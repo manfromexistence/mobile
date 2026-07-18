@@ -1,5 +1,5 @@
-import { expect, test } from "bun:test"
-import { CloudflareAIGatewayAuthPlugin } from "@/plugin/cloudflare"
+import { expect, test } from "bun:test";
+import { CloudflareAIGatewayAuthPlugin } from "@/plugin/cloudflare";
 
 const pluginInput = {
   client: {} as never,
@@ -11,7 +11,7 @@ const pluginInput = {
   },
   serverUrl: new URL("https://example.com"),
   $: {} as never,
-}
+};
 
 function makeHookInput(overrides: { providerID?: string; apiId?: string; reasoning?: boolean }) {
   return {
@@ -32,37 +32,55 @@ function makeHookInput(overrides: { providerID?: string; apiId?: string; reasoni
         interleaved: false,
       },
     } as never,
-  }
+  };
 }
 
 function makeHookOutput() {
-  return { temperature: 0, topP: 1, topK: 0, maxOutputTokens: 32_000 as number | undefined, options: {} }
+  return {
+    temperature: 0,
+    topP: 1,
+    topK: 0,
+    maxOutputTokens: 32_000 as number | undefined,
+    options: {},
+  };
 }
 
 test("omits maxOutputTokens for openai reasoning models on cloudflare-ai-gateway", async () => {
-  const hooks = await CloudflareAIGatewayAuthPlugin(pluginInput)
-  const out = makeHookOutput()
-  await hooks["chat.params"]!(makeHookInput({ apiId: "openai/gpt-5.2-codex", reasoning: true }), out)
-  expect(out.maxOutputTokens).toBeUndefined()
-})
+  const hooks = await CloudflareAIGatewayAuthPlugin(pluginInput);
+  const out = makeHookOutput();
+  await hooks["chat.params"]!(
+    makeHookInput({ apiId: "openai/gpt-5.2-codex", reasoning: true }),
+    out,
+  );
+  expect(out.maxOutputTokens).toBeUndefined();
+});
 
 test("keeps maxOutputTokens for openai non-reasoning models", async () => {
-  const hooks = await CloudflareAIGatewayAuthPlugin(pluginInput)
-  const out = makeHookOutput()
-  await hooks["chat.params"]!(makeHookInput({ apiId: "openai/gpt-4-turbo", reasoning: false }), out)
-  expect(out.maxOutputTokens).toBe(32_000)
-})
+  const hooks = await CloudflareAIGatewayAuthPlugin(pluginInput);
+  const out = makeHookOutput();
+  await hooks["chat.params"]!(
+    makeHookInput({ apiId: "openai/gpt-4-turbo", reasoning: false }),
+    out,
+  );
+  expect(out.maxOutputTokens).toBe(32_000);
+});
 
 test("keeps maxOutputTokens for non-openai reasoning models on cloudflare-ai-gateway", async () => {
-  const hooks = await CloudflareAIGatewayAuthPlugin(pluginInput)
-  const out = makeHookOutput()
-  await hooks["chat.params"]!(makeHookInput({ apiId: "anthropic/claude-sonnet-4-5", reasoning: true }), out)
-  expect(out.maxOutputTokens).toBe(32_000)
-})
+  const hooks = await CloudflareAIGatewayAuthPlugin(pluginInput);
+  const out = makeHookOutput();
+  await hooks["chat.params"]!(
+    makeHookInput({ apiId: "anthropic/claude-sonnet-4-5", reasoning: true }),
+    out,
+  );
+  expect(out.maxOutputTokens).toBe(32_000);
+});
 
 test("ignores non-cloudflare-ai-gateway providers", async () => {
-  const hooks = await CloudflareAIGatewayAuthPlugin(pluginInput)
-  const out = makeHookOutput()
-  await hooks["chat.params"]!(makeHookInput({ providerID: "openai", apiId: "gpt-5.2-codex", reasoning: true }), out)
-  expect(out.maxOutputTokens).toBe(32_000)
-})
+  const hooks = await CloudflareAIGatewayAuthPlugin(pluginInput);
+  const out = makeHookOutput();
+  await hooks["chat.params"]!(
+    makeHookInput({ providerID: "openai", apiId: "gpt-5.2-codex", reasoning: true }),
+    out,
+  );
+  expect(out.maxOutputTokens).toBe(32_000);
+});

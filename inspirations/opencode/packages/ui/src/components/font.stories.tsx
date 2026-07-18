@@ -1,5 +1,5 @@
 // @ts-nocheck
-import * as mod from "./font"
+import * as mod from "./font";
 
 const docs = `### Overview
 Uses native system font stacks for sans and mono typography.
@@ -21,7 +21,7 @@ Optional compatibility component. Existing roots can keep rendering it, but it d
 ### Theming/tokens
 - Theme tokens come from CSS variables, not this component.
 
-`
+`;
 
 export default {
   title: "UI/Font",
@@ -35,7 +35,7 @@ export default {
       },
     },
   },
-}
+};
 
 export const Basic = {
   render: () => (
@@ -45,4 +45,4 @@ export const Basic = {
       <div style={{ "font-family": "var(--font-family-mono)" }}>OpenCode Mono Sample</div>
     </div>
   ),
-}
+};

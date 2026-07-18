@@ -1,16 +1,23 @@
-import { RadioGroup as Kobalte } from "@kobalte/core/radio-group"
-import { Show, splitProps, type JSX } from "solid-js"
-import type { ComponentProps, ParentProps } from "solid-js"
-import "./radio-v2.css"
+import { RadioGroup as Kobalte } from "@kobalte/core/radio-group";
+import { Show, splitProps, type JSX } from "solid-js";
+import type { ComponentProps, ParentProps } from "solid-js";
+import "./radio-v2.css";
 
 export interface RadioGroupV2Props extends ParentProps<ComponentProps<typeof Kobalte>> {
-  label?: JSX.Element
-  description?: JSX.Element
-  hideLabel?: boolean
+  label?: JSX.Element;
+  description?: JSX.Element;
+  hideLabel?: boolean;
 }
 
 export function RadioGroupV2(props: RadioGroupV2Props) {
-  const [local, others] = splitProps(props, ["class", "classList", "children", "label", "description", "hideLabel"])
+  const [local, others] = splitProps(props, [
+    "class",
+    "classList",
+    "children",
+    "label",
+    "description",
+    "hideLabel",
+  ]);
   return (
     <Kobalte
       {...others}
@@ -28,22 +35,32 @@ export function RadioGroupV2(props: RadioGroupV2Props) {
         )}
       </Show>
       <Show when={local.description}>
-        {(description) => <Kobalte.Description data-slot="radio-v2-description">{description()}</Kobalte.Description>}
+        {(description) => (
+          <Kobalte.Description data-slot="radio-v2-description">
+            {description()}
+          </Kobalte.Description>
+        )}
       </Show>
       <div data-slot="radio-v2-items">{local.children}</div>
       <Kobalte.ErrorMessage data-slot="radio-v2-error" />
     </Kobalte>
-  )
+  );
 }
 
 export interface RadioItemV2Props extends ComponentProps<typeof Kobalte.Item> {
-  label: JSX.Element
-  description?: JSX.Element
-  hideLabel?: boolean
+  label: JSX.Element;
+  description?: JSX.Element;
+  hideLabel?: boolean;
 }
 
 export function RadioItemV2(props: RadioItemV2Props) {
-  const [local, others] = splitProps(props, ["class", "classList", "label", "description", "hideLabel"])
+  const [local, others] = splitProps(props, [
+    "class",
+    "classList",
+    "label",
+    "description",
+    "hideLabel",
+  ]);
   return (
     <Kobalte.Item
       {...others}
@@ -68,5 +85,5 @@ export function RadioItemV2(props: RadioItemV2Props) {
         </div>
       </Kobalte.ItemLabel>
     </Kobalte.Item>
-  )
+  );
 }

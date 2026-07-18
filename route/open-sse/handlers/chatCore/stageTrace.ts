@@ -13,7 +13,7 @@ type LoggerLike = { info?: (...args: unknown[]) => void } | null | undefined;
 export function stageTrace(
   label: string,
   extra: Record<string, unknown> | undefined,
-  ctx: { traceEnabled: boolean; startTime: number; traceId: string; log: LoggerLike }
+  ctx: { traceEnabled: boolean; startTime: number; traceId: string; log: LoggerLike },
 ) {
   const { traceEnabled, startTime, traceId, log } = ctx;
   if (!traceEnabled) return;

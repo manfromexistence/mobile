@@ -60,7 +60,7 @@ function normalizeFormat(format?: string | null): string {
 
 function inferFormatFromEvents(
   events: StructuredSSEEvent[],
-  fallbackFormat?: string | null
+  fallbackFormat?: string | null,
 ): string {
   const normalizedFallback = normalizeFormat(fallbackFormat);
   if (normalizedFallback) return normalizedFallback;
@@ -267,7 +267,7 @@ function buildOpenAISummary(events: StructuredSSEEvent[], fallbackModel?: string
 
 function buildResponsesSummary(
   events: StructuredSSEEvent[],
-  fallbackModel?: string | null
+  fallbackModel?: string | null,
 ): unknown {
   const payloads = events
     .map((evt) => asRecord(evt.data))
@@ -616,7 +616,7 @@ function buildGeminiSummary(events: StructuredSSEEvent[], fallbackModel?: string
 export function buildStreamSummaryFromEvents(
   events: StructuredSSEEvent[],
   fallbackFormat?: string | null,
-  fallbackModel?: string | null
+  fallbackModel?: string | null,
 ): unknown {
   const format = inferFormatFromEvents(events, fallbackFormat);
 

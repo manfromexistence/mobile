@@ -81,7 +81,7 @@ const VALID_BODY = {
  */
 function assertExecutorWrapperShape(
   result: unknown,
-  provider: string
+  provider: string,
 ): asserts result is {
   response: Response;
   url: string;
@@ -90,17 +90,17 @@ function assertExecutorWrapperShape(
 } {
   assert.ok(
     result && typeof result === "object",
-    `[${provider}] execute() must return an object, not ${typeof result}`
+    `[${provider}] execute() must return an object, not ${typeof result}`,
   );
   const r = result as Record<string, unknown>;
   assert.ok(
     r.response instanceof Response,
-    `[${provider}] result.response must be a Response (got ${typeof r.response})`
+    `[${provider}] result.response must be a Response (got ${typeof r.response})`,
   );
   assert.equal(typeof r.url, "string", `[${provider}] result.url must be a string`);
   assert.ok(
     r.headers && typeof r.headers === "object",
-    `[${provider}] result.headers must be an object`
+    `[${provider}] result.headers must be an object`,
   );
   // transformedBody may be null/undefined/object; just check it doesn't
   // throw when accessed.
@@ -111,7 +111,7 @@ function assertExecutorWrapperShape(
   const status = (r.response as Response).status;
   assert.ok(
     Number.isInteger(status) && status >= 100 && status < 600,
-    `[${provider}] result.response.status must be a valid HTTP status, got ${status}`
+    `[${provider}] result.response.status must be a valid HTTP status, got ${status}`,
   );
 }
 
@@ -146,7 +146,7 @@ describe("web-cookie + noauth executor wrapper contract sweep", () => {
         assert.doesNotMatch(
           body,
           /Cannot read properties of undefined \(reading 'status'\)/,
-          `[${providerId}] must not surface the chatCore-side TypeError`
+          `[${providerId}] must not surface the chatCore-side TypeError`,
         );
       });
     }
@@ -184,7 +184,7 @@ describe("web-cookie + noauth executor wrapper contract sweep", () => {
         if (result instanceof Response) {
           assert.ok(
             result.status >= 100 && result.status < 600,
-            `[${providerId}] bare Response must have a valid HTTP status, got ${result.status}`
+            `[${providerId}] bare Response must have a valid HTTP status, got ${result.status}`,
           );
         } else {
           assertExecutorWrapperShape(result, providerId);
@@ -194,7 +194,7 @@ describe("web-cookie + noauth executor wrapper contract sweep", () => {
         assert.doesNotMatch(
           body,
           /Cannot read properties of undefined \(reading 'status'\)/,
-          `[${providerId}] must not surface the chatCore-side TypeError`
+          `[${providerId}] must not surface the chatCore-side TypeError`,
         );
       });
     }

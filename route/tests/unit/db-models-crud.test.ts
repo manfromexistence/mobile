@@ -84,12 +84,12 @@ test("custom models can be added once and queried by provider", async () => {
     "Claude 3.7 Sonnet",
     "manual",
     "responses",
-    ["chat", "responses"]
+    ["chat", "responses"],
   );
   const duplicate = await modelsDb.addCustomModel(
     "openrouter",
     "anthropic/claude-3.7-sonnet",
-    "Claude 3.7 Sonnet"
+    "Claude 3.7 Sonnet",
   );
   const providerModels = await modelsDb.getCustomModels("openrouter");
   const allModels = await modelsDb.getAllCustomModels();
@@ -307,13 +307,13 @@ test("compat getters fall back to override rows when custom model storage is mal
   const db = core.getDbInstance();
   db.prepare("UPDATE key_value SET value = ? WHERE namespace = 'customModels' AND key = ?").run(
     "{not-json",
-    "anthropic"
+    "anthropic",
   );
 
   assert.equal(modelsDb.getModelNormalizeToolCallId("anthropic", "claude-edge", "openai"), false);
   assert.equal(
     modelsDb.getModelPreserveOpenAIDeveloperRole("anthropic", "claude-edge", "openai"),
-    true
+    true,
   );
   assert.equal(modelsDb.getModelIsHidden("anthropic", "claude-edge"), true);
   assert.deepEqual(modelsDb.getModelUpstreamExtraHeaders("anthropic", "claude-edge", "openai"), {

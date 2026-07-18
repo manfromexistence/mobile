@@ -10,7 +10,7 @@ const importCodexAuthBulkSchema = z.object({
         json: z.unknown(),
         name: z.string().min(1).max(200).optional(),
         email: z.string().email().optional(),
-      })
+      }),
     )
     .min(1)
     .max(50),

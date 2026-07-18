@@ -22,8 +22,9 @@ test.after(() => {
 });
 
 test("resolveCliPath finds omniroute.mjs from argv", async () => {
-  const { enable, disable, getAutostartStatus } =
-    await import("../../../bin/cli/tray/autostart.mjs");
+  const { enable, disable, getAutostartStatus } = await import(
+    "../../../bin/cli/tray/autostart.mjs"
+  );
   if (process.platform !== "linux") return;
 
   const ok = enable();

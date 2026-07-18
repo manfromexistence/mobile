@@ -186,7 +186,7 @@ test("maybeGenerateHandoff persists a structured handoff once the threshold is r
         {
           status: 200,
           headers: { "content-type": "application/json" },
-        }
+        },
       );
     },
   });
@@ -238,7 +238,7 @@ test("maybeGenerateHandoff deduplicates concurrent in-flight generations for the
         {
           status: 200,
           headers: { "content-type": "application/json" },
-        }
+        },
       );
     },
   };
@@ -291,7 +291,7 @@ test("maybeGenerateHandoff allows a new attempt after a failed in-flight generat
         {
           status: 200,
           headers: { "content-type": "application/json" },
-        }
+        },
       );
     },
   };
@@ -383,7 +383,7 @@ test("selectMessagesForSummary filters falsy values and preserves system/develop
 
   const selected = contextHandoff.selectMessagesForSummary(
     messages as contextHandoff.MessageLike[],
-    2
+    2,
   );
 
   assert.equal(selected.length, 4);

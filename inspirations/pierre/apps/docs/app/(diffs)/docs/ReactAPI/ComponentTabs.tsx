@@ -1,27 +1,23 @@
-'use client';
+"use client";
 
-import type { PreloadedFileResult } from '@pierre/diffs/ssr';
-import { type CSSProperties, useState } from 'react';
+import type { PreloadedFileResult } from "@pierre/diffs/ssr";
+import { type CSSProperties, useState } from "react";
 
-import { DocsCodeExample } from '@/components/docs/DocsCodeExample';
-import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group';
+import { DocsCodeExample } from "@/components/docs/DocsCodeExample";
+import { ButtonGroup, ButtonGroupItem } from "@/components/ui/button-group";
 
 const NumberColumnWidthOverride = {
-  '--diffs-min-number-column-width': '3ch',
+  "--diffs-min-number-column-width": "3ch",
 } as CSSProperties;
 
 type ExampleTypes =
-  | 'code-view'
-  | 'multi-file-diff'
-  | 'patch-diff'
-  | 'file-diff'
-  | 'file'
-  | 'unresolved-file';
-type SharedPropsTypes =
-  | 'diff-options'
-  | 'diff-render-props'
-  | 'file-options'
-  | 'file-render-props';
+  | "code-view"
+  | "multi-file-diff"
+  | "patch-diff"
+  | "file-diff"
+  | "file"
+  | "unresolved-file";
+type SharedPropsTypes = "diff-options" | "diff-render-props" | "file-options" | "file-render-props";
 
 interface ComponentTabsProps {
   reactAPICodeView: PreloadedFileResult<undefined>;
@@ -40,39 +36,32 @@ export function ComponentTabs({
   reactAPIFile,
   reactAPIUnresolvedFile,
 }: ComponentTabsProps) {
-  const [example, setExample] = useState<ExampleTypes>('code-view');
+  const [example, setExample] = useState<ExampleTypes>("code-view");
 
   return (
     <>
-      <ButtonGroup
-        value={example}
-        onValueChange={(value) => setExample(value as ExampleTypes)}
-      >
+      <ButtonGroup value={example} onValueChange={(value) => setExample(value as ExampleTypes)}>
         <ButtonGroupItem value="code-view">CodeView</ButtonGroupItem>
         <ButtonGroupItem value="multi-file-diff">MultiFileDiff</ButtonGroupItem>
         <ButtonGroupItem value="patch-diff">PatchDiff</ButtonGroupItem>
         <ButtonGroupItem value="file-diff">FileDiff</ButtonGroupItem>
         <ButtonGroupItem value="file">File</ButtonGroupItem>
-        <ButtonGroupItem value="unresolved-file">
-          UnresolvedFile
-        </ButtonGroupItem>
+        <ButtonGroupItem value="unresolved-file">UnresolvedFile</ButtonGroupItem>
       </ButtonGroup>
       {(() => {
         switch (example) {
-          case 'code-view':
+          case "code-view":
             return <DocsCodeExample {...reactAPICodeView} key={example} />;
-          case 'multi-file-diff':
+          case "multi-file-diff":
             return <DocsCodeExample {...reactAPIMultiFileDiff} key={example} />;
-          case 'file-diff':
+          case "file-diff":
             return <DocsCodeExample {...reactAPIFileDiff} key={example} />;
-          case 'patch-diff':
+          case "patch-diff":
             return <DocsCodeExample {...reactAPIPatch} key={example} />;
-          case 'file':
+          case "file":
             return <DocsCodeExample {...reactAPIFile} key={example} />;
-          case 'unresolved-file':
-            return (
-              <DocsCodeExample {...reactAPIUnresolvedFile} key={example} />
-            );
+          case "unresolved-file":
+            return <DocsCodeExample {...reactAPIUnresolvedFile} key={example} />;
         }
       })()}
     </>
@@ -92,8 +81,7 @@ export function SharedPropTabs({
   sharedFileOptions,
   sharedFileRenderProps,
 }: SharedPropTabsProps) {
-  const [sharedProps, setSharedProps] =
-    useState<SharedPropsTypes>('diff-options');
+  const [sharedProps, setSharedProps] = useState<SharedPropsTypes>("diff-options");
 
   return (
     <>
@@ -103,17 +91,13 @@ export function SharedPropTabs({
         className="no-scrollbar max-w-full overflow-x-auto md:overflow-visible"
       >
         <ButtonGroupItem value="diff-options">Diff Options</ButtonGroupItem>
-        <ButtonGroupItem value="diff-render-props">
-          Diff Render Props
-        </ButtonGroupItem>
+        <ButtonGroupItem value="diff-render-props">Diff Render Props</ButtonGroupItem>
         <ButtonGroupItem value="file-options">File Options</ButtonGroupItem>
-        <ButtonGroupItem value="file-render-props">
-          File Render Props
-        </ButtonGroupItem>
+        <ButtonGroupItem value="file-render-props">File Render Props</ButtonGroupItem>
       </ButtonGroup>
       {(() => {
         switch (sharedProps) {
-          case 'diff-options':
+          case "diff-options":
             return (
               <DocsCodeExample
                 {...sharedDiffOptions}
@@ -121,7 +105,7 @@ export function SharedPropTabs({
                 key={sharedProps}
               />
             );
-          case 'diff-render-props':
+          case "diff-render-props":
             return (
               <DocsCodeExample
                 {...sharedDiffRenderProps}
@@ -129,7 +113,7 @@ export function SharedPropTabs({
                 key={sharedProps}
               />
             );
-          case 'file-options':
+          case "file-options":
             return (
               <DocsCodeExample
                 {...sharedFileOptions}
@@ -137,7 +121,7 @@ export function SharedPropTabs({
                 key={sharedProps}
               />
             );
-          case 'file-render-props':
+          case "file-render-props":
             return (
               <DocsCodeExample
                 {...sharedFileRenderProps}

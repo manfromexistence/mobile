@@ -1,6 +1,6 @@
-import { type RefObject, useEffect } from 'react';
+import { type RefObject, useEffect } from "react";
 
-import { STATE_FILE_NAMES } from './constants';
+import { STATE_FILE_NAMES } from "./constants";
 
 const INITIAL_POLL_MS = 32;
 const MAX_POLL_MS = 256;
@@ -14,9 +14,7 @@ interface StatePreviewItems {
 }
 
 function findStatePreviewItems(root: ShadowRoot): StatePreviewItems {
-  const items = root.querySelectorAll<HTMLElement>(
-    "[data-type='item'][data-item-type='file']"
-  );
+  const items = root.querySelectorAll<HTMLElement>("[data-type='item'][data-item-type='file']");
 
   let hover: HTMLElement | null = null;
   let focus: HTMLElement | null = null;
@@ -36,12 +34,7 @@ function findStatePreviewItems(root: ShadowRoot): StatePreviewItems {
       selectedFocused = item;
     }
 
-    if (
-      hover != null &&
-      focus != null &&
-      selected != null &&
-      selectedFocused != null
-    ) {
+    if (hover != null && focus != null && selected != null && selectedFocused != null) {
       break;
     }
   }
@@ -50,36 +43,29 @@ function findStatePreviewItems(root: ShadowRoot): StatePreviewItems {
 }
 
 function applyStatePreview(root: ShadowRoot): boolean {
-  const { hover, focus, selected, selectedFocused } =
-    findStatePreviewItems(root);
+  const { hover, focus, selected, selectedFocused } = findStatePreviewItems(root);
 
-  if (
-    hover == null ||
-    focus == null ||
-    selected == null ||
-    selectedFocused == null
-  ) {
+  if (hover == null || focus == null || selected == null || selectedFocused == null) {
     return false;
   }
 
-  hover.style.setProperty('background-color', 'var(--trees-bg-muted)');
-  focus.setAttribute('data-item-focused', 'true');
-  selected.setAttribute('data-item-selected', 'true');
-  selectedFocused.setAttribute('data-item-selected', 'true');
-  selectedFocused.setAttribute('data-item-focused', 'true');
+  hover.style.setProperty("background-color", "var(--trees-bg-muted)");
+  focus.setAttribute("data-item-focused", "true");
+  selected.setAttribute("data-item-selected", "true");
+  selectedFocused.setAttribute("data-item-selected", "true");
+  selectedFocused.setAttribute("data-item-focused", "true");
 
   return true;
 }
 
 function clearStatePreview(root: ShadowRoot) {
-  const { hover, focus, selected, selectedFocused } =
-    findStatePreviewItems(root);
+  const { hover, focus, selected, selectedFocused } = findStatePreviewItems(root);
 
-  hover?.style.removeProperty('background-color');
-  focus?.removeAttribute('data-item-focused');
-  selected?.removeAttribute('data-item-selected');
-  selectedFocused?.removeAttribute('data-item-selected');
-  selectedFocused?.removeAttribute('data-item-focused');
+  hover?.style.removeProperty("background-color");
+  focus?.removeAttribute("data-item-focused");
+  selected?.removeAttribute("data-item-selected");
+  selectedFocused?.removeAttribute("data-item-selected");
+  selectedFocused?.removeAttribute("data-item-focused");
 }
 
 /**
@@ -87,12 +73,9 @@ function clearStatePreview(root: ShadowRoot) {
  * FileTree's shadow DOM. Uses a MutationObserver to re-apply after the tree
  * re-renders internally.
  */
-export function useTreeStatePreview(
-  ref: RefObject<HTMLDivElement | null>,
-  enabled: boolean
-) {
+export function useTreeStatePreview(ref: RefObject<HTMLDivElement | null>, enabled: boolean) {
   useEffect(() => {
-    const host = ref.current?.querySelector('file-tree-container');
+    const host = ref.current?.querySelector("file-tree-container");
     if (host == null) return;
     if (!enabled) {
       if (host.shadowRoot != null) {

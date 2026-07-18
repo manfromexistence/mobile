@@ -1,5 +1,5 @@
-import type { Dict } from "./en"
-import { dict as en } from "./en"
+import type { Dict } from "./en";
+import { dict as en } from "./en";
 
 export const dict = {
   ...en,
@@ -166,7 +166,8 @@ export const dict = {
   "home.faq.a5.and": "與",
   "home.faq.a5.web": "網頁端",
   "home.faq.q6": "OpenCode 價格如何？",
-  "home.faq.a6": "OpenCode 100% 免費使用。它也自帶一組免費模型。如果你連接其他供應商，可能會產生額外費用。",
+  "home.faq.a6":
+    "OpenCode 100% 免費使用。它也自帶一組免費模型。如果你連接其他供應商，可能會產生額外費用。",
   "home.faq.q7": "資料與隱私怎麼辦？",
   "home.faq.a7.p1": "僅當你使用我們的免費模型或建立可分享連結時，才會儲存你的資料與資訊。",
   "home.faq.a7.p2.beforeModels": "了解更多關於",
@@ -177,7 +178,8 @@ export const dict = {
   "home.faq.a8.p1": "是的，OpenCode 完全開源。原始碼公開在",
   "home.faq.a8.p2": "並採用",
   "home.faq.a8.mitLicense": "MIT 授權條款",
-  "home.faq.a8.p3": "，意味著任何人都可以使用、修改或貢獻。社群中的任何人都可以提交 issue、pull requests 並擴充功能。",
+  "home.faq.a8.p3":
+    "，意味著任何人都可以使用、修改或貢獻。社群中的任何人都可以提交 issue、pull requests 並擴充功能。",
 
   "home.zenCta.title": "存取可靠且最佳化的編碼代理模型",
   "home.zenCta.body":
@@ -192,7 +194,8 @@ export const dict = {
   "zen.faq.q1": "什麼是 OpenCode Zen？",
   "zen.faq.a1": "Zen 是由 OpenCode 團隊打造、專為編碼代理測試與評測的 AI 模型精選集合。",
   "zen.faq.q2": "是什麼讓 Zen 更準確？",
-  "zen.faq.a2": "Zen 只提供專為編碼代理測試與評測的模型。你不會用奶油刀切牛排，也別用糟糕的模型來寫程式。",
+  "zen.faq.a2":
+    "Zen 只提供專為編碼代理測試與評測的模型。你不會用奶油刀切牛排，也別用糟糕的模型來寫程式。",
   "zen.faq.q3": "Zen 更便宜嗎？",
   "zen.faq.a3":
     "Zen 不以營利為目的。Zen 會把模型供應商的成本原樣轉給你。Zen 的使用量越高，OpenCode 就越能談到更好的價格並把優惠讓利給你。",
@@ -202,9 +205,11 @@ export const dict = {
   "zen.faq.a4.p1.afterPricing": "且零加價，因此你支付的就是模型供應商的原價。",
   "zen.faq.a4.p2.beforeAccount": "總費用取決於使用量，你可以在",
   "zen.faq.a4.p2.accountLink": "帳戶中設定每月支出上限",
-  "zen.faq.a4.p3": "為了覆蓋成本，OpenCode 只會收取很小的支付處理費：每次儲值 $20 會額外收取 $1.23。",
+  "zen.faq.a4.p3":
+    "為了覆蓋成本，OpenCode 只會收取很小的支付處理費：每次儲值 $20 會額外收取 $1.23。",
   "zen.faq.q5": "資料與隱私如何？",
-  "zen.faq.a5.beforeExceptions": "所有 Zen 模型都託管在美國。供應商遵循零留存政策，不會將你的資料用於模型訓練，但有",
+  "zen.faq.a5.beforeExceptions":
+    "所有 Zen 模型都託管在美國。供應商遵循零留存政策，不會將你的資料用於模型訓練，但有",
   "zen.faq.a5.exceptionsLink": "以下例外",
   "zen.faq.q6": "我可以設定支出上限嗎？",
   "zen.faq.a6": "可以，你可以在帳戶中設定每月支出上限。",
@@ -236,7 +241,8 @@ export const dict = {
   "zen.how.step3.title": "自動儲值",
   "zen.how.step3.body": "當你的餘額達到 $5 時，我們會自動儲值 $20",
   "zen.privacy.title": "你的隱私對我們很重要",
-  "zen.privacy.beforeExceptions": "所有 Zen 模型均在美國託管。供應商遵循零留存政策，不會將你的資料用於模型訓練，並且有",
+  "zen.privacy.beforeExceptions":
+    "所有 Zen 模型均在美國託管。供應商遵循零留存政策，不會將你的資料用於模型訓練，並且有",
   "zen.privacy.exceptionsLink": "以下例外情況",
 
   "go.title": "OpenCode Go | 低成本全民編碼模型",
@@ -301,9 +307,11 @@ export const dict = {
   "go.how.step3.title": "開始編碼",
   "go.how.step3.body": "穩定存取開源模型",
   "go.privacy.title": "你的隱私對我們很重要",
-  "go.privacy.body": "該方案主要面向國際用戶設計，模型託管在美國、歐盟和新加坡，以確保全球穩定存取。",
+  "go.privacy.body":
+    "該方案主要面向國際用戶設計，模型託管在美國、歐盟和新加坡，以確保全球穩定存取。",
   "go.privacy.contactAfter": "如果你有任何問題。",
-  "go.privacy.beforeExceptions": "Go 模型託管在美國。供應商遵循零留存政策，不會將你的資料用於模型訓練，但有",
+  "go.privacy.beforeExceptions":
+    "Go 模型託管在美國。供應商遵循零留存政策，不會將你的資料用於模型訓練，但有",
   "go.privacy.exceptionsLink": "以下例外",
   "go.faq.q1": "什麼是 OpenCode Go？",
   "go.faq.a1": "Go 是一個低成本訂閱方案，讓你穩定存取強大的開源模型以進行代理編碼。",
@@ -322,7 +330,8 @@ export const dict = {
   "go.faq.q5": "資料與隱私怎麼辦？",
   "go.faq.a5.body":
     "該方案主要面向國際用戶設計，模型託管在美國、歐盟和新加坡，以確保全球穩定存取。我們的供應商遵循零留存政策，不會將你的資料用於模型訓練。",
-  "go.faq.a5.beforeExceptions": "Go 模型託管在美國。供應商遵循零留存政策，不會將你的資料用於模型訓練，但有",
+  "go.faq.a5.beforeExceptions":
+    "Go 模型託管在美國。供應商遵循零留存政策，不會將你的資料用於模型訓練，但有",
   "go.faq.a5.exceptionsLink": "以下例外",
   "go.faq.q6": "我可以儲值額度嗎？",
   "go.faq.a6": "如果你需要更多使用量，可以在帳戶中儲值額度。",
@@ -353,10 +362,13 @@ export const dict = {
   "zen.api.error.insufficientBalance": "餘額不足。請在此處管理你的帳務：{{billingUrl}}",
   "zen.api.error.workspaceMonthlyLimitReached":
     "你的工作區已達到每月支出限額 ${{amount}}。請在此處管理你的限額：{{billingUrl}}",
-  "zen.api.error.userMonthlyLimitReached": "你已達到每月支出限額 ${{amount}}。請在此處管理你的限額：{{membersUrl}}",
+  "zen.api.error.userMonthlyLimitReached":
+    "你已達到每月支出限額 ${{amount}}。請在此處管理你的限額：{{membersUrl}}",
   "zen.api.error.modelDisabled": "模型已停用",
-  "zen.api.error.regionNotAllowed": "此模型部署於中國。如果你想使用此模型，請在設定中啟用它：{{consoleGoUrl}}",
-  "zen.api.error.trialEnded": "{{model}} 的限免活动已結束。您可以訂閱 OpenCode Go 繼續使用該模型 - {{link}}",
+  "zen.api.error.regionNotAllowed":
+    "此模型部署於中國。如果你想使用此模型，請在設定中啟用它：{{consoleGoUrl}}",
+  "zen.api.error.trialEnded":
+    "{{model}} 的限免活动已結束。您可以訂閱 OpenCode Go 繼續使用該模型 - {{link}}",
 
   "black.meta.title": "OpenCode Black | 存取全球最佳編碼模型",
   "black.meta.description": "透過 OpenCode Black 訂閱方案存取 Claude、GPT、Gemini 等模型。",
@@ -420,9 +432,11 @@ export const dict = {
   "workspace.home.billing.currentBalance": "目前餘額",
 
   "workspace.newUser.feature.tested.title": "經過測試與驗證的模型",
-  "workspace.newUser.feature.tested.body": "我們專門針對編碼代理對模型進行了基準測試和測試，以確保最佳效能。",
+  "workspace.newUser.feature.tested.body":
+    "我們專門針對編碼代理對模型進行了基準測試和測試，以確保最佳效能。",
   "workspace.newUser.feature.quality.title": "最高品質",
-  "workspace.newUser.feature.quality.body": "存取配置為最佳效能的模型 - 無需降級或路由到更便宜的供應商。",
+  "workspace.newUser.feature.quality.body":
+    "存取配置為最佳效能的模型 - 無需降級或路由到更便宜的供應商。",
   "workspace.newUser.feature.lockin.title": "無綁定",
   "workspace.newUser.feature.lockin.body":
     "將 Zen 與任何編碼代理結合使用，並在需要時隨時使用 OpenCode 連接其他供應商。",
@@ -612,7 +626,8 @@ export const dict = {
   "workspace.black.waitlist.enroll": "加入",
   "workspace.black.waitlist.enrolling": "加入中...",
   "workspace.black.waitlist.enrolled": "已加入",
-  "workspace.black.waitlist.enrollNote": "當你點選「加入」後，你的訂閱將立即開始，並且將從你的卡片中扣款。",
+  "workspace.black.waitlist.enrollNote":
+    "當你點選「加入」後，你的訂閱將立即開始，並且將從你的卡片中扣款。",
 
   "workspace.lite.loading": "載入中...",
   "workspace.lite.time.day": "天",
@@ -634,8 +649,10 @@ export const dict = {
   "workspace.lite.providers.title": "提供商",
   "workspace.lite.providers.description": "控制用於路由的提供商。",
   "workspace.lite.providers.useChina": "啟用部署在中國的模型",
-  "workspace.lite.black.message": "您目前已訂閱 OpenCode Black 或在候補名單中。若要切換至 Go，請先取消訂閱。",
-  "workspace.lite.other.message": "此工作區中的另一位成員已訂閱 OpenCode Go。每個工作區只能有一位成員訂閱。",
+  "workspace.lite.black.message":
+    "您目前已訂閱 OpenCode Black 或在候補名單中。若要切換至 Go，請先取消訂閱。",
+  "workspace.lite.other.message":
+    "此工作區中的另一位成員已訂閱 OpenCode Go。每個工作區只能有一位成員訂閱。",
   "workspace.lite.promo.description":
     "OpenCode Go 起價為 {{price}}，之後 $10/月，並提供對熱門開放編碼模型的可靠存取，同時享有充裕的使用額度。",
   "workspace.lite.promo.price": "首月 $5",
@@ -705,7 +722,8 @@ export const dict = {
   "download.faq.a3.afterZen": "，但 OpenCode 同樣支援 OpenAI、Anthropic、xAI 等所有主流供應商。",
 
   "download.faq.a5.p1": "OpenCode 100% 免費使用。",
-  "download.faq.a5.p2.beforeZen": "額外費用來自你對模型供應商的訂閱。雖然 OpenCode 支援任何模型供應商，但我們建議使用",
+  "download.faq.a5.p2.beforeZen":
+    "額外費用來自你對模型供應商的訂閱。雖然 OpenCode 支援任何模型供應商，但我們建議使用",
   "download.faq.a5.p2.afterZen": "。",
 
   "download.faq.a6.p1": "你的資料與資訊只會在你於 OpenCode 中建立可分享連結時被儲存。",
@@ -797,4 +815,4 @@ export const dict = {
   "bench.detail.table.duration": "耗時",
   "bench.detail.run.title": "執行 {{n}}",
   "bench.detail.rawJson": "原始 JSON",
-} satisfies Dict
+} satisfies Dict;

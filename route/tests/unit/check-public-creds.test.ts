@@ -24,7 +24,7 @@ test("flags a clientId behind a process.env fallback (env || literal)", () => {
 
 test("flags clientSecret and apiKey literals too", () => {
   const src = [`clientSecret: "GOCSPX-secret-literal",`, `apiKey: "AIzaSyLeakedFirebaseKey",`].join(
-    "\n"
+    "\n",
   );
   const v = findLiteralCreds(src, new Set(), "x.ts");
   assert.equal(v.length, 2);
@@ -102,12 +102,12 @@ test("every frozen literal is actually present in a scanned file (no dead allowl
       const src = fs.readFileSync(path.join(repoRoot, file), "utf8") as string;
       assert.ok(
         src.includes(value),
-        `frozen literal not found in its source file ${file}: ${value}`
+        `frozen literal not found in its source file ${file}: ${value}`,
       );
     } else {
       assert.ok(
         anchorBlob.includes(value),
-        `frozen literal not found in any anchor file: ${value}`
+        `frozen literal not found in any anchor file: ${value}`,
       );
     }
   }
@@ -118,23 +118,23 @@ test("with an empty allowlist the real scanned files surface zero violations (al
   // #3493, so neither anchor file has literal credentials anymore.
   const reg = fs.readFileSync(
     path.join(repoRoot, "open-sse/config/providerRegistry.ts"),
-    "utf8"
+    "utf8",
   ) as string;
   const oauth = fs.readFileSync(
     path.join(repoRoot, "src/lib/oauth/constants/oauth.ts"),
-    "utf8"
+    "utf8",
   ) as string;
   const regViolations = findLiteralCreds(reg, new Set(), "providerRegistry.ts");
   const oauthViolations = findLiteralCreds(oauth, new Set(), "oauth.ts");
   assert.equal(
     regViolations.length,
     0,
-    `providerRegistry.ts should be clean, got: ${regViolations.join(", ")}`
+    `providerRegistry.ts should be clean, got: ${regViolations.join(", ")}`,
   );
   assert.equal(
     oauthViolations.length,
     0,
-    `oauth.ts should be clean, got: ${oauthViolations.join(", ")}`
+    `oauth.ts should be clean, got: ${oauthViolations.join(", ")}`,
   );
 });
 
@@ -173,7 +173,7 @@ test("6A.8 stale: known literal that was removed from the codebase is detected a
   const stale = (reportStale as (a: Set<string>, b: string[], c: string) => string[])(
     new Set(["old-literal"]),
     liveViolations,
-    "check-public-creds"
+    "check-public-creds",
   );
   assert.deepEqual(stale, ["old-literal"]);
 });
@@ -191,13 +191,13 @@ test("6A.8: open-sse/services/usage.ts FP — function-signature apiKey is suppr
   const vWithEmpty = findLiteralCreds(realSrc, new Set(), minimaxPath);
   assert.ok(
     vWithEmpty.some((v) => v.includes("minimax")),
-    `expected FP 'minimax' violations with empty allowlist, got: ${vWithEmpty.join(", ")}`
+    `expected FP 'minimax' violations with empty allowlist, got: ${vWithEmpty.join(", ")}`,
   );
   // With KNOWN_LITERAL_CREDS the FPs are suppressed.
   const vWithAllowlist = findLiteralCreds(realSrc, KNOWN_LITERAL_CREDS, minimaxPath);
   assert.deepEqual(
     vWithAllowlist,
     [],
-    `FP violations should be suppressed, got: ${vWithAllowlist.join(", ")}`
+    `FP violations should be suppressed, got: ${vWithAllowlist.join(", ")}`,
   );
 });

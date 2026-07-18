@@ -1,10 +1,10 @@
-import { button } from 'leva';
+import { button } from "leva";
 
 export function levaImageButton(onLoad: (image: HTMLImageElement) => void) {
   return button(() => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
     input.onchange = (event) => {
       const file = (event.target as HTMLInputElement).files?.[0];
       if (file) {
@@ -25,7 +25,7 @@ export function levaImageButton(onLoad: (image: HTMLImageElement) => void) {
 export function levaDeleteImageButton(onLoad: (image?: HTMLImageElement) => void) {
   return button(() => {
     const img = new Image();
-    img.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+    img.src = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
     img.onload = () => onLoad(img);
   });
 }

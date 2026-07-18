@@ -22,7 +22,7 @@ function buildLatencyMap(db: ReturnType<typeof getDbInstance>): Map<string, numb
       `SELECT proxy_host, proxy_port, AVG(latency_ms) as avg_latency
        FROM proxy_logs
        WHERE timestamp >= ?
-       GROUP BY proxy_host, proxy_port`
+       GROUP BY proxy_host, proxy_port`,
     )
     .all(sinceIso) as LatencyLogRow[];
 

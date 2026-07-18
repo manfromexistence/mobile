@@ -17,7 +17,7 @@ test("resolveAccountSemaphoreAccountKey falls back through credential candidates
   // blank connectionId -> first non-blank candidate (connectionId field) wins
   assert.equal(
     resolveAccountSemaphoreAccountKey("  ", { connectionId: "cred-conn", id: "id-x" }),
-    "cred-conn"
+    "cred-conn",
   );
   // candidate order: connectionId, id, email, name, displayName
   assert.equal(resolveAccountSemaphoreAccountKey(null, { id: "  id-x  " }), "id-x");
@@ -31,7 +31,13 @@ test("resolveAccountSemaphoreAccountKey returns null when nothing usable is pres
   assert.equal(resolveAccountSemaphoreAccountKey(undefined, undefined), null);
   assert.equal(resolveAccountSemaphoreAccountKey("", {}), null);
   // non-string / blank candidates are all rejected
-  assert.equal(resolveAccountSemaphoreAccountKey("", { id: 123, email: "   " } as unknown as Record<string, unknown>), null);
+  assert.equal(
+    resolveAccountSemaphoreAccountKey("", { id: 123, email: "   " } as unknown as Record<
+      string,
+      unknown
+    >),
+    null,
+  );
 });
 
 test("resolveAccountSemaphoreMaxConcurrency parses finite numbers and numeric strings", () => {
@@ -51,7 +57,13 @@ test("resolveAccountSemaphoreMaxConcurrency rejects non-finite / non-numeric / m
   assert.equal(resolveAccountSemaphoreMaxConcurrency({ maxConcurrent: "abc" }), null);
   assert.equal(resolveAccountSemaphoreMaxConcurrency({ maxConcurrent: "" }), null);
   assert.equal(resolveAccountSemaphoreMaxConcurrency({ maxConcurrent: "   " }), null);
-  assert.equal(resolveAccountSemaphoreMaxConcurrency({ maxConcurrent: true } as unknown as Record<string, unknown>), null);
+  assert.equal(
+    resolveAccountSemaphoreMaxConcurrency({ maxConcurrent: true } as unknown as Record<
+      string,
+      unknown
+    >),
+    null,
+  );
   assert.equal(resolveAccountSemaphoreMaxConcurrency({}), null);
   assert.equal(resolveAccountSemaphoreMaxConcurrency(null), null);
 });
@@ -64,7 +76,7 @@ test("resolveAccountSemaphoreKey builds provider:accountKey when both resolve", 
       connectionId: "conn-9",
       credentials: null,
     }),
-    "openai:conn-9"
+    "openai:conn-9",
   );
   // accountKey can come from credentials when connectionId is blank
   assert.equal(
@@ -74,24 +86,39 @@ test("resolveAccountSemaphoreKey builds provider:accountKey when both resolve", 
       connectionId: null,
       credentials: { email: "user@x.io" },
     }),
-    "anthropic:user@x.io"
+    "anthropic:user@x.io",
   );
 });
 
 test("resolveAccountSemaphoreKey returns null without a provider or account key", () => {
   // no account key resolvable
   assert.equal(
-    resolveAccountSemaphoreKey({ provider: "openai", model: "m", connectionId: null, credentials: null }),
-    null
+    resolveAccountSemaphoreKey({
+      provider: "openai",
+      model: "m",
+      connectionId: null,
+      credentials: null,
+    }),
+    null,
   );
   // account key resolves but provider missing
   assert.equal(
-    resolveAccountSemaphoreKey({ provider: null, model: "m", connectionId: "conn", credentials: null }),
-    null
+    resolveAccountSemaphoreKey({
+      provider: null,
+      model: "m",
+      connectionId: "conn",
+      credentials: null,
+    }),
+    null,
   );
   assert.equal(
-    resolveAccountSemaphoreKey({ provider: "", model: "m", connectionId: "conn", credentials: null }),
-    null
+    resolveAccountSemaphoreKey({
+      provider: "",
+      model: "m",
+      connectionId: "conn",
+      credentials: null,
+    }),
+    null,
   );
 });
 
@@ -100,7 +127,7 @@ test("buildClaudePromptCacheLogMeta returns null for non-Claude format or non-ob
   assert.equal(buildClaudePromptCacheLogMeta(FORMATS.CLAUDE, null, null), null);
   assert.equal(
     buildClaudePromptCacheLogMeta(FORMATS.CLAUDE, "x" as unknown as Record<string, unknown>, null),
-    null
+    null,
   );
 });
 
@@ -164,7 +191,7 @@ test("buildClaudePromptCacheLogMeta surfaces the Anthropic-Beta header even with
     FORMATS.CLAUDE,
     body,
     null,
-    new Headers({ "Anthropic-Beta": "client-beta" })
+    new Headers({ "Anthropic-Beta": "client-beta" }),
   );
   assert.ok(fromClient);
   assert.equal(fromClient.anthropicBeta, "client-beta");

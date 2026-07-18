@@ -22,8 +22,8 @@ const ALPHA_ZERO_RE = /^0(?:\.0+)?%?$/;
 // functional notation or has no alpha component. Used by isFullyTransparent to
 // detect zero-alpha colors without a full CSS color parser.
 function getFunctionalAlpha(color: string): string | undefined {
-  const openParen = color.indexOf('(');
-  if (openParen <= 0 || !color.endsWith(')')) {
+  const openParen = color.indexOf("(");
+  if (openParen <= 0 || !color.endsWith(")")) {
     return undefined;
   }
 
@@ -38,14 +38,14 @@ function getFunctionalAlpha(color: string): string | undefined {
   }
 
   // Modern functional syntax: rgb(0 0 0 / 0), color(... / 0%), etc.
-  const slashIndex = inner.lastIndexOf('/');
+  const slashIndex = inner.lastIndexOf("/");
   if (slashIndex !== -1) {
     return inner.slice(slashIndex + 1).trim();
   }
 
   // Legacy syntax: rgba(0, 0, 0, 0), hsla(210, 40%, 50%, 0.0)
   if (/^(?:rgba|hsla)$/i.test(fn)) {
-    const parts = inner.split(',');
+    const parts = inner.split(",");
     if (parts.length === 4) {
       return parts[3]?.trim();
     }
@@ -57,9 +57,7 @@ function getFunctionalAlpha(color: string): string | undefined {
 // Parses `#rgb`, `#rrggbb`, or `#rrggbbaa` into [r, g, b, a] with channels in
 // [0, 255] and alpha in [0, 1]. Returns null for any other format. Stay in
 // 0..255 (not normalized) and alpha is decoded from the 8-digit form.
-export function parseHexRgba(
-  color: string
-): readonly [number, number, number, number] | null {
+export function parseHexRgba(color: string): readonly [number, number, number, number] | null {
   // The \b anchor is inherited from the diffshub source to preserve parity.
   // Callers pass trimmed bare hex strings, so \b matches the end of the whole color.
   const match = /^#([0-9a-f]{3}|[0-9a-f]{6}|[0-9a-f]{8})\b/i.exec(color.trim());
@@ -69,9 +67,9 @@ export function parseHexRgba(
   let alpha = 1;
   if (hex.length === 3) {
     expanded = hex
-      .split('')
+      .split("")
       .map((c) => c + c)
-      .join('');
+      .join("");
   } else if (hex.length === 6) {
     expanded = hex;
   } else {
@@ -100,8 +98,7 @@ export function relativeLuminance(color?: string): number | null {
   const g = rgba[1] / 255;
   const b = rgba[2] / 255;
   // sRGB channel → linear → weighted sum (WCAG formula).
-  const channel = (v: number): number =>
-    v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4;
+  const channel = (v: number): number => (v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
   return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
 }
 
@@ -117,10 +114,7 @@ export function contrastRatio(a: number, b: number): number {
 // contrast of semi-transparent tokens (e.g. `#576daf79`) against the surface
 // they'll render on, rather than the alpha-stripped base color. Returns
 // undefined when no background is given or either color is unparseable.
-export function compositeOverBg(
-  fgColor: string,
-  bgColor?: string
-): string | undefined {
+export function compositeOverBg(fgColor: string, bgColor?: string): string | undefined {
   if (bgColor == null) return undefined;
   const fgParts = parseHexRgba(fgColor);
   const bgParts = parseHexRgba(bgColor);
@@ -130,7 +124,7 @@ export function compositeOverBg(
   const r = Math.round(fr * fa + br * (1 - fa));
   const g = Math.round(fg * fa + bg * (1 - fa));
   const b = Math.round(fb * fa + bb * (1 - fa));
-  return '#' + [r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('');
+  return "#" + [r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("");
 }
 
 // True when a color is fully transparent: the `transparent` keyword, a
@@ -140,7 +134,7 @@ export function compositeOverBg(
 export function isFullyTransparent(color?: string): boolean {
   if (color == null) return false;
   const normalized = color.trim().toLowerCase();
-  if (normalized === 'transparent') return true;
+  if (normalized === "transparent") return true;
   if (HEX_TRANSPARENT_RE.test(normalized)) return true;
 
   const alpha = getFunctionalAlpha(normalized);
@@ -178,7 +172,7 @@ export function surfacesMatch(a?: string, b?: string): boolean {
 export function hoverWouldEraseText(
   hover: string,
   bg: string | undefined,
-  fg: string | undefined
+  fg: string | undefined,
 ): boolean {
   if (bg == null || fg == null) return false;
   const hoverL = relativeLuminance(hover);
@@ -198,17 +192,15 @@ export function hoverWouldEraseText(
 // fallback when nothing parses.
 export function pickReadableForeground(
   bg: string | undefined,
-  candidates: ReadonlyArray<string | undefined>
+  candidates: ReadonlyArray<string | undefined>,
 ): string | undefined {
   const bgL = relativeLuminance(bg);
-  const firstDefined = candidates.find(
-    (candidate) => candidate != null && candidate !== ''
-  );
+  const firstDefined = candidates.find((candidate) => candidate != null && candidate !== "");
   if (bgL == null) return firstDefined;
   let best: string | undefined;
   let bestRatio = -1;
   for (const candidate of candidates) {
-    if (candidate == null || candidate === '') continue;
+    if (candidate == null || candidate === "") continue;
     const candidateL = relativeLuminance(candidate);
     if (candidateL == null) continue;
     const ratio = contrastRatio(bgL, candidateL);
@@ -228,10 +220,7 @@ export function pickReadableForeground(
 // chrome. Falls back to a CSS `color-mix` expression when either input isn't a
 // parseable hex — the browser can still composite, we just can't verify the
 // contrast.
-export function deriveMutedFg(
-  primaryFg: string,
-  bg: string | undefined
-): string {
+export function deriveMutedFg(primaryFg: string, bg: string | undefined): string {
   if (bg == null) return primaryFg;
   const fgParts = parseHexRgba(primaryFg);
   const bgParts = parseHexRgba(bg);
@@ -245,8 +234,7 @@ export function deriveMutedFg(
     const r = Math.round(fr * weight + br * (1 - weight));
     const g = Math.round(fg2 * weight + bg3 * (1 - weight));
     const b = Math.round(fb * weight + bb * (1 - weight));
-    const hex =
-      '#' + [r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('');
+    const hex = "#" + [r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("");
     const L = relativeLuminance(hex);
     if (L != null && contrastRatio(bgL, L) >= MIN_MUTED_RATIO) {
       return hex;

@@ -29,7 +29,7 @@ import { getDbInstance } from "./core";
 export function exportProxyLogsSince(since: string): Record<string, unknown>[] {
   const db = getDbInstance();
   const stmt = db.prepare(
-    "SELECT * FROM proxy_logs WHERE timestamp >= @since ORDER BY timestamp DESC"
+    "SELECT * FROM proxy_logs WHERE timestamp >= @since ORDER BY timestamp DESC",
   );
   return stmt.all({ since }) as Record<string, unknown>[];
 }

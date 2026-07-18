@@ -47,7 +47,7 @@ test("shouldRequestClaudeFastMode returns false for non-Opus models", () => {
 test("CLAUDE_FAST_MODE_DEFAULT_MODELS includes claude-opus-4-8", () => {
   assert.ok(
     CLAUDE_FAST_MODE_DEFAULT_MODELS.includes("claude-opus-4-8"),
-    "claude-opus-4-8 must be in CLAUDE_FAST_MODE_DEFAULT_MODELS"
+    "claude-opus-4-8 must be in CLAUDE_FAST_MODE_DEFAULT_MODELS",
   );
 });
 

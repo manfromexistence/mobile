@@ -26,7 +26,7 @@ import { isLocalOnlyPath } from "@/server/authz/routeGuard.ts";
 function assertNoStaleEntries(
   allowlist: string[] | Record<string, string>,
   liveItems: string[],
-  gateName: string
+  gateName: string,
 ): void {
   const liveSet = new Set(liveItems);
   const keys = Array.isArray(allowlist) ? allowlist : Object.keys(allowlist);
@@ -35,7 +35,7 @@ function assertNoStaleEntries(
     console.error(
       `[${gateName}] ${stale.length} entrada(s) obsoleta(s) na allowlist ` +
         `— a violação foi corrigida; REMOVA a entrada para travar a correção:\n` +
-        stale.map((e) => `  ✗ ${e}`).join("\n")
+        stale.map((e) => `  ✗ ${e}`).join("\n"),
     );
     process.exitCode = 1;
   }
@@ -83,7 +83,7 @@ export function routeFileToApiPath(routeFile: string): string {
 export function findUnclassifiedSpawnRoutes(
   apiPaths: string[],
   isLocalOnly: (path: string) => boolean,
-  allowlist: Record<string, string>
+  allowlist: Record<string, string>,
 ): string[] {
   return apiPaths.filter((p) => !isLocalOnly(p) && !(p in allowlist));
 }
@@ -206,7 +206,7 @@ function main(): void {
   assertNoStaleEntries(
     KNOWN_UNCLASSIFIED_SOURCE_SPAWN,
     spawnCapableFiles,
-    "route-guard-membership/source-spawn"
+    "route-guard-membership/source-spawn",
   );
 
   // Find spawn-capable routes outside SPAWN_CAPABLE_ROUTE_ROOTS that are not classified
@@ -229,7 +229,7 @@ function main(): void {
     console.error(
       `[route-guard-membership] CRITICAL — ${unclassified.length} spawn-capable route(s) in SPAWN_CAPABLE_ROUTE_ROOTS NOT classified local-only (RCE-via-tunnel risk, Hard Rules #15/#17):\n` +
         unclassified.map((p) => `  ✗ ${p}`).join("\n") +
-        `\n  → add a matching prefix to LOCAL_ONLY_API_PREFIXES or a pattern to LOCAL_ONLY_API_PATTERNS in src/server/authz/routeGuard.ts, or freeze in KNOWN_UNCLASSIFIED with justification.`
+        `\n  → add a matching prefix to LOCAL_ONLY_API_PREFIXES or a pattern to LOCAL_ONLY_API_PATTERNS in src/server/authz/routeGuard.ts, or freeze in KNOWN_UNCLASSIFIED with justification.`,
     );
     failed = true;
   }
@@ -238,7 +238,7 @@ function main(): void {
     console.error(
       `[route-guard-membership] CRITICAL — ${unclassifiedSourceSpawn.length} route.ts file(s) contain child_process/worker_threads but are NOT classified local-only (Hard Rules #15/#17):\n` +
         unclassifiedSourceSpawn.map((p) => `  ✗ ${p} (${routeFileToApiPath(p)})`).join("\n") +
-        `\n  → classify in LOCAL_ONLY_API_PREFIXES / LOCAL_ONLY_API_PATTERNS, or freeze in KNOWN_UNCLASSIFIED_SOURCE_SPAWN with justification.`
+        `\n  → classify in LOCAL_ONLY_API_PREFIXES / LOCAL_ONLY_API_PATTERNS, or freeze in KNOWN_UNCLASSIFIED_SOURCE_SPAWN with justification.`,
     );
     failed = true;
   }
@@ -251,7 +251,7 @@ function main(): void {
       `${apiPaths.length} route(s) in ${SPAWN_CAPABLE_ROUTE_ROOTS.length} root(s) all local-only; ` +
       `${spawnCapableFiles.length} source-spawn route(s) scanned, ` +
       `${Object.keys(KNOWN_UNCLASSIFIED_SOURCE_SPAWN).length} frozen as security debt, ` +
-      `0 new gaps`
+      `0 new gaps`,
   );
   // Explicit exit: importing routeGuard.ts pulls in runtime settings, which opens
   // the SQLite DB and starts a background health-check timer that would otherwise

@@ -1,18 +1,14 @@
-'use client';
+"use client";
 
-import { IconBook, IconCheck, IconCopyFill } from '@pierre/icons';
-import Link from 'next/link';
-import { useState } from 'react';
+import { IconBook, IconCheck, IconCopyFill } from "@pierre/icons";
+import Link from "next/link";
+import { useState } from "react";
 
-import diffsPackageJson from '../../../packages/diffs/package.json';
-import treesPackageJson from '../../../packages/trees/package.json';
-import { Button } from '@/components/ui/button';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { getProductConfig, type ProductId } from '@/lib/product-config';
+import diffsPackageJson from "../../../packages/diffs/package.json";
+import treesPackageJson from "../../../packages/trees/package.json";
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { getProductConfig, type ProductId } from "@/lib/product-config";
 
 export interface HeroProps {
   productId: ProductId;
@@ -24,12 +20,8 @@ export function Hero({ productId }: HeroProps) {
   // Diffshub has no published package, so there's no version line to render.
   // Diffs and Trees each ship their own package; pick the matching one.
   const packageJson =
-    productId === 'diffs'
-      ? diffsPackageJson
-      : productId === 'trees'
-        ? treesPackageJson
-        : null;
-  const hasInstallCommand = product.installCommand !== '';
+    productId === "diffs" ? diffsPackageJson : productId === "trees" ? treesPackageJson : null;
+  const hasInstallCommand = product.installCommand !== "";
 
   const copyToClipboard = async () => {
     try {
@@ -37,7 +29,7 @@ export function Hero({ productId }: HeroProps) {
       setCopied(true);
       setTimeout(() => setCopied(false), 5000);
     } catch (err) {
-      console.error('Failed to copy to clipboard', err);
+      console.error("Failed to copy to clipboard", err);
     }
   };
 
@@ -49,17 +41,14 @@ export function Hero({ productId }: HeroProps) {
         {product.tagline}
       </h1>
       <p className="text-md text-muted-foreground mb-2 max-w-[740px] text-pretty md:text-lg lg:text-xl">
-        {product.packageName !== '' && (
+        {product.packageName !== "" && (
           <>
-            <code>{product.packageName}</code>{' '}
-            {product.description.replace(
-              `${product.packageName} is `,
-              'is '
-            )}{' '}
+            <code>{product.packageName}</code>{" "}
+            {product.description.replace(`${product.packageName} is `, "is ")}{" "}
           </>
         )}
-        {product.packageName === '' && <>{product.description} </>}
-        Made with love by{' '}
+        {product.packageName === "" && <>{product.description} </>}
+        Made with love by{" "}
         <Link
           target="_blank"
           href="https://pierre.computer"
@@ -86,7 +75,7 @@ export function Hero({ productId }: HeroProps) {
               </button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>{'Copy to clipboard'}</p>
+              <p>{"Copy to clipboard"}</p>
             </TooltipContent>
           </Tooltip>
           <Button
@@ -103,9 +92,7 @@ export function Hero({ productId }: HeroProps) {
         </div>
       )}
       {packageJson != null && (
-        <p className="text-muted-foreground mt-2 text-sm">
-          Currently v{packageJson.version}
-        </p>
+        <p className="text-muted-foreground mt-2 text-sm">Currently v{packageJson.version}</p>
       )}
     </section>
   );
@@ -158,6 +145,6 @@ function TreesIcon() {
 }
 
 function HeroIcon({ productId }: { productId: ProductId }) {
-  if (productId === 'trees') return <TreesIcon />;
+  if (productId === "trees") return <TreesIcon />;
   return <DiffsIcon />;
 }

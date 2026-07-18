@@ -40,7 +40,10 @@ test("#3273 /v1/images/edits forwards model as real multipart (undici-patched fe
     await handleOpenAIImageEdit({
       model: "gpt-image-2",
       provider: "customopenai",
-      credentials: { apiKey: "sk-test", providerSpecificData: { baseUrl: `http://127.0.0.1:${port}` } },
+      credentials: {
+        apiKey: "sk-test",
+        providerSpecificData: { baseUrl: `http://127.0.0.1:${port}` },
+      },
       prompt: "make it blue",
       imageBytes: Buffer.from([0x89, 0x50, 0x4e, 0x47]),
       imageMime: "image/png",
@@ -53,7 +56,7 @@ test("#3273 /v1/images/edits forwards model as real multipart (undici-patched fe
   assert.match(
     captured.contentType,
     /multipart\/form-data/,
-    `upstream must receive multipart, got "${captured.contentType}"`
+    `upstream must receive multipart, got "${captured.contentType}"`,
   );
   assert.ok(captured.body.includes('name="model"'), "multipart must contain a model field");
   assert.ok(captured.body.includes("gpt-image-2"), "model value must reach upstream (not empty)");

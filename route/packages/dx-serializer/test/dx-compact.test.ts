@@ -134,7 +134,7 @@ describe("DX Compact — decode", () => {
 
   it("decodes inline objects with nested fields", () => {
     const result = decode(
-      "items(\n  x (type=object properties(path(type=string)) required=[path])\n)"
+      "items(\n  x (type=object properties(path(type=string)) required=[path])\n)",
     );
     expect(result).toEqual({
       items: {

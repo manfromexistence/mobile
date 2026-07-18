@@ -88,9 +88,11 @@ export const dict = {
   "home.usageTitle": "Utilisation",
   "home.topModelsDescription": "Utilisation des modèles dans OpenCode Go.",
   "home.noUsageTitle": "Aucune donnée d'utilisation",
-  "home.noUsageDescription": "Aucune ligne de modèle ne correspondait à ce produit et à cette période.",
+  "home.noUsageDescription":
+    "Aucune ligne de modèle ne correspondait à ce produit et à cette période.",
   "home.noLeaderboardTitle": "Aucune donnée de classement",
-  "home.noLeaderboardDescription": "Aucune ligne de modèle ne correspondait à ce produit et à cette période.",
+  "home.noLeaderboardDescription":
+    "Aucune ligne de modèle ne correspondait à ce produit et à cette période.",
   "home.productFilter": "Filtre produit",
   "home.dateRange": "Période",
   "home.stackedUsageChart": "Graphique empilé d'utilisation des meilleurs modèles",
@@ -100,7 +102,8 @@ export const dict = {
   "home.uniqueUsersTitle": "Utilisateurs uniques",
   "home.uniqueUsersDescription": "Utilisateurs uniques quotidiens d'OpenCode Go par modèle.",
   "home.noUserDataTitle": "Aucune donnée utilisateur",
-  "home.noUserDataDescription": "Aucune ligne de modèle avec utilisateurs ne correspondait à cette fenêtre.",
+  "home.noUserDataDescription":
+    "Aucune ligne de modèle avec utilisateurs ne correspondait à cette fenêtre.",
   "home.uniqueUsersChart": "Graphique empilé des utilisateurs uniques par modèle",
   "home.marketShareTitle": "Part de marché",
   "home.marketShareDescription": "Comparez la part de tokens par auteur de modèle.",
@@ -122,17 +125,20 @@ export const dict = {
   "home.cacheRatioTitle": "Taux de cache",
   "home.cacheRatioDescription": "Part des tokens d'entrée servis depuis le cache.",
   "home.noCacheTitle": "Aucune donnée de taux de cache",
-  "home.noCacheDescription": "Aucune ligne de modèle avec tokens d'entrée ne correspondait à ce produit.",
+  "home.noCacheDescription":
+    "Aucune ligne de modèle avec tokens d'entrée ne correspondait à ce produit.",
   "home.sessionCostTitle": "Coût par session",
   "home.sessionCostDescription": "Coût moyen par session.",
   "home.noSessionCostTitle": "Aucune donnée de coût par session",
-  "home.noSessionCostDescription": "Aucune ligne de modèle avec sessions ne correspondait à ce produit.",
+  "home.noSessionCostDescription":
+    "Aucune ligne de modèle avec sessions ne correspondait à ce produit.",
   "home.costSession": "Coût/session",
   "lab.title": "Utilisation et classements des modèles d'IA {{lab}} | OpenCode Data",
   "lab.description":
     "Comparez les modèles {{lab}} utilisés dans OpenCode Go, avec l'utilisation des tokens, les classements de modèles, les fenêtres de contexte, les dates de sortie, les coûts et les données propres aux modèles.",
   "lab.loadingTitle": "Laboratoire de modèles",
-  "lab.loadingDescription": "Lecture de la disponibilité des modèles et de l'utilisation récente d'OpenCode.",
+  "lab.loadingDescription":
+    "Lecture de la disponibilité des modèles et de l'utilisation récente d'OpenCode.",
   "lab.notFound": "Aucun modèle ne correspondait à ce laboratoire.",
   "lab.heroPrefix": "Explorez {{count}} modèles {{lab}} utilisés dans OpenCode",
   "lab.heroIncluding": "dont {{models}}",
@@ -164,7 +170,8 @@ export const dict = {
   "model.loadingProfile": "Lecture du profil du modèle.",
   "model.noDataTitle": "Aucune donnée de modèle",
   "model.noDataDescription": "Essayez d'ouvrir un modèle depuis le classement.",
-  "model.noMatched": "Aucun fait de modèle ni aucune ligne d'utilisation ne correspondait à {{id}}.",
+  "model.noMatched":
+    "Aucun fait de modèle ni aucune ligne d'utilisation ne correspondait à {{id}}.",
   "model.fallback": "Modèle",
   "model.catalogFallback":
     "Faits du modèle issus de l'index partagé des modèles. L'utilisation OpenCode Go apparaîtra dès que ce modèle aura de l'activité.",
@@ -182,7 +189,8 @@ export const dict = {
   "model.knowledge": "Connaissances",
   "model.release": "Sortie",
   "model.inputs": "Entrées",
-  "model.overviewDescription": "Tokens OpenCode Go récents, utilisateurs uniques et position sur le marché.",
+  "model.overviewDescription":
+    "Tokens OpenCode Go récents, utilisateurs uniques et position sur le marché.",
   "model.noSummaryTitle": "Aucun résumé d'utilisation",
   "model.noSummaryDescription": "Ce modèle n'a pas encore de lignes d'utilisation OpenCode Go.",
   "model.tokens": "Tokens",
@@ -194,17 +202,22 @@ export const dict = {
   "model.totalModels": "{{count}} modèles",
   "model.momentum": "Dynamique",
   "model.vsPreviousWindow": "vs fenêtre précédente",
-  "model.usageDescription": "Volume quotidien de tokens OpenCode Go sur la fenêtre récente de deux mois.",
+  "model.usageDescription":
+    "Volume quotidien de tokens OpenCode Go sur la fenêtre récente de deux mois.",
   "model.noUsageTitle": "Aucune utilisation",
   "model.noUsageDescription": "Aucune utilisation n'est arrivée dans la fenêtre actuelle.",
   "model.dailyTokenChart": "Graphique quotidien d'utilisation des tokens",
-  "model.usersDescription": "Utilisateurs uniques quotidiens d'OpenCode Go sur la fenêtre récente de deux mois.",
+  "model.usersDescription":
+    "Utilisateurs uniques quotidiens d'OpenCode Go sur la fenêtre récente de deux mois.",
   "model.noUsersTitle": "Aucune donnée utilisateur",
-  "model.noUsersDescription": "Aucune ligne avec utilisateurs n'est arrivée dans la fenêtre actuelle.",
+  "model.noUsersDescription":
+    "Aucune ligne avec utilisateurs n'est arrivée dans la fenêtre actuelle.",
   "model.dailyUserChart": "Graphique quotidien des utilisateurs uniques",
-  "model.efficiencyDescription": "Coût, comportement du cache et forme moyenne des sessions OpenCode Go.",
+  "model.efficiencyDescription":
+    "Coût, comportement du cache et forme moyenne des sessions OpenCode Go.",
   "model.noEfficiencyTitle": "Aucune donnée d'efficacité",
-  "model.noEfficiencyDescription": "Les données d'efficacité apparaissent après l'arrivée de l'utilisation.",
+  "model.noEfficiencyDescription":
+    "Les données d'efficacité apparaissent après l'arrivée de l'utilisation.",
   "model.cost": "Coût",
   "model.totalSpend": "dépense totale",
   "model.costPerMillion": "Coût / 1 M",
@@ -221,7 +234,8 @@ export const dict = {
   "model.worldMap": "Carte mondiale de l'utilisation des tokens du modèle par pays",
   "model.peersDescription": "Modèles proches par volume récent de tokens OpenCode Go.",
   "model.noPeersTitle": "Aucun modèle proche",
-  "model.noPeersDescription": "Les classements de modèles proches apparaissent après l'arrivée de l'utilisation.",
+  "model.noPeersDescription":
+    "Les classements de modèles proches apparaissent après l'arrivée de l'utilisation.",
   "model.noUsageLastWeek": "Aucune utilisation la semaine dernière",
   "model.newThisWeek": "Nouveau cette semaine",
   "model.sameAsPreviousWeek": "Identique à la semaine précédente",
@@ -229,4 +243,4 @@ export const dict = {
   "model.pdf": "PDF",
   "format.users": "utilisateurs",
   "format.tokens": "tokens",
-} as const
+} as const;

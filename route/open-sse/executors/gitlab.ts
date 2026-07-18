@@ -143,7 +143,7 @@ function renderAssistantTurn(message: OpenAIMessage, text: string): string | nul
   for (const tc of Array.isArray(message?.tool_calls) ? message.tool_calls : []) {
     const id = tc?.id ? ` [${tc.id}]` : "";
     lines.push(
-      `Called tool ${tc?.function?.name || "tool"}${id} with arguments: ${tc?.function?.arguments ?? ""}`
+      `Called tool ${tc?.function?.name || "tool"}${id} with arguments: ${tc?.function?.arguments ?? ""}`,
     );
   }
   return lines.length ? `Assistant: ${lines.join("\n")}` : null;
@@ -208,11 +208,9 @@ function buildToolExchangePrompt(messages: OpenAIMessage[]): string {
     const line = renderConversationTurn(message, role, text);
     if (line) convo.push(line);
   }
-  const header = systemParts.length
-    ? `System instructions:\n${systemParts.join("\n\n")}\n\n`
-    : "";
+  const header = systemParts.length ? `System instructions:\n${systemParts.join("\n\n")}\n\n` : "";
   const body = `${header}${convo.join(
-    "\n\n"
+    "\n\n",
   )}\n\nContinue the response using the tool result above; do not repeat the tool call.`.trim();
   return capText(body, MAX_TOOL_EXCHANGE_CHARS);
 }
@@ -263,13 +261,13 @@ function toOpenAIError(status: number, message: string): Response {
     {
       status,
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 
 function mergeCredentials(
   current: ProviderCredentials,
-  patch: Partial<ProviderCredentials> | null | undefined
+  patch: Partial<ProviderCredentials> | null | undefined,
 ): ProviderCredentials {
   if (!patch) return current;
   return {
@@ -347,7 +345,7 @@ async function persistGitLabDirectAccessCache(
   input: ExecuteInput,
   credentials: ProviderCredentials,
   root: string,
-  directAccess: GitLabDirectAccessDetails
+  directAccess: GitLabDirectAccessDetails,
 ) {
   if (!input.onCredentialsRefreshed) return;
 
@@ -378,7 +376,7 @@ export class GitlabExecutor extends BaseExecutor {
     _model: string,
     _stream: boolean,
     _urlIndex = 0,
-    credentials: ExecuteInput["credentials"] | null = null
+    credentials: ExecuteInput["credentials"] | null = null,
   ): string {
     const endpoints = buildGitLabOAuthEndpoints(resolveGitLabRoot(credentials || {}));
     return endpoints.publicCompletionsUrl;
@@ -393,7 +391,7 @@ export class GitlabExecutor extends BaseExecutor {
     _model: string,
     body: Record<string, unknown>,
     _stream: boolean,
-    credentials: ExecuteInput["credentials"]
+    credentials: ExecuteInput["credentials"],
   ): Record<string, unknown> {
     const messages = body.messages as OpenAIMessage[] | undefined;
     const prompt = buildPrompt(messages);
@@ -442,7 +440,7 @@ export class GitlabExecutor extends BaseExecutor {
     } catch (error) {
       log?.error?.(
         "TOKEN",
-        `GitLab Duo refresh error: ${error instanceof Error ? error.message : String(error)}`
+        `GitLab Duo refresh error: ${error instanceof Error ? error.message : String(error)}`,
       );
       return null;
     }
@@ -462,7 +460,7 @@ export class GitlabExecutor extends BaseExecutor {
   private async fetchGitLabDirectAccess(
     root: string,
     accessToken: string,
-    signal: AbortSignal | null | undefined
+    signal: AbortSignal | null | undefined,
   ): Promise<{
     directAccess: GitLabDirectAccessDetails | null;
     response: Response | null;
@@ -495,7 +493,7 @@ export class GitlabExecutor extends BaseExecutor {
 
   private async resolveRequestTarget(
     input: ExecuteInput,
-    credentials: ProviderCredentials
+    credentials: ProviderCredentials,
   ): Promise<{
     target: GitLabRequestTarget | null;
     credentials: ProviderCredentials;
@@ -541,7 +539,7 @@ export class GitlabExecutor extends BaseExecutor {
       const { directAccess, response, bodyText } = await this.fetchGitLabDirectAccess(
         root,
         credentials.accessToken,
-        input.signal
+        input.signal,
       );
 
       if (directAccess) {
@@ -623,7 +621,7 @@ export class GitlabExecutor extends BaseExecutor {
   private async performRequest(
     input: ExecuteInput,
     target: GitLabRequestTarget,
-    transformedBody: Record<string, unknown>
+    transformedBody: Record<string, unknown>,
   ) {
     const headers = { ...target.headers };
     mergeUpstreamExtraHeaders(headers, input.upstreamExtraHeaders);
@@ -651,7 +649,7 @@ export class GitlabExecutor extends BaseExecutor {
     // qwen-web / duckduckgo-web executors (#6051).
     const { hasTools, requestedTools, effectiveMessages } = prepareToolMessages(
       bodyObj,
-      rawMessages as Array<{ role: string; content: unknown }>
+      rawMessages as Array<{ role: string; content: unknown }>,
     );
 
     const prompt = buildPrompt(effectiveMessages as OpenAIMessage[]);
@@ -680,7 +678,7 @@ export class GitlabExecutor extends BaseExecutor {
       input.model,
       { ...bodyObj, messages: effectiveMessages },
       false,
-      activeCredentials
+      activeCredentials,
     );
 
     const {

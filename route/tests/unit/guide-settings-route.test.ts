@@ -6,8 +6,9 @@ import path from "node:path";
 import { SignJWT } from "jose";
 import { parse } from "jsonc-parser";
 import * as yaml from "js-yaml";
-const guideSettingsRoute =
-  await import("../../src/app/api/cli-tools/guide-settings/[toolId]/route.ts");
+const guideSettingsRoute = await import(
+  "../../src/app/api/cli-tools/guide-settings/[toolId]/route.ts"
+);
 
 const DUMMY_HOME = path.join(os.tmpdir(), "omniroute-qwen-test-" + Date.now());
 const QWEN_CONFIG_PATH = path.join(DUMMY_HOME, ".qwen", "settings.json");
@@ -119,7 +120,7 @@ test("guide-settings POST merges into existing qwen settings.json", async () => 
     JSON.stringify({
       permissions: { allow: ["Bash(*)"] },
     }),
-    "utf-8"
+    "utf-8",
   );
 
   const req = await buildRequest({
@@ -152,7 +153,7 @@ test("guide-settings POST writes OpenCode config with current schema and multi-m
         },
       },
     }),
-    "utf-8"
+    "utf-8",
   );
 
   const cookie = await createAuthCookie();
@@ -214,7 +215,7 @@ test("guide-settings POST preserves existing OpenCode config fields while only u
     }
   }
 }`,
-    "utf-8"
+    "utf-8",
   );
 
   const cookie = await createAuthCookie();

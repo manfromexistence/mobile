@@ -12,7 +12,7 @@ const DATA_DIR_MODULE = path.join(ROOT, "bin", "cli", "data-dir.mjs");
 
 async function withEnv<T>(
   updates: Record<string, string | undefined>,
-  fn: () => Promise<T>
+  fn: () => Promise<T>,
 ): Promise<T> {
   const original = new Map<string, string | undefined>();
   for (const key of Object.keys(updates)) {
@@ -48,7 +48,7 @@ function readCliEnvShow(env: NodeJS.ProcessEnv, cwd: string): Record<string, str
   assert.equal(
     result.status,
     0,
-    `omniroute env show failed\nstdout=${result.stdout}\nstderr=${result.stderr}`
+    `omniroute env show failed\nstdout=${result.stdout}\nstderr=${result.stderr}`,
   );
 
   const stdout = result.stdout ?? "";
@@ -86,7 +86,7 @@ test("CLI data-dir resolver preserves an existing legacy ~/.omniroute before XDG
 
         assert.equal(cliResolveDataDir(), legacyDir);
         assert.equal(cliResolveDataDir(), runtimeResolveDataDir());
-      }
+      },
     );
   } finally {
     fs.rmSync(tmp, { recursive: true, force: true });
@@ -111,19 +111,19 @@ test("CLI startup loads later non-conflicting .env files without overriding earl
     fs.writeFileSync(
       path.join(dataDir, ".env"),
       "OMNIROUTE_BASE_URL=https://data.example/v1\n",
-      "utf-8"
+      "utf-8",
     );
     fs.writeFileSync(
       path.join(appDataDir, ".env"),
       ["OMNIROUTE_BASE_URL=https://appdata.example/v1", "OMNIROUTE_HTTP_TIMEOUT_MS=1234", ""].join(
-        "\n"
+        "\n",
       ),
-      "utf-8"
+      "utf-8",
     );
     fs.writeFileSync(
       path.join(cwd, ".env"),
       ["OMNIROUTE_BASE_URL=https://cwd.example/v1", "PORT=34567", ""].join("\n"),
-      "utf-8"
+      "utf-8",
     );
 
     const cleanEnv = { ...process.env };

@@ -9,7 +9,7 @@ import { type WebSessionCredentialRequirement } from "./webSessionCredentials";
 
 export type ProviderMessageTranslator = ((
   key: string,
-  values?: Record<string, unknown>
+  values?: Record<string, unknown>,
 ) => string) & {
   has?: (key: string) => boolean;
 };
@@ -18,7 +18,7 @@ export function providerText(
   t: ProviderMessageTranslator,
   key: string,
   fallback: string,
-  values?: Record<string, unknown>
+  values?: Record<string, unknown>,
 ): string {
   if (typeof t.has === "function" && t.has(key)) {
     return t(key, values);
@@ -26,7 +26,7 @@ export function providerText(
   if (values) {
     return Object.entries(values).reduce(
       (acc, [name, value]) => acc.replaceAll(`{${name}}`, String(value)),
-      fallback
+      fallback,
     );
   }
   return fallback;
@@ -35,7 +35,7 @@ export function providerText(
 export function getWebSessionCredentialLabel(
   t: ProviderMessageTranslator,
   requirement: WebSessionCredentialRequirement,
-  optional: boolean
+  optional: boolean,
 ): string {
   if (requirement.kind === "none") {
     return providerText(t, "webNoAuthCredentialLabel", "No credential required");
@@ -51,7 +51,7 @@ export function getWebSessionCredentialHint(
   t: ProviderMessageTranslator,
   requirement: WebSessionCredentialRequirement,
   providerName: string,
-  editing: boolean
+  editing: boolean,
 ): string | undefined {
   if (requirement.kind === "none") return undefined;
 
@@ -62,13 +62,13 @@ export function getWebSessionCredentialHint(
           t,
           "webTokenEditHint",
           "Leave blank to keep the current web session token. Credential: {credential}.",
-          values
+          values,
         )
       : providerText(
           t,
           "webCookieEditHint",
           "Leave blank to keep the current session cookie. Required cookie: {credential}.",
-          values
+          values,
         );
   }
 
@@ -83,7 +83,7 @@ export function getWebSessionCredentialHint(
       requirement.hintKey,
       requirement.hintFallback ??
         "Open the provider's web session in DevTools, copy the required credential(s), and paste them in the fields below.",
-      values
+      values,
     );
   }
 
@@ -92,19 +92,19 @@ export function getWebSessionCredentialHint(
         t,
         "webTokenCredentialHint",
         "Credential: {credential}. Paste the token value from your own signed-in {provider} web session, or a DevTools HAR export if the provider supports it.",
-        values
+        values,
       )
     : providerText(
         t,
         "webCookieCredentialHint",
         "Required cookie: {credential}. Paste the Cookie header value from your own signed-in {provider} web session. Do not include the Cookie: prefix.",
-        values
+        values,
       );
 }
 
 export function getWebSessionCredentialCheckLabel(
   t: ProviderMessageTranslator,
-  requirement: WebSessionCredentialRequirement
+  requirement: WebSessionCredentialRequirement,
 ): string {
   if (requirement.kind === "token") return providerText(t, "checkWebToken", "Check token");
   return providerText(t, "checkCookie", "Check cookie");
@@ -113,7 +113,7 @@ export function getWebSessionCredentialCheckLabel(
 export function getAddCredentialModalTitle(
   t: ProviderMessageTranslator,
   providerName: string,
-  requirement: WebSessionCredentialRequirement | null
+  requirement: WebSessionCredentialRequirement | null,
 ): string {
   if (!requirement) return t("addProviderApiKeyTitle", { provider: providerName });
   if (requirement.kind === "none") {

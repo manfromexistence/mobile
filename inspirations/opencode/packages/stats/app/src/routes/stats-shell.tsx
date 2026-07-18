@@ -1,28 +1,28 @@
-import opencodeWordmarkDark from "../asset/logo-ornate-dark.svg"
-import { query } from "@solidjs/router"
-import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from "solid-js"
-import { useI18n } from "../context/i18n"
-import { useLanguage } from "../context/language"
-import { route, type Locale } from "../lib/language"
+import opencodeWordmarkDark from "../asset/logo-ornate-dark.svg";
+import { query } from "@solidjs/router";
+import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show } from "solid-js";
+import { useI18n } from "../context/i18n";
+import { useLanguage } from "../context/language";
+import { route, type Locale } from "../lib/language";
 
-export type HeaderLink = { href: string; label: string }
+export type HeaderLink = { href: string; label: string };
 
 export const githubLink = {
   href: "https://github.com/anomalyco/opencode",
   apiHref: "https://api.github.com/repos/anomalyco/opencode",
   fallbackStars: "150K",
-}
-export const themePreferences = ["dark", "light", "system"] as const
-export const themeStorageKey = "opencode:stats-theme"
-export type ThemePreference = (typeof themePreferences)[number]
+};
+export const themePreferences = ["dark", "light", "system"] as const;
+export const themeStorageKey = "opencode:stats-theme";
+export type ThemePreference = (typeof themePreferences)[number];
 
 const compactNumberFormatter = new Intl.NumberFormat("en", {
   notation: "compact",
   maximumFractionDigits: 1,
-})
+});
 
 export const getGitHubStars = query(async () => {
-  "use server"
+  "use server";
   return fetch(githubLink.apiHref, {
     headers: {
       Accept: "application/vnd.github+json",
@@ -31,32 +31,39 @@ export const getGitHubStars = query(async () => {
   })
     .then((response) => (response.ok ? response.json() : undefined))
     .then((body: unknown) =>
-      body && typeof body === "object" && "stargazers_count" in body && typeof body.stargazers_count === "number"
+      body &&
+      typeof body === "object" &&
+      "stargazers_count" in body &&
+      typeof body.stargazers_count === "number"
         ? compactNumberFormatter.format(body.stargazers_count)
         : githubLink.fallbackStars,
     )
-    .catch(() => githubLink.fallbackStars)
-}, "getGitHubStars")
+    .catch(() => githubLink.fallbackStars);
+}, "getGitHubStars");
 
 export function isThemePreference(value: string | null): value is ThemePreference {
-  return value === "dark" || value === "light" || value === "system"
+  return value === "dark" || value === "light" || value === "system";
 }
 
 export function applyThemePreference(preference: ThemePreference) {
-  if (typeof document === "undefined") return
-  document.documentElement.dataset.statsTheme = preference
+  if (typeof document === "undefined") return;
+  document.documentElement.dataset.statsTheme = preference;
   if (preference === "system") {
-    document.documentElement.style.removeProperty("color-scheme")
-    return
+    document.documentElement.style.removeProperty("color-scheme");
+    return;
   }
-  document.documentElement.style.setProperty("color-scheme", preference)
+  document.documentElement.style.setProperty("color-scheme", preference);
 }
 
-export function Header(props: { githubStars: string; links?: readonly HeaderLink[]; brandHref?: string }) {
-  const i18n = useI18n()
-  const language = useLanguage()
-  const [menuOpen, setMenuOpen] = createSignal(false)
-  const [menuViewport, setMenuViewport] = createSignal(false)
+export function Header(props: {
+  githubStars: string;
+  links?: readonly HeaderLink[];
+  brandHref?: string;
+}) {
+  const i18n = useI18n();
+  const language = useLanguage();
+  const [menuOpen, setMenuOpen] = createSignal(false);
+  const [menuViewport, setMenuViewport] = createSignal(false);
   const links = createMemo(
     () =>
       props.links ?? [
@@ -68,36 +75,36 @@ export function Header(props: { githubStars: string; links?: readonly HeaderLink
         { href: "#market-share", label: i18n.t("nav.marketShare") },
         { href: "#geo-breakdown", label: i18n.t("nav.geoBreakdown") },
       ],
-  )
-  const localHref = (href: string) => (href.startsWith("/") ? language.route(href) : href)
+  );
+  const localHref = (href: string) => (href.startsWith("/") ? language.route(href) : href);
 
   createEffect(() => {
-    if (typeof window === "undefined") return
-    const media = window.matchMedia("(max-width: 89.999rem)")
-    const update = () => setMenuViewport(media.matches)
-    update()
-    media.addEventListener("change", update)
-    onCleanup(() => media.removeEventListener("change", update))
-  })
+    if (typeof window === "undefined") return;
+    const media = window.matchMedia("(max-width: 89.999rem)");
+    const update = () => setMenuViewport(media.matches);
+    update();
+    media.addEventListener("change", update);
+    onCleanup(() => media.removeEventListener("change", update));
+  });
 
   createEffect(() => {
-    if (!menuOpen()) return
-    if (!menuViewport()) return
-    if (typeof document === "undefined") return
-    const page = document.querySelector<HTMLElement>('[data-page="stats"]')
-    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
-    const htmlOverflow = document.documentElement.style.overflow
-    const pagePaddingRight = page?.style.paddingRight
-    const bodyOverflow = document.body.style.overflow
-    document.documentElement.style.overflow = "hidden"
-    if (scrollbarWidth > 0 && page) page.style.paddingRight = `${scrollbarWidth}px`
-    document.body.style.overflow = "hidden"
+    if (!menuOpen()) return;
+    if (!menuViewport()) return;
+    if (typeof document === "undefined") return;
+    const page = document.querySelector<HTMLElement>('[data-page="stats"]');
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const htmlOverflow = document.documentElement.style.overflow;
+    const pagePaddingRight = page?.style.paddingRight;
+    const bodyOverflow = document.body.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+    if (scrollbarWidth > 0 && page) page.style.paddingRight = `${scrollbarWidth}px`;
+    document.body.style.overflow = "hidden";
     onCleanup(() => {
-      document.documentElement.style.overflow = htmlOverflow
-      if (page && pagePaddingRight !== undefined) page.style.paddingRight = pagePaddingRight
-      document.body.style.overflow = bodyOverflow
-    })
-  })
+      document.documentElement.style.overflow = htmlOverflow;
+      if (page && pagePaddingRight !== undefined) page.style.paddingRight = pagePaddingRight;
+      document.body.style.overflow = bodyOverflow;
+    });
+  });
 
   return (
     <header data-component="top" data-menu-open={menuOpen() ? "true" : undefined}>
@@ -144,7 +151,10 @@ export function Header(props: { githubStars: string; links?: readonly HeaderLink
             onClick={() => setMenuOpen((value) => !value)}
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-              <Show when={menuOpen()} fallback={<path d="M2 4.72H14M2 8.5H14M2 12.28H14" stroke="currentColor" />}>
+              <Show
+                when={menuOpen()}
+                fallback={<path d="M2 4.72H14M2 8.5H14M2 12.28H14" stroke="currentColor" />}
+              >
                 <path d="M4.44 4.44L11.56 11.56M11.56 4.44L4.44 11.56" stroke="currentColor" />
               </Show>
             </svg>
@@ -170,26 +180,40 @@ export function Header(props: { githubStars: string; links?: readonly HeaderLink
         </a>
         <For each={links()}>
           {(link) => (
-            <a data-slot="mobile-menu-item" href={localHref(link.href)} onClick={() => setMenuOpen(false)}>
+            <a
+              data-slot="mobile-menu-item"
+              href={localHref(link.href)}
+              onClick={() => setMenuOpen(false)}
+            >
               {link.label}
             </a>
           )}
         </For>
       </nav>
     </header>
-  )
+  );
 }
 
 function DataWordmark() {
   return (
-    <svg data-slot="stats-wordmark" width="66" height="20" viewBox="0 0 66 20" fill="none" aria-hidden="true">
+    <svg
+      data-slot="stats-wordmark"
+      width="66"
+      height="20"
+      viewBox="0 0 66 20"
+      fill="none"
+      aria-hidden="true"
+    >
       <path opacity="0.2" d="M12 16H4V8H12V16Z" fill="currentColor" />
       <path d="M12 4H4V16H12V4ZM16 20H0V0H16V20Z" fill="currentColor" />
       <path
         d="M63.3543 16L62.5119 12.8711H58.6437L57.8013 16H55.7383L59.2454 4H61.9618L65.4689 16H63.3543ZM61.0678 7.851L60.6896 5.94269H60.4489L60.0707 7.851L59.1595 11.1347H61.9962L61.0678 7.851Z"
         fill="currentColor"
       />
-      <path d="M52.5951 5.87392V16H50.4461V5.87392H47.4375V4H55.6209V5.87392H52.5951Z" fill="currentColor" />
+      <path
+        d="M52.5951 5.87392V16H50.4461V5.87392H47.4375V4H55.6209V5.87392H52.5951Z"
+        fill="currentColor"
+      />
       <path
         d="M45.2059 16L44.3635 12.8711H40.4953L39.6529 16H37.5898L41.097 4H43.8133L47.3205 16H45.2059ZM42.9194 7.851L42.5411 5.94269H42.3004L41.9222 7.851L41.011 11.1347H43.8477L42.9194 7.851Z"
         fill="currentColor"
@@ -199,28 +223,35 @@ function DataWordmark() {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 function OpenCodeMark() {
   return (
-    <svg data-slot="opencode-mark" width="40" height="40" viewBox="0 0 40 40" fill="none" aria-hidden="true">
+    <svg
+      data-slot="opencode-mark"
+      width="40"
+      height="40"
+      viewBox="0 0 40 40"
+      fill="none"
+      aria-hidden="true"
+    >
       <path d="M40 40H0V0H40V40Z" fill="var(--stats-logo-bg)" />
       <path d="M26 29H14V17H26V29Z" fill="var(--stats-logo-fill)" />
       <path d="M26 11H14V29H26V11ZM32 35H8V5H32V35Z" fill="var(--stats-logo-stroke)" />
     </svg>
-  )
+  );
 }
 
 export function Footer(props: {
-  themePreference: ThemePreference
-  onThemePreferenceChange: (preference: ThemePreference) => void
-  links?: readonly HeaderLink[]
+  themePreference: ThemePreference;
+  onThemePreferenceChange: (preference: ThemePreference) => void;
+  links?: readonly HeaderLink[];
 }) {
-  const i18n = useI18n()
-  const language = useLanguage()
-  const [subscribeOpen, setSubscribeOpen] = createSignal(false)
-  const localHref = (href: string) => (href.startsWith("/") ? language.route(href) : href)
+  const i18n = useI18n();
+  const language = useLanguage();
+  const [subscribeOpen, setSubscribeOpen] = createSignal(false);
+  const localHref = (href: string) => (href.startsWith("/") ? language.route(href) : href);
   const modelStats = props.links ?? [
     { href: "#top-models", label: i18n.t("nav.topModels") },
     { href: "#leaderboard", label: i18n.t("nav.leaderboard") },
@@ -229,24 +260,28 @@ export function Footer(props: {
     { href: "#cache-ratio", label: i18n.t("nav.cacheRatio") },
     { href: "#market-share", label: i18n.t("nav.marketShare") },
     { href: "#geo-breakdown", label: i18n.t("nav.geoBreakdown") },
-  ]
+  ];
   const legal = [
     { href: "https://opencode.ai/legal/terms-of-service", label: i18n.t("footer.terms") },
     { href: "https://opencode.ai/legal/privacy-policy", label: i18n.t("footer.privacy") },
-  ]
+  ];
   const connect = [
     { href: "mailto:hello@opencode.ai", label: i18n.t("footer.contact") },
     { href: "https://opencode.ai/discord", label: i18n.t("footer.community") },
     { href: "https://x.com/opencode", label: "X" },
     { href: githubLink.href, label: i18n.t("header.github") },
     { href: "https://www.youtube.com/@anomaly-co", label: i18n.t("footer.youtube") },
-  ]
+  ];
 
   return (
     <footer data-component="footer">
       <SectionBridge label={i18n.t("nav.geoBreakdown").toUpperCase()} href="#geo-breakdown" />
       <div data-slot="footer-grid">
-        <a data-slot="footer-mark" href="https://opencode.ai" aria-label={i18n.t("footer.homeAria")}>
+        <a
+          data-slot="footer-mark"
+          href="https://opencode.ai"
+          aria-label={i18n.t("footer.homeAria")}
+        >
           <OpenCodeMark />
         </a>
         <FooterColumn title={i18n.t("footer.modelData")} links={modelStats} localHref={localHref} />
@@ -290,12 +325,12 @@ export function Footer(props: {
         <SubscribeModal onClose={() => setSubscribeOpen(false)} />
       </Show>
     </footer>
-  )
+  );
 }
 
 function FooterLanguageSwitcher() {
-  const i18n = useI18n()
-  const language = useLanguage()
+  const i18n = useI18n();
+  const language = useLanguage();
 
   return (
     <label data-slot="footer-language">
@@ -304,22 +339,24 @@ function FooterLanguageSwitcher() {
         value={language.locale()}
         aria-label={i18n.t("footer.language")}
         onChange={(event) => {
-          const locale = event.currentTarget.value as Locale
-          const url = new URL(window.location.href)
-          const current = `${url.pathname}${url.search}${url.hash}`
-          const href = `${route(locale, url.pathname)}${url.search}${url.hash}`
-          language.setLocale(locale)
-          if (href !== current) window.location.assign(href)
+          const locale = event.currentTarget.value as Locale;
+          const url = new URL(window.location.href);
+          const current = `${url.pathname}${url.search}${url.hash}`;
+          const href = `${route(locale, url.pathname)}${url.search}${url.hash}`;
+          language.setLocale(locale);
+          if (href !== current) window.location.assign(href);
         }}
       >
-        <For each={language.locales}>{(locale) => <option value={locale}>{language.label(locale)}</option>}</For>
+        <For each={language.locales}>
+          {(locale) => <option value={locale}>{language.label(locale)}</option>}
+        </For>
       </select>
     </label>
-  )
+  );
 }
 
 function SectionBridge(props: { label: string; href: string }) {
-  const i18n = useI18n()
+  const i18n = useI18n();
   return (
     <a data-component="section-bridge" href={props.href}>
       <span>{i18n.t("bridge.learnMore")}</span>
@@ -327,12 +364,19 @@ function SectionBridge(props: { label: string; href: string }) {
       <strong>{props.label}</strong>
       <b>▸</b>
     </a>
-  )
+  );
 }
 
 function ThemePreferenceIcon(props: { preference: ThemePreference }) {
   return (
-    <svg data-slot="theme-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <svg
+      data-slot="theme-icon"
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      aria-hidden="true"
+    >
       <Show
         when={props.preference === "dark"}
         fallback={
@@ -340,7 +384,14 @@ function ThemePreferenceIcon(props: { preference: ThemePreference }) {
             when={props.preference === "light"}
             fallback={
               <>
-                <rect x="1.5552" y="2.4448" width="12.8896" height="8.8888" fill="currentColor" opacity="0.3" />
+                <rect
+                  x="1.5552"
+                  y="2.4448"
+                  width="12.8896"
+                  height="8.8888"
+                  fill="currentColor"
+                  opacity="0.3"
+                />
                 <svg
                   x="1.0552"
                   y="1.9446"
@@ -393,38 +444,44 @@ function ThemePreferenceIcon(props: { preference: ThemePreference }) {
         </svg>
       </Show>
     </svg>
-  )
+  );
 }
 
 function SubscribeModal(props: { onClose: () => void }) {
-  const i18n = useI18n()
-  const [status, setStatus] = createSignal<"idle" | "pending" | "success" | "error">("idle")
-  const [message, setMessage] = createSignal("")
-  let input: HTMLInputElement | undefined
+  const i18n = useI18n();
+  const [status, setStatus] = createSignal<"idle" | "pending" | "success" | "error">("idle");
+  const [message, setMessage] = createSignal("");
+  let input: HTMLInputElement | undefined;
 
   onMount(() => {
-    if (typeof document === "undefined") return
-    const activeElement = document.activeElement instanceof HTMLElement ? document.activeElement : undefined
-    const htmlOverflow = document.documentElement.style.overflow
-    const bodyOverflow = document.body.style.overflow
-    document.documentElement.style.overflow = "hidden"
-    document.body.style.overflow = "hidden"
-    const focusTimeout = window.setTimeout(() => input?.focus(), 0)
+    if (typeof document === "undefined") return;
+    const activeElement =
+      document.activeElement instanceof HTMLElement ? document.activeElement : undefined;
+    const htmlOverflow = document.documentElement.style.overflow;
+    const bodyOverflow = document.body.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    const focusTimeout = window.setTimeout(() => input?.focus(), 0);
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") props.onClose()
-    }
-    document.addEventListener("keydown", onKeyDown)
+      if (event.key === "Escape") props.onClose();
+    };
+    document.addEventListener("keydown", onKeyDown);
     onCleanup(() => {
-      window.clearTimeout(focusTimeout)
-      document.documentElement.style.overflow = htmlOverflow
-      document.body.style.overflow = bodyOverflow
-      document.removeEventListener("keydown", onKeyDown)
-      activeElement?.focus()
-    })
-  })
+      window.clearTimeout(focusTimeout);
+      document.documentElement.style.overflow = htmlOverflow;
+      document.body.style.overflow = bodyOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+      activeElement?.focus();
+    });
+  });
 
   return (
-    <div data-component="subscribe-modal" role="dialog" aria-modal="true" aria-labelledby="subscribe-title">
+    <div
+      data-component="subscribe-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="subscribe-title"
+    >
       <div data-slot="modal-scrim" aria-hidden="true" onClick={props.onClose} />
       <div data-slot="modal-panel">
         <div data-slot="modal-brand">
@@ -449,33 +506,41 @@ function SubscribeModal(props: { onClose: () => void }) {
             data-slot="subscribe-form"
             method="post"
             onSubmit={(event) => {
-              event.preventDefault()
-              const form = event.currentTarget
-              setStatus("pending")
-              setMessage("")
+              event.preventDefault();
+              const form = event.currentTarget;
+              setStatus("pending");
+              setMessage("");
               fetch(`${import.meta.env.BASE_URL}api/newsletter`, {
                 method: "POST",
                 body: new FormData(form),
               }).then(
                 async (response) => {
                   if (response.ok) {
-                    form.reset()
-                    setStatus("success")
-                    return
+                    form.reset();
+                    setStatus("success");
+                    return;
                   }
-                  setMessage(await newsletterErrorMessage(response, i18n.t("modal.error")))
-                  setStatus("error")
+                  setMessage(await newsletterErrorMessage(response, i18n.t("modal.error")));
+                  setStatus("error");
                 },
                 () => {
-                  setMessage(i18n.t("modal.error"))
-                  setStatus("error")
+                  setMessage(i18n.t("modal.error"));
+                  setStatus("error");
                 },
-              )
+              );
             }}
           >
-            <input ref={input} type="email" name="email" placeholder={i18n.t("modal.email")} required />
+            <input
+              ref={input}
+              type="email"
+              name="email"
+              placeholder={i18n.t("modal.email")}
+              required
+            />
             <button type="submit" disabled={status() === "pending"}>
-              <span>{status() === "pending" ? i18n.t("modal.subscribing") : i18n.t("modal.subscribe")}</span>
+              <span>
+                {status() === "pending" ? i18n.t("modal.subscribing") : i18n.t("modal.subscribe")}
+              </span>
             </button>
           </form>
           <div data-slot="subscribe-feedback" aria-live="polite">
@@ -489,21 +554,23 @@ function SubscribeModal(props: { onClose: () => void }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function newsletterErrorMessage(response: Response, fallback: string) {
   return response.json().then(
     (body: unknown) =>
-      body && typeof body === "object" && "error" in body && typeof body.error === "string" ? body.error : fallback,
+      body && typeof body === "object" && "error" in body && typeof body.error === "string"
+        ? body.error
+        : fallback,
     () => fallback,
-  )
+  );
 }
 
 function FooterColumn(props: {
-  title: string
-  links: readonly { href: string; label: string }[]
-  localHref: (href: string) => string
+  title: string;
+  links: readonly { href: string; label: string }[];
+  localHref: (href: string) => string;
 }) {
   return (
     <div data-slot="footer-column">
@@ -522,11 +589,11 @@ function FooterColumn(props: {
         </For>
       </nav>
     </div>
-  )
+  );
 }
 
 function themePreferenceLabelKey(preference: ThemePreference) {
-  if (preference === "dark") return "theme.dark"
-  if (preference === "light") return "theme.light"
-  return "theme.system"
+  if (preference === "dark") return "theme.dark";
+  if (preference === "light") return "theme.light";
+  return "theme.system";
 }

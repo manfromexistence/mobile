@@ -78,7 +78,7 @@ test.after(async () => {
 
 test("parseAndValidateCodexAuth extracts userId from chatgpt_user_id claim", () => {
   const parsed = parseAndValidateCodexAuth(
-    buildAuthFile("acct-shared", "user-alice", "alice@example.com")
+    buildAuthFile("acct-shared", "user-alice", "alice@example.com"),
   );
   assert.equal(parsed.accountId, "acct-shared");
   assert.equal(parsed.userId, "user-alice");
@@ -86,10 +86,10 @@ test("parseAndValidateCodexAuth extracts userId from chatgpt_user_id claim", () 
 
 test("#6301: same workspace, DIFFERENT user → both imports create a new connection", async () => {
   const alice = parseAndValidateCodexAuth(
-    buildAuthFile("acct-shared", "user-alice", "alice@example.com")
+    buildAuthFile("acct-shared", "user-alice", "alice@example.com"),
   );
   const bob = parseAndValidateCodexAuth(
-    buildAuthFile("acct-shared", "user-bob", "bob@example.com")
+    buildAuthFile("acct-shared", "user-bob", "bob@example.com"),
   );
 
   // Sanity: same account id, distinct user id.
@@ -107,14 +107,14 @@ test("#6301: same workspace, DIFFERENT user → both imports create a new connec
 
 test("same workspace AND same user → still deduped (update, not create)", async () => {
   const alice1 = parseAndValidateCodexAuth(
-    buildAuthFile("acct-shared", "user-alice", "alice@example.com")
+    buildAuthFile("acct-shared", "user-alice", "alice@example.com"),
   );
   const first = await createConnectionFromAuthFile(alice1, {});
   assert.equal(first.created, true);
 
   // Re-import the same identity with overwrite → dedup to the existing connection.
   const alice2 = parseAndValidateCodexAuth(
-    buildAuthFile("acct-shared", "user-alice", "alice@example.com")
+    buildAuthFile("acct-shared", "user-alice", "alice@example.com"),
   );
   const second = await createConnectionFromAuthFile(alice2, { overwriteExisting: true });
   assert.equal(second.created, false);
@@ -142,7 +142,7 @@ test("backward-compat: legacy connection without stored userId still dedups by a
   });
 
   const incoming = parseAndValidateCodexAuth(
-    buildAuthFile("acct-shared", "user-alice", "alice@example.com")
+    buildAuthFile("acct-shared", "user-alice", "alice@example.com"),
   );
   const result = await createConnectionFromAuthFile(incoming, { overwriteExisting: true });
   assert.equal(result.created, false);

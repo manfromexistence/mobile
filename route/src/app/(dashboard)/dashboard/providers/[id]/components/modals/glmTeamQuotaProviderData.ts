@@ -13,7 +13,7 @@ export const EMPTY_GLM_TEAM_QUOTA_FIELDS: GlmTeamQuotaFieldValues = {
 export function assignGlmTeamQuotaProviderData(
   isGlm: boolean,
   values: GlmTeamQuotaFieldValues,
-  target: Record<string, unknown>
+  target: Record<string, unknown>,
 ) {
   if (!isGlm) return;
 

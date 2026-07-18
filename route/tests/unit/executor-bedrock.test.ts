@@ -16,11 +16,11 @@ test("BedrockExecutor builds regional native Converse URLs", () => {
 
   assert.equal(
     executor.buildUrl("anthropic.claude-sonnet-4-6", false, 0, credentials()),
-    "https://bedrock-runtime.eu-west-2.amazonaws.com/model/anthropic.claude-sonnet-4-6/converse"
+    "https://bedrock-runtime.eu-west-2.amazonaws.com/model/anthropic.claude-sonnet-4-6/converse",
   );
   assert.equal(
     executor.buildUrl("anthropic.claude-sonnet-4-6", true, 0, credentials()),
-    "https://bedrock-runtime.eu-west-2.amazonaws.com/model/anthropic.claude-sonnet-4-6/converse-stream"
+    "https://bedrock-runtime.eu-west-2.amazonaws.com/model/anthropic.claude-sonnet-4-6/converse-stream",
   );
 });
 
@@ -303,7 +303,7 @@ test("BedrockExecutor converts non-streaming Converse output to OpenAI chat comp
       body: { messages: [{ role: "user", content: "Hi" }], max_tokens: 8 },
       stream: false,
       credentials: credentials(),
-    })
+    }),
   );
 
   assert.equal(sent[0].constructor.name, "ConverseCommand");

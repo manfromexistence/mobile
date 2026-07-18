@@ -79,7 +79,7 @@ test("GET /api/cli-tools/logs respects filter param", async () => {
       const msg = (e.msg || "").toLowerCase();
       return comp.includes("ratelimit") || msg.includes("ratelimit") || comp.includes("rate");
     }),
-    "filter should restrict results to matching component/message"
+    "filter should restrict results to matching component/message",
   );
 });
 
@@ -129,7 +129,7 @@ test("GET /api/cli-tools/logs limit=abc does not bypass the 2000-entry cap", asy
     // Non-numeric limit must fall back to default (500), not bypass the cap with NaN
     assert.ok(
       body.length <= 500,
-      `Non-numeric limit=abc should fall back to default 500, got ${body.length}`
+      `Non-numeric limit=abc should fall back to default 500, got ${body.length}`,
     );
   } finally {
     process.env.APP_LOG_FILE_PATH = origPath;
@@ -152,7 +152,7 @@ test("log-streamer.ts calls /api/cli-tools/logs (correct URL, not the missing ro
           c.close();
         },
       }),
-      { status: 200 }
+      { status: 200 },
     );
   }) as typeof fetch;
 
@@ -169,11 +169,11 @@ test("log-streamer.ts calls /api/cli-tools/logs (correct URL, not the missing ro
   assert.ok(captured.length > 0, "fetch should have been called");
   assert.ok(
     captured.some((u) => u.includes("/api/cli-tools/logs")),
-    `Expected /api/cli-tools/logs in fetched URL, got: ${captured[0]}`
+    `Expected /api/cli-tools/logs in fetched URL, got: ${captured[0]}`,
   );
   assert.ok(
     !captured.some((u) => u.includes("/api/logs/console")),
-    "log-streamer should not call /api/logs/console"
+    "log-streamer should not call /api/logs/console",
   );
 });
 
@@ -190,7 +190,7 @@ test("log-streamer forwards auth headers to fetch (regression: 401 against authe
           c.close();
         },
       }),
-      { status: 200 }
+      { status: 200 },
     );
   }) as typeof fetch;
 
@@ -211,6 +211,6 @@ test("log-streamer forwards auth headers to fetch (regression: 401 against authe
   assert.equal(
     headers.get("authorization"),
     "Bearer test-token",
-    "createLogStream must forward the provided auth headers to fetch"
+    "createLogStream must forward the provided auth headers to fetch",
   );
 });

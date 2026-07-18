@@ -10,20 +10,16 @@ import {
 test("extractMemoryTextFromResponse reads OpenAI choices[0].message.content (trimmed)", () => {
   assert.equal(
     extractMemoryTextFromResponse({ choices: [{ message: { content: "  hi  " } }] }),
-    "hi"
+    "hi",
   );
 });
 
 test("extractMemoryTextFromResponse joins Claude content text blocks and skips non-text", () => {
   assert.equal(
     extractMemoryTextFromResponse({
-      content: [
-        { type: "text", text: " a " },
-        { type: "image" },
-        { type: "text", text: "b" },
-      ],
+      content: [{ type: "text", text: " a " }, { type: "image" }, { type: "text", text: "b" }],
     }),
-    "a\nb"
+    "a\nb",
   );
 });
 
@@ -45,7 +41,7 @@ test("extractMemoryTextFromResponse prefers OpenAI content over output_text", ()
       choices: [{ message: { content: "openai" } }],
       output_text: "responses",
     }),
-    "openai"
+    "openai",
   );
 });
 
@@ -65,11 +61,7 @@ test("extractMemoryTextFromRequestBody joins array content parts of the last use
     messages: [
       {
         role: "user",
-        content: [
-          { type: "input_text", text: " a " },
-          { text: "b" },
-          { type: "image_url" },
-        ],
+        content: [{ type: "input_text", text: " a " }, { text: "b" }, { type: "image_url" }],
       },
     ],
   };
@@ -120,7 +112,7 @@ test("extractMemoryTextFromRequestBody returns empty for null/empty/no-user bodi
   // only an assistant message -> no user text
   assert.equal(
     extractMemoryTextFromRequestBody({ messages: [{ role: "assistant", content: "x" }] }),
-    ""
+    "",
   );
 });
 

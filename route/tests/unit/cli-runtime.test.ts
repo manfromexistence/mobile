@@ -58,8 +58,9 @@ test("isBetterSqliteBinaryValid retorna false quando binário não existe", asyn
 });
 
 test("buildEnvWithRuntime extende NODE_PATH com runtime node_modules", async () => {
-  const { buildEnvWithRuntime, getRuntimeNodeModules } =
-    await import("../../bin/cli/runtime/nativeDeps.mjs");
+  const { buildEnvWithRuntime, getRuntimeNodeModules } = await import(
+    "../../bin/cli/runtime/nativeDeps.mjs"
+  );
   const nm = getRuntimeNodeModules();
   const env = buildEnvWithRuntime({});
   assert.ok(env.NODE_PATH.includes(nm), "NODE_PATH deve conter runtime node_modules");
@@ -75,8 +76,9 @@ test("isBetterSqliteBinaryValid rejeita binário com magic bytes válidos mas AB
   // Regression for upstream 9router#2493: a binary that only "looks" native (correct ELF/Mach-O/PE
   // header) but was built for a different Node ABI (NODE_MODULE_VERSION) must NOT be reported as
   // valid — loading it crashes the process (segfault) instead of triggering a rebuild.
-  const { getRuntimeNodeModules, isBetterSqliteBinaryValid } =
-    await import("../../bin/cli/runtime/nativeDeps.mjs");
+  const { getRuntimeNodeModules, isBetterSqliteBinaryValid } = await import(
+    "../../bin/cli/runtime/nativeDeps.mjs"
+  );
   const nm = getRuntimeNodeModules();
   const buildDir = join(nm, "better-sqlite3", "build", "Release");
   mkdirSync(buildDir, { recursive: true });
@@ -97,14 +99,15 @@ test("isBetterSqliteBinaryValid rejeita binário com magic bytes válidos mas AB
   assert.equal(
     result,
     false,
-    "binário com header válido mas ABI/conteúdo incompatível deve ser inválido"
+    "binário com header válido mas ABI/conteúdo incompatível deve ser inválido",
   );
   rmSync(join(nm, "better-sqlite3"), { recursive: true, force: true });
 });
 
 test("isBetterSqliteBinaryValid aceita um binário nativo real e carregável", async () => {
-  const { getRuntimeNodeModules, isBetterSqliteBinaryValid } =
-    await import("../../bin/cli/runtime/nativeDeps.mjs");
+  const { getRuntimeNodeModules, isBetterSqliteBinaryValid } = await import(
+    "../../bin/cli/runtime/nativeDeps.mjs"
+  );
   const { existsSync, copyFileSync } = await import("node:fs");
   const realBinary = join(
     process.cwd(),
@@ -112,7 +115,7 @@ test("isBetterSqliteBinaryValid aceita um binário nativo real e carregável", a
     "better-sqlite3",
     "build",
     "Release",
-    "better_sqlite3.node"
+    "better_sqlite3.node",
   );
   if (!existsSync(realBinary)) {
     // Ambient runtime without a compiled better-sqlite3 binary — nothing to assert here.

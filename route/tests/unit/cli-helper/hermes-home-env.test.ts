@@ -47,7 +47,7 @@ describe("getHermesHome (#3628 — HERMES_HOME env var)", () => {
     const result = getHermesHome();
     assert.ok(
       result.startsWith("/custom/hermes"),
-      `Expected path to start with /custom/hermes, got: ${result}`
+      `Expected path to start with /custom/hermes, got: ${result}`,
     );
   });
 
@@ -61,11 +61,11 @@ describe("getHermesHome (#3628 — HERMES_HOME env var)", () => {
     const configPath = getHermesConfigPath();
     assert.ok(
       configPath.startsWith("/custom/hermes"),
-      `Expected config path to start with /custom/hermes, got: ${configPath}`
+      `Expected config path to start with /custom/hermes, got: ${configPath}`,
     );
     assert.ok(
       configPath.endsWith("config.yaml"),
-      `Expected config path to end with config.yaml, got: ${configPath}`
+      `Expected config path to end with config.yaml, got: ${configPath}`,
     );
   });
 
@@ -83,23 +83,21 @@ describe("getHermesHome (#3628 — HERMES_HOME env var)", () => {
     const expected = getHermesConfigPath();
     assert.ok(
       expected.startsWith("/custom/hermes"),
-      `Expected ${expected} to start with /custom/hermes`
+      `Expected ${expected} to start with /custom/hermes`,
     );
   });
 
   it("getCliConfigPaths('hermes-agent') uses HERMES_HOME (cliRuntime integration)", async () => {
     process.env.HERMES_HOME = "/custom/hermes";
 
-    const { getCliConfigPaths } = await import(
-      "../../../src/shared/services/cliRuntime.ts"
-    );
+    const { getCliConfigPaths } = await import("../../../src/shared/services/cliRuntime.ts");
 
     const paths = getCliConfigPaths("hermes-agent");
     assert.ok(paths !== null, "getCliConfigPaths('hermes-agent') returned null");
     const configPath = (paths as Record<string, string>)["config"];
     assert.ok(
       configPath.startsWith("/custom/hermes"),
-      `Expected hermes-agent config path to start with /custom/hermes, got: ${configPath}`
+      `Expected hermes-agent config path to start with /custom/hermes, got: ${configPath}`,
     );
   });
 });

@@ -7,6 +7,6 @@ test("instrumentation-node.ts imports liveServer for in-process WS auto-start", 
   const source = readFileSync(resolve("src/instrumentation-node.ts"), "utf8");
   assert.ok(
     source.includes("server/ws/liveServer"),
-    "instrumentation-node.ts should import @/server/ws/liveServer"
+    "instrumentation-node.ts should import @/server/ws/liveServer",
   );
 });

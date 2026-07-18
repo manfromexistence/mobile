@@ -46,6 +46,6 @@ test("GET /api/health/ping is fast (under 500ms for trivial SELECT 1)", async ()
   const body = await res.json();
   assert.ok(
     body.latencyMs < 500,
-    `expected latencyMs < 500, got ${body.latencyMs}ms — endpoint is no longer lightweight`
+    `expected latencyMs < 500, got ${body.latencyMs}ms — endpoint is no longer lightweight`,
   );
 });

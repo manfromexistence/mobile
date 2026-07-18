@@ -13,7 +13,8 @@ export const dict: Record<string, string> = {
   "ui.sessionReview.image.loading": "Loading...",
   "ui.sessionReview.image.placeholder": "Image",
   "ui.sessionReview.largeDiff.title": "Diff too large to render",
-  "ui.sessionReview.largeDiff.meta": "Limit: {{limit}} changed lines. Current: {{current}} changed lines.",
+  "ui.sessionReview.largeDiff.meta":
+    "Limit: {{limit}} changed lines. Current: {{current}} changed lines.",
   "ui.sessionReview.largeDiff.renderAnyway": "Render anyway",
   "ui.sessionReviewV2.expandMode": "Expand or collapse diff",
   "ui.sessionReviewV2.filterFiles": "Filter files",
@@ -191,4 +192,4 @@ export const dict: Record<string, string> = {
   "ui.question.multiHint": "Select all answers that apply",
   "ui.question.singleHint": "Select one answer",
   "ui.question.custom.placeholder": "Type your answer...",
-}
+};

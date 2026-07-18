@@ -136,7 +136,8 @@ export const dict = {
   "lab.notFound": "Ingen modeller matchet dette laben.",
   "lab.heroPrefix": "Utforsk {{count}} {{lab}}-modeller brukt i OpenCode",
   "lab.heroIncluding": "inkludert {{models}}",
-  "lab.heroSuffix": "Sammenlign nylig tokenbruk, kontekstvinduer, utgivelsesdatoer og modellspesifikke data.",
+  "lab.heroSuffix":
+    "Sammenlign nylig tokenbruk, kontekstvinduer, utgivelsesdatoer og modellspesifikke data.",
   "lab.tokensProcessed": "Behandlede tokens",
   "lab.pending": "Venter",
   "lab.usageAfterActivity": "Bruk vises etter at modellaktivitet lander",
@@ -227,4 +228,4 @@ export const dict = {
   "model.pdf": "PDF",
   "format.users": "brukere",
   "format.tokens": "tokens",
-} as const
+} as const;

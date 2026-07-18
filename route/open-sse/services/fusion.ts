@@ -86,9 +86,9 @@ export function extractPanelText(json: unknown): string {
       .flatMap((o) =>
         Array.isArray(o.content)
           ? (o.content as Array<{ text?: unknown }>).map((c) =>
-              typeof c?.text === "string" ? c.text : ""
+              typeof c?.text === "string" ? c.text : "",
             )
-          : []
+          : [],
       )
       .join("");
     if (t.trim()) return t;
@@ -108,10 +108,7 @@ export function appendUserTurn(body: Body, text: string): Body {
   } else if (Array.isArray(body.input)) {
     next.input = [...(body.input as unknown[]), { role: "user", content: text }];
   } else if (Array.isArray(body.contents)) {
-    next.contents = [
-      ...(body.contents as unknown[]),
-      { role: "user", parts: [{ text }] },
-    ];
+    next.contents = [...(body.contents as unknown[]), { role: "user", parts: [{ text }] }];
   } else {
     next.messages = [{ role: "user", content: text }];
   }
@@ -147,10 +144,7 @@ export function buildJudgePrompt(answers: Array<{ text: string }>): string {
 type Sentinel = { __timeout?: true; __error?: unknown };
 
 // Resolve a Response (or sentinel) within ms; the loser keeps running but is ignored.
-function withTimeout(
-  promise: Promise<Response>,
-  ms: number
-): Promise<Response | Sentinel> {
+function withTimeout(promise: Promise<Response>, ms: number): Promise<Response | Sentinel> {
   return new Promise((resolve) => {
     const t = setTimeout(() => resolve({ __timeout: true }), ms);
     Promise.resolve(promise)
@@ -175,7 +169,7 @@ function withTimeout(
  */
 export function collectPanel(
   calls: Array<Promise<Response | Sentinel>>,
-  cfg: { minPanel: number; stragglerGraceMs: number; panelHardTimeoutMs: number }
+  cfg: { minPanel: number; stragglerGraceMs: number; panelHardTimeoutMs: number },
 ): Promise<Array<Response | Sentinel | undefined>> {
   return new Promise((resolve) => {
     const out: Array<Response | Sentinel | undefined> = new Array(calls.length);
@@ -261,11 +255,11 @@ export async function handleFusionChat({
   if (panel.length > maxPanel) {
     log.warn(
       "FUSION",
-      `Combo "${comboName ?? ""}" panel=${panel.length} exceeds maxPanel=${maxPanel} — rejecting before fan-out (#1905)`
+      `Combo "${comboName ?? ""}" panel=${panel.length} exceeds maxPanel=${maxPanel} — rejecting before fan-out (#1905)`,
     );
     return errorResponse(
       400,
-      `Fusion panel too large (${panel.length} models, max ${maxPanel}) — reduce the combo's target count or raise fusionTuning.maxPanel`
+      `Fusion panel too large (${panel.length} models, max ${maxPanel}) — reduce the combo's target count or raise fusionTuning.maxPanel`,
     );
   }
 
@@ -281,7 +275,7 @@ export async function handleFusionChat({
   const judge = hasExplicitJudge ? (judgeModel as string).trim() : panel[0];
   log.info(
     "FUSION",
-    `Combo "${comboName ?? ""}" | panel=${panel.length} [${panel.join(", ")}] | judge=${judge} | quorum=${minPanel}`
+    `Combo "${comboName ?? ""}" | panel=${panel.length} [${panel.join(", ")}] | judge=${judge} | quorum=${minPanel}`,
   );
 
   // 1. Fan out to the panel in parallel: non-streaming, tools stripped (we want prose).
@@ -291,7 +285,7 @@ export async function handleFusionChat({
   const panelBody: Body = { ...rest, stream: false };
   const t0 = Date.now();
   const calls = panel.map((m) =>
-    withTimeout(handleSingleModel(panelBody, m), cfg.panelHardTimeoutMs)
+    withTimeout(handleSingleModel(panelBody, m), cfg.panelHardTimeoutMs),
   );
   const settled = await collectPanel(calls, { ...cfg, minPanel });
   log.info("FUSION", `fan-out collected in ${Date.now() - t0}ms`);
@@ -359,7 +353,7 @@ export async function handleFusionChat({
     log.warn("FUSION", `No live models: ${detail}`);
     return errorResponse(
       503,
-      detail ? `All fusion panel models failed: ${detail}` : "All fusion panel models failed"
+      detail ? `All fusion panel models failed: ${detail}` : "All fusion panel models failed",
     );
   }
   if (answers.length === 1) {
@@ -367,10 +361,7 @@ export async function handleFusionChat({
     // synthesizing from a single source through itself would be redundant —
     // answer directly with the lone survivor (issue #6454).
     if (!hasExplicitJudge) {
-      log.info(
-        "FUSION",
-        `Only ${answers[0].model} succeeded — answering directly (no fusion)`
-      );
+      log.info("FUSION", `Only ${answers[0].model} succeeded — answering directly (no fusion)`);
       return handleSingleModel(body, answers[0].model);
     }
     // An explicit judgeModel IS configured: honor it even with a single
@@ -396,7 +387,7 @@ export async function handleFusionChat({
   if (answers.length === 1) {
     log.info(
       "FUSION",
-      `Only ${answers[0].model} succeeded — judging single answer with ${effectiveJudge}`
+      `Only ${answers[0].model} succeeded — judging single answer with ${effectiveJudge}`,
     );
   }
 

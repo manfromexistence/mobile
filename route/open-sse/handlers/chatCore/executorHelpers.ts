@@ -15,7 +15,7 @@ function toFiniteNumberOrNull(value: unknown): number | null {
 
 export function resolveAccountSemaphoreAccountKey(
   connectionId: string | null | undefined,
-  credentials: Record<string, unknown> | null | undefined
+  credentials: Record<string, unknown> | null | undefined,
 ): string | null {
   if (typeof connectionId === "string" && connectionId.trim().length > 0) {
     return connectionId;
@@ -39,7 +39,7 @@ export function resolveAccountSemaphoreAccountKey(
 }
 
 export function resolveAccountSemaphoreMaxConcurrency(
-  credentials: Record<string, unknown> | null | undefined
+  credentials: Record<string, unknown> | null | undefined,
 ): number | null {
   return toFiniteNumberOrNull(credentials?.maxConcurrent);
 }
@@ -64,7 +64,7 @@ export function buildClaudePromptCacheLogMeta(
   targetFormat: string,
   finalBody: Record<string, unknown> | null | undefined,
   providerHeaders: Record<string, unknown> | Headers | null | undefined,
-  clientHeaders?: Headers | Record<string, unknown> | null | undefined
+  clientHeaders?: Headers | Record<string, unknown> | null | undefined,
 ) {
   if (targetFormat !== FORMATS.CLAUDE || !finalBody || typeof finalBody !== "object") return null;
 

@@ -83,12 +83,12 @@ export async function POST(request) {
 
   const { provider, model: resolvedModel } = parseTranscriptionModel(
     model as string,
-    dynamicProviders
+    dynamicProviders,
   );
   if (!provider) {
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
-      `Invalid transcription model: ${model}. Use format: provider/model`
+      `Invalid transcription model: ${model}. Use format: provider/model`,
     );
   }
 

@@ -115,7 +115,7 @@ test("kiro-to-openai: streamed tool name is reverse-mapped via state.toolNameMap
 
   const result = convertKiroToOpenAI(
     { _eventType: "toolUseEvent", toolUseId: "call_9", name: truncated, input: {} },
-    { toolNameMap: nameMap }
+    { toolNameMap: nameMap },
   );
 
   assert.equal(result.choices[0].delta.tool_calls[0].function.name, longName);
@@ -124,7 +124,7 @@ test("kiro-to-openai: streamed tool name is reverse-mapped via state.toolNameMap
 test("kiro-to-openai: unmapped tool name passes through unchanged", () => {
   const result = convertKiroToOpenAI(
     { _eventType: "toolUseEvent", toolUseId: "call_10", name: "read_file", input: {} },
-    { toolNameMap: new Map() }
+    { toolNameMap: new Map() },
   );
 
   assert.equal(result.choices[0].delta.tool_calls[0].function.name, "read_file");

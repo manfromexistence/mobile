@@ -1,5 +1,5 @@
-import { createProviderToolFactoryWithOutputSchema } from "@ai-sdk/provider-utils"
-import { z } from "zod/v4"
+import { createProviderToolFactoryWithOutputSchema } from "@ai-sdk/provider-utils";
+import { z } from "zod/v4";
 
 export const localShellInputSchema = z.object({
   action: z.object({
@@ -10,11 +10,11 @@ export const localShellInputSchema = z.object({
     workingDirectory: z.string().optional(),
     env: z.record(z.string(), z.string()).optional(),
   }),
-})
+});
 
 export const localShellOutputSchema = z.object({
   output: z.string(),
-})
+});
 
 export const localShell = createProviderToolFactoryWithOutputSchema<
   {
@@ -22,43 +22,43 @@ export const localShell = createProviderToolFactoryWithOutputSchema<
      * Execute a shell command on the server.
      */
     action: {
-      type: "exec"
+      type: "exec";
 
       /**
        * The command to run.
        */
-      command: string[]
+      command: string[];
 
       /**
        * Optional timeout in milliseconds for the command.
        */
-      timeoutMs?: number
+      timeoutMs?: number;
 
       /**
        * Optional user to run the command as.
        */
-      user?: string
+      user?: string;
 
       /**
        * Optional working directory to run the command in.
        */
-      workingDirectory?: string
+      workingDirectory?: string;
 
       /**
        * Environment variables to set for the command.
        */
-      env?: Record<string, string>
-    }
+      env?: Record<string, string>;
+    };
   },
   {
     /**
      * The output of local shell tool call.
      */
-    output: string
+    output: string;
   },
   {}
 >({
   id: "openai.local_shell",
   inputSchema: localShellInputSchema,
   outputSchema: localShellOutputSchema,
-})
+});

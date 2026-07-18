@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { DotGrid, dotGridPresets } from '@paper-design/shaders-react';
-import { useControls, button, folder } from 'leva';
-import { setParamsSafe, useResetLevaParams } from '@/helpers/use-reset-leva-params';
-import { usePresetHighlight } from '@/helpers/use-preset-highlight';
-import { DotGridShape, DotGridShapes } from '@paper-design/shaders';
-import { cleanUpLevaParams } from '@/helpers/clean-up-leva-params';
-import { toHsla } from '@/helpers/color-utils';
-import { ShaderDetails } from '@/components/shader-details';
-import { dotGridDef } from '@/shader-defs/dot-grid-def';
-import { ShaderContainer } from '@/components/shader-container';
-import { useUrlParams } from '@/helpers/use-url-params';
+import { DotGrid, dotGridPresets } from "@paper-design/shaders-react";
+import { useControls, button, folder } from "leva";
+import { setParamsSafe, useResetLevaParams } from "@/helpers/use-reset-leva-params";
+import { usePresetHighlight } from "@/helpers/use-preset-highlight";
+import { DotGridShape, DotGridShapes } from "@paper-design/shaders";
+import { cleanUpLevaParams } from "@/helpers/clean-up-leva-params";
+import { toHsla } from "@/helpers/color-utils";
+import { ShaderDetails } from "@/components/shader-details";
+import { dotGridDef } from "@/shader-defs/dot-grid-def";
+import { ShaderContainer } from "@/components/shader-container";
+import { useUrlParams } from "@/helpers/use-url-params";
 
 const { worldWidth, worldHeight, ...defaults } = dotGridPresets[0].params;
 
@@ -40,7 +40,7 @@ const DotGridWithControls = () => {
       dotGridPresets.map(({ name, params: { worldWidth, worldHeight, ...preset } }) => [
         name,
         button(() => setParamsSafe(params, setParams, preset)),
-      ])
+      ]),
     );
     return {
       Presets: folder(presets, { order: -1 }),

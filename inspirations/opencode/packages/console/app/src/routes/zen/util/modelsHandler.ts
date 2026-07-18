@@ -6,7 +6,7 @@ export async function buildOptionsResponse() {
       "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
       "Access-Control-Allow-Headers": "Content-Type, Authorization",
     },
-  })
+  });
 }
 
 export async function buildModelsResponse(models: string[]) {
@@ -27,5 +27,5 @@ export async function buildModelsResponse(models: string[]) {
         "Content-Type": "application/json",
       },
     },
-  )
+  );
 }

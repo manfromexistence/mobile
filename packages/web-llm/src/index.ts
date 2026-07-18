@@ -4,7 +4,7 @@ export {
   deleteModelInCache,
   deleteModelWasmInCache,
   hasModelInCache,
-} from "./cache_util"
+} from "./cache_util";
 export {
   AppConfig,
   ChatOptions,
@@ -17,38 +17,38 @@ export {
   modelVersion,
   OPFSAccessMode,
   prebuiltAppConfig,
-} from "./config"
-export { CreateMLCEngine, MLCEngine } from "./engine"
-export { IntegrityError } from "./error"
+} from "./config";
+export { CreateMLCEngine, MLCEngine } from "./engine";
+export { IntegrityError } from "./error";
 export {
   CreateServiceWorkerMLCEngine as CreateExtensionServiceWorkerMLCEngine,
   ServiceWorkerMLCEngine as ExtensionServiceWorkerMLCEngine,
   ServiceWorkerMLCEngineHandler as ExtensionServiceWorkerMLCEngineHandler,
-} from "./extension_service_worker"
+} from "./extension_service_worker";
 export {
   type FileIntegrityMap,
   isValidSRI,
   type ModelIntegrity,
   type SRIString,
   verifyIntegrity,
-} from "./integrity"
-export { CustomRequestParams, WorkerRequest, WorkerResponse } from "./message"
-export * from "./openai_api_protocols/index"
+} from "./integrity";
+export { CustomRequestParams, WorkerRequest, WorkerResponse } from "./message";
+export * from "./openai_api_protocols/index";
 
 export {
   CreateServiceWorkerMLCEngine,
   ServiceWorkerMLCEngine,
   ServiceWorkerMLCEngineHandler,
-} from "./service_worker"
+} from "./service_worker";
 export {
   InitProgressCallback,
   InitProgressReport,
   LogitProcessor,
   LogLevel,
   MLCEngineInterface,
-} from "./types"
+} from "./types";
 export {
   CreateWebWorkerMLCEngine,
   WebWorkerMLCEngine,
   WebWorkerMLCEngineHandler,
-} from "./web_worker"
+} from "./web_worker";

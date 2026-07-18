@@ -15,7 +15,7 @@ test("flags a vitest-only-dir test that imports node:test", () => {
   const root = tmpRepo();
   fs.writeFileSync(
     path.join(root, "tests/unit/autoCombo/bad.test.ts"),
-    `import { describe, it } from "node:test";\ndescribe("x", () => it("y", () => {}));\n`
+    `import { describe, it } from "node:test";\ndescribe("x", () => it("y", () => {}));\n`,
   );
   const bad = findRunnerMismatches(root);
   assert.equal(bad.length, 1);
@@ -28,7 +28,7 @@ test("accepts a vitest-only-dir test that imports vitest", () => {
   const root = tmpRepo();
   fs.writeFileSync(
     path.join(root, "tests/unit/autoCombo/good.test.ts"),
-    `import { describe, it } from "vitest";\ndescribe("x", () => it("y", () => {}));\n`
+    `import { describe, it } from "vitest";\ndescribe("x", () => it("y", () => {}));\n`,
   );
   assert.equal(findRunnerMismatches(root).length, 0);
   fs.rmSync(root, { recursive: true, force: true });

@@ -4,19 +4,18 @@ import {
   faBug,
   faQuestionCircle,
   faTrashAlt,
-} from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { WLLAMA_VERSION } from "../config"
-import { useMessages } from "../utils/messages.context"
-import { Screen } from "../utils/types"
-import { useWllama } from "../utils/wllama.context"
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { WLLAMA_VERSION } from "../config";
+import { useMessages } from "../utils/messages.context";
+import { Screen } from "../utils/types";
+import { useWllama } from "../utils/wllama.context";
 
 export default function Sidebar({ children }: { children: any }) {
-  const { currentConvId, navigateTo, currScreen, loadedModel } = useWllama()
-  const { conversations, getConversationById, deleteConversation } =
-    useMessages()
+  const { currentConvId, navigateTo, currScreen, loadedModel } = useWllama();
+  const { conversations, getConversationById, deleteConversation } = useMessages();
 
-  const currConv = getConversationById(currentConvId)
+  const currConv = getConversationById(currentConvId);
 
   return (
     <>
@@ -33,11 +32,7 @@ export default function Sidebar({ children }: { children: any }) {
           <div className="grow w-80 overflow-auto p-4">
             <ul className="menu gap-1 overflow-x-hidden">
               <li onClick={() => navigateTo(Screen.CHAT)}>
-                <a
-                  className={
-                    !currConv && currScreen === Screen.CHAT ? "active" : ""
-                  }
-                >
+                <a className={!currConv && currScreen === Screen.CHAT ? "active" : ""}>
                   + New conversation
                 </a>
               </li>
@@ -47,9 +42,7 @@ export default function Sidebar({ children }: { children: any }) {
                   onClick={() => navigateTo(Screen.CHAT, conv.id)}
                   className="group flex flex-row"
                 >
-                  <a
-                    className={`${conv.id === currentConvId ? "active" : ""} flex-1 min-w-0`}
-                  >
+                  <a className={`${conv.id === currentConvId ? "active" : ""} flex-1 min-w-0`}>
                     <div className="truncate">{conv.messages[0]?.content}</div>
                   </a>
 
@@ -57,12 +50,10 @@ export default function Sidebar({ children }: { children: any }) {
                     <FontAwesomeIcon
                       icon={faTrashAlt}
                       onClick={(e) => {
-                        e.preventDefault()
-                        if (
-                          confirm("Are you sure to delete this conversation?")
-                        ) {
-                          navigateTo(Screen.CHAT)
-                          deleteConversation(conv.id)
+                        e.preventDefault();
+                        if (confirm("Are you sure to delete this conversation?")) {
+                          navigateTo(Screen.CHAT);
+                          deleteConversation(conv.id);
                         }
                       }}
                     />
@@ -75,11 +66,7 @@ export default function Sidebar({ children }: { children: any }) {
           <div className="w-80 px-4 pt-0 pb-8">
             <div className="divider my-2"></div>
 
-            {loadedModel && (
-              <div className="text-sm px-4 pb-2">
-                Model: {loadedModel.hfModel}
-              </div>
-            )}
+            {loadedModel && <div className="text-sm px-4 pb-2">Model: {loadedModel.hfModel}</div>}
 
             <ul className="menu gap-1">
               <li onClick={() => navigateTo(Screen.GUIDE)}>
@@ -98,11 +85,7 @@ export default function Sidebar({ children }: { children: any }) {
                 </a>
               </li>
               <li>
-                <a
-                  href="https://github.com/ngxson/wllama"
-                  target="_blank"
-                  rel="noopener"
-                >
+                <a href="https://github.com/ngxson/wllama" target="_blank" rel="noopener">
                   <FontAwesomeIcon icon={faArrowUpRightFromSquare} /> Github
                 </a>
               </li>
@@ -115,5 +98,5 @@ export default function Sidebar({ children }: { children: any }) {
 
       <div className="drawer-content grow">{children}</div>
     </>
-  )
+  );
 }

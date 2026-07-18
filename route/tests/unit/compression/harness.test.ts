@@ -22,11 +22,11 @@ describe("compression harness — measure (C1)", () => {
     assert.ok(entities.length >= 3, `expected >=3 entities, got ${entities.length}`);
     assert.ok(
       entities.some((e) => e.includes("api.example.com")),
-      "url entity missing"
+      "url entity missing",
     );
     assert.ok(
       entities.some((e) => e.includes("MAX_RETRIES")),
-      "const_case entity missing"
+      "const_case entity missing",
     );
   });
 
@@ -44,7 +44,7 @@ describe("compression harness — measure (C1)", () => {
     assert.ok(r.score < 1, "retention should drop when the URL is dropped");
     assert.ok(
       r.lost.some((e) => e.includes("api.example.com")),
-      "lost list must name the URL"
+      "lost list must name the URL",
     );
   });
 
@@ -70,7 +70,7 @@ describe("compression harness — eval runner (C1)", () => {
   it("awaits async compress functions (H10-friendly)", async () => {
     const report = await runCompressionEval(
       [{ id: "a", input: SAMPLE, task: "chat" }],
-      async (s) => s
+      async (s) => s,
     );
     assert.equal(report.results[0].retention.score, 1);
   });
@@ -131,7 +131,7 @@ describe("compression harness — transcript replay (TV3)", () => {
           ],
         },
       ],
-      (s) => s
+      (s) => s,
     );
     assert.equal(report.results.length, 2);
     assert.ok(report.results.every((r) => r.task === "t1"));

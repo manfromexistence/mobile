@@ -21,7 +21,7 @@ export type BlockingHookResult = {
 };
 
 export type HookHandler = (
-  payload: unknown
+  payload: unknown,
 ) => void | Promise<void> | BlockingHookResult | Promise<BlockingHookResult>;
 
 export interface HookRegistration {
@@ -92,7 +92,7 @@ export function registerHook(
   event: string,
   pluginName: string,
   handler: HookHandler,
-  priority: number = 100
+  priority: number = 100,
 ): void {
   if (!hooks.has(event)) {
     hooks.set(event, []);
@@ -175,7 +175,7 @@ export async function emitHook(event: string, payload: unknown): Promise<void> {
  */
 export async function emitHookBlocking(
   event: string,
-  payload: unknown
+  payload: unknown,
 ): Promise<{
   blocked?: boolean;
   response?: unknown;

@@ -1,3 +1,3 @@
-export function formatCSSVariablePrefix(type: 'global' | 'token') {
-  return `--${type === 'token' ? 'diffs-token' : 'diffs'}-`;
+export function formatCSSVariablePrefix(type: "global" | "token") {
+  return `--${type === "token" ? "diffs-token" : "diffs"}-`;
 }

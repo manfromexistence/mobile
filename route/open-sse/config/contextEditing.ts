@@ -47,7 +47,7 @@ type ContextEditingEdit = { type?: unknown; [key: string]: unknown };
  */
 export function applyContextEditingToBody(
   body: Record<string, unknown> | null | undefined,
-  opts: { enabled: boolean }
+  opts: { enabled: boolean },
 ): void {
   if (!opts.enabled || !body || typeof body !== "object") return;
 
@@ -130,7 +130,7 @@ function getNested(obj: unknown, keys: string[]): unknown {
  * fallback.
  */
 export function extractContextEditingTelemetry(
-  responseBody: unknown
+  responseBody: unknown,
 ): ContextEditingTelemetry | null {
   if (!responseBody || typeof responseBody !== "object") return null;
 

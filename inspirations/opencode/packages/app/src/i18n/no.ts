@@ -1,5 +1,5 @@
-import { dict as en } from "./en"
-type Keys = keyof typeof en
+import { dict as en } from "./en";
+type Keys = keyof typeof en;
 
 export const dict = {
   "command.category.suggested": "Foreslått",
@@ -164,14 +164,16 @@ export const dict = {
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "Leverandør-ID",
   "provider.custom.field.providerID.placeholder": "minleverandør",
-  "provider.custom.field.providerID.description": "Små bokstaver, tall, bindestreker eller understreker",
+  "provider.custom.field.providerID.description":
+    "Små bokstaver, tall, bindestreker eller understreker",
   "provider.custom.field.name.label": "Visningsnavn",
   "provider.custom.field.name.placeholder": "Min AI-leverandør",
   "provider.custom.field.baseURL.label": "Base-URL",
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "API-nøkkel",
   "provider.custom.field.apiKey.placeholder": "API-nøkkel",
-  "provider.custom.field.apiKey.description": "Valgfritt. La stå tomt hvis du administrerer autentisering via headers.",
+  "provider.custom.field.apiKey.description":
+    "Valgfritt. La stå tomt hvis du administrerer autentisering via headers.",
   "provider.custom.models.label": "Modeller",
   "provider.custom.models.id.label": "ID",
   "provider.custom.models.id.placeholder": "modell-id",
@@ -187,7 +189,8 @@ export const dict = {
   "provider.custom.headers.remove": "Fjern header",
   "provider.custom.headers.add": "Legg til header",
   "provider.custom.error.providerID.required": "Leverandør-ID er påkrevd",
-  "provider.custom.error.providerID.format": "Bruk små bokstaver, tall, bindestreker eller understreker",
+  "provider.custom.error.providerID.format":
+    "Bruk små bokstaver, tall, bindestreker eller understreker",
   "provider.custom.error.providerID.exists": "Den leverandør-IDen finnes allerede",
   "provider.custom.error.name.required": "Visningsnavn er påkrevd",
   "provider.custom.error.baseURL.required": "Base-URL er påkrevd",
@@ -196,7 +199,8 @@ export const dict = {
   "provider.custom.error.duplicate": "Duplikat",
 
   "provider.disconnect.toast.disconnected.title": "{{provider}} frakoblet",
-  "provider.disconnect.toast.disconnected.description": "Modeller fra {{provider}} er ikke lenger tilgjengelige.",
+  "provider.disconnect.toast.disconnected.description":
+    "Modeller fra {{provider}} er ikke lenger tilgjengelige.",
 
   "model.tag.free": "Gratis",
   "model.tag.latest": "Nyeste",
@@ -282,9 +286,11 @@ export const dict = {
   "prompt.action.stop": "Stopp",
 
   "prompt.toast.pasteUnsupported.title": "Ikke støttet vedlegg",
-  "prompt.toast.pasteUnsupported.description": "Kun bilder, PDF-er eller tekstfiler kan legges ved her.",
+  "prompt.toast.pasteUnsupported.description":
+    "Kun bilder, PDF-er eller tekstfiler kan legges ved her.",
   "prompt.toast.modelAgentRequired.title": "Velg en agent og modell",
-  "prompt.toast.modelAgentRequired.description": "Velg en agent og modell før du sender en forespørsel.",
+  "prompt.toast.modelAgentRequired.description":
+    "Velg en agent og modell før du sender en forespørsel.",
   "prompt.toast.worktreeCreateFailed.title": "Kunne ikke opprette worktree",
   "prompt.toast.sessionCreateFailed.title": "Kunne ikke opprette sesjon",
   "prompt.toast.shellSendFailed.title": "Kunne ikke sende shell-kommando",
@@ -354,11 +360,13 @@ export const dict = {
   "dialog.project.edit.color": "Farge",
   "dialog.project.edit.color.select": "Velg fargen {{color}}",
   "dialog.project.edit.worktree.startup": "Oppstartsskript for arbeidsområde",
-  "dialog.project.edit.worktree.startup.description": "Kjører etter at et nytt arbeidsområde (worktree) er opprettet.",
+  "dialog.project.edit.worktree.startup.description":
+    "Kjører etter at et nytt arbeidsområde (worktree) er opprettet.",
   "dialog.project.edit.worktree.startup.placeholder": "f.eks. bun install",
 
   "context.breakdown.title": "Kontekstfordeling",
-  "context.breakdown.note": 'Omtrentlig fordeling av input-tokens. "Annet" inkluderer verktøydefinisjoner og overhead.',
+  "context.breakdown.note":
+    'Omtrentlig fordeling av input-tokens. "Annet" inkluderer verktøydefinisjoner og overhead.',
   "context.breakdown.system": "System",
   "context.breakdown.user": "Bruker",
   "context.breakdown.assistant": "Assistent",
@@ -421,9 +429,11 @@ export const dict = {
   "toast.workspace.disabled.description": "Kun hoved-worktree vises i sidefeltet",
 
   "toast.permissions.autoaccept.on.title": "Aksepterer tillatelser automatisk",
-  "toast.permissions.autoaccept.on.description": "Forespørsler om tillatelse vil bli godkjent automatisk",
+  "toast.permissions.autoaccept.on.description":
+    "Forespørsler om tillatelse vil bli godkjent automatisk",
   "toast.permissions.autoaccept.off.title": "Stoppet automatisk akseptering av tillatelser",
-  "toast.permissions.autoaccept.off.description": "Forespørsler om tillatelse vil kreve godkjenning",
+  "toast.permissions.autoaccept.off.description":
+    "Forespørsler om tillatelse vil kreve godkjenning",
 
   "toast.model.none.title": "Ingen modell valgt",
   "toast.model.none.description": "Koble til en leverandør for å oppsummere denne sesjonen",
@@ -443,12 +453,14 @@ export const dict = {
   "toast.session.unshare.success.title": "Deling av sesjon stoppet",
   "toast.session.unshare.success.description": "Sesjonen deles ikke lenger!",
   "toast.session.unshare.failed.title": "Kunne ikke stoppe deling av sesjon",
-  "toast.session.unshare.failed.description": "Det oppstod en feil da delingen av sesjonen skulle stoppes",
+  "toast.session.unshare.failed.description":
+    "Det oppstod en feil da delingen av sesjonen skulle stoppes",
 
   "toast.session.listFailed.title": "Kunne ikke laste sesjoner for {{project}}",
 
   "toast.update.title": "Oppdatering tilgjengelig",
-  "toast.update.description": "En ny versjon av OpenCode ({{version}}) er nå tilgjengelig for installasjon.",
+  "toast.update.description":
+    "En ny versjon av OpenCode ({{version}}) er nå tilgjengelig for installasjon.",
   "toast.update.action.installRestart": "Installer og start på nytt",
   "toast.update.action.notYet": "Ikke nå",
 
@@ -468,7 +480,8 @@ export const dict = {
   "error.dev.rootNotFound":
     "Rotelement ikke funnet. Glemte du å legge det til i index.html? Eller kanskje id-attributten er feilstavet?",
 
-  "error.serverSync.connectFailed": "Kunne ikke koble til server. Kjører det en server på `{{url}}`?",
+  "error.serverSync.connectFailed":
+    "Kunne ikke koble til server. Kjører det en server på `{{url}}`?",
   "directory.error.invalidUrl": "Invalid directory in URL.",
 
   "error.chain.unknown": "Ukjent feil",
@@ -479,13 +492,16 @@ export const dict = {
   "error.chain.responseBody": "Responsinnhold:\n{{body}}",
   "error.chain.didYouMean": "Mente du: {{suggestions}}",
   "error.chain.modelNotFound": "Modell ikke funnet: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Sjekk leverandør-/modellnavnene i konfigurasjonen din (opencode.json)",
-  "error.chain.mcpFailed": 'MCP-server "{{name}}" mislyktes. Merk at OpenCode ikke støtter MCP-autentisering ennå.',
+  "error.chain.checkConfig":
+    "Sjekk leverandør-/modellnavnene i konfigurasjonen din (opencode.json)",
+  "error.chain.mcpFailed":
+    'MCP-server "{{name}}" mislyktes. Merk at OpenCode ikke støtter MCP-autentisering ennå.',
   "error.chain.providerAuthFailed": "Leverandørautentisering mislyktes ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'Kunne ikke initialisere leverandør "{{provider}}". Sjekk legitimasjon og konfigurasjon.',
   "error.chain.configJsonInvalid": "Konfigurasjonsfilen på {{path}} er ikke gyldig JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "Konfigurasjonsfilen på {{path}} er ikke gyldig JSON(C): {{message}}",
+  "error.chain.configJsonInvalidWithMessage":
+    "Konfigurasjonsfilen på {{path}} er ikke gyldig JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'Mappen "{{dir}}" i {{path}} er ikke gyldig. Gi mappen nytt navn til "{{suggestion}}" eller fjern den. Dette er en vanlig skrivefeil.',
   "error.chain.configFrontmatterError": "Kunne ikke analysere frontmatter i {{path}}:\n{{message}}",
@@ -616,8 +632,10 @@ export const dict = {
   "sidebar.workspaces.enable": "Aktiver arbeidsområder",
   "sidebar.workspaces.disable": "Deaktiver arbeidsområder",
   "sidebar.gettingStarted.title": "Kom i gang",
-  "sidebar.gettingStarted.line1": "OpenCode inkluderer gratis modeller så du kan starte umiddelbart.",
-  "sidebar.gettingStarted.line2": "Koble til en leverandør for å bruke modeller, inkl. Claude, GPT, Gemini osv.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode inkluderer gratis modeller så du kan starte umiddelbart.",
+  "sidebar.gettingStarted.line2":
+    "Koble til en leverandør for å bruke modeller, inkl. Claude, GPT, Gemini osv.",
   "sidebar.project.recentSessions": "Nylige sesjoner",
   "sidebar.project.viewAllSessions": "Vis alle sesjoner",
   "sidebar.project.clearNotifications": "Fjern varsler",
@@ -644,7 +662,8 @@ export const dict = {
   "settings.general.row.appearance.title": "Utseende",
   "settings.general.row.appearance.description": "Tilpass hvordan OpenCode ser ut på enheten din",
   "settings.general.row.colorScheme.title": "Fargevalg",
-  "settings.general.row.colorScheme.description": "Velg om OpenCode skal følge systemets, lyst eller mørkt tema",
+  "settings.general.row.colorScheme.description":
+    "Velg om OpenCode skal følge systemets, lyst eller mørkt tema",
   "settings.general.row.theme.title": "Tema",
   "settings.general.row.theme.description": "Tilpass hvordan OpenCode er tematisert.",
   "settings.general.row.font.title": "Kodefont",
@@ -654,13 +673,16 @@ export const dict = {
   "settings.general.row.uiFont.title": "UI-skrift",
   "settings.general.row.uiFont.description": "Tilpass skrifttypen som brukes i hele grensesnittet",
   "settings.general.row.followup.title": "Oppfølgingsadferd",
-  "settings.general.row.followup.description": "Velg om oppfølgingsspørsmål skal kjøres umiddelbart eller vente i kø",
+  "settings.general.row.followup.description":
+    "Velg om oppfølgingsspørsmål skal kjøres umiddelbart eller vente i kø",
   "settings.general.row.followup.option.queue": "Kø",
   "settings.general.row.followup.option.steer": "Styr",
   "settings.general.row.reasoningSummaries.title": "Vis resonneringssammendrag",
-  "settings.general.row.reasoningSummaries.description": "Vis sammendrag av modellresonnering i tidslinjen",
+  "settings.general.row.reasoningSummaries.description":
+    "Vis sammendrag av modellresonnering i tidslinjen",
   "settings.general.row.shellToolPartsExpanded.title": "Utvid shell-verktøydeler",
-  "settings.general.row.shellToolPartsExpanded.description": "Vis shell-verktøydeler utvidet som standard i tidslinjen",
+  "settings.general.row.shellToolPartsExpanded.description":
+    "Vis shell-verktøydeler utvidet som standard i tidslinjen",
   "settings.general.row.editToolPartsExpanded.title": "Utvid edit-verktøydeler",
   "settings.general.row.editToolPartsExpanded.description":
     "Vis edit-, write- og patch-verktøydeler utvidet som standard i tidslinjen",
@@ -673,9 +695,11 @@ export const dict = {
   "settings.general.row.releaseNotes.description": 'Vis "Hva er nytt"-vinduer etter oppdateringer',
 
   "settings.updates.row.startup.title": "Se etter oppdateringer ved oppstart",
-  "settings.updates.row.startup.description": "Se automatisk etter oppdateringer når OpenCode starter",
+  "settings.updates.row.startup.description":
+    "Se automatisk etter oppdateringer når OpenCode starter",
   "settings.updates.row.check.title": "Se etter oppdateringer",
-  "settings.updates.row.check.description": "Se etter oppdateringer manuelt og installer hvis tilgjengelig",
+  "settings.updates.row.check.description":
+    "Se etter oppdateringer manuelt og installer hvis tilgjengelig",
   "settings.updates.action.checkNow": "Sjekk nå",
   "settings.updates.action.checking": "Sjekker...",
   "settings.updates.toast.latest.title": "Du er oppdatert",
@@ -731,12 +755,14 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Vis systemvarsel når agenten er ferdig eller trenger oppmerksomhet",
   "settings.general.notifications.permissions.title": "Tillatelser",
-  "settings.general.notifications.permissions.description": "Vis systemvarsel når en tillatelse er påkrevd",
+  "settings.general.notifications.permissions.description":
+    "Vis systemvarsel når en tillatelse er påkrevd",
   "settings.general.notifications.errors.title": "Feil",
   "settings.general.notifications.errors.description": "Vis systemvarsel når det oppstår en feil",
 
   "settings.general.sounds.agent.title": "Agent",
-  "settings.general.sounds.agent.description": "Spill av lyd når agenten er ferdig eller trenger oppmerksomhet",
+  "settings.general.sounds.agent.description":
+    "Spill av lyd når agenten er ferdig eller trenger oppmerksomhet",
   "settings.general.sounds.permissions.title": "Tillatelser",
   "settings.general.sounds.permissions.description": "Spill av lyd når en tillatelse er påkrevd",
   "settings.general.sounds.errors.title": "Feil",
@@ -813,9 +839,11 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "Websøk",
   "settings.permissions.tool.websearch.description": "Søk på nettet",
   "settings.permissions.tool.external_directory.title": "Ekstern mappe",
-  "settings.permissions.tool.external_directory.description": "Få tilgang til filer utenfor prosjektmappen",
+  "settings.permissions.tool.external_directory.description":
+    "Få tilgang til filer utenfor prosjektmappen",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "Oppdager gjentatte verktøykall med identisk input",
+  "settings.permissions.tool.doom_loop.description":
+    "Oppdager gjentatte verktøykall med identisk input",
 
   "session.delete.failed.title": "Kunne ikke slette sesjon",
   "session.delete.title": "Slett sesjon",
@@ -846,7 +874,8 @@ export const dict = {
   "workspace.reset.archived.none": "Ingen aktive sesjoner vil bli arkivert.",
   "workspace.reset.archived.one": "1 sesjon vil bli arkivert.",
   "workspace.reset.archived.many": "{{count}} sesjoner vil bli arkivert.",
-  "workspace.reset.note": "Dette vil tilbakestille arbeidsområdet til å samsvare med standardgrenen.",
+  "workspace.reset.note":
+    "Dette vil tilbakestille arbeidsområdet til å samsvare med standardgrenen.",
   "common.open": "Åpne",
   "dialog.releaseNotes.action.getStarted": "Kom i gang",
   "dialog.releaseNotes.action.next": "Neste",
@@ -860,7 +889,8 @@ export const dict = {
   "common.time.hoursAgo.short": "{{count}} t siden",
   "common.time.daysAgo.short": "{{count}} d siden",
   "settings.providers.connected.environmentDescription": "Koblet til fra miljøvariablene dine",
-  "settings.providers.custom.description": "Legg til en OpenAI-kompatibel leverandør via basis-URL.",
+  "settings.providers.custom.description":
+    "Legg til en OpenAI-kompatibel leverandør via basis-URL.",
 
   "app.server.unreachable": "Kunne ikke nå {{server}}",
   "app.server.retrying": "Prøver på nytt automatisk...",
@@ -869,7 +899,8 @@ export const dict = {
   "dialog.server.add.passwordPlaceholder": "passord",
   "server.row.noUsername": "inget brukernavn",
   "session.review.noVcs.createGit.title": "Opprett et Git-depot",
-  "session.review.noVcs.createGit.description": "Spor, gjennomgå og angre endringer i dette prosjektet",
+  "session.review.noVcs.createGit.description":
+    "Spor, gjennomgå og angre endringer i dette prosjektet",
   "session.review.noVcs.createGit.actionLoading": "Oppretter Git-depot...",
   "session.review.noVcs.createGit.action": "Opprett Git-depot",
   "session.todo.progress": "{{done}} av {{total}} oppgaver fullført",
@@ -902,7 +933,8 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "Bilder over 32ms i de siste 5 sekundene.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "Blokkert tid og antall lange oppgaver i de siste 5 sekundene. Maks oppgave: {{max}}.",
+  "debugBar.long.tip":
+    "Blokkert tid og antall lange oppgaver i de siste 5 sekundene. Maks oppgave: {{max}}.",
   "debugBar.delay.label": "DELAY",
   "debugBar.delay.tip": "Verste observerte inndataforsinkelse i de siste 5 sekundene.",
   "debugBar.inp.label": "INP",
@@ -932,8 +964,10 @@ export const dict = {
   "error.serverSDK.noServerAvailable": "Ingen server tilgjengelig",
   "error.serverSDK.serverNotAvailable": "Server ikke tilgjengelig",
   "error.childStore.persistedCacheCreateFailed": "Kunne ikke opprette vedvarende hurtigbuffer",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Kunne ikke opprette vedvarende prosjektmetadata",
-  "error.childStore.persistedProjectIconCreateFailed": "Kunne ikke opprette vedvarende prosjektikon",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Kunne ikke opprette vedvarende prosjektmetadata",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Kunne ikke opprette vedvarende prosjektikon",
   "error.childStore.storeCreateFailed": "Kunne ikke opprette lager",
   "terminal.connectionLost.abnormalClose": "WebSocket lukket unormalt: {{code}}",
-} satisfies Partial<Record<Keys, string>>
+} satisfies Partial<Record<Keys, string>>;

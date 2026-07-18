@@ -1,27 +1,23 @@
-'use client';
+"use client";
 
 import {
   FILE_TREE_DENSITY_PRESETS,
   type FileTreeDensityKeyword,
   FileTree as VanillaFileTree,
-} from '@pierre/trees';
-import { FileTree, useFileTree } from '@pierre/trees/react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+} from "@pierre/trees";
+import { FileTree, useFileTree } from "@pierre/trees/react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-import { ExampleCard } from '../_components/ExampleCard';
+import { ExampleCard } from "../_components/ExampleCard";
 import {
   CUSTOM_NUMERIC_DENSITY,
   type CustomDensityKey,
   DENSITY_DEMO_PATHS,
   EXPLICIT_ITEM_HEIGHT,
   type SerializedDensityPayload,
-} from './DensityDemoData';
+} from "./DensityDemoData";
 
-const KEYWORD_DENSITIES: readonly FileTreeDensityKeyword[] = [
-  'compact',
-  'default',
-  'relaxed',
-];
+const KEYWORD_DENSITIES: readonly FileTreeDensityKeyword[] = ["compact", "default", "relaxed"];
 
 interface DensityReadout {
   computedDensityFactor: string;
@@ -41,10 +37,8 @@ function readReadout(model: VanillaFileTree): DensityReadout | null {
 
   const computed = window.getComputedStyle(host);
   return {
-    computedDensityFactor: computed
-      .getPropertyValue('--trees-density-override')
-      .trim(),
-    computedItemHeight: computed.getPropertyValue('--trees-item-height').trim(),
+    computedDensityFactor: computed.getPropertyValue("--trees-density-override").trim(),
+    computedItemHeight: computed.getPropertyValue("--trees-item-height").trim(),
     modelDensityFactor: model.getDensityFactor(),
     modelItemHeight: model.getItemHeight(),
   };
@@ -54,32 +48,26 @@ function readReadout(model: VanillaFileTree): DensityReadout | null {
 // regression to the previous density-divergence bug would be loud.
 function ReadoutPanel({ readout }: { readout: DensityReadout | null }) {
   if (readout == null) {
-    return (
-      <div className="text-muted-foreground mt-2 text-xs italic">Mounting…</div>
-    );
+    return <div className="text-muted-foreground mt-2 text-xs italic">Mounting…</div>;
   }
 
-  const itemHeightMatches =
-    readout.computedItemHeight === `${String(readout.modelItemHeight)}px`;
+  const itemHeightMatches = readout.computedItemHeight === `${String(readout.modelItemHeight)}px`;
   const factorMatches =
-    Number.parseFloat(readout.computedDensityFactor) ===
-    readout.modelDensityFactor;
+    Number.parseFloat(readout.computedDensityFactor) === readout.modelDensityFactor;
 
   return (
     <dl className="text-muted-foreground mt-2 grid grid-cols-2 gap-x-3 gap-y-0.5 font-mono text-[11px] leading-tight">
       <dt>model itemHeight</dt>
       <dd className="text-right">{readout.modelItemHeight}px</dd>
       <dt>--trees-item-height</dt>
-      <dd className={`text-right ${itemHeightMatches ? '' : 'text-red-500'}`}>
-        {readout.computedItemHeight === '' ? '—' : readout.computedItemHeight}
+      <dd className={`text-right ${itemHeightMatches ? "" : "text-red-500"}`}>
+        {readout.computedItemHeight === "" ? "—" : readout.computedItemHeight}
       </dd>
       <dt>model factor</dt>
       <dd className="text-right">{readout.modelDensityFactor}</dd>
       <dt>--trees-density-override</dt>
-      <dd className={`text-right ${factorMatches ? '' : 'text-red-500'}`}>
-        {readout.computedDensityFactor === ''
-          ? '—'
-          : readout.computedDensityFactor}
+      <dd className={`text-right ${factorMatches ? "" : "text-red-500"}`}>
+        {readout.computedDensityFactor === "" ? "—" : readout.computedDensityFactor}
       </dd>
     </dl>
   );
@@ -115,16 +103,16 @@ function VanillaSsrCard({
     const fileTree = new VanillaFileTree({
       density,
       id: payload.id,
-      initialExpansion: 'open',
+      initialExpansion: "open",
       itemHeight,
       paths: DENSITY_DEMO_PATHS,
     });
 
-    const fileTreeContainer = node.querySelector('file-tree-container');
+    const fileTreeContainer = node.querySelector("file-tree-container");
     if (fileTreeContainer instanceof HTMLElement) {
       fileTree.hydrate({ fileTreeContainer });
     } else {
-      node.innerHTML = '';
+      node.innerHTML = "";
       fileTree.render({ containerWrapper: node });
     }
 
@@ -176,7 +164,7 @@ function ReactCsrCard({
     density,
     flattenEmptyDirectories,
     id,
-    initialExpansion: 'open',
+    initialExpansion: "open",
     itemHeight,
     paths: DENSITY_DEMO_PATHS,
   });
@@ -199,10 +187,7 @@ function ReactCsrCard({
       description={description}
       footer={<ReadoutPanel readout={readout} />}
     >
-      <FileTree
-        model={model}
-        style={{ height: `${String(viewportHeight)}px` }}
-      />
+      <FileTree model={model} style={{ height: `${String(viewportHeight)}px` }} />
     </ExampleCard>
   );
 }
@@ -225,12 +210,10 @@ export function DensityDemoClient({
       <header className="space-y-2">
         <h1 className="text-2xl font-bold">Density</h1>
         <p className="text-muted-foreground max-w-3xl text-sm leading-6">
-          Proves all four density entry points stay in lockstep across runtimes.
-          Each tree's readout pairs the model's resolved <code>itemHeight</code>{' '}
-          and density factor with the live <code>getComputedStyle</code> values
-          of <code>--trees-item-height</code> and{' '}
-          <code>--trees-density-override</code> on the host. Mismatches turn
-          red.
+          Proves all four density entry points stay in lockstep across runtimes. Each tree's readout
+          pairs the model's resolved <code>itemHeight</code> and density factor with the live{" "}
+          <code>getComputedStyle</code> values of <code>--trees-item-height</code> and{" "}
+          <code>--trees-density-override</code> on the host. Mismatches turn red.
         </p>
       </header>
 
@@ -327,10 +310,7 @@ function CustomReactDensityCard({
 }) {
   const [factor, setFactor] = useState(1);
   const [rowHeight, setRowHeight] = useState(30);
-  const remountKey = useMemo(
-    () => `${String(factor)}-${String(rowHeight)}`,
-    [factor, rowHeight]
-  );
+  const remountKey = useMemo(() => `${String(factor)}-${String(rowHeight)}`, [factor, rowHeight]);
 
   return (
     <section className="space-y-3">
@@ -343,18 +323,14 @@ function CustomReactDensityCard({
         controls={
           <div className="flex flex-col gap-2">
             <label className="flex items-center gap-3 text-xs">
-              <span className="w-28 font-mono">
-                factor: {factor.toFixed(2)}
-              </span>
+              <span className="w-28 font-mono">factor: {factor.toFixed(2)}</span>
               <input
                 type="range"
                 min={NUMERIC_FACTOR_MIN}
                 max={NUMERIC_FACTOR_MAX}
                 step={NUMERIC_FACTOR_STEP}
                 value={factor}
-                onChange={(event) =>
-                  setFactor(Number.parseFloat(event.target.value))
-                }
+                onChange={(event) => setFactor(Number.parseFloat(event.target.value))}
                 className="flex-1"
               />
             </label>
@@ -366,9 +342,7 @@ function CustomReactDensityCard({
                 max={ITEM_HEIGHT_MAX}
                 step={ITEM_HEIGHT_STEP}
                 value={rowHeight}
-                onChange={(event) =>
-                  setRowHeight(Number.parseInt(event.target.value, 10))
-                }
+                onChange={(event) => setRowHeight(Number.parseInt(event.target.value, 10))}
                 className="flex-1"
               />
             </label>
@@ -408,7 +382,7 @@ function ReactCustomTree({
     density,
     flattenEmptyDirectories,
     id: `trees-dev-density-react-custom-${remountKey}`,
-    initialExpansion: 'open',
+    initialExpansion: "open",
     itemHeight,
     paths: DENSITY_DEMO_PATHS,
   });
@@ -427,10 +401,7 @@ function ReactCustomTree({
 
   return (
     <>
-      <FileTree
-        model={model}
-        style={{ height: `${String(viewportHeight)}px` }}
-      />
+      <FileTree model={model} style={{ height: `${String(viewportHeight)}px` }} />
       <ReadoutPanel readout={readout} />
     </>
   );

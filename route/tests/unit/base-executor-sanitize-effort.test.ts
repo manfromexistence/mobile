@@ -35,7 +35,7 @@ test("sanitizeReasoningEffortForProvider: OpenRouter DeepSeek preserves xhigh", 
     body,
     "openrouter",
     "deepseek/deepseek-v4-pro",
-    null
+    null,
   );
   assert.equal(result, body);
   assert.equal((result as any).reasoning_effort, "xhigh");
@@ -53,7 +53,7 @@ test("sanitizeReasoningEffortForProvider: explicit xhigh opt-out downgrades to h
   assert.equal((result as any).reasoning_effort, "high");
   assert.ok(
     log.messages.some(([tag, m]) => tag === "REASONING_SANITIZE" && /xhigh → high/.test(m)),
-    "logs the downgrade"
+    "logs the downgrade",
   );
 });
 
@@ -67,7 +67,7 @@ test("sanitizeReasoningEffortForProvider: Anthropic-compatible dynamic provider 
     body,
     "anthropic-compatible-test",
     "claude-opus-4-6",
-    null
+    null,
   );
   assert.notEqual(result, body, "must return a new object when mutating");
   assert.equal((result as any).reasoning_effort, "high");
@@ -84,7 +84,7 @@ test("sanitizeReasoningEffortForProvider: xiaomi-mimo normalizes max → xhigh b
   assert.equal((result as any).reasoning_effort, "xhigh");
   assert.ok(
     log.messages.some(([tag, m]) => tag === "REASONING_SANITIZE" && /max → xhigh/.test(m)),
-    "logs the normalization"
+    "logs the normalization",
   );
 });
 
@@ -124,13 +124,13 @@ test("sanitizeReasoningEffortForProvider: OpenRouter DeepSeek normalizes max →
     body,
     "openrouter",
     "deepseek/deepseek-v4-pro",
-    log
+    log,
   );
   assert.notEqual(result, body, "must return a new object when mutating");
   assert.equal((result as any).reasoning_effort, "xhigh");
   assert.ok(
     log.messages.some(([tag, m]) => tag === "REASONING_SANITIZE" && /max → xhigh/.test(m)),
-    "logs the normalization"
+    "logs the normalization",
   );
 });
 
@@ -145,13 +145,13 @@ test("sanitizeReasoningEffortForProvider: OpenRouter Claude opt-out aliases down
     body,
     "openrouter",
     "anthropic/claude-opus-4.6",
-    log
+    log,
   );
   assert.notEqual(result, body, "must return a new object when mutating");
   assert.equal((result as any).reasoning_effort, "high");
   assert.ok(
     log.messages.some(([tag, m]) => tag === "REASONING_SANITIZE" && /max → high/.test(m)),
-    "logs the downgrade"
+    "logs the downgrade",
   );
 });
 
@@ -166,13 +166,13 @@ test("sanitizeReasoningEffortForProvider: OpenAI-compatible Gemini normalizes ma
     body,
     "openai-compatible-free1",
     "gemini-3.1-pro-preview",
-    log
+    log,
   );
   assert.notEqual(result, body, "must return a new object when mutating");
   assert.equal((result as any).reasoning_effort, "xhigh");
   assert.ok(
     log.messages.some(([tag, m]) => tag === "REASONING_SANITIZE" && /max → xhigh/.test(m)),
-    "logs the normalization"
+    "logs the normalization",
   );
 });
 
@@ -186,7 +186,7 @@ test("sanitizeReasoningEffortForProvider: nested OpenAI reasoning max normalizes
     body,
     "openai-compatible-free1",
     "gemini-3.1-pro-preview",
-    null
+    null,
   );
   assert.equal((result as any).reasoning.effort, "xhigh");
   assert.equal((result as any).reasoning.summary, "auto", "other reasoning fields preserved");
@@ -203,7 +203,7 @@ test("sanitizeReasoningEffortForProvider: claude preserves max for Opus/Sonnet a
     sonnetBody,
     "claude",
     "claude-sonnet-4-6",
-    null
+    null,
   );
   assert.equal(sonnetResult, sonnetBody);
   assert.equal((sonnetResult as any).reasoning_effort, "max");
@@ -217,7 +217,7 @@ test("sanitizeReasoningEffortForProvider: claude preserves max for Opus/Sonnet a
     opusBody,
     "anthropic-compatible-cc-test",
     "claude-opus-4-6",
-    null
+    null,
   );
   assert.equal(opusResult, opusBody);
   assert.equal((opusResult as any).reasoning.effort, "max");
@@ -231,7 +231,7 @@ test("sanitizeReasoningEffortForProvider: claude preserves max for Opus/Sonnet a
     haikuBody,
     "claude",
     "claude-haiku-4-5-20251001",
-    null
+    null,
   );
   assert.notEqual(haikuResult, haikuBody);
   assert.equal((haikuResult as any).reasoning_effort, "high");
@@ -271,7 +271,7 @@ test("sanitizeReasoningEffortForProvider: mistral/devstral strips reasoning_effo
   assert.equal((result as any).reasoning_effort, undefined, "reasoning_effort must be stripped");
   assert.ok(
     log.messages.some(([tag, m]) => tag === "REASONING_SANITIZE" && /removed/.test(m)),
-    "logs the removal"
+    "logs the removal",
   );
 });
 
@@ -307,7 +307,7 @@ test("sanitizeReasoningEffortForProvider: rejecting providers strip max before n
     mistralBody,
     "mistral",
     "devstral-2512",
-    null
+    null,
   );
   assert.equal((mistralResult as any).reasoning_effort, undefined);
 
@@ -324,7 +324,7 @@ test("sanitizeReasoningEffortForProvider: rejecting providers strip max before n
     githubBody,
     "github",
     "claude-opus-4-6",
-    null
+    null,
   );
   assert.equal((githubResult as any).reasoning_effort, "high");
 
@@ -339,7 +339,7 @@ test("sanitizeReasoningEffortForProvider: rejecting providers strip max before n
     githubHaiku,
     "github",
     "claude-haiku-4.5",
-    null
+    null,
   );
   assert.equal((githubHaikuResult as any).reasoning_effort, undefined);
 });
@@ -414,7 +414,7 @@ test("sanitizeReasoningEffortForProvider: native deepseek maps xhigh → max", (
   assert.equal((result as any).model, "deepseek-v4-pro", "other fields preserved");
   assert.ok(
     log.messages.some(([tag, m]) => tag === "REASONING_SANITIZE" && /xhigh → max/.test(m)),
-    "logs the xhigh → max mapping"
+    "logs the xhigh → max mapping",
   );
 });
 
@@ -487,7 +487,7 @@ test("sanitizeReasoningEffortForProvider: OpenRouter DeepSeek still preserves xh
     body,
     "openrouter",
     "deepseek/deepseek-v4-pro",
-    null
+    null,
   );
   assert.equal(result, body);
   assert.equal((result as any).reasoning_effort, "xhigh");
@@ -521,12 +521,12 @@ test("sanitizeReasoningEffortForProvider: opencode-go DeepSeek V4 Pro preserves 
       body,
       "opencode-go",
       `deepseek-v4-pro-${level}`,
-      null
+      null,
     );
     assert.equal(
       (result as any).reasoning_effort,
       level,
-      `opencode-go deepseek-v4-pro-${level} preserves reasoning_effort=${level}`
+      `opencode-go deepseek-v4-pro-${level} preserves reasoning_effort=${level}`,
     );
   }
 });

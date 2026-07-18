@@ -1,8 +1,8 @@
-import { getVirtualizationWorkload } from '@pierre/tree-test-data';
-import { describe, expect, test } from 'bun:test';
+import { getVirtualizationWorkload } from "@pierre/tree-test-data";
+import { describe, expect, test } from "bun:test";
 
-import { PathStoreBuilder, preparePathEntries } from '../src/builder';
-import { PathStore } from '../src/index';
+import { PathStoreBuilder, preparePathEntries } from "../src/builder";
+import { PathStore } from "../src/index";
 import {
   getNodeDepth,
   getNodeFlags,
@@ -10,7 +10,7 @@ import {
   isDirectoryNode,
   PATH_STORE_NODE_FLAG_REMOVED,
   type PathStoreSnapshot,
-} from '../src/internal-types';
+} from "../src/internal-types";
 import {
   buildSoaNodeStore,
   getSoaNodeDepth,
@@ -19,27 +19,25 @@ import {
   hasSoaNodeFlag,
   isSoaDirectoryNode,
   sweepOpenVisibleCountsSoa,
-} from '../src/soa-node-store';
+} from "../src/soa-node-store";
 
 const SMALL_PATHS: string[] = [
-  'alpha/docs/readme.md',
-  'alpha/src/app.ts',
-  'alpha/src/utils/math.ts',
-  'alpha/todo.txt',
-  'beta/archive/notes.txt',
-  'beta/keep.txt',
-  'gamma/logs/today.txt',
-  'zeta.md',
+  "alpha/docs/readme.md",
+  "alpha/src/app.ts",
+  "alpha/src/utils/math.ts",
+  "alpha/todo.txt",
+  "beta/archive/notes.txt",
+  "beta/keep.txt",
+  "gamma/logs/today.txt",
+  "zeta.md",
 ];
 
 function buildSnapshotFromPaths(
   paths: readonly string[],
-  flattenEmptyDirectories: boolean
+  flattenEmptyDirectories: boolean,
 ): PathStoreSnapshot {
   const builder = new PathStoreBuilder({ flattenEmptyDirectories });
-  builder.appendPreparedPaths(
-    preparePathEntries(paths, { flattenEmptyDirectories })
-  );
+  builder.appendPreparedPaths(preparePathEntries(paths, { flattenEmptyDirectories }));
   // Leave subtree counts un-accumulated, matching the PathStore constructor's
   // skipSubtreeCountPass usage: the SoA sweep populates them.
   return builder.finish({ skipSubtreeCountPass: true });
@@ -52,9 +50,9 @@ function buildPresortedSnapshot(workloadName: string): PathStoreSnapshot {
   return builder.finish({ skipSubtreeCountPass: false });
 }
 
-describe('SoA node store', () => {
-  test('accessors return identical values to the object-array helpers for every node', () => {
-    const snapshot = buildPresortedSnapshot('linux-1x');
+describe("SoA node store", () => {
+  test("accessors return identical values to the object-array helpers for every node", () => {
+    const snapshot = buildPresortedSnapshot("linux-1x");
     const store = buildSoaNodeStore(snapshot);
 
     expect(store.nodeCount).toBe(snapshot.nodes.length);
@@ -72,13 +70,13 @@ describe('SoA node store', () => {
       expect(isSoaDirectoryNode(store, id)).toBe(isDirectoryNode(node));
       expect(getSoaNodeFlags(store, id)).toBe(getNodeFlags(node));
       expect(hasSoaNodeFlag(store, id, PATH_STORE_NODE_FLAG_REMOVED)).toBe(
-        (getNodeFlags(node) & PATH_STORE_NODE_FLAG_REMOVED) !== 0
+        (getNodeFlags(node) & PATH_STORE_NODE_FLAG_REMOVED) !== 0,
       );
     }
   });
 
-  test('CSR child table reproduces every directory child list', () => {
-    const snapshot = buildPresortedSnapshot('linux-1x');
+  test("CSR child table reproduces every directory child list", () => {
+    const snapshot = buildPresortedSnapshot("linux-1x");
     const store = buildSoaNodeStore(snapshot);
 
     for (const [dirId, index] of snapshot.directories) {
@@ -91,14 +89,14 @@ describe('SoA node store', () => {
     }
   });
 
-  test('count-only sweep matches initializeOpenVisibleCounts (presorted, no flatten)', () => {
+  test("count-only sweep matches initializeOpenVisibleCounts (presorted, no flatten)", () => {
     // Reference: a default PathStore built all-open over the same input. Its
     // per-node subtreeNodeCount / visibleSubtreeCount are produced by
     // initializeOpenVisibleCounts.
-    const workload = getVirtualizationWorkload('linux-1x');
+    const workload = getVirtualizationWorkload("linux-1x");
     const referenceStore = new PathStore({
       flattenEmptyDirectories: false,
-      initialExpansion: 'open',
+      initialExpansion: "open",
       presorted: true,
       paths: workload.presortedFiles,
     });
@@ -106,13 +104,11 @@ describe('SoA node store', () => {
     // The SoA sweep over a fresh skip-pass snapshot must agree with the values
     // the default constructor computed via initializeOpenVisibleCounts. The
     // root's visibleSubtreeCount is exactly the store's total visible count.
-    const soaSnapshot = buildPresortedSnapshot('linux-1x');
+    const soaSnapshot = buildPresortedSnapshot("linux-1x");
     const store = buildSoaNodeStore(soaSnapshot);
     sweepOpenVisibleCountsSoa(store);
 
-    expect(store.visibleSubtreeCount[store.rootId]).toBe(
-      referenceStore.getVisibleCount()
-    );
+    expect(store.visibleSubtreeCount[store.rootId]).toBe(referenceStore.getVisibleCount());
 
     // Spot check: every directory's subtreeNodeCount equals 1 + sum of child
     // subtree counts (internal consistency of the sweep).
@@ -125,23 +121,21 @@ describe('SoA node store', () => {
     }
   });
 
-  test('sweep handles the flatten-empty-directories case', () => {
+  test("sweep handles the flatten-empty-directories case", () => {
     const snapshot = buildSnapshotFromPaths(SMALL_PATHS, true);
     const store = buildSoaNodeStore(snapshot);
     sweepOpenVisibleCountsSoa(store);
 
     const reference = new PathStore({
       flattenEmptyDirectories: true,
-      initialExpansion: 'open',
+      initialExpansion: "open",
       paths: SMALL_PATHS,
     });
-    expect(store.visibleSubtreeCount[store.rootId]).toBe(
-      reference.getVisibleCount()
-    );
+    expect(store.visibleSubtreeCount[store.rootId]).toBe(reference.getVisibleCount());
   });
 });
 
-describe('PathStore useSoaCountSweep flag', () => {
+describe("PathStore useSoaCountSweep flag", () => {
   function assertIdenticalProjection(a: PathStore, b: PathStore): void {
     expect(a.getVisibleCount()).toBe(b.getVisibleCount());
     const count = a.getVisibleCount();
@@ -158,35 +152,35 @@ describe('PathStore useSoaCountSweep flag', () => {
     }
   }
 
-  test('flag produces identical projection to the default path (small, flatten)', () => {
+  test("flag produces identical projection to the default path (small, flatten)", () => {
     const base = {
       flattenEmptyDirectories: true,
-      initialExpansion: 'open' as const,
+      initialExpansion: "open" as const,
       paths: SMALL_PATHS,
     };
     assertIdenticalProjection(
       new PathStore(base),
-      new PathStore({ ...base, useSoaCountSweep: true })
+      new PathStore({ ...base, useSoaCountSweep: true }),
     );
   });
 
-  test('flag produces identical projection to the default path (small, no flatten)', () => {
+  test("flag produces identical projection to the default path (small, no flatten)", () => {
     const base = {
       flattenEmptyDirectories: false,
-      initialExpansion: 'open' as const,
+      initialExpansion: "open" as const,
       paths: SMALL_PATHS,
     };
     assertIdenticalProjection(
       new PathStore(base),
-      new PathStore({ ...base, useSoaCountSweep: true })
+      new PathStore({ ...base, useSoaCountSweep: true }),
     );
   });
 
-  test('flag produces identical visible count over a real presorted workload', () => {
-    const workload = getVirtualizationWorkload('linux-1x');
+  test("flag produces identical visible count over a real presorted workload", () => {
+    const workload = getVirtualizationWorkload("linux-1x");
     const base = {
       flattenEmptyDirectories: false,
-      initialExpansion: 'open' as const,
+      initialExpansion: "open" as const,
       presorted: true,
       paths: workload.presortedFiles,
     };
@@ -201,28 +195,26 @@ describe('PathStore useSoaCountSweep flag', () => {
     let checksumDef = 0;
     let checksumSoa = 0;
     for (let i = 0; i < rowsDef.length; i += 1) {
-      checksumDef =
-        (checksumDef + rowsDef[i].path.length + rowsDef[i].depth) | 0;
-      checksumSoa =
-        (checksumSoa + rowsSoa[i].path.length + rowsSoa[i].depth) | 0;
+      checksumDef = (checksumDef + rowsDef[i].path.length + rowsDef[i].depth) | 0;
+      checksumSoa = (checksumSoa + rowsSoa[i].path.length + rowsSoa[i].depth) | 0;
     }
     expect(rowsSoa.length).toBe(rowsDef.length);
     expect(checksumSoa).toBe(checksumDef);
   });
 
-  test('flag is inert when the all-open count fast path is not eligible', () => {
+  test("flag is inert when the all-open count fast path is not eligible", () => {
     // initialExpandedPaths makes canInitializeOpenVisibleCounts false unless all
     // directories happen to be expanded; with a single expanded path the store
     // falls back to recomputeCountsRecursive and the flag has no effect.
     const base = {
       flattenEmptyDirectories: true,
-      initialExpansion: 'closed' as const,
-      initialExpandedPaths: ['alpha/'],
+      initialExpansion: "closed" as const,
+      initialExpandedPaths: ["alpha/"],
       paths: SMALL_PATHS,
     };
     assertIdenticalProjection(
       new PathStore(base),
-      new PathStore({ ...base, useSoaCountSweep: true })
+      new PathStore({ ...base, useSoaCountSweep: true }),
     );
   });
 });

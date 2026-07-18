@@ -89,10 +89,12 @@ test("#2244 cross-IdP dedup: same email + DIFFERENT username creates a separate 
   assert.equal(
     conns.length,
     2,
-    "two different IdP identities sharing an email must NOT be collapsed into one connection"
+    "two different IdP identities sharing an email must NOT be collapsed into one connection",
   );
   const usernames = conns
-    .map((c) => (c as { providerSpecificData?: { username?: string } }).providerSpecificData?.username)
+    .map(
+      (c) => (c as { providerSpecificData?: { username?: string } }).providerSpecificData?.username,
+    )
     .sort();
   assert.deepEqual(usernames, ["alice-google", "alice-huggingface"]);
 });
@@ -117,7 +119,7 @@ test("#2244 cross-IdP dedup: legacy rows without username still dedupe against i
   assert.equal(
     conns.length,
     1,
-    "legacy email-only rows without a username must keep deduping on email alone"
+    "legacy email-only rows without a username must keep deduping on email alone",
   );
   assert.equal((first as { id: string }).id, (second as { id: string }).id);
 });
@@ -149,7 +151,7 @@ test("#2244 cross-IdP dedup: Codex workspaceId matching path is unaffected", asy
   assert.equal(
     conns.length,
     2,
-    "Codex must keep matching on workspaceId + email regardless of username, and a different workspace must stay a separate connection"
+    "Codex must keep matching on workspaceId + email regardless of username, and a different workspace must stay a separate connection",
   );
   assert.equal((first as { id: string }).id, (second as { id: string }).id);
   assert.notEqual((first as { id: string }).id, (third as { id: string }).id);

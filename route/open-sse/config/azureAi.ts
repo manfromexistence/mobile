@@ -38,7 +38,7 @@ export function normalizeAzureAiBaseUrl(value: string | null | undefined): strin
 
 export function buildAzureAiChatUrl(
   value: string | null | undefined,
-  apiType: "chat" | "responses" = "chat"
+  apiType: "chat" | "responses" = "chat",
 ): string {
   const normalized = normalizeAzureAiBaseUrl(value);
   return `${normalized}/${apiType === "responses" ? "responses" : "chat/completions"}`;

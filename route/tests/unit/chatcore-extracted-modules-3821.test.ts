@@ -28,14 +28,18 @@ test("sanitizeChatRequestBody: Responses target maps max_completion_tokens → m
   const out = sanitizeChatRequestBody(
     { max_completion_tokens: 512 },
     FORMATS.OPENAI,
-    FORMATS.OPENAI_RESPONSES
+    FORMATS.OPENAI_RESPONSES,
   );
   assert.equal(out.max_output_tokens, 512);
   assert.equal(out.max_completion_tokens, undefined);
 });
 
 test("sanitizeChatRequestBody: Responses target maps max_tokens → max_output_tokens", () => {
-  const out = sanitizeChatRequestBody({ max_tokens: 128 }, FORMATS.OPENAI_RESPONSES, FORMATS.OPENAI);
+  const out = sanitizeChatRequestBody(
+    { max_tokens: 128 },
+    FORMATS.OPENAI_RESPONSES,
+    FORMATS.OPENAI,
+  );
   assert.equal(out.max_output_tokens, 128);
   assert.equal(out.max_tokens, undefined);
 });
@@ -54,7 +58,7 @@ test("sanitizeChatRequestBody: strips empty message name and filters nameless to
       ],
     },
     FORMATS.OPENAI,
-    FORMATS.OPENAI
+    FORMATS.OPENAI,
   );
 
   const messages = out.messages as Array<Record<string, unknown>>;
@@ -86,7 +90,7 @@ test("checkIdempotencyCache returns { hit:null, idempotencyKey } on a miss", asy
       provider: "openai",
       model: "gpt-4.1",
       messages: undefined,
-    })
+    }),
   );
 });
 
@@ -112,7 +116,11 @@ test("checkIdempotencyCache returns a hit Response reusing the same key after a 
     log: undefined,
   });
 
-  assert.equal(result.idempotencyKey, key, "the resolved key is returned for the save site to reuse");
+  assert.equal(
+    result.idempotencyKey,
+    key,
+    "the resolved key is returned for the save site to reuse",
+  );
   assert.ok(result.hit, "a cached entry produces a hit");
   assert.equal(result.hit!.response.headers.get("X-OmniRoute-Idempotent"), "true");
 });

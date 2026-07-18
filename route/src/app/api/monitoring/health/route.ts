@@ -31,7 +31,7 @@ export async function GET() {
     } catch (error) {
       console.warn(
         `[API] GET /api/monitoring/health ${label} unavailable:`,
-        error instanceof Error ? error.message : error
+        error instanceof Error ? error.message : error,
       );
       return fallback;
     }
@@ -76,7 +76,7 @@ export async function GET() {
         ? readHealthValue(
             "circuit breakers",
             () => circuitBreakerModule.value.getAllCircuitBreakerStatuses(),
-            []
+            [],
           )
         : [];
     const rateLimitStatus =
@@ -92,7 +92,7 @@ export async function GET() {
         ? readHealthValue(
             "model lockouts",
             () => accountFallbackModule.value.getAllModelLockouts(),
-            []
+            [],
           )
         : [];
     const quotaMonitorSummary =
@@ -100,7 +100,7 @@ export async function GET() {
         ? readHealthValue(
             "quota monitor summary",
             () => quotaMonitorModule.value.getQuotaMonitorSummary(),
-            fallbackQuotaMonitorSummary
+            fallbackQuotaMonitorSummary,
           )
         : fallbackQuotaMonitorSummary;
     const quotaMonitorMonitors =
@@ -108,7 +108,7 @@ export async function GET() {
         ? readHealthValue(
             "quota monitor snapshots",
             () => quotaMonitorModule.value.getQuotaMonitorSnapshots(),
-            []
+            [],
           )
         : [];
     const activeSessions =
@@ -116,7 +116,7 @@ export async function GET() {
         ? readHealthValue(
             "active sessions",
             () => sessionManagerModule.value.getActiveSessions(),
-            []
+            [],
           )
         : [];
     const activeSessionsByKey =
@@ -124,7 +124,7 @@ export async function GET() {
         ? readHealthValue(
             "active sessions by key",
             () => sessionManagerModule.value.getAllActiveSessionCountsByKey(),
-            {}
+            {},
           )
         : {};
     const credentialHealth =
@@ -132,7 +132,7 @@ export async function GET() {
         ? readHealthValue(
             "credential health",
             () => credentialHealthModule.value.getCredentialHealthSummary(),
-            undefined
+            undefined,
           )
         : undefined;
     const localProviders =
@@ -140,7 +140,7 @@ export async function GET() {
         ? readHealthValue(
             "local providers",
             () => localHealthModule.value.getAllHealthStatuses(),
-            {}
+            {},
           )
         : {};
     const settings = settingsResult.status === "fulfilled" ? settingsResult.value : {};
@@ -161,7 +161,7 @@ export async function GET() {
           ? readHealthValue(
               "inflight requests",
               () => requestDedupModule.value.getInflightCount(),
-              0
+              0,
             )
           : 0,
       quotaMonitorSummary,
@@ -203,8 +203,9 @@ export async function DELETE(request: Request) {
   }
 
   try {
-    const { resetAllCircuitBreakers, getAllCircuitBreakerStatuses } =
-      await import("@/shared/utils/circuitBreaker");
+    const { resetAllCircuitBreakers, getAllCircuitBreakerStatuses } = await import(
+      "@/shared/utils/circuitBreaker"
+    );
 
     const before = getAllCircuitBreakerStatuses();
     const resetCount = before.length;

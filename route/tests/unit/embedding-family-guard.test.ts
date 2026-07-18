@@ -58,10 +58,7 @@ test("detectEmbeddingDimensionConflict ignores unknown dimensions (no false posi
 
 test("detectEmbeddingDimensionConflict is a no-op for empty / all-unknown lists", () => {
   assert.equal(detectEmbeddingDimensionConflict([]).conflict, false);
-  assert.equal(
-    detectEmbeddingDimensionConflict(["localembed/a", "localembed/b"]).conflict,
-    false
-  );
+  assert.equal(detectEmbeddingDimensionConflict(["localembed/a", "localembed/b"]).conflict, false);
 });
 
 test("findEmbeddingComboDimensionConflict flags a mixed-dimension embedding combo", () => {

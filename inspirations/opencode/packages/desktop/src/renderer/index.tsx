@@ -13,25 +13,33 @@ import {
   ServerConnection,
   useCommand,
   useWslServers,
-} from "@opencode-ai/app"
-import type { UpdaterState } from "@opencode-ai/app/updater"
-import * as Sentry from "@sentry/solid"
-import type { AsyncStorage } from "@solid-primitives/storage"
-import { createMemoryHistory, MemoryRouter, type BaseRouterProps } from "@solidjs/router"
-import { createEffect, createMemo, createResource, createSignal, onCleanup, onMount, Show } from "solid-js"
-import { render } from "solid-js/web"
-import pkg from "../../package.json"
-import { initI18n, t } from "./i18n"
-import { initializationData, initializationReady } from "./initialization"
-import { resetZoom, setPinchZoomEnabled, webviewZoom, zoomIn, zoomOut } from "./webview-zoom"
-import { availableStartupServer, readyWslConnections } from "./wsl/connections"
-import "./styles.css"
-import { Splash } from "@opencode-ai/ui/logo"
-import { useTheme } from "@opencode-ai/ui/theme/context"
+} from "@opencode-ai/app";
+import type { UpdaterState } from "@opencode-ai/app/updater";
+import * as Sentry from "@sentry/solid";
+import type { AsyncStorage } from "@solid-primitives/storage";
+import { createMemoryHistory, MemoryRouter, type BaseRouterProps } from "@solidjs/router";
+import {
+  createEffect,
+  createMemo,
+  createResource,
+  createSignal,
+  onCleanup,
+  onMount,
+  Show,
+} from "solid-js";
+import { render } from "solid-js/web";
+import pkg from "../../package.json";
+import { initI18n, t } from "./i18n";
+import { initializationData, initializationReady } from "./initialization";
+import { resetZoom, setPinchZoomEnabled, webviewZoom, zoomIn, zoomOut } from "./webview-zoom";
+import { availableStartupServer, readyWslConnections } from "./wsl/connections";
+import "./styles.css";
+import { Splash } from "@opencode-ai/ui/logo";
+import { useTheme } from "@opencode-ai/ui/theme/context";
 
-const root = document.getElementById("root")
+const root = document.getElementById("root");
 if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
-  throw new Error(t("error.dev.rootNotFound"))
+  throw new Error(t("error.dev.rootNotFound"));
 }
 
 if (import.meta.env.VITE_SENTRY_DSN) {
@@ -52,91 +60,91 @@ if (import.meta.env.VITE_SENTRY_DSN) {
             import.meta.env.OPENCODE_CHANNEL === "prod" &&
             (i.name === "GlobalHandlers" || i.name === "BrowserApiErrors")
           ),
-      )
+      );
     },
-  })
+  });
 }
 
-void initI18n()
+void initI18n();
 
-const [updaterState, setUpdaterState] = createSignal<UpdaterState>({ status: "disabled" })
-void window.api.updater.subscribe(setUpdaterState)
+const [updaterState, setUpdaterState] = createSignal<UpdaterState>({ status: "disabled" });
+void window.api.updater.subscribe(setUpdaterState);
 
-const deepLinkEvent = "opencode:deep-link"
+const deepLinkEvent = "opencode:deep-link";
 
 type DesktopWindowState = {
-  id?: string
-}
+  id?: string;
+};
 
 const emitDeepLinks = (urls: string[]) => {
-  if (urls.length === 0) return
-  window.__OPENCODE__ ??= {}
-  const pending = window.__OPENCODE__.deepLinks ?? []
-  window.__OPENCODE__.deepLinks = [...pending, ...urls]
-  window.dispatchEvent(new CustomEvent(deepLinkEvent, { detail: { urls } }))
-}
+  if (urls.length === 0) return;
+  window.__OPENCODE__ ??= {};
+  const pending = window.__OPENCODE__.deepLinks ?? [];
+  window.__OPENCODE__.deepLinks = [...pending, ...urls];
+  window.dispatchEvent(new CustomEvent(deepLinkEvent, { detail: { urls } }));
+};
 
 const listenForDeepLinks = () => {
-  void window.api.consumeInitialDeepLinks().then((urls) => emitDeepLinks(urls))
-  return window.api.onDeepLink((urls) => emitDeepLinks(urls))
-}
+  void window.api.consumeInitialDeepLinks().then((urls) => emitDeepLinks(urls));
+  return window.api.onDeepLink((urls) => emitDeepLinks(urls));
+};
 
 function windowLastActiveUrlKey(windowID: string) {
-  return `opencode.desktop.window.${windowID}.last-active-url`
+  return `opencode.desktop.window.${windowID}.last-active-url`;
 }
 
 function getLastActiveUrl(windowID: string) {
-  if (typeof localStorage !== "object") return "/"
+  if (typeof localStorage !== "object") return "/";
   try {
-    const value = localStorage.getItem(windowLastActiveUrlKey(windowID))
-    if (value?.startsWith("/") && !value.startsWith("//")) return value
+    const value = localStorage.getItem(windowLastActiveUrlKey(windowID));
+    if (value?.startsWith("/") && !value.startsWith("//")) return value;
   } catch {}
-  return "/"
+  return "/";
 }
 
 function setLastActiveUrl(windowID: string, value: string) {
-  if (typeof localStorage !== "object") return
+  if (typeof localStorage !== "object") return;
   try {
-    localStorage.setItem(windowLastActiveUrlKey(windowID), value)
+    localStorage.setItem(windowLastActiveUrlKey(windowID), value);
   } catch {}
 }
 
 function DesktopMemoryRouter(props: BaseRouterProps & { windowID: string }) {
-  const history = createMemoryHistory()
-  const initialUrl = getLastActiveUrl(props.windowID)
-  if (initialUrl !== "/") history.set({ value: initialUrl, replace: true, scroll: false })
-  onCleanup(history.listen((value) => setLastActiveUrl(props.windowID, value)))
-  return <MemoryRouter {...props} history={history} />
+  const history = createMemoryHistory();
+  const initialUrl = getLastActiveUrl(props.windowID);
+  if (initialUrl !== "/") history.set({ value: initialUrl, replace: true, scroll: false });
+  onCleanup(history.listen((value) => setLastActiveUrl(props.windowID, value)));
+  return <MemoryRouter {...props} history={history} />;
 }
 
 const createPlatform = (windowState: DesktopWindowState): Platform => {
-  const attachmentPaths = new WeakMap<File, string>()
+  const attachmentPaths = new WeakMap<File, string>();
   const os = (() => {
-    const ua = navigator.userAgent
-    if (ua.includes("Mac")) return "macos"
-    if (ua.includes("Windows")) return "windows"
-    if (ua.includes("Linux")) return "linux"
-    return undefined
-  })()
+    const ua = navigator.userAgent;
+    if (ua.includes("Mac")) return "macos";
+    if (ua.includes("Windows")) return "windows";
+    if (ua.includes("Linux")) return "linux";
+    return undefined;
+  })();
 
   const runDesktopMenuAction: Platform["runDesktopMenuAction"] = (action) => {
     switch (action) {
       case "view.resetZoom":
-        resetZoom()
-        return
+        resetZoom();
+        return;
       case "view.zoomIn":
-        zoomIn()
-        return
+        zoomIn();
+        return;
       case "view.zoomOut":
-        zoomOut()
-        return
+        zoomOut();
+        return;
     }
 
-    return window.api.runDesktopMenuAction(action)
-  }
+    return window.api.runDesktopMenuAction(action);
+  };
 
   const storage = (() => {
-    const cache = new Map<string, AsyncStorage>()
+    const cache = new Map<string, AsyncStorage>();
 
     const createStorage = (name: string) => {
       const api: AsyncStorage = {
@@ -147,22 +155,22 @@ const createPlatform = (windowState: DesktopWindowState): Platform => {
         key: async (index: number) => (await window.api.storeKeys(name))[index],
         getLength: () => window.api.storeLength(name),
         get length() {
-          return api.getLength()
+          return api.getLength();
         },
-      }
-      return api
-    }
+      };
+      return api;
+    };
 
     return (name = "default.dat") => {
-      const cached = cache.get(name)
-      if (cached) return cached
-      const api = createStorage(name)
-      cache.set(name, api)
-      return api
-    }
-  })()
+      const cached = cache.get(name);
+      if (cached) return cached;
+      const api = createStorage(name);
+      cache.set(name, api);
+      return api;
+    };
+  })();
 
-  const wslServersApi = os === "windows" ? window.api.wslServers : undefined
+  const wslServersApi = os === "windows" ? window.api.wslServers : undefined;
 
   return {
     platform: "desktop",
@@ -174,7 +182,7 @@ const createPlatform = (windowState: DesktopWindowState): Platform => {
       return window.api.openDirectoryPicker({
         multiple: opts?.multiple ?? false,
         title: opts?.title ?? t("desktop.dialog.chooseFolder"),
-      })
+      });
     },
 
     async openAttachmentPickerDialog(opts, onFile) {
@@ -183,47 +191,50 @@ const createPlatform = (windowState: DesktopWindowState): Platform => {
         title: opts?.title ?? t("desktop.dialog.chooseFile"),
         defaultPath: opts?.defaultPath,
         extensions: opts?.extensions ?? ACCEPTED_FILE_EXTENSIONS,
-      })
-      if (!result) return
+      });
+      if (!result) return;
       try {
         for (const file of result.files) {
-          const selected = new File([await window.api.readPickedFile(result.token, file.path)], file.name)
-          attachmentPaths.set(selected, file.path)
-          await onFile(selected)
+          const selected = new File(
+            [await window.api.readPickedFile(result.token, file.path)],
+            file.name,
+          );
+          attachmentPaths.set(selected, file.path);
+          await onFile(selected);
         }
       } finally {
-        await window.api.releasePickedFiles(result.token)
+        await window.api.releasePickedFiles(result.token);
       }
     },
 
     getPathForFile(file) {
-      return attachmentPaths.get(file) ?? window.api.getPathForFile(file)
+      return attachmentPaths.get(file) ?? window.api.getPathForFile(file);
     },
 
     async saveFilePickerDialog(opts) {
       return window.api.saveFilePicker({
         title: opts?.title ?? t("desktop.dialog.saveFile"),
         defaultPath: opts?.defaultPath,
-      })
+      });
     },
 
     openLink(url: string) {
-      window.api.openLink(url)
+      window.api.openLink(url);
     },
     async openPath(path: string, app?: string) {
       if (os === "windows") {
-        const resolvedApp = app ? await window.api.resolveAppPath(app).catch(() => null) : null
-        return window.api.openPath(path, resolvedApp ?? undefined)
+        const resolvedApp = app ? await window.api.resolveAppPath(app).catch(() => null) : null;
+        return window.api.openPath(path, resolvedApp ?? undefined);
       }
-      return window.api.openPath(path, app)
+      return window.api.openPath(path, app);
     },
 
     back() {
-      window.history.back()
+      window.history.back();
     },
 
     forward() {
-      window.history.forward()
+      window.history.forward();
     },
 
     storage,
@@ -239,49 +250,49 @@ const createPlatform = (windowState: DesktopWindowState): Platform => {
     recordFatalRendererError: (error) => window.api.recordFatalRendererError(error),
 
     restart: async () => {
-      await window.api.killSidecar().catch(() => undefined)
-      window.api.relaunch()
+      await window.api.killSidecar().catch(() => undefined);
+      window.api.relaunch();
     },
 
     notify: async (title, description, href) => {
-      const focused = await window.api.getWindowFocused().catch(() => document.hasFocus())
-      if (focused) return
+      const focused = await window.api.getWindowFocused().catch(() => document.hasFocus());
+      if (focused) return;
 
       const notification = new Notification(title, {
         body: description ?? "",
         icon: "https://opencode.ai/favicon-96x96-v3.png",
-      })
+      });
       notification.onclick = () => {
-        void window.api.showWindow()
-        void window.api.setWindowFocus()
-        handleNotificationClick(href)
-        notification.close()
-      }
+        void window.api.showWindow();
+        void window.api.setWindowFocus();
+        handleNotificationClick(href);
+        notification.close();
+      };
     },
 
     fetch: (input, init) => {
-      if (input instanceof Request) return fetch(input)
-      return fetch(input, init)
+      if (input instanceof Request) return fetch(input);
+      return fetch(input, init);
     },
 
     getDefaultServer: async () => {
-      const url = await window.api.getDefaultServerUrl().catch(() => null)
-      if (!url) return null
-      return ServerConnection.Key.make(url)
+      const url = await window.api.getDefaultServerUrl().catch(() => null);
+      if (!url) return null;
+      return ServerConnection.Key.make(url);
     },
 
     setDefaultServer: async (url: string | null) => {
-      await window.api.setDefaultServerUrl(url)
+      await window.api.setDefaultServerUrl(url);
     },
 
     wslServers: wslServersApi,
 
     getDisplayBackend: async () => {
-      return window.api.getDisplayBackend().catch(() => null)
+      return window.api.getDisplayBackend().catch(() => null);
     },
 
     setDisplayBackend: async (backend) => {
-      await window.api.setDisplayBackend(backend)
+      await window.api.setDisplayBackend(backend);
     },
 
     parseMarkdown: (markdown: string) => window.api.parseMarkdownCommand(markdown),
@@ -295,93 +306,95 @@ const createPlatform = (windowState: DesktopWindowState): Platform => {
     runDesktopMenuAction,
 
     checkAppExists: async (appName: string) => {
-      return window.api.checkAppExists(appName)
+      return window.api.checkAppExists(appName);
     },
 
     async readClipboardImage() {
-      const image = await window.api.readClipboardImage().catch(() => null)
-      if (!image) return null
-      const blob = new Blob([image.buffer], { type: "image/png" })
+      const image = await window.api.readClipboardImage().catch(() => null);
+      if (!image) return null;
+      const blob = new Blob([image.buffer], { type: "image/png" });
       return new File([blob], `pasted-image-${Date.now()}.png`, {
         type: "image/png",
-      })
+      });
     },
-  }
-}
+  };
+};
 
-let menuTrigger = null as null | ((id: string) => void)
+let menuTrigger = null as null | ((id: string) => void);
 window.api.onMenuCommand((id) => {
-  menuTrigger?.(id)
-})
-listenForDeepLinks()
+  menuTrigger?.(id);
+});
+listenForDeepLinks();
 
 function LoadingSplash() {
   return (
     <div class="h-dvh w-screen flex flex-col items-center justify-center bg-background-base">
       <Splash class="w-16 h-20 opacity-50 animate-pulse" />
     </div>
-  )
+  );
 }
 
 function DesktopRoot(props: { windowState: DesktopWindowState }) {
-  const platform = createPlatform(props.windowState)
+  const platform = createPlatform(props.windowState);
   const loadLocale = async () => {
-    const current = await platform.storage?.("opencode.global.dat").getItem("language")
-    const legacy = current ? undefined : await platform.storage?.().getItem("language.v1")
-    const raw = current ?? legacy
-    if (!raw) return
-    const locale = raw.match(/"locale"\s*:\s*"([^"]+)"/)?.[1]
-    if (!locale) return
-    const next = normalizeLocale(locale)
-    if (next !== "en") await loadLocaleDict(next)
-    return next satisfies Locale
-  }
+    const current = await platform.storage?.("opencode.global.dat").getItem("language");
+    const legacy = current ? undefined : await platform.storage?.().getItem("language.v1");
+    const raw = current ?? legacy;
+    if (!raw) return;
+    const locale = raw.match(/"locale"\s*:\s*"([^"]+)"/)?.[1];
+    if (!locale) return;
+    const next = normalizeLocale(locale);
+    if (next !== "en") await loadLocaleDict(next);
+    return next satisfies Locale;
+  };
 
-  const [windowCount] = createResource(() => window.api.getWindowCount())
+  const [windowCount] = createResource(() => window.api.getWindowCount());
 
   // Fetch sidecar credentials (available immediately, before health check)
-  const [sidecar] = createResource(() => window.api.awaitInitialization())
+  const [sidecar] = createResource(() => window.api.awaitInitialization());
 
-  const [defaultServer] = createResource(() => platform.getDefaultServer?.())
-  const [locale] = createResource(loadLocale)
+  const [defaultServer] = createResource(() => platform.getDefaultServer?.());
+  const [locale] = createResource(loadLocale);
   const router = (props: BaseRouterProps) => (
     <DesktopMemoryRouter {...props} windowID={platform.windowID ?? "browser"} />
-  )
+  );
 
   function handleClick(e: MouseEvent) {
-    const link = (e.target as HTMLElement).closest("a.external-link") as HTMLAnchorElement | null
+    const link = (e.target as HTMLElement).closest("a.external-link") as HTMLAnchorElement | null;
     if (link?.href) {
-      e.preventDefault()
-      platform.openLink(link.href)
+      e.preventDefault();
+      platform.openLink(link.href);
     }
   }
 
   function Inner() {
-    const cmd = useCommand()
-    menuTrigger = (id) => cmd.trigger(id)
+    const cmd = useCommand();
+    menuTrigger = (id) => cmd.trigger(id);
 
-    const theme = useTheme()
+    const theme = useTheme();
 
     createEffect(() => {
-      theme.themeId()
-      theme.mode()
-      const bg = getComputedStyle(document.documentElement).getPropertyValue("--background-base").trim()
+      theme.themeId();
+      theme.mode();
+      const bg = getComputedStyle(document.documentElement)
+        .getPropertyValue("--background-base")
+        .trim();
       if (bg) {
-        void window.api.setBackgroundColor(bg)
+        void window.api.setBackgroundColor(bg);
       }
-    })
+    });
 
-    return null
+    return null;
   }
 
   function App() {
-    const wslServers = useWslServers()
+    const wslServers = useWslServers();
     const ready = createMemo(
       () => !defaultServer.loading && !sidecar.loading && !windowCount.loading && !locale.loading,
-    )
+    );
     const servers = createMemo(() => {
-      const data = initializationData(sidecar)
-      const list: ServerConnection.Any[] = []
+      const data = initializationData(sidecar);
+      const list: ServerConnection.Any[] = [];
       if (data) {
         list.push({
           displayName: "Local Server",
@@ -392,14 +405,14 @@ function DesktopRoot(props: { windowState: DesktopWindowState }) {
             username: data.username ?? undefined,
             password: data.password ?? undefined,
           },
-        })
+        });
       }
-      list.push(...readyWslConnections(wslServers.data))
-      return list
-    })
+      list.push(...readyWslConnections(wslServers.data));
+      return list;
+    });
     const effectiveDefaultServer = createMemo(() =>
       ServerConnection.Key.make(availableStartupServer(defaultServer.latest, wslServers.data)),
-    )
+    );
 
     return (
       <Show when={ready()} fallback={<LoadingSplash />}>
@@ -411,15 +424,15 @@ function DesktopRoot(props: { windowState: DesktopWindowState }) {
           )}
         </Show>
       </Show>
-    )
+    );
   }
 
   onMount(() => {
-    document.addEventListener("click", handleClick)
+    document.addEventListener("click", handleClick);
     onCleanup(() => {
-      document.removeEventListener("click", handleClick)
-    })
-  })
+      document.removeEventListener("click", handleClick);
+    });
+  });
 
   return (
     <PlatformProvider value={platform}>
@@ -427,20 +440,20 @@ function DesktopRoot(props: { windowState: DesktopWindowState }) {
         <Show when={true}>{(_) => <App />}</Show>
       </AppBaseProviders>
     </PlatformProvider>
-  )
+  );
 }
 
 render(() => {
   const [windowState] = createResource(async () => {
     const api = window.api as typeof window.api & {
-      getWindowID?: () => Promise<string>
-    }
-    return { id: await api.getWindowID?.() }
-  })
+      getWindowID?: () => Promise<string>;
+    };
+    return { id: await api.getWindowID?.() };
+  });
 
   return (
     <Show when={windowState.latest} fallback={<LoadingSplash />} keyed>
       {(state) => <DesktopRoot windowState={state} />}
     </Show>
-  )
-}, root!)
+  );
+}, root!);

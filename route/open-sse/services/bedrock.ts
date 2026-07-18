@@ -40,7 +40,7 @@ export function isBedrockNativeAuthError(error: unknown): boolean {
 
 export function buildBedrockNativeHeaders(
   apiKey: string | null | undefined,
-  extraHeaders: Record<string, string> = {}
+  extraHeaders: Record<string, string> = {},
 ): Record<string, string> {
   return {
     Accept: "application/json",
@@ -74,7 +74,7 @@ async function fetchBedrockJson(
   fetcher: BedrockNativeFetch,
   url: string,
   apiKey: string,
-  init: RequestInit = {}
+  init: RequestInit = {},
 ): Promise<unknown> {
   const headers = buildBedrockNativeHeaders(apiKey, {
     ...((init.headers as Record<string, string> | undefined) || {}),
@@ -89,7 +89,7 @@ async function fetchBedrockJson(
   if (!response.ok) {
     throw new BedrockNativeApiError(
       getErrorMessage(body, "Bedrock API request failed with " + response.status),
-      { status: response.status, url, body }
+      { status: response.status, url, body },
     );
   }
 
@@ -99,7 +99,7 @@ async function fetchBedrockJson(
 async function fetchInferenceProfiles(
   fetcher: BedrockNativeFetch,
   region: string,
-  apiKey: string
+  apiKey: string,
 ): Promise<{ inferenceProfileSummaries: unknown[] }> {
   const summaries: unknown[] = [];
   let nextToken: string | null = null;
@@ -108,7 +108,7 @@ async function fetchInferenceProfiles(
     const data = await fetchBedrockJson(
       fetcher,
       buildBedrockNativeInferenceProfilesUrl(region, { nextToken }),
-      apiKey
+      apiKey,
     );
     const record = data && typeof data === "object" ? (data as Record<string, unknown>) : {};
     const pageSummaries = Array.isArray(record.inferenceProfileSummaries)
@@ -134,7 +134,7 @@ export async function discoverBedrockNativeModels({
   const foundationModelsResponse = await fetchBedrockJson(
     fetcher,
     buildBedrockNativeModelsUrl(region),
-    apiKey
+    apiKey,
   );
 
   let inferenceProfilesResponse: unknown = { inferenceProfileSummaries: [] };

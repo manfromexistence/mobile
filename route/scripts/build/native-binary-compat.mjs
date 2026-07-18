@@ -141,7 +141,7 @@ export function readNativeBinaryTarget(binaryPath) {
 
 export function isNativeBinaryCompatible(
   binaryPath,
-  { runtimePlatform = process.platform, runtimeArch = process.arch, dlopen = process.dlopen } = {}
+  { runtimePlatform = process.platform, runtimeArch = process.arch, dlopen = process.dlopen } = {},
 ) {
   const target = readNativeBinaryTarget(binaryPath);
 

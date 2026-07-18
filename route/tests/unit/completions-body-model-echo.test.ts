@@ -24,7 +24,7 @@ test("body.model echoes requestedModel (non-stream, JSON)", () => {
       model: "deepseek-v4.1-flash-preview", // upstream provider's post-routing string
       choices: [{ index: 0, message: { content: "hi" }, finish_reason: "stop" }],
     },
-    "ds/deepseek-v4-flash" // what the caller asked for
+    "ds/deepseek-v4-flash", // what the caller asked for
   );
   assert.equal(out.model, "ds/deepseek-v4-flash");
   assert.equal(out.object, "text_completion");
@@ -45,8 +45,8 @@ test("transformSseData rewrites SSE chunk model when requestedModel given", () =
   const rewritten = JSON.parse(
     transformSseData(
       '{"object":"chat.completion.chunk","model":"gpt-5.5-turbo-2026-01","choices":[{"delta":{"content":"X"}}]}',
-      "gpt-5.5"
-    )
+      "gpt-5.5",
+    ),
   );
   assert.equal(rewritten.object, "text_completion");
   assert.equal(rewritten.model, "gpt-5.5");
@@ -100,7 +100,7 @@ test("asTextCompletionResponse (JSON path) rewrites body.model", async () => {
     {
       status: 200,
       headers: { "content-type": "application/json" },
-    }
+    },
   );
   const wrapped = await asTextCompletionResponse(upstream, "caller/asked-for");
   const body = await wrapped.json();

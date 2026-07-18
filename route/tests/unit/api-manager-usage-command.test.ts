@@ -26,7 +26,7 @@ test("api key routes and schemas accept allowUsageCommand", () => {
 
   assert.ok(
     schemas.includes("allowUsageCommand: z.boolean().optional()"),
-    "zod schemas must accept the field"
+    "zod schemas must accept the field",
   );
   assert.ok(createRoute.includes("allowUsageCommand"), "create route must persist the field");
   assert.ok(updateRoute.includes("allowUsageCommand"), "update route must persist the field");

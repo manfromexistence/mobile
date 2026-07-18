@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { GeminiWebExecutor, parseStreamResponse } =
-  await import("../../open-sse/executors/gemini-web.ts");
+const { GeminiWebExecutor, parseStreamResponse } = await import(
+  "../../open-sse/executors/gemini-web.ts"
+);
 const { getExecutor, hasSpecializedExecutor } = await import("../../open-sse/executors/index.ts");
 
 // ─── Registration ───────────────────────────────────────────────────────────
@@ -52,7 +53,7 @@ test("Returns 400 when no user message", async () => {
 
 test("Reads bulk-imported cookie credentials from providerSpecificData.cookie", async () => {
   const playwrightError = new Error(
-    "browserType.launch: Executable doesn't exist at /home/node/.cache/ms-playwright/chromium_headless_shell-1161/chrome-linux/headless_shell"
+    "browserType.launch: Executable doesn't exist at /home/node/.cache/ms-playwright/chromium_headless_shell-1161/chrome-linux/headless_shell",
   );
 
   const playwright = await import("playwright");
@@ -78,7 +79,7 @@ test("Reads bulk-imported cookie credentials from providerSpecificData.cookie", 
     assert.equal(
       result.response.status,
       503,
-      "providerSpecificData.cookie should be accepted and reach Playwright launch"
+      "providerSpecificData.cookie should be accepted and reach Playwright launch",
     );
   } finally {
     playwright.chromium.launch = originalLaunch;
@@ -173,7 +174,7 @@ test("Provider: gemini-web has correct models", async () => {
       ["gemini-3.1-pro", "Gemini 3.1 Pro"],
       ["gemini-3.5-flash", "Gemini 3.5 Flash"],
       ["gemini-3.1-flash-lite", "Gemini 3.1 Flash-Lite"],
-    ]
+    ],
   );
 });
 
@@ -195,7 +196,7 @@ test("Provider: gemini-web has correct models", async () => {
 test("#2832/#3516: missing Playwright browser returns an actionable 503 with cooldown hint, not a retryable 500", async () => {
   const playwrightError = new Error(
     "browserType.launch: Executable doesn't exist at /home/node/.cache/ms-playwright/chromium_headless_shell-1161/chrome-linux/headless_shell\n" +
-      "    at /app/node_modules/playwright-core/lib/server/browserType.js:123:19"
+      "    at /app/node_modules/playwright-core/lib/server/browserType.js:123:19",
   );
 
   const playwright = await import("playwright");
@@ -221,7 +222,7 @@ test("#2832/#3516: missing Playwright browser returns an actionable 503 with coo
     assert.equal(
       result.response.headers.get("X-Omni-Fallback-Hint"),
       "connection_cooldown",
-      "must signal connection cooldown so the provider breaker is skipped"
+      "must signal connection cooldown so the provider breaker is skipped",
     );
     const json = (await result.response.json()) as any;
     assert.ok(typeof json.error === "string", "error field must be a string");
@@ -230,7 +231,7 @@ test("#2832/#3516: missing Playwright browser returns an actionable 503 with coo
     assert.ok(!json.error.includes("\n    at "), "must not contain multi-line stack trace");
     assert.ok(
       !json.error.includes("node_modules/playwright-core"),
-      "must not contain node_modules source path"
+      "must not contain node_modules source path",
     );
   } finally {
     playwright.chromium.launch = originalLaunch;

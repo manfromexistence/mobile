@@ -19,37 +19,47 @@ const words = [
   "river",
   "signal",
   "vector",
-]
+];
 
-const serverKey = "http://127.0.0.1:4096"
-const sourceID = "ses_smoke_source"
-const targetID = "ses_smoke_target"
-const directory = "C:/OpenCode/SmokeProject"
-const projectID = "proj_smoke_timeline"
-const model = { providerID: "opencode", modelID: "claude-opus-4-6", variant: "max" }
+const serverKey = "http://127.0.0.1:4096";
+const sourceID = "ses_smoke_source";
+const targetID = "ses_smoke_target";
+const directory = "C:/OpenCode/SmokeProject";
+const projectID = "proj_smoke_timeline";
+const model = { providerID: "opencode", modelID: "claude-opus-4-6", variant: "max" };
 
-type MessageInfo = Record<string, unknown> & { id: string; role: "user" | "assistant" }
-type MessagePart = Record<string, unknown> & { id: string; type: string; text?: string; tool?: string }
-type Message = { info: MessageInfo; parts: MessagePart[] }
+type MessageInfo = Record<string, unknown> & { id: string; role: "user" | "assistant" };
+type MessagePart = Record<string, unknown> & {
+  id: string;
+  type: string;
+  text?: string;
+  tool?: string;
+};
+type Message = { info: MessageInfo; parts: MessagePart[] };
 
 function lorem(seed: number, length: number) {
-  let out = ""
-  let i = seed
+  let out = "";
+  let i = seed;
   while (out.length < length) {
-    const word = words[i % words.length]
-    out += (out ? " " : "") + word
-    if (i % 17 === 0) out += ".\n\n"
-    i += 7
+    const word = words[i % words.length];
+    out += (out ? " " : "") + word;
+    if (i % 17 === 0) out += ".\n\n";
+    i += 7;
   }
-  return out.slice(0, length)
+  return out.slice(0, length);
 }
 
 function id(prefix: string, value: number) {
-  return `${prefix}_smoke_${String(value).padStart(4, "0")}`
+  return `${prefix}_smoke_${String(value).padStart(4, "0")}`;
 }
 
-function userMessage(sessionID: string, index: number, textLength: number, diffs: unknown[] = []): Message {
-  const messageID = id("msg_user", index)
+function userMessage(
+  sessionID: string,
+  index: number,
+  textLength: number,
+  diffs: unknown[] = [],
+): Message {
+  const messageID = id("msg_user", index);
   return {
     info: {
       id: messageID,
@@ -69,17 +79,25 @@ function userMessage(sessionID: string, index: number, textLength: number, diffs
         text: lorem(index, textLength),
       },
     ],
-  }
+  };
 }
 
-function assistantMessage(sessionID: string, index: number, parentID: string, parts: MessagePart[]): Message {
-  const messageID = id("msg_assistant", index)
+function assistantMessage(
+  sessionID: string,
+  index: number,
+  parentID: string,
+  parts: MessagePart[],
+): Message {
+  const messageID = id("msg_assistant", index);
   return {
     info: {
       id: messageID,
       sessionID,
       role: "assistant",
-      time: { created: 1700000000000 + index * 10_000 + 1_000, completed: 1700000000000 + index * 10_000 + 8_000 },
+      time: {
+        created: 1700000000000 + index * 10_000 + 1_000,
+        completed: 1700000000000 + index * 10_000 + 8_000,
+      },
       parentID,
       modelID: model.modelID,
       providerID: model.providerID,
@@ -96,11 +114,15 @@ function assistantMessage(sessionID: string, index: number, parentID: string, pa
       sessionID,
       messageID,
     })),
-  }
+  };
 }
 
 function textPart(index: number, partIndex: number, length: number): MessagePart {
-  return { id: id(`prt_text_${partIndex}`, index), type: "text", text: lorem(index * 13 + partIndex, length) }
+  return {
+    id: id(`prt_text_${partIndex}`, index),
+    type: "text",
+    text: lorem(index * 13 + partIndex, length),
+  };
 }
 
 function reasoningPart(index: number, partIndex: number, length: number): MessagePart {
@@ -109,7 +131,7 @@ function reasoningPart(index: number, partIndex: number, length: number): Messag
     type: "reasoning",
     text: lorem(index * 19 + partIndex, length),
     time: { start: 1700000000000 + index * 10_000, end: 1700000000000 + index * 10_000 + 500 },
-  }
+  };
 }
 
 function toolPart(
@@ -121,7 +143,12 @@ function toolPart(
 ): MessagePart {
   const metadata =
     tool === "apply_patch"
-      ? { files: [patchFile(index, "update"), patchFile(index + 1, index % 2 === 0 ? "add" : "delete")] }
+      ? {
+          files: [
+            patchFile(index, "update"),
+            patchFile(index + 1, index % 2 === 0 ? "add" : "delete"),
+          ],
+        }
       : tool === "edit" || tool === "write"
         ? {
             filediff: fileDiff(String(input.filePath ?? `src/generated/file-${index}.ts`), index),
@@ -130,7 +157,7 @@ function toolPart(
           }
         : tool === "question"
           ? { answers: [["Proceed"], ["Keep sample output"]] }
-          : {}
+          : {};
   return {
     id: id(`prt_tool_${tool}_${partIndex}`, index),
     type: "tool",
@@ -140,11 +167,14 @@ function toolPart(
       status: "completed",
       input,
       output: lorem(index * 23 + partIndex, outputLength),
-      title: tool === "bash" ? input.command : input.filePath || input.path || input.pattern || "completed",
+      title:
+        tool === "bash"
+          ? input.command
+          : input.filePath || input.path || input.pattern || "completed",
       metadata,
       time: { start: 1700000000000 + index * 10_000, end: 1700000000000 + index * 10_000 + 400 },
     },
-  }
+  };
 }
 
 function patchFile(seed: number, type: "add" | "update" | "delete") {
@@ -157,7 +187,7 @@ function patchFile(seed: number, type: "add" | "update" | "delete") {
     patch: patch(seed, 520),
     before: type === "add" ? undefined : code(seed, 18),
     after: type === "delete" ? undefined : code(seed + 1, 24),
-  }
+  };
 }
 
 function fileDiff(file: string, seed: number) {
@@ -167,76 +197,118 @@ function fileDiff(file: string, seed: number) {
     deletions: seed % 4,
     before: code(seed, 32),
     after: code(seed + 1, 38),
-  }
+  };
 }
 
 function patch(seed: number, length: number) {
-  return `diff --git a/src/generated/file-${seed}.ts b/src/generated/file-${seed}.ts\n+${lorem(seed, length).replace(/\n/g, "\n+")}`
+  return `diff --git a/src/generated/file-${seed}.ts b/src/generated/file-${seed}.ts\n+${lorem(seed, length).replace(/\n/g, "\n+")}`;
 }
 
 function code(seed: number, lines: number) {
-  return Array.from({ length: lines }, (_, index) => `export const value${index} = "${lorem(seed + index, 32)}"`).join(
-    "\n",
-  )
+  return Array.from(
+    { length: lines },
+    (_, index) => `export const value${index} = "${lorem(seed + index, 32)}"`,
+  ).join("\n");
 }
 
 function turn(index: number): Message[] {
-  const diff = index % 9 === 0 ? [fileDiff(`src/generated/summary-${index}.ts`, index)] : []
-  const user = userMessage(targetID, index, 100 + (index % 4) * 80, diff)
+  const diff = index % 9 === 0 ? [fileDiff(`src/generated/summary-${index}.ts`, index)] : [];
+  const user = userMessage(targetID, index, 100 + (index % 4) * 80, diff);
   const parts = [
     ...(index % 5 === 0 ? [reasoningPart(index, 0, 420)] : []),
     ...(index % 3 === 0
       ? [
-          toolPart(index, 0, "read", { filePath: `src/generated/file-${index}.ts`, offset: 0, limit: 80 }, 220),
+          toolPart(
+            index,
+            0,
+            "read",
+            { filePath: `src/generated/file-${index}.ts`, offset: 0, limit: 80 },
+            220,
+          ),
           toolPart(index, 5, "glob", { path: directory, pattern: `**/*sample-${index}*.ts` }, 140),
-          toolPart(index, 1, "grep", { path: directory, pattern: `sample-${index}`, include: "*.ts" }, 180),
+          toolPart(
+            index,
+            1,
+            "grep",
+            { path: directory, pattern: `sample-${index}`, include: "*.ts" },
+            180,
+          ),
           toolPart(index, 6, "list", { path: `src/generated/${index}` }, 120),
         ]
       : []),
     textPart(index, 2, 160 + (index % 6) * 90),
-    ...(index % 4 === 0 ? [toolPart(index, 3, "edit", { filePath: `src/generated/file-${index}.ts` }, 700)] : []),
+    ...(index % 4 === 0
+      ? [toolPart(index, 3, "edit", { filePath: `src/generated/file-${index}.ts` }, 700)]
+      : []),
     ...(index % 6 === 0
-      ? [toolPart(index, 7, "write", { filePath: `src/generated/write-${index}.ts`, content: code(index, 28) }, 560)]
+      ? [
+          toolPart(
+            index,
+            7,
+            "write",
+            { filePath: `src/generated/write-${index}.ts`, content: code(index, 28) },
+            560,
+          ),
+        ]
       : []),
     ...(index % 8 === 0
       ? [toolPart(index, 8, "apply_patch", { files: [`src/generated/patch-${index}.ts`] }, 620)]
       : []),
     ...(index % 7 === 0 ? [toolPart(index, 4, "bash", { command: "bun typecheck" }, 620)] : []),
-    ...(index % 10 === 0 ? [toolPart(index, 9, "webfetch", { url: "https://example.com/docs/sample" }, 120)] : []),
-    ...(index % 11 === 0 ? [toolPart(index, 10, "websearch", { query: "sample movement notes" }, 240)] : []),
+    ...(index % 10 === 0
+      ? [toolPart(index, 9, "webfetch", { url: "https://example.com/docs/sample" }, 120)]
+      : []),
+    ...(index % 11 === 0
+      ? [toolPart(index, 10, "websearch", { query: "sample movement notes" }, 240)]
+      : []),
     ...(index % 13 === 0
       ? [
           toolPart(
             index,
             11,
             "question",
-            { questions: [{ question: "Use generated fixture?" }, { question: "Keep same row shape?" }] },
+            {
+              questions: [
+                { question: "Use generated fixture?" },
+                { question: "Keep same row shape?" },
+              ],
+            },
             120,
           ),
         ]
       : []),
     ...(index % 17 === 0
-      ? [toolPart(index, 12, "task", { description: "Inspect generated fixture", subagent_type: "explore" }, 160)]
+      ? [
+          toolPart(
+            index,
+            12,
+            "task",
+            { description: "Inspect generated fixture", subagent_type: "explore" },
+            160,
+          ),
+        ]
       : []),
-  ]
-  return [user, assistantMessage(targetID, index, user.info.id, parts)]
+  ];
+  return [user, assistantMessage(targetID, index, user.info.id, parts)];
 }
 
-const targetMessages = Array.from({ length: 72 }, (_, index) => turn(index)).flat()
+const targetMessages = Array.from({ length: 72 }, (_, index) => turn(index)).flat();
 const sourceMessages = Array.from({ length: 12 }, (_, index) => [
   userMessage(sourceID, index + 1000, 120),
-  assistantMessage(sourceID, index + 1000, id("msg_user", index + 1000), [textPart(index + 1000, 0, 240)]),
-]).flat()
+  assistantMessage(sourceID, index + 1000, id("msg_user", index + 1000), [
+    textPart(index + 1000, 0, 240),
+  ]),
+]).flat();
 
 function renderable(part: MessagePart) {
-  if (part.type === "tool" && part.tool === "todowrite") return false
-  if (part.type === "text") return !!part.text.trim()
-  if (part.type === "reasoning") return !!part.text.trim()
-  return part.type !== "step-start" && part.type !== "step-finish" && part.type !== "patch"
+  if (part.type === "tool" && part.tool === "todowrite") return false;
+  if (part.type === "text") return !!part.text.trim();
+  if (part.type === "reasoning") return !!part.text.trim();
+  return part.type !== "step-start" && part.type !== "step-finish" && part.type !== "patch";
 }
 
 function orderedParts(message: Message) {
-  return message.parts.slice().sort((a, b) => a.id.localeCompare(b.id))
+  return message.parts.slice().sort((a, b) => a.id.localeCompare(b.id));
 }
 
 export const fixture = {
@@ -255,7 +327,13 @@ export const fixture = {
       {
         id: "opencode",
         name: "OpenCode",
-        models: { "claude-opus-4-6": { id: "claude-opus-4-6", name: "Claude Opus 4.6", limit: { context: 200_000 } } },
+        models: {
+          "claude-opus-4-6": {
+            id: "claude-opus-4-6",
+            name: "Claude Opus 4.6",
+            limit: { context: 200_000 },
+          },
+        },
       },
     ],
     connected: ["opencode"],
@@ -295,21 +373,23 @@ export const fixture = {
         .filter(renderable)
         .map((part) => part.id),
     ),
-    expandedShellPartID: targetMessages.flatMap((message) => message.parts).find((part) => part.tool === "bash")!.id,
+    expandedShellPartID: targetMessages
+      .flatMap((message) => message.parts)
+      .find((part) => part.tool === "bash")!.id,
   },
-}
+};
 
 export function pageMessages(sessionID: string, limit: number, before?: string) {
-  const messages = fixture.messages[sessionID as keyof typeof fixture.messages] ?? []
+  const messages = fixture.messages[sessionID as keyof typeof fixture.messages] ?? [];
   const end = before
     ? Math.max(
         0,
         messages.findIndex((message) => message.info.id === before),
       )
-    : messages.length
-  const start = Math.max(0, end - limit)
+    : messages.length;
+  const start = Math.max(0, end - limit);
   return {
     items: messages.slice(start, end),
     cursor: start > 0 ? messages[start]!.info.id : undefined,
-  }
+  };
 }

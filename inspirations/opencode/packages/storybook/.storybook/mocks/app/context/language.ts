@@ -53,23 +53,23 @@ const dict: Record<string, string> = {
   "prompt.example.23": "Create a minimal reproduction",
   "prompt.example.24": "Suggest naming improvements",
   "prompt.example.25": "What should we test next?",
-}
+};
 
 function render(template: string, params?: Record<string, unknown>) {
-  if (!params) return template
+  if (!params) return template;
   return template.replace(/\{\{([^}]+)\}\}/g, (_, key: string) => {
-    const value = params[key.trim()]
-    if (value === undefined || value === null) return ""
+    const value = params[key.trim()];
+    if (value === undefined || value === null) return "";
     // oxlint-disable-next-line no-base-to-string -- value is Record<string, unknown>, always coerced intentionally
-    return String(value)
-  })
+    return String(value);
+  });
 }
 
 export function useLanguage() {
   return {
     locale: () => "en" as const,
     t(key: string, params?: Record<string, unknown>) {
-      return render(dict[key] ?? key, params)
+      return render(dict[key] ?? key, params);
     },
-  }
+  };
 }

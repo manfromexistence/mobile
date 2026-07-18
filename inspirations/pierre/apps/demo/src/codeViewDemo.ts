@@ -10,24 +10,22 @@ import {
   type ParsedPatch,
   type SelectedLineRange,
   type ThemesType,
-} from '@pierre/diffs';
-import type { WorkerPoolManager } from '@pierre/diffs/worker';
+} from "@pierre/diffs";
+import type { WorkerPoolManager } from "@pierre/diffs/worker";
 
-import { FAKE_DIFF_LINE_ANNOTATIONS, type LineCommentMetadata } from './mocks/';
+import { FAKE_DIFF_LINE_ANNOTATIONS, type LineCommentMetadata } from "./mocks/";
 
-type CodeViewCommentMetadata =
-  | CodeViewSavedCommentMetadata
-  | CodeViewDraftCommentMetadata;
+type CodeViewCommentMetadata = CodeViewSavedCommentMetadata | CodeViewDraftCommentMetadata;
 
 interface CodeViewSavedCommentMetadata extends LineCommentMetadata {
-  kind: 'saved';
+  kind: "saved";
   key: string;
   itemId: string;
   range: SelectedLineRange;
 }
 
 interface CodeViewDraftCommentMetadata {
-  kind: 'draft';
+  kind: "draft";
   key: string;
   itemId: string;
   message: string;
@@ -43,15 +41,9 @@ type CodeViewDemoAnnotation =
   | DiffLineAnnotation<CodeViewCommentMetadata>
   | LineAnnotation<CodeViewCommentMetadata>;
 
-type CodeViewDiffStyle = NonNullable<
-  CodeViewOptions<CodeViewCommentMetadata>['diffStyle']
->;
-type CodeViewOverflow = NonNullable<
-  CodeViewOptions<CodeViewCommentMetadata>['overflow']
->;
-type CodeViewThemeType = NonNullable<
-  CodeViewOptions<CodeViewCommentMetadata>['themeType']
->;
+type CodeViewDiffStyle = NonNullable<CodeViewOptions<CodeViewCommentMetadata>["diffStyle"]>;
+type CodeViewOverflow = NonNullable<CodeViewOptions<CodeViewCommentMetadata>["overflow"]>;
+type CodeViewThemeType = NonNullable<CodeViewOptions<CodeViewCommentMetadata>["themeType"]>;
 
 interface RenderDemoCodeViewOptions {
   diffStyle: CodeViewDiffStyle;
@@ -76,13 +68,7 @@ export function cleanupCodeView(container: HTMLElement) {
 export function renderDemoCodeView(
   wrapper: HTMLElement,
   parsedPatches: ParsedPatch[],
-  {
-    diffStyle,
-    overflow,
-    theme,
-    themeType,
-    workerManager,
-  }: RenderDemoCodeViewOptions
+  { diffStyle, overflow, theme, themeType, workerManager }: RenderDemoCodeViewOptions,
 ) {
   setupCodeViewWrapper(wrapper);
 
@@ -95,20 +81,20 @@ export function renderDemoCodeView(
     renderAnnotation(annotation) {
       return renderCodeViewAnnotation(annotation, viewer, items);
     },
-    lineHoverHighlight: 'both',
+    lineHoverHighlight: "both",
     expansionLineCount: 10,
     enableLineSelection: true,
     enableGutterUtility: true,
     stickyHeaders: true,
     layout: { paddingTop: 10, paddingBottom: 24, gap: 12 },
     onGutterUtilityClick(range, context) {
-      if (context.item.type !== 'diff') {
+      if (context.item.type !== "diff") {
         return;
       }
       createCodeViewDraftComment(viewer, items, context.item.id, range);
     },
     onSelectedLinesChange(selection) {
-      console.log('CodeView selected lines', selection);
+      console.log("CodeView selected lines", selection);
     },
   };
 
@@ -140,24 +126,24 @@ export function setCodeViewThemeType(themeType: CodeViewThemeType) {
 }
 
 function setupCodeViewWrapper(wrapper: HTMLElement) {
-  wrapper.dataset.codeView = '';
+  wrapper.dataset.codeView = "";
   setRootCodeViewState(wrapper, true);
 }
 
 function setRootCodeViewState(element: HTMLElement, active: boolean) {
-  const root = element.ownerDocument.getElementById('root');
+  const root = element.ownerDocument.getElementById("root");
   if (root == null) {
     return;
   }
   if (active) {
-    root.dataset.codeView = '';
+    root.dataset.codeView = "";
   } else {
     delete root.dataset.codeView;
   }
 }
 
 function createCodeViewItems(
-  parsedPatches: ParsedPatch[]
+  parsedPatches: ParsedPatch[],
 ): CodeViewItem<CodeViewCommentMetadata>[] {
   const items: CodeViewItem<CodeViewCommentMetadata>[] = [];
   for (let patchIndex = 0; patchIndex < parsedPatches.length; patchIndex++) {
@@ -172,17 +158,16 @@ function createCodeViewItems(
         continue;
       }
       const itemId = `diff:${patchIndex}:${fileIndex}:${fileDiff.name}`;
-      const annotations = (patchAnnotations[fileIndex] ?? []).map(
-        (annotation, annotationIndex) =>
-          createCodeViewSavedAnnotation(
-            annotation,
-            itemId,
-            `seed:${patchIndex}:${fileIndex}:${annotationIndex}`
-          )
+      const annotations = (patchAnnotations[fileIndex] ?? []).map((annotation, annotationIndex) =>
+        createCodeViewSavedAnnotation(
+          annotation,
+          itemId,
+          `seed:${patchIndex}:${fileIndex}:${annotationIndex}`,
+        ),
       );
       items.push({
         id: itemId,
-        type: 'diff',
+        type: "diff",
         fileDiff,
         annotations,
         version: 0,
@@ -195,28 +180,25 @@ function createCodeViewItems(
 function createCodeViewSavedAnnotation(
   annotation: DiffLineAnnotation<LineCommentMetadata>,
   itemId: string,
-  key: string
+  key: string,
 ): DiffLineAnnotation<CodeViewCommentMetadata> {
   return {
     side: annotation.side,
     lineNumber: annotation.lineNumber,
     metadata: {
-      kind: 'saved',
+      kind: "saved",
       key,
       itemId,
       author: annotation.metadata.author,
       message: annotation.metadata.message,
-      range: createCodeViewSelectionRange(
-        annotation.lineNumber,
-        annotation.side
-      ),
+      range: createCodeViewSelectionRange(annotation.lineNumber, annotation.side),
     },
   };
 }
 
 function createCodeViewSelectionRange(
   lineNumber: number,
-  side?: SelectedLineRange['side']
+  side?: SelectedLineRange["side"],
 ): SelectedLineRange {
   if (side == null) {
     return { start: lineNumber, end: lineNumber };
@@ -227,10 +209,10 @@ function createCodeViewSelectionRange(
 function renderCodeViewAnnotation(
   annotation: CodeViewDemoAnnotation,
   viewer: CodeView<CodeViewCommentMetadata>,
-  items: CodeViewItem<CodeViewCommentMetadata>[]
+  items: CodeViewItem<CodeViewCommentMetadata>[],
 ): HTMLElement | undefined {
   const { metadata } = annotation;
-  if (metadata.kind === 'draft') {
+  if (metadata.kind === "draft") {
     return createCodeViewDraftCommentElement(metadata, viewer, items);
   }
   return createCodeViewSavedCommentElement(annotation, viewer, items);
@@ -239,36 +221,36 @@ function renderCodeViewAnnotation(
 function createCodeViewSavedCommentElement(
   annotation: CodeViewDemoAnnotation,
   viewer: CodeView<CodeViewCommentMetadata>,
-  items: CodeViewItem<CodeViewCommentMetadata>[]
+  items: CodeViewItem<CodeViewCommentMetadata>[],
 ) {
   const { metadata } = annotation;
-  if (metadata.kind !== 'saved') {
+  if (metadata.kind !== "saved") {
     return undefined;
   }
-  const side = 'side' in annotation ? annotation.side : 'line';
-  const wrapper = document.createElement('div');
-  wrapper.className = 'comment';
-  wrapper.role = 'button';
+  const side = "side" in annotation ? annotation.side : "line";
+  const wrapper = document.createElement("div");
+  wrapper.className = "comment";
+  wrapper.role = "button";
   wrapper.tabIndex = 0;
-  const deleteButton = document.createElement('button');
-  deleteButton.type = 'button';
-  deleteButton.innerText = 'Delete';
-  deleteButton.addEventListener('click', (event) => {
+  const deleteButton = document.createElement("button");
+  deleteButton.type = "button";
+  deleteButton.innerText = "Delete";
+  deleteButton.addEventListener("click", (event) => {
     event.stopPropagation();
     removeCodeViewComment(viewer, items, metadata.itemId, metadata.key);
   });
-  const author = document.createElement('h6');
+  const author = document.createElement("h6");
   author.innerText = `${metadata.author}::(${side}-${annotation.lineNumber})`;
-  const message = document.createElement('p');
+  const message = document.createElement("p");
   message.innerText = metadata.message;
   wrapper.appendChild(deleteButton);
   wrapper.appendChild(author);
   wrapper.appendChild(message);
-  wrapper.addEventListener('click', () => {
+  wrapper.addEventListener("click", () => {
     toggleCodeViewCommentSelection(viewer, metadata.itemId, metadata.range);
   });
-  wrapper.addEventListener('keydown', (event) => {
-    if (event.key !== 'Enter' && event.key !== ' ') {
+  wrapper.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") {
       return;
     }
     event.preventDefault();
@@ -280,61 +262,49 @@ function createCodeViewSavedCommentElement(
 function createCodeViewDraftCommentElement(
   metadata: CodeViewDraftCommentMetadata,
   viewer: CodeView<CodeViewCommentMetadata>,
-  items: CodeViewItem<CodeViewCommentMetadata>[]
+  items: CodeViewItem<CodeViewCommentMetadata>[],
 ) {
-  const form = document.createElement('form');
-  form.className = 'comment';
-  const textarea = document.createElement('textarea');
+  const form = document.createElement("form");
+  form.className = "comment";
+  const textarea = document.createElement("textarea");
   textarea.value = metadata.message;
-  textarea.placeholder = 'Add a comment';
+  textarea.placeholder = "Add a comment";
   textarea.rows = 2;
   textarea.spellcheck = false;
-  textarea.style.boxSizing = 'border-box';
-  textarea.style.marginBottom = '8px';
-  textarea.style.resize = 'vertical';
-  textarea.style.width = '100%';
-  const actions = document.createElement('div');
-  actions.style.display = 'flex';
-  actions.style.justifyContent = 'flex-end';
-  actions.style.gap = '8px';
-  const cancel = document.createElement('button');
-  cancel.type = 'button';
-  cancel.innerText = 'Cancel';
-  const save = document.createElement('button');
-  save.type = 'submit';
-  save.innerText = 'Save comment';
+  textarea.style.boxSizing = "border-box";
+  textarea.style.marginBottom = "8px";
+  textarea.style.resize = "vertical";
+  textarea.style.width = "100%";
+  const actions = document.createElement("div");
+  actions.style.display = "flex";
+  actions.style.justifyContent = "flex-end";
+  actions.style.gap = "8px";
+  const cancel = document.createElement("button");
+  cancel.type = "button";
+  cancel.innerText = "Cancel";
+  const save = document.createElement("button");
+  save.type = "submit";
+  save.innerText = "Save comment";
   const updateSaveState = () => {
     save.disabled = textarea.value.trim().length === 0;
   };
   updateSaveState();
-  textarea.addEventListener('input', updateSaveState);
-  textarea.addEventListener('keydown', (event) => {
-    if (!event.shiftKey || event.key !== 'Enter') {
+  textarea.addEventListener("input", updateSaveState);
+  textarea.addEventListener("keydown", (event) => {
+    if (!event.shiftKey || event.key !== "Enter") {
       return;
     }
     event.preventDefault();
-    saveCodeViewDraftComment(
-      viewer,
-      items,
-      metadata.itemId,
-      metadata.key,
-      textarea.value
-    );
+    saveCodeViewDraftComment(viewer, items, metadata.itemId, metadata.key, textarea.value);
   });
-  cancel.addEventListener('click', () => {
+  cancel.addEventListener("click", () => {
     removeCodeViewComment(viewer, items, metadata.itemId, metadata.key);
   });
-  form.addEventListener('submit', (event) => {
+  form.addEventListener("submit", (event) => {
     event.preventDefault();
-    saveCodeViewDraftComment(
-      viewer,
-      items,
-      metadata.itemId,
-      metadata.key,
-      textarea.value
-    );
+    saveCodeViewDraftComment(viewer, items, metadata.itemId, metadata.key, textarea.value);
   });
-  form.addEventListener('click', (event) => {
+  form.addEventListener("click", (event) => {
     event.stopPropagation();
   });
   actions.appendChild(cancel);
@@ -348,7 +318,7 @@ function createCodeViewDraftComment(
   viewer: CodeView<CodeViewCommentMetadata>,
   items: CodeViewItem<CodeViewCommentMetadata>[],
   itemId: string,
-  range: SelectedLineRange
+  range: SelectedLineRange,
 ) {
   const item = getCodeViewDiffItem(items, itemId);
   const side = range.endSide ?? range.side;
@@ -364,10 +334,10 @@ function createCodeViewDraftComment(
       side,
       lineNumber,
       metadata: {
-        kind: 'draft',
+        kind: "draft",
         key,
         itemId,
-        message: '',
+        message: "",
         range: commentRange,
       },
     },
@@ -381,7 +351,7 @@ function saveCodeViewDraftComment(
   items: CodeViewItem<CodeViewCommentMetadata>[],
   itemId: string,
   key: string,
-  message: string
+  message: string,
 ) {
   const trimmedMessage = message.trim();
   if (trimmedMessage.length === 0) {
@@ -393,20 +363,17 @@ function saveCodeViewDraftComment(
   }
   let changed = false;
   item.annotations = item.annotations.map((annotation) => {
-    if (
-      annotation.metadata.kind !== 'draft' ||
-      annotation.metadata.key !== key
-    ) {
+    if (annotation.metadata.kind !== "draft" || annotation.metadata.key !== key) {
       return annotation;
     }
     changed = true;
     return {
       ...annotation,
       metadata: {
-        kind: 'saved',
+        kind: "saved",
         key,
         itemId,
-        author: 'You',
+        author: "You",
         message: trimmedMessage,
         range: annotation.metadata.range,
       },
@@ -423,15 +390,13 @@ function removeCodeViewComment(
   viewer: CodeView<CodeViewCommentMetadata>,
   items: CodeViewItem<CodeViewCommentMetadata>[],
   itemId: string,
-  key: string
+  key: string,
 ) {
   const item = getCodeViewDiffItem(items, itemId);
   if (item?.annotations == null) {
     return;
   }
-  const nextAnnotations = item.annotations.filter(
-    (annotation) => annotation.metadata.key !== key
-  );
+  const nextAnnotations = item.annotations.filter((annotation) => annotation.metadata.key !== key);
   if (nextAnnotations.length === item.annotations.length) {
     return;
   }
@@ -442,25 +407,25 @@ function removeCodeViewComment(
 
 function getCodeViewDiffItem(
   items: CodeViewItem<CodeViewCommentMetadata>[],
-  itemId: string
+  itemId: string,
 ): CodeViewDiffItem<CodeViewCommentMetadata> | undefined {
   const item = items.find((candidate) => candidate.id === itemId);
-  return item?.type === 'diff' ? item : undefined;
+  return item?.type === "diff" ? item : undefined;
 }
 
 function publishCodeViewItemChange(
   viewer: CodeView<CodeViewCommentMetadata>,
   items: CodeViewItem<CodeViewCommentMetadata>[],
-  item: CodeViewDiffItem<CodeViewCommentMetadata>
+  item: CodeViewDiffItem<CodeViewCommentMetadata>,
 ) {
-  item.version = typeof item.version === 'number' ? item.version + 1 : 1;
+  item.version = typeof item.version === "number" ? item.version + 1 : 1;
   viewer.setItems([...items]);
 }
 
 function toggleCodeViewCommentSelection(
   viewer: CodeView<CodeViewCommentMetadata>,
   itemId: string,
-  range: SelectedLineRange
+  range: SelectedLineRange,
 ) {
   const selection = viewer.getSelectedLines();
   if (selection?.id === itemId && areSelectionsEqual(selection.range, range)) {

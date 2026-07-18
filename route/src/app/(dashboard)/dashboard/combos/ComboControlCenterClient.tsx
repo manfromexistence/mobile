@@ -225,13 +225,13 @@ export default function ComboControlCenterClient({ comboId }: { comboId: string 
       const comboData = await fetchJson<ComboControlCenterCombo>(`/api/combos/${comboId}`);
       const [metricsData, healthData, logsData] = await Promise.all([
         fetchJson<ComboMetricsResponse>(
-          `/api/combos/metrics?combo=${encodeURIComponent(comboData.name || "")}`
+          `/api/combos/metrics?combo=${encodeURIComponent(comboData.name || "")}`,
         ).catch(() => ({ metrics: null })),
         fetchJson<ComboHealthResponse>(`/api/usage/combo-health?range=${range}&comboId=${comboId}`)
           .then((data) => data.combos?.[0] || null)
           .catch(() => null),
         fetchJson<CallLogEntry[]>(
-          `/api/usage/call-logs?combo=1&search=${encodeURIComponent(comboData.name || "")}&limit=8`
+          `/api/usage/call-logs?combo=1&search=${encodeURIComponent(comboData.name || "")}&limit=8`,
         ).catch(() => []),
       ]);
 
@@ -253,11 +253,11 @@ export default function ComboControlCenterClient({ comboId }: { comboId: string 
 
   const summary = useMemo(
     () => (combo ? summarizeComboControlCenter(combo, metrics, health) : null),
-    [combo, metrics, health]
+    [combo, metrics, health],
   );
   const configuredTargets = useMemo(
     () => (combo ? getComboControlCenterTargets(combo, health) : []),
-    [combo, health]
+    [combo, health],
   );
   const resolvedTargets = useMemo(() => getResolvedComboControlCenterTargets(health), [health]);
   const runtimeConfig = useMemo(() => (combo ? extractComboRuntimeConfig(combo) : {}), [combo]);
@@ -335,7 +335,7 @@ export default function ComboControlCenterClient({ comboId }: { comboId: string 
         {metricValue(
           "Worst quota",
           fmtPercent(summary.worstQuotaRemainingPct),
-          "provider/account telemetry"
+          "provider/account telemetry",
         )}
       </div>
 

@@ -16,7 +16,7 @@ test("withDegradation returns full capability when the primary path succeeds", a
     "semantic-search",
     async () => "primary-result",
     async () => "fallback-result",
-    "safe-default"
+    "safe-default",
   );
 
   assert.equal(result.result, "primary-result");
@@ -50,7 +50,7 @@ test("withDegradation reports reduced capability, calls onDegrade, and preserves
     {
       reducedCapability: "In-memory fallback",
       onDegrade: (status) => seen.push(status),
-    }
+    },
   );
 
   await new Promise((resolve) => setTimeout(resolve, 10));
@@ -65,7 +65,7 @@ test("withDegradation reports reduced capability, calls onDegrade, and preserves
     {
       reducedCapability: "In-memory fallback",
       onDegrade: (status) => seen.push(status),
-    }
+    },
   );
 
   assert.equal(first.result, "memory-fallback");
@@ -85,7 +85,7 @@ test("withDegradation falls back to the safe default when both implementations f
       throw new Error("cache offline");
     },
     async () => "memory-fallback",
-    "safe-default"
+    "safe-default",
   );
 
   const finalFallback = await degradation.withDegradation(
@@ -99,7 +99,7 @@ test("withDegradation falls back to the safe default when both implementations f
     { exported: false },
     {
       defaultCapability: "Disabled export",
-    }
+    },
   );
 
   assert.deepEqual(finalFallback.result, { exported: false });
@@ -114,7 +114,7 @@ test("withDegradation falls back to the safe default when both implementations f
     [
       { feature: "billing-export", level: "default" },
       { feature: "cache-layer", level: "reduced" },
-    ]
+    ],
   );
 });
 
@@ -128,7 +128,7 @@ test("withDegradationSync supports reduced and default modes and reset clears th
     "safe-default",
     {
       reducedCapability: "Fallback mode",
-    }
+    },
   );
 
   const fallback = degradation.withDegradationSync(
@@ -139,7 +139,7 @@ test("withDegradationSync supports reduced and default modes and reset clears th
     () => {
       throw new Error("fallback failed");
     },
-    "safe-default"
+    "safe-default",
   );
 
   assert.equal(reduced.result, "fallback-result");
@@ -164,7 +164,7 @@ test("degradation helpers cover custom capabilities and primitive error values",
     "safe-default",
     {
       fullCapability: "Primary path available",
-    }
+    },
   );
 
   const reduced = await degradation.withDegradation(
@@ -177,7 +177,7 @@ test("degradation helpers cover custom capabilities and primitive error values",
     {
       reducedCapability: "Secondary path available",
       onDegrade: (status) => seen.push(status.feature),
-    }
+    },
   );
 
   const fallback = await degradation.withDegradation(
@@ -192,7 +192,7 @@ test("degradation helpers cover custom capabilities and primitive error values",
     {
       defaultCapability: "Static safe mode",
       onDegrade: (status) => seen.push(status.feature),
-    }
+    },
   );
 
   const fullSync = degradation.withDegradationSync(
@@ -202,7 +202,7 @@ test("degradation helpers cover custom capabilities and primitive error values",
     "sync-safe",
     {
       fullCapability: "Sync primary path",
-    }
+    },
   );
 
   const reducedSync = degradation.withDegradationSync(
@@ -215,7 +215,7 @@ test("degradation helpers cover custom capabilities and primitive error values",
     {
       reducedCapability: "Sync fallback path",
       onDegrade: (status) => seen.push(status.feature),
-    }
+    },
   );
 
   const defaultSync = degradation.withDegradationSync(
@@ -230,7 +230,7 @@ test("degradation helpers cover custom capabilities and primitive error values",
     {
       defaultCapability: "Sync safe mode",
       onDegrade: (status) => seen.push(status.feature),
-    }
+    },
   );
 
   assert.equal(full.status.capability, "Primary path available");

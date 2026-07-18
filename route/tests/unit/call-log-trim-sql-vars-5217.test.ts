@@ -28,7 +28,7 @@ function insertCallLog(id: string, timestamp: string) {
       id, timestamp, method, path, status, model, provider, detail_state
     )
     VALUES (@id, @timestamp, 'POST', '/v1/chat/completions', 200, 'openai/gpt-4.1', 'openai', 'none')
-  `
+  `,
   ).run({ id, timestamp });
 }
 
@@ -56,7 +56,7 @@ test("trimCallLogsToMaxRows deletes >999 rows in one pass without 'too many SQL 
 
   assert.equal(
     (db.prepare("SELECT COUNT(*) AS cnt FROM call_logs").get() as { cnt: number }).cnt,
-    total
+    total,
   );
 
   // Trim to 10 rows → 1490 ids must be deleted in a single trim batch (batchSize=5000),
@@ -70,7 +70,7 @@ test("trimCallLogsToMaxRows deletes >999 rows in one pass without 'too many SQL 
   assert.equal(
     (db.prepare("SELECT COUNT(*) AS cnt FROM call_logs").get() as { cnt: number }).cnt,
     10,
-    "exactly maxRows rows must remain"
+    "exactly maxRows rows must remain",
   );
 });
 
@@ -97,6 +97,6 @@ test("deleteCallLogsBefore deletes a batch larger than SQLite's variable limit w
   assert.equal(result!.deletedRows, total, "every row before the cutoff must be deleted");
   assert.equal(
     (db.prepare("SELECT COUNT(*) AS cnt FROM call_logs").get() as { cnt: number }).cnt,
-    0
+    0,
   );
 });

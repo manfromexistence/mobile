@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
       {
         data: tasks.map(serializeCloudAgentTask),
       },
-      { headers: getCloudAgentCorsHeaders(request) }
+      { headers: getCloudAgentCorsHeaders(request) },
     );
   } catch (error) {
     return NextResponse.json(
@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
           sanitizeErrorMessage(error instanceof Error ? error.message : "Unknown error") ||
           "Internal server error",
       },
-      { status: 500, headers: getCloudAgentCorsHeaders(request) }
+      { status: 500, headers: getCloudAgentCorsHeaders(request) },
     );
   }
 }
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
     if (!validation.success) {
       return NextResponse.json(
         { error: "Validation failed", details: validation.error.issues },
-        { status: 400, headers: getCloudAgentCorsHeaders(request) }
+        { status: 400, headers: getCloudAgentCorsHeaders(request) },
       );
     }
 
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
     if (!agent) {
       return NextResponse.json(
         { error: `Unknown provider: ${validated.providerId}` },
-        { status: 400, headers: getCloudAgentCorsHeaders(request) }
+        { status: 400, headers: getCloudAgentCorsHeaders(request) },
       );
     }
 
@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
         {
           error: `No active credentials configured for cloud agent provider: ${validated.providerId}`,
         },
-        { status: 400, headers: getCloudAgentCorsHeaders(request) }
+        { status: 400, headers: getCloudAgentCorsHeaders(request) },
       );
     }
 
@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
         source: validated.source,
         options: validated.options || {},
       },
-      credentials
+      credentials,
     );
 
     createCloudAgentTaskTable();
@@ -143,7 +143,7 @@ export async function POST(request: NextRequest) {
           createdAt: task.createdAt,
         },
       },
-      { status: 201, headers: getCloudAgentCorsHeaders(request) }
+      { status: 201, headers: getCloudAgentCorsHeaders(request) },
     );
   } catch (error) {
     logger.error({ err: error }, "Failed to create cloud agent task");
@@ -153,7 +153,7 @@ export async function POST(request: NextRequest) {
           sanitizeErrorMessage(error instanceof Error ? error.message : "Unknown error") ||
           "Internal server error",
       },
-      { status: 500, headers: getCloudAgentCorsHeaders(request) }
+      { status: 500, headers: getCloudAgentCorsHeaders(request) },
     );
   }
 }
@@ -171,7 +171,7 @@ export async function DELETE(request: NextRequest) {
     if (!taskId) {
       return NextResponse.json(
         { error: "Task ID required" },
-        { status: 400, headers: getCloudAgentCorsHeaders(request) }
+        { status: 400, headers: getCloudAgentCorsHeaders(request) },
       );
     }
 
@@ -185,7 +185,7 @@ export async function DELETE(request: NextRequest) {
           sanitizeErrorMessage(error instanceof Error ? error.message : "Unknown error") ||
           "Internal server error",
       },
-      { status: 500, headers: getCloudAgentCorsHeaders(request) }
+      { status: 500, headers: getCloudAgentCorsHeaders(request) },
     );
   }
 }

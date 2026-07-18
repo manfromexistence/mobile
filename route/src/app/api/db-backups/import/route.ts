@@ -29,9 +29,7 @@ const MAX_UPLOAD_MB_CEILING = 4096;
  * via `OMNIROUTE_DB_IMPORT_MAX_MB`. Invalid / out-of-range values fall back to the 100 MB
  * default and are clamped to a 4 GB ceiling.
  */
-export function resolveMaxUploadSizeBytes(
-  env: NodeJS.ProcessEnv = process.env
-): number {
+export function resolveMaxUploadSizeBytes(env: NodeJS.ProcessEnv = process.env): number {
   const raw = env.OMNIROUTE_DB_IMPORT_MAX_MB;
   const parsed = raw === undefined ? NaN : Number(raw);
   const mb =
@@ -71,7 +69,7 @@ export async function POST(request: Request) {
       if (!file) {
         return NextResponse.json(
           { error: "No file provided. Upload a .sqlite file." },
-          { status: 400 }
+          { status: 400 },
         );
       }
       fileName = file.name;
@@ -91,7 +89,7 @@ export async function POST(request: Request) {
     if (!fileName.endsWith(".sqlite")) {
       return NextResponse.json(
         { error: "Invalid file type. Only .sqlite files are accepted." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -105,14 +103,14 @@ export async function POST(request: Request) {
             `File too large. Maximum allowed size is ${maxUploadSize / (1024 * 1024)} MB. ` +
             `Set OMNIROUTE_DB_IMPORT_MAX_MB to raise it, or VACUUM the database before exporting.`,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (fileSize < 4096) {
       return NextResponse.json(
         { error: "File too small to be a valid SQLite database." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -132,7 +130,7 @@ export async function POST(request: Request) {
       if (result[0]?.integrity_check !== "ok") {
         return NextResponse.json(
           { error: "Database integrity check failed. The file may be corrupted." },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -145,7 +143,7 @@ export async function POST(request: Request) {
           {
             error: `Invalid OmniRoute database. Missing tables: ${missingTables.join(", ")}`,
           },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -155,7 +153,7 @@ export async function POST(request: Request) {
       if (testDb) testDb.close();
       return NextResponse.json(
         { error: `Invalid database file: ${sanitizeErrorMessage(e)}` },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -188,7 +186,7 @@ export async function POST(request: Request) {
     const { connCount, nodeCount, comboCount, keyCount } = countImportedRows();
 
     console.log(
-      `[DB] Imported database from upload: ${connCount} connections, ${nodeCount} nodes, ${comboCount} combos, ${keyCount} API keys`
+      `[DB] Imported database from upload: ${connCount} connections, ${nodeCount} nodes, ${comboCount} combos, ${keyCount} API keys`,
     );
 
     // The DB was replaced wholesale — re-hydrate the in-memory Global System Prompt so it

@@ -321,7 +321,7 @@ async function getModelPermissionCandidates(modelId: string): Promise<string[]> 
 }
 
 async function getPublishedModelLookupTarget(
-  modelId: string
+  modelId: string,
 ): Promise<{ providerId: string; modelId: string } | null> {
   const cleanModelId = stripExtendedContextSuffix(modelId.trim());
   if (!cleanModelId) return null;
@@ -350,7 +350,7 @@ async function getPublishedModelLookupTarget(
 function ensureApiKeyColumn(
   db: ApiKeysDbLike,
   columnNames: Set<string>,
-  column: (typeof API_KEY_COLUMN_FALLBACKS)[number]
+  column: (typeof API_KEY_COLUMN_FALLBACKS)[number],
 ): void {
   if (columnNames.has(column.name)) return;
   db.exec(`ALTER TABLE api_keys ADD COLUMN ${column.definition}`);
@@ -395,13 +395,13 @@ function getPreparedStatements(db: ApiKeysDbLike): ApiKeysStatements {
     _stmtGetAllKeys = db.prepare<ApiKeyRow>("SELECT * FROM api_keys ORDER BY created_at");
     _stmtGetKeyById = db.prepare<ApiKeyRow>("SELECT * FROM api_keys WHERE id = ?");
     _stmtValidateKey = db.prepare<JsonRecord>(
-      "SELECT id, expires_at, revoked_at, is_active, is_banned FROM api_keys WHERE key = ? OR key_hash = ?"
+      "SELECT id, expires_at, revoked_at, is_active, is_banned FROM api_keys WHERE key = ? OR key_hash = ?",
     );
     _stmtGetKeyMetadata = db.prepare<ApiKeyRow>(
-      "SELECT id, name, machine_id, allowed_models, blocked_models, allowed_combos, allowed_connections, allowed_quotas, no_log, auto_resolve, is_active, access_schedule, max_requests_per_day, max_requests_per_minute, throttle_delay_ms, max_sessions, revoked_at, expires_at, ip_allowlist, scopes, rate_limits, is_banned, key_hash, allowed_endpoints, stream_default_mode, disable_non_public_models, allow_usage_command, usage_limit_enabled, daily_usage_limit_usd, weekly_usage_limit_usd, chaos_mode_enabled, proxy_id FROM api_keys WHERE key = ? OR key_hash = ?"
+      "SELECT id, name, machine_id, allowed_models, blocked_models, allowed_combos, allowed_connections, allowed_quotas, no_log, auto_resolve, is_active, access_schedule, max_requests_per_day, max_requests_per_minute, throttle_delay_ms, max_sessions, revoked_at, expires_at, ip_allowlist, scopes, rate_limits, is_banned, key_hash, allowed_endpoints, stream_default_mode, disable_non_public_models, allow_usage_command, usage_limit_enabled, daily_usage_limit_usd, weekly_usage_limit_usd, chaos_mode_enabled, proxy_id FROM api_keys WHERE key = ? OR key_hash = ?",
     );
     _stmtInsertKey = db.prepare(
-      "INSERT INTO api_keys (id, name, key, machine_id, allowed_models, no_log, created_at, key_prefix, key_hash, scopes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+      "INSERT INTO api_keys (id, name, key, machine_id, allowed_models, no_log, created_at, key_prefix, key_hash, scopes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
     );
     _stmtDeleteKey = db.prepare("DELETE FROM api_keys WHERE id = ?");
   }
@@ -448,7 +448,7 @@ export async function getApiKeys() {
     camelRow.allowedEndpoints = parseStringList((camelRow as JsonRecord).allowedEndpoints);
     camelRow.streamDefaultMode = parseStreamDefaultMode((camelRow as JsonRecord).streamDefaultMode);
     camelRow.disableNonPublicModels = parseDisableNonPublicModels(
-      (camelRow as JsonRecord).disableNonPublicModels
+      (camelRow as JsonRecord).disableNonPublicModels,
     );
     camelRow.allowUsageCommand = parseAllowUsageCommand((camelRow as JsonRecord).allowUsageCommand);
     camelRow.chaosModeEnabled = parseChaosModeEnabled((camelRow as JsonRecord).chaosModeEnabled);
@@ -485,10 +485,7 @@ export async function getApiKeys() {
  * inactive, or banned key, and it never widens a key's allowedModels.
  */
 export async function pickApiKeyForInternalUse(
-  purpose:
-    | "combo-health-check"
-    | "cloud-sync-verify"
-    | "internal-probe" = "internal-probe"
+  purpose: "combo-health-check" | "cloud-sync-verify" | "internal-probe" = "internal-probe",
 ): Promise<string | null> {
   try {
     const keys = (await getApiKeys()) as Array<{
@@ -506,29 +503,23 @@ export async function pickApiKeyForInternalUse(
 
     // 1. Management-scoped key (preferred for any internal probe).
     const manageKey = keys.find(
-      (k) =>
-        isUsable(k) && Array.isArray(k.scopes) && k.scopes.includes("manage"),
+      (k) => isUsable(k) && Array.isArray(k.scopes) && k.scopes.includes("manage"),
     );
     if (manageKey?.key) return manageKey.key;
 
     // 2. Allow-all key (empty allowedModels means no model restrictions).
     const allowAllKey = keys.find(
-      (k) =>
-        isUsable(k) &&
-        Array.isArray(k.allowedModels) &&
-        k.allowedModels.length === 0,
+      (k) => isUsable(k) && Array.isArray(k.allowedModels) && k.allowedModels.length === 0,
     );
     if (allowAllKey?.key) return allowAllKey.key;
 
     // 3. Most recently used (proxy for "the user actually wants this one
     //    working right now").
-    const byRecency = [...keys]
-      .filter(isUsable)
-      .sort((a, b) => {
-        const aT = typeof a.lastUsedAt === "number" ? a.lastUsedAt : 0;
-        const bT = typeof b.lastUsedAt === "number" ? b.lastUsedAt : 0;
-        return bT - aT;
-      });
+    const byRecency = [...keys].filter(isUsable).sort((a, b) => {
+      const aT = typeof a.lastUsedAt === "number" ? a.lastUsedAt : 0;
+      const bT = typeof b.lastUsedAt === "number" ? b.lastUsedAt : 0;
+      return bT - aT;
+    });
     if (byRecency[0]?.key) return byRecency[0].key;
 
     // 4. Legacy fallback: first active key. Keeps the function working
@@ -561,7 +552,7 @@ export async function getApiKeyById(id: string) {
   camelRow.allowedEndpoints = parseStringList((camelRow as JsonRecord).allowedEndpoints);
   camelRow.streamDefaultMode = parseStreamDefaultMode((camelRow as JsonRecord).streamDefaultMode);
   camelRow.disableNonPublicModels = parseDisableNonPublicModels(
-    (camelRow as JsonRecord).disableNonPublicModels
+    (camelRow as JsonRecord).disableNonPublicModels,
   );
   camelRow.allowUsageCommand = parseAllowUsageCommand((camelRow as JsonRecord).allowUsageCommand);
   camelRow.chaosModeEnabled = parseChaosModeEnabled((camelRow as JsonRecord).chaosModeEnabled);
@@ -618,7 +609,7 @@ export async function createApiKey(name: string, machineId: string, scopes: stri
     apiKey.createdAt,
     apiKey.key.slice(0, 12),
     await hashKey(apiKey.key),
-    JSON.stringify(scopes)
+    JSON.stringify(scopes),
   );
   setNoLog(apiKey.id, false);
 
@@ -640,7 +631,7 @@ export async function regenerateApiKey(id: string) {
 
   // Update in DB
   const updateStmt = db.prepare(
-    "UPDATE api_keys SET key = ?, key_hash = ?, key_prefix = ? WHERE id = ?"
+    "UPDATE api_keys SET key = ?, key_hash = ?, key_prefix = ? WHERE id = ?",
   );
   updateStmt.run(newKey, newHash, newPrefix, id);
 
@@ -692,7 +683,7 @@ export async function updateApiKeyPermissions(
         dailyUsageLimitUsd?: number | null;
         weeklyUsageLimitUsd?: number | null;
         chaosModeEnabled?: boolean;
-      }
+      },
 ) {
   const db = getDbInstance() as ApiKeysDbLike;
   getPreparedStatements(db);
@@ -1078,7 +1069,7 @@ export async function revokeApiKey(id: string): Promise<boolean> {
 
   const result = db
     .prepare(
-      "UPDATE api_keys SET revoked_at = COALESCE(revoked_at, @ts), is_active = 0 WHERE id = @id"
+      "UPDATE api_keys SET revoked_at = COALESCE(revoked_at, @ts), is_active = 0 WHERE id = @id",
     )
     .run({ id, ts: new Date().toISOString() });
 
@@ -1207,7 +1198,7 @@ export async function validateApiKey(key: string | null | undefined) {
             revokedAt: row.revoked_at,
           }),
           "EX",
-          3600 // 1 hour cache
+          3600, // 1 hour cache
         );
       }
     } catch {
@@ -1224,7 +1215,7 @@ export async function validateApiKey(key: string | null | undefined) {
  * Get API key metadata with caching for performance
  */
 export async function getApiKeyMetadata(
-  key: string | null | undefined
+  key: string | null | undefined,
 ): Promise<ApiKeyMetadata | null> {
   if (!key || typeof key !== "string") return null;
 
@@ -1323,10 +1314,10 @@ export async function getApiKeyMetadata(
     blockedModels: parseAllowedModels(record.blocked_models ?? record.blockedModels),
     allowedCombos: parseAllowedCombos(record.allowed_combos ?? record.allowedCombos),
     allowedConnections: parseAllowedConnections(
-      record.allowed_connections ?? record.allowedConnections
+      record.allowed_connections ?? record.allowedConnections,
     ),
     allowedQuotas: parseAllowedQuotas(
-      (record as JsonRecord).allowed_quotas ?? (record as JsonRecord).allowedQuotas
+      (record as JsonRecord).allowed_quotas ?? (record as JsonRecord).allowedQuotas,
     ),
     noLog: parseNoLog(record.no_log ?? record.noLog),
     autoResolve: parseAutoResolve(record.auto_resolve ?? record.autoResolve),
@@ -1348,20 +1339,20 @@ export async function getApiKeyMetadata(
     proxyId:
       typeof record.proxy_id === "string" && record.proxy_id.trim() !== "" ? record.proxy_id : null,
     allowedEndpoints: parseStringList(
-      (record as JsonRecord).allowed_endpoints ?? (record as JsonRecord).allowedEndpoints
+      (record as JsonRecord).allowed_endpoints ?? (record as JsonRecord).allowedEndpoints,
     ),
     streamDefaultMode: parseStreamDefaultMode(
-      (record as JsonRecord).stream_default_mode ?? (record as JsonRecord).streamDefaultMode
+      (record as JsonRecord).stream_default_mode ?? (record as JsonRecord).streamDefaultMode,
     ),
     disableNonPublicModels: parseDisableNonPublicModels(
       (record as JsonRecord).disable_non_public_models ??
-        (record as JsonRecord).disableNonPublicModels
+        (record as JsonRecord).disableNonPublicModels,
     ),
     allowUsageCommand: parseAllowUsageCommand(
-      (record as JsonRecord).allow_usage_command ?? (record as JsonRecord).allowUsageCommand
+      (record as JsonRecord).allow_usage_command ?? (record as JsonRecord).allowUsageCommand,
     ),
     chaosModeEnabled: parseChaosModeEnabled(
-      (record as JsonRecord).chaos_mode_enabled ?? (record as JsonRecord).chaosModeEnabled
+      (record as JsonRecord).chaos_mode_enabled ?? (record as JsonRecord).chaosModeEnabled,
     ),
     ...parseApiKeyUsageLimitFields(record as JsonRecord),
   };
@@ -1387,7 +1378,7 @@ export async function getApiKeyMetadata(
  */
 export async function isModelAllowedForKey(
   key: string | null | undefined,
-  modelId: string | null | undefined
+  modelId: string | null | undefined,
 ) {
   // If no key provided, allow (request may be using different auth method like JWT)
   // If no modelId provided, deny (invalid request)

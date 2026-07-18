@@ -9,7 +9,7 @@
 
 export function wrapReadableStreamWithFinalize<T>(
   readable: ReadableStream<T>,
-  finalize: () => void
+  finalize: () => void,
 ): ReadableStream<T> {
   const reader = readable.getReader();
   let finalized = false;

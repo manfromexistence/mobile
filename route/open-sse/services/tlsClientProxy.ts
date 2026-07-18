@@ -1,5 +1,5 @@
 type ResolveProxyForRequest = (
-  targetUrl: string
+  targetUrl: string,
 ) => { source: string; proxyUrl: string | null } | null;
 
 /**
@@ -13,7 +13,7 @@ type ResolveProxyForRequest = (
 export function resolveTlsClientProxyUrl(
   targetUrl: string,
   perCall: string | undefined,
-  resolveProxyForRequest: ResolveProxyForRequest
+  resolveProxyForRequest: ResolveProxyForRequest,
 ): string | undefined {
   if (perCall && perCall.length > 0) return perCall;
   let info: { source: string; proxyUrl: string | null } | null;
@@ -23,7 +23,7 @@ export function resolveTlsClientProxyUrl(
     throw new Error(
       `[TlsClient] Proxy resolution failed for ${targetUrl}; refusing direct connection (fail-closed): ${
         err instanceof Error ? err.message : String(err)
-      }`
+      }`,
     );
   }
   return info && info.proxyUrl ? info.proxyUrl : undefined;

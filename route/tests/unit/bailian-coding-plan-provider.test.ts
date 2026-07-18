@@ -15,7 +15,7 @@ import {
 test("APIKEY_PROVIDERS includes bailian-coding-plan", () => {
   assert.ok(
     APIKEY_PROVIDERS["bailian-coding-plan"],
-    "bailian-coding-plan should be present in APIKEY_PROVIDERS"
+    "bailian-coding-plan should be present in APIKEY_PROVIDERS",
   );
 
   const provider = APIKEY_PROVIDERS["bailian-coding-plan"];
@@ -28,7 +28,7 @@ test("bailian-coding-plan not in OAUTH_PROVIDERS", () => {
   assert.equal(
     OAUTH_PROVIDERS["bailian-coding-plan"],
     undefined,
-    "bailian-coding-plan should NOT be present in OAUTH_PROVIDERS"
+    "bailian-coding-plan should NOT be present in OAUTH_PROVIDERS",
   );
 });
 
@@ -50,7 +50,7 @@ test("createProviderSchema accepts valid baseUrl in providerSpecificData", () =>
     assert.equal(
       validation.data.providerSpecificData?.baseUrl,
       VALID_BAILIAN_URL,
-      "Should preserve valid baseUrl"
+      "Should preserve valid baseUrl",
     );
   }
 });
@@ -93,7 +93,7 @@ test("createProviderSchema rejects invalid baseUrl in providerSpecificData", () 
     const errorStr = details.map((d) => d.message || "").join(", ");
     assert.ok(
       errorStr.includes("baseUrl") && errorStr.includes("URL"),
-      `Error should mention baseUrl and URL. Got: ${errorStr}`
+      `Error should mention baseUrl and URL. Got: ${errorStr}`,
     );
   }
 });
@@ -141,7 +141,7 @@ test("createProviderSchema rejects non-boolean Codex context1m request default",
     const details = Array.isArray(validation.error.details) ? validation.error.details : [];
     assert.ok(
       details.some((detail) => String(detail.message || "").includes("context1m")),
-      "Error should mention context1m"
+      "Error should mention context1m",
     );
   }
 });
@@ -158,7 +158,7 @@ test("updateProviderConnectionSchema accepts valid baseUrl in providerSpecificDa
     assert.equal(
       validation.data.providerSpecificData?.baseUrl,
       VALID_BAILIAN_URL,
-      "Should preserve valid baseUrl"
+      "Should preserve valid baseUrl",
     );
   }
 });
@@ -177,7 +177,7 @@ test("updateProviderConnectionSchema rejects invalid baseUrl in providerSpecific
     const errorStr = details.map((d) => d.message || "").join(", ");
     assert.ok(
       errorStr.includes("baseUrl") && errorStr.includes("URL"),
-      `Error should mention baseUrl and URL. Got: ${errorStr}`
+      `Error should mention baseUrl and URL. Got: ${errorStr}`,
     );
   }
 });
@@ -308,7 +308,7 @@ test("getStaticModelsForProvider does not dump IMAGE_PROVIDERS into chat special
     const models = getStaticModelsForProvider(provider) || [];
     assert.ok(
       !models.some((m) => m.supportedEndpoints?.includes("images")),
-      `${provider} chat specialty must not include image-only models`
+      `${provider} chat specialty must not include image-only models`,
     );
   }
   const lmarena = getStaticModelsForProvider("lmarena") || [];
@@ -341,7 +341,7 @@ test("getStaticModelsForProvider returns models matching registry for bailian-co
   assert.equal(
     models.length,
     registryModels.length,
-    `Static model count (${models.length}) should match registry (${registryModels.length})`
+    `Static model count (${models.length}) should match registry (${registryModels.length})`,
   );
 
   // Verify all model IDs match
@@ -390,11 +390,11 @@ test("bailian-coding-plan static models are complete and valid", () => {
   for (const model of models) {
     assert.ok(
       model.id && model.id.trim().length > 0,
-      `Model ID should be non-empty: ${JSON.stringify(model)}`
+      `Model ID should be non-empty: ${JSON.stringify(model)}`,
     );
     assert.ok(
       model.name && model.name.trim().length > 0,
-      `Model name should be non-empty: ${JSON.stringify(model)}`
+      `Model name should be non-empty: ${JSON.stringify(model)}`,
     );
   }
 });
@@ -477,7 +477,7 @@ test("validateProviderApiKey returns valid for 400 response (bailian-coding-plan
     assert.equal(
       result.valid,
       true,
-      "Should return valid for 400 (auth passed, request malformed)"
+      "Should return valid for 400 (auth passed, request malformed)",
     );
     assert.equal(result.error, null, "Error should be null for valid auth");
   } finally {
@@ -561,7 +561,7 @@ test("validateProviderApiKey avoids double /messages suffix for bailian-coding-p
     assert.equal(
       urls[0],
       "https://coding-intl.dashscope.aliyuncs.com/apps/anthropic/v1/messages",
-      "Should probe exactly one /messages suffix"
+      "Should probe exactly one /messages suffix",
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -588,7 +588,7 @@ test("POST /api/providers validation: bailian-coding-plan with baseUrl passes sc
     assert.equal(validation.data.provider, "bailian-coding-plan");
     assert.equal(
       validation.data.providerSpecificData?.baseUrl,
-      "https://coding-intl.dashscope.aliyuncs.com/apps/anthropic/v1"
+      "https://coding-intl.dashscope.aliyuncs.com/apps/anthropic/v1",
     );
   }
 });
@@ -640,7 +640,7 @@ test("PUT /api/providers/{id} validation: updating baseUrl passes schema", () =>
   if (validation.success) {
     assert.equal(
       validation.data.providerSpecificData?.baseUrl,
-      "https://updated.dashscope.aliyuncs.com/apps/anthropic/v1"
+      "https://updated.dashscope.aliyuncs.com/apps/anthropic/v1",
     );
   }
 });
@@ -657,7 +657,7 @@ test("PUT /api/providers/{id} validation: baseUrl update with other fields passe
   assert.equal(
     validation.success,
     true,
-    "Schema should accept update with baseUrl and other fields"
+    "Schema should accept update with baseUrl and other fields",
   );
   if (validation.success) {
     assert.equal(validation.data.name, "Updated Bailian Name");

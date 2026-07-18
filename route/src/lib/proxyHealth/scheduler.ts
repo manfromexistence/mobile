@@ -12,12 +12,12 @@
  */
 
 import { deleteProxyById, listProxies, updateProxy } from "@/lib/localDb";
-import { createProxyDispatcher, clearDispatcherCache } from "@omniroute/open-sse/utils/proxyDispatcher";
-import { fetch as undiciFetch } from "undici";
 import {
-  decideProxyHealthAction,
-  type ProxyProbeOutcome,
-} from "./decision.ts";
+  createProxyDispatcher,
+  clearDispatcherCache,
+} from "@omniroute/open-sse/utils/proxyDispatcher";
+import { fetch as undiciFetch } from "undici";
+import { decideProxyHealthAction, type ProxyProbeOutcome } from "./decision.ts";
 
 // #6246: a HEAD to the public probe target through a legit (often loaded) proxy
 // can exceed a few seconds; the old 5s ceiling produced false negatives that
@@ -130,7 +130,7 @@ async function sweep(): Promise<void> {
       batch.map(async (proxy) => {
         const outcome = await testOneProxy(proxy);
         return { id: proxy.id, outcome };
-      })
+      }),
     );
 
     for (const result of results) {
@@ -161,14 +161,18 @@ async function sweep(): Promise<void> {
         if (await deleteProxyById(id, { force: true }).catch(() => false)) {
           failureMap.delete(id);
           removed++;
-          try { clearDispatcherCache(); } catch { /* non-critical */ }
+          try {
+            clearDispatcherCache();
+          } catch {
+            /* non-critical */
+          }
         }
       }
     }
   }
 
   console.log(
-    `${LOG_PREFIX} Sweep complete: ${tested} tested, ${alive} alive, ${inconclusive} inconclusive, ${removed} auto-removed`
+    `${LOG_PREFIX} Sweep complete: ${tested} tested, ${alive} alive, ${inconclusive} inconclusive, ${removed} auto-removed`,
   );
 }
 

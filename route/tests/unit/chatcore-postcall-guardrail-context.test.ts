@@ -56,7 +56,7 @@ test("null clientRawRequest → endpoint/headers null", () => {
 test("missing endpoint → null (|| null), headers passes through", () => {
   const ctx = buildPostCallGuardrailContext(
     baseArgs({ clientRawRequest: { headers: { a: "b" } } }),
-    () => []
+    () => [],
   );
   assert.equal(ctx.endpoint, null);
   assert.deepEqual(ctx.headers, { a: "b" });

@@ -1,131 +1,131 @@
-import { SyntaxStyle, RGBA, type TerminalColors } from "@opentui/core"
-import aura from "./assets/aura.json" with { type: "json" }
-import ayu from "./assets/ayu.json" with { type: "json" }
-import carbonfox from "./assets/carbonfox.json" with { type: "json" }
-import catppuccinFrappe from "./assets/catppuccin-frappe.json" with { type: "json" }
-import catppuccinMacchiato from "./assets/catppuccin-macchiato.json" with { type: "json" }
-import catppuccin from "./assets/catppuccin.json" with { type: "json" }
-import cobalt2 from "./assets/cobalt2.json" with { type: "json" }
-import cursor from "./assets/cursor.json" with { type: "json" }
-import dracula from "./assets/dracula.json" with { type: "json" }
-import everforest from "./assets/everforest.json" with { type: "json" }
-import flexoki from "./assets/flexoki.json" with { type: "json" }
-import github from "./assets/github.json" with { type: "json" }
-import gruvbox from "./assets/gruvbox.json" with { type: "json" }
-import kanagawa from "./assets/kanagawa.json" with { type: "json" }
-import lucentOrng from "./assets/lucent-orng.json" with { type: "json" }
-import material from "./assets/material.json" with { type: "json" }
-import matrix from "./assets/matrix.json" with { type: "json" }
-import mercury from "./assets/mercury.json" with { type: "json" }
-import monokai from "./assets/monokai.json" with { type: "json" }
-import nightowl from "./assets/nightowl.json" with { type: "json" }
-import nord from "./assets/nord.json" with { type: "json" }
-import onedark from "./assets/one-dark.json" with { type: "json" }
-import opencode from "./assets/opencode.json" with { type: "json" }
-import orng from "./assets/orng.json" with { type: "json" }
-import osakaJade from "./assets/osaka-jade.json" with { type: "json" }
-import palenight from "./assets/palenight.json" with { type: "json" }
-import rosepine from "./assets/rosepine.json" with { type: "json" }
-import solarized from "./assets/solarized.json" with { type: "json" }
-import synthwave84 from "./assets/synthwave84.json" with { type: "json" }
-import tokyonight from "./assets/tokyonight.json" with { type: "json" }
-import vercel from "./assets/vercel.json" with { type: "json" }
-import vesper from "./assets/vesper.json" with { type: "json" }
-import zenburn from "./assets/zenburn.json" with { type: "json" }
+import { SyntaxStyle, RGBA, type TerminalColors } from "@opentui/core";
+import aura from "./assets/aura.json" with { type: "json" };
+import ayu from "./assets/ayu.json" with { type: "json" };
+import carbonfox from "./assets/carbonfox.json" with { type: "json" };
+import catppuccinFrappe from "./assets/catppuccin-frappe.json" with { type: "json" };
+import catppuccinMacchiato from "./assets/catppuccin-macchiato.json" with { type: "json" };
+import catppuccin from "./assets/catppuccin.json" with { type: "json" };
+import cobalt2 from "./assets/cobalt2.json" with { type: "json" };
+import cursor from "./assets/cursor.json" with { type: "json" };
+import dracula from "./assets/dracula.json" with { type: "json" };
+import everforest from "./assets/everforest.json" with { type: "json" };
+import flexoki from "./assets/flexoki.json" with { type: "json" };
+import github from "./assets/github.json" with { type: "json" };
+import gruvbox from "./assets/gruvbox.json" with { type: "json" };
+import kanagawa from "./assets/kanagawa.json" with { type: "json" };
+import lucentOrng from "./assets/lucent-orng.json" with { type: "json" };
+import material from "./assets/material.json" with { type: "json" };
+import matrix from "./assets/matrix.json" with { type: "json" };
+import mercury from "./assets/mercury.json" with { type: "json" };
+import monokai from "./assets/monokai.json" with { type: "json" };
+import nightowl from "./assets/nightowl.json" with { type: "json" };
+import nord from "./assets/nord.json" with { type: "json" };
+import onedark from "./assets/one-dark.json" with { type: "json" };
+import opencode from "./assets/opencode.json" with { type: "json" };
+import orng from "./assets/orng.json" with { type: "json" };
+import osakaJade from "./assets/osaka-jade.json" with { type: "json" };
+import palenight from "./assets/palenight.json" with { type: "json" };
+import rosepine from "./assets/rosepine.json" with { type: "json" };
+import solarized from "./assets/solarized.json" with { type: "json" };
+import synthwave84 from "./assets/synthwave84.json" with { type: "json" };
+import tokyonight from "./assets/tokyonight.json" with { type: "json" };
+import vercel from "./assets/vercel.json" with { type: "json" };
+import vesper from "./assets/vesper.json" with { type: "json" };
+import zenburn from "./assets/zenburn.json" with { type: "json" };
 
 export type Theme = {
-  readonly primary: RGBA
-  readonly secondary: RGBA
-  readonly accent: RGBA
-  readonly error: RGBA
-  readonly warning: RGBA
-  readonly success: RGBA
-  readonly info: RGBA
-  readonly text: RGBA
-  readonly textMuted: RGBA
-  readonly selectedListItemText: RGBA
-  readonly background: RGBA
-  readonly backgroundPanel: RGBA
-  readonly backgroundElement: RGBA
-  readonly backgroundMenu: RGBA
-  readonly border: RGBA
-  readonly borderActive: RGBA
-  readonly borderSubtle: RGBA
-  readonly diffAdded: RGBA
-  readonly diffRemoved: RGBA
-  readonly diffContext: RGBA
-  readonly diffHunkHeader: RGBA
-  readonly diffHighlightAdded: RGBA
-  readonly diffHighlightRemoved: RGBA
-  readonly diffAddedBg: RGBA
-  readonly diffRemovedBg: RGBA
-  readonly diffContextBg: RGBA
-  readonly diffLineNumber: RGBA
-  readonly diffAddedLineNumberBg: RGBA
-  readonly diffRemovedLineNumberBg: RGBA
-  readonly markdownText: RGBA
-  readonly markdownHeading: RGBA
-  readonly markdownLink: RGBA
-  readonly markdownLinkText: RGBA
-  readonly markdownCode: RGBA
-  readonly markdownBlockQuote: RGBA
-  readonly markdownEmph: RGBA
-  readonly markdownStrong: RGBA
-  readonly markdownHorizontalRule: RGBA
-  readonly markdownListItem: RGBA
-  readonly markdownListEnumeration: RGBA
-  readonly markdownImage: RGBA
-  readonly markdownImageText: RGBA
-  readonly markdownCodeBlock: RGBA
-  readonly syntaxComment: RGBA
-  readonly syntaxKeyword: RGBA
-  readonly syntaxFunction: RGBA
-  readonly syntaxVariable: RGBA
-  readonly syntaxString: RGBA
-  readonly syntaxNumber: RGBA
-  readonly syntaxType: RGBA
-  readonly syntaxOperator: RGBA
-  readonly syntaxPunctuation: RGBA
-  readonly thinkingOpacity: number
-  _hasSelectedListItemText: boolean
-}
-type ThemeColor = Exclude<keyof Theme, "thinkingOpacity" | "_hasSelectedListItemText">
-export type SyntaxStyleOverrides = Record<string, { italic?: boolean }>
+  readonly primary: RGBA;
+  readonly secondary: RGBA;
+  readonly accent: RGBA;
+  readonly error: RGBA;
+  readonly warning: RGBA;
+  readonly success: RGBA;
+  readonly info: RGBA;
+  readonly text: RGBA;
+  readonly textMuted: RGBA;
+  readonly selectedListItemText: RGBA;
+  readonly background: RGBA;
+  readonly backgroundPanel: RGBA;
+  readonly backgroundElement: RGBA;
+  readonly backgroundMenu: RGBA;
+  readonly border: RGBA;
+  readonly borderActive: RGBA;
+  readonly borderSubtle: RGBA;
+  readonly diffAdded: RGBA;
+  readonly diffRemoved: RGBA;
+  readonly diffContext: RGBA;
+  readonly diffHunkHeader: RGBA;
+  readonly diffHighlightAdded: RGBA;
+  readonly diffHighlightRemoved: RGBA;
+  readonly diffAddedBg: RGBA;
+  readonly diffRemovedBg: RGBA;
+  readonly diffContextBg: RGBA;
+  readonly diffLineNumber: RGBA;
+  readonly diffAddedLineNumberBg: RGBA;
+  readonly diffRemovedLineNumberBg: RGBA;
+  readonly markdownText: RGBA;
+  readonly markdownHeading: RGBA;
+  readonly markdownLink: RGBA;
+  readonly markdownLinkText: RGBA;
+  readonly markdownCode: RGBA;
+  readonly markdownBlockQuote: RGBA;
+  readonly markdownEmph: RGBA;
+  readonly markdownStrong: RGBA;
+  readonly markdownHorizontalRule: RGBA;
+  readonly markdownListItem: RGBA;
+  readonly markdownListEnumeration: RGBA;
+  readonly markdownImage: RGBA;
+  readonly markdownImageText: RGBA;
+  readonly markdownCodeBlock: RGBA;
+  readonly syntaxComment: RGBA;
+  readonly syntaxKeyword: RGBA;
+  readonly syntaxFunction: RGBA;
+  readonly syntaxVariable: RGBA;
+  readonly syntaxString: RGBA;
+  readonly syntaxNumber: RGBA;
+  readonly syntaxType: RGBA;
+  readonly syntaxOperator: RGBA;
+  readonly syntaxPunctuation: RGBA;
+  readonly thinkingOpacity: number;
+  _hasSelectedListItemText: boolean;
+};
+type ThemeColor = Exclude<keyof Theme, "thinkingOpacity" | "_hasSelectedListItemText">;
+export type SyntaxStyleOverrides = Record<string, { italic?: boolean }>;
 
 export function selectedForeground(theme: Theme, bg?: RGBA): RGBA {
   // If theme explicitly defines selectedListItemText, use it
   if (theme._hasSelectedListItemText) {
-    return theme.selectedListItemText
+    return theme.selectedListItemText;
   }
 
   // For transparent backgrounds, calculate contrast based on the actual bg (or fallback to primary)
   if (theme.background.a === 0) {
-    const targetColor = bg ?? theme.primary
-    const { r, g, b } = targetColor
-    const luminance = 0.299 * r + 0.587 * g + 0.114 * b
-    return luminance > 0.5 ? RGBA.fromInts(0, 0, 0) : RGBA.fromInts(255, 255, 255)
+    const targetColor = bg ?? theme.primary;
+    const { r, g, b } = targetColor;
+    const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+    return luminance > 0.5 ? RGBA.fromInts(0, 0, 0) : RGBA.fromInts(255, 255, 255);
   }
 
   // Fall back to background color
-  return theme.background
+  return theme.background;
 }
 
-type HexColor = `#${string}`
-type RefName = string
+type HexColor = `#${string}`;
+type RefName = string;
 type Variant = {
-  dark: HexColor | RefName
-  light: HexColor | RefName
-}
-type ColorValue = HexColor | RefName | Variant | RGBA
+  dark: HexColor | RefName;
+  light: HexColor | RefName;
+};
+type ColorValue = HexColor | RefName | Variant | RGBA;
 export type ThemeJson = {
-  $schema?: string
-  defs?: Record<string, HexColor | RefName>
+  $schema?: string;
+  defs?: Record<string, HexColor | RefName>;
   theme: Omit<Record<ThemeColor, ColorValue>, "selectedListItemText" | "backgroundMenu"> & {
-    selectedListItemText?: ColorValue
-    backgroundMenu?: ColorValue
-    thinkingOpacity?: number
-  }
-}
+    selectedListItemText?: ColorValue;
+    backgroundMenu?: ColorValue;
+    thinkingOpacity?: number;
+  };
+};
 
 export const DEFAULT_THEMES: Record<string, ThemeJson> = {
   aura,
@@ -161,12 +161,12 @@ export const DEFAULT_THEMES: Record<string, ThemeJson> = {
   vercel,
   zenburn,
   carbonfox,
-}
+};
 
-const pluginThemes: Record<string, ThemeJson> = {}
-let customThemes: Record<string, ThemeJson> = {}
-let systemTheme: ThemeJson | undefined
-const listeners = new Set<(themes: Record<string, ThemeJson>) => void>()
+const pluginThemes: Record<string, ThemeJson> = {};
+let customThemes: Record<string, ThemeJson> = {};
+let systemTheme: ThemeJson | undefined;
+const listeners = new Set<(themes: Record<string, ThemeJson>) => void>();
 
 function listThemes() {
   // Priority: defaults < plugin installs < custom files < generated system.
@@ -174,128 +174,131 @@ function listThemes() {
     ...DEFAULT_THEMES,
     ...pluginThemes,
     ...customThemes,
-  }
-  if (!systemTheme) return themes
+  };
+  if (!systemTheme) return themes;
   return {
     ...themes,
     system: systemTheme,
-  }
+  };
 }
 
 function syncThemes() {
-  const themes = listThemes()
-  for (const listener of listeners) listener(themes)
+  const themes = listThemes();
+  for (const listener of listeners) listener(themes);
 }
 
 export function allThemes() {
-  return listThemes()
+  return listThemes();
 }
 
 export function isTheme(theme: unknown): theme is ThemeJson {
-  if (typeof theme !== "object" || theme === null || Array.isArray(theme)) return false
-  const value = Reflect.get(theme, "theme")
-  return typeof value === "object" && value !== null && !Array.isArray(value)
+  if (typeof theme !== "object" || theme === null || Array.isArray(theme)) return false;
+  const value = Reflect.get(theme, "theme");
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 export function subscribeThemes(listener: (themes: Record<string, ThemeJson>) => void) {
-  listeners.add(listener)
-  return () => listeners.delete(listener)
+  listeners.add(listener);
+  return () => listeners.delete(listener);
 }
 
 export function setCustomThemes(themes: Record<string, ThemeJson>) {
-  customThemes = themes
-  syncThemes()
+  customThemes = themes;
+  syncThemes();
 }
 
 export function setSystemTheme(theme: ThemeJson | undefined) {
-  systemTheme = theme
-  syncThemes()
+  systemTheme = theme;
+  syncThemes();
 }
 
 export function hasTheme(name: string) {
-  if (!name) return false
-  return allThemes()[name] !== undefined
+  if (!name) return false;
+  return allThemes()[name] !== undefined;
 }
 
 export function addTheme(name: string, theme: unknown) {
-  if (!name) return false
-  if (!isTheme(theme)) return false
-  if (hasTheme(name)) return false
-  pluginThemes[name] = theme
-  syncThemes()
-  return true
+  if (!name) return false;
+  if (!isTheme(theme)) return false;
+  if (hasTheme(name)) return false;
+  pluginThemes[name] = theme;
+  syncThemes();
+  return true;
 }
 
 export function upsertTheme(name: string, theme: unknown) {
-  if (!name) return false
-  if (!isTheme(theme)) return false
+  if (!name) return false;
+  if (!isTheme(theme)) return false;
   if (customThemes[name] !== undefined) {
-    customThemes[name] = theme
+    customThemes[name] = theme;
   } else {
-    pluginThemes[name] = theme
+    pluginThemes[name] = theme;
   }
-  syncThemes()
-  return true
+  syncThemes();
+  return true;
 }
 
 export function resolveTheme(theme: ThemeJson, mode: "dark" | "light") {
-  const defs = theme.defs ?? {}
+  const defs = theme.defs ?? {};
   function resolveColor(c: ColorValue, chain: string[] = []): RGBA {
-    if (c instanceof RGBA) return c
+    if (c instanceof RGBA) return c;
     if (typeof c === "string") {
-      if (c === "transparent" || c === "none") return RGBA.fromInts(0, 0, 0, 0)
+      if (c === "transparent" || c === "none") return RGBA.fromInts(0, 0, 0, 0);
 
-      if (c.startsWith("#")) return RGBA.fromHex(c)
+      if (c.startsWith("#")) return RGBA.fromHex(c);
 
       if (chain.includes(c)) {
-        throw new Error(`Circular color reference: ${[...chain, c].join(" -> ")}`)
+        throw new Error(`Circular color reference: ${[...chain, c].join(" -> ")}`);
       }
 
-      const next = defs[c] ?? theme.theme[c as ThemeColor]
+      const next = defs[c] ?? theme.theme[c as ThemeColor];
       if (next === undefined) {
-        throw new Error(`Color reference "${c}" not found in defs or theme`)
+        throw new Error(`Color reference "${c}" not found in defs or theme`);
       }
-      return resolveColor(next, [...chain, c])
+      return resolveColor(next, [...chain, c]);
     }
     if (typeof c === "number") {
-      return ansiToRgba(c)
+      return ansiToRgba(c);
     }
-    return resolveColor(c[mode], chain)
+    return resolveColor(c[mode], chain);
   }
 
   const resolved = Object.fromEntries(
     Object.entries(theme.theme)
-      .filter(([key]) => key !== "selectedListItemText" && key !== "backgroundMenu" && key !== "thinkingOpacity")
+      .filter(
+        ([key]) =>
+          key !== "selectedListItemText" && key !== "backgroundMenu" && key !== "thinkingOpacity",
+      )
       .map(([key, value]) => {
-        return [key, resolveColor(value as ColorValue)]
+        return [key, resolveColor(value as ColorValue)];
       }),
-  ) as Partial<Record<ThemeColor, RGBA>>
+  ) as Partial<Record<ThemeColor, RGBA>>;
 
   // Handle selectedListItemText separately since it's optional
-  const hasSelectedListItemText = theme.theme.selectedListItemText !== undefined
+  const hasSelectedListItemText = theme.theme.selectedListItemText !== undefined;
   if (hasSelectedListItemText) {
-    resolved.selectedListItemText = resolveColor(theme.theme.selectedListItemText!)
+    resolved.selectedListItemText = resolveColor(theme.theme.selectedListItemText!);
   } else {
     // Backward compatibility: if selectedListItemText is not defined, use background color
     // This preserves the current behavior for all existing themes
-    resolved.selectedListItemText = resolved.background
+    resolved.selectedListItemText = resolved.background;
   }
 
   // Handle backgroundMenu - optional with fallback to backgroundElement
   if (theme.theme.backgroundMenu !== undefined) {
-    resolved.backgroundMenu = resolveColor(theme.theme.backgroundMenu)
+    resolved.backgroundMenu = resolveColor(theme.theme.backgroundMenu);
   } else {
-    resolved.backgroundMenu = resolved.backgroundElement
+    resolved.backgroundMenu = resolved.backgroundElement;
   }
 
   // Handle thinkingOpacity - optional with default of 0.6
-  const thinkingOpacity = theme.theme.thinkingOpacity ?? 0.6
+  const thinkingOpacity = theme.theme.thinkingOpacity ?? 0.6;
 
   return {
     ...resolved,
     _hasSelectedListItemText: hasSelectedListItemText,
     thinkingOpacity,
-  } as Theme
+  } as Theme;
 }
 
 function ansiToRgba(code: number): RGBA {
@@ -318,60 +321,60 @@ function ansiToRgba(code: number): RGBA {
       "#ff00ff", // Bright Magenta
       "#00ffff", // Bright Cyan
       "#ffffff", // Bright White
-    ]
-    return RGBA.fromHex(ansiColors[code] ?? "#000000")
+    ];
+    return RGBA.fromHex(ansiColors[code] ?? "#000000");
   }
 
   // 6x6x6 Color Cube (16-231)
   if (code < 232) {
-    const index = code - 16
-    const b = index % 6
-    const g = Math.floor(index / 6) % 6
-    const r = Math.floor(index / 36)
+    const index = code - 16;
+    const b = index % 6;
+    const g = Math.floor(index / 6) % 6;
+    const r = Math.floor(index / 36);
 
-    const val = (x: number) => (x === 0 ? 0 : x * 40 + 55)
-    return RGBA.fromInts(val(r), val(g), val(b))
+    const val = (x: number) => (x === 0 ? 0 : x * 40 + 55);
+    return RGBA.fromInts(val(r), val(g), val(b));
   }
 
   // Grayscale Ramp (232-255)
   if (code < 256) {
-    const gray = (code - 232) * 10 + 8
-    return RGBA.fromInts(gray, gray, gray)
+    const gray = (code - 232) * 10 + 8;
+    return RGBA.fromInts(gray, gray, gray);
   }
 
   // Fallback for invalid codes
-  return RGBA.fromInts(0, 0, 0)
+  return RGBA.fromInts(0, 0, 0);
 }
 
 export function tint(base: RGBA, overlay: RGBA, alpha: number): RGBA {
-  const r = base.r + (overlay.r - base.r) * alpha
-  const g = base.g + (overlay.g - base.g) * alpha
-  const b = base.b + (overlay.b - base.b) * alpha
-  return RGBA.fromInts(Math.round(r * 255), Math.round(g * 255), Math.round(b * 255))
+  const r = base.r + (overlay.r - base.r) * alpha;
+  const g = base.g + (overlay.g - base.g) * alpha;
+  const b = base.b + (overlay.b - base.b) * alpha;
+  return RGBA.fromInts(Math.round(r * 255), Math.round(g * 255), Math.round(b * 255));
 }
 
 export function terminalMode(colors: TerminalColors): "dark" | "light" | undefined {
-  const bg = colors.defaultBackground
-  if (!bg) return
-  const { r, g, b } = RGBA.fromHex(bg)
-  return 0.299 * r + 0.587 * g + 0.114 * b > 0.5 ? "light" : "dark"
+  const bg = colors.defaultBackground;
+  if (!bg) return;
+  const { r, g, b } = RGBA.fromHex(bg);
+  return 0.299 * r + 0.587 * g + 0.114 * b > 0.5 ? "light" : "dark";
 }
 
 export function generateSystem(colors: TerminalColors, mode: "dark" | "light"): ThemeJson {
-  const bg = RGBA.fromHex(colors.defaultBackground ?? colors.palette[0]!)
-  const fg = RGBA.fromHex(colors.defaultForeground ?? colors.palette[7]!)
-  const transparent = RGBA.fromValues(bg.r, bg.g, bg.b, 0)
-  const isDark = mode == "dark"
+  const bg = RGBA.fromHex(colors.defaultBackground ?? colors.palette[0]!);
+  const fg = RGBA.fromHex(colors.defaultForeground ?? colors.palette[7]!);
+  const transparent = RGBA.fromValues(bg.r, bg.g, bg.b, 0);
+  const isDark = mode == "dark";
 
   const col = (i: number) => {
-    const value = colors.palette[i]
-    if (value) return RGBA.fromHex(value)
-    return ansiToRgba(i)
-  }
+    const value = colors.palette[i];
+    if (value) return RGBA.fromHex(value);
+    return ansiToRgba(i);
+  };
 
   // Generate gray scale based on terminal background
-  const grays = generateGrayScale(bg, isDark)
-  const textMuted = generateMutedTextColor(bg, isDark)
+  const grays = generateGrayScale(bg, isDark);
+  const textMuted = generateMutedTextColor(bg, isDark);
 
   // ANSI color references
   const ansiColors = {
@@ -385,15 +388,15 @@ export function generateSystem(colors: TerminalColors, mode: "dark" | "light"): 
     white: col(7),
     redBright: col(9),
     greenBright: col(10),
-  }
+  };
 
-  const diffAlpha = isDark ? 0.22 : 0.14
-  const diffAddedBg = tint(bg, ansiColors.green, diffAlpha)
-  const diffRemovedBg = tint(bg, ansiColors.red, diffAlpha)
-  const diffContextBg = grays[2]
-  const diffAddedLineNumberBg = tint(diffContextBg, ansiColors.green, diffAlpha)
-  const diffRemovedLineNumberBg = tint(diffContextBg, ansiColors.red, diffAlpha)
-  const diffLineNumber = textMuted
+  const diffAlpha = isDark ? 0.22 : 0.14;
+  const diffAddedBg = tint(bg, ansiColors.green, diffAlpha);
+  const diffRemovedBg = tint(bg, ansiColors.red, diffAlpha);
+  const diffContextBg = grays[2];
+  const diffAddedLineNumberBg = tint(diffContextBg, ansiColors.green, diffAlpha);
+  const diffRemovedLineNumberBg = tint(diffContextBg, ansiColors.red, diffAlpha);
+  const diffLineNumber = textMuted;
 
   return {
     theme: {
@@ -465,105 +468,105 @@ export function generateSystem(colors: TerminalColors, mode: "dark" | "light"): 
       syntaxOperator: ansiColors.cyan,
       syntaxPunctuation: fg,
     },
-  }
+  };
 }
 
 function generateGrayScale(bg: RGBA, isDark: boolean): Record<number, RGBA> {
-  const grays: Record<number, RGBA> = {}
+  const grays: Record<number, RGBA> = {};
 
   // RGBA stores floats in range 0-1, convert to 0-255
-  const bgR = bg.r * 255
-  const bgG = bg.g * 255
-  const bgB = bg.b * 255
+  const bgR = bg.r * 255;
+  const bgG = bg.g * 255;
+  const bgB = bg.b * 255;
 
-  const luminance = 0.299 * bgR + 0.587 * bgG + 0.114 * bgB
+  const luminance = 0.299 * bgR + 0.587 * bgG + 0.114 * bgB;
 
   for (let i = 1; i <= 12; i++) {
-    const factor = i / 12.0
+    const factor = i / 12.0;
 
-    let grayValue: number
-    let newR: number
-    let newG: number
-    let newB: number
+    let grayValue: number;
+    let newR: number;
+    let newG: number;
+    let newB: number;
 
     if (isDark) {
       if (luminance < 10) {
-        grayValue = Math.floor(factor * 0.4 * 255)
-        newR = grayValue
-        newG = grayValue
-        newB = grayValue
+        grayValue = Math.floor(factor * 0.4 * 255);
+        newR = grayValue;
+        newG = grayValue;
+        newB = grayValue;
       } else {
-        const newLum = luminance + (255 - luminance) * factor * 0.4
+        const newLum = luminance + (255 - luminance) * factor * 0.4;
 
-        const ratio = newLum / luminance
-        newR = Math.min(bgR * ratio, 255)
-        newG = Math.min(bgG * ratio, 255)
-        newB = Math.min(bgB * ratio, 255)
+        const ratio = newLum / luminance;
+        newR = Math.min(bgR * ratio, 255);
+        newG = Math.min(bgG * ratio, 255);
+        newB = Math.min(bgB * ratio, 255);
       }
     } else {
       if (luminance > 245) {
-        grayValue = Math.floor(255 - factor * 0.4 * 255)
-        newR = grayValue
-        newG = grayValue
-        newB = grayValue
+        grayValue = Math.floor(255 - factor * 0.4 * 255);
+        newR = grayValue;
+        newG = grayValue;
+        newB = grayValue;
       } else {
-        const newLum = luminance * (1 - factor * 0.4)
+        const newLum = luminance * (1 - factor * 0.4);
 
-        const ratio = newLum / luminance
-        newR = Math.max(bgR * ratio, 0)
-        newG = Math.max(bgG * ratio, 0)
-        newB = Math.max(bgB * ratio, 0)
+        const ratio = newLum / luminance;
+        newR = Math.max(bgR * ratio, 0);
+        newG = Math.max(bgG * ratio, 0);
+        newB = Math.max(bgB * ratio, 0);
       }
     }
 
-    grays[i] = RGBA.fromInts(Math.floor(newR), Math.floor(newG), Math.floor(newB))
+    grays[i] = RGBA.fromInts(Math.floor(newR), Math.floor(newG), Math.floor(newB));
   }
 
-  return grays
+  return grays;
 }
 
 function generateMutedTextColor(bg: RGBA, isDark: boolean): RGBA {
   // RGBA stores floats in range 0-1, convert to 0-255
-  const bgR = bg.r * 255
-  const bgG = bg.g * 255
-  const bgB = bg.b * 255
+  const bgR = bg.r * 255;
+  const bgG = bg.g * 255;
+  const bgB = bg.b * 255;
 
-  const bgLum = 0.299 * bgR + 0.587 * bgG + 0.114 * bgB
+  const bgLum = 0.299 * bgR + 0.587 * bgG + 0.114 * bgB;
 
-  let grayValue: number
+  let grayValue: number;
 
   if (isDark) {
     if (bgLum < 10) {
       // Very dark/black background
-      grayValue = 180 // #b4b4b4
+      grayValue = 180; // #b4b4b4
     } else {
       // Scale up for lighter dark backgrounds
-      grayValue = Math.min(Math.floor(160 + bgLum * 0.3), 200)
+      grayValue = Math.min(Math.floor(160 + bgLum * 0.3), 200);
     }
   } else {
     if (bgLum > 245) {
       // Very light/white background
-      grayValue = 75 // #4b4b4b
+      grayValue = 75; // #4b4b4b
     } else {
       // Scale down for darker light backgrounds
-      grayValue = Math.max(Math.floor(100 - (255 - bgLum) * 0.2), 60)
+      grayValue = Math.max(Math.floor(100 - (255 - bgLum) * 0.2), 60);
     }
   }
 
-  return RGBA.fromInts(grayValue, grayValue, grayValue)
+  return RGBA.fromInts(grayValue, grayValue, grayValue);
 }
 
 export function generateSyntax(theme: Theme) {
-  return SyntaxStyle.fromTheme(getSyntaxRules(theme))
+  return SyntaxStyle.fromTheme(getSyntaxRules(theme));
 }
 
 export function generateSubtleSyntax(theme: Theme, overrides?: SyntaxStyleOverrides) {
-  const rules = getSyntaxRules(theme)
+  const rules = getSyntaxRules(theme);
   return SyntaxStyle.fromTheme(
     rules.map((rule) => {
-      const override = rule.scope.reduce((acc, scope) => ({ ...acc, ...overrides?.[scope] }), {})
+      const override = rule.scope.reduce((acc, scope) => ({ ...acc, ...overrides?.[scope] }), {});
       if (rule.style.foreground) {
-        const fg = rule.style.foreground
+        const fg = rule.style.foreground;
         return {
           ...rule,
           style: {
@@ -576,11 +579,11 @@ export function generateSubtleSyntax(theme: Theme, overrides?: SyntaxStyleOverri
               Math.round(theme.thinkingOpacity * 255),
             ),
           },
-        }
+        };
       }
-      return rule
+      return rule;
     }),
-  )
+  );
 }
 
 function getSyntaxRules(theme: Theme) {
@@ -746,7 +749,13 @@ function getSyntaxRules(theme: Theme) {
       },
     },
     {
-      scope: ["variable.builtin", "type.builtin", "function.builtin", "module.builtin", "constant.builtin"],
+      scope: [
+        "variable.builtin",
+        "type.builtin",
+        "function.builtin",
+        "module.builtin",
+        "constant.builtin",
+      ],
       style: {
         foreground: theme.error,
       },
@@ -1085,5 +1094,5 @@ function getSyntaxRules(theme: Theme) {
         foreground: theme.textMuted,
       },
     },
-  ]
+  ];
 }

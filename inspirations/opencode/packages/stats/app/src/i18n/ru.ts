@@ -146,7 +146,8 @@ export const dict = {
   "lab.usageTitle": "Использование токенов {{lab}}",
   "lab.usageDescription": "Ежедневный объем токенов OpenCode за последние два месяца.",
   "lab.noUsageTitle": "Использования пока нет",
-  "lab.noUsageDescription": "Недавнее использование токенов появится здесь, когда у этой лаборатории будет активность.",
+  "lab.noUsageDescription":
+    "Недавнее использование токенов появится здесь, когда у этой лаборатории будет активность.",
   "lab.dailyTokenChart": "Ежедневный график использования токенов {{lab}}",
   "lab.dailyTokens": "Ежедневные токены",
   "lab.tokens": "токены",
@@ -181,7 +182,8 @@ export const dict = {
   "model.knowledge": "Знания",
   "model.release": "Релиз",
   "model.inputs": "Входы",
-  "model.overviewDescription": "Недавние токены OpenCode Go, уникальные пользователи и рыночная позиция.",
+  "model.overviewDescription":
+    "Недавние токены OpenCode Go, уникальные пользователи и рыночная позиция.",
   "model.noSummaryTitle": "Нет сводки использования",
   "model.noSummaryDescription": "У этой модели пока нет строк использования OpenCode Go.",
   "model.tokens": "Токены",
@@ -197,7 +199,8 @@ export const dict = {
   "model.noUsageTitle": "Нет использования",
   "model.noUsageDescription": "В текущем окне использование не появилось.",
   "model.dailyTokenChart": "Ежедневный график использования токенов",
-  "model.usersDescription": "Ежедневные уникальные пользователи OpenCode Go за недавнее двухмесячное окно.",
+  "model.usersDescription":
+    "Ежедневные уникальные пользователи OpenCode Go за недавнее двухмесячное окно.",
   "model.noUsersTitle": "Нет данных пользователей",
   "model.noUsersDescription": "В текущем окне нет строк с пользователями.",
   "model.dailyUserChart": "Ежедневный график уникальных пользователей",
@@ -228,4 +231,4 @@ export const dict = {
   "model.pdf": "PDF",
   "format.users": "пользователи",
   "format.tokens": "токены",
-} as const
+} as const;

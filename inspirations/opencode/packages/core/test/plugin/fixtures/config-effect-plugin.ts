@@ -1,5 +1,5 @@
-import { define } from "@opencode-ai/plugin/v2/effect"
-import { Effect } from "effect"
+import { define } from "@opencode-ai/plugin/v2/effect";
+import { Effect } from "effect";
 
 export default define({
   id: "config-effect-plugin",
@@ -7,9 +7,9 @@ export default define({
     ctx.agent
       .transform((agents) => {
         agents.update("effect-configured", (agent) => {
-          agent.description = ctx.options.description
-          agent.mode = "subagent"
-        })
+          agent.description = ctx.options.description;
+          agent.mode = "subagent";
+        });
       })
       .pipe(Effect.asVoid),
-})
+});

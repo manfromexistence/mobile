@@ -1,16 +1,16 @@
-import type { PreloadFileOptions } from '@pierre/diffs/ssr';
+import type { PreloadFileOptions } from "@pierre/diffs/ssr";
 
-import { CustomScrollbarCSS } from '@/components/CustomScrollbarCSS';
+import { CustomScrollbarCSS } from "@/components/CustomScrollbarCSS";
 
 const options = {
-  theme: { dark: 'pierre-dark', light: 'pierre-light' },
+  theme: { dark: "pierre-dark", light: "pierre-light" },
   disableFileHeader: true,
   unsafeCSS: CustomScrollbarCSS,
 } as const;
 
 export const CODE_VIEW_ITEM_TYPE_EXAMPLE: PreloadFileOptions<undefined> = {
   file: {
-    name: 'code_view_items.ts',
+    name: "code_view_items.ts",
     contents: `type CodeViewFileItem<T = undefined> = {
   type: 'file';
   id: string;
@@ -42,7 +42,7 @@ type CodeViewItem<T = undefined> = CodeViewFileItem<T> | CodeViewDiffItem<T>;`,
 
 export const CODE_VIEW_LAYOUT_OPTIONS_EXAMPLE: PreloadFileOptions<undefined> = {
   file: {
-    name: 'code_view_layout.ts',
+    name: "code_view_layout.ts",
     contents: `options: {
   layout: {
     // Controls how much spacing before files/diffs
@@ -57,11 +57,10 @@ export const CODE_VIEW_LAYOUT_OPTIONS_EXAMPLE: PreloadFileOptions<undefined> = {
   options,
 };
 
-export const CODE_VIEW_ITEM_METRICS_OPTIONS_EXAMPLE: PreloadFileOptions<undefined> =
-  {
-    file: {
-      name: 'code_view_item_metrics.ts',
-      contents: `const options: CodeViewOptions = {
+export const CODE_VIEW_ITEM_METRICS_OPTIONS_EXAMPLE: PreloadFileOptions<undefined> = {
+  file: {
+    name: "code_view_item_metrics.ts",
+    contents: `const options: CodeViewOptions = {
   // As a general rule if you are using any \`unsafeCSS\` or custom line-height,
   // you should test with \`__devOnlyValidateItemHeights\` enabled to ensure
   // that estimations are working correctly. Otherwise CodeView's layout and
@@ -115,13 +114,13 @@ export const CODE_VIEW_ITEM_METRICS_OPTIONS_EXAMPLE: PreloadFileOptions<undefine
     paddingBottom: number | undefined;
   }
 }`,
-    },
-    options,
-  };
+  },
+  options,
+};
 
 export const CODE_VIEW_SCROLL_TARGETS_EXAMPLE: PreloadFileOptions<undefined> = {
   file: {
-    name: 'code_view_scroll_targets.ts',
+    name: "code_view_scroll_targets.ts",
     contents: `// Scroll directly to a file or diff
 viewer.scrollTo({ type: 'item', id: 'diff:src/app.ts', align: 'start' });
 
@@ -155,7 +154,7 @@ viewer.scrollTo({ type: 'position', position: 0 });`,
 
 export const CODE_VIEW_REACT_EXAMPLE: PreloadFileOptions<undefined> = {
   file: {
-    name: 'code_view_react.tsx',
+    name: "code_view_react.tsx",
     contents: `import {
   parseDiffFromFile,
   type CodeViewItem,
@@ -294,7 +293,7 @@ export function ReviewSurface() {
 
 export const CODE_VIEW_VANILLA_EXAMPLE: PreloadFileOptions<undefined> = {
   file: {
-    name: 'code_view_vanilla.ts',
+    name: "code_view_vanilla.ts",
     contents: `import {
   CodeView,
   parseDiffFromFile,

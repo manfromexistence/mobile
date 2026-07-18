@@ -1,7 +1,7 @@
 interface CreateCodeNodeProps {
   pre?: HTMLPreElement;
   code?: HTMLElement;
-  columnType?: 'additions' | 'deletions' | 'unified';
+  columnType?: "additions" | "deletions" | "unified";
   rowSpan?: number;
   containerSize?: boolean;
 }
@@ -14,22 +14,22 @@ export function getOrCreateCodeNode({
   containerSize = false,
 }: CreateCodeNodeProps = {}): HTMLElement {
   if (code == null) {
-    code = document.createElement('code');
-    code.setAttribute('data-code', '');
+    code = document.createElement("code");
+    code.setAttribute("data-code", "");
     if (columnType != null) {
-      code.setAttribute(`data-${columnType}`, '');
+      code.setAttribute(`data-${columnType}`, "");
     }
     pre?.appendChild(code);
   }
   if (rowSpan != null) {
-    code.style.setProperty('grid-row', `span ${rowSpan}`);
+    code.style.setProperty("grid-row", `span ${rowSpan}`);
   } else {
-    code.style.removeProperty('grid-row');
+    code.style.removeProperty("grid-row");
   }
   if (containerSize) {
-    code.setAttribute('data-container-size', '');
+    code.setAttribute("data-container-size", "");
   } else {
-    code.removeAttribute('data-container-size');
+    code.removeAttribute("data-container-size");
   }
   return code;
 }

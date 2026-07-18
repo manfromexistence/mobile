@@ -1,20 +1,20 @@
-import { expect, spyOn, test } from "bun:test"
-import fs from "fs/promises"
-import path from "path"
-import { pathToFileURL } from "url"
-import { tmpdir } from "../../fixture/fixture"
-import { createTuiPluginApi } from "../../fixture/tui-plugin"
-import { createTuiResolvedConfig } from "../../fixture/tui-runtime"
-import { TuiConfig } from "../../../src/config/tui"
+import { expect, spyOn, test } from "bun:test";
+import fs from "fs/promises";
+import path from "path";
+import { pathToFileURL } from "url";
+import { tmpdir } from "../../fixture/fixture";
+import { createTuiPluginApi } from "../../fixture/tui-plugin";
+import { createTuiResolvedConfig } from "../../fixture/tui-runtime";
+import { TuiConfig } from "../../../src/config/tui";
 
-const { TuiPluginRuntime } = await import("../../../src/plugin/tui/runtime")
+const { TuiPluginRuntime } = await import("../../../src/plugin/tui/runtime");
 
 test("installs plugin without loading it", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      const file = path.join(dir, "install-plugin.ts")
-      const spec = pathToFileURL(file).href
-      const marker = path.join(dir, "install.txt")
+      const file = path.join(dir, "install-plugin.ts");
+      const spec = pathToFileURL(file).href;
+      const marker = path.join(dir, "install.txt");
 
       await Bun.write(
         path.join(dir, "package.json"),
@@ -32,7 +32,7 @@ test("installs plugin without loading it", async () => {
           null,
           2,
         ),
-      )
+      );
 
       await Bun.write(
         file,
@@ -44,18 +44,18 @@ test("installs plugin without loading it", async () => {
   },
 }
 `,
-      )
+      );
 
-      return { spec, marker }
+      return { spec, marker };
     },
-  })
+  });
 
-  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json")
+  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json");
   const config = createTuiResolvedConfig({
     plugin: [],
-  })
-  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue()
-  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path)
+  });
+  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue();
+  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path);
   const api = createTuiPluginApi({
     state: {
       path: {
@@ -65,23 +65,23 @@ test("installs plugin without loading it", async () => {
         directory: tmp.path,
       },
     },
-  })
+  });
 
   try {
-    await TuiPluginRuntime.init({ api, config })
-    const out = await TuiPluginRuntime.installPlugin(tmp.extra.spec)
+    await TuiPluginRuntime.init({ api, config });
+    const out = await TuiPluginRuntime.installPlugin(tmp.extra.spec);
     expect(out).toMatchObject({
       ok: true,
       tui: true,
-    })
+    });
 
-    await expect(fs.readFile(tmp.extra.marker, "utf8")).rejects.toThrow()
-    await expect(TuiPluginRuntime.addPlugin(tmp.extra.spec)).resolves.toBe(true)
-    await expect(fs.readFile(tmp.extra.marker, "utf8")).resolves.toBe("loaded")
+    await expect(fs.readFile(tmp.extra.marker, "utf8")).rejects.toThrow();
+    await expect(TuiPluginRuntime.addPlugin(tmp.extra.spec)).resolves.toBe(true);
+    await expect(fs.readFile(tmp.extra.marker, "utf8")).resolves.toBe("loaded");
   } finally {
-    await TuiPluginRuntime.dispose()
-    cwd.mockRestore()
-    wait.mockRestore()
-    delete process.env.OPENCODE_PLUGIN_META_FILE
+    await TuiPluginRuntime.dispose();
+    cwd.mockRestore();
+    wait.mockRestore();
+    delete process.env.OPENCODE_PLUGIN_META_FILE;
   }
-})
+});

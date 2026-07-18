@@ -1,12 +1,12 @@
-import { Context } from "../context"
+import { Context } from "../context";
 
 export namespace Log {
   const ctx = Context.create<{
-    tags: Record<string, any>
-  }>()
+    tags: Record<string, any>;
+  }>();
 
   export function create(tags?: Record<string, any>) {
-    tags = tags || {}
+    tags = tags || {};
 
     const result = {
       info(message?: any, extra?: Record<string, any>) {
@@ -16,24 +16,24 @@ export namespace Log {
           ...extra,
         })
           .map(([key, value]) => `${key}=${value}`)
-          .join(" ")
-        console.log(prefix, message)
-        return result
+          .join(" ");
+        console.log(prefix, message);
+        return result;
       },
       tag(key: string, value: string) {
-        if (tags) tags[key] = value
-        return result
+        if (tags) tags[key] = value;
+        return result;
       },
       clone() {
-        return Log.create({ ...tags })
+        return Log.create({ ...tags });
       },
-    }
+    };
 
-    return result
+    return result;
   }
 
   export function provide<R>(tags: Record<string, any>, cb: () => R) {
-    const existing = use()
+    const existing = use();
     return ctx.provide(
       {
         tags: {
@@ -42,14 +42,14 @@ export namespace Log {
         },
       },
       cb,
-    )
+    );
   }
 
   function use() {
     try {
-      return ctx.use()
+      return ctx.use();
     } catch {
-      return { tags: {} }
+      return { tags: {} };
     }
   }
 }

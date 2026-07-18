@@ -1,8 +1,9 @@
-import { describe, expect, test } from "bun:test"
-import { promptPlaceholder } from "./placeholder"
+import { describe, expect, test } from "bun:test";
+import { promptPlaceholder } from "./placeholder";
 
 describe("promptPlaceholder", () => {
-  const t = (key: string, params?: Record<string, string>) => `${key}${params?.example ? `:${params.example}` : ""}`
+  const t = (key: string, params?: Record<string, string>) =>
+    `${key}${params?.example ? `:${params.example}` : ""}`;
 
   test("returns shell placeholder in shell mode", () => {
     const value = promptPlaceholder({
@@ -11,18 +12,18 @@ describe("promptPlaceholder", () => {
       example: "example",
       suggest: true,
       t,
-    })
-    expect(value).toBe("prompt.placeholder.shell:example")
-  })
+    });
+    expect(value).toBe("prompt.placeholder.shell:example");
+  });
 
   test("returns summarize placeholders for comment context", () => {
-    expect(promptPlaceholder({ mode: "normal", commentCount: 1, example: "example", suggest: true, t })).toBe(
-      "prompt.placeholder.summarizeComment",
-    )
-    expect(promptPlaceholder({ mode: "normal", commentCount: 2, example: "example", suggest: true, t })).toBe(
-      "prompt.placeholder.summarizeComments",
-    )
-  })
+    expect(
+      promptPlaceholder({ mode: "normal", commentCount: 1, example: "example", suggest: true, t }),
+    ).toBe("prompt.placeholder.summarizeComment");
+    expect(
+      promptPlaceholder({ mode: "normal", commentCount: 2, example: "example", suggest: true, t }),
+    ).toBe("prompt.placeholder.summarizeComments");
+  });
 
   test("returns default placeholder with example when suggestions enabled", () => {
     const value = promptPlaceholder({
@@ -31,9 +32,9 @@ describe("promptPlaceholder", () => {
       example: "translated-example",
       suggest: true,
       t,
-    })
-    expect(value).toBe("prompt.placeholder.normal:translated-example")
-  })
+    });
+    expect(value).toBe("prompt.placeholder.normal:translated-example");
+  });
 
   test("returns simple placeholder when suggestions disabled", () => {
     const value = promptPlaceholder({
@@ -42,7 +43,7 @@ describe("promptPlaceholder", () => {
       example: "translated-example",
       suggest: false,
       t,
-    })
-    expect(value).toBe("prompt.placeholder.simple")
-  })
-})
+    });
+    expect(value).toBe("prompt.placeholder.simple");
+  });
+});

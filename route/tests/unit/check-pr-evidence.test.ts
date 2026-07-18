@@ -8,7 +8,7 @@ const mod = await import("../../scripts/check/check-pr-evidence.mjs");
 const { evaluatePrBody } = mod;
 const SCRIPT = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
-  "../../scripts/check/check-pr-evidence.mjs"
+  "../../scripts/check/check-pr-evidence.mjs",
 );
 
 function run(body) {

@@ -14,8 +14,9 @@ process.env.CALL_LOG_RETENTION_DAYS = "7";
 process.env.CALL_LOG_MAX_ENTRIES = "2";
 
 const core = await import("../../src/lib/db/core.ts");
-const { rotateCallLogs, cleanupOverflowCallLogFiles } =
-  await import("../../src/lib/usage/callLogs.ts");
+const { rotateCallLogs, cleanupOverflowCallLogFiles } = await import(
+  "../../src/lib/usage/callLogs.ts"
+);
 const { CALL_LOGS_DIR } = await import("../../src/lib/usage/callLogArtifacts.ts");
 
 async function resetTestDataDir() {
@@ -53,7 +54,7 @@ function insertCallLog(row) {
       has_request_body
     )
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `
+  `,
   ).run(
     row.id,
     row.timestamp,
@@ -65,14 +66,14 @@ function insertCallLog(row) {
     row.account || "acct",
     row.detail_state || "ready",
     row.artifact_relpath || null,
-    row.has_request_body || 1
+    row.has_request_body || 1,
   );
 }
 
 function buildArtifactRelPath(date: Date, label: string) {
   const dateFolder = date.toISOString().slice(0, 10);
   const timePart = `${String(date.getUTCHours()).padStart(2, "0")}${String(
-    date.getUTCMinutes()
+    date.getUTCMinutes(),
   ).padStart(2, "0")}${String(date.getUTCSeconds()).padStart(2, "0")}`;
   return `${dateFolder}/${timePart}_${label}_200.json`;
 }
@@ -154,22 +155,22 @@ test("call log file rotation honors both retention days and file count", () => {
   fs.utimesSync(
     path.join(CALL_LOGS_DIR, oldRelPath),
     new Date(now - 10 * oneDay),
-    new Date(now - 10 * oneDay)
+    new Date(now - 10 * oneDay),
   );
   fs.utimesSync(
     path.join(CALL_LOGS_DIR, keepARelPath),
     new Date(now - 3 * oneDay),
-    new Date(now - 3 * oneDay)
+    new Date(now - 3 * oneDay),
   );
   fs.utimesSync(
     path.join(CALL_LOGS_DIR, keepBRelPath),
     new Date(now - 2 * oneDay),
-    new Date(now - 2 * oneDay)
+    new Date(now - 2 * oneDay),
   );
   fs.utimesSync(
     path.join(CALL_LOGS_DIR, keepCRelPath),
     new Date(now - oneDay),
-    new Date(now - oneDay)
+    new Date(now - oneDay),
   );
 
   rotateCallLogs();
@@ -177,7 +178,7 @@ test("call log file rotation honors both retention days and file count", () => {
   const db = core.getDbInstance();
   assert.equal(
     (db.prepare("SELECT COUNT(*) AS cnt FROM call_logs WHERE id = ?").get("old-log") as any).cnt,
-    0
+    0,
   );
   assert.equal(fs.existsSync(path.join(CALL_LOGS_DIR, oldRelPath)), false);
 

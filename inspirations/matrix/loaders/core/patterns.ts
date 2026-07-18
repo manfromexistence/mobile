@@ -6,9 +6,7 @@ const CENTER = Math.floor(MATRIX_SIZE / 2);
 
 const RANGE = [...Array(MATRIX_SIZE).keys()];
 
-export const FULL_INDEXES = RANGE.flatMap((row) =>
-  RANGE.map((col) => rowMajorIndex(row, col))
-);
+export const FULL_INDEXES = RANGE.flatMap((row) => RANGE.map((col) => rowMajorIndex(row, col)));
 
 export const DIAMOND_INDEXES = FULL_INDEXES.filter((index) => {
   const { row, col } = indexToCoord(index);
@@ -47,7 +45,7 @@ const PATTERN_INDEXES: Record<MatrixPattern, number[]> = {
   outline: OUTLINE_INDEXES,
   rose: ROSE_INDEXES,
   cross: CROSS_INDEXES,
-  rings: RINGS_INDEXES
+  rings: RINGS_INDEXES,
 };
 
 export function getPatternIndexes(pattern: MatrixPattern = "diamond"): number[] {
@@ -61,7 +59,7 @@ export function rowMajorIndex(row: number, col: number): number {
 export function indexToCoord(index: number): { row: number; col: number } {
   return {
     row: Math.floor(index / MATRIX_SIZE),
-    col: index % MATRIX_SIZE
+    col: index % MATRIX_SIZE,
   };
 }
 

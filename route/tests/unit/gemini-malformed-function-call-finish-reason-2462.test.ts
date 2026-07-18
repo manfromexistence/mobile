@@ -42,10 +42,10 @@ function runDirectGeminiToClaude(finishReason: string) {
         modelVersion: "gemini-2.5-pro",
         candidates: [{ content: { parts: [{ text: "partial" }] }, finishReason, index: 0 }],
       },
-      state
+      state,
     ) || [];
   const messageDelta = (events as Array<Record<string, unknown>>).find(
-    (event) => event.type === "message_delta"
+    (event) => event.type === "message_delta",
   );
   return (messageDelta?.delta as { stop_reason?: string } | undefined)?.stop_reason;
 }

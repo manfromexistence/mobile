@@ -53,17 +53,14 @@ test("findOrphans: múltiplos collectors — basta UM casar", () => {
 test("evaluateAgainstBaseline: órfão novo é flagado; órfão congelado passa", () => {
   const { newOrphans, stale } = evaluateAgainstBaseline(
     ["tests/unit/novo/a.test.ts", "tests/unit/velho/b.test.ts"],
-    ["tests/unit/velho/b.test.ts"]
+    ["tests/unit/velho/b.test.ts"],
   );
   assert.deepEqual(newOrphans, ["tests/unit/novo/a.test.ts"]);
   assert.deepEqual(stale, []);
 });
 
 test("evaluateAgainstBaseline: entrada congelada que deixou de ser órfã é STALE (remova)", () => {
-  const { newOrphans, stale } = evaluateAgainstBaseline(
-    [],
-    ["tests/unit/religado/c.test.ts"]
-  );
+  const { newOrphans, stale } = evaluateAgainstBaseline([], ["tests/unit/religado/c.test.ts"]);
   assert.deepEqual(newOrphans, []);
   assert.deepEqual(stale, ["tests/unit/religado/c.test.ts"]);
 });

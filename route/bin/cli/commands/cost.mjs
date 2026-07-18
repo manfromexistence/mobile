@@ -63,7 +63,7 @@ export async function runCostCommand(opts, cmd) {
   if (!globalOpts.quiet && globalOpts.output !== "json" && globalOpts.output !== "jsonl") {
     const total = rows.reduce((s, r) => s + (r.costUsd ?? 0), 0);
     process.stderr.write(
-      `\nTotal: $${total.toFixed(4)} across ${rows.length} ${opts.groupBy ?? "provider"}(s)\n`
+      `\nTotal: $${total.toFixed(4)} across ${rows.length} ${opts.groupBy ?? "provider"}(s)\n`,
     );
   }
 }

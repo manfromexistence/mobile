@@ -35,18 +35,18 @@ test("drops pin when the only connection has credits exhausted (terminal)", () =
 test("drops pin on banned/expired terminal status", () => {
   assert.equal(
     pinIsDurablyUnhealthy("CLOSED", [{ testStatus: "banned", backoffLevel: 0 }], NOW, opts),
-    true
+    true,
   );
   assert.equal(
     pinIsDurablyUnhealthy("CLOSED", [{ testStatus: "expired", backoffLevel: 0 }], NOW, opts),
-    true
+    true,
   );
 });
 
 test("drops pin once backoffLevel reaches the threshold (repeated failures)", () => {
   assert.equal(
     pinIsDurablyUnhealthy("CLOSED", [{ testStatus: "active", backoffLevel: 2 }], NOW, opts),
-    true
+    true,
   );
 });
 
@@ -69,9 +69,6 @@ test("drops pin on a long rate-limit window (beyond grace)", () => {
 });
 
 test("keeps pin if ANY connection is usable (terminal + healthy mix)", () => {
-  const conns = [
-    { testStatus: "credits_exhausted", backoffLevel: 0 },
-    healthy,
-  ];
+  const conns = [{ testStatus: "credits_exhausted", backoffLevel: 0 }, healthy];
   assert.equal(pinIsDurablyUnhealthy("CLOSED", conns, NOW, opts), false);
 });

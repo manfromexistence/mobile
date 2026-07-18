@@ -22,7 +22,7 @@ function toRecord(value: unknown): JsonRecord {
 }
 
 export function normalizeResponsesPreviousResponseIdMode(
-  value: unknown
+  value: unknown,
 ): ResponsesPreviousResponseIdMode {
   if (typeof value === "string" && MODE_SET.has(value)) {
     return value as ResponsesPreviousResponseIdMode;
@@ -53,7 +53,7 @@ export function shouldStripPreviousResponseId({
 
 export function applyResponsesPreviousResponseIdPolicy(
   body: unknown,
-  options: ApplyResponsesPreviousResponseIdPolicyOptions
+  options: ApplyResponsesPreviousResponseIdPolicyOptions,
 ): { body: unknown; stripped: boolean; mode: ResponsesPreviousResponseIdMode } {
   const mode = normalizeResponsesPreviousResponseIdMode(options.mode);
   if (!body || typeof body !== "object" || Array.isArray(body)) {

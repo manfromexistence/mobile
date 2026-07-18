@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { createSignal } from "solid-js"
-import { RadioGroupV2, RadioItemV2 } from "./radio-v2"
+import { createSignal } from "solid-js";
+import { RadioGroupV2, RadioItemV2 } from "./radio-v2";
 
 const docs = `### Overview
 Single-select options using Kobalte RadioGroup.
@@ -14,7 +14,7 @@ Single-select options using Kobalte RadioGroup.
 
 ### Theming/tokens
 - Uses \`data-component="radio-v2"\` and slot attributes.
-`
+`;
 
 export default {
   title: "UI V2/Radio",
@@ -28,7 +28,7 @@ export default {
       },
     },
   },
-}
+};
 
 export const Basic = {
   render: () => (
@@ -38,25 +38,36 @@ export const Basic = {
       <RadioItemV2 value="never" label="Never" description="No notifications." />
     </RadioGroupV2>
   ),
-}
+};
 
 export const Controlled = {
   render: () => {
-    const [value, setValue] = createSignal("weekly")
+    const [value, setValue] = createSignal("weekly");
     return (
       <div style={{ display: "grid", gap: "12px" }}>
-        <RadioGroupV2 label="Controlled" value={value()} onChange={(v) => setValue(v)} name="controlled-frequency">
+        <RadioGroupV2
+          label="Controlled"
+          value={value()}
+          onChange={(v) => setValue(v)}
+          name="controlled-frequency"
+        >
           <RadioItemV2 value="daily" label="Daily" />
           <RadioItemV2 value="weekly" label="Weekly" />
           <RadioItemV2 value="never" label="Never" />
         </RadioGroupV2>
-        <div style={{ "font-family": "var(--v2-font-family-sans)", "font-size": "12px", color: "#808080" }}>
+        <div
+          style={{
+            "font-family": "var(--v2-font-family-sans)",
+            "font-size": "12px",
+            color: "#808080",
+          }}
+        >
           Selected: {value()}
         </div>
       </div>
-    )
+    );
   },
-}
+};
 
 export const States = {
   render: () => (
@@ -89,4 +100,4 @@ export const States = {
       </RadioGroupV2>
     </div>
   ),
-}
+};

@@ -25,7 +25,7 @@ export interface BifrostRoutingDecision {
 }
 
 export function getBifrostRoutingConfig(
-  env: NodeJS.ProcessEnv = process.env
+  env: NodeJS.ProcessEnv = process.env,
 ): BifrostRoutingConfig | null {
   const baseUrl = env.BIFROST_BASE_URL?.replace(/\/$/, "");
 
@@ -52,7 +52,7 @@ export function getBifrostRoutingConfig(
 }
 
 export function resolveRelayRoutingBackend(
-  env: NodeJS.ProcessEnv = process.env
+  env: NodeJS.ProcessEnv = process.env,
 ): RelayRoutingBackend {
   const configured = env.OMNIROUTE_RELAY_BACKEND || env.RELAY_ROUTING_BACKEND;
   if (configured && VALID_BACKENDS.has(configured as RelayRoutingBackend)) {
@@ -64,7 +64,7 @@ export function resolveRelayRoutingBackend(
 
 export function shouldTryBifrost(
   backend: RelayRoutingBackend,
-  config: BifrostRoutingConfig | null
+  config: BifrostRoutingConfig | null,
 ): config is BifrostRoutingConfig {
   return Boolean(config?.enabled && backend !== "ts");
 }
@@ -73,7 +73,7 @@ export function shouldTryBifrostForRequest(
   backend: RelayRoutingBackend,
   config: BifrostRoutingConfig | null,
   body: unknown,
-  lookupProviderSidecar: ProviderSidecarLookup
+  lookupProviderSidecar: ProviderSidecarLookup,
 ): BifrostRoutingDecision {
   if (!shouldTryBifrost(backend, config)) {
     return { tryBifrost: false };
@@ -82,9 +82,10 @@ export function shouldTryBifrostForRequest(
     return { tryBifrost: true };
   }
 
-  const model = typeof (body as { model?: unknown } | null)?.model === "string"
-    ? (body as { model: string }).model
-    : undefined;
+  const model =
+    typeof (body as { model?: unknown } | null)?.model === "string"
+      ? (body as { model: string }).model
+      : undefined;
   const provider = lookupProviderSidecar(model);
   if (provider?.eligible) {
     return { tryBifrost: true };
@@ -98,7 +99,7 @@ export function shouldTryBifrostForRequest(
 
 export function getRoutingFallbackHeader(
   backend: RelayRoutingBackend,
-  config: BifrostRoutingConfig | null
+  config: BifrostRoutingConfig | null,
 ): "bifrost" | undefined {
   return backend === "auto" && config?.enabled ? "bifrost" : undefined;
 }

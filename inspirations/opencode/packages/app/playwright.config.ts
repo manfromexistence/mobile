@@ -1,15 +1,16 @@
-import { defineConfig, devices } from "@playwright/test"
+import { defineConfig, devices } from "@playwright/test";
 
-const port = Number(process.env.PLAYWRIGHT_PORT ?? 3000)
-const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://127.0.0.1:${port}`
-const serverHost = process.env.PLAYWRIGHT_SERVER_HOST ?? "127.0.0.1"
-const serverPort = process.env.PLAYWRIGHT_SERVER_PORT ?? "4096"
-const command = `bun run dev -- --host 0.0.0.0 --port ${port}`
-const reuse = !process.env.CI
-const workers = Number(process.env.PLAYWRIGHT_WORKERS ?? (process.env.CI ? 5 : 0)) || undefined
+const port = Number(process.env.PLAYWRIGHT_PORT ?? 3000);
+const baseURL = process.env.PLAYWRIGHT_BASE_URL ?? `http://127.0.0.1:${port}`;
+const serverHost = process.env.PLAYWRIGHT_SERVER_HOST ?? "127.0.0.1";
+const serverPort = process.env.PLAYWRIGHT_SERVER_PORT ?? "4096";
+const command = `bun run dev -- --host 0.0.0.0 --port ${port}`;
+const reuse = !process.env.CI;
+const workers = Number(process.env.PLAYWRIGHT_WORKERS ?? (process.env.CI ? 5 : 0)) || undefined;
 export default defineConfig({
   testDir: "./e2e",
-  testIgnore: process.env.OPENCODE_PERFORMANCE === "1" ? "performance/**/*.test.ts" : "performance/**",
+  testIgnore:
+    process.env.OPENCODE_PERFORMANCE === "1" ? "performance/**/*.test.ts" : "performance/**",
   outputDir: "./e2e/test-results",
   timeout: 60_000,
   expect: {
@@ -42,4 +43,4 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
   ],
-})
+});

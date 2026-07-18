@@ -9,8 +9,9 @@ import assert from "node:assert/strict";
 
 describe("ApiKeyField — module shape", () => {
   it("exports ApiKeyField function", async () => {
-    const mod =
-      await import("../../../../../src/app/(dashboard)/dashboard/providers/services/components/ApiKeyField.tsx");
+    const mod = await import(
+      "../../../../../src/app/(dashboard)/dashboard/providers/services/components/ApiKeyField.tsx"
+    );
     assert.equal(typeof mod.ApiKeyField, "function");
   });
 });

@@ -39,7 +39,7 @@ test("Responses WS memory query falls back to prompt or instructions", () => {
   assert.equal(extractResponsesWsMemoryQuery({ prompt: "  prompt text  " }), "prompt text");
   assert.equal(
     extractResponsesWsMemoryQuery({ instructions: "  instruction text  " }),
-    "instruction text"
+    "instruction text",
   );
 });
 
@@ -52,14 +52,14 @@ test("Responses WS memory injection prepends memory to instructions without muta
 
   const result = injectResponsesWsMemoryInstructions(
     request,
-    "Memory context: user prefers concise replies"
+    "Memory context: user prefers concise replies",
   );
 
   assert.notEqual(result, request);
   assert.equal(request.instructions, "follow the user request");
   assert.equal(
     result.instructions,
-    "Memory context: user prefers concise replies\n\nfollow the user request"
+    "Memory context: user prefers concise replies\n\nfollow the user request",
   );
 });
 

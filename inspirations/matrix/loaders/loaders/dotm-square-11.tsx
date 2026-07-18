@@ -9,7 +9,12 @@ import type { DotAnimationResolver, DotMatrixCommonProps } from "../types";
 
 export type DotmSquare11Props = DotMatrixCommonProps;
 
-const animationResolver: DotAnimationResolver = ({ isActive, manhattanDistance, reducedMotion, phase }) => {
+const animationResolver: DotAnimationResolver = ({
+  isActive,
+  manhattanDistance,
+  reducedMotion,
+  phase,
+}) => {
   if (!isActive) {
     return { className: "dmx-inactive" };
   }
@@ -17,15 +22,15 @@ const animationResolver: DotAnimationResolver = ({ isActive, manhattanDistance, 
   const ring = Math.max(0, Math.min(4, manhattanDistance));
   const style = {
     "--dmx-ripple-ring": ring,
-    "--dmx-ripple-parity": ring % 2
+    "--dmx-ripple-parity": ring % 2,
   } as CSSProperties;
 
   if (reducedMotion || phase === "idle") {
     return {
       style: {
         ...style,
-        opacity: 0.2 + (1 - ring / 4) * 0.72
-      }
+        opacity: 0.2 + (1 - ring / 4) * 0.72,
+      },
     };
   }
 
@@ -40,10 +45,14 @@ export function DotmSquare11({
   ...rest
 }: DotmSquare11Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
 
   return (

@@ -5,24 +5,21 @@ import {
   materializeNodePath,
   recomputeCountsUpwardFrom,
   requireNode,
-} from './canonical';
+} from "./canonical";
 import {
   ensureChildPositions,
   getVisibleChildPrefixCount,
   selectChildIndexByVisibleIndex,
-} from './child-index';
-import { createCollapseEvent, createExpandEvent } from './events';
+} from "./child-index";
+import { createCollapseEvent, createExpandEvent } from "./events";
 import {
   collectFlattenedDirectoryChainIds,
   getFlattenedChildDirectoryId,
   getFlattenedTerminalDirectoryId,
-} from './flatten';
-import type { DirectoryChildIndex, NodeId } from './internal-types';
-import { isDirectoryNode } from './internal-types';
-import {
-  setBenchmarkCounter,
-  withBenchmarkPhase,
-} from './internal/benchmarkInstrumentation';
+} from "./flatten";
+import type { DirectoryChildIndex, NodeId } from "./internal-types";
+import { isDirectoryNode } from "./internal-types";
+import { setBenchmarkCounter, withBenchmarkPhase } from "./internal/benchmarkInstrumentation";
 import type {
   PathStoreCollapseEvent,
   PathStoreDirectoryLoadState,
@@ -33,14 +30,10 @@ import type {
   PathStoreVisibleTreeProjection,
   PathStoreVisibleTreeProjectionData,
   PathStoreVisibleTreeProjectionRow,
-} from './public-types';
-import { getSegmentValue } from './segments';
-import {
-  getDirectoryLoadState,
-  isDirectoryExpanded,
-  setDirectoryExpanded,
-} from './state';
-import type { PathStoreState } from './state';
+} from "./public-types";
+import { getSegmentValue } from "./segments";
+import { getDirectoryLoadState, isDirectoryExpanded, setDirectoryExpanded } from "./state";
+import type { PathStoreState } from "./state";
 
 const INITIAL_PROJECTION_DEPTH_CAPACITY = 64;
 type ProjectionDepthTable = Int32Array<ArrayBufferLike>;
@@ -53,7 +46,7 @@ interface VisibleRowCursor {
 
 function ensureProjectionDepthCapacity(
   depthTable: ProjectionDepthTable,
-  depth: number
+  depth: number,
 ): ProjectionDepthTable {
   const requiredLength = depth + 2;
   if (requiredLength <= depthTable.length) {
@@ -86,7 +79,7 @@ function getVisibleRowSubtreeEndIndex(
   state: PathStoreState,
   cursor: VisibleRowCursor,
   index: number,
-  totalVisibleCount: number
+  totalVisibleCount: number,
 ): number {
   const terminalNode = requireNode(state, cursor.terminalNodeId);
   const subtreeSize = Math.max(1, terminalNode.visibleSubtreeCount);
@@ -97,7 +90,7 @@ function materializeVisibleAncestorRow(
   state: PathStoreState,
   entry: VisibleRowCursorWithIndex,
   totalVisibleCount: number,
-  ancestorPaths: readonly string[]
+  ancestorPaths: readonly string[],
 ): PathStoreVisibleAncestorRow {
   return {
     ancestorPaths,
@@ -109,7 +102,7 @@ function materializeVisibleAncestorRow(
       state,
       entry.cursor,
       entry.index,
-      totalVisibleCount
+      totalVisibleCount,
     ),
   };
 }
@@ -120,7 +113,7 @@ function selectVisibleRowContextWithinDirectory(
   index: number,
   directoryStartIndex: number,
   parentVisibleDepth: number,
-  ancestors: readonly VisibleRowCursorWithIndex[]
+  ancestors: readonly VisibleRowCursorWithIndex[],
 ): {
   ancestors: readonly VisibleRowCursorWithIndex[];
   cursor: VisibleRowCursor;
@@ -129,8 +122,11 @@ function selectVisibleRowContextWithinDirectory(
   setSize: number;
 } {
   const directoryIndex = getDirectoryIndex(state, directoryNodeId);
-  const { childIndex, childVisibleIndex, localVisibleIndex } =
-    selectChildIndexByVisibleIndex(state.snapshot.nodes, directoryIndex, index);
+  const { childIndex, childVisibleIndex, localVisibleIndex } = selectChildIndexByVisibleIndex(
+    state.snapshot.nodes,
+    directoryIndex,
+    index,
+  );
   const childId = directoryIndex.childIds[childIndex];
   if (childId == null) {
     throw new Error(`Visible index ${String(index)} is out of range`);
@@ -144,7 +140,7 @@ function selectVisibleRowContextWithinDirectory(
     parentVisibleDepth + 1,
     childIndex,
     directoryIndex.childIds.length,
-    ancestors
+    ancestors,
   );
 }
 
@@ -156,7 +152,7 @@ function selectVisibleRowContextWithinSubtree(
   visibleDepth: number,
   posInSet: number,
   setSize: number,
-  ancestors: readonly VisibleRowCursorWithIndex[]
+  ancestors: readonly VisibleRowCursorWithIndex[],
 ): {
   ancestors: readonly VisibleRowCursorWithIndex[];
   cursor: VisibleRowCursor;
@@ -199,9 +195,7 @@ function selectVisibleRowContextWithinSubtree(
     !isDirectoryNode(terminalNode) ||
     !isDirectoryExpanded(state, currentCursor.terminalNodeId, terminalNode)
   ) {
-    throw new Error(
-      `Visible index ${String(index)} is out of range for collapsed directory`
-    );
+    throw new Error(`Visible index ${String(index)} is out of range for collapsed directory`);
   }
 
   return selectVisibleRowContextWithinDirectory(
@@ -210,16 +204,13 @@ function selectVisibleRowContextWithinSubtree(
     index - 1,
     rowIndex + 1,
     currentCursor.visibleDepth,
-    [
-      ...ancestors,
-      { cursor: currentCursor, index: rowIndex, posInSet, setSize },
-    ]
+    [...ancestors, { cursor: currentCursor, index: rowIndex, posInSet, setSize }],
   );
 }
 
 export function getVisibleRowContext(
   state: PathStoreState,
-  index: number
+  index: number,
 ): PathStoreVisibleRowContext | null {
   const totalVisibleCount = getVisibleCount(state);
   if (index < 0 || index >= totalVisibleCount) {
@@ -232,10 +223,10 @@ export function getVisibleRowContext(
     index,
     0,
     -1,
-    []
+    [],
   );
   const ancestorPaths = selected.ancestors.map((ancestor) =>
-    materializeNodePath(state, ancestor.cursor.terminalNodeId)
+    materializeNodePath(state, ancestor.cursor.terminalNodeId),
   );
   let cachedAncestorRows: readonly PathStoreVisibleAncestorRow[] | null = null;
 
@@ -249,12 +240,9 @@ export function getVisibleRowContext(
       const ancestorRows: PathStoreVisibleAncestorRow[] = [];
       const rowAncestorPaths: string[] = [];
       for (const ancestor of selected.ancestors) {
-        const ancestorRow = materializeVisibleAncestorRow(
-          state,
-          ancestor,
-          totalVisibleCount,
-          [...rowAncestorPaths]
-        );
+        const ancestorRow = materializeVisibleAncestorRow(state, ancestor, totalVisibleCount, [
+          ...rowAncestorPaths,
+        ]);
         ancestorRows.push(ancestorRow);
         rowAncestorPaths.push(ancestorRow.row.path);
       }
@@ -269,7 +257,7 @@ export function getVisibleRowContext(
       state,
       selected.cursor,
       selected.index,
-      totalVisibleCount
+      totalVisibleCount,
     ),
   };
 }
@@ -277,7 +265,7 @@ export function getVisibleRowContext(
 export function getVisibleSlice(
   state: PathStoreState,
   start: number,
-  end: number
+  end: number,
 ): readonly PathStoreVisibleRow[] {
   const instrumentation = state.instrumentation;
   const totalVisibleCount = getVisibleCount(state);
@@ -286,10 +274,7 @@ export function getVisibleSlice(
   }
 
   const normalizedStart = Math.max(0, Math.min(start, totalVisibleCount - 1));
-  const normalizedEnd = Math.max(
-    normalizedStart,
-    Math.min(end, totalVisibleCount - 1)
-  );
+  const normalizedEnd = Math.max(normalizedStart, Math.min(end, totalVisibleCount - 1));
 
   if (instrumentation == null) {
     // Fast path: full-tree DFS avoids the expensive parent-walk for finding
@@ -319,8 +304,8 @@ export function getVisibleSlice(
   let flattenedSegmentCount = 0;
   let currentCursor = withBenchmarkPhase(
     instrumentation,
-    'store.getVisibleSlice.selectFirstRow',
-    () => selectVisibleRow(state, normalizedStart)
+    "store.getVisibleSlice.selectFirstRow",
+    () => selectVisibleRow(state, normalizedStart),
   );
 
   for (
@@ -328,77 +313,53 @@ export function getVisibleSlice(
     visibleIndex <= normalizedEnd && currentCursor != null;
     visibleIndex++
   ) {
-    const row = withBenchmarkPhase(
-      instrumentation,
-      'store.getVisibleSlice.materializeRow',
-      () => materializeVisibleRow(state, currentCursor as VisibleRowCursor)
+    const row = withBenchmarkPhase(instrumentation, "store.getVisibleSlice.materializeRow", () =>
+      materializeVisibleRow(state, currentCursor as VisibleRowCursor),
     );
     rows.push(row);
     if (row.isFlattened) {
       flattenedRowCount++;
       flattenedSegmentCount += row.flattenedSegments?.length ?? 0;
     }
-    currentCursor = withBenchmarkPhase(
-      instrumentation,
-      'store.getVisibleSlice.advanceCursor',
-      () => getNextVisibleRowCursor(state, currentCursor as VisibleRowCursor)
+    currentCursor = withBenchmarkPhase(instrumentation, "store.getVisibleSlice.advanceCursor", () =>
+      getNextVisibleRowCursor(state, currentCursor as VisibleRowCursor),
     );
   }
 
-  setBenchmarkCounter(instrumentation, 'workload.visibleRowsRead', rows.length);
-  setBenchmarkCounter(
-    instrumentation,
-    'workload.flattenedRowsRead',
-    flattenedRowCount
-  );
-  setBenchmarkCounter(
-    instrumentation,
-    'workload.flattenedSegmentsRead',
-    flattenedSegmentCount
-  );
+  setBenchmarkCounter(instrumentation, "workload.visibleRowsRead", rows.length);
+  setBenchmarkCounter(instrumentation, "workload.flattenedRowsRead", flattenedRowCount);
+  setBenchmarkCounter(instrumentation, "workload.flattenedSegmentsRead", flattenedSegmentCount);
   return rows;
 }
 
 export function getVisibleTreeProjectionData(
   state: PathStoreState,
-  maxRows: number = getVisibleCount(state)
+  maxRows: number = getVisibleCount(state),
 ): PathStoreVisibleTreeProjectionData {
   const instrumentation = state.instrumentation;
   if (instrumentation == null) {
     return buildVisibleTreeProjectionDataDFS(state, maxRows);
   }
 
-  return withBenchmarkPhase(
-    instrumentation,
-    'store.getVisibleTreeProjection',
-    () => buildVisibleTreeProjectionDataDFS(state, maxRows)
+  return withBenchmarkPhase(instrumentation, "store.getVisibleTreeProjection", () =>
+    buildVisibleTreeProjectionDataDFS(state, maxRows),
   );
 }
 
-export function getVisibleTreeProjection(
-  state: PathStoreState
-): PathStoreVisibleTreeProjection {
-  return createVisibleTreeProjectionFromData(
-    getVisibleTreeProjectionData(state)
-  );
+export function getVisibleTreeProjection(state: PathStoreState): PathStoreVisibleTreeProjection {
+  return createVisibleTreeProjectionFromData(getVisibleTreeProjectionData(state));
 }
 
 // Resolves one canonical path to its current visible row index using stored
 // subtree counts rather than materializing the whole path-to-index map.
-export function getVisibleIndexByPath(
-  state: PathStoreState,
-  path: string
-): number | null {
+export function getVisibleIndexByPath(state: PathStoreState, path: string): number | null {
   const nodeId = findNodeId(state, path);
   if (nodeId == null || nodeId === state.snapshot.rootId) {
     return null;
   }
 
   const node = requireNode(state, nodeId);
-  if (
-    isDirectoryNode(node) &&
-    getFlattenedTerminalDirectoryId(state, nodeId) !== nodeId
-  ) {
+  if (isDirectoryNode(node) && getFlattenedTerminalDirectoryId(state, nodeId) !== nodeId) {
     return null;
   }
 
@@ -412,23 +373,14 @@ export function getVisibleIndexByPath(
     const parentIndex = getDirectoryIndex(state, parentId);
     const childPosition = ensureChildPositions(parentIndex).get(currentNodeId);
     if (childPosition == null) {
-      throw new Error(
-        `Child ${String(currentNodeId)} was not found in its parent index`
-      );
+      throw new Error(`Child ${String(currentNodeId)} was not found in its parent index`);
     }
 
-    visibleIndex += getVisibleChildPrefixCount(
-      nodes,
-      parentIndex,
-      childPosition
-    );
+    visibleIndex += getVisibleChildPrefixCount(nodes, parentIndex, childPosition);
 
     if (parentId !== rootId) {
       const parentNode = requireNode(state, parentId);
-      const flattenedChildDirectoryId = getFlattenedChildDirectoryId(
-        state,
-        parentId
-      );
+      const flattenedChildDirectoryId = getFlattenedChildDirectoryId(state, parentId);
       if (
         !isDirectoryExpanded(state, parentId, parentNode) &&
         flattenedChildDirectoryId !== currentNodeId
@@ -447,10 +399,7 @@ export function getVisibleIndexByPath(
   return visibleIndex;
 }
 
-export function expandPath(
-  state: PathStoreState,
-  path: string
-): PathStoreExpandEvent | null {
+export function expandPath(state: PathStoreState, path: string): PathStoreExpandEvent | null {
   const directoryNodeId = findNodeId(state, path);
   if (directoryNodeId == null) {
     throw new Error(`Path does not exist: "${path}"`);
@@ -475,10 +424,7 @@ export function expandPath(
   });
 }
 
-export function collapsePath(
-  state: PathStoreState,
-  path: string
-): PathStoreCollapseEvent | null {
+export function collapsePath(state: PathStoreState, path: string): PathStoreCollapseEvent | null {
   const directoryNodeId = findNodeId(state, path);
   if (directoryNodeId == null) {
     throw new Error(`Path does not exist: "${path}"`);
@@ -503,55 +449,31 @@ export function collapsePath(
   });
 }
 
-function selectVisibleRow(
-  state: PathStoreState,
-  index: number
-): VisibleRowCursor | null {
+function selectVisibleRow(state: PathStoreState, index: number): VisibleRowCursor | null {
   if (index < 0 || index >= getVisibleCount(state)) {
     return null;
   }
 
-  return selectVisibleRowWithinDirectory(
-    state,
-    state.snapshot.rootId,
-    index,
-    -1
-  );
+  return selectVisibleRowWithinDirectory(state, state.snapshot.rootId, index, -1);
 }
 
 function selectVisibleRowWithinDirectory(
   state: PathStoreState,
   directoryNodeId: NodeId,
   index: number,
-  parentVisibleDepth: number
+  parentVisibleDepth: number,
 ): VisibleRowCursor {
   const directoryIndex = getDirectoryIndex(state, directoryNodeId);
   const instrumentation = state.instrumentation;
   const { childIndex, localVisibleIndex } =
     instrumentation == null
-      ? selectChildIndexByVisibleIndex(
-          state.snapshot.nodes,
-          directoryIndex,
-          index
-        )
-      : withBenchmarkPhase(
-          instrumentation,
-          'store.getVisibleSlice.selectChildIndex',
-          () =>
-            selectChildIndexByVisibleIndex(
-              state.snapshot.nodes,
-              directoryIndex,
-              index
-            )
+      ? selectChildIndexByVisibleIndex(state.snapshot.nodes, directoryIndex, index)
+      : withBenchmarkPhase(instrumentation, "store.getVisibleSlice.selectChildIndex", () =>
+          selectChildIndexByVisibleIndex(state.snapshot.nodes, directoryIndex, index),
         );
   const childId = directoryIndex.childIds[childIndex];
   if (childId != null) {
-    return selectVisibleRowWithinSubtree(
-      state,
-      childId,
-      localVisibleIndex,
-      parentVisibleDepth + 1
-    );
+    return selectVisibleRowWithinSubtree(state, childId, localVisibleIndex, parentVisibleDepth + 1);
   }
 
   throw new Error(`Visible index ${String(index)} is out of range`);
@@ -561,7 +483,7 @@ function selectVisibleRowWithinSubtree(
   state: PathStoreState,
   nodeId: NodeId,
   index: number,
-  visibleDepth: number
+  visibleDepth: number,
 ): VisibleRowCursor {
   const node = requireNode(state, nodeId);
   if (!isDirectoryNode(node)) {
@@ -586,23 +508,21 @@ function selectVisibleRowWithinSubtree(
     !isDirectoryNode(terminalNode) ||
     !isDirectoryExpanded(state, currentCursor.terminalNodeId, terminalNode)
   ) {
-    throw new Error(
-      `Visible index ${String(index)} is out of range for collapsed directory`
-    );
+    throw new Error(`Visible index ${String(index)} is out of range for collapsed directory`);
   }
 
   return selectVisibleRowWithinDirectory(
     state,
     currentCursor.terminalNodeId,
     index - 1,
-    currentCursor.visibleDepth
+    currentCursor.visibleDepth,
   );
 }
 
 function createVisibleRowCursor(
   state: PathStoreState,
   nodeId: NodeId,
-  visibleDepth: number
+  visibleDepth: number,
 ): VisibleRowCursor {
   const node = requireNode(state, nodeId);
   if (!isDirectoryNode(node)) {
@@ -625,8 +545,8 @@ function createVisibleRowCursor(
     headNodeId: nodeId,
     terminalNodeId: withBenchmarkPhase(
       state.instrumentation,
-      'store.getVisibleSlice.flatten.resolveTerminalDirectory',
-      () => getFlattenedTerminalDirectoryId(state, nodeId)
+      "store.getVisibleSlice.flatten.resolveTerminalDirectory",
+      () => getFlattenedTerminalDirectoryId(state, nodeId),
     ),
     visibleDepth,
   };
@@ -649,7 +569,7 @@ function isVisibleRowHeadNode(state: PathStoreState, nodeId: NodeId): boolean {
 // Walks the visible preorder sequence without materializing the full row list.
 function getNextVisibleRowCursor(
   state: PathStoreState,
-  currentCursor: VisibleRowCursor
+  currentCursor: VisibleRowCursor,
 ): VisibleRowCursor | null {
   const terminalNode = requireNode(state, currentCursor.terminalNodeId);
   if (isDirectoryNode(terminalNode)) {
@@ -661,12 +581,7 @@ function getNextVisibleRowCursor(
       const firstChildId = currentIndex.childIds[0];
       return firstChildId == null
         ? null
-        : selectVisibleRowWithinSubtree(
-            state,
-            firstChildId,
-            0,
-            currentCursor.visibleDepth + 1
-          );
+        : selectVisibleRowWithinSubtree(state, firstChildId, 0, currentCursor.visibleDepth + 1);
     }
   }
 
@@ -680,22 +595,14 @@ function getNextVisibleRowCursor(
 
     const parentId = currentNode.parentId;
     const parentIndex = getDirectoryIndex(state, parentId);
-    const siblingIndex =
-      ensureChildPositions(parentIndex).get(currentNodeId) ?? -1;
+    const siblingIndex = ensureChildPositions(parentIndex).get(currentNodeId) ?? -1;
     if (siblingIndex < 0) {
-      throw new Error(
-        `Child ${String(currentNodeId)} was not found in its parent index`
-      );
+      throw new Error(`Child ${String(currentNodeId)} was not found in its parent index`);
     }
 
     const nextSiblingId = parentIndex.childIds[siblingIndex + 1] ?? null;
     if (nextSiblingId != null) {
-      return selectVisibleRowWithinSubtree(
-        state,
-        nextSiblingId,
-        0,
-        currentVisibleDepth
-      );
+      return selectVisibleRowWithinSubtree(state, nextSiblingId, 0, currentVisibleDepth);
     }
 
     if (isVisibleRowHeadNode(state, currentNodeId)) {
@@ -706,20 +613,17 @@ function getNextVisibleRowCursor(
 }
 
 function createVisibleTreeProjectionFromData(
-  projection: PathStoreVisibleTreeProjectionData
+  projection: PathStoreVisibleTreeProjectionData,
 ): PathStoreVisibleTreeProjection {
   const rowCount = projection.paths.length;
-  const projectionRows: PathStoreVisibleTreeProjectionRow[] = new Array(
-    rowCount
-  );
+  const projectionRows: PathStoreVisibleTreeProjectionRow[] = new Array(rowCount);
 
   for (let rowIndex = 0; rowIndex < rowCount; rowIndex += 1) {
     const parentIndex = projection.getParentIndex(rowIndex);
     projectionRows[rowIndex] = {
       index: rowIndex,
-      parentPath:
-        parentIndex >= 0 ? (projection.paths[parentIndex] ?? null) : null,
-      path: projection.paths[rowIndex] ?? '',
+      parentPath: parentIndex >= 0 ? (projection.paths[parentIndex] ?? null) : null,
+      path: projection.paths[rowIndex] ?? "",
       posInSet: projection.posInSetByIndex[rowIndex] ?? 0,
       setSize: projection.setSizeByIndex[rowIndex] ?? 0,
     };
@@ -739,21 +643,19 @@ function createVisibleTreeProjectionFromData(
 // projection row object for every visible item.
 function buildVisibleTreeProjectionDataDFS(
   state: PathStoreState,
-  maxRows: number
+  maxRows: number,
 ): PathStoreVisibleTreeProjectionData {
   const paths = new Array<string>(maxRows);
   const parentRowIndex = new Int32Array(maxRows);
   const posInSetByIndex = new Int32Array(maxRows);
   const setSizeByIndex = new Int32Array(maxRows);
-  let lastRowAtDepth: ProjectionDepthTable = new Int32Array(
-    INITIAL_PROJECTION_DEPTH_CAPACITY
-  );
+  let lastRowAtDepth: ProjectionDepthTable = new Int32Array(INITIAL_PROJECTION_DEPTH_CAPACITY);
   lastRowAtDepth.fill(-1);
 
   let rowCount = 0;
   const { nodes, directories, segmentTable } = state.snapshot;
   const stack: Array<[DirectoryChildIndex, number, number, string]> = [
-    [directories.get(state.snapshot.rootId)!, 0, -1, ''],
+    [directories.get(state.snapshot.rootId)!, 0, -1, ""],
   ];
   const flattenEnabled = state.snapshot.options.flattenEmptyDirectories;
   const pathCacheByNodeId = state.pathCacheByNodeId;
@@ -774,10 +676,7 @@ function buildVisibleTreeProjectionDataDFS(
     const childNode = nodes[childId];
     const visibleDepth = frame[2] + 1;
     const parentPath = frame[3];
-    lastRowAtDepth = ensureProjectionDepthCapacity(
-      lastRowAtDepth,
-      visibleDepth
-    );
+    lastRowAtDepth = ensureProjectionDepthCapacity(lastRowAtDepth, visibleDepth);
 
     let path: string;
     let terminalNodeId = childId;
@@ -788,9 +687,7 @@ function buildVisibleTreeProjectionDataDFS(
           ? cachedPathEntry.path
           : `${parentPath}${segmentValues[childNode.nameId]}`;
     } else {
-      terminalNodeId = flattenEnabled
-        ? getFlattenedTerminalDirectoryId(state, childId)
-        : childId;
+      terminalNodeId = flattenEnabled ? getFlattenedTerminalDirectoryId(state, childId) : childId;
       path =
         terminalNodeId === childId
           ? `${parentPath}${segmentValues[childNode.nameId]}/`
@@ -828,9 +725,7 @@ function buildVisibleTreeProjectionDataDFS(
   let cachedVisibleIndexByPath: Map<string, number> | null = null;
   return {
     getParentIndex(index: number): number {
-      return index < 0 || index >= rowCount
-        ? -1
-        : (finalParentRowIndex[index] ?? -1);
+      return index < 0 || index >= rowCount ? -1 : (finalParentRowIndex[index] ?? -1);
     },
     paths,
     posInSetByIndex: finalPosInSetByIndex,
@@ -839,7 +734,7 @@ function buildVisibleTreeProjectionDataDFS(
       if (cachedVisibleIndexByPath == null) {
         cachedVisibleIndexByPath = new Map<string, number>();
         for (let rowIndex = 0; rowIndex < rowCount; rowIndex += 1) {
-          cachedVisibleIndexByPath.set(paths[rowIndex] ?? '', rowIndex);
+          cachedVisibleIndexByPath.set(paths[rowIndex] ?? "", rowIndex);
         }
       }
 
@@ -852,10 +747,7 @@ function buildVisibleTreeProjectionDataDFS(
 // child arrays directly.  This is faster than the cursor-based approach for
 // large contiguous slices starting from index 0, because it never needs to
 // walk up the tree to locate the next sibling.
-function collectVisibleRowsDFS(
-  state: PathStoreState,
-  maxRows: number
-): PathStoreVisibleRow[] {
+function collectVisibleRowsDFS(state: PathStoreState, maxRows: number): PathStoreVisibleRow[] {
   // Pre-allocate output array to avoid dynamic resizing from push().
   const rows: PathStoreVisibleRow[] = new Array(maxRows);
   let rowCount = 0;
@@ -897,12 +789,11 @@ function collectVisibleRowsDFS(
         isExpanded: false,
         isFlattened: false,
         isLoading: false,
-        kind: 'file',
+        kind: "file",
         loadState: undefined,
         name: segmentValues[childNode.nameId],
         path:
-          cachedPathEntry != null &&
-          cachedPathEntry.version === pathCacheVersion
+          cachedPathEntry != null && cachedPathEntry.version === pathCacheVersion
             ? cachedPathEntry.path
             : materializeNodePath(state, childId),
       };
@@ -941,17 +832,12 @@ function collectVisibleRowsDFS(
 
 function materializeVisibleRow(
   state: PathStoreState,
-  cursor: VisibleRowCursor
+  cursor: VisibleRowCursor,
 ): PathStoreVisibleRow {
   const terminalNode = requireNode(state, cursor.terminalNodeId);
-  const loadState = isDirectoryNode(terminalNode)
-    ? getVisibleRowLoadState(state, cursor)
-    : null;
+  const loadState = isDirectoryNode(terminalNode) ? getVisibleRowLoadState(state, cursor) : null;
   const path = materializeNodePath(state, cursor.terminalNodeId);
-  const name = getSegmentValue(
-    state.snapshot.segmentTable,
-    terminalNode.nameId
-  );
+  const name = getSegmentValue(state.snapshot.segmentTable, terminalNode.nameId);
   const hasChildren =
     isDirectoryNode(terminalNode) &&
     getDirectoryIndex(state, cursor.terminalNodeId).childIds.length > 0;
@@ -959,8 +845,17 @@ function materializeVisibleRow(
   const instrumentation = state.instrumentation;
   const flattenedSegments = isFlattened
     ? instrumentation == null
-      ? collectFlattenedDirectoryChainIds(state, cursor.headNodeId).map(
-          (nodeId) => {
+      ? collectFlattenedDirectoryChainIds(state, cursor.headNodeId).map((nodeId) => {
+          const node = requireNode(state, nodeId);
+          return {
+            isTerminal: nodeId === cursor.terminalNodeId,
+            name: getSegmentValue(state.snapshot.segmentTable, node.nameId),
+            nodeId,
+            path: materializeNodePath(state, nodeId),
+          };
+        })
+      : withBenchmarkPhase(instrumentation, "store.getVisibleSlice.flatten.collectSegments", () =>
+          collectFlattenedDirectoryChainIds(state, cursor.headNodeId).map((nodeId) => {
             const node = requireNode(state, nodeId);
             return {
               isTerminal: nodeId === cursor.terminalNodeId,
@@ -968,26 +863,7 @@ function materializeVisibleRow(
               nodeId,
               path: materializeNodePath(state, nodeId),
             };
-          }
-        )
-      : withBenchmarkPhase(
-          instrumentation,
-          'store.getVisibleSlice.flatten.collectSegments',
-          () =>
-            collectFlattenedDirectoryChainIds(state, cursor.headNodeId).map(
-              (nodeId) => {
-                const node = requireNode(state, nodeId);
-                return {
-                  isTerminal: nodeId === cursor.terminalNodeId,
-                  name: getSegmentValue(
-                    state.snapshot.segmentTable,
-                    node.nameId
-                  ),
-                  nodeId,
-                  path: materializeNodePath(state, nodeId),
-                };
-              }
-            )
+          }),
         )
     : undefined;
 
@@ -1000,10 +876,10 @@ function materializeVisibleRow(
       isDirectoryNode(terminalNode) &&
       isDirectoryExpanded(state, cursor.terminalNodeId, terminalNode),
     isFlattened,
-    isLoading: loadState === 'loading',
-    kind: isDirectoryNode(terminalNode) ? 'directory' : 'file',
+    isLoading: loadState === "loading",
+    kind: isDirectoryNode(terminalNode) ? "directory" : "file",
     loadState:
-      loadState == null || loadState === 'loaded'
+      loadState == null || loadState === "loaded"
         ? undefined
         : (loadState as PathStoreDirectoryLoadState),
     name,
@@ -1013,42 +889,39 @@ function materializeVisibleRow(
 
 function getVisibleRowLoadState(
   state: PathStoreState,
-  cursor: VisibleRowCursor
+  cursor: VisibleRowCursor,
 ): PathStoreDirectoryLoadState {
   if (cursor.headNodeId === cursor.terminalNodeId) {
     return getDirectoryLoadState(state, cursor.terminalNodeId);
   }
 
-  const chainNodeIds = collectFlattenedDirectoryChainIds(
-    state,
-    cursor.headNodeId
-  );
+  const chainNodeIds = collectFlattenedDirectoryChainIds(state, cursor.headNodeId);
   let hasUnloaded = false;
   let hasError = false;
 
   for (const nodeId of chainNodeIds) {
     const loadState = getDirectoryLoadState(state, nodeId);
-    if (loadState === 'loading') {
-      return 'loading';
+    if (loadState === "loading") {
+      return "loading";
     }
 
-    if (loadState === 'error') {
+    if (loadState === "error") {
       hasError = true;
       continue;
     }
 
-    if (loadState === 'unloaded') {
+    if (loadState === "unloaded") {
       hasUnloaded = true;
     }
   }
 
   if (hasError) {
-    return 'error';
+    return "error";
   }
 
   if (hasUnloaded) {
-    return 'unloaded';
+    return "unloaded";
   }
 
-  return 'loaded';
+  return "loaded";
 }

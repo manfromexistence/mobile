@@ -47,12 +47,9 @@ test("detects a whole eaten version section (#6193 pattern)", () => {
 });
 
 test("bullets moved between sections are NOT reported (line content preserved)", () => {
-  const head = BASE.replace(
-    "- **fix(a):** first bullet ([#1](https://x/1))\n",
-    ""
-  ).replace(
+  const head = BASE.replace("- **fix(a):** first bullet ([#1](https://x/1))\n", "").replace(
     "- **feat(c):** shipped bullet ([#3](https://x/3))",
-    "- **feat(c):** shipped bullet ([#3](https://x/3))\n- **fix(a):** first bullet ([#1](https://x/1))"
+    "- **feat(c):** shipped bullet ([#3](https://x/3))\n- **fix(a):** first bullet ([#1](https://x/1))",
   );
   assert.deepEqual(findLostBullets(BASE, head), []);
 });

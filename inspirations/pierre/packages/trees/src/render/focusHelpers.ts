@@ -1,9 +1,9 @@
-import type { FileTreeScrollOffset } from '../model/publicTypes';
+import type { FileTreeScrollOffset } from "../model/publicTypes";
 import {
   computeFocusedRowScrollIntoView,
   computeFocusedRowScrollTopForOffset,
   computeViewportOffsetScrollTop,
-} from './scrollTarget';
+} from "./scrollTarget";
 
 export function focusElement(element: HTMLElement | null): boolean {
   if (element == null || !element.isConnected) {
@@ -24,9 +24,7 @@ export function focusElement(element: HTMLElement | null): boolean {
 
 // Reads the actual focused element from the tree's shadow root so focus sync
 // logic can work even when document.activeElement points at the host.
-export function getActiveTreeElement(
-  rootElement: HTMLElement
-): HTMLElement | null {
+export function getActiveTreeElement(rootElement: HTMLElement): HTMLElement | null {
   const rootNode = rootElement.getRootNode();
   if (rootNode instanceof ShadowRoot) {
     const activeElement = rootNode.activeElement;
@@ -34,15 +32,14 @@ export function getActiveTreeElement(
   }
 
   const activeElement = document.activeElement;
-  return activeElement instanceof HTMLElement &&
-    rootElement.contains(activeElement)
+  return activeElement instanceof HTMLElement && rootElement.contains(activeElement)
     ? activeElement
     : null;
 }
 
 export function readMeasuredViewportHeight(
   scrollElement: HTMLElement | null,
-  fallbackViewportHeight: number
+  fallbackViewportHeight: number,
 ): number {
   if (scrollElement == null) {
     return fallbackViewportHeight;
@@ -53,14 +50,12 @@ export function readMeasuredViewportHeight(
     return rectHeight;
   }
 
-  return scrollElement.clientHeight > 0
-    ? scrollElement.clientHeight
-    : fallbackViewportHeight;
+  return scrollElement.clientHeight > 0 ? scrollElement.clientHeight : fallbackViewportHeight;
 }
 
 export function getCachedViewportHeight(
   cachedViewportHeight: number | null,
-  fallbackViewportHeight: number
+  fallbackViewportHeight: number,
 ): number {
   return cachedViewportHeight != null && cachedViewportHeight > 0
     ? cachedViewportHeight
@@ -70,9 +65,7 @@ export function getCachedViewportHeight(
 // ResizeObserver exposes box sizes without forcing an extra layout read. Use
 // that value to refresh the viewport-height cache, falling back to the direct
 // measurement only in environments that omit the border-box size.
-export function getResizeObserverViewportHeight(
-  entry: ResizeObserverEntry
-): number | null {
+export function getResizeObserverViewportHeight(entry: ResizeObserverEntry): number | null {
   const borderBoxSize = entry.borderBoxSize;
   const firstBorderBoxSize: ResizeObserverSize = Array.isArray(borderBoxSize)
     ? borderBoxSize[0]
@@ -97,7 +90,7 @@ export function scrollFocusedRowIntoView(
   focusedIndex: number,
   itemHeight: number,
   viewportHeight: number,
-  topInset: number = 0
+  topInset: number = 0,
 ): boolean {
   const nextScrollTop = computeFocusedRowScrollIntoView({
     currentScrollTop: scrollElement.scrollTop,
@@ -123,7 +116,7 @@ export function scrollFocusedRowToOffset(
   viewportHeight: number,
   totalHeight: number,
   offset: FileTreeScrollOffset,
-  topInset: number = 0
+  topInset: number = 0,
 ): boolean {
   const nextScrollTop = computeFocusedRowScrollTopForOffset({
     currentScrollTop: scrollElement.scrollTop,
@@ -151,7 +144,7 @@ export function scrollFocusedRowToViewportOffset(
   itemHeight: number,
   viewportHeight: number,
   totalHeight: number,
-  targetViewportOffset: number
+  targetViewportOffset: number,
 ): boolean {
   const nextScrollTop = computeViewportOffsetScrollTop({
     currentScrollTop: scrollElement.scrollTop,
@@ -173,7 +166,7 @@ export function getParkedFocusedRowOffset(
   focusedIndex: number,
   itemHeight: number,
   range: { start: number; end: number },
-  windowHeight: number
+  windowHeight: number,
 ): number | null {
   if (range.end < range.start) {
     return null;

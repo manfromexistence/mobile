@@ -38,7 +38,7 @@ export function validateProviderNodeBaseUrl(baseUrl: string): NextResponse | nul
           details: [{ field: "baseUrl", message }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 }

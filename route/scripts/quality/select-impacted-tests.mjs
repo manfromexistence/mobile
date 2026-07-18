@@ -4,7 +4,8 @@ import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
-const HUB_RE = /(setupPolyfill|tsconfig|package\.json|package-lock\.json|\.env|vitest\.config|stryker\.conf)/;
+const HUB_RE =
+  /(setupPolyfill|tsconfig|package\.json|package-lock\.json|\.env|vitest\.config|stryker\.conf)/;
 // A changed file counts as a "run-it" test ONLY if it is a node:test unit file the TIA
 // step can actually run via `node --test` — i.e. it mirrors the `npm run test:unit` glob.
 // This EXCLUDES vitest files (`.test.tsx`, `tests/unit/autoCombo/**`), e2e and integration
@@ -15,7 +16,7 @@ const UNIT_SUBDIRS =
 // .ts: top-level + UNIT_SUBDIRS (mirrors package.json brace globs).
 // .mjs: package.json uses tests/unit/**/*.test.mjs (any depth under tests/unit).
 const TEST_RE = new RegExp(
-  `^tests/unit/([^/]+\\.test\\.(ts|mjs)$|(${UNIT_SUBDIRS})/.*\\.test\\.(ts|mjs)$|.*\\.test\\.mjs$)`
+  `^tests/unit/([^/]+\\.test\\.(ts|mjs)$|(${UNIT_SUBDIRS})/.*\\.test\\.(ts|mjs)$|.*\\.test\\.mjs$)`,
 );
 
 export function selectImpacted({ changed, map }) {
@@ -44,7 +45,7 @@ function changedFiles() {
   const stdout = execFileSync(
     "git",
     ["diff", "--name-only", "--diff-filter=ACMR", `${baseTarget}...HEAD`],
-    { cwd: ROOT, encoding: "utf8" }
+    { cwd: ROOT, encoding: "utf8" },
   );
   return stdout
     .split("\n")

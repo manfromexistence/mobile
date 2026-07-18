@@ -6,8 +6,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 const { CLI_TOOLS } = await import("../../src/shared/constants/cliTools.ts");
-const { EXPECTED_CODE_COUNT, EXPECTED_AGENT_COUNT } =
-  await import("../../src/shared/schemas/cliCatalog.ts");
+const { EXPECTED_CODE_COUNT, EXPECTED_AGENT_COUNT } = await import(
+  "../../src/shared/schemas/cliCatalog.ts"
+);
 
 const all = Object.values(CLI_TOOLS);
 const codeAll = all.filter((t) => t.category === "code");
@@ -18,7 +19,7 @@ test(`CLI_TOOLS has exactly ${EXPECTED_CODE_COUNT} code entries with baseUrlSupp
   assert.equal(
     codeVisible.length,
     EXPECTED_CODE_COUNT,
-    `Expected ${EXPECTED_CODE_COUNT} visible code entries, got ${codeVisible.length}: ${codeVisible.map((t) => t.id).join(", ")}`
+    `Expected ${EXPECTED_CODE_COUNT} visible code entries, got ${codeVisible.length}: ${codeVisible.map((t) => t.id).join(", ")}`,
   );
 });
 
@@ -26,7 +27,7 @@ test(`CLI_TOOLS has exactly ${EXPECTED_AGENT_COUNT} agent entries`, () => {
   assert.equal(
     agentAll.length,
     EXPECTED_AGENT_COUNT,
-    `Expected ${EXPECTED_AGENT_COUNT} agent entries, got ${agentAll.length}: ${agentAll.map((t) => t.id).join(", ")}`
+    `Expected ${EXPECTED_AGENT_COUNT} agent entries, got ${agentAll.length}: ${agentAll.map((t) => t.id).join(", ")}`,
   );
 });
 
@@ -36,7 +37,7 @@ test("CLI_TOOLS total code entries (including none) equals 24 (20 visible + 4 no
   assert.equal(
     codeNone.length,
     4,
-    `Expected 4 code entries with baseUrlSupport='none', got ${codeNone.length}: ${codeNone.map((t) => t.id).join(", ")}`
+    `Expected 4 code entries with baseUrlSupport='none', got ${codeNone.length}: ${codeNone.map((t) => t.id).join(", ")}`,
   );
   assert.equal(codeAll.length, 24, `Expected 24 total code entries, got ${codeAll.length}`);
 });
@@ -51,7 +52,7 @@ test("All code-none entries have configType mitm OR are legacy excluded entries"
   for (const entry of codeNone) {
     assert.ok(
       allowedIds.has(entry.id),
-      `Unexpected code entry with baseUrlSupport='none': ${entry.id}`
+      `Unexpected code entry with baseUrlSupport='none': ${entry.id}`,
     );
   }
 });
@@ -61,7 +62,7 @@ test("All agent entries have baseUrlSupport 'full' or 'partial' (no agent is 'no
     assert.notEqual(
       entry.baseUrlSupport,
       "none",
-      `Agent entry '${entry.id}' has unexpected baseUrlSupport='none'`
+      `Agent entry '${entry.id}' has unexpected baseUrlSupport='none'`,
     );
   }
 });

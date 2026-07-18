@@ -1,9 +1,9 @@
 // @ts-nocheck
-import { createSignal } from "solid-js"
-import { MenuV2 } from "./menu-v2"
-import { ButtonV2 } from "./button-v2"
-import { Avatar } from "./avatar-v2"
-import { Icon } from "./icon"
+import { createSignal } from "solid-js";
+import { MenuV2 } from "./menu-v2";
+import { ButtonV2 } from "./button-v2";
+import { Avatar } from "./avatar-v2";
+import { Icon } from "./icon";
 
 const docs = `### Overview
 Composable menu primitive built on Kobalte's \`DropdownMenu\` and \`ContextMenu\`. The same item components (\`Item\`, \`CheckboxItem\`, \`RadioItem\`, \`SubTrigger\`) work inside either container.
@@ -19,7 +19,7 @@ Composable menu primitive built on Kobalte's \`DropdownMenu\` and \`ContextMenu\
 - Items expose Kobalte's data attributes — \`data-highlighted\`, \`data-checked\`, \`data-disabled\`.
 - Blue selected state is reserved for \`CheckboxItem\` / \`RadioItem\` (the rest just highlight on hover).
 - Chevron is only rendered on \`SubTrigger\`.
-`
+`;
 
 export default {
   title: "UI V2/Menu",
@@ -35,7 +35,7 @@ export default {
       },
     },
   },
-}
+};
 
 export const Basic = {
   render: () => (
@@ -52,7 +52,7 @@ export const Basic = {
       </MenuV2.Portal>
     </MenuV2>
   ),
-}
+};
 
 export const Rich = {
   render: () => (
@@ -82,13 +82,13 @@ export const Rich = {
       </MenuV2.Portal>
     </MenuV2>
   ),
-}
+};
 
 export const WithCheckbox = {
   render: () => {
-    const [wrap, setWrap] = createSignal(true)
-    const [minimap, setMinimap] = createSignal(false)
-    const [ruler, setRuler] = createSignal(false)
+    const [wrap, setWrap] = createSignal(true);
+    const [minimap, setMinimap] = createSignal(false);
+    const [ruler, setRuler] = createSignal(false);
     return (
       <MenuV2 gutter={6}>
         <MenuV2.Trigger as={ButtonV2}>View</MenuV2.Trigger>
@@ -106,13 +106,13 @@ export const WithCheckbox = {
           </MenuV2.Content>
         </MenuV2.Portal>
       </MenuV2>
-    )
+    );
   },
-}
+};
 
 export const WithRadio = {
   render: () => {
-    const [theme, setTheme] = createSignal("system")
+    const [theme, setTheme] = createSignal("system");
     return (
       <MenuV2 gutter={6}>
         <MenuV2.Trigger as={ButtonV2}>Theme</MenuV2.Trigger>
@@ -131,9 +131,9 @@ export const WithRadio = {
           </MenuV2.Content>
         </MenuV2.Portal>
       </MenuV2>
-    )
+    );
   },
-}
+};
 
 export const WithSubmenu = {
   render: () => (
@@ -162,7 +162,7 @@ export const WithSubmenu = {
       </MenuV2.Portal>
     </MenuV2>
   ),
-}
+};
 
 export const Context = {
   render: () => (
@@ -213,4 +213,4 @@ export const Context = {
       </MenuV2.Context.Portal>
     </MenuV2.Context>
   ),
-}
+};

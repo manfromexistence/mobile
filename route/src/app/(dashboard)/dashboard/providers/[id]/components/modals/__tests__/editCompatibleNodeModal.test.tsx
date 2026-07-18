@@ -47,7 +47,7 @@ describe("EditCompatibleNodeModal (Phase 1b extraction)", () => {
         onSave={async () => {}}
         onClose={() => {}}
         isCcCompatible
-      />
+      />,
     );
     expect(c.querySelector("*")).not.toBeNull();
   });
@@ -55,8 +55,13 @@ describe("EditCompatibleNodeModal (Phase 1b extraction)", () => {
   it("renders nothing harmful when closed", () => {
     expect(() =>
       renderModal(
-        <EditCompatibleNodeModal isOpen={false} node={null} onSave={async () => {}} onClose={() => {}} />
-      )
+        <EditCompatibleNodeModal
+          isOpen={false}
+          node={null}
+          onSave={async () => {}}
+          onClose={() => {}}
+        />,
+      ),
     ).not.toThrow();
   });
 });

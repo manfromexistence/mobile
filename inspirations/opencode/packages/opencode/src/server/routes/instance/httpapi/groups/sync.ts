@@ -1,46 +1,52 @@
-import { NonNegativeInt } from "@opencode-ai/core/schema"
-import { EventV2 } from "@opencode-ai/core/event"
-import { SessionID } from "@/session/schema"
-import { Schema } from "effect"
-import { HttpApi, HttpApiEndpoint, HttpApiError, HttpApiGroup, OpenApi } from "effect/unstable/httpapi"
-import { Authorization } from "../middleware/authorization"
-import { InstanceContextMiddleware } from "../middleware/instance-context"
-import { WorkspaceRoutingMiddleware, WorkspaceRoutingQuery } from "../middleware/workspace-routing"
-import { described } from "./metadata"
+import { NonNegativeInt } from "@opencode-ai/core/schema";
+import { EventV2 } from "@opencode-ai/core/event";
+import { SessionID } from "@/session/schema";
+import { Schema } from "effect";
+import {
+  HttpApi,
+  HttpApiEndpoint,
+  HttpApiError,
+  HttpApiGroup,
+  OpenApi,
+} from "effect/unstable/httpapi";
+import { Authorization } from "../middleware/authorization";
+import { InstanceContextMiddleware } from "../middleware/instance-context";
+import { WorkspaceRoutingMiddleware, WorkspaceRoutingQuery } from "../middleware/workspace-routing";
+import { described } from "./metadata";
 
-const root = "/sync"
+const root = "/sync";
 export const ReplayEvent = Schema.Struct({
   id: EventV2.ID,
   aggregateID: Schema.String,
   seq: NonNegativeInt,
   type: Schema.String,
   data: Schema.Record(Schema.String, Schema.Unknown),
-})
+});
 export const ReplayPayload = Schema.Struct({
   directory: Schema.String,
   events: Schema.NonEmptyArray(ReplayEvent),
-})
+});
 export const ReplayResponse = Schema.Struct({
   sessionID: Schema.String,
-})
+});
 export const SessionPayload = Schema.Struct({
   sessionID: SessionID,
-})
-export const HistoryPayload = Schema.Record(Schema.String, NonNegativeInt)
+});
+export const HistoryPayload = Schema.Record(Schema.String, NonNegativeInt);
 export const HistoryEvent = Schema.Struct({
   id: EventV2.ID,
   aggregate_id: Schema.String,
   seq: NonNegativeInt,
   type: Schema.String,
   data: Schema.Record(Schema.String, Schema.Unknown),
-})
+});
 
 export const SyncPaths = {
   start: `${root}/start`,
   replay: `${root}/replay`,
   steal: `${root}/steal`,
   history: `${root}/history`,
-} as const
+} as const;
 
 export const SyncApi = HttpApi.make("sync")
   .add(
@@ -53,7 +59,8 @@ export const SyncApi = HttpApi.make("sync")
           OpenApi.annotations({
             identifier: "sync.start",
             summary: "Start workspace sync",
-            description: "Start sync loops for workspaces in the current project that have active sessions.",
+            description:
+              "Start sync loops for workspaces in the current project that have active sessions.",
           }),
         ),
         HttpApiEndpoint.post("replay", SyncPaths.replay, {
@@ -77,7 +84,8 @@ export const SyncApi = HttpApi.make("sync")
           OpenApi.annotations({
             identifier: "sync.steal",
             summary: "Steal session into workspace",
-            description: "Update a session to belong to the current workspace through the sync event system.",
+            description:
+              "Update a session to belong to the current workspace through the sync event system.",
           }),
         ),
         HttpApiEndpoint.post("history", SyncPaths.history, {
@@ -110,4 +118,4 @@ export const SyncApi = HttpApi.make("sync")
       version: "0.0.1",
       description: "Experimental HttpApi surface for selected instance routes.",
     }),
-  )
+  );

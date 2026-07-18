@@ -11,7 +11,7 @@ test("extractCodeAssistSubscriptionTier prefers paidTier over currentTier", () =
       paidTier: { id: "tier_google_one_ai_pro", name: "Google One AI Premium" },
       currentTier: { id: "free-tier", name: "Free" },
     }),
-    "Google One AI Premium"
+    "Google One AI Premium",
   );
 });
 
@@ -21,7 +21,7 @@ test("extractCodeAssistSubscriptionTier uses currentTier when not ineligible", (
       currentTier: { id: "tier_pro", name: "Pro" },
       allowedTiers: [{ id: "free-tier", isDefault: true }],
     }),
-    "Pro"
+    "Pro",
   );
 });
 
@@ -32,7 +32,7 @@ test("extractCodeAssistSubscriptionTier uses restricted default when ineligible"
       currentTier: { id: "tier_ultra", name: "Ultra" },
       allowedTiers: [{ id: "tier_pro", name: "Pro", isDefault: true }],
     }),
-    "Pro (Restricted)"
+    "Pro (Restricted)",
   );
 });
 
@@ -42,7 +42,7 @@ test("extractCodeAssistOnboardTierId prefers paidTier id for onboarding", () => 
       paidTier: { id: "tier_google_one_ai_pro" },
       currentTier: { id: "free-tier" },
     }),
-    "tier_google_one_ai_pro"
+    "tier_google_one_ai_pro",
   );
 });
 
@@ -53,7 +53,7 @@ test("extractCodeAssistOnboardTierId skips currentTier when ineligible", () => {
       currentTier: { id: "tier_ultra" },
       allowedTiers: [{ id: "tier_pro", isDefault: true }],
     }),
-    "tier_pro"
+    "tier_pro",
   );
 });
 

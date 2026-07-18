@@ -61,10 +61,10 @@ export function reconstructLMArenaCookie(rawCookie: string): string {
   if (!joined) return rawCookie;
 
   const preserved = pairs.filter(
-    (p) => p.name !== LMARENA_AUTH_COOKIE && !p.name.startsWith(chunkPrefix)
+    (p) => p.name !== LMARENA_AUTH_COOKIE && !p.name.startsWith(chunkPrefix),
   );
   return [`${LMARENA_AUTH_COOKIE}=${joined}`, ...preserved.map((p) => `${p.name}=${p.value}`)].join(
-    "; "
+    "; ",
   );
 }
 

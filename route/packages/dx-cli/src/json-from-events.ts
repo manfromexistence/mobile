@@ -29,7 +29,7 @@ type JsonContext =
  */
 export async function* jsonStreamFromEvents(
   events: AsyncIterable<JsonStreamEvent>,
-  indent: number = 2
+  indent: number = 2,
 ): AsyncIterable<string> {
   const stack: JsonContext[] = [];
   let depth = 0;

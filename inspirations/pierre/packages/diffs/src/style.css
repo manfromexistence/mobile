@@ -2,22 +2,17 @@
 
 @layer base {
   :host {
-    --diffs-font-fallback:
-      'SF Mono', Monaco, Consolas, 'Ubuntu Mono', 'Liberation Mono',
-      'Courier New', monospace;
-    --diffs-header-font-fallback:
-      system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
-      'Noto Sans', 'Liberation Sans', Arial, sans-serif;
+    --diffs-font-fallback: "SF Mono", Monaco, Consolas, "Ubuntu Mono", "Liberation Mono",
+      "Courier New", monospace;
+    --diffs-header-font-fallback: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+      "Noto Sans", "Liberation Sans", Arial, sans-serif;
 
     --diffs-mixer: light-dark(black, white);
     --diffs-gap-fallback: 8px;
     --diffs-scrollbar-gutter-fallback: 6px;
     --diffs-scrollbar-gutter: var(
       --diffs-scrollbar-gutter-override,
-      var(
-        --diffs-scrollbar-gutter-measured,
-        var(--diffs-scrollbar-gutter-fallback)
-      )
+      var(--diffs-scrollbar-gutter-measured, var(--diffs-scrollbar-gutter-fallback))
     );
 
     --diffs-added-light: #0dbe4e;
@@ -74,10 +69,7 @@
 
     color-scheme: light dark;
     display: block;
-    font-family: var(
-      --diffs-header-font-family,
-      var(--diffs-header-font-fallback)
-    );
+    font-family: var(--diffs-header-font-family, var(--diffs-header-font-fallback));
     font-size: var(--diffs-font-size, 13px);
     line-height: var(--diffs-line-height, 20px);
     font-feature-settings: var(--diffs-font-features);
@@ -85,10 +77,7 @@
     /* NOTE(amadeus): we cannot use 'in oklch' because current versions of cursor
      * and vscode use an older build of chrome that appears to have a bug with
      * color-mix and 'in oklch', so use 'in lab' instead */
-    --diffs-bg: light-dark(
-      var(--diffs-light-bg, #fff),
-      var(--diffs-dark-bg, #000)
-    );
+    --diffs-bg: light-dark(var(--diffs-light-bg, #fff), var(--diffs-dark-bg, #000));
     --diffs-bg-buffer: var(
       --diffs-bg-buffer-override,
       light-dark(
@@ -126,48 +115,27 @@
         color-mix(in lab, var(--diffs-fg) 65%, var(--diffs-bg))
       )
     );
-    --diffs-fg-conflict-marker: var(
-      --diffs-fg-conflict-marker-override,
-      var(--diffs-fg-number)
-    );
+    --diffs-fg-conflict-marker: var(--diffs-fg-conflict-marker-override, var(--diffs-fg-number));
 
     --diffs-deletion-base: var(
       --diffs-deletion-color-override,
       light-dark(
-        var(
-          --diffs-light-deletion-color,
-          var(--diffs-deletion-color, var(--diffs-deleted-light))
-        ),
-        var(
-          --diffs-dark-deletion-color,
-          var(--diffs-deletion-color, var(--diffs-deleted-dark))
-        )
+        var(--diffs-light-deletion-color, var(--diffs-deletion-color, var(--diffs-deleted-light))),
+        var(--diffs-dark-deletion-color, var(--diffs-deletion-color, var(--diffs-deleted-dark)))
       )
     );
     --diffs-addition-base: var(
       --diffs-addition-color-override,
       light-dark(
-        var(
-          --diffs-light-addition-color,
-          var(--diffs-addition-color, var(--diffs-added-light))
-        ),
-        var(
-          --diffs-dark-addition-color,
-          var(--diffs-addition-color, var(--diffs-added-dark))
-        )
+        var(--diffs-light-addition-color, var(--diffs-addition-color, var(--diffs-added-light))),
+        var(--diffs-dark-addition-color, var(--diffs-addition-color, var(--diffs-added-dark)))
       )
     );
     --diffs-modified-base: var(
       --diffs-modified-color-override,
       light-dark(
-        var(
-          --diffs-light-modified-color,
-          var(--diffs-modified-color, var(--diffs-modified-light))
-        ),
-        var(
-          --diffs-dark-modified-color,
-          var(--diffs-modified-color, var(--diffs-modified-dark))
-        )
+        var(--diffs-light-modified-color, var(--diffs-modified-color, var(--diffs-modified-light))),
+        var(--diffs-dark-modified-color, var(--diffs-modified-color, var(--diffs-modified-dark)))
       )
     );
 
@@ -249,10 +217,7 @@
    * their font-family explicitly. */
   [data-diffs-header],
   [data-separator] {
-    font-family: var(
-      --diffs-header-font-family,
-      var(--diffs-header-font-fallback)
-    );
+    font-family: var(--diffs-header-font-family, var(--diffs-header-font-fallback));
   }
 
   [data-diffs-header][data-sticky] {
@@ -360,12 +325,12 @@
       --mix-deco-light: 92%;
       --mix-deco-dark: 85%;
 
-      &[data-decoration-bg-depth='2'] {
+      &[data-decoration-bg-depth="2"] {
         --mix-deco-light: 88%;
         --mix-deco-dark: 80%;
       }
 
-      &[data-decoration-bg-depth='3'] {
+      &[data-decoration-bg-depth="3"] {
         --mix-deco-light: 85%;
         --mix-deco-dark: 78%;
       }
@@ -376,32 +341,20 @@
           --mix-deco-dark: 85%;
         }
 
-        &[data-hovered]:not(
-            [data-selected-line]
-          )[data-decoration-bg-depth='2'] {
+        &[data-hovered]:not([data-selected-line])[data-decoration-bg-depth="2"] {
           --mix-deco-light: 83%;
           --mix-deco-dark: 83%;
         }
 
-        &[data-hovered]:not(
-            [data-selected-line]
-          )[data-decoration-bg-depth='3'] {
+        &[data-hovered]:not([data-selected-line])[data-decoration-bg-depth="3"] {
           --mix-deco-light: 81%;
           --mix-deco-dark: 81%;
         }
       }
 
       --diffs-computed-decoration-bg: light-dark(
-        color-mix(
-          in lab,
-          var(--diffs-bg) var(--mix-deco-light),
-          var(--diffs-decoration-bg)
-        ),
-        color-mix(
-          in lab,
-          var(--diffs-bg) var(--mix-deco-dark),
-          var(--diffs-decoration-bg)
-        )
+        color-mix(in lab, var(--diffs-bg) var(--mix-deco-light), var(--diffs-decoration-bg)),
+        color-mix(in lab, var(--diffs-bg) var(--mix-deco-dark), var(--diffs-decoration-bg))
       );
       /* Lets up-select all lines */
       --diffs-computed-diff-line-bg: var(--diffs-computed-decoration-bg);
@@ -413,7 +366,7 @@
   }
 
   [data-line-annotation],
-  [data-gutter-buffer='annotation'] {
+  [data-gutter-buffer="annotation"] {
     --diffs-annotation-bg: var(--diffs-bg-context);
     --diffs-computed-decoration-bg: var(--diffs-annotation-bg);
     --diffs-computed-diff-line-bg: var(--diffs-annotation-bg);
@@ -422,19 +375,19 @@
   }
 
   [data-merge-conflict-actions],
-  [data-gutter-buffer='merge-conflict-action'],
-  [data-gutter-buffer='merge-conflict-marker-base'],
-  [data-gutter-buffer='merge-conflict-marker-separator'],
-  [data-merge-conflict='marker-base'],
-  [data-merge-conflict='marker-separator'] {
+  [data-gutter-buffer="merge-conflict-action"],
+  [data-gutter-buffer="merge-conflict-marker-base"],
+  [data-gutter-buffer="merge-conflict-marker-separator"],
+  [data-merge-conflict="marker-base"],
+  [data-merge-conflict="marker-separator"] {
     --diffs-computed-decoration-bg: var(--diffs-bg-context);
     --diffs-computed-diff-line-bg: var(--diffs-bg-context);
     --diffs-computed-selected-line-bg: var(--diffs-bg-context);
     --diffs-line-bg: var(--diffs-bg-context);
   }
 
-  [data-gutter-buffer='merge-conflict-marker-start'],
-  [data-merge-conflict='marker-start'] {
+  [data-gutter-buffer="merge-conflict-marker-start"],
+  [data-merge-conflict="marker-start"] {
     --diffs-computed-decoration-bg: light-dark(
       color-mix(
         in lab,
@@ -452,8 +405,8 @@
     --diffs-line-bg: var(--diffs-computed-decoration-bg);
   }
 
-  [data-gutter-buffer='merge-conflict-marker-end'],
-  [data-merge-conflict='marker-end'] {
+  [data-gutter-buffer="merge-conflict-marker-end"],
+  [data-merge-conflict="marker-end"] {
     --diffs-computed-decoration-bg: light-dark(
       color-mix(
         in lab,
@@ -472,7 +425,7 @@
   }
 
   [data-has-merge-conflict] [data-line-annotation],
-  [data-has-merge-conflict] [data-gutter-buffer='annotation'] {
+  [data-has-merge-conflict] [data-gutter-buffer="annotation"] {
     --diffs-computed-decoration-bg: var(--diffs-bg);
     --diffs-computed-diff-line-bg: var(--diffs-bg);
     --diffs-computed-selected-line-bg: var(--diffs-bg);
@@ -500,11 +453,8 @@
     [data-no-newline] {
       --diffs-diff-line-mix-target: var(--diffs-bg);
 
-      &[data-line-type='change-deletion'] {
-        --diffs-diff-line-mix-target: var(
-          --diffs-bg-deletion-override,
-          var(--diffs-deletion-base)
-        );
+      &[data-line-type="change-deletion"] {
+        --diffs-diff-line-mix-target: var(--diffs-bg-deletion-override, var(--diffs-deletion-base));
 
         @media (pointer: fine) {
           &[data-hovered] {
@@ -514,10 +464,7 @@
         }
 
         &:where([data-gutter-buffer], [data-column-number]) {
-          color: var(
-            --diffs-fg-number-deletion-override,
-            var(--diffs-deletion-base)
-          );
+          color: var(--diffs-fg-number-deletion-override, var(--diffs-deletion-base));
 
           --diffs-diff-line-mix-target: var(
             --diffs-bg-deletion-number-override,
@@ -542,11 +489,8 @@
         --diffs-line-bg: var(--diffs-computed-diff-line-bg, inherit);
       }
 
-      &[data-line-type='change-addition'] {
-        --diffs-diff-line-mix-target: var(
-          --diffs-bg-addition-override,
-          var(--diffs-addition-base)
-        );
+      &[data-line-type="change-addition"] {
+        --diffs-diff-line-mix-target: var(--diffs-bg-addition-override, var(--diffs-addition-base));
 
         @media (pointer: fine) {
           &[data-hovered] {
@@ -556,10 +500,7 @@
         }
 
         &:where([data-gutter-buffer], [data-column-number]) {
-          color: var(
-            --diffs-fg-number-addition-override,
-            var(--diffs-addition-base)
-          );
+          color: var(--diffs-fg-number-addition-override, var(--diffs-addition-base));
 
           --diffs-diff-line-mix-target: var(
             --diffs-bg-addition-number-override,
@@ -584,17 +525,14 @@
         --diffs-line-bg: var(--diffs-computed-diff-line-bg, inherit);
       }
 
-      &[data-merge-conflict='current'] {
+      &[data-merge-conflict="current"] {
         --diffs-diff-line-mix-target: var(
           --conflict-bg-current-override,
           var(--diffs-addition-base)
         );
 
         &:where([data-gutter-buffer], [data-column-number]) {
-          color: var(
-            --diffs-fg-number-addition-override,
-            var(--diffs-addition-base)
-          );
+          color: var(--diffs-fg-number-addition-override, var(--diffs-addition-base));
 
           --diffs-diff-line-mix-target: var(
             --conflict-bg-current-number-override,
@@ -626,7 +564,7 @@
         --diffs-line-bg: var(--diffs-computed-diff-line-bg, inherit);
       }
 
-      &[data-merge-conflict='incoming'] {
+      &[data-merge-conflict="incoming"] {
         --diffs-diff-line-mix-target: var(
           --conflict-bg-incoming-override,
           var(--diffs-modified-base)
@@ -677,10 +615,7 @@
   [data-merge-conflict],
   [data-merge-conflict-actions],
   [data-no-newline] {
-    --diffs-selection-mix-target: var(
-      --diffs-bg-selection-override,
-      var(--diffs-selection-base)
-    );
+    --diffs-selection-mix-target: var(--diffs-bg-selection-override, var(--diffs-selection-base));
 
     &:where(
         [data-line],
@@ -695,8 +630,8 @@
       @media (pointer: fine) {
         &[data-hovered]:not(
             [data-merge-conflict],
-            [data-line-type='change-addition'],
-            [data-line-type='change-deletion']
+            [data-line-type="change-addition"],
+            [data-line-type="change-deletion"]
           ) {
           --mix-selection-light: 75%;
           --mix-selection-dark: 70%;
@@ -715,8 +650,8 @@
       @media (pointer: fine) {
         &[data-hovered]:not(
             [data-merge-conflict],
-            [data-line-type='change-addition'],
-            [data-line-type='change-deletion']
+            [data-line-type="change-addition"],
+            [data-line-type="change-deletion"]
           ) {
           --mix-selection-light: 70%;
           --mix-selection-dark: 55%;
@@ -756,7 +691,7 @@
     }
   }
 
-  [data-diff-type='split'][data-overflow='scroll'] {
+  [data-diff-type="split"][data-overflow="scroll"] {
     display: grid;
     grid-template-columns: 1fr 1fr;
 
@@ -780,10 +715,7 @@
     padding-top: var(--diffs-gap-block, var(--diffs-gap-fallback));
     padding-bottom: max(
       0px,
-      calc(
-        var(--diffs-gap-block, var(--diffs-gap-fallback)) -
-          var(--diffs-scrollbar-gutter)
-      )
+      calc(var(--diffs-gap-block, var(--diffs-gap-fallback)) - var(--diffs-scrollbar-gutter))
     );
     scrollbar-gutter: stable;
   }
@@ -841,7 +773,7 @@
   [data-diffs-header] ~ [data-diff],
   [data-diffs-header] ~ [data-file] {
     [data-code],
-    &[data-overflow='wrap'] {
+    &[data-overflow="wrap"] {
       padding-top: 0;
     }
   }
@@ -870,7 +802,7 @@
     background-color: var(--diffs-bg);
   }
 
-  [data-diff-type='split'][data-overflow='wrap'] {
+  [data-diff-type="split"][data-overflow="wrap"] {
     display: grid;
     grid-auto-flow: dense;
     grid-template-columns: repeat(2, var(--diffs-code-grid));
@@ -903,7 +835,7 @@
     }
   }
 
-  [data-overflow='scroll'] [data-gutter] {
+  [data-overflow="scroll"] [data-gutter] {
     position: sticky;
     left: 0;
   }
@@ -929,7 +861,7 @@
     padding-right: 1ch;
 
     &::before {
-      content: '';
+      content: "";
       display: block;
       min-width: var(
         --diffs-min-number-column-width,
@@ -938,12 +870,12 @@
     }
   }
 
-  [data-gutter-buffer='annotation'] {
+  [data-gutter-buffer="annotation"] {
     --diffs-annotation-bg: var(--diffs-bg-context-gutter);
     min-height: 0;
   }
 
-  [data-gutter-buffer='buffer'] {
+  [data-gutter-buffer="buffer"] {
     --diffs-line-bg: var(--diffs-bg-context-gutter);
   }
 
@@ -970,20 +902,20 @@
     background-color: var(--diffs-bg);
   }
 
-  [data-separator='simple'] {
+  [data-separator="simple"] {
     min-height: 4px;
   }
 
-  [data-separator='line-info'],
-  [data-separator='line-info-basic'],
-  [data-separator='metadata'],
-  [data-separator='simple'] {
+  [data-separator="line-info"],
+  [data-separator="line-info-basic"],
+  [data-separator="metadata"],
+  [data-separator="simple"] {
     background-color: var(--diffs-bg-separator);
   }
 
-  [data-separator='line-info'],
-  [data-separator='line-info-basic'],
-  [data-separator='metadata'] {
+  [data-separator="line-info"],
+  [data-separator="line-info-basic"],
+  [data-separator="metadata"] {
     height: 32px;
     position: relative;
   }
@@ -1003,7 +935,7 @@
     display: none;
   }
 
-  [data-separator='metadata'] [data-separator-wrapper] {
+  [data-separator="metadata"] [data-separator-wrapper] {
     inset-inline: 100% auto;
     padding-inline: 1ch;
     height: 100%;
@@ -1015,7 +947,7 @@
     min-width: min-content;
   }
 
-  [data-separator='line-info'] {
+  [data-separator="line-info"] {
     margin-block: var(--diffs-gap-block, var(--diffs-gap-fallback));
 
     [data-separator-wrapper] {
@@ -1023,16 +955,16 @@
     }
   }
 
-  [data-separator='line-info-basic'],
-  [data-separator='metadata'] {
+  [data-separator="line-info-basic"],
+  [data-separator="metadata"] {
     margin-block: 0;
   }
 
-  [data-separator='line-info'][data-separator-first] {
+  [data-separator="line-info"][data-separator-first] {
     margin-top: 0;
   }
 
-  [data-separator='line-info'][data-separator-last] {
+  [data-separator="line-info"][data-separator-last] {
     margin-bottom: 0;
   }
 
@@ -1090,8 +1022,8 @@
     justify-content: flex-start;
   }
 
-  [data-separator='line-info'],
-  [data-separator='line-info-basic'] {
+  [data-separator="line-info"],
+  [data-separator="line-info-basic"] {
     [data-separator-content] {
       height: 100%;
       user-select: none;
@@ -1110,7 +1042,7 @@
 
   @supports (width: 1cqi) {
     [data-unified] {
-      [data-separator='line-info'] [data-separator-wrapper] {
+      [data-separator="line-info"] [data-separator-wrapper] {
         padding-inline: var(--diffs-gap-inline, var(--diffs-gap-fallback));
         width: 100cqi;
 
@@ -1119,7 +1051,7 @@
         }
       }
 
-      [data-separator='line-info'][data-expand-index]
+      [data-separator="line-info"][data-expand-index]
         [data-separator-wrapper]
         [data-separator-content] {
         border-top-left-radius: unset;
@@ -1128,23 +1060,23 @@
     }
 
     [data-gutter] {
-      [data-separator='line-info'] [data-separator-wrapper] {
+      [data-separator="line-info"] [data-separator-wrapper] {
         padding-left: var(--diffs-gap-inline, var(--diffs-gap-fallback));
       }
 
-      [data-separator='line-info'] [data-separator-content] {
+      [data-separator="line-info"] [data-separator-content] {
         border-top-left-radius: 6px;
         border-bottom-left-radius: 6px;
       }
 
-      [data-separator='line-info'][data-expand-index] [data-separator-content] {
+      [data-separator="line-info"][data-expand-index] [data-separator-content] {
         border-top-left-radius: unset;
         border-bottom-left-radius: unset;
       }
     }
 
     [data-additions] {
-      [data-content] [data-separator='line-info'] {
+      [data-content] [data-separator="line-info"] {
         background-color: var(--diffs-bg);
 
         [data-separator-wrapper] {
@@ -1152,7 +1084,7 @@
         }
       }
 
-      [data-gutter] [data-separator='line-info'] [data-separator-wrapper] {
+      [data-gutter] [data-separator="line-info"] [data-separator-wrapper] {
         display: block;
         height: 100%;
         background-color: var(--diffs-bg-separator);
@@ -1166,18 +1098,18 @@
       }
     }
 
-    [data-overflow='scroll']
+    [data-overflow="scroll"]
       [data-additions]
       [data-gutter]
-      [data-separator='line-info']
+      [data-separator="line-info"]
       [data-separator-wrapper] {
       width: calc(100cqi - var(--diffs-gap-inline, var(--diffs-gap-fallback)));
     }
 
-    [data-overflow='wrap']
+    [data-overflow="wrap"]
       [data-additions]
       [data-content]
-      [data-separator='line-info']
+      [data-separator="line-info"]
       [data-separator-wrapper] {
       background-color: var(--diffs-bg-separator);
       display: block;
@@ -1192,7 +1124,7 @@
       }
     }
 
-    [data-separator='line-info'] [data-separator-wrapper] {
+    [data-separator="line-info"] [data-separator-wrapper] {
       [data-expand-both],
       [data-expand-down],
       [data-expand-up] {
@@ -1202,7 +1134,7 @@
     }
 
     @media (pointer: fine) {
-      [data-separator='line-info'] [data-separator-wrapper] {
+      [data-separator="line-info"] [data-separator-wrapper] {
         &[data-separator-multi-button] {
           [data-expand-up] {
             border-top-left-radius: 6px;
@@ -1219,8 +1151,7 @@
   }
 
   @media (pointer: coarse) {
-    [data-separator='line-info-basic']
-      [data-separator-wrapper][data-separator-multi-button] {
+    [data-separator="line-info-basic"] [data-separator-wrapper][data-separator-multi-button] {
       grid-template-columns: 34px 34px auto;
 
       [data-separator-content] {
@@ -1230,7 +1161,7 @@
     }
 
     @supports (width: 1cqi) {
-      [data-separator='line-info'] [data-separator-wrapper] {
+      [data-separator="line-info"] [data-separator-wrapper] {
         [data-expand-both],
         [data-expand-down],
         [data-expand-up] {
@@ -1269,19 +1200,17 @@
       }
     }
 
-    [data-separator='line-info'] [data-separator-wrapper],
-    [data-separator='line-info']
-      [data-separator-wrapper][data-separator-multi-button] {
+    [data-separator="line-info"] [data-separator-wrapper],
+    [data-separator="line-info"] [data-separator-wrapper][data-separator-multi-button] {
       grid-template-columns: 34px auto;
     }
 
-    [data-separator='line-info-basic'][data-expand-index]
-      [data-separator-wrapper] {
+    [data-separator="line-info-basic"][data-expand-index] [data-separator-wrapper] {
       grid-template-columns: 100% auto;
     }
 
-    [data-separator='line-info'],
-    [data-separator='line-info-basic'] {
+    [data-separator="line-info"],
+    [data-separator="line-info-basic"] {
       [data-separator-multi-button] {
         [data-expand-up] {
           border-bottom: 1px solid var(--diffs-bg);
@@ -1298,7 +1227,7 @@
   /* Hunk separator content is duplicated across gutters and content columns,
    * so custom CSS can do some stuff. Lets hide things for defaults */
   [data-additions] [data-gutter] [data-separator-wrapper],
-  [data-additions] [data-separator='line-info-basic'] [data-separator-wrapper],
+  [data-additions] [data-separator="line-info-basic"] [data-separator-wrapper],
   [data-content] [data-separator-wrapper] {
     display: none;
   }
@@ -1312,7 +1241,7 @@
     z-index: 2;
   }
 
-  [data-separator='custom'] {
+  [data-separator="custom"] {
     display: grid;
     grid-template-columns: subgrid;
   }
@@ -1324,13 +1253,13 @@
     padding-inline: 1ch;
   }
 
-  [data-indicators='classic'] [data-line] {
+  [data-indicators="classic"] [data-line] {
     padding-inline-start: 2ch;
   }
 
-  [data-indicators='classic'] {
-    [data-line-type='change-addition'],
-    [data-line-type='change-deletion'] {
+  [data-indicators="classic"] {
+    [data-line-type="change-addition"],
+    [data-line-type="change-deletion"] {
       &[data-no-newline],
       &[data-line] {
         &::before {
@@ -1345,33 +1274,33 @@
       }
     }
 
-    [data-line-type='change-addition'] {
+    [data-line-type="change-addition"] {
       &[data-line],
       &[data-no-newline] {
         &::before {
-          content: '+';
+          content: "+";
           color: var(--diffs-addition-base);
         }
       }
     }
 
-    [data-line-type='change-deletion'] {
+    [data-line-type="change-deletion"] {
       &[data-line],
       &[data-no-newline] {
         &::before {
-          content: '-';
+          content: "-";
           color: var(--diffs-deletion-base);
         }
       }
     }
   }
 
-  [data-indicators='bars'] {
-    [data-line-type='change-deletion'],
-    [data-line-type='change-addition'] {
+  [data-indicators="bars"] {
+    [data-line-type="change-deletion"],
+    [data-line-type="change-addition"] {
       &[data-column-number] {
         &::before {
-          content: '';
+          content: "";
           display: block;
           width: 4px;
           height: 100%;
@@ -1384,7 +1313,7 @@
       }
     }
 
-    [data-line-type='change-deletion'] {
+    [data-line-type="change-deletion"] {
       &[data-column-number] {
         &::before {
           background-image: linear-gradient(
@@ -1394,13 +1323,12 @@
           );
           background-repeat: repeat;
           background-size: 2px 2px;
-          background-size: calc(1lh / round(1lh / 2px))
-            calc(1lh / round(1lh / 2px));
+          background-size: calc(1lh / round(1lh / 2px)) calc(1lh / round(1lh / 2px));
         }
       }
     }
 
-    [data-line-type='change-addition'] {
+    [data-line-type="change-addition"] {
       &[data-column-number] {
         &::before {
           background-color: var(--diffs-addition-base);
@@ -1409,7 +1337,7 @@
     }
   }
 
-  [data-overflow='wrap'] {
+  [data-overflow="wrap"] {
     [data-line],
     [data-annotation-content] {
       white-space: pre-wrap;
@@ -1417,7 +1345,7 @@
     }
   }
 
-  [data-overflow='scroll'] [data-line] {
+  [data-overflow="scroll"] [data-line] {
     white-space: pre;
     min-height: 1lh;
   }
@@ -1461,7 +1389,7 @@
       justify-content: flex-start;
     }
 
-    &[data-indicators='bars'] [data-gutter-utility-slot] {
+    &[data-indicators="bars"] [data-gutter-utility-slot] {
       /* Using 5px here because theres a 2px separator after the bar */
       left: 6px;
     }
@@ -1480,24 +1408,24 @@
     box-decoration-break: clone;
   }
 
-  [data-line-type='change-addition'] [data-diff-span] {
+  [data-line-type="change-addition"] [data-diff-span] {
     background-color: var(--diffs-bg-addition-emphasis);
   }
 
-  [data-line-type='change-deletion'] [data-diff-span] {
+  [data-line-type="change-deletion"] [data-diff-span] {
     background-color: var(--diffs-bg-deletion-emphasis);
   }
 
-  [data-merge-conflict='marker-start'],
-  [data-merge-conflict='marker-base'],
-  [data-merge-conflict='marker-separator'],
-  [data-merge-conflict='marker-end'] {
+  [data-merge-conflict="marker-start"],
+  [data-merge-conflict="marker-base"],
+  [data-merge-conflict="marker-separator"],
+  [data-merge-conflict="marker-end"] {
     padding-left: 1ch;
     color: var(--diffs-fg);
   }
 
-  [data-merge-conflict='marker-start'],
-  [data-merge-conflict='marker-end'] {
+  [data-merge-conflict="marker-start"],
+  [data-merge-conflict="marker-end"] {
     display: flex;
     align-items: center;
 
@@ -1507,19 +1435,16 @@
       font-size: 0.75rem;
       line-height: 1.25rem;
       padding-left: 1ch;
-      font-family: var(
-        --diffs-header-font-family,
-        var(--diffs-header-font-fallback)
-      );
+      font-family: var(--diffs-header-font-family, var(--diffs-header-font-fallback));
     }
   }
 
-  [data-merge-conflict='marker-start']::after {
-    content: '(Current Change)';
+  [data-merge-conflict="marker-start"]::after {
+    content: "(Current Change)";
   }
 
-  [data-merge-conflict='marker-end']::after {
-    content: '(Incoming Change)';
+  [data-merge-conflict="marker-end"]::after {
+    content: "(Incoming Change)";
   }
 
   [data-merge-conflict-actions-content] {
@@ -1528,10 +1453,7 @@
     gap: 0.25rem;
     padding-inline: 0.5rem;
     min-height: 1.75rem;
-    font-family: var(
-      --diffs-header-font-family,
-      var(--diffs-header-font-fallback)
-    );
+    font-family: var(--diffs-header-font-family, var(--diffs-header-font-fallback));
     font-size: 0.75rem;
     line-height: 1.2;
     color: var(--diffs-fg);
@@ -1552,11 +1474,11 @@
     color: var(--diffs-fg);
   }
 
-  [data-merge-conflict-action='current']:hover {
+  [data-merge-conflict-action="current"]:hover {
     color: var(--diffs-addition-base);
   }
 
-  [data-merge-conflict-action='incoming']:hover {
+  [data-merge-conflict-action="incoming"]:hover {
     color: var(--diffs-modified-base);
   }
 
@@ -1568,7 +1490,7 @@
 
   /* Default Header Styles */
   /* --------------------- */
-  [data-diffs-header='default'] {
+  [data-diffs-header="default"] {
     position: relative;
     background-color: var(--diffs-bg);
     display: flex;
@@ -1576,9 +1498,7 @@
     justify-content: space-between;
     align-items: center;
     gap: var(--diffs-gap-inline, var(--diffs-gap-fallback));
-    min-height: calc(
-      1lh + (var(--diffs-gap-block, var(--diffs-gap-fallback)) * 3)
-    );
+    min-height: calc(1lh + (var(--diffs-gap-block, var(--diffs-gap-fallback)) * 3));
     padding-inline: 16px;
     top: 0;
     z-index: 2;
@@ -1612,19 +1532,19 @@
     flex-grow: 0;
   }
 
-  [data-diffs-header='default'] [data-metadata] {
+  [data-diffs-header="default"] [data-metadata] {
     display: flex;
     align-items: center;
     gap: 1ch;
     white-space: nowrap;
   }
 
-  [data-diffs-header='default'] [data-additions-count] {
+  [data-diffs-header="default"] [data-additions-count] {
     font-family: var(--diffs-font-family, var(--diffs-font-fallback));
     color: var(--diffs-addition-base);
   }
 
-  [data-diffs-header='default'] [data-deletions-count] {
+  [data-diffs-header="default"] [data-deletions-count] {
     font-family: var(--diffs-font-family, var(--diffs-font-fallback));
     color: var(--diffs-deletion-base);
   }
@@ -1634,21 +1554,21 @@
     flex-shrink: 0;
   }
 
-  [data-change-icon='change'],
-  [data-change-icon='rename-pure'],
-  [data-change-icon='rename-changed'] {
+  [data-change-icon="change"],
+  [data-change-icon="rename-pure"],
+  [data-change-icon="rename-changed"] {
     color: var(--diffs-modified-base);
   }
 
-  [data-change-icon='new'] {
+  [data-change-icon="new"] {
     color: var(--diffs-addition-base);
   }
 
-  [data-change-icon='deleted'] {
+  [data-change-icon="deleted"] {
     color: var(--diffs-deletion-base);
   }
 
-  [data-change-icon='file'] {
+  [data-change-icon="file"] {
     opacity: 0.6;
   }
 
@@ -1663,13 +1583,13 @@
 
   /* Sticky positioning has a composite costs, so we should _only_ pay it if we
    * need to */
-  [data-overflow='scroll'] [data-annotation-content] {
+  [data-overflow="scroll"] [data-annotation-content] {
     position: sticky;
     width: var(--diffs-column-content-width, auto);
     left: var(--diffs-column-number-width, 0);
   }
 
-  [data-overflow='scroll'] [data-merge-conflict-actions-content] {
+  [data-overflow="scroll"] [data-merge-conflict-actions-content] {
     position: sticky;
     width: var(--diffs-column-content-width, auto);
     left: var(--diffs-column-number-width, 0);
@@ -1714,7 +1634,7 @@
     touch-action: none;
 
     &::before {
-      content: '';
+      content: "";
       display: block;
       position: absolute;
       inset: 0 0 0 -4px;
@@ -1738,7 +1658,7 @@
     border-left: 2px solid var(--diffs-bg);
     border-right: 2px solid var(--diffs-bg);
 
-    [data-decoration-bar-depth='1'] & {
+    [data-decoration-bar-depth="1"] & {
       background-color: color-mix(
         in lab,
         var(--diffs-bg) 20%,
@@ -1746,7 +1666,7 @@
       );
     }
 
-    [data-decoration-bar-depth='2'] & {
+    [data-decoration-bar-depth="2"] & {
       background-color: color-mix(
         in lab,
         var(--diffs-bg) 45%,
@@ -1754,7 +1674,7 @@
       );
     }
 
-    [data-decoration-bar-depth='3'] & {
+    [data-decoration-bar-depth="3"] & {
       background-color: color-mix(
         in lab,
         var(--diffs-bg) 65%,

@@ -242,7 +242,7 @@ export class CopilotWebExecutor extends BaseExecutor {
     prompt: string,
     mode: string,
     accessToken?: string,
-    signal?: AbortSignal
+    signal?: AbortSignal,
   ): Promise<ReadableStream<Uint8Array>> {
     // Build WebSocket URL without credentials in query string
     const wsUrl = `${COPILOT_WS_URL}&clientSessionId=${crypto.randomUUID()}`;
@@ -279,7 +279,7 @@ export class CopilotWebExecutor extends BaseExecutor {
             cleanup();
             if (reason) {
               controller.enqueue(
-                encoder.encode(`data: ${JSON.stringify({ error: { message: reason } })}\n\n`)
+                encoder.encode(`data: ${JSON.stringify({ error: { message: reason } })}\n\n`),
               );
             }
             controller.close();
@@ -319,7 +319,7 @@ export class CopilotWebExecutor extends BaseExecutor {
                   conversationId,
                   content: [{ type: "text", text: prompt }],
                   mode,
-                })
+                }),
               );
             };
 
@@ -344,18 +344,18 @@ export class CopilotWebExecutor extends BaseExecutor {
                           event: "challengeResponse",
                           token: solution !== null ? String(solution) : "",
                           method: "hashcash",
-                        })
+                        }),
                       );
                       // Re-send chat after solving challenge
                       chatSent = false;
                       sendChat();
                     } else if (event.method === "cloudflare") {
                       abort(
-                        "Copilot requires Cloudflare Turnstile verification. Use an authenticated session (access_token) instead."
+                        "Copilot requires Cloudflare Turnstile verification. Use an authenticated session (access_token) instead.",
                       );
                     } else {
                       abort(
-                        `Copilot challenge "${event.method}" not supported. Use an authenticated session.`
+                        `Copilot challenge "${event.method}" not supported. Use an authenticated session.`,
                       );
                     }
                     break;
@@ -538,7 +538,7 @@ export class CopilotWebExecutor extends BaseExecutor {
           }
         },
       },
-      { highWaterMark: 16384 }
+      { highWaterMark: 16384 },
     );
   }
 
@@ -600,7 +600,7 @@ export class CopilotWebExecutor extends BaseExecutor {
       sessionCookies = session.cookies;
     } catch (err) {
       const msg = sanitizeErrorMessage(
-        err instanceof Error ? err.message : "Failed to start Copilot conversation"
+        err instanceof Error ? err.message : "Failed to start Copilot conversation",
       );
       return {
         response: new Response(JSON.stringify({ error: { message: msg } }), {
@@ -621,7 +621,7 @@ export class CopilotWebExecutor extends BaseExecutor {
           fullPrompt,
           mode,
           accessToken || undefined,
-          signal
+          signal,
         );
         const reader = wsStream.getReader();
         const decoder = new TextDecoder();
@@ -691,7 +691,7 @@ export class CopilotWebExecutor extends BaseExecutor {
         fullPrompt,
         mode,
         accessToken || undefined,
-        signal
+        signal,
       );
 
       return {

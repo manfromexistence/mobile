@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { openaiResponsesToOpenAIRequest, openaiToOpenAIResponsesRequest } =
-  await import("../../open-sse/translator/request/openai-responses.ts");
+const { openaiResponsesToOpenAIRequest, openaiToOpenAIResponsesRequest } = await import(
+  "../../open-sse/translator/request/openai-responses.ts"
+);
 
 // ──────────────────────────────────────────────────────────────────────────────
 // Responses API -> Chat Completions direction

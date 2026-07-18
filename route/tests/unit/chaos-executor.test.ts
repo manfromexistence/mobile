@@ -60,7 +60,7 @@ function jsonResponse(body: unknown, status = 200): Response {
 test("executeChaosRun throws when no active provider connections exist", async () => {
   await assert.rejects(
     () => chaosExecutor.executeChaosRun({ task: "hello" }),
-    /No active provider connections found/
+    /No active provider connections found/,
   );
 });
 
@@ -90,7 +90,7 @@ test("executeChaosRun dispatches in-process (no fetch/network call) and returns 
   assert.ok(capturedRequest, "postChatCompletion should have been invoked in-process");
   assert.equal(
     (capturedRequest as unknown as Request).url,
-    "http://localhost/api/v1/chat/completions"
+    "http://localhost/api/v1/chat/completions",
   );
 });
 
@@ -144,7 +144,7 @@ test("executeChaosRun surfaces upstream errors per-model instead of throwing", a
   });
 
   mock.method(chaosExecutor.chatDispatch, "postChatCompletion", async () =>
-    jsonResponse({ error: "upstream exploded" }, 502)
+    jsonResponse({ error: "upstream exploded" }, 502),
   );
 
   const result = await chaosExecutor.executeChaosRun({ task: "task" });
@@ -201,12 +201,12 @@ test("executeChaosRun respects an explicit providers filter and errors when none
   });
 
   mock.method(chaosExecutor.chatDispatch, "postChatCompletion", async () =>
-    jsonResponse({ choices: [{ message: { content: "ok" } }] })
+    jsonResponse({ choices: [{ message: { content: "ok" } }] }),
   );
 
   await assert.rejects(
     () => chaosExecutor.executeChaosRun({ task: "task", providers: ["anthropic"] }),
-    /None of the specified providers are active/
+    /None of the specified providers are active/,
   );
 
   const result = await chaosExecutor.executeChaosRun({ task: "task", providers: ["openai"] });

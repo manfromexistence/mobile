@@ -53,7 +53,7 @@ describe("DashScope OpenAI-compat cache_control preservation (#2069)", () => {
         targetProvider: "alibaba",
         targetFormat: "openai",
       }),
-      true
+      true,
     );
   });
 
@@ -67,7 +67,7 @@ describe("DashScope OpenAI-compat cache_control preservation (#2069)", () => {
       null,
       "alibaba",
       null,
-      { preserveCacheControl: true }
+      { preserveCacheControl: true },
     ) as { messages: Array<Record<string, unknown>> };
 
     const system = out.messages.find((m) => m.role === "system");
@@ -98,7 +98,7 @@ describe("DashScope OpenAI-compat cache_control preservation (#2069)", () => {
       null,
       "alibaba",
       null,
-      { preserveCacheControl: false }
+      { preserveCacheControl: false },
     ) as { messages: Array<Record<string, unknown>> };
 
     assert.equal(hasCacheControl(out.messages), false, "cache_control stripped when not preserved");
@@ -118,7 +118,7 @@ describe("DashScope OpenAI-compat cache_control preservation (#2069)", () => {
         targetProvider: "groq",
         targetFormat: "openai",
       }),
-      false
+      false,
     );
   });
 
@@ -153,7 +153,7 @@ describe("DashScope OpenAI-compat cache_control preservation (#2069)", () => {
       null,
       "alibaba",
       null,
-      { preserveCacheControl: true }
+      { preserveCacheControl: true },
     ) as { messages: Array<Record<string, unknown>> };
 
     const system = out.messages.find((m) => m.role === "system");
@@ -162,7 +162,7 @@ describe("DashScope OpenAI-compat cache_control preservation (#2069)", () => {
     assert.equal(
       content.some((b) => b.text === "plain string directive"),
       true,
-      "string system element text is preserved"
+      "string system element text is preserved",
     );
     // The tagged object keeps its cache_control breakpoint.
     const tagged = content.find((b) => b.text === "tagged");
@@ -183,12 +183,12 @@ describe("DashScope OpenAI-compat cache_control preservation (#2069)", () => {
       null,
       "openai",
       null,
-      { preserveCacheControl: true }
+      { preserveCacheControl: true },
     ) as { messages: Array<Record<string, unknown>> };
     assert.equal(
       hasCacheControl(out.messages),
       false,
-      "openai (implicit prefix cache) must not receive explicit cache_control"
+      "openai (implicit prefix cache) must not receive explicit cache_control",
     );
   });
 });

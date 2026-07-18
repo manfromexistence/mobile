@@ -24,18 +24,18 @@ const isLocalOnly = (path: string): boolean =>
 test("routeFileToApiPath maps a Next App Router route.ts to its URL path", () => {
   assert.equal(
     routeFileToApiPath("src/app/api/services/9router/install/route.ts"),
-    "/api/services/9router/install"
+    "/api/services/9router/install",
   );
 });
 
 test("routeFileToApiPath resolves dynamic [param] segments to a concrete placeholder", () => {
   assert.equal(
     routeFileToApiPath("src/app/api/services/[name]/logs/route.ts"),
-    "/api/services/_name_/logs"
+    "/api/services/_name_/logs",
   );
   assert.equal(
     routeFileToApiPath("src/app/api/cli-tools/runtime/[toolId]/route.ts"),
-    "/api/cli-tools/runtime/_toolId_"
+    "/api/cli-tools/runtime/_toolId_",
   );
 });
 
@@ -46,7 +46,7 @@ test("routeFileToApiPath normalizes Windows backslash separators before strippin
   // RCE-capable spawn routes). See PR #5613.
   assert.equal(
     routeFileToApiPath("src\\app\\api\\services\\9router\\install\\route.ts"),
-    "/api/services/9router/install"
+    "/api/services/9router/install",
   );
 });
 
@@ -64,24 +64,18 @@ test("flags a spawn-capable route that is NOT classified local-only (RCE-via-tun
   // this gate guards against.
   const leaky = (path: string): boolean => path.startsWith("/api/mcp/");
   assert.deepEqual(
-    findUnclassifiedSpawnRoutes(
-      ["/api/mcp/tools", "/api/services/cliproxy/install"],
-      leaky,
-      {}
-    ),
-    ["/api/services/cliproxy/install"]
+    findUnclassifiedSpawnRoutes(["/api/mcp/tools", "/api/services/cliproxy/install"], leaky, {}),
+    ["/api/services/cliproxy/install"],
   );
 });
 
 test("allowlisted routes are not flagged (frozen pre-existing exceptions)", () => {
   const leaky = (path: string): boolean => path.startsWith("/api/mcp/");
   assert.deepEqual(
-    findUnclassifiedSpawnRoutes(
-      ["/api/mcp/tools", "/api/services/legacy/route"],
-      leaky,
-      { "/api/services/legacy/route": "frozen pre-existing exception" }
-    ),
-    []
+    findUnclassifiedSpawnRoutes(["/api/mcp/tools", "/api/services/legacy/route"], leaky, {
+      "/api/services/legacy/route": "frozen pre-existing exception",
+    }),
+    [],
   );
 });
 
@@ -89,7 +83,7 @@ test("flags multiple unclassified routes, preserves input order", () => {
   const leaky = (): boolean => false;
   assert.deepEqual(
     findUnclassifiedSpawnRoutes(["/api/services/a", "/api/mcp/b", "/api/services/c"], leaky, {}),
-    ["/api/services/a", "/api/mcp/b", "/api/services/c"]
+    ["/api/services/a", "/api/mcp/b", "/api/services/c"],
   );
 });
 
@@ -128,7 +122,10 @@ test("6A.8 findSpawnCapableRoutes: detects real spawn-capable route.ts files", (
   ];
   const found = findSpawnCapableRoutes(repoRoot);
   for (const r of knownSpawnRoutes) {
-    assert.ok(found.includes(r), `expected ${r} in spawn-capable routes, found: ${found.join(", ")}`);
+    assert.ok(
+      found.includes(r),
+      `expected ${r} in spawn-capable routes, found: ${found.join(", ")}`,
+    );
   }
 });
 
@@ -139,7 +136,7 @@ test("6A.8 P1 RESOLVED: spawn-capable system/db-backups routes are classified lo
   assert.equal(
     Object.keys(KNOWN_UNCLASSIFIED_SOURCE_SPAWN).length,
     0,
-    "KNOWN_UNCLASSIFIED_SOURCE_SPAWN must be empty once the routes are classified (stale-enforcement)"
+    "KNOWN_UNCLASSIFIED_SOURCE_SPAWN must be empty once the routes are classified (stale-enforcement)",
   );
   assert.equal(isLocalOnlyPath("/api/system/version"), true);
   assert.equal(isLocalOnlyPath("/api/db-backups/exportAll"), true);

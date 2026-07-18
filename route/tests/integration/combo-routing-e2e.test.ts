@@ -62,7 +62,7 @@ test("combo routes requests by exact combo name", async () => {
   const response = await handleChat(
     buildRequest({
       body: buildOpenAIChatBody("router-priority"),
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -142,12 +142,12 @@ test("priority combo sticks to the primary model while healthy", async () => {
   const first = await handleChat(
     buildRequest({
       body: buildOpenAIChatBody("router-priority-healthy", "Route priority first"),
-    })
+    }),
   );
   const second = await handleChat(
     buildRequest({
       body: buildOpenAIChatBody("router-priority-healthy", "Route priority second"),
-    })
+    }),
   );
 
   assert.equal(first.status, 200);
@@ -240,7 +240,7 @@ test("priority combo can repeat the same provider/model with different fixed acc
   const response = await handleChat(
     buildRequest({
       body: buildOpenAIChatBody("router-fixed-accounts"),
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -249,7 +249,7 @@ test("priority combo can repeat the same provider/model with different fixed acc
   assert.notEqual(authHeaders[0], authHeaders[1]);
   assert.deepEqual(
     new Set(authHeaders),
-    new Set(["Bearer sk-openai-fixed-1", "Bearer sk-openai-fixed-2"])
+    new Set(["Bearer sk-openai-fixed-1", "Bearer sk-openai-fixed-2"]),
   );
   assert.equal(json.choices[0].message.content, "Second fixed account answered");
 
@@ -281,7 +281,7 @@ test("priority combo can repeat the same provider/model with different fixed acc
         comboExecutionKey: "step-openai-secondary",
         status: 200,
       },
-    ]
+    ],
   );
 });
 
@@ -310,7 +310,7 @@ test("model combo mappings route explicit model ids through the configured combo
   const response = await handleChat(
     buildRequest({
       body: buildOpenAIChatBody("tenant/mapped-model"),
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -345,7 +345,7 @@ test("wildcard model combo mappings resolve arbitrary matching models", async ()
   const response = await handleChat(
     buildRequest({
       body: buildOpenAIChatBody("tenant/any-model-name"),
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -360,7 +360,7 @@ test("unmapped custom model requests fail after combo resolution falls through",
   const response = await handleChat(
     buildRequest({
       body: buildOpenAIChatBody("tenant/unmapped-model"),
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -393,7 +393,7 @@ test("strategy updates take effect for later requests on the same combo name", a
   const initial = await handleChat(
     buildRequest({
       body: buildOpenAIChatBody("router-dynamic", "Route dynamic initial"),
-    })
+    }),
   );
   await combosDb.updateCombo((combo as any).id, {
     strategy: "round-robin",
@@ -408,8 +408,8 @@ test("strategy updates take effect for later requests on the same combo name", a
   for (let i = 0; i < 4; i++) {
     postUpdate.push(
       await handleChat(
-        buildRequest({ body: buildOpenAIChatBody("router-dynamic", `Route dynamic ${i}`) })
-      )
+        buildRequest({ body: buildOpenAIChatBody("router-dynamic", `Route dynamic ${i}`) }),
+      ),
     );
   }
 

@@ -1,13 +1,13 @@
-import { Dialog as Kobalte } from "@kobalte/core/dialog"
-import { JSX, Show } from "solid-js"
-import "./modal.css"
+import { Dialog as Kobalte } from "@kobalte/core/dialog";
+import { JSX, Show } from "solid-js";
+import "./modal.css";
 
 interface ModalProps {
-  open: boolean
-  onClose: () => void
-  title?: string
-  variant?: "black"
-  children: JSX.Element
+  open: boolean;
+  onClose: () => void;
+  title?: string;
+  variant?: "black";
+  children: JSX.Element;
 }
 
 export function Modal(props: ModalProps) {
@@ -18,7 +18,7 @@ export function Modal(props: ModalProps) {
         open={props.open}
         preventScroll={false}
         onOpenChange={(open) => {
-          if (!open) props.onClose()
+          if (!open) props.onClose();
         }}
       >
         <Kobalte.Portal>
@@ -28,9 +28,9 @@ export function Modal(props: ModalProps) {
               data-variant={props.variant}
               onClick={(e) => e.stopPropagation()}
               onOpenAutoFocus={(e) => {
-                e.preventDefault()
-                const target = e.currentTarget as HTMLElement | null
-                target?.focus({ preventScroll: true })
+                e.preventDefault();
+                const target = e.currentTarget as HTMLElement | null;
+                target?.focus({ preventScroll: true });
               }}
             >
               <Show when={props.title}>
@@ -42,5 +42,5 @@ export function Modal(props: ModalProps) {
         </Kobalte.Portal>
       </Kobalte>
     </Show>
-  )
+  );
 }

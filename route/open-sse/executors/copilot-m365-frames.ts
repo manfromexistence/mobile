@@ -265,7 +265,7 @@ export function extractFinalResultMessage(frame: Record<string, unknown> | null)
  */
 export function accumulateBotContent(
   previous: string,
-  frame: Record<string, unknown> | null
+  frame: Record<string, unknown> | null,
 ): { delta: string; next: string } {
   const snapshot = extractBotText(frame);
   if (snapshot) {

@@ -46,7 +46,7 @@ function makeRequest(
   method: string,
   url: string,
   body?: unknown,
-  headers: Record<string, string> = {}
+  headers: Record<string, string> = {},
 ): Request {
   const opts: RequestInit = {
     method,

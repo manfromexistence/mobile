@@ -1,6 +1,6 @@
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { declarePI, rotation2, simplexNoise, colorBandingFix } from '../shader-utils.js';
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { declarePI, rotation2, simplexNoise, colorBandingFix } from "../shader-utils.js";
 
 /**
  * Futuristic liquid metal material applied to uploaded logo or abstract shape.
@@ -77,9 +77,9 @@ in vec2 v_imageUV;
 
 out vec4 fragColor;
 
-${ declarePI }
-${ rotation2 }
-${ simplexNoise }
+${declarePI}
+${rotation2}
+${simplexNoise}
 
 float getColorChanges(float c1, float c2, float stripe_p, vec3 w, float blur, float bump, float tint) {
 
@@ -364,7 +364,7 @@ void main() {
   color = color + bgColor * (1. - opacity);
   opacity = opacity + u_colorBack.a * (1. - opacity);
 
-  ${ colorBandingFix }
+  ${colorBandingFix}
 
   fragColor = vec4(color, opacity);
 }
@@ -387,20 +387,23 @@ interface SparsePixelData {
   neighborIndices: Int32Array;
 }
 
-export function toProcessedLiquidMetal(file: File | string): Promise<{ imageData: ImageData; pngBlob: Blob }> {
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  const isBlob = typeof file === 'string' && file.startsWith('blob:');
+export function toProcessedLiquidMetal(
+  file: File | string,
+): Promise<{ imageData: ImageData; pngBlob: Blob }> {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  const isBlob = typeof file === "string" && file.startsWith("blob:");
 
   return new Promise((resolve, reject) => {
     if (!file || !ctx) {
-      reject(new Error('Invalid file or canvas context'));
+      reject(new Error("Invalid file or canvas context"));
       return;
     }
 
-    const blobContentTypePromise = isBlob && fetch(file).then((res) => res.headers.get('Content-Type'));
+    const blobContentTypePromise =
+      isBlob && fetch(file).then((res) => res.headers.get("Content-Type"));
     const img = new Image();
-    img.crossOrigin = 'anonymous';
+    img.crossOrigin = "anonymous";
     const totalStartTime = performance.now();
 
     img.onload = async () => {
@@ -410,11 +413,11 @@ export function toProcessedLiquidMetal(file: File | string): Promise<{ imageData
       const blobContentType = await blobContentTypePromise;
 
       if (blobContentType) {
-        isSVG = blobContentType === 'image/svg+xml';
-      } else if (typeof file === 'string') {
-        isSVG = file.endsWith('.svg') || file.startsWith('data:image/svg+xml');
+        isSVG = blobContentType === "image/svg+xml";
+      } else if (typeof file === "string") {
+        isSVG = file.endsWith(".svg") || file.startsWith("data:image/svg+xml");
       } else {
-        isSVG = file.type === 'image/svg+xml';
+        isSVG = file.type === "image/svg+xml";
       }
 
       let originalWidth = img.width || img.naturalWidth;
@@ -459,11 +462,11 @@ export function toProcessedLiquidMetal(file: File | string): Promise<{ imageData
       canvas.height = originalHeight;
 
       // Use a smaller canvas for shape detection and Poisson solving
-      const shapeCanvas = document.createElement('canvas');
+      const shapeCanvas = document.createElement("canvas");
       shapeCanvas.width = width;
       shapeCanvas.height = height;
 
-      const shapeCtx = shapeCanvas.getContext('2d')!;
+      const shapeCtx = shapeCanvas.getContext("2d")!;
       shapeCtx.drawImage(img, 0, 0, width, height);
 
       // 1) Build optimized masks using TypedArrays
@@ -526,7 +529,7 @@ export function toProcessedLiquidMetal(file: File | string): Promise<{ imageData
       if (POISSON_CONFIG_OPTIMIZED.measurePerformance) {
         console.log(`[Mask Building] Time: ${(performance.now() - startMask).toFixed(2)}ms`);
         console.log(
-          `  Shape pixels: ${shapePixelCount} / ${width * height} (${((shapePixelCount / (width * height)) * 100).toFixed(1)}%)`
+          `  Shape pixels: ${shapePixelCount} / ${width * height} (${((shapePixelCount / (width * height)) * 100).toFixed(1)}%)`,
         );
         console.log(`  Interior pixels: ${interiorIndices.length}`);
         console.log(`  Boundary pixels: ${boundaryIndices.length}`);
@@ -539,7 +542,7 @@ export function toProcessedLiquidMetal(file: File | string): Promise<{ imageData
         new Uint32Array(interiorIndices),
         new Uint32Array(boundaryIndices),
         width,
-        height
+        height,
       );
 
       // 4) Solve Poisson equation with optimized sparse solver
@@ -561,10 +564,10 @@ export function toProcessedLiquidMetal(file: File | string): Promise<{ imageData
       }
 
       // Create gradient image at working resolution
-      const tempCanvas = document.createElement('canvas');
+      const tempCanvas = document.createElement("canvas");
       tempCanvas.width = width;
       tempCanvas.height = height;
-      const tempCtx = tempCanvas.getContext('2d')!;
+      const tempCtx = tempCanvas.getContext("2d")!;
 
       const tempImg = tempCtx.createImageData(width, height);
       for (let y = 0; y < height; y++) {
@@ -591,7 +594,7 @@ export function toProcessedLiquidMetal(file: File | string): Promise<{ imageData
 
       // Upscale to original resolution with smooth interpolation
       ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
+      ctx.imageSmoothingQuality = "high";
       ctx.drawImage(tempCanvas, 0, 0, width, height, 0, 0, originalWidth, originalHeight);
 
       // Now get the upscaled image data for final output
@@ -599,10 +602,10 @@ export function toProcessedLiquidMetal(file: File | string): Promise<{ imageData
 
       // Re-apply edges from original resolution with anti-aliasing
       // This ensures edges are pixel-perfect while gradient is smooth
-      const originalCanvas = document.createElement('canvas');
+      const originalCanvas = document.createElement("canvas");
       originalCanvas.width = originalWidth;
       originalCanvas.height = originalHeight;
-      const originalCtx = originalCanvas.getContext('2d')!;
+      const originalCtx = originalCanvas.getContext("2d")!;
       // originalCtx.fillStyle = "white";
       // originalCtx.fillRect(0, 0, originalWidth, originalHeight);
       originalCtx.drawImage(img, 0, 0, originalWidth, originalHeight);
@@ -634,7 +637,7 @@ export function toProcessedLiquidMetal(file: File | string): Promise<{ imageData
       finalImageData = outImg;
       canvas.toBlob((blob) => {
         if (!blob) {
-          reject(new Error('Failed to create PNG blob'));
+          reject(new Error("Failed to create PNG blob"));
           return;
         }
 
@@ -642,10 +645,13 @@ export function toProcessedLiquidMetal(file: File | string): Promise<{ imageData
           const totalTime = performance.now() - totalStartTime;
           console.log(`[Total Processing Time] ${totalTime.toFixed(2)}ms`);
           if (scaleFactor < 1) {
-            const estimatedFullResTime = totalTime * Math.pow((originalWidth * originalHeight) / (width * height), 1.5);
-            console.log(`[Estimated time at full resolution] ~${estimatedFullResTime.toFixed(0)}ms`);
+            const estimatedFullResTime =
+              totalTime * Math.pow((originalWidth * originalHeight) / (width * height), 1.5);
             console.log(
-              `[Time saved] ~${(estimatedFullResTime - totalTime).toFixed(0)}ms (${Math.round(estimatedFullResTime / totalTime)}× faster)`
+              `[Estimated time at full resolution] ~${estimatedFullResTime.toFixed(0)}ms`,
+            );
+            console.log(
+              `[Time saved] ~${(estimatedFullResTime - totalTime).toFixed(0)}ms (${Math.round(estimatedFullResTime / totalTime)}× faster)`,
             );
           }
         }
@@ -654,11 +660,11 @@ export function toProcessedLiquidMetal(file: File | string): Promise<{ imageData
           imageData: finalImageData,
           pngBlob: blob,
         });
-      }, 'image/png');
+      }, "image/png");
     };
 
-    img.onerror = () => reject(new Error('Failed to load image'));
-    img.src = typeof file === 'string' ? file : URL.createObjectURL(file);
+    img.onerror = () => reject(new Error("Failed to load image"));
+    img.src = typeof file === "string" ? file : URL.createObjectURL(file);
   });
 }
 
@@ -668,7 +674,7 @@ function buildSparseData(
   interiorPixels: Uint32Array,
   boundaryPixels: Uint32Array,
   width: number,
-  height: number
+  height: number,
 ): SparsePixelData {
   const pixelCount = interiorPixels.length;
 
@@ -705,7 +711,7 @@ function solvePoissonSparse(
   shapeMask: Uint8Array,
   boundaryMask: Uint8Array,
   width: number,
-  height: number
+  height: number,
 ): Float32Array {
   // This controls how smooth the falloff gradient will be and extend into the shape
   const ITERATIONS = POISSON_CONFIG_OPTIMIZED.iterations;
@@ -793,7 +799,9 @@ function solvePoissonSparse(
     console.log(`  Iterations: ${ITERATIONS}`);
     console.log(`  Time: ${elapsed.toFixed(2)}ms`);
     console.log(`  Interior pixels processed: ${pixelCount}`);
-    console.log(`  Speed: ${((ITERATIONS * pixelCount) / (elapsed * 1000)).toFixed(2)} Mpixels/sec`);
+    console.log(
+      `  Speed: ${((ITERATIONS * pixelCount) / (elapsed * 1000)).toFixed(2)} Mpixels/sec`,
+    );
   }
 
   return u;

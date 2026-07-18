@@ -46,7 +46,7 @@ export function emitOutputStyleTelemetry(args: {
     } catch (err) {
       args.log?.debug?.(
         "COMPRESSION",
-        "Run-telemetry emit skipped: " + (err instanceof Error ? err.message : String(err))
+        "Run-telemetry emit skipped: " + (err instanceof Error ? err.message : String(err)),
       );
     }
   })();

@@ -4,9 +4,7 @@
   "title": "Logos Carousel",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "Cycle through logos column by column in a staggered wave.",
-  "dependencies": [
-    "motion"
-  ],
+  "dependencies": ["motion"],
   "files": [
     {
       "path": "src/registry/components/logos-carousel/logos-carousel.tsx",
@@ -16,8 +14,6 @@
     }
   ],
   "docs": "https://chanhdai.com/components/logos-carousel",
-  "categories": [
-    "marketing"
-  ],
+  "categories": ["marketing"],
   "type": "registry:component"
 }

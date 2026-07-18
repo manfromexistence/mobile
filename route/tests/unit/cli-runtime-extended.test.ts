@@ -80,7 +80,7 @@ test("CLI config helpers enforce safe config homes and expose per-tool config pa
   });
   assert.equal(
     cliRuntime.getCliPrimaryConfigPath("codex"),
-    path.join(safeOverride, ".codex", "config.toml")
+    path.join(safeOverride, ".codex", "config.toml"),
   );
   assert.equal(cliRuntime.getCliConfigPaths("unknown"), null);
 
@@ -116,7 +116,7 @@ test("getCliRuntimeStatus reports not_executable for absolute env override files
     process.platform === "win32"
       ? "@echo off\r\necho codex 1.0.0\r\nREM padding padding padding\r\n"
       : "#!/bin/sh\necho codex 1.0.0\n# padding padding padding\n",
-    false
+    false,
   );
 
   process.env.CLI_CODEX_BIN = scriptPath;
@@ -142,7 +142,7 @@ test("getCliRuntimeStatus reports healthcheck_failed when a binary exists but do
     scriptName,
     process.platform === "win32"
       ? "@echo off\r\nexit /b 1\r\nREM padding padding padding\r\n"
-      : "#!/bin/sh\nexit 1\n# padding padding padding\n"
+      : "#!/bin/sh\nexit 1\n# padding padding padding\n",
   );
 
   process.env.CLI_QODER_BIN = scriptPath;
@@ -163,7 +163,7 @@ test("getCliRuntimeStatus healthchecks Windows .exe paths with spaces without sh
   const scriptPath = writeScript(
     tempDir,
     "claude.exe",
-    "fake executable content padding padding padding"
+    "fake executable content padding padding padding",
   );
   const spawnCalls = [];
 
@@ -201,7 +201,7 @@ test("getCliRuntimeStatus still healthchecks Windows .cmd wrappers through shell
   const scriptPath = writeScript(
     tempDir,
     "codex.cmd",
-    "@echo off\r\necho codex 1.2.3\r\nREM padding padding padding\r\n"
+    "@echo off\r\necho codex 1.2.3\r\nREM padding padding padding\r\n",
   );
   const spawnCalls = [];
 
@@ -240,7 +240,7 @@ test("shouldUseShellForCommand never uses the shell on non-Windows platforms", a
     assert.equal(
       cliRuntime.shouldUseShellForCommand(cmd),
       false,
-      `expected no shell on POSIX for: ${cmd}`
+      `expected no shell on POSIX for: ${cmd}`,
     );
   }
 });
@@ -253,7 +253,7 @@ test("getCliRuntimeStatus discovers binaries from CLI_EXTRA_PATHS during PATH lo
     scriptName,
     process.platform === "win32"
       ? "@echo off\r\necho qodercli 1.2.3\r\nREM padding padding padding\r\n"
-      : "#!/bin/sh\necho qodercli 1.2.3\n# padding padding padding\n"
+      : "#!/bin/sh\necho qodercli 1.2.3\n# padding padding padding\n",
   );
 
   process.env.CLI_EXTRA_PATHS = tempDir;
@@ -267,7 +267,7 @@ test("getCliRuntimeStatus discovers binaries from CLI_EXTRA_PATHS during PATH lo
   assert.equal(status.reason, null);
   assert.equal(
     path.basename(String(status.commandPath)).toLowerCase(),
-    process.platform === "win32" ? "qodercli.cmd" : "qodercli"
+    process.platform === "win32" ? "qodercli.cmd" : "qodercli",
   );
 });
 
@@ -279,7 +279,7 @@ test("getCliRuntimeStatus resolves known binaries from npm global prefix discove
     scriptName,
     process.platform === "win32"
       ? "@echo off\r\necho qodercli 1.2.3\r\nREM padding padding padding\r\n"
-      : "#!/bin/sh\necho qodercli 1.2.3\n# padding padding padding\n"
+      : "#!/bin/sh\necho qodercli 1.2.3\n# padding padding padding\n",
   );
 
   delete process.env.npm_config_prefix;
@@ -323,7 +323,7 @@ test("getCliRuntimeStatus ignores suspicious known-path binaries and symlink esc
     const outsideTarget = writeScript(
       outsideDir,
       "qodercli",
-      "#!/bin/sh\necho qodercli 9.9.9\n# padding padding padding\n"
+      "#!/bin/sh\necho qodercli 9.9.9\n# padding padding padding\n",
     );
 
     fs.mkdirSync(escapeBinDir, { recursive: true });
@@ -346,7 +346,7 @@ test("getCliRuntimeStatus tolerates spawn errors during healthcheck and marks th
     scriptName,
     process.platform === "win32"
       ? "@echo off\r\necho cline\r\nREM padding padding padding\r\n"
-      : "#!/bin/sh\necho cline\n# padding padding padding\n"
+      : "#!/bin/sh\necho cline\n# padding padding padding\n",
   );
 
   process.env.CLI_CLINE_BIN = scriptPath;

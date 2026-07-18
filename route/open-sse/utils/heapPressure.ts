@@ -22,7 +22,7 @@ import v8 from "node:v8";
  */
 export function computeHeapPressureThresholdMb(
   heapSizeLimitMb: number,
-  override?: string | number | null
+  override?: string | number | null,
 ): number {
   const explicit = Number(override);
   if (Number.isFinite(explicit) && explicit > 0) return Math.floor(explicit);
@@ -40,7 +40,7 @@ export function computeHeapPressureThresholdMb(
  */
 export const HEAP_PRESSURE_THRESHOLD_MB = computeHeapPressureThresholdMb(
   v8.getHeapStatistics().heap_size_limit / (1024 * 1024),
-  process.env.HEAP_PRESSURE_THRESHOLD_MB
+  process.env.HEAP_PRESSURE_THRESHOLD_MB,
 );
 
 const HEAP_PRESSURE_MESSAGE =
@@ -61,11 +61,11 @@ export type HeapPressureGuardResult = {
  */
 export function checkHeapPressureGuard(
   heapUsedMb: number,
-  thresholdMb: number = HEAP_PRESSURE_THRESHOLD_MB
+  thresholdMb: number = HEAP_PRESSURE_THRESHOLD_MB,
 ): HeapPressureGuardResult | null {
   if (heapUsedMb <= thresholdMb) return null;
   console.warn(
-    `[chatCore] heap pressure guard tripped: ${Math.round(heapUsedMb)}MB > ${thresholdMb}MB; returning 503`
+    `[chatCore] heap pressure guard tripped: ${Math.round(heapUsedMb)}MB > ${thresholdMb}MB; returning 503`,
   );
   return {
     success: false,
@@ -75,7 +75,7 @@ export function checkHeapPressureGuard(
       JSON.stringify({
         error: { message: HEAP_PRESSURE_MESSAGE, type: "server_error", code: "heap_pressure" },
       }),
-      { status: 503, headers: { "Content-Type": "application/json", "Retry-After": "5" } }
+      { status: 503, headers: { "Content-Type": "application/json", "Retry-After": "5" } },
     ),
   };
 }

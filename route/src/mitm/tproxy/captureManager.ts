@@ -69,7 +69,7 @@ let active: ActiveCapture | null = null;
  * installed in the trust store via the injected `installCa`.
  */
 export async function startCaptureMode(
-  options: StartCaptureModeOptions
+  options: StartCaptureModeOptions,
 ): Promise<CaptureManagerStatus> {
   if (active) throw new Error("TPROXY capture mode is already running");
 

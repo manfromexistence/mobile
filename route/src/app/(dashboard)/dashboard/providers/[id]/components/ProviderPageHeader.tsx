@@ -56,7 +56,7 @@ export default function ProviderPageHeader({
               isOpenAICompatible,
               isAnthropicProtocolCompatible,
               providerInfo.id,
-              providerInfo.apiType
+              providerInfo.apiType,
             )}
             size={48}
             type="color"

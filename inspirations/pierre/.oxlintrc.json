@@ -1,23 +1,12 @@
 {
-  "plugins": [
-    "import",
-    "react",
-    "nextjs",
-    "promise",
-    "node",
-    "react-perf",
-    "typescript"
-  ],
+  "plugins": ["import", "react", "nextjs", "promise", "node", "react-perf", "typescript"],
   "categories": {},
   "rules": {
     "nextjs/no-head-element": "off",
     "nextjs/no-html-link-for-pages": "off",
     "nextjs/no-img-element": "off",
     "prefer-const": ["error", { "destructuring": "all" }],
-    "no-unused-vars": [
-      "error",
-      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
-    ],
+    "no-unused-vars": ["error", { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }],
 
     "sort-imports": [
       "error",

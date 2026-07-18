@@ -71,7 +71,7 @@ describe("#6980 provider rule: cloudflare-ai neuron exhaustion", () => {
       {},
       {
         error: "rate limited, try again later",
-      }
+      },
     );
     assert.equal(result, null);
   });

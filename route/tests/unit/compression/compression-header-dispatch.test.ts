@@ -64,7 +64,7 @@ describe("planFromHeader (Phase 3)", () => {
   it("<combo> matches by name (case-insensitive) and by id", () => {
     assert.deepEqual(
       planFromHeader(cfg(), "FAST COMBO", combos)?.stackedPipeline,
-      combos["fast combo"]
+      combos["fast combo"],
     );
     assert.deepEqual(planFromHeader(cfg(), "c1", combos)?.stackedPipeline, combos.c1);
   });
@@ -124,9 +124,9 @@ describe("source on non-header paths", () => {
         undefined,
         undefined,
         combos,
-        null
+        null,
       ).source,
-      "routing-override"
+      "routing-override",
     );
     assert.equal(planWithHeader(cfg({ activeComboId: "c1" }), null).source, "active-profile");
     // auto-trigger only fires once estimatedTokens crosses autoTriggerTokens, so pass an
@@ -139,14 +139,14 @@ describe("source on non-header paths", () => {
         undefined,
         undefined,
         combos,
-        null
+        null,
       ).source,
-      "auto-trigger"
+      "auto-trigger",
     );
     assert.equal(
       planWithHeader(cfg({ enginesExplicit: true, engines: { rtk: { enabled: true } } }), null)
         .source,
-      "default"
+      "default",
     );
     assert.equal(planWithHeader(cfg({ enabled: false }), null).source, "off");
   });
@@ -156,7 +156,7 @@ describe("formatCompressionMeta", () => {
   it("renders '<mode>; source=<source>'", () => {
     assert.equal(
       formatCompressionMeta({ mode: "aggressive", stackedPipeline: [], source: "request-header" }),
-      "aggressive; source=request-header"
+      "aggressive; source=request-header",
     );
     assert.equal(formatCompressionMeta({ mode: "off", stackedPipeline: [] }), "off; source=off");
   });

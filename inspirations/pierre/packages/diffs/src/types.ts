@@ -1,5 +1,5 @@
-import type { CreatePatchOptionsNonabortable } from 'diff';
-import type { ElementContent } from 'hast';
+import type { CreatePatchOptionsNonabortable } from "diff";
+import type { ElementContent } from "hast";
 import type {
   BundledLanguage,
   BundledTheme,
@@ -11,11 +11,11 @@ import type {
   ThemedToken,
   ThemeRegistration,
   ThemeRegistrationResolved,
-} from 'shiki';
+} from "shiki";
 
 export type { CreatePatchOptionsNonabortable };
 
-export type CodeViewScrollBehavior = 'instant' | 'smooth' | 'smooth-auto';
+export type CodeViewScrollBehavior = "instant" | "smooth" | "smooth-auto";
 
 /**
  * Represents a file's contents for generating diffs via `parseDiffFromFile` or
@@ -38,7 +38,7 @@ export interface FileContents {
   cacheKey?: string;
 }
 
-export type HighlighterTypes = 'shiki-js' | 'shiki-wasm';
+export type HighlighterTypes = "shiki-js" | "shiki-wasm";
 
 export type {
   BundledLanguage,
@@ -55,7 +55,7 @@ export type {
 // consumer registers through the highlighter/theming catalog.
 export type DiffsThemeNames = BundledTheme | (string & {});
 
-export type ThemesType = Record<'dark' | 'light', DiffsThemeNames>;
+export type ThemesType = Record<"dark" | "light", DiffsThemeNames>;
 
 /**
  * A Shiki highlighter instance configured with the library's supported
@@ -64,10 +64,7 @@ export type ThemesType = Record<'dark' | 'light', DiffsThemeNames>;
  * instantiated per thread and shared for all syntax highlighting.  This
  * applies to the main thread and worker threads.
  */
-export type DiffsHighlighter = HighlighterGeneric<
-  SupportedLanguages,
-  DiffsThemeNames
->;
+export type DiffsHighlighter = HighlighterGeneric<SupportedLanguages, DiffsThemeNames>;
 
 /**
  * Describes the type of change for a file in a diff.
@@ -77,12 +74,7 @@ export type DiffsHighlighter = HighlighterGeneric<
  * - `new`: A new file was added.
  * - `deleted`: An existing file was removed.
  */
-export type ChangeTypes =
-  | 'change'
-  | 'rename-pure'
-  | 'rename-changed'
-  | 'new'
-  | 'deleted';
+export type ChangeTypes = "change" | "rename-pure" | "rename-changed" | "new" | "deleted";
 
 /**
  * Represents a parsed patch file, typically corresponding to a single commit.
@@ -102,7 +94,7 @@ export interface ParsedPatch {
  * lines prefixed with a ` ` are grouped together into a single ContextContent.
  */
 export interface ContextContent {
-  type: 'context';
+  type: "context";
   /** Number of unchanged lines in this context block. */
   lines: number;
   /**
@@ -123,7 +115,7 @@ export interface ContextContent {
  * ChangeContent.
  */
 export interface ChangeContent {
-  type: 'change';
+  type: "change";
   /** Number of lines prefixed with `-` in this change block. */
   deletions: number;
   /**
@@ -321,10 +313,10 @@ export interface FileDiffMetadata {
 }
 
 export type MergeConflictMarkerRowType =
-  | 'marker-start'
-  | 'marker-base'
-  | 'marker-separator'
-  | 'marker-end';
+  | "marker-start"
+  | "marker-base"
+  | "marker-separator"
+  | "marker-end";
 
 export interface MergeConflictMarkerRow {
   type: MergeConflictMarkerRowType;
@@ -337,42 +329,28 @@ export interface MergeConflictMarkerRow {
   lineIndex: number;
 }
 
-export type SupportedLanguages =
-  | BundledLanguage
-  | 'text'
-  | 'ansi'
-  | (string & {});
+export type SupportedLanguages = BundledLanguage | "text" | "ansi" | (string & {});
 
 // Line types that we can parse from a patch file
-export type HunkLineType =
-  | 'context'
-  | 'expanded'
-  | 'addition'
-  | 'deletion'
-  | 'metadata';
+export type HunkLineType = "context" | "expanded" | "addition" | "deletion" | "metadata";
 
-export type ThemeTypes = 'system' | 'light' | 'dark';
+export type ThemeTypes = "system" | "light" | "dark";
 
-export type PostRenderPhase = 'mount' | 'update' | 'unmount';
+export type PostRenderPhase = "mount" | "update" | "unmount";
 
 /**
  * The `'custom'` variant is deprecated and will be removed in a future version.
  */
-export type HunkSeparators =
-  | 'simple'
-  | 'metadata'
-  | 'line-info'
-  | 'line-info-basic'
-  | 'custom';
+export type HunkSeparators = "simple" | "metadata" | "line-info" | "line-info-basic" | "custom";
 
-export type LineDiffTypes = 'word-alt' | 'word' | 'char' | 'none';
+export type LineDiffTypes = "word-alt" | "word" | "char" | "none";
 
-export type DiffIndicators = 'classic' | 'bars' | 'none';
+export type DiffIndicators = "classic" | "bars" | "none";
 
 export interface BaseCodeOptions {
   theme?: DiffsThemeNames | ThemesType;
   disableLineNumbers?: boolean;
-  overflow?: 'scroll' | 'wrap'; // 'scroll' is default
+  overflow?: "scroll" | "wrap"; // 'scroll' is default
   themeType?: ThemeTypes; // 'system' is default
   collapsed?: boolean;
   disableFileHeader?: boolean;
@@ -391,7 +369,7 @@ export interface BaseCodeOptions {
 }
 
 export interface BaseDiffOptions extends BaseCodeOptions {
-  diffStyle?: 'unified' | 'split'; // split is default
+  diffStyle?: "unified" | "split"; // split is default
   diffIndicators?: DiffIndicators; // bars is default
   disableBackground?: boolean;
   hunkSeparators?: HunkSeparators; // line-info is default
@@ -414,10 +392,7 @@ export interface BaseDiffOptions extends BaseCodeOptions {
 }
 
 export type BaseDiffOptionsWithDefaults = Required<
-  Omit<
-    BaseDiffOptions,
-    'unsafeCSS' | 'preferredHighlighter' | 'parseDiffOptions'
-  >
+  Omit<BaseDiffOptions, "unsafeCSS" | "preferredHighlighter" | "parseDiffOptions">
 >;
 
 export type CustomPreProperties = Record<string, string | number | undefined>;
@@ -425,36 +400,37 @@ export type CustomPreProperties = Record<string, string | number | undefined>;
 // NOTE(amadeus): This is the shared config that all `pre` nodes will need to
 // get setup properly. Whether it's via direct DOM manipulation or via HAST
 // html rendering, this interface can be shared across both of these areas.
-export interface PrePropertiesConfig extends Required<
-  Pick<
-    BaseDiffOptions,
-    'diffIndicators' | 'disableBackground' | 'disableLineNumbers' | 'overflow'
-  >
-> {
-  type: 'diff' | 'file';
+export interface PrePropertiesConfig
+  extends Required<
+    Pick<
+      BaseDiffOptions,
+      "diffIndicators" | "disableBackground" | "disableLineNumbers" | "overflow"
+    >
+  > {
+  type: "diff" | "file";
   split: boolean;
   totalLines: number;
   customProperties?: CustomPreProperties;
 }
 
-export type FileHeaderRenderMode = 'default' | 'custom';
+export type FileHeaderRenderMode = "default" | "custom";
 
 export type RenderHeaderMetadataCallback = (
-  fileDiff: FileDiffMetadata
+  fileDiff: FileDiffMetadata,
 ) => Element | string | number | null | undefined;
 
 export type RenderHeaderPrefixCallback = (
-  fileDiff: FileDiffMetadata
+  fileDiff: FileDiffMetadata,
 ) => Element | string | number | null | undefined;
 
 export type RenderFileMetadata = (
-  file: FileContents
+  file: FileContents,
 ) => Element | string | number | null | undefined;
 
 export type ExtensionFormatMap = Record<string, SupportedLanguages | undefined>;
 
-export type AnnotationSide = 'deletions' | 'additions';
-export type SelectionSide = 'deletions' | 'additions';
+export type AnnotationSide = "deletions" | "additions";
+export type SelectionSide = "deletions" | "additions";
 
 export interface SelectedLineRange {
   start: number;
@@ -463,9 +439,7 @@ export interface SelectedLineRange {
   endSide?: SelectionSide;
 }
 
-type OptionalMetadata<T> = T extends undefined
-  ? { metadata?: undefined }
-  : { metadata: T };
+type OptionalMetadata<T> = T extends undefined ? { metadata?: undefined } : { metadata: T };
 
 /**
  * Annotation rendered for a file line. Use `lineNumber: 0` to render a
@@ -486,7 +460,7 @@ export type DiffLineAnnotation<T = undefined> = {
 
 export type CodeViewFileItem<T = undefined> = {
   id: string;
-  type: 'file';
+  type: "file";
   file: FileContents;
   annotations?: LineAnnotation<T>[];
   version?: number;
@@ -495,38 +469,36 @@ export type CodeViewFileItem<T = undefined> = {
 
 export type CodeViewDiffItem<T = undefined> = {
   id: string;
-  type: 'diff';
+  type: "diff";
   fileDiff: FileDiffMetadata;
   annotations?: DiffLineAnnotation<T>[];
   version?: number;
   collapsed?: boolean;
 };
 
-export type CodeViewItem<T = undefined> =
-  | CodeViewFileItem<T>
-  | CodeViewDiffItem<T>;
+export type CodeViewItem<T = undefined> = CodeViewFileItem<T> | CodeViewDiffItem<T>;
 
 export interface CodeViewPositionScrollTarget {
-  type: 'position';
+  type: "position";
   position: number;
   behavior?: CodeViewScrollBehavior;
 }
 
 export interface CodeViewLineScrollTarget {
-  type: 'line';
+  type: "line";
   id: string;
   lineNumber: number;
   side?: SelectionSide;
-  align?: 'start' | 'center' | 'end' | 'nearest';
+  align?: "start" | "center" | "end" | "nearest";
   offset?: number;
   behavior?: CodeViewScrollBehavior;
 }
 
 export interface CodeViewRangeScrollTarget {
-  type: 'range';
+  type: "range";
   id: string;
   range: SelectedLineRange;
-  align?: 'start' | 'center' | 'end' | 'nearest';
+  align?: "start" | "center" | "end" | "nearest";
   offset?: number;
   behavior?: CodeViewScrollBehavior;
 }
@@ -538,9 +510,9 @@ export interface NumericScrollLineAnchor {
 }
 
 export interface CodeViewItemScrollTarget {
-  type: 'item';
+  type: "item";
   id: string;
-  align?: 'start' | 'center' | 'end' | 'nearest';
+  align?: "start" | "center" | "end" | "nearest";
   offset?: number;
   behavior?: CodeViewScrollBehavior;
 }
@@ -551,7 +523,7 @@ export type CodeViewScrollTarget =
   | CodeViewRangeScrollTarget
   | CodeViewItemScrollTarget;
 
-export type MergeConflictResolution = 'current' | 'incoming' | 'both';
+export type MergeConflictResolution = "current" | "incoming" | "both";
 
 export interface MergeConflictRegion {
   conflictIndex: number;
@@ -571,7 +543,7 @@ export interface MergeConflictActionPayload {
 }
 
 export interface GapSpan {
-  type: 'gap';
+  type: "gap";
   rows: number;
 }
 
@@ -580,11 +552,7 @@ export type LineSpans = GapSpan | AnnotationSpan;
 // Types of rendered lines in a rendered diff
 // Should we have yet another type for files? seems silly for
 // use to have a type in that case?
-export type LineTypes =
-  | 'change-deletion'
-  | 'change-addition'
-  | 'context'
-  | 'context-expanded';
+export type LineTypes = "change-deletion" | "change-addition" | "context" | "context-expanded";
 
 export interface LineInfo {
   type: LineTypes;
@@ -598,31 +566,28 @@ export interface SharedRenderState {
 }
 
 export interface AnnotationSpan {
-  type: 'annotation';
+  type: "annotation";
   hunkIndex: number;
   lineIndex: number;
   annotations: string[];
 }
 
 export interface LineEventBaseProps {
-  type: 'line';
+  type: "line";
   lineNumber: number;
   lineElement: HTMLElement;
   numberElement: HTMLElement;
   numberColumn: boolean;
 }
 
-export interface DiffLineEventBaseProps extends Omit<
-  LineEventBaseProps,
-  'type'
-> {
-  type: 'diff-line';
+export interface DiffLineEventBaseProps extends Omit<LineEventBaseProps, "type"> {
+  type: "diff-line";
   annotationSide: AnnotationSide;
   lineType: LineTypes;
 }
 
 export interface TokenEventBase {
-  type: 'token';
+  type: "token";
   lineNumber: number;
   lineCharStart: number;
   lineCharEnd: number;
@@ -635,7 +600,7 @@ export interface DiffTokenEventBaseProps extends TokenEventBase {
 }
 
 export interface ObservedAnnotationNodes {
-  type: 'annotations';
+  type: "annotations";
   column1: {
     container: HTMLElement;
     child: HTMLElement;
@@ -646,18 +611,18 @@ export interface ObservedAnnotationNodes {
     child: HTMLElement;
     childHeight: number;
   };
-  currentHeight: number | 'auto';
+  currentHeight: number | "auto";
 }
 
 export interface ObservedGridNodes {
-  type: 'code';
+  type: "code";
   codeElement: HTMLElement;
   numberElement: HTMLElement | null;
-  codeWidth: number | 'auto';
+  codeWidth: number | "auto";
   numberWidth: number;
 }
 
-export type CodeColumnType = 'unified' | 'additions' | 'deletions';
+export type CodeColumnType = "unified" | "additions" | "deletions";
 
 export interface HunkData {
   slotName: string;
@@ -676,12 +641,12 @@ export type AnnotationLineMap<LAnnotation> = Record<
   DiffLineAnnotation<LAnnotation>[] | undefined
 >;
 
-export type ExpansionDirections = 'up' | 'down' | 'both';
+export type ExpansionDirections = "up" | "down" | "both";
 
 export interface ThemedFileResult {
   code: ElementContent[];
   themeStyles: string;
-  baseThemeType: 'light' | 'dark' | undefined;
+  baseThemeType: "light" | "dark" | undefined;
 }
 
 export interface RenderDiffFilesResult {
@@ -692,7 +657,7 @@ export interface RenderDiffFilesResult {
 export interface ThemedDiffResult {
   code: RenderDiffFilesResult;
   themeStyles: string;
-  baseThemeType: 'light' | 'dark' | undefined;
+  baseThemeType: "light" | "dark" | undefined;
 }
 
 export interface HunkExpansionRegion {
@@ -717,13 +682,13 @@ export interface ForceFilePlainTextOptions {
 }
 
 export interface RenderFileOptions {
-  theme: DiffsThemeNames | Record<'dark' | 'light', DiffsThemeNames>;
+  theme: DiffsThemeNames | Record<"dark" | "light", DiffsThemeNames>;
   useTokenTransformer: boolean;
   tokenizeMaxLineLength: number;
 }
 
 export interface RenderDiffOptions {
-  theme: DiffsThemeNames | Record<'dark' | 'light', DiffsThemeNames>;
+  theme: DiffsThemeNames | Record<"dark" | "light", DiffsThemeNames>;
   useTokenTransformer: boolean;
   tokenizeMaxLineLength: number;
   lineDiffType: LineDiffTypes;
@@ -839,9 +804,9 @@ export interface SelectionPoint {
   side: SelectionSide | undefined;
 }
 
-export type DiffAcceptRejectHunkType = 'accept' | 'reject' | 'both';
+export type DiffAcceptRejectHunkType = "accept" | "reject" | "both";
 
-export type ConflictResolverTypes = 'current' | 'incoming' | 'both';
+export type ConflictResolverTypes = "current" | "incoming" | "both";
 
 export interface DiffAcceptRejectHunkConfig {
   type: DiffAcceptRejectHunkType;
@@ -882,7 +847,7 @@ export interface AppliedThemeStyleCache {
   theme: DiffsThemeNames | ThemesType;
   themeStyles: string;
   themeType: ThemeTypes;
-  baseThemeType: 'light' | 'dark' | undefined;
+  baseThemeType: "light" | "dark" | undefined;
   scrollbarGutter: number | undefined;
 }
 

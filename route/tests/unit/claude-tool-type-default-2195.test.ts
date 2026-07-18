@@ -32,7 +32,7 @@ test("leaves tools that already declare a type untouched", () => {
   const out = defaultClaudeToolType(tools) as Array<Record<string, unknown>>;
   assert.deepEqual(
     out.map((t) => t.type),
-    ["custom", "computer_20241022", "bash_20241022"]
+    ["custom", "computer_20241022", "bash_20241022"],
   );
   // Non-custom built-in tool types must be preserved, not overwritten.
   assert.equal(out[1].type, "computer_20241022");

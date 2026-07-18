@@ -8,18 +8,14 @@
  * @returns {{ isDirectory: boolean; name: string; parentPath: string }}
  */
 export function splitPath(path) {
-  const isDirectory = path.endsWith('/');
+  const isDirectory = path.endsWith("/");
   const normalizedPath = isDirectory ? path.slice(0, -1) : path;
-  const lastSlashIndex = normalizedPath.lastIndexOf('/');
+  const lastSlashIndex = normalizedPath.lastIndexOf("/");
 
   return {
     isDirectory,
-    name:
-      lastSlashIndex === -1
-        ? normalizedPath
-        : normalizedPath.slice(lastSlashIndex + 1),
-    parentPath:
-      lastSlashIndex === -1 ? '' : normalizedPath.slice(0, lastSlashIndex + 1),
+    name: lastSlashIndex === -1 ? normalizedPath : normalizedPath.slice(lastSlashIndex + 1),
+    parentPath: lastSlashIndex === -1 ? "" : normalizedPath.slice(0, lastSlashIndex + 1),
   };
 }
 
@@ -30,7 +26,7 @@ export function splitPath(path) {
  */
 export function getMovedPathIntoDirectory(path, destinationDirectoryPath) {
   const { isDirectory, name } = splitPath(path);
-  return `${destinationDirectoryPath}${name}${isDirectory ? '/' : ''}`;
+  return `${destinationDirectoryPath}${name}${isDirectory ? "/" : ""}`;
 }
 
 /**
@@ -43,12 +39,12 @@ export function getMovedPathIntoDirectory(path, destinationDirectoryPath) {
  */
 export function getMovePathToParentPlan(store, path) {
   const parentPath = splitPath(path).parentPath;
-  if (parentPath === '') {
+  if (parentPath === "") {
     return null;
   }
 
   const destinationPath = splitPath(parentPath).parentPath;
-  if (destinationPath === '') {
+  if (destinationPath === "") {
     return null;
   }
 
@@ -72,7 +68,7 @@ export function getMovePathToParentPlan(store, path) {
  * @returns {{ destinationPath: string; movedPath: string } | null}
  */
 export function getMoveVisibleFolderToParentPlan(store, path) {
-  return path.endsWith('/') ? getMovePathToParentPlan(store, path) : null;
+  return path.endsWith("/") ? getMovePathToParentPlan(store, path) : null;
 }
 
 /**
@@ -87,8 +83,7 @@ export function findMoveVisibleFolderToParentCandidate(store, rows) {
   return (
     rows.find(
       (row) =>
-        row.kind === 'directory' &&
-        getMoveVisibleFolderToParentPlan(store, row.path) != null
+        row.kind === "directory" && getMoveVisibleFolderToParentPlan(store, row.path) != null,
     ) ?? null
   );
 }
@@ -103,9 +98,7 @@ export function findMoveVisibleFolderToParentCandidate(store, rows) {
  */
 export function findMoveVisibleLeafToParentCandidate(store, rows) {
   return (
-    rows.find(
-      (row) =>
-        row.kind === 'file' && getMovePathToParentPlan(store, row.path) != null
-    ) ?? null
+    rows.find((row) => row.kind === "file" && getMovePathToParentPlan(store, row.path) != null) ??
+    null
   );
 }

@@ -16,7 +16,7 @@ describe("claudeCliConfig", () => {
   it("prefers a stored auth token but can read legacy api key config", () => {
     assert.equal(
       getStoredClaudeAuthValue({ ANTHROPIC_AUTH_TOKEN: "sk-live-token" }),
-      "sk-live-token"
+      "sk-live-token",
     );
     assert.equal(getStoredClaudeAuthValue({ ANTHROPIC_API_KEY: "sk-legacy-key" }), "sk-legacy-key");
     assert.equal(
@@ -24,7 +24,7 @@ describe("claudeCliConfig", () => {
         ANTHROPIC_AUTH_TOKEN: "sk-live-token",
         ANTHROPIC_API_KEY: "sk-legacy-key",
       }),
-      "sk-live-token"
+      "sk-live-token",
     );
     assert.equal(getStoredClaudeAuthValue({}), null);
   });

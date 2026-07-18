@@ -43,7 +43,10 @@ test("#4227 createTask posts the prompt+repo and maps CREATING → queued", asyn
     return Response.json({ id: "bc-abc123", status: "CREATING", name: "agent-1" });
   });
   try {
-    const task = await agent.createTask({ prompt: "fix the bug", source: SOURCE, options: OPTIONS }, CREDS);
+    const task = await agent.createTask(
+      { prompt: "fix the bug", source: SOURCE, options: OPTIONS },
+      CREDS,
+    );
     assert.equal(task.providerId, "cursor-cloud");
     assert.equal(task.externalId, "bc-abc123");
     assert.equal(task.status, "queued");
@@ -66,7 +69,7 @@ test("#4227 createTask surfaces an upstream error instead of swallowing it", asy
   try {
     await assert.rejects(
       agent.createTask({ prompt: "x", source: SOURCE, options: {} }, CREDS),
-      /Cursor create agent failed: 401/
+      /Cursor create agent failed: 401/,
     );
   } finally {
     restore();
@@ -81,8 +84,10 @@ test("#4227 getStatus maps FINISHED → completed and extracts the PR url + conv
       status: "FINISHED",
       target: { prUrl: "https://github.com/org/repo/pull/7", branchName: "cursor/fix" },
       summary: "Fixed it",
-      conversation: [{ type: "assistant_message", text: "done", createdAt: "2026-06-19T00:00:00Z" }],
-    })
+      conversation: [
+        { type: "assistant_message", text: "done", createdAt: "2026-06-19T00:00:00Z" },
+      ],
+    }),
   );
   try {
     const result = await agent.getStatus("bc-abc123", CREDS);
@@ -136,7 +141,7 @@ test("#4227 sendMessage posts a followup; approvePlan is unsupported", async () 
 test("#4227 listSources normalizes the repositories list", async () => {
   const agent = new cursorMod.CursorCloudAgent();
   const restore = mockFetch(() =>
-    Response.json({ repositories: [{ url: "https://github.com/org/repo", name: "org/repo" }] })
+    Response.json({ repositories: [{ url: "https://github.com/org/repo", name: "org/repo" }] }),
   );
   try {
     const sources = await agent.listSources(CREDS);

@@ -20,7 +20,7 @@ test("getLatestVersion passes --prefer-online to bypass the stale npm cache (#43
   assert.equal(capturedArgs.cmd, "npm");
   assert.ok(
     capturedArgs.args.includes("--prefer-online"),
-    `expected --prefer-online in npm args, got: ${JSON.stringify(capturedArgs.args)}`
+    `expected --prefer-online in npm args, got: ${JSON.stringify(capturedArgs.args)}`,
   );
   // still the right query
   assert.ok(capturedArgs.args.includes("view"));

@@ -21,9 +21,7 @@ const { resetDbInstance, getDbInstance } = await import("../../src/lib/db/core.t
 const { addCustomHost, toggleCustomHost } = await import(
   "../../src/lib/db/inspectorCustomHosts.ts"
 );
-const { recordRequestStart } = await import(
-  "../../src/mitm/inspector/agentBridgeHook.ts"
-);
+const { recordRequestStart } = await import("../../src/mitm/inspector/agentBridgeHook.ts");
 
 async function resetStorage() {
   resetDbInstance();
@@ -92,7 +90,7 @@ test("recordRequestStart: disabled custom-host → source=agent-bridge (not matc
   assert.equal(
     entry.source,
     "agent-bridge",
-    "disabled custom-host should not be treated as custom-host source"
+    "disabled custom-host should not be treated as custom-host source",
   );
   assert.equal(entry.agent, "codex");
 });

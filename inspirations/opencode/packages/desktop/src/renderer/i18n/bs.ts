@@ -25,4 +25,4 @@ export const dict = {
     "CLI je instaliran u {{path}}\n\nRestartuj terminal da bi koristio komandu 'opencode'.",
   "desktop.cli.failed.title": "Instalacija nije uspjela",
   "desktop.cli.failed.message": "Neuspjela instalacija CLI-a: {{error}}",
-}
+};

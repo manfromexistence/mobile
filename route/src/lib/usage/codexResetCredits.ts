@@ -77,14 +77,14 @@ function parseConsumeOutcome(payload: unknown): CodexResetCreditOutcome {
     throw new CodexResetCreditError(
       409,
       "nothing_to_reset",
-      "No exhausted Codex usage limit can be reset right now."
+      "No exhausted Codex usage limit can be reset right now.",
     );
   }
 
   throw new CodexResetCreditError(
     502,
     "unknown_reset_credit_response",
-    "Codex returned an unknown reset-credit response."
+    "Codex returned an unknown reset-credit response.",
   );
 }
 
@@ -99,7 +99,7 @@ function throwKnownConsumeError(payload: unknown): void {
     throw new CodexResetCreditError(
       409,
       "nothing_to_reset",
-      "No exhausted Codex usage limit can be reset right now."
+      "No exhausted Codex usage limit can be reset right now.",
     );
   }
 }
@@ -114,7 +114,7 @@ function extractStringField(record: JsonRecord, keys: string[]): string | null {
 
 function isUnavailableResetCredit(record: JsonRecord): boolean {
   const status = normalizeOutcome(
-    record.status ?? record.state ?? record.outcome ?? record.result ?? record.code
+    record.status ?? record.state ?? record.outcome ?? record.result ?? record.code,
   );
   if (status && ["consumed", "redeemed", "used", "expired", "unavailable"].includes(status)) {
     return true;
@@ -180,7 +180,7 @@ function buildCodexResetCreditHeaders(connection: CodexConnectionLike): Record<s
     throw new CodexResetCreditError(
       401,
       "codex_access_token_missing",
-      "Codex OAuth access token is missing."
+      "Codex OAuth access token is missing.",
     );
   }
 
@@ -198,7 +198,7 @@ function buildCodexResetCreditHeaders(connection: CodexConnectionLike): Record<s
 
 async function loadCodexConnection(connectionId: string): Promise<CodexConnectionLike> {
   const connection = (await getProviderConnectionById(
-    connectionId
+    connectionId,
   )) as unknown as CodexConnectionLike | null;
 
   if (!connection) {
@@ -209,7 +209,7 @@ async function loadCodexConnection(connectionId: string): Promise<CodexConnectio
     throw new CodexResetCreditError(
       400,
       "codex_provider_required",
-      "Reset credits can only be redeemed for OpenAI Codex accounts."
+      "Reset credits can only be redeemed for OpenAI Codex accounts.",
     );
   }
 
@@ -217,7 +217,7 @@ async function loadCodexConnection(connectionId: string): Promise<CodexConnectio
     throw new CodexResetCreditError(
       400,
       "codex_oauth_required",
-      "Codex reset credits require an OAuth connection."
+      "Codex reset credits require an OAuth connection.",
     );
   }
 
@@ -226,7 +226,7 @@ async function loadCodexConnection(connectionId: string): Promise<CodexConnectio
 
 async function refreshCodexConnectionIfNeeded(
   connection: CodexConnectionLike,
-  force = false
+  force = false,
 ): Promise<CodexConnectionLike> {
   const refreshed = await refreshAndUpdateCredentials(connection, {
     allowRotatingRefresh: true,
@@ -238,7 +238,7 @@ async function refreshCodexConnectionIfNeeded(
 async function postConsumeResetCredit(
   connection: CodexConnectionLike,
   idempotencyKey: string,
-  creditId: string
+  creditId: string,
 ): Promise<Response> {
   const headers = buildCodexResetCreditHeaders(connection);
   const proxyInfo = await resolveProxyForConnection(connection.id);
@@ -248,7 +248,7 @@ async function postConsumeResetCredit(
       headers,
       body: JSON.stringify({ redeem_request_id: idempotencyKey, credit_id: creditId }),
       signal: AbortSignal.timeout(15_000),
-    })
+    }),
   );
 }
 
@@ -260,13 +260,13 @@ async function fetchResetCredits(connection: CodexConnectionLike): Promise<Respo
       method: "GET",
       headers,
       signal: AbortSignal.timeout(15_000),
-    })
+    }),
   );
 }
 
 async function consumeWithAuthRetry(
   connection: CodexConnectionLike,
-  idempotencyKey: string
+  idempotencyKey: string,
 ): Promise<{ connection: CodexConnectionLike; response: Response }> {
   let refreshedConnection = await refreshCodexConnectionIfNeeded(connection);
   let creditsResponse = await fetchResetCredits(refreshedConnection);
@@ -282,7 +282,7 @@ async function consumeWithAuthRetry(
     throw new CodexResetCreditError(
       creditsResponse.status,
       "codex_reset_credit_upstream_error",
-      `Codex reset-credit API returned HTTP ${creditsResponse.status}.`
+      `Codex reset-credit API returned HTTP ${creditsResponse.status}.`,
     );
   }
 
@@ -298,7 +298,7 @@ async function consumeWithAuthRetry(
       throw new CodexResetCreditError(
         refreshedCreditsResponse.status,
         "codex_reset_credit_upstream_error",
-        `Codex reset-credit API returned HTTP ${refreshedCreditsResponse.status}.`
+        `Codex reset-credit API returned HTTP ${refreshedCreditsResponse.status}.`,
       );
     }
     const refreshedCreditId = parseAvailableResetCreditId(refreshedCreditsPayload);
@@ -310,7 +310,7 @@ async function consumeWithAuthRetry(
 
 export async function consumeCodexResetCredit(
   connectionId: string,
-  idempotencyKey: string
+  idempotencyKey: string,
 ): Promise<{
   outcome: CodexResetCreditOutcome;
   usage: JsonRecord;
@@ -332,7 +332,7 @@ export async function consumeCodexResetCredit(
       throw new CodexResetCreditError(
         response.status,
         "codex_reset_credit_upstream_error",
-        `Codex reset-credit API returned HTTP ${response.status}.`
+        `Codex reset-credit API returned HTTP ${response.status}.`,
       );
     }
 
@@ -349,7 +349,7 @@ export async function consumeCodexResetCredit(
     throw new CodexResetCreditError(
       500,
       "codex_reset_credit_failed",
-      sanitizeErrorMessage(error) || "Failed to redeem Codex reset credit."
+      sanitizeErrorMessage(error) || "Failed to redeem Codex reset credit.",
     );
   }
 }

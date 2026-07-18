@@ -30,19 +30,19 @@ describe("Golden Eval: long-coding-session", () => {
         role: string;
         content?: string | Array<{ type: string; text?: string }>;
         [key: string]: unknown;
-      }>
+      }>,
     );
     assert.ok(result.messages.length > 0, "Should produce output messages");
     assert.equal(result.stats.mode, "aggressive");
     assert.ok(
       result.stats.savingsPercent >= 5,
-      `Expected >= 5% savings, got ${result.stats.savingsPercent}%`
+      `Expected >= 5% savings, got ${result.stats.savingsPercent}%`,
     );
     assert.ok(result.stats.originalTokens > 0, "Should have original token count");
     assert.ok(result.stats.compressedTokens > 0, "Should have compressed token count");
     assert.ok(
       result.stats.compressedTokens < result.stats.originalTokens,
-      "Compressed should be less than original"
+      "Compressed should be less than original",
     );
   });
 
@@ -53,7 +53,7 @@ describe("Golden Eval: long-coding-session", () => {
         role: string;
         content?: string | Array<{ type: string; text?: string }>;
         [key: string]: unknown;
-      }>
+      }>,
     );
     const systemMsg = result.messages.find((m) => m.role === "system");
     assert.ok(systemMsg, "System message should be preserved");
@@ -75,7 +75,7 @@ describe("Golden Eval: long-coding-session", () => {
           json: true,
           errorMessage: true,
         },
-      }
+      },
     );
     assert.ok(result.stats.aggressive!.toolResultSavings > 0, "Should have tool result savings");
   });
@@ -103,7 +103,7 @@ describe("Golden Eval: long-coding-session", () => {
     assert.equal(result.stats!.mode, "aggressive");
     assert.ok(
       Array.isArray((result.body as Record<string, unknown>).messages),
-      "Should have messages in body"
+      "Should have messages in body",
     );
   });
 
@@ -115,7 +115,7 @@ describe("Golden Eval: long-coding-session", () => {
         role: string;
         content?: string | Array<{ type: string; text?: string }>;
         [key: string]: unknown;
-      }>
+      }>,
     );
     const elapsed = performance.now() - start;
     assert.ok(elapsed < 50, `Expected < 50ms, got ${elapsed.toFixed(1)}ms`);

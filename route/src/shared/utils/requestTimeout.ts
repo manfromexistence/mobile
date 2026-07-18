@@ -20,7 +20,7 @@
 export async function withTimeout<T>(
   fn: () => Promise<T>,
   timeoutMs: number,
-  label = "Operation"
+  label = "Operation",
 ): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     const timeoutId = setTimeout(() => {

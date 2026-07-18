@@ -154,7 +154,7 @@ function buildCodexAuthPayload(connection: CodexConnectionLike): CodexAuthFilePa
     throw new CodexAuthFileError(
       "Codex connection is missing id_token. Re-authenticate this account before exporting.",
       409,
-      "reauth_required"
+      "reauth_required",
     );
   }
 
@@ -162,7 +162,7 @@ function buildCodexAuthPayload(connection: CodexConnectionLike): CodexAuthFilePa
     throw new CodexAuthFileError(
       "Codex connection is missing access_token. Refresh or re-authenticate this account first.",
       409,
-      "access_token_missing"
+      "access_token_missing",
     );
   }
 
@@ -170,7 +170,7 @@ function buildCodexAuthPayload(connection: CodexConnectionLike): CodexAuthFilePa
     throw new CodexAuthFileError(
       "Codex connection is missing refresh_token. Re-authenticate this account before exporting.",
       409,
-      "reauth_required"
+      "reauth_required",
     );
   }
 
@@ -179,7 +179,7 @@ function buildCodexAuthPayload(connection: CodexConnectionLike): CodexAuthFilePa
     throw new CodexAuthFileError(
       "Unable to derive Codex account_id from the stored session. Re-authenticate this account.",
       409,
-      "account_id_missing"
+      "account_id_missing",
     );
   }
 
@@ -219,7 +219,7 @@ async function resolveFreshCodexConnection(connectionId: string): Promise<CodexC
     throw new CodexAuthFileError(
       "Codex connection requires refresh but no refresh_token is available. Re-authenticate first.",
       409,
-      "reauth_required"
+      "reauth_required",
     );
   }
 
@@ -239,14 +239,14 @@ async function resolveFreshCodexConnection(connectionId: string): Promise<CodexC
     async (result) => {
       await updateProviderCredentials(connectionId, result);
       persistedRefresh = result;
-    }
+    },
   );
 
   if (isUnrecoverableRefreshError(refreshed)) {
     throw new CodexAuthFileError(
       "Codex refresh token is no longer valid. Re-authenticate this account before exporting.",
       409,
-      "reauth_required"
+      "reauth_required",
     );
   }
 
@@ -254,7 +254,7 @@ async function resolveFreshCodexConnection(connectionId: string): Promise<CodexC
     throw new CodexAuthFileError(
       "Failed to refresh the Codex session before exporting the auth file. Re-authenticate this account if the session is stale.",
       502,
-      "refresh_failed"
+      "refresh_failed",
     );
   }
 

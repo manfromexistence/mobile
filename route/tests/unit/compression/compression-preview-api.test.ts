@@ -21,7 +21,7 @@ describe("compression preview API contract", () => {
           },
         },
       }).success,
-      true
+      true,
     );
 
     assert.equal(
@@ -35,7 +35,7 @@ describe("compression preview API contract", () => {
           ],
         },
       }).success,
-      true
+      true,
     );
   });
 
@@ -47,19 +47,19 @@ describe("compression preview API contract", () => {
         mode: "rtk",
         config: { rtkConfig: { intensity: "extreme" } },
       }).success,
-      false
+      false,
     );
     assert.equal(
       PreviewCompressionConfigSchema.safeParse({
         stackedPipeline: [{ engine: "rtk", intensity: "bogus" }],
       }).success,
-      false
+      false,
     );
     assert.equal(
       PreviewCompressionConfigSchema.safeParse({
         stackedPipeline: [{ engine: "rtk", config: { maxLinesPerResult: -1 } }],
       }).success,
-      false
+      false,
     );
   });
 });

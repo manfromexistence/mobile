@@ -18,7 +18,7 @@ test("FETCH_BODY_TIMEOUT_MS defaults to FETCH_TIMEOUT_MS when no env override", 
   assert.equal(
     constants.FETCH_BODY_TIMEOUT_MS,
     constants.FETCH_TIMEOUT_MS,
-    "FETCH_BODY_TIMEOUT_MS should default to FETCH_TIMEOUT_MS"
+    "FETCH_BODY_TIMEOUT_MS should default to FETCH_TIMEOUT_MS",
   );
 });
 
@@ -33,7 +33,7 @@ test("chatCore error classification maps BodyTimeoutError to 504 GATEWAY_TIMEOUT
     /error\.name === ["']TimeoutError["']\s*\|\|\s*error\.name === ["']BodyTimeoutError["']/;
   assert.ok(
     classificationPattern.test(content),
-    "chatCore should classify BodyTimeoutError as GATEWAY_TIMEOUT (504)"
+    "chatCore should classify BodyTimeoutError as GATEWAY_TIMEOUT (504)",
   );
 });
 
@@ -44,7 +44,7 @@ test("chatCore catch block decrements pending requests for all error types", () 
   const catchBlockPattern = /catch\s*\(error\)\s*\{[^}]*trackPendingRequest\([^)]*,\s*false\)/;
   assert.ok(
     catchBlockPattern.test(content),
-    "chatCore catch block should decrement pending requests"
+    "chatCore catch block should decrement pending requests",
   );
 });
 
@@ -68,7 +68,7 @@ test("BodyTimeoutError from withBodyTimeout does not leave timer leaks", async (
 
   // Fire multiple short timeouts to ensure no timer accumulation
   const promises = Array.from({ length: 10 }, () =>
-    withBodyTimeout(new Promise(() => {}), 10).catch(() => {})
+    withBodyTimeout(new Promise(() => {}), 10).catch(() => {}),
   );
   await Promise.all(promises);
 

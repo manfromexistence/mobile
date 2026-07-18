@@ -87,7 +87,7 @@ export default function CopilotToolCard({
     if (selectedModels.size > 0) {
       localStorage.setItem(
         "omniroute-copilot-selected-models",
-        JSON.stringify([...selectedModels])
+        JSON.stringify([...selectedModels]),
       );
     }
   }, [selectedModels]);

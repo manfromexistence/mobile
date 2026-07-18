@@ -154,12 +154,7 @@ export function SiteMarkIcon({ className }: SiteMarkIconProps) {
           colorInterpolationFilters="sRGB"
         >
           <feFlood floodOpacity="0" result="BackgroundImageFix" />
-          <feBlend
-            mode="normal"
-            in="SourceGraphic"
-            in2="BackgroundImageFix"
-            result="shape"
-          />
+          <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
           <feColorMatrix
             in="SourceAlpha"
             type="matrix"
@@ -169,10 +164,7 @@ export function SiteMarkIcon({ className }: SiteMarkIconProps) {
           <feOffset dy="2" />
           <feGaussianBlur stdDeviation="3" />
           <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
           <feBlend mode="normal" in2="shape" result="effect1_innerShadow_1415_4245" />
           <feColorMatrix
             in="SourceAlpha"
@@ -183,10 +175,7 @@ export function SiteMarkIcon({ className }: SiteMarkIconProps) {
           <feOffset />
           <feGaussianBlur stdDeviation="20" />
           <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0" />
           <feBlend
             mode="normal"
             in2="effect1_innerShadow_1415_4245"
@@ -212,10 +201,7 @@ export function SiteMarkIcon({ className }: SiteMarkIconProps) {
           <feOffset dy="2" />
           <feGaussianBlur stdDeviation="1.5" />
           <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
           <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1415_4245" />
           <feBlend
             mode="normal"
@@ -232,10 +218,7 @@ export function SiteMarkIcon({ className }: SiteMarkIconProps) {
           <feOffset dy="4" />
           <feGaussianBlur stdDeviation="2" />
           <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
           <feBlend mode="normal" in2="shape" result="effect2_innerShadow_1415_4245" />
         </filter>
         <filter
@@ -257,10 +240,7 @@ export function SiteMarkIcon({ className }: SiteMarkIconProps) {
           <feOffset dy="2" />
           <feGaussianBlur stdDeviation="1.5" />
           <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
           <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1415_4245" />
           <feBlend
             mode="normal"
@@ -277,10 +257,7 @@ export function SiteMarkIcon({ className }: SiteMarkIconProps) {
           <feOffset dy="4" />
           <feGaussianBlur stdDeviation="2" />
           <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
           <feBlend mode="normal" in2="shape" result="effect2_innerShadow_1415_4245" />
         </filter>
         <filter
@@ -302,10 +279,7 @@ export function SiteMarkIcon({ className }: SiteMarkIconProps) {
           <feOffset dy="2" />
           <feGaussianBlur stdDeviation="1.5" />
           <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
           <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1415_4245" />
           <feBlend
             mode="normal"
@@ -322,10 +296,7 @@ export function SiteMarkIcon({ className }: SiteMarkIconProps) {
           <feOffset dy="4" />
           <feGaussianBlur stdDeviation="2" />
           <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
           <feBlend mode="normal" in2="shape" result="effect2_innerShadow_1415_4245" />
         </filter>
         <filter
@@ -347,10 +318,7 @@ export function SiteMarkIcon({ className }: SiteMarkIconProps) {
           <feOffset dy="2" />
           <feGaussianBlur stdDeviation="1.5" />
           <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
           <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1415_4245" />
           <feBlend
             mode="normal"
@@ -367,10 +335,7 @@ export function SiteMarkIcon({ className }: SiteMarkIconProps) {
           <feOffset dy="4" />
           <feGaussianBlur stdDeviation="2" />
           <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
           <feBlend mode="normal" in2="shape" result="effect2_innerShadow_1415_4245" />
         </filter>
         <filter
@@ -392,10 +357,7 @@ export function SiteMarkIcon({ className }: SiteMarkIconProps) {
           <feOffset dy="2" />
           <feGaussianBlur stdDeviation="1.5" />
           <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
           <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1415_4245" />
           <feBlend
             mode="normal"
@@ -412,10 +374,7 @@ export function SiteMarkIcon({ className }: SiteMarkIconProps) {
           <feOffset dy="4" />
           <feGaussianBlur stdDeviation="2" />
           <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
           <feBlend mode="normal" in2="shape" result="effect2_innerShadow_1415_4245" />
         </filter>
         <filter
@@ -437,10 +396,7 @@ export function SiteMarkIcon({ className }: SiteMarkIconProps) {
           <feOffset dy="2" />
           <feGaussianBlur stdDeviation="1.5" />
           <feComposite in2="hardAlpha" operator="out" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0" />
           <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1415_4245" />
           <feBlend
             mode="normal"
@@ -457,10 +413,7 @@ export function SiteMarkIcon({ className }: SiteMarkIconProps) {
           <feOffset dy="4" />
           <feGaussianBlur stdDeviation="2" />
           <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
-          <feColorMatrix
-            type="matrix"
-            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0"
-          />
+          <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
           <feBlend mode="normal" in2="shape" result="effect2_innerShadow_1415_4245" />
         </filter>
         <linearGradient

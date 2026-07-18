@@ -1,11 +1,11 @@
-import { DEFAULT_THEMES } from '../constants';
-import type { MergeConflictActionTarget } from '../managers/InteractionManager';
-import { pluckInteractionOptions } from '../managers/InteractionManager';
-import type { HunksRenderResult } from '../renderers/DiffHunksRenderer';
+import { DEFAULT_THEMES } from "../constants";
+import type { MergeConflictActionTarget } from "../managers/InteractionManager";
+import { pluckInteractionOptions } from "../managers/InteractionManager";
+import type { HunksRenderResult } from "../renderers/DiffHunksRenderer";
 import {
   UnresolvedFileHunksRenderer,
   type UnresolvedFileHunksRendererOptions,
-} from '../renderers/UnresolvedFileHunksRenderer';
+} from "../renderers/UnresolvedFileHunksRenderer";
 import type {
   FileContents,
   FileDiffMetadata,
@@ -14,70 +14,57 @@ import type {
   MergeConflictRegion,
   MergeConflictResolution,
   PostRenderPhase,
-} from '../types';
-import { areFilesEqual } from '../utils/areFilesEqual';
-import { areMergeConflictActionsEqual } from '../utils/areMergeConflictActionsEqual';
-import { createAnnotationWrapperNode } from '../utils/createAnnotationWrapperNode';
-import { getMergeConflictActionSlotName } from '../utils/getMergeConflictActionSlotName';
+} from "../types";
+import { areFilesEqual } from "../utils/areFilesEqual";
+import { areMergeConflictActionsEqual } from "../utils/areMergeConflictActionsEqual";
+import { createAnnotationWrapperNode } from "../utils/createAnnotationWrapperNode";
+import { getMergeConflictActionSlotName } from "../utils/getMergeConflictActionSlotName";
 import {
   buildMergeConflictMarkerRows,
   getMergeConflictActionAnchor,
   type MergeConflictDiffAction,
   parseMergeConflictDiffFromFile,
-} from '../utils/parseMergeConflictDiffFromFile';
-import { resolveConflict as resolveConflictDiff } from '../utils/resolveConflict';
-import { splitFileContents } from '../utils/splitFileContents';
-import type { WorkerPoolManager } from '../worker';
-import {
-  FileDiff,
-  type FileDiffOptions,
-  type FileDiffRenderProps,
-} from './FileDiff';
+} from "../utils/parseMergeConflictDiffFromFile";
+import { resolveConflict as resolveConflictDiff } from "../utils/resolveConflict";
+import { splitFileContents } from "../utils/splitFileContents";
+import type { WorkerPoolManager } from "../worker";
+import { FileDiff, type FileDiffOptions, type FileDiffRenderProps } from "./FileDiff";
 
 export type RenderMergeConflictActions<LAnnotation> = (
   action: MergeConflictDiffAction,
-  instance: UnresolvedFile<LAnnotation>
+  instance: UnresolvedFile<LAnnotation>,
 ) => HTMLElement | DocumentFragment | null | undefined;
 
 export type MergeConflictActionsTypeOption<LAnnotation> =
-  | 'none'
-  | 'default'
+  | "none"
+  | "default"
   | RenderMergeConflictActions<LAnnotation>;
 
-export interface UnresolvedFileOptions<LAnnotation> extends Omit<
-  FileDiffOptions<LAnnotation>,
-  'diffStyle' | 'onPostRender'
-> {
+export interface UnresolvedFileOptions<LAnnotation>
+  extends Omit<FileDiffOptions<LAnnotation>, "diffStyle" | "onPostRender"> {
   onPostRender?(
     node: HTMLElement,
     instance: UnresolvedFile<LAnnotation>,
-    phase: PostRenderPhase
+    phase: PostRenderPhase,
   ): unknown;
   mergeConflictActionsType?: MergeConflictActionsTypeOption<LAnnotation>;
   onMergeConflictAction?(
     payload: MergeConflictActionPayload,
-    instance: UnresolvedFile<LAnnotation>
+    instance: UnresolvedFile<LAnnotation>,
   ): void;
-  onMergeConflictResolve?(
-    file: FileContents,
-    payload: MergeConflictActionPayload
-  ): void;
+  onMergeConflictResolve?(file: FileContents, payload: MergeConflictActionPayload): void;
   maxContextLines?: number;
 }
 
-export interface UnresolvedFileRenderProps<LAnnotation> extends Omit<
-  FileDiffRenderProps<LAnnotation>,
-  'oldFile' | 'newFile'
-> {
+export interface UnresolvedFileRenderProps<LAnnotation>
+  extends Omit<FileDiffRenderProps<LAnnotation>, "oldFile" | "newFile"> {
   file?: FileContents;
   actions?: (MergeConflictDiffAction | undefined)[];
   markerRows?: MergeConflictMarkerRow[];
 }
 
-export interface UnresolvedFileHydrationProps<LAnnotation> extends Omit<
-  UnresolvedFileRenderProps<LAnnotation>,
-  'file'
-> {
+export interface UnresolvedFileHydrationProps<LAnnotation>
+  extends Omit<UnresolvedFileRenderProps<LAnnotation>, "file"> {
   file?: FileContents;
   fileContainer: HTMLElement;
   prerenderedHTML?: string;
@@ -112,11 +99,9 @@ type UnresolvedFileDataCache = GetOrComputeDiffProps;
 
 let instanceId = -1;
 
-export class UnresolvedFile<
-  LAnnotation = undefined,
-> extends FileDiff<LAnnotation> {
+export class UnresolvedFile<LAnnotation = undefined> extends FileDiff<LAnnotation> {
   override readonly __id: string = `unresolved-file:${++instanceId}`;
-  override readonly type = 'unresolved-file';
+  override readonly type = "unresolved-file";
 
   protected computedCache: UnresolvedFileDataCache = {
     file: undefined,
@@ -126,33 +111,27 @@ export class UnresolvedFile<
   };
   private conflictActions: (MergeConflictDiffAction | undefined)[] = [];
   private markerRows: MergeConflictMarkerRow[] = [];
-  private conflictActionCache: Map<string, MergeConflictActionElementCache> =
-    new Map();
+  private conflictActionCache: Map<string, MergeConflictActionElementCache> = new Map();
 
   constructor(
     public override options: UnresolvedFileOptions<LAnnotation> = {
       theme: DEFAULT_THEMES,
     },
     workerManager?: WorkerPoolManager | undefined,
-    isContainerManaged = false
+    isContainerManaged = false,
   ) {
     super(undefined, workerManager, isContainerManaged);
     this.setOptions(options);
   }
 
-  override setOptions(
-    options: UnresolvedFileOptions<LAnnotation> | undefined
-  ): void {
+  override setOptions(options: UnresolvedFileOptions<LAnnotation> | undefined): void {
     if (options == null) {
       return;
     }
 
-    if (
-      options.onMergeConflictAction != null &&
-      options.onMergeConflictResolve != null
-    ) {
+    if (options.onMergeConflictAction != null && options.onMergeConflictResolve != null) {
       throw new Error(
-        'UnresolvedFile: onMergeConflictAction and onMergeConflictResolve are mutually exclusive. Use only one callback.'
+        "UnresolvedFile: onMergeConflictAction and onMergeConflictResolve are mutually exclusive. Use only one callback.",
       );
     }
 
@@ -170,40 +149,37 @@ export class UnresolvedFile<
     this.interactionManager.setOptions(
       pluckInteractionOptions(
         this.options,
-        typeof this.options.hunkSeparators === 'function' ||
-          (this.options.hunkSeparators ?? 'line-info') === 'line-info' ||
-          this.options.hunkSeparators === 'line-info-basic'
+        typeof this.options.hunkSeparators === "function" ||
+          (this.options.hunkSeparators ?? "line-info") === "line-info" ||
+          this.options.hunkSeparators === "line-info-basic"
           ? this.handleExpandHunk
           : undefined,
         this.getLineIndex,
-        this.handleMergeConflictActionClick
-      )
+        this.handleMergeConflictActionClick,
+      ),
     );
   }
 
   protected override createHunksRenderer(
-    options: UnresolvedFileOptions<LAnnotation>
+    options: UnresolvedFileOptions<LAnnotation>,
   ): UnresolvedFileHunksRenderer<LAnnotation> {
     const renderer = new UnresolvedFileHunksRenderer<LAnnotation>(
       this.getHunksRendererOptions(options),
       this.handleHighlightRender,
-      this.workerManager
+      this.workerManager,
     );
     return renderer;
   }
 
   protected override getHunksRendererOptions(
-    options: UnresolvedFileOptions<LAnnotation>
+    options: UnresolvedFileOptions<LAnnotation>,
   ): UnresolvedFileHunksRendererOptions {
     return getUnresolvedDiffHunksRendererOptions(options, this.options);
   }
 
-  protected override applyPreNodeAttributes(
-    pre: HTMLPreElement,
-    result: HunksRenderResult
-  ): void {
+  protected override applyPreNodeAttributes(pre: HTMLPreElement, result: HunksRenderResult): void {
     super.applyPreNodeAttributes(pre, result, {
-      'data-has-merge-conflict': '',
+      "data-has-merge-conflict": "",
     });
   }
 
@@ -235,7 +211,7 @@ export class UnresolvedFile<
         const hasMarkerRows = markerRows != null;
         if (hasFileDiff !== hasActions || hasFileDiff !== hasMarkerRows) {
           throw new Error(
-            'UnresolvedFile.getOrComputeDiff: fileDiff, actions, and markerRows must be passed together'
+            "UnresolvedFile.getOrComputeDiff: fileDiff, actions, and markerRows must be passed together",
           );
         }
         // If we were provided a new fileDiff/actions/markerRows, we are a FULLY
@@ -262,24 +238,19 @@ export class UnresolvedFile<
             this.computedCache.actions != null
           ) {
             throw new Error(
-              'UnresolvedFile.getOrComputeDiff: file can only be used to initialize unresolved state once. Pass fileDiff and actions for subsequent updates.'
+              "UnresolvedFile.getOrComputeDiff: file can only be used to initialize unresolved state once. Pass fileDiff and actions for subsequent updates.",
             );
           }
           file ??= this.computedCache.file;
           if (file == null) {
-            throw new Error(
-              'UnresolvedFile.getOrComputeDiff: file is null, should be impossible'
-            );
+            throw new Error("UnresolvedFile.getOrComputeDiff: file is null, should be impossible");
           }
           if (
             !areFilesEqual(file, this.computedCache.file) ||
             this.computedCache.fileDiff == null ||
             this.computedCache.actions == null
           ) {
-            const computed = parseMergeConflictDiffFromFile(
-              file,
-              maxContextLines
-            );
+            const computed = parseMergeConflictDiffFromFile(file, maxContextLines);
             this.computedCache = {
               file,
               fileDiff: computed.fileDiff,
@@ -306,7 +277,7 @@ export class UnresolvedFile<
       else {
         if (fileDiff != null || actions != null || markerRows != null) {
           throw new Error(
-            'UnresolvedFile.getOrComputeDiff: fileDiff, actions, and markerRows are only usable in controlled mode, you must pass in `onMergeConflictAction`'
+            "UnresolvedFile.getOrComputeDiff: fileDiff, actions, and markerRows are only usable in controlled mode, you must pass in `onMergeConflictAction`",
           );
         }
         if (
@@ -315,18 +286,12 @@ export class UnresolvedFile<
           !areFilesEqual(file, this.computedCache.file)
         ) {
           throw new Error(
-            'UnresolvedFile.getOrComputeDiff: uncontrolled unresolved files parse the file only once. Later updates must come from the cached diff state.'
+            "UnresolvedFile.getOrComputeDiff: uncontrolled unresolved files parse the file only once. Later updates must come from the cached diff state.",
           );
         }
         this.computedCache.file ??= file;
-        if (
-          this.computedCache.fileDiff == null &&
-          this.computedCache.file != null
-        ) {
-          const computed = parseMergeConflictDiffFromFile(
-            this.computedCache.file,
-            maxContextLines
-          );
+        if (this.computedCache.fileDiff == null && this.computedCache.file != null) {
+          const computed = parseMergeConflictDiffFromFile(this.computedCache.file, maxContextLines);
           this.computedCache.fileDiff = computed.fileDiff;
           this.computedCache.actions = computed.actions;
           this.computedCache.markerRows = computed.markerRows;
@@ -371,11 +336,7 @@ export class UnresolvedFile<
     // render
     if (
       shouldRenderCode(this.pre, source.fileDiff, this.options.collapsed) ||
-      shouldRenderHeader(
-        this.headerElement,
-        source.fileDiff,
-        this.options.disableFileHeader
-      )
+      shouldRenderHeader(this.headerElement, source.fileDiff, this.options.disableFileHeader)
     ) {
       this.render({ ...props, preventEmit: true });
     }
@@ -436,7 +397,7 @@ export class UnresolvedFile<
   public resolveConflict(
     conflictIndex: number,
     resolution: MergeConflictResolution,
-    fileDiff: FileDiffMetadata | undefined = this.computedCache.fileDiff
+    fileDiff: FileDiffMetadata | undefined = this.computedCache.fileDiff,
   ): ResolveConflictReturn | undefined {
     const action = this.conflictActions[conflictIndex];
     if (fileDiff == null || action == null) {
@@ -446,7 +407,7 @@ export class UnresolvedFile<
     if (action.conflictIndex !== conflictIndex) {
       console.error({ conflictIndex, action });
       throw new Error(
-        "UnresolvedFile.resolveConflict: conflictIndex and conflictAction don't match"
+        "UnresolvedFile.resolveConflict: conflictIndex and conflictAction don't match",
       );
     }
 
@@ -470,7 +431,7 @@ export class UnresolvedFile<
 
   private resolveConflictAndRender(
     conflictIndex: number,
-    resolution: MergeConflictResolution
+    resolution: MergeConflictResolution,
   ): void {
     const action = this.conflictActions[conflictIndex];
     if (action == null) {
@@ -479,7 +440,7 @@ export class UnresolvedFile<
     if (action.conflictIndex !== conflictIndex) {
       console.error({ conflictIndex, action });
       throw new Error(
-        "UnresolvedFile.resolveConflictAndRender: conflictIndex and conflictAction don't match"
+        "UnresolvedFile.resolveConflictAndRender: conflictIndex and conflictAction don't match",
       );
     }
     const payload: MergeConflictActionPayload = {
@@ -488,12 +449,7 @@ export class UnresolvedFile<
     };
     const { file, fileDiff, actions, markerRows } =
       this.resolveConflict(conflictIndex, resolution) ?? {};
-    if (
-      file == null ||
-      fileDiff == null ||
-      actions == null ||
-      markerRows == null
-    ) {
+    if (file == null || fileDiff == null || actions == null || markerRows == null) {
       return;
     }
 
@@ -517,7 +473,7 @@ export class UnresolvedFile<
 
   private setActiveMergeConflictState(
     actions: (MergeConflictDiffAction | undefined)[] = this.conflictActions,
-    markerRows: MergeConflictMarkerRow[] = this.markerRows
+    markerRows: MergeConflictMarkerRow[] = this.markerRows,
   ): void {
     this.conflictActions = actions;
     this.markerRows = markerRows;
@@ -526,16 +482,14 @@ export class UnresolvedFile<
       this.hunksRenderer instanceof UnresolvedFileHunksRenderer
     ) {
       this.hunksRenderer.setConflictState(
-        this.options.mergeConflictActionsType === 'none' ? [] : actions,
+        this.options.mergeConflictActionsType === "none" ? [] : actions,
         markerRows,
-        this.computedCache.fileDiff
+        this.computedCache.fileDiff,
       );
     }
   }
 
-  private handleMergeConflictActionClick = (
-    target: MergeConflictActionTarget
-  ): void => {
+  private handleMergeConflictActionClick = (target: MergeConflictActionTarget): void => {
     const action = this.conflictActions[target.conflictIndex];
     if (action == null) {
       return;
@@ -543,7 +497,7 @@ export class UnresolvedFile<
     if (action.conflictIndex !== target.conflictIndex) {
       console.error({ conflictIndex: target.conflictIndex, action });
       throw new Error(
-        "UnresolvedFile.handleMergeConflictActionClick: conflictIndex and conflictAction don't match"
+        "UnresolvedFile.handleMergeConflictActionClick: conflictIndex and conflictAction don't match",
       );
     }
     const payload: MergeConflictActionPayload = {
@@ -562,7 +516,7 @@ export class UnresolvedFile<
     if (
       this.isContainerManaged ||
       this.fileContainer == null ||
-      typeof this.options.mergeConflictActionsType !== 'function' ||
+      typeof this.options.mergeConflictActionsType !== "function" ||
       this.conflictActions.length === 0 ||
       fileDiff == null
     ) {
@@ -570,11 +524,7 @@ export class UnresolvedFile<
       return;
     }
     const staleActions = new Map(this.conflictActionCache);
-    for (
-      let actionIndex = 0;
-      actionIndex < this.conflictActions.length;
-      actionIndex++
-    ) {
+    for (let actionIndex = 0; actionIndex < this.conflictActions.length; actionIndex++) {
       const action = this.conflictActions[actionIndex];
       if (action == null) {
         continue;
@@ -582,7 +532,7 @@ export class UnresolvedFile<
       if (action.conflictIndex !== actionIndex) {
         console.error({ conflictIndex: actionIndex, action });
         throw new Error(
-          "UnresolvedFile.renderMergeConflictActionSlots: conflictIndex and conflictAction don't match"
+          "UnresolvedFile.renderMergeConflictActionSlots: conflictIndex and conflictAction don't match",
         );
       }
       const anchor = getMergeConflictActionAnchor(action, fileDiff);
@@ -597,10 +547,7 @@ export class UnresolvedFile<
       });
       const id = `${actionIndex}-${slotName}`;
       let cache = this.conflictActionCache.get(id);
-      if (
-        cache == null ||
-        !areMergeConflictActionsEqual(cache.action, action)
-      ) {
+      if (cache == null || !areMergeConflictActionsEqual(cache.action, action)) {
         cache?.element.remove();
         const rendered = this.renderMergeConflictAction(action);
         if (rendered == null) {
@@ -620,10 +567,8 @@ export class UnresolvedFile<
     }
   }
 
-  private renderMergeConflictAction(
-    action: MergeConflictDiffAction
-  ): HTMLElement | undefined {
-    if (typeof this.options.mergeConflictActionsType !== 'function') {
+  private renderMergeConflictAction(action: MergeConflictDiffAction): HTMLElement | undefined {
+    if (typeof this.options.mergeConflictActionsType !== "function") {
       return undefined;
     }
     const rendered = this.options.mergeConflictActionsType(action, this);
@@ -633,12 +578,9 @@ export class UnresolvedFile<
     if (rendered instanceof HTMLElement) {
       return rendered;
     }
-    if (
-      typeof DocumentFragment !== 'undefined' &&
-      rendered instanceof DocumentFragment
-    ) {
-      const wrapper = document.createElement('div');
-      wrapper.style.display = 'contents';
+    if (typeof DocumentFragment !== "undefined" && rendered instanceof DocumentFragment) {
+      const wrapper = document.createElement("div");
+      wrapper.style.display = "contents";
       wrapper.appendChild(rendered);
       return wrapper;
     }
@@ -672,22 +614,17 @@ function rebuildFileAndActions({
   resolvedConflictIndex,
   previousFile,
   resolution,
-}: RebuildFileAndActionsProps): Pick<
-  ResolveConflictReturn,
-  'file' | 'actions' | 'markerRows'
-> {
+}: RebuildFileAndActionsProps): Pick<ResolveConflictReturn, "file" | "actions" | "markerRows"> {
   const resolvedAction = previousActions[resolvedConflictIndex];
   if (resolvedAction == null) {
-    throw new Error(
-      'rebuildFileAndActions: missing resolved action for unresolved file rebuild'
-    );
+    throw new Error("rebuildFileAndActions: missing resolved action for unresolved file rebuild");
   }
 
   const actions = updateConflictActionsAfterResolution(
     previousActions,
     resolvedConflictIndex,
     resolvedAction,
-    resolution
+    resolution,
   );
   const markerRows = buildMergeConflictMarkerRows(fileDiff, actions);
 
@@ -723,19 +660,15 @@ function rebuildUnresolvedFile({
   fileDiff,
   resolution,
 }: RebuildUnresolvedFileProps): FileContents {
-  const previousContents = previousFile?.contents ?? '';
+  const previousContents = previousFile?.contents ?? "";
   const lines = splitFileContents(previousContents);
   const { conflict } = resolvedAction;
-  const replacementLines = getResolvedConflictReplacementLines(
-    lines,
-    conflict,
-    resolution
-  );
+  const replacementLines = getResolvedConflictReplacementLines(lines, conflict, resolution);
   const contents = [
     ...lines.slice(0, conflict.startLineIndex),
     ...replacementLines,
     ...lines.slice(conflict.endLineIndex + 1),
-  ].join('');
+  ].join("");
 
   return {
     name: previousFile?.name ?? fileDiff.name,
@@ -749,22 +682,19 @@ function rebuildUnresolvedFile({
 
 function getResolvedConflictReplacementLines(
   lines: string[],
-  conflict: MergeConflictDiffAction['conflict'],
-  resolution: MergeConflictResolution
+  conflict: MergeConflictDiffAction["conflict"],
+  resolution: MergeConflictResolution,
 ): string[] {
   const currentLines = lines.slice(
     conflict.startLineIndex + 1,
-    conflict.baseMarkerLineIndex ?? conflict.separatorLineIndex
+    conflict.baseMarkerLineIndex ?? conflict.separatorLineIndex,
   );
-  const incomingLines = lines.slice(
-    conflict.separatorLineIndex + 1,
-    conflict.endLineIndex
-  );
+  const incomingLines = lines.slice(conflict.separatorLineIndex + 1, conflict.endLineIndex);
 
-  if (resolution === 'current') {
+  if (resolution === "current") {
     return currentLines;
   }
-  if (resolution === 'incoming') {
+  if (resolution === "incoming") {
     return incomingLines;
   }
   return [...currentLines, ...incomingLines];
@@ -777,12 +707,9 @@ function updateConflictActionsAfterResolution(
   previousActions: (MergeConflictDiffAction | undefined)[],
   resolvedConflictIndex: number,
   resolvedAction: MergeConflictDiffAction,
-  resolution: MergeConflictResolution
+  resolution: MergeConflictResolution,
 ): (MergeConflictDiffAction | undefined)[] {
-  const lineDelta = getResolvedConflictLineDelta(
-    resolvedAction.conflict,
-    resolution
-  );
+  const lineDelta = getResolvedConflictLineDelta(resolvedAction.conflict, resolution);
 
   return previousActions.map((action, index) => {
     if (index === resolvedConflictIndex) {
@@ -803,18 +730,15 @@ function updateConflictActionsAfterResolution(
 
 function getResolvedConflictLineDelta(
   conflict: MergeConflictRegion,
-  resolution: MergeConflictResolution
+  resolution: MergeConflictResolution,
 ): number {
   const currentLineCount =
-    (conflict.baseMarkerLineIndex ?? conflict.separatorLineIndex) -
-    conflict.startLineIndex -
-    1;
-  const incomingLineCount =
-    conflict.endLineIndex - conflict.separatorLineIndex - 1;
+    (conflict.baseMarkerLineIndex ?? conflict.separatorLineIndex) - conflict.startLineIndex - 1;
+  const incomingLineCount = conflict.endLineIndex - conflict.separatorLineIndex - 1;
   const replacementLineCount =
-    resolution === 'current'
+    resolution === "current"
       ? currentLineCount
-      : resolution === 'incoming'
+      : resolution === "incoming"
         ? incomingLineCount
         : currentLineCount + incomingLineCount;
   const conflictLineCount = conflict.endLineIndex - conflict.startLineIndex + 1;
@@ -823,7 +747,7 @@ function getResolvedConflictLineDelta(
 
 function shiftMergeConflictRegion(
   conflict: MergeConflictRegion,
-  lineDelta: number
+  lineDelta: number,
 ): MergeConflictRegion {
   return {
     ...conflict,
@@ -834,20 +758,16 @@ function shiftMergeConflictRegion(
     endLineIndex: conflict.endLineIndex + lineDelta,
     endLineNumber: conflict.endLineNumber + lineDelta,
     baseMarkerLineIndex:
-      conflict.baseMarkerLineIndex != null
-        ? conflict.baseMarkerLineIndex + lineDelta
-        : undefined,
+      conflict.baseMarkerLineIndex != null ? conflict.baseMarkerLineIndex + lineDelta : undefined,
     baseMarkerLineNumber:
-      conflict.baseMarkerLineNumber != null
-        ? conflict.baseMarkerLineNumber + lineDelta
-        : undefined,
+      conflict.baseMarkerLineNumber != null ? conflict.baseMarkerLineNumber + lineDelta : undefined,
   };
 }
 
 function shouldRenderCode(
   pre: HTMLPreElement | undefined,
   fileDiff: FileDiffMetadata | undefined,
-  collapsed = false
+  collapsed = false,
 ): boolean {
   return !collapsed && pre == null && fileDiff != null;
 }
@@ -855,7 +775,7 @@ function shouldRenderCode(
 function shouldRenderHeader(
   headerElement: HTMLElement | undefined,
   fileDiff: FileDiffMetadata | undefined,
-  disableFileHeader = false
+  disableFileHeader = false,
 ): boolean {
   return headerElement == null && fileDiff != null && !disableFileHeader;
 }
@@ -864,18 +784,16 @@ function shouldRenderHeader(
 // for all component types
 export function getUnresolvedDiffHunksRendererOptions<LAnnotation>(
   options?: UnresolvedFileOptions<LAnnotation>,
-  baseOptions?: UnresolvedFileOptions<LAnnotation>
+  baseOptions?: UnresolvedFileOptions<LAnnotation>,
 ): UnresolvedFileHunksRendererOptions {
   return {
     ...baseOptions,
     ...options,
     hunkSeparators:
-      typeof options?.hunkSeparators === 'function'
-        ? 'custom'
-        : options?.hunkSeparators,
+      typeof options?.hunkSeparators === "function" ? "custom" : options?.hunkSeparators,
     mergeConflictActionsType:
-      typeof options?.mergeConflictActionsType === 'function'
-        ? 'custom'
+      typeof options?.mergeConflictActionsType === "function"
+        ? "custom"
         : options?.mergeConflictActionsType,
   };
 }

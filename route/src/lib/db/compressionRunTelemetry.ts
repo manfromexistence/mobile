@@ -60,7 +60,7 @@ export function insertCompressionRunTelemetryRow(row: CompressionRunTelemetryInp
         timestamp, request_id, model, provider, source,
         tokens_before, tokens_after, ratio, cost_delta,
         output_styles, output_style_bypass, output_tokens
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     ).run(
       Date.now(),
       row.requestId ?? null,
@@ -73,7 +73,7 @@ export function insertCompressionRunTelemetryRow(row: CompressionRunTelemetryInp
       row.costDelta ?? null,
       row.outputStyles && row.outputStyles.length > 0 ? JSON.stringify(row.outputStyles) : null,
       row.outputStyleBypass ?? null,
-      row.outputTokens ?? null
+      row.outputTokens ?? null,
     );
   } catch {
     // best-effort telemetry — a write failure never affects a request
@@ -86,7 +86,7 @@ export function getCompressionRunTelemetrySummary(): CompressionRunTelemetrySumm
   const rows = db
     .prepare(
       `SELECT tokens_before, tokens_after, output_styles, output_style_bypass, output_tokens
-       FROM compression_run_telemetry`
+       FROM compression_run_telemetry`,
     )
     .all() as Array<{
     tokens_before: number;
@@ -114,8 +114,7 @@ export function getCompressionRunTelemetrySummary(): CompressionRunTelemetrySumm
       try {
         const styles = JSON.parse(row.output_styles) as Array<{ id: string }>;
         for (const style of styles) {
-          summary.appliedStyleCounts[style.id] =
-            (summary.appliedStyleCounts[style.id] ?? 0) + 1;
+          summary.appliedStyleCounts[style.id] = (summary.appliedStyleCounts[style.id] ?? 0) + 1;
         }
       } catch {
         // ignore a corrupt JSON cell

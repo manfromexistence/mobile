@@ -106,7 +106,7 @@ test("getCodexUsage threads bankedResetCredits through additively", async () => 
         },
         rate_limit_reset_credits: { available_count: 2 },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   const usage = await getCodexUsage("token", { workspaceId: "ws-1" });
@@ -127,7 +127,7 @@ test("getCodexUsage omits bankedResetCredits and stays intact when absent", asyn
           secondary_window: { used_percent: 25 },
         },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   const usage = await getCodexUsage("token", { workspaceId: "ws-1" });
@@ -152,7 +152,7 @@ test("fetchCodexQuota surfaces bankedResetCredits from the dual-window parser", 
         rate_limit_reset_credits: { available_count: 4 },
         rate_limit_reached_type: { type: "primary_window" },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   const quota = await fetchCodexQuota(connectionId, {
@@ -184,7 +184,7 @@ test("fetchCodexQuota omits bankedResetCredits when the payload does not have it
           secondary_window: { used_percent: 10 },
         },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   const quota = await fetchCodexQuota(connectionId);

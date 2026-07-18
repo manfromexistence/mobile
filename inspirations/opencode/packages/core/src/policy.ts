@@ -1,12 +1,12 @@
-export * as Policy from "./policy"
+export * as Policy from "./policy";
 
-import { makeLocationNode } from "./effect/app-node"
-import { Context, Effect as EffectRuntime, Layer, Schema } from "effect"
-import { Wildcard } from "./util/wildcard"
-import { Location } from "./location"
+import { makeLocationNode } from "./effect/app-node";
+import { Context, Effect as EffectRuntime, Layer, Schema } from "effect";
+import { Wildcard } from "./util/wildcard";
+import { Location } from "./location";
 
-export const Effect = Schema.Literals(["allow", "deny"]).annotate({ identifier: "Policy.Effect" })
-export type Effect = typeof Effect.Type
+export const Effect = Schema.Literals(["allow", "deny"]).annotate({ identifier: "Policy.Effect" });
+export type Effect = typeof Effect.Type;
 
 export class Info extends Schema.Class<Info>("Policy.Info")({
   action: Schema.String,
@@ -15,9 +15,13 @@ export class Info extends Schema.Class<Info>("Policy.Info")({
 }) {}
 
 export interface Interface {
-  readonly load: (statements: Info[]) => EffectRuntime.Effect<void>
-  readonly evaluate: (action: string, resource: string, fallback: Effect) => EffectRuntime.Effect<Effect>
-  readonly hasStatements: () => boolean
+  readonly load: (statements: Info[]) => EffectRuntime.Effect<void>;
+  readonly evaluate: (
+    action: string,
+    resource: string,
+    fallback: Effect,
+  ) => EffectRuntime.Effect<Effect>;
+  readonly hasStatements: () => boolean;
 }
 
 export class Service extends Context.Service<Service, Interface>()("@opencode/v2/Policy") {}
@@ -25,25 +29,27 @@ export class Service extends Context.Service<Service, Interface>()("@opencode/v2
 const layer = Layer.effect(
   Service,
   EffectRuntime.gen(function* () {
-    let statements: Info[] = []
-    yield* Location.Service
+    let statements: Info[] = [];
+    yield* Location.Service;
 
     return Service.of({
       load: EffectRuntime.fn("Policy.load")(function* (input) {
-        statements = input
+        statements = input;
       }),
       hasStatements: () => statements.length > 0,
       evaluate: EffectRuntime.fn("Policy.evaluate")(function* (action, resource, fallback) {
         return (
           statements.findLast(
-            (statement) => Wildcard.match(action, statement.action) && Wildcard.match(resource, statement.resource),
+            (statement) =>
+              Wildcard.match(action, statement.action) &&
+              Wildcard.match(resource, statement.resource),
           )?.effect ?? fallback
-        )
+        );
       }),
-    })
+    });
   }),
-)
+);
 
-export const locationLayer = layer
+export const locationLayer = layer;
 
-export const node = makeLocationNode({ service: Service, layer, deps: [Location.node] })
+export const node = makeLocationNode({ service: Service, layer, deps: [Location.node] });

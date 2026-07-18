@@ -1,6 +1,6 @@
-import { type ComponentProps, type JSX, Show, onMount, splitProps } from "solid-js"
-import { ButtonV2 } from "./button-v2"
-import "./line-comment-v2.css"
+import { type ComponentProps, type JSX, Show, onMount, splitProps } from "solid-js";
+import { ButtonV2 } from "./button-v2";
+import "./line-comment-v2.css";
 
 /** Horizontal “more” glyph for the display-card overflow control (Figma outline-dots). */
 export function LineCommentV2OverflowIcon(props: ComponentProps<"svg">) {
@@ -18,20 +18,26 @@ export function LineCommentV2OverflowIcon(props: ComponentProps<"svg">) {
       <path d="M7.5 7.5H8.5V8.5H7.5V7.5Z" stroke="currentColor" />
       <path d="M12.5 7.5H13.5V8.5H12.5V7.5Z" stroke="currentColor" />
     </svg>
-  )
+  );
 }
 
 export interface LineCommentV2Props extends ComponentProps<"div"> {
   /** Main comment body (text or rich content). */
-  comment: JSX.Element
+  comment: JSX.Element;
   /** Line / selection context (e.g. “Comment on line 40”). */
-  selection: JSX.Element
+  selection: JSX.Element;
   /** Typically an overflow menu trigger; use `LineCommentV2OverflowIcon` inside `line-comment-v2-overflow`. */
-  actions?: JSX.Element
+  actions?: JSX.Element;
 }
 
 export function LineCommentV2(props: LineCommentV2Props) {
-  const [local, rest] = splitProps(props, ["comment", "selection", "actions", "class", "classList"])
+  const [local, rest] = splitProps(props, [
+    "comment",
+    "selection",
+    "actions",
+    "class",
+    "classList",
+  ]);
   return (
     <div
       {...rest}
@@ -47,29 +53,32 @@ export function LineCommentV2(props: LineCommentV2Props) {
           <div data-slot="line-comment-v2-text">{local.comment}</div>
           <div data-slot="line-comment-v2-meta">{local.selection}</div>
         </div>
-        <Show when={local.actions}>{(actions) => <div data-slot="line-comment-v2-tools">{actions()}</div>}</Show>
+        <Show when={local.actions}>
+          {(actions) => <div data-slot="line-comment-v2-tools">{actions()}</div>}
+        </Show>
       </div>
     </div>
-  )
+  );
 }
 
-export interface LineCommentEditorV2Props extends Omit<ComponentProps<"div">, "children" | "onInput" | "onSubmit"> {
+export interface LineCommentEditorV2Props
+  extends Omit<ComponentProps<"div">, "children" | "onInput" | "onSubmit"> {
   /** Visible field label above the textarea (default: “Comment”). */
-  heading?: JSX.Element | string
-  value: string
-  onInput: (value: string) => void
-  onCancel: () => void
-  onSubmit: (value: string) => void
-  selection: JSX.Element
-  placeholder?: string
-  rows?: number
-  cancelLabel?: string
-  submitLabel?: string
-  autofocus?: boolean
+  heading?: JSX.Element | string;
+  value: string;
+  onInput: (value: string) => void;
+  onCancel: () => void;
+  onSubmit: (value: string) => void;
+  selection: JSX.Element;
+  placeholder?: string;
+  rows?: number;
+  cancelLabel?: string;
+  submitLabel?: string;
+  autofocus?: boolean;
 }
 
 export function LineCommentEditorV2(props: LineCommentEditorV2Props) {
-  let textareaRef: HTMLTextAreaElement | undefined
+  let textareaRef: HTMLTextAreaElement | undefined;
 
   const [local, rest] = splitProps(props, [
     "heading",
@@ -85,21 +94,21 @@ export function LineCommentEditorV2(props: LineCommentEditorV2Props) {
     "autofocus",
     "class",
     "classList",
-  ])
+  ]);
 
-  const heading = () => local.heading ?? "Comment"
-  const canSubmit = () => local.value.trim().length > 0
+  const heading = () => local.heading ?? "Comment";
+  const canSubmit = () => local.value.trim().length > 0;
 
   const submit = () => {
-    const v = local.value.trim()
-    if (!v) return
-    local.onSubmit(v)
-  }
+    const v = local.value.trim();
+    if (!v) return;
+    local.onSubmit(v);
+  };
 
   onMount(() => {
-    if (local.autofocus === false) return
-    requestAnimationFrame(() => textareaRef?.focus())
-  })
+    if (local.autofocus === false) return;
+    requestAnimationFrame(() => textareaRef?.focus());
+  });
 
   return (
     <div
@@ -116,7 +125,7 @@ export function LineCommentEditorV2(props: LineCommentEditorV2Props) {
           <div data-slot="line-comment-v2-label">{heading()}</div>
           <textarea
             ref={(el) => {
-              textareaRef = el
+              textareaRef = el;
             }}
             data-slot="line-comment-v2-textarea"
             rows={local.rows ?? 3}
@@ -124,16 +133,16 @@ export function LineCommentEditorV2(props: LineCommentEditorV2Props) {
             value={local.value}
             onInput={(e) => local.onInput(e.currentTarget.value)}
             onKeyDown={(e) => {
-              e.stopPropagation()
+              e.stopPropagation();
               if (e.key === "Escape") {
-                e.preventDefault()
-                e.currentTarget.blur()
-                local.onCancel()
-                return
+                e.preventDefault();
+                e.currentTarget.blur();
+                local.onCancel();
+                return;
               }
               if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault()
-                submit()
+                e.preventDefault();
+                submit();
               }
             }}
           />
@@ -141,15 +150,26 @@ export function LineCommentEditorV2(props: LineCommentEditorV2Props) {
         <div data-slot="line-comment-v2-footer">
           <div data-slot="line-comment-v2-footer-meta">{local.selection}</div>
           <div data-slot="line-comment-v2-footer-actions">
-            <ButtonV2 type="button" size="normal" variant="neutral" onClick={() => local.onCancel()}>
+            <ButtonV2
+              type="button"
+              size="normal"
+              variant="neutral"
+              onClick={() => local.onCancel()}
+            >
               {local.cancelLabel ?? "Cancel"}
             </ButtonV2>
-            <ButtonV2 type="button" size="normal" variant="contrast" disabled={!canSubmit()} onClick={submit}>
+            <ButtonV2
+              type="button"
+              size="normal"
+              variant="contrast"
+              disabled={!canSubmit()}
+              onClick={submit}
+            >
               {local.submitLabel ?? "Comment"}
             </ButtonV2>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }

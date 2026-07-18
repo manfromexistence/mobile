@@ -39,7 +39,7 @@ interface CapturedRequest {
 }
 
 function installFetchMock(
-  responder: (url: string, init: RequestInit) => Response | Promise<Response>
+  responder: (url: string, init: RequestInit) => Response | Promise<Response>,
 ): { restore: () => void; calls: CapturedRequest[] } {
   const calls: CapturedRequest[] = [];
   const original = globalThis.fetch;
@@ -65,7 +65,7 @@ test("cursor usage: happy path returns three windows with correct percentages an
       new Response(JSON.stringify(SAMPLE_RESPONSE), {
         status: 200,
         headers: { "content-type": "application/json" },
-      })
+      }),
   );
 
   try {
@@ -111,7 +111,7 @@ test("cursor usage: sends correct cookie, origin, body, and method", async () =>
       new Response(JSON.stringify(SAMPLE_RESPONSE), {
         status: 200,
         headers: { "content-type": "application/json" },
-      })
+      }),
   );
 
   try {
@@ -147,7 +147,7 @@ test("cursor usage: falls back to JWT sub when providerSpecificData.userId is mi
       new Response(JSON.stringify(SAMPLE_RESPONSE), {
         status: 200,
         headers: { "content-type": "application/json" },
-      })
+      }),
   );
 
   try {
@@ -163,7 +163,7 @@ test("cursor usage: falls back to JWT sub when providerSpecificData.userId is mi
     // Cookie should use the full sub claim (google-oauth2|user_...) since Cursor accepts both forms.
     assert.equal(
       headers.Cookie,
-      `WorkosCursorSessionToken=google-oauth2|${userId}::${accessToken}`
+      `WorkosCursorSessionToken=google-oauth2|${userId}::${accessToken}`,
     );
   } finally {
     mock.restore();
@@ -195,7 +195,7 @@ test("cursor usage: 307 redirect surfaces as expired session message", async () 
       new Response("", {
         status: 307,
         headers: { Location: "https://api.workos.com/user_management/authorize?..." },
-      })
+      }),
   );
 
   try {
@@ -219,8 +219,8 @@ test("cursor usage: empty planUsage returns informational message", async () => 
     async () =>
       new Response(
         JSON.stringify({ billingCycleStart: "0", billingCycleEnd: "0", planUsage: {} }),
-        { status: 200, headers: { "content-type": "application/json" } }
-      )
+        { status: 200, headers: { "content-type": "application/json" } },
+      ),
   );
 
   try {

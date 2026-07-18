@@ -54,7 +54,7 @@ export class CloudSyncScheduler {
       () => {
         this.syncWithRetry().catch(() => {});
       },
-      this.intervalMinutes * 60 * 1000
+      this.intervalMinutes * 60 * 1000,
     );
     this.intervalId.unref?.();
   }

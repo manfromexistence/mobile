@@ -1,11 +1,11 @@
-import { DEFAULT_THEMES } from '@pierre/diffs';
-import type { PreloadMultiFileDiffOptions } from '@pierre/diffs/ssr';
+import { DEFAULT_THEMES } from "@pierre/diffs";
+import type { PreloadMultiFileDiffOptions } from "@pierre/diffs/ssr";
 
-import { CustomScrollbarCSS } from '@/components/CustomScrollbarCSS';
+import { CustomScrollbarCSS } from "@/components/CustomScrollbarCSS";
 
 export const FONT_STYLES: PreloadMultiFileDiffOptions<undefined> = {
   oldFile: {
-    name: 'cache.go',
+    name: "cache.go",
     contents: `package cache
 
 import (
@@ -70,7 +70,7 @@ func (c *Cache) onEviction(key string, value interface{}) {
 `,
   },
   newFile: {
-    name: 'cache.go',
+    name: "cache.go",
     contents: `package cache
 
 import (
@@ -133,8 +133,8 @@ func (c *Cache) onEviction(key string, value interface{}) {
   },
   options: {
     theme: DEFAULT_THEMES,
-    themeType: 'dark',
-    diffStyle: 'unified',
+    themeType: "dark",
+    diffStyle: "unified",
     unsafeCSS: CustomScrollbarCSS,
   },
 };

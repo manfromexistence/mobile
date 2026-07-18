@@ -62,7 +62,7 @@ test("#2778 getComboModelString with UUID-prefixed providerId assembles the UUID
   assert.strictEqual(
     modelStr,
     `${FAKE_UUID_NODE_ID}/gpt-5.5`,
-    "getComboModelString must build UUID-prefixed modelStr when step.providerId is the internal node id"
+    "getComboModelString must build UUID-prefixed modelStr when step.providerId is the internal node id",
   );
 });
 
@@ -97,7 +97,7 @@ test("#2778 getModelInfo in src/sse/services/model.ts matches openai-compatible 
     snippet.includes("node.id") && snippet.includes("prefixToCheck"),
     "getModelInfo must match openai-compatible provider nodes by node.id (not only node.prefix) " +
       "so that combo steps storing internal UUID provider ids still resolve correctly (#2778). " +
-      `Got: ${snippet.slice(0, 150)}`
+      `Got: ${snippet.slice(0, 150)}`,
   );
 });
 
@@ -112,7 +112,7 @@ test("#2778 getModelInfo in src/sse/services/model.ts matches anthropic-compatib
     snippet.includes("node.id") && snippet.includes("prefixToCheck"),
     "getModelInfo must match anthropic-compatible provider nodes by node.id (not only node.prefix) " +
       "so that combo steps storing internal UUID provider ids still resolve correctly (#2778). " +
-      `Got: ${snippet.slice(0, 150)}`
+      `Got: ${snippet.slice(0, 150)}`,
   );
 });
 
@@ -134,7 +134,7 @@ test("#2778 matching logic: node with prefix=flymux and id=UUID-id matches when 
 
   // NEW (fixed): match prefix OR id
   const matchByPrefixOrId = nodes.find(
-    (node) => node.prefix === prefixToCheck || node.id === prefixToCheck
+    (node) => node.prefix === prefixToCheck || node.id === prefixToCheck,
   );
   assert.ok(matchByPrefixOrId !== undefined, "Prefix-or-id match SHOULD find the node");
   assert.strictEqual(matchByPrefixOrId?.id, FAKE_UUID_NODE_ID);
@@ -152,7 +152,7 @@ test("#2778 matching logic: node with prefix=flymux and id=UUID-id still matches
   const nodes = [mockNode];
 
   const matchByPrefixOrId = nodes.find(
-    (node) => node.prefix === prefixToCheck || node.id === prefixToCheck
+    (node) => node.prefix === prefixToCheck || node.id === prefixToCheck,
   );
   assert.ok(matchByPrefixOrId !== undefined, "Alias-based match must still work after the fix");
   assert.strictEqual(matchByPrefixOrId?.id, FAKE_UUID_NODE_ID);
@@ -161,27 +161,27 @@ test("#2778 matching logic: node with prefix=flymux and id=UUID-id still matches
 test("custom provider auth lookup search pool maps alias prefixes to internal provider ids", async () => {
   const authSrc = fs.readFileSync(
     path.resolve(__dirname, "../../src/sse/services/auth.ts"),
-    "utf8"
+    "utf8",
   );
 
   assert.match(
     authSrc,
     /async function getProviderSearchPool\(provider: string\): Promise<string\[]>/,
-    "getProviderSearchPool should be async so it can expand custom provider aliases via provider_nodes"
+    "getProviderSearchPool should be async so it can expand custom provider aliases via provider_nodes",
   );
   assert.match(
     authSrc,
     /getProviderNodes\(/,
-    "auth lookup should read provider_nodes to map custom prefixes like 78code/micu back to internal provider ids"
+    "auth lookup should read provider_nodes to map custom prefixes like 78code/micu back to internal provider ids",
   );
   assert.match(
     authSrc,
     /nodePrefix === provider\s*\|\|\s*nodePrefix === canonicalProvider\s*\|\|\s*nodePrefix === canonicalAlias/,
-    "auth lookup should match provider node prefixes against the requested alias/canonical provider values"
+    "auth lookup should match provider node prefixes against the requested alias/canonical provider values",
   );
   assert.match(
     authSrc,
     /searchPool\.add\(nodeId\)/,
-    "auth lookup should add the matched custom provider node id into the credential search pool"
+    "auth lookup should add the matched custom provider node id into the credential search pool",
   );
 });

@@ -1,6 +1,6 @@
-import { type ChangeObject } from 'diff';
+import { type ChangeObject } from "diff";
 
-import type { DecorationItem } from '../types';
+import type { DecorationItem } from "../types";
 
 interface CreateDiffSpanDecorationProps {
   line: number;
@@ -16,7 +16,7 @@ export function createDiffSpanDecoration({
   return {
     start: { line, character: spanStart },
     end: { line, character: spanStart + spanLength },
-    properties: { 'data-diff-span': '' },
+    properties: { "data-diff-span": "" },
     alwaysWrap: true,
   };
 }

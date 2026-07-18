@@ -1,11 +1,11 @@
-import type { FileTreeIcons } from '@pierre/trees';
+import type { FileTreeIcons } from "@pierre/trees";
 
 export const DEMO_FILE_TREE_ICONS: FileTreeIcons = {
   byFileExtension: {
-    ts: 'trees-dev-icon-typescript',
+    ts: "trees-dev-icon-typescript",
   },
   byFileName: {
-    'readme.md': 'trees-dev-icon-readme',
+    "readme.md": "trees-dev-icon-readme",
   },
   spriteSheet: `<svg data-icon-sprite aria-hidden="true" width="0" height="0">
   <symbol id="trees-dev-icon-readme" viewBox="0 0 16 16">

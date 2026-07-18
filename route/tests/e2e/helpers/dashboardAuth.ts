@@ -82,7 +82,7 @@ function isAtRequestedRoute(page: Page, requestedUrl: string) {
 export async function gotoDashboardRoute(
   page: Page,
   url: string,
-  options: GotoDashboardRouteOptions = {}
+  options: GotoDashboardRouteOptions = {},
 ) {
   const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const waitUntil = options.waitUntil ?? "commit";

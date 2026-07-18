@@ -22,7 +22,7 @@ describe("MCP HTTP auth context", () => {
     });
 
     const headers = await withMcpHttpAuthContext(request, async () =>
-      getMcpHttpAuthHeadersForInternalFetch()
+      getMcpHttpAuthHeadersForInternalFetch(),
     );
 
     expect(headers).toEqual({
@@ -40,7 +40,7 @@ describe("MCP HTTP auth context", () => {
     });
 
     const headers = await withMcpHttpAuthContext(request, async () =>
-      getMcpHttpAuthHeadersForInternalFetch()
+      getMcpHttpAuthHeadersForInternalFetch(),
     );
 
     expect(headers).toEqual({
@@ -55,7 +55,7 @@ describe("MCP HTTP auth context", () => {
     });
 
     const headers = await withMcpHttpAuthContext(request, async () =>
-      getMcpHttpAuthHeadersForInternalFetch()
+      getMcpHttpAuthHeadersForInternalFetch(),
     );
 
     expect(headers).toEqual({});
@@ -93,14 +93,14 @@ describe("MCP HTTP auth context", () => {
         headers: { Authorization: "Bearer manage-key" },
       });
       await withMcpHttpAuthContext(request, () =>
-        client.callTool({ name: "omniroute_list_combos", arguments: {} })
+        client.callTool({ name: "omniroute_list_combos", arguments: {} }),
       );
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringContaining("/api/combos"),
         expect.objectContaining({
           headers: expect.objectContaining({ Authorization: "Bearer manage-key" }),
-        })
+        }),
       );
     } finally {
       await client.close();
@@ -127,7 +127,7 @@ describe("MCP HTTP auth context", () => {
         headers: { Authorization: "Bearer manage-key" },
       });
       await withMcpHttpAuthContext(request, () =>
-        client.callTool({ name: "omniroute_list_combos", arguments: {} })
+        client.callTool({ name: "omniroute_list_combos", arguments: {} }),
       );
 
       // The per-caller forwarded identity must win over the static env fallback.
@@ -135,7 +135,7 @@ describe("MCP HTTP auth context", () => {
         expect.stringContaining("/api/combos"),
         expect.objectContaining({
           headers: expect.objectContaining({ Authorization: "Bearer manage-key" }),
-        })
+        }),
       );
       const sentHeaders = fetchMock.mock.calls[0][1].headers as Record<string, string>;
       expect(sentHeaders.Authorization).not.toBe("Bearer env-fallback-key");
@@ -164,14 +164,14 @@ describe("MCP HTTP auth context", () => {
         headers: { Authorization: "Bearer manage-key" },
       });
       await withMcpHttpAuthContext(request, () =>
-        client.callTool({ name: "omniroute_cache_stats", arguments: {} })
+        client.callTool({ name: "omniroute_cache_stats", arguments: {} }),
       );
 
       expect(fetchMock).toHaveBeenCalledWith(
         expect.stringContaining("/api/cache"),
         expect.objectContaining({
           headers: expect.objectContaining({ Authorization: "Bearer manage-key" }),
-        })
+        }),
       );
     } finally {
       await client.close();

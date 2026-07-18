@@ -65,12 +65,12 @@ for (const fileName of files) {
 
   if (info.size > MAX_RASTER_BYTES) {
     failures.push(
-      `${fileName}: ${(info.size / 1024).toFixed(1)} KiB exceeds ${MAX_RASTER_BYTES / 1024} KiB`
+      `${fileName}: ${(info.size / 1024).toFixed(1)} KiB exceeds ${MAX_RASTER_BYTES / 1024} KiB`,
     );
   }
   if (width > MAX_RASTER_DIMENSION || height > MAX_RASTER_DIMENSION) {
     failures.push(
-      `${fileName}: ${width}x${height} exceeds ${MAX_RASTER_DIMENSION}px max dimension`
+      `${fileName}: ${width}x${height} exceeds ${MAX_RASTER_DIMENSION}px max dimension`,
     );
   }
 }

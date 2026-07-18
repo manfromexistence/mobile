@@ -1,4 +1,4 @@
-import type { Key } from "../i18n"
+import type { Key } from "../i18n";
 
 export const dict = {
   "app.title": "อันดับการใช้งานโมเดล AI | ข้อมูล OpenCode",
@@ -228,4 +228,4 @@ export const dict = {
   "model.pdf": "PDF",
   "format.users": "ผู้ใช้",
   "format.tokens": "token",
-} satisfies Record<Key, string>
+} satisfies Record<Key, string>;

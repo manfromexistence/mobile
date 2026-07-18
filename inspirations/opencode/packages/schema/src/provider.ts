@@ -1,9 +1,9 @@
-export * as Provider from "./provider"
+export * as Provider from "./provider";
 
-import { Schema } from "effect"
-import { optional } from "./schema"
-import { Integration } from "./integration"
-import { statics } from "./schema"
+import { Schema } from "effect";
+import { optional } from "./schema";
+import { Integration } from "./integration";
+import { statics } from "./schema";
 
 export const ID = Schema.String.pipe(
   Schema.brand("ProviderV2.ID"),
@@ -20,8 +20,8 @@ export const ID = Schema.String.pipe(
     mistral: schema.make("mistral"),
     gitlab: schema.make("gitlab"),
   })),
-)
-export type ID = typeof ID.Type
+);
+export type ID = typeof ID.Type;
 
 export interface AISDK extends Schema.Schema.Type<typeof AISDK> {}
 export const AISDK = Schema.Struct({
@@ -29,25 +29,25 @@ export const AISDK = Schema.Struct({
   package: Schema.String,
   url: Schema.String.pipe(optional),
   settings: Schema.Record(Schema.String, Schema.Unknown).pipe(optional),
-}).annotate({ identifier: "Provider.AISDK" })
+}).annotate({ identifier: "Provider.AISDK" });
 
 export interface Native extends Schema.Schema.Type<typeof Native> {}
 export const Native = Schema.Struct({
   type: Schema.Literal("native"),
   url: Schema.String.pipe(optional),
   settings: Schema.Record(Schema.String, Schema.Unknown),
-}).annotate({ identifier: "Provider.Native" })
+}).annotate({ identifier: "Provider.Native" });
 
 export const Api = Schema.Union([AISDK, Native])
   .pipe(Schema.toTaggedUnion("type"))
-  .annotate({ identifier: "Provider.Api" })
-export type Api = typeof Api.Type
+  .annotate({ identifier: "Provider.Api" });
+export type Api = typeof Api.Type;
 
 export interface Request extends Schema.Schema.Type<typeof Request> {}
 export const Request = Schema.Struct({
   headers: Schema.Record(Schema.String, Schema.String),
   body: Schema.Record(Schema.String, Schema.Json),
-}).annotate({ identifier: "Provider.Request" })
+}).annotate({ identifier: "Provider.Request" });
 
 export interface Info extends Schema.Schema.Type<typeof Info> {}
 export const Info = Schema.Struct({
@@ -69,4 +69,4 @@ export const Info = Schema.Struct({
           request: { headers: {}, body: {} },
         }),
     })),
-  )
+  );

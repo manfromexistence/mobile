@@ -92,7 +92,7 @@ export async function validateOpenAILikeProvider({
           ...(apiKey ? { Authorization: `Bearer ${apiKey}` } : {}),
         },
       },
-      isLocal
+      isLocal,
     );
 
     if (response.ok) {
@@ -137,7 +137,7 @@ export async function validateOpenAILikeProvider({
         },
         body: JSON.stringify(testBody),
       },
-      isLocal
+      isLocal,
     );
 
     if (chatRes.ok) {
@@ -308,7 +308,7 @@ export async function validateGeminiLikeProvider({
       {
         headers,
       },
-      isLocal
+      isLocal,
     );
 
     if (response.ok) {
@@ -334,7 +334,7 @@ export async function validateGeminiLikeProvider({
           "UNAUTHENTICATED",
         ];
         return authPatterns.some(
-          (p) => message.includes(p.toLowerCase()) || reason === p || status === p
+          (p) => message.includes(p.toLowerCase()) || reason === p || status === p,
         );
       };
 

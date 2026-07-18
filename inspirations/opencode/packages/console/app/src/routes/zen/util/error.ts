@@ -6,23 +6,23 @@ export class ModelError extends Error {}
 export class RegionError extends Error {}
 
 class LimitError extends Error {
-  retryAfter?: number
+  retryAfter?: number;
   constructor(message: string, retryAfter?: number) {
-    super(message)
-    this.retryAfter = retryAfter
+    super(message);
+    this.retryAfter = retryAfter;
   }
 }
 export class RateLimitError extends LimitError {}
 export class FreeUsageLimitError extends LimitError {}
 export class BlackUsageLimitError extends LimitError {}
 
-type LimitName = "5 hour" | "weekly" | "monthly"
+type LimitName = "5 hour" | "weekly" | "monthly";
 export class GoUsageLimitError extends LimitError {
-  workspace: string
-  limitName: LimitName
+  workspace: string;
+  limitName: LimitName;
   constructor(message: string, workspace: string, limitName: LimitName, retryAfter?: number) {
-    super(message, retryAfter)
-    this.workspace = workspace
-    this.limitName = limitName
+    super(message, retryAfter);
+    this.workspace = workspace;
+    this.limitName = limitName;
   }
 }

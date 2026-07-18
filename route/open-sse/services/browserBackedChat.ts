@@ -200,7 +200,7 @@ export interface BrowserBackedChatResult {
 
 async function settlePoolKey(
   requestedKey: string,
-  reuseContext: boolean
+  reuseContext: boolean,
 ): Promise<{ key: string; acquired: boolean }> {
   if (reuseContext) return { key: requestedKey, acquired: true };
   // Use a unique key per non-reuse call so the pool always creates a
@@ -246,7 +246,7 @@ export function chatUrlMatcher(u: string, matchDomain: string, chatUrl: string):
 }
 
 export async function browserBackedChat(
-  req: BrowserBackedChatRequest
+  req: BrowserBackedChatRequest,
 ): Promise<BrowserBackedChatResult> {
   if (testOverride) return testOverride(req);
   const t0 = Date.now();
@@ -300,7 +300,7 @@ export async function browserBackedChat(
     const responsePromise = page.waitForResponse(
       (r) =>
         r.request().method() === "POST" && chatUrlMatcher(r.url(), chatUrlMatchDomain, chatUrl),
-      { timeout: 30000 }
+      { timeout: 30000 },
     );
 
     // Wire signal to responsePromise via Promise.race
@@ -356,7 +356,7 @@ export async function browserBackedChat(
               message: "Response too large",
               type: "upstream_error",
             },
-          })
+          }),
         );
         status = 502;
         contentType = "application/json";
@@ -389,7 +389,7 @@ export async function browserBackedChat(
           message: sanitizeErrorMessage(`browserBackedChat failed: ${msg}`),
           type: "upstream_error",
         },
-      })
+      }),
     );
     return {
       status: 502,
@@ -435,7 +435,7 @@ export async function browserBackedChat(
  *   - claude-web:      POST to claude.ai API completion endpoint
  */
 export async function httpBackedChat(
-  req: BrowserBackedChatRequest
+  req: BrowserBackedChatRequest,
 ): Promise<BrowserBackedChatResult> {
   if (httpOverride) return httpOverride(req);
   const t0 = Date.now();
@@ -499,7 +499,7 @@ export async function httpBackedChat(
               message: "httpBackedChat unavailable: wreq-js (TLS client) not installed",
               type: "configuration_error",
             },
-          })
+          }),
         ),
         isStealth: false,
         timing: {
@@ -557,7 +557,7 @@ export async function httpBackedChat(
           message: sanitizeErrorMessage(`httpBackedChat failed: ${msg}`),
           type: "upstream_error",
         },
-      })
+      }),
     );
     return {
       status: 502,
@@ -583,7 +583,7 @@ export async function httpBackedChat(
 async function waitForCookiesWithPolling(
   context: import("playwright").BrowserContext,
   cookieDomain: string,
-  signal: AbortSignal | null
+  signal: AbortSignal | null,
 ): Promise<string | null> {
   const deadline = Date.now() + COOKIE_POLL_TIMEOUT_MS;
   while (Date.now() < deadline) {
@@ -607,7 +607,7 @@ async function doCookieRefreshOnContext(
   pooled: import("./browserPool.ts").PooledContext,
   chatPageUrl: string,
   cookieDomain: string,
-  signal: AbortSignal | null
+  signal: AbortSignal | null,
 ): Promise<string | null> {
   const page = await openPage(pooled);
   try {
@@ -638,7 +638,7 @@ async function refreshCookiesViaBrowser(
   poolKey: string,
   chatPageUrl: string,
   cookieDomain: string,
-  signal: AbortSignal | null
+  signal: AbortSignal | null,
 ): Promise<string | null> {
   if (httpOverride !== null) return null;
 
@@ -660,7 +660,7 @@ async function doRefresh(
   poolKey: string,
   chatPageUrl: string,
   cookieDomain: string,
-  signal: AbortSignal | null
+  signal: AbortSignal | null,
 ): Promise<string | null> {
   const { key } = await settlePoolKey(poolKey, true);
   let pooled: import("./browserPool.ts").PooledContext;
@@ -689,7 +689,7 @@ async function doRefresh(
  * If a challenge is detected, the browser is already partially ready.
  */
 async function startBrowserWarmup(
-  req: BrowserBackedChatRequest
+  req: BrowserBackedChatRequest,
 ): Promise<import("./browserPool.ts").PooledContext | null> {
   if (!req.cookieDomain || httpOverride !== null) return null;
   const flag = process.env.OMNIROUTE_BROWSER_POOL;
@@ -717,7 +717,7 @@ async function getFreshCookiesWithWarmup(
   chatPageUrl: string,
   cookieDomain: string,
   signal: AbortSignal | null,
-  warmupPromise: Promise<import("./browserPool.ts").PooledContext | null> | null
+  warmupPromise: Promise<import("./browserPool.ts").PooledContext | null> | null,
 ): Promise<string | null> {
   if (warmupPromise) {
     try {
@@ -755,7 +755,7 @@ function isChallengeResponse(status: number): boolean {
  * Skips browser steps when OMNIROUTE_BROWSER_POOL=off.
  */
 export async function tryBackedChat(
-  req: BrowserBackedChatRequest
+  req: BrowserBackedChatRequest,
 ): Promise<BrowserBackedChatResult> {
   const abortController = req.signal ? null : new AbortController();
   const effectiveSignal = req.signal ?? abortController?.signal ?? null;
@@ -799,7 +799,7 @@ export async function tryBackedChat(
           req.chatPageUrl,
           req.cookieDomain,
           effectiveSignal,
-          warmupPromise
+          warmupPromise,
         );
 
         if (freshCookie) {
@@ -830,7 +830,7 @@ export async function tryBackedChat(
               message: "tryBackedChat timed out",
               type: "timeout_error",
             },
-          })
+          }),
         ),
         isStealth: false,
         timing: {

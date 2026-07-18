@@ -1,17 +1,12 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from "bun:test";
 
-import type {
-  FileDiffMetadata,
-  Hunk,
-  HunkSeparators,
-  VirtualFileMetrics,
-} from '../src/types';
+import type { FileDiffMetadata, Hunk, HunkSeparators, VirtualFileMetrics } from "../src/types";
 import {
   getExpandedRegion,
   getLeadingHunkSeparatorLayout,
   getTrailingExpandedRegion,
   getTrailingHunkSeparatorLayout,
-} from '../src/utils/virtualDiffLayout';
+} from "../src/utils/virtualDiffLayout";
 
 const metrics: VirtualFileMetrics = {
   hunkLineCount: 2,
@@ -20,9 +15,9 @@ const metrics: VirtualFileMetrics = {
   spacing: 4,
 };
 
-describe('virtual diff layout helpers', () => {
-  describe('getExpandedRegion', () => {
-    test('keeps collapsed ranges collapsed by default', () => {
+describe("virtual diff layout helpers", () => {
+  describe("getExpandedRegion", () => {
+    test("keeps collapsed ranges collapsed by default", () => {
       expect(
         getExpandedRegion({
           isPartial: false,
@@ -30,7 +25,7 @@ describe('virtual diff layout helpers', () => {
           expandedHunks: undefined,
           hunkIndex: 1,
           collapsedContextThreshold: 1,
-        })
+        }),
       ).toEqual({
         fromStart: 0,
         fromEnd: 0,
@@ -40,7 +35,7 @@ describe('virtual diff layout helpers', () => {
       });
     });
 
-    test('expands all lines for expandUnchanged or small ranges', () => {
+    test("expands all lines for expandUnchanged or small ranges", () => {
       expect(
         getExpandedRegion({
           isPartial: false,
@@ -48,7 +43,7 @@ describe('virtual diff layout helpers', () => {
           expandedHunks: true,
           hunkIndex: 1,
           collapsedContextThreshold: 1,
-        })
+        }),
       ).toEqual({
         fromStart: 10,
         fromEnd: 0,
@@ -64,7 +59,7 @@ describe('virtual diff layout helpers', () => {
           expandedHunks: undefined,
           hunkIndex: 1,
           collapsedContextThreshold: 1,
-        })
+        }),
       ).toEqual({
         fromStart: 1,
         fromEnd: 0,
@@ -74,7 +69,7 @@ describe('virtual diff layout helpers', () => {
       });
     });
 
-    test('clamps explicit expansion regions to the collapsed range', () => {
+    test("clamps explicit expansion regions to the collapsed range", () => {
       const expandedHunks = new Map([[1, { fromStart: 3, fromEnd: 20 }]]);
 
       expect(
@@ -84,7 +79,7 @@ describe('virtual diff layout helpers', () => {
           expandedHunks,
           hunkIndex: 1,
           collapsedContextThreshold: 1,
-        })
+        }),
       ).toEqual({
         fromStart: 10,
         fromEnd: 0,
@@ -94,7 +89,7 @@ describe('virtual diff layout helpers', () => {
       });
     });
 
-    test('keeps partial diffs collapsed even with expansion state', () => {
+    test("keeps partial diffs collapsed even with expansion state", () => {
       expect(
         getExpandedRegion({
           isPartial: true,
@@ -102,7 +97,7 @@ describe('virtual diff layout helpers', () => {
           expandedHunks: true,
           hunkIndex: 1,
           collapsedContextThreshold: 1,
-        })
+        }),
       ).toEqual({
         fromStart: 0,
         fromEnd: 0,
@@ -113,8 +108,8 @@ describe('virtual diff layout helpers', () => {
     });
   });
 
-  describe('getTrailingExpandedRegion', () => {
-    test('ignores unsupported final trailing fromEnd expansion', () => {
+  describe("getTrailingExpandedRegion", () => {
+    test("ignores unsupported final trailing fromEnd expansion", () => {
       const fileDiff = createTrailingDiff(5);
 
       expect(
@@ -123,8 +118,8 @@ describe('virtual diff layout helpers', () => {
           hunkIndex: 0,
           expandedHunks: new Map([[1, { fromStart: 2, fromEnd: 3 }]]),
           collapsedContextThreshold: 0,
-          errorPrefix: 'virtualDiffLayout.test',
-        })
+          errorPrefix: "virtualDiffLayout.test",
+        }),
       ).toEqual({
         fromStart: 2,
         fromEnd: 0,
@@ -134,7 +129,7 @@ describe('virtual diff layout helpers', () => {
       });
     });
 
-    test('expands all final trailing context from the start', () => {
+    test("expands all final trailing context from the start", () => {
       const fileDiff = createTrailingDiff(5);
 
       expect(
@@ -143,8 +138,8 @@ describe('virtual diff layout helpers', () => {
           hunkIndex: 0,
           expandedHunks: true,
           collapsedContextThreshold: 0,
-          errorPrefix: 'virtualDiffLayout.test',
-        })
+          errorPrefix: "virtualDiffLayout.test",
+        }),
       ).toEqual({
         fromStart: 5,
         fromEnd: 0,
@@ -167,8 +162,8 @@ describe('virtual diff layout helpers', () => {
             ],
           ]),
           collapsedContextThreshold: 0,
-          errorPrefix: 'virtualDiffLayout.test',
-        })
+          errorPrefix: "virtualDiffLayout.test",
+        }),
       ).toEqual({
         fromStart: 5,
         fromEnd: 0,
@@ -179,23 +174,23 @@ describe('virtual diff layout helpers', () => {
     });
   });
 
-  describe('separator layouts', () => {
-    test('preserves current leading separator rules', () => {
+  describe("separator layouts", () => {
+    test("preserves current leading separator rules", () => {
       const cases: [
         type: HunkSeparators,
         hunkIndex: number,
         hunkSpecs: string | undefined,
         totalHeight: number | undefined,
       ][] = [
-        ['simple', 0, '@@ -1 +1 @@', undefined],
-        ['simple', 1, '@@ -1 +1 @@', 4],
-        ['metadata', 0, undefined, undefined],
-        ['metadata', 0, '@@ -1 +1 @@', 32],
-        ['line-info', 0, '@@ -1 +1 @@', 36],
-        ['line-info', 1, '@@ -1 +1 @@', 40],
-        ['line-info-basic', 0, '@@ -1 +1 @@', 32],
-        ['custom', 0, '@@ -1 +1 @@', 36],
-        ['custom', 1, '@@ -1 +1 @@', 40],
+        ["simple", 0, "@@ -1 +1 @@", undefined],
+        ["simple", 1, "@@ -1 +1 @@", 4],
+        ["metadata", 0, undefined, undefined],
+        ["metadata", 0, "@@ -1 +1 @@", 32],
+        ["line-info", 0, "@@ -1 +1 @@", 36],
+        ["line-info", 1, "@@ -1 +1 @@", 40],
+        ["line-info-basic", 0, "@@ -1 +1 @@", 32],
+        ["custom", 0, "@@ -1 +1 @@", 36],
+        ["custom", 1, "@@ -1 +1 @@", 40],
       ];
 
       for (const [type, hunkIndex, hunkSpecs, totalHeight] of cases) {
@@ -205,35 +200,33 @@ describe('virtual diff layout helpers', () => {
             metrics,
             hunkIndex,
             hunkSpecs,
-          })?.totalHeight
+          })?.totalHeight,
         ).toBe(totalHeight);
       }
     });
 
-    test('preserves current trailing separator rules', () => {
+    test("preserves current trailing separator rules", () => {
       const cases: [type: HunkSeparators, totalHeight: number | undefined][] = [
-        ['simple', undefined],
-        ['metadata', undefined],
-        ['line-info', 36],
-        ['line-info-basic', 32],
-        ['custom', 36],
+        ["simple", undefined],
+        ["metadata", undefined],
+        ["line-info", 36],
+        ["line-info-basic", 32],
+        ["custom", 36],
       ];
 
       for (const [type, totalHeight] of cases) {
-        expect(
-          getTrailingHunkSeparatorLayout({ type, metrics })?.totalHeight
-        ).toBe(totalHeight);
+        expect(getTrailingHunkSeparatorLayout({ type, metrics })?.totalHeight).toBe(totalHeight);
       }
     });
 
-    test('uses custom hunk separator height metrics', () => {
+    test("uses custom hunk separator height metrics", () => {
       expect(
         getLeadingHunkSeparatorLayout({
-          type: 'line-info',
+          type: "line-info",
           metrics: { ...metrics, hunkSeparatorHeight: 12 },
           hunkIndex: 1,
-          hunkSpecs: '@@ -1 +1 @@',
-        })?.totalHeight
+          hunkSpecs: "@@ -1 +1 @@",
+        })?.totalHeight,
       ).toBe(20);
     });
   });
@@ -252,13 +245,13 @@ function createTrailingDiff(trailingLineCount: number): FileDiffMetadata {
     deletionLineIndex: 0,
     hunkContent: [
       {
-        type: 'context',
+        type: "context",
         lines: 2,
         deletionLineIndex: 0,
         additionLineIndex: 0,
       },
     ],
-    hunkSpecs: '@@ -1,2 +1,2 @@',
+    hunkSpecs: "@@ -1,2 +1,2 @@",
     splitLineStart: 0,
     splitLineCount: 2,
     unifiedLineStart: 0,
@@ -268,8 +261,8 @@ function createTrailingDiff(trailingLineCount: number): FileDiffMetadata {
   };
 
   return {
-    name: 'trailing.ts',
-    type: 'change',
+    name: "trailing.ts",
+    type: "change",
     hunks: [hunk],
     splitLineCount: 2 + trailingLineCount,
     unifiedLineCount: 2 + trailingLineCount,

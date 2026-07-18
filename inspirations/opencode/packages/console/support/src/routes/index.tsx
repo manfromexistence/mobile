@@ -1,4 +1,4 @@
-import { Title } from "@solidjs/meta"
+import { Title } from "@solidjs/meta";
 
 export default function SupportPage() {
   return (
@@ -18,5 +18,5 @@ export default function SupportPage() {
         <button type="submit">Lookup</button>
       </form>
     </main>
-  )
+  );
 }

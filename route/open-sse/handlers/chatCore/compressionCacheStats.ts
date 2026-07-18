@@ -30,7 +30,7 @@ export function recordCompressionCacheStats(args: {
       });
       const tokensSavedCompression = Math.max(
         0,
-        args.stats.originalTokens - args.stats.compressedTokens
+        args.stats.originalTokens - args.stats.compressedTokens,
       );
       recordCacheStats({
         provider: cacheContext.provider ?? args.provider ?? "unknown",
@@ -46,7 +46,7 @@ export function recordCompressionCacheStats(args: {
       args.log?.debug?.(
         "COMPRESSION",
         "Compression cache stats write skipped: " +
-          (err instanceof Error ? err.message : String(err))
+          (err instanceof Error ? err.message : String(err)),
       );
     }
   })();

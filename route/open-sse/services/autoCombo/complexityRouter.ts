@@ -78,7 +78,7 @@ export function classifyRequestComplexity(input: RuleInput): ComplexityClassific
 export function buildComplexityRoutingHint(
   modelTargets: Parameters<typeof generateRoutingHints>[0],
   body: { messages?: unknown; tools?: unknown; model?: unknown } | null | undefined,
-  log: { info: (tag: string, message: string) => void }
+  log: { info: (tag: string, message: string) => void },
 ): RoutingHint | null {
   try {
     const ruleInput = {
@@ -98,11 +98,11 @@ export function buildComplexityRoutingHint(
     const classification = classifyRequestComplexity(ruleInput);
     hint.recommendedMinTier = escalateTier(
       hint.recommendedMinTier as ComplexityTier,
-      classification.recommendedTier
+      classification.recommendedTier,
     ) as typeof hint.recommendedMinTier;
     log.info(
       "COMBO",
-      `Complexity-aware routing: level=${classification.level} score=${classification.score} minTier=${hint.recommendedMinTier} tools=${classification.hasToolUse}`
+      `Complexity-aware routing: level=${classification.level} score=${classification.score} minTier=${hint.recommendedMinTier} tools=${classification.hasToolUse}`,
     );
     return hint;
   } catch {

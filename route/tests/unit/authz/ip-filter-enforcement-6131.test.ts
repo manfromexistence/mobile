@@ -86,7 +86,7 @@ test("#6131 loopback is exempt — operator can't lock themselves out locally", 
   // A trusted stamped loopback peer IP downgrades the request to "loopback".
   const res = await pipeline.runAuthzPipeline(
     req(BLOCKED, { "x-omniroute-peer-ip": "stamp-tok|127.0.0.1" }),
-    { enforce: true }
+    { enforce: true },
   );
   assert.equal(await isIpBlocked(res), false, "loopback must be exempt from the IP filter");
 });

@@ -203,7 +203,7 @@ export default function ReasoningCacheTab() {
 
   const { stats, entries } = data;
   const providerEntries = Object.entries(stats.byProvider).sort(
-    ([, a], [, b]) => b.entries - a.entries
+    ([, a], [, b]) => b.entries - a.entries,
   );
   const modelEntries = Object.entries(stats.byModel).sort(([, a], [, b]) => b.entries - a.entries);
   const totalLookups = stats.hits + stats.misses;

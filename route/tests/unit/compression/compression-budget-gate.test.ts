@@ -17,7 +17,7 @@ import {
 
 const BASELINE_PATH = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
-  "../../../scripts/check/compression-budget-baseline.json"
+  "../../../scripts/check/compression-budget-baseline.json",
 );
 
 describe("compression budget gate (F2.4 / N4 ratchet)", () => {
@@ -32,7 +32,7 @@ describe("compression budget gate (F2.4 / N4 ratchet)", () => {
       failed.length,
       0,
       `tokens-per-task regressed vs the committed baseline: ${JSON.stringify(failed)} — ` +
-        `if intentional, run: npm run check:compression-budget -- --update`
+        `if intentional, run: npm run check:compression-budget -- --update`,
     );
   });
 
@@ -45,7 +45,7 @@ describe("compression budget gate (F2.4 / N4 ratchet)", () => {
           Object.entries(tokensPerTask(reports.ultra)).map(([task, n]) => [
             task,
             Math.max(1, Math.floor(n / 2)),
-          ])
+          ]),
         ),
       },
     };

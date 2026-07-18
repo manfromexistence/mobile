@@ -32,39 +32,39 @@ describe("dashboard CSRF tokens", () => {
     assert.ok(issued);
     assert.equal(
       validateDashboardCsrfToken(request("/api/models/test", undefined, issued.token), 1_000),
-      true
+      true,
     );
     assert.equal(
       validateDashboardCsrfToken(request("/api/models/test-all", undefined, issued.token), 1_000),
-      true
+      true,
     );
     assert.equal(
       validateDashboardCsrfToken(request("/api/combos/test", undefined, issued.token), 1_000),
-      true
+      true,
     );
     assert.equal(
       validateDashboardCsrfToken(request("/api/keys", undefined, issued.token), 1_000),
-      true
+      true,
     );
     assert.equal(
       validateDashboardCsrfToken(request("/api/settings", undefined, issued.token), 1_000),
-      true
+      true,
     );
   });
 
   it("binds tokens to the dashboard auth cookie", () => {
     const issued = issueDashboardCsrfToken(
       request("/api/auth/csrf", "auth_token=session-a"),
-      1_000
+      1_000,
     );
 
     assert.ok(issued);
     assert.equal(
       validateDashboardCsrfToken(
         request("/api/models/test", "auth_token=session-b", issued.token),
-        1_000
+        1_000,
       ),
-      false
+      false,
     );
   });
 
@@ -74,11 +74,11 @@ describe("dashboard CSRF tokens", () => {
     assert.ok(issued);
     assert.equal(
       validateDashboardCsrfToken(request("/api/models/test", undefined, issued.token), 700_000),
-      false
+      false,
     );
     assert.equal(
       validateDashboardCsrfToken(request("/api/models/test", undefined, `${issued.token}x`), 1_000),
-      false
+      false,
     );
   });
 });

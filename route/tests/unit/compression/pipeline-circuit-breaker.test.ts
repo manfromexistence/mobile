@@ -124,7 +124,7 @@ describe("pipelineEngineBreaker — pipeline integration", () => {
     return applyStackedCompression(
       { messages: [{ role: "user", content: "hello world" }] },
       [{ engine: ENGINE_ID, intensity: "standard" }],
-      { circuitBreaker: { enabled: true, failureThreshold: 2, cooldownMs: 60_000 } }
+      { circuitBreaker: { enabled: true, failureThreshold: 2, cooldownMs: 60_000 } },
     );
   }
 
@@ -149,8 +149,8 @@ describe("pipelineEngineBreaker — pipeline integration", () => {
       applyStackedCompression(
         { messages: [{ role: "user", content: "x" }] },
         [{ engine: ENGINE_ID, intensity: "standard" }],
-        {}
-      )
+        {},
+      ),
     );
   });
 });

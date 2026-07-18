@@ -48,14 +48,14 @@ export type CompatibleProviderGroups = {
 
 export function shouldApplyConfiguredOnlyFilter(
   showConfiguredOnly: boolean,
-  connectionCount: number
+  connectionCount: number,
 ): boolean {
   return showConfiguredOnly && connectionCount > 0;
 }
 
 export function shouldFilterProviderEntriesForDisplayMode(
   displayMode: ProviderDisplayMode,
-  connectionCount: number
+  connectionCount: number,
 ): boolean {
   if (displayMode === "compact") return true;
 
@@ -64,7 +64,7 @@ export function shouldFilterProviderEntriesForDisplayMode(
 
 export function shouldShowFirstProviderHint(
   connectionCount: number,
-  searchQuery?: string
+  searchQuery?: string,
 ): boolean {
   return connectionCount === 0 && !searchQuery?.trim();
 }
@@ -83,7 +83,7 @@ const OAUTH_CARD_API_KEY_CONNECTION_PROVIDER_IDS = new Set(["kiro", "amazon-q"])
 export function connectionMatchesProviderCard(
   conn: { provider?: string; authType?: string } | null | undefined,
   providerId: string,
-  cardAuthType: "oauth" | "free" | "apikey"
+  cardAuthType: "oauth" | "free" | "apikey",
 ): boolean {
   if (!conn || conn.provider !== providerId) return false;
   if (cardAuthType === "free") return true;
@@ -98,7 +98,7 @@ export function connectionMatchesProviderCard(
 
 type GetProviderStats = (
   providerId: string,
-  authType: "oauth" | "free" | "apikey"
+  authType: "oauth" | "free" | "apikey",
 ) => ProviderStatsSnapshot;
 
 function getProviderSortLabel<TProvider>(entry: ProviderEntry<TProvider>): string {
@@ -108,7 +108,7 @@ function getProviderSortLabel<TProvider>(entry: ProviderEntry<TProvider>): strin
 }
 
 export function sortProviderEntriesByName<TProvider>(
-  entries: ProviderEntry<TProvider>[]
+  entries: ProviderEntry<TProvider>[],
 ): ProviderEntry<TProvider>[] {
   return [...entries].sort((a, b) => {
     const nameCompare = compareTr(getProviderSortLabel(a), getProviderSortLabel(b));
@@ -121,7 +121,7 @@ export function buildProviderEntries<TProvider = Record<string, unknown>>(
   providers: ProviderRecord<TProvider>,
   displayAuthType: ProviderEntry["displayAuthType"],
   toggleAuthType: ProviderEntry["toggleAuthType"],
-  getProviderStats: GetProviderStats
+  getProviderStats: GetProviderStats,
 ): ProviderEntry<TProvider>[] {
   return Object.entries(providers).map(([providerId, provider]) => ({
     providerId,
@@ -135,7 +135,7 @@ export function buildProviderEntries<TProvider = Record<string, unknown>>(
 export function buildMergedOAuthProviderEntries<TProvider = Record<string, unknown>>(
   oauthProviders: ProviderRecord<TProvider>,
   freeProviders: ProviderRecord<TProvider>,
-  getProviderStats: GetProviderStats
+  getProviderStats: GetProviderStats,
 ): ProviderEntry<TProvider>[] {
   return [
     ...buildProviderEntries(oauthProviders, "oauth", "oauth", getProviderStats),
@@ -145,14 +145,14 @@ export function buildMergedOAuthProviderEntries<TProvider = Record<string, unkno
 
 export function buildStaticProviderEntries(
   category: StaticProviderCatalogCategory,
-  getProviderStats: GetProviderStats
+  getProviderStats: GetProviderStats,
 ): ProviderEntry<ProviderCatalogMetadata>[] {
   const group = getStaticProviderCatalogGroup(category);
   return buildProviderEntries(
     group.providers,
     group.displayAuthType,
     group.toggleAuthType,
-    getProviderStats
+    getProviderStats,
   );
 }
 
@@ -168,7 +168,7 @@ export function buildCompatibleProviderGroups(
     openaiCompatibleName: string;
     anthropicCompatibleName: string;
     claudeCodeCompatibleName: string;
-  }
+  },
 ): CompatibleProviderGroups {
   const openai: CompatibleProviderInfo[] = [];
   const anthropic: CompatibleProviderInfo[] = [];
@@ -218,7 +218,7 @@ export function filterConfiguredProviderEntries<TProvider>(
   searchQuery?: string,
   showFreeOnly?: boolean,
   modelSearchQuery?: string,
-  serviceKindFilter?: string | null
+  serviceKindFilter?: string | null,
 ): ProviderEntry<TProvider>[] {
   let filtered = entries;
 
@@ -237,7 +237,7 @@ export function filterConfiguredProviderEntries<TProvider>(
     // are always usable and appear unconditionally in the /v1/models catalog, so
     // they must not be hidden by the configured-only filter (#3290).
     filtered = filtered.filter(
-      (entry) => entry.displayAuthType === "no-auth" || Number(entry.stats?.total || 0) > 0
+      (entry) => entry.displayAuthType === "no-auth" || Number(entry.stats?.total || 0) > 0,
     );
   }
 
@@ -272,7 +272,7 @@ export function filterConfiguredProviderEntries<TProvider>(
 function pushUniqueProviderEntry<TProvider>(
   entries: ProviderEntry<TProvider>[],
   seenProviderIds: Set<string>,
-  entry: ProviderEntry<TProvider>
+  entry: ProviderEntry<TProvider>,
 ) {
   if (seenProviderIds.has(entry.providerId)) return;
 
@@ -282,7 +282,7 @@ function pushUniqueProviderEntry<TProvider>(
 
 export function buildCompactProviderEntries<TProvider>(
   groups: ProviderEntry<TProvider>[][],
-  options: { deferNoAuth?: boolean } = {}
+  options: { deferNoAuth?: boolean } = {},
 ): ProviderEntry<TProvider>[] {
   const seenProviderIds = new Set<string>();
   const visibleEntries: ProviderEntry<TProvider>[] = [];
@@ -312,7 +312,7 @@ export function resolveDashboardProviderInfo(
   options?: {
     providerNode?: CompatibleProviderNodeLike | null;
     compatibleLabels?: CompatibleProviderLabels | null;
-  }
+  },
 ): ResolvedProviderCatalogEntry | null {
   return resolveProviderCatalogEntry(providerId, options);
 }
@@ -370,7 +370,7 @@ const PROVIDER_PAGE_FETCH_TIMEOUT_MS = 20_000;
  */
 export async function loadProviderPageData(
   fetchImpl: typeof fetch = globalThis.fetch as typeof fetch,
-  timeoutMs: number = PROVIDER_PAGE_FETCH_TIMEOUT_MS
+  timeoutMs: number = PROVIDER_PAGE_FETCH_TIMEOUT_MS,
 ): Promise<ProviderPageData> {
   const safeJson = async (url: string, init?: RequestInit): Promise<any | null> => {
     try {

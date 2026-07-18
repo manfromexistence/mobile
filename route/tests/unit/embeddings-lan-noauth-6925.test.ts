@@ -42,7 +42,7 @@ test("#6925: 10.x LAN embeddings provider is treated as no-auth (no Authorizatio
         data: [{ object: "embedding", embedding: [0.1, 0.2], index: 0 }],
         usage: { prompt_tokens: 3, total_tokens: 3 },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -60,12 +60,12 @@ test("#6925: 10.x LAN embeddings provider is treated as no-auth (no Authorizatio
   assert.equal(
     captured!.url,
     "http://10.10.0.181:11434/v1/embeddings",
-    "should hit the LAN provider's own embeddings endpoint"
+    "should hit the LAN provider's own embeddings endpoint",
   );
   assert.equal(
     captured!.headers.Authorization,
     undefined,
-    "a keyless LAN provider must not receive a fabricated Authorization header"
+    "a keyless LAN provider must not receive a fabricated Authorization header",
   );
 });
 
@@ -87,7 +87,7 @@ test("#6925: 192.168.x LAN embeddings provider is also treated as no-auth", asyn
         data: [{ object: "embedding", embedding: [0.1, 0.2], index: 0 }],
         usage: { prompt_tokens: 3, total_tokens: 3 },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 

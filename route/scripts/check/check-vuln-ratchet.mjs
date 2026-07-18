@@ -85,9 +85,10 @@ export function parseOsvJson(osvJson) {
       if (!Array.isArray(pkg.vulnerabilities)) continue;
 
       // Use groups for deduplication when available (same vuln in multiple paths)
-      const pkgCount = Array.isArray(pkg.groups) && pkg.groups.length > 0
-        ? pkg.groups.length
-        : pkg.vulnerabilities.length;
+      const pkgCount =
+        Array.isArray(pkg.groups) && pkg.groups.length > 0
+          ? pkg.groups.length
+          : pkg.vulnerabilities.length;
 
       vulnCount += pkgCount;
 
@@ -224,10 +225,7 @@ export function findOsvScanner() {
  * @returns {{ json: object } | { skip: true, reason: string }}
  */
 function runOsvScanner(osvBin) {
-  const args = [
-    "--format", "json",
-    "--lockfile", path.join(ROOT, "package-lock.json"),
-  ];
+  const args = ["--format", "json", "--lockfile", path.join(ROOT, "package-lock.json")];
 
   if (!QUIET) {
     process.stderr.write("[vuln-ratchet] Rodando osv-scanner --format json ...\n");
@@ -254,7 +252,9 @@ function runOsvScanner(osvBin) {
   try {
     return { json: JSON.parse(stdout) };
   } catch (parseErr) {
-    process.stderr.write(`[vuln-ratchet] ERRO ao parsear JSON do osv-scanner: ${parseErr.message}\n`);
+    process.stderr.write(
+      `[vuln-ratchet] ERRO ao parsear JSON do osv-scanner: ${parseErr.message}\n`,
+    );
     process.stderr.write(`[vuln-ratchet] stdout (primeiros 500 chars): ${stdout.slice(0, 500)}\n`);
     return { skip: true, reason: "parse-error" };
   }
@@ -274,8 +274,8 @@ function main() {
     if (!QUIET) {
       process.stderr.write(
         "[vuln-ratchet] SKIP — osv-scanner não encontrado no PATH.\n" +
-        "[vuln-ratchet] Instale via: https://google.github.io/osv-scanner/\n" +
-        "[vuln-ratchet] SKIP gracioso — sai 0 mesmo com --ratchet (binário ausente nunca bloqueia).\n"
+          "[vuln-ratchet] Instale via: https://google.github.io/osv-scanner/\n" +
+          "[vuln-ratchet] SKIP gracioso — sai 0 mesmo com --ratchet (binário ausente nunca bloqueia).\n",
       );
     }
     process.exitCode = 0;
@@ -291,7 +291,7 @@ function main() {
     if (!QUIET) {
       process.stderr.write(
         `[vuln-ratchet] SKIP — osv-scanner não produziu uma medição (${osvResult.reason}).\n` +
-        "[vuln-ratchet] SKIP gracioso — sai 0 mesmo com --ratchet (falha de medição nunca bloqueia).\n"
+          "[vuln-ratchet] SKIP gracioso — sai 0 mesmo com --ratchet (falha de medição nunca bloqueia).\n",
       );
     }
     process.exitCode = 0;
@@ -311,11 +311,12 @@ function main() {
   console.log(`vulnCount=${vulnCount}`);
 
   if (!QUIET) {
-    const severitySummary = Object.entries(bySeverity)
-      .map(([k, v]) => `${k}=${v}`)
-      .join(", ") || "nenhuma";
+    const severitySummary =
+      Object.entries(bySeverity)
+        .map(([k, v]) => `${k}=${v}`)
+        .join(", ") || "nenhuma";
     process.stderr.write(
-      `[vuln-ratchet] Total de vulnerabilidades: ${vulnCount} (${severitySummary})\n`
+      `[vuln-ratchet] Total de vulnerabilidades: ${vulnCount} (${severitySummary})\n`,
     );
   }
 
@@ -334,7 +335,7 @@ function applyRatchet(vulnCount) {
   if (!RATCHET) {
     if (!QUIET) {
       process.stderr.write(
-        "[vuln-ratchet] ADVISORY — não falha pela contagem (passe --ratchet para bloquear regressão).\n"
+        "[vuln-ratchet] ADVISORY — não falha pela contagem (passe --ratchet para bloquear regressão).\n",
       );
     }
     process.exitCode = 0;
@@ -345,7 +346,7 @@ function applyRatchet(vulnCount) {
   if (baselineValue === null) {
     if (!QUIET) {
       process.stderr.write(
-        "[vuln-ratchet] baseline ausente (metrics.vulnCount) — SKIP gracioso, sai 0.\n"
+        "[vuln-ratchet] baseline ausente (metrics.vulnCount) — SKIP gracioso, sai 0.\n",
       );
     }
     process.exitCode = 0;
@@ -358,7 +359,7 @@ function applyRatchet(vulnCount) {
       `[vuln-ratchet] REGRESSÃO — ${vulnCount} vulnerabilidades > baseline ${baselineValue}\n` +
         "  → Bumpe a(s) dep(s) afetada(s) (preferível). Se não houver fix, re-baseline\n" +
         "    metrics.vulnCount em config/quality/quality-baseline.json com justificativa\n" +
-        "    + issue de tracking. Ver docs/security/SUPPLY_CHAIN.md → 'Variância de CVE'.\n"
+        "    + issue de tracking. Ver docs/security/SUPPLY_CHAIN.md → 'Variância de CVE'.\n",
     );
     process.exitCode = 1;
     return;
@@ -366,7 +367,7 @@ function applyRatchet(vulnCount) {
 
   if (!QUIET) {
     process.stderr.write(
-      `[vuln-ratchet] OK — sem regressão (${vulnCount} vulns, baseline ${baselineValue}).\n`
+      `[vuln-ratchet] OK — sem regressão (${vulnCount} vulns, baseline ${baselineValue}).\n`,
     );
   }
   process.exitCode = 0;

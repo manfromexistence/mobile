@@ -1,29 +1,29 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from "bun:test";
 
-import { parseDiffFromFile } from '../src/utils/parseDiffFromFile';
-import { fileNew, fileOld } from './mocks';
-import { assertDefined, hunkDigest, verifyHunkLineValues } from './testUtils';
+import { parseDiffFromFile } from "../src/utils/parseDiffFromFile";
+import { fileNew, fileOld } from "./mocks";
+import { assertDefined, hunkDigest, verifyHunkLineValues } from "./testUtils";
 
-describe('parseDiffFromFile', () => {
+describe("parseDiffFromFile", () => {
   const result = parseDiffFromFile(
-    { name: 'fileOld.txt', contents: fileOld },
-    { name: 'fileNew.txt', contents: fileNew }
+    { name: "fileOld.txt", contents: fileOld },
+    { name: "fileNew.txt", contents: fileNew },
   );
 
-  test('should parse diff from fileOld and fileNew and match its digest', () => {
+  test("should parse diff from fileOld and fileNew and match its digest", () => {
     expect(result.hunks.length).toBeGreaterThan(0);
     // Compact geometry lock; line-level accuracy is covered by the invariant
     // test below and the renderer's content tests
-    expect(hunkDigest(result)).toMatchSnapshot('parsed diff digest');
+    expect(hunkDigest(result)).toMatchSnapshot("parsed diff digest");
   });
 
-  test('should have accurate hunk line values', () => {
+  test("should have accurate hunk line values", () => {
     expect(verifyHunkLineValues(result)).toEqual([]);
   });
 
-  test('should correctly set oldLines and newLines', () => {
-    assertDefined(result.deletionLines, 'result.oldLines should be defined');
-    assertDefined(result.additionLines, 'result.newLines should be defined');
+  test("should correctly set oldLines and newLines", () => {
+    assertDefined(result.deletionLines, "result.oldLines should be defined");
+    assertDefined(result.additionLines, "result.newLines should be defined");
 
     // oldLines should match the split of fileOld
     const expectedOldLineCount = fileOld.split(/(?<=\n)/).length;
@@ -34,14 +34,14 @@ describe('parseDiffFromFile', () => {
     expect(result.additionLines.length).toBe(expectedNewLineCount);
   });
 
-  test('ignoreWhitespace hides leading/trailing whitespace changes', () => {
+  test("ignoreWhitespace hides leading/trailing whitespace changes", () => {
     const oldFile = {
-      name: 'test.txt',
-      contents: 'hello world\nfoo bar\n',
+      name: "test.txt",
+      contents: "hello world\nfoo bar\n",
     };
     const newFile = {
-      name: 'test.txt',
-      contents: '  hello world\nfoo bar\n',
+      name: "test.txt",
+      contents: "  hello world\nfoo bar\n",
     };
 
     const withWhitespace = parseDiffFromFile(oldFile, newFile);
@@ -55,29 +55,29 @@ describe('parseDiffFromFile', () => {
 
   test('should have type "change" (default) when files did not change', () => {
     const oldFile = {
-      name: 'test.txt',
-      contents: 'abc',
+      name: "test.txt",
+      contents: "abc",
     };
     const newFile = {
-      name: 'test.txt',
-      contents: 'abc',
+      name: "test.txt",
+      contents: "abc",
     };
 
     const result = parseDiffFromFile(oldFile, newFile);
-    expect(result.type).toBe('change');
+    expect(result.type).toBe("change");
   });
 
   test('should have type "change" (default) when empty files did not change', () => {
     const oldFile = {
-      name: 'test.txt',
-      contents: '',
+      name: "test.txt",
+      contents: "",
     };
     const newFile = {
-      name: 'test.txt',
-      contents: '',
+      name: "test.txt",
+      contents: "",
     };
 
     const result = parseDiffFromFile(oldFile, newFile);
-    expect(result.type).toBe('change');
+    expect(result.type).toBe("change");
   });
 });

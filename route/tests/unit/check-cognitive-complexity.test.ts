@@ -12,7 +12,7 @@ type CogComplexityVerdict = { regressed: boolean; improved: boolean };
 const count = countCognitiveViolations as (report: EslintReport) => number;
 const evaluate = evaluateCognitiveComplexity as (
   current: number,
-  baseline: number
+  baseline: number,
 ) => CogComplexityVerdict;
 
 // --- countCognitiveViolations tests ---

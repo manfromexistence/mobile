@@ -23,13 +23,13 @@ function applyLegacyTypeMap(type) {
   if (Object.prototype.hasOwnProperty.call(LEGACY_TYPE_MAP, type)) {
     const mapped = LEGACY_TYPE_MAP[type];
     process.stderr.write(
-      `Warning: legacy type '${type}' is deprecated; using '${mapped}'. Use --type factual|episodic|procedural|semantic.\n`
+      `Warning: legacy type '${type}' is deprecated; using '${mapped}'. Use --type factual|episodic|procedural|semantic.\n`,
     );
     return mapped;
   }
   if (!VALID_TYPES.includes(type)) {
     process.stderr.write(
-      `Warning: unknown type '${type}'. Valid types: factual, episodic, procedural, semantic.\n`
+      `Warning: unknown type '${type}'. Valid types: factual, episodic, procedural, semantic.\n`,
     );
   }
   return type;

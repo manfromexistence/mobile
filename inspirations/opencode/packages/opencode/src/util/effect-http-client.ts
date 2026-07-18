@@ -1,5 +1,5 @@
-import { Schedule } from "effect"
-import { HttpClient } from "effect/unstable/http"
+import { Schedule } from "effect";
+import { HttpClient } from "effect/unstable/http";
 
 export const withTransientReadRetry = <E, R>(client: HttpClient.HttpClient.With<E, R>) =>
   client.pipe(
@@ -8,4 +8,4 @@ export const withTransientReadRetry = <E, R>(client: HttpClient.HttpClient.With<
       times: 2,
       schedule: Schedule.exponential(200).pipe(Schedule.jittered),
     }),
-  )
+  );

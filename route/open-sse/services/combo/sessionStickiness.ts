@@ -73,9 +73,7 @@ interface StickyEntry {
  * Injectable saturation fetcher seam (for unit tests).
  * Returns HeadroomSaturation or undefined when unknown.
  */
-export type SaturationFetcher = (
-  connectionId: string
-) => Promise<HeadroomSaturation | undefined>;
+export type SaturationFetcher = (connectionId: string) => Promise<HeadroomSaturation | undefined>;
 
 // ─── Saturation fetcher seam ─────────────────────────────────────────────────
 
@@ -101,7 +99,7 @@ export interface StickyConnectionHealth {
  */
 export type ConnectionHealthFetcher = (
   connectionId: string,
-  provider: string
+  provider: string,
 ) => Promise<StickyConnectionHealth | undefined>;
 
 /** Overrides the default connection-health fetcher for tests; null = use production fetcher. */
@@ -109,7 +107,7 @@ let _connectionFetcherOverride: ConnectionHealthFetcher | null = null;
 
 /** Test-only: inject the connection-health fetcher; pass null to restore default. */
 export function __setStickinessConnectionFetcherForTests(
-  fetcher: ConnectionHealthFetcher | null
+  fetcher: ConnectionHealthFetcher | null,
 ): void {
   _connectionFetcherOverride = fetcher;
 }
@@ -129,14 +127,14 @@ const TERMINAL_STICKY_STATUSES = new Set(["credits_exhausted", "banned", "expire
  */
 async function resolveConnectionHealth(
   connectionId: string,
-  provider: string
+  provider: string,
 ): Promise<StickyConnectionHealth | undefined> {
   if (_connectionFetcherOverride) return _connectionFetcherOverride(connectionId, provider);
 
   try {
     const mod = await import("../../../src/lib/db/providers");
     const getProviderConnections = mod.getProviderConnections as (
-      filter: Record<string, unknown>
+      filter: Record<string, unknown>,
     ) => Promise<StickyConnectionHealth[]>;
     const connections = (await getProviderConnections({
       provider,
@@ -155,7 +153,7 @@ async function resolveConnectionHealth(
  */
 export function isStickyConnectionTerminallyUnhealthy(
   conn: StickyConnectionHealth | undefined,
-  now: number
+  now: number,
 ): boolean {
   if (!conn) return false;
   const status = typeof conn.testStatus === "string" ? conn.testStatus : "";
@@ -171,7 +169,7 @@ export function isStickyConnectionTerminallyUnhealthy(
  */
 async function resolveSaturation(
   connectionId: string,
-  provider: string
+  provider: string,
 ): Promise<HeadroomSaturation | undefined> {
   if (_fetcherOverride) return _fetcherOverride(connectionId);
 
@@ -180,7 +178,7 @@ async function resolveSaturation(
     const getSaturation = mod.getSaturation as (
       connectionId: string,
       provider: string,
-      dim: { unit: "percent"; window: "5h" | "weekly" }
+      dim: { unit: "percent"; window: "5h" | "weekly" },
     ) => Promise<number>;
 
     const [util5h, util7d] = await Promise.all([
@@ -205,7 +203,7 @@ const stickyMap = new Map<string, StickyEntry>();
  * Returns null when the message cannot be extracted (fail-open).
  */
 export function deriveMessageHash(
-  messages: Array<{ role?: string; content?: unknown }> | null | undefined
+  messages: Array<{ role?: string; content?: unknown }> | null | undefined,
 ): string | null {
   if (!Array.isArray(messages) || messages.length === 0) return null;
   const first = messages.find((m) => m?.role === "user");
@@ -300,7 +298,7 @@ export function clearAllStickyBindings(): void {
  */
 export function resolveDisableSessionStickiness(
   config: Record<string, unknown> | null | undefined,
-  settings: Record<string, unknown> | null | undefined
+  settings: Record<string, unknown> | null | undefined,
 ): boolean {
   const perCombo = config?.disableSessionStickiness;
   if (typeof perCombo === "boolean") return perCombo;
@@ -340,7 +338,7 @@ export interface ApplyStickinessResult {
  */
 export async function applySessionStickiness(
   orderedTargets: ResolvedComboTarget[],
-  messages: Array<{ role?: string; content?: unknown }> | null | undefined
+  messages: Array<{ role?: string; content?: unknown }> | null | undefined,
 ): Promise<ApplyStickinessResult> {
   const noOp: ApplyStickinessResult = { targets: orderedTargets, messageHash: null, stuck: false };
 

@@ -57,7 +57,7 @@ test("multi-instance: hook objects + nested arrays are independent references", 
   assert.notEqual(
     a.auth?.methods,
     b.auth?.methods,
-    "methods arrays must not be the same reference"
+    "methods arrays must not be the same reference",
   );
 });
 
@@ -126,7 +126,7 @@ test("multi-instance: invalid opts on one instance does not poison the other", a
   // half-built module-level state survives a failed parse.
   await assert.rejects(
     () => OmniRoutePlugin(fakeInput, { providerId: "bad id!" } as never),
-    /providerId/
+    /providerId/,
   );
   const ok = await OmniRoutePlugin(fakeInput, {
     providerId: "recovered",

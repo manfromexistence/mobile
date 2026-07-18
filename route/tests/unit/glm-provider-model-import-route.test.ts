@@ -44,7 +44,7 @@ test("GLM import uses international coding endpoint when apiRegion is internatio
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
     assert.deepEqual(await response.json(), {
@@ -89,7 +89,7 @@ test("GLM import normalizes custom coding models URLs without duplicating endpoi
         name: `glm-custom-${index}`,
         apiKey: testCase.apiKey,
         providerSpecificData: { baseUrl: testCase.baseUrl },
-      })
+      }),
     );
   }
 
@@ -108,14 +108,14 @@ test("GLM import normalizes custom coding models URLs without duplicating endpoi
     for (const connection of connections) {
       const response = await modelsRoute.GET(
         new Request(`http://localhost/api/providers/${connection.id}/models`),
-        { params: { id: connection.id } }
+        { params: { id: connection.id } },
       );
       assert.equal(response.status, 200);
     }
 
     assert.deepEqual(
       seenUrls,
-      cases.map((testCase) => testCase.expectedUrl)
+      cases.map((testCase) => testCase.expectedUrl),
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -153,7 +153,7 @@ test("GLM import falls back to Anthropic model discovery when coding discovery f
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
     assert.deepEqual(await response.json(), {
@@ -191,7 +191,7 @@ test("GLM import preserves auth failures instead of falling back across transpor
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models?refresh=true`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 401);
     assert.deepEqual(seenUrls, ["https://api.z.ai/api/coding/paas/v4/models"]);
@@ -220,7 +220,7 @@ test("GLMT import shares the GLM coding models endpoint and surfaces provider me
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
     assert.deepEqual(await response.json(), {
@@ -254,7 +254,7 @@ test("GLM import uses China coding endpoint when apiRegion is china", async () =
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
     const body = (await response.json()) as any;
@@ -286,7 +286,7 @@ test("GLM China provider import uses the specialized GLM discovery path", async 
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
     const body = (await response.json()) as any;
@@ -316,7 +316,7 @@ test("GLM import defaults to international endpoint when apiRegion is missing", 
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
   } finally {
@@ -343,7 +343,7 @@ test("GLM import defaults to international endpoint when apiRegion is invalid", 
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
   } finally {
@@ -372,7 +372,7 @@ test("GLM import prefers apiKey over accessToken and sends only Authorization Be
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
   } finally {
@@ -399,7 +399,7 @@ test("GLM import falls back to accessToken when apiKey is absent", async () => {
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
   } finally {
@@ -423,7 +423,7 @@ test("GLM import falls back to the local catalog on upstream non-OK status codes
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
     const body = (await response.json()) as any;

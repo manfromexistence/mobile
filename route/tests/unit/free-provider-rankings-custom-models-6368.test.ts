@@ -49,10 +49,7 @@ test("mergeProviderModels: additively includes custom models, de-duping by id", 
     { id: "claude-fable-5-6368", name: "Claude Fable 5" },
   ];
   const merged = rankings.mergeProviderModels(registryModels, customModels);
-  assert.deepEqual(
-    merged.map((m) => m.id).sort(),
-    ["claude-fable-5-6368", "known-model"]
-  );
+  assert.deepEqual(merged.map((m) => m.id).sort(), ["claude-fable-5-6368", "known-model"]);
 });
 
 test("mergeProviderModels: no custom models returns the registry list unchanged", () => {
@@ -89,7 +86,7 @@ test("#6368: a provider whose only scored model is a user-added custom model app
   assert.ok(
     puterUnfiltered!.topModel?.modelId === CUSTOM_MODEL_ID ||
       unfiltered.some((r) => r.id === "puter" && r.modelCount >= 1),
-    "puter ranking must reflect the custom model score"
+    "puter ranking must reflect the custom model score",
   );
 
   const filtered = await rankings.computeFreeProviderRankings(undefined, 100, {
@@ -99,7 +96,7 @@ test("#6368: a provider whose only scored model is a user-added custom model app
   const puterFiltered = filtered.find((r) => r.id === "puter");
   assert.ok(
     puterFiltered,
-    "puter (configured + available, ranked only via its custom model) must survive configuredOnly+availableOnly filters"
+    "puter (configured + available, ranked only via its custom model) must survive configuredOnly+availableOnly filters",
   );
 });
 

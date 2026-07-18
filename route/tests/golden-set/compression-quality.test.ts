@@ -31,7 +31,7 @@ function extractCodeBlocks(text: string): string[] {
 function compressText(text: string): string {
   const result = cavemanCompress(
     { messages: [{ role: "user", content: text }] },
-    { enabled: true, compressRoles: ["user"] }
+    { enabled: true, compressRoles: ["user"] },
   );
   if (!result.compressed) return text;
   const messages = (result.body as { messages?: { content?: string }[] }).messages;
@@ -69,7 +69,7 @@ describe("golden set — compression quality (meaning preservation)", () => {
 
     const preservationRate = preservedPhrases / totalPhrases;
     console.log(
-      `Key phrase preservation rate: ${(preservationRate * 100).toFixed(1)}% (${preservedPhrases}/${totalPhrases})`
+      `Key phrase preservation rate: ${(preservationRate * 100).toFixed(1)}% (${preservedPhrases}/${totalPhrases})`,
     );
 
     if (failures.length > 0) {
@@ -82,7 +82,7 @@ describe("golden set — compression quality (meaning preservation)", () => {
 
     assert.ok(
       preservationRate >= 0.95,
-      `Key phrase preservation rate ${(preservationRate * 100).toFixed(1)}% is below 95% threshold`
+      `Key phrase preservation rate ${(preservationRate * 100).toFixed(1)}% is below 95% threshold`,
     );
   });
 
@@ -104,19 +104,19 @@ describe("golden set — compression quality (meaning preservation)", () => {
 
       if (compressedBlocks.length < originalBlocks.length) {
         console.log(
-          `Lost code blocks: ${originalBlocks.length} → ${compressedBlocks.length} in: "${entry.prompt.substring(0, 60)}..."`
+          `Lost code blocks: ${originalBlocks.length} → ${compressedBlocks.length} in: "${entry.prompt.substring(0, 60)}..."`,
         );
         allPromptsPreservedCode = false;
       }
     }
 
     console.log(
-      `Code blocks: ${totalOriginalBlocks} original → ${totalCompressedBlocks} compressed`
+      `Code blocks: ${totalOriginalBlocks} original → ${totalCompressedBlocks} compressed`,
     );
 
     assert.ok(
       totalCompressedBlocks >= totalOriginalBlocks * 0.95,
-      `Code block count dropped from ${totalOriginalBlocks} to ${totalCompressedBlocks} (below 95%)`
+      `Code block count dropped from ${totalOriginalBlocks} to ${totalCompressedBlocks} (below 95%)`,
     );
   });
 
@@ -130,7 +130,7 @@ describe("golden set — compression quality (meaning preservation)", () => {
       for (const pattern of brokenPatterns) {
         assert.ok(
           !pattern.test(withoutCodeBlocks),
-          `Compressed text contains broken pattern ${pattern} in: ${compressed.substring(0, 100)}`
+          `Compressed text contains broken pattern ${pattern} in: ${compressed.substring(0, 100)}`,
         );
       }
     }

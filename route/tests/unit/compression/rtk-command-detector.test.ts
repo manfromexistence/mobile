@@ -19,27 +19,27 @@ describe("RTK command detector", () => {
   it("detects planned command output classes", () => {
     assert.equal(
       detectCommandType(fixture("git-status-sample.txt"), "git status").type,
-      "git-status"
+      "git-status",
     );
     assert.equal(detectCommandType(fixture("git-diff-sample.txt"), "git diff").type, "git-diff");
     assert.equal(detectCommandType("commit abcdef1\nAuthor: A", "git log").type, "git-log");
     assert.equal(
       detectCommandType(fixture("vitest-output-sample.txt"), "vitest").type,
-      "test-vitest"
+      "test-vitest",
     );
     assert.equal(detectCommandType("FAIL test\nTests: 1 failed", "jest").type, "test-jest");
     assert.equal(detectCommandType("FAILED test_a.py::test_a", "pytest").type, "test-pytest");
     assert.equal(
       detectCommandType(fixture("typescript-errors-sample.txt"), "tsc --noEmit").type,
-      "build-typescript"
+      "build-typescript",
     );
     assert.equal(
       detectCommandType(fixture("eslint-output-sample.txt"), "eslint .").type,
-      "build-eslint"
+      "build-eslint",
     );
     assert.equal(
       detectCommandType("CONTAINER ID   IMAGE   COMMAND", "docker ps").type,
-      "docker-ps"
+      "docker-ps",
     );
     assert.equal(detectCommandType(fixture("json-output-sample.txt")).type, "json-output");
     assert.equal(detectCommandType("Error: boom\n    at fn").type, "generic-error");
@@ -100,11 +100,11 @@ describe("RTK command detector", () => {
   it("detects git-status when command is a composite like 'cd /x && git status'", () => {
     assert.equal(
       detectCommandType(fixture("git-status-sample.txt"), "cd /x && git status").type,
-      "git-status"
+      "git-status",
     );
     assert.equal(
       detectCommandType(fixture("git-diff-sample.txt"), "cd /repo && git diff").type,
-      "git-diff"
+      "git-diff",
     );
   });
 

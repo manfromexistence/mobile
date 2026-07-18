@@ -36,13 +36,13 @@ const SEP = "[▁_]"; // full-width separator or ASCII underscore
 // Match the outer tool-calls block, lazily.
 const OUTER_RE = new RegExp(
   `<${FW}tool${SEP}calls${SEP}begin${FW}>([\\s\\S]*?)<${FW}tool${SEP}calls${SEP}end${FW}>`,
-  "i"
+  "i",
 );
 
 // Match a single tool-call block.
 const INNER_RE = new RegExp(
   `<${FW}tool${SEP}call${SEP}begin${FW}>([\\s\\S]*?)<${FW}tool${SEP}call${SEP}end${FW}>`,
-  "gi"
+  "gi",
 );
 
 // Match an arg separator.
@@ -52,7 +52,7 @@ const ARG_SEP_RE = new RegExp(`<${FW}tool${SEP}sep${FW}>`, "gi");
 // final `>`). Used by the streaming parser to know it must hold back text.
 const PARTIAL_OPEN_MARKER_RE = new RegExp(
   `<${FW}?(?:t(?:o(?:o(?:l(?:${SEP}(?:c(?:a(?:l(?:l(?:s)?(?:${SEP}(?:b(?:e(?:g(?:i(?:n${FW}?>?)?)?)?)?)?)?)?)?)?)?)?)?)?)?)?$`,
-  "i"
+  "i",
 );
 
 export interface ComposerToolCall {

@@ -239,12 +239,12 @@ const CLIENT_VISIBLE_MODEL_NAMES = Object.freeze(
   ANTIGRAVITY_PUBLIC_MODELS.reduce<Record<string, string>>((acc, model) => {
     acc[model.id] = model.name;
     return acc;
-  }, {})
+  }, {}),
 );
 
 const PUBLIC_MODEL_IDS = new Set(ANTIGRAVITY_PUBLIC_MODELS.map((model) => model.id));
 const UPSTREAM_PUBLIC_MODEL_IDS = new Set(
-  ANTIGRAVITY_PUBLIC_MODELS.map((model) => resolveAntigravityModelId(model.id))
+  ANTIGRAVITY_PUBLIC_MODELS.map((model) => resolveAntigravityModelId(model.id)),
 );
 
 export function resolveAntigravityModelId(modelId: string): string {
@@ -296,7 +296,7 @@ export function toClientAntigravityQuotaModelId(modelId: string): string | null 
 
 export function getClientVisibleAntigravityModelName(
   modelId: string,
-  fallbackName?: string
+  fallbackName?: string,
 ): string {
   return CLIENT_VISIBLE_MODEL_NAMES[modelId] || fallbackName || modelId;
 }

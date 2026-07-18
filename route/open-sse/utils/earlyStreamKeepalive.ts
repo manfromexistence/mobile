@@ -32,7 +32,7 @@ const KEEPALIVE_FRAME = ENCODER.encode(": omniroute-keepalive\n\n");
 // Some OpenAI-compatible clients parse every non-empty SSE line as JSON and
 // reject legal SSE comments before their first provider chunk arrives.
 export const OPENAI_KEEPALIVE_FRAME = ENCODER.encode(
-  'data: {"id":"omniroute-keepalive","object":"chat.completion.chunk","created":0,"model":"omniroute","choices":[{"index":0,"delta":{},"finish_reason":null}]}\n\n'
+  'data: {"id":"omniroute-keepalive","object":"chat.completion.chunk","created":0,"model":"omniroute","choices":[{"index":0,"delta":{},"finish_reason":null}]}\n\n',
 );
 // Anthropic Messages-format keepalive: a REAL `ping` SSE event, not a comment.
 // Anthropic clients (Claude Code, the Anthropic SDK) reset their stream/first-token
@@ -43,7 +43,7 @@ export const ANTHROPIC_PING_FRAME = ENCODER.encode('event: ping\ndata: {"type":"
 const ERROR_FRAME = ENCODER.encode(
   `event: error\ndata: ${JSON.stringify({
     error: { message: "Upstream stream failed before completion.", type: "stream_error" },
-  })}\n\n`
+  })}\n\n`,
 );
 
 export type EarlyStreamKeepaliveOptions = {
@@ -68,7 +68,7 @@ type SettledHandler = { ok: true; response: Response } | { ok: false; error: unk
 
 export async function withEarlyStreamKeepalive(
   handlerPromise: Promise<Response>,
-  options: EarlyStreamKeepaliveOptions = {}
+  options: EarlyStreamKeepaliveOptions = {},
 ): Promise<Response> {
   const thresholdMs = Math.max(0, options.thresholdMs ?? 2_000);
   const intervalMs = Math.max(250, options.intervalMs ?? 2_500);
@@ -80,7 +80,7 @@ export async function withEarlyStreamKeepalive(
   // rejection when the threshold timer wins.
   const settled: Promise<SettledHandler> = handlerPromise.then(
     (response) => ({ ok: true as const, response }),
-    (error) => ({ ok: false as const, error })
+    (error) => ({ ok: false as const, error }),
   );
 
   let timer: ReturnType<typeof setTimeout> | undefined;

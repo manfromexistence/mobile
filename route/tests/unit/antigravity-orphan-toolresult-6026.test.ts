@@ -47,19 +47,19 @@ test("#6026: antigravityToOpenAIRequest strips an orphan functionResponse (no pr
         ],
       },
     },
-    false
+    false,
   );
 
   // The orphan tool message must be gone — otherwise the openai→claude step would emit an
   // orphan tool_result block and Anthropic would 400.
   const orphan = result.messages.find(
-    (m: Record<string, unknown>) => m.role === "tool" && m.tool_call_id === "toolu_vrtx_test"
+    (m: Record<string, unknown>) => m.role === "tool" && m.tool_call_id === "toolu_vrtx_test",
   );
   assert.equal(orphan, undefined, "orphan tool_result message must be stripped");
   assert.equal(
     result.messages.some((m: Record<string, unknown>) => m.role === "tool"),
     false,
-    "no orphan tool messages should remain"
+    "no orphan tool messages should remain",
   );
 });
 
@@ -88,12 +88,10 @@ test("#6026: well-formed functionCall/functionResponse pair is preserved (no reg
         ],
       },
     },
-    false
+    false,
   );
 
-  const assistant = result.messages.find(
-    (m: Record<string, unknown>) => m.role === "assistant"
-  );
+  const assistant = result.messages.find((m: Record<string, unknown>) => m.role === "assistant");
   const tool = result.messages.find((m: Record<string, unknown>) => m.role === "tool");
   assert.ok(assistant, "assistant tool_call message must survive");
   assert.ok(tool, "matched tool_result message must survive");
@@ -120,8 +118,8 @@ test("#6026: fixToolPairs removes the exact Anthropic-shape orphan tool_result b
       m.role === "user" &&
       Array.isArray(m.content) &&
       (m.content as Record<string, unknown>[]).some(
-        (b) => b.type === "tool_result" && b.tool_use_id === "toolu_vrtx_test"
-      )
+        (b) => b.type === "tool_result" && b.tool_use_id === "toolu_vrtx_test",
+      ),
   );
   assert.equal(stillHasOrphan, false, "orphan tool_result block must be stripped");
 });

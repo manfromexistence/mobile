@@ -138,7 +138,7 @@ function createReleaseFn(modelStr: string): () => void {
  */
 export function acquire(
   modelStr: string,
-  { maxConcurrency = 3, timeoutMs = 30000, maxQueueSize }: AcquireOptions = {}
+  { maxConcurrency = 3, timeoutMs = 30000, maxQueueSize }: AcquireOptions = {},
 ): Promise<() => void> {
   const gate = getGate(modelStr, maxConcurrency);
 

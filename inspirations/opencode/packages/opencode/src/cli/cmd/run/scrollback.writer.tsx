@@ -1,58 +1,66 @@
-import { createScrollbackWriter } from "@opentui/solid"
-import { TextRenderable, type ColorInput, type ScrollbackRenderContext, type ScrollbackWriter } from "@opentui/core"
-import { Match, Switch, createMemo } from "solid-js"
-import { entryBody, entryFlags } from "./entry.body"
-import { entryColor, entryLook, entrySyntax } from "./scrollback.shared"
-import { toolFiletype, toolStructuredFinal } from "./tool"
-import { RUN_THEME_FALLBACK, transparent, type RunTheme } from "./theme"
-import type { EntryLayout, RunEntryBody, ScrollbackOptions, StreamCommit } from "./types"
+import { createScrollbackWriter } from "@opentui/solid";
+import {
+  TextRenderable,
+  type ColorInput,
+  type ScrollbackRenderContext,
+  type ScrollbackWriter,
+} from "@opentui/core";
+import { Match, Switch, createMemo } from "solid-js";
+import { entryBody, entryFlags } from "./entry.body";
+import { entryColor, entryLook, entrySyntax } from "./scrollback.shared";
+import { toolFiletype, toolStructuredFinal } from "./tool";
+import { RUN_THEME_FALLBACK, transparent, type RunTheme } from "./theme";
+import type { EntryLayout, RunEntryBody, ScrollbackOptions, StreamCommit } from "./types";
 
 function todoText(item: { status: string; content: string }): string {
   if (item.status === "completed") {
-    return `[✓] ${item.content}`
+    return `[✓] ${item.content}`;
   }
 
   if (item.status === "cancelled") {
-    return `~[ ] ${item.content}~`
+    return `~[ ] ${item.content}~`;
   }
 
   if (item.status === "in_progress") {
-    return `[•] ${item.content}`
+    return `[•] ${item.content}`;
   }
 
-  return `[ ] ${item.content}`
+  return `[ ] ${item.content}`;
 }
 
 function todoColor(theme: RunTheme, status: string) {
-  return status === "in_progress" ? theme.block.warning : theme.block.muted
+  return status === "in_progress" ? theme.block.warning : theme.block.muted;
 }
 
 export function entryGroupKey(commit: StreamCommit): string | undefined {
   if (!commit.partID) {
-    return undefined
+    return undefined;
   }
 
   if (toolStructuredFinal(commit)) {
-    return `tool:${commit.partID}:final`
+    return `tool:${commit.partID}:final`;
   }
 
-  return `${commit.kind}:${commit.partID}`
+  return `${commit.kind}:${commit.partID}`;
 }
 
 export function sameEntryGroup(left: StreamCommit | undefined, right: StreamCommit): boolean {
   if (!left) {
-    return false
+    return false;
   }
 
-  const current = entryGroupKey(left)
-  const next = entryGroupKey(right)
-  return Boolean(current && next && current === next)
+  const current = entryGroupKey(left);
+  const next = entryGroupKey(right);
+  return Boolean(current && next && current === next);
 }
 
-export function entryLayout(commit: StreamCommit, body: RunEntryBody = entryBody(commit)): EntryLayout {
+export function entryLayout(
+  commit: StreamCommit,
+  body: RunEntryBody = entryBody(commit),
+): EntryLayout {
   if (commit.kind === "tool") {
     if (body.type === "structured" || body.type === "markdown") {
-      return "block"
+      return "block";
     }
 
     if (
@@ -61,21 +69,21 @@ export function entryLayout(commit: StreamCommit, body: RunEntryBody = entryBody
       body.type === "text" &&
       body.content.includes("\n")
     ) {
-      return "block"
+      return "block";
     }
 
-    return "inline"
+    return "inline";
   }
 
   if (commit.kind === "reasoning") {
-    return "block"
+    return "block";
   }
 
   if (commit.kind === "error") {
-    return "block"
+    return "block";
   }
 
-  return "block"
+  return "block";
 }
 
 export function separatorRows(
@@ -84,67 +92,67 @@ export function separatorRows(
   body: RunEntryBody = entryBody(next),
 ): number {
   if (!prev || sameEntryGroup(prev, next)) {
-    return 0
+    return 0;
   }
 
   if (entryLayout(prev) === "inline" && entryLayout(next, body) === "inline") {
-    return 0
+    return 0;
   }
 
-  return 1
+  return 1;
 }
 
 export function RunEntryContent(props: {
-  commit: StreamCommit
-  body?: RunEntryBody
-  theme?: RunTheme
-  opts?: ScrollbackOptions
-  width?: number
+  commit: StreamCommit;
+  body?: RunEntryBody;
+  theme?: RunTheme;
+  opts?: ScrollbackOptions;
+  width?: number;
 }) {
-  const theme = createMemo(() => props.theme ?? RUN_THEME_FALLBACK)
-  const body = createMemo(() => props.body ?? entryBody(props.commit))
-  const style = createMemo(() => entryLook(props.commit, theme().entry))
-  const syntax = createMemo(() => entrySyntax(props.commit, theme()))
-  const color = createMemo(() => entryColor(props.commit, theme()))
-  const suppressBackgrounds = createMemo(() => props.opts?.suppressBackgrounds === true)
-  const diffBg = (color: ColorInput) => (suppressBackgrounds() ? transparent : color)
-  const streaming = createMemo(() => props.commit.phase === "progress")
+  const theme = createMemo(() => props.theme ?? RUN_THEME_FALLBACK);
+  const body = createMemo(() => props.body ?? entryBody(props.commit));
+  const style = createMemo(() => entryLook(props.commit, theme().entry));
+  const syntax = createMemo(() => entrySyntax(props.commit, theme()));
+  const color = createMemo(() => entryColor(props.commit, theme()));
+  const suppressBackgrounds = createMemo(() => props.opts?.suppressBackgrounds === true);
+  const diffBg = (color: ColorInput) => (suppressBackgrounds() ? transparent : color);
+  const streaming = createMemo(() => props.commit.phase === "progress");
   const text = createMemo(() => {
-    const next = body()
-    return next.type === "text" ? next : undefined
-  })
+    const next = body();
+    return next.type === "text" ? next : undefined;
+  });
   const code = createMemo(() => {
-    const next = body()
-    return next.type === "code" ? next : undefined
-  })
+    const next = body();
+    return next.type === "code" ? next : undefined;
+  });
   const structured = createMemo(() => {
-    const next = body()
-    return next.type === "structured" ? next.snapshot : undefined
-  })
+    const next = body();
+    return next.type === "structured" ? next.snapshot : undefined;
+  });
   const markdown = createMemo(() => {
-    const next = body()
-    return next.type === "markdown" ? next : undefined
-  })
+    const next = body();
+    return next.type === "markdown" ? next : undefined;
+  });
   const code_snapshot = createMemo(() => {
-    const next = structured()
-    return next?.kind === "code" ? next : undefined
-  })
+    const next = structured();
+    return next?.kind === "code" ? next : undefined;
+  });
   const diff_snapshot = createMemo(() => {
-    const next = structured()
-    return next?.kind === "diff" ? next : undefined
-  })
+    const next = structured();
+    return next?.kind === "diff" ? next : undefined;
+  });
   const task_snapshot = createMemo(() => {
-    const next = structured()
-    return next?.kind === "task" ? next : undefined
-  })
+    const next = structured();
+    return next?.kind === "task" ? next : undefined;
+  });
   const todo_snapshot = createMemo(() => {
-    const next = structured()
-    return next?.kind === "todo" ? next : undefined
-  })
+    const next = structured();
+    return next?.kind === "todo" ? next : undefined;
+  });
   const question_snapshot = createMemo(() => {
-    const next = structured()
-    return next?.kind === "question" ? next : undefined
-  })
+    const next = structured();
+    return next?.kind === "question" ? next : undefined;
+  });
 
   return (
     <Switch fallback={null}>
@@ -296,14 +304,14 @@ export function RunEntryContent(props: {
         />
       </Match>
     </Switch>
-  )
+  );
 }
 
 export function entryWriter(input: {
-  commit: StreamCommit
-  body?: RunEntryBody
-  theme?: RunTheme
-  opts?: ScrollbackOptions
+  commit: StreamCommit;
+  body?: RunEntryBody;
+  theme?: RunTheme;
+  opts?: ScrollbackOptions;
 }): ScrollbackWriter {
   return createScrollbackWriter(
     (ctx) => (
@@ -316,7 +324,7 @@ export function entryWriter(input: {
       />
     ),
     entryFlags(input.commit),
-  )
+  );
 }
 
 export function spacerWriter(): ScrollbackWriter {
@@ -330,10 +338,15 @@ export function spacerWriter(): ScrollbackWriter {
     height: 1,
     startOnNewLine: true,
     trailingNewline: true,
-  })
+  });
 }
 
-export function turnSummaryWriter(input: { agent: string; model: string; duration: string; theme: RunTheme }) {
+export function turnSummaryWriter(input: {
+  agent: string;
+  model: string;
+  duration: string;
+  theme: RunTheme;
+}) {
   return createScrollbackWriter(
     () => (
       <box width="100%" height={1}>
@@ -348,5 +361,5 @@ export function turnSummaryWriter(input: { agent: string; model: string; duratio
       </box>
     ),
     { startOnNewLine: true, trailingNewline: false },
-  )
+  );
 }

@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { Spiral, spiralPresets } from '@paper-design/shaders-react';
-import { useControls, button, folder } from 'leva';
-import { setParamsSafe, useResetLevaParams } from '@/helpers/use-reset-leva-params';
-import { usePresetHighlight } from '@/helpers/use-preset-highlight';
-import { cleanUpLevaParams } from '@/helpers/clean-up-leva-params';
-import { toHsla } from '@/helpers/color-utils';
-import { ShaderDetails } from '@/components/shader-details';
-import { spiralDef } from '@/shader-defs/spiral-def';
-import { ShaderContainer } from '@/components/shader-container';
-import { useUrlParams } from '@/helpers/use-url-params';
+import { Spiral, spiralPresets } from "@paper-design/shaders-react";
+import { useControls, button, folder } from "leva";
+import { setParamsSafe, useResetLevaParams } from "@/helpers/use-reset-leva-params";
+import { usePresetHighlight } from "@/helpers/use-preset-highlight";
+import { cleanUpLevaParams } from "@/helpers/clean-up-leva-params";
+import { toHsla } from "@/helpers/color-utils";
+import { ShaderDetails } from "@/components/shader-details";
+import { spiralDef } from "@/shader-defs/spiral-def";
+import { ShaderContainer } from "@/components/shader-container";
+import { useUrlParams } from "@/helpers/use-url-params";
 
 const firstPresetParams = spiralPresets[0].params;
 const { worldWidth, worldHeight, ...defaults } = {
   ...firstPresetParams,
   speed: Math.abs(firstPresetParams.speed),
   reverse: firstPresetParams.speed < 0,
-  style: { background: 'hsla(0, 0%, 0%, 0)' },
+  style: { background: "hsla(0, 0%, 0%, 0)" },
 };
 
 const SpiralWithControls = () => {
@@ -45,7 +45,7 @@ const SpiralWithControls = () => {
       spiralPresets.map(({ name, params: { worldWidth, worldHeight, ...preset } }) => [
         name,
         button(() => setParamsSafe(params, setParams, preset)),
-      ])
+      ]),
     );
     return {
       Presets: folder(presets, { order: -1 }),

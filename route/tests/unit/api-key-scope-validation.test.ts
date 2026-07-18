@@ -12,7 +12,10 @@ import {
   hasSelfUsageScope,
   normalizeSelfServiceScopesForCreate,
 } from "../../src/shared/constants/selfServiceScopes.ts";
-import { createKeySchema, updateKeyPermissionsSchema } from "../../src/shared/validation/schemas.ts";
+import {
+  createKeySchema,
+  updateKeyPermissionsSchema,
+} from "../../src/shared/validation/schemas.ts";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 
@@ -51,6 +54,6 @@ test("api key create route normalizes omitted scopes to self-service usage", () 
   assert.ok(
     source.indexOf("normalizeSelfServiceScopesForCreate(scopes)") <
       source.indexOf("createApiKey(name, machineId"),
-    "create route must add default self-service scope before persistence"
+    "create route must add default self-service scope before persistence",
   );
 });

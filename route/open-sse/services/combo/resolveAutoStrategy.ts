@@ -1,8 +1,5 @@
 import { errorResponse, unavailableResponse } from "../../utils/error.ts";
-import {
-  BudgetExceededError,
-  selectProvider as selectAutoProvider,
-} from "../autoCombo/engine.ts";
+import { BudgetExceededError, selectProvider as selectAutoProvider } from "../autoCombo/engine.ts";
 import {
   resolveRequestModePack,
   parseRequestBudgetCap,
@@ -46,7 +43,7 @@ type BuildAutoCandidates = (
   comboName: string,
   sessionId?: string | null,
   resetWindowConfig?: ResetWindowConfig,
-  resilienceSettings?: ResilienceSettings | null
+  resilienceSettings?: ResilienceSettings | null,
 ) => Promise<AutoProviderCandidate[]>;
 
 export interface ResolveAutoStrategyDeps {
@@ -86,7 +83,7 @@ export type ResolveAutoStrategyResult =
  * `orderedTargets` / `autoUsedExplicitRouter` are returned instead of closed over.
  */
 export async function resolveAutoStrategyOrder(
-  deps: ResolveAutoStrategyDeps
+  deps: ResolveAutoStrategyDeps,
 ): Promise<ResolveAutoStrategyResult> {
   const {
     body,
@@ -111,7 +108,7 @@ export async function resolveAutoStrategyOrder(
     } else {
       log.warn(
         "COMBO",
-        "Auto strategy: all candidates filtered by tool-calling policy, falling back to full pool"
+        "Auto strategy: all candidates filtered by tool-calling policy, falling back to full pool",
       );
     }
   }
@@ -125,7 +122,7 @@ export async function resolveAutoStrategyOrder(
     typeof requestMessages === "string" ||
       (requestMessages !== null && typeof requestMessages === "object")
       ? requestMessages
-      : []
+      : [],
   );
   if (estimatedInputTokens > 0) {
     const filteredByContext = eligibleTargets.filter((target) => {
@@ -136,13 +133,13 @@ export async function resolveAutoStrategyOrder(
     if (filteredByContext.length > 0) {
       log.debug?.(
         "COMBO",
-        `Auto strategy: context-window filter kept ${filteredByContext.length}/${eligibleTargets.length} candidates (est. ${estimatedInputTokens} tokens)`
+        `Auto strategy: context-window filter kept ${filteredByContext.length}/${eligibleTargets.length} candidates (est. ${estimatedInputTokens} tokens)`,
       );
       eligibleTargets = filteredByContext;
     } else {
       log.warn(
         "COMBO",
-        `Auto strategy: all candidates filtered by context-window policy (est. ${estimatedInputTokens} tokens), falling back to full pool`
+        `Auto strategy: all candidates filtered by context-window policy (est. ${estimatedInputTokens} tokens), falling back to full pool`,
       );
       // eligibleTargets intentionally unchanged — same fallback contract as tool-calling filter
     }
@@ -180,12 +177,16 @@ export async function resolveAutoStrategyOrder(
   const budgetFallback = requestBudgetFallback ?? configBudgetFallback;
   const requestModePack = resolveRequestModePack(relayOptions?.mode);
   const modePack = requestModePack.override ? requestModePack.modePack : configModePack;
-  if (requestModePack.override || requestBudgetCap !== undefined || requestBudgetFallback !== undefined) {
+  if (
+    requestModePack.override ||
+    requestBudgetCap !== undefined ||
+    requestBudgetFallback !== undefined
+  ) {
     log.debug?.(
       "COMBO",
       `Auto strategy: per-request controls applied (mode=${
         requestModePack.override ? (requestModePack.modePack ?? "balanced") : "—"
-      }, budgetCap=${requestBudgetCap ?? "—"}, budgetFallback=${requestBudgetFallback ?? "—"})`
+      }, budgetCap=${requestBudgetCap ?? "—"}, budgetFallback=${requestBudgetFallback ?? "—"})`,
     );
   }
 
@@ -213,16 +214,16 @@ export async function resolveAutoStrategyOrder(
     combo.name,
     relayOptions?.sessionId,
     resetWindowConfig,
-    autoCandidateResilienceSettings
+    autoCandidateResilienceSettings,
   );
   const routableCandidates = candidates.filter(
-    (candidate) => candidate.quotaCutoffBlocked !== true
+    (candidate) => candidate.quotaCutoffBlocked !== true,
   );
   const quotaBlockedCount = candidates.length - routableCandidates.length;
   if (quotaBlockedCount > 0) {
     log.info(
       "COMBO",
-      `Auto strategy: quota cutoff skipped ${quotaBlockedCount}/${candidates.length} account candidates`
+      `Auto strategy: quota cutoff skipped ${quotaBlockedCount}/${candidates.length} account candidates`,
     );
   }
   // G2: Register candidates so chatCore can mark quotaSoftPenalty via setCandidateQuotaSoftPenalty.
@@ -231,7 +232,7 @@ export async function resolveAutoStrategyOrder(
     return {
       earlyResponse: unavailableResponse(
         429,
-        "All auto strategy candidates are below configured quota cutoffs"
+        "All auto strategy candidates are below configured quota cutoffs",
       ),
     };
   }
@@ -251,7 +252,7 @@ export async function resolveAutoStrategyOrder(
             estimatedInputTokens,
             sla: slaPolicy,
           },
-          routingStrategy
+          routingStrategy,
         );
         selectedProvider = decision.provider;
         selectedModel = decision.model;
@@ -260,7 +261,7 @@ export async function resolveAutoStrategyOrder(
       } catch (err) {
         log.warn(
           "COMBO",
-          `Auto strategy '${routingStrategy}' failed (${err?.message || "unknown"}), falling back to rules`
+          `Auto strategy '${routingStrategy}' failed (${err?.message || "unknown"}), falling back to rules`,
         );
       }
     }
@@ -281,7 +282,7 @@ export async function resolveAutoStrategyOrder(
             explorationRate,
           },
           routableCandidates,
-          taskType
+          taskType,
         );
       } catch (err) {
         // #3470: `budgetFallback: "strict"` refuses to select when every candidate
@@ -305,7 +306,7 @@ export async function resolveAutoStrategyOrder(
         ? buildComplexityRoutingHint(
             eligibleTargets.filter((t) => t.kind === "model"),
             body,
-            log
+            log,
           )
         : null;
 
@@ -314,7 +315,7 @@ export async function resolveAutoStrategyOrder(
       routableCandidates,
       taskType,
       weights,
-      autoManifestHint
+      autoManifestHint,
     );
     const rankedTargets = scoredTargets.map((entry) => entry.target);
     const selectedTarget =
@@ -329,7 +330,7 @@ export async function resolveAutoStrategyOrder(
       return {
         earlyResponse: unavailableResponse(
           429,
-          "No auto strategy targets remained after quota cutoff filtering"
+          "No auto strategy targets remained after quota cutoff filtering",
         ),
       };
     }
@@ -340,13 +341,13 @@ export async function resolveAutoStrategyOrder(
     // final fallback instead of vanishing — the hard cutoff only de-prioritizes.
     orderedTargets = dedupeTargetsByExecutionKey(
       [selectedTarget, ...rankedTargets, ...eligibleTargets].filter(
-        (entry): entry is ResolvedComboTarget => entry !== undefined && entry !== null
-      )
+        (entry): entry is ResolvedComboTarget => entry !== undefined && entry !== null,
+      ),
     );
 
     log.info(
       "COMBO",
-      `Auto selection: ${selectedTarget?.modelStr || `${selectedProvider}/${selectedModel}`} | intent=${intent} task=${taskType} | strategy=${routingStrategy} | ${selectionReason}`
+      `Auto selection: ${selectedTarget?.modelStr || `${selectedProvider}/${selectedModel}`} | intent=${intent} task=${taskType} | strategy=${routingStrategy} | ${selectionReason}`,
     );
   } else {
     log.warn("COMBO", "Auto strategy has no candidates, keeping default ordering");

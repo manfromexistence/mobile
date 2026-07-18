@@ -77,9 +77,7 @@ export default function ColorConverter() {
     }
   };
 
-  const handleColorPicker = (
-    e: React.ChangeEvent<HTMLInputElement> | string,
-  ) => {
+  const handleColorPicker = (e: React.ChangeEvent<HTMLInputElement> | string) => {
     if (typeof e === "string") {
       setHexValue(e);
     } else {
@@ -346,10 +344,7 @@ export default function ColorConverter() {
                 setHexValue={setHexValue}
               />
               {/* All Color Formats Section */}
-              <AllColorFormats
-                colorFormats={colorFormats}
-                formatHandlers={formatHandlers}
-              />
+              <AllColorFormats colorFormats={colorFormats} formatHandlers={formatHandlers} />
             </div>
             <div>
               {/* Image Color Picker Section */}

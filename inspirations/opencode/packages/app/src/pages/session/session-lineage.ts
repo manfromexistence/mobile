@@ -1,13 +1,16 @@
-import { createEffect, createMemo, createSignal, on, onCleanup } from "solid-js"
-import { sessionNotFoundError } from "@/utils/server-errors"
+import { createEffect, createMemo, createSignal, on, onCleanup } from "solid-js";
+import { sessionNotFoundError } from "@/utils/server-errors";
 
-type LineageStore<T> = { peek: (id: string) => T | undefined; resolve: (id: string) => Promise<unknown> }
+type LineageStore<T> = {
+  peek: (id: string) => T | undefined;
+  resolve: (id: string) => Promise<unknown>;
+};
 
 type Resolution<T> = { id: string; store: LineageStore<T> } & (
   | { state: "pending" }
   | { state: "settled" }
   | { state: "failed"; failure: unknown }
-)
+);
 
 // Reactive session lineage for the target session route, read from the sync store.
 // All session tabs on a server share one route instance, so the target session ID
@@ -26,44 +29,44 @@ type Resolution<T> = { id: string; store: LineageStore<T> } & (
 // session that simply has not resolved yet. Resolve failures rethrow on read so
 // the enclosing SessionRouteErrorBoundary renders the scoped session error.
 export function createSessionLineage<T>(sessionID: () => string, lineage: () => LineageStore<T>) {
-  const cached = createMemo(() => lineage().peek(sessionID()))
-  const [status, setStatus] = createSignal<Resolution<T>>()
+  const cached = createMemo(() => lineage().peek(sessionID()));
+  const [status, setStatus] = createSignal<Resolution<T>>();
 
   createEffect(
     on([sessionID, lineage] as const, ([id, store]) => {
-      let stale = false
+      let stale = false;
       onCleanup(() => {
-        stale = true
-      })
+        stale = true;
+      });
       if (cached()) {
-        setStatus({ id, store, state: "settled" })
-        return
+        setStatus({ id, store, state: "settled" });
+        return;
       }
-      setStatus({ id, store, state: "pending" })
+      setStatus({ id, store, state: "pending" });
       store
         .resolve(id)
         .then(() => {
-          if (!stale) setStatus({ id, store, state: "settled" })
+          if (!stale) setStatus({ id, store, state: "settled" });
         })
         .catch((failure) => {
-          if (!stale) setStatus({ id, store, state: "failed", failure })
-        })
+          if (!stale) setStatus({ id, store, state: "failed", failure });
+        });
     }),
-  )
+  );
 
   return createMemo(() => {
-    const id = sessionID()
-    const value = cached()
-    if (value) return value
-    const state = status()
-    if (state?.id !== id || state.store !== lineage()) return undefined
-    if (state.state === "failed") throw state.failure
+    const id = sessionID();
+    const value = cached();
+    if (value) return value;
+    const state = status();
+    if (state?.id !== id || state.store !== lineage()) return undefined;
+    if (state.state === "failed") throw state.failure;
     // The viewed session is pinned (DirectoryDataProvider, directory-layout.tsx)
     // and pinned lineages are exempt from cache pruning, so a lineage missing
     // after settlement means the session (or an ancestor) was deleted, possibly
     // by another client. Match the resolve error so the boundary shows the
     // session not found fallback.
-    if (state.state === "settled") throw sessionNotFoundError(id)
-    return undefined
-  })
+    if (state.state === "settled") throw sessionNotFoundError(id);
+    return undefined;
+  });
 }

@@ -1,11 +1,11 @@
-import { DEFAULT_THEMES } from '@pierre/diffs';
-import type { PreloadMultiFileDiffOptions } from '@pierre/diffs/ssr';
+import { DEFAULT_THEMES } from "@pierre/diffs";
+import type { PreloadMultiFileDiffOptions } from "@pierre/diffs/ssr";
 
-import { CustomScrollbarCSS } from '@/components/CustomScrollbarCSS';
+import { CustomScrollbarCSS } from "@/components/CustomScrollbarCSS";
 
 export const SPLIT_UNIFIED: PreloadMultiFileDiffOptions<undefined> = {
   oldFile: {
-    name: 'utils.ts',
+    name: "utils.ts",
     contents: `import { getTokenStyleObject, stringifyTokenStyle } from 'shiki';
 
 import type {
@@ -76,7 +76,7 @@ export function createHunkSeparator() {
 `,
   },
   newFile: {
-    name: 'code_utils.ts',
+    name: "code_utils.ts",
     contents: `import { getTokenStyleObject, stringifyTokenStyle } from 'shiki';
 
 import type {
@@ -145,8 +145,8 @@ export function createHunkSeparator() {
   },
   options: {
     theme: DEFAULT_THEMES,
-    themeType: 'dark',
-    diffStyle: 'split',
+    themeType: "dark",
+    diffStyle: "split",
     unsafeCSS: CustomScrollbarCSS,
   },
 };

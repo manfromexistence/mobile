@@ -18,7 +18,7 @@ export default function ThemeToggle({
       "text-text-muted",
       "hover:bg-black/5",
       "hover:text-text-main",
-      "transition-colors"
+      "transition-colors",
     ),
     card: cn(
       "flex items-center justify-center size-11 rounded-full",
@@ -28,7 +28,7 @@ export default function ThemeToggle({
       "backdrop-blur-md shadow-sm hover:shadow-md",
       "text-text-muted-light hover:text-primary",
       "hover:text-primary",
-      "transition-all group"
+      "transition-all group",
     ),
   };
 
@@ -42,7 +42,7 @@ export default function ThemeToggle({
       <span
         className={cn(
           "material-symbols-outlined text-[22px]",
-          variant === "card" && "transition-transform duration-300 group-hover:rotate-12"
+          variant === "card" && "transition-transform duration-300 group-hover:rotate-12",
         )}
       >
         {isDark ? "light_mode" : "dark_mode"}

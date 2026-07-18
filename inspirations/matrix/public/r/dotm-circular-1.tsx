@@ -24,15 +24,19 @@ export function DotmCircular1({
   ...rest
 }: DotmCircular1Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
   const animPhase = useCyclePhase({
     active: !reducedMotion && matrixPhase !== "idle",
     cycleMsBase: 1700,
-    speed
+    speed,
   });
 
   const animationResolver = useMemo<DotAnimationResolver>(() => {

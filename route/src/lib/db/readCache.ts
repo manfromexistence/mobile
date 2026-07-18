@@ -91,7 +91,7 @@ export async function getCachedPricing(): Promise<Record<string, unknown>> {
  * Used in request hot-paths (usageStats, callLogs, usageHistory).
  */
 export async function getCachedProviderConnections(
-  filter?: Record<string, unknown>
+  filter?: Record<string, unknown>,
 ): Promise<unknown[]> {
   // Only cache the unfiltered "all connections" query (most common)
   if (filter && Object.keys(filter).length > 0) {
@@ -119,7 +119,7 @@ const lkgpCache = new TTLCache<LKGPRecordCache | null>(SETTINGS_TTL_MS);
 
 export async function getCachedLKGP(
   comboName: string,
-  modelId: string
+  modelId: string,
 ): Promise<LKGPRecordCache | null> {
   const cacheKey = `lkgp:${comboName}:${modelId}`;
   const cached = lkgpCache.get(cacheKey);
@@ -135,7 +135,7 @@ export async function setCachedLKGP(
   comboName: string,
   modelId: string,
   providerId: string,
-  connectionId?: string
+  connectionId?: string,
 ): Promise<void> {
   const { setLKGP } = await import("@/lib/db/settings");
   await setLKGP(comboName, modelId, providerId, connectionId);

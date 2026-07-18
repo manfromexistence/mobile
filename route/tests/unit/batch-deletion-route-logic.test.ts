@@ -10,7 +10,7 @@ const TERMINAL = ["completed", "failed", "cancelled", "expired"];
 function scopeCheck(
   isSessionAuth: boolean,
   recordApiKeyId: string | null | undefined,
-  apiKeyId: string | null
+  apiKeyId: string | null,
 ): boolean {
   if (isSessionAuth) return true;
   if (recordApiKeyId === null || recordApiKeyId === undefined) return apiKeyId !== null;

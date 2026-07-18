@@ -1,11 +1,7 @@
-import type {
-  PreparedPath,
-  SegmentSortKey,
-  SegmentTable,
-} from './internal-types';
-import { PATH_STORE_NODE_KIND_DIRECTORY } from './internal-types';
-import { PATH_STORE_NODE_KIND_FILE } from './internal-types';
-import type { PathStoreCompareEntry } from './public-types';
+import type { PreparedPath, SegmentSortKey, SegmentTable } from "./internal-types";
+import { PATH_STORE_NODE_KIND_DIRECTORY } from "./internal-types";
+import { PATH_STORE_NODE_KIND_FILE } from "./internal-types";
+import type { PathStoreCompareEntry } from "./public-types";
 
 function isDigitCode(characterCode: number): boolean {
   return characterCode >= 48 && characterCode <= 57;
@@ -56,7 +52,7 @@ export function createSegmentSortKey(value: string): SegmentSortKey {
 
 function compareNaturalTokens(
   leftTokens: readonly (number | string)[],
-  rightTokens: readonly (number | string)[]
+  rightTokens: readonly (number | string)[],
 ): number {
   const tokenCount = Math.min(leftTokens.length, rightTokens.length);
 
@@ -68,7 +64,7 @@ function compareNaturalTokens(
       continue;
     }
 
-    if (typeof leftToken === 'number' && typeof rightToken === 'number') {
+    if (typeof leftToken === "number" && typeof rightToken === "number") {
       return leftToken < rightToken ? -1 : 1;
     }
 
@@ -86,18 +82,15 @@ function compareNaturalTokens(
   return 0;
 }
 
-export function compareSegmentSortKeys(
-  leftKey: SegmentSortKey,
-  rightKey: SegmentSortKey
-): number {
+export function compareSegmentSortKeys(leftKey: SegmentSortKey, rightKey: SegmentSortKey): number {
   // Segments without numeric runs produce a single string token, so they can
   // compare directly on the cached lower-case string without walking the token
   // arrays or coercing tokens back through String().
   if (
     leftKey.tokens.length === 1 &&
     rightKey.tokens.length === 1 &&
-    typeof leftKey.tokens[0] === 'string' &&
-    typeof rightKey.tokens[0] === 'string'
+    typeof leftKey.tokens[0] === "string" &&
+    typeof rightKey.tokens[0] === "string"
   ) {
     if (leftKey.lowerValue === rightKey.lowerValue) {
       return 0;
@@ -121,7 +114,7 @@ export function compareSegmentSortKeys(
 function compareSegmentValuesWithSortKeyLookup(
   left: string,
   right: string,
-  getSortKey: (value: string) => SegmentSortKey
+  getSortKey: (value: string) => SegmentSortKey,
 ): number {
   const leftKey = getSortKey(left);
   const rightKey = getSortKey(right);
@@ -138,30 +131,21 @@ function compareSegmentValuesWithSortKeyLookup(
 }
 
 export function compareSegmentValues(left: string, right: string): number {
-  return compareSegmentValuesWithSortKeyLookup(
-    left,
-    right,
-    createSegmentSortKey
-  );
+  return compareSegmentValuesWithSortKeyLookup(left, right, createSegmentSortKey);
 }
 
-function getKindAtDepth(
-  entry: PreparedPath | PathStoreCompareEntry,
-  depth: number
-): number {
+function getKindAtDepth(entry: PreparedPath | PathStoreCompareEntry, depth: number): number {
   const isTerminalSegment = depth === entry.segments.length - 1;
   if (!isTerminalSegment) {
     return PATH_STORE_NODE_KIND_DIRECTORY;
   }
 
-  return entry.isDirectory
-    ? PATH_STORE_NODE_KIND_DIRECTORY
-    : PATH_STORE_NODE_KIND_FILE;
+  return entry.isDirectory ? PATH_STORE_NODE_KIND_DIRECTORY : PATH_STORE_NODE_KIND_FILE;
 }
 
 function comparePreparedEntries(
   left: PreparedPath | PathStoreCompareEntry,
-  right: PreparedPath | PathStoreCompareEntry
+  right: PreparedPath | PathStoreCompareEntry,
 ): number {
   const sharedDepth = Math.min(left.segments.length, right.segments.length);
 
@@ -193,17 +177,14 @@ function comparePreparedEntries(
   return left.isDirectory ? -1 : 1;
 }
 
-export function comparePreparedPaths(
-  left: PreparedPath,
-  right: PreparedPath
-): number {
+export function comparePreparedPaths(left: PreparedPath, right: PreparedPath): number {
   return comparePreparedEntries(left, right);
 }
 
 export function comparePreparedPathsWithCachedSortKeys(
   left: PreparedPath,
   right: PreparedPath,
-  cache: Map<string, SegmentSortKey>
+  cache: Map<string, SegmentSortKey>,
 ): number {
   const getCachedSortKey = (value: string): SegmentSortKey => {
     const existingKey = cache.get(value);
@@ -231,11 +212,7 @@ export function comparePreparedPathsWithCachedSortKeys(
       return leftKind === PATH_STORE_NODE_KIND_DIRECTORY ? -1 : 1;
     }
 
-    return compareSegmentValuesWithSortKeyLookup(
-      leftSegment,
-      rightSegment,
-      getCachedSortKey
-    );
+    return compareSegmentValuesWithSortKeyLookup(leftSegment, rightSegment, getCachedSortKey);
   }
 
   if (left.segments.length !== right.segments.length) {
@@ -251,15 +228,12 @@ export function comparePreparedPathsWithCachedSortKeys(
 
 export function compareCompareEntries(
   left: PathStoreCompareEntry,
-  right: PathStoreCompareEntry
+  right: PathStoreCompareEntry,
 ): number {
   return comparePreparedEntries(left, right);
 }
 
-export function getSegmentSortKey(
-  segmentTable: SegmentTable,
-  segmentId: number
-): SegmentSortKey {
+export function getSegmentSortKey(segmentTable: SegmentTable, segmentId: number): SegmentSortKey {
   const existingKey = segmentTable.sortKeyById[segmentId];
   if (existingKey !== undefined) {
     return existingKey;

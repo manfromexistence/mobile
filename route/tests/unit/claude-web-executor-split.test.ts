@@ -31,7 +31,7 @@ test("transformToClaude builds a Claude-web payload with model + tools", async (
   const { transformToClaude } = await import("../../open-sse/executors/claude-web/payload.ts");
   const payload = transformToClaude(
     { messages: [{ role: "user", content: "hi" }] },
-    "claude-sonnet-4-6"
+    "claude-sonnet-4-6",
   );
   assert.equal(typeof payload, "object");
   assert.ok(Array.isArray(payload.tools));

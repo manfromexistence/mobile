@@ -169,7 +169,7 @@ export class PolicyEngine {
         case "access":
           if (policy.actions?.block_model) {
             const blocked = policy.actions.block_model.some((pattern) =>
-              globMatch(pattern, context.model)
+              globMatch(pattern, context.model),
             );
             if (blocked) {
               result.allowed = false;

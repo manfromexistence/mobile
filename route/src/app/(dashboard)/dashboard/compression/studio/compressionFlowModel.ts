@@ -194,7 +194,7 @@ export interface InFlightCompressionRun {
 /** Append a step to the in-flight run; a new requestId starts a fresh run (latest wins). */
 export function appendInFlightStep(
   state: InFlightCompressionRun | null,
-  step: CompressionStepPayload
+  step: CompressionStepPayload,
 ): InFlightCompressionRun {
   if (state && state.requestId === step.requestId) {
     return { requestId: state.requestId, steps: [...state.steps, step] };
@@ -205,7 +205,7 @@ export function appendInFlightStep(
 /** Clear the in-flight run when its run completes (otherwise leave it untouched). */
 export function clearInFlightOnComplete(
   state: InFlightCompressionRun | null,
-  completedRequestId: string
+  completedRequestId: string,
 ): InFlightCompressionRun | null {
   return state && state.requestId === completedRequestId ? null : state;
 }

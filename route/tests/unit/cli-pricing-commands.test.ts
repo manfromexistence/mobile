@@ -66,7 +66,7 @@ test("runPricingList busca /api/pricing com filtros", async () => {
 
   const { runPricingList } = await import("../../bin/cli/commands/pricing.mjs");
   await captureStdout(() =>
-    runPricingList({ provider: "anthropic", model: "claude-3", limit: 50 }, makeCmd() as any)
+    runPricingList({ provider: "anthropic", model: "claude-3", limit: 50 }, makeCmd() as any),
   );
 
   globalThis.fetch = origFetch;

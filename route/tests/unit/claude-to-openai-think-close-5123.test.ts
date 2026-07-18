@@ -39,23 +39,30 @@ test("thinking block followed by tool_use: </think> must NOT appear in any conte
 
   // message_start
   allResults.push(
-    claudeToOpenAIResponse({ type: "message_start", message: { id: "msg_1", model: "claude-3-7-sonnet" } }, state)
+    claudeToOpenAIResponse(
+      { type: "message_start", message: { id: "msg_1", model: "claude-3-7-sonnet" } },
+      state,
+    ),
   );
 
   // thinking block open
   allResults.push(
     claudeToOpenAIResponse(
       { type: "content_block_start", index: 0, content_block: { type: "thinking", thinking: "" } },
-      state
-    )
+      state,
+    ),
   );
 
   // thinking delta
   allResults.push(
     claudeToOpenAIResponse(
-      { type: "content_block_delta", index: 0, delta: { type: "thinking_delta", thinking: "Let me think..." } },
-      state
-    )
+      {
+        type: "content_block_delta",
+        index: 0,
+        delta: { type: "thinking_delta", thinking: "Let me think..." },
+      },
+      state,
+    ),
   );
 
   // thinking block stop — currently emits </think> unconditionally (the bug)
@@ -69,16 +76,20 @@ test("thinking block followed by tool_use: </think> must NOT appear in any conte
         index: 1,
         content_block: { type: "tool_use", id: "toolu_01", name: "get_weather" },
       },
-      state
-    )
+      state,
+    ),
   );
 
   // tool arguments delta
   allResults.push(
     claudeToOpenAIResponse(
-      { type: "content_block_delta", index: 1, delta: { type: "input_json_delta", partial_json: '{"city":"Paris"}' } },
-      state
-    )
+      {
+        type: "content_block_delta",
+        index: 1,
+        delta: { type: "input_json_delta", partial_json: '{"city":"Paris"}' },
+      },
+      state,
+    ),
   );
 
   // tool_use block stop
@@ -88,20 +99,20 @@ test("thinking block followed by tool_use: </think> must NOT appear in any conte
   allResults.push(
     claudeToOpenAIResponse(
       { type: "message_delta", delta: { stop_reason: "tool_use" }, usage: { output_tokens: 42 } },
-      state
-    )
+      state,
+    ),
   );
 
   const chunks = collectChunks(allResults);
 
   const spuriousThinkClose = chunks.filter(
-    (chunk: any) => chunk?.choices?.[0]?.delta?.content === "</think>"
+    (chunk: any) => chunk?.choices?.[0]?.delta?.content === "</think>",
   );
 
   assert.equal(
     spuriousThinkClose.length,
     0,
-    `Expected NO chunk with delta.content === "</think>" before tool_calls, but found ${spuriousThinkClose.length}:\n${JSON.stringify(spuriousThinkClose, null, 2)}`
+    `Expected NO chunk with delta.content === "</think>" before tool_calls, but found ${spuriousThinkClose.length}:\n${JSON.stringify(spuriousThinkClose, null, 2)}`,
   );
 });
 
@@ -115,23 +126,30 @@ test("thinking block followed by text: </think> IS still emitted (preserves #463
 
   // message_start
   allResults.push(
-    claudeToOpenAIResponse({ type: "message_start", message: { id: "msg_2", model: "claude-3-7-sonnet" } }, state)
+    claudeToOpenAIResponse(
+      { type: "message_start", message: { id: "msg_2", model: "claude-3-7-sonnet" } },
+      state,
+    ),
   );
 
   // thinking block open
   allResults.push(
     claudeToOpenAIResponse(
       { type: "content_block_start", index: 0, content_block: { type: "thinking", thinking: "" } },
-      state
-    )
+      state,
+    ),
   );
 
   // thinking delta
   allResults.push(
     claudeToOpenAIResponse(
-      { type: "content_block_delta", index: 0, delta: { type: "thinking_delta", thinking: "Plan..." } },
-      state
-    )
+      {
+        type: "content_block_delta",
+        index: 0,
+        delta: { type: "thinking_delta", thinking: "Plan..." },
+      },
+      state,
+    ),
   );
 
   // thinking block stop
@@ -141,16 +159,16 @@ test("thinking block followed by text: </think> IS still emitted (preserves #463
   allResults.push(
     claudeToOpenAIResponse(
       { type: "content_block_start", index: 1, content_block: { type: "text", text: "" } },
-      state
-    )
+      state,
+    ),
   );
 
   // text delta (this should trigger the deferred </think> flush)
   allResults.push(
     claudeToOpenAIResponse(
       { type: "content_block_delta", index: 1, delta: { type: "text_delta", text: "Hello!" } },
-      state
-    )
+      state,
+    ),
   );
 
   // text block stop
@@ -160,18 +178,18 @@ test("thinking block followed by text: </think> IS still emitted (preserves #463
   allResults.push(
     claudeToOpenAIResponse(
       { type: "message_delta", delta: { stop_reason: "end_turn" }, usage: { output_tokens: 10 } },
-      state
-    )
+      state,
+    ),
   );
 
   const chunks = collectChunks(allResults);
 
   const hasThinkClose = chunks.some(
-    (chunk: any) => chunk?.choices?.[0]?.delta?.content === "</think>"
+    (chunk: any) => chunk?.choices?.[0]?.delta?.content === "</think>",
   );
 
   assert.ok(
     hasThinkClose,
-    `Expected a chunk with delta.content === "</think>" in a pure-text thinking response, but none found.\nAll chunks: ${JSON.stringify(chunks, null, 2)}`
+    `Expected a chunk with delta.content === "</think>" in a pure-text thinking response, but none found.\nAll chunks: ${JSON.stringify(chunks, null, 2)}`,
   );
 });

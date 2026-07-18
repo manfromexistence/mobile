@@ -62,7 +62,7 @@ export async function resolveSingleImageComboTarget(name: string): Promise<strin
     const targets = resolveComboTargets(combo as never, allCombos as never);
     const first = targets.find(
       (t: { modelStr?: unknown }) =>
-        typeof t?.modelStr === "string" && (t.modelStr as string).trim()
+        typeof t?.modelStr === "string" && (t.modelStr as string).trim(),
     );
     return (first?.modelStr as string) ?? null;
   } catch {

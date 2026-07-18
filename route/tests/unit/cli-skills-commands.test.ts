@@ -146,7 +146,7 @@ test("runSkillsExecute envia POST com skillId e input", async () => {
 
   const { runSkillsExecute } = await import("../../bin/cli/commands/skills.mjs");
   await captureStdout(() =>
-    runSkillsExecute("sk_pdf", { input: '{"file":"doc.pdf"}' }, makeCmd() as any)
+    runSkillsExecute("sk_pdf", { input: '{"file":"doc.pdf"}' }, makeCmd() as any),
   );
 
   globalThis.fetch = origFetch;
@@ -165,7 +165,7 @@ test("runSkillsExecutions filtra por skill e status", async () => {
 
   const { runSkillsExecutions } = await import("../../bin/cli/commands/skills.mjs");
   const out = await captureStdout(() =>
-    runSkillsExecutions({ skill: "sk_pdf", limit: 20, status: "completed" }, makeCmd() as any)
+    runSkillsExecutions({ skill: "sk_pdf", limit: 20, status: "completed" }, makeCmd() as any),
   );
 
   globalThis.fetch = origFetch;
@@ -185,7 +185,7 @@ test("runMarketplaceSearch retorna pacotes com query e filtros", async () => {
 
   const { runMarketplaceSearch } = await import("../../bin/cli/commands/skills.mjs");
   const out = await captureStdout(() =>
-    runMarketplaceSearch("pdf", { limit: 30, category: "documents" }, makeCmd() as any)
+    runMarketplaceSearch("pdf", { limit: 30, category: "documents" }, makeCmd() as any),
   );
 
   globalThis.fetch = origFetch;
@@ -209,8 +209,8 @@ test("runMarketplaceInstall --yes envia POST sem confirmação", async () => {
     runMarketplaceInstall(
       "pkg_pdf",
       { yes: true, version: "latest", enable: true },
-      makeCmd() as any
-    )
+      makeCmd() as any,
+    ),
   );
 
   globalThis.fetch = origFetch;

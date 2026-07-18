@@ -16,10 +16,7 @@ interface ShadowGalleryProps {
   isDarkMode: boolean;
 }
 
-export default function ShadowGallery({
-  applyPreset,
-  isDarkMode,
-}: ShadowGalleryProps) {
+export default function ShadowGallery({ applyPreset, isDarkMode }: ShadowGalleryProps) {
   const [viewAll, setViewAll] = useState(false);
 
   return (
@@ -61,34 +58,30 @@ export default function ShadowGallery({
         {!viewAll && (
           <div className="absolute bottom-0 left-0 z-10 grid h-52 w-full place-content-center bg-gradient-to-t from-42% from-white dark:from-black" />
         )}
-        {(viewAll ? preBuiltShadows : preBuiltShadows.slice(0, 10)).map(
-          (shadow, _index) => (
-            <motion.div
-              key={shadow.id}
+        {(viewAll ? preBuiltShadows : preBuiltShadows.slice(0, 10)).map((shadow, _index) => (
+          <motion.div
+            key={shadow.id}
+            className={cn("group group relative cursor-pointer rounded-md p-2 lg:p-5 2xl:p-6")}
+            onClick={() => applyPreset(shadow)}
+          >
+            <CopyToClipboard
+              classname="top-6 right-7 opacity-0 group-hover:opacity-100 transition-opacity"
+              text={shadow.tailwind}
+            />
+            <div
               className={cn(
-                "group group relative cursor-pointer rounded-md p-2 lg:p-5 2xl:p-6",
-              )}
-              onClick={() => applyPreset(shadow)}
-            >
-              <CopyToClipboard
-                classname="top-6 right-7 opacity-0 group-hover:opacity-100 transition-opacity"
-                text={shadow.tailwind}
-              />
-              <div
-                className={cn(
-                  "relative flex aspect-square w-full flex-col items-center justify-center rounded-lg text-center text-neutral-700 text-xs transition-transform group-hover:scale-105 dark:bg-neutral-950 dark:text-neutral-400",
-                  isDarkMode
+                "relative flex aspect-square w-full flex-col items-center justify-center rounded-lg text-center text-neutral-700 text-xs transition-transform group-hover:scale-105 dark:bg-neutral-950 dark:text-neutral-400",
+                isDarkMode
+                  ? shadow.darkTailwind
                     ? shadow.darkTailwind
-                      ? shadow.darkTailwind
-                      : shadow.tailwind
-                    : shadow.tailwind,
-                )}
-              >
-                {shadow.name}
-              </div>
-            </motion.div>
-          ),
-        )}
+                    : shadow.tailwind
+                  : shadow.tailwind,
+              )}
+            >
+              {shadow.name}
+            </div>
+          </motion.div>
+        ))}
       </div>
     </>
   );

@@ -20,8 +20,9 @@ process.env.DATA_DIR = TEST_DATA_DIR;
 const core = await import("../../../src/lib/db/core.ts");
 core.resetDbInstance();
 
-const { getDefaultCompressionCombo, setEngineInDefaultCombo, getCompressionCombo } =
-  await import("../../../src/lib/db/compressionCombos.ts");
+const { getDefaultCompressionCombo, setEngineInDefaultCombo, getCompressionCombo } = await import(
+  "../../../src/lib/db/compressionCombos.ts"
+);
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
@@ -71,14 +72,14 @@ test("Fix #1: normalizePipeline passes through new engine IDs (headroom, session
   assert.ok(engineIds.includes("headroom"), `expected headroom in pipeline, got: ${engineIds}`);
   assert.ok(
     engineIds.includes("session-dedup"),
-    `expected session-dedup in pipeline, got: ${engineIds}`
+    `expected session-dedup in pipeline, got: ${engineIds}`,
   );
   assert.ok(engineIds.includes("ccr"), `expected ccr in pipeline, got: ${engineIds}`);
   assert.ok(engineIds.includes("llmlingua"), `expected llmlingua in pipeline, got: ${engineIds}`);
   assert.equal(
     reloaded.pipeline.length,
     5,
-    `expected 5 steps, got ${reloaded.pipeline.length}: ${engineIds}`
+    `expected 5 steps, got ${reloaded.pipeline.length}: ${engineIds}`,
   );
 });
 
@@ -101,11 +102,11 @@ test("enabling headroom adds it to the pipeline sorted by stackPriority", () => 
 
   assert.ok(
     rtkIdx < headroomIdx,
-    `rtk(10) should come before headroom(15), got order: ${engineIds}`
+    `rtk(10) should come before headroom(15), got order: ${engineIds}`,
   );
   assert.ok(
     headroomIdx < cavemanIdx,
-    `headroom(15) should come before caveman(20), got order: ${engineIds}`
+    `headroom(15) should come before caveman(20), got order: ${engineIds}`,
   );
 });
 
@@ -119,7 +120,7 @@ test("enabling an engine with config persists the config", () => {
   assert.deepEqual(
     headroomStep.config,
     customConfig,
-    "config should be persisted on the pipeline step"
+    "config should be persisted on the pipeline step",
   );
 });
 
@@ -140,14 +141,14 @@ test("disabling an engine removes it from the pipeline", () => {
   const before = getDefaultCompressionCombo();
   assert.ok(
     before?.pipeline.some((s) => s.engine === "headroom"),
-    "headroom should be in pipeline before disabling"
+    "headroom should be in pipeline before disabling",
   );
 
   const result = setEngineInDefaultCombo("headroom", false);
   assert.ok(result, "should return the updated combo");
   assert.ok(
     !result.pipeline.some((s) => s.engine === "headroom"),
-    "headroom should be removed from pipeline"
+    "headroom should be removed from pipeline",
   );
 });
 
@@ -165,7 +166,7 @@ test("Fix #8: setEngineInDefaultCombo with unknown engineId returns null and doe
   assert.equal(
     JSON.stringify(after.pipeline),
     originalPipeline,
-    "pipeline should be unmodified when unknown engineId is rejected"
+    "pipeline should be unmodified when unknown engineId is rejected",
   );
 });
 
@@ -178,7 +179,7 @@ test("Fix #2: disabling last engine produces an empty pipeline (not silently rev
 
   db.prepare("UPDATE compression_combos SET pipeline = ? WHERE id = ?").run(
     JSON.stringify([{ engine: "headroom" }]),
-    combo.id
+    combo.id,
   );
 
   // Now disable headroom — result should be empty pipeline, not a fallback.
@@ -187,6 +188,6 @@ test("Fix #2: disabling last engine produces an empty pipeline (not silently rev
   assert.equal(
     result.pipeline.length,
     0,
-    `expected empty pipeline after disabling last engine, got: ${JSON.stringify(result.pipeline)}`
+    `expected empty pipeline after disabling last engine, got: ${JSON.stringify(result.pipeline)}`,
   );
 });

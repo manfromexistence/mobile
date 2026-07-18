@@ -81,10 +81,7 @@ test("combo hits a failing provider only once before falling back across same-pr
       });
     }
 
-    if (
-      apiKeyHeader === "sk-claude-cascade" ||
-      authHeader === "Bearer sk-claude-cascade"
-    ) {
+    if (apiKeyHeader === "sk-claude-cascade" || authHeader === "Bearer sk-claude-cascade") {
       claudeCalls += 1;
       return buildClaudeResponse("claude handled the fallback");
     }
@@ -99,7 +96,7 @@ test("combo hits a failing provider only once before falling back across same-pr
         stream: false,
         messages: [{ role: "user", content: "cascade request" }],
       },
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -110,7 +107,7 @@ test("combo hits a failing provider only once before falling back across same-pr
   assert.equal(
     openaiCalls,
     1,
-    `expected the failing provider to be hit once then short-circuited by connection cooldown, got ${openaiCalls} calls`
+    `expected the failing provider to be hit once then short-circuited by connection cooldown, got ${openaiCalls} calls`,
   );
   assert.equal(claudeCalls, 1, "claude must serve the request after the cascade is cut short");
 });

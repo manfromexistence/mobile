@@ -1,4 +1,4 @@
-import { DiffChanges } from "./diff-changes-v2"
+import { DiffChanges } from "./diff-changes-v2";
 
 const docs = `### Overview  
 Summarize additions/deletions as compact text.
@@ -20,9 +20,9 @@ Pair with \`Diff\`/\`DiffSSR\` to contextualize a change set.
 ### Theming/tokens
 - Uses \`data-component="diff-changes"\` and diff color tokens.
 
-`
+`;
 
-const changes = { additions: 12, deletions: 5 }
+const changes = { additions: 12, deletions: 5 };
 
 export default {
   title: "UI V2/DiffChanges",
@@ -39,9 +39,9 @@ export default {
   args: {
     changes,
   },
-}
+};
 
-export const Default = {}
+export const Default = {};
 
 export const MultipleFiles = {
   args: {
@@ -51,10 +51,10 @@ export const MultipleFiles = {
       { additions: 2, deletions: 0 },
     ],
   },
-}
+};
 
 export const Zero = {
   args: {
     changes: { additions: 0, deletions: 0 },
   },
-}
+};

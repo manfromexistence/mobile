@@ -13,7 +13,7 @@ import {
 const require = createRequire(import.meta.url);
 const upstreamFixtureDir = path.resolve("_references/_outros/caveman/tests/caveman-compress");
 const upstream = require(
-  path.resolve("_references/_outros/caveman/mcp-servers/caveman-shrink/compress.js")
+  path.resolve("_references/_outros/caveman/mcp-servers/caveman-shrink/compress.js"),
 ) as {
   compress(text: string): { compressed: string; before: number; after: number };
 };
@@ -32,7 +32,7 @@ function omniroutePromptCompression(text: string): { text: string; fallbackAppli
       minMessageLength: 0,
       preservePatterns: [],
       intensity: "full",
-    }
+    },
   );
   return {
     text: result.body.messages[0].content as string,
@@ -75,7 +75,7 @@ describe("upstream Caveman parity benchmark", () => {
     const theirs = upstream.compress(input).compressed;
     assert.ok(
       ours.length <= Math.ceil(theirs.length * 1.2),
-      `Expected OmniRoute within 20% of upstream shrink length. ours=${ours.length}, upstream=${theirs.length}`
+      `Expected OmniRoute within 20% of upstream shrink length. ours=${ours.length}, upstream=${theirs.length}`,
     );
   });
 
@@ -107,7 +107,7 @@ describe("upstream Caveman parity benchmark", () => {
         originalPath: path.join(upstreamFixtureDir, originalName),
         compressedPath: path.join(
           upstreamFixtureDir,
-          originalName.replace(/\.original\.md$/, ".md")
+          originalName.replace(/\.original\.md$/, ".md"),
         ),
       }));
 
@@ -121,19 +121,19 @@ describe("upstream Caveman parity benchmark", () => {
 
       assert.ok(
         expected.length < original.length,
-        `${fixture.name}: upstream fixture did not reduce`
+        `${fixture.name}: upstream fixture did not reduce`,
       );
       if (ours.fallbackApplied) {
         assert.equal(
           ours.text,
           original,
-          `${fixture.name}: fallback must preserve original fixture verbatim`
+          `${fixture.name}: fallback must preserve original fixture verbatim`,
         );
       } else {
         assert.ok(ours.text.length < original.length, `${fixture.name}: OmniRoute did not reduce`);
         assert.ok(
           ours.text.length <= Math.ceil(Math.max(expected.length, upstreamShrink.length) * 1.35),
-          `${fixture.name}: OmniRoute drifted too far from upstream fixture budget`
+          `${fixture.name}: OmniRoute drifted too far from upstream fixture budget`,
         );
       }
 
@@ -142,7 +142,7 @@ describe("upstream Caveman parity benchmark", () => {
         for (const protectedValue of protectedValues) {
           assert.ok(
             ours.text.includes(protectedValue),
-            `${fixture.name}: protected content changed: ${protectedValue.slice(0, 80)}`
+            `${fixture.name}: protected content changed: ${protectedValue.slice(0, 80)}`,
           );
         }
       }

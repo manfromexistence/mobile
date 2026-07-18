@@ -28,7 +28,7 @@ function eslintCounts() {
   // when CI/local already produced the report.
   const cached = path.resolve(
     cwd,
-    process.env.ESLINT_RESULTS_JSON || path.join(".artifacts", "eslint-results.json")
+    process.env.ESLINT_RESULTS_JSON || path.join(".artifacts", "eslint-results.json"),
   );
   let results;
   if (fs.existsSync(cached)) {
@@ -39,7 +39,7 @@ function eslintCounts() {
       cwd,
       "node_modules",
       ".bin",
-      process.platform === "win32" ? "eslint.cmd" : "eslint"
+      process.platform === "win32" ? "eslint.cmd" : "eslint",
     );
     const args = [".", "--format", "json", "--cache", "--cache-location", ".eslintcache"];
     if (fs.existsSync(path.join(cwd, "config/quality/eslint-suppressions.json"))) {
@@ -282,7 +282,7 @@ if (import.meta.url === pathToFileURL(process.argv[1] || "").href) {
   await i18nUiCoverage();
   fs.writeFileSync(
     path.join(cwd, "config/quality/quality-metrics.json"),
-    JSON.stringify(out, null, 2) + "\n"
+    JSON.stringify(out, null, 2) + "\n",
   );
   console.log("[collect-metrics]", JSON.stringify(out));
 }

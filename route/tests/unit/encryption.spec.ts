@@ -159,8 +159,9 @@ describe("encryption module", () => {
       vi.stubEnv("STORAGE_ENCRYPTION_KEY", "test-secret-key-12345");
       vi.resetModules();
 
-      const { encryptConnectionFields, decryptConnectionFields } =
-        await import("@/lib/db/encryption");
+      const { encryptConnectionFields, decryptConnectionFields } = await import(
+        "@/lib/db/encryption"
+      );
 
       const conn = {
         id: "conn-123",
@@ -184,8 +185,9 @@ describe("encryption module", () => {
       vi.stubEnv("STORAGE_ENCRYPTION_KEY", "test-secret-key-12345");
       vi.resetModules();
 
-      const { encryptConnectionFields, decryptConnectionFields } =
-        await import("@/lib/db/encryption");
+      const { encryptConnectionFields, decryptConnectionFields } = await import(
+        "@/lib/db/encryption"
+      );
 
       expect(encryptConnectionFields(null)).toBeNull();
       expect(encryptConnectionFields(undefined)).toBeUndefined();
@@ -197,8 +199,9 @@ describe("encryption module", () => {
       vi.stubEnv("STORAGE_ENCRYPTION_KEY", "test-secret-key-12345");
       vi.resetModules();
 
-      const { encryptConnectionFields, decryptConnectionFields } =
-        await import("@/lib/db/encryption");
+      const { encryptConnectionFields, decryptConnectionFields } = await import(
+        "@/lib/db/encryption"
+      );
 
       const conn: import("@/lib/db/encryption").ConnectionFields = {
         id: "conn-123",

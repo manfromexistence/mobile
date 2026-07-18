@@ -69,7 +69,7 @@ test.after(async () => {
 test("resolveComboModel covers empty combos, priority, round-robin, random, least-used and default fallback", () => {
   assert.throws(
     () => comboResolver.resolveComboModel({ name: "empty", models: [] }),
-    /has no models configured/
+    /has no models configured/,
   );
 
   assert.deepEqual(
@@ -78,7 +78,7 @@ test("resolveComboModel covers empty combos, priority, round-robin, random, leas
       models: ["model-a", "model-b"],
       strategy: "priority",
     }),
-    { model: "model-a", index: 0 }
+    { model: "model-a", index: 0 },
   );
 
   const rrCombo = {
@@ -100,7 +100,7 @@ test("resolveComboModel covers empty combos, priority, round-robin, random, leas
         { model: "large", weight: 9 },
       ],
     }),
-    { model: "large", index: 1 }
+    { model: "large", index: 1 },
   );
 
   Math.random = () => Number.NaN;
@@ -110,7 +110,7 @@ test("resolveComboModel covers empty combos, priority, round-robin, random, leas
       strategy: "random",
       models: ["fallback-a", "fallback-b"],
     }),
-    { model: "fallback-a", index: 0 }
+    { model: "fallback-a", index: 0 },
   );
 
   assert.deepEqual(
@@ -120,9 +120,9 @@ test("resolveComboModel covers empty combos, priority, round-robin, random, leas
         strategy: "least-used",
         models: ["used-a", "used-b", "used-c"],
       },
-      { modelUsageCounts: { "used-a": 5, "used-b": 1 } }
+      { modelUsageCounts: { "used-a": 5, "used-b": 1 } },
     ),
-    { model: "used-c", index: 2 }
+    { model: "used-c", index: 2 },
   );
 
   assert.deepEqual(
@@ -134,7 +134,7 @@ test("resolveComboModel covers empty combos, priority, round-robin, random, leas
         { model: "default-b", weight: 1 },
       ],
     }),
-    { model: "default-a", index: 0 }
+    { model: "default-a", index: 0 },
   );
 
   assert.deepEqual(
@@ -142,9 +142,9 @@ test("resolveComboModel covers empty combos, priority, round-robin, random, leas
       {
         models: ["alpha", { model: "beta" }, "gamma"],
       },
-      1
+      1,
     ),
-    ["gamma", "alpha"]
+    ["gamma", "alpha"],
   );
 });
 
@@ -175,7 +175,7 @@ test("resolveComboModel also covers implicit defaults and missing optional field
       strategy: "random",
       models: [{ model: "weighted-default-a" }, { model: "weighted-default-b" }],
     }),
-    { model: "weighted-default-b", index: 1 }
+    { model: "weighted-default-b", index: 1 },
   );
 
   assert.deepEqual(
@@ -183,7 +183,7 @@ test("resolveComboModel also covers implicit defaults and missing optional field
       strategy: "least-used",
       models: ["least-default-a", "least-default-b"],
     }),
-    { model: "least-default-a", index: 0 }
+    { model: "least-default-a", index: 0 },
   );
 
   assert.deepEqual(comboResolver.getComboFallbacks({}, 0), []);
@@ -195,7 +195,7 @@ test("providerExpiration derives status, sorting, summary and header-based expir
     "claude",
     "Claude",
     isoFromNow(-60_000),
-    "oauth_token"
+    "oauth_token",
   );
   const soon = providerExpiration.setExpiration(
     "conn-soon",
@@ -203,7 +203,7 @@ test("providerExpiration derives status, sorting, summary and header-based expir
     "OpenAI",
     isoFromNow(2 * 24 * 60 * 60 * 1000),
     "subscription",
-    { alertDays: 7 }
+    { alertDays: 7 },
   );
   const active = providerExpiration.setExpiration(
     "conn-active",
@@ -211,7 +211,7 @@ test("providerExpiration derives status, sorting, summary and header-based expir
     "Gemini",
     isoFromNow(20 * 24 * 60 * 60 * 1000),
     "api_credits",
-    { alertDays: 3, note: "healthy" }
+    { alertDays: 3, note: "healthy" },
   );
   providerExpiration.setExpiration("conn-unknown", "cursor", "Cursor", null, "subscription");
   providerExpiration.setExpiration("conn-invalid", "kimi", "Kimi", "not-a-date", "free_tier_reset");
@@ -224,11 +224,11 @@ test("providerExpiration derives status, sorting, summary and header-based expir
 
   assert.deepEqual(
     providerExpiration.getAllExpirations().map((entry) => entry.connectionId),
-    ["conn-expired", "conn-soon", "conn-active", "conn-unknown", "conn-invalid"]
+    ["conn-expired", "conn-soon", "conn-active", "conn-unknown", "conn-invalid"],
   );
   assert.deepEqual(
     providerExpiration.getExpiringSoon().map((entry) => entry.connectionId),
-    ["conn-expired", "conn-soon"]
+    ["conn-expired", "conn-soon"],
   );
 
   const summary = providerExpiration.getExpirationSummary();
@@ -259,7 +259,7 @@ test("providerExpiration derives status, sorting, summary and header-based expir
 
   assert.equal(
     providerExpiration.detectExpirationFromResponse("openai", 429, { "retry-after": "nope" }),
-    null
+    null,
   );
   assert.equal(providerExpiration.detectExpirationFromResponse("openai", 500, {}), null);
 
@@ -474,6 +474,6 @@ test("policyEngine evaluates lockout, budget, fallback chains and policy class a
   engine.removePolicy("access");
   assert.equal(
     engine.getPolicies().some((policy) => policy.id === "access"),
-    false
+    false,
   );
 });

@@ -12,17 +12,19 @@ import assert from "node:assert/strict";
 
 describe("sidebarVisibility — embedded-services", () => {
   it("embedded-services is in HIDEABLE_SIDEBAR_ITEM_IDS", async () => {
-    const { HIDEABLE_SIDEBAR_ITEM_IDS } =
-      await import("../../../../../src/shared/constants/sidebarVisibility.ts");
+    const { HIDEABLE_SIDEBAR_ITEM_IDS } = await import(
+      "../../../../../src/shared/constants/sidebarVisibility.ts"
+    );
     assert.ok(
       (HIDEABLE_SIDEBAR_ITEM_IDS as readonly string[]).includes("embedded-services"),
-      "expected embedded-services in HIDEABLE_SIDEBAR_ITEM_IDS"
+      "expected embedded-services in HIDEABLE_SIDEBAR_ITEM_IDS",
     );
   });
 
   it("embedded-services has the correct href", async () => {
-    const { SIDEBAR_SECTIONS } =
-      await import("../../../../../src/shared/constants/sidebarVisibility.ts");
+    const { SIDEBAR_SECTIONS } = await import(
+      "../../../../../src/shared/constants/sidebarVisibility.ts"
+    );
     const omniProxy = SIDEBAR_SECTIONS.find((s) => s.id === "omni-proxy");
     const flat = (omniProxy?.children ?? []).filter((c) => !("type" in c));
     const item = flat.find((c) => (c as { id: string }).id === "embedded-services") as
@@ -37,8 +39,9 @@ describe("sidebarVisibility — embedded-services", () => {
 
 describe("useServiceStatus — module shape", () => {
   it("exports useServiceStatus function", async () => {
-    const mod =
-      await import("../../../../../src/app/(dashboard)/dashboard/providers/services/hooks/useServiceStatus.ts");
+    const mod = await import(
+      "../../../../../src/app/(dashboard)/dashboard/providers/services/hooks/useServiceStatus.ts"
+    );
     assert.equal(typeof mod.useServiceStatus, "function");
   });
 });
@@ -47,8 +50,9 @@ describe("useServiceStatus — module shape", () => {
 
 describe("useServiceLogs — module shape", () => {
   it("exports useServiceLogs function", async () => {
-    const mod =
-      await import("../../../../../src/app/(dashboard)/dashboard/providers/services/hooks/useServiceLogs.ts");
+    const mod = await import(
+      "../../../../../src/app/(dashboard)/dashboard/providers/services/hooks/useServiceLogs.ts"
+    );
     assert.equal(typeof mod.useServiceLogs, "function");
   });
 });

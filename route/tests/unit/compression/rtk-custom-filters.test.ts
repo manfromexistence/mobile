@@ -77,7 +77,7 @@ describe("RTK custom filter lookup and trust", () => {
     process.env.DATA_DIR = tempData;
     writeJson(
       path.join(tempData, "rtk", "filters.json"),
-      customFilter("global-filter", "globalcmd")
+      customFilter("global-filter", "globalcmd"),
     );
 
     const filter = matchRtkFilter("global-filter", "globalcmd");

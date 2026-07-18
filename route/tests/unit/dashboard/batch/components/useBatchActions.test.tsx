@@ -109,10 +109,9 @@ describe("useBatchActions — cancel", () => {
       await hook.get()!.cancel("batch-123");
     });
 
-    expect(global.fetch).toHaveBeenCalledWith(
-      "/api/v1/batches/batch-123/cancel",
-      { method: "POST" },
-    );
+    expect(global.fetch).toHaveBeenCalledWith("/api/v1/batches/batch-123/cancel", {
+      method: "POST",
+    });
     expect(onRefresh).toHaveBeenCalledOnce();
     expect(hook.get()!.cancelling).toBe(false);
     expect(hook.get()!.error).toBeNull();
@@ -137,9 +136,9 @@ describe("useBatchActions — cancel", () => {
   });
 
   it("3. fetch throws → error set (i18n key only), stack NOT exposed", async () => {
-    global.fetch = vi.fn().mockRejectedValueOnce(
-      new Error("ECONNREFUSED at /home/user/src/route.ts:42"),
-    );
+    global.fetch = vi
+      .fn()
+      .mockRejectedValueOnce(new Error("ECONNREFUSED at /home/user/src/route.ts:42"));
 
     const hook = renderHook({}, containers);
 
@@ -349,9 +348,7 @@ describe("useBatchActions — download hrefs", () => {
 
   it("12. downloadHrefOutput: returns correct URL", () => {
     const hook = renderHook({}, containers);
-    expect(hook.get()!.downloadHrefOutput("file-out-42")).toBe(
-      "/api/v1/files/file-out-42/content",
-    );
+    expect(hook.get()!.downloadHrefOutput("file-out-42")).toBe("/api/v1/files/file-out-42/content");
   });
 
   it("13. downloadHrefErrors: null when no errorFileId", () => {
@@ -362,9 +359,7 @@ describe("useBatchActions — download hrefs", () => {
 
   it("14. downloadHrefErrors: returns correct URL", () => {
     const hook = renderHook({}, containers);
-    expect(hook.get()!.downloadHrefErrors("file-err-99")).toBe(
-      "/api/v1/files/file-err-99/content",
-    );
+    expect(hook.get()!.downloadHrefErrors("file-err-99")).toBe("/api/v1/files/file-err-99/content");
   });
 });
 

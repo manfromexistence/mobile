@@ -41,7 +41,7 @@ test("#6402: messages: null is rejected with a clear 400 before model resolution
         model: "anthropic/claude-haiku-4-5",
         messages: null,
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 400, "null messages must be a 400, not a 404 model_not_found");
@@ -65,7 +65,7 @@ test("#6402: messages: <number> is rejected with a clear 400 before model resolu
         model: "anthropic/claude-haiku-4-5",
         messages: 123 as unknown as [],
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 400, "non-array messages must be a 400, not a 404 model_not_found");
@@ -88,7 +88,7 @@ test("#6402: missing messages (and no Responses-API input) is rejected with a cl
       body: {
         model: "anthropic/claude-haiku-4-5",
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 400, "missing messages must be a 400, not a 404 model_not_found");
@@ -107,7 +107,7 @@ test("#6402: Responses-API input passes the guard (messages discriminator preser
         model: "openai/gpt-4.1",
         input: [{ role: "user", content: "Hello" }],
       },
-    })
+    }),
   );
 
   // The guard must not fire for Responses-API requests; whatever downstream
@@ -118,7 +118,7 @@ test("#6402: Responses-API input passes the guard (messages discriminator preser
     assert.doesNotMatch(
       body.error?.message ?? "",
       /messages.*Expected array/i,
-      "Responses-API request must not be caught by the messages guard"
+      "Responses-API request must not be caught by the messages guard",
     );
   }
 });

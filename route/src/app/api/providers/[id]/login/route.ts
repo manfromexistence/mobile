@@ -15,7 +15,7 @@ import { sanitizeErrorMessage } from "@omniroute/open-sse/utils/error.ts";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ): Promise<NextResponse> {
   const auth = await requireManagementAuth(req);
   if (auth) return auth;
@@ -31,9 +31,7 @@ export async function POST(
 
   try {
     // Dynamic import — InAppLoginService depends on Playwright (heavy)
-    const { inAppLoginService } = await import(
-      "@omniroute/open-sse/services/inAppLoginService.ts"
-    );
+    const { inAppLoginService } = await import("@omniroute/open-sse/services/inAppLoginService.ts");
 
     const result = await inAppLoginService.startLogin(id, { timeout });
 
@@ -56,7 +54,7 @@ export async function POST(
         const msg = sanitizeErrorMessage(err instanceof Error ? err.message : err);
         return NextResponse.json(
           { success: false, error: `Extracted but failed to persist: ${msg}` },
-          { status: 500 }
+          { status: 500 },
         );
       }
     }
@@ -69,7 +67,7 @@ export async function POST(
     const msg = sanitizeErrorMessage(err instanceof Error ? err.message : err);
     return NextResponse.json(
       { success: false, error: `Login endpoint error: ${msg}` },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

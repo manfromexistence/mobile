@@ -27,7 +27,14 @@ async function detectRuntime() {
 
 async function containerExists(runtime, name) {
   try {
-    const { stdout } = await execFile(runtime, ["ps", "-a", "--filter", `name=^${name}$`, "--format", "{{.Names}}"]);
+    const { stdout } = await execFile(runtime, [
+      "ps",
+      "-a",
+      "--filter",
+      `name=^${name}$`,
+      "--format",
+      "{{.Names}}",
+    ]);
     return stdout.trim() === name;
   } catch {
     return false;
@@ -36,7 +43,13 @@ async function containerExists(runtime, name) {
 
 async function containerRunning(runtime, name) {
   try {
-    const { stdout } = await execFile(runtime, ["ps", "--filter", `name=^${name}$`, "--format", "{{.Names}}"]);
+    const { stdout } = await execFile(runtime, [
+      "ps",
+      "--filter",
+      `name=^${name}$`,
+      "--format",
+      "{{.Names}}",
+    ]);
     return stdout.trim() === name;
   } catch {
     return false;
@@ -93,7 +106,7 @@ export function registerRedis(program) {
     .command("redis")
     .description(
       t("redis.description") ||
-        "Launch a 1-click local Redis container (Podman or Docker) for OmniRoute caching and quota tracking"
+        "Launch a 1-click local Redis container (Podman or Docker) for OmniRoute caching and quota tracking",
     );
 
   redis
@@ -186,7 +199,11 @@ export async function runRedisUpCommand(opts = {}) {
     info(`Checking if image '${image}' is present locally…`);
     let present = false;
     try {
-      const { stdout } = await execFile(runtime, ["images", "--format", "{{.Repository}}:{{.Tag}}"]);
+      const { stdout } = await execFile(runtime, [
+        "images",
+        "--format",
+        "{{.Repository}}:{{.Tag}}",
+      ]);
       present = stdout.split("\n").some((line) => line.trim() === image);
     } catch {
       // ignore — fall through to pull
@@ -205,10 +222,14 @@ export async function runRedisUpCommand(opts = {}) {
   const args = [
     "run",
     "-d",
-    "--name", name,
-    "--restart", "unless-stopped",
-    "-p", `${port}:6379`,
-    "-v", `${DEFAULT_VOLUME}:/data`,
+    "--name",
+    name,
+    "--restart",
+    "unless-stopped",
+    "-p",
+    `${port}:6379`,
+    "-v",
+    `${DEFAULT_VOLUME}:/data`,
   ];
   if (opts.password) {
     args.push("-e", `REDIS_PASSWORD=${opts.password}`);
@@ -267,7 +288,13 @@ export async function runRedisStatusCommand(opts = {}) {
 
   const exists = await containerExists(runtime, name);
   if (!exists) {
-    console.log(JSON.stringify({ runtime, name, port, exists: false, running: false, reachable: false }, null, 2));
+    console.log(
+      JSON.stringify(
+        { runtime, name, port, exists: false, running: false, reachable: false },
+        null,
+        2,
+      ),
+    );
     return 0;
   }
 
@@ -285,7 +312,9 @@ export async function runRedisStatusCommand(opts = {}) {
   console.log(`  Running:     ${running ? "yes" : "no"}`);
   console.log(`  Reachable:   ${reachable ? "yes" : "no"} (port ${port})`);
   if (running && !reachable) {
-    warn("Container is running but the port is not reachable. Is REDIS_PASSWORD set or another process bound?");
+    warn(
+      "Container is running but the port is not reachable. Is REDIS_PASSWORD set or another process bound?",
+    );
   }
   if (!running) {
     info(`Run 'omniroute redis up' to launch it.`);

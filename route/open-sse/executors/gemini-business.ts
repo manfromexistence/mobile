@@ -96,7 +96,7 @@ export class GeminiBusinessExecutor extends BaseExecutor {
         401,
         "Missing Gemini Business cookies. Set __Secure-1PSID and __Secure-1PSIDTS from your enterprise account (business.gemini.google).",
         body,
-        DEFAULT_ENTRY_URL
+        DEFAULT_ENTRY_URL,
       );
     }
 
@@ -116,7 +116,7 @@ export class GeminiBusinessExecutor extends BaseExecutor {
         400,
         "No user message found in request body.",
         body,
-        DEFAULT_ENTRY_URL
+        DEFAULT_ENTRY_URL,
       );
     }
 
@@ -165,7 +165,7 @@ export class GeminiBusinessExecutor extends BaseExecutor {
         isTimeout ? 504 : 502,
         `Gemini Business ${isTimeout ? "request timed out" : "network error"}: ${message}`,
         body,
-        streamUrl
+        streamUrl,
       );
     }
 
@@ -175,7 +175,7 @@ export class GeminiBusinessExecutor extends BaseExecutor {
         response.status,
         `Gemini Business returned HTTP ${response.status}: ${text.slice(0, 200)}`,
         body,
-        streamUrl
+        streamUrl,
       );
     }
 
@@ -186,7 +186,7 @@ export class GeminiBusinessExecutor extends BaseExecutor {
         403,
         "Gemini Business account-chooser detected. Your enterprise cookies may be stale or the entry URL is wrong. Re-extract __Secure-1PSID/PSIDTS from business.gemini.google/home/cid/{YOUR-CID} after signing in.",
         body,
-        streamUrl
+        streamUrl,
       );
     }
 
@@ -196,7 +196,7 @@ export class GeminiBusinessExecutor extends BaseExecutor {
         502,
         "Gemini Business returned no text. The cookie may be expired or the entry URL is wrong.",
         body,
-        streamUrl
+        streamUrl,
       );
     }
 

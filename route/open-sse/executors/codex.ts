@@ -86,7 +86,7 @@ function getCodexWebSocketTransport(): WebsocketFn | null {
 }
 
 export function __setCodexWebSocketTransportForTesting(
-  websocket: WebsocketFn | null | undefined
+  websocket: WebsocketFn | null | undefined,
 ): void {
   _websocketOverride = websocket;
 }
@@ -106,7 +106,7 @@ function codexWebSocketUnavailableResponse(): Response {
         "Content-Type": "application/json",
         ...CORS_HEADERS,
       },
-    }
+    },
   );
 }
 
@@ -268,7 +268,7 @@ export function stripStoredItemReferences(body: Record<string, unknown>): void {
 
   if (strippedCount > 0) {
     console.debug(
-      `[Codex] stripStoredItemReferences: sanitized ${strippedCount} server-generated ID(s) from input`
+      `[Codex] stripStoredItemReferences: sanitized ${strippedCount} server-generated ID(s) from input`,
     );
   }
 }
@@ -308,7 +308,7 @@ function repairMissingCodexFunctionCallOutputs(body: Record<string, unknown>): v
   if (insertedCount > 0) {
     body.input = repaired;
     console.debug(
-      `[Codex] repairMissingCodexFunctionCallOutputs: inserted ${insertedCount} empty function_call_output item(s)`
+      `[Codex] repairMissingCodexFunctionCallOutputs: inserted ${insertedCount} empty function_call_output item(s)`,
     );
   }
 }
@@ -602,7 +602,8 @@ function extractCodexSseErrorMessage(text: string, fallback: string): string {
       const parsed = JSON.parse(data) as Record<string, unknown>;
       const directError = parsed.error as Record<string, unknown> | undefined;
       const nestedError = (parsed.response as Record<string, unknown> | undefined)?.error as
-        Record<string, unknown> | undefined;
+        | Record<string, unknown>
+        | undefined;
       const message =
         (typeof directError?.message === "string" && directError.message) ||
         (typeof nestedError?.message === "string" && nestedError.message) ||
@@ -624,7 +625,7 @@ type CodexSseTransientErrorPeek =
  * error embedded in an otherwise 200-OK stream. Exported for unit testing.
  */
 export async function peekCodexSseTransientError(
-  response: Response
+  response: Response,
 ): Promise<CodexSseTransientErrorPeek> {
   const contentType = response.headers.get("content-type") || "";
   if (!response.ok || !response.body || !contentType.includes("text/event-stream")) {
@@ -662,7 +663,7 @@ export async function peekCodexSseTransientError(
     console.warn(
       `[codex] peekCodexSseTransientError: read error, passing stream through: ${
         err instanceof Error ? err.message : String(err)
-      }`
+      }`,
     );
   }
 
@@ -793,11 +794,11 @@ export class CodexExecutor extends BaseExecutor {
   async execute(input: ExecuteInput) {
     const sessionId = this.getPromptCacheSessionId(
       input.credentials,
-      input.body as Record<string, unknown> | null
+      input.body as Record<string, unknown> | null,
     );
     const identity = createCodexClientIdentity(
       sessionId,
-      input.credentials?.providerSpecificData ?? null
+      input.credentials?.providerSpecificData ?? null,
     );
     const credentials = identity
       ? {
@@ -824,11 +825,11 @@ export class CodexExecutor extends BaseExecutor {
         if (peek.matched) {
           input.log?.warn?.(
             "RETRY",
-            `CODEX | 200-OK SSE carried transient error "${peek.matched}" — converting to 503 for account fallback`
+            `CODEX | 200-OK SSE carried transient error "${peek.matched}" — converting to 503 for account fallback`,
           );
           (httpResult as { response: Response }).response = errorResponse(
             HTTP_STATUS.SERVICE_UNAVAILABLE,
-            peek.message
+            peek.message,
           );
         } else if (peek.replacementBody) {
           (httpResult as { response: Response }).response = new Response(peek.replacementBody, {
@@ -849,7 +850,7 @@ export class CodexExecutor extends BaseExecutor {
       nextInput.model,
       nextInput.body,
       true,
-      nextInput.credentials
+      nextInput.credentials,
     )) as Record<string, unknown>;
     transformedBody.model = getCodexUpstreamModel(transformedBody.model || nextInput.model);
     delete transformedBody.stream;
@@ -992,7 +993,7 @@ export class CodexExecutor extends BaseExecutor {
           ws.onerror = (event) => {
             failController(
               "upstream_websocket_error",
-              event.message || "Codex upstream WebSocket error"
+              event.message || "Codex upstream WebSocket error",
             );
           };
           ws.onclose = () => {
@@ -1005,7 +1006,7 @@ export class CodexExecutor extends BaseExecutor {
         } catch (error) {
           failController(
             "upstream_websocket_connect_failed",
-            error instanceof Error ? error.message : String(error)
+            error instanceof Error ? error.message : String(error),
           );
         }
       },
@@ -1033,7 +1034,7 @@ export class CodexExecutor extends BaseExecutor {
     model: string,
     stream: boolean,
     urlIndex = 0,
-    credentials: ProviderCredentials | null = null
+    credentials: ProviderCredentials | null = null,
   ) {
     void model;
     void stream;
@@ -1068,7 +1069,9 @@ export class CodexExecutor extends BaseExecutor {
       headers["chatgpt-account-id"] = workspaceId;
     }
     const clientIdentity = credentials?.providerSpecificData?.codexClientIdentity as
-      CodexClientIdentity | null | undefined;
+      | CodexClientIdentity
+      | null
+      | undefined;
 
     // Originator header — identifies the client type to the Codex backend.
     // Ref: openai/codex login/src/auth/default_client.rs DEFAULT_ORIGINATOR = "codex_cli_rs"
@@ -1096,7 +1099,7 @@ export class CodexExecutor extends BaseExecutor {
    */
   private getPromptCacheSessionId(
     credentials: ProviderCredentials | null | undefined,
-    body: Record<string, unknown> | null
+    body: Record<string, unknown> | null,
   ): string | null {
     const promptCacheKey = normalizeCodexSessionId(body?.prompt_cache_key);
     if (promptCacheKey) return promptCacheKey;
@@ -1133,7 +1136,7 @@ export class CodexExecutor extends BaseExecutor {
     if (result.error) {
       log?.warn?.(
         "TOKEN_REFRESH",
-        `Codex: token refresh failed (${result.error}) — re-authentication required`
+        `Codex: token refresh failed (${result.error}) — re-authentication required`,
       );
       // Return null (not the error-only object): base.ts spreads any truthy
       // result onto activeCredentials and persists it via onCredentialsRefreshed.
@@ -1153,7 +1156,7 @@ export class CodexExecutor extends BaseExecutor {
     model: string,
     bodyInput: unknown,
     stream: boolean,
-    credentials: ProviderCredentials
+    credentials: ProviderCredentials,
   ) {
     void stream;
     // Do not mutate the caller's payload in place. Combo quality checks and
@@ -1397,7 +1400,9 @@ export class CodexExecutor extends BaseExecutor {
       applyCodexClientMetadata(
         body,
         credentials?.providerSpecificData?.codexClientIdentity as
-          CodexClientIdentity | null | undefined
+          | CodexClientIdentity
+          | null
+          | undefined,
       );
     }
 

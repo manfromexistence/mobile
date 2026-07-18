@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { fixToolPairs, fixToolAdjacency, stripTrailingAssistantOrphanToolUse } =
-  await import("../../open-sse/services/contextManager.ts");
+const { fixToolPairs, fixToolAdjacency, stripTrailingAssistantOrphanToolUse } = await import(
+  "../../open-sse/services/contextManager.ts"
+);
 
 // ─── fixToolAdjacency ───────────────────────────────────────────────────────
 

@@ -41,7 +41,7 @@ function getPromptCacheReadTokens(tokens) {
     tokenRecord.cacheRead ??
       tokenRecord.cache_read_input_tokens ??
       tokenRecord.cached_tokens ??
-      promptDetails.cached_tokens
+      promptDetails.cached_tokens,
   );
 }
 
@@ -51,7 +51,7 @@ function getPromptCacheCreationTokens(tokens) {
   return toFiniteNumber(
     tokenRecord.cacheCreation ??
       tokenRecord.cache_creation_input_tokens ??
-      promptDetails.cache_creation_tokens
+      promptDetails.cache_creation_tokens,
   );
 }
 
@@ -59,7 +59,7 @@ function getReasoningTokens(tokens) {
   const tokenRecord = asRecord(tokens);
   const completionDetails = asRecord(tokenRecord.completion_tokens_details);
   return toFiniteNumber(
-    tokenRecord.reasoning ?? tokenRecord.reasoning_tokens ?? completionDetails.reasoning_tokens
+    tokenRecord.reasoning ?? tokenRecord.reasoning_tokens ?? completionDetails.reasoning_tokens,
   );
 }
 
@@ -177,7 +177,7 @@ describe("detailed token extraction — per provider format", () => {
     assert.equal(
       getPromptCacheCreationTokensOrNull(tokens),
       null,
-      "OpenRouter cache_write_tokens not mapped to creation"
+      "OpenRouter cache_write_tokens not mapped to creation",
     );
     assert.equal(getReasoningTokensOrNull(tokens), 60, "Reasoning = 60");
   });

@@ -1,11 +1,11 @@
-import { getVirtualizationWorkload } from '@pierre/tree-test-data';
+import { getVirtualizationWorkload } from "@pierre/tree-test-data";
 
-import type { ContextMenuItem } from '../../../src/index';
+import type { ContextMenuItem } from "../../../src/index";
 
-const fileTreeRuntimePath: string = '/dist/index.js';
+const fileTreeRuntimePath: string = "/dist/index.js";
 const { FileTree, preparePresortedFileTreeInput } = (await import(
   /* @vite-ignore */ fileTreeRuntimePath
-)) as typeof import('../../../src/index');
+)) as typeof import("../../../src/index");
 
 type StickyKeyboardRowSnapshot = {
   bottomWithinScroll: number;
@@ -49,7 +49,7 @@ type SyntheticBranchWorkload = {
 };
 
 const createSyntheticBranchWorkload = (): SyntheticBranchWorkload => {
-  const letters = ['a', 'b', 'c', 'd'] as const;
+  const letters = ["a", "b", "c", "d"] as const;
   const expandedFolders = new Set<string>();
   const paths: string[] = [];
 
@@ -72,8 +72,8 @@ const createSyntheticBranchWorkload = (): SyntheticBranchWorkload => {
     addFolder(`${folderPath}/${nextLetter}2`, depth + 1);
   };
 
-  addFolder('a1', 0);
-  addFolder('a2', 0);
+  addFolder("a1", 0);
+  addFolder("a2", 0);
 
   return {
     expandedFolders: [...expandedFolders],
@@ -81,20 +81,19 @@ const createSyntheticBranchWorkload = (): SyntheticBranchWorkload => {
   };
 };
 
-const mount = document.querySelector('[data-sticky-keyboard-mount]');
-const report = document.querySelector('[data-sticky-keyboard-report]');
+const mount = document.querySelector("[data-sticky-keyboard-mount]");
+const report = document.querySelector("[data-sticky-keyboard-report]");
 if (!(mount instanceof HTMLDivElement) || !(report instanceof HTMLPreElement)) {
-  throw new Error('Missing sticky keyboard navigation fixture shell.');
+  throw new Error("Missing sticky keyboard navigation fixture shell.");
 }
 
-const scenario = new URL(window.location.href).searchParams.get('scenario');
+const scenario = new URL(window.location.href).searchParams.get("scenario");
 const hasFractionalHeader =
-  new URL(window.location.href).searchParams.get('fractional-header') ===
-  'true';
-const workload = getVirtualizationWorkload('linux-1x');
+  new URL(window.location.href).searchParams.get("fractional-header") === "true";
+const workload = getVirtualizationWorkload("linux-1x");
 const syntheticBranchWorkload = createSyntheticBranchWorkload();
 const renderContextMenu = (item: ContextMenuItem): HTMLElement => {
-  const menu = document.createElement('div');
+  const menu = document.createElement("div");
   menu.dataset.testStickyKeyboardMenu = item.path;
   menu.textContent = `Menu for ${item.path}`;
   return menu;
@@ -105,17 +104,17 @@ const headerComposition = hasFractionalHeader
     }
   : undefined;
 const fileTree =
-  scenario === 'synthetic-branch'
+  scenario === "synthetic-branch"
     ? new FileTree({
         composition: {
           contextMenu: {
             enabled: true,
             render: renderContextMenu,
-            triggerMode: 'both',
+            triggerMode: "both",
           },
           header: headerComposition,
         },
-        fileTreeSearchMode: 'hide-non-matches',
+        fileTreeSearchMode: "hide-non-matches",
         flattenEmptyDirectories: true,
         initialExpandedPaths: syntheticBranchWorkload.expandedFolders,
         paths: syntheticBranchWorkload.paths,
@@ -128,11 +127,11 @@ const fileTree =
           contextMenu: {
             enabled: true,
             render: renderContextMenu,
-            triggerMode: 'both',
+            triggerMode: "both",
           },
           header: headerComposition,
         },
-        fileTreeSearchMode: 'hide-non-matches',
+        fileTreeSearchMode: "hide-non-matches",
         flattenEmptyDirectories: true,
         initialExpandedPaths: workload.expandedFolders,
         preparedInput: preparePresortedFileTreeInput(workload.presortedFiles),
@@ -153,7 +152,7 @@ const nextFrames = async (count: number = 2): Promise<void> => {
 const waitForTree = async (): Promise<HTMLElement> => {
   const started = performance.now();
   while (true) {
-    const host = mount.querySelector('file-tree-container');
+    const host = mount.querySelector("file-tree-container");
     if (
       host instanceof HTMLElement &&
       host.shadowRoot?.querySelector('button[data-type="item"]') != null
@@ -162,9 +161,7 @@ const waitForTree = async (): Promise<HTMLElement> => {
     }
 
     if (performance.now() - started > 5_000) {
-      throw new Error(
-        'Timed out waiting for sticky keyboard navigation fixture tree.'
-      );
+      throw new Error("Timed out waiting for sticky keyboard navigation fixture tree.");
     }
 
     await new Promise((resolve) => setTimeout(resolve, 16));
@@ -174,33 +171,29 @@ const waitForTree = async (): Promise<HTMLElement> => {
 const host = await waitForTree();
 const getShadow = (): ShadowRoot => {
   if (!(host.shadowRoot instanceof ShadowRoot)) {
-    throw new Error(
-      'Expected open shadow root on sticky keyboard navigation fixture host.'
-    );
+    throw new Error("Expected open shadow root on sticky keyboard navigation fixture host.");
   }
   return host.shadowRoot;
 };
 
 const getScrollElement = (): HTMLElement => {
-  const scrollElement = getShadow().querySelector(
-    '[data-file-tree-virtualized-scroll="true"]'
-  );
+  const scrollElement = getShadow().querySelector('[data-file-tree-virtualized-scroll="true"]');
   if (!(scrollElement instanceof HTMLElement)) {
-    throw new Error('Missing sticky keyboard navigation scroll element.');
+    throw new Error("Missing sticky keyboard navigation scroll element.");
   }
   return scrollElement;
 };
 
 const getStickyOverlayContentElement = (): HTMLElement | null => {
   const overlayContent = getShadow().querySelector(
-    '[data-file-tree-sticky-overlay-content="true"]'
+    '[data-file-tree-sticky-overlay-content="true"]',
   );
   return overlayContent instanceof HTMLElement ? overlayContent : null;
 };
 
 const getStickyRowButton = (path: string): HTMLButtonElement => {
   const button = getShadow().querySelector(
-    `button[data-file-tree-sticky-row="true"][data-file-tree-sticky-path="${path}"]`
+    `button[data-file-tree-sticky-row="true"][data-file-tree-sticky-path="${path}"]`,
   );
   if (!(button instanceof HTMLButtonElement)) {
     throw new Error(`Missing sticky keyboard row for ${path}`);
@@ -210,16 +203,12 @@ const getStickyRowButton = (path: string): HTMLButtonElement => {
 
 const getRows = (): HTMLButtonElement[] =>
   Array.from(getShadow().querySelectorAll('button[data-type="item"]')).filter(
-    (button): button is HTMLButtonElement => button instanceof HTMLButtonElement
+    (button): button is HTMLButtonElement => button instanceof HTMLButtonElement,
   );
 
 const getStickyPaths = (): string[] =>
-  Array.from(
-    getShadow().querySelectorAll('button[data-file-tree-sticky-row="true"]')
-  )
-    .map((element) =>
-      element instanceof HTMLElement ? element.dataset.fileTreeStickyPath : null
-    )
+  Array.from(getShadow().querySelectorAll('button[data-file-tree-sticky-row="true"]'))
+    .map((element) => (element instanceof HTMLElement ? element.dataset.fileTreeStickyPath : null))
     .filter((path): path is string => path != null);
 
 const writeReport = (value: unknown): void => {
@@ -229,22 +218,20 @@ const writeReport = (value: unknown): void => {
 const setScrollTop = (scrollTop: number): void => {
   const scrollElement = getScrollElement();
   scrollElement.scrollTop = scrollTop;
-  scrollElement.dispatchEvent(new Event('scroll'));
+  scrollElement.dispatchEvent(new Event("scroll"));
 };
 
-const focusStickyPath: StickyKeyboardNavigationProbe['focusStickyPath'] =
-  async (path) => {
-    fileTree.focusPath(path);
-    await nextFrames(1);
-    getStickyRowButton(path).focus({ preventScroll: true });
-    await nextFrames(1);
-  };
+const focusStickyPath: StickyKeyboardNavigationProbe["focusStickyPath"] = async (path) => {
+  fileTree.focusPath(path);
+  await nextFrames(1);
+  getStickyRowButton(path).focus({ preventScroll: true });
+  await nextFrames(1);
+};
 
-const focusStickyDomOnly: StickyKeyboardNavigationProbe['focusStickyDomOnly'] =
-  async (path) => {
-    getStickyRowButton(path).focus({ preventScroll: true });
-    await nextFrames(1);
-  };
+const focusStickyDomOnly: StickyKeyboardNavigationProbe["focusStickyDomOnly"] = async (path) => {
+  getStickyRowButton(path).focus({ preventScroll: true });
+  await nextFrames(1);
+};
 
 const getRowPath = (element: HTMLElement): string | null =>
   element.dataset.fileTreeStickyPath ?? element.dataset.itemPath ?? null;
@@ -254,9 +241,8 @@ const sample = (): StickyKeyboardSample => {
   const scrollRect = scrollElement.getBoundingClientRect();
   const overlayRect = getStickyOverlayContentElement()?.getBoundingClientRect();
   const activeElement = getShadow().activeElement;
-  const activeHtmlElement =
-    activeElement instanceof HTMLElement ? activeElement : null;
-  const contextMenu = host.querySelector('[data-test-sticky-keyboard-menu]');
+  const activeHtmlElement = activeElement instanceof HTMLElement ? activeElement : null;
+  const contextMenu = host.querySelector("[data-test-sticky-keyboard-menu]");
   const rows = getRows()
     .map((button): StickyKeyboardRowSnapshot | null => {
       const path = getRowPath(button);
@@ -267,9 +253,9 @@ const sample = (): StickyKeyboardSample => {
       const rect = button.getBoundingClientRect();
       return {
         bottomWithinScroll: rect.bottom - scrollRect.top,
-        isFocused: button.dataset.itemFocused === 'true',
-        isParked: button.dataset.itemParked === 'true',
-        isSticky: button.dataset.fileTreeStickyRow === 'true',
+        isFocused: button.dataset.itemFocused === "true",
+        isParked: button.dataset.itemParked === "true",
+        isSticky: button.dataset.fileTreeStickyRow === "true",
         path,
         topWithinScroll: rect.top - scrollRect.top,
       };
@@ -280,12 +266,9 @@ const sample = (): StickyKeyboardSample => {
     .filter((row) => !row.isSticky && !row.isParked)
     .map((row) => row.path);
   const result = {
-    activeElementPath:
-      activeHtmlElement == null ? null : getRowPath(activeHtmlElement),
-    activeElementIsParked:
-      activeHtmlElement?.dataset.itemParked === 'true' ? true : false,
-    activeElementIsSticky:
-      activeHtmlElement?.dataset.fileTreeStickyRow === 'true' ? true : false,
+    activeElementPath: activeHtmlElement == null ? null : getRowPath(activeHtmlElement),
+    activeElementIsParked: activeHtmlElement?.dataset.itemParked === "true" ? true : false,
+    activeElementIsSticky: activeHtmlElement?.dataset.fileTreeStickyRow === "true" ? true : false,
     contextMenuPath:
       contextMenu instanceof HTMLElement
         ? (contextMenu.dataset.testStickyKeyboardMenu ?? null)
@@ -295,8 +278,7 @@ const sample = (): StickyKeyboardSample => {
     mountedFlowPaths,
     rows,
     scrollTop: scrollElement.scrollTop,
-    stickyOverlayBottomWithinScroll:
-      overlayRect == null ? 0 : overlayRect.bottom - scrollRect.top,
+    stickyOverlayBottomWithinScroll: overlayRect == null ? 0 : overlayRect.bottom - scrollRect.top,
     stickyPaths: getStickyPaths(),
   } satisfies StickyKeyboardSample;
   writeReport(result);
@@ -312,4 +294,4 @@ stickyKeyboardNavigationWindow.__stickyKeyboardNavigationProbe = {
   setScrollTop,
 };
 stickyKeyboardNavigationWindow.__stickyKeyboardNavigationFixtureReady = true;
-writeReport({ ready: true, scenario: scenario ?? 'linux-1x' });
+writeReport({ ready: true, scenario: scenario ?? "linux-1x" });

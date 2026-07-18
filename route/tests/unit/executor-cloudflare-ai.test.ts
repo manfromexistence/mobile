@@ -12,7 +12,7 @@ test("CloudflareAIExecutor.buildUrl prefers providerSpecificData.accountId", () 
 
   assert.equal(
     url,
-    "https://api.cloudflare.com/client/v4/accounts/provider-id/ai/v1/chat/completions"
+    "https://api.cloudflare.com/client/v4/accounts/provider-id/ai/v1/chat/completions",
   );
 });
 
@@ -29,11 +29,11 @@ test("CloudflareAIExecutor.buildUrl falls back to top-level credentials and envi
 
     assert.equal(
       fromTopLevel,
-      "https://api.cloudflare.com/client/v4/accounts/top-level-id/ai/v1/chat/completions"
+      "https://api.cloudflare.com/client/v4/accounts/top-level-id/ai/v1/chat/completions",
     );
     assert.equal(
       fromEnv,
-      "https://api.cloudflare.com/client/v4/accounts/env-account-id/ai/v1/chat/completions"
+      "https://api.cloudflare.com/client/v4/accounts/env-account-id/ai/v1/chat/completions",
     );
   } finally {
     if (originalAccountId === undefined) delete process.env.CLOUDFLARE_ACCOUNT_ID;
@@ -49,7 +49,7 @@ test("CloudflareAIExecutor.buildUrl throws when account ID is missing", () => {
   try {
     assert.throws(
       () => executor.buildUrl("@cf/meta/llama-3.3-70b-instruct", true, 0, {}),
-      /Account ID/
+      /Account ID/,
     );
   } finally {
     if (originalAccountId === undefined) delete process.env.CLOUDFLARE_ACCOUNT_ID;
@@ -104,7 +104,7 @@ test("CloudflareAIExecutor.transformRequest flattens content-part arrays to stri
     "@cf/meta/llama-3.3-70b-instruct",
     body,
     false,
-    {} as any
+    {} as any,
   ) as any;
   assert.equal(out.messages[0].content, "hello world");
   assert.equal(out.messages[1].content, "plain stays plain");
@@ -126,7 +126,7 @@ test("CloudflareAIExecutor.execute uses inherited BaseExecutor flow successfully
       {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   };
 
@@ -148,7 +148,7 @@ test("CloudflareAIExecutor.execute uses inherited BaseExecutor flow successfully
     assert.equal(result.response.status, 200);
     assert.equal(
       result.url,
-      "https://api.cloudflare.com/client/v4/accounts/account-123/ai/v1/chat/completions"
+      "https://api.cloudflare.com/client/v4/accounts/account-123/ai/v1/chat/completions",
     );
     assert.deepEqual(result.transformedBody, body);
     assert.equal(captured.options.headers.Authorization, "Bearer cf-api-token");

@@ -66,18 +66,18 @@ export function useProviderModels(providerId: string): UseProviderModelsResult {
               };
               if (cancelled) return;
               const providerConn = connData.connections?.find(
-                (c) => (c.provider === providerId || c.id === providerId) && c.isActive !== false
+                (c) => (c.provider === providerId || c.id === providerId) && c.isActive !== false,
               );
 
               if (providerConn && !cancelled) {
                 const syncRes = await fetch(
                   `/api/providers/${encodeURIComponent(providerConn.id)}/sync-models?mode=sync`,
-                  { method: "POST" }
+                  { method: "POST" },
                 );
 
                 if (syncRes.ok && !cancelled) {
                   const refetchRes = await fetch(
-                    `/api/v1/providers/${encodeURIComponent(providerId)}/models`
+                    `/api/v1/providers/${encodeURIComponent(providerId)}/models`,
                   );
                   if (refetchRes.ok && !cancelled) {
                     const refetchData = (await refetchRes.json()) as { data?: ProviderModel[] };

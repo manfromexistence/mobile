@@ -103,7 +103,7 @@ function extractTextFromContent(content: unknown): string {
         !!part &&
         typeof part === "object" &&
         "type" in part &&
-        (part as MessageContentPart).type === "text"
+        (part as MessageContentPart).type === "text",
     )
     .map((part) => (typeof part.text === "string" ? part.text : ""))
     .join("\n");
@@ -153,7 +153,7 @@ export function normalizeDeveloperRole(
   messages: NormalizedMessage[] | unknown,
   targetFormat: string,
   preserveDeveloperRole?: boolean,
-  provider?: string
+  provider?: string,
 ): NormalizedMessage[] | unknown {
   if (!Array.isArray(messages)) return messages;
 
@@ -176,7 +176,7 @@ export function normalizeDeveloperRole(
 }
 
 export function normalizeModelRole(
-  messages: NormalizedMessage[] | unknown
+  messages: NormalizedMessage[] | unknown,
 ): NormalizedMessage[] | unknown {
   if (!Array.isArray(messages)) return messages;
 
@@ -203,14 +203,14 @@ export function normalizeModelRole(
 export function normalizeSystemRole(
   messages: NormalizedMessage[] | unknown,
   provider: string,
-  model: string
+  model: string,
 ): NormalizedMessage[] | unknown {
   if (!Array.isArray(messages) || messages.length === 0) return messages;
   if (supportsSystemRole(provider, model)) return messages;
 
   // Extract system messages
   const systemMessages = messages.filter(
-    (message: NormalizedMessage) => message.role === "system" || message.role === "developer"
+    (message: NormalizedMessage) => message.role === "system" || message.role === "developer",
   );
   if (systemMessages.length === 0) return messages;
 
@@ -222,18 +222,18 @@ export function normalizeSystemRole(
 
   if (!systemContent) {
     return messages.filter(
-      (message: NormalizedMessage) => message.role !== "system" && message.role !== "developer"
+      (message: NormalizedMessage) => message.role !== "system" && message.role !== "developer",
     );
   }
 
   // Remove system messages and merge into first user message
   const nonSystemMessages = messages.filter(
-    (message: NormalizedMessage) => message.role !== "system" && message.role !== "developer"
+    (message: NormalizedMessage) => message.role !== "system" && message.role !== "developer",
   );
 
   // Find first user message and prepend system content
   const firstUserIdx = nonSystemMessages.findIndex(
-    (message: NormalizedMessage) => message.role === "user"
+    (message: NormalizedMessage) => message.role === "user",
   );
   if (firstUserIdx >= 0) {
     const userMsg = nonSystemMessages[firstUserIdx];
@@ -271,7 +271,7 @@ export function normalizeRoles(
   provider: string,
   model: string,
   targetFormat: string,
-  preserveDeveloperRole?: boolean
+  preserveDeveloperRole?: boolean,
 ): NormalizedMessage[] | unknown {
   if (!Array.isArray(messages)) return messages;
 

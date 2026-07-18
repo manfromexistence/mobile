@@ -77,7 +77,7 @@ test("POST /v1/embeddings authentication", async (t) => {
       const res = await POST(req);
       assert.strictEqual(res.status, 401);
       delete process.env.REQUIRE_API_KEY;
-    }
+    },
   );
 
   await t.test("should NOT return 401 when a valid API key is provided", async () => {

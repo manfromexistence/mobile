@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { AgentSkillSchema, SkillCoverageSchema, ListQuerySchema, GenerateBodySchema } =
-  await import("../../src/lib/agentSkills/schemas.ts");
+const { AgentSkillSchema, SkillCoverageSchema, ListQuerySchema, GenerateBodySchema } = await import(
+  "../../src/lib/agentSkills/schemas.ts"
+);
 
 test("agent skills schemas module exposes runtime validators", async () => {
   const schemas = await import("../../src/lib/agentSkills/schemas.ts");

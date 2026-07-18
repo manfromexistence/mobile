@@ -633,7 +633,7 @@ export const DEFAULT_INTENT_CONFIG: IntentClassifierConfig = {
 export function classifyWithConfig(
   prompt: string,
   config: IntentClassifierConfig,
-  systemPrompt?: string
+  systemPrompt?: string,
 ): IntentType {
   if (!config.enabled) return "medium";
   const fullText = `${systemPrompt ?? ""} ${prompt}`.toLowerCase();

@@ -1,11 +1,11 @@
-import { type ComponentProps, splitProps } from "solid-js"
+import { type ComponentProps, splitProps } from "solid-js";
 
 export interface TagProps extends ComponentProps<"span"> {
-  size?: "normal" | "large"
+  size?: "normal" | "large";
 }
 
 export function Tag(props: TagProps) {
-  const [split, rest] = splitProps(props, ["size", "class", "classList", "children"])
+  const [split, rest] = splitProps(props, ["size", "class", "classList", "children"]);
   return (
     <span
       {...rest}
@@ -18,5 +18,5 @@ export function Tag(props: TagProps) {
     >
       {split.children}
     </span>
-  )
+  );
 }

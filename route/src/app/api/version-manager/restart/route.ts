@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, pid: status.pid, port: status.port });
   } catch (error) {
     const message = sanitizeErrorMessage(
-      error instanceof Error ? error.message : "Failed to restart"
+      error instanceof Error ? error.message : "Failed to restart",
     );
     console.error("[version-manager] restart error:", message);
     return NextResponse.json({ error: message }, { status: 500 });

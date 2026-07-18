@@ -1,5 +1,5 @@
-import { expect, test } from "bun:test"
-import { summarizeFirstNavigation } from "../timeline/first-navigation-metrics"
+import { expect, test } from "bun:test";
+import { summarizeFirstNavigation } from "../timeline/first-navigation-metrics";
 
 test("reports blank frames before first destination and stable paint", () => {
   expect(
@@ -18,8 +18,8 @@ test("reports blank frames before first destination and stable paint", () => {
     blankSamples: 1,
     unknownSamples: 0,
     destinationSamples: 3,
-  })
-})
+  });
+});
 
 test("does not report stability for interrupted destination frames", () => {
   expect(
@@ -28,5 +28,5 @@ test("does not report stability for interrupted destination frames", () => {
       { observedAtMs: 32, source: false, destination: false, content: true },
       { observedAtMs: 48, source: false, destination: true, content: true },
     ]).stableDestinationObservedMs,
-  ).toBeNull()
-})
+  ).toBeNull();
+});

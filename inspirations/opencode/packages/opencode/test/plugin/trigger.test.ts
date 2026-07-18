@@ -1,23 +1,23 @@
-import { describe, expect } from "bun:test"
-import { Effect } from "effect"
-import { CrossSpawnSpawner } from "@opencode-ai/core/cross-spawn-spawner"
-import { Npm } from "@opencode-ai/core/npm"
-import path from "path"
-import { pathToFileURL } from "url"
-import { Account } from "../../src/account/account"
-import { Auth } from "../../src/auth"
-import { RuntimeFlags } from "../../src/effect/runtime-flags"
-import { Plugin } from "../../src/plugin/index"
+import { describe, expect } from "bun:test";
+import { Effect } from "effect";
+import { CrossSpawnSpawner } from "@opencode-ai/core/cross-spawn-spawner";
+import { Npm } from "@opencode-ai/core/npm";
+import path from "path";
+import { pathToFileURL } from "url";
+import { Account } from "../../src/account/account";
+import { Auth } from "../../src/auth";
+import { RuntimeFlags } from "../../src/effect/runtime-flags";
+import { Plugin } from "../../src/plugin/index";
 
-import { TestInstance } from "../fixture/fixture"
-import { testEffect } from "../lib/effect"
-import { AccountTest } from "../fake/account"
-import { AuthTest } from "../fake/auth"
-import { NpmTest } from "../fake/npm"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { ModelV2 } from "@opencode-ai/core/model"
-import { AppNodeBuilder } from "@opencode-ai/core/effect/app-node-builder"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
+import { TestInstance } from "../fixture/fixture";
+import { testEffect } from "../lib/effect";
+import { AccountTest } from "../fake/account";
+import { AuthTest } from "../fake/auth";
+import { NpmTest } from "../fake/npm";
+import { ProviderV2 } from "@opencode-ai/core/provider";
+import { ModelV2 } from "@opencode-ai/core/model";
+import { AppNodeBuilder } from "@opencode-ai/core/effect/app-node-builder";
+import { LayerNode } from "@opencode-ai/core/effect/layer-node";
 
 const it = testEffect(
   AppNodeBuilder.build(LayerNode.group([Plugin.node, CrossSpawnSpawner.node]), [
@@ -26,13 +26,13 @@ const it = testEffect(
     [Npm.node, NpmTest.noop],
     [RuntimeFlags.node, RuntimeFlags.layer({ disableDefaultPlugins: true })],
   ]),
-)
-const systemHook = "experimental.chat.system.transform"
+);
+const systemHook = "experimental.chat.system.transform";
 
 function withProject<A, E, R>(source: string, self: Effect.Effect<A, E, R>) {
   return Effect.gen(function* () {
-    const test = yield* TestInstance
-    const file = path.join(test.directory, "plugin.ts")
+    const test = yield* TestInstance;
+    const file = path.join(test.directory, "plugin.ts");
     yield* Effect.all(
       [
         Effect.promise(() => Bun.write(file, source)),
@@ -51,14 +51,14 @@ function withProject<A, E, R>(source: string, self: Effect.Effect<A, E, R>) {
         ),
       ],
       { discard: true, concurrency: 2 },
-    )
-    return yield* self
-  })
+    );
+    return yield* self;
+  });
 }
 
 const triggerSystemTransform = Effect.fn("PluginTriggerTest.triggerSystemTransform")(function* () {
-  const plugin = yield* Plugin.Service
-  const out = { system: [] as string[] }
+  const plugin = yield* Plugin.Service;
+  const out = { system: [] as string[] };
   yield* plugin.trigger(
     systemHook,
     {
@@ -68,9 +68,9 @@ const triggerSystemTransform = Effect.fn("PluginTriggerTest.triggerSystemTransfo
       },
     },
     out,
-  )
-  return out.system
-})
+  );
+  return out.system;
+});
 
 describe("plugin.trigger", () => {
   it.instance("runs synchronous hooks without crashing", () =>
@@ -84,10 +84,10 @@ describe("plugin.trigger", () => {
         "",
       ].join("\n"),
       Effect.gen(function* () {
-        expect(yield* triggerSystemTransform()).toEqual(["sync"])
+        expect(yield* triggerSystemTransform()).toEqual(["sync"]);
       }),
     ),
-  )
+  );
 
   it.instance("awaits asynchronous hooks", () =>
     withProject(
@@ -101,8 +101,8 @@ describe("plugin.trigger", () => {
         "",
       ].join("\n"),
       Effect.gen(function* () {
-        expect(yield* triggerSystemTransform()).toEqual(["async"])
+        expect(yield* triggerSystemTransform()).toEqual(["async"]);
       }),
     ),
-  )
-})
+  );
+});

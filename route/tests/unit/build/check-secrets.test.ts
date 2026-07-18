@@ -32,7 +32,7 @@ function makeFinding(
     description?: string;
     startLine?: number;
     secret?: string;
-  } = {}
+  } = {},
 ) {
   return {
     Description: overrides.description ?? "GitHub Personal Access Token",

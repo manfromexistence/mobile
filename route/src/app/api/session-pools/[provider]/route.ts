@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ provider: string }> }
+  { params }: { params: Promise<{ provider: string }> },
 ): Promise<Response> {
   const authError = await requireManagementAuth(request);
   if (authError) return authError;
@@ -21,7 +21,7 @@ export async function GET(
     if (!poolData) {
       return NextResponse.json(
         { error: `No session pool found for provider '${provider}'` },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -32,7 +32,7 @@ export async function GET(
   } catch (err) {
     return NextResponse.json(
       { error: sanitizeErrorMessage(err) || "Failed to get session pool health" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

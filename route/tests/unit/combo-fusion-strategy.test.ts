@@ -190,7 +190,7 @@ test("fusion: returns the lone survivor directly when only one panel model succe
   // No judge call — single answer + no explicit judge means there is nothing to fuse.
   assert.ok(
     !seen.includes("p/judge"),
-    "judge should not be invoked when only one panel model survives and no judgeModel is set"
+    "judge should not be invoked when only one panel model survives and no judgeModel is set",
   );
 });
 
@@ -219,7 +219,7 @@ test("fusion: honors an explicit judgeModel even with a single surviving panel a
   });
   assert.ok(
     seen.includes("p/judge"),
-    "explicit judgeModel should still be invoked to synthesize a single panel answer"
+    "explicit judgeModel should still be invoked to synthesize a single panel answer",
   );
   assert.equal(seen[seen.length - 1], "p/judge");
   assert.equal(res.status, 200);

@@ -2,8 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 const claudeExtraUsage = await import("../../src/lib/providers/claudeExtraUsage.ts");
-const { normalizeProviderSpecificData } =
-  await import("../../src/lib/providers/requestDefaults.ts");
+const { normalizeProviderSpecificData } = await import(
+  "../../src/lib/providers/requestDefaults.ts"
+);
 const { updateProviderConnectionSchema } = await import("../../src/shared/validation/schemas.ts");
 
 function futureIso(ms = 60_000) {
@@ -14,11 +15,11 @@ test("Claude extra-usage blocking defaults to enabled and validates provider pay
   assert.equal(claudeExtraUsage.isClaudeExtraUsageBlockEnabled("claude", {}), true);
   assert.equal(
     claudeExtraUsage.isClaudeExtraUsageBlockEnabled("claude", { blockExtraUsage: false }),
-    false
+    false,
   );
   assert.equal(
     claudeExtraUsage.isClaudeExtraUsageBlockEnabled("openai", { blockExtraUsage: false }),
-    false
+    false,
   );
 
   assert.deepEqual(normalizeProviderSpecificData("claude", { blockExtraUsage: "nope", tag: "x" }), {
@@ -52,7 +53,7 @@ test("Claude extra-usage state builds an unavailable cooldown update from queued
         "session (5h)": { remainingPercentage: 0, resetAt: sessionReset },
         "weekly (7d)": { remainingPercentage: 62, resetAt: weeklyReset },
       },
-    }
+    },
   );
 
   assert.equal(update?.testStatus, "unavailable");

@@ -1,14 +1,14 @@
-import { Switch as Kobalte } from "@kobalte/core/switch"
-import { Show, splitProps } from "solid-js"
-import type { ComponentProps, ParentProps } from "solid-js"
+import { Switch as Kobalte } from "@kobalte/core/switch";
+import { Show, splitProps } from "solid-js";
+import type { ComponentProps, ParentProps } from "solid-js";
 
 export interface SwitchProps extends ParentProps<ComponentProps<typeof Kobalte>> {
-  hideLabel?: boolean
-  description?: string
+  hideLabel?: boolean;
+  description?: string;
 }
 
 export function Switch(props: SwitchProps) {
-  const [local, others] = splitProps(props, ["children", "class", "hideLabel", "description"])
+  const [local, others] = splitProps(props, ["children", "class", "hideLabel", "description"]);
   return (
     <Kobalte {...others} class={local.class} data-component="switch">
       <Kobalte.Input data-slot="switch-input" />
@@ -18,12 +18,14 @@ export function Switch(props: SwitchProps) {
         </Kobalte.Label>
       </Show>
       <Show when={local.description}>
-        <Kobalte.Description data-slot="switch-description">{local.description}</Kobalte.Description>
+        <Kobalte.Description data-slot="switch-description">
+          {local.description}
+        </Kobalte.Description>
       </Show>
       <Kobalte.ErrorMessage data-slot="switch-error" />
       <Kobalte.Control data-slot="switch-control">
         <Kobalte.Thumb data-slot="switch-thumb" />
       </Kobalte.Control>
     </Kobalte>
-  )
+  );
 }

@@ -79,7 +79,7 @@ test("#3954 filterAvailableAccounts: excludes a numeric-epoch-string future cool
   const available = filterAvailableAccounts(accts as never);
   assert.deepEqual(
     available.map((a) => a.id),
-    ["healthy"]
+    ["healthy"],
   );
 });
 
@@ -105,7 +105,7 @@ test("#3954 setConnectionRateLimitUntil stores a numeric string that selection s
   // It is persisted in the numeric-string form (NOT ISO) — this is the trap.
   assert.ok(
     /^\d+(\.\d+)?$/.test(String(stored)),
-    `expected numeric epoch string, got ${String(stored)}`
+    `expected numeric epoch string, got ${String(stored)}`,
   );
   // The selection filter must still treat this connection as unavailable.
   assert.equal(isAccountUnavailable(String(stored)), true);

@@ -13,7 +13,7 @@ import os from "node:os";
 import path from "node:path";
 
 const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-adaptive-context-budget-db-")
+  path.join(os.tmpdir(), "omniroute-adaptive-context-budget-db-"),
 );
 const ORIGINAL_DATA_DIR = process.env.DATA_DIR;
 process.env.DATA_DIR = TEST_DATA_DIR;
@@ -71,7 +71,12 @@ describe("bug #7005: adaptive context-budget dial is configurable", () => {
 
   it("updateCompressionSettings() persists a partial contextBudget merge", async () => {
     await updateCompressionSettings({
-      contextBudget: { ...DEFAULT_CONTEXT_BUDGET, mode: "floor", policy: "absolute", absoluteBudget: 8000 },
+      contextBudget: {
+        ...DEFAULT_CONTEXT_BUDGET,
+        mode: "floor",
+        policy: "absolute",
+        absoluteBudget: 8000,
+      },
     });
     const settings = await getCompressionSettings();
     assert.equal(settings.contextBudget?.mode, "floor");

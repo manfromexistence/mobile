@@ -1,14 +1,14 @@
-import "./[...404].css"
-import { Title } from "@solidjs/meta"
-import { HttpStatusCode } from "@solidjs/start"
-import logoLight from "../asset/logo-ornate-light.svg"
-import logoDark from "../asset/logo-ornate-dark.svg"
-import { useI18n } from "~/context/i18n"
-import { useLanguage } from "~/context/language"
+import "./[...404].css";
+import { Title } from "@solidjs/meta";
+import { HttpStatusCode } from "@solidjs/start";
+import logoLight from "../asset/logo-ornate-light.svg";
+import logoDark from "../asset/logo-ornate-dark.svg";
+import { useI18n } from "~/context/i18n";
+import { useLanguage } from "~/context/language";
 
 export default function NotFound() {
-  const i18n = useI18n()
-  const language = useLanguage()
+  const i18n = useI18n();
+  const language = useLanguage();
   return (
     <main data-page="not-found">
       <Title>{i18n.t("notFound.title")}</Title>
@@ -38,5 +38,5 @@ export default function NotFound() {
         </section>
       </div>
     </main>
-  )
+  );
 }

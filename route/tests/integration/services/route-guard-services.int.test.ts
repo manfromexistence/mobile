@@ -136,28 +136,28 @@ describe("LOCAL_ONLY_API_PREFIXES constant integrity", () => {
   it("includes /api/services/ (T-10 hard rule)", () => {
     assert.ok(
       LOCAL_ONLY_API_PREFIXES.includes("/api/services/"),
-      `Expected /api/services/ in LOCAL_ONLY_API_PREFIXES, got: ${JSON.stringify(LOCAL_ONLY_API_PREFIXES)}`
+      `Expected /api/services/ in LOCAL_ONLY_API_PREFIXES, got: ${JSON.stringify(LOCAL_ONLY_API_PREFIXES)}`,
     );
   });
 
   it("includes /dashboard/providers/services/ (T-07 reverse proxy hard rule)", () => {
     assert.ok(
       LOCAL_ONLY_API_PREFIXES.includes("/dashboard/providers/services/"),
-      `Expected /dashboard/providers/services/ in LOCAL_ONLY_API_PREFIXES, got: ${JSON.stringify(LOCAL_ONLY_API_PREFIXES)}`
+      `Expected /dashboard/providers/services/ in LOCAL_ONLY_API_PREFIXES, got: ${JSON.stringify(LOCAL_ONLY_API_PREFIXES)}`,
     );
   });
 
   it("includes /api/mcp/ (pre-existing hard rule)", () => {
     assert.ok(
       LOCAL_ONLY_API_PREFIXES.includes("/api/mcp/"),
-      "Expected /api/mcp/ in LOCAL_ONLY_API_PREFIXES"
+      "Expected /api/mcp/ in LOCAL_ONLY_API_PREFIXES",
     );
   });
 
   it("includes /api/cli-tools/runtime/ (pre-existing hard rule)", () => {
     assert.ok(
       LOCAL_ONLY_API_PREFIXES.includes("/api/cli-tools/runtime/"),
-      "Expected /api/cli-tools/runtime/ in LOCAL_ONLY_API_PREFIXES"
+      "Expected /api/cli-tools/runtime/ in LOCAL_ONLY_API_PREFIXES",
     );
   });
 
@@ -168,7 +168,7 @@ describe("LOCAL_ONLY_API_PREFIXES constant integrity", () => {
     assert.equal(
       LOCAL_ONLY_API_PREFIXES.length,
       5,
-      `Expected 5 LOCAL_ONLY_API_PREFIXES, got ${LOCAL_ONLY_API_PREFIXES.length}: ${JSON.stringify(LOCAL_ONLY_API_PREFIXES)}`
+      `Expected 5 LOCAL_ONLY_API_PREFIXES, got ${LOCAL_ONLY_API_PREFIXES.length}: ${JSON.stringify(LOCAL_ONLY_API_PREFIXES)}`,
     );
   });
 });
@@ -177,14 +177,14 @@ describe("SPAWN_CAPABLE_PREFIXES constant integrity", () => {
   it("includes /api/services/ (can run npm install + spawn node)", () => {
     assert.ok(
       SPAWN_CAPABLE_PREFIXES.includes("/api/services/"),
-      `Expected /api/services/ in SPAWN_CAPABLE_PREFIXES, got: ${JSON.stringify(SPAWN_CAPABLE_PREFIXES)}`
+      `Expected /api/services/ in SPAWN_CAPABLE_PREFIXES, got: ${JSON.stringify(SPAWN_CAPABLE_PREFIXES)}`,
     );
   });
 
   it("includes /api/cli-tools/runtime/ (pre-existing spawn-capable)", () => {
     assert.ok(
       SPAWN_CAPABLE_PREFIXES.includes("/api/cli-tools/runtime/"),
-      "Expected /api/cli-tools/runtime/ in SPAWN_CAPABLE_PREFIXES"
+      "Expected /api/cli-tools/runtime/ in SPAWN_CAPABLE_PREFIXES",
     );
   });
 
@@ -192,21 +192,21 @@ describe("SPAWN_CAPABLE_PREFIXES constant integrity", () => {
     assert.equal(
       SPAWN_CAPABLE_PREFIXES.length,
       2,
-      `Expected 2 SPAWN_CAPABLE_PREFIXES, got ${SPAWN_CAPABLE_PREFIXES.length}: ${JSON.stringify(SPAWN_CAPABLE_PREFIXES)}`
+      `Expected 2 SPAWN_CAPABLE_PREFIXES, got ${SPAWN_CAPABLE_PREFIXES.length}: ${JSON.stringify(SPAWN_CAPABLE_PREFIXES)}`,
     );
   });
 
   it("does NOT include /api/mcp/ (bypassable, not spawn-capable)", () => {
     assert.ok(
       !SPAWN_CAPABLE_PREFIXES.includes("/api/mcp/"),
-      "/api/mcp/ should NOT be in SPAWN_CAPABLE_PREFIXES"
+      "/api/mcp/ should NOT be in SPAWN_CAPABLE_PREFIXES",
     );
   });
 
   it("does NOT include /dashboard/providers/services/ (local-only but separate concern)", () => {
     assert.ok(
       !SPAWN_CAPABLE_PREFIXES.includes("/dashboard/providers/services/"),
-      "/dashboard/providers/services/ should NOT be in SPAWN_CAPABLE_PREFIXES"
+      "/dashboard/providers/services/ should NOT be in SPAWN_CAPABLE_PREFIXES",
     );
   });
 });

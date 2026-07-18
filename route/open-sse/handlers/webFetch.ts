@@ -65,7 +65,7 @@ type WebFetchProviderId = (typeof WEB_FETCH_PROVIDERS)[number];
 export async function handleWebFetch(
   req: WebFetchRequest,
   credentials: WebFetchCredentials,
-  resolvedProvider?: WebFetchProviderId
+  resolvedProvider?: WebFetchProviderId,
 ): Promise<WebFetchResult> {
   const provider = resolvedProvider ?? req.provider ?? "firecrawl";
 

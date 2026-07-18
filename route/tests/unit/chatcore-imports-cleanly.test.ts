@@ -18,6 +18,6 @@ test("chatCore.ts imports without a duplicate-declaration transform error", asyn
   assert.equal(
     typeof mod.handleChatCore,
     "function",
-    "handleChatCore must be importable (no duplicate `const settings` in scope)"
+    "handleChatCore must be importable (no duplicate `const settings` in scope)",
   );
 });

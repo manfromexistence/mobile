@@ -165,4 +165,4 @@ export const dict = {
   "ui.toolErrorCard.copyError": "오류 복사",
   "ui.message.duration.seconds": "{{count}}초",
   "ui.message.duration.minutesSeconds": "{{minutes}}분 {{seconds}}초",
-}
+};

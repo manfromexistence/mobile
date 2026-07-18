@@ -1,11 +1,11 @@
-import { Resource } from "@opencode-ai/console-resource"
-import { Actor } from "@opencode-ai/console-core/actor.js"
-import { action, json, query } from "@solidjs/router"
-import { withActor } from "~/context/auth.withActor"
-import { Billing } from "@opencode-ai/console-core/billing.js"
-import { and, Database, desc, eq, isNull } from "@opencode-ai/console-core/drizzle/index.js"
-import { WorkspaceTable } from "@opencode-ai/console-core/schema/workspace.sql.js"
-import { UserTable } from "@opencode-ai/console-core/schema/user.sql.js"
+import { Resource } from "@opencode-ai/console-resource";
+import { Actor } from "@opencode-ai/console-core/actor.js";
+import { action, json, query } from "@solidjs/router";
+import { withActor } from "~/context/auth.withActor";
+import { Billing } from "@opencode-ai/console-core/billing.js";
+import { and, Database, desc, eq, isNull } from "@opencode-ai/console-core/drizzle/index.js";
+import { WorkspaceTable } from "@opencode-ai/console-core/schema/workspace.sql.js";
+import { UserTable } from "@opencode-ai/console-core/schema/user.sql.js";
 
 export function formatDateForTable(date: Date) {
   const options: Intl.DateTimeFormatOptions = {
@@ -14,8 +14,8 @@ export function formatDateForTable(date: Date) {
     hour: "numeric",
     minute: "2-digit",
     hour12: true,
-  }
-  return date.toLocaleDateString(undefined, options).replace(",", ",")
+  };
+  return date.toLocaleDateString(undefined, options).replace(",", ",");
 }
 
 export function formatDateUTC(date: Date) {
@@ -29,19 +29,19 @@ export function formatDateUTC(date: Date) {
     second: "2-digit",
     timeZoneName: "short",
     timeZone: "UTC",
-  }
-  return date.toLocaleDateString(undefined, options)
+  };
+  return date.toLocaleDateString(undefined, options);
 }
 
 export function formatBalance(amount: number) {
-  const balance = ((amount ?? 0) / 100000000).toFixed(2)
-  return balance === "-0.00" ? "0.00" : balance
+  const balance = ((amount ?? 0) / 100000000).toFixed(2);
+  return balance === "-0.00" ? "0.00" : balance;
 }
 
 export async function getLastSeenWorkspaceID() {
-  "use server"
+  "use server";
   return withActor(async () => {
-    const actor = Actor.assert("account")
+    const actor = Actor.assert("account");
     return Database.use(async (tx) =>
       tx
         .select({ id: WorkspaceTable.id })
@@ -57,23 +57,26 @@ export async function getLastSeenWorkspaceID() {
         .orderBy(desc(UserTable.timeSeen))
         .limit(1)
         .then((x) => x[0]?.id),
-    )
-  })
+    );
+  });
 }
 
 export const querySessionInfo = query(async (workspaceID: string) => {
-  "use server"
+  "use server";
   return withActor(() => {
     return {
       isAdmin: Actor.userRole() === "admin",
-      isBeta: Resource.App.stage === "production" ? workspaceID === "wrk_01K46JDFR0E75SG2Q8K172KF3Y" : true,
-    }
-  }, workspaceID)
-}, "session.get")
+      isBeta:
+        Resource.App.stage === "production"
+          ? workspaceID === "wrk_01K46JDFR0E75SG2Q8K172KF3Y"
+          : true,
+    };
+  }, workspaceID);
+}, "session.get");
 
 export const createCheckoutUrl = action(
   async (workspaceID: string, amount: number, successUrl: string, cancelUrl: string) => {
-    "use server"
+    "use server";
     return json(
       await withActor(
         () =>
@@ -85,15 +88,15 @@ export const createCheckoutUrl = action(
             })),
         workspaceID,
       ),
-    )
+    );
   },
   "checkoutUrl",
-)
+);
 
 export const queryBillingInfo = query(async (workspaceID: string) => {
-  "use server"
+  "use server";
   return withActor(async () => {
-    const billing = await Billing.get()
+    const billing = await Billing.get();
     return {
       customerID: billing.customerID,
       paymentMethodID: billing.paymentMethodID,
@@ -117,6 +120,6 @@ export const queryBillingInfo = query(async (workspaceID: string) => {
       timeSubscriptionSelected: billing.timeSubscriptionSelected,
       lite: billing.lite,
       liteSubscriptionID: billing.liteSubscriptionID,
-    }
-  }, workspaceID)
-}, "billing.get")
+    };
+  }, workspaceID);
+}, "billing.get");

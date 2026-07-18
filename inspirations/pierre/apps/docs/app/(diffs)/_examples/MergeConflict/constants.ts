@@ -1,11 +1,11 @@
-import { DEFAULT_THEMES } from '@pierre/diffs';
-import type { PreloadUnresolvedFileOptions } from '@pierre/diffs/ssr';
+import { DEFAULT_THEMES } from "@pierre/diffs";
+import type { PreloadUnresolvedFileOptions } from "@pierre/diffs/ssr";
 
-import { CustomScrollbarCSS } from '@/components/CustomScrollbarCSS';
+import { CustomScrollbarCSS } from "@/components/CustomScrollbarCSS";
 
 export const MERGE_CONFLICT_EXAMPLE: PreloadUnresolvedFileOptions<undefined> = {
   file: {
-    name: 'auth-session.ts',
+    name: "auth-session.ts",
     contents: `import { db } from './db';
 import { randomUUID } from 'crypto';
 import { redis } from './cache';
@@ -97,9 +97,9 @@ export async function validateSession(token: string): Promise<Session | null> {
   },
   options: {
     theme: DEFAULT_THEMES,
-    themeType: 'dark',
-    overflow: 'wrap',
-    diffIndicators: 'none',
+    themeType: "dark",
+    overflow: "wrap",
+    diffIndicators: "none",
     unsafeCSS: CustomScrollbarCSS,
     maxContextLines: 3,
   },

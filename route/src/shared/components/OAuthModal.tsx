@@ -57,7 +57,7 @@ export default function OAuthModal({
   const [polling, setPolling] = useState(false);
   // API-key paste mode: for providers that accept a token directly (windsurf, devin-cli)
   const [showPasteToken, setShowPasteToken] = useState(
-    provider === "windsurf" || provider === "devin-cli" || provider === "grok-cli"
+    provider === "windsurf" || provider === "devin-cli" || provider === "grok-cli",
   );
   const [pasteToken, setPasteToken] = useState("");
   const [savingToken, setSavingToken] = useState(false);
@@ -111,7 +111,7 @@ export default function OAuthModal({
       try {
         if (!authData.redirectUri || !authData.codeVerifier) {
           throw new Error(
-            "OAuth session is incomplete (missing redirect URI or code verifier). Restart the connection and try again."
+            "OAuth session is incomplete (missing redirect URI or code verifier). Restart the connection and try again.",
           );
         }
 
@@ -162,7 +162,7 @@ export default function OAuthModal({
             "redirect_uri_mismatch: The default Google OAuth credentials only work on localhost. " +
               "For remote use, configure your own OAuth credentials via environment variables: " +
               "ANTIGRAVITY_OAUTH_CLIENT_ID and ANTIGRAVITY_OAUTH_CLIENT_SECRET" +
-              ". See the README section 'OAuth on a Remote Server'."
+              ". See the README section 'OAuth on a Remote Server'.",
           );
         } else {
           setError(err.message);
@@ -170,7 +170,7 @@ export default function OAuthModal({
         setStep("error");
       }
     },
-    [authData, provider, onSuccess, reauthConnection]
+    [authData, provider, onSuccess, reauthConnection],
   );
 
   // Save a raw API token directly (windsurf / devin-cli import-token path)
@@ -254,7 +254,7 @@ export default function OAuthModal({
       setStep("error");
       setPolling(false);
     },
-    [provider, onSuccess, reauthConnection]
+    [provider, onSuccess, reauthConnection],
   );
 
   // Start OAuth flow
@@ -341,7 +341,7 @@ export default function OAuthModal({
             const serverData = (await parseResponseBody(serverRes)) as Record<string, unknown>;
             if (!serverRes.ok)
               throw new Error(
-                getErrorMessage(serverData, serverRes.status, "Failed to start callback server")
+                getErrorMessage(serverData, serverRes.status, "Failed to start callback server"),
               );
 
             setAuthData({ ...serverData, redirectUri: serverData.redirectUri });
@@ -382,7 +382,7 @@ export default function OAuthModal({
           } catch (pkceErr) {
             console.warn(
               `${provider} callback server failed, falling back to manual flow`,
-              pkceErr
+              pkceErr,
             );
             setPolling(false);
             forceManual = true;
@@ -432,7 +432,7 @@ export default function OAuthModal({
       }
 
       const res = await fetch(
-        `/api/oauth/${provider}/authorize?redirect_uri=${encodeURIComponent(redirectUri)}`
+        `/api/oauth/${provider}/authorize?redirect_uri=${encodeURIComponent(redirectUri)}`,
       );
       const data = (await parseResponseBody(res)) as Record<string, unknown>;
       if (!res.ok) {
@@ -443,7 +443,7 @@ export default function OAuthModal({
       if (!data.authUrl) {
         throw new Error(
           data.error ||
-            "Browser OAuth is unavailable for this provider in the current environment. Use the supported auth method instead."
+            "Browser OAuth is unavailable for this provider in the current environment. Use the supported auth method instead.",
         );
       }
 
@@ -644,7 +644,7 @@ export default function OAuthModal({
           setStep("input");
         }
       },
-      5 * 60 * 1000
+      5 * 60 * 1000,
     );
 
     return () => {
@@ -683,7 +683,7 @@ export default function OAuthModal({
 
       if (!authData) {
         throw new Error(
-          "OAuth session not initialized. Restart the connection flow and try again."
+          "OAuth session not initialized. Restart the connection flow and try again.",
         );
       }
 
@@ -712,7 +712,7 @@ export default function OAuthModal({
 
       if (!code) {
         throw new Error(
-          "No authorization code found. Paste the callback URL or the Authentication Code."
+          "No authorization code found. Paste the callback URL or the Authentication Code.",
         );
       }
 

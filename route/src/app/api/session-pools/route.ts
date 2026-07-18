@@ -15,7 +15,7 @@ export async function GET(request: Request): Promise<Response> {
   } catch (err) {
     return NextResponse.json(
       { error: sanitizeErrorMessage(err) || "Failed to get session pool health" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

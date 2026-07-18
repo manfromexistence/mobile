@@ -1,1 +1,1 @@
-await import("../test/server/httpapi-exercise/index")
+await import("../test/server/httpapi-exercise/index");

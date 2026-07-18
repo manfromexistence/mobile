@@ -22,7 +22,7 @@ test("restoreClaudePassthroughToolNames rewrites tool_use block names", () => {
   const map = new Map([[`${CLAUDE_OAUTH_TOOL_PREFIX}x`, "x"]]);
   const restored = restoreClaudePassthroughToolNames(
     { content: [{ type: "tool_use", name: `${CLAUDE_OAUTH_TOOL_PREFIX}x` }] },
-    map
+    map,
   ) as { content: { name: string }[] };
   assert.equal(restored.content[0].name, "x");
   const body = { content: [{ type: "tool_use", name: "y" }] };

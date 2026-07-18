@@ -1,48 +1,48 @@
-import { createStore } from "solid-js/store"
-import { dirname } from "node:path"
-import { createMemo, For, Match, Show, Switch } from "solid-js"
-import { Portal, useRenderer, useTerminalDimensions, type JSX } from "@opentui/solid"
-import type { TextareaRenderable } from "@opentui/core"
-import { useTheme, selectedForeground } from "../../context/theme"
-import type { PermissionRequest } from "@opencode-ai/sdk/v2"
-import { useSDK } from "../../context/sdk"
-import { SplitBorder } from "../../ui/border"
-import { useSync } from "../../context/sync"
-import { useProject } from "../../context/project"
-import { filetype } from "../../util/filetype"
-import { Locale } from "../../util/locale"
-import { webSearchProviderLabel } from "../../util/tool-display"
-import { getScrollAcceleration } from "../../util/scroll"
-import { useTuiConfig } from "../../config"
-import { OPENCODE_BASE_MODE, useBindings, useCommandShortcut } from "../../keymap"
-import { usePathFormatter } from "../../context/path-format"
+import { createStore } from "solid-js/store";
+import { dirname } from "node:path";
+import { createMemo, For, Match, Show, Switch } from "solid-js";
+import { Portal, useRenderer, useTerminalDimensions, type JSX } from "@opentui/solid";
+import type { TextareaRenderable } from "@opentui/core";
+import { useTheme, selectedForeground } from "../../context/theme";
+import type { PermissionRequest } from "@opencode-ai/sdk/v2";
+import { useSDK } from "../../context/sdk";
+import { SplitBorder } from "../../ui/border";
+import { useSync } from "../../context/sync";
+import { useProject } from "../../context/project";
+import { filetype } from "../../util/filetype";
+import { Locale } from "../../util/locale";
+import { webSearchProviderLabel } from "../../util/tool-display";
+import { getScrollAcceleration } from "../../util/scroll";
+import { useTuiConfig } from "../../config";
+import { OPENCODE_BASE_MODE, useBindings, useCommandShortcut } from "../../keymap";
+import { usePathFormatter } from "../../context/path-format";
 
-type PermissionStage = "permission" | "always" | "reject"
+type PermissionStage = "permission" | "always" | "reject";
 
 function EditBody(props: { request: PermissionRequest }) {
-  const themeState = useTheme()
-  const theme = themeState.theme
-  const syntax = themeState.syntax
-  const config = useTuiConfig()
-  const dimensions = useTerminalDimensions()
+  const themeState = useTheme();
+  const theme = themeState.theme;
+  const syntax = themeState.syntax;
+  const config = useTuiConfig();
+  const dimensions = useTerminalDimensions();
 
   const filepath = createMemo(() => {
-    const value = props.request.metadata?.filepath
-    return typeof value === "string" ? value : ""
-  })
+    const value = props.request.metadata?.filepath;
+    return typeof value === "string" ? value : "";
+  });
   const diff = createMemo(() => {
-    const value = props.request.metadata?.diff
-    return typeof value === "string" ? value : ""
-  })
+    const value = props.request.metadata?.diff;
+    return typeof value === "string" ? value : "";
+  });
 
   const view = createMemo(() => {
-    const diffStyle = config.diff_style
-    if (diffStyle === "stacked") return "unified"
-    return dimensions().width > 120 ? "split" : "unified"
-  })
+    const diffStyle = config.diff_style;
+    if (diffStyle === "stacked") return "unified";
+    return dimensions().width > 120 ? "split" : "unified";
+  });
 
-  const ft = createMemo(() => filetype(filepath()))
-  const scrollAcceleration = createMemo(() => getScrollAcceleration(config))
+  const ft = createMemo(() => filetype(filepath()));
+  const scrollAcceleration = createMemo(() => getScrollAcceleration(config));
 
   return (
     <box flexDirection="column" gap={1}>
@@ -84,11 +84,11 @@ function EditBody(props: { request: PermissionRequest }) {
         </box>
       </Show>
     </box>
-  )
+  );
 }
 
 function TextBody(props: { title: string; description?: string; icon?: string }) {
-  const { theme } = useTheme()
+  const { theme } = useTheme();
   return (
     <>
       <box flexDirection="row" gap={1} paddingLeft={1}>
@@ -105,33 +105,33 @@ function TextBody(props: { title: string; description?: string; icon?: string })
         </box>
       </Show>
     </>
-  )
+  );
 }
 
 export function PermissionPrompt(props: { request: PermissionRequest; directory?: string }) {
-  const sdk = useSDK()
-  const project = useProject()
-  const sync = useSync()
+  const sdk = useSDK();
+  const project = useProject();
+  const sync = useSync();
   const [store, setStore] = createStore({
     stage: "permission" as PermissionStage,
-  })
-  const pathFormatter = usePathFormatter()
+  });
+  const pathFormatter = usePathFormatter();
 
-  const session = createMemo(() => sync.data.session.find((s) => s.id === props.request.sessionID))
+  const session = createMemo(() => sync.data.session.find((s) => s.id === props.request.sessionID));
 
   const input = createMemo(() => {
-    const tool = props.request.tool
-    if (!tool) return {}
-    const parts = sync.data.part[tool.messageID] ?? []
+    const tool = props.request.tool;
+    if (!tool) return {};
+    const parts = sync.data.part[tool.messageID] ?? [];
     for (const part of parts) {
       if (part.type === "tool" && part.callID === tool.callID && part.state.status !== "pending") {
-        return part.state.input ?? {}
+        return part.state.input ?? {};
       }
     }
-    return {}
-  })
+    return {};
+  });
 
-  const { theme } = useTheme()
+  const { theme } = useTheme();
 
   return (
     <Switch>
@@ -141,11 +141,17 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
           body={
             <Switch>
               <Match when={props.request.always.length === 1 && props.request.always[0] === "*"}>
-                <TextBody title={"This will allow " + props.request.permission + " until OpenCode is restarted."} />
+                <TextBody
+                  title={
+                    "This will allow " + props.request.permission + " until OpenCode is restarted."
+                  }
+                />
               </Match>
               <Match when={true}>
                 <box paddingLeft={1} gap={1}>
-                  <text fg={theme.textMuted}>This will allow the following patterns until OpenCode is restarted</text>
+                  <text fg={theme.textMuted}>
+                    This will allow the following patterns until OpenCode is restarted
+                  </text>
                   <box>
                     <For each={props.request.always}>
                       {(pattern) => (
@@ -163,14 +169,14 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
           options={{ confirm: "Confirm", cancel: "Cancel" }}
           escapeKey="cancel"
           onSelect={(option) => {
-            setStore("stage", "permission")
-            if (option === "cancel") return
+            setStore("stage", "permission");
+            if (option === "cancel") return;
             void sdk.client.permission.reply({
               reply: "always",
               requestID: props.request.id,
               directory: props.directory,
               workspace: project.workspace.current(),
-            })
+            });
           }}
         />
       </Match>
@@ -183,32 +189,32 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
               directory: props.directory,
               message: message || undefined,
               workspace: project.workspace.current(),
-            })
+            });
           }}
           onCancel={() => {
-            setStore("stage", "permission")
+            setStore("stage", "permission");
           }}
         />
       </Match>
       <Match when={store.stage === "permission"}>
         {(() => {
           const info = () => {
-            const permission = props.request.permission
-            const data = input()
+            const permission = props.request.permission;
+            const data = input();
 
             if (permission === "edit") {
-              const raw = props.request.metadata?.filepath
-              const filepath = typeof raw === "string" ? raw : ""
+              const raw = props.request.metadata?.filepath;
+              const filepath = typeof raw === "string" ? raw : "";
               return {
                 icon: "→",
                 title: `Edit ${pathFormatter.format(filepath)}`,
                 body: <EditBody request={props.request} />,
-              }
+              };
             }
 
             if (permission === "read") {
-              const raw = data.filePath
-              const filePath = typeof raw === "string" ? raw : ""
+              const raw = data.filePath;
+              const filePath = typeof raw === "string" ? raw : "";
               return {
                 icon: "→",
                 title: `Read ${pathFormatter.format(filePath)}`,
@@ -219,11 +225,11 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
                     </box>
                   </Show>
                 ),
-              }
+              };
             }
 
             if (permission === "glob") {
-              const pattern = typeof data.pattern === "string" ? data.pattern : ""
+              const pattern = typeof data.pattern === "string" ? data.pattern : "";
               return {
                 icon: "✱",
                 title: `Glob "${pattern}"`,
@@ -234,11 +240,11 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
                     </box>
                   </Show>
                 ),
-              }
+              };
             }
 
             if (permission === "grep") {
-              const pattern = typeof data.pattern === "string" ? data.pattern : ""
+              const pattern = typeof data.pattern === "string" ? data.pattern : "";
               return {
                 icon: "✱",
                 title: `Grep "${pattern}"`,
@@ -249,12 +255,12 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
                     </box>
                   </Show>
                 ),
-              }
+              };
             }
 
             if (permission === "list") {
-              const raw = data.path
-              const dir = typeof raw === "string" ? raw : ""
+              const raw = data.path;
+              const dir = typeof raw === "string" ? raw : "";
               return {
                 icon: "→",
                 title: `List ${pathFormatter.format(dir)}`,
@@ -265,11 +271,11 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
                     </box>
                   </Show>
                 ),
-              }
+              };
             }
 
             if (permission === "bash") {
-              const command = typeof data.command === "string" ? data.command : ""
+              const command = typeof data.command === "string" ? data.command : "";
               return {
                 icon: "#",
                 title: "Shell command",
@@ -280,12 +286,12 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
                     </box>
                   </Show>
                 ),
-              }
+              };
             }
 
             if (permission === "task") {
-              const type = typeof data.subagent_type === "string" ? data.subagent_type : "Unknown"
-              const desc = typeof data.description === "string" ? data.description : ""
+              const type = typeof data.subagent_type === "string" ? data.subagent_type : "Unknown";
+              const desc = typeof data.description === "string" ? data.description : "";
               return {
                 icon: "#",
                 title: `${Locale.titlecase(type)} Task`,
@@ -296,11 +302,11 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
                     </box>
                   </Show>
                 ),
-              }
+              };
             }
 
             if (permission === "webfetch") {
-              const url = typeof data.url === "string" ? data.url : ""
+              const url = typeof data.url === "string" ? data.url : "";
               return {
                 icon: "%",
                 title: `WebFetch ${url}`,
@@ -311,11 +317,11 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
                     </box>
                   </Show>
                 ),
-              }
+              };
             }
 
             if (permission === "websearch") {
-              const query = typeof data.query === "string" ? data.query : ""
+              const query = typeof data.query === "string" ? data.query : "";
               return {
                 icon: "◈",
                 title: `${webSearchProviderLabel(data.provider)} "${query}"`,
@@ -326,20 +332,26 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
                     </box>
                   </Show>
                 ),
-              }
+              };
             }
 
             if (permission === "external_directory") {
-              const meta = props.request.metadata ?? {}
-              const parent = typeof meta["parentDir"] === "string" ? meta["parentDir"] : undefined
-              const filepath = typeof meta["filepath"] === "string" ? meta["filepath"] : undefined
-              const pattern = props.request.patterns?.[0]
+              const meta = props.request.metadata ?? {};
+              const parent = typeof meta["parentDir"] === "string" ? meta["parentDir"] : undefined;
+              const filepath = typeof meta["filepath"] === "string" ? meta["filepath"] : undefined;
+              const pattern = props.request.patterns?.[0];
               const derived =
-                typeof pattern === "string" ? (pattern.includes("*") ? dirname(pattern) : pattern) : undefined
+                typeof pattern === "string"
+                  ? pattern.includes("*")
+                    ? dirname(pattern)
+                    : pattern
+                  : undefined;
 
-              const raw = parent ?? filepath ?? derived
-              const dir = pathFormatter.format(raw)
-              const patterns = (props.request.patterns ?? []).filter((p): p is string => typeof p === "string")
+              const raw = parent ?? filepath ?? derived;
+              const dir = pathFormatter.format(raw);
+              const patterns = (props.request.patterns ?? []).filter(
+                (p): p is string => typeof p === "string",
+              );
 
               return {
                 icon: "←",
@@ -354,7 +366,7 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
                     </box>
                   </Show>
                 ),
-              }
+              };
             }
 
             if (permission === "doom_loop") {
@@ -363,10 +375,12 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
                 title: "Continue after repeated failures",
                 body: (
                   <box paddingLeft={1}>
-                    <text fg={theme.textMuted}>This keeps the session running despite repeated failures.</text>
+                    <text fg={theme.textMuted}>
+                      This keeps the session running despite repeated failures.
+                    </text>
                   </box>
                 ),
-              }
+              };
             }
 
             return {
@@ -377,10 +391,10 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
                   <text fg={theme.textMuted}>{"Tool: " + permission}</text>
                 </box>
               ),
-            }
-          }
+            };
+          };
 
-          const current = info()
+          const current = info();
 
           const header = () => (
             <box flexDirection="column" gap={0}>
@@ -395,7 +409,7 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
                 <text fg={theme.text}>{current.title}</text>
               </box>
             </box>
-          )
+          );
 
           const body = (
             <Prompt
@@ -407,45 +421,45 @@ export function PermissionPrompt(props: { request: PermissionRequest; directory?
               fullscreen
               onSelect={(option) => {
                 if (option === "always") {
-                  setStore("stage", "always")
-                  return
+                  setStore("stage", "always");
+                  return;
                 }
                 if (option === "reject") {
                   if (session()?.parentID) {
-                    setStore("stage", "reject")
-                    return
+                    setStore("stage", "reject");
+                    return;
                   }
                   void sdk.client.permission.reply({
                     reply: "reject",
                     requestID: props.request.id,
                     directory: props.directory,
                     workspace: project.workspace.current(),
-                  })
-                  return
+                  });
+                  return;
                 }
                 void sdk.client.permission.reply({
                   reply: "once",
                   requestID: props.request.id,
                   directory: props.directory,
                   workspace: project.workspace.current(),
-                })
+                });
               }}
             />
-          )
+          );
 
-          return body
+          return body;
         })()}
       </Match>
     </Switch>
-  )
+  );
 }
 
 function RejectPrompt(props: { onConfirm: (message: string) => void; onCancel: () => void }) {
-  let input: TextareaRenderable
-  const { theme } = useTheme()
-  const tuiConfig = useTuiConfig()
-  const dimensions = useTerminalDimensions()
-  const narrow = createMemo(() => dimensions().width < 80)
+  let input: TextareaRenderable;
+  const { theme } = useTheme();
+  const tuiConfig = useTuiConfig();
+  const dimensions = useTerminalDimensions();
+  const narrow = createMemo(() => dimensions().width < 80);
   useBindings(() => ({
     mode: OPENCODE_BASE_MODE,
     commands: [
@@ -454,12 +468,17 @@ function RejectPrompt(props: { onConfirm: (message: string) => void; onCancel: (
         title: "Cancel permission rejection",
         category: "Permission",
         run() {
-          props.onCancel()
+          props.onCancel();
         },
       },
     ],
     bindings: [
-      { key: "escape", desc: "Cancel permission rejection", group: "Permission", cmd: () => props.onCancel() },
+      {
+        key: "escape",
+        desc: "Cancel permission rejection",
+        group: "Permission",
+        cmd: () => props.onCancel(),
+      },
       ...tuiConfig.keybinds.get("app.exit"),
       {
         key: "return",
@@ -468,7 +487,7 @@ function RejectPrompt(props: { onConfirm: (message: string) => void; onCancel: (
         cmd: () => props.onConfirm(input.plainText),
       },
     ],
-  }))
+  }));
 
   return (
     <box
@@ -500,8 +519,8 @@ function RejectPrompt(props: { onConfirm: (message: string) => void; onCancel: (
       >
         <textarea
           ref={(val: TextareaRenderable) => {
-            input = val
-            val.traits = { status: "REJECT" }
+            input = val;
+            val.traits = { status: "REJECT" };
           }}
           focused
           textColor={theme.text}
@@ -518,28 +537,28 @@ function RejectPrompt(props: { onConfirm: (message: string) => void; onCancel: (
         </box>
       </box>
     </box>
-  )
+  );
 }
 
 function Prompt<const T extends Record<string, string>>(props: {
-  title: string
-  header?: JSX.Element
-  body: JSX.Element
-  options: T
-  escapeKey?: keyof T
-  fullscreen?: boolean
-  onSelect: (option: keyof T) => void
+  title: string;
+  header?: JSX.Element;
+  body: JSX.Element;
+  options: T;
+  escapeKey?: keyof T;
+  fullscreen?: boolean;
+  onSelect: (option: keyof T) => void;
 }) {
-  const { theme } = useTheme()
-  const tuiConfig = useTuiConfig()
-  const dimensions = useTerminalDimensions()
-  const keys = Object.keys(props.options) as (keyof T)[]
+  const { theme } = useTheme();
+  const tuiConfig = useTuiConfig();
+  const dimensions = useTerminalDimensions();
+  const keys = Object.keys(props.options) as (keyof T)[];
   const [store, setStore] = createStore({
     selected: keys[0],
     expanded: false,
-  })
-  const narrow = createMemo(() => dimensions().width < 80)
-  const fullscreenHint = useCommandShortcut("permission.prompt.fullscreen")
+  });
+  const narrow = createMemo(() => dimensions().width < 80);
+  const fullscreenHint = useCommandShortcut("permission.prompt.fullscreen");
 
   useBindings(() => ({
     mode: OPENCODE_BASE_MODE,
@@ -549,8 +568,8 @@ function Prompt<const T extends Record<string, string>>(props: {
         title: "Reject permission",
         category: "Permission",
         run() {
-          if (!props.escapeKey) return
-          props.onSelect(props.escapeKey)
+          if (!props.escapeKey) return;
+          props.onSelect(props.escapeKey);
         },
       },
       {
@@ -558,8 +577,8 @@ function Prompt<const T extends Record<string, string>>(props: {
         title: "Toggle permission fullscreen",
         category: "Permission",
         run() {
-          if (!props.fullscreen) return
-          setStore("expanded", (v) => !v)
+          if (!props.fullscreen) return;
+          setStore("expanded", (v) => !v);
         },
       },
     ],
@@ -569,9 +588,9 @@ function Prompt<const T extends Record<string, string>>(props: {
         desc: "Previous permission option",
         group: "Permission",
         cmd: () => {
-          const idx = keys.indexOf(store.selected)
-          const next = keys[(idx - 1 + keys.length) % keys.length]
-          setStore("selected", next)
+          const idx = keys.indexOf(store.selected);
+          const next = keys[(idx - 1 + keys.length) % keys.length];
+          setStore("selected", next);
         },
       },
       {
@@ -579,9 +598,9 @@ function Prompt<const T extends Record<string, string>>(props: {
         desc: "Previous permission option",
         group: "Permission",
         cmd: () => {
-          const idx = keys.indexOf(store.selected)
-          const next = keys[(idx - 1 + keys.length) % keys.length]
-          setStore("selected", next)
+          const idx = keys.indexOf(store.selected);
+          const next = keys[(idx - 1 + keys.length) % keys.length];
+          setStore("selected", next);
         },
       },
       {
@@ -589,9 +608,9 @@ function Prompt<const T extends Record<string, string>>(props: {
         desc: "Next permission option",
         group: "Permission",
         cmd: () => {
-          const idx = keys.indexOf(store.selected)
-          const next = keys[(idx + 1) % keys.length]
-          setStore("selected", next)
+          const idx = keys.indexOf(store.selected);
+          const next = keys[(idx + 1) % keys.length];
+          setStore("selected", next);
         },
       },
       {
@@ -599,9 +618,9 @@ function Prompt<const T extends Record<string, string>>(props: {
         desc: "Next permission option",
         group: "Permission",
         cmd: () => {
-          const idx = keys.indexOf(store.selected)
-          const next = keys[(idx + 1) % keys.length]
-          setStore("selected", next)
+          const idx = keys.indexOf(store.selected);
+          const next = keys[(idx + 1) % keys.length];
+          setStore("selected", next);
         },
       },
       {
@@ -623,10 +642,10 @@ function Prompt<const T extends Record<string, string>>(props: {
       ...(props.escapeKey ? tuiConfig.keybinds.get("app.exit") : []),
       ...(props.fullscreen ? tuiConfig.keybinds.get("permission.prompt.fullscreen") : []),
     ],
-  }))
+  }));
 
-  const hint = createMemo(() => (store.expanded ? "minimize" : "fullscreen"))
-  useRenderer()
+  const hint = createMemo(() => (store.expanded ? "minimize" : "fullscreen"));
+  useRenderer();
 
   const content = () => (
     <box
@@ -682,11 +701,17 @@ function Prompt<const T extends Record<string, string>>(props: {
                 backgroundColor={option === store.selected ? theme.warning : theme.backgroundMenu}
                 onMouseOver={() => setStore("selected", option)}
                 onMouseUp={() => {
-                  setStore("selected", option)
-                  props.onSelect(option)
+                  setStore("selected", option);
+                  props.onSelect(option);
                 }}
               >
-                <text fg={option === store.selected ? selectedForeground(theme, theme.warning) : theme.textMuted}>
+                <text
+                  fg={
+                    option === store.selected
+                      ? selectedForeground(theme, theme.warning)
+                      : theme.textMuted
+                  }
+                >
                   {props.options[option]}
                 </text>
               </box>
@@ -708,11 +733,11 @@ function Prompt<const T extends Record<string, string>>(props: {
         </box>
       </box>
     </box>
-  )
+  );
 
   return (
     <Show when={!store.expanded} fallback={<Portal>{content()}</Portal>}>
       {content()}
     </Show>
-  )
+  );
 }

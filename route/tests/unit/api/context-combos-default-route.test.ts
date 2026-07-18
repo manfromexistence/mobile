@@ -105,12 +105,15 @@ test("GET /api/context/combos/default returns the derived stacked pipeline (refl
 
   const expected = deriveDefaultPlan(
     { caveman: { enabled: true, level: "full" }, headroom: { enabled: true } },
-    true
+    true,
   );
   assert.equal(body.mode, "stacked");
   assert.deepEqual(body.pipeline, expected.stackedPipeline);
   const engineIds = body.pipeline.map((s) => s.engine);
-  assert.ok(engineIds.includes("caveman"), `expected caveman in derived pipeline, got: ${engineIds}`);
+  assert.ok(
+    engineIds.includes("caveman"),
+    `expected caveman in derived pipeline, got: ${engineIds}`,
+  );
 });
 
 test("GET /api/context/combos/default returns off when master switch is disabled", async () => {
@@ -148,7 +151,7 @@ test("PUT /api/context/combos/default is deprecated and rejects writes (not 200)
   // which legitimately appears in the URL inside the deprecation message.
   assert.ok(
     !/\bat\s+\S+\s+\(?\/?\S+:\d+:\d+/.test(JSON.stringify(body)),
-    "error body must not contain a stack trace"
+    "error body must not contain a stack trace",
   );
   assert.ok(!/\n\s+at\s/.test(JSON.stringify(body)), "error body must not contain a stack trace");
 });

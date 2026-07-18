@@ -67,7 +67,7 @@ test("cost-optimized: cheapest model (gpt-4o-mini $0.15) dispatched before expen
   assert.equal(
     seen[0],
     "openai",
-    `expected cheapest provider (openai/gpt-4o-mini $0.15/M) to be dispatched first, got ${seen[0]}`
+    `expected cheapest provider (openai/gpt-4o-mini $0.15/M) to be dispatched first, got ${seen[0]}`,
   );
 });
 
@@ -101,7 +101,7 @@ test("context-optimized: largest-context model (gemini-2.5-flash 1048576) dispat
   assert.equal(
     seen[0],
     "gemini",
-    `expected largest-context provider (gemini/gemini-2.5-flash 1048576) to be dispatched first, got ${seen[0]}`
+    `expected largest-context provider (gemini/gemini-2.5-flash 1048576) to be dispatched first, got ${seen[0]}`,
   );
 });
 
@@ -137,6 +137,6 @@ test("context-relay: preserves combo-definition order (openai dispatched before 
   assert.equal(
     seen[0],
     "openai",
-    `expected context-relay to preserve definition order (openai first), got ${seen[0]}`
+    `expected context-relay to preserve definition order (openai first), got ${seen[0]}`,
   );
 });

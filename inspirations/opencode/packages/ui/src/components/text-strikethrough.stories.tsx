@@ -1,14 +1,14 @@
 // @ts-nocheck
-import { createSignal, onMount } from "solid-js"
-import { createResizeObserver } from "@solid-primitives/resize-observer"
-import { createStore } from "solid-js/store"
-import { useSpring } from "./motion-spring"
-import { TextStrikethrough } from "./text-strikethrough"
+import { createSignal, onMount } from "solid-js";
+import { createResizeObserver } from "@solid-primitives/resize-observer";
+import { createStore } from "solid-js/store";
+import { useSpring } from "./motion-spring";
+import { TextStrikethrough } from "./text-strikethrough";
 
-const TEXT_SHORT = "Remove inline measure nodes"
-const TEXT_MED = "Remove inline measure nodes and keep width morph behavior intact"
+const TEXT_SHORT = "Remove inline measure nodes";
+const TEXT_MED = "Remove inline measure nodes and keep width morph behavior intact";
 const TEXT_LONG =
-  "Refactor ToolStatusTitle DOM measurement to offscreen global measurer (unconstrained by timeline layout)"
+  "Refactor ToolStatusTitle DOM measurement to offscreen global measurer (unconstrained by timeline layout)";
 
 const btn = (active?: boolean) =>
   ({
@@ -20,7 +20,7 @@ const btn = (active?: boolean) =>
     cursor: "pointer",
     "font-size": "14px",
     "font-weight": "500",
-  }) as const
+  }) as const;
 
 const heading = {
   "font-size": "11px",
@@ -29,21 +29,21 @@ const heading = {
   "letter-spacing": "0.05em",
   color: "var(--text-weak, #888)",
   "margin-bottom": "4px",
-}
+};
 
 const card = {
   padding: "16px 20px",
   "border-radius": "10px",
   border: "1px solid var(--border-weak-base, #333)",
   background: "var(--surface-base, #1a1a1a)",
-}
+};
 
 /* ─── Variant A: scaleX pseudo-line at 50% ─── */
 function VariantA(props: { active: boolean; text: string }) {
   const progress = useSpring(
     () => (props.active ? 1 : 0),
     () => ({ visualDuration: 0.35, bounce: 0 }),
-  )
+  );
   return (
     <span
       style={{
@@ -68,7 +68,7 @@ function VariantA(props: { active: boolean; text: string }) {
         }}
       />
     </span>
-  )
+  );
 }
 
 /* ─── Variant D: background-image line ─── */
@@ -76,7 +76,7 @@ function VariantD(props: { active: boolean; text: string }) {
   const progress = useSpring(
     () => (props.active ? 1 : 0),
     () => ({ visualDuration: 0.35, bounce: 0 }),
-  )
+  );
   return (
     <span
       style={{
@@ -91,7 +91,7 @@ function VariantD(props: { active: boolean; text: string }) {
     >
       {props.text}
     </span>
-  )
+  );
 }
 
 /* ─── Variant E: grid stacking + clip-path (container %) ─── */
@@ -99,7 +99,7 @@ function VariantE(props: { active: boolean; text: string }) {
   const progress = useSpring(
     () => (props.active ? 1 : 0),
     () => ({ visualDuration: 0.35, bounce: 0 }),
-  )
+  );
   return (
     <span
       style={{
@@ -121,7 +121,7 @@ function VariantE(props: { active: boolean; text: string }) {
         {props.text}
       </span>
     </span>
-  )
+  );
 }
 
 /* ─── Variant F: grid stacking + clip-path mapped to text width ─── */
@@ -129,32 +129,32 @@ function VariantF(props: { active: boolean; text: string }) {
   const progress = useSpring(
     () => (props.active ? 1 : 0),
     () => ({ visualDuration: 0.35, bounce: 0 }),
-  )
-  let baseRef: HTMLSpanElement | undefined
-  let containerRef: HTMLSpanElement | undefined
+  );
+  let baseRef: HTMLSpanElement | undefined;
+  let containerRef: HTMLSpanElement | undefined;
   const [state, setState] = createStore({
     textWidth: 0,
     containerWidth: 0,
-  })
-  const textWidth = () => state.textWidth
-  const containerWidth = () => state.containerWidth
+  });
+  const textWidth = () => state.textWidth;
+  const containerWidth = () => state.containerWidth;
 
   const measure = () => {
-    if (baseRef) setState("textWidth", baseRef.scrollWidth)
-    if (containerRef) setState("containerWidth", containerRef.offsetWidth)
-  }
+    if (baseRef) setState("textWidth", baseRef.scrollWidth);
+    if (containerRef) setState("containerWidth", containerRef.offsetWidth);
+  };
 
-  onMount(measure)
-  createResizeObserver(() => containerRef, measure)
+  onMount(measure);
+  createResizeObserver(() => containerRef, measure);
 
   const clipRight = () => {
-    const cw = containerWidth()
-    const tw = textWidth()
-    if (cw <= 0 || tw <= 0) return `${(1 - progress()) * 100}%`
-    const revealed = progress() * tw
-    const remaining = Math.max(0, cw - revealed)
-    return `${remaining}px`
-  }
+    const cw = containerWidth();
+    const tw = textWidth();
+    if (cw <= 0 || tw <= 0) return `${(1 - progress()) * 100}%`;
+    const revealed = progress() * tw;
+    const remaining = Math.max(0, cw - revealed);
+    return `${remaining}px`;
+  };
 
   return (
     <span
@@ -180,7 +180,7 @@ function VariantF(props: { active: boolean; text: string }) {
         {props.text}
       </span>
     </span>
-  )
+  );
 }
 
 export default {
@@ -199,12 +199,12 @@ export default {
       },
     },
   },
-}
+};
 
 export const Playground = {
   render: () => {
-    const [active, setActive] = createSignal(false)
-    const toggle = () => setActive((v) => !v)
+    const [active, setActive] = createSignal(false);
+    const toggle = () => setActive((v) => !v);
 
     return (
       <div style={{ display: "grid", gap: "24px", padding: "24px", "max-width": "700px" }}>
@@ -274,6 +274,6 @@ export const Playground = {
           <VariantD active={active()} text={TEXT_LONG} />
         </div>
       </div>
-    )
+    );
   },
-}
+};

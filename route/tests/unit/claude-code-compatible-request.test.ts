@@ -11,14 +11,15 @@ const {
   resolveClaudeCodeCompatibleMaxTokens,
   buildClaudeCodeCompatibleRequest,
 } = await import("../../open-sse/services/claudeCodeCompatible.ts");
-const { getModelsByProviderId, supportsXHighEffort } =
-  await import("../../open-sse/config/providerModels.ts");
+const { getModelsByProviderId, supportsXHighEffort } = await import(
+  "../../open-sse/config/providerModels.ts"
+);
 
 function getClaudeEffortFixtures() {
   const claudeModels = getModelsByProviderId("claude");
   const xhighModel = claudeModels.find((model) => supportsXHighEffort("claude", model.id));
   const standardModel = claudeModels.find(
-    (model) => supportsXHighEffort("claude", model.id) === false
+    (model) => supportsXHighEffort("claude", model.id) === false,
   );
   assert.ok(xhighModel, "expected at least one Claude model with xhigh support");
   assert.ok(standardModel, "expected at least one Claude model without xhigh support");
@@ -29,19 +30,19 @@ test("Claude Code compatible URL helpers cover empty values, version trimming an
   assert.equal(stripClaudeCodeCompatibleEndpointSuffix(""), "");
   assert.equal(
     stripClaudeCodeCompatibleEndpointSuffix("https://api.example.com/v1/messages"),
-    "https://api.example.com"
+    "https://api.example.com",
   );
   assert.equal(
     joinBaseUrlAndPath("https://api.example.com/v1", "v1/messages"),
-    "https://api.example.com/v1/messages"
+    "https://api.example.com/v1/messages",
   );
   assert.equal(
     joinClaudeCodeCompatibleUrl("https://api.example.com/v1/messages", "models"),
-    "https://api.example.com/models"
+    "https://api.example.com/models",
   );
   assert.equal(
     resolveClaudeCodeCompatibleSessionId({ "x-omniroute-session": " session-from-proxy " }),
-    "session-from-proxy"
+    "session-from-proxy",
   );
 });
 
@@ -51,46 +52,46 @@ test("Claude Code compatible effort and max token helpers cover priority fallbac
   assert.equal(resolveClaudeCodeCompatibleEffort({ reasoning: { effort: "none" } }), "low");
   assert.equal(
     resolveClaudeCodeCompatibleEffort({ output_config: { effort: "xhigh" } }, null, xhighModel.id),
-    "xhigh"
+    "xhigh",
   );
   assert.equal(
     resolveClaudeCodeCompatibleEffort({ output_config: { effort: "max" } }, null, xhighModel.id),
-    "max"
+    "max",
   );
   assert.equal(
     resolveClaudeCodeCompatibleEffort(
       { output_config: { effort: "xhigh" } },
       null,
-      standardModel.id
+      standardModel.id,
     ),
-    "high"
+    "high",
   );
   assert.equal(
     resolveClaudeCodeCompatibleEffort({ output_config: { effort: "max" } }, null, standardModel.id),
-    "max"
+    "max",
   );
   assert.equal(
     resolveClaudeCodeCompatibleEffort(
       { output_config: { effort: "max" } },
       null,
-      "claude-haiku-4-5-20251001"
+      "claude-haiku-4-5-20251001",
     ),
-    "high"
+    "high",
   );
   assert.equal(
     resolveClaudeCodeCompatibleEffort({ output_config: { effort: "unexpected" } }),
-    "high"
+    "high",
   );
 
   assert.equal(resolveClaudeCodeCompatibleMaxTokens({ max_completion_tokens: "17" }), 17);
   assert.equal(
     resolveClaudeCodeCompatibleMaxTokens({ max_output_tokens: -1 }, { max_tokens: 9 }),
-    9
+    9,
   );
   assert.equal(resolveClaudeCodeCompatibleMaxTokens({}, { max_output_tokens: "31.9" }), 31);
   assert.equal(
     resolveClaudeCodeCompatibleMaxTokens({}, {}),
-    CLAUDE_CODE_COMPATIBLE_DEFAULT_MAX_TOKENS
+    CLAUDE_CODE_COMPATIBLE_DEFAULT_MAX_TOKENS,
   );
 });
 

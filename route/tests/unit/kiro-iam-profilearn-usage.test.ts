@@ -53,13 +53,13 @@ test("discoverKiroProfileArn prefers the region-matched profile ARN", async () =
           { arn: "arn:aws:codewhisperer:eu-central-1:820374639727:profile/RX4VNUHGHGAQ" },
         ],
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     )) as typeof fetch;
   try {
     const arn = await discoverKiroProfileArn(
       "tok",
       "https://q.eu-central-1.amazonaws.com",
-      "eu-central-1"
+      "eu-central-1",
     );
     assert.equal(arn, "arn:aws:codewhisperer:eu-central-1:820374639727:profile/RX4VNUHGHGAQ");
   } finally {
@@ -76,7 +76,7 @@ test("discoverKiroProfileArn sends tokentype for API-key auth", async () => {
       JSON.stringify({
         profiles: [{ arn: "arn:aws:codewhisperer:us-east-1:1:profile/APIKEY" }],
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   }) as typeof fetch;
   try {
@@ -84,7 +84,7 @@ test("discoverKiroProfileArn sends tokentype for API-key auth", async () => {
       "api-key",
       "https://codewhisperer.us-east-1.amazonaws.com",
       "us-east-1",
-      "api_key"
+      "api_key",
     );
     assert.equal(arn, "arn:aws:codewhisperer:us-east-1:1:profile/APIKEY");
   } finally {
@@ -97,13 +97,13 @@ test("discoverKiroProfileArn falls back to the first profile when no region matc
   globalThis.fetch = (async () =>
     new Response(
       JSON.stringify({ profiles: [{ arn: "arn:aws:codewhisperer:us-east-1:1:profile/X" }] }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     )) as typeof fetch;
   try {
     const arn = await discoverKiroProfileArn(
       "tok",
       "https://q.eu-west-1.amazonaws.com",
-      "eu-west-1"
+      "eu-west-1",
     );
     assert.equal(arn, "arn:aws:codewhisperer:us-east-1:1:profile/X");
   } finally {
@@ -118,13 +118,13 @@ test("discoverKiroProfileArn returns undefined for empty profiles or non-ok resp
       new Response(JSON.stringify({ profiles: [] }), { status: 200 })) as typeof fetch;
     assert.equal(
       await discoverKiroProfileArn("tok", "https://q.eu-central-1.amazonaws.com", "eu-central-1"),
-      undefined
+      undefined,
     );
 
     globalThis.fetch = (async () => new Response("nope", { status: 403 })) as typeof fetch;
     assert.equal(
       await discoverKiroProfileArn("tok", "https://q.eu-central-1.amazonaws.com", "eu-central-1"),
-      undefined
+      undefined,
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -144,12 +144,12 @@ test("getKiroUsage returns a friendly auth-expired message for social-auth Kiro 
   globalThis.fetch = (async (_url: string, init?: RequestInit) => {
     callIdx += 1;
     const target = String(
-      (init?.headers as Record<string, string> | undefined)?.["x-amz-target"] || ""
+      (init?.headers as Record<string, string> | undefined)?.["x-amz-target"] || "",
     );
     if (target.endsWith("ListAvailableProfiles")) {
       return new Response(
         JSON.stringify({ profiles: [{ arn: "arn:aws:codewhisperer:us-east-1:1:profile/SOCIAL" }] }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
     // GetUsageLimits → simulate the social-auth token rejection
@@ -166,7 +166,7 @@ test("getKiroUsage returns a friendly auth-expired message for social-auth Kiro 
     assert.ok(result, "should resolve, not throw");
     assert.ok(
       typeof result.message === "string" && /authentication expired/i.test(result.message),
-      `expected an auth-expired message, got: ${JSON.stringify(result)}`
+      `expected an auth-expired message, got: ${JSON.stringify(result)}`,
     );
     assert.deepEqual(result.quotas ?? {}, {});
     assert.ok(callIdx >= 2, "GetUsageLimits should have been called after profile discovery");
@@ -190,7 +190,7 @@ test("getKiroUsage sends tokentype for API-key quota requests", async () => {
           },
         ],
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   }) as typeof fetch;
   try {
@@ -218,7 +218,7 @@ test("getKiroUsage returns a friendly rejected-token message on repeated 401/403
     assert.match(
       result.message || "",
       /quota API rejected the current token/i,
-      `expected friendly rejected-token message, got: ${JSON.stringify(result)}`
+      `expected friendly rejected-token message, got: ${JSON.stringify(result)}`,
     );
     assert.deepEqual(result.quotas ?? {}, {});
   } finally {

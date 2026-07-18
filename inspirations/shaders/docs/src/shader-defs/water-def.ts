@@ -1,80 +1,80 @@
-import { waterPresets } from '@paper-design/shaders-react';
-import type { ShaderDef } from './shader-def-types';
-import { animatedImageCommonParams } from './common-param-def';
+import { waterPresets } from "@paper-design/shaders-react";
+import type { ShaderDef } from "./shader-def-types";
+import { animatedImageCommonParams } from "./common-param-def";
 
 const defaultParams = waterPresets[0].params;
 
 export const waterDef: ShaderDef = {
-  name: 'Water',
+  name: "Water",
   description:
-    'Water-like surface distortion with natural caustic realism. Works as an image filter or standalone animated texture.',
+    "Water-like surface distortion with natural caustic realism. Works as an image filter or standalone animated texture.",
   params: [
     {
-      name: 'image',
-      type: 'HTMLImageElement | string',
-      description: 'The image to use for the effect',
+      name: "image",
+      type: "HTMLImageElement | string",
+      description: "The image to use for the effect",
     },
     {
-      name: 'colorBack',
-      type: 'string',
+      name: "colorBack",
+      type: "string",
       defaultValue: defaultParams.colorBack,
       isColor: true,
-      description: 'Background color',
+      description: "Background color",
     },
     {
-      name: 'colorHighlight',
-      type: 'string',
+      name: "colorHighlight",
+      type: "string",
       defaultValue: defaultParams.colorHighlight,
       isColor: true,
-      description: 'Highlight color',
+      description: "Highlight color",
     },
     {
-      name: 'highlights',
-      type: 'number',
+      name: "highlights",
+      type: "number",
       min: 0,
       max: 1,
       defaultValue: defaultParams.highlights,
-      description: 'A coloring added over the image/background, following the caustic shape',
+      description: "A coloring added over the image/background, following the caustic shape",
     },
     {
-      name: 'layering',
-      type: 'number',
+      name: "layering",
+      type: "number",
       min: 0,
       max: 1,
       defaultValue: defaultParams.layering,
-      description: 'The power of 2nd layer of caustic distortion',
+      description: "The power of 2nd layer of caustic distortion",
     },
     {
-      name: 'edges',
-      type: 'number',
+      name: "edges",
+      type: "number",
       min: 0,
       max: 1,
       defaultValue: defaultParams.edges,
-      description: 'Caustic distortion power on the image edges',
+      description: "Caustic distortion power on the image edges",
     },
     {
-      name: 'waves',
-      type: 'number',
+      name: "waves",
+      type: "number",
       min: 0,
       max: 1,
       defaultValue: defaultParams.waves,
-      description: 'Additional distortion based in simplex noise, independent from caustic',
+      description: "Additional distortion based in simplex noise, independent from caustic",
     },
     {
-      name: 'caustic',
-      type: 'number',
+      name: "caustic",
+      type: "number",
       min: 0,
       max: 1,
       defaultValue: defaultParams.caustic,
-      description: 'Power of caustic distortion',
+      description: "Power of caustic distortion",
     },
     {
-      name: 'size',
-      type: 'number',
+      name: "size",
+      type: "number",
       min: 0.01,
       max: 7,
       defaultValue: defaultParams.size,
-      description: 'Pattern scale relative to the image',
+      description: "Pattern scale relative to the image",
     },
     ...animatedImageCommonParams,
   ],

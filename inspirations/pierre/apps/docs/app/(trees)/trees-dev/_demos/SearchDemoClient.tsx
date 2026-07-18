@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { FileTree } from '@pierre/trees';
-import type { FileTreePathOptions } from '@trees/_lib/fileTreePathOptions';
-import type { ReactNode } from 'react';
-import { memo, useEffect, useMemo, useRef } from 'react';
+import { FileTree } from "@pierre/trees";
+import type { FileTreePathOptions } from "@trees/_lib/fileTreePathOptions";
+import type { ReactNode } from "react";
+import { memo, useEffect, useMemo, useRef } from "react";
 
-import { ExampleCard } from '../_components/ExampleCard';
-import { StateLog, useStateLog } from '../_components/StateLog';
+import { ExampleCard } from "../_components/ExampleCard";
+import { StateLog, useStateLog } from "../_components/StateLog";
 
 interface SearchExampleProps {
   containerHtml: string;
@@ -37,15 +37,15 @@ const HydratedSearchExample = memo(function HydratedSearchExample({
     const fileTree = new FileTree({
       ...options,
       onSearchChange: (value) => {
-        addLog(`search: ${value ?? '<closed>'}`);
+        addLog(`search: ${value ?? "<closed>"}`);
       },
     });
     onTreeReady?.(fileTree);
-    const fileTreeContainer = node.querySelector('file-tree-container');
+    const fileTreeContainer = node.querySelector("file-tree-container");
     if (fileTreeContainer instanceof HTMLElement) {
       fileTree.hydrate({ fileTreeContainer });
     } else {
-      node.innerHTML = '';
+      node.innerHTML = "";
       fileTree.render({ containerWrapper: node });
     }
 
@@ -59,7 +59,7 @@ const HydratedSearchExample = memo(function HydratedSearchExample({
     <ExampleCard title={title} description={description} controls={controls}>
       <div
         ref={ref}
-        style={{ height: '260px' }}
+        style={{ height: "260px" }}
         dangerouslySetInnerHTML={{ __html: containerHtml }}
         suppressHydrationWarning
       />
@@ -81,11 +81,7 @@ export function SearchDemoClient({
   hiddenHtml: string;
   sharedOptions: Omit<
     FileTreePathOptions,
-    | 'fileTreeSearchMode'
-    | 'id'
-    | 'initialSearchQuery'
-    | 'preparedInput'
-    | 'search'
+    "fileTreeSearchMode" | "id" | "initialSearchQuery" | "preparedInput" | "search"
   >;
 }) {
   const baseOptions = useMemo(
@@ -93,7 +89,7 @@ export function SearchDemoClient({
       ...sharedOptions,
       initialVisibleRowCount: 260 / 30,
     }),
-    [sharedOptions]
+    [sharedOptions],
   );
   const hiddenTreeRef = useRef<FileTree | null>(null);
 
@@ -102,8 +98,8 @@ export function SearchDemoClient({
       <header className="space-y-2">
         <h1 className="text-2xl font-bold">Search</h1>
         <p className="text-muted-foreground max-w-3xl text-sm leading-6">
-          The canonical tree keeps the three search modes, built-in input,
-          session behavior, keyboard navigation, and an observable
+          The canonical tree keeps the three search modes, built-in input, session behavior,
+          keyboard navigation, and an observable
           <code>onSearchChange</code> hook on the same file-tree model.
         </p>
       </header>
@@ -114,8 +110,8 @@ export function SearchDemoClient({
           description="Expands folders containing matches but keeps all items visible. Type to filter, use Escape to close, and ArrowUp/ArrowDown to move through matches."
           options={{
             ...baseOptions,
-            fileTreeSearchMode: 'expand-matches',
-            id: 'trees-search-expand',
+            fileTreeSearchMode: "expand-matches",
+            id: "trees-search-expand",
             search: true,
           }}
           title="expand-matches"
@@ -125,8 +121,8 @@ export function SearchDemoClient({
           description="Collapses folders not containing matches while keeping the full tree visible."
           options={{
             ...baseOptions,
-            fileTreeSearchMode: 'collapse-non-matches',
-            id: 'trees-search-collapse',
+            fileTreeSearchMode: "collapse-non-matches",
+            id: "trees-search-collapse",
             search: true,
           }}
           title="collapse-non-matches"
@@ -136,8 +132,8 @@ export function SearchDemoClient({
           description="Hides rows that are neither matches nor ancestors of matches."
           options={{
             ...baseOptions,
-            fileTreeSearchMode: 'hide-non-matches',
-            id: 'trees-search-hide',
+            fileTreeSearchMode: "hide-non-matches",
+            id: "trees-search-hide",
             search: true,
           }}
           title="hide-non-matches"
@@ -149,9 +145,9 @@ export function SearchDemoClient({
               <button
                 type="button"
                 className="rounded-sm border px-2 py-1 text-xs"
-                style={{ borderColor: 'var(--color-border)' }}
+                style={{ borderColor: "var(--color-border)" }}
                 onClick={() => {
-                  hiddenTreeRef.current?.openSearch('worker');
+                  hiddenTreeRef.current?.openSearch("worker");
                 }}
               >
                 Open hidden search
@@ -159,7 +155,7 @@ export function SearchDemoClient({
               <button
                 type="button"
                 className="rounded-sm border px-2 py-1 text-xs"
-                style={{ borderColor: 'var(--color-border)' }}
+                style={{ borderColor: "var(--color-border)" }}
                 onClick={() => {
                   hiddenTreeRef.current?.closeSearch();
                 }}
@@ -174,8 +170,8 @@ export function SearchDemoClient({
           }}
           options={{
             ...baseOptions,
-            fileTreeSearchMode: 'hide-non-matches',
-            id: 'trees-search-hidden',
+            fileTreeSearchMode: "hide-non-matches",
+            id: "trees-search-hidden",
             initialSearchQuery: null,
             search: false,
           }}

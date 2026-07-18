@@ -1,10 +1,10 @@
-import { createHighlighterCore } from 'shiki/core';
-import { createJavaScriptRegexEngine } from 'shiki/engine/javascript';
-import { createOnigurumaEngine } from 'shiki/engine/oniguruma';
+import { createHighlighterCore } from "shiki/core";
+import { createJavaScriptRegexEngine } from "shiki/engine/javascript";
+import { createOnigurumaEngine } from "shiki/engine/oniguruma";
 
-import { DEFAULT_THEMES } from '../constants';
-import { attachResolvedLanguages } from '../highlighter/languages/attachResolvedLanguages';
-import { attachResolvedThemes } from '../highlighter/themes/attachResolvedThemes';
+import { DEFAULT_THEMES } from "../constants";
+import { attachResolvedLanguages } from "../highlighter/languages/attachResolvedLanguages";
+import { attachResolvedThemes } from "../highlighter/themes/attachResolvedThemes";
 import type {
   DiffsHighlighter,
   HighlighterTypes,
@@ -12,10 +12,10 @@ import type {
   RenderFileOptions,
   ThemedDiffResult,
   ThemedFileResult,
-} from '../types';
-import { replaceCustomExtensions } from '../utils/getFiletypeFromFileName';
-import { renderDiffWithHighlighter } from '../utils/renderDiffWithHighlighter';
-import { renderFileWithHighlighter } from '../utils/renderFileWithHighlighter';
+} from "../types";
+import { replaceCustomExtensions } from "../utils/getFiletypeFromFileName";
+import { renderDiffWithHighlighter } from "../utils/renderDiffWithHighlighter";
+import { renderFileWithHighlighter } from "../utils/renderFileWithHighlighter";
 import type {
   InitializeSuccessResponse,
   InitializeWorkerRequest,
@@ -28,55 +28,53 @@ import type {
   WorkerRenderingOptions,
   WorkerRequest,
   WorkerRequestId,
-} from './types';
+} from "./types";
 
 let highlighter: Promise<DiffsHighlighter> | DiffsHighlighter | undefined;
 let renderOptions: WorkerRenderingOptions = {
   theme: DEFAULT_THEMES,
   useTokenTransformer: false,
   tokenizeMaxLineLength: 1000,
-  lineDiffType: 'word-alt',
+  lineDiffType: "word-alt",
   maxLineDiffLength: 1000,
 };
 
 const EMPTY_REGEXP = /(?:)/;
 
-self.addEventListener('error', (event) => {
-  console.error('[Shiki Worker] Unhandled error:', event.error);
+self.addEventListener("error", (event) => {
+  console.error("[Shiki Worker] Unhandled error:", event.error);
 });
 
 // Handle incoming messages from the main thread
-self.addEventListener('message', (event: MessageEvent<WorkerRequest>) => {
+self.addEventListener("message", (event: MessageEvent<WorkerRequest>) => {
   void handleMessage(event.data);
 });
 
 async function handleMessage(request: WorkerRequest) {
   try {
     switch (request.type) {
-      case 'initialize':
+      case "initialize":
         await handleInitialize(request);
         break;
-      case 'set-render-options':
+      case "set-render-options":
         await handleSetRenderOptions(request);
         break;
-      case 'file':
+      case "file":
         await handleRenderFile(request);
         break;
-      case 'diff':
+      case "diff":
         await handleRenderDiff(request);
         break;
       default:
-        throw new Error(
-          `Unknown request type: ${(request as WorkerRequest).type}`
-        );
+        throw new Error(`Unknown request type: ${(request as WorkerRequest).type}`);
     }
   } catch (error) {
-    console.error('Worker error:', error);
+    console.error("Worker error:", error);
     sendError(request.id, error);
   } finally {
     // Reset legacy RegExp last-match state so it cannot keep a highlighted
     // source string alive after a highlight job completes.
-    EMPTY_REGEXP.exec('');
+    EMPTY_REGEXP.exec("");
   }
 }
 
@@ -90,7 +88,7 @@ async function handleInitialize({
   customExtensionMap,
 }: InitializeWorkerRequest): Promise<void> {
   let highlighter = getHighlighter(preferredHighlighter);
-  if ('then' in highlighter) {
+  if ("then" in highlighter) {
     highlighter = await highlighter;
   }
   syncCustomExtensionsFromRequest({
@@ -103,9 +101,9 @@ async function handleInitialize({
   }
   renderOptions = options;
   postMessage({
-    type: 'success',
+    type: "success",
     id,
-    requestType: 'initialize',
+    requestType: "initialize",
     sentAt: Date.now(),
   } satisfies InitializeSuccessResponse);
 }
@@ -116,15 +114,15 @@ async function handleSetRenderOptions({
   resolvedThemes,
 }: SetRenderOptionsWorkerRequest): Promise<void> {
   let highlighter = getHighlighter();
-  if ('then' in highlighter) {
+  if ("then" in highlighter) {
     highlighter = await highlighter;
   }
   attachResolvedThemes(resolvedThemes, highlighter);
   renderOptions = options;
   postMessage({
-    type: 'success',
+    type: "success",
     id,
-    requestType: 'set-render-options',
+    requestType: "set-render-options",
     sentAt: Date.now(),
   });
 }
@@ -137,7 +135,7 @@ async function handleRenderFile({
   customExtensionMap,
 }: RenderFileRequest): Promise<void> {
   let highlighter = getHighlighter();
-  if ('then' in highlighter) {
+  if ("then" in highlighter) {
     highlighter = await highlighter;
   }
   syncCustomExtensionsFromRequest({
@@ -153,11 +151,7 @@ async function handleRenderFile({
     useTokenTransformer: renderOptions.useTokenTransformer,
     tokenizeMaxLineLength: renderOptions.tokenizeMaxLineLength,
   };
-  sendFileSuccess(
-    id,
-    renderFileWithHighlighter(file, highlighter, fileOptions),
-    fileOptions
-  );
+  sendFileSuccess(id, renderFileWithHighlighter(file, highlighter, fileOptions), fileOptions);
 }
 
 async function handleRenderDiff({
@@ -168,7 +162,7 @@ async function handleRenderDiff({
   customExtensionMap,
 }: RenderDiffRequest): Promise<void> {
   let highlighter = getHighlighter();
-  if ('then' in highlighter) {
+  if ("then" in highlighter) {
     highlighter = await highlighter;
   }
   syncCustomExtensionsFromRequest({
@@ -184,14 +178,14 @@ async function handleRenderDiff({
 }
 
 function getHighlighter(
-  preferredHighlighter: HighlighterTypes = 'shiki-js'
+  preferredHighlighter: HighlighterTypes = "shiki-js",
 ): Promise<DiffsHighlighter> | DiffsHighlighter {
   highlighter ??= createHighlighterCore({
     themes: [],
     langs: [],
     engine:
-      preferredHighlighter === 'shiki-wasm'
-        ? createOnigurumaEngine(import('shiki/wasm'))
+      preferredHighlighter === "shiki-wasm"
+        ? createOnigurumaEngine(import("shiki/wasm"))
         : createJavaScriptRegexEngine(),
   }) as Promise<DiffsHighlighter>;
   return highlighter;
@@ -202,14 +196,14 @@ function syncCustomExtensionsFromRequest({
   customExtensionMap,
 }: Pick<
   InitializeWorkerRequest | RenderFileRequest | RenderDiffRequest,
-  'customExtensionsVersion' | 'customExtensionMap'
+  "customExtensionsVersion" | "customExtensionMap"
 >) {
   if (customExtensionsVersion == null && customExtensionMap == null) {
     return;
   }
   if (customExtensionsVersion == null || customExtensionMap == null) {
     throw new Error(
-      'Worker request must include both customExtensionsVersion and customExtensionMap'
+      "Worker request must include both customExtensionsVersion and customExtensionMap",
     );
   }
   replaceCustomExtensions(customExtensionsVersion, customExtensionMap);
@@ -218,11 +212,11 @@ function syncCustomExtensionsFromRequest({
 function sendFileSuccess(
   id: WorkerRequestId,
   result: ThemedFileResult,
-  options: RenderFileOptions
+  options: RenderFileOptions,
 ) {
   postMessage({
-    type: 'success',
-    requestType: 'file',
+    type: "success",
+    requestType: "file",
     id,
     result,
     options,
@@ -233,11 +227,11 @@ function sendFileSuccess(
 function sendDiffSuccess(
   id: WorkerRequestId,
   result: ThemedDiffResult,
-  options: RenderDiffOptions
+  options: RenderDiffOptions,
 ) {
   postMessage({
-    type: 'success',
-    requestType: 'diff',
+    type: "success",
+    requestType: "diff",
     id,
     result,
     options,
@@ -247,7 +241,7 @@ function sendDiffSuccess(
 
 function sendError(id: WorkerRequestId, error: unknown) {
   const response: RenderErrorResponse = {
-    type: 'error',
+    type: "error",
     id,
     error: error instanceof Error ? error.message : String(error),
     stack: error instanceof Error ? error.stack : undefined,

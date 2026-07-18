@@ -1,46 +1,39 @@
-import { getVirtualizationWorkload } from '@pierre/tree-test-data';
-import { do_not_optimize } from 'mitata';
-import { cpus } from 'node:os';
-import { basename, resolve } from 'node:path';
+import { getVirtualizationWorkload } from "@pierre/tree-test-data";
+import { do_not_optimize } from "mitata";
+import { cpus } from "node:os";
+import { basename, resolve } from "node:path";
 
-import {
-  createPathStoreScheduler,
-  PathStore,
-  StaticPathStore,
-} from '../src/index';
-import type { PathStoreVisibleRow } from '../src/public-types';
+import { createPathStoreScheduler, PathStore, StaticPathStore } from "../src/index";
+import type { PathStoreVisibleRow } from "../src/public-types";
 
-const WORKLOAD_NAMES = ['linux-5x', 'linux-10x'] as const;
-const WIDE_DIRECTORY_WORKLOAD_NAME = 'wide-directory-5k' as const;
-const FLATTEN_CHAIN_WORKLOAD_NAME = 'flatten-chain-5k' as const;
-const VIEWPORT_MODES = ['first', 'middle'] as const;
+const WORKLOAD_NAMES = ["linux-5x", "linux-10x"] as const;
+const WIDE_DIRECTORY_WORKLOAD_NAME = "wide-directory-5k" as const;
+const FLATTEN_CHAIN_WORKLOAD_NAME = "flatten-chain-5k" as const;
+const VIEWPORT_MODES = ["first", "middle"] as const;
 const VISIBLE_WINDOW_SIZES = [30, 100, 200, 500] as const;
 const QUICK_VISIBLE_WINDOW_SIZES = [30, 200] as const;
-const BENCHMARK_PROFILE_NAMES = ['quick', 'full'] as const;
+const BENCHMARK_PROFILE_NAMES = ["quick", "full"] as const;
 const BENCHMARK_FILTER_PRESET_NAMES = [
-  'presorted-render',
-  'async',
-  'mutation',
-  'cleanup',
-  'static',
+  "presorted-render",
+  "async",
+  "mutation",
+  "cleanup",
+  "static",
 ] as const;
-const QUICK_WORKLOAD_NAMES = ['linux-5x'] as const;
+const QUICK_WORKLOAD_NAMES = ["linux-5x"] as const;
 const MUTATION_SCENARIO_KINDS = [
-  'rename-leaf',
-  'delete-leaf',
-  'delete-subtree',
-  'add-sibling',
-  'move-leaf',
-  'move-subtree',
-  'batch-visible-renames',
-  'expand-directory',
-  'rename-root-file',
-  'rename-root-directory',
+  "rename-leaf",
+  "delete-leaf",
+  "delete-subtree",
+  "add-sibling",
+  "move-leaf",
+  "move-subtree",
+  "batch-visible-renames",
+  "expand-directory",
+  "rename-root-file",
+  "rename-root-directory",
 ] as const;
-const QUICK_MUTATION_SCENARIO_KINDS = [
-  'rename-leaf',
-  'rename-root-directory',
-] as const;
+const QUICK_MUTATION_SCENARIO_KINDS = ["rename-leaf", "rename-root-directory"] as const;
 const VISIBLE_SCENARIO_SAMPLE_COUNT = 50;
 const COLD_VISIBLE_SCENARIO_SAMPLE_COUNT = 10;
 const LIST_AND_SCROLL_SCENARIO_SAMPLE_COUNT = 10;
@@ -58,19 +51,19 @@ const MUTATION_WINDOW_SIZE = 200;
 const SCROLL_WINDOW_STEP = 24;
 const SCROLL_WINDOW_COUNT = 10;
 const PREVIEW_LIMIT = 12;
-const ROOT_FILE_SEED_PATH = 'zz-benchmark-root-file.ts';
-const ROOT_FILE_RENAMED_PATH = 'zz-benchmark-root-file-renamed.ts';
-const ASYNC_BENCH_DIRECTORY_PATH = 'aaa-async-bench/';
-const ASYNC_BENCH_PATCH_FILE_PATH = 'aaa-async-bench/inner/file.ts';
+const ROOT_FILE_SEED_PATH = "zz-benchmark-root-file.ts";
+const ROOT_FILE_RENAMED_PATH = "zz-benchmark-root-file-renamed.ts";
+const ASYNC_BENCH_DIRECTORY_PATH = "aaa-async-bench/";
+const ASYNC_BENCH_PATCH_FILE_PATH = "aaa-async-bench/inner/file.ts";
 const COOPERATIVE_BENCH_DIRECTORY_PATHS = [
-  'aaa-cooperative-bench-a/',
-  'aaa-cooperative-bench-b/',
-  'aaa-cooperative-bench-c/',
+  "aaa-cooperative-bench-a/",
+  "aaa-cooperative-bench-b/",
+  "aaa-cooperative-bench-c/",
 ] as const;
 const COOPERATIVE_BENCH_PATCH_FILE_PATHS = [
-  'aaa-cooperative-bench-a/file-a.ts',
-  'aaa-cooperative-bench-b/file-b.ts',
-  'aaa-cooperative-bench-c/file-c.ts',
+  "aaa-cooperative-bench-a/file-a.ts",
+  "aaa-cooperative-bench-b/file-b.ts",
+  "aaa-cooperative-bench-c/file-c.ts",
 ] as const;
 const WIDE_DIRECTORY_FILE_COUNT = 5_000;
 const HUMAN_BENCHMARK_NAME_MIN_WIDTH = 32;
@@ -80,9 +73,9 @@ const LOCAL_VISIBLE_PATH_SEARCH_RADIUS = MUTATION_WINDOW_SIZE * 2;
 const VISIBLE_PATH_SEARCH_CHUNK_SIZE = 1_024;
 const ANSI_ENABLED = process.stdout.isTTY;
 const BENCHMARK_INTENT =
-  'Measure absolute path-store scenario latencies by workload and operation. Build and visible-read scenarios use presorted inputs everywhere except the standalone preparePaths benchmarks. Mutation scenarios measure commit plus the immediate store-side render contract: getVisibleCount() and getVisibleSlice(start, end), either for the changed window or for a preserved offscreen viewport.';
+  "Measure absolute path-store scenario latencies by workload and operation. Build and visible-read scenarios use presorted inputs everywhere except the standalone preparePaths benchmarks. Mutation scenarios measure commit plus the immediate store-side render contract: getVisibleCount() and getVisibleSlice(start, end), either for the changed window or for a preserved offscreen viewport.";
 const COMPARE_INTENT =
-  'Compare two path-store benchmark JSON runs and decide whether the candidate is meaningfully better than the baseline. Acceptance is based on p50 improvement, with a bootstrap 95% confidence interval when raw samples are available.';
+  "Compare two path-store benchmark JSON runs and decide whether the candidate is meaningfully better than the baseline. Acceptance is based on p50 improvement, with a bootstrap 95% confidence interval when raw samples are available.";
 const COMPARE_CONFIDENCE_LEVEL = 0.95;
 const COMPARE_DEFAULT_MIN_EFFECT_PCT = 3;
 const COMPARE_DEFAULT_BOOTSTRAP_RESAMPLES = 1_000;
@@ -97,18 +90,18 @@ type BenchmarkFilterPresetName = (typeof BENCHMARK_FILTER_PRESET_NAMES)[number];
 type BenchmarkPresetName = BenchmarkProfileName | BenchmarkFilterPresetName;
 type ViewportMode = (typeof VIEWPORT_MODES)[number];
 type ScenarioCategory =
-  | 'prepare'
-  | 'build'
-  | 'visible'
-  | 'visible-cold'
-  | 'scroll'
-  | 'list'
-  | 'e2e'
-  | 'mutation'
-  | 'cleanup';
+  | "prepare"
+  | "build"
+  | "visible"
+  | "visible-cold"
+  | "scroll"
+  | "list"
+  | "e2e"
+  | "mutation"
+  | "cleanup";
 type MutationScenarioKind = (typeof MUTATION_SCENARIO_KINDS)[number];
-type MutationReadIntent = 'render-changed-window' | 'preserve-viewport';
-type MutationProgressPhase = 'warmup' | 'sample';
+type MutationReadIntent = "render-changed-window" | "preserve-viewport";
+type MutationProgressPhase = "warmup" | "sample";
 
 interface BenchmarkCliOptions {
   bootstrapResamples: number;
@@ -130,7 +123,7 @@ interface BenchmarkWorkload {
   fileCount: number;
   fileCountLabel: string;
   getPreparedFiles: () => readonly string[];
-  getPreparedInput: () => import('../src/public-types').PathStorePreparedInput;
+  getPreparedInput: () => import("../src/public-types").PathStorePreparedInput;
   getPresortedFiles: () => readonly string[];
   label: string;
   name: BenchmarkWorkloadName;
@@ -151,10 +144,7 @@ interface VisibleWindowRead {
 
 interface ProjectionReadableBenchmarkStore {
   getVisibleCount: () => number;
-  getVisibleSlice: (
-    start: number,
-    end: number
-  ) => readonly PathStoreVisibleRow[];
+  getVisibleSlice: (start: number, end: number) => readonly PathStoreVisibleRow[];
 }
 
 interface ExpandableProjectionBenchmarkStore extends ProjectionReadableBenchmarkStore {
@@ -203,7 +193,7 @@ interface ScenarioManifest {
 interface BenchmarkScenario {
   manifest: ScenarioManifest;
   measure: (
-    progressReporter?: ((progress: ScenarioProgress) => void) | undefined
+    progressReporter?: ((progress: ScenarioProgress) => void) | undefined,
   ) => Promise<MeasuredRunStats>;
   name: string;
 }
@@ -256,7 +246,7 @@ interface BenchmarkRunOutput {
   derivedSummaries?: DerivedBenchmarkSummaryOutput[];
   generatedAt: string;
   intent: string;
-  kind: 'path-store-benchmark-run';
+  kind: "path-store-benchmark-run";
   preparationTimeMs: number;
   profile: BenchmarkProfileName;
   results: MitataJsonResult;
@@ -280,7 +270,7 @@ interface BenchmarkCompareScenario {
   category?: ScenarioCategory;
   ci95HighPct?: number;
   ci95LowPct?: number;
-  classification: 'improved' | 'regressed' | 'inconclusive';
+  classification: "improved" | "regressed" | "inconclusive";
   confidenceAvailable: boolean;
   name: string;
   notes?: readonly string[];
@@ -300,7 +290,7 @@ interface BenchmarkCompareOutput {
   confidenceLevel: number;
   generatedAt: string;
   intent: string;
-  kind: 'path-store-benchmark-compare';
+  kind: "path-store-benchmark-compare";
   minEffectPct: number;
   summary: {
     accepted: number;
@@ -335,7 +325,7 @@ interface DerivedBenchmarkSummaryOutput {
   components: readonly string[];
   name: string;
   preparationTimeMs: number;
-  sampleStrategy: 'min-component-samples';
+  sampleStrategy: "min-component-samples";
   stats: MitataRunStats;
   wallTimeMs: number;
 }
@@ -351,11 +341,11 @@ interface BenchmarkProfile {
 }
 
 const ANSI = {
-  bold: ANSI_ENABLED ? '\u001B[1m' : '',
-  cyan: ANSI_ENABLED ? '\u001B[36m' : '',
-  dim: ANSI_ENABLED ? '\u001B[2m' : '',
-  green: ANSI_ENABLED ? '\u001B[32m' : '',
-  reset: ANSI_ENABLED ? '\u001B[0m' : '',
+  bold: ANSI_ENABLED ? "\u001B[1m" : "",
+  cyan: ANSI_ENABLED ? "\u001B[36m" : "",
+  dim: ANSI_ENABLED ? "\u001B[2m" : "",
+  green: ANSI_ENABLED ? "\u001B[32m" : "",
+  reset: ANSI_ENABLED ? "\u001B[0m" : "",
 };
 
 function styleText(text: string, ...styles: readonly string[]): string {
@@ -363,7 +353,7 @@ function styleText(text: string, ...styles: readonly string[]): string {
     return text;
   }
 
-  return `${styles.join('')}${text}${ANSI.reset}`;
+  return `${styles.join("")}${text}${ANSI.reset}`;
 }
 
 interface BenchmarkPresetSelection {
@@ -376,36 +366,34 @@ const BENCHMARK_PRESET_NAMES = [
   ...BENCHMARK_FILTER_PRESET_NAMES,
 ] as const satisfies readonly BenchmarkPresetName[];
 
-const BENCHMARK_PRESETS: Record<BenchmarkPresetName, BenchmarkPresetSelection> =
-  {
-    async: {
-      filter: /^(async\/|cooperative\/)/,
-      profile: 'full',
-    },
-    cleanup: {
-      filter: /^cleanup\//,
-      profile: 'full',
-    },
-    full: {
-      profile: 'full',
-    },
-    mutation: {
-      filter: /^mutate\//,
-      profile: 'full',
-    },
-    static: {
-      filter: /^static\//,
-      profile: 'full',
-    },
-    'presorted-render': {
-      filter:
-        /^(prepare-presorted-input\/linux-5x|build\/linux-5x|visible-first\/linux-5x\/30)$/,
-      profile: 'quick',
-    },
-    quick: {
-      profile: 'quick',
-    },
-  };
+const BENCHMARK_PRESETS: Record<BenchmarkPresetName, BenchmarkPresetSelection> = {
+  async: {
+    filter: /^(async\/|cooperative\/)/,
+    profile: "full",
+  },
+  cleanup: {
+    filter: /^cleanup\//,
+    profile: "full",
+  },
+  full: {
+    profile: "full",
+  },
+  mutation: {
+    filter: /^mutate\//,
+    profile: "full",
+  },
+  static: {
+    filter: /^static\//,
+    profile: "full",
+  },
+  "presorted-render": {
+    filter: /^(prepare-presorted-input\/linux-5x|build\/linux-5x|visible-first\/linux-5x\/30)$/,
+    profile: "quick",
+  },
+  quick: {
+    profile: "quick",
+  },
+};
 
 function parseArgs(argv: readonly string[]): BenchmarkCliOptions {
   let bootstrapResamples = COMPARE_DEFAULT_BOOTSTRAP_RESAMPLES;
@@ -420,23 +408,23 @@ function parseArgs(argv: readonly string[]): BenchmarkCliOptions {
   let json = false;
   let minEffectPct = COMPARE_DEFAULT_MIN_EFFECT_PCT;
   let preset: BenchmarkPresetName | undefined;
-  let profile: BenchmarkProfileName = 'quick';
+  let profile: BenchmarkProfileName = "quick";
   let presetWasSelected = false;
 
   for (let index = 0; index < argv.length; index++) {
     const argument = argv[index];
 
-    if (argument === '--json') {
+    if (argument === "--json") {
       json = true;
       continue;
     }
 
-    if (argument === '--samples') {
+    if (argument === "--samples") {
       includeSamples = true;
       continue;
     }
 
-    if (argument === '--compare') {
+    if (argument === "--compare") {
       const baselinePath = argv[index + 1];
       const candidatePath = argv[index + 2];
       if (
@@ -445,9 +433,7 @@ function parseArgs(argv: readonly string[]): BenchmarkCliOptions {
         candidatePath == null ||
         candidatePath.length === 0
       ) {
-        throw new Error(
-          'Expected <baseline.json> <candidate.json> after --compare'
-        );
+        throw new Error("Expected <baseline.json> <candidate.json> after --compare");
       }
 
       compare = {
@@ -458,16 +444,16 @@ function parseArgs(argv: readonly string[]): BenchmarkCliOptions {
       continue;
     }
 
-    if (argument === '--min-effect-pct') {
+    if (argument === "--min-effect-pct") {
       const value = argv[index + 1];
       if (value == null || value.length === 0) {
-        throw new Error('Expected a value after --min-effect-pct');
+        throw new Error("Expected a value after --min-effect-pct");
       }
 
       const parsed = Number(value);
       if (!Number.isFinite(parsed) || parsed < 0) {
         throw new Error(
-          `Invalid --min-effect-pct value: ${value}. Expected a non-negative number.`
+          `Invalid --min-effect-pct value: ${value}. Expected a non-negative number.`,
         );
       }
 
@@ -476,16 +462,16 @@ function parseArgs(argv: readonly string[]): BenchmarkCliOptions {
       continue;
     }
 
-    if (argument === '--bootstrap-resamples') {
+    if (argument === "--bootstrap-resamples") {
       const value = argv[index + 1];
       if (value == null || value.length === 0) {
-        throw new Error('Expected a value after --bootstrap-resamples');
+        throw new Error("Expected a value after --bootstrap-resamples");
       }
 
       const parsed = Number(value);
       if (!Number.isInteger(parsed) || parsed <= 0) {
         throw new Error(
-          `Invalid --bootstrap-resamples value: ${value}. Expected a positive integer.`
+          `Invalid --bootstrap-resamples value: ${value}. Expected a positive integer.`,
         );
       }
 
@@ -494,15 +480,15 @@ function parseArgs(argv: readonly string[]): BenchmarkCliOptions {
       continue;
     }
 
-    if (argument === '--preset') {
+    if (argument === "--preset") {
       const value = argv[index + 1];
       if (value == null || value.length === 0) {
-        throw new Error('Expected a value after --preset');
+        throw new Error("Expected a value after --preset");
       }
 
       if (!(BENCHMARK_PRESET_NAMES as readonly string[]).includes(value)) {
         throw new Error(
-          `Unknown benchmark preset: ${value}. Expected one of: ${BENCHMARK_PRESET_NAMES.join(', ')}`
+          `Unknown benchmark preset: ${value}. Expected one of: ${BENCHMARK_PRESET_NAMES.join(", ")}`,
         );
       }
 
@@ -515,44 +501,36 @@ function parseArgs(argv: readonly string[]): BenchmarkCliOptions {
       continue;
     }
 
-    if (argument === '--filter') {
+    if (argument === "--filter") {
       const value = argv[index + 1];
       if (value == null || value.length === 0) {
-        throw new Error('Expected a value after --filter');
+        throw new Error("Expected a value after --filter");
       }
 
       filter = new RegExp(value);
       if (!presetWasSelected) {
-        profile = 'full';
+        profile = "full";
       }
       index++;
       continue;
     }
 
-    if (argument === '--help') {
-      console.log('Usage: moonx path-store:benchmark -- [options]');
-      console.log('');
-      console.log('Options:');
+    if (argument === "--help") {
+      console.log("Usage: moonx path-store:benchmark -- [options]");
+      console.log("");
+      console.log("Options:");
       console.log(
-        `  --preset <name>   Benchmark preset (${BENCHMARK_PRESET_NAMES.join(', ')}; default quick)`
+        `  --preset <name>   Benchmark preset (${BENCHMARK_PRESET_NAMES.join(", ")}; default quick)`,
+      );
+      console.log("  --filter <regex>  Run only scenarios whose names match the regex");
+      console.log("  --json             Emit a JSON wrapper with scenario metadata");
+      console.log("  --samples          Include raw timing samples in JSON output");
+      console.log("  --compare <baseline.json> <candidate.json>  Compare two JSON runs");
+      console.log(
+        `  --min-effect-pct <n>  Minimum required p50 improvement for acceptance (default ${COMPARE_DEFAULT_MIN_EFFECT_PCT})`,
       );
       console.log(
-        '  --filter <regex>  Run only scenarios whose names match the regex'
-      );
-      console.log(
-        '  --json             Emit a JSON wrapper with scenario metadata'
-      );
-      console.log(
-        '  --samples          Include raw timing samples in JSON output'
-      );
-      console.log(
-        '  --compare <baseline.json> <candidate.json>  Compare two JSON runs'
-      );
-      console.log(
-        `  --min-effect-pct <n>  Minimum required p50 improvement for acceptance (default ${COMPARE_DEFAULT_MIN_EFFECT_PCT})`
-      );
-      console.log(
-        `  --bootstrap-resamples <n>  Bootstrap resample count for compare mode (default ${COMPARE_DEFAULT_BOOTSTRAP_RESAMPLES})`
+        `  --bootstrap-resamples <n>  Bootstrap resample count for compare mode (default ${COMPARE_DEFAULT_BOOTSTRAP_RESAMPLES})`,
       );
       process.exit(0);
     }
@@ -578,7 +556,7 @@ const BENCHMARK_PROFILES: Record<BenchmarkProfileName, BenchmarkProfile> = {
     includeEndToEnd: true,
     includePrepare: true,
     mutationScenarioKinds: MUTATION_SCENARIO_KINDS,
-    name: 'full',
+    name: "full",
     visibleWindowSizes: VISIBLE_WINDOW_SIZES,
     workloadNames: WORKLOAD_NAMES,
   },
@@ -587,7 +565,7 @@ const BENCHMARK_PROFILES: Record<BenchmarkProfileName, BenchmarkProfile> = {
     includeEndToEnd: false,
     includePrepare: false,
     mutationScenarioKinds: QUICK_MUTATION_SCENARIO_KINDS,
-    name: 'quick',
+    name: "quick",
     visibleWindowSizes: QUICK_VISIBLE_WINDOW_SIZES,
     workloadNames: QUICK_WORKLOAD_NAMES,
   },
@@ -601,11 +579,11 @@ function resolveProfile(cliOptions: BenchmarkCliOptions): BenchmarkProfile {
 // so the benchmark scenarios match the intended production workload.
 function createExpandedStore(
   workload: BenchmarkWorkload,
-  seededPaths: readonly string[] = []
+  seededPaths: readonly string[] = [],
 ): PathStore {
   const store = new PathStore({
     flattenEmptyDirectories: true,
-    initialExpansion: 'open',
+    initialExpansion: "open",
     preparedInput: workload.getPreparedInput(),
   });
 
@@ -619,12 +597,10 @@ function createExpandedStore(
 // Builds the read-only counterpart against the same prepared input so static
 // scenarios measure representation differences rather than different parsing
 // paths.
-function createStaticExpandedStore(
-  workload: BenchmarkWorkload
-): StaticPathStore {
+function createStaticExpandedStore(workload: BenchmarkWorkload): StaticPathStore {
   return new StaticPathStore({
     flattenEmptyDirectories: true,
-    initialExpansion: 'open',
+    initialExpansion: "open",
     preparedInput: workload.getPreparedInput(),
   });
 }
@@ -637,7 +613,7 @@ function createAsyncBenchStore(workload: BenchmarkWorkload): PathStore {
 
 function createCooperativeBenchStore(
   workload: BenchmarkWorkload,
-  directoryPaths: readonly string[]
+  directoryPaths: readonly string[],
 ): PathStore {
   const store = createExpandedStore(workload, directoryPaths);
   for (const directoryPath of directoryPaths) {
@@ -651,19 +627,12 @@ function createCooperativeBenchStore(
 // reclaimable state instead of a pristine snapshot.
 function createCleanupChurnedStore(workload: BenchmarkWorkload): PathStore {
   const store = createExpandedStore(workload);
-  const visibleRowLimit = Math.min(
-    511,
-    Math.max(0, store.getVisibleCount() - 1)
-  );
-  const visibleRows =
-    visibleRowLimit < 0 ? [] : store.getVisibleSlice(0, visibleRowLimit);
-  const removedPath =
-    visibleRows.find((row) => row.kind === 'file')?.path ?? store.list()[0];
+  const visibleRowLimit = Math.min(511, Math.max(0, store.getVisibleCount() - 1));
+  const visibleRows = visibleRowLimit < 0 ? [] : store.getVisibleSlice(0, visibleRowLimit);
+  const removedPath = visibleRows.find((row) => row.kind === "file")?.path ?? store.list()[0];
 
   if (removedPath == null) {
-    throw new Error(
-      `No removable canonical path available for cleanup/${workload.name}.`
-    );
+    throw new Error(`No removable canonical path available for cleanup/${workload.name}.`);
   }
 
   for (let index = 0; index < 128; index++) {
@@ -672,7 +641,7 @@ function createCleanupChurnedStore(workload: BenchmarkWorkload): PathStore {
     store.remove(tempPath);
   }
 
-  store.remove(removedPath, { recursive: removedPath.endsWith('/') });
+  store.remove(removedPath, { recursive: removedPath.endsWith("/") });
   if (visibleRowLimit >= 0) {
     do_not_optimize(store.getVisibleSlice(0, visibleRowLimit));
   }
@@ -699,8 +668,8 @@ function createDeferred<TValue>(): {
 // Cancellation benchmarks wait until one task is actively running so the next
 // queued task can be cancelled mid-drain instead of before execution starts.
 async function waitForSchedulerHandleStatus(
-  handle: import('../src').PathStoreSchedulerHandle,
-  status: import('../src').PathStoreSchedulerTaskStatus
+  handle: import("../src").PathStoreSchedulerHandle,
+  status: import("../src").PathStoreSchedulerTaskStatus,
 ): Promise<void> {
   while (handle.status() !== status) {
     await Bun.sleep(0);
@@ -712,14 +681,14 @@ async function waitForSchedulerHandleStatus(
 function getWindowBounds(
   store: PathStore,
   viewport: ViewportMode,
-  windowSize: number
+  windowSize: number,
 ): WindowBounds {
   const visibleCount = store.getVisibleCount();
   if (visibleCount === 0) {
     return { end: -1, start: 0 };
   }
 
-  if (viewport === 'first') {
+  if (viewport === "first") {
     return {
       end: Math.min(visibleCount - 1, windowSize - 1),
       start: 0,
@@ -739,14 +708,14 @@ function getWindowBounds(
 function getWindowBoundsForProjectionStore(
   store: ProjectionReadableBenchmarkStore,
   viewport: ViewportMode,
-  windowSize: number
+  windowSize: number,
 ): WindowBounds {
   const visibleCount = store.getVisibleCount();
   if (visibleCount === 0) {
     return { end: -1, start: 0 };
   }
 
-  if (viewport === 'first') {
+  if (viewport === "first") {
     return {
       end: Math.min(visibleCount - 1, windowSize - 1),
       start: 0,
@@ -766,7 +735,7 @@ function getWindowBoundsForProjectionStore(
 function getWindowBoundsAtStart(
   visibleCount: number,
   start: number,
-  windowSize: number
+  windowSize: number,
 ): WindowBounds {
   if (visibleCount <= 0) {
     return { end: -1, start: 0 };
@@ -782,7 +751,7 @@ function getWindowBoundsAtStart(
 function getSequentialScrollBounds(
   store: PathStore,
   viewport: ViewportMode,
-  windowSize: number
+  windowSize: number,
 ): readonly WindowBounds[] {
   const visibleCount = store.getVisibleCount();
   if (visibleCount <= 0) {
@@ -795,7 +764,7 @@ function getSequentialScrollBounds(
   for (let index = 1; index < SCROLL_WINDOW_COUNT; index++) {
     const nextStart = Math.min(
       Math.max(0, visibleCount - windowSize),
-      initialBounds.start + index * SCROLL_WINDOW_STEP
+      initialBounds.start + index * SCROLL_WINDOW_STEP,
     );
     bounds.push(getWindowBoundsAtStart(visibleCount, nextStart, windowSize));
   }
@@ -805,7 +774,7 @@ function getSequentialScrollBounds(
 
 function getWindowRows(
   store: ProjectionReadableBenchmarkStore,
-  bounds: WindowBounds
+  bounds: WindowBounds,
 ): readonly PathStoreVisibleRow[] {
   if (bounds.end < bounds.start) {
     return [];
@@ -814,30 +783,21 @@ function getWindowRows(
   return store.getVisibleSlice(bounds.start, bounds.end);
 }
 
-function readVisibleWindow(
-  store: PathStore,
-  bounds: WindowBounds
-): VisibleWindowRead {
+function readVisibleWindow(store: PathStore, bounds: WindowBounds): VisibleWindowRead {
   const visibleCount = store.getVisibleCount();
   return {
-    rows:
-      bounds.end < bounds.start
-        ? []
-        : store.getVisibleSlice(bounds.start, bounds.end),
+    rows: bounds.end < bounds.start ? [] : store.getVisibleSlice(bounds.start, bounds.end),
     visibleCount,
   };
 }
 
 function readVisibleWindowFromProjectionStore(
   store: ProjectionReadableBenchmarkStore,
-  bounds: WindowBounds
+  bounds: WindowBounds,
 ): VisibleWindowRead {
   const visibleCount = store.getVisibleCount();
   return {
-    rows:
-      bounds.end < bounds.start
-        ? []
-        : store.getVisibleSlice(bounds.start, bounds.end),
+    rows: bounds.end < bounds.start ? [] : store.getVisibleSlice(bounds.start, bounds.end),
     visibleCount,
   };
 }
@@ -848,7 +808,7 @@ function getWindowBoundsContainingIndex(
   visibleCount: number,
   index: number,
   windowSize: number,
-  preferredStart: number
+  preferredStart: number,
 ): WindowBounds {
   if (visibleCount === 0) {
     return { end: -1, start: 0 };
@@ -868,7 +828,7 @@ function getWindowBoundsContainingIndex(
 function findVisiblePathInBounds(
   store: ProjectionReadableBenchmarkStore,
   bounds: WindowBounds,
-  targetPaths: readonly string[]
+  targetPaths: readonly string[],
 ): { index: number; path: string } | null {
   if (targetPaths.length === 0) {
     return null;
@@ -895,7 +855,7 @@ function findVisiblePathInBounds(
 function findVisiblePathNearBounds(
   store: ProjectionReadableBenchmarkStore,
   baselineBounds: WindowBounds,
-  targetPaths: readonly string[]
+  targetPaths: readonly string[],
 ): { index: number; path: string } | null {
   const visibleCount = store.getVisibleCount();
   if (visibleCount === 0 || targetPaths.length === 0) {
@@ -903,10 +863,7 @@ function findVisiblePathNearBounds(
   }
 
   const localBounds = {
-    end: Math.min(
-      visibleCount - 1,
-      baselineBounds.end + LOCAL_VISIBLE_PATH_SEARCH_RADIUS
-    ),
+    end: Math.min(visibleCount - 1, baselineBounds.end + LOCAL_VISIBLE_PATH_SEARCH_RADIUS),
     start: Math.max(0, baselineBounds.start - LOCAL_VISIBLE_PATH_SEARCH_RADIUS),
   };
   const localMatch = findVisiblePathInBounds(store, localBounds, targetPaths);
@@ -914,16 +871,9 @@ function findVisiblePathNearBounds(
     return localMatch;
   }
 
-  for (
-    let start = 0;
-    start < visibleCount;
-    start += VISIBLE_PATH_SEARCH_CHUNK_SIZE
-  ) {
+  for (let start = 0; start < visibleCount; start += VISIBLE_PATH_SEARCH_CHUNK_SIZE) {
     const chunkBounds = {
-      end: Math.min(
-        visibleCount - 1,
-        start + VISIBLE_PATH_SEARCH_CHUNK_SIZE - 1
-      ),
+      end: Math.min(visibleCount - 1, start + VISIBLE_PATH_SEARCH_CHUNK_SIZE - 1),
       start,
     };
     const match = findVisiblePathInBounds(store, chunkBounds, targetPaths);
@@ -935,12 +885,10 @@ function findVisiblePathNearBounds(
   return null;
 }
 
-function createPreservedViewportReadPlan(
-  baselineBounds: WindowBounds
-): MutationReadPlan {
+function createPreservedViewportReadPlan(baselineBounds: WindowBounds): MutationReadPlan {
   return {
     bounds: baselineBounds,
-    intent: 'preserve-viewport',
+    intent: "preserve-viewport",
     windowShifted: false,
   };
 }
@@ -951,25 +899,21 @@ function createRenderChangedWindowPlan(
   store: ProjectionReadableBenchmarkStore,
   baselineBounds: WindowBounds,
   windowSize: number,
-  targetPaths: readonly string[]
+  targetPaths: readonly string[],
 ): MutationReadPlan {
   if (targetPaths.length === 0) {
     return {
       bounds: baselineBounds,
-      intent: 'render-changed-window',
+      intent: "render-changed-window",
       windowShifted: false,
     };
   }
 
-  const preferredMatch = findVisiblePathInBounds(
-    store,
-    baselineBounds,
-    targetPaths
-  );
+  const preferredMatch = findVisiblePathInBounds(store, baselineBounds, targetPaths);
   if (preferredMatch != null) {
     return {
       bounds: baselineBounds,
-      intent: 'render-changed-window',
+      intent: "render-changed-window",
       renderTargetPath: preferredMatch.path,
       windowShifted: false,
     };
@@ -977,25 +921,21 @@ function createRenderChangedWindowPlan(
 
   const match = findVisiblePathNearBounds(store, baselineBounds, targetPaths);
   if (match == null) {
-    throw new Error(
-      `Could not find a visible render target for paths: ${targetPaths.join(', ')}`
-    );
+    throw new Error(`Could not find a visible render target for paths: ${targetPaths.join(", ")}`);
   }
 
   const bounds = getWindowBoundsContainingIndex(
     store.getVisibleCount(),
     match.index,
     windowSize,
-    baselineBounds.start
+    baselineBounds.start,
   );
 
   return {
     bounds,
-    intent: 'render-changed-window',
+    intent: "render-changed-window",
     renderTargetPath: match.path,
-    windowShifted:
-      bounds.start !== baselineBounds.start ||
-      bounds.end !== baselineBounds.end,
+    windowShifted: bounds.start !== baselineBounds.start || bounds.end !== baselineBounds.end,
   };
 }
 
@@ -1003,18 +943,15 @@ function getPreview(rows: readonly PathStoreVisibleRow[]): string[] {
   return rows.slice(0, PREVIEW_LIMIT).map((row) => row.path);
 }
 
-function hasVisiblePath(
-  rows: readonly PathStoreVisibleRow[],
-  targetPath: string
-): boolean {
+function hasVisiblePath(rows: readonly PathStoreVisibleRow[], targetPath: string): boolean {
   return rows.some((row) => row.path === targetPath);
 }
 
 function requireVisibleFile(
   rows: readonly PathStoreVisibleRow[],
-  scenarioName: string
+  scenarioName: string,
 ): PathStoreVisibleRow {
-  const row = rows.find((candidate) => candidate.kind === 'file');
+  const row = rows.find((candidate) => candidate.kind === "file");
   if (row == null) {
     throw new Error(`No visible file available for ${scenarioName}`);
   }
@@ -1024,16 +961,13 @@ function requireVisibleFile(
 
 function requireVisibleDirectoryWithChildren(
   rows: readonly PathStoreVisibleRow[],
-  scenarioName: string
+  scenarioName: string,
 ): PathStoreVisibleRow {
   const row = rows.find(
-    (candidate) =>
-      candidate.kind === 'directory' && candidate.hasChildren === true
+    (candidate) => candidate.kind === "directory" && candidate.hasChildren === true,
   );
   if (row == null) {
-    throw new Error(
-      `No expandable visible directory available for ${scenarioName}`
-    );
+    throw new Error(`No expandable visible directory available for ${scenarioName}`);
   }
 
   return row;
@@ -1042,16 +976,12 @@ function requireVisibleDirectoryWithChildren(
 function requireVisibleDirectoryWithRoom(
   rows: readonly PathStoreVisibleRow[],
   scenarioName: string,
-  minimumTrailingRows = 8
+  minimumTrailingRows = 8,
 ): PathStoreVisibleRow {
   const lastEligibleIndex = Math.max(0, rows.length - minimumTrailingRows - 1);
-  for (
-    let rowIndex = 0;
-    rowIndex < rows.length && rowIndex <= lastEligibleIndex;
-    rowIndex++
-  ) {
+  for (let rowIndex = 0; rowIndex < rows.length && rowIndex <= lastEligibleIndex; rowIndex++) {
     const row = rows[rowIndex];
-    if (row != null && row.kind === 'directory' && row.hasChildren === true) {
+    if (row != null && row.kind === "directory" && row.hasChildren === true) {
       return row;
     }
   }
@@ -1059,17 +989,12 @@ function requireVisibleDirectoryWithRoom(
   return requireVisibleDirectoryWithChildren(rows, scenarioName);
 }
 
-function requireRootDirectory(
-  store: PathStore,
-  scenarioName: string
-): PathStoreVisibleRow {
+function requireRootDirectory(store: PathStore, scenarioName: string): PathStoreVisibleRow {
   const rows = getWindowRows(store, {
     end: Math.min(store.getVisibleCount() - 1, 64),
     start: 0,
   });
-  const row = rows.find(
-    (candidate) => candidate.depth === 0 && candidate.kind === 'directory'
-  );
+  const row = rows.find((candidate) => candidate.depth === 0 && candidate.kind === "directory");
 
   if (row == null) {
     throw new Error(`No root directory available for ${scenarioName}`);
@@ -1078,10 +1003,8 @@ function requireRootDirectory(
   return row;
 }
 
-function getVisibleFiles(
-  rows: readonly PathStoreVisibleRow[]
-): readonly PathStoreVisibleRow[] {
-  return rows.filter((row) => row.kind === 'file');
+function getVisibleFiles(rows: readonly PathStoreVisibleRow[]): readonly PathStoreVisibleRow[] {
+  return rows.filter((row) => row.kind === "file");
 }
 
 function splitPath(path: string): {
@@ -1089,18 +1012,14 @@ function splitPath(path: string): {
   name: string;
   parentPath: string;
 } {
-  const isDirectory = path.endsWith('/');
+  const isDirectory = path.endsWith("/");
   const normalizedPath = isDirectory ? path.slice(0, -1) : path;
-  const lastSlashIndex = normalizedPath.lastIndexOf('/');
+  const lastSlashIndex = normalizedPath.lastIndexOf("/");
 
   return {
     isDirectory,
-    name:
-      lastSlashIndex === -1
-        ? normalizedPath
-        : normalizedPath.slice(lastSlashIndex + 1),
-    parentPath:
-      lastSlashIndex === -1 ? '' : normalizedPath.slice(0, lastSlashIndex + 1),
+    name: lastSlashIndex === -1 ? normalizedPath : normalizedPath.slice(lastSlashIndex + 1),
+    parentPath: lastSlashIndex === -1 ? "" : normalizedPath.slice(0, lastSlashIndex + 1),
   };
 }
 
@@ -1111,7 +1030,7 @@ function renamePathWithSuffix(path: string, suffix: string): string {
     return `${parentPath}${name}-${suffix}/`;
   }
 
-  const extensionIndex = name.lastIndexOf('.');
+  const extensionIndex = name.lastIndexOf(".");
   if (extensionIndex > 0) {
     return `${parentPath}${name.slice(0, extensionIndex)}-${suffix}${name.slice(extensionIndex)}`;
   }
@@ -1119,12 +1038,9 @@ function renamePathWithSuffix(path: string, suffix: string): string {
   return `${parentPath}${name}-${suffix}`;
 }
 
-function getMovedPathIntoDirectory(
-  path: string,
-  destinationDirectoryPath: string
-): string {
+function getMovedPathIntoDirectory(path: string, destinationDirectoryPath: string): string {
   const { isDirectory, name } = splitPath(path);
-  return `${destinationDirectoryPath}${name}${isDirectory ? '/' : ''}`;
+  return `${destinationDirectoryPath}${name}${isDirectory ? "/" : ""}`;
 }
 
 function createExistingPathSet(store: PathStore): ReadonlySet<string> {
@@ -1134,15 +1050,12 @@ function createExistingPathSet(store: PathStore): ReadonlySet<string> {
 function createUniqueRenamedPath(
   path: string,
   suffix: string,
-  existingPaths: ReadonlySet<string>
+  existingPaths: ReadonlySet<string>,
 ): string {
   let attempt = 1;
 
   while (true) {
-    const candidate = renamePathWithSuffix(
-      path,
-      attempt === 1 ? suffix : `${suffix}-${attempt}`
-    );
+    const candidate = renamePathWithSuffix(path, attempt === 1 ? suffix : `${suffix}-${attempt}`);
     if (!existingPaths.has(candidate)) {
       return candidate;
     }
@@ -1153,14 +1066,14 @@ function createUniqueRenamedPath(
 function createUniqueMovedPathIntoDirectory(
   path: string,
   destinationDirectoryPath: string,
-  existingPaths: ReadonlySet<string>
+  existingPaths: ReadonlySet<string>,
 ): string {
   const directPath = getMovedPathIntoDirectory(path, destinationDirectoryPath);
   if (!existingPaths.has(directPath)) {
     return directPath;
   }
 
-  return createUniqueRenamedPath(directPath, 'benchmark-moved', existingPaths);
+  return createUniqueRenamedPath(directPath, "benchmark-moved", existingPaths);
 }
 
 // Move benchmarks need deterministic non-colliding destinations because real
@@ -1169,7 +1082,7 @@ function resolveVisibleMoveDestination(
   rows: readonly PathStoreVisibleRow[],
   sourcePath: string,
   existingPaths: ReadonlySet<string>,
-  scenarioName: string
+  scenarioName: string,
 ): {
   destinationDirectoryPath: string;
   note: string;
@@ -1181,11 +1094,7 @@ function resolveVisibleMoveDestination(
 
   for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
     const row = rows[rowIndex];
-    if (
-      row == null ||
-      row.kind !== 'directory' ||
-      row.path === sourceParentPath
-    ) {
+    if (row == null || row.kind !== "directory" || row.path === sourceParentPath) {
       continue;
     }
 
@@ -1203,15 +1112,13 @@ function resolveVisibleMoveDestination(
   }
 
   if (fallbackDirectoryPath == null) {
-    throw new Error(
-      `No visible destination directory available for ${scenarioName}`
-    );
+    throw new Error(`No visible destination directory available for ${scenarioName}`);
   }
 
   const movedPath = createUniqueMovedPathIntoDirectory(
     sourcePath,
     fallbackDirectoryPath,
-    existingPaths
+    existingPaths,
   );
 
   return {
@@ -1226,7 +1133,7 @@ function resolveRootMoveDestination(
   workload: BenchmarkWorkload,
   sourcePath: string,
   existingPaths: ReadonlySet<string>,
-  scenarioName: string
+  scenarioName: string,
 ): {
   destinationDirectoryPath: string;
   note: string;
@@ -1260,7 +1167,7 @@ function resolveRootMoveDestination(
   const movedPath = createUniqueMovedPathIntoDirectory(
     sourcePath,
     fallbackDirectoryPath,
-    existingPaths
+    existingPaths,
   );
 
   return {
@@ -1292,7 +1199,7 @@ function formatCount(value: number): string {
 }
 
 function getHumanBenchmarkFactoryNameWidth(
-  scenarioFactories: readonly BenchmarkScenarioFactory[]
+  scenarioFactories: readonly BenchmarkScenarioFactory[],
 ): number {
   let maxWidth = HUMAN_BENCHMARK_NAME_MIN_WIDTH;
 
@@ -1344,68 +1251,54 @@ function formatHumanWallTimeCell(durationMs: number): string {
 }
 
 function printHumanBenchmarkHeader(
-  context: NonNullable<MitataJsonResult['context']>,
+  context: NonNullable<MitataJsonResult["context"]>,
   scenarioCount: number,
-  nameWidth: number
+  nameWidth: number,
 ): void {
   if (context.cpu?.freq != null) {
-    console.log(
-      `${styleText('clk:', ANSI.dim)} ~${context.cpu.freq.toFixed(2)} GHz`
-    );
+    console.log(`${styleText("clk:", ANSI.dim)} ~${context.cpu.freq.toFixed(2)} GHz`);
   }
   if (context.cpu?.name != null) {
-    console.log(`${styleText('cpu:', ANSI.dim)} ${context.cpu.name}`);
+    console.log(`${styleText("cpu:", ANSI.dim)} ${context.cpu.name}`);
   }
   console.log(
-    `${styleText('runtime:', ANSI.dim)} ${context.runtime}${context.version == null ? '' : ` ${context.version}`} (${context.arch})`
+    `${styleText("runtime:", ANSI.dim)} ${context.runtime}${context.version == null ? "" : ` ${context.version}`} (${context.arch})`,
   );
-  console.log(
-    `${styleText('scenarios:', ANSI.dim)} ${formatCount(scenarioCount)}`
-  );
-  console.log('');
+  console.log(`${styleText("scenarios:", ANSI.dim)} ${formatCount(scenarioCount)}`);
+  console.log("");
 
   console.log(
     styleText(
-      `${'benchmark'.padEnd(nameWidth)} ${'p50'.padStart(10)} ${'p95'.padStart(10)} ${'min'.padStart(10)} ${'max'.padStart(10)} ${'prep'.padStart(10)} ${'wall'.padStart(10)} ${'samples'.padStart(10)}`,
-      ANSI.bold
-    )
+      `${"benchmark".padEnd(nameWidth)} ${"p50".padStart(10)} ${"p95".padStart(10)} ${"min".padStart(10)} ${"max".padStart(10)} ${"prep".padStart(10)} ${"wall".padStart(10)} ${"samples".padStart(10)}`,
+      ANSI.bold,
+    ),
   );
-  console.log(styleText('-'.repeat(nameWidth + 83), ANSI.dim));
+  console.log(styleText("-".repeat(nameWidth + 83), ANSI.dim));
 }
 
 function printHumanBenchmarkBootBanner(
   cliOptions: BenchmarkCliOptions,
-  profile: BenchmarkProfile
+  profile: BenchmarkProfile,
 ): void {
-  console.log(styleText('path-store benchmark', ANSI.bold, ANSI.cyan));
-  console.log(`${styleText('profile:', ANSI.dim)} ${profile.name}`);
+  console.log(styleText("path-store benchmark", ANSI.bold, ANSI.cyan));
+  console.log(`${styleText("profile:", ANSI.dim)} ${profile.name}`);
   if (cliOptions.preset != null) {
-    console.log(`${styleText('preset:', ANSI.dim)} ${cliOptions.preset}`);
+    console.log(`${styleText("preset:", ANSI.dim)} ${cliOptions.preset}`);
   }
+  console.log(`${styleText("workloads:", ANSI.dim)} ${profile.workloadNames.join(", ")}`);
+  console.log(`${styleText("filter:", ANSI.dim)} ${cliOptions.filter?.source ?? "none"}`);
   console.log(
-    `${styleText('workloads:', ANSI.dim)} ${profile.workloadNames.join(', ')}`
+    `${styleText("base samples:", ANSI.dim)} build=${formatCount(BUILD_SCENARIO_SAMPLE_COUNT)}, prepare/e2e=${formatCount(PREPARE_AND_E2E_SCENARIO_SAMPLE_COUNT)}, visible=${formatCount(VISIBLE_SCENARIO_SAMPLE_COUNT)}, visible-cold=${formatCount(COLD_VISIBLE_SCENARIO_SAMPLE_COUNT)}, list/scroll=${formatCount(LIST_AND_SCROLL_SCENARIO_SAMPLE_COUNT)}, mutation=${formatCount(MUTATION_SCENARIO_SAMPLE_COUNT)} (+ ${formatCount(MUTATION_SCENARIO_WARMUP_COUNT)} warmup, reused store where possible; delete-subtree=${formatCount(DESTRUCTIVE_MUTATION_SCENARIO_SAMPLE_COUNT)} fresh-store samples), cleanup=${formatCount(CLEANUP_SCENARIO_SAMPLE_COUNT)}`,
   );
   console.log(
-    `${styleText('filter:', ANSI.dim)} ${cliOptions.filter?.source ?? 'none'}`
+    `${styleText("short runs:", ANSI.dim)} scenarios under ${formatDuration(TARGET_SHORT_SCENARIO_WALL_TIME_MS * 1_000_000)} wall time scale sample counts upward toward that target`,
   );
-  console.log(
-    `${styleText('base samples:', ANSI.dim)} build=${formatCount(BUILD_SCENARIO_SAMPLE_COUNT)}, prepare/e2e=${formatCount(PREPARE_AND_E2E_SCENARIO_SAMPLE_COUNT)}, visible=${formatCount(VISIBLE_SCENARIO_SAMPLE_COUNT)}, visible-cold=${formatCount(COLD_VISIBLE_SCENARIO_SAMPLE_COUNT)}, list/scroll=${formatCount(LIST_AND_SCROLL_SCENARIO_SAMPLE_COUNT)}, mutation=${formatCount(MUTATION_SCENARIO_SAMPLE_COUNT)} (+ ${formatCount(MUTATION_SCENARIO_WARMUP_COUNT)} warmup, reused store where possible; delete-subtree=${formatCount(DESTRUCTIVE_MUTATION_SCENARIO_SAMPLE_COUNT)} fresh-store samples), cleanup=${formatCount(CLEANUP_SCENARIO_SAMPLE_COUNT)}`
-  );
-  console.log(
-    `${styleText('short runs:', ANSI.dim)} scenarios under ${formatDuration(TARGET_SHORT_SCENARIO_WALL_TIME_MS * 1_000_000)} wall time scale sample counts upward toward that target`
-  );
-  console.log(
-    `${styleText('input mode:', ANSI.dim)} presorted for all scenarios except prepare/*`
-  );
-  console.log(
-    `${styleText('boot:', ANSI.dim)} loading workloads and preparing scenarios...`
-  );
-  console.log('');
+  console.log(`${styleText("input mode:", ANSI.dim)} presorted for all scenarios except prepare/*`);
+  console.log(`${styleText("boot:", ANSI.dim)} loading workloads and preparing scenarios...`);
+  console.log("");
 }
 
-function getHumanCompareNameWidth(
-  comparedScenarios: readonly BenchmarkCompareScenario[]
-): number {
+function getHumanCompareNameWidth(comparedScenarios: readonly BenchmarkCompareScenario[]): number {
   let maxWidth = HUMAN_BENCHMARK_NAME_MIN_WIDTH;
 
   for (let index = 0; index < comparedScenarios.length; index++) {
@@ -1421,77 +1314,71 @@ function getHumanCompareNameWidth(
 }
 
 function formatPercentCell(value: number, width = 10): string {
-  const prefix = value > 0 ? '+' : '';
+  const prefix = value > 0 ? "+" : "";
   return `${prefix}${value.toFixed(2)}%`.padStart(width);
 }
 
 function formatConfidenceCell(
   lowPct: number | undefined,
   highPct: number | undefined,
-  width = 24
+  width = 24,
 ): string {
   if (lowPct == null || highPct == null) {
-    return 'n/a'.padStart(width);
+    return "n/a".padStart(width);
   }
 
   return `[${lowPct.toFixed(2)}%, ${highPct.toFixed(2)}%]`.padStart(width);
 }
 
-function formatComparisonStatus(
-  comparedScenario: BenchmarkCompareScenario
-): string {
-  const acceptedLabel = 'accept'.padStart(8);
-  const improveLabel = 'improve'.padStart(8);
-  const regressLabel = 'regress'.padStart(8);
-  const unclearLabel = 'unclear'.padStart(8);
+function formatComparisonStatus(comparedScenario: BenchmarkCompareScenario): string {
+  const acceptedLabel = "accept".padStart(8);
+  const improveLabel = "improve".padStart(8);
+  const regressLabel = "regress".padStart(8);
+  const unclearLabel = "unclear".padStart(8);
 
   if (comparedScenario.accepted) {
     return styleText(acceptedLabel, ANSI.green, ANSI.bold);
   }
 
   switch (comparedScenario.classification) {
-    case 'improved':
+    case "improved":
       return styleText(improveLabel, ANSI.green);
-    case 'regressed':
+    case "regressed":
       return regressLabel;
-    case 'inconclusive':
+    case "inconclusive":
       return styleText(unclearLabel, ANSI.dim);
   }
 }
 
 function printHumanBenchmarkCompareHeader(
   compareOutput: BenchmarkCompareOutput,
-  filterSource: string
+  filterSource: string,
 ): void {
   const nameWidth = getHumanCompareNameWidth(compareOutput.comparedScenarios);
 
-  console.log(styleText('path-store benchmark compare', ANSI.bold, ANSI.cyan));
+  console.log(styleText("path-store benchmark compare", ANSI.bold, ANSI.cyan));
+  console.log(`${styleText("baseline:", ANSI.dim)} ${compareOutput.baselineFile}`);
+  console.log(`${styleText("candidate:", ANSI.dim)} ${compareOutput.candidateFile}`);
+  console.log(`${styleText("filter:", ANSI.dim)} ${filterSource}`);
   console.log(
-    `${styleText('baseline:', ANSI.dim)} ${compareOutput.baselineFile}`
+    `${styleText("acceptance:", ANSI.dim)} candidate p50 must improve by at least ${compareOutput.minEffectPct.toFixed(2)}%`,
   );
   console.log(
-    `${styleText('candidate:', ANSI.dim)} ${compareOutput.candidateFile}`
+    `${styleText("confidence:", ANSI.dim)} ${compareOutput.confidenceLevel * 100}% bootstrap CI over median improvement (${formatCount(compareOutput.bootstrapResamples)} resamples when raw samples are available)`,
   );
-  console.log(`${styleText('filter:', ANSI.dim)} ${filterSource}`);
-  console.log(
-    `${styleText('acceptance:', ANSI.dim)} candidate p50 must improve by at least ${compareOutput.minEffectPct.toFixed(2)}%`
-  );
-  console.log(
-    `${styleText('confidence:', ANSI.dim)} ${compareOutput.confidenceLevel * 100}% bootstrap CI over median improvement (${formatCount(compareOutput.bootstrapResamples)} resamples when raw samples are available)`
-  );
-  console.log('');
+  console.log("");
   console.log(
     styleText(
-      `${'benchmark'.padEnd(nameWidth)} ${'base p50'.padStart(10)} ${'cand p50'.padStart(10)} ${'delta'.padStart(10)} ${'ci95'.padStart(24)} ${'p95'.padStart(10)} ${'status'.padStart(8)}`,
-      ANSI.bold
-    )
+      `${"benchmark".padEnd(nameWidth)} ${"base p50".padStart(10)} ${"cand p50".padStart(10)} ${"delta".padStart(10)} ${"ci95".padStart(24)} ${"p95".padStart(10)} ${"status".padStart(8)}`,
+      ANSI.bold,
+    ),
   );
-  console.log(styleText('-'.repeat(nameWidth + 78), ANSI.dim));
+  console.log(styleText("-".repeat(nameWidth + 78), ANSI.dim));
 }
 
 function printHumanBenchmarkCompareRow(
   comparedScenario: BenchmarkCompareScenario,
-  nameWidth: number
+  nameWidth: number,
 ): void {
   console.log(
     [
@@ -1499,21 +1386,18 @@ function printHumanBenchmarkCompareRow(
       formatHumanDurationCell(comparedScenario.baseline.p50),
       formatHumanDurationCell(comparedScenario.candidate.p50),
       formatPercentCell(comparedScenario.p50ImprovementPct),
-      formatConfidenceCell(
-        comparedScenario.ci95LowPct,
-        comparedScenario.ci95HighPct
-      ),
+      formatConfidenceCell(comparedScenario.ci95LowPct, comparedScenario.ci95HighPct),
       comparedScenario.p95ImprovementPct == null
-        ? 'n/a'.padStart(10)
+        ? "n/a".padStart(10)
         : formatPercentCell(comparedScenario.p95ImprovementPct),
       formatComparisonStatus(comparedScenario),
-    ].join(' ')
+    ].join(" "),
   );
 }
 
 function printHumanBenchmarkCompareSummary(
   compareOutput: BenchmarkCompareOutput,
-  filterSource: string
+  filterSource: string,
 ): void {
   const nameWidth = getHumanCompareNameWidth(compareOutput.comparedScenarios);
 
@@ -1528,9 +1412,9 @@ function printHumanBenchmarkCompareSummary(
     printHumanBenchmarkCompareRow(scenario, nameWidth);
   }
 
-  console.log('');
+  console.log("");
   console.log(
-    `${styleText('summary:', ANSI.dim)} compared=${formatCount(compareOutput.summary.compared)}, accepted=${formatCount(compareOutput.summary.accepted)}, improved=${formatCount(compareOutput.summary.improved)}, regressed=${formatCount(compareOutput.summary.regressed)}, inconclusive=${formatCount(compareOutput.summary.inconclusive)}`
+    `${styleText("summary:", ANSI.dim)} compared=${formatCount(compareOutput.summary.compared)}, accepted=${formatCount(compareOutput.summary.accepted)}, improved=${formatCount(compareOutput.summary.improved)}, regressed=${formatCount(compareOutput.summary.regressed)}, inconclusive=${formatCount(compareOutput.summary.inconclusive)}`,
   );
 }
 
@@ -1539,7 +1423,7 @@ function printHumanBenchmarkRow(
   stats: MeasuredRunStats,
   preparationTimeMs: number,
   wallTimeMs: number,
-  nameWidth: number
+  nameWidth: number,
 ): void {
   const row = [
     styleText(padBenchmarkLabel(label, nameWidth), ANSI.bold),
@@ -1550,31 +1434,31 @@ function printHumanBenchmarkRow(
     styleText(formatHumanWallTimeCell(preparationTimeMs), ANSI.dim),
     formatHumanWallTimeCell(wallTimeMs),
     styleText(formatHumanSamplesCell(stats.ticks), ANSI.dim),
-  ].join(' ');
+  ].join(" ");
 
   console.log(row);
 }
 
 function printHumanDerivedBenchmarkSummaries(
   summaries: readonly DerivedBenchmarkSummary[],
-  nameWidth: number
+  nameWidth: number,
 ): void {
   if (summaries.length === 0) {
     return;
   }
 
-  console.log('');
-  console.log(styleText('derived summaries', ANSI.bold, ANSI.cyan));
+  console.log("");
+  console.log(styleText("derived summaries", ANSI.bold, ANSI.cyan));
   console.log(
-    `${styleText('note:', ANSI.dim)} sums independently measured component scenarios; samples shows the minimum component sample count.`
+    `${styleText("note:", ANSI.dim)} sums independently measured component scenarios; samples shows the minimum component sample count.`,
   );
   console.log(
     styleText(
-      `${'benchmark'.padEnd(nameWidth)} ${'p50'.padStart(10)} ${'p95'.padStart(10)} ${'min'.padStart(10)} ${'max'.padStart(10)} ${'prep'.padStart(10)} ${'wall'.padStart(10)} ${'samples'.padStart(10)}`,
-      ANSI.bold
-    )
+      `${"benchmark".padEnd(nameWidth)} ${"p50".padStart(10)} ${"p95".padStart(10)} ${"min".padStart(10)} ${"max".padStart(10)} ${"prep".padStart(10)} ${"wall".padStart(10)} ${"samples".padStart(10)}`,
+      ANSI.bold,
+    ),
   );
-  console.log(styleText('-'.repeat(nameWidth + 83), ANSI.dim));
+  console.log(styleText("-".repeat(nameWidth + 83), ANSI.dim));
 
   for (const summary of summaries) {
     printHumanBenchmarkRow(
@@ -1582,19 +1466,13 @@ function printHumanDerivedBenchmarkSummaries(
       summary.stats,
       summary.preparationTimeMs,
       summary.wallTimeMs,
-      nameWidth
+      nameWidth,
     );
   }
 }
 
-function printHumanMeasurementProgress(
-  index: number,
-  total: number,
-  scenarioName: string
-): void {
-  console.log(
-    `${styleText('› run', ANSI.dim)} [${index}/${total}] ${scenarioName}`
-  );
+function printHumanMeasurementProgress(index: number, total: number, scenarioName: string): void {
+  console.log(`${styleText("› run", ANSI.dim)} [${index}/${total}] ${scenarioName}`);
 }
 
 function clearHumanLiveLine(): void {
@@ -1609,7 +1487,7 @@ function clearHumanLiveLine(): void {
 function createHumanLiveMeasurementProgress(
   index: number,
   total: number,
-  scenarioName: string
+  scenarioName: string,
 ): {
   stop: () => void;
   update: (progress: ScenarioProgress) => void;
@@ -1625,13 +1503,13 @@ function createHumanLiveMeasurementProgress(
   let latestProgress: ScenarioProgress | undefined;
 
   const render = (): void => {
-    const prefix = `${styleText('› run', ANSI.dim)} [${index}/${total}] ${padBenchmarkLabel(
+    const prefix = `${styleText("› run", ANSI.dim)} [${index}/${total}] ${padBenchmarkLabel(
       scenarioName,
-      HUMAN_PROGRESS_LABEL_WIDTH
+      HUMAN_PROGRESS_LABEL_WIDTH,
     )}`;
     const progressLabel =
       latestProgress == null
-        ? 'sampling'
+        ? "sampling"
         : latestProgress.total == null
           ? `${latestProgress.phase} ${latestProgress.completed}`
           : `${latestProgress.phase} ${latestProgress.completed}/${latestProgress.total}`;
@@ -1655,32 +1533,32 @@ function createHumanLiveMeasurementProgress(
 
 function getScenarioSampleCount(category: ScenarioCategory): number {
   switch (category) {
-    case 'visible':
+    case "visible":
       return VISIBLE_SCENARIO_SAMPLE_COUNT;
-    case 'visible-cold':
+    case "visible-cold":
       return COLD_VISIBLE_SCENARIO_SAMPLE_COUNT;
-    case 'scroll':
-    case 'list':
+    case "scroll":
+    case "list":
       return LIST_AND_SCROLL_SCENARIO_SAMPLE_COUNT;
-    case 'mutation':
+    case "mutation":
       return MUTATION_SCENARIO_SAMPLE_COUNT;
-    case 'cleanup':
+    case "cleanup":
       return CLEANUP_SCENARIO_SAMPLE_COUNT;
-    case 'build':
+    case "build":
       return BUILD_SCENARIO_SAMPLE_COUNT;
-    case 'prepare':
-    case 'e2e':
+    case "prepare":
+    case "e2e":
       return PREPARE_AND_E2E_SCENARIO_SAMPLE_COUNT;
   }
 }
 
-function getBenchmarkContext(): NonNullable<MitataJsonResult['context']> {
+function getBenchmarkContext(): NonNullable<MitataJsonResult["context"]> {
   return {
     arch: `${process.arch}-${process.platform}`,
     cpu: {
       name: cpus()[0]?.model ?? null,
     },
-    runtime: 'bun',
+    runtime: "bun",
     version: Bun.version,
   };
 }
@@ -1702,7 +1580,7 @@ function createBenchmarkResult(
   alias: string,
   stats: MeasuredRunStats,
   wallTimeMs: number,
-  includeSamples: boolean
+  includeSamples: boolean,
 ): MitataBenchmarkResult {
   const sanitizedStats = sanitizeMeasuredRunStats(stats);
   if (includeSamples) {
@@ -1721,7 +1599,7 @@ function createBenchmarkResult(
 }
 
 function parseVisibleFirstScenarioName(
-  name: string
+  name: string,
 ): { windowSize: number; workload: BenchmarkWorkloadName } | null {
   const match = /^visible-first\/([^/]+)\/(\d+)$/.exec(name);
   if (match == null) {
@@ -1737,9 +1615,7 @@ function parseVisibleFirstScenarioName(
   return { windowSize, workload };
 }
 
-function sumMeasuredRunStats(
-  componentStats: readonly MeasuredRunStats[]
-): MeasuredRunStats {
+function sumMeasuredRunStats(componentStats: readonly MeasuredRunStats[]): MeasuredRunStats {
   return {
     avg: componentStats.reduce((total, stats) => total + stats.avg, 0),
     max: componentStats.reduce((total, stats) => total + stats.max, 0),
@@ -1751,13 +1627,13 @@ function sumMeasuredRunStats(
     samples: [],
     ticks: componentStats.reduce(
       (minimum, stats) => Math.min(minimum, stats.ticks),
-      Number.MAX_SAFE_INTEGER
+      Number.MAX_SAFE_INTEGER,
     ),
   };
 }
 
 function createDerivedBenchmarkSummaries(
-  results: readonly ScenarioMeasurementResult[]
+  results: readonly ScenarioMeasurementResult[],
 ): DerivedBenchmarkSummary[] {
   const resultByName = new Map(results.map((result) => [result.name, result]));
   const summaries: DerivedBenchmarkSummary[] = [];
@@ -1774,36 +1650,24 @@ function createDerivedBenchmarkSummaries(
     }
 
     const preparePresortedResult = resultByName.get(
-      `prepare-presorted-input/${visibleFirst.workload}`
+      `prepare-presorted-input/${visibleFirst.workload}`,
     );
     if (preparePresortedResult != null) {
       summaries.push({
-        components: [
-          preparePresortedResult.name,
-          buildResult.name,
-          result.name,
-        ],
+        components: [preparePresortedResult.name, buildResult.name, result.name],
         name: `equivalent-presorted-first-render/${visibleFirst.workload}/${visibleFirst.windowSize}`,
         preparationTimeMs:
           preparePresortedResult.preparationTimeMs +
           buildResult.preparationTimeMs +
           result.preparationTimeMs,
-        stats: sumMeasuredRunStats([
-          preparePresortedResult.stats,
-          buildResult.stats,
-          result.stats,
-        ]),
-        wallTimeMs:
-          preparePresortedResult.wallTimeMs +
-          buildResult.wallTimeMs +
-          result.wallTimeMs,
+        stats: sumMeasuredRunStats([preparePresortedResult.stats, buildResult.stats, result.stats]),
+        wallTimeMs: preparePresortedResult.wallTimeMs + buildResult.wallTimeMs + result.wallTimeMs,
       });
     } else {
       summaries.push({
         components: [buildResult.name, result.name],
         name: `equivalent-presorted-warm-first-render/${visibleFirst.workload}/${visibleFirst.windowSize}`,
-        preparationTimeMs:
-          buildResult.preparationTimeMs + result.preparationTimeMs,
+        preparationTimeMs: buildResult.preparationTimeMs + result.preparationTimeMs,
         stats: sumMeasuredRunStats([buildResult.stats, result.stats]),
         wallTimeMs: buildResult.wallTimeMs + result.wallTimeMs,
       });
@@ -1818,13 +1682,8 @@ function createDerivedBenchmarkSummaries(
           prepareResult.preparationTimeMs +
           buildResult.preparationTimeMs +
           result.preparationTimeMs,
-        stats: sumMeasuredRunStats([
-          prepareResult.stats,
-          buildResult.stats,
-          result.stats,
-        ]),
-        wallTimeMs:
-          prepareResult.wallTimeMs + buildResult.wallTimeMs + result.wallTimeMs,
+        stats: sumMeasuredRunStats([prepareResult.stats, buildResult.stats, result.stats]),
+        wallTimeMs: prepareResult.wallTimeMs + buildResult.wallTimeMs + result.wallTimeMs,
       });
     }
   }
@@ -1834,14 +1693,14 @@ function createDerivedBenchmarkSummaries(
 
 async function runBenchmarksForJson(
   scenarioFactories: readonly BenchmarkScenarioFactory[],
-  includeSamples: boolean
+  includeSamples: boolean,
 ): Promise<{
   derivedSummaries: DerivedBenchmarkSummaryOutput[];
   preparationTimeMs: number;
   results: MitataJsonResult;
   scenarios: ScenarioManifest[];
 }> {
-  const benchmarks: MitataJsonResult['benchmarks'] = [];
+  const benchmarks: MitataJsonResult["benchmarks"] = [];
   const manifests: ScenarioManifest[] = [];
   const results: ScenarioMeasurementResult[] = [];
   let preparationTimeMs = 0;
@@ -1854,8 +1713,7 @@ async function runBenchmarksForJson(
 
     const scenarioPreparationStartedAt = performance.now();
     const scenario = factory.build();
-    const scenarioPreparationTimeMs =
-      performance.now() - scenarioPreparationStartedAt;
+    const scenarioPreparationTimeMs = performance.now() - scenarioPreparationStartedAt;
     preparationTimeMs += scenarioPreparationTimeMs;
     scenario.manifest.preparationTimeMs = scenarioPreparationTimeMs;
     manifests.push(scenario.manifest);
@@ -1870,24 +1728,20 @@ async function runBenchmarksForJson(
       wallTimeMs,
     });
 
-    benchmarks.push(
-      createBenchmarkResult(scenario.name, stats, wallTimeMs, includeSamples)
-    );
+    benchmarks.push(createBenchmarkResult(scenario.name, stats, wallTimeMs, includeSamples));
 
     maybeCollectGarbage();
   }
 
   return {
-    derivedSummaries: createDerivedBenchmarkSummaries(results).map(
-      (summary) => ({
-        components: summary.components,
-        name: summary.name,
-        preparationTimeMs: summary.preparationTimeMs,
-        sampleStrategy: 'min-component-samples',
-        stats: sanitizeMeasuredRunStats(summary.stats),
-        wallTimeMs: summary.wallTimeMs,
-      })
-    ),
+    derivedSummaries: createDerivedBenchmarkSummaries(results).map((summary) => ({
+      components: summary.components,
+      name: summary.name,
+      preparationTimeMs: summary.preparationTimeMs,
+      sampleStrategy: "min-component-samples",
+      stats: sanitizeMeasuredRunStats(summary.stats),
+      wallTimeMs: summary.wallTimeMs,
+    })),
     preparationTimeMs,
     results: {
       benchmarks,
@@ -1898,19 +1752,13 @@ async function runBenchmarksForJson(
   };
 }
 
-function getPercentile(
-  sortedSamples: readonly number[],
-  percentile: number
-): number {
+function getPercentile(sortedSamples: readonly number[], percentile: number): number {
   const lastIndex = sortedSamples.length - 1;
   if (lastIndex < 0) {
     return 0;
   }
 
-  const sampleIndex = Math.min(
-    lastIndex,
-    Math.max(0, Math.round(lastIndex * percentile))
-  );
+  const sampleIndex = Math.min(lastIndex, Math.max(0, Math.round(lastIndex * percentile)));
   return sortedSamples[sampleIndex] ?? 0;
 }
 
@@ -1935,10 +1783,7 @@ function summarizeSamples(samples: readonly number[]): MeasuredRunStats {
   };
 }
 
-function computeImprovementPct(
-  baselineNs: number,
-  candidateNs: number
-): number {
+function computeImprovementPct(baselineNs: number, candidateNs: number): number {
   if (baselineNs <= 0) {
     return 0;
   }
@@ -1980,9 +1825,7 @@ function getCompareSamplePool(samples: readonly number[]): number[] {
   const lastIndex = sortedSamples.length - 1;
 
   for (let index = 0; index < COMPARE_MAX_SAMPLE_POOL; index++) {
-    const sampleIndex = Math.round(
-      (index / (COMPARE_MAX_SAMPLE_POOL - 1)) * lastIndex
-    );
+    const sampleIndex = Math.round((index / (COMPARE_MAX_SAMPLE_POOL - 1)) * lastIndex);
     const sample = sortedSamples[sampleIndex];
     if (sample == null) {
       continue;
@@ -2000,7 +1843,7 @@ function getMedianFromSortedSamples(samples: readonly number[]): number {
 
 function createBootstrapMedianSample(
   sourceSamples: readonly number[],
-  random: () => number
+  random: () => number,
 ): number {
   const resampled = new Array<number>(sourceSamples.length);
 
@@ -2017,7 +1860,7 @@ function getBootstrapMedianImprovementCI(
   scenarioName: string,
   baselineSamples: readonly number[],
   candidateSamples: readonly number[],
-  bootstrapResamples: number
+  bootstrapResamples: number,
 ):
   | {
       ci95HighPct: number;
@@ -2037,9 +1880,7 @@ function getBootstrapMedianImprovementCI(
   for (let index = 0; index < bootstrapResamples; index++) {
     const baselineMedian = createBootstrapMedianSample(baselinePool, random);
     const candidateMedian = createBootstrapMedianSample(candidatePool, random);
-    improvementSamples.push(
-      computeImprovementPct(baselineMedian, candidateMedian)
-    );
+    improvementSamples.push(computeImprovementPct(baselineMedian, candidateMedian));
   }
 
   improvementSamples.sort((left, right) => left - right);
@@ -2050,19 +1891,13 @@ function getBootstrapMedianImprovementCI(
     candidatePool.length !== candidateSamples.length
   ) {
     notes.push(
-      `Bootstrap confidence uses stratified ${formatCount(Math.max(baselinePool.length, candidatePool.length))}-sample pools from larger raw sample arrays.`
+      `Bootstrap confidence uses stratified ${formatCount(Math.max(baselinePool.length, candidatePool.length))}-sample pools from larger raw sample arrays.`,
     );
   }
 
   return {
-    ci95HighPct: getPercentile(
-      improvementSamples,
-      1 - (1 - COMPARE_CONFIDENCE_LEVEL) / 2
-    ),
-    ci95LowPct: getPercentile(
-      improvementSamples,
-      (1 - COMPARE_CONFIDENCE_LEVEL) / 2
-    ),
+    ci95HighPct: getPercentile(improvementSamples, 1 - (1 - COMPARE_CONFIDENCE_LEVEL) / 2),
+    ci95LowPct: getPercentile(improvementSamples, (1 - COMPARE_CONFIDENCE_LEVEL) / 2),
     notes: notes.length === 0 ? undefined : notes,
   };
 }
@@ -2070,35 +1905,35 @@ function getBootstrapMedianImprovementCI(
 function getComparisonClassification(
   p50ImprovementPct: number,
   ci95LowPct: number | undefined,
-  ci95HighPct: number | undefined
-): 'improved' | 'regressed' | 'inconclusive' {
+  ci95HighPct: number | undefined,
+): "improved" | "regressed" | "inconclusive" {
   if (ci95LowPct != null && ci95HighPct != null) {
     if (ci95LowPct > 0) {
-      return 'improved';
+      return "improved";
     }
 
     if (ci95HighPct < 0) {
-      return 'regressed';
+      return "regressed";
     }
 
-    return 'inconclusive';
+    return "inconclusive";
   }
 
   if (p50ImprovementPct > 0) {
-    return 'improved';
+    return "improved";
   }
 
   if (p50ImprovementPct < 0) {
-    return 'regressed';
+    return "regressed";
   }
 
-  return 'inconclusive';
+  return "inconclusive";
 }
 
 function getComparisonAcceptance(
   p50ImprovementPct: number,
   ci95LowPct: number | undefined,
-  minEffectPct: number
+  minEffectPct: number,
 ): boolean {
   if (ci95LowPct != null) {
     return ci95LowPct >= minEffectPct;
@@ -2109,7 +1944,7 @@ function getComparisonAcceptance(
 
 function getComparisonSignificance(
   ci95LowPct: number | undefined,
-  ci95HighPct: number | undefined
+  ci95HighPct: number | undefined,
 ): boolean {
   if (ci95LowPct == null || ci95HighPct == null) {
     return false;
@@ -2118,28 +1953,21 @@ function getComparisonSignificance(
   return ci95LowPct > 0 || ci95HighPct < 0;
 }
 
-function getScenarioManifestByName(
-  runOutput: BenchmarkRunOutput
-): Map<string, ScenarioManifest> {
-  return new Map(
-    runOutput.scenarios.map((scenario) => [scenario.name, scenario])
-  );
+function getScenarioManifestByName(runOutput: BenchmarkRunOutput): Map<string, ScenarioManifest> {
+  return new Map(runOutput.scenarios.map((scenario) => [scenario.name, scenario]));
 }
 
 function createCompareScenario(
   name: string,
-  baselineRun: MitataBenchmarkResult['runs'][number],
-  candidateRun: MitataBenchmarkResult['runs'][number],
+  baselineRun: MitataBenchmarkResult["runs"][number],
+  candidateRun: MitataBenchmarkResult["runs"][number],
   baselineManifest: ScenarioManifest | undefined,
   candidateManifest: ScenarioManifest | undefined,
-  options: Pick<BenchmarkCliOptions, 'bootstrapResamples' | 'minEffectPct'>
+  options: Pick<BenchmarkCliOptions, "bootstrapResamples" | "minEffectPct">,
 ): BenchmarkCompareScenario {
   const baselineStats = baselineRun.stats;
   const candidateStats = candidateRun.stats;
-  const p50ImprovementPct = computeImprovementPct(
-    baselineStats.p50,
-    candidateStats.p50
-  );
+  const p50ImprovementPct = computeImprovementPct(baselineStats.p50, candidateStats.p50);
   const p95ImprovementPct =
     baselineStats.p95 != null && candidateStats.p95 != null
       ? computeImprovementPct(baselineStats.p95, candidateStats.p95)
@@ -2149,7 +1977,7 @@ function createCompareScenario(
     name,
     baselineStats.samples ?? [],
     candidateStats.samples ?? [],
-    options.bootstrapResamples
+    options.bootstrapResamples,
   );
 
   const notes: string[] = [];
@@ -2159,7 +1987,7 @@ function createCompareScenario(
 
   if (baselineStats.samples == null || candidateStats.samples == null) {
     notes.push(
-      'Raw samples are unavailable, so confidence intervals are omitted. Re-run benchmarks with --json --samples for confidence-aware comparisons.'
+      "Raw samples are unavailable, so confidence intervals are omitted. Re-run benchmarks with --json --samples for confidence-aware comparisons.",
     );
   }
 
@@ -2167,11 +1995,7 @@ function createCompareScenario(
   const ci95HighPct = bootstrapCI?.ci95HighPct;
 
   return {
-    accepted: getComparisonAcceptance(
-      p50ImprovementPct,
-      ci95LowPct,
-      options.minEffectPct
-    ),
+    accepted: getComparisonAcceptance(p50ImprovementPct, ci95LowPct, options.minEffectPct),
     baseline: {
       p50: baselineStats.p50,
       p95: baselineStats.p95,
@@ -2187,20 +2011,13 @@ function createCompareScenario(
     category: candidateManifest?.category ?? baselineManifest?.category,
     ci95HighPct,
     ci95LowPct,
-    classification: getComparisonClassification(
-      p50ImprovementPct,
-      ci95LowPct,
-      ci95HighPct
-    ),
+    classification: getComparisonClassification(p50ImprovementPct, ci95LowPct, ci95HighPct),
     confidenceAvailable: ci95LowPct != null && ci95HighPct != null,
     name,
     notes: notes.length === 0 ? undefined : notes,
     p50ImprovementPct,
     p95ImprovementPct,
-    statisticallySignificant: getComparisonSignificance(
-      ci95LowPct,
-      ci95HighPct
-    ),
+    statisticallySignificant: getComparisonSignificance(ci95LowPct, ci95HighPct),
     workload: candidateManifest?.workload ?? baselineManifest?.workload,
   };
 }
@@ -2210,56 +2027,39 @@ function createCompareScenario(
 async function createBenchmarkCompareOutput(
   baselinePath: string,
   candidatePath: string,
-  options: Pick<
-    BenchmarkCliOptions,
-    'bootstrapResamples' | 'filter' | 'minEffectPct'
-  >
+  options: Pick<BenchmarkCliOptions, "bootstrapResamples" | "filter" | "minEffectPct">,
 ): Promise<BenchmarkCompareOutput> {
-  const baselineOutput = (await Bun.file(
-    baselinePath
-  ).json()) as BenchmarkRunOutput;
-  const candidateOutput = (await Bun.file(
-    candidatePath
-  ).json()) as BenchmarkRunOutput;
+  const baselineOutput = (await Bun.file(baselinePath).json()) as BenchmarkRunOutput;
+  const candidateOutput = (await Bun.file(candidatePath).json()) as BenchmarkRunOutput;
 
-  if (baselineOutput.kind !== 'path-store-benchmark-run') {
+  if (baselineOutput.kind !== "path-store-benchmark-run") {
     throw new Error(
-      `Expected a path-store benchmark run in ${baselinePath}, got ${String(baselineOutput.kind)}`
+      `Expected a path-store benchmark run in ${baselinePath}, got ${String(baselineOutput.kind)}`,
     );
   }
 
-  if (candidateOutput.kind !== 'path-store-benchmark-run') {
+  if (candidateOutput.kind !== "path-store-benchmark-run") {
     throw new Error(
-      `Expected a path-store benchmark run in ${candidatePath}, got ${String(candidateOutput.kind)}`
+      `Expected a path-store benchmark run in ${candidatePath}, got ${String(candidateOutput.kind)}`,
     );
   }
 
   const baselineBenchmarks = new Map(
-    baselineOutput.results.benchmarks.map((benchmark) => [
-      benchmark.alias,
-      benchmark,
-    ])
+    baselineOutput.results.benchmarks.map((benchmark) => [benchmark.alias, benchmark]),
   );
   const candidateBenchmarks = new Map(
-    candidateOutput.results.benchmarks.map((benchmark) => [
-      benchmark.alias,
-      benchmark,
-    ])
+    candidateOutput.results.benchmarks.map((benchmark) => [benchmark.alias, benchmark]),
   );
   const baselineManifests = getScenarioManifestByName(baselineOutput);
   const candidateManifests = getScenarioManifestByName(candidateOutput);
 
   const scenarioNames = [...baselineBenchmarks.keys()]
     .filter((name) => candidateBenchmarks.has(name))
-    .filter((name) =>
-      options.filter == null ? true : options.filter.test(name)
-    )
+    .filter((name) => (options.filter == null ? true : options.filter.test(name)))
     .sort((left, right) => left.localeCompare(right));
 
   if (scenarioNames.length === 0) {
-    throw new Error(
-      'No shared benchmark scenarios matched the provided filter.'
-    );
+    throw new Error("No shared benchmark scenarios matched the provided filter.");
   }
 
   const comparedScenarios = scenarioNames.map((name) => {
@@ -2278,7 +2078,7 @@ async function createBenchmarkCompareOutput(
       candidateRun,
       baselineManifests.get(name),
       candidateManifests.get(name),
-      options
+      options,
     );
   });
 
@@ -2292,21 +2092,18 @@ async function createBenchmarkCompareOutput(
     confidenceLevel: COMPARE_CONFIDENCE_LEVEL,
     generatedAt: new Date().toISOString(),
     intent: COMPARE_INTENT,
-    kind: 'path-store-benchmark-compare',
+    kind: "path-store-benchmark-compare",
     minEffectPct: options.minEffectPct,
     summary: {
-      accepted: comparedScenarios.filter((scenario) => scenario.accepted)
-        .length,
+      accepted: comparedScenarios.filter((scenario) => scenario.accepted).length,
       compared: comparedScenarios.length,
-      improved: comparedScenarios.filter(
-        (scenario) => scenario.classification === 'improved'
-      ).length,
+      improved: comparedScenarios.filter((scenario) => scenario.classification === "improved")
+        .length,
       inconclusive: comparedScenarios.filter(
-        (scenario) => scenario.classification === 'inconclusive'
+        (scenario) => scenario.classification === "inconclusive",
       ).length,
-      regressed: comparedScenarios.filter(
-        (scenario) => scenario.classification === 'regressed'
-      ).length,
+      regressed: comparedScenarios.filter((scenario) => scenario.classification === "regressed")
+        .length,
     },
   };
 }
@@ -2329,15 +2126,13 @@ interface ReusedStoreMutationMeasurement {
   reset: (store: PathStore) => void;
 }
 
-interface ReusedProjectionMutationMeasurement<
-  TStore extends ExpandableProjectionBenchmarkStore,
-> {
+interface ReusedProjectionMutationMeasurement<TStore extends ExpandableProjectionBenchmarkStore> {
   apply: (store: TStore) => unknown;
   createStore: () => TStore;
   reset: (store: TStore) => void;
 }
 
-type BenchmarkListenerType = '*' | 'batch' | 'move' | 'add';
+type BenchmarkListenerType = "*" | "batch" | "move" | "add";
 
 function maybeCollectGarbage(): void {
   const runtime = Bun as unknown as {
@@ -2346,10 +2141,7 @@ function maybeCollectGarbage(): void {
   runtime.gc?.(true);
 }
 
-function attachBenchmarkListener(
-  store: PathStore,
-  type: BenchmarkListenerType
-): void {
+function attachBenchmarkListener(store: PathStore, type: BenchmarkListenerType): void {
   let eventCount = 0;
   let visibleCountDeltaTotal = 0;
 
@@ -2363,7 +2155,7 @@ function attachBenchmarkListener(
 }
 
 function createProgressEmitter(
-  progressReporter?: ((progress: ScenarioProgress) => void) | undefined
+  progressReporter?: ((progress: ScenarioProgress) => void) | undefined,
 ): {
   report: (progress: ScenarioProgress) => void;
 } {
@@ -2398,7 +2190,7 @@ function measureFunctionSamples(
     innerGc?: boolean;
     warmupCount?: number;
   } = {},
-  progressReporter?: ((progress: ScenarioProgress) => void) | undefined
+  progressReporter?: ((progress: ScenarioProgress) => void) | undefined,
 ): MeasuredRunStats {
   const progress = createProgressEmitter(progressReporter);
   const warmupCount = options.warmupCount ?? 0;
@@ -2406,7 +2198,7 @@ function measureFunctionSamples(
   if (warmupCount > 0) {
     progress.report({
       completed: 0,
-      phase: 'warmup',
+      phase: "warmup",
       total: warmupCount,
     });
 
@@ -2414,7 +2206,7 @@ function measureFunctionSamples(
       do_not_optimize(bench());
       progress.report({
         completed: warmupIndex + 1,
-        phase: 'warmup',
+        phase: "warmup",
         total: warmupCount,
       });
 
@@ -2430,7 +2222,7 @@ function measureFunctionSamples(
 
   progress.report({
     completed: 0,
-    phase: 'sample',
+    phase: "sample",
     total: sampleCount,
   });
 
@@ -2452,7 +2244,7 @@ function measureFunctionSamples(
 
     progress.report({
       completed: sampleIndex,
-      phase: 'sample',
+      phase: "sample",
       total: reachedMinimum ? undefined : sampleCount,
     });
 
@@ -2475,7 +2267,7 @@ function measureFreshSampleBench<TSample>(
     innerGc?: boolean;
     warmupCount?: number;
   } = {},
-  progressReporter?: ((progress: ScenarioProgress) => void) | undefined
+  progressReporter?: ((progress: ScenarioProgress) => void) | undefined,
 ): MeasuredRunStats {
   const progress = createProgressEmitter(progressReporter);
   const warmupCount = options.warmupCount ?? 0;
@@ -2483,7 +2275,7 @@ function measureFreshSampleBench<TSample>(
   if (warmupCount > 0) {
     progress.report({
       completed: 0,
-      phase: 'warmup',
+      phase: "warmup",
       total: warmupCount,
     });
 
@@ -2498,7 +2290,7 @@ function measureFreshSampleBench<TSample>(
 
       progress.report({
         completed: warmupIndex + 1,
-        phase: 'warmup',
+        phase: "warmup",
         total: warmupCount,
       });
 
@@ -2514,7 +2306,7 @@ function measureFreshSampleBench<TSample>(
 
   progress.report({
     completed: 0,
-    phase: 'sample',
+    phase: "sample",
     total: sampleCount,
   });
 
@@ -2542,7 +2334,7 @@ function measureFreshSampleBench<TSample>(
 
     progress.report({
       completed: sampleIndex,
-      phase: 'sample',
+      phase: "sample",
       total: reachedMinimum ? undefined : sampleCount,
     });
 
@@ -2568,7 +2360,7 @@ async function measureAsyncFreshSampleBench<TSample>(
     innerGc?: boolean;
     warmupCount?: number;
   } = {},
-  progressReporter?: ((progress: ScenarioProgress) => void) | undefined
+  progressReporter?: ((progress: ScenarioProgress) => void) | undefined,
 ): Promise<MeasuredRunStats> {
   const progress = createProgressEmitter(progressReporter);
   const warmupCount = options.warmupCount ?? 0;
@@ -2576,7 +2368,7 @@ async function measureAsyncFreshSampleBench<TSample>(
   if (warmupCount > 0) {
     progress.report({
       completed: 0,
-      phase: 'warmup',
+      phase: "warmup",
       total: warmupCount,
     });
 
@@ -2591,7 +2383,7 @@ async function measureAsyncFreshSampleBench<TSample>(
 
       progress.report({
         completed: warmupIndex + 1,
-        phase: 'warmup',
+        phase: "warmup",
         total: warmupCount,
       });
 
@@ -2607,7 +2399,7 @@ async function measureAsyncFreshSampleBench<TSample>(
 
   progress.report({
     completed: 0,
-    phase: 'sample',
+    phase: "sample",
     total: sampleCount,
   });
 
@@ -2636,7 +2428,7 @@ async function measureAsyncFreshSampleBench<TSample>(
 
     progress.report({
       completed: sampleIndex,
-      phase: 'sample',
+      phase: "sample",
       total: reachedMinimum ? undefined : sampleCount,
     });
 
@@ -2656,7 +2448,7 @@ async function measureAsyncFreshSampleBench<TSample>(
 // should reuse that store and only reset state between timed iterations.
 function measureMutationWithReusedStore(
   measurement: ReusedStoreMutationMeasurement,
-  progressReporter?: ((progress: ScenarioProgress) => void) | undefined
+  progressReporter?: ((progress: ScenarioProgress) => void) | undefined,
 ): MeasuredRunStats {
   const store = measurement.createStore();
   const timings: number[] = [];
@@ -2664,29 +2456,25 @@ function measureMutationWithReusedStore(
 
   progress.report({
     completed: 0,
-    phase: 'warmup',
+    phase: "warmup",
     total: MUTATION_SCENARIO_WARMUP_COUNT,
   });
 
-  for (
-    let warmupIndex = 0;
-    warmupIndex < MUTATION_SCENARIO_WARMUP_COUNT;
-    warmupIndex++
-  ) {
+  for (let warmupIndex = 0; warmupIndex < MUTATION_SCENARIO_WARMUP_COUNT; warmupIndex++) {
     const result = measurement.apply(store);
 
     do_not_optimize(result);
     measurement.reset(store);
     progress.report({
       completed: warmupIndex + 1,
-      phase: 'warmup',
+      phase: "warmup",
       total: MUTATION_SCENARIO_WARMUP_COUNT,
     });
   }
 
   progress.report({
     completed: 0,
-    phase: 'sample',
+    phase: "sample",
     total: MUTATION_SCENARIO_SAMPLE_COUNT,
   });
 
@@ -2708,7 +2496,7 @@ function measureMutationWithReusedStore(
 
     progress.report({
       completed: sampleIndex,
-      phase: 'sample',
+      phase: "sample",
       total: reachedMinimum ? undefined : MUTATION_SCENARIO_SAMPLE_COUNT,
     });
 
@@ -2724,7 +2512,7 @@ function measureProjectionMutationWithReusedStore<
   TStore extends ExpandableProjectionBenchmarkStore,
 >(
   measurement: ReusedProjectionMutationMeasurement<TStore>,
-  progressReporter?: ((progress: ScenarioProgress) => void) | undefined
+  progressReporter?: ((progress: ScenarioProgress) => void) | undefined,
 ): MeasuredRunStats {
   const store = measurement.createStore();
   const timings: number[] = [];
@@ -2732,29 +2520,25 @@ function measureProjectionMutationWithReusedStore<
 
   progress.report({
     completed: 0,
-    phase: 'warmup',
+    phase: "warmup",
     total: MUTATION_SCENARIO_WARMUP_COUNT,
   });
 
-  for (
-    let warmupIndex = 0;
-    warmupIndex < MUTATION_SCENARIO_WARMUP_COUNT;
-    warmupIndex++
-  ) {
+  for (let warmupIndex = 0; warmupIndex < MUTATION_SCENARIO_WARMUP_COUNT; warmupIndex++) {
     const result = measurement.apply(store);
 
     do_not_optimize(result);
     measurement.reset(store);
     progress.report({
       completed: warmupIndex + 1,
-      phase: 'warmup',
+      phase: "warmup",
       total: MUTATION_SCENARIO_WARMUP_COUNT,
     });
   }
 
   progress.report({
     completed: 0,
-    phase: 'sample',
+    phase: "sample",
     total: MUTATION_SCENARIO_SAMPLE_COUNT,
   });
 
@@ -2776,7 +2560,7 @@ function measureProjectionMutationWithReusedStore<
 
     progress.report({
       completed: sampleIndex,
-      phase: 'sample',
+      phase: "sample",
       total: reachedMinimum ? undefined : MUTATION_SCENARIO_SAMPLE_COUNT,
     });
 
@@ -2789,7 +2573,7 @@ function measureProjectionMutationWithReusedStore<
 }
 
 async function runBenchmarksForHuman(
-  scenarioFactories: readonly BenchmarkScenarioFactory[]
+  scenarioFactories: readonly BenchmarkScenarioFactory[],
 ): Promise<HumanBenchmarkRun & { preparationTimeMs: number }> {
   const context = getBenchmarkContext();
   const nameWidth = getHumanBenchmarkFactoryNameWidth(scenarioFactories);
@@ -2807,15 +2591,14 @@ async function runBenchmarksForHuman(
 
     const scenarioPreparationStartedAt = performance.now();
     const scenario = factory.build();
-    const scenarioPreparationTimeMs =
-      performance.now() - scenarioPreparationStartedAt;
+    const scenarioPreparationTimeMs = performance.now() - scenarioPreparationStartedAt;
     preparationTimeMs += scenarioPreparationTimeMs;
     scenario.manifest.preparationTimeMs = scenarioPreparationTimeMs;
 
     const progress = createHumanLiveMeasurementProgress(
       index + 1,
       scenarioFactories.length,
-      scenario.name
+      scenario.name,
     );
     const wallTimeStart = performance.now();
 
@@ -2838,7 +2621,7 @@ async function runBenchmarksForHuman(
         result.stats,
         result.preparationTimeMs,
         result.wallTimeMs,
-        nameWidth
+        nameWidth,
       );
       maybeCollectGarbage();
     } catch (error) {
@@ -2852,12 +2635,7 @@ async function runBenchmarksForHuman(
     preparationTimeMs,
     results: {
       benchmarks: results.map((result) =>
-        createBenchmarkResult(
-          result.name,
-          result.stats,
-          result.wallTimeMs,
-          false
-        )
+        createBenchmarkResult(result.name, result.stats, result.wallTimeMs, false),
       ),
       context,
       layout: [{ name: null, types: [] }],
@@ -2876,9 +2654,7 @@ function loadWorkload(workloadName: BenchmarkWorkloadName): BenchmarkWorkload {
 
   const workload = getVirtualizationWorkload(workloadName);
   let preparedFiles: readonly string[] | undefined;
-  let preparedInput:
-    | import('../src/public-types').PathStorePreparedInput
-    | undefined;
+  let preparedInput: import("../src/public-types").PathStorePreparedInput | undefined;
 
   return {
     fileCount: workload.files.length,
@@ -2888,9 +2664,7 @@ function loadWorkload(workloadName: BenchmarkWorkloadName): BenchmarkWorkload {
       return preparedFiles;
     },
     getPreparedInput() {
-      preparedInput ??= PathStore.preparePresortedInput(
-        workload.presortedFiles
-      );
+      preparedInput ??= PathStore.preparePresortedInput(workload.presortedFiles);
       return preparedInput;
     },
     getPresortedFiles() {
@@ -2907,12 +2681,10 @@ function loadWorkload(workloadName: BenchmarkWorkloadName): BenchmarkWorkload {
 function createWideDirectoryWorkload(): BenchmarkWorkload {
   const rawFiles = Array.from(
     { length: WIDE_DIRECTORY_FILE_COUNT },
-    (_, index) => `wide/item${index + 1}.ts`
+    (_, index) => `wide/item${index + 1}.ts`,
   );
   let preparedFiles: readonly string[] | undefined;
-  let preparedInput:
-    | import('../src/public-types').PathStorePreparedInput
-    | undefined;
+  let preparedInput: import("../src/public-types").PathStorePreparedInput | undefined;
 
   return {
     fileCount: rawFiles.length,
@@ -2929,31 +2701,26 @@ function createWideDirectoryWorkload(): BenchmarkWorkload {
       preparedFiles ??= PathStore.preparePaths(rawFiles);
       return preparedFiles;
     },
-    label: 'Synthetic wide directory fixture',
+    label: "Synthetic wide directory fixture",
     name: WIDE_DIRECTORY_WORKLOAD_NAME,
     rawFiles,
     rootCount: 1,
-    rootDirectoryPaths: ['wide/'],
+    rootDirectoryPaths: ["wide/"],
   };
 }
 
 function createFlattenChainWorkload(): BenchmarkWorkload {
   const bucketCount = 50;
   const chainsPerBucket = 100;
-  const rawFiles = Array.from(
-    { length: bucketCount * chainsPerBucket },
-    (_, index) => {
-      const bucketIndex = Math.floor(index / chainsPerBucket) + 1;
-      const chainIndex = (index % chainsPerBucket) + 1;
-      const bucketName = `bucket-${String(bucketIndex).padStart(2, '0')}`;
-      const chainName = `chain-${String(chainIndex).padStart(3, '0')}`;
-      return `${bucketName}/${chainName}/one/two/three/four/file.ts`;
-    }
-  );
+  const rawFiles = Array.from({ length: bucketCount * chainsPerBucket }, (_, index) => {
+    const bucketIndex = Math.floor(index / chainsPerBucket) + 1;
+    const chainIndex = (index % chainsPerBucket) + 1;
+    const bucketName = `bucket-${String(bucketIndex).padStart(2, "0")}`;
+    const chainName = `chain-${String(chainIndex).padStart(3, "0")}`;
+    return `${bucketName}/${chainName}/one/two/three/four/file.ts`;
+  });
   let preparedFiles: readonly string[] | undefined;
-  let preparedInput:
-    | import('../src/public-types').PathStorePreparedInput
-    | undefined;
+  let preparedInput: import("../src/public-types").PathStorePreparedInput | undefined;
 
   return {
     fileCount: rawFiles.length,
@@ -2970,7 +2737,7 @@ function createFlattenChainWorkload(): BenchmarkWorkload {
       preparedFiles ??= PathStore.preparePaths(rawFiles);
       return preparedFiles;
     },
-    label: 'Synthetic flatten-heavy fixture',
+    label: "Synthetic flatten-heavy fixture",
     name: FLATTEN_CHAIN_WORKLOAD_NAME,
     rawFiles,
     rootCount: bucketCount,
@@ -2985,7 +2752,7 @@ function getRootDirectoryPaths(paths: readonly string[]): readonly string[] {
   const seen = new Set<string>();
 
   for (const path of paths) {
-    const slashIndex = path.indexOf('/');
+    const slashIndex = path.indexOf("/");
     if (slashIndex === -1) {
       continue;
     }
@@ -3002,9 +2769,7 @@ function getRootDirectoryPaths(paths: readonly string[]): readonly string[] {
   return rootDirectories;
 }
 
-function createPrepareScenarioFactory(
-  workload: BenchmarkWorkload
-): BenchmarkScenarioFactory {
+function createPrepareScenarioFactory(workload: BenchmarkWorkload): BenchmarkScenarioFactory {
   const name = `prepare/${workload.name}`;
 
   return {
@@ -3012,7 +2777,7 @@ function createPrepareScenarioFactory(
     build() {
       return {
         manifest: {
-          category: 'prepare',
+          category: "prepare",
           fileCount: workload.fileCount,
           name,
           workload: workload.name,
@@ -3021,10 +2786,10 @@ function createPrepareScenarioFactory(
           return Promise.resolve(
             measureFunctionSamples(
               () => do_not_optimize(PathStore.preparePaths(workload.rawFiles)),
-              getScenarioSampleCount('prepare'),
+              getScenarioSampleCount("prepare"),
               {},
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -3034,7 +2799,7 @@ function createPrepareScenarioFactory(
 }
 
 function createPreparePresortedInputScenarioFactory(
-  workload: BenchmarkWorkload
+  workload: BenchmarkWorkload,
 ): BenchmarkScenarioFactory {
   const name = `prepare-presorted-input/${workload.name}`;
 
@@ -3045,25 +2810,20 @@ function createPreparePresortedInputScenarioFactory(
 
       return {
         manifest: {
-          category: 'prepare',
+          category: "prepare",
           fileCount: workload.fileCount,
           name,
-          notes: [
-            'Parses already-canonical presorted strings into prepared input.',
-          ],
+          notes: ["Parses already-canonical presorted strings into prepared input."],
           workload: workload.name,
         },
         measure(progressReporter) {
           return Promise.resolve(
             measureFunctionSamples(
-              () =>
-                do_not_optimize(
-                  PathStore.preparePresortedInput(presortedFiles)
-                ),
-              getScenarioSampleCount('prepare'),
+              () => do_not_optimize(PathStore.preparePresortedInput(presortedFiles)),
+              getScenarioSampleCount("prepare"),
               {},
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -3072,20 +2832,17 @@ function createPreparePresortedInputScenarioFactory(
   };
 }
 
-function createBuildScenarioFactory(
-  workload: BenchmarkWorkload
-): BenchmarkScenarioFactory {
+function createBuildScenarioFactory(workload: BenchmarkWorkload): BenchmarkScenarioFactory {
   const name = `build/${workload.name}`;
 
   return {
     name,
     build() {
-      const previewVisibleCount =
-        createExpandedStore(workload).getVisibleCount();
+      const previewVisibleCount = createExpandedStore(workload).getVisibleCount();
 
       return {
         manifest: {
-          category: 'build',
+          category: "build",
           fileCount: workload.fileCount,
           name,
           visibleCount: previewVisibleCount,
@@ -3098,10 +2855,10 @@ function createBuildScenarioFactory(
                 const store = createExpandedStore(workload);
                 return do_not_optimize(store.getNodeCount());
               },
-              getScenarioSampleCount('build'),
+              getScenarioSampleCount("build"),
               { innerGc: true, warmupCount: 2 },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -3110,37 +2867,31 @@ function createBuildScenarioFactory(
   };
 }
 
-function createStaticBuildScenarioFactory(
-  workload: BenchmarkWorkload
-): BenchmarkScenarioFactory {
+function createStaticBuildScenarioFactory(workload: BenchmarkWorkload): BenchmarkScenarioFactory {
   const name = `static/build/${workload.name}`;
 
   return {
     name,
     build() {
-      const previewVisibleCount =
-        createStaticExpandedStore(workload).getVisibleCount();
+      const previewVisibleCount = createStaticExpandedStore(workload).getVisibleCount();
 
       return {
         manifest: {
-          category: 'build',
+          category: "build",
           fileCount: workload.fileCount,
           name,
-          notes: ['Builds the public static/read-only representation.'],
+          notes: ["Builds the public static/read-only representation."],
           visibleCount: previewVisibleCount,
           workload: workload.name,
         },
         measure(progressReporter) {
           return Promise.resolve(
             measureFunctionSamples(
-              () =>
-                do_not_optimize(
-                  createStaticExpandedStore(workload).getVisibleCount()
-                ),
-              getScenarioSampleCount('build'),
+              () => do_not_optimize(createStaticExpandedStore(workload).getVisibleCount()),
+              getScenarioSampleCount("build"),
               { innerGc: true, warmupCount: 2 },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -3149,9 +2900,7 @@ function createStaticBuildScenarioFactory(
   };
 }
 
-function createListScenarioFactory(
-  workload: BenchmarkWorkload
-): BenchmarkScenarioFactory {
+function createListScenarioFactory(workload: BenchmarkWorkload): BenchmarkScenarioFactory {
   const name = `list/${workload.name}`;
 
   return {
@@ -3162,7 +2911,7 @@ function createListScenarioFactory(
 
       return {
         manifest: {
-          category: 'list',
+          category: "list",
           fileCount: workload.fileCount,
           name,
           preview,
@@ -3173,10 +2922,10 @@ function createListScenarioFactory(
           return Promise.resolve(
             measureFunctionSamples(
               () => do_not_optimize(previewStore.list()),
-              getScenarioSampleCount('list'),
+              getScenarioSampleCount("list"),
               { innerGc: true },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -3185,9 +2934,7 @@ function createListScenarioFactory(
   };
 }
 
-function createStaticListScenarioFactory(
-  workload: BenchmarkWorkload
-): BenchmarkScenarioFactory {
+function createStaticListScenarioFactory(workload: BenchmarkWorkload): BenchmarkScenarioFactory {
   const name = `static/list/${workload.name}`;
 
   return {
@@ -3198,12 +2945,10 @@ function createStaticListScenarioFactory(
 
       return {
         manifest: {
-          category: 'list',
+          category: "list",
           fileCount: workload.fileCount,
           name,
-          notes: [
-            'Enumerates canonical entries from the static/read-only mode.',
-          ],
+          notes: ["Enumerates canonical entries from the static/read-only mode."],
           preview,
           visibleCount: previewStore.getVisibleCount(),
           workload: workload.name,
@@ -3212,10 +2957,10 @@ function createStaticListScenarioFactory(
           return Promise.resolve(
             measureFunctionSamples(
               () => do_not_optimize(previewStore.list()),
-              getScenarioSampleCount('list'),
+              getScenarioSampleCount("list"),
               { innerGc: true },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -3227,7 +2972,7 @@ function createStaticListScenarioFactory(
 function createVisibleScenarioFactory(
   workload: BenchmarkWorkload,
   viewport: ViewportMode,
-  windowSize: number
+  windowSize: number,
 ): BenchmarkScenarioFactory {
   const name = `visible-${viewport}/${workload.name}/${windowSize}`;
 
@@ -3240,7 +2985,7 @@ function createVisibleScenarioFactory(
 
       return {
         manifest: {
-          category: 'visible',
+          category: "visible",
           fileCount: workload.fileCount,
           name,
           preview: getPreview(read.rows),
@@ -3255,10 +3000,10 @@ function createVisibleScenarioFactory(
           return Promise.resolve(
             measureFunctionSamples(
               () => do_not_optimize(readVisibleWindow(store, bounds)),
-              getScenarioSampleCount('visible'),
+              getScenarioSampleCount("visible"),
               {},
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -3270,7 +3015,7 @@ function createVisibleScenarioFactory(
 function createStaticVisibleScenarioFactory(
   workload: BenchmarkWorkload,
   viewport: ViewportMode,
-  windowSize: number
+  windowSize: number,
 ): BenchmarkScenarioFactory {
   const name = `static/visible-${viewport}/${workload.name}/${windowSize}`;
 
@@ -3278,21 +3023,15 @@ function createStaticVisibleScenarioFactory(
     name,
     build() {
       const store = createStaticExpandedStore(workload);
-      const bounds = getWindowBoundsForProjectionStore(
-        store,
-        viewport,
-        windowSize
-      );
+      const bounds = getWindowBoundsForProjectionStore(store, viewport, windowSize);
       const read = readVisibleWindowFromProjectionStore(store, bounds);
 
       return {
         manifest: {
-          category: 'visible',
+          category: "visible",
           fileCount: workload.fileCount,
           name,
-          notes: [
-            'Reads the static/read-only projection with the mutable-compatible row shape.',
-          ],
+          notes: ["Reads the static/read-only projection with the mutable-compatible row shape."],
           preview: getPreview(read.rows),
           viewport,
           visibleCount: read.visibleCount,
@@ -3304,14 +3043,11 @@ function createStaticVisibleScenarioFactory(
         measure(progressReporter) {
           return Promise.resolve(
             measureFunctionSamples(
-              () =>
-                do_not_optimize(
-                  readVisibleWindowFromProjectionStore(store, bounds)
-                ),
-              getScenarioSampleCount('visible'),
+              () => do_not_optimize(readVisibleWindowFromProjectionStore(store, bounds)),
+              getScenarioSampleCount("visible"),
               {},
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -3322,7 +3058,7 @@ function createStaticVisibleScenarioFactory(
 
 function createStaticExpandDirectoryScenarioFactory(
   workload: BenchmarkWorkload,
-  viewport: ViewportMode
+  viewport: ViewportMode,
 ): BenchmarkScenarioFactory {
   const name = `static/expand-directory/${viewport}/${workload.name}/${MUTATION_WINDOW_SIZE}`;
 
@@ -3333,38 +3069,26 @@ function createStaticExpandDirectoryScenarioFactory(
       const expandedBounds = getWindowBoundsForProjectionStore(
         expandedStore,
         viewport,
-        MUTATION_WINDOW_SIZE
+        MUTATION_WINDOW_SIZE,
       );
-      const expandedRead = readVisibleWindowFromProjectionStore(
-        expandedStore,
-        expandedBounds
-      );
-      const targetPath = requireVisibleDirectoryWithRoom(
-        expandedRead.rows,
-        name
-      ).path;
+      const expandedRead = readVisibleWindowFromProjectionStore(expandedStore, expandedBounds);
+      const targetPath = requireVisibleDirectoryWithRoom(expandedRead.rows, name).path;
 
       const collapsedStore = createStaticExpandedStore(workload);
       collapsedStore.collapse(targetPath);
       const baselineBounds = getWindowBoundsForProjectionStore(
         collapsedStore,
         viewport,
-        MUTATION_WINDOW_SIZE
+        MUTATION_WINDOW_SIZE,
       );
-      const baselineRead = readVisibleWindowFromProjectionStore(
-        collapsedStore,
-        baselineBounds
-      );
+      const baselineRead = readVisibleWindowFromProjectionStore(collapsedStore, baselineBounds);
       const readPlan = createRenderChangedWindowPlan(
         expandedStore,
         baselineBounds,
         MUTATION_WINDOW_SIZE,
-        [targetPath]
+        [targetPath],
       );
-      const postExpandRead = readVisibleWindowFromProjectionStore(
-        expandedStore,
-        readPlan.bounds
-      );
+      const postExpandRead = readVisibleWindowFromProjectionStore(expandedStore, readPlan.bounds);
 
       return {
         manifest: {
@@ -3372,11 +3096,11 @@ function createStaticExpandDirectoryScenarioFactory(
           baselineWindowEnd: baselineBounds.end,
           baselineWindowStart: baselineBounds.start,
           beforePreview: getPreview(baselineRead.rows),
-          category: 'mutation',
+          category: "mutation",
           fileCount: workload.fileCount,
           name,
           notes: [
-            'Measures static expand/collapse cost, including the full visible-count recompute.',
+            "Measures static expand/collapse cost, including the full visible-count recompute.",
           ],
           postMutationReadIntent: readPlan.intent,
           renderTargetPath: readPlan.renderTargetPath,
@@ -3396,10 +3120,7 @@ function createStaticExpandDirectoryScenarioFactory(
               {
                 apply(store) {
                   store.expand(targetPath);
-                  return readVisibleWindowFromProjectionStore(
-                    store,
-                    readPlan.bounds
-                  );
+                  return readVisibleWindowFromProjectionStore(store, readPlan.bounds);
                 },
                 createStore() {
                   const store = createStaticExpandedStore(workload);
@@ -3410,8 +3131,8 @@ function createStaticExpandDirectoryScenarioFactory(
                   store.collapse(targetPath);
                 },
               },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -3423,7 +3144,7 @@ function createStaticExpandDirectoryScenarioFactory(
 function createColdVisibleScenarioFactory(
   workload: BenchmarkWorkload,
   viewport: ViewportMode,
-  windowSize: number
+  windowSize: number,
 ): BenchmarkScenarioFactory {
   const name = `visible-cold-${viewport}/${workload.name}/${windowSize}`;
 
@@ -3436,12 +3157,10 @@ function createColdVisibleScenarioFactory(
 
       return {
         manifest: {
-          category: 'visible-cold',
+          category: "visible-cold",
           fileCount: workload.fileCount,
           name,
-          notes: [
-            'Creates a fresh expanded store for each timed visible read.',
-          ],
+          notes: ["Creates a fresh expanded store for each timed visible read."],
           preview: getPreview(read.rows),
           viewport,
           visibleCount: read.visibleCount,
@@ -3461,10 +3180,10 @@ function createColdVisibleScenarioFactory(
                   return do_not_optimize(readVisibleWindow(store, bounds));
                 },
               },
-              getScenarioSampleCount('visible-cold'),
+              getScenarioSampleCount("visible-cold"),
               { innerGc: true },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -3476,7 +3195,7 @@ function createColdVisibleScenarioFactory(
 function createSequentialScrollScenarioFactory(
   workload: BenchmarkWorkload,
   viewport: ViewportMode,
-  windowSize: number
+  windowSize: number,
 ): BenchmarkScenarioFactory {
   const name = `scroll-${viewport}/${workload.name}/${windowSize}`;
 
@@ -3485,13 +3204,11 @@ function createSequentialScrollScenarioFactory(
     build() {
       const store = createExpandedStore(workload);
       const boundsList = getSequentialScrollBounds(store, viewport, windowSize);
-      const preview = getPreview(
-        getWindowRows(store, boundsList[0] ?? { end: -1, start: 0 })
-      );
+      const preview = getPreview(getWindowRows(store, boundsList[0] ?? { end: -1, start: 0 }));
 
       return {
         manifest: {
-          category: 'scroll',
+          category: "scroll",
           fileCount: workload.fileCount,
           name,
           notes: [
@@ -3516,10 +3233,10 @@ function createSequentialScrollScenarioFactory(
 
                 return do_not_optimize(lastRead);
               },
-              getScenarioSampleCount('scroll'),
+              getScenarioSampleCount("scroll"),
               {},
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -3531,7 +3248,7 @@ function createSequentialScrollScenarioFactory(
 function createEndToEndScenarioFactory(
   workload: BenchmarkWorkload,
   viewport: ViewportMode,
-  windowSize: number
+  windowSize: number,
 ): BenchmarkScenarioFactory {
   const name = `e2e-${viewport}/${workload.name}/${windowSize}`;
 
@@ -3544,7 +3261,7 @@ function createEndToEndScenarioFactory(
 
       return {
         manifest: {
-          category: 'e2e',
+          category: "e2e",
           fileCount: workload.fileCount,
           name,
           preview: getPreview(read.rows),
@@ -3563,10 +3280,10 @@ function createEndToEndScenarioFactory(
                 const nextBounds = getWindowBounds(store, viewport, windowSize);
                 return do_not_optimize(readVisibleWindow(store, nextBounds));
               },
-              getScenarioSampleCount('e2e'),
+              getScenarioSampleCount("e2e"),
               { innerGc: true },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -3577,7 +3294,7 @@ function createEndToEndScenarioFactory(
 
 function createRenameLeafScenarioFactory(
   workload: BenchmarkWorkload,
-  viewport: ViewportMode
+  viewport: ViewportMode,
 ): BenchmarkScenarioFactory {
   const name = `mutate/rename-leaf/${viewport}/${workload.name}/${MUTATION_WINDOW_SIZE}`;
 
@@ -3586,18 +3303,10 @@ function createRenameLeafScenarioFactory(
     build() {
       const previewStore = createExpandedStore(workload);
       const existingPaths = createExistingPathSet(previewStore);
-      const baselineBounds = getWindowBounds(
-        previewStore,
-        viewport,
-        MUTATION_WINDOW_SIZE
-      );
+      const baselineBounds = getWindowBounds(previewStore, viewport, MUTATION_WINDOW_SIZE);
       const baselineRead = readVisibleWindow(previewStore, baselineBounds);
       const targetPath = requireVisibleFile(baselineRead.rows, name).path;
-      const renamedPath = createUniqueRenamedPath(
-        targetPath,
-        'benchmark-renamed',
-        existingPaths
-      );
+      const renamedPath = createUniqueRenamedPath(targetPath, "benchmark-renamed", existingPaths);
 
       const simulationStore = createExpandedStore(workload);
       simulationStore.move(targetPath, renamedPath);
@@ -3605,12 +3314,9 @@ function createRenameLeafScenarioFactory(
         simulationStore,
         baselineBounds,
         MUTATION_WINDOW_SIZE,
-        [renamedPath]
+        [renamedPath],
       );
-      const postMutationRead = readVisibleWindow(
-        simulationStore,
-        readPlan.bounds
-      );
+      const postMutationRead = readVisibleWindow(simulationStore, readPlan.bounds);
 
       return {
         manifest: {
@@ -3618,7 +3324,7 @@ function createRenameLeafScenarioFactory(
           baselineWindowEnd: baselineBounds.end,
           baselineWindowStart: baselineBounds.start,
           beforePreview: getPreview(baselineRead.rows),
-          category: 'mutation',
+          category: "mutation",
           destinationPath: renamedPath,
           fileCount: workload.fileCount,
           name,
@@ -3649,8 +3355,8 @@ function createRenameLeafScenarioFactory(
                   store.move(renamedPath, targetPath);
                 },
               },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -3662,9 +3368,9 @@ function createRenameLeafScenarioFactory(
 function createRenameLeafListenerScenarioFactory(
   workload: BenchmarkWorkload,
   viewport: ViewportMode,
-  listenerType: '*' | 'move'
+  listenerType: "*" | "move",
 ): BenchmarkScenarioFactory {
-  const listenerLabel = listenerType === '*' ? 'wildcard' : 'specific';
+  const listenerLabel = listenerType === "*" ? "wildcard" : "specific";
   const name = `mutate/rename-leaf-listener-${listenerLabel}/${viewport}/${workload.name}/${MUTATION_WINDOW_SIZE}`;
 
   return {
@@ -3672,18 +3378,10 @@ function createRenameLeafListenerScenarioFactory(
     build() {
       const previewStore = createExpandedStore(workload);
       const existingPaths = createExistingPathSet(previewStore);
-      const baselineBounds = getWindowBounds(
-        previewStore,
-        viewport,
-        MUTATION_WINDOW_SIZE
-      );
+      const baselineBounds = getWindowBounds(previewStore, viewport, MUTATION_WINDOW_SIZE);
       const baselineRead = readVisibleWindow(previewStore, baselineBounds);
       const targetPath = requireVisibleFile(baselineRead.rows, name).path;
-      const renamedPath = createUniqueRenamedPath(
-        targetPath,
-        'benchmark-renamed',
-        existingPaths
-      );
+      const renamedPath = createUniqueRenamedPath(targetPath, "benchmark-renamed", existingPaths);
 
       const simulationStore = createExpandedStore(workload);
       simulationStore.move(targetPath, renamedPath);
@@ -3691,12 +3389,9 @@ function createRenameLeafListenerScenarioFactory(
         simulationStore,
         baselineBounds,
         MUTATION_WINDOW_SIZE,
-        [renamedPath]
+        [renamedPath],
       );
-      const postMutationRead = readVisibleWindow(
-        simulationStore,
-        readPlan.bounds
-      );
+      const postMutationRead = readVisibleWindow(simulationStore, readPlan.bounds);
 
       return {
         manifest: {
@@ -3704,7 +3399,7 @@ function createRenameLeafListenerScenarioFactory(
           baselineWindowEnd: baselineBounds.end,
           baselineWindowStart: baselineBounds.start,
           beforePreview: getPreview(baselineRead.rows),
-          category: 'mutation',
+          category: "mutation",
           destinationPath: renamedPath,
           fileCount: workload.fileCount,
           name,
@@ -3738,8 +3433,8 @@ function createRenameLeafListenerScenarioFactory(
                   store.move(renamedPath, targetPath);
                 },
               },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -3750,7 +3445,7 @@ function createRenameLeafListenerScenarioFactory(
 
 function createDeleteLeafScenarioFactory(
   workload: BenchmarkWorkload,
-  viewport: ViewportMode
+  viewport: ViewportMode,
 ): BenchmarkScenarioFactory {
   const name = `mutate/delete-leaf/${viewport}/${workload.name}/${MUTATION_WINDOW_SIZE}`;
 
@@ -3758,11 +3453,7 @@ function createDeleteLeafScenarioFactory(
     name,
     build() {
       const previewStore = createExpandedStore(workload);
-      const baselineBounds = getWindowBounds(
-        previewStore,
-        viewport,
-        MUTATION_WINDOW_SIZE
-      );
+      const baselineBounds = getWindowBounds(previewStore, viewport, MUTATION_WINDOW_SIZE);
       const baselineRead = readVisibleWindow(previewStore, baselineBounds);
       const targetPath = requireVisibleFile(baselineRead.rows, name).path;
 
@@ -3772,12 +3463,9 @@ function createDeleteLeafScenarioFactory(
         simulationStore,
         baselineBounds,
         MUTATION_WINDOW_SIZE,
-        []
+        [],
       );
-      const postMutationRead = readVisibleWindow(
-        simulationStore,
-        readPlan.bounds
-      );
+      const postMutationRead = readVisibleWindow(simulationStore, readPlan.bounds);
 
       return {
         manifest: {
@@ -3785,7 +3473,7 @@ function createDeleteLeafScenarioFactory(
           baselineWindowEnd: baselineBounds.end,
           baselineWindowStart: baselineBounds.start,
           beforePreview: getPreview(baselineRead.rows),
-          category: 'mutation',
+          category: "mutation",
           fileCount: workload.fileCount,
           name,
           postMutationReadIntent: readPlan.intent,
@@ -3814,8 +3502,8 @@ function createDeleteLeafScenarioFactory(
                   store.add(targetPath);
                 },
               },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -3826,7 +3514,7 @@ function createDeleteLeafScenarioFactory(
 
 function createAddSiblingScenarioFactory(
   workload: BenchmarkWorkload,
-  viewport: ViewportMode
+  viewport: ViewportMode,
 ): BenchmarkScenarioFactory {
   const name = `mutate/add-sibling/${viewport}/${workload.name}/${MUTATION_WINDOW_SIZE}`;
 
@@ -3835,18 +3523,10 @@ function createAddSiblingScenarioFactory(
     build() {
       const previewStore = createExpandedStore(workload);
       const existingPaths = createExistingPathSet(previewStore);
-      const baselineBounds = getWindowBounds(
-        previewStore,
-        viewport,
-        MUTATION_WINDOW_SIZE
-      );
+      const baselineBounds = getWindowBounds(previewStore, viewport, MUTATION_WINDOW_SIZE);
       const baselineRead = readVisibleWindow(previewStore, baselineBounds);
       const targetPath = requireVisibleFile(baselineRead.rows, name).path;
-      const addedPath = createUniqueRenamedPath(
-        targetPath,
-        'benchmark-added',
-        existingPaths
-      );
+      const addedPath = createUniqueRenamedPath(targetPath, "benchmark-added", existingPaths);
 
       const simulationStore = createExpandedStore(workload);
       simulationStore.add(addedPath);
@@ -3854,12 +3534,9 @@ function createAddSiblingScenarioFactory(
         simulationStore,
         baselineBounds,
         MUTATION_WINDOW_SIZE,
-        [addedPath]
+        [addedPath],
       );
-      const postMutationRead = readVisibleWindow(
-        simulationStore,
-        readPlan.bounds
-      );
+      const postMutationRead = readVisibleWindow(simulationStore, readPlan.bounds);
 
       return {
         manifest: {
@@ -3867,7 +3544,7 @@ function createAddSiblingScenarioFactory(
           baselineWindowEnd: baselineBounds.end,
           baselineWindowStart: baselineBounds.start,
           beforePreview: getPreview(baselineRead.rows),
-          category: 'mutation',
+          category: "mutation",
           destinationPath: addedPath,
           fileCount: workload.fileCount,
           name,
@@ -3898,8 +3575,8 @@ function createAddSiblingScenarioFactory(
                   store.remove(addedPath);
                 },
               },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -3910,7 +3587,7 @@ function createAddSiblingScenarioFactory(
 
 function createAddSiblingListenerScenarioFactory(
   workload: BenchmarkWorkload,
-  viewport: ViewportMode
+  viewport: ViewportMode,
 ): BenchmarkScenarioFactory {
   const name = `mutate/add-sibling-listener-wildcard/${viewport}/${workload.name}/${MUTATION_WINDOW_SIZE}`;
 
@@ -3919,18 +3596,10 @@ function createAddSiblingListenerScenarioFactory(
     build() {
       const previewStore = createExpandedStore(workload);
       const existingPaths = createExistingPathSet(previewStore);
-      const baselineBounds = getWindowBounds(
-        previewStore,
-        viewport,
-        MUTATION_WINDOW_SIZE
-      );
+      const baselineBounds = getWindowBounds(previewStore, viewport, MUTATION_WINDOW_SIZE);
       const baselineRead = readVisibleWindow(previewStore, baselineBounds);
       const targetPath = requireVisibleFile(baselineRead.rows, name).path;
-      const addedPath = createUniqueRenamedPath(
-        targetPath,
-        'benchmark-added',
-        existingPaths
-      );
+      const addedPath = createUniqueRenamedPath(targetPath, "benchmark-added", existingPaths);
 
       const simulationStore = createExpandedStore(workload);
       simulationStore.add(addedPath);
@@ -3938,12 +3607,9 @@ function createAddSiblingListenerScenarioFactory(
         simulationStore,
         baselineBounds,
         MUTATION_WINDOW_SIZE,
-        [addedPath]
+        [addedPath],
       );
-      const postMutationRead = readVisibleWindow(
-        simulationStore,
-        readPlan.bounds
-      );
+      const postMutationRead = readVisibleWindow(simulationStore, readPlan.bounds);
 
       return {
         manifest: {
@@ -3951,13 +3617,11 @@ function createAddSiblingListenerScenarioFactory(
           baselineWindowEnd: baselineBounds.end,
           baselineWindowStart: baselineBounds.start,
           beforePreview: getPreview(baselineRead.rows),
-          category: 'mutation',
+          category: "mutation",
           destinationPath: addedPath,
           fileCount: workload.fileCount,
           name,
-          notes: [
-            'Attached wildcard listener to a flatten-sensitive add-sibling case.',
-          ],
+          notes: ["Attached wildcard listener to a flatten-sensitive add-sibling case."],
           postMutationReadIntent: readPlan.intent,
           renderTargetPath: readPlan.renderTargetPath,
           targetPath,
@@ -3980,15 +3644,15 @@ function createAddSiblingListenerScenarioFactory(
                 },
                 createStore() {
                   const store = createExpandedStore(workload);
-                  attachBenchmarkListener(store, '*');
+                  attachBenchmarkListener(store, "*");
                   return store;
                 },
                 reset(store) {
                   store.remove(addedPath);
                 },
               },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -3999,7 +3663,7 @@ function createAddSiblingListenerScenarioFactory(
 
 function createMoveLeafScenarioFactory(
   workload: BenchmarkWorkload,
-  viewport: ViewportMode
+  viewport: ViewportMode,
 ): BenchmarkScenarioFactory {
   const name = `mutate/move-leaf/${viewport}/${workload.name}/${MUTATION_WINDOW_SIZE}`;
 
@@ -4008,18 +3672,14 @@ function createMoveLeafScenarioFactory(
     build() {
       const previewStore = createExpandedStore(workload);
       const existingPaths = createExistingPathSet(previewStore);
-      const baselineBounds = getWindowBounds(
-        previewStore,
-        viewport,
-        MUTATION_WINDOW_SIZE
-      );
+      const baselineBounds = getWindowBounds(previewStore, viewport, MUTATION_WINDOW_SIZE);
       const baselineRead = readVisibleWindow(previewStore, baselineBounds);
       const targetPath = requireVisibleFile(baselineRead.rows, name).path;
       const moveDestination = resolveVisibleMoveDestination(
         baselineRead.rows,
         targetPath,
         existingPaths,
-        name
+        name,
       );
       const movedPath = moveDestination.resultingPath;
 
@@ -4029,12 +3689,9 @@ function createMoveLeafScenarioFactory(
         simulationStore,
         baselineBounds,
         MUTATION_WINDOW_SIZE,
-        [movedPath]
+        [movedPath],
       );
-      const postMutationRead = readVisibleWindow(
-        simulationStore,
-        readPlan.bounds
-      );
+      const postMutationRead = readVisibleWindow(simulationStore, readPlan.bounds);
 
       return {
         manifest: {
@@ -4042,7 +3699,7 @@ function createMoveLeafScenarioFactory(
           baselineWindowEnd: baselineBounds.end,
           baselineWindowStart: baselineBounds.start,
           beforePreview: getPreview(baselineRead.rows),
-          category: 'mutation',
+          category: "mutation",
           destinationPath: movedPath,
           fileCount: workload.fileCount,
           name,
@@ -4074,8 +3731,8 @@ function createMoveLeafScenarioFactory(
                   store.move(movedPath, targetPath);
                 },
               },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -4086,7 +3743,7 @@ function createMoveLeafScenarioFactory(
 
 function createDeleteSubtreeScenarioFactory(
   workload: BenchmarkWorkload,
-  viewport: ViewportMode
+  viewport: ViewportMode,
 ): BenchmarkScenarioFactory {
   const name = `mutate/delete-subtree/${viewport}/${workload.name}/${MUTATION_WINDOW_SIZE}`;
 
@@ -4094,29 +3751,17 @@ function createDeleteSubtreeScenarioFactory(
     name,
     build() {
       const previewStore = createExpandedStore(workload);
-      const baselineBounds = getWindowBounds(
-        previewStore,
-        viewport,
-        MUTATION_WINDOW_SIZE
-      );
+      const baselineBounds = getWindowBounds(previewStore, viewport, MUTATION_WINDOW_SIZE);
       const baselineRead = readVisibleWindow(previewStore, baselineBounds);
       const targetPath = requireRootDirectory(previewStore, name).path;
 
       const simulationStore = createExpandedStore(workload);
       simulationStore.remove(targetPath, { recursive: true });
       const readPlan =
-        viewport === 'first'
-          ? createRenderChangedWindowPlan(
-              simulationStore,
-              baselineBounds,
-              MUTATION_WINDOW_SIZE,
-              []
-            )
+        viewport === "first"
+          ? createRenderChangedWindowPlan(simulationStore, baselineBounds, MUTATION_WINDOW_SIZE, [])
           : createPreservedViewportReadPlan(baselineBounds);
-      const postMutationRead = readVisibleWindow(
-        simulationStore,
-        readPlan.bounds
-      );
+      const postMutationRead = readVisibleWindow(simulationStore, readPlan.bounds);
 
       return {
         manifest: {
@@ -4124,11 +3769,11 @@ function createDeleteSubtreeScenarioFactory(
           baselineWindowEnd: baselineBounds.end,
           baselineWindowStart: baselineBounds.start,
           beforePreview: getPreview(baselineRead.rows),
-          category: 'mutation',
+          category: "mutation",
           fileCount: workload.fileCount,
           name,
           notes: [
-            'Uses a fresh store per timed sample because subtree restoration is intentionally excluded from the measurement.',
+            "Uses a fresh store per timed sample because subtree restoration is intentionally excluded from the measurement.",
           ],
           postMutationReadIntent: readPlan.intent,
           targetPath,
@@ -4150,15 +3795,13 @@ function createDeleteSubtreeScenarioFactory(
                 },
                 runSample(store) {
                   store.remove(targetPath, { recursive: true });
-                  return do_not_optimize(
-                    readVisibleWindow(store, readPlan.bounds)
-                  );
+                  return do_not_optimize(readVisibleWindow(store, readPlan.bounds));
                 },
               },
               DESTRUCTIVE_MUTATION_SCENARIO_SAMPLE_COUNT,
               { innerGc: true },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -4169,7 +3812,7 @@ function createDeleteSubtreeScenarioFactory(
 
 function createMoveSubtreeScenarioFactory(
   workload: BenchmarkWorkload,
-  viewport: ViewportMode
+  viewport: ViewportMode,
 ): BenchmarkScenarioFactory {
   const name = `mutate/move-subtree/${viewport}/${workload.name}/${MUTATION_WINDOW_SIZE}`;
 
@@ -4178,36 +3821,21 @@ function createMoveSubtreeScenarioFactory(
     build() {
       const previewStore = createExpandedStore(workload);
       const existingPaths = createExistingPathSet(previewStore);
-      const baselineBounds = getWindowBounds(
-        previewStore,
-        viewport,
-        MUTATION_WINDOW_SIZE
-      );
+      const baselineBounds = getWindowBounds(previewStore, viewport, MUTATION_WINDOW_SIZE);
       const baselineRead = readVisibleWindow(previewStore, baselineBounds);
       const targetPath = requireRootDirectory(previewStore, name).path;
-      const moveDestination = resolveRootMoveDestination(
-        workload,
-        targetPath,
-        existingPaths,
-        name
-      );
+      const moveDestination = resolveRootMoveDestination(workload, targetPath, existingPaths, name);
       const movedPath = moveDestination.resultingPath;
 
       const simulationStore = createExpandedStore(workload);
       simulationStore.move(targetPath, moveDestination.toPath);
       const readPlan =
-        viewport === 'first'
-          ? createRenderChangedWindowPlan(
-              simulationStore,
-              baselineBounds,
-              MUTATION_WINDOW_SIZE,
-              [movedPath]
-            )
+        viewport === "first"
+          ? createRenderChangedWindowPlan(simulationStore, baselineBounds, MUTATION_WINDOW_SIZE, [
+              movedPath,
+            ])
           : createPreservedViewportReadPlan(baselineBounds);
-      const postMutationRead = readVisibleWindow(
-        simulationStore,
-        readPlan.bounds
-      );
+      const postMutationRead = readVisibleWindow(simulationStore, readPlan.bounds);
 
       return {
         manifest: {
@@ -4215,7 +3843,7 @@ function createMoveSubtreeScenarioFactory(
           baselineWindowEnd: baselineBounds.end,
           baselineWindowStart: baselineBounds.start,
           beforePreview: getPreview(baselineRead.rows),
-          category: 'mutation',
+          category: "mutation",
           destinationPath: movedPath,
           fileCount: workload.fileCount,
           name,
@@ -4247,8 +3875,8 @@ function createMoveSubtreeScenarioFactory(
                   store.move(movedPath, targetPath);
                 },
               },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -4259,7 +3887,7 @@ function createMoveSubtreeScenarioFactory(
 
 function createBatchVisibleRenamesScenarioFactory(
   workload: BenchmarkWorkload,
-  viewport: ViewportMode
+  viewport: ViewportMode,
 ): BenchmarkScenarioFactory {
   const name = `mutate/batch-visible-renames/${viewport}/${workload.name}/${MUTATION_WINDOW_SIZE}`;
 
@@ -4268,11 +3896,7 @@ function createBatchVisibleRenamesScenarioFactory(
     build() {
       const previewStore = createExpandedStore(workload);
       const existingPaths = new Set(createExistingPathSet(previewStore));
-      const baselineBounds = getWindowBounds(
-        previewStore,
-        viewport,
-        MUTATION_WINDOW_SIZE
-      );
+      const baselineBounds = getWindowBounds(previewStore, viewport, MUTATION_WINDOW_SIZE);
       const baselineRead = readVisibleWindow(previewStore, baselineBounds);
       const targetFiles = getVisibleFiles(baselineRead.rows).slice(0, 16);
       if (targetFiles.length === 0) {
@@ -4283,7 +3907,7 @@ function createBatchVisibleRenamesScenarioFactory(
         const destinationPath = createUniqueRenamedPath(
           row.path,
           `batch-${index + 1}`,
-          existingPaths
+          existingPaths,
         );
         existingPaths.add(destinationPath);
         return {
@@ -4298,19 +3922,16 @@ function createBatchVisibleRenamesScenarioFactory(
         renamedPairs.map((pair) => ({
           from: pair.from,
           to: pair.to,
-          type: 'move' as const,
-        }))
+          type: "move" as const,
+        })),
       );
       const readPlan = createRenderChangedWindowPlan(
         simulationStore,
         baselineBounds,
         MUTATION_WINDOW_SIZE,
-        destinationPaths
+        destinationPaths,
       );
-      const postMutationRead = readVisibleWindow(
-        simulationStore,
-        readPlan.bounds
-      );
+      const postMutationRead = readVisibleWindow(simulationStore, readPlan.bounds);
 
       return {
         manifest: {
@@ -4318,12 +3939,10 @@ function createBatchVisibleRenamesScenarioFactory(
           baselineWindowEnd: baselineBounds.end,
           baselineWindowStart: baselineBounds.start,
           beforePreview: getPreview(baselineRead.rows),
-          category: 'mutation',
+          category: "mutation",
           fileCount: workload.fileCount,
           name,
-          notes: [
-            `Renames ${formatCount(renamedPairs.length)} visible files in one batch.`,
-          ],
+          notes: [`Renames ${formatCount(renamedPairs.length)} visible files in one batch.`],
           postMutationReadIntent: readPlan.intent,
           renderTargetPath: readPlan.renderTargetPath,
           targetPath: renamedPairs[0]?.from,
@@ -4345,8 +3964,8 @@ function createBatchVisibleRenamesScenarioFactory(
                     renamedPairs.map((pair) => ({
                       from: pair.from,
                       to: pair.to,
-                      type: 'move' as const,
-                    }))
+                      type: "move" as const,
+                    })),
                   );
                   return readVisibleWindow(store, readPlan.bounds);
                 },
@@ -4358,13 +3977,13 @@ function createBatchVisibleRenamesScenarioFactory(
                     renamedPairs.map((pair) => ({
                       from: pair.to,
                       to: pair.from,
-                      type: 'move' as const,
-                    }))
+                      type: "move" as const,
+                    })),
                   );
                 },
               },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -4375,7 +3994,7 @@ function createBatchVisibleRenamesScenarioFactory(
 
 function createBatchVisibleRenamesListenerScenarioFactory(
   workload: BenchmarkWorkload,
-  viewport: ViewportMode
+  viewport: ViewportMode,
 ): BenchmarkScenarioFactory {
   const name = `mutate/batch-visible-renames-listener-wildcard/${viewport}/${workload.name}/${MUTATION_WINDOW_SIZE}`;
 
@@ -4384,11 +4003,7 @@ function createBatchVisibleRenamesListenerScenarioFactory(
     build() {
       const previewStore = createExpandedStore(workload);
       const existingPaths = new Set(createExistingPathSet(previewStore));
-      const baselineBounds = getWindowBounds(
-        previewStore,
-        viewport,
-        MUTATION_WINDOW_SIZE
-      );
+      const baselineBounds = getWindowBounds(previewStore, viewport, MUTATION_WINDOW_SIZE);
       const baselineRead = readVisibleWindow(previewStore, baselineBounds);
       const targetFiles = getVisibleFiles(baselineRead.rows).slice(0, 16);
       if (targetFiles.length === 0) {
@@ -4399,7 +4014,7 @@ function createBatchVisibleRenamesListenerScenarioFactory(
         const destinationPath = createUniqueRenamedPath(
           row.path,
           `batch-${index + 1}`,
-          existingPaths
+          existingPaths,
         );
         existingPaths.add(destinationPath);
         return {
@@ -4414,19 +4029,16 @@ function createBatchVisibleRenamesListenerScenarioFactory(
         renamedPairs.map((pair) => ({
           from: pair.from,
           to: pair.to,
-          type: 'move' as const,
-        }))
+          type: "move" as const,
+        })),
       );
       const readPlan = createRenderChangedWindowPlan(
         simulationStore,
         baselineBounds,
         MUTATION_WINDOW_SIZE,
-        destinationPaths
+        destinationPaths,
       );
-      const postMutationRead = readVisibleWindow(
-        simulationStore,
-        readPlan.bounds
-      );
+      const postMutationRead = readVisibleWindow(simulationStore, readPlan.bounds);
 
       return {
         manifest: {
@@ -4434,7 +4046,7 @@ function createBatchVisibleRenamesListenerScenarioFactory(
           baselineWindowEnd: baselineBounds.end,
           baselineWindowStart: baselineBounds.start,
           beforePreview: getPreview(baselineRead.rows),
-          category: 'mutation',
+          category: "mutation",
           fileCount: workload.fileCount,
           name,
           notes: [
@@ -4461,14 +4073,14 @@ function createBatchVisibleRenamesListenerScenarioFactory(
                     renamedPairs.map((pair) => ({
                       from: pair.from,
                       to: pair.to,
-                      type: 'move' as const,
-                    }))
+                      type: "move" as const,
+                    })),
                   );
                   return readVisibleWindow(store, readPlan.bounds);
                 },
                 createStore() {
                   const store = createExpandedStore(workload);
-                  attachBenchmarkListener(store, '*');
+                  attachBenchmarkListener(store, "*");
                   return store;
                 },
                 reset(store) {
@@ -4476,13 +4088,13 @@ function createBatchVisibleRenamesListenerScenarioFactory(
                     renamedPairs.map((pair) => ({
                       from: pair.to,
                       to: pair.from,
-                      type: 'move' as const,
-                    }))
+                      type: "move" as const,
+                    })),
                   );
                 },
               },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -4492,7 +4104,7 @@ function createBatchVisibleRenamesListenerScenarioFactory(
 }
 
 function createAsyncBeginLoadScenarioFactory(
-  workload: BenchmarkWorkload
+  workload: BenchmarkWorkload,
 ): BenchmarkScenarioFactory {
   const name = `async/begin-child-load/${workload.name}/${MUTATION_WINDOW_SIZE}`;
 
@@ -4500,38 +4112,27 @@ function createAsyncBeginLoadScenarioFactory(
     name,
     build() {
       const previewStore = createAsyncBenchStore(workload);
-      const baselineBounds = getWindowBounds(
-        previewStore,
-        'first',
-        MUTATION_WINDOW_SIZE
-      );
+      const baselineBounds = getWindowBounds(previewStore, "first", MUTATION_WINDOW_SIZE);
       const simulationStore = createAsyncBenchStore(workload);
       const readPlan = createRenderChangedWindowPlan(
         (() => {
-          const attempt = simulationStore.beginChildLoad(
-            ASYNC_BENCH_DIRECTORY_PATH
-          );
+          const attempt = simulationStore.beginChildLoad(ASYNC_BENCH_DIRECTORY_PATH);
           do_not_optimize(attempt);
           return simulationStore;
         })(),
         baselineBounds,
         MUTATION_WINDOW_SIZE,
-        [ASYNC_BENCH_DIRECTORY_PATH]
+        [ASYNC_BENCH_DIRECTORY_PATH],
       );
-      const postMutationRead = readVisibleWindow(
-        simulationStore,
-        readPlan.bounds
-      );
+      const postMutationRead = readVisibleWindow(simulationStore, readPlan.bounds);
 
       return {
         manifest: {
           afterPreview: getPreview(postMutationRead.rows),
           baselineWindowEnd: baselineBounds.end,
           baselineWindowStart: baselineBounds.start,
-          beforePreview: getPreview(
-            getWindowRows(previewStore, baselineBounds)
-          ),
-          category: 'mutation',
+          beforePreview: getPreview(getWindowRows(previewStore, baselineBounds)),
+          category: "mutation",
           fileCount: workload.fileCount,
           name,
           postMutationReadIntent: readPlan.intent,
@@ -4546,7 +4147,7 @@ function createAsyncBeginLoadScenarioFactory(
           workload: workload.name,
         },
         measure(progressReporter) {
-          let attempt: import('../src').PathStoreLoadAttempt | null = null;
+          let attempt: import("../src").PathStoreLoadAttempt | null = null;
 
           return Promise.resolve(
             measureMutationWithReusedStore(
@@ -4560,14 +4161,14 @@ function createAsyncBeginLoadScenarioFactory(
                 },
                 reset(store) {
                   if (attempt != null) {
-                    store.failChildLoad(attempt, 'benchmark reset');
+                    store.failChildLoad(attempt, "benchmark reset");
                   }
                   store.markDirectoryUnloaded(ASYNC_BENCH_DIRECTORY_PATH);
                   attempt = null;
                 },
               },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -4577,7 +4178,7 @@ function createAsyncBeginLoadScenarioFactory(
 }
 
 function createAsyncApplyPatchScenarioFactory(
-  workload: BenchmarkWorkload
+  workload: BenchmarkWorkload,
 ): BenchmarkScenarioFactory {
   const name = `async/apply-child-patch/${workload.name}/${MUTATION_WINDOW_SIZE}`;
 
@@ -4585,32 +4186,21 @@ function createAsyncApplyPatchScenarioFactory(
     name,
     build() {
       const previewStore = createAsyncBenchStore(workload);
-      const previewAttempt = previewStore.beginChildLoad(
-        ASYNC_BENCH_DIRECTORY_PATH
-      );
-      const baselineBounds = getWindowBounds(
-        previewStore,
-        'first',
-        MUTATION_WINDOW_SIZE
-      );
+      const previewAttempt = previewStore.beginChildLoad(ASYNC_BENCH_DIRECTORY_PATH);
+      const baselineBounds = getWindowBounds(previewStore, "first", MUTATION_WINDOW_SIZE);
 
       const simulationStore = createAsyncBenchStore(workload);
-      const simulationAttempt = simulationStore.beginChildLoad(
-        ASYNC_BENCH_DIRECTORY_PATH
-      );
+      const simulationAttempt = simulationStore.beginChildLoad(ASYNC_BENCH_DIRECTORY_PATH);
       simulationStore.applyChildPatch(simulationAttempt, {
-        operations: [{ path: ASYNC_BENCH_PATCH_FILE_PATH, type: 'add' }],
+        operations: [{ path: ASYNC_BENCH_PATCH_FILE_PATH, type: "add" }],
       });
       const readPlan = createRenderChangedWindowPlan(
         simulationStore,
         baselineBounds,
         MUTATION_WINDOW_SIZE,
-        [ASYNC_BENCH_PATCH_FILE_PATH]
+        [ASYNC_BENCH_PATCH_FILE_PATH],
       );
-      const postMutationRead = readVisibleWindow(
-        simulationStore,
-        readPlan.bounds
-      );
+      const postMutationRead = readVisibleWindow(simulationStore, readPlan.bounds);
       do_not_optimize(previewAttempt);
 
       return {
@@ -4618,13 +4208,11 @@ function createAsyncApplyPatchScenarioFactory(
           afterPreview: getPreview(postMutationRead.rows),
           baselineWindowEnd: baselineBounds.end,
           baselineWindowStart: baselineBounds.start,
-          beforePreview: getPreview(
-            getWindowRows(previewStore, baselineBounds)
-          ),
-          category: 'mutation',
+          beforePreview: getPreview(getWindowRows(previewStore, baselineBounds)),
+          category: "mutation",
           fileCount: workload.fileCount,
           name,
-          notes: ['Flatten-sensitive async child patch.'],
+          notes: ["Flatten-sensitive async child patch."],
           postMutationReadIntent: readPlan.intent,
           renderTargetPath: readPlan.renderTargetPath,
           targetPath: ASYNC_BENCH_PATCH_FILE_PATH,
@@ -4637,7 +4225,7 @@ function createAsyncApplyPatchScenarioFactory(
           workload: workload.name,
         },
         measure(progressReporter) {
-          let attempt: import('../src').PathStoreLoadAttempt | null = null;
+          let attempt: import("../src").PathStoreLoadAttempt | null = null;
 
           return Promise.resolve(
             measureMutationWithReusedStore(
@@ -4645,9 +4233,7 @@ function createAsyncApplyPatchScenarioFactory(
                 apply(store) {
                   attempt = store.beginChildLoad(ASYNC_BENCH_DIRECTORY_PATH);
                   store.applyChildPatch(attempt, {
-                    operations: [
-                      { path: ASYNC_BENCH_PATCH_FILE_PATH, type: 'add' },
-                    ],
+                    operations: [{ path: ASYNC_BENCH_PATCH_FILE_PATH, type: "add" }],
                   });
                   return readVisibleWindow(store, readPlan.bounds);
                 },
@@ -4661,8 +4247,8 @@ function createAsyncApplyPatchScenarioFactory(
                   attempt = null;
                 },
               },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -4672,7 +4258,7 @@ function createAsyncApplyPatchScenarioFactory(
 }
 
 function createAsyncCompleteLoadScenarioFactory(
-  workload: BenchmarkWorkload
+  workload: BenchmarkWorkload,
 ): BenchmarkScenarioFactory {
   const name = `async/complete-child-load/${workload.name}/${MUTATION_WINDOW_SIZE}`;
 
@@ -4680,36 +4266,25 @@ function createAsyncCompleteLoadScenarioFactory(
     name,
     build() {
       const previewStore = createAsyncBenchStore(workload);
-      const baselineBounds = getWindowBounds(
-        previewStore,
-        'first',
-        MUTATION_WINDOW_SIZE
-      );
+      const baselineBounds = getWindowBounds(previewStore, "first", MUTATION_WINDOW_SIZE);
       const simulationStore = createAsyncBenchStore(workload);
-      const simulationAttempt = simulationStore.beginChildLoad(
-        ASYNC_BENCH_DIRECTORY_PATH
-      );
+      const simulationAttempt = simulationStore.beginChildLoad(ASYNC_BENCH_DIRECTORY_PATH);
       simulationStore.completeChildLoad(simulationAttempt);
       const readPlan = createRenderChangedWindowPlan(
         simulationStore,
         baselineBounds,
         MUTATION_WINDOW_SIZE,
-        [ASYNC_BENCH_DIRECTORY_PATH]
+        [ASYNC_BENCH_DIRECTORY_PATH],
       );
-      const postMutationRead = readVisibleWindow(
-        simulationStore,
-        readPlan.bounds
-      );
+      const postMutationRead = readVisibleWindow(simulationStore, readPlan.bounds);
 
       return {
         manifest: {
           afterPreview: getPreview(postMutationRead.rows),
           baselineWindowEnd: baselineBounds.end,
           baselineWindowStart: baselineBounds.start,
-          beforePreview: getPreview(
-            getWindowRows(previewStore, baselineBounds)
-          ),
-          category: 'mutation',
+          beforePreview: getPreview(getWindowRows(previewStore, baselineBounds)),
+          category: "mutation",
           fileCount: workload.fileCount,
           name,
           postMutationReadIntent: readPlan.intent,
@@ -4724,7 +4299,7 @@ function createAsyncCompleteLoadScenarioFactory(
           workload: workload.name,
         },
         measure(progressReporter) {
-          let attempt: import('../src').PathStoreLoadAttempt | null = null;
+          let attempt: import("../src").PathStoreLoadAttempt | null = null;
 
           return Promise.resolve(
             measureMutationWithReusedStore(
@@ -4742,8 +4317,8 @@ function createAsyncCompleteLoadScenarioFactory(
                   attempt = null;
                 },
               },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -4752,45 +4327,32 @@ function createAsyncCompleteLoadScenarioFactory(
   };
 }
 
-function createAsyncFailLoadScenarioFactory(
-  workload: BenchmarkWorkload
-): BenchmarkScenarioFactory {
+function createAsyncFailLoadScenarioFactory(workload: BenchmarkWorkload): BenchmarkScenarioFactory {
   const name = `async/fail-child-load/${workload.name}/${MUTATION_WINDOW_SIZE}`;
 
   return {
     name,
     build() {
       const previewStore = createAsyncBenchStore(workload);
-      const baselineBounds = getWindowBounds(
-        previewStore,
-        'first',
-        MUTATION_WINDOW_SIZE
-      );
+      const baselineBounds = getWindowBounds(previewStore, "first", MUTATION_WINDOW_SIZE);
       const simulationStore = createAsyncBenchStore(workload);
-      const simulationAttempt = simulationStore.beginChildLoad(
-        ASYNC_BENCH_DIRECTORY_PATH
-      );
-      simulationStore.failChildLoad(simulationAttempt, 'benchmark failure');
+      const simulationAttempt = simulationStore.beginChildLoad(ASYNC_BENCH_DIRECTORY_PATH);
+      simulationStore.failChildLoad(simulationAttempt, "benchmark failure");
       const readPlan = createRenderChangedWindowPlan(
         simulationStore,
         baselineBounds,
         MUTATION_WINDOW_SIZE,
-        [ASYNC_BENCH_DIRECTORY_PATH]
+        [ASYNC_BENCH_DIRECTORY_PATH],
       );
-      const postMutationRead = readVisibleWindow(
-        simulationStore,
-        readPlan.bounds
-      );
+      const postMutationRead = readVisibleWindow(simulationStore, readPlan.bounds);
 
       return {
         manifest: {
           afterPreview: getPreview(postMutationRead.rows),
           baselineWindowEnd: baselineBounds.end,
           baselineWindowStart: baselineBounds.start,
-          beforePreview: getPreview(
-            getWindowRows(previewStore, baselineBounds)
-          ),
-          category: 'mutation',
+          beforePreview: getPreview(getWindowRows(previewStore, baselineBounds)),
+          category: "mutation",
           fileCount: workload.fileCount,
           name,
           postMutationReadIntent: readPlan.intent,
@@ -4805,14 +4367,14 @@ function createAsyncFailLoadScenarioFactory(
           workload: workload.name,
         },
         measure(progressReporter) {
-          let attempt: import('../src').PathStoreLoadAttempt | null = null;
+          let attempt: import("../src").PathStoreLoadAttempt | null = null;
 
           return Promise.resolve(
             measureMutationWithReusedStore(
               {
                 apply(store) {
                   attempt = store.beginChildLoad(ASYNC_BENCH_DIRECTORY_PATH);
-                  store.failChildLoad(attempt, 'benchmark failure');
+                  store.failChildLoad(attempt, "benchmark failure");
                   return readVisibleWindow(store, readPlan.bounds);
                 },
                 createStore() {
@@ -4823,8 +4385,8 @@ function createAsyncFailLoadScenarioFactory(
                   attempt = null;
                 },
               },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -4834,7 +4396,7 @@ function createAsyncFailLoadScenarioFactory(
 }
 
 function createCooperativeApplyPatchScenarioFactory(
-  workload: BenchmarkWorkload
+  workload: BenchmarkWorkload,
 ): BenchmarkScenarioFactory {
   const name = `cooperative/apply-child-patch/${workload.name}/${MUTATION_WINDOW_SIZE}`;
 
@@ -4842,42 +4404,31 @@ function createCooperativeApplyPatchScenarioFactory(
     name,
     build() {
       const previewStore = createAsyncBenchStore(workload);
-      const baselineBounds = getWindowBounds(
-        previewStore,
-        'first',
-        MUTATION_WINDOW_SIZE
-      );
+      const baselineBounds = getWindowBounds(previewStore, "first", MUTATION_WINDOW_SIZE);
       const simulationStore = createAsyncBenchStore(workload);
-      const simulationAttempt = simulationStore.beginChildLoad(
-        ASYNC_BENCH_DIRECTORY_PATH
-      );
+      const simulationAttempt = simulationStore.beginChildLoad(ASYNC_BENCH_DIRECTORY_PATH);
       simulationStore.applyChildPatch(simulationAttempt, {
-        operations: [{ path: ASYNC_BENCH_PATCH_FILE_PATH, type: 'add' }],
+        operations: [{ path: ASYNC_BENCH_PATCH_FILE_PATH, type: "add" }],
       });
       const readPlan = createRenderChangedWindowPlan(
         simulationStore,
         baselineBounds,
         MUTATION_WINDOW_SIZE,
-        [ASYNC_BENCH_PATCH_FILE_PATH]
+        [ASYNC_BENCH_PATCH_FILE_PATH],
       );
-      const postMutationRead = readVisibleWindow(
-        simulationStore,
-        readPlan.bounds
-      );
+      const postMutationRead = readVisibleWindow(simulationStore, readPlan.bounds);
 
       return {
         manifest: {
           afterPreview: getPreview(postMutationRead.rows),
           baselineWindowEnd: baselineBounds.end,
           baselineWindowStart: baselineBounds.start,
-          beforePreview: getPreview(
-            getWindowRows(previewStore, baselineBounds)
-          ),
-          category: 'mutation',
+          beforePreview: getPreview(getWindowRows(previewStore, baselineBounds)),
+          category: "mutation",
           fileCount: workload.fileCount,
           name,
           notes: [
-            'Cooperative helper wraps begin/load scheduling around one async child patch and leaves the directory loading.',
+            "Cooperative helper wraps begin/load scheduling around one async child patch and leaves the directory loading.",
           ],
           postMutationReadIntent: readPlan.intent,
           renderTargetPath: readPlan.renderTargetPath,
@@ -4904,18 +4455,16 @@ function createCooperativeApplyPatchScenarioFactory(
                   completeOnSuccess: false,
                   createPatch() {
                     return {
-                      operations: [
-                        { path: ASYNC_BENCH_PATCH_FILE_PATH, type: 'add' },
-                      ],
+                      operations: [{ path: ASYNC_BENCH_PATCH_FILE_PATH, type: "add" }],
                     };
                   },
                   path: ASYNC_BENCH_DIRECTORY_PATH,
                   priority: 100,
                 });
 
-                if (enqueueResult.status === 'rejected') {
+                if (enqueueResult.status === "rejected") {
                   throw new Error(
-                    `Cooperative benchmark task was rejected: ${enqueueResult.reason}`
+                    `Cooperative benchmark task was rejected: ${enqueueResult.reason}`,
                   );
                 }
 
@@ -4931,9 +4480,9 @@ function createCooperativeApplyPatchScenarioFactory(
               async runSample(sample) {
                 await sample.scheduler.whenIdle();
                 const completion = await sample.handle.result;
-                if (completion.status !== 'completed') {
+                if (completion.status !== "completed") {
                   throw new Error(
-                    `Expected cooperative helper to complete successfully, received ${completion.status}.`
+                    `Expected cooperative helper to complete successfully, received ${completion.status}.`,
                   );
                 }
 
@@ -4945,7 +4494,7 @@ function createCooperativeApplyPatchScenarioFactory(
             },
             COOPERATIVE_MUTATION_SCENARIO_SAMPLE_COUNT,
             { warmupCount: 1 },
-            progressReporter
+            progressReporter,
           );
         },
         name,
@@ -4955,32 +4504,21 @@ function createCooperativeApplyPatchScenarioFactory(
 }
 
 function createCooperativeYieldyApplyPatchScenarioFactory(
-  workload: BenchmarkWorkload
+  workload: BenchmarkWorkload,
 ): BenchmarkScenarioFactory {
   const name = `cooperative/apply-child-patch-yieldy/${workload.name}/${MUTATION_WINDOW_SIZE}`;
 
   return {
     name,
     build() {
-      const previewStore = createCooperativeBenchStore(
-        workload,
-        COOPERATIVE_BENCH_DIRECTORY_PATHS
-      );
-      const baselineBounds = getWindowBounds(
-        previewStore,
-        'first',
-        MUTATION_WINDOW_SIZE
-      );
+      const previewStore = createCooperativeBenchStore(workload, COOPERATIVE_BENCH_DIRECTORY_PATHS);
+      const baselineBounds = getWindowBounds(previewStore, "first", MUTATION_WINDOW_SIZE);
       const simulationStore = createCooperativeBenchStore(
         workload,
-        COOPERATIVE_BENCH_DIRECTORY_PATHS
+        COOPERATIVE_BENCH_DIRECTORY_PATHS,
       );
 
-      for (
-        let index = 0;
-        index < COOPERATIVE_BENCH_DIRECTORY_PATHS.length;
-        index++
-      ) {
+      for (let index = 0; index < COOPERATIVE_BENCH_DIRECTORY_PATHS.length; index++) {
         const directoryPath = COOPERATIVE_BENCH_DIRECTORY_PATHS[index];
         const patchFilePath = COOPERATIVE_BENCH_PATCH_FILE_PATHS[index];
         if (directoryPath == null || patchFilePath == null) {
@@ -4989,7 +4527,7 @@ function createCooperativeYieldyApplyPatchScenarioFactory(
 
         const attempt = simulationStore.beginChildLoad(directoryPath);
         simulationStore.applyChildPatch(attempt, {
-          operations: [{ path: patchFilePath, type: 'add' }],
+          operations: [{ path: patchFilePath, type: "add" }],
         });
       }
 
@@ -4997,26 +4535,21 @@ function createCooperativeYieldyApplyPatchScenarioFactory(
         simulationStore,
         baselineBounds,
         MUTATION_WINDOW_SIZE,
-        COOPERATIVE_BENCH_PATCH_FILE_PATHS
+        COOPERATIVE_BENCH_PATCH_FILE_PATHS,
       );
-      const postMutationRead = readVisibleWindow(
-        simulationStore,
-        readPlan.bounds
-      );
+      const postMutationRead = readVisibleWindow(simulationStore, readPlan.bounds);
 
       return {
         manifest: {
           afterPreview: getPreview(postMutationRead.rows),
           baselineWindowEnd: baselineBounds.end,
           baselineWindowStart: baselineBounds.start,
-          beforePreview: getPreview(
-            getWindowRows(previewStore, baselineBounds)
-          ),
-          category: 'mutation',
+          beforePreview: getPreview(getWindowRows(previewStore, baselineBounds)),
+          category: "mutation",
           fileCount: workload.fileCount,
           name,
           notes: [
-            'Cooperative helper drains three queued directory loads with a one-task slice budget to force visible yields.',
+            "Cooperative helper drains three queued directory loads with a one-task slice budget to force visible yields.",
           ],
           postMutationReadIntent: readPlan.intent,
           renderTargetPath: readPlan.renderTargetPath,
@@ -5035,7 +4568,7 @@ function createCooperativeYieldyApplyPatchScenarioFactory(
               createSample() {
                 const store = createCooperativeBenchStore(
                   workload,
-                  COOPERATIVE_BENCH_DIRECTORY_PATHS
+                  COOPERATIVE_BENCH_DIRECTORY_PATHS,
                 );
                 const scheduler = createPathStoreScheduler({
                   chunkBudgetMs: 0,
@@ -5043,36 +4576,31 @@ function createCooperativeYieldyApplyPatchScenarioFactory(
                   store,
                   yieldDelayMs: 0,
                 });
-                const handles = COOPERATIVE_BENCH_DIRECTORY_PATHS.map(
-                  (directoryPath, index) => {
-                    const patchFilePath =
-                      COOPERATIVE_BENCH_PATCH_FILE_PATHS[index];
-                    if (patchFilePath == null) {
-                      throw new Error(
-                        'Missing cooperative benchmark patch path.'
-                      );
-                    }
-
-                    const enqueueResult = scheduler.enqueue({
-                      completeOnSuccess: false,
-                      createPatch() {
-                        return {
-                          operations: [{ path: patchFilePath, type: 'add' }],
-                        };
-                      },
-                      path: directoryPath,
-                      priority: 100 - index,
-                    });
-
-                    if (enqueueResult.status === 'rejected') {
-                      throw new Error(
-                        `Cooperative yieldy benchmark task was rejected: ${enqueueResult.reason}`
-                      );
-                    }
-
-                    return enqueueResult.handle;
+                const handles = COOPERATIVE_BENCH_DIRECTORY_PATHS.map((directoryPath, index) => {
+                  const patchFilePath = COOPERATIVE_BENCH_PATCH_FILE_PATHS[index];
+                  if (patchFilePath == null) {
+                    throw new Error("Missing cooperative benchmark patch path.");
                   }
-                );
+
+                  const enqueueResult = scheduler.enqueue({
+                    completeOnSuccess: false,
+                    createPatch() {
+                      return {
+                        operations: [{ path: patchFilePath, type: "add" }],
+                      };
+                    },
+                    path: directoryPath,
+                    priority: 100 - index,
+                  });
+
+                  if (enqueueResult.status === "rejected") {
+                    throw new Error(
+                      `Cooperative yieldy benchmark task was rejected: ${enqueueResult.reason}`,
+                    );
+                  }
+
+                  return enqueueResult.handle;
+                });
 
                 return {
                   handles,
@@ -5086,21 +4614,21 @@ function createCooperativeYieldyApplyPatchScenarioFactory(
               async runSample(sample) {
                 await sample.scheduler.whenIdle();
                 const completions = await Promise.all(
-                  sample.handles.map((handle) => handle.result)
+                  sample.handles.map((handle) => handle.result),
                 );
                 const failedCompletion = completions.find(
-                  (completion) => completion.status !== 'completed'
+                  (completion) => completion.status !== "completed",
                 );
                 if (failedCompletion != null) {
                   throw new Error(
-                    `Expected yieldy cooperative helper to complete successfully, received ${failedCompletion.status} for ${failedCompletion.path}.`
+                    `Expected yieldy cooperative helper to complete successfully, received ${failedCompletion.status} for ${failedCompletion.path}.`,
                   );
                 }
 
                 const metrics = sample.scheduler.getMetrics();
                 if (metrics.yieldCount <= 1) {
                   throw new Error(
-                    `Expected yieldy cooperative helper to yield more than once, received ${metrics.yieldCount}.`
+                    `Expected yieldy cooperative helper to yield more than once, received ${metrics.yieldCount}.`,
                   );
                 }
 
@@ -5112,7 +4640,7 @@ function createCooperativeYieldyApplyPatchScenarioFactory(
             },
             COOPERATIVE_YIELDY_SCENARIO_SAMPLE_COUNT,
             { warmupCount: 1 },
-            progressReporter
+            progressReporter,
           );
         },
         name,
@@ -5122,72 +4650,46 @@ function createCooperativeYieldyApplyPatchScenarioFactory(
 }
 
 function createCooperativeCancelMidQueueScenarioFactory(
-  workload: BenchmarkWorkload
+  workload: BenchmarkWorkload,
 ): BenchmarkScenarioFactory {
   const name = `cooperative/cancel-mid-queue/${workload.name}/${MUTATION_WINDOW_SIZE}`;
-  const [firstDirectoryPath, secondDirectoryPath] =
-    COOPERATIVE_BENCH_DIRECTORY_PATHS;
+  const [firstDirectoryPath, secondDirectoryPath] = COOPERATIVE_BENCH_DIRECTORY_PATHS;
   const [firstPatchFilePath] = COOPERATIVE_BENCH_PATCH_FILE_PATHS;
 
-  if (
-    firstDirectoryPath == null ||
-    secondDirectoryPath == null ||
-    firstPatchFilePath == null
-  ) {
-    throw new Error(
-      'Missing cooperative cancellation benchmark fixture paths.'
-    );
+  if (firstDirectoryPath == null || secondDirectoryPath == null || firstPatchFilePath == null) {
+    throw new Error("Missing cooperative cancellation benchmark fixture paths.");
   }
 
   return {
     name,
     build() {
-      const cooperativeDirectoryPaths = [
-        firstDirectoryPath,
-        secondDirectoryPath,
-      ] as const;
-      const previewStore = createCooperativeBenchStore(
-        workload,
-        cooperativeDirectoryPaths
-      );
-      const baselineBounds = getWindowBounds(
-        previewStore,
-        'first',
-        MUTATION_WINDOW_SIZE
-      );
-      const simulationStore = createCooperativeBenchStore(
-        workload,
-        cooperativeDirectoryPaths
-      );
-      const simulationAttempt =
-        simulationStore.beginChildLoad(firstDirectoryPath);
+      const cooperativeDirectoryPaths = [firstDirectoryPath, secondDirectoryPath] as const;
+      const previewStore = createCooperativeBenchStore(workload, cooperativeDirectoryPaths);
+      const baselineBounds = getWindowBounds(previewStore, "first", MUTATION_WINDOW_SIZE);
+      const simulationStore = createCooperativeBenchStore(workload, cooperativeDirectoryPaths);
+      const simulationAttempt = simulationStore.beginChildLoad(firstDirectoryPath);
       simulationStore.applyChildPatch(simulationAttempt, {
-        operations: [{ path: firstPatchFilePath, type: 'add' }],
+        operations: [{ path: firstPatchFilePath, type: "add" }],
       });
       const readPlan = createRenderChangedWindowPlan(
         simulationStore,
         baselineBounds,
         MUTATION_WINDOW_SIZE,
-        [firstPatchFilePath]
+        [firstPatchFilePath],
       );
-      const postMutationRead = readVisibleWindow(
-        simulationStore,
-        readPlan.bounds
-      );
+      const postMutationRead = readVisibleWindow(simulationStore, readPlan.bounds);
 
       return {
         manifest: {
           afterPreview: getPreview(postMutationRead.rows),
           baselineWindowEnd: baselineBounds.end,
           baselineWindowStart: baselineBounds.start,
-          beforePreview: getPreview(
-            getWindowRows(previewStore, baselineBounds)
-          ),
-          category: 'mutation',
+          beforePreview: getPreview(getWindowRows(previewStore, baselineBounds)),
+          category: "mutation",
           fileCount: workload.fileCount,
           name,
           notes: [
-            'First cooperative task starts, second queued task is cancelled before it mutates the store.',
+            "First cooperative task starts, second queued task is cancelled before it mutates the store.",
           ],
           postMutationReadIntent: readPlan.intent,
           renderTargetPath: readPlan.renderTargetPath,
@@ -5204,12 +4706,8 @@ function createCooperativeCancelMidQueueScenarioFactory(
           return measureAsyncFreshSampleBench(
             {
               createSample() {
-                const deferred =
-                  createDeferred<import('../src').PathStoreChildPatch>();
-                const store = createCooperativeBenchStore(
-                  workload,
-                  cooperativeDirectoryPaths
-                );
+                const deferred = createDeferred<import("../src").PathStoreChildPatch>();
+                const store = createCooperativeBenchStore(workload, cooperativeDirectoryPaths);
                 const scheduler = createPathStoreScheduler({
                   chunkBudgetMs: 0,
                   maxTasksPerSlice: 1,
@@ -5231,7 +4729,7 @@ function createCooperativeCancelMidQueueScenarioFactory(
                       operations: [
                         {
                           path: COOPERATIVE_BENCH_PATCH_FILE_PATHS[1],
-                          type: 'add',
+                          type: "add",
                         },
                       ],
                     };
@@ -5240,13 +4738,8 @@ function createCooperativeCancelMidQueueScenarioFactory(
                   priority: 50,
                 });
 
-                if (
-                  first.status === 'rejected' ||
-                  second.status === 'rejected'
-                ) {
-                  throw new Error(
-                    'Cooperative cancellation benchmark task was rejected.'
-                  );
+                if (first.status === "rejected" || second.status === "rejected") {
+                  throw new Error("Cooperative cancellation benchmark task was rejected.");
                 }
 
                 return {
@@ -5261,19 +4754,14 @@ function createCooperativeCancelMidQueueScenarioFactory(
                 sample.scheduler.dispose();
               },
               async runSample(sample) {
-                await waitForSchedulerHandleStatus(
-                  sample.firstHandle,
-                  'running'
-                );
+                await waitForSchedulerHandleStatus(sample.firstHandle, "running");
                 const cancelled = sample.scheduler.cancel(sample.secondHandle);
                 if (!cancelled) {
-                  throw new Error(
-                    'Expected queued cooperative task cancellation to succeed.'
-                  );
+                  throw new Error("Expected queued cooperative task cancellation to succeed.");
                 }
 
                 sample.deferred.resolve({
-                  operations: [{ path: firstPatchFilePath, type: 'add' }],
+                  operations: [{ path: firstPatchFilePath, type: "add" }],
                 });
 
                 await sample.scheduler.whenIdle();
@@ -5281,14 +4769,14 @@ function createCooperativeCancelMidQueueScenarioFactory(
                   sample.firstHandle.result,
                   sample.secondHandle.result,
                 ]);
-                if (firstCompletion.status !== 'completed') {
+                if (firstCompletion.status !== "completed") {
                   throw new Error(
-                    `Expected first cooperative task to complete, received ${firstCompletion.status}.`
+                    `Expected first cooperative task to complete, received ${firstCompletion.status}.`,
                   );
                 }
-                if (secondCompletion.status !== 'cancelled') {
+                if (secondCompletion.status !== "cancelled") {
                   throw new Error(
-                    `Expected second cooperative task to cancel, received ${secondCompletion.status}.`
+                    `Expected second cooperative task to cancel, received ${secondCompletion.status}.`,
                   );
                 }
 
@@ -5300,7 +4788,7 @@ function createCooperativeCancelMidQueueScenarioFactory(
             },
             COOPERATIVE_YIELDY_SCENARIO_SAMPLE_COUNT,
             { warmupCount: 1 },
-            progressReporter
+            progressReporter,
           );
         },
         name,
@@ -5311,7 +4799,7 @@ function createCooperativeCancelMidQueueScenarioFactory(
 
 function createCleanupScenarioFactory(
   workload: BenchmarkWorkload,
-  mode: 'stable' | 'aggressive'
+  mode: "stable" | "aggressive",
 ): BenchmarkScenarioFactory {
   const name = `cleanup/${mode}/${workload.name}/churned`;
 
@@ -5319,7 +4807,7 @@ function createCleanupScenarioFactory(
     name,
     build() {
       const previewStore = createCleanupChurnedStore(workload);
-      const previewBounds = getWindowBounds(previewStore, 'first', 200);
+      const previewBounds = getWindowBounds(previewStore, "first", 200);
       const previewRead = readVisibleWindow(previewStore, previewBounds);
       const cleanupResult = previewStore.cleanup({ mode });
       const postCleanupRead = readVisibleWindow(previewStore, previewBounds);
@@ -5328,14 +4816,14 @@ function createCleanupScenarioFactory(
         manifest: {
           afterPreview: getPreview(postCleanupRead.rows),
           beforePreview: getPreview(previewRead.rows),
-          category: 'cleanup',
+          category: "cleanup",
           fileCount: workload.fileCount,
           name,
           notes: [
             `Manual ${mode} cleanup after deterministic churn (temp add/remove plus one persisted removal).`,
             cleanupResult.idsPreserved
-              ? 'Cleanup preserved visible identities.'
-              : 'Cleanup reset visible identities explicitly.',
+              ? "Cleanup preserved visible identities."
+              : "Cleanup reset visible identities explicitly.",
           ],
           visibleCount: postCleanupRead.visibleCount,
           windowEnd: previewBounds.end,
@@ -5357,10 +4845,10 @@ function createCleanupScenarioFactory(
                   return do_not_optimize(store.cleanup({ mode }));
                 },
               },
-              getScenarioSampleCount('cleanup'),
+              getScenarioSampleCount("cleanup"),
               { innerGc: true },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -5371,7 +4859,7 @@ function createCleanupScenarioFactory(
 
 function createExpandDirectoryScenarioFactory(
   workload: BenchmarkWorkload,
-  viewport: ViewportMode
+  viewport: ViewportMode,
 ): BenchmarkScenarioFactory {
   const name = `mutate/expand-directory/${viewport}/${workload.name}/${MUTATION_WINDOW_SIZE}`;
 
@@ -5379,35 +4867,21 @@ function createExpandDirectoryScenarioFactory(
     name,
     build() {
       const expandedStore = createExpandedStore(workload);
-      const expandedBounds = getWindowBounds(
-        expandedStore,
-        viewport,
-        MUTATION_WINDOW_SIZE
-      );
+      const expandedBounds = getWindowBounds(expandedStore, viewport, MUTATION_WINDOW_SIZE);
       const expandedRead = readVisibleWindow(expandedStore, expandedBounds);
-      const targetPath = requireVisibleDirectoryWithRoom(
-        expandedRead.rows,
-        name
-      ).path;
+      const targetPath = requireVisibleDirectoryWithRoom(expandedRead.rows, name).path;
 
       const collapsedStore = createExpandedStore(workload);
       collapsedStore.collapse(targetPath);
-      const baselineBounds = getWindowBounds(
-        collapsedStore,
-        viewport,
-        MUTATION_WINDOW_SIZE
-      );
+      const baselineBounds = getWindowBounds(collapsedStore, viewport, MUTATION_WINDOW_SIZE);
       const baselineRead = readVisibleWindow(collapsedStore, baselineBounds);
       const readPlan = createRenderChangedWindowPlan(
         expandedStore,
         baselineBounds,
         MUTATION_WINDOW_SIZE,
-        [targetPath]
+        [targetPath],
       );
-      const postMutationRead = readVisibleWindow(
-        expandedStore,
-        readPlan.bounds
-      );
+      const postMutationRead = readVisibleWindow(expandedStore, readPlan.bounds);
 
       return {
         manifest: {
@@ -5415,7 +4889,7 @@ function createExpandDirectoryScenarioFactory(
           baselineWindowEnd: baselineBounds.end,
           baselineWindowStart: baselineBounds.start,
           beforePreview: getPreview(baselineRead.rows),
-          category: 'mutation',
+          category: "mutation",
           fileCount: workload.fileCount,
           name,
           postMutationReadIntent: readPlan.intent,
@@ -5447,8 +4921,8 @@ function createExpandDirectoryScenarioFactory(
                   store.collapse(targetPath);
                 },
               },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -5459,7 +4933,7 @@ function createExpandDirectoryScenarioFactory(
 
 function createRenameRootFileScenarioFactory(
   workload: BenchmarkWorkload,
-  viewport: ViewportMode
+  viewport: ViewportMode,
 ): BenchmarkScenarioFactory {
   const name = `mutate/rename-root-file/${viewport}/${workload.name}/${MUTATION_WINDOW_SIZE}`;
 
@@ -5467,30 +4941,18 @@ function createRenameRootFileScenarioFactory(
     name,
     build() {
       const previewStore = createExpandedStore(workload, [ROOT_FILE_SEED_PATH]);
-      const baselineBounds = getWindowBounds(
-        previewStore,
-        viewport,
-        MUTATION_WINDOW_SIZE
-      );
+      const baselineBounds = getWindowBounds(previewStore, viewport, MUTATION_WINDOW_SIZE);
       const baselineRead = readVisibleWindow(previewStore, baselineBounds);
 
-      const simulationStore = createExpandedStore(workload, [
-        ROOT_FILE_SEED_PATH,
-      ]);
+      const simulationStore = createExpandedStore(workload, [ROOT_FILE_SEED_PATH]);
       simulationStore.move(ROOT_FILE_SEED_PATH, ROOT_FILE_RENAMED_PATH);
       const readPlan =
-        viewport === 'first'
-          ? createRenderChangedWindowPlan(
-              simulationStore,
-              baselineBounds,
-              MUTATION_WINDOW_SIZE,
-              [ROOT_FILE_RENAMED_PATH]
-            )
+        viewport === "first"
+          ? createRenderChangedWindowPlan(simulationStore, baselineBounds, MUTATION_WINDOW_SIZE, [
+              ROOT_FILE_RENAMED_PATH,
+            ])
           : createPreservedViewportReadPlan(baselineBounds);
-      const postMutationRead = readVisibleWindow(
-        simulationStore,
-        readPlan.bounds
-      );
+      const postMutationRead = readVisibleWindow(simulationStore, readPlan.bounds);
 
       return {
         manifest: {
@@ -5498,7 +4960,7 @@ function createRenameRootFileScenarioFactory(
           baselineWindowEnd: baselineBounds.end,
           baselineWindowStart: baselineBounds.start,
           beforePreview: getPreview(baselineRead.rows),
-          category: 'mutation',
+          category: "mutation",
           destinationPath: ROOT_FILE_RENAMED_PATH,
           fileCount: workload.fileCount,
           name,
@@ -5530,8 +4992,8 @@ function createRenameRootFileScenarioFactory(
                   store.move(ROOT_FILE_RENAMED_PATH, ROOT_FILE_SEED_PATH);
                 },
               },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -5542,7 +5004,7 @@ function createRenameRootFileScenarioFactory(
 
 function createRenameRootDirectoryScenarioFactory(
   workload: BenchmarkWorkload,
-  viewport: ViewportMode
+  viewport: ViewportMode,
 ): BenchmarkScenarioFactory {
   const name = `mutate/rename-root-directory/${viewport}/${workload.name}/${MUTATION_WINDOW_SIZE}`;
 
@@ -5551,34 +5013,20 @@ function createRenameRootDirectoryScenarioFactory(
     build() {
       const previewStore = createExpandedStore(workload);
       const existingPaths = createExistingPathSet(previewStore);
-      const baselineBounds = getWindowBounds(
-        previewStore,
-        viewport,
-        MUTATION_WINDOW_SIZE
-      );
+      const baselineBounds = getWindowBounds(previewStore, viewport, MUTATION_WINDOW_SIZE);
       const baselineRead = readVisibleWindow(previewStore, baselineBounds);
       const targetPath = requireRootDirectory(previewStore, name).path;
-      const renamedPath = createUniqueRenamedPath(
-        targetPath,
-        'benchmark-renamed',
-        existingPaths
-      );
+      const renamedPath = createUniqueRenamedPath(targetPath, "benchmark-renamed", existingPaths);
 
       const simulationStore = createExpandedStore(workload);
       simulationStore.move(targetPath, renamedPath);
       const readPlan =
-        viewport === 'first'
-          ? createRenderChangedWindowPlan(
-              simulationStore,
-              baselineBounds,
-              MUTATION_WINDOW_SIZE,
-              [renamedPath]
-            )
+        viewport === "first"
+          ? createRenderChangedWindowPlan(simulationStore, baselineBounds, MUTATION_WINDOW_SIZE, [
+              renamedPath,
+            ])
           : createPreservedViewportReadPlan(baselineBounds);
-      const postMutationRead = readVisibleWindow(
-        simulationStore,
-        readPlan.bounds
-      );
+      const postMutationRead = readVisibleWindow(simulationStore, readPlan.bounds);
 
       return {
         manifest: {
@@ -5586,7 +5034,7 @@ function createRenameRootDirectoryScenarioFactory(
           baselineWindowEnd: baselineBounds.end,
           baselineWindowStart: baselineBounds.start,
           beforePreview: getPreview(baselineRead.rows),
-          category: 'mutation',
+          category: "mutation",
           destinationPath: renamedPath,
           fileCount: workload.fileCount,
           name,
@@ -5617,8 +5065,8 @@ function createRenameRootDirectoryScenarioFactory(
                   store.move(renamedPath, targetPath);
                 },
               },
-              progressReporter
-            )
+              progressReporter,
+            ),
           );
         },
         name,
@@ -5629,7 +5077,7 @@ function createRenameRootDirectoryScenarioFactory(
 
 function createScenarioFactories(
   profile: BenchmarkProfile,
-  workloads: readonly BenchmarkWorkload[]
+  workloads: readonly BenchmarkWorkload[],
 ): BenchmarkScenarioFactory[] {
   const factories: BenchmarkScenarioFactory[] = [];
 
@@ -5647,19 +5095,11 @@ function createScenarioFactories(
 
     for (const windowSize of profile.visibleWindowSizes) {
       for (const viewport of VIEWPORT_MODES) {
-        factories.push(
-          createVisibleScenarioFactory(workload, viewport, windowSize)
-        );
-        factories.push(
-          createColdVisibleScenarioFactory(workload, viewport, windowSize)
-        );
-        factories.push(
-          createSequentialScrollScenarioFactory(workload, viewport, windowSize)
-        );
+        factories.push(createVisibleScenarioFactory(workload, viewport, windowSize));
+        factories.push(createColdVisibleScenarioFactory(workload, viewport, windowSize));
+        factories.push(createSequentialScrollScenarioFactory(workload, viewport, windowSize));
         if (profile.includeEndToEnd) {
-          factories.push(
-            createEndToEndScenarioFactory(workload, viewport, windowSize)
-          );
+          factories.push(createEndToEndScenarioFactory(workload, viewport, windowSize));
         }
       }
     }
@@ -5667,144 +5107,78 @@ function createScenarioFactories(
     for (const viewport of VIEWPORT_MODES) {
       for (const mutationScenarioKind of profile.mutationScenarioKinds) {
         switch (mutationScenarioKind) {
-          case 'rename-leaf':
+          case "rename-leaf":
             factories.push(createRenameLeafScenarioFactory(workload, viewport));
             break;
-          case 'delete-leaf':
+          case "delete-leaf":
             factories.push(createDeleteLeafScenarioFactory(workload, viewport));
             break;
-          case 'delete-subtree':
-            factories.push(
-              createDeleteSubtreeScenarioFactory(workload, viewport)
-            );
+          case "delete-subtree":
+            factories.push(createDeleteSubtreeScenarioFactory(workload, viewport));
             break;
-          case 'add-sibling':
+          case "add-sibling":
             factories.push(createAddSiblingScenarioFactory(workload, viewport));
             break;
-          case 'move-leaf':
+          case "move-leaf":
             factories.push(createMoveLeafScenarioFactory(workload, viewport));
             break;
-          case 'move-subtree':
-            factories.push(
-              createMoveSubtreeScenarioFactory(workload, viewport)
-            );
+          case "move-subtree":
+            factories.push(createMoveSubtreeScenarioFactory(workload, viewport));
             break;
-          case 'batch-visible-renames':
-            factories.push(
-              createBatchVisibleRenamesScenarioFactory(workload, viewport)
-            );
+          case "batch-visible-renames":
+            factories.push(createBatchVisibleRenamesScenarioFactory(workload, viewport));
             break;
-          case 'expand-directory':
-            factories.push(
-              createExpandDirectoryScenarioFactory(workload, viewport)
-            );
+          case "expand-directory":
+            factories.push(createExpandDirectoryScenarioFactory(workload, viewport));
             break;
-          case 'rename-root-file':
-            factories.push(
-              createRenameRootFileScenarioFactory(workload, viewport)
-            );
+          case "rename-root-file":
+            factories.push(createRenameRootFileScenarioFactory(workload, viewport));
             break;
-          case 'rename-root-directory':
-            factories.push(
-              createRenameRootDirectoryScenarioFactory(workload, viewport)
-            );
+          case "rename-root-directory":
+            factories.push(createRenameRootDirectoryScenarioFactory(workload, viewport));
             break;
         }
       }
     }
   }
 
-  if (profile.name === 'full') {
-    const listenerBenchmarkWorkload = loadWorkload('linux-5x');
+  if (profile.name === "full") {
+    const listenerBenchmarkWorkload = loadWorkload("linux-5x");
     for (const viewport of VIEWPORT_MODES) {
       factories.push(
-        createRenameLeafListenerScenarioFactory(
-          listenerBenchmarkWorkload,
-          viewport,
-          '*'
-        )
+        createRenameLeafListenerScenarioFactory(listenerBenchmarkWorkload, viewport, "*"),
       );
       factories.push(
-        createRenameLeafListenerScenarioFactory(
-          listenerBenchmarkWorkload,
-          viewport,
-          'move'
-        )
+        createRenameLeafListenerScenarioFactory(listenerBenchmarkWorkload, viewport, "move"),
       );
       factories.push(
-        createBatchVisibleRenamesListenerScenarioFactory(
-          listenerBenchmarkWorkload,
-          viewport
-        )
+        createBatchVisibleRenamesListenerScenarioFactory(listenerBenchmarkWorkload, viewport),
       );
     }
 
     const wideDirectoryWorkload = loadWorkload(WIDE_DIRECTORY_WORKLOAD_NAME);
-    factories.push(
-      createVisibleScenarioFactory(wideDirectoryWorkload, 'middle', 200)
-    );
-    factories.push(
-      createVisibleScenarioFactory(wideDirectoryWorkload, 'middle', 30)
-    );
-    factories.push(
-      createVisibleScenarioFactory(wideDirectoryWorkload, 'middle', 500)
-    );
+    factories.push(createVisibleScenarioFactory(wideDirectoryWorkload, "middle", 200));
+    factories.push(createVisibleScenarioFactory(wideDirectoryWorkload, "middle", 30));
+    factories.push(createVisibleScenarioFactory(wideDirectoryWorkload, "middle", 500));
 
     const flattenChainWorkload = loadWorkload(FLATTEN_CHAIN_WORKLOAD_NAME);
-    factories.push(
-      createVisibleScenarioFactory(flattenChainWorkload, 'middle', 200)
-    );
-    factories.push(
-      createAddSiblingListenerScenarioFactory(flattenChainWorkload, 'first')
-    );
+    factories.push(createVisibleScenarioFactory(flattenChainWorkload, "middle", 200));
+    factories.push(createAddSiblingListenerScenarioFactory(flattenChainWorkload, "first"));
 
-    factories.push(
-      createAsyncBeginLoadScenarioFactory(listenerBenchmarkWorkload)
-    );
-    factories.push(
-      createAsyncApplyPatchScenarioFactory(listenerBenchmarkWorkload)
-    );
-    factories.push(
-      createAsyncCompleteLoadScenarioFactory(listenerBenchmarkWorkload)
-    );
-    factories.push(
-      createAsyncFailLoadScenarioFactory(listenerBenchmarkWorkload)
-    );
-    factories.push(
-      createCooperativeApplyPatchScenarioFactory(listenerBenchmarkWorkload)
-    );
-    factories.push(
-      createCooperativeYieldyApplyPatchScenarioFactory(
-        listenerBenchmarkWorkload
-      )
-    );
-    factories.push(
-      createCooperativeCancelMidQueueScenarioFactory(listenerBenchmarkWorkload)
-    );
-    factories.push(
-      createCleanupScenarioFactory(listenerBenchmarkWorkload, 'stable')
-    );
-    factories.push(
-      createCleanupScenarioFactory(listenerBenchmarkWorkload, 'aggressive')
-    );
+    factories.push(createAsyncBeginLoadScenarioFactory(listenerBenchmarkWorkload));
+    factories.push(createAsyncApplyPatchScenarioFactory(listenerBenchmarkWorkload));
+    factories.push(createAsyncCompleteLoadScenarioFactory(listenerBenchmarkWorkload));
+    factories.push(createAsyncFailLoadScenarioFactory(listenerBenchmarkWorkload));
+    factories.push(createCooperativeApplyPatchScenarioFactory(listenerBenchmarkWorkload));
+    factories.push(createCooperativeYieldyApplyPatchScenarioFactory(listenerBenchmarkWorkload));
+    factories.push(createCooperativeCancelMidQueueScenarioFactory(listenerBenchmarkWorkload));
+    factories.push(createCleanupScenarioFactory(listenerBenchmarkWorkload, "stable"));
+    factories.push(createCleanupScenarioFactory(listenerBenchmarkWorkload, "aggressive"));
     factories.push(createStaticBuildScenarioFactory(listenerBenchmarkWorkload));
     factories.push(createStaticListScenarioFactory(listenerBenchmarkWorkload));
-    factories.push(
-      createStaticVisibleScenarioFactory(listenerBenchmarkWorkload, 'first', 30)
-    );
-    factories.push(
-      createStaticVisibleScenarioFactory(
-        listenerBenchmarkWorkload,
-        'middle',
-        200
-      )
-    );
-    factories.push(
-      createStaticExpandDirectoryScenarioFactory(
-        listenerBenchmarkWorkload,
-        'first'
-      )
-    );
+    factories.push(createStaticVisibleScenarioFactory(listenerBenchmarkWorkload, "first", 30));
+    factories.push(createStaticVisibleScenarioFactory(listenerBenchmarkWorkload, "middle", 200));
+    factories.push(createStaticExpandDirectoryScenarioFactory(listenerBenchmarkWorkload, "first"));
   }
 
   return factories;
@@ -5816,16 +5190,13 @@ if (cliOptions.compare != null) {
   const compareOutput = await createBenchmarkCompareOutput(
     cliOptions.compare.baselinePath,
     cliOptions.compare.candidatePath,
-    cliOptions
+    cliOptions,
   );
 
   if (cliOptions.json) {
     console.log(JSON.stringify(compareOutput));
   } else {
-    printHumanBenchmarkCompareSummary(
-      compareOutput,
-      cliOptions.filter?.source ?? 'none'
-    );
+    printHumanBenchmarkCompareSummary(compareOutput, cliOptions.filter?.source ?? "none");
   }
 } else {
   const profile = resolveProfile(cliOptions);
@@ -5834,27 +5205,23 @@ if (cliOptions.compare != null) {
     printHumanBenchmarkBootBanner(cliOptions, profile);
   }
 
-  const workloads: BenchmarkWorkload[] =
-    profile.workloadNames.map(loadWorkload);
+  const workloads: BenchmarkWorkload[] = profile.workloadNames.map(loadWorkload);
   const scenarioFactories = createScenarioFactories(profile, workloads);
   const selectedFactories = scenarioFactories.filter((factory) =>
-    cliOptions.filter == null ? true : cliOptions.filter.test(factory.name)
+    cliOptions.filter == null ? true : cliOptions.filter.test(factory.name),
   );
 
   if (selectedFactories.length === 0) {
-    throw new Error('No benchmark scenarios matched the provided filter.');
+    throw new Error("No benchmark scenarios matched the provided filter.");
   }
 
   if (cliOptions.json) {
-    const jsonRun = await runBenchmarksForJson(
-      selectedFactories,
-      cliOptions.includeSamples
-    );
+    const jsonRun = await runBenchmarksForJson(selectedFactories, cliOptions.includeSamples);
     const runOutput: BenchmarkRunOutput = {
       derivedSummaries: jsonRun.derivedSummaries,
       generatedAt: new Date().toISOString(),
       intent: BENCHMARK_INTENT,
-      kind: 'path-store-benchmark-run',
+      kind: "path-store-benchmark-run",
       preparationTimeMs: jsonRun.preparationTimeMs,
       profile: profile.name,
       results: jsonRun.results,
@@ -5865,16 +5232,16 @@ if (cliOptions.compare != null) {
   } else {
     const humanRun = await runBenchmarksForHuman(selectedFactories);
     const derivedNameWidth = getHumanBenchmarkNameWidth(
-      humanRun.derivedSummaries.map((summary) => summary.name)
+      humanRun.derivedSummaries.map((summary) => summary.name),
     );
     const nameWidth = Math.max(
       getHumanBenchmarkFactoryNameWidth(selectedFactories),
-      derivedNameWidth
+      derivedNameWidth,
     );
     printHumanDerivedBenchmarkSummaries(humanRun.derivedSummaries, nameWidth);
-    console.log('');
+    console.log("");
     console.log(
-      `${styleText('Completed', ANSI.green, ANSI.bold)} ${formatCount(humanRun.results.benchmarks.length)} scenarios. Use --json for detailed scenario metadata.`
+      `${styleText("Completed", ANSI.green, ANSI.bold)} ${formatCount(humanRun.results.benchmarks.length)} scenarios. Use --json for detailed scenario metadata.`,
     );
   }
 }

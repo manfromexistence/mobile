@@ -166,7 +166,7 @@ export default function ModelSelectModal({
       const customProviderIds = activeProviders
         .filter(
           (p) =>
-            isOpenAICompatibleProvider(p.provider) || isAnthropicCompatibleProvider(p.provider)
+            isOpenAICompatibleProvider(p.provider) || isAnthropicCompatibleProvider(p.provider),
         )
         .map((p) => p.provider);
 
@@ -179,7 +179,7 @@ export default function ModelSelectModal({
           if (models && models.length > 1) {
             fetched[providerId] = models;
           }
-        })
+        }),
       );
 
       if (!cancelled) setFetchedModels(fetched);
@@ -195,7 +195,7 @@ export default function ModelSelectModal({
 
   const allProviders = useMemo(
     () => ({ ...OAUTH_PROVIDERS, ...NOAUTH_PROVIDERS, ...APIKEY_PROVIDERS }),
-    []
+    [],
   );
   const alwaysIncludeProvidersKey = Array.isArray(alwaysIncludeProviders)
     ? alwaysIncludeProviders
@@ -236,9 +236,7 @@ export default function ModelSelectModal({
       // any explicitly hidden by the operator (#7156 — the legacy picker
       // must respect the same isHidden flag the Precision Builder and
       // /v1/models catalog already honor).
-      const providerCustomModels = (customModels[providerId] || []).filter(
-        (cm) => !cm.isHidden
-      );
+      const providerCustomModels = (customModels[providerId] || []).filter((cm) => !cm.isHidden);
 
       if (providerInfo.passthroughModels) {
         // Passthrough aliases are stored prefixed by the canonical providerId
@@ -247,7 +245,7 @@ export default function ModelSelectModal({
         // branch below. (port: decolua/9router#485)
         const aliasModels = buildPassthroughAliasModels(
           modelAliases as Record<string, string>,
-          providerId
+          providerId,
         );
 
         // Merge custom models for passthrough providers
@@ -282,7 +280,7 @@ export default function ModelSelectModal({
         const nodeModels = buildNodeAliasModels(
           modelAliases as Record<string, string>,
           providerId,
-          nodePrefix
+          nodePrefix,
         );
 
         const fallbackEntries = (
@@ -302,7 +300,7 @@ export default function ModelSelectModal({
           .filter(
             (cm) =>
               !nodeModels.some((nm) => nm.id === cm.id) &&
-              !fallbackEntries.some((fm) => fm.id === cm.id)
+              !fallbackEntries.some((fm) => fm.id === cm.id),
           )
           .map((cm) => ({
             id: cm.id,
@@ -331,7 +329,7 @@ export default function ModelSelectModal({
               fm.id &&
               !nodeModels.some((nm) => nm.id === fm.id) &&
               !fallbackEntries.some((fbm) => fbm.id === fm.id) &&
-              !customEntries.some((cm) => cm.id === fm.id)
+              !customEntries.some((cm) => cm.id === fm.id),
           );
 
         const allModels = [...nodeModels, ...fallbackEntries, ...customEntries, ...fetchedEntries];
@@ -411,7 +409,7 @@ export default function ModelSelectModal({
           modelId: model.id,
           modelName: model.name,
           source: model.source,
-        })
+        }),
       );
 
       const providerNameMatches = group.name.toLowerCase().includes(query);

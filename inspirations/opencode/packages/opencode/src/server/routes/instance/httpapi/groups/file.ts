@@ -1,26 +1,26 @@
-import { FileSystem } from "@opencode-ai/core/filesystem"
-import { NonNegativeInt } from "@opencode-ai/core/schema"
-import { LSP } from "@/lsp/lsp"
-import { Schema } from "effect"
-import { HttpApi, HttpApiEndpoint, HttpApiGroup, OpenApi } from "effect/unstable/httpapi"
-import { Authorization } from "../middleware/authorization"
-import { InstanceContextMiddleware } from "../middleware/instance-context"
+import { FileSystem } from "@opencode-ai/core/filesystem";
+import { NonNegativeInt } from "@opencode-ai/core/schema";
+import { LSP } from "@/lsp/lsp";
+import { Schema } from "effect";
+import { HttpApi, HttpApiEndpoint, HttpApiGroup, OpenApi } from "effect/unstable/httpapi";
+import { Authorization } from "../middleware/authorization";
+import { InstanceContextMiddleware } from "../middleware/instance-context";
 import {
   WorkspaceRoutingMiddleware,
   WorkspaceRoutingQuery,
   WorkspaceRoutingQueryFields,
-} from "../middleware/workspace-routing"
-import { described } from "./metadata"
+} from "../middleware/workspace-routing";
+import { described } from "./metadata";
 
 export const FileQuery = Schema.Struct({
   ...WorkspaceRoutingQueryFields,
   path: Schema.String,
-})
+});
 
 export const FindTextQuery = Schema.Struct({
   ...WorkspaceRoutingQueryFields,
   pattern: Schema.String,
-})
+});
 
 export const FindFileQuery = Schema.Struct({
   ...WorkspaceRoutingQueryFields,
@@ -28,14 +28,18 @@ export const FindFileQuery = Schema.Struct({
   dirs: Schema.optional(Schema.Literals(["true", "false"])),
   type: Schema.optional(Schema.Literals(["file", "directory"])),
   limit: Schema.optional(
-    Schema.NumberFromString.check(Schema.isInt(), Schema.isGreaterThanOrEqualTo(1), Schema.isLessThanOrEqualTo(200)),
+    Schema.NumberFromString.check(
+      Schema.isInt(),
+      Schema.isGreaterThanOrEqualTo(1),
+      Schema.isLessThanOrEqualTo(200),
+    ),
   ),
-})
+});
 
 export const FindSymbolQuery = Schema.Struct({
   ...WorkspaceRoutingQueryFields,
   query: Schema.String,
-})
+});
 
 export const LegacyMatch = Schema.Struct({
   path: Schema.Struct({ text: Schema.String }),
@@ -49,7 +53,7 @@ export const LegacyMatch = Schema.Struct({
       end: NonNegativeInt,
     }),
   ),
-})
+});
 
 export const LegacyEntry = Schema.Struct({
   name: Schema.String,
@@ -57,7 +61,7 @@ export const LegacyEntry = Schema.Struct({
   absolute: Schema.String,
   type: Schema.Literals(["file", "directory"]),
   ignored: Schema.Boolean,
-}).annotate({ identifier: "FileNode" })
+}).annotate({ identifier: "FileNode" });
 
 export const LegacyContent = Schema.Struct({
   type: Schema.Literals(["text", "binary"]),
@@ -83,14 +87,14 @@ export const LegacyContent = Schema.Struct({
   ),
   encoding: Schema.optional(Schema.Literal("base64")),
   mimeType: Schema.optional(Schema.String),
-}).annotate({ identifier: "FileContent" })
+}).annotate({ identifier: "FileContent" });
 
 export const LegacyStatus = Schema.Struct({
   path: Schema.String,
   added: NonNegativeInt,
   removed: NonNegativeInt,
   status: Schema.Literals(["added", "deleted", "modified"]),
-}).annotate({ identifier: "File" })
+}).annotate({ identifier: "File" });
 
 export const FilePaths = {
   findText: "/find",
@@ -99,7 +103,7 @@ export const FilePaths = {
   list: "/file",
   content: "/file/content",
   status: "/file/status",
-} as const
+} as const;
 
 export const FileApi = HttpApi.make("file")
   .add(
@@ -122,7 +126,8 @@ export const FileApi = HttpApi.make("file")
           OpenApi.annotations({
             identifier: "find.files",
             summary: "Find files",
-            description: "Search for files or directories by name or pattern in the project directory.",
+            description:
+              "Search for files or directories by name or pattern in the project directory.",
           }),
         ),
         HttpApiEndpoint.get("findSymbol", FilePaths.findSymbol, {
@@ -132,7 +137,8 @@ export const FileApi = HttpApi.make("file")
           OpenApi.annotations({
             identifier: "find.symbols",
             summary: "Find symbols",
-            description: "Search for workspace symbols like functions, classes, and variables using LSP.",
+            description:
+              "Search for workspace symbols like functions, classes, and variables using LSP.",
           }),
         ),
         HttpApiEndpoint.get("list", FilePaths.list, {
@@ -182,4 +188,4 @@ export const FileApi = HttpApi.make("file")
       version: "0.0.1",
       description: "Experimental HttpApi surface for selected instance routes.",
     }),
-  )
+  );

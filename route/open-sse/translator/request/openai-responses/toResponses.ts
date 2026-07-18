@@ -53,7 +53,7 @@ export function openaiToOpenAIResponsesRequest(
   model: unknown,
   body: unknown,
   stream: unknown,
-  credentials: unknown
+  credentials: unknown,
 ): unknown {
   void stream;
 
@@ -100,7 +100,8 @@ export function openaiToOpenAIResponsesRequest(
                 }
                 if (contentItem.type === "image_url") {
                   const imgUrl = contentItem.image_url as
-                    string | { url?: string; detail?: string };
+                    | string
+                    | { url?: string; detail?: string };
                   const imgResult: JsonRecord = {
                     type: "input_image",
                     image_url: typeof imgUrl === "string" ? imgUrl : imgUrl?.url || "",
@@ -128,7 +129,7 @@ export function openaiToOpenAIResponsesRequest(
                   // and map the bare `data`/`url` fields too, so a PDF reaches Codex/Responses
                   // regardless of which content-part name the client used (#2515).
                   const file = toRecord(
-                    contentItem.type === "document" ? contentItem.document : contentItem.file
+                    contentItem.type === "document" ? contentItem.document : contentItem.file,
                   );
                   const fileResult: JsonRecord = { type: "input_file" };
                   if (file.file_data !== undefined) fileResult.file_data = file.file_data;
@@ -257,9 +258,10 @@ export function openaiToOpenAIResponsesRequest(
   const knownCallIds = new Set(
     input
       .filter(
-        (item: { type?: string; call_id?: string }) => item.type === "function_call" && item.call_id
+        (item: { type?: string; call_id?: string }) =>
+          item.type === "function_call" && item.call_id,
       )
-      .map((item: { type?: string; call_id?: string }) => item.call_id)
+      .map((item: { type?: string; call_id?: string }) => item.call_id),
   );
   result.input = input.filter((item: { type?: string; call_id?: string }) => {
     if (item.type === "function_call_output" && item.call_id) {

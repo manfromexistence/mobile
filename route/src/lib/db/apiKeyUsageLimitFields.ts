@@ -22,13 +22,13 @@ export function parseNullablePositiveNumber(value: unknown): number | null {
 export function parseApiKeyUsageLimitFields(record: UsageLimitRecord): ApiKeyUsageLimitFields {
   return {
     usageLimitEnabled: parseUsageLimitEnabled(
-      record.usage_limit_enabled ?? record.usageLimitEnabled
+      record.usage_limit_enabled ?? record.usageLimitEnabled,
     ),
     dailyUsageLimitUsd: parseNullablePositiveNumber(
-      record.daily_usage_limit_usd ?? record.dailyUsageLimitUsd
+      record.daily_usage_limit_usd ?? record.dailyUsageLimitUsd,
     ),
     weeklyUsageLimitUsd: parseNullablePositiveNumber(
-      record.weekly_usage_limit_usd ?? record.weeklyUsageLimitUsd
+      record.weekly_usage_limit_usd ?? record.weeklyUsageLimitUsd,
     ),
   };
 }
@@ -48,7 +48,7 @@ export function appendUsageLimitUpdates(
     usageLimitEnabled?: number;
     dailyUsageLimitUsd?: number | null;
     weeklyUsageLimitUsd?: number | null;
-  }
+  },
 ) {
   if (update.usageLimitEnabled !== undefined) {
     updates.push("usage_limit_enabled = @usageLimitEnabled");

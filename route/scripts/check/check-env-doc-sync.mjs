@@ -279,7 +279,7 @@ function scanCodeVars({ cwd } = {}) {
   const stdout = execSync(
     "grep -rhoE 'process\\.env\\.[A-Z][A-Z0-9_]+' " +
       "src/ open-sse/ bin/ scripts/ electron/main.js electron/preload.js 2>/dev/null || true",
-    { cwd: repoRoot, encoding: "utf8", maxBuffer: 20 * 1024 * 1024 }
+    { cwd: repoRoot, encoding: "utf8", maxBuffer: 20 * 1024 * 1024 },
   );
   const vars = new Set();
   for (const line of stdout.split("\n")) {
@@ -324,7 +324,7 @@ export function runEnvDocSync(options = {}) {
   const docVars = parseEnvDocVars(envDocText);
 
   const codeVars = new Set(
-    [...(options.codeVars ?? scanCodeVars({ cwd: options.root }))].filter((v) => !ignore.has(v))
+    [...(options.codeVars ?? scanCodeVars({ cwd: options.root }))].filter((v) => !ignore.has(v)),
   );
 
   const codeMissingEnv = diff(codeVars, envVars);
@@ -387,7 +387,7 @@ function main() {
   }
 
   console.log(
-    "\n✗ Env / docs contract is out of sync. Update .env.example, docs/reference/ENVIRONMENT.md,"
+    "\n✗ Env / docs contract is out of sync. Update .env.example, docs/reference/ENVIRONMENT.md,",
   );
   console.log("  or the allowlists in scripts/check/check-env-doc-sync.mjs and try again.");
   process.exit(1);

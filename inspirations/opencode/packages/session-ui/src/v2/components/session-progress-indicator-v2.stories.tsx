@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { SessionProgressIndicatorV2 } from "./session-progress-indicator-v2"
+import { SessionProgressIndicatorV2 } from "./session-progress-indicator-v2";
 
 const docs = `### Overview
 Animated 5×5 dot grid loader for in-progress session state.
@@ -18,7 +18,7 @@ Derived from Figma \`_sessionProgressIndicator\` with 8-frame rotation.
 
 ### Theming
 - Uses \`currentColor\` via \`--v2-icon-icon-muted\`.
-`
+`;
 
 export default {
   title: "UI V2/SessionProgressIndicator",
@@ -32,11 +32,11 @@ export default {
       },
     },
   },
-}
+};
 
 export const Basic = {
   render: () => <SessionProgressIndicatorV2 />,
-}
+};
 
 export const Sizes = {
   render: () => (
@@ -46,7 +46,7 @@ export const Sizes = {
       <SessionProgressIndicatorV2 width={24} height={24} />
     </div>
   ),
-}
+};
 
 export const OnDark = {
   render: () => (
@@ -63,4 +63,4 @@ export const OnDark = {
       <SessionProgressIndicatorV2 />
     </div>
   ),
-}
+};

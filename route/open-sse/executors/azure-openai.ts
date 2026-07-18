@@ -22,7 +22,7 @@ export class AzureOpenAIExecutor extends DefaultExecutor {
     model: string,
     stream: boolean,
     urlIndex = 0,
-    credentials: ProviderCredentials | null = null
+    credentials: ProviderCredentials | null = null,
   ) {
     void urlIndex;
 

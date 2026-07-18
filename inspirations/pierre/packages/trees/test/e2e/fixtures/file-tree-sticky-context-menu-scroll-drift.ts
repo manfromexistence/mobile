@@ -1,15 +1,15 @@
-import { getVirtualizationWorkload } from '@pierre/tree-test-data';
+import { getVirtualizationWorkload } from "@pierre/tree-test-data";
 
-import type { ContextMenuItem } from '../../../src/index';
+import type { ContextMenuItem } from "../../../src/index";
 
 // This fixture uses the real linux-1x workload plus debug hooks so a formerly
 // frame-sensitive sticky trigger bug can be reproduced with tiny scroll deltas
 // and measured geometrically instead of eyeballed in the demo.
 
-const fileTreeRuntimePath: string = '/dist/index.js';
-const { FileTree } = (await import(
-  /* @vite-ignore */ fileTreeRuntimePath
-)) as typeof import('../../../src/index');
+const fileTreeRuntimePath: string = "/dist/index.js";
+const { FileTree } = (await import(/* @vite-ignore */ fileTreeRuntimePath)) as typeof import(
+  "../../../src/index",
+);
 
 type StickyRectSnapshot = {
   bottom: number;
@@ -157,7 +157,7 @@ type StickyContextMenuDriftProbe = {
   runScenario: (
     path: string,
     scrollTops: readonly number[],
-    settleFrames?: number
+    settleFrames?: number,
   ) => Promise<StickyContextMenuScenarioStep[]>;
   sample: (path: string) => StickyContextMenuSample;
   sampleHoverSuppression: (path: string) => StickyHoverSuppressionSample;
@@ -171,27 +171,27 @@ type StickyContextMenuDriftWindow = Window & {
   __stickyContextMenuDriftProbe?: StickyContextMenuDriftProbe;
 };
 
-const mount = document.querySelector('[data-sticky-drift-mount]');
-const report = document.querySelector('[data-sticky-drift-report]');
+const mount = document.querySelector("[data-sticky-drift-mount]");
+const report = document.querySelector("[data-sticky-drift-report]");
 if (!(mount instanceof HTMLDivElement) || !(report instanceof HTMLPreElement)) {
-  throw new Error('Missing sticky context-menu drift fixture shell.');
+  throw new Error("Missing sticky context-menu drift fixture shell.");
 }
 
-const workload = getVirtualizationWorkload('linux-1x');
+const workload = getVirtualizationWorkload("linux-1x");
 const fileTree = new FileTree({
   composition: {
     contextMenu: {
       enabled: true,
       render: (item: ContextMenuItem) => {
-        const menu = document.createElement('div');
+        const menu = document.createElement("div");
         menu.dataset.testStickyDriftMenu = item.path;
         menu.textContent = `Menu for ${item.path}`;
         return menu;
       },
-      triggerMode: 'both',
+      triggerMode: "both",
     },
   },
-  fileTreeSearchMode: 'hide-non-matches',
+  fileTreeSearchMode: "hide-non-matches",
   flattenEmptyDirectories: true,
   initialExpandedPaths: workload.expandedFolders,
   paths: workload.presortedFiles,
@@ -212,7 +212,7 @@ const nextFrames = async (count: number = 2): Promise<void> => {
 const waitForTree = async (): Promise<HTMLElement> => {
   const started = performance.now();
   while (true) {
-    const host = mount.querySelector('file-tree-container');
+    const host = mount.querySelector("file-tree-container");
     if (
       host instanceof HTMLElement &&
       host.shadowRoot?.querySelector('button[data-type="item"]') != null
@@ -221,7 +221,7 @@ const waitForTree = async (): Promise<HTMLElement> => {
     }
 
     if (performance.now() - started > 5_000) {
-      throw new Error('Timed out waiting for the sticky drift fixture tree.');
+      throw new Error("Timed out waiting for the sticky drift fixture tree.");
     }
 
     await new Promise((resolve) => setTimeout(resolve, 16));
@@ -231,27 +231,23 @@ const waitForTree = async (): Promise<HTMLElement> => {
 const host = await waitForTree();
 const getShadow = (): ShadowRoot => {
   if (!(host.shadowRoot instanceof ShadowRoot)) {
-    throw new Error('Expected open shadow root on sticky drift fixture host.');
+    throw new Error("Expected open shadow root on sticky drift fixture host.");
   }
   return host.shadowRoot;
 };
 
 const getRootElement = (): HTMLElement => {
-  const rootElement = getShadow().querySelector(
-    '[data-file-tree-virtualized-root="true"]'
-  );
+  const rootElement = getShadow().querySelector('[data-file-tree-virtualized-root="true"]');
   if (!(rootElement instanceof HTMLElement)) {
-    throw new Error('Missing sticky drift root element.');
+    throw new Error("Missing sticky drift root element.");
   }
   return rootElement;
 };
 
 const getScrollElement = (): HTMLElement => {
-  const scrollElement = getShadow().querySelector(
-    '[data-file-tree-virtualized-scroll="true"]'
-  );
+  const scrollElement = getShadow().querySelector('[data-file-tree-virtualized-scroll="true"]');
   if (!(scrollElement instanceof HTMLElement)) {
-    throw new Error('Missing sticky drift scroll element.');
+    throw new Error("Missing sticky drift scroll element.");
   }
   return scrollElement;
 };
@@ -262,30 +258,24 @@ const getAnchorElement = (): HTMLDivElement | null => {
 };
 
 const getTriggerElement = (): HTMLButtonElement | null => {
-  const trigger = getShadow().querySelector(
-    '[data-type="context-menu-trigger"]'
-  );
+  const trigger = getShadow().querySelector('[data-type="context-menu-trigger"]');
   return trigger instanceof HTMLButtonElement ? trigger : null;
 };
 
 const getStickyOverlayContentElement = (): HTMLElement | null => {
   const overlayContent = getShadow().querySelector(
-    '[data-file-tree-sticky-overlay-content="true"]'
+    '[data-file-tree-sticky-overlay-content="true"]',
   );
   return overlayContent instanceof HTMLElement ? overlayContent : null;
 };
 
 const getStickyWindowElement = (): HTMLElement | null => {
-  const stickyWindow = getShadow().querySelector(
-    '[data-file-tree-virtualized-sticky="true"]'
-  );
+  const stickyWindow = getShadow().querySelector('[data-file-tree-virtualized-sticky="true"]');
   return stickyWindow instanceof HTMLElement ? stickyWindow : null;
 };
 
 const getVirtualizedListElement = (): HTMLElement | null => {
-  const listElement = getShadow().querySelector(
-    '[data-file-tree-virtualized-list="true"]'
-  );
+  const listElement = getShadow().querySelector('[data-file-tree-virtualized-list="true"]');
   return listElement instanceof HTMLElement ? listElement : null;
 };
 
@@ -293,35 +283,28 @@ const getVisibleRowButtons = (): HTMLButtonElement[] =>
   Array.from(getShadow().querySelectorAll('button[data-type="item"]')).filter(
     (button): button is HTMLButtonElement =>
       button instanceof HTMLButtonElement &&
-      button.dataset.itemParked !== 'true' &&
-      button.dataset.itemPath != null
+      button.dataset.itemParked !== "true" &&
+      button.dataset.itemPath != null,
   );
 
 const getStickyRowButtons = (): HTMLButtonElement[] =>
-  Array.from(
-    getShadow().querySelectorAll('button[data-file-tree-sticky-row="true"]')
-  ).filter(
+  Array.from(getShadow().querySelectorAll('button[data-file-tree-sticky-row="true"]')).filter(
     (button): button is HTMLButtonElement =>
-      button instanceof HTMLButtonElement &&
-      button.dataset.fileTreeStickyPath != null
+      button instanceof HTMLButtonElement && button.dataset.fileTreeStickyPath != null,
   );
 
 const getRowButton = (path: string): HTMLButtonElement | null =>
-  getStickyRowButtons().find(
-    (button) => button.dataset.fileTreeStickyPath === path
-  ) ??
+  getStickyRowButtons().find((button) => button.dataset.fileTreeStickyPath === path) ??
   getVisibleRowButtons().find((button) => button.dataset.itemPath === path) ??
   null;
 
 const getStickyPaths = (): string[] =>
-  Array.from(getShadow().querySelectorAll('[data-file-tree-sticky-path]'))
-    .map((element) =>
-      element instanceof HTMLElement ? element.dataset.fileTreeStickyPath : null
-    )
+  Array.from(getShadow().querySelectorAll("[data-file-tree-sticky-path]"))
+    .map((element) => (element instanceof HTMLElement ? element.dataset.fileTreeStickyPath : null))
     .filter((path): path is string => path != null);
 
 const parsePixelValue = (value: string | null | undefined): number | null => {
-  if (value == null || value === '') {
+  if (value == null || value === "") {
     return null;
   }
 
@@ -341,12 +324,10 @@ const serializeRect = (rect: DOMRect | DOMRectReadOnly): StickyRectSnapshot => {
 };
 
 const emptyStringToNull = (value: string): string | null => {
-  return value === '' ? null : value;
+  return value === "" ? null : value;
 };
 
-const serializePositioningStyle = (
-  style: CSSStyleDeclaration
-): StickyPositioningSnapshot => {
+const serializePositioningStyle = (style: CSSStyleDeclaration): StickyPositioningSnapshot => {
   return {
     contain: emptyStringToNull(style.contain),
     display: emptyStringToNull(style.display),
@@ -360,9 +341,7 @@ const serializePositioningStyle = (
   };
 };
 
-const getElementIdentity = (
-  element: HTMLElement | null
-): StickyElementIdentity | null => {
+const getElementIdentity = (element: HTMLElement | null): StickyElementIdentity | null => {
   if (element == null) {
     return null;
   }
@@ -370,8 +349,7 @@ const getElementIdentity = (
   return {
     dataset: {
       fileTreeStickyOverlay: element.dataset.fileTreeStickyOverlay,
-      fileTreeStickyOverlayContent:
-        element.dataset.fileTreeStickyOverlayContent,
+      fileTreeStickyOverlayContent: element.dataset.fileTreeStickyOverlayContent,
       fileTreeStickyPath: element.dataset.fileTreeStickyPath,
       fileTreeVirtualizedList: element.dataset.fileTreeVirtualizedList,
       fileTreeVirtualizedRoot: element.dataset.fileTreeVirtualizedRoot,
@@ -380,14 +358,12 @@ const getElementIdentity = (
       itemPath: element.dataset.itemPath,
       type: element.dataset.type,
     },
-    role: element.getAttribute('role'),
+    role: element.getAttribute("role"),
     tagName: element.tagName.toLowerCase(),
   };
 };
 
-const serializeLayer = (
-  element: HTMLElement | null
-): StickyLayerSnapshot | null => {
+const serializeLayer = (element: HTMLElement | null): StickyLayerSnapshot | null => {
   if (element == null) {
     return null;
   }
@@ -408,15 +384,11 @@ const serializeLayer = (
 // container establishes each coordinate system and whether any transform is live.
 const collectAncestorChain = (
   element: HTMLElement | null,
-  stopAt: HTMLElement
+  stopAt: HTMLElement,
 ): StickyAncestorSnapshot[] => {
   const chain: StickyAncestorSnapshot[] = [];
 
-  for (
-    let current = element;
-    current != null;
-    current = current.parentElement
-  ) {
+  for (let current = element; current != null; current = current.parentElement) {
     const identity = getElementIdentity(current);
     if (identity != null) {
       chain.push({
@@ -436,12 +408,12 @@ const collectAncestorChain = (
 };
 
 const getPathDepth = (path: string): number => {
-  const normalizedPath = path.endsWith('/') ? path.slice(0, -1) : path;
+  const normalizedPath = path.endsWith("/") ? path.slice(0, -1) : path;
   if (normalizedPath.length === 0) {
     return 0;
   }
 
-  return normalizedPath.split('/').length - 1;
+  return normalizedPath.split("/").length - 1;
 };
 
 const writeReport = (value: unknown): void => {
@@ -450,9 +422,9 @@ const writeReport = (value: unknown): void => {
 
 const setTriggerPath = (path: string | null): void => {
   getRootElement().dispatchEvent(
-    new CustomEvent('file-tree-debug-set-context-menu-trigger', {
+    new CustomEvent("file-tree-debug-set-context-menu-trigger", {
       detail: { path },
-    })
+    }),
   );
 };
 
@@ -466,16 +438,12 @@ const hoverRow = (path: string): void => {
     throw new Error(`Expected visible row for ${path}`);
   }
 
-  row.dispatchEvent(
-    new PointerEvent('pointerover', { bubbles: true, composed: true })
-  );
+  row.dispatchEvent(new PointerEvent("pointerover", { bubbles: true, composed: true }));
 };
 
 const getRenderedMenuPath = (): string | null => {
-  const menu = document.querySelector('[data-test-sticky-drift-menu]');
-  return menu instanceof HTMLElement
-    ? (menu.dataset.testStickyDriftMenu ?? null)
-    : null;
+  const menu = document.querySelector("[data-test-sticky-drift-menu]");
+  return menu instanceof HTMLElement ? (menu.dataset.testStickyDriftMenu ?? null) : null;
 };
 
 // Samples the sticky row, root scroll-suppression flags, and floating trigger
@@ -490,33 +458,31 @@ const sampleHoverSuppression = (path: string): StickyHoverSuppressionSample => {
   const virtualizedList = getVirtualizedListElement();
 
   return {
-    anchorDisplay: emptyStringToNull(anchorStyle?.display ?? ''),
-    anchorVisible: anchor?.dataset.visible === 'true',
+    anchorDisplay: emptyStringToNull(anchorStyle?.display ?? ""),
+    anchorVisible: anchor?.dataset.visible === "true",
     menuPath: getRenderedMenuPath(),
-    rowBackgroundColor: emptyStringToNull(rowStyle?.backgroundColor ?? ''),
-    rowContextHovered: row?.dataset.itemContextHover === 'true',
-    rowMatchesHover: row?.matches(':hover') === true,
+    rowBackgroundColor: emptyStringToNull(rowStyle?.backgroundColor ?? ""),
+    rowContextHovered: row?.dataset.itemContextHover === "true",
+    rowMatchesHover: row?.matches(":hover") === true,
     rowMounted: row instanceof HTMLButtonElement,
-    rowPointerEvents: emptyStringToNull(rowStyle?.pointerEvents ?? ''),
+    rowPointerEvents: emptyStringToNull(rowStyle?.pointerEvents ?? ""),
     rootIsScrolling: getRootElement().dataset.isScrolling != null,
-    triggerDisplay: emptyStringToNull(triggerStyle?.display ?? ''),
-    triggerVisible: trigger?.dataset.visible === 'true',
+    triggerDisplay: emptyStringToNull(triggerStyle?.display ?? ""),
+    triggerVisible: trigger?.dataset.visible === "true",
     virtualizedListIsScrolling: virtualizedList?.dataset.isScrolling != null,
   };
 };
 
 // Bypasses browser hit-testing to prove late contextmenu events still cannot
 // open a sticky-row menu while the tree is suppressing scroll interactions.
-const dispatchStickyContextMenu = (
-  path: string
-): StickyContextMenuDispatchResult => {
+const dispatchStickyContextMenu = (path: string): StickyContextMenuDispatchResult => {
   const row = getRowButton(path);
   if (!(row instanceof HTMLButtonElement)) {
     throw new Error(`Expected visible row for ${path}`);
   }
 
   const rect = row.getBoundingClientRect();
-  const event = new MouseEvent('contextmenu', {
+  const event = new MouseEvent("contextmenu", {
     bubbles: true,
     button: 2,
     cancelable: true,
@@ -534,16 +500,16 @@ const dispatchStickyContextMenu = (
 
 const setScrollSuppressionDisabled = (disabled: boolean): void => {
   getRootElement().dispatchEvent(
-    new CustomEvent('file-tree-debug-set-scroll-suppression', {
+    new CustomEvent("file-tree-debug-set-scroll-suppression", {
       detail: { disabled },
-    })
+    }),
   );
 };
 
 const setScrollTop = (scrollTop: number): void => {
   const scrollElement = getScrollElement();
   scrollElement.scrollTop = scrollTop;
-  scrollElement.dispatchEvent(new Event('scroll'));
+  scrollElement.dispatchEvent(new Event("scroll"));
 };
 
 const sample = (path: string): StickyContextMenuSample => {
@@ -561,43 +527,34 @@ const sample = (path: string): StickyContextMenuSample => {
   const anchorRect = anchor?.getBoundingClientRect() ?? null;
   const triggerRect = trigger?.getBoundingClientRect() ?? null;
   const rowTopWithinRoot = rowRect == null ? null : rowRect.top - rootRect.top;
-  const rowTopWithinScroll =
-    rowRect == null ? null : rowRect.top - scrollRect.top;
-  const anchorRectTopWithinRoot =
-    anchorRect == null ? null : anchorRect.top - rootRect.top;
-  const anchorRectTopWithinScroll =
-    anchorRect == null ? null : anchorRect.top - scrollRect.top;
-  const triggerRectTopWithinRoot =
-    triggerRect == null ? null : triggerRect.top - rootRect.top;
-  const triggerRectTopWithinScroll =
-    triggerRect == null ? null : triggerRect.top - scrollRect.top;
+  const rowTopWithinScroll = rowRect == null ? null : rowRect.top - scrollRect.top;
+  const anchorRectTopWithinRoot = anchorRect == null ? null : anchorRect.top - rootRect.top;
+  const anchorRectTopWithinScroll = anchorRect == null ? null : anchorRect.top - scrollRect.top;
+  const triggerRectTopWithinRoot = triggerRect == null ? null : triggerRect.top - rootRect.top;
+  const triggerRectTopWithinScroll = triggerRect == null ? null : triggerRect.top - scrollRect.top;
   const anchorStyleTop = parsePixelValue(anchor?.style.top);
   const anchorOffsetParent =
     anchor?.offsetParent instanceof HTMLElement ? anchor.offsetParent : null;
-  const anchorOffsetParentRect =
-    anchorOffsetParent?.getBoundingClientRect() ?? null;
+  const anchorOffsetParentRect = anchorOffsetParent?.getBoundingClientRect() ?? null;
   const anchorRectTopWithinOffsetParent =
     anchorRect == null || anchorOffsetParentRect == null
       ? null
       : anchorRect.top - anchorOffsetParentRect.top;
-  const rowComputedStyle =
-    row == null ? null : serializePositioningStyle(getComputedStyle(row));
+  const rowComputedStyle = row == null ? null : serializePositioningStyle(getComputedStyle(row));
   const anchorComputedStyle =
     anchor == null ? null : serializePositioningStyle(getComputedStyle(anchor));
   const triggerComputedStyle =
-    trigger == null
-      ? null
-      : serializePositioningStyle(getComputedStyle(trigger));
+    trigger == null ? null : serializePositioningStyle(getComputedStyle(trigger));
 
   return {
     anchorAncestorChain: collectAncestorChain(anchor, rootElement),
     anchorComputedStyle,
     anchorInlineStyle: {
-      left: emptyStringToNull(anchor?.style.left ?? ''),
-      position: emptyStringToNull(anchor?.style.position ?? ''),
-      right: emptyStringToNull(anchor?.style.right ?? ''),
-      top: emptyStringToNull(anchor?.style.top ?? ''),
-      transform: emptyStringToNull(anchor?.style.transform ?? ''),
+      left: emptyStringToNull(anchor?.style.left ?? ""),
+      position: emptyStringToNull(anchor?.style.position ?? ""),
+      right: emptyStringToNull(anchor?.style.right ?? ""),
+      top: emptyStringToNull(anchor?.style.top ?? ""),
+      transform: emptyStringToNull(anchor?.style.transform ?? ""),
     },
     anchorOffsetParent: getElementIdentity(anchorOffsetParent),
     anchorOffsetTop: anchor?.offsetTop ?? null,
@@ -606,7 +563,7 @@ const sample = (path: string): StickyContextMenuSample => {
     anchorRectTopWithinRoot,
     anchorRectTopWithinScroll,
     anchorStyleTop,
-    anchorVisible: anchor?.dataset.visible === 'true',
+    anchorVisible: anchor?.dataset.visible === "true",
     driftFromRectWithinRoot:
       anchorRectTopWithinRoot == null || rowTopWithinRoot == null
         ? null
@@ -616,9 +573,7 @@ const sample = (path: string): StickyContextMenuSample => {
         ? null
         : anchorRectTopWithinScroll - rowTopWithinScroll,
     driftFromStyleWithinRoot:
-      anchorStyleTop == null || rowTopWithinRoot == null
-        ? null
-        : anchorStyleTop - rowTopWithinRoot,
+      anchorStyleTop == null || rowTopWithinRoot == null ? null : anchorStyleTop - rowTopWithinRoot,
     driftFromStyleWithinScroll:
       anchorStyleTop == null || rowTopWithinScroll == null
         ? null
@@ -648,7 +603,7 @@ const sample = (path: string): StickyContextMenuSample => {
     triggerRect: triggerRect == null ? null : serializeRect(triggerRect),
     triggerRectTopWithinRoot,
     triggerRectTopWithinScroll,
-    triggerVisible: trigger?.dataset.visible === 'true',
+    triggerVisible: trigger?.dataset.visible === "true",
     virtualizedList: serializeLayer(virtualizedListElement),
     visiblePaths: getVisibleRowButtons()
       .map((button) => button.dataset.itemPath)
@@ -656,85 +611,85 @@ const sample = (path: string): StickyContextMenuSample => {
   };
 };
 
-const findScenarioCandidate: StickyContextMenuDriftProbe['findScenarioCandidate'] =
-  async (options) => {
-    const {
-      maxScrollTop,
-      minDepth = 4,
-      minStickyCount = 3,
-      settleFrames = 2,
-      step = 30,
-    } = options ?? {};
-    const scrollElement = getScrollElement();
-    const finalScrollTop = Math.min(
-      maxScrollTop ?? Number.POSITIVE_INFINITY,
-      Math.max(0, scrollElement.scrollHeight - scrollElement.clientHeight)
-    );
+const findScenarioCandidate: StickyContextMenuDriftProbe["findScenarioCandidate"] = async (
+  options,
+) => {
+  const {
+    maxScrollTop,
+    minDepth = 4,
+    minStickyCount = 3,
+    settleFrames = 2,
+    step = 30,
+  } = options ?? {};
+  const scrollElement = getScrollElement();
+  const finalScrollTop = Math.min(
+    maxScrollTop ?? Number.POSITIVE_INFINITY,
+    Math.max(0, scrollElement.scrollHeight - scrollElement.clientHeight),
+  );
 
-    for (let scrollTop = 0; scrollTop <= finalScrollTop; scrollTop += step) {
-      setScrollTop(scrollTop);
-      await nextFrames(settleFrames);
+  for (let scrollTop = 0; scrollTop <= finalScrollTop; scrollTop += step) {
+    setScrollTop(scrollTop);
+    await nextFrames(settleFrames);
 
-      const stickyPaths = getStickyPaths();
-      if (stickyPaths.length < minStickyCount) {
-        continue;
-      }
-
-      const stickyPathSet = new Set(stickyPaths);
-      const scrollRect = scrollElement.getBoundingClientRect();
-      const candidate = getVisibleRowButtons()
-        .map((button) => {
-          const buttonPath = button.dataset.itemPath ?? '';
-          const rowRect = button.getBoundingClientRect();
-          const rowTopWithinScroll = rowRect.top - scrollRect.top;
-          const rowBottomWithinScroll = rowRect.bottom - scrollRect.top;
-          return {
-            depth: getPathDepth(buttonPath),
-            path: buttonPath,
-            rowBottomWithinScroll,
-            rowTopWithinScroll,
-          };
-        })
-        .filter((row) => {
-          return (
-            row.path !== '' &&
-            !stickyPathSet.has(row.path) &&
-            row.depth >= minDepth &&
-            row.rowTopWithinScroll >= 0 &&
-            row.rowBottomWithinScroll <= scrollElement.clientHeight
-          );
-        })
-        .sort((left, right) => {
-          const rowTopDelta =
-            left.rowTopWithinScroll - right.rowTopWithinScroll;
-          if (rowTopDelta !== 0) {
-            return rowTopDelta;
-          }
-
-          return right.depth - left.depth;
-        })[0];
-
-      if (candidate != null) {
-        const result = {
-          depth: candidate.depth,
-          path: candidate.path,
-          scrollTop,
-          stickyCount: stickyPaths.length,
-          stickyPaths,
-        } satisfies StickyContextMenuScenarioCandidate;
-        writeReport({ candidate: result });
-        return result;
-      }
+    const stickyPaths = getStickyPaths();
+    if (stickyPaths.length < minStickyCount) {
+      continue;
     }
 
-    writeReport({ candidate: null });
-    return null;
-  };
+    const stickyPathSet = new Set(stickyPaths);
+    const scrollRect = scrollElement.getBoundingClientRect();
+    const candidate = getVisibleRowButtons()
+      .map((button) => {
+        const buttonPath = button.dataset.itemPath ?? "";
+        const rowRect = button.getBoundingClientRect();
+        const rowTopWithinScroll = rowRect.top - scrollRect.top;
+        const rowBottomWithinScroll = rowRect.bottom - scrollRect.top;
+        return {
+          depth: getPathDepth(buttonPath),
+          path: buttonPath,
+          rowBottomWithinScroll,
+          rowTopWithinScroll,
+        };
+      })
+      .filter((row) => {
+        return (
+          row.path !== "" &&
+          !stickyPathSet.has(row.path) &&
+          row.depth >= minDepth &&
+          row.rowTopWithinScroll >= 0 &&
+          row.rowBottomWithinScroll <= scrollElement.clientHeight
+        );
+      })
+      .sort((left, right) => {
+        const rowTopDelta = left.rowTopWithinScroll - right.rowTopWithinScroll;
+        if (rowTopDelta !== 0) {
+          return rowTopDelta;
+        }
 
-const runScenario: StickyContextMenuDriftProbe['runScenario'] = async (
+        return right.depth - left.depth;
+      })[0];
+
+    if (candidate != null) {
+      const result = {
+        depth: candidate.depth,
+        path: candidate.path,
+        scrollTop,
+        stickyCount: stickyPaths.length,
+        stickyPaths,
+      } satisfies StickyContextMenuScenarioCandidate;
+      writeReport({ candidate: result });
+      return result;
+    }
+  }
+
+  writeReport({ candidate: null });
+  return null;
+};
+
+const runScenario: StickyContextMenuDriftProbe["runScenario"] = async (
   path,
   scrollTops,
-  settleFrames = 2
+  settleFrames = 2,
 ) => {
   const steps: StickyContextMenuScenarioStep[] = [];
 

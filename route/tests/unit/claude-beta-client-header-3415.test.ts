@@ -41,19 +41,19 @@ test("#3415 opus client WITHOUT interleaved-thinking → interleaved-thinking NO
   const flags = selectBetaFlags(
     fullAgentBody("claude-opus-4-8"),
     null,
-    "claude-code-20250219,oauth-2025-04-20,fine-grained-tool-streaming-2025-05-14"
+    "claude-code-20250219,oauth-2025-04-20,fine-grained-tool-streaming-2025-05-14",
   );
   assert.ok(
     !flags.includes("interleaved-thinking-2025-05-14"),
-    "must NOT force interleaved-thinking when the client did not request it"
+    "must NOT force interleaved-thinking when the client did not request it",
   );
   assert.ok(
     !flags.includes("advanced-tool-use-2025-11-20"),
-    "must NOT force advanced-tool-use when the client did not request it"
+    "must NOT force advanced-tool-use when the client did not request it",
   );
   assert.ok(
     !flags.includes("effort-2025-11-24"),
-    "must NOT force effort when the client did not request it"
+    "must NOT force effort when the client did not request it",
   );
   // Mandatory OAuth cloak flag is still present.
   assert.ok(flags.includes("oauth-2025-04-20"));
@@ -63,11 +63,11 @@ test("#3415 opus client WITH interleaved-thinking → interleaved-thinking prese
   const flags = selectBetaFlags(
     fullAgentBody("claude-opus-4-8"),
     null,
-    "oauth-2025-04-20,interleaved-thinking-2025-05-14"
+    "oauth-2025-04-20,interleaved-thinking-2025-05-14",
   );
   assert.ok(
     flags.includes("interleaved-thinking-2025-05-14"),
-    "must keep interleaved-thinking when the client requested it"
+    "must keep interleaved-thinking when the client requested it",
   );
 });
 
@@ -75,7 +75,7 @@ test("#3415 opus client WITH effort/advanced-tool-use → preserved", () => {
   const flags = selectBetaFlags(
     fullAgentBody("claude-opus-4-8"),
     null,
-    "oauth-2025-04-20,advanced-tool-use-2025-11-20,effort-2025-11-24"
+    "oauth-2025-04-20,advanced-tool-use-2025-11-20,effort-2025-11-24",
   );
   assert.ok(flags.includes("advanced-tool-use-2025-11-20"));
   assert.ok(flags.includes("effort-2025-11-24"));

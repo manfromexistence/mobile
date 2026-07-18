@@ -21,7 +21,7 @@ test("protected-tokens: preserving them passes", () => {
 test("numeric: a dropped/altered number fails", () => {
   assert.equal(
     checkFidelity("14 passed, 1 failed", "4 passed, 1 failed", ON).failedInvariant,
-    "numeric"
+    "numeric",
   );
   assert.equal(checkFidelity("14 passed, 1 failed", "14 passed, 1 failed (ok)", ON).passed, true);
 });
@@ -37,7 +37,7 @@ test("json-keys: all keys + numbers preserved passes", () => {
   // keys alpha/beta survive AND numbers 1/2 survive → json-keys (and numeric/tokens) all pass
   assert.equal(
     checkFidelity('{"alpha":1,"beta":2}', '{"alpha":1,"beta":2} (compacted)', ON).passed,
-    true
+    true,
   );
 });
 
@@ -55,6 +55,6 @@ test("fail-open + disabled-config defaults", () => {
   assert.equal(checkFidelity("", "", ON).passed, true);
   assert.equal(
     checkFidelity("port 8080", "port", { enabled: true, checkNumericIntegrity: false }).passed,
-    true
+    true,
   );
 });

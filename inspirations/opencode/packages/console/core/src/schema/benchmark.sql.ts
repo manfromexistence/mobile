@@ -1,5 +1,5 @@
-import { index, mediumtext, mysqlTable, primaryKey, varchar } from "drizzle-orm/mysql-core"
-import { id, timestamps } from "../drizzle/types"
+import { index, mediumtext, mysqlTable, primaryKey, varchar } from "drizzle-orm/mysql-core";
+import { id, timestamps } from "../drizzle/types";
 
 export const BenchmarkTable = mysqlTable(
   "benchmark",
@@ -11,4 +11,4 @@ export const BenchmarkTable = mysqlTable(
     result: mediumtext("result").notNull(),
   },
   (table) => [primaryKey({ columns: [table.id] }), index("time_created").on(table.timeCreated)],
-)
+);

@@ -38,7 +38,7 @@ export async function GET(request) {
           {
             status: resolved.error.status,
             headers: getCatalogDiagnosticsHeaders({ request, resolvedAlias: alias }),
-          }
+          },
         );
       }
 
@@ -61,7 +61,7 @@ export async function GET(request) {
             request,
             resolvedAlias: resolved.value.resolvedAlias,
           }),
-        }
+        },
       );
     }
 
@@ -73,7 +73,7 @@ export async function GET(request) {
       },
       {
         headers: getCatalogDiagnosticsHeaders({ request }),
-      }
+      },
     );
   } catch (error) {
     console.log("Error fetching aliases:", error);
@@ -87,7 +87,7 @@ export async function GET(request) {
       {
         status: 500,
         headers: getCatalogDiagnosticsHeaders({ request, resolvedAlias: alias }),
-      }
+      },
     );
   }
 }
@@ -106,7 +106,7 @@ export async function PUT(request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400, headers: diagnosticHeaders }
+      { status: 400, headers: diagnosticHeaders },
     );
   }
 
@@ -123,7 +123,7 @@ export async function PUT(request) {
     if (isValidationFailure(validation)) {
       return NextResponse.json(
         { error: validation.error },
-        { status: 400, headers: diagnosticHeaders }
+        { status: 400, headers: diagnosticHeaders },
       );
     }
     const { model, alias } = validation.data;
@@ -135,7 +135,7 @@ export async function PUT(request) {
       { success: true, model, alias },
       {
         headers: getCatalogDiagnosticsHeaders({ request, resolvedAlias: alias }),
-      }
+      },
     );
   } catch (error) {
     console.log("Error updating alias:", error);
@@ -146,7 +146,7 @@ export async function PUT(request) {
           code: INTERNAL_PROXY_ERROR,
         },
       },
-      { status: 500, headers: diagnosticHeaders }
+      { status: 500, headers: diagnosticHeaders },
     );
   }
 }
@@ -169,7 +169,7 @@ export async function DELETE(request) {
     if (!alias) {
       return NextResponse.json(
         { error: "Alias required" },
-        { status: 400, headers: diagnosticHeaders }
+        { status: 400, headers: diagnosticHeaders },
       );
     }
 
@@ -180,7 +180,7 @@ export async function DELETE(request) {
       { success: true },
       {
         headers: getCatalogDiagnosticsHeaders({ request, resolvedAlias: alias }),
-      }
+      },
     );
   } catch (error) {
     console.log("Error deleting alias:", error);
@@ -191,7 +191,7 @@ export async function DELETE(request) {
           code: INTERNAL_PROXY_ERROR,
         },
       },
-      { status: 500, headers: diagnosticHeaders }
+      { status: 500, headers: diagnosticHeaders },
     );
   }
 }

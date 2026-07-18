@@ -4,12 +4,8 @@
   "title": "Spotlight Logo",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "SVG logo with a cursor-tracking gradient highlight and tactile press.",
-  "dependencies": [
-    "motion"
-  ],
-  "registryDependencies": [
-    "@soundcn/metal-click"
-  ],
+  "dependencies": ["motion"],
+  "registryDependencies": ["@soundcn/metal-click"],
   "files": [
     {
       "path": "src/registry/components/spotlight-logo/spotlight-logo.tsx",
@@ -19,8 +15,6 @@
     }
   ],
   "docs": "https://chanhdai.com/components/spotlight-logo",
-  "categories": [
-    "effects"
-  ],
+  "categories": ["effects"],
   "type": "registry:component"
 }

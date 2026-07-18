@@ -28,7 +28,7 @@ describe("resolveCacheAwareConfig (#3890)", () => {
     const out = resolveCacheAwareConfig(
       cfg({ preserveSystemPrompt: false }),
       { messages: [{ role: "system", content: "x", cache_control: { type: "ephemeral" } }] },
-      { provider: "anthropic", targetFormat: "claude" }
+      { provider: "anthropic", targetFormat: "claude" },
     );
     assert.equal(out.preserveSystemPrompt, true);
   });
@@ -39,7 +39,7 @@ describe("resolveCacheAwareConfig (#3890)", () => {
     const out = resolveCacheAwareConfig(
       cfg({ preserveSystemPrompt: false }),
       { messages: [{ role: "system", content: "x" }] },
-      { provider: "google" }
+      { provider: "google" },
     );
     assert.equal(out.preserveSystemPrompt, false);
   });
@@ -53,7 +53,7 @@ describe("resolveCacheAwareConfig (#3890)", () => {
     const out = resolveCacheAwareConfig(
       cfg({ preserveSystemPrompt: true }),
       { messages: [{ role: "system", content: "x", cache_control: { type: "ephemeral" } }] },
-      { provider: "anthropic", targetFormat: "claude" }
+      { provider: "anthropic", targetFormat: "claude" },
     );
     assert.equal(out.preserveSystemPrompt, true);
   });

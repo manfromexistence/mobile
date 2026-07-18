@@ -33,7 +33,7 @@ export type RecordNonStreamingUsageStatsContext = {
 function logUsageTrace(
   usage: object,
   provider: string | null | undefined,
-  connectionId: string | null | undefined
+  connectionId: string | null | undefined,
 ): void {
   const msg = `[${new Date().toLocaleTimeString("en-US", { hour12: false, hour: "2-digit", minute: "2-digit" })}] 📊 [USAGE] ${provider?.toUpperCase()} | ${formatUsageLog(usage)}${connectionId ? ` | account=${connectionId.slice(0, 8)}...` : ""}`;
   console.log(`${COLORS.green}${msg}${COLORS.reset}`);
@@ -66,7 +66,7 @@ function recordBillableTokens(
   usage: object,
   apiKeyInfo: RecordNonStreamingUsageStatsContext["apiKeyInfo"],
   provider: string | null | undefined,
-  model: string | null | undefined
+  model: string | null | undefined,
 ): void {
   if (!apiKeyInfo?.id) return;
   try {
@@ -80,7 +80,7 @@ function recordBillableTokens(
 
 export function recordNonStreamingUsageStats(
   usage: unknown,
-  ctx: RecordNonStreamingUsageStatsContext
+  ctx: RecordNonStreamingUsageStatsContext,
 ): void {
   if (!usage || typeof usage !== "object") return;
 

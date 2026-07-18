@@ -70,7 +70,7 @@ function buildClass(
   enableEnv: string,
   thresholdEnv: string,
   windowEnv: string,
-  enableDefault: boolean
+  enableDefault: boolean,
 ): RotationErrorClassConfig {
   return {
     enabled: envBool(enableEnv, enableDefault),
@@ -88,25 +88,25 @@ function buildFromEnv(): RotationConfig {
       "OMNIROUTE_ROTATE_ON_429",
       "OMNIROUTE_ROTATE_429_THRESHOLD",
       "OMNIROUTE_ROTATE_429_WINDOW_SECONDS",
-      true
+      true,
     ),
     serverError500: buildClass(
       "OMNIROUTE_ROTATE_ON_500",
       "OMNIROUTE_ROTATE_500_THRESHOLD",
       "OMNIROUTE_ROTATE_500_WINDOW_SECONDS",
-      true
+      true,
     ),
     badGateway502: buildClass(
       "OMNIROUTE_ROTATE_ON_502",
       "OMNIROUTE_ROTATE_502_THRESHOLD",
       "OMNIROUTE_ROTATE_502_WINDOW_SECONDS",
-      true
+      true,
     ),
     badRequest400: buildClass(
       "OMNIROUTE_ROTATE_ON_400",
       "OMNIROUTE_ROTATE_400_THRESHOLD",
       "OMNIROUTE_ROTATE_400_WINDOW_SECONDS",
-      false
+      false,
     ),
   };
 }
@@ -165,12 +165,14 @@ export function resolveRotationConfig(overrides?: Record<string, unknown> | null
     src: RotationErrorClassConfig,
     enableKey: string,
     thrKey: string,
-    winKey: string
+    winKey: string,
   ): RotationErrorClassConfig => ({
     enabled: enableKey in overrides ? coerceBool(overrides[enableKey], src.enabled) : src.enabled,
     threshold: thrKey in overrides ? coerceInt(overrides[thrKey], src.threshold, 1) : src.threshold,
     windowMs:
-      winKey in overrides ? coerceInt(overrides[winKey], src.windowMs / 1000, 1) * 1000 : src.windowMs,
+      winKey in overrides
+        ? coerceInt(overrides[winKey], src.windowMs / 1000, 1) * 1000
+        : src.windowMs,
   });
 
   return {
@@ -180,15 +182,38 @@ export function resolveRotationConfig(overrides?: Record<string, unknown> | null
         ? coerceInt(overrides.rateLimitResetSeconds, base.rateLimitResetMs / 1000, 0) * 1000
         : base.rateLimitResetMs,
     disableTagWithoutReset: base.disableTagWithoutReset,
-    rateLimit429: cls(base.rateLimit429, "rotateOn429", "error429Threshold", "error429WindowSeconds"),
-    serverError500: cls(base.serverError500, "rotateOn500", "error500Threshold", "error500WindowSeconds"),
-    badGateway502: cls(base.badGateway502, "rotateOn502", "error502Threshold", "error502WindowSeconds"),
-    badRequest400: cls(base.badRequest400, "rotateOn400", "error400Threshold", "error400WindowSeconds"),
+    rateLimit429: cls(
+      base.rateLimit429,
+      "rotateOn429",
+      "error429Threshold",
+      "error429WindowSeconds",
+    ),
+    serverError500: cls(
+      base.serverError500,
+      "rotateOn500",
+      "error500Threshold",
+      "error500WindowSeconds",
+    ),
+    badGateway502: cls(
+      base.badGateway502,
+      "rotateOn502",
+      "error502Threshold",
+      "error502WindowSeconds",
+    ),
+    badRequest400: cls(
+      base.badRequest400,
+      "rotateOn400",
+      "error400Threshold",
+      "error400WindowSeconds",
+    ),
   };
 }
 
 /** Maps an HTTP status to its configured error class (or null for statuses this config doesn't gate). */
-export function classForStatus(status: number, cfg: RotationConfig): RotationErrorClassConfig | null {
+export function classForStatus(
+  status: number,
+  cfg: RotationConfig,
+): RotationErrorClassConfig | null {
   if (status === 429) return cfg.rateLimit429;
   if (status === 502) return cfg.badGateway502;
   if (status >= 500 && status < 600) return cfg.serverError500;
@@ -252,7 +277,7 @@ export function recordErrorAndCheckThreshold(
   key: string,
   status: number,
   cfg: RotationConfig,
-  nowMs: number = Date.now()
+  nowMs: number = Date.now(),
 ): boolean {
   const cls = classForStatus(status, cfg);
   if (cls === null) return true; // not gated => defer to engine (treat as immediate)
@@ -295,7 +320,7 @@ export interface RotationGateDecision {
 export function evaluateRotationGate(
   status: number,
   rotationCfg: RotationConfig,
-  rotationKey?: string | null
+  rotationKey?: string | null,
 ): RotationGateDecision | null {
   if (isFallbackBlockedForStatus(status, rotationCfg)) {
     return { shouldFallback: false, cooldownMs: 0, reason: RateLimitReason.UNKNOWN };
@@ -338,7 +363,7 @@ export interface RotationRateLimitFallback {
  */
 export function rotationRateLimitFallback(
   reason: string,
-  rotationCfg: RotationConfig
+  rotationCfg: RotationConfig,
 ): RotationRateLimitFallback | null {
   if (reason !== RateLimitReason.RATE_LIMIT_EXCEEDED) return null;
   const overrideMs = rateLimitCooldownOverrideMs(rotationCfg);

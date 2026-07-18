@@ -1,67 +1,75 @@
-import { expect, test, type Page } from "@playwright/test"
-import { mockOpenCodeServer } from "../utils/mock-server"
-import { expectAppVisible, expectSessionTitle } from "../utils/waits"
+import { expect, test, type Page } from "@playwright/test";
+import { mockOpenCodeServer } from "../utils/mock-server";
+import { expectAppVisible, expectSessionTitle } from "../utils/waits";
 import {
   analyzeVisualObservations,
   defineVisualRegions,
   startVisualProbe,
   stopVisualProbe,
   visualPlan,
-} from "../utils/visual-stability"
+} from "../utils/visual-stability";
 
-const directory = "C:/OpenCode/ContextResizeRegression"
-const projectID = "proj_context_resize_regression"
-const sessionID = "ses_context_resize_regression"
-const title = "Context resize regression"
-const model = { providerID: "opencode", modelID: "claude-opus-4-6", variant: "max" }
-const contextIDs = ["prt_0100_read", "prt_0101_glob", "prt_0102_grep", "prt_0103_list"]
-const followingTextID = "prt_0104_text"
+const directory = "C:/OpenCode/ContextResizeRegression";
+const projectID = "proj_context_resize_regression";
+const sessionID = "ses_context_resize_regression";
+const title = "Context resize regression";
+const model = { providerID: "opencode", modelID: "claude-opus-4-6", variant: "max" };
+const contextIDs = ["prt_0100_read", "prt_0101_glob", "prt_0102_grep", "prt_0103_list"];
+const followingTextID = "prt_0104_text";
 
 type Message = {
-  info: Record<string, unknown> & { id: string; role: "user" | "assistant" }
-  parts: Record<string, unknown>[]
-}
+  info: Record<string, unknown> & { id: string; role: "user" | "assistant" };
+  parts: Record<string, unknown>[];
+};
 
-const messages = [...Array.from({ length: 8 }, (_, index) => turn(index, false)).flat(), ...turn(10, true)]
+const messages = [
+  ...Array.from({ length: 8 }, (_, index) => turn(index, false)).flat(),
+  ...turn(10, true),
+];
 
 test.describe("regression: session timeline context group resize", () => {
   test("remeasures a recent explored context group before the next paint", async ({ page }) => {
-    await page.setViewportSize({ width: 1400, height: 900 })
-    await mockServer(page)
-    await configurePage(page)
+    await page.setViewportSize({ width: 1400, height: 900 });
+    await mockServer(page);
+    await configurePage(page);
 
-    await page.goto(`/${base64Encode(directory)}/session/${sessionID}`)
-    await expectSessionTitle(page, title)
-    await expectAppVisible(page.locator(`[data-timeline-part-ids="${contextIDs.join(",")}"]`).first())
-    await expectAppVisible(page.locator(`[data-timeline-part-id="${followingTextID}"]`).first())
-    await settle(page)
+    await page.goto(`/${base64Encode(directory)}/session/${sessionID}`);
+    await expectSessionTitle(page, title);
+    await expectAppVisible(
+      page.locator(`[data-timeline-part-ids="${contextIDs.join(",")}"]`).first(),
+    );
+    await expectAppVisible(page.locator(`[data-timeline-part-id="${followingTextID}"]`).first());
+    await settle(page);
 
-    const samples = await sampleExpansion(page)
-    const visibleOverlap = samples.filter((sample) => sample.frame >= 1 && sample.overlap > 0.5)
+    const samples = await sampleExpansion(page);
+    const visibleOverlap = samples.filter((sample) => sample.frame >= 1 && sample.overlap > 0.5);
 
-    expect(samples[0]?.overlap).toBe(0)
-    expect(visibleOverlap).toEqual([])
-    expect(samples.at(-1)?.expanded).toBe("true")
-  })
+    expect(samples[0]?.overlap).toBe(0);
+    expect(visibleOverlap).toEqual([]);
+    expect(samples.at(-1)?.expanded).toBe("true");
+  });
 
   test("paints a stable exploring to explored transition", async ({ page }) => {
-    const events: { directory: string; payload: Record<string, unknown> }[] = []
-    await page.setViewportSize({ width: 1400, height: 900 })
+    const events: { directory: string; payload: Record<string, unknown> }[] = [];
+    await page.setViewportSize({ width: 1400, height: 900 });
     await mockServer(page, events, [
       ...Array.from({ length: 8 }, (_, index) => turn(index, false)).flat(),
       ...turn(10, true, "running"),
-    ])
-    await configurePage(page)
+    ]);
+    await configurePage(page);
 
-    await page.goto(`/${base64Encode(directory)}/session/${sessionID}`)
-    await expectSessionTitle(page, title)
-    const devtools = await page.context().newCDPSession(page)
-    await devtools.send("Emulation.setCPUThrottlingRate", { rate: 4 })
-    const context = page.locator(`[data-timeline-part-ids="${contextIDs.join(",")}"]`).first()
-    await expectAppVisible(context)
-    await expect(context.locator('[data-component="tool-status-title"]')).toHaveAttribute("aria-label", "Exploring")
+    await page.goto(`/${base64Encode(directory)}/session/${sessionID}`);
+    await expectSessionTitle(page, title);
+    const devtools = await page.context().newCDPSession(page);
+    await devtools.send("Emulation.setCPUThrottlingRate", { rate: 4 });
+    const context = page.locator(`[data-timeline-part-ids="${contextIDs.join(",")}"]`).first();
+    await expectAppVisible(context);
+    await expect(context.locator('[data-component="tool-status-title"]')).toHaveAttribute(
+      "aria-label",
+      "Exploring",
+    );
 
-    const contextSelector = `[data-timeline-part-ids="${contextIDs.join(",")}"]`
+    const contextSelector = `[data-timeline-part-ids="${contextIDs.join(",")}"]`;
     const regions = defineVisualRegions({
       status: {
         selector: `${contextSelector} [data-component="tool-status-title"]`,
@@ -72,8 +80,8 @@ test.describe("regression: session timeline context group resize", () => {
         selector: `[data-timeline-part-id="${followingTextID}"]`,
         closest: '[data-timeline-row="AssistantPart"]',
       },
-    })
-    await startVisualProbe(page, regions)
+    });
+    await startVisualProbe(page, regions);
     for (const [index, delay] of [120, 350, 80, 500].entries()) {
       events.push({
         directory,
@@ -93,17 +101,20 @@ test.describe("regression: session timeline context group resize", () => {
             ),
           },
         },
-      })
-      await page.waitForTimeout(delay)
+      });
+      await page.waitForTimeout(delay);
     }
 
-    await expect(context.locator('[data-component="tool-status-title"]')).toHaveAttribute("aria-label", "Explored")
-    await page.waitForTimeout(700)
-    const trace = await stopVisualProbe<keyof typeof regions>(page)
+    await expect(context.locator('[data-component="tool-status-title"]')).toHaveAttribute(
+      "aria-label",
+      "Explored",
+    );
+    await page.waitForTimeout(700);
+    const trace = await stopVisualProbe<keyof typeof regions>(page);
     const labels = trace.samples
       .map((sample) => sample.regions.status?.label)
       .filter((value): value is string => !!value)
-      .filter((value, index, all) => value !== all[index - 1])
+      .filter((value, index, all) => value !== all[index - 1]);
     const issues = analyzeVisualObservations(
       trace.samples,
       visualPlan(regions, [
@@ -114,12 +125,12 @@ test.describe("regression: session timeline context group resize", () => {
         { type: "label-stability", regions: "all" },
         { type: "flow", regions: ["context", "following"] },
       ]),
-    )
+    );
 
-    expect(labels).toEqual(["Exploring", "Explored"])
-    expect(issues, JSON.stringify(trace.samples, null, 2)).toEqual([])
-  })
-})
+    expect(labels).toEqual(["Exploring", "Explored"]);
+    expect(issues, JSON.stringify(trace.samples, null, 2)).toEqual([]);
+  });
+});
 
 async function configurePage(page: Page) {
   await page.addInitScript(() => {
@@ -132,8 +143,8 @@ async function configurePage(page: Page) {
           showReasoningSummaries: true,
         },
       }),
-    )
-  })
+    );
+  });
 }
 
 async function sampleExpansion(page: Page) {
@@ -141,41 +152,45 @@ async function sampleExpansion(page: Page) {
     ({ contextIDs, followingTextID }) =>
       new Promise<
         {
-          frame: number
-          label: string
-          scrollTop: number
-          scrollHeight: number
-          contextBottom: number
-          textTop: number
-          overlap: number
-          gap: number
-          expanded: string | null
+          frame: number;
+          label: string;
+          scrollTop: number;
+          scrollHeight: number;
+          contextBottom: number;
+          textTop: number;
+          overlap: number;
+          gap: number;
+          expanded: string | null;
         }[]
       >((resolve) => {
-        const context = document.querySelector<HTMLElement>(`[data-timeline-part-ids="${contextIDs.join(",")}"]`)
-        const text = document.querySelector<HTMLElement>(`[data-timeline-part-id="${followingTextID}"]`)
-        const scroller = context?.closest<HTMLElement>(".scroll-view__viewport")
-        const trigger = context?.querySelector<HTMLElement>('[data-slot="collapsible-trigger"]')
-        const contextRow = context?.closest<HTMLElement>('[data-timeline-row="AssistantPart"]')
-        const textRow = text?.closest<HTMLElement>('[data-timeline-row="AssistantPart"]')
+        const context = document.querySelector<HTMLElement>(
+          `[data-timeline-part-ids="${contextIDs.join(",")}"]`,
+        );
+        const text = document.querySelector<HTMLElement>(
+          `[data-timeline-part-id="${followingTextID}"]`,
+        );
+        const scroller = context?.closest<HTMLElement>(".scroll-view__viewport");
+        const trigger = context?.querySelector<HTMLElement>('[data-slot="collapsible-trigger"]');
+        const contextRow = context?.closest<HTMLElement>('[data-timeline-row="AssistantPart"]');
+        const textRow = text?.closest<HTMLElement>('[data-timeline-row="AssistantPart"]');
         if (!context || !text || !scroller || !trigger || !contextRow || !textRow)
-          throw new Error("missing regression nodes")
+          throw new Error("missing regression nodes");
 
-        scroller.scrollTop = scroller.scrollHeight
+        scroller.scrollTop = scroller.scrollHeight;
         const samples: {
-          frame: number
-          label: string
-          scrollTop: number
-          scrollHeight: number
-          contextBottom: number
-          textTop: number
-          overlap: number
-          gap: number
-          expanded: string | null
-        }[] = []
+          frame: number;
+          label: string;
+          scrollTop: number;
+          scrollHeight: number;
+          contextBottom: number;
+          textTop: number;
+          overlap: number;
+          gap: number;
+          expanded: string | null;
+        }[] = [];
         const capture = (frame: number, label: string) => {
-          const contextRect = contextRow.getBoundingClientRect()
-          const textRect = textRow.getBoundingClientRect()
+          const contextRect = contextRow.getBoundingClientRect();
+          const textRect = textRow.getBoundingClientRect();
           samples.push({
             frame,
             label,
@@ -186,34 +201,38 @@ async function sampleExpansion(page: Page) {
             overlap: Math.max(0, Math.round((contextRect.bottom - textRect.top) * 10) / 10),
             gap: Math.max(0, Math.round((textRect.top - contextRect.bottom) * 10) / 10),
             expanded: trigger.getAttribute("aria-expanded"),
-          })
-        }
+          });
+        };
 
-        capture(-1, "before")
-        trigger.click()
-        capture(0, "sync-after-click")
+        capture(-1, "before");
+        trigger.click();
+        capture(0, "sync-after-click");
 
-        let frame = 1
+        let frame = 1;
         const tick = () => {
           setTimeout(() => {
-            capture(frame, "painted")
-            frame += 1
+            capture(frame, "painted");
+            frame += 1;
             if (frame > 8) {
-              resolve(samples)
-              return
+              resolve(samples);
+              return;
             }
-            requestAnimationFrame(tick)
-          }, 0)
-        }
-        requestAnimationFrame(tick)
+            requestAnimationFrame(tick);
+          }, 0);
+        };
+        requestAnimationFrame(tick);
       }),
     { contextIDs, followingTextID },
-  )
+  );
 }
 
-function turn(index: number, target: boolean, status: "running" | "completed" = "completed"): Message[] {
-  const userID = id("msg_user", index)
-  const assistantID = id("msg_assistant", index)
+function turn(
+  index: number,
+  target: boolean,
+  status: "running" | "completed" = "completed",
+): Message[] {
+  const userID = id("msg_user", index);
+  const assistantID = id("msg_assistant", index);
   return [
     {
       info: {
@@ -225,14 +244,25 @@ function turn(index: number, target: boolean, status: "running" | "completed" = 
         agent: "build",
         model,
       },
-      parts: [{ id: id("prt_user", index), sessionID, messageID: userID, type: "text", text: `User message ${index}` }],
+      parts: [
+        {
+          id: id("prt_user", index),
+          sessionID,
+          messageID: userID,
+          type: "text",
+          text: `User message ${index}`,
+        },
+      ],
     },
     {
       info: {
         id: assistantID,
         sessionID,
         role: "assistant",
-        time: { created: 1700000000000 + index * 10_000 + 1_000, completed: 1700000000000 + index * 10_000 + 2_000 },
+        time: {
+          created: 1700000000000 + index * 10_000 + 1_000,
+          completed: 1700000000000 + index * 10_000 + 2_000,
+        },
         parentID: userID,
         modelID: model.modelID,
         providerID: model.providerID,
@@ -253,7 +283,13 @@ function turn(index: number, target: boolean, status: "running" | "completed" = 
               { filePath: "src/recent-a.ts", offset: 0, limit: 120 },
               status,
             ),
-            contextTool(contextIDs[1]!, assistantID, "glob", { path: directory, pattern: "**/*.ts" }, status),
+            contextTool(
+              contextIDs[1]!,
+              assistantID,
+              "glob",
+              { path: directory, pattern: "**/*.ts" },
+              status,
+            ),
             contextTool(
               contextIDs[2]!,
               assistantID,
@@ -280,7 +316,7 @@ function turn(index: number, target: boolean, status: "running" | "completed" = 
             },
           ],
     },
-  ]
+  ];
 }
 
 function contextTool(
@@ -305,7 +341,7 @@ function contextTool(
       metadata: {},
       time: { start: 1700000000000, end: 1700000000100 },
     },
-  }
+  };
 }
 
 async function mockServer(
@@ -321,15 +357,17 @@ async function mockServer(
     pageMessages: () => ({ items: fixtureMessages }),
     events: () => events.splice(0, 1),
     eventRetry: 50,
-  })
+  });
 }
 
 async function settle(page: Page) {
-  await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))))
+  await page.evaluate(
+    () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))),
+  );
 }
 
 function id(prefix: string, index: number) {
-  return `${prefix}_${String(index).padStart(4, "0")}`
+  return `${prefix}_${String(index).padStart(4, "0")}`;
 }
 
 function project() {
@@ -340,7 +378,7 @@ function project() {
     name: "context-resize-regression",
     time: { created: 1700000000000, updated: 1700000000000 },
     sandboxes: [],
-  }
+  };
 }
 
 function session() {
@@ -352,7 +390,7 @@ function session() {
     title,
     version: "dev",
     time: { created: 1700000000000, updated: 1700000000000 },
-  }
+  };
 }
 
 function provider() {
@@ -361,14 +399,24 @@ function provider() {
       {
         id: "opencode",
         name: "OpenCode",
-        models: { "claude-opus-4-6": { id: "claude-opus-4-6", name: "Claude Opus 4.6", limit: { context: 200_000 } } },
+        models: {
+          "claude-opus-4-6": {
+            id: "claude-opus-4-6",
+            name: "Claude Opus 4.6",
+            limit: { context: 200_000 },
+          },
+        },
       },
     ],
     connected: ["opencode"],
     default: { providerID: "opencode", modelID: "claude-opus-4-6" },
-  }
+  };
 }
 
 function base64Encode(value: string) {
-  return Buffer.from(value, "utf8").toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "")
+  return Buffer.from(value, "utf8")
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=/g, "");
 }

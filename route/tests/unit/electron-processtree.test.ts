@@ -99,7 +99,7 @@ describe("Electron main.js server shutdown routes through killProcessTree (#3347
     assert.doesNotMatch(main, /nextServer\.kill\(/);
     assert.ok(
       /killProcessTree\s*\(/.test(main),
-      "main.js must call killProcessTree() for server shutdown"
+      "main.js must call killProcessTree() for server shutdown",
     );
   });
 });

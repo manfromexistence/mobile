@@ -1,7 +1,7 @@
-import { queueRender } from '../managers/UniversalRenderingManager';
-import type { VirtualWindowSpecs } from '../types';
-import { areVirtualWindowSpecsEqual } from '../utils/areVirtualWindowSpecsEqual';
-import { createWindowFromScrollPosition } from '../utils/createWindowFromScrollPosition';
+import { queueRender } from "../managers/UniversalRenderingManager";
+import type { VirtualWindowSpecs } from "../types";
+import { areVirtualWindowSpecsEqual } from "../utils/areVirtualWindowSpecsEqual";
+import { createWindowFromScrollPosition } from "../utils/createWindowFromScrollPosition";
 
 interface SubscribedInstance {
   onRender(dirty: boolean): boolean;
@@ -11,7 +11,7 @@ interface SubscribedInstance {
 
 interface ScrollAnchor {
   fileElement: HTMLElement;
-  fileTypeOffset: 'top' | 'bottom';
+  fileTypeOffset: "top" | "bottom";
   fileOffset: number;
   lineIndex: string | undefined;
   lineOffset: number | undefined;
@@ -48,7 +48,7 @@ export class Virtualizer {
 
   public readonly __id: string = `virtualizer-${++instance}`;
   public readonly config: VirtualizerConfig;
-  public type = 'simple' as const;
+  public type = "simple" as const;
   private intersectionObserver: IntersectionObserver | undefined;
   private scrollTop: number = 0;
   private height: number = 0;
@@ -79,16 +79,13 @@ export class Virtualizer {
     }
     this.root = root;
     this.resizeObserver = new ResizeObserver(this.handleContainerResize);
-    this.intersectionObserver = new IntersectionObserver(
-      this.handleIntersectionChange,
-      {
-        root: this.root,
-        threshold: INTERSECTION_OBSERVER_THRESHOLD,
-        rootMargin: `${this.config.intersectionObserverMargin}px 0px ${this.config.intersectionObserverMargin}px 0px`,
-        // FIXME(amadeus): Figure out the other settings we'll want in here, or
-        // if we should make them configurable...
-      }
-    );
+    this.intersectionObserver = new IntersectionObserver(this.handleIntersectionChange, {
+      root: this.root,
+      threshold: INTERSECTION_OBSERVER_THRESHOLD,
+      rootMargin: `${this.config.intersectionObserverMargin}px 0px ${this.config.intersectionObserverMargin}px 0px`,
+      // FIXME(amadeus): Figure out the other settings we'll want in here, or
+      // if we should make them configurable...
+    });
     if (root instanceof Document) {
       this.setupWindow();
     } else {
@@ -155,7 +152,7 @@ export class Virtualizer {
           this.scrollHeightDirty = true;
           shouldQueueUpdate = true;
           if (this.config.resizeDebugging) {
-            console.log('Virtualizer: content size change', this.__id, {
+            console.log("Virtualizer: content size change", this.__id, {
               sizeChange: blockSize - lastSize,
               newSize: blockSize,
             });
@@ -172,7 +169,7 @@ export class Virtualizer {
           this.scrollHeightDirty = true;
           shouldQueueUpdate = true;
           if (this.config.resizeDebugging) {
-            console.log('Virtualizer: scroller size change', this.__id, {
+            console.log("Virtualizer: scroller size change", this.__id, {
               sizeChange: blockSize - lastSize,
               newSize: blockSize,
             });
@@ -189,12 +186,12 @@ export class Virtualizer {
 
   private setupWindow() {
     if (this.root == null || !(this.root instanceof Document)) {
-      throw new Error('Virtualizer.setupWindow: Invalid setup method');
+      throw new Error("Virtualizer.setupWindow: Invalid setup method");
     }
-    window.addEventListener('scroll', this.handleWindowScroll, {
+    window.addEventListener("scroll", this.handleWindowScroll, {
       passive: true,
     });
-    window.addEventListener('resize', this.handleWindowResize, {
+    window.addEventListener("resize", this.handleWindowResize, {
       passive: true,
     });
     this.resizeObserver?.observe(this.root.documentElement);
@@ -202,9 +199,9 @@ export class Virtualizer {
 
   private setupElement(contentContainer: Element | undefined) {
     if (this.root == null || this.root instanceof Document) {
-      throw new Error('Virtualizer.setupElement: Invalid setup method');
+      throw new Error("Virtualizer.setupElement: Invalid setup method");
     }
-    this.root.addEventListener('scroll', this.handleElementScroll, {
+    this.root.addEventListener("scroll", this.handleElementScroll, {
       passive: true,
     });
     this.resizeObserver?.observe(this.root);
@@ -220,9 +217,9 @@ export class Virtualizer {
     this.resizeObserver = undefined;
     this.intersectionObserver?.disconnect();
     this.intersectionObserver = undefined;
-    this.root?.removeEventListener('scroll', this.handleElementScroll);
-    window.removeEventListener('scroll', this.handleWindowScroll);
-    window.removeEventListener('resize', this.handleWindowResize);
+    this.root?.removeEventListener("scroll", this.handleElementScroll);
+    window.removeEventListener("scroll", this.handleWindowScroll);
+    window.removeEventListener("resize", this.handleWindowResize);
     this.root = undefined;
     this.contentContainer = undefined;
     this.observers.clear();
@@ -237,15 +234,12 @@ export class Virtualizer {
   }
 
   getOffsetInScrollContainer(element: HTMLElement): number {
-    return (
-      this.getScrollTop() +
-      getRelativeBoundingTop(element, this.getScrollContainerElement())
-    );
+    return this.getScrollTop() + getRelativeBoundingTop(element, this.getScrollContainerElement());
   }
 
   connect(container: HTMLElement, instance: SubscribedInstance): () => void {
     if (this.observers.has(container)) {
-      throw new Error('Virtualizer.connect: instance is already connected...');
+      throw new Error("Virtualizer.connect: instance is already connected...");
     }
     // If we are racing against the intersectionObserver, then we should just
     // queue up the connection for when the observer does get set up
@@ -286,11 +280,7 @@ export class Virtualizer {
   };
 
   private handleWindowScroll = () => {
-    if (
-      Virtualizer.__STOP ||
-      this.root == null ||
-      !(this.root instanceof Document)
-    ) {
+    if (Virtualizer.__STOP || this.root == null || !(this.root instanceof Document)) {
       return;
     }
     this.scrollDirty = true;
@@ -298,11 +288,7 @@ export class Virtualizer {
   };
 
   private handleElementScroll = () => {
-    if (
-      Virtualizer.__STOP ||
-      this.root == null ||
-      this.root instanceof Document
-    ) {
+    if (Virtualizer.__STOP || this.root == null || this.root instanceof Document) {
       return;
     }
     this.scrollDirty = true;
@@ -392,11 +378,10 @@ export class Virtualizer {
       return;
     }
     const scrollContainer = this.getScrollContainerElement();
-    const { lineIndex, lineOffset, fileElement, fileOffset, fileTypeOffset } =
-      anchor;
+    const { lineIndex, lineOffset, fileElement, fileOffset, fileTypeOffset } = anchor;
     if (lineIndex != null && lineOffset != null) {
       const element = fileElement.shadowRoot?.querySelector(
-        `[data-line][data-line-index="${lineIndex}"]`
+        `[data-line][data-line-index="${lineIndex}"]`,
       );
       if (element instanceof HTMLElement) {
         const top = getRelativeBoundingTop(element, scrollContainer);
@@ -408,7 +393,7 @@ export class Virtualizer {
       }
     }
     const top = getRelativeBoundingTop(fileElement, scrollContainer);
-    if (fileTypeOffset === 'top') {
+    if (fileTypeOffset === "top") {
       if (top !== fileOffset) {
         this.applyScrollFix(top - fileOffset);
       }
@@ -424,12 +409,12 @@ export class Virtualizer {
     if (this.root == null || this.root instanceof Document) {
       window.scrollTo({
         top: window.scrollY + scrollOffset,
-        behavior: 'instant',
+        behavior: "instant",
       });
     } else {
       this.root.scrollTo({
         top: this.root.scrollTop + scrollOffset,
-        behavior: 'instant',
+        behavior: "instant",
       });
     }
     // Because we fixed our scroll positions, it means something resized or
@@ -453,15 +438,15 @@ export class Virtualizer {
       // Determine file offset and type based on position
       // Only use bottom anchor when entire file is above viewport
       let fileOffset: number;
-      let fileTypeOffset: 'top' | 'bottom';
+      let fileTypeOffset: "top" | "bottom";
       if (fileBottom <= 0) {
         // Entire file is above viewport - use bottom as anchor
         fileOffset = fileBottom;
-        fileTypeOffset = 'bottom';
+        fileTypeOffset = "bottom";
       } else {
         // File is at least partially visible or below - use top
         fileOffset = fileTop;
-        fileTypeOffset = 'top';
+        fileTypeOffset = "top";
       }
 
       // Find the best line (first fully visible) within this file
@@ -471,7 +456,7 @@ export class Virtualizer {
       // Only search for lines if file potentially intersects viewport
       if (fileBottom > 0 && fileTop < viewportHeight) {
         for (const line of fileElement.shadowRoot?.querySelectorAll(
-          '[data-line][data-line-index]'
+          "[data-line][data-line-index]",
         ) ?? []) {
           if (!(line instanceof HTMLElement)) continue;
           const lineIndex = line.dataset.lineIndex;
@@ -505,18 +490,14 @@ export class Virtualizer {
       // If we found a better line anchor, we should replace the old one
       else if (
         bestLineOffset != null &&
-        (bestAnchor.lineOffset == null ||
-          bestLineOffset < bestAnchor.lineOffset)
+        (bestAnchor.lineOffset == null || bestLineOffset < bestAnchor.lineOffset)
       ) {
         shouldReplace = true;
       }
       // Otherwise we need to compare file only anchors
       else if (bestLineOffset == null && bestAnchor.lineOffset == null) {
         // Favor files with their tops in view
-        if (
-          fileOffset >= 0 &&
-          (bestAnchor.fileOffset < 0 || fileOffset < bestAnchor.fileOffset)
-        ) {
+        if (fileOffset >= 0 && (bestAnchor.fileOffset < 0 || fileOffset < bestAnchor.fileOffset)) {
           shouldReplace = true;
         }
         // Or the closest file
@@ -543,15 +524,11 @@ export class Virtualizer {
     return bestAnchor;
   }
 
-  private handleIntersectionChange = (
-    entries: IntersectionObserverEntry[]
-  ): void => {
+  private handleIntersectionChange = (entries: IntersectionObserverEntry[]): void => {
     this.scrollDirty = true;
     for (const { target, isIntersecting } of entries) {
       if (!(target instanceof HTMLElement)) {
-        throw new Error(
-          'Virtualizer.handleIntersectionChange: target not an HTMLElement'
-        );
+        throw new Error("Virtualizer.handleIntersectionChange: target not an HTMLElement");
       }
       const instance = this.observers.get(target);
       // IntersectionObserver delivers entries asynchronously, so an entry can
@@ -599,10 +576,7 @@ export class Virtualizer {
 
     // Lets always make sure to clamp scroll position cases of
     // over/bounce scroll
-    scrollTop = Math.max(
-      0,
-      Math.min(scrollTop, this.getScrollHeight() - this.getHeight())
-    );
+    scrollTop = Math.max(0, Math.min(scrollTop, this.getScrollHeight() - this.getHeight()));
     this.scrollTop = scrollTop;
     return scrollTop;
   }
@@ -648,18 +622,13 @@ export class Virtualizer {
   }
 
   private getScrollContainerElement(): HTMLElement | undefined {
-    return this.root == null || this.root instanceof Document
-      ? undefined
-      : this.root;
+    return this.root == null || this.root instanceof Document ? undefined : this.root;
   }
 }
 
 // This function is like a generalized getBoundingClientRect for it's relative
 // scroll container
-function getRelativeBoundingTop(
-  element: HTMLElement,
-  scrollContainer: HTMLElement | undefined
-) {
+function getRelativeBoundingTop(element: HTMLElement, scrollContainer: HTMLElement | undefined) {
   const rect = element.getBoundingClientRect();
   const scrollContainerTop = scrollContainer?.getBoundingClientRect().top ?? 0;
   return rect.top - scrollContainerTop;

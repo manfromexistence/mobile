@@ -1,28 +1,35 @@
-import { getRequestEvent } from "solid-js/web"
-import { and, Database, eq, inArray, isNull, sql } from "@opencode-ai/console-core/drizzle/index.js"
-import { UserTable } from "@opencode-ai/console-core/schema/user.sql.js"
-import { redirect } from "@solidjs/router"
-import { Actor } from "@opencode-ai/console-core/actor.js"
+import { getRequestEvent } from "solid-js/web";
+import {
+  and,
+  Database,
+  eq,
+  inArray,
+  isNull,
+  sql,
+} from "@opencode-ai/console-core/drizzle/index.js";
+import { UserTable } from "@opencode-ai/console-core/schema/user.sql.js";
+import { redirect } from "@solidjs/router";
+import { Actor } from "@opencode-ai/console-core/actor.js";
 
-import { createClient } from "@openauthjs/openauth/client"
+import { createClient } from "@openauthjs/openauth/client";
 
 export const AuthClient = createClient({
   clientID: "app",
   issuer: import.meta.env.VITE_AUTH_URL,
-})
+});
 
-import { useSession } from "@solidjs/start/http"
-import { Resource } from "@opencode-ai/console-resource"
+import { useSession } from "@solidjs/start/http";
+import { Resource } from "@opencode-ai/console-resource";
 
 export interface AuthSession {
   account?: Record<
     string,
     {
-      id: string
-      email: string
+      id: string;
+      email: string;
     }
-  >
-  current?: string
+  >;
+  current?: string;
 }
 
 export function useAuthSession() {
@@ -34,19 +41,19 @@ export function useAuthSession() {
       secure: false,
       httpOnly: true,
     },
-  })
+  });
 }
 
 export const getActor = async (workspace?: string): Promise<Actor.Info> => {
-  "use server"
-  const evt = getRequestEvent()
-  if (!evt) throw new Error("No request event")
-  if (evt.locals.actor) return evt.locals.actor
+  "use server";
+  const evt = getRequestEvent();
+  if (!evt) throw new Error("No request event");
+  if (evt.locals.actor) return evt.locals.actor;
   evt.locals.actor = (async () => {
-    const auth = await useAuthSession()
+    const auth = await useAuthSession();
     if (!workspace) {
-      const account = auth.data.account ?? {}
-      const current = account[auth.data.current ?? ""]
+      const account = auth.data.account ?? {};
+      const current = account[auth.data.current ?? ""];
       if (current) {
         return {
           type: "account",
@@ -54,28 +61,28 @@ export const getActor = async (workspace?: string): Promise<Actor.Info> => {
             email: current.email,
             accountID: current.id,
           },
-        }
+        };
       }
       if (Object.keys(account).length > 0) {
-        const current = Object.values(account)[0]
+        const current = Object.values(account)[0];
         await auth.update((val) => ({
           ...val,
           current: current.id,
-        }))
+        }));
         return {
           type: "account",
           properties: {
             email: current.email,
             accountID: current.id,
           },
-        }
+        };
       }
       return {
         type: "public",
         properties: {},
-      }
+      };
     }
-    const accounts = Object.keys(auth.data.account ?? {})
+    const accounts = Object.keys(auth.data.account ?? {});
     if (accounts.length) {
       const user = await Database.use((tx) =>
         tx
@@ -91,14 +98,14 @@ export const getActor = async (workspace?: string): Promise<Actor.Info> => {
           .limit(1)
           .execute()
           .then((x) => x[0]),
-      )
+      );
       if (user) {
         await Database.use((tx) =>
           tx
             .update(UserTable)
             .set({ timeSeen: sql`now()` })
             .where(and(eq(UserTable.workspaceID, workspace), eq(UserTable.id, user.id))),
-        )
+        );
         return {
           type: "user",
           properties: {
@@ -107,10 +114,10 @@ export const getActor = async (workspace?: string): Promise<Actor.Info> => {
             accountID: user.accountID,
             role: user.role,
           },
-        }
+        };
       }
     }
-    throw redirect("/auth/authorize")
-  })()
-  return evt.locals.actor
-}
+    throw redirect("/auth/authorize");
+  })();
+  return evt.locals.actor;
+};

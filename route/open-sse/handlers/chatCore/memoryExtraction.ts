@@ -1,7 +1,7 @@
 import { capMemoryExtractionText, MEMORY_EXTRACTION_TEXT_LIMIT } from "./logTruncation.ts";
 
 export function extractMemoryTextFromResponse(
-  response: Record<string, unknown> | null | undefined
+  response: Record<string, unknown> | null | undefined,
 ): string {
   if (!response || typeof response !== "object") return "";
 
@@ -13,7 +13,7 @@ export function extractMemoryTextFromResponse(
   if (Array.isArray(response?.content)) {
     const contentText = response.content
       .filter(
-        (part: Record<string, unknown>) => part?.type === "text" && typeof part?.text === "string"
+        (part: Record<string, unknown>) => part?.type === "text" && typeof part?.text === "string",
       )
       .map((part: Record<string, unknown>) => String(part.text).trim())
       .filter(Boolean)
@@ -29,7 +29,7 @@ export function extractMemoryTextFromResponse(
 }
 
 export function extractMemoryTextFromRequestBody(
-  body: Record<string, unknown> | null | undefined
+  body: Record<string, unknown> | null | undefined,
 ): string {
   if (!body || typeof body !== "object") return "";
 

@@ -95,7 +95,7 @@ export default function RedisLauncherPanel() {
           <p className="mt-1 text-sm text-text-muted">
             {t(
               "redisLauncherDesc",
-              "One-click launch a Redis 7 container (Podman or Docker) for response cache, quota tracking, and rate limiting."
+              "One-click launch a Redis 7 container (Podman or Docker) for response cache, quota tracking, and rate limiting.",
             )}
           </p>
         </div>
@@ -146,7 +146,7 @@ export default function RedisLauncherPanel() {
       <p className="mt-3 text-xs text-text-muted">
         {t(
           "redisLauncherHint",
-          "Equivalent to running `omniroute redis up`. The container is named `omniroute-redis` and listens on 127.0.0.1:6379."
+          "Equivalent to running `omniroute redis up`. The container is named `omniroute-redis` and listens on 127.0.0.1:6379.",
         )}
       </p>
     </div>

@@ -38,7 +38,7 @@ export function runRtkFilterTests(
     requireAll?: boolean;
     customFiltersEnabled?: boolean;
     trustProjectFilters?: boolean;
-  } = {}
+  } = {},
 ): RtkVerifyResult {
   const filters = loadRtkFilters({
     refresh: true,

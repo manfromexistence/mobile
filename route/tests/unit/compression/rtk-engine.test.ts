@@ -39,7 +39,7 @@ describe("RTK compression engine", () => {
   it("honors disabled and empty-message runtime branches", () => {
     const disabled = applyRtkCompression(
       { messages: [{ role: "tool", content: "same\nsame\nsame" }] },
-      { config: { enabled: false } }
+      { config: { enabled: false } },
     );
     assert.equal(disabled.compressed, false);
     assert.equal(disabled.stats, null);
@@ -73,7 +73,7 @@ describe("RTK compression engine", () => {
     const body = { messages: [{ role: "tool", content: "same\nsame\nsame\nsame" }] };
     assert.equal(
       rtkEngine.apply(body, { config: { rtkConfig: { enabled: true } } }).stats?.engine,
-      "rtk"
+      "rtk",
     );
     assert.equal(rtkEngine.compress(body, { enabled: true }).stats?.engine, "rtk");
   });

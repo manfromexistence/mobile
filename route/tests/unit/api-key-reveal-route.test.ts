@@ -58,7 +58,7 @@ test("GET /api/keys falls back to default pagination for invalid query params", 
   await apiKeysDb.createApiKey("Beta", MACHINE_ID);
 
   const response = await listRoute.GET(
-    new Request("http://localhost/api/keys?limit=abc&offset=xyz")
+    new Request("http://localhost/api/keys?limit=abc&offset=xyz"),
   );
   const body = (await response.json()) as any;
 
@@ -68,7 +68,7 @@ test("GET /api/keys falls back to default pagination for invalid query params", 
   assert.equal(body.keys.length, 2);
   assert.equal(
     body.keys.every((entry) => entry.key.includes("****")),
-    true
+    true,
   );
 });
 

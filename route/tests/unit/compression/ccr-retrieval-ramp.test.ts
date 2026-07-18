@@ -61,7 +61,7 @@ describe("resolveRetrievalRampFactor (env)", () => {
       resolveRetrievalRampFactor({
         COMPRESSION_CCR_RETRIEVAL_RAMP_FACTOR: "3",
       } as NodeJS.ProcessEnv),
-      3
+      3,
     );
   });
   it("falls back to the default on an invalid value", () => {
@@ -69,7 +69,7 @@ describe("resolveRetrievalRampFactor (env)", () => {
       resolveRetrievalRampFactor({
         COMPRESSION_CCR_RETRIEVAL_RAMP_FACTOR: "0",
       } as NodeJS.ProcessEnv),
-      2
+      2,
     );
   });
 });
@@ -79,7 +79,7 @@ describe("ccrEngine.apply — retrieval-aware compression (H8)", () => {
   const run = (content: string, retrievalRampFactor = 2) =>
     ccrEngine.apply(
       { messages: [{ role: "user", content }] },
-      { stepConfig: { minChars: BASE, retrievalRampFactor }, principalId: P }
+      { stepConfig: { minChars: BASE, retrievalRampFactor }, principalId: P },
     );
 
   it("compresses a large never-retrieved block normally", () => {
@@ -108,7 +108,7 @@ describe("ccrEngine.apply — retrieval-aware compression (H8)", () => {
     assert.equal(
       run(block(1000), 1).compressed,
       true,
-      "no ramp → still compressed below threshold"
+      "no ramp → still compressed below threshold",
     );
     retrieve(hash, 1); // count 3
     assert.equal(run(block(1000), 1).compressed, false, "cliff still applies at the threshold");

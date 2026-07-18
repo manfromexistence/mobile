@@ -76,7 +76,7 @@ const GENERATORS: Record<string, ConfigGenerator> = {
 
 export async function generateConfig(
   toolId: string,
-  options: GenerateOptions
+  options: GenerateOptions,
 ): Promise<GenerateResult> {
   if (!validateBaseUrl(options.baseUrl)) {
     return {
@@ -119,6 +119,6 @@ export async function generateAllConfigs(options: GenerateOptions): Promise<Gene
   return results.map((r) =>
     r.status === "fulfilled"
       ? r.value
-      : { success: false, configPath: "", error: r.reason?.message || "Unknown error" }
+      : { success: false, configPath: "", error: r.reason?.message || "Unknown error" },
   );
 }

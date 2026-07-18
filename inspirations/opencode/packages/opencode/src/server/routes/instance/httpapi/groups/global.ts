@@ -1,21 +1,28 @@
-import { ConfigV1 } from "@opencode-ai/core/v1/config/config"
-import { EventV2 } from "@opencode-ai/core/event"
-import { EventManifest } from "@/event-manifest"
-import { InstanceDisposed } from "@/server/event"
-import "@opencode-ai/core/account"
-import "@/server/event"
-import { Schema } from "effect"
-import { HttpApi, HttpApiEndpoint, HttpApiError, HttpApiGroup, HttpApiSchema, OpenApi } from "effect/unstable/httpapi"
-import { described } from "./metadata"
+import { ConfigV1 } from "@opencode-ai/core/v1/config/config";
+import { EventV2 } from "@opencode-ai/core/event";
+import { EventManifest } from "@/event-manifest";
+import { InstanceDisposed } from "@/server/event";
+import "@opencode-ai/core/account";
+import "@/server/event";
+import { Schema } from "effect";
+import {
+  HttpApi,
+  HttpApiEndpoint,
+  HttpApiError,
+  HttpApiGroup,
+  HttpApiSchema,
+  OpenApi,
+} from "effect/unstable/httpapi";
+import { described } from "./metadata";
 
 const GlobalHealth = Schema.Struct({
   healthy: Schema.Literal(true),
   version: Schema.String,
-})
+});
 
 const SyncEventSchemas = EventManifest.Latest.values()
   .flatMap((definition) => {
-    if (!definition.durable) return []
+    if (!definition.durable) return [];
     return [
       Schema.Struct({
         type: Schema.Literal("sync"),
@@ -28,9 +35,9 @@ const SyncEventSchemas = EventManifest.Latest.values()
           data: definition.data,
         }),
       }).annotate({ identifier: `SyncEvent.${definition.type}` }),
-    ]
+    ];
   })
-  .toArray()
+  .toArray();
 
 const GlobalEventSchema = Schema.Struct({
   directory: Schema.String,
@@ -39,17 +46,21 @@ const GlobalEventSchema = Schema.Struct({
   payload: Schema.Union([
     ...EventManifest.Latest.values()
       .map((definition) =>
-        Schema.Struct({ id: EventV2.ID, type: Schema.Literal(definition.type), properties: definition.data }),
+        Schema.Struct({
+          id: EventV2.ID,
+          type: Schema.Literal(definition.type),
+          properties: definition.data,
+        }),
       )
       .toArray(),
     InstanceDisposed,
     ...SyncEventSchemas,
   ]),
-}).annotate({ identifier: "GlobalEvent" })
+}).annotate({ identifier: "GlobalEvent" });
 
 export const GlobalUpgradeInput = Schema.Struct({
   target: Schema.optional(Schema.String),
-})
+});
 
 const GlobalUpgradeResult = Schema.Union([
   Schema.Struct({
@@ -60,7 +71,7 @@ const GlobalUpgradeResult = Schema.Union([
     success: Schema.Literal(false),
     error: Schema.String,
   }),
-])
+]);
 
 export const GlobalPaths = {
   health: "/global/health",
@@ -68,7 +79,7 @@ export const GlobalPaths = {
   config: "/global/config",
   dispose: "/global/dispose",
   upgrade: "/global/upgrade",
-} as const
+} as const;
 
 export const GlobalApi = HttpApi.make("global").add(
   HttpApiGroup.make("global")
@@ -88,7 +99,8 @@ export const GlobalApi = HttpApi.make("global").add(
         OpenApi.annotations({
           identifier: "global.event",
           summary: "Get global events",
-          description: "Subscribe to global events from the OpenCode system using server-sent events.",
+          description:
+            "Subscribe to global events from the OpenCode system using server-sent events.",
         }),
       ),
       HttpApiEndpoint.get("configGet", GlobalPaths.config, {
@@ -97,7 +109,8 @@ export const GlobalApi = HttpApi.make("global").add(
         OpenApi.annotations({
           identifier: "global.config.get",
           summary: "Get global configuration",
-          description: "Retrieve the current global OpenCode configuration settings and preferences.",
+          description:
+            "Retrieve the current global OpenCode configuration settings and preferences.",
         }),
       ),
       HttpApiEndpoint.patch("configUpdate", GlobalPaths.config, {
@@ -133,4 +146,4 @@ export const GlobalApi = HttpApi.make("global").add(
       ),
     )
     .annotateMerge(OpenApi.annotations({ title: "global", description: "Global server routes." })),
-)
+);

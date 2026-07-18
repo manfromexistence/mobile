@@ -9,7 +9,11 @@ import { ProxyStatusBadge } from "./ProxyStatusBadge";
 import { ProxyHealthCell } from "./ProxyHealthCell";
 import { ProxyBatchActions } from "./ProxyBatchActions";
 import { ProxyCheckboxCell } from "./ProxyCheckboxCell";
-import { parseBulkImportText, type ParsedProxyEntry, type ParseError } from "./parseBulkProxyImport";
+import {
+  parseBulkImportText,
+  type ParsedProxyEntry,
+  type ParseError,
+} from "./parseBulkProxyImport";
 import { POOL_STRATEGY_OPTIONS, isPoolStrategy, type PoolStrategy } from "./proxyStrategyOptions";
 import type { ProxyItem } from "./proxyRegistryTypes";
 
@@ -90,7 +94,6 @@ const BULK_IMPORT_TEMPLATE = `# Proxy Bulk Import
 # 200.234.177.62:50101:otheruser:otherpass
 #`;
 
-
 export default function ProxyRegistryManager({
   onRedeployRelay,
 }: {
@@ -153,7 +156,7 @@ export default function ProxyRegistryManager({
       if (!res.ok) return;
       const entries = Array.isArray(data?.items) ? data.items : [];
       const mapped = Object.fromEntries(
-        entries.map((entry: HealthInfo) => [entry.proxyId, entry])
+        entries.map((entry: HealthInfo) => [entry.proxyId, entry]),
       ) as Record<string, HealthInfo>;
       setHealthById(mapped);
     } catch {
@@ -182,8 +185,8 @@ export default function ProxyRegistryManager({
               });
               return [id, { count: assignments.length, assignments }] as [string, UsageInfo];
             })
-            .catch(() => [id, { count: 0, assignments: [] }] as [string, UsageInfo])
-        )
+            .catch(() => [id, { count: 0, assignments: [] }] as [string, UsageInfo]),
+        ),
       );
       setUsageById(Object.fromEntries(results));
     } catch {
@@ -284,12 +287,12 @@ export default function ProxyRegistryManager({
   const loadUsage = async (proxyId: string) => {
     try {
       const res = await fetch(
-        `/api/settings/proxies/assignments?proxyId=${encodeURIComponent(proxyId)}`
+        `/api/settings/proxies/assignments?proxyId=${encodeURIComponent(proxyId)}`,
       );
       const data = await res.json().catch(() => ({}));
       if (!res.ok) return;
       const rawAssignments: Array<{ scope: string; scopeId: string | null }> = Array.isArray(
-        data?.items
+        data?.items,
       )
         ? data.items
         : [];

@@ -47,11 +47,11 @@ test("falls back to a safe positive default when the server omits limits (old se
   const entry = mapAutoComboToStaticEntry(raw);
   assert.ok(
     typeof entry.limit?.context === "number" && entry.limit.context > 0,
-    `context must be a positive number (never 0 — zero disables opencode auto-compaction), got ${entry.limit?.context}`
+    `context must be a positive number (never 0 — zero disables opencode auto-compaction), got ${entry.limit?.context}`,
   );
   assert.ok(
     typeof entry.limit?.output === "number" && entry.limit.output > 0,
-    `output must be a positive number, got ${entry.limit?.output}`
+    `output must be a positive number, got ${entry.limit?.output}`,
   );
 });
 
@@ -68,7 +68,7 @@ test("ignores non-positive server values and keeps the safe fallback", () => {
   const entry = mapAutoComboToStaticEntry(raw);
   assert.ok(
     typeof entry.limit?.context === "number" && entry.limit.context > 0,
-    "zero/negative server values must not propagate"
+    "zero/negative server values must not propagate",
   );
   assert.ok(typeof entry.limit?.output === "number" && entry.limit.output > 0);
 });

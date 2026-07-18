@@ -13,7 +13,7 @@ export function isStaleNeedDetails(issue, thresholdDays, now = new Date()) {
     }
   }
   const daysSilent = Math.floor(
-    (now.getTime() - new Date(lastAuthorActivity).getTime()) / 86400_000
+    (now.getTime() - new Date(lastAuthorActivity).getTime()) / 86400_000,
   );
   return {
     stale: daysSilent >= thresholdDays,

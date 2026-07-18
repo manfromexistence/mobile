@@ -41,7 +41,7 @@ function recordOrEmpty(value: unknown): JsonRecord {
     } catch (error) {
       console.warn(
         "[commandCode] tool arg parse failed:",
-        error instanceof Error ? error.message : String(error)
+        error instanceof Error ? error.message : String(error),
       );
     }
   }
@@ -182,7 +182,7 @@ function completeToolCallIds(messages: JsonRecord[]): Set<string> {
 
 function convertMessages(
   messages: unknown,
-  model?: string | null
+  model?: string | null,
 ): { system: string; messages: unknown[] } {
   const source = asRecordArray(messages);
   const pairedToolCallIds = completeToolCallIds(source);
@@ -341,7 +341,7 @@ function parseStreamLine(line: string): unknown | undefined {
   } catch (error) {
     console.warn(
       "[commandCode] stream line parse failed:",
-      error instanceof Error ? error.message : String(error)
+      error instanceof Error ? error.message : String(error),
     );
     return undefined;
   }
@@ -365,7 +365,7 @@ function chatCompletionChunk(
   id: string,
   model: string,
   delta: JsonRecord,
-  finishReason: unknown = null
+  finishReason: unknown = null,
 ) {
   return {
     id,
@@ -419,7 +419,7 @@ function applyEventToAggregateOrThrow(event: JsonRecord, state: AggregateState):
   if (event.type === "error") {
     const error = isRecord(event.error) ? event.error : {};
     throw new Error(
-      stringValue(error.message) || stringValue(event.error) || "Command Code stream error"
+      stringValue(error.message) || stringValue(event.error) || "Command Code stream error",
     );
   }
 
@@ -442,7 +442,7 @@ function usageFromCommandCode(usage: JsonRecord | null) {
 function createStreamResponse(
   upstream: Response,
   model: string,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): Response {
   const id = `chatcmpl-${randomUUID()}`;
   const reader = upstream.body?.getReader();
@@ -507,7 +507,7 @@ function createStreamResponse(
             };
             state.toolCalls.push(toolCall);
             controller.enqueue(
-              sse(chatCompletionChunk(id, model, { tool_calls: [{ index, ...toolCall }] }))
+              sse(chatCompletionChunk(id, model, { tool_calls: [{ index, ...toolCall }] })),
             );
             break;
           }
@@ -526,7 +526,7 @@ function createStreamResponse(
           case "error": {
             const error = isRecord(event.error) ? event.error : {};
             throw new Error(
-              stringValue(error.message) || stringValue(event.error) || "Command Code stream error"
+              stringValue(error.message) || stringValue(event.error) || "Command Code stream error",
             );
           }
         }
@@ -560,7 +560,7 @@ function createStreamResponse(
           } catch (error) {
             console.warn(
               "[commandCode] reader releaseLock failed:",
-              error instanceof Error ? error.message : String(error)
+              error instanceof Error ? error.message : String(error),
             );
           }
         }
@@ -583,7 +583,7 @@ function createStreamResponse(
 async function createJsonResponse(
   upstream: Response,
   model: string,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): Promise<Response> {
   const reader = upstream.body?.getReader();
   if (!reader) throw new Error("Command Code response missing body");
@@ -622,7 +622,7 @@ async function createJsonResponse(
     } catch (error) {
       console.warn(
         "[commandCode] reader cancel failed:",
-        error instanceof Error ? error.message : String(error)
+        error instanceof Error ? error.message : String(error),
       );
     }
     try {
@@ -630,7 +630,7 @@ async function createJsonResponse(
     } catch (error) {
       console.warn(
         "[commandCode] reader releaseLock failed:",
-        error instanceof Error ? error.message : String(error)
+        error instanceof Error ? error.message : String(error),
       );
     }
   }

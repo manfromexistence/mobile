@@ -1,38 +1,38 @@
-import { json, query, action, useParams, createAsync, useSubmission } from "@solidjs/router"
-import { createEffect, For, Show } from "solid-js"
-import { withActor } from "~/context/auth.withActor"
-import { createStore } from "solid-js/store"
-import styles from "./member-section.module.css"
-import { UserRole } from "@opencode-ai/console-core/schema/user.sql.js"
-import { Actor } from "@opencode-ai/console-core/actor.js"
-import { User } from "@opencode-ai/console-core/user.js"
-import { RoleDropdown } from "./role-dropdown"
-import { useI18n } from "~/context/i18n"
-import { useLanguage } from "~/context/language"
-import { formError, localizeError } from "~/lib/form-error"
+import { json, query, action, useParams, createAsync, useSubmission } from "@solidjs/router";
+import { createEffect, For, Show } from "solid-js";
+import { withActor } from "~/context/auth.withActor";
+import { createStore } from "solid-js/store";
+import styles from "./member-section.module.css";
+import { UserRole } from "@opencode-ai/console-core/schema/user.sql.js";
+import { Actor } from "@opencode-ai/console-core/actor.js";
+import { User } from "@opencode-ai/console-core/user.js";
+import { RoleDropdown } from "./role-dropdown";
+import { useI18n } from "~/context/i18n";
+import { useLanguage } from "~/context/language";
+import { formError, localizeError } from "~/lib/form-error";
 
 const listMembers = query(async (workspaceID: string) => {
-  "use server"
+  "use server";
   return withActor(async () => {
     return {
       members: await User.list(),
       actorID: Actor.userID(),
       actorRole: Actor.userRole(),
-    }
-  }, workspaceID)
-}, "member.list")
+    };
+  }, workspaceID);
+}, "member.list");
 
 const inviteMember = action(async (form: FormData) => {
-  "use server"
-  const email = (form.get("email") as string | null)?.trim()
-  if (!email) return { error: formError.emailRequired }
-  const workspaceID = form.get("workspaceID") as string | null
-  if (!workspaceID) return { error: formError.workspaceRequired }
-  const role = form.get("role") as (typeof UserRole)[number] | null
-  if (!role) return { error: formError.roleRequired }
-  const limit = form.get("limit") as string | null
-  const monthlyLimit = limit && limit.trim() !== "" ? parseInt(limit) : null
-  if (monthlyLimit !== null && monthlyLimit < 0) return { error: formError.monthlyLimitInvalid }
+  "use server";
+  const email = (form.get("email") as string | null)?.trim();
+  if (!email) return { error: formError.emailRequired };
+  const workspaceID = form.get("workspaceID") as string | null;
+  if (!workspaceID) return { error: formError.workspaceRequired };
+  const role = form.get("role") as (typeof UserRole)[number] | null;
+  if (!role) return { error: formError.roleRequired };
+  const limit = form.get("limit") as string | null;
+  const monthlyLimit = limit && limit.trim() !== "" ? parseInt(limit) : null;
+  if (monthlyLimit !== null && monthlyLimit < 0) return { error: formError.monthlyLimitInvalid };
   return json(
     await withActor(
       () =>
@@ -42,15 +42,15 @@ const inviteMember = action(async (form: FormData) => {
       workspaceID,
     ),
     { revalidate: listMembers.key },
-  )
-}, "member.create")
+  );
+}, "member.create");
 
 const removeMember = action(async (form: FormData) => {
-  "use server"
-  const id = form.get("id") as string | null
-  if (!id) return { error: formError.idRequired }
-  const workspaceID = form.get("workspaceID") as string | null
-  if (!workspaceID) return { error: formError.workspaceRequired }
+  "use server";
+  const id = form.get("id") as string | null;
+  if (!id) return { error: formError.idRequired };
+  const workspaceID = form.get("workspaceID") as string | null;
+  if (!workspaceID) return { error: formError.workspaceRequired };
   return json(
     await withActor(
       () =>
@@ -60,21 +60,21 @@ const removeMember = action(async (form: FormData) => {
       workspaceID,
     ),
     { revalidate: listMembers.key },
-  )
-}, "member.remove")
+  );
+}, "member.remove");
 
 const updateMember = action(async (form: FormData) => {
-  "use server"
+  "use server";
 
-  const id = form.get("id") as string | null
-  if (!id) return { error: formError.idRequired }
-  const workspaceID = form.get("workspaceID") as string | null
-  if (!workspaceID) return { error: formError.workspaceRequired }
-  const role = form.get("role") as (typeof UserRole)[number] | null
-  if (!role) return { error: formError.roleRequired }
-  const limit = form.get("limit") as string | null
-  const monthlyLimit = limit && limit.trim() !== "" ? parseInt(limit) : null
-  if (monthlyLimit !== null && monthlyLimit < 0) return { error: formError.monthlyLimitInvalid }
+  const id = form.get("id") as string | null;
+  if (!id) return { error: formError.idRequired };
+  const workspaceID = form.get("workspaceID") as string | null;
+  if (!workspaceID) return { error: formError.workspaceRequired };
+  const role = form.get("role") as (typeof UserRole)[number] | null;
+  if (!role) return { error: formError.roleRequired };
+  const limit = form.get("limit") as string | null;
+  const monthlyLimit = limit && limit.trim() !== "" ? parseInt(limit) : null;
+  if (monthlyLimit !== null && monthlyLimit < 0) return { error: formError.monthlyLimitInvalid };
 
   return json(
     await withActor(
@@ -85,77 +85,81 @@ const updateMember = action(async (form: FormData) => {
       workspaceID,
     ),
     { revalidate: listMembers.key },
-  )
-}, "member.update")
+  );
+}, "member.update");
 
 function MemberRow(props: {
-  member: any
-  workspaceID: string
-  actorID: string
-  actorRole: string
-  roleOptions: { value: string; label: string; description: string }[]
+  member: any;
+  workspaceID: string;
+  actorID: string;
+  actorRole: string;
+  roleOptions: { value: string; label: string; description: string }[];
 }) {
-  const i18n = useI18n()
-  const submission = useSubmission(updateMember)
-  const isCurrentUser = () => props.actorID === props.member.id
-  const isAdmin = () => props.actorRole === "admin"
+  const i18n = useI18n();
+  const submission = useSubmission(updateMember);
+  const isCurrentUser = () => props.actorID === props.member.id;
+  const isAdmin = () => props.actorRole === "admin";
   const [store, setStore] = createStore({
     editing: false,
     selectedRole: props.member.role as (typeof UserRole)[number],
     limit: "",
-  })
+  });
 
   createEffect(() => {
     if (!submission.pending && submission.result && !submission.result.error) {
-      setStore("editing", false)
+      setStore("editing", false);
     }
-  })
+  });
 
   function show() {
     while (true) {
-      submission.clear()
-      if (!submission.result) break
+      submission.clear();
+      if (!submission.result) break;
     }
-    setStore("editing", true)
-    setStore("selectedRole", props.member.role)
-    setStore("limit", props.member.monthlyLimit != null ? String(props.member.monthlyLimit) : "")
+    setStore("editing", true);
+    setStore("selectedRole", props.member.role);
+    setStore("limit", props.member.monthlyLimit != null ? String(props.member.monthlyLimit) : "");
   }
 
   function hide() {
-    setStore("editing", false)
+    setStore("editing", false);
   }
 
   function getUsageDisplay() {
     const currentUsage = (() => {
-      const dateLastUsed = props.member.timeMonthlyUsageUpdated
-      if (!dateLastUsed) return 0
+      const dateLastUsed = props.member.timeMonthlyUsageUpdated;
+      if (!dateLastUsed) return 0;
 
       const current = new Date().toLocaleDateString(undefined, {
         year: "numeric",
         month: "long",
         timeZone: "UTC",
-      })
+      });
       const lastUsed = dateLastUsed.toLocaleDateString(undefined, {
         year: "numeric",
         month: "long",
         timeZone: "UTC",
-      })
-      return current === lastUsed ? (props.member.monthlyUsage ?? 0) : 0
-    })()
+      });
+      return current === lastUsed ? (props.member.monthlyUsage ?? 0) : 0;
+    })();
 
     const limit = props.member.monthlyLimit
       ? `$${props.member.monthlyLimit}`
-      : i18n.t("workspace.members.noLimitLowercase")
-    return `$${(currentUsage / 100000000).toFixed(2)} / ${limit}`
+      : i18n.t("workspace.members.noLimitLowercase");
+    return `$${(currentUsage / 100000000).toFixed(2)} / ${limit}`;
   }
 
-  const roleLabel = (value: string) => props.roleOptions.find((option) => option.value === value)?.label ?? value
+  const roleLabel = (value: string) =>
+    props.roleOptions.find((option) => option.value === value)?.label ?? value;
 
   return (
     <tr>
       <td data-slot="member-email">{props.member.authEmail ?? props.member.email}</td>
       <td data-slot="member-role">
-        <Show when={store.editing && !isCurrentUser()} fallback={<span>{roleLabel(props.member.role)}</span>}>
+        <Show
+          when={store.editing && !isCurrentUser()}
+          fallback={<span>{roleLabel(props.member.role)}</span>}
+        >
           <RoleDropdown
             value={store.selectedRole}
             options={props.roleOptions}
@@ -175,7 +179,9 @@ function MemberRow(props: {
           />
         </Show>
       </td>
-      <td data-slot="member-joined">{props.member.timeSeen ? "" : i18n.t("workspace.members.invited")}</td>
+      <td data-slot="member-joined">
+        {props.member.timeSeen ? "" : i18n.t("workspace.members.invited")}
+      </td>
       <Show when={isAdmin()}>
         <td data-slot="member-actions">
           <Show
@@ -201,7 +207,9 @@ function MemberRow(props: {
               <input type="hidden" name="role" value={store.selectedRole} />
               <input type="hidden" name="limit" value={store.limit} />
               <button type="submit" data-color="ghost" disabled={submission.pending}>
-                {submission.pending ? i18n.t("workspace.members.saving") : i18n.t("workspace.members.save")}
+                {submission.pending
+                  ? i18n.t("workspace.members.saving")
+                  : i18n.t("workspace.members.save")}
               </button>
               <Show when={!submission.pending}>
                 <button type="button" data-color="ghost" onClick={() => hide()}>
@@ -213,22 +221,22 @@ function MemberRow(props: {
         </td>
       </Show>
     </tr>
-  )
+  );
 }
 
 export function MemberSection() {
-  const params = useParams()
-  const i18n = useI18n()
-  const language = useLanguage()
-  const data = createAsync(() => listMembers(params.id!))
-  const submission = useSubmission(inviteMember)
+  const params = useParams();
+  const i18n = useI18n();
+  const language = useLanguage();
+  const data = createAsync(() => listMembers(params.id!));
+  const submission = useSubmission(inviteMember);
   const [store, setStore] = createStore({
     show: false,
     selectedRole: "member" as (typeof UserRole)[number],
     limit: "",
-  })
+  });
 
-  let input: HTMLInputElement
+  let input: HTMLInputElement;
 
   const roleOptions = [
     {
@@ -241,27 +249,27 @@ export function MemberSection() {
       label: i18n.t("workspace.members.role.member"),
       description: i18n.t("workspace.members.role.memberDescription"),
     },
-  ]
+  ];
 
   createEffect(() => {
     if (!submission.pending && submission.result && !submission.result.error) {
-      setStore("show", false)
+      setStore("show", false);
     }
-  })
+  });
 
   function show() {
     while (true) {
-      submission.clear()
-      if (!submission.result) break
+      submission.clear();
+      if (!submission.result) break;
     }
-    setStore("show", true)
-    setStore("selectedRole", "member")
-    setStore("limit", "")
-    setTimeout(() => input?.focus(), 0)
+    setStore("show", true);
+    setStore("selectedRole", "member");
+    setStore("limit", "");
+    setTimeout(() => input?.focus(), 0);
   }
 
   function hide() {
-    setStore("show", false)
+    setStore("show", false);
   }
 
   return (
@@ -328,7 +336,9 @@ export function MemberSection() {
               {i18n.t("common.cancel")}
             </button>
             <button type="submit" data-color="primary" disabled={submission.pending}>
-              {submission.pending ? i18n.t("workspace.members.inviting") : i18n.t("workspace.members.invite")}
+              {submission.pending
+                ? i18n.t("workspace.members.inviting")
+                : i18n.t("workspace.members.invite")}
             </button>
           </div>
         </form>
@@ -364,5 +374,5 @@ export function MemberSection() {
         </table>
       </div>
     </section>
-  )
+  );
 }

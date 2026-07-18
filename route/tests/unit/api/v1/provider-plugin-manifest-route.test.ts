@@ -7,10 +7,16 @@ import {
   injectServiceModelsIntoManifest,
 } from "../../../../src/app/api/v1/provider-plugin-manifest/route.ts";
 import type { ServiceModel } from "../../../../src/lib/db/serviceModels.ts";
-import type { ProviderPluginManifest, ProviderPluginManifestEntry } from "../../../../open-sse/config/providerPluginManifest.ts";
+import type {
+  ProviderPluginManifest,
+  ProviderPluginManifestEntry,
+} from "../../../../open-sse/config/providerPluginManifest.ts";
 import { generateProviderPluginManifest } from "../../../../open-sse/config/providerPluginManifestRegistry.ts";
 
-function getProvider(manifest: ProviderPluginManifest, id: string): ProviderPluginManifestEntry | undefined {
+function getProvider(
+  manifest: ProviderPluginManifest,
+  id: string,
+): ProviderPluginManifestEntry | undefined {
   return manifest.providers.find((provider) => provider.id === id);
 }
 
@@ -121,7 +127,7 @@ test("provider plugin manifest route injects providers absent from upstream regi
         return [{ id: "proxy-model", name: "Proxy Model", available: true }];
       }
       return [];
-    }
+    },
   );
 
   const nineRouterEntry = getProvider(withModels, "9router");

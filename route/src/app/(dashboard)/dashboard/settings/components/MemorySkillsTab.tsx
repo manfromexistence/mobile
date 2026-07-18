@@ -153,7 +153,7 @@ export default function MemorySkillsTab() {
         setQdrantSaving(false);
       }
     },
-    [qdrant]
+    [qdrant],
   );
 
   const checkQdrant = useCallback(async () => {
@@ -208,7 +208,7 @@ export default function MemorySkillsTab() {
           t("qdrantCleanupSuccess", {
             count: data.deletedCount ?? 0,
             days: data.retentionDays,
-          })
+          }),
         );
       } else {
         const err = data?.error || t("qdrantCleanupFailed");
@@ -216,7 +216,7 @@ export default function MemorySkillsTab() {
       }
     } catch (e) {
       setQdrantCleanupMsg(
-        t("qdrantCleanupError", { error: e instanceof Error ? e.message : String(e) })
+        t("qdrantCleanupError", { error: e instanceof Error ? e.message : String(e) }),
       );
     } finally {
       setQdrantCleanupLoading(false);
@@ -369,7 +369,10 @@ export default function MemorySkillsTab() {
             role="note"
             data-testid="memory-token-cost-warning"
           >
-            <span className="material-symbols-outlined text-[18px] leading-none mt-0.5" aria-hidden="true">
+            <span
+              className="material-symbols-outlined text-[18px] leading-none mt-0.5"
+              aria-hidden="true"
+            >
               info
             </span>
             <p className="text-xs leading-relaxed">
@@ -656,7 +659,7 @@ export default function MemorySkillsTab() {
               <button
                 onClick={() =>
                   saveQdrant(
-                    qdrantApiKeyInput.trim().length > 0 ? { apiKey: qdrantApiKeyInput } : {}
+                    qdrantApiKeyInput.trim().length > 0 ? { apiKey: qdrantApiKeyInput } : {},
                   )
                 }
                 disabled={qdrantSaving}

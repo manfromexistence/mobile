@@ -1,19 +1,19 @@
-import * as webllm from "@mlc-ai/web-llm"
+import * as webllm from "@mlc-ai/web-llm";
 
 function setLabel(id: string, text: string) {
-  const label = document.getElementById(id)
+  const label = document.getElementById(id);
   if (label == null) {
-    throw Error("Cannot find label " + id)
+    throw Error("Cannot find label " + id);
   }
-  label.innerText = text
+  label.innerText = text;
 }
 
 async function main() {
   const initProgressCallback = (report: webllm.InitProgressReport) => {
-    setLabel("init-label", report.text)
-  }
+    setLabel("init-label", report.text);
+  };
   // Option 1: If we do not specify appConfig, we use `prebuiltAppConfig` defined in `config.ts`
-  const selectedModel = "Llama-3.1-8B-Instruct-q4f32_1-MLC"
+  const selectedModel = "Llama-3.1-8B-Instruct-q4f32_1-MLC";
   const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
     selectedModel,
     {
@@ -25,8 +25,8 @@ async function main() {
       context_window_size: 2048,
       // sliding_window_size: 1024,
       // attention_sink_size: 4,
-    }
-  )
+    },
+  );
 
   // Option 2: Specify your own model other than the prebuilt ones
   // const appConfig: webllm.AppConfig = {
@@ -72,11 +72,11 @@ async function main() {
     },
     logprobs: true,
     top_logprobs: 2,
-  })
-  console.log(reply0)
-  console.log(reply0.usage)
+  });
+  console.log(reply0);
+  console.log(reply0.usage);
 
   // To change model, either create a new engine via `CreateMLCEngine()`, or call `engine.reload(modelId)`
 }
 
-main()
+main();

@@ -1,73 +1,79 @@
-import { For, Show, splitProps, type Accessor, type ComponentProps } from "solid-js"
-import { createStore } from "solid-js/store"
-import { DropdownMenu } from "@opencode-ai/ui/dropdown-menu"
-import { Icon } from "@opencode-ai/ui/icon"
-import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon"
-import { ProjectAvatar } from "@opencode-ai/ui/v2/project-avatar-v2"
-import { getProjectAvatarVariant } from "@/context/layout"
-import { useLanguage } from "@/context/language"
-import { displayName, getProjectAvatarSource } from "@/pages/layout/helpers"
-import { pathKey } from "@/utils/path-key"
+import { For, Show, splitProps, type Accessor, type ComponentProps } from "solid-js";
+import { createStore } from "solid-js/store";
+import { DropdownMenu } from "@opencode-ai/ui/dropdown-menu";
+import { Icon } from "@opencode-ai/ui/icon";
+import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon";
+import { ProjectAvatar } from "@opencode-ai/ui/v2/project-avatar-v2";
+import { getProjectAvatarVariant } from "@/context/layout";
+import { useLanguage } from "@/context/language";
+import { displayName, getProjectAvatarSource } from "@/pages/layout/helpers";
+import { pathKey } from "@/utils/path-key";
 
 export type PromptProject = {
-  name?: string
-  id?: string
-  worktree: string
-  sandboxes?: string[]
-  icon?: { color?: string; url?: string; override?: string }
-  server?: { key: string; name: string }
-}
+  name?: string;
+  id?: string;
+  worktree: string;
+  sandboxes?: string[];
+  icon?: { color?: string; url?: string; override?: string };
+  server?: { key: string; name: string };
+};
 
 export type PromptProjectControls = {
-  available: PromptProject[]
-  directory: string
-  server?: string
-  select: (worktree: string, server?: string) => void
-  add: (title: string, server?: string) => void
-}
+  available: PromptProject[];
+  directory: string;
+  server?: string;
+  select: (worktree: string, server?: string) => void;
+  add: (title: string, server?: string) => void;
+};
 
-const actionPrefix = "action:"
-const projectPrefix = "project:"
+const actionPrefix = "action:";
+const projectPrefix = "project:";
 
 function projectKey(project: PromptProject) {
-  return `${projectPrefix}${encodeURIComponent(project.server?.key ?? "")}:${encodeURIComponent(project.worktree)}`
+  return `${projectPrefix}${encodeURIComponent(project.server?.key ?? "")}:${encodeURIComponent(project.worktree)}`;
 }
 
 function actionKey(server?: string) {
-  return `${actionPrefix}${encodeURIComponent(server ?? "")}`
+  return `${actionPrefix}${encodeURIComponent(server ?? "")}`;
 }
 
 export function createPromptProjectController(input: {
-  controls: Accessor<PromptProjectControls>
-  onDone: () => void
+  controls: Accessor<PromptProjectControls>;
+  onDone: () => void;
 }) {
-  const language = useLanguage()
-  const [store, setStore] = createStore({ open: false, search: "", active: "" })
-  let searchRef: HTMLInputElement | undefined
+  const language = useLanguage();
+  const [store, setStore] = createStore({ open: false, search: "", active: "" });
+  let searchRef: HTMLInputElement | undefined;
 
   const selected = () => {
-    const key = pathKey(input.controls().directory)
+    const key = pathKey(input.controls().directory);
     return input
       .controls()
       .available.find(
         (project) =>
           (!project.server || project.server.key === input.controls().server) &&
-          (pathKey(project.worktree) === key || project.sandboxes?.some((sandbox) => pathKey(sandbox) === key)),
-      )
-  }
+          (pathKey(project.worktree) === key ||
+            project.sandboxes?.some((sandbox) => pathKey(sandbox) === key)),
+      );
+  };
   const projects = () => {
-    const search = store.search.trim().toLowerCase()
-    if (!search) return input.controls().available
-    return input.controls().available.filter((project) => displayName(project).toLowerCase().includes(search))
-  }
+    const search = store.search.trim().toLowerCase();
+    if (!search) return input.controls().available;
+    return input
+      .controls()
+      .available.filter((project) => displayName(project).toLowerCase().includes(search));
+  };
   const servers = () =>
     input
       .controls()
       .available.map((project) => project.server)
-      .filter((server, index, all) => server && all.findIndex((item) => item?.key === server.key) === index)
+      .filter(
+        (server, index, all) =>
+          server && all.findIndex((item) => item?.key === server.key) === index,
+      );
   const keys = () => {
     if (servers().length <= 1) {
-      return [...projects().map(projectKey), actionKey(servers()[0]?.key)]
+      return [...projects().map(projectKey), actionKey(servers()[0]?.key)];
     }
     return [
       ...servers().flatMap((server) =>
@@ -76,31 +82,31 @@ export function createPromptProjectController(input: {
           .map(projectKey),
       ),
       actionKey(),
-    ]
-  }
+    ];
+  };
   const initialActive = () => {
-    const selectedKey = selected() ? projectKey(selected()!) : undefined
-    const options = keys()
-    if (selectedKey && options.includes(selectedKey)) return selectedKey
-    return options[0] ?? ""
-  }
+    const selectedKey = selected() ? projectKey(selected()!) : undefined;
+    const options = keys();
+    if (selectedKey && options.includes(selectedKey)) return selectedKey;
+    return options[0] ?? "";
+  };
   const close = () => {
-    setStore({ open: false, search: "", active: "" })
-    input.onDone()
-  }
+    setStore({ open: false, search: "", active: "" });
+    input.onDone();
+  };
   const select = (project: PromptProject) => {
     if (
       pathKey(project.worktree) !== pathKey(selected()?.worktree ?? "") ||
       project.server?.key !== selected()?.server?.key
     ) {
-      input.controls().select(project.worktree, project.server?.key)
+      input.controls().select(project.worktree, project.server?.key);
     }
-    close()
-  }
+    close();
+  };
   const add = (server?: string) => {
-    setStore({ open: false, search: "", active: "" })
-    input.controls().add(language.t("command.project.open"), server)
-  }
+    setStore({ open: false, search: "", active: "" });
+    input.controls().add(language.t("command.project.open"), server);
+  };
 
   return {
     selected,
@@ -121,127 +127,135 @@ export function createPromptProjectController(input: {
     select,
     setOpen(open: boolean) {
       if (open) {
-        setStore({ open: true, active: initialActive() })
-        setTimeout(() => requestAnimationFrame(() => searchRef?.focus()))
-        return
+        setStore({ open: true, active: initialActive() });
+        setTimeout(() => requestAnimationFrame(() => searchRef?.focus()));
+        return;
       }
-      setStore({ open: false, search: "", active: "" })
+      setStore({ open: false, search: "", active: "" });
     },
     setSearch(value: string) {
-      const search = value.trim().toLowerCase()
+      const search = value.trim().toLowerCase();
       const first = input
         .controls()
-        .available.find((project) => !search || displayName(project).toLowerCase().includes(search))
+        .available.find(
+          (project) => !search || displayName(project).toLowerCase().includes(search),
+        );
       setStore({
         search: value,
-        active: first ? projectKey(first) : actionKey(servers().length > 1 ? undefined : servers()[0]?.key),
-      })
+        active: first
+          ? projectKey(first)
+          : actionKey(servers().length > 1 ? undefined : servers()[0]?.key),
+      });
     },
     clearSearch() {
-      setStore({ search: "", active: initialActive() })
-      setTimeout(() => searchRef?.focus())
+      setStore({ search: "", active: initialActive() });
+      setTimeout(() => searchRef?.focus());
     },
     setActive(key: string) {
-      setStore("active", key)
+      setStore("active", key);
     },
     moveActive(delta: number) {
-      const options = keys()
-      if (options.length === 0) return
-      const index = options.indexOf(store.active)
-      const start = index === -1 ? 0 : index
-      setStore("active", options[(start + delta + options.length) % options.length])
+      const options = keys();
+      if (options.length === 0) return;
+      const index = options.indexOf(store.active);
+      const start = index === -1 ? 0 : index;
+      setStore("active", options[(start + delta + options.length) % options.length]);
     },
     activeProject() {
       return store.active.startsWith(projectPrefix)
         ? projects().find((project) => projectKey(project) === store.active)
-        : undefined
+        : undefined;
     },
     activeServer() {
       return store.active.startsWith(actionPrefix)
         ? decodeURIComponent(store.active.slice(actionPrefix.length)) || undefined
-        : undefined
+        : undefined;
     },
     activeAction() {
-      return store.active.startsWith(actionPrefix)
+      return store.active.startsWith(actionPrefix);
     },
     setSearchRef(el: HTMLInputElement) {
-      searchRef = el
+      searchRef = el;
     },
     focusSearch() {
-      setTimeout(() => requestAnimationFrame(() => searchRef?.focus()))
+      setTimeout(() => requestAnimationFrame(() => searchRef?.focus()));
     },
-  }
+  };
 }
 
-export type PromptProjectController = ReturnType<typeof createPromptProjectController>
+export type PromptProjectController = ReturnType<typeof createPromptProjectController>;
 
 export function PromptProjectSelector(props: {
-  controller: PromptProjectController
-  placement?: "bottom" | "bottom-start"
+  controller: PromptProjectController;
+  placement?: "bottom" | "bottom-start";
 }) {
-  let contentRef: HTMLDivElement | undefined
-  let restoreTrigger = true
+  let contentRef: HTMLDivElement | undefined;
+  let restoreTrigger = true;
 
   const activeItem = () =>
     props.controller.active()
-      ? contentRef?.querySelector<HTMLElement>(`[data-option-key="${CSS.escape(props.controller.active())}"]`)
-      : undefined
+      ? contentRef?.querySelector<HTMLElement>(
+          `[data-option-key="${CSS.escape(props.controller.active())}"]`,
+        )
+      : undefined;
   const afterClose = (callback: () => void) => {
     const complete = () => {
       if (contentRef?.isConnected) {
-        requestAnimationFrame(complete)
-        return
+        requestAnimationFrame(complete);
+        return;
       }
-      requestAnimationFrame(() => requestAnimationFrame(callback))
-    }
-    requestAnimationFrame(complete)
-  }
+      requestAnimationFrame(() => requestAnimationFrame(callback));
+    };
+    requestAnimationFrame(complete);
+  };
   const selectProject = (project: PromptProject) => {
-    restoreTrigger = false
-    props.controller.setOpen(false)
-    afterClose(() => props.controller.select(project))
-  }
+    restoreTrigger = false;
+    props.controller.setOpen(false);
+    afterClose(() => props.controller.select(project));
+  };
   const selectAction = (server?: string) => {
-    restoreTrigger = false
-    props.controller.setOpen(false)
-    afterClose(() => props.controller.add(server))
-  }
+    restoreTrigger = false;
+    props.controller.setOpen(false);
+    afterClose(() => props.controller.add(server));
+  };
   const selectActive = () => {
-    const project = props.controller.activeProject()
+    const project = props.controller.activeProject();
     if (project) {
-      selectProject(project)
-      return
+      selectProject(project);
+      return;
     }
     if (props.controller.activeAction() && props.controller.servers().length > 1) {
-      const item = activeItem()
-      item?.focus()
-      item?.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }))
-      return
+      const item = activeItem();
+      item?.focus();
+      item?.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true }));
+      return;
     }
-    selectAction(props.controller.activeServer())
-  }
+    selectAction(props.controller.activeServer());
+  };
   const moveActive = (delta: number) => {
-    props.controller.moveActive(delta)
-    queueMicrotask(() => activeItem()?.scrollIntoView({ block: "nearest" }))
-  }
+    props.controller.moveActive(delta);
+    queueMicrotask(() => activeItem()?.scrollIntoView({ block: "nearest" }));
+  };
   const focusPreviousControl = () => {
     const target = Array.from(
       document.querySelectorAll<HTMLElement>(
         'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
       ),
     )
-      .filter((element) => !contentRef?.contains(element) && !element.hasAttribute("data-focus-trap"))
-      .findLast((element) => element.offsetParent !== null)
-    restoreTrigger = false
-    target?.focus()
+      .filter(
+        (element) => !contentRef?.contains(element) && !element.hasAttribute("data-focus-trap"),
+      )
+      .findLast((element) => element.offsetParent !== null);
+    restoreTrigger = false;
+    target?.focus();
     queueMicrotask(() => {
-      if (props.controller.open()) props.controller.setOpen(false)
-    })
-  }
+      if (props.controller.open()) props.controller.setOpen(false);
+    });
+  };
   const selectedValue = () => {
-    const project = props.controller.selected()
-    return project ? props.controller.projectKey(project) : undefined
-  }
+    const project = props.controller.selected();
+    return project ? props.controller.projectKey(project) : undefined;
+  };
 
   return (
     <DropdownMenu
@@ -261,7 +275,7 @@ export function PromptProjectSelector(props: {
           onPointerDownOutside={() => (restoreTrigger = false)}
           onFocusOutside={() => (restoreTrigger = false)}
           onCloseAutoFocus={(event) => {
-            if (!restoreTrigger) event.preventDefault()
+            if (!restoreTrigger) event.preventDefault();
           }}
         >
           <div class="flex flex-col p-0.5">
@@ -278,35 +292,35 @@ export function PromptProjectSelector(props: {
                 onInput={(event) => props.controller.setSearch(event.currentTarget.value)}
                 onKeyDown={(event) => {
                   if (event.key === "Tab") {
-                    event.preventDefault()
-                    event.stopPropagation()
+                    event.preventDefault();
+                    event.stopPropagation();
                     if (event.shiftKey) {
-                      focusPreviousControl()
-                      return
+                      focusPreviousControl();
+                      return;
                     }
-                    activeItem()?.focus()
-                    return
+                    activeItem()?.focus();
+                    return;
                   }
-                  event.stopPropagation()
+                  event.stopPropagation();
                   if (event.key === "Escape") {
-                    event.preventDefault()
-                    props.controller.setOpen(false)
-                    return
+                    event.preventDefault();
+                    props.controller.setOpen(false);
+                    return;
                   }
-                  if (event.altKey || event.metaKey) return
+                  if (event.altKey || event.metaKey) return;
                   if (event.key === "ArrowDown") {
-                    event.preventDefault()
-                    moveActive(1)
-                    return
+                    event.preventDefault();
+                    moveActive(1);
+                    return;
                   }
                   if (event.key === "ArrowUp") {
-                    event.preventDefault()
-                    moveActive(-1)
-                    return
+                    event.preventDefault();
+                    moveActive(-1);
+                    return;
                   }
                   if (event.key === "Enter" && !event.isComposing) {
-                    event.preventDefault()
-                    selectActive()
+                    event.preventDefault();
+                    selectActive();
                   }
                 }}
               />
@@ -328,7 +342,11 @@ export function PromptProjectSelector(props: {
                 <DropdownMenu.RadioGroup value={selectedValue()}>
                   <For each={props.controller.projects()}>
                     {(project) => (
-                      <ProjectItem project={project} controller={props.controller} onSelect={selectProject} />
+                      <ProjectItem
+                        project={project}
+                        controller={props.controller}
+                        onSelect={selectProject}
+                      />
                     )}
                   </For>
                 </DropdownMenu.RadioGroup>
@@ -338,7 +356,9 @@ export function PromptProjectSelector(props: {
                 each={props.controller
                   .servers()
                   .filter((server) =>
-                    props.controller.projects().some((project) => project.server?.key === server!.key),
+                    props.controller
+                      .projects()
+                      .some((project) => project.server?.key === server!.key),
                   )}
               >
                 {(server) => (
@@ -347,9 +367,17 @@ export function PromptProjectSelector(props: {
                       {server!.name}
                     </div>
                     <DropdownMenu.RadioGroup value={selectedValue()}>
-                      <For each={props.controller.projects().filter((project) => project.server?.key === server!.key)}>
+                      <For
+                        each={props.controller
+                          .projects()
+                          .filter((project) => project.server?.key === server!.key)}
+                      >
                         {(project) => (
-                          <ProjectItem project={project} controller={props.controller} onSelect={selectProject} />
+                          <ProjectItem
+                            project={project}
+                            controller={props.controller}
+                            onSelect={selectProject}
+                          />
                         )}
                       </For>
                     </DropdownMenu.RadioGroup>
@@ -376,15 +404,23 @@ export function PromptProjectSelector(props: {
                   data-option-key={props.controller.actionKey()}
                   class={projectActionClass}
                   classList={{
-                    "!bg-v2-overlay-simple-overlay-hover": props.controller.active() === props.controller.actionKey(),
+                    "!bg-v2-overlay-simple-overlay-hover":
+                      props.controller.active() === props.controller.actionKey(),
                   }}
                   onMouseEnter={() => props.controller.setActive(props.controller.actionKey())}
                 >
                   <Icon name="plus" size="small" />
-                  <span data-slot="dropdown-menu-item-label" class="min-w-0 flex-1 truncate leading-5">
+                  <span
+                    data-slot="dropdown-menu-item-label"
+                    class="min-w-0 flex-1 truncate leading-5"
+                  >
                     {props.controller.labels.add()}
                   </span>
-                  <Icon name="chevron-right" size="small" class="shrink-0 text-v2-icon-icon-muted" />
+                  <Icon
+                    name="chevron-right"
+                    size="small"
+                    class="shrink-0 text-v2-icon-icon-muted"
+                  />
                 </DropdownMenu.SubTrigger>
                 <DropdownMenu.Portal>
                   <DropdownMenu.SubContent class="min-w-[180px] overflow-hidden rounded-md border-0 bg-v2-background-bg-layer-01 p-0.5 shadow-[var(--v2-elevation-floating)] focus:outline-none">
@@ -399,7 +435,7 @@ export function PromptProjectSelector(props: {
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
     </DropdownMenu>
-  )
+  );
 }
 
 export function PromptProjectAddButton(props: { controller: PromptProjectController }) {
@@ -414,12 +450,18 @@ export function PromptProjectAddButton(props: { controller: PromptProjectControl
       <span class="min-w-0 truncate leading-5">{props.controller.labels.new()}</span>
       <Icon name="chevron-down" size="small" class="shrink-0 text-v2-icon-icon-muted" />
     </button>
-  )
+  );
 }
 
 function ProjectTrigger(props: ComponentProps<"button"> & { controller: PromptProjectController }) {
-  const [local, rest] = splitProps(props, ["controller", "class", "classList", "onClick", "onKeyDown"])
-  const project = () => local.controller.selected()
+  const [local, rest] = splitProps(props, [
+    "controller",
+    "class",
+    "classList",
+    "onClick",
+    "onKeyDown",
+  ]);
+  const project = () => local.controller.selected();
   return (
     <button
       {...rest}
@@ -435,16 +477,18 @@ function ProjectTrigger(props: ComponentProps<"button"> & { controller: PromptPr
       onClick={local.onClick ?? (() => local.controller.setOpen(true))}
       onKeyDown={(event) => {
         if (!local.controller.open() && (event.key === "ArrowDown" || event.key === "ArrowUp")) {
-          event.preventDefault()
-          event.stopPropagation()
-          return
+          event.preventDefault();
+          event.stopPropagation();
+          return;
         }
-        if (typeof local.onKeyDown === "function") local.onKeyDown(event)
+        if (typeof local.onKeyDown === "function") local.onKeyDown(event);
       }}
     >
       <Show
         when={project()}
-        fallback={<Icon name="folder-add-left" size="small" class="shrink-0 text-v2-icon-icon-muted" />}
+        fallback={
+          <Icon name="folder-add-left" size="small" class="shrink-0 text-v2-icon-icon-muted" />
+        }
       >
         {(item) => (
           <ProjectAvatar
@@ -459,15 +503,15 @@ function ProjectTrigger(props: ComponentProps<"button"> & { controller: PromptPr
       </span>
       <Icon name="chevron-down" size="small" class="shrink-0 text-v2-icon-icon-muted" />
     </button>
-  )
+  );
 }
 
 function ProjectItem(props: {
-  project: PromptProject
-  controller: PromptProjectController
-  onSelect: (project: PromptProject) => void
+  project: PromptProject;
+  controller: PromptProjectController;
+  onSelect: (project: PromptProject) => void;
 }) {
-  const key = () => props.controller.projectKey(props.project)
+  const key = () => props.controller.projectKey(props.project);
   return (
     <DropdownMenu.RadioItem
       id={key()}
@@ -486,8 +530,8 @@ function ProjectItem(props: {
       }}
       closeOnSelect
       onMouseEnter={() => {
-        props.controller.setActive(key())
-        props.controller.focusSearch()
+        props.controller.setActive(key());
+        props.controller.focusSearch();
       }}
       onSelect={() => props.onSelect(props.project)}
     >
@@ -496,23 +540,25 @@ function ProjectItem(props: {
         src={getProjectAvatarSource(props.project.id, props.project.icon)}
         variant={getProjectAvatarVariant(props.project.icon?.color)}
       />
-      <DropdownMenu.ItemLabel class="min-w-0 truncate leading-5">{displayName(props.project)}</DropdownMenu.ItemLabel>
+      <DropdownMenu.ItemLabel class="min-w-0 truncate leading-5">
+        {displayName(props.project)}
+      </DropdownMenu.ItemLabel>
       <DropdownMenu.ItemIndicator style={{ width: "14px", height: "14px", right: "12px" }}>
         <IconV2 name="check" size="small" class="shrink-0 text-v2-icon-icon-base" />
       </DropdownMenu.ItemIndicator>
     </DropdownMenu.RadioItem>
-  )
+  );
 }
 
 const projectActionClass =
-  "h-7 gap-2 rounded-sm px-3 text-[13px] font-[440] leading-5 tracking-[-0.04px] text-v2-text-text-base [font-family:var(--v2-font-family-sans)] data-[highlighted]:!bg-v2-overlay-simple-overlay-hover"
+  "h-7 gap-2 rounded-sm px-3 text-[13px] font-[440] leading-5 tracking-[-0.04px] text-v2-text-text-base [font-family:var(--v2-font-family-sans)] data-[highlighted]:!bg-v2-overlay-simple-overlay-hover";
 
 function ProjectAction(props: {
-  server?: string
-  controller: PromptProjectController
-  onSelect: (server?: string) => void
+  server?: string;
+  controller: PromptProjectController;
+  onSelect: (server?: string) => void;
 }) {
-  const key = () => props.controller.actionKey(props.server)
+  const key = () => props.controller.actionKey(props.server);
   return (
     <DropdownMenu.Item
       id={key()}
@@ -529,8 +575,8 @@ function ProjectAction(props: {
         padding: "0 12px",
       }}
       onMouseEnter={() => {
-        props.controller.setActive(key())
-        props.controller.focusSearch()
+        props.controller.setActive(key());
+        props.controller.focusSearch();
       }}
       onSelect={() => props.onSelect(props.server)}
     >
@@ -539,13 +585,18 @@ function ProjectAction(props: {
         {props.controller.labels.add()}
       </DropdownMenu.ItemLabel>
     </DropdownMenu.Item>
-  )
+  );
 }
 
-function ServerAction(props: { server: { key: string; name: string }; onSelect: (server: string) => void }) {
+function ServerAction(props: {
+  server: { key: string; name: string };
+  onSelect: (server: string) => void;
+}) {
   return (
     <DropdownMenu.Item class={projectActionClass} onSelect={() => props.onSelect(props.server.key)}>
-      <DropdownMenu.ItemLabel class="min-w-0 flex-1 truncate leading-5">{props.server.name}</DropdownMenu.ItemLabel>
+      <DropdownMenu.ItemLabel class="min-w-0 flex-1 truncate leading-5">
+        {props.server.name}
+      </DropdownMenu.ItemLabel>
     </DropdownMenu.Item>
-  )
+  );
 }

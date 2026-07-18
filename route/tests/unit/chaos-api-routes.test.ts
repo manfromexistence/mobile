@@ -45,7 +45,12 @@ async function resetStorage() {
   delete process.env.INITIAL_PASSWORD;
 }
 
-function makeRequest(method: string, url: string, body?: unknown, headers: Record<string, string> = {}) {
+function makeRequest(
+  method: string,
+  url: string,
+  body?: unknown,
+  headers: Record<string, string> = {},
+) {
   return new Request(url, {
     method,
     headers: {
@@ -114,10 +119,7 @@ test("GET /api/chaos/config — returns defaults, PUT updates, DELETE resets", a
   const getBody = (await getRes.json()) as { config: typeof chaosConfig.DEFAULT_CHAOS_CONFIG };
   // JSON.stringify drops keys whose value is `undefined` (systemPrompt), so compare
   // against the JSON round-tripped shape rather than the raw in-memory default.
-  assert.deepEqual(
-    getBody.config,
-    JSON.parse(JSON.stringify(chaosConfig.DEFAULT_CHAOS_CONFIG))
-  );
+  assert.deepEqual(getBody.config, JSON.parse(JSON.stringify(chaosConfig.DEFAULT_CHAOS_CONFIG)));
 
   const putRes = await configRoute.PUT(
     makeRequest("PUT", "http://localhost/api/chaos/config", {
@@ -126,7 +128,7 @@ test("GET /api/chaos/config — returns defaults, PUT updates, DELETE resets", a
       providerOverrides: [],
       timeoutMs: 60_000,
       maxTokens: 8192,
-    })
+    }),
   );
   assert.equal(putRes.status, 200);
   const putBody = (await putRes.json()) as { config: { enabled: boolean; defaultMode: string } };
@@ -134,15 +136,14 @@ test("GET /api/chaos/config — returns defaults, PUT updates, DELETE resets", a
   assert.equal(putBody.config.defaultMode, "collaborative");
 
   const deleteRes = await configRoute.DELETE(
-    makeRequest("DELETE", "http://localhost/api/chaos/config")
+    makeRequest("DELETE", "http://localhost/api/chaos/config"),
   );
   assert.equal(deleteRes.status, 200);
-  const deleteBody = (await deleteRes.json()) as { config: typeof chaosConfig.DEFAULT_CHAOS_CONFIG };
+  const deleteBody = (await deleteRes.json()) as {
+    config: typeof chaosConfig.DEFAULT_CHAOS_CONFIG;
+  };
   // Same JSON.stringify undefined-key drop as the GET assertion above.
-  assert.deepEqual(
-    deleteBody.config,
-    JSON.parse(JSON.stringify(chaosConfig.DEFAULT_CHAOS_CONFIG))
-  );
+  assert.deepEqual(deleteBody.config, JSON.parse(JSON.stringify(chaosConfig.DEFAULT_CHAOS_CONFIG)));
 });
 
 test("PUT /api/chaos/config — 400 on schema validation failure", async () => {
@@ -150,7 +151,7 @@ test("PUT /api/chaos/config — 400 on schema validation failure", async () => {
     makeRequest("PUT", "http://localhost/api/chaos/config", {
       enabled: true,
       defaultMode: "not-a-real-mode",
-    })
+    }),
   );
   assert.equal(res.status, 400);
 });
@@ -163,14 +164,14 @@ test("POST /api/chaos/run — requires management auth when a password is config
   process.env.INITIAL_PASSWORD = "chaos-run-requires-login";
 
   const res = await runRoute.POST(
-    makeRequest("POST", "http://localhost/api/chaos/run", { task: "hello" })
+    makeRequest("POST", "http://localhost/api/chaos/run", { task: "hello" }),
   );
   assert.ok(res.status === 401 || res.status === 403, `expected 401/403, got ${res.status}`);
 });
 
 test("POST /api/chaos/run — 400 when Chaos Mode is not enabled globally", async () => {
   const res = await runRoute.POST(
-    makeRequest("POST", "http://localhost/api/chaos/run", { task: "hello" })
+    makeRequest("POST", "http://localhost/api/chaos/run", { task: "hello" }),
   );
   assert.equal(res.status, 400);
   const body = (await res.json()) as { error: { message: string } };
@@ -213,7 +214,7 @@ test("POST /api/chaos/run — 200 happy path dispatches without an Authorization
   });
 
   const res = await runRoute.POST(
-    makeRequest("POST", "http://localhost/api/chaos/run", { task: "Summarize" })
+    makeRequest("POST", "http://localhost/api/chaos/run", { task: "Summarize" }),
   );
   assert.equal(res.status, 200);
   const body = (await res.json()) as { models: { status: string; content: string }[] };
@@ -228,7 +229,7 @@ test("POST /api/chaos/run — 200 happy path dispatches without an Authorization
 
 test("POST /api/skills/collect/chaos — 401 without an Authorization header", async () => {
   const res = await skillsChaosRoute.POST(
-    makeRequest("POST", "http://localhost/api/skills/collect/chaos", { task: "hello" })
+    makeRequest("POST", "http://localhost/api/skills/collect/chaos", { task: "hello" }),
   );
   assert.equal(res.status, 401);
 });
@@ -239,8 +240,8 @@ test("POST /api/skills/collect/chaos — 403 with an invalid API key", async () 
       "POST",
       "http://localhost/api/skills/collect/chaos",
       { task: "hello" },
-      { Authorization: "Bearer sk-does-not-exist" }
-    )
+      { Authorization: "Bearer sk-does-not-exist" },
+    ),
   );
   assert.equal(res.status, 403);
 });
@@ -253,8 +254,8 @@ test("POST /api/skills/collect/chaos — 403 when the API key does not have chao
       "POST",
       "http://localhost/api/skills/collect/chaos",
       { task: "hello" },
-      { Authorization: `Bearer ${created.key}` }
-    )
+      { Authorization: `Bearer ${created.key}` },
+    ),
   );
   assert.equal(res.status, 403);
   const body = (await res.json()) as { error: { message: string } };
@@ -271,8 +272,8 @@ test("POST /api/skills/collect/chaos — 400 when Chaos Mode is disabled globall
       "POST",
       "http://localhost/api/skills/collect/chaos",
       { task: "hello" },
-      { Authorization: `Bearer ${created.key}` }
-    )
+      { Authorization: `Bearer ${created.key}` },
+    ),
   );
   assert.equal(res.status, 400);
 });
@@ -308,8 +309,8 @@ test("POST /api/skills/collect/chaos — 200 happy path forwards the caller's ke
       "POST",
       "http://localhost/api/skills/collect/chaos",
       { task: "Summarize" },
-      { Authorization: `Bearer ${created.key}` }
-    )
+      { Authorization: `Bearer ${created.key}` },
+    ),
   );
 
   assert.equal(res.status, 200);

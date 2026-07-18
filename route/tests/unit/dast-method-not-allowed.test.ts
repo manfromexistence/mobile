@@ -49,7 +49,7 @@ test("raw HTTP guard rejects high-risk unsupported methods before Next.js handle
 
     const handled = maybeHandleDisallowedMethod(
       { method: testCase.method, url: testCase.url },
-      response
+      response,
     );
     assert.equal(handled, true, testCase.label);
     assert.equal(response.statusCode, 405, testCase.label);
@@ -70,16 +70,16 @@ test("raw HTTP guard allows documented methods through", () => {
 
   assert.equal(
     maybeHandleDisallowedMethod({ method: "POST", url: "/api/auth/login" }, response),
-    false
+    false,
   );
   assert.equal(maybeHandleDisallowedMethod({ method: "GET", url: "/api/keys" }, response), false);
   assert.equal(
     maybeHandleDisallowedMethod({ method: "OPTIONS", url: "/api/keys" }, response),
-    false
+    false,
   );
   assert.equal(
     maybeHandleDisallowedMethod({ method: "QUERY", url: "/api/health/ping" }, response),
-    false
+    false,
   );
 });
 

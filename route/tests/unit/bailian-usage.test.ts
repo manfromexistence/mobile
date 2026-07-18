@@ -50,7 +50,7 @@ test("getUsageForProvider with bailian-coding-plan and consoleApiKey returns quo
   assert.notStrictEqual(
     result?.message,
     "Usage API not implemented for bailian-coding-plan",
-    "Should have implemented bailian-coding-plan usage"
+    "Should have implemented bailian-coding-plan usage",
   );
 
   // Should return quota data with percentUsed
@@ -103,7 +103,7 @@ test("getUsageForProvider with bailian-coding-plan and only apiKey falls back to
   assert.notStrictEqual(
     result?.message,
     "Usage API not implemented for bailian-coding-plan",
-    "Should have implemented bailian-coding-plan usage with apiKey fallback"
+    "Should have implemented bailian-coding-plan usage with apiKey fallback",
   );
 
   assert.ok(result, "Should return quota data via apiKey fallback");
@@ -113,7 +113,7 @@ test("getUsageForProvider with bailian-coding-plan and only apiKey falls back to
     const authHeader = fetchCalledWith.headers?.Authorization || "";
     assert.ok(
       authHeader.includes("sk-test-fallback"),
-      "Should use apiKey when consoleApiKey is not provided"
+      "Should use apiKey when consoleApiKey is not provided",
     );
   }
 });
@@ -159,7 +159,7 @@ test("getUsageForProvider with bailian-coding-plan returns quota with percentUse
   assert.notStrictEqual(
     result?.message,
     "Usage API not implemented for bailian-coding-plan",
-    "Should have implemented bailian-coding-plan usage"
+    "Should have implemented bailian-coding-plan usage",
   );
 
   // Should return percentUsed = 0.8 (80% from weekly, the most restrictive)
@@ -168,6 +168,6 @@ test("getUsageForProvider with bailian-coding-plan returns quota with percentUse
   assert.strictEqual(
     percentUsed,
     0.8,
-    "percentUsed should be 0.8 from most restrictive window (weekly 80%)"
+    "percentUsed should be 0.8 from most restrictive window (weekly 80%)",
   );
 });

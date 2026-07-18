@@ -68,7 +68,7 @@ function walkFiles(dir: string, rootDir: string = dir, files: string[] = []): st
       fullPath
         .replace(rootDir, "")
         .replace(/^[/\\]/, "")
-        .replace(/\\/g, "/")
+        .replace(/\\/g, "/"),
     );
   }
 
@@ -132,7 +132,7 @@ if (!existsSync(standaloneServerJs)) {
   if (!existsSync(standaloneServerJs)) {
     console.error(
       "\n  ❌ Standalone build not found after `npm run build` at:",
-      standaloneServerJs
+      standaloneServerJs,
     );
     console.error("     Make sure next.config.mjs has: output: 'standalone'");
     process.exit(1);
@@ -246,7 +246,7 @@ if (existsSync(mcpSrcFile)) {
         "--format=esm",
         "--outfile=dist/open-sse/mcp-server/server.js",
       ],
-      { cwd: ROOT, stdio: "inherit" }
+      { cwd: ROOT, stdio: "inherit" },
     );
     console.log("  ✅ MCP Server bundled to dist/open-sse/mcp-server/server.js");
   } catch (err: any) {
@@ -267,7 +267,7 @@ const llmWorkerSrc = join(
   "compression",
   "engines",
   "llmlingua",
-  "onnxWorker.ts"
+  "onnxWorker.ts",
 );
 const llmWorkerDestDir = join(
   DIST_DIR,
@@ -275,7 +275,7 @@ const llmWorkerDestDir = join(
   "services",
   "compression",
   "engines",
-  "llmlingua"
+  "llmlingua",
 );
 if (existsSync(llmWorkerSrc)) {
   console.log("  🔨 Bundling LLMLingua ONNX worker (TypeScript → JavaScript)...");
@@ -292,10 +292,10 @@ if (existsSync(llmWorkerSrc)) {
         "--format=esm",
         "--outfile=dist/open-sse/services/compression/engines/llmlingua/onnxWorker.js",
       ],
-      { cwd: ROOT, stdio: "inherit" }
+      { cwd: ROOT, stdio: "inherit" },
     );
     console.log(
-      "  ✅ LLMLingua worker bundled to dist/open-sse/services/compression/engines/llmlingua/onnxWorker.js"
+      "  ✅ LLMLingua worker bundled to dist/open-sse/services/compression/engines/llmlingua/onnxWorker.js",
     );
   } catch (err: any) {
     console.warn("  ⚠️  LLMLingua worker bundle error:", err.message);
@@ -320,7 +320,7 @@ if (existsSync(cliSrcFile)) {
         "--format=esm",
         "--outfile=bin/omniroute.mjs",
       ],
-      { cwd: ROOT, stdio: "inherit" }
+      { cwd: ROOT, stdio: "inherit" },
     );
     chmodSync(cliDestFile, 0o755);
     console.log("  ✅ CLI Entrypoint bundled to bin/omniroute.mjs");
@@ -365,7 +365,7 @@ if (existsSync(opencodePluginSrc) && existsSync(join(opencodePluginSrc, "package
       console.error("  ❌ Failed to build @omniroute/opencode-plugin:", err.message);
       console.error("     The published package would be missing the plugin dist.");
       console.error(
-        "     Run `cd @omniroute/opencode-plugin && npm install && npm run build` to debug."
+        "     Run `cd @omniroute/opencode-plugin && npm install && npm run build` to debug.",
       );
       process.exit(1);
     }
@@ -412,7 +412,7 @@ if (existsSync(docsMarkdownSrc)) {
   const docsDest = join(DIST_DIR, "docs");
   mkdirSync(docsDest, { recursive: true });
   const mdFiles = readdirSync(docsMarkdownSrc).filter(
-    (f) => f.endsWith(".md") || f.endsWith(".mdx")
+    (f) => f.endsWith(".md") || f.endsWith(".mdx"),
   );
   for (const mdFile of mdFiles) {
     cpSync(join(docsMarkdownSrc, mdFile), join(docsDest, mdFile));
@@ -502,7 +502,7 @@ const remainingUnexpectedFiles = findUnexpectedArtifactPaths(walkFiles(DIST_DIR)
 if (remainingUnexpectedFiles.length > 0) {
   console.error("\n  ❌ Staged dist/ still contains unexpected publish artifacts:");
   remainingUnexpectedFiles.forEach((violation: string) =>
-    console.error(`     - dist/${violation}`)
+    console.error(`     - dist/${violation}`),
   );
   process.exit(1);
 }

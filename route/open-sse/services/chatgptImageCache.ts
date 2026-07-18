@@ -78,7 +78,7 @@ export function storeChatGptImage(
   bytes: Buffer,
   mime: string,
   ttlMs = DEFAULT_TTL_MS,
-  context?: ChatGptImageConversationContext
+  context?: ChatGptImageConversationContext,
 ): string {
   evictExpired();
   evictUntilWithinLimits(configuredMaxBytes(), bytes.length);
@@ -107,7 +107,7 @@ export function getChatGptImage(id: string): CachedImage | null {
 }
 
 export function getChatGptImageConversationContext(
-  id: string
+  id: string,
 ): ChatGptImageConversationContext | null {
   return getChatGptImage(id)?.context ?? null;
 }

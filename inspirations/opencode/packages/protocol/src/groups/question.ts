@@ -1,10 +1,16 @@
-import { Question } from "@opencode-ai/schema/question"
-import { Location } from "@opencode-ai/schema/location"
-import { Session } from "@opencode-ai/schema/session"
-import { Context, Schema } from "effect"
-import { HttpApiEndpoint, HttpApiGroup, HttpApiMiddleware, HttpApiSchema, OpenApi } from "effect/unstable/httpapi"
-import { QuestionNotFoundError, SessionNotFoundError } from "../errors"
-import { LocationQuery, locationQueryOpenApi } from "./location"
+import { Question } from "@opencode-ai/schema/question";
+import { Location } from "@opencode-ai/schema/location";
+import { Session } from "@opencode-ai/schema/session";
+import { Context, Schema } from "effect";
+import {
+  HttpApiEndpoint,
+  HttpApiGroup,
+  HttpApiMiddleware,
+  HttpApiSchema,
+  OpenApi,
+} from "effect/unstable/httpapi";
+import { QuestionNotFoundError, SessionNotFoundError } from "../errors";
+import { LocationQuery, locationQueryOpenApi } from "./location";
 
 export const makeQuestionGroup = <
   LocationId extends HttpApiMiddleware.AnyId,
@@ -30,7 +36,9 @@ export const makeQuestionGroup = <
           }),
         ),
     )
-    .annotateMerge(OpenApi.annotations({ title: "questions", description: "Experimental question routes." }))
+    .annotateMerge(
+      OpenApi.annotations({ title: "questions", description: "Experimental question routes." }),
+    )
     // Effect applies group middleware only to endpoints already added; session endpoints use session placement below.
     .middleware(locationMiddleware)
     .add(
@@ -49,12 +57,16 @@ export const makeQuestionGroup = <
         ),
     )
     .add(
-      HttpApiEndpoint.post("session.question.reply", "/api/session/:sessionID/question/:requestID/reply", {
-        params: { sessionID: Session.ID, requestID: Question.ID },
-        payload: Question.Reply,
-        success: HttpApiSchema.NoContent,
-        error: [SessionNotFoundError, QuestionNotFoundError],
-      })
+      HttpApiEndpoint.post(
+        "session.question.reply",
+        "/api/session/:sessionID/question/:requestID/reply",
+        {
+          params: { sessionID: Session.ID, requestID: Question.ID },
+          payload: Question.Reply,
+          success: HttpApiSchema.NoContent,
+          error: [SessionNotFoundError, QuestionNotFoundError],
+        },
+      )
         .middleware(sessionLocationMiddleware)
         .annotateMerge(
           OpenApi.annotations({
@@ -65,11 +77,15 @@ export const makeQuestionGroup = <
         ),
     )
     .add(
-      HttpApiEndpoint.post("session.question.reject", "/api/session/:sessionID/question/:requestID/reject", {
-        params: { sessionID: Session.ID, requestID: Question.ID },
-        success: HttpApiSchema.NoContent,
-        error: [SessionNotFoundError, QuestionNotFoundError],
-      })
+      HttpApiEndpoint.post(
+        "session.question.reject",
+        "/api/session/:sessionID/question/:requestID/reject",
+        {
+          params: { sessionID: Session.ID, requestID: Question.ID },
+          success: HttpApiSchema.NoContent,
+          error: [SessionNotFoundError, QuestionNotFoundError],
+        },
+      )
         .middleware(sessionLocationMiddleware)
         .annotateMerge(
           OpenApi.annotations({
@@ -80,5 +96,8 @@ export const makeQuestionGroup = <
         ),
     )
     .annotateMerge(
-      OpenApi.annotations({ title: "session questions", description: "Experimental session question routes." }),
-    )
+      OpenApi.annotations({
+        title: "session questions",
+        description: "Experimental session question routes.",
+      }),
+    );

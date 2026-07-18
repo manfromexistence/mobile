@@ -163,7 +163,7 @@ export {
   ROSE_INDEXES,
   distanceFromCenter,
   getPatternIndexes,
-  rowMajorIndex
+  rowMajorIndex,
 } from "./core/patterns";
 
 export {
@@ -181,7 +181,7 @@ export {
   snakePathNormFromIndex,
   spiralInwardNormFromIndex,
   spiralInwardOrderValue,
-  trBlPathNormFromIndex
+  trBlPathNormFromIndex,
 } from "./core/grid-paths";
 
 export {
@@ -191,5 +191,5 @@ export {
   manhattanDistance,
   normalizedRadius,
   polarAngle,
-  spiralOffset
+  spiralOffset,
 } from "./core/math";

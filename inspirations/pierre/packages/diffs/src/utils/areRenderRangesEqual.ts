@@ -1,8 +1,8 @@
-import type { RenderRange } from '../types';
+import type { RenderRange } from "../types";
 
 export function areRenderRangesEqual(
   renderRangeA: RenderRange | undefined,
-  renderRangeB: RenderRange | undefined
+  renderRangeB: RenderRange | undefined,
 ): boolean {
   if (renderRangeA == null || renderRangeB == null) {
     return renderRangeA === renderRangeB;

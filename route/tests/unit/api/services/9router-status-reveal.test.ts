@@ -23,7 +23,7 @@ const db = core.getDbInstance();
 
 db.prepare(
   `INSERT OR IGNORE INTO version_manager (tool, status, port, auto_start, auto_update, provider_expose)
-   VALUES ('9router', 'stopped', 20130, 0, 1, 1)`
+   VALUES ('9router', 'stopped', 20130, 0, 1, 1)`,
 ).run();
 
 const { updateVersionManagerTool } = await import("../../../../src/lib/db/versionManager.ts");
@@ -37,8 +37,9 @@ const { initAuditLog, countAuditLog } = await import("../../../../src/lib/compli
 initAuditLog();
 
 // Import GET after env is set
-const { GET } =
-  await import("../../../../src/app/api/services/9router/status/route.ts?t=reveal-suite");
+const { GET } = await import(
+  "../../../../src/app/api/services/9router/status/route.ts?t=reveal-suite"
+);
 
 function makeRequest(url: string, headers?: Record<string, string>): Request {
   return new Request(url, { headers });
@@ -69,7 +70,7 @@ describe("GET /api/services/9router/status", () => {
         body.error?.message?.toLowerCase().includes("header") ||
         body.message?.toLowerCase().includes("confirm") ||
         String(body).toLowerCase().includes("confirm"),
-      `body should mention confirmation: ${JSON.stringify(body)}`
+      `body should mention confirmation: ${JSON.stringify(body)}`,
     );
   });
 
@@ -107,7 +108,7 @@ describe("GET /api/services/9router/status", () => {
     assert.equal(
       countAfter,
       countBefore + 1,
-      `audit entries should increase by 1 (was ${countBefore}, now ${countAfter})`
+      `audit entries should increase by 1 (was ${countBefore}, now ${countAfter})`,
     );
   });
 
@@ -121,7 +122,7 @@ describe("GET /api/services/9router/status", () => {
     assert.ok(
       body.apiKeyPlain.length > body.apiKeyMasked.length ||
         !body.apiKeyMasked.includes(body.apiKeyPlain),
-      "masked should not contain the full plain key"
+      "masked should not contain the full plain key",
     );
   });
 });

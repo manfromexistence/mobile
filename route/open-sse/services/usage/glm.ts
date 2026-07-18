@@ -17,7 +17,7 @@ type JsonRecord = Record<string, unknown>;
 
 function getGlmTokenQuotaName(
   limit: JsonRecord,
-  existingQuotas: Record<string, UsageQuota>
+  existingQuotas: Record<string, UsageQuota>,
 ): string {
   const unit = toNumber(limit.unit, 0);
   const number = toNumber(limit.number, 0);
@@ -104,7 +104,7 @@ function shouldSuggestGlmTeamQuota(
   teamConfig: ReturnType<typeof getGlmTeamQuotaConfig>,
   _providerSpecificData: unknown,
   _json: JsonRecord,
-  upstreamMsg: string
+  upstreamMsg: string,
 ): boolean {
   if (teamConfig.state !== "none") return false;
   return /coding\s*plan|不存在.*plan|没有.*coding|团队|编码套餐/i.test(upstreamMsg);

@@ -161,7 +161,7 @@ export function buildRefreshFailureUpdate(conn: any, now: string) {
  * successful refresh, so the streak/backoff resets cleanly.
  */
 export function clearRefreshCircuit(
-  providerSpecificData: Record<string, unknown> | null | undefined
+  providerSpecificData: Record<string, unknown> | null | undefined,
 ): Record<string, unknown> | undefined {
   if (!providerSpecificData || typeof providerSpecificData !== "object") return undefined;
   if (!("refreshCircuit" in providerSpecificData)) return undefined;
@@ -199,7 +199,7 @@ function getHealthCheckSkipProviders(): Set<string> {
     raw
       .split(",")
       .map((s) => s.trim().toLowerCase())
-      .filter(Boolean)
+      .filter(Boolean),
   );
 }
 
@@ -277,7 +277,8 @@ export function clearHealthCheckLogCache() {
 
 declare global {
   var __omnirouteTokenHC:
-    { initialized: boolean; interval: ReturnType<typeof setInterval> | null } | undefined;
+    | { initialized: boolean; interval: ReturnType<typeof setInterval> | null }
+    | undefined;
 }
 
 function getHCState() {
@@ -377,7 +378,7 @@ export async function checkConnection(conn) {
         typeof providerSpecificData.copilotToken === "string" &&
         providerSpecificData.copilotToken.trim().length > 0;
       const copilotExpiresAtMs = getCopilotTokenExpiryMs(
-        providerSpecificData.copilotTokenExpiresAt
+        providerSpecificData.copilotTokenExpiresAt,
       );
       const copilotAboutToExpire =
         !hasCopilotToken ||
@@ -404,7 +405,7 @@ export async function checkConnection(conn) {
         const copilotResult = await refreshCopilotToken(
           conn.accessToken,
           healthCheckLog,
-          proxyConfig
+          proxyConfig,
         );
         if (copilotResult?.token) {
           refreshedProviderSpecificData = {
@@ -445,7 +446,7 @@ export async function checkConnection(conn) {
       }
 
       log(
-        `${LOG_PREFIX} ${conn.provider}/${getConnectionLogLabel(conn)} has no refresh token but has a GitHub access token; keeping connection active`
+        `${LOG_PREFIX} ${conn.provider}/${getConnectionLogLabel(conn)} has no refresh token but has a GitHub access token; keeping connection active`,
       );
       return;
     }
@@ -475,7 +476,7 @@ export async function checkConnection(conn) {
         errorCode: "no_refresh_token",
       });
       log(
-        `${LOG_PREFIX} ${conn.provider}/${getConnectionLogLabel(conn)} has no refresh token; marking expired (needs re-auth)`
+        `${LOG_PREFIX} ${conn.provider}/${getConnectionLogLabel(conn)} has no refresh token; marking expired (needs re-auth)`,
       );
     }
     return;
@@ -491,7 +492,7 @@ export async function checkConnection(conn) {
     if (Date.now() - lastRetry < backoffMs) return;
 
     log(
-      `${LOG_PREFIX} Retrying expired ${conn.provider}/${getConnectionLogLabel(conn)} (attempt ${retryCount + 1}/${EXPIRED_RETRY_MAX})`
+      `${LOG_PREFIX} Retrying expired ${conn.provider}/${getConnectionLogLabel(conn)} (attempt ${retryCount + 1}/${EXPIRED_RETRY_MAX})`,
     );
   }
 
@@ -499,7 +500,7 @@ export async function checkConnection(conn) {
     const now = new Date().toISOString();
     await updateProviderConnection(conn.id, { lastHealthCheckAt: now });
     log(
-      `${LOG_PREFIX} Skipping ${conn.provider}/${getConnectionLogLabel(conn)} (refresh unsupported)`
+      `${LOG_PREFIX} Skipping ${conn.provider}/${getConnectionLogLabel(conn)} (refresh unsupported)`,
     );
     return;
   }
@@ -533,7 +534,7 @@ export async function checkConnection(conn) {
     "claude",
   ]);
   const isRotatingProvider = ROTATING_REFRESH_PROVIDERS.has(
-    String(conn.provider || "").toLowerCase()
+    String(conn.provider || "").toLowerCase(),
   );
   const shouldRefreshByInterval =
     !hasKnownExpiry && !isRotatingProvider && Date.now() - lastCheck >= intervalMs;
@@ -634,7 +635,7 @@ export async function checkConnection(conn) {
       }
       await updateProviderConnection(conn.id, updateData);
       persistedResult = refreshResult;
-    }
+    },
   );
 
   const now = new Date().toISOString();
@@ -655,7 +656,7 @@ export async function checkConnection(conn) {
         lastHealthCheckAt: now,
       });
       logWarn(
-        `${LOG_PREFIX} ! ${conn.provider}/${getConnectionLogLabel(conn)} changed during refresh; skipping stale deactivation`
+        `${LOG_PREFIX} ! ${conn.provider}/${getConnectionLogLabel(conn)} changed during refresh; skipping stale deactivation`,
       );
       return;
     }
@@ -674,7 +675,7 @@ export async function checkConnection(conn) {
         errorCode: result.error,
       });
       logWarn(
-        `${LOG_PREFIX} ! ${conn.provider}/${getConnectionLogLabel(conn)} refresh token is invalid (${result.error}), but the current access token is still valid; keeping connection active`
+        `${LOG_PREFIX} ! ${conn.provider}/${getConnectionLogLabel(conn)} refresh token is invalid (${result.error}), but the current access token is still valid; keeping connection active`,
       );
       return;
     }
@@ -701,7 +702,7 @@ export async function checkConnection(conn) {
     logError(
       `${LOG_PREFIX} ✗ ${conn.provider}/${getConnectionLogLabel(conn)} — ` +
         `Refresh token is permanently invalid (${result.error}). ` +
-        `Connection deactivated. Re-authenticate to restore.`
+        `Connection deactivated. Re-authenticate to restore.`,
     );
     return;
   }
@@ -780,13 +781,13 @@ export async function checkConnection(conn) {
 
         if (copilotAboutToExpire) {
           log(
-            `${LOG_PREFIX} Refreshing GitHub Copilot sub-token for ${getConnectionLogLabel(conn)}`
+            `${LOG_PREFIX} Refreshing GitHub Copilot sub-token for ${getConnectionLogLabel(conn)}`,
           );
           try {
             const copilotResult = await refreshCopilotToken(
               accessTokenForCopilot,
               healthCheckLog,
-              proxyConfig
+              proxyConfig,
             );
             if (copilotResult?.token) {
               await updateProviderConnection(conn.id, {
@@ -797,17 +798,17 @@ export async function checkConnection(conn) {
                 },
               });
               log(
-                `${LOG_PREFIX} ✓ GitHub Copilot sub-token refreshed for ${getConnectionLogLabel(conn)}`
+                `${LOG_PREFIX} ✓ GitHub Copilot sub-token refreshed for ${getConnectionLogLabel(conn)}`,
               );
             } else {
               logWarn(
-                `${LOG_PREFIX} ✗ GitHub Copilot sub-token refresh failed for ${getConnectionLogLabel(conn)}`
+                `${LOG_PREFIX} ✗ GitHub Copilot sub-token refresh failed for ${getConnectionLogLabel(conn)}`,
               );
             }
           } catch (copilotErr) {
             logError(
               `${LOG_PREFIX} Error refreshing Copilot sub-token:`,
-              copilotErr?.message || copilotErr
+              copilotErr?.message || copilotErr,
             );
           }
         }
@@ -820,7 +821,7 @@ export async function checkConnection(conn) {
       `${LOG_PREFIX} ✗ ${conn.provider}/${getConnectionLogLabel(conn)} refresh failed` +
         (conn.testStatus === "expired"
           ? ` (${updateData.expiredRetryCount}/${EXPIRED_RETRY_MAX} expired retries used)`
-          : "")
+          : ""),
     );
   }
 }

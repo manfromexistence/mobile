@@ -225,7 +225,7 @@ export function normalizeBaseURL(rawBaseURL: string): string {
     new URL(trimmed);
   } catch {
     throw new Error(
-      `@omniroute/opencode-provider: baseURL is not a valid URL: ${JSON.stringify(rawBaseURL)}`
+      `@omniroute/opencode-provider: baseURL is not a valid URL: ${JSON.stringify(rawBaseURL)}`,
     );
   }
   let base = trimmed;
@@ -312,7 +312,7 @@ export function createOmniRouteProvider(options: OmniRouteProviderOptions): Open
  * OpenCode resolves them through the configured provider.
  */
 export function buildOmniRouteOpenCodeConfig(
-  options: OmniRouteProviderOptions
+  options: OmniRouteProviderOptions,
 ): OpenCodeConfigDocument {
   const doc: OpenCodeConfigDocument = {
     $schema: OPENCODE_CONFIG_SCHEMA,
@@ -358,7 +358,7 @@ export function buildOmniRouteOpenCodeConfig(
  */
 export function mergeIntoExistingConfig(
   existing: Record<string, unknown>,
-  options: OmniRouteProviderOptions
+  options: OmniRouteProviderOptions,
 ): Record<string, unknown> {
   const partial = buildOmniRouteOpenCodeConfig(options);
 
@@ -535,7 +535,7 @@ export interface OmniRouteLiveModel {
 export async function fetchLiveModels(
   baseURL: string,
   apiKey: string,
-  timeoutMs = 5_000
+  timeoutMs = 5_000,
 ): Promise<OmniRouteLiveModel[]> {
   const key = requireNonEmpty(apiKey, "apiKey");
   const url = `${normalizeBaseURL(baseURL)}/models`;
@@ -641,7 +641,7 @@ export interface OmniRouteCombo {
 export async function listCombos(
   baseURL: string,
   managementApiKey: string,
-  timeoutMs = 5_000
+  timeoutMs = 5_000,
 ): Promise<OmniRouteCombo[]> {
   const key = requireNonEmpty(managementApiKey, "managementApiKey");
   const base = normalizeBaseURL(baseURL).replace(/\/v1$/, "");
@@ -723,7 +723,7 @@ export interface OmniRouteComboConfigOptions {
  * ```
  */
 export function createOmniRouteComboConfig(
-  options: OmniRouteComboConfigOptions
+  options: OmniRouteComboConfigOptions,
 ): Record<string, unknown> {
   const name = requireNonEmpty(options.name, "name");
   const strategy = requireNonEmpty(options.strategy, "strategy");
@@ -833,7 +833,7 @@ function buildAgentEntry(role: OmniRouteAgentRole): OpenCodeAgentEntry | undefin
  * ```
  */
 export function createOmniRouteAgentBlock(
-  options: OmniRouteAgentBlockOptions
+  options: OmniRouteAgentBlockOptions,
 ): Record<string, OpenCodeAgentEntry> {
   const out: Record<string, OpenCodeAgentEntry> = {};
   const roles = options.roles ?? {};
@@ -894,7 +894,7 @@ export interface OpenCodeModeEntry extends OpenCodeAgentEntry {}
  * ```
  */
 export function createOmniRouteModesBlock(
-  options: OmniRouteModesBlockOptions
+  options: OmniRouteModesBlockOptions,
 ): Record<string, OpenCodeModeEntry> {
   const out: Record<string, OpenCodeModeEntry> = {};
   const modes = options.modes ?? {};

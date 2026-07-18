@@ -13,8 +13,9 @@ process.env.API_KEY_SECRET = "test-combo-quota-reset-6863";
 
 const core = await import("../../src/lib/db/core.ts");
 const { handleComboChat } = await import("../../open-sse/services/combo.ts");
-const { getModelLockoutInfo, clearAllModelLockouts, parseRetryFromErrorText } =
-  await import("../../open-sse/services/accountFallback.ts");
+const { getModelLockoutInfo, clearAllModelLockouts, parseRetryFromErrorText } = await import(
+  "../../open-sse/services/accountFallback.ts"
+);
 
 const UPSTREAM_429_MESSAGE =
   "429: Individual quota reached. Please upgrade your subscription to increase your limits. Resets in 92h27m28s.";
@@ -72,7 +73,7 @@ test("combo 429 lockout honors parsed upstream quota reset over base cooldown (#
   const parsedResetMs = parseRetryFromErrorText(UPSTREAM_429_MESSAGE);
   assert.ok(
     parsedResetMs && parsedResetMs > 90 * 3600 * 1000,
-    `sanity: reset text must parse to ~92.5h, got ${parsedResetMs}`
+    `sanity: reset text must parse to ~92.5h, got ${parsedResetMs}`,
   );
 
   const info = getModelLockoutInfo(provider, "", model);
@@ -82,7 +83,7 @@ test("combo 429 lockout honors parsed upstream quota reset over base cooldown (#
   // so a hardcoded long cooldown (e.g. a fixed 1h) cannot pass.
   assert.ok(
     info!.remainingMs > parsedResetMs! - 5_000 && info!.remainingMs <= parsedResetMs!,
-    `lockout must equal the parsed upstream reset (~${parsedResetMs}ms); got ${info!.remainingMs}ms (~${Math.round(info!.remainingMs / 1000)}s)`
+    `lockout must equal the parsed upstream reset (~${parsedResetMs}ms); got ${info!.remainingMs}ms (~${Math.round(info!.remainingMs / 1000)}s)`,
   );
 });
 
@@ -135,6 +136,6 @@ test("combo 429 lockout prefers a SHORT parsed reset over the subscription fallb
   // Must be the parsed 45m — NOT the 1h subscription fallback (over-lock).
   assert.ok(
     info!.remainingMs > parsedResetMs! - 5_000 && info!.remainingMs <= parsedResetMs!,
-    `lockout must follow the parsed 45m reset, not the 1h fallback; got ${info!.remainingMs}ms (~${Math.round(info!.remainingMs / 1000)}s)`
+    `lockout must follow the parsed 45m reset, not the 1h fallback; got ${info!.remainingMs}ms (~${Math.round(info!.remainingMs / 1000)}s)`,
   );
 });

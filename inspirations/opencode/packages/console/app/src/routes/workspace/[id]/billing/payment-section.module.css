@@ -74,17 +74,13 @@
       }
 
       th {
-        &:nth-child(2)
-
-        /* Payment ID */ {
+        &:nth-child(2) /* Payment ID */ {
           display: none;
         }
       }
 
       td {
-        &:nth-child(2)
-
-        /* Payment ID */ {
+        &:nth-child(2) /* Payment ID */ {
           display: none;
         }
       }

@@ -22,9 +22,7 @@ async function resetStorage() {
   getDbInstance();
 }
 
-const sessionsRoute = await import(
-  "../../src/app/api/tools/traffic-inspector/sessions/route.ts"
-);
+const sessionsRoute = await import("../../src/app/api/tools/traffic-inspector/sessions/route.ts");
 const sessionDetailRoute = await import(
   "../../src/app/api/tools/traffic-inspector/sessions/[id]/route.ts"
 );
@@ -38,7 +36,7 @@ async function createSession(name?: string): Promise<string> {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify(name !== undefined ? { name } : {}),
-    })
+    }),
   );
   const body = (await res.json()) as { id: string };
   return body.id;
@@ -51,7 +49,7 @@ async function postRequest(sessionId: string, payload: string): Promise<Response
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ payload }),
     }),
-    { params: Promise.resolve({ id: sessionId }) }
+    { params: Promise.resolve({ id: sessionId }) },
   );
 }
 
@@ -108,7 +106,7 @@ test("POST /sessions/[id]/requests: invalid body returns 400", async () => {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ not_payload: "oops" }),
     }),
-    { params: Promise.resolve({ id }) }
+    { params: Promise.resolve({ id }) },
   );
   assert.equal(res.status, 400);
 });
@@ -131,7 +129,7 @@ test("POST /sessions/[id]/requests: error response does not leak stack trace", a
   // POST to non-existent session — exercises the 404 path error body
   const res = await postRequest("00000000-0000-4000-8000-000000000099", "data");
   assert.equal(res.status, 404);
-  const body = await res.json() as { error?: { message?: string } };
+  const body = (await res.json()) as { error?: { message?: string } };
   const msg = body?.error?.message ?? "";
   assert.ok(!msg.includes("at /"), "should not contain stack trace");
 });

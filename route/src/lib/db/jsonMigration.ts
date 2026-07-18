@@ -45,7 +45,7 @@ export interface LegacyJsonData {
  */
 export function runJsonMigration(
   db: SqliteDatabase,
-  data: LegacyJsonData
+  data: LegacyJsonData,
 ): {
   connections: number;
   nodes: number;
@@ -83,7 +83,7 @@ export function runJsonMigration(
   `);
 
   const insertKv = db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)",
   );
 
   const insertCombo = db.prepare(`
@@ -190,7 +190,7 @@ export function runJsonMigration(
           : combo.config;
       if (config && typeof config === "object" && !Array.isArray(config) && "strategy" in config) {
         (config as Record<string, unknown>).strategy = normalizeRoutingStrategy(
-          (config as Record<string, unknown>).strategy
+          (config as Record<string, unknown>).strategy,
         );
       }
       const normalizedCombo: Record<string, unknown> = {

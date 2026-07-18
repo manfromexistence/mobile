@@ -58,7 +58,7 @@ describe("volumeDetector", async () => {
       const signals = detectVolumeSignals(body);
       assert.ok(
         signals.complexity === "critical" || signals.complexity === "high",
-        `expected critical or high, got ${signals.complexity}`
+        `expected critical or high, got ${signals.complexity}`,
       );
     });
   });

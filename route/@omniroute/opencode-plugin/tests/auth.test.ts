@@ -49,7 +49,7 @@ test("createOmniRouteAuthHook: prompts[0] uses key='apiKey' per @opencode-ai/plu
   assert.ok(
     typeof (p as { message: string }).message === "string" &&
       (p as { message: string }).message.includes("omniroute"),
-    "prompt message should mention provider id"
+    "prompt message should mention provider id",
   );
 });
 
@@ -62,7 +62,7 @@ test("loader: valid api auth → {apiKey} when no baseURL option (T-04: fetch om
   assert.ok(hook.loader, "loader must be defined");
   const result = await hook.loader!(
     async () => ({ type: "api", key: "sk-test" }) as never,
-    {} as never
+    {} as never,
   );
   assert.deepEqual(result, { apiKey: "sk-test" });
 });
@@ -71,14 +71,14 @@ test("loader: valid api auth → {apiKey, baseURL, fetch} when baseURL option se
   const hook = createOmniRouteAuthHook({ baseURL: "https://or.example.com/v1" });
   const result = await hook.loader!(
     async () => ({ type: "api", key: "sk-x" }) as never,
-    {} as never
+    {} as never,
   );
   assert.equal((result as { apiKey: string }).apiKey, "sk-x");
   assert.equal((result as { baseURL: string }).baseURL, "https://or.example.com/v1");
   assert.equal(
     typeof (result as { fetch?: unknown }).fetch,
     "function",
-    "T-04: loader must wire fetch interceptor when baseURL resolves"
+    "T-04: loader must wire fetch interceptor when baseURL resolves",
   );
 });
 
@@ -91,13 +91,13 @@ test("loader: features.fetchInterceptor=false AND geminiSanitization=false → n
   });
   const result = await hook.loader!(
     async () => ({ type: "api", key: "sk-x" }) as never,
-    {} as never
+    {} as never,
   );
   assert.deepEqual(result, { apiKey: "sk-x", baseURL: "https://or.example.com/v1" });
   assert.equal(
     (result as { fetch?: unknown }).fetch,
     undefined,
-    "both flags off must omit the custom fetch"
+    "both flags off must omit the custom fetch",
   );
 });
 
@@ -108,12 +108,12 @@ test("loader: features.fetchInterceptor=false but geminiSanitization=true → fe
   });
   const result = await hook.loader!(
     async () => ({ type: "api", key: "sk-x" }) as never,
-    {} as never
+    {} as never,
   );
   assert.equal(
     typeof (result as { fetch?: unknown }).fetch,
     "function",
-    "geminiSanitization alone must still provide a fetch wrapper"
+    "geminiSanitization alone must still provide a fetch wrapper",
   );
 });
 
@@ -135,7 +135,7 @@ test("loader: oauth-flavored auth → {} (wrong method type, ignored)", async ()
         access: "a",
         expires: 0,
       }) as never,
-    {} as never
+    {} as never,
   );
   assert.deepEqual(result, {});
 });

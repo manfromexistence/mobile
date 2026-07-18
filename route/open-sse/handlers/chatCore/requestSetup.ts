@@ -31,7 +31,7 @@ export type ChatCoreRequestSetup = {
 export function resolveChatCoreRequestSetup(
   modelInfo: unknown,
   body: { model?: unknown } | null | undefined,
-  model: string
+  model: string,
 ): ChatCoreRequestSetup {
   const apiFormat: string | undefined =
     modelInfo && typeof modelInfo === "object" && "apiFormat" in modelInfo

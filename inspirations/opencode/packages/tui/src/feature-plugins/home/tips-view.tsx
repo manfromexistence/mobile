@@ -1,102 +1,104 @@
-import type { TuiPluginApi } from "@opencode-ai/plugin/tui"
-import { createMemo, For, type Accessor } from "solid-js"
-import { DEFAULT_THEMES, useTheme } from "../../context/theme"
-import { useCommandShortcut } from "../../keymap"
+import type { TuiPluginApi } from "@opencode-ai/plugin/tui";
+import { createMemo, For, type Accessor } from "solid-js";
+import { DEFAULT_THEMES, useTheme } from "../../context/theme";
+import { useCommandShortcut } from "../../keymap";
 
-const themeCount = Object.keys(DEFAULT_THEMES).length
+const themeCount = Object.keys(DEFAULT_THEMES).length;
 
-type TipPart = { text: string; highlight: boolean }
-type TipShortcut = Accessor<string>
+type TipPart = { text: string; highlight: boolean };
+type TipShortcut = Accessor<string>;
 type Shortcuts = {
-  agentCycle: TipShortcut
-  childFirst: TipShortcut
-  childNext: TipShortcut
-  childPrevious: TipShortcut
-  commandList: TipShortcut
-  editorOpen: TipShortcut
-  helpShow: TipShortcut
-  inputClear: TipShortcut
-  inputNewline: TipShortcut
-  inputPaste: TipShortcut
-  inputUndo: TipShortcut
-  leader: TipShortcut
-  messagesCopy: TipShortcut
-  messagesFirst: TipShortcut
-  messagesLast: TipShortcut
-  messagesPageDown: TipShortcut
-  messagesPageUp: TipShortcut
-  messagesToggleConceal: TipShortcut
-  modelCycleRecent: TipShortcut
-  modelList: TipShortcut
-  sessionExport: TipShortcut
-  sessionInterrupt: TipShortcut
-  sessionList: TipShortcut
-  sessionNew: TipShortcut
-  sessionParent: TipShortcut
-  sessionPinToggle: TipShortcut
-  sessionQuickSwitch1: TipShortcut
-  sessionQuickSwitch9: TipShortcut
-  sessionSidebarToggle: TipShortcut
-  sessionTimeline: TipShortcut
-  statusView: TipShortcut
-  terminalSuspend: TipShortcut
-  themeList: TipShortcut
-}
-type Tip = string | ((shortcuts: Shortcuts) => string | undefined)
+  agentCycle: TipShortcut;
+  childFirst: TipShortcut;
+  childNext: TipShortcut;
+  childPrevious: TipShortcut;
+  commandList: TipShortcut;
+  editorOpen: TipShortcut;
+  helpShow: TipShortcut;
+  inputClear: TipShortcut;
+  inputNewline: TipShortcut;
+  inputPaste: TipShortcut;
+  inputUndo: TipShortcut;
+  leader: TipShortcut;
+  messagesCopy: TipShortcut;
+  messagesFirst: TipShortcut;
+  messagesLast: TipShortcut;
+  messagesPageDown: TipShortcut;
+  messagesPageUp: TipShortcut;
+  messagesToggleConceal: TipShortcut;
+  modelCycleRecent: TipShortcut;
+  modelList: TipShortcut;
+  sessionExport: TipShortcut;
+  sessionInterrupt: TipShortcut;
+  sessionList: TipShortcut;
+  sessionNew: TipShortcut;
+  sessionParent: TipShortcut;
+  sessionPinToggle: TipShortcut;
+  sessionQuickSwitch1: TipShortcut;
+  sessionQuickSwitch9: TipShortcut;
+  sessionSidebarToggle: TipShortcut;
+  sessionTimeline: TipShortcut;
+  statusView: TipShortcut;
+  terminalSuspend: TipShortcut;
+  themeList: TipShortcut;
+};
+type Tip = string | ((shortcuts: Shortcuts) => string | undefined);
 
 function parse(tip: string): TipPart[] {
-  const parts: TipPart[] = []
-  const regex = /\{highlight\}(.*?)\{\/highlight\}/g
-  const found = Array.from(tip.matchAll(regex))
+  const parts: TipPart[] = [];
+  const regex = /\{highlight\}(.*?)\{\/highlight\}/g;
+  const found = Array.from(tip.matchAll(regex));
   const state = found.reduce(
     (acc, match) => {
-      const start = match.index ?? 0
+      const start = match.index ?? 0;
       if (start > acc.index) {
-        acc.parts.push({ text: tip.slice(acc.index, start), highlight: false })
+        acc.parts.push({ text: tip.slice(acc.index, start), highlight: false });
       }
-      acc.parts.push({ text: match[1], highlight: true })
-      acc.index = start + match[0].length
-      return acc
+      acc.parts.push({ text: match[1], highlight: true });
+      acc.index = start + match[0].length;
+      return acc;
     },
     { parts, index: 0 },
-  )
+  );
 
   if (state.index < tip.length) {
-    parts.push({ text: tip.slice(state.index), highlight: false })
+    parts.push({ text: tip.slice(state.index), highlight: false });
   }
 
-  return parts
+  return parts;
 }
 
-const NO_MODELS_TIP = "Run {highlight}/connect{/highlight} to add an AI provider and start coding"
-const NO_MODELS_PARTS = parse(NO_MODELS_TIP)
+const NO_MODELS_TIP = "Run {highlight}/connect{/highlight} to add an AI provider and start coding";
+const NO_MODELS_PARTS = parse(NO_MODELS_TIP);
 
 function shortcutText(value: string) {
-  return `{highlight}${value}{/highlight}`
+  return `{highlight}${value}{/highlight}`;
 }
 
 function commandText(command: string, shortcut: string) {
-  if (!shortcut) return shortcutText(command)
-  return `${shortcutText(command)} or ${shortcutText(shortcut)}`
+  if (!shortcut) return shortcutText(command);
+  return `${shortcutText(command)} or ${shortcutText(shortcut)}`;
 }
 
 function press(shortcut: string, text: string) {
-  if (!shortcut) return undefined
-  return `Press ${shortcutText(shortcut)} ${text}`
+  if (!shortcut) return undefined;
+  return `Press ${shortcutText(shortcut)} ${text}`;
 }
 
 function configShortcut(api: TuiPluginApi, command: string): TipShortcut {
   return () =>
     api.tuiConfig.keybinds
       .get(command)
-      .map((binding) => api.keys.formatSequence(Array.from(api.keymap.parseKeySequence(binding.key))))
+      .map((binding) =>
+        api.keys.formatSequence(Array.from(api.keymap.parseKeySequence(binding.key))),
+      )
       .filter(Boolean)
-      .join(", ")
+      .join(", ");
 }
 
 export function Tips(props: { api: TuiPluginApi; connected?: boolean }) {
-  const theme = useTheme().theme
-  const tipOffset = Math.random()
+  const theme = useTheme().theme;
+  const tipOffset = Math.random();
   const shortcuts: Shortcuts = {
     agentCycle: useCommandShortcut("agent.cycle"),
     childFirst: configShortcut(props.api, "session.child.first"),
@@ -131,21 +133,24 @@ export function Tips(props: { api: TuiPluginApi; connected?: boolean }) {
     statusView: useCommandShortcut("opencode.status"),
     terminalSuspend: useCommandShortcut("terminal.suspend"),
     themeList: useCommandShortcut("theme.switch"),
-  }
+  };
   const tip = createMemo(() => {
-    if (props.connected === false) return NO_MODELS_TIP
-    const tips = [...TIPS, process.platform !== "win32" ? TERMINAL_SUSPEND_TIP : INPUT_UNDO_TIP].flatMap((item) => {
-      const value = typeof item === "string" ? item : item(shortcuts)
-      return value ? [value] : []
-    })
-    return tips[Math.floor(tipOffset * tips.length)] ?? NO_MODELS_TIP
-  }, NO_MODELS_TIP)
+    if (props.connected === false) return NO_MODELS_TIP;
+    const tips = [
+      ...TIPS,
+      process.platform !== "win32" ? TERMINAL_SUSPEND_TIP : INPUT_UNDO_TIP,
+    ].flatMap((item) => {
+      const value = typeof item === "string" ? item : item(shortcuts);
+      return value ? [value] : [];
+    });
+    return tips[Math.floor(tipOffset * tips.length)] ?? NO_MODELS_TIP;
+  }, NO_MODELS_TIP);
   // Solid can expose a memo's initial value while a pure computation is pending.
   const parts = createMemo(() => {
-    const value = tip()
-    if (typeof value === "string") return parse(value)
-    return NO_MODELS_PARTS
-  }, NO_MODELS_PARTS)
+    const value = tip();
+    if (typeof value === "string") return parse(value);
+    return NO_MODELS_PARTS;
+  }, NO_MODELS_PARTS);
 
   return (
     <box flexDirection="row" maxWidth="100%">
@@ -154,11 +159,13 @@ export function Tips(props: { api: TuiPluginApi; connected?: boolean }) {
       </text>
       <text flexShrink={1} wrapMode="word">
         <For each={parts()}>
-          {(part) => <span style={{ fg: part.highlight ? theme.text : theme.textMuted }}>{part.text}</span>}
+          {(part) => (
+            <span style={{ fg: part.highlight ? theme.text : theme.textMuted }}>{part.text}</span>
+          )}
         </For>
       </text>
     </box>
-  )
+  );
 }
 
 const TIPS: Tip[] = [
@@ -169,26 +176,41 @@ const TIPS: Tip[] = [
   "Use {highlight}/redo{/highlight} to restore previously undone messages and file changes",
   "Run {highlight}/share{/highlight} to create a public link to your conversation at opencode.ai",
   "Drag and drop images or PDFs into the terminal to add them as context",
-  (shortcuts) => press(shortcuts.inputPaste(), "to paste images from your clipboard into the prompt"),
-  (shortcuts) => `Use ${commandText("/editor", shortcuts.editorOpen())} to compose messages in your external editor`,
+  (shortcuts) =>
+    press(shortcuts.inputPaste(), "to paste images from your clipboard into the prompt"),
+  (shortcuts) =>
+    `Use ${commandText("/editor", shortcuts.editorOpen())} to compose messages in your external editor`,
   "Run {highlight}/init{/highlight} to auto-generate project rules based on your codebase",
-  (shortcuts) => `Use ${commandText("/models", shortcuts.modelList())} to see and switch between available AI models`,
-  (shortcuts) => `Use ${commandText("/themes", shortcuts.themeList())} to switch between ${themeCount} built-in themes`,
-  (shortcuts) => `Use ${commandText("/new", shortcuts.sessionNew())} to start a fresh conversation session`,
-  (shortcuts) => `Use ${commandText("/sessions", shortcuts.sessionList())} to list, pin, and continue sessions`,
-  (shortcuts) => press(shortcuts.sessionPinToggle(), "in the session list to pin a session so it stays at the top"),
+  (shortcuts) =>
+    `Use ${commandText("/models", shortcuts.modelList())} to see and switch between available AI models`,
+  (shortcuts) =>
+    `Use ${commandText("/themes", shortcuts.themeList())} to switch between ${themeCount} built-in themes`,
+  (shortcuts) =>
+    `Use ${commandText("/new", shortcuts.sessionNew())} to start a fresh conversation session`,
+  (shortcuts) =>
+    `Use ${commandText("/sessions", shortcuts.sessionList())} to list, pin, and continue sessions`,
+  (shortcuts) =>
+    press(
+      shortcuts.sessionPinToggle(),
+      "in the session list to pin a session so it stays at the top",
+    ),
   (shortcuts) =>
     shortcuts.sessionQuickSwitch1() && shortcuts.sessionQuickSwitch9()
       ? `Pinned sessions are assigned quick slots; use ${shortcutText(shortcuts.sessionQuickSwitch1())} through ${shortcutText(shortcuts.sessionQuickSwitch9())} to switch`
       : undefined,
   "Run {highlight}/compact{/highlight} to summarize long sessions near context limits",
-  (shortcuts) => `Use ${commandText("/export", shortcuts.sessionExport())} to save the conversation as Markdown`,
-  (shortcuts) => press(shortcuts.messagesCopy(), "to copy the assistant's last message to clipboard"),
+  (shortcuts) =>
+    `Use ${commandText("/export", shortcuts.sessionExport())} to save the conversation as Markdown`,
+  (shortcuts) =>
+    press(shortcuts.messagesCopy(), "to copy the assistant's last message to clipboard"),
   (shortcuts) => press(shortcuts.commandList(), "to see all available actions and commands"),
   "Run {highlight}/connect{/highlight} to add API keys for 75+ supported LLM providers",
-  (shortcuts) => `The leader key is ${shortcutText(shortcuts.leader())}; combine with other keys for quick actions`,
-  (shortcuts) => press(shortcuts.modelCycleRecent(), "to quickly switch between recently used models"),
-  (shortcuts) => press(shortcuts.sessionSidebarToggle(), "in a session to show or hide the sidebar panel"),
+  (shortcuts) =>
+    `The leader key is ${shortcutText(shortcuts.leader())}; combine with other keys for quick actions`,
+  (shortcuts) =>
+    press(shortcuts.modelCycleRecent(), "to quickly switch between recently used models"),
+  (shortcuts) =>
+    press(shortcuts.sessionSidebarToggle(), "in a session to show or hide the sidebar panel"),
   (shortcuts) =>
     shortcuts.messagesPageUp() && shortcuts.messagesPageDown()
       ? `Use ${shortcutText(shortcuts.messagesPageUp())}/${shortcutText(shortcuts.messagesPageDown())} to navigate through conversation history`
@@ -206,9 +228,9 @@ const TIPS: Tip[] = [
       shortcuts.childFirst(),
       shortcuts.childPrevious(),
       shortcuts.childNext(),
-    ].filter(Boolean)
-    if (!items.length) return undefined
-    return `Use ${items.map(shortcutText).join(" / ")} to move between parent and child sessions`
+    ].filter(Boolean);
+    if (!items.length) return undefined;
+    return `Use ${items.map(shortcutText).join(" / ")} to move between parent and child sessions`;
   },
   "Create {highlight}opencode.json{/highlight} for server settings and {highlight}tui.json{/highlight} for TUI settings",
   "Place TUI settings in {highlight}~/.config/opencode/tui.json{/highlight} for global config",
@@ -266,8 +288,10 @@ const TIPS: Tip[] = [
   "Permission {highlight}external_directory{/highlight} protects files outside project",
   "Run {highlight}opencode debug config{/highlight} to troubleshoot configuration",
   "Use {highlight}--print-logs{/highlight} flag to see detailed logs in stderr",
-  (shortcuts) => `Use ${commandText("/timeline", shortcuts.sessionTimeline())} to jump to specific messages`,
-  (shortcuts) => press(shortcuts.messagesToggleConceal(), "to toggle code block visibility in messages"),
+  (shortcuts) =>
+    `Use ${commandText("/timeline", shortcuts.sessionTimeline())} to jump to specific messages`,
+  (shortcuts) =>
+    press(shortcuts.messagesToggleConceal(), "to toggle code block visibility in messages"),
   (shortcuts) => `Use ${commandText("/status", shortcuts.statusView())} to see system status info`,
   "Enable {highlight}scroll_acceleration{/highlight} in {highlight}tui.json{/highlight} for smooth macOS-style scrolling",
   (shortcuts) =>
@@ -280,8 +304,9 @@ const TIPS: Tip[] = [
   "Use {highlight}/review{/highlight} to review uncommitted changes, branches, or PRs",
   (shortcuts) => `Use ${commandText("/help", shortcuts.helpShow())} to show the help dialog`,
   "Use {highlight}/rename{/highlight} to rename the current session",
-]
+];
 
-const INPUT_UNDO_TIP: Tip = (shortcuts) => press(shortcuts.inputUndo(), "to undo changes in your prompt")
+const INPUT_UNDO_TIP: Tip = (shortcuts) =>
+  press(shortcuts.inputUndo(), "to undo changes in your prompt");
 const TERMINAL_SUSPEND_TIP: Tip = (shortcuts) =>
-  press(shortcuts.terminalSuspend(), "to suspend the terminal and return to your shell")
+  press(shortcuts.terminalSuspend(), "to suspend the terminal and return to your shell");

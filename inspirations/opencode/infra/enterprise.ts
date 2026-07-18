@@ -1,7 +1,7 @@
-import { SECRET } from "./secret"
-import { shortDomain } from "./stage"
+import { SECRET } from "./secret";
+import { shortDomain } from "./stage";
 
-const storage = new sst.cloudflare.Bucket("EnterpriseStorage")
+const storage = new sst.cloudflare.Bucket("EnterpriseStorage");
 
 new sst.cloudflare.x.SolidStart("Teams", {
   domain: shortDomain,
@@ -15,4 +15,4 @@ new sst.cloudflare.x.SolidStart("Teams", {
     OPENCODE_STORAGE_SECRET_ACCESS_KEY: SECRET.R2SecretKey.value,
     OPENCODE_STORAGE_BUCKET: storage.name,
   },
-})
+});

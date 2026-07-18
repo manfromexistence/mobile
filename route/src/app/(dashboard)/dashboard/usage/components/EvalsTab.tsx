@@ -241,7 +241,7 @@ function normalizeBuilderStrategy(value: unknown): BuilderStrategy {
 
 function joinPromptMessages(
   messages: Array<{ role: string; content: string }> | undefined,
-  role: string
+  role: string,
 ): string {
   return (messages || [])
     .filter((message) => message.role === role && typeof message.content === "string")
@@ -277,7 +277,7 @@ function suiteToDraft(suite: EvalSuite): EvalSuiteDraft {
 
 function suiteToCloneDraft(
   suite: EvalSuite,
-  t: (key: string, values?: Record<string, unknown>) => string
+  t: (key: string, values?: Record<string, unknown>) => string,
 ): EvalSuiteDraft {
   const draft = suiteToDraft(suite);
   return {
@@ -309,7 +309,7 @@ function getResultActualValue(result: EvalResult, output?: string): string {
 
 function createDraftFromImportedSuite(
   payload: ImportedEvalSuiteFile,
-  fallbackName: string
+  fallbackName: string,
 ): EvalSuiteDraft {
   const cases = Array.isArray(payload.cases) ? payload.cases : [];
 
@@ -358,7 +358,7 @@ function createDraftFromImportedSuite(
 
 function getTargetLabel(
   target: { type: EvalTargetType; id: string | null },
-  t: (key: string, values?: Record<string, unknown>) => string
+  t: (key: string, values?: Record<string, unknown>) => string,
 ): string {
   if (target.type === "combo") {
     return `${t("targetTypeCombo")}: ${target.id || "—"}`;
@@ -399,7 +399,7 @@ function formatTimestamp(value: string): string {
 
 function getResultDetails(
   result: EvalResult,
-  t: (key: string, values?: Record<string, unknown>) => string
+  t: (key: string, values?: Record<string, unknown>) => string,
 ): string {
   if (result.error) {
     return `${t("resultErrorLabel")}: ${result.error}`;
@@ -515,7 +515,7 @@ export default function EvalsTab() {
 
   const totalCases = suites.reduce(
     (sum, suite) => sum + (suite.cases?.length || suite.caseCount || 0),
-    0
+    0,
   );
 
   const uniqueModels = [
@@ -523,7 +523,7 @@ export default function EvalsTab() {
       suites
         .flatMap((suite) => suite.cases || [])
         .map((evalCase) => evalCase.model)
-        .filter((model): model is string => typeof model === "string" && model.trim().length > 0)
+        .filter((model): model is string => typeof model === "string" && model.trim().length > 0),
     ),
   ];
 
@@ -615,7 +615,7 @@ export default function EvalsTab() {
         t("notifyEvalRunFailedWithReason", {
           reason: getErrorMessage(error) || t("suiteExportFailed"),
         }),
-        t("suiteExportFailed")
+        t("suiteExportFailed"),
       );
     }
   }
@@ -647,7 +647,7 @@ export default function EvalsTab() {
         t("notifyEvalRunFailedWithReason", {
           reason: getErrorMessage(error) || t("suiteImportInvalid"),
         }),
-        t("suiteImportFailed")
+        t("suiteImportFailed"),
       );
     }
   }
@@ -720,12 +720,12 @@ export default function EvalsTab() {
           method: isEditing ? "PUT" : "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
-        }
+        },
       );
       const result = await response.json();
       if (!response.ok) {
         throw new Error(
-          result?.error?.message || result?.error || result?.message || t("suiteBuilderSaveFailed")
+          result?.error?.message || result?.error || result?.message || t("suiteBuilderSaveFailed"),
         );
       }
 
@@ -735,14 +735,14 @@ export default function EvalsTab() {
       setSuiteDraft(createEmptySuiteDraft());
       notify.success(
         isEditing ? t("suiteBuilderUpdated") : t("suiteBuilderCreated"),
-        t("notifyEvalTitle", { name: suiteName })
+        t("notifyEvalTitle", { name: suiteName }),
       );
     } catch (error: any) {
       notify.error(
         t("notifyEvalRunFailedWithReason", {
           reason: error?.message || t("notAvailableSymbol"),
         }),
-        t("suiteBuilderSaveFailed")
+        t("suiteBuilderSaveFailed"),
       );
     } finally {
       setSavingSuite(false);
@@ -752,7 +752,7 @@ export default function EvalsTab() {
   async function handleDeleteSuite(suite: EvalSuite) {
     if (suite.source !== "custom") return;
     const confirmDelete = window.confirm(
-      t("suiteBuilderDeleteConfirm", { name: suite.name || suite.id })
+      t("suiteBuilderDeleteConfirm", { name: suite.name || suite.id }),
     );
     if (!confirmDelete) return;
 
@@ -767,7 +767,7 @@ export default function EvalsTab() {
           result?.error?.message ||
             result?.error ||
             result?.message ||
-            t("suiteBuilderDeleteFailed")
+            t("suiteBuilderDeleteFailed"),
         );
       }
       await refreshDashboard();
@@ -776,14 +776,14 @@ export default function EvalsTab() {
       }
       notify.success(
         t("suiteBuilderDeleted"),
-        t("notifyEvalTitle", { name: suite.name || suite.id })
+        t("notifyEvalTitle", { name: suite.name || suite.id }),
       );
     } catch (error: any) {
       notify.error(
         t("notifyEvalRunFailedWithReason", {
           reason: error?.message || t("notAvailableSymbol"),
         }),
-        t("suiteBuilderDeleteFailed")
+        t("suiteBuilderDeleteFailed"),
       );
     } finally {
       setDeletingSuiteId(null);
@@ -792,7 +792,7 @@ export default function EvalsTab() {
 
   async function handleRunAllSuites() {
     const suitesToRun = filteredSuites.filter(
-      (suite) => (suite.cases?.length || suite.caseCount || 0) > 0
+      (suite) => (suite.cases?.length || suite.caseCount || 0) > 0,
     );
 
     if (suitesToRun.length === 0) {
@@ -848,7 +848,7 @@ export default function EvalsTab() {
               payload?.error?.message ||
                 payload?.error ||
                 payload?.message ||
-                t("notifyEvalRunFailed")
+                t("notifyEvalRunFailed"),
             );
           }
 
@@ -891,7 +891,7 @@ export default function EvalsTab() {
       if (failedSuites > 0) {
         notify.warning(
           t("runAllCompletedWithFailures", { completed, failedSuites }),
-          t("notifyEvalTitle", { name: t("runAllSuites") })
+          t("notifyEvalTitle", { name: t("runAllSuites") }),
         );
       } else {
         notify.success(
@@ -900,7 +900,7 @@ export default function EvalsTab() {
             passed: totalPassed,
             failed: totalFailed,
           }),
-          t("notifyEvalTitle", { name: t("runAllSuites") })
+          t("notifyEvalTitle", { name: t("runAllSuites") }),
         );
       }
     } finally {
@@ -941,7 +941,7 @@ export default function EvalsTab() {
       const payload = await response.json();
       if (!response.ok) {
         throw new Error(
-          payload?.error?.message || payload?.error || payload?.message || t("notifyEvalRunFailed")
+          payload?.error?.message || payload?.error || payload?.message || t("notifyEvalRunFailed"),
         );
       }
 
@@ -973,7 +973,7 @@ export default function EvalsTab() {
           compareTargetKey
             ? t("compareCompletedWithScore", { score })
             : t("runCompletedWithScore", { score }),
-          t("notifyEvalTitle", { name: suite.name || suite.id })
+          t("notifyEvalTitle", { name: suite.name || suite.id }),
         );
       }
     } catch (error: any) {
@@ -981,7 +981,7 @@ export default function EvalsTab() {
         t("notifyEvalRunFailedWithReason", {
           reason: error?.message || t("notAvailableSymbol"),
         }),
-        t("notifyEvalTitle", { name: suite.name || suite.id })
+        t("notifyEvalTitle", { name: suite.name || suite.id }),
       );
     } finally {
       setRunning(null);
@@ -1070,7 +1070,7 @@ export default function EvalsTab() {
             value={compareTargetKey || NO_COMPARE_TARGET}
             onChange={(event) =>
               setCompareTargetKey(
-                event.target.value === NO_COMPARE_TARGET ? "" : event.target.value
+                event.target.value === NO_COMPARE_TARGET ? "" : event.target.value,
               )
             }
             options={[
@@ -1403,8 +1403,9 @@ export default function EvalsTab() {
                 (suite.cases || [])
                   .map((evalCase) => evalCase.model)
                   .filter(
-                    (model): model is string => typeof model === "string" && model.trim().length > 0
-                  )
+                    (model): model is string =>
+                      typeof model === "string" && model.trim().length > 0,
+                  ),
               ),
             ];
             const liveResult = suiteRuns[suite.id] || null;
@@ -1631,7 +1632,7 @@ export default function EvalsTab() {
                                   const isResultExpanded = expandedResults.has(resultKey);
                                   const actualOutput = getResultActualValue(
                                     result,
-                                    run.outputs?.[result.caseId]
+                                    run.outputs?.[result.caseId],
                                   );
                                   const expectedOutput = getResultExpectedValue(result);
 
@@ -2009,7 +2010,7 @@ function SuiteBuilderModal({
 
         {draft.cases.map((draftCase, index) => {
           const selectedStrategy = editableStrategies.find(
-            (strategy) => strategy.name === draftCase.strategy
+            (strategy) => strategy.name === draftCase.strategy,
           );
 
           return (

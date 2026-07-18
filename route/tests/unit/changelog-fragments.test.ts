@@ -10,8 +10,9 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-const { SECTIONS, validateFragmentText, collectFragments, insertBullets, aggregate } =
-  await import("../../scripts/release/aggregate-changelog.mjs");
+const { SECTIONS, validateFragmentText, collectFragments, insertBullets, aggregate } = await import(
+  "../../scripts/release/aggregate-changelog.mjs"
+);
 const { findInvalidFragments } = await import("../../scripts/check/check-changelog-integrity.mjs");
 
 const CHANGELOG_FIXTURE = `# Changelog
@@ -73,7 +74,7 @@ test("collectFragments reads sections sorted and flags invalid files", () => {
   const c = collectFragments(root);
   assert.deepEqual(
     c.fixes.map((f) => f.text),
-    ["- fix A (#6496)", "- fix B (#6700)"]
+    ["- fix A (#6496)", "- fix B (#6700)"],
   );
   assert.equal(c.features.length, 1);
   assert.equal(c.invalid.length, 1);
@@ -100,7 +101,11 @@ test("insertBullets appends at the END of each living section", () => {
   assert.ok(maintIdx > maintHeadIdx && maintIdx < lines.indexOf("## [3.8.46] - 2026-07-04"));
   // Only the FIRST (living) occurrence of a heading is touched — the shipped 3.8.46
   // section is byte-identical.
-  assert.ok(out.includes("## [3.8.46] - 2026-07-04\n\n### ✨ New Features\n\n- **old feature**: shipped (#0)"));
+  assert.ok(
+    out.includes(
+      "## [3.8.46] - 2026-07-04\n\n### ✨ New Features\n\n- **old feature**: shipped (#0)",
+    ),
+  );
   // No existing bullet lost.
   for (const existing of ["#1 — thanks @a", "existing fix (#2", "existing maintenance (#3"]) {
     assert.ok(out.includes(existing));
@@ -108,10 +113,13 @@ test("insertBullets appends at the END of each living section", () => {
 });
 
 test("insertBullets throws when a needed heading is missing", () => {
-  const noMaint = CHANGELOG_FIXTURE.replace("### 📝 Maintenance\n\n- chore: existing maintenance (#3)\n", "");
+  const noMaint = CHANGELOG_FIXTURE.replace(
+    "### 📝 Maintenance\n\n- chore: existing maintenance (#3)\n",
+    "",
+  );
   assert.throws(
     () => insertBullets(noMaint, { maintenance: [{ text: "- x" }] }),
-    /📝 Maintenance.*not found/s
+    /📝 Maintenance.*not found/s,
   );
 });
 

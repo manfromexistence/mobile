@@ -26,7 +26,7 @@ describe("summarizeConnectionCooldown", () => {
         { provider: "openai", rateLimitedUntil: null },
         { provider: "openai", rateLimitedUntil: new Date(NOW - 5000).toISOString() }, // past → expired
       ],
-      NOW
+      NOW,
     );
     assert.deepEqual(out, {});
   });
@@ -38,7 +38,7 @@ describe("summarizeConnectionCooldown", () => {
         { provider: "anthropic", rateLimitedUntil: new Date(NOW + 60_000).toISOString() },
         { provider: "anthropic", rateLimitedUntil: null }, // available
       ],
-      NOW
+      NOW,
     );
     assert.ok(out.anthropic);
     assert.equal(out.anthropic.coolingDown, 2);
@@ -46,14 +46,14 @@ describe("summarizeConnectionCooldown", () => {
     assert.equal(
       out.anthropic.soonestRetryAfterMs,
       28_000,
-      "soonest = the connection that recovers first"
+      "soonest = the connection that recovers first",
     );
   });
 
   it("parses numeric-epoch-string rateLimitedUntil (SQLite TEXT-affinity, #3954)", () => {
     const out = summarizeConnectionCooldown(
       [{ provider: "glm", rateLimitedUntil: String(NOW + 15_000) }],
-      NOW
+      NOW,
     );
     assert.ok(out.glm);
     assert.equal(out.glm.coolingDown, 1);
@@ -63,7 +63,7 @@ describe("summarizeConnectionCooldown", () => {
   it("accepts a raw epoch number too", () => {
     const out = summarizeConnectionCooldown(
       [{ provider: "glm", rateLimitedUntil: NOW + 9000 }],
-      NOW
+      NOW,
     );
     assert.equal(out.glm?.soonestRetryAfterMs, 9000);
   });
@@ -75,7 +75,7 @@ describe("summarizeConnectionCooldown", () => {
         { provider: "anthropic", rateLimitedUntil: new Date(NOW + 40_000).toISOString() },
         { provider: "openai", rateLimitedUntil: null },
       ],
-      NOW
+      NOW,
     );
     assert.equal(out.openai.coolingDown, 1);
     assert.equal(out.openai.total, 2);
@@ -89,7 +89,7 @@ describe("summarizeConnectionCooldown", () => {
         { rateLimitedUntil: new Date(NOW + 5000).toISOString() }, // no provider
         { provider: "x", rateLimitedUntil: new Date(NOW + 1).toISOString() },
       ],
-      NOW
+      NOW,
     );
     assert.equal(Object.keys(out).length, 1);
     assert.ok(out.x.soonestRetryAfterMs >= 0);

@@ -19,7 +19,7 @@ export async function fetchWithProxyFallback(
   url: string,
   init: RequestInit,
   presets: typeof SAFE_OUTBOUND_FETCH_PRESETS.validationRead,
-  isLocal: boolean
+  isLocal: boolean,
 ): Promise<Response> {
   try {
     return await safeOutboundFetch(url, {

@@ -1,11 +1,11 @@
-import { type DiffLineAnnotation, type FileContents } from '@pierre/diffs';
-import { preloadMultiFileDiff } from '@pierre/diffs/ssr';
+import { type DiffLineAnnotation, type FileContents } from "@pierre/diffs";
+import { preloadMultiFileDiff } from "@pierre/diffs/ssr";
 
-import type { AnnotationMetadata } from './ssr_types';
-import { SSRPage } from './SSRPage';
+import type { AnnotationMetadata } from "./ssr_types";
+import { SSRPage } from "./SSRPage";
 
 const OLD_FILE: FileContents = {
-  name: 'main.zig',
+  name: "main.zig",
   contents: `const std = @import("std");
 const allocator = std.heap.page_allocator;
 const ArrayList = std.ArrayList;
@@ -21,7 +21,7 @@ pub fn main() !void {
 };
 
 const NEW_FILE: FileContents = {
-  name: 'main.zig',
+  name: "main.zig",
   contents: `const std = @import("std");
 const GeneralPurposeAllocator = std.heap.GeneralPurposeAllocator;
 const ArrayList = std.ArrayList;
@@ -44,10 +44,10 @@ pub fn main() !void {
 // Define annotation positions once in the server component
 const annotations: DiffLineAnnotation<AnnotationMetadata>[] = [
   {
-    side: 'additions',
+    side: "additions",
     lineNumber: 8,
     metadata: {
-      message: 'There was a sneaky lil error on this line in CI.',
+      message: "There was a sneaky lil error on this line in CI.",
     },
   },
 ];
@@ -57,10 +57,10 @@ export default async function Ssr() {
     oldFile: OLD_FILE,
     newFile: NEW_FILE,
     options: {
-      theme: 'pierre-dark',
-      diffStyle: 'split',
-      diffIndicators: 'bars',
-      overflow: 'scroll',
+      theme: "pierre-dark",
+      diffStyle: "split",
+      diffIndicators: "bars",
+      overflow: "scroll",
     },
     annotations,
   });

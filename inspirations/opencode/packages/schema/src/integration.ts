@@ -1,25 +1,25 @@
-export * as Integration from "./integration"
+export * as Integration from "./integration";
 
-import { Schema } from "effect"
-import { optional } from "./schema"
-import { define, inventory } from "./event"
-import { Connection } from "./connection"
-import { ascending } from "./identifier"
-import { statics } from "./schema"
-import { IntegrationID, IntegrationMethodID } from "./integration-id"
+import { Schema } from "effect";
+import { optional } from "./schema";
+import { define, inventory } from "./event";
+import { Connection } from "./connection";
+import { ascending } from "./identifier";
+import { statics } from "./schema";
+import { IntegrationID, IntegrationMethodID } from "./integration-id";
 
-export const ID = IntegrationID
-export type ID = typeof ID.Type
+export const ID = IntegrationID;
+export type ID = typeof ID.Type;
 
-export const MethodID = IntegrationMethodID
-export type MethodID = typeof MethodID.Type
+export const MethodID = IntegrationMethodID;
+export type MethodID = typeof MethodID.Type;
 
 export interface When extends Schema.Schema.Type<typeof When> {}
 export const When = Schema.Struct({
   key: Schema.String,
   op: Schema.Literals(["eq", "neq"]),
   value: Schema.String,
-}).annotate({ identifier: "Integration.When" })
+}).annotate({ identifier: "Integration.When" });
 
 export interface TextPrompt extends Schema.Schema.Type<typeof TextPrompt> {}
 export const TextPrompt = Schema.Struct({
@@ -28,7 +28,7 @@ export const TextPrompt = Schema.Struct({
   message: Schema.String,
   placeholder: optional(Schema.String),
   when: optional(When),
-}).annotate({ identifier: "Integration.TextPrompt" })
+}).annotate({ identifier: "Integration.TextPrompt" });
 
 export interface SelectPrompt extends Schema.Schema.Type<typeof SelectPrompt> {}
 export const SelectPrompt = Schema.Struct({
@@ -43,10 +43,10 @@ export const SelectPrompt = Schema.Struct({
     }),
   ),
   when: optional(When),
-}).annotate({ identifier: "Integration.SelectPrompt" })
+}).annotate({ identifier: "Integration.SelectPrompt" });
 
-export const Prompt = Schema.Union([TextPrompt, SelectPrompt]).pipe(Schema.toTaggedUnion("type"))
-export type Prompt = typeof Prompt.Type
+export const Prompt = Schema.Union([TextPrompt, SelectPrompt]).pipe(Schema.toTaggedUnion("type"));
+export type Prompt = typeof Prompt.Type;
 
 export interface OAuthMethod extends Schema.Schema.Type<typeof OAuthMethod> {}
 export const OAuthMethod = Schema.Struct({
@@ -54,43 +54,49 @@ export const OAuthMethod = Schema.Struct({
   type: Schema.Literal("oauth"),
   label: Schema.String,
   prompts: optional(Schema.Array(Prompt)),
-}).annotate({ identifier: "Integration.OAuthMethod" })
+}).annotate({ identifier: "Integration.OAuthMethod" });
 
 export interface KeyMethod extends Schema.Schema.Type<typeof KeyMethod> {}
 export const KeyMethod = Schema.Struct({
   type: Schema.Literal("key"),
   label: optional(Schema.String),
-}).annotate({ identifier: "Integration.KeyMethod" })
+}).annotate({ identifier: "Integration.KeyMethod" });
 
 export interface EnvMethod extends Schema.Schema.Type<typeof EnvMethod> {}
 export const EnvMethod = Schema.Struct({
   type: Schema.Literal("env"),
   names: Schema.Array(Schema.String),
-}).annotate({ identifier: "Integration.EnvMethod" })
+}).annotate({ identifier: "Integration.EnvMethod" });
 
 export const Method = Schema.Union([OAuthMethod, KeyMethod, EnvMethod])
   .pipe(Schema.toTaggedUnion("type"))
-  .annotate({ identifier: "Integration.Method" })
-export type Method = typeof Method.Type
+  .annotate({ identifier: "Integration.Method" });
+export type Method = typeof Method.Type;
 
-export const Inputs = Schema.Record(Schema.String, Schema.String).annotate({ identifier: "Integration.Inputs" })
-export type Inputs = typeof Inputs.Type
+export const Inputs = Schema.Record(Schema.String, Schema.String).annotate({
+  identifier: "Integration.Inputs",
+});
+export type Inputs = typeof Inputs.Type;
 
 const Updated = define({
   type: "integration.updated",
   schema: {},
-})
+});
 const ConnectionUpdated = define({
   type: "integration.connection.updated",
   schema: { integrationID: ID },
-})
-export const Event = { Updated, ConnectionUpdated, Definitions: inventory(Updated, ConnectionUpdated) }
+});
+export const Event = {
+  Updated,
+  ConnectionUpdated,
+  Definitions: inventory(Updated, ConnectionUpdated),
+};
 
 export interface Ref extends Schema.Schema.Type<typeof Ref> {}
 export const Ref = Schema.Struct({
   id: ID,
   name: Schema.String,
-}).annotate({ identifier: "Integration.Ref" })
+}).annotate({ identifier: "Integration.Ref" });
 
 export class Info extends Schema.Class<Info>("Integration.Info")({
   id: ID,
@@ -102,13 +108,13 @@ export class Info extends Schema.Class<Info>("Integration.Info")({
 export const AttemptID = Schema.String.pipe(
   Schema.brand("Integration.AttemptID"),
   statics((schema) => ({ create: () => schema.make("con_" + ascending()) })),
-)
-export type AttemptID = typeof AttemptID.Type
+);
+export type AttemptID = typeof AttemptID.Type;
 
 const AttemptTime = Schema.Struct({
   created: Schema.Number,
   expires: Schema.Number,
-})
+});
 
 export class Attempt extends Schema.Class<Attempt>("Integration.Attempt")({
   attemptID: AttemptID,
@@ -125,5 +131,5 @@ export const AttemptStatus = Schema.Union([
   Schema.Struct({ status: Schema.Literal("expired"), time: AttemptTime }),
 ])
   .pipe(Schema.toTaggedUnion("status"))
-  .annotate({ identifier: "Integration.AttemptStatus" })
-export type AttemptStatus = typeof AttemptStatus.Type
+  .annotate({ identifier: "Integration.AttemptStatus" });
+export type AttemptStatus = typeof AttemptStatus.Type;

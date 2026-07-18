@@ -262,9 +262,7 @@ test.describe("Memory Qdrant routes — Engine tab integration", () => {
     // Qdrant section heading should be visible.
     // getByText(/qdrant/i) resolves to multiple elements (label, description, title, etc.),
     // causing a strict-mode violation. Use the unambiguous card heading instead.
-    await expect(
-      page.getByRole("heading", { name: /qdrant/i }),
-    ).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByRole("heading", { name: /qdrant/i })).toBeVisible({ timeout: 20_000 });
 
     // Qdrant enabled switch should be visible
     const qdrantSwitch = page.getByTestId("qdrant-enabled-switch");

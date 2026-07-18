@@ -20,7 +20,11 @@ test("#3571 non-stream: chat.completion → text_completion with choices[].text"
     created: 1,
     model: "ds/deepseek-v4-flash",
     choices: [
-      { index: 0, message: { role: "assistant", content: "public class Test {}" }, finish_reason: "stop" },
+      {
+        index: 0,
+        message: { role: "assistant", content: "public class Test {}" },
+        finish_reason: "stop",
+      },
     ],
     usage: { prompt_tokens: 3, completion_tokens: 5, total_tokens: 8 },
   });
@@ -51,7 +55,7 @@ test("#3571 transformSseData: passes [DONE] and non-JSON through, rewrites chat 
   assert.equal(transformSseData("  "), "");
   assert.equal(transformSseData("not json"), "not json");
   const rewritten = JSON.parse(
-    transformSseData('{"object":"chat.completion.chunk","choices":[{"delta":{"content":"X"}}]}')
+    transformSseData('{"object":"chat.completion.chunk","choices":[{"delta":{"content":"X"}}]}'),
   );
   assert.equal(rewritten.object, "text_completion");
   assert.equal(rewritten.choices[0].text, "X");

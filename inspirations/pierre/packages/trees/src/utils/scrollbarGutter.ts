@@ -2,7 +2,7 @@ import {
   FILE_TREE_SCROLLBAR_GUTTER_MEASURED_PROPERTY,
   FILE_TREE_SCROLLBAR_GUTTER_STYLE_ATTRIBUTE,
   FILE_TREE_SCROLLBAR_MEASURE_ATTRIBUTE,
-} from '../constants';
+} from "../constants";
 
 const measuredGutterCache = new WeakMap<ShadowRoot, number>();
 
@@ -15,11 +15,11 @@ function measureScrollbarGutter(shadowRoot: ShadowRoot): number | undefined {
     return cachedScrollbarGutter;
   }
 
-  const wrapper = document.createElement('div');
-  wrapper.setAttribute(FILE_TREE_SCROLLBAR_MEASURE_ATTRIBUTE, 'true');
-  const child = document.createElement('div');
-  child.style.position = 'relative';
-  child.style.height = '200%';
+  const wrapper = document.createElement("div");
+  wrapper.setAttribute(FILE_TREE_SCROLLBAR_MEASURE_ATTRIBUTE, "true");
+  const child = document.createElement("div");
+  child.style.position = "relative";
+  child.style.height = "200%";
   wrapper.appendChild(child);
   shadowRoot.appendChild(wrapper);
 
@@ -35,10 +35,7 @@ function measureScrollbarGutter(shadowRoot: ShadowRoot): number | undefined {
 // attributes, so mutating `host.style` before hydration produces a mismatch;
 // shadow-root contents are outside React's hydration diff, so updating the
 // variable there is safe to do synchronously from connectedCallback.
-export function ensureMeasuredScrollbarGutter(
-  host: HTMLElement,
-  shadowRoot: ShadowRoot
-): void {
+export function ensureMeasuredScrollbarGutter(host: HTMLElement, shadowRoot: ShadowRoot): void {
   if (!host.isConnected) {
     return;
   }
@@ -48,15 +45,10 @@ export function ensureMeasuredScrollbarGutter(
     return;
   }
 
-  const existing = shadowRoot.querySelector(
-    `style[${FILE_TREE_SCROLLBAR_GUTTER_STYLE_ATTRIBUTE}]`
-  );
-  const styleEl =
-    existing instanceof HTMLStyleElement
-      ? existing
-      : document.createElement('style');
+  const existing = shadowRoot.querySelector(`style[${FILE_TREE_SCROLLBAR_GUTTER_STYLE_ATTRIBUTE}]`);
+  const styleEl = existing instanceof HTMLStyleElement ? existing : document.createElement("style");
   if (!(existing instanceof HTMLStyleElement)) {
-    styleEl.setAttribute(FILE_TREE_SCROLLBAR_GUTTER_STYLE_ATTRIBUTE, '');
+    styleEl.setAttribute(FILE_TREE_SCROLLBAR_GUTTER_STYLE_ATTRIBUTE, "");
     shadowRoot.appendChild(styleEl);
   }
   styleEl.textContent = `:host { ${FILE_TREE_SCROLLBAR_GUTTER_MEASURED_PROPERTY}: ${measuredScrollbarGutter}px; }`;

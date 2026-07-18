@@ -1,4 +1,4 @@
-export const ACCEPTED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/gif", "image/webp"]
+export const ACCEPTED_IMAGE_TYPES = ["image/png", "image/jpeg", "image/gif", "image/webp"];
 
 export const ACCEPTED_FILE_TYPES = [
   ...ACCEPTED_IMAGE_TYPES,
@@ -53,7 +53,7 @@ export const ACCEPTED_FILE_TYPES = [
   ".yaml",
   ".yml",
   ".zsh",
-]
+];
 
 const MIME_EXT = new Map([
   ["image/png", "png"],
@@ -68,22 +68,22 @@ const MIME_EXT = new Map([
   ["application/x-yaml", "yaml"],
   ["application/xml", "xml"],
   ["application/yaml", "yaml"],
-])
+]);
 
-const TEXT_EXT = ["txt", "text", "md", "markdown", "log", "csv"]
+const TEXT_EXT = ["txt", "text", "md", "markdown", "log", "csv"];
 
 export const ACCEPTED_FILE_EXTENSIONS = Array.from(
   new Set(
     ACCEPTED_FILE_TYPES.flatMap((item) => {
-      if (item.startsWith(".")) return [item.slice(1)]
-      if (item === "text/*") return TEXT_EXT
-      const out = MIME_EXT.get(item)
-      return out ? [out] : []
+      if (item.startsWith(".")) return [item.slice(1)];
+      if (item === "text/*") return TEXT_EXT;
+      const out = MIME_EXT.get(item);
+      return out ? [out] : [];
     }),
   ),
-).sort()
+).sort();
 
 export function filePickerFilters(ext?: string[]) {
-  if (!ext || ext.length === 0) return undefined
-  return [{ name: "Files", extensions: ext }]
+  if (!ext || ext.length === 0) return undefined;
+  return [{ name: "Files", extensions: ext }];
 }

@@ -25,4 +25,4 @@ export const dict = {
     "CLI installert til {{path}}\n\nStart terminalen på nytt for å bruke 'opencode'-kommandoen.",
   "desktop.cli.failed.title": "Installasjon mislyktes",
   "desktop.cli.failed.message": "Kunne ikke installere CLI: {{error}}",
-}
+};

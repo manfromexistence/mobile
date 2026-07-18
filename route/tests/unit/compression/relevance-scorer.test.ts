@@ -30,7 +30,7 @@ test("boilerplate sentences are penalized relative to content sentences", () => 
   assert.equal(scores.length, 2);
   assert.ok(
     scores[1] > scores[0],
-    `content sentence (${scores[1]}) should score higher than boilerplate (${scores[0]})`
+    `content sentence (${scores[1]}) should score higher than boilerplate (${scores[0]})`,
   );
 });
 
@@ -47,7 +47,10 @@ test("empty query returns array of zeros with same length as sentences", () => {
   const sentences = ["First sentence.", "Second sentence.", "Third sentence."];
   const scores = scoreSentences(sentences, "", DEFAULT_CFG);
   assert.equal(scores.length, 3);
-  assert.ok(scores.every((s) => s === 0), `all scores should be 0, got: ${scores}`);
+  assert.ok(
+    scores.every((s) => s === 0),
+    `all scores should be 0, got: ${scores}`,
+  );
 });
 
 test("empty sentences array returns empty array", () => {

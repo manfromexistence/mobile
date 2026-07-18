@@ -26,7 +26,7 @@ export async function GET(request?: Request) {
   return getSpecialtyModelsResponse(
     request,
     "/v1/embeddings",
-    (model) => model.type === "embedding"
+    (model) => model.type === "embedding",
   );
 }
 
@@ -34,7 +34,7 @@ type ValidatedEmbeddingBody = Record<string, unknown> & { model: string };
 
 export async function handleValidatedEmbeddingRequestBody(
   body: ValidatedEmbeddingBody,
-  options: EmbeddingHandlerOptions = {}
+  options: EmbeddingHandlerOptions = {},
 ) {
   return createEmbeddingResponse(body, options);
 }

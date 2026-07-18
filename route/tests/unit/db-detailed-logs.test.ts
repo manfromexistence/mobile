@@ -17,8 +17,9 @@ const core = await import("../../src/lib/db/core.ts");
 const settingsDb = await import("../../src/lib/db/settings.ts");
 const apiKeysDb = await import("../../src/lib/db/apiKeys.ts");
 const detailedLogsDb = await import("../../src/lib/db/detailedLogs.ts");
-const { createStructuredSSECollector } =
-  await import("../../open-sse/utils/streamPayloadCollector.ts");
+const { createStructuredSSECollector } = await import(
+  "../../open-sse/utils/streamPayloadCollector.ts"
+);
 
 async function resetStorage() {
   core.resetDbInstance();
@@ -83,7 +84,7 @@ test("legacy detailed log helpers tolerate databases without request_detail_logs
       call_log_id: "call-missing-table",
       provider: "openai",
       model: "gpt-4.1",
-    })
+    }),
   );
   assert.deepEqual(detailedLogsDb.getRequestDetailLogs(), []);
   assert.equal(detailedLogsDb.getRequestDetailLogCount(), 0);
@@ -166,11 +167,11 @@ test("latest log lookup by call_log_id and paginated listing use newest-first or
   assert.equal(detailedLogsDb.getRequestDetailLogByCallLogId("call-2").id, "newer");
   assert.deepEqual(
     firstPage.map((row) => row.id),
-    ["latest", "newer"]
+    ["latest", "newer"],
   );
   assert.deepEqual(
     secondPage.map((row) => row.id),
-    ["newer"]
+    ["newer"],
   );
   assert.equal(detailedLogsDb.getRequestDetailLogCount(), 3);
 });

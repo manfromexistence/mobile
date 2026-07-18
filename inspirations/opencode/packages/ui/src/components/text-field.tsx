@@ -1,9 +1,9 @@
-import { TextField as Kobalte } from "@kobalte/core/text-field"
-import { createSignal, Show, splitProps } from "solid-js"
-import type { ComponentProps } from "solid-js"
-import { useI18n } from "../context/i18n"
-import { IconButton } from "./icon-button"
-import { Tooltip } from "./tooltip"
+import { TextField as Kobalte } from "@kobalte/core/text-field";
+import { createSignal, Show, splitProps } from "solid-js";
+import type { ComponentProps } from "solid-js";
+import { useI18n } from "../context/i18n";
+import { IconButton } from "./icon-button";
+import { Tooltip } from "./tooltip";
 
 export interface TextFieldProps
   extends ComponentProps<typeof Kobalte.Input>,
@@ -21,18 +21,18 @@ export interface TextFieldProps
         | "readOnly"
       >
     > {
-  label?: string
-  hideLabel?: boolean
-  description?: string
-  error?: string
-  variant?: "normal" | "ghost"
-  copyable?: boolean
-  copyKind?: "clipboard" | "link"
-  multiline?: boolean
+  label?: string;
+  hideLabel?: boolean;
+  description?: string;
+  error?: string;
+  variant?: "normal" | "ghost";
+  copyable?: boolean;
+  copyKind?: "clipboard" | "link";
+  multiline?: boolean;
 }
 
 export function TextField(props: TextFieldProps) {
-  const i18n = useI18n()
+  const i18n = useI18n();
   const [local, others] = splitProps(props, [
     "name",
     "defaultValue",
@@ -52,30 +52,30 @@ export function TextField(props: TextFieldProps) {
     "copyable",
     "copyKind",
     "multiline",
-  ])
-  const [copied, setCopied] = createSignal(false)
+  ]);
+  const [copied, setCopied] = createSignal(false);
 
   const label = () => {
-    if (copied()) return i18n.t("ui.textField.copied")
-    if (local.copyKind === "link") return i18n.t("ui.textField.copyLink")
-    return i18n.t("ui.textField.copyToClipboard")
-  }
+    if (copied()) return i18n.t("ui.textField.copied");
+    if (local.copyKind === "link") return i18n.t("ui.textField.copyLink");
+    return i18n.t("ui.textField.copyToClipboard");
+  };
 
   const icon = () => {
-    if (copied()) return "check"
-    if (local.copyKind === "link") return "link"
-    return "copy"
-  }
+    if (copied()) return "check";
+    if (local.copyKind === "link") return "link";
+    return "copy";
+  };
 
   async function handleCopy() {
-    const value = local.value ?? local.defaultValue ?? ""
-    await navigator.clipboard.writeText(value)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    const value = local.value ?? local.defaultValue ?? "";
+    await navigator.clipboard.writeText(value);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   }
 
   function handleClick() {
-    if (local.copyable) void handleCopy()
+    if (local.copyable) void handleCopy();
   }
 
   return (
@@ -106,7 +106,13 @@ export function TextField(props: TextFieldProps) {
           <Kobalte.TextArea {...others} autoResize data-slot="input-input" class={local.class} />
         </Show>
         <Show when={local.copyable}>
-          <Tooltip value={label()} placement="top" gutter={4} forceOpen={copied()} skipDelayDuration={0}>
+          <Tooltip
+            value={label()}
+            placement="top"
+            gutter={4}
+            forceOpen={copied()}
+            skipDelayDuration={0}
+          >
             <IconButton
               type="button"
               icon={icon()}
@@ -124,5 +130,5 @@ export function TextField(props: TextFieldProps) {
       </Show>
       <Kobalte.ErrorMessage data-slot="input-error">{local.error}</Kobalte.ErrorMessage>
     </Kobalte>
-  )
+  );
 }

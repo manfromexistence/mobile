@@ -3,7 +3,12 @@
   "metadata": {
     "name": "anthropic-messages/accepts-malformed-assistant-tool-order-with-default-patch",
     "recordedAt": "2026-05-05T20:09:16.245Z",
-    "tags": ["prefix:anthropic-messages", "provider:anthropic", "protocol:anthropic-messages", "tool"]
+    "tags": [
+      "prefix:anthropic-messages",
+      "provider:anthropic",
+      "protocol:anthropic-messages",
+      "tool"
+    ]
   },
   "interactions": [
     {

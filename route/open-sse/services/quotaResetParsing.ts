@@ -18,7 +18,7 @@ import { getProviderCategory } from "../config/providerRegistry.ts";
  */
 export function shouldPreserveQuotaSignals(
   provider: string | null | undefined,
-  errorText?: string | null
+  errorText?: string | null,
 ): boolean {
   if (!provider) return true;
   if (getProviderCategory(provider) === "oauth") return true;

@@ -39,7 +39,7 @@ export async function cleanupQuotaSnapshots(): Promise<CleanupResult> {
     result.deleted = runResult.changes;
 
     console.log(
-      `[Cleanup] Deleted ${result.deleted} quota_snapshots older than ${retentionDays} days`
+      `[Cleanup] Deleted ${result.deleted} quota_snapshots older than ${retentionDays} days`,
     );
   } catch (err: unknown) {
     console.error("[Cleanup] Error cleaning quota_snapshots:", err);
@@ -104,7 +104,7 @@ export async function cleanupUsageHistory(): Promise<CleanupResult> {
   const rollupResult = await rollupUsageHistoryBeforeDate(cutoffDateStr);
   if (rollupResult.errors > 0) {
     console.error(
-      "[Cleanup] Aborting usage_history deletion because the pre-delete rollup failed."
+      "[Cleanup] Aborting usage_history deletion because the pre-delete rollup failed.",
     );
     result.errors += rollupResult.errors;
     return result;
@@ -116,7 +116,7 @@ export async function cleanupUsageHistory(): Promise<CleanupResult> {
     result.deleted = runResult.changes;
 
     console.log(
-      `[Cleanup] Deleted ${result.deleted} usage_history older than ${retentionDays} days`
+      `[Cleanup] Deleted ${result.deleted} usage_history older than ${retentionDays} days`,
     );
   } catch (err: unknown) {
     console.error("[Cleanup] Error cleaning usage_history:", err);
@@ -146,7 +146,7 @@ export async function cleanupCompressionAnalytics(): Promise<CleanupResult> {
     result.deleted = runResult.changes;
 
     console.log(
-      `[Cleanup] Deleted ${result.deleted} compression_analytics older than ${retentionDays} days`
+      `[Cleanup] Deleted ${result.deleted} compression_analytics older than ${retentionDays} days`,
     );
   } catch (err: unknown) {
     console.error("[Cleanup] Error cleaning compression_analytics:", err);
@@ -176,7 +176,7 @@ export async function cleanupMcpAudit(): Promise<CleanupResult> {
     result.deleted = runResult.changes;
 
     console.log(
-      `[Cleanup] Deleted ${result.deleted} mcp_audit_log older than ${retentionDays} days`
+      `[Cleanup] Deleted ${result.deleted} mcp_audit_log older than ${retentionDays} days`,
     );
   } catch (err: unknown) {
     console.error("[Cleanup] Error cleaning mcp_audit_log:", err);
@@ -234,7 +234,7 @@ export async function cleanupMemoryEntries(): Promise<CleanupResult> {
     result.deleted = runResult.changes;
 
     console.log(
-      `[Cleanup] Deleted ${result.deleted} memory_entries older than ${retentionDays} days`
+      `[Cleanup] Deleted ${result.deleted} memory_entries older than ${retentionDays} days`,
     );
   } catch (err: unknown) {
     console.error("[Cleanup] Error cleaning memory_entries:", err);
@@ -462,7 +462,7 @@ export async function resetUsageHistory(period: string): Promise<ResetUsageHisto
 
     console.log(
       `[Cleanup] Reset usage data (period=${period}): ${result.deletedUsageHistory} usage_history, ` +
-        `${result.deletedDailySummary} daily_usage_summary, ${result.deletedHourlySummary} hourly_usage_summary`
+        `${result.deletedDailySummary} daily_usage_summary, ${result.deletedHourlySummary} hourly_usage_summary`,
     );
   } catch (err: unknown) {
     console.error("[Cleanup] Error resetting usage history:", err);
@@ -492,9 +492,7 @@ export async function cleanupProxyLogs(): Promise<CleanupResult> {
     const runResult = stmt.run(cutoffISO);
     result.deleted = runResult.changes;
 
-    console.log(
-      `[Cleanup] Deleted ${result.deleted} proxy_logs older than ${retentionDays} days`
-    );
+    console.log(`[Cleanup] Deleted ${result.deleted} proxy_logs older than ${retentionDays} days`);
   } catch (err: unknown) {
     console.error("[Cleanup] Error cleaning proxy_logs:", err);
     result.errors++;
@@ -526,9 +524,7 @@ export function startCleanupScheduler(): void {
       const proxyResult = await cleanupProxyLogs();
       const totalDeleted = result.totalDeleted + proxyResult.deleted;
       if (totalDeleted > 0) {
-        console.log(
-          `[Cleanup] Startup cleanup freed ${totalDeleted} rows. Running VACUUM...`
-        );
+        console.log(`[Cleanup] Startup cleanup freed ${totalDeleted} rows. Running VACUUM...`);
         try {
           const db = getDbInstance();
           db.exec("VACUUM");
@@ -549,9 +545,7 @@ export function startCleanupScheduler(): void {
       const proxyResult = await cleanupProxyLogs();
       const totalDeleted = result.totalDeleted + proxyResult.deleted;
       if (totalDeleted > 0) {
-        console.log(
-          `[Cleanup] Periodic cleanup freed ${totalDeleted} rows. Running VACUUM...`
-        );
+        console.log(`[Cleanup] Periodic cleanup freed ${totalDeleted} rows. Running VACUUM...`);
         try {
           const db = getDbInstance();
           db.exec("VACUUM");

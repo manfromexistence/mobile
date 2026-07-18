@@ -1,5 +1,5 @@
-import type { Dict } from "./en"
-import { dict as en } from "./en"
+import type { Dict } from "./en";
+import { dict as en } from "./en";
 
 export const dict = {
   ...en,
@@ -108,7 +108,8 @@ export const dict = {
   "home.banner.downloadBetaNow": "Download desktop-betaen nu",
 
   "home.hero.title": "Den open source AI-kodningsagent",
-  "home.hero.subtitle.a": "Gratis modeller inkluderet, eller forbind enhver model fra enhver udbyder,",
+  "home.hero.subtitle.a":
+    "Gratis modeller inkluderet, eller forbind enhver model fra enhver udbyder,",
   "home.hero.subtitle.b": "inklusive Claude, GPT, Gemini og mere.",
 
   "home.install.ariaLabel": "Installationsmuligheder",
@@ -172,7 +173,8 @@ export const dict = {
   "home.faq.a6":
     "OpenCode er 100% gratis at bruge. Det kommer også med et sæt gratis modeller. Der kan være ekstra omkostninger, hvis du forbinder en anden udbyder.",
   "home.faq.q7": "Hvad med data og privatliv?",
-  "home.faq.a7.p1": "Dine data gemmes kun, når du bruger vores gratis modeller eller opretter delbare links.",
+  "home.faq.a7.p1":
+    "Dine data gemmes kun, når du bruger vores gratis modeller eller opretter delbare links.",
   "home.faq.a7.p2.beforeModels": "Læs mere om",
   "home.faq.a7.p2.modelsLink": "vores modeller",
   "home.faq.a7.p2.and": "og",
@@ -189,7 +191,8 @@ export const dict = {
     "Zen giver dig adgang til et håndplukket sæt AI-modeller, som OpenCode har testet og benchmarked specifikt til kodningsagenter. Du behøver ikke bekymre dig om svingende performance og kvalitet på tværs af udbydere: brug validerede modeller, der virker.",
   "home.zenCta.link": "Læs om Zen",
 
-  "zen.title": "OpenCode Zen | Et kurateret sæt af pålidelige, optimerede modeller til kodningsagenter",
+  "zen.title":
+    "OpenCode Zen | Et kurateret sæt af pålidelige, optimerede modeller til kodningsagenter",
   "zen.hero.title": "Pålidelige optimerede modeller til kodningsagenter",
   "zen.hero.body":
     "Zen giver dig adgang til et kurateret sæt AI-modeller, som OpenCode har testet og benchmarked specifikt til kodningsagenter. Du behøver ikke bekymre dig om svingende performance og kvalitet: brug validerede modeller, der virker.",
@@ -206,8 +209,10 @@ export const dict = {
   "zen.faq.q4": "Hvad koster Zen?",
   "zen.faq.a4.p1.beforePricing": "Zen",
   "zen.faq.a4.p1.pricingLink": "opkræver per request",
-  "zen.faq.a4.p1.afterPricing": "uden markups, så du betaler præcis det, som modeludbyderen opkræver.",
-  "zen.faq.a4.p2.beforeAccount": "Din samlede pris afhænger af brug, og du kan sætte månedlige udgiftsgrænser i din",
+  "zen.faq.a4.p1.afterPricing":
+    "uden markups, så du betaler præcis det, som modeludbyderen opkræver.",
+  "zen.faq.a4.p2.beforeAccount":
+    "Din samlede pris afhænger af brug, og du kan sætte månedlige udgiftsgrænser i din",
   "zen.faq.a4.p2.accountLink": "konto",
   "zen.faq.a4.p3":
     "For at dække omkostninger tilføjer OpenCode kun et lille betalingsgebyr på $1.23 per $20 saldo-opfyldning.",
@@ -226,7 +231,8 @@ export const dict = {
   "zen.cta.start": "Kom godt i gang med Zen",
   "zen.pricing.title": "Tilføj $20 Pay as you go-saldo",
   "zen.pricing.fee": "(+$1.23 kortbehandlingsgebyr)",
-  "zen.pricing.body": "Brug med enhver agent. Indstil månedlige forbrugsgrænser. Annuller til enhver tid.",
+  "zen.pricing.body":
+    "Brug med enhver agent. Indstil månedlige forbrugsgrænser. Annuller til enhver tid.",
   "zen.problem.title": "Hvilket problem løser Zen?",
   "zen.problem.body":
     "Der er så mange modeller tilgængelige, men kun få fungerer godt med kodningsagenter. De fleste udbydere konfigurerer dem anderledes med forskellige resultater.",
@@ -235,7 +241,8 @@ export const dict = {
   "zen.problem.item2": "Samarbejde med udbydere for at sikre, at de bliver leveret korrekt",
   "zen.problem.item3": "Benchmarking af alle model-udbyder kombinationer, vi anbefaler",
   "zen.how.title": "Hvordan Zen virker",
-  "zen.how.body": "Selvom vi foreslår, at du bruger Zen med OpenCode, kan du bruge Zen med enhver agent.",
+  "zen.how.body":
+    "Selvom vi foreslår, at du bruger Zen med OpenCode, kan du bruge Zen med enhver agent.",
   "zen.how.step1.title": "Tilmeld dig og tilføj saldo på $20",
   "zen.how.step1.beforeLink": "følg",
   "zen.how.step1.link": "opsætningsinstruktioner",
@@ -288,7 +295,8 @@ export const dict = {
   "go.testimonials.david.name": "David Hill",
   "go.testimonials.david.title": "ex-Head of Design, Laravel",
   "go.testimonials.david.quoteBefore": "Med",
-  "go.testimonials.david.quoteAfter": "ved jeg, at alle modellerne er testede og perfekte til kodningsagenter.",
+  "go.testimonials.david.quoteAfter":
+    "ved jeg, at alle modellerne er testede og perfekte til kodningsagenter.",
   "go.testimonials.frank.name": "Frank Wang",
   "go.testimonials.frank.title": "ex-Intern, Nvidia (4 gange)",
   "go.testimonials.frank.quote": "Jeg ville ønske, jeg stadig var hos Nvidia.",
@@ -345,7 +353,8 @@ export const dict = {
   "go.faq.q7": "Kan jeg annullere?",
   "go.faq.a7": "Ja, du kan annullere til enhver tid.",
   "go.faq.q8": "Kan jeg bruge Go med andre kodningsagenter?",
-  "go.faq.a8": "Ja, du kan bruge Go med enhver agent. Følg opsætningsinstruktionerne i din foretrukne kodningsagent.",
+  "go.faq.a8":
+    "Ja, du kan bruge Go med enhver agent. Følg opsætningsinstruktionerne i din foretrukne kodningsagent.",
 
   "go.faq.q9": "Hvad er forskellen på gratis modeller og Go?",
   "go.faq.a9":
@@ -353,20 +362,24 @@ export const dict = {
 
   "zen.api.error.rateLimitExceeded": "Hastighedsgrænse overskredet. Prøv venligst igen senere.",
   "zen.api.error.modelNotSupported": "Model {{model}} understøttes ikke",
-  "zen.api.error.modelFormatNotSupported": "Model {{model}} understøttes ikke for format {{format}}",
+  "zen.api.error.modelFormatNotSupported":
+    "Model {{model}} understøttes ikke for format {{format}}",
   "zen.api.error.noProviderAvailable": "Ingen udbyder tilgængelig",
   "zen.api.error.providerNotSupported": "Udbyder {{provider}} understøttes ikke",
   "zen.api.error.missingApiKey": "Manglende API-nøgle.",
   "zen.api.error.invalidApiKey": "Ugyldig API-nøgle.",
-  "zen.api.error.subscriptionQuotaExceeded": "Abonnementskvote overskredet. Prøv igen om {{retryIn}}.",
+  "zen.api.error.subscriptionQuotaExceeded":
+    "Abonnementskvote overskredet. Prøv igen om {{retryIn}}.",
   "zen.api.error.goSubscriptionRollingLimitExceeded":
     "Forbrugsgrænsen for 5 timer er nået. Nulstilles om {{retryIn}}. For at fortsætte med at bruge denne model nu, aktivér forbrug fra din tilgængelige saldo: {{consoleGoUrl}}",
   "zen.api.error.goSubscriptionWeeklyLimitExceeded":
     "Ugentlig forbrugsgrænse er nået. Nulstilles om {{retryIn}}. For at fortsætte med at bruge denne model nu, aktivér forbrug fra din tilgængelige saldo: {{consoleGoUrl}}",
   "zen.api.error.goSubscriptionMonthlyLimitExceeded":
     "Månedlig forbrugsgrænse er nået. Nulstilles om {{retryIn}}. For at fortsætte med at bruge denne model nu, aktivér forbrug fra din tilgængelige saldo: {{consoleGoUrl}}",
-  "zen.api.error.noPaymentMethod": "Ingen betalingsmetode. Tilføj en betalingsmetode her: {{billingUrl}}",
-  "zen.api.error.insufficientBalance": "Utilstrækkelig saldo. Administrer din fakturering her: {{billingUrl}}",
+  "zen.api.error.noPaymentMethod":
+    "Ingen betalingsmetode. Tilføj en betalingsmetode her: {{billingUrl}}",
+  "zen.api.error.insufficientBalance":
+    "Utilstrækkelig saldo. Administrer din fakturering her: {{billingUrl}}",
   "zen.api.error.workspaceMonthlyLimitReached":
     "Dit workspace har nået sin månedlige forbrugsgrænse på ${{amount}}. Administrer dine grænser her: {{billingUrl}}",
   "zen.api.error.userMonthlyLimitReached":
@@ -378,7 +391,8 @@ export const dict = {
     "Den gratis kampagne for {{model}} er afsluttet. Du kan fortsætte med at bruge modellen ved at abonnere på OpenCode Go - {{link}}",
 
   "black.meta.title": "OpenCode Black | Få adgang til verdens bedste kodningsmodeller",
-  "black.meta.description": "Få adgang til Claude, GPT, Gemini og mere med OpenCode Black-abonnementer.",
+  "black.meta.description":
+    "Få adgang til Claude, GPT, Gemini og mere med OpenCode Black-abonnementer.",
   "black.hero.title": "Få adgang til verdens bedste kodningsmodeller",
   "black.hero.subtitle": "Inklusive Claude, GPT, Gemini og mere",
   "black.title": "OpenCode Black | Priser",
@@ -422,7 +436,8 @@ export const dict = {
   "black.subscribe.success.amountValue": "${{plan}} pr. måned",
   "black.subscribe.success.paymentMethod": "Betalingsmetode",
   "black.subscribe.success.dateJoined": "Dato tilmeldt",
-  "black.subscribe.success.chargeNotice": "Dit kort vil blive debiteret, når dit abonnement er aktiveret",
+  "black.subscribe.success.chargeNotice":
+    "Dit kort vil blive debiteret, når dit abonnement er aktiveret",
 
   "workspace.nav.zen": "Zen",
   "workspace.nav.go": "Go",
@@ -458,7 +473,8 @@ export const dict = {
   "workspace.newUser.step.models.after": "for at vælge en model",
 
   "workspace.models.title": "Modeller",
-  "workspace.models.subtitle.beforeLink": "Administrer, hvilke modeller workspace-medlemmer kan få adgang til.",
+  "workspace.models.subtitle.beforeLink":
+    "Administrer, hvilke modeller workspace-medlemmer kan få adgang til.",
   "workspace.models.table.model": "Model",
   "workspace.models.table.enabled": "Aktiveret",
 
@@ -618,15 +634,19 @@ export const dict = {
   "workspace.black.time.minutes": "minutter",
   "workspace.black.time.fewSeconds": "et par sekunder",
   "workspace.black.subscription.title": "Abonnement",
-  "workspace.black.subscription.message": "Du abonnerer på OpenCode Black for ${{plan}} om måneden.",
+  "workspace.black.subscription.message":
+    "Du abonnerer på OpenCode Black for ${{plan}} om måneden.",
   "workspace.black.subscription.manage": "Administrer abonnement",
   "workspace.black.subscription.rollingUsage": "5-timers brug",
   "workspace.black.subscription.weeklyUsage": "Ugentlig brug",
   "workspace.black.subscription.resetsIn": "Nulstiller i",
-  "workspace.black.subscription.useBalance": "Brug din tilgængelige saldo, når du har nået forbrugsgrænserne",
+  "workspace.black.subscription.useBalance":
+    "Brug din tilgængelige saldo, når du har nået forbrugsgrænserne",
   "workspace.black.waitlist.title": "Venteliste",
-  "workspace.black.waitlist.joined": "Du er på ventelisten for ${{plan}} per måned OpenCode Black plan.",
-  "workspace.black.waitlist.ready": "Vi er klar til at tilmelde dig ${{plan}} per måned OpenCode Black plan.",
+  "workspace.black.waitlist.joined":
+    "Du er på ventelisten for ${{plan}} per måned OpenCode Black plan.",
+  "workspace.black.waitlist.ready":
+    "Vi er klar til at tilmelde dig ${{plan}} per måned OpenCode Black plan.",
   "workspace.black.waitlist.leave": "Forlad venteliste",
   "workspace.black.waitlist.leaving": "Forlader...",
   "workspace.black.waitlist.left": "Forladt",
@@ -650,7 +670,8 @@ export const dict = {
   "workspace.lite.subscription.weeklyUsage": "Ugentligt forbrug",
   "workspace.lite.subscription.monthlyUsage": "Månedligt forbrug",
   "workspace.lite.subscription.resetsIn": "Nulstiller i",
-  "workspace.lite.subscription.useBalance": "Brug din tilgængelige saldo, når du har nået forbrugsgrænserne",
+  "workspace.lite.subscription.useBalance":
+    "Brug din tilgængelige saldo, når du har nået forbrugsgrænserne",
   "workspace.lite.subscription.selectProvider":
     'Vælg "OpenCode Go" som udbyder i din opencode-konfiguration for at bruge Go-modeller.',
   "workspace.lite.providers.title": "Udbydere",
@@ -677,9 +698,11 @@ export const dict = {
   "workspace.referral.overview.subtitle": "Få $5, når en ven abonnerer. De får også $5.",
   "workspace.referral.instructions.share": "Del dit henvisningslink",
   "workspace.referral.instructions.subscribe": "Din ven tilmelder sig og abonnerer på Go",
-  "workspace.referral.instructions.claim": "I får begge $5 i forbrugskredit til at bruge på jeres Go-forbrugsgrænser",
+  "workspace.referral.instructions.claim":
+    "I får begge $5 i forbrugskredit til at bruge på jeres Go-forbrugsgrænser",
   "workspace.referral.rewards.title": "Henvisningsbelønninger",
-  "workspace.referral.rewards.description": "Brug tilgængelige henvisningskreditter på dit Go-forbrug.",
+  "workspace.referral.rewards.description":
+    "Brug tilgængelige henvisningskreditter på dit Go-forbrug.",
   "workspace.referral.rewards.subtitle": "{{applied}} / {{total}} belønninger brugt.",
   "workspace.referral.rewards.empty": "Ingen henvisningsbelønninger endnu.",
   "workspace.referral.table.reward": "Belønning",
@@ -701,7 +724,8 @@ export const dict = {
   "workspace.referral.apply.preview": "Vis belønning",
   "workspace.referral.apply.action": "Brug",
   "workspace.referral.apply.confirmTitle": "Brug belønning",
-  "workspace.referral.apply.confirmBody": "Brug {{amount}} til at reducere dette workspaces nuværende forbrug.",
+  "workspace.referral.apply.confirmBody":
+    "Brug {{amount}} til at reducere dette workspaces nuværende forbrug.",
   "workspace.referral.apply.confirmAction": "Brug",
 
   "download.title": "OpenCode | Download",
@@ -726,14 +750,16 @@ export const dict = {
     "Ikke nødvendigvis, men sandsynligvis. Du skal bruge et AI-abonnement hvis du vil forbinde OpenCode til en betalt udbyder, men du kan arbejde med",
   "download.faq.a3.localLink": "lokale modeller",
   "download.faq.a3.afterLocal.beforeZen": "gratis. Selvom vi opfordrer brugere til at bruge",
-  "download.faq.a3.afterZen": ", fungerer OpenCode med alle populære udbydere som OpenAI, Anthropic, xAI osv.",
+  "download.faq.a3.afterZen":
+    ", fungerer OpenCode med alle populære udbydere som OpenAI, Anthropic, xAI osv.",
 
   "download.faq.a5.p1": "OpenCode er 100% gratis at bruge.",
   "download.faq.a5.p2.beforeZen":
     "Eventuelle ekstra omkostninger kommer fra dit abonnement hos en modeludbyder. Selvom OpenCode fungerer med enhver modeludbyder, anbefaler vi at bruge",
   "download.faq.a5.p2.afterZen": ".",
 
-  "download.faq.a6.p1": "Dine data og oplysninger gemmes kun når du opretter delbare links i OpenCode.",
+  "download.faq.a6.p1":
+    "Dine data og oplysninger gemmes kun når du opretter delbare links i OpenCode.",
   "download.faq.a6.p2.beforeShare": "Læs mere om",
   "download.faq.a6.shareLink": "delingssider",
 
@@ -822,4 +848,4 @@ export const dict = {
   "bench.detail.table.duration": "Varighed",
   "bench.detail.run.title": "Kørsel {{n}}",
   "bench.detail.rawJson": "Rå JSON",
-} satisfies Dict
+} satisfies Dict;

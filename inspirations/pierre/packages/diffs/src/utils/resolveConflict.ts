@@ -1,15 +1,11 @@
-import type {
-  ConflictResolverTypes,
-  FileDiffMetadata,
-  ProcessFileConflictData,
-} from '../types';
-import { normalizeDiffResolution } from './normalizeDiffResolution';
-import { resolveRegion } from './resolveRegion';
+import type { ConflictResolverTypes, FileDiffMetadata, ProcessFileConflictData } from "../types";
+import { normalizeDiffResolution } from "./normalizeDiffResolution";
+import { resolveRegion } from "./resolveRegion";
 
 export function resolveConflict(
   diff: FileDiffMetadata,
   conflict: ProcessFileConflictData,
-  type: ConflictResolverTypes
+  type: ConflictResolverTypes,
 ): FileDiffMetadata {
   return resolveRegion(diff, {
     resolution: normalizeDiffResolution(type),
@@ -20,9 +16,7 @@ export function resolveConflict(
   });
 }
 
-function getConflictDeleteContentIndexes(
-  conflict: ProcessFileConflictData
-): Set<number> {
+function getConflictDeleteContentIndexes(conflict: ProcessFileConflictData): Set<number> {
   const indexes: Set<number> = new Set();
   if (conflict.baseContentIndex != null) {
     indexes.add(conflict.baseContentIndex);

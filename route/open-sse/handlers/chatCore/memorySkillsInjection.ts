@@ -1,11 +1,17 @@
 import { retrieveMemories } from "@/lib/memory/retrieval";
-import { getMemorySettings, DEFAULT_MEMORY_SETTINGS, toMemoryRetrievalConfig } from "@/lib/memory/settings";
+import {
+  getMemorySettings,
+  DEFAULT_MEMORY_SETTINGS,
+  toMemoryRetrievalConfig,
+} from "@/lib/memory/settings";
 import { injectMemory, shouldInjectMemory } from "@/lib/memory/injection";
 import { injectSkills } from "@/lib/skills/injection";
 import { FORMATS } from "../../translator/formats.ts";
 import { detectCachingContext } from "../../services/compression/cachingAware.ts";
 
-export function getSkillsProviderForFormat(format: string): "openai" | "anthropic" | "google" | "other" {
+export function getSkillsProviderForFormat(
+  format: string,
+): "openai" | "anthropic" | "google" | "other" {
   switch (format) {
     case FORMATS.CLAUDE:
       return "anthropic";
@@ -97,7 +103,7 @@ export async function injectMemoryAndSkills({
           }
           return "";
         }
-        
+
         if (Array.isArray(body.messages)) {
           const r = pickFrom(body.messages);
           if (r) return r;
@@ -111,7 +117,7 @@ export async function injectMemoryAndSkills({
 
       const memories = await retrieveMemories(
         memoryOwnerId,
-        toMemoryRetrievalConfig(memorySettings, { query: lastUserQuery })
+        toMemoryRetrievalConfig(memorySettings, { query: lastUserQuery }),
       );
       if (memories.length > 0) {
         // #3890: when the client uses prompt caching (cache_control breakpoints), inject
@@ -122,7 +128,7 @@ export async function injectMemoryAndSkills({
           body as Parameters<typeof injectMemory>[0],
           memories,
           provider,
-          { cacheSafe }
+          { cacheSafe },
         );
         body = injected as typeof body;
         log?.debug?.("MEMORY", `Injected ${memories.length} memories for key=${memoryOwnerId}`);
@@ -130,7 +136,7 @@ export async function injectMemoryAndSkills({
     } catch (memErr) {
       log?.debug?.(
         "MEMORY",
-        `Memory injection skipped: ${memErr instanceof Error ? memErr.message : String(memErr)}`
+        `Memory injection skipped: ${memErr instanceof Error ? memErr.message : String(memErr)}`,
       );
     }
   }

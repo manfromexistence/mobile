@@ -31,15 +31,9 @@ const memorySettings = await import("../../src/lib/memory/settings.ts");
 
 // ── Route imports ──
 const qdrantSettingsRoute = await import("../../src/app/api/settings/qdrant/route.ts");
-const qdrantHealthRoute = await import(
-  "../../src/app/api/settings/qdrant/health/route.ts"
-);
-const qdrantSearchRoute = await import(
-  "../../src/app/api/settings/qdrant/search/route.ts"
-);
-const qdrantCleanupRoute = await import(
-  "../../src/app/api/settings/qdrant/cleanup/route.ts"
-);
+const qdrantHealthRoute = await import("../../src/app/api/settings/qdrant/health/route.ts");
+const qdrantSearchRoute = await import("../../src/app/api/settings/qdrant/search/route.ts");
+const qdrantCleanupRoute = await import("../../src/app/api/settings/qdrant/cleanup/route.ts");
 const qdrantEmbeddingModelsRoute = await import(
   "../../src/app/api/settings/qdrant/embedding-models/route.ts"
 );
@@ -55,11 +49,7 @@ async function resetStorage() {
   memorySettings.invalidateMemorySettingsCache();
 }
 
-async function makeAuthRequest(
-  method: "GET" | "POST" | "PUT",
-  url: string,
-  body?: unknown
-) {
+async function makeAuthRequest(method: "GET" | "POST" | "PUT", url: string, body?: unknown) {
   return makeManagementSessionRequest(url, { method, body });
 }
 
@@ -166,7 +156,7 @@ test("PUT enabled=true also activates Qdrant as the engine (memoryVectorStore=qd
   assert.strictEqual(
     s.memoryVectorStore,
     "qdrant",
-    "enabling Qdrant must select it as the active vector store, else it stays inert"
+    "enabling Qdrant must select it as the active vector store, else it stays inert",
   );
 });
 
@@ -176,19 +166,19 @@ test("PUT enabled=false resets the engine back to auto (sqlite-vec)", async () =
       enabled: true,
       host: "qdrant-server",
       collection: "c",
-    })) as any
+    })) as any,
   );
   await qdrantSettingsRoute.PUT(
     (await makeAuthRequest("PUT", "http://localhost/api/settings/qdrant", {
       enabled: false,
-    })) as any
+    })) as any,
   );
 
   const s = (await localDb.getSettings()) as Record<string, unknown>;
   assert.strictEqual(
     s.memoryVectorStore,
     "auto",
-    "disabling Qdrant must fall back to auto (sqlite-vec), not stay on qdrant"
+    "disabling Qdrant must fall back to auto (sqlite-vec), not stay on qdrant",
   );
 });
 
@@ -198,14 +188,14 @@ test("PUT without the enabled field must not change memoryVectorStore", async ()
   await qdrantSettingsRoute.PUT(
     (await makeAuthRequest("PUT", "http://localhost/api/settings/qdrant", {
       collection: "renamed",
-    })) as any
+    })) as any,
   );
 
   const s = (await localDb.getSettings()) as Record<string, unknown>;
   assert.strictEqual(
     s.memoryVectorStore,
     "qdrant",
-    "editing other fields must leave the engine selection untouched"
+    "editing other fields must leave the engine selection untouched",
   );
 });
 
@@ -218,7 +208,7 @@ test("PUT enabled=true invalidates the memory-settings cache (retrieval sees qdr
   assert.notStrictEqual(
     before.vectorStore,
     "qdrant",
-    "precondition: cache warmed with a non-qdrant vectorStore"
+    "precondition: cache warmed with a non-qdrant vectorStore",
   );
 
   const res = await qdrantSettingsRoute.PUT(
@@ -226,7 +216,7 @@ test("PUT enabled=true invalidates the memory-settings cache (retrieval sees qdr
       enabled: true,
       host: "qdrant-server",
       collection: "c",
-    })) as any
+    })) as any,
   );
   assert.strictEqual(res.status, 200);
 
@@ -236,7 +226,7 @@ test("PUT enabled=true invalidates the memory-settings cache (retrieval sees qdr
   assert.strictEqual(
     after.vectorStore,
     "qdrant",
-    "PUT must invalidate the memory-settings cache so retrieval routes to Qdrant without a restart"
+    "PUT must invalidate the memory-settings cache so retrieval routes to Qdrant without a restart",
   );
 });
 

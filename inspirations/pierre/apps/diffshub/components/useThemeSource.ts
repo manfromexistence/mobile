@@ -1,37 +1,28 @@
-'use client';
+"use client";
 
-import type { ThemeController, ThemeResolver } from '@pierre/theming';
-import { createContext, useContext, useRef, useSyncExternalStore } from 'react';
+import type { ThemeController, ThemeResolver } from "@pierre/theming";
+import { createContext, useContext, useRef, useSyncExternalStore } from "react";
 
-import type { ActiveThemeSnapshot, ThemeSource } from '@/lib/theme/ThemeSource';
+import type { ActiveThemeSnapshot, ThemeSource } from "@/lib/theme/ThemeSource";
 
-export const ThemeSourceContext = createContext<ThemeSource | undefined>(
-  undefined
-);
+export const ThemeSourceContext = createContext<ThemeSource | undefined>(undefined);
 
 // Carries the controller behind the provider source so the names-now diffs hook
 // and the selection hook can read selection + setters. Undefined under an
 // override-only provider (a fixedSource has no controller).
-export const ThemeControllerContext = createContext<
-  ThemeController | undefined
->(undefined);
+export const ThemeControllerContext = createContext<ThemeController | undefined>(undefined);
 
-export const ThemeResolverContext = createContext<ThemeResolver | undefined>(
-  undefined
-);
+export const ThemeResolverContext = createContext<ThemeResolver | undefined>(undefined);
 
 const EMPTY_SNAPSHOT: ActiveThemeSnapshot = {
   theme: undefined,
-  colorScheme: 'light',
+  colorScheme: "light",
 };
 
 // Returns whether two snapshots are equal by the fields React cares about, so
 // useSyncExternalStore can keep a stable reference and avoid a render loop (the
 // source may allocate a fresh object on every getSnapshot call).
-function snapshotsEqual(
-  a: ActiveThemeSnapshot,
-  b: ActiveThemeSnapshot
-): boolean {
+function snapshotsEqual(a: ActiveThemeSnapshot, b: ActiveThemeSnapshot): boolean {
   return a.theme === b.theme && a.colorScheme === b.colorScheme;
 }
 
@@ -54,7 +45,7 @@ export function useThemeSource(override?: ThemeSource): {
   const activeTheme = useSyncExternalStore(
     (listener) => (source != null ? source.subscribe(listener) : () => {}),
     getSnapshot,
-    () => EMPTY_SNAPSHOT
+    () => EMPTY_SNAPSHOT,
   );
   return { activeTheme, source };
 }

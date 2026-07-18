@@ -288,7 +288,7 @@ test("rowToAllocation normalizes an unknown DB policy to 'hard' (Guard A)", () =
   db.prepare("UPDATE quota_allocations SET policy = ? WHERE pool_id = ? AND api_key_id = ?").run(
     "bogus-policy",
     pool.id,
-    "k-corrupt"
+    "k-corrupt",
   );
   db.pragma("ignore_check_constraints = OFF");
 

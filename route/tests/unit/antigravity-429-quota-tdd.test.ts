@@ -76,7 +76,7 @@ test("TDD S3: checkFallbackError extracts retry hint for oauth providers even if
     0,
     "gemini-3.5-flash",
     "antigravity", // which uses oauth provider profile (useUpstreamRetryHints: false)
-    null
+    null,
   );
 
   assert.equal(res.shouldFallback, true);

@@ -1,8 +1,8 @@
-export * as ConfigProvider from "./provider"
+export * as ConfigProvider from "./provider";
 
-import { Schema } from "effect"
-import { ProviderV2 } from "../provider"
-import { ModelV2 } from "../model"
+import { Schema } from "effect";
+import { ProviderV2 } from "../provider";
+import { ModelV2 } from "../model";
 
 export class Request extends Schema.Class<Request>("ConfigV2.Provider.Request")({
   headers: Schema.Record(Schema.String, Schema.String).pipe(Schema.optional),
@@ -42,7 +42,7 @@ const ModelApi = Schema.Union([
   Schema.Struct({
     id: ModelV2.ID,
   }),
-])
+]);
 
 class Model extends Schema.Class<Model>("ConfigV2.Model")({
   family: ModelV2.Family.pipe(Schema.optional),

@@ -1,6 +1,6 @@
 // @ts-nocheck
-import * as mod from "./switch"
-import { create } from "../storybook/scaffold"
+import * as mod from "./switch";
+import { create } from "../storybook/scaffold";
 
 const docs = `### Overview
 Toggle control for binary settings.
@@ -24,13 +24,13 @@ Use in settings panels or forms.
 ### Theming/tokens
 - Uses \`data-component="switch"\` and slot attributes.
 
-`
+`;
 
 const story = create({
   title: "UI/Switch",
   mod,
   args: { defaultChecked: true, children: "Enable notifications" },
-})
+});
 
 export default {
   title: "UI/Switch",
@@ -44,9 +44,9 @@ export default {
       },
     },
   },
-}
+};
 
-export const Basic = story.Basic
+export const Basic = story.Basic;
 
 export const States = {
   render: () => (
@@ -57,7 +57,7 @@ export const States = {
       <mod.Switch description="Optional description">With description</mod.Switch>
     </div>
   ),
-}
+};
 
 export const HiddenLabel = {
   args: {
@@ -65,4 +65,4 @@ export const HiddenLabel = {
     hideLabel: true,
     defaultChecked: true,
   },
-}
+};

@@ -98,7 +98,7 @@ export function toWikiName(basename) {
     .map((t) =>
       ACRONYMS.has(t.toLowerCase())
         ? t.toUpperCase()
-        : t[0].toUpperCase() + t.slice(1).toLowerCase()
+        : t[0].toUpperCase() + t.slice(1).toLowerCase(),
     )
     .join("-");
 }
@@ -121,7 +121,7 @@ function providerCount() {
 }
 function strategyCount() {
   const m = read("src/shared/constants/routingStrategies.ts").match(
-    /ROUTING_STRATEGY_VALUES\s*=\s*\[([^\]]*)\]/
+    /ROUTING_STRATEGY_VALUES\s*=\s*\[([^\]]*)\]/,
   );
   return m ? (m[1].match(/"[^"]+"/g) || []).length : null;
 }
@@ -154,7 +154,7 @@ export function syncHomeCounts(home, counts) {
     out = out
       .replace(
         /Connect every AI tool to \d+ providers/g,
-        `Connect every AI tool to ${counts.providers} providers`
+        `Connect every AI tool to ${counts.providers} providers`,
       )
       .replace(/\*\*\d+ AI Providers\*\*/g, `**${counts.providers} AI Providers**`)
       .replace(/All \d+ supported providers/g, `All ${counts.providers} supported providers`)
@@ -163,7 +163,7 @@ export function syncHomeCounts(home, counts) {
   if (counts.strategies) {
     out = out.replace(
       /\*\*\d+ Routing Strategies\*\*/g,
-      `**${counts.strategies} Routing Strategies**`
+      `**${counts.strategies} Routing Strategies**`,
     );
   }
   if (counts.mcpTools) {
@@ -291,7 +291,7 @@ function main() {
   console.log(`[wiki-sync] counts: ${JSON.stringify(counts)}`);
   console.log(
     `[wiki-sync] add: ${plan.add.length} | Home counts: ${plan.countsChanged ? "drift" : "in-sync"} | ` +
-      `existing-page updates: ${plan.update.length} (${updateExisting ? "ENABLED" : "skipped — needs --update-existing"}) | untouched: ${plan.untouched.length}`
+      `existing-page updates: ${plan.update.length} (${updateExisting ? "ENABLED" : "skipped — needs --update-existing"}) | untouched: ${plan.untouched.length}`,
   );
   if (dryRun || check) {
     if (plan.add.length) console.log(`  add → ${plan.add.map((a) => a.page).join(", ")}`);
@@ -300,7 +300,7 @@ function main() {
         `  ${updateExisting ? "update" : "would-update (skipped)"} → ${plan.update
           .map((u) => u.page)
           .slice(0, 60)
-          .join(", ")}${plan.update.length > 60 ? " …" : ""}`
+          .join(", ")}${plan.update.length > 60 ? " …" : ""}`,
       );
     if (check) {
       if (total > 0) {
@@ -316,12 +316,12 @@ function main() {
   for (const { page, srcFile } of [...updates, ...plan.add]) {
     fs.writeFileSync(
       path.join(wikiDir, `${page}.md`),
-      toWikiContent(fs.readFileSync(srcFile, "utf8"))
+      toWikiContent(fs.readFileSync(srcFile, "utf8")),
     );
   }
   if (plan.countsChanged && homeAfter != null) fs.writeFileSync(homePath, homeAfter);
   console.log(
-    `[wiki-sync] wrote ${total} page(s) (add: ${plan.add.length}, updates: ${updates.length}, counts: ${plan.countsChanged ? 1 : 0}).`
+    `[wiki-sync] wrote ${total} page(s) (add: ${plan.add.length}, updates: ${updates.length}, counts: ${plan.countsChanged ? 1 : 0}).`,
   );
 }
 

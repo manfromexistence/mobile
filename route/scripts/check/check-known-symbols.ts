@@ -103,7 +103,7 @@ export type StrategyMismatch = {
 export function diffComboStrategies(
   canonical: readonly string[],
   handled: Set<string>,
-  implicitDefaults: Record<string, string>
+  implicitDefaults: Record<string, string>,
 ): StrategyMismatch {
   const canonicalSet = new Set(canonical);
   const effectivelyHandled = new Set<string>(handled);
@@ -112,7 +112,7 @@ export function diffComboStrategies(
   const canonicalNotHandled = [...canonicalSet].filter((s) => !effectivelyHandled.has(s));
   // Strings tratadas que não são canônicas NEM defaults implícitos = inventadas.
   const handledNotCanonical = [...handled].filter(
-    (s) => !canonicalSet.has(s) && !(s in implicitDefaults)
+    (s) => !canonicalSet.has(s) && !(s in implicitDefaults),
   );
   return { canonicalNotHandled, handledNotCanonical };
 }
@@ -156,7 +156,7 @@ export type ExecutorLike = {
 export function findNonConformingExecutors(
   aliases: string[],
   resolve: (alias: string) => ExecutorLike | null | undefined,
-  isInstance: (value: unknown) => boolean
+  isInstance: (value: unknown) => boolean,
 ): string[] {
   return aliases.filter((alias) => {
     const ex = resolve(alias);
@@ -395,7 +395,7 @@ export type CloudAgentDiff = {
  */
 export function diffCloudAgents(
   registryKeys: Set<string>,
-  agentFiles: Set<string>
+  agentFiles: Set<string>,
 ): CloudAgentDiff {
   const inRegistryNotFiles = [...registryKeys].filter((k) => !agentFiles.has(k)).sort();
   const inFilesNotRegistry = [...agentFiles].filter((f) => !registryKeys.has(f)).sort();
@@ -451,7 +451,7 @@ async function main(): Promise<void> {
   const aliases = extractExecutorAliases(indexSource);
   if (aliases.length === 0) {
     failures.push(
-      "[executor] parse do mapa `executors` não encontrou nenhum alias (regex quebrada?)"
+      "[executor] parse do mapa `executors` não encontrou nenhum alias (regex quebrada?)",
     );
   }
   const isExecutorInstance = (value: unknown) => value instanceof BaseExecutor;
@@ -460,7 +460,7 @@ async function main(): Promise<void> {
     failures.push(
       `[executor] ${badExecutors.length} alias(es) registrado(s) não resolvem para um BaseExecutor válido (instância + execute() + getProvider()):\n` +
         badExecutors.map((a) => `    ✗ ${a}`).join("\n") +
-        `\n    → verifique a entrada em open-sse/executors/index.ts (classe importada/exportada e estende BaseExecutor).`
+        `\n    → verifique a entrada em open-sse/executors/index.ts (classe importada/exportada e estende BaseExecutor).`,
     );
   }
 
@@ -495,43 +495,43 @@ async function main(): Promise<void> {
   assertNoStale(
     Object.keys(IMPLICIT_DEFAULT_STRATEGIES),
     liveImplicitNeeded,
-    "known-symbols:combo"
+    "known-symbols:combo",
   );
 
   const { canonicalNotHandled, handledNotCanonical } = diffComboStrategies(
     canonical,
     handled,
-    IMPLICIT_DEFAULT_STRATEGIES
+    IMPLICIT_DEFAULT_STRATEGIES,
   );
   if (canonicalNotHandled.length) {
     failures.push(
       `[combo] ${canonicalNotHandled.length} estratégia(s) canônica(s) sem branch de despacho em combo.ts:\n` +
         canonicalNotHandled.map((s) => `    ✗ ${s}`).join("\n") +
-        `\n    → fie no despacho (\`strategy === "${canonicalNotHandled[0]}"\`) ou documente em IMPLICIT_DEFAULT_STRATEGIES.`
+        `\n    → fie no despacho (\`strategy === "${canonicalNotHandled[0]}"\`) ou documente em IMPLICIT_DEFAULT_STRATEGIES.`,
     );
   }
   if (handledNotCanonical.length) {
     failures.push(
       `[combo] ${handledNotCanonical.length} string(s) de estratégia tratada(s) no despacho mas ausente(s) de ROUTING_STRATEGY_VALUES (inventada/órfã):\n` +
         handledNotCanonical.map((s) => `    ✗ ${s}`).join("\n") +
-        `\n    → registre em src/shared/constants/routingStrategies.ts ou remova o branch morto.`
+        `\n    → registre em src/shared/constants/routingStrategies.ts ou remova o branch morto.`,
     );
   }
 
   // ── (3) Translator pairs ──────────────────────────────────────────────────
   await import("@omniroute/open-sse/translator/bootstrap.ts").then((m) =>
-    (m.bootstrapTranslatorRegistry as () => void)()
+    (m.bootstrapTranslatorRegistry as () => void)(),
   );
   const formatsMod = await import("@omniroute/open-sse/translator/formats.ts");
   const registryMod = await import("@omniroute/open-sse/translator/registry.ts");
   const FORMATS = formatsMod.FORMATS as Record<string, string>;
   const getRequestTranslator = registryMod.getRequestTranslator as (
     from: string,
-    to: string
+    to: string,
   ) => unknown;
   const getResponseTranslator = registryMod.getResponseTranslator as (
     from: string,
-    to: string
+    to: string,
   ) => unknown;
   const formatIds = Object.values(FORMATS);
   const livePairs = new Set<string>();
@@ -548,7 +548,7 @@ async function main(): Promise<void> {
     failures.push(
       `[translator] ${missingPairs.length} par(es) from:to congelado(s) sumiram do registry vivo (regressão):\n` +
         missingPairs.map((p) => `    ✗ ${p}`).join("\n") +
-        `\n    → restaure o adapter em open-sse/translator/ ou, se a remoção foi intencional, atualize KNOWN_TRANSLATOR_PAIRS.`
+        `\n    → restaure o adapter em open-sse/translator/ ou, se a remoção foi intencional, atualize KNOWN_TRANSLATOR_PAIRS.`,
     );
   }
   const newPairs = findNewTranslatorPairs(KNOWN_TRANSLATOR_PAIRS, livePairs);
@@ -557,8 +557,9 @@ async function main(): Promise<void> {
   const { MCP_TOOLS } = await import("@omniroute/open-sse/mcp-server/schemas/tools.ts");
   const { memoryTools } = await import("@omniroute/open-sse/mcp-server/tools/memoryTools.ts");
   const { skillTools } = await import("@omniroute/open-sse/mcp-server/tools/skillTools.ts");
-  const { gamificationTools } =
-    await import("@omniroute/open-sse/mcp-server/tools/gamificationTools.ts");
+  const { gamificationTools } = await import(
+    "@omniroute/open-sse/mcp-server/tools/gamificationTools.ts"
+  );
   const { pluginTools } = await import("@omniroute/open-sse/mcp-server/tools/pluginTools.ts");
   const { notionTools } = await import("@omniroute/open-sse/mcp-server/tools/notionTools.ts");
   const { obsidianTools } = await import("@omniroute/open-sse/mcp-server/tools/obsidianTools.ts");
@@ -582,7 +583,7 @@ async function main(): Promise<void> {
     failures.push(
       `[mcp-tools] ${toolsWithoutScopes.length} tool(s) sem scope(s) atribuído(s) — todo tool registrado deve ter ao menos 1 scope para scope-enforcement:\n` +
         toolsWithoutScopes.map((n) => `    ✗ ${n}`).join("\n") +
-        `\n    → adicione o campo scopes: [...] na definição do tool.`
+        `\n    → adicione o campo scopes: [...] na definição do tool.`,
     );
   }
 
@@ -592,7 +593,7 @@ async function main(): Promise<void> {
     failures.push(
       `[mcp-tools] ${missingMcpTools.length} tool(s) congelado(s) sumiram do registry vivo (regressão):\n` +
         missingMcpTools.map((n) => `    ✗ ${n}`).join("\n") +
-        `\n    → restaure o tool ou, se a remoção foi intencional, atualize KNOWN_MCP_TOOL_NAMES.`
+        `\n    → restaure o tool ou, se a remoção foi intencional, atualize KNOWN_MCP_TOOL_NAMES.`,
     );
   }
   const newMcpTools = findNewMcpTools(KNOWN_MCP_TOOL_NAMES, liveMcpToolNames);
@@ -604,7 +605,7 @@ async function main(): Promise<void> {
   // Parse the Agent Card route statically (the skills array is a literal in the source).
   const agentCardSource = readFileSync(
     resolvePath(REPO_ROOT, "src/app/.well-known/agent.json/route.ts"),
-    "utf8"
+    "utf8",
   );
   // Extract skill IDs: `id: "..."` lines inside the skills array.
   const skillIdRe = /\bid:\s*"([^"]+)"/g;
@@ -615,7 +616,7 @@ async function main(): Promise<void> {
   }
   if (agentCardSkills.size === 0) {
     failures.push(
-      `[a2a-skills] parse do Agent Card não encontrou nenhum skill id (regex quebrada ou arquivo movido?)`
+      `[a2a-skills] parse do Agent Card não encontrou nenhum skill id (regex quebrada ou arquivo movido?)`,
     );
   }
 
@@ -624,21 +625,21 @@ async function main(): Promise<void> {
     failures.push(
       `[a2a-skills] ${inHandlersNotCard.length} skill(s) em A2A_SKILL_HANDLERS mas ausente(s) do Agent Card (agentes não conseguem descobrir):\n` +
         inHandlersNotCard.map((s) => `    ✗ ${s}`).join("\n") +
-        `\n    → adicione o skill em src/app/.well-known/agent.json/route.ts (skills array).`
+        `\n    → adicione o skill em src/app/.well-known/agent.json/route.ts (skills array).`,
     );
   }
   if (inCardNotHandlers.length) {
     failures.push(
       `[a2a-skills] ${inCardNotHandlers.length} skill(s) expostos no Agent Card mas ausente(s) de A2A_SKILL_HANDLERS (chamada silenciosamente falha):\n` +
         inCardNotHandlers.map((s) => `    ✗ ${s}`).join("\n") +
-        `\n    → registre o handler em src/lib/a2a/taskExecution.ts (A2A_SKILL_HANDLERS).`
+        `\n    → registre o handler em src/lib/a2a/taskExecution.ts (A2A_SKILL_HANDLERS).`,
     );
   }
 
   // ── (6) Cloud agents ─────────────────────────────────────────────────────
   const registrySource = readFileSync(
     resolvePath(REPO_ROOT, "src/lib/cloudAgent/registry.ts"),
-    "utf8"
+    "utf8",
   );
   const registryKeys = extractCloudAgentRegistryKeys(registrySource);
 
@@ -650,7 +651,7 @@ async function main(): Promise<void> {
       .map((f) => {
         const base = basename(f, extname(f));
         return AGENT_FILE_TO_REGISTRY_KEY[base] ?? base;
-      })
+      }),
   );
 
   const { inRegistryNotFiles, inFilesNotRegistry } = diffCloudAgents(registryKeys, agentFileBases);
@@ -658,21 +659,21 @@ async function main(): Promise<void> {
     failures.push(
       `[cloud-agents] ${inRegistryNotFiles.length} chave(s) no registry sem arquivo de classe em agents/:\n` +
         inRegistryNotFiles.map((k) => `    ✗ ${k}`).join("\n") +
-        `\n    → crie o arquivo src/lib/cloudAgent/agents/<name>.ts ou atualize AGENT_FILE_TO_REGISTRY_KEY.`
+        `\n    → crie o arquivo src/lib/cloudAgent/agents/<name>.ts ou atualize AGENT_FILE_TO_REGISTRY_KEY.`,
     );
   }
   if (inFilesNotRegistry.length) {
     failures.push(
       `[cloud-agents] ${inFilesNotRegistry.length} arquivo(s) em agents/ sem entrada no registry:\n` +
         inFilesNotRegistry.map((f) => `    ✗ ${f}`).join("\n") +
-        `\n    → registre o agente em src/lib/cloudAgent/registry.ts ou adicione o alias em AGENT_FILE_TO_REGISTRY_KEY.`
+        `\n    → registre o agente em src/lib/cloudAgent/registry.ts ou adicione o alias em AGENT_FILE_TO_REGISTRY_KEY.`,
     );
   }
 
   // ── Resultado ─────────────────────────────────────────────────────────────
   if (failures.length) {
     console.error(
-      `[known-symbols] ${failures.length} sub-checagem(ns) falharam:\n\n${failures.join("\n\n")}`
+      `[known-symbols] ${failures.length} sub-checagem(ns) falharam:\n\n${failures.join("\n\n")}`,
     );
     process.exit(1);
   }
@@ -693,14 +694,14 @@ async function main(): Promise<void> {
       `${livePairs.size} pares de tradutor vivos vs ${KNOWN_TRANSLATOR_PAIRS.length} congelados${newPairsNote}; ` +
       `${liveMcpToolNames.size} tools MCP (${toolsWithoutScopes.length === 0 ? "todos com scope" : `${toolsWithoutScopes.length} sem scope`}) vs ${KNOWN_MCP_TOOL_NAMES.length} congelados${newMcpNote}; ` +
       `${handlerKeys.size} A2A skills (handlers↔card OK); ` +
-      `${registryKeys.size} cloud agents (registry↔files OK)`
+      `${registryKeys.size} cloud agents (registry↔files OK)`,
   );
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] || "").href) {
   main().catch((err) => {
     console.error(
-      `[known-symbols] erro fatal: ${err instanceof Error ? err.message : String(err)}`
+      `[known-symbols] erro fatal: ${err instanceof Error ? err.message : String(err)}`,
     );
     process.exit(1);
   });

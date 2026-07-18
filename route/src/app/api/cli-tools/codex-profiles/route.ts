@@ -113,7 +113,7 @@ export async function POST(request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -153,7 +153,7 @@ export async function POST(request) {
     if (!configToml && !authJson) {
       return NextResponse.json(
         { error: "No Codex configuration files found to save" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -202,7 +202,7 @@ export async function PUT(request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -276,7 +276,7 @@ export async function DELETE(request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 

@@ -1,23 +1,19 @@
-'use client';
+"use client";
 
-import { MultiFileDiff } from '@pierre/diffs/react';
-import type { PreloadMultiFileDiffResult } from '@pierre/diffs/ssr';
-import { IconDiffSplit, IconDiffUnified } from '@pierre/icons';
-import { useState } from 'react';
+import { MultiFileDiff } from "@pierre/diffs/react";
+import type { PreloadMultiFileDiffResult } from "@pierre/diffs/ssr";
+import { IconDiffSplit, IconDiffUnified } from "@pierre/icons";
+import { useState } from "react";
 
-import { FeatureHeader } from '@/components/FeatureHeader';
-import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group';
+import { FeatureHeader } from "@/components/FeatureHeader";
+import { ButtonGroup, ButtonGroupItem } from "@/components/ui/button-group";
 
 interface SplitUnifiedProps {
   prerenderedDiff: PreloadMultiFileDiffResult<undefined>;
 }
 
-export function SplitUnified({
-  prerenderedDiff: { options, ...props },
-}: SplitUnifiedProps) {
-  const [diffStyle, setDiffStyle] = useState<'split' | 'unified'>(
-    options?.diffStyle ?? 'split'
-  );
+export function SplitUnified({ prerenderedDiff: { options, ...props } }: SplitUnifiedProps) {
+  const [diffStyle, setDiffStyle] = useState<"split" | "unified">(options?.diffStyle ?? "split");
   return (
     <div className="space-y-5">
       <FeatureHeader
@@ -27,7 +23,7 @@ export function SplitUnified({
       />
       <ButtonGroup
         value={diffStyle}
-        onValueChange={(value) => setDiffStyle(value as 'split' | 'unified')}
+        onValueChange={(value) => setDiffStyle(value as "split" | "unified")}
       >
         <ButtonGroupItem value="split">
           <IconDiffSplit />
@@ -39,11 +35,7 @@ export function SplitUnified({
         </ButtonGroupItem>
       </ButtonGroup>
 
-      <MultiFileDiff
-        {...props}
-        className="diff-container"
-        options={{ ...options, diffStyle }}
-      />
+      <MultiFileDiff {...props} className="diff-container" options={{ ...options, diffStyle }} />
     </div>
   );
 }

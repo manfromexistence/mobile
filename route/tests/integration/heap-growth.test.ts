@@ -26,8 +26,8 @@ function sseChunks(n: number): Uint8Array[] {
   for (let i = 0; i < n; i++) {
     parts.push(
       enc.encode(
-        `data: {"id":"chatcmpl","object":"chat.completion.chunk","created":1,"model":"gpt-4o","choices":[{"delta":{"content":"x"},"index":0}]}\n\n`
-      )
+        `data: {"id":"chatcmpl","object":"chat.completion.chunk","created":1,"model":"gpt-4o","choices":[{"delta":{"content":"x"},"index":0}]}\n\n`,
+      ),
     );
   }
   parts.push(enc.encode(`data: [DONE]\n\n`));

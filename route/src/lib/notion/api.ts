@@ -79,13 +79,16 @@ function classifyNotionError(status: number, code: string, message: string): Err
 }
 
 function sanitize(msg: string): string {
-  return msg.replace(/\s+at\s+\S+/g, "").replace(/\/[\w/.-]+\.[a-z]+\:\d+/g, "").slice(0, 4096);
+  return msg
+    .replace(/\s+at\s+\S+/g, "")
+    .replace(/\/[\w/.-]+\.[a-z]+\:\d+/g, "")
+    .slice(0, 4096);
 }
 
 async function notionFetch(
   path: string,
   apiKey: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<unknown> {
   const url = `${NOTION_API_BASE}${path}`;
   const controller = new AbortController();
@@ -110,7 +113,7 @@ async function notionFetch(
       });
 
       if (!response.ok) {
-        const body = await response.json().catch(() => ({})) as Record<string, unknown>;
+        const body = (await response.json().catch(() => ({}))) as Record<string, unknown>;
         const errBody = body as Partial<NotionErrorBody>;
         const code = errBody?.code ?? "unknown";
         const msg = errBody?.message ?? `HTTP ${response.status}`;
@@ -138,7 +141,11 @@ async function notionFetch(
         clearTimeout(timeout);
         throw new NotionTimeoutError("Notion API request timed out after 55s");
       }
-      if (err instanceof NotionAuthError || err instanceof NotionNotFoundError || err instanceof NotionValidationError) {
+      if (
+        err instanceof NotionAuthError ||
+        err instanceof NotionNotFoundError ||
+        err instanceof NotionValidationError
+      ) {
         clearTimeout(timeout);
         throw err;
       }
@@ -175,7 +182,7 @@ export function createNotionClient(apiKey: string) {
     async searchPagesAndDatabases(
       query: string,
       startCursor?: string,
-      pageSize = 20
+      pageSize = 20,
     ): Promise<unknown> {
       const body: Record<string, unknown> = {
         query,
@@ -196,7 +203,7 @@ export function createNotionClient(apiKey: string) {
     async listBlockChildren(
       blockId: string,
       startCursor?: string,
-      pageSize = 50
+      pageSize = 50,
     ): Promise<unknown> {
       const params = new URLSearchParams();
       params.set("page_size", String(Math.min(pageSize, 100)));
@@ -209,7 +216,7 @@ export function createNotionClient(apiKey: string) {
       filter?: unknown,
       sorts?: unknown[],
       startCursor?: string,
-      pageSize = 50
+      pageSize = 50,
     ): Promise<unknown> {
       const body: Record<string, unknown> = {
         page_size: Math.min(pageSize, 100),
@@ -227,11 +234,7 @@ export function createNotionClient(apiKey: string) {
       return notionFetch(`/databases/${databaseId}`, apiKey);
     },
 
-    async appendBlocks(
-      blockId: string,
-      children: unknown[],
-      after?: string
-    ): Promise<unknown> {
+    async appendBlocks(blockId: string, children: unknown[], after?: string): Promise<unknown> {
       const body: Record<string, unknown> = {
         children: children.slice(0, 100),
       };

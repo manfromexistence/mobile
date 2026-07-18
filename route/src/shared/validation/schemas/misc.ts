@@ -144,7 +144,7 @@ export const jsonRecordSchema = z.record(z.string(), z.unknown());
 
 export const nonEmptyJsonRecordSchema = jsonRecordSchema.refine(
   (value) => Object.keys(value).length > 0,
-  "Body must be a non-empty object"
+  "Body must be a non-empty object",
 );
 
 export const dbBackupRestoreSchema = z.object({

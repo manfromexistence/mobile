@@ -14,7 +14,7 @@ async function waitForAnalyticsShell(page: import("@playwright/test").Page) {
       .filter({
         hasText: /overview/i,
       })
-      .first()
+      .first(),
   ).toBeVisible({ timeout: 15000 });
 }
 
@@ -130,7 +130,7 @@ test.describe("Analytics Tabs UI", () => {
     await expect(mainTabList).toBeVisible();
 
     const tabButtons = page.locator(
-      'button[class*="segmented"], [role="tablist"] > button, [role="tablist"] div > button'
+      'button[class*="segmented"], [role="tablist"] > button, [role="tablist"] div > button',
     );
     const count = await tabButtons.count();
     expect(count).toBeGreaterThanOrEqual(4);

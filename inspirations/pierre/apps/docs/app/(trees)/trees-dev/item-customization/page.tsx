@@ -1,20 +1,17 @@
-import {
-  preloadFileTree,
-  serializeFileTreeSsrPayload,
-} from '@pierre/trees/ssr';
-import type { FileTreePathOptions } from '@trees/_lib/fileTreePathOptions';
+import { preloadFileTree, serializeFileTreeSsrPayload } from "@pierre/trees/ssr";
+import type { FileTreePathOptions } from "@trees/_lib/fileTreePathOptions";
 
-import { readSettingsCookies } from '../_components/readSettingsCookies';
-import { ItemCustomizationDemoClient } from '../_demos/ItemCustomizationDemoClient';
-import { createPresortedPreparedInput } from '../_lib/createPresortedPreparedInput';
+import { readSettingsCookies } from "../_components/readSettingsCookies";
+import { ItemCustomizationDemoClient } from "../_demos/ItemCustomizationDemoClient";
+import { createPresortedPreparedInput } from "../_lib/createPresortedPreparedInput";
 import {
   getItemCustomizationDecorationPreset,
   getTreesDevGitStatusPreset,
   ITEM_CUSTOMIZATION_DECORATION_ICONS,
   ITEM_CUSTOMIZATION_DEMO_DEFAULTS,
   ITEM_CUSTOMIZATION_DEMO_WORKLOAD_NAME,
-} from '../_lib/itemCustomizationDemoData';
-import { loadWorkloadDataPayload } from '../_lib/workloadLoader';
+} from "../_lib/itemCustomizationDemoData";
+import { loadWorkloadDataPayload } from "../_lib/workloadLoader";
 
 const ITEM_CUSTOMIZATION_VIEWPORT_HEIGHT = 360;
 
@@ -22,25 +19,25 @@ export default async function TreesDevItemCustomizationPage() {
   const { flattenEmptyDirectories } = await readSettingsCookies();
   const workloadData = await loadWorkloadDataPayload(
     ITEM_CUSTOMIZATION_DEMO_WORKLOAD_NAME,
-    'workload'
+    "workload",
   );
   const defaultGitStatusPreset = getTreesDevGitStatusPreset(
-    ITEM_CUSTOMIZATION_DEMO_DEFAULTS.gitStatusPresetId
+    ITEM_CUSTOMIZATION_DEMO_DEFAULTS.gitStatusPresetId,
   );
   const defaultDecorationPreset = getItemCustomizationDecorationPreset(
-    ITEM_CUSTOMIZATION_DEMO_DEFAULTS.decorationPresetId
+    ITEM_CUSTOMIZATION_DEMO_DEFAULTS.decorationPresetId,
   );
   const preparedInput = workloadData.pathsArePresorted
     ? createPresortedPreparedInput(workloadData.paths)
     : undefined;
   const sharedOptions: Omit<
     FileTreePathOptions,
-    | 'composition'
-    | 'gitStatus'
-    | 'id'
-    | 'onSelectionChange'
-    | 'renderRowDecoration'
-    | 'preparedInput'
+    | "composition"
+    | "gitStatus"
+    | "id"
+    | "onSelectionChange"
+    | "renderRowDecoration"
+    | "preparedInput"
   > = {
     flattenEmptyDirectories,
     icons: ITEM_CUSTOMIZATION_DECORATION_ICONS,
@@ -59,14 +56,14 @@ export default async function TreesDevItemCustomizationPage() {
       },
     },
     gitStatus: defaultGitStatusPreset.entries,
-    id: 'trees-dev-item-customization',
+    id: "trees-dev-item-customization",
     preparedInput,
     renderRowDecoration: defaultDecorationPreset.renderer ?? undefined,
   });
 
   return (
     <ItemCustomizationDemoClient
-      containerHtml={serializeFileTreeSsrPayload(payload, 'dom')}
+      containerHtml={serializeFileTreeSsrPayload(payload, "dom")}
       fileCountLabel={workloadData.selectedWorkload.fileCountLabel}
       pathsArePresorted={workloadData.pathsArePresorted}
       sharedOptions={sharedOptions}

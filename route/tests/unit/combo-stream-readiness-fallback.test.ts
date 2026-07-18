@@ -36,15 +36,15 @@ function okStreamResponse(content: string): Response {
         textEncoder.encode(
           `data: ${JSON.stringify({
             choices: [{ delta: { role: "assistant", content } }],
-          })}\n\n`
-        )
+          })}\n\n`,
+        ),
       );
       controller.enqueue(
         textEncoder.encode(
           `data: ${JSON.stringify({
             choices: [{ delta: {}, finish_reason: "stop" }],
-          })}\n\n`
-        )
+          })}\n\n`,
+        ),
       );
       controller.enqueue(textEncoder.encode("data: [DONE]\n\n"));
       controller.close();
@@ -97,7 +97,7 @@ async function readWithTimeout(response: Response, timeoutMs = 100): Promise<str
       new Promise<never>((_, reject) => {
         timer = setTimeout(
           () => reject(new Error(`Timed out reading response after ${timeoutMs}ms`)),
-          timeoutMs
+          timeoutMs,
         );
       }),
     ]);
@@ -134,7 +134,7 @@ test("streaming quality peek releases OpenAI-compatible reasoning-only SSE immed
         headers: { "Content-Type": "text/event-stream" },
       }),
       true,
-      createLog()
+      createLog(),
     ),
     new Promise<"timeout">((resolve) => setTimeout(() => resolve("timeout"), 50)),
   ]);
@@ -189,7 +189,7 @@ test("streaming quality peek waits past OpenAI-compatible empty header chunks", 
       headers: { "Content-Type": "text/event-stream" },
     }),
     true,
-    createLog()
+    createLog(),
   );
 
   const earlyResult = await Promise.race([
@@ -247,7 +247,7 @@ test("streaming quality peek waits past OpenAI-compatible finish-only chunks", a
       headers: { "Content-Type": "text/event-stream" },
     }),
     true,
-    createLog()
+    createLog(),
   );
 
   const earlyResult = await Promise.race([
@@ -306,7 +306,7 @@ test("streaming quality peek waits past Responses lifecycle-only events", async 
       headers: { "Content-Type": "text/event-stream" },
     }),
     true,
-    createLog()
+    createLog(),
   );
 
   const earlyResult = await Promise.race([
@@ -357,7 +357,7 @@ test("streaming quality peek waits past Gemini finish-only candidates", async ()
       headers: { "Content-Type": "text/event-stream" },
     }),
     true,
-    createLog()
+    createLog(),
   );
 
   const earlyResult = await Promise.race([
@@ -396,8 +396,8 @@ test("streaming quality peek parses legal multi-line SSE data before releasing",
     start(controller) {
       controller.enqueue(
         textEncoder.encode(
-          `data: ${payload.slice(0, splitAt)}\ndata: ${payload.slice(splitAt)}\n\n`
-        )
+          `data: ${payload.slice(0, splitAt)}\ndata: ${payload.slice(splitAt)}\n\n`,
+        ),
       );
     },
   });
@@ -409,7 +409,7 @@ test("streaming quality peek parses legal multi-line SSE data before releasing",
         headers: { "Content-Type": "text/event-stream" },
       }),
       true,
-      createLog()
+      createLog(),
     ),
     new Promise<"timeout">((resolve) => setTimeout(() => resolve("timeout"), 100)),
   ]);
@@ -435,8 +435,8 @@ test("streaming quality peek still rejects complete Claude lifecycle without con
             `data: ${JSON.stringify({ type: "message_stop" })}`,
             "",
             "",
-          ].join("\n")
-        )
+          ].join("\n"),
+        ),
       );
       controller.close();
     },
@@ -448,7 +448,7 @@ test("streaming quality peek still rejects complete Claude lifecycle without con
       headers: { "Content-Type": "text/event-stream" },
     }),
     true,
-    createLog()
+    createLog(),
   );
 
   assert.equal(result.valid, false);
@@ -491,9 +491,9 @@ test("combo falls back when first model returns HTTP 200 zombie SSE stream", asy
   assert.deepEqual(calls, ["glm/zombie-model", "openai/gpt-5.4-mini"]);
   assert.ok(
     log.entries.some(
-      (e) => e.level === "warn" && e.tag === "COMBO" && String(e.msg).includes("glm/zombie-model")
+      (e) => e.level === "warn" && e.tag === "COMBO" && String(e.msg).includes("glm/zombie-model"),
     ),
-    "combo should log warning for the failed model"
+    "combo should log warning for the failed model",
   );
 });
 

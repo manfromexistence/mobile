@@ -13,7 +13,7 @@ type EnvelopeTool = { functionDeclarations?: Array<{ name: string }> };
 
 function declaredToolNames(result: { request: { tools?: EnvelopeTool[] } }): string[] {
   return (result.request.tools ?? []).flatMap((tool) =>
-    (tool.functionDeclarations ?? []).map((fn) => fn.name)
+    (tool.functionDeclarations ?? []).map((fn) => fn.name),
   );
 }
 
@@ -36,14 +36,14 @@ test("Antigravity envelope strips built-in tool names mixed with custom function
       ],
     },
     false,
-    CREDS
+    CREDS,
   );
 
   const names = declaredToolNames(result);
   // Built-in tool name must be gone from functionDeclarations...
   assert.ok(
     !names.includes("google_search") && !names.includes("googleSearch"),
-    `expected built-in tool name stripped, got ${JSON.stringify(names)}`
+    `expected built-in tool name stripped, got ${JSON.stringify(names)}`,
   );
   // ...while the custom declaration survives.
   assert.ok(names.includes("read_file"), `expected custom tool kept, got ${JSON.stringify(names)}`);
@@ -66,7 +66,7 @@ test("Antigravity envelope keeps a normal custom-only tool request intact (#1095
       ],
     },
     false,
-    CREDS
+    CREDS,
   );
 
   const names = declaredToolNames(result);
@@ -89,13 +89,13 @@ test("Antigravity envelope drops tools + toolConfig when only built-in tools are
       ],
     },
     false,
-    CREDS
+    CREDS,
   );
 
   const names = declaredToolNames(result);
   assert.ok(
     !names.includes("google_search") && !names.includes("googleSearch"),
-    `expected no built-in functionDeclarations, got ${JSON.stringify(names)}`
+    `expected no built-in functionDeclarations, got ${JSON.stringify(names)}`,
   );
   // No custom declarations remain -> no VALIDATED toolConfig is forced.
   assert.equal(result.request.toolConfig, undefined);

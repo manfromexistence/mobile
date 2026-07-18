@@ -1,9 +1,9 @@
-import { createUniqueId, type ComponentProps } from "solid-js"
+import { createUniqueId, type ComponentProps } from "solid-js";
 
 export function WordmarkV2(props: Pick<ComponentProps<"svg">, "class">) {
-  const filter = createUniqueId()
-  const mask = createUniqueId()
-  const maskGradient = createUniqueId()
+  const filter = createUniqueId();
+  const mask = createUniqueId();
+  const maskGradient = createUniqueId();
 
   return (
     <svg
@@ -59,7 +59,14 @@ export function WordmarkV2(props: Pick<ComponentProps<"svg">, "class">) {
         <mask id={mask} maskUnits="userSpaceOnUse" x="0" y="0" width="720" height="129">
           <rect width="720" height="129" fill={`url(#${maskGradient})`} />
         </mask>
-        <linearGradient id={maskGradient} x1="360" y1="0" x2="360" y2="112" gradientUnits="userSpaceOnUse">
+        <linearGradient
+          id={maskGradient}
+          x1="360"
+          y1="0"
+          x2="360"
+          y2="112"
+          gradientUnits="userSpaceOnUse"
+        >
           <stop stop-color="white" stop-opacity="0.7" />
           <stop offset="1" stop-color="white" stop-opacity="0" />
         </linearGradient>
@@ -88,5 +95,5 @@ export function WordmarkV2(props: Pick<ComponentProps<"svg">, "class">) {
         </filter>
       </defs>
     </svg>
-  )
+  );
 }

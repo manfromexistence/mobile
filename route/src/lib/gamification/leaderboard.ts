@@ -21,7 +21,7 @@ export interface LeaderboardEntry {
 export async function updateScore(
   apiKeyId: string,
   scope: LeaderboardScope,
-  points: number
+  points: number,
 ): Promise<void> {
   const { updateScore: dbUpdateScore } = await import("../db/gamification");
   dbUpdateScore(apiKeyId, scope, points);
@@ -49,7 +49,7 @@ export async function getTopN(scope: LeaderboardScope, limit: number = 50, offse
 export async function getNeighbors(
   apiKeyId: string,
   scope: LeaderboardScope,
-  radius: number = 5
+  radius: number = 5,
 ): Promise<{ above: LeaderboardEntry[]; below: LeaderboardEntry[] }> {
   const { getLeaderboardNeighbors } = await import("../db/gamification");
   return getLeaderboardNeighbors(apiKeyId, scope, radius);

@@ -25,7 +25,7 @@ test("CloudflareAIExecutor.transformRequest throws a clear error on image_url co
 
   assert.throws(
     () => executor.transformRequest("@cf/meta/llama-3.3-70b-instruct", body, false, null),
-    /does not accept image|non-text content/i
+    /does not accept image|non-text content/i,
   );
 });
 

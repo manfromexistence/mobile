@@ -58,7 +58,7 @@ test("expandAutoComboCandidatePool adds every model of an active provider when n
   for (const id of catalogIds) {
     assert.ok(
       expanded.some((t) => t.modelStr === id),
-      `expected expanded targets to include ${id}`
+      `expected expanded targets to include ${id}`,
     );
   }
 });
@@ -109,7 +109,7 @@ test("expandAutoComboCandidatePool falls through to active connections when cand
   // should fall through and expand from active connections instead.
   assert.ok(
     expanded.length > 0,
-    "expected expansion from active connections despite empty candidatePool"
+    "expected expansion from active connections despite empty candidatePool",
   );
   const openaiTargets = expanded.filter((t) => t.provider === "openai");
   assert.ok(openaiTargets.length > 0, "expected openai targets to be expanded");

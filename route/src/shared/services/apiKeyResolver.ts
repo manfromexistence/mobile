@@ -3,7 +3,7 @@ import { getConsistentMachineId } from "@/shared/utils/machineId";
 
 export async function resolveApiKey(
   apiKeyId?: string | null,
-  apiKey?: string | null
+  apiKey?: string | null,
 ): Promise<string> {
   if (apiKeyId) {
     try {

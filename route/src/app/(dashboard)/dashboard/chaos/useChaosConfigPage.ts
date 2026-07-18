@@ -20,14 +20,17 @@ export function useChaosConfigPage() {
   const { config, setConfig, availableProviders, loading } = useChaosConfigData();
   const { t, saving, message, setMessage, saveConfig, resetConfig } = useChaosConfigPersistence(
     config,
-    setConfig
+    setConfig,
   );
   const { testing, testResult, testChaos } = useChaosTestRun(config, setMessage);
 
   const addOverride = useCallback(() => {
     setConfig((prev) => ({
       ...prev,
-      providerOverrides: [...prev.providerOverrides, { providerId: "", modelId: "", enabled: true }],
+      providerOverrides: [
+        ...prev.providerOverrides,
+        { providerId: "", modelId: "", enabled: true },
+      ],
     }));
   }, [setConfig]);
 
@@ -39,7 +42,7 @@ export function useChaosConfigPage() {
         return { ...prev, providerOverrides: overrides };
       });
     },
-    [setConfig]
+    [setConfig],
   );
 
   const removeOverride = useCallback(
@@ -49,7 +52,7 @@ export function useChaosConfigPage() {
         providerOverrides: prev.providerOverrides.filter((_, i) => i !== index),
       }));
     },
-    [setConfig]
+    [setConfig],
   );
 
   return {

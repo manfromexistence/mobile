@@ -12,7 +12,7 @@ import { markVerified } from "@/lib/db/discoveryResults";
 
 export async function POST(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ): Promise<Response> {
   const authError = await requireManagementAuth(request);
   if (authError) return authError;

@@ -110,7 +110,7 @@ test("handleAudioTranscription routes Deepgram with binary upload and language p
           channels: [{ alternatives: [{ transcript: "ola mundo" }] }],
         },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -150,7 +150,7 @@ test("handleAudioTranscription marks noSpeechDetected when Deepgram returns no t
           channels: [{ alternatives: [{ transcript: "" }] }],
         },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   try {
@@ -300,7 +300,7 @@ test("handleAudioTranscription routes AssemblyAI uploads and polls until complet
         "https://api.assemblyai.com/v2/upload",
         "https://api.assemblyai.com/v2/transcript",
         "https://api.assemblyai.com/v2/transcript/transcript-1",
-      ]
+      ],
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -388,7 +388,7 @@ test("handleAudioTranscription routes HuggingFace providers with raw audio uploa
 
     assert.equal(
       capturedUrl,
-      "https://api-inference.huggingface.co/models/openai/whisper-large-v3"
+      "https://api-inference.huggingface.co/models/openai/whisper-large-v3",
     );
     assert.equal(capturedHeaders.Authorization, "Bearer hf-key");
     assert.equal(capturedHeaders["Content-Type"], "audio/mpeg");
@@ -413,7 +413,7 @@ test("handleAudioTranscription rejects unsupported providers", async () => {
   assert.equal(response.status, 400);
   assert.match(
     payload.error.message,
-    /No transcription provider found for model "unknown\/provider"/
+    /No transcription provider found for model "unknown\/provider"/,
   );
 });
 

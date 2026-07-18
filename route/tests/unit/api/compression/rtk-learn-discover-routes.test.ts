@@ -35,7 +35,7 @@ function seedSamples() {
   for (let i = 0; i < 3; i++) {
     maybePersistRtkRawOutput(
       `Resolving dependencies...\nnpm warn deprecated foo@1.0.0\nadded ${i} packages in ${i}s\n`,
-      { retention: "always", command: "npm install" }
+      { retention: "always", command: "npm install" },
     );
   }
 }
@@ -78,7 +78,7 @@ test("GET /discover — empty store → 200 with no candidates", async () => {
 test("GET /learn?command=npm install — returns a suggested filter learned from matching samples", async () => {
   seedSamples();
   const res = await learnRoute.GET(
-    get("http://localhost/api/context/rtk/learn?command=" + encodeURIComponent("npm install"))
+    get("http://localhost/api/context/rtk/learn?command=" + encodeURIComponent("npm install")),
   );
   assert.equal(res.status, 200);
   const body = (await res.json()) as {
@@ -108,7 +108,7 @@ test("GET /learn filters out other commands' samples", async () => {
     command: "cargo build",
   });
   const res = await learnRoute.GET(
-    get("http://localhost/api/context/rtk/learn?command=" + encodeURIComponent("npm install"))
+    get("http://localhost/api/context/rtk/learn?command=" + encodeURIComponent("npm install")),
   );
   const body = (await res.json()) as { sampleCount: number };
   assert.equal(body.sampleCount, 3, "the cargo sample is excluded");

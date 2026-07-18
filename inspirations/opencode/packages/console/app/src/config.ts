@@ -26,4 +26,4 @@ export const config = {
     commits: "13,000",
     monthlyUsers: "7.5M",
   },
-} as const
+} as const;

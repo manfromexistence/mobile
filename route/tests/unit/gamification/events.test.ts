@@ -14,7 +14,7 @@ describe("Gamification Events", () => {
 
   it("does not throw for unknown action", async () => {
     await assert.doesNotReject(
-      emitGamificationEvent({ apiKeyId: "test-user", action: "unknown" as any })
+      emitGamificationEvent({ apiKeyId: "test-user", action: "unknown" as any }),
     );
   });
 
@@ -27,14 +27,14 @@ describe("Gamification Events", () => {
       db.prepare("INSERT INTO xp_audit_log (api_key_id, action, xp_earned) VALUES (?, ?, ?)").run(
         testKey,
         "request",
-        1
+        1,
       );
     }
 
     // Verify the SELECT query works (was broken before fix)
     const row = db
       .prepare(
-        "SELECT COALESCE(COUNT(*), 0) AS count FROM xp_audit_log WHERE api_key_id = ? AND action = ?"
+        "SELECT COALESCE(COUNT(*), 0) AS count FROM xp_audit_log WHERE api_key_id = ? AND action = ?",
       )
       .get(testKey, "request") as { count: number };
     assert.equal(row.count, 5);

@@ -42,7 +42,7 @@ function safeCapMaxOutputTokens(model: string): number | null {
 export function fitThinkingToMaxTokens(
   model: string,
   callerMaxTokens: number,
-  thinking: Record<string, unknown> | undefined
+  thinking: Record<string, unknown> | undefined,
 ): { maxTokens: number; thinking: Record<string, unknown> | undefined } {
   const modelCap = safeCapMaxOutputTokens(model);
   const requestedBudget = Number(thinking?.budget_tokens) || 0;

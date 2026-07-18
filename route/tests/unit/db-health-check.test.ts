@@ -34,32 +34,32 @@ function insertBrokenRows(db) {
   db.prepare(
     `INSERT INTO quota_snapshots
       (provider, connection_id, window_key, remaining_percentage, is_exhausted, created_at)
-     VALUES (?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?)`,
   ).run("openai", "missing-conn", "monthly", 75, 0, new Date().toISOString());
 
   db.prepare(
     `INSERT INTO quota_snapshots
       (provider, connection_id, window_key, remaining_percentage, is_exhausted, created_at)
-     VALUES (?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?)`,
   ).run("openai", "missing-conn-2", "monthly", 55, 0, "not-a-timestamp");
 
   db.prepare(
-    "INSERT INTO domain_budgets (api_key_id, daily_limit_usd, monthly_limit_usd, warning_threshold) VALUES (?, ?, ?, ?)"
+    "INSERT INTO domain_budgets (api_key_id, daily_limit_usd, monthly_limit_usd, warning_threshold) VALUES (?, ?, ?, ?)",
   ).run("missing-key", 10, 100, 0.8);
   db.prepare("INSERT INTO domain_cost_history (api_key_id, cost, timestamp) VALUES (?, ?, ?)").run(
     "missing-key",
     1.5,
-    Date.now()
+    Date.now(),
   );
   db.prepare("INSERT INTO domain_fallback_chains (model, chain) VALUES (?, ?)").run(
     "broken-model",
-    "{invalid"
+    "{invalid",
   );
   db.prepare(
-    "INSERT INTO domain_lockout_state (identifier, attempts, locked_until) VALUES (?, ?, ?)"
+    "INSERT INTO domain_lockout_state (identifier, attempts, locked_until) VALUES (?, ?, ?)",
   ).run("broken-lockout", "{invalid", null);
   db.prepare(
-    "INSERT INTO domain_circuit_breakers (name, state, failure_count, last_failure_time, options) VALUES (?, ?, ?, ?, ?)"
+    "INSERT INTO domain_circuit_breakers (name, state, failure_count, last_failure_time, options) VALUES (?, ?, ?, ?, ?)",
   ).run("broken-breaker", "OPEN", 3, Date.now(), "{invalid");
 }
 
@@ -76,7 +76,7 @@ test("runDbHealthCheck reports issues without mutating when autoRepair is disabl
   assert.equal((db.prepare("SELECT COUNT(*) AS count FROM domain_budgets").get() as any).count, 1);
   assert.equal(
     (db.prepare("SELECT COUNT(*) AS count FROM domain_fallback_chains").get() as any).count,
-    1
+    1,
   );
 });
 
@@ -89,7 +89,7 @@ test("runDbHealthCheck tolerates databases without a combos table", async () => 
   assert.equal(result.isHealthy, true);
   assert.equal(
     result.issues.some((issue) => issue.table === "combos"),
-    false
+    false,
   );
 });
 
@@ -109,15 +109,15 @@ test("runDbHealthCheck auto-repairs orphan rows and invalid JSON payloads", asyn
   assert.equal((db.prepare("SELECT COUNT(*) AS count FROM domain_budgets").get() as any).count, 0);
   assert.equal(
     (db.prepare("SELECT COUNT(*) AS count FROM domain_cost_history").get() as any).count,
-    0
+    0,
   );
   assert.equal(
     (db.prepare("SELECT COUNT(*) AS count FROM domain_fallback_chains").get() as any).count,
-    0
+    0,
   );
   assert.equal(
     (db.prepare("SELECT COUNT(*) AS count FROM domain_lockout_state").get() as any).count,
-    0
+    0,
   );
   assert.equal(
     (
@@ -125,7 +125,7 @@ test("runDbHealthCheck auto-repairs orphan rows and invalid JSON payloads", asyn
         .prepare("SELECT options FROM domain_circuit_breakers WHERE name = ?")
         .get("broken-breaker") as any
     ).options,
-    null
+    null,
   );
 });
 
@@ -139,7 +139,7 @@ test("runDbHealthCheck repairs broken combo payloads, combo refs and stale conne
     apiKey: "sk-healthy",
   });
   db.prepare(
-    "INSERT INTO combos (id, name, data, sort_order, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)"
+    "INSERT INTO combos (id, name, data, sort_order, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
   ).run(
     "combo-child",
     "combo-child",
@@ -155,15 +155,15 @@ test("runDbHealthCheck repairs broken combo payloads, combo refs and stale conne
     }),
     0,
     now,
-    now
+    now,
   );
 
   db.prepare(
-    "INSERT INTO combos (id, name, data, sort_order, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)"
+    "INSERT INTO combos (id, name, data, sort_order, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
   ).run("combo-invalid", "combo-invalid", "{invalid", 1, now, now);
 
   db.prepare(
-    "INSERT INTO combos (id, name, data, sort_order, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)"
+    "INSERT INTO combos (id, name, data, sort_order, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
   ).run(
     "combo-broken",
     "combo-broken",
@@ -199,7 +199,7 @@ test("runDbHealthCheck repairs broken combo payloads, combo refs and stale conne
     }),
     2,
     now,
-    now
+    now,
   );
 
   const result = healthCheckDb.runDbHealthCheck(db, {
@@ -207,15 +207,15 @@ test("runDbHealthCheck repairs broken combo payloads, combo refs and stale conne
     createBackupBeforeRepair: () => false,
   });
   const invalidCombo = JSON.parse(
-    (db.prepare("SELECT data FROM combos WHERE id = ?").get("combo-invalid") as any).data
+    (db.prepare("SELECT data FROM combos WHERE id = ?").get("combo-invalid") as any).data,
   );
   const repairedCombo = JSON.parse(
-    (db.prepare("SELECT data FROM combos WHERE id = ?").get("combo-broken") as any).data
+    (db.prepare("SELECT data FROM combos WHERE id = ?").get("combo-broken") as any).data,
   );
 
   assert.equal(
     result.issues.some((issue) => issue.table === "combos"),
-    true
+    true,
   );
   assert.equal(result.repairedCount, 5);
   assert.equal(invalidCombo.isActive, false);
@@ -223,9 +223,9 @@ test("runDbHealthCheck repairs broken combo payloads, combo refs and stale conne
   assert.equal(repairedCombo.models.length, 3);
   assert.equal(
     repairedCombo.models.some(
-      (step) => step.kind === "combo-ref" && step.comboName === "combo-child"
+      (step) => step.kind === "combo-ref" && step.comboName === "combo-child",
     ),
-    true
+    true,
   );
   assert.equal("connectionId" in repairedCombo.models[1], false);
   assert.equal(repairedCombo.models[2].connectionId, activeConnection.id);
@@ -239,7 +239,7 @@ test("runDbHealthCheck diagnosis does not request backups for combo-only issues"
   let backupAttempts = 0;
 
   db.prepare(
-    "INSERT INTO combos (id, name, data, sort_order, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)"
+    "INSERT INTO combos (id, name, data, sort_order, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
   ).run(
     "combo-broken",
     "combo-broken",
@@ -255,7 +255,7 @@ test("runDbHealthCheck diagnosis does not request backups for combo-only issues"
     }),
     1,
     now,
-    now
+    now,
   );
 
   const result = healthCheckDb.runDbHealthCheck(db, {
@@ -292,15 +292,15 @@ test("getDbInstance can auto-repair persisted broken rows when startup repair is
   assert.equal((db.prepare("SELECT COUNT(*) AS count FROM domain_budgets").get() as any).count, 0);
   assert.equal(
     (db.prepare("SELECT COUNT(*) AS count FROM domain_cost_history").get() as any).count,
-    0
+    0,
   );
   assert.equal(
     (db.prepare("SELECT COUNT(*) AS count FROM domain_fallback_chains").get() as any).count,
-    0
+    0,
   );
   assert.equal(
     (db.prepare("SELECT COUNT(*) AS count FROM domain_lockout_state").get() as any).count,
-    0
+    0,
   );
   assert.equal(
     (
@@ -308,7 +308,7 @@ test("getDbInstance can auto-repair persisted broken rows when startup repair is
         .prepare("SELECT options FROM domain_circuit_breakers WHERE name = ?")
         .get("broken-breaker") as any
     ).options,
-    null
+    null,
   );
 });
 
@@ -323,15 +323,15 @@ test("getDbInstance skips automatic startup repair during tests unless forced", 
   assert.equal((db.prepare("SELECT COUNT(*) AS count FROM domain_budgets").get() as any).count, 1);
   assert.equal(
     (db.prepare("SELECT COUNT(*) AS count FROM domain_cost_history").get() as any).count,
-    1
+    1,
   );
   assert.equal(
     (db.prepare("SELECT COUNT(*) AS count FROM domain_fallback_chains").get() as any).count,
-    1
+    1,
   );
   assert.equal(
     (db.prepare("SELECT COUNT(*) AS count FROM domain_lockout_state").get() as any).count,
-    1
+    1,
   );
 });
 
@@ -346,11 +346,11 @@ test("runDbHealthCheck repairs a drifted db_meta schema version", async () => {
 
   assert.equal(
     result.issues.some((issue) => issue.table === "db_meta"),
-    true
+    true,
   );
   assert.equal(
     (db.prepare("SELECT value FROM db_meta WHERE key = 'schema_version'").get() as any).value,
-    "1"
+    "1",
   );
 });
 
@@ -359,12 +359,12 @@ test("deleteApiKey removes domain budget and cost history rows for that key", as
   const db = core.getDbInstance();
 
   db.prepare(
-    "INSERT INTO domain_budgets (api_key_id, daily_limit_usd, monthly_limit_usd, warning_threshold) VALUES (?, ?, ?, ?)"
+    "INSERT INTO domain_budgets (api_key_id, daily_limit_usd, monthly_limit_usd, warning_threshold) VALUES (?, ?, ?, ?)",
   ).run(created.id, 5, 50, 0.9);
   db.prepare("INSERT INTO domain_cost_history (api_key_id, cost, timestamp) VALUES (?, ?, ?)").run(
     created.id,
     0.5,
-    Date.now()
+    Date.now(),
   );
 
   assert.equal(await apiKeysDb.deleteApiKey(created.id), true);
@@ -374,7 +374,7 @@ test("deleteApiKey removes domain budget and cost history rows for that key", as
         .prepare("SELECT COUNT(*) AS count FROM domain_budgets WHERE api_key_id = ?")
         .get(created.id) as any
     ).count,
-    0
+    0,
   );
   assert.equal(
     (
@@ -382,7 +382,7 @@ test("deleteApiKey removes domain budget and cost history rows for that key", as
         .prepare("SELECT COUNT(*) AS count FROM domain_cost_history WHERE api_key_id = ?")
         .get((created as any).id) as any
     ).count,
-    0
+    0,
   );
 });
 
@@ -404,12 +404,12 @@ test("deleteProviderConnection and bulk delete remove related quota snapshots", 
   db.prepare(
     `INSERT INTO quota_snapshots
       (provider, connection_id, window_key, remaining_percentage, is_exhausted, created_at)
-     VALUES (?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?)`,
   ).run("openai", first.id, "monthly", 80, 0, new Date().toISOString());
   db.prepare(
     `INSERT INTO quota_snapshots
       (provider, connection_id, window_key, remaining_percentage, is_exhausted, created_at)
-     VALUES (?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?)`,
   ).run("openai", second.id, "monthly", 40, 0, new Date().toISOString());
 
   assert.equal(await providersDb.deleteProviderConnection((first as any).id), true);
@@ -417,7 +417,7 @@ test("deleteProviderConnection and bulk delete remove related quota snapshots", 
     (
       db.prepare("SELECT COUNT(*) AS count FROM quota_snapshots WHERE connection_id = ?") as any
     ).get(first.id).count,
-    0
+    0,
   );
 
   await providersDb.deleteProviderConnectionsByProvider("openai");
@@ -427,6 +427,6 @@ test("deleteProviderConnection and bulk delete remove related quota snapshots", 
         .prepare("SELECT COUNT(*) AS count FROM quota_snapshots WHERE connection_id = ?")
         .get(second.id) as any
     ).count,
-    0
+    0,
   );
 });

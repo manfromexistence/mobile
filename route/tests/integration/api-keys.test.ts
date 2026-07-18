@@ -40,7 +40,7 @@ async function createManagementKey() {
 
 function makeRequest(
   url: string | URL,
-  { method = "GET", token, body }: { method?: string; token?: string; body?: unknown } = {}
+  { method = "GET", token, body }: { method?: string; token?: string; body?: unknown } = {},
 ) {
   const headers = new Headers();
   if (token) {
@@ -73,7 +73,7 @@ test("API keys routes require management auth when login protection is enabled",
   const invalidToken = await listRoute.GET(
     new Request("http://localhost/api/keys", {
       headers: { authorization: "Bearer sk-invalid" },
-    })
+    }),
   );
 
   const unauthenticatedBody = (await unauthenticated.json()) as any;
@@ -92,14 +92,14 @@ test("API keys POST also requires management auth when login protection is enabl
     makeRequest("http://localhost/api/keys", {
       method: "POST",
       body: { name: "Blocked Create" },
-    })
+    }),
   );
   const invalidToken = await listRoute.POST(
     makeRequest("http://localhost/api/keys", {
       method: "POST",
       token: "sk-invalid",
       body: { name: "Blocked Create" },
-    })
+    }),
   );
 
   const unauthenticatedBody = (await unauthenticated.json()) as any;
@@ -118,7 +118,7 @@ test("POST /api/keys creates a key, preserves special characters, and persists n
     await makeManagementSessionRequest("http://localhost/api/keys", {
       method: "POST",
       body: { name: "Key / Prod #1", noLog: true },
-    })
+    }),
   );
   const body = (await response.json()) as any;
   const stored = await apiKeysDb.getApiKeyById(body.id);
@@ -139,13 +139,13 @@ test("POST /api/keys validates missing and oversized names", async () => {
     await makeManagementSessionRequest("http://localhost/api/keys", {
       method: "POST",
       body: {},
-    })
+    }),
   );
   const oversizedName = await listRoute.POST(
     await makeManagementSessionRequest("http://localhost/api/keys", {
       method: "POST",
       body: { name: "x".repeat(201) },
-    })
+    }),
   );
 
   assert.equal(missingName.status, 400);
@@ -161,7 +161,7 @@ test("POST /api/keys returns a server error for malformed JSON payloads", async 
       method: "POST",
       headers: { "content-type": "application/json" },
       body: "{",
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -176,11 +176,11 @@ test("GET /api/keys lists masked keys with pagination and GET /api/keys/[id] sta
   const createdB = await apiKeysDb.createApiKey("Beta", MACHINE_ID);
 
   const listResponse = await listRoute.GET(
-    await makeManagementSessionRequest("http://localhost/api/keys?limit=1&offset=1")
+    await makeManagementSessionRequest("http://localhost/api/keys?limit=1&offset=1"),
   );
   const getResponse = await keyRoute.GET(
     await makeManagementSessionRequest(`http://localhost/api/keys/${createdB.id}`),
-    { params: Promise.resolve({ id: createdB.id }) }
+    { params: Promise.resolve({ id: createdB.id }) },
   );
 
   const listBody = (await listResponse.json()) as any;
@@ -206,7 +206,7 @@ test("GET /api/keys falls back to default pagination for invalid query params", 
   await apiKeysDb.createApiKey("Beta", MACHINE_ID);
 
   const response = await listRoute.GET(
-    await makeManagementSessionRequest("http://localhost/api/keys?limit=0&offset=-25")
+    await makeManagementSessionRequest("http://localhost/api/keys?limit=0&offset=-25"),
   );
   const body = (await response.json()) as any;
 
@@ -223,7 +223,7 @@ test("GET /api/keys treats non-numeric pagination params as defaults", async () 
   await apiKeysDb.createApiKey("Beta", MACHINE_ID);
 
   const response = await listRoute.GET(
-    await makeManagementSessionRequest("http://localhost/api/keys?limit=abc&offset=xyz")
+    await makeManagementSessionRequest("http://localhost/api/keys?limit=abc&offset=xyz"),
   );
   const body = (await response.json()) as any;
 
@@ -232,7 +232,7 @@ test("GET /api/keys treats non-numeric pagination params as defaults", async () 
   assert.equal(body.keys.length, 3);
   assert.deepEqual(
     body.keys.map((entry) => entry.name),
-    ["management", "Alpha", "Beta"]
+    ["management", "Alpha", "Beta"],
   );
 });
 
@@ -244,7 +244,7 @@ test("GET /api/keys uses default pagination when query params are absent and rep
   const createdB = await apiKeysDb.createApiKey("Beta", MACHINE_ID);
 
   const response = await listRoute.GET(
-    await makeManagementSessionRequest("http://localhost/api/keys")
+    await makeManagementSessionRequest("http://localhost/api/keys"),
   );
   const body = (await response.json()) as any;
 
@@ -254,7 +254,7 @@ test("GET /api/keys uses default pagination when query params are absent and rep
   assert.equal(body.keys.length, 3);
   assert.deepEqual(
     body.keys.map((entry) => entry.id).sort(),
-    [authKey.id, createdA.id, createdB.id].sort()
+    [authKey.id, createdA.id, createdB.id].sort(),
   );
   assert.ok(body.keys.every((entry) => entry.key !== undefined && entry.key !== ""));
 });
@@ -275,7 +275,7 @@ test("POST /api/keys triggers cloud sync when cloud mode is enabled", async () =
       await makeManagementSessionRequest("http://localhost/api/keys", {
         method: "POST",
         body: { name: "Cloud Synced Key" },
-      })
+      }),
     );
     const body = (await response.json()) as any;
 
@@ -346,7 +346,7 @@ test("POST /api/keys still succeeds when cloud sync fails after creation", async
       await makeManagementSessionRequest("http://localhost/api/keys", {
         method: "POST",
         body: { name: "Cloud Failure Tolerated" },
-      })
+      }),
     );
     const body = (await response.json()) as any;
     const stored = await apiKeysDb.getApiKeyById(body.id);
@@ -372,17 +372,17 @@ test("GET /api/keys/[id] returns 404 for an unknown key and reveal is gated by t
 
   const missingResponse = await keyRoute.GET(
     await makeManagementSessionRequest("http://localhost/api/keys/missing"),
-    { params: Promise.resolve({ id: "missing" }) }
+    { params: Promise.resolve({ id: "missing" }) },
   );
   const revealDisabled = await revealRoute.GET(
     await makeManagementSessionRequest(`http://localhost/api/keys/${created.id}/reveal`),
-    { params: Promise.resolve({ id: created.id }) }
+    { params: Promise.resolve({ id: created.id }) },
   );
 
   process.env.ALLOW_API_KEY_REVEAL = "true";
   const revealEnabled = await revealRoute.GET(
     await makeManagementSessionRequest(`http://localhost/api/keys/${created.id}/reveal`),
-    { params: Promise.resolve({ id: created.id }) }
+    { params: Promise.resolve({ id: created.id }) },
   );
 
   const missingBody = (await missingResponse.json()) as any;
@@ -412,7 +412,7 @@ test("PATCH /api/keys/[id] updates permissions and rejects invalid payloads", as
         maxSessions: 2,
       },
     }),
-    { params: Promise.resolve({ id: created.id }) }
+    { params: Promise.resolve({ id: created.id }) },
   );
   const invalidJsonResponse = await keyRoute.PATCH(
     await makeManagementSessionRequest(`http://localhost/api/keys/${created.id}`, {
@@ -420,14 +420,14 @@ test("PATCH /api/keys/[id] updates permissions and rejects invalid payloads", as
       headers: { "content-type": "application/json" },
       body: "{",
     }),
-    { params: Promise.resolve({ id: created.id }) }
+    { params: Promise.resolve({ id: created.id }) },
   );
   const missingKeyResponse = await keyRoute.PATCH(
     await makeManagementSessionRequest("http://localhost/api/keys/missing", {
       method: "PATCH",
       body: { noLog: false },
     }),
-    { params: Promise.resolve({ id: "missing" }) }
+    { params: Promise.resolve({ id: "missing" }) },
   );
 
   const patchBody = (await patchResponse.json()) as any;
@@ -459,7 +459,7 @@ test("PATCH /api/keys/[id] renames a key and rejects invalid names", async () =>
       method: "PATCH",
       body: { name: "Renamed Key" },
     }),
-    { params: Promise.resolve({ id: created.id }) }
+    { params: Promise.resolve({ id: created.id }) },
   );
   const renameBody = (await renameResponse.json()) as any;
   const renamed = await apiKeysDb.getApiKeyById(created.id);
@@ -474,7 +474,7 @@ test("PATCH /api/keys/[id] renames a key and rejects invalid names", async () =>
       method: "PATCH",
       body: { name: "   " },
     }),
-    { params: Promise.resolve({ id: created.id }) }
+    { params: Promise.resolve({ id: created.id }) },
   );
   assert.equal(emptyNameResponse.status, 400);
 
@@ -484,7 +484,7 @@ test("PATCH /api/keys/[id] renames a key and rejects invalid names", async () =>
       method: "PATCH",
       body: { name: "x".repeat(201) },
     }),
-    { params: Promise.resolve({ id: created.id }) }
+    { params: Promise.resolve({ id: created.id }) },
   );
   assert.equal(longNameResponse.status, 400);
 });
@@ -498,13 +498,13 @@ test("DELETE /api/keys/[id] removes keys and reports missing resources", async (
     await makeManagementSessionRequest(`http://localhost/api/keys/${created.id}`, {
       method: "DELETE",
     }),
-    { params: Promise.resolve({ id: created.id }) }
+    { params: Promise.resolve({ id: created.id }) },
   );
   const missingDeleteResponse = await keyRoute.DELETE(
     await makeManagementSessionRequest("http://localhost/api/keys/missing", {
       method: "DELETE",
     }),
-    { params: Promise.resolve({ id: "missing" }) }
+    { params: Promise.resolve({ id: "missing" }) },
   );
 
   const deleteBody = (await deleteResponse.json()) as any;

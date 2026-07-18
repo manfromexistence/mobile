@@ -15,7 +15,7 @@ describe("extractCozeValidationError (#5426)", () => {
     const result = extractCozeValidationError(body);
     assert.equal(
       result,
-      "Coze rejected the key: The token you entered is incorrect. Please check and try again. (code 4100)"
+      "Coze rejected the key: The token you entered is incorrect. Please check and try again. (code 4100)",
     );
     // Never echo the raw logId or the whole envelope.
     assert.ok(result && !result.includes("20240101000000ABCDEF"));

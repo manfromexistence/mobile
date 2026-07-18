@@ -63,7 +63,7 @@ export async function startInteractiveTui({ port = 20128, baseUrl, apiKey } = {}
   const resolvedUrl = baseUrl ?? `http://localhost:${port}`;
   return new Promise((resolve) => {
     const { unmount, waitUntilExit } = render(
-      <DashboardApp port={port} baseUrl={resolvedUrl} apiKey={apiKey} onExit={() => unmount()} />
+      <DashboardApp port={port} baseUrl={resolvedUrl} apiKey={apiKey} onExit={() => unmount()} />,
     );
     waitUntilExit().then(resolve).catch(resolve);
   });

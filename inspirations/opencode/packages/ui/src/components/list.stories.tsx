@@ -1,6 +1,6 @@
 // @ts-nocheck
-import * as mod from "./list"
-import { create } from "../storybook/scaffold"
+import * as mod from "./list";
+import { create } from "../storybook/scaffold";
 
 const docs = `### Overview
 Filterable list with keyboard navigation and optional search input.
@@ -25,7 +25,7 @@ Use within panels or popovers where keyboard navigation is expected.
 ### Theming/tokens
 - Uses \`data-component="list"\` and data slots for structure.
 
-`
+`;
 
 const story = create({
   title: "UI/List",
@@ -36,7 +36,7 @@ const story = create({
     children: (x: string) => x,
     search: true,
   },
-})
+});
 
 export default {
   title: "UI/List",
@@ -50,9 +50,9 @@ export default {
       },
     },
   },
-}
+};
 
-export const Basic = story.Basic
+export const Basic = story.Basic;
 
 export const Grouped = {
   render: () => {
@@ -60,14 +60,14 @@ export const Grouped = {
       { id: "a1", title: "Alpha", group: "Group A" },
       { id: "a2", title: "Bravo", group: "Group A" },
       { id: "b1", title: "Delta", group: "Group B" },
-    ]
+    ];
     return (
       <mod.List items={items} key={(item) => item.id} groupBy={(item) => item.group} search={true}>
         {(item) => item.title}
       </mod.List>
-    )
+    );
   },
-}
+};
 
 export const Empty = {
   render: () => (
@@ -75,7 +75,7 @@ export const Empty = {
       {(item) => item}
     </mod.List>
   ),
-}
+};
 
 export const WithAdd = {
   render: () => (
@@ -94,7 +94,7 @@ export const WithAdd = {
       {(item) => item}
     </mod.List>
   ),
-}
+};
 
 export const Divider = {
   render: () => (
@@ -102,7 +102,7 @@ export const Divider = {
       {(item) => item}
     </mod.List>
   ),
-}
+};
 
 export const ActiveIcon = {
   render: () => (
@@ -110,7 +110,7 @@ export const ActiveIcon = {
       {(item) => item}
     </mod.List>
   ),
-}
+};
 
 export const NoSearch = {
   render: () => (
@@ -118,7 +118,7 @@ export const NoSearch = {
       {(item) => item}
     </mod.List>
   ),
-}
+};
 
 export const SearchOptions = {
   render: () => (
@@ -134,7 +134,7 @@ export const SearchOptions = {
       {(item) => item}
     </mod.List>
   ),
-}
+};
 
 export const ItemWrapper = {
   render: () => (
@@ -142,20 +142,28 @@ export const ItemWrapper = {
       items={["One", "Two", "Three"]}
       key={(item) => item}
       itemWrapper={(item, node) => (
-        <div style={{ border: "1px solid var(--border-weak)", "border-radius": "6px", margin: "4px 0" }}>{node}</div>
+        <div
+          style={{
+            border: "1px solid var(--border-weak)",
+            "border-radius": "6px",
+            margin: "4px 0",
+          }}
+        >
+          {node}
+        </div>
       )}
     >
       {(item) => item}
     </mod.List>
   ),
-}
+};
 
 export const GroupHeader = {
   render: () => {
     const items = [
       { id: "a1", title: "Alpha", group: "Group A" },
       { id: "b1", title: "Beta", group: "Group B" },
-    ]
+    ];
     return (
       <mod.List
         items={items}
@@ -165,6 +173,6 @@ export const GroupHeader = {
       >
         {(item) => item.title}
       </mod.List>
-    )
+    );
   },
-}
+};

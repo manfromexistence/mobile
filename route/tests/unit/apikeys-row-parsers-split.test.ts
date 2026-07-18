@@ -64,7 +64,7 @@ test("parseNullableTimestamp trims and nulls empties", () => {
 
 test("parseAccessSchedule validates shape + clamps days, else null", () => {
   const ok = P.parseAccessSchedule(
-    JSON.stringify({ enabled: true, from: "08:00", until: "18:00", days: [0, 3, 9], tz: "UTC" })
+    JSON.stringify({ enabled: true, from: "08:00", until: "18:00", days: [0, 3, 9], tz: "UTC" }),
   );
   assert.ok(ok);
   assert.deepEqual(ok?.days, [0, 3]); // 9 dropped (out of 0..6)
@@ -75,7 +75,7 @@ test("parseAccessSchedule validates shape + clamps days, else null", () => {
 
 test("parseRateLimits keeps well-formed numeric rules only", () => {
   const out = P.parseRateLimits(
-    JSON.stringify([{ limit: 10, window: 60 }, { limit: "x", window: 1 }, null])
+    JSON.stringify([{ limit: 10, window: 60 }, { limit: "x", window: 1 }, null]),
   );
   assert.deepEqual(out, [{ limit: 10, window: 60 }]);
   assert.equal(P.parseRateLimits("not array"), null);

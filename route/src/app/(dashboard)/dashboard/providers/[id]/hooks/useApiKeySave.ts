@@ -23,7 +23,11 @@ type UseApiKeySaveParams = {
   setShowImportModal: (open: boolean) => void;
   setShowAddApiKeyModal: (open: boolean) => void;
   setSiliconFlowInitialBaseUrl: (url: string | undefined) => void;
-  notify: { success: (msg: string) => void; error: (msg: string) => void; info?: (msg: string) => void };
+  notify: {
+    success: (msg: string) => void;
+    error: (msg: string) => void;
+    info?: (msg: string) => void;
+  };
   t: ProviderMessageTranslator;
 };
 
@@ -153,7 +157,7 @@ export function useApiKeySave({
       setShowAddApiKeyModal,
       setSiliconFlowInitialBaseUrl,
       t,
-    ]
+    ],
   );
 
   return { handleSaveApiKey };

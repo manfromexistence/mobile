@@ -103,7 +103,7 @@ export function addSignature(pattern: unknown, context: SignatureContext = {}): 
  */
 export function detectAndLearn(
   text: unknown,
-  context: SignatureContext = {}
+  context: SignatureContext = {},
 ): { found: string[]; cleaned: unknown } {
   if (!text || typeof text !== "string") return { found: [], cleaned: text };
 

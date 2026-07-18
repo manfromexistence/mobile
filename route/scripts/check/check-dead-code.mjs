@@ -28,7 +28,7 @@ const UPDATE = process.argv.includes("--update");
 const BASELINE_PATH = path.resolve(
   process.argv.includes("--baseline")
     ? process.argv[process.argv.indexOf("--baseline") + 1]
-    : path.join(ROOT, "config/quality/quality-baseline.json")
+    : path.join(ROOT, "config/quality/quality-baseline.json"),
 );
 
 /**
@@ -154,7 +154,7 @@ function main() {
   const baselineMetric = baselineJson.metrics && baselineJson.metrics.deadExports;
   if (!baselineMetric || typeof baselineMetric.value !== "number") {
     process.stderr.write(
-      "[dead-code] FAIL — metrics.deadExports ausente em quality-baseline.json.\n"
+      "[dead-code] FAIL — metrics.deadExports ausente em quality-baseline.json.\n",
     );
     process.exit(2);
   }
@@ -186,7 +186,7 @@ function main() {
     process.stderr.write(
       `[dead-code] REGRESSÃO — ${deadTotal} símbolos mortos > baseline ${baselineValue}\n` +
         `  → Remova exports/arquivos não utilizados ou rode\n` +
-        `    'node scripts/check/check-dead-code.mjs --update' se a contagem caiu legitimamente.\n`
+        `    'node scripts/check/check-dead-code.mjs --update' se a contagem caiu legitimamente.\n`,
     );
     process.exit(1);
   }

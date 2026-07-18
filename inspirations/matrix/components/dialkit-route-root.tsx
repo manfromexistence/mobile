@@ -17,7 +17,7 @@ function useDocumentTheme(): "light" | "dark" {
     const observer = new MutationObserver(read);
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["data-theme"]
+      attributeFilter: ["data-theme"],
     });
     return () => observer.disconnect();
   }, []);
@@ -47,12 +47,5 @@ export function DialKitRouteRoot() {
     return null;
   }
 
-  return (
-    <DialRoot
-      position="top-right"
-      defaultOpen
-      theme={dialTheme}
-      productionEnabled
-    />
-  );
+  return <DialRoot position="top-right" defaultOpen theme={dialTheme} productionEnabled />;
 }

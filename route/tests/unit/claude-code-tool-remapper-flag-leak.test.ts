@@ -19,7 +19,7 @@ describe("remapToolNamesInRequest — flag-leak regression", () => {
     assert.equal(
       "_claudeCodeRequiresLowercaseToolNames" in body,
       false,
-      "Flag must not leak into outgoing request body"
+      "Flag must not leak into outgoing request body",
     );
   });
 
@@ -52,7 +52,7 @@ describe("remapToolNamesInRequest — flag-leak regression", () => {
       assert.equal(
         "_claudeCodeRequiresLowercaseToolNames" in body,
         false,
-        `Flag leaked for tools=${JSON.stringify(tools)}`
+        `Flag leaked for tools=${JSON.stringify(tools)}`,
       );
     }
   });

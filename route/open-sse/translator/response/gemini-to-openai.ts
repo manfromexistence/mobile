@@ -90,7 +90,7 @@ function getTrailingReasoningCloseTagPrefixStart(text: string, tagName: string):
 function consumeTextualReasoningTags(
   text: string,
   state: GeminiToOpenAIState,
-  results: Array<Record<string, unknown>>
+  results: Array<Record<string, unknown>>,
 ): string {
   const pendingTagBuffer = state.textualReasoningTagBuffer || "";
 
@@ -125,7 +125,7 @@ function consumeTextualReasoningTags(
       if (!closeMatch || closeMatch.index < 0) {
         const partialCloseStart = getTrailingReasoningCloseTagPrefixStart(
           bufferedReasoning,
-          state.activeTextualReasoningTag
+          state.activeTextualReasoningTag,
         );
         if (partialCloseStart >= 0) {
           state.textualReasoningContentBuffer = bufferedReasoning.slice(0, partialCloseStart);
@@ -140,13 +140,13 @@ function consumeTextualReasoningTags(
         bufferedReasoning.slice(0, closeMatch.index),
         state,
         results,
-        "reasoning_content"
+        "reasoning_content",
       );
       state.activeTextualReasoningTag = undefined;
       state.textualReasoningContentBuffer = undefined;
       const closeEnd = bufferedReasoning.indexOf(">", closeMatch.index);
       remaining = bufferedReasoning.slice(
-        closeEnd >= 0 ? closeEnd + 1 : closeMatch.index + closeMatch[0].length
+        closeEnd >= 0 ? closeEnd + 1 : closeMatch.index + closeMatch[0].length,
       );
       continue;
     }
@@ -187,7 +187,7 @@ function consumeTextualReasoningTags(
 
 function flushOpenTextualReasoning(
   state: GeminiToOpenAIState,
-  results: Array<Record<string, unknown>>
+  results: Array<Record<string, unknown>>,
 ): void {
   if (!state.activeTextualReasoningTag && !state.textualReasoningContentBuffer) return;
   emitTextDelta(state.textualReasoningContentBuffer || "", state, results, "reasoning_content");
@@ -200,7 +200,7 @@ function emitTextDelta(
   content: string,
   state: GeminiToOpenAIState,
   results: Array<Record<string, unknown>>,
-  field: "content" | "reasoning_content" = "content"
+  field: "content" | "reasoning_content" = "content",
 ) {
   if (!content) return;
   if (field === "content") state.hasEmittedContent = true;
@@ -233,7 +233,7 @@ function normalizeToolCallArgs(args: unknown): unknown {
 function buildToolCallId(
   functionCall: GeminiFunctionCallPart["functionCall"],
   toolName: string,
-  toolCallIndex: number
+  toolCallIndex: number,
 ) {
   return typeof functionCall?.id === "string" && functionCall.id.length > 0
     ? functionCall.id
@@ -242,7 +242,7 @@ function buildToolCallId(
 
 function getSignatureCacheKey(
   state: Pick<GeminiToOpenAIState, "signatureNamespace">,
-  toolCallId: unknown
+  toolCallId: unknown,
 ) {
   return buildGeminiThoughtSignatureKey(state?.signatureNamespace, toolCallId);
 }
@@ -250,7 +250,7 @@ function getSignatureCacheKey(
 function emitFunctionCallPart(
   part: GeminiFunctionCallPart,
   state: GeminiToOpenAIState,
-  results: Array<Record<string, unknown>>
+  results: Array<Record<string, unknown>>,
 ) {
   const rawToolName = part.functionCall.name;
   const fcName = state.toolNameMap?.get(rawToolName) || rawToolName;
@@ -269,7 +269,7 @@ function emitFunctionCallPart(
   if (state.pendingThoughtSignature) {
     storeGeminiThoughtSignature(
       getSignatureCacheKey(state, toolCall.id),
-      state.pendingThoughtSignature
+      state.pendingThoughtSignature,
     );
     state.pendingThoughtSignature = null;
   }
@@ -527,7 +527,7 @@ export function geminiToOpenAIResponse(chunk, state) {
                   },
                 },
                 state,
-                results
+                results,
               );
               state.textualToolCallBuffer = "";
             } else {
@@ -706,7 +706,7 @@ export function geminiToOpenAIResponse(chunk, state) {
             },
           },
           state,
-          results
+          results,
         );
       } else if (state.hasEmittedContent || !containsTextualToolCallMarker(remainingText)) {
         state.hasEmittedContent = true;

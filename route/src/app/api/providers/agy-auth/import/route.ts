@@ -51,7 +51,7 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json(
       { error: "Could not parse the content as JSON", code: "invalid_json" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -86,11 +86,14 @@ export async function POST(request: Request) {
     });
   } catch (error) {
     if (error instanceof AgyAuthFileError) {
-      return NextResponse.json({ error: error.message, code: error.code }, { status: error.status });
+      return NextResponse.json(
+        { error: error.message, code: error.code },
+        { status: error.status },
+      );
     }
     return NextResponse.json(
       { error: sanitizeErrorMessage(error) || "Failed to import Antigravity CLI auth" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

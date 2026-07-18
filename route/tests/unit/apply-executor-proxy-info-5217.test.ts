@@ -34,7 +34,7 @@ test("preserves an existing non-direct level (connection/key/global proxy)", () 
   const applied = { type: "http", host: "127.0.0.1", port: 8888 };
   const merged = applyExecutorProxyToInfo(
     { proxy: { type: "http", host: "1.2.3.4", port: 1 }, level: "connection", levelId: "conn-1" },
-    applied
+    applied,
   );
   assert.deepEqual(merged?.proxy, applied, "proxy is overwritten by the actually-applied one");
   assert.equal(merged?.level, "connection", "a non-direct level must be preserved");

@@ -13,23 +13,28 @@ const settingsDb = await import("../../src/lib/db/settings.ts");
 const { getDbInstance } = core;
 const runtimeSettings = await import("../../src/lib/config/runtimeSettings.ts");
 const { applyRuntimeSettings, resetRuntimeSettingsStateForTests } = runtimeSettings;
-const { startRuntimeConfigHotReload, stopRuntimeConfigHotReloadForTests } =
-  await import("../../src/lib/config/hotReload.ts");
+const { startRuntimeConfigHotReload, stopRuntimeConfigHotReloadForTests } = await import(
+  "../../src/lib/config/hotReload.ts"
+);
 const { getCliCompatProviders } = await import("../../open-sse/config/cliFingerprints.ts");
-const { getCustomAliases, setCustomAliases } =
-  await import("../../open-sse/services/modelDeprecation.ts");
+const { getCustomAliases, setCustomAliases } = await import(
+  "../../open-sse/services/modelDeprecation.ts"
+);
 const {
   getBackgroundDegradationConfig,
   getDefaultDegradationMap,
   getDefaultDetectionPatterns,
   setBackgroundDegradationConfig,
 } = await import("../../open-sse/services/backgroundTaskDetector.ts");
-const { clearGeminiThoughtSignatures, getGeminiThoughtSignatureMode } =
-  await import("../../open-sse/services/geminiThoughtSignatureStore.ts");
-const { getPayloadRulesConfig, resetPayloadRulesConfigForTests } =
-  await import("../../open-sse/services/payloadRules.ts");
-const { getCacheControlSettings, invalidateCacheControlSettingsCache } =
-  await import("../../src/lib/cacheControlSettings.ts");
+const { clearGeminiThoughtSignatures, getGeminiThoughtSignatureMode } = await import(
+  "../../open-sse/services/geminiThoughtSignatureStore.ts"
+);
+const { getPayloadRulesConfig, resetPayloadRulesConfigForTests } = await import(
+  "../../open-sse/services/payloadRules.ts"
+);
+const { getCacheControlSettings, invalidateCacheControlSettingsCache } = await import(
+  "../../src/lib/cacheControlSettings.ts"
+);
 
 async function resetStorage() {
   stopRuntimeConfigHotReloadForTests();
@@ -69,7 +74,7 @@ test.after(async () => {
 test("runtime settings public surface excludes removed snapshot inspection helper", () => {
   assert.equal(
     Object.hasOwn(runtimeSettings, "getLastAppliedRuntimeSettingsSnapshotForTests"),
-    false
+    false,
   );
   assert.equal(typeof runtimeSettings.applyRuntimeSettings, "function");
   assert.equal(typeof runtimeSettings.getAuthzBypassSnapshot, "function");
@@ -137,16 +142,16 @@ test("hot-reload watcher picks up external sqlite changes via polling fallback",
 
   const db = getDbInstance();
   db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', 'cliCompatProviders', ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', 'cliCompatProviders', ?)",
   ).run(JSON.stringify(["github", "openai"]));
   db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', 'antigravitySignatureCacheMode', ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', 'antigravitySignatureCacheMode', ?)",
   ).run(JSON.stringify("bypass-strict"));
 
   await waitFor(
     () =>
       getCliCompatProviders().includes("github") &&
       !getCliCompatProviders().includes("openai") &&
-      getGeminiThoughtSignatureMode() === "bypass-strict"
+      getGeminiThoughtSignatureMode() === "bypass-strict",
   );
 });

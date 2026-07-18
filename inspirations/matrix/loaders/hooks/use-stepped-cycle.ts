@@ -52,7 +52,7 @@ export function useSteppedCycle({
   cycleMsBase,
   steps,
   speed = 1,
-  idleStep = 0
+  idleStep = 0,
 }: UseSteppedCycleOptions): number {
   const safeSteps = Math.max(1, Math.floor(steps));
   const safeSpeed = speed > 0 ? speed : 1;

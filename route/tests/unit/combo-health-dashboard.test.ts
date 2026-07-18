@@ -155,28 +155,28 @@ test("combo health dashboard route requires auth, validates query, and returns c
   const { combo } = await seedDashboardCombo();
 
   const unauthenticated = await route.GET(
-    new Request(`http://localhost/api/usage/combo-health-dashboard?comboId=${combo.id}`)
+    new Request(`http://localhost/api/usage/combo-health-dashboard?comboId=${combo.id}`),
   );
   assert.equal(unauthenticated.status, 401);
 
   const invalid = await route.GET(
     await makeManagementSessionRequest(
-      "http://localhost/api/usage/combo-health-dashboard?range=bad"
-    )
+      "http://localhost/api/usage/combo-health-dashboard?range=bad",
+    ),
   );
   assert.equal(invalid.status, 400);
 
   const missing = await route.GET(
     await makeManagementSessionRequest(
-      "http://localhost/api/usage/combo-health-dashboard?comboId=11111111-1111-4111-8111-111111111111"
-    )
+      "http://localhost/api/usage/combo-health-dashboard?comboId=11111111-1111-4111-8111-111111111111",
+    ),
   );
   assert.equal(missing.status, 404);
 
   const authenticated = await route.GET(
     await makeManagementSessionRequest(
-      `http://localhost/api/usage/combo-health-dashboard?range=24h&horizon=7d&comboId=${combo.id}`
-    )
+      `http://localhost/api/usage/combo-health-dashboard?range=24h&horizon=7d&comboId=${combo.id}`,
+    ),
   );
   assert.equal(authenticated.status, 200);
   const body = await authenticated.json();

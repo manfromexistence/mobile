@@ -16,7 +16,7 @@ export function estimateMessageTokens(messages: Array<{ content?: string | unkno
             (typeof (part as { text?: string })?.text === "string"
               ? estimateTokens((part as { text: string }).text)
               : 0),
-          0
+          0,
         )
       );
     }
@@ -162,10 +162,10 @@ export function getSpecificityBreakdown(input: RuleInput): SpecificityBreakdown 
 
 export function detectConversationDepth(input: RuleInput): number {
   const userMessages = input.messages.filter(
-    (m) => (m as { role?: string }).role === "user"
+    (m) => (m as { role?: string }).role === "user",
   ).length;
   const assistantMessages = input.messages.filter(
-    (m) => (m as { role?: string }).role === "assistant"
+    (m) => (m as { role?: string }).role === "assistant",
   ).length;
 
   const totalTurns = userMessages + assistantMessages;
@@ -226,10 +226,10 @@ export function detectEnhancedContextSize(input: RuleInput): number {
           sum +
           estimateTokens(
             JSON.stringify(
-              (t as { function?: { description?: string; parameters?: unknown } })?.function || t
-            )
+              (t as { function?: { description?: string; parameters?: unknown } })?.function || t,
+            ),
           ),
-        0
+        0,
       )
     : 0;
 

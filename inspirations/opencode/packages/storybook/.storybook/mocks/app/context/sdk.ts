@@ -9,19 +9,19 @@ const make = (directory: string) => ({
   worktree: {
     create: async () => ({ data: { directory: `${directory}/worktree-1` } }),
   },
-})
+});
 
-const root = "/tmp/story"
+const root = "/tmp/story";
 const sdk = {
   directory: root,
   scope: "story-server",
   url: "http://localhost:4096",
   client: make(root),
   createClient(input: { directory: string }) {
-    return make(input.directory)
+    return make(input.directory);
   },
-}
+};
 
 export function useSDK() {
-  return () => sdk
+  return () => sdk;
 }

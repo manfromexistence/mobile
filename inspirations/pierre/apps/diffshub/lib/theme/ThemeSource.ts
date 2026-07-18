@@ -2,12 +2,7 @@
 // resolved theme, plus the two adapters that produce one. React context simply
 // carries the current ThemeSource; the override precedence (prop > provider)
 // falls out because a `theme` prop constructs a local fixedSource.
-import type {
-  ColorScheme,
-  ThemeController,
-  ThemeLike,
-  ThemeResolver,
-} from '@pierre/theming';
+import type { ColorScheme, ThemeController, ThemeLike, ThemeResolver } from "@pierre/theming";
 
 export interface ActiveThemeSnapshot {
   // The resolved active theme object (full: colors + tokenColors). Undefined
@@ -37,16 +32,14 @@ export interface ThemeNameSelectionSource {
   getThemeNameSelection(): ThemeNameSelection | undefined;
 }
 
-export type ThemeSourceWithNameSelection = ThemeSource &
-  ThemeNameSelectionSource;
+export type ThemeSourceWithNameSelection = ThemeSource & ThemeNameSelectionSource;
 
 export function hasThemeNameSelection(
-  source: ThemeSource | undefined
+  source: ThemeSource | undefined,
 ): source is ThemeSourceWithNameSelection {
   return (
     source != null &&
-    typeof (source as Partial<ThemeNameSelectionSource>)
-      .getThemeNameSelection === 'function'
+    typeof (source as Partial<ThemeNameSelectionSource>).getThemeNameSelection === "function"
   );
 }
 
@@ -65,23 +58,21 @@ export interface FixedSourceOptions {
 // Reads the color scheme from a resolved theme object's own `type`, defaulting
 // to 'light' when the theme declares nothing.
 function schemeOf(theme: ThemeLike | undefined): ColorScheme {
-  return theme?.type === 'dark' ? 'dark' : 'light';
+  return theme?.type === "dark" ? "dark" : "light";
 }
 
 export function isThemePair(input: ThemeInput): input is ThemePair {
-  return typeof input === 'object' && 'light' in input && 'dark' in input;
+  return typeof input === "object" && "light" in input && "dark" in input;
 }
 
 export function nameOf(slot: ThemeValue | undefined): string | undefined {
-  return typeof slot === 'string' ? slot : slot?.name;
+  return typeof slot === "string" ? slot : slot?.name;
 }
 
 export function requireThemeValueName(value: ThemeValue): string {
   const name = nameOf(value);
-  if (name == null || name === '') {
-    throw new Error(
-      'ThemeInput ThemeLike values used by diff wrappers must include a `name`'
-    );
+  if (name == null || name === "") {
+    throw new Error("ThemeInput ThemeLike values used by diff wrappers must include a `name`");
   }
   return name;
 }
@@ -94,9 +85,7 @@ export function requireThemeValueName(value: ThemeValue): string {
 // flash the default palette. The scheme always follows the controller
 // immediately so a mode flip is visible at once even while the new theme object
 // loads.
-export function controllerSource(
-  controller: ThemeController
-): ThemeSourceWithNameSelection {
+export function controllerSource(controller: ThemeController): ThemeSourceWithNameSelection {
   let lastResolved: ThemeLike | undefined = controller.getState().resolvedTheme;
   return {
     subscribe(listener) {
@@ -131,9 +120,9 @@ export function controllerSource(
 // has loaded once.
 export function fixedSource(
   input: ThemeInput,
-  options: FixedSourceOptions
+  options: FixedSourceOptions,
 ): ThemeSourceWithNameSelection {
-  const { resolver, colorScheme = 'light' } = options;
+  const { resolver, colorScheme = "light" } = options;
   const listeners = new Set<() => void>();
   let resolved: ThemeLike | undefined;
   let selection: ThemeNameSelection | undefined;
@@ -150,15 +139,15 @@ export function fixedSource(
   // Pull the name (if any) for the slot we should show, plus an already-resolved
   // object when the input carried one directly.
   function selectSlot(): { name?: string; object?: ThemeLike } {
-    if (typeof input === 'string') return { name: input };
+    if (typeof input === "string") return { name: input };
     if (isThemePair(input)) {
-      const slot = colorScheme === 'dark' ? input.dark : input.light;
-      return typeof slot === 'string' ? { name: slot } : { object: slot };
+      const slot = colorScheme === "dark" ? input.dark : input.light;
+      return typeof slot === "string" ? { name: slot } : { object: slot };
     }
     return { object: input };
   }
 
-  if (typeof input === 'string') {
+  if (typeof input === "string") {
     selection = {
       lightThemeName: input,
       darkThemeName: input,
@@ -231,9 +220,7 @@ export function fixedSource(
       return { theme: resolved, colorScheme: reportedScheme };
     },
     getThemeNameSelection() {
-      return selection != null
-        ? { ...selection, colorScheme: reportedScheme }
-        : undefined;
+      return selection != null ? { ...selection, colorScheme: reportedScheme } : undefined;
     },
   };
 }

@@ -17,7 +17,7 @@ type ProviderPricingTable = Record<string, Record<string, unknown>>;
  */
 export function getPricingForModel(
   provider: string,
-  model: string
+  model: string,
 ): Record<string, unknown> | null {
   if (!provider || !model) return null;
 

@@ -57,7 +57,7 @@ test("getCachedSettings returns cached data until TTL expires or cache is invali
   db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "settings",
     "label",
-    JSON.stringify("stale-write")
+    JSON.stringify("stale-write"),
   );
 
   assert.equal((await readCache.getCachedSettings()).label, "initial");
@@ -73,7 +73,7 @@ test("getCachedSettings returns cached data until TTL expires or cache is invali
   db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "settings",
     "label",
-    JSON.stringify("after-invalidate")
+    JSON.stringify("after-invalidate"),
   );
   readCache.invalidateDbCache("settings");
 
@@ -89,7 +89,7 @@ test("getCachedPricing caches results and refreshes after invalidation", async (
     "cache-provider",
     JSON.stringify({
       "model-a": { prompt: 1 },
-    })
+    }),
   );
 
   assert.equal((await readCache.getCachedPricing())["cache-provider"]["model-a"].prompt, 1);
@@ -99,7 +99,7 @@ test("getCachedPricing caches results and refreshes after invalidation", async (
       "model-a": { prompt: 9 },
     }),
     "pricing",
-    "cache-provider"
+    "cache-provider",
   );
 
   assert.equal((await readCache.getCachedPricing())["cache-provider"]["model-a"].prompt, 1);
@@ -127,7 +127,7 @@ test("getCachedProviderConnections caches only the unfiltered query", async () =
     INSERT INTO provider_connections (
       id, provider, auth_type, name, is_active, created_at, updated_at
     ) VALUES (?, ?, ?, ?, ?, ?, ?)
-  `
+  `,
   ).run("direct-insert", "openai", "apikey", "Secondary", 1, now, now);
 
   const cachedAll = await readCache.getCachedProviderConnections();
@@ -154,7 +154,7 @@ test("cached LKGP values refresh only after the specific key is invalidated", as
 
   db.prepare("UPDATE key_value SET value = ? WHERE namespace = 'lkgp' AND key = ?").run(
     JSON.stringify("anthropic"),
-    lkgpKey
+    lkgpKey,
   );
 
   assert.deepEqual(await readCache.getCachedLKGP(comboName, modelId), { provider: "openai" });

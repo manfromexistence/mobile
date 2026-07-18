@@ -73,7 +73,7 @@ async function writeFiles(baseDir: string, files: FileRecord): Promise<void> {
       const filePath = path.join(baseDir, relativePath);
       await fsp.mkdir(path.dirname(filePath), { recursive: true });
       await fsp.writeFile(filePath, contents, "utf8");
-    })
+    }),
   );
 }
 

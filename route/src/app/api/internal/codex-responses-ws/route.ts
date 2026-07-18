@@ -81,7 +81,7 @@ function extractResponsesWsContentText(value: unknown): string | null {
         if (type && !RESPONSES_WS_MEMORY_TEXT_PART_TYPES.has(type)) return null;
 
         return toStringOrNull(part.text) || toStringOrNull(part.input_text);
-      })
+      }),
     );
   }
 
@@ -146,7 +146,7 @@ export function extractResponsesWsMemoryQuery(body: JsonRecord): string {
 
 export function injectResponsesWsMemoryInstructions(
   body: JsonRecord,
-  memoryText: string
+  memoryText: string,
 ): JsonRecord {
   const memoryContext = toStringOrNull(memoryText);
   if (!memoryContext) return body;
@@ -173,7 +173,7 @@ async function getMemorySettingsForResponsesWs() {
 
 async function maybeInjectResponsesWsMemory(
   responseBody: JsonRecord,
-  metadata: ApiKeyMetadata | null
+  metadata: ApiKeyMetadata | null,
 ): Promise<JsonRecord> {
   if (!metadata?.id) return responseBody;
 
@@ -184,7 +184,7 @@ async function maybeInjectResponsesWsMemory(
     const memorySettings = await getMemorySettingsForResponsesWs();
     const memories = await retrieveMemories(
       metadata.id,
-      toMemoryRetrievalConfig(memorySettings, { query })
+      toMemoryRetrievalConfig(memorySettings, { query }),
     );
     const memoryText = formatMemoryContext(memories);
     return injectResponsesWsMemoryInstructions(responseBody, memoryText);
@@ -298,7 +298,7 @@ function jsonError(status: number, code: string, message: string) {
         message,
       },
     },
-    { status }
+    { status },
   );
 }
 
@@ -329,7 +329,7 @@ async function authenticate(body: JsonRecord) {
     return jsonError(
       auth.hasCredential ? 403 : 401,
       auth.hasCredential ? "ws_auth_invalid" : "ws_auth_required",
-      auth.hasCredential ? "Invalid WebSocket credential" : "WebSocket auth required"
+      auth.hasCredential ? "Invalid WebSocket credential" : "WebSocket auth required",
     );
   }
 
@@ -354,7 +354,7 @@ async function authenticate(body: JsonRecord) {
 async function enforceCodexWsApiKeyPolicy(
   authRequest: Request,
   apiKey: string | null,
-  requestedModel: string
+  requestedModel: string,
 ): Promise<{ rejection: Response | null; apiKeyInfo: ApiKeyMetadata | null }> {
   const policyHeaders = new Headers(authRequest.headers);
   if (apiKey) policyHeaders.set("Authorization", `Bearer ${apiKey}`);
@@ -402,7 +402,7 @@ async function prepare(body: JsonRecord) {
     return jsonError(
       400,
       "codex_ws_provider_required",
-      `Responses WebSocket bridge only supports Codex models, got ${provider || "unknown"}`
+      `Responses WebSocket bridge only supports Codex models, got ${provider || "unknown"}`,
     );
   }
 
@@ -410,14 +410,14 @@ async function prepare(body: JsonRecord) {
     provider,
     null,
     allowedConnections,
-    model
+    model,
   );
 
   if (!credentials || "allRateLimited" in credentials) {
     return jsonError(
       503,
       "codex_credentials_unavailable",
-      "No available Codex OAuth connection for Responses WebSocket"
+      "No available Codex OAuth connection for Responses WebSocket",
     );
   }
 
@@ -431,7 +431,7 @@ async function prepare(body: JsonRecord) {
     model,
     responseBodyWithMemory,
     true,
-    refreshedCredentials
+    refreshedCredentials,
   )) as JsonRecord;
   transformed.model = model;
   delete transformed.stream;
@@ -484,7 +484,7 @@ async function persistResponsesWsCallHistory(body: JsonRecord) {
   const errorRecord = getErrorRecord(body, responseBody);
   const status = toHttpStatus(
     body.status ?? errorRecord?.status_code ?? errorRecord?.status,
-    body.success === false ? 500 : 200
+    body.success === false ? 500 : 200,
   );
   const success = typeof body.success === "boolean" ? body.success : status < 400;
   const errorCode =
@@ -496,7 +496,7 @@ async function persistResponsesWsCallHistory(body: JsonRecord) {
     : sanitizeErrorMessage(
         toStringOrNull(body.errorMessage) ||
           toStringOrNull(errorRecord?.message) ||
-          "Responses WebSocket request failed"
+          "Responses WebSocket request failed",
       );
   const timestamp = getTimestamp(body.startedAt);
   const durationMs = Math.max(0, Math.round(toFiniteNumber(body.durationMs, 0)));
@@ -609,7 +609,7 @@ export async function POST(request: Request) {
       return jsonError(
         500,
         "responses_ws_history_log_failed",
-        sanitizeErrorMessage(error instanceof Error ? error.message : String(error))
+        sanitizeErrorMessage(error instanceof Error ? error.message : String(error)),
       );
     }
   }

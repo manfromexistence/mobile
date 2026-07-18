@@ -6,7 +6,7 @@ import type { SqliteAdapter, PreparedStatement, RunResult } from "./types";
 const SAVE_DEBOUNCE_MS = 100;
 const CHECKPOINT_INTERVAL_MS = 60_000;
 
-let _sqlJsLib: Awaited<ReturnType<(typeof import("sql.js"))["default"]>> | null = null;
+let _sqlJsLib: Awaited<ReturnType<typeof import("sql.js")["default"]>> | null = null;
 
 function resolveSqlJsWasmPath(): string {
   const candidatePaths = [
@@ -18,7 +18,7 @@ function resolveSqlJsWasmPath(): string {
       "node_modules",
       "sql.js",
       "dist",
-      "sql-wasm.wasm"
+      "sql-wasm.wasm",
     ),
   ];
 
@@ -84,7 +84,7 @@ function toBindValue(params: unknown[]): unknown[] | Record<string, unknown> | u
 
 async function loadSqlJs(): Promise<typeof _sqlJsLib> {
   if (_sqlJsLib) return _sqlJsLib;
-  const initSqlJs = ((await import("sql.js")) as { default: (typeof import("sql.js"))["default"] })
+  const initSqlJs = ((await import("sql.js")) as { default: typeof import("sql.js")["default"] })
     .default;
   const wasmPath = resolveSqlJsWasmPath();
 
@@ -251,7 +251,7 @@ export async function createSqlJsAdapter(filePath: string): Promise<SqliteAdapte
         return rows.values?.[0]?.[0] ?? null;
       }
       return (rows.values ?? []).map((row: unknown[]) =>
-        Object.fromEntries(rows.columns.map((col: string, i: number) => [col, row[i]]))
+        Object.fromEntries(rows.columns.map((col: string, i: number) => [col, row[i]])),
       );
     },
 

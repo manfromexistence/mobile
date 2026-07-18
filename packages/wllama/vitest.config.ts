@@ -1,16 +1,16 @@
-import { defineConfig } from "vitest/config"
+import { defineConfig } from "vitest/config";
 
-const SAFARI = process.env.BROWSER === "safari"
-const WEBGPU = process.env.WEBGPU === "1"
-const AUTO = process.env.AUTO === "1"
+const SAFARI = process.env.BROWSER === "safari";
+const WEBGPU = process.env.WEBGPU === "1";
+const AUTO = process.env.AUTO === "1";
 
-const chromeArgsCI = ["disable-gpu", "no-sandbox", "disable-setuid-sandbox"]
+const chromeArgsCI = ["disable-gpu", "no-sandbox", "disable-setuid-sandbox"];
 const chromeArgsWebGPU = [
   "no-sandbox",
   "disable-setuid-sandbox",
   "enable-unsafe-webgpu",
   "enable-features=WebGPU",
-]
+];
 
 export default defineConfig({
   define: {
@@ -58,4 +58,4 @@ export default defineConfig({
       "Cross-Origin-Opener-Policy": "same-origin",
     },
   },
-})
+});

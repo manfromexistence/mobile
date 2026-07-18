@@ -18,7 +18,7 @@ test("disabled config → no detection, no redirect (even for a clear background
   setBackgroundDegradationConfig({ enabled: false, degradationMap: { "gpt-5": "gpt-5-mini" } });
   assert.deepEqual(
     resolveBackgroundTaskRedirect({ body: { max_tokens: 10 }, headers: null, model: "gpt-5" }),
-    { backgroundReason: null, redirect: null }
+    { backgroundReason: null, redirect: null },
   );
 });
 
@@ -56,14 +56,18 @@ test("enabled but the request is not a background task → no detection, no redi
       headers: null,
       model: "gpt-5",
     }),
-    { backgroundReason: null, redirect: null }
+    { backgroundReason: null, redirect: null },
   );
 });
 
 test("enabled + background but the model has no degradation mapping → detection but no redirect", () => {
   setBackgroundDegradationConfig({ enabled: true, degradationMap: { "gpt-5": "gpt-5-mini" } });
   assert.deepEqual(
-    resolveBackgroundTaskRedirect({ body: { max_tokens: 10 }, headers: null, model: "claude-opus-4" }),
-    { backgroundReason: "low_max_tokens", redirect: null }
+    resolveBackgroundTaskRedirect({
+      body: { max_tokens: 10 },
+      headers: null,
+      model: "claude-opus-4",
+    }),
+    { backgroundReason: "low_max_tokens", redirect: null },
   );
 });

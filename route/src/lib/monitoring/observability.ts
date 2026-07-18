@@ -178,7 +178,7 @@ function parseCooldownUntilMs(value: unknown): number {
  */
 export function summarizeConnectionCooldown(
   connections: Array<{ provider?: string; rateLimitedUntil?: unknown }>,
-  nowMs: number
+  nowMs: number,
 ): Record<string, ConnectionCooldownSummary> {
   const byProvider: Record<string, { total: number; coolingDown: number; soonestUntil: number }> =
     {};
@@ -269,13 +269,13 @@ export function buildHealthPayload({
   const connectionHealth = summarizeConnectionCooldown(connections, Date.now());
 
   const configuredProviders = new Set(
-    connections.map((connection) => connection.provider).filter(Boolean)
+    connections.map((connection) => connection.provider).filter(Boolean),
   );
   const activeProviders = new Set(
     connections
       .filter((connection) => connection.isActive !== false)
       .map((connection) => connection.provider)
-      .filter(Boolean)
+      .filter(Boolean),
   );
   const breakerCounts = circuitBreakers.reduce(
     (acc, cb) => {
@@ -286,7 +286,7 @@ export function buildHealthPayload({
       else acc.closed += 1;
       return acc;
     },
-    { open: 0, halfOpen: 0, degraded: 0, closed: 0 }
+    { open: 0, halfOpen: 0, degraded: 0, closed: 0 },
   );
 
   return {

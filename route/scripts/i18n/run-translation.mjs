@@ -190,7 +190,7 @@ function parseArgs(argv) {
           "  --force              Retranslate even when hashes match",
           "  --dry-run            Report what would happen but never call the API",
           "  --concurrency=<n>    Parallel API requests (default: env CONCURRENCY or 4)",
-        ].join("\n")
+        ].join("\n"),
       );
       process.exit(0);
     }
@@ -312,7 +312,7 @@ function requireEnv(name) {
   const v = process.env[name];
   if (!v || !v.trim()) {
     throw new Error(
-      `Missing required env var: ${name}. Set it in .env (see docs/guides/I18N.md → "Translation pipeline").`
+      `Missing required env var: ${name}. Set it in .env (see docs/guides/I18N.md → "Translation pipeline").`,
     );
   }
   return v.trim();
@@ -431,7 +431,7 @@ async function translateBody(body, localeEntry, backend) {
     translated.push(out.trim());
     if (chunks.length > 1) {
       logInfo(
-        `  chunk ${i + 1}/${chunks.length} translated (${chunks[i].length} → ${out.length} chars)`
+        `  chunk ${i + 1}/${chunks.length} translated (${chunks[i].length} → ${out.length} chars)`,
       );
     }
   }
@@ -503,7 +503,7 @@ async function main() {
     if (opts.concurrency) backend.concurrency = opts.concurrency;
     else backend.concurrency = Number(process.env.OMNIROUTE_TRANSLATION_CONCURRENCY || 4);
     logInfo(
-      `backend: ${backend.apiUrl} (model=${backend.model}, concurrency=${backend.concurrency}, timeout=${backend.timeoutMs}ms)`
+      `backend: ${backend.apiUrl} (model=${backend.model}, concurrency=${backend.concurrency}, timeout=${backend.timeoutMs}ms)`,
     );
   } else {
     const apiUrl = (process.env.OMNIROUTE_TRANSLATION_API_URL || "").replace(/\/$/, "");
@@ -546,7 +546,7 @@ async function main() {
   }
 
   logInfo(
-    `work units: ${tasks.length} (skipped up-to-date: ${stats.skipped} of ${stats.considered})`
+    `work units: ${tasks.length} (skipped up-to-date: ${stats.skipped} of ${stats.considered})`,
   );
 
   if (opts.dryRun) {
@@ -600,8 +600,8 @@ async function main() {
 
         stats.translated++;
         logInfo(`✓ ${task.rel} → ${task.locale} (${translatedBody.length} chars)`);
-      })
-    )
+      }),
+    ),
   );
 
   // Save state even on partial failure so future runs only retry what failed.
@@ -609,7 +609,7 @@ async function main() {
 
   const elapsedSec = ((Date.now() - startMs) / 1000).toFixed(1);
   logInfo(
-    `summary: translated=${stats.translated}, skipped=${stats.skipped}, failed=${stats.failed}, total considered=${stats.considered}, elapsed=${elapsedSec}s`
+    `summary: translated=${stats.translated}, skipped=${stats.skipped}, failed=${stats.failed}, total considered=${stats.considered}, elapsed=${elapsedSec}s`,
   );
 
   if (failures.length) {

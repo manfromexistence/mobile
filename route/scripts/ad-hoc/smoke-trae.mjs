@@ -20,7 +20,7 @@ const cfg = Object.fromEntries(
     .map((l) => {
       const i = l.indexOf("=");
       return [l.slice(0, i), l.slice(i + 1)];
-    })
+    }),
 );
 
 const { TraeExecutor } = await import("../../open-sse/executors/trae.ts");

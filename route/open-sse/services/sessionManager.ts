@@ -102,7 +102,7 @@ if (typeof _cleanupTimer === "object" && "unref" in _cleanupTimer) {
  */
 export function generateSessionId(
   body: SessionBody | null | undefined,
-  options: SessionFingerprintOptions = {}
+  options: SessionFingerprintOptions = {},
 ): string | null {
   if (!body || typeof body !== "object") return null;
   const parts: string[] = [];
@@ -303,7 +303,7 @@ export function unregisterKeySession(apiKeyId: string, sessionId: string): void 
  */
 export function checkSessionLimit(
   apiKeyId: string,
-  maxSessions: number
+  maxSessions: number,
 ): { code: "SESSION_LIMIT_EXCEEDED"; message: string; limit: number; current: number } | null {
   if (!maxSessions || maxSessions <= 0) return null; // unlimited
   const current = getActiveSessionCountForKey(apiKeyId);
@@ -330,7 +330,7 @@ export function checkSessionLimit(
  * @returns External session ID with "ext:" prefix, or null
  */
 export function extractExternalSessionId(
-  headers: Headers | { get?: (n: string) => string | null } | null | undefined
+  headers: Headers | { get?: (n: string) => string | null } | null | undefined,
 ): string | null {
   if (!headers || typeof (headers as Headers).get !== "function") return null;
   const h = headers as Headers;

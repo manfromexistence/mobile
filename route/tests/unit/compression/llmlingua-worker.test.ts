@@ -83,7 +83,7 @@ test("GATED real compression (RUN_LLMLINGUA_INT=1)", async () => {
   // Long prose well above any practical floor so compression has room to shrink.
   const LONG_PROSE =
     "The quick brown fox jumps over the lazy dog while the sun sets slowly behind the distant hills. ".repeat(
-      120
+      120,
     );
 
   const out = await workerBackend(LONG_PROSE, { model: "tinybert", compressionRate: 0.5 });

@@ -3,17 +3,13 @@
 // how the "vibrant" theme variants are defined (see scripts/build.ts) and
 // previewed (src/previews/p3.ts).
 
-import { hexToRgb01, linearToSrgb, srgbToLinear } from './srgb';
+import { hexToRgb01, linearToSrgb, srgbToLinear } from "./srgb";
 
 // Display P3 uses the same transfer function (gamma) as sRGB.
 const linearToP3 = linearToSrgb;
 
 /** Linear sRGB → linear Display P3 (sRGB primaries → P3 primaries via XYZ). */
-function linearSrgbToLinearP3(
-  r: number,
-  g: number,
-  b: number
-): [number, number, number] {
+function linearSrgbToLinearP3(r: number, g: number, b: number): [number, number, number] {
   const rOut = 0.82246197 * r + 0.17753803 * g + 0.0 * b;
   const gOut = 0.0331942 * r + 0.9668058 * g + 0.0 * b;
   const bOut = 0.01708263 * r + 0.07239744 * g + 0.91051993 * b;
@@ -83,11 +79,7 @@ function hslToRgb(h: number, s: number, l: number): [number, number, number] {
  * (15–30% by original saturation) and, for vivid mid-tones, luminance (~5%).
  * Grays and near-black/white are left untouched.
  */
-function enhanceForP3Gamut(
-  r: number,
-  g: number,
-  b: number
-): [number, number, number] {
+function enhanceForP3Gamut(r: number, g: number, b: number): [number, number, number] {
   const [h, s, l] = rgbToHsl(r, g, b);
 
   if (s < 0.1 || l < 0.1 || l > 0.9) {
@@ -109,13 +101,9 @@ function enhanceForP3Gamut(
  * Convert an sRGB hex color to a CSS Display P3 string,
  * "color(display-p3 r g b)" (or "… / alpha").
  */
-export function srgbHexToP3Color(
-  srgbHex: string,
-  enhance: boolean = true
-): string {
-  const hasAlpha =
-    srgbHex.length === 9 || (srgbHex.startsWith('#') && srgbHex.length === 9);
-  let alpha = '';
+export function srgbHexToP3Color(srgbHex: string, enhance: boolean = true): string {
+  const hasAlpha = srgbHex.length === 9 || (srgbHex.startsWith("#") && srgbHex.length === 9);
+  let alpha = "";
   let colorHex = srgbHex;
 
   if (hasAlpha) {
@@ -129,7 +117,7 @@ export function srgbHexToP3Color(
   const [linearPR, linearPG, linearPB] = linearSrgbToLinearP3(
     srgbToLinear(sR),
     srgbToLinear(sG),
-    srgbToLinear(sB)
+    srgbToLinear(sB),
   );
 
   let pR = linearToP3(linearPR);
@@ -145,7 +133,7 @@ export function srgbHexToP3Color(
 
 /** Recursively convert every hex color in a Roles-shaped object to Display P3. */
 export function convertRolesToP3<T>(obj: T): T {
-  if (typeof obj === 'string') {
+  if (typeof obj === "string") {
     if (/^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/.test(obj)) {
       return srgbHexToP3Color(obj) as T;
     }
@@ -157,7 +145,7 @@ export function convertRolesToP3<T>(obj: T): T {
     return items.map((item) => convertRolesToP3(item)) as T;
   }
 
-  if (obj !== null && typeof obj === 'object') {
+  if (obj !== null && typeof obj === "object") {
     const result: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(obj)) {
       result[key] = convertRolesToP3(value);

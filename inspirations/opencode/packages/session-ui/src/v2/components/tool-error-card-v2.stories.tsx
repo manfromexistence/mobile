@@ -1,6 +1,6 @@
-import { createSignal } from "solid-js"
-import { ButtonV2 } from "@opencode-ai/ui/v2/button-v2"
-import { ToolErrorCardV2, type ToolErrorCardV2Props } from "./tool-error-card-v2"
+import { createSignal } from "solid-js";
+import { ButtonV2 } from "@opencode-ai/ui/v2/button-v2";
+import { ToolErrorCardV2, type ToolErrorCardV2Props } from "./tool-error-card-v2";
 
 const docs = `### Overview
 Compact tool error row with optional expandable detail, aligned to the OpenCode design system spec.
@@ -11,7 +11,7 @@ Compact tool error row with optional expandable detail, aligned to the OpenCode 
 
 ### Theming
 - Uses \`data-component="tool-error-card"\` and slot attributes; colors are CSS variables on the root (\`--tec-*\`).
-`
+`;
 
 export default {
   title: "UI V2/ToolErrorCard",
@@ -27,7 +27,7 @@ export default {
       },
     },
   },
-}
+};
 
 export const Default = {
   args: {
@@ -37,7 +37,7 @@ export const Default = {
     defaultOpen: false,
   } satisfies ToolErrorCardV2Props,
   render: (args: ToolErrorCardV2Props) => <ToolErrorCardV2 {...args} />,
-}
+};
 
 export const Loading = {
   args: {
@@ -48,7 +48,7 @@ export const Loading = {
     defaultOpen: false,
   } satisfies ToolErrorCardV2Props,
   render: (args: ToolErrorCardV2Props) => <ToolErrorCardV2 {...args} />,
-}
+};
 
 export const SubtitleLink = {
   args: {
@@ -59,7 +59,7 @@ export const SubtitleLink = {
     defaultOpen: false,
   } satisfies ToolErrorCardV2Props,
   render: (args: ToolErrorCardV2Props) => <ToolErrorCardV2 {...args} />,
-}
+};
 
 export const NoSuffixDisabled = {
   args: {
@@ -68,13 +68,15 @@ export const NoSuffixDisabled = {
     defaultOpen: false,
   } satisfies ToolErrorCardV2Props,
   render: (args: ToolErrorCardV2Props) => <ToolErrorCardV2 {...args} />,
-}
+};
 
 export const Controlled = {
   render: () => {
-    const [open, setOpen] = createSignal(false)
+    const [open, setOpen] = createSignal(false);
     return (
-      <div style={{ display: "flex", "flex-direction": "column", gap: "24px", "max-width": "420px" }}>
+      <div
+        style={{ display: "flex", "flex-direction": "column", gap: "24px", "max-width": "420px" }}
+      >
         <ButtonV2 type="button" classList={{ "w-fit": true }} onClick={() => setOpen((o) => !o)}>
           Toggle from outside: {open() ? "Open" : "Closed"}
         </ButtonV2>
@@ -86,6 +88,6 @@ export const Controlled = {
           onOpenChange={setOpen}
         />
       </div>
-    )
+    );
   },
-}
+};

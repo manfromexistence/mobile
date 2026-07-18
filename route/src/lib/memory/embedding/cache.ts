@@ -32,7 +32,7 @@ export function buildCacheKey(
   source: string,
   model: string | null,
   dim: number | null,
-  text: string
+  text: string,
 ): string {
   const safeModel = model ?? "unknown";
   const safeDim = dim != null ? String(dim) : "0";

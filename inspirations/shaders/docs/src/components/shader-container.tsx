@@ -1,9 +1,9 @@
-'use client';
-import { SerializableValue, serializeParams } from '@/helpers/url-serializer';
-import { ShaderDef } from '@/shader-defs/shader-def-types';
-import { Leva } from 'leva';
-import { CopyButton } from './copy-button';
-import { useState } from 'react';
+"use client";
+import { SerializableValue, serializeParams } from "@/helpers/url-serializer";
+import { ShaderDef } from "@/shader-defs/shader-def-types";
+import { Leva } from "leva";
+import { CopyButton } from "./copy-button";
+import { useState } from "react";
 
 export function ShaderContainer({
   children,
@@ -67,31 +67,31 @@ export function ShaderContainer({
               titleBar={false}
               theme={{
                 fonts: {
-                  mono: 'var(--font-mono)',
+                  mono: "var(--font-mono)",
                 },
                 colors: {
                   // Separators and slider tracks
-                  elevation1: 'var(--color-leva-separators)',
+                  elevation1: "var(--color-leva-separators)",
                   // Main background color
-                  elevation2: 'transparent',
+                  elevation2: "transparent",
                   // Inputs background
-                  elevation3: 'var(--color-leva-input)',
+                  elevation3: "var(--color-leva-input)",
 
                   // Button :active
-                  accent1: 'var(--color-leva-control-pressed)',
+                  accent1: "var(--color-leva-control-pressed)",
                   // Buttons at rest
-                  accent2: 'var(--color-leva-button)',
+                  accent2: "var(--color-leva-button)",
                   // Slider thumb hover
-                  accent3: 'var(--color-leva-control-pressed)',
+                  accent3: "var(--color-leva-control-pressed)",
 
                   // Label and input text color
-                  highlight2: 'var(--color-foreground)',
+                  highlight2: "var(--color-foreground)",
                   // Leva folder title
-                  folderTextColor: 'var(--color-foreground)',
+                  folderTextColor: "var(--color-foreground)",
                 },
                 sizes: {
-                  folderTitleHeight: '28px',
-                  numberInputMinWidth: '7ch',
+                  folderTitleHeight: "28px",
+                  numberInputMinWidth: "7ch",
                 },
               }}
             />
@@ -142,8 +142,11 @@ export function CopyLinkButton({
   return (
     <CopyButton
       getText={() => {
-        const baseUrl = typeof window !== 'undefined' ? window.location.href.split('#')[0] : '';
-        const serialized = serializeParams(currentParams as Record<string, SerializableValue>, shaderDef.params);
+        const baseUrl = typeof window !== "undefined" ? window.location.href.split("#")[0] : "";
+        const serialized = serializeParams(
+          currentParams as Record<string, SerializableValue>,
+          shaderDef.params,
+        );
         return `${baseUrl}#${serialized}`;
       }}
       className={className}

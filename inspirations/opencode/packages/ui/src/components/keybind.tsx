@@ -1,8 +1,8 @@
-import type { ComponentProps, ParentProps } from "solid-js"
+import type { ComponentProps, ParentProps } from "solid-js";
 
 export interface KeybindProps extends ParentProps {
-  class?: string
-  classList?: ComponentProps<"span">["classList"]
+  class?: string;
+  classList?: ComponentProps<"span">["classList"];
 }
 
 export function Keybind(props: KeybindProps) {
@@ -16,5 +16,5 @@ export function Keybind(props: KeybindProps) {
     >
       {props.children}
     </span>
-  )
+  );
 }

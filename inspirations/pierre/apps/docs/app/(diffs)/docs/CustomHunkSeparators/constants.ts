@@ -1,18 +1,18 @@
-import type { PreloadFileOptions } from '@pierre/diffs/ssr';
+import type { PreloadFileOptions } from "@pierre/diffs/ssr";
 
-import { CUSTOM_HUNK_SEPARATORS_EXAMPLE } from '../../_examples/CustomHunkSeparators/constants';
-import { CustomScrollbarCSS } from '@/components/CustomScrollbarCSS';
+import { CUSTOM_HUNK_SEPARATORS_EXAMPLE } from "../../_examples/CustomHunkSeparators/constants";
+import { CustomScrollbarCSS } from "@/components/CustomScrollbarCSS";
 
 export { CUSTOM_HUNK_SEPARATORS_EXAMPLE };
 
 const fileOptions = {
-  theme: { dark: 'pierre-dark', light: 'pierre-light' },
+  theme: { dark: "pierre-dark", light: "pierre-light" },
   unsafeCSS: CustomScrollbarCSS,
 } as const;
 
 export const CUSTOM_HUNK_SEPARATORS_SWITCHER: PreloadFileOptions<undefined> = {
   file: {
-    name: 'custom_hunk_separators.tsx',
+    name: "custom_hunk_separators.tsx",
     contents: `import type { FileContents } from '@pierre/diffs';
 import { MultiFileDiff } from '@pierre/diffs/react';
 

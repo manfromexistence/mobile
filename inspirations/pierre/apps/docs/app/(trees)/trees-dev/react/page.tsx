@@ -1,17 +1,16 @@
-import { preloadFileTree } from '@pierre/trees/ssr';
+import { preloadFileTree } from "@pierre/trees/ssr";
 
-import { readSettingsCookies } from '../_components/readSettingsCookies';
-import { ReactDemoClient } from '../_demos/ReactDemoClient';
+import { readSettingsCookies } from "../_components/readSettingsCookies";
+import { ReactDemoClient } from "../_demos/ReactDemoClient";
 
 const DEMO_PATHS = [
-  'README.md',
-  'src/index.ts',
-  'src/components/Button.tsx',
-  'src/components/Button.test.tsx',
+  "README.md",
+  "src/index.ts",
+  "src/components/Button.tsx",
+  "src/components/Button.test.tsx",
   ...Array.from(
     { length: 28 },
-    (_, index) =>
-      `src/components/feature-${String(index + 1).padStart(2, '0')}.ts`
+    (_, index) => `src/components/feature-${String(index + 1).padStart(2, "0")}.ts`,
   ),
 ] satisfies readonly string[];
 const VIEWPORT_HEIGHT = 240;
@@ -20,8 +19,8 @@ export default async function TreesDevReactPage() {
   const { flattenEmptyDirectories } = await readSettingsCookies();
   const ssrPayload = preloadFileTree({
     flattenEmptyDirectories,
-    id: 'trees-dev-react-ssr',
-    initialExpansion: 'open',
+    id: "trees-dev-react-ssr",
+    initialExpansion: "open",
     paths: DEMO_PATHS,
     search: true,
     initialVisibleRowCount: VIEWPORT_HEIGHT / 30,

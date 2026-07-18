@@ -38,7 +38,7 @@ export function makeMemoKey(
   config: CompressionConfig,
   principalId?: string,
   model?: string,
-  supportsVision?: boolean | null
+  supportsVision?: boolean | null,
 ): string {
   const bodyHash = sha256hex(JSON.stringify(body));
   // model + supportsVision MUST be part of the key: the `lite` engine strips data:image
@@ -53,7 +53,7 @@ export function makeMemoKey(
       principalId: principalId ?? null,
       model: model ?? null,
       supportsVision: supportsVision ?? null,
-    })
+    }),
   );
 }
 

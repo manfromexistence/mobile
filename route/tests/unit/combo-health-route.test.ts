@@ -111,7 +111,7 @@ test("combo health route exposes step-level target health for structured combos"
   });
 
   const response = await route.GET(
-    new Request(`http://localhost/api/usage/combo-health?range=24h&comboId=${combo.id}`)
+    new Request(`http://localhost/api/usage/combo-health?range=24h&comboId=${combo.id}`),
   );
   const body = (await response.json()) as any;
 
@@ -148,7 +148,7 @@ test("combo health route exposes step-level target health for structured combos"
         quotaRemainingPct: 85,
         quotaScope: "connection",
       },
-    ]
+    ],
   );
 });
 
@@ -232,7 +232,7 @@ test("combo health route prefers historical call log target metrics over volatil
   });
 
   const response = await route.GET(
-    new Request(`http://localhost/api/usage/combo-health?range=24h&comboId=${combo.id}`)
+    new Request(`http://localhost/api/usage/combo-health?range=24h&comboId=${combo.id}`),
   );
   const body = (await response.json()) as any;
 
@@ -261,7 +261,7 @@ test("combo health route prefers historical call log target metrics over volatil
         avgLatencyMs: 120,
         lastStatus: "ok",
       },
-    ]
+    ],
   );
 });
 
@@ -314,7 +314,7 @@ test("combo health route aggregates target history without changing latest targe
     .run("combo-aggregate-1");
 
   const response = await route.GET(
-    new Request(`http://localhost/api/usage/combo-health?range=24h&comboId=${combo.id}`)
+    new Request(`http://localhost/api/usage/combo-health?range=24h&comboId=${combo.id}`),
   );
   const body = (await response.json()) as any;
   const [target] = body.combos[0].targetHealth;

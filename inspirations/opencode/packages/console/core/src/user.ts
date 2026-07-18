@@ -1,23 +1,23 @@
-import { z } from "zod"
-import { and, eq, getTableColumns, isNull, sql } from "drizzle-orm"
-import { fn } from "./util/fn"
-import { Database } from "./drizzle"
-import { UserRole, UserTable } from "./schema/user.sql"
-import { Actor } from "./actor"
-import { Identifier } from "./identifier"
-import { render } from "@jsx-email/render"
-import { AWS } from "./aws"
-import { Key } from "./key"
-import { KeyTable } from "./schema/key.sql"
-import { WorkspaceTable } from "./schema/workspace.sql"
-import { AuthTable } from "./schema/auth.sql"
-import { AccountTable } from "./schema/account.sql"
+import { z } from "zod";
+import { and, eq, getTableColumns, isNull, sql } from "drizzle-orm";
+import { fn } from "./util/fn";
+import { Database } from "./drizzle";
+import { UserRole, UserTable } from "./schema/user.sql";
+import { Actor } from "./actor";
+import { Identifier } from "./identifier";
+import { render } from "@jsx-email/render";
+import { AWS } from "./aws";
+import { Key } from "./key";
+import { KeyTable } from "./schema/key.sql";
+import { WorkspaceTable } from "./schema/workspace.sql";
+import { AuthTable } from "./schema/auth.sql";
+import { AccountTable } from "./schema/account.sql";
 
 export namespace User {
   const assertNotSelf = (id: string) => {
-    if (Actor.userID() !== id) return
-    throw new Error(`Expected not self actor, got self actor`)
-  }
+    if (Actor.userID() !== id) return;
+    throw new Error(`Expected not self actor, got self actor`);
+  };
 
   export const list = fn(z.void(), () =>
     Database.use((tx) =>
@@ -27,20 +27,29 @@ export namespace User {
           authEmail: AuthTable.subject,
         })
         .from(UserTable)
-        .leftJoin(AuthTable, and(eq(UserTable.accountID, AuthTable.accountID), eq(AuthTable.provider, "email")))
+        .leftJoin(
+          AuthTable,
+          and(eq(UserTable.accountID, AuthTable.accountID), eq(AuthTable.provider, "email")),
+        )
         .where(and(eq(UserTable.workspaceID, Actor.workspace()), isNull(UserTable.timeDeleted))),
     ),
-  )
+  );
 
   export const fromID = fn(z.string(), (id) =>
     Database.use((tx) =>
       tx
         .select()
         .from(UserTable)
-        .where(and(eq(UserTable.workspaceID, Actor.workspace()), eq(UserTable.id, id), isNull(UserTable.timeDeleted)))
+        .where(
+          and(
+            eq(UserTable.workspaceID, Actor.workspace()),
+            eq(UserTable.id, id),
+            isNull(UserTable.timeDeleted),
+          ),
+        )
         .then((rows) => rows[0]),
     ),
-  )
+  );
 
   export const getAuthEmail = fn(z.string(), (id) =>
     Database.use((tx) =>
@@ -49,11 +58,14 @@ export namespace User {
           email: AuthTable.subject,
         })
         .from(UserTable)
-        .leftJoin(AuthTable, and(eq(UserTable.accountID, AuthTable.accountID), eq(AuthTable.provider, "email")))
+        .leftJoin(
+          AuthTable,
+          and(eq(UserTable.accountID, AuthTable.accountID), eq(AuthTable.provider, "email")),
+        )
         .where(and(eq(UserTable.workspaceID, Actor.workspace()), eq(UserTable.id, id)))
         .then((rows) => rows[0]?.email),
     ),
-  )
+  );
 
   export const invite = fn(
     z.object({
@@ -62,8 +74,8 @@ export namespace User {
       monthlyLimit: z.number().nullable().optional(),
     }),
     async ({ email, role, monthlyLimit }) => {
-      Actor.assertAdmin()
-      const workspaceID = Actor.workspace()
+      Actor.assertAdmin();
+      const workspaceID = Actor.workspace();
 
       // create user
       const accountID = await Database.use((tx) =>
@@ -74,7 +86,7 @@ export namespace User {
           .from(AuthTable)
           .where(and(eq(AuthTable.provider, "email"), eq(AuthTable.subject, email)))
           .then((rows) => rows[0]?.accountID),
-      )
+      );
       await Database.use((tx) =>
         tx
           .insert(UserTable)
@@ -99,7 +111,7 @@ export namespace User {
               timeDeleted: null,
             },
           }),
-      )
+      );
 
       // create api key
       if (accountID) {
@@ -108,18 +120,18 @@ export namespace User {
             .select()
             .from(UserTable)
             .where(and(eq(UserTable.workspaceID, workspaceID), eq(UserTable.accountID, accountID)))
-            .then((rows) => rows[0])
+            .then((rows) => rows[0]);
 
           const key = await tx
             .select()
             .from(KeyTable)
             .where(and(eq(KeyTable.workspaceID, workspaceID), eq(KeyTable.userID, user.id)))
-            .then((rows) => rows[0])
+            .then((rows) => rows[0]);
 
-          if (key) return
+          if (key) return;
 
-          await Key.create({ userID: user.id, name: "Default API Key" })
-        })
+          await Key.create({ userID: user.id, name: "Default API Key" });
+        });
       }
 
       // send email, ignore errors
@@ -131,15 +143,21 @@ export namespace User {
               workspaceName: WorkspaceTable.name,
             })
             .from(UserTable)
-            .innerJoin(AuthTable, and(eq(UserTable.accountID, AuthTable.accountID), eq(AuthTable.provider, "email")))
+            .innerJoin(
+              AuthTable,
+              and(eq(UserTable.accountID, AuthTable.accountID), eq(AuthTable.provider, "email")),
+            )
             .innerJoin(WorkspaceTable, eq(WorkspaceTable.id, workspaceID))
             .where(
-              and(eq(UserTable.workspaceID, workspaceID), eq(UserTable.id, Actor.assert("user").properties.userID)),
+              and(
+                eq(UserTable.workspaceID, workspaceID),
+                eq(UserTable.id, Actor.assert("user").properties.userID),
+              ),
             )
             .then((rows) => rows[0]),
-        )
+        );
 
-        const { InviteEmail } = await import("@opencode-ai/console-mail/InviteEmail.jsx")
+        const { InviteEmail } = await import("@opencode-ai/console-mail/InviteEmail.jsx");
         await AWS.sendEmail({
           to: email,
           subject: `You've been invited to join the ${emailInfo.workspaceName} workspace on OpenCode`,
@@ -152,22 +170,24 @@ export namespace User {
               workspaceName: emailInfo.workspaceName,
             }),
           ),
-        })
+        });
       } catch (e) {
-        console.error(e)
+        console.error(e);
       }
     },
-  )
+  );
 
   export const joinInvitedWorkspaces = fn(z.void(), async () => {
-    const account = Actor.assert("account")
+    const account = Actor.assert("account");
     const invitations = await Database.use(async (tx) => {
       const active = await tx
         .select({ id: AccountTable.id })
         .from(AccountTable)
-        .where(and(eq(AccountTable.id, account.properties.accountID), isNull(AccountTable.timeDeleted)))
-        .then((rows) => rows[0])
-      if (!active) throw new Error("Account is not active")
+        .where(
+          and(eq(AccountTable.id, account.properties.accountID), isNull(AccountTable.timeDeleted)),
+        )
+        .then((rows) => rows[0]);
+      if (!active) throw new Error("Account is not active");
 
       const invitations = await tx
         .select({
@@ -175,7 +195,7 @@ export namespace User {
           workspaceID: UserTable.workspaceID,
         })
         .from(UserTable)
-        .where(eq(UserTable.email, account.properties.email))
+        .where(eq(UserTable.email, account.properties.email));
 
       await tx
         .update(UserTable)
@@ -183,9 +203,9 @@ export namespace User {
           accountID: account.properties.accountID,
           email: null,
         })
-        .where(eq(UserTable.email, account.properties.email))
-      return invitations
-    })
+        .where(eq(UserTable.email, account.properties.email));
+      return invitations;
+    });
 
     await Promise.all(
       invitations.map((invite) =>
@@ -197,8 +217,8 @@ export namespace User {
           () => Key.create({ userID: invite.id, name: "Default API Key" }),
         ),
       ),
-    )
-  })
+    );
+  });
 
   export const update = fn(
     z.object({
@@ -207,20 +227,20 @@ export namespace User {
       monthlyLimit: z.number().nullable(),
     }),
     async ({ id, role, monthlyLimit }) => {
-      Actor.assertAdmin()
-      if (role === "member") assertNotSelf(id)
+      Actor.assertAdmin();
+      if (role === "member") assertNotSelf(id);
       return await Database.use((tx) =>
         tx
           .update(UserTable)
           .set({ role, monthlyLimit })
           .where(and(eq(UserTable.id, id), eq(UserTable.workspaceID, Actor.workspace()))),
-      )
+      );
     },
-  )
+  );
 
   export const remove = fn(z.string(), async (id) => {
-    Actor.assertAdmin()
-    assertNotSelf(id)
+    Actor.assertAdmin();
+    assertNotSelf(id);
 
     return await Database.use((tx) =>
       tx
@@ -229,6 +249,6 @@ export namespace User {
           timeDeleted: sql`now()`,
         })
         .where(and(eq(UserTable.id, id), eq(UserTable.workspaceID, Actor.workspace()))),
-    )
-  })
+    );
+  });
 }

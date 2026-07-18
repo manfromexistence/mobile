@@ -151,11 +151,11 @@ function withNonTestEnvironment(fn) {
 
 const REAL_022_ADD_MEMORY_FTS5_SQL = fs.readFileSync(
   path.resolve("src/lib/db/migrations/022_add_memory_fts5.sql"),
-  "utf8"
+  "utf8",
 );
 const REAL_023_FIX_MEMORY_FTS_UUID_SQL = fs.readFileSync(
   path.resolve("src/lib/db/migrations/023_fix_memory_fts_uuid.sql"),
-  "utf8"
+  "utf8",
 );
 
 test("migration infrastructure avoids cwd-based repo tracing fallbacks", () => {
@@ -180,23 +180,23 @@ test("runMigrations applies pending files sequentially in version order", serial
         "002_middle.sql": "CREATE TABLE migration_middle (id INTEGER);",
         "001_first.sql": "CREATE TABLE migration_first (id INTEGER);",
       },
-      () => runner.runMigrations(db)
+      () => runner.runMigrations(db),
     );
 
     assert.equal(appliedCount, 3);
     assert.deepEqual(
       db.prepare("SELECT version FROM _omniroute_migrations ORDER BY version").all(),
-      [{ version: "001" }, { version: "002" }, { version: "010" }]
+      [{ version: "001" }, { version: "002" }, { version: "010" }],
     );
     assert.ok(
       db
         .prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?")
-        .get("migration_first")
+        .get("migration_first"),
     );
     assert.ok(
       db
         .prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?")
-        .get("migration_last")
+        .get("migration_last"),
     );
   } finally {
     db.close();
@@ -213,7 +213,7 @@ test("runMigrations skips versions that are already tracked as applied", serial,
         "001_first.sql": "CREATE TABLE skip_first (id INTEGER);",
         "002_second.sql": "CREATE TABLE skip_second (id INTEGER);",
       },
-      () => runner.runMigrations(db)
+      () => runner.runMigrations(db),
     );
 
     const secondRun = withMockedMigrationFs(
@@ -221,7 +221,7 @@ test("runMigrations skips versions that are already tracked as applied", serial,
         "001_first.sql": "CREATE TABLE skip_first (id INTEGER);",
         "002_second.sql": "CREATE TABLE skip_second (id INTEGER);",
       },
-      () => runner.runMigrations(db)
+      () => runner.runMigrations(db),
     );
 
     assert.equal(secondRun, 0);
@@ -231,7 +231,7 @@ test("runMigrations skips versions that are already tracked as applied", serial,
           .prepare("SELECT COUNT(*) AS count FROM _omniroute_migrations WHERE version = ?")
           .get("001") as any
       ).count,
-      1
+      1,
     );
     assert.equal(
       (
@@ -239,7 +239,7 @@ test("runMigrations skips versions that are already tracked as applied", serial,
           .prepare("SELECT COUNT(*) AS count FROM _omniroute_migrations WHERE version = ?")
           .get("002") as any
       ).count,
-      1
+      1,
     );
   } finally {
     db.close();
@@ -266,7 +266,7 @@ test(
         {
           "032_apikey_lifecycle.sql": "ALTER TABLE api_keys ADD COLUMN revoked_at TEXT;",
         },
-        () => runner.runMigrations(db)
+        () => runner.runMigrations(db),
       );
 
       assert.equal(appliedCount, 1);
@@ -284,12 +284,12 @@ test(
       }
       assert.deepEqual(
         db.prepare("SELECT version, name FROM _omniroute_migrations WHERE version = ?").get("032"),
-        { version: "032", name: "apikey_lifecycle" }
+        { version: "032", name: "apikey_lifecycle" },
       );
     } finally {
       db.close();
     }
-  }
+  },
 );
 
 test(
@@ -311,7 +311,7 @@ test(
         {
           "032_renamed_lifecycle_patch.sql": "ALTER TABLE api_keys ADD COLUMN should_not_run TEXT;",
         },
-        () => runner.runMigrations(db)
+        () => runner.runMigrations(db),
       );
 
       assert.equal(appliedCount, 1);
@@ -322,12 +322,12 @@ test(
       assert.equal(names.has("should_not_run"), false);
       assert.deepEqual(
         db.prepare("SELECT version, name FROM _omniroute_migrations WHERE version = ?").get("032"),
-        { version: "032", name: "renamed_lifecycle_patch" }
+        { version: "032", name: "renamed_lifecycle_patch" },
       );
     } finally {
       db.close();
     }
-  }
+  },
 );
 
 test("getMigrationStatus reports applied and pending migrations", serial, async () => {
@@ -344,7 +344,7 @@ test("getMigrationStatus reports applied and pending migrations", serial, async 
     `);
     db.prepare("INSERT INTO _omniroute_migrations (version, name) VALUES (?, ?)").run(
       "001",
-      "first"
+      "first",
     );
 
     const status = withMockedMigrationFs(
@@ -353,16 +353,16 @@ test("getMigrationStatus reports applied and pending migrations", serial, async 
         "002_second.sql": "CREATE TABLE status_second (id INTEGER);",
         "003_third.sql": "CREATE TABLE status_third (id INTEGER);",
       },
-      () => runner.getMigrationStatus(db)
+      () => runner.getMigrationStatus(db),
     );
 
     assert.deepEqual(
       status.applied.map((row) => row.version),
-      ["001"]
+      ["001"],
     );
     assert.deepEqual(
       status.pending.map((row) => row.version),
-      ["002", "003"]
+      ["002", "003"],
     );
   } finally {
     db.close();
@@ -385,21 +385,21 @@ test(
               "002_broken.sql":
                 "CREATE TABLE rollback_broken (id INTEGER); INSERT INTO missing_table VALUES (1);",
             },
-            () => runner.runMigrations(db)
+            () => runner.runMigrations(db),
           ),
-        /missing_table/i
+        /missing_table/i,
       );
 
       assert.ok(
         db
           .prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?")
-          .get("rollback_ok")
+          .get("rollback_ok"),
       );
       assert.equal(
         db
           .prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?")
           .get("rollback_broken"),
-        undefined
+        undefined,
       );
       assert.equal(
         (
@@ -407,12 +407,12 @@ test(
             .prepare("SELECT COUNT(*) AS count FROM _omniroute_migrations WHERE version = ?")
             .get("002") as any
         ).count,
-        0
+        0,
       );
     } finally {
       db.close();
     }
-  }
+  },
 );
 
 test("missing or empty migration directories are treated as a no-op", serial, async () => {
@@ -423,18 +423,18 @@ test("missing or empty migration directories are treated as a no-op", serial, as
   try {
     assert.equal(
       withMockedMigrationFs(null, () => runner.runMigrations(missingDb)),
-      0
+      0,
     );
     assert.equal(
       withMockedMigrationFs({}, () => runner.runMigrations(emptyDb)),
-      0
+      0,
     );
     assert.deepEqual(
       withMockedMigrationFs({}, () => runner.getMigrationStatus(emptyDb)),
       {
         applied: [],
         pending: [],
-      }
+      },
     );
   } finally {
     missingDb.close();
@@ -453,19 +453,19 @@ test("invalid file names are ignored while valid migrations still run", serial, 
         "not-a-migration.sql": "CREATE TABLE should_not_exist (id INTEGER);",
         "003_valid.sql": "CREATE TABLE valid_migration (id INTEGER);",
       },
-      () => runner.runMigrations(db)
+      () => runner.runMigrations(db),
     );
 
     assert.equal(count, 1);
     assert.deepEqual(
       db.prepare("SELECT version, name FROM _omniroute_migrations ORDER BY version").all(),
-      [{ version: "003", name: "valid" }]
+      [{ version: "003", name: "valid" }],
     );
     assert.equal(
       db
         .prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?")
         .get("should_not_exist"),
-      undefined
+      undefined,
     );
   } finally {
     db.close();
@@ -485,7 +485,7 @@ test(
           "001_first.sql": "CREATE TABLE rerun_first (id INTEGER);",
           "002_second.sql": "CREATE TABLE rerun_second (id INTEGER);",
         },
-        () => runner.runMigrations(db)
+        () => runner.runMigrations(db),
       );
 
       const count = withMockedMigrationFs(
@@ -494,18 +494,18 @@ test(
           "002_second.sql": "CREATE TABLE rerun_second (id INTEGER);",
           "003_third.sql": "CREATE TABLE rerun_third (id INTEGER);",
         },
-        () => runner.runMigrations(db)
+        () => runner.runMigrations(db),
       );
 
       assert.equal(count, 1);
       assert.deepEqual(
         db.prepare("SELECT version FROM _omniroute_migrations ORDER BY version").all(),
-        [{ version: "001" }, { version: "002" }, { version: "003" }]
+        [{ version: "001" }, { version: "002" }, { version: "003" }],
       );
     } finally {
       db.close();
     }
-  }
+  },
 );
 
 test(
@@ -525,7 +525,7 @@ test(
     `);
       db.prepare("INSERT INTO _omniroute_migrations (version, name) VALUES (?, ?)").run(
         "999",
-        "ghost"
+        "ghost",
       );
 
       const count = withMockedMigrationFs(
@@ -533,18 +533,18 @@ test(
           "001_first.sql": "CREATE TABLE recover_first (id INTEGER);",
           "002_second.sql": "CREATE TABLE recover_second (id INTEGER);",
         },
-        () => runner.runMigrations(db)
+        () => runner.runMigrations(db),
       );
 
       assert.equal(count, 2);
       assert.deepEqual(
         db.prepare("SELECT version FROM _omniroute_migrations ORDER BY version").all(),
-        [{ version: "001" }, { version: "002" }, { version: "999" }]
+        [{ version: "001" }, { version: "002" }, { version: "999" }],
       );
     } finally {
       db.close();
     }
-  }
+  },
 );
 
 test(
@@ -577,10 +577,10 @@ test(
     `);
       db.prepare("INSERT INTO _omniroute_migrations (version, name) VALUES (?, ?)").run(
         "021",
-        "combo_call_log_targets"
+        "combo_call_log_targets",
       );
       db.prepare(
-        "INSERT INTO memories (id, api_key_id, session_id, type, key, content, metadata) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        "INSERT INTO memories (id, api_key_id, session_id, type, key, content, metadata) VALUES (?, ?, ?, ?, ?, ?, ?)",
       ).run(
         "550e8400-e29b-41d4-a716-446655440000",
         "key-1",
@@ -588,7 +588,7 @@ test(
         "factual",
         "topic",
         "memory content",
-        "{}"
+        "{}",
       );
 
       const count = withMockedMigrationFs(
@@ -596,13 +596,13 @@ test(
           "022_add_memory_fts5.sql": REAL_022_ADD_MEMORY_FTS5_SQL,
           "023_fix_memory_fts_uuid.sql": REAL_023_FIX_MEMORY_FTS_UUID_SQL,
         },
-        () => runner.runMigrations(db)
+        () => runner.runMigrations(db),
       );
 
       assert.equal(count, 2);
       assert.deepEqual(
         db.prepare("SELECT version FROM _omniroute_migrations ORDER BY version").all(),
-        [{ version: "021" }, { version: "022" }, { version: "023" }]
+        [{ version: "021" }, { version: "022" }, { version: "023" }],
       );
       assert.deepEqual(db.prepare("SELECT memory_id, content FROM memories").get(), {
         memory_id: 1,
@@ -616,7 +616,7 @@ test(
     } finally {
       db.close();
     }
-  }
+  },
 );
 
 test(
@@ -649,7 +649,7 @@ test(
       `);
       db.prepare("INSERT INTO _omniroute_migrations (version, name) VALUES (?, ?)").run(
         "021",
-        "combo_call_log_targets"
+        "combo_call_log_targets",
       );
 
       const count = withMockedMigrationFs(
@@ -658,24 +658,24 @@ test(
           "023_fix_memory_fts_uuid.sql": REAL_023_FIX_MEMORY_FTS_UUID_SQL,
           "024_after_fts.sql": "CREATE TABLE after_fts (id INTEGER PRIMARY KEY);",
         },
-        () => runner.runMigrations(db)
+        () => runner.runMigrations(db),
       );
 
       assert.equal(count, 1);
       assert.deepEqual(
         db.prepare("SELECT version FROM _omniroute_migrations ORDER BY version").all(),
-        [{ version: "021" }, { version: "024" }]
+        [{ version: "021" }, { version: "024" }],
       );
       assert.equal(
         db
           .prepare("SELECT COUNT(*) AS count FROM sqlite_master WHERE type = 'table' AND name = ?")
           .get("memory_fts").count,
-        0
+        0,
       );
     } finally {
       db.close();
     }
-  }
+  },
 );
 
 test(
@@ -696,13 +696,13 @@ test(
       `);
       db.prepare("INSERT INTO _omniroute_migrations (version, name) VALUES (?, ?)").run(
         "001",
-        "initial_schema"
+        "initial_schema",
       );
 
       const count = withNonTestEnvironment(() =>
         withMockedMigrationFs(buildMockMigrationFiles(1, 7, "legacy_allow"), () =>
-          runner.runMigrations(db)
-        )
+          runner.runMigrations(db),
+        ),
       );
 
       assert.equal(count, 6);
@@ -716,12 +716,12 @@ test(
           { version: "005" },
           { version: "006" },
           { version: "007" },
-        ]
+        ],
       );
     } finally {
       db.close();
     }
-  }
+  },
 );
 
 test(
@@ -743,22 +743,22 @@ test(
       `);
       db.prepare("INSERT INTO _omniroute_migrations (version, name) VALUES (?, ?)").run(
         "001",
-        "initial_schema"
+        "initial_schema",
       );
 
       assert.throws(
         () =>
           withNonTestEnvironment(() =>
             withMockedMigrationFs(buildMockMigrationFiles(1, 60, "legacy_abort"), () =>
-              runner.runMigrations(db)
-            )
+              runner.runMigrations(db),
+            ),
           ),
-        /Physical schema already shows 006/i
+        /Physical schema already shows 006/i,
       );
     } finally {
       db.close();
     }
-  }
+  },
 );
 
 test(
@@ -779,7 +779,7 @@ test(
       // Simulate a DB where compression_settings was applied at version 028
       db.prepare("INSERT INTO _omniroute_migrations (version, name) VALUES (?, ?)").run(
         "028",
-        "compression_settings"
+        "compression_settings",
       );
 
       // Disk has compression_settings at 034 (current location) and create_files_and_batches at 028
@@ -797,7 +797,7 @@ test(
             "034_compression_settings.sql":
               "CREATE TABLE IF NOT EXISTS compression_settings_table (id TEXT PRIMARY KEY);",
           },
-          () => runner.runMigrations(db)
+          () => runner.runMigrations(db),
         );
 
         // The reconcile should have moved 028/compression_settings → 034/compression_settings
@@ -814,12 +814,12 @@ test(
 
         // No CRITICAL renumbering warning for version 028
         const renumberingWarnings = consoleErrors.filter(
-          (e) => e.includes("CRITICAL") && e.includes("renumbered")
+          (e) => e.includes("CRITICAL") && e.includes("renumbered"),
         );
         assert.equal(
           renumberingWarnings.length,
           0,
-          `Expected no renumbering warnings, got: ${renumberingWarnings.join("; ")}`
+          `Expected no renumbering warnings, got: ${renumberingWarnings.join("; ")}`,
         );
       } finally {
         console.error = originalError;
@@ -827,7 +827,7 @@ test(
     } finally {
       db.close();
     }
-  }
+  },
 );
 
 test(
@@ -848,7 +848,7 @@ test(
       // Simulate DB where compression_analytics was applied at version 032
       db.prepare("INSERT INTO _omniroute_migrations (version, name) VALUES (?, ?)").run(
         "032",
-        "compression_analytics"
+        "compression_analytics",
       );
 
       const consoleErrors: string[] = [];
@@ -870,7 +870,7 @@ test(
             "038_compression_analytics.sql":
               "CREATE TABLE IF NOT EXISTS compression_analytics (id TEXT PRIMARY KEY);",
           },
-          () => runner.runMigrations(db)
+          () => runner.runMigrations(db),
         );
 
         const row038 = db
@@ -880,12 +880,12 @@ test(
         assert.equal(row038?.name, "compression_analytics");
 
         const renumberingWarnings = consoleErrors.filter(
-          (e) => e.includes("CRITICAL") && e.includes("renumbered")
+          (e) => e.includes("CRITICAL") && e.includes("renumbered"),
         );
         assert.equal(
           renumberingWarnings.length,
           0,
-          `Expected no renumbering warnings, got: ${renumberingWarnings.join("; ")}`
+          `Expected no renumbering warnings, got: ${renumberingWarnings.join("; ")}`,
         );
       } finally {
         console.error = originalError;
@@ -893,7 +893,7 @@ test(
     } finally {
       db.close();
     }
-  }
+  },
 );
 
 test(
@@ -914,7 +914,7 @@ test(
       // Simulate DB where compression_cache_stats was applied at version 033
       db.prepare("INSERT INTO _omniroute_migrations (version, name) VALUES (?, ?)").run(
         "033",
-        "compression_cache_stats"
+        "compression_cache_stats",
       );
 
       const consoleErrors: string[] = [];
@@ -931,7 +931,7 @@ test(
             "039_compression_cache_stats.sql":
               "CREATE TABLE IF NOT EXISTS compression_cache_stats_table (id TEXT PRIMARY KEY);",
           },
-          () => runner.runMigrations(db)
+          () => runner.runMigrations(db),
         );
 
         const row039 = db
@@ -941,12 +941,12 @@ test(
         assert.equal(row039?.name, "compression_cache_stats");
 
         const renumberingWarnings = consoleErrors.filter(
-          (e) => e.includes("CRITICAL") && e.includes("renumbered")
+          (e) => e.includes("CRITICAL") && e.includes("renumbered"),
         );
         assert.equal(
           renumberingWarnings.length,
           0,
-          `Expected no renumbering warnings, got: ${renumberingWarnings.join("; ")}`
+          `Expected no renumbering warnings, got: ${renumberingWarnings.join("; ")}`,
         );
       } finally {
         console.error = originalError;
@@ -954,7 +954,7 @@ test(
     } finally {
       db.close();
     }
-  }
+  },
 );
 
 test(
@@ -988,30 +988,30 @@ test(
             );
           `,
         },
-        () => runner.runMigrations(db)
+        () => runner.runMigrations(db),
       );
 
       assert.equal(count, 3);
       assert.equal(
         db.prepare("SELECT name FROM _omniroute_migrations WHERE version = ?").get("041")?.name,
-        "compression_receipts"
+        "compression_receipts",
       );
       assert.equal(
         db.prepare("SELECT name FROM _omniroute_migrations WHERE version = ?").get("050")?.name,
-        "session_account_affinity"
+        "session_account_affinity",
       );
       assert.deepEqual(
         db
           .prepare(
-            "SELECT name FROM sqlite_master WHERE type = 'table' AND name IN (?, ?) ORDER BY name"
+            "SELECT name FROM sqlite_master WHERE type = 'table' AND name IN (?, ?) ORDER BY name",
           )
           .all("duplicate_041_session_account_affinity", "session_account_affinity"),
-        [{ name: "session_account_affinity" }]
+        [{ name: "session_account_affinity" }],
       );
     } finally {
       db.close();
     }
-  }
+  },
 );
 
 test(
@@ -1035,7 +1035,7 @@ test(
       `);
       db.prepare("INSERT INTO _omniroute_migrations (version, name) VALUES (?, ?)").run(
         "041",
-        "session_account_affinity"
+        "session_account_affinity",
       );
 
       const consoleErrors: string[] = [];
@@ -1062,26 +1062,26 @@ test(
               );
             `,
           },
-          () => runner.runMigrations(db)
+          () => runner.runMigrations(db),
         );
 
         assert.equal(count, 1);
         assert.equal(
           db.prepare("SELECT name FROM _omniroute_migrations WHERE version = ?").get("041")?.name,
-          "compression_receipts"
+          "compression_receipts",
         );
         assert.equal(
           db.prepare("SELECT name FROM _omniroute_migrations WHERE version = ?").get("050")?.name,
-          "session_account_affinity"
+          "session_account_affinity",
         );
 
         const renumberingWarnings = consoleErrors.filter(
-          (e) => e.includes("CRITICAL") && e.includes("renumbered")
+          (e) => e.includes("CRITICAL") && e.includes("renumbered"),
         );
         assert.equal(
           renumberingWarnings.length,
           0,
-          `Expected no renumbering warnings, got: ${renumberingWarnings.join("; ")}`
+          `Expected no renumbering warnings, got: ${renumberingWarnings.join("; ")}`,
         );
       } finally {
         console.error = originalError;
@@ -1089,7 +1089,7 @@ test(
     } finally {
       db.close();
     }
-  }
+  },
 );
 
 test(
@@ -1109,7 +1109,7 @@ test(
       `);
       db.prepare("INSERT INTO _omniroute_migrations (version, name) VALUES (?, ?)").run(
         "056",
-        "manifest_routing"
+        "manifest_routing",
       );
 
       const consoleErrors: string[] = [];
@@ -1126,25 +1126,25 @@ test(
             "059_manifest_routing.sql":
               "CREATE TABLE IF NOT EXISTS manifest_routing (id TEXT PRIMARY KEY);",
           },
-          () => runner.runMigrations(db)
+          () => runner.runMigrations(db),
         );
 
         assert.equal(
           db.prepare("SELECT name FROM _omniroute_migrations WHERE version = ?").get("056")?.name,
-          "mcp_accessibility_compression"
+          "mcp_accessibility_compression",
         );
         assert.equal(
           db.prepare("SELECT name FROM _omniroute_migrations WHERE version = ?").get("059")?.name,
-          "manifest_routing"
+          "manifest_routing",
         );
 
         const renumberingWarnings = consoleErrors.filter(
-          (e) => e.includes("CRITICAL") && e.includes("renumbered")
+          (e) => e.includes("CRITICAL") && e.includes("renumbered"),
         );
         assert.equal(
           renumberingWarnings.length,
           0,
-          `Expected no renumbering warnings, got: ${renumberingWarnings.join("; ")}`
+          `Expected no renumbering warnings, got: ${renumberingWarnings.join("; ")}`,
         );
       } finally {
         console.error = originalError;
@@ -1152,7 +1152,7 @@ test(
     } finally {
       db.close();
     }
-  }
+  },
 );
 
 test(
@@ -1172,7 +1172,7 @@ test(
       `);
       db.prepare("INSERT INTO _omniroute_migrations (version, name) VALUES (?, ?)").run(
         "051",
-        "usage_history_service_tier"
+        "usage_history_service_tier",
       );
       db.exec(`
         CREATE TABLE usage_history (
@@ -1196,25 +1196,25 @@ test(
             "054_usage_history_service_tier.sql":
               "ALTER TABLE usage_history ADD COLUMN service_tier TEXT;",
           },
-          () => runner.runMigrations(db)
+          () => runner.runMigrations(db),
         );
 
         assert.equal(
           db.prepare("SELECT name FROM _omniroute_migrations WHERE version = ?").get("051")?.name,
-          "hot_path_db_indexes"
+          "hot_path_db_indexes",
         );
         assert.equal(
           db.prepare("SELECT name FROM _omniroute_migrations WHERE version = ?").get("054")?.name,
-          "usage_history_service_tier"
+          "usage_history_service_tier",
         );
 
         const renumberingWarnings = consoleErrors.filter(
-          (e) => e.includes("CRITICAL") && e.includes("renumbered")
+          (e) => e.includes("CRITICAL") && e.includes("renumbered"),
         );
         assert.equal(
           renumberingWarnings.length,
           0,
-          `Expected no renumbering warnings, got: ${renumberingWarnings.join("; ")}`
+          `Expected no renumbering warnings, got: ${renumberingWarnings.join("; ")}`,
         );
       } finally {
         console.error = originalError;
@@ -1222,7 +1222,7 @@ test(
     } finally {
       db.close();
     }
-  }
+  },
 );
 
 test(
@@ -1299,17 +1299,17 @@ test(
             "059_manifest_routing.sql":
               "CREATE TABLE IF NOT EXISTS manifest_routing (id TEXT PRIMARY KEY);",
           },
-          () => runner.runMigrations(db)
+          () => runner.runMigrations(db),
         );
 
         // No CRITICAL renumbering warnings
         const renumberingWarnings = consoleErrors.filter(
-          (e) => e.includes("CRITICAL") && e.includes("renumbered")
+          (e) => e.includes("CRITICAL") && e.includes("renumbered"),
         );
         assert.equal(
           renumberingWarnings.length,
           0,
-          `Expected no renumbering warnings, got: ${renumberingWarnings.join("; ")}`
+          `Expected no renumbering warnings, got: ${renumberingWarnings.join("; ")}`,
         );
 
         // Verify the reconciled entries
@@ -1348,7 +1348,7 @@ test(
     } finally {
       db.close();
     }
-  }
+  },
 );
 
 // ── #3416: OMNIROUTE_MAX_PENDING_MIGRATIONS env override ─────────────────────
@@ -1371,7 +1371,7 @@ function seedExistingDbWithoutPhysicalBaseline(db) {
   `);
   db.prepare("INSERT INTO _omniroute_migrations (version, name) VALUES (?, ?)").run(
     "001",
-    "initial_schema"
+    "initial_schema",
   );
 }
 
@@ -1392,17 +1392,17 @@ test(
         () =>
           withNonTestEnvironment(() =>
             withMockedMigrationFs(buildMockMigrationFiles(1, 11, "lower_threshold"), () =>
-              runner.runMigrations(db)
-            )
+              runner.runMigrations(db),
+            ),
           ),
-        /threshold is 5/i
+        /threshold is 5/i,
       );
     } finally {
       if (original === undefined) delete process.env.OMNIROUTE_MAX_PENDING_MIGRATIONS;
       else process.env.OMNIROUTE_MAX_PENDING_MIGRATIONS = original;
       db.close();
     }
-  }
+  },
 );
 
 test(
@@ -1427,7 +1427,7 @@ test(
       }
 
       const count = withNonTestEnvironment(() =>
-        withMockedMigrationFs(pendingFiles, () => runner.runMigrations(db))
+        withMockedMigrationFs(pendingFiles, () => runner.runMigrations(db)),
       );
 
       assert.equal(count, 60);
@@ -1436,7 +1436,7 @@ test(
       else process.env.OMNIROUTE_MAX_PENDING_MIGRATIONS = original;
       db.close();
     }
-  }
+  },
 );
 
 test(
@@ -1456,10 +1456,10 @@ test(
           () =>
             withNonTestEnvironment(() =>
               withMockedMigrationFs(buildMockMigrationFiles(1, 60, "default_unset"), () =>
-                runner.runMigrations(dbUnset)
-              )
+                runner.runMigrations(dbUnset),
+              ),
             ),
-          /threshold is 50/i
+          /threshold is 50/i,
         );
       } finally {
         dbUnset.close();
@@ -1474,10 +1474,10 @@ test(
           () =>
             withNonTestEnvironment(() =>
               withMockedMigrationFs(buildMockMigrationFiles(1, 60, "default_invalid"), () =>
-                runner.runMigrations(dbInvalid)
-              )
+                runner.runMigrations(dbInvalid),
+              ),
             ),
-          /threshold is 50/i
+          /threshold is 50/i,
         );
       } finally {
         dbInvalid.close();
@@ -1486,5 +1486,5 @@ test(
       if (original === undefined) delete process.env.OMNIROUTE_MAX_PENDING_MIGRATIONS;
       else process.env.OMNIROUTE_MAX_PENDING_MIGRATIONS = original;
     }
-  }
+  },
 );

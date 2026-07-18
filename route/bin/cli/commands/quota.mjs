@@ -71,7 +71,7 @@ export async function runQuotaCommand(opts = {}) {
       "  Provider".padEnd(25) +
       "Used".padEnd(15) +
       "Remaining".padEnd(20) +
-      "Reset\x1b[0m"
+      "Reset\x1b[0m",
   );
   console.log(
     "\x1b[2m  " +
@@ -82,7 +82,7 @@ export async function runQuotaCommand(opts = {}) {
       "─".repeat(19) +
       " " +
       "─".repeat(15) +
-      "\x1b[0m"
+      "\x1b[0m",
   );
 
   for (const p of providers) {

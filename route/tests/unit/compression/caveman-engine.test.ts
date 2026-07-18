@@ -28,11 +28,11 @@ describe("caveman engine", () => {
     assert.equal(result.compressed, true);
     assert.ok(
       result.stats.savingsPercent > 0,
-      `Expected savings > 0, got ${result.stats.savingsPercent}`
+      `Expected savings > 0, got ${result.stats.savingsPercent}`,
     );
     assert.ok(
       result.stats.rulesApplied && result.stats.rulesApplied.length > 0,
-      "Expected rules applied"
+      "Expected rules applied",
     );
   });
 
@@ -102,7 +102,7 @@ describe("caveman engine", () => {
     assert.equal(
       text.split(/\s+/).some((token) => token === url),
       true,
-      `URL should be preserved`
+      `URL should be preserved`,
     );
   });
 
@@ -143,7 +143,7 @@ describe("caveman engine", () => {
     });
     assert.ok(
       !resultWithSkip.stats.rulesApplied?.includes("polite_framing"),
-      "polite_framing should be skipped"
+      "polite_framing should be skipped",
     );
   });
 
@@ -173,15 +173,15 @@ describe("caveman engine", () => {
     const userMsg = result.body.messages[1].content as string;
     assert.ok(
       systemMsg.includes("very"),
-      "System message should not be compressed (not in compressRoles)"
+      "System message should not be compressed (not in compressRoles)",
     );
     assert.ok(
       !userMsg.includes("Please could you"),
-      "User message should have 'Please could you' removed"
+      "User message should have 'Please could you' removed",
     );
     assert.ok(
       !userMsg.includes("Thank you so much"),
-      "User message should have 'Thank you so much' removed"
+      "User message should have 'Thank you so much' removed",
     );
   });
 
@@ -205,14 +205,14 @@ describe("caveman engine", () => {
     assert.ok(
       // Loose catastrophic budget (see the 10K-token test below for rationale).
       result.stats.durationMs < 500,
-      `Duration ${result.stats.durationMs}ms should stay under the 500ms catastrophic budget`
+      `Duration ${result.stats.durationMs}ms should stay under the 500ms catastrophic budget`,
     );
   });
 
   it("applyRulesToText should track applied rules", () => {
     const { text, appliedRules } = applyRulesToText(
       "Please help me",
-      CAVEMAN_RULES.filter((r) => r.context === "all" || r.context === "user")
+      CAVEMAN_RULES.filter((r) => r.context === "all" || r.context === "user"),
     );
     assert.ok(appliedRules.length > 0, "Should track applied rules");
     assert.ok(appliedRules.includes("polite_framing"), "polite_framing should be in applied rules");

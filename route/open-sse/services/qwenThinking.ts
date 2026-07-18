@@ -21,7 +21,7 @@ export function isQwenThinkingToolChoiceIncompatible(toolChoice: unknown): boole
 
 export function sanitizeQwenThinkingToolChoice(
   body: JsonRecord,
-  providerLabel = "Qwen"
+  providerLabel = "Qwen",
 ): JsonRecord {
   if (!isQwenThinkingActive(body)) {
     return body;
@@ -34,7 +34,7 @@ export function sanitizeQwenThinkingToolChoice(
 
   const toolChoiceLabel = typeof toolChoice === "string" ? toolChoice : "object";
   console.warn(
-    `[${providerLabel}] Neutralizing incompatible tool_choice ${toolChoiceLabel} to "auto" (thinking mode active)`
+    `[${providerLabel}] Neutralizing incompatible tool_choice ${toolChoiceLabel} to "auto" (thinking mode active)`,
   );
 
   return {

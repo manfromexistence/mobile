@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { createSignal } from "solid-js"
-import * as mod from "./basic-tool"
-import { create } from "@opencode-ai/ui/storybook/scaffold"
+import { createSignal } from "solid-js";
+import * as mod from "./basic-tool";
+import { create } from "@opencode-ai/ui/storybook/scaffold";
 
 const docs = `### Overview
 Expandable tool panel with a structured trigger and optional details.
@@ -25,7 +25,7 @@ Use structured triggers for consistent layout; custom triggers allowed.
 ### Theming/tokens
 - Uses \`data-component="tool-trigger"\` and related slots.
 
-`
+`;
 
 const story = create({
   title: "UI/Basic Tool",
@@ -40,7 +40,7 @@ const story = create({
     },
     children: "Details content",
   },
-})
+});
 
 export default {
   title: "UI/Basic Tool",
@@ -54,9 +54,9 @@ export default {
       },
     },
   },
-}
+};
 
-export const Basic = story.Basic
+export const Basic = story.Basic;
 
 export const Pending = {
   args: {
@@ -67,7 +67,7 @@ export const Pending = {
     },
     children: "Progress details",
   },
-}
+};
 
 export const Locked = {
   args: {
@@ -78,7 +78,7 @@ export const Locked = {
     },
     children: "Locked details",
   },
-}
+};
 
 export const Deferred = {
   args: {
@@ -90,7 +90,7 @@ export const Deferred = {
     },
     children: "Deferred content",
   },
-}
+};
 
 export const ForceOpen = {
   args: {
@@ -101,7 +101,7 @@ export const ForceOpen = {
     },
     children: "Forced content",
   },
-}
+};
 
 export const HideDetails = {
   args: {
@@ -112,11 +112,11 @@ export const HideDetails = {
     },
     children: "Hidden content",
   },
-}
+};
 
 export const SubtitleAction = {
   render: () => {
-    const [message, setMessage] = createSignal("Subtitle not clicked")
+    const [message, setMessage] = createSignal("Subtitle not clicked");
     return (
       <div style={{ display: "grid", gap: "8px" }}>
         <div style={{ "font-size": "12px", color: "var(--text-weak)" }}>{message()}</div>
@@ -128,6 +128,6 @@ export const SubtitleAction = {
           Subtitle action details
         </mod.BasicTool>
       </div>
-    )
+    );
   },
-}
+};

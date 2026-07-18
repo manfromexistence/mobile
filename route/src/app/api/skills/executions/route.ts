@@ -17,7 +17,7 @@ export async function GET(request: Request) {
     const executions = skillExecutor.listExecutions(
       apiKeyId,
       params.limit,
-      (params.page - 1) * params.limit
+      (params.page - 1) * params.limit,
     );
     return NextResponse.json(buildPaginatedResponse(executions, total, params));
   } catch (err: unknown) {

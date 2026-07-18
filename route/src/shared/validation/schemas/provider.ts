@@ -105,7 +105,7 @@ export const bulkCreateProviderSchema = z
           apiKey: z.string().min(1).max(MAX_PROVIDER_CREDENTIAL_LENGTH),
           // Per-key account id — required for cloudflare-ai (enforced in superRefine below).
           accountId: z.string().min(1).max(200).optional(),
-        })
+        }),
       )
       .min(1, "entries must contain at least 1 item")
       .max(200, "entries must contain at most 200 items"),
@@ -160,7 +160,7 @@ export const bulkWebSessionImportSchema = z.object({
           .string()
           .min(1)
           .max(64 * 1024, "Credential must be under 64 KB"),
-      })
+      }),
     )
     .min(1, "entries must contain at least 1 item")
     .max(50, "entries must contain at most 50 items"),
@@ -195,7 +195,7 @@ export const providerModelMutationSchema = z.object({
         "audio-transcriptions",
         "audio-speech",
         "images-generations",
-      ])
+      ]),
     )
     .default(["chat"]),
   // #2905: optional per-model wire format override for custom models (e.g. a
@@ -351,8 +351,11 @@ export const updateProviderConnectionSchema = z
           // Window keys mirror the quota names from getUsageForProvider —
           // bound for defense-in-depth so a malicious payload can't ship
           // megabyte-long keys that would bloat the DB row.
-          z.string().min(1).max(64),
-          z.union([z.null(), z.coerce.number().int().min(0).max(100)])
+          z
+            .string()
+            .min(1)
+            .max(64),
+          z.union([z.null(), z.coerce.number().int().min(0).max(100)]),
         ),
       ])
       .optional(),

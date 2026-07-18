@@ -1,24 +1,24 @@
-import { type ComponentProps, type JSX, Show, splitProps } from "solid-js"
-import { Icon } from "./icon"
-import "./inline-input-v2.css"
+import { type ComponentProps, type JSX, Show, splitProps } from "solid-js";
+import { Icon } from "./icon";
+import "./inline-input-v2.css";
 
 export interface InlineInputV2Props extends Omit<ComponentProps<"input">, "type" | "prefix"> {
   /** Inline label shown before the field (prefix segment). */
-  prefix: JSX.Element
+  prefix: JSX.Element;
   /** Fixed width for the prefix segment (px number or CSS length). Omit for fit-content. */
-  labelWidth?: number | string
+  labelWidth?: number | string;
   /** Show the trailing copy action. */
-  showCopyButton?: boolean
+  showCopyButton?: boolean;
   /** Accessible label for the copy button. */
-  copyLabel?: string
-  onCopyClick?: (event: MouseEvent) => void
+  copyLabel?: string;
+  onCopyClick?: (event: MouseEvent) => void;
   /** Apply tabular numerals to the prefix and field value. */
-  numeric?: boolean
+  numeric?: boolean;
   /** Error styling for the field and value text. */
-  invalid?: boolean
+  invalid?: boolean;
   /** `base` is 28px tall; `large` is 32px tall. */
-  appearance?: "base" | "large"
-  type?: ComponentProps<"input">["type"]
+  appearance?: "base" | "large";
+  type?: ComponentProps<"input">["type"];
 }
 
 export function InlineInputV2(props: InlineInputV2Props) {
@@ -35,7 +35,7 @@ export function InlineInputV2(props: InlineInputV2Props) {
     "appearance",
     "disabled",
     "style",
-  ])
+  ]);
 
   return (
     <div
@@ -86,5 +86,5 @@ export function InlineInputV2(props: InlineInputV2Props) {
         </Show>
       </div>
     </div>
-  )
+  );
 }

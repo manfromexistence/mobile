@@ -1,6 +1,6 @@
-import { DropdownMenu as Kobalte } from "@kobalte/core/dropdown-menu"
-import { splitProps } from "solid-js"
-import type { ComponentProps, ParentProps } from "solid-js"
+import { DropdownMenu as Kobalte } from "@kobalte/core/dropdown-menu";
+import { splitProps } from "solid-js";
+import type { ComponentProps, ParentProps } from "solid-js";
 
 export interface DropdownMenuProps extends ComponentProps<typeof Kobalte> {}
 export interface DropdownMenuTriggerProps extends ComponentProps<typeof Kobalte.Trigger> {}
@@ -13,21 +13,24 @@ export interface DropdownMenuGroupProps extends ComponentProps<typeof Kobalte.Gr
 export interface DropdownMenuGroupLabelProps extends ComponentProps<typeof Kobalte.GroupLabel> {}
 export interface DropdownMenuItemProps extends ComponentProps<typeof Kobalte.Item> {}
 export interface DropdownMenuItemLabelProps extends ComponentProps<typeof Kobalte.ItemLabel> {}
-export interface DropdownMenuItemDescriptionProps extends ComponentProps<typeof Kobalte.ItemDescription> {}
-export interface DropdownMenuItemIndicatorProps extends ComponentProps<typeof Kobalte.ItemIndicator> {}
+export interface DropdownMenuItemDescriptionProps
+  extends ComponentProps<typeof Kobalte.ItemDescription> {}
+export interface DropdownMenuItemIndicatorProps
+  extends ComponentProps<typeof Kobalte.ItemIndicator> {}
 export interface DropdownMenuRadioGroupProps extends ComponentProps<typeof Kobalte.RadioGroup> {}
 export interface DropdownMenuRadioItemProps extends ComponentProps<typeof Kobalte.RadioItem> {}
-export interface DropdownMenuCheckboxItemProps extends ComponentProps<typeof Kobalte.CheckboxItem> {}
+export interface DropdownMenuCheckboxItemProps
+  extends ComponentProps<typeof Kobalte.CheckboxItem> {}
 export interface DropdownMenuSubProps extends ComponentProps<typeof Kobalte.Sub> {}
 export interface DropdownMenuSubTriggerProps extends ComponentProps<typeof Kobalte.SubTrigger> {}
 export interface DropdownMenuSubContentProps extends ComponentProps<typeof Kobalte.SubContent> {}
 
 function DropdownMenuRoot(props: DropdownMenuProps) {
-  return <Kobalte {...props} data-component="dropdown-menu" />
+  return <Kobalte {...props} data-component="dropdown-menu" />;
 }
 
 function DropdownMenuTrigger(props: ParentProps<DropdownMenuTriggerProps>) {
-  const [local, rest] = splitProps(props, ["class", "classList", "children"])
+  const [local, rest] = splitProps(props, ["class", "classList", "children"]);
   return (
     <Kobalte.Trigger
       {...rest}
@@ -39,11 +42,11 @@ function DropdownMenuTrigger(props: ParentProps<DropdownMenuTriggerProps>) {
     >
       {local.children}
     </Kobalte.Trigger>
-  )
+  );
 }
 
 function DropdownMenuIcon(props: ParentProps<DropdownMenuIconProps>) {
-  const [local, rest] = splitProps(props, ["class", "classList", "children"])
+  const [local, rest] = splitProps(props, ["class", "classList", "children"]);
   return (
     <Kobalte.Icon
       {...rest}
@@ -55,15 +58,15 @@ function DropdownMenuIcon(props: ParentProps<DropdownMenuIconProps>) {
     >
       {local.children}
     </Kobalte.Icon>
-  )
+  );
 }
 
 function DropdownMenuPortal(props: DropdownMenuPortalProps) {
-  return <Kobalte.Portal {...props} />
+  return <Kobalte.Portal {...props} />;
 }
 
 function DropdownMenuContent(props: ParentProps<DropdownMenuContentProps>) {
-  const [local, rest] = splitProps(props, ["class", "classList", "children"])
+  const [local, rest] = splitProps(props, ["class", "classList", "children"]);
   return (
     <Kobalte.Content
       {...rest}
@@ -75,11 +78,11 @@ function DropdownMenuContent(props: ParentProps<DropdownMenuContentProps>) {
     >
       {local.children}
     </Kobalte.Content>
-  )
+  );
 }
 
 function DropdownMenuArrow(props: DropdownMenuArrowProps) {
-  const [local, rest] = splitProps(props, ["class", "classList"])
+  const [local, rest] = splitProps(props, ["class", "classList"]);
   return (
     <Kobalte.Arrow
       {...rest}
@@ -89,11 +92,11 @@ function DropdownMenuArrow(props: DropdownMenuArrowProps) {
         [local.class ?? ""]: !!local.class,
       }}
     />
-  )
+  );
 }
 
 function DropdownMenuSeparator(props: DropdownMenuSeparatorProps) {
-  const [local, rest] = splitProps(props, ["class", "classList"])
+  const [local, rest] = splitProps(props, ["class", "classList"]);
   return (
     <Kobalte.Separator
       {...rest}
@@ -103,11 +106,11 @@ function DropdownMenuSeparator(props: DropdownMenuSeparatorProps) {
         [local.class ?? ""]: !!local.class,
       }}
     />
-  )
+  );
 }
 
 function DropdownMenuGroup(props: ParentProps<DropdownMenuGroupProps>) {
-  const [local, rest] = splitProps(props, ["class", "classList", "children"])
+  const [local, rest] = splitProps(props, ["class", "classList", "children"]);
   return (
     <Kobalte.Group
       {...rest}
@@ -119,11 +122,11 @@ function DropdownMenuGroup(props: ParentProps<DropdownMenuGroupProps>) {
     >
       {local.children}
     </Kobalte.Group>
-  )
+  );
 }
 
 function DropdownMenuGroupLabel(props: ParentProps<DropdownMenuGroupLabelProps>) {
-  const [local, rest] = splitProps(props, ["class", "classList", "children"])
+  const [local, rest] = splitProps(props, ["class", "classList", "children"]);
   return (
     <Kobalte.GroupLabel
       {...rest}
@@ -135,11 +138,11 @@ function DropdownMenuGroupLabel(props: ParentProps<DropdownMenuGroupLabelProps>)
     >
       {local.children}
     </Kobalte.GroupLabel>
-  )
+  );
 }
 
 function DropdownMenuItem(props: ParentProps<DropdownMenuItemProps>) {
-  const [local, rest] = splitProps(props, ["class", "classList", "children"])
+  const [local, rest] = splitProps(props, ["class", "classList", "children"]);
   return (
     <Kobalte.Item
       {...rest}
@@ -151,11 +154,11 @@ function DropdownMenuItem(props: ParentProps<DropdownMenuItemProps>) {
     >
       {local.children}
     </Kobalte.Item>
-  )
+  );
 }
 
 function DropdownMenuItemLabel(props: ParentProps<DropdownMenuItemLabelProps>) {
-  const [local, rest] = splitProps(props, ["class", "classList", "children"])
+  const [local, rest] = splitProps(props, ["class", "classList", "children"]);
   return (
     <Kobalte.ItemLabel
       {...rest}
@@ -167,11 +170,11 @@ function DropdownMenuItemLabel(props: ParentProps<DropdownMenuItemLabelProps>) {
     >
       {local.children}
     </Kobalte.ItemLabel>
-  )
+  );
 }
 
 function DropdownMenuItemDescription(props: ParentProps<DropdownMenuItemDescriptionProps>) {
-  const [local, rest] = splitProps(props, ["class", "classList", "children"])
+  const [local, rest] = splitProps(props, ["class", "classList", "children"]);
   return (
     <Kobalte.ItemDescription
       {...rest}
@@ -183,11 +186,11 @@ function DropdownMenuItemDescription(props: ParentProps<DropdownMenuItemDescript
     >
       {local.children}
     </Kobalte.ItemDescription>
-  )
+  );
 }
 
 function DropdownMenuItemIndicator(props: ParentProps<DropdownMenuItemIndicatorProps>) {
-  const [local, rest] = splitProps(props, ["class", "classList", "children"])
+  const [local, rest] = splitProps(props, ["class", "classList", "children"]);
   return (
     <Kobalte.ItemIndicator
       {...rest}
@@ -199,11 +202,11 @@ function DropdownMenuItemIndicator(props: ParentProps<DropdownMenuItemIndicatorP
     >
       {local.children}
     </Kobalte.ItemIndicator>
-  )
+  );
 }
 
 function DropdownMenuRadioGroup(props: ParentProps<DropdownMenuRadioGroupProps>) {
-  const [local, rest] = splitProps(props, ["class", "classList", "children"])
+  const [local, rest] = splitProps(props, ["class", "classList", "children"]);
   return (
     <Kobalte.RadioGroup
       {...rest}
@@ -215,11 +218,11 @@ function DropdownMenuRadioGroup(props: ParentProps<DropdownMenuRadioGroupProps>)
     >
       {local.children}
     </Kobalte.RadioGroup>
-  )
+  );
 }
 
 function DropdownMenuRadioItem(props: ParentProps<DropdownMenuRadioItemProps>) {
-  const [local, rest] = splitProps(props, ["class", "classList", "children"])
+  const [local, rest] = splitProps(props, ["class", "classList", "children"]);
   return (
     <Kobalte.RadioItem
       {...rest}
@@ -231,11 +234,11 @@ function DropdownMenuRadioItem(props: ParentProps<DropdownMenuRadioItemProps>) {
     >
       {local.children}
     </Kobalte.RadioItem>
-  )
+  );
 }
 
 function DropdownMenuCheckboxItem(props: ParentProps<DropdownMenuCheckboxItemProps>) {
-  const [local, rest] = splitProps(props, ["class", "classList", "children"])
+  const [local, rest] = splitProps(props, ["class", "classList", "children"]);
   return (
     <Kobalte.CheckboxItem
       {...rest}
@@ -247,15 +250,15 @@ function DropdownMenuCheckboxItem(props: ParentProps<DropdownMenuCheckboxItemPro
     >
       {local.children}
     </Kobalte.CheckboxItem>
-  )
+  );
 }
 
 function DropdownMenuSub(props: DropdownMenuSubProps) {
-  return <Kobalte.Sub {...props} />
+  return <Kobalte.Sub {...props} />;
 }
 
 function DropdownMenuSubTrigger(props: ParentProps<DropdownMenuSubTriggerProps>) {
-  const [local, rest] = splitProps(props, ["class", "classList", "children"])
+  const [local, rest] = splitProps(props, ["class", "classList", "children"]);
   return (
     <Kobalte.SubTrigger
       {...rest}
@@ -267,11 +270,11 @@ function DropdownMenuSubTrigger(props: ParentProps<DropdownMenuSubTriggerProps>)
     >
       {local.children}
     </Kobalte.SubTrigger>
-  )
+  );
 }
 
 function DropdownMenuSubContent(props: ParentProps<DropdownMenuSubContentProps>) {
-  const [local, rest] = splitProps(props, ["class", "classList", "children"])
+  const [local, rest] = splitProps(props, ["class", "classList", "children"]);
   return (
     <Kobalte.SubContent
       {...rest}
@@ -283,7 +286,7 @@ function DropdownMenuSubContent(props: ParentProps<DropdownMenuSubContentProps>)
     >
       {local.children}
     </Kobalte.SubContent>
-  )
+  );
 }
 
 export const DropdownMenu = Object.assign(DropdownMenuRoot, {
@@ -305,4 +308,4 @@ export const DropdownMenu = Object.assign(DropdownMenuRoot, {
   Sub: DropdownMenuSub,
   SubTrigger: DropdownMenuSubTrigger,
   SubContent: DropdownMenuSubContent,
-})
+});

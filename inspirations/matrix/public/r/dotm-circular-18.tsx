@@ -22,15 +22,19 @@ export function DotmCircular18({
   ...rest
 }: DotmCircular18Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
   const animPhase = useCyclePhase({
     active: !reducedMotion && matrixPhase !== "idle",
     cycleMsBase: 1550,
-    speed
+    speed,
   });
 
   const resolver = useMemo<DotAnimationResolver>(() => {
@@ -39,7 +43,7 @@ export function DotmCircular18({
         return { className: "dmx-inactive" };
       }
 
-      const t = reducedMotion || phase === "idle" ? 0 : Math.floor((animPhase) * 6);
+      const t = reducedMotion || phase === "idle" ? 0 : Math.floor(animPhase * 6);
       const pulseRow = t % 3; // 0..2
       const topRow = pulseRow;
       const bottomRow = 4 - pulseRow;

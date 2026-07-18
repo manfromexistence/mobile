@@ -122,10 +122,7 @@ export async function GET(request: Request) {
       backendMode: settings.preferredBackendMode || "api",
     });
   } catch (error) {
-    return NextResponse.json(
-      { error: { message: sanitizeErrorMessage(error) } },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: { message: sanitizeErrorMessage(error) } }, { status: 500 });
   }
 }
 
@@ -137,7 +134,7 @@ export async function GET(request: Request) {
  * the complexity gate.
  */
 async function prepareLettaAuthFile(
-  overwrite: boolean | undefined
+  overwrite: boolean | undefined,
 ): Promise<
   | { conflictResponse: NextResponse }
   | { authFile: { version: number; providers: Record<string, any> }; authPath: string }
@@ -164,7 +161,7 @@ async function prepareLettaAuthFile(
           conflict: true,
           existingBaseUrl: existingProvider.base_url,
         },
-        { status: 409 }
+        { status: 409 },
       ),
     };
   }
@@ -246,10 +243,7 @@ export async function POST(request: Request) {
       needsRestart: true,
     });
   } catch (error) {
-    return NextResponse.json(
-      { error: { message: sanitizeErrorMessage(error) } },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: { message: sanitizeErrorMessage(error) } }, { status: 500 });
   }
 }
 
@@ -321,9 +315,6 @@ export async function DELETE(request: Request) {
       needsRestart: true,
     });
   } catch (error) {
-    return NextResponse.json(
-      { error: { message: sanitizeErrorMessage(error) } },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: { message: sanitizeErrorMessage(error) } }, { status: 500 });
   }
 }

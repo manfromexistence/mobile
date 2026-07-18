@@ -141,7 +141,7 @@ function findHardcodedStrings(source) {
     // Skip lines that are *clearly* TypeScript signatures
     if (
       /:\s*(Promise|Record|Map|Set|Array|Partial|Pick|Omit|Required|Readonly|Awaited)\s*</.test(
-        line
+        line,
       )
     )
       continue;

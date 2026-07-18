@@ -36,7 +36,7 @@ describe("#6343: v0-vercel-web credential detection (alias collision)", () => {
     assert.notEqual(
       webAlias,
       apiKeyAlias,
-      "v0-vercel and v0-vercel-web must have distinct aliases so alias->id resolution is unambiguous"
+      "v0-vercel and v0-vercel-web must have distinct aliases so alias->id resolution is unambiguous",
     );
   });
 

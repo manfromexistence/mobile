@@ -1,6 +1,6 @@
-import { dict as en } from "./en"
+import { dict as en } from "./en";
 
-type Keys = keyof typeof en
+type Keys = keyof typeof en;
 
 export const dict = {
   "command.category.suggested": "建議",
@@ -136,14 +136,17 @@ export const dict = {
   "provider.connect.apiKey.label": "{{provider}} API 金鑰",
   "provider.connect.apiKey.placeholder": "API 金鑰",
   "provider.connect.apiKey.required": "API 金鑰為必填",
-  "provider.connect.opencodeZen.line1": "OpenCode Zen 為你提供一組精選的可靠最佳化模型，用於程式碼代理程式。",
-  "provider.connect.opencodeZen.line2": "只需一個 API 金鑰，你就能使用 Claude、GPT、Gemini、GLM 等模型。",
+  "provider.connect.opencodeZen.line1":
+    "OpenCode Zen 為你提供一組精選的可靠最佳化模型，用於程式碼代理程式。",
+  "provider.connect.opencodeZen.line2":
+    "只需一個 API 金鑰，你就能使用 Claude、GPT、Gemini、GLM 等模型。",
   "provider.connect.opencodeZen.visit.prefix": "造訪 ",
   "provider.connect.opencodeZen.visit.link": "opencode.ai/zen",
   "provider.connect.opencodeZen.visit.suffix": " 取得你的 API 金鑰。",
   "provider.connect.oauth.code.visit.prefix": "造訪 ",
   "provider.connect.oauth.code.visit.link": "此連結",
-  "provider.connect.oauth.code.visit.suffix": " 取得授權碼，以連線你的帳戶並在 OpenCode 中使用 {{provider}} 模型。",
+  "provider.connect.oauth.code.visit.suffix":
+    " 取得授權碼，以連線你的帳戶並在 OpenCode 中使用 {{provider}} 模型。",
   "provider.connect.oauth.code.label": "{{method}} 授權碼",
   "provider.connect.oauth.code.placeholder": "授權碼",
   "provider.connect.oauth.code.required": "授權碼為必填",
@@ -328,7 +331,8 @@ export const dict = {
   "dialog.server.add.password": "密碼（選填）",
   "dialog.server.edit.title": "編輯伺服器",
   "dialog.server.default.title": "預設伺服器",
-  "dialog.server.default.description": "應用程式啟動時連線此伺服器，而不是啟動本地伺服器。需要重新啟動。",
+  "dialog.server.default.description":
+    "應用程式啟動時連線此伺服器，而不是啟動本地伺服器。需要重新啟動。",
   "dialog.server.default.none": "未選擇伺服器",
   "dialog.server.default.set": "將目前伺服器設為預設",
   "dialog.server.default.clear": "清除",
@@ -560,8 +564,10 @@ export const dict = {
   "status.popover.action.manageServers": "管理伺服器",
 
   "session.share.popover.title": "發佈到網頁",
-  "session.share.popover.description.shared": "此工作階段已在網頁上公開。任何擁有連結的人都可以存取。",
-  "session.share.popover.description.unshared": "在網頁上公開分享此工作階段。任何擁有連結的人都可以存取。",
+  "session.share.popover.description.shared":
+    "此工作階段已在網頁上公開。任何擁有連結的人都可以存取。",
+  "session.share.popover.description.unshared":
+    "在網頁上公開分享此工作階段。任何擁有連結的人都可以存取。",
   "session.share.action.share": "分享",
   "session.share.action.publish": "發佈",
   "session.share.action.publishing": "正在發佈...",
@@ -649,10 +655,12 @@ export const dict = {
   "settings.general.row.shellToolPartsExpanded.title": "展開 shell 工具區塊",
   "settings.general.row.shellToolPartsExpanded.description": "在時間軸中預設展開 shell 工具區塊",
   "settings.general.row.editToolPartsExpanded.title": "展開 edit 工具區塊",
-  "settings.general.row.editToolPartsExpanded.description": "在時間軸中預設展開 edit、write 和 patch 工具區塊",
+  "settings.general.row.editToolPartsExpanded.description":
+    "在時間軸中預設展開 edit、write 和 patch 工具區塊",
   "settings.general.row.wayland.title": "使用原生 Wayland",
   "settings.general.row.wayland.description": "在 Wayland 上停用 X11 後備模式。需要重新啟動。",
-  "settings.general.row.wayland.tooltip": "在混合更新率螢幕的 Linux 系統上，原生 Wayland 可能更穩定。",
+  "settings.general.row.wayland.tooltip":
+    "在混合更新率螢幕的 Linux 系統上，原生 Wayland 可能更穩定。",
 
   "settings.general.row.releaseNotes.title": "發行說明",
   "settings.general.row.releaseNotes.description": "更新後顯示「新功能」彈出視窗",
@@ -876,7 +884,8 @@ export const dict = {
   "debugBar.ariaLabel": "開發效能診斷",
   "debugBar.na": "不適用",
   "debugBar.nav.label": "NAV",
-  "debugBar.nav.tip": "最後一次完成的涉及工作階段頁面的路由轉換，從路由器啟動到穩定後的第一次繪製。",
+  "debugBar.nav.tip":
+    "最後一次完成的涉及工作階段頁面的路由轉換，從路由器啟動到穩定後的第一次繪製。",
   "debugBar.fps.label": "FPS",
   "debugBar.fps.tip": "過去 5 秒內的滾動幀率。",
   "debugBar.frame.label": "FRAME",
@@ -917,4 +926,4 @@ export const dict = {
   "error.childStore.persistedProjectIconCreateFailed": "建立持續性專案圖示失敗",
   "error.childStore.storeCreateFailed": "建立儲存區失敗",
   "terminal.connectionLost.abnormalClose": "WebSocket 異常關閉：{{code}}",
-} satisfies Partial<Record<Keys, string>>
+} satisfies Partial<Record<Keys, string>>;

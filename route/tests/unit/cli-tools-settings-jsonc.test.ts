@@ -57,7 +57,7 @@ test("readJsoncConfig parses a JSONC file with trailing commas (regression)", as
   "model": "claude-sonnet-4-5",
 }
 `,
-    "utf-8"
+    "utf-8",
   );
   try {
     const parsed = await readJsoncConfig<{ apiKey: string; model: string }>(file);
@@ -106,22 +106,19 @@ test("cli-tools settings routes use the JSONC-tolerant reader (source-guard)", a
   for (const r of routes) {
     const src = await fs.readFile(
       path.join(repoRoot, "src", "app", "api", "cli-tools", r, "route.ts"),
-      "utf-8"
+      "utf-8",
     );
     const getIdx = src.indexOf("export async function GET");
     assert.ok(getIdx > 0, `${r}: expected an exported GET handler`);
     const head = src.slice(0, getIdx);
     assert.ok(
       /from\s+["']\.\.\/_lib\/jsoncConfig["']/.test(src),
-      `${r}: must import readJsoncConfig from ../_lib/jsoncConfig`
+      `${r}: must import readJsoncConfig from ../_lib/jsoncConfig`,
     );
     assert.ok(
       !/JSON\.parse\(\s*content\s*\)/.test(head),
-      `${r}: read helper still calls raw JSON.parse(content) — port the JSONC fix`
+      `${r}: read helper still calls raw JSON.parse(content) — port the JSONC fix`,
     );
-    assert.ok(
-      /readJsoncConfig\s*[<(]/.test(head),
-      `${r}: read helper must invoke readJsoncConfig`
-    );
+    assert.ok(/readJsoncConfig\s*[<(]/.test(head), `${r}: read helper must invoke readJsoncConfig`);
   }
 });

@@ -172,7 +172,7 @@ export async function runLogsCommand(opts = {}) {
       console.error(
         t("logs.streamError", {
           message: (err instanceof Error ? err.message : String(err)).slice(0, 100),
-        })
+        }),
       );
     }
   } finally {

@@ -98,7 +98,7 @@ function extractMessageText(content: unknown): string {
 
 function parseOpenAIMessages(
   messages: Array<Record<string, unknown>>,
-  chatId: string
+  chatId: string,
 ): BlackboxMessage[] {
   const systemParts: string[] = [];
   const parsed: BlackboxMessage[] = [];
@@ -152,7 +152,7 @@ function sseChunk(data: unknown): string {
 
 async function readTextResponse(
   body: ReadableStream<Uint8Array>,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): Promise<string> {
   const reader = body.getReader();
   const decoder = new TextDecoder();
@@ -180,7 +180,7 @@ function buildStreamingResponse(
   responseText: string,
   model: string,
   id: string,
-  created: number
+  created: number,
 ): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder();
 
@@ -203,8 +203,8 @@ function buildStreamingResponse(
                   logprobs: null,
                 },
               ],
-            })
-          )
+            }),
+          ),
         );
 
         if (responseText) {
@@ -224,8 +224,8 @@ function buildStreamingResponse(
                     logprobs: null,
                   },
                 ],
-              })
-            )
+              }),
+            ),
           );
         }
 
@@ -238,14 +238,14 @@ function buildStreamingResponse(
               model,
               system_fingerprint: null,
               choices: [{ index: 0, delta: {}, finish_reason: "stop", logprobs: null }],
-            })
-          )
+            }),
+          ),
         );
         controller.enqueue(encoder.encode("data: [DONE]\n\n"));
         controller.close();
       },
     },
-    { highWaterMark: 16384 }
+    { highWaterMark: 16384 },
   );
 }
 
@@ -253,7 +253,7 @@ function buildNonStreamingResponse(
   responseText: string,
   model: string,
   id: string,
-  created: number
+  created: number,
 ) {
   const completionTokens = estimateTokens(responseText);
 
@@ -281,7 +281,7 @@ function buildNonStreamingResponse(
     {
       status: 200,
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 
@@ -313,7 +313,7 @@ export class BlackboxWebExecutor extends BaseExecutor {
             type: "invalid_request",
           },
         }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
       return {
         response: errorResponse,
@@ -325,7 +325,7 @@ export class BlackboxWebExecutor extends BaseExecutor {
 
     const { hasTools, requestedTools, effectiveMessages } = prepareToolMessages(
       bodyObj,
-      messages as Array<{ role: string; content: unknown }>
+      messages as Array<{ role: string; content: unknown }>,
     );
     const chatId = crypto.randomUUID().slice(0, 7);
     const parsedMessages = parseOpenAIMessages(effectiveMessages, chatId);
@@ -337,7 +337,7 @@ export class BlackboxWebExecutor extends BaseExecutor {
             type: "invalid_request",
           },
         }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
       return {
         response: errorResponse,
@@ -518,7 +518,7 @@ export class BlackboxWebExecutor extends BaseExecutor {
             type: "upstream_error",
           },
         }),
-        { status: 502, headers: { "Content-Type": "application/json" } }
+        { status: 502, headers: { "Content-Type": "application/json" } },
       );
       return {
         response: errorResponse,
@@ -553,7 +553,7 @@ export class BlackboxWebExecutor extends BaseExecutor {
             code: `HTTP_${status}`,
           },
         }),
-        { status, headers: { "Content-Type": "application/json" } }
+        { status, headers: { "Content-Type": "application/json" } },
       );
       return {
         response: errorResponse,
@@ -571,7 +571,7 @@ export class BlackboxWebExecutor extends BaseExecutor {
             type: "upstream_error",
           },
         }),
-        { status: 502, headers: { "Content-Type": "application/json" } }
+        { status: 502, headers: { "Content-Type": "application/json" } },
       );
       return {
         response: errorResponse,
@@ -610,7 +610,7 @@ export class BlackboxWebExecutor extends BaseExecutor {
             code: "BLACKBOX_SUBSCRIPTION_REQUIRED",
           },
         }),
-        { status: 402, headers: { "Content-Type": "application/json" } }
+        { status: 402, headers: { "Content-Type": "application/json" } },
       );
       return { response: errorResponse, url: BLACKBOX_CHAT_API, headers, transformedBody };
     }
@@ -626,7 +626,7 @@ export class BlackboxWebExecutor extends BaseExecutor {
             code: "BLACKBOX_AUTH_REQUIRED",
           },
         }),
-        { status: 401, headers: { "Content-Type": "application/json" } }
+        { status: 401, headers: { "Content-Type": "application/json" } },
       );
       return { response: errorResponse, url: BLACKBOX_CHAT_API, headers, transformedBody };
     }
@@ -641,7 +641,7 @@ export class BlackboxWebExecutor extends BaseExecutor {
             code: "BLACKBOX_RATE_LIMIT",
           },
         }),
-        { status: 429, headers: { "Content-Type": "application/json" } }
+        { status: 429, headers: { "Content-Type": "application/json" } },
       );
       return { response: errorResponse, url: BLACKBOX_CHAT_API, headers, transformedBody };
     }
@@ -653,7 +653,7 @@ export class BlackboxWebExecutor extends BaseExecutor {
       const { content, toolCalls, finishReason } = buildToolAwareResult(
         responseText,
         requestedTools,
-        "bbx"
+        "bbx",
       );
       if (toolCalls) {
         const toolResponse = new Response(
@@ -670,7 +670,7 @@ export class BlackboxWebExecutor extends BaseExecutor {
               },
             ],
           }),
-          { status: 200, headers: { "Content-Type": "application/json" } }
+          { status: 200, headers: { "Content-Type": "application/json" } },
         );
         return { response: toolResponse, url: BLACKBOX_CHAT_API, headers, transformedBody };
       }

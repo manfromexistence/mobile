@@ -1,16 +1,12 @@
-'use client';
+"use client";
 
-import type {
-  ColorMode,
-  ThemeController,
-  ThemeControllerState,
-} from '@pierre/theming';
-import { createThemeResolver } from '@pierre/theming';
-import { useThemeController } from '@pierre/theming/react';
-import { useContext, useMemo } from 'react';
+import type { ColorMode, ThemeController, ThemeControllerState } from "@pierre/theming";
+import { createThemeResolver } from "@pierre/theming";
+import { useThemeController } from "@pierre/theming/react";
+import { useContext, useMemo } from "react";
 
-import { ThemeControllerContext } from './useThemeSource';
-import { docsThemeCatalog } from '@/components/themeCatalog';
+import { ThemeControllerContext } from "./useThemeSource";
+import { docsThemeCatalog } from "@/components/themeCatalog";
 
 export interface ThemeSelectionResult {
   // Current selection.
@@ -34,10 +30,10 @@ const EMPTY_THEMES: readonly string[] = [];
 // return the same reference on every call or it would loop. Hence a module-level
 // singleton rather than a fresh object literal.
 const FALLBACK_STATE: ThemeControllerState = {
-  darkThemeName: '',
-  lightThemeName: '',
-  mode: 'system',
-  resolvedColorScheme: 'light',
+  darkThemeName: "",
+  lightThemeName: "",
+  mode: "system",
+  resolvedColorScheme: "light",
 };
 
 // A no-op controller used when no ThemeControllerContext is present (an
@@ -65,9 +61,9 @@ export function useThemeSelection(): ThemeSelectionResult {
   return useMemo<ThemeSelectionResult>(() => {
     if (controller == null) {
       return {
-        colorMode: 'system',
-        darkThemeName: '',
-        lightThemeName: '',
+        colorMode: "system",
+        darkThemeName: "",
+        lightThemeName: "",
         darkThemeNames: EMPTY_THEMES,
         lightThemeNames: EMPTY_THEMES,
         setColorMode: NOOP,
@@ -79,13 +75,11 @@ export function useThemeSelection(): ThemeSelectionResult {
       colorMode: state.mode,
       darkThemeName: state.darkThemeName,
       lightThemeName: state.lightThemeName,
-      darkThemeNames: docsThemeCatalog.getThemeNames({ colorScheme: 'dark' }),
-      lightThemeNames: docsThemeCatalog.getThemeNames({ colorScheme: 'light' }),
+      darkThemeNames: docsThemeCatalog.getThemeNames({ colorScheme: "dark" }),
+      lightThemeNames: docsThemeCatalog.getThemeNames({ colorScheme: "light" }),
       setColorMode: (mode: ColorMode) => controller.setColorMode(mode),
-      setDarkThemeName: (name: string) =>
-        controller.setThemeNameForScheme('dark', name),
-      setLightThemeName: (name: string) =>
-        controller.setThemeNameForScheme('light', name),
+      setDarkThemeName: (name: string) => controller.setThemeNameForScheme("dark", name),
+      setLightThemeName: (name: string) => controller.setThemeNameForScheme("light", name),
     };
   }, [controller, state.mode, state.darkThemeName, state.lightThemeName]);
 }

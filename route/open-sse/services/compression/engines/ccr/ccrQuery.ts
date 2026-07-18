@@ -85,7 +85,7 @@ function blockStats(text: string, lines: string[]): CcrQueryResult {
       lines: lines.length,
       chars: text.length,
       bytes: Buffer.byteLength(text, "utf8"),
-    })
+    }),
   );
 }
 

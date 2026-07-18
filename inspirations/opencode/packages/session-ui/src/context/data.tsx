@@ -1,63 +1,70 @@
-import type { Message, Session, Part, SnapshotFileDiff, SessionStatus, Provider } from "@opencode-ai/sdk/v2"
-import { createSimpleContext } from "@opencode-ai/ui/context"
-import { PreloadMultiFileDiffResult } from "@pierre/diffs/ssr"
+import type {
+  Message,
+  Session,
+  Part,
+  SnapshotFileDiff,
+  SessionStatus,
+  Provider,
+} from "@opencode-ai/sdk/v2";
+import { createSimpleContext } from "@opencode-ai/ui/context";
+import { PreloadMultiFileDiffResult } from "@pierre/diffs/ssr";
 
 export type NormalizedProviderListResponse = {
-  all: Map<string, Provider>
+  all: Map<string, Provider>;
   default: {
-    [key: string]: string
-  }
-  connected: Array<string>
-}
+    [key: string]: string;
+  };
+  connected: Array<string>;
+};
 
 type Data = {
   agent?: {
-    name: string
-    color?: string
-  }[]
-  provider?: NormalizedProviderListResponse
-  session: Session[]
+    name: string;
+    color?: string;
+  }[];
+  provider?: NormalizedProviderListResponse;
+  session: Session[];
   session_status: {
-    [sessionID: string]: SessionStatus
-  }
+    [sessionID: string]: SessionStatus;
+  };
   session_diff: {
-    [sessionID: string]: SnapshotFileDiff[]
-  }
+    [sessionID: string]: SnapshotFileDiff[];
+  };
   session_diff_preload?: {
-    [sessionID: string]: PreloadMultiFileDiffResult<any>[]
-  }
+    [sessionID: string]: PreloadMultiFileDiffResult<any>[];
+  };
   message: {
-    [sessionID: string]: Message[]
-  }
+    [sessionID: string]: Message[];
+  };
   part: {
-    [messageID: string]: Part[]
-  }
+    [messageID: string]: Part[];
+  };
   part_text_accum_delta?: {
-    [partID: string]: string
-  }
-}
+    [partID: string]: string;
+  };
+};
 
-export type NavigateToSessionFn = (sessionID: string) => void
+export type NavigateToSessionFn = (sessionID: string) => void;
 
-export type SessionHrefFn = (sessionID: string) => string
+export type SessionHrefFn = (sessionID: string) => string;
 
 export const { use: useData, provider: DataProvider } = createSimpleContext({
   name: "Data",
   init: (props: {
-    data: Data
-    directory: string
-    onNavigateToSession?: NavigateToSessionFn
-    onSessionHref?: SessionHrefFn
+    data: Data;
+    directory: string;
+    onNavigateToSession?: NavigateToSessionFn;
+    onSessionHref?: SessionHrefFn;
   }) => {
     return {
       get store() {
-        return props.data
+        return props.data;
       },
       get directory() {
-        return props.directory
+        return props.directory;
       },
       navigateToSession: props.onNavigateToSession,
       sessionHref: props.onSessionHref,
-    }
+    };
   },
-})
+});

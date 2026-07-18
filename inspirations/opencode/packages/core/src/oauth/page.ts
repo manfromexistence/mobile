@@ -13,27 +13,29 @@
 
 export interface CallbackPageOptions {
   /** Friendly integration name shown as a subtitle, e.g. "xAI", "Snowflake", "MCP". */
-  provider?: string
+  provider?: string;
   /** Attempt to close the window shortly after success. Defaults to true. */
-  autoClose?: boolean
+  autoClose?: boolean;
 }
 
 export function success(options?: CallbackPageOptions) {
-  const provider = options?.provider
+  const provider = options?.provider;
   return renderDocument({
     title: "Authorization successful",
     body: renderCard({
       status: "success",
       headline: "Authorization successful",
-      message: provider ? `OpenCode is now connected to ${escapeHtml(provider)}.` : "OpenCode is now authorized.",
+      message: provider
+        ? `OpenCode is now connected to ${escapeHtml(provider)}.`
+        : "OpenCode is now authorized.",
       footnote: "You can close this window.",
     }),
     script: options?.autoClose === false ? undefined : AUTO_CLOSE_SCRIPT,
-  })
+  });
 }
 
 export function error(detail: string, options?: CallbackPageOptions) {
-  const provider = options?.provider
+  const provider = options?.provider;
   return renderDocument({
     title: "Authorization failed",
     body: renderCard({
@@ -45,13 +47,13 @@ export function error(detail: string, options?: CallbackPageOptions) {
       detail,
       footnote: "Close this window and try again from OpenCode.",
     }),
-  })
+  });
 }
 
 export interface BootstrapOptions {
   /** Same-origin path the in-browser script POSTs the parsed callback to. */
-  tokenPath: string
-  provider?: string
+  tokenPath: string;
+  provider?: string;
 }
 
 // For flows where the credential arrives in the URL fragment (implicit grant),
@@ -70,15 +72,21 @@ export function bootstrap(options: BootstrapOptions) {
       footnote: "You can close this window once sign-in finishes.",
     }),
     script: bootstrapScript(options),
-  })
+  });
 }
 
-export * as OauthCallbackPage from "./page"
+export * as OauthCallbackPage from "./page";
 
-type Status = "pending" | "success" | "error"
+type Status = "pending" | "success" | "error";
 
-function renderCard(input: { status: Status; headline: string; message: string; detail?: string; footnote: string }) {
-  const detail = input.detail?.trim()
+function renderCard(input: {
+  status: Status;
+  headline: string;
+  message: string;
+  detail?: string;
+  footnote: string;
+}) {
+  const detail = input.detail?.trim();
   return `<main class="card" id="oc-card" data-status="${input.status}" role="status" aria-live="polite">
       <div class="brand">${WORDMARK}</div>
       <div class="status" aria-hidden="true">
@@ -90,7 +98,7 @@ function renderCard(input: { status: Status; headline: string; message: string; 
       <p class="message" id="oc-message">${input.message}</p>
       <pre class="detail" id="oc-detail"${detail ? "" : " hidden"}>${detail ? escapeHtml(detail) : ""}</pre>
       <p class="footnote" id="oc-footnote">${escapeHtml(input.footnote)}</p>
-    </main>`
+    </main>`;
 }
 
 function renderDocument(input: { title: string; body: string; script?: string }) {
@@ -106,10 +114,10 @@ function renderDocument(input: { title: string; body: string; script?: string })
   <body>
     ${input.body}${input.script ? `\n    <script>${input.script}</script>` : ""}
   </body>
-</html>`
+</html>`;
 }
 
-const AUTO_CLOSE_SCRIPT = `setTimeout(function(){try{window.close()}catch(e){}},2500)`
+const AUTO_CLOSE_SCRIPT = `setTimeout(function(){try{window.close()}catch(e){}},2500)`;
 
 function bootstrapScript(options: BootstrapOptions) {
   return `var PROVIDER=${scriptString(options.provider ?? "")};
@@ -130,11 +138,11 @@ var TOKEN_URL=new URL(${scriptString(options.tokenPath)},window.location.origin)
       ok();
     }).catch(function(e){fail(String(e&&e.message?e.message:e))});
   }catch(e){fail(String(e&&e.message?e.message:e))}
-})()`
+})()`;
 }
 
 function scriptString(value: string) {
-  return JSON.stringify(value).replaceAll("<", "\\u003c")
+  return JSON.stringify(value).replaceAll("<", "\\u003c");
 }
 
 function escapeHtml(value: string) {
@@ -143,7 +151,7 @@ function escapeHtml(value: string) {
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;")
+    .replaceAll("'", "&#39;");
 }
 
 // Curated subset of OC-2 tokens (packages/ui/src/styles/theme.css). Default is
@@ -163,7 +171,7 @@ const LIGHT_VARS = `
     --oc-error: #ed4831;
     --oc-detail-bg: #fff8f6;
     --oc-detail-border: #fdc3b7;
-    --oc-shadow: 0 16px 48px -6px rgba(0,0,0,.10), 0 6px 12px -2px rgba(0,0,0,.05), 0 1px 2px rgba(0,0,0,.06);`
+    --oc-shadow: 0 16px 48px -6px rgba(0,0,0,.10), 0 6px 12px -2px rgba(0,0,0,.05), 0 1px 2px rgba(0,0,0,.06);`;
 
 const DARK_VARS = `
     --oc-bg: #101010;
@@ -179,7 +187,7 @@ const DARK_VARS = `
     --oc-error: #fc533a;
     --oc-detail-bg: #28110c;
     --oc-detail-border: #6a1206;
-    --oc-shadow: 0 16px 48px -6px rgba(0,0,0,.55), 0 6px 12px -2px rgba(0,0,0,.35), 0 1px 2px rgba(0,0,0,.4);`
+    --oc-shadow: 0 16px 48px -6px rgba(0,0,0,.55), 0 6px 12px -2px rgba(0,0,0,.35), 0 1px 2px rgba(0,0,0,.4);`;
 
 const STYLES = `
   :root { color-scheme: light dark;${LIGHT_VARS}
@@ -247,7 +255,7 @@ const STYLES = `
   .spinner { animation: oc-spin 0.8s linear infinite; transform-origin: center; }
   @keyframes oc-spin { to { transform: rotate(360deg); } }
   @media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
-`
+`;
 
 // OpenCode wordmark — same path geometry as packages/ui/src/components/logo.tsx (Logo).
 const WORDMARK = `<svg class="wordmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 234 42" fill="none" aria-label="OpenCode" role="img">
@@ -267,10 +275,10 @@ const WORDMARK = `<svg class="wordmark" xmlns="http://www.w3.org/2000/svg" viewB
         <path d="M198 12H186V30H198V12ZM204 36H180V6H198V0H204V36Z" fill="var(--oc-icon-strong)" />
         <path d="M234 24V30H216V24H234Z" fill="var(--oc-icon-weak)" />
         <path d="M216 12V18H228V12H216ZM234 24H216V30H234V36H210V6H234V24Z" fill="var(--oc-icon-strong)" />
-      </svg>`
+      </svg>`;
 
-const ICON_CHECK = `<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="m8.5 12.5 2.4 2.4 4.6-5.4" /></svg>`
+const ICON_CHECK = `<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="m8.5 12.5 2.4 2.4 4.6-5.4" /></svg>`;
 
-const ICON_CROSS = `<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="m9 9 6 6m0-6-6 6" /></svg>`
+const ICON_CROSS = `<svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" /><path d="m9 9 6 6m0-6-6 6" /></svg>`;
 
-const ICON_SPINNER = `<svg class="spinner" viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9" opacity="0.2" /><path d="M21 12a9 9 0 0 0-9-9" /></svg>`
+const ICON_SPINNER = `<svg class="spinner" viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9" opacity="0.2" /><path d="M21 12a9 9 0 0 0-9-9" /></svg>`;

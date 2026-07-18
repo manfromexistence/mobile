@@ -102,7 +102,7 @@ export function insertBullets(changelogText, bulletsBySection) {
     const headIdx = lines.findIndex((l) => l.trim() === heading);
     if (headIdx === -1) {
       throw new Error(
-        `heading "${heading}" not found in CHANGELOG.md — add it to the living section before aggregating ${section} fragments`
+        `heading "${heading}" not found in CHANGELOG.md — add it to the living section before aggregating ${section} fragments`,
       );
     }
     // End of this section's block: last non-empty line before the next heading.
@@ -157,7 +157,7 @@ function main() {
     }
   }
   console.log(
-    `[aggregate-changelog] ${result.total} fragment(s) → CHANGELOG.md${dryRun ? " (dry-run, nothing written)" : " (fragments deleted — commit CHANGELOG.md + deletions together)"}`
+    `[aggregate-changelog] ${result.total} fragment(s) → CHANGELOG.md${dryRun ? " (dry-run, nothing written)" : " (fragments deleted — commit CHANGELOG.md + deletions together)"}`,
   );
   return 0;
 }

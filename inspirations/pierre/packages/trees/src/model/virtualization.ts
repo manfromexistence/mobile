@@ -1,20 +1,16 @@
-import { FILE_TREE_DENSITY_PRESETS } from './density';
+import { FILE_TREE_DENSITY_PRESETS } from "./density";
 import type {
   FileTreeRange,
   FileTreeStickyWindowLayout,
   FileTreeViewportMetrics,
-} from './internalTypes';
+} from "./internalTypes";
 
-export const FILE_TREE_DEFAULT_ITEM_HEIGHT: number =
-  FILE_TREE_DENSITY_PRESETS.default.itemHeight;
+export const FILE_TREE_DEFAULT_ITEM_HEIGHT: number = FILE_TREE_DENSITY_PRESETS.default.itemHeight;
 export const FILE_TREE_DEFAULT_OVERSCAN = 10;
 export const FILE_TREE_DEFAULT_VIEWPORT_HEIGHT = 420;
 export const EMPTY_RANGE: FileTreeRange = { start: 0, end: -1 };
 
-function normalizeRange(
-  range: FileTreeRange,
-  itemCount: number
-): FileTreeRange {
+function normalizeRange(range: FileTreeRange, itemCount: number): FileTreeRange {
   if (itemCount <= 0 || range.end < range.start) {
     return EMPTY_RANGE;
   }
@@ -24,10 +20,7 @@ function normalizeRange(
   return { start, end };
 }
 
-export function rangesEqual(
-  left: FileTreeRange,
-  right: FileTreeRange
-): boolean {
+export function rangesEqual(left: FileTreeRange, right: FileTreeRange): boolean {
   return left.start === right.start && left.end === right.end;
 }
 
@@ -53,11 +46,7 @@ export function computeVisibleRange({
   };
 }
 
-function expandRange(
-  range: FileTreeRange,
-  itemCount: number,
-  overscan: number
-): FileTreeRange {
+function expandRange(range: FileTreeRange, itemCount: number, overscan: number): FileTreeRange {
   if (range.end < range.start || itemCount <= 0) {
     return EMPTY_RANGE;
   }
@@ -67,13 +56,13 @@ function expandRange(
       start: range.start - overscan,
       end: range.end + overscan,
     },
-    itemCount
+    itemCount,
   );
 }
 
 export function computeWindowRange(
   metrics: FileTreeViewportMetrics,
-  currentRange: FileTreeRange = EMPTY_RANGE
+  currentRange: FileTreeRange = EMPTY_RANGE,
 ): FileTreeRange {
   const visibleRange = computeVisibleRange(metrics);
   const normalizedCurrent = normalizeRange(currentRange, metrics.itemCount);
@@ -89,7 +78,7 @@ export function computeWindowRange(
   return expandRange(
     visibleRange,
     metrics.itemCount,
-    metrics.overscan ?? FILE_TREE_DEFAULT_OVERSCAN
+    metrics.overscan ?? FILE_TREE_DEFAULT_OVERSCAN,
   );
 }
 
@@ -127,9 +116,6 @@ export function computeStickyWindowLayout({
     windowHeight,
     // The sticky window is usually taller than the viewport once overscan is
     // included, so a negative inset keeps the full overscanned slice pinned.
-    stickyInset: Math.min(
-      0,
-      viewportHeight - windowHeight + randomStickyOffset
-    ),
+    stickyInset: Math.min(0, viewportHeight - windowHeight + randomStickyOffset),
   };
 }

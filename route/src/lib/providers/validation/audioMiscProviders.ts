@@ -13,8 +13,15 @@ import {
 } from "./headers";
 import { toValidationErrorResult, validationRead, validationWrite } from "./transport";
 import { validateDirectChatProvider } from "./directChatProbe";
-import { buildRunwayApiUrl, buildRunwayHeaders, normalizeRunwayBaseUrl } from "@omniroute/open-sse/config/runway.ts";
-import { buildMaritalkChatUrl, buildMaritalkModelsUrl } from "@omniroute/open-sse/config/maritalk.ts";
+import {
+  buildRunwayApiUrl,
+  buildRunwayHeaders,
+  normalizeRunwayBaseUrl,
+} from "@omniroute/open-sse/config/runway.ts";
+import {
+  buildMaritalkChatUrl,
+  buildMaritalkModelsUrl,
+} from "@omniroute/open-sse/config/maritalk.ts";
 import { signAwsRequest } from "@omniroute/open-sse/utils/awsSigV4.ts";
 
 export async function validateDeepgramProvider({ apiKey, providerSpecificData = {} }: any) {
@@ -42,7 +49,7 @@ export async function validateAssemblyAIProvider({ apiKey, providerSpecificData 
           Authorization: apiKey,
           "Content-Type": "application/json",
         },
-        providerSpecificData
+        providerSpecificData,
       ),
     });
     if (response.ok) return { valid: true, error: null };
@@ -65,7 +72,7 @@ export async function validateElevenLabsProvider({ apiKey, providerSpecificData 
           "xi-api-key": apiKey,
           "Content-Type": "application/json",
         },
-        providerSpecificData
+        providerSpecificData,
       ),
     });
 
@@ -91,7 +98,7 @@ export async function validateInworldProvider({ apiKey, providerSpecificData = {
           Authorization: `Basic ${apiKey}`,
           "Content-Type": "application/json",
         },
-        providerSpecificData
+        providerSpecificData,
       ),
       body: JSON.stringify({
         text: "test",
@@ -121,7 +128,7 @@ export async function validateKieProvider({ apiKey, providerSpecificData = {} }:
           Authorization: `Bearer ${apiKey}`,
           "Content-Type": "application/json",
         },
-        providerSpecificData
+        providerSpecificData,
       ),
     });
 
@@ -227,7 +234,10 @@ export async function validateAwsPollyProvider({ apiKey, providerSpecificData = 
   }
 }
 
-export async function validateBailianCodingPlanProvider({ apiKey, providerSpecificData = {} }: any) {
+export async function validateBailianCodingPlanProvider({
+  apiKey,
+  providerSpecificData = {},
+}: any) {
   try {
     const rawBaseUrl =
       normalizeBaseUrl(providerSpecificData.baseUrl) ||
@@ -247,7 +257,7 @@ export async function validateBailianCodingPlanProvider({ apiKey, providerSpecif
           "x-api-key": apiKey,
           "anthropic-version": "2023-06-01",
         },
-        providerSpecificData
+        providerSpecificData,
       ),
       body: JSON.stringify({
         model: "qwen3-coder-plus",
@@ -579,4 +589,3 @@ export async function validatePoeProvider({ apiKey, providerSpecificData = {} }:
 
   return { valid: false, error: "Connection failed while testing Poe" };
 }
-

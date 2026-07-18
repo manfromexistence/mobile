@@ -40,7 +40,7 @@ test("files list busca /v1/files", async () => {
   globalThis.fetch = ((url: string) => {
     capturedUrl = url;
     return Promise.resolve(
-      makeResp({ data: [{ id: "file-1", filename: "test.jsonl", purpose: "batch", bytes: 1024 }] })
+      makeResp({ data: [{ id: "file-1", filename: "test.jsonl", purpose: "batch", bytes: 1024 }] }),
     );
   }) as any;
 

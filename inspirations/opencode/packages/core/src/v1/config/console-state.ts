@@ -1,7 +1,7 @@
-export * as ConfigConsoleStateV1 from "./console-state"
+export * as ConfigConsoleStateV1 from "./console-state";
 
-import { Schema } from "effect"
-import { NonNegativeInt } from "../../schema"
+import { Schema } from "effect";
+import { NonNegativeInt } from "../../schema";
 
 export class ConsoleState extends Schema.Class<ConsoleState>("ConsoleState")({
   consoleManagedProviders: Schema.mutable(Schema.Array(Schema.String)),
@@ -13,4 +13,4 @@ export const emptyConsoleState: ConsoleState = ConsoleState.make({
   consoleManagedProviders: [],
   activeOrgName: undefined,
   switchableOrgCount: 0,
-})
+});

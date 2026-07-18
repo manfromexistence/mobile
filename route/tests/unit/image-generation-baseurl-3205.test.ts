@@ -12,7 +12,7 @@ test("#3205: custom node baseUrl from providerSpecificData is used (not Gemini f
 
   assert.ok(
     resolved.startsWith("https://example.com/"),
-    `expected resolved URL to point to example.com, got: ${resolved}`
+    `expected resolved URL to point to example.com, got: ${resolved}`,
   );
   // The exact-equality assertion below already guarantees the Gemini fallback
   // was not used (a substring `.includes` check trips CodeQL

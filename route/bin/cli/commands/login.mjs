@@ -54,9 +54,9 @@ function defaultStartServer(preferredPort) {
       res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
       res.end(
         "<!doctype html><meta charset=utf-8><title>OmniRoute</title>" +
-          "<body style=\"font-family:system-ui;padding:2rem\">" +
+          '<body style="font-family:system-ui;padding:2rem">' +
           "<h2>✅ Authorization received</h2>" +
-          "<p>Return to your terminal — you can close this tab.</p></body>"
+          "<p>Return to your terminal — you can close this tab.</p></body>",
       );
       resolveCallback(params);
     });
@@ -129,7 +129,7 @@ export async function runAntigravityLogin(opts = {}, deps = {}) {
       new Promise((_, reject) => {
         timer = setTimeout(
           () => reject(new Error("Timed out waiting for the OAuth callback")),
-          timeoutMs
+          timeoutMs,
         );
         // Don't keep the event loop alive solely for this timer.
         if (typeof timer.unref === "function") timer.unref();
@@ -156,10 +156,10 @@ export async function runAntigravityLogin(opts = {}, deps = {}) {
   print(
     "\n" +
       "Antigravity authorized. Copy the line below and paste it into your remote\n" +
-      "OmniRoute dashboard: Providers → Antigravity → Connect → \"Paste credentials\".\n" +
+      'OmniRoute dashboard: Providers → Antigravity → Connect → "Paste credentials".\n' +
       "(This contains a refresh token — treat it like a password.)\n\n" +
       blob +
-      "\n\n"
+      "\n\n",
   );
   return blob;
 }

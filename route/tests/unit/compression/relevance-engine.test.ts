@@ -57,9 +57,7 @@ test("no-op when there is no user message in messages", () => {
 
 test("no-op when last user message has only one sentence", () => {
   const body = {
-    messages: [
-      { role: "user", content: "Just one sentence here." },
-    ],
+    messages: [{ role: "user", content: "Just one sentence here." }],
   };
   const result = relevanceEngine.apply(body, {
     stepConfig: { enabled: true, budgetPercent: 0.5 },
@@ -142,7 +140,7 @@ test("techniquesUsed contains relevance-extract when compression occurred", () =
   if (result.compressed && result.stats) {
     assert.ok(
       result.stats.techniquesUsed.includes("relevance-extract"),
-      `expected relevance-extract in techniquesUsed, got: ${result.stats.techniquesUsed}`
+      `expected relevance-extract in techniquesUsed, got: ${result.stats.techniquesUsed}`,
     );
   }
 });
@@ -181,9 +179,7 @@ test("array content (multimodal) is handled without crash", () => {
     messages: [
       {
         role: "user",
-        content: [
-          { type: "text", text: "What is the database host?" },
-        ],
+        content: [{ type: "text", text: "What is the database host?" }],
       },
     ],
   };
@@ -224,7 +220,7 @@ test("zero-overlap sentences below overlapThreshold are dropped even with budget
   const compressed = messages[0].content;
   assert.ok(
     !compressed.includes("zzqqxx"),
-    `zero-overlap sentence should be dropped, got: ${compressed}`
+    `zero-overlap sentence should be dropped, got: ${compressed}`,
   );
   assert.ok(compressed.includes("alpha beta gamma"), "relevant sentence should survive");
 });
@@ -310,7 +306,7 @@ test("force-preserved sentences are free and do not starve top-relevance sentenc
   const compressed = messages[0].content;
   assert.ok(
     compressed.includes("quantum entanglement relevance signal"),
-    `top-relevance sentence must survive despite forced content, got: ${compressed}`
+    `top-relevance sentence must survive despite forced content, got: ${compressed}`,
   );
   // Forced content also survives.
   assert.ok(compressed.includes("Error: code 100"));
@@ -355,7 +351,14 @@ test("the last/only user message is NOT special-cased / skipped (eligible for co
   const result = relevanceEngine.apply(body, {
     stepConfig: { enabled: true, budgetPercent: 0.3, overlapThreshold: 0.0 },
   });
-  assert.equal(result.compressed, true, "the last/only user message must be eligible for compression");
+  assert.equal(
+    result.compressed,
+    true,
+    "the last/only user message must be eligible for compression",
+  );
   const out = (result.body.messages as Array<{ content: string }>)[0].content;
-  assert.ok(out.length < Array(8).fill(sentence).join(" ").length, "tight budget trims the message");
+  assert.ok(
+    out.length < Array(8).fill(sentence).join(" ").length,
+    "tight budget trims the message",
+  );
 });

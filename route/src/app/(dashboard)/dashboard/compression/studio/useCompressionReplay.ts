@@ -88,7 +88,7 @@ export function replayReducer(state: ReplayState, action: ReplayAction): ReplayS
  * inside effects (satisfies react-hooks/set-state-in-effect).
  */
 export function useCompressionReplay(
-  model: CompressionRunModel | null
+  model: CompressionRunModel | null,
 ): UseCompressionReplayReturn {
   const frames = model ? buildReplayFrames(model) : [];
   const totalFrames = frames.length;
@@ -174,7 +174,7 @@ export function useCompressionReplay(
       dispatch({ type: "SET_SPEED", speed: s });
       if (isPlaying) startTick();
     },
-    [isPlaying, startTick]
+    [isPlaying, startTick],
   );
 
   const currentFrame = frameIndex >= 0 && frameIndex < frames.length ? frames[frameIndex] : null;

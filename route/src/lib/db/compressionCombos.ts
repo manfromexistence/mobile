@@ -78,7 +78,7 @@ function normalizePipeline(value: unknown): CompressionPipelineStep[] {
 
 function normalizeLanguagePacks(value: unknown): string[] {
   const packs = parseJsonArray<string>(value, ["en"]).filter(
-    (pack): pack is string => typeof pack === "string" && pack.trim().length > 0
+    (pack): pack is string => typeof pack === "string" && pack.trim().length > 0,
   );
   return [...new Set(packs.length > 0 ? packs.map((pack) => pack.trim()) : ["en"])];
 }
@@ -94,7 +94,8 @@ function upgradeLegacySeededDefaultCompressionCombo(): void {
   const row = db
     .prepare("SELECT name, description, pipeline FROM compression_combos WHERE id = ?")
     .get(DEFAULT_COMPRESSION_COMBO_ID) as
-    { name?: string; description?: string; pipeline?: string } | undefined;
+    | { name?: string; description?: string; pipeline?: string }
+    | undefined;
 
   if (!row) return;
 
@@ -111,12 +112,12 @@ function upgradeLegacySeededDefaultCompressionCombo(): void {
     UPDATE compression_combos
     SET description = ?, pipeline = ?, updated_at = ?
     WHERE id = ?
-  `
+  `,
   ).run(
     DEFAULT_COMPRESSION_COMBO_DESCRIPTION,
     JSON.stringify(defaultCompressionComboPipeline()),
     new Date().toISOString(),
-    DEFAULT_COMPRESSION_COMBO_ID
+    DEFAULT_COMPRESSION_COMBO_ID,
   );
 }
 
@@ -157,7 +158,7 @@ function ensureCompressionComboTables(): void {
       id, name, description, pipeline, language_packs, output_mode, output_mode_intensity, is_default
     )
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-  `
+  `,
   ).run(
     DEFAULT_COMPRESSION_COMBO_ID,
     DEFAULT_COMPRESSION_COMBO_NAME,
@@ -166,7 +167,7 @@ function ensureCompressionComboTables(): void {
     JSON.stringify(["en"]),
     0,
     "full",
-    1
+    1,
   );
   upgradeLegacySeededDefaultCompressionCombo();
 }
@@ -245,7 +246,7 @@ export function getDefaultCompressionCombo(): CompressionCombo | null {
   ensureCompressionComboTables();
   const row = getDbInstance()
     .prepare(
-      "SELECT * FROM compression_combos WHERE is_default = 1 ORDER BY updated_at DESC LIMIT 1"
+      "SELECT * FROM compression_combos WHERE is_default = 1 ORDER BY updated_at DESC LIMIT 1",
     )
     .get();
   return rowToCompressionCombo(row);
@@ -264,7 +265,7 @@ export function createCompressionCombo(data: Partial<CompressionCombo>): Compres
         is_default, created_at, updated_at
       )
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `
+    `,
     ).run(
       combo.id,
       combo.name,
@@ -275,7 +276,7 @@ export function createCompressionCombo(data: Partial<CompressionCombo>): Compres
       combo.outputModeIntensity,
       combo.isDefault ? 1 : 0,
       combo.createdAt,
-      combo.updatedAt
+      combo.updatedAt,
     );
   });
   tx();
@@ -285,7 +286,7 @@ export function createCompressionCombo(data: Partial<CompressionCombo>): Compres
 
 export function updateCompressionCombo(
   id: string,
-  data: Partial<CompressionCombo>
+  data: Partial<CompressionCombo>,
 ): CompressionCombo | null {
   ensureCompressionComboTables();
   const existing = getCompressionCombo(id);
@@ -300,7 +301,7 @@ export function updateCompressionCombo(
       SET name = ?, description = ?, pipeline = ?, language_packs = ?, output_mode = ?,
           output_mode_intensity = ?, is_default = ?, updated_at = ?
       WHERE id = ?
-    `
+    `,
     ).run(
       combo.name,
       combo.description,
@@ -310,7 +311,7 @@ export function updateCompressionCombo(
       combo.outputModeIntensity,
       combo.isDefault ? 1 : 0,
       combo.updatedAt,
-      id
+      id,
     );
   });
   tx();
@@ -336,7 +337,7 @@ export function setDefaultCompressionCombo(id: string): boolean {
     db.prepare("UPDATE compression_combos SET is_default = 0").run();
     db.prepare("UPDATE compression_combos SET is_default = 1, updated_at = ? WHERE id = ?").run(
       now,
-      id
+      id,
     );
   })();
   backupDbFile("pre-write");
@@ -347,7 +348,7 @@ export function getAssignmentsForCompressionCombo(id: string): CompressionComboA
   ensureCompressionComboTables();
   return getDbInstance()
     .prepare(
-      "SELECT * FROM compression_combo_assignments WHERE compression_combo_id = ? ORDER BY routing_combo_id"
+      "SELECT * FROM compression_combo_assignments WHERE compression_combo_id = ? ORDER BY routing_combo_id",
     )
     .all(id)
     .map(rowToAssignment)
@@ -355,7 +356,7 @@ export function getAssignmentsForCompressionCombo(id: string): CompressionComboA
 }
 
 export function getCompressionComboForRoutingCombo(
-  routingComboId: string
+  routingComboId: string,
 ): CompressionCombo | null {
   ensureCompressionComboTables();
   const row = getDbInstance()
@@ -366,7 +367,7 @@ export function getCompressionComboForRoutingCombo(
       JOIN compression_combo_assignments a ON a.compression_combo_id = c.id
       WHERE a.routing_combo_id = ?
       LIMIT 1
-    `
+    `,
     )
     .get(routingComboId);
   return rowToCompressionCombo(row);
@@ -382,7 +383,7 @@ export function assignRoutingCombo(compressionComboId: string, routingComboId: s
         id, compression_combo_id, routing_combo_id, created_at
       )
       VALUES (?, ?, ?, ?)
-    `
+    `,
     )
     .run(uuidv4(), compressionComboId, routingComboId.trim(), new Date().toISOString());
   backupDbFile("pre-write");
@@ -393,7 +394,7 @@ export function unassignRoutingCombo(compressionComboId: string, routingComboId:
   ensureCompressionComboTables();
   const result = getDbInstance()
     .prepare(
-      "DELETE FROM compression_combo_assignments WHERE compression_combo_id = ? AND routing_combo_id = ?"
+      "DELETE FROM compression_combo_assignments WHERE compression_combo_id = ? AND routing_combo_id = ?",
     )
     .run(compressionComboId, routingComboId);
   if (result.changes > 0) backupDbFile("pre-write");
@@ -418,7 +419,7 @@ const ENGINE_STACK_PRIORITY: Record<string, number> = {
 export function setEngineInDefaultCombo(
   engineId: string,
   enabled: boolean,
-  config?: Record<string, unknown>
+  config?: Record<string, unknown>,
 ): CompressionCombo | null {
   if (!KNOWN_ENGINE_IDS.includes(engineId)) return null;
   ensureCompressionComboTables();
@@ -453,7 +454,7 @@ export function setEngineInDefaultCombo(
   db.prepare("UPDATE compression_combos SET pipeline = ?, updated_at = ? WHERE id = ?").run(
     JSON.stringify(newPipeline),
     now,
-    existing.id
+    existing.id,
   );
   backupDbFile("pre-write");
 
@@ -467,11 +468,11 @@ export function updateAssignments(compressionComboId: string, routingComboIds: s
   const db = getDbInstance();
   db.transaction(() => {
     db.prepare("DELETE FROM compression_combo_assignments WHERE compression_combo_id = ?").run(
-      compressionComboId
+      compressionComboId,
     );
     if (cleanedIds.length > 0) {
       const deleteExisting = db.prepare(
-        "DELETE FROM compression_combo_assignments WHERE routing_combo_id = ?"
+        "DELETE FROM compression_combo_assignments WHERE routing_combo_id = ?",
       );
       const insert = db.prepare(
         `
@@ -479,7 +480,7 @@ export function updateAssignments(compressionComboId: string, routingComboIds: s
           id, compression_combo_id, routing_combo_id, created_at
         )
         VALUES (?, ?, ?, ?)
-      `
+      `,
       );
       for (const routingComboId of cleanedIds) {
         deleteExisting.run(routingComboId);

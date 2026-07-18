@@ -1,18 +1,17 @@
-import type { PreloadFileOptions } from '@pierre/diffs/ssr';
+import type { PreloadFileOptions } from "@pierre/diffs/ssr";
 
-import { CustomScrollbarCSS } from '@/components/CustomScrollbarCSS';
+import { CustomScrollbarCSS } from "@/components/CustomScrollbarCSS";
 
 const options = {
-  theme: { dark: 'pierre-dark', light: 'pierre-light' },
+  theme: { dark: "pierre-dark", light: "pierre-light" },
   disableFileHeader: true,
   unsafeCSS: CustomScrollbarCSS,
 } as const;
 
-export const VANILLA_API_POST_RENDER_LIFECYCLE: PreloadFileOptions<undefined> =
-  {
-    file: {
-      name: 'post_render_lifecycle.ts',
-      contents: `import { FileDiff } from '@pierre/diffs';
+export const VANILLA_API_POST_RENDER_LIFECYCLE: PreloadFileOptions<undefined> = {
+  file: {
+    name: "post_render_lifecycle.ts",
+    contents: `import { FileDiff } from '@pierre/diffs';
 
 const cleanupByNode = new WeakMap<HTMLElement, () => void>();
 
@@ -60,9 +59,9 @@ const instance = new FileDiff({
 function containsSelectionNode(root: Node, node: Node | null) {
   return node != null && root.contains(node);
 }`,
-    },
-    options,
-  };
+  },
+  options,
+};
 
 // =============================================================================
 // COMPONENT EXAMPLES (short, focused on usage)
@@ -70,7 +69,7 @@ function containsSelectionNode(root: Node, node: Node | null) {
 
 export const VANILLA_API_FILE_DIFF_EXAMPLE: PreloadFileOptions<undefined> = {
   file: {
-    name: 'file_diff_example.ts',
+    name: "file_diff_example.ts",
     contents: `import { FileDiff, type FileContents } from '@pierre/diffs';
 
 // Create the instance with options
@@ -109,7 +108,7 @@ instance.cleanUp();`,
 
 export const VANILLA_API_FILE_EXAMPLE: PreloadFileOptions<undefined> = {
   file: {
-    name: 'file_example.ts',
+    name: "file_example.ts",
     contents: `import { File, type FileContents } from '@pierre/diffs';
 
 // Create the instance with options
@@ -144,11 +143,10 @@ instance.cleanUp();`,
   options,
 };
 
-export const VANILLA_API_UNRESOLVED_FILE_EXAMPLE: PreloadFileOptions<undefined> =
-  {
-    file: {
-      name: 'unresolved_file_example.ts',
-      contents: `import {
+export const VANILLA_API_UNRESOLVED_FILE_EXAMPLE: PreloadFileOptions<undefined> = {
+  file: {
+    name: "unresolved_file_example.ts",
+    contents: `import {
   UnresolvedFile,
   resolveMergeConflict,
   type FileContents,
@@ -186,13 +184,13 @@ const instance = new UnresolvedFile({
 });
 
 instance.render({ file, containerWrapper: container });`,
-    },
-    options,
-  };
+  },
+  options,
+};
 
 export const VANILLA_API_CODE_VIEW_EXAMPLE: PreloadFileOptions<undefined> = {
   file: {
-    name: 'code_view_example.ts',
+    name: "code_view_example.ts",
     contents: `import {
   CodeView,
   parseDiffFromFile,
@@ -277,7 +275,7 @@ window.addEventListener('beforeunload', () => {
 
 export const VANILLA_API_FILE_DIFF_PROPS: PreloadFileOptions<undefined> = {
   file: {
-    name: 'file_diff_props.ts',
+    name: "file_diff_props.ts",
     contents: `import { FileDiff, type DiffTokenEventBaseProps } from '@pierre/diffs';
 
 // All available options for the FileDiff class
@@ -601,7 +599,7 @@ instance.cleanUp();`,
 
 export const VANILLA_API_FILE_PROPS: PreloadFileOptions<undefined> = {
   file: {
-    name: 'file_props.ts',
+    name: "file_props.ts",
     contents: `import { File, type TokenEventBase } from '@pierre/diffs';
 
 // All available options for the File class
@@ -838,7 +836,7 @@ instance.cleanUp();`,
 
 export const VANILLA_API_CUSTOM_HUNK_FILE: PreloadFileOptions<undefined> = {
   file: {
-    name: 'hunks_example.ts',
+    name: "hunks_example.ts",
     contents: `import { FileDiff } from '@pierre/diffs';
 
 // This is a low-level vanilla-only escape hatch.
@@ -909,7 +907,7 @@ const instance3 = new FileDiff({
 
 export const VANILLA_API_HUNKS_RENDERER_FILE: PreloadFileOptions<undefined> = {
   file: {
-    name: 'hunks_renderer_file.ts',
+    name: "hunks_renderer_file.ts",
     contents: `import {
   DiffHunksRenderer,
   type FileDiffMetadata,
@@ -958,11 +956,10 @@ const fullAST = instance.renderFullAST(result);`,
   options,
 };
 
-export const VANILLA_API_HUNKS_RENDERER_PATCH_FILE: PreloadFileOptions<undefined> =
-  {
-    file: {
-      name: 'hunks_renderer_patch.ts',
-      contents: `import {
+export const VANILLA_API_HUNKS_RENDERER_PATCH_FILE: PreloadFileOptions<undefined> = {
+  file: {
+    name: "hunks_renderer_patch.ts",
+    contents: `import {
   DiffHunksRenderer,
   type FileDiffMetadata,
   type HunksRenderResult,
@@ -1034,13 +1031,13 @@ for (const patch of patches) {
     const fullAST = instance.renderFullAST(result);
   }
 }`,
-    },
-    options,
-  };
+  },
+  options,
+};
 
 export const VANILLA_API_FILE_RENDERER: PreloadFileOptions<undefined> = {
   file: {
-    name: 'file_renderer.ts',
+    name: "file_renderer.ts",
     contents: `import {
   FileRenderer,
   type FileContents,

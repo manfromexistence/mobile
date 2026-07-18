@@ -34,7 +34,7 @@ test("createProviderSchema rejects non-string consoleApiKey", () => {
   assert.equal(result.success, false, "Should reject non-string consoleApiKey");
   if (!result.success) {
     const hasConsoleApiKeyError = result.error.issues.some((issue) =>
-      issue.path.includes("consoleApiKey")
+      issue.path.includes("consoleApiKey"),
     );
     assert.equal(hasConsoleApiKeyError, true, "Error should target consoleApiKey path");
   }
@@ -61,7 +61,7 @@ test("createProviderSchema rejects consoleApiKey exceeding max length", () => {
   assert.equal(result.success, false, "Should reject consoleApiKey exceeding max length");
   if (!result.success) {
     const hasConsoleApiKeyError = result.error.issues.some((issue) =>
-      issue.path.includes("consoleApiKey")
+      issue.path.includes("consoleApiKey"),
     );
     assert.equal(hasConsoleApiKeyError, true, "Error should target consoleApiKey path");
   }
@@ -90,7 +90,7 @@ test("updateProviderConnectionSchema rejects non-string consoleApiKey", () => {
   assert.equal(result.success, false, "Should reject non-string consoleApiKey");
   if (!result.success) {
     const hasConsoleApiKeyError = result.error.issues.some((issue) =>
-      issue.path.includes("consoleApiKey")
+      issue.path.includes("consoleApiKey"),
     );
     assert.equal(hasConsoleApiKeyError, true, "Error should target consoleApiKey path");
   }
@@ -113,7 +113,7 @@ test("updateProviderConnectionSchema rejects consoleApiKey exceeding max length"
   assert.equal(result.success, false, "Should reject consoleApiKey exceeding max length");
   if (!result.success) {
     const hasConsoleApiKeyError = result.error.issues.some((issue) =>
-      issue.path.includes("consoleApiKey")
+      issue.path.includes("consoleApiKey"),
     );
     assert.equal(hasConsoleApiKeyError, true, "Error should target consoleApiKey path");
   }

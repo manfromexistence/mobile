@@ -172,34 +172,23 @@ test("context-relay universal handoff: fires and writes handoff record on model 
 
   // Wait for the setImmediate + generateUniversalHandoffAsync to complete and
   // write the DB record. Poll for up to 2 s — typically resolves in <100 ms.
-  const handoff = await waitFor(
-    () => getHandoff(SESSION_ID, COMBO_NAME),
-    2000
-  );
+  const handoff = await waitFor(() => getHandoff(SESSION_ID, COMBO_NAME), 2000);
 
   assert.ok(
     handoff !== null,
-    "universal handoff record must be written to DB when a model switch is detected"
+    "universal handoff record must be written to DB when a model switch is detected",
   );
   assert.ok(
     typeof handoff!.summary === "string" && handoff!.summary.length > 0,
-    `handoff.summary must be non-empty; got: ${JSON.stringify(handoff!.summary)}`
+    `handoff.summary must be non-empty; got: ${JSON.stringify(handoff!.summary)}`,
   );
-  assert.equal(
-    handoff!.comboName,
-    COMBO_NAME,
-    "handoff must be keyed to the correct combo"
-  );
-  assert.equal(
-    handoff!.sessionId,
-    SESSION_ID,
-    "handoff must be keyed to the correct session"
-  );
+  assert.equal(handoff!.comboName, COMBO_NAME, "handoff must be keyed to the correct combo");
+  assert.equal(handoff!.sessionId, SESSION_ID, "handoff must be keyed to the correct session");
 
   // Extra dispatch observable: main (index 0) + summary (index ≥ 1).
   assert.ok(
     h.calls.length >= 2,
-    `expected ≥2 upstream dispatches (main + summary); got ${h.calls.length}: ${JSON.stringify(h.calls.map((c) => ({ i: c.index, p: c.provider, m: c.model })))}`
+    `expected ≥2 upstream dispatches (main + summary); got ${h.calls.length}: ${JSON.stringify(h.calls.map((c) => ({ i: c.index, p: c.provider, m: c.model })))}`,
   );
 });
 
@@ -231,14 +220,14 @@ test("context-relay universal handoff: does NOT fire when no prior model is reco
   assert.equal(
     handoff,
     null,
-    "handoff must NOT be written when no prior model exists (prevModel is null)"
+    "handoff must NOT be written when no prior model exists (prevModel is null)",
   );
 
   // Only the main request — no extra summary dispatch.
   assert.equal(
     h.calls.length,
     1,
-    `expected exactly 1 upstream dispatch (main only); got ${h.calls.length}`
+    `expected exactly 1 upstream dispatch (main only); got ${h.calls.length}`,
   );
 });
 
@@ -271,12 +260,12 @@ test("context-relay universal handoff: does NOT fire when x-omniroute-session-id
   assert.equal(
     handoff,
     null,
-    "handoff must NOT be written when x-omniroute-session-id header is absent (sessionId gate)"
+    "handoff must NOT be written when x-omniroute-session-id header is absent (sessionId gate)",
   );
 
   assert.equal(
     h.calls.length,
     1,
-    `expected exactly 1 upstream dispatch (main only, no summary); got ${h.calls.length}`
+    `expected exactly 1 upstream dispatch (main only, no summary); got ${h.calls.length}`,
   );
 });

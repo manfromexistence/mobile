@@ -1,33 +1,33 @@
-import windowState from "electron-window-state"
-import { resolveThemeVariant } from "@opencode-ai/ui/theme/resolve"
-import type { DesktopTheme } from "@opencode-ai/ui/theme/types"
-import oc2ThemeJson from "../../../ui/src/theme/themes/oc-2.json"
-import { randomUUID } from "node:crypto"
-import { rmSync } from "node:fs"
-import { app, BrowserWindow, dialog, net, nativeImage, nativeTheme, protocol } from "electron"
-import { dirname, isAbsolute, join, relative, resolve } from "node:path"
-import { fileURLToPath, pathToFileURL } from "node:url"
-import type { TitlebarTheme } from "../preload/types"
-import { exportDebugLogs, write as writeLog } from "./logging"
-import { getStore, removeStoreFile } from "./store"
-import { PINCH_ZOOM_ENABLED_KEY, WINDOW_IDS_KEY } from "./store-keys"
-import { createUnresponsiveSampler } from "./unresponsive"
-import { createWindowRegistry } from "./window-registry"
+import windowState from "electron-window-state";
+import { resolveThemeVariant } from "@opencode-ai/ui/theme/resolve";
+import type { DesktopTheme } from "@opencode-ai/ui/theme/types";
+import oc2ThemeJson from "../../../ui/src/theme/themes/oc-2.json";
+import { randomUUID } from "node:crypto";
+import { rmSync } from "node:fs";
+import { app, BrowserWindow, dialog, net, nativeImage, nativeTheme, protocol } from "electron";
+import { dirname, isAbsolute, join, relative, resolve } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import type { TitlebarTheme } from "../preload/types";
+import { exportDebugLogs, write as writeLog } from "./logging";
+import { getStore, removeStoreFile } from "./store";
+import { PINCH_ZOOM_ENABLED_KEY, WINDOW_IDS_KEY } from "./store-keys";
+import { createUnresponsiveSampler } from "./unresponsive";
+import { createWindowRegistry } from "./window-registry";
 
-const root = dirname(fileURLToPath(import.meta.url))
-const rendererRoot = join(root, "../renderer")
-const rendererProtocol = "oc"
-const rendererHost = "renderer"
-const clipboardWritePermission = "clipboard-sanitized-write"
-const notificationPermission = "notifications"
-const rendererPermissions = new Set([clipboardWritePermission, notificationPermission])
-const oc2Theme = oc2ThemeJson as DesktopTheme
+const root = dirname(fileURLToPath(import.meta.url));
+const rendererRoot = join(root, "../renderer");
+const rendererProtocol = "oc";
+const rendererHost = "renderer";
+const clipboardWritePermission = "clipboard-sanitized-write";
+const notificationPermission = "notifications";
+const rendererPermissions = new Set([clipboardWritePermission, notificationPermission]);
+const oc2Theme = oc2ThemeJson as DesktopTheme;
 const oc2Background = {
   light: resolveThemeVariant(oc2Theme.light, false)["background-base"],
   dark: resolveThemeVariant(oc2Theme.dark, true)["background-base"],
-}
-const documentPolicyHeader = "Document-Policy"
-const jsCallStacksDocumentPolicy = "include-js-call-stacks-in-crash-reports"
+};
+const documentPolicyHeader = "Document-Policy";
+const jsCallStacksDocumentPolicy = "include-js-call-stacks-in-crash-reports";
 
 protocol.registerSchemesAsPrivileged([
   {
@@ -38,117 +38,119 @@ protocol.registerSchemesAsPrivileged([
       supportFetchAPI: true,
     },
   },
-])
+]);
 
-let backgroundColor: string | undefined
+let backgroundColor: string | undefined;
 let relaunchHandler = () => {
-  setAppQuitting()
-  app.relaunch()
-  app.exit(0)
-}
-const titlebarThemes = new WeakMap<BrowserWindow, Partial<TitlebarTheme>>()
-const pinchZoomEnabled = new WeakMap<BrowserWindow, boolean>()
-const windowIDs = new WeakMap<BrowserWindow, string>()
+  setAppQuitting();
+  app.relaunch();
+  app.exit(0);
+};
+const titlebarThemes = new WeakMap<BrowserWindow, Partial<TitlebarTheme>>();
+const pinchZoomEnabled = new WeakMap<BrowserWindow, boolean>();
+const windowIDs = new WeakMap<BrowserWindow, string>();
 const registry = createWindowRegistry<BrowserWindow>({
   read: () => getStore().get(WINDOW_IDS_KEY),
   write: (ids) => getStore().set(WINDOW_IDS_KEY, ids),
   cleanup: (id) => {
-    rmSync(join(app.getPath("userData"), windowStateFile(id)), { force: true })
-    removeStoreFile(windowDataFile(id))
+    rmSync(join(app.getPath("userData"), windowStateFile(id)), { force: true });
+    removeStoreFile(windowDataFile(id));
   },
-})
-const titlebarHeight = 40
-const maxZoomLevel = 10
-const minZoomLevel = 0.2
+});
+const titlebarHeight = 40;
+const maxZoomLevel = 10;
+const minZoomLevel = 0.2;
 
 export function setRelaunchHandler(handler: () => void) {
-  relaunchHandler = handler
+  relaunchHandler = handler;
 }
 
 export function setAppQuitting(quitting = true) {
-  registry.setQuitting(quitting)
+  registry.setQuitting(quitting);
 }
 
 export function setBackgroundColor(color: string) {
-  backgroundColor = color
-  BrowserWindow.getAllWindows().forEach((win) => win.setBackgroundColor(color))
+  backgroundColor = color;
+  BrowserWindow.getAllWindows().forEach((win) => win.setBackgroundColor(color));
 }
 
 export function getBackgroundColor(): string | undefined {
-  return backgroundColor
+  return backgroundColor;
 }
 
 function iconsDir() {
-  return app.isPackaged ? join(process.resourcesPath, "icons") : join(root, "../../resources/icons")
+  return app.isPackaged
+    ? join(process.resourcesPath, "icons")
+    : join(root, "../../resources/icons");
 }
 
 function iconPath() {
-  const ext = process.platform === "win32" ? "ico" : "png"
-  return join(iconsDir(), `icon.${ext}`)
+  const ext = process.platform === "win32" ? "ico" : "png";
+  return join(iconsDir(), `icon.${ext}`);
 }
 
 function tone() {
-  return nativeTheme.shouldUseDarkColors ? "dark" : "light"
+  return nativeTheme.shouldUseDarkColors ? "dark" : "light";
 }
 
 function defaultBackgroundColor() {
-  return oc2Background[tone()]
+  return oc2Background[tone()];
 }
 
 function overlay(theme: Partial<TitlebarTheme> = {}, zoom = 1) {
-  const mode = theme.mode ?? tone()
+  const mode = theme.mode ?? tone();
   return {
     color: "#00000000",
     symbolColor: mode === "dark" ? "white" : "black",
     height: Math.max(titlebarHeight, Math.round(titlebarHeight * zoom)),
-  }
+  };
 }
 
 export function setTitlebar(win: BrowserWindow, theme: Partial<TitlebarTheme> = {}) {
-  titlebarThemes.set(win, theme)
-  updateTitlebar(win)
+  titlebarThemes.set(win, theme);
+  updateTitlebar(win);
 }
 
 export function updateTitlebar(win: BrowserWindow) {
-  if (process.platform !== "win32") return
-  win.setTitleBarOverlay(overlay(titlebarThemes.get(win), win.webContents.getZoomFactor()))
+  if (process.platform !== "win32") return;
+  win.setTitleBarOverlay(overlay(titlebarThemes.get(win), win.webContents.getZoomFactor()));
 }
 
 export function setPinchZoomEnabled(enabled: boolean) {
-  getStore().set(PINCH_ZOOM_ENABLED_KEY, enabled)
+  getStore().set(PINCH_ZOOM_ENABLED_KEY, enabled);
   for (const win of BrowserWindow.getAllWindows()) {
-    pinchZoomEnabled.set(win, enabled)
-    win.webContents.send("pinch-zoom-enabled-changed", enabled)
-    if (!enabled && win.webContents.getZoomFactor() !== 1) win.webContents.setZoomFactor(1)
-    updateZoom(win)
+    pinchZoomEnabled.set(win, enabled);
+    win.webContents.send("pinch-zoom-enabled-changed", enabled);
+    if (!enabled && win.webContents.getZoomFactor() !== 1) win.webContents.setZoomFactor(1);
+    updateZoom(win);
   }
 }
 
 export function getPinchZoomEnabled() {
-  return getStore().get(PINCH_ZOOM_ENABLED_KEY) === true
+  return getStore().get(PINCH_ZOOM_ENABLED_KEY) === true;
 }
 
 export function getWindowID(win: BrowserWindow) {
-  return windowIDs.get(win)
+  return windowIDs.get(win);
 }
 
 export function getLastFocusedWindow() {
-  const focused = BrowserWindow.getFocusedWindow()
-  if (focused) return focused
-  const win = registry.lastFocused()
-  if (!win || win.isDestroyed()) return null
-  return win
+  const focused = BrowserWindow.getFocusedWindow();
+  if (focused) return focused;
+  const win = registry.lastFocused();
+  if (!win || win.isDestroyed()) return null;
+  return win;
 }
 
 export function restoreMainWindows() {
-  const ids = registry.persisted()
-  return (ids.length ? ids : [randomUUID()]).map((id) => createMainWindow(id))
+  const ids = registry.persisted();
+  return (ids.length ? ids : [randomUUID()]).map((id) => createMainWindow(id));
 }
 
 export function setDockIcon() {
-  if (process.platform !== "darwin") return
-  const icon = nativeImage.createFromPath(join(iconsDir(), "dock.png"))
-  if (!icon.isEmpty()) app.dock?.setIcon(icon)
+  if (process.platform !== "darwin") return;
+  const icon = nativeImage.createFromPath(join(iconsDir(), "dock.png"));
+  if (!icon.isEmpty()) app.dock?.setIcon(icon);
 }
 
 export function createMainWindow(id: string = randomUUID()) {
@@ -156,9 +158,9 @@ export function createMainWindow(id: string = randomUUID()) {
     file: windowStateFile(id),
     defaultWidth: 1280,
     defaultHeight: 800,
-  })
+  });
 
-  const mode = tone()
+  const mode = tone();
   const win = new BrowserWindow({
     x: state.x,
     y: state.y,
@@ -188,75 +190,75 @@ export function createMainWindow(id: string = randomUUID()) {
       nodeIntegration: false,
       sandbox: true,
     },
-  })
+  });
 
-  allowRendererPermissions(win)
-  wireWindowRecovery(win, id)
+  allowRendererPermissions(win);
+  wireWindowRecovery(win, id);
 
   win.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
-    const { requestHeaders } = details
-    upsertKeyValue(requestHeaders, "Access-Control-Allow-Origin", ["*"])
-    callback({ requestHeaders })
-  })
+    const { requestHeaders } = details;
+    upsertKeyValue(requestHeaders, "Access-Control-Allow-Origin", ["*"]);
+    callback({ requestHeaders });
+  });
 
   win.webContents.session.webRequest.onHeadersReceived((details, callback) => {
-    const { responseHeaders = {} } = details
-    addRendererHeaders(details.url, responseHeaders)
-    callback({ responseHeaders })
-  })
+    const { responseHeaders = {} } = details;
+    addRendererHeaders(details.url, responseHeaders);
+    callback({ responseHeaders });
+  });
 
-  state.manage(win)
-  registerWindow(win, id)
-  loadWindow(win, "index.html")
-  wireZoom(win)
+  state.manage(win);
+  registerWindow(win, id);
+  loadWindow(win, "index.html");
+  wireZoom(win);
 
   win.once("ready-to-show", () => {
-    win.show()
-  })
+    win.show();
+  });
 
-  return win
+  return win;
 }
 
 function registerWindow(win: BrowserWindow, id: string) {
-  windowIDs.set(win, id)
-  registry.register(id, win)
+  windowIDs.set(win, id);
+  registry.register(id, win);
 
-  win.on("focus", () => registry.focused(id))
+  win.on("focus", () => registry.focused(id));
   // Windows never emits before-quit on OS shutdown/logoff, but each window
   // gets session-end before it closes; flag the quit so ids stay persisted.
-  win.on("session-end", () => registry.setQuitting())
-  win.on("closed", () => registry.closed(id))
+  win.on("session-end", () => registry.setQuitting());
+  win.on("closed", () => registry.closed(id));
 }
 
 function windowStateFile(id: string) {
-  return `window-state-${id.replace(/[^a-zA-Z0-9._-]/g, "-")}.json`
+  return `window-state-${id.replace(/[^a-zA-Z0-9._-]/g, "-")}.json`;
 }
 
 // Mirrors windowStorage() in packages/app/src/utils/persist.ts, which names
 // the per-window renderer store this window persists its tabs into.
 function windowDataFile(id: string) {
-  return `opencode.window.${id.replace(/[^a-zA-Z0-9._-]/g, "-")}.dat`
+  return `opencode.window.${id.replace(/[^a-zA-Z0-9._-]/g, "-")}.dat`;
 }
 
 export function registerRendererProtocol() {
-  if (protocol.isProtocolHandled(rendererProtocol)) return
+  if (protocol.isProtocolHandled(rendererProtocol)) return;
 
   protocol.handle(rendererProtocol, async (request) => {
-    const url = new URL(request.url)
+    const url = new URL(request.url);
     if (url.host !== rendererHost) {
-      writeLog("protocol", "rejected host", { url: request.url }, "warn")
-      return new Response("Not found", { status: 404 })
+      writeLog("protocol", "rejected host", { url: request.url }, "warn");
+      return new Response("Not found", { status: 404 });
     }
 
-    const file = resolve(rendererRoot, `.${decodeURIComponent(url.pathname)}`)
-    const rel = relative(rendererRoot, file)
+    const file = resolve(rendererRoot, `.${decodeURIComponent(url.pathname)}`);
+    const rel = relative(rendererRoot, file);
     if (rel.startsWith("..") || isAbsolute(rel)) {
-      writeLog("protocol", "rejected path", { url: request.url, file }, "warn")
-      return new Response("Not found", { status: 404 })
+      writeLog("protocol", "rejected path", { url: request.url, file }, "warn");
+      return new Response("Not found", { status: 404 });
     }
 
     try {
-      const response = await net.fetch(pathToFileURL(file).toString())
+      const response = await net.fetch(pathToFileURL(file).toString());
       if (response.status >= 400) {
         writeLog(
           "protocol",
@@ -268,56 +270,60 @@ export function registerRendererProtocol() {
             statusText: response.statusText,
           },
           "error",
-        )
+        );
       }
-      return addDocumentPolicy(response, file)
+      return addDocumentPolicy(response, file);
     } catch (error) {
-      writeLog("protocol", "fetch error", { url: request.url, file, error }, "error")
-      return new Response("Not found", { status: 404 })
+      writeLog("protocol", "fetch error", { url: request.url, file, error }, "error");
+      return new Response("Not found", { status: 404 });
     }
-  })
+  });
 }
 
 function loadWindow(win: BrowserWindow, html: string) {
-  const devUrl = process.env.ELECTRON_RENDERER_URL
+  const devUrl = process.env.ELECTRON_RENDERER_URL;
   if (devUrl) {
-    const url = new URL(html, devUrl)
-    void win.loadURL(url.toString())
-    return
+    const url = new URL(html, devUrl);
+    void win.loadURL(url.toString());
+    return;
   }
 
-  void win.loadURL(`${rendererProtocol}://${rendererHost}/${html}`)
+  void win.loadURL(`${rendererProtocol}://${rendererHost}/${html}`);
 }
 
 function wireWindowRecovery(win: BrowserWindow, name: string) {
-  let showing = false
-  const sampler = createUnresponsiveSampler(win, name)
+  let showing = false;
+  const sampler = createUnresponsiveSampler(win, name);
 
   const handle = async (button: string | undefined, wait: boolean) => {
     if (button === "Export Logs") {
-      const sampling = sampler.stopAndFlush()
-      await exportDebugLogs().catch((error) => writeLog("main", "failed to export debug logs", { error }, "error"))
-      if (wait && sampling) sampler.start()
-      return true
+      const sampling = sampler.stopAndFlush();
+      await exportDebugLogs().catch((error) =>
+        writeLog("main", "failed to export debug logs", { error }, "error"),
+      );
+      if (wait && sampling) sampler.start();
+      return true;
     }
     if (button === "Relaunch") {
-      sampler.stopAndFlush()
-      relaunchHandler()
-      return false
+      sampler.stopAndFlush();
+      relaunchHandler();
+      return false;
     }
     if (button === "Quit") {
-      sampler.stopAndFlush()
-      app.quit()
+      sampler.stopAndFlush();
+      app.quit();
     }
-    return false
-  }
+    return false;
+  };
 
   const show = async (message: string, detail: string, wait: boolean) => {
-    if (showing || win.isDestroyed()) return
-    showing = true
+    if (showing || win.isDestroyed()) return;
+    showing = true;
     try {
       while (!win.isDestroyed()) {
-        const buttons = wait ? ["Relaunch", "Export Logs", "Keep Waiting"] : ["Relaunch", "Export Logs", "Quit"]
+        const buttons = wait
+          ? ["Relaunch", "Export Logs", "Keep Waiting"]
+          : ["Relaunch", "Export Logs", "Quit"];
         const result = await dialog.showMessageBox(win, {
           type: "warning",
           buttons,
@@ -325,14 +331,14 @@ function wireWindowRecovery(win: BrowserWindow, name: string) {
           cancelId: 2,
           message,
           detail,
-        })
-        if (await handle(buttons[result.response], wait)) continue
-        return
+        });
+        if (await handle(buttons[result.response], wait)) continue;
+        return;
       }
     } finally {
-      showing = false
+      showing = false;
     }
-  }
+  };
 
   const failed = (
     event: string,
@@ -354,133 +360,170 @@ function wireWindowRecovery(win: BrowserWindow, name: string) {
         isMainFrame,
       },
       "error",
-    )
+    );
 
-    if (!isMainFrame || errorCode === -3) return
+    if (!isMainFrame || errorCode === -3) return;
     void show(
       "OpenCode failed to load",
-      [`Window: ${name}`, `URL: ${validatedURL}`, `Error: ${errorCode} ${errorDescription}`].join("\n"),
+      [`Window: ${name}`, `URL: ${validatedURL}`, `Error: ${errorCode} ${errorDescription}`].join(
+        "\n",
+      ),
       false,
-    )
-  }
+    );
+  };
 
-  win.webContents.on("did-fail-load", (_event, errorCode, errorDescription, validatedURL, isMainFrame) => {
-    failed("did-fail-load", errorCode, errorDescription, validatedURL, isMainFrame)
-  })
-  win.webContents.on("did-fail-provisional-load", (_event, errorCode, errorDescription, validatedURL, isMainFrame) => {
-    failed("did-fail-provisional-load", errorCode, errorDescription, validatedURL, isMainFrame)
-  })
+  win.webContents.on(
+    "did-fail-load",
+    (_event, errorCode, errorDescription, validatedURL, isMainFrame) => {
+      failed("did-fail-load", errorCode, errorDescription, validatedURL, isMainFrame);
+    },
+  );
+  win.webContents.on(
+    "did-fail-provisional-load",
+    (_event, errorCode, errorDescription, validatedURL, isMainFrame) => {
+      failed("did-fail-provisional-load", errorCode, errorDescription, validatedURL, isMainFrame);
+    },
+  );
   win.webContents.on("render-process-gone", (_event, details) => {
-    sampler.stopAndFlush()
+    sampler.stopAndFlush();
     writeLog(
       "window",
       "renderer process gone",
       { window: name, currentURL: win.webContents.getURL(), details },
       "error",
-    )
+    );
     void show(
       "OpenCode window terminated unexpectedly",
-      [`Window: ${name}`, `Reason: ${details.reason}`, `Code: ${details.exitCode ?? "<unknown>"}`].join("\n"),
+      [
+        `Window: ${name}`,
+        `Reason: ${details.reason}`,
+        `Code: ${details.exitCode ?? "<unknown>"}`,
+      ].join("\n"),
       false,
-    )
-  })
+    );
+  });
   win.on("unresponsive", () => {
-    writeLog("window", "renderer unresponsive", { window: name, currentURL: win.webContents.getURL() }, "error")
-    sampler.start()
-    void show("OpenCode is not responding", "You can relaunch the app, open the logs, or keep waiting.", true)
-  })
+    writeLog(
+      "window",
+      "renderer unresponsive",
+      { window: name, currentURL: win.webContents.getURL() },
+      "error",
+    );
+    sampler.start();
+    void show(
+      "OpenCode is not responding",
+      "You can relaunch the app, open the logs, or keep waiting.",
+      true,
+    );
+  });
   win.on("responsive", () => {
-    writeLog("window", "renderer responsive", { window: name, currentURL: win.webContents.getURL() }, "error")
-    sampler.stopAndFlush()
-  })
+    writeLog(
+      "window",
+      "renderer responsive",
+      { window: name, currentURL: win.webContents.getURL() },
+      "error",
+    );
+    sampler.stopAndFlush();
+  });
   win.webContents.on("console-message", (_event, level, message, line, sourceId) => {
     if (message.toLowerCase().includes("terminal") || sourceId.toLowerCase().includes("terminal")) {
-      writeLog("pty", "console", { window: name, level, message, line, sourceId })
+      writeLog("pty", "console", { window: name, level, message, line, sourceId });
     }
-  })
+  });
   win.webContents.on("preload-error", (_event, preloadPath, error) => {
-    writeLog("preload", "preload error", { window: name, preloadPath, error }, "error")
-  })
+    writeLog("preload", "preload error", { window: name, preloadPath, error }, "error");
+  });
 }
 
 function addDocumentPolicy(response: Response, file: string) {
-  if (!file.toLowerCase().endsWith(".html")) return response
-  const headers = new Headers(response.headers)
-  headers.set(documentPolicyHeader, jsCallStacksDocumentPolicy)
-  return new Response(response.body, { status: response.status, statusText: response.statusText, headers })
+  if (!file.toLowerCase().endsWith(".html")) return response;
+  const headers = new Headers(response.headers);
+  headers.set(documentPolicyHeader, jsCallStacksDocumentPolicy);
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
 }
 
 function allowRendererPermissions(win: BrowserWindow) {
-  const webContentsId = win.webContents.id
+  const webContentsId = win.webContents.id;
 
-  win.webContents.session.setPermissionRequestHandler((webContents, permission, callback, details) => {
-    callback(
-      rendererPermissions.has(permission) &&
-        isTrustedRendererUrl(details.requestingUrl) &&
-        webContents.id === webContentsId,
-    )
-  })
-  win.webContents.session.setPermissionCheckHandler((webContents, permission, requestingOrigin, details) => {
-    if (!rendererPermissions.has(permission)) return false
-    if (webContents && webContents.id !== webContentsId) return false
-    return isTrustedRendererUrl(details.requestingUrl) || isTrustedRendererUrl(requestingOrigin)
-  })
+  win.webContents.session.setPermissionRequestHandler(
+    (webContents, permission, callback, details) => {
+      callback(
+        rendererPermissions.has(permission) &&
+          isTrustedRendererUrl(details.requestingUrl) &&
+          webContents.id === webContentsId,
+      );
+    },
+  );
+  win.webContents.session.setPermissionCheckHandler(
+    (webContents, permission, requestingOrigin, details) => {
+      if (!rendererPermissions.has(permission)) return false;
+      if (webContents && webContents.id !== webContentsId) return false;
+      return isTrustedRendererUrl(details.requestingUrl) || isTrustedRendererUrl(requestingOrigin);
+    },
+  );
 }
 
 function isTrustedRendererUrl(value?: string) {
-  return isRendererUrl(value)
+  return isRendererUrl(value);
 }
 
 function addRendererHeaders(value: string, headers: Record<string, any>) {
-  upsertKeyValue(headers, "Access-Control-Allow-Origin", ["*"])
-  upsertKeyValue(headers, "Access-Control-Allow-Headers", ["*"])
-  if (isRendererUrl(value, true)) upsertKeyValue(headers, documentPolicyHeader, [jsCallStacksDocumentPolicy])
+  upsertKeyValue(headers, "Access-Control-Allow-Origin", ["*"]);
+  upsertKeyValue(headers, "Access-Control-Allow-Headers", ["*"]);
+  if (isRendererUrl(value, true))
+    upsertKeyValue(headers, documentPolicyHeader, [jsCallStacksDocumentPolicy]);
 }
 
 function isRendererUrl(value?: string, html = false) {
-  if (!value || !URL.canParse(value)) return false
-  const url = new URL(value)
-  if (html && !url.pathname.endsWith(".html")) return false
-  if (url.protocol === `${rendererProtocol}:` && url.host === rendererHost) return true
-  const devUrl = process.env.ELECTRON_RENDERER_URL
-  if (!devUrl || !URL.canParse(devUrl)) return false
-  return url.origin === new URL(devUrl).origin
+  if (!value || !URL.canParse(value)) return false;
+  const url = new URL(value);
+  if (html && !url.pathname.endsWith(".html")) return false;
+  if (url.protocol === `${rendererProtocol}:` && url.host === rendererHost) return true;
+  const devUrl = process.env.ELECTRON_RENDERER_URL;
+  if (!devUrl || !URL.canParse(devUrl)) return false;
+  return url.origin === new URL(devUrl).origin;
 }
 
 function wireZoom(win: BrowserWindow) {
-  pinchZoomEnabled.set(win, getPinchZoomEnabled())
-  win.webContents.setZoomFactor(1)
+  pinchZoomEnabled.set(win, getPinchZoomEnabled());
+  win.webContents.setZoomFactor(1);
   win.webContents.on("zoom-changed", (event, zoomDirection) => {
-    event.preventDefault()
+    event.preventDefault();
     if (pinchZoomEnabled.get(win)) {
-      win.webContents.setZoomFactor(clampZoom(win.webContents.getZoomFactor() + (zoomDirection === "in" ? 0.2 : -0.2)))
-      updateZoom(win)
-      return
+      win.webContents.setZoomFactor(
+        clampZoom(win.webContents.getZoomFactor() + (zoomDirection === "in" ? 0.2 : -0.2)),
+      );
+      updateZoom(win);
+      return;
     }
-    if (win.webContents.getZoomFactor() !== 1) win.webContents.setZoomFactor(1)
-    updateZoom(win)
-  })
+    if (win.webContents.getZoomFactor() !== 1) win.webContents.setZoomFactor(1);
+    updateZoom(win);
+  });
 }
 
 function clampZoom(value: number) {
-  return Math.min(Math.max(value, minZoomLevel), maxZoomLevel)
+  return Math.min(Math.max(value, minZoomLevel), maxZoomLevel);
 }
 
 function updateZoom(win: BrowserWindow) {
-  updateTitlebar(win)
-  win.webContents.send("zoom-factor-changed", win.webContents.getZoomFactor())
+  updateTitlebar(win);
+  win.webContents.send("zoom-factor-changed", win.webContents.getZoomFactor());
 }
 
 function upsertKeyValue(obj: Record<string, any>, keyToChange: string, value: any) {
-  const keyToChangeLower = keyToChange.toLowerCase()
+  const keyToChangeLower = keyToChange.toLowerCase();
   for (const key of Object.keys(obj)) {
     if (key.toLowerCase() === keyToChangeLower) {
       // Reassign old key
-      obj[key] = value
+      obj[key] = value;
       // Done
-      return
+      return;
     }
   }
   // Insert at end instead
-  obj[keyToChange] = value
+  obj[keyToChange] = value;
 }

@@ -55,7 +55,7 @@ export function forwardOpencodeClientHeaders(
   options?: {
     synthesizeRequestId?: boolean;
     cliDefaults?: { userAgent: string; client: string; project: string };
-  }
+  },
 ): void {
   // 1. Forward User-Agent
   const clientUA = clientHeaders["User-Agent"] || clientHeaders["user-agent"];
@@ -105,7 +105,7 @@ export function forwardOpencodeClientHeaders(
  */
 function applyCliDefaults(
   headers: Record<string, string>,
-  cliDefaults: { userAgent: string; client: string; project: string }
+  cliDefaults: { userAgent: string; client: string; project: string },
 ): void {
   if (!headers["User-Agent"] && !headers["user-agent"]) {
     setUserAgentHeader(headers, cliDefaults.userAgent);

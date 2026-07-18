@@ -1,15 +1,15 @@
-import { z } from "zod"
-import { eq, and } from "drizzle-orm"
-import { Database } from "./drizzle"
-import { ModelTable } from "./schema/model.sql"
-import { Identifier } from "./identifier"
-import { fn } from "./util/fn"
-import { Actor } from "./actor"
-import { Resource } from "@opencode-ai/console-resource"
+import { z } from "zod";
+import { eq, and } from "drizzle-orm";
+import { Database } from "./drizzle";
+import { ModelTable } from "./schema/model.sql";
+import { Identifier } from "./identifier";
+import { fn } from "./util/fn";
+import { Actor } from "./actor";
+import { Resource } from "@opencode-ai/console-resource";
 
 export namespace ZenData {
-  const FormatSchema = z.enum(["anthropic", "google", "openai", "oa-compat"])
-  export type Format = z.infer<typeof FormatSchema>
+  const FormatSchema = z.enum(["anthropic", "google", "openai", "oa-compat"]);
+  export type Format = z.infer<typeof FormatSchema>;
 
   const ModelCostSchema = z.object({
     input: z.number(),
@@ -17,7 +17,7 @@ export namespace ZenData {
     cacheRead: z.number().optional(),
     cacheWrite5m: z.number().optional(),
     cacheWrite1h: z.number().optional(),
-  })
+  });
 
   const ModelSchema = z.object({
     name: z.string(),
@@ -45,7 +45,7 @@ export namespace ZenData {
         payloadModifier: z.record(z.string(), z.any()).optional(),
       }),
     ),
-  })
+  });
 
   const ProviderSchema = z.object({
     displayName: z.string().optional(),
@@ -56,7 +56,7 @@ export namespace ZenData {
     payloadModifier: z.record(z.string(), z.any()).optional(),
     adjustCacheUsage: z.boolean().optional(),
     budget: z.number().optional(),
-  })
+  });
 
   const ModelsSchema = z.object({
     zenModels: z.record(
@@ -68,11 +68,11 @@ export namespace ZenData {
       z.union([ModelSchema, z.array(ModelSchema.extend({ formatFilter: FormatSchema }))]),
     ),
     providers: z.record(z.string(), ProviderSchema),
-  })
+  });
 
   export const validate = fn(ModelsSchema, (input) => {
-    return input
-  })
+    return input;
+  });
 
   export const list = fn(z.enum(["lite", "full"]), (modelList) => {
     const json = JSON.parse(
@@ -106,8 +106,8 @@ export namespace ZenData {
         Resource.ZEN_MODELS28.value +
         Resource.ZEN_MODELS29.value +
         Resource.ZEN_MODELS30.value,
-    )
-    const { zenModels, liteModels, providers } = ModelsSchema.parse(json)
+    );
+    const { zenModels, liteModels, providers } = ModelsSchema.parse(json);
     const compositeProviders = Object.fromEntries(
       Object.entries(providers).map(([id, provider]) => [
         id,
@@ -118,7 +118,7 @@ export namespace ZenData {
               key,
             })),
       ]),
-    )
+    );
     return {
       providers: Object.fromEntries(
         Object.entries(providers).flatMap(([providerId, provider]) =>
@@ -131,21 +131,22 @@ export namespace ZenData {
             ...p,
             priority: p.priority ?? Infinity,
             weight: p.weight ?? 1,
-          }))
-          const composite = providers.find((p) => compositeProviders[p.id].length > 1)
+          }));
+          const composite = providers.find((p) => compositeProviders[p.id].length > 1);
           if (!composite)
             return {
               trialProvider: model.trialProvider ? [model.trialProvider] : undefined,
               providers,
-            }
+            };
 
-          const weightMulti = compositeProviders[composite.id].length
+          const weightMulti = compositeProviders[composite.id].length;
 
           return {
             trialProvider: (() => {
-              if (!model.trialProvider) return undefined
-              if (model.trialProvider === composite.id) return compositeProviders[composite.id].map((p) => p.id)
-              return [model.trialProvider]
+              if (!model.trialProvider) return undefined;
+              if (model.trialProvider === composite.id)
+                return compositeProviders[composite.id].map((p) => p.id);
+              return [model.trialProvider];
             })(),
             providers: providers.flatMap((p) =>
               p.id === composite.id
@@ -160,32 +161,34 @@ export namespace ZenData {
                     },
                   ],
             ),
-          }
-        }
+          };
+        };
 
         return Object.fromEntries(
           Object.entries(modelList === "lite" ? liteModels : zenModels).map(([modelId, model]) => {
             const n = Array.isArray(model)
               ? model.map((m) => ({ ...m, ...normalize(m) }))
-              : { ...model, ...normalize(model) }
-            return [modelId, n]
+              : { ...model, ...normalize(model) };
+            return [modelId, n];
           }),
-        )
+        );
       })(),
-    }
-  })
+    };
+  });
 }
 
 export namespace Model {
   export const enable = fn(z.object({ model: z.string() }), ({ model }) => {
-    Actor.assertAdmin()
+    Actor.assertAdmin();
     return Database.use((db) =>
-      db.delete(ModelTable).where(and(eq(ModelTable.workspaceID, Actor.workspace()), eq(ModelTable.model, model))),
-    )
-  })
+      db
+        .delete(ModelTable)
+        .where(and(eq(ModelTable.workspaceID, Actor.workspace()), eq(ModelTable.model, model))),
+    );
+  });
 
   export const disable = fn(z.object({ model: z.string() }), ({ model }) => {
-    Actor.assertAdmin()
+    Actor.assertAdmin();
     return Database.use((db) =>
       db
         .insert(ModelTable)
@@ -199,8 +202,8 @@ export namespace Model {
             timeDeleted: null,
           },
         }),
-    )
-  })
+    );
+  });
 
   export const listDisabled = fn(z.void(), () => {
     return Database.use((db) =>
@@ -209,8 +212,8 @@ export namespace Model {
         .from(ModelTable)
         .where(eq(ModelTable.workspaceID, Actor.workspace()))
         .then((rows) => rows.map((row) => row.model)),
-    )
-  })
+    );
+  });
 
   export const isDisabled = fn(
     z.object({
@@ -222,10 +225,10 @@ export namespace Model {
           .select()
           .from(ModelTable)
           .where(and(eq(ModelTable.workspaceID, Actor.workspace()), eq(ModelTable.model, model)))
-          .limit(1)
+          .limit(1);
 
-        return result.length > 0
-      })
+        return result.length > 0;
+      });
     },
-  )
+  );
 }

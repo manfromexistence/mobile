@@ -57,10 +57,7 @@ export function getLockfileLintConfig() {
  * @returns {string[]}
  */
 export function buildLockfileLintArgs(cfg) {
-  const args = [
-    "--path", cfg.lockfilePath,
-    "--type", cfg.type,
-  ];
+  const args = ["--path", cfg.lockfilePath, "--type", cfg.type];
   if (cfg.validateHttps) args.push("--validate-https");
   if (cfg.validateIntegrity) args.push("--validate-integrity");
   if (cfg.allowedHosts.length) {
@@ -75,7 +72,7 @@ function main() {
   if (!fs.existsSync(cfg.lockfilePath)) {
     console.error(
       `[check-lockfile] FAIL — lockfile not found: ${cfg.lockfilePath}\n` +
-        "  → Run `npm install` to generate package-lock.json"
+        "  → Run `npm install` to generate package-lock.json",
     );
     process.exit(1);
   }
@@ -84,7 +81,7 @@ function main() {
   if (!fs.existsSync(bin)) {
     console.error(
       `[check-lockfile] FAIL — lockfile-lint binary not found at:\n  ${bin}\n` +
-        "  → Run `npm install` to install dev dependencies"
+        "  → Run `npm install` to install dev dependencies",
     );
     process.exit(1);
   }
@@ -107,7 +104,7 @@ function main() {
         "  • A package is missing its integrity hash (tampered or legacy entry)\n" +
         "  • A package was resolved from a host other than registry.npmjs.org\n" +
         "    If a scoped/private registry is intentionally used, add its hostname\n" +
-        "    to getLockfileLintConfig().allowedHosts in scripts/check/check-lockfile.mjs"
+        "    to getLockfileLintConfig().allowedHosts in scripts/check/check-lockfile.mjs",
     );
     process.exit(1);
   }

@@ -71,7 +71,7 @@ async function fetchModelIds(apiBase, apiKey) {
     });
     if (!res.ok) return [];
     const body = await res.json();
-    const list = Array.isArray(body) ? body : body.data ?? body.models ?? [];
+    const list = Array.isArray(body) ? body : (body.data ?? body.models ?? []);
     return list.map((m) => (typeof m === "string" ? m : m?.id)).filter(Boolean);
   } catch {
     return [];
@@ -84,7 +84,12 @@ export async function runSetupCursorCommand(opts = {}) {
   printInfo(`Server: ${apiBase}`);
 
   let models = [];
-  const only = opts.only ? opts.only.split(",").map((s) => s.trim()).filter(Boolean) : null;
+  const only = opts.only
+    ? opts.only
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean)
+    : null;
   const ids = await fetchModelIds(apiBase, apiKey);
   models = only ? ids.filter((id) => only.some((f) => id.includes(f))) : ids;
 
@@ -96,7 +101,9 @@ export async function runSetupCursorCommand(opts = {}) {
 export function registerSetupCursor(program) {
   program
     .command("setup-cursor")
-    .description("Print the steps to point Cursor at OmniRoute (chat panel; Cursor config is not file-writable)")
+    .description(
+      "Print the steps to point Cursor at OmniRoute (chat panel; Cursor config is not file-writable)",
+    )
     .option("--port <port>", "Local OmniRoute port (ignored when --remote is set)", "20128")
     .option("--remote <url>", "Remote OmniRoute URL, e.g. http://192.168.0.15:20128")
     .option("--api-key <key>", "OmniRoute API key (defaults to OMNIROUTE_API_KEY env var)")

@@ -15,7 +15,8 @@ export const dict = {
   "ui.sessionReview.image.loading": "Загрузка...",
   "ui.sessionReview.image.placeholder": "Изображение",
   "ui.sessionReview.largeDiff.title": "Diff слишком большой для отображения",
-  "ui.sessionReview.largeDiff.meta": "Лимит: {{limit}} изменённых строк. Текущий: {{current}} изменённых строк.",
+  "ui.sessionReview.largeDiff.meta":
+    "Лимит: {{limit}} изменённых строк. Текущий: {{current}} изменённых строк.",
   "ui.sessionReview.largeDiff.renderAnyway": "Отобразить всё равно",
   "ui.fileMedia.kind.image": "изображение",
   "ui.fileMedia.kind.audio": "аудио",
@@ -24,8 +25,10 @@ export const dict = {
   "ui.fileMedia.state.error": "Не удалось загрузить {{kind}}",
   "ui.fileMedia.state.unavailable": "{{kind}} недоступно",
   "ui.fileMedia.binary.title": "Бинарный файл",
-  "ui.fileMedia.binary.description.path": "Невозможно отобразить {{path}}, так как это бинарный файл.",
-  "ui.fileMedia.binary.description.default": "Невозможно отобразить этот файл, так как он бинарный.",
+  "ui.fileMedia.binary.description.path":
+    "Невозможно отобразить {{path}}, так как это бинарный файл.",
+  "ui.fileMedia.binary.description.default":
+    "Невозможно отобразить этот файл, так как он бинарный.",
   "ui.lineComment.label.prefix": "Комментарий к ",
   "ui.lineComment.label.suffix": "",
   "ui.lineComment.editorLabel.prefix": "Комментирование: ",
@@ -164,4 +167,4 @@ export const dict = {
   "ui.toolErrorCard.copyError": "Скопировать ошибку",
   "ui.message.duration.seconds": "{{count}}с",
   "ui.message.duration.minutesSeconds": "{{minutes}}м {{seconds}}с",
-}
+};

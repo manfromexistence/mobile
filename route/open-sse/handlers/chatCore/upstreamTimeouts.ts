@@ -13,7 +13,7 @@ export function createBodyTimeoutError(timeoutMs: number): Error {
 
 export function readStreamChunkWithTimeout(
   reader: ReadableStreamDefaultReader<Uint8Array>,
-  timeoutMs: number
+  timeoutMs: number,
 ): Promise<{ done: boolean; value?: Uint8Array }> {
   if (timeoutMs <= 0) return reader.read();
 
@@ -27,7 +27,7 @@ export function readStreamChunkWithTimeout(
       (error) => {
         clearTimeout(timeout);
         reject(error);
-      }
+      },
     );
   });
 }
@@ -35,10 +35,10 @@ export function readStreamChunkWithTimeout(
 export function createUpstreamStartTimeoutError(
   timeoutMs: number,
   provider: string,
-  model: string
+  model: string,
 ): Error {
   const err = new Error(
-    `Upstream request did not return response headers after ${timeoutMs}ms (${provider}/${model})`
+    `Upstream request did not return response headers after ${timeoutMs}ms (${provider}/${model})`,
   );
   err.name = "TimeoutError";
   return err;
@@ -83,7 +83,7 @@ export function normalizeExecutorResult(
         url?: string;
         headers?: Record<string, string>;
         transformedBody?: unknown;
-      }
+      },
 ): { response: Response; url: string; headers: Record<string, string>; transformedBody: unknown } {
   if (result instanceof Response) {
     return { response: result, url: "", headers: {}, transformedBody: null };

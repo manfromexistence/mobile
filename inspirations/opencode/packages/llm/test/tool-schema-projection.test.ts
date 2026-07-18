@@ -1,10 +1,10 @@
-import { describe, expect, test } from "bun:test"
-import { Effect } from "effect"
-import { LLM } from "../src"
-import { OpenAIChat } from "../src/protocols"
-import { ToolSchemaProjection } from "../src/protocols/utils/tool-schema"
-import { Auth, LLMClient } from "../src/route"
-import { it } from "./lib/effect"
+import { describe, expect, test } from "bun:test";
+import { Effect } from "effect";
+import { LLM } from "../src";
+import { OpenAIChat } from "../src/protocols";
+import { ToolSchemaProjection } from "../src/protocols/utils/tool-schema";
+import { Auth, LLMClient } from "../src/route";
+import { it } from "./lib/effect";
 
 describe("tool schema projections", () => {
   test("moonshot strips $ref siblings and converts tuple arrays to a schema object", () => {
@@ -24,8 +24,8 @@ describe("tool schema projections", () => {
         tuple: { type: "array", items: { anyOf: [{ type: "string" }, { type: "number" }] } },
         prefixTuple: { type: "array", items: { anyOf: [{ type: "boolean" }, { type: "string" }] } },
       },
-    })
-  })
+    });
+  });
 
   test("gemini handles numeric enums, dangling required fields, untyped arrays, and scalar object keys", () => {
     expect(
@@ -35,7 +35,11 @@ describe("tool schema projections", () => {
         properties: {
           status: { type: "integer", enum: [1, 2] },
           tags: { type: "array" },
-          name: { type: "string", properties: { ignored: { type: "string" } }, required: ["ignored"] },
+          name: {
+            type: "string",
+            properties: { ignored: { type: "string" } },
+            required: ["ignored"],
+          },
         },
       }),
     ).toEqual({
@@ -46,8 +50,8 @@ describe("tool schema projections", () => {
         tags: { type: "array", items: { type: "string" } },
         name: { type: "string" },
       },
-    })
-  })
+    });
+  });
 
   test("openai keeps one flat object top-level schema", () => {
     expect(
@@ -71,14 +75,14 @@ describe("tool schema projections", () => {
         resource: { type: "string" },
       },
       additionalProperties: false,
-    })
-  })
+    });
+  });
 
   it.effect("applies model compatibility before protocol projection", () =>
     Effect.gen(function* () {
       const model = OpenAIChat.route
         .with({ endpoint: { baseURL: "https://api.openai.test/v1/" }, auth: Auth.bearer("test") })
-        .model({ id: "kimi-k2", compatibility: { toolSchema: "moonshot" } })
+        .model({ id: "kimi-k2", compatibility: { toolSchema: "moonshot" } });
       const prepared = yield* LLMClient.prepare<OpenAIChat.OpenAIChatBody>(
         LLM.request({
           model,
@@ -102,7 +106,7 @@ describe("tool schema projections", () => {
             },
           ],
         }),
-      )
+      );
 
       expect(prepared.body.tools?.[0]?.function.parameters).toEqual({
         type: "object",
@@ -111,7 +115,7 @@ describe("tool schema projections", () => {
           linked: { $ref: "#/$defs/Linked" },
         },
         additionalProperties: false,
-      })
+      });
     }),
-  )
-})
+  );
+});

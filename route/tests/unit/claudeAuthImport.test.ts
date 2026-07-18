@@ -51,7 +51,7 @@ interface CreateConnectionOptions {
 }
 
 function parseClaudeAuth(
-  raw: unknown
+  raw: unknown,
 ): ParsedClaudeAuth | { error: string; code: string; status: number } {
   const doc = toRecord(raw);
   const oauthBlock = toRecord(doc.claudeAiOauth);
@@ -103,7 +103,7 @@ function parseClaudeAuth(
 function checkCreateConnectionPreconditions(
   enriched: EnrichedClaudeAuth,
   options: CreateConnectionOptions,
-  existingByAccountUUID: JsonRecord | null
+  existingByAccountUUID: JsonRecord | null,
 ): { error: string; code: string; status: number } | null {
   if (enriched.accountUUID && existingByAccountUUID && !options.overwriteExisting) {
     return {

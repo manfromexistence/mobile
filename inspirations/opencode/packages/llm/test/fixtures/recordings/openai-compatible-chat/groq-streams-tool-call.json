@@ -3,7 +3,12 @@
   "metadata": {
     "name": "openai-compatible-chat/groq-streams-tool-call",
     "recordedAt": "2026-05-06T01:35:05.706Z",
-    "tags": ["prefix:openai-compatible-chat", "protocol:openai-compatible-chat", "provider:groq", "tool"]
+    "tags": [
+      "prefix:openai-compatible-chat",
+      "protocol:openai-compatible-chat",
+      "provider:groq",
+      "tool"
+    ]
   },
   "interactions": [
     {

@@ -53,12 +53,7 @@ export function iterateOverFile({
   // CIRCUMSTANCE CHEESE N RICE
   const lastLineIndex = (() => {
     const lastLine = lines.at(-1);
-    if (
-      lastLine === '' ||
-      lastLine === '\n' ||
-      lastLine === '\r\n' ||
-      lastLine === '\r'
-    ) {
+    if (lastLine === "" || lastLine === "\n" || lastLine === "\r\n" || lastLine === "\r") {
       return Math.max(0, lines.length - 2);
     }
     return lines.length - 1;

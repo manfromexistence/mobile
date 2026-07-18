@@ -29,7 +29,7 @@ describe("comboAgentMiddleware — <omniModel> tag stripping (non-global regex b
     assert.equal(remaining, 0, "Provider must never see any <omniModel> tag (#454)");
     assert.ok(
       !String(stripped[0].content).includes("<omniModel>"),
-      "Stripped content should contain no tag fragments"
+      "Stripped content should contain no tag fragments",
     );
   });
 
@@ -49,11 +49,11 @@ describe("comboAgentMiddleware — <omniModel> tag stripping (non-global regex b
     assert.equal(tagCount, 1, "Exactly one (the freshly pinned) tag should remain");
     assert.ok(
       String(result[1].content).includes("<omniModel>new/model</omniModel>"),
-      "The remaining tag must be the new pin"
+      "The remaining tag must be the new pin",
     );
     assert.ok(
       !String(result[1].content).includes("old/model"),
-      "All previous pins must be cleaned"
+      "All previous pins must be cleaned",
     );
   });
 });
@@ -92,8 +92,9 @@ describe("comboAgentMiddleware — ReDoS safety + newline-wrapped tags (#3870)",
 
   test("stripModelTags removes the newline run wrapping a tag (no blank line left)", () => {
     const out = String(
-      stripModelTags([{ role: "user", content: "before\n\n<omniModel>a/b</omniModel>\n\nafter" }])[0]
-        .content
+      stripModelTags([
+        { role: "user", content: "before\n\n<omniModel>a/b</omniModel>\n\nafter" },
+      ])[0].content,
     );
     assert.ok(!out.includes("<omniModel>"), "tag removed");
     assert.ok(!out.includes("\n\n\n"), "no triple newline left from stripping");

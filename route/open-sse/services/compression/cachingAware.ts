@@ -81,7 +81,7 @@ function hasCacheControl(value: unknown): boolean {
  */
 export function detectCachingContext(
   body: unknown,
-  context: CachingDetectionContext = {}
+  context: CachingDetectionContext = {},
 ): CachingContext {
   const bodyRecord = isRecord(body) ? body : {};
   const provider =

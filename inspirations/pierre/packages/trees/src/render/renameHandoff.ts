@@ -4,11 +4,7 @@
 // things alone because the input already owns focus. Isolating that decision
 // here lets the effect become a `switch` and keeps the transitions testable
 // without rendering a tree.
-export type FileTreeRenameHandoffAction =
-  | 'reset'
-  | 'reveal-canonical'
-  | 'focus-input'
-  | 'ignore';
+export type FileTreeRenameHandoffAction = "reset" | "reveal-canonical" | "focus-input" | "ignore";
 
 export type FileTreeRenameHandoffInput = {
   renamingPath: string | null;
@@ -17,21 +13,21 @@ export type FileTreeRenameHandoffInput = {
 };
 
 export function classifyFileTreeRenameHandoff(
-  input: FileTreeRenameHandoffInput
+  input: FileTreeRenameHandoffInput,
 ): FileTreeRenameHandoffAction {
   const { renamingPath, previousRenamingPath, hasRenderedInput } = input;
 
   if (renamingPath == null) {
-    return 'reset';
+    return "reset";
   }
 
   if (!hasRenderedInput) {
-    return 'reveal-canonical';
+    return "reveal-canonical";
   }
 
   if (previousRenamingPath === renamingPath) {
-    return 'ignore';
+    return "ignore";
   }
 
-  return 'focus-input';
+  return "focus-input";
 }

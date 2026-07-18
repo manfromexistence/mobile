@@ -1,4 +1,4 @@
-import type { Hunk } from '../types';
+import type { Hunk } from "../types";
 
 export function getTotalLineCountFromHunks(hunks: Hunk[]): number {
   const lastHunk = hunks.at(-1);
@@ -7,6 +7,6 @@ export function getTotalLineCountFromHunks(hunks: Hunk[]): number {
   }
   return Math.max(
     lastHunk.additionStart + lastHunk.additionCount,
-    lastHunk.deletionStart + lastHunk.deletionCount
+    lastHunk.deletionStart + lastHunk.deletionCount,
   );
 }

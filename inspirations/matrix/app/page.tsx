@@ -10,8 +10,8 @@ export default async function HomePage() {
       description: loader.description,
       componentName: loader.componentName,
       motionOptional: loader.motionOptional,
-      sourceCode: await getLoaderSource(loader.fileName)
-    }))
+      sourceCode: await getLoaderSource(loader.fileName),
+    })),
   );
 
   return <LoaderGallery items={items} />;

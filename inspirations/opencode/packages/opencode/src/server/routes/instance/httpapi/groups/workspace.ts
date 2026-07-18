@@ -1,23 +1,34 @@
-import { Workspace } from "@/control-plane/workspace"
-import { WorkspaceAdapterEntry } from "@/control-plane/types"
-import { Schema, Struct } from "effect"
-import { HttpApi, HttpApiEndpoint, HttpApiError, HttpApiGroup, HttpApiSchema, OpenApi } from "effect/unstable/httpapi"
-import { ApiVcsApplyError } from "./instance"
-import { ApiNotFoundError } from "../errors"
-import { Authorization } from "../middleware/authorization"
-import { InstanceContextMiddleware } from "../middleware/instance-context"
-import { WorkspaceRoutingMiddleware, WorkspaceRoutingQuery } from "../middleware/workspace-routing"
-import { described } from "./metadata"
+import { Workspace } from "@/control-plane/workspace";
+import { WorkspaceAdapterEntry } from "@/control-plane/types";
+import { Schema, Struct } from "effect";
+import {
+  HttpApi,
+  HttpApiEndpoint,
+  HttpApiError,
+  HttpApiGroup,
+  HttpApiSchema,
+  OpenApi,
+} from "effect/unstable/httpapi";
+import { ApiVcsApplyError } from "./instance";
+import { ApiNotFoundError } from "../errors";
+import { Authorization } from "../middleware/authorization";
+import { InstanceContextMiddleware } from "../middleware/instance-context";
+import { WorkspaceRoutingMiddleware, WorkspaceRoutingQuery } from "../middleware/workspace-routing";
+import { described } from "./metadata";
 
-const root = "/experimental/workspace"
-export const CreatePayload = Schema.Struct(Struct.omit(Workspace.CreateInput.fields, ["projectID"]))
+const root = "/experimental/workspace";
+export const CreatePayload = Schema.Struct(
+  Struct.omit(Workspace.CreateInput.fields, ["projectID"]),
+);
 export const WarpPayload = Schema.Struct({
   id: Schema.NullOr(Workspace.Info.fields.id),
   sessionID: Workspace.SessionWarpInput.fields.sessionID,
   copyChanges: Workspace.SessionWarpInput.fields.copyChanges,
-})
+});
 
-export class ApiWorkspaceWarpError extends Schema.ErrorClass<ApiWorkspaceWarpError>("WorkspaceWarpError")(
+export class ApiWorkspaceWarpError extends Schema.ErrorClass<ApiWorkspaceWarpError>(
+  "WorkspaceWarpError",
+)(
   {
     name: Schema.Literal("WorkspaceWarpError"),
     data: Schema.Struct({
@@ -27,7 +38,9 @@ export class ApiWorkspaceWarpError extends Schema.ErrorClass<ApiWorkspaceWarpErr
   { httpApiStatus: 400 },
 ) {}
 
-export class ApiWorkspaceCreateError extends Schema.ErrorClass<ApiWorkspaceCreateError>("WorkspaceCreateError")(
+export class ApiWorkspaceCreateError extends Schema.ErrorClass<ApiWorkspaceCreateError>(
+  "WorkspaceCreateError",
+)(
   {
     name: Schema.Literal("WorkspaceCreateError"),
     data: Schema.Struct({
@@ -44,7 +57,7 @@ export const WorkspacePaths = {
   status: `${root}/status`,
   remove: `${root}/:id`,
   warp: `${root}/warp`,
-} as const
+} as const;
 
 export const WorkspaceApi = HttpApi.make("workspace")
   .add(
@@ -123,11 +136,17 @@ export const WorkspaceApi = HttpApi.make("workspace")
           OpenApi.annotations({
             identifier: "experimental.workspace.warp",
             summary: "Warp session into workspace",
-            description: "Move a session's sync history into the target workspace, or detach it to the local project.",
+            description:
+              "Move a session's sync history into the target workspace, or detach it to the local project.",
           }),
         ),
       )
-      .annotateMerge(OpenApi.annotations({ title: "workspace", description: "Experimental HttpApi workspace routes." }))
+      .annotateMerge(
+        OpenApi.annotations({
+          title: "workspace",
+          description: "Experimental HttpApi workspace routes.",
+        }),
+      )
       .middleware(InstanceContextMiddleware)
       .middleware(WorkspaceRoutingMiddleware)
       .middleware(Authorization),
@@ -138,4 +157,4 @@ export const WorkspaceApi = HttpApi.make("workspace")
       version: "0.0.1",
       description: "Experimental HttpApi surface for selected instance routes.",
     }),
-  )
+  );

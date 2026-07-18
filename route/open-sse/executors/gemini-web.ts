@@ -29,7 +29,7 @@ const GEMINI_URL = "https://gemini.google.com/app";
 export function isMissingBrowserExecutable(message: string): boolean {
   if (!message) return false;
   return /executable doesn't exist|executablenotfound|playwright install|chromium.*download/i.test(
-    message
+    message,
   );
 }
 const GEMINI_USER_AGENT =
@@ -91,7 +91,7 @@ function parseCookies(raw: string): Array<{ name: string; value: string }> {
       const lowerName = name.toLowerCase();
       if (
         ["path", "domain", "expires", "max-age", "secure", "httponly", "samesite"].includes(
-          lowerName
+          lowerName,
         )
       ) {
         return null;
@@ -152,7 +152,7 @@ function readCredentialString(value: unknown): string {
 
 function readProviderSpecificString(
   providerSpecificData: unknown,
-  keys: readonly string[]
+  keys: readonly string[],
 ): string {
   if (
     !providerSpecificData ||
@@ -259,7 +259,7 @@ export class GeminiWebExecutor extends BaseExecutor {
           domain: ".google.com",
           path: "/",
           secure: true,
-        }))
+        })),
       );
 
       const page = await context.newPage();
@@ -325,19 +325,19 @@ export class GeminiWebExecutor extends BaseExecutor {
             start(controller) {
               controller.enqueue(
                 encoder.encode(
-                  `data: ${JSON.stringify(formatStreamChunk(responseText, modelId))}\n\n`
-                )
+                  `data: ${JSON.stringify(formatStreamChunk(responseText, modelId))}\n\n`,
+                ),
               );
               controller.enqueue(
                 encoder.encode(
-                  `data: ${JSON.stringify(formatStreamChunk("", modelId, "stop"))}\n\n`
-                )
+                  `data: ${JSON.stringify(formatStreamChunk("", modelId, "stop"))}\n\n`,
+                ),
               );
               controller.enqueue(encoder.encode("data: [DONE]\n\n"));
               controller.close();
             },
           },
-          { highWaterMark: 16384 }
+          { highWaterMark: 16384 },
         );
         return {
           response: new Response(readable, {
@@ -383,7 +383,7 @@ export class GeminiWebExecutor extends BaseExecutor {
                 "Content-Type": "application/json",
                 "X-Omni-Fallback-Hint": "connection_cooldown",
               },
-            }
+            },
           ),
           url: GEMINI_URL,
           headers: {},
@@ -395,7 +395,7 @@ export class GeminiWebExecutor extends BaseExecutor {
           JSON.stringify({
             error: sanitizeErrorMessage(rawMessage),
           }),
-          { status: 500, headers: { "Content-Type": "application/json" } }
+          { status: 500, headers: { "Content-Type": "application/json" } },
         ),
         url: GEMINI_URL,
         headers: {},

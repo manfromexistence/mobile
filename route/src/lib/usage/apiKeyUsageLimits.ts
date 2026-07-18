@@ -148,8 +148,8 @@ export function getFortalezaDayStartIso(nowMs = Date.now()): string {
       3,
       0,
       0,
-      0
-    )
+      0,
+    ),
   ).toISOString();
 }
 
@@ -227,7 +227,7 @@ function isWeeklyQuotaResetSnapshot(row: QuotaSnapshotRow, targetResetAtIso: str
 function getObservedWeeklyWindowStartIso(
   connectionId: string,
   targetResetAtIso: string,
-  nowMs: number
+  nowMs: number,
 ): string | null {
   if (!connectionId || !targetResetAtIso) return null;
 
@@ -245,7 +245,7 @@ function getObservedWeeklyWindowStartIso(
           AND LOWER(window_key) NOT LIKE '%sonnet%'
           AND created_at <= @nowIso
         ORDER BY created_at ASC, id ASC
-      `
+      `,
       )
       .all({ connectionId, nowIso: new Date(nowMs).toISOString() }) as QuotaSnapshotRow[];
 
@@ -282,7 +282,7 @@ function getObservedWeeklyWindowStartIso(
 function getWeeklyWindowStartIso(
   connectionId: string,
   targetResetAtIso: string,
-  nowMs: number
+  nowMs: number,
 ): string | null {
   return (
     getProviderQuotaWindowStartIso(connectionId, targetResetAtIso, nowMs) ??
@@ -314,7 +314,7 @@ async function resolveDeps(deps: ApiKeyUsageLimitDeps): Promise<Required<ApiKeyU
 async function getProviderWeeklyWindow(
   metadata: ApiKeyUsageLimitMetadata,
   deps: Required<ApiKeyUsageLimitDeps>,
-  nowMs: number
+  nowMs: number,
 ): Promise<{ resetAtIso: string | null; windowStartIso: string | null }> {
   const allowedConnections = Array.isArray(metadata.allowedConnections)
     ? metadata.allowedConnections.filter((id) => typeof id === "string" && id.trim())
@@ -327,7 +327,7 @@ async function getProviderWeeklyWindow(
       if (!connection) continue;
       const resetAt = findWeeklyQuotaResetAt(
         deps.getProviderLimitsCache(connection.id)?.quotas,
-        nowMs
+        nowMs,
       );
       if (resetAt) {
         resetCandidates.push({
@@ -359,7 +359,7 @@ async function getProviderWeeklyWindow(
   const preferredProvider = normalizeProvider(metadata.preferredProvider);
   const scopedCandidates = preferredProvider
     ? resetCandidates.filter(
-        (candidate) => normalizeProvider(candidate.provider) === preferredProvider
+        (candidate) => normalizeProvider(candidate.provider) === preferredProvider,
       )
     : [];
   const candidates = scopedCandidates.length > 0 ? scopedCandidates : resetCandidates;
@@ -393,7 +393,7 @@ async function getApiKeyUsdSpendSince(apiKeyId: string, sinceIso: string): Promi
         AND timestamp >= @sinceIso
         AND success = 1
       GROUP BY LOWER(provider), LOWER(model), serviceTier
-    `
+    `,
     )
     .all({ apiKeyId, sinceIso }) as UsageCostRow[];
 
@@ -417,7 +417,7 @@ async function getApiKeyUsdSpendSince(apiKeyId: string, sinceIso: string): Promi
         provider,
         model,
         serviceTier: row.serviceTier || "standard",
-      }
+      },
     );
   }
 
@@ -426,7 +426,7 @@ async function getApiKeyUsdSpendSince(apiKeyId: string, sinceIso: string): Promi
 
 export async function getApiKeyUsageLimitStatus(
   metadata: ApiKeyUsageLimitMetadata,
-  deps: ApiKeyUsageLimitDeps = {}
+  deps: ApiKeyUsageLimitDeps = {},
 ): Promise<ApiKeyUsageLimitStatus> {
   const resolvedDeps = await resolveDeps(deps);
   const now = resolvedDeps.now();
@@ -465,7 +465,7 @@ export async function getApiKeyUsageLimitStatus(
 
 export function buildApiKeyUsageLimitText(
   status: ApiKeyUsageLimitStatus,
-  now = Date.now()
+  now = Date.now(),
 ): string {
   return [
     "Daily quota",
@@ -488,7 +488,7 @@ export function buildApiKeyUsageLimitText(
 
 export function buildApiKeyUsageLimitPercentText(
   status: ApiKeyUsageLimitStatus,
-  now = Date.now()
+  now = Date.now(),
 ): string {
   return [
     "Daily",
@@ -504,7 +504,7 @@ export function buildApiKeyUsageLimitPercentText(
 function buildUsageLimitExceededMessage(
   status: ApiKeyUsageLimitStatus,
   now = Date.now(),
-  options: { showUsd?: boolean } = {}
+  options: { showUsd?: boolean } = {},
 ): string {
   const showUsd = options.showUsd !== false;
   if (status.dailyExceeded && status.dailyLimitUsd !== null) {
@@ -516,7 +516,7 @@ function buildUsageLimitExceededMessage(
   }
   if (status.weeklyExceeded && status.weeklyLimitUsd !== null) {
     const percent = formatUsagePercent(
-      getUsagePercent(status.weeklySpentUsd, status.weeklyLimitUsd)
+      getUsagePercent(status.weeklySpentUsd, status.weeklyLimitUsd),
     );
     if (!showUsd) {
       return `This API key reached its weekly usage quota (${percent}). Resets in ${formatResetIn(status.weeklyResetAtIso, now)}. Choose another allowed model after reset.`;
@@ -541,7 +541,7 @@ export function buildApiKeyUsageLimitRejection(
   request: Request,
   status: ApiKeyUsageLimitStatus,
   now = Date.now(),
-  options: { showUsd?: boolean } = {}
+  options: { showUsd?: boolean } = {},
 ): Response {
   const message = sanitizeErrorMessage(buildUsageLimitExceededMessage(status, now, options));
   if (isAnthropicMessagesRequest(request)) {
@@ -556,7 +556,7 @@ export function buildApiKeyUsageLimitRejection(
       {
         status: 400,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   }
 
@@ -568,7 +568,7 @@ export function buildApiKeyUsageLimitRejection(
 
 export async function buildApiKeyUsageLimitPolicyRejection(
   request: Request,
-  metadata: ApiKeyUsageLimitMetadata
+  metadata: ApiKeyUsageLimitMetadata,
 ): Promise<Response | null> {
   const status = await getApiKeyUsageLimitStatus(metadata);
   if (!status.enabled || (!status.dailyExceeded && !status.weeklyExceeded)) return null;

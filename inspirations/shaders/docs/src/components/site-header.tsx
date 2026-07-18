@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { GithubIcon } from '@/icons';
-import { getPreviousPathname } from './save-previous-pathname';
-import { useRouter } from 'next/navigation';
-import { Logo } from './logo';
+import Link from "next/link";
+import { GithubIcon } from "@/icons";
+import { getPreviousPathname } from "./save-previous-pathname";
+import { useRouter } from "next/navigation";
+import { Logo } from "./logo";
 
 export const SiteHeader = () => {
   const router = useRouter();
@@ -23,7 +23,7 @@ export const SiteHeader = () => {
           const prev = getPreviousPathname();
 
           // Go back if the previous page was the homepage so that the browser can restore the scroll position
-          if (prev === '/') {
+          if (prev === "/") {
             event.preventDefault();
             router.back();
           }
@@ -44,7 +44,7 @@ export const SiteHeader = () => {
   );
 };
 
-function ShadersWordmark(props: React.ComponentProps<'svg'>) {
+function ShadersWordmark(props: React.ComponentProps<"svg">) {
   return (
     <svg width="105" height="40" viewBox="0 0 105 40" fill="currentcolor">
       <path d="M98.7395 31.2321C97.6955 31.2321 96.7579 31.0581 95.9265 30.7101C95.1145 30.3428 94.4475 29.8401 93.9255 29.2021C93.4035 28.5448 93.0459 27.7811 92.8525 26.9111L94.6795 26.3601C94.8922 27.3654 95.3369 28.1388 96.0135 28.6801C96.7095 29.2214 97.6182 29.4921 98.7395 29.4921C99.7642 29.4921 100.586 29.2698 101.205 28.8251C101.823 28.3611 102.133 27.7134 102.133 26.8821C102.133 26.3214 101.959 25.8671 101.611 25.5191C101.282 25.1711 100.866 24.9004 100.364 24.7071C99.8609 24.5138 99.1842 24.3011 98.3335 24.0691C97.3089 23.8178 96.4775 23.5664 95.8395 23.3151C95.2209 23.0444 94.6892 22.6481 94.2445 22.1261C93.7999 21.6041 93.5775 20.8984 93.5775 20.0091C93.5775 19.2744 93.7805 18.6171 94.1865 18.0371C94.5925 17.4378 95.1629 16.9738 95.8975 16.6451C96.6322 16.3164 97.4635 16.1521 98.3915 16.1521C99.7835 16.1521 100.963 16.4808 101.93 17.1381C102.916 17.7761 103.573 18.6558 103.902 19.7771L102.075 20.4731C101.843 19.5838 101.408 18.9361 100.77 18.5301C100.151 18.1048 99.3582 17.8921 98.3915 17.8921C97.5602 17.8921 96.8739 18.0758 96.3325 18.4431C95.8105 18.7911 95.5495 19.2841 95.5495 19.9221C95.5495 20.4054 95.7042 20.8018 96.0135 21.1111C96.3229 21.4204 96.6999 21.6621 97.1445 21.8361C97.6085 21.9908 98.2562 22.1648 99.0875 22.3581C100.17 22.6481 101.04 22.9284 101.698 23.1991C102.374 23.4698 102.954 23.8951 103.438 24.4751C103.921 25.0551 104.163 25.8478 104.163 26.8531C104.163 27.7038 103.931 28.4674 103.467 29.1441C103.003 29.8014 102.355 30.3138 101.524 30.6811C100.692 31.0484 99.7642 31.2321 98.7395 31.2321Z" />

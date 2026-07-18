@@ -20,12 +20,12 @@ export type SseSequence = {
 
 export function loadTranslationFixtures(): TranslationCase[] {
   return ["openai-to-claude", "claude-to-openai", "openai-to-gemini", "gemini-to-openai"].flatMap(
-    (f) => JSON.parse(fs.readFileSync(path.join(DIR, `${f}.json`), "utf8")) as TranslationCase[]
+    (f) => JSON.parse(fs.readFileSync(path.join(DIR, `${f}.json`), "utf8")) as TranslationCase[],
   );
 }
 
 export function loadSseSequences(): SseSequence[] {
   return JSON.parse(
-    fs.readFileSync(path.join(DIR, "sse-chunk-sequences.json"), "utf8")
+    fs.readFileSync(path.join(DIR, "sse-chunk-sequences.json"), "utf8"),
   ) as SseSequence[];
 }

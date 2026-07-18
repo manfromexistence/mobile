@@ -227,7 +227,7 @@ export class CircuitBreaker {
     const escalationFactor = Math.pow(2, this.openCycleCount - this.backoffEscalationCount);
     return Math.min(
       this.resetTimeout * escalationFactor,
-      this.resetTimeout * this.maxBackoffMultiplier
+      this.resetTimeout * this.maxBackoffMultiplier,
     );
   }
 
@@ -238,7 +238,7 @@ export class CircuitBreaker {
       throw new CircuitBreakerOpenError(
         `Circuit breaker "${this.name}" is OPEN. Try again later.`,
         this.name,
-        this._timeUntilReset()
+        this._timeUntilReset(),
       );
     }
 
@@ -246,7 +246,7 @@ export class CircuitBreaker {
       throw new CircuitBreakerOpenError(
         `Circuit breaker "${this.name}" is HALF_OPEN, no more probe requests allowed.`,
         this.name,
-        this._timeUntilReset()
+        this._timeUntilReset(),
       );
     }
 
@@ -393,7 +393,7 @@ export class CircuitBreaker {
       } else if (this.failureCount >= this.degradationThreshold) {
         this._transition(
           STATE.DEGRADED,
-          `elevated-failures (${this.failureCount}/${this.failureThreshold})`
+          `elevated-failures (${this.failureCount}/${this.failureThreshold})`,
         );
       }
     }

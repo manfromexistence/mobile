@@ -1,6 +1,6 @@
-import { memo } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '../shader-mount.js';
-import { colorPropsAreEqual } from '../color-props-are-equal.js';
+import { memo } from "react";
+import { ShaderMount, type ShaderComponentProps } from "../shader-mount.js";
+import { colorPropsAreEqual } from "../color-props-are-equal.js";
 import {
   halftoneCmykFragmentShader,
   getShaderColorFromString,
@@ -11,25 +11,25 @@ import {
   defaultObjectSizing,
   type ImageShaderPreset,
   HalftoneCmykTypes,
-} from '@paper-design/shaders';
+} from "@paper-design/shaders";
 
 export interface HalftoneCmykProps extends ShaderComponentProps, HalftoneCmykParams {}
 
 type HalftoneCmykPreset = ImageShaderPreset<HalftoneCmykParams>;
 
 export const defaultPreset: HalftoneCmykPreset = {
-  name: 'Default',
+  name: "Default",
   params: {
     ...defaultObjectSizing,
     scale: 1,
-    fit: 'cover',
+    fit: "cover",
     speed: 0,
     frame: 0,
-    colorBack: '#fbfaf5',
-    colorC: '#00b4ff',
-    colorM: '#fc519f',
-    colorY: '#ffd800',
-    colorK: '#231f20',
+    colorBack: "#fbfaf5",
+    colorC: "#00b4ff",
+    colorM: "#fc519f",
+    colorY: "#ffd800",
+    colorK: "#231f20",
     size: 0.2,
     contrast: 1,
     softness: 1,
@@ -45,23 +45,23 @@ export const defaultPreset: HalftoneCmykPreset = {
     gainM: 0,
     gainY: 0.2,
     gainK: 0,
-    type: 'ink',
+    type: "ink",
   },
 };
 
 export const dropsPreset: HalftoneCmykPreset = {
-  name: 'Drops',
+  name: "Drops",
   params: {
     ...defaultObjectSizing,
     scale: 1,
-    fit: 'cover',
+    fit: "cover",
     speed: 0,
     frame: 0,
-    colorBack: '#eeefd7',
-    colorC: '#00b2ff',
-    colorM: '#fc4f4f',
-    colorY: '#ffd900',
-    colorK: '#231f20',
+    colorBack: "#eeefd7",
+    colorC: "#00b2ff",
+    colorM: "#fc4f4f",
+    colorY: "#ffd900",
+    colorK: "#231f20",
     size: 0.88,
     contrast: 1.15,
     softness: 0,
@@ -77,23 +77,23 @@ export const dropsPreset: HalftoneCmykPreset = {
     gainM: 0.44,
     gainY: -1.0,
     gainK: 0,
-    type: 'ink',
+    type: "ink",
   },
 };
 
 export const newspaper: HalftoneCmykPreset = {
-  name: 'Newspaper',
+  name: "Newspaper",
   params: {
     ...defaultObjectSizing,
     scale: 1,
-    fit: 'cover',
+    fit: "cover",
     speed: 0,
     frame: 0,
-    colorBack: '#f2f1e8',
-    colorC: '#7a7a75',
-    colorM: '#7a7a75',
-    colorY: '#7a7a75',
-    colorK: '#231f20',
+    colorBack: "#f2f1e8",
+    colorC: "#7a7a75",
+    colorM: "#7a7a75",
+    colorY: "#7a7a75",
+    colorK: "#231f20",
     size: 0.01,
     contrast: 2,
     softness: 0.2,
@@ -109,23 +109,23 @@ export const newspaper: HalftoneCmykPreset = {
     gainM: -0.45,
     gainY: -0.45,
     gainK: 0,
-    type: 'dots',
+    type: "dots",
   },
 };
 
 export const vintagePreset: HalftoneCmykPreset = {
-  name: 'Vintage',
+  name: "Vintage",
   params: {
     ...defaultObjectSizing,
     scale: 1,
-    fit: 'cover',
+    fit: "cover",
     speed: 0,
     frame: 0,
-    colorBack: '#fffaf0',
-    colorC: '#59afc5',
-    colorM: '#d8697c',
-    colorY: '#fad85c',
-    colorK: '#2d2824',
+    colorBack: "#fffaf0",
+    colorC: "#59afc5",
+    colorM: "#d8697c",
+    colorY: "#fad85c",
+    colorK: "#2d2824",
     size: 0.2,
     contrast: 1.25,
     softness: 0.4,
@@ -141,11 +141,16 @@ export const vintagePreset: HalftoneCmykPreset = {
     gainM: 0,
     gainY: 0.2,
     gainK: 0,
-    type: 'sharp',
+    type: "sharp",
   },
 };
 
-export const halftoneCmykPresets: HalftoneCmykPreset[] = [defaultPreset, dropsPreset, newspaper, vintagePreset];
+export const halftoneCmykPresets: HalftoneCmykPreset[] = [
+  defaultPreset,
+  dropsPreset,
+  newspaper,
+  vintagePreset,
+];
 
 export const HalftoneCmyk: React.FC<HalftoneCmykProps> = memo(function HalftoneCmykImpl({
   // Own props
@@ -156,7 +161,7 @@ export const HalftoneCmyk: React.FC<HalftoneCmykProps> = memo(function HalftoneC
   colorM = defaultPreset.params.colorM,
   colorY = defaultPreset.params.colorY,
   colorK = defaultPreset.params.colorK,
-  image = '',
+  image = "",
   size = defaultPreset.params.size,
   contrast = defaultPreset.params.contrast,
   softness = defaultPreset.params.softness,

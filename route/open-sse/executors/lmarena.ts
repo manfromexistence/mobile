@@ -80,7 +80,7 @@ export class LMArenaExecutor extends BaseExecutor {
   protected buildHeaders(
     _model: string,
     credentials: unknown,
-    _body: unknown
+    _body: unknown,
   ): Record<string, string> {
     const cookie = readLMArenaCookie(credentials);
     const headers = buildLmarenaBrowserHeaders({
@@ -132,7 +132,7 @@ export class LMArenaExecutor extends BaseExecutor {
       "LMArenaExecutor",
       arenaModelId === model
         ? `Executing request for model: ${model}`
-        : `Executing request for model: ${model} (${arenaModelId})`
+        : `Executing request for model: ${model} (${arenaModelId})`,
     );
 
     try {
@@ -164,7 +164,7 @@ export class LMArenaExecutor extends BaseExecutor {
       stream: boolean;
       signal?: AbortSignal;
       log?: ExecuteInput["log"];
-    }
+    },
   ) {
     const tlsResult = await tlsFetchLMArena(url, {
       method: "POST",
@@ -205,7 +205,7 @@ export class LMArenaExecutor extends BaseExecutor {
     response: Response,
     model: string,
     signal?: AbortSignal,
-    log?: ExecuteInput["log"]
+    log?: ExecuteInput["log"],
   ): Promise<Response> {
     const reader = response.body?.getReader();
     if (!reader) throw new Error("No response body for streaming");

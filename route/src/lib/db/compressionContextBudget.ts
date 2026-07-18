@@ -66,20 +66,20 @@ export function normalizeContextBudgetConfig(value: unknown): ContextBudgetConfi
       record.outputReserve,
       DEFAULT_CONTEXT_BUDGET.outputReserve,
       0,
-      Number.MAX_SAFE_INTEGER
+      Number.MAX_SAFE_INTEGER,
     ),
     safetyMargin: boundedInt(
       record.safetyMargin,
       DEFAULT_CONTEXT_BUDGET.safetyMargin,
       0,
-      Number.MAX_SAFE_INTEGER
+      Number.MAX_SAFE_INTEGER,
     ),
     pct: boundedNumber(record.pct, DEFAULT_CONTEXT_BUDGET.pct, 0, 1),
     absoluteBudget: boundedInt(
       record.absoluteBudget,
       DEFAULT_CONTEXT_BUDGET.absoluteBudget,
       0,
-      Number.MAX_SAFE_INTEGER
+      Number.MAX_SAFE_INTEGER,
     ),
     ...(ladderOverride ? { ladderOverride } : {}),
   };

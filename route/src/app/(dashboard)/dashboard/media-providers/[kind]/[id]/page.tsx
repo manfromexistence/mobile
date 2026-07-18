@@ -48,7 +48,7 @@ export default async function MediaProviderDetailPage({ params }: PageProps) {
   // listing filter in ../page.tsx, otherwise a listed provider would 404 on click).
   const serviceKinds = resolveProviderServiceKinds(
     provider.id,
-    provider.serviceKinds as string[] | undefined
+    provider.serviceKinds as string[] | undefined,
   );
   if (!serviceKinds.includes(validKind)) {
     notFound();

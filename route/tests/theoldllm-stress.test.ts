@@ -51,18 +51,16 @@ describe("TheOldLlmExecutor", () => {
   it("maps model aliases to upstream slugs", () => {
     const cases: Record<string, string> = {
       "gpt-5.4": "GPT_5_4",
-      "GPT_5_3": "GPT_5_3",
-      "gpt_5_2": "GPT_5_2",
+      GPT_5_3: "GPT_5_3",
+      gpt_5_2: "GPT_5_2",
       "gpt-4o": "GPT_4O",
       "claude-4.6-opus": "CLAUDE_4_6_OPUS",
       "claude sonnet 4": "CLAUDE_4_6_SONNET",
-      "claude_haiku_3_5": "CLAUDE_4_5_HAIKU",
+      claude_haiku_3_5: "CLAUDE_4_5_HAIKU",
       "weird-model": "GPT_5_4",
     };
 
-    const transformRequest = (executor as any).transformRequest.bind(
-      executor,
-    ) as (
+    const transformRequest = (executor as any).transformRequest.bind(executor) as (
       model: string,
       body: Record<string, unknown>,
       stream: boolean,
@@ -112,15 +110,10 @@ describe("TheOldLlmExecutor", () => {
     warmTokenCache();
     try {
       let calls = 0;
-      const responses = [
-        () => makeResponse(401, MOCK_ERR),
-        () => makeResponse(200, MOCK_SSE),
-      ];
+      const responses = [() => makeResponse(401, MOCK_ERR), () => makeResponse(200, MOCK_SSE)];
 
       globalThis.fetch = async () =>
-        responses[
-          calls++ < responses.length ? calls - 1 : responses.length - 1
-        ]() as any;
+        responses[calls++ < responses.length ? calls - 1 : responses.length - 1]() as any;
 
       const result = await executor.execute({
         model: "gpt-5.4",

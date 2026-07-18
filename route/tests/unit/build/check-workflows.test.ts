@@ -30,7 +30,7 @@ import {
 type RatchetVerdict = { regressed: boolean; improved: boolean };
 const evaluateZizmor = evaluateZizmorRatchet as (
   current: number,
-  baseline: number
+  baseline: number,
 ) => RatchetVerdict;
 const readZizmorBaseline = readBaselineZizmorValue as (p?: string) => number | null;
 

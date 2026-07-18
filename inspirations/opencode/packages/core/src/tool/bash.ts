@@ -1,63 +1,66 @@
-export * as BashTool from "./bash"
+export * as BashTool from "./bash";
 
-import path from "path"
-import { ToolFailure } from "@opencode-ai/llm"
-import { Duration, Effect, Layer, Schema } from "effect"
-import { ChildProcess } from "effect/unstable/process"
-import { Config } from "../config"
-import { makeLocationNode } from "../effect/app-node"
-import { FSUtil } from "../fs-util"
-import { LocationMutation } from "../location-mutation"
-import { AppProcess } from "../process"
-import { PermissionV2 } from "../permission"
-import { PositiveInt } from "../schema"
-import { ToolRegistry } from "./registry"
-import { Tool } from "./tool"
-import { Tools } from "./tools"
+import path from "path";
+import { ToolFailure } from "@opencode-ai/llm";
+import { Duration, Effect, Layer, Schema } from "effect";
+import { ChildProcess } from "effect/unstable/process";
+import { Config } from "../config";
+import { makeLocationNode } from "../effect/app-node";
+import { FSUtil } from "../fs-util";
+import { LocationMutation } from "../location-mutation";
+import { AppProcess } from "../process";
+import { PermissionV2 } from "../permission";
+import { PositiveInt } from "../schema";
+import { ToolRegistry } from "./registry";
+import { Tool } from "./tool";
+import { Tools } from "./tools";
 
-export const name = "bash"
-export const DEFAULT_TIMEOUT_MS = 2 * 60 * 1_000
-export const MAX_TIMEOUT_MS = 10 * 60 * 1_000
-export const MAX_CAPTURE_BYTES = 1024 * 1024
+export const name = "bash";
+export const DEFAULT_TIMEOUT_MS = 2 * 60 * 1_000;
+export const MAX_TIMEOUT_MS = 10 * 60 * 1_000;
+export const MAX_CAPTURE_BYTES = 1024 * 1024;
 
 export const Input = Schema.Struct({
   command: Schema.String.annotate({ description: "Shell command string to execute" }),
   workdir: Schema.String.pipe(Schema.optional).annotate({
-    description: "Working directory. Defaults to the active Location; relative paths resolve from that Location.",
+    description:
+      "Working directory. Defaults to the active Location; relative paths resolve from that Location.",
   }),
   timeout: PositiveInt.check(Schema.isLessThanOrEqualTo(MAX_TIMEOUT_MS))
     .pipe(Schema.optional)
     .annotate({
       description: `Timeout in milliseconds. Defaults to ${DEFAULT_TIMEOUT_MS} and may not exceed ${MAX_TIMEOUT_MS}.`,
     }),
-})
+});
 
 const StructuredOutput = Schema.Struct({
   exit: Schema.Number.pipe(Schema.optional),
   truncated: Schema.Boolean,
   timeout: Schema.Boolean.pipe(Schema.optional),
-})
+});
 
 const Output = Schema.Struct({
   ...StructuredOutput.fields,
   output: Schema.String,
   warnings: Schema.Array(Schema.String).pipe(Schema.optional),
-})
+});
 
-type Output = typeof Output.Type
+type Output = typeof Output.Type;
 
-const defaultShell = () => (process.platform === "win32" ? (process.env.COMSPEC ?? "cmd.exe") : "/bin/sh")
+const defaultShell = () =>
+  process.platform === "win32" ? (process.env.COMSPEC ?? "cmd.exe") : "/bin/sh";
 
 const modelOutput = (output: Output) => {
   const warnings = output.warnings?.length
     ? `\n\nWarnings:\n${output.warnings.map((warning) => `- ${warning}`).join("\n")}`
-    : ""
-  if (output.timeout) return `${warnings.trimStart()}${warnings ? "\n\n" : ""}Command timed out before completion.`
-  return `${warnings.trimStart()}${warnings ? "\n\n" : ""}Command exited with code ${output.exit}.`
-}
+    : "";
+  if (output.timeout)
+    return `${warnings.trimStart()}${warnings ? "\n\n" : ""}Command timed out before completion.`;
+  return `${warnings.trimStart()}${warnings ? "\n\n" : ""}Command exited with code ${output.exit}.`;
+};
 
 const isTimeout = (error: AppProcess.AppProcessError) =>
-  error.cause instanceof Error && error.cause.message === "Timed out"
+  error.cause instanceof Error && error.cause.message === "Timed out";
 
 /**
  * Minimal V2 core shell boundary. Keep parity debt visible without pulling the
@@ -76,28 +79,28 @@ const isTimeout = (error: AppProcess.AppProcessError) =>
 // TODO: Revisit binary output handling if stdout/stderr decoding is text-only.
 // TODO: Stream full shell output into managed storage while retaining only a bounded in-memory preview.
 
-const shellTokens = (command: string) => command.match(/(?:[^\s"']+|"[^"]*"|'[^']*')+/g) ?? []
-const unquote = (value: string) => value.replace(/^(['"])(.*)\1$/, "$2")
+const shellTokens = (command: string) => command.match(/(?:[^\s"']+|"[^"]*"|'[^']*')+/g) ?? [];
+const unquote = (value: string) => value.replace(/^(['"])(.*)\1$/, "$2");
 const externalCommandDirectories = (command: string, cwd: string) => {
-  const directories = new Set<string>()
+  const directories = new Set<string>();
   for (const token of shellTokens(command)) {
-    const value = unquote(token).replace(/[;,|&]+$/, "")
-    if (!path.isAbsolute(value)) continue
-    const resolved = FSUtil.resolve(value)
-    if (FSUtil.contains(cwd, resolved)) continue
-    directories.add(FSUtil.resolve(path.dirname(resolved)))
+    const value = unquote(token).replace(/[;,|&]+$/, "");
+    if (!path.isAbsolute(value)) continue;
+    const resolved = FSUtil.resolve(value);
+    if (FSUtil.contains(cwd, resolved)) continue;
+    directories.add(FSUtil.resolve(path.dirname(resolved)));
   }
-  return [...directories]
-}
+  return [...directories];
+};
 
 const layer = Layer.effectDiscard(
   Effect.gen(function* () {
-    const tools = yield* Tools.Service
-    const mutation = yield* LocationMutation.Service
-    const fs = yield* FSUtil.Service
-    const appProcess = yield* AppProcess.Service
-    const config = yield* Config.Service
-    const permission = yield* PermissionV2.Service
+    const tools = yield* Tools.Service;
+    const mutation = yield* LocationMutation.Service;
+    const fs = yield* FSUtil.Service;
+    const appProcess = yield* AppProcess.Service;
+    const config = yield* Config.Service;
+    const permission = yield* PermissionV2.Service;
 
     yield* tools
       .register({
@@ -121,20 +124,23 @@ const layer = Layer.effectDiscard(
                 type: "tool" as const,
                 messageID: context.assistantMessageID,
                 callID: context.toolCallID,
-              }
-              const target = yield* mutation.resolve({ path: input.workdir ?? ".", kind: "directory" })
-              const external = target.externalDirectory
+              };
+              const target = yield* mutation.resolve({
+                path: input.workdir ?? ".",
+                kind: "directory",
+              });
+              const external = target.externalDirectory;
               if (external)
                 yield* permission.assert({
                   ...LocationMutation.externalDirectoryPermission(external),
                   sessionID: context.sessionID,
                   agent: context.agent,
                   source,
-                })
+                });
               const warnings = externalCommandDirectories(input.command, target.canonical).map(
                 (directory) =>
                   `Command argument references external directory ${path.join(directory, "*").replaceAll("\\", "/")}. Bash runs with host-user filesystem, process, and network authority; this scan is advisory only.`,
-              )
+              );
               yield* permission.assert({
                 action: name,
                 resources: [input.command],
@@ -142,23 +148,27 @@ const layer = Layer.effectDiscard(
                 sessionID: context.sessionID,
                 agent: context.agent,
                 source,
-              })
+              });
 
               if ((yield* fs.stat(target.canonical)).type !== "Directory")
-                return yield* Effect.fail(new Error(`Working directory is not a directory: ${target.canonical}`))
+                return yield* Effect.fail(
+                  new Error(`Working directory is not a directory: ${target.canonical}`),
+                );
 
-              const entries = yield* config.entries()
+              const entries = yield* config.entries();
               const shell =
-                Object.assign({}, ...entries.flatMap((entry) => (entry.type === "document" ? [entry.info] : [])))
-                  .shell ?? defaultShell()
+                Object.assign(
+                  {},
+                  ...entries.flatMap((entry) => (entry.type === "document" ? [entry.info] : [])),
+                ).shell ?? defaultShell();
               const command = ChildProcess.make(input.command, [], {
                 cwd: target.canonical,
                 shell,
                 stdin: "ignore",
                 detached: process.platform !== "win32",
                 forceKillAfter: Duration.seconds(3),
-              })
-              const timeout = input.timeout ?? DEFAULT_TIMEOUT_MS
+              });
+              const timeout = input.timeout ?? DEFAULT_TIMEOUT_MS;
               const result = yield* appProcess
                 .run(command, {
                   combineOutput: true,
@@ -169,35 +179,46 @@ const layer = Layer.effectDiscard(
                   Effect.catchTag("AppProcessError", (error) =>
                     isTimeout(error) ? Effect.succeed(undefined) : Effect.fail(error),
                   ),
-                )
+                );
               if (!result) {
                 return {
                   output: `Command exceeded timeout of ${timeout} ms. Retry with a larger timeout if the command is expected to take longer.`,
                   truncated: false,
                   timeout: true,
                   ...(warnings.length ? { warnings } : {}),
-                }
+                };
               }
 
-              const output = result.output?.toString("utf8") || "(no output)"
+              const output = result.output?.toString("utf8") || "(no output)";
               const notice = result.outputTruncated
                 ? "[output capture truncated at the in-memory safety limit]"
-                : undefined
+                : undefined;
               return {
                 exit: result.exitCode,
                 output: notice ? `${output}\n\n${notice}` : output,
                 truncated: result.outputTruncated === true,
                 ...(warnings.length ? { warnings } : {}),
-              }
-            }).pipe(Effect.mapError(() => new ToolFailure({ message: `Unable to execute command: ${input.command}` }))),
+              };
+            }).pipe(
+              Effect.mapError(
+                () => new ToolFailure({ message: `Unable to execute command: ${input.command}` }),
+              ),
+            ),
         }),
       })
-      .pipe(Effect.orDie)
+      .pipe(Effect.orDie);
   }),
-)
+);
 
 export const node = makeLocationNode({
   name: "tool/bash",
   layer,
-  deps: [ToolRegistry.node, LocationMutation.node, FSUtil.node, AppProcess.node, Config.node, PermissionV2.node],
-})
+  deps: [
+    ToolRegistry.node,
+    LocationMutation.node,
+    FSUtil.node,
+    AppProcess.node,
+    Config.node,
+    PermissionV2.node,
+  ],
+});

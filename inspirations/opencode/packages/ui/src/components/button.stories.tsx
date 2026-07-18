@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Button } from "./button"
+import { Button } from "./button";
 
 const docs = `### Overview
 Primary action button with size, variant, and optional icon support.
@@ -25,7 +25,7 @@ Use \`IconButton\` for icon-only actions.
 ### Theming/tokens
 - Uses \`data-component="button"\` with size/variant data attributes.
 
-`
+`;
 
 export default {
   title: "UI/Button",
@@ -61,35 +61,35 @@ export default {
       },
     },
   },
-}
+};
 
 export const Primary = {
   args: {
     variant: "primary",
   },
-}
+};
 
-export const Secondary = {}
+export const Secondary = {};
 
 export const Ghost = {
   args: {
     variant: "ghost",
   },
-}
+};
 
 export const WithIcon = {
   args: {
     children: "Continue",
     icon: "arrow-right",
   },
-}
+};
 
 export const Disabled = {
   args: {
     variant: "primary",
     disabled: true,
   },
-}
+};
 
 export const Sizes = {
   render: () => (
@@ -105,4 +105,4 @@ export const Sizes = {
       </Button>
     </div>
   ),
-}
+};

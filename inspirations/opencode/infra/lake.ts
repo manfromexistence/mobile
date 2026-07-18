@@ -1,22 +1,22 @@
-import { domain } from "./stage"
+import { domain } from "./stage";
 
-const current = aws.getCallerIdentityOutput({})
-const partition = aws.getPartitionOutput({})
-const region = aws.getRegionOutput({})
+const current = aws.getCallerIdentityOutput({});
+const partition = aws.getPartitionOutput({});
+const region = aws.getRegionOutput({});
 
-const tableBucketName = `opencode-${$app.stage}-lake`
-const glueCatalogName = "s3tablescatalog"
-const glueCatalogArn = $interpolate`arn:${partition.partition}:glue:${region.region}:${current.accountId}:catalog`
-const glueS3TablesCatalogArn = $interpolate`${glueCatalogArn}/${glueCatalogName}`
-const glueS3TablesChildCatalogArn = $interpolate`${glueS3TablesCatalogArn}/${tableBucketName}`
-const glueS3TablesDatabaseWildcardArn = $interpolate`arn:${partition.partition}:glue:${region.region}:${current.accountId}:database/${glueCatalogName}/${tableBucketName}/*`
-const glueS3TablesTableWildcardArn = $interpolate`arn:${partition.partition}:glue:${region.region}:${current.accountId}:table/${glueCatalogName}/${tableBucketName}/*/*`
-const s3TablesBucketWildcardArn = $interpolate`arn:${partition.partition}:s3tables:${region.region}:${current.accountId}:bucket/*`
+const tableBucketName = `opencode-${$app.stage}-lake`;
+const glueCatalogName = "s3tablescatalog";
+const glueCatalogArn = $interpolate`arn:${partition.partition}:glue:${region.region}:${current.accountId}:catalog`;
+const glueS3TablesCatalogArn = $interpolate`${glueCatalogArn}/${glueCatalogName}`;
+const glueS3TablesChildCatalogArn = $interpolate`${glueS3TablesCatalogArn}/${tableBucketName}`;
+const glueS3TablesDatabaseWildcardArn = $interpolate`arn:${partition.partition}:glue:${region.region}:${current.accountId}:database/${glueCatalogName}/${tableBucketName}/*`;
+const glueS3TablesTableWildcardArn = $interpolate`arn:${partition.partition}:glue:${region.region}:${current.accountId}:table/${glueCatalogName}/${tableBucketName}/*/*`;
+const s3TablesBucketWildcardArn = $interpolate`arn:${partition.partition}:s3tables:${region.region}:${current.accountId}:bucket/*`;
 
 export const tableBucket = new aws.s3tables.TableBucket("LakeTableBucket", {
   name: tableBucketName,
   forceDestroy: $app.stage !== "production",
-})
+});
 
 const s3TablesCatalog = new aws.cloudcontrol.Resource(
   "LakeS3TablesCatalog",
@@ -49,17 +49,17 @@ const s3TablesCatalog = new aws.cloudcontrol.Resource(
     }),
   },
   { dependsOn: [tableBucket] },
-)
+);
 
 const athenaResultsBucket = new aws.s3.Bucket("LakeAthenaResults", {
   bucket: `opencode-${$app.stage}-lake-athena-results`,
   forceDestroy: $app.stage !== "production",
-})
+});
 
 const firehoseErrorBucket = new aws.s3.Bucket("LakeFirehoseErrors", {
   bucket: `opencode-${$app.stage}-lake-firehose-errors`,
   forceDestroy: $app.stage !== "production",
-})
+});
 
 const athenaWorkgroup = new aws.athena.Workgroup("LakeAthenaWorkgroup", {
   name: `opencode-${$app.stage}-lake-workgroup`,
@@ -71,7 +71,7 @@ const athenaWorkgroup = new aws.athena.Workgroup("LakeAthenaWorkgroup", {
       outputLocation: $interpolate`s3://${athenaResultsBucket.bucket}/`,
     },
   },
-})
+});
 
 const firehoseRole = new aws.iam.Role("LakeFirehoseRole", {
   assumeRolePolicy: aws.iam.getPolicyDocumentOutput({
@@ -88,7 +88,7 @@ const firehoseRole = new aws.iam.Role("LakeFirehoseRole", {
       },
     ],
   }).json,
-})
+});
 
 const firehosePolicy = new aws.iam.RolePolicy("LakeFirehosePolicy", {
   role: firehoseRole.id,
@@ -151,7 +151,7 @@ const firehosePolicy = new aws.iam.RolePolicy("LakeFirehosePolicy", {
       },
     ],
   }).json,
-})
+});
 
 const firehose = new aws.kinesis.FirehoseDeliveryStream(
   "LakeFirehose",
@@ -189,27 +189,27 @@ const firehose = new aws.kinesis.FirehoseDeliveryStream(
     },
   },
   { dependsOn: [s3TablesCatalog, firehosePolicy] },
-)
+);
 
-export const lakeVpc = new sst.aws.Vpc("LakeVpc")
-export const lakeCluster = new sst.aws.Cluster("LakeCluster", { vpc: lakeVpc })
-export const lakeRegion = region.region
-export const lakeCatalog = $interpolate`${glueCatalogName}/${tableBucket.name}`
-export const lakeAthenaWorkgroup = athenaWorkgroup
+export const lakeVpc = new sst.aws.Vpc("LakeVpc");
+export const lakeCluster = new sst.aws.Cluster("LakeCluster", { vpc: lakeVpc });
+export const lakeRegion = region.region;
+export const lakeCatalog = $interpolate`${glueCatalogName}/${tableBucket.name}`;
+export const lakeAthenaWorkgroup = athenaWorkgroup;
 
-const ingestSecret = new random.RandomPassword("LakeIngestSecret", { length: 32 })
+const ingestSecret = new random.RandomPassword("LakeIngestSecret", { length: 32 });
 export const ingestSecretSsm = new aws.ssm.Parameter("LakeIngestSecretSsm", {
   name: $interpolate`/${$app.name}/${$app.stage}/lake/ingest/secret`,
   type: "SecureString",
   value: ingestSecret.result,
-})
+});
 
 const ingestConfig = new sst.Linkable("LakeIngestConfig", {
   properties: {
     streamName: firehose.name,
     secret: ingestSecret.result,
   },
-})
+});
 
 const ingestService = new sst.aws.Service("LakeIngestService", {
   cluster: lakeCluster,
@@ -265,14 +265,14 @@ const ingestService = new sst.aws.Service("LakeIngestService", {
     url: "http://localhost:3000",
   },
   wait: $app.stage === "production",
-})
+});
 
 export const lakeIngest = new sst.Linkable("LakeIngest", {
   properties: {
     url: ingestService.url,
     secret: ingestSecret.result,
   },
-})
+});
 
 export const lakeQueryPermissions = [
   {
@@ -305,7 +305,12 @@ export const lakeQueryPermissions = [
     resources: [athenaResultsBucket.arn],
   },
   {
-    actions: ["s3:GetObject", "s3:PutObject", "s3:AbortMultipartUpload", "s3:ListBucketMultipartUploads"],
+    actions: [
+      "s3:GetObject",
+      "s3:PutObject",
+      "s3:AbortMultipartUpload",
+      "s3:ListBucketMultipartUploads",
+    ],
     resources: [$interpolate`${athenaResultsBucket.arn}/*`],
   },
   {
@@ -324,4 +329,4 @@ export const lakeQueryPermissions = [
     actions: ["lakeformation:GetDataAccess"],
     resources: ["*"],
   },
-]
+];

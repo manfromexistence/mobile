@@ -101,7 +101,7 @@ test("quotaSnapshots aggregates by provider or connection and rejects invalid bu
         since: "2000-01-01T00:00:00.000Z",
         bucketMinutes: 0,
       }),
-    /Invalid bucket size/
+    /Invalid bucket size/,
   );
 });
 
@@ -112,7 +112,7 @@ test("quotaSnapshots cleanup removes old rows and throttles repeated execution",
     INSERT INTO quota_snapshots
     (provider, connection_id, window_key, remaining_percentage, is_exhausted, next_reset_at, window_duration_ms, raw_data, created_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `
+  `,
   ).run(
     "openai",
     "old-conn",
@@ -122,7 +122,7 @@ test("quotaSnapshots cleanup removes old rows and throttles repeated execution",
     "2000-01-01T01:00:00.000Z",
     3600000,
     "{}",
-    "2000-01-01T00:00:00.000Z"
+    "2000-01-01T00:00:00.000Z",
   );
 
   const deleted = quotaSnapshotsDb.cleanupOldSnapshots(1);

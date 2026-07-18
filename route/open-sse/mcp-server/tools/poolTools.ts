@@ -33,13 +33,7 @@ export const poolResetInput = z.object({
 
 export const poolWarmInput = z.object({
   provider: z.string().describe("Provider name (e.g. 'pollinations')"),
-  count: z
-    .number()
-    .int()
-    .min(1)
-    .max(50)
-    .default(6)
-    .describe("Target session count (1–50)"),
+  count: z.number().int().min(1).max(50).default(6).describe("Target session count (1–50)"),
 });
 
 export const poolHealthInput = z.object({

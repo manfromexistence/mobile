@@ -40,7 +40,7 @@ export function getConnectionRoutingTags(providerSpecificData: unknown): string[
 export function matchesRoutingTags(
   connectionTags: string[],
   requestTags: string[],
-  matchMode: RoutingTagMatchMode = "any"
+  matchMode: RoutingTagMatchMode = "any",
 ): boolean {
   if (requestTags.length === 0) return true;
   if (connectionTags.length === 0) return false;

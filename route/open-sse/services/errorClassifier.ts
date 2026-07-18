@@ -119,7 +119,7 @@ function shouldPreserveQuotaSignalsFor429(provider?: string | null): boolean {
 export function classifyProviderError(
   statusCode: number,
   responseBody: unknown,
-  provider?: string | null
+  provider?: string | null,
 ): string | null {
   const bodyStr = responseBodyToString(responseBody);
   const creditsExhausted = isCreditsExhausted(bodyStr);

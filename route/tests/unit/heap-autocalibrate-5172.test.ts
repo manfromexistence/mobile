@@ -13,8 +13,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { calibrateHeapFallbackMb, resolveMaxOldSpaceMb } =
-  await import("../../scripts/build/runtime-env.mjs");
+const { calibrateHeapFallbackMb, resolveMaxOldSpaceMb } = await import(
+  "../../scripts/build/runtime-env.mjs"
+);
 
 const GB = 1024 * 1024 * 1024;
 

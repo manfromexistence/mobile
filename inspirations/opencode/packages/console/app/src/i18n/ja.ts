@@ -1,5 +1,5 @@
-import type { Dict } from "./en"
-import { dict as en } from "./en"
+import type { Dict } from "./en";
+import { dict as en } from "./en";
 
 export const dict = {
   ...en,
@@ -108,7 +108,8 @@ export const dict = {
   "home.banner.downloadBetaNow": "デスクトップベータ版を今すぐダウンロード",
 
   "home.hero.title": "オープンソースのAIコーディングエージェント",
-  "home.hero.subtitle.a": "無料モデルが含まれています。また、任意のプロバイダーの任意のモデルに接続でき、",
+  "home.hero.subtitle.a":
+    "無料モデルが含まれています。また、任意のプロバイダーの任意のモデルに接続でき、",
   "home.hero.subtitle.b": "Claude、GPT、Gemini などにも対応します。",
 
   "home.install.ariaLabel": "インストールオプション",
@@ -129,7 +130,8 @@ export const dict = {
   "home.what.anyModel.title": "あらゆるモデル",
   "home.what.anyModel.body": "Models.dev経由で75以上のLLMプロバイダーに対応（ローカルモデル含む）",
   "home.what.anyEditor.title": "あらゆるエディタ",
-  "home.what.anyEditor.body": "ターミナルインターフェース、デスクトップアプリ、IDE拡張機能として利用できます",
+  "home.what.anyEditor.body":
+    "ターミナルインターフェース、デスクトップアプリ、IDE拡張機能として利用できます",
   "home.what.readDocs": "ドキュメントを読む",
 
   "home.growth.title": "オープンソースのAIコーディングエージェント",
@@ -152,9 +154,11 @@ export const dict = {
   "home.faq.a2.before": "最も簡単な始め方は",
   "home.faq.a2.link": "イントロを読む",
   "home.faq.q3": "OpenCodeには追加のAIサブスクリプションが必要ですか？",
-  "home.faq.a3.p1": "必ずしも必要ではありません。OpenCodeには、アカウント不要で使える無料モデルが含まれています。",
+  "home.faq.a3.p1":
+    "必ずしも必要ではありません。OpenCodeには、アカウント不要で使える無料モデルが含まれています。",
   "home.faq.a3.p2.beforeZen": "これらに加えて、",
-  "home.faq.a3.p2.afterZen": " アカウントを作成することで、人気のコーディングモデルを利用できます。",
+  "home.faq.a3.p2.afterZen":
+    " アカウントを作成することで、人気のコーディングモデルを利用できます。",
   "home.faq.a3.p3":
     "Zenの利用を推奨していますが、OpenCodeはOpenAI、Anthropic、xAIなどの主要プロバイダーにも対応しています。",
   "home.faq.a3.p4.beforeLocal": "さらに、",
@@ -205,10 +209,12 @@ export const dict = {
   "zen.faq.q4": "Zenの料金は？",
   "zen.faq.a4.p1.beforePricing": "Zenは",
   "zen.faq.a4.p1.pricingLink": "リクエスト単位で課金",
-  "zen.faq.a4.p1.afterPricing": "し、マークアップはありません。つまり、モデル提供元の請求額をそのまま支払います。",
+  "zen.faq.a4.p1.afterPricing":
+    "し、マークアップはありません。つまり、モデル提供元の請求額をそのまま支払います。",
   "zen.faq.a4.p2.beforeAccount": "総コストは利用量に依存し、月次の支出上限を",
   "zen.faq.a4.p2.accountLink": "アカウント",
-  "zen.faq.a4.p3": "コストを賄うために、OpenCodeは$20の残高チャージあたり$1.23の小さな決済手数料のみを追加します。",
+  "zen.faq.a4.p3":
+    "コストを賄うために、OpenCodeは$20の残高チャージあたり$1.23の小さな決済手数料のみを追加します。",
   "zen.faq.q5": "データとプライバシーは？",
   "zen.faq.a5.beforeExceptions":
     "Zenのモデルはすべて米国でホストされています。プロバイダーはゼロ保持ポリシーを守り、データをモデル学習に使用しません（",
@@ -229,12 +235,14 @@ export const dict = {
   "zen.problem.title": "Zenはどのような問題を解決していますか？",
   "zen.problem.body":
     "利用可能なモデルは非常に多くありますが、コーディングエージェントで適切に機能するモデルはほんのわずかです。ほとんどのプロバイダーは、それらを異なる設定で提供し、結果も異なります。",
-  "zen.problem.subtitle": "OpenCodeユーザーだけでなく、すべての人を対象にこの問題を修正しています。",
+  "zen.problem.subtitle":
+    "OpenCodeユーザーだけでなく、すべての人を対象にこの問題を修正しています。",
   "zen.problem.item1": "選択したモデルをテストし、チームに相談する",
   "zen.problem.item2": "プロバイダーと連携して適切に提供されるようにする",
   "zen.problem.item3": "私たちが推奨するすべてのモデルとプロバイダーの組み合わせをベンチマークする",
   "zen.how.title": "Zenの仕組み",
-  "zen.how.body": "ZenをOpenCodeとともに使用することをお勧めしますが、Zenはどのエージェントでも使用できます。",
+  "zen.how.body":
+    "ZenをOpenCodeとともに使用することをお勧めしますが、Zenはどのエージェントでも使用できます。",
   "zen.how.step1.title": "サインアップして$20の残高を追加",
   "zen.how.step1.beforeLink": "",
   "zen.how.step1.link": "セットアップ手順",
@@ -302,7 +310,8 @@ export const dict = {
   "go.problem.item4":
     "GLM-5.2、GLM-5.1、Kimi K2.7 Code、Kimi K2.6、MiMo-V2.5-Pro、MiMo-V2.5、Qwen3.7 Max、Qwen3.7 Plus、Qwen3.6 Plus、MiniMax M2.7、MiniMax M3、DeepSeek V4 Pro、DeepSeek V4 Flashを含む",
   "go.how.title": "Goの仕組み",
-  "go.how.body": "Goは最初の月$5、その後$10/月で始まります。OpenCodeまたは任意のエージェントで使えます。",
+  "go.how.body":
+    "Goは最初の月$5、その後$10/月で始まります。OpenCodeまたは任意のエージェントで使えます。",
   "go.how.step1.title": "アカウントを作成",
   "go.how.step1.beforeLink": "",
   "go.how.step1.link": "セットアップ手順はこちら",
@@ -353,7 +362,8 @@ export const dict = {
 
   "zen.api.error.rateLimitExceeded": "レート制限を超えました。後でもう一度お試しください。",
   "zen.api.error.modelNotSupported": "モデル {{model}} はサポートされていません",
-  "zen.api.error.modelFormatNotSupported": "フォーマット {{format}} ではモデル {{model}} はサポートされていません",
+  "zen.api.error.modelFormatNotSupported":
+    "フォーマット {{format}} ではモデル {{model}} はサポートされていません",
   "zen.api.error.noProviderAvailable": "利用可能なプロバイダーがありません",
   "zen.api.error.providerNotSupported": "プロバイダー {{provider}} はサポートされていません",
   "zen.api.error.missingApiKey": "APIキーがありません。",
@@ -366,8 +376,10 @@ export const dict = {
     "週間の利用上限に達しました。{{retryIn}} 後にリセットされます。今すぐこのモデルの利用を続けるには、利用可能な残高からの利用を有効化してください: {{consoleGoUrl}}",
   "zen.api.error.goSubscriptionMonthlyLimitExceeded":
     "月間の利用上限に達しました。{{retryIn}} 後にリセットされます。今すぐこのモデルの利用を続けるには、利用可能な残高からの利用を有効化してください: {{consoleGoUrl}}",
-  "zen.api.error.noPaymentMethod": "お支払い方法がありません。こちらからお支払い方法を追加してください: {{billingUrl}}",
-  "zen.api.error.insufficientBalance": "残高が不足しています。こちらから請求を管理してください: {{billingUrl}}",
+  "zen.api.error.noPaymentMethod":
+    "お支払い方法がありません。こちらからお支払い方法を追加してください: {{billingUrl}}",
+  "zen.api.error.insufficientBalance":
+    "残高が不足しています。こちらから請求を管理してください: {{billingUrl}}",
   "zen.api.error.workspaceMonthlyLimitReached":
     "ワークスペースが月額の利用上限 ${{amount}} に達しました。こちらから上限を管理してください: {{billingUrl}}",
   "zen.api.error.userMonthlyLimitReached":
@@ -379,7 +391,8 @@ export const dict = {
     "{{model}} の無料プロモーションは終了しました。OpenCode Go を購読するとモデルを引き続き使用できます - {{link}}",
 
   "black.meta.title": "OpenCode Black | 世界最高峰のコーディングモデルすべてにアクセス",
-  "black.meta.description": "OpenCode Black サブスクリプションプランで、Claude、GPT、Gemini などにアクセス。",
+  "black.meta.description":
+    "OpenCode Black サブスクリプションプランで、Claude、GPT、Gemini などにアクセス。",
   "black.hero.title": "世界最高峰のコーディングモデルすべてにアクセス",
   "black.hero.subtitle": "Claude、GPT、Gemini などを含む",
   "black.title": "OpenCode Black | 料金",
@@ -395,7 +408,8 @@ export const dict = {
   "black.terms.2": "ウェイトリストに追加され、まもなく有効化されます",
   "black.terms.3": "サブスクリプションが有効化された時点でのみカードに請求されます",
   "black.terms.4": "利用制限が適用されます。過度な自動化利用は早く制限に達する可能性があります",
-  "black.terms.5": "サブスクリプションは個人向けです。チーム利用はエンタープライズにお問い合わせください",
+  "black.terms.5":
+    "サブスクリプションは個人向けです。チーム利用はエンタープライズにお問い合わせください",
   "black.terms.6": "将来的に制限が調整されたり、プランが廃止される可能性があります",
   "black.terms.7": "サブスクリプションはいつでもキャンセル可能です",
   "black.action.continue": "続ける",
@@ -412,7 +426,8 @@ export const dict = {
   "black.subscribe.error.generic": "エラーが発生しました",
   "black.subscribe.error.invalidPlan": "無効なプランです",
   "black.subscribe.error.workspaceRequired": "ワークスペースIDが必要です",
-  "black.subscribe.error.alreadySubscribed": "このワークスペースは既にサブスクリプションを持っています",
+  "black.subscribe.error.alreadySubscribed":
+    "このワークスペースは既にサブスクリプションを持っています",
   "black.subscribe.processing": "処理中...",
   "black.subscribe.submit": "購読する ${{plan}}",
   "black.subscribe.form.chargeNotice": "サブスクリプションが有効化された時点でのみ請求されます",
@@ -423,7 +438,8 @@ export const dict = {
   "black.subscribe.success.amountValue": "${{plan}} / 月",
   "black.subscribe.success.paymentMethod": "支払い方法",
   "black.subscribe.success.dateJoined": "登録日",
-  "black.subscribe.success.chargeNotice": "サブスクリプションが有効化された時点でカードに請求されます",
+  "black.subscribe.success.chargeNotice":
+    "サブスクリプションが有効化された時点でカードに請求されます",
 
   "workspace.nav.zen": "Zen",
   "workspace.nav.go": "Go",
@@ -433,7 +449,8 @@ export const dict = {
   "workspace.nav.billing": "請求",
   "workspace.nav.settings": "設定",
 
-  "workspace.home.banner.beforeLink": "コーディングエージェント向けに信頼性の高い最適化されたモデル。",
+  "workspace.home.banner.beforeLink":
+    "コーディングエージェント向けに信頼性の高い最適化されたモデル。",
   "workspace.lite.banner.beforeLink": "誰でも使える低コストコーディングモデル。",
   "workspace.home.billing.loading": "読み込み中...",
   "workspace.home.billing.enable": "課金を有効にする",
@@ -459,7 +476,8 @@ export const dict = {
   "workspace.newUser.step.models.after": "してモデルを選択",
 
   "workspace.models.title": "モデル",
-  "workspace.models.subtitle.beforeLink": "ワークスペースのメンバーがアクセスできるモデルを管理します。",
+  "workspace.models.subtitle.beforeLink":
+    "ワークスペースのメンバーがアクセスできるモデルを管理します。",
   "workspace.models.table.model": "モデル",
   "workspace.models.table.enabled": "有効",
 
@@ -580,7 +598,8 @@ export const dict = {
   "workspace.reload.title": "自動チャージ",
   "workspace.reload.disabled.before": "自動チャージは",
   "workspace.reload.disabled.state": "無効",
-  "workspace.reload.disabled.after": "です。残高が少なくなったときに自動的にチャージするには有効にしてください。",
+  "workspace.reload.disabled.after":
+    "です。残高が少なくなったときに自動的にチャージするには有効にしてください。",
   "workspace.reload.enabled.before": "自動チャージは",
   "workspace.reload.enabled.state": "有効",
   "workspace.reload.enabled.middle": "チャージします（",
@@ -619,7 +638,8 @@ export const dict = {
   "workspace.black.time.minutes": "分",
   "workspace.black.time.fewSeconds": "数秒",
   "workspace.black.subscription.title": "サブスクリプション",
-  "workspace.black.subscription.message": "あなたは OpenCode Black を月額 ${{plan}} で購読しています。",
+  "workspace.black.subscription.message":
+    "あなたは OpenCode Black を月額 ${{plan}} で購読しています。",
   "workspace.black.subscription.manage": "サブスクリプションの管理",
   "workspace.black.subscription.rollingUsage": "5時間利用",
   "workspace.black.subscription.weeklyUsage": "週間利用量",
@@ -628,7 +648,8 @@ export const dict = {
   "workspace.black.waitlist.title": "ウェイトリスト",
   "workspace.black.waitlist.joined":
     "あなたは月額 ${{plan}} の OpenCode Black プランのウェイトリストに登録されています。",
-  "workspace.black.waitlist.ready": "月額 ${{plan}} の OpenCode Black プランに登録する準備ができました。",
+  "workspace.black.waitlist.ready":
+    "月額 ${{plan}} の OpenCode Black プランに登録する準備ができました。",
   "workspace.black.waitlist.leave": "ウェイトリストから抜ける",
   "workspace.black.waitlist.leaving": "処理中...",
   "workspace.black.waitlist.left": "退会済み",
@@ -676,12 +697,15 @@ export const dict = {
   "workspace.referral.copyLink": "リンクをコピー",
   "workspace.referral.copied": "コピーしました",
   "workspace.referral.overview.title": "友達を招待",
-  "workspace.referral.overview.subtitle": "友達がサブスクライブすると $5 を獲得。友達にも $5 が付与されます。",
+  "workspace.referral.overview.subtitle":
+    "友達がサブスクライブすると $5 を獲得。友達にも $5 が付与されます。",
   "workspace.referral.instructions.share": "リファラルリンクをシェア",
   "workspace.referral.instructions.subscribe": "友達が参加して Go にサブスクライブ",
-  "workspace.referral.instructions.claim": "二人とも $5 の利用クレジットを獲得し、Go の利用上限に充当できます",
+  "workspace.referral.instructions.claim":
+    "二人とも $5 の利用クレジットを獲得し、Go の利用上限に充当できます",
   "workspace.referral.rewards.title": "リファラル特典",
-  "workspace.referral.rewards.description": "利用可能なリファラルクレジットを Go の利用に適用します。",
+  "workspace.referral.rewards.description":
+    "利用可能なリファラルクレジットを Go の利用に適用します。",
   "workspace.referral.rewards.subtitle": "{{applied}} / {{total}} 件の特典を適用済み。",
   "workspace.referral.rewards.empty": "リファラル特典はまだありません。",
   "workspace.referral.table.reward": "特典",
@@ -703,7 +727,8 @@ export const dict = {
   "workspace.referral.apply.preview": "特典を表示",
   "workspace.referral.apply.action": "適用",
   "workspace.referral.apply.confirmTitle": "特典を適用",
-  "workspace.referral.apply.confirmBody": "{{amount}} を適用して、このワークスペースの現在の使用量を減らします。",
+  "workspace.referral.apply.confirmBody":
+    "{{amount}} を適用して、このワークスペースの現在の使用量を減らします。",
   "workspace.referral.apply.confirmAction": "適用",
 
   "download.title": "OpenCode | ダウンロード",
@@ -736,7 +761,8 @@ export const dict = {
     "追加コストはモデルプロバイダーのサブスクリプションから発生します。OpenCodeはどのモデルプロバイダーでも利用できますが、",
   "download.faq.a5.p2.afterZen": "の利用をおすすめします。",
 
-  "download.faq.a6.p1": "あなたのデータと情報は、OpenCodeで共有リンクを作成したときにのみ保存されます。",
+  "download.faq.a6.p1":
+    "あなたのデータと情報は、OpenCodeで共有リンクを作成したときにのみ保存されます。",
   "download.faq.a6.p2.beforeShare": "詳しくは",
   "download.faq.a6.shareLink": "共有ページ",
 
@@ -825,4 +851,4 @@ export const dict = {
   "bench.detail.table.duration": "所要時間",
   "bench.detail.run.title": "実行 {{n}}",
   "bench.detail.rawJson": "Raw JSON",
-} satisfies Dict
+} satisfies Dict;

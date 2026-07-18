@@ -33,27 +33,29 @@ test("filterCombosByStrategyCategory returns expected combo subsets", () => {
 
   assert.deepEqual(
     intelligentRouting.filterCombosByStrategyCategory(combos, "all").map((combo) => combo.id),
-    ["1", "2", "3"]
+    ["1", "2", "3"],
   );
   assert.deepEqual(
     intelligentRouting
       .filterCombosByStrategyCategory(combos, "intelligent")
       .map((combo) => combo.id),
-    ["1", "3"]
+    ["1", "3"],
   );
   assert.deepEqual(
     intelligentRouting
       .filterCombosByStrategyCategory(combos, "deterministic")
       .map((combo) => combo.id),
-    ["2"]
+    ["2"],
   );
 });
 
 test("combo strategies stay aligned between UI metadata and schema validation", async () => {
-  const { ROUTING_STRATEGIES, ROUTING_STRATEGY_VALUES, normalizeRoutingStrategy } =
-    await import("../../src/shared/constants/routingStrategies.ts");
-  const { comboStrategySchema, createComboSchema } =
-    await import("../../src/shared/validation/schemas.ts");
+  const { ROUTING_STRATEGIES, ROUTING_STRATEGY_VALUES, normalizeRoutingStrategy } = await import(
+    "../../src/shared/constants/routingStrategies.ts"
+  );
+  const { comboStrategySchema, createComboSchema } = await import(
+    "../../src/shared/validation/schemas.ts"
+  );
   const { comboSchema } = await import("../../src/shared/schemas/validation.ts");
   const { setRoutingStrategyInput } = await import("../../open-sse/mcp-server/schemas/tools.ts");
   const strategyValues = ROUTING_STRATEGIES.map((strategy) => strategy.value);
@@ -79,12 +81,12 @@ test("combo strategies stay aligned between UI metadata and schema validation", 
         nodes: [{ connectionId: crypto.randomUUID() }],
       }).success,
       true,
-      `legacy combo schema should accept strategy ${strategy}`
+      `legacy combo schema should accept strategy ${strategy}`,
     );
     assert.equal(
       setRoutingStrategyInput.safeParse({ comboId: "combo", strategy }).success,
       true,
-      `MCP set strategy schema should accept ${strategy}`
+      `MCP set strategy schema should accept ${strategy}`,
     );
   });
 
@@ -119,36 +121,36 @@ test("intelligent combo selection defaults only inside the intelligent filter", 
 
   assert.equal(
     resolveSelectedCombo({ activeFilter: "all", selectedIntelligentComboId: null }),
-    null
+    null,
   );
   assert.equal(
     resolveSelectedCombo({ activeFilter: "intelligent", selectedIntelligentComboId: null })?.id,
-    "combo-auto"
+    "combo-auto",
   );
   assert.equal(
     resolveSelectedCombo({
       activeFilter: "all",
       selectedIntelligentComboId: "combo-lkgp",
     })?.id,
-    "combo-lkgp"
+    "combo-lkgp",
   );
 });
 
 test("sidebar visibility excludes the removed auto-combo item", async () => {
   const sidebarVisibility = await import("../../src/shared/constants/sidebarVisibility.ts");
   const omniProxySection = sidebarVisibility.SIDEBAR_SECTIONS.find(
-    (section) => section.id === "omni-proxy"
+    (section) => section.id === "omni-proxy",
   );
 
   assert.equal(
     (sidebarVisibility.HIDEABLE_SIDEBAR_ITEM_IDS as readonly string[]).includes("auto-combo"),
-    false
+    false,
   );
   assert.ok(omniProxySection);
   const items = sidebarVisibility.getSectionItems(omniProxySection);
   assert.equal(
     items.some((item) => (item.id as string) === "auto-combo"),
-    false
+    false,
   );
   assert.deepEqual(sidebarVisibility.normalizeHiddenSidebarItems(["auto-combo" as any, "home"]), [
     "home",
@@ -171,7 +173,7 @@ test("intelligent routing helpers normalize config and build provider scores", (
   assert.equal(normalizedConfig.weights.quota, 0.4);
   assert.equal(
     normalizedConfig.weights.health,
-    intelligentRouting.DEFAULT_INTELLIGENT_WEIGHTS.health
+    intelligentRouting.DEFAULT_INTELLIGENT_WEIGHTS.health,
   );
 
   const providerScores = intelligentRouting.buildIntelligentProviderScores({
@@ -189,6 +191,6 @@ test("intelligent routing helpers normalize config and build provider scores", (
     [
       { provider: "openai", model: "auto", score: 0.5, quotaWeight: 0.4 },
       { provider: "anthropic", model: "auto", score: 0.5, quotaWeight: 0.4 },
-    ]
+    ],
   );
 });

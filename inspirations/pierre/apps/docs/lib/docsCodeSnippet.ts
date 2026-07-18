@@ -1,11 +1,11 @@
-import type { PreloadFileOptions } from '@pierre/diffs/ssr';
+import type { PreloadFileOptions } from "@pierre/diffs/ssr";
 
-import { CustomScrollbarCSS } from '@/components/CustomScrollbarCSS';
+import { CustomScrollbarCSS } from "@/components/CustomScrollbarCSS";
 
-type SnippetOptions = PreloadFileOptions<undefined>['options'];
+type SnippetOptions = PreloadFileOptions<undefined>["options"];
 
 const SHARED_OPTIONS = {
-  theme: { dark: 'pierre-dark', light: 'pierre-light' },
+  theme: { dark: "pierre-dark", light: "pierre-light" },
   disableFileHeader: true,
   unsafeCSS: CustomScrollbarCSS,
 } as const satisfies SnippetOptions;
@@ -18,13 +18,10 @@ const SHARED_OPTIONS = {
 export function docsCodeSnippet(
   name: string,
   contents: string,
-  optionOverrides?: Partial<SnippetOptions>
+  optionOverrides?: Partial<SnippetOptions>,
 ): PreloadFileOptions<undefined> {
   return {
     file: { name, contents },
-    options:
-      optionOverrides != null
-        ? { ...SHARED_OPTIONS, ...optionOverrides }
-        : SHARED_OPTIONS,
+    options: optionOverrides != null ? { ...SHARED_OPTIONS, ...optionOverrides } : SHARED_OPTIONS,
   };
 }

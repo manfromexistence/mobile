@@ -111,8 +111,9 @@ function normalizeLegacyPatch(body: JsonRecord): ResilienceSettingsPatch {
 }
 
 async function syncRuntimeSettings(resilienceSettings: ResilienceSettings) {
-  const { applyRequestQueueSettings } =
-    await import("@omniroute/open-sse/services/rateLimitManager");
+  const { applyRequestQueueSettings } = await import(
+    "@omniroute/open-sse/services/rateLimitManager"
+  );
   await applyRequestQueueSettings(resilienceSettings.requestQueue);
 }
 
@@ -142,7 +143,7 @@ export async function GET() {
     console.error("[API] GET /api/resilience error:", err);
     return NextResponse.json(
       { error: getErrorMessage(err, "Failed to load resilience settings") },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -162,7 +163,7 @@ export async function PATCH(request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -251,7 +252,7 @@ export async function PATCH(request) {
     console.error("[API] PATCH /api/resilience error:", err);
     return NextResponse.json(
       { error: getErrorMessage(err, "Failed to save resilience settings") },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

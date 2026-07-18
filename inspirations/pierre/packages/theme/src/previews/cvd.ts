@@ -1,4 +1,4 @@
-import { type CVDType, simulateCVD } from '../color';
+import { type CVDType, simulateCVD } from "../color";
 // src/previews/cvd.ts
 // Builds preview/cvd.html (returned as a string; written by scripts/createPreviews.ts) —
 // a human-eyeballing companion to the objective gate (test/cvd.test.ts). For each
@@ -16,13 +16,13 @@ import {
   type Roles,
   tritanopiaDark,
   tritanopiaLight,
-} from '../roles';
+} from "../roles";
 
 type View = {
   title: string;
   roles: Roles;
   cvd: CVDType;
-  type: 'light' | 'dark';
+  type: "light" | "dark";
 };
 // The protan/deutan theme targets two deficiencies, so it gets one row per
 // deficiency (protanopia and deuteranopia) — both are gated in tests. The
@@ -30,51 +30,51 @@ type View = {
 const VIEWS: View[] = [
   // Light
   {
-    title: 'Pierre Light Protanopia & Deuteranopia',
+    title: "Pierre Light Protanopia & Deuteranopia",
     roles: protanDeutanLight,
-    cvd: 'protan',
-    type: 'light',
+    cvd: "protan",
+    type: "light",
   },
   {
-    title: 'Pierre Light Protanopia & Deuteranopia',
+    title: "Pierre Light Protanopia & Deuteranopia",
     roles: protanDeutanLight,
-    cvd: 'deutan',
-    type: 'light',
+    cvd: "deutan",
+    type: "light",
   },
   {
-    title: 'Pierre Light Tritanopia',
+    title: "Pierre Light Tritanopia",
     roles: tritanopiaLight,
-    cvd: 'tritan',
-    type: 'light',
+    cvd: "tritan",
+    type: "light",
   },
   // Dark
   {
-    title: 'Pierre Dark Protanopia & Deuteranopia',
+    title: "Pierre Dark Protanopia & Deuteranopia",
     roles: protanDeutanDark,
-    cvd: 'protan',
-    type: 'dark',
+    cvd: "protan",
+    type: "dark",
   },
   {
-    title: 'Pierre Dark Protanopia & Deuteranopia',
+    title: "Pierre Dark Protanopia & Deuteranopia",
     roles: protanDeutanDark,
-    cvd: 'deutan',
-    type: 'dark',
+    cvd: "deutan",
+    type: "dark",
   },
   {
-    title: 'Pierre Dark Tritanopia',
+    title: "Pierre Dark Tritanopia",
     roles: tritanopiaDark,
-    cvd: 'tritan',
-    type: 'dark',
+    cvd: "tritan",
+    type: "dark",
   },
 ];
 
 // Simulate every hex in a Roles object → "what the CVD viewer sees".
 function simulateRoles(r: Roles, cvd: CVDType): Roles {
   const walk = (value: unknown): unknown => {
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       return /^#[0-9a-fA-F]{6}$/.test(value) ? simulateCVD(value, cvd) : value;
     }
-    if (value !== null && typeof value === 'object') {
+    if (value !== null && typeof value === "object") {
       const out: Record<string, unknown> = {};
       for (const [key, child] of Object.entries(value)) out[key] = walk(child);
       return out;
@@ -86,12 +86,11 @@ function simulateRoles(r: Roles, cvd: CVDType): Roles {
 
 // Blend a foreground color over a background at the given alpha (for diff tints).
 function mix(fg: string, bg: string, a: number): string {
-  const h = (c: string) =>
-    [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16));
+  const h = (c: string) => [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16));
   const [r1, g1, b1] = h(fg),
     [r2, g2, b2] = h(bg);
   const m = (x: number, y: number) => Math.round(x * a + y * (1 - a));
-  return `#${[m(r1, r2), m(g1, g2), m(b1, b2)].map((x) => x.toString(16).padStart(2, '0')).join('')}`;
+  return `#${[m(r1, r2), m(g1, g2), m(b1, b2)].map((x) => x.toString(16).padStart(2, "0")).join("")}`;
 }
 
 const swatch = (label: string, hex: string) =>
@@ -109,10 +108,10 @@ function mock(r: Roles): string {
   <div class="mock" style="background:${win};color:${r.fg.base};border-color:${r.border.window}">
     <div class="mock-title" style="color:${r.fg.fg2}">git</div>
     <div class="tree">
-      <div>${dot(r.states.success, 'A')}<span style="color:${r.states.success}">added.ts</span></div>
-      <div>${dot(r.accent.primary, 'M')}<span style="color:${r.accent.primary}">changed.ts</span></div>
-      <div>${dot(r.states.danger, 'D')}<span style="color:${r.states.danger}">removed.ts</span></div>
-      <div>${dot(r.states.merge, 'C')}<span style="color:${r.states.merge}">conflict.ts</span></div>
+      <div>${dot(r.states.success, "A")}<span style="color:${r.states.success}">added.ts</span></div>
+      <div>${dot(r.accent.primary, "M")}<span style="color:${r.accent.primary}">changed.ts</span></div>
+      <div>${dot(r.states.danger, "D")}<span style="color:${r.states.danger}">removed.ts</span></div>
+      <div>${dot(r.states.merge, "C")}<span style="color:${r.states.merge}">conflict.ts</span></div>
     </div>
     <div class="diff" style="background:${ed}">
       <div style="background:${addBg}"><span style="color:${r.states.success}">+</span> <span style="color:${r.syntax.string}">"inserted line"</span></div>
@@ -133,29 +132,28 @@ function mock(r: Roles): string {
 }
 
 const CVD_LABEL: Record<CVDType, string> = {
-  protan: 'protanopia',
-  deutan: 'deuteranopia',
-  tritan: 'tritanopia',
+  protan: "protanopia",
+  deutan: "deuteranopia",
+  tritan: "tritanopia",
 };
 
 function section(v: View): string {
   const sim = simulateRoles(v.roles, v.cvd);
   const roleList: [string, (r: Roles) => string][] = [
-    ['success (added)', (r) => r.states.success],
-    ['danger (deleted)', (r) => r.states.danger],
-    ['warn', (r) => r.states.warn],
-    ['info', (r) => r.states.info],
-    ['merge', (r) => r.states.merge],
-    ['accent', (r) => r.accent.primary],
-    ['ansi.red', (r) => r.ansi.red],
-    ['ansi.green', (r) => r.ansi.green],
-    ['string', (r) => r.syntax.string],
-    ['keyword', (r) => r.syntax.keyword],
-    ['variable', (r) => r.syntax.variable],
-    ['func', (r) => r.syntax.func],
+    ["success (added)", (r) => r.states.success],
+    ["danger (deleted)", (r) => r.states.danger],
+    ["warn", (r) => r.states.warn],
+    ["info", (r) => r.states.info],
+    ["merge", (r) => r.states.merge],
+    ["accent", (r) => r.accent.primary],
+    ["ansi.red", (r) => r.ansi.red],
+    ["ansi.green", (r) => r.ansi.green],
+    ["string", (r) => r.syntax.string],
+    ["keyword", (r) => r.syntax.keyword],
+    ["variable", (r) => r.syntax.variable],
+    ["func", (r) => r.syntax.func],
   ];
-  const swatches = (r: Roles) =>
-    roleList.map(([n, sel]) => swatch(n, sel(r))).join('');
+  const swatches = (r: Roles) => roleList.map(([n, sel]) => swatch(n, sel(r))).join("");
   return `
   <section>
     <h2>${v.title} <span class="tag">${v.type} · simulated as ${CVD_LABEL[v.cvd]}</span></h2>
@@ -214,13 +212,13 @@ function renderCvdHtml(): string {
     Objective ΔE/contrast checks live in <code>test/cvd.test.ts</code> (run via <code>moonx theme:test</code>).</p>
   </header>
   <main>
-    ${VIEWS.map(section).join('\n')}
+    ${VIEWS.map(section).join("\n")}
   </main>
 </body></html>
 `;
 }
 
 export const cvd = {
-  filename: 'cvd.html',
+  filename: "cvd.html",
   render: renderCvdHtml,
 };

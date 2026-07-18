@@ -54,7 +54,7 @@ test("scoreAutoTargets — a tier/complexity hint moves the score off tier-neutr
   assert.notEqual(
     withHint[0].score,
     withoutHint[0].score,
-    "feeding a tier hint must change tierAffinity/specificityMatch (was constant 0.5)"
+    "feeding a tier hint must change tierAffinity/specificityMatch (was constant 0.5)",
   );
 });
 

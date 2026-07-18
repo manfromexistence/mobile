@@ -141,7 +141,7 @@ test("OAuthFlow.jsx — arquivo existe e exporta startOAuthTui", async () => {
   const src = readFileSync(fileURLToPath(path), "utf8");
   assert.ok(
     src.includes("export async function startOAuthTui"),
-    "startOAuthTui deve ser exportada"
+    "startOAuthTui deve ser exportada",
   );
 });
 
@@ -152,7 +152,7 @@ test("EvalWatch.jsx — arquivo existe e exporta startEvalWatchTui", async () =>
   const src = readFileSync(fileURLToPath(path), "utf8");
   assert.ok(
     src.includes("export async function startEvalWatchTui"),
-    "startEvalWatchTui deve ser exportada"
+    "startEvalWatchTui deve ser exportada",
   );
 });
 
@@ -163,7 +163,7 @@ test("ProvidersTestAll.jsx — arquivo existe e exporta startProvidersTestTui", 
   const src = readFileSync(fileURLToPath(path), "utf8");
   assert.ok(
     src.includes("export async function startProvidersTestTui"),
-    "startProvidersTestTui deve ser exportada"
+    "startProvidersTestTui deve ser exportada",
   );
 });
 
@@ -173,7 +173,7 @@ test("backup matchesGlob — comportamento correto", async () => {
   const { fileURLToPath } = await import("node:url");
   const src = readFileSync(
     fileURLToPath(new URL("../../bin/cli/commands/backup.mjs", import.meta.url)),
-    "utf8"
+    "utf8",
   );
   // Garante que a função usa lógica correta (sem startsWith na branch sem *)
   assert.ok(src.includes("return fileName === pattern;"), "non-glob deve usar igualdade exata");

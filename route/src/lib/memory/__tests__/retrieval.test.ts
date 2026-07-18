@@ -50,7 +50,7 @@ describe("Memory API - response shape", () => {
           acc[m.type] = (acc[m.type] || 0) + 1;
           return acc;
         },
-        {} as Record<string, number>
+        {} as Record<string, number>,
       ),
     };
 
@@ -125,12 +125,12 @@ function insertMemory(
     content: string;
     metadata?: string;
     createdAt?: string;
-  }
+  },
 ) {
   const now = opts.createdAt ?? new Date().toISOString();
   db.prepare(
     `INSERT INTO memories (api_key_id, session_id, type, key, content, metadata, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     opts.apiKeyId ?? API_KEY_ID,
     opts.sessionId ?? null,
@@ -139,7 +139,7 @@ function insertMemory(
     opts.content,
     opts.metadata ?? "{}",
     now,
-    now
+    now,
   );
 }
 

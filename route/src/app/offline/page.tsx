@@ -16,7 +16,7 @@ export default function OfflinePage() {
   const isOnline = useSyncExternalStore(
     subscribeToOnline,
     () => navigator.onLine,
-    () => false
+    () => false,
   );
 
   return (

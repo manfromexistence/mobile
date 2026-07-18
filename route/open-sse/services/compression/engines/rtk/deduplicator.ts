@@ -4,7 +4,7 @@ export interface DeduplicateOptions {
 
 export function deduplicateRepeatedLines(
   text: string,
-  options: DeduplicateOptions = {}
+  options: DeduplicateOptions = {},
 ): {
   text: string;
   collapsed: number;

@@ -49,14 +49,21 @@ const applyMode = hasFlag("--apply");
 const pruneMode = hasFlag("--prune");
 const jsonOutput = hasFlag("--json");
 const onlyRaw = getFlagValue("--only");
-const onlyIds = onlyRaw ? onlyRaw.split(",").map((s) => s.trim()).filter(Boolean) : undefined;
+const onlyIds = onlyRaw
+  ? onlyRaw
+      .split(",")
+      .map((s) => s.trim())
+      .filter(Boolean)
+  : undefined;
 
 // ── Utility: print table ──────────────────────────────────────────────────────
 
 function printTable(report) {
   const { generated, unchanged, pruned, orphansDetected, errors } = report;
 
-  console.log(`\nGenerated: ${generated.length} · Unchanged: ${unchanged.length} · Pruned: ${pruned.length} · Orphans: ${orphansDetected.length} · Errors: ${errors.length}\n`);
+  console.log(
+    `\nGenerated: ${generated.length} · Unchanged: ${unchanged.length} · Pruned: ${pruned.length} · Orphans: ${orphansDetected.length} · Errors: ${errors.length}\n`,
+  );
 
   if (generated.length > 0) {
     console.log("  GENERATED:");
@@ -161,9 +168,7 @@ async function main() {
   } else {
     printTable(report);
     if (!applyMode) {
-      console.log(
-        "\n(dry-run) No files written. Use --apply to write SKILL.md files.\n",
-      );
+      console.log("\n(dry-run) No files written. Use --apply to write SKILL.md files.\n");
     } else {
       console.log();
     }

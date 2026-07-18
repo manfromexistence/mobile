@@ -1,9 +1,6 @@
-import type { DiffsThemeNames, ThemeRegistrationResolved } from '../../types';
-import {
-  prepareThemeResolution,
-  validateResolvedThemeName,
-} from './themeResolution';
-import { themeResolver } from './themeResolver';
+import type { DiffsThemeNames, ThemeRegistrationResolved } from "../../types";
+import { prepareThemeResolution, validateResolvedThemeName } from "./themeResolution";
+import { themeResolver } from "./themeResolver";
 
 // Resolves a theme by name to a normalized Shiki theme, delegating the cache,
 // concurrent-load dedupe, normalization, and registry to the shared
@@ -15,9 +12,7 @@ import { themeResolver } from './themeResolver';
 //      so callers never have to pre-register the full Shiki theme set.
 //   3. theme.name validation — the resolved theme's own name must match the
 //      requested name, catching mismatched registrations early.
-export async function resolveTheme(
-  themeName: DiffsThemeNames
-): Promise<ThemeRegistrationResolved> {
+export async function resolveTheme(themeName: DiffsThemeNames): Promise<ThemeRegistrationResolved> {
   prepareThemeResolution(themeName);
 
   const theme = await themeResolver.resolveTheme(themeName);

@@ -117,7 +117,7 @@ test("omp-settings POST: 400 when baseUrl is missing", async () => {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ apiKey: "sk-test" }),
-    })
+    }),
   );
   assert.equal(res.status, 400, `Expected 400, got ${res.status}`);
   const body = await res.json();
@@ -134,7 +134,7 @@ test("omp-settings POST: writes models.yml and persists credentials for a seeded
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ baseUrl: "http://localhost:20128", apiKey: "sk-test-omp" }),
-    })
+    }),
   );
   assert.equal(res.status, 200, `Expected 200, got ${res.status}`);
   const body = await res.json();
@@ -159,7 +159,7 @@ test("omp-settings DELETE: removes the OmniRoute provider from models.yml and cr
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ baseUrl: "http://localhost:20128", apiKey: "sk-test-omp" }),
-    })
+    }),
   );
 
   const res = await DELETE(req({ method: "DELETE" }));
@@ -184,7 +184,7 @@ test("omp-settings: error responses do not leak stack traces", async () => {
   const bodyStr = JSON.stringify(await res.json());
   assert.ok(
     !bodyStr.match(/\s+at\s+\/[^\s]/),
-    "Error response must not contain absolute-path stack traces"
+    "Error response must not contain absolute-path stack traces",
   );
 });
 

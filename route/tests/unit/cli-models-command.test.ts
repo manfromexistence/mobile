@@ -52,7 +52,7 @@ test("models returns 1 when server is offline", async () => {
       const result = await runModelsCommand(undefined, {});
       console.error = originalError;
       assert.equal(result, 1);
-    }
+    },
   );
 });
 
@@ -76,7 +76,7 @@ test("models --json returns 0 and prints JSON when server responds", async () =>
     const { runModelsCommand } = await import("../../bin/cli/commands/models.mjs");
 
     const { output, result } = await captureStdout(() =>
-      runModelsCommand(undefined, { json: true })
+      runModelsCommand(undefined, { json: true }),
     );
 
     assert.equal(result, 0);
@@ -103,7 +103,7 @@ test("models filters by provider argument", async () => {
     const { runModelsCommand } = await import("../../bin/cli/commands/models.mjs");
 
     const { output, result } = await captureStdout(() =>
-      runModelsCommand("openai", { json: true })
+      runModelsCommand("openai", { json: true }),
     );
 
     assert.equal(result, 0);

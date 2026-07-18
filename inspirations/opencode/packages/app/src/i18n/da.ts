@@ -74,7 +74,8 @@ export const dict = {
   "command.permissions.autoaccept.enable": "Accepter tilladelser automatisk",
   "command.permissions.autoaccept.disable": "Stop med at acceptere tilladelser automatisk",
   "command.workspace.toggle": "Skift arbejdsområder",
-  "command.workspace.toggle.description": "Aktiver eller deaktiver flere arbejdsområder i sidebjælken",
+  "command.workspace.toggle.description":
+    "Aktiver eller deaktiver flere arbejdsområder i sidebjælken",
   "command.session.undo": "Fortryd",
   "command.session.undo.description": "Fortryd den sidste besked",
   "command.session.redo": "Omgør",
@@ -161,14 +162,16 @@ export const dict = {
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "Udbyder-ID",
   "provider.custom.field.providerID.placeholder": "minudbyder",
-  "provider.custom.field.providerID.description": "Små bogstaver, tal, bindestreger eller understregninger",
+  "provider.custom.field.providerID.description":
+    "Små bogstaver, tal, bindestreger eller understregninger",
   "provider.custom.field.name.label": "Visningsnavn",
   "provider.custom.field.name.placeholder": "Min AI-udbyder",
   "provider.custom.field.baseURL.label": "Basis-URL",
   "provider.custom.field.baseURL.placeholder": "https://api.minudbyder.dk/v1",
   "provider.custom.field.apiKey.label": "API-nøgle",
   "provider.custom.field.apiKey.placeholder": "API-nøgle",
-  "provider.custom.field.apiKey.description": "Valgfri. Lad være tom, hvis du administrerer godkendelse via headers.",
+  "provider.custom.field.apiKey.description":
+    "Valgfri. Lad være tom, hvis du administrerer godkendelse via headers.",
   "provider.custom.models.label": "Modeller",
   "provider.custom.models.id.label": "ID",
   "provider.custom.models.id.placeholder": "model-id",
@@ -184,7 +187,8 @@ export const dict = {
   "provider.custom.headers.remove": "Fjern header",
   "provider.custom.headers.add": "Tilføj header",
   "provider.custom.error.providerID.required": "Udbyder-ID er påkrævet",
-  "provider.custom.error.providerID.format": "Brug små bogstaver, tal, bindestreger eller understregninger",
+  "provider.custom.error.providerID.format":
+    "Brug små bogstaver, tal, bindestreger eller understregninger",
   "provider.custom.error.providerID.exists": "Dette udbyder-ID findes allerede",
   "provider.custom.error.name.required": "Visningsnavn er påkrævet",
   "provider.custom.error.baseURL.required": "Basis-URL er påkrævet",
@@ -193,7 +197,8 @@ export const dict = {
   "provider.custom.error.duplicate": "Duplikeret",
 
   "provider.disconnect.toast.disconnected.title": "{{provider}} frakoblet",
-  "provider.disconnect.toast.disconnected.description": "Modeller fra {{provider}} er ikke længere tilgængelige.",
+  "provider.disconnect.toast.disconnected.description":
+    "Modeller fra {{provider}} er ikke længere tilgængelige.",
   "model.tag.free": "Gratis",
   "model.tag.latest": "Nyeste",
 
@@ -278,9 +283,11 @@ export const dict = {
   "prompt.action.stop": "Stop",
 
   "prompt.toast.pasteUnsupported.title": "Ikke understøttet vedhæftning",
-  "prompt.toast.pasteUnsupported.description": "Kun billeder, PDF'er eller tekstfiler kan vedhæftes her.",
+  "prompt.toast.pasteUnsupported.description":
+    "Kun billeder, PDF'er eller tekstfiler kan vedhæftes her.",
   "prompt.toast.modelAgentRequired.title": "Vælg en agent og model",
-  "prompt.toast.modelAgentRequired.description": "Vælg en agent og model før du sender en forespørgsel.",
+  "prompt.toast.modelAgentRequired.description":
+    "Vælg en agent og model før du sender en forespørgsel.",
   "prompt.toast.worktreeCreateFailed.title": "Kunne ikke oprette worktree",
   "prompt.toast.sessionCreateFailed.title": "Kunne ikke oprette session",
   "prompt.toast.shellSendFailed.title": "Kunne ikke sende shell-kommando",
@@ -351,7 +358,8 @@ export const dict = {
   "dialog.project.edit.color.select": "Vælg farven {{color}}",
 
   "dialog.project.edit.worktree.startup": "Opstartsscript for arbejdsområde",
-  "dialog.project.edit.worktree.startup.description": "Køres efter oprettelse af et nyt arbejdsområde (worktree).",
+  "dialog.project.edit.worktree.startup.description":
+    "Køres efter oprettelse af et nyt arbejdsområde (worktree).",
   "dialog.project.edit.worktree.startup.placeholder": "f.eks. bun install",
   "context.breakdown.title": "Kontekstfordeling",
   "context.breakdown.note":
@@ -444,7 +452,8 @@ export const dict = {
   "toast.session.listFailed.title": "Kunne ikke indlæse sessioner for {{project}}",
 
   "toast.update.title": "Opdatering tilgængelig",
-  "toast.update.description": "En ny version af OpenCode ({{version}}) er nu tilgængelig til installation.",
+  "toast.update.description":
+    "En ny version af OpenCode ({{version}}) er nu tilgængelig til installation.",
   "toast.update.action.installRestart": "Installer og genstart",
   "toast.update.action.notYet": "Ikke endnu",
 
@@ -464,7 +473,8 @@ export const dict = {
   "error.dev.rootNotFound":
     "Rodelement ikke fundet. Har du glemt at tilføje det til din index.html? Eller måske er id-attributten stavet forkert?",
 
-  "error.serverSync.connectFailed": "Kunne ikke forbinde til server. Kører der en server på `{{url}}`?",
+  "error.serverSync.connectFailed":
+    "Kunne ikke forbinde til server. Kører der en server på `{{url}}`?",
   "directory.error.invalidUrl": "Ugyldig mappe i URL.",
 
   "error.chain.unknown": "Ukendt fejl",
@@ -476,12 +486,14 @@ export const dict = {
   "error.chain.didYouMean": "Mente du: {{suggestions}}",
   "error.chain.modelNotFound": "Model ikke fundet: {{provider}}/{{model}}",
   "error.chain.checkConfig": "Tjek dine konfigurations (opencode.json) udbyder/modelnavne",
-  "error.chain.mcpFailed": 'MCP-server "{{name}}" fejlede. Bemærk, OpenCode understøtter ikke MCP-godkendelse endnu.',
+  "error.chain.mcpFailed":
+    'MCP-server "{{name}}" fejlede. Bemærk, OpenCode understøtter ikke MCP-godkendelse endnu.',
   "error.chain.providerAuthFailed": "Udbydergodkendelse mislykkedes ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'Kunne ikke initialisere udbyder "{{provider}}". Tjek legitimationsoplysninger og konfiguration.',
   "error.chain.configJsonInvalid": "Konfigurationsfil på {{path}} er ikke gyldig JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "Konfigurationsfil på {{path}} er ikke gyldig JSON(C): {{message}}",
+  "error.chain.configJsonInvalidWithMessage":
+    "Konfigurationsfil på {{path}} er ikke gyldig JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'Mappe "{{dir}}" i {{path}} er ikke gyldig. Omdøb mappen til "{{suggestion}}" eller fjern den. Dette er en almindelig slåfejl.',
   "error.chain.configFrontmatterError": "Kunne ikke parse frontmatter i {{path}}:\n{{message}}",
@@ -587,7 +599,8 @@ export const dict = {
   "terminal.close": "Luk terminal",
 
   "terminal.connectionLost.title": "Forbindelse mistet",
-  "terminal.connectionLost.description": "Terminalforbindelsen blev afbrudt. Dette kan ske, når serveren genstarter.",
+  "terminal.connectionLost.description":
+    "Terminalforbindelsen blev afbrudt. Dette kan ske, når serveren genstarter.",
   "common.closeTab": "Luk fane",
   "common.dismiss": "Afvis",
   "common.requestFailed": "Forespørgsel mislykkedes",
@@ -609,8 +622,10 @@ export const dict = {
   "sidebar.workspaces.enable": "Aktiver arbejdsområder",
   "sidebar.workspaces.disable": "Deaktiver arbejdsområder",
   "sidebar.gettingStarted.title": "Kom i gang",
-  "sidebar.gettingStarted.line1": "OpenCode inkluderer gratis modeller så du kan starte med det samme.",
-  "sidebar.gettingStarted.line2": "Forbind enhver udbyder for at bruge modeller, inkl. Claude, GPT, Gemini osv.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode inkluderer gratis modeller så du kan starte med det samme.",
+  "sidebar.gettingStarted.line2":
+    "Forbind enhver udbyder for at bruge modeller, inkl. Claude, GPT, Gemini osv.",
   "sidebar.project.recentSessions": "Seneste sessioner",
   "sidebar.project.viewAllSessions": "Vis alle sessioner",
   "sidebar.project.clearNotifications": "Ryd notifikationer",
@@ -636,7 +651,8 @@ export const dict = {
   "settings.general.row.appearance.title": "Udseende",
   "settings.general.row.appearance.description": "Tilpas hvordan OpenCode ser ud på din enhed",
   "settings.general.row.colorScheme.title": "Farveskema",
-  "settings.general.row.colorScheme.description": "Vælg om OpenCode følger systemets, lyst eller mørkt tema",
+  "settings.general.row.colorScheme.description":
+    "Vælg om OpenCode følger systemets, lyst eller mørkt tema",
   "settings.general.row.theme.title": "Tema",
   "settings.general.row.theme.description": "Tilpas hvordan OpenCode er temabestemt.",
   "settings.general.row.font.title": "Kode-skrifttype",
@@ -646,14 +662,16 @@ export const dict = {
   "settings.general.row.uiFont.title": "UI-skrifttype",
   "settings.general.row.uiFont.description": "Tilpas skrifttypen, der bruges i hele brugerfladen",
   "settings.general.row.followup.title": "Opfølgningsadfærd",
-  "settings.general.row.followup.description": "Vælg om opfølgende forespørgsler skal styre straks eller vente i kø",
+  "settings.general.row.followup.description":
+    "Vælg om opfølgende forespørgsler skal styre straks eller vente i kø",
   "settings.general.row.followup.option.queue": "Kø",
   "settings.general.row.followup.option.steer": "Styr",
   "settings.general.row.reasoningSummaries.title": "Vis tænkeoversigter",
   "settings.general.row.reasoningSummaries.description": "Vis model tænkeoversigter i tidslinjen",
 
   "settings.general.row.shellToolPartsExpanded.title": "Udvid shell-værktøjsdele",
-  "settings.general.row.shellToolPartsExpanded.description": "Vis shell-værktøjsdele udvidet som standard i tidslinjen",
+  "settings.general.row.shellToolPartsExpanded.description":
+    "Vis shell-værktøjsdele udvidet som standard i tidslinjen",
   "settings.general.row.editToolPartsExpanded.title": "Udvid edit-værktøjsdele",
   "settings.general.row.editToolPartsExpanded.description":
     "Vis edit-, write- og patch-værktøjsdele udvidet som standard i tidslinjen",
@@ -666,9 +684,11 @@ export const dict = {
   "settings.general.row.releaseNotes.description": 'Vis "Hvad er nyt"-popups efter opdateringer',
 
   "settings.updates.row.startup.title": "Tjek for opdateringer ved opstart",
-  "settings.updates.row.startup.description": "Tjek automatisk for opdateringer, når OpenCode starter",
+  "settings.updates.row.startup.description":
+    "Tjek automatisk for opdateringer, når OpenCode starter",
   "settings.updates.row.check.title": "Tjek for opdateringer",
-  "settings.updates.row.check.description": "Tjek manuelt for opdateringer og installer, hvis tilgængelig",
+  "settings.updates.row.check.description":
+    "Tjek manuelt for opdateringer og installer, hvis tilgængelig",
   "settings.updates.action.checkNow": "Tjek nu",
   "settings.updates.action.checking": "Tjekker...",
   "settings.updates.toast.latest.title": "Du er opdateret",
@@ -724,12 +744,15 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Vis systemmeddelelse når agenten er færdig eller kræver opmærksomhed",
   "settings.general.notifications.permissions.title": "Tilladelser",
-  "settings.general.notifications.permissions.description": "Vis systemmeddelelse når en tilladelse er påkrævet",
+  "settings.general.notifications.permissions.description":
+    "Vis systemmeddelelse når en tilladelse er påkrævet",
   "settings.general.notifications.errors.title": "Fejl",
-  "settings.general.notifications.errors.description": "Vis systemmeddelelse når der opstår en fejl",
+  "settings.general.notifications.errors.description":
+    "Vis systemmeddelelse når der opstår en fejl",
 
   "settings.general.sounds.agent.title": "Agent",
-  "settings.general.sounds.agent.description": "Afspil lyd når agenten er færdig eller kræver opmærksomhed",
+  "settings.general.sounds.agent.description":
+    "Afspil lyd når agenten er færdig eller kræver opmærksomhed",
   "settings.general.sounds.permissions.title": "Tilladelser",
   "settings.general.sounds.permissions.description": "Afspil lyd når en tilladelse er påkrævet",
   "settings.general.sounds.errors.title": "Fejl",
@@ -738,7 +761,8 @@ export const dict = {
   "settings.shortcuts.title": "Tastaturgenveje",
   "settings.shortcuts.reset.button": "Nulstil til standard",
   "settings.shortcuts.reset.toast.title": "Genveje nulstillet",
-  "settings.shortcuts.reset.toast.description": "Tastaturgenveje er blevet nulstillet til standard.",
+  "settings.shortcuts.reset.toast.description":
+    "Tastaturgenveje er blevet nulstillet til standard.",
   "settings.shortcuts.conflict.title": "Genvej allerede i brug",
   "settings.shortcuts.conflict.description": "{{keybind}} er allerede tildelt til {{titles}}.",
   "settings.shortcuts.unassigned": "Ikke tildelt",
@@ -806,9 +830,11 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "Websøgning",
   "settings.permissions.tool.websearch.description": "Søg på nettet",
   "settings.permissions.tool.external_directory.title": "Ekstern mappe",
-  "settings.permissions.tool.external_directory.description": "Få adgang til filer uden for projektmappen",
+  "settings.permissions.tool.external_directory.description":
+    "Få adgang til filer uden for projektmappen",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "Opdag gentagne værktøjskald med identisk input",
+  "settings.permissions.tool.doom_loop.description":
+    "Opdag gentagne værktøjskald med identisk input",
 
   "session.delete.failed.title": "Kunne ikke slette session",
   "session.delete.title": "Slet session",
@@ -862,7 +888,8 @@ export const dict = {
   "dialog.server.add.passwordPlaceholder": "adgangskode",
   "server.row.noUsername": "intet brugernavn",
   "session.review.noVcs.createGit.title": "Opret et Git-repository",
-  "session.review.noVcs.createGit.description": "Spor, gennemgå og fortryd ændringer i dette projekt",
+  "session.review.noVcs.createGit.description":
+    "Spor, gennemgå og fortryd ændringer i dette projekt",
   "session.review.noVcs.createGit.actionLoading": "Opretter Git-repository...",
   "session.review.noVcs.createGit.action": "Opret Git-repository",
   "session.todo.progress": "{{done}} af {{total}} opgaver fuldført",
@@ -895,7 +922,8 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "Billeder over 32ms i de sidste 5 sekunder.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "Blokeret tid og antal lange opgaver i de sidste 5 sekunder. Maks opgave: {{max}}.",
+  "debugBar.long.tip":
+    "Blokeret tid og antal lange opgaver i de sidste 5 sekunder. Maks opgave: {{max}}.",
   "debugBar.delay.label": "DELAY",
   "debugBar.delay.tip": "Værste observerede inputforsinkelse i de sidste 5 sekunder.",
   "debugBar.inp.label": "INP",
@@ -925,8 +953,9 @@ export const dict = {
   "error.serverSDK.noServerAvailable": "Ingen server tilgængelig",
   "error.serverSDK.serverNotAvailable": "Server ikke tilgængelig",
   "error.childStore.persistedCacheCreateFailed": "Kunne ikke oprette vedvarende cache",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Kunne ikke oprette vedvarende projektmetadata",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Kunne ikke oprette vedvarende projektmetadata",
   "error.childStore.persistedProjectIconCreateFailed": "Kunne ikke oprette vedvarende projektikon",
   "error.childStore.storeCreateFailed": "Kunne ikke oprette lager",
   "terminal.connectionLost.abnormalClose": "WebSocket lukkede unormalt: {{code}}",
-}
+};

@@ -8,7 +8,7 @@ import type { AddressInfo } from "node:net";
 const require = createRequire(import.meta.url);
 const headResponseGuard = require("../../scripts/dev/head-response-guard.cjs") as {
   wrapRequestListenerWithHeadResponseGuard: (
-    listener: (req: http.IncomingMessage, res: http.ServerResponse) => unknown
+    listener: (req: http.IncomingMessage, res: http.ServerResponse) => unknown,
   ) => (req: http.IncomingMessage, res: http.ServerResponse) => unknown;
   suppressBodyAndForceClose: (res: http.ServerResponse) => void;
 };
@@ -85,7 +85,7 @@ describe("issue #6400 — HEAD response guard (unit)", () => {
     assert.equal(
       res.writeCalls.length,
       0,
-      "the original write() must never be called — the body must be fully discarded"
+      "the original write() must never be called — the body must be fully discarded",
     );
     assert.notEqual(res.write, originalWrite);
   });
@@ -101,7 +101,7 @@ describe("issue #6400 — HEAD response guard (unit)", () => {
     assert.deepEqual(
       res.endCalls[0],
       [],
-      "the discarded body must never be forwarded to the real end()"
+      "the discarded body must never be forwarded to the real end()",
     );
     assert.equal(res.ended, true);
   });
@@ -114,17 +114,20 @@ describe("issue #6400 — HEAD response guard (unit)", () => {
       receivedRes = res;
     };
     const guarded = wrapRequestListenerWithHeadResponseGuard(
-      listener as unknown as (req: http.IncomingMessage, res: http.ServerResponse) => unknown
+      listener as unknown as (req: http.IncomingMessage, res: http.ServerResponse) => unknown,
     );
 
     const getRes = makeMockResponse();
-    guarded({ method: "GET" } as unknown as http.IncomingMessage, getRes as unknown as http.ServerResponse);
+    guarded(
+      { method: "GET" } as unknown as http.IncomingMessage,
+      getRes as unknown as http.ServerResponse,
+    );
     assert.equal(getRes.headers.connection, undefined, "GET must not be forced to close");
 
     const headRes = makeMockResponse();
     guarded(
       { method: "HEAD" } as unknown as http.IncomingMessage,
-      headRes as unknown as http.ServerResponse
+      headRes as unknown as http.ServerResponse,
     );
     assert.equal(headRes.headers.connection, "close", "HEAD must be force-closed");
 
@@ -151,18 +154,20 @@ describe("issue #6400 — HEAD response guard (integration, real socket)", () =>
   });
 
   function startGuardedServer(
-    handler: (req: http.IncomingMessage, res: http.ServerResponse) => void
+    handler: (req: http.IncomingMessage, res: http.ServerResponse) => void,
   ): Promise<{ port: number }> {
     const server = http.createServer(wrapRequestListenerWithHeadResponseGuard(handler));
     servers.push(server);
     return new Promise((resolve) => {
-      server.listen(0, "127.0.0.1", () => resolve({ port: (server.address() as AddressInfo).port }));
+      server.listen(0, "127.0.0.1", () =>
+        resolve({ port: (server.address() as AddressInfo).port }),
+      );
     });
   }
 
   function rawRequest(
     port: number,
-    method: string
+    method: string,
   ): Promise<{ statusCode: number; headers: Record<string, string>; body: string }> {
     return new Promise((resolvePromise, reject) => {
       const req = http.request(
@@ -174,12 +179,12 @@ describe("issue #6400 — HEAD response guard (integration, real socket)", () =>
             resolvePromise({
               statusCode: res.statusCode ?? 0,
               headers: Object.fromEntries(
-                Object.entries(res.headers).map(([k, v]) => [k, String(v)])
+                Object.entries(res.headers).map(([k, v]) => [k, String(v)]),
               ),
               body: Buffer.concat(chunks).toString("utf8"),
             });
           });
-        }
+        },
       );
       req.on("error", reject);
       req.end();
@@ -201,7 +206,7 @@ describe("issue #6400 — HEAD response guard (integration, real socket)", () =>
     assert.equal(
       result.headers.connection,
       "close",
-      "HEAD response must force Connection: close so the client never has to guess"
+      "HEAD response must force Connection: close so the client never has to guess",
     );
   });
 
@@ -218,7 +223,7 @@ describe("issue #6400 — HEAD response guard (integration, real socket)", () =>
     assert.notEqual(
       result.headers.connection,
       "close",
-      "GET requests must not be forced to close — only HEAD is guarded"
+      "GET requests must not be forced to close — only HEAD is guarded",
     );
   });
 

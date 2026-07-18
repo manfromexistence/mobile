@@ -87,10 +87,15 @@ describe("detectModelFamily (pure)", () => {
   });
 
   it("advertises exactly one auto/<family> catalog id per family", () => {
-    assert.deepEqual(
-      [...AUTO_FAMILY_IDS].sort(),
-      ["auto/gemini", "auto/gemma", "auto/glm", "auto/llama", "auto/mimo", "auto/minimax", "auto/zai"]
-    );
+    assert.deepEqual([...AUTO_FAMILY_IDS].sort(), [
+      "auto/gemini",
+      "auto/gemma",
+      "auto/glm",
+      "auto/llama",
+      "auto/mimo",
+      "auto/minimax",
+      "auto/zai",
+    ]);
   });
 });
 
@@ -168,19 +173,18 @@ describe("auto/<family> materialization (#6453)", () => {
     assert.equal(combo.id, "auto/minimax");
     assert.ok(
       combo.models.every((m) => m.providerId !== "openai"),
-      "auto/minimax must not include the connected openai/gpt-4o-mini candidate"
+      "auto/minimax must not include the connected openai/gpt-4o-mini candidate",
     );
     assert.ok(
       combo.models.every((m) => detectModelFamily(m.model) === "minimax"),
-      "every candidate in auto/minimax must actually be a minimax model"
+      "every candidate in auto/minimax must actually be a minimax model",
     );
   });
-
 
   it("rejects auto/<unknownfamily> with the same clean error as any unknown combo", async () => {
     await assert.rejects(
       () => builtinCatalog.createBuiltinAutoCombo("auto/unknownfam", "unknownfam"),
-      /Unknown built-in auto combo/
+      /Unknown built-in auto combo/,
     );
   });
 

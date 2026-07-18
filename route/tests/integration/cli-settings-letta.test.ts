@@ -22,9 +22,7 @@ process.env.JWT_SECRET = "test-jwt-secret-letta";
 const core = await import("../../src/lib/db/core.ts");
 const localDb = await import("../../src/lib/localDb.ts");
 
-const { GET, POST, DELETE } = await import(
-  "../../src/app/api/cli-tools/letta-settings/route.ts"
-);
+const { GET, POST, DELETE } = await import("../../src/app/api/cli-tools/letta-settings/route.ts");
 
 let tmpHome: string;
 let origHome: string | undefined;
@@ -98,7 +96,7 @@ test("letta-settings POST: 400 when baseUrl is missing", async () => {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ apiKey: "sk-test" }),
-    })
+    }),
   );
   assert.equal(res.status, 400, `Expected 400, got ${res.status}`);
   const body = await res.json();
@@ -113,7 +111,7 @@ test("letta-settings POST: writes the lmstudio provider entry for a fresh instal
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ baseUrl: "http://localhost:20128", apiKey: "sk-test-letta" }),
-    })
+    }),
   );
   assert.equal(res.status, 200, `Expected 200, got ${res.status}`);
   const body = await res.json();
@@ -136,7 +134,7 @@ test("letta-settings POST: 409 when lmstudio is already configured for real LM S
     JSON.stringify({
       version: 1,
       providers: { lmstudio: { base_url: "http://localhost:1234/v1" } },
-    })
+    }),
   );
 
   const res = await POST(
@@ -144,7 +142,7 @@ test("letta-settings POST: 409 when lmstudio is already configured for real LM S
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ baseUrl: "http://localhost:20128", apiKey: "sk-test-letta" }),
-    })
+    }),
   );
   assert.equal(res.status, 409, `Expected 409, got ${res.status}`);
   const body = await res.json();
@@ -159,7 +157,7 @@ test("letta-settings DELETE: removes the lmstudio provider written by POST", asy
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ baseUrl: "http://localhost:20128", apiKey: "sk-test-letta" }),
-    })
+    }),
   );
 
   const res = await DELETE(req({ method: "DELETE" }));
@@ -183,7 +181,7 @@ test("letta-settings: error responses do not leak stack traces", async () => {
   const bodyStr = JSON.stringify(await res.json());
   assert.ok(
     !bodyStr.match(/\s+at\s+\/[^\s]/),
-    "Error response must not contain absolute-path stack traces"
+    "Error response must not contain absolute-path stack traces",
   );
 });
 

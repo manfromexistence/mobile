@@ -1,17 +1,17 @@
-import { describe, expect, test } from "bun:test"
-import type { ZenData } from "@opencode-ai/console-core/model.js"
-import type { ProviderHelper } from "../src/routes/zen/util/provider/provider"
-import { anthropicHelper } from "../src/routes/zen/util/provider/anthropic"
-import { googleHelper } from "../src/routes/zen/util/provider/google"
-import { oaCompatHelper } from "../src/routes/zen/util/provider/openai-compatible"
-import { openaiHelper } from "../src/routes/zen/util/provider/openai"
+import { describe, expect, test } from "bun:test";
+import type { ZenData } from "@opencode-ai/console-core/model.js";
+import type { ProviderHelper } from "../src/routes/zen/util/provider/provider";
+import { anthropicHelper } from "../src/routes/zen/util/provider/anthropic";
+import { googleHelper } from "../src/routes/zen/util/provider/google";
+import { oaCompatHelper } from "../src/routes/zen/util/provider/openai-compatible";
+import { openaiHelper } from "../src/routes/zen/util/provider/openai";
 
 const providers = {
   anthropic: anthropicHelper({ reqModel: "claude-haiku-4-5", providerModel: "claude-haiku-4-5" }),
   google: googleHelper({ reqModel: "gemini-3-flash", providerModel: "gemini-3-flash" }),
   openai: openaiHelper({ reqModel: "gpt-5", providerModel: "gpt-5" }),
   "oa-compat": oaCompatHelper({ reqModel: "gpt-5-nano", providerModel: "gpt-5-nano" }),
-} satisfies Record<ZenData.Format, ReturnType<ProviderHelper>>
+} satisfies Record<ZenData.Format, ReturnType<ProviderHelper>>;
 
 describe("provider usage extraction", () => {
   test("extracts Google non-stream usage metadata", () => {
@@ -22,7 +22,7 @@ describe("provider usage extraction", () => {
         thoughtsTokenCount: 2,
         cachedContentTokenCount: 4,
       },
-    })
+    });
 
     expect(providers.google.normalizeUsage(usage)).toEqual({
       inputTokens: 6,
@@ -31,14 +31,14 @@ describe("provider usage extraction", () => {
       cacheReadTokens: 4,
       cacheWrite5mTokens: undefined,
       cacheWrite1hTokens: undefined,
-    })
-  })
+    });
+  });
 
   test("parses Google stream usage metadata", () => {
-    const usageParser = providers.google.createUsageParser()
+    const usageParser = providers.google.createUsageParser();
     usageParser.parse(
       'data: {"usageMetadata":{"promptTokenCount":10,"candidatesTokenCount":3,"thoughtsTokenCount":2,"cachedContentTokenCount":4}}',
-    )
+    );
 
     expect(providers.google.normalizeUsage(usageParser.retrieve())).toEqual({
       inputTokens: 6,
@@ -47,8 +47,8 @@ describe("provider usage extraction", () => {
       cacheReadTokens: 4,
       cacheWrite5mTokens: undefined,
       cacheWrite1hTokens: undefined,
-    })
-  })
+    });
+  });
 
   test("extracts nested OpenAI Responses usage", () => {
     expect(
@@ -63,6 +63,6 @@ describe("provider usage extraction", () => {
     ).toEqual({
       input_tokens: 5,
       output_tokens: 7,
-    })
-  })
-})
+    });
+  });
+});

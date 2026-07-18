@@ -1,4 +1,4 @@
-import { SettingsSection } from "./settings-section"
+import { SettingsSection } from "./settings-section";
 
 export default function () {
   return (
@@ -7,5 +7,5 @@ export default function () {
         <SettingsSection />
       </div>
     </div>
-  )
+  );
 }

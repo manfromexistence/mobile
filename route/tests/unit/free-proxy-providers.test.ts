@@ -13,8 +13,9 @@ process.env.FREE_PROXY_PROXIFLY_ENABLED = "false";
 process.env.FREE_PROXY_IPLOCATE_ENABLED = "false";
 
 const core = await import("../../src/lib/db/core.ts");
-const { getProvider, getEnabledProviders, getAllProviders } =
-  await import("../../src/lib/freeProxyProviders/index.ts");
+const { getProvider, getEnabledProviders, getAllProviders } = await import(
+  "../../src/lib/freeProxyProviders/index.ts"
+);
 
 async function reset() {
   core.resetDbInstance();
@@ -257,13 +258,16 @@ test("IplocateProvider.sync parses the plain-text ip:port lists (.txt, not .json
     // plain-text payload → every protocol errored and 0 proxies were parsed.
     assert.ok(
       seenUrls.length > 0 && seenUrls.every((u) => u.endsWith(".txt")),
-      `expected .txt URLs, got: ${seenUrls.join(", ")}`
+      `expected .txt URLs, got: ${seenUrls.join(", ")}`,
     );
-    assert.ok(result.fetched > 0, `expected proxies parsed from the txt list, got ${result.fetched}`);
+    assert.ok(
+      result.fetched > 0,
+      `expected proxies parsed from the txt list, got ${result.fetched}`,
+    );
     const items = await p.list({ limit: 50 });
     assert.ok(
       items.some((i) => i.host === "103.173.141.10" && i.port === 8080),
-      "parsed ip:port must be stored"
+      "parsed ip:port must be stored",
     );
     assert.ok(items.every((i) => i.source === "iplocate"));
   } finally {

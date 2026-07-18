@@ -1,5 +1,5 @@
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { declarePI, simplexNoise } from '../shader-utils.js';
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { declarePI, simplexNoise } from "../shader-utils.js";
 
 /**
  * Static grid pattern made of circles, diamonds, squares or triangles.
@@ -53,8 +53,8 @@ in vec2 v_patternUV;
 
 out vec4 fragColor;
 
-${ declarePI }
-${ simplexNoise }
+${declarePI}
+${simplexNoise}
 
 float polygon(vec2 p, float N, float rot) {
   float a = atan(p.x, p.y) + rot;

@@ -1,27 +1,27 @@
-import { JSDOM } from 'jsdom';
+import { JSDOM } from "jsdom";
 
 const DOM_GLOBAL_KEYS = [
-  'CSS',
-  'CSSStyleSheet',
-  'customElements',
-  'document',
-  'Event',
-  'FocusEvent',
-  'HTMLElement',
-  'HTMLButtonElement',
-  'HTMLDivElement',
-  'HTMLInputElement',
-  'HTMLStyleElement',
-  'HTMLTemplateElement',
-  'KeyboardEvent',
-  'MouseEvent',
-  'MutationObserver',
-  'navigator',
-  'Node',
-  'ResizeObserver',
-  'SVGElement',
-  'ShadowRoot',
-  'window',
+  "CSS",
+  "CSSStyleSheet",
+  "customElements",
+  "document",
+  "Event",
+  "FocusEvent",
+  "HTMLElement",
+  "HTMLButtonElement",
+  "HTMLDivElement",
+  "HTMLInputElement",
+  "HTMLStyleElement",
+  "HTMLTemplateElement",
+  "KeyboardEvent",
+  "MouseEvent",
+  "MutationObserver",
+  "navigator",
+  "Node",
+  "ResizeObserver",
+  "SVGElement",
+  "ShadowRoot",
+  "window",
 ] as const;
 
 type DomGlobalKey = (typeof DOM_GLOBAL_KEYS)[number];
@@ -45,15 +45,15 @@ class MockResizeObserver {
 // Installs the browser globals that the vanilla tree renderer touches, then
 // restores the previous process state when the test calls cleanup().
 export function installDom(): InstalledDom {
-  const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
-    url: 'http://localhost',
+  const dom = new JSDOM("<!DOCTYPE html><html><body></body></html>", {
+    url: "http://localhost",
   });
   const originalValues = Object.fromEntries(
-    DOM_GLOBAL_KEYS.map((key) => [key, Reflect.get(globalThis, key)])
+    DOM_GLOBAL_KEYS.map((key) => [key, Reflect.get(globalThis, key)]),
   ) as DomGlobalSnapshot;
 
   Object.assign(globalThis, {
-    CSS: Reflect.get(dom.window, 'CSS'),
+    CSS: Reflect.get(dom.window, "CSS"),
     CSSStyleSheet: MockStyleSheet,
     customElements: dom.window.customElements,
     document: dom.window.document,

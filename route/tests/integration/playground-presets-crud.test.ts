@@ -22,26 +22,28 @@ import os from "node:os";
 import path from "node:path";
 
 // Isolated DB per test file
-const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-presets-crud-")
-);
+const TEST_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-presets-crud-"));
 process.env.DATA_DIR = TEST_DATA_DIR;
 process.env.REQUIRE_API_KEY = "false";
 
 const core = await import("../../src/lib/db/core.ts");
 
 // Import route handlers
-const { GET: listGet, POST: createPost, OPTIONS: listOptions } = await import(
-  "../../src/app/api/playground/presets/route.ts"
-);
-const { GET: idGet, PUT: idPut, DELETE: idDelete, OPTIONS: idOptions } = await import(
-  "../../src/app/api/playground/presets/[id]/route.ts"
-);
+const {
+  GET: listGet,
+  POST: createPost,
+  OPTIONS: listOptions,
+} = await import("../../src/app/api/playground/presets/route.ts");
+const {
+  GET: idGet,
+  PUT: idPut,
+  DELETE: idDelete,
+  OPTIONS: idOptions,
+} = await import("../../src/app/api/playground/presets/[id]/route.ts");
 
 const BASE_URL = "http://localhost:20128";
 
-const UUID_V4_REGEX =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const UUID_V4_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -119,7 +121,7 @@ test("POST /presets → 201 with valid UUID id and correct shape", async () => {
       model: "gpt-4o",
       system: "You are a helpful assistant.",
       params: { temperature: 0.7, max_tokens: 1024 },
-    })
+    }),
   );
   assert.equal(res.status, 201);
   assert.ok(res.headers.get("Access-Control-Allow-Methods")?.includes("POST"));
@@ -145,7 +147,7 @@ test("POST /presets → 201 with valid UUID id and correct shape", async () => {
 test("GET /presets list returns the created item", async () => {
   // Create one preset
   const createRes = await createPost(
-    postReq({ name: "Preset A", endpoint: "chat.completions", model: "gpt-4o" })
+    postReq({ name: "Preset A", endpoint: "chat.completions", model: "gpt-4o" }),
   );
   assert.equal(createRes.status, 201);
   const created = (await createRes.json()) as { id: string };
@@ -162,7 +164,7 @@ test("GET /presets list returns the created item", async () => {
 
 test("GET /presets/[id] returns the correct preset", async () => {
   const createRes = await createPost(
-    postReq({ name: "Fetch Me", endpoint: "embeddings", model: "text-embedding-3-small" })
+    postReq({ name: "Fetch Me", endpoint: "embeddings", model: "text-embedding-3-small" }),
   );
   const created = (await createRes.json()) as { id: string; name: string };
 
@@ -176,17 +178,22 @@ test("GET /presets/[id] returns the correct preset", async () => {
 
 test("PUT /presets/[id] partial patch (name only) updates correctly", async () => {
   const createRes = await createPost(
-    postReq({ name: "Original Name", endpoint: "chat.completions", model: "gpt-4o" })
+    postReq({ name: "Original Name", endpoint: "chat.completions", model: "gpt-4o" }),
   );
   const created = (await createRes.json()) as { id: string; endpoint: string; model: string };
 
   const putRes = await idPut(
     putReq(created.id, { name: "Updated Name" }),
-    await resolveParams(created.id)
+    await resolveParams(created.id),
   );
   assert.equal(putRes.status, 200);
 
-  const updated = (await putRes.json()) as { id: string; name: string; endpoint: string; model: string };
+  const updated = (await putRes.json()) as {
+    id: string;
+    name: string;
+    endpoint: string;
+    model: string;
+  };
   assert.equal(updated.id, created.id);
   assert.equal(updated.name, "Updated Name");
   // Other fields should be preserved
@@ -201,13 +208,13 @@ test("PUT /presets/[id] can update params", async () => {
       endpoint: "chat.completions",
       model: "gpt-4o",
       params: { temperature: 0.5 },
-    })
+    }),
   );
   const created = (await createRes.json()) as { id: string };
 
   const putRes = await idPut(
     putReq(created.id, { params: { temperature: 0.9, max_tokens: 2048 } }),
-    await resolveParams(created.id)
+    await resolveParams(created.id),
   );
   assert.equal(putRes.status, 200);
 
@@ -217,7 +224,7 @@ test("PUT /presets/[id] can update params", async () => {
 
 test("DELETE /presets/[id] returns 204", async () => {
   const createRes = await createPost(
-    postReq({ name: "Delete Me", endpoint: "chat.completions", model: "gpt-4o" })
+    postReq({ name: "Delete Me", endpoint: "chat.completions", model: "gpt-4o" }),
   );
   const created = (await createRes.json()) as { id: string };
 
@@ -227,7 +234,7 @@ test("DELETE /presets/[id] returns 204", async () => {
 
 test("GET /presets/[id] after DELETE returns 404", async () => {
   const createRes = await createPost(
-    postReq({ name: "Gone Soon", endpoint: "chat.completions", model: "gpt-4o" })
+    postReq({ name: "Gone Soon", endpoint: "chat.completions", model: "gpt-4o" }),
   );
   const created = (await createRes.json()) as { id: string };
 
@@ -269,7 +276,7 @@ test("params object is serialized and deserialized correctly", async () => {
       endpoint: "chat.completions",
       model: "gpt-4o",
       params: complexParams,
-    })
+    }),
   );
   assert.equal(createRes.status, 201);
   const created = (await createRes.json()) as { id: string; params: Record<string, unknown> };
@@ -295,10 +302,7 @@ test("GET /presets/[id] with non-UUID id → 400", async () => {
 
 test("PUT /presets/[id] with non-UUID id → 400", async () => {
   const badId = "also-not-a-uuid";
-  const res = await idPut(
-    putReq(badId, { name: "Whatever" }),
-    await resolveParams(badId)
-  );
+  const res = await idPut(putReq(badId, { name: "Whatever" }), await resolveParams(badId));
   assert.equal(res.status, 400);
 
   const body = (await res.json()) as { error: { message: string } };
@@ -320,7 +324,7 @@ test("DELETE /presets/[id] with non-UUID id → 400", async () => {
 
 test("POST with null system stores null correctly", async () => {
   const res = await createPost(
-    postReq({ name: "No System", endpoint: "chat.completions", model: "gpt-4o", system: null })
+    postReq({ name: "No System", endpoint: "chat.completions", model: "gpt-4o", system: null }),
   );
   assert.equal(res.status, 201);
   const body = (await res.json()) as { system: string | null };
@@ -329,7 +333,7 @@ test("POST with null system stores null correctly", async () => {
 
 test("POST without system defaults to null", async () => {
   const res = await createPost(
-    postReq({ name: "No System Either", endpoint: "chat.completions", model: "gpt-4o" })
+    postReq({ name: "No System Either", endpoint: "chat.completions", model: "gpt-4o" }),
   );
   assert.equal(res.status, 201);
   const body = (await res.json()) as { system: string | null };

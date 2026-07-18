@@ -1,24 +1,20 @@
-import { getVirtualizationWorkload } from '@pierre/tree-test-data';
+import { getVirtualizationWorkload } from "@pierre/tree-test-data";
 
 // Keep the profiling fixture on the narrow data-preparation entrypoint so the
 // Vite-served page does not accidentally import the source render runtime.
-import {
-  type FileTreePreparedInput,
-  preparePresortedFileTreeInput,
-} from '../../src/preparedInput';
+import { type FileTreePreparedInput, preparePresortedFileTreeInput } from "../../src/preparedInput";
 
 export const FILE_TREE_PROFILE_WORKLOAD_NAMES = [
-  'linux-5x',
-  'linux-10x',
-  'linux',
-  'aosp',
-  'demo-small',
+  "linux-5x",
+  "linux-10x",
+  "linux",
+  "aosp",
+  "demo-small",
 ] as const;
 
-export type FileTreeProfileWorkloadName =
-  (typeof FILE_TREE_PROFILE_WORKLOAD_NAMES)[number];
+export type FileTreeProfileWorkloadName = (typeof FILE_TREE_PROFILE_WORKLOAD_NAMES)[number];
 
-export const DEFAULT_FILE_TREE_PROFILE_WORKLOAD_NAME = 'linux-5x';
+export const DEFAULT_FILE_TREE_PROFILE_WORKLOAD_NAME = "linux-5x";
 export const FILE_TREE_PROFILE_VIEWPORT_HEIGHT = 500;
 
 export interface FileTreeProfileWorkloadSummary {
@@ -35,14 +31,10 @@ export interface FileTreeProfileWorkload {
   name: FileTreeProfileWorkloadName;
 }
 
-export type FileTreeProfileActionOperation = 'collapse' | 'expand';
-export type FileTreeProfileActionInitialExpansion = 'closed' | 'open';
-export type FileTreeProfileActionDispatch = 'api' | 'dom-click';
-export type FileTreeProfileActionTargetVisibility =
-  | 'hidden'
-  | 'offscreen'
-  | 'sticky'
-  | 'visible';
+export type FileTreeProfileActionOperation = "collapse" | "expand";
+export type FileTreeProfileActionInitialExpansion = "closed" | "open";
+export type FileTreeProfileActionDispatch = "api" | "dom-click";
+export type FileTreeProfileActionTargetVisibility = "hidden" | "offscreen" | "sticky" | "visible";
 
 export interface FileTreeProfileActionSetupOperation {
   operation: FileTreeProfileActionOperation;
@@ -93,7 +85,7 @@ export interface FileTreeProfilePageSummary {
   longTaskCount: number;
   longTaskTotalMs: number;
   longestLongTaskMs: number;
-  profileKind?: 'action' | 'render';
+  profileKind?: "action" | "render";
   renderDurationMs: number;
   renderedItemCount: number;
   resultText: string | null;
@@ -113,24 +105,20 @@ export interface FileTreeProfileFixtureOptions {
   stickyFolders: boolean;
 }
 
-export function isFileTreeProfileWorkloadName(
-  value: string
-): value is FileTreeProfileWorkloadName {
-  return (FILE_TREE_PROFILE_WORKLOAD_NAMES as readonly string[]).includes(
-    value
-  );
+export function isFileTreeProfileWorkloadName(value: string): value is FileTreeProfileWorkloadName {
+  return (FILE_TREE_PROFILE_WORKLOAD_NAMES as readonly string[]).includes(value);
 }
 
 export function getFileTreeProfileWorkload(
-  value: string | null | undefined
+  value: string | null | undefined,
 ): FileTreeProfileWorkload {
-  const requestedWorkloadName = value ?? '';
+  const requestedWorkloadName = value ?? "";
   const workloadName = isFileTreeProfileWorkloadName(requestedWorkloadName)
     ? requestedWorkloadName
     : DEFAULT_FILE_TREE_PROFILE_WORKLOAD_NAME;
-  if (workloadName === 'aosp') {
+  if (workloadName === "aosp") {
     throw new Error(
-      'The AOSP file-tree profile workload is loaded asynchronously from the browser fixture.'
+      "The AOSP file-tree profile workload is loaded asynchronously from the browser fixture.",
     );
   }
   const workload = getVirtualizationWorkload(workloadName);
@@ -144,10 +132,10 @@ export function getFileTreeProfileWorkload(
 
 export function createFileTreeProfileFixtureOptions(
   workload: FileTreeProfileWorkload,
-  options: FileTreeProfileFixtureOptionsConfig = {}
+  options: FileTreeProfileFixtureOptionsConfig = {},
 ): FileTreeProfileFixtureOptions {
   const initialExpansion: FileTreeProfileActionInitialExpansion =
-    options.initialExpansion ?? 'open';
+    options.initialExpansion ?? "open";
   return {
     flattenEmptyDirectories: true,
     // All profiling workloads expand every derived directory, so open-default
@@ -161,7 +149,7 @@ export function createFileTreeProfileFixtureOptions(
 }
 
 export function createFileTreeProfileWorkloadSummary(
-  workload: FileTreeProfileWorkload
+  workload: FileTreeProfileWorkload,
 ): FileTreeProfileWorkloadSummary {
   return {
     expandedFolderCount: workload.expandedFolders.length,

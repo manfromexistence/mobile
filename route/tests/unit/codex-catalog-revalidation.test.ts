@@ -16,7 +16,7 @@ import {
 test("Codex revalidation avoids top-level createRequire in packaged Next modules", () => {
   const source = fs.readFileSync(
     path.join(process.cwd(), "src/shared/services/codexCatalogRevalidation.ts"),
-    "utf8"
+    "utf8",
   );
   assert.doesNotMatch(source, /^const\s+\w+\s*=\s*createRequire\s*\(/m);
 });
@@ -32,7 +32,7 @@ test("scrubSyncedModelsWithCodexDenylist drops the GPT-5.4 family and keeps othe
 
   assert.deepEqual(
     kept.map((m) => m.id),
-    ["gpt-5.6-sol", "future-codex-experimental"]
+    ["gpt-5.6-sol", "future-codex-experimental"],
   );
   assert.deepEqual(removedIds.sort(), ["gpt-5.4", "gpt-5.4-mini"]);
 });
@@ -55,32 +55,32 @@ test("resolveCodexCatalogAppVersion uses stable, source-qualified identities", (
         OMNIROUTE_BUILD_SHA: "abc123",
         npm_package_version: "9.9.9",
       },
-      { runtimeRoot }
+      { runtimeRoot },
     ),
-    "build:abc123"
+    "build:abc123",
   );
   assert.equal(
     resolveCodexCatalogAppVersion(
       {
         npm_package_version: "3.8.47",
       },
-      { runtimeRoot }
+      { runtimeRoot },
     ),
-    "pkg:3.8.47"
+    "pkg:3.8.47",
   );
 
   try {
     fs.writeFileSync(path.join(runtimeRoot, "BUILD_SHA"), "sentinel-sha\n");
     assert.equal(
       resolveCodexCatalogAppVersion({}, { runtimeRoot, packageVersion: "3.8.47" }),
-      "build:sentinel-sha"
+      "build:sentinel-sha",
     );
     fs.rmSync(path.join(runtimeRoot, "BUILD_SHA"));
     fs.writeFileSync(path.join(runtimeRoot, "package.json"), '{"version":"9.8.7"}\n');
     assert.equal(resolveCodexCatalogAppVersion({}, { runtimeRoot }), "pkg:9.8.7");
     assert.equal(
       resolveCodexCatalogAppVersion({}, { runtimeRoot, packageVersion: "3.8.47" }),
-      "pkg:3.8.47"
+      "pkg:3.8.47",
     );
     assert.equal(resolveCodexCatalogAppVersion({}, { runtimeRoot, packageVersion: null }), null);
   } finally {
@@ -248,7 +248,7 @@ test("Codex revalidation coordinator does not lose init during active-run settle
 
   const activeRun = request({ reason: "upgrade" });
   const settlementInit = firstGate.then(() =>
-    Promise.resolve().then(() => request({ reason: "init" }))
+    Promise.resolve().then(() => request({ reason: "init" })),
   );
   releaseFirst?.();
   await Promise.all([activeRun, settlementInit]);

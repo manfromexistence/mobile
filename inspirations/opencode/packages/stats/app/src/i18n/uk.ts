@@ -122,7 +122,8 @@ export const dict = {
   "home.cacheRatioTitle": "Частка кешу",
   "home.cacheRatioDescription": "Частка вхідних токенів, обслужених із кешу.",
   "home.noCacheTitle": "Немає даних частки кешу",
-  "home.noCacheDescription": "Жодні рядки моделей із вхідними токенами не відповідали цьому продукту.",
+  "home.noCacheDescription":
+    "Жодні рядки моделей із вхідними токенами не відповідали цьому продукту.",
   "home.sessionCostTitle": "Вартість сеансу",
   "home.sessionCostDescription": "Середня вартість за сеанс.",
   "home.noSessionCostTitle": "Немає даних вартості сеансу",
@@ -146,7 +147,8 @@ export const dict = {
   "lab.usageTitle": "Використання токенів {{lab}}",
   "lab.usageDescription": "Щоденний обсяг токенів OpenCode за останні два місяці.",
   "lab.noUsageTitle": "Використання поки немає",
-  "lab.noUsageDescription": "Нещодавнє використання токенів з'явиться тут, коли ця лабораторія матиме активність.",
+  "lab.noUsageDescription":
+    "Нещодавнє використання токенів з'явиться тут, коли ця лабораторія матиме активність.",
   "lab.dailyTokenChart": "Щоденна діаграма використання токенів {{lab}}",
   "lab.dailyTokens": "Щоденні токени",
   "lab.tokens": "токени",
@@ -181,7 +183,8 @@ export const dict = {
   "model.knowledge": "Знання",
   "model.release": "Реліз",
   "model.inputs": "Входи",
-  "model.overviewDescription": "Нещодавні токени OpenCode Go, унікальні користувачі та ринкова позиція.",
+  "model.overviewDescription":
+    "Нещодавні токени OpenCode Go, унікальні користувачі та ринкова позиція.",
   "model.noSummaryTitle": "Немає підсумку використання",
   "model.noSummaryDescription": "Ця модель ще не має рядків використання OpenCode Go.",
   "model.tokens": "Токени",
@@ -197,7 +200,8 @@ export const dict = {
   "model.noUsageTitle": "Немає використання",
   "model.noUsageDescription": "У поточному вікні використання не з'явилося.",
   "model.dailyTokenChart": "Щоденна діаграма використання токенів",
-  "model.usersDescription": "Щоденні унікальні користувачі OpenCode Go за нещодавнє двомісячне вікно.",
+  "model.usersDescription":
+    "Щоденні унікальні користувачі OpenCode Go за нещодавнє двомісячне вікно.",
   "model.noUsersTitle": "Немає даних користувачів",
   "model.noUsersDescription": "У поточному вікні немає рядків із користувачами.",
   "model.dailyUserChart": "Щоденна діаграма унікальних користувачів",
@@ -228,4 +232,4 @@ export const dict = {
   "model.pdf": "PDF",
   "format.users": "користувачі",
   "format.tokens": "токени",
-} as const
+} as const;

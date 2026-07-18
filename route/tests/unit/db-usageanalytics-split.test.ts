@@ -38,7 +38,7 @@ describe("usageAnalytics/sources — buildUnifiedSource", () => {
     // needsAggregated = (sinceDate < rawCutoffDate) && !apiKeyWhere => true
     assert.ok(
       unifiedSource.includes("daily_usage_summary"),
-      "aggregated leg must be present when the window predates the raw cutoff"
+      "aggregated leg must be present when the window predates the raw cutoff",
     );
     assert.equal(unifiedParams.rawCutoff, "2024-06-15");
     assert.equal(unifiedParams.rawCutoffDate, "2024-06-15");
@@ -55,7 +55,7 @@ describe("usageAnalytics/sources — buildUnifiedSource", () => {
     // needsAggregated = ... && !apiKeyWhere => false
     assert.ok(
       !unifiedSource.includes("daily_usage_summary"),
-      "aggregated leg must be absent once an api-key filter scopes the query to raw rows"
+      "aggregated leg must be absent once an api-key filter scopes the query to raw rows",
     );
     // raw leg floors at @since (not @rawCutoff) and carries the api-key params
     assert.equal(unifiedParams.since, "2024-06-01T00:00:00.000Z");

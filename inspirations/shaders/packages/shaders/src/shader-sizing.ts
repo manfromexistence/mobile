@@ -11,7 +11,7 @@ export interface ShaderSizingUniforms {
 }
 
 export interface ShaderSizingParams {
-  fit?: 'none' | 'contain' | 'cover';
+  fit?: "none" | "contain" | "cover";
   scale?: number;
   rotation?: number;
   originX?: number;
@@ -23,7 +23,7 @@ export interface ShaderSizingParams {
 }
 
 export const defaultObjectSizing: Required<ShaderSizingParams> = {
-  fit: 'contain',
+  fit: "contain",
   scale: 1,
   rotation: 0,
   offsetX: 0,
@@ -35,7 +35,7 @@ export const defaultObjectSizing: Required<ShaderSizingParams> = {
 };
 
 export const defaultPatternSizing: Required<ShaderSizingParams> = {
-  fit: 'none',
+  fit: "none",
   scale: 1,
   rotation: 0,
   offsetX: 0,

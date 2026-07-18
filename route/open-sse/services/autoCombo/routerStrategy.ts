@@ -92,7 +92,7 @@ class RulesStrategyImpl implements RouterStrategy {
       eligible.length > 0 ? eligible : pool,
       context.taskType,
       undefined,
-      getTaskFitness
+      getTaskFitness,
     );
     const best = ranked[0];
     if (!best) throw new Error("[RulesStrategy] No candidates to score");
@@ -307,7 +307,7 @@ class LKGPStrategyImpl implements RouterStrategy {
 
     if (context.lastKnownGoodProvider) {
       const candidates = pool.filter(
-        (c) => c.provider === context.lastKnownGoodProvider && c.circuitBreakerState !== "OPEN"
+        (c) => c.provider === context.lastKnownGoodProvider && c.circuitBreakerState !== "OPEN",
       );
       if (candidates.length > 0) {
         const best = candidates[0];
@@ -369,7 +369,7 @@ export function listStrategies(): Array<{ name: string; description: string }> {
 export function selectWithStrategy(
   pool: ProviderCandidate[],
   context: RoutingContext,
-  strategyName = "rules"
+  strategyName = "rules",
 ): RoutingDecision {
   return getStrategy(strategyName).select(pool, context);
 }

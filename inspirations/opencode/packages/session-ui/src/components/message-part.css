@@ -44,9 +44,7 @@
     background: var(--v2-background-bg-layer-02);
     border: 0.5px solid var(--v2-border-border-base);
     cursor: default;
-    transition:
-      border-color 0.15s ease,
-      opacity 0.3s ease;
+    transition: border-color 0.15s ease, opacity 0.3s ease;
 
     &:hover {
       border-color: var(--v2-border-border-strong);
@@ -960,10 +958,7 @@
     text-align: left;
     width: 100%;
     cursor: pointer;
-    transition:
-      background-color 0.15s ease,
-      border-color 0.15s ease,
-      box-shadow 0.15s ease;
+    transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 
     &:hover:not([data-picked="true"]) {
       background-color: var(--v2-background-bg-base);
@@ -997,9 +992,7 @@
     justify-content: center;
     flex-shrink: 0;
     background-color: transparent;
-    transition:
-      background-color 0.15s ease,
-      border-color 0.15s ease;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
 
     [data-component="icon"] {
       opacity: 0;
@@ -1475,7 +1468,11 @@ body:not([data-new-layout]) {
     }
   }
 
-  :is([data-component="edit-tool"], [data-component="write-tool"], [data-component="apply-patch-tool"])
+  :is(
+      [data-component="edit-tool"],
+      [data-component="write-tool"],
+      [data-component="apply-patch-tool"]
+    )
     > [data-component="collapsible"]
     > [data-slot="collapsible-trigger"][aria-expanded="true"],
   [data-component="accordion"][data-scope="apply-patch"] [data-slot="accordion-trigger"] {

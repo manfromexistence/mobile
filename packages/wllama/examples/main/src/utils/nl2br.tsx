@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 
 export function nl2br(text: string) {
   return text.split("\n").map((line, i) => (
@@ -6,5 +6,5 @@ export function nl2br(text: string) {
       {line}
       <br />
     </React.Fragment>
-  ))
+  ));
 }

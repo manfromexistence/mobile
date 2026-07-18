@@ -1,13 +1,13 @@
-import ChatScreen from "./components/ChatScreen"
-import GuideScreen from "./components/GuideScreen"
-import LogScreen from "./components/LogScreen"
-import ModelScreen from "./components/ModelScreen"
-import Navbar from "./components/Navbar"
-import Sidebar from "./components/Sidebar"
-import { MessagesProvider } from "./utils/messages.context"
-import { Screen } from "./utils/types"
-import { useWllama, WllamaProvider } from "./utils/wllama.context"
-import "./utils/benchmark"
+import ChatScreen from "./components/ChatScreen";
+import GuideScreen from "./components/GuideScreen";
+import LogScreen from "./components/LogScreen";
+import ModelScreen from "./components/ModelScreen";
+import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar";
+import { MessagesProvider } from "./utils/messages.context";
+import { Screen } from "./utils/types";
+import { useWllama, WllamaProvider } from "./utils/wllama.context";
+import "./utils/benchmark";
 
 function App() {
   return (
@@ -16,11 +16,11 @@ function App() {
         <InnerApp />
       </WllamaProvider>
     </MessagesProvider>
-  )
+  );
 }
 
 function InnerApp() {
-  const { currScreen } = useWllama()
+  const { currScreen } = useWllama();
 
   return (
     <div className="flex flex-col drawer h-screen w-screen overflow-hidden">
@@ -34,7 +34,7 @@ function InnerApp() {
         </Sidebar>
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

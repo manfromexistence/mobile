@@ -168,7 +168,7 @@ export async function getZedCredential(provider: string): Promise<ZedCredential 
   if (!keytar) return null;
 
   const patterns = ZED_SERVICE_PATTERNS.filter((p) =>
-    p.toLowerCase().includes(provider.toLowerCase())
+    p.toLowerCase().includes(provider.toLowerCase()),
   );
 
   for (const pattern of patterns) {

@@ -6,16 +6,16 @@
  * The failure path is `sync.tsx#sync.session.sync` reading
  * `messages.data!` while the SDK leaves `data` undefined on error.
  */
-import { describe, expect, test } from "bun:test"
-import { tmpdir } from "../../../fixture/fixture"
-import { directory, json, mount } from "./sync-fixture"
+import { describe, expect, test } from "bun:test";
+import { tmpdir } from "../../../fixture/fixture";
+import { directory, json, mount } from "./sync-fixture";
 
-const sessionID = "ses_undef"
+const sessionID = "ses_undef";
 
 describe("tui sync (#26560)", () => {
   test("entering a session whose messages endpoint errors does not crash sync", async () => {
-    await using tmp = await tmpdir()
-    await Bun.write(`${tmp.path}/kv.json`, "{}")
+    await using tmp = await tmpdir();
+    await Bun.write(`${tmp.path}/kv.json`, "{}");
 
     const sessionPayload = {
       id: sessionID,
@@ -24,20 +24,20 @@ describe("tui sync (#26560)", () => {
       version: "1.14.42",
       directory,
       project_id: "proj_test",
-    }
+    };
     const { app, sync } = await mount((url) => {
-      if (url.pathname === `/session/${sessionID}`) return json(sessionPayload)
-      if (url.pathname === `/session/${sessionID}/messages`) return json({}, { status: 500 })
-      if (url.pathname === `/session/${sessionID}/todo`) return json([])
-      if (url.pathname === `/session/${sessionID}/diff`) return json([])
-      if (url.pathname === "/session") return json([sessionPayload])
-      return undefined
-    }, tmp.path)
+      if (url.pathname === `/session/${sessionID}`) return json(sessionPayload);
+      if (url.pathname === `/session/${sessionID}/messages`) return json({}, { status: 500 });
+      if (url.pathname === `/session/${sessionID}/todo`) return json([]);
+      if (url.pathname === `/session/${sessionID}/diff`) return json([]);
+      if (url.pathname === "/session") return json([sessionPayload]);
+      return undefined;
+    }, tmp.path);
 
     try {
-      await expect(sync.session.sync(sessionID)).resolves.toBeUndefined()
+      await expect(sync.session.sync(sessionID)).resolves.toBeUndefined();
     } finally {
-      app.renderer.destroy()
+      app.renderer.destroy();
     }
-  })
-})
+  });
+});

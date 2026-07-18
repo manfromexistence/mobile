@@ -85,13 +85,13 @@ test("evals GET returns suites, target options, api key metadata, and persisted 
   assert.equal(
     payload.suites.some(
       (entry: { id?: string; source?: string; cases?: unknown[] }) =>
-        entry.id === customSuite.id && entry.source === "custom" && entry.cases?.length === 1
+        entry.id === customSuite.id && entry.source === "custom" && entry.cases?.length === 1,
     ),
-    true
+    true,
   );
   assert.equal(
     payload.targets.some((entry) => entry.type === "suite-default"),
-    true
+    true,
   );
 });
 
@@ -139,7 +139,7 @@ test("eval suite routes create, update, fetch, and delete custom suites", async 
           },
         ],
       }),
-    })
+    }),
   );
 
   assert.equal(createResponse.status, 201);
@@ -149,7 +149,7 @@ test("eval suite routes create, update, fetch, and delete custom suites", async 
 
   const getResponse = await evalSuiteByIdRoute.GET(
     new Request(`http://localhost/api/evals/suites/${suiteId}`),
-    { params: Promise.resolve({ suiteId }) }
+    { params: Promise.resolve({ suiteId }) },
   );
   assert.equal(getResponse.status, 200);
 
@@ -188,7 +188,7 @@ test("eval suite routes create, update, fetch, and delete custom suites", async 
         ],
       }),
     }),
-    { params: Promise.resolve({ suiteId }) }
+    { params: Promise.resolve({ suiteId }) },
   );
 
   assert.equal(updateResponse.status, 200);
@@ -201,13 +201,13 @@ test("eval suite routes create, update, fetch, and delete custom suites", async 
 
   const deleteResponse = await evalSuiteByIdRoute.DELETE(
     new Request(`http://localhost/api/evals/suites/${suiteId}`, { method: "DELETE" }),
-    { params: Promise.resolve({ suiteId }) }
+    { params: Promise.resolve({ suiteId }) },
   );
   assert.equal(deleteResponse.status, 200);
 
   const missingResponse = await evalSuiteByIdRoute.GET(
     new Request(`http://localhost/api/evals/suites/${suiteId}`),
-    { params: Promise.resolve({ suiteId }) }
+    { params: Promise.resolve({ suiteId }) },
   );
   assert.equal(missingResponse.status, 404);
 });

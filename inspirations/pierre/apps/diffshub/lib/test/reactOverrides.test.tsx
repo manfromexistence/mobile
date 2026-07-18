@@ -1,62 +1,62 @@
 /** @jsxImportSource react */
 
-import type { CodeViewHandle } from '@pierre/diffs/react';
-import type { ThemeLike } from '@pierre/theming';
-import { afterAll, beforeAll, describe, expect, test } from 'bun:test';
-import { JSDOM } from 'jsdom';
-import { act, createRef } from 'react';
-import type { CSSProperties } from 'react';
-import { createRoot, type Root } from 'react-dom/client';
+import type { CodeViewHandle } from "@pierre/diffs/react";
+import type { ThemeLike } from "@pierre/theming";
+import { afterAll, beforeAll, describe, expect, test } from "bun:test";
+import { JSDOM } from "jsdom";
+import { act, createRef } from "react";
+import type { CSSProperties } from "react";
+import { createRoot, type Root } from "react-dom/client";
 
-import { ThemedCodeView } from '../../components/ThemedCodeView';
-import { ThemedSurface } from '../../components/ThemedSurface';
-import { ThemeSourceProvider } from '../../components/ThemeSourceProvider';
-import type { ChromeMapping } from '../theme/chromeThemeProps';
+import { ThemedCodeView } from "../../components/ThemedCodeView";
+import { ThemedSurface } from "../../components/ThemedSurface";
+import { ThemeSourceProvider } from "../../components/ThemeSourceProvider";
+import type { ChromeMapping } from "../theme/chromeThemeProps";
 
 const originalGlobals = {
-  document: Reflect.get(globalThis, 'document'),
-  HTMLDivElement: Reflect.get(globalThis, 'HTMLDivElement'),
-  HTMLElement: Reflect.get(globalThis, 'HTMLElement'),
+  document: Reflect.get(globalThis, "document"),
+  HTMLDivElement: Reflect.get(globalThis, "HTMLDivElement"),
+  HTMLElement: Reflect.get(globalThis, "HTMLElement"),
   IS_REACT_ACT_ENVIRONMENT: Reflect.get(
     globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean },
-    'IS_REACT_ACT_ENVIRONMENT'
+    "IS_REACT_ACT_ENVIRONMENT",
   ),
-  cancelAnimationFrame: Reflect.get(globalThis, 'cancelAnimationFrame'),
-  requestAnimationFrame: Reflect.get(globalThis, 'requestAnimationFrame'),
-  ResizeObserver: Reflect.get(globalThis, 'ResizeObserver'),
-  window: Reflect.get(globalThis, 'window'),
+  cancelAnimationFrame: Reflect.get(globalThis, "cancelAnimationFrame"),
+  requestAnimationFrame: Reflect.get(globalThis, "requestAnimationFrame"),
+  ResizeObserver: Reflect.get(globalThis, "ResizeObserver"),
+  window: Reflect.get(globalThis, "window"),
 };
 
-const dom = new JSDOM('<!doctype html><html><body></body></html>', {
+const dom = new JSDOM("<!doctype html><html><body></body></html>", {
   pretendToBeVisual: true,
-  url: 'http://localhost',
+  url: "http://localhost",
 });
 
 const lightTheme: ThemeLike = {
-  name: 'light-theme',
-  type: 'light',
+  name: "light-theme",
+  type: "light",
   colors: {
-    'editor.background': '#ffffff',
-    'editor.foreground': '#111111',
-    'sideBar.background': '#ffffff',
-    'sideBar.foreground': '#111111',
+    "editor.background": "#ffffff",
+    "editor.foreground": "#111111",
+    "sideBar.background": "#ffffff",
+    "sideBar.foreground": "#111111",
   },
 };
 
 const darkTheme: ThemeLike = {
-  name: 'dark-theme',
-  type: 'dark',
+  name: "dark-theme",
+  type: "dark",
   colors: {
-    'editor.background': '#000000',
-    'editor.foreground': '#eeeeee',
-    'sideBar.background': '#000000',
-    'sideBar.foreground': '#eeeeee',
+    "editor.background": "#000000",
+    "editor.foreground": "#eeeeee",
+    "sideBar.background": "#000000",
+    "sideBar.foreground": "#eeeeee",
   },
 };
 
 const themeNameMapping: ChromeMapping = (_chrome, theme) =>
   ({
-    '--test-theme-name': theme.name ?? '',
+    "--test-theme-name": theme.name ?? "",
   }) as CSSProperties;
 
 class MockResizeObserver {
@@ -75,9 +75,7 @@ beforeAll(() => {
     requestAnimationFrame: dom.window.requestAnimationFrame.bind(dom.window),
     window: dom.window,
   });
-  (
-    globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }
-  ).IS_REACT_ACT_ENVIRONMENT = true;
+  (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 });
 
 afterAll(() => {
@@ -96,9 +94,9 @@ async function flushReact(): Promise<void> {
   await Promise.resolve();
 }
 
-describe('React themed component overrides', () => {
-  test('ThemedCodeView preserves caller themeType while applying the active theme pair', async () => {
-    const container = document.createElement('div');
+describe("React themed component overrides", () => {
+  test("ThemedCodeView preserves caller themeType while applying the active theme pair", async () => {
+    const container = document.createElement("div");
     document.body.append(container);
     const codeViewRef = createRef<CodeViewHandle<undefined>>();
     let root: Root | undefined;
@@ -110,11 +108,11 @@ describe('React themed component overrides', () => {
           ref={codeViewRef}
           disableWorkerPool
           options={{
-            theme: { light: 'old-light', dark: 'old-dark' },
-            themeType: 'system',
+            theme: { light: "old-light", dark: "old-dark" },
+            themeType: "system",
           }}
-          theme={{ light: 'next-light', dark: 'next-dark' }}
-        />
+          theme={{ light: "next-light", dark: "next-dark" }}
+        />,
       );
       await flushReact();
     });
@@ -128,10 +126,10 @@ describe('React themed component overrides', () => {
         }
       | undefined;
     expect(instance?.options.theme).toEqual({
-      light: 'next-light',
-      dark: 'next-dark',
+      light: "next-light",
+      dark: "next-dark",
     });
-    expect(instance?.options.themeType).toBe('system');
+    expect(instance?.options.themeType).toBe("system");
 
     await act(async () => {
       root?.unmount();
@@ -140,8 +138,8 @@ describe('React themed component overrides', () => {
     container.remove();
   });
 
-  test('per-component theme pairs use the provider color scheme', async () => {
-    const container = document.createElement('div');
+  test("per-component theme pairs use the provider color scheme", async () => {
+    const container = document.createElement("div");
     document.body.append(container);
     let root: Root | undefined;
     await act(async () => {
@@ -152,15 +150,13 @@ describe('React themed component overrides', () => {
             mapping={themeNameMapping}
             theme={{ light: lightTheme, dark: darkTheme }}
           />
-        </ThemeSourceProvider>
+        </ThemeSourceProvider>,
       );
       await flushReact();
     });
 
     const surface = container.firstElementChild as HTMLElement;
-    expect(surface.style.getPropertyValue('--test-theme-name')).toBe(
-      'dark-theme'
-    );
+    expect(surface.style.getPropertyValue("--test-theme-name")).toBe("dark-theme");
 
     await act(async () => {
       root?.unmount();

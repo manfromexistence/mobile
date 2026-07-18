@@ -62,7 +62,7 @@ export function ModelSourceBadge({ source }: { source?: string }) {
   return (
     <span
       className={`rounded-full border px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide ${getModelSourceBadgeClass(
-        source
+        source,
       )}`}
     >
       {getModelCatalogSourceLabel(source)}
@@ -198,7 +198,7 @@ export function ModelVisibilityToolbar({
           title={providerText(
             t,
             "autoHideFailedHint",
-            "When enabled, Test all hides non-transient failures from public catalogs such as /v1/models. Single-model tests never auto-hide."
+            "When enabled, Test all hides non-transient failures from public catalogs such as /v1/models. Single-model tests never auto-hide.",
           )}
         >
           <input

@@ -116,7 +116,7 @@ describe("E2E: Quota Contract (/api/usage/quota)", () => {
 
     const connectionId = allData.providers[0].connectionId;
     const filteredRes = await apiFetch(
-      `/api/usage/quota?connectionId=${encodeURIComponent(connectionId)}`
+      `/api/usage/quota?connectionId=${encodeURIComponent(connectionId)}`,
     );
     expect(filteredRes.ok).toBe(true);
     const filteredData = (await filteredRes.json()) as any;
@@ -232,7 +232,7 @@ describe("E2E: Stress (100 parallel requests)", () => {
       apiFetch("/api/monitoring/health").then((r) => ({
         ok: r.ok,
         index: i,
-      }))
+      })),
     );
     const results = await Promise.allSettled(promises);
     const elapsed = Date.now() - start;
@@ -245,7 +245,7 @@ describe("E2E: Stress (100 parallel requests)", () => {
 
   itStress("should handle 50 parallel quota checks", async () => {
     const promises = Array.from({ length: 50 }, () =>
-      apiFetch("/api/usage/quota").then((r) => r.ok)
+      apiFetch("/api/usage/quota").then((r) => r.ok),
     );
     const results = await Promise.allSettled(promises);
     const successful = results.filter((r) => r.status === "fulfilled" && r.value).length;

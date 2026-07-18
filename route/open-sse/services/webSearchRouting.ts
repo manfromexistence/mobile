@@ -56,7 +56,7 @@ export function hasNativeWebSearchTool(body: unknown): boolean {
 export function resolveWebSearchRouteOverride(
   currentModel: string,
   body: unknown,
-  settings: Record<string, unknown> | null | undefined
+  settings: Record<string, unknown> | null | undefined,
 ): WebSearchRouteResult {
   const fallthrough: WebSearchRouteResult = { wasRouted: false, model: currentModel };
   if (!hasNativeWebSearchTool(body)) return fallthrough;

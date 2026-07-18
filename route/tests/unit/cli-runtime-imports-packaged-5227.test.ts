@@ -74,13 +74,13 @@ test("#5227 — every scripts/* module imported by bin/ is in the npm files whit
   // Sanity: the known runtime imports must be detected, else the scanner is broken.
   assert.ok(
     imported.has("scripts/build/runtime-env.mjs"),
-    "scanner should detect serve.mjs's import of scripts/build/runtime-env.mjs"
+    "scanner should detect serve.mjs's import of scripts/build/runtime-env.mjs",
   );
 
   const missing = [...imported].filter((p) => !isCovered(p, files));
   assert.deepEqual(
     missing,
     [],
-    `bin/ imports these scripts/* modules that are NOT in package.json "files" (global install will fail): ${missing.join(", ")}`
+    `bin/ imports these scripts/* modules that are NOT in package.json "files" (global install will fail): ${missing.join(", ")}`,
   );
 });

@@ -18,7 +18,7 @@ export function useApiKeyUsageLimits(selectedApiKeyId: string | null) {
     setLoading(true);
     try {
       const response = await fetch(
-        `/api/keys/${encodeURIComponent(selectedApiKeyId)}/usage-limits`
+        `/api/keys/${encodeURIComponent(selectedApiKeyId)}/usage-limits`,
       );
       if (!response.ok) throw new Error("Failed to load API key usage limits");
       setPayload((await response.json()) as ApiKeyUsageLimitPayload);
@@ -40,7 +40,7 @@ export function useApiKeyUsageLimits(selectedApiKeyId: string | null) {
       if (!response.ok) throw new Error("Failed to save API key usage limits");
       await load();
     },
-    [load, selectedApiKeyId]
+    [load, selectedApiKeyId],
   );
 
   useEffect(() => {

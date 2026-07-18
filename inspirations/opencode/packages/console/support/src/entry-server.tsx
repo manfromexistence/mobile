@@ -1,5 +1,5 @@
 // @refresh reload
-import { createHandler, StartServer } from "@solidjs/start/server"
+import { createHandler, StartServer } from "@solidjs/start/server";
 
 export default createHandler(
   () => (
@@ -23,4 +23,4 @@ export default createHandler(
   {
     mode: "async",
   },
-)
+);

@@ -69,7 +69,7 @@ describe("detectCachingContext", () => {
           },
         ],
       },
-      { provider: "anthropic", targetFormat: "claude" }
+      { provider: "anthropic", targetFormat: "claude" },
     );
 
     assert.equal(ctx.hasCacheControl, true);
@@ -83,7 +83,7 @@ describe("detectCachingContext", () => {
       {
         tools: [{ name: "lookup", cache_control: { type: "ephemeral" } }],
       },
-      { provider: "qwen", targetFormat: "claude" }
+      { provider: "qwen", targetFormat: "claude" },
     );
 
     assert.equal(ctx.hasCacheControl, true);
@@ -93,7 +93,7 @@ describe("detectCachingContext", () => {
   it("prefers explicit provider context over the body model prefix", () => {
     const ctx = detectCachingContext(
       { model: "openai/gpt-4o", cache_control: { type: "ephemeral" } },
-      { provider: "anthropic", targetFormat: "claude", model: "claude-3-5-sonnet" }
+      { provider: "anthropic", targetFormat: "claude", model: "claude-3-5-sonnet" },
     );
 
     assert.equal(ctx.provider, "anthropic");

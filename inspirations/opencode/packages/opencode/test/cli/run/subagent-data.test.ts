@@ -1,42 +1,42 @@
-import { describe, expect, test } from "bun:test"
-import type { Event } from "@opencode-ai/sdk/v2"
-import { entryBody } from "@/cli/cmd/run/entry.body"
+import { describe, expect, test } from "bun:test";
+import type { Event } from "@opencode-ai/sdk/v2";
+import { entryBody } from "@/cli/cmd/run/entry.body";
 import {
   bootstrapSubagentCalls,
   bootstrapSubagentData,
   createSubagentData,
   reduceSubagentData,
   snapshotSubagentData,
-} from "@/cli/cmd/run/subagent-data"
+} from "@/cli/cmd/run/subagent-data";
 
-type SessionMessage = Parameters<typeof bootstrapSubagentData>[0]["messages"][number]
-type ChildMessage = Parameters<typeof bootstrapSubagentCalls>[0]["messages"][number]
+type SessionMessage = Parameters<typeof bootstrapSubagentData>[0]["messages"][number];
+type ChildMessage = Parameters<typeof bootstrapSubagentCalls>[0]["messages"][number];
 
 function visible(commits: Array<Parameters<typeof entryBody>[0]>) {
   return commits.flatMap((item) => {
-    const body = entryBody(item)
+    const body = entryBody(item);
     if (body.type === "none") {
-      return []
+      return [];
     }
 
     if (body.type === "structured") {
       if (body.snapshot.kind === "code" || body.snapshot.kind === "task") {
-        return [body.snapshot.title]
+        return [body.snapshot.title];
       }
 
       if (body.snapshot.kind === "diff") {
-        return body.snapshot.items.map((item) => item.title)
+        return body.snapshot.items.map((item) => item.title);
       }
 
       if (body.snapshot.kind === "todo") {
-        return ["# Todos"]
+        return ["# Todos"];
       }
 
-      return ["# Questions"]
+      return ["# Questions"];
     }
 
-    return [body.content]
-  })
+    return [body.content];
+  });
 }
 
 function reduce(data: ReturnType<typeof createSubagentData>, event: unknown) {
@@ -46,10 +46,13 @@ function reduce(data: ReturnType<typeof createSubagentData>, event: unknown) {
     sessionID: "parent-1",
     thinking: true,
     limits: {},
-  })
+  });
 }
 
-function taskMessage(sessionID: string, status: "running" | "completed" | "interrupted" = "completed"): SessionMessage {
+function taskMessage(
+  sessionID: string,
+  status: "running" | "completed" | "interrupted" = "completed",
+): SessionMessage {
   if (status === "running") {
     return {
       parts: [
@@ -75,7 +78,7 @@ function taskMessage(sessionID: string, status: "running" | "completed" | "inter
           },
         },
       ],
-    }
+    };
   }
 
   if (status === "interrupted") {
@@ -104,7 +107,7 @@ function taskMessage(sessionID: string, status: "running" | "completed" | "inter
           },
         },
       ],
-    }
+    };
   }
 
   return {
@@ -132,7 +135,7 @@ function taskMessage(sessionID: string, status: "running" | "completed" | "inter
         },
       },
     ],
-  }
+  };
 }
 
 function question(id: string, sessionID: string) {
@@ -147,14 +150,14 @@ function question(id: string, sessionID: string) {
         multiple: false,
       },
     ],
-  }
+  };
 }
 
 function childMessage(input: {
-  messageID: string
-  sessionID: string
-  role: "user" | "assistant"
-  parts: ChildMessage["parts"]
+  messageID: string;
+  sessionID: string;
+  role: "user" | "assistant";
+  parts: ChildMessage["parts"];
 }) {
   if (input.role === "user") {
     return {
@@ -172,7 +175,7 @@ function childMessage(input: {
         },
       },
       parts: input.parts,
-    } satisfies ChildMessage
+    } satisfies ChildMessage;
   }
 
   return {
@@ -206,12 +209,12 @@ function childMessage(input: {
       finish: "stop",
     },
     parts: input.parts,
-  } satisfies ChildMessage
+  } satisfies ChildMessage;
 }
 
 describe("run subagent data", () => {
   test("bootstraps tabs and child blockers from parent task parts", () => {
-    const data = createSubagentData()
+    const data = createSubagentData();
 
     expect(
       bootstrapSubagentData({
@@ -238,9 +241,9 @@ describe("run subagent data", () => {
         ],
         questions: [question("question-1", "child-1"), question("question-2", "other")],
       }),
-    ).toBe(true)
+    ).toBe(true);
 
-    const snapshot = snapshotSubagentData(data)
+    const snapshot = snapshotSubagentData(data);
 
     expect(snapshot.tabs).toEqual([
       expect.objectContaining({
@@ -251,19 +254,19 @@ describe("run subagent data", () => {
         status: "completed",
         toolCalls: 4,
       }),
-    ])
+    ]);
     expect(snapshot.details).toEqual({
       "child-1": {
         sessionID: "child-1",
         commits: [],
       },
-    })
-    expect(snapshot.permissions.map((item) => item.id)).toEqual(["perm-1"])
-    expect(snapshot.questions.map((item) => item.id)).toEqual(["question-1"])
-  })
+    });
+    expect(snapshot.permissions.map((item) => item.id)).toEqual(["perm-1"]);
+    expect(snapshot.questions.map((item) => item.id)).toEqual(["question-1"]);
+  });
 
   test("marks interrupted task tabs as cancelled during bootstrap", () => {
-    const data = createSubagentData()
+    const data = createSubagentData();
 
     bootstrapSubagentData({
       data,
@@ -271,18 +274,18 @@ describe("run subagent data", () => {
       children: [{ id: "child-1" }],
       permissions: [],
       questions: [],
-    })
+    });
 
     expect(snapshotSubagentData(data).tabs).toEqual([
       expect.objectContaining({
         sessionID: "child-1",
         status: "cancelled",
       }),
-    ])
-  })
+    ]);
+  });
 
   test("captures child activity and blocker metadata in the footer detail state", () => {
-    const data = createSubagentData()
+    const data = createSubagentData();
 
     bootstrapSubagentData({
       data,
@@ -290,7 +293,7 @@ describe("run subagent data", () => {
       children: [{ id: "child-1" }],
       permissions: [],
       questions: [],
-    })
+    });
 
     reduce(data, {
       type: "message.part.updated",
@@ -303,7 +306,7 @@ describe("run subagent data", () => {
           text: "Inspect footer tabs",
         },
       },
-    })
+    });
     reduce(data, {
       type: "message.updated",
       properties: {
@@ -313,7 +316,7 @@ describe("run subagent data", () => {
           role: "user",
         },
       },
-    })
+    });
     reduce(data, {
       type: "message.updated",
       properties: {
@@ -323,7 +326,7 @@ describe("run subagent data", () => {
           role: "assistant",
         },
       },
-    })
+    });
     reduce(data, {
       type: "message.part.updated",
       properties: {
@@ -336,7 +339,7 @@ describe("run subagent data", () => {
           time: { start: 1 },
         },
       },
-    })
+    });
     reduce(data, {
       type: "message.part.updated",
       properties: {
@@ -356,7 +359,7 @@ describe("run subagent data", () => {
           },
         },
       },
-    })
+    });
     reduce(data, {
       type: "permission.asked",
       properties: {
@@ -371,7 +374,7 @@ describe("run subagent data", () => {
           callID: "call-1",
         },
       },
-    })
+    });
     reduce(data, {
       type: "message.part.updated",
       properties: {
@@ -383,7 +386,7 @@ describe("run subagent data", () => {
           text: "hello",
         },
       },
-    })
+    });
     reduce(data, {
       type: "message.part.delta",
       properties: {
@@ -393,17 +396,19 @@ describe("run subagent data", () => {
         field: "text",
         delta: " world",
       },
-    })
+    });
 
-    const snapshot = snapshotSubagentData(data)
+    const snapshot = snapshotSubagentData(data);
 
-    expect(snapshot.tabs).toEqual([expect.objectContaining({ sessionID: "child-1", status: "running" })])
+    expect(snapshot.tabs).toEqual([
+      expect.objectContaining({ sessionID: "child-1", status: "running" }),
+    ]);
     expect(visible(snapshot.details["child-1"]?.commits ?? [])).toEqual([
       "› Inspect footer tabs",
       "_Thinking:_ planning next steps",
       "$ git status --short",
       "hello world",
-    ])
+    ]);
     expect(snapshot.permissions).toEqual([
       expect.objectContaining({
         id: "perm-1",
@@ -413,12 +418,12 @@ describe("run subagent data", () => {
           },
         },
       }),
-    ])
-    expect(snapshot.questions).toEqual([])
-  })
+    ]);
+    expect(snapshot.questions).toEqual([]);
+  });
 
   test("replays bootstrapped child session messages into inspector commits", () => {
-    const data = createSubagentData()
+    const data = createSubagentData();
 
     bootstrapSubagentData({
       data,
@@ -426,7 +431,7 @@ describe("run subagent data", () => {
       children: [{ id: "child-1" }],
       permissions: [],
       questions: [],
-    })
+    });
 
     expect(
       bootstrapSubagentCalls({
@@ -475,17 +480,17 @@ describe("run subagent data", () => {
         thinking: true,
         limits: {},
       }),
-    ).toBe(true)
+    ).toBe(true);
 
     expect(visible(snapshotSubagentData(data).details["child-1"]?.commits ?? [])).toEqual([
       "› Inspect footer tabs",
       "_Thinking:_ planning next steps",
       "hello world",
-    ])
-  })
+    ]);
+  });
 
   test("marks a running tab cancelled when the child session aborts", () => {
-    const data = createSubagentData()
+    const data = createSubagentData();
 
     bootstrapSubagentData({
       data,
@@ -493,7 +498,7 @@ describe("run subagent data", () => {
       children: [{ id: "child-1" }],
       permissions: [],
       questions: [],
-    })
+    });
 
     reduce(data, {
       type: "message.updated",
@@ -535,13 +540,13 @@ describe("run subagent data", () => {
           finish: "error",
         },
       },
-    })
+    });
 
     expect(snapshotSubagentData(data).tabs).toEqual([
       expect.objectContaining({
         sessionID: "child-1",
         status: "cancelled",
       }),
-    ])
-  })
-})
+    ]);
+  });
+});

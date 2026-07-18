@@ -1,4 +1,4 @@
-import { SiteHeader } from '@/components/site-header';
+import { SiteHeader } from "@/components/site-header";
 
 export default function Layout({ children }: React.PropsWithChildren) {
   return (

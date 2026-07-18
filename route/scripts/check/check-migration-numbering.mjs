@@ -125,7 +125,7 @@ function main() {
   const { duplicates, gaps, badNames } = findMigrationAnomalies(
     filenames,
     KNOWN_DUPLICATE_VERSIONS,
-    KNOWN_GAPS
+    KNOWN_GAPS,
   );
 
   const problems = [];
@@ -145,7 +145,7 @@ function main() {
         problems.join("\n") +
         `\n  → renomeie o arquivo colidente, preencha o gap, ou — se for legítimo — ` +
         `adicione o número às allowlists KNOWN_DUPLICATE_VERSIONS / KNOWN_GAPS com ` +
-        `justificativa rastreável a src/lib/db/migrationRunner.ts.`
+        `justificativa rastreável a src/lib/db/migrationRunner.ts.`,
     );
     process.exitCode = 1;
   }
@@ -153,7 +153,7 @@ function main() {
   if (!process.exitCode) {
     console.log(
       `[check-migration-numbering] OK (${filenames.length} migrations, ` +
-        `${KNOWN_GAPS.size} gap(s) conhecido(s), ${KNOWN_DUPLICATE_VERSIONS.size} duplicata(s) conhecida(s))`
+        `${KNOWN_GAPS.size} gap(s) conhecido(s), ${KNOWN_DUPLICATE_VERSIONS.size} duplicata(s) conhecida(s))`,
     );
   }
 }

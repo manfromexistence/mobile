@@ -68,14 +68,14 @@ export function runOpenapiRoutesCheck(opts = {}) {
     parts.push(
       `[openapi-routes] ${stale.length} entrada(s) obsoleta(s) na allowlist ` +
         `— a violação foi corrigida; REMOVA a entrada para travar a correção:\n` +
-        stale.map((e) => `  ✗ ${e}`).join("\n")
+        stale.map((e) => `  ✗ ${e}`).join("\n"),
     );
   }
   if (orphans.length) {
     parts.push(
       `[openapi-routes] ${orphans.length} path(s) documentado(s) sem rota real:\n` +
         orphans.map((p) => "  ✗ " + p).join("\n") +
-        `\n  → crie a rota, corrija/remova a entrada na spec, ou adicione a KNOWN_STALE_SPEC com justificativa.`
+        `\n  → crie a rota, corrija/remova a entrada na spec, ou adicione a KNOWN_STALE_SPEC com justificativa.`,
     );
   }
   if (parts.length) {

@@ -60,7 +60,7 @@ export function sanitizeReasoningEffortForProvider(
   body: unknown,
   provider: string,
   model: string | undefined,
-  log?: { info?: (tag: string, msg: string) => void } | null
+  log?: { info?: (tag: string, msg: string) => void } | null,
 ): unknown {
   if (!body || typeof body !== "object" || Array.isArray(body)) return body;
   const b = body as Record<string, unknown>;
@@ -82,7 +82,7 @@ export function sanitizeReasoningEffortForProvider(
   if (rejecting) {
     log?.info?.(
       "REASONING_SANITIZE",
-      `${provider}/${modelStr}: removed unsupported reasoning_effort`
+      `${provider}/${modelStr}: removed unsupported reasoning_effort`,
     );
     const next: Record<string, unknown> = { ...b };
     delete next.reasoning_effort;
@@ -109,7 +109,7 @@ export function sanitizeReasoningEffortForProvider(
     if (mapped && mapped !== effortStr) {
       log?.info?.(
         "REASONING_SANITIZE",
-        `deepseek/${modelStr}: normalized reasoning_effort ${effortStr} → ${mapped}`
+        `deepseek/${modelStr}: normalized reasoning_effort ${effortStr} → ${mapped}`,
       );
       const next: Record<string, unknown> = { ...b };
       if (hasTopLevelReasoningEffort) next.reasoning_effort = mapped;
@@ -129,7 +129,7 @@ export function sanitizeReasoningEffortForProvider(
   if (shouldNormalizeMaxToXHigh) {
     log?.info?.(
       "REASONING_SANITIZE",
-      `${provider}/${modelStr}: normalized reasoning_effort max → xhigh`
+      `${provider}/${modelStr}: normalized reasoning_effort max → xhigh`,
     );
     const next: Record<string, unknown> = { ...b };
     if (hasTopLevelReasoningEffort) {
@@ -144,7 +144,7 @@ export function sanitizeReasoningEffortForProvider(
   if (shouldDowngradeXHigh || shouldDowngradeMax) {
     log?.info?.(
       "REASONING_SANITIZE",
-      `${provider}/${modelStr}: downgraded reasoning_effort ${effortStr} → high`
+      `${provider}/${modelStr}: downgraded reasoning_effort ${effortStr} → high`,
     );
     const next: Record<string, unknown> = { ...b };
     if (hasTopLevelReasoningEffort) {

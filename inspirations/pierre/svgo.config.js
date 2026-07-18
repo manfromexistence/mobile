@@ -1,7 +1,7 @@
 export const SVGOConfig = {
   plugins: [
     {
-      name: 'preset-default',
+      name: "preset-default",
       params: {
         overrides: {
           convertTransform: false,
@@ -10,13 +10,13 @@ export const SVGOConfig = {
       },
     },
     // Keep viewBox
-    'removeViewBox',
+    "removeViewBox",
     // convert width/height to viewBox if missing
-    { name: 'removeDimensions' },
+    { name: "removeDimensions" },
     {
-      name: 'removeAttrs',
+      name: "removeAttrs",
       params: {
-        attrs: ['path:fill', 'circle:fill', 'g:fill'],
+        attrs: ["path:fill", "circle:fill", "g:fill"],
       },
     },
   ],

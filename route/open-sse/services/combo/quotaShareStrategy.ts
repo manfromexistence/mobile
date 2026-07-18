@@ -84,7 +84,7 @@ function bareModelName(modelStr: string): string {
 function filterEligibleBySaturation(
   targets: ResolvedComboTarget[],
   modelStr: string,
-  nowMs: number
+  nowMs: number,
 ): ResolvedComboTarget[] {
   const modelName = bareModelName(modelStr);
 
@@ -113,7 +113,7 @@ function filterEligibleBySaturation(
  */
 function resolveConnectionCap(
   connectionId: string,
-  caps: Map<string, number | null> | undefined
+  caps: Map<string, number | null> | undefined,
 ): number | null {
   if (!connectionId || !caps) return null;
   const cap = caps.get(connectionId);
@@ -134,7 +134,7 @@ function resolveConnectionCap(
 function partitionByConcurrencyCap(
   targets: ResolvedComboTarget[],
   caps: Map<string, number | null> | undefined,
-  nowMs: number
+  nowMs: number,
 ): { withRoom: ResolvedComboTarget[]; atCap: ResolvedComboTarget[] } {
   if (!caps || caps.size === 0) return { withRoom: targets, atCap: [] };
 
@@ -222,7 +222,7 @@ function normalizeWeight(weight: number | undefined): number {
 function pickByInflightP2C(
   first: ResolvedComboTarget,
   second: ResolvedComboTarget,
-  nowMs: number
+  nowMs: number,
 ): 0 | 1 {
   const loadFirst = getInflight(first.connectionId ?? "", nowMs);
   const loadSecond = getInflight(second.connectionId ?? "", nowMs);
@@ -279,7 +279,7 @@ export function selectQuotaShareTarget(
   comboName: string,
   modelStr: string,
   nowMs: number = Date.now(),
-  options?: QuotaShareOptions
+  options?: QuotaShareOptions,
 ): QuotaShareResult {
   const noOp = (): void => {};
 
@@ -296,7 +296,7 @@ export function selectQuotaShareTarget(
   const { withRoom, atCap } = partitionByConcurrencyCap(
     eligible,
     options?.maxConcurrentByConnection,
-    nowMs
+    nowMs,
   );
 
   // 2) DRR ordering over the set that still has concurrency headroom.

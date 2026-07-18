@@ -280,7 +280,7 @@ export default function ProfilePage() {
               <div className="mt-4 p-3 rounded-lg bg-emerald-500/10 text-emerald-400 text-sm">
                 ✓ Earned on{" "}
                 {new Date(
-                  earnedBadges.find((b) => b.badgeId === selectedBadge.id)?.unlockedAt || ""
+                  earnedBadges.find((b) => b.badgeId === selectedBadge.id)?.unlockedAt || "",
                 ).toLocaleDateString()}
               </div>
             )}

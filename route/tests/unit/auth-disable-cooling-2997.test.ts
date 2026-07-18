@@ -42,7 +42,7 @@ test("markAccountUnavailable skips transient cooldown when disableCooling is set
     503,
     "temporary upstream error",
     "glm",
-    "glm-5.1"
+    "glm-5.1",
   );
   const after = await providersDb.getProviderConnectionById((conn as any).id);
 
@@ -52,7 +52,7 @@ test("markAccountUnavailable skips transient cooldown when disableCooling is set
   assert.notEqual(
     after.testStatus,
     "unavailable",
-    "testStatus must not become 'unavailable' when disableCooling is on"
+    "testStatus must not become 'unavailable' when disableCooling is on",
   );
   // The error is still recorded (backoff/lastError path), connection stays usable.
   assert.equal(Number(after.errorCode), 503);
@@ -79,7 +79,7 @@ test("markAccountUnavailable still applies terminal 'expired' despite disableCoo
     401,
     "unauthorized",
     "openai",
-    "gpt-4.1"
+    "gpt-4.1",
   );
   const after = await providersDb.getProviderConnectionById((conn as any).id);
 
@@ -104,7 +104,7 @@ test("markAccountUnavailable still applies terminal 'credits_exhausted' despite 
     402,
     "payment required",
     "openai",
-    "gpt-4.1"
+    "gpt-4.1",
   );
   const after = await providersDb.getProviderConnectionById((conn as any).id);
 
@@ -130,7 +130,7 @@ test("markAccountUnavailable still applies transient cooldown without disableCoo
     503,
     "temporary upstream error",
     "glm",
-    "glm-5.1"
+    "glm-5.1",
   );
   const after = await providersDb.getProviderConnectionById((conn as any).id);
 
@@ -168,14 +168,14 @@ test("getProviderCredentials keeps a disableCooling connection eligible after a 
     503,
     "temporary upstream error",
     "glm",
-    "glm-5.1"
+    "glm-5.1",
   );
   await auth.markAccountUnavailable(
     (unflagged as any).id,
     503,
     "temporary upstream error",
     "glm",
-    "glm-5.1"
+    "glm-5.1",
   );
 
   // Selection must keep returning the flagged connection (never the cooled sibling).
@@ -185,7 +185,7 @@ test("getProviderCredentials keeps a disableCooling connection eligible after a 
     assert.equal(
       selected.connectionId,
       (flagged as any).id,
-      "disableCooling connection must stay eligible while the unflagged sibling is cooled"
+      "disableCooling connection must stay eligible while the unflagged sibling is cooled",
     );
   }
 });

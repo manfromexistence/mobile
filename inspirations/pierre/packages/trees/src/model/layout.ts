@@ -1,7 +1,7 @@
 export type FileTreeLayoutRow = {
   ancestorPaths: readonly string[];
   isExpanded: boolean;
-  kind: 'directory' | 'file';
+  kind: "directory" | "file";
   path: string;
 };
 
@@ -29,16 +29,12 @@ export const EMPTY_FILE_TREE_LAYOUT_RANGE: FileTreeLayoutRange = {
   startIndex: -1,
 };
 
-export type FileTreeLayoutStickyRow<
-  Row extends FileTreeLayoutRow = FileTreeLayoutRow,
-> = {
+export type FileTreeLayoutStickyRow<Row extends FileTreeLayoutRow = FileTreeLayoutRow> = {
   row: Row;
   top: number;
 };
 
-export type FileTreeLayoutSnapshot<
-  Row extends FileTreeLayoutRow = FileTreeLayoutRow,
-> = {
+export type FileTreeLayoutSnapshot<Row extends FileTreeLayoutRow = FileTreeLayoutRow> = {
   occlusion: {
     firstOccludedIndex: number;
     lastOccludedIndex: number;
@@ -75,10 +71,7 @@ function clamp(value: number, minimum: number, maximum: number): number {
   return Math.min(Math.max(value, minimum), maximum);
 }
 
-function createRange(
-  startIndex: number,
-  endIndex: number
-): FileTreeLayoutRange {
+function createRange(startIndex: number, endIndex: number): FileTreeLayoutRange {
   return startIndex < 0 || endIndex < startIndex
     ? EMPTY_FILE_TREE_LAYOUT_RANGE
     : { endIndex, startIndex };
@@ -88,21 +81,12 @@ function isEmptyRange(range: FileTreeLayoutRange): boolean {
   return range.startIndex < 0 || range.endIndex < range.startIndex;
 }
 
-function getRangeHeight(
-  range: FileTreeLayoutRange,
-  itemHeight: number
-): number {
-  return isEmptyRange(range)
-    ? 0
-    : (range.endIndex - range.startIndex + 1) * itemHeight;
+function getRangeHeight(range: FileTreeLayoutRange, itemHeight: number): number {
+  return isEmptyRange(range) ? 0 : (range.endIndex - range.startIndex + 1) * itemHeight;
 }
 
 // Resolves the first row whose box intersects the given content offset.
-function getFirstIntersectingIndex(
-  offset: number,
-  itemCount: number,
-  itemHeight: number
-): number {
+function getFirstIntersectingIndex(offset: number, itemCount: number, itemHeight: number): number {
   if (itemCount <= 0) {
     return -1;
   }
@@ -124,7 +108,7 @@ function getFirstIntersectingIndex(
 function getLastIntersectingIndex(
   bottomOffset: number,
   itemCount: number,
-  itemHeight: number
+  itemHeight: number,
 ): number {
   if (itemCount <= 0 || bottomOffset <= 0) {
     return -1;
@@ -139,12 +123,12 @@ function getLastIntersectingIndex(
 }
 
 function getExpandedDirectoryIndicesByDepth<Row extends FileTreeLayoutRow>(
-  rows: readonly Row[]
+  rows: readonly Row[],
 ): ReadonlyMap<number, readonly number[]> {
   const indicesByDepth = new Map<number, number[]>();
 
   rows.forEach((row, index) => {
-    if (row.kind !== 'directory' || !row.isExpanded) {
+    if (row.kind !== "directory" || !row.isExpanded) {
       return;
     }
 
@@ -161,10 +145,7 @@ function getExpandedDirectoryIndicesByDepth<Row extends FileTreeLayoutRow>(
   return indicesByDepth;
 }
 
-function findLastIndexAtOrBefore(
-  indices: readonly number[],
-  threshold: number
-): number {
+function findLastIndexAtOrBefore(indices: readonly number[], threshold: number): number {
   let lowerBound = 0;
   let upperBound = indices.length - 1;
   let match = -1;
@@ -191,7 +172,7 @@ function findLastIndexAtOrBefore(
 // Tracks where each expanded directory's visible subtree ends so sticky rows can
 // slide out only when the next row outside that subtree reaches the slot.
 function computeExpandedSubtreeEndIndices<Row extends FileTreeLayoutRow>(
-  rows: readonly Row[]
+  rows: readonly Row[],
 ): ReadonlyMap<string, number> {
   const endIndexByPath = new Map<string, number>();
   const openDirectoryPaths: string[] = [];
@@ -203,7 +184,7 @@ function computeExpandedSubtreeEndIndices<Row extends FileTreeLayoutRow>(
     }
 
     const activePaths =
-      row.kind === 'directory' && row.isExpanded
+      row.kind === "directory" && row.isExpanded
         ? [...row.ancestorPaths, row.path]
         : row.ancestorPaths;
 
@@ -228,11 +209,7 @@ function computeExpandedSubtreeEndIndices<Row extends FileTreeLayoutRow>(
     }
 
     openDirectoryPaths.length = sharedPrefixLength;
-    for (
-      let activeIndex = sharedPrefixLength;
-      activeIndex < activePaths.length;
-      activeIndex += 1
-    ) {
+    for (let activeIndex = sharedPrefixLength; activeIndex < activePaths.length; activeIndex += 1) {
       const path = activePaths[activeIndex];
       if (path != null) {
         openDirectoryPaths.push(path);
@@ -257,15 +234,14 @@ function computeExpandedSubtreeEndIndices<Row extends FileTreeLayoutRow>(
 export function computeStickyRows<Row extends FileTreeLayoutRow>(
   rows: readonly Row[],
   scrollTop: number,
-  itemHeight: number
+  itemHeight: number,
 ): readonly FileTreeLayoutStickyRow<Row>[] {
   if (rows.length === 0 || scrollTop <= 0) {
     return [];
   }
 
   const subtreeEndIndexByPath = computeExpandedSubtreeEndIndices(rows);
-  const expandedDirectoryIndicesByDepth =
-    getExpandedDirectoryIndicesByDepth(rows);
+  const expandedDirectoryIndicesByDepth = getExpandedDirectoryIndicesByDepth(rows);
   const stickyRows: Row[] = [];
 
   for (let slotDepth = 0; slotDepth < rows.length; slotDepth += 1) {
@@ -275,14 +251,8 @@ export function computeStickyRows<Row extends FileTreeLayoutRow>(
     }
 
     const slotTop = scrollTop + slotDepth * itemHeight;
-    const thresholdIndex = Math.min(
-      rows.length - 1,
-      Math.floor(slotTop / itemHeight)
-    );
-    let candidateOffset = findLastIndexAtOrBefore(
-      candidateIndices,
-      thresholdIndex
-    );
+    const thresholdIndex = Math.min(rows.length - 1, Math.floor(slotTop / itemHeight));
+    let candidateOffset = findLastIndexAtOrBefore(candidateIndices, thresholdIndex);
     let candidate: Row | null = null;
 
     while (candidateOffset >= 0) {
@@ -290,8 +260,7 @@ export function computeStickyRows<Row extends FileTreeLayoutRow>(
       const row = rowIndex == null ? null : (rows[rowIndex] ?? null);
       if (
         row != null &&
-        (slotDepth === 0 ||
-          row.ancestorPaths[slotDepth - 1] === stickyRows[slotDepth - 1]?.path)
+        (slotDepth === 0 || row.ancestorPaths[slotDepth - 1] === stickyRows[slotDepth - 1]?.path)
       ) {
         candidate = row;
         break;
@@ -310,8 +279,7 @@ export function computeStickyRows<Row extends FileTreeLayoutRow>(
   return stickyRows
     .map((row, slotDepth) => {
       const defaultTop = slotDepth * itemHeight;
-      const subtreeEndIndex =
-        subtreeEndIndexByPath.get(row.path) ?? rows.length - 1;
+      const subtreeEndIndex = subtreeEndIndexByPath.get(row.path) ?? rows.length - 1;
       const nextBoundaryIndex = subtreeEndIndex + 1;
       if (nextBoundaryIndex >= rows.length) {
         return { row, top: defaultTop };
@@ -328,7 +296,7 @@ export function computeStickyRows<Row extends FileTreeLayoutRow>(
 
 export function computeFileTreeLayout<Row extends FileTreeLayoutRow>(
   rows: readonly Row[],
-  metrics: FileTreeLayoutMetrics
+  metrics: FileTreeLayoutMetrics,
 ): FileTreeLayoutSnapshot<Row> {
   const totalRowCount = metrics.totalRowCount ?? rows.length;
   const totalHeight = totalRowCount * metrics.itemHeight;
@@ -337,13 +305,11 @@ export function computeFileTreeLayout<Row extends FileTreeLayoutRow>(
   const maxScrollTop = Math.max(0, totalHeight - viewportHeight);
   const scrollTop = clamp(metrics.scrollTop, 0, maxScrollTop);
   const stickyRows =
-    (metrics.stickyRows as
-      | readonly FileTreeLayoutStickyRow<Row>[]
-      | undefined) ?? computeStickyRows(rows, scrollTop, metrics.itemHeight);
+    (metrics.stickyRows as readonly FileTreeLayoutStickyRow<Row>[] | undefined) ??
+    computeStickyRows(rows, scrollTop, metrics.itemHeight);
   const stickyHeight = stickyRows.reduce(
-    (maximumBottom, entry) =>
-      Math.max(maximumBottom, entry.top + metrics.itemHeight),
-    0
+    (maximumBottom, entry) => Math.max(maximumBottom, entry.top + metrics.itemHeight),
+    0,
   );
   const paneTop = Math.min(totalHeight, scrollTop + stickyHeight);
   const paneHeight = Math.max(0, viewportHeight - stickyHeight);
@@ -352,24 +318,16 @@ export function computeFileTreeLayout<Row extends FileTreeLayoutRow>(
   const firstVisiblePhysicalIndex = getFirstIntersectingIndex(
     scrollTop,
     totalRowCount,
-    metrics.itemHeight
+    metrics.itemHeight,
   );
-  const firstProjectedIndex = getFirstIntersectingIndex(
-    paneTop,
-    totalRowCount,
-    metrics.itemHeight
-  );
+  const firstProjectedIndex = getFirstIntersectingIndex(paneTop, totalRowCount, metrics.itemHeight);
 
   const firstOccludedIndex =
-    stickyHeight <= 0 ||
-    firstVisiblePhysicalIndex < 0 ||
-    firstVisiblePhysicalIndex >= totalRowCount
+    stickyHeight <= 0 || firstVisiblePhysicalIndex < 0 || firstVisiblePhysicalIndex >= totalRowCount
       ? -1
       : firstVisiblePhysicalIndex;
   const lastOccludedIndex =
-    firstOccludedIndex === -1
-      ? -1
-      : Math.min(totalRowCount - 1, firstProjectedIndex - 1);
+    firstOccludedIndex === -1 ? -1 : Math.min(totalRowCount - 1, firstProjectedIndex - 1);
   const occludedCount =
     firstOccludedIndex === -1 || lastOccludedIndex < firstOccludedIndex
       ? 0
@@ -380,11 +338,7 @@ export function computeFileTreeLayout<Row extends FileTreeLayoutRow>(
       ? EMPTY_FILE_TREE_LAYOUT_RANGE
       : createRange(
           firstProjectedIndex,
-          getLastIntersectingIndex(
-            paneTop + paneHeight,
-            totalRowCount,
-            metrics.itemHeight
-          )
+          getLastIntersectingIndex(paneTop + paneHeight, totalRowCount, metrics.itemHeight),
         );
 
   // Upward overscan is still useful above the physical viewport, but it must
@@ -394,7 +348,7 @@ export function computeFileTreeLayout<Row extends FileTreeLayoutRow>(
     ? EMPTY_FILE_TREE_LAYOUT_RANGE
     : createRange(
         Math.max(minimumWindowStart, visible.startIndex - overscan),
-        Math.min(totalRowCount - 1, visible.endIndex + overscan)
+        Math.min(totalRowCount - 1, visible.endIndex + overscan),
       );
   const windowHeight = getRangeHeight(windowRange, metrics.itemHeight);
 
@@ -426,9 +380,7 @@ export function computeFileTreeLayout<Row extends FileTreeLayoutRow>(
     window: {
       endIndex: windowRange.endIndex,
       height: windowHeight,
-      offsetTop: isEmptyRange(windowRange)
-        ? 0
-        : windowRange.startIndex * metrics.itemHeight,
+      offsetTop: isEmptyRange(windowRange) ? 0 : windowRange.startIndex * metrics.itemHeight,
       startIndex: windowRange.startIndex,
     },
   };

@@ -382,7 +382,7 @@ async function getLiveFunnelPayload(binaryPath: string | null) {
   if (!binaryPath) return null;
   const funnelResult = await readJsonCommand(
     binaryPath,
-    await buildTailscaleArgs("funnel", "status", "--json")
+    await buildTailscaleArgs("funnel", "status", "--json"),
   );
   if (funnelResult) return funnelResult;
   // Fallback: older/some versions expose the same config via "serve status"
@@ -396,7 +396,7 @@ function isBackendRunning(payload: unknown) {
 function isFunnelRunning(payload: unknown) {
   const allowFunnel = asRecord(payload).AllowFunnel;
   return Boolean(
-    allowFunnel && typeof allowFunnel === "object" && Object.keys(allowFunnel).length > 0
+    allowFunnel && typeof allowFunnel === "object" && Object.keys(allowFunnel).length > 0,
   );
 }
 
@@ -711,7 +711,7 @@ async function resetTailscaleFunnel(binaryPath: string) {
 }
 
 export async function startTailscaleFunnel(
-  port = getRuntimePorts().apiPort
+  port = getRuntimePorts().apiPort,
 ): Promise<TailscaleFunnelResult> {
   const resolution = await resolveBinary();
   if (!resolution.binaryPath) {
@@ -1129,7 +1129,7 @@ async function installTailscaleWindows(onProgress?: (message: string) => void) {
         windowsHide: true,
         stdio: ["ignore", "pipe", "pipe"],
         env: buildExecEnv(),
-      }
+      },
     );
     const log = createStreamLogger(onProgress);
     child.stdout.on("data", log);
@@ -1185,7 +1185,7 @@ export async function installTailscale({
     onProgress?.(
       `Install completed, but the daemon still needs manual attention: ${
         error instanceof Error ? error.message : String(error)
-      }`
+      }`,
     );
   }
 

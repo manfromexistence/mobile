@@ -1,7 +1,7 @@
-import { Credential } from "@opencode-ai/schema/credential"
-import { Schema } from "effect"
-import { HttpApiEndpoint, HttpApiGroup, HttpApiSchema, OpenApi } from "effect/unstable/httpapi"
-import { LocationQuery, locationQueryOpenApi } from "./location"
+import { Credential } from "@opencode-ai/schema/credential";
+import { Schema } from "effect";
+import { HttpApiEndpoint, HttpApiGroup, HttpApiSchema, OpenApi } from "effect/unstable/httpapi";
+import { LocationQuery, locationQueryOpenApi } from "./location";
 
 export const CredentialGroup = HttpApiGroup.make("server.credential")
   .add(
@@ -34,4 +34,4 @@ export const CredentialGroup = HttpApiGroup.make("server.credential")
           description: "Remove a stored integration credential.",
         }),
       ),
-  )
+  );

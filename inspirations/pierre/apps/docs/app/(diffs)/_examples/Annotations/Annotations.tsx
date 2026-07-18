@@ -1,94 +1,75 @@
-'use client';
+"use client";
 
 import {
   type AnnotationSide,
   type DiffLineAnnotation,
   type SelectedLineRange,
-} from '@pierre/diffs';
-import { MultiFileDiff, useStableCallback } from '@pierre/diffs/react';
-import type { PreloadMultiFileDiffResult } from '@pierre/diffs/ssr';
-import { IconArrowDownRight } from '@pierre/icons';
-import { useEffect, useMemo, useRef, useState } from 'react';
+} from "@pierre/diffs";
+import { MultiFileDiff, useStableCallback } from "@pierre/diffs/react";
+import type { PreloadMultiFileDiffResult } from "@pierre/diffs/ssr";
+import { IconArrowDownRight } from "@pierre/icons";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-import { type AnnotationMetadata } from './constants';
-import { FeatureHeader } from '@/components/FeatureHeader';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+import { type AnnotationMetadata } from "./constants";
+import { FeatureHeader } from "@/components/FeatureHeader";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 
 interface AnnotationsProps {
   prerenderedDiff: PreloadMultiFileDiffResult<AnnotationMetadata>;
 }
 
 export function Annotations({ prerenderedDiff }: AnnotationsProps) {
-  const [annotations, setAnnotations] = useState<
-    DiffLineAnnotation<AnnotationMetadata>[]
-  >(prerenderedDiff.annotations ?? []);
+  const [annotations, setAnnotations] = useState<DiffLineAnnotation<AnnotationMetadata>[]>(
+    prerenderedDiff.annotations ?? [],
+  );
 
-  const addCommentAtLine = useStableCallback(
-    (side: AnnotationSide, lineNumber: number) => {
-      setAnnotations((prev) => {
-        const hasAnnotation = prev.some(
-          (ann) => ann.side === side && ann.lineNumber === lineNumber
-        );
+  const addCommentAtLine = useStableCallback((side: AnnotationSide, lineNumber: number) => {
+    setAnnotations((prev) => {
+      const hasAnnotation = prev.some((ann) => ann.side === side && ann.lineNumber === lineNumber);
 
-        if (hasAnnotation) return prev;
+      if (hasAnnotation) return prev;
 
-        return [
-          ...prev,
-          {
-            side,
-            lineNumber,
-            metadata: {
-              key: `${side}-${lineNumber}`,
-              isThread: false,
-            },
+      return [
+        ...prev,
+        {
+          side,
+          lineNumber,
+          metadata: {
+            key: `${side}-${lineNumber}`,
+            isThread: false,
           },
-        ];
-      });
-    }
-  );
+        },
+      ];
+    });
+  });
 
-  const hasOpenCommentForm = annotations.some(
-    (ann) => ann.metadata.isThread !== true
-  );
-  const [selectedRange, setSelectedRange] = useState<SelectedLineRange | null>(
-    null
-  );
+  const hasOpenCommentForm = annotations.some((ann) => ann.metadata.isThread !== true);
+  const [selectedRange, setSelectedRange] = useState<SelectedLineRange | null>(null);
 
-  const handleLineSelectionEnd = useStableCallback(
-    (range: SelectedLineRange | null) => {
-      setSelectedRange(range);
-      if (range == null) return;
-      const derivedSide = range.endSide ?? range.side;
-      const side: AnnotationSide =
-        derivedSide === 'deletions' ? 'deletions' : 'additions';
-      addCommentAtLine(side, Math.max(range.end, range.start));
-    }
-  );
+  const handleLineSelectionEnd = useStableCallback((range: SelectedLineRange | null) => {
+    setSelectedRange(range);
+    if (range == null) return;
+    const derivedSide = range.endSide ?? range.side;
+    const side: AnnotationSide = derivedSide === "deletions" ? "deletions" : "additions";
+    addCommentAtLine(side, Math.max(range.end, range.start));
+  });
 
-  const handleLineSelectionChange = useStableCallback(
-    (range: SelectedLineRange | null) => {
-      setSelectedRange(range);
-    }
-  );
+  const handleLineSelectionChange = useStableCallback((range: SelectedLineRange | null) => {
+    setSelectedRange(range);
+  });
 
-  const handleSubmitComment = useStableCallback(
-    (side: AnnotationSide, lineNumber: number) => {
-      // TODO: Implement
-      console.log('submit comment', side, lineNumber);
-    }
-  );
+  const handleSubmitComment = useStableCallback((side: AnnotationSide, lineNumber: number) => {
+    // TODO: Implement
+    console.log("submit comment", side, lineNumber);
+  });
 
-  const handleCancelComment = useStableCallback(
-    (side: AnnotationSide, lineNumber: number) => {
-      setAnnotations((prev) =>
-        prev.filter(
-          (ann) => !(ann.side === side && ann.lineNumber === lineNumber)
-        )
-      );
-      setSelectedRange(null);
-    }
-  );
+  const handleCancelComment = useStableCallback((side: AnnotationSide, lineNumber: number) => {
+    setAnnotations((prev) =>
+      prev.filter((ann) => !(ann.side === side && ann.lineNumber === lineNumber)),
+    );
+    setSelectedRange(null);
+  });
 
   return (
     <div className="space-y-5">
@@ -97,10 +78,9 @@ export function Annotations({ prerenderedDiff }: AnnotationsProps) {
         title="Comments & Annotations"
         description={
           <>
-            <code>@pierre/diffs</code> provide a flexible annotation framework
-            for injecting additional content and context. Use it to render your
-            own line comments, annotations from CI jobs, and other third-party
-            content.
+            <code>@pierre/diffs</code> provide a flexible annotation framework for injecting
+            additional content and context. Use it to render your own line comments, annotations
+            from CI jobs, and other third-party content.
           </>
         }
       />
@@ -122,7 +102,7 @@ export function Annotations({ prerenderedDiff }: AnnotationsProps) {
             hasOpenCommentForm,
             handleLineSelectionEnd,
             handleLineSelectionChange,
-          ]
+          ],
         )}
         lineAnnotations={annotations}
         renderAnnotation={(annotation) =>
@@ -172,19 +152,19 @@ function CommentForm({
   return (
     <div
       style={{
-        overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'row',
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "row",
         gap: 1,
       }}
     >
-      <div style={{ width: '100%' }}>
+      <div style={{ width: "100%" }}>
         <div
           className="max-w-[95%] sm:max-w-[70%]"
           style={{
-            whiteSpace: 'normal',
+            whiteSpace: "normal",
             margin: 20,
-            fontFamily: 'Geist',
+            fontFamily: "Geist",
           }}
         >
           <div className="bg-card rounded-lg border p-5 shadow-sm">
@@ -202,11 +182,7 @@ function CommentForm({
                   className="text-foreground bg-background focus:ring-ring min-h-[60px] w-full resize-none rounded-md border p-2 text-sm focus:ring-2 focus:outline-none"
                 />
                 <div className="mt-3 flex items-center gap-2">
-                  <Button
-                    size="sm"
-                    className="cursor-pointer"
-                    onClick={handleSubmit}
-                  >
+                  <Button size="sm" className="cursor-pointer" onClick={handleSubmit}>
                     Comment
                   </Button>
                   <button
@@ -230,37 +206,36 @@ function Thread() {
     <div
       className="max-w-[95%] sm:max-w-[70%]"
       style={{
-        whiteSpace: 'normal',
+        whiteSpace: "normal",
         margin: 20,
-        fontFamily: 'Geist',
+        fontFamily: "Geist",
       }}
     >
       <CommentThread
         mainComment={{
-          author: 'You',
-          timestamp: '3h',
+          author: "You",
+          timestamp: "3h",
           content:
-            'Should we validate the role parameter? We could restrict it to a set of allowed values.',
-          avatarUrl: '/avatars/avatar_fat.jpg',
+            "Should we validate the role parameter? We could restrict it to a set of allowed values.",
+          avatarUrl: "/avatars/avatar_fat.jpg",
           isYou: true,
         }}
         replies={[
           {
-            author: 'Amadeus',
-            timestamp: '2h',
-            content: 'Good idea, maybe use a Literal type or an enum.',
-            avatarUrl: '/avatars/avatar_amadeus.jpg',
+            author: "Amadeus",
+            timestamp: "2h",
+            content: "Good idea, maybe use a Literal type or an enum.",
+            avatarUrl: "/avatars/avatar_amadeus.jpg",
           },
           {
-            author: 'Mark',
-            timestamp: '2h',
-            content:
-              'Agreed, we should also update verify_token to return the role.',
-            avatarUrl: '/avatars/avatar_mdo.jpg',
+            author: "Mark",
+            timestamp: "2h",
+            content: "Agreed, we should also update verify_token to return the role.",
+            avatarUrl: "/avatars/avatar_mdo.jpg",
           },
         ]}
-        onAddReply={() => console.log('Add reply clicked')}
-        onResolve={() => console.log('Resolve clicked')}
+        onAddReply={() => console.log("Add reply clicked")}
+        onResolve={() => console.log("Resolve clicked")}
       />
     </div>
   );
@@ -274,26 +249,18 @@ interface CommentProps {
   isYou?: boolean;
 }
 
-export function Comment({
-  author,
-  timestamp,
-  content,
-  avatarUrl,
-  isYou = false,
-}: CommentProps) {
+export function Comment({ author, timestamp, content, avatarUrl, isYou = false }: CommentProps) {
   return (
     <div className="flex gap-2">
       <div className="relative -mt-0.5 flex-shrink-0">
         <Avatar className="h-6 w-6">
-          <AvatarImage src={avatarUrl ?? '/placeholder.svg'} alt={author} />
+          <AvatarImage src={avatarUrl ?? "/placeholder.svg"} alt={author} />
           <AvatarFallback>{author[0]}</AvatarFallback>
         </Avatar>
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline gap-2">
-          <span className="text-foreground font-semibold">
-            {isYou ? 'You' : author}
-          </span>
+          <span className="text-foreground font-semibold">{isYou ? "You" : author}</span>
           <span className="text-muted-foreground text-sm">{timestamp}</span>
         </div>
         <p className="text-foreground leading-relaxed">{content}</p>

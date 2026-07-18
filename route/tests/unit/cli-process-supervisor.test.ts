@@ -247,7 +247,7 @@ test("ServerSupervisor.handleExit com string code não passa string para process
   assert.equal(
     typeof exits[0],
     "number",
-    `process.exit deve receber number, recebeu: ${typeof exits[0]} (${exits[0]})`
+    `process.exit deve receber number, recebeu: ${typeof exits[0]} (${exits[0]})`,
   );
 });
 

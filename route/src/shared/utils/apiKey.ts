@@ -10,7 +10,7 @@ function getApiKeySecret(): string {
   if (!secret || secret.trim() === "") {
     throw new Error(
       "API_KEY_SECRET is required for API key CRC operations. " +
-        "The startup validator (instrumentation-node.ts) should have set this automatically."
+        "The startup validator (instrumentation-node.ts) should have set this automatically.",
     );
   }
   return secret;
@@ -61,7 +61,7 @@ export function generateApiKeyWithMachine(machineId: string): { key: string; key
  * @returns {{ machineId: string, keyId: string, isNewFormat: boolean } | null}
  */
 export function parseApiKey(
-  apiKey: string
+  apiKey: string,
 ): { machineId: string | null; keyId: string; isNewFormat: boolean } | null {
   if (!apiKey || !apiKey.startsWith("sk-")) return null;
 

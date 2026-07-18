@@ -82,7 +82,7 @@ test("fallbackClaudeProfile skips media and non-text models", () => {
       id: "veo-free/seedance",
       output_modalities: ["video"],
     }),
-    null
+    null,
   );
 });
 
@@ -91,7 +91,7 @@ test("syncClaudeProfilesFromModels falls back to a generic profile for unmatched
   try {
     const result = await syncClaudeProfilesFromModels(
       [{ id: "new-provider/future-chat-1", output_modalities: ["text"] }],
-      { claudeHome, baseUrl: "http://vps:20128" }
+      { claudeHome, baseUrl: "http://vps:20128" },
     );
 
     assert.equal(result.written, 1);
@@ -101,7 +101,7 @@ test("syncClaudeProfilesFromModels falls back to a generic profile for unmatched
       claudeHome,
       "profiles",
       "new-provider-future-chat-1",
-      "settings.json"
+      "settings.json",
     );
     const json = JSON.parse(await fs.readFile(settingsPath, "utf8"));
     assert.equal(json.model, "new-provider/future-chat-1");
@@ -125,7 +125,7 @@ test("syncClaudeProfilesFromModels writes directory-per-profile settings + threa
     assert.equal(result.skipped, 1);
     assert.deepEqual(
       result.profiles.map((p) => p.name),
-      ["glm52"]
+      ["glm52"],
     );
 
     // Directory-per-profile: <claudeHome>/profiles/<name>/settings.json

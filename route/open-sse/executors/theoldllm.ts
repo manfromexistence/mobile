@@ -129,7 +129,7 @@ export const tokenCache: { value: string; expiresAt: number } = { value: "", exp
 
 async function directFetch(
   reqBody: Record<string, unknown>,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): Promise<Response> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 120_000);
@@ -240,7 +240,7 @@ export class TheOldLlmExecutor extends BaseExecutor {
   async testConnection(
     _credentials: ProviderCredentials,
     _signal?: AbortSignal | null,
-    log?: ExecuteInput["log"]
+    log?: ExecuteInput["log"],
   ): Promise<boolean> {
     try {
       const resp = await fetch(API_URL, {
@@ -280,9 +280,9 @@ export class TheOldLlmExecutor extends BaseExecutor {
           encoder.encode(
             JSON.stringify({
               error: { message: "Request aborted", type: "abort", code: "ABORTED" },
-            })
+            }),
           ),
-          { status: 499, headers: { "Content-Type": "application/json" } }
+          { status: 499, headers: { "Content-Type": "application/json" } },
         ),
         url: API_URL,
         headers: this.buildHeaders(input.credentials),
@@ -339,9 +339,9 @@ export class TheOldLlmExecutor extends BaseExecutor {
           encoder.encode(
             JSON.stringify({
               error: { message: msg, type: "upstream_error", code: "EXECUTOR_ERROR" },
-            })
+            }),
           ),
-          { status: 502, headers: { "Content-Type": "application/json" } }
+          { status: 502, headers: { "Content-Type": "application/json" } },
         ),
         url: API_URL,
         headers: this.buildHeaders(input.credentials),

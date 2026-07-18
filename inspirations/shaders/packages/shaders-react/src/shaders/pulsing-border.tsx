@@ -1,6 +1,6 @@
-import { memo } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '../shader-mount.js';
-import { colorPropsAreEqual } from '../color-props-are-equal.js';
+import { memo } from "react";
+import { ShaderMount, type ShaderComponentProps } from "../shader-mount.js";
+import { colorPropsAreEqual } from "../color-props-are-equal.js";
 import {
   defaultObjectSizing,
   getShaderColorFromString,
@@ -10,22 +10,22 @@ import {
   type PulsingBorderParams,
   type PulsingBorderUniforms,
   type ShaderPreset,
-} from '@paper-design/shaders';
-import { PulsingBorderAspectRatios } from '@paper-design/shaders';
+} from "@paper-design/shaders";
+import { PulsingBorderAspectRatios } from "@paper-design/shaders";
 
 export interface PulsingBorderProps extends ShaderComponentProps, PulsingBorderParams {}
 
 type PulsingBorderPreset = ShaderPreset<PulsingBorderParams>;
 
 export const defaultPreset: PulsingBorderPreset = {
-  name: 'Default',
+  name: "Default",
   params: {
     ...defaultObjectSizing,
     speed: 1,
     frame: 0,
     scale: 0.6,
-    colorBack: '#000000',
-    colors: ['#0dc1fd', '#d915ef', '#ff3f2ecc'],
+    colorBack: "#000000",
+    colors: ["#0dc1fd", "#d915ef", "#ff3f2ecc"],
     roundness: 0.25,
     thickness: 0.1,
     margin: 0,
@@ -33,7 +33,7 @@ export const defaultPreset: PulsingBorderPreset = {
     marginRight: 0,
     marginTop: 0,
     marginBottom: 0,
-    aspectRatio: 'auto',
+    aspectRatio: "auto",
     softness: 0.75,
     intensity: 0.2,
     bloom: 0.25,
@@ -46,15 +46,15 @@ export const defaultPreset: PulsingBorderPreset = {
 };
 
 export const circlePreset: PulsingBorderPreset = {
-  name: 'Circle',
+  name: "Circle",
   params: {
     ...defaultObjectSizing,
-    aspectRatio: 'square',
+    aspectRatio: "square",
     scale: 0.6,
     speed: 1,
     frame: 0,
-    colorBack: '#000000',
-    colors: ['#0dc1fd', '#d915ef', '#ff3f2ecc'],
+    colorBack: "#000000",
+    colors: ["#0dc1fd", "#d915ef", "#ff3f2ecc"],
     roundness: 1,
     margin: 0,
     marginLeft: 0,
@@ -74,14 +74,14 @@ export const circlePreset: PulsingBorderPreset = {
 };
 
 export const northernLightsPreset: PulsingBorderPreset = {
-  name: 'Northern lights',
+  name: "Northern lights",
   params: {
     ...defaultObjectSizing,
     speed: 0.18,
     scale: 1.1,
     frame: 0,
-    colors: ['#4c4794', '#774a7d', '#12694a', '#0aff78', '#4733cc'],
-    colorBack: '#0c182c',
+    colors: ["#4c4794", "#774a7d", "#12694a", "#0aff78", "#4733cc"],
+    colorBack: "#0c182c",
     roundness: 0,
     thickness: 1,
     softness: 1,
@@ -90,7 +90,7 @@ export const northernLightsPreset: PulsingBorderPreset = {
     marginRight: 0,
     marginTop: 0,
     marginBottom: 0,
-    aspectRatio: 'auto',
+    aspectRatio: "auto",
     intensity: 0.1,
     bloom: 0.2,
     spots: 4,
@@ -102,13 +102,13 @@ export const northernLightsPreset: PulsingBorderPreset = {
 };
 
 export const solidLinePreset: PulsingBorderPreset = {
-  name: 'Solid line',
+  name: "Solid line",
   params: {
     ...defaultObjectSizing,
     speed: 1,
     frame: 0,
-    colors: ['#81ADEC'],
-    colorBack: '#00000000',
+    colors: ["#81ADEC"],
+    colorBack: "#00000000",
     roundness: 0,
     thickness: 0.05,
     margin: 0,
@@ -116,7 +116,7 @@ export const solidLinePreset: PulsingBorderPreset = {
     marginRight: 0,
     marginTop: 0,
     marginBottom: 0,
-    aspectRatio: 'auto',
+    aspectRatio: "auto",
     softness: 0.0,
     intensity: 0.0,
     bloom: 0.15,

@@ -21,7 +21,7 @@ test("parseRetryFromErrorText reads millisecond retry hints from 429 JSON bodies
   assert.equal(parseRetryFromErrorText(JSON.stringify({ retry_after_ms: 45_000 })), 45_000);
   assert.equal(
     parseRetryFromErrorText(JSON.stringify({ error: { retry_after_ms: 12_000 } })),
-    12_000
+    12_000,
   );
   assert.equal(parseRetryFromErrorText(JSON.stringify({ retryAfterMs: 8_000 })), 8_000);
 });

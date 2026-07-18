@@ -24,7 +24,7 @@ export function buildPostCallGuardrailContext(
     responsePayloadFormat: unknown;
     clientResponseFormat: unknown;
   },
-  resolveDisabledGuardrails: typeof defaultResolveDisabled = defaultResolveDisabled
+  resolveDisabledGuardrails: typeof defaultResolveDisabled = defaultResolveDisabled,
 ) {
   const headers = (args.clientRawRequest?.headers as HeadersLike) ?? null;
   return {

@@ -26,14 +26,14 @@ const CURVE_SAMPLES: readonly Point[] = Array.from({ length: 96 }, (_, index) =>
   const t = (index / 96) * Math.PI * 2;
   return {
     x: Math.sin(t),
-    y: 0.58 * Math.sin(2 * t)
+    y: 0.58 * Math.sin(2 * t),
   };
 });
 
 function gridPoint(row: number, col: number): Point {
   return {
     x: (col - 2) / 2,
-    y: (2 - row) / 2
+    y: (2 - row) / 2,
   };
 }
 
@@ -41,7 +41,7 @@ function loopPoint(step: number): Point {
   const t = ((step % STEP_COUNT) / STEP_COUNT) * Math.PI * 2;
   return {
     x: Math.sin(t),
-    y: 0.58 * Math.sin(2 * t)
+    y: 0.58 * Math.sin(2 * t),
   };
 }
 
@@ -72,10 +72,14 @@ export function DotmSquare19({
   ...rest
 }: DotmSquare19Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
   const step = useSteppedCycle({
     active: !reducedMotion && matrixPhase !== "idle",
@@ -97,8 +101,11 @@ export function DotmSquare19({
         const centerBoost = Math.exp(-(dot.x * dot.x + dot.y * dot.y) / 0.06);
         return {
           style: {
-            opacity: Math.min(PEAK_OPACITY, BASE_OPACITY + curveGlow * CURVE_OPACITY + centerBoost * 0.18)
-          }
+            opacity: Math.min(
+              PEAK_OPACITY,
+              BASE_OPACITY + curveGlow * CURVE_OPACITY + centerBoost * 0.18,
+            ),
+          },
         };
       }
 

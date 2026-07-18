@@ -41,12 +41,12 @@ const config = {
 fs.mkdirSync("homolog-report/raw", { recursive: true });
 fs.writeFileSync(
   path.join("homolog-report", "promptfooconfig.yaml"),
-  JSON.stringify(config, null, 2) // promptfoo aceita JSON como config YAML-compatível
+  JSON.stringify(config, null, 2), // promptfoo aceita JSON como config YAML-compatível
 );
 fs.writeFileSync(
   path.join("homolog-report", "raw", "provider-misses.json"),
-  JSON.stringify(missing, null, 2)
+  JSON.stringify(missing, null, 2),
 );
 console.log(
-  `[gen-promptfoo] ${providers.length} providers no smoke, ${missing.length} misses de catálogo`
+  `[gen-promptfoo] ${providers.length} providers no smoke, ${missing.length} misses de catálogo`,
 );

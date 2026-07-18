@@ -1,27 +1,27 @@
-import { Session } from "@/session/session"
-import { SessionV1 } from "@opencode-ai/core/v1/session"
-import { MessageV2 } from "../../session/message-v2"
-import { SessionID } from "../../session/schema"
-import { effectCmd, fail } from "../effect-cmd"
-import { UI } from "../ui"
-import * as prompts from "@clack/prompts"
-import { EOL } from "os"
-import { Effect } from "effect"
+import { Session } from "@/session/session";
+import { SessionV1 } from "@opencode-ai/core/v1/session";
+import { MessageV2 } from "../../session/message-v2";
+import { SessionID } from "../../session/schema";
+import { effectCmd, fail } from "../effect-cmd";
+import { UI } from "../ui";
+import * as prompts from "@clack/prompts";
+import { EOL } from "os";
+import { Effect } from "effect";
 
 function redact(kind: string, id: string, value: string) {
-  return value.trim() ? `[redacted:${kind}:${id}]` : value
+  return value.trim() ? `[redacted:${kind}:${id}]` : value;
 }
 
 function data(kind: string, id: string, value: Record<string, unknown> | undefined) {
-  if (!value) return value
-  return Object.keys(value).length ? { redacted: `${kind}:${id}` } : value
+  if (!value) return value;
+  return Object.keys(value).length ? { redacted: `${kind}:${id}` } : value;
 }
 
 function span(id: string, value: { value: string; start: number; end: number }) {
   return {
     ...value,
     value: redact("file-text", id, value.value),
-  }
+  };
 }
 
 function diff(kind: string, diffs: { file?: string; patch?: string }[] | undefined) {
@@ -29,18 +29,18 @@ function diff(kind: string, diffs: { file?: string; patch?: string }[] | undefin
     ...item,
     file: item.file === undefined ? undefined : redact(`${kind}-file`, String(i), item.file),
     patch: item.patch === undefined ? undefined : redact(`${kind}-patch`, String(i), item.patch),
-  }))
+  }));
 }
 
 function source(part: SessionV1.FilePart) {
-  if (!part.source) return part.source
+  if (!part.source) return part.source;
   if (part.source.type === "symbol") {
     return {
       ...part.source,
       path: redact("file-path", part.id, part.source.path),
       name: redact("file-symbol", part.id, part.source.name),
       text: span(part.id, part.source.text),
-    }
+    };
   }
   if (part.source.type === "resource") {
     return {
@@ -48,13 +48,13 @@ function source(part: SessionV1.FilePart) {
       clientName: redact("file-client", part.id, part.source.clientName),
       uri: redact("file-uri", part.id, part.source.uri),
       text: span(part.id, part.source.text),
-    }
+    };
   }
   return {
     ...part.source,
     path: redact("file-path", part.id, part.source.path),
     text: span(part.id, part.source.text),
-  }
+  };
 }
 
 function filepart(part: SessionV1.FilePart): SessionV1.FilePart {
@@ -63,7 +63,7 @@ function filepart(part: SessionV1.FilePart): SessionV1.FilePart {
     url: redact("file-url", part.id, part.url),
     filename: part.filename === undefined ? undefined : redact("file-name", part.id, part.filename),
     source: source(part),
-  }
+  };
 }
 
 function part(part: SessionV1.Part): SessionV1.Part {
@@ -73,22 +73,23 @@ function part(part: SessionV1.Part): SessionV1.Part {
         ...part,
         text: redact("text", part.id, part.text),
         metadata: data("text-metadata", part.id, part.metadata),
-      }
+      };
     case "reasoning":
       return {
         ...part,
         text: redact("reasoning", part.id, part.text),
         metadata: data("reasoning-metadata", part.id, part.metadata),
-      }
+      };
     case "file":
-      return filepart(part)
+      return filepart(part);
     case "subtask":
       return {
         ...part,
         prompt: redact("subtask-prompt", part.id, part.prompt),
         description: redact("subtask-description", part.id, part.description),
-        command: part.command === undefined ? undefined : redact("subtask-command", part.id, part.command),
-      }
+        command:
+          part.command === undefined ? undefined : redact("subtask-command", part.id, part.command),
+      };
     case "tool":
       return {
         ...part,
@@ -104,7 +105,10 @@ function part(part: SessionV1.Part): SessionV1.Part {
               ? {
                   ...part.state,
                   input: data("tool-input", part.id, part.state.input) ?? part.state.input,
-                  title: part.state.title === undefined ? undefined : redact("tool-title", part.id, part.state.title),
+                  title:
+                    part.state.title === undefined
+                      ? undefined
+                      : redact("tool-title", part.id, part.state.title),
                   metadata: data("tool-state-metadata", part.id, part.state.metadata),
                 }
               : part.state.status === "completed"
@@ -113,7 +117,9 @@ function part(part: SessionV1.Part): SessionV1.Part {
                     input: data("tool-input", part.id, part.state.input) ?? part.state.input,
                     output: redact("tool-output", part.id, part.state.output),
                     title: redact("tool-title", part.id, part.state.title),
-                    metadata: data("tool-state-metadata", part.id, part.state.metadata) ?? part.state.metadata,
+                    metadata:
+                      data("tool-state-metadata", part.id, part.state.metadata) ??
+                      part.state.metadata,
                     attachments: part.state.attachments?.map(filepart),
                   }
                 : {
@@ -121,28 +127,32 @@ function part(part: SessionV1.Part): SessionV1.Part {
                     input: data("tool-input", part.id, part.state.input) ?? part.state.input,
                     metadata: data("tool-state-metadata", part.id, part.state.metadata),
                   },
-      }
+      };
     case "patch":
       return {
         ...part,
         hash: redact("patch", part.id, part.hash),
-        files: part.files.map((item: string, i: number) => redact("patch-file", `${part.id}-${i}`, item)),
-      }
+        files: part.files.map((item: string, i: number) =>
+          redact("patch-file", `${part.id}-${i}`, item),
+        ),
+      };
     case "snapshot":
       return {
         ...part,
         snapshot: redact("snapshot", part.id, part.snapshot),
-      }
+      };
     case "step-start":
       return {
         ...part,
-        snapshot: part.snapshot === undefined ? undefined : redact("snapshot", part.id, part.snapshot),
-      }
+        snapshot:
+          part.snapshot === undefined ? undefined : redact("snapshot", part.id, part.snapshot),
+      };
     case "step-finish":
       return {
         ...part,
-        snapshot: part.snapshot === undefined ? undefined : redact("snapshot", part.id, part.snapshot),
-      }
+        snapshot:
+          part.snapshot === undefined ? undefined : redact("snapshot", part.id, part.snapshot),
+      };
     case "agent":
       return {
         ...part,
@@ -152,13 +162,13 @@ function part(part: SessionV1.Part): SessionV1.Part {
               ...part.source,
               value: redact("agent-source", part.id, part.source.value),
             },
-      }
+      };
     default:
-      return part
+      return part;
   }
 }
 
-const partFn = part
+const partFn = part;
 
 function sanitize(data: { info: Session.Info; messages: SessionV1.WithParts[] }) {
   return {
@@ -191,7 +201,10 @@ function sanitize(data: { info: Session.Info; messages: SessionV1.WithParts[] })
         msg.info.role === "user"
           ? {
               ...msg.info,
-              system: msg.info.system === undefined ? undefined : redact("system", msg.info.id, msg.info.system),
+              system:
+                msg.info.system === undefined
+                  ? undefined
+                  : redact("system", msg.info.id, msg.info.system),
               summary: !msg.info.summary
                 ? msg.info.summary
                 : {
@@ -216,7 +229,7 @@ function sanitize(data: { info: Session.Info; messages: SessionV1.WithParts[] })
             },
       parts: msg.parts.map(partFn),
     })),
-  }
+  };
 }
 
 export const ExportCommand = effectCmd({
@@ -233,28 +246,31 @@ export const ExportCommand = effectCmd({
         type: "boolean",
       }),
   handler: Effect.fn("Cli.export")(function* (args) {
-    return yield* run(args)
+    return yield* run(args);
   }),
-})
+});
 
-const run = Effect.fn("Cli.export.body")(function* (args: { sessionID?: string; sanitize?: boolean }) {
-  const svc = yield* Session.Service
-  let sessionID = args.sessionID ? SessionID.make(args.sessionID) : undefined
-  process.stderr.write(`Exporting session: ${sessionID ?? "latest"}\n`)
+const run = Effect.fn("Cli.export.body")(function* (args: {
+  sessionID?: string;
+  sanitize?: boolean;
+}) {
+  const svc = yield* Session.Service;
+  let sessionID = args.sessionID ? SessionID.make(args.sessionID) : undefined;
+  process.stderr.write(`Exporting session: ${sessionID ?? "latest"}\n`);
 
   if (!sessionID) {
-    UI.empty()
-    prompts.intro("Export session", { output: process.stderr })
+    UI.empty();
+    prompts.intro("Export session", { output: process.stderr });
 
-    const sessions = yield* svc.list()
+    const sessions = yield* svc.list();
 
     if (sessions.length === 0) {
-      prompts.log.error("No sessions found", { output: process.stderr })
-      prompts.outro("Done", { output: process.stderr })
-      return
+      prompts.log.error("No sessions found", { output: process.stderr });
+      prompts.outro("Done", { output: process.stderr });
+      return;
     }
 
-    sessions.sort((a, b) => b.time.updated - a.time.updated)
+    sessions.sort((a, b) => b.time.updated - a.time.updated);
 
     const selectedSession = yield* Effect.promise(() =>
       prompts.autocomplete({
@@ -267,26 +283,28 @@ const run = Effect.fn("Cli.export.body")(function* (args: { sessionID?: string; 
         })),
         output: process.stderr,
       }),
-    )
+    );
 
     if (prompts.isCancel(selectedSession)) {
-      return yield* Effect.die(new UI.CancelledError())
+      return yield* Effect.die(new UI.CancelledError());
     }
 
-    sessionID = selectedSession
+    sessionID = selectedSession;
 
-    prompts.outro("Exporting session...", { output: process.stderr })
+    prompts.outro("Exporting session...", { output: process.stderr });
   }
 
   // Match legacy try/catch — catches both typed failures and defects
   // (Session.Service.get throws NotFoundError as a defect, not a typed E).
   return yield* Effect.gen(function* () {
-    const sessionInfo = yield* svc.get(sessionID!)
-    const messages = yield* svc.messages({ sessionID: sessionInfo.id })
+    const sessionInfo = yield* svc.get(sessionID!);
+    const messages = yield* svc.messages({ sessionID: sessionInfo.id });
 
-    const exportData = { info: sessionInfo, messages }
+    const exportData = { info: sessionInfo, messages };
 
-    process.stdout.write(JSON.stringify(args.sanitize ? sanitize(exportData) : exportData, null, 2))
-    process.stdout.write(EOL)
-  }).pipe(Effect.catchCause(() => fail(`Session not found: ${sessionID!}`)))
-})
+    process.stdout.write(
+      JSON.stringify(args.sanitize ? sanitize(exportData) : exportData, null, 2),
+    );
+    process.stdout.write(EOL);
+  }).pipe(Effect.catchCause(() => fail(`Session not found: ${sessionID!}`)));
+});

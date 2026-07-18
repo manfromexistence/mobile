@@ -22,15 +22,15 @@ test("classify429: 429 with no body or hints returns 'rate_limit'", () => {
 test("classify429: 429 with quota keyword in string body returns 'quota_exhausted'", () => {
   assert.equal(
     classify429({ status: 429, body: "You exceeded your daily limit." }),
-    "quota_exhausted"
+    "quota_exhausted",
   );
   assert.equal(
     classify429({ status: 429, body: "Monthly quota reached. Resets on the 1st." }),
-    "quota_exhausted"
+    "quota_exhausted",
   );
   assert.equal(
     classify429({ status: 429, body: "Out of credits — top up your account." }),
-    "quota_exhausted"
+    "quota_exhausted",
   );
   assert.equal(classify429({ status: 429, body: "plan limit reached" }), "quota_exhausted");
 });
@@ -67,17 +67,17 @@ test("classify429: Antigravity quota patterns do not over-match plain rate limit
   // a per-minute rate limit must still classify as a transient rate_limit.
   assert.equal(
     classify429({ status: 429, body: "Too many requests, please slow down." }),
-    "rate_limit"
+    "rate_limit",
   );
   assert.equal(
     classify429({ status: 429, body: "Rate limit exceeded. Try again in 30s." }),
-    "rate_limit"
+    "rate_limit",
   );
   // A bare "quota reached" in a transient per-minute limit must NOT be locked as
   // quota_exhausted — only the specific "individual quota reached" wording is.
   assert.equal(
     classify429({ status: 429, body: "Request quota reached, retry in 60s." }),
-    "rate_limit"
+    "rate_limit",
   );
 });
 
@@ -87,14 +87,14 @@ test("classify429: 429 with quota keyword in nested object body returns 'quota_e
       status: 429,
       body: { error: { message: "You have exceeded your monthly quota." } },
     }),
-    "quota_exhausted"
+    "quota_exhausted",
   );
   assert.equal(
     classify429({
       status: 429,
       body: { error: { type: "insufficient_quota", message: "..." } },
     }),
-    "quota_exhausted"
+    "quota_exhausted",
   );
 });
 
@@ -103,21 +103,21 @@ test("classify429: 429 without quota keyword returns 'rate_limit'", () => {
   // so classifier should default to "rate_limit" for any 429.
   assert.equal(
     classify429({ status: 429, body: "Too many requests. Try again in 60s." }),
-    "rate_limit"
+    "rate_limit",
   );
   assert.equal(
     classify429({
       status: 429,
       body: "Rate limit reached for requests. Please retry.",
     }),
-    "rate_limit"
+    "rate_limit",
   );
   assert.equal(
     classify429({
       status: 429,
       body: "I am experiencing high traffic, please try again shortly.",
     }),
-    "rate_limit"
+    "rate_limit",
   );
 });
 
@@ -160,7 +160,7 @@ test("ambiguous 'daily rate limit' messages classify as quota_exhausted (intenti
   assert.equal(classify429({ status: 429, body: "daily rate limit exceeded" }), "quota_exhausted");
   assert.equal(
     classify429({ status: 429, body: "monthly rate limit exceeded" }),
-    "quota_exhausted"
+    "quota_exhausted",
   );
 });
 

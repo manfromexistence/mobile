@@ -41,8 +41,9 @@ describe("AutoComboCatalog", () => {
   });
 
   it("renders the header with translated title and template-count badge", async () => {
-    const { default: AutoComboCatalog } =
-      await import("@/app/(dashboard)/dashboard/combos/AutoComboCatalog");
+    const { default: AutoComboCatalog } = await import(
+      "@/app/(dashboard)/dashboard/combos/AutoComboCatalog"
+    );
     const container = makeContainer();
     const root = createRoot(container);
     await act(async () => {
@@ -50,13 +51,14 @@ describe("AutoComboCatalog", () => {
     });
     expect(container.textContent).toContain("autoCatalogTitle");
     expect(container.textContent).toContain(
-      `${AUTO_COMBO_TEMPLATES.length} autoCatalogTemplateCount`
+      `${AUTO_COMBO_TEMPLATES.length} autoCatalogTemplateCount`,
     );
   });
 
   it("stays collapsed by default — no template rows in the DOM", async () => {
-    const { default: AutoComboCatalog } =
-      await import("@/app/(dashboard)/dashboard/combos/AutoComboCatalog");
+    const { default: AutoComboCatalog } = await import(
+      "@/app/(dashboard)/dashboard/combos/AutoComboCatalog"
+    );
     const container = makeContainer();
     const root = createRoot(container);
     await act(async () => {
@@ -67,8 +69,9 @@ describe("AutoComboCatalog", () => {
   });
 
   it("expands when toggled and lists every template name", async () => {
-    const { default: AutoComboCatalog } =
-      await import("@/app/(dashboard)/dashboard/combos/AutoComboCatalog");
+    const { default: AutoComboCatalog } = await import(
+      "@/app/(dashboard)/dashboard/combos/AutoComboCatalog"
+    );
     const container = makeContainer();
     const root = createRoot(container);
     await act(async () => {
@@ -85,8 +88,9 @@ describe("AutoComboCatalog", () => {
   });
 
   it("flips the toggle aria-label between expand and collapse", async () => {
-    const { default: AutoComboCatalog } =
-      await import("@/app/(dashboard)/dashboard/combos/AutoComboCatalog");
+    const { default: AutoComboCatalog } = await import(
+      "@/app/(dashboard)/dashboard/combos/AutoComboCatalog"
+    );
     const container = makeContainer();
     const root = createRoot(container);
     await act(async () => {
@@ -103,8 +107,9 @@ describe("AutoComboCatalog", () => {
   });
 
   it("renders the strategy badge for each template when expanded", async () => {
-    const { default: AutoComboCatalog } =
-      await import("@/app/(dashboard)/dashboard/combos/AutoComboCatalog");
+    const { default: AutoComboCatalog } = await import(
+      "@/app/(dashboard)/dashboard/combos/AutoComboCatalog"
+    );
     const container = makeContainer();
     const root = createRoot(container);
     await act(async () => {

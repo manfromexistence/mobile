@@ -5,17 +5,17 @@ import type {
   HunkExpansionRegion,
   HunkSeparators,
   VirtualFileMetrics,
-} from '../types';
+} from "../types";
 import {
   getVirtualFileHeaderRegion,
   getVirtualFilePaddingBottom,
-} from './computeVirtualFileMetrics';
+} from "./computeVirtualFileMetrics";
 import {
   getExpandedRegion,
   getLeadingHunkSeparatorLayout,
   getTrailingExpandedRegion,
   getTrailingHunkSeparatorLayout,
-} from './virtualDiffLayout';
+} from "./virtualDiffLayout";
 
 export interface ComputeEstimatedDiffHeightsOptions {
   fileDiff: FileDiffMetadata;
@@ -51,7 +51,7 @@ export function computeEstimatedDiffHeights({
   for (let hunkIndex = 0; hunkIndex < fileDiff.hunks.length; hunkIndex++) {
     const hunk = fileDiff.hunks[hunkIndex];
     if (hunk == null) {
-      throw new Error('computeEstimatedDiffHeights: invalid hunk index');
+      throw new Error("computeEstimatedDiffHeights: invalid hunk index");
     }
 
     const leadingRegion = getExpandedRegion({
@@ -92,13 +92,12 @@ export function computeEstimatedDiffHeights({
             hunkIndex,
             expandedHunks,
             collapsedContextThreshold,
-            errorPrefix: 'computeEstimatedDiffHeights',
+            errorPrefix: "computeEstimatedDiffHeights",
           })
         : undefined;
     if (trailingRegion != null) {
       const trailingExpandedHeight =
-        (trailingRegion.fromStart + trailingRegion.fromEnd) *
-        metrics.lineHeight;
+        (trailingRegion.fromStart + trailingRegion.fromEnd) * metrics.lineHeight;
       splitHeight += trailingExpandedHeight;
       unifiedHeight += trailingExpandedHeight;
 
@@ -136,7 +135,7 @@ function getNoNewlineMetadataLineCounts(hunk: Hunk): {
     return { split: 0, unified: 0 };
   }
 
-  if (lastContent.type === 'context') {
+  if (lastContent.type === "context") {
     const metadataRows = lastContent.lines > 0 ? 1 : 0;
     return { split: metadataRows, unified: metadataRows };
   }
@@ -145,15 +144,13 @@ function getNoNewlineMetadataLineCounts(hunk: Hunk): {
 }
 function getChangeNoNewlineMetadataLineCounts(
   hunk: Hunk,
-  content: ChangeContent
+  content: ChangeContent,
 ): { split: number; unified: number } {
   const unified =
     (content.deletions > 0 && hunk.noEOFCRDeletions ? 1 : 0) +
     (content.additions > 0 && hunk.noEOFCRAdditions ? 1 : 0);
-  const splitDeletionHasMetadata =
-    content.deletions > 0 && hunk.noEOFCRDeletions;
-  const splitAdditionHasMetadata =
-    content.additions > 0 && hunk.noEOFCRAdditions;
+  const splitDeletionHasMetadata = content.deletions > 0 && hunk.noEOFCRDeletions;
+  const splitAdditionHasMetadata = content.additions > 0 && hunk.noEOFCRAdditions;
   const split = splitDeletionHasMetadata || splitAdditionHasMetadata ? 1 : 0;
 
   return { split, unified };

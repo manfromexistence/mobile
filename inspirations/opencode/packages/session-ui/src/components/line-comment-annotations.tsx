@@ -1,172 +1,188 @@
-import { type DiffLineAnnotation, type SelectedLineRange } from "@pierre/diffs"
-import { createEffect, createMemo, createSignal, onCleanup, Show, type Accessor, type JSX } from "solid-js"
-import { createStore } from "solid-js/store"
-import { render as renderSolid } from "solid-js/web"
-import { useI18n } from "@opencode-ai/ui/context/i18n"
-import { createHoverCommentUtility } from "../pierre/comment-hover"
-import { cloneSelectedLineRange, formatSelectedLineLabel, lineInSelectedRange } from "../pierre/selection-bridge"
-import { LineComment, LineCommentEditor, type LineCommentEditorProps } from "./line-comment"
+import { type DiffLineAnnotation, type SelectedLineRange } from "@pierre/diffs";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  onCleanup,
+  Show,
+  type Accessor,
+  type JSX,
+} from "solid-js";
+import { createStore } from "solid-js/store";
+import { render as renderSolid } from "solid-js/web";
+import { useI18n } from "@opencode-ai/ui/context/i18n";
+import { createHoverCommentUtility } from "../pierre/comment-hover";
+import {
+  cloneSelectedLineRange,
+  formatSelectedLineLabel,
+  lineInSelectedRange,
+} from "../pierre/selection-bridge";
+import { LineComment, LineCommentEditor, type LineCommentEditorProps } from "./line-comment";
 
 export type LineCommentAnnotationMeta<T> =
   | { kind: "comment"; key: string; comment: T }
-  | { kind: "draft"; key: string; range: SelectedLineRange }
+  | { kind: "draft"; key: string; range: SelectedLineRange };
 
 export type LineCommentAnnotation<T> = {
-  lineNumber: number
-  side?: "additions" | "deletions"
-  metadata: LineCommentAnnotationMeta<T>
-}
+  lineNumber: number;
+  side?: "additions" | "deletions";
+  metadata: LineCommentAnnotationMeta<T>;
+};
 
 type LineCommentAnnotationsProps<T> = {
-  comments: Accessor<T[]>
-  getCommentId: (comment: T) => string
-  getCommentSelection: (comment: T) => SelectedLineRange
-  draftRange: Accessor<SelectedLineRange | null>
-  draftKey: Accessor<string>
-}
+  comments: Accessor<T[]>;
+  getCommentId: (comment: T) => string;
+  getCommentSelection: (comment: T) => SelectedLineRange;
+  draftRange: Accessor<SelectedLineRange | null>;
+  draftKey: Accessor<string>;
+};
 
 type LineCommentAnnotationsWithSideProps<T> = LineCommentAnnotationsProps<T> & {
-  getSide: (range: SelectedLineRange) => "additions" | "deletions"
-}
+  getSide: (range: SelectedLineRange) => "additions" | "deletions";
+};
 
 type HoverCommentLine = {
-  lineNumber: number
-  side?: "additions" | "deletions"
-}
+  lineNumber: number;
+  side?: "additions" | "deletions";
+};
 
 export type LineCommentStateProps<T> = {
-  opened: Accessor<T | null>
-  setOpened: (id: T | null) => void
-  selected: Accessor<SelectedLineRange | null>
-  setSelected: (range: SelectedLineRange | null) => void
-  commenting: Accessor<SelectedLineRange | null>
-  setCommenting: (range: SelectedLineRange | null) => void
-  syncSelected?: (range: SelectedLineRange | null) => void
-  hoverSelected?: (range: SelectedLineRange) => void
-}
+  opened: Accessor<T | null>;
+  setOpened: (id: T | null) => void;
+  selected: Accessor<SelectedLineRange | null>;
+  setSelected: (range: SelectedLineRange | null) => void;
+  commenting: Accessor<SelectedLineRange | null>;
+  setCommenting: (range: SelectedLineRange | null) => void;
+  syncSelected?: (range: SelectedLineRange | null) => void;
+  hoverSelected?: (range: SelectedLineRange) => void;
+};
 
 export type LineCommentShape = {
-  id: string
-  selection: SelectedLineRange
-  comment: string
-}
+  id: string;
+  selection: SelectedLineRange;
+  comment: string;
+};
 
 type LineCommentControllerProps<T extends LineCommentShape> = {
-  comments: Accessor<T[]>
-  draftKey: Accessor<string>
-  label: string
-  mention?: LineCommentEditorProps["mention"]
-  state: LineCommentStateProps<string>
-  onSubmit: (input: { comment: string; selection: SelectedLineRange }) => void
-  onUpdate?: (input: { id: string; comment: string; selection: SelectedLineRange }) => void
-  onDelete?: (comment: T) => void
-  renderCommentActions?: (comment: T, controls: { edit: VoidFunction; remove: VoidFunction }) => JSX.Element
-  editSubmitLabel?: string
-  onDraftPopoverFocusOut?: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent>
-  getHoverSelectedRange?: Accessor<SelectedLineRange | null>
-  cancelDraftOnCommentToggle?: boolean
-  clearSelectionOnSelectionEndNull?: boolean
-}
+  comments: Accessor<T[]>;
+  draftKey: Accessor<string>;
+  label: string;
+  mention?: LineCommentEditorProps["mention"];
+  state: LineCommentStateProps<string>;
+  onSubmit: (input: { comment: string; selection: SelectedLineRange }) => void;
+  onUpdate?: (input: { id: string; comment: string; selection: SelectedLineRange }) => void;
+  onDelete?: (comment: T) => void;
+  renderCommentActions?: (
+    comment: T,
+    controls: { edit: VoidFunction; remove: VoidFunction },
+  ) => JSX.Element;
+  editSubmitLabel?: string;
+  onDraftPopoverFocusOut?: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent>;
+  getHoverSelectedRange?: Accessor<SelectedLineRange | null>;
+  cancelDraftOnCommentToggle?: boolean;
+  clearSelectionOnSelectionEndNull?: boolean;
+};
 
-type LineCommentControllerWithSideProps<T extends LineCommentShape> = LineCommentControllerProps<T> & {
-  getSide: (range: SelectedLineRange) => "additions" | "deletions"
-}
+type LineCommentControllerWithSideProps<T extends LineCommentShape> =
+  LineCommentControllerProps<T> & {
+    getSide: (range: SelectedLineRange) => "additions" | "deletions";
+  };
 
 type CommentProps = {
-  id?: string
-  open: boolean
-  comment: JSX.Element
-  selection: JSX.Element
-  actions?: JSX.Element
-  editor?: DraftProps
-  onClick?: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent>
-  onMouseEnter?: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent>
-}
+  id?: string;
+  open: boolean;
+  comment: JSX.Element;
+  selection: JSX.Element;
+  actions?: JSX.Element;
+  editor?: DraftProps;
+  onClick?: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent>;
+  onMouseEnter?: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent>;
+};
 
 type DraftProps = {
-  value: string
-  selection: JSX.Element
-  mention?: LineCommentEditorProps["mention"]
-  onInput: (value: string) => void
-  onCancel: VoidFunction
-  onSubmit: (value: string) => void
-  onPopoverFocusOut?: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent>
-  cancelLabel?: string
-  submitLabel?: string
-}
+  value: string;
+  selection: JSX.Element;
+  mention?: LineCommentEditorProps["mention"];
+  onInput: (value: string) => void;
+  onCancel: VoidFunction;
+  onSubmit: (value: string) => void;
+  onPopoverFocusOut?: JSX.EventHandlerUnion<HTMLDivElement, FocusEvent>;
+  cancelLabel?: string;
+  submitLabel?: string;
+};
 
 // Generic host machinery shared by the v1 and v2 annotation renderers: each
 // annotation key gets a detached DOM host with its own Solid root, updated in
 // place through a signal so Pierre can reparent the host without re-rendering.
 export function createLineCommentAnnotationRenderer<T, C, D>(props: {
-  renderComment: (comment: T) => C
-  renderDraft: (range: SelectedLineRange) => D
-  commentElement: (view: Accessor<C>) => JSX.Element
-  draftElement: (view: Accessor<D>) => JSX.Element
+  renderComment: (comment: T) => C;
+  renderDraft: (range: SelectedLineRange) => D;
+  commentElement: (view: Accessor<C>) => JSX.Element;
+  draftElement: (view: Accessor<D>) => JSX.Element;
 }) {
   const nodes = new Map<
     string,
     {
-      host: HTMLDivElement
-      dispose: VoidFunction
-      setMeta: (meta: LineCommentAnnotationMeta<T>) => void
+      host: HTMLDivElement;
+      dispose: VoidFunction;
+      setMeta: (meta: LineCommentAnnotationMeta<T>) => void;
     }
-  >()
+  >();
 
   const mount = (meta: LineCommentAnnotationMeta<T>) => {
-    if (typeof document === "undefined") return
+    if (typeof document === "undefined") return;
 
-    const host = document.createElement("div")
-    host.setAttribute("data-prevent-autofocus", "")
-    const [current, setCurrent] = createSignal(meta)
+    const host = document.createElement("div");
+    host.setAttribute("data-prevent-autofocus", "");
+    const [current, setCurrent] = createSignal(meta);
 
     const dispose = renderSolid(() => {
-      const active = current()
+      const active = current();
       if (active.kind === "comment") {
         const view = createMemo(() => {
-          const next = current()
-          if (next.kind !== "comment") return props.renderComment(active.comment)
-          return props.renderComment(next.comment)
-        })
-        return props.commentElement(view)
+          const next = current();
+          if (next.kind !== "comment") return props.renderComment(active.comment);
+          return props.renderComment(next.comment);
+        });
+        return props.commentElement(view);
       }
 
       const view = createMemo(() => {
-        const next = current()
-        if (next.kind !== "draft") return props.renderDraft(active.range)
-        return props.renderDraft(next.range)
-      })
-      return props.draftElement(view)
-    }, host)
+        const next = current();
+        if (next.kind !== "draft") return props.renderDraft(active.range);
+        return props.renderDraft(next.range);
+      });
+      return props.draftElement(view);
+    }, host);
 
-    const node = { host, dispose, setMeta: setCurrent }
-    nodes.set(meta.key, node)
-    return node
-  }
+    const node = { host, dispose, setMeta: setCurrent };
+    nodes.set(meta.key, node);
+    return node;
+  };
 
   const render = <A extends { metadata: LineCommentAnnotationMeta<T> }>(annotation: A) => {
-    const meta = annotation.metadata
-    const node = nodes.get(meta.key) ?? mount(meta)
-    if (!node) return
-    node.setMeta(meta)
-    return node.host
-  }
+    const meta = annotation.metadata;
+    const node = nodes.get(meta.key) ?? mount(meta);
+    if (!node) return;
+    node.setMeta(meta);
+    return node.host;
+  };
 
   const reconcile = <A extends { metadata: LineCommentAnnotationMeta<T> }>(annotations: A[]) => {
-    const next = new Set(annotations.map((annotation) => annotation.metadata.key))
+    const next = new Set(annotations.map((annotation) => annotation.metadata.key));
     for (const [key, node] of nodes) {
-      if (next.has(key)) continue
-      node.dispose()
-      nodes.delete(key)
+      if (next.has(key)) continue;
+      node.dispose();
+      nodes.delete(key);
     }
-  }
+  };
 
   const cleanup = () => {
-    for (const [, node] of nodes) node.dispose()
-    nodes.clear()
-  }
+    for (const [, node] of nodes) node.dispose();
+    nodes.clear();
+  };
 
-  return { render, reconcile, cleanup }
+  return { render, reconcile, cleanup };
 }
 
 function lineCommentElement(view: Accessor<CommentProps>) {
@@ -200,7 +216,7 @@ function lineCommentElement(view: Accessor<CommentProps>) {
         mention={view().editor!.mention}
       />
     </Show>
-  )
+  );
 }
 
 function lineCommentDraftElement(view: Accessor<DraftProps>) {
@@ -215,91 +231,93 @@ function lineCommentDraftElement(view: Accessor<DraftProps>) {
       onPopoverFocusOut={view().onPopoverFocusOut}
       mention={view().mention}
     />
-  )
+  );
 }
 
 export function createLineCommentState<T>(props: LineCommentStateProps<T>) {
   const [state, setState] = createStore({
     draft: "",
     editing: null as T | null,
-  })
-  const draft = () => state.draft
-  const setDraft = (value: string) => setState("draft", value)
-  const editing = () => state.editing
-  const setEditing = (value: T | null) => setState("editing", typeof value === "function" ? () => value : value)
+  });
+  const draft = () => state.draft;
+  const setDraft = (value: string) => setState("draft", value);
+  const editing = () => state.editing;
+  const setEditing = (value: T | null) =>
+    setState("editing", typeof value === "function" ? () => value : value);
 
-  const toRange = (range: SelectedLineRange | null) => (range ? cloneSelectedLineRange(range) : null)
+  const toRange = (range: SelectedLineRange | null) =>
+    range ? cloneSelectedLineRange(range) : null;
   const setSelected = (range: SelectedLineRange | null) => {
-    const next = toRange(range)
-    props.setSelected(next)
-    props.syncSelected?.(toRange(next))
-    return next
-  }
+    const next = toRange(range);
+    props.setSelected(next);
+    props.syncSelected?.(toRange(next));
+    return next;
+  };
 
   const setCommenting = (range: SelectedLineRange | null) => {
-    const next = toRange(range)
-    props.setCommenting(next)
-    return next
-  }
+    const next = toRange(range);
+    props.setCommenting(next);
+    return next;
+  };
 
   const closeComment = () => {
-    props.setOpened(null)
-  }
+    props.setOpened(null);
+  };
 
   const cancelDraft = () => {
-    setDraft("")
-    setEditing(null)
-    setCommenting(null)
-  }
+    setDraft("");
+    setEditing(null);
+    setCommenting(null);
+  };
 
   const reset = () => {
-    setDraft("")
-    setEditing(null)
-    props.setOpened(null)
-    props.setSelected(null)
-    props.setCommenting(null)
-  }
+    setDraft("");
+    setEditing(null);
+    props.setOpened(null);
+    props.setSelected(null);
+    props.setCommenting(null);
+  };
 
   const openComment = (id: T, range: SelectedLineRange, options?: { cancelDraft?: boolean }) => {
-    if (options?.cancelDraft) cancelDraft()
-    props.setOpened(id)
-    setSelected(range)
-  }
+    if (options?.cancelDraft) cancelDraft();
+    props.setOpened(id);
+    setSelected(range);
+  };
 
   const toggleComment = (id: T, range: SelectedLineRange, options?: { cancelDraft?: boolean }) => {
-    if (options?.cancelDraft) cancelDraft()
-    const next = props.opened() === id ? null : id
-    props.setOpened(next)
-    setSelected(range)
-  }
+    if (options?.cancelDraft) cancelDraft();
+    const next = props.opened() === id ? null : id;
+    props.setOpened(next);
+    setSelected(range);
+  };
 
   const openDraft = (range: SelectedLineRange) => {
-    const next = toRange(range)
-    setDraft("")
-    setEditing(null)
-    closeComment()
-    setSelected(next)
-    setCommenting(next)
-  }
+    const next = toRange(range);
+    setDraft("");
+    setEditing(null);
+    closeComment();
+    setSelected(next);
+    setCommenting(next);
+  };
 
   const openEditor = (id: T, range: SelectedLineRange, value: string) => {
-    closeComment()
-    setSelected(range)
-    props.setCommenting(null)
-    setEditing(id)
-    setDraft(value)
-  }
+    closeComment();
+    setSelected(range);
+    props.setCommenting(null);
+    setEditing(id);
+    setDraft(value);
+  };
 
   const hoverComment = (range: SelectedLineRange) => {
-    const next = toRange(range)
-    if (!next) return
+    const next = toRange(range);
+    if (!next) return;
     if (props.hoverSelected) {
-      props.hoverSelected(next)
-      return
+      props.hoverSelected(next);
+      return;
     }
 
-    setSelected(next)
-  }
+    setSelected(next);
+  };
 
   return {
     draft,
@@ -319,38 +337,38 @@ export function createLineCommentState<T>(props: LineCommentStateProps<T>) {
     cancelDraft,
     select: setSelected,
     reset,
-  }
+  };
 }
 
 export function createLineCommentController<T extends LineCommentShape>(
   props: LineCommentControllerWithSideProps<T>,
 ): {
-  note: ReturnType<typeof createLineCommentState<string>>
-  annotations: Accessor<DiffLineAnnotation<LineCommentAnnotationMeta<T>>[]>
+  note: ReturnType<typeof createLineCommentState<string>>;
+  annotations: Accessor<DiffLineAnnotation<LineCommentAnnotationMeta<T>>[]>;
   renderAnnotation: ReturnType<
     typeof createManagedLineCommentAnnotationRenderer<T, CommentProps, DraftProps>
-  >["renderAnnotation"]
-  renderGutterUtility: ReturnType<typeof createLineCommentGutterRenderer>
-  onLineSelected: (range: SelectedLineRange | null) => void
-  onLineSelectionEnd: (range: SelectedLineRange | null) => void
-}
+  >["renderAnnotation"];
+  renderGutterUtility: ReturnType<typeof createLineCommentGutterRenderer>;
+  onLineSelected: (range: SelectedLineRange | null) => void;
+  onLineSelectionEnd: (range: SelectedLineRange | null) => void;
+};
 export function createLineCommentController<T extends LineCommentShape>(
   props: LineCommentControllerProps<T>,
 ): {
-  note: ReturnType<typeof createLineCommentState<string>>
-  annotations: Accessor<LineCommentAnnotation<T>[]>
+  note: ReturnType<typeof createLineCommentState<string>>;
+  annotations: Accessor<LineCommentAnnotation<T>[]>;
   renderAnnotation: ReturnType<
     typeof createManagedLineCommentAnnotationRenderer<T, CommentProps, DraftProps>
-  >["renderAnnotation"]
-  renderGutterUtility: ReturnType<typeof createLineCommentGutterRenderer>
-  onLineSelected: (range: SelectedLineRange | null) => void
-  onLineSelectionEnd: (range: SelectedLineRange | null) => void
-}
+  >["renderAnnotation"];
+  renderGutterUtility: ReturnType<typeof createLineCommentGutterRenderer>;
+  onLineSelected: (range: SelectedLineRange | null) => void;
+  onLineSelectionEnd: (range: SelectedLineRange | null) => void;
+};
 export function createLineCommentController<T extends LineCommentShape>(
   props: LineCommentControllerProps<T> | LineCommentControllerWithSideProps<T>,
 ) {
-  const i18n = useI18n()
-  const note = createLineCommentState<string>(props.state)
+  const i18n = useI18n();
+  const note = createLineCommentState<string>(props.state);
 
   const annotations =
     "getSide" in props
@@ -368,34 +386,38 @@ export function createLineCommentController<T extends LineCommentShape>(
           getCommentSelection: (comment) => comment.selection,
           draftRange: note.commenting,
           draftKey: props.draftKey,
-        })
+        });
 
-  const { renderAnnotation } = createManagedLineCommentAnnotationRenderer<T, CommentProps, DraftProps>({
+  const { renderAnnotation } = createManagedLineCommentAnnotationRenderer<
+    T,
+    CommentProps,
+    DraftProps
+  >({
     annotations,
     commentElement: lineCommentElement,
     draftElement: lineCommentDraftElement,
     renderComment: (comment) => {
-      const edit = () => note.openEditor(comment.id, comment.selection, comment.comment)
+      const edit = () => note.openEditor(comment.id, comment.selection, comment.comment);
       const remove = () => {
-        note.reset()
-        props.onDelete?.(comment)
-      }
+        note.reset();
+        props.onDelete?.(comment);
+      };
 
       return {
         id: comment.id,
         get open() {
-          return note.isOpen(comment.id) || note.isEditing(comment.id)
+          return note.isOpen(comment.id) || note.isEditing(comment.id);
         },
         comment: comment.comment,
         selection: formatSelectedLineLabel(comment.selection, i18n.t),
         get actions() {
-          return props.renderCommentActions?.(comment, { edit, remove })
+          return props.renderCommentActions?.(comment, { edit, remove });
         },
         get editor() {
           return note.isEditing(comment.id)
             ? {
                 get value() {
-                  return note.draft()
+                  return note.draft();
                 },
                 selection: formatSelectedLineLabel(comment.selection, i18n.t),
                 mention: props.mention,
@@ -406,67 +428,69 @@ export function createLineCommentController<T extends LineCommentShape>(
                     id: comment.id,
                     comment: value,
                     selection: cloneSelectedLineRange(comment.selection),
-                  })
-                  note.cancelDraft()
+                  });
+                  note.cancelDraft();
                 },
                 submitLabel: props.editSubmitLabel,
               }
-            : undefined
+            : undefined;
         },
         onMouseEnter: () => note.hoverComment(comment.selection),
         onClick: () => {
-          if (note.isEditing(comment.id)) return
-          note.toggleComment(comment.id, comment.selection, { cancelDraft: props.cancelDraftOnCommentToggle })
+          if (note.isEditing(comment.id)) return;
+          note.toggleComment(comment.id, comment.selection, {
+            cancelDraft: props.cancelDraftOnCommentToggle,
+          });
         },
-      }
+      };
     },
     renderDraft: (range) => ({
       get value() {
-        return note.draft()
+        return note.draft();
       },
       selection: formatSelectedLineLabel(range, i18n.t),
       mention: props.mention,
       onInput: note.setDraft,
       onCancel: () => {
-        note.cancelDraft()
-        note.select(null)
+        note.cancelDraft();
+        note.select(null);
       },
       onSubmit: (comment) => {
-        props.onSubmit({ comment, selection: cloneSelectedLineRange(range) })
-        note.cancelDraft()
+        props.onSubmit({ comment, selection: cloneSelectedLineRange(range) });
+        note.cancelDraft();
       },
       onPopoverFocusOut: props.onDraftPopoverFocusOut,
     }),
-  })
+  });
 
   const renderGutterUtility = createLineCommentGutterRenderer({
     label: props.label,
     getSelectedRange: () => {
-      if (note.opened()) return null
-      return props.getHoverSelectedRange?.() ?? note.selected()
+      if (note.opened()) return null;
+      return props.getHoverSelectedRange?.() ?? note.selected();
     },
     onOpenDraft: note.openDraft,
-  })
+  });
 
   const onLineSelected = (range: SelectedLineRange | null) => {
     if (!range) {
-      note.select(null)
-      note.cancelDraft()
-      return
+      note.select(null);
+      note.cancelDraft();
+      return;
     }
 
-    note.select(range)
-  }
+    note.select(range);
+  };
 
   const onLineSelectionEnd = (range: SelectedLineRange | null) => {
     if (!range) {
-      if (props.clearSelectionOnSelectionEndNull) note.select(null)
-      note.cancelDraft()
-      return
+      if (props.clearSelectionOnSelectionEndNull) note.select(null);
+      note.cancelDraft();
+      return;
     }
 
-    note.openDraft(range)
-  }
+    note.openDraft(range);
+  };
 
   return {
     note,
@@ -475,25 +499,25 @@ export function createLineCommentController<T extends LineCommentShape>(
     renderGutterUtility,
     onLineSelected,
     onLineSelectionEnd,
-  }
+  };
 }
 
 export function createLineCommentAnnotations<T>(
   props: LineCommentAnnotationsWithSideProps<T>,
-): Accessor<DiffLineAnnotation<LineCommentAnnotationMeta<T>>[]>
+): Accessor<DiffLineAnnotation<LineCommentAnnotationMeta<T>>[]>;
 export function createLineCommentAnnotations<T>(
   props: LineCommentAnnotationsProps<T>,
-): Accessor<LineCommentAnnotation<T>[]>
+): Accessor<LineCommentAnnotation<T>[]>;
 export function createLineCommentAnnotations<T>(
   props: LineCommentAnnotationsProps<T> | LineCommentAnnotationsWithSideProps<T>,
 ) {
-  const line = (range: SelectedLineRange) => Math.max(range.start, range.end)
+  const line = (range: SelectedLineRange) => Math.max(range.start, range.end);
 
   if ("getSide" in props) {
     return createMemo<DiffLineAnnotation<LineCommentAnnotationMeta<T>>[]>(
       () => {
         const list = props.comments().map((comment) => {
-          const range = props.getCommentSelection(comment)
+          const range = props.getCommentSelection(comment);
           return {
             side: props.getSide(range),
             lineNumber: line(range),
@@ -502,11 +526,11 @@ export function createLineCommentAnnotations<T>(
               key: `comment:${props.getCommentId(comment)}`,
               comment,
             } satisfies LineCommentAnnotationMeta<T>,
-          }
-        })
+          };
+        });
 
-        const range = props.draftRange()
-        if (!range) return list
+        const range = props.draftRange();
+        if (!range) return list;
 
         return [
           ...list,
@@ -519,18 +543,18 @@ export function createLineCommentAnnotations<T>(
               range,
             } satisfies LineCommentAnnotationMeta<T>,
           },
-        ]
+        ];
       },
       [],
       // Stable identity for unchanged annotations avoids no-op diff rerenders downstream.
       { equals: sameAnnotationLists },
-    )
+    );
   }
 
   return createMemo<LineCommentAnnotation<T>[]>(
     () => {
       const list = props.comments().map((comment) => {
-        const range = props.getCommentSelection(comment)
+        const range = props.getCommentSelection(comment);
         const entry: LineCommentAnnotation<T> = {
           lineNumber: line(range),
           metadata: {
@@ -538,13 +562,13 @@ export function createLineCommentAnnotations<T>(
             key: `comment:${props.getCommentId(comment)}`,
             comment,
           },
-        }
+        };
 
-        return entry
-      })
+        return entry;
+      });
 
-      const range = props.draftRange()
-      if (!range) return list
+      const range = props.draftRange();
+      if (!range) return list;
 
       const draft: LineCommentAnnotation<T> = {
         lineNumber: line(range),
@@ -553,25 +577,25 @@ export function createLineCommentAnnotations<T>(
           key: `draft:${props.draftKey()}`,
           range,
         },
-      }
+      };
 
-      return [...list, draft]
+      return [...list, draft];
     },
     [],
     { equals: sameAnnotationLists },
-  )
+  );
 }
 
 type AnnotationListItem = {
-  lineNumber: number
-  side?: unknown
-  metadata: { kind: string; key: string; comment?: unknown; range?: unknown }
-}
+  lineNumber: number;
+  side?: unknown;
+  metadata: { kind: string; key: string; comment?: unknown; range?: unknown };
+};
 
 function sameAnnotationLists(previous: AnnotationListItem[], next: AnnotationListItem[]) {
-  if (previous.length !== next.length) return false
+  if (previous.length !== next.length) return false;
   return previous.every((item, index) => {
-    const other = next[index]!
+    const other = next[index]!;
     return (
       item.lineNumber === other.lineNumber &&
       item.side === other.side &&
@@ -579,59 +603,59 @@ function sameAnnotationLists(previous: AnnotationListItem[], next: AnnotationLis
       item.metadata.key === other.metadata.key &&
       item.metadata.comment === other.metadata.comment &&
       item.metadata.range === other.metadata.range
-    )
-  })
+    );
+  });
 }
 
 export function createManagedLineCommentAnnotationRenderer<T, C, D>(props: {
-  annotations: Accessor<LineCommentAnnotation<T>[]>
-  renderComment: (comment: T) => C
-  renderDraft: (range: SelectedLineRange) => D
-  commentElement: (view: Accessor<C>) => JSX.Element
-  draftElement: (view: Accessor<D>) => JSX.Element
+  annotations: Accessor<LineCommentAnnotation<T>[]>;
+  renderComment: (comment: T) => C;
+  renderDraft: (range: SelectedLineRange) => D;
+  commentElement: (view: Accessor<C>) => JSX.Element;
+  draftElement: (view: Accessor<D>) => JSX.Element;
 }) {
   const renderer = createLineCommentAnnotationRenderer<T, C, D>({
     renderComment: props.renderComment,
     renderDraft: props.renderDraft,
     commentElement: props.commentElement,
     draftElement: props.draftElement,
-  })
+  });
 
   createEffect(() => {
-    renderer.reconcile(props.annotations())
-  })
+    renderer.reconcile(props.annotations());
+  });
 
   onCleanup(() => {
-    renderer.cleanup()
-  })
+    renderer.cleanup();
+  });
 
   return {
     renderAnnotation: renderer.render,
-  }
+  };
 }
 
 export function createLineCommentGutterRenderer(props: {
-  label: string
-  getSelectedRange: Accessor<SelectedLineRange | null>
-  onOpenDraft: (range: SelectedLineRange) => void
+  label: string;
+  getSelectedRange: Accessor<SelectedLineRange | null>;
+  onOpenDraft: (range: SelectedLineRange) => void;
 }) {
   return (getHoveredLine: () => HoverCommentLine | undefined) =>
     createHoverCommentUtility({
       label: props.label,
       getHoveredLine,
       onSelect: (hovered) => {
-        const current = props.getSelectedRange()
+        const current = props.getSelectedRange();
         if (current && lineInSelectedRange(current, hovered.lineNumber, hovered.side)) {
-          props.onOpenDraft(cloneSelectedLineRange(current))
-          return
+          props.onOpenDraft(cloneSelectedLineRange(current));
+          return;
         }
 
         const range: SelectedLineRange = {
           start: hovered.lineNumber,
           end: hovered.lineNumber,
-        }
-        if (hovered.side) range.side = hovered.side
-        props.onOpenDraft(range)
+        };
+        if (hovered.side) range.side = hovered.side;
+        props.onOpenDraft(range);
       },
-    })
+    });
 }

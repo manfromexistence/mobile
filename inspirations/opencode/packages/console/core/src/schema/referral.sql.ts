@@ -1,6 +1,6 @@
-import { bigint, mysqlTable, primaryKey, uniqueIndex, varchar } from "drizzle-orm/mysql-core"
-import { timestamps, ulid, utc, workspaceColumns } from "../drizzle/types"
-import { workspaceIndexes } from "./workspace.sql"
+import { bigint, mysqlTable, primaryKey, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
+import { timestamps, ulid, utc, workspaceColumns } from "../drizzle/types";
+import { workspaceIndexes } from "./workspace.sql";
 
 export const ReferralCodeTable = mysqlTable(
   "referral_code",
@@ -10,7 +10,7 @@ export const ReferralCodeTable = mysqlTable(
     ...timestamps,
   },
   (table) => [primaryKey({ columns: [table.workspaceID] }), uniqueIndex("code").on(table.code)],
-)
+);
 
 export const ReferralTable = mysqlTable(
   "referral",
@@ -19,8 +19,11 @@ export const ReferralTable = mysqlTable(
     ...timestamps,
     inviteeAccountID: ulid("invitee_account_id").notNull(),
   },
-  (table) => [...workspaceIndexes(table), uniqueIndex("invitee_account_id").on(table.inviteeAccountID)],
-)
+  (table) => [
+    ...workspaceIndexes(table),
+    uniqueIndex("invitee_account_id").on(table.inviteeAccountID),
+  ],
+);
 
 export const ReferralRewardTable = mysqlTable(
   "referral_reward",
@@ -32,4 +35,4 @@ export const ReferralRewardTable = mysqlTable(
     timeApplied: utc("time_applied"),
   },
   (table) => [primaryKey({ columns: [table.workspaceID, table.referralID] })],
-)
+);

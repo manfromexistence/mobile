@@ -1,6 +1,6 @@
-export * as ConfigFormatter from "./formatter"
+export * as ConfigFormatter from "./formatter";
 
-import { Schema } from "effect"
+import { Schema } from "effect";
 
 export class Entry extends Schema.Class<Entry>("ConfigV2.Formatter.Entry")({
   disabled: Schema.Boolean.pipe(Schema.optional),
@@ -9,4 +9,4 @@ export class Entry extends Schema.Class<Entry>("ConfigV2.Formatter.Entry")({
   extensions: Schema.String.pipe(Schema.Array, Schema.optional),
 }) {}
 
-export const Info = Schema.Union([Schema.Boolean, Schema.Record(Schema.String, Entry)])
+export const Info = Schema.Union([Schema.Boolean, Schema.Record(Schema.String, Entry)]);

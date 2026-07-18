@@ -20,7 +20,12 @@ const mimoOpenRouterStyleResponse = {
         refusal: null,
         reasoning: "Hmm, the user just said hi",
         reasoning_details: [
-          { type: "reasoning.text", text: "Hmm, the user just said hi", format: "unknown", index: 0 },
+          {
+            type: "reasoning.text",
+            text: "Hmm, the user just said hi",
+            format: "unknown",
+            index: 0,
+          },
         ],
       },
     },
@@ -33,12 +38,22 @@ test("#6623 raw responseBody is not flagged empty by isEmptyContentResponse", ()
 });
 
 test("#6623 /v1/messages non-stream translation of an OpenRouter reasoning-only turn is flagged malformed (502) - RED", () => {
-  const translated = translateNonStreamingResponse(mimoOpenRouterStyleResponse, "openai", "claude", null);
+  const translated = translateNonStreamingResponse(
+    mimoOpenRouterStyleResponse,
+    "openai",
+    "claude",
+    null,
+  );
   const malformedReason = detectMalformedNonStream(translated);
   assert.equal(malformedReason, null);
 });
 
 test("#6623 /v1/chat/completions (openai->openai, no translation) is unaffected", () => {
-  const passthrough = translateNonStreamingResponse(mimoOpenRouterStyleResponse, "openai", "openai", null);
+  const passthrough = translateNonStreamingResponse(
+    mimoOpenRouterStyleResponse,
+    "openai",
+    "openai",
+    null,
+  );
   assert.equal(passthrough, mimoOpenRouterStyleResponse);
 });

@@ -114,7 +114,8 @@ export const dict = {
   "home.install.ariaLabel": "Install options",
 
   "home.what.title": "What is OpenCode?",
-  "home.what.body": "OpenCode is an open source agent that helps you write code in your terminal, IDE, or desktop.",
+  "home.what.body":
+    "OpenCode is an open source agent that helps you write code in your terminal, IDE, or desktop.",
   "home.what.lsp.title": "LSP enabled",
   "home.what.lsp.body": "Automatically loads the right LSPs for the LLM",
   "home.what.multiSession.title": "Multi-session",
@@ -153,7 +154,8 @@ export const dict = {
   "home.faq.q3": "Do I need extra AI subscriptions to use OpenCode?",
   "home.faq.a3.p1":
     "Not necessarily, OpenCode comes with a set of free models that you can use without creating an account.",
-  "home.faq.a3.p2.beforeZen": "Aside from these, you can use any of the popular coding models by creating a",
+  "home.faq.a3.p2.beforeZen":
+    "Aside from these, you can use any of the popular coding models by creating a",
   "home.faq.a3.p2.afterZen": " account.",
   "home.faq.a3.p3":
     "While we encourage users to use Zen, OpenCode also works with all popular providers such as OpenAI, Anthropic, xAI etc.",
@@ -171,7 +173,8 @@ export const dict = {
   "home.faq.a6":
     "OpenCode is 100% free to use. It also comes with a set of free models. There might be additional costs if you connect any other provider.",
   "home.faq.q7": "What about data and privacy?",
-  "home.faq.a7.p1": "Your data and information is only stored when you use our free models or create sharable links.",
+  "home.faq.a7.p1":
+    "Your data and information is only stored when you use our free models or create sharable links.",
   "home.faq.a7.p2.beforeModels": "Learn more about",
   "home.faq.a7.p2.modelsLink": "our models",
   "home.faq.a7.p2.and": "and",
@@ -205,10 +208,13 @@ export const dict = {
   "zen.faq.q4": "How much does Zen cost?",
   "zen.faq.a4.p1.beforePricing": "Zen",
   "zen.faq.a4.p1.pricingLink": "charges per request",
-  "zen.faq.a4.p1.afterPricing": "with zero markups, so you pay exactly what the model provider charges.",
-  "zen.faq.a4.p2.beforeAccount": "Your total cost depends on usage, and you can set monthly spend limits in your",
+  "zen.faq.a4.p1.afterPricing":
+    "with zero markups, so you pay exactly what the model provider charges.",
+  "zen.faq.a4.p2.beforeAccount":
+    "Your total cost depends on usage, and you can set monthly spend limits in your",
   "zen.faq.a4.p2.accountLink": "account",
-  "zen.faq.a4.p3": "To cover costs, OpenCode adds only a small payment processing fee of $1.23 per $20 balance top-up.",
+  "zen.faq.a4.p3":
+    "To cover costs, OpenCode adds only a small payment processing fee of $1.23 per $20 balance top-up.",
   "zen.faq.q5": "What about data and privacy?",
   "zen.faq.a5.beforeExceptions":
     "All Zen models are hosted in the US. Providers follow a zero-retention policy and do not use your data for model training, with the",
@@ -259,7 +265,8 @@ export const dict = {
   "go.cta.text": "Subscribe to Go",
   "go.cta.price": "$10/month",
   "go.cta.promo": "$5 first month",
-  "go.pricing.body": "Use with any agent. $5 first month, then $10/month. Top up credit if needed. Cancel any time.",
+  "go.pricing.body":
+    "Use with any agent. $5 first month, then $10/month. Top up credit if needed. Cancel any time.",
   "go.graph.free": "Free",
   "go.graph.freePill": "Big Pickle and free models",
   "go.graph.go": "Go",
@@ -285,7 +292,8 @@ export const dict = {
   "go.testimonials.david.name": "David Hill",
   "go.testimonials.david.title": "ex-Head of Design, Laravel",
   "go.testimonials.david.quoteBefore": "With",
-  "go.testimonials.david.quoteAfter": "I know all the models are tested and perfect for coding agents.",
+  "go.testimonials.david.quoteAfter":
+    "I know all the models are tested and perfect for coding agents.",
   "go.testimonials.frank.name": "Frank Wang",
   "go.testimonials.frank.title": "ex-Intern, Nvidia (4 times)",
   "go.testimonials.frank.quote": "I wish I was still at Nvidia.",
@@ -299,7 +307,8 @@ export const dict = {
   "go.problem.item4":
     "Includes GLM-5.2, GLM-5.1, Kimi K2.7 Code, Kimi K2.6, MiMo-V2.5-Pro, MiMo-V2.5, Qwen3.7 Max, Qwen3.7 Plus, Qwen3.6 Plus, MiniMax M2.7, MiniMax M3, DeepSeek V4 Pro, and DeepSeek V4 Flash",
   "go.how.title": "How Go works",
-  "go.how.body": "Go starts at $5 for your first month, then $10/month. You can use it with OpenCode or any agent.",
+  "go.how.body":
+    "Go starts at $5 for your first month, then $10/month. You can use it with OpenCode or any agent.",
   "go.how.step1.title": "Create an account",
   "go.how.step1.beforeLink": "follow the",
   "go.how.step1.link": "setup instructions",
@@ -342,7 +351,8 @@ export const dict = {
   "go.faq.q7": "Can I cancel?",
   "go.faq.a7": "Yes, you can cancel any time.",
   "go.faq.q8": "Can I use Go with other coding agents?",
-  "go.faq.a8": "Yes, you can use Go with any agent. Follow the setup instructions in your preferred coding agent.",
+  "go.faq.a8":
+    "Yes, you can use Go with any agent. Follow the setup instructions in your preferred coding agent.",
 
   "go.faq.q9": "What is the difference between free models and Go?",
   "go.faq.a9":
@@ -363,7 +373,8 @@ export const dict = {
   "zen.api.error.goSubscriptionMonthlyLimitExceeded":
     "Monthly usage limit reached. Resets in {{retryIn}}. To continue using this model now, enable usage from your available balance: {{consoleGoUrl}}",
   "zen.api.error.noPaymentMethod": "No payment method. Add a payment method here: {{billingUrl}}",
-  "zen.api.error.insufficientBalance": "Insufficient balance. Manage your billing here: {{billingUrl}}",
+  "zen.api.error.insufficientBalance":
+    "Insufficient balance. Manage your billing here: {{billingUrl}}",
   "zen.api.error.workspaceMonthlyLimitReached":
     "Your workspace has reached its monthly spending limit of ${{amount}}. Manage your limits here: {{billingUrl}}",
   "zen.api.error.userMonthlyLimitReached":
@@ -375,7 +386,8 @@ export const dict = {
     "Free promotion has ended for {{model}}. You can continue using the model by subscribing to OpenCode Go - {{link}}",
 
   "black.meta.title": "OpenCode Black | Access all the world's best coding models",
-  "black.meta.description": "Get access to Claude, GPT, Gemini and more with OpenCode Black subscription plans.",
+  "black.meta.description":
+    "Get access to Claude, GPT, Gemini and more with OpenCode Black subscription plans.",
   "black.hero.title": "Access all the world's best coding models",
   "black.hero.subtitle": "Including Claude, GPT, Gemini and more",
   "black.title": "OpenCode Black | Pricing",
@@ -411,7 +423,8 @@ export const dict = {
   "black.subscribe.error.alreadySubscribed": "This workspace already has a subscription",
   "black.subscribe.processing": "Processing...",
   "black.subscribe.submit": "Subscribe ${{plan}}",
-  "black.subscribe.form.chargeNotice": "You will only be charged when your subscription is activated",
+  "black.subscribe.form.chargeNotice":
+    "You will only be charged when your subscription is activated",
   "black.subscribe.success.title": "You're on the OpenCode Black waitlist",
   "black.subscribe.success.subscriptionPlan": "Subscription plan",
   "black.subscribe.success.planName": "OpenCode Black {{plan}}",
@@ -419,7 +432,8 @@ export const dict = {
   "black.subscribe.success.amountValue": "${{plan}} per month",
   "black.subscribe.success.paymentMethod": "Payment method",
   "black.subscribe.success.dateJoined": "Date joined",
-  "black.subscribe.success.chargeNotice": "Your card will be charged when your subscription is activated",
+  "black.subscribe.success.chargeNotice":
+    "Your card will be charged when your subscription is activated",
 
   "workspace.nav.zen": "Zen",
   "workspace.nav.go": "Go",
@@ -615,15 +629,19 @@ export const dict = {
   "workspace.black.time.minutes": "minutes",
   "workspace.black.time.fewSeconds": "a few seconds",
   "workspace.black.subscription.title": "Subscription",
-  "workspace.black.subscription.message": "You are subscribed to OpenCode Black for ${{plan}} per month.",
+  "workspace.black.subscription.message":
+    "You are subscribed to OpenCode Black for ${{plan}} per month.",
   "workspace.black.subscription.manage": "Manage Subscription",
   "workspace.black.subscription.rollingUsage": "5-hour Usage",
   "workspace.black.subscription.weeklyUsage": "Weekly Usage",
   "workspace.black.subscription.resetsIn": "Resets in",
-  "workspace.black.subscription.useBalance": "Use your available balance after reaching the usage limits",
+  "workspace.black.subscription.useBalance":
+    "Use your available balance after reaching the usage limits",
   "workspace.black.waitlist.title": "Waitlist",
-  "workspace.black.waitlist.joined": "You are on the waitlist for the ${{plan}} per month OpenCode Black plan.",
-  "workspace.black.waitlist.ready": "We're ready to enroll you into the ${{plan}} per month OpenCode Black plan.",
+  "workspace.black.waitlist.joined":
+    "You are on the waitlist for the ${{plan}} per month OpenCode Black plan.",
+  "workspace.black.waitlist.ready":
+    "We're ready to enroll you into the ${{plan}} per month OpenCode Black plan.",
   "workspace.black.waitlist.leave": "Leave Waitlist",
   "workspace.black.waitlist.leaving": "Leaving...",
   "workspace.black.waitlist.left": "Left",
@@ -647,7 +665,8 @@ export const dict = {
   "workspace.lite.subscription.weeklyUsage": "Weekly Usage",
   "workspace.lite.subscription.monthlyUsage": "Monthly Usage",
   "workspace.lite.subscription.resetsIn": "Resets in",
-  "workspace.lite.subscription.useBalance": "Use your available balance after reaching the usage limits",
+  "workspace.lite.subscription.useBalance":
+    "Use your available balance after reaching the usage limits",
   "workspace.lite.subscription.selectProvider":
     'Select "OpenCode Go" as the provider in your opencode configuration to use Go models.',
   "workspace.lite.providers.title": "Providers",
@@ -674,9 +693,11 @@ export const dict = {
   "workspace.referral.overview.subtitle": "Earn $5 when a friend subscribes. They’ll get $5 too.",
   "workspace.referral.instructions.share": "Share your referral link",
   "workspace.referral.instructions.subscribe": "Your friend joins and subscribes to Go",
-  "workspace.referral.instructions.claim": "You both get a $5 usage credit to apply toward your Go usage limits",
+  "workspace.referral.instructions.claim":
+    "You both get a $5 usage credit to apply toward your Go usage limits",
   "workspace.referral.rewards.title": "Referral rewards",
-  "workspace.referral.rewards.description": "Apply available referral credits toward your Go usage.",
+  "workspace.referral.rewards.description":
+    "Apply available referral credits toward your Go usage.",
   "workspace.referral.rewards.subtitle": "{{applied}} / {{total}} rewards applied.",
   "workspace.referral.rewards.empty": "No referral rewards yet.",
   "workspace.referral.table.reward": "Reward",
@@ -698,7 +719,8 @@ export const dict = {
   "workspace.referral.apply.preview": "View Reward",
   "workspace.referral.apply.action": "Apply",
   "workspace.referral.apply.confirmTitle": "Apply reward",
-  "workspace.referral.apply.confirmBody": "Apply {{amount}} to reduce this workspace's current usage.",
+  "workspace.referral.apply.confirmBody":
+    "Apply {{amount}} to reduce this workspace's current usage.",
   "workspace.referral.apply.confirmAction": "Apply",
 
   "download.title": "OpenCode | Download",
@@ -723,14 +745,16 @@ export const dict = {
     "Not necessarily, but probably. You'll need an AI subscription if you want to connect OpenCode to a paid provider, although you can work with",
   "download.faq.a3.localLink": "local models",
   "download.faq.a3.afterLocal.beforeZen": "for free. While we encourage users to use",
-  "download.faq.a3.afterZen": ", OpenCode works with all popular providers such as OpenAI, Anthropic, xAI etc.",
+  "download.faq.a3.afterZen":
+    ", OpenCode works with all popular providers such as OpenAI, Anthropic, xAI etc.",
 
   "download.faq.a5.p1": "OpenCode is 100% free to use.",
   "download.faq.a5.p2.beforeZen":
     "Any additional costs will come from your subscription to a model provider. While OpenCode works with any model provider, we recommend using",
   "download.faq.a5.p2.afterZen": ".",
 
-  "download.faq.a6.p1": "Your data and information is only stored when you create sharable links in OpenCode.",
+  "download.faq.a6.p1":
+    "Your data and information is only stored when you create sharable links in OpenCode.",
   "download.faq.a6.p2.beforeShare": "Learn more about",
   "download.faq.a6.shareLink": "share pages",
 
@@ -819,7 +843,7 @@ export const dict = {
   "bench.detail.table.duration": "Duration",
   "bench.detail.run.title": "Run {{n}}",
   "bench.detail.rawJson": "Raw JSON",
-} as const
+} as const;
 
-export type Key = keyof typeof dict
-export type Dict = Record<Key, string>
+export type Key = keyof typeof dict;
+export type Dict = Record<Key, string>;

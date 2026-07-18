@@ -30,7 +30,7 @@ export function translateCostText(t: TranslationFn, key: string, fallback: strin
 export function getServiceTierDisplayLabel(
   t: TranslationFn,
   serviceTier: unknown,
-  fallback?: unknown
+  fallback?: unknown,
 ): string {
   const normalized = normalizeServiceTierId(serviceTier);
   const fallbackText = typeof fallback === "string" ? fallback.trim() : "";

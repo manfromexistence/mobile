@@ -28,7 +28,7 @@ if (!process.env.DEEPSEEK_WEB_SESSION_COOKIE) {
     assert.equal(
       new URL(result.url).hostname,
       "chat.deepseek.com",
-      "Should target chat.deepseek.com"
+      "Should target chat.deepseek.com",
     );
 
     if (result.response.ok) {
@@ -70,7 +70,7 @@ if (!process.env.DEEPSEEK_WEB_SESSION_COOKIE) {
       const ct = result.response.headers.get("content-type") || "";
       assert.ok(
         ct.includes("text/event-stream") || ct.includes("application/json"),
-        `Expected SSE or JSON, got: ${ct}`
+        `Expected SSE or JSON, got: ${ct}`,
       );
     }
   });

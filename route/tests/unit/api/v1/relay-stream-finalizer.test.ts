@@ -12,7 +12,7 @@ test("finalizeReadableStream finalizes once after the wrapped stream completes",
         controller.close();
       },
     }),
-    (error) => finalized.push(error)
+    (error) => finalized.push(error),
   );
 
   assert.equal(await new Response(stream).text(), "hello");
@@ -31,7 +31,7 @@ test("finalizeReadableStream finalizes once when the consumer cancels", async ()
         cancelReason = reason;
       },
     }),
-    (error) => finalized.push(error)
+    (error) => finalized.push(error),
   );
 
   const reader = stream.getReader();

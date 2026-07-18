@@ -35,7 +35,7 @@ test("routerStrategy takes precedence over routingStrategy/strategyName", () => 
         strategyName: "p2c",
       },
     } as never,
-    []
+    [],
   );
   assert.equal(cfg.routingStrategy, "lkgp");
 });
@@ -53,7 +53,7 @@ test("explicit candidatePool, weights, exploration and budget are honored", () =
         modePack: "coding",
       },
     } as never,
-    [target("ignored", "x")]
+    [target("ignored", "x")],
   );
   assert.deepEqual(cfg.candidatePool, ["glm", "openai"]);
   assert.equal(cfg.weights, customWeights);
@@ -65,7 +65,7 @@ test("explicit candidatePool, weights, exploration and budget are honored", () =
 test("config.auto is preferred over top-level config", () => {
   const cfg = parseAutoConfig(
     { name: "c", config: { auto: { routerStrategy: "cost" }, routerStrategy: "rules" } } as never,
-    []
+    [],
   );
   assert.equal(cfg.routingStrategy, "cost");
 });
@@ -73,7 +73,7 @@ test("config.auto is preferred over top-level config", () => {
 test("non-finite explorationRate falls back to 0.05", () => {
   const cfg = parseAutoConfig(
     { name: "c", autoConfig: { explorationRate: "not-a-number" } } as never,
-    []
+    [],
   );
   assert.equal(cfg.explorationRate, 0.05);
 });

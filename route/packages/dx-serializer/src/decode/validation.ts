@@ -25,7 +25,7 @@ export function assertExpectedCount(
   actual: number,
   expected: number,
   label: string,
-  line: ParsedLine
+  line: ParsedLine,
 ): void {
   if (actual !== expected) {
     throw new DxDecodeError(`Expected ${expected} ${label}, got ${actual}`, {

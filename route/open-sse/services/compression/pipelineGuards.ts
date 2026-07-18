@@ -69,7 +69,7 @@ export function applyStackedInflationGuard(
   originalBody: Record<string, unknown>,
   currentBody: Record<string, unknown>,
   compressed: boolean,
-  stats: CompressionStats
+  stats: CompressionStats,
 ): CompressionResult {
   if (!compressed) return { body: currentBody, compressed, stats };
 
@@ -85,7 +85,7 @@ export function applyStackedInflationGuard(
   const warnings = new Set(stats.validationWarnings ?? []);
   warnings.add(
     `pipeline-inflation-guard: stacked output (${inflatedTokens} tok) did not shrink input ` +
-      `(${stats.originalTokens} tok); reverted to original`
+      `(${stats.originalTokens} tok); reverted to original`,
   );
   stats.validationWarnings = Array.from(warnings);
   stats.fallbackApplied = true;

@@ -23,7 +23,7 @@ const hexLoaders: Array<[string, ComponentType<DotMatrixCommonProps>]> = [
   ["DotmHex7", DotmHex7],
   ["DotmHex8", DotmHex8],
   ["DotmHex9", DotmHex9],
-  ["DotmHex10", DotmHex10]
+  ["DotmHex10", DotmHex10],
 ];
 
 describe("dotm hex loaders", () => {
@@ -38,8 +38,8 @@ describe("dotm hex loaders", () => {
         removeEventListener: vi.fn(),
         addListener: vi.fn(),
         removeListener: vi.fn(),
-        dispatchEvent: vi.fn()
-      })
+        dispatchEvent: vi.fn(),
+      }),
     );
   });
 
@@ -67,7 +67,7 @@ describe("dotm hex loaders", () => {
         pattern="cross"
         size={48}
         speed={2}
-      />
+      />,
     );
 
     const status = screen.getByRole("status", { name: "Hex loading" });

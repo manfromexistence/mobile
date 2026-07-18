@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { getCopilotMode, extractAccessToken, sessionPoolKey, solveHashcash } =
-  await import("../../open-sse/executors/copilot-web.ts");
+const { getCopilotMode, extractAccessToken, sessionPoolKey, solveHashcash } = await import(
+  "../../open-sse/executors/copilot-web.ts"
+);
 
 test("getCopilotMode maps known models to their Copilot modes", () => {
   assert.equal(getCopilotMode("copilot"), "chat");

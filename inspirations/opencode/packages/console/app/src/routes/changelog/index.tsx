@@ -1,47 +1,52 @@
-import "./index.css"
-import { Title, Meta } from "@solidjs/meta"
-import { createAsync } from "@solidjs/router"
-import { Header } from "~/component/header"
-import { Footer } from "~/component/footer"
-import { Legal } from "~/component/legal"
-import { changelog } from "~/lib/changelog"
-import type { HighlightGroup } from "~/lib/changelog"
-import { For, Show, createSignal } from "solid-js"
-import { useI18n } from "~/context/i18n"
-import { useLanguage } from "~/context/language"
-import { LocaleLinks } from "~/component/locale-links"
+import "./index.css";
+import { Title, Meta } from "@solidjs/meta";
+import { createAsync } from "@solidjs/router";
+import { Header } from "~/component/header";
+import { Footer } from "~/component/footer";
+import { Legal } from "~/component/legal";
+import { changelog } from "~/lib/changelog";
+import type { HighlightGroup } from "~/lib/changelog";
+import { For, Show, createSignal } from "solid-js";
+import { useI18n } from "~/context/i18n";
+import { useLanguage } from "~/context/language";
+import { LocaleLinks } from "~/component/locale-links";
 
 function formatDate(dateString: string, locale: string) {
-  const date = new Date(dateString)
+  const date = new Date(dateString);
   return date.toLocaleDateString(locale, {
     year: "numeric",
     month: "short",
     day: "numeric",
-  })
+  });
 }
 
 function ReleaseItem(props: { item: string }) {
   const parts = () => {
-    const match = props.item.match(/^(.+?)(\s*\(@([\w-]+)\))?$/)
+    const match = props.item.match(/^(.+?)(\s*\(@([\w-]+)\))?$/);
     if (match) {
       return {
         text: match[1],
         username: match[3],
-      }
+      };
     }
-    return { text: props.item, username: undefined }
-  }
+    return { text: props.item, username: undefined };
+  };
 
   return (
     <li>
       <span>{parts().text}</span>
       <Show when={parts().username}>
-        <a data-slot="author" href={`https://github.com/${parts().username}`} target="_blank" rel="noopener noreferrer">
+        <a
+          data-slot="author"
+          href={`https://github.com/${parts().username}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           (@{parts().username})
         </a>
       </Show>
     </li>
-  )
+  );
 }
 
 function HighlightSection(props: { group: HighlightGroup }) {
@@ -69,11 +74,11 @@ function HighlightSection(props: { group: HighlightGroup }) {
         )}
       </For>
     </div>
-  )
+  );
 }
 
 function CollapsibleSection(props: { section: { title: string; items: string[] } }) {
-  const [open, setOpen] = createSignal(false)
+  const [open, setOpen] = createSignal(false);
 
   return (
     <div data-component="collapsible-section">
@@ -87,7 +92,7 @@ function CollapsibleSection(props: { section: { title: string; items: string[] }
         </ul>
       </Show>
     </div>
-  )
+  );
 }
 
 function CollapsibleSections(props: { sections: { title: string; items: string[] }[] }) {
@@ -95,14 +100,14 @@ function CollapsibleSections(props: { sections: { title: string; items: string[]
     <div data-component="collapsible-sections">
       <For each={props.sections}>{(section) => <CollapsibleSection section={section} />}</For>
     </div>
-  )
+  );
 }
 
 export default function Changelog() {
-  const i18n = useI18n()
-  const language = useLanguage()
-  const data = createAsync(() => changelog())
-  const releases = () => data() ?? []
+  const i18n = useI18n();
+  const language = useLanguage();
+  const data = createAsync(() => changelog());
+  const releases = () => data() ?? [];
 
   return (
     <main data-page="changelog">
@@ -136,12 +141,16 @@ export default function Changelog() {
                           {release.tag}
                         </a>
                       </div>
-                      <time dateTime={release.date}>{formatDate(release.date, language.tag(language.locale()))}</time>
+                      <time dateTime={release.date}>
+                        {formatDate(release.date, language.tag(language.locale()))}
+                      </time>
                     </header>
                     <div data-slot="content">
                       <Show when={release.highlights.length > 0}>
                         <div data-component="highlights">
-                          <For each={release.highlights}>{(group) => <HighlightSection group={group} />}</For>
+                          <For each={release.highlights}>
+                            {(group) => <HighlightSection group={group} />}
+                          </For>
                         </div>
                       </Show>
                       <Show when={release.highlights.length > 0 && release.sections.length > 0}>
@@ -153,7 +162,9 @@ export default function Changelog() {
                             <div data-component="section">
                               <h3>{section.title}</h3>
                               <ul>
-                                <For each={section.items}>{(item) => <ReleaseItem item={item} />}</For>
+                                <For each={section.items}>
+                                  {(item) => <ReleaseItem item={item} />}
+                                </For>
                               </ul>
                             </div>
                           )}
@@ -161,7 +172,7 @@ export default function Changelog() {
                       </Show>
                     </div>
                   </article>
-                )
+                );
               }}
             </For>
           </section>
@@ -172,5 +183,5 @@ export default function Changelog() {
 
       <Legal />
     </main>
-  )
+  );
 }

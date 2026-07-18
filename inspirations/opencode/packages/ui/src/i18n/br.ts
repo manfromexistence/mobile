@@ -14,7 +14,8 @@ export const dict = {
   "ui.sessionReview.image.loading": "Carregando...",
   "ui.sessionReview.image.placeholder": "Imagem",
   "ui.sessionReview.largeDiff.title": "Diff grande demais para renderizar",
-  "ui.sessionReview.largeDiff.meta": "Limite: {{limit}} linhas alteradas. Atual: {{current}} linhas alteradas.",
+  "ui.sessionReview.largeDiff.meta":
+    "Limite: {{limit}} linhas alteradas. Atual: {{current}} linhas alteradas.",
   "ui.sessionReview.largeDiff.renderAnyway": "Renderizar mesmo assim",
   "ui.fileMedia.kind.image": "imagem",
   "ui.fileMedia.kind.audio": "áudio",
@@ -23,8 +24,10 @@ export const dict = {
   "ui.fileMedia.state.error": "Erro ao carregar {{kind}}",
   "ui.fileMedia.state.unavailable": "{{kind}} indisponível",
   "ui.fileMedia.binary.title": "Arquivo binário",
-  "ui.fileMedia.binary.description.path": "Não é possível exibir {{path}} porque é um arquivo binário.",
-  "ui.fileMedia.binary.description.default": "Não é possível exibir o arquivo porque ele é binário.",
+  "ui.fileMedia.binary.description.path":
+    "Não é possível exibir {{path}} porque é um arquivo binário.",
+  "ui.fileMedia.binary.description.default":
+    "Não é possível exibir o arquivo porque ele é binário.",
 
   "ui.lineComment.label.prefix": "Comentar em ",
   "ui.lineComment.label.suffix": "",
@@ -165,4 +168,4 @@ export const dict = {
   "ui.toolErrorCard.copyError": "Copiar erro",
   "ui.message.duration.seconds": "{{count}}s",
   "ui.message.duration.minutesSeconds": "{{minutes}}m {{seconds}}s",
-}
+};

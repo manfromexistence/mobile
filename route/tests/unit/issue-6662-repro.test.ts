@@ -76,7 +76,7 @@ describe("#6662 repro — v0-vercel-web drops reasoning_content", () => {
 
     assert.ok(
       text.includes("reasoning_content"),
-      `expected translated SSE stream to carry a reasoning_content field, got:\n${text}`
+      `expected translated SSE stream to carry a reasoning_content field, got:\n${text}`,
     );
   });
 });
@@ -142,11 +142,11 @@ describe("#6662 repro — claude-web drops thinking_delta reasoning_content", ()
 
     assert.ok(
       text.includes("reasoning_content"),
-      `expected translated SSE stream to carry a reasoning_content field, got:\n${text}`
+      `expected translated SSE stream to carry a reasoning_content field, got:\n${text}`,
     );
     assert.ok(
       text.includes("Let me think about 17*23"),
-      `expected the thinking text to be forwarded, got:\n${text}`
+      `expected the thinking text to be forwarded, got:\n${text}`,
     );
   });
 });

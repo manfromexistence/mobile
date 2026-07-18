@@ -122,7 +122,7 @@ function SortableRow(props: {
 export function CompressionPipelineEditor({ steps, onChange, engineIntensities }: Props) {
   const sensors = useSensors(
     useSensor(PointerSensor),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
   // Index-based stable ids: a controlled list with no per-row id. Ids are stable within a
   // render (0..n-1); reorder maps id→index before delegating to the pure model.

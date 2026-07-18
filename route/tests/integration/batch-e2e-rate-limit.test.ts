@@ -64,7 +64,7 @@ function formatServerTail(proc: ReturnType<typeof createServerProcess>) {
 async function readJsonForTest<T>(
   response: Response,
   label: string,
-  proc: ReturnType<typeof createServerProcess>
+  proc: ReturnType<typeof createServerProcess>,
 ): Promise<T> {
   const text = await response.text();
   let body: T;
@@ -76,14 +76,14 @@ async function readJsonForTest<T>(
         `${label} returned invalid JSON (${response.status} ${response.statusText}, content-type=${response.headers.get("content-type") || "unknown"})`,
         summarizeText(text),
         formatServerTail(proc),
-      ].join("\n")
+      ].join("\n"),
     );
   }
 
   assert.equal(
     response.status,
     200,
-    `${label} failed (${response.status}): ${JSON.stringify(body)}`
+    `${label} failed (${response.status}): ${JSON.stringify(body)}`,
   );
   return body;
 }
@@ -118,7 +118,7 @@ function createFakeEmbeddingRelay() {
         res.end(
           JSON.stringify({
             error: { message: "rate limited", type: "rate_limit_error" },
-          })
+          }),
         );
       } else {
         res.writeHead(200, {
@@ -137,7 +137,7 @@ function createFakeEmbeddingRelay() {
             ],
             model: "test-model",
             usage: { prompt_tokens: 4, total_tokens: 4 },
-          })
+          }),
         );
       }
     });
@@ -225,7 +225,7 @@ async function waitForServer(baseUrl: string, proc: ReturnType<typeof createServ
         [
           `Server exited early (code=${proc.exitInfo.code}, signal=${proc.exitInfo.signal})`,
           formatServerTail(proc),
-        ].join("\n")
+        ].join("\n"),
       );
     }
     try {
@@ -248,7 +248,7 @@ async function waitForServer(baseUrl: string, proc: ReturnType<typeof createServ
       "Timed out waiting for server",
       `Last readiness probe: ${lastReadiness}`,
       formatServerTail(proc),
-    ].join("\n")
+    ].join("\n"),
   );
 }
 
@@ -304,7 +304,7 @@ test.before(async () => {
   if (!nodeResp.ok) {
     // If /api/provider-nodes fails, try the direct DB import approach
     throw new Error(
-      `Failed to create provider node: ${nodeResp.status} ${JSON.stringify(nodeBody)}`
+      `Failed to create provider node: ${nodeResp.status} ${JSON.stringify(nodeBody)}`,
     );
   }
 });
@@ -342,7 +342,7 @@ test("batch E2E: upload file, create batch, verify rate-limit logs appear", asyn
   formData.append(
     "file",
     new Blob([jsonlContent], { type: "application/jsonl" }),
-    "batch_input.jsonl"
+    "batch_input.jsonl",
   );
   formData.append("purpose", "batch");
 
@@ -353,7 +353,7 @@ test("batch E2E: upload file, create batch, verify rate-limit logs appear", asyn
   assert.match(
     uploadResp.headers.get("content-type") || "",
     /json/i,
-    "File upload should return JSON"
+    "File upload should return JSON",
   );
   const uploadBody = await readJsonForTest<FileUploadResponse>(uploadResp, "File upload", app);
   const fileId = uploadBody.id;
@@ -399,7 +399,7 @@ test("batch E2E: upload file, create batch, verify rate-limit logs appear", asyn
     batchStatus = sb.status || "";
     lastPollSummary = `poll ${attempts} status=${batchStatus}`;
     console.log(
-      `[poll ${attempts}] batch ${batchId} status=${batchStatus} completed=${sb.request_counts?.completed} failed=${sb.request_counts?.failed}`
+      `[poll ${attempts}] batch ${batchId} status=${batchStatus} completed=${sb.request_counts?.completed} failed=${sb.request_counts?.failed}`,
     );
     if (["completed", "failed", "cancelled"].includes(batchStatus)) break;
   }
@@ -408,7 +408,7 @@ test("batch E2E: upload file, create batch, verify rate-limit logs appear", asyn
     "completed",
     `Batch did not complete; final status: ${batchStatus}. ` +
       `Last poll: ${lastPollSummary}\n` +
-      `Server [BATCH] logs:\n${[...app.stdoutLines, ...app.stderrLines].filter((l) => l.includes("[BATCH]")).join("\n")}`
+      `Server [BATCH] logs:\n${[...app.stdoutLines, ...app.stderrLines].filter((l) => l.includes("[BATCH]")).join("\n")}`,
   );
 
   // 4. Check server stdout for throttle-related log messages
@@ -417,7 +417,7 @@ test("batch E2E: upload file, create batch, verify rate-limit logs appear", asyn
     (l) =>
       l.includes("[BATCH] Throttle check") ||
       l.includes("[BATCH] High pressure") ||
-      l.includes("[BATCH] Moderate pressure")
+      l.includes("[BATCH] Moderate pressure"),
   );
 
   console.log("\n=== Rate-limit throttle logs from batch processing ===");
@@ -429,7 +429,7 @@ test("batch E2E: upload file, create batch, verify rate-limit logs appear", asyn
   assert.ok(
     throttleLogs.length >= 2,
     `Expected >=2 throttle log entries, got ${throttleLogs.length}.\n` +
-      `All [BATCH] logs:\n${allLogs.filter((l) => l.includes("[BATCH]")).join("\n")}`
+      `All [BATCH] logs:\n${allLogs.filter((l) => l.includes("[BATCH]")).join("\n")}`,
   );
 
   // 5. Verify batch results
@@ -438,6 +438,6 @@ test("batch E2E: upload file, create batch, verify rate-limit logs appear", asyn
   assert.equal(
     finalBody.request_counts?.completed,
     2,
-    `Expected 2 completed, got ${JSON.stringify(finalBody.request_counts)}`
+    `Expected 2 completed, got ${JSON.stringify(finalBody.request_counts)}`,
   );
 });

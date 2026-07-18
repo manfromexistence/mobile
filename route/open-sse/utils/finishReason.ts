@@ -54,7 +54,7 @@ export function normalizeOpenAICompatibleFinishReason(value: unknown): unknown {
 
 export function normalizeOpenAICompatibleFinishReasonString(
   value: unknown,
-  fallback = "stop"
+  fallback = "stop",
 ): string {
   const normalized = normalizeOpenAICompatibleFinishReason(value);
   return typeof normalized === "string" && normalized ? normalized : fallback;

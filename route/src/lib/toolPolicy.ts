@@ -36,7 +36,7 @@ function parseList(envKey: string): Set<string> {
     raw
       .split(",")
       .map((s) => s.trim().toLowerCase())
-      .filter(Boolean)
+      .filter(Boolean),
   );
 }
 

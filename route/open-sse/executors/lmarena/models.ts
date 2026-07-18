@@ -65,7 +65,7 @@ function normalizeModelName(model: string): string {
 function hasLMArenaCapability(
   entry: LMArenaModelMetadata,
   direction: "input" | "output",
-  key: string
+  key: string,
 ): boolean {
   const capabilities =
     direction === "input"
@@ -190,7 +190,7 @@ export function normalizeLMArenaModelsForCatalog(models: LMArenaModelMetadata[])
     .sort(
       ([, a], [, b]) =>
         lmarenaModelResolutionScore(a.entry) - lmarenaModelResolutionScore(b.entry) ||
-        a.index - b.index
+        a.index - b.index,
     )
     .slice(0, LMARENA_CATALOG_SOFT_CAP)
     .map(([id, { entry }]) => ({
@@ -215,13 +215,14 @@ export function pickLMArenaModelId(model: string, models: LMArenaModelMetadata[]
     .filter(({ entry }) => isLMArenaChatCatalogModel(entry))
     .filter(({ entry }) =>
       [entry.id, entry.publicName, entry.name, entry.displayName].some(
-        (candidate) => typeof candidate === "string" && normalizeModelName(candidate) === normalized
-      )
+        (candidate) =>
+          typeof candidate === "string" && normalizeModelName(candidate) === normalized,
+      ),
     );
   const match = matches.sort(
     (a, b) =>
       lmarenaModelResolutionScore(a.entry) - lmarenaModelResolutionScore(b.entry) ||
-      a.index - b.index
+      a.index - b.index,
   )[0]?.entry;
 
   return match?.id || requested;
@@ -258,11 +259,12 @@ type LogFn = {
 
 /** Static Direct-chat allowlist only — no arena.ai network call. */
 export async function getLMArenaModels(log?: LogFn): Promise<LMArenaModelMetadata[]> {
-  const { LMARENA_DIRECT_MODEL_ENTRIES } =
-    await import("../../config/providers/registry/lmarena/directModels.ts");
+  const { LMARENA_DIRECT_MODEL_ENTRIES } = await import(
+    "../../config/providers/registry/lmarena/directModels.ts"
+  );
   // Chat path only — Image rows live in IMAGE_PROVIDERS (imageRegistry).
   const models: LMArenaModelMetadata[] = LMARENA_DIRECT_MODEL_ENTRIES.filter(
-    (m) => m.category === "Text" || m.category === "Search"
+    (m) => m.category === "Text" || m.category === "Search",
   ).map((m) => ({
     id: m.arenaId,
     publicName: m.catalogId,
@@ -281,7 +283,7 @@ export async function getLMArenaModels(log?: LogFn): Promise<LMArenaModelMetadat
   }));
   log?.debug?.(
     "LMArenaExecutor",
-    `Using static Direct-chat catalog (${models.length} Text/Search models; Image in imageRegistry)`
+    `Using static Direct-chat catalog (${models.length} Text/Search models; Image in imageRegistry)`,
   );
   return models;
 }
@@ -291,8 +293,9 @@ export async function resolveLMArenaModelId(model: string, log?: LogFn): Promise
   if (LMARENA_MODEL_ID_RE.test(requested)) return requested;
 
   try {
-    const { resolveLmarenaArenaId } =
-      await import("../../config/providers/registry/lmarena/directModels.ts");
+    const { resolveLmarenaArenaId } = await import(
+      "../../config/providers/registry/lmarena/directModels.ts"
+    );
     const fromSeed = resolveLmarenaArenaId(requested);
     if (fromSeed) return fromSeed;
     return pickLMArenaModelId(requested, await getLMArenaModels(log));
@@ -300,7 +303,7 @@ export async function resolveLMArenaModelId(model: string, log?: LogFn): Promise
     const message = error instanceof Error ? error.message : String(error);
     log?.warn?.(
       "LMArenaExecutor",
-      `Using raw model id after static catalog lookup failed: ${message}`
+      `Using raw model id after static catalog lookup failed: ${message}`,
     );
     return requested;
   }

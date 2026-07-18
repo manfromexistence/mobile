@@ -84,11 +84,11 @@ test("assembleStandalone copies standalone + static + public + sidecars into out
   // server.js — built with distDir baked into its config — serves /_next/static from.
   assert.ok(
     fs.existsSync(path.join(outDir, ".build/next/static/x.js")),
-    "static copied under distDir"
+    "static copied under distDir",
   );
   assert.ok(
     !fs.existsSync(path.join(outDir, ".next/static/x.js")),
-    "static is NOT placed under a literal .next (would 404 against distDir server)"
+    "static is NOT placed under a literal .next (would 404 against distDir server)",
   );
   assert.ok(fs.existsSync(path.join(outDir, "public/logo.svg")), "public copied");
   fs.rmSync(tmp, { recursive: true, force: true });
@@ -133,13 +133,13 @@ test("async and sync sidecar copy paths produce identical bundle trees", async (
   assert.deepEqual(
     syncTree,
     asyncTree,
-    "sync (assembleStandalone) and async (sync*ToDir) must copy the same sidecar tree"
+    "sync (assembleStandalone) and async (sync*ToDir) must copy the same sidecar tree",
   );
   // The TPROXY native addon must land at the cwd-relative path the runtime loader
   // (transparentSocket.ts) resolves in the standalone bundle.
   assert.ok(
     asyncTree.includes("src/mitm/tproxy/native/build/Release/transparent.node"),
-    "TPROXY transparent.node copied into the standalone bundle"
+    "TPROXY transparent.node copied into the standalone bundle",
   );
   fs.rmSync(tmp, { recursive: true, force: true });
 });
@@ -155,7 +155,7 @@ test("the TPROXY addon source is skipped gracefully when it was not built (non-L
   await syncStandaloneNativeAssets(projectRoot, fs.promises, { log() {} }, out);
   assert.ok(
     !fs.existsSync(path.join(out, "src/mitm/tproxy/native/build/Release/transparent.node")),
-    "absent addon is simply not copied (graceful skip)"
+    "absent addon is simply not copied (graceful skip)",
   );
   fs.rmSync(tmp, { recursive: true, force: true });
 });
@@ -169,7 +169,7 @@ test("every relative import of standalone-server-ws.mjs is shipped into the bund
   const repoRoot = path.resolve(new URL(".", import.meta.url).pathname, "../../..");
   const serverWsSrc = fs.readFileSync(
     path.join(repoRoot, "scripts/dev/standalone-server-ws.mjs"),
-    "utf8"
+    "utf8",
   );
   const relImports = [...serverWsSrc.matchAll(/from\s+"\.\/([^"]+)"/g)].map((m) => m[1]);
   assert.ok(relImports.length > 0, "server-ws.mjs has relative imports to check");
@@ -179,7 +179,7 @@ test("every relative import of standalone-server-ws.mjs is shipped into the bund
   for (const imp of relImports) {
     assert.ok(
       fs.existsSync(path.join(tmp, imp)),
-      `server-ws.mjs imports ./${imp} but EXTRA_MODULE_ENTRIES does not ship it — the bundle would crash at boot (ERR_MODULE_NOT_FOUND)`
+      `server-ws.mjs imports ./${imp} but EXTRA_MODULE_ENTRIES does not ship it — the bundle would crash at boot (ERR_MODULE_NOT_FOUND)`,
     );
   }
   fs.rmSync(tmp, { recursive: true, force: true });

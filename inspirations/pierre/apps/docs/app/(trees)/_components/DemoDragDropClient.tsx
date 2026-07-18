@@ -1,31 +1,27 @@
-'use client';
+"use client";
 
-import { IconLock, IconRefresh } from '@pierre/icons';
-import {
-  FileTree,
-  type FileTreePreloadedData,
-  useFileTree,
-} from '@pierre/trees/react';
-import type { FileTreePathOptions } from '@trees/_lib/fileTreePathOptions';
-import Link from 'next/link';
-import type { CSSProperties } from 'react';
-import { useEffect, useState } from 'react';
+import { IconLock, IconRefresh } from "@pierre/icons";
+import { FileTree, type FileTreePreloadedData, useFileTree } from "@pierre/trees/react";
+import type { FileTreePathOptions } from "@trees/_lib/fileTreePathOptions";
+import Link from "next/link";
+import type { CSSProperties } from "react";
+import { useEffect, useState } from "react";
 
-import { sampleFileList } from '../_lib/demo-data';
-import { TREE_NEW_VIEWPORT_HEIGHTS } from '../_lib/dimensions';
-import { getDefaultFileTreePanelClass } from './tree-examples/demo-data';
-import { TreeExampleSection } from './tree-examples/TreeExampleSection';
-import { FeatureHeader } from '@/components/FeatureHeader';
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { PRODUCTS } from '@/lib/product-config';
+import { sampleFileList } from "../_lib/demo-data";
+import { TREE_NEW_VIEWPORT_HEIGHTS } from "../_lib/dimensions";
+import { getDefaultFileTreePanelClass } from "./tree-examples/demo-data";
+import { TreeExampleSection } from "./tree-examples/TreeExampleSection";
+import { FeatureHeader } from "@/components/FeatureHeader";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { PRODUCTS } from "@/lib/product-config";
 
 const dragDropStyle = {
-  colorScheme: 'dark',
-  '--trees-search-bg-override': 'light-dark(#fff, oklch(14.5% 0 0))',
+  colorScheme: "dark",
+  "--trees-search-bg-override": "light-dark(#fff, oklch(14.5% 0 0))",
 } as CSSProperties;
 
-const DRAG_DROP_BASE_OPTIONS: Omit<FileTreePathOptions, 'id' | 'paths'> = {
+const DRAG_DROP_BASE_OPTIONS: Omit<FileTreePathOptions, "id" | "paths"> = {
   dragAndDrop: true,
   flattenEmptyDirectories: true,
   search: false,
@@ -45,18 +41,15 @@ export function DemoDragDropClient({ preloadedData }: DemoDragDropClientProps) {
   const { model: lockedModel } = useFileTree({
     ...DRAG_DROP_BASE_OPTIONS,
     dragAndDrop: {
-      canDrag: (draggedPaths) =>
-        draggedPaths.includes('package.json') === false,
+      canDrag: (draggedPaths) => draggedPaths.includes("package.json") === false,
       onDropComplete: () => {
         setHasDragged(true);
       },
     },
-    id: 'file-tree-drag-drop-demo-locked',
+    id: "file-tree-drag-drop-demo-locked",
     paths: sampleFileList,
     renderRowDecoration: ({ item }) =>
-      item.path === 'package.json'
-        ? { icon: 'file-tree-icon-lock', title: 'Locked file' }
-        : null,
+      item.path === "package.json" ? { icon: "file-tree-icon-lock", title: "Locked file" } : null,
   });
   const { model: unlockedModel } = useFileTree({
     ...DRAG_DROP_BASE_OPTIONS,
@@ -65,14 +58,12 @@ export function DemoDragDropClient({ preloadedData }: DemoDragDropClientProps) {
         setHasDragged(true);
       },
     },
-    id: 'file-tree-drag-drop-demo-unlocked',
+    id: "file-tree-drag-drop-demo-unlocked",
     paths: sampleFileList,
   });
 
   const activeModel = lockPackageJson ? lockedModel : unlockedModel;
-  const activePreloadedData = lockPackageJson
-    ? preloadedData.locked
-    : preloadedData.unlocked;
+  const activePreloadedData = lockPackageJson ? preloadedData.locked : preloadedData.unlocked;
 
   useEffect(() => {
     activeModel.resetPaths(sampleFileList);
@@ -86,12 +77,10 @@ export function DemoDragDropClient({ preloadedData }: DemoDragDropClientProps) {
         title="Drag and drop"
         description={
           <>
-            Move files and folders by dragging them onto other folders,
-            flattened folders, or the root with <code>dragAndDrop: true</code>.
-            Drop targets open automatically when you hover, and dragging is
-            disabled while search is active. Pass a <code>canDrag</code>{' '}
-            callback to prevent specific paths from being dragged. Learn more in
-            the{' '}
+            Move files and folders by dragging them onto other folders, flattened folders, or the
+            root with <code>dragAndDrop: true</code>. Drop targets open automatically when you
+            hover, and dragging is disabled while search is active. Pass a <code>canDrag</code>{" "}
+            callback to prevent specific paths from being dragged. Learn more in the{" "}
             <Link
               href={`${PRODUCTS.trees.docsPath}#rename-drag-and-trigger-item-actions-move-items-with-drag-and-drop`}
               className="inline-link"

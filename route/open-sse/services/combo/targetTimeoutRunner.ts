@@ -19,17 +19,17 @@ export function buildTargetTimeoutRunner(deps: {
 }): (
   b: Record<string, unknown>,
   modelStr: string,
-  target?: SingleModelTarget
+  target?: SingleModelTarget,
 ) => Promise<Response> {
   const { handleSingleModel, comboTargetTimeoutMs, log } = deps;
   return async (
     b: Record<string, unknown>,
     modelStr: string,
-    target?: SingleModelTarget
+    target?: SingleModelTarget,
   ): Promise<Response> => {
     if (comboTargetTimeoutMs <= 0) {
       return handleSingleModel(b, modelStr, target).catch((err) =>
-        errorResponse(502, err?.message ?? "Upstream model error")
+        errorResponse(502, err?.message ?? "Upstream model error"),
       );
     }
 
@@ -41,14 +41,14 @@ export function buildTargetTimeoutRunner(deps: {
         timedOut = true;
         log.warn(
           "COMBO",
-          `Model ${modelStr} exceeded ${comboTargetTimeoutMs}ms timeout — falling back`
+          `Model ${modelStr} exceeded ${comboTargetTimeoutMs}ms timeout — falling back`,
         );
         timeoutController.abort(new Error("combo-per-model-timeout"));
         resolve(
           new Response(JSON.stringify({ error: { message: `Model ${modelStr} timed out` } }), {
             status: 524,
             headers: { "Content-Type": "application/json" },
-          })
+          }),
         );
       }, comboTargetTimeoutMs);
     });

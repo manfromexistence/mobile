@@ -22,7 +22,7 @@ export function ShikiCodeView({
   code,
   lang,
   className,
-  lineNumbers = true
+  lineNumbers = true,
 }: {
   code: string;
   lang: BundledLanguage;
@@ -47,7 +47,7 @@ export function ShikiCodeView({
     const observer = new MutationObserver(updateThemeMode);
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ["data-theme"]
+      attributeFilter: ["data-theme"],
     });
 
     updateThemeMode();
@@ -64,7 +64,7 @@ export function ShikiCodeView({
       const { codeToHtml } = await import("shiki/bundle/web");
       const next = await codeToHtml(code, {
         lang,
-        theme: shikiTheme
+        theme: shikiTheme,
       });
       if (!cancelled) {
         setHtml(next);
@@ -82,7 +82,7 @@ export function ShikiCodeView({
         lineNumbers
           ? "grid min-h-0 min-w-0 grid-cols-[minmax(2.25rem,auto)_minmax(0,1fr)] gap-x-0"
           : "min-h-0 min-w-0",
-        className
+        className,
       ]
         .filter(Boolean)
         .join(" ")}
@@ -107,7 +107,7 @@ export function ShikiCodeView({
         {html ? (
           <div
             className={[
-              "shiki-embed min-w-0 [&_code]:block [&_code]:whitespace-normal [&_pre]:m-0 [&_pre]:min-h-0 [&_pre]:bg-transparent [&_pre]:p-0 [&_pre]:font-mono [&_pre]:text-[12px] [&_pre]:leading-relaxed [&_pre]:whitespace-normal [&_span.line]:block [&_span.line]:min-h-lh [&_span.line]:whitespace-pre [&_span.line]:leading-relaxed"
+              "shiki-embed min-w-0 [&_code]:block [&_code]:whitespace-normal [&_pre]:m-0 [&_pre]:min-h-0 [&_pre]:bg-transparent [&_pre]:p-0 [&_pre]:font-mono [&_pre]:text-[12px] [&_pre]:leading-relaxed [&_pre]:whitespace-normal [&_span.line]:block [&_span.line]:min-h-lh [&_span.line]:whitespace-pre [&_span.line]:leading-relaxed",
             ].join(" ")}
             dangerouslySetInnerHTML={{ __html: html }}
           />

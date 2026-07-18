@@ -21,7 +21,7 @@ test("gpt-oss-120b resolves into its cataloged open-weight providers, not openai
   assert.notEqual(
     info.provider,
     "openai",
-    "gpt-oss-120b must not be hijacked into the openai-family fallback"
+    "gpt-oss-120b must not be hijacked into the openai-family fallback",
   );
 
   // Multiple providers catalog this open-weight model id, so the resolver correctly
@@ -32,12 +32,12 @@ test("gpt-oss-120b resolves into its cataloged open-weight providers, not openai
   assert.ok(
     info.candidateProviders.some((p: string) => KNOWN_GPT_OSS_120B_PROVIDERS.has(p)),
     `expected at least one candidate from ${[...KNOWN_GPT_OSS_120B_PROVIDERS].join(
-      ", "
-    )}, got ${JSON.stringify(info.candidateProviders)}`
+      ", ",
+    )}, got ${JSON.stringify(info.candidateProviders)}`,
   );
   assert.ok(
     !info.candidateProviders.includes("openai"),
-    "openai must not be listed as a candidate for gpt-oss-120b"
+    "openai must not be listed as a candidate for gpt-oss-120b",
   );
 });
 
@@ -47,6 +47,6 @@ test("regression guard: a genuinely-uncataloged openai-family id still falls bac
   assert.equal(
     info.provider,
     "openai",
-    "uncataloged gpt-* ids with zero known candidates must still fall back to openai"
+    "uncataloged gpt-* ids with zero known candidates must still fall back to openai",
   );
 });

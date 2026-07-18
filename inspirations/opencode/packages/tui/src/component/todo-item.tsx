@@ -1,12 +1,12 @@
-import { useTheme } from "../context/theme"
+import { useTheme } from "../context/theme";
 
 export interface TodoItemProps {
-  status: string
-  content: string
+  status: string;
+  content: string;
 }
 
 export function TodoItem(props: TodoItemProps) {
-  const { theme } = useTheme()
+  const { theme } = useTheme();
 
   return (
     <box flexDirection="row" gap={0}>
@@ -28,5 +28,5 @@ export function TodoItem(props: TodoItemProps) {
         {props.content}
       </text>
     </box>
-  )
+  );
 }

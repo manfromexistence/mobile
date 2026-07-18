@@ -388,7 +388,7 @@ export const COPILOT_TOOLS: CopilotTool[] = [
         const trimmedCmd = cmd.trim();
         if (!trimmedCmd) return "Please provide a command to execute.";
         const argv = (trimmedCmd.match(/(?:[^\s"']+|"[^"]*"|'[^']*')+/g) || []).map((arg) =>
-          arg.replace(/^["']|["']$/g, "")
+          arg.replace(/^["']|["']$/g, ""),
         );
         const { stdout } = await execFileAsync(cliPath, argv, {
           encoding: "utf-8",

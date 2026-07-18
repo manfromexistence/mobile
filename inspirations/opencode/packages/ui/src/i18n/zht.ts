@@ -1,6 +1,6 @@
-import { dict as en } from "./en"
+import { dict as en } from "./en";
 
-type Keys = keyof typeof en
+type Keys = keyof typeof en;
 
 export const dict = {
   "ui.sessionReview.title": "工作階段變更",
@@ -51,7 +51,8 @@ export const dict = {
   "ui.sessionTurn.error.addCredits": "新增點數",
 
   "dialog.usageExceeded.freeTier.title": "已達免費額度上限",
-  "dialog.usageExceeded.freeTier.description": "訂閱 OpenCode Go，可靠地使用最佳開源模型，每月 $5 起。",
+  "dialog.usageExceeded.freeTier.description":
+    "訂閱 OpenCode Go，可靠地使用最佳開源模型，每月 $5 起。",
   "dialog.usageExceeded.freeTier.actionLabel": "訂閱",
   "dialog.usageExceeded.accountRateLimit.title": "已達 Go 額度上限",
   "dialog.usageExceeded.accountRateLimit.description":
@@ -168,4 +169,4 @@ export const dict = {
   "ui.toolErrorCard.copyError": "複製錯誤",
   "ui.message.duration.seconds": "{{count}}秒",
   "ui.message.duration.minutesSeconds": "{{minutes}}分 {{seconds}}秒",
-} satisfies Partial<Record<Keys, string>>
+} satisfies Partial<Record<Keys, string>>;

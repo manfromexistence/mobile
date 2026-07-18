@@ -1,8 +1,8 @@
-import { describe, expect, test } from "bun:test"
-import { Schema } from "effect"
-import { ProjectV2 } from "@opencode-ai/core/project"
-import { MessageID, SessionID } from "../../src/session/schema"
-import { Session } from "../../src/session/session"
+import { describe, expect, test } from "bun:test";
+import { Schema } from "effect";
+import { ProjectV2 } from "@opencode-ai/core/project";
+import { MessageID, SessionID } from "../../src/session/schema";
+import { Session } from "../../src/session/session";
 
 const info = {
   id: SessionID.descending(),
@@ -25,19 +25,19 @@ const info = {
   },
   permission: undefined,
   revert: undefined,
-} satisfies Session.Info
+} satisfies Session.Info;
 
 describe("Session schema", () => {
   test("encodes undefined optional session fields as omitted keys", () => {
-    const encoded = Schema.encodeUnknownSync(Session.Info)(info) as Record<string, unknown>
+    const encoded = Schema.encodeUnknownSync(Session.Info)(info) as Record<string, unknown>;
 
     for (const key of ["workspaceID", "parentID", "summary", "share", "permission", "revert"]) {
-      expect(Object.hasOwn(encoded, key)).toBe(false)
+      expect(Object.hasOwn(encoded, key)).toBe(false);
     }
-    expect(Object.hasOwn(encoded.time as Record<string, unknown>, "compacting")).toBe(false)
-    expect(Object.hasOwn(encoded.time as Record<string, unknown>, "archived")).toBe(false)
-    expect(JSON.stringify(encoded)).not.toContain("parentID")
-  })
+    expect(Object.hasOwn(encoded.time as Record<string, unknown>, "compacting")).toBe(false);
+    expect(Object.hasOwn(encoded.time as Record<string, unknown>, "archived")).toBe(false);
+    expect(JSON.stringify(encoded)).not.toContain("parentID");
+  });
 
   test("encodes undefined optional global session project fields as omitted keys", () => {
     const encoded = Schema.encodeUnknownSync(Session.GlobalInfo)({
@@ -47,11 +47,11 @@ describe("Session schema", () => {
         name: undefined,
         worktree: "/tmp/opencode",
       },
-    }) as Record<string, unknown>
+    }) as Record<string, unknown>;
 
-    expect(Object.hasOwn(encoded, "parentID")).toBe(false)
-    expect(Object.hasOwn(encoded.project as Record<string, unknown>, "name")).toBe(false)
-  })
+    expect(Object.hasOwn(encoded, "parentID")).toBe(false);
+    expect(Object.hasOwn(encoded.project as Record<string, unknown>, "name")).toBe(false);
+  });
 
   test("encodes nested undefined optional session fields as omitted keys", () => {
     const encoded = Schema.encodeUnknownSync(Session.Info)({
@@ -68,11 +68,11 @@ describe("Session schema", () => {
         snapshot: undefined,
         diff: undefined,
       },
-    }) as Record<string, unknown>
+    }) as Record<string, unknown>;
 
-    expect(Object.hasOwn(encoded.summary as Record<string, unknown>, "diffs")).toBe(false)
+    expect(Object.hasOwn(encoded.summary as Record<string, unknown>, "diffs")).toBe(false);
     for (const key of ["partID", "snapshot", "diff"]) {
-      expect(Object.hasOwn(encoded.revert as Record<string, unknown>, key)).toBe(false)
+      expect(Object.hasOwn(encoded.revert as Record<string, unknown>, key)).toBe(false);
     }
-  })
-})
+  });
+});

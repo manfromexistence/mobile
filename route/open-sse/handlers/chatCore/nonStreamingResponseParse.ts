@@ -76,12 +76,12 @@ export async function parseNonStreamingResponseBody(opts: {
     if (shouldTreatBufferedEventResponseAsExpected(upstreamStream, providerHeaders, finalBody)) {
       log?.debug?.(
         "STREAM",
-        `Buffering upstream ${streamKind} response for non-streaming client request`
+        `Buffering upstream ${streamKind} response for non-streaming client request`,
       );
     } else {
       log?.warn?.(
         "STREAM",
-        `Unexpected ${streamKind} response for non-streaming request — buffering`
+        `Unexpected ${streamKind} response for non-streaming request — buffering`,
       );
     }
     // Upstream returned an event stream for a non-streaming client; convert best-effort to JSON.

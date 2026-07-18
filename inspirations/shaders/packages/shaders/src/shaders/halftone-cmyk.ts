@@ -1,6 +1,6 @@
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { declarePI } from '../shader-utils.js';
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { declarePI } from "../shader-utils.js";
 
 /**
  * CMYK halftone printing effect applied to images with customizable dot patterns
@@ -95,7 +95,7 @@ const float cosM = 0.2588190;  const float sinM = 0.9659258;   // 75°
 const float cosY = 1.0;        const float sinY = 0.0;         // 0°
 const float cosK = 0.7071068;  const float sinK = 0.7071068;   // 45°
 
-${ declarePI }
+${declarePI}
 
 vec2 randomRG(vec2 p) {
   vec2 uv = floor(p) / 100. + .5;
@@ -385,4 +385,3 @@ export const HalftoneCmykTypes = {
 } as const;
 
 export type HalftoneCmykType = keyof typeof HalftoneCmykTypes;
-

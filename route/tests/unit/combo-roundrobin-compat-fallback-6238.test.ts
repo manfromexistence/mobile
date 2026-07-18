@@ -20,12 +20,14 @@ process.env.DATA_DIR = TEST_DATA_DIR;
 const { handleComboChat } = await import("../../open-sse/services/combo.ts");
 const core = await import("../../src/lib/db/core.ts");
 const settingsDb = await import("../../src/lib/db/settings.ts");
-const { saveModelsDevCapabilities, clearModelsDevCapabilities } =
-  await import("../../src/lib/modelsDevSync.ts");
+const { saveModelsDevCapabilities, clearModelsDevCapabilities } = await import(
+  "../../src/lib/modelsDevSync.ts"
+);
 const { resetAllComboMetrics } = await import("../../open-sse/services/comboMetrics.ts");
 const { resetAllCircuitBreakers } = await import("../../src/shared/utils/circuitBreaker.ts");
-const { resetAll: resetAllSemaphores } =
-  await import("../../open-sse/services/rateLimitSemaphore.ts");
+const { resetAll: resetAllSemaphores } = await import(
+  "../../open-sse/services/rateLimitSemaphore.ts"
+);
 
 function createLog() {
   return {
@@ -88,64 +90,61 @@ test.after(() => {
   }
 });
 
-test(
-  "round-robin falls back to a compat-rejected healthy target instead of 503 " +
-    "when every compat-kept target is unavailable (#6238)",
-  async () => {
-    // rr-a is tool-INCAPABLE → the tools-requiring request makes the compat
-    // pre-filter reject it. rr-b/rr-c are tool-capable → kept, but both are
-    // runtime-unavailable. Only the rejected rr-a is actually healthy.
-    saveModelsDevCapabilities({
-      openai: {
-        "rr-a": capabilityEntry(128000, { tool_call: false }),
-        "rr-b": capabilityEntry(128000),
-        "rr-c": capabilityEntry(128000),
-      },
-    });
+test("round-robin falls back to a compat-rejected healthy target instead of 503 " +
+  "when every compat-kept target is unavailable (#6238)", async () => {
+  // rr-a is tool-INCAPABLE → the tools-requiring request makes the compat
+  // pre-filter reject it. rr-b/rr-c are tool-capable → kept, but both are
+  // runtime-unavailable. Only the rejected rr-a is actually healthy.
+  saveModelsDevCapabilities({
+    openai: {
+      "rr-a": capabilityEntry(128000, { tool_call: false }),
+      "rr-b": capabilityEntry(128000),
+      "rr-c": capabilityEntry(128000),
+    },
+  });
 
-    const attempted: string[] = [];
-    const availabilityChecks: string[] = [];
+  const attempted: string[] = [];
+  const availabilityChecks: string[] = [];
 
-    const result = await handleComboChat({
-      body: {
-        messages: [{ role: "user", content: "Use a tool to look something up" }],
-        tools: [{ type: "function", function: { name: "lookup_weather" } }],
-      },
-      combo: {
-        name: "rr-compat-fallback-6238",
-        strategy: "round-robin",
-        models: ["openai/rr-a", "openai/rr-b", "openai/rr-c"],
-        config: { maxRetries: 0, concurrencyPerModel: 1, queueTimeoutMs: 1000 },
-      },
-      handleSingleModel: async (_body, modelStr) => {
-        attempted.push(modelStr);
-        return okResponse({ choices: [{ message: { content: `served by ${modelStr}` } }] });
-      },
-      // Only the compat-rejected rr-a is healthy; the compat-kept rr-b/rr-c
-      // are all runtime-unavailable.
-      isModelAvailable: async (modelStr) => {
-        availabilityChecks.push(modelStr);
-        return modelStr === "openai/rr-a";
-      },
-      log: createLog(),
-      settings: null,
-      relayOptions: null,
-      allCombos: null,
-    });
+  const result = await handleComboChat({
+    body: {
+      messages: [{ role: "user", content: "Use a tool to look something up" }],
+      tools: [{ type: "function", function: { name: "lookup_weather" } }],
+    },
+    combo: {
+      name: "rr-compat-fallback-6238",
+      strategy: "round-robin",
+      models: ["openai/rr-a", "openai/rr-b", "openai/rr-c"],
+      config: { maxRetries: 0, concurrencyPerModel: 1, queueTimeoutMs: 1000 },
+    },
+    handleSingleModel: async (_body, modelStr) => {
+      attempted.push(modelStr);
+      return okResponse({ choices: [{ message: { content: `served by ${modelStr}` } }] });
+    },
+    // Only the compat-rejected rr-a is healthy; the compat-kept rr-b/rr-c
+    // are all runtime-unavailable.
+    isModelAvailable: async (modelStr) => {
+      availabilityChecks.push(modelStr);
+      return modelStr === "openai/rr-a";
+    },
+    log: createLog(),
+    settings: null,
+    relayOptions: null,
+    allCombos: null,
+  });
 
-    // Before the fix this returned 503 ALL_ACCOUNTS_INACTIVE without ever
-    // attempting rr-a. After the fix the compat-rejected-but-healthy rr-a
-    // serves the request.
-    assert.equal(result.status, 200, "expected a 200 from the compat-rejected fallback, not 503");
-    assert.equal(result.ok, true);
-    assert.deepEqual(attempted, ["openai/rr-a"], "only the healthy compat-rejected target is used");
+  // Before the fix this returned 503 ALL_ACCOUNTS_INACTIVE without ever
+  // attempting rr-a. After the fix the compat-rejected-but-healthy rr-a
+  // serves the request.
+  assert.equal(result.status, 200, "expected a 200 from the compat-rejected fallback, not 503");
+  assert.equal(result.ok, true);
+  assert.deepEqual(attempted, ["openai/rr-a"], "only the healthy compat-rejected target is used");
 
-    const payload = await result.json();
-    assert.equal(payload.choices[0].message.content, "served by openai/rr-a");
-    // Sanity: the compat-kept rr-b/rr-c were probed for availability first.
-    assert.ok(
-      availabilityChecks.includes("openai/rr-b") || availabilityChecks.includes("openai/rr-c"),
-      "compat-kept targets should be probed before the last-resort fallback"
-    );
-  }
-);
+  const payload = await result.json();
+  assert.equal(payload.choices[0].message.content, "served by openai/rr-a");
+  // Sanity: the compat-kept rr-b/rr-c were probed for availability first.
+  assert.ok(
+    availabilityChecks.includes("openai/rr-b") || availabilityChecks.includes("openai/rr-c"),
+    "compat-kept targets should be probed before the last-resort fallback",
+  );
+});

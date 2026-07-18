@@ -114,7 +114,7 @@ test("enabling a disabled skill makes it available in the request pipeline", asy
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ enabled: true }),
     }),
-    { params: Promise.resolve({ id: skill.id }) }
+    { params: Promise.resolve({ id: skill.id }) },
   );
 
   const fetchBodies = [];
@@ -131,7 +131,7 @@ test("enabling a disabled skill makes it available in the request pipeline", asy
         stream: false,
         messages: [{ role: "user", content: "What tools do you have?" }],
       },
-    })
+    }),
   );
 
   assert.equal(updateResponse.status, 200);
@@ -168,7 +168,7 @@ test("matching tool calls execute the registered skill and return tool results",
         stream: false,
         messages: [{ role: "user", content: "Check the weather" }],
       },
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -200,7 +200,7 @@ test("non-matching responses fall through the pipeline normally", async () => {
         stream: false,
         messages: [{ role: "user", content: "Just answer normally" }],
       },
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -235,7 +235,7 @@ test("sandbox-backed skill execution can be mocked through the executor", async 
   const execution = await skillExecutor.execute(
     "sandboxedSkill@1.0.0",
     { command: "echo sandbox" },
-    { apiKeyId: apiKey.id, sessionId: "sandbox-session" }
+    { apiKeyId: apiKey.id, sessionId: "sandbox-session" },
   );
 
   sandboxRunner.run = originalRun;
@@ -273,7 +273,7 @@ test("skill execution errors are returned gracefully in tool results", async () 
         stream: false,
         messages: [{ role: "user", content: "Run the protected tool" }],
       },
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -299,7 +299,7 @@ test("disabling a skill removes it from request tool injection", async () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ enabled: false }),
     }),
-    { params: Promise.resolve({ id: skill.id }) }
+    { params: Promise.resolve({ id: skill.id }) },
   );
 
   const fetchBodies = [];
@@ -316,7 +316,7 @@ test("disabling a skill removes it from request tool injection", async () => {
         stream: false,
         messages: [{ role: "user", content: "What tools do you have now?" }],
       },
-    })
+    }),
   );
 
   assert.equal(updateResponse.status, 200);
@@ -354,7 +354,7 @@ test("injectSkills() correctly injects skill context into a request", async () =
   assert.equal((tools as any)[0].function.name, "translateText@1.0.0");
   (assert as any).equal(
     (tools[0] as any).function.description,
-    "Translate text to another language"
+    "Translate text to another language",
   );
   assert.ok((tools[0] as any).function.parameters, "parameters should be present");
 });
@@ -437,7 +437,7 @@ test("responses input context participates in AUTO skill injection", async () =>
           },
         ],
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -522,7 +522,7 @@ test("skill execution stores a record and marks it complete", async () => {
   const execution = await skillExecutor.execute(
     "storeTest@1.0.0",
     { data: "hello" },
-    { apiKeyId: apiKey.id, sessionId: "store-session" }
+    { apiKeyId: apiKey.id, sessionId: "store-session" },
   );
 
   assert.equal(execution.status, "success");
@@ -542,7 +542,7 @@ test("skill execution stores a record and marks it complete", async () => {
   assert.ok(executions.length >= 1, "listExecutions should return at least one record");
   assert.ok(
     executions.some((e) => e.id === execution.id),
-    "the execution should appear in listExecutions"
+    "the execution should appear in listExecutions",
   );
 });
 
@@ -580,7 +580,7 @@ test("skills pipeline can be disabled via skillsEnabled flag without crashing", 
         stream: false,
         messages: [{ role: "user", content: "Test with skills disabled" }],
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -599,12 +599,12 @@ test("skills pipeline can be disabled via skillsEnabled flag without crashing", 
         {
           apiKeyId: apiKey.id,
           sessionId: "disabled-session",
-        }
+        },
       ),
     (err) => {
       assert.ok((err as any).message.includes("disabled"), "should mention disabled in error");
       return true;
-    }
+    },
   );
 });
 
@@ -648,7 +648,7 @@ test("observability log calls fire during injection/interception/execution", asy
 
     assert.ok(
       logMessages.some((m) => m.includes("skills.injection.injected")),
-      "should log skills.injection.injected during injection"
+      "should log skills.injection.injected during injection",
     );
 
     // 2) Interception + Execution — should fire interception and executor logs
@@ -684,19 +684,19 @@ test("observability log calls fire during injection/interception/execution", asy
 
     assert.ok(
       logMessages.some((m) => m.includes("skills.interception.tool_call_detected")),
-      "should log skills.interception.tool_call_detected"
+      "should log skills.interception.tool_call_detected",
     );
     assert.ok(
       logMessages.some((m) => m.includes("skills.executor.start")),
-      "should log skills.executor.start"
+      "should log skills.executor.start",
     );
     assert.ok(
       logMessages.some((m) => m.includes("skills.executor.complete")),
-      "should log skills.executor.complete"
+      "should log skills.executor.complete",
     );
     assert.ok(
       logMessages.some((m) => m.includes("skills.interception.execution_complete")),
-      "should log skills.interception.execution_complete"
+      "should log skills.interception.execution_complete",
     );
   } finally {
     console.log = originalLog;
@@ -730,7 +730,7 @@ test("injectSkills() returns empty array and logs skipped when no skills are ena
     assert.equal(tools.length, 0, "should return empty array when no skills exist");
     assert.ok(
       logMessages.some((m) => m.includes("skills.injection.skipped")),
-      "should log skills.injection.skipped when no enabled skills"
+      "should log skills.injection.skipped when no enabled skills",
     );
   } finally {
     console.log = originalLog;
@@ -772,7 +772,7 @@ test("builtin and custom skills coexist in the injected tool list", async () => 
         stream: false,
         messages: [{ role: "user", content: "List my tools" }],
       },
-    })
+    }),
   );
 
   const toolNames = (fetchBodies[0].tools || []).map((tool) => tool.function.name).sort();
@@ -805,7 +805,7 @@ test("web_search fallback converts built-in tools for unsupported providers and 
             },
           ],
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -831,7 +831,7 @@ test("web_search fallback converts built-in tools for unsupported providers and 
         ],
         tools: [{ type: "web_search", search_context_size: "medium" }],
       },
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -866,7 +866,7 @@ test("web_search fallback preserves Responses API output by appending function_c
             },
           ],
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -897,7 +897,7 @@ test("web_search fallback preserves Responses API output by appending function_c
         ],
         tools: [{ type: "web_search_preview", search_context_size: "low" }],
       },
-    })
+    }),
   );
   const json = (await response.json()) as any;
   const functionCall = json.output.find((item) => item.type === "function_call");

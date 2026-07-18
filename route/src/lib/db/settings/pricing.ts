@@ -15,7 +15,7 @@ export type PricingSourceMap = Record<string, Record<string, PricingSource>>;
 
 function readPricingNamespace(
   db: ReturnType<typeof getDbInstance>,
-  namespace: string
+  namespace: string,
 ): PricingByProvider {
   const rows = db.prepare("SELECT key, value FROM key_value WHERE namespace = ?").all(namespace);
   const pricing: PricingByProvider = {};
@@ -125,7 +125,7 @@ export async function getPricingForModel(provider: string, model: string) {
 
   const findKeyInsensitive = <T>(
     obj: Record<string, T> | undefined | null,
-    key: string
+    key: string,
   ): T | undefined => {
     if (!obj || !key) return undefined;
     const lowerKey = key.toLowerCase();
@@ -175,7 +175,7 @@ export async function getPricingForModel(provider: string, model: string) {
 export async function updatePricing(pricingData: PricingByProvider) {
   const db = getDbInstance();
   const insert = db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('pricing', ?, ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('pricing', ?, ?)",
   );
 
   const rows = db.prepare("SELECT key, value FROM key_value WHERE namespace = 'pricing'").all();
@@ -225,7 +225,7 @@ export async function resetPricing(provider: string, model?: string) {
       } else {
         db.prepare("UPDATE key_value SET value = ? WHERE namespace = 'pricing' AND key = ?").run(
           JSON.stringify(models),
-          provider
+          provider,
         );
       }
     }

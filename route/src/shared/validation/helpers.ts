@@ -31,7 +31,7 @@ export type ValidationResult<TData> = ValidationSuccess<TData> | ValidationFailu
  */
 export function validateBody<TSchema extends z.ZodTypeAny>(
   schema: TSchema,
-  body: unknown
+  body: unknown,
 ): ValidationResult<z.infer<TSchema>> {
   const result = schema.safeParse(body);
   if (result.success) {
@@ -51,7 +51,7 @@ export function validateBody<TSchema extends z.ZodTypeAny>(
 }
 
 export function isValidationFailure<TData>(
-  validation: ValidationResult<TData>
+  validation: ValidationResult<TData>,
 ): validation is ValidationFailure {
   return validation.success === false;
 }
@@ -85,7 +85,7 @@ export type ValidatedJsonBodyResult<TData> =
  */
 export async function validatedJsonBody<TSchema extends z.ZodTypeAny>(
   request: Request,
-  schema: TSchema
+  schema: TSchema,
 ): Promise<ValidatedJsonBodyResult<z.infer<TSchema>>> {
   let raw: unknown;
   try {
@@ -100,7 +100,7 @@ export async function validatedJsonBody<TSchema extends z.ZodTypeAny>(
             details: [{ field: "body", message: "Invalid JSON body" }],
           },
         },
-        { status: 400 }
+        { status: 400 },
       ),
     };
   }

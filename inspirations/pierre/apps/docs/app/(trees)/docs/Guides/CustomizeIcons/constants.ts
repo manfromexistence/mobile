@@ -1,26 +1,26 @@
-import { docsCodeSnippet } from '@/lib/docsCodeSnippet';
+import { docsCodeSnippet } from "@/lib/docsCodeSnippet";
 
 export const ICONS_BASIC_SET = docsCodeSnippet(
-  'icons-basic.ts',
+  "icons-basic.ts",
   `const fileTree = new FileTree({
   paths,
   icons: 'standard',
-});`
+});`,
 );
 
 export const ICONS_COLORED_OFF = docsCodeSnippet(
-  'icons-colored-off.ts',
+  "icons-colored-off.ts",
   `const fileTree = new FileTree({
   paths,
   icons: {
     set: 'complete',
     colored: false,
   },
-});`
+});`,
 );
 
 export const ICONS_REMAP = docsCodeSnippet(
-  'icons-remap.ts',
+  "icons-remap.ts",
   `const fileTree = new FileTree({
   paths,
   icons: {
@@ -38,11 +38,11 @@ export const ICONS_REMAP = docsCodeSnippet(
       'file-tree-icon-lock': 'icon-locked',
     },
   },
-});`
+});`,
 );
 
 export const ICONS_SPRITE_SHEET = docsCodeSnippet(
-  'icons-sprite-sheet.ts',
+  "icons-sprite-sheet.ts",
   `const fileTree = new FileTree({
   paths,
   icons: {
@@ -58,5 +58,5 @@ export const ICONS_SPRITE_SHEET = docsCodeSnippet(
       'package.json': 'icon-package-json',
     },
   },
-});`
+});`,
 );

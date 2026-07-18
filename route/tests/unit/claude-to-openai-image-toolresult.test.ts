@@ -14,7 +14,8 @@ const { claudeToOpenAIRequest } = await import(
   "../../open-sse/translator/request/claude-to-openai.ts"
 );
 
-const FAKE_BASE64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
+const FAKE_BASE64 =
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
 const MEDIA_TYPE = "image/png";
 const EXPECTED_DATA_URI = `data:${MEDIA_TYPE};base64,${FAKE_BASE64}`;
 
@@ -60,7 +61,7 @@ test("image-only tool_result produces image_url in following user turn (not stri
         },
       ],
     },
-    false
+    false,
   );
 
   const msgs = result.messages as any[];
@@ -73,23 +74,21 @@ test("image-only tool_result produces image_url in following user turn (not stri
   const toolContent = JSON.stringify(toolMsg.content);
   assert.ok(
     !toolContent.includes(FAKE_BASE64),
-    `tool message must not contain raw base64 data; got: ${toolContent.slice(0, 200)}`
+    `tool message must not contain raw base64 data; got: ${toolContent.slice(0, 200)}`,
   );
 
   // There must be a following user message with image_url
   const userMsg = msgs.find((m) => m.role === "user");
   assert.ok(userMsg, "expected a following user message carrying the image");
 
-  const userContent: any[] = Array.isArray(userMsg.content)
-    ? userMsg.content
-    : [userMsg.content];
+  const userContent: any[] = Array.isArray(userMsg.content) ? userMsg.content : [userMsg.content];
 
   const imageUrlPart = userContent.find(
-    (p: any) => p.type === "image_url" && p.image_url?.url === EXPECTED_DATA_URI
+    (p: any) => p.type === "image_url" && p.image_url?.url === EXPECTED_DATA_URI,
   );
   assert.ok(
     imageUrlPart,
-    `expected image_url part with data URI in the user message; got: ${JSON.stringify(userContent)}`
+    `expected image_url part with data URI in the user message; got: ${JSON.stringify(userContent)}`,
   );
 
   // The tool message should have a placeholder text (not empty)
@@ -139,7 +138,7 @@ test("mixed text+image tool_result: text stays in tool message, image appears as
         },
       ],
     },
-    false
+    false,
   );
 
   const msgs = result.messages as any[];
@@ -151,23 +150,21 @@ test("mixed text+image tool_result: text stays in tool message, image appears as
   // base64 must NOT appear in the tool message
   assert.ok(
     !JSON.stringify(toolMsg.content).includes(FAKE_BASE64),
-    "tool message must not contain raw base64"
+    "tool message must not contain raw base64",
   );
 
   // Following user message must contain image_url
   const userMsg = msgs.find((m) => m.role === "user");
   assert.ok(userMsg, "expected a following user message carrying the image");
 
-  const userContent: any[] = Array.isArray(userMsg.content)
-    ? userMsg.content
-    : [userMsg.content];
+  const userContent: any[] = Array.isArray(userMsg.content) ? userMsg.content : [userMsg.content];
 
   const imageUrlPart = userContent.find(
-    (p: any) => p.type === "image_url" && p.image_url?.url === EXPECTED_DATA_URI
+    (p: any) => p.type === "image_url" && p.image_url?.url === EXPECTED_DATA_URI,
   );
   assert.ok(
     imageUrlPart,
-    `expected image_url part in the following user message; got: ${JSON.stringify(userContent)}`
+    `expected image_url part in the following user message; got: ${JSON.stringify(userContent)}`,
   );
 });
 
@@ -202,7 +199,7 @@ test("text-only tool_result is byte-identical to before the fix", () => {
         },
       ],
     },
-    false
+    false,
   );
 
   const msgs = result.messages as any[];
@@ -212,7 +209,7 @@ test("text-only tool_result is byte-identical to before the fix", () => {
   // No spurious user message
   assert.ok(
     !msgs.find((m) => m.role === "user"),
-    "text-only tool_result should not produce a following user message"
+    "text-only tool_result should not produce a following user message",
   );
 });
 
@@ -247,7 +244,7 @@ test("string content tool_result is unchanged", () => {
         },
       ],
     },
-    false
+    false,
   );
 
   const msgs = result.messages as any[];

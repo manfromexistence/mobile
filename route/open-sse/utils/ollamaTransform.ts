@@ -47,7 +47,11 @@ export function transformToOllama(response, model) {
                 const toolCallId = tc.id != null ? String(tc.id) : tc.id;
 
                 // T37: Prevent merging tool_calls on same index if ID changes
-                if (pendingToolCalls[idx] && toolCallId && pendingToolCalls[idx].id !== toolCallId) {
+                if (
+                  pendingToolCalls[idx] &&
+                  toolCallId &&
+                  pendingToolCalls[idx].id !== toolCallId
+                ) {
                   completedToolCalls.push(pendingToolCalls[idx]);
                   delete pendingToolCalls[idx];
                 }
@@ -111,7 +115,7 @@ export function transformToOllama(response, model) {
       },
     },
     { highWaterMark: 16384 },
-    { highWaterMark: 16384 }
+    { highWaterMark: 16384 },
   );
 
   return new Response(response.body.pipeThrough(transform), {

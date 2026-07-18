@@ -1,21 +1,21 @@
-import "./index.css"
-import { Title, Meta } from "@solidjs/meta"
+import "./index.css";
+import { Title, Meta } from "@solidjs/meta";
 //import { HttpHeader } from "@solidjs/start"
-import video from "../asset/lander/opencode-min.mp4"
-import videoPoster from "../asset/lander/opencode-poster.png"
-import { IconCopy, IconCheck } from "../component/icon"
-import { A, createAsync } from "@solidjs/router"
-import { EmailSignup } from "~/component/email-signup"
-import { Tabs } from "@kobalte/core/tabs"
-import { Faq } from "~/component/faq"
-import { Header } from "~/component/header"
-import { Footer } from "~/component/footer"
-import { Legal } from "~/component/legal"
-import { github } from "~/lib/github"
-import { config } from "~/config"
-import { useI18n } from "~/context/i18n"
-import { useLanguage } from "~/context/language"
-import { LocaleLinks } from "~/component/locale-links"
+import video from "../asset/lander/opencode-min.mp4";
+import videoPoster from "../asset/lander/opencode-poster.png";
+import { IconCopy, IconCheck } from "../component/icon";
+import { A, createAsync } from "@solidjs/router";
+import { EmailSignup } from "~/component/email-signup";
+import { Tabs } from "@kobalte/core/tabs";
+import { Faq } from "~/component/faq";
+import { Header } from "~/component/header";
+import { Footer } from "~/component/footer";
+import { Legal } from "~/component/legal";
+import { github } from "~/lib/github";
+import { config } from "~/config";
+import { useI18n } from "~/context/i18n";
+import { useLanguage } from "~/context/language";
+import { LocaleLinks } from "~/component/locale-links";
 
 function CopyStatus() {
   return (
@@ -23,24 +23,24 @@ function CopyStatus() {
       <IconCopy data-slot="copy" />
       <IconCheck data-slot="check" />
     </div>
-  )
+  );
 }
 
 export default function Home() {
-  const i18n = useI18n()
-  const language = useLanguage()
-  const _githubData = createAsync(() => github())
+  const i18n = useI18n();
+  const language = useLanguage();
+  const _githubData = createAsync(() => github());
   const handleCopyClick = (event: Event) => {
-    const button = event.currentTarget as HTMLButtonElement
-    const text = button.textContent
+    const button = event.currentTarget as HTMLButtonElement;
+    const text = button.textContent;
     if (text) {
-      void navigator.clipboard.writeText(text)
-      button.setAttribute("data-copied", "")
+      void navigator.clipboard.writeText(text);
+      button.setAttribute("data-copied", "");
       setTimeout(() => {
-        button.removeAttribute("data-copied")
-      }, 1500)
+        button.removeAttribute("data-copied");
+      }, 1500);
     }
-  }
+  };
 
   return (
     <main data-page="opencode">
@@ -183,43 +183,55 @@ export default function Home() {
               <li>
                 <span>[*]</span>
                 <div>
-                  <strong>{i18n.t("home.what.multiSession.title")}</strong> {i18n.t("home.what.multiSession.body")}
+                  <strong>{i18n.t("home.what.multiSession.title")}</strong>{" "}
+                  {i18n.t("home.what.multiSession.body")}
                 </div>
               </li>
               <li>
                 <span>[*]</span>
                 <div>
-                  <strong>{i18n.t("home.what.shareLinks.title")}</strong> {i18n.t("home.what.shareLinks.body")}
+                  <strong>{i18n.t("home.what.shareLinks.title")}</strong>{" "}
+                  {i18n.t("home.what.shareLinks.body")}
                 </div>
               </li>
               <li>
                 <span>[*]</span>
                 <div>
-                  <strong>{i18n.t("home.what.copilot.title")}</strong> {i18n.t("home.what.copilot.body")}
+                  <strong>{i18n.t("home.what.copilot.title")}</strong>{" "}
+                  {i18n.t("home.what.copilot.body")}
                 </div>
               </li>
               <li>
                 <span>[*]</span>
                 <div>
-                  <strong>{i18n.t("home.what.chatgptPlus.title")}</strong> {i18n.t("home.what.chatgptPlus.body")}
+                  <strong>{i18n.t("home.what.chatgptPlus.title")}</strong>{" "}
+                  {i18n.t("home.what.chatgptPlus.body")}
                 </div>
               </li>
               <li>
                 <span>[*]</span>
                 <div>
-                  <strong>{i18n.t("home.what.anyModel.title")}</strong> {i18n.t("home.what.anyModel.body")}
+                  <strong>{i18n.t("home.what.anyModel.title")}</strong>{" "}
+                  {i18n.t("home.what.anyModel.body")}
                 </div>
               </li>
               <li>
                 <span>[*]</span>
                 <div>
-                  <strong>{i18n.t("home.what.anyEditor.title")}</strong> {i18n.t("home.what.anyEditor.body")}
+                  <strong>{i18n.t("home.what.anyEditor.title")}</strong>{" "}
+                  {i18n.t("home.what.anyEditor.body")}
                 </div>
               </li>
             </ul>
             <a href={language.route("/docs")}>
               <span>{i18n.t("home.what.readDocs")} </span>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
                 <path
                   d="M6.5 12L17 12M13 16.5L17.5 12L13 7.5"
                   stroke="currentColor"
@@ -248,7 +260,13 @@ export default function Home() {
               <div data-component="growth-stats">
                 <div data-component="growth-stat">
                   <div data-component="stat-illustration">
-                    <svg width="205" height="264" viewBox="0 0 205 264" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg
+                      width="205"
+                      height="264"
+                      viewBox="0 0 205 264"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
                       <g opacity="0.5" clip-path="url(#clip0_236_15902)">
                         <mask
                           id="mask0_236_15902"
@@ -295,13 +313,20 @@ export default function Home() {
                   </div>
                   <span>
                     <figure>{i18n.t("common.figure", { n: 1 })}</figure>{" "}
-                    <strong>{config.github.starsFormatted.compact}</strong> {i18n.t("home.growth.githubStars")}
+                    <strong>{config.github.starsFormatted.compact}</strong>{" "}
+                    {i18n.t("home.growth.githubStars")}
                   </span>
                 </div>
 
                 <div data-component="growth-stat">
                   <div data-component="stat-illustration">
-                    <svg width="205" height="264" viewBox="0 0 205 264" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg
+                      width="205"
+                      height="264"
+                      viewBox="0 0 205 264"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
                       <g opacity="0.5" clip-path="url(#clip0_236_15557)">
                         <g clip-path="url(#clip1_236_15557)">
                           <rect opacity="0.81" width="6" height="6" fill="#CFCECD" />
@@ -430,12 +455,54 @@ export default function Home() {
                           <rect opacity="0.32" x="70" y="112" width="6" height="6" fill="#8E8B8B" />
                           <rect opacity="0.52" x="84" y="112" width="6" height="6" fill="#8E8B8B" />
                           <rect opacity="0.02" x="98" y="112" width="6" height="6" fill="#CFCECD" />
-                          <rect opacity="0.88" x="126" y="112" width="6" height="6" fill="#DAD9D9" />
-                          <rect opacity="0.12" x="140" y="112" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.93" x="154" y="112" width="6" height="6" fill="#BCBBBB" />
-                          <rect opacity="0.79" x="168" y="112" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.24" x="182" y="112" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.64" x="196" y="112" width="6" height="6" fill="#CFCECD" />
+                          <rect
+                            opacity="0.88"
+                            x="126"
+                            y="112"
+                            width="6"
+                            height="6"
+                            fill="#DAD9D9"
+                          />
+                          <rect
+                            opacity="0.12"
+                            x="140"
+                            y="112"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
+                          <rect
+                            opacity="0.93"
+                            x="154"
+                            y="112"
+                            width="6"
+                            height="6"
+                            fill="#BCBBBB"
+                          />
+                          <rect
+                            opacity="0.79"
+                            x="168"
+                            y="112"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
+                          <rect
+                            opacity="0.24"
+                            x="182"
+                            y="112"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
+                          <rect
+                            opacity="0.64"
+                            x="196"
+                            y="112"
+                            width="6"
+                            height="6"
+                            fill="#CFCECD"
+                          />
                           <rect opacity="0.57" y="126" width="6" height="6" fill="#8E8B8B" />
                           <rect opacity="0.6" x="14" y="126" width="6" height="6" fill="#BCBBBB" />
                           <rect opacity="0.05" x="28" y="126" width="6" height="6" fill="#BCBBBB" />
@@ -444,13 +511,55 @@ export default function Home() {
                           <rect opacity="0.93" x="70" y="126" width="6" height="6" fill="#CFCECD" />
                           <rect opacity="0.63" x="84" y="126" width="6" height="6" fill="#DAD9D9" />
                           <rect opacity="0.58" x="98" y="126" width="6" height="6" fill="#DAD9D9" />
-                          <rect opacity="0.64" x="112" y="126" width="6" height="6" fill="#DAD9D9" />
-                          <rect opacity="0.74" x="126" y="126" width="6" height="6" fill="#BCBBBB" />
-                          <rect opacity="0.74" x="140" y="126" width="6" height="6" fill="#8E8B8B" />
+                          <rect
+                            opacity="0.64"
+                            x="112"
+                            y="126"
+                            width="6"
+                            height="6"
+                            fill="#DAD9D9"
+                          />
+                          <rect
+                            opacity="0.74"
+                            x="126"
+                            y="126"
+                            width="6"
+                            height="6"
+                            fill="#BCBBBB"
+                          />
+                          <rect
+                            opacity="0.74"
+                            x="140"
+                            y="126"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
                           <rect opacity="0.1" x="154" y="126" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.93" x="168" y="126" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.43" x="182" y="126" width="6" height="6" fill="#CFCECD" />
-                          <rect opacity="0.45" x="196" y="126" width="6" height="6" fill="#BCBBBB" />
+                          <rect
+                            opacity="0.93"
+                            x="168"
+                            y="126"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
+                          <rect
+                            opacity="0.43"
+                            x="182"
+                            y="126"
+                            width="6"
+                            height="6"
+                            fill="#CFCECD"
+                          />
+                          <rect
+                            opacity="0.45"
+                            x="196"
+                            y="126"
+                            width="6"
+                            height="6"
+                            fill="#BCBBBB"
+                          />
                           <rect opacity="0.77" y="140" width="6" height="6" fill="#8E8B8B" />
                           <rect opacity="0.78" x="14" y="140" width="6" height="6" fill="#CFCECD" />
                           <rect opacity="0.18" x="28" y="140" width="6" height="6" fill="#DAD9D9" />
@@ -459,13 +568,55 @@ export default function Home() {
                           <rect opacity="0.53" x="70" y="140" width="6" height="6" fill="#BCBBBB" />
                           <rect opacity="0.06" x="84" y="140" width="6" height="6" fill="#CFCECD" />
                           <rect opacity="0.81" x="98" y="140" width="6" height="6" fill="#DAD9D9" />
-                          <rect opacity="0.49" x="112" y="140" width="6" height="6" fill="#DAD9D9" />
-                          <rect opacity="0.45" x="126" y="140" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.37" x="140" y="140" width="6" height="6" fill="#DAD9D9" />
-                          <rect opacity="0.58" x="154" y="140" width="6" height="6" fill="#8E8B8B" />
+                          <rect
+                            opacity="0.49"
+                            x="112"
+                            y="140"
+                            width="6"
+                            height="6"
+                            fill="#DAD9D9"
+                          />
+                          <rect
+                            opacity="0.45"
+                            x="126"
+                            y="140"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
+                          <rect
+                            opacity="0.37"
+                            x="140"
+                            y="140"
+                            width="6"
+                            height="6"
+                            fill="#DAD9D9"
+                          />
+                          <rect
+                            opacity="0.58"
+                            x="154"
+                            y="140"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
                           <rect opacity="0.8" x="168" y="140" width="6" height="6" fill="#BCBBBB" />
-                          <rect opacity="0.35" x="182" y="140" width="6" height="6" fill="#BCBBBB" />
-                          <rect opacity="0.73" x="196" y="140" width="6" height="6" fill="#8E8B8B" />
+                          <rect
+                            opacity="0.35"
+                            x="182"
+                            y="140"
+                            width="6"
+                            height="6"
+                            fill="#BCBBBB"
+                          />
+                          <rect
+                            opacity="0.73"
+                            x="196"
+                            y="140"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
                           <rect opacity="0.92" y="154" width="6" height="6" fill="#BCBBBB" />
                           <rect opacity="0.32" x="14" y="154" width="6" height="6" fill="#BCBBBB" />
                           <rect opacity="0.3" x="28" y="154" width="6" height="6" fill="#8E8B8B" />
@@ -474,12 +625,47 @@ export default function Home() {
                           <rect opacity="0.66" x="70" y="154" width="6" height="6" fill="#8E8B8B" />
                           <rect opacity="0.83" x="84" y="154" width="6" height="6" fill="#CFCECD" />
                           <rect opacity="0.52" x="98" y="154" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.82" x="112" y="154" width="6" height="6" fill="#CFCECD" />
-                          <rect opacity="0.95" x="126" y="154" width="6" height="6" fill="#CFCECD" />
-                          <rect opacity="0.89" x="140" y="154" width="6" height="6" fill="#CFCECD" />
+                          <rect
+                            opacity="0.82"
+                            x="112"
+                            y="154"
+                            width="6"
+                            height="6"
+                            fill="#CFCECD"
+                          />
+                          <rect
+                            opacity="0.95"
+                            x="126"
+                            y="154"
+                            width="6"
+                            height="6"
+                            fill="#CFCECD"
+                          />
+                          <rect
+                            opacity="0.89"
+                            x="140"
+                            y="154"
+                            width="6"
+                            height="6"
+                            fill="#CFCECD"
+                          />
                           <rect opacity="0.2" x="154" y="154" width="6" height="6" fill="#BCBBBB" />
-                          <rect opacity="0.61" x="168" y="154" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.34" x="196" y="154" width="6" height="6" fill="#DAD9D9" />
+                          <rect
+                            opacity="0.61"
+                            x="168"
+                            y="154"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
+                          <rect
+                            opacity="0.34"
+                            x="196"
+                            y="154"
+                            width="6"
+                            height="6"
+                            fill="#DAD9D9"
+                          />
                           <rect opacity="0.9" y="168" width="6" height="6" fill="#BCBBBB" />
                           <rect opacity="0.99" x="14" y="168" width="6" height="6" fill="#BCBBBB" />
                           <rect opacity="0.49" x="28" y="168" width="6" height="6" fill="#BCBBBB" />
@@ -488,13 +674,55 @@ export default function Home() {
                           <rect opacity="0.92" x="70" y="168" width="6" height="6" fill="#8E8B8B" />
                           <rect opacity="0.79" x="84" y="168" width="6" height="6" fill="#8E8B8B" />
                           <rect opacity="0.8" x="98" y="168" width="6" height="6" fill="#BCBBBB" />
-                          <rect opacity="0.74" x="112" y="168" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.38" x="126" y="168" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.56" x="140" y="168" width="6" height="6" fill="#CFCECD" />
+                          <rect
+                            opacity="0.74"
+                            x="112"
+                            y="168"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
+                          <rect
+                            opacity="0.38"
+                            x="126"
+                            y="168"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
+                          <rect
+                            opacity="0.56"
+                            x="140"
+                            y="168"
+                            width="6"
+                            height="6"
+                            fill="#CFCECD"
+                          />
                           <rect opacity="0.7" x="154" y="168" width="6" height="6" fill="#DAD9D9" />
-                          <rect opacity="0.47" x="168" y="168" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.92" x="182" y="168" width="6" height="6" fill="#BCBBBB" />
-                          <rect opacity="0.19" x="196" y="168" width="6" height="6" fill="#BCBBBB" />
+                          <rect
+                            opacity="0.47"
+                            x="168"
+                            y="168"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
+                          <rect
+                            opacity="0.92"
+                            x="182"
+                            y="168"
+                            width="6"
+                            height="6"
+                            fill="#BCBBBB"
+                          />
+                          <rect
+                            opacity="0.19"
+                            x="196"
+                            y="168"
+                            width="6"
+                            height="6"
+                            fill="#BCBBBB"
+                          />
                           <rect opacity="0.12" y="182" width="6" height="6" fill="#BCBBBB" />
                           <rect opacity="0.16" x="14" y="182" width="6" height="6" fill="#8E8B8B" />
                           <rect opacity="0.98" x="28" y="182" width="6" height="6" fill="#8E8B8B" />
@@ -503,13 +731,55 @@ export default function Home() {
                           <rect opacity="0.17" x="70" y="182" width="6" height="6" fill="#8E8B8B" />
                           <rect opacity="0.26" x="84" y="182" width="6" height="6" fill="#8E8B8B" />
                           <rect opacity="0.3" x="98" y="182" width="6" height="6" fill="#DAD9D9" />
-                          <rect opacity="0.12" x="112" y="182" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.31" x="126" y="182" width="6" height="6" fill="#BCBBBB" />
-                          <rect opacity="0.62" x="140" y="182" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.74" x="154" y="182" width="6" height="6" fill="#DAD9D9" />
+                          <rect
+                            opacity="0.12"
+                            x="112"
+                            y="182"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
+                          <rect
+                            opacity="0.31"
+                            x="126"
+                            y="182"
+                            width="6"
+                            height="6"
+                            fill="#BCBBBB"
+                          />
+                          <rect
+                            opacity="0.62"
+                            x="140"
+                            y="182"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
+                          <rect
+                            opacity="0.74"
+                            x="154"
+                            y="182"
+                            width="6"
+                            height="6"
+                            fill="#DAD9D9"
+                          />
                           <rect opacity="0.8" x="168" y="182" width="6" height="6" fill="#CFCECD" />
-                          <rect opacity="0.89" x="182" y="182" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.75" x="196" y="182" width="6" height="6" fill="#DAD9D9" />
+                          <rect
+                            opacity="0.89"
+                            x="182"
+                            y="182"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
+                          <rect
+                            opacity="0.75"
+                            x="196"
+                            y="182"
+                            width="6"
+                            height="6"
+                            fill="#DAD9D9"
+                          />
                           <rect opacity="0.1" y="196" width="6" height="6" fill="#CFCECD" />
                           <rect opacity="0.11" x="14" y="196" width="6" height="6" fill="#DAD9D9" />
                           <rect opacity="0.79" x="28" y="196" width="6" height="6" fill="#BCBBBB" />
@@ -518,13 +788,62 @@ export default function Home() {
                           <rect opacity="0.31" x="70" y="196" width="6" height="6" fill="#DAD9D9" />
                           <rect opacity="0.33" x="84" y="196" width="6" height="6" fill="#8E8B8B" />
                           <rect opacity="0.2" x="98" y="196" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.21" x="112" y="196" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.02" x="126" y="196" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.82" x="140" y="196" width="6" height="6" fill="#CFCECD" />
-                          <rect opacity="0.28" x="154" y="196" width="6" height="6" fill="#CFCECD" />
-                          <rect opacity="0.19" x="168" y="196" width="6" height="6" fill="#BCBBBB" />
-                          <rect opacity="0.97" x="182" y="196" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.45" x="196" y="196" width="6" height="6" fill="#DAD9D9" />
+                          <rect
+                            opacity="0.21"
+                            x="112"
+                            y="196"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
+                          <rect
+                            opacity="0.02"
+                            x="126"
+                            y="196"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
+                          <rect
+                            opacity="0.82"
+                            x="140"
+                            y="196"
+                            width="6"
+                            height="6"
+                            fill="#CFCECD"
+                          />
+                          <rect
+                            opacity="0.28"
+                            x="154"
+                            y="196"
+                            width="6"
+                            height="6"
+                            fill="#CFCECD"
+                          />
+                          <rect
+                            opacity="0.19"
+                            x="168"
+                            y="196"
+                            width="6"
+                            height="6"
+                            fill="#BCBBBB"
+                          />
+                          <rect
+                            opacity="0.97"
+                            x="182"
+                            y="196"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
+                          <rect
+                            opacity="0.45"
+                            x="196"
+                            y="196"
+                            width="6"
+                            height="6"
+                            fill="#DAD9D9"
+                          />
                           <rect opacity="0.88" y="210" width="6" height="6" fill="#BCBBBB" />
                           <rect opacity="0.58" x="14" y="210" width="6" height="6" fill="#DAD9D9" />
                           <rect opacity="0.53" x="28" y="210" width="6" height="6" fill="#BCBBBB" />
@@ -533,13 +852,55 @@ export default function Home() {
                           <rect opacity="0.73" x="70" y="210" width="6" height="6" fill="#8E8B8B" />
                           <rect opacity="0.87" x="84" y="210" width="6" height="6" fill="#8E8B8B" />
                           <rect opacity="0.35" x="98" y="210" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.61" x="112" y="210" width="6" height="6" fill="#8E8B8B" />
+                          <rect
+                            opacity="0.61"
+                            x="112"
+                            y="210"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
                           <rect opacity="0.8" x="126" y="210" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.87" x="140" y="210" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.77" x="154" y="210" width="6" height="6" fill="#DAD9D9" />
-                          <rect opacity="0.94" x="168" y="210" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.59" x="182" y="210" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.37" x="196" y="210" width="6" height="6" fill="#8E8B8B" />
+                          <rect
+                            opacity="0.87"
+                            x="140"
+                            y="210"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
+                          <rect
+                            opacity="0.77"
+                            x="154"
+                            y="210"
+                            width="6"
+                            height="6"
+                            fill="#DAD9D9"
+                          />
+                          <rect
+                            opacity="0.94"
+                            x="168"
+                            y="210"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
+                          <rect
+                            opacity="0.59"
+                            x="182"
+                            y="210"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
+                          <rect
+                            opacity="0.37"
+                            x="196"
+                            y="210"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
                           <rect opacity="0.7" y="224" width="6" height="6" fill="#8E8B8B" />
                           <rect opacity="0.72" x="14" y="224" width="6" height="6" fill="#BCBBBB" />
                           <rect opacity="0.95" x="28" y="224" width="6" height="6" fill="#CFCECD" />
@@ -549,12 +910,54 @@ export default function Home() {
                           <rect opacity="0.2" x="84" y="224" width="6" height="6" fill="#BCBBBB" />
                           <rect opacity="0.63" x="98" y="224" width="6" height="6" fill="#CFCECD" />
                           <rect opacity="0.5" x="112" y="224" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.79" x="126" y="224" width="6" height="6" fill="#CFCECD" />
-                          <rect opacity="0.02" x="140" y="224" width="6" height="6" fill="#BCBBBB" />
-                          <rect opacity="0.17" x="154" y="224" width="6" height="6" fill="#DAD9D9" />
-                          <rect opacity="0.99" x="168" y="224" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.82" x="182" y="224" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.28" x="196" y="224" width="6" height="6" fill="#DAD9D9" />
+                          <rect
+                            opacity="0.79"
+                            x="126"
+                            y="224"
+                            width="6"
+                            height="6"
+                            fill="#CFCECD"
+                          />
+                          <rect
+                            opacity="0.02"
+                            x="140"
+                            y="224"
+                            width="6"
+                            height="6"
+                            fill="#BCBBBB"
+                          />
+                          <rect
+                            opacity="0.17"
+                            x="154"
+                            y="224"
+                            width="6"
+                            height="6"
+                            fill="#DAD9D9"
+                          />
+                          <rect
+                            opacity="0.99"
+                            x="168"
+                            y="224"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
+                          <rect
+                            opacity="0.82"
+                            x="182"
+                            y="224"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
+                          <rect
+                            opacity="0.28"
+                            x="196"
+                            y="224"
+                            width="6"
+                            height="6"
+                            fill="#DAD9D9"
+                          />
                           <rect opacity="0.76" y="238" width="6" height="6" fill="#CFCECD" />
                           <rect opacity="0.39" x="14" y="238" width="6" height="6" fill="#DAD9D9" />
                           <rect opacity="0.14" x="28" y="238" width="6" height="6" fill="#8E8B8B" />
@@ -563,13 +966,62 @@ export default function Home() {
                           <rect opacity="0.13" x="70" y="238" width="6" height="6" fill="#8E8B8B" />
                           <rect opacity="0.35" x="84" y="238" width="6" height="6" fill="#CFCECD" />
                           <rect opacity="0.13" x="98" y="238" width="6" height="6" fill="#BCBBBB" />
-                          <rect opacity="0.55" x="112" y="238" width="6" height="6" fill="#CFCECD" />
-                          <rect opacity="0.83" x="126" y="238" width="6" height="6" fill="#DAD9D9" />
-                          <rect opacity="0.86" x="140" y="238" width="6" height="6" fill="#CFCECD" />
-                          <rect opacity="0.63" x="154" y="238" width="6" height="6" fill="#CFCECD" />
-                          <rect opacity="0.38" x="168" y="238" width="6" height="6" fill="#CFCECD" />
-                          <rect opacity="0.57" x="182" y="238" width="6" height="6" fill="#BCBBBB" />
-                          <rect opacity="0.13" x="196" y="238" width="6" height="6" fill="#8E8B8B" />
+                          <rect
+                            opacity="0.55"
+                            x="112"
+                            y="238"
+                            width="6"
+                            height="6"
+                            fill="#CFCECD"
+                          />
+                          <rect
+                            opacity="0.83"
+                            x="126"
+                            y="238"
+                            width="6"
+                            height="6"
+                            fill="#DAD9D9"
+                          />
+                          <rect
+                            opacity="0.86"
+                            x="140"
+                            y="238"
+                            width="6"
+                            height="6"
+                            fill="#CFCECD"
+                          />
+                          <rect
+                            opacity="0.63"
+                            x="154"
+                            y="238"
+                            width="6"
+                            height="6"
+                            fill="#CFCECD"
+                          />
+                          <rect
+                            opacity="0.38"
+                            x="168"
+                            y="238"
+                            width="6"
+                            height="6"
+                            fill="#CFCECD"
+                          />
+                          <rect
+                            opacity="0.57"
+                            x="182"
+                            y="238"
+                            width="6"
+                            height="6"
+                            fill="#BCBBBB"
+                          />
+                          <rect
+                            opacity="0.13"
+                            x="196"
+                            y="238"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
                           <rect opacity="0.9" y="252" width="6" height="6" fill="#8E8B8B" />
                           <rect opacity="0.63" x="14" y="252" width="6" height="6" fill="#CFCECD" />
                           <rect opacity="0.23" x="28" y="252" width="6" height="6" fill="#8E8B8B" />
@@ -578,12 +1030,54 @@ export default function Home() {
                           <rect opacity="0.19" x="70" y="252" width="6" height="6" fill="#DAD9D9" />
                           <rect opacity="0.29" x="84" y="252" width="6" height="6" fill="#8E8B8B" />
                           <rect opacity="0.78" x="98" y="252" width="6" height="6" fill="#BCBBBB" />
-                          <rect opacity="0.14" x="112" y="252" width="6" height="6" fill="#BCBBBB" />
-                          <rect opacity="0.64" x="126" y="252" width="6" height="6" fill="#8E8B8B" />
-                          <rect opacity="0.27" x="140" y="252" width="6" height="6" fill="#CFCECD" />
-                          <rect opacity="0.85" x="154" y="252" width="6" height="6" fill="#DAD9D9" />
-                          <rect opacity="0.02" x="168" y="252" width="6" height="6" fill="#DAD9D9" />
-                          <rect opacity="0.29" x="182" y="252" width="6" height="6" fill="#8E8B8B" />
+                          <rect
+                            opacity="0.14"
+                            x="112"
+                            y="252"
+                            width="6"
+                            height="6"
+                            fill="#BCBBBB"
+                          />
+                          <rect
+                            opacity="0.64"
+                            x="126"
+                            y="252"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
+                          <rect
+                            opacity="0.27"
+                            x="140"
+                            y="252"
+                            width="6"
+                            height="6"
+                            fill="#CFCECD"
+                          />
+                          <rect
+                            opacity="0.85"
+                            x="154"
+                            y="252"
+                            width="6"
+                            height="6"
+                            fill="#DAD9D9"
+                          />
+                          <rect
+                            opacity="0.02"
+                            x="168"
+                            y="252"
+                            width="6"
+                            height="6"
+                            fill="#DAD9D9"
+                          />
+                          <rect
+                            opacity="0.29"
+                            x="182"
+                            y="252"
+                            width="6"
+                            height="6"
+                            fill="#8E8B8B"
+                          />
                           <rect opacity="0.4" x="196" y="252" width="6" height="6" fill="#8E8B8B" />
                         </g>
                       </g>
@@ -592,20 +1086,32 @@ export default function Home() {
                           <rect width="205" height="264" fill="white" />
                         </clipPath>
                         <clipPath id="clip1_236_15557">
-                          <rect width="236" height="264" fill="white" transform="translate(-0.164062)" />
+                          <rect
+                            width="236"
+                            height="264"
+                            fill="white"
+                            transform="translate(-0.164062)"
+                          />
                         </clipPath>
                       </defs>
                     </svg>
                   </div>
                   <span>
-                    <figure>{i18n.t("common.figure", { n: 2 })}</figure> <strong>{config.stats.contributors}</strong>{" "}
+                    <figure>{i18n.t("common.figure", { n: 2 })}</figure>{" "}
+                    <strong>{config.stats.contributors}</strong>{" "}
                     {i18n.t("home.growth.contributors")}
                   </span>
                 </div>
 
                 <div data-component="growth-stat">
                   <div data-component="stat-illustration">
-                    <svg width="205" height="264" viewBox="0 0 205 264" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg
+                      width="205"
+                      height="264"
+                      viewBox="0 0 205 264"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
                       <g opacity="0.5">
                         <path d="M205 0H203.985V264H205V0Z" fill="#8E8B8B" />
                         <path d="M197.896 34H196.881V264H197.896V34Z" fill="#8E8B8B" />
@@ -641,8 +1147,8 @@ export default function Home() {
                     </svg>
                   </div>
                   <span>
-                    <figure>{i18n.t("common.figure", { n: 3 })}</figure> <strong>{config.stats.monthlyUsers}</strong>{" "}
-                    {i18n.t("home.growth.monthlyDevs")}
+                    <figure>{i18n.t("common.figure", { n: 3 })}</figure>{" "}
+                    <strong>{config.stats.monthlyUsers}</strong> {i18n.t("home.growth.monthlyDevs")}
                   </span>
                 </div>
               </div>
@@ -673,14 +1179,16 @@ export default function Home() {
               </li>
               <li>
                 <Faq question={i18n.t("home.faq.q2")}>
-                  {i18n.t("home.faq.a2.before")} <a href={language.route("/docs")}>{i18n.t("home.faq.a2.link")}</a>.
+                  {i18n.t("home.faq.a2.before")}{" "}
+                  <a href={language.route("/docs")}>{i18n.t("home.faq.a2.link")}</a>.
                 </Faq>
               </li>
               <li>
                 <Faq question={i18n.t("home.faq.q3")}>
                   {i18n.t("home.faq.a3.p1")} {i18n.t("home.faq.a3.p2.beforeZen")}{" "}
                   <A href={language.route("/zen")}>{i18n.t("nav.zen")}</A>
-                  {i18n.t("home.faq.a3.p2.afterZen")} {i18n.t("home.faq.a3.p3")} {i18n.t("home.faq.a3.p4.beforeLocal")}{" "}
+                  {i18n.t("home.faq.a3.p2.afterZen")} {i18n.t("home.faq.a3.p3")}{" "}
+                  {i18n.t("home.faq.a3.p4.beforeLocal")}{" "}
                   <a href={language.route("/docs/providers/#lm-studio")} target="_blank">
                     {i18n.t("home.faq.a3.p4.localLink")}
                   </a>
@@ -690,13 +1198,17 @@ export default function Home() {
               <li>
                 <Faq question={i18n.t("home.faq.q4")}>
                   {i18n.t("home.faq.a4.p1")}{" "}
-                  <a href={language.route("/docs/providers/#directory")}>{i18n.t("common.learnMore")}</a>.
+                  <a href={language.route("/docs/providers/#directory")}>
+                    {i18n.t("common.learnMore")}
+                  </a>
+                  .
                 </Faq>
               </li>
               <li>
                 <Faq question={i18n.t("home.faq.q5")}>
                   {i18n.t("home.faq.a5.beforeDesktop")}{" "}
-                  <a href={language.route("/download")}>{i18n.t("home.faq.a5.desktop")}</a> {i18n.t("home.faq.a5.and")}{" "}
+                  <a href={language.route("/download")}>{i18n.t("home.faq.a5.desktop")}</a>{" "}
+                  {i18n.t("home.faq.a5.and")}{" "}
                   <a href={language.route("/docs/web")}>{i18n.t("home.faq.a5.web")}</a>!
                 </Faq>
               </li>
@@ -706,9 +1218,14 @@ export default function Home() {
               <li>
                 <Faq question={i18n.t("home.faq.q7")}>
                   {i18n.t("home.faq.a7.p1")} {i18n.t("home.faq.a7.p2.beforeModels")}{" "}
-                  <a href={language.route("/docs/zen/#privacy")}>{i18n.t("home.faq.a7.p2.modelsLink")}</a>{" "}
+                  <a href={language.route("/docs/zen/#privacy")}>
+                    {i18n.t("home.faq.a7.p2.modelsLink")}
+                  </a>{" "}
                   {i18n.t("home.faq.a7.p2.and")}{" "}
-                  <a href={language.route("/docs/share/#privacy")}>{i18n.t("home.faq.a7.p2.shareLink")}</a>.
+                  <a href={language.route("/docs/share/#privacy")}>
+                    {i18n.t("home.faq.a7.p2.shareLink")}
+                  </a>
+                  .
                 </Faq>
               </li>
               <li>
@@ -733,7 +1250,13 @@ export default function Home() {
               <p>{i18n.t("home.zenCta.body")}</p>
               <div data-slot="model-logos">
                 <div>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <mask
                       id="mask0_79_128586"
                       style="mask-type:luminance"
@@ -754,8 +1277,17 @@ export default function Home() {
                   </svg>
                 </div>
                 <div>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M13.7891 3.93164L20.2223 20.0677H23.7502L17.317 3.93164H13.7891Z" fill="currentColor" />
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M13.7891 3.93164L20.2223 20.0677H23.7502L17.317 3.93164H13.7891Z"
+                      fill="currentColor"
+                    />
                     <path
                       d="M6.32538 13.6824L8.52662 8.01177L10.7279 13.6824H6.32538ZM6.68225 3.93164L0.25 20.0677H3.84652L5.16202 16.6791H11.8914L13.2067 20.0677H16.8033L10.371 3.93164H6.68225Z"
                       fill="currentColor"
@@ -774,7 +1306,13 @@ export default function Home() {
                   </svg>
                 </div>
                 <div>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <path
                       d="M9.16861 16.0529L17.2018 9.85156C17.5957 9.54755 18.1586 9.66612 18.3463 10.1384C19.3339 12.6288 18.8926 15.6217 16.9276 17.6766C14.9626 19.7314 12.2285 20.1821 9.72948 19.1557L6.9995 20.4775C10.9151 23.2763 15.6699 22.5841 18.6411 19.4749C20.9979 17.0103 21.7278 13.6508 21.0453 10.6214L21.0515 10.6278C20.0617 6.17736 21.2948 4.39847 23.8207 0.760904C23.8804 0.674655 23.9402 0.588405 24 0.5L20.6762 3.97585V3.96506L9.16658 16.0551"
                       fill="currentColor"
@@ -786,7 +1324,13 @@ export default function Home() {
                   </svg>
                 </div>
                 <div>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <path
                       fill-rule="evenodd"
                       clip-rule="evenodd"
@@ -796,7 +1340,13 @@ export default function Home() {
                   </svg>
                 </div>
                 <div>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <path
                       d="M12.6241 11.346L20.3848 3.44816C20.5309 3.29931 20.4487 3 20.2601 3H16.0842C16.0388 3 15.9949 3.01897 15.9594 3.05541L7.59764 11.5629C7.46721 11.6944 7.27446 11.5771 7.27446 11.3666V3.25183C7.27446 3.11242 7.18515 3 7.07594 3H4.19843C4.08932 3 4 3.11242 4 3.25183V20.7482C4 20.8876 4.08932 21 4.19843 21H7.07594C7.18515 21 7.27446 20.8876 7.27446 20.7482V17.1834C7.27446 17.1073 7.30136 17.0344 7.34815 16.987L9.94075 14.3486C10.0031 14.2853 10.0895 14.2757 10.159 14.3232L17.0934 19.5573C18.2289 20.3412 19.4975 20.8226 20.786 20.9652C20.9008 20.9778 21 20.8606 21 20.7133V17.3559C21 17.2276 20.9249 17.1232 20.8243 17.1073C20.0659 16.9853 19.326 16.6845 18.6569 16.222L12.6538 11.764C12.5291 11.6785 12.5135 11.4584 12.6241 11.346Z"
                       fill="currentColor"
@@ -804,7 +1354,13 @@ export default function Home() {
                   </svg>
                 </div>
                 <div>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <path
                       d="M12.0962 3L10.0998 5.6577H1.59858L3.59417 3H12.0972H12.0962ZM22.3162 18.3432L20.3215 21H11.8497L13.8425 18.3432H22.3162ZM23 3L9.492 21H1L14.508 3H23Z"
                       fill="currentColor"
@@ -814,7 +1370,13 @@ export default function Home() {
               </div>
               <A href={language.route("/zen")}>
                 <span>{i18n.t("home.zenCta.link")} </span>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path
                     d="M6.5 12L17 12M13 16.5L17.5 12L13 7.5"
                     stroke="currentColor"
@@ -833,5 +1395,5 @@ export default function Home() {
       </div>
       <Legal />
     </main>
-  )
+  );
 }

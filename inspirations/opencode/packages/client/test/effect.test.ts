@@ -1,19 +1,28 @@
-import { expect, test } from "bun:test"
-import { DateTime, Effect, Stream } from "effect"
-import { HttpClient, HttpClientResponse } from "effect/unstable/http"
-import { AbsolutePath, Agent, Location, Model, OpenCode, Prompt, Session, SessionMessage } from "../src/effect"
+import { expect, test } from "bun:test";
+import { DateTime, Effect, Stream } from "effect";
+import { HttpClient, HttpClientResponse } from "effect/unstable/http";
+import {
+  AbsolutePath,
+  Agent,
+  Location,
+  Model,
+  OpenCode,
+  Prompt,
+  Session,
+  SessionMessage,
+} from "../src/effect";
 
 test("sessions.get returns the decoded Effect projection", async () => {
   const httpClient = HttpClient.make((request) =>
     Effect.succeed(HttpClientResponse.fromWeb(request, Response.json(session))),
-  )
+  );
   const result = await Effect.gen(function* () {
-    const client = yield* OpenCode.make({ baseUrl: "http://localhost:3000" })
-    return yield* client.sessions.get({ sessionID: Session.ID.make("ses_test") })
-  }).pipe(Effect.provideService(HttpClient.HttpClient, httpClient), Effect.runPromise)
+    const client = yield* OpenCode.make({ baseUrl: "http://localhost:3000" });
+    return yield* client.sessions.get({ sessionID: Session.ID.make("ses_test") });
+  }).pipe(Effect.provideService(HttpClient.HttpClient, httpClient), Effect.runPromise);
 
-  expect(DateTime.toEpochMillis(result.time.created)).toBe(1_717_171_717_000)
-})
+  expect(DateTime.toEpochMillis(result.time.created)).toBe(1_717_171_717_000);
+});
 
 test("events.subscribe exposes and decodes the native Effect event stream", async () => {
   const httpClient = HttpClient.make((request) =>
@@ -27,18 +36,21 @@ test("events.subscribe exposes and decodes the native Effect event stream", asyn
         ),
       ),
     ),
-  )
+  );
   const events = await Effect.gen(function* () {
-    const client = yield* OpenCode.make({ baseUrl: "http://localhost:3000" })
-    return yield* client.events.subscribe().pipe(Stream.runCollect)
-  }).pipe(Effect.provideService(HttpClient.HttpClient, httpClient), Effect.runPromise)
+    const client = yield* OpenCode.make({ baseUrl: "http://localhost:3000" });
+    return yield* client.events.subscribe().pipe(Stream.runCollect);
+  }).pipe(Effect.provideService(HttpClient.HttpClient, httpClient), Effect.runPromise);
 
-  expect(Array.from(events).map((event) => event.type)).toEqual(["server.connected", "session.next.model.switched"])
-  const durable = events[1]
-  if (durable?.type !== "session.next.model.switched") throw new Error("Expected model event")
-  expect(DateTime.toEpochMillis(durable.data.timestamp)).toBe(1_717_171_717_000)
-  expect(durable.durable).toEqual({ aggregateID: "ses_test", seq: 1, version: 1 })
-})
+  expect(Array.from(events).map((event) => event.type)).toEqual([
+    "server.connected",
+    "session.next.model.switched",
+  ]);
+  const durable = events[1];
+  if (durable?.type !== "session.next.model.switched") throw new Error("Expected model event");
+  expect(DateTime.toEpochMillis(durable.data.timestamp)).toBe(1_717_171_717_000);
+  expect(durable.durable).toEqual({ aggregateID: "ses_test", seq: 1, version: 1 });
+});
 
 test("events.subscribe terminates on Effect protocol decode failures", async () => {
   const httpClient = HttpClient.make((request) =>
@@ -50,20 +62,20 @@ test("events.subscribe terminates on Effect protocol decode failures", async () 
         }),
       ),
     ),
-  )
+  );
   const error = await Effect.gen(function* () {
-    const client = yield* OpenCode.make({ baseUrl: "http://localhost:3000" })
-    return yield* client.events.subscribe().pipe(Stream.runCollect, Effect.flip)
-  }).pipe(Effect.provideService(HttpClient.HttpClient, httpClient), Effect.runPromise)
+    const client = yield* OpenCode.make({ baseUrl: "http://localhost:3000" });
+    return yield* client.events.subscribe().pipe(Stream.runCollect, Effect.flip);
+  }).pipe(Effect.provideService(HttpClient.HttpClient, httpClient), Effect.runPromise);
 
-  expect(error._tag).toBe("ClientError")
-})
+  expect(error._tag).toBe("ClientError");
+});
 
 test("session methods retain decoded Effect inputs and outputs", async () => {
-  const historyQueries: Array<Record<string, string>> = []
-  let historyPage = 0
+  const historyQueries: Array<Record<string, string>> = [];
+  let historyPage = 0;
   const httpClient = HttpClient.make((request) => {
-    const url = request.url
+    const url = request.url;
     if (url.includes("/event")) {
       return Effect.succeed(
         HttpClientResponse.fromWeb(
@@ -72,104 +84,121 @@ test("session methods retain decoded Effect inputs and outputs", async () => {
             headers: { "content-type": "text/event-stream" },
           }),
         ),
-      )
+      );
     }
     if (url.includes("/history")) {
-      historyPage++
-      historyQueries.push(Object.fromEntries(request.urlParams.params))
+      historyPage++;
+      historyQueries.push(Object.fromEntries(request.urlParams.params));
       return Effect.succeed(
         HttpClientResponse.fromWeb(
           request,
           Response.json(
-            historyPage === 1 ? { data: [modelSwitchedEvent], hasMore: true } : { data: [], hasMore: false },
+            historyPage === 1
+              ? { data: [modelSwitchedEvent], hasMore: true }
+              : { data: [], hasMore: false },
           ),
         ),
-      )
+      );
     }
     if (url.includes("/prompt")) {
-      return Effect.succeed(HttpClientResponse.fromWeb(request, Response.json(admission)))
+      return Effect.succeed(HttpClientResponse.fromWeb(request, Response.json(admission)));
     }
     if (url.includes("/context")) {
-      return Effect.succeed(HttpClientResponse.fromWeb(request, Response.json({ data: [] })))
+      return Effect.succeed(HttpClientResponse.fromWeb(request, Response.json({ data: [] })));
     }
     if (url.includes("/message/")) {
-      return Effect.succeed(HttpClientResponse.fromWeb(request, Response.json({ data: modelSwitchedMessage })))
+      return Effect.succeed(
+        HttpClientResponse.fromWeb(request, Response.json({ data: modelSwitchedMessage })),
+      );
     }
     if (url.endsWith("/api/session/active")) {
       return Effect.succeed(
-        HttpClientResponse.fromWeb(request, Response.json({ data: { ses_test: { type: "running" } } })),
-      )
+        HttpClientResponse.fromWeb(
+          request,
+          Response.json({ data: { ses_test: { type: "running" } } }),
+        ),
+      );
     }
     if (request.method === "POST" && url.endsWith("/api/session")) {
-      return Effect.succeed(HttpClientResponse.fromWeb(request, Response.json(session)))
+      return Effect.succeed(HttpClientResponse.fromWeb(request, Response.json(session)));
     }
     if (request.method === "POST") {
-      return Effect.succeed(HttpClientResponse.fromWeb(request, new Response(null, { status: 204 })))
+      return Effect.succeed(
+        HttpClientResponse.fromWeb(request, new Response(null, { status: 204 })),
+      );
     }
     return Effect.succeed(
-      HttpClientResponse.fromWeb(request, Response.json({ data: [session.data], cursor: { next: "next" } })),
-    )
-  })
+      HttpClientResponse.fromWeb(
+        request,
+        Response.json({ data: [session.data], cursor: { next: "next" } }),
+      ),
+    );
+  });
   const result = await Effect.gen(function* () {
-    const client = yield* OpenCode.make({ baseUrl: "http://localhost:3000" })
-    const page = yield* client.sessions.list({ limit: 10 })
-    const active = yield* client.sessions.active()
+    const client = yield* OpenCode.make({ baseUrl: "http://localhost:3000" });
+    const page = yield* client.sessions.list({ limit: 10 });
+    const active = yield* client.sessions.active();
     const created = yield* client.sessions.create({
       location: Location.Ref.make({ directory: AbsolutePath.make("/tmp/project") }),
-    })
-    yield* client.sessions.switchAgent({ sessionID: Session.ID.make("ses_test"), agent: Agent.ID.make("build") })
+    });
+    yield* client.sessions.switchAgent({
+      sessionID: Session.ID.make("ses_test"),
+      agent: Agent.ID.make("build"),
+    });
     yield* client.sessions.switchModel({
       sessionID: Session.ID.make("ses_test"),
       model: Model.Ref.make({ id: "claude", providerID: "anthropic" }),
-    })
+    });
     const admitted = yield* client.sessions.prompt({
       sessionID: Session.ID.make("ses_test"),
       prompt: Prompt.make({ text: "Hello" }),
       resume: false,
-    })
-    yield* client.sessions.compact({ sessionID: Session.ID.make("ses_test") })
-    yield* client.sessions.wait({ sessionID: Session.ID.make("ses_test") })
-    const context = yield* client.sessions.context({ sessionID: Session.ID.make("ses_test") })
+    });
+    yield* client.sessions.compact({ sessionID: Session.ID.make("ses_test") });
+    yield* client.sessions.wait({ sessionID: Session.ID.make("ses_test") });
+    const context = yield* client.sessions.context({ sessionID: Session.ID.make("ses_test") });
     const history = yield* client.sessions.history({
       sessionID: Session.ID.make("ses_test"),
       after: 0,
       limit: 1,
-    })
+    });
     const historyNext = history.hasMore
       ? yield* client.sessions.history({
           sessionID: Session.ID.make("ses_test"),
           after: history.data.at(-1)?.durable?.seq,
           limit: 2,
         })
-      : undefined
+      : undefined;
     const events = yield* client.sessions
       .events({ sessionID: Session.ID.make("ses_test"), after: 0 })
-      .pipe(Stream.runCollect)
-    yield* client.sessions.interrupt({ sessionID: Session.ID.make("ses_test") })
+      .pipe(Stream.runCollect);
+    yield* client.sessions.interrupt({ sessionID: Session.ID.make("ses_test") });
     const message = yield* client.sessions.message({
       sessionID: Session.ID.make("ses_test"),
       messageID: SessionMessage.ID.make("msg_model"),
-    })
-    return { page, active, created, admitted, context, history, historyNext, events, message }
-  }).pipe(Effect.provideService(HttpClient.HttpClient, httpClient), Effect.runPromise)
+    });
+    return { page, active, created, admitted, context, history, historyNext, events, message };
+  }).pipe(Effect.provideService(HttpClient.HttpClient, httpClient), Effect.runPromise);
 
-  expect(DateTime.toEpochMillis(result.page.data[0].time.created)).toBe(1_717_171_717_000)
-  expect(result.active).toEqual({ ses_test: { type: "running" } })
-  expect(Object.getPrototypeOf(result.page.data[0])).toBe(Object.prototype)
-  expect(Object.getPrototypeOf(result.created)).toBe(Object.prototype)
-  expect(result.created.id).toBe("ses_test")
-  expect(Object.getPrototypeOf(result.admitted)).toBe(Object.prototype)
-  expect(Object.getPrototypeOf(result.admitted.prompt)).toBe(Object.prototype)
-  expect(DateTime.toEpochMillis(result.admitted.timeCreated)).toBe(1_717_171_717_000)
-  expect(result.context).toEqual([])
-  expect(DateTime.toEpochMillis(result.history.data[0].data.timestamp)).toBe(1_717_171_717_000)
-  expect(result.history).toEqual(expect.objectContaining({ hasMore: true }))
-  expect(result.historyNext).toEqual({ data: [], hasMore: false })
-  expect(historyQueries[0]).toEqual({ limit: "1", after: "0" })
-  expect(historyQueries[1]).toEqual({ limit: "2", after: "1" })
-  expect(DateTime.toEpochMillis(result.events[0].data.timestamp)).toBe(1_717_171_717_000)
-  expect(result.message).toEqual(expect.objectContaining({ id: "msg_model", type: "model-switched" }))
-})
+  expect(DateTime.toEpochMillis(result.page.data[0].time.created)).toBe(1_717_171_717_000);
+  expect(result.active).toEqual({ ses_test: { type: "running" } });
+  expect(Object.getPrototypeOf(result.page.data[0])).toBe(Object.prototype);
+  expect(Object.getPrototypeOf(result.created)).toBe(Object.prototype);
+  expect(result.created.id).toBe("ses_test");
+  expect(Object.getPrototypeOf(result.admitted)).toBe(Object.prototype);
+  expect(Object.getPrototypeOf(result.admitted.prompt)).toBe(Object.prototype);
+  expect(DateTime.toEpochMillis(result.admitted.timeCreated)).toBe(1_717_171_717_000);
+  expect(result.context).toEqual([]);
+  expect(DateTime.toEpochMillis(result.history.data[0].data.timestamp)).toBe(1_717_171_717_000);
+  expect(result.history).toEqual(expect.objectContaining({ hasMore: true }));
+  expect(result.historyNext).toEqual({ data: [], hasMore: false });
+  expect(historyQueries[0]).toEqual({ limit: "1", after: "0" });
+  expect(historyQueries[1]).toEqual({ limit: "2", after: "1" });
+  expect(DateTime.toEpochMillis(result.events[0].data.timestamp)).toBe(1_717_171_717_000);
+  expect(result.message).toEqual(
+    expect.objectContaining({ id: "msg_model", type: "model-switched" }),
+  );
+});
 
 test("sessions.history retains the typed SessionNotFoundError", async () => {
   const httpClient = HttpClient.make((request) =>
@@ -182,18 +211,18 @@ test("sessions.history retains the typed SessionNotFoundError", async () => {
         ),
       ),
     ),
-  )
+  );
   const error = await Effect.gen(function* () {
-    const client = yield* OpenCode.make({ baseUrl: "http://localhost:3000" })
+    const client = yield* OpenCode.make({ baseUrl: "http://localhost:3000" });
     return yield* client.sessions
       .history({
         sessionID: Session.ID.make("ses_missing"),
       })
-      .pipe(Effect.flip)
-  }).pipe(Effect.provideService(HttpClient.HttpClient, httpClient), Effect.runPromise)
+      .pipe(Effect.flip);
+  }).pipe(Effect.provideService(HttpClient.HttpClient, httpClient), Effect.runPromise);
 
-  expect(error._tag).toBe("SessionNotFoundError")
-})
+  expect(error._tag).toBe("SessionNotFoundError");
+});
 
 const session = {
   data: {
@@ -213,7 +242,7 @@ const session = {
     title: "Test",
     location: { directory: "/tmp/project" },
   },
-}
+};
 
 const admission = {
   data: {
@@ -224,14 +253,14 @@ const admission = {
     delivery: "steer",
     timeCreated: 1_717_171_717_000,
   },
-}
+};
 
 const modelSwitchedMessage = {
   id: "msg_model",
   type: "model-switched",
   time: { created: 1_717_171_717_000 },
   model: { id: "claude", providerID: "anthropic" },
-}
+};
 
 const modelSwitchedEvent = {
   id: "evt_model",
@@ -243,4 +272,4 @@ const modelSwitchedEvent = {
     messageID: "msg_model",
     model: { id: "claude", providerID: "anthropic" },
   },
-}
+};

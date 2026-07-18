@@ -1,16 +1,22 @@
-import { Checkbox as Kobalte } from "@kobalte/core/checkbox"
-import { Show, splitProps, type JSX } from "solid-js"
-import type { ComponentProps } from "solid-js"
-import "./checkbox-v2.css"
+import { Checkbox as Kobalte } from "@kobalte/core/checkbox";
+import { Show, splitProps, type JSX } from "solid-js";
+import type { ComponentProps } from "solid-js";
+import "./checkbox-v2.css";
 
 export interface CheckboxV2Props extends ComponentProps<typeof Kobalte> {
-  label: JSX.Element
-  description?: JSX.Element
-  hideLabel?: boolean
+  label: JSX.Element;
+  description?: JSX.Element;
+  hideLabel?: boolean;
 }
 
 export function CheckboxV2(props: CheckboxV2Props) {
-  const [local, others] = splitProps(props, ["class", "classList", "label", "description", "hideLabel"])
+  const [local, others] = splitProps(props, [
+    "class",
+    "classList",
+    "label",
+    "description",
+    "hideLabel",
+  ]);
   return (
     <Kobalte
       {...others}
@@ -34,7 +40,11 @@ export function CheckboxV2(props: CheckboxV2Props) {
                 xmlns="http://www.w3.org/2000/svg"
                 aria-hidden="true"
               >
-                <path d="M3.53564 8.17857L6.39279 11.75L12.4642 4.25" stroke="#FAFAFA" stroke-width="1" />
+                <path
+                  d="M3.53564 8.17857L6.39279 11.75L12.4642 4.25"
+                  stroke="#FAFAFA"
+                  stroke-width="1"
+                />
               </svg>
               <svg
                 class="checkbox-v2-icon checkbox-v2-icon--minus"
@@ -61,5 +71,5 @@ export function CheckboxV2(props: CheckboxV2Props) {
       </div>
       <Kobalte.ErrorMessage data-slot="checkbox-v2-error" />
     </Kobalte>
-  )
+  );
 }

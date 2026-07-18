@@ -18,14 +18,18 @@ test("#5231: assistant-text-ending request never leaks the literal 'Continue' fi
       ],
     },
     false,
-    null
+    null,
   );
 
   const synthesized = result.conversationState.currentMessage.userInputMessage.content;
-  assert.match(synthesized, /\n\n\.\.\.$/, "synthesized trailing turn must end with the neutral filler");
+  assert.match(
+    synthesized,
+    /\n\n\.\.\.$/,
+    "synthesized trailing turn must end with the neutral filler",
+  );
   assert.ok(
     !/\bContinue\b/.test(synthesized),
-    `synthesized trailing turn must not contain the literal "Continue", got: ${synthesized}`
+    `synthesized trailing turn must not contain the literal "Continue", got: ${synthesized}`,
   );
 });
 
@@ -49,16 +53,16 @@ test("#5231: a trailing tool-result turn is promoted as-is, NOT replaced by the 
       ],
     },
     false,
-    null
+    null,
   );
 
   const current = result.conversationState.currentMessage.userInputMessage;
   assert.ok(
     !/\.\.\.$/.test(current.content) && !/\bContinue\b/.test(current.content),
-    `trailing tool-result turn must be promoted as-is, got synthesized filler: ${current.content}`
+    `trailing tool-result turn must be promoted as-is, got synthesized filler: ${current.content}`,
   );
   assert.ok(
     (current.userInputMessageContext?.toolResults?.length ?? 0) > 0,
-    "promoted trailing turn must carry the tool results"
+    "promoted trailing turn must carry the tool results",
   );
 });

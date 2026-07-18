@@ -9,47 +9,47 @@ import {
   expect,
   spyOn,
   test,
-} from 'bun:test';
-import { JSDOM } from 'jsdom';
-import { act, StrictMode, useState } from 'react';
-import { createRoot, hydrateRoot, type Root } from 'react-dom/client';
-import { renderToString } from 'react-dom/server';
+} from "bun:test";
+import { JSDOM } from "jsdom";
+import { act, StrictMode, useState } from "react";
+import { createRoot, hydrateRoot, type Root } from "react-dom/client";
+import { renderToString } from "react-dom/server";
 
-let FileTreeReact: typeof import('../src/react').FileTree;
-let FileTreeClass: typeof import('../src/render/FileTree').FileTree;
-let preloadFileTree: typeof import('../src/render/FileTree').preloadFileTree;
-let useFileTree: typeof import('../src/react').useFileTree;
-let useFileTreeSearch: typeof import('../src/react').useFileTreeSearch;
-let useFileTreeSelection: typeof import('../src/react').useFileTreeSelection;
+let FileTreeReact: typeof import("../src/react").FileTree;
+let FileTreeClass: typeof import("../src/render/FileTree").FileTree;
+let preloadFileTree: typeof import("../src/render/FileTree").preloadFileTree;
+let useFileTree: typeof import("../src/react").useFileTree;
+let useFileTreeSearch: typeof import("../src/react").useFileTreeSearch;
+let useFileTreeSelection: typeof import("../src/react").useFileTreeSelection;
 
-const TAG = 'file-tree-container';
+const TAG = "file-tree-container";
 const originalGlobals = {
-  CSSStyleSheet: Reflect.get(globalThis, 'CSSStyleSheet'),
-  customElements: Reflect.get(globalThis, 'customElements'),
-  document: Reflect.get(globalThis, 'document'),
-  Event: Reflect.get(globalThis, 'Event'),
-  HTMLElement: Reflect.get(globalThis, 'HTMLElement'),
-  HTMLButtonElement: Reflect.get(globalThis, 'HTMLButtonElement'),
-  HTMLDivElement: Reflect.get(globalThis, 'HTMLDivElement'),
-  HTMLInputElement: Reflect.get(globalThis, 'HTMLInputElement'),
-  HTMLStyleElement: Reflect.get(globalThis, 'HTMLStyleElement'),
-  HTMLTemplateElement: Reflect.get(globalThis, 'HTMLTemplateElement'),
-  MutationObserver: Reflect.get(globalThis, 'MutationObserver'),
-  navigator: Reflect.get(globalThis, 'navigator'),
-  Node: Reflect.get(globalThis, 'Node'),
-  ResizeObserver: Reflect.get(globalThis, 'ResizeObserver'),
-  SVGElement: Reflect.get(globalThis, 'SVGElement'),
-  ShadowRoot: Reflect.get(globalThis, 'ShadowRoot'),
-  window: Reflect.get(globalThis, 'window'),
+  CSSStyleSheet: Reflect.get(globalThis, "CSSStyleSheet"),
+  customElements: Reflect.get(globalThis, "customElements"),
+  document: Reflect.get(globalThis, "document"),
+  Event: Reflect.get(globalThis, "Event"),
+  HTMLElement: Reflect.get(globalThis, "HTMLElement"),
+  HTMLButtonElement: Reflect.get(globalThis, "HTMLButtonElement"),
+  HTMLDivElement: Reflect.get(globalThis, "HTMLDivElement"),
+  HTMLInputElement: Reflect.get(globalThis, "HTMLInputElement"),
+  HTMLStyleElement: Reflect.get(globalThis, "HTMLStyleElement"),
+  HTMLTemplateElement: Reflect.get(globalThis, "HTMLTemplateElement"),
+  MutationObserver: Reflect.get(globalThis, "MutationObserver"),
+  navigator: Reflect.get(globalThis, "navigator"),
+  Node: Reflect.get(globalThis, "Node"),
+  ResizeObserver: Reflect.get(globalThis, "ResizeObserver"),
+  SVGElement: Reflect.get(globalThis, "SVGElement"),
+  ShadowRoot: Reflect.get(globalThis, "ShadowRoot"),
+  window: Reflect.get(globalThis, "window"),
   IS_REACT_ACT_ENVIRONMENT: Reflect.get(
     globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean },
-    'IS_REACT_ACT_ENVIRONMENT'
+    "IS_REACT_ACT_ENVIRONMENT",
   ),
 };
 
-const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
+const dom = new JSDOM("<!DOCTYPE html><html><body></body></html>", {
   pretendToBeVisual: true,
-  url: 'http://localhost',
+  url: "http://localhost",
 });
 
 class MockCSSStyleSheet {
@@ -86,7 +86,7 @@ beforeAll(async () => {
     constructor() {
       super();
       if (this.shadowRoot == null) {
-        this.attachShadow({ mode: 'open' });
+        this.attachShadow({ mode: "open" });
       }
     }
   }
@@ -95,26 +95,23 @@ beforeAll(async () => {
     dom.window.customElements.define(TAG, FileTreeContainerElement);
   }
 
-  (
-    globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }
-  ).IS_REACT_ACT_ENVIRONMENT = true;
+  (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
 
   ({
     FileTree: FileTreeReact,
     useFileTree,
     useFileTreeSearch,
     useFileTreeSelection,
-  } = await import('../src/react'));
-  ({ FileTree: FileTreeClass, preloadFileTree } =
-    await import('../src/render/FileTree'));
+  } = await import("../src/react"));
+  ({ FileTree: FileTreeClass, preloadFileTree } = await import("../src/render/FileTree"));
 });
 
 beforeEach(() => {
-  document.body.innerHTML = '';
+  document.body.innerHTML = "";
 });
 
 afterEach(() => {
-  document.body.innerHTML = '';
+  document.body.innerHTML = "";
 });
 
 afterAll(() => {
@@ -136,7 +133,7 @@ async function flushDom(): Promise<void> {
 }
 
 function dispatchClick(target: Element): void {
-  target.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }));
+  target.dispatchEvent(new dom.window.MouseEvent("click", { bubbles: true }));
 }
 
 async function actAndFlush(callback: () => void): Promise<void> {
@@ -149,7 +146,7 @@ async function actAndFlush(callback: () => void): Promise<void> {
 function getHost(container: HTMLElement): HTMLElement {
   const host = container.querySelector(TAG);
   if (!(host instanceof dom.window.HTMLElement)) {
-    throw new Error('expected rendered file-tree host');
+    throw new Error("expected rendered file-tree host");
   }
 
   return host;
@@ -166,17 +163,17 @@ function getItemButton(host: HTMLElement, path: string): HTMLButtonElement {
 
 const BASE_OPTIONS = {
   flattenEmptyDirectories: true,
-  initialExpansion: 'open' as const,
-  paths: ['README.md', 'src/index.ts'],
+  initialExpansion: "open" as const,
+  paths: ["README.md", "src/index.ts"],
   initialVisibleRowCount: 120 / 30,
 };
 
-describe('file-tree React lane', () => {
+describe("file-tree React lane", () => {
   let container: HTMLElement;
   let root: Root;
 
   beforeEach(() => {
-    container = document.createElement('div');
+    container = document.createElement("div");
     document.body.appendChild(container);
     root = createRoot(container);
   });
@@ -188,7 +185,7 @@ describe('file-tree React lane', () => {
     container.remove();
   });
 
-  test('renders a model-first tree and applies model mutations from React event handlers', async () => {
+  test("renders a model-first tree and applies model mutations from React event handlers", async () => {
     function Harness() {
       const { model } = useFileTree(BASE_OPTIONS);
 
@@ -197,7 +194,7 @@ describe('file-tree React lane', () => {
           <button
             data-test-add
             onClick={() => {
-              model.add('src/utils.ts');
+              model.add("src/utils.ts");
             }}
             type="button"
           >
@@ -213,14 +210,12 @@ describe('file-tree React lane', () => {
     });
 
     const host = getHost(container);
-    expect(getItemButton(host, 'README.md')).not.toBeNull();
-    expect(
-      host.shadowRoot?.querySelector('[data-item-path="src/utils.ts"]')
-    ).toBeNull();
+    expect(getItemButton(host, "README.md")).not.toBeNull();
+    expect(host.shadowRoot?.querySelector('[data-item-path="src/utils.ts"]')).toBeNull();
 
-    const addButtonNode = container.querySelector('[data-test-add]');
+    const addButtonNode = container.querySelector("[data-test-add]");
     if (!(addButtonNode instanceof dom.window.HTMLButtonElement)) {
-      throw new Error('expected add button');
+      throw new Error("expected add button");
     }
 
     const addButton = addButtonNode;
@@ -229,12 +224,12 @@ describe('file-tree React lane', () => {
       dispatchClick(addButton);
     });
 
-    expect(getItemButton(host, 'src/utils.ts')).not.toBeNull();
+    expect(getItemButton(host, "src/utils.ts")).not.toBeNull();
   });
 
-  test('useFileTree cleans up the model when its owner unmounts', async () => {
+  test("useFileTree cleans up the model when its owner unmounts", async () => {
     let capturedModel: { cleanUp(): void } | null = null;
-    const localContainer = document.createElement('div');
+    const localContainer = document.createElement("div");
     document.body.appendChild(localContainer);
     const localRoot = createRoot(localContainer);
 
@@ -251,10 +246,10 @@ describe('file-tree React lane', () => {
       });
 
       if (capturedModel == null) {
-        throw new Error('expected model from useFileTree');
+        throw new Error("expected model from useFileTree");
       }
 
-      const cleanUpSpy = spyOn(capturedModel, 'cleanUp');
+      const cleanUpSpy = spyOn(capturedModel, "cleanUp");
       act(() => {
         localRoot.unmount();
       });
@@ -267,14 +262,12 @@ describe('file-tree React lane', () => {
     }
   });
 
-  test('keeps the model subscribed through StrictMode effect replay', async () => {
-    let capturedModel: InstanceType<
-      typeof import('../src/render/FileTree').FileTree
-    > | null = null;
+  test("keeps the model subscribed through StrictMode effect replay", async () => {
+    let capturedModel: InstanceType<typeof import("../src/render/FileTree").FileTree> | null = null;
     const options = {
       flattenEmptyDirectories: false,
-      initialExpandedPaths: ['src/'],
-      paths: ['README.md', 'src/index.ts', 'src/lib.ts'],
+      initialExpandedPaths: ["src/"],
+      paths: ["README.md", "src/index.ts", "src/lib.ts"],
       initialVisibleRowCount: 120 / 30,
     } as const;
 
@@ -288,48 +281,42 @@ describe('file-tree React lane', () => {
       root.render(
         <StrictMode>
           <Harness />
-        </StrictMode>
+        </StrictMode>,
       );
     });
 
     const host = getHost(container);
-    expect(getItemButton(host, 'src/').getAttribute('aria-expanded')).toBe(
-      'true'
-    );
-    expect(getItemButton(host, 'src/index.ts')).not.toBeNull();
+    expect(getItemButton(host, "src/").getAttribute("aria-expanded")).toBe("true");
+    expect(getItemButton(host, "src/index.ts")).not.toBeNull();
 
     const model = capturedModel as {
-      getItem(path: string): import('../src').FileTreeItemHandle | null;
+      getItem(path: string): import("../src").FileTreeItemHandle | null;
     } | null;
     if (model == null) {
-      throw new Error('expected model from useFileTree');
+      throw new Error("expected model from useFileTree");
     }
 
-    const sourceDirectory = model.getItem('src/');
+    const sourceDirectory = model.getItem("src/");
     if (
       sourceDirectory == null ||
       sourceDirectory.isDirectory() !== true ||
-      !('collapse' in sourceDirectory)
+      !("collapse" in sourceDirectory)
     ) {
-      throw new Error('expected src directory item');
+      throw new Error("expected src directory item");
     }
 
     await actAndFlush(() => {
       sourceDirectory.collapse();
     });
 
-    expect(getItemButton(host, 'src/').getAttribute('aria-expanded')).toBe(
-      'false'
-    );
-    expect(
-      host.shadowRoot?.querySelector('[data-item-path="src/index.ts"]')
-    ).toBeNull();
+    expect(getItemButton(host, "src/").getAttribute("aria-expanded")).toBe("false");
+    expect(host.shadowRoot?.querySelector('[data-item-path="src/index.ts"]')).toBeNull();
   });
 
-  test('can remount the same model instance after unmount', async () => {
+  test("can remount the same model instance after unmount", async () => {
     const model = new FileTreeClass(BASE_OPTIONS);
-    const firstContainer = document.createElement('div');
-    const secondContainer = document.createElement('div');
+    const firstContainer = document.createElement("div");
+    const secondContainer = document.createElement("div");
     document.body.append(firstContainer, secondContainer);
     const firstRoot = createRoot(firstContainer);
     const secondRoot = createRoot(secondContainer);
@@ -339,9 +326,7 @@ describe('file-tree React lane', () => {
         firstRoot.render(<FileTreeReact model={model} />);
         await flushDom();
       });
-      expect(
-        getItemButton(getHost(firstContainer), 'README.md')
-      ).not.toBeNull();
+      expect(getItemButton(getHost(firstContainer), "README.md")).not.toBeNull();
 
       act(() => {
         firstRoot.unmount();
@@ -351,9 +336,7 @@ describe('file-tree React lane', () => {
         secondRoot.render(<FileTreeReact model={model} />);
         await flushDom();
       });
-      expect(
-        getItemButton(getHost(secondContainer), 'README.md')
-      ).not.toBeNull();
+      expect(getItemButton(getHost(secondContainer), "README.md")).not.toBeNull();
     } finally {
       act(() => {
         secondRoot.unmount();
@@ -364,7 +347,7 @@ describe('file-tree React lane', () => {
     }
   });
 
-  test('preserves a model header composition when the wrapper does not override it', async () => {
+  test("preserves a model header composition when the wrapper does not override it", async () => {
     const model = new FileTreeClass({
       ...BASE_OPTIONS,
       composition: {
@@ -374,7 +357,7 @@ describe('file-tree React lane', () => {
       },
     });
 
-    const localContainer = document.createElement('div');
+    const localContainer = document.createElement("div");
     document.body.appendChild(localContainer);
     const localRoot = createRoot(localContainer);
 
@@ -385,9 +368,9 @@ describe('file-tree React lane', () => {
       });
 
       const host = getHost(localContainer);
-      expect(
-        host.querySelector('[data-test-model-header="true"]')?.textContent
-      ).toBe('Model header');
+      expect(host.querySelector('[data-test-model-header="true"]')?.textContent).toBe(
+        "Model header",
+      );
     } finally {
       act(() => {
         localRoot.unmount();
@@ -397,7 +380,7 @@ describe('file-tree React lane', () => {
     }
   });
 
-  test('restores a model header composition after a wrapper override unmounts', async () => {
+  test("restores a model header composition after a wrapper override unmounts", async () => {
     const model = new FileTreeClass({
       ...BASE_OPTIONS,
       composition: {
@@ -406,8 +389,8 @@ describe('file-tree React lane', () => {
         },
       },
     });
-    const firstContainer = document.createElement('div');
-    const secondContainer = document.createElement('div');
+    const firstContainer = document.createElement("div");
+    const secondContainer = document.createElement("div");
     document.body.append(firstContainer, secondContainer);
     const firstRoot = createRoot(firstContainer);
     const secondRoot = createRoot(secondContainer);
@@ -418,18 +401,14 @@ describe('file-tree React lane', () => {
           <FileTreeReact
             header={<button data-test-react-header>React header</button>}
             model={model}
-          />
+          />,
         );
         await flushDom();
       });
 
       const firstHost = getHost(firstContainer);
-      expect(
-        firstHost.querySelector('[data-test-react-header]')?.textContent
-      ).toBe('React header');
-      expect(
-        firstHost.querySelector('[data-test-model-header="true"]')
-      ).toBeNull();
+      expect(firstHost.querySelector("[data-test-react-header]")?.textContent).toBe("React header");
+      expect(firstHost.querySelector('[data-test-model-header="true"]')).toBeNull();
 
       act(() => {
         firstRoot.unmount();
@@ -441,9 +420,9 @@ describe('file-tree React lane', () => {
       });
 
       const secondHost = getHost(secondContainer);
-      expect(
-        secondHost.querySelector('[data-test-model-header="true"]')?.textContent
-      ).toBe('Model header');
+      expect(secondHost.querySelector('[data-test-model-header="true"]')?.textContent).toBe(
+        "Model header",
+      );
     } finally {
       act(() => {
         secondRoot.unmount();
@@ -454,7 +433,7 @@ describe('file-tree React lane', () => {
     }
   });
 
-  test('header button clicks can mutate the model and focus the new item', async () => {
+  test("header button clicks can mutate the model and focus the new item", async () => {
     function Harness() {
       const { model } = useFileTree(BASE_OPTIONS);
 
@@ -464,8 +443,8 @@ describe('file-tree React lane', () => {
             <button
               data-test-header-add
               onClick={() => {
-                model.add('demo-note.md');
-                model.focusPath('demo-note.md');
+                model.add("demo-note.md");
+                model.focusPath("demo-note.md");
               }}
               type="button"
             >
@@ -482,9 +461,9 @@ describe('file-tree React lane', () => {
     });
 
     const host = getHost(container);
-    const headerButtonNode = host.querySelector('[data-test-header-add]');
+    const headerButtonNode = host.querySelector("[data-test-header-add]");
     if (!(headerButtonNode instanceof dom.window.HTMLButtonElement)) {
-      throw new Error('expected header add button');
+      throw new Error("expected header add button");
     }
 
     const headerButton = headerButtonNode;
@@ -493,11 +472,11 @@ describe('file-tree React lane', () => {
       dispatchClick(headerButton);
     });
 
-    const addedItem = getItemButton(host, 'demo-note.md');
+    const addedItem = getItemButton(host, "demo-note.md");
     expect(addedItem).not.toBeNull();
   });
 
-  test('selection and search hooks rerender from model updates', async () => {
+  test("selection and search hooks rerender from model updates", async () => {
     function Harness() {
       const { model } = useFileTree({ ...BASE_OPTIONS, search: true });
       const selectedPaths = useFileTreeSelection(model);
@@ -508,7 +487,7 @@ describe('file-tree React lane', () => {
           <button
             data-test-select
             onClick={() => {
-              model.getItem('README.md')?.select();
+              model.getItem("README.md")?.select();
             }}
             type="button"
           >
@@ -517,7 +496,7 @@ describe('file-tree React lane', () => {
           <button
             data-test-search
             onClick={() => {
-              search.open('read');
+              search.open("read");
             }}
             type="button"
           >
@@ -536,14 +515,12 @@ describe('file-tree React lane', () => {
       root.render(<Harness />);
     });
 
-    const selectedCountNode = container.querySelector(
-      '[data-test-selected-count]'
-    );
-    const searchOpenNode = container.querySelector('[data-test-search-open]');
-    const searchValueNode = container.querySelector('[data-test-search-value]');
-    const searchCountNode = container.querySelector('[data-test-search-count]');
-    const selectButtonNode = container.querySelector('[data-test-select]');
-    const searchButtonNode = container.querySelector('[data-test-search]');
+    const selectedCountNode = container.querySelector("[data-test-selected-count]");
+    const searchOpenNode = container.querySelector("[data-test-search-open]");
+    const searchValueNode = container.querySelector("[data-test-search-value]");
+    const searchCountNode = container.querySelector("[data-test-search-count]");
+    const selectButtonNode = container.querySelector("[data-test-select]");
+    const searchButtonNode = container.querySelector("[data-test-search]");
     if (
       !(selectedCountNode instanceof dom.window.HTMLElement) ||
       !(searchOpenNode instanceof dom.window.HTMLElement) ||
@@ -552,7 +529,7 @@ describe('file-tree React lane', () => {
       !(selectButtonNode instanceof dom.window.HTMLButtonElement) ||
       !(searchButtonNode instanceof dom.window.HTMLButtonElement)
     ) {
-      throw new Error('expected hook harness elements');
+      throw new Error("expected hook harness elements");
     }
 
     const selectedCount = selectedCountNode;
@@ -562,27 +539,27 @@ describe('file-tree React lane', () => {
     const selectButton = selectButtonNode;
     const searchButton = searchButtonNode;
 
-    expect(selectedCount.textContent).toBe('0');
-    expect(searchOpen.textContent).toBe('false');
-    expect(searchValue.textContent).toBe('');
-    expect(searchCount.textContent).toBe('0');
+    expect(selectedCount.textContent).toBe("0");
+    expect(searchOpen.textContent).toBe("false");
+    expect(searchValue.textContent).toBe("");
+    expect(searchCount.textContent).toBe("0");
 
     await actAndFlush(() => {
       dispatchClick(selectButton);
     });
 
-    expect(selectedCount.textContent).toBe('1');
+    expect(selectedCount.textContent).toBe("1");
 
     await actAndFlush(() => {
       dispatchClick(searchButton);
     });
 
-    expect(searchOpen.textContent).toBe('true');
-    expect(searchValue.textContent).toBe('read');
-    expect(searchCount.textContent).toBe('1');
+    expect(searchOpen.textContent).toBe("true");
+    expect(searchValue.textContent).toBe("read");
+    expect(searchCount.textContent).toBe("1");
   });
 
-  test('search hook reacts to manual input in the tree search box', async () => {
+  test("search hook reacts to manual input in the tree search box", async () => {
     function Harness() {
       const { model } = useFileTree({ ...BASE_OPTIONS, search: true });
       const search = useFileTreeSearch(model);
@@ -592,7 +569,7 @@ describe('file-tree React lane', () => {
           <button
             data-test-open-search
             onClick={() => {
-              search.open('button');
+              search.open("button");
             }}
             type="button"
           >
@@ -609,15 +586,13 @@ describe('file-tree React lane', () => {
     });
 
     const host = getHost(container);
-    const openSearchButtonNode = container.querySelector(
-      '[data-test-open-search]'
-    );
-    const searchValueNode = container.querySelector('[data-test-search-value]');
+    const openSearchButtonNode = container.querySelector("[data-test-open-search]");
+    const searchValueNode = container.querySelector("[data-test-search-value]");
     if (
       !(openSearchButtonNode instanceof dom.window.HTMLButtonElement) ||
       !(searchValueNode instanceof dom.window.HTMLElement)
     ) {
-      throw new Error('expected search harness elements');
+      throw new Error("expected search harness elements");
     }
 
     const openSearchButton = openSearchButtonNode;
@@ -627,28 +602,24 @@ describe('file-tree React lane', () => {
       dispatchClick(openSearchButton);
     });
 
-    expect(searchValue.textContent).toBe('button');
+    expect(searchValue.textContent).toBe("button");
 
-    const searchInputNode = host.shadowRoot?.querySelector(
-      '[data-file-tree-search-input]'
-    );
+    const searchInputNode = host.shadowRoot?.querySelector("[data-file-tree-search-input]");
     if (!(searchInputNode instanceof dom.window.HTMLInputElement)) {
-      throw new Error('expected tree search input');
+      throw new Error("expected tree search input");
     }
 
     const searchInput = searchInputNode;
 
     await actAndFlush(() => {
-      searchInput.value = 'readme';
-      searchInput.dispatchEvent(
-        new dom.window.Event('input', { bubbles: true })
-      );
+      searchInput.value = "readme";
+      searchInput.dispatchEvent(new dom.window.Event("input", { bubbles: true }));
     });
 
-    expect(searchValue.textContent).toBe('readme');
+    expect(searchValue.textContent).toBe("readme");
   });
 
-  test('bridges header and context-menu composition through the model surface', async () => {
+  test("bridges header and context-menu composition through the model surface", async () => {
     function Harness() {
       const { model } = useFileTree(BASE_OPTIONS);
       const [showHeader, setShowHeader] = useState(true);
@@ -675,16 +646,10 @@ describe('file-tree React lane', () => {
             Hide menu
           </button>
           <FileTreeReact
-            header={
-              showHeader ? (
-                <button data-test-header>Header action</button>
-              ) : null
-            }
+            header={showHeader ? <button data-test-header>Header action</button> : null}
             model={model}
             renderContextMenu={
-              showMenu
-                ? (item) => <div data-test-menu>{item.path}</div>
-                : undefined
+              showMenu ? (item) => <div data-test-menu>{item.path}</div> : undefined
             }
           />
         </>
@@ -696,36 +661,30 @@ describe('file-tree React lane', () => {
     });
 
     const host = getHost(container);
-    expect(
-      host.querySelector('[slot="header"] [data-test-header]')
-    ).not.toBeNull();
+    expect(host.querySelector('[slot="header"] [data-test-header]')).not.toBeNull();
 
-    const readmeButton = getItemButton(host, 'README.md');
+    const readmeButton = getItemButton(host, "README.md");
     await actAndFlush(() => {
       readmeButton.dispatchEvent(
-        new dom.window.MouseEvent('contextmenu', {
+        new dom.window.MouseEvent("contextmenu", {
           bubbles: true,
           clientX: 24,
           clientY: 36,
-        })
+        }),
       );
     });
 
-    expect(
-      host.querySelector('[slot="context-menu"] [data-test-menu]')?.textContent
-    ).toBe('README.md');
+    expect(host.querySelector('[slot="context-menu"] [data-test-menu]')?.textContent).toBe(
+      "README.md",
+    );
 
-    const toggleHeaderButtonNode = container.querySelector(
-      '[data-test-toggle-header]'
-    );
-    const toggleMenuButtonNode = container.querySelector(
-      '[data-test-toggle-menu]'
-    );
+    const toggleHeaderButtonNode = container.querySelector("[data-test-toggle-header]");
+    const toggleMenuButtonNode = container.querySelector("[data-test-toggle-menu]");
     if (
       !(toggleHeaderButtonNode instanceof dom.window.HTMLButtonElement) ||
       !(toggleMenuButtonNode instanceof dom.window.HTMLButtonElement)
     ) {
-      throw new Error('expected toggle buttons');
+      throw new Error("expected toggle buttons");
     }
 
     const toggleHeaderButton = toggleHeaderButtonNode;
@@ -746,21 +705,21 @@ describe('file-tree React lane', () => {
     expect(host.querySelector('[slot="context-menu"]')).toBeNull();
   });
 
-  test('renderContextMenu preserves baseline context-menu trigger settings and handlers', async () => {
+  test("renderContextMenu preserves baseline context-menu trigger settings and handlers", async () => {
     const baselineEvents: string[] = [];
     const model = new FileTreeClass({
       ...BASE_OPTIONS,
       composition: {
         contextMenu: {
-          buttonVisibility: 'always',
+          buttonVisibility: "always",
           enabled: true,
           onClose: () => {
-            baselineEvents.push('close');
+            baselineEvents.push("close");
           },
           onOpen: (item) => {
             baselineEvents.push(`open:${item.path}`);
           },
-          triggerMode: 'button',
+          triggerMode: "button",
         },
       },
     });
@@ -781,39 +740,39 @@ describe('file-tree React lane', () => {
                 {item.path}
               </button>
             )}
-          />
+          />,
         );
       });
 
       const composition = model.getComposition()?.contextMenu;
       expect(composition?.enabled).toBe(true);
-      expect(composition?.triggerMode).toBe('button');
-      expect(composition?.buttonVisibility).toBe('always');
-      expect(typeof composition?.onOpen).toBe('function');
-      expect(typeof composition?.onClose).toBe('function');
+      expect(composition?.triggerMode).toBe("button");
+      expect(composition?.buttonVisibility).toBe("always");
+      expect(typeof composition?.onOpen).toBe("function");
+      expect(typeof composition?.onClose).toBe("function");
       expect(composition?.render).toBeUndefined();
 
       const host = getHost(container);
-      const readmeButton = getItemButton(host, 'README.md');
+      const readmeButton = getItemButton(host, "README.md");
       await actAndFlush(() => {
         dispatchClick(readmeButton);
       });
       readmeButton.focus();
       await actAndFlush(() => {
         readmeButton.dispatchEvent(
-          new dom.window.KeyboardEvent('keydown', {
+          new dom.window.KeyboardEvent("keydown", {
             bubbles: true,
             cancelable: true,
-            key: 'F10',
+            key: "F10",
             shiftKey: true,
-          })
+          }),
         );
       });
 
-      expect(baselineEvents).toContain('open:README.md');
-      const closeMenuButtonNode = host.querySelector('[data-test-close-menu]');
+      expect(baselineEvents).toContain("open:README.md");
+      const closeMenuButtonNode = host.querySelector("[data-test-close-menu]");
       if (!(closeMenuButtonNode instanceof dom.window.HTMLButtonElement)) {
-        throw new Error('expected close menu button');
+        throw new Error("expected close menu button");
       }
 
       const closeMenuButton = closeMenuButtonNode;
@@ -821,13 +780,13 @@ describe('file-tree React lane', () => {
         dispatchClick(closeMenuButton);
       });
 
-      expect(baselineEvents).toContain('close');
+      expect(baselineEvents).toContain("close");
     } finally {
       model.cleanUp();
     }
   });
 
-  test('baseline onOpen can close synchronously without leaving a stale React menu', async () => {
+  test("baseline onOpen can close synchronously without leaving a stale React menu", async () => {
     const baselineEvents: string[] = [];
     const model = new FileTreeClass({
       ...BASE_OPTIONS,
@@ -835,13 +794,13 @@ describe('file-tree React lane', () => {
         contextMenu: {
           enabled: true,
           onClose: () => {
-            baselineEvents.push('close');
+            baselineEvents.push("close");
           },
           onOpen: (_item, context) => {
-            baselineEvents.push('open');
+            baselineEvents.push("open");
             context.close();
           },
-          triggerMode: 'button',
+          triggerMode: "button",
         },
       },
     });
@@ -851,46 +810,44 @@ describe('file-tree React lane', () => {
         root.render(
           <FileTreeReact
             model={model}
-            renderContextMenu={(item) => (
-              <div data-test-sync-close-menu>{item.path}</div>
-            )}
-          />
+            renderContextMenu={(item) => <div data-test-sync-close-menu>{item.path}</div>}
+          />,
         );
       });
 
       const host = getHost(container);
-      const readmeButton = getItemButton(host, 'README.md');
+      const readmeButton = getItemButton(host, "README.md");
       await actAndFlush(() => {
         dispatchClick(readmeButton);
       });
       readmeButton.focus();
       await actAndFlush(() => {
         readmeButton.dispatchEvent(
-          new dom.window.KeyboardEvent('keydown', {
+          new dom.window.KeyboardEvent("keydown", {
             bubbles: true,
             cancelable: true,
-            key: 'F10',
+            key: "F10",
             shiftKey: true,
-          })
+          }),
         );
       });
 
-      expect(baselineEvents).toEqual(['open', 'close']);
+      expect(baselineEvents).toEqual(["open", "close"]);
       expect(host.querySelector('[slot="context-menu"]')).toBeNull();
     } finally {
       model.cleanUp();
     }
   });
 
-  test('hydrates preloadedData without a client/server mismatch', async () => {
+  test("hydrates preloadedData without a client/server mismatch", async () => {
     const preloadedData = preloadFileTree({
       ...BASE_OPTIONS,
-      id: 'pst-react-hydration-test',
+      id: "pst-react-hydration-test",
     });
     const hydrationErrors: string[] = [];
     const originalConsoleError = console.error;
-    const originalDocument = Reflect.get(globalThis, 'document');
-    const hydrateContainer = document.createElement('div');
+    const originalDocument = Reflect.get(globalThis, "document");
+    const hydrateContainer = document.createElement("div");
     document.body.appendChild(hydrateContainer);
     const model = new FileTreeClass(BASE_OPTIONS);
 
@@ -904,12 +861,12 @@ describe('file-tree React lane', () => {
       );
     }
 
-    Reflect.deleteProperty(globalThis, 'document');
+    Reflect.deleteProperty(globalThis, "document");
     const serverHtml = renderToString(<Harness />);
     Object.assign(globalThis, { document: originalDocument });
     hydrateContainer.innerHTML = serverHtml;
     console.error = (...args: unknown[]) => {
-      hydrationErrors.push(args.map((value) => String(value)).join(' '));
+      hydrationErrors.push(args.map((value) => String(value)).join(" "));
     };
 
     let hydrationRoot: Root | null = null;
@@ -921,16 +878,14 @@ describe('file-tree React lane', () => {
 
       const hydratedHost = getHost(hydrateContainer);
       expect(
-        hydratedHost.querySelector(
-          '[slot="header"] [data-test-hydration-header]'
-        )
+        hydratedHost.querySelector('[slot="header"] [data-test-hydration-header]'),
       ).not.toBeNull();
       expect(
         hydrationErrors.some((message) =>
           message.includes(
-            "Hydration failed because the server rendered HTML didn't match the client"
-          )
-        )
+            "Hydration failed because the server rendered HTML didn't match the client",
+          ),
+        ),
       ).toBe(false);
     } finally {
       console.error = originalConsoleError;
@@ -945,7 +900,7 @@ describe('file-tree React lane', () => {
     }
   });
 
-  test('hydrates colocated preloadedData and preserves live header interactions', async () => {
+  test("hydrates colocated preloadedData and preserves live header interactions", async () => {
     function HeaderAction() {
       const [count, setCount] = useState(0);
       return (
@@ -963,35 +918,30 @@ describe('file-tree React lane', () => {
 
     const preloadedData = preloadFileTree({
       ...BASE_OPTIONS,
-      id: 'pst-react-ssr-test',
+      id: "pst-react-ssr-test",
     });
-    const originalDocument = Reflect.get(globalThis, 'document');
-    const ssrMount = document.createElement('div');
+    const originalDocument = Reflect.get(globalThis, "document");
+    const ssrMount = document.createElement("div");
     document.body.appendChild(ssrMount);
 
     function Harness() {
       const { model } = useFileTree(BASE_OPTIONS);
 
       return (
-        <FileTreeReact
-          header={<HeaderAction />}
-          model={model}
-          preloadedData={preloadedData}
-        />
+        <FileTreeReact header={<HeaderAction />} model={model} preloadedData={preloadedData} />
       );
     }
 
-    Reflect.deleteProperty(globalThis, 'document');
+    Reflect.deleteProperty(globalThis, "document");
     const serverHtml = renderToString(<Harness />);
     Object.assign(globalThis, { document: originalDocument });
     ssrMount.innerHTML = serverHtml;
 
     const serverHost = getHost(ssrMount);
     expect(serverHost.querySelectorAll('[slot="header"]')).toHaveLength(1);
-    expect(
-      serverHost.querySelector('[slot="header"] [data-test-ssr-header]')
-        ?.textContent
-    ).toBe('Header action 0');
+    expect(serverHost.querySelector('[slot="header"] [data-test-ssr-header]')?.textContent).toBe(
+      "Header action 0",
+    );
 
     let hydrationRoot: Root | null = null;
     try {
@@ -1001,11 +951,9 @@ describe('file-tree React lane', () => {
       });
 
       expect(serverHost.querySelectorAll('[slot="header"]')).toHaveLength(1);
-      const hydratedHeaderNode = serverHost.querySelector(
-        '[data-test-ssr-header]'
-      );
+      const hydratedHeaderNode = serverHost.querySelector("[data-test-ssr-header]");
       if (!(hydratedHeaderNode instanceof dom.window.HTMLButtonElement)) {
-        throw new Error('expected hydrated header button');
+        throw new Error("expected hydrated header button");
       }
 
       const hydratedHeader = hydratedHeaderNode;
@@ -1014,7 +962,7 @@ describe('file-tree React lane', () => {
         dispatchClick(hydratedHeader);
       });
 
-      expect(hydratedHeader.textContent).toBe('Header action 1');
+      expect(hydratedHeader.textContent).toBe("Header action 1");
     } finally {
       Object.assign(globalThis, { document: originalDocument });
       if (hydrationRoot != null) {

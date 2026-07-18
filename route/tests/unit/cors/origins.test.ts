@@ -61,7 +61,7 @@ describe("cors/origins.resolveAllowedOrigin", () => {
     assert.equal(resolveAllowedOrigin("https://env.example.com"), "https://env.example.com");
     assert.equal(
       resolveAllowedOrigin("https://runtime.example.com"),
-      "https://runtime.example.com"
+      "https://runtime.example.com",
     );
     assert.equal(resolveAllowedOrigin("https://other.example.com"), null);
   });
@@ -70,7 +70,7 @@ describe("cors/origins.resolveAllowedOrigin", () => {
     process.env.CORS_ALLOW_ALL = "true";
     assert.equal(
       resolveAllowedOrigin("https://anything.example.com"),
-      "https://anything.example.com"
+      "https://anything.example.com",
     );
   });
 
@@ -83,7 +83,7 @@ describe("cors/origins.resolveAllowedOrigin", () => {
     process.env.CORS_ORIGIN = "*";
     assert.equal(
       resolveAllowedOrigin("https://anything.example.com"),
-      "https://anything.example.com"
+      "https://anything.example.com",
     );
   });
 
@@ -235,7 +235,7 @@ describe("cors/origins.STATIC_CORS_HEADERS", () => {
   it("never contains Access-Control-Allow-Origin", () => {
     assert.equal(
       Object.prototype.hasOwnProperty.call(STATIC_CORS_HEADERS, "Access-Control-Allow-Origin"),
-      false
+      false,
     );
     assert.match(STATIC_CORS_HEADERS["Access-Control-Allow-Methods"], /OPTIONS/);
   });

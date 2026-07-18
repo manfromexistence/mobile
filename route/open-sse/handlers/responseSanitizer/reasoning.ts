@@ -3,12 +3,12 @@ export const REASONING_TAG_PATTERN = REASONING_TAG_NAMES.join("|");
 // Matches complete <think>/<thinking>/<thought>/<internal_thought> blocks.
 export const THINK_TAG_REGEX = new RegExp(
   `<(${REASONING_TAG_PATTERN})\\b[^>]*>([\\s\\S]*?)<\\/\\1>`,
-  "gi"
+  "gi",
 );
 export const REASONING_CLOSE_TAG_REGEX = new RegExp(`</(${REASONING_TAG_PATTERN})>`, "i");
 export const REASONING_TAG_FRAGMENT_REGEX = new RegExp(
   `</?(${REASONING_TAG_PATTERN})\\b[^>]*>`,
-  "gi"
+  "gi",
 );
 export const CONTENT_OPEN_TAG_REGEX = /<content\b[^>]*>/i;
 // Matches an unclosed reasoning tag at the end of a message. Some providers can
@@ -16,7 +16,7 @@ export const CONTENT_OPEN_TAG_REGEX = /<content\b[^>]*>/i;
 // tool call. Treat that tail as reasoning instead of visible assistant text.
 export const UNCLOSED_REASONING_TAG_REGEX = new RegExp(
   `<(${REASONING_TAG_PATTERN})(?:\\s[^>]*)?(?:>|\\r?\\n)([\\s\\S]*)$`,
-  "i"
+  "i",
 );
 
 // #638, #727: Collapse runs of 2+ consecutive newlines into \n\n
@@ -48,7 +48,7 @@ export function splitClosingOnlyReasoningPrefix(text: string): {
 
 export function movePrefixBeforeContentTagToThinking(
   cleaned: string,
-  thinkingParts: string[]
+  thinkingParts: string[],
 ): string {
   const contentMatch = cleaned.match(CONTENT_OPEN_TAG_REGEX);
   if (!contentMatch || contentMatch.index === undefined || contentMatch.index <= 0) return cleaned;

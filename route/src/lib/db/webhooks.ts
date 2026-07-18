@@ -80,7 +80,7 @@ export function createWebhook(data: {
 
   db.prepare(
     `INSERT INTO webhooks (id, url, events, secret, description, kind, metadata_encrypted)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     id,
     data.url,
@@ -88,7 +88,7 @@ export function createWebhook(data: {
     secret,
     data.description || "",
     kind,
-    data.metadataEncrypted ?? null
+    data.metadataEncrypted ?? null,
   );
 
   return getWebhook(id)!;
@@ -104,7 +104,7 @@ export function updateWebhook(
     description: string;
     kind: WebhookKind;
     metadataEncrypted: string | null;
-  }>
+  }>,
 ): Webhook | null {
   const db = getDbInstance();
   const existing = getWebhook(id);
@@ -160,11 +160,11 @@ export function recordWebhookDelivery(id: string, status: number, success: boole
   const db = getDbInstance();
   if (success) {
     db.prepare(
-      `UPDATE webhooks SET last_triggered_at = datetime('now'), last_status = ?, failure_count = 0 WHERE id = ?`
+      `UPDATE webhooks SET last_triggered_at = datetime('now'), last_status = ?, failure_count = 0 WHERE id = ?`,
     ).run(status, id);
   } else {
     db.prepare(
-      `UPDATE webhooks SET last_triggered_at = datetime('now'), last_status = ?, failure_count = failure_count + 1 WHERE id = ?`
+      `UPDATE webhooks SET last_triggered_at = datetime('now'), last_status = ?, failure_count = failure_count + 1 WHERE id = ?`,
     ).run(status, id);
   }
 }

@@ -32,18 +32,18 @@ test("computeFreeModelTotals dedupes shared pools AND per-account credits, tiers
   // pool-deduped steady recurring should be in a defensible band (NOT the inflated per-model sum)
   assert.ok(
     t.steadyRecurringTokens >= 1_000_000_000 && t.steadyRecurringTokens <= 3_000_000_000,
-    `steady=${t.steadyRecurringTokens}`
+    `steady=${t.steadyRecurringTokens}`,
   );
   assert.ok(t.steadyWithRecurringCreditsTokens >= t.steadyRecurringTokens);
   assert.ok(t.firstMonthRealisticTokens >= t.steadyWithRecurringCreditsTokens);
   // one-time credits must be pool-deduped: a multi-model provider's signup credit counts once.
   const naiveOneTime = FREE_MODEL_BUDGETS.filter((m) => m.freeType === "one-time-initial").reduce(
     (s, m) => s + m.creditTokens,
-    0
+    0,
   );
   assert.ok(
     t.firstMonthRealisticTokens - t.steadyWithRecurringCreditsTokens < naiveOneTime,
-    "one-time credits not deduped"
+    "one-time credits not deduped",
   );
   assert.equal(t.modelCount, FREE_MODEL_BUDGETS.length);
   assert.equal(typeof t.headline, "string");

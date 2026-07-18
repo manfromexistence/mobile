@@ -51,26 +51,26 @@ test.after(async () => {
 
 test("cloud agent task list requires management auth when auth is enabled", async () => {
   const unauthenticated = await route.GET(
-    new Request("http://localhost/api/v1/agents/tasks") as TasksGetRequest
+    new Request("http://localhost/api/v1/agents/tasks") as TasksGetRequest,
   );
   const invalidToken = await route.GET(
     new Request("http://localhost/api/v1/agents/tasks", {
       headers: { authorization: "Bearer anything" },
-    }) as TasksGetRequest
+    }) as TasksGetRequest,
   );
   const authenticated = await route.GET(
-    (await makeManagementSessionRequest("http://localhost/api/v1/agents/tasks")) as TasksGetRequest
+    (await makeManagementSessionRequest("http://localhost/api/v1/agents/tasks")) as TasksGetRequest,
   );
 
   assert.equal(unauthenticated.status, 401);
   assert.equal(
     ((await unauthenticated.json()) as ErrorBody).error.message,
-    "Authentication required"
+    "Authentication required",
   );
   assert.equal(invalidToken.status, 403);
   assert.equal(
     ((await invalidToken.json()) as ErrorBody).error.message,
-    "Invalid management token"
+    "Invalid management token",
   );
   assert.equal(authenticated.status, 200);
   assert.deepEqual(await authenticated.json(), { data: [] });

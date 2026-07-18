@@ -56,7 +56,7 @@ function providerText(
   t: ProviderMessageTranslator,
   key: string,
   fallback: string,
-  values?: Record<string, unknown>
+  values?: Record<string, unknown>,
 ): string {
   if (typeof t.has === "function" && t.has(key)) {
     return t(key, values);
@@ -64,7 +64,7 @@ function providerText(
   if (values) {
     return Object.entries(values).reduce(
       (acc, [name, value]) => acc.replaceAll(`{${name}}`, String(value)),
-      fallback
+      fallback,
     );
   }
   return fallback;

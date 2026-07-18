@@ -6,7 +6,7 @@ import type { AgingThresholds, Summarizer } from "../../../open-sse/services/com
 function makeMessages(
   count: number,
   role: string = "user",
-  prefix: string = "Message"
+  prefix: string = "Message",
 ): Array<{ role: string; content: string }> {
   return Array.from({ length: count }, (_, i) => ({
     role: i % 2 === 0 ? "user" : "assistant",
@@ -41,7 +41,7 @@ describe("applyAging", () => {
           : "";
       assert.ok(
         !content.startsWith("[COMPRESSED:aging:"),
-        `Last message should be verbatim, got: ${content.slice(0, 40)}`
+        `Last message should be verbatim, got: ${content.slice(0, 40)}`,
       );
     }
   });
@@ -53,7 +53,7 @@ describe("applyAging", () => {
     const content = typeof first.content === "string" ? first.content : "";
     assert.ok(
       content.startsWith("[COMPRESSED:aging:fullSummary]"),
-      `Expected fullSummary marker, got: ${content.slice(0, 60)}`
+      `Expected fullSummary marker, got: ${content.slice(0, 60)}`,
     );
   });
 
@@ -164,10 +164,10 @@ describe("applyAging", () => {
     const first = applyAging(msgs, defaultThresholds);
     const second = applyAging(first.messages, defaultThresholds);
     const firstContent = JSON.stringify(
-      first.messages.map((m) => (m as { content: string }).content)
+      first.messages.map((m) => (m as { content: string }).content),
     );
     const secondContent = JSON.stringify(
-      second.messages.map((m) => (m as { content: string }).content)
+      second.messages.map((m) => (m as { content: string }).content),
     );
     assert.equal(firstContent, secondContent);
   });

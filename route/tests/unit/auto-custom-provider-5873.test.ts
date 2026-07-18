@@ -59,7 +59,7 @@ test("createVirtualAutoCombo includes custom openai-compatible providers via def
   const candidate = combo.models.find((model) => model.providerId === customProvider);
   assert.ok(
     candidate,
-    "custom openai-compatible providers must not be excluded from auto/ routing"
+    "custom openai-compatible providers must not be excluded from auto/ routing",
   );
   assert.equal(candidate.model, `${customProvider}/my-custom-model`);
   assert.ok(combo.autoConfig.candidatePool.includes(customProvider));

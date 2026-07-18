@@ -14,8 +14,8 @@
 // worktree root), whichever comes first. Values already present in
 // `process.env` are *not* clobbered, so `ws`-injected vars still win.
 
-import { existsSync, readFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 
 // Parse an env file into a plain record. Supports `KEY=value`, `# comments`,
 // and optional surrounding single/double quotes on the value.
@@ -23,11 +23,11 @@ import { dirname, resolve } from 'node:path';
 function parseEnvFile(path) {
   /** @type {Record<string, string>} */
   const out = {};
-  const text = readFileSync(path, 'utf8');
-  for (const rawLine of text.split('\n')) {
+  const text = readFileSync(path, "utf8");
+  for (const rawLine of text.split("\n")) {
     const line = rawLine.trim();
-    if (!line || line.startsWith('#')) continue;
-    const eq = line.indexOf('=');
+    if (!line || line.startsWith("#")) continue;
+    const eq = line.indexOf("=");
     if (eq === -1) continue;
     const key = line.slice(0, eq).trim();
     let value = line.slice(eq + 1).trim();
@@ -53,11 +53,11 @@ function parseEnvFile(path) {
 export function findWorktreeEnv(startDir = process.cwd()) {
   let dir = resolve(startDir);
   while (true) {
-    const candidate = resolve(dir, '.env.worktree');
+    const candidate = resolve(dir, ".env.worktree");
     if (existsSync(candidate)) {
       return parseEnvFile(candidate);
     }
-    if (existsSync(resolve(dir, '.git'))) return {};
+    if (existsSync(resolve(dir, ".git"))) return {};
     const parent = dirname(dir);
     if (parent === dir) return {};
     dir = parent;

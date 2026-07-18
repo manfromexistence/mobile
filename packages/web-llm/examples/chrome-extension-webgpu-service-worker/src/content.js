@@ -1,6 +1,6 @@
 // Only the content script is able to access the DOM
 chrome.runtime.onConnect.addListener((port) => {
   port.onMessage.addListener((msg) => {
-    port.postMessage({ contents: document.body.innerHTML })
-  })
-})
+    port.postMessage({ contents: document.body.innerHTML });
+  });
+});

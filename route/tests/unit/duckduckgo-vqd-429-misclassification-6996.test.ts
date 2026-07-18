@@ -57,15 +57,13 @@ describe("#6996 DuckDuckGo VQD 429 misclassification", () => {
     const response = await executor.execute(executeInputBase);
 
     const httpResponse =
-      response instanceof Response
-        ? response
-        : (response as { response: Response }).response;
+      response instanceof Response ? response : (response as { response: Response }).response;
     const bodyText = await httpResponse.text();
 
     assert.equal(
       httpResponse.status,
       429,
-      `expected the executor to surface DuckDuckGo's real 429 rate-limit status, got ${httpResponse.status} (body: ${bodyText})`
+      `expected the executor to surface DuckDuckGo's real 429 rate-limit status, got ${httpResponse.status} (body: ${bodyText})`,
     );
   });
 
@@ -85,15 +83,13 @@ describe("#6996 DuckDuckGo VQD 429 misclassification", () => {
     const response = await executor.execute(executeInputBase);
 
     const httpResponse =
-      response instanceof Response
-        ? response
-        : (response as { response: Response }).response;
+      response instanceof Response ? response : (response as { response: Response }).response;
     const bodyText = await httpResponse.text();
 
     assert.equal(
       httpResponse.status,
       503,
-      `expected the executor to keep the 503 fallback for a genuine upstream 5xx, got ${httpResponse.status} (body: ${bodyText})`
+      `expected the executor to keep the 503 fallback for a genuine upstream 5xx, got ${httpResponse.status} (body: ${bodyText})`,
     );
   });
 });

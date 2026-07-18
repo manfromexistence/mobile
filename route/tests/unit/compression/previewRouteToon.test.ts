@@ -26,7 +26,7 @@ test.after(() => {
 test("headroom engine carries encoderComparison with one array and a valid winner", async () => {
   const big = JSON.stringify(Array.from({ length: 20 }, (_, i) => ({ id: i, ok: true })));
   const res = await route.POST(
-    makeReq({ messages: [{ role: "user", content: big }], engineId: "headroom" })
+    makeReq({ messages: [{ role: "user", content: big }], engineId: "headroom" }),
   );
   assert.equal(res.status, 200);
   const body = await res.json();
@@ -38,7 +38,7 @@ test("headroom engine carries encoderComparison with one array and a valid winne
 test("non-headroom engine (lite) does not carry encoderComparison", async () => {
   const big = JSON.stringify(Array.from({ length: 20 }, (_, i) => ({ id: i, ok: true })));
   const res = await route.POST(
-    makeReq({ messages: [{ role: "user", content: big }], engineId: "lite" })
+    makeReq({ messages: [{ role: "user", content: big }], engineId: "lite" }),
   );
   assert.equal(res.status, 200);
   const body = await res.json();

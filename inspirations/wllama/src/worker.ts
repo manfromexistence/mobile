@@ -11,20 +11,12 @@
  * - Unidirection: { verb, args }
  */
 
-import { glueDeserialize, glueSerialize } from './glue/glue';
-import type { GlueMsg } from './glue/messages';
-import { Debug } from './debug';
-import {
-  canUseAsyncFileRead,
-  createWorker,
-  isSafariMobile,
-  isString,
-} from './utils';
-import {
-  LLAMA_CPP_WORKER_CODE,
-  WLLAMA_EMSCRIPTEN_CODE,
-} from './workers-code/generated';
-import { WllamaRuntimeError } from './wllama';
+import { glueDeserialize, glueSerialize } from "./glue/glue";
+import type { GlueMsg } from "./glue/messages";
+import { Debug } from "./debug";
+import { canUseAsyncFileRead, createWorker, isSafariMobile, isString } from "./utils";
+import { LLAMA_CPP_WORKER_CODE, WLLAMA_EMSCRIPTEN_CODE } from "./workers-code/generated";
+import { WllamaRuntimeError } from "./wllama";
 
 interface Logger {
   debug: typeof console.debug;
@@ -33,18 +25,18 @@ interface Logger {
   error: typeof console.error;
 }
 
-const FILE_READ_REQ_EVENT = 'fs.read_req';
+const FILE_READ_REQ_EVENT = "fs.read_req";
 
 interface TaskParam {
   verb:
-    | 'module.init'
-    | 'fs.alloc'
-    | 'fs.write'
-    | 'fs.read_res'
-    | 'wllama.start'
-    | 'wllama.action'
-    | 'wllama.exit'
-    | 'wllama.debug';
+    | "module.init"
+    | "fs.alloc"
+    | "fs.write"
+    | "fs.read_res"
+    | "wllama.start"
+    | "wllama.action"
+    | "wllama.exit"
+    | "wllama.debug";
   args: any[];
   callbackId: number;
 }
@@ -103,7 +95,7 @@ export class ProxyToWorker {
     resources: WllamaWorkerResources,
     nbThread: number,
     suppressNativeLog: boolean,
-    logger: Logger
+    logger: Logger,
   ) {
     this.resources = resources;
     this.nbThread = nbThread;
@@ -117,7 +109,7 @@ export class ProxyToWorker {
     if (!this.resources.jsPath) {
       if (this.resources.compat) {
         throw new Error(
-          'compat mode is enabled but no jsPath was provided. Pass a worker JS via setCompat() or install @wllama/wllama-compat.'
+          "compat mode is enabled but no jsPath was provided. Pass a worker JS via setCompat() or install @wllama/wllama-compat.",
         );
       }
       return WLLAMA_EMSCRIPTEN_CODE;
@@ -126,22 +118,20 @@ export class ProxyToWorker {
     } else if (isString(this.resources.jsPath)) {
       const response = await fetch(this.resources.jsPath as string);
       if (!response.ok) {
-        throw new Error(
-          `Failed to fetch worker code from ${this.resources.jsPath}`
-        );
+        throw new Error(`Failed to fetch worker code from ${this.resources.jsPath}`);
       }
       return await response.text();
     } else {
-      throw new Error('No JS code provided for worker');
+      throw new Error("No JS code provided for worker");
     }
   }
 
   async moduleInit(ggufFiles: { name: string; blob: Blob }[]): Promise<void> {
     let moduleCode = JSPI_STUB + (await this.getModuleCode());
-    let mainModuleCode = moduleCode.replace('var Module', 'var ___Module');
+    let mainModuleCode = moduleCode.replace("var Module", "var ___Module");
     const runOptions = {
       pathConfig: {
-        'wllama.wasm': this.resources.wasmPath,
+        "wllama.wasm": this.resources.wasmPath,
       },
       nbThread: this.nbThread,
       compat: this.resources.compat,
@@ -150,17 +140,14 @@ export class ProxyToWorker {
       `const RUN_OPTIONS = ${JSON.stringify(runOptions)};`,
       `function wModuleInit() { ${mainModuleCode}; return Module; }`,
       LLAMA_CPP_WORKER_CODE,
-    ].join(';\n\n');
+    ].join(";\n\n");
     this.worker = createWorker(completeCode);
     this.worker.onmessage = this.onRecvMsg.bind(this);
     this.worker.onerror = this.logger.error;
 
     const res = await this.pushTask({
-      verb: 'module.init',
-      args: [
-        new Blob([moduleCode], { type: 'text/javascript' }),
-        this.useAsyncFile,
-      ],
+      verb: "module.init",
+      args: [new Blob([moduleCode], { type: "text/javascript" }), this.useAsyncFile],
       callbackId: this.taskId++,
     });
 
@@ -168,11 +155,7 @@ export class ProxyToWorker {
     const nativeFiles: ({ id: number } & (typeof ggufFiles)[number])[] = [];
     for (const file of ggufFiles) {
       const needAllocBuffer = !this.useAsyncFile; // only alloc if mmap is used
-      const id = await this.fileAlloc(
-        file.name,
-        file.blob.size,
-        needAllocBuffer
-      );
+      const id = await this.fileAlloc(file.name, file.blob.size, needAllocBuffer);
       nativeFiles.push({ id, ...file });
       if (this.useAsyncFile) {
         this.fileBlobs.set(file.name, file.blob);
@@ -184,7 +167,7 @@ export class ProxyToWorker {
       await Promise.all(
         nativeFiles.map((file) => {
           return this.fileWrite(file.id, file.blob);
-        })
+        }),
       );
     }
 
@@ -193,7 +176,7 @@ export class ProxyToWorker {
 
   async wllamaStart(): Promise<number> {
     const result = await this.pushTask({
-      verb: 'wllama.start',
+      verb: "wllama.start",
       args: [],
       callbackId: this.taskId++,
     });
@@ -201,14 +184,11 @@ export class ProxyToWorker {
     return parsedResult;
   }
 
-  async wllamaAction<T extends GlueMsg>(
-    name: string,
-    body: GlueMsg
-  ): Promise<T> {
+  async wllamaAction<T extends GlueMsg>(name: string, body: GlueMsg): Promise<T> {
     // console.debug(`wllamaAction: ${name}`, body);
     const encodedMsg = glueSerialize(body);
     const result = await this.pushTask({
-      verb: 'wllama.action',
+      verb: "wllama.action",
       args: [name, encodedMsg],
       callbackId: this.taskId++,
     });
@@ -232,7 +212,7 @@ export class ProxyToWorker {
 
   async wllamaDebug(): Promise<any> {
     const result = await this.pushTask({
-      verb: 'wllama.debug',
+      verb: "wllama.debug",
       args: [],
       callbackId: this.taskId++,
     });
@@ -245,13 +225,9 @@ export class ProxyToWorker {
    * Allocate a new file in heapfs
    * @returns fileId, to be used by fileWrite()
    */
-  private async fileAlloc(
-    fileName: string,
-    size: number,
-    allocBuffer: boolean
-  ): Promise<number> {
+  private async fileAlloc(fileName: string, size: number, allocBuffer: boolean): Promise<number> {
     const result = await this.pushTask({
-      verb: 'fs.alloc',
+      verb: "fs.alloc",
       args: [fileName, size, allocBuffer],
       callbackId: this.taskId++,
     });
@@ -270,22 +246,18 @@ export class ProxyToWorker {
       const size = value.byteLength;
       await this.pushTask(
         {
-          verb: 'fs.write',
+          verb: "fs.write",
           args: [fileId, value, offset],
           callbackId: this.taskId++,
         },
         // @ts-ignore Type 'ArrayBufferLike' is not assignable to type 'ArrayBuffer'
-        [value.buffer]
+        [value.buffer],
       );
       offset += size;
     }
   }
 
-  private async fileReadResponse(
-    name: string,
-    offset: number,
-    size: number
-  ): Promise<void> {
+  private async fileReadResponse(name: string, offset: number, size: number): Promise<void> {
     try {
       const blob = this.fileBlobs.get(name);
       if (!blob) {
@@ -293,15 +265,12 @@ export class ProxyToWorker {
       }
       const chunk = blob.slice(offset, offset + size);
       const buffer = await chunk.arrayBuffer();
-      this.worker!!.postMessage(
-        { verb: 'fs.read_res', args: [buffer] },
-        { transfer: [buffer] }
-      );
+      this.worker!!.postMessage({ verb: "fs.read_res", args: [buffer] }, { transfer: [buffer] });
     } catch (err) {
-      this.logger.error('fileReadResponse failed, terminating worker:', err);
+      this.logger.error("fileReadResponse failed, terminating worker:", err);
       this.worker?.terminate();
       this.worker = undefined;
-      this.abort(`File read failed: ${err}`, (err as Error).stack || '');
+      this.abort(`File read failed: ${err}`, (err as Error).stack || "");
     }
   }
 
@@ -313,8 +282,8 @@ export class ProxyToWorker {
    */
   private parseResult(result: any): any {
     const parsedResult = JSON.parse(result);
-    if (parsedResult && parsedResult['error']) {
-      throw new WllamaRuntimeError('Unknown error, please see console.log', '');
+    if (parsedResult && parsedResult["error"]) {
+      throw new WllamaRuntimeError("Unknown error, please see console.log", "");
     }
     return parsedResult;
   }
@@ -348,7 +317,7 @@ export class ProxyToWorker {
           ? undefined
           : {
               transfer: task.buffers ?? [],
-            }
+            },
       );
     }
     this.busy = false;
@@ -361,35 +330,27 @@ export class ProxyToWorker {
     if (!e.data) return; // ignore
     const { verb, args } = e.data;
     const isCompatBuild = this.resources.compat;
-    if (verb && verb.startsWith('console.')) {
+    if (verb && verb.startsWith("console.")) {
       if (this.suppressNativeLog) {
         return;
       }
-      if (verb.endsWith('debug')) this.logger.debug(...args);
-      if (verb.endsWith('log')) this.logger.log(...args);
-      if (verb.endsWith('warn')) this.logger.warn(...args);
-      if (verb.endsWith('error')) this.logger.error(...args);
+      if (verb.endsWith("debug")) this.logger.debug(...args);
+      if (verb.endsWith("log")) this.logger.log(...args);
+      if (verb.endsWith("warn")) this.logger.warn(...args);
+      if (verb.endsWith("error")) this.logger.error(...args);
       return;
-    } else if (verb === 'signal.abort') {
-      const [signalType, message, rawStack, originalErr] = args as [
-        string,
-        string,
-        string,
-        any,
-      ];
+    } else if (verb === "signal.abort") {
+      const [signalType, message, rawStack, originalErr] = args as [string, string, string, any];
       if (originalErr) {
         this.logger.error(originalErr);
       }
       (async () => {
-        let stack = '';
-        let newMsg = message.replace(
-          'Build with -sASSERTIONS for more info.',
-          ''
-        );
-        if (signalType === 'abort') {
+        let stack = "";
+        let newMsg = message.replace("Build with -sASSERTIONS for more info.", "");
+        if (signalType === "abort") {
           newMsg = `(ABORT) ${newMsg}`;
-          stack = rawStack.replace(/\|/g, '\n');
-        } else if (signalType === 'exception') {
+          stack = rawStack.replace(/\|/g, "\n");
+        } else if (signalType === "exception") {
           stack = rawStack;
         }
         const decoded = await Debug.decodeStackTrace(stack, isCompatBuild);
@@ -409,26 +370,19 @@ export class ProxyToWorker {
     // handle task result
     const { callbackId, result, err } = e.data;
     if (callbackId) {
-      const idx = this.resultQueue.findIndex(
-        (t) => t.param.callbackId === callbackId
-      );
+      const idx = this.resultQueue.findIndex((t) => t.param.callbackId === callbackId);
       if (idx !== -1) {
         const waitingTask = this.resultQueue.splice(idx, 1)[0];
         if (err) waitingTask.reject(err);
         else waitingTask.resolve(result);
       } else {
-        this.logger.error(
-          `Cannot find waiting task with callbackId = ${callbackId}`
-        );
+        this.logger.error(`Cannot find waiting task with callbackId = ${callbackId}`);
       }
     }
   }
 
   private abort(text: string, stack: string) {
-    const error = new WllamaRuntimeError(
-      text.length == 0 ? '(unknown error)' : text,
-      stack
-    );
+    const error = new WllamaRuntimeError(text.length == 0 ? "(unknown error)" : text, stack);
     while (this.resultQueue.length > 0) {
       const waitingTask = this.resultQueue.pop();
       if (!waitingTask) break;

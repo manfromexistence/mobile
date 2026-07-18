@@ -1,14 +1,14 @@
-import { Database, eq } from "../src/drizzle/index.js"
-import { BillingTable } from "../src/schema/billing.sql.js"
+import { Database, eq } from "../src/drizzle/index.js";
+import { BillingTable } from "../src/schema/billing.sql.js";
 
-const workspaceID = process.argv[2]
+const workspaceID = process.argv[2];
 
 if (!workspaceID) {
-  console.error("Usage: bun script/foo.ts <workspaceID>")
-  process.exit(1)
+  console.error("Usage: bun script/foo.ts <workspaceID>");
+  process.exit(1);
 }
 
-console.log(`Removing from Black waitlist`)
+console.log(`Removing from Black waitlist`);
 
 const billing = await Database.use((tx) =>
   tx
@@ -19,11 +19,11 @@ const billing = await Database.use((tx) =>
     .from(BillingTable)
     .where(eq(BillingTable.workspaceID, workspaceID))
     .then((rows) => rows[0]),
-)
+);
 
 if (!billing?.timeSubscriptionBooked) {
-  console.error(`Error: Workspace is not on the waitlist`)
-  process.exit(1)
+  console.error(`Error: Workspace is not on the waitlist`);
+  process.exit(1);
 }
 
 await Database.use((tx) =>
@@ -34,6 +34,6 @@ await Database.use((tx) =>
       timeSubscriptionBooked: null,
     })
     .where(eq(BillingTable.workspaceID, workspaceID)),
-)
+);
 
-console.log(`Done`)
+console.log(`Done`);

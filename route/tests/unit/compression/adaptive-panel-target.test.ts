@@ -4,8 +4,15 @@ import { formatAdaptiveTarget } from "../../../src/app/(dashboard)/dashboard/con
 
 test("formatAdaptiveTarget shows policy + computed target for reserve-output", () => {
   const label = formatAdaptiveTarget(
-    { mode: "floor", policy: "reserve-output", outputReserve: 4096, safetyMargin: 1024, pct: 0.85, absoluteBudget: 0 },
-    200000
+    {
+      mode: "floor",
+      policy: "reserve-output",
+      outputReserve: 4096,
+      safetyMargin: 1024,
+      pct: 0.85,
+      absoluteBudget: 0,
+    },
+    200000,
   );
   assert.match(label, /reserve-output/);
   // 200000 − 4096 − 1024 = 194880; tolerate any digit-group separator (locale-dependent toLocaleString).
@@ -14,16 +21,30 @@ test("formatAdaptiveTarget shows policy + computed target for reserve-output", (
 
 test("formatAdaptiveTarget shows off when disabled", () => {
   const label = formatAdaptiveTarget(
-    { mode: "off", policy: "reserve-output", outputReserve: 4096, safetyMargin: 1024, pct: 0.85, absoluteBudget: 0 },
-    200000
+    {
+      mode: "off",
+      policy: "reserve-output",
+      outputReserve: 4096,
+      safetyMargin: 1024,
+      pct: 0.85,
+      absoluteBudget: 0,
+    },
+    200000,
   );
   assert.match(label, /off|disabled/i);
 });
 
 test("formatAdaptiveTarget reflects percentage policy target", () => {
   const label = formatAdaptiveTarget(
-    { mode: "floor", policy: "percentage", outputReserve: 4096, safetyMargin: 1024, pct: 0.7, absoluteBudget: 0 },
-    200000
+    {
+      mode: "floor",
+      policy: "percentage",
+      outputReserve: 4096,
+      safetyMargin: 1024,
+      pct: 0.7,
+      absoluteBudget: 0,
+    },
+    200000,
   );
   assert.match(label, /percentage/);
   // 200000 × 0.7 = 140000

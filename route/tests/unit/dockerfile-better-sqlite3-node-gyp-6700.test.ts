@@ -46,13 +46,13 @@ test("#6700 builder stage compiles better-sqlite3 via a direct node-gyp rebuild,
     stage,
     /cd node_modules\/better-sqlite3\s*(\\\s*)?&&\s*(npx\s+(--yes\s+)?node-gyp|node \/usr\/local\/lib\/node_modules\/npm\/node_modules\/node-gyp\/bin\/node-gyp\.js) rebuild/,
     "builder stage must compile better-sqlite3 by invoking node-gyp directly inside its " +
-      "package directory (bypasses npm's rebuild-script indirection)"
+      "package directory (bypasses npm's rebuild-script indirection)",
   );
   assert.doesNotMatch(
     stage,
     /npm rebuild better-sqlite3/,
     "builder stage must not fall back to `npm rebuild better-sqlite3` — that indirection " +
-      "is the #6700 Dokploy build failure mode"
+      "is the #6700 Dokploy build failure mode",
   );
 });
 
@@ -66,7 +66,7 @@ test("#6700 the better-sqlite3 rebuild happens after `npm ci --ignore-scripts` a
   const ignoreScriptsIdx = stage.findIndex((l) => /npm ci\b.*--ignore-scripts/.test(l));
   const rebuildIdx = stage.findIndex((l) => /node-gyp(\.js)? rebuild/.test(l));
   const smokeLoadIdx = stage.findIndex((l) =>
-    /node -e ".*require\('better-sqlite3'\)\(':memory:'\)\.close\(\)"/.test(l)
+    /node -e ".*require\('better-sqlite3'\)\(':memory:'\)\.close\(\)"/.test(l),
   );
 
   assert.ok(ignoreScriptsIdx >= 0, "builder stage must run `npm ci --ignore-scripts`");
@@ -74,6 +74,6 @@ test("#6700 the better-sqlite3 rebuild happens after `npm ci --ignore-scripts` a
   assert.ok(smokeLoadIdx >= 0, "builder stage must smoke-load better-sqlite3 after the rebuild");
   assert.ok(
     ignoreScriptsIdx <= rebuildIdx && rebuildIdx <= smokeLoadIdx,
-    "order must be: npm ci --ignore-scripts -> node-gyp rebuild -> smoke-load"
+    "order must be: npm ci --ignore-scripts -> node-gyp rebuild -> smoke-load",
   );
 });

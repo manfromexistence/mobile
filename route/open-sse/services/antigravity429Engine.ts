@@ -21,7 +21,10 @@
 export type Category = "unknown" | "rate_limited" | "quota_exhausted" | "soft_rate_limit";
 
 export type DecisionKind =
-  "soft_retry" | "instant_retry_same_auth" | "short_cooldown_switch_auth" | "full_quota_exhausted";
+  | "soft_retry"
+  | "instant_retry_same_auth"
+  | "short_cooldown_switch_auth"
+  | "full_quota_exhausted";
 
 export interface Decision {
   kind: DecisionKind;

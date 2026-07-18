@@ -21,7 +21,7 @@ test("base.ts re-exports it for external importers", () => {
   const host = readFileSync(join(EXE, "base.ts"), "utf8");
   assert.match(
     host,
-    /export \{[^}]*sanitizeReasoningEffortForProvider[^}]*\} from "\.\/base\/reasoningEffort\.ts"/s
+    /export \{[^}]*sanitizeReasoningEffortForProvider[^}]*\} from "\.\/base\/reasoningEffort\.ts"/s,
   );
 });
 

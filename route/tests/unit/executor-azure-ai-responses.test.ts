@@ -32,7 +32,7 @@ test("DefaultExecutor.transformRequest strips stream_options for openai-response
   assert.equal(
     (result as { stream_options?: unknown }).stream_options,
     undefined,
-    "stream_options must be stripped on /responses path"
+    "stream_options must be stripped on /responses path",
   );
 });
 
@@ -50,7 +50,7 @@ test("DefaultExecutor.buildUrl forces /responses path when _omnirouteForceRespon
   assert.match(
     forced,
     /\/responses(\?|$)/,
-    "Forced upstream flag must route to the /responses endpoint"
+    "Forced upstream flag must route to the /responses endpoint",
   );
 
   const defaultPath = executor.buildUrl("gpt-4.1", true, 0, {
@@ -62,7 +62,7 @@ test("DefaultExecutor.buildUrl forces /responses path when _omnirouteForceRespon
   assert.match(
     defaultPath,
     /\/chat\/completions(\?|$)/,
-    "Default azure-ai path must be /chat/completions when force flag is absent"
+    "Default azure-ai path must be /chat/completions when force flag is absent",
   );
 });
 

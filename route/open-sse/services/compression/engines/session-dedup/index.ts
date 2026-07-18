@@ -69,7 +69,7 @@ function hashBlock(text: string): string {
  */
 function findSuffixBlocks(
   lines: string[],
-  minBlockChars: number
+  minBlockChars: number,
 ): Array<{ block: string; startLine: number }> {
   const n = lines.length;
   const seen = new Set<string>();
@@ -94,7 +94,7 @@ function findSuffixBlocks(
  */
 function dedupeWithinMessage(
   text: string,
-  minBlockChars: number
+  minBlockChars: number,
 ): { deduped: string; changed: boolean } {
   const lines = text.split("\n");
   const blocks = findSuffixBlocks(lines, minBlockChars);
@@ -118,7 +118,9 @@ function dedupeWithinMessage(
 
   for (const { block } of sortedBlocks) {
     // Only dedup blocks that appear 2+ times in the text.
-    const occurrences = (result.match(new RegExp(block.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) || []).length;
+    const occurrences = (
+      result.match(new RegExp(block.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g")) || []
+    ).length;
     if (occurrences < 2) continue;
 
     const sha = hashBlock(block);
@@ -141,7 +143,7 @@ function dedupeWithinMessage(
  */
 function dedupMessageTexts(
   msgTexts: Array<{ msgIdx: number; text: string }>,
-  minBlockChars: number
+  minBlockChars: number,
 ): {
   deduped: Map<number, string>;
   dedupCount: number;
@@ -239,7 +241,7 @@ type MessageLike = {
  */
 function processMessages(
   messages: MessageLike[],
-  minBlockChars: number
+  minBlockChars: number,
 ): { messages: MessageLike[]; dedupCount: number } {
   // Collect (msgIdx, text) for non-system string-content messages.
   // For multipart, index each text part separately.
@@ -343,7 +345,8 @@ function validateSessionDedupConfig(config: Record<string, unknown>): EngineVali
     const f = config["fuzzy"];
     if (typeof f === "object" && f !== null) {
       const fe = (f as Record<string, unknown>)["enabled"];
-      if (fe !== undefined && typeof fe !== "boolean") errors.push("fuzzy.enabled must be a boolean");
+      if (fe !== undefined && typeof fe !== "boolean")
+        errors.push("fuzzy.enabled must be a boolean");
     } else if (typeof f !== "boolean") {
       errors.push("fuzzy must be an object { enabled } or a boolean");
     }
@@ -396,14 +399,14 @@ export const sessionDedupEngine: CompressionEngine = {
     const start = performance.now();
     const { messages: exactMessages, dedupCount } = processMessages(
       messages as MessageLike[],
-      minBlockChars
+      minBlockChars,
     );
 
     const { messages: finalMessages, fuzzyCount } = runFuzzyPass(
       exactMessages,
       stepConfig,
       minBlockChars,
-      options?.principalId
+      options?.principalId,
     );
 
     if (dedupCount + fuzzyCount === 0) {

@@ -28,7 +28,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   } catch (error: any) {
     return NextResponse.json(
       { error: sanitizeErrorMessage(error) || "Failed to fetch deliveries" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

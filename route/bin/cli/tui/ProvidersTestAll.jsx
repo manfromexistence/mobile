@@ -68,7 +68,7 @@ function ProvidersTestAllApp({ providers, baseUrl, apiKey, concurrency = 4, onEx
       status: STATUS.PENDING,
       latencyMs: null,
       error: null,
-    }))
+    })),
   );
   const [done, setDone] = useState(false);
   const [started, setStarted] = useState(false);
@@ -182,7 +182,7 @@ export async function startProvidersTestTui({ providers, baseUrl, apiKey, concur
         apiKey={apiKey}
         concurrency={concurrency}
         onExit={onExit}
-      />
+      />,
     );
 
     waitUntilExit().then(resolve).catch(reject);

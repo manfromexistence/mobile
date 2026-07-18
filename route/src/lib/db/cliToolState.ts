@@ -49,14 +49,14 @@ function toRecord(value: unknown): JsonRecord | null {
  */
 export function saveCliToolLastConfigured(
   toolId: string,
-  timestamp: string = new Date().toISOString()
+  timestamp: string = new Date().toISOString(),
 ): void {
   if (isBuildPhase || isCloud) return;
   const db = getDbInstance() as unknown as DbLike;
   db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "cliToolLastConfig",
     toolId,
-    JSON.stringify(timestamp)
+    JSON.stringify(timestamp),
   );
 }
 
@@ -103,7 +103,7 @@ export function deleteCliToolLastConfigured(toolId: string): void {
   const db = getDbInstance() as unknown as DbLike;
   db.prepare("DELETE FROM key_value WHERE namespace = ? AND key = ?").run(
     "cliToolLastConfig",
-    toolId
+    toolId,
   );
 }
 
@@ -126,7 +126,7 @@ export function saveCliToolInitialConfig(toolId: string, config: JsonRecord): bo
   db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "cliToolInitialConfig",
     toolId,
-    JSON.stringify(config)
+    JSON.stringify(config),
   );
   return true;
 }
@@ -154,6 +154,6 @@ export function deleteCliToolInitialConfig(toolId: string): void {
   const db = getDbInstance() as unknown as DbLike;
   db.prepare("DELETE FROM key_value WHERE namespace = ? AND key = ?").run(
     "cliToolInitialConfig",
-    toolId
+    toolId,
   );
 }

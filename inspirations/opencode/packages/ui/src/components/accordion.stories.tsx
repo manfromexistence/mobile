@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { createEffect, createSignal } from "solid-js"
-import * as mod from "./accordion"
-import { create } from "../storybook/scaffold"
+import { createEffect, createSignal } from "solid-js";
+import * as mod from "./accordion";
+import { create } from "../storybook/scaffold";
 
 const docs = `### Overview
 Accordion for collapsible content sections with optional multi-open behavior.
@@ -25,9 +25,9 @@ Use one trigger per item; keep content concise.
 ### Theming/tokens
 - Uses \`data-component="accordion"\` and slot data attributes.
 
-`
+`;
 
-const story = create({ title: "UI/Accordion", mod })
+const story = create({ title: "UI/Accordion", mod });
 export default {
   title: "UI/Accordion",
   id: "components-accordion",
@@ -40,7 +40,7 @@ export default {
       },
     },
   },
-}
+};
 export const Basic = {
   args: {
     collapsible: true,
@@ -59,25 +59,30 @@ export const Basic = {
     },
   },
   render: (props) => {
-    const [value, setValue] = createSignal(props.value)
+    const [value, setValue] = createSignal(props.value);
     createEffect(() => {
-      setValue(props.value)
-    })
+      setValue(props.value);
+    });
 
     const current = () => {
       if (props.multiple) {
-        if (Array.isArray(value())) return value()
-        if (value()) return [value()]
-        return []
+        if (Array.isArray(value())) return value();
+        if (value()) return [value()];
+        return [];
       }
 
-      if (Array.isArray(value())) return value()[0]
-      return value()
-    }
+      if (Array.isArray(value())) return value()[0];
+      return value();
+    };
 
     return (
       <div style={{ display: "grid", gap: "8px", width: "420px" }}>
-        <mod.Accordion collapsible={props.collapsible} multiple={props.multiple} value={current()} onChange={setValue}>
+        <mod.Accordion
+          collapsible={props.collapsible}
+          multiple={props.multiple}
+          value={current()}
+          onChange={setValue}
+        >
           <mod.Accordion.Item value="first">
             <mod.Accordion.Header>
               <mod.Accordion.Trigger>First</mod.Accordion.Trigger>
@@ -96,9 +101,9 @@ export const Basic = {
           </mod.Accordion.Item>
         </mod.Accordion>
       </div>
-    )
+    );
   },
-}
+};
 
 export const Multiple = {
   args: {
@@ -126,7 +131,7 @@ export const Multiple = {
       </mod.Accordion.Item>
     </mod.Accordion>
   ),
-}
+};
 
 export const NonCollapsible = {
   args: {
@@ -146,4 +151,4 @@ export const NonCollapsible = {
       </mod.Accordion.Item>
     </mod.Accordion>
   ),
-}
+};

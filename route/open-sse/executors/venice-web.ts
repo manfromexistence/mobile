@@ -57,7 +57,7 @@ export class VeniceWebExecutor extends BaseExecutor {
         502,
         `Venice fetch failed: ${err instanceof Error ? err.message : "unknown"}`,
         body,
-        CHAT_URL
+        CHAT_URL,
       );
     }
 
@@ -87,7 +87,7 @@ export class VeniceWebExecutor extends BaseExecutor {
               },
             ],
           }),
-          { headers: { "Content-Type": "application/json" } }
+          { headers: { "Content-Type": "application/json" } },
         ),
         url: CHAT_URL,
         headers: reqHeaders,

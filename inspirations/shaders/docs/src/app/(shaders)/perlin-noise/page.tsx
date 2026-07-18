@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { PerlinNoise, perlinNoisePresets } from '@paper-design/shaders-react';
-import { useControls, button, folder } from 'leva';
-import { setParamsSafe, useResetLevaParams } from '@/helpers/use-reset-leva-params';
-import { usePresetHighlight } from '@/helpers/use-preset-highlight';
-import { cleanUpLevaParams } from '@/helpers/clean-up-leva-params';
-import { toHsla } from '@/helpers/color-utils';
-import { ShaderDetails } from '@/components/shader-details';
-import { perlinNoiseDef } from '@/shader-defs/perlin-noise-def';
-import { ShaderContainer } from '@/components/shader-container';
-import { useUrlParams } from '@/helpers/use-url-params';
+import { PerlinNoise, perlinNoisePresets } from "@paper-design/shaders-react";
+import { useControls, button, folder } from "leva";
+import { setParamsSafe, useResetLevaParams } from "@/helpers/use-reset-leva-params";
+import { usePresetHighlight } from "@/helpers/use-preset-highlight";
+import { cleanUpLevaParams } from "@/helpers/clean-up-leva-params";
+import { toHsla } from "@/helpers/color-utils";
+import { ShaderDetails } from "@/components/shader-details";
+import { perlinNoiseDef } from "@/shader-defs/perlin-noise-def";
+import { ShaderContainer } from "@/components/shader-container";
+import { useUrlParams } from "@/helpers/use-url-params";
 
 const { worldWidth, worldHeight, ...defaults } = perlinNoisePresets[0].params;
 
@@ -34,7 +34,7 @@ const PerlinNoiseWithControls = () => {
       perlinNoisePresets.map(({ name, params: { worldWidth, worldHeight, ...preset } }) => [
         name,
         button(() => setParamsSafe(params, setParams, preset)),
-      ])
+      ]),
     );
     return {
       Presets: folder(presets, { order: -1 }),

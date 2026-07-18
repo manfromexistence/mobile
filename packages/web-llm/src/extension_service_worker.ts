@@ -1,18 +1,14 @@
-import * as tvmjs from "@mlc-ai/web-runtime"
-import log from "loglevel"
-import type { ChatOptions, MLCEngineConfig } from "./config"
-import { WebGPUNotFoundError } from "./error"
-import type { ReloadParams, WorkerRequest } from "./message"
-import { areArraysEqual, areChatOptionsListEqual } from "./utils"
-import {
-  type ChatWorker,
-  WebWorkerMLCEngine,
-  WebWorkerMLCEngineHandler,
-} from "./web_worker"
+import * as tvmjs from "@mlc-ai/web-runtime";
+import log from "loglevel";
+import type { ChatOptions, MLCEngineConfig } from "./config";
+import { WebGPUNotFoundError } from "./error";
+import type { ReloadParams, WorkerRequest } from "./message";
+import { areArraysEqual, areChatOptionsListEqual } from "./utils";
+import { type ChatWorker, WebWorkerMLCEngine, WebWorkerMLCEngineHandler } from "./web_worker";
 
 export interface ExtensionMLCEngineConfig extends MLCEngineConfig {
-  extensionId?: string
-  onDisconnect?: () => void
+  extensionId?: string;
+  onDisconnect?: () => void;
 }
 
 /**
@@ -32,72 +28,72 @@ export interface ExtensionMLCEngineConfig extends MLCEngineConfig {
  * });
  */
 export class ServiceWorkerMLCEngineHandler extends WebWorkerMLCEngineHandler {
-  port: chrome.runtime.Port | null
+  port: chrome.runtime.Port | null;
 
   constructor(port: chrome.runtime.Port) {
-    super()
-    this.port = port
-    port.onDisconnect.addListener(() => this.onPortDisconnect(port))
+    super();
+    this.port = port;
+    port.onDisconnect.addListener(() => this.onPortDisconnect(port));
   }
 
   postMessage(msg: any) {
-    this.port?.postMessage(msg)
+    this.port?.postMessage(msg);
   }
 
   setPort(port: chrome.runtime.Port) {
-    this.port = port
-    port.onDisconnect.addListener(() => this.onPortDisconnect(port))
+    this.port = port;
+    port.onDisconnect.addListener(() => this.onPortDisconnect(port));
   }
 
   onPortDisconnect(port: chrome.runtime.Port) {
     if (port === this.port) {
-      this.port = null
+      this.port = null;
     }
   }
 
   onmessage(event: any): void {
     if (event.type === "keepAlive") {
-      return
+      return;
     }
 
-    const msg = event as WorkerRequest
+    const msg = event as WorkerRequest;
     if (msg.kind === "reload") {
       this.handleTask(msg.uuid, async () => {
-        const params = msg.content as ReloadParams
+        const params = msg.content as ReloadParams;
         // If the modelId, chatOpts, and appConfig are the same, immediately return
         if (
           areArraysEqual(this.modelId, params.modelId) &&
           areChatOptionsListEqual(this.chatOpts, params.chatOpts)
         ) {
-          log.info("Already loaded the model. Skip loading")
-          const gpuDetectOutput = await tvmjs.detectGPUDevice()
+          log.info("Already loaded the model. Skip loading");
+          const gpuDetectOutput = await tvmjs.detectGPUDevice();
           if (gpuDetectOutput == undefined) {
-            throw new WebGPUNotFoundError()
+            throw new WebGPUNotFoundError();
           }
-          let gpuLabel = "WebGPU"
+          let gpuLabel = "WebGPU";
           if (gpuDetectOutput.adapterInfo.description.length != 0) {
-            gpuLabel += " - " + gpuDetectOutput.adapterInfo.description
+            gpuLabel += " - " + gpuDetectOutput.adapterInfo.description;
           } else {
-            gpuLabel += " - " + gpuDetectOutput.adapterInfo.vendor
+            gpuLabel += " - " + gpuDetectOutput.adapterInfo.vendor;
           }
           this.engine.getInitProgressCallback()?.({
             progress: 1,
             timeElapsed: 0,
             text: "Finish loading on " + gpuLabel,
-          })
-          return null
+          });
+          return null;
         }
 
-        await this.engine.reload(params.modelId, params.chatOpts)
-        this.modelId = params.modelId
-        this.chatOpts = params.chatOpts
-        return null
-      })
-      return
+        await this.engine.reload(params.modelId, params.chatOpts);
+        this.modelId = params.modelId;
+        this.chatOpts = params.chatOpts;
+        return null;
+      });
+      return;
     }
 
     // All rest of message handling are the same as WebWorkerMLCEngineHandler
-    super.onmessage(event)
+    super.onmessage(event);
   }
 }
 
@@ -119,77 +115,74 @@ export async function CreateServiceWorkerMLCEngine(
   modelId: string | string[],
   engineConfig?: ExtensionMLCEngineConfig,
   chatOpts?: ChatOptions | ChatOptions[],
-  keepAliveMs = 10000
+  keepAliveMs = 10000,
 ): Promise<ServiceWorkerMLCEngine> {
-  const serviceWorkerMLCEngine = new ServiceWorkerMLCEngine(
-    engineConfig,
-    keepAliveMs
-  )
-  await serviceWorkerMLCEngine.reload(modelId, chatOpts)
-  return serviceWorkerMLCEngine
+  const serviceWorkerMLCEngine = new ServiceWorkerMLCEngine(engineConfig, keepAliveMs);
+  await serviceWorkerMLCEngine.reload(modelId, chatOpts);
+  return serviceWorkerMLCEngine;
 }
 
 class PortAdapter implements ChatWorker {
-  port: chrome.runtime.Port
-  private _onmessage!: (message: any) => void
+  port: chrome.runtime.Port;
+  private _onmessage!: (message: any) => void;
 
   constructor(port: chrome.runtime.Port) {
-    this.port = port
-    this.port.onMessage.addListener(this.handleMessage.bind(this))
+    this.port = port;
+    this.port.onMessage.addListener(this.handleMessage.bind(this));
   }
 
   // Wrapper to handle incoming messages and delegate to onmessage if available
   private handleMessage(message: any) {
     if (this._onmessage) {
-      this._onmessage(message)
+      this._onmessage(message);
     }
   }
 
   // Getter and setter for onmessage to manage adding/removing listeners
   get onmessage(): (message: any) => void {
-    return this._onmessage
+    return this._onmessage;
   }
 
   set onmessage(listener: (message: any) => void) {
-    this._onmessage = listener
+    this._onmessage = listener;
   }
 
   // Wrap port.postMessage to maintain 'this' context
   postMessage = (message: any): void => {
-    this.port.postMessage(message)
-  }
+    this.port.postMessage(message);
+  };
 }
 
 /**
  * A client of MLCEngine that exposes the same interface
  */
 export class ServiceWorkerMLCEngine extends WebWorkerMLCEngine {
-  port: chrome.runtime.Port
-  extensionId?: string
+  port: chrome.runtime.Port;
+  extensionId?: string;
 
   constructor(engineConfig?: ExtensionMLCEngineConfig, keepAliveMs = 10000) {
-    const extensionId = engineConfig?.extensionId
-    const onDisconnect = engineConfig?.onDisconnect
+    const extensionId = engineConfig?.extensionId;
+    const onDisconnect = engineConfig?.onDisconnect;
     const port = extensionId
       ? chrome.runtime.connect(extensionId, {
           name: "web_llm_service_worker",
         })
-      : chrome.runtime.connect({ name: "web_llm_service_worker" })
-    const chatWorker = new PortAdapter(port)
-    super(chatWorker, engineConfig)
-    this.port = port
-    this.extensionId = extensionId
+      : chrome.runtime.connect({ name: "web_llm_service_worker" });
+    const chatWorker = new PortAdapter(port);
+    super(chatWorker, engineConfig);
+    this.port = port;
+    this.extensionId = extensionId;
 
     // Keep alive through periodical heartbeat signals
     const keepAliveTimer = setInterval(() => {
-      this.worker.postMessage({ kind: "keepAlive" })
-    }, keepAliveMs)
+      this.worker.postMessage({ kind: "keepAlive" });
+    }, keepAliveMs);
 
     port.onDisconnect.addListener(() => {
-      clearInterval(keepAliveTimer)
+      clearInterval(keepAliveTimer);
       if (onDisconnect) {
-        onDisconnect()
+        onDisconnect();
       }
-    })
+    });
   }
 }

@@ -182,7 +182,7 @@ export function getGlmApiRegion(providerSpecificData: unknown): GlmApiRegion {
 export function buildGlmModelsUrl(
   providerSpecificData: unknown,
   transport: GlmTransport = "openai",
-  fallbackBaseUrl?: string | null
+  fallbackBaseUrl?: string | null,
 ): string {
   const data = asRecord(providerSpecificData);
   const customModelsUrl = asString(data.modelsUrl);
@@ -191,7 +191,7 @@ export function buildGlmModelsUrl(
   if (transport === "anthropic") {
     return joinGlmBaseAndPath(
       getGlmAnthropicBaseUrl(providerSpecificData, fallbackBaseUrl),
-      "/v1/models"
+      "/v1/models",
     );
   }
 
@@ -258,7 +258,7 @@ export function getGlmTeamQuotaConfig(providerSpecificData: unknown): GlmTeamQuo
 
 export function buildGlmQuotaFetch(
   apiKey: string,
-  providerSpecificData?: unknown
+  providerSpecificData?: unknown,
 ): { url: string; headers: Record<string, string> } {
   const teamConfig = getGlmTeamQuotaConfig(providerSpecificData);
   const baseUrl = getGlmQuotaUrl(providerSpecificData);
@@ -347,7 +347,7 @@ export function isCodingGlmBaseUrl(baseUrl: string): boolean {
 
 export function getGlmBaseUrl(
   providerSpecificData: unknown,
-  fallbackBaseUrl?: string | null
+  fallbackBaseUrl?: string | null,
 ): string {
   const data = asRecord(providerSpecificData);
   const configuredBaseUrl = asString(data.baseUrl);
@@ -366,7 +366,7 @@ export function getGlmBaseUrl(
 
 export function getGlmAnthropicBaseUrl(
   providerSpecificData: unknown,
-  fallbackBaseUrl?: string | null
+  fallbackBaseUrl?: string | null,
 ): string {
   const data = asRecord(providerSpecificData);
   const anthropicBaseUrl = asString(data.anthropicBaseUrl);
@@ -400,7 +400,7 @@ export function getGlmAnthropicBaseUrl(
 
 export function getGlmPrimaryTransport(
   providerSpecificData: unknown,
-  fallbackBaseUrl?: string | null
+  fallbackBaseUrl?: string | null,
 ): GlmTransport {
   const data = asRecord(providerSpecificData);
   const configuredTransport = asString(data.primaryTransport);
@@ -418,7 +418,7 @@ export function getGlmTransport(providerSpecificData: unknown, fallbackBaseUrl?:
 export function buildGlmChatUrl(
   providerSpecificData: unknown,
   transport: GlmTransport = "openai",
-  fallbackBaseUrl?: string | null
+  fallbackBaseUrl?: string | null,
 ): string {
   if (transport === "anthropic") {
     return buildGlmAnthropicMessagesUrl(providerSpecificData, fallbackBaseUrl);
@@ -428,7 +428,7 @@ export function buildGlmChatUrl(
 
 export function buildGlmOpenAIChatUrl(
   providerSpecificData: unknown,
-  fallbackBaseUrl?: string | null
+  fallbackBaseUrl?: string | null,
 ): string {
   const configuredBaseUrl = getGlmBaseUrl(providerSpecificData, fallbackBaseUrl);
   const baseUrl = isAnthropicGlmBaseUrl(configuredBaseUrl)
@@ -439,25 +439,25 @@ export function buildGlmOpenAIChatUrl(
 
 export function buildGlmAnthropicMessagesUrl(
   providerSpecificData: unknown,
-  fallbackBaseUrl?: string | null
+  fallbackBaseUrl?: string | null,
 ): string {
   return addBetaQuery(
     joinGlmBaseAndPath(
       getGlmAnthropicBaseUrl(providerSpecificData, fallbackBaseUrl),
-      "/v1/messages"
-    )
+      "/v1/messages",
+    ),
   );
 }
 
 export function buildGlmCountTokensUrl(
   providerSpecificData: unknown,
-  fallbackBaseUrl?: string | null
+  fallbackBaseUrl?: string | null,
 ): string {
   return addBetaQuery(
     joinGlmBaseAndPath(
       getGlmAnthropicBaseUrl(providerSpecificData, fallbackBaseUrl),
-      "/v1/messages/count_tokens"
-    )
+      "/v1/messages/count_tokens",
+    ),
   );
 }
 

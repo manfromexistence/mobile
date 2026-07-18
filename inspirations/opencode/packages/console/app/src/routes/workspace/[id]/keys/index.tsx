@@ -1,4 +1,4 @@
-import { KeySection } from "./key-section"
+import { KeySection } from "./key-section";
 
 export default function () {
   return (
@@ -7,5 +7,5 @@ export default function () {
         <KeySection />
       </div>
     </div>
-  )
+  );
 }

@@ -72,8 +72,7 @@ export default function ClipPathGenerator() {
 
   const allShapes = [...INITIAL_CLIP_PATHS, ...editedShapes, ...customShapes];
   const selectedShape =
-    allShapes.find((shape) => shape.id === selectedShapeId) ||
-    INITIAL_CLIP_PATHS[0];
+    allShapes.find((shape) => shape.id === selectedShapeId) || INITIAL_CLIP_PATHS[0];
 
   useEffect(() => {
     if (INITIAL_CLIP_PATHS.length > 0 && !selectedShapeId) {
@@ -224,11 +223,7 @@ export default function ClipPathGenerator() {
     };
   }, [editMode, handleUndo]);
   if (allShapes.length === 0 || !selectedShape) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        Loading shapes...
-      </div>
-    );
+    return <div className="flex h-screen items-center justify-center">Loading shapes...</div>;
   }
 
   return (
@@ -270,33 +265,27 @@ export default function ClipPathGenerator() {
           <div className="absolute bottom-0 left-0 z-10 grid h-60 w-full place-content-center bg-gradient-to-t from-42% from-white dark:from-black" />
         )}
 
-        {(viewAll ? INITIAL_CLIP_PATHS : INITIAL_CLIP_PATHS.slice(0, 10)).map(
-          (shape) => (
-            <div
-              key={shape.id}
-              className="group relative grid aspect-square w-full cursor-pointer place-items-center rounded-lg border p-3 lg:p-10 2xl:h-48 dark:border-neutral-950"
-              onClick={() => setSelectedShapeId(shape.id)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  setSelectedShapeId(shape.id);
-                }
-              }}
+        {(viewAll ? INITIAL_CLIP_PATHS : INITIAL_CLIP_PATHS.slice(0, 10)).map((shape) => (
+          <div
+            key={shape.id}
+            className="group relative grid aspect-square w-full cursor-pointer place-items-center rounded-lg border p-3 lg:p-10 2xl:h-48 dark:border-neutral-950"
+            onClick={() => setSelectedShapeId(shape.id)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                setSelectedShapeId(shape.id);
+              }
+            }}
+          >
+            <svg
+              viewBox="0 0 100 100"
+              className="relative z-[2] text-neutral-300 dark:text-neutral-500"
+              aria-hidden="true"
+              focusable="false"
             >
-              <svg
-                viewBox="0 0 100 100"
-                className="relative z-[2] text-neutral-300 dark:text-neutral-500"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <path
-                  d={shape.path}
-                  fill="currentColor"
-                  transform={"scale(100)"}
-                />
-              </svg>
-            </div>
-          ),
-        )}
+              <path d={shape.path} fill="currentColor" transform={"scale(100)"} />
+            </svg>
+          </div>
+        ))}
       </div>
       {isMobile && (
         <p className="pb-2 text-center text-primary/60">
@@ -335,12 +324,7 @@ export default function ClipPathGenerator() {
                 </TabsList>
 
                 <TabsContent value="shapes" className="h-[80%] p-0">
-                  <ScrollArea
-                    className={cn(
-                      "mb-4 h-full rounded-lg border ",
-                      editMode && "h-60",
-                    )}
-                  >
+                  <ScrollArea className={cn("mb-4 h-full rounded-lg border ", editMode && "h-60")}>
                     <ShapeGrid
                       className="bg-main"
                       shapes={INITIAL_CLIP_PATHS}
@@ -377,10 +361,7 @@ export default function ClipPathGenerator() {
                   {editedShapes.length > 0 ? (
                     <>
                       <ScrollArea
-                        className={cn(
-                          "bg h-full rounded-md",
-                          editMode && "h-40 opacity-50",
-                        )}
+                        className={cn("bg h-full rounded-md", editMode && "h-40 opacity-50")}
                       >
                         <ShapeGrid
                           shapes={editedShapes}
@@ -411,20 +392,13 @@ export default function ClipPathGenerator() {
                   className="h-[80%] rounded-md border bg-background p-2 2xl:h-[90%]"
                 >
                   <ScrollArea className={cn("bg h-full rounded-md")}>
-                    <div
-                      className={cn(
-                        "",
-                        editMode ? "h-32 overflow-hidden opacity-50" : "",
-                      )}
-                    >
+                    <div className={cn("", editMode ? "h-32 overflow-hidden opacity-50" : "")}>
                       <CustomShapeForm
                         customName={customName}
                         setCustomName={setCustomName}
                         customPath={customPath}
                         setCustomPath={setCustomPath}
-                        onAddCustomShape={() =>
-                          addCustomShape(customPath, customName)
-                        }
+                        onAddCustomShape={() => addCustomShape(customPath, customName)}
                         disabled={editMode}
                       />
                     </div>
@@ -432,9 +406,7 @@ export default function ClipPathGenerator() {
                     {/* Custom shapes list */}
                     {customShapes.length > 0 && (
                       <>
-                        <h3 className="mt-6 font-medium text-lg">
-                          Custom Shapes
-                        </h3>
+                        <h3 className="mt-6 font-medium text-lg">Custom Shapes</h3>
 
                         <ShapeGrid
                           shapes={customShapes}

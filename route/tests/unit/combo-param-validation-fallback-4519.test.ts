@@ -21,7 +21,7 @@ const { normalizeUpstreamFailure } = await import(
 test("#4519 checkFallbackError treats per-model max_tokens 400 as fallback-worthy with zero cooldown", () => {
   const res = checkFallbackError(
     400,
-    "The max_tokens parameter is illegal.：限制数值范围[1,131072]"
+    "The max_tokens parameter is illegal.：限制数值范围[1,131072]",
   );
   assert.equal(res.shouldFallback, true);
   assert.equal(res.cooldownMs, 0);

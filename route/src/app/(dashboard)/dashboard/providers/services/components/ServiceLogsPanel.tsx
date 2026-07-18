@@ -17,7 +17,7 @@ function LogLineRow({ line }: { line: LogLine }) {
       <span
         className={cn(
           "text-text-muted shrink-0 select-none",
-          line.stream === "stderr" && "text-red-400 dark:text-red-400"
+          line.stream === "stderr" && "text-red-400 dark:text-red-400",
         )}
       >
         {line.stream === "stderr" ? "ERR" : "OUT"}

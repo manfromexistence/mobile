@@ -60,7 +60,7 @@ function getFunctionCallPendingKey(item: JsonRecord | null): string | null {
 function handleResponsesTailPayload(
   parsed: JsonRecord,
   output: string,
-  context: PassthroughTailProcessorContext
+  context: PassthroughTailProcessorContext,
 ): string {
   const responsesIdsNormalized = normalizeResponsesSseIds(parsed);
   const parsedResponse = asRecord(parsed.response);
@@ -155,7 +155,7 @@ function handleResponsesTailPayload(
   ) {
     pushUniqueResponsesOutputItems(
       context.passthroughResponsesOutputItems,
-      asRecord(parsed.response).output as unknown[]
+      asRecord(parsed.response).output as unknown[],
     );
   }
   if (
@@ -177,7 +177,7 @@ function handleResponsesTailPayload(
   const stripped = stripResponsesLifecycleEcho(outputPayload);
   const backfilled = backfillResponsesCompletedOutput(
     outputPayload,
-    context.passthroughResponsesOutputItems
+    context.passthroughResponsesOutputItems,
   );
 
   if (stripped || backfilled || textualToolCallBackfilled || responsesIdsNormalized) {
@@ -204,7 +204,7 @@ function handleOpenAiTailPayload(parsed: JsonRecord, context: PassthroughTailPro
 
 export function processBufferedPassthroughLine(
   line: string,
-  context: PassthroughTailProcessorContext
+  context: PassthroughTailProcessorContext,
 ): boolean {
   const trimmed = line.trim();
 

@@ -207,7 +207,7 @@ export async function removeDNSEntries(hosts: string[], sudoPassword: string): P
       await execFileWithPassword(
         "sudo",
         ["-S", process.execPath, "-e", REMOVE_HOSTS_ENTRY_SCRIPT, HOSTS_FILE, hostname],
-        sudoPassword
+        sudoPassword,
       );
       console.log(`[DNS] Removed entries for ${hostname}`);
     }

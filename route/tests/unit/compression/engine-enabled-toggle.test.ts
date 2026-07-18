@@ -56,7 +56,7 @@ function makeTaggingEngine(id: string): CompressionEngine {
       // Tag the user message; drop any padding (non-user) content so the body shrinks
       // and the #5527 (T02) inflation guard keeps the tagged output instead of reverting.
       const next = messages.map((m) =>
-        m.role === "user" ? { ...m, content: m.content + "|tagged" } : { ...m, content: "" }
+        m.role === "user" ? { ...m, content: m.content + "|tagged" } : { ...m, content: "" },
       );
       return {
         body: { ...body, messages: next },

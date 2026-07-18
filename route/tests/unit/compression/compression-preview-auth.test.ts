@@ -55,14 +55,14 @@ test("compression preview requires management auth before reading preview input"
         messages: [{ role: "tool", content: "same\nsame\nsame" }],
         mode: "rtk",
       }),
-    })
+    }),
   );
   const body = (await response.json()) as ErrorResponseBody;
 
   assert.equal(response.status, 401);
   assert.equal(
     typeof body.error === "object" ? body.error.message : null,
-    "Authentication required"
+    "Authentication required",
   );
 });
 
@@ -75,14 +75,14 @@ test("compression preview rejects bearer tokens without a dashboard session", as
         messages: [{ role: "tool", content: "same\nsame\nsame" }],
         mode: "rtk",
       }),
-    })
+    }),
   );
   const body = (await response.json()) as ErrorResponseBody;
 
   assert.equal(response.status, 403);
   assert.equal(
     typeof body.error === "object" ? body.error.message : null,
-    "Invalid management token"
+    "Invalid management token",
   );
 });
 
@@ -110,14 +110,14 @@ test("compression preview still runs for authenticated management sessions", asy
 
 test("compression language pack metadata requires management auth", async () => {
   const response = await languagePacksRoute.GET(
-    new Request("http://localhost/api/compression/language-packs")
+    new Request("http://localhost/api/compression/language-packs"),
   );
   const body = (await response.json()) as ErrorResponseBody;
 
   assert.equal(response.status, 401);
   assert.equal(
     typeof body.error === "object" ? body.error.message : null,
-    "Authentication required"
+    "Authentication required",
   );
 });
 
@@ -125,20 +125,20 @@ test("compression rules metadata rejects bearer tokens without a dashboard sessi
   const response = await rulesRoute.GET(
     new Request("http://localhost/api/compression/rules", {
       headers: { authorization: "Bearer invalid-management-token" },
-    })
+    }),
   );
   const body = (await response.json()) as ErrorResponseBody;
 
   assert.equal(response.status, 403);
   assert.equal(
     typeof body.error === "object" ? body.error.message : null,
-    "Invalid management token"
+    "Invalid management token",
   );
 });
 
 test("compression metadata routes return data for authenticated management sessions", async () => {
   const languageRequest = await makeManagementSessionRequest(
-    "http://localhost/api/compression/language-packs"
+    "http://localhost/api/compression/language-packs",
   );
   const rulesRequest = await makeManagementSessionRequest("http://localhost/api/compression/rules");
 

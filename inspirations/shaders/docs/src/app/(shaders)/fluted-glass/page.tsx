@@ -1,46 +1,51 @@
-'use client';
+"use client";
 
-import { FlutedGlass, flutedGlassPresets } from '@paper-design/shaders-react';
-import { useControls, button, folder } from 'leva';
-import { setParamsSafe, useResetLevaParams } from '@/helpers/use-reset-leva-params';
-import { usePresetHighlight } from '@/helpers/use-preset-highlight';
-import { cleanUpLevaParams } from '@/helpers/clean-up-leva-params';
-import { GlassGridShape, GlassGridShapes, GlassDistortionShape, GlassDistortionShapes } from '@paper-design/shaders';
-import { ShaderFit } from '@paper-design/shaders';
-import { levaImageButton } from '@/helpers/leva-image-button';
-import { useState, useEffect, useCallback } from 'react';
-import { toHsla } from '@/helpers/color-utils';
-import { ShaderDetails } from '@/components/shader-details';
-import { flutedGlassDef } from '@/shader-defs/fluted-glass-def';
-import { ShaderContainer } from '@/components/shader-container';
-import { useUrlParams } from '@/helpers/use-url-params';
+import { FlutedGlass, flutedGlassPresets } from "@paper-design/shaders-react";
+import { useControls, button, folder } from "leva";
+import { setParamsSafe, useResetLevaParams } from "@/helpers/use-reset-leva-params";
+import { usePresetHighlight } from "@/helpers/use-preset-highlight";
+import { cleanUpLevaParams } from "@/helpers/clean-up-leva-params";
+import {
+  GlassGridShape,
+  GlassGridShapes,
+  GlassDistortionShape,
+  GlassDistortionShapes,
+} from "@paper-design/shaders";
+import { ShaderFit } from "@paper-design/shaders";
+import { levaImageButton } from "@/helpers/leva-image-button";
+import { useState, useEffect, useCallback } from "react";
+import { toHsla } from "@/helpers/color-utils";
+import { ShaderDetails } from "@/components/shader-details";
+import { flutedGlassDef } from "@/shader-defs/fluted-glass-def";
+import { ShaderContainer } from "@/components/shader-container";
+import { useUrlParams } from "@/helpers/use-url-params";
 
 const { worldWidth, worldHeight, ...defaults } = flutedGlassPresets[0].params;
 
 const imageFiles = [
-  '001.webp',
-  '002.webp',
-  '003.webp',
-  '004.webp',
-  '005.webp',
-  '006.webp',
-  '007.webp',
-  '008.webp',
-  '009.webp',
-  '0010.webp',
-  '0011.webp',
-  '0012.webp',
-  '0013.webp',
-  '0014.webp',
-  '0015.webp',
-  '0016.webp',
-  '0017.webp',
-  '0018.webp',
+  "001.webp",
+  "002.webp",
+  "003.webp",
+  "004.webp",
+  "005.webp",
+  "006.webp",
+  "007.webp",
+  "008.webp",
+  "009.webp",
+  "0010.webp",
+  "0011.webp",
+  "0012.webp",
+  "0013.webp",
+  "0014.webp",
+  "0015.webp",
+  "0016.webp",
+  "0017.webp",
+  "0018.webp",
 ] as const;
 
 const FlutedGlassWithControls = () => {
   const [imageIdx, setImageIdx] = useState(-1);
-  const [image, setImage] = useState<HTMLImageElement | string>('/images/image-filters/0018.webp');
+  const [image, setImage] = useState<HTMLImageElement | string>("/images/image-filters/0018.webp");
 
   useEffect(() => {
     if (imageIdx >= 0) {
@@ -56,7 +61,7 @@ const FlutedGlassWithControls = () => {
   }, []);
 
   const setImageWithoutStatus = useCallback((img?: HTMLImageElement) => {
-    setImage(img ?? '');
+    setImage(img ?? "");
     setImageIdx(-1);
   }, []);
 
@@ -65,7 +70,7 @@ const FlutedGlassWithControls = () => {
       flutedGlassPresets.map(({ name, params: { worldWidth, worldHeight, ...preset } }) => [
         name,
         button(() => setParamsSafe(params, setParams, preset)),
-      ])
+      ]),
     );
     return {
       colorBack: { value: toHsla(defaults.colorBack), order: 100 },
@@ -101,13 +106,13 @@ const FlutedGlassWithControls = () => {
       // rotation: { value: defaults.rotation, min: 0, max: 360, order: 601 },
       // offsetX: { value: defaults.offsetX, min: -1, max: 1, order: 602 },
       // offsetY: { value: defaults.offsetX, min: -1, max: 1, order: 603 },
-      fit: { value: defaults.fit, options: ['contain', 'cover'] as ShaderFit[], order: 604 },
+      fit: { value: defaults.fit, options: ["contain", "cover"] as ShaderFit[], order: 604 },
 
       Image: folder(
         {
-          'Upload image': levaImageButton(setImageWithoutStatus),
+          "Upload image": levaImageButton(setImageWithoutStatus),
         },
-        { order: 0 }
+        { order: 0 },
       ),
       Presets: folder(presets, { order: -1 }),
     };
@@ -126,7 +131,10 @@ const FlutedGlassWithControls = () => {
         <FlutedGlass onClick={handleClick} {...params} image={image} />
       </ShaderContainer>
 
-      <div onClick={handleClick} className="mx-auto mt-16 mb-48 w-fit text-base text-current/70 select-none">
+      <div
+        onClick={handleClick}
+        className="mx-auto mt-16 mb-48 w-fit text-base text-current/70 select-none"
+      >
         Click to change the sample image
       </div>
 

@@ -44,8 +44,9 @@ export const gamificationTools = [
     }),
     handler: async (args: { apiKeyId: string }) => {
       const { getXp, getBadges } = await import("../../../src/lib/db/gamification");
-      const { calculateLevel, getLevelTitle, getLevelTier } =
-        await import("../../../src/lib/gamification/xp");
+      const { calculateLevel, getLevelTitle, getLevelTier } = await import(
+        "../../../src/lib/gamification/xp"
+      );
       const { getStreak } = await import("../../../src/lib/gamification/streaks");
 
       const xp = getXp(args.apiKeyId);
@@ -105,7 +106,7 @@ export const gamificationTools = [
         args.fromApiKeyId,
         args.toApiKeyId,
         args.amount,
-        args.reason
+        args.reason,
       );
       return result;
     },

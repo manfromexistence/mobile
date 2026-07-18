@@ -54,17 +54,17 @@ export function RequestRow({ request, selected, onClick, onSameContext, style }:
       className={cn(
         "flex items-stretch gap-1 border-b border-border/40 cursor-pointer hover:bg-bg-subtle",
         "focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-500",
-        selected && "bg-surface"
+        selected && "bg-surface",
       )}
     >
       <ContextColorBar contextKey={request.contextKey} />
       <div className="flex-1 min-w-0 px-2 py-1.5">
         <div className="flex items-center gap-2 text-xs">
-          <span className="text-text-muted shrink-0 font-mono">{formatTime(request.timestamp)}</span>
-          <span className="font-mono font-medium text-text-main shrink-0">{request.method}</span>
-          <span className={cn("font-mono font-bold shrink-0", sc)}>
-            {String(request.status)}
+          <span className="text-text-muted shrink-0 font-mono">
+            {formatTime(request.timestamp)}
           </span>
+          <span className="font-mono font-medium text-text-main shrink-0">{request.method}</span>
+          <span className={cn("font-mono font-bold shrink-0", sc)}>{String(request.status)}</span>
           <span className="text-text-muted shrink-0">{formatSize(request.responseSize)}</span>
           <span className="shrink-0">
             <AgentEmoji agentId={request.agent} />

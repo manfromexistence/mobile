@@ -1,6 +1,6 @@
-import { memo } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '../shader-mount.js';
-import { colorPropsAreEqual } from '../color-props-are-equal.js';
+import { memo } from "react";
+import { ShaderMount, type ShaderComponentProps } from "../shader-mount.js";
+import { colorPropsAreEqual } from "../color-props-are-equal.js";
 import {
   defaultObjectSizing,
   getShaderColorFromString,
@@ -10,48 +10,48 @@ import {
   type MetaballsParams,
   type MetaballsUniforms,
   type ShaderPreset,
-} from '@paper-design/shaders';
+} from "@paper-design/shaders";
 
 export interface MetaballsProps extends ShaderComponentProps, MetaballsParams {}
 
 type MetaballsPreset = ShaderPreset<MetaballsParams>;
 
 export const defaultPreset: MetaballsPreset = {
-  name: 'Default',
+  name: "Default",
   params: {
     ...defaultObjectSizing,
     scale: 1,
     speed: 1,
     frame: 0,
-    colorBack: '#000000',
-    colors: ['#6e33cc', '#ff5500', '#ffc105', '#ffc800', '#f585ff'],
+    colorBack: "#000000",
+    colors: ["#6e33cc", "#ff5500", "#ffc105", "#ffc800", "#f585ff"],
     count: 10,
     size: 0.83,
   },
 };
 
 export const inkDropsPreset: MetaballsPreset = {
-  name: 'Ink Drops',
+  name: "Ink Drops",
   params: {
     ...defaultObjectSizing,
     scale: 1,
     speed: 2,
     frame: 0,
-    colorBack: '#ffffff00',
-    colors: ['#000000'],
+    colorBack: "#ffffff00",
+    colors: ["#000000"],
     count: 18,
     size: 0.1,
   },
 };
 
 export const backgroundPreset: MetaballsPreset = {
-  name: 'Background',
+  name: "Background",
   params: {
     ...defaultObjectSizing,
     speed: 0.5,
     frame: 0,
-    colors: ['#ae00ff', '#00ff95', '#ffc105'],
-    colorBack: '#2a273f',
+    colors: ["#ae00ff", "#00ff95", "#ffc105"],
+    colorBack: "#2a273f",
     count: 13,
     size: 0.81,
     scale: 4.0,
@@ -61,20 +61,25 @@ export const backgroundPreset: MetaballsPreset = {
 };
 
 export const solarPreset: MetaballsPreset = {
-  name: 'Solar',
+  name: "Solar",
   params: {
     ...defaultObjectSizing,
     speed: 1,
     frame: 0,
-    colors: ['#ffc800', '#ff5500', '#ffc105'],
-    colorBack: '#102f84',
+    colors: ["#ffc800", "#ff5500", "#ffc105"],
+    colorBack: "#102f84",
     count: 7,
     size: 0.75,
     scale: 1,
   },
 };
 
-export const metaballsPresets: MetaballsPreset[] = [defaultPreset, inkDropsPreset, solarPreset, backgroundPreset];
+export const metaballsPresets: MetaballsPreset[] = [
+  defaultPreset,
+  inkDropsPreset,
+  solarPreset,
+  backgroundPreset,
+];
 
 export const Metaballs: React.FC<MetaballsProps> = memo(function MetaballsImpl({
   // Own props
@@ -119,6 +124,12 @@ export const Metaballs: React.FC<MetaballsProps> = memo(function MetaballsImpl({
   } satisfies MetaballsUniforms;
 
   return (
-    <ShaderMount {...props} speed={speed} frame={frame} fragmentShader={metaballsFragmentShader} uniforms={uniforms} />
+    <ShaderMount
+      {...props}
+      speed={speed}
+      frame={frame}
+      fragmentShader={metaballsFragmentShader}
+      uniforms={uniforms}
+    />
   );
 }, colorPropsAreEqual);

@@ -51,7 +51,7 @@ test("unknown strategy -> input order unchanged (same reference contents)", asyn
   const out = await applyStrategyOrdering("no-such-strategy", input, deps());
   assert.deepEqual(
     out.map((t: { executionKey: string }) => t.executionKey),
-    ["openai>gpt-4o", "anthropic>claude-3"]
+    ["openai>gpt-4o", "anthropic>claude-3"],
   );
 });
 
@@ -60,7 +60,7 @@ test("fill-first -> preserves priority order", async () => {
   const out = await applyStrategyOrdering("fill-first", input, deps());
   assert.deepEqual(
     out.map((t: { executionKey: string }) => t.executionKey),
-    ["a>m1", "b>m2", "c>m3"]
+    ["a>m1", "b>m2", "c>m3"],
   );
 });
 

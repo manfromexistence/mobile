@@ -29,8 +29,9 @@ await updateSettings({ requireLogin: false });
 
 const webhooksRoute = await import("../../../../src/app/api/webhooks/route.ts");
 const webhookByIdRoute = await import("../../../../src/app/api/webhooks/[id]/route.ts");
-const webhookTestRoute =
-  await import("../../../../src/app/api/webhooks/[id]/test/route.ts?suite=ssrf-guard");
+const webhookTestRoute = await import(
+  "../../../../src/app/api/webhooks/[id]/test/route.ts?suite=ssrf-guard"
+);
 const { createWebhook } = await import("../../../../src/lib/db/webhooks.ts");
 
 after(() => {
@@ -117,7 +118,7 @@ describe("POST /api/webhooks — SSRF guard on create", () => {
       const msg = JSON.stringify(body).toLowerCase();
       assert.ok(
         !/block|private|invalid outbound url|outbound url/.test(msg),
-        `telegram chat_id must not trip the URL guard: ${msg}`
+        `telegram chat_id must not trip the URL guard: ${msg}`,
       );
     }
   });
@@ -161,7 +162,7 @@ describe("POST /api/webhooks/[id]/test — defense in depth on dispatch", () => 
     assert.equal(body.responseBody, "", "no upstream body must be exfiltrated");
     assert.ok(
       typeof body.error === "string" && /block|private|invalid/i.test(body.error),
-      `error message must signal the block: ${body.error}`
+      `error message must signal the block: ${body.error}`,
     );
   });
 });

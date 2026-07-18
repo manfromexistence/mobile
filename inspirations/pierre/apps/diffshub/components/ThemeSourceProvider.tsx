@@ -1,11 +1,7 @@
-'use client';
+"use client";
 
-import {
-  createThemeResolver,
-  type ThemeController,
-  type ThemeResolver,
-} from '@pierre/theming';
-import { type ReactNode, useMemo } from 'react';
+import { createThemeResolver, type ThemeController, type ThemeResolver } from "@pierre/theming";
+import { type ReactNode, useMemo } from "react";
 
 import {
   ThemeControllerContext,
@@ -13,12 +9,8 @@ import {
   ThemeSourceContext,
   useThemeResolver,
   useThemeSource,
-} from './useThemeSource';
-import {
-  controllerSource,
-  fixedSource,
-  type ThemeInput,
-} from '@/lib/theme/ThemeSource';
+} from "./useThemeSource";
+import { controllerSource, fixedSource, type ThemeInput } from "@/lib/theme/ThemeSource";
 
 interface ControllerProviderProps {
   controller: ThemeController;
@@ -70,9 +62,7 @@ function ControllerThemeProvider({
   return (
     <ThemeControllerContext.Provider value={controller}>
       <ThemeResolverContext.Provider value={controller.resolver}>
-        <ThemeSourceContext.Provider value={source}>
-          {children}
-        </ThemeSourceContext.Provider>
+        <ThemeSourceContext.Provider value={source}>{children}</ThemeSourceContext.Provider>
       </ThemeResolverContext.Provider>
     </ThemeControllerContext.Provider>
   );
@@ -98,9 +88,7 @@ function OverrideThemeProvider({
   }, [theme, selectedResolver, colorScheme]);
   return (
     <ThemeResolverContext.Provider value={selectedResolver}>
-      <ThemeSourceContext.Provider value={source}>
-        {children}
-      </ThemeSourceContext.Provider>
+      <ThemeSourceContext.Provider value={source}>{children}</ThemeSourceContext.Provider>
     </ThemeResolverContext.Provider>
   );
 }

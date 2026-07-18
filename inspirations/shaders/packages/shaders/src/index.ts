@@ -1,12 +1,12 @@
 /** The core Shader Mount class. Pass it a parent element and a fragment shader to get started. */
-export { ShaderMount, isPaperShaderElement } from './shader-mount.js';
+export { ShaderMount, isPaperShaderElement } from "./shader-mount.js";
 export type {
   PaperShaderElement,
   ShaderMotionParams,
   ShaderMountUniforms,
   ShaderPreset,
   ImageShaderPreset,
-} from './shader-mount.js';
+} from "./shader-mount.js";
 
 /** Shader sizing options and uniforms */
 export {
@@ -16,7 +16,7 @@ export {
   type ShaderFit,
   type ShaderSizingParams,
   type ShaderSizingUniforms,
-} from './shader-sizing.js';
+} from "./shader-sizing.js";
 
 /** A flowing interplay of color spots, moving along distinct trajectories and transformed by organic distortion */
 export {
@@ -24,7 +24,7 @@ export {
   meshGradientMeta,
   type MeshGradientParams,
   type MeshGradientUniforms,
-} from './shaders/mesh-gradient.js';
+} from "./shaders/mesh-gradient.js";
 
 /** Radial multi-colored gradient shaped with layered noise for a natural, smoky aesthetic */
 export {
@@ -32,10 +32,14 @@ export {
   smokeRingFragmentShader,
   type SmokeRingParams,
   type SmokeRingUniforms,
-} from './shaders/smoke-ring.js';
+} from "./shaders/smoke-ring.js";
 
 /** A glowing, web-like structure of fluid lines and soft intersections. Great for creating atmospheric, organic-yet-futuristic visuals */
-export { neuroNoiseFragmentShader, type NeuroNoiseParams, type NeuroNoiseUniforms } from './shaders/neuro-noise.js';
+export {
+  neuroNoiseFragmentShader,
+  type NeuroNoiseParams,
+  type NeuroNoiseUniforms,
+} from "./shaders/neuro-noise.js";
 
 /** Animated multi-color dots pattern with each dot orbiting around its cell center. Supports up to 40 colors and various shape and motion controls. Great for playful, dynamic backgrounds and UI textures */
 export {
@@ -43,7 +47,7 @@ export {
   dotOrbitFragmentShader,
   type DotOrbitParams,
   type DotOrbitUniforms,
-} from './shaders/dot-orbit.js';
+} from "./shaders/dot-orbit.js";
 
 /** Static grid pattern made of circles, diamonds, squares or triangles */
 export {
@@ -52,7 +56,7 @@ export {
   type DotGridShape,
   type DotGridParams,
   type DotGridUniforms,
-} from './shaders/dot-grid.js';
+} from "./shaders/dot-grid.js";
 
 /** A multi-color gradient mapped into smooth, animated curves, delivering a sleek, futuristic visual */
 export {
@@ -60,7 +64,7 @@ export {
   simplexNoiseFragmentShader,
   type SimplexNoiseParams,
   type SimplexNoiseUniforms,
-} from './shaders/simplex-noise.js';
+} from "./shaders/simplex-noise.js";
 
 /** Up to 20 gooey blobs moving around the center and merging into smooth organic shapes */
 export {
@@ -68,16 +72,25 @@ export {
   metaballsFragmentShader,
   type MetaballsParams,
   type MetaballsUniforms,
-} from './shaders/metaballs.js';
+} from "./shaders/metaballs.js";
 
 /** Animated 3D Perlin noise with exposed controls */
-export { perlinNoiseFragmentShader, type PerlinNoiseParams, type PerlinNoiseUniforms } from './shaders/perlin-noise.js';
+export {
+  perlinNoiseFragmentShader,
+  type PerlinNoiseParams,
+  type PerlinNoiseUniforms,
+} from "./shaders/perlin-noise.js";
 
 /** Anti-aliased animated Voronoi pattern with smooth and customizable edges */
-export { voronoiMeta, voronoiFragmentShader, type VoronoiParams, type VoronoiUniforms } from './shaders/voronoi.js';
+export {
+  voronoiMeta,
+  voronoiFragmentShader,
+  type VoronoiParams,
+  type VoronoiUniforms,
+} from "./shaders/voronoi.js";
 
 /** Static line pattern configurable into textures ranging from sharp zigzags to smooth flowing waves */
-export { wavesFragmentShader, type WavesParams, type WavesUniforms } from './shaders/waves.js';
+export { wavesFragmentShader, type WavesParams, type WavesUniforms } from "./shaders/waves.js";
 
 /** Animated color fields warped by noise and swirls, applied over base patterns (checks, stripes, or split edge). Blends up to 10 colors with adjustable distribution, softness, distortion, and swirl. Great for fluid, smoky, or marbled effects */
 export {
@@ -87,16 +100,26 @@ export {
   type WarpParams,
   type WarpUniforms,
   type WarpPattern,
-} from './shaders/warp.js';
+} from "./shaders/warp.js";
 
 /** Animated rays of light radiating from the center, blended with up to 5 colors. The rays are adjustable by size, density, brightness and center glow. Great for dramatic backgrounds, logo reveals, and VFX like energy bursts or sun shafts */
-export { godRaysMeta, godRaysFragmentShader, type GodRaysParams, type GodRaysUniforms } from './shaders/god-rays.js';
+export {
+  godRaysMeta,
+  godRaysFragmentShader,
+  type GodRaysParams,
+  type GodRaysUniforms,
+} from "./shaders/god-rays.js";
 
 /** A single-colored animated spiral that morphs across a wide range of shapes - from crisp, thin-lined geometry to flowing whirlpool forms and wavy, abstract rings */
-export { spiralFragmentShader, type SpiralParams, type SpiralUniforms } from './shaders/spiral.js';
+export { spiralFragmentShader, type SpiralParams, type SpiralUniforms } from "./shaders/spiral.js";
 
 /** Animated bands of color twisting and bending, producing spirals, arcs, and flowing circular patterns */
-export { swirlMeta, swirlFragmentShader, type SwirlParams, type SwirlUniforms } from './shaders/swirl.js';
+export {
+  swirlMeta,
+  swirlFragmentShader,
+  type SwirlParams,
+  type SwirlUniforms,
+} from "./shaders/swirl.js";
 
 /** Animated 2-color dithering over with multiple pattern sources (noise, warp, dots, waves, ripple, swirl, sphere) */
 export {
@@ -107,7 +130,7 @@ export {
   type DitheringUniforms,
   type DitheringShape,
   type DitheringType,
-} from './shaders/dithering.js';
+} from "./shaders/dithering.js";
 
 /** Multi-color gradients with grainy, noise-textured distortion available in 7 animated abstract forms */
 export {
@@ -117,7 +140,7 @@ export {
   type GrainGradientParams,
   type GrainGradientUniforms,
   type GrainGradientShape,
-} from './shaders/grain-gradient.js';
+} from "./shaders/grain-gradient.js";
 
 /** Luminous trails of color merging into a glowing gradient frame */
 export {
@@ -127,7 +150,7 @@ export {
   type PulsingBorderParams,
   type PulsingBorderUniforms,
   type PulsingBorderAspectRatio,
-} from './shaders/pulsing-border.js';
+} from "./shaders/pulsing-border.js";
 
 /** Glowing translucent 3D panels rotating around a central axis */
 export {
@@ -135,7 +158,7 @@ export {
   colorPanelsMeta,
   type ColorPanelsParams,
   type ColorPanelsUniforms,
-} from './shaders/color-panels.js';
+} from "./shaders/color-panels.js";
 
 /** Multi-point mesh gradients with up to 10 color spots, enhanced by two-direction warping, adjustable blend sharpness, and grain controls. Perfect for elegant wallpapers and atmospheric backdrops */
 export {
@@ -143,7 +166,7 @@ export {
   staticMeshGradientMeta,
   type StaticMeshGradientParams,
   type StaticMeshGradientUniforms,
-} from './shaders/static-mesh-gradient.js';
+} from "./shaders/static-mesh-gradient.js";
 
 /** Radial gradient with up to 10 blended colors, featuring advanced focal point control, shape distortion, and grain effects */
 export {
@@ -151,17 +174,17 @@ export {
   staticRadialGradientMeta,
   type StaticRadialGradientParams,
   type StaticRadialGradientUniforms,
-} from './shaders/static-radial-gradient.js';
+} from "./shaders/static-radial-gradient.js";
 
 /** A static texture built from multiple noise layers, usable for a realistic paper and cardboard surfaces or generating abstract patterns. Can be used as a image filter or as a texture */
 export {
   paperTextureFragmentShader,
   type PaperTextureParams,
   type PaperTextureUniforms,
-} from './shaders/paper-texture.js';
+} from "./shaders/paper-texture.js";
 
 /** Water-like surface distortion with natural caustic realism. Works as an image filter or animated texture without image */
-export { waterFragmentShader, type WaterParams, type WaterUniforms } from './shaders/water.js';
+export { waterFragmentShader, type WaterParams, type WaterUniforms } from "./shaders/water.js";
 
 /** Fluted glass image filter transforms an image into streaked, ribbed distortions, giving a mix of clarity and obscurity */
 export {
@@ -172,14 +195,14 @@ export {
   type GlassGridShape,
   type FlutedGlassParams,
   type FlutedGlassUniforms,
-} from './shaders/fluted-glass.js';
+} from "./shaders/fluted-glass.js";
 
 /** A dithering image filter with support for 4 dithering modes and multiple color palettes (2-color, 3-color, and multicolor options, using either predefined colors or ones sampled directly from the original image) */
 export {
   imageDitheringFragmentShader,
   type ImageDitheringParams,
   type ImageDitheringUniforms,
-} from './shaders/image-dithering.js';
+} from "./shaders/image-dithering.js";
 
 /** A glowing gradient of colors flowing through an input image. The effect creates a smoothly animated wave of intensity across the image */
 export {
@@ -188,7 +211,7 @@ export {
   toProcessedHeatmap,
   type HeatmapParams,
   type HeatmapUniforms,
-} from './shaders/heatmap.js';
+} from "./shaders/heatmap.js";
 
 /** Futuristic liquid metal material applied to uploaded logo or one of pre-defined abstract shape */
 export {
@@ -198,7 +221,7 @@ export {
   type LiquidMetalShape,
   type LiquidMetalParams,
   type LiquidMetalUniforms,
-} from './shaders/liquid-metal.js';
+} from "./shaders/liquid-metal.js";
 
 /** A halftone-dot image filter featuring customizable grids, color palettes, and dot styles */
 export {
@@ -209,7 +232,7 @@ export {
   type HalftoneDotsUniforms,
   type HalftoneDotsType,
   type HalftoneDotsGrid,
-} from './shaders/halftone-dots.js';
+} from "./shaders/halftone-dots.js";
 
 /** A halftone CMYK classic algo */
 export {
@@ -218,7 +241,7 @@ export {
   type HalftoneCmykParams,
   type HalftoneCmykUniforms,
   type HalftoneCmykType,
-} from './shaders/halftone-cmyk.js';
+} from "./shaders/halftone-cmyk.js";
 
 /** Animated color fields running around a glassy logo shape */
 export {
@@ -229,9 +252,9 @@ export {
   type GemSmokeShape,
   type GemSmokeParams,
   type GemSmokeUniforms,
-} from './shaders/gem-smoke.js';
+} from "./shaders/gem-smoke.js";
 
 // ----- Utils ----- //
-export { getShaderColorFromString } from './get-shader-color-from-string.js';
-export { getShaderNoiseTexture } from './get-shader-noise-texture.js';
-export { emptyPixel } from './empty-pixel.js';
+export { getShaderColorFromString } from "./get-shader-color-from-string.js";
+export { getShaderNoiseTexture } from "./get-shader-noise-texture.js";
+export { emptyPixel } from "./empty-pixel.js";

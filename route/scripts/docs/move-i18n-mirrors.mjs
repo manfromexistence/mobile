@@ -139,5 +139,5 @@ for (const locale of fs.readdirSync(I18N_DIR)) {
 }
 
 console.log(
-  `[i18n-mirrors] locales=${seenLocales.length} moved=${moved} skipped=${skipped}${DRY ? " (dry-run)" : ""}`
+  `[i18n-mirrors] locales=${seenLocales.length} moved=${moved} skipped=${skipped}${DRY ? " (dry-run)" : ""}`,
 );

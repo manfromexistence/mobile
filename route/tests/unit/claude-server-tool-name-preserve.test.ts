@@ -74,7 +74,7 @@ describe("cloakThirdPartyToolNames — server-tool names in message history", ()
     assert.equal(blocks[1].name, "MixtureOfAgents");
     assert.deepEqual(
       (body.tools as AnyRecord[]).map((t) => t.name),
-      ["web_search", "MixtureOfAgents"]
+      ["web_search", "MixtureOfAgents"],
     );
   });
 

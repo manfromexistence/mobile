@@ -18,7 +18,6 @@ export {
   deleteProviderConnectionsByProvider,
   reorderProviderConnections,
   cleanupProviderConnections,
-
   // Provider Nodes
   getProviderNodes,
   getProviderNodeById,
@@ -26,15 +25,12 @@ export {
   createProviderNode,
   updateProviderNode,
   deleteProviderNode,
-
   // T05: Rate-limit DB persistence (survives token refresh)
   setConnectionRateLimitUntil,
   isConnectionRateLimited,
   getRateLimitedConnections,
-
   // T05 startup recovery: clear stale transient cooldowns left by a prior crash
   clearStaleCrashCooldowns,
-
   // T13: Stale quota display fix (zero out usage after window resets)
   getEffectiveQuotaUsage,
   formatResetCountdown,
@@ -46,11 +42,9 @@ export {
   setModelAlias,
   deleteModelAlias,
   deleteModelAliasesForProvider,
-
   // MITM Alias
   getMitmAlias,
   setMitmAliasAll,
-
   // Custom Models
   getCustomModels,
   getAllCustomModels,
@@ -67,7 +61,6 @@ export {
   getModelIsHidden,
   setModelIsHidden,
   getHiddenModelsByProvider,
-
   // Synced Available Models
   getSyncedAvailableModels,
   getAllSyncedAvailableModels,
@@ -138,11 +131,9 @@ export {
   getSettings,
   updateSettings,
   isCloudEnabled,
-
   // LKGP (Last Known Good Provider) (#919)
   getLKGP,
   setLKGP,
-
   // Pricing
   getPricing,
   getPricingWithSources,
@@ -150,7 +141,6 @@ export {
   updatePricing,
   resetPricing,
   resetAllPricing,
-
   // Proxy Config
   getProxyConfig,
   getProxyForLevel,

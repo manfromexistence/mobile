@@ -52,7 +52,7 @@ export function createStackAccumulator(): StackAccumulator {
  */
 export function decideStep(
   result: CompressionResult,
-  bailout: BailoutConfig
+  bailout: BailoutConfig,
 ): { advance: boolean } {
   if (!result.compressed) return { advance: false };
   // Clamp: a negative minGainPercent would mean "always advance" (invalid state).
@@ -77,7 +77,7 @@ function recordNullStatsStep(acc: StackAccumulator, engineId: string): void {
 export function mergeStackStep(
   acc: StackAccumulator,
   engineId: string,
-  result: CompressionResult
+  result: CompressionResult,
 ): void {
   if (!result.stats) {
     // No-op engine (e.g. ccr / session-dedup found no candidate): stats is null so there is no

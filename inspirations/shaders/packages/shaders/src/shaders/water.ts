@@ -1,6 +1,6 @@
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { declarePI, rotation2, simplexNoise } from '../shader-utils.js';
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { declarePI, rotation2, simplexNoise } from "../shader-utils.js";
 
 /**
  * Water-like surface distortion with natural caustic realism. Works as an image filter or standalone animated texture.
@@ -60,9 +60,9 @@ in vec2 v_imageUV;
 
 out vec4 fragColor;
 
-${ declarePI }
-${ rotation2 }
-${ simplexNoise }
+${declarePI}
+${rotation2}
+${simplexNoise}
 
 float getUvFrame(vec2 uv) {
   float aax = 2. * fwidth(uv.x);

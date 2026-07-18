@@ -161,7 +161,7 @@ export function extractContentText(json: unknown): string {
  */
 export function evaluateResponseValidation(
   json: unknown,
-  config: ResponseValidationConfig | undefined | null
+  config: ResponseValidationConfig | undefined | null,
 ): ResponseValidationResult {
   if (!config || typeof config !== "object") return { valid: true };
 

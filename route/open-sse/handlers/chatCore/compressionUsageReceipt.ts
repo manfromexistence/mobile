@@ -12,7 +12,7 @@
 export function attachCompressionUsageReceiptAfterAnalytics(
   usage: Record<string, unknown>,
   source: "provider" | "estimated" | "stream",
-  ctx: { pendingWrite: Promise<void> | null; skillRequestId: string }
+  ctx: { pendingWrite: Promise<void> | null; skillRequestId: string },
 ) {
   const { pendingWrite, skillRequestId } = ctx;
   void (async () => {

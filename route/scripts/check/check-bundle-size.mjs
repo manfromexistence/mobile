@@ -201,13 +201,13 @@ function applyRatchet(totalBytes) {
     console.error(
       `[bundle-size] REGRESSÃO — ${totalBytes} bytes > baseline ${baselineValue}.\n` +
         "  → Reduza o tamanho dos entrypoints, ou re-baseline metrics.bundleSize em\n" +
-        "    config/quality/quality-baseline.json se o crescimento for legítimo e justificado."
+        "    config/quality/quality-baseline.json se o crescimento for legítimo e justificado.",
     );
     process.exitCode = 1;
     return;
   }
   console.log(
-    `[bundle-size] --ratchet OK — ${totalBytes} bytes, baseline ${baselineValue} (sem regressão).`
+    `[bundle-size] --ratchet OK — ${totalBytes} bytes, baseline ${baselineValue} (sem regressão).`,
   );
   process.exitCode = 0;
 }
@@ -232,7 +232,7 @@ function main() {
         console.log("bundleSize=SKIP reason=no-build");
         if (process.env.CI) {
           console.log(
-            "::notice::check-bundle-size skipped — entradas do .size-limit.json não encontradas (build necessário)"
+            "::notice::check-bundle-size skipped — entradas do .size-limit.json não encontradas (build necessário)",
           );
         }
         return;
@@ -267,7 +267,7 @@ function main() {
     if (RATCHET) {
       console.log(
         `[bundle-size] ${mode}: total ${kb} KB (${totalBytes} bytes) — ` +
-          "--ratchet SKIP (medição não-comparável ao baseline gzip; instale @size-limit/file)."
+          "--ratchet SKIP (medição não-comparável ao baseline gzip; instale @size-limit/file).",
       );
       process.exitCode = 0;
       return;

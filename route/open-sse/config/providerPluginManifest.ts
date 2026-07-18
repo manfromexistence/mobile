@@ -179,8 +179,7 @@ export function getProviderPluginManifestEntryFromRegistry(
   provider: string,
 ): ProviderPluginManifestEntry | null {
   const entry =
-    registry[provider] ||
-    Object.values(registry).find((candidate) => candidate.alias === provider);
+    registry[provider] || Object.values(registry).find((candidate) => candidate.alias === provider);
 
   return entry ? createProviderPluginManifestEntry(entry) : null;
 }

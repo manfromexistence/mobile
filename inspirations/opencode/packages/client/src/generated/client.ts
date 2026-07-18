@@ -112,43 +112,45 @@ import type {
   ProjectCopiesRemoveOutput,
   ProjectCopiesRefreshInput,
   ProjectCopiesRefreshOutput,
-} from "./types"
-import { ClientError } from "./client-error"
+} from "./types";
+import { ClientError } from "./client-error";
 
 export interface ClientOptions {
-  readonly baseUrl: string
-  readonly fetch?: typeof globalThis.fetch
-  readonly headers?: HeadersInit
+  readonly baseUrl: string;
+  readonly fetch?: typeof globalThis.fetch;
+  readonly headers?: HeadersInit;
 }
 
 export interface RequestOptions {
-  readonly signal?: AbortSignal
-  readonly headers?: HeadersInit
+  readonly signal?: AbortSignal;
+  readonly headers?: HeadersInit;
 }
 
 interface RequestDescriptor {
-  readonly method: string
-  readonly path: string
-  readonly query?: Record<string, unknown>
-  readonly headers?: Record<string, unknown>
-  readonly body?: unknown
-  readonly successStatus: number
-  readonly declaredStatuses: ReadonlyArray<number>
-  readonly empty: boolean
+  readonly method: string;
+  readonly path: string;
+  readonly query?: Record<string, unknown>;
+  readonly headers?: Record<string, unknown>;
+  readonly body?: unknown;
+  readonly successStatus: number;
+  readonly declaredStatuses: ReadonlyArray<number>;
+  readonly empty: boolean;
 }
 
 export function make(options: ClientOptions) {
-  const fetch = options.fetch ?? globalThis.fetch
+  const fetch = options.fetch ?? globalThis.fetch;
 
   const prepare = (descriptor: RequestDescriptor, requestOptions?: RequestOptions) => {
-    const url = new URL(descriptor.path, options.baseUrl)
-    for (const [key, value] of Object.entries(descriptor.query ?? {})) appendQuery(url.searchParams, key, value)
-    const headers = new Headers(options.headers)
+    const url = new URL(descriptor.path, options.baseUrl);
+    for (const [key, value] of Object.entries(descriptor.query ?? {}))
+      appendQuery(url.searchParams, key, value);
+    const headers = new Headers(options.headers);
     for (const [key, value] of Object.entries(descriptor.headers ?? {})) {
-      if (value !== undefined && value !== null) headers.set(key, String(value))
+      if (value !== undefined && value !== null) headers.set(key, String(value));
     }
-    for (const [key, value] of new Headers(requestOptions?.headers)) headers.set(key, value)
-    if (descriptor.body !== undefined && !headers.has("content-type")) headers.set("content-type", "application/json")
+    for (const [key, value] of new Headers(requestOptions?.headers)) headers.set(key, value);
+    if (descriptor.body !== undefined && !headers.has("content-type"))
+      headers.set("content-type", "application/json");
     return {
       url,
       init: {
@@ -157,100 +159,115 @@ export function make(options: ClientOptions) {
         headers,
         body: descriptor.body === undefined ? undefined : JSON.stringify(descriptor.body),
       } satisfies RequestInit,
-    }
-  }
+    };
+  };
 
   const execute = async (descriptor: RequestDescriptor, requestOptions?: RequestOptions) => {
     try {
-      const prepared = prepare(descriptor, requestOptions)
-      return await fetch(prepared.url, prepared.init)
+      const prepared = prepare(descriptor, requestOptions);
+      return await fetch(prepared.url, prepared.init);
     } catch (cause) {
-      throw new ClientError("Transport", { cause })
+      throw new ClientError("Transport", { cause });
     }
-  }
+  };
 
-  const responseError = async (response: Response, descriptor: RequestDescriptor): Promise<never> => {
-    if (descriptor.declaredStatuses.includes(response.status)) throw await json(response)
+  const responseError = async (
+    response: Response,
+    descriptor: RequestDescriptor,
+  ): Promise<never> => {
+    if (descriptor.declaredStatuses.includes(response.status)) throw await json(response);
     try {
-      await response.body?.cancel()
+      await response.body?.cancel();
     } catch {}
-    throw new ClientError("UnexpectedStatus", { cause: { status: response.status } })
-  }
+    throw new ClientError("UnexpectedStatus", { cause: { status: response.status } });
+  };
 
-  const request = async <A>(descriptor: RequestDescriptor, requestOptions?: RequestOptions): Promise<A> => {
-    const response = await execute(descriptor, requestOptions)
-    if (response.status !== descriptor.successStatus) return responseError(response, descriptor)
+  const request = async <A>(
+    descriptor: RequestDescriptor,
+    requestOptions?: RequestOptions,
+  ): Promise<A> => {
+    const response = await execute(descriptor, requestOptions);
+    if (response.status !== descriptor.successStatus) return responseError(response, descriptor);
     if (descriptor.empty) {
       try {
-        await response.body?.cancel()
+        await response.body?.cancel();
       } catch {}
-      return undefined as A
+      return undefined as A;
     }
-    return (await json(response)) as A
-  }
+    return (await json(response)) as A;
+  };
 
-  const sse = <A>(descriptor: RequestDescriptor, requestOptions?: RequestOptions): AsyncIterable<A> => ({
+  const sse = <A>(
+    descriptor: RequestDescriptor,
+    requestOptions?: RequestOptions,
+  ): AsyncIterable<A> => ({
     async *[Symbol.asyncIterator]() {
-      const response = await execute(descriptor, requestOptions)
-      if (response.status !== descriptor.successStatus) await responseError(response, descriptor)
+      const response = await execute(descriptor, requestOptions);
+      if (response.status !== descriptor.successStatus) await responseError(response, descriptor);
       if (!isContentType(response, "text/event-stream")) {
         try {
-          await response.body?.cancel()
+          await response.body?.cancel();
         } catch {}
-        throw new ClientError("UnsupportedContentType")
+        throw new ClientError("UnsupportedContentType");
       }
-      if (response.body === null) throw new ClientError("MalformedResponse")
-      const reader = response.body.getReader()
-      const decoder = new TextDecoder()
-      let buffer = ""
+      if (response.body === null) throw new ClientError("MalformedResponse");
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
       try {
         while (true) {
-          let next
+          let next;
           try {
-            next = await reader.read()
+            next = await reader.read();
           } catch (cause) {
-            throw new ClientError("Transport", { cause })
+            throw new ClientError("Transport", { cause });
           }
-          buffer += decoder.decode(next.value, { stream: !next.done })
-          if (buffer.length > 1_048_576) throw new ClientError("MalformedResponse")
-          const trailingCarriageReturn = !next.done && buffer.endsWith("\r")
-          if (trailingCarriageReturn) buffer = buffer.slice(0, -1)
-          buffer = buffer.replaceAll("\r\n", "\n").replaceAll("\r", "\n")
-          if (trailingCarriageReturn) buffer += "\r"
-          if (next.done && buffer !== "") buffer += "\n\n"
-          let boundary = buffer.indexOf("\n\n")
+          buffer += decoder.decode(next.value, { stream: !next.done });
+          if (buffer.length > 1_048_576) throw new ClientError("MalformedResponse");
+          const trailingCarriageReturn = !next.done && buffer.endsWith("\r");
+          if (trailingCarriageReturn) buffer = buffer.slice(0, -1);
+          buffer = buffer.replaceAll("\r\n", "\n").replaceAll("\r", "\n");
+          if (trailingCarriageReturn) buffer += "\r";
+          if (next.done && buffer !== "") buffer += "\n\n";
+          let boundary = buffer.indexOf("\n\n");
           while (boundary >= 0) {
-            const block = buffer.slice(0, boundary)
-            buffer = buffer.slice(boundary + 2)
+            const block = buffer.slice(0, boundary);
+            buffer = buffer.slice(boundary + 2);
             const data = block
               .split("\n")
               .flatMap((line) => (line.startsWith("data:") ? [line.slice(5).trimStart()] : []))
-              .join("\n")
+              .join("\n");
             if (data !== "") {
               try {
-                yield JSON.parse(data) as A
+                yield JSON.parse(data) as A;
               } catch (cause) {
-                throw new ClientError("MalformedResponse", { cause })
+                throw new ClientError("MalformedResponse", { cause });
               }
             }
-            boundary = buffer.indexOf("\n\n")
+            boundary = buffer.indexOf("\n\n");
           }
-          if (next.done) return
+          if (next.done) return;
         }
       } finally {
         try {
-          await reader.cancel()
+          await reader.cancel();
         } catch {}
-        reader.releaseLock()
+        reader.releaseLock();
       }
     },
-  })
+  });
 
   return {
     health: {
       get: (requestOptions?: RequestOptions) =>
         request<HealthGetOutput>(
-          { method: "GET", path: `/api/health`, successStatus: 200, declaredStatuses: [401, 400], empty: false },
+          {
+            method: "GET",
+            path: `/api/health`,
+            successStatus: 200,
+            declaredStatuses: [401, 400],
+            empty: false,
+          },
           requestOptions,
         ),
     },
@@ -372,7 +389,12 @@ export function make(options: ClientOptions) {
           {
             method: "POST",
             path: `/api/session/${encodeURIComponent(input.sessionID)}/prompt`,
-            body: { id: input["id"], prompt: input["prompt"], delivery: input["delivery"], resume: input["resume"] },
+            body: {
+              id: input["id"],
+              prompt: input["prompt"],
+              delivery: input["delivery"],
+              resume: input["resume"],
+            },
             successStatus: 200,
             declaredStatuses: [409, 404, 400, 401],
             empty: false,
@@ -458,7 +480,10 @@ export function make(options: ClientOptions) {
           },
           requestOptions,
         ),
-      events: (input: SessionsEventsInput, requestOptions?: RequestOptions): AsyncIterable<SessionsEventsOutput> =>
+      events: (
+        input: SessionsEventsInput,
+        requestOptions?: RequestOptions,
+      ): AsyncIterable<SessionsEventsOutput> =>
         sse<SessionsEventsOutput>(
           {
             method: "GET",
@@ -772,7 +797,12 @@ export function make(options: ClientOptions) {
           {
             method: "GET",
             path: `/api/fs/find`,
-            query: { location: input["location"], query: input["query"], type: input["type"], limit: input["limit"] },
+            query: {
+              location: input["location"],
+              query: input["query"],
+              type: input["type"],
+              limit: input["limit"],
+            },
             successStatus: 200,
             declaredStatuses: [401, 400],
             empty: false,
@@ -811,7 +841,13 @@ export function make(options: ClientOptions) {
     events: {
       subscribe: (requestOptions?: RequestOptions): AsyncIterable<EventsSubscribeOutput> =>
         sse<EventsSubscribeOutput>(
-          { method: "GET", path: `/api/event`, successStatus: 200, declaredStatuses: [401, 400], empty: false },
+          {
+            method: "GET",
+            path: `/api/event`,
+            successStatus: 200,
+            declaredStatuses: [401, 400],
+            empty: false,
+          },
           requestOptions,
         ),
     },
@@ -954,7 +990,11 @@ export function make(options: ClientOptions) {
             method: "POST",
             path: `/experimental/project/${encodeURIComponent(input.projectID)}/copy`,
             query: { location: input["location"] },
-            body: { strategy: input["strategy"], directory: input["directory"], name: input["name"] },
+            body: {
+              strategy: input["strategy"],
+              directory: input["directory"],
+              name: input["name"],
+            },
             successStatus: 200,
             declaredStatuses: [400, 401],
             empty: false,
@@ -987,43 +1027,47 @@ export function make(options: ClientOptions) {
           requestOptions,
         ),
     },
-  }
+  };
 }
 
 function appendQuery(params: URLSearchParams, key: string, value: unknown): void {
-  if (value === undefined || value === null) return
+  if (value === undefined || value === null) return;
   if (Array.isArray(value)) {
-    for (const item of value) appendQuery(params, key, item)
-    return
+    for (const item of value) appendQuery(params, key, item);
+    return;
   }
   if (typeof value === "object") {
-    for (const [child, item] of Object.entries(value)) appendQuery(params, `${key}[${child}]`, item)
-    return
+    for (const [child, item] of Object.entries(value))
+      appendQuery(params, `${key}[${child}]`, item);
+    return;
   }
-  params.append(key, String(value))
+  params.append(key, String(value));
 }
 
 async function json(response: Response): Promise<unknown> {
-  if (!isContentType(response, "application/json") && !response.headers.get("content-type")?.includes("+json")) {
+  if (
+    !isContentType(response, "application/json") &&
+    !response.headers.get("content-type")?.includes("+json")
+  ) {
     try {
-      await response.body?.cancel()
+      await response.body?.cancel();
     } catch {}
-    throw new ClientError("UnsupportedContentType")
+    throw new ClientError("UnsupportedContentType");
   }
-  let text: string
+  let text: string;
   try {
-    text = await response.text()
+    text = await response.text();
   } catch (cause) {
-    throw new ClientError("Transport", { cause })
+    throw new ClientError("Transport", { cause });
   }
-  if (text === "") throw new ClientError("MalformedResponse")
+  if (text === "") throw new ClientError("MalformedResponse");
   try {
-    return JSON.parse(text)
+    return JSON.parse(text);
   } catch (cause) {
-    throw new ClientError("MalformedResponse", { cause })
+    throw new ClientError("MalformedResponse", { cause });
   }
 }
 
 function isContentType(response: Response, expected: string) {
-  return response.headers.get("content-type")?.split(";", 1)[0]?.trim().toLowerCase() === expected
+  return response.headers.get("content-type")?.split(";", 1)[0]?.trim().toLowerCase() === expected;
 }

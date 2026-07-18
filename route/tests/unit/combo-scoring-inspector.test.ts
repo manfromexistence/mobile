@@ -23,8 +23,9 @@ const comboMetrics = await import("../../open-sse/services/comboMetrics.ts");
 const inspector = await import("../../src/lib/usage/comboScoringInspector.ts");
 const route = await import("../../src/app/api/usage/combo-scoring-inspector/route.ts");
 const { normalizeComboStep } = await import("../../src/lib/combos/steps.ts");
-const { lockModel, clearAllModelLockouts } =
-  await import("../../open-sse/services/accountFallback.ts");
+const { lockModel, clearAllModelLockouts } = await import(
+  "../../open-sse/services/accountFallback.ts"
+);
 const { resetAllCircuitBreakers } = await import("../../src/shared/utils/circuitBreaker.ts");
 
 async function resetStorage() {
@@ -172,12 +173,12 @@ test("scoring inspector ranks targets and explains score contributions", async (
 
   const contributionSum = response.combos[0].targets[0].factors.reduce(
     (sum, factor) => sum + factor.contribution,
-    0
+    0,
   );
   assert.ok(Math.abs(contributionSum - response.combos[0].targets[0].score) < 0.02);
   assert.ok(response.combos[0].targets[0].factors.some((factor) => factor.key === "quota"));
   assert.ok(
-    response.combos[0].targets[0].factors.some((factor) => factor.source === "combo_health")
+    response.combos[0].targets[0].factors.some((factor) => factor.source === "combo_health"),
   );
 });
 
@@ -197,7 +198,7 @@ test("scoring inspector marks non-auto combos as explanatory recompute", async (
   assert.equal(response.combos.length, 1);
   assert.equal(
     response.combos[0].warnings.some((warning) => warning.includes("not auto")),
-    true
+    true,
   );
 });
 
@@ -278,7 +279,7 @@ test("scoring inspector skipAutopilot avoids rebuilding autopilot report", async
   assert.equal(response.combos.length, 1);
   assert.equal(
     response.combos[0].warnings.includes("Combo has no inspectable execution targets."),
-    true
+    true,
   );
 });
 
@@ -372,14 +373,14 @@ test("scoring inspector includes resilience skip reasons for cooldowns and model
   assert.equal(cooldownTarget?.signals.resilience.targetState, "skipped");
   assert.equal(
     cooldownTarget?.signals.resilience.skipReasons.some(
-      (reason) => reason.code === "connection_cooldown" && reason.retryAfterMs! > 0
+      (reason) => reason.code === "connection_cooldown" && reason.retryAfterMs! > 0,
     ),
-    true
+    true,
   );
   assert.equal(lockoutTarget?.signals.resilience.targetState, "skipped");
   assert.equal(
     lockoutTarget?.signals.resilience.skipReasons.some((reason) => reason.code === "model_lockout"),
-    true
+    true,
   );
 });
 
@@ -388,28 +389,28 @@ test("scoring inspector route requires auth, validates query, and returns 404", 
   const { combo } = await seedAutoCombo();
 
   const unauthenticated = await route.GET(
-    new Request(`http://localhost/api/usage/combo-scoring-inspector?comboId=${combo.id}`)
+    new Request(`http://localhost/api/usage/combo-scoring-inspector?comboId=${combo.id}`),
   );
   assert.equal(unauthenticated.status, 401);
 
   const invalid = await route.GET(
     await makeManagementSessionRequest(
-      "http://localhost/api/usage/combo-scoring-inspector?range=bad"
-    )
+      "http://localhost/api/usage/combo-scoring-inspector?range=bad",
+    ),
   );
   assert.equal(invalid.status, 400);
 
   const missing = await route.GET(
     await makeManagementSessionRequest(
-      "http://localhost/api/usage/combo-scoring-inspector?comboId=11111111-1111-4111-8111-111111111111"
-    )
+      "http://localhost/api/usage/combo-scoring-inspector?comboId=11111111-1111-4111-8111-111111111111",
+    ),
   );
   assert.equal(missing.status, 404);
 
   const authenticated = await route.GET(
     await makeManagementSessionRequest(
-      `http://localhost/api/usage/combo-scoring-inspector?range=24h&horizon=7d&taskType=coding&comboId=${combo.id}`
-    )
+      `http://localhost/api/usage/combo-scoring-inspector?range=24h&horizon=7d&taskType=coding&comboId=${combo.id}`,
+    ),
   );
   assert.equal(authenticated.status, 200);
   const body = await authenticated.json();

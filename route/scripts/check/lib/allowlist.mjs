@@ -49,7 +49,7 @@ export function assertNoStale(allowlist, liveViolations, gateName) {
     console.error(
       `[${gateName}] ${stale.length} entrada(s) obsoleta(s) na allowlist ` +
         `— a violação foi corrigida; REMOVA a entrada para travar a correção:\n` +
-        stale.map((e) => `  ✗ ${e}`).join("\n")
+        stale.map((e) => `  ✗ ${e}`).join("\n"),
     );
     process.exitCode = 1;
   }

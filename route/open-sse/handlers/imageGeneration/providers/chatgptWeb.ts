@@ -87,7 +87,7 @@ export async function handleChatGptWebImageGeneration({
   if (log && requestedCount > 1) {
     log.warn(
       "IMAGE",
-      `ChatGPT Web returns one image per chat turn; requested n=${requestedCount} will run sequentially`
+      `ChatGPT Web returns one image per chat turn; requested n=${requestedCount} will run sequentially`,
     );
   }
 

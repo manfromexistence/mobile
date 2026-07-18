@@ -15,7 +15,7 @@ function mkPkg(
   nmDir: string,
   name: string,
   manifest: Record<string, unknown> = {},
-  files: Record<string, string> = {}
+  files: Record<string, string> = {},
 ): void {
   const dir = join(nmDir, name);
   mkdirSync(dir, { recursive: true });
@@ -47,7 +47,7 @@ function buildRoot(rootDir: string): void {
         "js-tiktoken": "*",
       },
     },
-    { "dist/index.js": "export const llmlingua = true;\n" }
+    { "dist/index.js": "export const llmlingua = true;\n" },
   );
   mkPkg(rootNm, "es-toolkit", {});
   mkPkg(rootNm, "@tensorflow/tfjs", { dependencies: { "@tensorflow/tfjs-core": "4.22.0" } });
@@ -79,7 +79,7 @@ test("computeDependencyClosure walks deps transitively and skips peers (transfor
     // The peer (declared via peerDependencies, NOT dependencies) must NOT be pulled in.
     assert.ok(
       !closure.includes("@huggingface/transformers"),
-      "closure must NOT include the transformers peer"
+      "closure must NOT include the transformers peer",
     );
   } finally {
     rmSync(root, { recursive: true, force: true });
@@ -117,7 +117,7 @@ test("colocateLlmlinguaOptionals copies the closure into dist and never clobbers
 
     // CRITICAL: dist's pinned transformers is preserved — root's 4.2.0 must NOT win.
     const distTransformers = JSON.parse(
-      readFileSync(join(distNm, "@huggingface", "transformers", "package.json"), "utf8")
+      readFileSync(join(distNm, "@huggingface", "transformers", "package.json"), "utf8"),
     );
     assert.equal(distTransformers.version, "3.5.2", "dist transformers must remain 3.5.2");
   } finally {

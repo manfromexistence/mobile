@@ -20,8 +20,9 @@ process.env.DATA_DIR = TEST_DATA_DIR;
 const core = await import("../../../src/lib/db/core.ts");
 core.resetDbInstance();
 
-const { insertCompressionAnalyticsRow, getPerEngineAnalytics } =
-  await import("../../../src/lib/db/compressionAnalytics.ts");
+const { insertCompressionAnalyticsRow, getPerEngineAnalytics } = await import(
+  "../../../src/lib/db/compressionAnalytics.ts"
+);
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
@@ -136,7 +137,7 @@ test("getPerEngineAnalytics falls back to mode column when engine is null (COALE
   const db = core.getDbInstance();
   db.prepare(
     `INSERT INTO compression_analytics (timestamp, mode, engine, original_tokens, compressed_tokens, tokens_saved)
-     VALUES (?, ?, NULL, ?, ?, ?)`
+     VALUES (?, ?, NULL, ?, ?, ?)`,
   ).run(now, "caveman", 600, 400, 200);
 
   // COALESCE(engine, mode) = 'caveman' for the row above

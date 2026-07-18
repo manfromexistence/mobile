@@ -1,7 +1,7 @@
-import type { V2ColorValue } from "../types"
+import type { V2ColorValue } from "../types";
 
 /** Fixed project avatar colors (OC-2); theme-independent like v1 `avatar-background-*`. */
-export const V2_AVATAR_FG = "#ffffffff"
+export const V2_AVATAR_FG = "#ffffffff";
 
 export const V2_AVATAR_LIGHT: Record<string, V2ColorValue> = {
   "v2-avatar-fg": V2_AVATAR_FG,
@@ -23,7 +23,7 @@ export const V2_AVATAR_LIGHT: Record<string, V2ColorValue> = {
   "v2-avatar-border-purple": "#5230c2ff",
   "v2-avatar-bg-gray": "#5c5c5cff",
   "v2-avatar-border-gray": "#3a3a3aff",
-}
+};
 
 export const V2_AVATAR_DARK: Record<string, V2ColorValue> = {
   "v2-avatar-fg": V2_AVATAR_FG,
@@ -45,4 +45,4 @@ export const V2_AVATAR_DARK: Record<string, V2ColorValue> = {
   "v2-avatar-border-purple": "#7152f4ff",
   "v2-avatar-bg-gray": "#5c5c5cff",
   "v2-avatar-border-gray": "#aeaeaeff",
-}
+};

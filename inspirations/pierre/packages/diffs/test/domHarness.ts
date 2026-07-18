@@ -1,7 +1,7 @@
-import { JSDOM } from 'jsdom';
+import { JSDOM } from "jsdom";
 
-import type { CodeView } from '../src/components/CodeView';
-import type { CodeViewItem, FileContents } from '../src/types';
+import type { CodeView } from "../src/components/CodeView";
+import type { CodeViewItem, FileContents } from "../src/types";
 
 export interface InstallDomNavigatorOptions {
   maxTouchPoints?: number;
@@ -20,7 +20,7 @@ export interface InstallDomOptions {
 }
 
 export interface DomHandle {
-  window: JSDOM['window'];
+  window: JSDOM["window"];
   cleanup(): void;
   /**
    * Registers the element that document.elementFromPoint(x, y) returns for an
@@ -35,31 +35,28 @@ export interface DomHandle {
 // in the past and caused harness bugs, while unused extras are harmless. The
 // returned cleanup() restores (or deletes) every global it touched.
 export function installDom(options: InstallDomOptions = {}): DomHandle {
-  const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
-    url: 'http://localhost',
+  const dom = new JSDOM("<!DOCTYPE html><html><body></body></html>", {
+    url: "http://localhost",
   });
-  const originalNavigatorDescriptor = Object.getOwnPropertyDescriptor(
-    globalThis,
-    'navigator'
-  );
+  const originalNavigatorDescriptor = Object.getOwnPropertyDescriptor(globalThis, "navigator");
   const originalValues = {
-    cancelAnimationFrame: Reflect.get(globalThis, 'cancelAnimationFrame'),
-    document: Reflect.get(globalThis, 'document'),
-    DocumentFragment: Reflect.get(globalThis, 'DocumentFragment'),
-    Element: Reflect.get(globalThis, 'Element'),
-    Event: Reflect.get(globalThis, 'Event'),
-    HTMLButtonElement: Reflect.get(globalThis, 'HTMLButtonElement'),
-    HTMLDivElement: Reflect.get(globalThis, 'HTMLDivElement'),
-    HTMLElement: Reflect.get(globalThis, 'HTMLElement'),
-    HTMLPreElement: Reflect.get(globalThis, 'HTMLPreElement'),
-    HTMLStyleElement: Reflect.get(globalThis, 'HTMLStyleElement'),
-    MouseEvent: Reflect.get(globalThis, 'MouseEvent'),
-    Node: Reflect.get(globalThis, 'Node'),
-    PointerEvent: Reflect.get(globalThis, 'PointerEvent'),
-    requestAnimationFrame: Reflect.get(globalThis, 'requestAnimationFrame'),
-    ResizeObserver: Reflect.get(globalThis, 'ResizeObserver'),
-    SVGElement: Reflect.get(globalThis, 'SVGElement'),
-    window: Reflect.get(globalThis, 'window'),
+    cancelAnimationFrame: Reflect.get(globalThis, "cancelAnimationFrame"),
+    document: Reflect.get(globalThis, "document"),
+    DocumentFragment: Reflect.get(globalThis, "DocumentFragment"),
+    Element: Reflect.get(globalThis, "Element"),
+    Event: Reflect.get(globalThis, "Event"),
+    HTMLButtonElement: Reflect.get(globalThis, "HTMLButtonElement"),
+    HTMLDivElement: Reflect.get(globalThis, "HTMLDivElement"),
+    HTMLElement: Reflect.get(globalThis, "HTMLElement"),
+    HTMLPreElement: Reflect.get(globalThis, "HTMLPreElement"),
+    HTMLStyleElement: Reflect.get(globalThis, "HTMLStyleElement"),
+    MouseEvent: Reflect.get(globalThis, "MouseEvent"),
+    Node: Reflect.get(globalThis, "Node"),
+    PointerEvent: Reflect.get(globalThis, "PointerEvent"),
+    requestAnimationFrame: Reflect.get(globalThis, "requestAnimationFrame"),
+    ResizeObserver: Reflect.get(globalThis, "ResizeObserver"),
+    SVGElement: Reflect.get(globalThis, "SVGElement"),
+    window: Reflect.get(globalThis, "window"),
   };
 
   // jsdom does not implement PointerEvent; tests dispatch this MouseEvent
@@ -76,7 +73,7 @@ export function installDom(options: InstallDomOptions = {}): DomHandle {
         ...init,
       });
       this.pointerId = init.pointerId ?? 1;
-      this.pointerType = init.pointerType ?? 'mouse';
+      this.pointerType = init.pointerType ?? "mouse";
     }
   }
 
@@ -86,11 +83,7 @@ export function installDom(options: InstallDomOptions = {}): DomHandle {
     disconnect(): void {}
   }
 
-  const {
-    maxTouchPoints = 0,
-    platform = 'MacIntel',
-    userAgent,
-  } = options.navigator ?? {};
+  const { maxTouchPoints = 0, platform = "MacIntel", userAgent } = options.navigator ?? {};
   // Bun defines globalThis.navigator as a non-writable accessor, so the
   // override has to go through defineProperty and be restored from the saved
   // property descriptor rather than plain assignment.
@@ -116,10 +109,9 @@ export function installDom(options: InstallDomOptions = {}): DomHandle {
   const frames = new Map<number, ReturnType<typeof setTimeout>>();
 
   const pointTargets = new Map<string, Element>();
-  Object.defineProperty(dom.window.document, 'elementFromPoint', {
+  Object.defineProperty(dom.window.document, "elementFromPoint", {
     configurable: true,
-    value: (x: number, y: number): Element | null =>
-      pointTargets.get(`${x},${y}`) ?? null,
+    value: (x: number, y: number): Element | null => pointTargets.get(`${x},${y}`) ?? null,
   });
 
   Object.assign(globalThis, {
@@ -156,7 +148,7 @@ export function installDom(options: InstallDomOptions = {}): DomHandle {
     window: dom.window,
   });
   Object.assign(dom.window, { PointerEvent: MockPointerEvent });
-  Object.defineProperty(globalThis, 'navigator', {
+  Object.defineProperty(globalThis, "navigator", {
     configurable: true,
     value: navigator,
   });
@@ -180,13 +172,9 @@ export function installDom(options: InstallDomOptions = {}): DomHandle {
         }
       }
       if (originalNavigatorDescriptor == null) {
-        Reflect.deleteProperty(globalThis, 'navigator');
+        Reflect.deleteProperty(globalThis, "navigator");
       } else {
-        Object.defineProperty(
-          globalThis,
-          'navigator',
-          originalNavigatorDescriptor
-        );
+        Object.defineProperty(globalThis, "navigator", originalNavigatorDescriptor);
       }
       dom.window.close();
     },
@@ -202,14 +190,12 @@ export interface CreateRootOptions {
 // bounding rect, since jsdom performs no layout. Appends it to document.body.
 export function createRoot(options: CreateRootOptions = {}): HTMLDivElement {
   const { width = 1000, height = 800 } = options;
-  const root = document.createElement('div');
+  const root = document.createElement("div");
   root.scrollTo = (scrollOptions?: ScrollToOptions | number, y?: number) => {
     root.scrollTop =
-      typeof scrollOptions === 'number'
-        ? (y ?? 0)
-        : (scrollOptions?.top ?? root.scrollTop);
+      typeof scrollOptions === "number" ? (y ?? 0) : (scrollOptions?.top ?? root.scrollTop);
   };
-  Object.defineProperty(root, 'getBoundingClientRect', {
+  Object.defineProperty(root, "getBoundingClientRect", {
     value: () => ({
       bottom: height,
       height,
@@ -233,35 +219,26 @@ export function wait(ms = 0): Promise<void> {
 }
 
 export function dispatchScroll(root: HTMLElement): void {
-  root.dispatchEvent(new window.Event('scroll'));
+  root.dispatchEvent(new window.Event("scroll"));
 }
 
 export function makeFile(name: string, lineCount = 20): FileContents {
   return {
     name,
-    contents: Array.from(
-      { length: lineCount },
-      (_, index) => `line ${index + 1}`
-    ).join('\n'),
+    contents: Array.from({ length: lineCount }, (_, index) => `line ${index + 1}`).join("\n"),
   };
 }
 
-export function makeFileItem(
-  id: string,
-  lineCount = 20
-): CodeViewItem<undefined> {
+export function makeFileItem(id: string, lineCount = 20): CodeViewItem<undefined> {
   return {
     id,
-    type: 'file',
+    type: "file",
     file: makeFile(`${id}.ts`, lineCount),
   };
 }
 
 // Pushes items into the viewer and flushes the rAF-scheduled render pass.
-export async function renderItems(
-  viewer: CodeView,
-  items: readonly CodeViewItem[]
-): Promise<void> {
+export async function renderItems(viewer: CodeView, items: readonly CodeViewItem[]): Promise<void> {
   viewer.setItems(items);
   viewer.render(true);
   await wait(0);

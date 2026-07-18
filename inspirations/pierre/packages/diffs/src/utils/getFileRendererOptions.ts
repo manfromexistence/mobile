@@ -1,10 +1,10 @@
-import type { FileOptions } from '../components/File';
-import type { FileRendererOptions } from '../renderers/FileRenderer';
+import type { FileOptions } from "../components/File";
+import type { FileRendererOptions } from "../renderers/FileRenderer";
 
 // Build the renderer option snapshot with direct property reads. CodeView item
 // options may inherit prototype getters, so object spread can miss values.
 export function getFileRendererOptions<LAnnotation>(
-  options: FileOptions<LAnnotation> | undefined
+  options: FileOptions<LAnnotation> | undefined,
 ): FileRendererOptions {
   return {
     theme: options?.theme,
@@ -21,7 +21,6 @@ export function getFileRendererOptions<LAnnotation>(
     tokenizeMaxLineLength: options?.tokenizeMaxLineLength,
     tokenizeMaxLength: options?.tokenizeMaxLength,
     unsafeCSS: options?.unsafeCSS,
-    headerRenderMode:
-      options?.renderCustomHeader != null ? 'custom' : 'default',
+    headerRenderMode: options?.renderCustomHeader != null ? "custom" : "default",
   };
 }

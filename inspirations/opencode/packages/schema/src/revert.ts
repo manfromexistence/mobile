@@ -1,9 +1,9 @@
-export * as Revert from "./revert"
+export * as Revert from "./revert";
 
-import { Schema } from "effect"
-import { optional } from "./schema"
-import { NonNegativeInt, RelativePath } from "./schema"
-import { SessionMessage } from "./session-message"
+import { Schema } from "effect";
+import { optional } from "./schema";
+import { NonNegativeInt, RelativePath } from "./schema";
+import { SessionMessage } from "./session-message";
 
 export const FileDiff = Schema.Struct({
   path: RelativePath,
@@ -11,7 +11,7 @@ export const FileDiff = Schema.Struct({
   additions: NonNegativeInt,
   deletions: NonNegativeInt,
   patch: Schema.String,
-}).annotate({ identifier: "File.Diff" })
+}).annotate({ identifier: "File.Diff" });
 export interface FileDiff extends Schema.Schema.Type<typeof FileDiff> {}
 
 export const State = Schema.Struct({
@@ -20,5 +20,5 @@ export const State = Schema.Struct({
   snapshot: Schema.String.pipe(optional),
   diff: Schema.String.pipe(optional),
   files: Schema.Array(FileDiff).pipe(optional),
-}).annotate({ identifier: "Revert.State" })
+}).annotate({ identifier: "Revert.State" });
 export interface State extends Schema.Schema.Type<typeof State> {}

@@ -30,13 +30,16 @@ test("RED reproduction: a native FormData body loses its shape through undici's 
   fd.append(
     "index.js",
     new Blob(["export default { fetch() {} };"], { type: "application/javascript" }),
-    "index.js"
+    "index.js",
   );
 
-  const req = new UndiciRequest("https://api.cloudflare.com/client/v4/accounts/x/workers/scripts/y", {
-    method: "PUT",
-    body: fd,
-  });
+  const req = new UndiciRequest(
+    "https://api.cloudflare.com/client/v4/accounts/x/workers/scripts/y",
+    {
+      method: "PUT",
+      body: fd,
+    },
+  );
 
   // This is the exact Content-Type Cloudflare's API rejects — proves *why*
   // relying on FormData + fetch-derived headers broke on self-hosted Docker.
@@ -68,15 +71,18 @@ test("buildCloudflareWorkerUploadRequest body is a well-formed multipart Buffer 
   assert.ok(text.includes(`--${boundary}`), "body must contain the declared boundary");
   assert.ok(
     text.includes('Content-Disposition: form-data; name="index.js"; filename="index.js"'),
-    "body must carry the index.js script part"
+    "body must carry the index.js script part",
   );
   assert.ok(
     text.includes('Content-Disposition: form-data; name="metadata"; filename="metadata.json"'),
-    "body must carry the metadata part"
+    "body must carry the metadata part",
   );
   assert.ok(text.includes(workerScript), "body must embed the actual worker script source");
   assert.ok(text.includes(JSON.stringify(metadata)), "body must embed the JSON metadata");
-  assert.ok(!text.includes("[object FormData]"), "body must never degrade to the FormData stringification bug");
+  assert.ok(
+    !text.includes("[object FormData]"),
+    "body must never degrade to the FormData stringification bug",
+  );
 });
 
 test("the request undici's fetch/Request builds from our headers+body keeps the accepted Content-Type", () => {
@@ -88,11 +94,14 @@ test("the request undici's fetch/Request builds from our headers+body keeps the 
     main_module: "index.js",
   });
 
-  const req = new UndiciRequest("https://api.cloudflare.com/client/v4/accounts/x/workers/scripts/y", {
-    method: "PUT",
-    headers,
-    body,
-  });
+  const req = new UndiciRequest(
+    "https://api.cloudflare.com/client/v4/accounts/x/workers/scripts/y",
+    {
+      method: "PUT",
+      headers,
+      body,
+    },
+  );
 
   const contentType = req.headers.get("content-type");
   assert.ok(contentType?.startsWith("multipart/form-data; boundary="));

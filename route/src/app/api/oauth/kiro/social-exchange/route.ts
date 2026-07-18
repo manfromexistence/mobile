@@ -35,7 +35,7 @@ export async function POST(request: Request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
   if (isValidationFailure(validation)) {
     return NextResponse.json(
       { error: validation.error || "Missing deviceCode or provider" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 

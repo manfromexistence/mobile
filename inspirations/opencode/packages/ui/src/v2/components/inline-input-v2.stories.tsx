@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { createSignal } from "solid-js"
-import { Field as FieldV2 } from "./field-v2"
-import { InlineInputV2 } from "./inline-input-v2"
+import { createSignal } from "solid-js";
+import { Field as FieldV2 } from "./field-v2";
+import { InlineInputV2 } from "./inline-input-v2";
 
 const docs = `### Overview
 Single-line field with an inline prefix label, vertical divider, and the same states as TextInput v2.
@@ -20,7 +20,7 @@ Single-line field with an inline prefix label, vertical divider, and the same st
 
 ### Field
 Compose with \`Field\` for label, helper prefix/suffix, and tooltip — see the **Field** story.
-`
+`;
 
 export default {
   title: "UI V2/InlineInput",
@@ -68,13 +68,13 @@ export default {
       control: "text",
     },
   },
-}
+};
 
-export const Playground = {}
+export const Playground = {};
 
 export const Controlled = {
   render: () => {
-    const [value, setValue] = createSignal("42")
+    const [value, setValue] = createSignal("42");
     return (
       <div style={{ display: "grid", gap: "12px", width: "280px" }}>
         <InlineInputV2
@@ -94,9 +94,9 @@ export const Controlled = {
           Value: {value()}
         </div>
       </div>
-    )
+    );
   },
-}
+};
 
 export const Appearances = {
   render: () => (
@@ -107,7 +107,7 @@ export const Appearances = {
       <InlineInputV2 prefix="Long label" placeholder="Text" showCopyButton />
     </div>
   ),
-}
+};
 
 export const Field = {
   parameters: { frameHeight: "500px" },
@@ -127,15 +127,21 @@ export const Field = {
       </FieldV2>
     </div>
   ),
-}
+};
 
 export const States = {
   render: () => (
     <div style={{ display: "grid", gap: "20px", width: "280px" }}>
       <InlineInputV2 prefix="Label" placeholder="Text" showCopyButton />
       <InlineInputV2 prefix="Label" placeholder="Text" defaultValue="Hello" showCopyButton />
-      <InlineInputV2 prefix="Label" placeholder="Text" defaultValue="Invalid" invalid showCopyButton />
+      <InlineInputV2
+        prefix="Label"
+        placeholder="Text"
+        defaultValue="Invalid"
+        invalid
+        showCopyButton
+      />
       <InlineInputV2 prefix="Label" placeholder="Text" disabled showCopyButton />
     </div>
   ),
-}
+};

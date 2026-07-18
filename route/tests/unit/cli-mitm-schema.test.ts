@@ -68,7 +68,7 @@ test("resolveApiKey returns sentinel when apiKey is null and keyId is null", asy
   assert.equal(
     result,
     "sk_omniroute",
-    "resolveApiKey should return the sentinel when no real key is available"
+    "resolveApiKey should return the sentinel when no real key is available",
   );
 });
 

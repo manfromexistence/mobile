@@ -99,7 +99,7 @@ function runTsc() {
     const stdout = execFileSync(
       process.platform === "win32" ? "npx.cmd" : "npx",
       ["tsc", "--pretty", "false", "--noEmit", "-p", TSCONFIG],
-      { encoding: "utf8", maxBuffer: 64 * 1024 * 1024, cwd: ROOT }
+      { encoding: "utf8", maxBuffer: 64 * 1024 * 1024, cwd: ROOT },
     );
     return stdout;
   } catch (err) {
@@ -132,7 +132,7 @@ function main() {
 
   const liveErrorCount = Object.values(live).reduce(
     (sum, codes) => sum + Object.values(codes).reduce((s, c) => s + c, 0),
-    0
+    0,
   );
   console.log(`dashboardTypecheckErrors=${liveErrorCount}`);
 
@@ -147,8 +147,10 @@ function main() {
       `[dashboard-typecheck] ${improvements.length} baselined error(s) no longer present ` +
         `— run 'node scripts/check/check-dashboard-typecheck.mjs --update' to ratchet the baseline down:\n` +
         improvements
-          .map((i) => `  - ${i.file} ${i.code} (baseline ${i.baselineCount} -> live ${i.liveCount})`)
-          .join("\n")
+          .map(
+            (i) => `  - ${i.file} ${i.code} (baseline ${i.baselineCount} -> live ${i.liveCount})`,
+          )
+          .join("\n"),
     );
   }
 
@@ -161,13 +163,13 @@ function main() {
           .join("\n") +
         `\n\nIf this is a genuine new dashboard TSX bug (e.g. an orphaned identifier), fix it.\n` +
         `If it's pre-existing type looseness you're intentionally not fixing in this PR,\n` +
-        `do NOT widen the baseline for new regressions — that defeats the gate.\n`
+        `do NOT widen the baseline for new regressions — that defeats the gate.\n`,
     );
     process.exit(1);
   }
 
   console.log(
-    `[dashboard-typecheck] OK — ${liveErrorCount} pre-existing error(s), all within frozen baseline.`
+    `[dashboard-typecheck] OK — ${liveErrorCount} pre-existing error(s), all within frozen baseline.`,
   );
   process.exit(0);
 }

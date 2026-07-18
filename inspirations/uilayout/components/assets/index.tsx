@@ -12,16 +12,16 @@ import whiteMeshGradient from "./white_mesh-gradient.png";
 import whiteShadow from "./white_shadow.png";
 
 export const images = {
-	clipPath,
-	whiteClipPath,
-	meshGradient,
-	whiteMeshGradient,
-	shadow,
-	whiteShadow,
-	whiteBgSnippets,
-	bgSnippets,
-	svgLineDraw,
-	whiteSvgLineDraw,
-	colorsBlack,
-	colorsWhite,
+  clipPath,
+  whiteClipPath,
+  meshGradient,
+  whiteMeshGradient,
+  shadow,
+  whiteShadow,
+  whiteBgSnippets,
+  bgSnippets,
+  svgLineDraw,
+  whiteSvgLineDraw,
+  colorsBlack,
+  colorsWhite,
 };

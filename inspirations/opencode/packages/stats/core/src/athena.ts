@@ -4,41 +4,43 @@ import {
   GetQueryResultsCommand,
   StartQueryExecutionCommand,
   type Row,
-} from "@aws-sdk/client-athena"
-import { Effect, Layer } from "effect"
-import * as Context from "effect/Context"
-import { Resource } from "sst/resource"
+} from "@aws-sdk/client-athena";
+import { Effect, Layer } from "effect";
+import * as Context from "effect/Context";
+import { Resource } from "sst/resource";
 
-const ATHENA_MAX_POLL_ATTEMPTS = 300
-const ATHENA_PAGE_SIZE = 1000
+const ATHENA_MAX_POLL_ATTEMPTS = 300;
+const ATHENA_PAGE_SIZE = 1000;
 
-export type AthenaData = Record<string, string>
+export type AthenaData = Record<string, string>;
 
 export class AthenaQueryError extends Error {
-  readonly _tag = "AthenaQueryError"
-  readonly queryExecutionId?: string
+  readonly _tag = "AthenaQueryError";
+  readonly queryExecutionId?: string;
 
   constructor(input: { message: string; queryExecutionId?: string; cause?: unknown }) {
-    super(input.message, { cause: input.cause })
-    this.name = "AthenaQueryError"
-    this.queryExecutionId = input.queryExecutionId
+    super(input.message, { cause: input.cause });
+    this.name = "AthenaQueryError";
+    this.queryExecutionId = input.queryExecutionId;
   }
 }
 
 export class AthenaQueryTimeoutError extends Error {
-  readonly _tag = "AthenaQueryTimeoutError"
-  readonly queryExecutionId: string
+  readonly _tag = "AthenaQueryTimeoutError";
+  readonly queryExecutionId: string;
 
   constructor(input: { message: string; queryExecutionId: string }) {
-    super(input.message)
-    this.name = "AthenaQueryTimeoutError"
-    this.queryExecutionId = input.queryExecutionId
+    super(input.message);
+    this.name = "AthenaQueryTimeoutError";
+    this.queryExecutionId = input.queryExecutionId;
   }
 }
 
 export declare namespace Athena {
   export interface Service {
-    readonly query: (query: string) => Effect.Effect<AthenaData[], AthenaQueryError | AthenaQueryTimeoutError>
+    readonly query: (
+      query: string,
+    ) => Effect.Effect<AthenaData[], AthenaQueryError | AthenaQueryTimeoutError>;
   }
 }
 
@@ -46,7 +48,7 @@ export class Athena extends Context.Service<Athena, Athena.Service>()("@opencode
   static readonly layer: Layer.Layer<Athena> = Layer.effect(
     Athena,
     Effect.sync(() => {
-      const client = new AwsAthenaClient({ region: Resource.InferenceEvent.region })
+      const client = new AwsAthenaClient({ region: Resource.InferenceEvent.region });
 
       const query = Effect.fn("Athena.query")(function* (query: string) {
         const started = yield* Effect.tryPromise({
@@ -61,57 +63,63 @@ export class Athena extends Context.Service<Athena, Athena.Service>()("@opencode
                 },
               }),
             ),
-          catch: (cause) => new AthenaQueryError({ message: "Failed to start Athena stats query", cause }),
-        })
-        const queryExecutionId = started.QueryExecutionId
+          catch: (cause) =>
+            new AthenaQueryError({ message: "Failed to start Athena stats query", cause }),
+        });
+        const queryExecutionId = started.QueryExecutionId;
         if (!queryExecutionId)
-          return yield* Effect.fail(new AthenaQueryError({ message: "Athena did not return a query execution id" }))
+          return yield* Effect.fail(
+            new AthenaQueryError({ message: "Athena did not return a query execution id" }),
+          );
 
-        yield* poll(client, queryExecutionId)
-        return yield* results(client, queryExecutionId)
-      })
+        yield* poll(client, queryExecutionId);
+        return yield* results(client, queryExecutionId);
+      });
 
-      return Athena.of({ query })
+      return Athena.of({ query });
     }),
-  )
+  );
 }
 
 const poll: (
   client: AwsAthenaClient,
   queryExecutionId: string,
   attempt?: number,
-) => Effect.Effect<void, AthenaQueryError | AthenaQueryTimeoutError> = Effect.fn("Athena.poll")(function* (
-  client: AwsAthenaClient,
-  queryExecutionId: string,
-  attempt = 0,
-) {
-  if (attempt > 0) yield* Effect.sleep("2 seconds")
+) => Effect.Effect<void, AthenaQueryError | AthenaQueryTimeoutError> = Effect.fn("Athena.poll")(
+  function* (client: AwsAthenaClient, queryExecutionId: string, attempt = 0) {
+    if (attempt > 0) yield* Effect.sleep("2 seconds");
 
-  const result = yield* Effect.tryPromise({
-    try: () => client.send(new GetQueryExecutionCommand({ QueryExecutionId: queryExecutionId })),
-    catch: (cause) => new AthenaQueryError({ message: "Failed to poll Athena stats query", queryExecutionId, cause }),
-  })
-  const status = result.QueryExecution?.Status
+    const result = yield* Effect.tryPromise({
+      try: () => client.send(new GetQueryExecutionCommand({ QueryExecutionId: queryExecutionId })),
+      catch: (cause) =>
+        new AthenaQueryError({
+          message: "Failed to poll Athena stats query",
+          queryExecutionId,
+          cause,
+        }),
+    });
+    const status = result.QueryExecution?.Status;
 
-  if (status?.State === "SUCCEEDED") return
-  if (status?.State === "FAILED" || status?.State === "CANCELLED")
-    return yield* Effect.fail(
-      new AthenaQueryError({
-        message: `Athena stats query ${status.State.toLowerCase()}: ${status.StateChangeReason ?? "unknown reason"}`,
-        queryExecutionId,
-      }),
-    )
+    if (status?.State === "SUCCEEDED") return;
+    if (status?.State === "FAILED" || status?.State === "CANCELLED")
+      return yield* Effect.fail(
+        new AthenaQueryError({
+          message: `Athena stats query ${status.State.toLowerCase()}: ${status.StateChangeReason ?? "unknown reason"}`,
+          queryExecutionId,
+        }),
+      );
 
-  if (attempt >= ATHENA_MAX_POLL_ATTEMPTS - 1)
-    return yield* Effect.fail(
-      new AthenaQueryTimeoutError({
-        message: `Athena stats query ${queryExecutionId} did not complete`,
-        queryExecutionId,
-      }),
-    )
+    if (attempt >= ATHENA_MAX_POLL_ATTEMPTS - 1)
+      return yield* Effect.fail(
+        new AthenaQueryTimeoutError({
+          message: `Athena stats query ${queryExecutionId} did not complete`,
+          queryExecutionId,
+        }),
+      );
 
-  return yield* poll(client, queryExecutionId, attempt + 1)
-})
+    return yield* poll(client, queryExecutionId, attempt + 1);
+  },
+);
 
 const results: (
   client: AwsAthenaClient,
@@ -131,21 +139,29 @@ const results: (
           MaxResults: ATHENA_PAGE_SIZE,
         }),
       ),
-    catch: (cause) => new AthenaQueryError({ message: "Failed to read Athena stats results", queryExecutionId, cause }),
-  })
-  const columns = result.ResultSet?.ResultSetMetadata?.ColumnInfo?.map((item) => item.Name ?? "") ?? []
-  const rows = (result.ResultSet?.Rows ?? []).slice(nextToken ? 0 : 1).map((row) => rowData(columns, row))
+    catch: (cause) =>
+      new AthenaQueryError({
+        message: "Failed to read Athena stats results",
+        queryExecutionId,
+        cause,
+      }),
+  });
+  const columns =
+    result.ResultSet?.ResultSetMetadata?.ColumnInfo?.map((item) => item.Name ?? "") ?? [];
+  const rows = (result.ResultSet?.Rows ?? [])
+    .slice(nextToken ? 0 : 1)
+    .map((row) => rowData(columns, row));
 
-  if (!result.NextToken) return rows
-  return [...rows, ...(yield* results(client, queryExecutionId, result.NextToken))]
-})
+  if (!result.NextToken) return rows;
+  return [...rows, ...(yield* results(client, queryExecutionId, result.NextToken))];
+});
 
 function rowData(columns: string[], row: Row): AthenaData {
   return Object.fromEntries(
     columns.flatMap((column, index) => {
-      const value = row.Data?.[index]?.VarCharValue
-      if (!column || value === undefined) return []
-      return [[column, value]]
+      const value = row.Data?.[index]?.VarCharValue;
+      if (!column || value === undefined) return [];
+      return [[column, value]];
     }),
-  )
+  );
 }

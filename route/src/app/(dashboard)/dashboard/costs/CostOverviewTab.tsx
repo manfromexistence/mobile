@@ -214,7 +214,7 @@ function generateCSV(analytics: UsageAnalyticsPayload, locale: string): string {
   lines.push("Provider,Requests,Total Tokens,Cost (USD)");
   for (const row of analytics.byProvider) {
     lines.push(
-      [row.provider, row.requests, row.totalTokens, row.cost.toFixed(6)].map(csvCell).join(",")
+      [row.provider, row.requests, row.totalTokens, row.cost.toFixed(6)].map(csvCell).join(","),
     );
   }
   lines.push("");
@@ -223,7 +223,7 @@ function generateCSV(analytics: UsageAnalyticsPayload, locale: string): string {
   lines.push("Model,Requests,Total Tokens,Cost (USD)");
   for (const row of analytics.byModel) {
     lines.push(
-      [row.model, row.requests, row.totalTokens, row.cost.toFixed(6)].map(csvCell).join(",")
+      [row.model, row.requests, row.totalTokens, row.cost.toFixed(6)].map(csvCell).join(","),
     );
   }
   lines.push("");
@@ -234,7 +234,7 @@ function generateCSV(analytics: UsageAnalyticsPayload, locale: string): string {
     lines.push(
       [row.apiKeyName || row.apiKey, row.requests, row.totalTokens, row.cost.toFixed(6)]
         .map(csvCell)
-        .join(",")
+        .join(","),
     );
   }
   lines.push("");
@@ -243,7 +243,7 @@ function generateCSV(analytics: UsageAnalyticsPayload, locale: string): string {
   lines.push("Account,Requests,Total Tokens,Cost (USD)");
   for (const row of analytics.byAccount || []) {
     lines.push(
-      [row.account, row.requests, row.totalTokens, row.cost.toFixed(6)].map(csvCell).join(",")
+      [row.account, row.requests, row.totalTokens, row.cost.toFixed(6)].map(csvCell).join(","),
     );
   }
 
@@ -264,7 +264,7 @@ function generateJSON(analytics: UsageAnalyticsPayload): string {
       byAccount: analytics.byAccount || [],
     },
     null,
-    2
+    2,
   );
 }
 
@@ -301,7 +301,7 @@ export default function CostOverviewTab() {
   const [summaryLoading, setSummaryLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [explorerGroupBy, setExplorerGroupBy] = useState<CostExplorerGroupBy>(() =>
-    parseExplorerGroupBy(searchParams.get("groupBy"))
+    parseExplorerGroupBy(searchParams.get("groupBy")),
   );
   const [explorerSearch, setExplorerSearch] = useState("");
   const [explorerSortKey, setExplorerSortKey] = useState<CostExplorerSortKey>("cost");
@@ -359,7 +359,7 @@ export default function CostOverviewTab() {
   }, [apiKeyFilter, range, t]);
 
   const selectedRangeLabel = t(
-    RANGE_OPTIONS.find((option) => option.value === range)?.labelKey || "range30d"
+    RANGE_OPTIONS.find((option) => option.value === range)?.labelKey || "range30d",
   );
   const summary = analytics?.summary || {
     totalCost: 0,
@@ -434,7 +434,7 @@ export default function CostOverviewTab() {
         sortKey: explorerSortKey,
         sortDirection: explorerSortDirection,
       }),
-    [localizedAnalytics, explorerGroupBy, explorerSearch, explorerSortDirection, explorerSortKey]
+    [localizedAnalytics, explorerGroupBy, explorerSearch, explorerSortDirection, explorerSortKey],
   );
   const explorerVisibleRows = explorerRows.slice(0, 50);
 
@@ -499,7 +499,7 @@ export default function CostOverviewTab() {
                     downloadFile(
                       json,
                       `omniroute-costs-${range}-${dateStr}.json`,
-                      "application/json"
+                      "application/json",
                     );
                   }}
                   className="flex items-center gap-1 px-2.5 py-1.5 text-xs text-text-muted hover:text-text-main hover:bg-surface/50 rounded-lg border border-border/30 transition-colors"
@@ -605,19 +605,19 @@ export default function CostOverviewTab() {
           <CompactMetric
             label={t("totalTokens")}
             value={new Intl.NumberFormat(locale, { notation: "compact" }).format(
-              summary.totalTokens || 0
+              summary.totalTokens || 0,
             )}
           />
           <CompactMetric
             label={t("inputTokens")}
             value={new Intl.NumberFormat(locale, { notation: "compact" }).format(
-              summary.promptTokens || 0
+              summary.promptTokens || 0,
             )}
           />
           <CompactMetric
             label={t("outputTokens")}
             value={new Intl.NumberFormat(locale, { notation: "compact" }).format(
-              summary.completionTokens || 0
+              summary.completionTokens || 0,
             )}
           />
           <CompactMetric
@@ -920,7 +920,7 @@ function CostExplorerCard({
   const numberFormatter = useMemo(() => new Intl.NumberFormat(locale), [locale]);
   const compactFormatter = useMemo(
     () => new Intl.NumberFormat(locale, { notation: "compact" }),
-    [locale]
+    [locale],
   );
 
   const columns = useMemo<
@@ -938,7 +938,7 @@ function CostExplorerCard({
       { key: "avgCostPerRequest", label: t("avgCostPerRequest"), align: "right" },
       { key: "sharePct", label: t("share"), align: "right" },
     ],
-    [t]
+    [t],
   );
 
   function renderSortIcon(columnKey: CostExplorerSortKey) {
@@ -1296,7 +1296,7 @@ function ActivityHeatmap({
     const date = new Date(today);
     date.setDate(date.getDate() - index);
     const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(
-      date.getDate()
+      date.getDate(),
     ).padStart(2, "0")}`;
     days.push({ date: key, value: activityMap[key] || 0 });
   }
@@ -1392,7 +1392,7 @@ function TopListCard({
               {secondaryKey ? (
                 <span className="text-xs text-text-muted">
                   {new Intl.NumberFormat(locale, { notation: "compact" }).format(
-                    Number(row[secondaryKey] || 0)
+                    Number(row[secondaryKey] || 0),
                   )}{" "}
                   {secondaryLabel}
                 </span>

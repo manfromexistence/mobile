@@ -63,7 +63,7 @@ test("#6696: fp-pinned composite connectionId is never resolved to the real conn
   assert.equal(
     result[0].connectionId,
     realConnectionId,
-    "fp-pinned target must resolve to the real connection id for credential lookup to succeed"
+    "fp-pinned target must resolve to the real connection id for credential lookup to succeed",
   );
 
   // The selected fingerprint must be threaded through so downstream execution
@@ -73,7 +73,7 @@ test("#6696: fp-pinned composite connectionId is never resolved to the real conn
   assert.equal(
     (result[0] as Record<string, unknown>).pinnedFingerprint,
     pinnedFingerprint,
-    "the pinned fingerprint must survive resolution so downstream execution can target that account"
+    "the pinned fingerprint must survive resolution so downstream execution can target that account",
   );
 });
 
@@ -90,7 +90,7 @@ test("#6696: composite connectionId never matches connectionById (root cause of 
   assert.equal(
     connById.get(compositeConnectionId),
     undefined,
-    "composite fp-pin id must not resolve directly against connectionById"
+    "composite fp-pin id must not resolve directly against connectionById",
   );
 });
 

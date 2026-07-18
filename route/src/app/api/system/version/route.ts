@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
   if (!latest) {
     return NextResponse.json(
       { success: false, error: "Could not reach npm registry" },
-      { status: 503 }
+      { status: 503 },
     );
   }
 
@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
         success: false,
         error: validation.reason || "Auto-update is not supported in this environment.",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -124,7 +124,7 @@ export async function POST(req: NextRequest) {
           channel: launched.channel,
           logPath: launched.logPath,
         },
-        { status: 503 }
+        { status: 503 },
       );
     }
 
@@ -215,7 +215,7 @@ export async function POST(req: NextRequest) {
           await execFileAsync(
             "npm",
             ["install", "--legacy-peer-deps"],
-            buildNpmExecOptions(process.platform, { cwd: PROJECT_ROOT, timeoutMs: 300_000 })
+            buildNpmExecOptions(process.platform, { cwd: PROJECT_ROOT, timeoutMs: 300_000 }),
           );
           send({ step: "rebuild", status: "done", message: "Dependencies installed" });
 
@@ -236,7 +236,7 @@ export async function POST(req: NextRequest) {
           await execFileAsync(
             "npm",
             ["run", "build"],
-            buildNpmExecOptions(process.platform, { cwd: PROJECT_ROOT, timeoutMs: 600_000 })
+            buildNpmExecOptions(process.platform, { cwd: PROJECT_ROOT, timeoutMs: 600_000 }),
           );
           send({ step: "rebuild", status: "done", message: "Build complete" });
 
@@ -301,11 +301,11 @@ export async function POST(req: NextRequest) {
           return;
         }
         send({ step: "install", status: "running", message: `Installing omniroute@${latest}...` });
-          await execFileAsync(
-            "npm",
-            ["install", "-g", `omniroute@${latest}`, "--ignore-scripts", "--legacy-peer-deps"],
-            buildNpmExecOptions(process.platform, { cwd: PROJECT_ROOT, timeoutMs: 300_000 })
-          );
+        await execFileAsync(
+          "npm",
+          ["install", "-g", `omniroute@${latest}`, "--ignore-scripts", "--legacy-peer-deps"],
+          buildNpmExecOptions(process.platform, { cwd: PROJECT_ROOT, timeoutMs: 300_000 }),
+        );
         send({ step: "install", status: "done", message: `Installed omniroute@${latest}` });
 
         // Step 2: Rebuild native modules (critical for better-sqlite3)
@@ -318,26 +318,26 @@ export async function POST(req: NextRequest) {
         await execFileAsync(
           "npm",
           ["rebuild", "better-sqlite3"],
-          buildNpmExecOptions(process.platform, { cwd: omniPath, timeoutMs: 120_000 })
+          buildNpmExecOptions(process.platform, { cwd: omniPath, timeoutMs: 120_000 }),
         );
         send({ step: "rebuild", status: "done", message: "Native modules rebuilt" });
 
         // Step 3: Restart PM2
         send({ step: "restart", status: "running", message: "Restarting service via PM2..." });
-          try {
-            await execFileAsync("pm2", ["restart", "omniroute", "--update-env"], {
-              timeout: 30000,
-              cwd: PROJECT_ROOT,
-            });
-            send({ step: "restart", status: "done", message: "Service restarted" });
-          } catch {
-            // PM2 may not be available (Docker/manual setups)
-            send({
-              step: "restart",
-              status: "skipped",
-              message: "PM2 not available — manual restart needed",
-            });
-          }
+        try {
+          await execFileAsync("pm2", ["restart", "omniroute", "--update-env"], {
+            timeout: 30000,
+            cwd: PROJECT_ROOT,
+          });
+          send({ step: "restart", status: "done", message: "Service restarted" });
+        } catch {
+          // PM2 may not be available (Docker/manual setups)
+          send({
+            step: "restart",
+            status: "skipped",
+            message: "PM2 not available — manual restart needed",
+          });
+        }
 
         send({
           step: "complete",

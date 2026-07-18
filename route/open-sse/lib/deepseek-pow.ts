@@ -21,7 +21,7 @@ class DeepSeekHashWasm {
   private encodeString(
     text: string,
     allocate: (size: number, align: number) => number,
-    reallocate: (ptr: number, oldSize: number, newSize: number, align: number) => number
+    reallocate: (ptr: number, oldSize: number, newSize: number, align: number) => number,
   ): number {
     const strLength = text.length;
     let ptr = allocate(strLength, 1) >>> 0;
@@ -38,7 +38,10 @@ class DeepSeekHashWasm {
       ptr = reallocate(ptr, strLength, asciiLength + text.length * 3, 1) >>> 0;
       const result = this.cachedTextEncoder.encodeInto(
         text,
-        this.getCachedUint8Memory().subarray(ptr + asciiLength, ptr + asciiLength + text.length * 3)
+        this.getCachedUint8Memory().subarray(
+          ptr + asciiLength,
+          ptr + asciiLength + text.length * 3,
+        ),
       );
       asciiLength += result.written!;
       ptr = reallocate(ptr, asciiLength + text.length * 3, asciiLength, 1) >>> 0;
@@ -55,14 +58,14 @@ class DeepSeekHashWasm {
       const ptr0 = this.encodeString(
         challenge,
         this.wasmInstance.__wbindgen_export_0,
-        this.wasmInstance.__wbindgen_export_1
+        this.wasmInstance.__wbindgen_export_1,
       );
       const len0 = this.offset;
 
       const ptr1 = this.encodeString(
         prefix,
         this.wasmInstance.__wbindgen_export_0,
-        this.wasmInstance.__wbindgen_export_1
+        this.wasmInstance.__wbindgen_export_1,
       );
       const len1 = this.offset;
 
@@ -160,7 +163,7 @@ export async function solveDeepSeekPowAsync(
   challenge: string,
   salt: string,
   difficulty: number,
-  expireAt: number
+  expireAt: number,
 ): Promise<number> {
   if (algorithm !== "DeepSeekHashV1") throw new Error(`Unsupported: ${algorithm}`);
   const prefix = `${salt}_${expireAt}_`;
@@ -181,7 +184,7 @@ export function solveDeepSeekPow(
   challenge: string,
   salt: string,
   difficulty: number,
-  expireAt: number
+  expireAt: number,
 ): number {
   if (algorithm !== "DeepSeekHashV1") throw new Error(`Unsupported: ${algorithm}`);
   const prefix = `${salt}_${expireAt}_`;

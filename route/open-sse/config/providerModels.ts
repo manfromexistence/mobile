@@ -32,7 +32,7 @@ export function getProviderModel(aliasOrId: string, modelId: string): RegistryMo
 export function isValidModel(
   aliasOrId: string,
   modelId: string,
-  passthroughProviders = new Set<string>()
+  passthroughProviders = new Set<string>(),
 ): boolean {
   if (passthroughProviders.has(aliasOrId)) return true;
   const models = PROVIDER_MODELS[aliasOrId];
@@ -84,7 +84,7 @@ export function supportsClaudeMaxEffort(modelId: string | null | undefined): boo
   if (!claudeMatch) return false;
   const claudeScopedId = normalized.slice(claudeMatch.index ?? 0);
   return !CLAUDE_MAX_EFFORT_UNSUPPORTED_FAMILY_PATTERNS.some((pattern) =>
-    pattern.test(claudeScopedId)
+    pattern.test(claudeScopedId),
   );
 }
 
@@ -153,7 +153,7 @@ function findCanonicalClaudeEffortModel(modelId: string): RegistryModel | undefi
       }))
       .filter(
         (item): item is { entry: RegistryModel; date: number } =>
-          item.date !== null && item.entry.supportsXHighEffort !== undefined
+          item.date !== null && item.entry.supportsXHighEffort !== undefined,
       )
       .sort((a, b) => b.date - a.date || a.entry.id.localeCompare(b.entry.id));
     if (datedAliases[0]) return datedAliases[0].entry;
@@ -193,7 +193,7 @@ export function supportsXHighEffort(aliasOrId: string, modelId: string): boolean
 /** @deprecated Use supportsXHighEffort(); max normalization now follows the same opt-out policy. */
 export function supportsXHighEffortForMaxNormalization(
   aliasOrId: string,
-  modelId: string
+  modelId: string,
 ): boolean {
   return supportsXHighEffort(aliasOrId, modelId);
 }

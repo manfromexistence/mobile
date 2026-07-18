@@ -30,7 +30,7 @@ describe("Cache Metrics Database", () => {
         ttft_ms INTEGER DEFAULT 0,
         error_code TEXT
       )
-    `
+    `,
     ).run();
   });
 
@@ -64,7 +64,7 @@ describe("Cache Metrics Database", () => {
           tokens_input, tokens_output, tokens_cache_read, tokens_cache_creation, tokens_reasoning,
           status, success, latency_ms, ttft_ms, error_code, timestamp)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `
+      `,
       ).run(
         "test-provider",
         "test-model",
@@ -81,7 +81,7 @@ describe("Cache Metrics Database", () => {
         100, // latency_ms
         50, // ttft_ms
         null, // error_code
-        now // timestamp
+        now, // timestamp
       );
 
       // Insert another row
@@ -91,7 +91,7 @@ describe("Cache Metrics Database", () => {
           tokens_input, tokens_output, tokens_cache_read, tokens_cache_creation, tokens_reasoning,
           status, success, latency_ms, ttft_ms, error_code, timestamp)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `
+      `,
       ).run(
         "test-provider",
         "test-model",
@@ -108,7 +108,7 @@ describe("Cache Metrics Database", () => {
         80, // latency_ms
         40, // ttft_ms
         null, // error_code
-        now // timestamp
+        now, // timestamp
       );
 
       const metrics = await getCacheMetrics();

@@ -31,7 +31,7 @@ const baseConfig: CompressionConfig = {
  */
 function engineConfig(
   engines: CompressionConfig["engines"],
-  overrides: Partial<CompressionConfig> = {}
+  overrides: Partial<CompressionConfig> = {},
 ): CompressionConfig {
   return {
     ...DEFAULT_COMPRESSION_CONFIG,
@@ -153,7 +153,7 @@ describe("selectCompressionStrategy resolves via the engines map (Task 7)", () =
   it("auto-trigger still overrides the derived default", () => {
     const config = engineConfig(
       { rtk: { enabled: true } },
-      { autoTriggerTokens: 1000, autoTriggerMode: "aggressive" }
+      { autoTriggerTokens: 1000, autoTriggerMode: "aggressive" },
     );
     // Below threshold: derived default (rtk) wins.
     assert.equal(selectCompressionStrategy(config, null, 500), "rtk");
@@ -164,7 +164,7 @@ describe("selectCompressionStrategy resolves via the engines map (Task 7)", () =
   it("routing-combo override still wins over the derived default", () => {
     const config = engineConfig(
       { rtk: { enabled: true } },
-      { comboOverrides: { "my-combo": "off" } }
+      { comboOverrides: { "my-combo": "off" } },
     );
     assert.equal(selectCompressionStrategy(config, "my-combo", 0), "off");
   });
@@ -187,7 +187,7 @@ describe("engines map drives dispatch ONLY when explicit (zero behaviour change 
   it("explicit install (enginesExplicit true) uses the engines map over defaultMode", () => {
     const explicit = engineConfig(
       { rtk: { enabled: true }, caveman: { enabled: true, level: "full" } },
-      { defaultMode: "lite" }
+      { defaultMode: "lite" },
     );
     assert.equal(selectCompressionStrategy(explicit, null, 0), "stacked");
   });
@@ -197,9 +197,9 @@ describe("enginesMapDerivesStackedPipeline", () => {
   it("true only for an explicit multi-engine stacked map", () => {
     assert.equal(
       enginesMapDerivesStackedPipeline(
-        engineConfig({ rtk: { enabled: true }, caveman: { enabled: true, level: "full" } })
+        engineConfig({ rtk: { enabled: true }, caveman: { enabled: true, level: "full" } }),
       ),
-      true
+      true,
     );
   });
   it("false for a single-mode explicit map (not stacked)", () => {
@@ -241,7 +241,7 @@ describe("selectCompressionStrategy", () => {
         targetFormat: "claude",
         model: "claude-3-5-sonnet",
       }),
-      "standard"
+      "standard",
     );
   });
 });

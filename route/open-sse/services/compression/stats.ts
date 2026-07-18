@@ -29,9 +29,7 @@ function isAnthropicPngImageBlock(value: unknown): value is AnthropicImageBlock 
   const source = block.source as Record<string, unknown> | undefined;
   if (!source || typeof source !== "object") return false;
   return (
-    source.type === "base64" &&
-    source.media_type === "image/png" &&
-    typeof source.data === "string"
+    source.type === "base64" && source.media_type === "image/png" && typeof source.data === "string"
   );
 }
 
@@ -123,7 +121,7 @@ export function estimateCompressionTokens(text: string | object | null | undefin
   }
   try {
     const { clone, imageTokens } = blankImageBlocksAndSumImageTokens(
-      text as Record<string, unknown>
+      text as Record<string, unknown>,
     );
     if (imageTokens === 0) {
       // No recognized image blocks — byte-identical to the legacy behavior.
@@ -143,7 +141,7 @@ export function createCompressionStats(
   mode: CompressionMode,
   techniquesUsed: string[],
   rulesApplied?: string[],
-  durationMs?: number
+  durationMs?: number,
 ): CompressionStats {
   const originalTokens = estimateCompressionTokens(originalBody);
   const compressedTokens = estimateCompressionTokens(compressedBody);

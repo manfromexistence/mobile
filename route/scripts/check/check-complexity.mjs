@@ -17,7 +17,7 @@ const ROOT = process.cwd();
 const BASELINE_PATH = path.resolve(
   process.argv.includes("--baseline")
     ? process.argv[process.argv.indexOf("--baseline") + 1]
-    : path.join(ROOT, "config/quality/complexity-baseline.json")
+    : path.join(ROOT, "config/quality/complexity-baseline.json"),
 );
 const UPDATE = process.argv.includes("--update");
 
@@ -54,7 +54,7 @@ function main() {
     console.error(
       `[complexity] REGRESSÃO — ${current} violações > baseline ${baseline.count}\n` +
         `  → quebre a função em helpers menores (reduza ramos/tamanho) ou rode\n` +
-        `    'node scripts/check/check-complexity.mjs --update' se a contagem caiu legitimamente.`
+        `    'node scripts/check/check-complexity.mjs --update' se a contagem caiu legitimamente.`,
     );
     process.exit(1);
   }

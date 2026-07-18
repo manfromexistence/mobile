@@ -1,15 +1,15 @@
 // @ts-nocheck
-import { createEffect, createMemo, onCleanup } from "solid-js"
-import { createStore } from "solid-js/store"
-import type { Todo } from "@opencode-ai/sdk/v2"
-import { useServerSync } from "@/context/global-sync"
-import { PromptInput } from "@/components/prompt-input"
-import { usePrompt } from "@/context/prompt"
+import { createEffect, createMemo, onCleanup } from "solid-js";
+import { createStore } from "solid-js/store";
+import type { Todo } from "@opencode-ai/sdk/v2";
+import { useServerSync } from "@/context/global-sync";
+import { PromptInput } from "@/components/prompt-input";
+import { usePrompt } from "@/context/prompt";
 import {
   SessionComposerRegion,
   createSessionComposerController,
   createSessionComposerRegionController,
-} from "@/pages/session/composer"
+} from "@/pages/session/composer";
 
 export default {
   title: "UI/Todo Panel Motion",
@@ -32,7 +32,7 @@ No visual reimplementation layer is used for the dock/input stack.`,
       },
     },
   },
-}
+};
 
 const pool = [
   "Refactor ToolStatusTitle DOM measurement to offscreen global measurer (unconstrained by timeline layout)",
@@ -43,7 +43,7 @@ const pool = [
   "Document rollout notes in PR description",
   "Check keyboard and screen reader semantics",
   "Add storybook controls for iteration speed",
-]
+];
 
 const btn = (accent?: boolean) =>
   ({
@@ -54,13 +54,24 @@ const btn = (accent?: boolean) =>
     color: "var(--color-text, #eee)",
     cursor: "pointer",
     "font-size": "13px",
-  }) as const
+  }) as const;
 
 const controls = {
-  agents: { available: [], options: ["build"], current: "build", loading: false, visible: true, select: () => {} },
+  agents: {
+    available: [],
+    options: ["build"],
+    current: "build",
+    loading: false,
+    visible: true,
+    select: () => {},
+  },
   model: {
     selection: {
-      current: () => ({ id: "claude-3-7-sonnet", name: "Claude 3.7 Sonnet", provider: { id: "anthropic" } }),
+      current: () => ({
+        id: "claude-3-7-sonnet",
+        name: "Claude 3.7 Sonnet",
+        provider: { id: "anthropic" },
+      }),
       variant: { list: () => [], current: () => undefined, set: () => {} },
     },
     paid: true,
@@ -72,7 +83,7 @@ const controls = {
     reviewPanel: { opened: () => false, open: () => {} },
   },
   newLayoutDesigns: true,
-}
+};
 
 const css = `
 [data-component="todo-stage"] {
@@ -149,12 +160,12 @@ const css = `
 [data-slot="todo-preview-msg"][data-strong="true"] {
   color: var(--text-strong);
 }
-`
+`;
 
 export const Playground = {
   render: () => {
-    const global = useServerSync()
-    const prompt = usePrompt()
+    const global = useServerSync();
+    const prompt = usePrompt();
     const [cfg, setCfg] = createStore({
       open: true,
       collapsed: false,
@@ -175,96 +186,98 @@ export const Playground = {
       countMask: 18,
       countMaskHeight: 0,
       countWidthDuration: 560,
-    })
-    const open = () => cfg.open
-    const step = () => cfg.step
-    const dockOpenDuration = () => cfg.dockOpenDuration
-    const dockOpenBounce = () => cfg.dockOpenBounce
-    const dockCloseDuration = () => cfg.dockCloseDuration
-    const dockCloseBounce = () => cfg.dockCloseBounce
-    const drawerExpandDuration = () => cfg.drawerExpandDuration
-    const drawerExpandBounce = () => cfg.drawerExpandBounce
-    const drawerCollapseDuration = () => cfg.drawerCollapseDuration
-    const drawerCollapseBounce = () => cfg.drawerCollapseBounce
-    const subtitleDuration = () => cfg.subtitleDuration
-    const subtitleAuto = () => cfg.subtitleAuto
-    const subtitleTravel = () => cfg.subtitleTravel
-    const subtitleEdge = () => cfg.subtitleEdge
-    const countDuration = () => cfg.countDuration
-    const countMask = () => cfg.countMask
-    const countMaskHeight = () => cfg.countMaskHeight
-    const countWidthDuration = () => cfg.countWidthDuration
-    const state = createSessionComposerController({ closeMs: () => Math.round(dockCloseDuration() * 1000) })
-    let frame
-    let scrollRef
+    });
+    const open = () => cfg.open;
+    const step = () => cfg.step;
+    const dockOpenDuration = () => cfg.dockOpenDuration;
+    const dockOpenBounce = () => cfg.dockOpenBounce;
+    const dockCloseDuration = () => cfg.dockCloseDuration;
+    const dockCloseBounce = () => cfg.dockCloseBounce;
+    const drawerExpandDuration = () => cfg.drawerExpandDuration;
+    const drawerExpandBounce = () => cfg.drawerExpandBounce;
+    const drawerCollapseDuration = () => cfg.drawerCollapseDuration;
+    const drawerCollapseBounce = () => cfg.drawerCollapseBounce;
+    const subtitleDuration = () => cfg.subtitleDuration;
+    const subtitleAuto = () => cfg.subtitleAuto;
+    const subtitleTravel = () => cfg.subtitleTravel;
+    const subtitleEdge = () => cfg.subtitleEdge;
+    const countDuration = () => cfg.countDuration;
+    const countMask = () => cfg.countMask;
+    const countMaskHeight = () => cfg.countMaskHeight;
+    const countWidthDuration = () => cfg.countWidthDuration;
+    const state = createSessionComposerController({
+      closeMs: () => Math.round(dockCloseDuration() * 1000),
+    });
+    let frame;
+    let scrollRef;
 
     const todos = createMemo<Todo[]>(() => {
-      const done = Math.max(0, Math.min(3, step()))
+      const done = Math.max(0, Math.min(3, step()));
       return pool.slice(0, 3).map((content, i) => ({
         id: `todo-${i + 1}`,
         content,
         status: i < done ? "completed" : i === done && done < 3 ? "in_progress" : "pending",
-      }))
-    })
+      }));
+    });
 
     createEffect(() => {
-      global.todo.set("story-session", todos())
-    })
+      global.todo.set("story-session", todos());
+    });
 
     const clear = () => {
-      if (frame) cancelAnimationFrame(frame)
-      frame = undefined
-    }
+      if (frame) cancelAnimationFrame(frame);
+      frame = undefined;
+    };
 
     const pin = () => {
-      if (!scrollRef) return
-      scrollRef.scrollTop = scrollRef.scrollHeight
-    }
+      if (!scrollRef) return;
+      scrollRef.scrollTop = scrollRef.scrollHeight;
+    };
 
-    const collapsed = () => cfg.collapsed
-    const setCollapsed = (value: boolean) => setCfg("collapsed", value)
+    const collapsed = () => cfg.collapsed;
+    const setCollapsed = (value: boolean) => setCfg("collapsed", value);
     const openDock = () => {
-      clear()
-      setCfg("open", true)
+      clear();
+      setCfg("open", true);
       frame = requestAnimationFrame(() => {
-        pin()
-        frame = undefined
-      })
-    }
+        pin();
+        frame = undefined;
+      });
+    };
 
     const closeDock = () => {
-      clear()
-      setCfg("open", false)
-    }
+      clear();
+      setCfg("open", false);
+    };
 
-    const dockOpen = () => open()
+    const dockOpen = () => open();
 
     const toggleDock = () => {
       if (dockOpen()) {
-        closeDock()
-        return
+        closeDock();
+        return;
       }
-      openDock()
-    }
+      openDock();
+    };
 
     const toggleDrawer = () => {
       if (!dockOpen()) {
-        openDock()
+        openDock();
         frame = requestAnimationFrame(() => {
-          pin()
-          setCollapsed(true)
-          frame = undefined
-        })
-        return
+          pin();
+          setCollapsed(true);
+          frame = undefined;
+        });
+        return;
       }
-      setCollapsed(!collapsed())
-    }
+      setCollapsed(!collapsed());
+    };
 
     const cycle = () => {
-      setCfg("step", (value) => (value + 1) % 4)
-    }
+      setCfg("step", (value) => (value + 1) % 4);
+    };
 
-    onCleanup(clear)
+    onCleanup(clear);
 
     return (
       <div data-component="todo-stage">
@@ -275,12 +288,18 @@ export const Playground = {
             <div data-component="todo-session-frame">
               <div data-component="todo-session-panel">
                 <div data-slot="todo-preview-content">
-                  <div data-slot="todo-preview-scroll" class="scroll-view__viewport" ref={scrollRef}>
+                  <div
+                    data-slot="todo-preview-scroll"
+                    class="scroll-view__viewport"
+                    ref={scrollRef}
+                  >
                     <div data-slot="todo-preview-spacer" />
                     <div data-slot="todo-preview-msg" data-strong="true">
                       Thinking Checking type safety
                     </div>
-                    <div data-slot="todo-preview-msg">Shell Prints five topic blocks between timed commands</div>
+                    <div data-slot="todo-preview-msg">
+                      Shell Prints five topic blocks between timed commands
+                    </div>
                   </div>
                 </div>
 
@@ -304,7 +323,10 @@ export const Playground = {
                     promptInput={
                       <PromptInput
                         controls={controls}
-                        submission={{ abort: () => {}, handleSubmit: (event) => event.preventDefault() }}
+                        submission={{
+                          abort: () => {},
+                          handleSubmit: (event) => event.preventDefault(),
+                        }}
                         ref={() => {}}
                         newSessionWorktree=""
                         onNewSessionWorktreeReset={() => {}}
@@ -335,9 +357,17 @@ export const Playground = {
         </div>
 
         <div style={{ display: "grid", gap: "10px", "max-width": "560px" }}>
-          <div style={{ "font-size": "12px", color: "var(--color-text-secondary, #a3a3a3)" }}>Dock open</div>
+          <div style={{ "font-size": "12px", color: "var(--color-text-secondary, #a3a3a3)" }}>
+            Dock open
+          </div>
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
-            <span style={{ width: "110px", "font-size": "13px", color: "var(--color-text-secondary, #a3a3a3)" }}>
+            <span
+              style={{
+                width: "110px",
+                "font-size": "13px",
+                color: "var(--color-text-secondary, #a3a3a3)",
+              }}
+            >
               duration
             </span>
             <input
@@ -354,7 +384,13 @@ export const Playground = {
             </span>
           </label>
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
-            <span style={{ width: "110px", "font-size": "13px", color: "var(--color-text-secondary, #a3a3a3)" }}>
+            <span
+              style={{
+                width: "110px",
+                "font-size": "13px",
+                color: "var(--color-text-secondary, #a3a3a3)",
+              }}
+            >
               bounce
             </span>
             <input
@@ -371,11 +407,23 @@ export const Playground = {
             </span>
           </label>
 
-          <div style={{ "font-size": "12px", color: "var(--color-text-secondary, #a3a3a3)", "margin-top": "4px" }}>
+          <div
+            style={{
+              "font-size": "12px",
+              color: "var(--color-text-secondary, #a3a3a3)",
+              "margin-top": "4px",
+            }}
+          >
             Dock close
           </div>
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
-            <span style={{ width: "110px", "font-size": "13px", color: "var(--color-text-secondary, #a3a3a3)" }}>
+            <span
+              style={{
+                width: "110px",
+                "font-size": "13px",
+                color: "var(--color-text-secondary, #a3a3a3)",
+              }}
+            >
               duration
             </span>
             <input
@@ -392,7 +440,13 @@ export const Playground = {
             </span>
           </label>
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
-            <span style={{ width: "110px", "font-size": "13px", color: "var(--color-text-secondary, #a3a3a3)" }}>
+            <span
+              style={{
+                width: "110px",
+                "font-size": "13px",
+                color: "var(--color-text-secondary, #a3a3a3)",
+              }}
+            >
               bounce
             </span>
             <input
@@ -409,11 +463,23 @@ export const Playground = {
             </span>
           </label>
 
-          <div style={{ "font-size": "12px", color: "var(--color-text-secondary, #a3a3a3)", "margin-top": "4px" }}>
+          <div
+            style={{
+              "font-size": "12px",
+              color: "var(--color-text-secondary, #a3a3a3)",
+              "margin-top": "4px",
+            }}
+          >
             Drawer expand
           </div>
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
-            <span style={{ width: "110px", "font-size": "13px", color: "var(--color-text-secondary, #a3a3a3)" }}>
+            <span
+              style={{
+                width: "110px",
+                "font-size": "13px",
+                color: "var(--color-text-secondary, #a3a3a3)",
+              }}
+            >
               duration
             </span>
             <input
@@ -430,7 +496,13 @@ export const Playground = {
             </span>
           </label>
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
-            <span style={{ width: "110px", "font-size": "13px", color: "var(--color-text-secondary, #a3a3a3)" }}>
+            <span
+              style={{
+                width: "110px",
+                "font-size": "13px",
+                color: "var(--color-text-secondary, #a3a3a3)",
+              }}
+            >
               bounce
             </span>
             <input
@@ -447,11 +519,23 @@ export const Playground = {
             </span>
           </label>
 
-          <div style={{ "font-size": "12px", color: "var(--color-text-secondary, #a3a3a3)", "margin-top": "4px" }}>
+          <div
+            style={{
+              "font-size": "12px",
+              color: "var(--color-text-secondary, #a3a3a3)",
+              "margin-top": "4px",
+            }}
+          >
             Drawer collapse
           </div>
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
-            <span style={{ width: "110px", "font-size": "13px", color: "var(--color-text-secondary, #a3a3a3)" }}>
+            <span
+              style={{
+                width: "110px",
+                "font-size": "13px",
+                color: "var(--color-text-secondary, #a3a3a3)",
+              }}
+            >
               duration
             </span>
             <input
@@ -460,7 +544,9 @@ export const Playground = {
               max="1"
               step="0.01"
               value={drawerCollapseDuration()}
-              onInput={(event) => setCfg("drawerCollapseDuration", event.currentTarget.valueAsNumber)}
+              onInput={(event) =>
+                setCfg("drawerCollapseDuration", event.currentTarget.valueAsNumber)
+              }
               style={{ flex: 1 }}
             />
             <span style={{ width: "64px", "text-align": "right", "font-size": "13px" }}>
@@ -468,7 +554,13 @@ export const Playground = {
             </span>
           </label>
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
-            <span style={{ width: "110px", "font-size": "13px", color: "var(--color-text-secondary, #a3a3a3)" }}>
+            <span
+              style={{
+                width: "110px",
+                "font-size": "13px",
+                color: "var(--color-text-secondary, #a3a3a3)",
+              }}
+            >
               bounce
             </span>
             <input
@@ -485,11 +577,23 @@ export const Playground = {
             </span>
           </label>
 
-          <div style={{ "font-size": "12px", color: "var(--color-text-secondary, #a3a3a3)", "margin-top": "4px" }}>
+          <div
+            style={{
+              "font-size": "12px",
+              color: "var(--color-text-secondary, #a3a3a3)",
+              "margin-top": "4px",
+            }}
+          >
             Subtitle odometer
           </div>
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
-            <span style={{ width: "110px", "font-size": "13px", color: "var(--color-text-secondary, #a3a3a3)" }}>
+            <span
+              style={{
+                width: "110px",
+                "font-size": "13px",
+                color: "var(--color-text-secondary, #a3a3a3)",
+              }}
+            >
               duration
             </span>
             <input
@@ -506,7 +610,13 @@ export const Playground = {
             </span>
           </label>
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
-            <span style={{ width: "110px", "font-size": "13px", color: "var(--color-text-secondary, #a3a3a3)" }}>
+            <span
+              style={{
+                width: "110px",
+                "font-size": "13px",
+                color: "var(--color-text-secondary, #a3a3a3)",
+              }}
+            >
               auto fit
             </span>
             <input
@@ -519,7 +629,13 @@ export const Playground = {
             </span>
           </label>
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
-            <span style={{ width: "110px", "font-size": "13px", color: "var(--color-text-secondary, #a3a3a3)" }}>
+            <span
+              style={{
+                width: "110px",
+                "font-size": "13px",
+                color: "var(--color-text-secondary, #a3a3a3)",
+              }}
+            >
               travel
             </span>
             <input
@@ -531,10 +647,18 @@ export const Playground = {
               onInput={(event) => setCfg("subtitleTravel", event.currentTarget.valueAsNumber)}
               style={{ flex: 1 }}
             />
-            <span style={{ width: "64px", "text-align": "right", "font-size": "13px" }}>{subtitleTravel()}px</span>
+            <span style={{ width: "64px", "text-align": "right", "font-size": "13px" }}>
+              {subtitleTravel()}px
+            </span>
           </label>
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
-            <span style={{ width: "110px", "font-size": "13px", color: "var(--color-text-secondary, #a3a3a3)" }}>
+            <span
+              style={{
+                width: "110px",
+                "font-size": "13px",
+                color: "var(--color-text-secondary, #a3a3a3)",
+              }}
+            >
               edge
             </span>
             <input
@@ -546,14 +670,28 @@ export const Playground = {
               onInput={(event) => setCfg("subtitleEdge", event.currentTarget.valueAsNumber)}
               style={{ flex: 1 }}
             />
-            <span style={{ width: "64px", "text-align": "right", "font-size": "13px" }}>{subtitleEdge()}%</span>
+            <span style={{ width: "64px", "text-align": "right", "font-size": "13px" }}>
+              {subtitleEdge()}%
+            </span>
           </label>
 
-          <div style={{ "font-size": "12px", color: "var(--color-text-secondary, #a3a3a3)", "margin-top": "4px" }}>
+          <div
+            style={{
+              "font-size": "12px",
+              color: "var(--color-text-secondary, #a3a3a3)",
+              "margin-top": "4px",
+            }}
+          >
             Count odometer
           </div>
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
-            <span style={{ width: "110px", "font-size": "13px", color: "var(--color-text-secondary, #a3a3a3)" }}>
+            <span
+              style={{
+                width: "110px",
+                "font-size": "13px",
+                color: "var(--color-text-secondary, #a3a3a3)",
+              }}
+            >
               duration
             </span>
             <input
@@ -570,7 +708,13 @@ export const Playground = {
             </span>
           </label>
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
-            <span style={{ width: "110px", "font-size": "13px", color: "var(--color-text-secondary, #a3a3a3)" }}>
+            <span
+              style={{
+                width: "110px",
+                "font-size": "13px",
+                color: "var(--color-text-secondary, #a3a3a3)",
+              }}
+            >
               mask
             </span>
             <input
@@ -582,10 +726,18 @@ export const Playground = {
               onInput={(event) => setCfg("countMask", event.currentTarget.valueAsNumber)}
               style={{ flex: 1 }}
             />
-            <span style={{ width: "64px", "text-align": "right", "font-size": "13px" }}>{countMask()}%</span>
+            <span style={{ width: "64px", "text-align": "right", "font-size": "13px" }}>
+              {countMask()}%
+            </span>
           </label>
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
-            <span style={{ width: "110px", "font-size": "13px", color: "var(--color-text-secondary, #a3a3a3)" }}>
+            <span
+              style={{
+                width: "110px",
+                "font-size": "13px",
+                color: "var(--color-text-secondary, #a3a3a3)",
+              }}
+            >
               mask height
             </span>
             <input
@@ -597,10 +749,18 @@ export const Playground = {
               onInput={(event) => setCfg("countMaskHeight", event.currentTarget.valueAsNumber)}
               style={{ flex: 1 }}
             />
-            <span style={{ width: "64px", "text-align": "right", "font-size": "13px" }}>{countMaskHeight()}px</span>
+            <span style={{ width: "64px", "text-align": "right", "font-size": "13px" }}>
+              {countMaskHeight()}px
+            </span>
           </label>
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
-            <span style={{ width: "110px", "font-size": "13px", color: "var(--color-text-secondary, #a3a3a3)" }}>
+            <span
+              style={{
+                width: "110px",
+                "font-size": "13px",
+                color: "var(--color-text-secondary, #a3a3a3)",
+              }}
+            >
               width spring
             </span>
             <input
@@ -618,6 +778,6 @@ export const Playground = {
           </label>
         </div>
       </div>
-    )
+    );
   },
-}
+};

@@ -16,7 +16,7 @@ export function getCustomUserAgent(providerSpecificData: any = {}) {
 
 export function applyCustomUserAgent(
   headers: Record<string, string>,
-  providerSpecificData: any = {}
+  providerSpecificData: any = {},
 ) {
   const customUserAgent = getCustomUserAgent(providerSpecificData);
   if (!customUserAgent) return headers;
@@ -32,7 +32,7 @@ export function withCustomUserAgent(init: RequestInit, providerSpecificData: any
     ...init,
     headers: applyCustomUserAgent(
       { ...((init.headers as Record<string, string> | undefined) || {}) },
-      providerSpecificData
+      providerSpecificData,
     ),
   };
 }
@@ -56,7 +56,7 @@ export function withCustomUserAgent(init: RequestInit, providerSpecificData: any
 export function directHttpsRequest(
   url: string,
   options: { method?: string; headers?: Record<string, string>; body?: string },
-  timeoutMs: number
+  timeoutMs: number,
 ): Promise<{ status: number; ok: boolean; text: () => Promise<string> }> {
   return safeOutboundFetch(url, {
     method: options.method || "GET",

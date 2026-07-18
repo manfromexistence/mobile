@@ -4,14 +4,8 @@
   "title": "GitHub Contributions",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "Visualize year-long GitHub contribution activity with daily counts, tooltips, and a profile link.",
-  "dependencies": [
-    "date-fns"
-  ],
-  "registryDependencies": [
-    "tooltip",
-    "spinner",
-    "https://chanhdai.com/r/contribution-graph.json"
-  ],
+  "dependencies": ["date-fns"],
+  "registryDependencies": ["tooltip", "spinner", "https://chanhdai.com/r/contribution-graph.json"],
   "files": [
     {
       "path": "src/registry/components/github-contributions/github-contributions.tsx",
@@ -32,8 +26,6 @@
     }
   },
   "docs": "https://chanhdai.com/components/github-contributions",
-  "categories": [
-    "data-display"
-  ],
+  "categories": ["data-display"],
   "type": "registry:component"
 }

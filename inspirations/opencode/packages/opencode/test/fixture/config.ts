@@ -1,6 +1,6 @@
-import { Config } from "@/config/config"
-import { emptyConsoleState } from "@opencode-ai/core/v1/config/console-state"
-import { Effect, Layer } from "effect"
+import { Config } from "@/config/config";
+import { emptyConsoleState } from "@opencode-ai/core/v1/config/console-state";
+import { Effect, Layer } from "effect";
 
 export function make(overrides: Partial<Config.Interface> = {}) {
   return Config.Service.of({
@@ -13,11 +13,11 @@ export function make(overrides: Partial<Config.Interface> = {}) {
     directories: () => Effect.succeed([]),
     waitForDependencies: () => Effect.void,
     ...overrides,
-  })
+  });
 }
 
 export function layer(overrides?: Partial<Config.Interface>) {
-  return Layer.succeed(Config.Service, make(overrides))
+  return Layer.succeed(Config.Service, make(overrides));
 }
 
-export * as TestConfig from "./config"
+export * as TestConfig from "./config";

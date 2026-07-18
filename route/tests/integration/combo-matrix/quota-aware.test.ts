@@ -100,7 +100,7 @@ test("reset-aware: exhausted connection (limitReached) demoted — second target
     first,
     "claude",
     `reset-aware: openai has limitReached quota (score -Infinity), so claude (score 0.5) ` +
-      `must be dispatched first even though it is second in the combo definition. Got: ${first}`
+      `must be dispatched first even though it is second in the combo definition. Got: ${first}`,
   );
 });
 
@@ -164,7 +164,7 @@ test("reset-window: target with nearest quota-reset dispatched first despite bei
     first,
     "gemini",
     `reset-window: gemini quota resets in ~1h (resetMs finite), openai has no reset date ` +
-      `(resetMs Infinity), so gemini must be dispatched first despite being second in combo. Got: ${first}`
+      `(resetMs Infinity), so gemini must be dispatched first despite being second in combo. Got: ${first}`,
   );
 });
 
@@ -227,7 +227,7 @@ test("headroom: target with most free capacity dispatched first despite being se
     first,
     "claude",
     `headroom: openai saturation=0.9 → headroom=0.1, claude saturation=0.1 → headroom=0.9, ` +
-      `so claude must be dispatched first despite being second in combo definition. Got: ${first}`
+      `so claude must be dispatched first despite being second in combo definition. Got: ${first}`,
   );
 });
 
@@ -277,6 +277,6 @@ test("lkgp: last-known-good provider is prioritised above definition order", asy
     first,
     "claude",
     `lkgp: LKGP record names "claude" as last-known-good, so claude must be dispatched ` +
-      `first despite being second in the combo definition. Got: ${first}`
+      `first despite being second in the combo definition. Got: ${first}`,
   );
 });

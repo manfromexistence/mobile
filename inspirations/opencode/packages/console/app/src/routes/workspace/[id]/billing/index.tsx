@@ -1,18 +1,20 @@
-import { MonthlyLimitSection } from "./monthly-limit-section"
-import { BillingSection } from "./billing-section"
-import { ReloadSection } from "./reload-section"
-import { PaymentSection } from "./payment-section"
-import { BlackSection } from "./black-section"
-import { RedeemSection } from "./redeem-section"
-import { createMemo, Show } from "solid-js"
-import { createAsync, useParams } from "@solidjs/router"
-import { queryBillingInfo, querySessionInfo } from "../../common"
+import { MonthlyLimitSection } from "./monthly-limit-section";
+import { BillingSection } from "./billing-section";
+import { ReloadSection } from "./reload-section";
+import { PaymentSection } from "./payment-section";
+import { BlackSection } from "./black-section";
+import { RedeemSection } from "./redeem-section";
+import { createMemo, Show } from "solid-js";
+import { createAsync, useParams } from "@solidjs/router";
+import { queryBillingInfo, querySessionInfo } from "../../common";
 
 export default function () {
-  const params = useParams()
-  const sessionInfo = createAsync(() => querySessionInfo(params.id!))
-  const billingInfo = createAsync(() => queryBillingInfo(params.id!))
-  const isBlack = createMemo(() => billingInfo()?.subscriptionID || billingInfo()?.timeSubscriptionBooked)
+  const params = useParams();
+  const sessionInfo = createAsync(() => querySessionInfo(params.id!));
+  const billingInfo = createAsync(() => queryBillingInfo(params.id!));
+  const isBlack = createMemo(
+    () => billingInfo()?.subscriptionID || billingInfo()?.timeSubscriptionBooked,
+  );
 
   return (
     <div data-page="workspace-[id]">
@@ -31,5 +33,5 @@ export default function () {
         </Show>
       </div>
     </div>
-  )
+  );
 }

@@ -143,7 +143,7 @@ export function detectVolumeSignals(body: Record<string, unknown>): VolumeSignal
  */
 export async function recommendStrategyOverride(
   signals: VolumeSignals,
-  currentStrategy: string
+  currentStrategy: string,
 ): Promise<StrategyOverride> {
   const noOverride: StrategyOverride = {
     shouldOverride: false,

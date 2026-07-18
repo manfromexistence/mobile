@@ -4,10 +4,7 @@
   "title": "Work Experience",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "Display work experiences with role details, company logos, and durations.",
-  "dependencies": [
-    "react-markdown",
-    "date-fns"
-  ],
+  "dependencies": ["react-markdown", "date-fns"],
   "registryDependencies": [
     "collapsible",
     "separator",
@@ -23,8 +20,6 @@
     }
   ],
   "docs": "https://chanhdai.com/components/work-experience-component",
-  "categories": [
-    "marketing"
-  ],
+  "categories": ["marketing"],
   "type": "registry:component"
 }

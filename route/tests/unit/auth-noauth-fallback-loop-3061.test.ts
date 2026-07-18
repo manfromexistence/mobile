@@ -66,7 +66,7 @@ test("#3061 opencode no-auth: excluding 'noauth' returns null (breaks the fallba
     creds,
     null,
     "after the synthetic noauth connection failed and was excluded, the selector must return " +
-      "null instead of handing back 'noauth' (which would loop forever and fill the disk)"
+      "null instead of handing back 'noauth' (which would loop forever and fill the disk)",
   );
 });
 
@@ -77,7 +77,7 @@ test("#3061 opencode-zen no-auth: excluding 'noauth' returns null (breaks the fa
   assert.equal(
     creds,
     null,
-    "excluded synthetic noauth must not be re-selected for the opencode-zen keyless path"
+    "excluded synthetic noauth must not be re-selected for the opencode-zen keyless path",
   );
 });
 
@@ -88,6 +88,6 @@ test("#3061 mimocode no-auth: excluding 'noauth' returns null (breaks the fallba
   assert.equal(
     creds,
     null,
-    "excluded synthetic noauth must not be re-selected for the mimocode keyless path"
+    "excluded synthetic noauth must not be re-selected for the mimocode keyless path",
   );
 });

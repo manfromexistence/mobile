@@ -1,21 +1,21 @@
 export type SVGSpriteNames =
-  | 'diffs-icon-arrow-right-short'
-  | 'diffs-icon-brand-github'
-  | 'diffs-icon-chevron'
-  | 'diffs-icon-chevrons-narrow'
-  | 'diffs-icon-diff-split'
-  | 'diffs-icon-diff-unified'
-  | 'diffs-icon-expand'
-  | 'diffs-icon-expand-all'
-  | 'diffs-icon-file-code'
-  | 'diffs-icon-plus'
-  | 'diffs-icon-symbol-added'
-  | 'diffs-icon-symbol-deleted'
-  | 'diffs-icon-symbol-diffstat'
-  | 'diffs-icon-symbol-ignored'
-  | 'diffs-icon-symbol-modified'
-  | 'diffs-icon-symbol-moved'
-  | 'diffs-icon-symbol-ref';
+  | "diffs-icon-arrow-right-short"
+  | "diffs-icon-brand-github"
+  | "diffs-icon-chevron"
+  | "diffs-icon-chevrons-narrow"
+  | "diffs-icon-diff-split"
+  | "diffs-icon-diff-unified"
+  | "diffs-icon-expand"
+  | "diffs-icon-expand-all"
+  | "diffs-icon-file-code"
+  | "diffs-icon-plus"
+  | "diffs-icon-symbol-added"
+  | "diffs-icon-symbol-deleted"
+  | "diffs-icon-symbol-diffstat"
+  | "diffs-icon-symbol-ignored"
+  | "diffs-icon-symbol-modified"
+  | "diffs-icon-symbol-moved"
+  | "diffs-icon-symbol-ref";
 
 export const SVGSpriteSheet = `<svg data-icon-sprite aria-hidden="true" width="0" height="0">
   <symbol id="diffs-icon-arrow-right-short" viewBox="0 0 16 16">

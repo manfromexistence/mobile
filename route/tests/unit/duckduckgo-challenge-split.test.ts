@@ -27,8 +27,9 @@ test("host imports the solver back from the leaf", () => {
 });
 
 test("makeDuckDuckGoFeSignals returns a base64 string", async () => {
-  const { makeDuckDuckGoFeSignals } =
-    await import("../../open-sse/executors/duckduckgo-web/challenge.ts");
+  const { makeDuckDuckGoFeSignals } = await import(
+    "../../open-sse/executors/duckduckgo-web/challenge.ts"
+  );
   const out = makeDuckDuckGoFeSignals();
   assert.equal(typeof out, "string");
   assert.ok(out.length > 0);

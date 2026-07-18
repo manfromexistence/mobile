@@ -14,8 +14,9 @@ const ORIGINAL_DATA_DIR = process.env.DATA_DIR;
 process.env.DATA_DIR = TEST_DATA_DIR;
 
 const core = await import("../../src/lib/db/core.ts");
-const { saveModelsDevCapabilities, clearModelsDevCapabilities } =
-  await import("../../src/lib/modelsDevSync.ts");
+const { saveModelsDevCapabilities, clearModelsDevCapabilities } = await import(
+  "../../src/lib/modelsDevSync.ts"
+);
 const { filterTargetsByRequestCompatibility } = await import("../../open-sse/services/combo.ts");
 
 test.after(() => {
@@ -92,12 +93,12 @@ test("known compatible context target wins over unknown-context targets", () => 
       target("unit-unknown-context/mystery-b"),
     ],
     largeContextBody(),
-    noopLog
+    noopLog,
   );
 
   assert.deepEqual(
     out.map((entry) => entry.modelStr),
-    ["unit-known-context/million"]
+    ["unit-known-context/million"],
   );
 });
 
@@ -111,12 +112,12 @@ test("unknown-context targets keep strategy order when no known limit was reject
   const out = filterTargetsByRequestCompatibility(
     [target("unit-unknown-context/mystery-a"), target("unit-known-context/million")],
     { messages: [{ role: "user", content: "hello" }] },
-    noopLog
+    noopLog,
   );
 
   assert.deepEqual(
     out.map((entry) => entry.modelStr),
-    ["unit-unknown-context/mystery-a", "unit-known-context/million"]
+    ["unit-unknown-context/mystery-a", "unit-known-context/million"],
   );
 });
 
@@ -134,12 +135,12 @@ test("unknown-context targets do not become the only survivors when no known-com
       target("unit-unknown-context/mystery-b"),
     ],
     largeContextBody(),
-    noopLog
+    noopLog,
   );
 
   assert.deepEqual(
     out.map((entry) => entry.modelStr),
-    ["unit-unknown-context/mystery-a", "unit-known-context/tiny", "unit-unknown-context/mystery-b"]
+    ["unit-unknown-context/mystery-a", "unit-known-context/tiny", "unit-unknown-context/mystery-b"],
   );
 });
 
@@ -154,11 +155,11 @@ test("all known-too-small context targets still fall back to strategy order", ()
   const out = filterTargetsByRequestCompatibility(
     [target("unit-known-context/tiny"), target("unit-known-context/small")],
     largeContextBody(),
-    noopLog
+    noopLog,
   );
 
   assert.deepEqual(
     out.map((entry) => entry.modelStr),
-    ["unit-known-context/tiny", "unit-known-context/small"]
+    ["unit-known-context/tiny", "unit-known-context/small"],
   );
 });

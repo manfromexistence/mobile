@@ -58,7 +58,7 @@ describe("getGlmTeamQuotaConfig", () => {
         state: "configured",
         organizationId: "org-abc",
         projectId: "proj_xyz",
-      }
+      },
     );
   });
 
@@ -72,7 +72,7 @@ describe("getGlmTeamQuotaConfig", () => {
         state: "configured",
         organizationId: "org-alias",
         projectId: "proj-alias",
-      }
+      },
     );
   });
 
@@ -128,7 +128,7 @@ describe("assignGlmTeamQuotaProviderData", () => {
     assignGlmTeamQuotaProviderData(
       true,
       { glmOrganizationId: "org-canonical", glmProjectId: "proj-canonical" },
-      target
+      target,
     );
 
     assert.equal(target.glmOrganizationId, "org-canonical");
@@ -151,7 +151,7 @@ describe("assignGlmTeamQuotaProviderData", () => {
         glmOrganizationId: undefined as unknown as string,
         glmProjectId: null as unknown as string,
       },
-      target
+      target,
     );
 
     assert.equal(getGlmTeamQuotaConfig(target).state, "none");
@@ -184,11 +184,11 @@ describe("getGlmUsage team quota parsing", () => {
       assert.match(String(url), /open\.bigmodel\.cn\/api\/monitor\/usage\/quota\/limit\?type=2/);
       assert.equal(
         (init as { headers: Record<string, string> }).headers["bigmodel-organization"],
-        "org-team"
+        "org-team",
       );
       assert.equal(
         (init as { headers: Record<string, string> }).headers["bigmodel-project"],
-        "proj_team"
+        "proj_team",
       );
       return new Response(JSON.stringify(TEAM_QUOTA_RESPONSE), { status: 200 });
     };
@@ -219,7 +219,7 @@ describe("getGlmUsage team quota parsing", () => {
           msg: "当前用户不存在coding plan",
           success: false,
         }),
-        { status: 200 }
+        { status: 200 },
       );
 
     try {
@@ -248,7 +248,7 @@ describe("getGlmUsage team quota parsing", () => {
           msg: "project mismatch",
           success: false,
         }),
-        { status: 200 }
+        { status: 200 },
       );
 
     try {
@@ -272,7 +272,7 @@ describe("getGlmUsage team quota parsing", () => {
           msg: "rate limited",
           success: false,
         }),
-        { status: 200 }
+        { status: 200 },
       );
 
     try {
@@ -290,7 +290,7 @@ describe("getGlmUsage team quota parsing", () => {
     try {
       await assert.rejects(
         () => getGlmUsage("glm-cn-key", { apiRegion: "china" }),
-        /Invalid JSON response from GLM quota API/
+        /Invalid JSON response from GLM quota API/,
       );
     } finally {
       globalThis.fetch = originalFetch;
@@ -306,7 +306,7 @@ describe("getGlmUsage team quota parsing", () => {
           msg: "当前用户不存在coding plan",
           success: false,
         }),
-        { status: 200 }
+        { status: 200 },
       );
 
     try {

@@ -123,7 +123,7 @@ export class A2ATaskManager {
     taskId: string,
     state: TaskState,
     artifacts?: TaskArtifact[],
-    message?: string
+    message?: string,
   ): A2ATask {
     const task = this.tasks.get(taskId);
     if (!task) throw new Error(`Task ${taskId} not found`);

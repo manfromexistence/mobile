@@ -78,7 +78,7 @@ export function registerNodes(program) {
       "--auth-header <kv>",
       t("nodes.add.authHeader"),
       (v, prev = []) => [...prev, parseHeader(v)],
-      []
+      [],
     )
     .action(async (opts, cmd) => {
       const body = {

@@ -1,21 +1,13 @@
-'use client';
+"use client";
 
-import {
-  UnresolvedFile,
-  type UnresolvedFileReactOptions,
-} from '@pierre/diffs/react';
-import type { PreloadUnresolvedFileResult } from '@pierre/diffs/ssr';
-import {
-  IconColorAuto,
-  IconColorDark,
-  IconColorLight,
-  IconRefresh,
-} from '@pierre/icons';
-import { useMemo, useState } from 'react';
+import { UnresolvedFile, type UnresolvedFileReactOptions } from "@pierre/diffs/react";
+import type { PreloadUnresolvedFileResult } from "@pierre/diffs/ssr";
+import { IconColorAuto, IconColorDark, IconColorLight, IconRefresh } from "@pierre/icons";
+import { useMemo, useState } from "react";
 
-import { FeatureHeader } from '@/components/FeatureHeader';
-import { Button } from '@/components/ui/button';
-import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group';
+import { FeatureHeader } from "@/components/FeatureHeader";
+import { Button } from "@/components/ui/button";
+import { ButtonGroup, ButtonGroupItem } from "@/components/ui/button-group";
 
 interface MergeConflictProps {
   prerenderedFile: PreloadUnresolvedFileResult<undefined>;
@@ -25,30 +17,26 @@ export function MergeConflict({ prerenderedFile }: MergeConflictProps) {
   const [instanceKey, setInstanceKey] = useState(0);
   const [hasResolved, setHasResolved] = useState(false);
 
-  const [themeType, setThemeType] = useState<'light' | 'dark' | 'system'>(
-    () => prerenderedFile.options?.themeType ?? 'system'
+  const [themeType, setThemeType] = useState<"light" | "dark" | "system">(
+    () => prerenderedFile.options?.themeType ?? "system",
   );
   const borderClass =
-    themeType === 'light'
-      ? 'border-neutral-200'
-      : themeType === 'dark'
-        ? 'border-neutral-800'
-        : 'border-neutral-200 dark:border-neutral-800';
+    themeType === "light"
+      ? "border-neutral-200"
+      : themeType === "dark"
+        ? "border-neutral-800"
+        : "border-neutral-200 dark:border-neutral-800";
 
   // NOTE(amadeus): These server render APIs definitely suck, and it's
   // something we need to take a pass at.  Curious if it's something Nicolas
   // could help with designing...
   const options: UnresolvedFileReactOptions<undefined> = useMemo(() => {
-    const { mergeConflictActionsType, hunkSeparators, ...rest } =
-      prerenderedFile.options ?? {};
+    const { mergeConflictActionsType, hunkSeparators, ...rest } = prerenderedFile.options ?? {};
     return {
       ...rest,
       mergeConflictActionsType:
-        typeof mergeConflictActionsType === 'function'
-          ? 'custom'
-          : mergeConflictActionsType,
-      hunkSeparators:
-        typeof hunkSeparators === 'function' ? 'custom' : hunkSeparators,
+        typeof mergeConflictActionsType === "function" ? "custom" : mergeConflictActionsType,
+      hunkSeparators: typeof hunkSeparators === "function" ? "custom" : hunkSeparators,
       themeType,
     };
   }, [prerenderedFile.options, themeType]);
@@ -60,10 +48,9 @@ export function MergeConflict({ prerenderedFile }: MergeConflictProps) {
         title="Merge conflict resolution UI"
         description={
           <>
-            Render conflicts through a dedicated diff primitive that treats
-            current and incoming sections as structured additions/deletions
-            without running text diffing. Resolve by choosing current, incoming,
-            or both changes and preview the updated file instantly.
+            Render conflicts through a dedicated diff primitive that treats current and incoming
+            sections as structured additions/deletions without running text diffing. Resolve by
+            choosing current, incoming, or both changes and preview the updated file instantly.
           </>
         }
       />
@@ -82,9 +69,7 @@ export function MergeConflict({ prerenderedFile }: MergeConflictProps) {
         </Button>
         <ButtonGroup
           value={themeType}
-          onValueChange={(value) =>
-            setThemeType(value as 'light' | 'dark' | 'system')
-          }
+          onValueChange={(value) => setThemeType(value as "light" | "dark" | "system")}
         >
           <ButtonGroupItem value="system">
             <IconColorAuto />
@@ -106,10 +91,7 @@ export function MergeConflict({ prerenderedFile }: MergeConflictProps) {
         onClickCapture={(e) => {
           if (hasResolved) return;
           for (const el of e.nativeEvent.composedPath()) {
-            if (
-              el instanceof HTMLElement &&
-              el.hasAttribute('data-merge-conflict-action')
-            ) {
+            if (el instanceof HTMLElement && el.hasAttribute("data-merge-conflict-action")) {
               setHasResolved(true);
               break;
             }

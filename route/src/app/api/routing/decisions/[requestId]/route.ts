@@ -4,7 +4,7 @@ import { explainRouteByRequestId } from "@/lib/usage/routeExplain";
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ requestId: string }> }
+  { params }: { params: Promise<{ requestId: string }> },
 ) {
   try {
     const authError = await requireManagementAuth(request);

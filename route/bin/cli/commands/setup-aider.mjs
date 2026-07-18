@@ -25,7 +25,9 @@ export function resolveAiderTarget(opts = {}) {
   if (opts.remote) root = stripToRoot(opts.remote);
   else {
     try {
-      root = stripToRoot(resolveActiveContext(opts.context ?? process.env.OMNIROUTE_CONTEXT)?.baseUrl);
+      root = stripToRoot(
+        resolveActiveContext(opts.context ?? process.env.OMNIROUTE_CONTEXT)?.baseUrl,
+      );
     } catch {
       /* none */
     }
@@ -78,7 +80,7 @@ async function fetchModelIds(apiBase, apiKey) {
     const res = await fetch(`${apiBase}/v1/models`, { headers, signal: AbortSignal.timeout(8000) });
     if (!res.ok) return [];
     const body = await res.json();
-    const list = Array.isArray(body) ? body : body.data ?? body.models ?? [];
+    const list = Array.isArray(body) ? body : (body.data ?? body.models ?? []);
     return list.map((m) => (typeof m === "string" ? m : m?.id)).filter(Boolean);
   } catch {
     return [];
@@ -88,7 +90,8 @@ async function fetchModelIds(apiBase, apiKey) {
 export async function runSetupAiderCommand(opts = {}) {
   const { apiBase, apiKey } = resolveAiderTarget(opts);
   const dryRun = Boolean(opts.dryRun ?? opts["dry-run"]);
-  const configPath = opts.configPath ?? opts["config-path"] ?? join(os.homedir(), ".aider.conf.yml");
+  const configPath =
+    opts.configPath ?? opts["config-path"] ?? join(os.homedir(), ".aider.conf.yml");
 
   printHeading("OmniRoute → Aider (openai-compatible via LiteLLM)");
   printInfo(`OPENAI_API_BASE: ${apiBase}   (no /v1 — LiteLLM appends it)`);
@@ -107,7 +110,9 @@ export async function runSetupAiderCommand(opts = {}) {
     }
   }
   if (!model) {
-    printError("A model is required. Pass --model <id> (the openai/ prefix is added automatically).");
+    printError(
+      "A model is required. Pass --model <id> (the openai/ prefix is added automatically).",
+    );
     return 2;
   }
 

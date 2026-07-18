@@ -22,7 +22,9 @@ process.env.JWT_SECRET = "test-jwt-secret-codewhale";
 const core = await import("../../src/lib/db/core.ts");
 const localDb = await import("../../src/lib/localDb.ts");
 
-const { GET, POST, DELETE } = await import("../../src/app/api/cli-tools/codewhale-settings/route.ts");
+const { GET, POST, DELETE } = await import(
+  "../../src/app/api/cli-tools/codewhale-settings/route.ts"
+);
 
 async function resetStorage() {
   delete process.env.INITIAL_PASSWORD;
@@ -56,7 +58,7 @@ test("codewhale-settings GET: returns 200 when auth not required", async () => {
   const body = await res.json();
   assert.ok(
     "installed" in body || "config" in body,
-    "Response should contain installed or config field"
+    "Response should contain installed or config field",
   );
 });
 
@@ -68,7 +70,7 @@ test("codewhale-settings POST: 400 when baseUrl is missing", async () => {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ apiKey: "sk-test", model: "deepseek-v4-pro" }),
-    })
+    }),
   );
   assert.equal(res.status, 400, `Expected 400, got ${res.status}`);
   const body = await res.json();
@@ -81,7 +83,7 @@ test("codewhale-settings POST: 400 when model is missing", async () => {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ baseUrl: "http://localhost:20128", apiKey: "sk-test" }),
-    })
+    }),
   );
   assert.equal(res.status, 400, `Expected 400, got ${res.status}`);
 });
@@ -103,7 +105,7 @@ test("codewhale-settings POST: writes primary ~/.codewhale/config.toml for a fre
           apiKey: "sk-test-codewhale-key",
           model: "deepseek-v4-pro",
         }),
-      })
+      }),
     );
     assert.ok([200, 403, 500].includes(res.status), `Unexpected status ${res.status}`);
     if (res.status === 200) {
@@ -121,7 +123,7 @@ test("codewhale-settings POST: writes primary ~/.codewhale/config.toml for a fre
       const legacyPath = path.join(tmpHome, ".deepseek", "config.toml");
       assert.ok(
         !fs.existsSync(legacyPath),
-        "Legacy ~/.deepseek/config.toml must not be created for a fresh install"
+        "Legacy ~/.deepseek/config.toml must not be created for a fresh install",
       );
     }
   } finally {
@@ -152,7 +154,7 @@ test("codewhale-settings POST: syncs an existing legacy ~/.deepseek/config.toml"
           apiKey: "sk-test-codewhale-key",
           model: "deepseek-v4-flash",
         }),
-      })
+      }),
     );
     assert.ok([200, 403, 500].includes(res.status), `Unexpected status ${res.status}`);
     if (res.status === 200) {
@@ -167,7 +169,7 @@ test("codewhale-settings POST: syncs an existing legacy ~/.deepseek/config.toml"
       assert.ok(primaryContent.includes("http://localhost:20128"));
       assert.ok(
         legacyContent.includes("http://localhost:20128"),
-        "Legacy config must be kept in sync with the new base URL"
+        "Legacy config must be kept in sync with the new base URL",
       );
       assert.equal(primaryContent, legacyContent, "Primary and legacy configs should match");
     }
@@ -189,7 +191,7 @@ test("codewhale-settings GET: falls back to legacy ~/.deepseek/config.toml when 
     fs.mkdirSync(legacyDir, { recursive: true });
     fs.writeFileSync(
       path.join(legacyDir, "config.toml"),
-      '# managed by OmniRoute (plan 14)\n[openai]\nbase_url = "http://localhost:20128"\n'
+      '# managed by OmniRoute (plan 14)\n[openai]\nbase_url = "http://localhost:20128"\n',
     );
 
     const res = await GET(new Request("http://localhost/api/cli-tools/codewhale-settings"));
@@ -219,15 +221,15 @@ test("codewhale-settings DELETE: removes primary and legacy config files", async
     fs.mkdirSync(legacyDir, { recursive: true });
     fs.writeFileSync(
       path.join(primaryDir, "config.toml"),
-      '# managed by OmniRoute (plan 14)\n[openai]\nbase_url = "http://localhost:20128"\n'
+      '# managed by OmniRoute (plan 14)\n[openai]\nbase_url = "http://localhost:20128"\n',
     );
     fs.writeFileSync(
       path.join(legacyDir, "config.toml"),
-      '# managed by OmniRoute (plan 14)\n[openai]\nbase_url = "http://localhost:20128"\n'
+      '# managed by OmniRoute (plan 14)\n[openai]\nbase_url = "http://localhost:20128"\n',
     );
 
     const res = await DELETE(
-      new Request("http://localhost/api/cli-tools/codewhale-settings", { method: "DELETE" })
+      new Request("http://localhost/api/cli-tools/codewhale-settings", { method: "DELETE" }),
     );
     assert.ok([200, 403, 500].includes(res.status), `Expected 200/403/500, got ${res.status}`);
     if (res.status === 200) {
@@ -254,7 +256,7 @@ test("codewhale-settings: error responses do not leak stack traces", async () =>
   const bodyStr = JSON.stringify(await res.json());
   assert.ok(
     !bodyStr.match(/\s+at\s+\/[^\s]/),
-    "Error response must not contain absolute-path stack traces"
+    "Error response must not contain absolute-path stack traces",
   );
 });
 
@@ -263,7 +265,7 @@ test("codewhale-settings: error responses do not leak stack traces", async () =>
 test("codewhale-settings route.ts: does not call exec() or spawn() directly", () => {
   const routePath = path.resolve(
     import.meta.dirname,
-    "../../src/app/api/cli-tools/codewhale-settings/route.ts"
+    "../../src/app/api/cli-tools/codewhale-settings/route.ts",
   );
   const content = fs.readFileSync(routePath, "utf-8");
   assert.ok(!content.match(/\bexec\s*\(/), "Handler must not use exec()");

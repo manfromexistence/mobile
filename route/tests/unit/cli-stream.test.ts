@@ -71,7 +71,7 @@ test("runStreamCommand --raw imprime linhas SSE brutas", async () => {
   const { runStreamCommand } = await import("../../bin/cli/commands/stream.mjs");
   const cmd = { optsWithGlobals: () => ({ output: "text", quiet: true }) };
   const out = await captureStdout(() =>
-    runStreamCommand("hi", { model: "auto", raw: true }, cmd as any)
+    runStreamCommand("hi", { model: "auto", raw: true }, cmd as any),
   );
 
   globalThis.fetch = origFetch;
@@ -118,7 +118,7 @@ test("runStreamCommand --debug imprime timing no stderr", async () => {
   const { runStreamCommand } = await import("../../bin/cli/commands/stream.mjs");
   const cmd = { optsWithGlobals: () => ({ output: "text", quiet: true }) };
   const err = await captureStderr(() =>
-    captureStdout(() => runStreamCommand("hi", { model: "auto", debug: true }, cmd as any))
+    captureStdout(() => runStreamCommand("hi", { model: "auto", debug: true }, cmd as any)),
   );
 
   globalThis.fetch = origFetch;
@@ -137,7 +137,7 @@ test("runStreamCommand usa /v1/responses com --responses-api", async () => {
   const { runStreamCommand } = await import("../../bin/cli/commands/stream.mjs");
   const cmd = { optsWithGlobals: () => ({ output: "text", quiet: true }) };
   const out = await captureStdout(() =>
-    runStreamCommand("hi", { model: "auto", responsesApi: true }, cmd as any)
+    runStreamCommand("hi", { model: "auto", responsesApi: true }, cmd as any),
   );
 
   globalThis.fetch = origFetch;

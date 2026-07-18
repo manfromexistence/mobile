@@ -6,7 +6,7 @@ export type JsonValue = JsonPrimitive | JsonObject | JsonArray;
 export type EncodeReplacer = (
   key: string,
   value: JsonValue,
-  path: readonly (string | number)[]
+  path: readonly (string | number)[],
 ) => unknown;
 
 export interface EncodeOptions {

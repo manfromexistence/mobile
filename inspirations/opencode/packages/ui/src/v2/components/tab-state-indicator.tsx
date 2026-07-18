@@ -1,7 +1,7 @@
-import { splitProps, type ComponentProps } from "solid-js"
+import { splitProps, type ComponentProps } from "solid-js";
 
 export function TabStateIndicator(props: ComponentProps<"svg">) {
-  const [local, rest] = splitProps(props, ["class", "classList", "width", "height"])
+  const [local, rest] = splitProps(props, ["class", "classList", "width", "height"]);
   return (
     <svg
       {...rest}
@@ -33,5 +33,5 @@ export function TabStateIndicator(props: ComponentProps<"svg">) {
         <path d="M10.5 11.5L10.5 13.5L8.5 13.5L8.5 11.5L10.5 11.5Z" />
       </g>
     </svg>
-  )
+  );
 }

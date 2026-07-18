@@ -106,7 +106,7 @@ function detectWithPatterns(text: string, patterns: ReturnType<typeof normalizeP
 function shouldBlock(detections: Detection[], threshold: "low" | "medium" | "high") {
   const minimumSeverity = SEVERITY_SCORES[threshold] || SEVERITY_SCORES.high;
   return detections.some(
-    (detection) => (SEVERITY_SCORES[detection.severity] || 0) >= minimumSeverity
+    (detection) => (SEVERITY_SCORES[detection.severity] || 0) >= minimumSeverity,
   );
 }
 
@@ -118,7 +118,7 @@ function emitGuardrailLog(
   logger: GuardrailContext["log"] | Console,
   level: "debug" | "info" | "warn",
   message: string,
-  meta?: Record<string, unknown>
+  meta?: Record<string, unknown>,
 ) {
   const target = logger?.[level];
   if (typeof target !== "function") return;
@@ -162,7 +162,7 @@ function isEnabled(options: PromptInjectionGuardrailOptions) {
 export function evaluatePromptInjection(
   body: unknown,
   options: PromptInjectionGuardrailOptions = {},
-  context: GuardrailContext = {}
+  context: GuardrailContext = {},
 ): PromptInjectionGuardrailDecision {
   if (!isEnabled(options) || !body || typeof body !== "object") {
     return {
@@ -197,7 +197,7 @@ export function evaluatePromptInjection(
       : joinedContents;
   const customDetections = detectWithPatterns(scanText, patterns);
   const existingDetections = new Set(
-    sanitizerResult.detections.map((d: Detection) => `${d.pattern}:${d.match}:${d.severity}`)
+    sanitizerResult.detections.map((d: Detection) => `${d.pattern}:${d.match}:${d.severity}`),
   );
 
   for (const detection of customDetections) {

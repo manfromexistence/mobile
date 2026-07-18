@@ -30,7 +30,7 @@ for (const id of ACP_SPAWNABLE_IDS) {
     assert.equal(
       entry.acpSpawnable,
       true,
-      `Expected CLI_TOOLS['${id}'].acpSpawnable to be true, got ${entry.acpSpawnable}`
+      `Expected CLI_TOOLS['${id}'].acpSpawnable to be true, got ${entry.acpSpawnable}`,
     );
   });
 }
@@ -59,7 +59,7 @@ for (const id of NOT_ACP_SPAWNABLE_IDS) {
     assert.equal(
       entry.acpSpawnable,
       false,
-      `Expected CLI_TOOLS['${id}'].acpSpawnable to be false, got ${entry.acpSpawnable}`
+      `Expected CLI_TOOLS['${id}'].acpSpawnable to be false, got ${entry.acpSpawnable}`,
     );
   });
 }
@@ -69,6 +69,6 @@ test("windsurf is not in CLI_TOOLS (removed per D17)", () => {
   assert.equal(
     (CLI_TOOLS as Record<string, unknown>)["windsurf"],
     undefined,
-    "windsurf must not be in CLI_TOOLS (removed per plan 14 D17)"
+    "windsurf must not be in CLI_TOOLS (removed per plan 14 D17)",
   );
 });

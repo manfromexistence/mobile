@@ -45,7 +45,7 @@ function isClaudeFormat(body: Record<string, unknown>): boolean {
 
 async function applyOmniglyph(
   body: Record<string, unknown>,
-  options?: CompressionEngineApplyOptions
+  options?: CompressionEngineApplyOptions,
 ): Promise<CompressionResult> {
   const model = options?.model ?? (body as { model?: string }).model ?? "";
   if (options?.supportsVision !== true) return skip(body, "no_vision");
@@ -75,7 +75,7 @@ async function applyOmniglyph(
       "stacked",
       ["omniglyph:context-as-image"],
       undefined,
-      Date.now() - started
+      Date.now() - started,
     ),
   };
 }

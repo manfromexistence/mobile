@@ -45,13 +45,13 @@ const BROAD_CANDIDATES = [
 // Models absent from this map are treated as unknown cost (Infinity in the server's
 // sortModelsByCost, i.e. sorted last — effectively "most expensive").
 const KNOWN_INPUT_COST = {
-  "groq/llama-3.1-8b-instant": 0,       // inference-hosts.ts: price=0 (free tier)
-  "groq/llama-3.3-70b-versatile": 0,     // inference-hosts.ts: price=0 (free tier)
-  "cerebras/llama3.1-8b": 0,             // inference-hosts.ts: price=0
-  "cerebras/llama-3.3-70b": 0,           // inference-hosts.ts: price=0
-  "deepseek/deepseek-chat": 0,           // inference-hosts.ts: price=0
-  "minimax/MiniMax-M3": 0.5,             // regional.ts: $0.5/M input
-  "minimax/minimax-m3": 0.5,             // regional.ts: $0.5/M input
+  "groq/llama-3.1-8b-instant": 0, // inference-hosts.ts: price=0 (free tier)
+  "groq/llama-3.3-70b-versatile": 0, // inference-hosts.ts: price=0 (free tier)
+  "cerebras/llama3.1-8b": 0, // inference-hosts.ts: price=0
+  "cerebras/llama-3.3-70b": 0, // inference-hosts.ts: price=0
+  "deepseek/deepseek-chat": 0, // inference-hosts.ts: price=0
+  "minimax/MiniMax-M3": 0.5, // regional.ts: $0.5/M input
+  "minimax/minimax-m3": 0.5, // regional.ts: $0.5/M input
   "kimi-coding-apikey/moonshot-v1-8k": 1, // not in pricing table → Infinity on server → treated pricey
 };
 
@@ -127,14 +127,10 @@ async function step0CacheProbe(healthy) {
     // Attempt immediate chat — expect instant visibility (getComboByName bypasses cache)
     let r = await chat(probeName, { maxTokens: 4 });
     if (r.status === 200 && r.text) {
-      console.log(
-        `  chat() → ${r.status} model=${r.model} text="${r.text.slice(0, 40)}"`
-      );
+      console.log(`  chat() → ${r.status} model=${r.model} text="${r.text.slice(0, 40)}"`);
       console.log("  PROBE RESULT: immediately routable — getComboByName bypasses in-memory cache");
     } else {
-      console.log(
-        `  Immediate chat → status=${r.status} text=${r.text ?? "(empty)"}`
-      );
+      console.log(`  Immediate chat → status=${r.status} text=${r.text ?? "(empty)"}`);
       console.log("  Polling up to 12 s (TTL cache unexpectedly active)...");
       let resolved = false;
       for (let i = 0; i < 6; i++) {
@@ -164,7 +160,9 @@ async function step0CacheProbe(healthy) {
   }
 
   if (blocked) {
-    throw new Error("BLOCKER: sqlite-inserted combo not routable within 12s — cannot run scenarios");
+    throw new Error(
+      "BLOCKER: sqlite-inserted combo not routable within 12s — cannot run scenarios",
+    );
   }
 }
 
@@ -193,7 +191,12 @@ async function scenarioPriority(healthy) {
     }
     pass("priority", `status=200 model=${r.model} text="${r.text.slice(0, 40)}"`);
   } finally {
-    if (id) try { deleteCombo(name); } catch { /* best effort */ }
+    if (id)
+      try {
+        deleteCombo(name);
+      } catch {
+        /* best effort */
+      }
   }
 }
 
@@ -224,13 +227,21 @@ async function scenarioRoundRobin(healthy) {
     if (served.size < 2) {
       fail(
         "round-robin",
-        `only 1 distinct model across 5 calls: [${[...served].join(", ")}] — round-robin not distributing`
+        `only 1 distinct model across 5 calls: [${[...served].join(", ")}] — round-robin not distributing`,
       );
       return;
     }
-    pass("round-robin", `${served.size} distinct models across 5 calls: [${[...served].join(", ")}]`);
+    pass(
+      "round-robin",
+      `${served.size} distinct models across 5 calls: [${[...served].join(", ")}]`,
+    );
   } finally {
-    if (id) try { deleteCombo(name); } catch { /* best effort */ }
+    if (id)
+      try {
+        deleteCombo(name);
+      } catch {
+        /* best effort */
+      }
   }
 }
 
@@ -271,13 +282,18 @@ async function scenarioWeighted(healthy) {
     if (distinct.length < 2) {
       fail(
         "weighted",
-        `only 1 distinct model across 8 calls: ${JSON.stringify(tally)} — weighted routing not distributing`
+        `only 1 distinct model across 8 calls: ${JSON.stringify(tally)} — weighted routing not distributing`,
       );
       return;
     }
     pass("weighted", `8 calls distribution: ${JSON.stringify(tally)}`);
   } finally {
-    if (id) try { deleteCombo(name); } catch { /* best effort */ }
+    if (id)
+      try {
+        deleteCombo(name);
+      } catch {
+        /* best effort */
+      }
   }
 }
 
@@ -296,16 +312,16 @@ async function scenarioCostOptimized(healthy) {
 
   // Partition healthy into cheap (price=0) and pricey (price>0 or unknown>0)
   const cheap = healthy.filter(
-    (m) => KNOWN_INPUT_COST[m] !== undefined && KNOWN_INPUT_COST[m] === 0
+    (m) => KNOWN_INPUT_COST[m] !== undefined && KNOWN_INPUT_COST[m] === 0,
   );
   const pricey = healthy.filter(
-    (m) => KNOWN_INPUT_COST[m] !== undefined && KNOWN_INPUT_COST[m] > 0
+    (m) => KNOWN_INPUT_COST[m] !== undefined && KNOWN_INPUT_COST[m] > 0,
   );
 
   if (cheap.length === 0 || pricey.length === 0) {
     skip(
       "cost-optimized",
-      `no distinguishable cheap+pricey pair among healthy=[${healthy.join(", ")}]`
+      `no distinguishable cheap+pricey pair among healthy=[${healthy.join(", ")}]`,
     );
     return;
   }
@@ -345,16 +361,21 @@ async function scenarioCostOptimized(healthy) {
     if (!isChapModel) {
       fail(
         "cost-optimized",
-        `expected cheaper model (${cheapModel}, price=${KNOWN_INPUT_COST[cheapModel]}) but got ${r.model} — cost-optimized may not have reordered`
+        `expected cheaper model (${cheapModel}, price=${KNOWN_INPUT_COST[cheapModel]}) but got ${r.model} — cost-optimized may not have reordered`,
       );
       return;
     }
     pass(
       "cost-optimized",
-      `cheaper model served: ${r.model} (cheap=${cheapModel}@$${KNOWN_INPUT_COST[cheapModel]}, pricey=${priceyModel}@$${KNOWN_INPUT_COST[priceyModel]})`
+      `cheaper model served: ${r.model} (cheap=${cheapModel}@$${KNOWN_INPUT_COST[cheapModel]}, pricey=${priceyModel}@$${KNOWN_INPUT_COST[priceyModel]})`,
     );
   } finally {
-    if (id) try { deleteCombo(name); } catch { /* best effort */ }
+    if (id)
+      try {
+        deleteCombo(name);
+      } catch {
+        /* best effort */
+      }
   }
 }
 
@@ -399,7 +420,12 @@ async function scenarioFusion(healthy) {
     }
     pass("fusion", `synthesized text="${r.text.slice(0, 60)}" served-model=${r.model}`);
   } finally {
-    if (id) try { deleteCombo(name); } catch { /* best effort */ }
+    if (id)
+      try {
+        deleteCombo(name);
+      } catch {
+        /* best effort */
+      }
   }
 }
 
@@ -494,7 +520,7 @@ async function scenarioFailover(healthy) {
       "failover",
       `need ≥2 distinct healthy providers for cross-provider approach; ` +
         `found only 1 [${distinctProviders.join(", ")}]. ` +
-        `Implement BROKEN-CONNECTION approach to run failover with a single provider.`
+        `Implement BROKEN-CONNECTION approach to run failover with a single provider.`,
     );
     return;
   }
@@ -520,7 +546,7 @@ async function scenarioFailover(healthy) {
       `  failover combo (CROSS-PROVIDER BOGUS-MODEL):\n` +
         `    [0] ${bogusModel} ← broken primary (will 404)\n` +
         `    [1] ${realModel} ← healthy fallback (different provider)\n` +
-        `    strategy=priority, maxRetries=0`
+        `    strategy=priority, maxRetries=0`,
     );
 
     const r = await chat(name, { maxTokens: 16 });
@@ -537,13 +563,16 @@ async function scenarioFailover(healthy) {
         "failover",
         `expected status=200 after fallover (broken ${bogusModel} → ${realModel}), ` +
           `got status=${r.status}. ` +
-          `raw=${JSON.stringify(r.raw)?.slice(0, 200)}`
+          `raw=${JSON.stringify(r.raw)?.slice(0, 200)}`,
       );
       return;
     }
 
     if (!r.text) {
-      fail("failover", `status=200 but empty text — fallover may have served a no-content response`);
+      fail(
+        "failover",
+        `status=200 but empty text — fallover may have served a no-content response`,
+      );
       return;
     }
 
@@ -555,7 +584,7 @@ async function scenarioFailover(healthy) {
       fail(
         "failover",
         `bogus model string "${bogusModelPart}" appears in served model field "${r.model}" — ` +
-          `impossible 200 from a non-existent model; something is wrong`
+          `impossible 200 from a non-existent model; something is wrong`,
       );
       return;
     }
@@ -576,7 +605,7 @@ async function scenarioFailover(healthy) {
       "failover",
       `CROSS-PROVIDER BOGUS-MODEL: broken primary (${bogusModel}) → ` +
         `fallover → served ${r.model} (real target: ${realModel}) ` +
-        `text="${r.text.slice(0, 40)}"${proofNote}`
+        `text="${r.text.slice(0, 40)}"${proofNote}`,
     );
   } finally {
     if (id) {

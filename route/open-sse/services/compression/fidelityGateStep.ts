@@ -22,7 +22,7 @@ export function gateAdvance(
   inputBody: Record<string, unknown>,
   fidelityGate: FidelityGateConfig | undefined,
   acc: StackAccumulator,
-  engineId?: string
+  engineId?: string,
 ): boolean {
   if (!fidelityGate?.enabled) return true;
   if (engineId && getCompressionEngine(engineId)?.sampling) return true; // lossy-by-design, CCR-recoverable

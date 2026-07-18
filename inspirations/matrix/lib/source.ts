@@ -26,7 +26,7 @@ const importRewrites: ReadonlyArray<{ from: string; to: string }> = [
   { from: "../hooks/use-cycle-phase", to: "./dotmatrix-hooks" },
   { from: "../hooks/use-stepped-cycle", to: "./dotmatrix-hooks" },
   { from: "../hooks/use-prefers-reduced-motion", to: "./dotmatrix-hooks" },
-  { from: "../core/phases", to: "./dotmatrix-hooks" }
+  { from: "../core/phases", to: "./dotmatrix-hooks" },
 ];
 
 export async function getLoaderSource(fileName: string): Promise<string> {
@@ -40,7 +40,7 @@ export async function getManualSetupSources(): Promise<ManualSetupSources> {
   const [coreSource, hooksSource, cssSource] = await Promise.all([
     readFile(path.join(manualRoot, "dotmatrix-core.tsx"), "utf-8"),
     readFile(path.join(manualRoot, "dotmatrix-hooks.ts"), "utf-8"),
-    readFile(path.join(loadersRoot, "styles.css"), "utf-8")
+    readFile(path.join(loadersRoot, "styles.css"), "utf-8"),
   ]);
 
   return {
@@ -49,7 +49,7 @@ export async function getManualSetupSources(): Promise<ManualSetupSources> {
     hooksFilePath: "components/ui/dotmatrix-hooks.ts",
     hooksSource,
     cssFilePath: "components/dotmatrix-loader.css",
-    cssSource
+    cssSource,
   };
 }
 

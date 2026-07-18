@@ -120,7 +120,7 @@ test("maybeThrottle - both pressures, token pressure is tighter", () => {
   assert.ok(result !== null, "Should use the tighter of the two pressures");
   assert.ok(
     result >= 20_000 && result <= 32_000,
-    `Delay should be 20-32s (high pressure from tokens), got ${result}`
+    `Delay should be 20-32s (high pressure from tokens), got ${result}`,
   );
 });
 

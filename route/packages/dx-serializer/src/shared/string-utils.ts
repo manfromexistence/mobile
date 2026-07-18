@@ -16,7 +16,7 @@ export function escapeString(value: string): string {
     .replace(/\t/g, `${BACKSLASH}t`)
     .replace(
       /[\u0000-\u001F]/g,
-      (c) => `${BACKSLASH}u${c.charCodeAt(0).toString(16).padStart(4, "0")}`
+      (c) => `${BACKSLASH}u${c.charCodeAt(0).toString(16).padStart(4, "0")}`,
     );
 }
 
@@ -66,19 +66,19 @@ export function unescapeString(value: string): string {
       if (next === "u") {
         if (i + 6 > value.length) {
           throw new SyntaxError(
-            `Invalid escape sequence: truncated \\u escape at "${value.slice(i, i + 6)}"`
+            `Invalid escape sequence: truncated \\u escape at "${value.slice(i, i + 6)}"`,
           );
         }
         const hex = value.slice(i + 2, i + 6);
         if (!/^[0-9a-f]{4}$/i.test(hex)) {
           throw new SyntaxError(
-            `Invalid escape sequence: \\u must be followed by 4 hex digits, got "${hex}"`
+            `Invalid escape sequence: \\u must be followed by 4 hex digits, got "${hex}"`,
           );
         }
         const codeUnit = Number.parseInt(hex, 16);
         if (codeUnit >= 0xd800 && codeUnit <= 0xdfff) {
           throw new SyntaxError(
-            `Invalid escape sequence: \\u${hex} is a lone surrogate; supplementary code points MUST appear as literal UTF-8`
+            `Invalid escape sequence: \\u${hex} is a lone surrogate; supplementary code points MUST appear as literal UTF-8`,
           );
         }
         unescaped += String.fromCodePoint(codeUnit);

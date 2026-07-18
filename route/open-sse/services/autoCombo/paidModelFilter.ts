@@ -37,7 +37,7 @@ function isFreeCandidate(candidate: PaidFilterCandidate): boolean {
  */
 export function filterPaidOnlyCandidates<T extends PaidFilterCandidate>(
   pool: T[],
-  hidePaidModels: boolean
+  hidePaidModels: boolean,
 ): T[] {
   if (!hidePaidModels) return pool;
   return pool.filter(isFreeCandidate);

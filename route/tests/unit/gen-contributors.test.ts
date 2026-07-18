@@ -55,7 +55,7 @@ test("parseContributors credits per parenthetical group, not a flat scan", () =>
   // rollup: erin gets 200+201, frank gets 202 — NOT both getting all three
   assert.deepEqual(
     [...agg.get("erin")].sort((a, b) => a - b),
-    [200, 201]
+    [200, 201],
   );
   assert.deepEqual([...agg.get("frank")], [202]);
   // simple bullets
@@ -85,7 +85,7 @@ test("renderContributors emits an alphabetical table with maintainer last", () =
   assert.deepEqual(
     external,
     [...external].sort((a, b) => a.localeCompare(b)),
-    "external sorted"
+    "external sorted",
   );
   assert.ok(table.includes("| [@carol](https://github.com/carol) | direct commit / report |"));
 });
@@ -94,7 +94,7 @@ test("injectContributors inserts before the closing --- and is idempotent", () =
   const once = injectContributors(
     FIXTURE,
     "3.9.0",
-    renderContributors("3.9.0", parseContributors(extractVersionSection(FIXTURE, "3.9.0")))
+    renderContributors("3.9.0", parseContributors(extractVersionSection(FIXTURE, "3.9.0"))),
   );
   assert.ok(once.includes("### 🙌 Contributors"), "section injected");
   // 3.8.99 untouched
@@ -103,7 +103,7 @@ test("injectContributors inserts before the closing --- and is idempotent", () =
   const twice = injectContributors(
     once,
     "3.9.0",
-    renderContributors("3.9.0", parseContributors(extractVersionSection(once, "3.9.0")))
+    renderContributors("3.9.0", parseContributors(extractVersionSection(once, "3.9.0"))),
   );
   const count = (twice.match(/### 🙌 Contributors/g) || []).length;
   assert.equal(count, 1, "no duplicate Contributors section on re-run");

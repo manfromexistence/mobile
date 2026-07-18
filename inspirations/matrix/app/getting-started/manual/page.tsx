@@ -11,10 +11,13 @@ export default async function ManualGettingStartedPage() {
       <section className="theme-page-shell grid gap-6 rounded-2xl py-10 sm:p-6">
         <header className="grid gap-3">
           <p className="theme-text-muted text-xs">Getting Started</p>
-          <h1 className="theme-text-strong text-2xl tracking-tight sm:text-3xl">Manual Setup Guide</h1>
+          <h1 className="theme-text-strong text-2xl tracking-tight sm:text-3xl">
+            Manual Setup Guide
+          </h1>
           <p className="theme-text max-w-[72ch] text-sm leading-relaxed">
             Before you paste any individual loader component, add these shared runtime files once.
-            After this setup, you can copy any loader source snippet from the gallery and use it directly.
+            After this setup, you can copy any loader source snippet from the gallery and use it
+            directly.
           </p>
         </header>
 

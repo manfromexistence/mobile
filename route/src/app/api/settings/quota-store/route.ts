@@ -78,7 +78,7 @@ export async function PUT(request: Request): Promise<Response> {
     if (driver === "redis" && !redisUrl) {
       return NextResponse.json(
         buildErrorBody(400, "Redis URL is required when driver is set to 'redis'"),
-        { status: 400 }
+        { status: 400 },
       );
     }
 

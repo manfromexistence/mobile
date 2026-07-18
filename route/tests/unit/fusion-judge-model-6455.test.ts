@@ -78,7 +78,7 @@ test("6455: judge synthesizes even a single surviving panel answer when judgeMod
   // (a) The judge model MUST be invoked to synthesize, not skipped.
   assert.ok(
     calls.includes("auto/claude-opus"),
-    `expected the configured judge to be invoked; calls were: ${calls.join(", ")}`
+    `expected the configured judge to be invoked; calls were: ${calls.join(", ")}`,
   );
   // The judge call is the last one — it consumes the panel answer(s).
   assert.equal(calls[calls.length - 1], "auto/claude-opus");

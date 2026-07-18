@@ -73,7 +73,7 @@ test("non-object usage is a no-op", async () => {
 test("200 stream persists a success row with ttft and status 200", async () => {
   recordStreamingUsageStats(
     { prompt_tokens: 20, completion_tokens: 9 },
-    baseCtx({ provider: "smap-prov", model: "gpt-stream", streamStatus: 200 })
+    baseCtx({ provider: "smap-prov", model: "gpt-stream", streamStatus: 200 }),
   );
   const rows = await waitForRows("smap-prov", 1);
   const row = rows[0] as {
@@ -94,7 +94,7 @@ test("200 stream persists a success row with ttft and status 200", async () => {
 test("non-200 stream persists a failure row (success=false, status string)", async () => {
   recordStreamingUsageStats(
     { prompt_tokens: 1, completion_tokens: 0 },
-    baseCtx({ provider: "sfail-prov", streamStatus: 503, streamErrorCode: "upstream_5xx" })
+    baseCtx({ provider: "sfail-prov", streamStatus: 503, streamErrorCode: "upstream_5xx" }),
   );
   const rows = await waitForRows("sfail-prov", 1);
   const row = rows[0] as { success: boolean; status: string; errorCode: string };

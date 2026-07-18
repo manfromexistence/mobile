@@ -1,26 +1,26 @@
-import { describe, expect } from "bun:test"
-import { Effect, Schema, Stream } from "effect"
-import { LLM, LLMResponse } from "../src"
-import { Route, Endpoint, LLMClient, Protocol, type FramingDef } from "../src/route"
-import { Model } from "../src/schema"
-import { testEffect } from "./lib/effect"
-import { dynamicResponse } from "./lib/http"
+import { describe, expect } from "bun:test";
+import { Effect, Schema, Stream } from "effect";
+import { LLM, LLMResponse } from "../src";
+import { Route, Endpoint, LLMClient, Protocol, type FramingDef } from "../src/route";
+import { Model } from "../src/schema";
+import { testEffect } from "./lib/effect";
+import { dynamicResponse } from "./lib/http";
 
-const updateModel = (model: Model, patch: Partial<Model.Input>) => Model.update(model, patch)
+const updateModel = (model: Model, patch: Partial<Model.Input>) => Model.update(model, patch);
 
-const Json = Schema.fromJsonString(Schema.Unknown)
-const encodeJson = Schema.encodeSync(Json)
+const Json = Schema.fromJsonString(Schema.Unknown);
+const encodeJson = Schema.encodeSync(Json);
 
 type FakeBody = {
-  readonly body: string
-}
+  readonly body: string;
+};
 
 const FakeEvent = Schema.Union([
   Schema.Struct({ type: Schema.Literal("text"), text: Schema.String }),
   Schema.Struct({ type: Schema.Literal("finish"), reason: Schema.Literal("stop") }),
-])
-type FakeEvent = Schema.Schema.Type<typeof FakeEvent>
-const decodeFakeEvents = Schema.decodeUnknownEffect(Schema.fromJsonString(Schema.Array(FakeEvent)))
+]);
+type FakeEvent = Schema.Schema.Type<typeof FakeEvent>;
+const decodeFakeEvents = Schema.decodeUnknownEffect(Schema.fromJsonString(Schema.Array(FakeEvent)));
 
 const fakeFraming: FramingDef<FakeEvent> = {
   id: "fake-json-array",
@@ -36,12 +36,12 @@ const fakeFraming: FramingDef<FakeEvent> = {
         Effect.orDie,
       ),
     ).pipe(Stream.flatMap(Stream.fromIterable)),
-}
+};
 
 const raiseEvent = (event: FakeEvent): import("../src/schema").LLMEvent =>
   event.type === "finish"
     ? { type: "finish", reason: event.reason }
-    : { type: "text-delta", id: "text-0", text: event.text }
+    : { type: "text-delta", id: "text-0", text: event.text };
 
 const fakeProtocol = Protocol.make<FakeBody, FakeEvent, FakeEvent, void>({
   id: "fake",
@@ -65,23 +65,23 @@ const fakeProtocol = Protocol.make<FakeBody, FakeEvent, FakeEvent, void>({
     initial: () => undefined,
     step: (state, event) => Effect.succeed([state, [raiseEvent(event)]] as const),
   },
-})
+});
 
 const fake = Route.make({
   id: "fake",
   protocol: fakeProtocol,
   endpoint: Endpoint.path("/chat"),
   framing: fakeFraming,
-})
-const configuredFake = fake.with({ endpoint: { baseURL: "https://fake.local" } })
+});
+const configuredFake = fake.with({ endpoint: { baseURL: "https://fake.local" } });
 
 const gemini = Route.make({
   id: "gemini-fake",
   protocol: fakeProtocol,
   endpoint: Endpoint.path("/chat"),
   framing: fakeFraming,
-})
-const configuredGemini = gemini.with({ endpoint: { baseURL: "https://fake.local" } })
+});
+const configuredGemini = gemini.with({ endpoint: { baseURL: "https://fake.local" } });
 
 const request = LLM.request({
   id: "req_1",
@@ -91,7 +91,7 @@ const request = LLM.request({
     route: configuredFake,
   }),
   prompt: "hello",
-})
+});
 
 const echoLayer = dynamicResponse(({ text, respond }) =>
   Effect.succeed(
@@ -102,49 +102,54 @@ const echoLayer = dynamicResponse(({ text, respond }) =>
       ]),
     ),
   ),
-)
+);
 
-const it = testEffect(echoLayer)
+const it = testEffect(echoLayer);
 
 describe("llm route", () => {
   it.effect("stream and generate use the route pipeline", () =>
     Effect.gen(function* () {
-      const llm = yield* LLMClient.Service
-      const events = Array.from(yield* llm.stream(request).pipe(Stream.runCollect))
-      const response = yield* llm.generate(request)
-      const reduced = LLMResponse.fromEvents(events)
+      const llm = yield* LLMClient.Service;
+      const events = Array.from(yield* llm.stream(request).pipe(Stream.runCollect));
+      const response = yield* llm.generate(request);
+      const reduced = LLMResponse.fromEvents(events);
 
-      expect(events.map((event) => event.type)).toEqual(["text-delta", "finish"])
-      expect(reduced).toBeDefined()
-      if (!reduced) throw new Error("stream reducer did not produce a completed response")
-      expect(response.events).toEqual(events)
-      expect(response.message).toEqual(reduced.message)
-      expect(response.usage).toEqual(reduced.usage)
-      expect(response.finishReason).toEqual(reduced.finishReason)
-      expect(response.message.content).toEqual([{ type: "text", text: 'echo:{"body":"hello"}' }])
+      expect(events.map((event) => event.type)).toEqual(["text-delta", "finish"]);
+      expect(reduced).toBeDefined();
+      if (!reduced) throw new Error("stream reducer did not produce a completed response");
+      expect(response.events).toEqual(events);
+      expect(response.message).toEqual(reduced.message);
+      expect(response.usage).toEqual(reduced.usage);
+      expect(response.finishReason).toEqual(reduced.finishReason);
+      expect(response.message.content).toEqual([{ type: "text", text: 'echo:{"body":"hello"}' }]);
     }),
-  )
+  );
 
   it.effect("selects routes by model route value", () =>
     Effect.gen(function* () {
-      const llm = yield* LLMClient.Service
+      const llm = yield* LLMClient.Service;
       const prepared = yield* llm.prepare(
-        LLM.updateRequest(request, { model: updateModel(request.model, { route: configuredGemini }) }),
-      )
+        LLM.updateRequest(request, {
+          model: updateModel(request.model, { route: configuredGemini }),
+        }),
+      );
 
-      expect(prepared.route).toBe("gemini-fake")
+      expect(prepared.route).toBe("gemini-fake");
     }),
-  )
+  );
 
   it.effect("builds models from configured routes", () =>
     Effect.gen(function* () {
-      const configured = fake.with({ provider: "fake-provider", endpoint: { baseURL: "https://fake.local" } })
+      const configured = fake.with({
+        provider: "fake-provider",
+        endpoint: { baseURL: "https://fake.local" },
+      });
 
       expect(configured.model({ id: "fake-model" })).toMatchObject({
         provider: "fake-provider",
-      })
+      });
     }),
-  )
+  );
 
   it.effect("does not register duplicate route ids globally", () =>
     Effect.gen(function* () {
@@ -159,13 +164,13 @@ describe("llm route", () => {
         }),
         endpoint: Endpoint.path("/chat", { baseURL: "https://fake.local" }),
         framing: fakeFraming,
-      })
+      });
 
       const prepared = yield* (yield* LLMClient.Service).prepare(
         LLM.updateRequest(request, { model: updateModel(request.model, { route: duplicate }) }),
-      )
+      );
 
-      expect(prepared.body).toEqual({ body: "late-default" })
+      expect(prepared.body).toEqual({ body: "late-default" });
     }),
-  )
-})
+  );
+});

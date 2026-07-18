@@ -39,8 +39,8 @@
  * The fallback chains are small and used only here, so they are inlined rather
  * than split into a separate resolver module.
  */
-import { hoverWouldEraseText, isFullyTransparent } from './color';
-import type { ThemeLike } from './types';
+import { hoverWouldEraseText, isFullyTransparent } from "./color";
+import type { ThemeLike } from "./types";
 
 const cache = new WeakMap<ThemeLike, ThemeLike>();
 
@@ -54,33 +54,27 @@ export function normalizeThemeColors(theme: ThemeLike): ThemeLike {
   // Surface precedence: the editor falls back to the base theme bg/fg, and the
   // sidebar falls back to the editor. Plain `??` so an explicit value is honored
   // and the chain never invents a color.
-  const editorBackground = originalColors['editor.background'] ?? theme.bg;
-  const editorForeground = originalColors['editor.foreground'] ?? theme.fg;
-  const sidebarBackground =
-    originalColors['sideBar.background'] ?? editorBackground;
-  const sidebarForeground =
-    originalColors['sideBar.foreground'] ?? editorForeground;
+  const editorBackground = originalColors["editor.background"] ?? theme.bg;
+  const editorForeground = originalColors["editor.foreground"] ?? theme.fg;
+  const sidebarBackground = originalColors["sideBar.background"] ?? editorBackground;
+  const sidebarForeground = originalColors["sideBar.foreground"] ?? editorForeground;
 
   // Write each resolved surface back onto its canonical key so consumers read a
   // single key instead of re-walking the chain.
-  fill(colors, 'editor.background', editorBackground);
-  fill(colors, 'editor.foreground', editorForeground);
-  fill(colors, 'sideBar.background', sidebarBackground);
-  fill(colors, 'sideBar.foreground', sidebarForeground);
+  fill(colors, "editor.background", editorBackground);
+  fill(colors, "editor.foreground", editorForeground);
+  fill(colors, "sideBar.background", sidebarBackground);
+  fill(colors, "sideBar.foreground", sidebarForeground);
+  fill(colors, "input.background", originalColors["input.background"] ?? sidebarBackground);
   fill(
     colors,
-    'input.background',
-    originalColors['input.background'] ?? sidebarBackground
+    "sideBarSectionHeader.foreground",
+    originalColors["sideBarSectionHeader.foreground"] ?? sidebarForeground,
   );
   fill(
     colors,
-    'sideBarSectionHeader.foreground',
-    originalColors['sideBarSectionHeader.foreground'] ?? sidebarForeground
-  );
-  fill(
-    colors,
-    'list.activeSelectionForeground',
-    originalColors['list.activeSelectionForeground'] ?? sidebarForeground
+    "list.activeSelectionForeground",
+    originalColors["list.activeSelectionForeground"] ?? sidebarForeground,
   );
 
   // Git status foreground chains: the dedicated gitDecoration key, then the
@@ -89,59 +83,57 @@ export function normalizeThemeColors(theme: ThemeLike): ThemeLike {
   // key falls through to the next tier.
   fill(
     colors,
-    'gitDecoration.addedResourceForeground',
+    "gitDecoration.addedResourceForeground",
     firstColor(
-      originalColors['gitDecoration.addedResourceForeground'],
-      originalColors['terminal.ansiGreen'],
-      originalColors['editorGutter.addedBackground']
-    )
+      originalColors["gitDecoration.addedResourceForeground"],
+      originalColors["terminal.ansiGreen"],
+      originalColors["editorGutter.addedBackground"],
+    ),
   );
   fill(
     colors,
-    'gitDecoration.modifiedResourceForeground',
+    "gitDecoration.modifiedResourceForeground",
     firstColor(
-      originalColors['gitDecoration.modifiedResourceForeground'],
-      originalColors['terminal.ansiBlue'],
-      originalColors['editorGutter.modifiedBackground']
-    )
+      originalColors["gitDecoration.modifiedResourceForeground"],
+      originalColors["terminal.ansiBlue"],
+      originalColors["editorGutter.modifiedBackground"],
+    ),
   );
   fill(
     colors,
-    'gitDecoration.deletedResourceForeground',
+    "gitDecoration.deletedResourceForeground",
     firstColor(
-      originalColors['gitDecoration.deletedResourceForeground'],
-      originalColors['terminal.ansiRed'],
-      originalColors['editorGutter.deletedBackground']
-    )
+      originalColors["gitDecoration.deletedResourceForeground"],
+      originalColors["terminal.ansiRed"],
+      originalColors["editorGutter.deletedBackground"],
+    ),
   );
 
   // Focus ring: first non-transparent of [list.focusOutline, focusBorder]. A
   // transparent outline is rejected so the resolved key is always a visible
   // color; if neither candidate is visible the key is left absent.
   const focusRing =
-    (isFullyTransparent(originalColors['list.focusOutline'])
+    (isFullyTransparent(originalColors["list.focusOutline"])
       ? undefined
-      : originalColors['list.focusOutline']) ??
-    (isFullyTransparent(originalColors['focusBorder'])
-      ? undefined
-      : originalColors['focusBorder']);
+      : originalColors["list.focusOutline"]) ??
+    (isFullyTransparent(originalColors["focusBorder"]) ? undefined : originalColors["focusBorder"]);
   if (focusRing != null) {
-    colors['list.focusOutline'] = focusRing;
+    colors["list.focusOutline"] = focusRing;
   } else {
-    delete colors['list.focusOutline'];
+    delete colors["list.focusOutline"];
   }
 
   // Hover repair: a hover background that exactly matches the surface, or that
   // sits closer to the text color than the surface (so it would erase the row
   // text), is unusable for any consumer — drop it and let the consumer apply its
   // own hover default.
-  const hover = originalColors['list.hoverBackground'];
+  const hover = originalColors["list.hoverBackground"];
   if (
     hover != null &&
     (matchesSurface(hover, sidebarBackground) ||
       hoverWouldEraseText(hover, sidebarBackground, sidebarForeground))
   ) {
-    delete colors['list.hoverBackground'];
+    delete colors["list.hoverBackground"];
   }
 
   const result = Object.freeze({ ...theme, colors: Object.freeze(colors) });
@@ -151,19 +143,15 @@ export function normalizeThemeColors(theme: ThemeLike): ThemeLike {
 
 // Writes `value` to `key` only when it is a real color, so an absent source key
 // stays absent rather than being coerced to undefined/''.
-function fill(
-  colors: Record<string, string>,
-  key: string,
-  value: string | undefined
-): void {
-  if (value != null && value !== '') colors[key] = value;
+function fill(colors: Record<string, string>, key: string, value: string | undefined): void {
+  if (value != null && value !== "") colors[key] = value;
 }
 
 // Returns the first non-empty color among the candidates, in priority order.
 // Skipping '' lets a blank workbench key fall through to the next tier.
 function firstColor(...candidates: (string | undefined)[]): string | undefined {
   for (const candidate of candidates) {
-    if (candidate != null && candidate !== '') return candidate;
+    if (candidate != null && candidate !== "") return candidate;
   }
   return undefined;
 }

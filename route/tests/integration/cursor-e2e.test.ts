@@ -54,7 +54,7 @@ function solidColorPng(size: number, rgb: [number, number, number]): Buffer {
       c ^= buf[i];
       for (let k = 0; k < 8; k++) c = c & 1 ? (c >>> 1) ^ 0xedb88320 : c >>> 1;
     }
-    return (~c) >>> 0;
+    return ~c >>> 0;
   };
   const chunk = (type: string, data: Buffer): Buffer => {
     const t = Buffer.from(type, "ascii");
@@ -77,7 +77,12 @@ function solidColorPng(size: number, rgb: [number, number, number]): Buffer {
   ]);
   const raw = Buffer.concat(Array.from({ length: size }, () => row));
   const idat = zlib.deflateSync(raw);
-  return Buffer.concat([sig, chunk("IHDR", ihdr), chunk("IDAT", idat), chunk("IEND", Buffer.alloc(0))]);
+  return Buffer.concat([
+    sig,
+    chunk("IHDR", ihdr),
+    chunk("IDAT", idat),
+    chunk("IEND", Buffer.alloc(0)),
+  ]);
 }
 
 const weatherTools = [
@@ -114,7 +119,7 @@ test(
     const json = await result.response.json();
     assert.equal(json.choices[0].finish_reason, "stop");
     assert.match(json.choices[0].message.content, /PING/i);
-  }
+  },
 );
 
 test("[cursor-e2e] system prompt biases the response", { skip: skipReason }, async () => {
@@ -213,7 +218,7 @@ test(
     // and isn't worth asserting tightly.
     assert.ok(chunks > 1, `expected multiple chunks; got ${chunks}`);
     assert.match(totalText, /data: \[DONE\]/);
-  }
+  },
 );
 
 // ─── composer-2.5 regression coverage ──────────────────────────────────────
@@ -223,25 +228,29 @@ test(
 // the multi-turn tool round-trip (inline h2 session reuse) and the cold-resume
 // fallback. All were validated end-to-end against the live endpoint.
 
-test("[cursor-e2e] composer-2.5 plain chat returns assistant text", { skip: skipReason }, async () => {
-  const { CursorExecutor } = await import("../../open-sse/executors/cursor.ts");
-  const exec = new CursorExecutor();
-  const result = await exec.execute({
-    model: COMPOSER_MODEL,
-    body: { messages: [{ role: "user", content: "Say only the word PING and nothing else." }] },
-    stream: false,
-    credentials: { accessToken: TOKEN },
-    signal: undefined,
-    log: () => {},
-    upstreamExtraHeaders: undefined,
-  });
-  assert.equal(result.response.status, 200);
-  const json = await result.response.json();
-  assert.equal(json.choices[0].finish_reason, "stop");
-  assert.match(json.choices[0].message.content, /PING/i);
-  // Usage is always present on the success path (OpenAI contract).
-  assert.equal(typeof json.usage?.total_tokens, "number");
-});
+test(
+  "[cursor-e2e] composer-2.5 plain chat returns assistant text",
+  { skip: skipReason },
+  async () => {
+    const { CursorExecutor } = await import("../../open-sse/executors/cursor.ts");
+    const exec = new CursorExecutor();
+    const result = await exec.execute({
+      model: COMPOSER_MODEL,
+      body: { messages: [{ role: "user", content: "Say only the word PING and nothing else." }] },
+      stream: false,
+      credentials: { accessToken: TOKEN },
+      signal: undefined,
+      log: () => {},
+      upstreamExtraHeaders: undefined,
+    });
+    assert.equal(result.response.status, 200);
+    const json = await result.response.json();
+    assert.equal(json.choices[0].finish_reason, "stop");
+    assert.match(json.choices[0].message.content, /PING/i);
+    // Usage is always present on the success path (OpenAI contract).
+    assert.equal(typeof json.usage?.total_tokens, "number");
+  },
+);
 
 test(
   "[cursor-e2e] composer-2.5 surfaces reasoning as reasoning_content",
@@ -269,7 +278,7 @@ test(
     const content = json.choices[0].message.content || "";
     assert.match(content, /391/);
     assert.doesNotMatch(content, /<\|?tool_calls_begin|<\/think>|<\|?final\|?>/);
-  }
+  },
 );
 
 test(
@@ -304,7 +313,7 @@ test(
     assert.equal(toolCall.function.name, "get_weather");
     assert.ok(
       cursorSessionManager.has(conversationId),
-      "session should be retained for inline resume"
+      "session should be retained for inline resume",
     );
 
     // Turn 2: same conversation_id, append the tool result → final answer.
@@ -333,7 +342,7 @@ test(
     const j2 = await r2.response.json();
     assert.equal(r2.response.status, 200);
     assert.match(j2.choices[0].message.content || "", /19|sunny/i);
-  }
+  },
 );
 
 test(
@@ -380,7 +389,7 @@ test(
     assert.equal(result.response.status, 200);
     const json = await result.response.json();
     assert.match(json.choices[0].message.content || "", /8|rainy/i);
-  }
+  },
 );
 
 test(
@@ -410,7 +419,7 @@ test(
     // CONSTRAINTS prompt injection is what makes the model return raw JSON.
     const parsed = JSON.parse(content);
     assert.equal(typeof parsed, "object");
-  }
+  },
 );
 
 test(
@@ -445,7 +454,7 @@ test(
     assert.ok(chunks > 1, `expected multiple chunks; got ${chunks}`);
     assert.match(totalText, /data: \[DONE\]/);
     assert.ok(sawUsage, "streaming response should include a usage chunk");
-  }
+  },
 );
 
 test(
@@ -484,9 +493,9 @@ test(
     assert.match(
       json.choices[0].message.content,
       /red/i,
-      `vision model should report red; got: ${json.choices[0].message.content}`
+      `vision model should report red; got: ${json.choices[0].message.content}`,
     );
-  }
+  },
 );
 
 test(
@@ -522,7 +531,7 @@ test(
     assert.match(
       json.choices[0].message.content,
       /red/i,
-      `vision model should report red; got: ${json.choices[0].message.content}`
+      `vision model should report red; got: ${json.choices[0].message.content}`,
     );
-  }
+  },
 );

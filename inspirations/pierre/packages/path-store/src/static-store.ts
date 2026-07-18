@@ -3,7 +3,7 @@ import {
   getPreparedInputPresortedPaths,
   PathStoreBuilder,
   preparePathEntries,
-} from './builder';
+} from "./builder";
 import {
   getNodeDepth,
   getNodeFlags,
@@ -14,15 +14,12 @@ import {
   type PathStoreNodeKind,
   type PathStoreSnapshot,
   type SegmentTable,
-} from './internal-types';
-import { parseLookupPath } from './path';
-import type {
-  PathStoreConstructorOptions,
-  PathStoreVisibleRow,
-} from './public-types';
-import { getSegmentValue } from './segments';
-import { compareSegmentValues } from './sort';
-import { resolveInitialExpansion } from './state';
+} from "./internal-types";
+import { parseLookupPath } from "./path";
+import type { PathStoreConstructorOptions, PathStoreVisibleRow } from "./public-types";
+import { getSegmentValue } from "./segments";
+import { compareSegmentValues } from "./sort";
+import { resolveInitialExpansion } from "./state";
 
 const STATIC_CHILD_INDEX_CHUNK_SHIFT = 5;
 const STATIC_CHILD_INDEX_CHUNK_SIZE = 1 << STATIC_CHILD_INDEX_CHUNK_SHIFT;
@@ -51,14 +48,14 @@ interface StaticPathStoreSnapshot {
   childPositionByNodeId: Int32Array;
   childVisibleChunkSumsByDirectory: Array<readonly number[] | null>;
   nodes: StaticPathStoreNode[];
-  options: PathStoreSnapshot['options'];
+  options: PathStoreSnapshot["options"];
   rootId: number;
   segmentTable: SegmentTable;
 }
 
 interface StaticPathStoreState {
   collapsedDirectoryIds: Set<number>;
-  defaultExpansion: 'closed' | 'open' | number;
+  defaultExpansion: "closed" | "open" | number;
   expandedDirectoryIds: Set<number>;
   pathByNodeId: Array<string | null>;
   snapshot: StaticPathStoreSnapshot;
@@ -72,9 +69,7 @@ interface StaticVisibleRowCursor {
 
 // Rebuilds the mutable builder snapshot into a read-optimized static snapshot
 // with dense child ranges and no mutation-oriented maps.
-function createStaticSnapshot(
-  sourceSnapshot: PathStoreSnapshot
-): StaticPathStoreSnapshot {
+function createStaticSnapshot(sourceSnapshot: PathStoreSnapshot): StaticPathStoreSnapshot {
   // childIds holds one entry per parent->child edge; that total equals the sum
   // of every directory's child count. Sizing the typed array up front avoids
   // growth/copies during the fill below.
@@ -84,11 +79,9 @@ function createStaticSnapshot(
   }
   const childIds = new Int32Array(totalChildEdges);
   let childIdsCursor = 0;
-  const childPositionByNodeId = new Int32Array(
-    sourceSnapshot.nodes.length
-  ).fill(-1);
+  const childPositionByNodeId = new Int32Array(sourceSnapshot.nodes.length).fill(-1);
   const childVisibleChunkSumsByDirectory = new Array<readonly number[] | null>(
-    sourceSnapshot.nodes.length
+    sourceSnapshot.nodes.length,
   ).fill(null);
   const nodes = sourceSnapshot.nodes.map(
     (node, nodeId): StaticPathStoreNode => ({
@@ -102,7 +95,7 @@ function createStaticSnapshot(
       parentId: node.parentId,
       subtreeNodeCount: node.subtreeNodeCount,
       visibleSubtreeCount: node.visibleSubtreeCount,
-    })
+    }),
   );
 
   for (let nodeId = 0; nodeId < nodes.length; nodeId += 1) {
@@ -146,10 +139,7 @@ function createStaticSnapshot(
 
 // Static mode keeps topology immutable, so full paths can be cached forever
 // without any path-cache version invalidation bookkeeping.
-function materializeStaticNodePath(
-  state: StaticPathStoreState,
-  nodeId: number
-): string {
+function materializeStaticNodePath(state: StaticPathStoreState, nodeId: number): string {
   const cachedPath = state.pathByNodeId[nodeId];
   if (cachedPath != null) {
     return cachedPath;
@@ -157,28 +147,21 @@ function materializeStaticNodePath(
 
   const node = requireStaticNode(state, nodeId);
   if ((node.flags & PATH_STORE_NODE_FLAG_ROOT) !== 0) {
-    state.pathByNodeId[nodeId] = '';
-    return '';
+    state.pathByNodeId[nodeId] = "";
+    return "";
   }
 
   const parentPath = materializeStaticNodePath(state, node.parentId);
   const nodeName = getSegmentValue(state.snapshot.segmentTable, node.nameId);
-  const joinedPath =
-    parentPath.length === 0 ? nodeName : `${parentPath}${nodeName}`;
-  const path =
-    node.kind === PATH_STORE_NODE_KIND_DIRECTORY
-      ? `${joinedPath}/`
-      : joinedPath;
+  const joinedPath = parentPath.length === 0 ? nodeName : `${parentPath}${nodeName}`;
+  const path = node.kind === PATH_STORE_NODE_KIND_DIRECTORY ? `${joinedPath}/` : joinedPath;
   state.pathByNodeId[nodeId] = path;
   return path;
 }
 
 // Lookup walks sorted child ranges with binary search so static mode does not
 // need to keep a mutation-oriented child-name map per directory.
-function findStaticNodeId(
-  state: StaticPathStoreState,
-  path: string
-): number | null {
+function findStaticNodeId(state: StaticPathStoreState, path: string): number | null {
   if (path.length === 0) {
     return state.snapshot.rootId;
   }
@@ -196,7 +179,7 @@ function findStaticNodeId(
       state,
       currentNode.firstChildIndex,
       currentNode.childCount,
-      segment
+      segment,
     );
     if (nextNodeId == null) {
       return null;
@@ -206,10 +189,7 @@ function findStaticNodeId(
   }
 
   const currentNode = requireStaticNode(state, currentNodeId);
-  if (
-    lookupPath.requiresDirectory &&
-    currentNode.kind !== PATH_STORE_NODE_KIND_DIRECTORY
-  ) {
+  if (lookupPath.requiresDirectory && currentNode.kind !== PATH_STORE_NODE_KIND_DIRECTORY) {
     return null;
   }
 
@@ -220,7 +200,7 @@ function findStaticChildIdBySegment(
   state: StaticPathStoreState,
   firstChildIndex: number,
   childCount: number,
-  segment: string
+  segment: string,
 ): number | null {
   let low = firstChildIndex;
   let high = firstChildIndex + childCount - 1;
@@ -233,10 +213,7 @@ function findStaticChildIdBySegment(
     }
 
     const childNode = requireStaticNode(state, childId);
-    const childSegment = getSegmentValue(
-      state.snapshot.segmentTable,
-      childNode.nameId
-    );
+    const childSegment = getSegmentValue(state.snapshot.segmentTable, childNode.nameId);
     const comparison = compareSegmentValues(childSegment, segment);
 
     if (comparison === 0) {
@@ -253,10 +230,7 @@ function findStaticChildIdBySegment(
   return null;
 }
 
-function requireStaticNode(
-  state: StaticPathStoreState,
-  nodeId: number
-): StaticPathStoreNode {
+function requireStaticNode(state: StaticPathStoreState, nodeId: number): StaticPathStoreNode {
   const node = state.snapshot.nodes[nodeId];
   if (node == null) {
     throw new Error(`Unknown node ID: ${String(nodeId)}`);
@@ -267,27 +241,24 @@ function requireStaticNode(
 
 function isStaticDirectoryExpandedByDefault(
   state: StaticPathStoreState,
-  node: StaticPathStoreNode
+  node: StaticPathStoreNode,
 ): boolean {
   if ((node.flags & PATH_STORE_NODE_FLAG_ROOT) !== 0) {
     return true;
   }
 
-  if (state.defaultExpansion === 'open') {
+  if (state.defaultExpansion === "open") {
     return true;
   }
 
-  if (state.defaultExpansion === 'closed') {
+  if (state.defaultExpansion === "closed") {
     return false;
   }
 
   return node.depth <= state.defaultExpansion;
 }
 
-function isStaticDirectoryExpanded(
-  state: StaticPathStoreState,
-  nodeId: number
-): boolean {
+function isStaticDirectoryExpanded(state: StaticPathStoreState, nodeId: number): boolean {
   const node = requireStaticNode(state, nodeId);
   if (node.kind !== PATH_STORE_NODE_KIND_DIRECTORY) {
     return false;
@@ -307,7 +278,7 @@ function isStaticDirectoryExpanded(
 function setStaticDirectoryExpanded(
   state: StaticPathStoreState,
   nodeId: number,
-  expanded: boolean
+  expanded: boolean,
 ): void {
   const node = requireStaticNode(state, nodeId);
   if (node.kind !== PATH_STORE_NODE_KIND_DIRECTORY) {
@@ -337,7 +308,7 @@ function setStaticDirectoryExpanded(
 // change so static visible selection can skip large child ranges efficiently.
 function rebuildStaticVisibleChildChunks(
   state: StaticPathStoreState,
-  directoryNodeId: number
+  directoryNodeId: number,
 ): void {
   const directoryNode = requireStaticNode(state, directoryNodeId);
   if (directoryNode.childCount < STATIC_CHILD_INDEX_CHUNK_THRESHOLD) {
@@ -345,24 +316,19 @@ function rebuildStaticVisibleChildChunks(
     return;
   }
 
-  const chunkCount = Math.ceil(
-    directoryNode.childCount / STATIC_CHILD_INDEX_CHUNK_SIZE
-  );
+  const chunkCount = Math.ceil(directoryNode.childCount / STATIC_CHILD_INDEX_CHUNK_SIZE);
   const chunkSums = new Array<number>(chunkCount).fill(0);
 
-  for (
-    let childOffset = 0;
-    childOffset < directoryNode.childCount;
-    childOffset++
-  ) {
-    const childId =
-      state.snapshot.childIds[directoryNode.firstChildIndex + childOffset];
+  for (let childOffset = 0; childOffset < directoryNode.childCount; childOffset++) {
+    const childId = state.snapshot.childIds[directoryNode.firstChildIndex + childOffset];
     if (childId == null) {
       continue;
     }
 
-    chunkSums[childOffset >> STATIC_CHILD_INDEX_CHUNK_SHIFT] +=
-      requireStaticNode(state, childId).visibleSubtreeCount;
+    chunkSums[childOffset >> STATIC_CHILD_INDEX_CHUNK_SHIFT] += requireStaticNode(
+      state,
+      childId,
+    ).visibleSubtreeCount;
   }
 
   state.snapshot.childVisibleChunkSumsByDirectory[directoryNodeId] = chunkSums;
@@ -374,7 +340,7 @@ function rebuildStaticVisibleChildChunks(
 // expand/collapse-heavy interaction patterns.
 function recomputeStaticVisibleCountsRecursive(
   state: StaticPathStoreState,
-  nodeId: number
+  nodeId: number,
 ): number {
   const node = requireStaticNode(state, nodeId);
   if (node.kind !== PATH_STORE_NODE_KIND_DIRECTORY) {
@@ -392,10 +358,7 @@ function recomputeStaticVisibleCountsRecursive(
     visibleChildCount += recomputeStaticVisibleCountsRecursive(state, childId);
   }
 
-  const flattenedChildDirectoryId = getStaticFlattenedChildDirectoryId(
-    state,
-    nodeId
-  );
+  const flattenedChildDirectoryId = getStaticFlattenedChildDirectoryId(state, nodeId);
   let visibleSubtreeCount: number;
   if ((node.flags & PATH_STORE_NODE_FLAG_ROOT) !== 0) {
     visibleSubtreeCount = visibleChildCount;
@@ -418,7 +381,7 @@ function recomputeStaticVisibleCounts(state: StaticPathStoreState): void {
 
 function getStaticFlattenedChildDirectoryId(
   state: StaticPathStoreState,
-  directoryNodeId: number
+  directoryNodeId: number,
 ): number | null {
   if (state.snapshot.options.flattenEmptyDirectories !== true) {
     return null;
@@ -438,23 +401,17 @@ function getStaticFlattenedChildDirectoryId(
     return null;
   }
 
-  return requireStaticNode(state, childId).kind ===
-    PATH_STORE_NODE_KIND_DIRECTORY
-    ? childId
-    : null;
+  return requireStaticNode(state, childId).kind === PATH_STORE_NODE_KIND_DIRECTORY ? childId : null;
 }
 
 function getStaticFlattenedTerminalDirectoryId(
   state: StaticPathStoreState,
-  directoryNodeId: number
+  directoryNodeId: number,
 ): number {
   let currentDirectoryId = directoryNodeId;
 
   while (true) {
-    const nextDirectoryId = getStaticFlattenedChildDirectoryId(
-      state,
-      currentDirectoryId
-    );
+    const nextDirectoryId = getStaticFlattenedChildDirectoryId(state, currentDirectoryId);
     if (nextDirectoryId == null) {
       return currentDirectoryId;
     }
@@ -465,16 +422,13 @@ function getStaticFlattenedTerminalDirectoryId(
 
 function collectStaticFlattenedDirectoryChainIds(
   state: StaticPathStoreState,
-  directoryNodeId: number
+  directoryNodeId: number,
 ): number[] {
   const chainIds = [directoryNodeId];
   let currentDirectoryId = directoryNodeId;
 
   while (true) {
-    const nextDirectoryId = getStaticFlattenedChildDirectoryId(
-      state,
-      currentDirectoryId
-    );
+    const nextDirectoryId = getStaticFlattenedChildDirectoryId(state, currentDirectoryId);
     if (nextDirectoryId == null) {
       return chainIds;
     }
@@ -484,10 +438,7 @@ function collectStaticFlattenedDirectoryChainIds(
   }
 }
 
-function isStaticVisibleRowHeadNode(
-  state: StaticPathStoreState,
-  nodeId: number
-): boolean {
+function isStaticVisibleRowHeadNode(state: StaticPathStoreState, nodeId: number): boolean {
   const node = requireStaticNode(state, nodeId);
   if (node.kind !== PATH_STORE_NODE_KIND_DIRECTORY) {
     return true;
@@ -504,42 +455,29 @@ function isStaticVisibleRowHeadNode(
 function selectStaticChildIndexByVisibleIndex(
   state: StaticPathStoreState,
   directoryNodeId: number,
-  visibleIndex: number
+  visibleIndex: number,
 ): { childId: number; localVisibleIndex: number } {
   const directoryNode = requireStaticNode(state, directoryNodeId);
-  const chunkSums =
-    state.snapshot.childVisibleChunkSumsByDirectory[directoryNodeId];
+  const chunkSums = state.snapshot.childVisibleChunkSumsByDirectory[directoryNodeId];
 
   if (chunkSums != null) {
     let remainingIndex = visibleIndex;
     let childOffset = 0;
     for (const chunkVisibleCount of chunkSums) {
       if (remainingIndex < chunkVisibleCount) {
-        return selectStaticChildIndexWithinChunk(
-          state,
-          directoryNode,
-          childOffset,
-          remainingIndex
-        );
+        return selectStaticChildIndexWithinChunk(state, directoryNode, childOffset, remainingIndex);
       }
 
       remainingIndex -= chunkVisibleCount;
       childOffset += STATIC_CHILD_INDEX_CHUNK_SIZE;
     }
 
-    throw new Error(
-      `Visible child index ${String(visibleIndex)} is out of range`
-    );
+    throw new Error(`Visible child index ${String(visibleIndex)} is out of range`);
   }
 
   let remainingIndex = visibleIndex;
-  for (
-    let childOffset = 0;
-    childOffset < directoryNode.childCount;
-    childOffset++
-  ) {
-    const childId =
-      state.snapshot.childIds[directoryNode.firstChildIndex + childOffset];
+  for (let childOffset = 0; childOffset < directoryNode.childCount; childOffset++) {
+    const childId = state.snapshot.childIds[directoryNode.firstChildIndex + childOffset];
     if (childId == null) {
       continue;
     }
@@ -552,30 +490,23 @@ function selectStaticChildIndexByVisibleIndex(
     remainingIndex -= childNode.visibleSubtreeCount;
   }
 
-  throw new Error(
-    `Visible child index ${String(visibleIndex)} is out of range`
-  );
+  throw new Error(`Visible child index ${String(visibleIndex)} is out of range`);
 }
 
 function selectStaticChildIndexWithinChunk(
   state: StaticPathStoreState,
   directoryNode: StaticPathStoreNode,
   chunkStartOffset: number,
-  visibleIndex: number
+  visibleIndex: number,
 ): { childId: number; localVisibleIndex: number } {
   const chunkEndOffset = Math.min(
     directoryNode.childCount,
-    chunkStartOffset + STATIC_CHILD_INDEX_CHUNK_SIZE
+    chunkStartOffset + STATIC_CHILD_INDEX_CHUNK_SIZE,
   );
   let remainingIndex = visibleIndex;
 
-  for (
-    let childOffset = chunkStartOffset;
-    childOffset < chunkEndOffset;
-    childOffset++
-  ) {
-    const childId =
-      state.snapshot.childIds[directoryNode.firstChildIndex + childOffset];
+  for (let childOffset = chunkStartOffset; childOffset < chunkEndOffset; childOffset++) {
+    const childId = state.snapshot.childIds[directoryNode.firstChildIndex + childOffset];
     if (childId == null) {
       continue;
     }
@@ -588,15 +519,13 @@ function selectStaticChildIndexWithinChunk(
     remainingIndex -= childNode.visibleSubtreeCount;
   }
 
-  throw new Error(
-    `Visible child index ${String(visibleIndex)} is out of range`
-  );
+  throw new Error(`Visible child index ${String(visibleIndex)} is out of range`);
 }
 
 function createStaticVisibleRowCursor(
   state: StaticPathStoreState,
   nodeId: number,
-  visibleDepth: number
+  visibleDepth: number,
 ): StaticVisibleRowCursor {
   const node = requireStaticNode(state, nodeId);
   if (node.kind !== PATH_STORE_NODE_KIND_DIRECTORY) {
@@ -616,37 +545,32 @@ function createStaticVisibleRowCursor(
 
 function selectStaticVisibleRow(
   state: StaticPathStoreState,
-  index: number
+  index: number,
 ): StaticVisibleRowCursor | null {
   if (index < 0 || index >= getStaticVisibleCount(state)) {
     return null;
   }
 
-  return selectStaticVisibleRowWithinDirectory(
-    state,
-    state.snapshot.rootId,
-    index,
-    -1
-  );
+  return selectStaticVisibleRowWithinDirectory(state, state.snapshot.rootId, index, -1);
 }
 
 function selectStaticVisibleRowWithinDirectory(
   state: StaticPathStoreState,
   directoryNodeId: number,
   index: number,
-  parentVisibleDepth: number
+  parentVisibleDepth: number,
 ): StaticVisibleRowCursor {
   const { childId, localVisibleIndex } = selectStaticChildIndexByVisibleIndex(
     state,
     directoryNodeId,
-    index
+    index,
   );
 
   return selectStaticVisibleRowWithinSubtree(
     state,
     childId,
     localVisibleIndex,
-    parentVisibleDepth + 1
+    parentVisibleDepth + 1,
   );
 }
 
@@ -654,7 +578,7 @@ function selectStaticVisibleRowWithinSubtree(
   state: StaticPathStoreState,
   nodeId: number,
   index: number,
-  visibleDepth: number
+  visibleDepth: number,
 ): StaticVisibleRowCursor {
   const node = requireStaticNode(state, nodeId);
   if (node.kind !== PATH_STORE_NODE_KIND_DIRECTORY) {
@@ -669,11 +593,7 @@ function selectStaticVisibleRowWithinSubtree(
     throw new Error(`Visible index ${String(index)} is out of range for file`);
   }
 
-  const currentCursor = createStaticVisibleRowCursor(
-    state,
-    nodeId,
-    visibleDepth
-  );
+  const currentCursor = createStaticVisibleRowCursor(state, nodeId, visibleDepth);
   if (index === 0) {
     return currentCursor;
   }
@@ -683,22 +603,20 @@ function selectStaticVisibleRowWithinSubtree(
     terminalNode.kind !== PATH_STORE_NODE_KIND_DIRECTORY ||
     !isStaticDirectoryExpanded(state, currentCursor.terminalNodeId)
   ) {
-    throw new Error(
-      `Visible index ${String(index)} is out of range for collapsed directory`
-    );
+    throw new Error(`Visible index ${String(index)} is out of range for collapsed directory`);
   }
 
   return selectStaticVisibleRowWithinDirectory(
     state,
     currentCursor.terminalNodeId,
     index - 1,
-    currentCursor.visibleDepth
+    currentCursor.visibleDepth,
   );
 }
 
 function getStaticNextVisibleRowCursor(
   state: StaticPathStoreState,
-  currentCursor: StaticVisibleRowCursor
+  currentCursor: StaticVisibleRowCursor,
 ): StaticVisibleRowCursor | null {
   const terminalNode = requireStaticNode(state, currentCursor.terminalNodeId);
   if (
@@ -709,12 +627,7 @@ function getStaticNextVisibleRowCursor(
     const firstChildId = state.snapshot.childIds[terminalNode.firstChildIndex];
     return firstChildId == null
       ? null
-      : selectStaticVisibleRowWithinSubtree(
-          state,
-          firstChildId,
-          0,
-          currentCursor.visibleDepth + 1
-        );
+      : selectStaticVisibleRowWithinSubtree(state, firstChildId, 0, currentCursor.visibleDepth + 1);
   }
 
   let currentNodeId = currentCursor.terminalNodeId;
@@ -727,8 +640,7 @@ function getStaticNextVisibleRowCursor(
     }
 
     const parentNode = requireStaticNode(state, currentNode.parentId);
-    const absolutePosition =
-      state.snapshot.childPositionByNodeId[currentNodeId];
+    const absolutePosition = state.snapshot.childPositionByNodeId[currentNodeId];
     const nextSiblingPosition = absolutePosition + 1;
     const siblingRangeEnd = parentNode.firstChildIndex + parentNode.childCount;
 
@@ -736,12 +648,7 @@ function getStaticNextVisibleRowCursor(
       const nextSiblingId = state.snapshot.childIds[nextSiblingPosition];
       return nextSiblingId == null
         ? null
-        : selectStaticVisibleRowWithinSubtree(
-            state,
-            nextSiblingId,
-            0,
-            currentVisibleDepth
-          );
+        : selectStaticVisibleRowWithinSubtree(state, nextSiblingId, 0, currentVisibleDepth);
     }
 
     if (isStaticVisibleRowHeadNode(state, currentNodeId)) {
@@ -753,27 +660,22 @@ function getStaticNextVisibleRowCursor(
 
 function materializeStaticVisibleRow(
   state: StaticPathStoreState,
-  cursor: StaticVisibleRowCursor
+  cursor: StaticVisibleRowCursor,
 ): PathStoreVisibleRow {
   const terminalNode = requireStaticNode(state, cursor.terminalNodeId);
   const path = materializeStaticNodePath(state, cursor.terminalNodeId);
-  const name = getSegmentValue(
-    state.snapshot.segmentTable,
-    terminalNode.nameId
-  );
+  const name = getSegmentValue(state.snapshot.segmentTable, terminalNode.nameId);
   const isFlattened = cursor.headNodeId !== cursor.terminalNodeId;
   const flattenedSegments = isFlattened
-    ? collectStaticFlattenedDirectoryChainIds(state, cursor.headNodeId).map(
-        (nodeId) => {
-          const node = requireStaticNode(state, nodeId);
-          return {
-            isTerminal: nodeId === cursor.terminalNodeId,
-            name: getSegmentValue(state.snapshot.segmentTable, node.nameId),
-            nodeId,
-            path: materializeStaticNodePath(state, nodeId),
-          };
-        }
-      )
+    ? collectStaticFlattenedDirectoryChainIds(state, cursor.headNodeId).map((nodeId) => {
+        const node = requireStaticNode(state, nodeId);
+        return {
+          isTerminal: nodeId === cursor.terminalNodeId,
+          name: getSegmentValue(state.snapshot.segmentTable, node.nameId),
+          nodeId,
+          path: materializeStaticNodePath(state, nodeId),
+        };
+      })
     : undefined;
 
   return {
@@ -786,10 +688,7 @@ function materializeStaticVisibleRow(
       isStaticDirectoryExpanded(state, cursor.terminalNodeId),
     isFlattened,
     isLoading: false,
-    kind:
-      terminalNode.kind === PATH_STORE_NODE_KIND_DIRECTORY
-        ? 'directory'
-        : 'file',
+    kind: terminalNode.kind === PATH_STORE_NODE_KIND_DIRECTORY ? "directory" : "file",
     loadState: undefined,
     name,
     path,
@@ -798,10 +697,7 @@ function materializeStaticVisibleRow(
 
 // Enumerates canonical entries from immutable topology without relying on any
 // mutation-oriented side tables.
-function collectStaticCanonicalEntries(
-  state: StaticPathStoreState,
-  nodeId: number
-): string[] {
+function collectStaticCanonicalEntries(state: StaticPathStoreState, nodeId: number): string[] {
   const node = requireStaticNode(state, nodeId);
   if (node.kind !== PATH_STORE_NODE_KIND_DIRECTORY) {
     return [materializeStaticNodePath(state, nodeId)];
@@ -815,9 +711,7 @@ function collectStaticCanonicalEntries(
   }
 
   const entries: string[] = [];
-  const stack: Array<{ childOffset: number; nodeId: number }> = [
-    { childOffset: 0, nodeId },
-  ];
+  const stack: Array<{ childOffset: number; nodeId: number }> = [{ childOffset: 0, nodeId }];
 
   while (stack.length > 0) {
     const frame = stack[stack.length - 1];
@@ -848,8 +742,7 @@ function collectStaticCanonicalEntries(
       continue;
     }
 
-    const childId =
-      state.snapshot.childIds[currentNode.firstChildIndex + frame.childOffset];
+    const childId = state.snapshot.childIds[currentNode.firstChildIndex + frame.childOffset];
     frame.childOffset += 1;
     if (childId != null) {
       stack.push({ childOffset: 0, nodeId: childId });
@@ -869,19 +762,14 @@ export class StaticPathStore {
   public constructor(options: PathStoreConstructorOptions = {}) {
     const builder = new PathStoreBuilder(options);
     if (options.preparedInput != null) {
-      const presortedPaths = getPreparedInputPresortedPaths(
-        options.preparedInput
-      );
+      const presortedPaths = getPreparedInputPresortedPaths(options.preparedInput);
       if (presortedPaths != null) {
         builder.appendPresortedPaths(presortedPaths);
       } else {
         // preparedInput is the caller's explicit fast path, so skip the
         // builder's redundant monotonic-order validation and only keep
         // duplicate checks.
-        builder.appendPreparedPaths(
-          getPreparedInputEntries(options.preparedInput),
-          false
-        );
+        builder.appendPreparedPaths(getPreparedInputEntries(options.preparedInput), false);
       }
     } else {
       const inputPaths = options.paths ?? [];
@@ -895,23 +783,18 @@ export class StaticPathStore {
     const staticSnapshot = createStaticSnapshot(builder.finish());
     this.#state = {
       collapsedDirectoryIds: new Set<number>(),
-      defaultExpansion: resolveInitialExpansion(
-        options.initialExpansion ?? 'closed'
-      ),
+      defaultExpansion: resolveInitialExpansion(options.initialExpansion ?? "closed"),
       expandedDirectoryIds: new Set<number>(),
       pathByNodeId: new Array(staticSnapshot.nodes.length).fill(null),
       snapshot: staticSnapshot,
     };
-    this.#state.pathByNodeId[staticSnapshot.rootId] = '';
+    this.#state.pathByNodeId[staticSnapshot.rootId] = "";
     this.initializeExpandedPaths(options.initialExpandedPaths);
     recomputeStaticVisibleCounts(this.#state);
   }
 
   public list(path?: string): string[] {
-    const nodeId =
-      path == null
-        ? this.#state.snapshot.rootId
-        : findStaticNodeId(this.#state, path);
+    const nodeId = path == null ? this.#state.snapshot.rootId : findStaticNodeId(this.#state, path);
     if (nodeId == null) {
       return [];
     }
@@ -923,20 +806,14 @@ export class StaticPathStore {
     return getStaticVisibleCount(this.#state);
   }
 
-  public getVisibleSlice(
-    start: number,
-    end: number
-  ): readonly PathStoreVisibleRow[] {
+  public getVisibleSlice(start: number, end: number): readonly PathStoreVisibleRow[] {
     const totalVisibleCount = getStaticVisibleCount(this.#state);
     if (totalVisibleCount <= 0 || end < start) {
       return [];
     }
 
     const normalizedStart = Math.max(0, Math.min(start, totalVisibleCount - 1));
-    const normalizedEnd = Math.max(
-      normalizedStart,
-      Math.min(end, totalVisibleCount - 1)
-    );
+    const normalizedEnd = Math.max(normalizedStart, Math.min(end, totalVisibleCount - 1));
     const rows: PathStoreVisibleRow[] = [];
     let currentCursor = selectStaticVisibleRow(this.#state, normalizedStart);
 
@@ -990,9 +867,7 @@ export class StaticPathStore {
     recomputeStaticVisibleCounts(this.#state);
   }
 
-  private initializeExpandedPaths(
-    expandedPaths: readonly string[] | undefined
-  ): void {
+  private initializeExpandedPaths(expandedPaths: readonly string[] | undefined): void {
     if (expandedPaths == null || expandedPaths.length === 0) {
       return;
     }

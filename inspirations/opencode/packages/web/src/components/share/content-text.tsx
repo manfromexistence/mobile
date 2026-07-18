@@ -1,17 +1,17 @@
-import style from "./content-text.module.css"
-import { createSignal } from "solid-js"
-import { createOverflow, useShareMessages } from "./common"
-import { CopyButton } from "./copy-button"
+import style from "./content-text.module.css";
+import { createSignal } from "solid-js";
+import { createOverflow, useShareMessages } from "./common";
+import { CopyButton } from "./copy-button";
 
 interface Props {
-  text: string
-  expand?: boolean
-  compact?: boolean
+  text: string;
+  expand?: boolean;
+  compact?: boolean;
 }
 export function ContentText(props: Props) {
-  const [expanded, setExpanded] = createSignal(false)
-  const overflow = createOverflow()
-  const messages = useShareMessages()
+  const [expanded, setExpanded] = createSignal(false);
+  const overflow = createOverflow();
+  const messages = useShareMessages();
 
   return (
     <div
@@ -34,5 +34,5 @@ export function ContentText(props: Props) {
       )}
       <CopyButton text={props.text} />
     </div>
-  )
+  );
 }

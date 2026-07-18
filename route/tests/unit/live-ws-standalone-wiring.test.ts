@@ -20,7 +20,7 @@ describe("standalone runtime wires the live-dashboard WebSocket daemon", () => {
     assert.match(
       source,
       /import\(\s*["']@\/server\/ws\/liveServer["']\s*\)/,
-      "instrumentation-node.ts must import @/server/ws/liveServer so the port-20129 daemon starts in the standalone bin"
+      "instrumentation-node.ts must import @/server/ws/liveServer so the port-20129 daemon starts in the standalone bin",
     );
   });
 

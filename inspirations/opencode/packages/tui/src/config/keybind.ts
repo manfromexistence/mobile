@@ -1,9 +1,9 @@
-export * as TuiKeybind from "./keybind"
+export * as TuiKeybind from "./keybind";
 
-import type { KeyEvent, Renderable } from "@opentui/core"
-import type { Binding } from "@opentui/keymap"
-import type { BindingCommandMap, BindingConfig, BindingDefaults } from "@opentui/keymap/extras"
-import { Schema } from "effect"
+import type { KeyEvent, Renderable } from "@opentui/core";
+import type { Binding } from "@opentui/keymap";
+import type { BindingCommandMap, BindingConfig, BindingDefaults } from "@opentui/keymap/extras";
+import { Schema } from "effect";
 
 const KeyStroke = Schema.Struct({
   name: Schema.String,
@@ -12,7 +12,7 @@ const KeyStroke = Schema.Struct({
   meta: Schema.optional(Schema.Boolean),
   super: Schema.optional(Schema.Boolean),
   hyper: Schema.optional(Schema.Boolean),
-})
+});
 
 const BindingObject = Schema.StructWithRest(
   Schema.Struct({
@@ -22,25 +22,28 @@ const BindingObject = Schema.StructWithRest(
     fallthrough: Schema.optional(Schema.Boolean),
   }),
   [Schema.Record(Schema.String, Schema.Unknown)],
-)
+);
 
-const BindingItem = Schema.Union([Schema.String, KeyStroke, BindingObject])
+const BindingItem = Schema.Union([Schema.String, KeyStroke, BindingObject]);
 export const BindingValueSchema = Schema.Union([
   Schema.Literal(false),
   Schema.Literal("none"),
   BindingItem,
   Schema.Array(BindingItem),
-])
-export type BindingValueSchema = Schema.Schema.Type<typeof BindingValueSchema>
+]);
+export type BindingValueSchema = Schema.Schema.Type<typeof BindingValueSchema>;
 
 type Definition = {
-  default: BindingValueSchema
-  description: string
-}
+  default: BindingValueSchema;
+  description: string;
+};
 
-export const LeaderDefault = "ctrl+x"
+export const LeaderDefault = "ctrl+x";
 
-const keybind = (value: Definition["default"], description: string): Definition => ({ default: value, description })
+const keybind = (value: Definition["default"], description: string): Definition => ({
+  default: value,
+  description,
+});
 
 export const Definitions = {
   leader: keybind(LeaderDefault, "Leader key for keybind combinations"),
@@ -192,9 +195,18 @@ export const Definitions = {
   input_word_forward: keybind("alt+f,alt+right,ctrl+right", "Move word forward in input"),
   input_word_backward: keybind("alt+b,alt+left,ctrl+left", "Move word backward in input"),
   input_select_word_forward: keybind("alt+shift+f,alt+shift+right", "Select word forward in input"),
-  input_select_word_backward: keybind("alt+shift+b,alt+shift+left", "Select word backward in input"),
-  input_delete_word_forward: keybind("alt+d,alt+delete,ctrl+delete", "Delete word forward in input"),
-  input_delete_word_backward: keybind("ctrl+w,ctrl+backspace,alt+backspace", "Delete word backward in input"),
+  input_select_word_backward: keybind(
+    "alt+shift+b,alt+shift+left",
+    "Select word backward in input",
+  ),
+  input_delete_word_forward: keybind(
+    "alt+d,alt+delete,ctrl+delete",
+    "Delete word forward in input",
+  ),
+  input_delete_word_backward: keybind(
+    "ctrl+w,ctrl+backspace,alt+backspace",
+    "Delete word backward in input",
+  ),
   input_select_all: keybind("super+a", "Select all in input"),
   history_previous: keybind("up", "Previous history item"),
   history_next: keybind("down", "Next history item"),
@@ -237,10 +249,10 @@ export const Definitions = {
   which_key_page_down: keybind("ctrl+alt+pagedown", "Page which-key down"),
   which_key_home: keybind("ctrl+alt+home", "Jump to first which-key binding"),
   which_key_end: keybind("ctrl+alt+end", "Jump to last which-key binding"),
-} satisfies Record<string, Definition>
+} satisfies Record<string, Definition>;
 
-type KeybindName = keyof typeof Definitions
-const KeybindNames = new Set<string>(Object.keys(Definitions))
+type KeybindName = keyof typeof Definitions;
+const KeybindNames = new Set<string>(Object.keys(Definitions));
 
 export const KeybindOverrides = Schema.Struct(
   Object.fromEntries(
@@ -249,10 +261,10 @@ export const KeybindOverrides = Schema.Struct(
       Schema.optional(BindingValueSchema).annotate({ description: item.description }),
     ]),
   ),
-).annotate({ description: "TUI keybinding overrides" })
+).annotate({ description: "TUI keybinding overrides" });
 export const Descriptions = Object.fromEntries(
   Object.entries(Definitions).map(([name, item]) => [name, item.description]),
-) as Record<KeybindName, string>
+) as Record<KeybindName, string>;
 export const CommandMap = {
   app_exit: "app.exit",
   app_debug: "app.debug",
@@ -417,55 +429,58 @@ export const CommandMap = {
   which_key_page_down: "which-key.page.down",
   which_key_home: "which-key.home",
   which_key_end: "which-key.end",
-} satisfies BindingCommandMap
+} satisfies BindingCommandMap;
 const CommandDescriptions = Object.fromEntries(
   Object.entries(Definitions).map(([name, item]) => [
     CommandMap[name as keyof typeof CommandMap] ?? name,
     item.description,
   ]),
-) as Record<string, string>
+) as Record<string, string>;
 
-export type Keybinds = { [K in KeybindName]: BindingValueSchema }
-export type KeybindOverrides = Partial<Keybinds>
+export type Keybinds = { [K in KeybindName]: BindingValueSchema };
+export type KeybindOverrides = Partial<Keybinds>;
 export type BindingLookupView = {
-  readonly bindings: readonly Binding<Renderable, KeyEvent>[]
-  get(command: string): readonly Binding<Renderable, KeyEvent>[]
-  has(command: string): boolean
-  gather(name: string, commands: readonly string[]): readonly Binding<Renderable, KeyEvent>[]
-  pick(name: string, commands: readonly string[]): Binding<Renderable, KeyEvent>[]
-  omit(name: string, commands: readonly string[]): Binding<Renderable, KeyEvent>[]
-}
+  readonly bindings: readonly Binding<Renderable, KeyEvent>[];
+  get(command: string): readonly Binding<Renderable, KeyEvent>[];
+  has(command: string): boolean;
+  gather(name: string, commands: readonly string[]): readonly Binding<Renderable, KeyEvent>[];
+  pick(name: string, commands: readonly string[]): Binding<Renderable, KeyEvent>[];
+  omit(name: string, commands: readonly string[]): Binding<Renderable, KeyEvent>[];
+};
 
 export function toBindingConfig(keybinds: Keybinds): BindingConfig<Renderable, KeyEvent> {
-  return Object.fromEntries(Object.entries(keybinds)) as BindingConfig<Renderable, KeyEvent>
+  return Object.fromEntries(Object.entries(keybinds)) as BindingConfig<Renderable, KeyEvent>;
 }
 
-const decodeBindingValue = Schema.decodeUnknownSync(BindingValueSchema)
+const decodeBindingValue = Schema.decodeUnknownSync(BindingValueSchema);
 
 export function defaultValue(name: KeybindName) {
-  return Definitions[name].default
+  return Definitions[name].default;
 }
 
 export function parse(keybinds: KeybindOverrides): Keybinds {
-  const invalid = unknownKeys(keybinds)
-  if (invalid.length) throw new Error(`Unrecognized keybind${invalid.length === 1 ? "" : "s"}: ${invalid.join(", ")}`)
+  const invalid = unknownKeys(keybinds);
+  if (invalid.length)
+    throw new Error(
+      `Unrecognized keybind${invalid.length === 1 ? "" : "s"}: ${invalid.join(", ")}`,
+    );
   return Object.fromEntries(
     Object.entries(Definitions).map(([name, item]) => [
       name,
       decodeBindingValue(keybinds[name as KeybindName] ?? item.default),
     ]),
-  ) as Keybinds
+  ) as Keybinds;
 }
 
-export const Keybinds = { parse }
+export const Keybinds = { parse };
 
 export function unknownKeys(input: object) {
-  return Object.keys(input).filter((key) => !KeybindNames.has(key))
+  return Object.keys(input).filter((key) => !KeybindNames.has(key));
 }
 
 export function bindingDefaults(): BindingDefaults<Renderable, KeyEvent> {
   return ({ command, binding }) => {
-    if (binding.desc !== undefined) return
-    return { desc: CommandDescriptions[command] }
-  }
+    if (binding.desc !== undefined) return;
+    return { desc: CommandDescriptions[command] };
+  };
 }

@@ -4,12 +4,8 @@
   "title": "Blog 01",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "A blog section with a grid layout.",
-  "dependencies": [
-    "date-fns"
-  ],
-  "registryDependencies": [
-    "button"
-  ],
+  "dependencies": ["date-fns"],
+  "registryDependencies": ["button"],
   "files": [
     {
       "path": "src/registry/blocks/blog-01/blog-01.tsx",
@@ -27,8 +23,6 @@
   "meta": {
     "createdAt": "2026-03-13"
   },
-  "categories": [
-    "marketing"
-  ],
+  "categories": ["marketing"],
   "type": "registry:block"
 }

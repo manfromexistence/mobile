@@ -107,7 +107,7 @@ test("moderations route covers CORS, validation, and missing credential branches
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: "{",
-    })
+    }),
   );
   assert.equal(invalidJsonResponse.status, 400);
   assert.match(await invalidJsonResponse.text(), /Invalid JSON body/i);
@@ -117,7 +117,7 @@ test("moderations route covers CORS, validation, and missing credential branches
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({}),
-    })
+    }),
   );
   assert.equal(invalidBodyResponse.status, 400);
   assert.match(await invalidBodyResponse.text(), /Invalid request/i);
@@ -130,7 +130,7 @@ test("moderations route covers CORS, validation, and missing credential branches
         input: "hello",
         model: "anthropic/omni-moderation-latest",
       }),
-    })
+    }),
   );
   assert.equal(noCredentialsResponse.status, 400);
   assert.match(await noCredentialsResponse.text(), /No credentials for provider: openai/i);

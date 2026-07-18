@@ -1,36 +1,36 @@
-import "./index.css"
-import { createAsync, query } from "@solidjs/router"
-import { Title, Meta } from "@solidjs/meta"
+import "./index.css";
+import { createAsync, query } from "@solidjs/router";
+import { Title, Meta } from "@solidjs/meta";
 //import { HttpHeader } from "@solidjs/start"
-import zenLogoLight from "../../asset/zen-ornate-light.svg"
-import zenLogoDark from "../../asset/zen-ornate-dark.svg"
-import compareVideo from "../../asset/lander/opencode-comparison-min.mp4"
-import compareVideoPoster from "../../asset/lander/opencode-comparison-poster.png"
-import avatarDax from "../../asset/lander/avatar-dax.png"
-import avatarJay from "../../asset/lander/avatar-jay.png"
-import avatarFrank from "../../asset/lander/avatar-frank.png"
-import avatarAdam from "../../asset/lander/avatar-adam.png"
-import avatarDavid from "../../asset/lander/avatar-david.png"
-import { EmailSignup } from "~/component/email-signup"
-import { Faq } from "~/component/faq"
-import { Legal } from "~/component/legal"
-import { Footer } from "~/component/footer"
-import { Header } from "~/component/header"
-import { getLastSeenWorkspaceID } from "../workspace/common"
-import { IconGemini, IconMiniMax, IconZai } from "~/component/icon"
-import { useI18n } from "~/context/i18n"
-import { useLanguage } from "~/context/language"
-import { LocaleLinks } from "~/component/locale-links"
+import zenLogoLight from "../../asset/zen-ornate-light.svg";
+import zenLogoDark from "../../asset/zen-ornate-dark.svg";
+import compareVideo from "../../asset/lander/opencode-comparison-min.mp4";
+import compareVideoPoster from "../../asset/lander/opencode-comparison-poster.png";
+import avatarDax from "../../asset/lander/avatar-dax.png";
+import avatarJay from "../../asset/lander/avatar-jay.png";
+import avatarFrank from "../../asset/lander/avatar-frank.png";
+import avatarAdam from "../../asset/lander/avatar-adam.png";
+import avatarDavid from "../../asset/lander/avatar-david.png";
+import { EmailSignup } from "~/component/email-signup";
+import { Faq } from "~/component/faq";
+import { Legal } from "~/component/legal";
+import { Footer } from "~/component/footer";
+import { Header } from "~/component/header";
+import { getLastSeenWorkspaceID } from "../workspace/common";
+import { IconGemini, IconMiniMax, IconZai } from "~/component/icon";
+import { useI18n } from "~/context/i18n";
+import { useLanguage } from "~/context/language";
+import { LocaleLinks } from "~/component/locale-links";
 
 const checkLoggedIn = query(async () => {
-  "use server"
-  return await getLastSeenWorkspaceID().catch(() => {})
-}, "checkLoggedIn.get")
+  "use server";
+  return await getLastSeenWorkspaceID().catch(() => {});
+}, "checkLoggedIn.get");
 
 export default function Home() {
-  const loggedin = createAsync(() => checkLoggedIn())
-  const i18n = useI18n()
-  const language = useLanguage()
+  const loggedin = createAsync(() => checkLoggedIn());
+  const i18n = useI18n();
+  const language = useLanguage();
   return (
     <main data-page="zen">
       {/*<HttpHeader name="Cache-Control" value="public, max-age=1, s-maxage=3600, stale-while-revalidate=86400" />*/}
@@ -52,7 +52,13 @@ export default function Home() {
               <p>{i18n.t("zen.hero.body")}</p>
               <div data-slot="model-logos">
                 <div>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <mask
                       id="mask0_79_128586"
                       style="mask-type:luminance"
@@ -73,8 +79,17 @@ export default function Home() {
                   </svg>
                 </div>
                 <div>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M13.7891 3.93164L20.2223 20.0677H23.7502L17.317 3.93164H13.7891Z" fill="currentColor" />
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M13.7891 3.93164L20.2223 20.0677H23.7502L17.317 3.93164H13.7891Z"
+                      fill="currentColor"
+                    />
                     <path
                       d="M6.32538 13.6824L8.52662 8.01177L10.7279 13.6824H6.32538ZM6.68225 3.93164L0.25 20.0677H3.84652L5.16202 16.6791H11.8914L13.2067 20.0677H16.8033L10.371 3.93164H6.68225Z"
                       fill="currentColor"
@@ -85,7 +100,13 @@ export default function Home() {
                   <IconGemini width="24" height="24" />
                 </div>
                 <div>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <path
                       d="M9.16861 16.0529L17.2018 9.85156C17.5957 9.54755 18.1586 9.66612 18.3463 10.1384C19.3339 12.6288 18.8926 15.6217 16.9276 17.6766C14.9626 19.7314 12.2285 20.1821 9.72948 19.1557L6.9995 20.4775C10.9151 23.2763 15.6699 22.5841 18.6411 19.4749C20.9979 17.0103 21.7278 13.6508 21.0453 10.6214L21.0515 10.6278C20.0617 6.17736 21.2948 4.39847 23.8207 0.760904C23.8804 0.674655 23.9402 0.588405 24 0.5L20.6762 3.97585V3.96506L9.16658 16.0551"
                       fill="currentColor"
@@ -100,7 +121,13 @@ export default function Home() {
                   <IconMiniMax width="24" height="24" />
                 </div>
                 <div>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <path
                       d="M12.6241 11.346L20.3848 3.44816C20.5309 3.29931 20.4487 3 20.2601 3H16.0842C16.0388 3 15.9949 3.01897 15.9594 3.05541L7.59764 11.5629C7.46721 11.6944 7.27446 11.5771 7.27446 11.3666V3.25183C7.27446 3.11242 7.18515 3 7.07594 3H4.19843C4.08932 3 4 3.11242 4 3.25183V20.7482C4 20.8876 4.08932 21 4.19843 21H7.07594C7.18515 21 7.27446 20.8876 7.27446 20.7482V17.1834C7.27446 17.1073 7.30136 17.0344 7.34815 16.987L9.94075 14.3486C10.0031 14.2853 10.0895 14.2757 10.159 14.3232L17.0934 19.5573C18.2289 20.3412 19.4975 20.8226 20.786 20.9652C20.9008 20.9778 21 20.8606 21 20.7133V17.3559C21 17.2276 20.9249 17.1232 20.8243 17.1073C20.0659 16.9853 19.326 16.6845 18.6569 16.222L12.6538 11.764C12.5291 11.6785 12.5135 11.4584 12.6241 11.346Z"
                       fill="currentColor"
@@ -111,7 +138,13 @@ export default function Home() {
                   <IconZai width="24" height="24" />
                 </div>
                 <div>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <path
                       fill-rule="evenodd"
                       clip-rule="evenodd"
@@ -123,7 +156,13 @@ export default function Home() {
               </div>
               <a href="/auth">
                 <span>{i18n.t("zen.cta.start")}</span>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path
                     d="M6.5 12L17 12M13 16.5L17.5 12L13 7.5"
                     stroke="currentColor"
@@ -135,14 +174,23 @@ export default function Home() {
             </div>
             <div data-slot="pricing-copy">
               <p>
-                <strong>{i18n.t("zen.pricing.title")}</strong> <span>{i18n.t("zen.pricing.fee")}</span>
+                <strong>{i18n.t("zen.pricing.title")}</strong>{" "}
+                <span>{i18n.t("zen.pricing.fee")}</span>
               </p>
               <p>{i18n.t("zen.pricing.body")}</p>
             </div>
           </section>
 
           <section data-component="comparison">
-            <video src={compareVideo} autoplay playsinline loop muted preload="auto" poster={compareVideoPoster}>
+            <video
+              src={compareVideo}
+              autoplay
+              playsinline
+              loop
+              muted
+              preload="auto"
+              poster={compareVideoPoster}
+            >
               {i18n.t("common.videoUnsupported")}
             </video>
           </section>
@@ -175,8 +223,12 @@ export default function Home() {
               <li>
                 <span>[1]</span>
                 <div>
-                  <strong>{i18n.t("zen.how.step1.title")}</strong> - {i18n.t("zen.how.step1.beforeLink")}{" "}
-                  <a href={language.route("/docs/zen/#how-it-works")} title={i18n.t("zen.how.step1.link")}>
+                  <strong>{i18n.t("zen.how.step1.title")}</strong> -{" "}
+                  {i18n.t("zen.how.step1.beforeLink")}{" "}
+                  <a
+                    href={language.route("/docs/zen/#how-it-works")}
+                    title={i18n.t("zen.how.step1.link")}
+                  >
                     {i18n.t("zen.how.step1.link")}
                   </a>
                 </div>
@@ -205,7 +257,10 @@ export default function Home() {
                 <span>[*]</span>
                 <p>
                   {i18n.t("zen.privacy.beforeExceptions")}{" "}
-                  <a href={language.route("/docs/zen/#privacy")}>{i18n.t("zen.privacy.exceptionsLink")}</a>.
+                  <a href={language.route("/docs/zen/#privacy")}>
+                    {i18n.t("zen.privacy.exceptionsLink")}
+                  </a>
+                  .
                 </p>
               </div>
             </div>
@@ -301,15 +356,21 @@ export default function Home() {
               <li>
                 <Faq question={i18n.t("zen.faq.q4")}>
                   {i18n.t("zen.faq.a4.p1.beforePricing")}{" "}
-                  <a href={language.route("/docs/zen/#pricing")}>{i18n.t("zen.faq.a4.p1.pricingLink")}</a>{" "}
+                  <a href={language.route("/docs/zen/#pricing")}>
+                    {i18n.t("zen.faq.a4.p1.pricingLink")}
+                  </a>{" "}
                   {i18n.t("zen.faq.a4.p1.afterPricing")} {i18n.t("zen.faq.a4.p2.beforeAccount")}{" "}
-                  <a href="/auth">{i18n.t("zen.faq.a4.p2.accountLink")}</a>. {i18n.t("zen.faq.a4.p3")}
+                  <a href="/auth">{i18n.t("zen.faq.a4.p2.accountLink")}</a>.{" "}
+                  {i18n.t("zen.faq.a4.p3")}
                 </Faq>
               </li>
               <li>
                 <Faq question={i18n.t("zen.faq.q5")}>
                   {i18n.t("zen.faq.a5.beforeExceptions")}{" "}
-                  <a href={language.route("/docs/zen/#privacy")}>{i18n.t("zen.faq.a5.exceptionsLink")}</a>.
+                  <a href={language.route("/docs/zen/#privacy")}>
+                    {i18n.t("zen.faq.a5.exceptionsLink")}
+                  </a>
+                  .
                 </Faq>
               </li>
               <li>
@@ -332,5 +393,5 @@ export default function Home() {
 
       <Legal />
     </main>
-  )
+  );
 }

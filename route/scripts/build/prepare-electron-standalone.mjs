@@ -36,7 +36,7 @@ function resolveStandaloneBundleDir() {
   }
 
   throw new Error(
-    `Standalone server bundle not found in ${STANDALONE_DIR}. Run \`npm run build\` first.`
+    `Standalone server bundle not found in ${STANDALONE_DIR}. Run \`npm run build\` first.`,
   );
 }
 
@@ -55,7 +55,7 @@ function assertBundleIsPackagable(bundleDir) {
         "",
         `Offending path: ${nodeModulesPath}`,
         "Use a real node_modules directory in the build worktree before packaging Electron.",
-      ].join("\n")
+      ].join("\n"),
     );
   }
 }
@@ -124,30 +124,26 @@ function rebuildBetterSqlite3ForElectron(standaloneNodeModules) {
 
   console.log(`[electron] rebuilding better-sqlite3 against electron ${electronVersion} ABI…`);
   const plan = buildRebuildSpawnPlan(process.platform);
-  const result = spawnSync(
-    plan.command,
-    plan.args,
-    {
-      cwd: destMod,
-      stdio: "inherit",
-      // .cmd shims must go through a shell on Windows (CVE-2024-27980 hardening
-      // makes a shell-less spawn fail with status null); args are fixed literals.
-      shell: plan.shell,
-      // Compile against the Electron headers (not Node's) so the .node lands in
-      // build/Release with the Electron NODE_MODULE_VERSION. No shell interpolation.
-      env: {
-        ...process.env,
-        npm_config_runtime: "electron",
-        npm_config_target: electronVersion,
-        npm_config_disturl: "https://electronjs.org/headers",
-        npm_config_arch: process.arch,
-        npm_config_build_from_source: "true",
-      },
-    }
-  );
+  const result = spawnSync(plan.command, plan.args, {
+    cwd: destMod,
+    stdio: "inherit",
+    // .cmd shims must go through a shell on Windows (CVE-2024-27980 hardening
+    // makes a shell-less spawn fail with status null); args are fixed literals.
+    shell: plan.shell,
+    // Compile against the Electron headers (not Node's) so the .node lands in
+    // build/Release with the Electron NODE_MODULE_VERSION. No shell interpolation.
+    env: {
+      ...process.env,
+      npm_config_runtime: "electron",
+      npm_config_target: electronVersion,
+      npm_config_disturl: "https://electronjs.org/headers",
+      npm_config_arch: process.arch,
+      npm_config_build_from_source: "true",
+    },
+  });
   if (result.status !== 0) {
     throw new Error(
-      `[electron] better-sqlite3 rebuild against electron ${electronVersion} failed (exit ${result.status}).`
+      `[electron] better-sqlite3 rebuild against electron ${electronVersion} failed (exit ${result.status}).`,
     );
   }
   // Drop the now-unneeded compile inputs to keep the packaged app lean.
@@ -199,5 +195,5 @@ removeNativeModules(join(ELECTRON_STANDALONE_DIR, ".next", "node_modules"), [
 ]);
 
 console.log(
-  `[electron] prepared standalone bundle: ${relative(ROOT, ELECTRON_STANDALONE_DIR) || "."}`
+  `[electron] prepared standalone bundle: ${relative(ROOT, ELECTRON_STANDALONE_DIR) || "."}`,
 );

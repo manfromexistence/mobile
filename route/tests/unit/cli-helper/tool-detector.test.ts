@@ -85,7 +85,10 @@ describe("tool-detector", () => {
     it("includes openclaw in the detected tools list", async () => {
       const tools = await toolDetector.detectAllTools();
       const openclaw = tools.find((t) => t.id === "openclaw");
-      assert.ok(openclaw !== undefined, "detectAllTools() must include an entry with id='openclaw'");
+      assert.ok(
+        openclaw !== undefined,
+        "detectAllTools() must include an entry with id='openclaw'",
+      );
       assert.strictEqual(openclaw!.name, "OpenClaw");
       assert.ok(
         openclaw!.configPath.includes(".openclaw/openclaw.json"),

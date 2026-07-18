@@ -43,7 +43,7 @@ export const MODEL_FORCED_EFFORT: Record<string, "standard" | "extended"> = {
 export const THINKING_CAPABLE_SLUGS: ReadonlySet<string> = new Set(
   Object.entries(MODEL_MAP)
     .filter(([k]) => k.includes("thinking") || k === "o3")
-    .map(([, v]) => v)
+    .map(([, v]) => v),
 );
 
 /** chatgpt.com only exposes the thinking-effort toggle on dedicated thinking
@@ -89,7 +89,7 @@ export function normalizeThinkingEffort(input: unknown): "standard" | "extended"
  * Returns null when the caller did not request one. */
 export function resolveThinkingEffort(
   body: unknown,
-  providerSpecificData: Record<string, unknown> | undefined
+  providerSpecificData: Record<string, unknown> | undefined,
 ): "standard" | "extended" | null {
   if (providerSpecificData && providerSpecificData.thinkingEffort !== undefined) {
     return normalizeThinkingEffort(providerSpecificData.thinkingEffort);
@@ -111,7 +111,7 @@ export interface ResolvedChatGptModel {
 export function resolveChatGptModel(
   model: string,
   body: unknown,
-  providerSpecificData: Record<string, unknown> | undefined
+  providerSpecificData: Record<string, unknown> | undefined,
 ): ResolvedChatGptModel {
   const slug = MODEL_MAP[model] ?? model;
   const forcedEffort = MODEL_FORCED_EFFORT[model] ?? null;

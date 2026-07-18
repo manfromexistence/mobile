@@ -84,7 +84,7 @@ export async function handleAudioTranslation({
   if (!providerConfig) {
     return errorResponse(
       400,
-      `No translation provider found for model "${model}". Available: openai, groq`
+      `No translation provider found for model "${model}". Available: openai, groq`,
     );
   }
 

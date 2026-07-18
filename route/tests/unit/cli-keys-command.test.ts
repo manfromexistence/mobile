@@ -65,7 +65,7 @@ test("keys add writes provider_connection row to DB when server is offline", asy
     const db = new Database(dbPath);
     const row = db
       .prepare(
-        "SELECT provider, auth_type, name, api_key, is_active, created_at, updated_at FROM provider_connections WHERE provider = ?"
+        "SELECT provider, auth_type, name, api_key, is_active, created_at, updated_at FROM provider_connections WHERE provider = ?",
       )
       .get("openai") as ProviderConnectionRow | undefined;
     db.close();
@@ -90,8 +90,9 @@ test("keys list returns 0 and shows no keys on empty DB", async () => {
 
 test("keys list --json returns structured output", async () => {
   await withCliKeysEnv(async () => {
-    const { runKeysAddCommand, runKeysListCommand } =
-      await import("../../bin/cli/commands/keys.mjs");
+    const { runKeysAddCommand, runKeysListCommand } = await import(
+      "../../bin/cli/commands/keys.mjs"
+    );
 
     await runKeysAddCommand("openai", "sk-list-json-test", {});
 
@@ -111,8 +112,9 @@ test("keys list --json returns structured output", async () => {
 
 test("keys remove deletes the provider_connection row", async () => {
   await withCliKeysEnv(async (_dataDir, dbPath) => {
-    const { runKeysAddCommand, runKeysRemoveCommand } =
-      await import("../../bin/cli/commands/keys.mjs");
+    const { runKeysAddCommand, runKeysRemoveCommand } = await import(
+      "../../bin/cli/commands/keys.mjs"
+    );
 
     await runKeysAddCommand("openai", "sk-remove-test", {});
 

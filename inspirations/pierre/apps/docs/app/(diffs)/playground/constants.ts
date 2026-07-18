@@ -1,7 +1,7 @@
-import { parseDiffFromFile } from '@pierre/diffs';
-import type { PreloadFileDiffOptions } from '@pierre/diffs/ssr';
+import { parseDiffFromFile } from "@pierre/diffs";
+import type { PreloadFileDiffOptions } from "@pierre/diffs/ssr";
 
-import { CustomScrollbarCSS } from '@/components/CustomScrollbarCSS';
+import { CustomScrollbarCSS } from "@/components/CustomScrollbarCSS";
 
 export interface PlaygroundAnnotationMetadata {
   key: string;
@@ -107,31 +107,30 @@ export async function deleteUser(id: string): Promise<void> {
 
 `;
 
-export const PLAYGROUND_DIFF: PreloadFileDiffOptions<PlaygroundAnnotationMetadata> =
-  {
-    fileDiff: parseDiffFromFile(
-      {
-        name: 'api/users.ts',
-        contents: OLD_USERS_CONTENT,
-      },
-      {
-        name: 'api/users.ts',
-        contents: NEW_USERS_CONTENT,
-      }
-    ),
-    options: {
-      theme: 'pierre-dark',
-      diffStyle: 'split',
-      unsafeCSS: CustomScrollbarCSS,
+export const PLAYGROUND_DIFF: PreloadFileDiffOptions<PlaygroundAnnotationMetadata> = {
+  fileDiff: parseDiffFromFile(
+    {
+      name: "api/users.ts",
+      contents: OLD_USERS_CONTENT,
     },
-    annotations: [
-      {
-        side: 'additions',
-        lineNumber: 25,
-        metadata: {
-          key: 'additions-25',
-          isThread: true,
-        },
+    {
+      name: "api/users.ts",
+      contents: NEW_USERS_CONTENT,
+    },
+  ),
+  options: {
+    theme: "pierre-dark",
+    diffStyle: "split",
+    unsafeCSS: CustomScrollbarCSS,
+  },
+  annotations: [
+    {
+      side: "additions",
+      lineNumber: 25,
+      metadata: {
+        key: "additions-25",
+        isThread: true,
       },
-    ],
-  };
+    },
+  ],
+};

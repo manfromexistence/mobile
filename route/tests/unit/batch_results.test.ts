@@ -37,7 +37,7 @@ test("Batch processor produces output file for successful items", async () => {
         data: [{ object: "embedding", embedding: [0.1, 0.2], index: 0 }],
         usage: { prompt_tokens: 2, total_tokens: 2 },
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   }) as any;
 
@@ -105,14 +105,14 @@ test("Batch processor produces output file for successful items", async () => {
 
     assert.ok(
       currentBatch?.status === "completed" || currentBatch?.status === "failed",
-      "Batch should reach a terminal state"
+      "Batch should reach a terminal state",
     );
 
     // The batch should have recorded progress counts (completed + failed == total)
     assert.strictEqual(
       (currentBatch?.requestCountsCompleted || 0) + (currentBatch?.requestCountsFailed || 0),
       currentBatch?.requestCountsTotal || 1,
-      "Processed counts should add up to total"
+      "Processed counts should add up to total",
     );
 
     // If the batch completed successfully, it should have produced an output file

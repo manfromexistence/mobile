@@ -386,7 +386,7 @@ test("createGeminiSanitizingFetch: composes correctly with createOmniRouteFetchI
       createOmniRouteFetchInterceptor({
         apiKey: "sk-test",
         baseURL: "https://or.example.com/v1",
-      })
+      }),
     );
     await composed(URL_CHAT, {
       method: "POST",

@@ -1,12 +1,12 @@
-import { Effect } from "effect"
-import type { DatabaseMigration } from "../migration"
+import { Effect } from "effect";
+import type { DatabaseMigration } from "../migration";
 
 export default {
   id: "20260611192811_lush_chimera",
   up(tx) {
     return Effect.gen(function* () {
-      yield* tx.run(`DROP INDEX IF EXISTS \`credential_connector_active_idx\`;`)
-      yield* tx.run(`DROP TABLE \`credential\`;`)
+      yield* tx.run(`DROP INDEX IF EXISTS \`credential_connector_active_idx\`;`);
+      yield* tx.run(`DROP TABLE \`credential\`;`);
       yield* tx.run(`
         CREATE TABLE \`credential\` (
           \`id\` text PRIMARY KEY,
@@ -19,7 +19,7 @@ export default {
           \`time_created\` integer NOT NULL,
           \`time_updated\` integer NOT NULL
         );
-      `)
-    })
+      `);
+    });
   },
-} satisfies DatabaseMigration.Migration
+} satisfies DatabaseMigration.Migration;

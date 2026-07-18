@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import type { ColorMode, ColorScheme } from '@pierre/theming';
-import { useThemeController } from '@pierre/theming/react';
+import type { ColorMode, ColorScheme } from "@pierre/theming";
+import { useThemeController } from "@pierre/theming/react";
 import {
   createContext,
   type ReactNode,
@@ -10,12 +10,12 @@ import {
   useEffect,
   useMemo,
   useState,
-} from 'react';
+} from "react";
 
-import { themeController } from './themeController';
+import { themeController } from "./themeController";
 
 interface ThemeProviderProps {
-  attribute?: 'class' | `data-${string}` | Array<'class' | `data-${string}`>;
+  attribute?: "class" | `data-${string}` | Array<"class" | `data-${string}`>;
   children: ReactNode;
   enableColorScheme?: boolean;
   value?: Partial<Record<ColorScheme, string>>;
@@ -28,8 +28,8 @@ interface ThemeContextValue {
   setColorMode: (mode: ColorMode) => void;
 }
 
-const COLOR_MODES: ColorMode[] = ['light', 'dark', 'system'];
-const COLOR_SCHEMES: ColorScheme[] = ['light', 'dark'];
+const COLOR_MODES: ColorMode[] = ["light", "dark", "system"];
+const COLOR_SCHEMES: ColorScheme[] = ["light", "dark"];
 
 // Navbar tint (iOS Safari's <meta name="theme-color">) for each resolved color
 // scheme. These match the global body `--background` (oklch(1)/oklch(0.145))
@@ -37,8 +37,8 @@ const COLOR_SCHEMES: ColorScheme[] = ['light', 'dark'];
 // instead of contrasting it. Kept in sync with the same literals hardcoded in
 // the layout's pre-paint bootstrap script (which can't import this module).
 const SCHEME_THEME_COLOR: Record<ColorScheme, string> = {
-  light: '#ffffff',
-  dark: '#0a0a0a',
+  light: "#ffffff",
+  dark: "#0a0a0a",
 };
 
 // Points the document's theme-color meta at `color` (the iOS Safari navbar
@@ -49,11 +49,11 @@ const SCHEME_THEME_COLOR: Record<ColorScheme, string> = {
 function setThemeColorMeta(color: string) {
   let meta = document.querySelector('meta[name="theme-color"]');
   if (meta == null) {
-    meta = document.createElement('meta');
-    meta.setAttribute('name', 'theme-color');
+    meta = document.createElement("meta");
+    meta.setAttribute("name", "theme-color");
     document.head.appendChild(meta);
   }
-  meta.setAttribute('content', color);
+  meta.setAttribute("content", color);
 }
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
@@ -68,7 +68,7 @@ function applyColorScheme({
   resolvedColorScheme,
   value,
 }: {
-  attribute: ThemeProviderProps['attribute'];
+  attribute: ThemeProviderProps["attribute"];
   enableColorScheme: boolean;
   resolvedColorScheme: ColorScheme;
   value: Partial<Record<ColorScheme, string>> | undefined;
@@ -79,7 +79,7 @@ function applyColorScheme({
   const classValues = COLOR_SCHEMES.map((scheme) => value?.[scheme] ?? scheme);
 
   for (const currentAttribute of attributes) {
-    if (currentAttribute === 'class') {
+    if (currentAttribute === "class") {
       root.classList.remove(...classValues);
       root.classList.add(resolvedValue);
       continue;
@@ -103,7 +103,7 @@ function applyColorScheme({
 // DOM and exposes the useTheme() API the app depends on. Selection and
 // persistence live in the controller — this holds no theming state of its own.
 export function ThemeProvider({
-  attribute = 'data-theme',
+  attribute = "data-theme",
   children,
   enableColorScheme = true,
   value,
@@ -145,14 +145,10 @@ export function ThemeProvider({
       resolvedColorScheme,
       setColorMode,
     }),
-    [colorMode, resolvedColorScheme, setColorMode]
+    [colorMode, resolvedColorScheme, setColorMode],
   );
 
-  return (
-    <ThemeContext.Provider value={contextValue}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme(): ThemeContextValue {

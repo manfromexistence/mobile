@@ -40,7 +40,7 @@ export function moduleFragment(modulePath) {
 export function testImportsModule(content, fragment) {
   const esc = fragment.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   const re = new RegExp(
-    "(?:from\\s+|\\bimport\\s*\\(\\s*|\\brequire\\s*\\(\\s*)[\"'][^\"']*" + esc
+    "(?:from\\s+|\\bimport\\s*\\(\\s*|\\brequire\\s*\\(\\s*)[\"'][^\"']*" + esc,
   );
   return re.test(content);
 }
@@ -67,14 +67,16 @@ export function findCoverageDrift({ mutate, tapTestFiles, unitTests }) {
 function listUnitTests() {
   // Static argv — no shell, no interpolation.
   const out = execFileSync("git", ["ls-files", "tests/unit"], { encoding: "utf8" });
-  return out
-    .split("\n")
-    .filter((f) => /\.test\.ts$/.test(f))
-    // Exclude tests/unit/build/: these test the build TOOLING (scripts/), not the
-    // mutated runtime modules. They legitimately embed module paths as fixture
-    // strings (e.g. this gate's own test), which would otherwise false-match.
-    .filter((f) => !f.startsWith("tests/unit/build/"))
-    .map((path) => ({ path, content: fs.readFileSync(path, "utf8") }));
+  return (
+    out
+      .split("\n")
+      .filter((f) => /\.test\.ts$/.test(f))
+      // Exclude tests/unit/build/: these test the build TOOLING (scripts/), not the
+      // mutated runtime modules. They legitimately embed module paths as fixture
+      // strings (e.g. this gate's own test), which would otherwise false-match.
+      .filter((f) => !f.startsWith("tests/unit/build/"))
+      .map((path) => ({ path, content: fs.readFileSync(path, "utf8") }))
+  );
 }
 
 function main() {
@@ -97,7 +99,7 @@ function main() {
   console.log("Mutation test-coverage gate — tap.testFiles drift detection");
   console.log("===========================================================");
   console.log(
-    `Scanned ${unitTests.length} unit test file(s) against ${mutate.filter((m) => m.endsWith(".ts")).length} mutated module(s).`
+    `Scanned ${unitTests.length} unit test file(s) against ${mutate.filter((m) => m.endsWith(".ts")).length} mutated module(s).`,
   );
 
   if (total === 0) {

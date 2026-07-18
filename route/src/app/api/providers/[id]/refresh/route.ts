@@ -29,14 +29,14 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
     if (connection.authType !== "oauth") {
       return NextResponse.json(
         { error: "Only OAuth connections support manual token refresh" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (!connection.refreshToken && !connection.accessToken) {
       return NextResponse.json(
         { error: "No token credentials available for refresh" },
-        { status: 422 }
+        { status: 422 },
       );
     }
 
@@ -99,7 +99,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
         });
         return NextResponse.json(
           { error: "Token refresh failed — provider returned no new token", requiresReauth: true },
-          { status: 401 }
+          { status: 401 },
         );
       }
     }
@@ -107,7 +107,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
     if (!newCredentials?.accessToken) {
       return NextResponse.json(
         { error: "Token refresh failed — provider returned no new token" },
-        { status: 502 }
+        { status: 502 },
       );
     }
 
@@ -134,7 +134,7 @@ export async function POST(_request: Request, { params }: { params: Promise<{ id
     console.error("[T12] Token refresh failed:", error);
     return NextResponse.json(
       { error: "Token refresh failed", details: (error as Error).message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

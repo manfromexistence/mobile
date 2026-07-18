@@ -35,9 +35,9 @@ export async function POST(request: Request): Promise<NextResponse> {
     return NextResponse.json(
       buildErrorBody(
         400,
-        "Validation failed: " + parsed.error.issues.map((i) => i.message).join(", ")
+        "Validation failed: " + parsed.error.issues.map((i) => i.message).join(", "),
       ),
-      { status: 400 }
+      { status: 400 },
     );
   }
 

@@ -111,7 +111,7 @@ export const __buildRelayFunctionForTest = buildRelayFunction;
 async function disableSsoProtection(
   vercelApiBase: string,
   projectId: string,
-  token: string
+  token: string,
 ): Promise<{ ok: boolean; status?: number }> {
   try {
     const res = await fetch(`${vercelApiBase}/v9/projects/${projectId}`, {
@@ -171,7 +171,7 @@ async function buildDeployErrorResponse(deployRes: Response) {
 async function resolveSsoProtectionWarning(
   projectId: string | undefined,
   vercelApiBase: string,
-  token: string
+  token: string,
 ): Promise<string | undefined> {
   if (!projectId) return undefined;
   const ssoResult = await disableSsoProtection(vercelApiBase, projectId, token);
@@ -285,7 +285,7 @@ export async function POST(request: Request) {
     const ssoProtectionWarning = await resolveSsoProtectionWarning(
       deployment.projectId,
       VERCEL_API_BASE,
-      token
+      token,
     );
 
     // Poll until READY

@@ -33,7 +33,7 @@ function systemTextOf(msg: Record<string, unknown>): string {
 export function applyQuantumLock(
   body: Record<string, unknown>,
   cfg: QuantumLockConfig,
-  _ctx?: { isCachingProvider: boolean }
+  _ctx?: { isCachingProvider: boolean },
 ): { body: Record<string, unknown>; stats: QuantumLockStats } {
   const messages = body.messages;
   if (!Array.isArray(messages)) return { body, stats: emptyStats() };

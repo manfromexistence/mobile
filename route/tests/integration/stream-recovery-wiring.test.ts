@@ -76,7 +76,7 @@ test("stream recovery ON: a truncated opening stream is retried transparently", 
         stream: true,
         messages: [{ role: "user", content: "hi" }],
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -106,7 +106,7 @@ test("stream recovery OFF (default): a truncated stream is NOT retried", async (
         stream: true,
         messages: [{ role: "user", content: "hi" }],
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -133,7 +133,7 @@ test("/goal requests enable early stream recovery even when the global default i
         stream: true,
         messages: [{ role: "user", content: "/goal finish this long-running task" }],
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -166,7 +166,7 @@ test("/goal requests do NOT re-enable stream recovery when the operator explicit
         stream: true,
         messages: [{ role: "user", content: "/goal finish this long-running task" }],
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -174,6 +174,6 @@ test("/goal requests do NOT re-enable stream recovery when the operator explicit
   assert.equal(
     calls,
     1,
-    "explicit operator opt-out must win over the goal-policy heuristic — zero re-open"
+    "explicit operator opt-out must win over the goal-policy heuristic — zero re-open",
   );
 });

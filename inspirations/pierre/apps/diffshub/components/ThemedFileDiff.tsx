@@ -1,15 +1,13 @@
-'use client';
+"use client";
 
-import { FileDiff, type FileDiffProps } from '@pierre/diffs/react';
-import { useMemo } from 'react';
+import { FileDiff, type FileDiffProps } from "@pierre/diffs/react";
+import { useMemo } from "react";
 
-import { useDiffThemeProps } from './useDiffThemeProps';
-import { useWorkerDiffTheme } from './useWorkerDiffTheme';
-import type { DiffThemeInput } from '@/lib/theme/diffThemeProps';
+import { useDiffThemeProps } from "./useDiffThemeProps";
+import { useWorkerDiffTheme } from "./useWorkerDiffTheme";
+import type { DiffThemeInput } from "@/lib/theme/diffThemeProps";
 
-interface ThemedFileDiffProps<
-  LAnnotation = undefined,
-> extends FileDiffProps<LAnnotation> {
+interface ThemedFileDiffProps<LAnnotation = undefined> extends FileDiffProps<LAnnotation> {
   // Names-now override (omitted => follow the provider/source).
   theme?: DiffThemeInput;
 }
@@ -30,7 +28,7 @@ export function ThemedFileDiff<LAnnotation = undefined>({
       theme: diffTheme.theme,
       themeType: options?.themeType ?? diffTheme.themeType,
     }),
-    [diffTheme, options]
+    [diffTheme, options],
   );
   return (
     <FileDiff<LAnnotation>

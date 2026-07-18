@@ -31,11 +31,11 @@ test("jinaReaderFetch calls r.jina.ai/{url} with Bearer auth", async () => {
     assert.equal(result.success, true);
     assert.ok(
       captured.url.startsWith("https://r.jina.ai/"),
-      `URL should start with https://r.jina.ai/, got: ${captured.url}`
+      `URL should start with https://r.jina.ai/, got: ${captured.url}`,
     );
     assert.ok(
       captured.url.includes(encodeURIComponent("https://example.com")),
-      "URL should include encoded target URL"
+      "URL should include encoded target URL",
     );
     assert.equal(captured.headers["Authorization"], "Bearer jina-test-key");
   } finally {
@@ -96,7 +96,7 @@ test("jinaReaderFetch parses JSON response with data.content", async () => {
           links: ["https://example.com/a", "https://example.com/b"],
         },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -140,7 +140,7 @@ test("jinaReaderFetch falls back to plain text when response is not JSON", async
     assert.equal(result.success, true);
     assert.ok(
       result.data?.content.includes("Plain text content"),
-      "should include plain text content"
+      "should include plain text content",
     );
   } finally {
     globalThis.fetch = originalFetch;

@@ -103,7 +103,7 @@ function installMockFetch({
       }
       // Warmup (/me, /conversations, /models) — tolerated.
       return { status: 404, headers: makeHeaders(), text: "not mocked", body: null };
-    }
+    },
   );
 
   return {
@@ -184,11 +184,11 @@ test("Non-streaming: resolves ChatGPT web citation markers into markdown links",
     const content = json.choices[0].message.content;
     assert.match(
       content,
-      /\[Tesla\]\(https:\/\/www\.tesla\.com\/en_au\/support\/autopilot\) FSD v14 is rolling out/
+      /\[Tesla\]\(https:\/\/www\.tesla\.com\/en_au\/support\/autopilot\) FSD v14 is rolling out/,
     );
     assert.match(
       content,
-      /\[1\]\(https:\/\/www\.tesla\.com\/support\/fsd-v14\?utm_source=chatgpt\.com\)/
+      /\[1\]\(https:\/\/www\.tesla\.com\/support\/fsd-v14\?utm_source=chatgpt\.com\)/,
     );
     assert.match(content, /\[2\]\(https:\/\/example\.com\/owners\/fsd-v14\)/);
     assert.doesNotMatch(content, /|||turn0search/);
@@ -289,7 +289,7 @@ test("Streaming: buffers split ChatGPT citation markers until metadata can link 
 
     assert.equal(
       content,
-      "Tesla FSD v14 is rolling out [1](https://www.tesla.com/fsd)[2](https://example.com/owners)."
+      "Tesla FSD v14 is rolling out [1](https://www.tesla.com/fsd)[2](https://example.com/owners).",
     );
     assert.doesNotMatch(content, /|||turn0search/);
   } finally {
@@ -380,7 +380,7 @@ test("GPT-5.5 Pro non-streaming: stream_handoff polls conversation detail for fi
     const json = await result.response.json();
     assert.equal(
       json.choices[0].message.content,
-      "👉 Final full Pro answer. [1](https://example.com/pro-source)"
+      "👉 Final full Pro answer. [1](https://example.com/pro-source)",
     );
     assert.equal(m.calls.conversationDetail, 1);
     const convIdx = m.calls.urls.findIndex((u) => u.endsWith("/backend-api/f/conversation"));

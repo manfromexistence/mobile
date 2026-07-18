@@ -1,9 +1,13 @@
-import { marked, type MarkedExtension, type Tokens } from "marked"
-import markedShiki from "marked-shiki"
-import katex from "katex"
-import { bundledLanguages, type BundledLanguage } from "shiki"
-import { createSimpleContext } from "./helper"
-import { getSharedHighlighter, registerCustomTheme, ThemeRegistrationResolved } from "@pierre/diffs"
+import { marked, type MarkedExtension, type Tokens } from "marked";
+import markedShiki from "marked-shiki";
+import katex from "katex";
+import { bundledLanguages, type BundledLanguage } from "shiki";
+import { createSimpleContext } from "./helper";
+import {
+  getSharedHighlighter,
+  registerCustomTheme,
+  ThemeRegistrationResolved,
+} from "@pierre/diffs";
 
 export const OpenCodeTheme = {
   name: "OpenCode",
@@ -54,7 +58,13 @@ export const OpenCodeTheme = {
       },
     },
     {
-      scope: ["constant", "entity.name.constant", "variable.other.constant", "variable.language", "entity"],
+      scope: [
+        "constant",
+        "entity.name.constant",
+        "variable.other.constant",
+        "variable.language",
+        "entity",
+      ],
       settings: {
         foreground: "var(--syntax-constant)",
       },
@@ -147,7 +157,11 @@ export const OpenCodeTheme = {
       },
     },
     {
-      scope: ["support.type.object.module", "variable.other.object", "support.type.property-name.css"],
+      scope: [
+        "support.type.object.module",
+        "variable.other.object",
+        "support.type.property-name.css",
+      ],
       settings: {
         foreground: "var(--syntax-object)",
       },
@@ -374,44 +388,44 @@ export const OpenCodeTheme = {
     "variable.constant": "var(--syntax-constant)",
     "variable.defaultLibrary": "var(--syntax-unknown)",
   },
-} as unknown as ThemeRegistrationResolved
+} as unknown as ThemeRegistrationResolved;
 
-registerCustomTheme("OpenCode", () => Promise.resolve(OpenCodeTheme))
+registerCustomTheme("OpenCode", () => Promise.resolve(OpenCodeTheme));
 
 function renderMathInText(text: string): string {
-  let result = text
+  let result = text;
 
   // Display math: $$...$$
-  const displayMathRegex = /\$\$([\s\S]*?)\$\$/g
+  const displayMathRegex = /\$\$([\s\S]*?)\$\$/g;
   result = result.replace(displayMathRegex, (_, math) => {
     try {
       return katex.renderToString(math, {
         displayMode: true,
         throwOnError: false,
-      })
+      });
     } catch {
-      return `$$${math}$$`
+      return `$$${math}$$`;
     }
-  })
+  });
 
   // Inline math: \(...\)
-  const inlineMathRegex = /\\\(((?:\\.|[^\\\n])*?)\\\)/g
+  const inlineMathRegex = /\\\(((?:\\.|[^\\\n])*?)\\\)/g;
   result = result.replace(inlineMathRegex, (_, math) => {
     try {
       return katex.renderToString(math, {
         displayMode: false,
         throwOnError: false,
-      })
+      });
     } catch {
-      return `\\(${math}\\)`
+      return `\\(${math}\\)`;
     }
-  })
+  });
 
-  return result
+  return result;
 }
 
-const inlineMathRegex = /^\\\(((?:\\.|[^\\\n])*?)\\\)/
-const blockMathRegex = /^\$\$\n([\s\S]+?)\n\$\$(?:\n|$)/
+const inlineMathRegex = /^\\\(((?:\\.|[^\\\n])*?)\\\)/;
+const blockMathRegex = /^\$\$\n([\s\S]+?)\n\$\$(?:\n|$)/;
 
 const katexExtension: MarkedExtension = {
   extensions: [
@@ -419,19 +433,19 @@ const katexExtension: MarkedExtension = {
       name: "inlineKatex",
       level: "inline",
       start(src) {
-        const index = src.indexOf("\\(")
-        if (index === -1) return
-        return index
+        const index = src.indexOf("\\(");
+        if (index === -1) return;
+        return index;
       },
       tokenizer(src) {
-        const match = src.match(inlineMathRegex)
-        if (!match) return
+        const match = src.match(inlineMathRegex);
+        if (!match) return;
         return {
           type: "inlineKatex",
           raw: match[0],
           text: match[1].trim(),
           displayMode: false,
-        }
+        };
       },
       renderer: renderKatexToken,
     },
@@ -439,83 +453,83 @@ const katexExtension: MarkedExtension = {
       name: "blockKatex",
       level: "block",
       tokenizer(src) {
-        const match = src.match(blockMathRegex)
-        if (!match) return
+        const match = src.match(blockMathRegex);
+        if (!match) return;
         return {
           type: "blockKatex",
           raw: match[0],
           text: match[1].trim(),
           displayMode: true,
-        }
+        };
       },
       renderer: renderKatexToken,
     },
   ],
-}
+};
 
 function renderKatexToken(token: Tokens.Generic) {
   return katex.renderToString(typeof token.text === "string" ? token.text : "", {
     displayMode: token.displayMode === true,
     throwOnError: false,
-  })
+  });
 }
 
 function renderMathExpressions(html: string): string {
   // Split on code/pre/kbd tags to avoid processing their contents
-  const codeBlockPattern = /(<(?:pre|code|kbd)[^>]*>[\s\S]*?<\/(?:pre|code|kbd)>)/gi
-  const parts = html.split(codeBlockPattern)
+  const codeBlockPattern = /(<(?:pre|code|kbd)[^>]*>[\s\S]*?<\/(?:pre|code|kbd)>)/gi;
+  const parts = html.split(codeBlockPattern);
 
   return parts
     .map((part, i) => {
       // Odd indices are the captured code blocks - leave them alone
-      if (i % 2 === 1) return part
+      if (i % 2 === 1) return part;
       // Process math only in non-code parts
-      return renderMathInText(part)
+      return renderMathInText(part);
     })
-    .join("")
+    .join("");
 }
 
 async function highlightCodeBlocks(html: string): Promise<string> {
-  const codeBlockRegex = /<pre><code(?:\s+class="language-([^"]*)")?>([\s\S]*?)<\/code><\/pre>/g
-  const matches = [...html.matchAll(codeBlockRegex)]
-  if (matches.length === 0) return html
+  const codeBlockRegex = /<pre><code(?:\s+class="language-([^"]*)")?>([\s\S]*?)<\/code><\/pre>/g;
+  const matches = [...html.matchAll(codeBlockRegex)];
+  if (matches.length === 0) return html;
 
   const highlighter = await getSharedHighlighter({
     themes: ["OpenCode"],
     langs: [],
     preferredHighlighter: "shiki-wasm",
-  })
+  });
 
-  let result = html
+  let result = html;
   for (const match of matches) {
-    const [fullMatch, lang, escapedCode] = match
+    const [fullMatch, lang, escapedCode] = match;
     const code = escapedCode
       .replace(/&lt;/g, "<")
       .replace(/&gt;/g, ">")
       .replace(/&amp;/g, "&")
       .replace(/&quot;/g, '"')
-      .replace(/&#39;/g, "'")
+      .replace(/&#39;/g, "'");
 
-    let language = lang || "text"
+    let language = lang || "text";
     if (!(language in bundledLanguages)) {
-      language = "text"
+      language = "text";
     }
     if (!highlighter.getLoadedLanguages().includes(language)) {
-      await highlighter.loadLanguage(language as BundledLanguage)
+      await highlighter.loadLanguage(language as BundledLanguage);
     }
 
     const highlighted = highlighter.codeToHtml(code, {
       lang: language,
       theme: "OpenCode",
       tabindex: false,
-    })
-    result = result.replace(fullMatch, () => highlighted)
+    });
+    result = result.replace(fullMatch, () => highlighted);
   }
 
-  return result
+  return result;
 }
 
-export type NativeMarkdownParser = (markdown: string) => Promise<string>
+export type NativeMarkdownParser = (markdown: string) => Promise<string>;
 
 export const { use: useMarked, provider: MarkedProvider } = createSimpleContext({
   name: "Marked",
@@ -524,8 +538,8 @@ export const { use: useMarked, provider: MarkedProvider } = createSimpleContext(
       {
         renderer: {
           link({ href, title, text }) {
-            const titleAttr = title ? ` title="${title}"` : ""
-            return `<a href="${href}"${titleAttr} class="external-link" target="_blank" rel="noopener noreferrer">${text}</a>`
+            const titleAttr = title ? ` title="${title}"` : "";
+            return `<a href="${href}"${titleAttr} class="external-link" target="_blank" rel="noopener noreferrer">${text}</a>`;
           },
         },
       },
@@ -536,33 +550,33 @@ export const { use: useMarked, provider: MarkedProvider } = createSimpleContext(
             themes: ["OpenCode"],
             langs: [],
             preferredHighlighter: "shiki-wasm",
-          })
+          });
           if (!(lang in bundledLanguages)) {
-            lang = "text"
+            lang = "text";
           }
           if (!highlighter.getLoadedLanguages().includes(lang)) {
-            await highlighter.loadLanguage(lang as BundledLanguage)
+            await highlighter.loadLanguage(lang as BundledLanguage);
           }
           return highlighter.codeToHtml(code, {
             lang: lang || "text",
             theme: "OpenCode",
             tabindex: false,
-          })
+          });
         },
       }),
-    )
+    );
 
     if (props.nativeParser) {
-      const nativeParser = props.nativeParser
+      const nativeParser = props.nativeParser;
       return {
         async parse(markdown: string): Promise<string> {
-          const html = await nativeParser(markdown)
-          const withMath = renderMathExpressions(html)
-          return highlightCodeBlocks(withMath)
+          const html = await nativeParser(markdown);
+          const withMath = renderMathExpressions(html);
+          return highlightCodeBlocks(withMath);
         },
-      }
+      };
     }
 
-    return jsParser
+    return jsParser;
   },
-})
+});

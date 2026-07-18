@@ -13,4 +13,4 @@ Response must include:
 - List of any remaining tasks that were not completed
 - Recommendations for what should be done next
 
-Any attempt to use tools is a critical violation. Respond with text ONLY.`
+Any attempt to use tools is a critical violation. Respond with text ONLY.`;

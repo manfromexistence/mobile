@@ -2,8 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 test("chatCore integration: compressContext called proactively when context exceeds 85% threshold", async () => {
-  const { compressContext, estimateTokens, getTokenLimit } =
-    await import("../../open-sse/services/contextManager.ts");
+  const { compressContext, estimateTokens, getTokenLimit } = await import(
+    "../../open-sse/services/contextManager.ts"
+  );
 
   const provider = "openai";
   const model = "gpt-4";
@@ -26,7 +27,7 @@ test("chatCore integration: compressContext called proactively when context exce
   const estimatedTokens = estimateTokens(JSON.stringify(body.messages));
   assert.ok(
     estimatedTokens > threshold,
-    `Expected ${estimatedTokens} to exceed threshold ${threshold}`
+    `Expected ${estimatedTokens} to exceed threshold ${threshold}`,
   );
 
   const result = compressContext(body, { provider, model, maxTokens: contextLimit });
@@ -34,22 +35,23 @@ test("chatCore integration: compressContext called proactively when context exce
   assert.ok(result.compressed, "Context should be compressed");
   assert.ok(
     result.stats.final < result.stats.original,
-    "Final tokens should be less than original"
+    "Final tokens should be less than original",
   );
   assert.ok(
     result.stats.final <= contextLimit,
-    `Final tokens ${result.stats.final} should fit within limit ${contextLimit}`
+    `Final tokens ${result.stats.final} should fit within limit ${contextLimit}`,
   );
   assert.equal(
     result.body.messages[(result.body.messages as any).length - 1].content,
     "Final question?",
-    "Latest user turn should be preserved after compression"
+    "Latest user turn should be preserved after compression",
   );
 });
 
 test("chatCore integration: compressContext NOT called when context is below 85% threshold", async () => {
-  const { compressContext, estimateTokens, getTokenLimit } =
-    await import("../../open-sse/services/contextManager.ts");
+  const { compressContext, estimateTokens, getTokenLimit } = await import(
+    "../../open-sse/services/contextManager.ts"
+  );
 
   const provider = "openai";
   const model = "gpt-4";
@@ -68,7 +70,7 @@ test("chatCore integration: compressContext NOT called when context is below 85%
   const estimatedTokens = estimateTokens(JSON.stringify(body.messages));
   assert.ok(
     estimatedTokens < threshold,
-    `Expected ${estimatedTokens} to be below threshold ${threshold}`
+    `Expected ${estimatedTokens} to be below threshold ${threshold}`,
   );
 
   const result = compressContext(body, { provider, model, maxTokens: contextLimit });
@@ -77,8 +79,9 @@ test("chatCore integration: compressContext NOT called when context is below 85%
 });
 
 test("chatCore integration: compression preserves message structure", async () => {
-  const { compressContext, getTokenLimit } =
-    await import("../../open-sse/services/contextManager.ts");
+  const { compressContext, getTokenLimit } = await import(
+    "../../open-sse/services/contextManager.ts"
+  );
 
   const provider = "claude";
   const model = "claude-sonnet-4";
@@ -110,8 +113,9 @@ test("chatCore integration: compression preserves message structure", async () =
 });
 
 test("chatCore integration: compression handles tool messages", async () => {
-  const { compressContext, getTokenLimit } =
-    await import("../../open-sse/services/contextManager.ts");
+  const { compressContext, getTokenLimit } = await import(
+    "../../open-sse/services/contextManager.ts"
+  );
 
   const provider = "openai";
   const model = "gpt-4";
@@ -138,6 +142,6 @@ test("chatCore integration: compression handles tool messages", async () => {
   assert.ok(toolMessage.content.length < longToolOutput.length, "Tool message should be truncated");
   assert.ok(
     toolMessage.content.includes("[truncated]"),
-    "Tool message should have truncation marker"
+    "Tool message should have truncation marker",
   );
 });

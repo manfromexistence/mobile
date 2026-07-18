@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { IconColorDark, IconColorLight } from '@pierre/icons';
-import Image, { type StaticImageData } from 'next/image';
-import { useEffect, useState } from 'react';
+import { IconColorDark, IconColorLight } from "@pierre/icons";
+import Image, { type StaticImageData } from "next/image";
+import { useEffect, useState } from "react";
 
-import pierreDark from '../pierre-dark.png';
-import pierreLight from '../pierre-light.png';
-import { useTheme } from '@/components/theme-provider';
-import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group';
+import pierreDark from "../pierre-dark.png";
+import pierreLight from "../pierre-light.png";
+import { useTheme } from "@/components/theme-provider";
+import { ButtonGroup, ButtonGroupItem } from "@/components/ui/button-group";
 
 export function ThemeScreenshots() {
   const { resolvedTheme } = useTheme();
-  const [activeTheme, setActiveTheme] = useState<'light' | 'dark'>('dark');
+  const [activeTheme, setActiveTheme] = useState<"light" | "dark">("dark");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    if (resolvedTheme === 'light' || resolvedTheme === 'dark') {
+    if (resolvedTheme === "light" || resolvedTheme === "dark") {
       setActiveTheme(resolvedTheme);
     }
   }, [resolvedTheme]);
@@ -27,7 +27,7 @@ export function ThemeScreenshots() {
     );
   }
 
-  const screenshots: Record<'light' | 'dark', StaticImageData> = {
+  const screenshots: Record<"light" | "dark", StaticImageData> = {
     dark: pierreDark,
     light: pierreLight,
   };
@@ -36,7 +36,7 @@ export function ThemeScreenshots() {
     <div className="space-y-4">
       <ButtonGroup
         value={activeTheme}
-        onValueChange={(value) => setActiveTheme(value as 'light' | 'dark')}
+        onValueChange={(value) => setActiveTheme(value as "light" | "dark")}
       >
         <ButtonGroupItem value="light">
           <IconColorLight /> Pierre Light
@@ -49,7 +49,7 @@ export function ThemeScreenshots() {
       <div className="relative overflow-hidden rounded-[16px] border border-[rgb(0_0_0_/_0.1)] dark:border-[rgb(255_255_255_/_0.15)]">
         <Image
           src={screenshots[activeTheme]}
-          alt={`Pierre ${activeTheme === 'dark' ? 'Dark' : 'Light'} theme screenshot`}
+          alt={`Pierre ${activeTheme === "dark" ? "Dark" : "Light"} theme screenshot`}
           className="block w-full"
           placeholder="blur"
           priority

@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
-import { MobileNavLink } from './MobileNavLink';
+import { MobileNavLink } from "./MobileNavLink";
 import {
   DIFFS_THEME_PATH,
   getExternalUrl,
   type ProductConfig,
   type ProductId,
   PRODUCTS,
-} from '@/lib/product-config';
+} from "@/lib/product-config";
 
-const siteProduct = process.env.NEXT_PUBLIC_SITE ?? 'diffs';
-const isDiffs = siteProduct === 'diffs';
+const siteProduct = process.env.NEXT_PUBLIC_SITE ?? "diffs";
+const isDiffs = siteProduct === "diffs";
 
 // Order matches Header.tsx so the desktop and mobile navs render the same
 // list of cross-site links.
-const OTHER_PRODUCT_IDS: ProductId[] = ['diffs', 'trees'];
+const OTHER_PRODUCT_IDS: ProductId[] = ["diffs", "trees"];
 
 export interface HeaderMobileMenuProps {
   isOpen: boolean;
@@ -29,19 +29,15 @@ export interface HeaderMobileMenuProps {
  * already render a docs-style sidebar (home, playground, ssr). On docs/theme
  * pages the DocsSidebar popover is used instead and includes a TOC section.
  */
-export function HeaderMobileMenu({
-  isOpen,
-  onClose,
-  product,
-}: HeaderMobileMenuProps) {
+export function HeaderMobileMenu({ isOpen, onClose, product }: HeaderMobileMenuProps) {
   useEffect(() => {
     if (isOpen) {
-      document.body.classList.add('overflow-hidden');
+      document.body.classList.add("overflow-hidden");
     } else {
-      document.body.classList.remove('overflow-hidden');
+      document.body.classList.remove("overflow-hidden");
     }
     return () => {
-      document.body.classList.remove('overflow-hidden');
+      document.body.classList.remove("overflow-hidden");
     };
   }, [isOpen]);
 
@@ -55,17 +51,10 @@ export function HeaderMobileMenu({
         />
       )}
 
-      <nav
-        className={`mobile-popover md:hidden ${isOpen ? 'is-open' : ''}`}
-        onClick={onClose}
-      >
-        <MobileNavLink href={product.basePath !== '' ? product.basePath : '/'}>
-          Home
-        </MobileNavLink>
+      <nav className={`mobile-popover md:hidden ${isOpen ? "is-open" : ""}`} onClick={onClose}>
+        <MobileNavLink href={product.basePath !== "" ? product.basePath : "/"}>Home</MobileNavLink>
         <MobileNavLink href={product.docsPath}>Docs</MobileNavLink>
-        {product.themePath != null && (
-          <MobileNavLink href={product.themePath}>Theme</MobileNavLink>
-        )}
+        {product.themePath != null && <MobileNavLink href={product.themePath}>Theme</MobileNavLink>}
         {OTHER_PRODUCT_IDS.filter((id) => id !== product.id).map((id) => (
           <MobileNavLink key={id} href={getExternalUrl(id)} external>
             {PRODUCTS[id].name}
@@ -80,10 +69,7 @@ export function HeaderMobileMenu({
             to it; on the diffs site itself we already rendered it above via
             `product.themePath`. */}
         {!isDiffs && (
-          <MobileNavLink
-            href={`${getExternalUrl('diffs')}${DIFFS_THEME_PATH}`}
-            external
-          >
+          <MobileNavLink href={`${getExternalUrl("diffs")}${DIFFS_THEME_PATH}`} external>
             Theme
           </MobileNavLink>
         )}

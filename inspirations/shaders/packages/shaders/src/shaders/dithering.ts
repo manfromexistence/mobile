@@ -1,9 +1,6 @@
-import type { ShaderMotionParams } from '../shader-mount.js';
-import {
-  type ShaderSizingParams,
-  type ShaderSizingUniforms,
-} from '../shader-sizing.js';
-import { simplexNoise, declarePI, proceduralHash11, proceduralHash21 } from '../shader-utils.js';
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { simplexNoise, declarePI, proceduralHash11, proceduralHash21 } from "../shader-utils.js";
 
 /**
  * Animated 2-color dithering over multiple pattern sources (noise, warp, dots, waves, ripple, swirl, sphere).
@@ -60,10 +57,10 @@ uniform float u_type;
 
 out vec4 fragColor;
 
-${ simplexNoise }
-${ declarePI }
-${ proceduralHash11 }
-${ proceduralHash21 }
+${simplexNoise}
+${declarePI}
+${proceduralHash11}
+${proceduralHash21}
 
 float getSimplexNoise(vec2 uv, float t) {
   float noise = .5 * snoise(uv - vec2(0., .3 * t));
@@ -307,10 +304,10 @@ export const DitheringShapes = {
 export type DitheringShape = keyof typeof DitheringShapes;
 
 export const DitheringTypes = {
-  'random': 1,
-  '2x2': 2,
-  '4x4': 3,
-  '8x8': 4,
+  random: 1,
+  "2x2": 2,
+  "4x4": 3,
+  "8x8": 4,
 } as const;
 
 export type DitheringType = keyof typeof DitheringTypes;

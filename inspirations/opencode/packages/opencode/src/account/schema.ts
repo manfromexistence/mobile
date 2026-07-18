@@ -1,23 +1,23 @@
-import { Schema } from "effect"
-import type * as HttpClientError from "effect/unstable/http/HttpClientError"
+import { Schema } from "effect";
+import type * as HttpClientError from "effect/unstable/http/HttpClientError";
 
-export const AccountID = Schema.String.pipe(Schema.brand("AccountID"))
-export type AccountID = Schema.Schema.Type<typeof AccountID>
+export const AccountID = Schema.String.pipe(Schema.brand("AccountID"));
+export type AccountID = Schema.Schema.Type<typeof AccountID>;
 
-export const OrgID = Schema.String.pipe(Schema.brand("OrgID"))
-export type OrgID = Schema.Schema.Type<typeof OrgID>
+export const OrgID = Schema.String.pipe(Schema.brand("OrgID"));
+export type OrgID = Schema.Schema.Type<typeof OrgID>;
 
-export const AccessToken = Schema.String.pipe(Schema.brand("AccessToken"))
-export type AccessToken = Schema.Schema.Type<typeof AccessToken>
+export const AccessToken = Schema.String.pipe(Schema.brand("AccessToken"));
+export type AccessToken = Schema.Schema.Type<typeof AccessToken>;
 
-export const RefreshToken = Schema.String.pipe(Schema.brand("RefreshToken"))
-export type RefreshToken = Schema.Schema.Type<typeof RefreshToken>
+export const RefreshToken = Schema.String.pipe(Schema.brand("RefreshToken"));
+export type RefreshToken = Schema.Schema.Type<typeof RefreshToken>;
 
-export const DeviceCode = Schema.String.pipe(Schema.brand("DeviceCode"))
-export type DeviceCode = Schema.Schema.Type<typeof DeviceCode>
+export const DeviceCode = Schema.String.pipe(Schema.brand("DeviceCode"));
+export type DeviceCode = Schema.Schema.Type<typeof DeviceCode>;
 
-export const UserCode = Schema.String.pipe(Schema.brand("UserCode"))
-export type UserCode = Schema.Schema.Type<typeof UserCode>
+export const UserCode = Schema.String.pipe(Schema.brand("UserCode"));
+export type UserCode = Schema.Schema.Type<typeof UserCode>;
 
 export class Info extends Schema.Class<Info>("Account")({
   id: AccountID,
@@ -31,29 +31,38 @@ export class Org extends Schema.Class<Org>("Org")({
   name: Schema.String,
 }) {}
 
-export class AccountRepoError extends Schema.TaggedErrorClass<AccountRepoError>()("AccountRepoError", {
-  message: Schema.String,
-  cause: Schema.optional(Schema.Defect()),
-}) {}
+export class AccountRepoError extends Schema.TaggedErrorClass<AccountRepoError>()(
+  "AccountRepoError",
+  {
+    message: Schema.String,
+    cause: Schema.optional(Schema.Defect()),
+  },
+) {}
 
-export class AccountServiceError extends Schema.TaggedErrorClass<AccountServiceError>()("AccountServiceError", {
-  message: Schema.String,
-  cause: Schema.optional(Schema.Defect()),
-}) {}
+export class AccountServiceError extends Schema.TaggedErrorClass<AccountServiceError>()(
+  "AccountServiceError",
+  {
+    message: Schema.String,
+    cause: Schema.optional(Schema.Defect()),
+  },
+) {}
 
-export class AccountTransportError extends Schema.TaggedErrorClass<AccountTransportError>()("AccountTransportError", {
-  method: Schema.String,
-  url: Schema.String,
-  description: Schema.optional(Schema.String),
-  cause: Schema.optional(Schema.Defect()),
-}) {
+export class AccountTransportError extends Schema.TaggedErrorClass<AccountTransportError>()(
+  "AccountTransportError",
+  {
+    method: Schema.String,
+    url: Schema.String,
+    description: Schema.optional(Schema.String),
+    cause: Schema.optional(Schema.Defect()),
+  },
+) {
   static fromHttpClientError(error: HttpClientError.TransportError): AccountTransportError {
     return new AccountTransportError({
       method: error.request.method,
       url: error.request.url,
       description: error.description,
       cause: error.cause,
-    })
+    });
   }
 
   override get message(): string {
@@ -64,11 +73,11 @@ export class AccountTransportError extends Schema.TaggedErrorClass<AccountTransp
       `Check your network, proxy, or VPN configuration and try again.`,
     ]
       .filter(Boolean)
-      .join("\n")
+      .join("\n");
   }
 }
 
-export type AccountError = AccountRepoError | AccountServiceError | AccountTransportError
+export type AccountError = AccountRepoError | AccountServiceError | AccountTransportError;
 
 export class Login extends Schema.Class<Login>("Login")({
   code: DeviceCode,
@@ -95,5 +104,12 @@ export class PollError extends Schema.TaggedClass<PollError>()("PollError", {
   cause: Schema.Defect(),
 }) {}
 
-export const PollResult = Schema.Union([PollSuccess, PollPending, PollSlow, PollExpired, PollDenied, PollError])
-export type PollResult = Schema.Schema.Type<typeof PollResult>
+export const PollResult = Schema.Union([
+  PollSuccess,
+  PollPending,
+  PollSlow,
+  PollExpired,
+  PollDenied,
+  PollError,
+]);
+export type PollResult = Schema.Schema.Type<typeof PollResult>;

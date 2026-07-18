@@ -1,31 +1,31 @@
-import { createSignal } from "solid-js"
+import { createSignal } from "solid-js";
 
-const [all, setAll] = createSignal<string[]>([])
-const [active, setActive] = createSignal<string | undefined>(undefined)
-const [reviewOpen, setReviewOpen] = createSignal(false)
+const [all, setAll] = createSignal<string[]>([]);
+const [active, setActive] = createSignal<string | undefined>(undefined);
+const [reviewOpen, setReviewOpen] = createSignal(false);
 
 const tabs = {
   all,
   active,
   open(tab: string) {
-    setAll((current) => (current.includes(tab) ? current : [...current, tab]))
+    setAll((current) => (current.includes(tab) ? current : [...current, tab]));
   },
   setActive(tab: string) {
     if (!all().includes(tab)) {
-      tabs.open(tab)
+      tabs.open(tab);
     }
-    setActive(tab)
+    setActive(tab);
   },
-}
+};
 
 const view = {
   reviewPanel: {
     opened: reviewOpen,
     open() {
-      setReviewOpen(true)
+      setReviewOpen(true);
     },
   },
-}
+};
 
 export function useLayout() {
   return {
@@ -37,5 +37,5 @@ export function useLayout() {
     handoff: {
       setTabs() {},
     },
-  }
+  };
 }

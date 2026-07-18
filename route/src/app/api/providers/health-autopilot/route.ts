@@ -24,7 +24,7 @@ export async function GET(request: Request) {
     console.error("[API] GET /api/providers/health-autopilot error:", error);
     return NextResponse.json(
       { error: { message: "Failed to build provider health autopilot report" } },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

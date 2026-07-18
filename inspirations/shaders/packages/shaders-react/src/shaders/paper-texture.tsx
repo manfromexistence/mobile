@@ -1,6 +1,6 @@
-import { memo } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '../shader-mount.js';
-import { colorPropsAreEqual } from '../color-props-are-equal.js';
+import { memo } from "react";
+import { ShaderMount, type ShaderComponentProps } from "../shader-mount.js";
+import { colorPropsAreEqual } from "../color-props-are-equal.js";
 import {
   defaultObjectSizing,
   getShaderColorFromString,
@@ -10,7 +10,7 @@ import {
   type ImageShaderPreset,
   type PaperTextureParams,
   type PaperTextureUniforms,
-} from '@paper-design/shaders';
+} from "@paper-design/shaders";
 
 export interface PaperTextureProps extends ShaderComponentProps, PaperTextureParams {
   /** @deprecated use `fiberSize` instead */
@@ -26,15 +26,15 @@ export interface PaperTextureProps extends ShaderComponentProps, PaperTexturePar
 type PaperTexturePreset = ImageShaderPreset<PaperTextureParams>;
 
 export const defaultPreset: PaperTexturePreset = {
-  name: 'Default',
+  name: "Default",
   params: {
     ...defaultObjectSizing,
-    fit: 'cover',
+    fit: "cover",
     scale: 0.6,
     speed: 0,
     frame: 0,
-    colorFront: '#9fadbc',
-    colorBack: '#ffffff',
+    colorFront: "#9fadbc",
+    colorBack: "#ffffff",
     contrast: 0.3,
     roughness: 0.4,
     fiber: 0.3,
@@ -50,15 +50,15 @@ export const defaultPreset: PaperTexturePreset = {
 };
 
 export const abstractPreset: PaperTexturePreset = {
-  name: 'Abstract',
+  name: "Abstract",
   params: {
     ...defaultObjectSizing,
-    fit: 'cover',
+    fit: "cover",
     speed: 0,
     frame: 0,
     scale: 0.6,
-    colorFront: '#00eeff',
-    colorBack: '#ff0a81',
+    colorFront: "#00eeff",
+    colorBack: "#ff0a81",
     contrast: 0.85,
     roughness: 0,
     fiber: 0.1,
@@ -74,15 +74,15 @@ export const abstractPreset: PaperTexturePreset = {
 };
 
 export const cardboardPreset: PaperTexturePreset = {
-  name: 'Cardboard',
+  name: "Cardboard",
   params: {
     ...defaultObjectSizing,
-    fit: 'cover',
+    fit: "cover",
     speed: 0,
     frame: 0,
     scale: 0.6,
-    colorFront: '#c7b89e',
-    colorBack: '#999180',
+    colorFront: "#c7b89e",
+    colorBack: "#999180",
     contrast: 0.4,
     roughness: 0,
     fiber: 0.35,
@@ -98,15 +98,15 @@ export const cardboardPreset: PaperTexturePreset = {
 };
 
 export const detailsPreset: PaperTexturePreset = {
-  name: 'Details',
+  name: "Details",
   params: {
     ...defaultObjectSizing,
     speed: 0,
     frame: 0,
-    fit: 'cover',
+    fit: "cover",
     scale: 3,
-    colorFront: '#00000000',
-    colorBack: '#00000000',
+    colorFront: "#00000000",
+    colorBack: "#00000000",
     contrast: 0,
     roughness: 1,
     fiber: 0.27,
@@ -134,7 +134,7 @@ export const PaperTexture: React.FC<PaperTextureProps> = memo(function PaperText
   frame = defaultPreset.params.frame,
   colorFront = defaultPreset.params.colorFront,
   colorBack = defaultPreset.params.colorBack,
-  image = '',
+  image = "",
   contrast = defaultPreset.params.contrast,
   roughness = defaultPreset.params.roughness,
   fiber = defaultPreset.params.fiber,
@@ -147,7 +147,9 @@ export const PaperTexture: React.FC<PaperTextureProps> = memo(function PaperText
   fiberScale,
   fiberSize = fiberScale === undefined ? defaultPreset.params.fiberSize : 0.2 / fiberScale,
   crumplesScale,
-  crumpleSize = crumplesScale === undefined ? defaultPreset.params.crumpleSize : 0.2 / crumplesScale,
+  crumpleSize = crumplesScale === undefined
+    ? defaultPreset.params.crumpleSize
+    : 0.2 / crumplesScale,
   blur,
   fade = blur === undefined ? defaultPreset.params.fade : blur,
   foldsNumber,
@@ -165,7 +167,7 @@ export const PaperTexture: React.FC<PaperTextureProps> = memo(function PaperText
   worldHeight = defaultPreset.params.worldHeight,
   ...props
 }: PaperTextureProps) {
-  const noiseTexture = typeof window !== 'undefined' && { u_noiseTexture: getShaderNoiseTexture() };
+  const noiseTexture = typeof window !== "undefined" && { u_noiseTexture: getShaderNoiseTexture() };
 
   const uniforms = {
     // Own uniforms
@@ -203,7 +205,7 @@ export const PaperTexture: React.FC<PaperTextureProps> = memo(function PaperText
       speed={speed}
       frame={frame}
       fragmentShader={paperTextureFragmentShader}
-      mipmaps={['u_image']}
+      mipmaps={["u_image"]}
       uniforms={uniforms}
     />
   );

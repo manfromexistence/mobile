@@ -1,26 +1,23 @@
-import { PathStore, type PathStorePreparedInput } from '@pierre/path-store';
-import { getVirtualizationWorkload } from '@pierre/tree-test-data';
-import { existsSync, readFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { gunzipSync } from 'node:zlib';
+import { PathStore, type PathStorePreparedInput } from "@pierre/path-store";
+import { getVirtualizationWorkload } from "@pierre/tree-test-data";
+import { existsSync, readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { gunzipSync } from "node:zlib";
 
-import { preparePresortedFileTreeInput } from '../src/index';
-import { FileTreeController } from '../src/model/FileTreeController';
-import type { FileTreeStickyRowCandidate } from '../src/model/internalTypes';
+import { preparePresortedFileTreeInput } from "../src/index";
+import { FileTreeController } from "../src/model/FileTreeController";
+import type { FileTreeStickyRowCandidate } from "../src/model/internalTypes";
 import {
   computeFileTreeLayout,
   computeStickyRows,
   type FileTreeLayoutSnapshot,
   type FileTreeLayoutStickyRow,
-} from '../src/model/layout';
-import type {
-  FileTreeDirectoryHandle,
-  FileTreeVisibleRow,
-} from '../src/model/publicTypes';
+} from "../src/model/layout";
+import type { FileTreeDirectoryHandle, FileTreeVisibleRow } from "../src/model/publicTypes";
 
-const PRESET_NAMES = ['get-item', 'sticky-scroll', 'expansion', 'all'] as const;
-const DEFAULT_PRESET: BenchmarkPresetName = 'get-item';
+const PRESET_NAMES = ["get-item", "sticky-scroll", "expansion", "all"] as const;
+const DEFAULT_PRESET: BenchmarkPresetName = "get-item";
 const DEFAULT_SAMPLE_COUNT = 8;
 const DEFAULT_WARMUP_COUNT = 1;
 const COLD_SAMPLE_COUNT = 3;
@@ -28,8 +25,7 @@ const EXPANSION_SAMPLE_COUNT = 4;
 const ITEM_HEIGHT = 30;
 const VIEWPORT_HEIGHT = 700;
 const OVERSCAN = 10;
-const WINDOW_ROW_COUNT =
-  Math.ceil(VIEWPORT_HEIGHT / ITEM_HEIGHT) + OVERSCAN * 2;
+const WINDOW_ROW_COUNT = Math.ceil(VIEWPORT_HEIGHT / ITEM_HEIGHT) + OVERSCAN * 2;
 const HUMAN_NAME_MIN_WIDTH = 36;
 const HUMAN_NAME_MAX_WIDTH = 76;
 
@@ -56,17 +52,17 @@ interface BenchmarkStats {
 }
 
 interface BenchmarkManifest {
-  category: 'expansion' | 'get-item' | 'sticky-scroll';
+  category: "expansion" | "get-item" | "sticky-scroll";
   fileCount: number;
   name: string;
   notes?: readonly string[];
   visibleCount?: number;
-  workload: 'aosp' | 'linux-5x';
+  workload: "aosp" | "linux-5x";
 }
 
 interface BenchmarkRunOutput {
   generatedAt: string;
-  kind: 'trees-benchmark-run';
+  kind: "trees-benchmark-run";
   preset: BenchmarkPresetName;
   results: BenchmarkResult[];
 }
@@ -125,33 +121,33 @@ function parseArgs(argv: readonly string[]): BenchmarkCliOptions {
   for (let index = 0; index < argv.length; index++) {
     const argument = argv[index];
 
-    if (argument === '--') {
+    if (argument === "--") {
       continue;
     }
 
-    if (argument === '--filter') {
+    if (argument === "--filter") {
       const value = argv[index + 1];
       if (value == null || value.length === 0) {
-        throw new Error('Expected a value after --filter');
+        throw new Error("Expected a value after --filter");
       }
       filter = new RegExp(value);
       index++;
       continue;
     }
 
-    if (argument === '--json') {
+    if (argument === "--json") {
       json = true;
       continue;
     }
 
-    if (argument === '--preset') {
+    if (argument === "--preset") {
       const value = argv[index + 1];
       if (value == null || value.length === 0) {
-        throw new Error('Expected a value after --preset');
+        throw new Error("Expected a value after --preset");
       }
       if (!(PRESET_NAMES as readonly string[]).includes(value)) {
         throw new Error(
-          `Unknown benchmark preset: ${value}. Expected one of: ${PRESET_NAMES.join(', ')}`
+          `Unknown benchmark preset: ${value}. Expected one of: ${PRESET_NAMES.join(", ")}`,
         );
       }
       preset = value as BenchmarkPresetName;
@@ -159,38 +155,36 @@ function parseArgs(argv: readonly string[]): BenchmarkCliOptions {
       continue;
     }
 
-    if (argument === '--sample-count') {
+    if (argument === "--sample-count") {
       const value = argv[index + 1];
       if (value == null || value.length === 0) {
-        throw new Error('Expected a value after --sample-count');
+        throw new Error("Expected a value after --sample-count");
       }
       const parsed = Number(value);
       if (!Number.isInteger(parsed) || parsed <= 0) {
-        throw new Error(
-          `Invalid --sample-count value: ${value}. Expected a positive integer.`
-        );
+        throw new Error(`Invalid --sample-count value: ${value}. Expected a positive integer.`);
       }
       sampleCountOverride = parsed;
       index++;
       continue;
     }
 
-    if (argument === '--samples') {
+    if (argument === "--samples") {
       includeSamples = true;
       continue;
     }
 
-    if (argument === '--help') {
-      console.log('Usage: moonx trees:benchmark -- [options]');
-      console.log('');
-      console.log('Options:');
+    if (argument === "--help") {
+      console.log("Usage: moonx trees:benchmark -- [options]");
+      console.log("");
+      console.log("Options:");
       console.log(
-        `  --preset <name>       Benchmark preset (${PRESET_NAMES.join(', ')}; default ${DEFAULT_PRESET})`
+        `  --preset <name>       Benchmark preset (${PRESET_NAMES.join(", ")}; default ${DEFAULT_PRESET})`,
       );
-      console.log('  --filter <regex>      Run only matching scenarios');
-      console.log('  --sample-count <n>    Override timed sample count');
-      console.log('  --json                Emit machine-readable JSON');
-      console.log('  --samples             Include raw timing samples in JSON');
+      console.log("  --filter <regex>      Run only matching scenarios");
+      console.log("  --sample-count <n>    Override timed sample count");
+      console.log("  --json                Emit machine-readable JSON");
+      console.log("  --samples             Include raw timing samples in JSON");
       process.exit(0);
     }
 
@@ -207,36 +201,28 @@ function parseArgs(argv: readonly string[]): BenchmarkCliOptions {
 }
 
 function getRepoRoot(): string {
-  return resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
+  return resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 }
 
 function readAospFixture(): {
   allExpandedPaths: readonly string[];
   paths: readonly string[];
 } {
-  const fixturePath = resolve(
-    getRepoRoot(),
-    'apps/docs/public/trees-dev/aosp-files.json.gz'
-  );
+  const fixturePath = resolve(getRepoRoot(), "apps/docs/public/trees-dev/aosp-files.json.gz");
   if (!existsSync(fixturePath)) {
     throw new Error(
-      `Missing AOSP benchmark fixture at ${fixturePath}. Run apps/docs/scripts/generateAospArtifacts.ts first.`
+      `Missing AOSP benchmark fixture at ${fixturePath}. Run apps/docs/scripts/generateAospArtifacts.ts first.`,
     );
   }
 
-  const rawPayload = JSON.parse(
-    gunzipSync(readFileSync(fixturePath)).toString('utf8')
-  ) as {
+  const rawPayload = JSON.parse(gunzipSync(readFileSync(fixturePath)).toString("utf8")) as {
     allExpandedPaths?: unknown;
     paths?: unknown;
   };
 
-  if (
-    !Array.isArray(rawPayload.paths) ||
-    !Array.isArray(rawPayload.allExpandedPaths)
-  ) {
+  if (!Array.isArray(rawPayload.paths) || !Array.isArray(rawPayload.allExpandedPaths)) {
     throw new Error(
-      `Invalid AOSP benchmark fixture at ${fixturePath}: expected paths and allExpandedPaths arrays.`
+      `Invalid AOSP benchmark fixture at ${fixturePath}: expected paths and allExpandedPaths arrays.`,
     );
   }
 
@@ -261,9 +247,7 @@ function loadAospWorkload(): AospBenchmarkWorkload {
   return cachedAospWorkload;
 }
 
-function createAospController(
-  workload: AospBenchmarkWorkload
-): FileTreeController {
+function createAospController(workload: AospBenchmarkWorkload): FileTreeController {
   return new FileTreeController({
     flattenEmptyDirectories: true,
     initialExpandedPaths: workload.allExpandedPaths,
@@ -280,13 +264,9 @@ function createAospPathStore(workload: AospBenchmarkWorkload): PathStore {
 }
 
 function getAospTopLevelDirectoryPath(workload: AospBenchmarkWorkload): string {
-  const topLevelPath = workload.allExpandedPaths.find(
-    (path) => !path.includes('/')
-  );
+  const topLevelPath = workload.allExpandedPaths.find((path) => !path.includes("/"));
   if (topLevelPath == null) {
-    throw new Error(
-      'AOSP workload did not include a top-level directory path.'
-    );
+    throw new Error("AOSP workload did not include a top-level directory path.");
   }
   return topLevelPath;
 }
@@ -308,7 +288,7 @@ function computeStickyRowsFromCandidates(
   candidates: readonly FileTreeStickyRowCandidate[],
   scrollTop: number,
   itemHeight: number,
-  totalRowCount: number
+  totalRowCount: number,
 ): readonly FileTreeLayoutStickyRow<FileTreeVisibleRow>[] {
   return candidates
     .map((candidate, slotDepth) => {
@@ -350,12 +330,7 @@ function computeFileTreeViewLayoutBenchmarkState({
   const stickyRows =
     stickyCandidates == null
       ? undefined
-      : computeStickyRowsFromCandidates(
-          stickyCandidates,
-          scrollTop,
-          ITEM_HEIGHT,
-          visibleCount
-        );
+      : computeStickyRowsFromCandidates(stickyCandidates, scrollTop, ITEM_HEIGHT, visibleCount);
   const snapshot = computeFileTreeLayout(visibleRows, {
     itemHeight: ITEM_HEIGHT,
     overscan: OVERSCAN,
@@ -371,18 +346,13 @@ function computeFileTreeViewLayoutBenchmarkState({
       : [];
   const overlayRows =
     previewStickyCandidates != null && scrollTop <= 0
-      ? computeStickyRowsFromCandidates(
-          previewStickyCandidates,
-          1,
-          ITEM_HEIGHT,
-          visibleCount
-        )
+      ? computeStickyRowsFromCandidates(previewStickyCandidates, 1, ITEM_HEIGHT, visibleCount)
       : stickyFolders && scrollTop <= 0 && visibleRows.length > 0
         ? computeStickyRows(visibleRows, 1, ITEM_HEIGHT)
         : snapshot.sticky.rows;
   const overlayHeight = overlayRows.reduce(
     (maxBottom, entry) => Math.max(maxBottom, entry.top + ITEM_HEIGHT),
-    0
+    0,
   );
 
   return {
@@ -395,7 +365,7 @@ function computeFileTreeViewLayoutBenchmarkState({
 
 function computeStickyViewUpdateWindowRead(
   controller: FileTreeController,
-  scrollTop: number
+  scrollTop: number,
 ): {
   overlayRows: readonly FileTreeLayoutStickyRow<FileTreeVisibleRow>[];
   rows: readonly FileTreeVisibleRow[];
@@ -407,9 +377,7 @@ function computeStickyViewUpdateWindowRead(
     stickyFolders: true,
   });
   const { snapshot } = layoutState;
-  const stickyPathSet = new Set(
-    layoutState.snapshot.sticky.rows.map((entry) => entry.row.path)
-  );
+  const stickyPathSet = new Set(layoutState.snapshot.sticky.rows.map((entry) => entry.row.path));
   const rows =
     snapshot.window.endIndex < snapshot.window.startIndex
       ? []
@@ -426,7 +394,7 @@ function computeStickyViewUpdateWindowRead(
 
 function computeStickyScrollSequenceWindowRead(
   controller: FileTreeController,
-  scrollTops: readonly number[]
+  scrollTops: readonly number[],
 ): {
   dispatches: number;
   rows: number;
@@ -454,7 +422,7 @@ function computeStickyScrollSequenceWindowRead(
 
 function computeNoStickyWindowRead(
   controller: FileTreeController,
-  scrollTop: number
+  scrollTop: number,
 ): {
   rows: readonly FileTreeVisibleRow[];
   snapshot: FileTreeLayoutSnapshot<FileTreeVisibleRow>;
@@ -470,10 +438,7 @@ function computeNoStickyWindowRead(
   const rows =
     snapshot.window.endIndex < snapshot.window.startIndex
       ? []
-      : controller.getVisibleRows(
-          snapshot.window.startIndex,
-          snapshot.window.endIndex
-        );
+      : controller.getVisibleRows(snapshot.window.startIndex, snapshot.window.endIndex);
 
   return {
     rows,
@@ -487,7 +452,7 @@ function consume(value: unknown): void {
     return;
   }
 
-  if (typeof value === 'number') {
+  if (typeof value === "number") {
     sink += value;
     return;
   }
@@ -497,7 +462,7 @@ function consume(value: unknown): void {
     return;
   }
 
-  if (typeof value !== 'object') {
+  if (typeof value !== "object") {
     sink += 1;
     return;
   }
@@ -526,7 +491,7 @@ function percentile(sortedValues: readonly number[], pct: number): number {
   }
   const index = Math.min(
     sortedValues.length - 1,
-    Math.max(0, Math.ceil((pct / 100) * sortedValues.length) - 1)
+    Math.max(0, Math.ceil((pct / 100) * sortedValues.length) - 1),
   );
   return sortedValues[index] ?? 0;
 }
@@ -549,7 +514,7 @@ function summarizeSamples(samples: readonly number[]): BenchmarkStats {
 
 function measureScenario(
   factory: BenchmarkScenarioFactory,
-  options: BenchmarkCliOptions
+  options: BenchmarkCliOptions,
 ): BenchmarkResult {
   const preparationStartedAt = performance.now();
   const scenario = factory.build();
@@ -604,12 +569,12 @@ function measureScenario(
 }
 
 function createGetItemScenarioFactory(): BenchmarkScenarioFactory {
-  const name = 'get-item/linux-5x';
+  const name = "get-item/linux-5x";
 
   return {
     name,
     build() {
-      const workload = getVirtualizationWorkload('linux-5x');
+      const workload = getVirtualizationWorkload("linux-5x");
       const preparedInput = preparePresortedFileTreeInput(workload.files);
       const controller = new FileTreeController({
         flattenEmptyDirectories: true,
@@ -618,12 +583,8 @@ function createGetItemScenarioFactory(): BenchmarkScenarioFactory {
       });
       const fileHitPaths = workload.files.slice(0, 2_000);
       const directoryAliasHitPaths = workload.expandedFolders.slice(0, 2_000);
-      const directoryCanonicalHitPaths = directoryAliasHitPaths.map(
-        (path) => `${path}/`
-      );
-      const missPaths = fileHitPaths.map(
-        (path, index) => `${path}.missing-${index.toString(36)}`
-      );
+      const directoryCanonicalHitPaths = directoryAliasHitPaths.map((path) => `${path}/`);
+      const missPaths = fileHitPaths.map((path, index) => `${path}.missing-${index.toString(36)}`);
       const pathSets = [
         fileHitPaths,
         directoryAliasHitPaths,
@@ -636,14 +597,12 @@ function createGetItemScenarioFactory(): BenchmarkScenarioFactory {
           controller.destroy();
         },
         manifest: {
-          category: 'get-item',
+          category: "get-item",
           fileCount: workload.files.length,
           name,
-          notes: [
-            'Runs file hits, directory alias hits, canonical directory hits, and misses.',
-          ],
+          notes: ["Runs file hits, directory alias hits, canonical directory hits, and misses."],
           visibleCount: controller.getVisibleCount(),
-          workload: 'linux-5x',
+          workload: "linux-5x",
         },
         measure(_sample, sampleIndex) {
           const paths = pathSets[sampleIndex % pathSets.length] ?? fileHitPaths;
@@ -660,7 +619,7 @@ function createGetItemScenarioFactory(): BenchmarkScenarioFactory {
 }
 
 function createStickyFullLayoutWarmScenarioFactory(): BenchmarkScenarioFactory {
-  const name = 'sticky-scroll/full-layout/aosp/warm';
+  const name = "sticky-scroll/full-layout/aosp/warm";
 
   return {
     name,
@@ -680,20 +639,19 @@ function createStickyFullLayoutWarmScenarioFactory(): BenchmarkScenarioFactory {
           controller.destroy();
         },
         manifest: {
-          category: 'sticky-scroll',
+          category: "sticky-scroll",
           fileCount: workload.fileCount,
           name,
           notes: [
-            'Reused controller; mirrors one scroll-layout update with sticky folders enabled.',
+            "Reused controller; mirrors one scroll-layout update with sticky folders enabled.",
           ],
           visibleCount,
-          workload: 'aosp',
+          workload: "aosp",
         },
         measure(_sample, sampleIndex) {
           return computeFileTreeViewLayoutBenchmarkState({
             controller,
-            scrollTop:
-              scrollTops[sampleIndex % scrollTops.length] ?? ITEM_HEIGHT,
+            scrollTop: scrollTops[sampleIndex % scrollTops.length] ?? ITEM_HEIGHT,
             stickyFolders: true,
           });
         },
@@ -705,7 +663,7 @@ function createStickyFullLayoutWarmScenarioFactory(): BenchmarkScenarioFactory {
 }
 
 function createStickyViewUpdateWindowReadScenarioFactory(): BenchmarkScenarioFactory {
-  const name = 'sticky-scroll/view-update-plus-window-rows/aosp/warm';
+  const name = "sticky-scroll/view-update-plus-window-rows/aosp/warm";
 
   return {
     name,
@@ -714,29 +672,26 @@ function createStickyViewUpdateWindowReadScenarioFactory(): BenchmarkScenarioFac
       const controller = createAospController(workload);
       const visibleCount = controller.getVisibleCount();
       const scrollTops = createAospScrollTops(visibleCount);
-      computeStickyViewUpdateWindowRead(
-        controller,
-        scrollTops[0] ?? ITEM_HEIGHT
-      );
+      computeStickyViewUpdateWindowRead(controller, scrollTops[0] ?? ITEM_HEIGHT);
 
       return {
         destroy() {
           controller.destroy();
         },
         manifest: {
-          category: 'sticky-scroll',
+          category: "sticky-scroll",
           fileCount: workload.fileCount,
           name,
           notes: [
-            'Mirrors one warm sticky scroll update plus the mounted window row fetch/filter used by rendering.',
+            "Mirrors one warm sticky scroll update plus the mounted window row fetch/filter used by rendering.",
           ],
           visibleCount,
-          workload: 'aosp',
+          workload: "aosp",
         },
         measure(_sample, sampleIndex) {
           return computeStickyViewUpdateWindowRead(
             controller,
-            scrollTops[sampleIndex % scrollTops.length] ?? ITEM_HEIGHT
+            scrollTops[sampleIndex % scrollTops.length] ?? ITEM_HEIGHT,
           );
         },
         sampleCount: DEFAULT_SAMPLE_COUNT,
@@ -747,8 +702,7 @@ function createStickyViewUpdateWindowReadScenarioFactory(): BenchmarkScenarioFac
 }
 
 function createStickyViewUpdateWindowReadColdProjectionScenarioFactory(): BenchmarkScenarioFactory {
-  const name =
-    'sticky-scroll/view-update-plus-window-rows/aosp/cold-projection';
+  const name = "sticky-scroll/view-update-plus-window-rows/aosp/cold-projection";
 
   return {
     name,
@@ -769,19 +723,19 @@ function createStickyViewUpdateWindowReadColdProjectionScenarioFactory(): Benchm
           (sample as AospBenchmarkSample).controller.destroy();
         },
         manifest: {
-          category: 'sticky-scroll',
+          category: "sticky-scroll",
           fileCount: workload.fileCount,
           name,
           notes: [
-            'Fresh controller per sample; includes first sticky layout and mounted window row fetch/filter.',
+            "Fresh controller per sample; includes first sticky layout and mounted window row fetch/filter.",
           ],
           visibleCount,
-          workload: 'aosp',
+          workload: "aosp",
         },
         measure(sample, sampleIndex) {
           return computeStickyViewUpdateWindowRead(
             (sample as AospBenchmarkSample).controller,
-            scrollTops[sampleIndex % scrollTops.length] ?? ITEM_HEIGHT
+            scrollTops[sampleIndex % scrollTops.length] ?? ITEM_HEIGHT,
           );
         },
         sampleCount: COLD_SAMPLE_COUNT,
@@ -792,7 +746,7 @@ function createStickyViewUpdateWindowReadColdProjectionScenarioFactory(): Benchm
 }
 
 function createStickyScrollSequenceWindowReadScenarioFactory(): BenchmarkScenarioFactory {
-  const name = 'sticky-scroll/scroll-sequence-plus-window-rows/aosp/warm';
+  const name = "sticky-scroll/scroll-sequence-plus-window-rows/aosp/warm";
 
   return {
     name,
@@ -813,14 +767,14 @@ function createStickyScrollSequenceWindowReadScenarioFactory(): BenchmarkScenari
           controller.destroy();
         },
         manifest: {
-          category: 'sticky-scroll',
+          category: "sticky-scroll",
           fileCount: workload.fileCount,
           name,
           notes: [
-            'Runs a 14-dispatch sticky scroll sequence including mounted window row fetch/filter to validate repeated app-like updates stay off the full-tree path.',
+            "Runs a 14-dispatch sticky scroll sequence including mounted window row fetch/filter to validate repeated app-like updates stay off the full-tree path.",
           ],
           visibleCount,
-          workload: 'aosp',
+          workload: "aosp",
         },
         measure() {
           return computeStickyScrollSequenceWindowRead(controller, scrollTops);
@@ -833,7 +787,7 @@ function createStickyScrollSequenceWindowReadScenarioFactory(): BenchmarkScenari
 }
 
 function createExpansionProjectionIndexScenarioFactory(): BenchmarkScenarioFactory {
-  const name = 'expansion/projection-index/aosp/warm';
+  const name = "expansion/projection-index/aosp/warm";
 
   return {
     name,
@@ -844,14 +798,14 @@ function createExpansionProjectionIndexScenarioFactory(): BenchmarkScenarioFacto
 
       return {
         manifest: {
-          category: 'expansion',
+          category: "expansion",
           fileCount: workload.fileCount,
           name,
           notes: [
-            'Measures the full visible projection plus visibleIndexByPath map build seen inside expansion/collapse traces.',
+            "Measures the full visible projection plus visibleIndexByPath map build seen inside expansion/collapse traces.",
           ],
           visibleCount,
-          workload: 'aosp',
+          workload: "aosp",
         },
         measure() {
           const projection = store.getVisibleTreeProjectionData();
@@ -868,7 +822,7 @@ function createExpansionProjectionIndexScenarioFactory(): BenchmarkScenarioFacto
 }
 
 function createExpansionControllerToggleScenarioFactory(): BenchmarkScenarioFactory {
-  const name = 'expansion/controller-toggle/aosp/warm';
+  const name = "expansion/controller-toggle/aosp/warm";
 
   return {
     name,
@@ -889,15 +843,15 @@ function createExpansionControllerToggleScenarioFactory(): BenchmarkScenarioFact
           controller.destroy();
         },
         manifest: {
-          category: 'expansion',
+          category: "expansion",
           fileCount: workload.fileCount,
           name,
           notes: [
-            'Alternates one public controller collapse/expand so the timed region includes store mutation, notification, full projection rebuild, and visibleIndexByPath creation.',
+            "Alternates one public controller collapse/expand so the timed region includes store mutation, notification, full projection rebuild, and visibleIndexByPath creation.",
             `Toggle path: ${togglePath}`,
           ],
           visibleCount: controller.getVisibleCount(),
-          workload: 'aosp',
+          workload: "aosp",
         },
         measure() {
           if (expanded) {
@@ -916,7 +870,7 @@ function createExpansionControllerToggleScenarioFactory(): BenchmarkScenarioFact
 }
 
 function createStickyFullLayoutColdProjectionScenarioFactory(): BenchmarkScenarioFactory {
-  const name = 'sticky-scroll/full-layout/aosp/cold-projection';
+  const name = "sticky-scroll/full-layout/aosp/cold-projection";
 
   return {
     name,
@@ -937,20 +891,19 @@ function createStickyFullLayoutColdProjectionScenarioFactory(): BenchmarkScenari
           (sample as AospBenchmarkSample).controller.destroy();
         },
         manifest: {
-          category: 'sticky-scroll',
+          category: "sticky-scroll",
           fileCount: workload.fileCount,
           name,
           notes: [
-            'Fresh controller per sample; timed region excludes store construction but includes first full projection.',
+            "Fresh controller per sample; timed region excludes store construction but includes first full projection.",
           ],
           visibleCount,
-          workload: 'aosp',
+          workload: "aosp",
         },
         measure(sample, sampleIndex) {
           return computeFileTreeViewLayoutBenchmarkState({
             controller: (sample as AospBenchmarkSample).controller,
-            scrollTop:
-              scrollTops[sampleIndex % scrollTops.length] ?? ITEM_HEIGHT,
+            scrollTop: scrollTops[sampleIndex % scrollTops.length] ?? ITEM_HEIGHT,
             stickyFolders: true,
           });
         },
@@ -962,7 +915,7 @@ function createStickyFullLayoutColdProjectionScenarioFactory(): BenchmarkScenari
 }
 
 function createStickyGetVisibleRowsFullScenarioFactory(): BenchmarkScenarioFactory {
-  const name = 'sticky-scroll/get-visible-rows-full/aosp/warm';
+  const name = "sticky-scroll/get-visible-rows-full/aosp/warm";
 
   return {
     name,
@@ -977,14 +930,14 @@ function createStickyGetVisibleRowsFullScenarioFactory(): BenchmarkScenarioFacto
           controller.destroy();
         },
         manifest: {
-          category: 'sticky-scroll',
+          category: "sticky-scroll",
           fileCount: workload.fileCount,
           name,
           notes: [
-            'Measures full visible-row materialization after the projection is already warm.',
+            "Measures full visible-row materialization after the projection is already warm.",
           ],
           visibleCount,
-          workload: 'aosp',
+          workload: "aosp",
         },
         measure() {
           return controller.getVisibleRows(0, visibleCount - 1);
@@ -997,7 +950,7 @@ function createStickyGetVisibleRowsFullScenarioFactory(): BenchmarkScenarioFacto
 }
 
 function createStickyGetVisibleRowsWindowScenarioFactory(): BenchmarkScenarioFactory {
-  const name = 'sticky-scroll/get-visible-rows-window/aosp/warm';
+  const name = "sticky-scroll/get-visible-rows-window/aosp/warm";
 
   return {
     name,
@@ -1012,20 +965,20 @@ function createStickyGetVisibleRowsWindowScenarioFactory(): BenchmarkScenarioFac
           controller.destroy();
         },
         manifest: {
-          category: 'sticky-scroll',
+          category: "sticky-scroll",
           fileCount: workload.fileCount,
           name,
-          notes: ['Measures the O(window) row fetch target for comparison.'],
+          notes: ["Measures the O(window) row fetch target for comparison."],
           visibleCount,
-          workload: 'aosp',
+          workload: "aosp",
         },
         measure(_sample, sampleIndex) {
           const start = Math.floor(
-            (scrollTops[sampleIndex % scrollTops.length] ?? 0) / ITEM_HEIGHT
+            (scrollTops[sampleIndex % scrollTops.length] ?? 0) / ITEM_HEIGHT,
           );
           return controller.getVisibleRows(
             start,
-            Math.min(visibleCount - 1, start + WINDOW_ROW_COUNT - 1)
+            Math.min(visibleCount - 1, start + WINDOW_ROW_COUNT - 1),
           );
         },
         sampleCount: DEFAULT_SAMPLE_COUNT,
@@ -1036,7 +989,7 @@ function createStickyGetVisibleRowsWindowScenarioFactory(): BenchmarkScenarioFac
 }
 
 function createStickyLayoutFromFullRowsScenarioFactory(): BenchmarkScenarioFactory {
-  const name = 'sticky-scroll/compute-layout-sticky-full-rows/aosp/warm';
+  const name = "sticky-scroll/compute-layout-sticky-full-rows/aosp/warm";
 
   return {
     name,
@@ -1050,21 +1003,18 @@ function createStickyLayoutFromFullRowsScenarioFactory(): BenchmarkScenarioFacto
 
       return {
         manifest: {
-          category: 'sticky-scroll',
+          category: "sticky-scroll",
           fileCount: workload.fileCount,
           name,
-          notes: [
-            'Measures sticky layout once full visible rows are already materialized.',
-          ],
+          notes: ["Measures sticky layout once full visible rows are already materialized."],
           visibleCount,
-          workload: 'aosp',
+          workload: "aosp",
         },
         measure(_sample, sampleIndex) {
           return computeFileTreeLayout(visibleRows, {
             itemHeight: ITEM_HEIGHT,
             overscan: OVERSCAN,
-            scrollTop:
-              scrollTops[sampleIndex % scrollTops.length] ?? ITEM_HEIGHT,
+            scrollTop: scrollTops[sampleIndex % scrollTops.length] ?? ITEM_HEIGHT,
             totalRowCount: visibleCount,
             viewportHeight: VIEWPORT_HEIGHT,
           });
@@ -1077,7 +1027,7 @@ function createStickyLayoutFromFullRowsScenarioFactory(): BenchmarkScenarioFacto
 }
 
 function createNoStickyLayoutScenarioFactory(): BenchmarkScenarioFactory {
-  const name = 'sticky-scroll/compute-layout-no-sticky/aosp/warm';
+  const name = "sticky-scroll/compute-layout-no-sticky/aosp/warm";
 
   return {
     name,
@@ -1090,21 +1040,20 @@ function createNoStickyLayoutScenarioFactory(): BenchmarkScenarioFactory {
 
       return {
         manifest: {
-          category: 'sticky-scroll',
+          category: "sticky-scroll",
           fileCount: workload.fileCount,
           name,
           notes: [
-            'Measures count-only virtual layout, the lower bound when sticky rows do not need full materialization.',
+            "Measures count-only virtual layout, the lower bound when sticky rows do not need full materialization.",
           ],
           visibleCount,
-          workload: 'aosp',
+          workload: "aosp",
         },
         measure(_sample, sampleIndex) {
           return computeFileTreeLayout([], {
             itemHeight: ITEM_HEIGHT,
             overscan: OVERSCAN,
-            scrollTop:
-              scrollTops[sampleIndex % scrollTops.length] ?? ITEM_HEIGHT,
+            scrollTop: scrollTops[sampleIndex % scrollTops.length] ?? ITEM_HEIGHT,
             totalRowCount: visibleCount,
             viewportHeight: VIEWPORT_HEIGHT,
           });
@@ -1117,7 +1066,7 @@ function createNoStickyLayoutScenarioFactory(): BenchmarkScenarioFactory {
 }
 
 function createNoStickyWindowReadScenarioFactory(): BenchmarkScenarioFactory {
-  const name = 'sticky-scroll/window-layout-plus-window-rows/aosp/warm';
+  const name = "sticky-scroll/window-layout-plus-window-rows/aosp/warm";
 
   return {
     name,
@@ -1132,19 +1081,17 @@ function createNoStickyWindowReadScenarioFactory(): BenchmarkScenarioFactory {
           controller.destroy();
         },
         manifest: {
-          category: 'sticky-scroll',
+          category: "sticky-scroll",
           fileCount: workload.fileCount,
           name,
-          notes: [
-            'Combines count-only virtual layout with the mounted window row fetch.',
-          ],
+          notes: ["Combines count-only virtual layout with the mounted window row fetch."],
           visibleCount,
-          workload: 'aosp',
+          workload: "aosp",
         },
         measure(_sample, sampleIndex) {
           return computeNoStickyWindowRead(
             controller,
-            scrollTops[sampleIndex % scrollTops.length] ?? ITEM_HEIGHT
+            scrollTops[sampleIndex % scrollTops.length] ?? ITEM_HEIGHT,
           );
         },
         sampleCount: DEFAULT_SAMPLE_COUNT,
@@ -1174,13 +1121,13 @@ function createScenarioFactories(): BenchmarkScenarioFactory[] {
 
 function getPresetFilter(preset: BenchmarkPresetName): RegExp | undefined {
   switch (preset) {
-    case 'all':
+    case "all":
       return undefined;
-    case 'get-item':
+    case "get-item":
       return /^get-item\//;
-    case 'sticky-scroll':
+    case "sticky-scroll":
       return /^sticky-scroll\//;
-    case 'expansion':
+    case "expansion":
       return /^expansion\//;
   }
 }
@@ -1212,24 +1159,24 @@ function getNameWidth(results: readonly { name: string }[]): number {
 
 function printHumanHeader(
   options: BenchmarkCliOptions,
-  selectedFactories: readonly BenchmarkScenarioFactory[]
+  selectedFactories: readonly BenchmarkScenarioFactory[],
 ): void {
-  console.log('trees benchmark');
+  console.log("trees benchmark");
   console.log(`preset: ${options.preset}`);
-  console.log(`filter: ${options.filter?.source ?? 'none'}`);
+  console.log(`filter: ${options.filter?.source ?? "none"}`);
   console.log(`scenarios: ${formatCount(selectedFactories.length)}`);
-  console.log('');
+  console.log("");
 }
 
 function printHumanResults(results: readonly BenchmarkResult[]): void {
   const nameWidth = getNameWidth(results);
   console.log(
-    `${'benchmark'.padEnd(nameWidth)} ${'p50'.padStart(10)} ${'p95'.padStart(10)} ${'min'.padStart(10)} ${'max'.padStart(10)} ${'prep'.padStart(10)} ${'wall'.padStart(10)} ${'samples'.padStart(8)}`
+    `${"benchmark".padEnd(nameWidth)} ${"p50".padStart(10)} ${"p95".padStart(10)} ${"min".padStart(10)} ${"max".padStart(10)} ${"prep".padStart(10)} ${"wall".padStart(10)} ${"samples".padStart(8)}`,
   );
-  console.log('-'.repeat(nameWidth + 82));
+  console.log("-".repeat(nameWidth + 82));
   for (const result of results) {
     console.log(
-      `${result.name.padEnd(nameWidth)} ${formatDuration(result.stats.p50).padStart(10)} ${formatDuration(result.stats.p95).padStart(10)} ${formatDuration(result.stats.min).padStart(10)} ${formatDuration(result.stats.max).padStart(10)} ${`${result.preparationTimeMs.toFixed(0)} ms`.padStart(10)} ${`${result.wallTimeMs.toFixed(0)} ms`.padStart(10)} ${formatCount(result.stats.ticks).padStart(8)}`
+      `${result.name.padEnd(nameWidth)} ${formatDuration(result.stats.p50).padStart(10)} ${formatDuration(result.stats.p95).padStart(10)} ${formatDuration(result.stats.min).padStart(10)} ${formatDuration(result.stats.max).padStart(10)} ${`${result.preparationTimeMs.toFixed(0)} ms`.padStart(10)} ${`${result.wallTimeMs.toFixed(0)} ms`.padStart(10)} ${formatCount(result.stats.ticks).padStart(8)}`,
     );
   }
 }
@@ -1244,28 +1191,26 @@ const selectedFactories = createScenarioFactories().filter((factory) => {
 });
 
 if (selectedFactories.length === 0) {
-  throw new Error('No benchmark scenarios matched the provided preset/filter.');
+  throw new Error("No benchmark scenarios matched the provided preset/filter.");
 }
 
 if (!cliOptions.json) {
   printHumanHeader(cliOptions, selectedFactories);
 }
 
-const results = selectedFactories.map((factory) =>
-  measureScenario(factory, cliOptions)
-);
+const results = selectedFactories.map((factory) => measureScenario(factory, cliOptions));
 
 if (cliOptions.json) {
   const output: BenchmarkRunOutput = {
     generatedAt: new Date().toISOString(),
-    kind: 'trees-benchmark-run',
+    kind: "trees-benchmark-run",
     preset: cliOptions.preset,
     results,
   };
   console.log(JSON.stringify(output));
 } else {
   printHumanResults(results);
-  console.log('');
+  console.log("");
   console.log(`Completed ${formatCount(results.length)} scenarios.`);
 }
 

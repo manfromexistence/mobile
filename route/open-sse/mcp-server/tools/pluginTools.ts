@@ -161,7 +161,10 @@ export const pluginTools = [
           const validation = validatePluginConfig(merged, rawSchema);
           if (!validation.valid) {
             // Return a generic message — do NOT leak raw field-level detail externally
-            return { success: false, error: "Config validation failed: one or more values are invalid" };
+            return {
+              success: false,
+              error: "Config validation failed: one or more values are invalid",
+            };
           }
         }
 

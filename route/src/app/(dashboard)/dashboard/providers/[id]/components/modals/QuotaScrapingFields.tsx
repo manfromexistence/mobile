@@ -18,7 +18,7 @@ export const EMPTY_QUOTA_SCRAPING_FIELDS: QuotaScrapingFieldValues = {
 export function assignQuotaScrapingProviderData(
   provider: string | undefined,
   values: QuotaScrapingFieldValues,
-  target: Record<string, unknown>
+  target: Record<string, unknown>,
 ) {
   if (provider === "opencode-go") {
     target.opencodeGoWorkspaceId = values.opencodeGoWorkspaceId.trim() || undefined;
@@ -57,7 +57,7 @@ export default function QuotaScrapingFields({
           hint={providerText(
             t,
             "opencodeGoWorkspaceIdHint",
-            "Required for quota scraping. Copy it from the OpenCode Go workspace URL."
+            "Required for quota scraping. Copy it from the OpenCode Go workspace URL.",
           )}
           autoComplete="off"
           spellCheck={false}
@@ -74,7 +74,7 @@ export default function QuotaScrapingFields({
             "opencodeGoAuthCookieHint",
             editMode
               ? "Leave blank to keep the stored cookie. Paste auth=... or only the cookie value to replace it."
-              : "Paste the auth cookie value from opencode.ai. The auth= prefix is accepted."
+              : "Paste the auth cookie value from opencode.ai. The auth= prefix is accepted.",
           )}
           autoComplete="off"
           spellCheck={false}
@@ -99,7 +99,7 @@ export default function QuotaScrapingFields({
             "ollamaCloudUsageCookieHint",
             editMode
               ? "Leave blank to keep the stored cookie. Paste the __Secure-session cookie value from ollama.com/settings to replace it."
-              : "Required for quota scraping. Paste the __Secure-session cookie value from ollama.com/settings."
+              : "Required for quota scraping. Paste the __Secure-session cookie value from ollama.com/settings.",
           )}
           autoComplete="off"
           spellCheck={false}

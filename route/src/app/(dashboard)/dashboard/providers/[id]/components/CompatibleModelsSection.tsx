@@ -132,9 +132,9 @@ export default function CompatibleModelsSection({
   const providerAliases = useMemo(
     () =>
       Object.entries(modelAliases).filter(([, model]: [string, any]) =>
-        (model as string).startsWith(`${providerStorageAlias}/`)
+        (model as string).startsWith(`${providerStorageAlias}/`),
       ),
-    [modelAliases, providerStorageAlias]
+    [modelAliases, providerStorageAlias],
   );
 
   const allModels = useMemo(() => {
@@ -181,7 +181,7 @@ export default function CompatibleModelsSection({
     for (const model of customModels) {
       addModel(
         model,
-        normalizeModelCatalogSource(model.source) === "imported" ? "imported" : "custom"
+        normalizeModelCatalogSource(model.source) === "imported" ? "imported" : "custom",
       );
     }
 
@@ -254,7 +254,7 @@ export default function CompatibleModelsSection({
         providerDisplayAlias,
         existingAliases: workingAliases,
       }),
-    [providerDisplayAlias, providerStorageAlias]
+    [providerDisplayAlias, providerStorageAlias],
   );
 
   const handleAdd = async () => {
@@ -327,7 +327,7 @@ export default function CompatibleModelsSection({
       // Remove from customModels DB
       const res = await fetch(
         `/api/provider-models?provider=${encodeURIComponent(providerStorageAlias)}&model=${encodeURIComponent(modelId)}`,
-        { method: "DELETE" }
+        { method: "DELETE" },
       );
       if (!res.ok) {
         throw new Error(t("failedRemoveModelFromDatabase"));
@@ -397,13 +397,13 @@ export default function CompatibleModelsSection({
             onSelectAll={() =>
               onBulkToggleHidden(
                 filteredModels.map((model) => model.modelId),
-                false
+                false,
               )
             }
             onDeselectAll={() =>
               onBulkToggleHidden(
                 filteredModels.map((model) => model.modelId),
-                true
+                true,
               )
             }
             selectAllDisabled={hiddenFilteredCount === 0 || bulkTogglePending}

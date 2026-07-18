@@ -1,6 +1,6 @@
-import { memo } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '../shader-mount.js';
-import { colorPropsAreEqual } from '../color-props-are-equal.js';
+import { memo } from "react";
+import { ShaderMount, type ShaderComponentProps } from "../shader-mount.js";
+import { colorPropsAreEqual } from "../color-props-are-equal.js";
 import {
   getShaderColorFromString,
   getShaderNoiseTexture,
@@ -10,20 +10,20 @@ import {
   type DotOrbitUniforms,
   type ShaderPreset,
   defaultPatternSizing,
-} from '@paper-design/shaders';
+} from "@paper-design/shaders";
 
 export interface DotOrbitProps extends ShaderComponentProps, DotOrbitParams {}
 
 type DotOrbitPreset = ShaderPreset<DotOrbitParams>;
 
 export const defaultPreset: DotOrbitPreset = {
-  name: 'Default',
+  name: "Default",
   params: {
     ...defaultPatternSizing,
     speed: 1.5,
     frame: 0,
-    colorBack: '#000000',
-    colors: ['#ffc96b', '#ff6200', '#ff2f00', '#421100', '#1a0000'],
+    colorBack: "#000000",
+    colors: ["#ffc96b", "#ff6200", "#ff2f00", "#421100", "#1a0000"],
     size: 1,
     sizeRange: 0,
     spreading: 1,
@@ -32,13 +32,13 @@ export const defaultPreset: DotOrbitPreset = {
 };
 
 export const shinePreset: DotOrbitPreset = {
-  name: 'Shine',
+  name: "Shine",
   params: {
     ...defaultPatternSizing,
     speed: 0.1,
     frame: 0,
-    colors: ['#ffffff', '#006aff', '#fff675'],
-    colorBack: '#000000',
+    colors: ["#ffffff", "#006aff", "#fff675"],
+    colorBack: "#000000",
     stepsPerColor: 4,
     size: 0.3,
     sizeRange: 0.2,
@@ -48,13 +48,13 @@ export const shinePreset: DotOrbitPreset = {
 };
 
 export const bubblesPreset: DotOrbitPreset = {
-  name: 'Bubbles',
+  name: "Bubbles",
   params: {
     ...defaultPatternSizing,
     speed: 0.4,
     frame: 0,
-    colors: ['#D0D2D5'],
-    colorBack: '#989CA4',
+    colors: ["#D0D2D5"],
+    colorBack: "#989CA4",
     stepsPerColor: 2,
     size: 0.9,
     sizeRange: 0.7,
@@ -64,13 +64,13 @@ export const bubblesPreset: DotOrbitPreset = {
 };
 
 export const hallucinatoryPreset: DotOrbitPreset = {
-  name: 'Hallucinatory',
+  name: "Hallucinatory",
   params: {
     ...defaultPatternSizing,
     speed: 5,
     frame: 0,
-    colors: ['#000000'],
-    colorBack: '#ffe500',
+    colors: ["#000000"],
+    colorBack: "#ffe500",
     stepsPerColor: 2,
     size: 0.65,
     sizeRange: 0,
@@ -79,7 +79,12 @@ export const hallucinatoryPreset: DotOrbitPreset = {
   },
 };
 
-export const dotOrbitPresets: DotOrbitPreset[] = [defaultPreset, bubblesPreset, shinePreset, hallucinatoryPreset];
+export const dotOrbitPresets: DotOrbitPreset[] = [
+  defaultPreset,
+  bubblesPreset,
+  shinePreset,
+  hallucinatoryPreset,
+];
 
 export const DotOrbit: React.FC<DotOrbitProps> = memo(function DotOrbitImpl({
   // Own props
@@ -128,6 +133,12 @@ export const DotOrbit: React.FC<DotOrbitProps> = memo(function DotOrbitImpl({
   } satisfies DotOrbitUniforms;
 
   return (
-    <ShaderMount {...props} speed={speed} frame={frame} fragmentShader={dotOrbitFragmentShader} uniforms={uniforms} />
+    <ShaderMount
+      {...props}
+      speed={speed}
+      frame={frame}
+      fragmentShader={dotOrbitFragmentShader}
+      uniforms={uniforms}
+    />
   );
 }, colorPropsAreEqual);

@@ -85,7 +85,7 @@ export async function POST(request: Request) {
     if (!id || !name || !binary || !versionCommand) {
       return NextResponse.json(
         { error: "Missing required fields: id, name, binary, versionCommand" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -102,7 +102,7 @@ export async function POST(request: Request) {
     if (!resolveVersionProbe(newAgent.binary, newAgent.versionCommand, true)) {
       return NextResponse.json(
         { error: "Invalid versionCommand: use the configured binary with plain arguments only" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -114,7 +114,7 @@ export async function POST(request: Request) {
     if (current.some((a) => a.id === newAgent.id)) {
       return NextResponse.json(
         { error: `Agent with id '${newAgent.id}' already exists` },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -151,7 +151,7 @@ export async function DELETE(request: Request) {
     if (updated.length === current.length) {
       return NextResponse.json(
         { error: `Agent '${agentId}' not found in custom agents` },
-        { status: 404 }
+        { status: 404 },
       );
     }
 

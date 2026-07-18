@@ -53,16 +53,16 @@ test("cloakAntigravityToolPayload cloaks custom tools, preserves native tools an
   }
   assert.equal(
     result.body.request.contents[0].parts[0].functionCall.name,
-    `workspace_read${AG_TOOL_SUFFIX}`
+    `workspace_read${AG_TOOL_SUFFIX}`,
   );
   assert.equal(
     result.body.request.contents[1].parts[0].functionResponse.name,
-    `workspace_read${AG_TOOL_SUFFIX}`
+    `workspace_read${AG_TOOL_SUFFIX}`,
   );
   assert.equal(result.toolNameMap?.get(`workspace_read${AG_TOOL_SUFFIX}`), "workspace_read");
   assert.equal(
     declarations.filter((tool: { name: string }) => tool.name === "browser_subagent").length,
-    1
+    1,
   );
   assert.ok(AG_DECOY_TOOLS.length > 20);
 });
@@ -90,7 +90,7 @@ test("cloakAntigravityToolPayload composes namespace sanitization maps with Anti
 
   assert.equal(
     result.toolNameMap?.get(`workspace_read${AG_TOOL_SUFFIX}`),
-    "mcp__filesystem__workspace_read"
+    "mcp__filesystem__workspace_read",
   );
 });
 
@@ -180,7 +180,7 @@ test("cloakAntigravityToolPayload strips enumDescriptions from declaration param
   const declarations = (result.body.request.tools?.[0] as any)?.functionDeclarations || [];
 
   const cloaked = declarations.find(
-    (d: { name: string }) => d.name === `workspace_read${AG_TOOL_SUFFIX}`
+    (d: { name: string }) => d.name === `workspace_read${AG_TOOL_SUFFIX}`,
   );
   assert.ok(cloaked, "cloaked client tool present");
   assert.equal("enumDescriptions" in cloaked.parameters, false);

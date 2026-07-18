@@ -98,7 +98,7 @@ function getReasoningCacheRequestId(body: Record<string, unknown> | null | undef
 
 function getAssistantMessageCacheKey(
   body: Record<string, unknown> | null | undefined,
-  messageIndex: number
+  messageIndex: number,
 ): string {
   const requestId = getReasoningCacheRequestId(body);
   return requestId ? `request:${requestId}:message:${messageIndex}` : "";
@@ -164,7 +164,7 @@ export function translateRequest(
     /** UA-detected GitHub Copilot client. Forwarded to translators via the
      *  transient `_copilotClient` credential flag (see openai-responses → openai). */
     copilotClient?: boolean;
-  }
+  },
 ) {
   let result = body;
   const use9CharId = options?.normalizeToolCallId === true;
@@ -194,7 +194,7 @@ export function translateRequest(
       provider || "",
       model || "",
       targetFormat,
-      preserveDeveloperRole
+      preserveDeveloperRole,
     );
   }
 
@@ -331,7 +331,7 @@ export function translateRequest(
       provider || "",
       model || "",
       targetFormat,
-      preserveDeveloperRole
+      preserveDeveloperRole,
     );
   }
 
@@ -405,7 +405,7 @@ export function translateRequest(
         // Reasoning models (Kimi K2, etc.) require a thinking block before tool_use
         // on multi-turn or they regenerate the same tool call infinitely.
         const hasThinkingBlock = msg.content.some(
-          (b) => b?.type === "thinking" || b?.type === "redacted_thinking"
+          (b) => b?.type === "thinking" || b?.type === "redacted_thinking",
         );
         if (hasThinkingBlock) continue;
 

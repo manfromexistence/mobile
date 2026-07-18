@@ -10,7 +10,7 @@ function mockFetch(body: unknown, status = 200) {
       new Response(JSON.stringify(body), {
         status,
         headers: { "content-type": "application/json" },
-      })
+      }),
     );
 }
 
@@ -45,7 +45,7 @@ test("runChatCommand imprime texto da resposta no stdout", async () => {
   const { runChatCommand } = await import("../../bin/cli/commands/chat.mjs");
   const cmd = { optsWithGlobals: () => ({ output: "text", quiet: false }) };
   const out = await captureStdout(() =>
-    runChatCommand("hi", { model: "auto", noHistory: true }, cmd as any)
+    runChatCommand("hi", { model: "auto", noHistory: true }, cmd as any),
   );
 
   globalThis.fetch = origFetch;
@@ -62,7 +62,7 @@ test("runChatCommand com --output json emite body completo", async () => {
   const { runChatCommand } = await import("../../bin/cli/commands/chat.mjs");
   const cmd = { optsWithGlobals: () => ({ output: "json", quiet: true }) };
   const out = await captureStdout(() =>
-    runChatCommand("hi", { model: "auto", noHistory: true }, cmd as any)
+    runChatCommand("hi", { model: "auto", noHistory: true }, cmd as any),
   );
 
   globalThis.fetch = origFetch;
@@ -86,7 +86,7 @@ test("runChatCommand lê prompt de arquivo com --file", async () => {
   const { runChatCommand } = await import("../../bin/cli/commands/chat.mjs");
   const cmd = { optsWithGlobals: () => ({ output: "text", quiet: true }) };
   await captureStdout(() =>
-    runChatCommand(undefined, { model: "auto", file: promptFile, noHistory: true }, cmd as any)
+    runChatCommand(undefined, { model: "auto", file: promptFile, noHistory: true }, cmd as any),
   );
 
   globalThis.fetch = origFetch;
@@ -134,7 +134,7 @@ test("runChatCommand usa /v1/responses com --responses-api", async () => {
   const { runChatCommand } = await import("../../bin/cli/commands/chat.mjs");
   const cmd = { optsWithGlobals: () => ({ output: "text", quiet: true }) };
   const out = await captureStdout(() =>
-    runChatCommand("test", { model: "auto", responsesApi: true, noHistory: true }, cmd as any)
+    runChatCommand("test", { model: "auto", responsesApi: true, noHistory: true }, cmd as any),
   );
 
   globalThis.fetch = origFetch;
@@ -157,7 +157,7 @@ test("runChatCommand propaga system prompt no payload", async () => {
   const { runChatCommand } = await import("../../bin/cli/commands/chat.mjs");
   const cmd = { optsWithGlobals: () => ({ output: "text", quiet: true }) };
   await captureStdout(() =>
-    runChatCommand("hi", { model: "auto", system: "Be concise", noHistory: true }, cmd as any)
+    runChatCommand("hi", { model: "auto", system: "Be concise", noHistory: true }, cmd as any),
   );
 
   globalThis.fetch = origFetch;

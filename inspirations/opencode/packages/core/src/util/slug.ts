@@ -29,7 +29,7 @@ export namespace Slug {
     "swift",
     "tidy",
     "witty",
-  ] as const
+  ] as const;
 
   const NOUNS = [
     "cabin",
@@ -63,12 +63,12 @@ export namespace Slug {
     "tiger",
     "wizard",
     "wolf",
-  ] as const
+  ] as const;
 
   export function create() {
     return [
       ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)],
       NOUNS[Math.floor(Math.random() * NOUNS.length)],
-    ].join("-")
+    ].join("-");
   }
 }

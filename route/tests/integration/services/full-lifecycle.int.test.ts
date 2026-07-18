@@ -79,7 +79,7 @@ async function waitForState(
   statusPath: string,
   targetState: string,
   timeoutMs = 30_000,
-  intervalMs = 1_000
+  intervalMs = 1_000,
 ): Promise<unknown> {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
@@ -103,13 +103,13 @@ describe("9router — full lifecycle (opt-in, RUN_SERVICES_INT=1)", () => {
     });
     assert.ok(
       status === 200,
-      `Expected 200 from install, got ${status}: ${JSON.stringify(body).slice(0, 300)}`
+      `Expected 200 from install, got ${status}: ${JSON.stringify(body).slice(0, 300)}`,
     );
     const b = body as Record<string, unknown>;
     assert.ok(b.ok === true, "install response must have ok:true");
     assert.ok(
       typeof b.installedVersion === "string",
-      "install response must have installedVersion"
+      "install response must have installedVersion",
     );
     assert.ok(typeof b.durationMs === "number", "install response must have durationMs");
   });
@@ -123,12 +123,12 @@ describe("9router — full lifecycle (opt-in, RUN_SERVICES_INT=1)", () => {
       ["stopped", "not_installed"].includes(b.state as string) === false
         ? b.state === "stopped"
         : true,
-      `Expected stopped state after install, got: ${b.state}`
+      `Expected stopped state after install, got: ${b.state}`,
     );
     // installedVersion should now be set
     assert.ok(
       typeof b.installedVersion === "string",
-      "installedVersion should be set after install"
+      "installedVersion should be set after install",
     );
   });
 
@@ -137,12 +137,12 @@ describe("9router — full lifecycle (opt-in, RUN_SERVICES_INT=1)", () => {
     const { status, body } = await apiPost("/api/services/9router/start");
     assert.ok(
       status === 200,
-      `Expected 200 from start, got ${status}: ${JSON.stringify(body).slice(0, 300)}`
+      `Expected 200 from start, got ${status}: ${JSON.stringify(body).slice(0, 300)}`,
     );
     const b = body as Record<string, unknown>;
     assert.ok(
       ["starting", "running"].includes(b.state as string),
-      `Expected starting or running, got: ${b.state}`
+      `Expected starting or running, got: ${b.state}`,
     );
   });
 
@@ -173,7 +173,7 @@ describe("9router — full lifecycle (opt-in, RUN_SERVICES_INT=1)", () => {
     });
     assert.ok(
       status === 200,
-      `Expected 200 from chat, got ${status}: ${JSON.stringify(body).slice(0, 300)}`
+      `Expected 200 from chat, got ${status}: ${JSON.stringify(body).slice(0, 300)}`,
     );
   });
 
@@ -184,7 +184,7 @@ describe("9router — full lifecycle (opt-in, RUN_SERVICES_INT=1)", () => {
     const b = body as Record<string, unknown>;
     assert.ok(
       ["stopping", "stopped"].includes(b.state as string),
-      `Expected stopping or stopped, got: ${b.state}`
+      `Expected stopping or stopped, got: ${b.state}`,
     );
   });
 
@@ -207,13 +207,13 @@ describe("cliproxy — full lifecycle (opt-in, RUN_SERVICES_INT=1)", () => {
     });
     assert.ok(
       status === 200,
-      `Expected 200 from install, got ${status}: ${JSON.stringify(body).slice(0, 300)}`
+      `Expected 200 from install, got ${status}: ${JSON.stringify(body).slice(0, 300)}`,
     );
     const b = body as Record<string, unknown>;
     assert.ok(b.ok === true, "install response must have ok:true");
     assert.ok(
       typeof b.installedVersion === "string",
-      "install response must have installedVersion"
+      "install response must have installedVersion",
     );
   });
 
@@ -222,7 +222,7 @@ describe("cliproxy — full lifecycle (opt-in, RUN_SERVICES_INT=1)", () => {
     const { status, body } = await apiPost("/api/services/cliproxy/start");
     assert.ok(
       status === 200,
-      `Expected 200 from start, got ${status}: ${JSON.stringify(body).slice(0, 300)}`
+      `Expected 200 from start, got ${status}: ${JSON.stringify(body).slice(0, 300)}`,
     );
   });
 
@@ -259,13 +259,13 @@ describe("bifrost — full lifecycle (opt-in, RUN_SERVICES_INT=1)", () => {
     });
     assert.ok(
       status === 200,
-      `Expected 200 from install, got ${status}: ${JSON.stringify(body).slice(0, 300)}`
+      `Expected 200 from install, got ${status}: ${JSON.stringify(body).slice(0, 300)}`,
     );
     const b = body as Record<string, unknown>;
     assert.ok(b.ok === true, "install response must have ok:true");
     assert.ok(
       typeof b.installedVersion === "string",
-      "install response must have installedVersion"
+      "install response must have installedVersion",
     );
     assert.ok(typeof b.durationMs === "number", "install response must have durationMs");
   });
@@ -278,7 +278,7 @@ describe("bifrost — full lifecycle (opt-in, RUN_SERVICES_INT=1)", () => {
     assert.equal(b.state, "stopped", `Expected stopped state after install, got: ${b.state}`);
     assert.ok(
       typeof b.installedVersion === "string",
-      "installedVersion should be set after install"
+      "installedVersion should be set after install",
     );
   });
 
@@ -287,12 +287,12 @@ describe("bifrost — full lifecycle (opt-in, RUN_SERVICES_INT=1)", () => {
     const { status, body } = await apiPost("/api/services/bifrost/start");
     assert.ok(
       status === 200,
-      `Expected 200 from start, got ${status}: ${JSON.stringify(body).slice(0, 300)}`
+      `Expected 200 from start, got ${status}: ${JSON.stringify(body).slice(0, 300)}`,
     );
     const b = body as Record<string, unknown>;
     assert.ok(
       ["starting", "running"].includes(b.state as string),
-      `Expected starting or running, got: ${b.state}`
+      `Expected starting or running, got: ${b.state}`,
     );
   });
 
@@ -316,7 +316,7 @@ describe("bifrost — full lifecycle (opt-in, RUN_SERVICES_INT=1)", () => {
     const b = body as Record<string, unknown>;
     assert.ok(
       ["stopping", "stopped"].includes(b.state as string),
-      `Expected stopping or stopped, got: ${b.state}`
+      `Expected stopping or stopped, got: ${b.state}`,
     );
   });
 
@@ -349,7 +349,7 @@ describe("Route guard security smoke (opt-in, RUN_SERVICES_INT=1)", () => {
     // 403 expected from route guard; 405 possible if server already blocked at method level.
     assert.ok(
       res.status === 403 || res.status === 405,
-      `Expected 403 from non-loopback request, got ${res.status}`
+      `Expected 403 from non-loopback request, got ${res.status}`,
     );
   });
 });

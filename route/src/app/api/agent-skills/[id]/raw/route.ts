@@ -13,10 +13,7 @@ import { getSkillById, fetchSkillMarkdown } from "@/lib/agentSkills/catalog";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(
-  _request: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
 
@@ -39,10 +36,9 @@ export async function GET(
     const markdown = await fetchSkillMarkdown(id);
 
     // Return the full markdown content (frontmatter + body reconstructed)
-    const content =
-      markdown.frontmatter.name
-        ? `---\nname: ${markdown.frontmatter.name}\ndescription: ${markdown.frontmatter.description}\n---\n${markdown.body}`
-        : markdown.body;
+    const content = markdown.frontmatter.name
+      ? `---\nname: ${markdown.frontmatter.name}\ndescription: ${markdown.frontmatter.description}\n---\n${markdown.body}`
+      : markdown.body;
 
     return new Response(content, {
       status: 200,

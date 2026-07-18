@@ -33,7 +33,7 @@ const TOOLS = [
 ];
 
 async function captureUpstreamBody(
-  body: Record<string, unknown>
+  body: Record<string, unknown>,
 ): Promise<Record<string, unknown>> {
   const executor = new ClaudeLikeExecutor();
   const originalFetch = globalThis.fetch;
@@ -74,7 +74,7 @@ test("forced tool_choice strips injected thinking (avoids Anthropic 400)", async
   assert.equal(
     upstream.thinking,
     undefined,
-    "thinking must NOT be present when tool_choice forces a tool"
+    "thinking must NOT be present when tool_choice forces a tool",
   );
 });
 
@@ -87,6 +87,6 @@ test("non-forced call still injects adaptive thinking (behavior preserved)", asy
   assert.deepEqual(
     upstream.thinking,
     { type: "adaptive" },
-    "adaptive thinking must still be injected when tool_choice does not force a tool"
+    "adaptive thinking must still be injected when tool_choice does not force a tool",
   );
 });

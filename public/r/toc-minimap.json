@@ -4,10 +4,7 @@
   "title": "TOC Minimap",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "Navigate page sections with a compact, hoverable TOC minimap.",
-  "registryDependencies": [
-    "hover-card",
-    "@soundcn/u-mini-map-open"
-  ],
+  "registryDependencies": ["hover-card", "@soundcn/u-mini-map-open"],
   "files": [
     {
       "path": "src/registry/components/toc-minimap/toc-minimap.tsx",
@@ -17,8 +14,6 @@
     }
   ],
   "docs": "https://chanhdai.com/components/toc-minimap",
-  "categories": [
-    "navigation"
-  ],
+  "categories": ["navigation"],
   "type": "registry:component"
 }

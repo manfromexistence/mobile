@@ -7,16 +7,14 @@ export interface NormalizedInputPath {
  * Normalizes user-provided tree paths.
  * Trailing slashes explicitly mark directories; empty slash segments are ignored.
  */
-export function normalizeInputPath(
-  inputPath: string
-): NormalizedInputPath | null {
-  const isDirectory = inputPath.endsWith('/');
-  let normalizedPath = '';
+export function normalizeInputPath(inputPath: string): NormalizedInputPath | null {
+  const isDirectory = inputPath.endsWith("/");
+  let normalizedPath = "";
   let segmentStart = -1;
 
   for (let i = 0; i <= inputPath.length; i += 1) {
     const char = inputPath[i];
-    const isSeparator = char === '/' || i === inputPath.length;
+    const isSeparator = char === "/" || i === inputPath.length;
 
     if (!isSeparator) {
       if (segmentStart === -1) {
@@ -29,14 +27,14 @@ export function normalizeInputPath(
       continue;
     }
 
-    if (normalizedPath !== '') {
-      normalizedPath += '/';
+    if (normalizedPath !== "") {
+      normalizedPath += "/";
     }
     normalizedPath += inputPath.slice(segmentStart, i);
     segmentStart = -1;
   }
 
-  if (normalizedPath === '') {
+  if (normalizedPath === "") {
     return null;
   }
 
@@ -49,9 +47,9 @@ export function normalizeInputPath(
 export function forEachFolderInNormalizedPath(
   path: string,
   isDirectory: boolean,
-  visit: (folderPath: string) => void
+  visit: (folderPath: string) => void,
 ): void {
-  const lastSlashIndex = path.lastIndexOf('/');
+  const lastSlashIndex = path.lastIndexOf("/");
   if (lastSlashIndex === -1) {
     if (isDirectory) {
       visit(path);
@@ -60,11 +58,11 @@ export function forEachFolderInNormalizedPath(
   }
 
   const limit = isDirectory ? path.length : lastSlashIndex;
-  let slashIndex = path.indexOf('/');
+  let slashIndex = path.indexOf("/");
 
   while (slashIndex !== -1 && slashIndex <= limit) {
     visit(path.slice(0, slashIndex));
-    slashIndex = path.indexOf('/', slashIndex + 1);
+    slashIndex = path.indexOf("/", slashIndex + 1);
   }
 
   if (isDirectory) {

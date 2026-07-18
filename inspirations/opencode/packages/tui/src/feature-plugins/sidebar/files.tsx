@@ -1,25 +1,29 @@
-import type { TuiPlugin, TuiPluginApi } from "@opencode-ai/plugin/tui"
-import type { BuiltinTuiPlugin } from "../builtins"
-import { createMemo, For, Show, createSignal } from "solid-js"
-import { Locale } from "../../util/locale"
+import type { TuiPlugin, TuiPluginApi } from "@opencode-ai/plugin/tui";
+import type { BuiltinTuiPlugin } from "../builtins";
+import { createMemo, For, Show, createSignal } from "solid-js";
+import { Locale } from "../../util/locale";
 
-const id = "internal:sidebar-files"
+const id = "internal:sidebar-files";
 
 function changeCountWidth(item: { additions: number; deletions: number }) {
   return [item.additions ? `+${item.additions}` : "", item.deletions ? `-${item.deletions}` : ""]
     .filter(Boolean)
-    .join(" ").length
+    .join(" ").length;
 }
 
 function View(props: { api: TuiPluginApi; session_id: string }) {
-  const [open, setOpen] = createSignal(true)
-  const theme = () => props.api.theme.current
-  const list = createMemo(() => props.api.state.session.diff(props.session_id))
+  const [open, setOpen] = createSignal(true);
+  const theme = () => props.api.theme.current;
+  const list = createMemo(() => props.api.state.session.diff(props.session_id));
 
   return (
     <Show when={list().length > 0}>
       <box>
-        <box flexDirection="row" gap={1} onMouseDown={() => list().length > 2 && setOpen((x) => !x)}>
+        <box
+          flexDirection="row"
+          gap={1}
+          onMouseDown={() => list().length > 2 && setOpen((x) => !x)}
+        >
           <Show when={list().length > 2}>
             <text fg={theme().text}>{open() ? "▼" : "▶"}</text>
           </Show>
@@ -48,7 +52,7 @@ function View(props: { api: TuiPluginApi; session_id: string }) {
         </Show>
       </box>
     </Show>
-  )
+  );
 }
 
 const tui: TuiPlugin = async (api) => {
@@ -56,15 +60,15 @@ const tui: TuiPlugin = async (api) => {
     order: 500,
     slots: {
       sidebar_content(_ctx, props) {
-        return <View api={api} session_id={props.session_id} />
+        return <View api={api} session_id={props.session_id} />;
       },
     },
-  })
-}
+  });
+};
 
 const plugin: BuiltinTuiPlugin = {
   id,
   tui,
-}
+};
 
-export default plugin
+export default plugin;

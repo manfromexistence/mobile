@@ -81,11 +81,11 @@ test("DefaultExecutor.buildUrl handles Gemini, Claude and Qwen variants", () => 
 
   assert.equal(
     gemini.buildUrl("gemini-2.5-flash", false),
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent",
   );
   assert.equal(
     gemini.buildUrl("gemini-2.5-flash", true),
-    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse"
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:streamGenerateContent?alt=sse",
   );
   assert.equal(claude.buildUrl("claude-sonnet-4", true), `${PROVIDERS.claude.baseUrl}?beta=true`);
   assert.equal(qwen.buildUrl("qwen3-coder", true), "https://portal.qwen.ai/v1/chat/completions");
@@ -93,7 +93,7 @@ test("DefaultExecutor.buildUrl handles Gemini, Claude and Qwen variants", () => 
     qwen.buildUrl("qwen3-coder", true, 0, {
       providerSpecificData: { resourceUrl: "custom.qwen.ai" },
     }),
-    "https://custom.qwen.ai/v1/chat/completions"
+    "https://custom.qwen.ai/v1/chat/completions",
   );
 });
 
@@ -103,7 +103,7 @@ test("DefaultExecutor.buildUrl uses full chat endpoints for hosted OpenAI-compat
 
   assert.equal(
     bazaarlink.buildUrl("auto:free", true),
-    "https://bazaarlink.ai/api/v1/chat/completions"
+    "https://bazaarlink.ai/api/v1/chat/completions",
   );
   assert.equal(crof.buildUrl("gpt-4.1", true), "https://crof.ai/v1/chat/completions");
 });
@@ -119,7 +119,7 @@ test("DefaultExecutor.buildUrl honors a custom providerSpecificData.baseUrl for 
     openai.buildUrl("gpt-4o", true, 0, {
       providerSpecificData: { baseUrl: "https://api.contactboxtools.me/v1" },
     }),
-    "https://api.contactboxtools.me/v1/chat/completions"
+    "https://api.contactboxtools.me/v1/chat/completions",
   );
 
   // Trailing slash is normalized.
@@ -127,7 +127,7 @@ test("DefaultExecutor.buildUrl honors a custom providerSpecificData.baseUrl for 
     openai.buildUrl("gpt-4o", true, 0, {
       providerSpecificData: { baseUrl: "https://proxy.example/v1/" },
     }),
-    "https://proxy.example/v1/chat/completions"
+    "https://proxy.example/v1/chat/completions",
   );
 
   // A base URL already pointing at the chat endpoint is kept as-is.
@@ -135,7 +135,7 @@ test("DefaultExecutor.buildUrl honors a custom providerSpecificData.baseUrl for 
     openai.buildUrl("gpt-4o", true, 0, {
       providerSpecificData: { baseUrl: "https://proxy.example/v1/chat/completions" },
     }),
-    "https://proxy.example/v1/chat/completions"
+    "https://proxy.example/v1/chat/completions",
   );
 });
 
@@ -150,7 +150,7 @@ test("DefaultExecutor.buildUrl handles openai-compatible and anthropic-compatibl
     openAICompat.buildUrl("gpt-4.1", true, 0, {
       providerSpecificData: { baseUrl: "https://proxy.example/v1/" },
     }),
-    "https://proxy.example/v1/chat/completions"
+    "https://proxy.example/v1/chat/completions",
   );
   assert.equal(
     openAICompat.buildUrl("gpt-4.1", true, 0, {
@@ -159,13 +159,13 @@ test("DefaultExecutor.buildUrl handles openai-compatible and anthropic-compatibl
         chatPath: "/custom/chat",
       },
     }),
-    "https://proxy.example/v1/custom/chat"
+    "https://proxy.example/v1/custom/chat",
   );
   assert.equal(
     openAIResponsesCompat.buildUrl("gpt-4.1", true, 0, {
       providerSpecificData: { baseUrl: "https://proxy.example/v1/" },
     }),
-    "https://proxy.example/v1/responses"
+    "https://proxy.example/v1/responses",
   );
   assert.equal(
     openAICompat.buildUrl("gpt-4.1", true, 0, {
@@ -174,7 +174,7 @@ test("DefaultExecutor.buildUrl handles openai-compatible and anthropic-compatibl
         _omnirouteForceResponsesUpstream: true,
       },
     }),
-    "https://proxy.example/v1/responses"
+    "https://proxy.example/v1/responses",
   );
   assert.equal(
     openAILegacyResponsesCompat.buildUrl("gpt-5.4", true, 0, {
@@ -183,13 +183,13 @@ test("DefaultExecutor.buildUrl handles openai-compatible and anthropic-compatibl
         baseUrl: "https://proxy.example/v1/",
       },
     }),
-    "https://proxy.example/v1/responses"
+    "https://proxy.example/v1/responses",
   );
   assert.equal(
     anthropicCompat.buildUrl("claude-sonnet-4", true, 0, {
       providerSpecificData: { baseUrl: "https://anthropic.example/v1/" },
     }),
-    "https://anthropic.example/v1/messages"
+    "https://anthropic.example/v1/messages",
   );
   assert.equal(
     anthropicCompat.buildUrl("claude-sonnet-4", true, 0, {
@@ -198,7 +198,7 @@ test("DefaultExecutor.buildUrl handles openai-compatible and anthropic-compatibl
         chatPath: "/custom/messages",
       },
     }),
-    "https://anthropic.example/v1/custom/messages"
+    "https://anthropic.example/v1/custom/messages",
   );
   assert.equal(
     anthropicCcCompat.buildUrl("claude-sonnet-4", true, 0, {
@@ -206,7 +206,7 @@ test("DefaultExecutor.buildUrl handles openai-compatible and anthropic-compatibl
         baseUrl: "https://cc.example/v1/messages",
       },
     }),
-    `https://cc.example${CLAUDE_CODE_COMPATIBLE_DEFAULT_CHAT_PATH}`
+    `https://cc.example${CLAUDE_CODE_COMPATIBLE_DEFAULT_CHAT_PATH}`,
   );
 });
 
@@ -231,13 +231,13 @@ test("DefaultExecutor.buildUrl normalizes configurable chat-openai-compat base U
         baseUrl: "https://coding-intl.dashscope.aliyuncs.com/apps/anthropic/v1",
       },
     }),
-    "https://coding-intl.dashscope.aliyuncs.com/apps/anthropic/v1/messages"
+    "https://coding-intl.dashscope.aliyuncs.com/apps/anthropic/v1/messages",
   );
   assert.equal(
     heroku.buildUrl("claude-4-sonnet", true, 0, {
       providerSpecificData: { baseUrl: "https://us.inference.heroku.com" },
     }),
-    "https://us.inference.heroku.com/v1/chat/completions"
+    "https://us.inference.heroku.com/v1/chat/completions",
   );
   assert.equal(
     databricks.buildUrl("databricks-gpt-5", true, 0, {
@@ -245,21 +245,21 @@ test("DefaultExecutor.buildUrl normalizes configurable chat-openai-compat base U
         baseUrl: "https://adb-1234567890123456.7.azuredatabricks.net/serving-endpoints",
       },
     }),
-    "https://adb-1234567890123456.7.azuredatabricks.net/serving-endpoints/chat/completions"
+    "https://adb-1234567890123456.7.azuredatabricks.net/serving-endpoints/chat/completions",
   );
 
   assert.equal(
     azureAi.buildUrl("DeepSeek-V3.1", true, 0, {
       providerSpecificData: { baseUrl: "https://my-foundry.services.ai.azure.com" },
     }),
-    "https://my-foundry.services.ai.azure.com/openai/v1/chat/completions"
+    "https://my-foundry.services.ai.azure.com/openai/v1/chat/completions",
   );
 
   assert.equal(
     watsonx.buildUrl("ibm/granite-3-3-8b-instruct", true, 0, {
       providerSpecificData: { baseUrl: "https://ca-tor.ml.cloud.ibm.com" },
     }),
-    "https://ca-tor.ml.cloud.ibm.com/ml/gateway/v1/chat/completions"
+    "https://ca-tor.ml.cloud.ibm.com/ml/gateway/v1/chat/completions",
   );
   assert.equal(
     oci.buildUrl("openai.gpt-oss-20b", true, 0, {
@@ -267,7 +267,7 @@ test("DefaultExecutor.buildUrl normalizes configurable chat-openai-compat base U
         baseUrl: "https://inference.generativeai.us-ashburn-1.oci.oraclecloud.com",
       },
     }),
-    "https://inference.generativeai.us-ashburn-1.oci.oraclecloud.com/openai/v1/chat/completions"
+    "https://inference.generativeai.us-ashburn-1.oci.oraclecloud.com/openai/v1/chat/completions",
   );
   assert.equal(
     sap.buildUrl("gpt-4o", true, 0, {
@@ -275,7 +275,7 @@ test("DefaultExecutor.buildUrl normalizes configurable chat-openai-compat base U
         baseUrl: "https://sap.example.com/v2/lm/deployments/demo-deployment",
       },
     }),
-    "https://sap.example.com/v2/lm/deployments/demo-deployment/chat/completions"
+    "https://sap.example.com/v2/lm/deployments/demo-deployment/chat/completions",
   );
   assert.equal(
     modal.buildUrl("Qwen/Qwen3-4B-Thinking-2507-FP8", true, 0, {
@@ -283,7 +283,7 @@ test("DefaultExecutor.buildUrl normalizes configurable chat-openai-compat base U
         baseUrl: "https://alice--demo.modal.run/v1",
       },
     }),
-    "https://alice--demo.modal.run/v1/chat/completions"
+    "https://alice--demo.modal.run/v1/chat/completions",
   );
   assert.equal(
     reka.buildUrl("reka-core", true, 0, {
@@ -291,7 +291,7 @@ test("DefaultExecutor.buildUrl normalizes configurable chat-openai-compat base U
         baseUrl: "https://api.reka.ai/v1",
       },
     }),
-    "https://api.reka.ai/v1/chat/completions"
+    "https://api.reka.ai/v1/chat/completions",
   );
   assert.equal(
     maritalk.buildUrl("sabia-4", true, 0, {
@@ -299,29 +299,29 @@ test("DefaultExecutor.buildUrl normalizes configurable chat-openai-compat base U
         baseUrl: "https://chat.maritaca.ai/api/chat/inference",
       },
     }),
-    "https://chat.maritaca.ai/api/chat/completions"
+    "https://chat.maritaca.ai/api/chat/completions",
   );
   assert.equal(
     snowflake.buildUrl("llama3.3-70b", true, 0, {
       providerSpecificData: { baseUrl: "https://account.snowflakecomputing.com" },
     }),
-    "https://account.snowflakecomputing.com/api/v2/cortex/inference:complete"
+    "https://account.snowflakecomputing.com/api/v2/cortex/inference:complete",
   );
   assert.equal(
     gigachat.buildUrl("GigaChat-2-Pro", true, 0, {
       providerSpecificData: { baseUrl: "https://gigachat.devices.sberbank.ru/api/v1" },
     }),
-    "https://gigachat.devices.sberbank.ru/api/v1/chat/completions"
+    "https://gigachat.devices.sberbank.ru/api/v1/chat/completions",
   );
   assert.equal(
     siliconflow.buildUrl("deepseek-ai/DeepSeek-V3.2", true),
-    "https://api.siliconflow.com/v1/chat/completions"
+    "https://api.siliconflow.com/v1/chat/completions",
   );
   assert.equal(
     siliconflow.buildUrl("deepseek-ai/DeepSeek-V3.2", true, 0, {
       providerSpecificData: { baseUrl: "https://api.siliconflow.cn/v1" },
     }),
-    "https://api.siliconflow.cn/v1/chat/completions"
+    "https://api.siliconflow.cn/v1/chat/completions",
   );
 });
 
@@ -338,13 +338,13 @@ test("DefaultExecutor.buildUrl applies urlSuffix for zai and glm-coding-apikey",
     zai.buildUrl("glm-5", true, 0, {
       providerSpecificData: { baseUrl: "https://api.z.ai/api/anthropic/v1/messages" },
     }),
-    "https://api.z.ai/api/anthropic/v1/messages?beta=true"
+    "https://api.z.ai/api/anthropic/v1/messages?beta=true",
   );
   assert.equal(
     glmCodingApikey.buildUrl("glm-4.7", true, 0, {
       providerSpecificData: { baseUrl: "https://api.z.ai/api/anthropic/v1/messages" },
     }),
-    "https://api.z.ai/api/anthropic/v1/messages?beta=true"
+    "https://api.z.ai/api/anthropic/v1/messages?beta=true",
   );
   assert.equal(zai.buildUrl("glm-5", true), "https://api.z.ai/api/anthropic/v1/messages?beta=true");
 });
@@ -384,7 +384,7 @@ test("DefaultExecutor.buildHeaders handles Gemini and Claude auth modes", () => 
       apiKey: "oci-key",
       projectId: "ocid1.generativeaiproject.oc1.us-chicago-1.example",
     },
-    true
+    true,
   );
   const sapHeaders = sap.buildHeaders(
     {
@@ -393,13 +393,13 @@ test("DefaultExecutor.buildHeaders handles Gemini and Claude auth modes", () => 
         resourceGroup: "shared",
       },
     },
-    true
+    true,
   );
   const modalHeaders = modal.buildHeaders(
     {
       apiKey: "modal-key",
     },
-    true
+    true,
   );
   const maritalkHeaders = maritalk.buildHeaders({ apiKey: "maritalk-key" }, true);
 
@@ -461,7 +461,7 @@ test("DefaultExecutor.buildHeaders keeps a caller-supplied Anthropic-Version (ca
     const headers = anthropicCompat.buildHeaders({ apiKey: "anth-key" }, true);
 
     const versionKeys = Object.keys(headers).filter(
-      (key) => key.toLowerCase() === "anthropic-version"
+      (key) => key.toLowerCase() === "anthropic-version",
     );
     assert.equal(versionKeys.length, 1, "Duplicate anthropic-version header keys found");
     assert.equal(headers["Anthropic-Version"], "2025-01-01");
@@ -523,7 +523,7 @@ test("DefaultExecutor.buildHeaders handles Snowflake PATs and GigaChat access to
   assert.equal(snowflakePatHeaders.Authorization, "Bearer test-token");
   assert.equal(
     snowflakePatHeaders["X-Snowflake-Authorization-Token-Type"],
-    "PROGRAMMATIC_ACCESS_TOKEN"
+    "PROGRAMMATIC_ACCESS_TOKEN",
   );
   assert.equal(snowflakeJwtHeaders.Authorization, "Bearer jwt-token");
   assert.equal(snowflakeJwtHeaders["X-Snowflake-Authorization-Token-Type"], "KEYPAIR_JWT");
@@ -539,7 +539,7 @@ test("DefaultExecutor.buildHeaders strips DashScope headers for Qwen API keys an
   assert.equal(apiKeyHeaders.Authorization, "Bearer dash-key");
   assert.equal(
     Object.keys(apiKeyHeaders).some((key) => key.toLowerCase().startsWith("x-dashscope-")),
-    false
+    false,
   );
   assert.equal(oauthHeaders.Authorization, "Bearer oauth-token");
   assert.equal(oauthHeaders["X-Dashscope-AuthType"], "qwen-oauth");
@@ -556,7 +556,7 @@ test("DefaultExecutor.buildHeaders rotates extra API keys and builds Claude Code
       connectionId: "conn-rotation",
       providerSpecificData: { extraApiKeys: ["extra-1", "extra-2"] },
     },
-    false
+    false,
   );
   const second = openai.buildHeaders(
     {
@@ -564,21 +564,21 @@ test("DefaultExecutor.buildHeaders rotates extra API keys and builds Claude Code
       connectionId: "conn-rotation",
       providerSpecificData: { extraApiKeys: ["extra-1", "extra-2"] },
     },
-    false
+    false,
   );
   const ccHeaders = cc.buildHeaders(
     {
       apiKey: "cc-key",
       providerSpecificData: { ccSessionId: "session-1" },
     },
-    true
+    true,
   );
   const ccJsonHeaders = cc.buildHeaders(
     {
       apiKey: "cc-key",
       providerSpecificData: { ccSessionId: "session-1" },
     },
-    false
+    false,
   );
 
   assert.equal(first.Authorization, "Bearer primary");
@@ -601,7 +601,7 @@ test("DefaultExecutor.execute uses CC-compatible connection defaults to append 1
           Object.entries(headers || {}).map(([key, value]) => [
             key,
             value == null ? "" : String(value),
-          ])
+          ]),
         );
 
   globalThis.fetch = async (_url, init = {}) => {
@@ -676,12 +676,12 @@ test("DefaultExecutor.execute uses CC-compatible connection defaults to append 1
   assert.equal(calls[0].headers["anthropic-beta"].includes(CONTEXT_1M_BETA_HEADER), false);
   assert.equal(
     calls[0].headers["anthropic-beta"].includes(CLAUDE_CODE_COMPATIBLE_REDACT_THINKING_BETA),
-    false
+    false,
   );
   assert.equal(calls[1].headers["anthropic-beta"].includes(CONTEXT_1M_BETA_HEADER), true);
   assert.equal(
     calls[1].headers["anthropic-beta"].includes(CLAUDE_CODE_COMPATIBLE_REDACT_THINKING_BETA),
-    true
+    true,
   );
   assert.equal(calls[2].headers["anthropic-beta"], undefined);
 });
@@ -738,7 +738,7 @@ test("DefaultExecutor.execute reports the exact serialized provider request befo
             ccSessionId: "session-1",
           },
         },
-      })
+      }),
     );
 
     assert.ok(prepared, "prepared request hook should fire before fetch");
@@ -949,7 +949,7 @@ test("DefaultExecutor.transformRequest injects OpenRouter connection preset", ()
     "openai/gpt-4",
     { ...body, preset: "client-preset" },
     true,
-    { providerSpecificData: { preset: "connection-preset" } }
+    { providerSpecificData: { preset: "connection-preset" } },
   );
 
   assert.equal((explicit as any).preset, "client-preset");
@@ -991,7 +991,7 @@ test("DefaultExecutor.transformRequest strips stream_options from Anthropic-comp
     "claude-sonnet-4-6",
     anthropicBody,
     true,
-    {}
+    {},
   );
   const ccResult = anthropicCcCompat.transformRequest("claude-sonnet-4-6", ccBody, true, {});
 
@@ -1218,7 +1218,7 @@ test("DefaultExecutor.needsRefresh requests a proactive token for GigaChat", () 
       accessToken: "existing-token",
       expiresAt: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
     }),
-    false
+    false,
   );
 });
 
@@ -1237,7 +1237,7 @@ test("DefaultExecutor.refreshCredentials delegates to OAuth refresh and returns 
       {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   };
 
@@ -1264,7 +1264,7 @@ test("DefaultExecutor.refreshCredentials swallows refresh errors and logs them",
   try {
     const result = await executor.refreshCredentials(
       { refreshToken: "refresh-me" },
-      { error: (tag, message) => messages.push({ tag, message }) }
+      { error: (tag, message) => messages.push({ tag, message }) },
     );
     assert.equal(result, null);
     assert.equal(messages.length, 1);
@@ -1405,7 +1405,7 @@ test("BaseExecutor.execute throws the last error when all URLs fail", async () =
         stream: false,
         credentials: {},
       }),
-      /still down/
+      /still down/,
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -1434,7 +1434,7 @@ test("BaseExecutor.execute propagates aborted requests through the merged signal
         credentials: {},
         signal: controller.signal,
       }),
-      /aborted/
+      /aborted/,
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -1515,7 +1515,7 @@ test("DefaultExecutor.execute does not produce duplicate anthropic-version heade
 
   // Must be exactly one key — not multiple case variants that undici would combine
   const versionKeys = Object.keys(capturedHeaders).filter(
-    (k) => k.toLowerCase() === "anthropic-version"
+    (k) => k.toLowerCase() === "anthropic-version",
   );
   assert.equal(versionKeys.length, 1, "Duplicate anthropic-version header keys found");
   assert.equal(capturedHeaders[versionKeys[0]], "2023-06-01");

@@ -57,7 +57,7 @@ describe("classifyIssue", () => {
         reactionGroups: [{ content: "THUMBS_UP", users: { totalCount: 5 } }],
       }),
       DEFAULT_THRESHOLDS,
-      now
+      now,
     );
     assert.equal(r.bucket, "absorb");
     assert.match(r.reason, /override:thumbs/);
@@ -74,7 +74,7 @@ describe("classifyIssue", () => {
         ],
       }),
       DEFAULT_THRESHOLDS,
-      now
+      now,
     );
     assert.equal(r.bucket, "absorb");
     assert.match(r.reason, /override:commenters/);
@@ -91,7 +91,7 @@ describe("classifyIssue", () => {
         ],
       }),
       DEFAULT_THRESHOLDS,
-      now
+      now,
     );
     assert.equal(r.bucket, "dormant");
     assert.equal(r.commenters, 2);
@@ -107,7 +107,7 @@ describe("classifyIssue", () => {
         ],
       }),
       DEFAULT_THRESHOLDS,
-      now
+      now,
     );
     assert.equal(r.bucket, "dormant");
     assert.equal(r.commenters, 2);
@@ -129,7 +129,7 @@ describe("classifyIssue", () => {
         assignees: [{ login: "alice" }],
       }),
       DEFAULT_THRESHOLDS,
-      now
+      now,
     );
     assert.equal(r.bucket, "skip_assigned");
   });
@@ -146,7 +146,7 @@ describe("classifyIssue", () => {
         ],
       }),
       DEFAULT_THRESHOLDS,
-      now
+      now,
     );
     assert.equal(r.bucket, "skip_has_pr");
     assert.deepEqual(r.linkedPrs, [{ number: 2400, state: "open" }]);

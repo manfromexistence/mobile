@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
         totalOutputTokens: 0,
         appliedStyleCounts: {},
       },
-      { status: 200 }
+      { status: 200 },
     );
   }
 }

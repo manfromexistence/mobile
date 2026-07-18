@@ -1,7 +1,7 @@
 // @ts-nocheck
-import * as mod from "./diff-changes"
-import { create } from "../storybook/scaffold"
-import { changes } from "../storybook/fixtures"
+import * as mod from "./diff-changes";
+import { create } from "../storybook/scaffold";
+import { changes } from "../storybook/fixtures";
 
 const docs = `### Overview
 Summarize additions/deletions as text or compact bars.
@@ -25,7 +25,7 @@ Pair with \`Diff\`/\`DiffSSR\` to contextualize a change set.
 ### Theming/tokens
 - Uses \`data-component="diff-changes"\` and diff color tokens.
 
-`
+`;
 
 const story = create({
   title: "UI/DiffChanges",
@@ -34,7 +34,7 @@ const story = create({
     changes,
     variant: "default",
   },
-})
+});
 
 export default {
   title: "UI/DiffChanges",
@@ -54,15 +54,15 @@ export default {
       options: ["default", "bars"],
     },
   },
-}
+};
 
-export const Default = story.Basic
+export const Default = story.Basic;
 
 export const Bars = {
   args: {
     variant: "bars",
   },
-}
+};
 
 export const MultipleFiles = {
   args: {
@@ -72,10 +72,10 @@ export const MultipleFiles = {
       { additions: 2, deletions: 0 },
     ],
   },
-}
+};
 
 export const Zero = {
   args: {
     changes: { additions: 0, deletions: 0 },
   },
-}
+};

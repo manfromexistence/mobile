@@ -10,8 +10,9 @@ process.env.DATA_DIR = TEST_DATA_DIR;
 const core = await import("../../src/lib/db/core.ts");
 const providersDb = await import("../../src/lib/db/providers.ts");
 const settingsDb = await import("../../src/lib/db/settings.ts");
-const { migrateCodexConnectionDefaultsFromLegacySettings } =
-  await import("../../src/lib/providers/codexConnectionDefaults.ts");
+const { migrateCodexConnectionDefaultsFromLegacySettings } = await import(
+  "../../src/lib/providers/codexConnectionDefaults.ts"
+);
 
 async function resetStorage() {
   core.resetDbInstance();

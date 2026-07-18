@@ -138,7 +138,7 @@ function convertMessages(messages, tools, model) {
               description,
               inputSchema: {
                 json: normalizeKiroToolSchema(
-                  t.function?.parameters || t.parameters || t.input_schema || {}
+                  t.function?.parameters || t.parameters || t.input_schema || {},
                 ),
               },
             },
@@ -376,7 +376,7 @@ function convertMessages(messages, tools, model) {
           description,
           inputSchema: {
             json: normalizeKiroToolSchema(
-              t.function?.parameters || t.parameters || t.input_schema || {}
+              t.function?.parameters || t.parameters || t.input_schema || {},
             ),
           },
         },
@@ -744,7 +744,7 @@ export function buildKiroPayload(model, body, stream, credentials) {
   const { history, currentMessage, toolsAttached } = convertMessages(
     messages,
     tools,
-    normalizedModel
+    normalizedModel,
   );
 
   const profileArn = credentials?.providerSpecificData?.profileArn || "";
@@ -818,12 +818,14 @@ export function buildKiroPayload(model, body, stream, credentials) {
   // compressContext runs). This keeps conversationId stable even when compression alters content.
   // Priority 2: Deterministic hash from first user message in translated history (fallback).
   const preCompressionBody = credentials?._preCompressionBody as
-    Record<string, unknown> | null | undefined;
+    | Record<string, unknown>
+    | null
+    | undefined;
   const preCompressionMessages = Array.isArray(preCompressionBody?.messages)
     ? preCompressionBody.messages
     : null;
   const preCompressionFirstUser = preCompressionMessages?.find(
-    (m: Record<string, unknown>) => m.role === "user"
+    (m: Record<string, unknown>) => m.role === "user",
   );
   const seedFromPreCompression = preCompressionFirstUser
     ? typeof preCompressionFirstUser.content === "string"
@@ -842,7 +844,7 @@ export function buildKiroPayload(model, body, stream, credentials) {
   // Use uuidv5 with the hash of the system prompt / first message to maintain AWS Builder ID context cache
   payload.conversationState.conversationId = uuidv5(
     (firstContent || "").substring(0, 4000),
-    NAMESPACE_KIRO
+    NAMESPACE_KIRO,
   );
 
   if (profileArn) {

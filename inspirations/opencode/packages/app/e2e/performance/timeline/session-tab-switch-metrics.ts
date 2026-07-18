@@ -1,22 +1,24 @@
 export type SessionSwitchSample = {
-  observedAtMs: number
-  destination: string[]
-  source: string[]
-  hasVisibleRows: boolean
-  last: boolean
-  bottomErrorPx?: number
+  observedAtMs: number;
+  destination: string[];
+  source: string[];
+  hasVisibleRows: boolean;
+  last: boolean;
+  bottomErrorPx?: number;
   review?: {
-    fileHost: boolean
-    fileHostReplaced: boolean
-    header: string
-    replacedLevels: string[]
-  }
-}
+    fileHost: boolean;
+    fileHostReplaced: boolean;
+    header: string;
+    replacedLevels: string[];
+  };
+};
 
 export function classifySessionSwitch(samples: SessionSwitchSample[]) {
-  const firstDestination = samples.findIndex((sample) => sample.destination.length > 0)
-  const firstCorrect = samples.findIndex(isCorrectDestination)
-  const stable = samples.findIndex((_, index) => isStableSessionSwitch(samples.slice(index, index + 3)))
+  const firstDestination = samples.findIndex((sample) => sample.destination.length > 0);
+  const firstCorrect = samples.findIndex(isCorrectDestination);
+  const stable = samples.findIndex((_, index) =>
+    isStableSessionSwitch(samples.slice(index, index + 3)),
+  );
   return {
     firstDestinationObservedMs: samples[firstDestination]?.observedAtMs ?? null,
     firstCorrectObservedMs: samples[firstCorrect]?.observedAtMs ?? null,
@@ -26,14 +28,22 @@ export function classifySessionSwitch(samples: SessionSwitchSample[]) {
       .filter((sample) => sample.destination.length > 0 && !sample.last).length,
     blankSamples: samples.filter((sample) => !sample.hasVisibleRows).length,
     unknownSamples: samples.filter(
-      (sample) => sample.hasVisibleRows && sample.destination.length === 0 && sample.source.length === 0,
+      (sample) =>
+        sample.hasVisibleRows && sample.destination.length === 0 && sample.source.length === 0,
     ).length,
     sourceSamples: samples.filter((sample) => sample.source.length > 0).length,
-    reviewFileHostMissingSamples: samples.filter((sample) => sample.review && !sample.review.fileHost).length,
-    reviewFileHostReplacedSamples: samples.filter((sample) => sample.review?.fileHostReplaced).length,
-    reviewHeaders: [...new Set(samples.flatMap((sample) => (sample.review ? [sample.review.header] : [])))],
-    reviewReplacedLevels: [...new Set(samples.flatMap((sample) => sample.review?.replacedLevels ?? []))],
-  }
+    reviewFileHostMissingSamples: samples.filter(
+      (sample) => sample.review && !sample.review.fileHost,
+    ).length,
+    reviewFileHostReplacedSamples: samples.filter((sample) => sample.review?.fileHostReplaced)
+      .length,
+    reviewHeaders: [
+      ...new Set(samples.flatMap((sample) => (sample.review ? [sample.review.header] : []))),
+    ],
+    reviewReplacedLevels: [
+      ...new Set(samples.flatMap((sample) => sample.review?.replacedLevels ?? [])),
+    ],
+  };
 }
 
 export function isCorrectDestination(sample: SessionSwitchSample) {
@@ -42,15 +52,18 @@ export function isCorrectDestination(sample: SessionSwitchSample) {
     sample.source.length === 0 &&
     sample.last &&
     Math.abs(sample.bottomErrorPx ?? Infinity) <= 1
-  )
+  );
 }
 
 export function isStableSessionSwitch(samples: SessionSwitchSample[]) {
-  return samples.length === 3 && samples.every(isCorrectDestination)
+  return samples.length === 3 && samples.every(isCorrectDestination);
 }
 
-export function isStableDestination(samples: Pick<SessionSwitchSample, "last" | "bottomErrorPx">[]) {
+export function isStableDestination(
+  samples: Pick<SessionSwitchSample, "last" | "bottomErrorPx">[],
+) {
   return (
-    samples.length === 3 && samples.every((sample) => sample.last && Math.abs(sample.bottomErrorPx ?? Infinity) <= 1)
-  )
+    samples.length === 3 &&
+    samples.every((sample) => sample.last && Math.abs(sample.bottomErrorPx ?? Infinity) <= 1)
+  );
 }

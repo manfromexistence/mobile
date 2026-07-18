@@ -1,10 +1,10 @@
-import { Component, createMemo, Show } from "solid-js"
-import { useSync } from "@/context/sync"
-import { Dialog } from "@opencode-ai/ui/dialog"
-import { List } from "@opencode-ai/ui/list"
-import { Switch } from "@opencode-ai/ui/switch"
-import { useLanguage } from "@/context/language"
-import { useMcpToggle } from "@/context/mcp"
+import { Component, createMemo, Show } from "solid-js";
+import { useSync } from "@/context/sync";
+import { Dialog } from "@opencode-ai/ui/dialog";
+import { List } from "@opencode-ai/ui/list";
+import { Switch } from "@opencode-ai/ui/switch";
+import { useLanguage } from "@/context/language";
+import { useMcpToggle } from "@/context/mcp";
 
 const statusLabels = {
   connected: "mcp.status.connected",
@@ -12,27 +12,30 @@ const statusLabels = {
   needs_auth: "mcp.status.needs_auth",
   needs_client_registration: "mcp.status.needs_client_registration",
   disabled: "mcp.status.disabled",
-} as const
+} as const;
 
 export const DialogSelectMcp: Component = () => {
-  const sync = useSync()
-  const language = useLanguage()
+  const sync = useSync();
+  const language = useLanguage();
 
   const items = createMemo(() =>
     Object.entries(sync().data.mcp ?? {})
       .map(([name, status]) => ({ name, status: status.status }))
       .sort((a, b) => a.name.localeCompare(b.name)),
-  )
+  );
 
-  const toggle = useMcpToggle()
+  const toggle = useMcpToggle();
 
-  const enabledCount = createMemo(() => items().filter((i) => i.status === "connected").length)
-  const totalCount = createMemo(() => items().length)
+  const enabledCount = createMemo(() => items().filter((i) => i.status === "connected").length);
+  const totalCount = createMemo(() => items().length);
 
   return (
     <Dialog
       title={language.t("dialog.mcp.title")}
-      description={language.t("dialog.mcp.description", { enabled: enabledCount(), total: totalCount() })}
+      description={language.t("dialog.mcp.description", {
+        enabled: enabledCount(),
+        total: totalCount(),
+      })}
     >
       <List
         class="px-3"
@@ -43,23 +46,23 @@ export const DialogSelectMcp: Component = () => {
         filterKeys={["name", "status"]}
         sortBy={(a, b) => a.name.localeCompare(b.name)}
         onSelect={(x) => {
-          if (!x || toggle.isPending) return
-          toggle.mutate(x.name)
+          if (!x || toggle.isPending) return;
+          toggle.mutate(x.name);
         }}
       >
         {(i) => {
-          const mcpStatus = () => sync().data.mcp[i.name]
-          const status = () => mcpStatus()?.status
+          const mcpStatus = () => sync().data.mcp[i.name];
+          const status = () => mcpStatus()?.status;
           const statusLabel = () => {
-            const key = status() ? statusLabels[status() as keyof typeof statusLabels] : undefined
-            if (!key) return
-            return language.t(key)
-          }
+            const key = status() ? statusLabels[status() as keyof typeof statusLabels] : undefined;
+            if (!key) return;
+            return language.t(key);
+          };
           const error = () => {
-            const s = mcpStatus()
-            if (s?.status === "failed" || s?.status === "needs_client_registration") return s.error
-          }
-          const enabled = () => status() === "connected"
+            const s = mcpStatus();
+            if (s?.status === "failed" || s?.status === "needs_client_registration") return s.error;
+          };
+          const enabled = () => status() === "connected";
           return (
             <div class="w-full flex items-center justify-between gap-x-3">
               <div class="flex flex-col gap-0.5 min-w-0">
@@ -78,15 +81,15 @@ export const DialogSelectMcp: Component = () => {
                   checked={enabled()}
                   disabled={toggle.isPending && toggle.variables === i.name}
                   onChange={() => {
-                    if (toggle.isPending) return
-                    toggle.mutate(i.name)
+                    if (toggle.isPending) return;
+                    toggle.mutate(i.name);
                   }}
                 />
               </div>
             </div>
-          )
+          );
         }}
       </List>
     </Dialog>
-  )
-}
+  );
+};

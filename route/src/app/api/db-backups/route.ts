@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -136,7 +136,7 @@ export async function PATCH(request: NextRequest) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -176,7 +176,7 @@ export async function DELETE(request: NextRequest) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 

@@ -49,7 +49,7 @@ export default function KiroOAuthWrapper({
         onSuccess?.();
       }
     },
-    [onSuccess]
+    [onSuccess],
   );
 
   const handleBack = () => {

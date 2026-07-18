@@ -61,7 +61,7 @@ export function getUsageSummary(unifiedSource: string, params: AnalyticsParams):
         COALESCE(MIN(timestamp), '') as firstRequest,
         COALESCE(MAX(timestamp), '') as lastRequest
       FROM ${unifiedSource} AS _u
-    `
+    `,
     )
     .get(params) as UsageSummaryRow | undefined;
   return (
@@ -108,7 +108,7 @@ export function getDailyUsage(unifiedSource: string, params: AnalyticsParams): D
       FROM ${unifiedSource} AS _u
       GROUP BY DATE(timestamp)
       ORDER BY date ASC
-    `
+    `,
     )
     .all(params) as DailyUsageRow[];
 }
@@ -148,7 +148,7 @@ export function getDailyCostRows(unifiedSource: string, params: AnalyticsParams)
       FROM ${unifiedSource} AS _u
       GROUP BY DATE(timestamp), LOWER(provider), LOWER(model), serviceTier
       ORDER BY date ASC
-    `
+    `,
     )
     .all(params) as DailyCostRow[];
 }
@@ -180,7 +180,7 @@ export function getHeatmapRows(heatmapConditions: string[], params: AnalyticsPar
       WHERE ${heatmapConditions.join(" AND ")}
       GROUP BY DATE(timestamp)
       ORDER BY date ASC
-    `
+    `,
     )
     .all(params) as HeatmapRow[];
 }
@@ -228,7 +228,7 @@ export function getModelUsageRows(unifiedSource: string, params: AnalyticsParams
       FROM ${unifiedSource} AS _u
       GROUP BY LOWER(model), LOWER(provider), serviceTier
       ORDER BY requests DESC
-    `
+    `,
     )
     .all(params) as ModelUsageRow[];
 }
@@ -251,7 +251,7 @@ export interface ProviderCostRow {
  */
 export function getProviderCostRows(
   unifiedSource: string,
-  params: AnalyticsParams
+  params: AnalyticsParams,
 ): ProviderCostRow[] {
   const db = getDbInstance();
   return db
@@ -268,7 +268,7 @@ export function getProviderCostRows(
         COALESCE(SUM(tokens_reasoning), 0) as reasoningTokens
       FROM ${unifiedSource} AS _u
       GROUP BY LOWER(provider), LOWER(model), serviceTier
-    `
+    `,
     )
     .all(params) as ProviderCostRow[];
 }
@@ -290,7 +290,7 @@ export interface ProviderUsageRow {
  */
 export function getProviderUsageRows(
   unifiedSource: string,
-  params: AnalyticsParams
+  params: AnalyticsParams,
 ): ProviderUsageRow[] {
   const db = getDbInstance();
   return db
@@ -307,7 +307,7 @@ export function getProviderUsageRows(
       FROM ${unifiedSource} AS _u
       GROUP BY LOWER(provider)
       ORDER BY requests DESC
-    `
+    `,
     )
     .all(params) as ProviderUsageRow[];
 }
@@ -353,7 +353,7 @@ export function getAccountCostRows(whereClause: string, params: AnalyticsParams)
       LEFT JOIN provider_connections c ON c.id = usage_history.connection_id
       ${whereClause}
       GROUP BY account, LOWER(usage_history.provider), LOWER(usage_history.model), serviceTier
-    `
+    `,
     )
     .all(params) as AccountCostRow[];
 }
@@ -379,7 +379,7 @@ export interface AccountUsageRow {
  */
 export function getAccountUsageRows(
   whereClause: string,
-  params: AnalyticsParams
+  params: AnalyticsParams,
 ): AccountUsageRow[] {
   const db = getDbInstance();
   return db
@@ -399,7 +399,7 @@ export function getAccountUsageRows(
       GROUP BY account
       ORDER BY requests DESC
       LIMIT 50
-    `
+    `,
     )
     .all(params) as AccountUsageRow[];
 }
@@ -429,7 +429,7 @@ export interface ApiKeyUsageRow {
  */
 export function getApiKeyUsageRows(
   apiKeyWhereClause: string,
-  params: AnalyticsParams
+  params: AnalyticsParams,
 ): ApiKeyUsageRow[] {
   const db = getDbInstance();
   return db
@@ -451,7 +451,7 @@ export function getApiKeyUsageRows(
       FROM usage_history
       ${apiKeyWhereClause}
       GROUP BY COALESCE(NULLIF(api_key_id, ''), NULLIF(api_key_name, ''), 'unknown'), NULLIF(api_key_id, ''), LOWER(provider), LOWER(model), serviceTier
-    `
+    `,
     )
     .all(params) as ApiKeyUsageRow[];
 }
@@ -476,7 +476,7 @@ export interface ServiceTierUsageRow {
  */
 export function getServiceTierUsageRows(
   unifiedSource: string,
-  params: AnalyticsParams
+  params: AnalyticsParams,
 ): ServiceTierUsageRow[] {
   const db = getDbInstance();
   return db
@@ -496,7 +496,7 @@ export function getServiceTierUsageRows(
         COALESCE(SUM(tokens_input + tokens_output), 0) as totalTokens
       FROM ${unifiedSource} AS _u
       GROUP BY serviceTier, LOWER(provider), LOWER(model)
-    `
+    `,
     )
     .all(params) as ServiceTierUsageRow[];
 }
@@ -518,7 +518,7 @@ export interface ApiKeyMetadataRow {
  */
 export function getApiKeyMetadataRows(
   apiKeyWhereClause: string,
-  params: AnalyticsParams
+  params: AnalyticsParams,
 ): ApiKeyMetadataRow[] {
   const db = getDbInstance();
   return db
@@ -533,7 +533,7 @@ export function getApiKeyMetadataRows(
       ${apiKeyWhereClause}
       GROUP BY NULLIF(api_key_id, ''), NULLIF(api_key_name, '')
       ORDER BY lastUsed DESC
-    `
+    `,
     )
     .all(params) as ApiKeyMetadataRow[];
 }
@@ -552,7 +552,7 @@ export interface WeeklyPatternRow {
  */
 export function getWeeklyPatternRows(
   unifiedSource: string,
-  params: AnalyticsParams
+  params: AnalyticsParams,
 ): WeeklyPatternRow[] {
   const db = getDbInstance();
   return db
@@ -574,7 +574,7 @@ export function getWeeklyPatternRows(
       )
       GROUP BY dayOfWeek
       ORDER BY dayOfWeek ASC
-    `
+    `,
     )
     .all(params) as WeeklyPatternRow[];
 }
@@ -598,7 +598,7 @@ export interface PresetCostModelRow {
  */
 export function getPresetCostModelRows(
   presetUnifiedSource: string,
-  params: AnalyticsParams
+  params: AnalyticsParams,
 ): PresetCostModelRow[] {
   const db = getDbInstance();
   return db
@@ -615,7 +615,7 @@ export function getPresetCostModelRows(
         COALESCE(SUM(tokens_reasoning), 0) as reasoningTokens
       FROM ${presetUnifiedSource} AS _pu
       GROUP BY LOWER(model), LOWER(provider), serviceTier
-    `
+    `,
     )
     .all(params) as PresetCostModelRow[];
 }
@@ -688,7 +688,7 @@ export function getEndpointUsageRows(params: EndpointUsageParams = {}): Endpoint
       ${whereSql}
       GROUP BY endpoint, LOWER(COALESCE(provider, 'unknown')), LOWER(COALESCE(model, 'unknown'))
       ORDER BY requests DESC
-    `
+    `,
     )
     .all(bind) as EndpointUsageRow[];
 }
@@ -715,7 +715,7 @@ export interface ProviderDailyUsageRow {
  */
 export function getProviderDailyUsageRows(
   unifiedSource: string,
-  params: AnalyticsParams
+  params: AnalyticsParams,
 ): ProviderDailyUsageRow[] {
   const db = getDbInstance();
   return db
@@ -731,7 +731,7 @@ export function getProviderDailyUsageRows(
       FROM ${unifiedSource} AS _u
       GROUP BY DATE(timestamp), LOWER(provider)
       ORDER BY date DESC, requests DESC
-    `
+    `,
     )
     .all(params) as ProviderDailyUsageRow[];
 }

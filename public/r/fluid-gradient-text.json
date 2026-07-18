@@ -4,9 +4,7 @@
   "title": "Fluid Gradient Text",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "Render text with a fluid gradient that shifts with pointer movement.",
-  "dependencies": [
-    "motion"
-  ],
+  "dependencies": ["motion"],
   "files": [
     {
       "path": "src/registry/components/fluid-gradient-text/fluid-gradient-text.tsx",
@@ -16,8 +14,6 @@
     }
   ],
   "docs": "https://chanhdai.com/components/fluid-gradient-text",
-  "categories": [
-    "text-effects"
-  ],
+  "categories": ["text-effects"],
   "type": "registry:component"
 }

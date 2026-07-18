@@ -20,7 +20,7 @@ import path from "node:path";
 import { makeManagementSessionRequest } from "../helpers/managementSession.ts";
 
 const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-quota-pool-usage-provider-")
+  path.join(os.tmpdir(), "omniroute-quota-pool-usage-provider-"),
 );
 process.env.DATA_DIR = TEST_DATA_DIR;
 process.env.API_KEY_SECRET = "test-quota-usage-provider-secret";
@@ -62,7 +62,7 @@ test("GET /usage surfaces catalog dimensions for a catalog-only pool (provider r
   upsertAllocations(pool.id, [{ apiKeyId: "key-a", weight: 100, policy: "hard" }]);
 
   const req = await makeManagementSessionRequest(
-    `http://localhost/api/quota/pools/${pool.id}/usage`
+    `http://localhost/api/quota/pools/${pool.id}/usage`,
   );
   const res = await usageRoute.GET(req, { params: Promise.resolve({ id: pool.id }) });
   assert.equal(res.status, 200);
@@ -76,7 +76,7 @@ test("GET /usage surfaces catalog dimensions for a catalog-only pool (provider r
   // Regression assertion: was [] because resolvePlan(connId, "") found no catalog match.
   assert.ok(
     body.usage.dimensions.length >= 1,
-    "catalog-only pool must surface plan dimensions (was blank)"
+    "catalog-only pool must surface plan dimensions (was blank)",
   );
   const dim = body.usage.dimensions[0];
   assert.equal(dim.unit, "requests");
@@ -97,7 +97,7 @@ test("GET /usage still returns a 200 snapshot when the provider has no catalog p
   const pool = createPool({ name: "Unknown Pool", connectionId: conn.id });
 
   const req = await makeManagementSessionRequest(
-    `http://localhost/api/quota/pools/${pool.id}/usage`
+    `http://localhost/api/quota/pools/${pool.id}/usage`,
   );
   const res = await usageRoute.GET(req, { params: Promise.resolve({ id: pool.id }) });
   assert.equal(res.status, 200);

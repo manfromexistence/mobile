@@ -1,35 +1,39 @@
-export * as ConfigParse from "./parse"
+export * as ConfigParse from "./parse";
 
-import { type ParseError as JsoncParseError, parse as parseJsoncImpl, printParseErrorCode } from "jsonc-parser"
-import { Cause, Exit, Schema as EffectSchema, SchemaIssue } from "effect"
-import type { DeepMutable } from "@opencode-ai/core/schema"
-import { InvalidError, JsonError } from "@opencode-ai/core/v1/config/error"
+import {
+  type ParseError as JsoncParseError,
+  parse as parseJsoncImpl,
+  printParseErrorCode,
+} from "jsonc-parser";
+import { Cause, Exit, Schema as EffectSchema, SchemaIssue } from "effect";
+import type { DeepMutable } from "@opencode-ai/core/schema";
+import { InvalidError, JsonError } from "@opencode-ai/core/v1/config/error";
 
 export function jsonc(text: string, filepath: string): unknown {
-  const errors: JsoncParseError[] = []
-  const data = parseJsoncImpl(text, errors, { allowTrailingComma: true })
+  const errors: JsoncParseError[] = [];
+  const data = parseJsoncImpl(text, errors, { allowTrailingComma: true });
   if (errors.length) {
-    const lines = text.split("\n")
+    const lines = text.split("\n");
     const issues = errors
       .map((e) => {
-        const beforeOffset = text.substring(0, e.offset).split("\n")
-        const line = beforeOffset.length
-        const column = beforeOffset[beforeOffset.length - 1].length + 1
-        const problemLine = lines[line - 1]
+        const beforeOffset = text.substring(0, e.offset).split("\n");
+        const line = beforeOffset.length;
+        const column = beforeOffset[beforeOffset.length - 1].length + 1;
+        const problemLine = lines[line - 1];
 
-        const error = `${printParseErrorCode(e.error)} at line ${line}, column ${column}`
-        if (!problemLine) return error
+        const error = `${printParseErrorCode(e.error)} at line ${line}, column ${column}`;
+        if (!problemLine) return error;
 
-        return `${error}\n   Line ${line}: ${problemLine}\n${"".padStart(column + 9)}^`
+        return `${error}\n   Line ${line}: ${problemLine}\n${"".padStart(column + 9)}^`;
       })
-      .join("\n")
+      .join("\n");
     throw new JsonError({
       path: filepath,
       message: `\n--- JSONC Input ---\n${text}\n--- Errors ---\n${issues}\n--- End ---`,
-    })
+    });
   }
 
-  return data
+  return data;
 }
 
 export function schema<S extends EffectSchema.Decoder<unknown, never>>(
@@ -37,7 +41,7 @@ export function schema<S extends EffectSchema.Decoder<unknown, never>>(
   data: unknown,
   source: string,
 ): DeepMutable<S["Type"]> {
-  const extra = topLevelExtraKeys(schema, data)
+  const extra = topLevelExtraKeys(schema, data);
   if (extra.length) {
     throw new InvalidError({
       path: source,
@@ -49,12 +53,15 @@ export function schema<S extends EffectSchema.Decoder<unknown, never>>(
           message: `Unrecognized key${extra.length === 1 ? "" : "s"}: ${extra.join(", ")}`,
         },
       ],
-    })
+    });
   }
 
-  const decoded = EffectSchema.decodeUnknownExit(schema)(data, { errors: "all", propertyOrder: "original" })
-  if (Exit.isSuccess(decoded)) return decoded.value as DeepMutable<S["Type"]>
-  const error = Cause.squash(decoded.cause)
+  const decoded = EffectSchema.decodeUnknownExit(schema)(data, {
+    errors: "all",
+    propertyOrder: "original",
+  });
+  if (Exit.isSuccess(decoded)) return decoded.value as DeepMutable<S["Type"]>;
+  const error = Cause.squash(decoded.cause);
 
   throw new InvalidError(
     {
@@ -68,12 +75,12 @@ export function schema<S extends EffectSchema.Decoder<unknown, never>>(
         : [{ message: String(error), path: [] }],
     },
     { cause: error },
-  )
+  );
 }
 
 function topLevelExtraKeys(schema: EffectSchema.Top, data: unknown) {
-  if (typeof data !== "object" || data === null || Array.isArray(data)) return []
-  if (schema.ast._tag !== "Objects" || schema.ast.indexSignatures.length > 0) return []
-  const known = new Set(schema.ast.propertySignatures.map((item) => String(item.name)))
-  return Object.keys(data).filter((key) => !known.has(key))
+  if (typeof data !== "object" || data === null || Array.isArray(data)) return [];
+  if (schema.ast._tag !== "Objects" || schema.ast.indexSignatures.length > 0) return [];
+  const known = new Set(schema.ast.propertySignatures.map((item) => String(item.name)));
+  return Object.keys(data).filter((key) => !known.has(key));
 }

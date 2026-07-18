@@ -90,9 +90,9 @@ export async function install(version = "latest"): Promise<InstallResult> {
       JSON.stringify(
         { name: "omniroute-mux-host", version: "0.0.0", private: true, dependencies: {} },
         null,
-        2
+        2,
       ),
-      "utf8"
+      "utf8",
     );
   }
 
@@ -100,7 +100,7 @@ export async function install(version = "latest"): Promise<InstallResult> {
     ["install", `${MUX_PACKAGE}@${version}`, "--omit=dev", "--no-audit", "--no-fund"],
     // `--prefix` is passed via `prefix` (→ npm_config_prefix env) instead of an
     // argv path so an install dir with spaces survives the Windows shell (#5379).
-    { cwd: MUX_INSTALL_DIR, prefix: MUX_INSTALL_DIR }
+    { cwd: MUX_INSTALL_DIR, prefix: MUX_INSTALL_DIR },
   );
 
   const installedVersion = await getInstalledVersion();
@@ -108,7 +108,7 @@ export async function install(version = "latest"): Promise<InstallResult> {
     throw new InstallError(
       "Could not read installed version from node_modules/mux/package.json",
       "Mux instalado mas versão não pôde ser lida.",
-      500
+      500,
     );
   }
 

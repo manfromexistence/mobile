@@ -49,7 +49,7 @@ export function registerPlugin(program) {
       const plugins = await discoverPlugins();
       emit(
         plugins.map((p) => ({ name: p.name, version: p.version, description: p.description })),
-        cmd.optsWithGlobals()
+        cmd.optsWithGlobals(),
       );
       if (plugins.length === 0) {
         process.stdout.write("No plugins installed.\n");
@@ -70,7 +70,7 @@ export function registerPlugin(program) {
           `⚠ WARNING: Plugins run with the same privileges as omniroute CLI.\n` +
             `  Only install plugins from sources you trust.\n` +
             `  Installing: ${pkgName}\n` +
-            `  Pass --yes to skip this prompt.\n`
+            `  Pass --yes to skip this prompt.\n`,
         );
         // In non-interactive mode, require explicit --yes
         if (!process.stdin.isTTY) {
@@ -142,7 +142,7 @@ export function registerPlugin(program) {
           process.stdout.write(`No plugins found for '${query || "omniroute-cmd"}'.\n`);
         } else {
           rows.forEach((r) =>
-            process.stdout.write(`  ${r.name}@${r.version}  ${r.description || ""}\n`)
+            process.stdout.write(`  ${r.name}@${r.version}  ${r.description || ""}\n`),
           );
         }
       } catch (err) {
@@ -205,13 +205,13 @@ export function registerPlugin(program) {
             keywords: ["omniroute-plugin", "omniroute-cmd"],
           },
           null,
-          2
-        ) + "\n"
+          2,
+        ) + "\n",
       );
       writeFileSync(join(dir, "index.mjs"), TEMPLATE_INDEX.replace(/PLUGIN_NAME/g, safeName));
       writeFileSync(
         join(dir, "README.md"),
-        `# omniroute-cmd-${safeName}\n\nAn OmniRoute CLI plugin.\n\n## Install\n\n\`\`\`bash\nomniroute plugin install ${safeName}\n\`\`\`\n`
+        `# omniroute-cmd-${safeName}\n\nAn OmniRoute CLI plugin.\n\n## Install\n\n\`\`\`bash\nomniroute plugin install ${safeName}\n\`\`\`\n`,
       );
       process.stdout.write(`✓ Scaffolded: ${dir}\n`);
       process.stdout.write(`  Run: cd ${dir} && omniroute plugin install .\n`);

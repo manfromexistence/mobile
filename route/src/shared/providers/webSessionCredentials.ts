@@ -262,7 +262,7 @@ export const WEB_SESSION_CREDENTIAL_REQUIREMENTS = {
 } satisfies Record<keyof typeof WEB_COOKIE_PROVIDERS, WebSessionCredentialRequirement>;
 
 export function getWebSessionCredentialRequirement(
-  providerId: unknown
+  providerId: unknown,
 ): WebSessionCredentialRequirement | null {
   if (typeof providerId !== "string") return null;
   return (
@@ -283,7 +283,7 @@ function hasNonEmptyString(value: unknown): value is string {
 
 export function hasUsableWebSessionCredential(
   providerId: unknown,
-  providerSpecificData: unknown
+  providerSpecificData: unknown,
 ): boolean {
   const requirement = getWebSessionCredentialRequirement(providerId);
   if (!requirement || requirement.kind === "none") return false;
@@ -311,7 +311,7 @@ export function hasUsableWebSessionCredential(
  */
 export function resolveWebSessionImportApiKey(
   requirement: WebSessionCredentialRequirement | null,
-  credential: string
+  credential: string,
 ): string | null {
   if (!requirement || requirement.kind !== "token") return null;
   const trimmed = typeof credential === "string" ? credential.trim() : "";

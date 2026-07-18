@@ -23,7 +23,7 @@ export async function encodeToDx(config: {
     data = JSON.parse(jsonContent);
   } catch (error) {
     throw new Error(
-      `Failed to parse JSON: ${error instanceof Error ? error.message : String(error)}`
+      `Failed to parse JSON: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 
@@ -99,7 +99,7 @@ export async function decodeToJson(config: {
 
 async function writeStreamingJson(
   chunks: AsyncIterable<string> | Iterable<string>,
-  outputPath?: string
+  outputPath?: string,
 ): Promise<void> {
   if (outputPath) {
     let fileHandle: FileHandle | undefined;

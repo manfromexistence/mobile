@@ -10,7 +10,7 @@ export function stripZeroWidth(value: unknown): unknown {
       Object.entries(value as Record<string, unknown>).map(([key, item]) => [
         key,
         stripZeroWidth(item),
-      ])
+      ]),
     );
   }
   return value;
@@ -55,7 +55,7 @@ export function isValidToolCallHeaderPrefix(candidate: string): boolean {
 }
 
 export function parseTextualToolCallCandidate(
-  text: unknown
+  text: unknown,
 ): { kind: "complete"; name: string; args: unknown } | { kind: "partial" } | null {
   if (typeof text !== "string") return null;
   const normalized = text.replace(/[\u200B-\u200D\uFEFF]/g, "");

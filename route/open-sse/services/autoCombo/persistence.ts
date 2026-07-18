@@ -69,7 +69,7 @@ export function recordDecision(
   comboId: string,
   provider: string,
   score: number,
-  wasExploration: boolean
+  wasExploration: boolean,
 ): void {
   let state = stateCache.get(comboId);
   if (!state) {

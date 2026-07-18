@@ -1,11 +1,11 @@
-import { Route, type RouteRoutedModelInput } from "../route/client"
-import { Endpoint } from "../route/endpoint"
-import { Framing } from "../route/framing"
-import * as OpenAIChat from "./openai-chat"
+import { Route, type RouteRoutedModelInput } from "../route/client";
+import { Endpoint } from "../route/endpoint";
+import { Framing } from "../route/framing";
+import * as OpenAIChat from "./openai-chat";
 
-const ADAPTER = "openai-compatible-chat"
+const ADAPTER = "openai-compatible-chat";
 
-export type OpenAICompatibleChatModelInput = RouteRoutedModelInput
+export type OpenAICompatibleChatModelInput = RouteRoutedModelInput;
 
 /**
  * Route for non-OpenAI providers that expose an OpenAI Chat-compatible
@@ -19,6 +19,6 @@ export const route = Route.make({
   protocol: OpenAIChat.protocol,
   endpoint: Endpoint.path("/chat/completions"),
   framing: Framing.sse,
-})
+});
 
-export * as OpenAICompatibleChat from "./openai-compatible-chat"
+export * as OpenAICompatibleChat from "./openai-compatible-chat";

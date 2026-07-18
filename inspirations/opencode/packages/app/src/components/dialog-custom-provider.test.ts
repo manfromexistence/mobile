@@ -1,7 +1,7 @@
-import { describe, expect, test } from "bun:test"
-import { validateCustomProvider } from "./dialog-custom-provider-form"
+import { describe, expect, test } from "bun:test";
+import { validateCustomProvider } from "./dialog-custom-provider-form";
 
-const t = (key: string) => key
+const t = (key: string) => key;
 
 describe("validateCustomProvider", () => {
   test("builds trimmed config payload", () => {
@@ -21,7 +21,7 @@ describe("validateCustomProvider", () => {
       t,
       disabledProviders: [],
       existingProviderIDs: new Set(),
-    })
+    });
 
     expect(result.result).toEqual({
       providerID: "custom-provider",
@@ -41,8 +41,8 @@ describe("validateCustomProvider", () => {
           "model-a": { name: "Model A" },
         },
       },
-    })
-  })
+    });
+  });
 
   test("flags duplicate rows and allows reconnecting disabled providers", () => {
     const result = validateCustomProvider({
@@ -64,17 +64,17 @@ describe("validateCustomProvider", () => {
       t,
       disabledProviders: ["custom-provider"],
       existingProviderIDs: new Set(["custom-provider"]),
-    })
+    });
 
-    expect(result.result).toBeUndefined()
-    expect(result.err.providerID).toBeUndefined()
+    expect(result.result).toBeUndefined();
+    expect(result.err.providerID).toBeUndefined();
     expect(result.models[1]).toEqual({
       id: "provider.custom.error.duplicate",
       name: undefined,
-    })
+    });
     expect(result.headers[1]).toEqual({
       key: "provider.custom.error.duplicate",
       value: undefined,
-    })
-  })
-})
+    });
+  });
+});

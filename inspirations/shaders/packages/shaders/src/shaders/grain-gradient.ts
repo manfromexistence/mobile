@@ -1,16 +1,13 @@
-import type { vec4 } from '../types.js';
-import type { ShaderMotionParams } from '../shader-mount.js';
-import {
-  type ShaderSizingParams,
-  type ShaderSizingUniforms,
-} from '../shader-sizing.js';
+import type { vec4 } from "../types.js";
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
 import {
   simplexNoise,
   declarePI,
   rotation2,
   textureRandomizerR,
   proceduralHash11,
-} from '../shader-utils.js';
+} from "../shader-utils.js";
 
 export const grainGradientMeta = {
   maxColorCount: 7,
@@ -75,7 +72,7 @@ uniform mediump float u_pixelRatio;
 uniform sampler2D u_noiseTexture;
 
 uniform vec4 u_colorBack;
-uniform vec4 u_colors[${ grainGradientMeta.maxColorCount }];
+uniform vec4 u_colors[${grainGradientMeta.maxColorCount}];
 uniform float u_colorsCount;
 uniform float u_softness;
 uniform float u_intensity;
@@ -100,10 +97,10 @@ in vec2 v_patternBoxSize;
 
 out vec4 fragColor;
 
-${ declarePI }
-${ simplexNoise }
-${ rotation2 }
-${ textureRandomizerR }
+${declarePI}
+${simplexNoise}
+${rotation2}
+${textureRandomizerR}
 
 float valueNoiseR(vec2 st) {
   vec2 i = floor(st);
@@ -138,7 +135,7 @@ vec4 fbmR(vec2 n0, vec2 n1, vec2 n2, vec2 n3) {
   return total;
 }
 
-${ proceduralHash11 }
+${proceduralHash11}
 
 vec2 truchet(vec2 uv, float idx){
   idx = fract(((idx - .5) * 2.));
@@ -315,7 +312,7 @@ void main() {
   int cntStop = int(u_colorsCount) - 1;
   vec4 gradient = u_colors[0];
   gradient.rgb *= gradient.a;
-  for (int i = 1; i < ${ grainGradientMeta.maxColorCount }; i++) {
+  for (int i = 1; i < ${grainGradientMeta.maxColorCount}; i++) {
     if (i > cntStop) break;
 
     float localT = clamp(mixer - float(i - 1), 0., 1.);

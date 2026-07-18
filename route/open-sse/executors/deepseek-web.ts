@@ -98,13 +98,13 @@ function errorResponse(status: number, message: string, dsCode?: number): Respon
     JSON.stringify({
       error: { message, type: "upstream_error", code: dsCode ?? `HTTP_${status}` },
     }),
-    { status, headers: { "Content-Type": "application/json" } }
+    { status, headers: { "Content-Type": "application/json" } },
   );
 }
 
 function resolveModelOptions(
   model?: string,
-  bodyObj?: Record<string, unknown>
+  bodyObj?: Record<string, unknown>,
 ): {
   modelType: string;
   thinkingEnabled: boolean;
@@ -147,7 +147,7 @@ async function solvePow(challenge: PowChallenge): Promise<string> {
     challenge.challenge,
     challenge.salt,
     challenge.difficulty,
-    challenge.expire_at
+    challenge.expire_at,
   );
   if (answer < 0) throw new Error("PoW solver failed");
   return Buffer.from(
@@ -158,7 +158,7 @@ async function solvePow(challenge: PowChallenge): Promise<string> {
       answer,
       signature: challenge.signature,
       target_path: challenge.target_path,
-    })
+    }),
   ).toString("base64");
 }
 
@@ -362,13 +362,13 @@ function transformSSE(deepseekStream: ReadableStream, model: string): ReadableSt
         // finishStream is not required here — the controller is already cancelled.
       },
     },
-    { highWaterMark: 16384 }
+    { highWaterMark: 16384 },
   );
 }
 
 async function collectSSEContent(
   deepseekStream: ReadableStream,
-  model: string
+  model: string,
 ): Promise<{ content: string; reasoningContent: string }> {
   const decoder = new TextDecoder();
   const reader = deepseekStream.getReader();
@@ -512,7 +512,7 @@ function extractMessageText(content: unknown): string {
  */
 export function messagesToPrompt(
   messages: Array<{ role: string; content: string; tool_call_id?: string; name?: string }>,
-  historyWindow = 0
+  historyWindow = 0,
 ): string {
   if (messages.length === 0) return "";
 
@@ -560,7 +560,7 @@ export function messagesToPrompt(
           ? `Assistant: ${turn.text}`
           : turn.role === "tool"
             ? `Tool result ${turn.text}`
-            : `User: ${turn.text}`
+            : `User: ${turn.text}`,
       )
       .join("\n\n");
     parts.push(transcript);
@@ -576,7 +576,7 @@ export function messagesToPrompt(
 async function acquireAccessToken(
   userToken: string,
   signal?: AbortSignal | null,
-  log?: ExecuteInput["log"]
+  log?: ExecuteInput["log"],
 ): Promise<string> {
   const cached = tokenCache.get(userToken);
   if (cached && cached.expiresAt > Math.floor(Date.now() / 1000)) {
@@ -676,7 +676,7 @@ async function deleteSessionOnDeepSeek(accessToken: string, sessionId: string): 
 
 function wrapStreamWithCleanup(
   responseStream: ReadableStream,
-  cleanup: () => Promise<void>
+  cleanup: () => Promise<void>,
 ): ReadableStream {
   const reader = responseStream.getReader();
   return new ReadableStream({
@@ -698,7 +698,7 @@ function wrapStreamWithCleanup(
 
 async function getPowChallenge(
   accessToken: string,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): Promise<PowChallenge> {
   const resp = await fetch(`${DEEPSEEK_API_BASE}/v0/chat/create_pow_challenge`, {
     method: "POST",
@@ -745,7 +745,7 @@ function buildToolAwareResult(opts: {
     const emit = (
       controller: ReadableStreamDefaultController,
       delta: object,
-      finish: string | null
+      finish: string | null,
     ) => {
       controller.enqueue(
         encoder.encode(
@@ -755,8 +755,8 @@ function buildToolAwareResult(opts: {
             created,
             model: clientModel,
             choices: [{ index: 0, delta, finish_reason: finish }],
-          })}\n\n`
-        )
+          })}\n\n`,
+        ),
       );
     };
     const sse = new ReadableStream({
@@ -777,7 +777,7 @@ function buildToolAwareResult(opts: {
                 function: { name: tc.function.name, arguments: tc.function.arguments },
               })),
             },
-            null
+            null,
           );
         }
         emit(controller, {}, finishReason);
@@ -830,7 +830,7 @@ export class DeepSeekWebExecutor extends BaseExecutor {
 
   async testConnection(
     credentials: Record<string, unknown>,
-    signal?: AbortSignal
+    signal?: AbortSignal,
   ): Promise<boolean> {
     try {
       const userToken = extractUserToken(credentials);
@@ -869,7 +869,7 @@ export class DeepSeekWebExecutor extends BaseExecutor {
         response: errorResponse(
           400,
           "Invalid credentials: paste your userToken from DeepSeek localStorage " +
-            "(DevTools → Application → Local Storage → chat.deepseek.com → userToken)"
+            "(DevTools → Application → Local Storage → chat.deepseek.com → userToken)",
         ),
         url: COMPLETION_URL,
         headers: {},
@@ -879,7 +879,7 @@ export class DeepSeekWebExecutor extends BaseExecutor {
 
     const { modelType, thinkingEnabled, searchEnabled } = resolveModelOptions(
       model as string,
-      bodyObj
+      bodyObj,
     );
 
     // Per-connection memory config (#2942). Defaults preserve the legacy
@@ -903,7 +903,7 @@ export class DeepSeekWebExecutor extends BaseExecutor {
       const refFileIds = Array.isArray(bodyObj.ref_file_ids) ? bodyObj.ref_file_ids : [];
       log?.info?.(
         "DEEPSEEK-WEB",
-        `model_type=${modelType}, thinking=${thinkingEnabled}, search=${searchEnabled}, files=${refFileIds.length}, stream=${stream !== false}, persist=${persistSession}, window=${historyWindow}`
+        `model_type=${modelType}, thinking=${thinkingEnabled}, search=${searchEnabled}, files=${refFileIds.length}, stream=${stream !== false}, persist=${persistSession}, window=${historyWindow}`,
       );
 
       // One completion attempt against a given session id (fresh PoW per attempt).
@@ -957,7 +957,7 @@ export class DeepSeekWebExecutor extends BaseExecutor {
       let { sessionId, reused: reusedSession } = await acquireSession();
       log?.info?.(
         "DEEPSEEK-WEB",
-        `Session ${reusedSession ? "reused" : "created"} in ${Date.now() - t0}ms`
+        `Session ${reusedSession ? "reused" : "created"} in ${Date.now() - t0}ms`,
       );
 
       t0 = Date.now();
@@ -965,7 +965,7 @@ export class DeepSeekWebExecutor extends BaseExecutor {
       let { resp, reqHeaders, requestPayload } = await performCompletion(sessionId);
       log?.info?.(
         "DEEPSEEK-WEB",
-        `Completion response in ${Date.now() - t0}ms, status=${resp.status}`
+        `Completion response in ${Date.now() - t0}ms, status=${resp.status}`,
       );
 
       // A reused session that fails is likely stale (user deleted the chat in the
@@ -1064,7 +1064,7 @@ export class DeepSeekWebExecutor extends BaseExecutor {
         const { content: cleanedContent, toolCalls } = parseDeepSeekToolCalls(
           content,
           `call-${Date.now()}`,
-          requestedTools
+          requestedTools,
         );
         return buildToolAwareResult({
           stream: stream !== false,

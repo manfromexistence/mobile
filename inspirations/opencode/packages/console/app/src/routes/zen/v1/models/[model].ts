@@ -1,6 +1,6 @@
-import type { APIEvent } from "@solidjs/start/server"
-import { handler } from "~/routes/zen/util/handler"
-import { parseGoogleVariant } from "~/routes/zen/util/variant"
+import type { APIEvent } from "@solidjs/start/server";
+import { handler } from "~/routes/zen/util/handler";
+import { parseGoogleVariant } from "~/routes/zen/util/variant";
 
 export function POST(input: APIEvent) {
   return handler(input, {
@@ -12,5 +12,5 @@ export function POST(input: APIEvent) {
     parseIsStream: (url: string, _body: any) =>
       // ie. url: https://opencode.ai/zen/v1/models/gemini-3-pro:streamGenerateContent?alt=sse'
       url.split("/").pop()?.split(":")?.[1]?.startsWith("streamGenerateContent") ?? false,
-  })
+  });
 }

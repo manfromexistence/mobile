@@ -41,7 +41,7 @@ describe("binaryManager", () => {
     it("should return .tar.gz for darwin", () => {
       assert.equal(
         mod.getAssetName("darwin", "arm64"),
-        "CLIProxyAPI_{version}_darwin_arm64.tar.gz"
+        "CLIProxyAPI_{version}_darwin_arm64.tar.gz",
       );
     });
 
@@ -52,7 +52,7 @@ describe("binaryManager", () => {
     it("should return .tar.gz for freebsd", () => {
       assert.equal(
         mod.getAssetName("freebsd", "amd64"),
-        "CLIProxyAPI_{version}_freebsd_amd64.tar.gz"
+        "CLIProxyAPI_{version}_freebsd_amd64.tar.gz",
       );
     });
   });
@@ -127,7 +127,7 @@ describe("binaryManager", () => {
       }
       fs.symlinkSync(
         path.join(binDir, "cliproxyapi-2.0.0", "cli-proxy-api"),
-        path.join(binDir, "cliproxyapi")
+        path.join(binDir, "cliproxyapi"),
       );
       const result = await mod.rollbackVersion(tmpDir);
       // Previous = second highest = 1.0.0

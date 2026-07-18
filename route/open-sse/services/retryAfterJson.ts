@@ -39,6 +39,6 @@ export function parseRetryHintFromJsonBody(body: string, maxMs: number): number 
 
   return positiveCappedMs(
     errorObj.retry_after_ms ?? root.retry_after_ms ?? errorObj.retryAfterMs ?? root.retryAfterMs,
-    maxMs
+    maxMs,
   );
 }

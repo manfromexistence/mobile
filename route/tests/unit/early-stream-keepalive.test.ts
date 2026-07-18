@@ -46,7 +46,7 @@ test("slow handler emits early keepalive then forwards the real body (#2544)", a
   const slow = new Promise<Response>((resolve) => {
     setTimeout(
       () => resolve(sseResponse("event: response.created\ndata: {}\n\ndata: [DONE]\n\n")),
-      120
+      120,
     );
   });
 
@@ -101,7 +101,7 @@ test("slow handler emits the custom keepaliveFrame (Anthropic ping) before the b
   const slow = new Promise<Response>((resolve) => {
     setTimeout(
       () => resolve(sseResponse("event: message_start\ndata: {}\n\ndata: [DONE]\n\n")),
-      120
+      120,
     );
   });
 
@@ -128,9 +128,9 @@ test("slow handler that errors emits an in-band error frame (#2544)", async () =
           new Response(JSON.stringify({ error: { message: "rate limited", type: "rate_limit" } }), {
             status: 429,
             headers: { "Content-Type": "application/json" },
-          })
+          }),
         ),
-      80
+      80,
     );
   });
 
@@ -151,7 +151,7 @@ test("fast handler rejection propagates instead of being swallowed (#2544)", asy
       withEarlyStreamKeepalive(Promise.reject(new Error("upstream unreachable")), {
         thresholdMs: 1000,
       }),
-    /upstream unreachable/
+    /upstream unreachable/,
   );
 });
 

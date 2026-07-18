@@ -1,11 +1,11 @@
-import { type ContextMenuTriggerMode } from '@pierre/trees';
-import { preloadFileTree } from '@pierre/trees/ssr';
+import { type ContextMenuTriggerMode } from "@pierre/trees";
+import { preloadFileTree } from "@pierre/trees/ssr";
 
-import { sampleFileList } from '../_lib/demo-data';
-import { TREE_NEW_VIEWPORT_HEIGHTS } from '../_lib/dimensions';
-import { DemoContextMenuClient } from './DemoContextMenuClient';
+import { sampleFileList } from "../_lib/demo-data";
+import { TREE_NEW_VIEWPORT_HEIGHTS } from "../_lib/dimensions";
+import { DemoContextMenuClient } from "./DemoContextMenuClient";
 
-const CONTEXT_MENU_EXPANDED_PATHS = ['src', 'src/components'] as const;
+const CONTEXT_MENU_EXPANDED_PATHS = ["src", "src/components"] as const;
 
 const CONTEXT_MENU_HEADER_HTML = `
 <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;font-size:12px;border-bottom:1px solid color-mix(in oklab, currentColor 18%, transparent);color:var(--trees-fg-muted)">
@@ -14,10 +14,7 @@ const CONTEXT_MENU_HEADER_HTML = `
 </div>
 `;
 
-function createContextMenuPreloadedData(
-  triggerMode: ContextMenuTriggerMode,
-  id: string
-) {
+function createContextMenuPreloadedData(triggerMode: ContextMenuTriggerMode, id: string) {
   return preloadFileTree({
     composition: {
       contextMenu: {
@@ -38,25 +35,25 @@ function createContextMenuPreloadedData(
 }
 
 const bothModePreloadedData = createContextMenuPreloadedData(
-  'both',
-  'file-tree-context-menu-demo-both'
+  "both",
+  "file-tree-context-menu-demo-both",
 );
 const buttonModePreloadedData = createContextMenuPreloadedData(
-  'button',
-  'file-tree-context-menu-demo-button'
+  "button",
+  "file-tree-context-menu-demo-button",
 );
 const rightClickModePreloadedData = createContextMenuPreloadedData(
-  'right-click',
-  'file-tree-context-menu-demo-right-click'
+  "right-click",
+  "file-tree-context-menu-demo-right-click",
 );
 
 export function DemoContextMenu() {
   return (
     <DemoContextMenuClient
       preloadedDataById={{
-        'file-tree-context-menu-demo-both': bothModePreloadedData,
-        'file-tree-context-menu-demo-button': buttonModePreloadedData,
-        'file-tree-context-menu-demo-right-click': rightClickModePreloadedData,
+        "file-tree-context-menu-demo-both": bothModePreloadedData,
+        "file-tree-context-menu-demo-button": buttonModePreloadedData,
+        "file-tree-context-menu-demo-right-click": rightClickModePreloadedData,
       }}
     />
   );

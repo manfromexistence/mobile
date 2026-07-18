@@ -109,7 +109,7 @@ async function waitForServer(
     stdoutLines: string[];
     stderrLines: string[];
     exitInfo?: { code: number | null; signal: NodeJS.Signals | null } | null;
-  }
+  },
 ) {
   const startedAt = Date.now();
   let lastError = "";
@@ -122,7 +122,7 @@ async function waitForServer(
           ...logs.stdoutLines.slice(-40),
           "--- stderr ---",
           ...logs.stderrLines.slice(-40),
-        ].join("\n")
+        ].join("\n"),
       );
     }
     try {
@@ -143,7 +143,7 @@ async function waitForServer(
       ...logs.stdoutLines.slice(-40),
       "--- stderr ---",
       ...logs.stderrLines.slice(-40),
-    ].join("\n")
+    ].join("\n"),
   );
 }
 
@@ -294,7 +294,7 @@ test("round-robin combo with 3 fingerprints: all requests succeed", async () => 
     assert.equal(
       result.response.status,
       200,
-      `request ${i + 1} failed: ${JSON.stringify(result.json)}`
+      `request ${i + 1} failed: ${JSON.stringify(result.json)}`,
     );
     assert.equal(result.json.choices[0].message.content, "fingerprint ok");
     // #6426 (v3.8.46): chatCore now unconditionally aligns the non-streaming
@@ -334,7 +334,7 @@ test("round-robin combo handles 5 sequential requests", async () => {
     assert.equal(
       result.response.status,
       200,
-      `request ${i + 1} failed: ${JSON.stringify(result.json)}`
+      `request ${i + 1} failed: ${JSON.stringify(result.json)}`,
     );
   }
 

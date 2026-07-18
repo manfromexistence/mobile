@@ -20,7 +20,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 export function shouldForceResponsesUpstream(
   provider: string,
   body: unknown,
-  credentials: CredentialsLike | null
+  credentials: CredentialsLike | null,
 ): boolean {
   if (!provider.startsWith("openai-compatible-")) return false;
   if (!isRecord(body)) return false;
@@ -47,7 +47,7 @@ export function shouldForceResponsesUpstream(
 export function withForcedResponsesUpstream<T extends CredentialsLike>(
   provider: string,
   body: unknown,
-  credentials: T
+  credentials: T,
 ): T {
   if (!shouldForceResponsesUpstream(provider, body, credentials)) return credentials;
   return {

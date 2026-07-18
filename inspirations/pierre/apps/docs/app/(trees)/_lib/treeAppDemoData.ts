@@ -1,13 +1,13 @@
-import type { FileContents } from '@pierre/diffs';
-import type { GitStatusEntry } from '@pierre/trees';
+import type { FileContents } from "@pierre/diffs";
+import type { GitStatusEntry } from "@pierre/trees";
 
 export const TREE_APP_DEMO_FILES: Readonly<Record<string, FileContents>> = {
   // ---------------------------------------------------------------------------
   // Repository-level dotfiles
   // ---------------------------------------------------------------------------
 
-  '.gitignore': {
-    name: '.gitignore',
+  ".gitignore": {
+    name: ".gitignore",
     contents: `# Dependencies
 node_modules
 .pnp
@@ -38,16 +38,16 @@ yarn-error.log*
 pnpm-debug.log*
 `,
   },
-  '.env': {
-    name: '.env',
+  ".env": {
+    name: ".env",
     contents: `CODE_STORAGE_API_KEY=your-api-key
 CODE_STORAGE_BASE_URL=https://api.code.storage
 SENTRY_DSN=
 ANALYTICS_ID=
 `,
   },
-  '.editorconfig': {
-    name: '.editorconfig',
+  ".editorconfig": {
+    name: ".editorconfig",
     contents: `root = true
 
 [*]
@@ -62,13 +62,13 @@ trim_trailing_whitespace = true
 trim_trailing_whitespace = false
 `,
   },
-  '.nvmrc': {
-    name: '.nvmrc',
+  ".nvmrc": {
+    name: ".nvmrc",
     contents: `20.11.1
 `,
   },
-  '.prettierrc.json': {
-    name: '.prettierrc.json',
+  ".prettierrc.json": {
+    name: ".prettierrc.json",
     contents: `{
   "printWidth": 100,
   "singleQuote": true,
@@ -84,8 +84,8 @@ trim_trailing_whitespace = false
   // Top-level docs
   // ---------------------------------------------------------------------------
 
-  'README.md': {
-    name: 'README.md',
+  "README.md": {
+    name: "README.md",
     contents: `# Acme Components
 
 A small UI kit used to demo the **TreeApp** component from \`@pierre/docs\`.
@@ -117,8 +117,8 @@ See [docs/getting-started.md](./docs/getting-started.md) for the full tour.
 > This is a static example: no bundler is involved.
 `,
   },
-  'CHANGELOG.md': {
-    name: 'CHANGELOG.md',
+  "CHANGELOG.md": {
+    name: "CHANGELOG.md",
     contents: `# Changelog
 
 All notable changes to this project will be documented in this file.
@@ -147,8 +147,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - \`formatRelativeTime\` helper.
 `,
   },
-  'CONTRIBUTING.md': {
-    name: 'CONTRIBUTING.md',
+  "CONTRIBUTING.md": {
+    name: "CONTRIBUTING.md",
     contents: `# Contributing
 
 Thanks for your interest in contributing to Acme Components!
@@ -181,7 +181,7 @@ Please be kind.
 `,
   },
   LICENSE: {
-    name: 'LICENSE',
+    name: "LICENSE",
     contents: `MIT License
 
 Copyright (c) 2026 Acme, Inc.
@@ -210,8 +210,8 @@ SOFTWARE.
   // Package / build config
   // ---------------------------------------------------------------------------
 
-  'package.json': {
-    name: 'package.json',
+  "package.json": {
+    name: "package.json",
     contents: `{
   "name": "acme-components",
   "version": "0.1.0",
@@ -273,8 +273,8 @@ SOFTWARE.
 }
 `,
   },
-  'tsconfig.json': {
-    name: 'tsconfig.json',
+  "tsconfig.json": {
+    name: "tsconfig.json",
     contents: `{
   "compilerOptions": {
     "target": "ES2022",
@@ -304,8 +304,8 @@ SOFTWARE.
 }
 `,
   },
-  'tsconfig.node.json': {
-    name: 'tsconfig.node.json',
+  "tsconfig.node.json": {
+    name: "tsconfig.node.json",
     contents: `{
   "compilerOptions": {
     "composite": true,
@@ -320,8 +320,8 @@ SOFTWARE.
 }
 `,
   },
-  'vite.config.ts': {
-    name: 'vite.config.ts',
+  "vite.config.ts": {
+    name: "vite.config.ts",
     contents: `import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -355,8 +355,8 @@ export default defineConfig({
 });
 `,
   },
-  'vitest.config.ts': {
-    name: 'vitest.config.ts',
+  "vitest.config.ts": {
+    name: "vitest.config.ts",
     contents: `import { fileURLToPath } from 'node:url';
 
 import { defineConfig, mergeConfig } from 'vitest/config';
@@ -384,8 +384,8 @@ export default mergeConfig(
 );
 `,
   },
-  'tailwind.config.ts': {
-    name: 'tailwind.config.ts',
+  "tailwind.config.ts": {
+    name: "tailwind.config.ts",
     contents: `import type { Config } from 'tailwindcss';
 
 // The raw color values live in src/styles/tokens.css as CSS custom
@@ -431,8 +431,8 @@ const config: Config = {
 export default config;
 `,
   },
-  'postcss.config.js': {
-    name: 'postcss.config.js',
+  "postcss.config.js": {
+    name: "postcss.config.js",
     contents: `export default {
   plugins: {
     tailwindcss: {},
@@ -441,8 +441,8 @@ export default config;
 };
 `,
   },
-  'eslint.config.js': {
-    name: 'eslint.config.js',
+  "eslint.config.js": {
+    name: "eslint.config.js",
     contents: `import js from '@eslint/js';
 import reactHooks from 'eslint-plugin-react-hooks';
 import tseslint from 'typescript-eslint';
@@ -488,8 +488,8 @@ export default tseslint.config(
   // .github/
   // ---------------------------------------------------------------------------
 
-  '.github/CODEOWNERS': {
-    name: 'CODEOWNERS',
+  ".github/CODEOWNERS": {
+    name: "CODEOWNERS",
     contents: `# Default owners for everything in the repo
 * @acme/frontend-platform
 
@@ -501,8 +501,8 @@ export default tseslint.config(
 /.github/        @acme/devex
 `,
   },
-  '.github/PULL_REQUEST_TEMPLATE.md': {
-    name: 'PULL_REQUEST_TEMPLATE.md',
+  ".github/PULL_REQUEST_TEMPLATE.md": {
+    name: "PULL_REQUEST_TEMPLATE.md",
     contents: `## Summary
 
 <!-- Describe the change and link any related issues. -->
@@ -519,8 +519,8 @@ export default tseslint.config(
 <!-- If the change affects UI, drag-and-drop images here. -->
 `,
   },
-  '.github/ISSUE_TEMPLATE/bug_report.md': {
-    name: 'bug_report.md',
+  ".github/ISSUE_TEMPLATE/bug_report.md": {
+    name: "bug_report.md",
     contents: `---
 name: Bug report
 about: Report something that's not working as expected
@@ -552,8 +552,8 @@ What did you expect to happen instead?
 - OS:
 `,
   },
-  '.github/ISSUE_TEMPLATE/feature_request.md': {
-    name: 'feature_request.md',
+  ".github/ISSUE_TEMPLATE/feature_request.md": {
+    name: "feature_request.md",
     contents: `---
 name: Feature request
 about: Suggest a new feature or enhancement
@@ -575,8 +575,8 @@ Describe the API, UX, or behavior you'd like.
 What else did you try? Why doesn't it fit?
 `,
   },
-  '.github/dependabot.yml': {
-    name: 'dependabot.yml',
+  ".github/dependabot.yml": {
+    name: "dependabot.yml",
     contents: `version: 2
 updates:
   - package-ecosystem: npm
@@ -608,8 +608,8 @@ updates:
       prefix: "ci"
 `,
   },
-  '.github/workflows/ci.yml': {
-    name: 'ci.yml',
+  ".github/workflows/ci.yml": {
+    name: "ci.yml",
     contents: `name: CI
 
 on:
@@ -668,8 +668,8 @@ jobs:
           path: dist
 `,
   },
-  '.github/workflows/release.yml': {
-    name: 'release.yml',
+  ".github/workflows/release.yml": {
+    name: "release.yml",
     contents: `name: Release
 
 on:
@@ -715,8 +715,8 @@ jobs:
           generate_release_notes: true
 `,
   },
-  '.github/workflows/codeql.yml': {
-    name: 'codeql.yml',
+  ".github/workflows/codeql.yml": {
+    name: "codeql.yml",
     contents: `name: "CodeQL"
 
 on:
@@ -756,8 +756,8 @@ jobs:
   // Husky
   // ---------------------------------------------------------------------------
 
-  '.husky/pre-commit': {
-    name: 'pre-commit',
+  ".husky/pre-commit": {
+    name: "pre-commit",
     contents: `#!/usr/bin/env sh
 
 # Run lint and typecheck on staged changes before letting the commit land.
@@ -770,12 +770,12 @@ pnpm typecheck
   // node_modules (kept small on purpose; shows up as ignored in git)
   // ---------------------------------------------------------------------------
 
-  'node_modules/cool/cool.ts': {
-    name: 'cool.ts',
+  "node_modules/cool/cool.ts": {
+    name: "cool.ts",
     contents: `console.log('cool')`,
   },
-  'node_modules/storage/index.ts': {
-    name: 'index.ts',
+  "node_modules/storage/index.ts": {
+    name: "index.ts",
     contents: `export interface CodeStorageClientOptions {
   apiKey: string;
   baseUrl?: string;
@@ -818,8 +818,8 @@ export class CodeStorageClient {
   // src/ — public entry
   // ---------------------------------------------------------------------------
 
-  'src/index.ts': {
-    name: 'src/index.ts',
+  "src/index.ts": {
+    name: "src/index.ts",
     contents: `export { Avatar } from './components/Avatar';
 export { Badge } from './components/Badge';
 export { Button } from './components/Button';
@@ -846,8 +846,8 @@ export { invariant } from './utils/invariant';
   // src/components/
   // ---------------------------------------------------------------------------
 
-  'src/components/Button.tsx': {
-    name: 'src/components/Button.tsx',
+  "src/components/Button.tsx": {
+    name: "src/components/Button.tsx",
     contents: `import type { ButtonHTMLAttributes, ReactNode } from 'react';
 
 import { cn } from '../utils/cn';
@@ -900,8 +900,8 @@ export function Button({
 }
 `,
   },
-  'src/components/Card.tsx': {
-    name: 'src/components/Card.tsx',
+  "src/components/Card.tsx": {
+    name: "src/components/Card.tsx",
     contents: `import type { ReactNode } from 'react';
 
 export interface CardProps {
@@ -927,8 +927,8 @@ export function Card({ title, footer, children }: CardProps) {
 }
 `,
   },
-  'src/components/Badge.tsx': {
-    name: 'src/components/Badge.tsx',
+  "src/components/Badge.tsx": {
+    name: "src/components/Badge.tsx",
     contents: `import type { HTMLAttributes, ReactNode } from 'react';
 
 import { cn } from '../utils/cn';
@@ -962,8 +962,8 @@ export function Badge({ tone = 'neutral', className, children, ...rest }: BadgeP
 }
 `,
   },
-  'src/components/Input.tsx': {
-    name: 'src/components/Input.tsx',
+  "src/components/Input.tsx": {
+    name: "src/components/Input.tsx",
     contents: `import type { InputHTMLAttributes } from 'react';
 import { forwardRef, useId } from 'react';
 
@@ -1018,8 +1018,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
 });
 `,
   },
-  'src/components/Dialog.tsx': {
-    name: 'src/components/Dialog.tsx',
+  "src/components/Dialog.tsx": {
+    name: "src/components/Dialog.tsx",
     contents: `import type { ReactNode } from 'react';
 import { useEffect, useRef } from 'react';
 
@@ -1089,8 +1089,8 @@ export function Dialog({
 }
 `,
   },
-  'src/components/Tooltip.tsx': {
-    name: 'src/components/Tooltip.tsx',
+  "src/components/Tooltip.tsx": {
+    name: "src/components/Tooltip.tsx",
     contents: `import type { ReactElement } from 'react';
 import { cloneElement, useId, useState } from 'react';
 
@@ -1142,8 +1142,8 @@ export function Tooltip({ label, side = 'top', children }: TooltipProps) {
 }
 `,
   },
-  'src/components/Avatar.tsx': {
-    name: 'src/components/Avatar.tsx',
+  "src/components/Avatar.tsx": {
+    name: "src/components/Avatar.tsx",
     contents: `import { useState } from 'react';
 
 import { cn } from '../utils/cn';
@@ -1197,8 +1197,8 @@ export function Avatar({ src, alt, size = 'md', className }: AvatarProps) {
 }
 `,
   },
-  'src/components/Spinner.tsx': {
-    name: 'src/components/Spinner.tsx',
+  "src/components/Spinner.tsx": {
+    name: "src/components/Spinner.tsx",
     contents: `import { cn } from '../utils/cn';
 
 export interface SpinnerProps {
@@ -1229,8 +1229,8 @@ export function Spinner({ size = 'md', label = 'Loading', className }: SpinnerPr
 }
 `,
   },
-  'src/components/Tabs.tsx': {
-    name: 'src/components/Tabs.tsx',
+  "src/components/Tabs.tsx": {
+    name: "src/components/Tabs.tsx",
     contents: `import type { KeyboardEvent, ReactNode } from 'react';
 import { useCallback, useId, useState } from 'react';
 
@@ -1336,8 +1336,8 @@ export function Tabs({ tabs, defaultTabId, onChange, className }: TabsProps) {
   // src/hooks/
   // ---------------------------------------------------------------------------
 
-  'src/hooks/useMediaQuery.ts': {
-    name: 'useMediaQuery.ts',
+  "src/hooks/useMediaQuery.ts": {
+    name: "useMediaQuery.ts",
     contents: `import { useEffect, useState } from 'react';
 
 // Subscribes to a media query and returns whether it currently matches.
@@ -1364,8 +1364,8 @@ export function useMediaQuery(query: string): boolean {
 }
 `,
   },
-  'src/hooks/useDebounce.ts': {
-    name: 'useDebounce.ts',
+  "src/hooks/useDebounce.ts": {
+    name: "useDebounce.ts",
     contents: `import { useEffect, useState } from 'react';
 
 // Returns a value that updates only after \`delay\` ms have elapsed without a
@@ -1388,8 +1388,8 @@ export function useDebounce<T>(value: T, delay = 200): T {
 }
 `,
   },
-  'src/hooks/useLocalStorage.ts': {
-    name: 'useLocalStorage.ts',
+  "src/hooks/useLocalStorage.ts": {
+    name: "useLocalStorage.ts",
     contents: `import type { Dispatch, SetStateAction } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -1442,8 +1442,8 @@ export function useLocalStorage<T>(
 }
 `,
   },
-  'src/hooks/useOnClickOutside.ts': {
-    name: 'useOnClickOutside.ts',
+  "src/hooks/useOnClickOutside.ts": {
+    name: "useOnClickOutside.ts",
     contents: `import type { RefObject } from 'react';
 import { useEffect } from 'react';
 
@@ -1474,8 +1474,8 @@ export function useOnClickOutside<T extends HTMLElement>(
   // src/utils/
   // ---------------------------------------------------------------------------
 
-  'src/utils/format.ts': {
-    name: 'src/utils/format.ts',
+  "src/utils/format.ts": {
+    name: "src/utils/format.ts",
     contents: `const UNITS: ReadonlyArray<{ ms: number; label: Intl.RelativeTimeFormatUnit }> = [
   { ms: 60_000, label: 'second' },
   { ms: 3_600_000, label: 'minute' },
@@ -1503,8 +1503,8 @@ export function formatRelativeTime(timestamp: number, now: number = Date.now()):
 }
 `,
   },
-  'src/utils/cn.ts': {
-    name: 'cn.ts',
+  "src/utils/cn.ts": {
+    name: "cn.ts",
     contents: `type ClassValue = string | number | null | undefined | false | ClassValue[];
 
 // Small classnames helper: flattens nested arrays, ignores falsy values, and
@@ -1525,8 +1525,8 @@ export function cn(...values: ClassValue[]): string {
 }
 `,
   },
-  'src/utils/invariant.ts': {
-    name: 'invariant.ts',
+  "src/utils/invariant.ts": {
+    name: "invariant.ts",
     contents: `// Narrows values at runtime. Throws a descriptive error when \`condition\` is
 // falsy so callers can safely treat the value as non-null afterwards.
 export function invariant(condition: unknown, message: string): asserts condition {
@@ -1537,8 +1537,8 @@ export function invariant(condition: unknown, message: string): asserts conditio
 }
 `,
   },
-  'src/utils/assertNever.ts': {
-    name: 'assertNever.ts',
+  "src/utils/assertNever.ts": {
+    name: "assertNever.ts",
     contents: `// Exhaustiveness helper for discriminated unions. Place in the \`default:\`
 // branch of a switch statement so TypeScript errors if a new variant is added.
 export function assertNever(value: never, message = 'Unhandled variant'): never {
@@ -1551,8 +1551,8 @@ export function assertNever(value: never, message = 'Unhandled variant'): never 
   // src/styles/
   // ---------------------------------------------------------------------------
 
-  'src/styles/tokens.css': {
-    name: 'tokens.css',
+  "src/styles/tokens.css": {
+    name: "tokens.css",
     contents: `/*
  * Design tokens. All runtime theming funnels through these custom properties
  * so Tailwind (via var() references in tailwind.config.ts), raw CSS, and
@@ -1603,8 +1603,8 @@ export function assertNever(value: never, message = 'Unhandled variant'): never 
 }
 `,
   },
-  'src/styles/typography.css': {
-    name: 'typography.css',
+  "src/styles/typography.css": {
+    name: "typography.css",
     contents: `/*
  * Typographic tokens and base heading styles. Imported by globals.css.
  */
@@ -1650,8 +1650,8 @@ code, pre, kbd, samp {
 }
 `,
   },
-  'src/styles/globals.css': {
-    name: 'globals.css',
+  "src/styles/globals.css": {
+    name: "globals.css",
     contents: `@import './tokens.css';
 @import './typography.css';
 
@@ -1688,8 +1688,8 @@ a {
   // Tests
   // ---------------------------------------------------------------------------
 
-  'src/test/setup.ts': {
-    name: 'setup.ts',
+  "src/test/setup.ts": {
+    name: "setup.ts",
     contents: `import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
 import { afterEach } from 'vitest';
@@ -1699,8 +1699,8 @@ afterEach(() => {
 });
 `,
   },
-  'src/components/Button.test.tsx': {
-    name: 'Button.test.tsx',
+  "src/components/Button.test.tsx": {
+    name: "Button.test.tsx",
     contents: `import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
@@ -1738,8 +1738,8 @@ describe('Button', () => {
 });
 `,
   },
-  'src/components/Card.test.tsx': {
-    name: 'Card.test.tsx',
+  "src/components/Card.test.tsx": {
+    name: "Card.test.tsx",
     contents: `import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
@@ -1772,8 +1772,8 @@ describe('Card', () => {
 });
 `,
   },
-  'src/utils/format.test.ts': {
-    name: 'format.test.ts',
+  "src/utils/format.test.ts": {
+    name: "format.test.ts",
     contents: `import { describe, expect, it } from 'vitest';
 
 import { formatRelativeTime } from './format';
@@ -1798,8 +1798,8 @@ describe('formatRelativeTime', () => {
 });
 `,
   },
-  'src/hooks/useDebounce.test.ts': {
-    name: 'useDebounce.test.ts',
+  "src/hooks/useDebounce.test.ts": {
+    name: "useDebounce.test.ts",
     contents: `import { act, renderHook } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -1842,8 +1842,8 @@ describe('useDebounce', () => {
   // docs/
   // ---------------------------------------------------------------------------
 
-  'docs/getting-started.md': {
-    name: 'getting-started.md',
+  "docs/getting-started.md": {
+    name: "getting-started.md",
     contents: `# Getting started
 
 ## Install
@@ -1877,8 +1877,8 @@ export function Example() {
 - Open an issue if something is missing from this tour.
 `,
   },
-  'docs/theming.md': {
-    name: 'theming.md',
+  "docs/theming.md": {
+    name: "theming.md",
     contents: `# Theming
 
 All runtime color and typography values live in
@@ -1920,18 +1920,17 @@ way for brand skins, high-contrast modes, or per-tenant palettes.
   },
 };
 
-export const TREE_APP_DEMO_PATHS: readonly string[] =
-  Object.keys(TREE_APP_DEMO_FILES);
+export const TREE_APP_DEMO_PATHS: readonly string[] = Object.keys(TREE_APP_DEMO_FILES);
 
 export const TREE_APP_DEMO_INITIAL_EXPANDED_PATHS: readonly string[] = [
-  'src',
-  'src/components',
-  'src/hooks',
-  'src/styles',
-  'src/utils',
+  "src",
+  "src/components",
+  "src/hooks",
+  "src/styles",
+  "src/utils",
 ];
 
-export const TREE_APP_DEMO_INITIAL_ACTIVE_PATH = 'src/components/Button.tsx';
+export const TREE_APP_DEMO_INITIAL_ACTIVE_PATH = "src/components/Button.tsx";
 
 export const TREE_APP_DEMO_UNSAFE_CSS = `
   /* Hide the search field until the controller flips data-open="true". This
@@ -1944,29 +1943,29 @@ export const TREE_APP_DEMO_UNSAFE_CSS = `
 
 export const TREE_APP_DEMO_GIT_STATUSES: readonly GitStatusEntry[] = [
   // Ignored / infrastructure
-  { path: '.env', status: 'ignored' },
-  { path: 'node_modules/', status: 'ignored' },
+  { path: ".env", status: "ignored" },
+  { path: "node_modules/", status: "ignored" },
 
   // Newly added in this imagined branch
-  { path: '.github/workflows/ci.yml', status: 'added' },
-  { path: '.github/workflows/release.yml', status: 'added' },
-  { path: '.github/dependabot.yml', status: 'added' },
-  { path: 'src/components/Tabs.tsx', status: 'added' },
-  { path: 'src/components/Tooltip.tsx', status: 'added' },
-  { path: 'src/hooks/useOnClickOutside.ts', status: 'added' },
-  { path: 'src/styles/tokens.css', status: 'added' },
-  { path: 'src/styles/typography.css', status: 'added' },
+  { path: ".github/workflows/ci.yml", status: "added" },
+  { path: ".github/workflows/release.yml", status: "added" },
+  { path: ".github/dependabot.yml", status: "added" },
+  { path: "src/components/Tabs.tsx", status: "added" },
+  { path: "src/components/Tooltip.tsx", status: "added" },
+  { path: "src/hooks/useOnClickOutside.ts", status: "added" },
+  { path: "src/styles/tokens.css", status: "added" },
+  { path: "src/styles/typography.css", status: "added" },
 
   // Existing files the branch touched
-  { path: 'CHANGELOG.md', status: 'modified' },
-  { path: 'README.md', status: 'modified' },
-  { path: 'package.json', status: 'modified' },
-  { path: 'src/index.ts', status: 'modified' },
-  { path: 'src/components/Button.tsx', status: 'modified' },
-  { path: 'src/styles/globals.css', status: 'modified' },
-  { path: 'tailwind.config.ts', status: 'modified' },
+  { path: "CHANGELOG.md", status: "modified" },
+  { path: "README.md", status: "modified" },
+  { path: "package.json", status: "modified" },
+  { path: "src/index.ts", status: "modified" },
+  { path: "src/components/Button.tsx", status: "modified" },
+  { path: "src/styles/globals.css", status: "modified" },
+  { path: "tailwind.config.ts", status: "modified" },
 
   // Renamed / untracked to show off more status chips
-  { path: 'src/utils/cn.ts', status: 'renamed' },
-  { path: 'docs/theming.md', status: 'untracked' },
+  { path: "src/utils/cn.ts", status: "renamed" },
+  { path: "docs/theming.md", status: "untracked" },
 ];

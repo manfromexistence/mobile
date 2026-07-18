@@ -19,7 +19,7 @@ function logsText(
   t: LogsTranslator,
   key: string,
   fallback: string,
-  values?: Record<string, unknown>
+  values?: Record<string, unknown>,
 ) {
   if (typeof t.has !== "function" || !t.has(key)) return fallback;
   return values ? t(key, values) : t(key);
@@ -51,7 +51,7 @@ export default function LogsPage() {
   // render, so re-reading it on every render flips this prop mid-session and
   // re-triggers the child's deep-link effect right when the modal closes.
   const [initialId] = useState(() =>
-    typeof window !== "undefined" ? new URL(window.location.href).searchParams.get("id") : null
+    typeof window !== "undefined" ? new URL(window.location.href).searchParams.get("id") : null,
   );
 
   async function handleExport(hours: number) {
@@ -87,7 +87,7 @@ export default function LogsPage() {
 
       if (!res.ok) {
         throw new Error(
-          data?.error || logsText(t, "cleanHistoryFailed", "Failed to clean log history.")
+          data?.error || logsText(t, "cleanHistoryFailed", "Failed to clean log history."),
         );
       }
 
@@ -107,14 +107,14 @@ export default function LogsPage() {
               deletedArtifacts,
               deletedDetailedLogs,
             })
-          : logsText(t, "cleanHistoryEmpty", "No request log history was found.")
+          : logsText(t, "cleanHistoryEmpty", "No request log history was found."),
       );
     } catch (err) {
       console.error(logsText(t, "cleanHistoryFailed", "Failed to clean log history."), err);
       setCleanHistoryStatus(
         err instanceof Error
           ? err.message
-          : logsText(t, "cleanHistoryFailed", "Failed to clean log history.")
+          : logsText(t, "cleanHistoryFailed", "Failed to clean log history."),
       );
     } finally {
       setCleaningHistory(false);
@@ -229,7 +229,7 @@ export default function LogsPage() {
         message={logsText(
           t,
           "cleanHistoryMessage",
-          "This permanently clears all request log rows, legacy detail rows, and local artifact files under DATA_DIR/call_logs. The live page will refresh after cleanup."
+          "This permanently clears all request log rows, legacy detail rows, and local artifact files under DATA_DIR/call_logs. The live page will refresh after cleanup.",
         )}
         confirmText={logsText(t, "cleanHistoryConfirm", "Clean history")}
         cancelText={logsText(t, "cleanHistoryCancel", "Cancel")}

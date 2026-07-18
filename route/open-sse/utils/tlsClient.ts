@@ -104,7 +104,7 @@ class TlsClient {
         this.session = null;
       }
       console.warn(
-        `[TlsClient] Circuit opened after ${this.failureCount} consecutive failures, cooling down for ${this.cooldownMs}ms`
+        `[TlsClient] Circuit opened after ${this.failureCount} consecutive failures, cooling down for ${this.cooldownMs}ms`,
       );
       // Double cooldown for the next trip: 30s → 60s → 120s → ... → 10 min max
       this.escalateCooldown();

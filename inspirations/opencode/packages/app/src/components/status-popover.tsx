@@ -1,34 +1,44 @@
-import { Button } from "@opencode-ai/ui/button"
-import { Icon } from "@opencode-ai/ui/icon"
-import { IconButtonV2 } from "@opencode-ai/ui/v2/icon-button-v2"
-import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon"
-import { Popover } from "@opencode-ai/ui/popover"
-import { Suspense, createMemo, createSignal, lazy, Show, type JSX } from "solid-js"
-import { useLanguage } from "@/context/language"
-import { ServerConnection, useServer } from "@/context/server"
-import { useServerSDK } from "@/context/server-sdk"
-import { useSync } from "@/context/sync"
-import { useGlobal } from "@/context/global"
+import { Button } from "@opencode-ai/ui/button";
+import { Icon } from "@opencode-ai/ui/icon";
+import { IconButtonV2 } from "@opencode-ai/ui/v2/icon-button-v2";
+import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon";
+import { Popover } from "@opencode-ai/ui/popover";
+import { Suspense, createMemo, createSignal, lazy, Show, type JSX } from "solid-js";
+import { useLanguage } from "@/context/language";
+import { ServerConnection, useServer } from "@/context/server";
+import { useServerSDK } from "@/context/server-sdk";
+import { useSync } from "@/context/sync";
+import { useGlobal } from "@/context/global";
 
-const Body = lazy(() => import("./status-popover-body").then((x) => ({ default: x.StatusPopoverBody })))
-const ServerBody = lazy(() => import("./status-popover-body").then((x) => ({ default: x.StatusPopoverServerBody })))
+const Body = lazy(() =>
+  import("./status-popover-body").then((x) => ({ default: x.StatusPopoverBody })),
+);
+const ServerBody = lazy(() =>
+  import("./status-popover-body").then((x) => ({ default: x.StatusPopoverServerBody })),
+);
 
 export function StatusPopover() {
-  const language = useLanguage()
-  const server = useServer()
-  const global = useGlobal()
-  const sync = useSync()
-  const [shown, setShown] = createSignal(false)
-  const ready = createMemo(() => global.servers.health[server.key]?.healthy === false || sync().data.mcp_ready)
+  const language = useLanguage();
+  const server = useServer();
+  const global = useGlobal();
+  const sync = useSync();
+  const [shown, setShown] = createSignal(false);
+  const ready = createMemo(
+    () => global.servers.health[server.key]?.healthy === false || sync().data.mcp_ready,
+  );
   const mcpIssue = createMemo(() => {
-    const mcp = Object.values(sync().data.mcp ?? {})
-    const failed = mcp.some((item) => item.status === "failed" || item.status === "needs_client_registration")
-    const warn = mcp.some((item) => item.status === "needs_auth")
-    if (failed) return "critical" as const
-    if (warn) return "warning" as const
-  })
-  const serverHealthy = () => global.servers.health[server.key]?.healthy === true
-  const healthy = createMemo(() => global.servers.health[server.key]?.healthy === true && !mcpIssue())
+    const mcp = Object.values(sync().data.mcp ?? {});
+    const failed = mcp.some(
+      (item) => item.status === "failed" || item.status === "needs_client_registration",
+    );
+    const warn = mcp.some((item) => item.status === "needs_auth");
+    if (failed) return "critical" as const;
+    if (warn) return "warning" as const;
+  });
+  const serverHealthy = () => global.servers.health[server.key]?.healthy === true;
+  const healthy = createMemo(
+    () => global.servers.health[server.key]?.healthy === true && !mcpIssue(),
+  );
 
   return (
     <Popover
@@ -51,7 +61,8 @@ export function StatusPopover() {
               "absolute -top-px -right-px size-1.5 rounded-full": true,
               "bg-icon-success-base": ready() && healthy(),
               "bg-icon-warning-base": ready() && serverHealthy() && mcpIssue() === "warning",
-              "bg-icon-critical-base": serverHealthy() || (ready() && serverHealthy() && mcpIssue() === "critical"),
+              "bg-icon-critical-base":
+                serverHealthy() || (ready() && serverHealthy() && mcpIssue() === "critical"),
               "bg-border-weak-base": serverHealthy() || !ready(),
             }}
           />
@@ -72,30 +83,32 @@ export function StatusPopover() {
         </Suspense>
       </Show>
     </Popover>
-  )
+  );
 }
 
 export function StatusPopoverV2(props: { scope?: "server" }) {
-  if (props.scope === "server") return <ServerStatusPopover />
-  return <DirectoryStatusPopover />
+  if (props.scope === "server") return <ServerStatusPopover />;
+  return <DirectoryStatusPopover />;
 }
 
 function DirectoryStatusPopover() {
-  const language = useLanguage()
-  const server = useServerSDK()
-  const global = useGlobal()
-  const sync = useSync()
-  const [shown, setShown] = createSignal(false)
-  const serverHealth = () => global.servers.health[ServerConnection.key(server().server)]?.healthy
-  const ready = createMemo(() => serverHealth() === false || sync().data.mcp_ready)
+  const language = useLanguage();
+  const server = useServerSDK();
+  const global = useGlobal();
+  const sync = useSync();
+  const [shown, setShown] = createSignal(false);
+  const serverHealth = () => global.servers.health[ServerConnection.key(server().server)]?.healthy;
+  const ready = createMemo(() => serverHealth() === false || sync().data.mcp_ready);
   const mcpIssue = createMemo(() => {
-    const mcp = Object.values(sync().data.mcp ?? {})
-    const failed = mcp.some((item) => item.status === "failed" || item.status === "needs_client_registration")
-    const warn = mcp.some((item) => item.status === "needs_auth")
-    if (failed) return "critical" as const
-    if (warn) return "warning" as const
-  })
-  const healthy = createMemo(() => serverHealth() === true && !mcpIssue())
+    const mcp = Object.values(sync().data.mcp ?? {});
+    const failed = mcp.some(
+      (item) => item.status === "failed" || item.status === "needs_client_registration",
+    );
+    const warn = mcp.some((item) => item.status === "needs_auth");
+    if (failed) return "critical" as const;
+    if (warn) return "warning" as const;
+  });
+  const healthy = createMemo(() => serverHealth() === true && !mcpIssue());
   const state = createMemo<StatusPopoverState>(() => ({
     shown: shown(),
     ready: ready(),
@@ -109,17 +122,17 @@ function DirectoryStatusPopover() {
         <Body shown={shown} />
       </StatusPopoverBody>
     ),
-  }))
+  }));
 
-  return <StatusPopoverView state={state()} />
+  return <StatusPopoverView state={state()} />;
 }
 
 function ServerStatusPopover() {
-  const language = useLanguage()
-  const server = useServer()
-  const global = useGlobal()
-  const [shown, setShown] = createSignal(false)
-  const serverHealth = () => global.servers.health[server.key]?.healthy
+  const language = useLanguage();
+  const server = useServer();
+  const global = useGlobal();
+  const [shown, setShown] = createSignal(false);
+  const serverHealth = () => global.servers.health[server.key]?.healthy;
   const state = createMemo<StatusPopoverState>(() => ({
     shown: shown(),
     ready: serverHealth() !== undefined,
@@ -132,44 +145,47 @@ function ServerStatusPopover() {
         <ServerBody />
       </StatusPopoverBody>
     ),
-  }))
+  }));
 
-  return <StatusPopoverView state={state()} />
+  return <StatusPopoverView state={state()} />;
 }
 
 type StatusPopoverState = {
-  shown: boolean
-  ready: boolean
-  healthy: boolean
-  serverHealth: boolean | undefined
-  issue?: "critical" | "warning"
-  label: string
-  onOpenChange: (value: boolean) => void
-  body: () => JSX.Element
-}
+  shown: boolean;
+  ready: boolean;
+  healthy: boolean;
+  serverHealth: boolean | undefined;
+  issue?: "critical" | "warning";
+  label: string;
+  onOpenChange: (value: boolean) => void;
+  body: () => JSX.Element;
+};
 
 function StatusPopoverBody(props: { shown: boolean; children: JSX.Element }) {
   return (
     <Show when={props.shown}>
       <Suspense
-        fallback={<div class="w-[360px] h-14 rounded-xl bg-background-strong shadow-[var(--shadow-lg-border-base)]" />}
+        fallback={
+          <div class="w-[360px] h-14 rounded-xl bg-background-strong shadow-[var(--shadow-lg-border-base)]" />
+        }
       >
         {props.children}
       </Suspense>
     </Show>
-  )
+  );
 }
 
 function StatusPopoverView(props: { state: StatusPopoverState }) {
   const statusDotClass = () => ({
     "absolute rounded-full": true,
     "bg-icon-success-base": props.state.ready && props.state.healthy,
-    "bg-icon-warning-base": props.state.ready && props.state.serverHealth === true && props.state.issue === "warning",
+    "bg-icon-warning-base":
+      props.state.ready && props.state.serverHealth === true && props.state.issue === "warning",
     "bg-icon-critical-base":
       props.state.serverHealth === false ||
       (props.state.ready && props.state.serverHealth === true && props.state.issue === "critical"),
     "bg-border-weak-base": props.state.serverHealth === undefined || !props.state.ready,
-  })
+  });
 
   const popoverProps = {
     class:
@@ -177,7 +193,7 @@ function StatusPopoverView(props: { state: StatusPopoverState }) {
     gutter: 4,
     placement: "bottom-end" as const,
     shift: -168,
-  }
+  };
 
   return (
     <Popover
@@ -204,5 +220,5 @@ function StatusPopoverView(props: { state: StatusPopoverState }) {
     >
       {props.state.body()}
     </Popover>
-  )
+  );
 }

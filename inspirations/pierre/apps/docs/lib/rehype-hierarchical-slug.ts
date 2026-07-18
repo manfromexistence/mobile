@@ -1,7 +1,7 @@
-import type { Element, Root } from 'hast';
-import { headingRank } from 'hast-util-heading-rank';
-import { toString } from 'hast-util-to-string';
-import { visit } from 'unist-util-visit';
+import type { Element, Root } from "hast";
+import { headingRank } from "hast-util-heading-rank";
+import { toString } from "hast-util-to-string";
+import { visit } from "unist-util-visit";
 
 interface Options {
   /**
@@ -15,10 +15,10 @@ function slugify(text: string): string {
   return text
     .toLowerCase()
     .trim()
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/[^\w-]/g, '') // Remove non-word chars (except hyphens)
-    .replace(/--+/g, '-') // Replace multiple hyphens with single
-    .replace(/^-+|-+$/g, ''); // Trim hyphens from start/end
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/[^\w-]/g, "") // Remove non-word chars (except hyphens)
+    .replace(/--+/g, "-") // Replace multiple hyphens with single
+    .replace(/^-+|-+$/g, ""); // Trim hyphens from start/end
 }
 
 /**
@@ -39,7 +39,7 @@ export default function rehypeHierarchicalSlug(options: Options = {}) {
     // Track parent slugs by heading level
     const parentSlugs: Record<number, string> = {};
 
-    visit(tree, 'element', (node: Element) => {
+    visit(tree, "element", (node: Element) => {
       const rank = headingRank(node);
       if (rank == null) return;
 
@@ -56,13 +56,9 @@ export default function rehypeHierarchicalSlug(options: Options = {}) {
       let slug = baseSlug;
 
       // Find the nearest parent level that exists
-      for (
-        let parentLevel = rank - 1;
-        parentLevel >= Math.min(...levels);
-        parentLevel--
-      ) {
+      for (let parentLevel = rank - 1; parentLevel >= Math.min(...levels); parentLevel--) {
         const parentSlug = parentSlugs[parentLevel];
-        if (parentSlug != null && parentSlug !== '') {
+        if (parentSlug != null && parentSlug !== "") {
           slug = `${parentSlug}-${baseSlug}`;
           break;
         }

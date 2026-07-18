@@ -53,7 +53,7 @@ function insertUsageHistory(row: Record<string, unknown>) {
       @timestamp, @provider, @model,
       @tokens_input, @tokens_output, @tokens_cache_read, @tokens_cache_creation, @tokens_reasoning,
       @service_tier, @success, @latency_ms, @connection_id, @api_key_id, @api_key_name
-    )`
+    )`,
   ).run(full);
 }
 
@@ -75,7 +75,7 @@ function insertDailyUsageSummary(row: Record<string, unknown>) {
       date, provider, model, total_input_tokens, total_output_tokens, total_requests, total_cost
     ) VALUES (
       @date, @provider, @model, @total_input_tokens, @total_output_tokens, @total_requests, @total_cost
-    )`
+    )`,
   ).run(full);
 }
 
@@ -170,7 +170,7 @@ test("#3500 buildUnifiedSource — api_key filter suppresses daily_usage_summary
 
   assert.ok(
     !result.unifiedSource.includes("daily_usage_summary"),
-    "agg leg suppressed with api_key filter"
+    "agg leg suppressed with api_key filter",
   );
   assert.ok(result.unifiedSource.includes("usage_history"), "raw leg still present");
   assert.equal(result.unifiedParams.apiKey0, "key-abc", "apiKey0 propagated");

@@ -1,20 +1,25 @@
-import type { APIEvent } from "@solidjs/start/server"
-import { and, Database, eq, isNull, lt, or, sql } from "@opencode-ai/console-core/drizzle/index.js"
-import { KeyTable } from "@opencode-ai/console-core/schema/key.sql.js"
-import { BillingTable, LiteTable, SubscriptionTable, UsageTable } from "@opencode-ai/console-core/schema/billing.sql.js"
-import { centsToMicroCents } from "@opencode-ai/console-core/util/price.js"
-import { getMonthlyBounds, getWeekBounds } from "@opencode-ai/console-core/util/date.js"
-import { Identifier } from "@opencode-ai/console-core/identifier.js"
-import { Billing } from "@opencode-ai/console-core/billing.js"
-import { Actor } from "@opencode-ai/console-core/actor.js"
-import { WorkspaceTable } from "@opencode-ai/console-core/schema/workspace.sql.js"
-import { ZenData } from "@opencode-ai/console-core/model.js"
-import { Subscription } from "@opencode-ai/console-core/subscription.js"
-import { BlackData } from "@opencode-ai/console-core/black.js"
-import { UserTable } from "@opencode-ai/console-core/schema/user.sql.js"
-import { ModelTable } from "@opencode-ai/console-core/schema/model.sql.js"
-import { ProviderTable } from "@opencode-ai/console-core/schema/provider.sql.js"
-import { logger } from "./logger"
+import type { APIEvent } from "@solidjs/start/server";
+import { and, Database, eq, isNull, lt, or, sql } from "@opencode-ai/console-core/drizzle/index.js";
+import { KeyTable } from "@opencode-ai/console-core/schema/key.sql.js";
+import {
+  BillingTable,
+  LiteTable,
+  SubscriptionTable,
+  UsageTable,
+} from "@opencode-ai/console-core/schema/billing.sql.js";
+import { centsToMicroCents } from "@opencode-ai/console-core/util/price.js";
+import { getMonthlyBounds, getWeekBounds } from "@opencode-ai/console-core/util/date.js";
+import { Identifier } from "@opencode-ai/console-core/identifier.js";
+import { Billing } from "@opencode-ai/console-core/billing.js";
+import { Actor } from "@opencode-ai/console-core/actor.js";
+import { WorkspaceTable } from "@opencode-ai/console-core/schema/workspace.sql.js";
+import { ZenData } from "@opencode-ai/console-core/model.js";
+import { Subscription } from "@opencode-ai/console-core/subscription.js";
+import { BlackData } from "@opencode-ai/console-core/black.js";
+import { UserTable } from "@opencode-ai/console-core/schema/user.sql.js";
+import { ModelTable } from "@opencode-ai/console-core/schema/model.sql.js";
+import { ProviderTable } from "@opencode-ai/console-core/schema/provider.sql.js";
+import { logger } from "./logger";
 import {
   AuthError,
   CreditsError,
@@ -26,90 +31,90 @@ import {
   FreeUsageLimitError,
   GoUsageLimitError,
   BlackUsageLimitError,
-} from "./error"
+} from "./error";
 import {
   buildCostChunk,
   createBodyConverter,
   createStreamPartConverter,
   createResponseConverter,
   UsageInfo,
-} from "./provider/provider"
-import { anthropicHelper } from "./provider/anthropic"
-import { googleHelper } from "./provider/google"
-import { openaiHelper } from "./provider/openai"
-import { oaCompatHelper } from "./provider/openai-compatible"
-import { createRateLimiter as createIpRateLimiter } from "./ipRateLimiter"
-import { createRateLimiter as createKeyRateLimiter } from "./keyRateLimiter"
-import { createTrialLimiter } from "./trialLimiter"
-import { createStickyTracker } from "./stickyProviderTracker"
-import { LiteData } from "@opencode-ai/console-core/lite.js"
-import { Resource } from "@opencode-ai/console-resource"
-import { i18n, type Key } from "~/i18n"
-import { localeFromRequest } from "~/lib/language"
-import { createModelTpmLimiter } from "./modelTpmLimiter"
-import { createModelTpsLimiter } from "./modelTpsLimiter"
-import { createProviderBudgetTracker } from "./providerBudgetTracker"
-import { accumulateUsage, HOT_WORKSPACES } from "./usageBatcher"
-import { Workspace } from "@opencode-ai/console-core/workspace.js"
-import { countryFromRequest } from "~/lib/request-country"
+} from "./provider/provider";
+import { anthropicHelper } from "./provider/anthropic";
+import { googleHelper } from "./provider/google";
+import { openaiHelper } from "./provider/openai";
+import { oaCompatHelper } from "./provider/openai-compatible";
+import { createRateLimiter as createIpRateLimiter } from "./ipRateLimiter";
+import { createRateLimiter as createKeyRateLimiter } from "./keyRateLimiter";
+import { createTrialLimiter } from "./trialLimiter";
+import { createStickyTracker } from "./stickyProviderTracker";
+import { LiteData } from "@opencode-ai/console-core/lite.js";
+import { Resource } from "@opencode-ai/console-resource";
+import { i18n, type Key } from "~/i18n";
+import { localeFromRequest } from "~/lib/language";
+import { createModelTpmLimiter } from "./modelTpmLimiter";
+import { createModelTpsLimiter } from "./modelTpsLimiter";
+import { createProviderBudgetTracker } from "./providerBudgetTracker";
+import { accumulateUsage, HOT_WORKSPACES } from "./usageBatcher";
+import { Workspace } from "@opencode-ai/console-core/workspace.js";
+import { countryFromRequest } from "~/lib/request-country";
 
-type ZenData = Awaited<ReturnType<typeof ZenData.list>>
+type ZenData = Awaited<ReturnType<typeof ZenData.list>>;
 type RetryOptions = {
-  excludeProviders: string[]
-  retryCount: number
-}
-type BillingSource = "anonymous" | "free" | "byok" | "subscription" | "lite" | "balance"
+  excludeProviders: string[];
+  retryCount: number;
+};
+type BillingSource = "anonymous" | "free" | "byok" | "subscription" | "lite" | "balance";
 
 function resolve(text: string, params?: Record<string, string | number>) {
-  if (!params) return text
+  if (!params) return text;
   return text.replace(/\{\{(\w+)\}\}/g, (raw, key) => {
-    const value = params[key]
-    if (value === undefined || value === null) return raw
-    return String(value)
-  })
+    const value = params[key];
+    if (value === undefined || value === null) return raw;
+    return String(value);
+  });
 }
 
 export async function handler(
   input: APIEvent,
   opts: {
-    format: ZenData.Format
-    modelList: "lite" | "full"
-    parseApiKey: (headers: Headers) => string | undefined
-    parseModel: (url: string, body: any) => string
-    parseVariant: (url: string, body: any) => string | undefined
-    parseIsStream: (url: string, body: any) => boolean
+    format: ZenData.Format;
+    modelList: "lite" | "full";
+    parseApiKey: (headers: Headers) => string | undefined;
+    parseModel: (url: string, body: any) => string;
+    parseVariant: (url: string, body: any) => string | undefined;
+    parseIsStream: (url: string, body: any) => boolean;
   },
 ) {
-  type AuthInfo = Awaited<ReturnType<typeof authenticate>>
-  type ModelInfo = Awaited<ReturnType<typeof validateModel>>
-  type ProviderInfo = Awaited<ReturnType<typeof selectProvider>>
-  type CostInfo = ReturnType<typeof calculateCost>
+  type AuthInfo = Awaited<ReturnType<typeof authenticate>>;
+  type ModelInfo = Awaited<ReturnType<typeof validateModel>>;
+  type ProviderInfo = Awaited<ReturnType<typeof selectProvider>>;
+  type CostInfo = ReturnType<typeof calculateCost>;
 
-  const MAX_FAILOVER_RETRIES = 3
-  const MAX_429_RETRIES = 3
-  const dict = i18n(localeFromRequest(input.request))
-  const t = (key: Key, params?: Record<string, string | number>) => resolve(dict[key], params)
+  const MAX_FAILOVER_RETRIES = 3;
+  const MAX_429_RETRIES = 3;
+  const dict = i18n(localeFromRequest(input.request));
+  const t = (key: Key, params?: Record<string, string | number>) => resolve(dict[key], params);
   const ADMIN_WORKSPACES = [
     "wrk_01K46JDFR0E75SG2Q8K172KF3Y", // anomaly
     "wrk_01K6W1A3VE0KMNVSCQT43BG2SX", // benchmark
     "wrk_01KKZDKDWCS1VTJF8QTX62DD50", // contributors
-  ]
+  ];
 
   try {
-    const url = input.request.url
-    const body = await input.request.json()
-    const model = opts.parseModel(url, body)
-    const variant = opts.parseVariant(url, body)
-    const isStream = opts.parseIsStream(url, body)
-    const rawIp = input.request.headers.get("x-real-ip") ?? ""
-    const ip = rawIp.includes(":") ? rawIp.split(":").slice(0, 4).join(":") : rawIp
-    const rawZenApiKey = opts.parseApiKey(input.request.headers)
-    const zenApiKey = rawZenApiKey === "public" ? undefined : rawZenApiKey
-    const sessionId = input.request.headers.get("x-opencode-session") ?? ""
-    const requestId = input.request.headers.get("x-opencode-request") ?? ""
-    const ocClient = input.request.headers.get("x-opencode-client") ?? ""
-    const projectId = input.request.headers.get("x-opencode-project") ?? ""
-    const userAgent = input.request.headers.get("user-agent") ?? ""
+    const url = input.request.url;
+    const body = await input.request.json();
+    const model = opts.parseModel(url, body);
+    const variant = opts.parseVariant(url, body);
+    const isStream = opts.parseIsStream(url, body);
+    const rawIp = input.request.headers.get("x-real-ip") ?? "";
+    const ip = rawIp.includes(":") ? rawIp.split(":").slice(0, 4).join(":") : rawIp;
+    const rawZenApiKey = opts.parseApiKey(input.request.headers);
+    const zenApiKey = rawZenApiKey === "public" ? undefined : rawZenApiKey;
+    const sessionId = input.request.headers.get("x-opencode-session") ?? "";
+    const requestId = input.request.headers.get("x-opencode-request") ?? "";
+    const ocClient = input.request.headers.get("x-opencode-client") ?? "";
+    const projectId = input.request.headers.get("x-opencode-project") ?? "";
+    const userAgent = input.request.headers.get("user-agent") ?? "";
     logger.metric({
       is_stream: isStream,
       session: sessionId,
@@ -118,24 +123,24 @@ export async function handler(
       user_agent: userAgent,
       "model.variant": variant,
       "model.tier": opts.modelList === "full" ? "zen" : "go",
-    })
-    const zenData = ZenData.list(opts.modelList)
-    const modelInfo = validateModel(zenData, model)
-    const trialLimiter = createTrialLimiter(modelInfo.trialProvider, ip)
-    const trialProviders = await trialLimiter?.check()
+    });
+    const zenData = ZenData.list(opts.modelList);
+    const modelInfo = validateModel(zenData, model);
+    const trialLimiter = createTrialLimiter(modelInfo.trialProvider, ip);
+    const trialProviders = await trialLimiter?.check();
     const rateLimiter = modelInfo.allowAnonymous
       ? createIpRateLimiter(modelInfo.id, modelInfo.rateLimit, ip, input.request)
-      : createKeyRateLimiter(modelInfo.id, modelInfo.rateLimit, zenApiKey, input.request)
-    await rateLimiter?.check()
-    const authInfo = await authenticate(modelInfo, zenApiKey)
+      : createKeyRateLimiter(modelInfo.id, modelInfo.rateLimit, zenApiKey, input.request);
+    await rateLimiter?.check();
+    const authInfo = await authenticate(modelInfo, zenApiKey);
     const allowedRegions = authInfo?.region
       ? authInfo.region
       : await (async () => {
-          if (!authInfo) return
+          if (!authInfo) return;
           return Actor.provide("system", { workspaceID: authInfo.workspaceID }, () =>
             Workspace.setDefaultRegion({ country: countryFromRequest(input.request) }),
-          )
-        })()
+          );
+        })();
     /*
     if (true) {
       if (!allowedRegions?.includes("unavailable"))
@@ -146,21 +151,23 @@ export async function handler(
         )
     }
     */
-    const stickyId = sessionId ? sessionId : (authInfo?.workspaceID ?? ip)
-    const stickyTracker = createStickyTracker(modelInfo.id, modelInfo.stickyProvider, stickyId)
-    const stickyProvider = await stickyTracker?.get()
-    const billingSource = validateBilling(authInfo, modelInfo)
-    logger.metric({ source: billingSource })
-    const modelTpmLimiter = createModelTpmLimiter(modelInfo.providers)
-    const modelTpmLimits = await modelTpmLimiter?.check()
-    const modelTpsLimiter = createModelTpsLimiter(modelInfo.providers)
-    const modelTpsLimits = await modelTpsLimiter?.check()
+    const stickyId = sessionId ? sessionId : (authInfo?.workspaceID ?? ip);
+    const stickyTracker = createStickyTracker(modelInfo.id, modelInfo.stickyProvider, stickyId);
+    const stickyProvider = await stickyTracker?.get();
+    const billingSource = validateBilling(authInfo, modelInfo);
+    logger.metric({ source: billingSource });
+    const modelTpmLimiter = createModelTpmLimiter(modelInfo.providers);
+    const modelTpmLimits = await modelTpmLimiter?.check();
+    const modelTpsLimiter = createModelTpsLimiter(modelInfo.providers);
+    const modelTpsLimits = await modelTpsLimiter?.check();
     const providerBudgetTracker = createProviderBudgetTracker(
       modelInfo.providers.map((provider) => ({ ...zenData.providers[provider.id], ...provider })),
-    )
-    const providerBudget = await providerBudgetTracker?.check()
+    );
+    const providerBudget = await providerBudgetTracker?.check();
 
-    const retriableRequest = async (retry: RetryOptions = { excludeProviders: [], retryCount: 0 }) => {
+    const retriableRequest = async (
+      retry: RetryOptions = { excludeProviders: [], retryCount: 0 },
+    ) => {
       const providerInfo = selectProvider(
         model,
         zenData,
@@ -173,18 +180,18 @@ export async function handler(
         modelTpmLimits,
         modelTpsLimits,
         providerBudget,
-      )
-      validateModelSettings(billingSource, authInfo)
-      updateProviderKey(authInfo, providerInfo)
+      );
+      validateModelSettings(billingSource, authInfo);
+      updateProviderKey(authInfo, providerInfo);
       logger.metric({
         provider: providerInfo.id,
         "provider.model": providerInfo.model,
         shallowProvider: providerInfo.id,
         "shallowProvider.model": providerInfo.model,
-      })
+      });
 
-      const startTimestamp = Date.now()
-      const reqUrl = providerInfo.modifyUrl(providerInfo.api, isStream)
+      const startTimestamp = Date.now();
+      const reqUrl = providerInfo.modifyUrl(providerInfo.api, isStream);
       const reqBody = JSON.stringify(
         providerInfo.modifyBody({
           ...createBodyConverter(opts.format, providerInfo.format)(body),
@@ -193,53 +200,55 @@ export async function handler(
             const replacer = (obj: Record<string, any>): Record<string, any> =>
               Object.fromEntries(
                 Object.entries(obj).flatMap(([k, v]) => {
-                  if (Array.isArray(v)) return [[k, v]]
-                  if (typeof v === "object") return [[k, replacer(v)]]
+                  if (Array.isArray(v)) return [[k, v]];
+                  if (typeof v === "object") return [[k, replacer(v)]];
                   if (typeof v === "string") {
-                    if (v === "$workspace") return authInfo?.workspaceID ? [[k, authInfo?.workspaceID]] : []
-                    if (v === "$user") return stickyId ? [[k, stickyId]] : []
+                    if (v === "$workspace")
+                      return authInfo?.workspaceID ? [[k, authInfo?.workspaceID]] : [];
+                    if (v === "$user") return stickyId ? [[k, stickyId]] : [];
                     if (v.startsWith("$header.")) {
-                      const headerValue = input.request.headers.get(v.slice(8))
-                      return headerValue ? [[k, headerValue]] : []
+                      const headerValue = input.request.headers.get(v.slice(8));
+                      return headerValue ? [[k, headerValue]] : [];
                     }
                   }
-                  return [[k, v]]
+                  return [[k, v]];
                 }),
-              )
-            return replacer(providerInfo.payloadModifier ?? {})
+              );
+            return replacer(providerInfo.payloadModifier ?? {});
           })(),
         }),
-      )
-      logger.debug("REQUEST URL: " + reqUrl)
-      logger.debug("REQUEST: " + reqBody.substring(0, 300) + "...")
-      const isNewInference = providerInfo.id.startsWith("console.") || providerInfo.id.startsWith("console-go.")
+      );
+      logger.debug("REQUEST URL: " + reqUrl);
+      logger.debug("REQUEST: " + reqBody.substring(0, 300) + "...");
+      const isNewInference =
+        providerInfo.id.startsWith("console.") || providerInfo.id.startsWith("console-go.");
       const res = await fetchWith429Retry(
         reqUrl,
         {
           method: "POST",
           headers: (() => {
-            const headers = new Headers(input.request.headers)
-            providerInfo.modifyHeaders(headers, providerInfo.apiKey, stickyId)
+            const headers = new Headers(input.request.headers);
+            providerInfo.modifyHeaders(headers, providerInfo.apiKey, stickyId);
             Object.entries(providerInfo.headerModifier ?? {}).forEach(([k, v]) => {
-              if (v === "$ip") return headers.set(k, ip)
-              if (v === "$caller") return headers.set(k, stickyId)
-              if (v === "$session") return headers.set(k, sessionId)
-              if (v === "$model") return headers.set(k, model)
-              if (v === "$request") return headers.set(k, requestId)
-              if (v === "$project") return headers.set(k, projectId)
+              if (v === "$ip") return headers.set(k, ip);
+              if (v === "$caller") return headers.set(k, stickyId);
+              if (v === "$session") return headers.set(k, sessionId);
+              if (v === "$model") return headers.set(k, model);
+              if (v === "$request") return headers.set(k, requestId);
+              if (v === "$project") return headers.set(k, projectId);
               if (v === "$workspace") {
-                if (authInfo?.workspaceID) headers.set(k, authInfo.workspaceID)
-                return
+                if (authInfo?.workspaceID) headers.set(k, authInfo.workspaceID);
+                return;
               }
-              headers.set(k, v)
-            })
-            headers.delete("host")
-            headers.delete("content-length")
-            headers.delete("x-opencode-request")
-            headers.delete("x-opencode-session")
-            headers.delete("x-opencode-project")
-            headers.delete("x-opencode-client")
-            return headers
+              headers.set(k, v);
+            });
+            headers.delete("host");
+            headers.delete("content-length");
+            headers.delete("x-opencode-request");
+            headers.delete("x-opencode-session");
+            headers.delete("x-opencode-project");
+            headers.delete("x-opencode-client");
+            return headers;
           })(),
           body: reqBody,
           // Propagate caller disconnects to the upstream provider request so
@@ -247,23 +256,23 @@ export async function handler(
           signal: input.request.signal,
         },
         { count: isNewInference ? MAX_429_RETRIES : 0 },
-      )
+      );
 
       if (isNewInference) {
-        const resEndpointId = res.headers.get("x-opencode-endpoint-id")
-        const resEndpointModelId = res.headers.get("x-opencode-upstream-model-id")
+        const resEndpointId = res.headers.get("x-opencode-endpoint-id");
+        const resEndpointModelId = res.headers.get("x-opencode-upstream-model-id");
         if (resEndpointId && resEndpointModelId)
           logger.metric({
             provider: resEndpointId,
             "provider.model": resEndpointModelId,
-          })
+          });
       }
 
       if (res.status !== 200) {
         logger.metric({
           "llm.error.code": res.status,
           "llm.error.message": res.statusText,
-        })
+        });
       }
 
       // Try another provider => stop retrying if using fallback provider
@@ -282,94 +291,106 @@ export async function handler(
         return retriableRequest({
           excludeProviders: [...retry.excludeProviders, providerInfo.id],
           retryCount: retry.retryCount + 1,
-        })
+        });
       }
 
-      return { providerInfo, reqBody, res, startTimestamp }
-    }
+      return { providerInfo, reqBody, res, startTimestamp };
+    };
 
-    const { providerInfo, reqBody, res, startTimestamp } = await retriableRequest()
+    const { providerInfo, reqBody, res, startTimestamp } = await retriableRequest();
 
     // Store sticky provider
-    if (res.status === 200) await stickyTracker?.set(providerInfo.id)
+    if (res.status === 200) await stickyTracker?.set(providerInfo.id);
 
     // Temporarily change 404 to 400 status code b/c solid start automatically override 404 response
-    const resStatus = res.status === 404 ? 400 : res.status
+    const resStatus = res.status === 404 ? 400 : res.status;
 
     // Scrub response headers
-    const resHeaders = new Headers()
-    const keepHeaders = ["content-type", "cache-control"]
+    const resHeaders = new Headers();
+    const keepHeaders = ["content-type", "cache-control"];
     for (const [k, v] of res.headers.entries()) {
       if (keepHeaders.includes(k.toLowerCase())) {
-        resHeaders.set(k, v)
+        resHeaders.set(k, v);
       }
     }
-    logger.debug("STATUS: " + res.status + " " + res.statusText)
+    logger.debug("STATUS: " + res.status + " " + res.statusText);
 
     // Handle non-streaming response
     if (!isStream || [400, 404, 429].includes(res.status)) {
-      const json = await res.json()
-      await rateLimiter?.track()
-      const usage = providerInfo.extractUsage(json)
+      const json = await res.json();
+      await rateLimiter?.track();
+      const usage = providerInfo.extractUsage(json);
       if (usage) {
-        const usageInfo = providerInfo.normalizeUsage(usage)
-        const costInfo = calculateCost(modelInfo, usageInfo)
-        await trialLimiter?.track(usageInfo)
-        await modelTpmLimiter?.track(providerInfo.id, providerInfo.model, usageInfo)
-        await providerBudgetTracker?.track(providerInfo.id, providerInfo.budgetPriority, costInfo.totalCostInCent)
-        await trackUsage(sessionId, billingSource, authInfo, modelInfo, providerInfo, usageInfo, costInfo)
-        await reload(billingSource, authInfo, costInfo)
-        json.cost = calculateOccurredCost(billingSource, costInfo)
+        const usageInfo = providerInfo.normalizeUsage(usage);
+        const costInfo = calculateCost(modelInfo, usageInfo);
+        await trialLimiter?.track(usageInfo);
+        await modelTpmLimiter?.track(providerInfo.id, providerInfo.model, usageInfo);
+        await providerBudgetTracker?.track(
+          providerInfo.id,
+          providerInfo.budgetPriority,
+          costInfo.totalCostInCent,
+        );
+        await trackUsage(
+          sessionId,
+          billingSource,
+          authInfo,
+          modelInfo,
+          providerInfo,
+          usageInfo,
+          costInfo,
+        );
+        await reload(billingSource, authInfo, costInfo);
+        json.cost = calculateOccurredCost(billingSource, costInfo);
       }
       if (res.status === 400) {
-        logger.metric({ "error.response": JSON.stringify(json) })
+        logger.metric({ "error.response": JSON.stringify(json) });
       }
       if (json.error?.message) {
-        json.error.message = `Error from provider${providerInfo.displayName ? ` (${providerInfo.displayName})` : ""}: ${json.error.message}`
+        json.error.message = `Error from provider${providerInfo.displayName ? ` (${providerInfo.displayName})` : ""}: ${json.error.message}`;
       }
 
-      const responseConverter = createResponseConverter(providerInfo.format, opts.format)
-      const body = JSON.stringify(responseConverter(json))
-      logger.metric({ response_length: body.length })
-      logger.debug("RESPONSE: " + body)
+      const responseConverter = createResponseConverter(providerInfo.format, opts.format);
+      const body = JSON.stringify(responseConverter(json));
+      logger.metric({ response_length: body.length });
+      logger.debug("RESPONSE: " + body);
       return new Response(body, {
         status: resStatus,
         statusText: res.statusText,
         headers: resHeaders,
-      })
+      });
     }
 
     // Handle streaming response
-    const streamConverter = createStreamPartConverter(providerInfo.format, opts.format)
-    const usageParser = providerInfo.createUsageParser()
-    const binaryDecoder = providerInfo.createBinaryStreamDecoder()
-    let reader: ReadableStreamDefaultReader<Uint8Array> | undefined
+    const streamConverter = createStreamPartConverter(providerInfo.format, opts.format);
+    const usageParser = providerInfo.createUsageParser();
+    const binaryDecoder = providerInfo.createBinaryStreamDecoder();
+    let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
     const stream = new ReadableStream({
       start(c) {
-        reader = res.body?.getReader()
-        const decoder = new TextDecoder()
-        const encoder = new TextEncoder()
+        reader = res.body?.getReader();
+        const decoder = new TextDecoder();
+        const encoder = new TextEncoder();
 
-        let buffer = ""
-        let responseLength = 0
-        let timestampFirstByte = 0
+        let buffer = "";
+        let responseLength = 0;
+        let timestampFirstByte = 0;
 
         function pump(): Promise<void> {
           return (
             reader?.read().then(async ({ done, value: rawValue }) => {
               if (done) {
-                const timestampLastByte = Date.now()
+                const timestampLastByte = Date.now();
                 logger.metric({
                   response_length: responseLength,
                   "timestamp.last_byte": timestampLastByte,
-                })
-                await rateLimiter?.track()
-                const usage = usageParser.retrieve()
+                });
+                await rateLimiter?.track();
+                const usage = usageParser.retrieve();
                 if (usage) {
-                  const usageInfo = providerInfo.normalizeUsage(usage)
-                  const costInfo = calculateCost(modelInfo, usageInfo)
-                  await trialLimiter?.track(usageInfo)
-                  await modelTpmLimiter?.track(providerInfo.id, providerInfo.model, usageInfo)
+                  const usageInfo = providerInfo.normalizeUsage(usage);
+                  const costInfo = calculateCost(modelInfo, usageInfo);
+                  await trialLimiter?.track(usageInfo);
+                  await modelTpmLimiter?.track(providerInfo.id, providerInfo.model, usageInfo);
                   await modelTpsLimiter?.track(
                     providerInfo.id,
                     providerInfo.model,
@@ -377,92 +398,100 @@ export async function handler(
                     timestampFirstByte,
                     timestampLastByte,
                     usageInfo,
-                  )
+                  );
                   await providerBudgetTracker?.track(
                     providerInfo.id,
                     providerInfo.budgetPriority,
                     costInfo.totalCostInCent,
-                  )
-                  await trackUsage(sessionId, billingSource, authInfo, modelInfo, providerInfo, usageInfo, costInfo)
-                  await reload(billingSource, authInfo, costInfo)
-                  const cost = calculateOccurredCost(billingSource, costInfo)
-                  c.enqueue(encoder.encode(buildCostChunk(opts.format, cost)))
+                  );
+                  await trackUsage(
+                    sessionId,
+                    billingSource,
+                    authInfo,
+                    modelInfo,
+                    providerInfo,
+                    usageInfo,
+                    costInfo,
+                  );
+                  await reload(billingSource, authInfo, costInfo);
+                  const cost = calculateOccurredCost(billingSource, costInfo);
+                  c.enqueue(encoder.encode(buildCostChunk(opts.format, cost)));
                 }
-                c.close()
-                return
+                c.close();
+                return;
               }
 
               if (responseLength === 0) {
-                timestampFirstByte = Date.now()
+                timestampFirstByte = Date.now();
                 logger.metric({
                   time_to_first_byte: timestampFirstByte - startTimestamp,
                   "timestamp.first_byte": timestampFirstByte,
-                })
+                });
               }
 
-              const value = binaryDecoder ? binaryDecoder(rawValue) : rawValue
-              if (!value) return
+              const value = binaryDecoder ? binaryDecoder(rawValue) : rawValue;
+              if (!value) return;
 
-              responseLength += value.length
-              buffer += decoder.decode(value, { stream: true })
+              responseLength += value.length;
+              buffer += decoder.decode(value, { stream: true });
 
-              const parts = buffer.split(/\r\n\r\n|\n\n|\r\r/)
-              buffer = parts.pop() ?? ""
+              const parts = buffer.split(/\r\n\r\n|\n\n|\r\r/);
+              buffer = parts.pop() ?? "";
 
               for (let part of parts) {
-                logger.debug("PART: " + part)
+                logger.debug("PART: " + part);
 
-                part = part.trim()
-                usageParser.parse(part)
+                part = part.trim();
+                usageParser.parse(part);
 
                 if (providerInfo.format !== opts.format) {
-                  part = streamConverter(part)
-                  c.enqueue(encoder.encode(part + "\n\n"))
+                  part = streamConverter(part);
+                  c.enqueue(encoder.encode(part + "\n\n"));
                 }
               }
 
               if (providerInfo.format === opts.format) {
-                c.enqueue(value)
+                c.enqueue(value);
               }
 
-              return pump()
+              return pump();
             }) || Promise.resolve()
-          )
+          );
         }
 
-        return pump()
+        return pump();
       },
       cancel() {
         // When the downstream caller stops reading, release the upstream
         // response body instead of keeping the provider/inference stream alive.
-        return reader?.cancel()
+        return reader?.cancel();
       },
-    })
+    });
     return new Response(stream, {
       status: resStatus,
       statusText: res.statusText,
       headers: resHeaders,
-    })
+    });
   } catch (error: any) {
     // The caller disconnected before we finished. Because the outbound provider
     // request shares input.request.signal, an aborted caller surfaces here as an
     // AbortError. There is no client left to receive a body, so skip the error
     // metric and 500 and return a quiet client-closed response.
     if (input.request.signal.aborted || error?.name === "AbortError") {
-      logger.debug("REQUEST ABORTED BY CALLER")
-      return new Response(null, { status: 499 })
+      logger.debug("REQUEST ABORTED BY CALLER");
+      return new Response(null, { status: 499 });
     }
 
     logger.metric({
       "error.type": error.constructor.name,
       "error.message": error.message,
       "error.cause": error.cause?.toString(),
-    })
+    });
     if (error.message.startsWith("Failed query")) {
       try {
         logger.metric({
           "error.cause2": JSON.stringify(error.cause),
-        })
+        });
       } catch {}
     }
 
@@ -473,7 +502,7 @@ export async function handler(
           error: { type: error.constructor.name, message: error.message },
         }),
         { status: 403 },
-      )
+      );
 
     // Note: both top level "type" and "error.type" fields are used by the @ai-sdk/anthropic client to render the error message.
     if (
@@ -489,7 +518,7 @@ export async function handler(
           error: { type: error.constructor.name, message: error.message },
         }),
         { status: 401 },
-      )
+      );
 
     if (
       error instanceof RateLimitError ||
@@ -497,9 +526,9 @@ export async function handler(
       error instanceof GoUsageLimitError ||
       error instanceof BlackUsageLimitError
     ) {
-      const headers = new Headers()
+      const headers = new Headers();
       if (error.retryAfter) {
-        headers.set("retry-after", String(error.retryAfter))
+        headers.set("retry-after", String(error.retryAfter));
       }
       return new Response(
         JSON.stringify({
@@ -517,7 +546,7 @@ export async function handler(
               : {},
         }),
         { status: 429, headers },
-      )
+      );
     }
 
     return new Response(
@@ -529,16 +558,17 @@ export async function handler(
         },
       }),
       { status: 500 },
-    )
+    );
   }
 
   function validateModel(zenData: ZenData, reqModel: string) {
-    if (!(reqModel in zenData.models)) throw new ModelError(t("zen.api.error.modelNotSupported", { model: reqModel }))
+    if (!(reqModel in zenData.models))
+      throw new ModelError(t("zen.api.error.modelNotSupported", { model: reqModel }));
 
-    const modelId = reqModel
+    const modelId = reqModel;
     const modelData = Array.isArray(zenData.models[modelId])
       ? zenData.models[modelId].find((model) => opts.format === model.formatFilter)
-      : zenData.models[modelId]
+      : zenData.models[modelId];
 
     if (!modelData)
       throw new ModelError(
@@ -546,7 +576,7 @@ export async function handler(
           model: reqModel,
           format: opts.format,
         }),
-      )
+      );
 
     if (modelData.trialEnded)
       throw new ModelError(
@@ -554,11 +584,11 @@ export async function handler(
           model: modelData.name,
           link: "https://opencode.ai/go",
         })}`,
-      )
+      );
 
-    logger.metric({ model: modelId })
+    logger.metric({ model: modelId });
 
-    return { id: modelId, ...modelData }
+    return { id: modelId, ...modelData };
   }
 
   function selectProvider(
@@ -574,8 +604,8 @@ export async function handler(
     modelTpsLimits: Record<string, { qualify: number; unqualify: number }> | undefined,
     providerBudget:
       | {
-          qualify: (providerId: string, priority: number) => boolean
-          prefer: (providerId: string, priority: number) => boolean
+          qualify: (providerId: string, priority: number) => boolean;
+          prefer: (providerId: string, priority: number) => boolean;
         }
       | undefined,
   ) {
@@ -583,112 +613,115 @@ export async function handler(
       // Byok is top priority b/c if user set their own API key, we should use it
       // instead of using the sticky provider for the same session
       if (authInfo?.provider?.credentials) {
-        return modelInfo.providers.find((provider) => provider.id === modelInfo.byokProvider)
+        return modelInfo.providers.find((provider) => provider.id === modelInfo.byokProvider);
       }
 
       // Prioritize trial providers
-      let allProviders = modelInfo.providers.filter((provider) => !provider.disabled)
+      let allProviders = modelInfo.providers.filter((provider) => !provider.disabled);
       if (trialProviders) {
         allProviders = allProviders.map((provider) => ({
           ...provider,
           priority: trialProviders.includes(provider.id) ? 0 : provider.priority,
-        }))
+        }));
       }
 
       // Use fallback provider if max retries reached
-      const fallbackProvider = allProviders.find((provider) => provider.id === modelInfo.fallbackProvider)
-      if (retry.retryCount === MAX_FAILOVER_RETRIES) return fallbackProvider
+      const fallbackProvider = allProviders.find(
+        (provider) => provider.id === modelInfo.fallbackProvider,
+      );
+      if (retry.retryCount === MAX_FAILOVER_RETRIES) return fallbackProvider;
 
-      let topPriority = Infinity
+      let topPriority = Infinity;
       const providers = allProviders
         .filter((provider) => provider.weight !== 0)
         .filter((provider) => !retry.excludeProviders.includes(provider.id))
         .filter((provider) => {
-          if (provider.budgetPriority === undefined) return true
-          if (!providerBudget) return true
-          return providerBudget.qualify(provider.id, provider.budgetPriority)
+          if (provider.budgetPriority === undefined) return true;
+          if (!providerBudget) return true;
+          return providerBudget.qualify(provider.id, provider.budgetPriority);
         })
         .filter((provider) => {
-          if (!provider.tpmLimit) return true
-          const usage = modelTpmLimits?.[`${provider.id}/${provider.model}`] ?? 0
-          return usage < provider.tpmLimit * 1_000_000
+          if (!provider.tpmLimit) return true;
+          const usage = modelTpmLimits?.[`${provider.id}/${provider.model}`] ?? 0;
+          return usage < provider.tpmLimit * 1_000_000;
         })
         .filter((provider) => {
-          if (!provider.tpsGoal) return true
+          if (!provider.tpsGoal) return true;
           const tps = modelTpsLimits?.[`${provider.id}/${provider.model}/${provider.tpsGoal}`] ?? {
             qualify: 0,
             unqualify: 0,
-          }
-          const isLowTps = tps.qualify + tps.unqualify > 10 && tps.qualify < tps.unqualify
-          return !isLowTps
+          };
+          const isLowTps = tps.qualify + tps.unqualify > 10 && tps.qualify < tps.unqualify;
+          return !isLowTps;
         })
         .map((provider) => {
-          topPriority = Math.min(topPriority, provider.priority)
-          return provider
+          topPriority = Math.min(topPriority, provider.priority);
+          return provider;
         })
         .filter((p) => p.priority <= topPriority)
-        .flatMap((provider) => Array<typeof provider>(provider.weight).fill(provider))
+        .flatMap((provider) => Array<typeof provider>(provider.weight).fill(provider));
 
       // Use the last 4 characters of session ID to select a provider
-      let h = 0
-      const l = stickyId.length
+      let h = 0;
+      const l = stickyId.length;
       for (let i = l - 4; i < l; i++) {
-        h = (h * 31 + stickyId.charCodeAt(i)) | 0 // 32-bit int
+        h = (h * 31 + stickyId.charCodeAt(i)) | 0; // 32-bit int
       }
-      const index = (h >>> 0) % providers.length // make unsigned + range 0..length-1
-      const provider = providers[index || 0] ?? fallbackProvider
+      const index = (h >>> 0) % providers.length; // make unsigned + range 0..length-1
+      const provider = providers[index || 0] ?? fallbackProvider;
 
       // sticky provider does not exist => use selected provider
-      if (!stickyProviderId) return provider
-      const stickProvider = allProviders.find((provider) => provider.id === stickyProviderId)
-      if (!stickProvider) return provider
+      if (!stickyProviderId) return provider;
+      const stickProvider = allProviders.find((provider) => provider.id === stickyProviderId);
+      if (!stickProvider) return provider;
 
       const preferBudgetProvider =
-        provider.budgetPriority !== undefined && providerBudget?.prefer(provider.id, provider.budgetPriority)
+        provider.budgetPriority !== undefined &&
+        providerBudget?.prefer(provider.id, provider.budgetPriority);
 
       const preferTpsProvider = (() => {
-        if (!provider.tpsGoal) return false
+        if (!provider.tpsGoal) return false;
         const tps = modelTpsLimits?.[`${provider.id}/${provider.model}/${provider.tpsGoal}`] ?? {
           qualify: 0,
           unqualify: 0,
-        }
-        return tps.qualify > tps.unqualify * 3
-      })()
+        };
+        return tps.qualify > tps.unqualify * 3;
+      })();
 
-      if (!preferBudgetProvider && !preferTpsProvider) return stickProvider
+      if (!preferBudgetProvider && !preferTpsProvider) return stickProvider;
 
-      return provider
-    })()
+      return provider;
+    })();
 
-    if (!modelProvider) throw new ModelError(t("zen.api.error.noProviderAvailable"))
+    if (!modelProvider) throw new ModelError(t("zen.api.error.noProviderAvailable"));
     if (!(modelProvider.id in zenData.providers))
-      throw new ModelError(t("zen.api.error.providerNotSupported", { provider: modelProvider.id }))
+      throw new ModelError(t("zen.api.error.providerNotSupported", { provider: modelProvider.id }));
 
     return {
       ...modelProvider,
       ...zenData.providers[modelProvider.id],
       ...(() => {
-        const providerProps = zenData.providers[modelProvider.id]
-        const format = providerProps.format
+        const providerProps = zenData.providers[modelProvider.id];
+        const format = providerProps.format;
         const opts = {
           reqModel,
           providerModel: modelProvider.model,
           adjustCacheUsage: providerProps.adjustCacheUsage,
           workspaceID: authInfo?.workspaceID,
-        }
-        if (format === "anthropic") return anthropicHelper(opts)
-        if (format === "google") return googleHelper(opts)
-        if (format === "openai") return openaiHelper(opts)
-        return oaCompatHelper(opts)
+        };
+        if (format === "anthropic") return anthropicHelper(opts);
+        if (format === "google") return googleHelper(opts);
+        if (format === "openai") return openaiHelper(opts);
+        return oaCompatHelper(opts);
       })(),
-    }
+    };
   }
 
   async function authenticate(modelInfo: ModelInfo, zenApiKey?: string) {
     if (!zenApiKey) {
-      if (modelInfo.allowAnonymous) return
-      if ((modelInfo as any).cost?.input === 0) return
-      throw new AuthError(t("zen.api.error.missingApiKey"))
+      if (modelInfo.allowAnonymous) return;
+      if ((modelInfo as any).cost?.input === 0) return;
+      throw new AuthError(t("zen.api.error.missingApiKey"));
     }
 
     const data = await Database.use((tx) =>
@@ -741,8 +774,14 @@ export async function handler(
         .from(KeyTable)
         .innerJoin(WorkspaceTable, eq(WorkspaceTable.id, KeyTable.workspaceID))
         .innerJoin(BillingTable, eq(BillingTable.workspaceID, KeyTable.workspaceID))
-        .innerJoin(UserTable, and(eq(UserTable.workspaceID, KeyTable.workspaceID), eq(UserTable.id, KeyTable.userID)))
-        .leftJoin(ModelTable, and(eq(ModelTable.workspaceID, KeyTable.workspaceID), eq(ModelTable.model, modelInfo.id)))
+        .innerJoin(
+          UserTable,
+          and(eq(UserTable.workspaceID, KeyTable.workspaceID), eq(UserTable.id, KeyTable.userID)),
+        )
+        .leftJoin(
+          ModelTable,
+          and(eq(ModelTable.workspaceID, KeyTable.workspaceID), eq(ModelTable.model, modelInfo.id)),
+        )
         .leftJoin(
           ProviderTable,
           modelInfo.byokProvider
@@ -770,15 +809,15 @@ export async function handler(
         )
         .where(and(eq(KeyTable.key, zenApiKey), isNull(KeyTable.timeDeleted)))
         .then((rows) => rows[0]),
-    )
+    );
 
-    if (!data) throw new AuthError(t("zen.api.error.invalidApiKey"))
+    if (!data) throw new AuthError(t("zen.api.error.invalidApiKey"));
     if (
       modelInfo.id.startsWith("alpha-") &&
       Resource.App.stage === "production" &&
       !ADMIN_WORKSPACES.includes(data.workspace.id)
     )
-      throw new AuthError(t("zen.api.error.modelNotSupported", { model: modelInfo.id }))
+      throw new AuthError(t("zen.api.error.modelNotSupported", { model: modelInfo.id }));
 
     logger.metric({
       api_key: data.apiKey,
@@ -788,14 +827,14 @@ export async function handler(
         if (data.billing.subscription)
           return {
             subscription: data.billing.subscription.plan,
-          }
+          };
         if (data.billing.lite)
           return {
             subscription: "lite",
-          }
-        return {}
+          };
+        return {};
       })(),
-    })
+    });
 
     return {
       apiKeyId: data.apiKey,
@@ -808,80 +847,80 @@ export async function handler(
       provider: data.provider,
       isFree: ADMIN_WORKSPACES.includes(data.workspace.id),
       isDisabled: !!data.timeDisabled,
-    }
+    };
   }
 
   function validateBilling(authInfo: AuthInfo, modelInfo: ModelInfo): BillingSource {
-    if (!authInfo) return "anonymous"
-    if (authInfo.provider?.credentials) return "byok"
-    if (authInfo.isFree) return "free"
-    if (modelInfo.allowAnonymous) return "free"
+    if (!authInfo) return "anonymous";
+    if (authInfo.provider?.credentials) return "byok";
+    if (authInfo.isFree) return "free";
+    if (modelInfo.allowAnonymous) return "free";
     // Treat zero-cost models (e.g. big-pickle free models) as free even if a Zen key is configured.
     // Prevents "Insufficient Balance" when a spending-limit plugin or other config sets an opencode key with $0 balance.
-    if ((modelInfo as any).cost?.input === 0) return "free"
+    if ((modelInfo as any).cost?.input === 0) return "free";
 
     const formatRetryTime = (seconds: number) => {
-      const days = Math.floor(seconds / 86400)
-      if (days >= 1) return `${days} day${days > 1 ? "s" : ""}`
-      const hours = Math.floor(seconds / 3600)
-      const minutes = Math.ceil((seconds % 3600) / 60)
-      if (hours >= 1) return `${hours}hr ${minutes}min`
-      return `${minutes}min`
-    }
+      const days = Math.floor(seconds / 86400);
+      if (days >= 1) return `${days} day${days > 1 ? "s" : ""}`;
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.ceil((seconds % 3600) / 60);
+      if (hours >= 1) return `${hours}hr ${minutes}min`;
+      return `${minutes}min`;
+    };
 
     // Validate black subscription billing
     if (authInfo.billing.subscription && authInfo.black) {
       try {
-        const sub = authInfo.black
-        const plan = authInfo.billing.subscription.plan
+        const sub = authInfo.black;
+        const plan = authInfo.billing.subscription.plan;
 
         // Check weekly limit
         if (sub.fixedUsage && sub.timeFixedUpdated) {
-          const blackData = BlackData.getLimits({ plan })
+          const blackData = BlackData.getLimits({ plan });
           const result = Subscription.analyzeWeeklyUsage({
             limit: blackData.fixedLimit,
             usage: sub.fixedUsage,
             timeUpdated: sub.timeFixedUpdated,
-          })
+          });
           if (result.status === "rate-limited")
             throw new BlackUsageLimitError(
               t("zen.api.error.subscriptionQuotaExceeded", {
                 retryIn: formatRetryTime(result.resetInSec),
               }),
               result.resetInSec,
-            )
+            );
         }
 
         // Check rolling limit
         if (sub.rollingUsage && sub.timeRollingUpdated) {
-          const blackData = BlackData.getLimits({ plan })
+          const blackData = BlackData.getLimits({ plan });
           const result = Subscription.analyzeRollingUsage({
             limit: blackData.rollingLimit,
             window: blackData.rollingWindow,
             usage: sub.rollingUsage,
             timeUpdated: sub.timeRollingUpdated,
-          })
+          });
           if (result.status === "rate-limited")
             throw new BlackUsageLimitError(
               t("zen.api.error.subscriptionQuotaExceeded", {
                 retryIn: formatRetryTime(result.resetInSec),
               }),
               result.resetInSec,
-            )
+            );
         }
 
-        return "subscription"
+        return "subscription";
       } catch (e) {
-        if (!authInfo.billing.subscription.useBalance) throw e
+        if (!authInfo.billing.subscription.useBalance) throw e;
       }
     }
 
     // Validate lite subscription billing
     if (opts.modelList === "lite" && authInfo.billing.lite && authInfo.lite) {
       try {
-        const consoleGoUrl = `https://opencode.ai/workspace/${authInfo.workspaceID}/go`
-        const sub = authInfo.lite
-        const liteData = LiteData.getLimits()
+        const consoleGoUrl = `https://opencode.ai/workspace/${authInfo.workspaceID}/go`;
+        const sub = authInfo.lite;
+        const liteData = LiteData.getLimits();
 
         // Check weekly limit
         if (sub.weeklyUsage && sub.timeWeeklyUpdated) {
@@ -889,7 +928,7 @@ export async function handler(
             limit: liteData.weeklyLimit,
             usage: sub.weeklyUsage,
             timeUpdated: sub.timeWeeklyUpdated,
-          })
+          });
           if (result.status === "rate-limited")
             throw new GoUsageLimitError(
               t("zen.api.error.goSubscriptionWeeklyLimitExceeded", {
@@ -899,7 +938,7 @@ export async function handler(
               authInfo.workspaceID,
               "weekly",
               result.resetInSec,
-            )
+            );
         }
 
         // Check monthly limit
@@ -909,7 +948,7 @@ export async function handler(
             usage: sub.monthlyUsage,
             timeUpdated: sub.timeMonthlyUpdated,
             timeSubscribed: sub.timeCreated,
-          })
+          });
           if (result.status === "rate-limited")
             throw new GoUsageLimitError(
               t("zen.api.error.goSubscriptionMonthlyLimitExceeded", {
@@ -919,7 +958,7 @@ export async function handler(
               authInfo.workspaceID,
               "monthly",
               result.resetInSec,
-            )
+            );
         }
 
         // Check rolling limit
@@ -929,7 +968,7 @@ export async function handler(
             window: liteData.rollingWindow,
             usage: sub.rollingUsage,
             timeUpdated: sub.timeRollingUpdated,
-          })
+          });
           if (result.status === "rate-limited")
             throw new GoUsageLimitError(
               t("zen.api.error.goSubscriptionRollingLimitExceeded", {
@@ -939,26 +978,27 @@ export async function handler(
               authInfo.workspaceID,
               "5 hour",
               result.resetInSec,
-            )
+            );
         }
 
-        return "lite"
+        return "lite";
       } catch (e) {
-        if (!authInfo.billing.lite.useBalance) throw e
+        if (!authInfo.billing.lite.useBalance) throw e;
       }
     }
 
     // Validate pay as you go billing
-    const billing = authInfo.billing
-    const billingUrl = `https://opencode.ai/workspace/${authInfo.workspaceID}/billing`
-    const membersUrl = `https://opencode.ai/workspace/${authInfo.workspaceID}/members`
+    const billing = authInfo.billing;
+    const billingUrl = `https://opencode.ai/workspace/${authInfo.workspaceID}/billing`;
+    const membersUrl = `https://opencode.ai/workspace/${authInfo.workspaceID}/members`;
     if (!billing.paymentMethodID && billing.balance <= 0)
-      throw new CreditsError(t("zen.api.error.noPaymentMethod", { billingUrl }))
-    if (billing.balance <= 0) throw new CreditsError(t("zen.api.error.insufficientBalance", { billingUrl }))
+      throw new CreditsError(t("zen.api.error.noPaymentMethod", { billingUrl }));
+    if (billing.balance <= 0)
+      throw new CreditsError(t("zen.api.error.insufficientBalance", { billingUrl }));
 
-    const now = new Date()
-    const currentYear = now.getUTCFullYear()
-    const currentMonth = now.getUTCMonth()
+    const now = new Date();
+    const currentYear = now.getUTCFullYear();
+    const currentMonth = now.getUTCMonth();
     if (
       billing.monthlyLimit &&
       billing.monthlyUsage &&
@@ -972,7 +1012,7 @@ export async function handler(
           amount: billing.monthlyLimit,
           billingUrl,
         }),
-      )
+      );
 
     if (
       authInfo.user.monthlyLimit &&
@@ -987,60 +1027,71 @@ export async function handler(
           amount: authInfo.user.monthlyLimit,
           membersUrl,
         }),
-      )
+      );
 
-    return "balance"
+    return "balance";
   }
 
   function validateModelSettings(billingSource: BillingSource, authInfo: AuthInfo) {
-    if (billingSource === "lite") return
-    if (billingSource === "anonymous") return
-    if (authInfo!.isDisabled) throw new ModelError(t("zen.api.error.modelDisabled"))
+    if (billingSource === "lite") return;
+    if (billingSource === "anonymous") return;
+    if (authInfo!.isDisabled) throw new ModelError(t("zen.api.error.modelDisabled"));
   }
 
   function updateProviderKey(authInfo: AuthInfo, providerInfo: ProviderInfo) {
-    if (!authInfo?.provider?.credentials) return
-    providerInfo.apiKey = authInfo.provider.credentials
+    if (!authInfo?.provider?.credentials) return;
+    providerInfo.apiKey = authInfo.provider.credentials;
   }
 
   async function fetchWith429Retry(url: string, options: RequestInit, retry = { count: 0 }) {
-    const res = await fetch(url, options)
+    const res = await fetch(url, options);
     if (res.status === 429 && retry.count < MAX_429_RETRIES) {
-      await new Promise((resolve) => setTimeout(resolve, Math.pow(2, retry.count) * 500))
-      return fetchWith429Retry(url, options, { count: retry.count + 1 })
+      await new Promise((resolve) => setTimeout(resolve, Math.pow(2, retry.count) * 500));
+      return fetchWith429Retry(url, options, { count: retry.count + 1 });
     }
-    return res
+    return res;
   }
 
   function calculateCost(modelInfo: ModelInfo, usageInfo: UsageInfo) {
-    const { inputTokens, outputTokens, reasoningTokens, cacheReadTokens, cacheWrite5mTokens, cacheWrite1hTokens } =
-      usageInfo
+    const {
+      inputTokens,
+      outputTokens,
+      reasoningTokens,
+      cacheReadTokens,
+      cacheWrite5mTokens,
+      cacheWrite1hTokens,
+    } = usageInfo;
 
     const modelCost =
       modelInfo.cost200K &&
-      inputTokens + (cacheReadTokens ?? 0) + (cacheWrite5mTokens ?? 0) + (cacheWrite1hTokens ?? 0) > 200_000
+      inputTokens + (cacheReadTokens ?? 0) + (cacheWrite5mTokens ?? 0) + (cacheWrite1hTokens ?? 0) >
+        200_000
         ? modelInfo.cost200K
-        : modelInfo.cost
+        : modelInfo.cost;
 
-    const inputCost = modelCost.input * inputTokens * 100
-    const outputCost = modelCost.output * outputTokens * 100
+    const inputCost = modelCost.input * inputTokens * 100;
+    const outputCost = modelCost.output * outputTokens * 100;
     const cacheReadCost = (() => {
-      if (!cacheReadTokens) return undefined
-      if (!modelCost.cacheRead) return undefined
-      return modelCost.cacheRead * cacheReadTokens * 100
-    })()
+      if (!cacheReadTokens) return undefined;
+      if (!modelCost.cacheRead) return undefined;
+      return modelCost.cacheRead * cacheReadTokens * 100;
+    })();
     const cacheWrite5mCost = (() => {
-      if (!cacheWrite5mTokens) return undefined
-      if (!modelCost.cacheWrite5m) return undefined
-      return modelCost.cacheWrite5m * cacheWrite5mTokens * 100
-    })()
+      if (!cacheWrite5mTokens) return undefined;
+      if (!modelCost.cacheWrite5m) return undefined;
+      return modelCost.cacheWrite5m * cacheWrite5mTokens * 100;
+    })();
     const cacheWrite1hCost = (() => {
-      if (!cacheWrite1hTokens) return undefined
-      if (!modelCost.cacheWrite1h) return undefined
-      return modelCost.cacheWrite1h * cacheWrite1hTokens * 100
-    })()
+      if (!cacheWrite1hTokens) return undefined;
+      if (!modelCost.cacheWrite1h) return undefined;
+      return modelCost.cacheWrite1h * cacheWrite1hTokens * 100;
+    })();
     const totalCostInCent =
-      inputCost + outputCost + (cacheReadCost ?? 0) + (cacheWrite5mCost ?? 0) + (cacheWrite1hCost ?? 0)
+      inputCost +
+      outputCost +
+      (cacheReadCost ?? 0) +
+      (cacheWrite5mCost ?? 0) +
+      (cacheWrite1hCost ?? 0);
     return {
       totalCostInCent,
       inputCost,
@@ -1048,11 +1099,11 @@ export async function handler(
       cacheReadCost,
       cacheWrite5mCost,
       cacheWrite1hCost,
-    }
+    };
   }
 
   function calculateOccurredCost(billingSource: BillingSource, costInfo: CostInfo) {
-    return billingSource === "balance" ? (costInfo.totalCostInCent / 100).toFixed(8) : "0"
+    return billingSource === "balance" ? (costInfo.totalCostInCent / 100).toFixed(8) : "0";
   }
 
   async function trackUsage(
@@ -1064,9 +1115,22 @@ export async function handler(
     usageInfo: UsageInfo,
     costInfo: CostInfo,
   ) {
-    const { inputTokens, outputTokens, reasoningTokens, cacheReadTokens, cacheWrite5mTokens, cacheWrite1hTokens } =
-      usageInfo
-    const { totalCostInCent, inputCost, outputCost, cacheReadCost, cacheWrite5mCost, cacheWrite1hCost } = costInfo
+    const {
+      inputTokens,
+      outputTokens,
+      reasoningTokens,
+      cacheReadTokens,
+      cacheWrite5mTokens,
+      cacheWrite1hTokens,
+    } = usageInfo;
+    const {
+      totalCostInCent,
+      inputCost,
+      outputCost,
+      cacheReadCost,
+      cacheWrite5mCost,
+      cacheWrite1hCost,
+    } = costInfo;
 
     logger.metric({
       "tokens.input": inputTokens,
@@ -1078,7 +1142,9 @@ export async function handler(
       "cost.input.microcents": centsToMicroCents(inputCost),
       "cost.output.microcents": centsToMicroCents(outputCost),
       "cost.cache_read.microcents": cacheReadCost ? centsToMicroCents(cacheReadCost) : undefined,
-      "cost.cache_write.microcents": cacheWrite5mCost ? centsToMicroCents(cacheWrite5mCost) : undefined,
+      "cost.cache_write.microcents": cacheWrite5mCost
+        ? centsToMicroCents(cacheWrite5mCost)
+        : undefined,
       "cost.total.microcents": centsToMicroCents(totalCostInCent),
       // deprecated - remove after May 20, 2026
       "cost.input": Math.round(inputCost),
@@ -1087,24 +1153,33 @@ export async function handler(
       "cost.cache_write_5m": cacheWrite5mCost ? Math.round(cacheWrite5mCost) : undefined,
       "cost.cache_write_1h": cacheWrite1hCost ? Math.round(cacheWrite1hCost) : undefined,
       "cost.total": Math.round(totalCostInCent),
-    })
+    });
 
-    if (billingSource === "anonymous") return
-    authInfo = authInfo!
+    if (billingSource === "anonymous") return;
+    authInfo = authInfo!;
 
-    const cost = centsToMicroCents(totalCostInCent)
+    const cost = centsToMicroCents(totalCostInCent);
 
     // For hot workspaces, batch balance/usage updates through Redis to avoid
     // row-level lock contention on BillingTable/UserTable. Returns the amount
     // to flush this request, or null to skip the DB writes entirely.
     const balanceFlush = await (async () => {
-      if (billingSource !== "subscription" && billingSource !== "lite" && HOT_WORKSPACES.has(authInfo.workspaceID)) {
-        const workspaceCost = billingSource === "free" || billingSource === "byok" ? 0 : cost
-        const flush = await accumulateUsage(authInfo.workspaceID, authInfo.user.id, workspaceCost, cost)
-        return { batched: true as const, flush }
+      if (
+        billingSource !== "subscription" &&
+        billingSource !== "lite" &&
+        HOT_WORKSPACES.has(authInfo.workspaceID)
+      ) {
+        const workspaceCost = billingSource === "free" || billingSource === "byok" ? 0 : cost;
+        const flush = await accumulateUsage(
+          authInfo.workspaceID,
+          authInfo.user.id,
+          workspaceCost,
+          cost,
+        );
+        return { batched: true as const, flush };
       }
-      return { batched: false as const, flush: null }
-    })()
+      return { batched: false as const, flush: null };
+    })();
 
     await Database.use((db) =>
       Promise.all([
@@ -1123,18 +1198,18 @@ export async function handler(
           keyID: authInfo.apiKeyId,
           sessionID: sessionId.substring(0, 30),
           enrichment: (() => {
-            if (billingSource === "subscription") return { plan: "sub" }
-            if (billingSource === "byok") return { plan: "byok" }
-            if (billingSource === "lite") return { plan: "lite" }
-            return undefined
+            if (billingSource === "subscription") return { plan: "sub" };
+            if (billingSource === "byok") return { plan: "byok" };
+            if (billingSource === "lite") return { plan: "lite" };
+            return undefined;
           })(),
         }),
         ...(() => {
           if (billingSource === "subscription") {
-            const plan = authInfo.billing.subscription!.plan
-            const black = BlackData.getLimits({ plan })
-            const week = getWeekBounds(new Date())
-            const rollingWindowSeconds = black.rollingWindow * 3600
+            const plan = authInfo.billing.subscription!.plan;
+            const black = BlackData.getLimits({ plan });
+            const week = getWeekBounds(new Date());
+            const rollingWindowSeconds = black.rollingWindow * 3600;
             return [
               db
                 .update(SubscriptionTable)
@@ -1165,13 +1240,13 @@ export async function handler(
                     eq(SubscriptionTable.userID, authInfo.user.id),
                   ),
                 ),
-            ]
+            ];
           }
           if (billingSource === "lite") {
-            const lite = LiteData.getLimits()
-            const week = getWeekBounds(new Date())
-            const month = getMonthlyBounds(new Date(), authInfo.lite!.timeCreated)
-            const rollingWindowSeconds = lite.rollingWindow * 3600
+            const lite = LiteData.getLimits();
+            const week = getWeekBounds(new Date());
+            const month = getMonthlyBounds(new Date(), authInfo.lite!.timeCreated);
+            const rollingWindowSeconds = lite.rollingWindow * 3600;
             return [
               db
                 .update(LiteTable)
@@ -1203,16 +1278,22 @@ export async function handler(
               END
             `,
                 })
-                .where(and(eq(LiteTable.workspaceID, authInfo.workspaceID), eq(LiteTable.userID, authInfo.user.id))),
-            ]
+                .where(
+                  and(
+                    eq(LiteTable.workspaceID, authInfo.workspaceID),
+                    eq(LiteTable.userID, authInfo.user.id),
+                  ),
+                ),
+            ];
           }
 
           // Batched hot workspace: skip DB writes unless this request is the flush.
-          if (balanceFlush.batched && !balanceFlush.flush) return []
+          if (balanceFlush.batched && !balanceFlush.flush) return [];
 
-          const workspaceDelta = balanceFlush.flush?.workspaceCost ?? cost
-          const userDelta = balanceFlush.flush?.userCost ?? cost
-          const balanceDelta = billingSource === "free" || billingSource === "byok" ? 0 : workspaceDelta
+          const workspaceDelta = balanceFlush.flush?.workspaceCost ?? cost;
+          const userDelta = balanceFlush.flush?.userCost ?? cost;
+          const balanceDelta =
+            billingSource === "free" || billingSource === "byok" ? 0 : workspaceDelta;
 
           return [
             db
@@ -1239,22 +1320,30 @@ export async function handler(
             `,
                 timeMonthlyUsageUpdated: sql`now()`,
               })
-              .where(and(eq(UserTable.workspaceID, authInfo.workspaceID), eq(UserTable.id, authInfo.user.id))),
-          ]
+              .where(
+                and(
+                  eq(UserTable.workspaceID, authInfo.workspaceID),
+                  eq(UserTable.id, authInfo.user.id),
+                ),
+              ),
+          ];
         })(),
       ]),
-    )
+    );
 
-    return { costInMicroCents: cost }
+    return { costInMicroCents: cost };
   }
 
   async function reload(billingSource: BillingSource, authInfo: AuthInfo, costInfo: CostInfo) {
-    if (billingSource !== "balance") return
-    authInfo = authInfo!
+    if (billingSource !== "balance") return;
+    authInfo = authInfo!;
 
-    const reloadTrigger = centsToMicroCents((authInfo.billing.reloadTrigger ?? Billing.RELOAD_TRIGGER) * 100)
-    if (authInfo.billing.balance - costInfo.totalCostInCent >= reloadTrigger) return
-    if (authInfo.billing.timeReloadLockedTill && authInfo.billing.timeReloadLockedTill > new Date()) return
+    const reloadTrigger = centsToMicroCents(
+      (authInfo.billing.reloadTrigger ?? Billing.RELOAD_TRIGGER) * 100,
+    );
+    if (authInfo.billing.balance - costInfo.totalCostInCent >= reloadTrigger) return;
+    if (authInfo.billing.timeReloadLockedTill && authInfo.billing.timeReloadLockedTill > new Date())
+      return;
 
     const lock = await Database.use((tx) =>
       tx
@@ -1267,14 +1356,17 @@ export async function handler(
             eq(BillingTable.workspaceID, authInfo.workspaceID),
             eq(BillingTable.reload, true),
             lt(BillingTable.balance, reloadTrigger),
-            or(isNull(BillingTable.timeReloadLockedTill), lt(BillingTable.timeReloadLockedTill, sql`now()`)),
+            or(
+              isNull(BillingTable.timeReloadLockedTill),
+              lt(BillingTable.timeReloadLockedTill, sql`now()`),
+            ),
           ),
         ),
-    )
-    if (lock.rowsAffected === 0) return
+    );
+    if (lock.rowsAffected === 0) return;
 
     await Actor.provide("system", { workspaceID: authInfo.workspaceID }, async () => {
-      await Billing.reload()
-    })
+      await Billing.reload();
+    });
   }
 }

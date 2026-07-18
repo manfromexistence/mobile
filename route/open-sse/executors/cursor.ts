@@ -116,28 +116,28 @@ function buildExecRejection(event: ExecServerEvent): Buffer | null {
         event.execMsgId,
         event.execId,
         event.path,
-        BUILTIN_TOOL_REJECT_REASON
+        BUILTIN_TOOL_REJECT_REASON,
       );
     case "exec_write":
       return encodeExecWriteRejected(
         event.execMsgId,
         event.execId,
         event.path,
-        BUILTIN_TOOL_REJECT_REASON
+        BUILTIN_TOOL_REJECT_REASON,
       );
     case "exec_delete":
       return encodeExecDeleteRejected(
         event.execMsgId,
         event.execId,
         event.path,
-        BUILTIN_TOOL_REJECT_REASON
+        BUILTIN_TOOL_REJECT_REASON,
       );
     case "exec_ls":
       return encodeExecLsRejected(
         event.execMsgId,
         event.execId,
         event.path,
-        BUILTIN_TOOL_REJECT_REASON
+        BUILTIN_TOOL_REJECT_REASON,
       );
     case "exec_grep":
       return encodeExecGrepError(event.execMsgId, event.execId, BUILTIN_TOOL_REJECT_REASON);
@@ -151,7 +151,7 @@ function buildExecRejection(event: ExecServerEvent): Buffer | null {
         event.execId,
         event.command,
         event.workingDir,
-        BUILTIN_TOOL_REJECT_REASON
+        BUILTIN_TOOL_REJECT_REASON,
       );
     case "exec_bg_shell":
       return encodeExecBackgroundShellSpawnRejected(
@@ -159,20 +159,20 @@ function buildExecRejection(event: ExecServerEvent): Buffer | null {
         event.execId,
         event.command,
         event.workingDir,
-        BUILTIN_TOOL_REJECT_REASON
+        BUILTIN_TOOL_REJECT_REASON,
       );
     case "exec_fetch":
       return encodeExecFetchError(
         event.execMsgId,
         event.execId,
         event.url,
-        BUILTIN_TOOL_REJECT_REASON
+        BUILTIN_TOOL_REJECT_REASON,
       );
     case "exec_write_shell_stdin":
       return encodeExecWriteShellStdinError(
         event.execMsgId,
         event.execId,
-        BUILTIN_TOOL_REJECT_REASON
+        BUILTIN_TOOL_REJECT_REASON,
       );
   }
 }
@@ -402,7 +402,7 @@ export function processFrame(
     h2Req?: import("http2").ClientHttp2Stream;
     mcpTools?: McpToolDefinition[];
     blobStore?: Map<string, Buffer>;
-  } = {}
+  } = {},
 ): void {
   // 1. JSON error envelope (Connect-RPC style — usually status > 200).
   const jsonError = tryParseJsonError(payload);
@@ -746,7 +746,7 @@ export class CursorExecutor extends BaseExecutor {
       max_completion_tokens?: unknown;
       stop?: unknown;
       response_format?: unknown;
-    }
+    },
   ): Promise<{ body: Uint8Array; blobStore: Map<string, Buffer> }> {
     const { userText, tools } = this.assembleTextAndTools(body);
     const images = await this.resolveRequestImages(body);
@@ -793,7 +793,7 @@ export class CursorExecutor extends BaseExecutor {
     url: string,
     headers: Record<string, string>,
     body: Uint8Array,
-    signal?: AbortSignal
+    signal?: AbortSignal,
   ): Promise<{
     status: number;
     headers: Record<string, string | number>;
@@ -923,7 +923,7 @@ export class CursorExecutor extends BaseExecutor {
     ctx: StreamCtx,
     mcpTools: McpToolDefinition[] | undefined,
     blobStore: Map<string, Buffer> | undefined,
-    signal?: AbortSignal
+    signal?: AbortSignal,
   ): Promise<void> {
     const ackedExecIds = new Set<string>();
     // Rolling buffer: chunks arrive on `data`, get appended, and consumed
@@ -1025,7 +1025,7 @@ export class CursorExecutor extends BaseExecutor {
                 "[cursor-agent] frame decode failed at pos",
                 pos,
                 ":",
-                (err as Error).message
+                (err as Error).message,
               );
             }
             pos += 5 + length;
@@ -1081,7 +1081,7 @@ export class CursorExecutor extends BaseExecutor {
     const buildErrorResponse = (status: number, message: string, type = "invalid_request_error") =>
       new Response(
         JSON.stringify({ error: { message: sanitizeErrorMessage(message), type, code: "" } }),
-        { status, headers: { "Content-Type": "application/json" } }
+        { status, headers: { "Content-Type": "application/json" } },
       );
 
     // Cursor's agent.v1.AgentService/Run is a bidirectional Connect-RPC:
@@ -1095,7 +1095,7 @@ export class CursorExecutor extends BaseExecutor {
         response: buildErrorResponse(
           501,
           "Cursor provider requires Node.js http2, which is unavailable in this runtime (Edge / Cloudflare Workers / similar). Run OmniRoute on a Node.js runtime to use cursor.",
-          "unsupported_runtime"
+          "unsupported_runtime",
         ),
         url,
         headers,
@@ -1251,7 +1251,7 @@ export class CursorExecutor extends BaseExecutor {
             }
           },
         },
-        { highWaterMark: 16384 }
+        { highWaterMark: 16384 },
       );
       return {
         response: new Response(sseStream, {
@@ -1383,7 +1383,7 @@ export class CursorExecutor extends BaseExecutor {
         {
           status: ctx.midStreamError.status,
           headers: { "Content-Type": "application/json" },
-        }
+        },
       );
     }
 
@@ -1456,7 +1456,7 @@ export class CursorExecutor extends BaseExecutor {
         ],
         usage,
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   }
 

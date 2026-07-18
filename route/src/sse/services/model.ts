@@ -69,7 +69,7 @@ async function getCombinedModelAliases(): Promise<Record<string, unknown>> {
  */
 async function lookupCustomModelMeta(
   providerId: string,
-  modelId: string
+  modelId: string,
 ): Promise<{ apiFormat?: string; targetFormat?: string }> {
   try {
     const models = await getCustomModels(providerId);
@@ -112,7 +112,7 @@ export async function getModelInfo(modelStr) {
     if (!info?.provider || !info?.model) return info;
     const { apiFormat, targetFormat } = await lookupCustomModelMeta(
       String(info.provider),
-      String(info.model)
+      String(info.model),
     );
     if (apiFormat || targetFormat) {
       return {
@@ -146,16 +146,16 @@ export async function getModelInfo(modelStr) {
       // correctly (#2778).
       const openaiNodes = await getProviderNodes({ type: "openai-compatible" });
       const matchedOpenAI = openaiNodes.find(
-        (node) => node.prefix === prefixToCheck || node.id === prefixToCheck
+        (node) => node.prefix === prefixToCheck || node.id === prefixToCheck,
       );
       if (matchedOpenAI) {
         const normalizedModel = stripRedundantNodePrefix(
           parsed.model as string,
-          matchedOpenAI.prefix
+          matchedOpenAI.prefix,
         );
         const { apiFormat, targetFormat } = await lookupCustomModelMeta(
           matchedOpenAI.id as string,
-          normalizedModel
+          normalizedModel,
         );
         return {
           provider: matchedOpenAI.id,
@@ -169,16 +169,16 @@ export async function getModelInfo(modelStr) {
       // Check Anthropic Compatible nodes
       const anthropicNodes = await getProviderNodes({ type: "anthropic-compatible" });
       const matchedAnthropic = anthropicNodes.find(
-        (node) => node.prefix === prefixToCheck || node.id === prefixToCheck
+        (node) => node.prefix === prefixToCheck || node.id === prefixToCheck,
       );
       if (matchedAnthropic) {
         const normalizedModel = stripRedundantNodePrefix(
           parsed.model as string,
-          matchedAnthropic.prefix
+          matchedAnthropic.prefix,
         );
         const { apiFormat, targetFormat } = await lookupCustomModelMeta(
           matchedAnthropic.id as string,
-          normalizedModel
+          normalizedModel,
         );
         return {
           provider: matchedAnthropic.id,

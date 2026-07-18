@@ -39,9 +39,9 @@ test("formatCursorAgentClientVersion prefixes cli-", () => {
 test("extractVersionIdFromResolvedPath reads versions/<id>", () => {
   assert.equal(
     extractVersionIdFromResolvedPath(
-      "/home/u/.local/share/cursor-agent/versions/2026.07.08-0c04a8a/cursor-agent"
+      "/home/u/.local/share/cursor-agent/versions/2026.07.08-0c04a8a/cursor-agent",
     ),
-    "2026.07.08-0c04a8a"
+    "2026.07.08-0c04a8a",
   );
   assert.equal(extractVersionIdFromResolvedPath("/tmp/not-an-agent"), null);
 });
@@ -115,7 +115,7 @@ test("getCursorAgentCliVersion ignores invalid env and uses pin when FS empty", 
       () => {
         resetCursorAgentCliVersionCache();
         assert.equal(getCursorAgentCliVersion(), CURSOR_AGENT_CLI_VERSION);
-      }
+      },
     );
   } finally {
     resetCursorAgentCliVersionCache();
@@ -151,11 +151,8 @@ test("getCursorAgentCliVersion reads CURSOR_DATA_DIR via isolated HOME", () => {
       () => {
         resetCursorAgentCliVersionCache();
         assert.equal(getCursorAgentCliVersion(), id);
-        assert.equal(
-          formatCursorAgentClientVersion(getCursorAgentCliVersion()),
-          `cli-${id}`
-        );
-      }
+        assert.equal(formatCursorAgentClientVersion(getCursorAgentCliVersion()), `cli-${id}`);
+      },
     );
   } finally {
     resetCursorAgentCliVersionCache();

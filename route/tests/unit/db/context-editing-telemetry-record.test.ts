@@ -48,7 +48,7 @@ test("records a context-editing row reflected in byEngine analytics", () => {
   recordContextEditingTelemetry(
     "req-1",
     { editCount: 1, clearedInputTokens: 50000, clearedToolUses: 8 },
-    "claude"
+    "claude",
   );
   const summary = getCompressionAnalyticsSummary();
   assert.ok(summary.byEngine["context-editing"], "byEngine has a context-editing bucket");
@@ -78,7 +78,7 @@ test("uses a suffixed request_id so it never collides with the usage-receipt UPD
   recordContextEditingTelemetry(
     "abc123",
     { editCount: 1, clearedInputTokens: 1000, clearedToolUses: 1 },
-    "claude"
+    "claude",
   );
   const latest = getLatestCompressionAnalyticsRun();
   assert.ok(latest);
@@ -87,7 +87,7 @@ test("uses a suffixed request_id so it never collides with the usage-receipt UPD
   assert.notEqual(latest.request_id, "abc123", "must not reuse the raw request id");
   assert.ok(
     typeof latest.request_id === "string" && latest.request_id.startsWith("abc123"),
-    "stays traceable to the originating request"
+    "stays traceable to the originating request",
   );
 });
 

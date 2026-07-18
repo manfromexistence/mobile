@@ -162,7 +162,7 @@ function headerValue(headers: Record<string, string> | null, key: string): strin
  */
 export function getBackgroundTaskReason(
   body: BackgroundTaskBody | unknown,
-  headers: Record<string, string> | null = null
+  headers: Record<string, string> | null = null,
 ): string | null {
   if (!body || typeof body !== "object") return null;
   const typedBody = body as BackgroundTaskBody;
@@ -180,7 +180,7 @@ export function getBackgroundTaskReason(
 
   // 2. Very low max tokens usually indicates utility/background tasks
   const maxTokens = toFiniteNumber(
-    typedBody.max_tokens ?? typedBody.max_completion_tokens ?? typedBody.max_output_tokens
+    typedBody.max_tokens ?? typedBody.max_completion_tokens ?? typedBody.max_output_tokens,
   );
   if (maxTokens !== null && maxTokens > 0 && maxTokens < 50) {
     return "low_max_tokens";
@@ -192,7 +192,7 @@ export function getBackgroundTaskReason(
 
   // Find system message
   const systemMsg = messages.find(
-    (message: BackgroundMessage) => message.role === "system" || message.role === "developer"
+    (message: BackgroundMessage) => message.role === "system" || message.role === "developer",
   );
   if (!systemMsg) return null;
 
@@ -203,7 +203,7 @@ export function getBackgroundTaskReason(
 
   // Check against detection patterns
   const matched = getConfig().detectionPatterns.some((pattern) =>
-    systemContent.includes(pattern.toLowerCase())
+    systemContent.includes(pattern.toLowerCase()),
   );
 
   if (!matched) return null;
@@ -225,7 +225,7 @@ export function getBackgroundTaskReason(
  */
 export function isBackgroundTask(
   body: BackgroundTaskBody | unknown,
-  headers: Record<string, string> | null = null
+  headers: Record<string, string> | null = null,
 ): boolean {
   return getBackgroundTaskReason(body, headers) !== null;
 }

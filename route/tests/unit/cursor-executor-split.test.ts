@@ -40,8 +40,9 @@ test("composer thinking decoding behaves via the leaf", async () => {
 });
 
 test("prompt constraint builder behaves via the leaf", async () => {
-  const { toolChoiceDirectiveLine, buildCursorOutputConstraints } =
-    await import("../../open-sse/executors/cursor/prompt.ts");
+  const { toolChoiceDirectiveLine, buildCursorOutputConstraints } = await import(
+    "../../open-sse/executors/cursor/prompt.ts"
+  );
   assert.match(toolChoiceDirectiveLine("required"), /MUST call at least one/);
   assert.equal(toolChoiceDirectiveLine("auto"), "");
   assert.match(buildCursorOutputConstraints({ max_tokens: 100 }), /100 output tokens/);

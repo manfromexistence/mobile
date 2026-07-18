@@ -72,7 +72,7 @@ type NamedCombos = Record<string, CompressionPipelineStep[]>;
 
 export function checkComboOverride(
   config: CompressionConfig,
-  comboId: string | null
+  comboId: string | null,
 ): CompressionMode | null {
   if (!comboId || !config.comboOverrides) return null;
   return config.comboOverrides[comboId] ?? null;
@@ -113,7 +113,7 @@ function resolveBasePlan(
   comboId: string | null,
   estimatedTokens: number,
   combos: NamedCombos = {},
-  header: string | null = null
+  header: string | null = null,
 ): DerivedPlan {
   if (!config.enabled) return withSource({ mode: "off", stackedPipeline: [] }, "off");
 
@@ -137,7 +137,7 @@ function resolveBasePlan(
   if (config.activeComboId && combos[config.activeComboId]) {
     return withSource(
       { mode: "stacked", stackedPipeline: combos[config.activeComboId] },
-      "active-profile"
+      "active-profile",
     );
   }
 
@@ -147,7 +147,7 @@ function resolveBasePlan(
       mode === "stacked"
         ? { mode, stackedPipeline: config.stackedPipeline ?? [] }
         : { mode, stackedPipeline: [] },
-      "auto-trigger"
+      "auto-trigger",
     );
   }
 
@@ -181,7 +181,7 @@ export function getEffectiveMode(
   comboId: string | null,
   estimatedTokens: number,
   combos: NamedCombos = {},
-  header: string | null = null
+  header: string | null = null,
 ): CompressionMode {
   return resolveBasePlan(config, comboId, estimatedTokens, combos, header).mode as CompressionMode;
 }
@@ -209,7 +209,7 @@ export function selectCompressionPlan(
   context?: CachingDetectionContext,
   combos: NamedCombos = {},
   header: string | null = null,
-  adaptiveOptions?: AdaptiveSelectOptions
+  adaptiveOptions?: AdaptiveSelectOptions,
 ): DerivedPlan {
   let plan = resolveBasePlan(config, comboId, estimatedTokens, combos, header);
 
@@ -244,7 +244,7 @@ export function selectCompressionStrategy(
   body?: Record<string, unknown>,
   context?: CachingDetectionContext,
   combos: NamedCombos = {},
-  header: string | null = null
+  header: string | null = null,
 ): CompressionMode {
   return selectCompressionPlan(config, comboId, estimatedTokens, body, context, combos, header)
     .mode as CompressionMode;
@@ -268,7 +268,7 @@ export function applyCompression(
     riskGate?: RiskGateConfig;
     /** Force/override the caching gate (studio dry-run, or chatCore's resolved context). */
     cachingContext?: CachingDetectionContext;
-  }
+  },
 ): CompressionResult {
   return withCompressionEntrypointGuards(body, options, (b) => runCompression(b, mode, options));
 }
@@ -284,7 +284,7 @@ function runCompression(
     bailout?: BailoutConfig;
     riskGate?: RiskGateConfig;
     cachingContext?: CachingDetectionContext;
-  }
+  },
 ): CompressionResult {
   if (mode === "off") {
     return { body, compressed: false, stats: null };
@@ -304,7 +304,7 @@ function runCompression(
       options.config,
       options.principalId,
       options.model,
-      options.supportsVision
+      options.supportsVision,
     );
     const hit = memoLookup(key);
     if (hit) return hit;
@@ -339,7 +339,7 @@ function runCompression(
     const result = applyStackedCompression(
       compressionBody,
       options?.config?.stackedPipeline,
-      options
+      options,
     );
     return adapter.adapted ? { ...result, body: adapter.restore(result.body) } : result;
   }
@@ -356,7 +356,7 @@ function runCompression(
       ...(options?.config?.preserveSystemPrompt !== false
         ? {
             compressRoles: (options?.config?.cavemanConfig?.compressRoles ?? ["user"]).filter(
-              (role) => role !== "system"
+              (role) => role !== "system",
             ),
           }
         : {}),
@@ -366,7 +366,7 @@ function runCompression(
     };
     const result = cavemanCompress(
       compressionBody as Parameters<typeof cavemanCompress>[0],
-      cavemanConfig
+      cavemanConfig,
     );
     return adapter.adapted ? { ...result, body: adapter.restore(result.body) } : result;
   }
@@ -394,7 +394,7 @@ function runCompression(
         mode,
         ["aggressive"],
         result.stats.rulesApplied,
-        result.stats.durationMs
+        result.stats.durationMs,
       ),
     };
   }
@@ -423,7 +423,7 @@ function runCompression(
           mode,
           ["ultra"],
           result.stats.rulesApplied,
-          result.stats.durationMs
+          result.stats.durationMs,
         ),
         ultraTier: result.stats.ultraTier,
       },
@@ -451,10 +451,10 @@ export async function applyCompressionAsync(
     principalId?: string;
     onEngineStep?: (step: StackedCompressionStep) => void;
     cachingContext?: CachingDetectionContext;
-  }
+  },
 ): Promise<CompressionResult> {
   return withCompressionEntrypointGuardsAsync(body, options, (b) =>
-    runCompressionAsync(b, mode, options)
+    runCompressionAsync(b, mode, options),
   );
 }
 
@@ -470,7 +470,7 @@ async function runCompressionAsync(
     principalId?: string;
     onEngineStep?: (step: StackedCompressionStep) => void;
     cachingContext?: CachingDetectionContext;
-  }
+  },
 ): Promise<CompressionResult> {
   if (
     options?.config?.memoizeCompressionResults === true &&
@@ -487,7 +487,7 @@ async function runCompressionAsync(
       options.config,
       options.principalId,
       options.model,
-      options.supportsVision
+      options.supportsVision,
     );
     const hit = memoLookup(key);
     if (hit) return hit;
@@ -505,7 +505,7 @@ async function runCompressionAsync(
     const result = await applyStackedCompressionAsync(
       adapter.body,
       options?.config?.stackedPipeline,
-      options
+      options,
     );
     return adapter.adapted ? { ...result, body: adapter.restore(result.body) } : result;
   }
@@ -536,7 +536,7 @@ async function applyUltraAsync(
     config?: CompressionConfig;
     principalId?: string;
     onEngineStep?: (step: StackedCompressionStep) => void;
-  }
+  },
 ): Promise<CompressionResult> {
   const ultraConfig = options?.config?.ultra;
   const modelPath = typeof ultraConfig?.modelPath === "string" ? ultraConfig.modelPath.trim() : "";
@@ -571,7 +571,7 @@ async function applyUltraAsync(
           "ultra",
           result.stats.techniquesUsed,
           result.stats.rulesApplied,
-          result.stats.durationMs
+          result.stats.durationMs,
         ),
         ultraTier: result.stats.ultraTier,
       },
@@ -615,7 +615,7 @@ async function applyUltraAsync(
   return applyCompression(
     body,
     ultraConfig?.slmFallbackToAggressive ? "aggressive" : "ultra",
-    options
+    options,
   );
 }
 
@@ -666,7 +666,7 @@ function reportEngineStep(
   stepIndex: number,
   totalSteps: number,
   engine: string,
-  result: CompressionResult
+  result: CompressionResult,
 ): void {
   if (!onStep) return;
   const s = result.stats;
@@ -692,7 +692,7 @@ function reportEngineStep(
  */
 function resolveStackSteps(
   pipeline?: Array<CompressionPipelineStep | string>,
-  config?: CompressionConfig
+  config?: CompressionConfig,
 ): CompressionPipelineStep[] {
   if (pipeline && pipeline.length > 0) return pipeline.map(normalizePipelineStep);
 
@@ -712,7 +712,7 @@ function resolveStackSteps(
 
 function buildStepOptions(
   step: CompressionPipelineStep,
-  options?: StackOptions
+  options?: StackOptions,
 ): CompressionEngineApplyOptions {
   return {
     ...options,
@@ -731,7 +731,7 @@ function finalizeStackedResult(
   compressed: boolean,
   acc: StackAccumulator,
   start: number,
-  compressionComboId: string | null | undefined
+  compressionComboId: string | null | undefined,
 ): CompressionResult {
   const stats = createCompressionStats(
     originalBody,
@@ -739,7 +739,7 @@ function finalizeStackedResult(
     "stacked",
     Array.from(acc.techniques),
     acc.rules.size > 0 ? Array.from(acc.rules) : undefined,
-    Math.round((performance.now() - start) * 100) / 100
+    Math.round((performance.now() - start) * 100) / 100,
   );
   stats.engine = "stacked";
   stats.compressionComboId = compressionComboId ?? null;
@@ -782,11 +782,11 @@ function recordStepFailure(
   acc: StackAccumulator,
   engineId: string,
   err: unknown,
-  ctx: StepCommitCtx
+  ctx: StepCommitCtx,
 ): void {
   if (ctx.breakerOn) recordEngineFailure(engineId, ctx.breaker);
   acc.validationErrors.add(
-    `${engineId}: bailed out — ${err instanceof Error ? err.message : String(err)}`
+    `${engineId}: bailed out — ${err instanceof Error ? err.message : String(err)}`,
   );
   acc.fallbackApplied = true;
 }
@@ -801,7 +801,7 @@ function commitStepResult(
   step: CompressionPipelineStep,
   result: CompressionResult,
   currentBody: Record<string, unknown>,
-  ctx: StepCommitCtx
+  ctx: StepCommitCtx,
 ): { body: Record<string, unknown>; advanced: boolean } {
   if (ctx.breakerOn) recordEngineSuccess(step.engine, ctx.breaker);
   mergeStackStep(acc, step.engine, result);
@@ -817,17 +817,17 @@ function commitStepResult(
 export function applyStackedCompression(
   body: Record<string, unknown>,
   pipeline?: Array<CompressionPipelineStep | string>,
-  options?: StackOptions
+  options?: StackOptions,
 ): CompressionResult {
   return withRiskGate(body, resolveRiskGate(options), (b) =>
-    runStackedCompression(b, pipeline, options)
+    runStackedCompression(b, pipeline, options),
   );
 }
 
 function runStackedCompression(
   body: Record<string, unknown>,
   pipeline?: Array<CompressionPipelineStep | string>,
-  options?: StackOptions
+  options?: StackOptions,
 ): CompressionResult {
   const steps = resolveStackSteps(pipeline, options?.config);
   registerBuiltinCompressionEngines();
@@ -839,7 +839,7 @@ function runStackedCompression(
 
   const bailout = options?.bailout;
   const breaker = resolvePipelineBreakerConfig(
-    options?.circuitBreaker ?? options?.config?.pipelineCircuitBreaker
+    options?.circuitBreaker ?? options?.config?.pipelineCircuitBreaker,
   );
   const breakerOn = breaker.enabled;
   const fidelityGate = options?.fidelityGate ?? options?.config?.fidelityGate;
@@ -910,7 +910,7 @@ function runStackedCompression(
     compressed,
     acc,
     start,
-    options?.compressionComboId ?? options?.config?.compressionComboId
+    options?.compressionComboId ?? options?.config?.compressionComboId,
   );
 }
 
@@ -923,17 +923,17 @@ function runStackedCompression(
 export async function applyStackedCompressionAsync(
   body: Record<string, unknown>,
   pipeline?: Array<CompressionPipelineStep | string>,
-  options?: StackOptions
+  options?: StackOptions,
 ): Promise<CompressionResult> {
   return withRiskGateAsync(body, resolveRiskGate(options), (b) =>
-    runStackedCompressionAsync(b, pipeline, options)
+    runStackedCompressionAsync(b, pipeline, options),
   );
 }
 
 async function runStackedCompressionAsync(
   body: Record<string, unknown>,
   pipeline?: Array<CompressionPipelineStep | string>,
-  options?: StackOptions
+  options?: StackOptions,
 ): Promise<CompressionResult> {
   const steps = resolveStackSteps(pipeline, options?.config);
   registerBuiltinCompressionEngines();
@@ -945,7 +945,7 @@ async function runStackedCompressionAsync(
 
   const bailout = options?.bailout;
   const breaker = resolvePipelineBreakerConfig(
-    options?.circuitBreaker ?? options?.config?.pipelineCircuitBreaker
+    options?.circuitBreaker ?? options?.config?.pipelineCircuitBreaker,
   );
   const breakerOn = breaker.enabled;
   const fidelityGate = options?.fidelityGate ?? options?.config?.fidelityGate;
@@ -1018,6 +1018,6 @@ async function runStackedCompressionAsync(
     compressed,
     acc,
     start,
-    options?.compressionComboId ?? options?.config?.compressionComboId
+    options?.compressionComboId ?? options?.config?.compressionComboId,
   );
 }

@@ -86,7 +86,7 @@ function getRowDetail(row: CostExplorerBreakdownRow, groupBy: CostExplorerGroupB
 
 function getGroupRows(
   analytics: CostExplorerAnalyticsPayload,
-  groupBy: CostExplorerGroupBy
+  groupBy: CostExplorerGroupBy,
 ): CostExplorerBreakdownRow[] {
   switch (groupBy) {
     case "provider":

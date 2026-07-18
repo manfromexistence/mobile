@@ -48,7 +48,11 @@ export function CaptureModesToolbar({ customHostCount }: CaptureModesToolbarProp
     fetchTproxyStatus()
       .then((s) => {
         if (alive) {
-          setTproxy({ running: s.running, available: s.available, interceptCount: s.interceptCount });
+          setTproxy({
+            running: s.running,
+            available: s.available,
+            interceptCount: s.interceptCount,
+          });
         }
       })
       .catch(() => {
@@ -124,13 +128,13 @@ export function CaptureModesToolbar({ customHostCount }: CaptureModesToolbarProp
                   ? warn
                     ? "border-amber-500/50 bg-amber-900/30 text-amber-300"
                     : "border-green-500/50 bg-green-900/30 text-green-300"
-                  : "border-border text-text-muted hover:text-text-main hover:bg-surface"
+                  : "border-border text-text-muted hover:text-text-main hover:bg-surface",
               )}
             >
               <span
                 className={cn(
                   "inline-block h-1.5 w-1.5 rounded-full",
-                  active ? (warn ? "bg-amber-400" : "bg-green-400") : "bg-gray-600"
+                  active ? (warn ? "bg-amber-400" : "bg-green-400") : "bg-gray-600",
                 )}
               />
               {label}
@@ -149,13 +153,13 @@ export function CaptureModesToolbar({ customHostCount }: CaptureModesToolbarProp
             "focus-ring disabled:cursor-not-allowed disabled:opacity-50",
             tproxy.running
               ? "border-amber-500/50 bg-amber-900/30 text-amber-300"
-              : "border-border text-text-muted hover:text-text-main hover:bg-surface"
+              : "border-border text-text-muted hover:text-text-main hover:bg-surface",
           )}
         >
           <span
             className={cn(
               "inline-block h-1.5 w-1.5 rounded-full",
-              tproxy.running ? "bg-amber-400" : "bg-gray-600"
+              tproxy.running ? "bg-amber-400" : "bg-gray-600",
             )}
           />
           {t("tproxyMode")}

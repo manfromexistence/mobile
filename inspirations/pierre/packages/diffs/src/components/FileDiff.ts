@@ -1,5 +1,5 @@
-import type { ElementContent, Element as HASTElement } from 'hast';
-import { toHtml } from 'hast-util-to-html';
+import type { ElementContent, Element as HASTElement } from "hast";
+import { toHtml } from "hast-util-to-html";
 
 import {
   CUSTOM_HEADER_SLOT_ID,
@@ -11,7 +11,7 @@ import {
   HEADER_PREFIX_SLOT_ID,
   THEME_CSS_ATTRIBUTE,
   UNSAFE_CSS_ATTRIBUTE,
-} from '../constants';
+} from "../constants";
 import {
   type GetHoveredLineResult,
   type GetLineIndexUtility,
@@ -19,15 +19,15 @@ import {
   type InteractionManagerBaseOptions,
   pluckInteractionOptions,
   type SelectionWriteOptions,
-} from '../managers/InteractionManager';
-import { ResizeManager } from '../managers/ResizeManager';
-import { ScrollSyncManager } from '../managers/ScrollSyncManager';
+} from "../managers/InteractionManager";
+import { ResizeManager } from "../managers/ResizeManager";
+import { ScrollSyncManager } from "../managers/ScrollSyncManager";
 import {
   DiffHunksRenderer,
   type DiffHunksRendererOptions,
   type HunksRenderResult,
-} from '../renderers/DiffHunksRenderer';
-import { SVGSpriteSheet } from '../sprite';
+} from "../renderers/DiffHunksRenderer";
+import { SVGSpriteSheet } from "../sprite";
 import type {
   AppliedThemeStyleCache,
   BaseDiffOptions,
@@ -46,33 +46,29 @@ import type {
   SelectedLineRange,
   SelectionSide,
   ThemeTypes,
-} from '../types';
-import { areDiffLineAnnotationsEqual } from '../utils/areDiffLineAnnotationsEqual';
-import { areFilesEqual } from '../utils/areFilesEqual';
-import { areHunkDataEqual } from '../utils/areHunkDataEqual';
-import { arePrePropertiesEqual } from '../utils/arePrePropertiesEqual';
-import { areRenderRangesEqual } from '../utils/areRenderRangesEqual';
-import { areThemesEqual } from '../utils/areThemesEqual';
-import { createAnnotationWrapperNode } from '../utils/createAnnotationWrapperNode';
-import { createGutterUtilityContentNode } from '../utils/createGutterUtilityContentNode';
-import { createUnsafeCSSStyleNode } from '../utils/createUnsafeCSSStyleNode';
-import {
-  patchScrollbarGutterSize,
-  wrapThemeCSS,
-  wrapUnsafeCSS,
-} from '../utils/cssWrappers';
-import { getDiffHunksRendererOptions } from '../utils/getDiffHunksRendererOptions';
-import { getLineAnnotationName } from '../utils/getLineAnnotationName';
-import { getOrCreateCodeNode } from '../utils/getOrCreateCodeNode';
-import { upsertHostThemeStyle } from '../utils/hostTheme';
-import { isDiffPlainText } from '../utils/isDiffPlainText';
-import { isStyleNode } from '../utils/isStyleNode';
-import { parseDiffFromFile } from '../utils/parseDiffFromFile';
-import { prerenderHTMLIfNecessary } from '../utils/prerenderHTMLIfNecessary';
-import { getMeasuredScrollbarGutter } from '../utils/scrollbarGutter';
-import { setPreNodeProperties } from '../utils/setWrapperNodeProps';
-import type { WorkerPoolManager } from '../worker';
-import { DiffsContainerLoaded } from './web-components';
+} from "../types";
+import { areDiffLineAnnotationsEqual } from "../utils/areDiffLineAnnotationsEqual";
+import { areFilesEqual } from "../utils/areFilesEqual";
+import { areHunkDataEqual } from "../utils/areHunkDataEqual";
+import { arePrePropertiesEqual } from "../utils/arePrePropertiesEqual";
+import { areRenderRangesEqual } from "../utils/areRenderRangesEqual";
+import { areThemesEqual } from "../utils/areThemesEqual";
+import { createAnnotationWrapperNode } from "../utils/createAnnotationWrapperNode";
+import { createGutterUtilityContentNode } from "../utils/createGutterUtilityContentNode";
+import { createUnsafeCSSStyleNode } from "../utils/createUnsafeCSSStyleNode";
+import { patchScrollbarGutterSize, wrapThemeCSS, wrapUnsafeCSS } from "../utils/cssWrappers";
+import { getDiffHunksRendererOptions } from "../utils/getDiffHunksRendererOptions";
+import { getLineAnnotationName } from "../utils/getLineAnnotationName";
+import { getOrCreateCodeNode } from "../utils/getOrCreateCodeNode";
+import { upsertHostThemeStyle } from "../utils/hostTheme";
+import { isDiffPlainText } from "../utils/isDiffPlainText";
+import { isStyleNode } from "../utils/isStyleNode";
+import { parseDiffFromFile } from "../utils/parseDiffFromFile";
+import { prerenderHTMLIfNecessary } from "../utils/prerenderHTMLIfNecessary";
+import { getMeasuredScrollbarGutter } from "../utils/scrollbarGutter";
+import { setPreNodeProperties } from "../utils/setWrapperNodeProps";
+import type { WorkerPoolManager } from "../worker";
+import { DiffsContainerLoaded } from "./web-components";
 
 export interface FileDiffRenderProps<LAnnotation> {
   fileDiff?: FileDiffMetadata;
@@ -87,28 +83,25 @@ export interface FileDiffRenderProps<LAnnotation> {
   renderRange?: RenderRange;
 }
 
-export interface FileDiffHydrationProps<LAnnotation> extends Omit<
-  FileDiffRenderProps<LAnnotation>,
-  'fileContainer'
-> {
+export interface FileDiffHydrationProps<LAnnotation>
+  extends Omit<FileDiffRenderProps<LAnnotation>, "fileContainer"> {
   fileContainer: HTMLElement;
   prerenderedHTML?: string;
 }
 
-export type FileDiffType = 'file-diff' | 'unresolved-file';
+export type FileDiffType = "file-diff" | "unresolved-file";
 
 export interface FileDiffOptions<LAnnotation>
-  extends
-    Omit<BaseDiffOptions, 'hunkSeparators'>,
-    InteractionManagerBaseOptions<'diff'> {
+  extends Omit<BaseDiffOptions, "hunkSeparators">,
+    InteractionManagerBaseOptions<"diff"> {
   hunkSeparators?:
-    | Exclude<HunkSeparators, 'custom'> /**
-       * @deprecated Custom hunk separator functions are deprecated and will be
-       * removed in a future version.
-       */
+    | Exclude<HunkSeparators, "custom"> /**
+     * @deprecated Custom hunk separator functions are deprecated and will be
+     * removed in a future version.
+     */
     | ((
         hunk: HunkData,
-        instance: FileDiff<LAnnotation>
+        instance: FileDiff<LAnnotation>,
       ) => HTMLElement | DocumentFragment | null | undefined);
   disableFileHeader?: boolean;
   renderHeaderPrefix?: RenderHeaderPrefixCallback;
@@ -120,17 +113,15 @@ export interface FileDiffOptions<LAnnotation>
    * errors yourself.
    */
   disableErrorHandling?: boolean;
-  renderAnnotation?(
-    annotation: DiffLineAnnotation<LAnnotation>
-  ): HTMLElement | undefined;
+  renderAnnotation?(annotation: DiffLineAnnotation<LAnnotation>): HTMLElement | undefined;
   renderGutterUtility?(
-    getHoveredRow: () => GetHoveredLineResult<'diff'> | undefined
+    getHoveredRow: () => GetHoveredLineResult<"diff"> | undefined,
   ): HTMLElement | null | undefined;
 
   onPostRender?(
     node: HTMLElement,
     instance: FileDiff<LAnnotation>,
-    phase: PostRenderPhase
+    phase: PostRenderPhase,
   ): unknown;
 }
 
@@ -150,10 +141,8 @@ interface ColumnElements {
 }
 
 interface TrimColumnsToOverlapProps {
-  columns:
-    | [ColumnElements | undefined, ColumnElements | undefined]
-    | ColumnElements;
-  diffStyle: 'split' | 'unified';
+  columns: [ColumnElements | undefined, ColumnElements | undefined] | ColumnElements;
+  diffStyle: "split" | "unified";
   overlapEnd: number;
   overlapStart: number;
   previousStart: number;
@@ -181,7 +170,7 @@ export class FileDiff<LAnnotation = undefined> {
   static LoadedCustomComponent: boolean = DiffsContainerLoaded;
 
   readonly __id: string = `file-diff:${++instanceId}`;
-  readonly type: FileDiffType = 'file-diff';
+  readonly type: FileDiffType = "file-diff";
 
   protected fileContainer: HTMLElement | undefined;
   protected spriteSVG: SVGElement | undefined;
@@ -209,10 +198,9 @@ export class FileDiff<LAnnotation = undefined> {
   protected hunksRenderer: DiffHunksRenderer<LAnnotation>;
   protected resizeManager: ResizeManager;
   protected scrollSyncManager: ScrollSyncManager;
-  protected interactionManager: InteractionManager<'diff'>;
+  protected interactionManager: InteractionManager<"diff">;
 
-  protected annotationCache: Map<string, AnnotationElementCache<LAnnotation>> =
-    new Map();
+  protected annotationCache: Map<string, AnnotationElementCache<LAnnotation>> = new Map();
   protected lineAnnotations: DiffLineAnnotation<LAnnotation>[] = [];
   protected managersDirty = false;
 
@@ -231,22 +219,22 @@ export class FileDiff<LAnnotation = undefined> {
   constructor(
     public options: FileDiffOptions<LAnnotation> = { theme: DEFAULT_THEMES },
     protected workerManager?: WorkerPoolManager | undefined,
-    protected isContainerManaged = false
+    protected isContainerManaged = false,
   ) {
     this.hunksRenderer = this.createHunksRenderer(options);
     this.resizeManager = new ResizeManager();
     this.scrollSyncManager = new ScrollSyncManager();
     this.interactionManager = new InteractionManager(
-      'diff',
+      "diff",
       pluckInteractionOptions(
         options,
-        typeof options.hunkSeparators === 'function' ||
-          (options.hunkSeparators ?? 'line-info') === 'line-info' ||
-          options.hunkSeparators === 'line-info-basic'
+        typeof options.hunkSeparators === "function" ||
+          (options.hunkSeparators ?? "line-info") === "line-info" ||
+          options.hunkSeparators === "line-info-basic"
           ? this.handleExpandHunk
           : undefined,
-        this.getLineIndex
-      )
+        this.getLineIndex,
+      ),
     );
     this.workerManager?.subscribeToThemeChanges(this);
     this.enabled = true;
@@ -257,24 +245,24 @@ export class FileDiff<LAnnotation = undefined> {
   };
 
   protected getHunksRendererOptions(
-    options: FileDiffOptions<LAnnotation>
+    options: FileDiffOptions<LAnnotation>,
   ): DiffHunksRendererOptions {
     return getDiffHunksRendererOptions(options);
   }
 
   protected createHunksRenderer(
-    options: FileDiffOptions<LAnnotation>
+    options: FileDiffOptions<LAnnotation>,
   ): DiffHunksRenderer<LAnnotation> {
     return new DiffHunksRenderer(
       this.getHunksRendererOptions(options),
       this.handleHighlightRender,
-      this.workerManager
+      this.workerManager,
     );
   }
 
   public getLineIndex: GetLineIndexUtility = (
     lineNumber: number,
-    side: SelectionSide = 'additions'
+    side: SelectionSide = "additions",
   ) => {
     if (this.fileDiff == null) {
       return undefined;
@@ -283,10 +271,8 @@ export class FileDiff<LAnnotation = undefined> {
     let targetUnifiedIndex: number | undefined;
     let targetSplitIndex: number | undefined;
     hunkIterator: for (const hunk of this.fileDiff.hunks) {
-      let currentLineNumber =
-        side === 'deletions' ? hunk.deletionStart : hunk.additionStart;
-      const hunkCount =
-        side === 'deletions' ? hunk.deletionCount : hunk.additionCount;
+      let currentLineNumber = side === "deletions" ? hunk.deletionStart : hunk.additionStart;
+      const hunkCount = side === "deletions" ? hunk.deletionCount : hunk.additionCount;
       let splitIndex = hunk.splitLineStart;
       let unifiedIndex = hunk.unifiedLineStart;
 
@@ -302,8 +288,7 @@ export class FileDiff<LAnnotation = undefined> {
       if (lineNumber >= currentLineNumber + hunkCount) {
         if (hunk === lastHunk) {
           const difference = lineNumber - (currentLineNumber + hunkCount);
-          targetUnifiedIndex =
-            unifiedIndex + hunk.unifiedLineCount + difference;
+          targetUnifiedIndex = unifiedIndex + hunk.unifiedLineCount + difference;
           targetSplitIndex = splitIndex + hunk.splitLineCount + difference;
           break hunkIterator;
         }
@@ -311,7 +296,7 @@ export class FileDiff<LAnnotation = undefined> {
       }
 
       for (const content of hunk.hunkContent) {
-        if (content.type === 'context') {
+        if (content.type === "context") {
           if (lineNumber < currentLineNumber + content.lines) {
             const difference = lineNumber - currentLineNumber;
             targetSplitIndex = splitIndex + difference;
@@ -323,14 +308,11 @@ export class FileDiff<LAnnotation = undefined> {
             unifiedIndex += content.lines;
           }
         } else {
-          const sideCount =
-            side === 'deletions' ? content.deletions : content.additions;
+          const sideCount = side === "deletions" ? content.deletions : content.additions;
           if (lineNumber < currentLineNumber + sideCount) {
             const indexDifference = lineNumber - currentLineNumber;
             targetUnifiedIndex =
-              unifiedIndex +
-              (side === 'additions' ? content.deletions : 0) +
-              indexDifference;
+              unifiedIndex + (side === "additions" ? content.deletions : 0) + indexDifference;
             targetSplitIndex = splitIndex + indexDifference;
 
             break hunkIterator;
@@ -370,13 +352,13 @@ export class FileDiff<LAnnotation = undefined> {
     this.interactionManager.setOptions(
       pluckInteractionOptions(
         this.options,
-        typeof this.options.hunkSeparators === 'function' ||
-          (this.options.hunkSeparators ?? 'line-info') === 'line-info' ||
-          this.options.hunkSeparators === 'line-info-basic'
+        typeof this.options.hunkSeparators === "function" ||
+          (this.options.hunkSeparators ?? "line-info") === "line-info" ||
+          this.options.hunkSeparators === "line-info-basic"
           ? this.handleExpandHunk
           : undefined,
-        this.getLineIndex
-      )
+        this.getLineIndex,
+      ),
     );
   }
 
@@ -385,7 +367,7 @@ export class FileDiff<LAnnotation = undefined> {
   }
 
   public setThemeType(themeType: ThemeTypes): void {
-    if ((this.options.themeType ?? 'system') === themeType) {
+    if ((this.options.themeType ?? "system") === themeType) {
       return;
     }
     this.mergeOptions({ themeType });
@@ -394,7 +376,7 @@ export class FileDiff<LAnnotation = undefined> {
 
   private applyCachedThemeState(themeType: ThemeTypes): boolean {
     if (
-      typeof this.options.theme === 'string' ||
+      typeof this.options.theme === "string" ||
       this.fileContainer == null ||
       this.appliedThemeCSS == null
     ) {
@@ -408,7 +390,7 @@ export class FileDiff<LAnnotation = undefined> {
       this.fileContainer,
       this.appliedThemeCSS.themeStyles,
       themeType,
-      this.appliedThemeCSS.baseThemeType
+      this.appliedThemeCSS.baseThemeType,
     );
     return true;
   }
@@ -416,43 +398,35 @@ export class FileDiff<LAnnotation = undefined> {
   private hasThemeChanged(): boolean {
     return (
       this.appliedThemeCSS != null &&
-      !areThemesEqual(
-        this.appliedThemeCSS.theme,
-        this.options.theme ?? DEFAULT_THEMES
-      )
+      !areThemesEqual(this.appliedThemeCSS.theme, this.options.theme ?? DEFAULT_THEMES)
     );
   }
 
-  public getHoveredLine = (): GetHoveredLineResult<'diff'> | undefined => {
+  public getHoveredLine = (): GetHoveredLineResult<"diff"> | undefined => {
     return this.interactionManager.getHoveredLine();
   };
 
-  public setLineAnnotations(
-    lineAnnotations: DiffLineAnnotation<LAnnotation>[]
-  ): void {
+  public setLineAnnotations(lineAnnotations: DiffLineAnnotation<LAnnotation>[]): void {
     this.lineAnnotations = lineAnnotations;
   }
 
   private canPartiallyRender(
     forceRender: boolean,
     annotationsChanged: boolean,
-    didContentChange: boolean
+    didContentChange: boolean,
   ): boolean {
     if (
       forceRender ||
       annotationsChanged ||
       didContentChange ||
-      typeof this.options.hunkSeparators === 'function'
+      typeof this.options.hunkSeparators === "function"
     ) {
       return false;
     }
     return true;
   }
 
-  public setSelectedLines(
-    range: SelectedLineRange | null,
-    options?: SelectionWriteOptions
-  ): void {
+  public setSelectedLines(range: SelectedLineRange | null, options?: SelectionWriteOptions): void {
     this.interactionManager.setSelection(range, options);
   }
 
@@ -462,15 +436,11 @@ export class FileDiff<LAnnotation = undefined> {
       return;
     }
 
-    const { diffStyle = 'split', overflow = 'scroll' } = this.options;
+    const { diffStyle = "split", overflow = "scroll" } = this.options;
     this.interactionManager.setup(this.pre);
-    this.resizeManager.setup(this.pre, overflow === 'wrap');
-    if (overflow === 'scroll' && diffStyle === 'split') {
-      this.scrollSyncManager.setup(
-        this.pre,
-        this.codeDeletions,
-        this.codeAdditions
-      );
+    this.resizeManager.setup(this.pre, overflow === "wrap");
+    if (overflow === "scroll" && diffStyle === "split") {
+      this.scrollSyncManager.setup(this.pre, this.codeDeletions, this.codeAdditions);
     } else {
       this.scrollSyncManager.cleanUp();
     }
@@ -556,12 +526,12 @@ export class FileDiff<LAnnotation = undefined> {
       shouldRenderCode(
         this.pre,
         hasDiffContent({ fileDiff, oldFile, newFile }),
-        this.options.collapsed
+        this.options.collapsed,
       ) ||
       shouldRenderHeader(
         this.headerElement,
         hasDiffHeaderContent({ fileDiff, oldFile, newFile }),
-        this.options.disableFileHeader
+        this.options.disableFileHeader,
       )
     ) {
       this.render({ ...props, preventEmit: true });
@@ -580,10 +550,7 @@ export class FileDiff<LAnnotation = undefined> {
     }
   }
 
-  protected hydrateElements(
-    fileContainer: HTMLElement,
-    prerenderedHTML: string | undefined
-  ): void {
+  protected hydrateElements(fileContainer: HTMLElement, prerenderedHTML: string | undefined): void {
     if (this.fileContainer !== fileContainer) {
       this.emitPostRender(true);
     }
@@ -599,39 +566,30 @@ export class FileDiff<LAnnotation = undefined> {
       if (element instanceof HTMLPreElement) {
         this.pre = element;
         for (const code of element.children) {
-          if (
-            !(code instanceof HTMLElement) ||
-            code.tagName.toLowerCase() !== 'code'
-          ) {
+          if (!(code instanceof HTMLElement) || code.tagName.toLowerCase() !== "code") {
             continue;
           }
-          if ('deletions' in code.dataset) {
+          if ("deletions" in code.dataset) {
             this.codeDeletions = code;
           }
-          if ('additions' in code.dataset) {
+          if ("additions" in code.dataset) {
             this.codeAdditions = code;
           }
-          if ('unified' in code.dataset) {
+          if ("unified" in code.dataset) {
             this.codeUnified = code;
           }
         }
         continue;
       }
-      if ('diffsHeader' in element.dataset) {
+      if ("diffsHeader" in element.dataset) {
         this.headerElement = element;
         continue;
       }
-      if (
-        element instanceof HTMLStyleElement &&
-        element.hasAttribute(THEME_CSS_ATTRIBUTE)
-      ) {
+      if (element instanceof HTMLStyleElement && element.hasAttribute(THEME_CSS_ATTRIBUTE)) {
         this.themeCSSStyle = element;
         continue;
       }
-      if (
-        element instanceof HTMLStyleElement &&
-        element.hasAttribute(UNSAFE_CSS_ATTRIBUTE)
-      ) {
+      if (element instanceof HTMLStyleElement && element.hasAttribute(UNSAFE_CSS_ATTRIBUTE)) {
         this.unsafeCSSStyle = element;
         this.appliedUnsafeCSS = element.textContent;
         continue;
@@ -639,7 +597,7 @@ export class FileDiff<LAnnotation = undefined> {
     }
     if (this.pre != null) {
       this.syncCodeNodesFromPre(this.pre);
-      this.pre.removeAttribute('data-dehydrated');
+      this.pre.removeAttribute("data-dehydrated");
     }
     this.fileContainer = fileContainer;
     this.hydrateMeasuredScrollbar();
@@ -680,9 +638,7 @@ export class FileDiff<LAnnotation = undefined> {
   public rerender(): void {
     if (
       !this.enabled ||
-      (this.fileDiff == null &&
-        this.additionFile == null &&
-        this.deletionFile == null)
+      (this.fileDiff == null && this.additionFile == null && this.deletionFile == null)
     ) {
       return;
     }
@@ -702,7 +658,7 @@ export class FileDiff<LAnnotation = undefined> {
   public handleExpandHunk = (
     hunkIndex: number,
     direction: ExpansionDirections,
-    expansionLineCountOverride?: number
+    expansionLineCountOverride?: number,
   ): void => {
     this.expandHunk(hunkIndex, direction, expansionLineCountOverride);
   };
@@ -710,13 +666,9 @@ export class FileDiff<LAnnotation = undefined> {
   public expandHunk = (
     hunkIndex: number,
     direction: ExpansionDirections,
-    expansionLineCountOverride?: number
+    expansionLineCountOverride?: number,
   ): void => {
-    this.hunksRenderer.expandHunk(
-      hunkIndex,
-      direction,
-      expansionLineCountOverride
-    );
+    this.hunksRenderer.expandHunk(hunkIndex, direction, expansionLineCountOverride);
     this.rerender();
   };
 
@@ -735,22 +687,18 @@ export class FileDiff<LAnnotation = undefined> {
     if (!this.enabled) {
       // NOTE(amadeus): May need to be a silent failure? Making it loud for now
       // to better understand it
-      throw new Error(
-        'FileDiff.render: attempting to call render after cleaned up'
-      );
+      throw new Error("FileDiff.render: attempting to call render after cleaned up");
     }
-    const { collapsed = false, themeType = 'system' } = this.options;
+    const { collapsed = false, themeType = "system" } = this.options;
     const nextRenderRange = collapsed ? undefined : renderRange;
     const themeChanged = this.hasThemeChanged();
     const filesDidChange =
       oldFile != null &&
       newFile != null &&
-      (!areFilesEqual(oldFile, this.deletionFile) ||
-        !areFilesEqual(newFile, this.additionFile));
+      (!areFilesEqual(oldFile, this.deletionFile) || !areFilesEqual(newFile, this.additionFile));
     let diffDidChange = fileDiff != null && fileDiff !== this.fileDiff;
     const annotationsChanged =
-      lineAnnotations != null &&
-      (lineAnnotations.length > 0 || this.lineAnnotations.length > 0)
+      lineAnnotations != null && (lineAnnotations.length > 0 || this.lineAnnotations.length > 0)
         ? lineAnnotations !== this.lineAnnotations
         : false;
 
@@ -779,11 +727,7 @@ export class FileDiff<LAnnotation = undefined> {
       this.fileDiff = fileDiff;
     } else if (oldFile != null && newFile != null && filesDidChange) {
       diffDidChange = true;
-      this.fileDiff = parseDiffFromFile(
-        oldFile,
-        newFile,
-        this.options.parseDiffOptions
-      );
+      this.fileDiff = parseDiffFromFile(oldFile, newFile, this.options.parseDiffOptions);
     }
     if (diffDidChange) {
       this.cachedHeaderHTML = undefined;
@@ -800,8 +744,7 @@ export class FileDiff<LAnnotation = undefined> {
 
     this.hunksRenderer.setLineAnnotations(this.lineAnnotations);
 
-    const { disableErrorHandling = false, disableFileHeader = false } =
-      this.options;
+    const { disableErrorHandling = false, disableFileHeader = false } = this.options;
 
     if (disableFileHeader) {
       // Remove existing header from DOM
@@ -812,10 +755,7 @@ export class FileDiff<LAnnotation = undefined> {
       }
       this.clearHeaderSlots();
     }
-    fileContainer = this.getOrCreateFileContainer(
-      fileContainer,
-      containerWrapper
-    );
+    fileContainer = this.getOrCreateFileContainer(fileContainer, containerWrapper);
     this.applyCachedThemeState(themeType);
 
     if (collapsed) {
@@ -823,16 +763,13 @@ export class FileDiff<LAnnotation = undefined> {
       this.clearAuxiliaryNodes();
 
       try {
-        const hunksResult = this.hunksRenderer.renderDiff(
-          this.fileDiff,
-          EMPTY_RENDER_RANGE
-        );
+        const hunksResult = this.hunksRenderer.renderDiff(this.fileDiff, EMPTY_RENDER_RANGE);
         if (hunksResult != null) {
           this.applyThemeState(
             fileContainer,
             hunksResult.themeStyles,
             themeType,
-            hunksResult.baseThemeType
+            hunksResult.baseThemeType,
           );
         }
         if (hunksResult?.headerElement != null) {
@@ -863,7 +800,7 @@ export class FileDiff<LAnnotation = undefined> {
         this.canPartiallyRender(
           forceRender,
           annotationsChanged,
-          filesDidChange || diffDidChange || themeChanged
+          filesDidChange || diffDidChange || themeChanged,
         ) &&
         this.applyPartialRender({
           previousRenderRange,
@@ -872,10 +809,7 @@ export class FileDiff<LAnnotation = undefined> {
 
       // If we were unable to partially render, perform a full render
       if (!didPartiallyRender) {
-        const hunksResult = this.hunksRenderer.renderDiff(
-          this.fileDiff,
-          nextRenderRange
-        );
+        const hunksResult = this.hunksRenderer.renderDiff(this.fileDiff, nextRenderRange);
         if (hunksResult == null) {
           // FIXME(amadeus): I don't think we actually need this check, as
           // DiffHunksRenderer should probably take care of it for us?
@@ -889,7 +823,7 @@ export class FileDiff<LAnnotation = undefined> {
           fileContainer,
           hunksResult.themeStyles,
           themeType,
-          hunksResult.baseThemeType
+          hunksResult.baseThemeType,
         );
 
         if (hunksResult.headerElement != null) {
@@ -946,7 +880,7 @@ export class FileDiff<LAnnotation = undefined> {
       if (fileContainer == null) {
         return;
       }
-      this.options.onPostRender?.(fileContainer, this, 'unmount');
+      this.options.onPostRender?.(fileContainer, this, "unmount");
       return;
     }
 
@@ -954,7 +888,7 @@ export class FileDiff<LAnnotation = undefined> {
       return;
     }
 
-    const phase: PostRenderPhase = this.mounted ? 'update' : 'mount';
+    const phase: PostRenderPhase = this.mounted ? "update" : "mount";
     this.mounted = true;
     onPostRender?.(fileContainer, this, phase);
   }
@@ -1007,30 +941,23 @@ export class FileDiff<LAnnotation = undefined> {
 
     if (this.placeHolder == null) {
       const shadowRoot =
-        this.fileContainer.shadowRoot ??
-        this.fileContainer.attachShadow({ mode: 'open' });
-      this.placeHolder = document.createElement('div');
-      this.placeHolder.dataset.placeholder = '';
+        this.fileContainer.shadowRoot ?? this.fileContainer.attachShadow({ mode: "open" });
+      this.placeHolder = document.createElement("div");
+      this.placeHolder.dataset.placeholder = "";
       shadowRoot.appendChild(this.placeHolder);
     }
-    this.placeHolder.style.setProperty('height', `${height}px`);
+    this.placeHolder.style.setProperty("height", `${height}px`);
     return true;
   }
 
   public primeHighlightCache(): void {
     const { fileDiff, workerManager } = this;
-    if (
-      fileDiff == null ||
-      workerManager == null ||
-      isDiffPlainText(fileDiff)
-    ) {
+    if (fileDiff == null || workerManager == null || isDiffPlainText(fileDiff)) {
       return;
     }
-    const tokenizeMaxLength =
-      this.options.tokenizeMaxLength ?? DEFAULT_TOKENIZE_MAX_LENGTH;
+    const tokenizeMaxLength = this.options.tokenizeMaxLength ?? DEFAULT_TOKENIZE_MAX_LENGTH;
     if (
-      Math.max(fileDiff.additionLines.length, fileDiff.deletionLines.length) >
-      tokenizeMaxLength
+      Math.max(fileDiff.additionLines.length, fileDiff.deletionLines.length) > tokenizeMaxLength
     ) {
       return;
     }
@@ -1086,7 +1013,7 @@ export class FileDiff<LAnnotation = undefined> {
     if (
       this.isContainerManaged ||
       this.fileContainer == null ||
-      typeof hunkSeparators !== 'function'
+      typeof hunkSeparators !== "function"
     ) {
       for (const { element } of this.separatorCache.values()) {
         element.remove();
@@ -1100,8 +1027,8 @@ export class FileDiff<LAnnotation = undefined> {
       let cache = this.separatorCache.get(id);
       if (cache == null || !areHunkDataEqual(hunk, cache.hunkData)) {
         cache?.element.remove();
-        const element = document.createElement('div');
-        element.style.display = 'contents';
+        const element = document.createElement("div");
+        element.style.display = "contents";
         element.slot = hunk.slotName;
         const child = hunkSeparators(hunk, this);
         if (child != null) {
@@ -1133,10 +1060,7 @@ export class FileDiff<LAnnotation = undefined> {
       for (const [index, annotation] of this.lineAnnotations.entries()) {
         const id = `${index}-${getLineAnnotationName(annotation)}`;
         let cache = this.annotationCache.get(id);
-        if (
-          cache == null ||
-          !areDiffLineAnnotationsEqual(annotation, cache.annotation)
-        ) {
+        if (cache == null || !areDiffLineAnnotationsEqual(annotation, cache.annotation)) {
           cache?.element.remove();
           const content = renderAnnotation(annotation);
           // If we can't render anything, then we should not render anything
@@ -1145,9 +1069,7 @@ export class FileDiff<LAnnotation = undefined> {
             continue;
           }
           cache = {
-            element: createAnnotationWrapperNode(
-              getLineAnnotationName(annotation)
-            ),
+            element: createAnnotationWrapperNode(getLineAnnotationName(annotation)),
             annotation,
           };
           cache.element.appendChild(content);
@@ -1186,13 +1108,11 @@ export class FileDiff<LAnnotation = undefined> {
 
   protected getOrCreateFileContainer(
     fileContainer?: HTMLElement,
-    parentNode?: HTMLElement
+    parentNode?: HTMLElement,
   ): HTMLElement {
     const { fileContainer: previousContainer } = this;
     const nextContainer =
-      fileContainer ??
-      previousContainer ??
-      document.createElement(DIFFS_TAG_NAME);
+      fileContainer ?? previousContainer ?? document.createElement(DIFFS_TAG_NAME);
     const containerChanged = previousContainer !== nextContainer;
     if (containerChanged) {
       this.emitPostRender(true);
@@ -1228,16 +1148,10 @@ export class FileDiff<LAnnotation = undefined> {
     for (const element of shadowRoot.children) {
       if (element instanceof SVGElement) {
         this.spriteSVG ??= element;
-      } else if (
-        isStyleNode(element) &&
-        element.hasAttribute(THEME_CSS_ATTRIBUTE)
-      ) {
+      } else if (isStyleNode(element) && element.hasAttribute(THEME_CSS_ATTRIBUTE)) {
         this.themeCSSStyle ??= element;
         this.hasAdoptedThemeCSS = true;
-      } else if (
-        isStyleNode(element) &&
-        element.hasAttribute(UNSAFE_CSS_ATTRIBUTE)
-      ) {
+      } else if (isStyleNode(element) && element.hasAttribute(UNSAFE_CSS_ATTRIBUTE)) {
         this.unsafeCSSStyle ??= element;
         this.appliedUnsafeCSS ??= this.options.unsafeCSS ?? undefined;
       }
@@ -1245,10 +1159,9 @@ export class FileDiff<LAnnotation = undefined> {
   }
 
   private ensureSpriteSVG(fileContainer: HTMLElement): void {
-    const shadowRoot =
-      fileContainer.shadowRoot ?? fileContainer.attachShadow({ mode: 'open' });
+    const shadowRoot = fileContainer.shadowRoot ?? fileContainer.attachShadow({ mode: "open" });
     if (this.spriteSVG == null) {
-      const fragment = document.createElement('div');
+      const fragment = document.createElement("div");
       fragment.innerHTML = SVGSpriteSheet;
       const firstChild = fragment.firstChild;
       if (firstChild instanceof SVGElement) {
@@ -1261,11 +1174,10 @@ export class FileDiff<LAnnotation = undefined> {
   }
 
   private getOrCreatePreNode(container: HTMLElement): HTMLPreElement {
-    const shadowRoot =
-      container.shadowRoot ?? container.attachShadow({ mode: 'open' });
+    const shadowRoot = container.shadowRoot ?? container.attachShadow({ mode: "open" });
     // If we haven't created a pre element yet, lets go ahead and do that
     if (this.pre == null) {
-      this.pre = document.createElement('pre');
+      this.pre = document.createElement("pre");
       this.appliedPreAttributes = undefined;
       this.codeUnified = undefined;
       this.codeDeletions = undefined;
@@ -1293,20 +1205,17 @@ export class FileDiff<LAnnotation = undefined> {
       if (!(child instanceof HTMLElement)) {
         continue;
       }
-      if (child.hasAttribute('data-unified')) {
+      if (child.hasAttribute("data-unified")) {
         this.codeUnified = child;
-      } else if (child.hasAttribute('data-deletions')) {
+      } else if (child.hasAttribute("data-deletions")) {
         this.codeDeletions = child;
-      } else if (child.hasAttribute('data-additions')) {
+      } else if (child.hasAttribute("data-additions")) {
         this.codeAdditions = child;
       }
     }
   }
 
-  private applyHeaderToDOM(
-    headerAST: HASTElement,
-    container: HTMLElement
-  ): void {
+  private applyHeaderToDOM(headerAST: HASTElement, container: HTMLElement): void {
     this.cleanupErrorWrapper();
     this.placeHolder?.remove();
     this.placeHolder = undefined;
@@ -1314,7 +1223,7 @@ export class FileDiff<LAnnotation = undefined> {
     const headerHTML = this.cachedHeaderHTML ?? toHtml(headerAST);
     this.cachedHeaderHTML = headerHTML;
     if (headerHTML !== this.lastRenderedHeaderHTML) {
-      const tempDiv = document.createElement('div');
+      const tempDiv = document.createElement("div");
       tempDiv.innerHTML = headerHTML;
       const newHeader = tempDiv.firstElementChild;
       if (!(newHeader instanceof HTMLElement)) {
@@ -1333,8 +1242,7 @@ export class FileDiff<LAnnotation = undefined> {
       return;
     }
 
-    const { renderCustomHeader, renderHeaderPrefix, renderHeaderMetadata } =
-      this.options;
+    const { renderCustomHeader, renderHeaderPrefix, renderHeaderMetadata } = this.options;
 
     if (renderCustomHeader != null) {
       const content = renderCustomHeader(fileDiff) ?? undefined;
@@ -1342,7 +1250,7 @@ export class FileDiff<LAnnotation = undefined> {
         container,
         this.headerCustom,
         CUSTOM_HEADER_SLOT_ID,
-        content
+        content,
       );
       this.headerPrefix?.remove();
       this.headerMetadata?.remove();
@@ -1357,13 +1265,13 @@ export class FileDiff<LAnnotation = undefined> {
       container,
       this.headerPrefix,
       HEADER_PREFIX_SLOT_ID,
-      prefix
+      prefix,
     );
     this.headerMetadata = this.upsertHeaderSlotElement(
       container,
       this.headerMetadata,
       HEADER_METADATA_SLOT_ID,
-      content
+      content,
     );
     this.headerCustom?.remove();
     this.headerCustom = undefined;
@@ -1383,7 +1291,7 @@ export class FileDiff<LAnnotation = undefined> {
     container: HTMLElement,
     current: HTMLElement | undefined,
     slot: string,
-    content: Element | string | number | undefined
+    content: Element | string | number | undefined,
   ): HTMLElement | undefined {
     if (content == null) {
       current?.remove();
@@ -1397,10 +1305,7 @@ export class FileDiff<LAnnotation = undefined> {
     return element;
   }
 
-  private replaceHeaderSlotContent(
-    element: HTMLElement,
-    content: Element | string | number
-  ): void {
+  private replaceHeaderSlotContent(element: HTMLElement, content: Element | string | number): void {
     element.replaceChildren();
     if (content instanceof Element) {
       element.appendChild(content);
@@ -1410,7 +1315,7 @@ export class FileDiff<LAnnotation = undefined> {
   }
 
   private createHeaderSlotElement(slot: string): HTMLElement {
-    const element = document.createElement('div');
+    const element = document.createElement("div");
     element.slot = slot;
     return element;
   }
@@ -1422,7 +1327,7 @@ export class FileDiff<LAnnotation = undefined> {
       return;
     }
 
-    if (unsafeCSS == null || unsafeCSS === '') {
+    if (unsafeCSS == null || unsafeCSS === "") {
       if (this.unsafeCSSStyle != null) {
         this.unsafeCSSStyle.remove();
         this.unsafeCSSStyle = undefined;
@@ -1431,10 +1336,7 @@ export class FileDiff<LAnnotation = undefined> {
       return;
     }
 
-    if (
-      this.unsafeCSSStyle?.parentNode === shadowRoot &&
-      this.appliedUnsafeCSS === unsafeCSS
-    ) {
+    if (this.unsafeCSSStyle?.parentNode === shadowRoot && this.appliedUnsafeCSS === unsafeCSS) {
       return;
     }
 
@@ -1452,14 +1354,12 @@ export class FileDiff<LAnnotation = undefined> {
     container: HTMLElement,
     themeStyles: string,
     themeType: ThemeTypes,
-    baseThemeType?: 'light' | 'dark'
+    baseThemeType?: "light" | "dark",
   ): void {
-    const shadowRoot =
-      container.shadowRoot ?? container.attachShadow({ mode: 'open' });
+    const shadowRoot = container.shadowRoot ?? container.attachShadow({ mode: "open" });
     const effectiveThemeType = baseThemeType ?? themeType;
     const currentTheme = this.options.theme ?? DEFAULT_THEMES;
-    const theme =
-      typeof currentTheme === 'string' ? currentTheme : { ...currentTheme };
+    const theme = typeof currentTheme === "string" ? currentTheme : { ...currentTheme };
     const scrollbarGutter = getMeasuredScrollbarGutter(shadowRoot);
     if (
       this.themeCSSStyle?.parentNode === shadowRoot &&
@@ -1470,10 +1370,7 @@ export class FileDiff<LAnnotation = undefined> {
       this.appliedThemeCSS.theme = theme;
       return;
     }
-    if (
-      this.hasAdoptedThemeCSS &&
-      this.themeCSSStyle?.parentNode === shadowRoot
-    ) {
+    if (this.hasAdoptedThemeCSS && this.themeCSSStyle?.parentNode === shadowRoot) {
       this.hasAdoptedThemeCSS = false;
       this.appliedThemeCSS = {
         theme,
@@ -1507,33 +1404,27 @@ export class FileDiff<LAnnotation = undefined> {
       return;
     }
     this.themeCSSStyle.textContent = patchScrollbarGutterSize(
-      this.themeCSSStyle.textContent ?? '',
-      getMeasuredScrollbarGutter(shadowRoot)
+      this.themeCSSStyle.textContent ?? "",
+      getMeasuredScrollbarGutter(shadowRoot),
     );
   }
 
-  private applyHunksToDOM(
-    pre: HTMLPreElement,
-    result: HunksRenderResult
-  ): void {
-    const { overflow = 'scroll' } = this.options;
-    const containerSize =
-      (this.options.hunkSeparators ?? 'line-info') === 'line-info';
-    const rowSpan = overflow === 'wrap' ? result.rowCount : undefined;
+  private applyHunksToDOM(pre: HTMLPreElement, result: HunksRenderResult): void {
+    const { overflow = "scroll" } = this.options;
+    const containerSize = (this.options.hunkSeparators ?? "line-info") === "line-info";
+    const rowSpan = overflow === "wrap" ? result.rowCount : undefined;
     this.cleanupErrorWrapper();
     this.applyPreNodeAttributes(pre, result);
 
     let shouldReplace = false;
     // Create code elements and insert HTML content
     const codeElements: HTMLElement[] = [];
-    const unifiedAST = this.hunksRenderer.renderCodeAST('unified', result);
-    const deletionsAST = this.hunksRenderer.renderCodeAST('deletions', result);
-    const additionsAST = this.hunksRenderer.renderCodeAST('additions', result);
+    const unifiedAST = this.hunksRenderer.renderCodeAST("unified", result);
+    const deletionsAST = this.hunksRenderer.renderCodeAST("deletions", result);
+    const additionsAST = this.hunksRenderer.renderCodeAST("additions", result);
     if (unifiedAST != null) {
       shouldReplace =
-        this.codeUnified == null ||
-        this.codeAdditions != null ||
-        this.codeDeletions != null;
+        this.codeUnified == null || this.codeAdditions != null || this.codeDeletions != null;
 
       // Clean up addition/deletion elements if necessary
       this.codeDeletions?.remove();
@@ -1543,12 +1434,11 @@ export class FileDiff<LAnnotation = undefined> {
 
       this.codeUnified = getOrCreateCodeNode({
         code: this.codeUnified,
-        columnType: 'unified',
+        columnType: "unified",
         rowSpan,
         containerSize,
       });
-      this.codeUnified.innerHTML =
-        this.hunksRenderer.renderPartialHTML(unifiedAST);
+      this.codeUnified.innerHTML = this.hunksRenderer.renderPartialHTML(unifiedAST);
       codeElements.push(this.codeUnified);
     } else if (deletionsAST != null || additionsAST != null) {
       if (deletionsAST != null) {
@@ -1560,12 +1450,11 @@ export class FileDiff<LAnnotation = undefined> {
 
         this.codeDeletions = getOrCreateCodeNode({
           code: this.codeDeletions,
-          columnType: 'deletions',
+          columnType: "deletions",
           rowSpan,
           containerSize,
         });
-        this.codeDeletions.innerHTML =
-          this.hunksRenderer.renderPartialHTML(deletionsAST);
+        this.codeDeletions.innerHTML = this.hunksRenderer.renderPartialHTML(deletionsAST);
         codeElements.push(this.codeDeletions);
       } else {
         // If we have no deletion column, lets clean it up if it exists
@@ -1574,10 +1463,7 @@ export class FileDiff<LAnnotation = undefined> {
       }
 
       if (additionsAST != null) {
-        shouldReplace =
-          shouldReplace ||
-          this.codeAdditions == null ||
-          this.codeUnified != null;
+        shouldReplace = shouldReplace || this.codeAdditions == null || this.codeUnified != null;
 
         // Clean up unified column if necessary
         this.codeUnified?.remove();
@@ -1585,12 +1471,11 @@ export class FileDiff<LAnnotation = undefined> {
 
         this.codeAdditions = getOrCreateCodeNode({
           code: this.codeAdditions,
-          columnType: 'additions',
+          columnType: "additions",
           rowSpan,
           containerSize,
         });
-        this.codeAdditions.innerHTML =
-          this.hunksRenderer.renderPartialHTML(additionsAST);
+        this.codeAdditions.innerHTML = this.hunksRenderer.renderPartialHTML(additionsAST);
         codeElements.push(this.codeAdditions);
       } else {
         // If we have no addition column, lets clean it up if it exists
@@ -1609,7 +1494,7 @@ export class FileDiff<LAnnotation = undefined> {
     }
 
     if (codeElements.length === 0) {
-      pre.textContent = '';
+      pre.textContent = "";
     } else if (shouldReplace) {
       pre.replaceChildren(...codeElements);
     }
@@ -1626,7 +1511,7 @@ export class FileDiff<LAnnotation = undefined> {
       codeUnified,
       codeAdditions,
       codeDeletions,
-      options: { diffStyle = 'split' },
+      options: { diffStyle = "split" },
     } = this;
     if (
       pre == null ||
@@ -1640,12 +1525,7 @@ export class FileDiff<LAnnotation = undefined> {
     ) {
       return false;
     }
-    const codeElements = this.getCodeColumns(
-      diffStyle,
-      codeUnified,
-      codeDeletions,
-      codeAdditions
-    );
+    const codeElements = this.getCodeColumns(diffStyle, codeUnified, codeDeletions, codeAdditions);
     if (codeElements == null) {
       return false;
     }
@@ -1674,17 +1554,17 @@ export class FileDiff<LAnnotation = undefined> {
       diffStyle,
     });
     if (trimResult < 0) {
-      throw new Error('applyPartialRender: failed to trim to overlap');
+      throw new Error("applyPartialRender: failed to trim to overlap");
     }
 
     if (this.lastRowCount < trimResult) {
-      throw new Error('applyPartialRender: trimmed beyond DOM row count');
+      throw new Error("applyPartialRender: trimmed beyond DOM row count");
     }
 
     let rowCount = this.lastRowCount - trimResult;
     const renderChunk = (
       startingLine: number,
-      totalLines: number
+      totalLines: number,
     ): HunksRenderResult | undefined => {
       if (totalLines <= 0 || this.fileDiff == null) {
         return undefined;
@@ -1697,44 +1577,36 @@ export class FileDiff<LAnnotation = undefined> {
       });
     };
 
-    const prependResult = renderChunk(
-      nextStart,
-      Math.max(overlapStart - nextStart, 0)
-    );
+    const prependResult = renderChunk(nextStart, Math.max(overlapStart - nextStart, 0));
     if (prependResult == null && nextStart < overlapStart) {
       return false;
     }
 
-    const appendResult = renderChunk(
-      overlapEnd,
-      Math.max(nextEnd - overlapEnd, 0)
-    );
+    const appendResult = renderChunk(overlapEnd, Math.max(nextEnd - overlapEnd, 0));
     if (appendResult == null && nextEnd > overlapEnd) {
       return false;
     }
 
     const applyChunk = (
       result: HunksRenderResult | undefined,
-      insertPosition: 'afterbegin' | 'beforeend'
+      insertPosition: "afterbegin" | "beforeend",
     ) => {
       if (result == null) {
         return;
       }
-      if (diffStyle === 'unified' && !Array.isArray(codeElements)) {
+      if (diffStyle === "unified" && !Array.isArray(codeElements)) {
         this.insertPartialHTML(diffStyle, codeElements, result, insertPosition);
-      } else if (diffStyle === 'split' && Array.isArray(codeElements)) {
+      } else if (diffStyle === "split" && Array.isArray(codeElements)) {
         this.insertPartialHTML(diffStyle, codeElements, result, insertPosition);
       } else {
-        throw new Error(
-          'FileDiff.applyPartialRender.applyChunk: invalid chunk application'
-        );
+        throw new Error("FileDiff.applyPartialRender.applyChunk: invalid chunk application");
       }
       rowCount += result.rowCount;
     };
 
     this.cleanupErrorWrapper();
-    applyChunk(prependResult, 'afterbegin');
-    applyChunk(appendResult, 'beforeend');
+    applyChunk(prependResult, "afterbegin");
+    applyChunk(appendResult, "beforeend");
 
     if (this.lastRowCount !== rowCount) {
       this.applyRowSpan(diffStyle, codeElements, rowCount);
@@ -1745,50 +1617,40 @@ export class FileDiff<LAnnotation = undefined> {
   }
 
   private insertPartialHTML(
-    diffStyle: 'unified',
+    diffStyle: "unified",
     columns: ColumnElements,
     result: HunksRenderResult,
-    insertPosition: 'afterbegin' | 'beforeend'
+    insertPosition: "afterbegin" | "beforeend",
   ): void;
   private insertPartialHTML(
-    diffStyle: 'split',
+    diffStyle: "split",
     columns: [ColumnElements | undefined, ColumnElements | undefined],
     result: HunksRenderResult,
-    insertPosition: 'afterbegin' | 'beforeend'
+    insertPosition: "afterbegin" | "beforeend",
   ): void;
   private insertPartialHTML(
-    diffStyle: 'split' | 'unified',
-    columns:
-      | [ColumnElements | undefined, ColumnElements | undefined]
-      | ColumnElements,
+    diffStyle: "split" | "unified",
+    columns: [ColumnElements | undefined, ColumnElements | undefined] | ColumnElements,
     result: HunksRenderResult,
-    insertPosition: 'afterbegin' | 'beforeend'
+    insertPosition: "afterbegin" | "beforeend",
   ): void {
-    if (diffStyle === 'unified' && !Array.isArray(columns)) {
-      const unifiedAST = this.hunksRenderer.renderCodeAST('unified', result);
+    if (diffStyle === "unified" && !Array.isArray(columns)) {
+      const unifiedAST = this.hunksRenderer.renderCodeAST("unified", result);
       this.renderPartialColumn(columns, unifiedAST, insertPosition);
-    } else if (diffStyle === 'split' && Array.isArray(columns)) {
-      const deletionsAST = this.hunksRenderer.renderCodeAST(
-        'deletions',
-        result
-      );
-      const additionsAST = this.hunksRenderer.renderCodeAST(
-        'additions',
-        result
-      );
+    } else if (diffStyle === "split" && Array.isArray(columns)) {
+      const deletionsAST = this.hunksRenderer.renderCodeAST("deletions", result);
+      const additionsAST = this.hunksRenderer.renderCodeAST("additions", result);
       this.renderPartialColumn(columns[0], deletionsAST, insertPosition);
       this.renderPartialColumn(columns[1], additionsAST, insertPosition);
     } else {
-      throw new Error(
-        'FileDiff.insertPartialHTML: Invalid argument composition'
-      );
+      throw new Error("FileDiff.insertPartialHTML: Invalid argument composition");
     }
   }
 
   private renderPartialColumn(
     column: ColumnElements | undefined,
     ast: ElementContent[] | undefined,
-    insertPosition: 'afterbegin' | 'beforeend'
+    insertPosition: "afterbegin" | "beforeend",
   ) {
     if (column == null || ast == null) {
       return;
@@ -1796,46 +1658,46 @@ export class FileDiff<LAnnotation = undefined> {
     const gutterChildren = getElementChildren(ast[0]);
     const contentChildren = getElementChildren(ast[1]);
     if (gutterChildren == null || contentChildren == null) {
-      throw new Error('FileDiff.insertPartialHTML: Unexpected AST structure');
+      throw new Error("FileDiff.insertPartialHTML: Unexpected AST structure");
     }
     const firstHASTElement = contentChildren.at(0);
     if (
-      insertPosition === 'beforeend' &&
-      firstHASTElement?.type === 'element' &&
-      typeof firstHASTElement.properties['data-buffer-size'] === 'number'
+      insertPosition === "beforeend" &&
+      firstHASTElement?.type === "element" &&
+      typeof firstHASTElement.properties["data-buffer-size"] === "number"
     ) {
       this.mergeBuffersIfNecessary(
-        firstHASTElement.properties['data-buffer-size'],
+        firstHASTElement.properties["data-buffer-size"],
         column.content.children[column.content.children.length - 1],
         column.gutter.children[column.gutter.children.length - 1],
         gutterChildren,
         contentChildren,
-        true
+        true,
       );
     }
     const lastHASTElement = contentChildren.at(-1);
     if (
-      insertPosition === 'afterbegin' &&
-      lastHASTElement?.type === 'element' &&
-      typeof lastHASTElement.properties['data-buffer-size'] === 'number'
+      insertPosition === "afterbegin" &&
+      lastHASTElement?.type === "element" &&
+      typeof lastHASTElement.properties["data-buffer-size"] === "number"
     ) {
       this.mergeBuffersIfNecessary(
-        lastHASTElement.properties['data-buffer-size'],
+        lastHASTElement.properties["data-buffer-size"],
         column.content.children[0],
         column.gutter.children[0],
         gutterChildren,
         contentChildren,
-        false
+        false,
       );
     }
 
     column.gutter.insertAdjacentHTML(
       insertPosition,
-      this.hunksRenderer.renderPartialHTML(gutterChildren)
+      this.hunksRenderer.renderPartialHTML(gutterChildren),
     );
     column.content.insertAdjacentHTML(
       insertPosition,
-      this.hunksRenderer.renderPartialHTML(contentChildren)
+      this.hunksRenderer.renderPartialHTML(contentChildren),
     );
   }
 
@@ -1845,12 +1707,9 @@ export class FileDiff<LAnnotation = undefined> {
     gutterElement: Element,
     gutterChildren: ElementContent[],
     contentChildren: ElementContent[],
-    fromStart: boolean
+    fromStart: boolean,
   ) {
-    if (
-      !(contentElement instanceof HTMLElement) ||
-      !(gutterElement instanceof HTMLElement)
-    ) {
+    if (!(contentElement instanceof HTMLElement) || !(gutterElement instanceof HTMLElement)) {
       return;
     }
     const currentSize = this.getBufferSize(contentElement.dataset);
@@ -1869,33 +1728,31 @@ export class FileDiff<LAnnotation = undefined> {
   }
 
   private applyRowSpan(
-    diffStyle: 'split' | 'unified',
-    columns:
-      | [ColumnElements | undefined, ColumnElements | undefined]
-      | ColumnElements,
-    rowCount: number
+    diffStyle: "split" | "unified",
+    columns: [ColumnElements | undefined, ColumnElements | undefined] | ColumnElements,
+    rowCount: number,
   ): void {
     const applySpan = (column: ColumnElements | undefined) => {
       if (column == null) {
         return;
       }
-      column.gutter.style.setProperty('grid-row', `span ${rowCount}`);
-      column.content.style.setProperty('grid-row', `span ${rowCount}`);
+      column.gutter.style.setProperty("grid-row", `span ${rowCount}`);
+      column.content.style.setProperty("grid-row", `span ${rowCount}`);
     };
-    if (diffStyle === 'unified' && !Array.isArray(columns)) {
+    if (diffStyle === "unified" && !Array.isArray(columns)) {
       applySpan(columns);
-    } else if (diffStyle === 'split' && Array.isArray(columns)) {
+    } else if (diffStyle === "split" && Array.isArray(columns)) {
       applySpan(columns[0]);
       applySpan(columns[1]);
     } else {
-      throw new Error('dun fuuuuked up');
+      throw new Error("dun fuuuuked up");
     }
   }
 
   private trimColumnRows(
     columns: ColumnElements | undefined,
     preTrimCount: number,
-    postTrimStart: number
+    postTrimStart: number,
   ): number {
     let visibleLineIndex = 0;
     let rowCount = 0;
@@ -1909,7 +1766,7 @@ export class FileDiff<LAnnotation = undefined> {
     const contentChildren = Array.from(columns.content.children);
     const gutterChildren = Array.from(columns.gutter.children);
     if (contentChildren.length !== gutterChildren.length) {
-      throw new Error('FileDiff.trimColumnRows: columns do not match');
+      throw new Error("FileDiff.trimColumnRows: columns do not match");
     }
 
     while (rowIndex < contentChildren.length) {
@@ -1920,21 +1777,18 @@ export class FileDiff<LAnnotation = undefined> {
       const contentElement = contentChildren[rowIndex];
       rowIndex++;
 
-      if (
-        !(gutterElement instanceof HTMLElement) ||
-        !(contentElement instanceof HTMLElement)
-      ) {
+      if (!(gutterElement instanceof HTMLElement) || !(contentElement instanceof HTMLElement)) {
         console.error({ gutterElement, contentElement });
-        throw new Error('FileDiff.trimColumnRows: invalid row elements');
+        throw new Error("FileDiff.trimColumnRows: invalid row elements");
       }
 
       if (pendingMetadataTrim) {
         pendingMetadataTrim = false;
         if (
-          (gutterElement.dataset.gutterBuffer === 'annotation' &&
-            'lineAnnotation' in contentElement.dataset) ||
-          (gutterElement.dataset.gutterBuffer === 'metadata' &&
-            'noNewline' in contentElement.dataset)
+          (gutterElement.dataset.gutterBuffer === "annotation" &&
+            "lineAnnotation" in contentElement.dataset) ||
+          (gutterElement.dataset.gutterBuffer === "metadata" &&
+            "noNewline" in contentElement.dataset)
         ) {
           gutterElement.remove();
           contentElement.remove();
@@ -1944,14 +1798,8 @@ export class FileDiff<LAnnotation = undefined> {
       }
 
       // If we found a line element, lets trim it if necessary
-      if (
-        'lineIndex' in gutterElement.dataset &&
-        'lineIndex' in contentElement.dataset
-      ) {
-        if (
-          preTrimCount > 0 ||
-          (hasPostTrim && visibleLineIndex >= postTrimStart)
-        ) {
+      if ("lineIndex" in gutterElement.dataset && "lineIndex" in contentElement.dataset) {
+        if (preTrimCount > 0 || (hasPostTrim && visibleLineIndex >= postTrimStart)) {
           gutterElement.remove();
           contentElement.remove();
           if (preTrimCount > 0) {
@@ -1967,14 +1815,8 @@ export class FileDiff<LAnnotation = undefined> {
       }
 
       // Separators should be removed, but don't count towards line indices
-      if (
-        'separator' in gutterElement.dataset &&
-        'separator' in contentElement.dataset
-      ) {
-        if (
-          preTrimCount > 0 ||
-          (hasPostTrim && visibleLineIndex >= postTrimStart)
-        ) {
+      if ("separator" in gutterElement.dataset && "separator" in contentElement.dataset) {
+        if (preTrimCount > 0 || (hasPostTrim && visibleLineIndex >= postTrimStart)) {
           gutterElement.remove();
           contentElement.remove();
           rowCount++;
@@ -1984,13 +1826,10 @@ export class FileDiff<LAnnotation = undefined> {
 
       // Annotations should be removed, but don't count towards line indices
       if (
-        gutterElement.dataset.gutterBuffer === 'annotation' &&
-        'lineAnnotation' in contentElement.dataset
+        gutterElement.dataset.gutterBuffer === "annotation" &&
+        "lineAnnotation" in contentElement.dataset
       ) {
-        if (
-          preTrimCount > 0 ||
-          (hasPostTrim && visibleLineIndex >= postTrimStart)
-        ) {
+        if (preTrimCount > 0 || (hasPostTrim && visibleLineIndex >= postTrimStart)) {
           gutterElement.remove();
           contentElement.remove();
           rowCount++;
@@ -1999,13 +1838,10 @@ export class FileDiff<LAnnotation = undefined> {
       }
 
       if (
-        gutterElement.dataset.gutterBuffer === 'metadata' &&
-        'noNewline' in contentElement.dataset
+        gutterElement.dataset.gutterBuffer === "metadata" &&
+        "noNewline" in contentElement.dataset
       ) {
-        if (
-          preTrimCount > 0 ||
-          (hasPostTrim && visibleLineIndex >= postTrimStart)
-        ) {
+        if (preTrimCount > 0 || (hasPostTrim && visibleLineIndex >= postTrimStart)) {
           gutterElement.remove();
           contentElement.remove();
           rowCount++;
@@ -2014,12 +1850,12 @@ export class FileDiff<LAnnotation = undefined> {
       }
 
       if (
-        gutterElement.dataset.gutterBuffer === 'buffer' &&
-        'contentBuffer' in contentElement.dataset
+        gutterElement.dataset.gutterBuffer === "buffer" &&
+        "contentBuffer" in contentElement.dataset
       ) {
         const totalRows = this.getBufferSize(contentElement.dataset);
         if (totalRows == null) {
-          throw new Error('FileDiff.trimColumnRows: invalid element');
+          throw new Error("FileDiff.trimColumnRows: invalid element");
         }
         if (preTrimCount > 0) {
           const rowsToRemove = Math.min(preTrimCount, totalRows);
@@ -2059,7 +1895,7 @@ export class FileDiff<LAnnotation = undefined> {
       }
 
       console.error({ gutterElement, contentElement });
-      throw new Error('FileDiff.trimColumnRows: unknown row elements');
+      throw new Error("FileDiff.trimColumnRows: unknown row elements");
     }
 
     return rowCount;
@@ -2080,7 +1916,7 @@ export class FileDiff<LAnnotation = undefined> {
     const preTrimCount = Math.max(0, overlapStart - previousStart);
     const postTrimStart = overlapEnd - previousStart;
     if (postTrimStart < 0) {
-      throw new Error('FileDiff.trimColumns: overlap ends before previous');
+      throw new Error("FileDiff.trimColumns: overlap ends before previous");
     }
     const shouldTrimStart = trimStart > 0;
     const shouldTrimEnd = trimEnd > 0;
@@ -2090,63 +1926,54 @@ export class FileDiff<LAnnotation = undefined> {
     const effectivePreTrimCount = shouldTrimStart ? preTrimCount : 0;
     const effectivePostTrimStart = shouldTrimEnd ? postTrimStart : -1;
 
-    if (diffStyle === 'unified' && !Array.isArray(columns)) {
+    if (diffStyle === "unified" && !Array.isArray(columns)) {
       const removedRows = this.trimColumnRows(
         columns,
         effectivePreTrimCount,
-        effectivePostTrimStart
+        effectivePostTrimStart,
       );
       return removedRows;
-    } else if (diffStyle === 'split' && Array.isArray(columns)) {
+    } else if (diffStyle === "split" && Array.isArray(columns)) {
       const deletionsTrim = this.trimColumnRows(
         columns[0],
         effectivePreTrimCount,
-        effectivePostTrimStart
+        effectivePostTrimStart,
       );
       const additionsTrim = this.trimColumnRows(
         columns[1],
         effectivePreTrimCount,
-        effectivePostTrimStart
+        effectivePostTrimStart,
       );
       // We should avoid the trim validation if we are split but
       // there's only one side
-      if (
-        columns[0] != null &&
-        columns[1] != null &&
-        deletionsTrim !== additionsTrim
-      ) {
-        throw new Error('FileDiff.trimColumns: split columns out of sync');
+      if (columns[0] != null && columns[1] != null && deletionsTrim !== additionsTrim) {
+        throw new Error("FileDiff.trimColumns: split columns out of sync");
       }
       return columns[0] != null ? deletionsTrim : additionsTrim;
     } else {
       console.error({ diffStyle, columns });
-      throw new Error('FileDiff.trimColumns: Invalid columns for diffType');
+      throw new Error("FileDiff.trimColumns: Invalid columns for diffType");
     }
   }
 
   private getBufferSize(properties: DOMStringMap): number | undefined {
-    const parsed = Number.parseInt(properties?.bufferSize ?? '', 10);
+    const parsed = Number.parseInt(properties?.bufferSize ?? "", 10);
     return Number.isNaN(parsed) ? undefined : parsed;
   }
 
   private updateBufferSize(element: HTMLElement, size: number): void {
     element.dataset.bufferSize = `${size}`;
-    element.style.setProperty('grid-row', `span ${size}`);
-    element.style.setProperty('min-height', `calc(${size} * 1lh)`);
+    element.style.setProperty("grid-row", `span ${size}`);
+    element.style.setProperty("min-height", `calc(${size} * 1lh)`);
   }
 
   private getCodeColumns(
-    diffStyle: 'split' | 'unified',
+    diffStyle: "split" | "unified",
     codeUnified: HTMLElement | undefined,
     codeDeletions: HTMLElement | undefined,
-    codeAdditions: HTMLElement | undefined
-  ):
-    | [ColumnElements | undefined, ColumnElements | undefined]
-    | ColumnElements
-    | undefined {
-    function getColumns(
-      code: HTMLElement | undefined
-    ): ColumnElements | undefined {
+    codeAdditions: HTMLElement | undefined,
+  ): [ColumnElements | undefined, ColumnElements | undefined] | ColumnElements | undefined {
+    function getColumns(code: HTMLElement | undefined): ColumnElements | undefined {
       if (code == null) {
         return undefined;
       }
@@ -2163,21 +1990,16 @@ export class FileDiff<LAnnotation = undefined> {
       return { gutter, content };
     }
 
-    if (diffStyle === 'unified') {
+    if (diffStyle === "unified") {
       return getColumns(codeUnified);
     } else {
       const deletions = getColumns(codeDeletions);
       const additions = getColumns(codeAdditions);
-      return deletions != null || additions != null
-        ? [deletions, additions]
-        : undefined;
+      return deletions != null || additions != null ? [deletions, additions] : undefined;
     }
   }
 
-  private applyBuffers(
-    pre: HTMLPreElement,
-    renderRange: RenderRange | undefined
-  ) {
+  private applyBuffers(pre: HTMLPreElement, renderRange: RenderRange | undefined) {
     if (renderRange == null || this.shouldDisableVirtualizationBuffers()) {
       if (this.bufferBefore != null) {
         this.bufferBefore.remove();
@@ -2193,15 +2015,12 @@ export class FileDiff<LAnnotation = undefined> {
     // i may need to improve this...
     if (renderRange.bufferBefore > 0) {
       if (this.bufferBefore == null) {
-        this.bufferBefore = document.createElement('div');
-        this.bufferBefore.dataset.virtualizerBuffer = 'before';
+        this.bufferBefore = document.createElement("div");
+        this.bufferBefore.dataset.virtualizerBuffer = "before";
         pre.before(this.bufferBefore);
       }
-      this.bufferBefore.style.setProperty(
-        'height',
-        `${renderRange.bufferBefore}px`
-      );
-      this.bufferBefore.style.setProperty('contain', 'strict');
+      this.bufferBefore.style.setProperty("height", `${renderRange.bufferBefore}px`);
+      this.bufferBefore.style.setProperty("contain", "strict");
     } else if (this.bufferBefore != null) {
       this.bufferBefore.remove();
       this.bufferBefore = undefined;
@@ -2209,15 +2028,12 @@ export class FileDiff<LAnnotation = undefined> {
 
     if (renderRange.bufferAfter > 0) {
       if (this.bufferAfter == null) {
-        this.bufferAfter = document.createElement('div');
-        this.bufferAfter.dataset.virtualizerBuffer = 'after';
+        this.bufferAfter = document.createElement("div");
+        this.bufferAfter.dataset.virtualizerBuffer = "after";
         pre.after(this.bufferAfter);
       }
-      this.bufferAfter.style.setProperty(
-        'height',
-        `${renderRange.bufferAfter}px`
-      );
-      this.bufferAfter.style.setProperty('contain', 'strict');
+      this.bufferAfter.style.setProperty("height", `${renderRange.bufferAfter}px`);
+      this.bufferAfter.style.setProperty("contain", "strict");
     } else if (this.bufferAfter != null) {
       this.bufferAfter.remove();
       this.bufferAfter = undefined;
@@ -2231,23 +2047,23 @@ export class FileDiff<LAnnotation = undefined> {
   protected applyPreNodeAttributes(
     pre: HTMLPreElement,
     { additionsContentAST, deletionsContentAST, totalLines }: HunksRenderResult,
-    customProperties?: CustomPreProperties
+    customProperties?: CustomPreProperties,
   ): void {
     const {
-      diffIndicators = 'bars',
+      diffIndicators = "bars",
       disableBackground = false,
       disableLineNumbers = false,
-      overflow = 'scroll',
-      diffStyle = 'split',
+      overflow = "scroll",
+      diffStyle = "split",
     } = this.options;
     const preProperties: PrePropertiesConfig = {
-      type: 'diff',
+      type: "diff",
       diffIndicators,
       disableBackground,
       disableLineNumbers,
       overflow,
       split:
-        diffStyle === 'unified'
+        diffStyle === "unified"
           ? false
           : additionsContentAST != null && deletionsContentAST != null,
       totalLines,
@@ -2265,19 +2081,18 @@ export class FileDiff<LAnnotation = undefined> {
     this.pre?.remove();
     this.pre = undefined;
     this.appliedPreAttributes = undefined;
-    const shadowRoot =
-      container.shadowRoot ?? container.attachShadow({ mode: 'open' });
-    this.errorWrapper ??= document.createElement('div');
-    this.errorWrapper.dataset.errorWrapper = '';
-    this.errorWrapper.textContent = '';
+    const shadowRoot = container.shadowRoot ?? container.attachShadow({ mode: "open" });
+    this.errorWrapper ??= document.createElement("div");
+    this.errorWrapper.dataset.errorWrapper = "";
+    this.errorWrapper.textContent = "";
     shadowRoot.appendChild(this.errorWrapper);
-    const errorMessage = document.createElement('div');
-    errorMessage.dataset.errorMessage = '';
+    const errorMessage = document.createElement("div");
+    errorMessage.dataset.errorMessage = "";
     errorMessage.innerText = error.message;
     this.errorWrapper.appendChild(errorMessage);
-    const errorStack = document.createElement('pre');
-    errorStack.dataset.errorStack = '';
-    errorStack.innerText = error.stack ?? 'No Error Stack';
+    const errorStack = document.createElement("pre");
+    errorStack.dataset.errorStack = "";
+    errorStack.innerText = error.stack ?? "No Error Stack";
     this.errorWrapper.appendChild(errorStack);
   }
 
@@ -2293,30 +2108,18 @@ interface HasContentProps {
   newFile: FileContents | undefined;
 }
 
-function hasDiffContent({
-  fileDiff,
-  oldFile,
-  newFile,
-}: HasContentProps): boolean {
-  return (
-    (fileDiff != null && fileDiff.hunks.length > 0) ||
-    oldFile != null ||
-    newFile != null
-  );
+function hasDiffContent({ fileDiff, oldFile, newFile }: HasContentProps): boolean {
+  return (fileDiff != null && fileDiff.hunks.length > 0) || oldFile != null || newFile != null;
 }
 
-function hasDiffHeaderContent({
-  fileDiff,
-  oldFile,
-  newFile,
-}: HasContentProps): boolean {
+function hasDiffHeaderContent({ fileDiff, oldFile, newFile }: HasContentProps): boolean {
   return fileDiff != null || oldFile != null || newFile != null;
 }
 
 function shouldRenderCode(
   pre: HTMLPreElement | undefined,
   hasContent: boolean,
-  collapsed = false
+  collapsed = false,
 ): boolean {
   return !collapsed && pre == null && hasContent;
 }
@@ -2324,15 +2127,13 @@ function shouldRenderCode(
 function shouldRenderHeader(
   headerElement: HTMLElement | undefined,
   hasContent: boolean,
-  disableFileHeader = false
+  disableFileHeader = false,
 ): boolean {
   return headerElement == null && hasContent && !disableFileHeader;
 }
 
-function getElementChildren(
-  node: ElementContent | undefined
-): ElementContent[] | undefined {
-  if (node == null || node.type !== 'element') {
+function getElementChildren(node: ElementContent | undefined): ElementContent[] | undefined {
+  if (node == null || node.type !== "element") {
     return undefined;
   }
   return node.children ?? [];

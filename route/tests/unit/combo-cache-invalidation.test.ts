@@ -82,7 +82,7 @@ test("createCombo bumps the combos cache version (invalidation hook fires)", asy
   assert.notEqual(
     readCache.getCombosCacheVersion(),
     before,
-    "createCombo must invalidate the combos cache"
+    "createCombo must invalidate the combos cache",
   );
 });
 
@@ -104,7 +104,7 @@ test("editing a combo invalidates the nested-expansion cache within the 10s wind
   assert.equal(
     cacheStillValid(populatedAtTs, populatedAtVersion),
     false,
-    "cache populated before the combo writes must be invalidated immediately"
+    "cache populated before the combo writes must be invalidated immediately",
   );
 
   // Re-warm against the post-write state, then mutate again and confirm the
@@ -117,7 +117,7 @@ test("editing a combo invalidates the nested-expansion cache within the 10s wind
   assert.equal(
     cacheStillValid(freshTs, freshVersion),
     false,
-    "updateCombo must invalidate the cache without waiting for the TTL"
+    "updateCombo must invalidate the cache without waiting for the TTL",
   );
 });
 
@@ -134,18 +134,10 @@ test("deleteCombo and reorderCombos also invalidate the cache", async () => {
   let ts = Date.now();
   let version = readCache.getCombosCacheVersion();
   await combosDb.reorderCombos([(b as any).id, (a as any).id]);
-  assert.equal(
-    cacheStillValid(ts, version),
-    false,
-    "reorderCombos must invalidate the cache"
-  );
+  assert.equal(cacheStillValid(ts, version), false, "reorderCombos must invalidate the cache");
 
   ts = Date.now();
   version = readCache.getCombosCacheVersion();
   await combosDb.deleteCombo((a as any).id);
-  assert.equal(
-    cacheStillValid(ts, version),
-    false,
-    "deleteCombo must invalidate the cache"
-  );
+  assert.equal(cacheStillValid(ts, version), false, "deleteCombo must invalidate the cache");
 });

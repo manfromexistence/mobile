@@ -26,7 +26,7 @@ const FRAME_MASKS: readonly string[] = [
   // Petal ring
   ".x.x." + "x.o.x" + "..o.." + "x.o.x" + ".x.x.",
   // Crossed lattice
-  "x.x.x" + ".o.o." + "x.o.x" + ".o.o." + "x.x.x"
+  "x.x.x" + ".o.o." + "x.o.x" + ".o.o." + "x.x.x",
 ];
 
 const FRAME_SEQUENCE: readonly number[] = [0, 1, 2, 3, 2, 1];
@@ -43,10 +43,14 @@ export function DotmSquare14({
   ...rest
 }: DotmSquare14Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
   const sequenceLength = FRAME_SEQUENCE.length;
   const step = useSteppedCycle({

@@ -20,7 +20,7 @@ const PATHS = [
     process.env.LOCALAPPDATA ?? path.join(HOME, "AppData", "Local"),
     "Programs",
     "OpenCode",
-    "OpenCode.exe"
+    "OpenCode.exe",
   ),
 ];
 

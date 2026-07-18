@@ -111,7 +111,7 @@ export function calculateScore(factors: ScoringFactors, weights: ScoringWeights)
       (weights.specificityMatch ?? 0) * factors.specificityMatch +
       (weights.contextAffinity ?? 0) * factors.contextAffinity +
       (weights.resetWindowAffinity ?? 0) * factors.resetWindowAffinity +
-      (weights.connectionDensity ?? 0) * factors.connectionDensity
+      (weights.connectionDensity ?? 0) * factors.connectionDensity,
   );
 }
 
@@ -120,7 +120,7 @@ export function calculateScore(factors: ScoringFactors, weights: ScoringWeights)
  */
 export function calculateTierScore(
   tier: string | undefined,
-  quotaResetIntervalSecs: number | undefined
+  quotaResetIntervalSecs: number | undefined,
 ): number {
   const BASE_TIER_SCORES: Record<string, number> = {
     ultra: 1.0,
@@ -140,7 +140,7 @@ export function calculateTierScore(
 
 function calculateTierAffinity(
   candidate: ProviderCandidate,
-  hint: RoutingHint | undefined | null
+  hint: RoutingHint | undefined | null,
 ): number {
   if (!hint) return 0.5;
   try {
@@ -159,7 +159,7 @@ function calculateTierAffinity(
 
 function calculateSpecificityMatch(
   candidate: ProviderCandidate,
-  hint: RoutingHint | undefined | null
+  hint: RoutingHint | undefined | null,
 ): number {
   if (!hint) return 0.5;
   try {
@@ -181,7 +181,7 @@ export function calculateFactors(
   pool: ProviderCandidate[],
   taskType: string,
   getTaskFitness: (model: string, taskType: string) => number,
-  manifestHint?: RoutingHint | null
+  manifestHint?: RoutingHint | null,
 ): ScoringFactors {
   const maxCost = Math.max(...pool.map((p) => p.costPer1MTokens), 0.001);
   const maxLatency = Math.max(...pool.map((p) => p.p95LatencyMs), 1);
@@ -217,7 +217,7 @@ export function scorePool(
   taskType: string,
   weights: ScoringWeights = DEFAULT_WEIGHTS,
   getTaskFitness: (model: string, taskType: string) => number = () => 0.5,
-  manifestHint?: RoutingHint | null
+  manifestHint?: RoutingHint | null,
 ): ScoredProvider[] {
   return pool
     .map((candidate) => {

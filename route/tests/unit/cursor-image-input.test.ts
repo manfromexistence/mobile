@@ -23,9 +23,7 @@ const PUBLIC_IP = [{ address: "93.184.216.34", family: 4 }];
 // ─── Minimal protobuf field walker (test-only) ──────────────────────────────
 // Mirrors the production decoder enough to assert field layout without exposing
 // the internal decodeFields helper.
-type WalkField =
-  | { fn: number; wt: 0; varint: bigint }
-  | { fn: number; wt: 2; bytes: Buffer };
+type WalkField = { fn: number; wt: 0; varint: bigint } | { fn: number; wt: 2; bytes: Buffer };
 
 function walk(buf: Buffer): WalkField[] {
   const out: WalkField[] = [];
@@ -182,7 +180,7 @@ test("extractImageUrls pulls urls from object and string image_url parts", () =>
       { type: "image_url", image_url: "https://x.test/y.png" },
       { type: "image_url", image_url: { detail: "high" } }, // no url -> ignored
     ]),
-    ["data:image/png;base64,AA", "https://x.test/y.png"]
+    ["data:image/png;base64,AA", "https://x.test/y.png"],
   );
   assert.deepEqual(extractImageUrls("plain string content"), []);
   assert.deepEqual(extractImageUrls(null), []);
@@ -204,21 +202,21 @@ test("resolveCursorImages decodes a valid base64 data URI", async () => {
 test("resolveCursorImages rejects a non-image data URI", async () => {
   await assert.rejects(
     () => resolveCursorImages(["data:text/plain;base64,aGVsbG8="]),
-    (e) => e instanceof CursorImageError
+    (e) => e instanceof CursorImageError,
   );
 });
 
 test("resolveCursorImages rejects invalid base64", async () => {
   await assert.rejects(
     () => resolveCursorImages(["data:image/png;base64,@@@@"]),
-    (e) => e instanceof CursorImageError
+    (e) => e instanceof CursorImageError,
   );
 });
 
 test("resolveCursorImages rejects a non-base64 data URI", async () => {
   await assert.rejects(
     () => resolveCursorImages(["data:image/png,not-base64-payload"]),
-    (e) => e instanceof CursorImageError
+    (e) => e instanceof CursorImageError,
   );
 });
 
@@ -226,7 +224,7 @@ test("resolveCursorImages rejects an oversized image (>1 MiB)", async () => {
   const big = Buffer.alloc(MAX_CURSOR_IMAGE_BYTES + 16).toString("base64");
   await assert.rejects(
     () => resolveCursorImages([`data:image/png;base64,${big}`]),
-    (e) => e instanceof CursorImageError
+    (e) => e instanceof CursorImageError,
   );
 });
 
@@ -242,7 +240,7 @@ test("resolveCursorImages blocks SSRF targets (localhost, link-local, file://)",
     await assert.rejects(
       () => resolveCursorImages([url]),
       (e) => e instanceof CursorImageError,
-      `expected ${url} to be blocked`
+      `expected ${url} to be blocked`,
     );
   }
 });
@@ -251,7 +249,7 @@ test("resolveCursorImages rejects too many images", async () => {
   const one = "data:image/png;base64,AAAA";
   await assert.rejects(
     () => resolveCursorImages(Array.from({ length: MAX_CURSOR_IMAGES + 1 }, () => one)),
-    (e) => e instanceof CursorImageError
+    (e) => e instanceof CursorImageError,
   );
 });
 
@@ -265,7 +263,11 @@ test("resolveCursorImages accepts an uppercase DATA: scheme (RFC 2397 case-insen
 
 test("assertResolvedAddressesPublic blocks private/metadata IPs, allows public", () => {
   for (const ip of ["127.0.0.1", "10.0.0.1", "169.254.169.254", "192.168.1.1", "::1", "fd00::1"]) {
-    assert.throws(() => assertResolvedAddressesPublic([ip]), CursorImageError, `should block ${ip}`);
+    assert.throws(
+      () => assertResolvedAddressesPublic([ip]),
+      CursorImageError,
+      `should block ${ip}`,
+    );
   }
   assert.doesNotThrow(() => assertResolvedAddressesPublic(["93.184.216.34", "1.1.1.1"]));
   // A single private answer among public ones still blocks (DNS-rebinding).
@@ -282,7 +284,7 @@ test("resolveCursorImages blocks DNS rebinding (public host resolving to a priva
   try {
     await assert.rejects(
       () => resolveCursorImages(["https://rebind.attacker.example/a.png"]),
-      (e) => e instanceof CursorImageError && /blocked address/i.test((e as Error).message)
+      (e) => e instanceof CursorImageError && /blocked address/i.test((e as Error).message),
     );
   } finally {
     globalThis.fetch = realFetch;
@@ -300,7 +302,7 @@ test("resolveCursorImages re-validates redirects: a 30x to a private host is blo
   try {
     await assert.rejects(
       () => resolveCursorImages(["https://public.example/a.png"]),
-      (e) => e instanceof CursorImageError && /blocked address/i.test((e as Error).message)
+      (e) => e instanceof CursorImageError && /blocked address/i.test((e as Error).message),
     );
   } finally {
     globalThis.fetch = realFetch;
@@ -346,7 +348,7 @@ test("resolveCursorImages rejects an over-long redirect chain", async (t) => {
   try {
     await assert.rejects(
       () => resolveCursorImages(["https://public.example/start.png"]),
-      (e) => e instanceof CursorImageError && /too many redirects/i.test((e as Error).message)
+      (e) => e instanceof CursorImageError && /too many redirects/i.test((e as Error).message),
     );
   } finally {
     globalThis.fetch = realFetch;
@@ -431,7 +433,7 @@ test("CursorImageError messages never leak stack traces or paths", async () => {
         assert.ok(e instanceof CursorImageError);
         assert.ok(!/\bat \//.test(e.message), `no stack frame in: ${e.message}`);
         assert.ok(!/\/(root|home|usr)\//.test(e.message), `no abs path in: ${e.message}`);
-      }
+      },
     );
   }
 });

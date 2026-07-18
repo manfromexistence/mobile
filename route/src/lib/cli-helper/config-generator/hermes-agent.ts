@@ -83,7 +83,7 @@ function getProviderBlock(baseUrl: string, apiKey: string) {
  * This is the core of the rich implementation.
  */
 export async function generateHermesAgentConfig(
-  payload: HermesAgentConfigPayload
+  payload: HermesAgentConfigPayload,
 ): Promise<{ yaml: string; error?: string }> {
   const { baseUrl, keyId, apiKey, selections } = payload;
 

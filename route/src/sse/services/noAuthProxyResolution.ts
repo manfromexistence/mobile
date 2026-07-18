@@ -77,7 +77,7 @@ function normalizeRecord(rec: ProxyRegistryRecordLike | Partial<ResolvedAccountP
  */
 export async function resolveAccountProxies(
   entries: unknown,
-  lookup: ProxyByIdLookup
+  lookup: ProxyByIdLookup,
 ): Promise<Array<{ fingerprint: string; proxy: ResolvedAccountProxy | null }>> {
   if (!Array.isArray(entries)) return [];
   const out: Array<{ fingerprint: string; proxy: ResolvedAccountProxy | null }> = [];

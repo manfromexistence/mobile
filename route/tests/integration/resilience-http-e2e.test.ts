@@ -149,7 +149,7 @@ function createFakeOpenAiRelay() {
     },
     configureToken(
       token: string,
-      config: { defaultResponse: PlannedResponse; queue?: PlannedResponse[] }
+      config: { defaultResponse: PlannedResponse; queue?: PlannedResponse[] },
     ) {
       behaviors.set(token, {
         defaultResponse: config.defaultResponse,
@@ -238,7 +238,7 @@ async function waitForServer(
     stdoutLines: string[];
     stderrLines: string[];
     exitInfo?: { code: number | null; signal: NodeJS.Signals | null } | null;
-  }
+  },
 ) {
   const startedAt = Date.now();
   let lastError = "";
@@ -251,7 +251,7 @@ async function waitForServer(
           ...logs.stdoutLines.slice(-40),
           "--- stderr ---",
           ...logs.stderrLines.slice(-40),
-        ].join("\n")
+        ].join("\n"),
       );
     }
 
@@ -274,7 +274,7 @@ async function waitForServer(
       ...logs.stdoutLines.slice(-40),
       "--- stderr ---",
       ...logs.stderrLines.slice(-40),
-    ].join("\n")
+    ].join("\n"),
   );
 }
 
@@ -578,7 +578,7 @@ test("request queue serializes concurrent requests on the same connection", asyn
         concurrentRequests: 1,
         maxWaitMs: 1_500,
       },
-    })
+    }),
   );
   relay.resetState(TOKENS.p8);
 
@@ -596,7 +596,7 @@ test("request queue serializes concurrent requests on the same connection", asyn
   assert.ok(elapsed >= 450, `expected queued elapsed >= 450ms, got ${elapsed}ms`);
   assert.ok(
     state.startedAt[1] - state.startedAt[0] >= 180,
-    `expected second request to be delayed by queue, got ${state.startedAt[1] - state.startedAt[0]}ms`
+    `expected second request to be delayed by queue, got ${state.startedAt[1] - state.startedAt[0]}ms`,
   );
 });
 
@@ -639,7 +639,7 @@ test.skip("wait-for-cooldown honors upstream Retry-After when enabled", async ()
         maxRetries: 1,
         maxRetryWaitSec: 2,
       },
-    })
+    }),
   );
   relay.resetState(TOKENS.p3);
   const warmup = await postChat(app.baseUrl, "p3/test-model", "warm provider-specific route");
@@ -675,7 +675,7 @@ test.skip("connection cooldown can ignore upstream Retry-After and use the confi
         maxRetries: 1,
         maxRetryWaitSec: 2,
       },
-    })
+    }),
   );
   relay.resetState(TOKENS.p4);
   const warmup = await postChat(app.baseUrl, "p4/test-model", "warm provider-specific route");
@@ -694,7 +694,7 @@ test.skip("connection cooldown can ignore upstream Retry-After and use the confi
   assert.ok(hits >= 2, `expected at least one retry after cooldown, got ${hits} hits`);
   assert.ok(
     elapsed < 5_000,
-    `expected ignored upstream hint to avoid a 30s wait, got ${elapsed}ms`
+    `expected ignored upstream hint to avoid a 30s wait, got ${elapsed}ms`,
   );
 });
 
@@ -715,7 +715,7 @@ test.skip("provider circuit breaker opens after repeated final failures and Heal
           resetTimeoutMs: 1_500,
         },
       },
-    })
+    }),
   );
   relay.resetState(TOKENS.p5, [
     buildError(503, "breaker failure #1"),
@@ -736,7 +736,7 @@ test.skip("provider circuit breaker opens after repeated final failures and Heal
   const health = await getJson(`${app.baseUrl}/api/monitoring/health`);
   assert.equal(health.response.status, 200);
   const breakerEntry = (health.json.providerBreakers || []).find(
-    (entry: Record<string, unknown>) => entry.provider === "openai-compatible-chat-e2e-p5"
+    (entry: Record<string, unknown>) => entry.provider === "openai-compatible-chat-e2e-p5",
   );
   assert.ok(breakerEntry, "expected provider breaker entry for p5");
   assert.equal(breakerEntry.state, "OPEN");
@@ -744,8 +744,8 @@ test.skip("provider circuit breaker opens after repeated final failures and Heal
   assert.ok(Number(breakerEntry.retryAfterMs) > 0);
   assert.ok(
     (health.json.providerBreakers || []).every(
-      (entry: Record<string, unknown>) => !String(entry.provider || "").includes(":")
-    )
+      (entry: Record<string, unknown>) => !String(entry.provider || "").includes(":"),
+    ),
   );
 });
 
@@ -756,7 +756,7 @@ test("combo respects the global provider breaker and falls through without a com
   const result = await postChat(
     app.baseUrl,
     "res-breaker-combo",
-    "combo should skip broken provider"
+    "combo should skip broken provider",
   );
 
   assert.equal(result.response.status, 200, JSON.stringify(result.json));

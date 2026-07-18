@@ -31,7 +31,9 @@ export function normalizeBaseUrl(host, port) {
 
 /** Derive a clean context name from a host (strip scheme/port). */
 export function hostLabel(host) {
-  let value = String(host || "").trim().replace(/^https?:\/\//i, "");
+  let value = String(host || "")
+    .trim()
+    .replace(/^https?:\/\//i, "");
   value = value.split("/")[0].split(":")[0];
   return value || "remote";
 }
@@ -119,7 +121,7 @@ export function registerConnect(program) {
   program
     .command("connect <host>")
     .description(
-      t("connect.description") || "Connect to a remote OmniRoute server and enter remote mode"
+      t("connect.description") || "Connect to a remote OmniRoute server and enter remote mode",
     )
     .option("--port <port>", "Server port when the host has none", "20128")
     .option("--key <token>", "Use a pre-generated scoped access token (skips the password prompt)")

@@ -1,12 +1,12 @@
-import { writeFileSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { writeFileSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 
-import { shaderDefs } from './shader-defs/shader-defs';
+import { shaderDefs } from "./shader-defs/shader-defs";
 
 const directory = dirname(fileURLToPath(import.meta.url));
 
-const BASE_URL = 'https://shaders.paper.design';
+const BASE_URL = "https://shaders.paper.design";
 
 const generateLlmsFullTxt = () => {
   const sortedShaders = [...shaderDefs].sort((a, b) => a.name.localeCompare(b.name));
@@ -21,7 +21,7 @@ Website: ${BASE_URL}
 
 ${sortedShaders
   .map((shader) => {
-    const shaderPath = `/${shader.name.toLowerCase().replace(/\s+/g, '-')}`;
+    const shaderPath = `/${shader.name.toLowerCase().replace(/\s+/g, "-")}`;
 
     return `### ${shader.name}
 
@@ -39,11 +39,13 @@ ${shader.params
       if (param.min !== undefined) range.push(`min: ${param.min}`);
       if (param.max !== undefined) range.push(`max: ${param.max}`);
       if (param.step !== undefined) range.push(`step: ${param.step}`);
-      if (range.length > 0) paramInfo += ` [${range.join(', ')}]`;
+      if (range.length > 0) paramInfo += ` [${range.join(", ")}]`;
     }
 
     if (param.options) {
-      const options = param.options.map((opt) => (param.type === 'enum' ? `"${opt}"` : opt)).join(', ');
+      const options = param.options
+        .map((opt) => (param.type === "enum" ? `"${opt}"` : opt))
+        .join(", ");
       paramInfo += ` [${options}]`;
     }
 
@@ -53,11 +55,11 @@ ${shader.params
 
     return paramInfo;
   })
-  .join('\n')}
+  .join("\n")}
 
 ---`;
   })
-  .join('\n\n')}
+  .join("\n\n")}
 
 ## Usage Examples
 
@@ -79,11 +81,11 @@ import { shaderName } from '@paper-design/shaders'
 \`\`\`
 `;
 
-  writeFileSync(join(directory, '..', 'public', 'llms.txt'), content, 'utf8');
-  console.log('✅ Generated llms.txt successfully');
+  writeFileSync(join(directory, "..", "public", "llms.txt"), content, "utf8");
+  console.log("✅ Generated llms.txt successfully");
 
-  writeFileSync(join(directory, '..', 'public', 'llms-full.txt'), content, 'utf8');
-  console.log('✅ Generated llms-full.txt successfully');
+  writeFileSync(join(directory, "..", "public", "llms-full.txt"), content, "utf8");
+  console.log("✅ Generated llms-full.txt successfully");
 };
 
 generateLlmsFullTxt();

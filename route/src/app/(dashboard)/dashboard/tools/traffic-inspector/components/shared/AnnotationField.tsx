@@ -17,7 +17,7 @@ export function AnnotationField({ requestId, initialValue = "" }: AnnotationFiel
       setValue(e.target.value);
       save(e.target.value);
     },
-    [save]
+    [save],
   );
 
   return (

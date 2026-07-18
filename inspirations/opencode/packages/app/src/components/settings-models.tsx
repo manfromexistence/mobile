@@ -1,25 +1,25 @@
-import { useFilteredList } from "@opencode-ai/ui/hooks"
-import { ProviderIcon } from "@opencode-ai/ui/provider-icon"
-import { Switch } from "@opencode-ai/ui/switch"
-import { Icon } from "@opencode-ai/ui/icon"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { TextField } from "@opencode-ai/ui/text-field"
-import { type Component, For, Show } from "solid-js"
-import { useLanguage } from "@/context/language"
-import { useModels } from "@/context/models"
-import { popularProviders } from "@/hooks/use-providers"
-import { SettingsList } from "./settings-list"
-import { SettingsServerPicker, SettingsServerScope } from "./settings-server-picker"
+import { useFilteredList } from "@opencode-ai/ui/hooks";
+import { ProviderIcon } from "@opencode-ai/ui/provider-icon";
+import { Switch } from "@opencode-ai/ui/switch";
+import { Icon } from "@opencode-ai/ui/icon";
+import { IconButton } from "@opencode-ai/ui/icon-button";
+import { TextField } from "@opencode-ai/ui/text-field";
+import { type Component, For, Show } from "solid-js";
+import { useLanguage } from "@/context/language";
+import { useModels } from "@/context/models";
+import { popularProviders } from "@/hooks/use-providers";
+import { SettingsList } from "./settings-list";
+import { SettingsServerPicker, SettingsServerScope } from "./settings-server-picker";
 
-type ModelItem = ReturnType<ReturnType<typeof useModels>["list"]>[number]
+type ModelItem = ReturnType<ReturnType<typeof useModels>["list"]>[number];
 
 const ListLoadingState: Component<{ label: string }> = (props) => {
   return (
     <div class="flex flex-col items-center justify-center py-12 text-center">
       <span class="text-14-regular text-text-weak">{props.label}</span>
     </div>
-  )
-}
+  );
+};
 
 const ListEmptyState: Component<{ message: string; filter: string }> = (props) => {
   return (
@@ -29,20 +29,20 @@ const ListEmptyState: Component<{ message: string; filter: string }> = (props) =
         <span class="text-14-regular text-text-strong mt-1">&quot;{props.filter}&quot;</span>
       </Show>
     </div>
-  )
-}
+  );
+};
 
 export const SettingsModels: Component = () => {
   return (
     <SettingsServerScope>
       <SettingsModelsContent />
     </SettingsServerScope>
-  )
-}
+  );
+};
 
 const SettingsModelsContent: Component = () => {
-  const language = useLanguage()
-  const models = useModels()
+  const language = useLanguage();
+  const models = useModels();
 
   const list = useFilteredList<ModelItem>({
     items: (_filter) => models.list(),
@@ -51,20 +51,20 @@ const SettingsModelsContent: Component = () => {
     sortBy: (a, b) => a.name.localeCompare(b.name),
     groupBy: (x) => x.provider.id,
     sortGroupsBy: (a, b) => {
-      const aIndex = popularProviders.indexOf(a.category)
-      const bIndex = popularProviders.indexOf(b.category)
-      const aPopular = aIndex >= 0
-      const bPopular = bIndex >= 0
+      const aIndex = popularProviders.indexOf(a.category);
+      const bIndex = popularProviders.indexOf(b.category);
+      const aPopular = aIndex >= 0;
+      const bPopular = bIndex >= 0;
 
-      if (aPopular && !bPopular) return -1
-      if (!aPopular && bPopular) return 1
-      if (aPopular && bPopular) return aIndex - bIndex
+      if (aPopular && !bPopular) return -1;
+      if (!aPopular && bPopular) return 1;
+      if (aPopular && bPopular) return aIndex - bIndex;
 
-      const aName = a.items[0].provider.name
-      const bName = b.items[0].provider.name
-      return aName.localeCompare(bName)
+      const aName = a.items[0].provider.name;
+      const bName = b.items[0].provider.name;
+      return aName.localeCompare(bName);
     },
-  })
+  });
 
   return (
     <div class="flex flex-col h-full overflow-y-auto no-scrollbar px-4 pb-10 sm:px-10 sm:pb-10">
@@ -99,34 +99,42 @@ const SettingsModelsContent: Component = () => {
         <Show
           when={!list.grouped.loading}
           fallback={
-            <ListLoadingState label={`${language.t("common.loading")}${language.t("common.loading.ellipsis")}`} />
+            <ListLoadingState
+              label={`${language.t("common.loading")}${language.t("common.loading.ellipsis")}`}
+            />
           }
         >
           <Show
             when={list.flat().length > 0}
-            fallback={<ListEmptyState message={language.t("dialog.model.empty")} filter={list.filter()} />}
+            fallback={
+              <ListEmptyState message={language.t("dialog.model.empty")} filter={list.filter()} />
+            }
           >
             <For each={list.grouped.latest}>
               {(group) => (
                 <div class="flex flex-col gap-1">
                   <div class="flex items-center gap-2 pb-2">
                     <ProviderIcon id={group.category} class="size-5 shrink-0 icon-strong-base" />
-                    <span class="text-14-medium text-text-strong">{group.items[0].provider.name}</span>
+                    <span class="text-14-medium text-text-strong">
+                      {group.items[0].provider.name}
+                    </span>
                   </div>
                   <SettingsList>
                     <For each={group.items}>
                       {(item) => {
-                        const key = { providerID: item.provider.id, modelID: item.id }
+                        const key = { providerID: item.provider.id, modelID: item.id };
                         return (
                           <div class="flex flex-wrap items-center justify-between gap-4 py-3 border-b border-border-weak-base last:border-none">
                             <div class="min-w-0">
-                              <span class="text-14-regular text-text-strong truncate block">{item.name}</span>
+                              <span class="text-14-regular text-text-strong truncate block">
+                                {item.name}
+                              </span>
                             </div>
                             <div class="flex-shrink-0">
                               <Switch
                                 checked={models.visible(key)}
                                 onChange={(checked) => {
-                                  models.setVisibility(key, checked)
+                                  models.setVisibility(key, checked);
                                 }}
                                 hideLabel
                               >
@@ -134,7 +142,7 @@ const SettingsModelsContent: Component = () => {
                               </Switch>
                             </div>
                           </div>
-                        )
+                        );
                       }}
                     </For>
                   </SettingsList>
@@ -145,5 +153,5 @@ const SettingsModelsContent: Component = () => {
         </Show>
       </div>
     </div>
-  )
-}
+  );
+};

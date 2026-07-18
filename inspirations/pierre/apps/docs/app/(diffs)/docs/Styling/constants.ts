@@ -1,16 +1,16 @@
-import type { PreloadFileOptions } from '@pierre/diffs/ssr';
+import type { PreloadFileOptions } from "@pierre/diffs/ssr";
 
-import { CustomScrollbarCSS } from '@/components/CustomScrollbarCSS';
+import { CustomScrollbarCSS } from "@/components/CustomScrollbarCSS";
 
 const options = {
-  theme: { dark: 'pierre-dark', light: 'pierre-light' },
+  theme: { dark: "pierre-dark", light: "pierre-light" },
   disableFileHeader: true,
   unsafeCSS: CustomScrollbarCSS,
 } as const;
 
 export const STYLING_CODE_GLOBAL: PreloadFileOptions<undefined> = {
   file: {
-    name: 'global.css',
+    name: "global.css",
     contents: `:root {
   /* Available Custom CSS Variables. Most should be self explanatory */
   /* Sets code font, very important */
@@ -57,7 +57,7 @@ export const STYLING_CODE_GLOBAL: PreloadFileOptions<undefined> = {
 
 export const STYLING_CODE_INLINE: PreloadFileOptions<undefined> = {
   file: {
-    name: 'inline.tsx',
+    name: "inline.tsx",
     contents: `<FileDiff
   style={{
     '--diffs-font-family': 'JetBrains Mono, monospace',
@@ -71,7 +71,7 @@ export const STYLING_CODE_INLINE: PreloadFileOptions<undefined> = {
 
 export const STYLING_CODE_UNSAFE: PreloadFileOptions<undefined> = {
   file: {
-    name: 'unsafe-css.tsx',
+    name: "unsafe-css.tsx",
     contents: `<FileDiff
   options={{
     unsafeCSS: /* css */ \`

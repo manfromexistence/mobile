@@ -30,7 +30,7 @@ const DEFAULT_DEPS: JsonBodyToSseDeps = {
 
 function prependBufferedChunks(
   chunks: Uint8Array[],
-  reader: ReadableStreamDefaultReader<Uint8Array>
+  reader: ReadableStreamDefaultReader<Uint8Array>,
 ): ReadableStream<Uint8Array> {
   let index = 0;
   return new ReadableStream<Uint8Array>({
@@ -80,7 +80,7 @@ function classifyBodyPrefix(text: string): "sse" | "non-sse" | "unknown" {
 async function sniffJsonBodyForSse(
   providerResponse: Response,
   ctx: { log?: LoggerLike; provider: string | null | undefined; model: string | null | undefined },
-  deps: JsonBodyToSseDeps
+  deps: JsonBodyToSseDeps,
 ): Promise<{ sseResponse?: Response; jsonBody: Response }> {
   const reader = providerResponse.body!.getReader();
   const bufferedChunks: Uint8Array[] = [];
@@ -101,7 +101,7 @@ async function sniffJsonBodyForSse(
       rebuiltHeaders.set("content-type", "text/event-stream");
       ctx.log?.debug?.(
         "STREAM",
-        `Upstream returned SSE bytes with application/json content-type — preserving streaming body (${ctx.provider}/${ctx.model})`
+        `Upstream returned SSE bytes with application/json content-type — preserving streaming body (${ctx.provider}/${ctx.model})`,
       );
       return {
         sseResponse: new Response(prependBufferedChunks(bufferedChunks, reader), {
@@ -120,7 +120,7 @@ async function sniffJsonBodyForSse(
 export async function maybeConvertJsonBodyToSse(
   providerResponse: Response,
   ctx: { log?: LoggerLike; provider: string | null | undefined; model: string | null | undefined },
-  deps: JsonBodyToSseDeps = DEFAULT_DEPS
+  deps: JsonBodyToSseDeps = DEFAULT_DEPS,
 ): Promise<Response> {
   const upstreamContentType = (providerResponse.headers.get("content-type") || "").toLowerCase();
   const isNonSseJsonBody =
@@ -142,7 +142,7 @@ export async function maybeConvertJsonBodyToSse(
   if (synthesizedSse) {
     ctx.log?.debug?.(
       "STREAM",
-      `Upstream returned application/json on a streaming request — converting to SSE (${ctx.provider}/${ctx.model})`
+      `Upstream returned application/json on a streaming request — converting to SSE (${ctx.provider}/${ctx.model})`,
     );
     rebuiltHeaders.set("content-type", "text/event-stream");
     return new Response(synthesizedSse, {

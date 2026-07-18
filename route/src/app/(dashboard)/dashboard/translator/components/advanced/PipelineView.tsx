@@ -30,7 +30,8 @@ const DEMO_STEPS: PipelineStep[] = [
     name: "Client Request",
     description: "Request received in client format",
     format: "claude",
-    content: '{\n  "model": "claude-sonnet-4-20250514",\n  "messages": [\n    { "role": "user", "content": "Hello!" }\n  ]\n}',
+    content:
+      '{\n  "model": "claude-sonnet-4-20250514",\n  "messages": [\n    { "role": "user", "content": "Hello!" }\n  ]\n}',
     status: "done",
   },
   {
@@ -46,7 +47,8 @@ const DEMO_STEPS: PipelineStep[] = [
     name: "OpenAI Intermediate",
     description: "Translated to OpenAI hub format",
     format: "openai",
-    content: '{\n  "model": "claude-sonnet-4-20250514",\n  "messages": [\n    { "role": "user", "content": "Hello!" }\n  ],\n  "stream": true\n}',
+    content:
+      '{\n  "model": "claude-sonnet-4-20250514",\n  "messages": [\n    { "role": "user", "content": "Hello!" }\n  ],\n  "stream": true\n}',
     status: "pending",
   },
   {
@@ -54,7 +56,8 @@ const DEMO_STEPS: PipelineStep[] = [
     name: "Provider Format",
     description: "Translated to provider target format",
     format: "gemini",
-    content: '{\n  "model": "gemini-2.5-flash",\n  "contents": [\n    { "role": "user", "parts": [{ "text": "Hello!" }] }\n  ]\n}',
+    content:
+      '{\n  "model": "gemini-2.5-flash",\n  "contents": [\n    { "role": "user", "parts": [{ "text": "Hello!" }] }\n  ]\n}',
     status: "pending",
   },
   {
@@ -62,7 +65,8 @@ const DEMO_STEPS: PipelineStep[] = [
     name: "Provider Response",
     description: "Streaming response from provider",
     format: "openai",
-    content: "data: {\"choices\":[{\"delta\":{\"content\":\"Hello! How can I help you today?\"}}]}\ndata: [DONE]",
+    content:
+      'data: {"choices":[{"delta":{"content":"Hello! How can I help you today?"}}]}\ndata: [DONE]',
     status: "pending",
   },
 ];
@@ -181,10 +185,7 @@ export default function PipelineView({
             {/* Demo badge when showing placeholder data */}
             {!pipelineSteps && (
               <div className="flex items-center gap-2 text-xs text-text-muted px-1">
-                <span
-                  className="material-symbols-outlined text-[14px]"
-                  aria-hidden="true"
-                >
+                <span className="material-symbols-outlined text-[14px]" aria-hidden="true">
                   info
                 </span>
                 <span>

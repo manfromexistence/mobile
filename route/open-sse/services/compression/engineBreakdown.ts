@@ -51,7 +51,7 @@ export function reconcileSingleEngineTokens(
   breakdown: EngineBreakdownEntry[],
   outerOriginalTokens: number,
   outerCompressedTokens: number,
-  outerSavingsPercent: number
+  outerSavingsPercent: number,
 ): EngineBreakdownEntry[] {
   if (breakdown.length !== 1) return breakdown;
   const [entry] = breakdown;

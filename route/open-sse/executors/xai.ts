@@ -74,7 +74,7 @@ export class XaiExecutor extends BaseExecutor {
     model: string,
     body: unknown,
     stream: boolean,
-    credentials: ProviderCredentials
+    credentials: ProviderCredentials,
   ): unknown {
     const cleaned = super.transformRequest(model, body, stream, credentials);
     const record = asRecord(cleaned);

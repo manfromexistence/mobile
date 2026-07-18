@@ -4,7 +4,7 @@
  */
 export function buildNonStreamingJsonResponse(
   body: unknown,
-  headers: Record<string, string>
+  headers: Record<string, string>,
 ): Response {
   const payload = JSON.stringify(body);
   return new Response(payload, {

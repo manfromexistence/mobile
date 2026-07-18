@@ -172,7 +172,7 @@ export const ANTIGRAVITY_CONFIG = {
   apiEndpoint: ANTIGRAVITY_BASE_URLS[0],
   apiVersion: "v1internal",
   loadCodeAssistEndpoints: ANTIGRAVITY_BASE_URLS.map(
-    (baseUrl) => `${baseUrl}/v1internal:loadCodeAssist`
+    (baseUrl) => `${baseUrl}/v1internal:loadCodeAssist`,
   ),
   onboardUserEndpoints: ANTIGRAVITY_BASE_URLS.map((baseUrl) => `${baseUrl}/v1internal:onboardUser`),
   fetchAvailableModelsEndpoints: getAntigravityFetchAvailableModelsUrls(),

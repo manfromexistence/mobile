@@ -129,7 +129,7 @@ export async function createChatPipelineHarness(prefix) {
       {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   }
 
@@ -173,7 +173,7 @@ export async function createChatPipelineHarness(prefix) {
       {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   }
 
@@ -194,7 +194,7 @@ export async function createChatPipelineHarness(prefix) {
       {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   }
 
@@ -221,7 +221,7 @@ export async function createChatPipelineHarness(prefix) {
       {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   }
 

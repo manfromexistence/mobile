@@ -37,7 +37,7 @@ test("codex gpt-5.5 reports max_input_tokens smaller than its context window (#6
   assert.equal(caps.maxInputTokens, 272000);
   assert.ok(
     (caps.maxInputTokens ?? 0) < (caps.contextWindow ?? 0),
-    "max_input_tokens must be strictly smaller than context_length so agents compact"
+    "max_input_tokens must be strictly smaller than context_length so agents compact",
   );
 });
 
@@ -62,6 +62,6 @@ test("regression: a model without maxInputTokens still falls back to its context
   assert.equal(
     caps.maxInputTokens,
     caps.contextWindow,
-    "without an explicit input cap, max_input_tokens falls back to context_length"
+    "without an explicit input cap, max_input_tokens falls back to context_length",
   );
 });

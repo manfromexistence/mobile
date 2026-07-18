@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 const siteUrl =
   typeof process.env.NEXT_PUBLIC_SITE_URL === "string" &&
-    process.env.NEXT_PUBLIC_SITE_URL.length > 0
+  process.env.NEXT_PUBLIC_SITE_URL.length > 0
     ? new URL(process.env.NEXT_PUBLIC_SITE_URL)
     : undefined;
 
@@ -19,7 +19,7 @@ const ogImage = {
   width: 1024,
   height: 537,
   alt: ogImageAlt,
-  type: "image/png" as const
+  type: "image/png" as const,
 };
 
 const creatorName = "zzzzshawn";
@@ -31,7 +31,7 @@ import {
   GeistPixelGrid,
   GeistPixelCircle,
   GeistPixelTriangle,
-  GeistPixelLine
+  GeistPixelLine,
 } from "geist/font/pixel";
 import type { ReactNode } from "react";
 import Link from "next/link";
@@ -51,7 +51,7 @@ const fontVariables = [
   GeistPixelGrid.variable,
   GeistPixelCircle.variable,
   GeistPixelTriangle.variable,
-  GeistPixelLine.variable
+  GeistPixelLine.variable,
 ].join(" ");
 
 const themeInitScript = `(() => {
@@ -77,7 +77,7 @@ export const metadata: Metadata = {
   applicationName: defaultTitle,
   title: {
     default: defaultTitle,
-    template: "%s · Dot Matrix"
+    template: "%s · Dot Matrix",
   },
   description: siteDescription,
   keywords: [
@@ -93,7 +93,7 @@ export const metadata: Metadata = {
     "Tailwind CSS",
     "UI",
     "npm",
-    "open source"
+    "open source",
   ],
   authors: [{ name: creatorName, url: creatorUrl }],
   creator: creatorName,
@@ -102,7 +102,7 @@ export const metadata: Metadata = {
   formatDetection: {
     email: false,
     address: false,
-    telephone: false
+    telephone: false,
   },
   robots: {
     index: true,
@@ -112,8 +112,8 @@ export const metadata: Metadata = {
       follow: true,
       "max-video-preview": -1,
       "max-image-preview": "large",
-      "max-snippet": -1
-    }
+      "max-snippet": -1,
+    },
   },
   alternates: siteUrl ? { canonical: "/" } : undefined,
   openGraph: {
@@ -123,7 +123,7 @@ export const metadata: Metadata = {
     title: defaultTitle,
     description: siteDescription,
     ...(siteUrl ? { url: new URL("/", siteUrl).href } : {}),
-    images: [ogImage]
+    images: [ogImage],
   },
   twitter: {
     card: "summary_large_image",
@@ -131,8 +131,8 @@ export const metadata: Metadata = {
     creator: "@zzzzshawn",
     title: defaultTitle,
     description: siteDescription,
-    images: [{ url: "/og.png", alt: ogImageAlt }]
-  }
+    images: [{ url: "/og.png", alt: ogImageAlt }],
+  },
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

@@ -81,7 +81,7 @@ function getModelLeafId(modelId: string): string {
 export function resolveModelTestTimeoutMs(
   providerId: string,
   modelId: string,
-  requestedTimeoutMs: number = DEFAULT_TEST_TIMEOUT_MS
+  requestedTimeoutMs: number = DEFAULT_TEST_TIMEOUT_MS,
 ) {
   if (
     providerId.trim().toLowerCase() === DOUBAO_WEB_PROVIDER_ID &&
@@ -105,7 +105,7 @@ async function findCustomModelMetadata(providerId: string, modelId: string) {
 
     return (
       customModels.find(
-        (model: any) => typeof model?.id === "string" && candidates.has(model.id)
+        (model: any) => typeof model?.id === "string" && candidates.has(model.id),
       ) || null
     );
   } catch {
@@ -217,7 +217,7 @@ export interface SingleModelTestResult {
  * batch-test endpoints can format it differently.
  */
 export async function runSingleModelTest(
-  options: RunSingleModelTestOptions
+  options: RunSingleModelTestOptions,
 ): Promise<SingleModelTestResult> {
   const { providerId, modelId, connectionId, timeoutMs = DEFAULT_TEST_TIMEOUT_MS } = options;
 
@@ -257,7 +257,7 @@ export async function runSingleModelTest(
   const runInner = async (signal: AbortSignal): Promise<Response> => {
     if (isEmbedding) {
       return handleValidatedEmbeddingRequestBody(
-        testBody as Record<string, unknown> & { model: string }
+        testBody as Record<string, unknown> & { model: string },
       );
     }
     if (isRerank) {
@@ -274,7 +274,7 @@ export async function runSingleModelTest(
         connectionId,
         fullModelStr,
         (signal) => runInner(signal),
-        controller.signal
+        controller.signal,
       );
     } else {
       res = await runInner(controller.signal);

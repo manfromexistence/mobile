@@ -1,5 +1,5 @@
-import { memo } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '../shader-mount.js';
+import { memo } from "react";
+import { ShaderMount, type ShaderComponentProps } from "../shader-mount.js";
 import {
   getShaderColorFromString,
   getShaderNoiseTexture,
@@ -11,102 +11,102 @@ import {
   defaultPatternSizing,
   defaultObjectSizing,
   GrainGradientShapes,
-} from '@paper-design/shaders';
+} from "@paper-design/shaders";
 
 export interface GrainGradientProps extends ShaderComponentProps, GrainGradientParams {}
 
 type GrainGradientPreset = ShaderPreset<GrainGradientParams>;
 
 export const defaultPreset: GrainGradientPreset = {
-  name: 'Default',
+  name: "Default",
   params: {
     ...defaultObjectSizing,
     speed: 1,
     frame: 0,
-    colorBack: '#000000',
-    colors: ['#7300ff', '#eba8ff', '#00bfff', '#2a00ff'],
+    colorBack: "#000000",
+    colors: ["#7300ff", "#eba8ff", "#00bfff", "#2a00ff"],
     softness: 0.5,
     intensity: 0.5,
     noise: 0.25,
-    shape: 'corners',
+    shape: "corners",
   },
 };
 
 export const wavePreset: GrainGradientPreset = {
-  name: 'Wave',
+  name: "Wave",
   params: {
     ...defaultPatternSizing,
     speed: 1,
     frame: 0,
-    colorBack: '#000a0f',
-    colors: ['#c4730b', '#bdad5f', '#d8ccc7'],
+    colorBack: "#000a0f",
+    colors: ["#c4730b", "#bdad5f", "#d8ccc7"],
     softness: 0.7,
     intensity: 0.15,
     noise: 0.5,
-    shape: 'wave',
+    shape: "wave",
   },
 };
 
 export const dotsPreset: GrainGradientPreset = {
-  name: 'Dots',
+  name: "Dots",
   params: {
     ...defaultPatternSizing,
     scale: 0.6,
     speed: 1,
     frame: 0,
-    colorBack: '#0a0000',
-    colors: ['#6f0000', '#0080ff', '#f2ebc9', '#33cc33'],
+    colorBack: "#0a0000",
+    colors: ["#6f0000", "#0080ff", "#f2ebc9", "#33cc33"],
     softness: 1,
     intensity: 1,
     noise: 0.7,
-    shape: 'dots',
+    shape: "dots",
   },
 };
 
 export const truchetPreset: GrainGradientPreset = {
-  name: 'Truchet',
+  name: "Truchet",
   params: {
     ...defaultPatternSizing,
     speed: 1,
     frame: 0,
-    colorBack: '#0a0000',
-    colors: ['#6f2200', '#eabb7c', '#39b523'],
+    colorBack: "#0a0000",
+    colors: ["#6f2200", "#eabb7c", "#39b523"],
     softness: 0,
     intensity: 0.2,
     noise: 1,
-    shape: 'truchet',
+    shape: "truchet",
   },
 };
 
 export const ripplePreset: GrainGradientPreset = {
-  name: 'Ripple',
+  name: "Ripple",
   params: {
     ...defaultObjectSizing,
     scale: 0.5,
     speed: 1,
     frame: 0,
-    colorBack: '#140a00',
-    colors: ['#6f2d00', '#88ddae', '#2c0b1d'],
+    colorBack: "#140a00",
+    colors: ["#6f2d00", "#88ddae", "#2c0b1d"],
     softness: 0.5,
     intensity: 0.5,
     noise: 0.5,
-    shape: 'ripple',
+    shape: "ripple",
   },
 };
 
 export const blobPreset: GrainGradientPreset = {
-  name: 'Blob',
+  name: "Blob",
   params: {
     ...defaultObjectSizing,
     scale: 1.3,
     speed: 1,
     frame: 0,
-    colorBack: '#0f0e18',
-    colors: ['#3e6172', '#a49b74', '#568c50'],
+    colorBack: "#0f0e18",
+    colors: ["#3e6172", "#a49b74", "#568c50"],
     softness: 0,
     intensity: 0.15,
     noise: 0.5,
-    shape: 'blob',
+    shape: "blob",
   },
 };
 

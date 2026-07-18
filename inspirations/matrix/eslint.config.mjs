@@ -5,14 +5,14 @@ const config = [
   ...coreWebVitals,
   ...typescript,
   {
-    ignores: ["public/r/**"]
+    ignores: ["public/r/**"],
   },
   {
     rules: {
       // Next 16 / react-hooks 7 flags many valid animation init patterns in loaders.
-      "react-hooks/set-state-in-effect": "off"
-    }
-  }
+      "react-hooks/set-state-in-effect": "off",
+    },
+  },
 ];
 
 export default config;

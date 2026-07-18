@@ -14,7 +14,7 @@ const apiKey = process.env.OMNIROUTE_KEY ?? process.env.OPENCODE_API_KEY ?? "";
 if (!apiKey) {
   console.error(
     "OMNIROUTE_KEY (or OPENCODE_API_KEY) env var is required. " +
-      "Find it in OmniRoute dashboard → Settings → API Keys."
+      "Find it in OmniRoute dashboard → Settings → API Keys.",
   );
   process.exit(1);
 }

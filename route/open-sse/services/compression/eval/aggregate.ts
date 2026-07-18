@@ -37,13 +37,18 @@ function summarizeKind(kind: ContentKind, scored: EvalRecord[]): KindSummary {
 export function aggregateRecords(
   records: EvalRecord[],
   stamps: RunStamps,
-  run: { partial: boolean; totalCostUsd: number }
+  run: { partial: boolean; totalCostUsd: number },
 ): EvalReport {
   const scored = records.filter((r) => !r.errored);
   const errored = records.length - scored.length;
 
   const kinds = Array.from(new Set(scored.map((r) => r.kind)));
-  const perKind = kinds.map((k) => summarizeKind(k, scored.filter((r) => r.kind === k)));
+  const perKind = kinds.map((k) =>
+    summarizeKind(
+      k,
+      scored.filter((r) => r.kind === k),
+    ),
+  );
 
   const same = scored.filter((r) => r.fidelity === "same").length;
   return {

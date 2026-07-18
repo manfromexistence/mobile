@@ -59,7 +59,7 @@ test("compression configure envia configuração via mcp", async () => {
 
   const { runCompressionConfigure } = await import("../../bin/cli/commands/compression.mjs");
   await captureStdout(() =>
-    runCompressionConfigure({ engine: "caveman", cavemanAggressiveness: 0.8 }, makeCmd() as any)
+    runCompressionConfigure({ engine: "caveman", cavemanAggressiveness: 0.8 }, makeCmd() as any),
   );
 
   globalThis.fetch = origFetch;
@@ -115,7 +115,7 @@ test("compression rules list busca /api/compression/rules", async () => {
   globalThis.fetch = ((url: string) => {
     capturedUrl = url;
     return Promise.resolve(
-      makeResp([{ id: "rule-1", pattern: "system_prompt:.*", action: "drop" }])
+      makeResp([{ id: "rule-1", pattern: "system_prompt:.*", action: "drop" }]),
     );
   }) as any;
 
@@ -196,15 +196,15 @@ test("compression status falls back to /api/settings/compression on MCP 404", as
   globalThis.fetch = origFetch;
   assert.ok(
     callOrder.some((u) => u.includes("/api/mcp/tools/call")),
-    "should attempt MCP first"
+    "should attempt MCP first",
   );
   assert.ok(
     callOrder.some((u) => u.includes("/api/settings/compression")),
-    "should fall back to settings endpoint"
+    "should fall back to settings endpoint",
   );
   assert.ok(
     callOrder.some((u) => u.includes("/api/context/combos")),
-    "should fall back to combos endpoint"
+    "should fall back to combos endpoint",
   );
 });
 

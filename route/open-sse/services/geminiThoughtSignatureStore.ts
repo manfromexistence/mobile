@@ -143,7 +143,7 @@ export function storeGeminiThoughtSignature(toolCallId: unknown, signature: unkn
     db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
       NAMESPACE,
       toolCallId,
-      serializePersistedEntry({ signature, createdAt: now, expiresAt: now + PERSISTED_TTL_MS })
+      serializePersistedEntry({ signature, createdAt: now, expiresAt: now + PERSISTED_TTL_MS }),
     );
     maybePrunePersistedSignatures(db);
   } catch (error) {
@@ -169,7 +169,7 @@ export function getGeminiThoughtSignature(toolCallId: unknown) {
       if (!persisted) {
         db.prepare("DELETE FROM key_value WHERE namespace = ? AND key = ?").run(
           NAMESPACE,
-          toolCallId
+          toolCallId,
         );
         return null;
       }
@@ -183,7 +183,7 @@ export function getGeminiThoughtSignature(toolCallId: unknown) {
         db.prepare("UPDATE key_value SET value = ? WHERE namespace = ? AND key = ?").run(
           serializePersistedEntry(persisted.entry),
           NAMESPACE,
-          toolCallId
+          toolCallId,
         );
       }
 
@@ -233,7 +233,7 @@ function decodeSignature(signature: string): Buffer | null {
 
 function readVarint(
   buffer: Buffer,
-  startOffset: number
+  startOffset: number,
 ): { nextOffset: number; value: number } | null {
   let offset = startOffset;
   let result = 0;
@@ -282,7 +282,7 @@ export function isValidFullGeminiThoughtSignature(signature: unknown): boolean {
 
 export function resolveGeminiThoughtSignature(
   toolCallId: unknown,
-  clientSignature?: unknown
+  clientSignature?: unknown,
 ): string | null {
   const persisted = getGeminiThoughtSignature(toolCallId);
   if (typeof clientSignature !== "string" || clientSignature.length === 0) {
@@ -303,7 +303,7 @@ export function resolveGeminiThoughtSignature(
   }
 
   console.warn(
-    `[signature-cache] ${signatureCacheMode}: invalid client thought signature, falling back`
+    `[signature-cache] ${signatureCacheMode}: invalid client thought signature, falling back`,
   );
   return persisted;
 }

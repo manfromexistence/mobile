@@ -11,7 +11,7 @@ function makeLine(
   customId: string,
   url: string = ENDPOINT,
   method: string = "POST",
-  body: unknown = { model: "gpt-4o", messages: [{ role: "user", content: "hi" }] }
+  body: unknown = { model: "gpt-4o", messages: [{ role: "user", content: "hi" }] },
 ) {
   return JSON.stringify({ custom_id: customId, method, url, body });
 }
@@ -183,9 +183,15 @@ test("validateJsonl: byteSize matches UTF-8 byte length of input", () => {
 // ── Errors cap ────────────────────────────────────────────────────────────────
 
 test("validateJsonl: errors capped at 50 even with many invalid lines", () => {
-  const lines = Array.from({ length: 100 }, (_, i) => `{"custom_id":"req-${i}","method":"GET","url":"${ENDPOINT}","body":{}}`);
+  const lines = Array.from(
+    { length: 100 },
+    (_, i) => `{"custom_id":"req-${i}","method":"GET","url":"${ENDPOINT}","body":{}}`,
+  );
   const result = validateJsonl(makeJsonl(lines), { endpoint: ENDPOINT });
-  assert.ok(result.errors.length <= 50, `errors should be capped at 50, got ${result.errors.length}`);
+  assert.ok(
+    result.errors.length <= 50,
+    `errors should be capped at 50, got ${result.errors.length}`,
+  );
 });
 
 // ── body must be object (not array) — Array.isArray guard ─────────────────────

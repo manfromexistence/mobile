@@ -61,6 +61,6 @@ test("every shipped locale has real (non-__MISSING__) providers visibility filte
   assert.equal(
     offenders.length,
     0,
-    `Untranslated provider visibility filter labels (#6694 regression):\n${offenders.join("\n")}`
+    `Untranslated provider visibility filter labels (#6694 regression):\n${offenders.join("\n")}`,
   );
 });

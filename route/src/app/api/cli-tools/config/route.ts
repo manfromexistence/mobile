@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     if (!parsed.success) {
       return NextResponse.json(
         { error: parsed.error.issues[0]?.message ?? "Invalid request" },
-        { status: 400 }
+        { status: 400 },
       );
     }
     const { toolId, baseUrl, apiKey, model } = parsed.data;

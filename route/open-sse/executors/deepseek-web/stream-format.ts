@@ -31,7 +31,7 @@ export interface DeepSeekSearchResult {
 
 export function appendSearchCitations(
   searchResults: DeepSeekSearchResult[],
-  model: string
+  model: string,
 ): string {
   if (searchResults.length === 0 || model.toLowerCase().includes("search-silent")) {
     return "";

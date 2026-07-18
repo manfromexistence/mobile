@@ -38,7 +38,7 @@ export const clampStickyWeightedTargetLimit = clampStickyRoundRobinTargetLimit;
 export function getStickyRoundRobinStartIndex(
   comboName: string,
   targets: ResolvedComboUnit[],
-  stickyLimit: number
+  stickyLimit: number,
 ): { startIndex: number; counter: number } {
   const sticky = rrStickyTargets.get(comboName);
   const stickyIndex = sticky
@@ -56,7 +56,7 @@ export function recordStickyRoundRobinSuccess(
   comboName: string,
   target: ResolvedComboUnit,
   stickyLimit: number,
-  targets: ResolvedComboUnit[]
+  targets: ResolvedComboUnit[],
 ): void {
   const sticky = rrStickyTargets.get(comboName);
   const successCount = sticky?.executionKey === target.executionKey ? sticky.successCount + 1 : 1;
@@ -64,7 +64,7 @@ export function recordStickyRoundRobinSuccess(
     const servedIndex = targets.findIndex((entry) => entry.executionKey === target.executionKey);
     rrCounters.set(
       comboName,
-      servedIndex >= 0 ? servedIndex + 1 : (rrCounters.get(comboName) || 0) + 1
+      servedIndex >= 0 ? servedIndex + 1 : (rrCounters.get(comboName) || 0) + 1,
     );
     rrStickyTargets.delete(comboName);
     return;
@@ -75,7 +75,7 @@ export function recordStickyRoundRobinSuccess(
 
 export function getStickyWeightedExecutionKey(
   comboName: string,
-  stickyLimit: number
+  stickyLimit: number,
 ): string | null {
   const sticky = weightedStickyTargets.get(comboName);
   if (!sticky || stickyLimit <= 1 || sticky.successCount >= stickyLimit) return null;
@@ -85,7 +85,7 @@ export function getStickyWeightedExecutionKey(
 export function recordStickyWeightedSuccess(
   comboName: string,
   executionKey: string,
-  stickyLimit: number
+  stickyLimit: number,
 ): void {
   const sticky = weightedStickyTargets.get(comboName);
   const successCount = sticky?.executionKey === executionKey ? sticky.successCount + 1 : 1;
@@ -104,7 +104,7 @@ export function recordStickyWeightedSuccess(
  */
 export function resolveComboStickyRoundRobinLimit(
   perComboLimit: unknown,
-  settings: Record<string, unknown> | null | undefined
+  settings: Record<string, unknown> | null | undefined,
 ): number {
   if (perComboLimit !== undefined && perComboLimit !== null) {
     return clampStickyRoundRobinTargetLimit(perComboLimit);

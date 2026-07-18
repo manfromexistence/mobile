@@ -1,6 +1,6 @@
-import { Accordion as Kobalte } from "@kobalte/core/accordion"
-import { Show, splitProps, type Component, type ComponentProps, type ParentProps } from "solid-js"
-import "./accordion-v2.css"
+import { Accordion as Kobalte } from "@kobalte/core/accordion";
+import { Show, splitProps, type Component, type ComponentProps, type ParentProps } from "solid-js";
+import "./accordion-v2.css";
 
 const ChevronDown: Component = () => (
   <svg
@@ -14,43 +14,53 @@ const ChevronDown: Component = () => (
   >
     <path d="M4 5.5L7 8.5L10 5.5" stroke="currentColor" />
   </svg>
-)
+);
 
 export interface AccordionV2Props extends ComponentProps<typeof Kobalte> {}
 export interface AccordionV2ItemProps extends ComponentProps<typeof Kobalte.Item> {}
 export interface AccordionV2HeaderProps extends ComponentProps<typeof Kobalte.Header> {}
 export interface AccordionV2TriggerProps extends ComponentProps<typeof Kobalte.Trigger> {
-  hideChevron?: boolean
+  hideChevron?: boolean;
 }
 export interface AccordionV2ContentProps extends ComponentProps<typeof Kobalte.Content> {}
 
 function AccordionV2Root(props: ParentProps<AccordionV2Props>) {
-  const [s, r] = splitProps(props, ["class", "classList"])
-  return <Kobalte {...r} data-component="accordion-v2" classList={{ ...s.classList, [s.class ?? ""]: !!s.class }} />
+  const [s, r] = splitProps(props, ["class", "classList"]);
+  return (
+    <Kobalte
+      {...r}
+      data-component="accordion-v2"
+      classList={{ ...s.classList, [s.class ?? ""]: !!s.class }}
+    />
+  );
 }
 
 function AccordionV2Item(props: ParentProps<AccordionV2ItemProps>) {
-  const [s, r] = splitProps(props, ["class", "classList"])
+  const [s, r] = splitProps(props, ["class", "classList"]);
   return (
     <Kobalte.Item
       {...r}
       data-component="accordion-v2-item"
       classList={{ ...s.classList, [s.class ?? ""]: !!s.class }}
     />
-  )
+  );
 }
 
 function AccordionV2Header(props: ParentProps<AccordionV2HeaderProps>) {
-  const [s, r] = splitProps(props, ["class", "classList", "children"])
+  const [s, r] = splitProps(props, ["class", "classList", "children"]);
   return (
-    <Kobalte.Header {...r} data-slot="accordion-v2-header" classList={{ ...s.classList, [s.class ?? ""]: !!s.class }}>
+    <Kobalte.Header
+      {...r}
+      data-slot="accordion-v2-header"
+      classList={{ ...s.classList, [s.class ?? ""]: !!s.class }}
+    >
       {s.children}
     </Kobalte.Header>
-  )
+  );
 }
 
 function AccordionV2Trigger(props: ParentProps<AccordionV2TriggerProps>) {
-  const [s, r] = splitProps(props, ["class", "classList", "children", "hideChevron"])
+  const [s, r] = splitProps(props, ["class", "classList", "children", "hideChevron"]);
   return (
     <Kobalte.Trigger
       {...r}
@@ -62,11 +72,11 @@ function AccordionV2Trigger(props: ParentProps<AccordionV2TriggerProps>) {
         <ChevronDown />
       </Show>
     </Kobalte.Trigger>
-  )
+  );
 }
 
 function AccordionV2Content(props: ParentProps<AccordionV2ContentProps>) {
-  const [s, r] = splitProps(props, ["class", "classList", "children"])
+  const [s, r] = splitProps(props, ["class", "classList", "children"]);
   return (
     <Kobalte.Content
       {...r}
@@ -75,7 +85,7 @@ function AccordionV2Content(props: ParentProps<AccordionV2ContentProps>) {
     >
       <div data-slot="accordion-v2-content-inner">{s.children}</div>
     </Kobalte.Content>
-  )
+  );
 }
 
 export const AccordionV2 = Object.assign(AccordionV2Root, {
@@ -83,4 +93,4 @@ export const AccordionV2 = Object.assign(AccordionV2Root, {
   Header: AccordionV2Header,
   Trigger: AccordionV2Trigger,
   Content: AccordionV2Content,
-})
+});

@@ -1,9 +1,9 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from "bun:test";
 
 import {
   type ControllerSnapshotSeenHolder,
   shouldBumpControllerRevision,
-} from '../src/render/controllerSnapshotSubscription';
+} from "../src/render/controllerSnapshotSubscription";
 
 // FileTreeView's controller-subscription effect re-subscribes whenever its
 // layout/viewport deps change. Each emit runs the imperative viewport `update()`
@@ -15,8 +15,8 @@ import {
 //
 // These tests pin the contract that the flag must persist across re-subscribes:
 // only the very first emit observed by a given holder is suppressed.
-describe('shouldBumpControllerRevision', () => {
-  test('suppresses only the genuine initial snapshot, then bumps every later emit', () => {
+describe("shouldBumpControllerRevision", () => {
+  test("suppresses only the genuine initial snapshot, then bumps every later emit", () => {
     const seen: ControllerSnapshotSeenHolder = { current: false };
 
     // Initial snapshot: no bump (first render already reflects the controller).
@@ -26,7 +26,7 @@ describe('shouldBumpControllerRevision', () => {
     expect(shouldBumpControllerRevision(seen)).toBe(true);
   });
 
-  test('first emit after a re-subscribe still bumps when the holder persists', () => {
+  test("first emit after a re-subscribe still bumps when the holder persists", () => {
     // A single persistent holder models the component-instance `useRef` that
     // survives across effect re-runs (re-subscribes).
     const seen: ControllerSnapshotSeenHolder = { current: false };
@@ -45,7 +45,7 @@ describe('shouldBumpControllerRevision', () => {
     expect(shouldBumpControllerRevision(seen)).toBe(true);
   });
 
-  test('regression guard: a fresh holder per re-subscribe reproduces the swallowed first emit', () => {
+  test("regression guard: a fresh holder per re-subscribe reproduces the swallowed first emit", () => {
     // Documents exactly why the effect-local `let` was wrong: a new holder on
     // each re-subscribe makes every first-emit-after-re-subscribe look like the
     // initial snapshot and get swallowed. The fix is to share one holder across

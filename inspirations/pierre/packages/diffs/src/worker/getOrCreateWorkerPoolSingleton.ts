@@ -1,8 +1,5 @@
-import type {
-  WorkerInitializationRenderOptions,
-  WorkerPoolOptions,
-} from './types';
-import { WorkerPoolManager } from './WorkerPoolManager';
+import type { WorkerInitializationRenderOptions, WorkerPoolOptions } from "./types";
+import { WorkerPoolManager } from "./WorkerPoolManager";
 
 let workerPoolSingleton: WorkerPoolManager | undefined;
 
@@ -15,10 +12,7 @@ export function getOrCreateWorkerPoolSingleton({
   poolOptions,
   highlighterOptions,
 }: SetupWorkerPoolProps): WorkerPoolManager {
-  workerPoolSingleton ??= new WorkerPoolManager(
-    poolOptions,
-    highlighterOptions
-  );
+  workerPoolSingleton ??= new WorkerPoolManager(poolOptions, highlighterOptions);
   return workerPoolSingleton;
 }
 

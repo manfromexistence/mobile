@@ -22,7 +22,7 @@ const ALIAS_TO_PROVIDER_ID: Record<string, string> = {};
 for (const [id, alias] of Object.entries(PROVIDER_ID_TO_ALIAS)) {
   if (ALIAS_TO_PROVIDER_ID[alias]) {
     console.log(
-      `[MODEL] Warning: alias "${alias}" maps to both "${ALIAS_TO_PROVIDER_ID[alias]}" and "${id}". Using "${id}".`
+      `[MODEL] Warning: alias "${alias}" maps to both "${ALIAS_TO_PROVIDER_ID[alias]}" and "${id}". Using "${id}".`,
     );
   }
   ALIAS_TO_PROVIDER_ID[alias] = id;
@@ -103,7 +103,7 @@ const CROSS_PROXY_MODEL_ALIASES_LOWER = Object.fromEntries(
   Object.entries(CROSS_PROXY_MODEL_ALIASES).map(([alias, canonical]) => [
     alias.toLowerCase(),
     canonical,
-  ])
+  ]),
 );
 
 // Reverse index: modelId -> providerIds that expose this model
@@ -187,7 +187,7 @@ export function resolveProviderAlias(aliasOrId: string | null | undefined): stri
 export function resolveBareModelToConnectionDefault(
   requestedModelStr: string | null | undefined,
   resolvedModel: string | null | undefined,
-  connectionDefaultModel: string | null | undefined
+  connectionDefaultModel: string | null | undefined,
 ): string | null {
   const fallback = typeof resolvedModel === "string" ? resolvedModel : null;
   if (typeof requestedModelStr !== "string" || requestedModelStr.includes("/")) {
@@ -233,7 +233,7 @@ export function normalizeCrossProxyModelId(modelId: unknown): {
  */
 function resolveProviderModelAlias(
   providerOrAlias: string | null | undefined,
-  modelId: string | null | undefined
+  modelId: string | null | undefined,
 ) {
   if (!modelId || typeof modelId !== "string") return modelId;
   const providerId = resolveProviderAlias(providerOrAlias);
@@ -344,7 +344,7 @@ async function getPreferClaudeCodeForUnprefixedClaudeModels() {
 function shouldPreferClaudeCodeForUnprefixedClaudeModel(
   modelId: string,
   activeProviders: Set<string> | null,
-  preferClaudeCode: boolean
+  preferClaudeCode: boolean,
 ) {
   if (!preferClaudeCode || !/^claude-/i.test(modelId)) {
     return false;
@@ -373,7 +373,7 @@ function shouldTreatAsExactModelId(modelStr: string | null) {
  */
 export function resolveCanonicalProviderModel(
   providerOrAlias: string | null | undefined,
-  modelId: string | null | undefined
+  modelId: string | null | undefined,
 ) {
   if (!modelId || typeof modelId !== "string") {
     return {
@@ -468,7 +468,7 @@ export function resolveModelAliasFromMap(alias: string | null, aliases: ModelAli
 
 function resolveModelAliasTarget(
   alias: string | null,
-  aliases: ModelAliasMap | null
+  aliases: ModelAliasMap | null,
 ): ResolvedModelTarget | null {
   if (!alias || !aliases) return null;
 
@@ -486,7 +486,7 @@ function resolveModelAliasTarget(
     typeof resolved.model === "string"
   ) {
     const normalizedPair = normalizeCrossProxyModelId(
-      `${resolved.provider}/${resolved.model}`
+      `${resolved.provider}/${resolved.model}`,
     ).modelId;
     if (normalizedPair && normalizedPair !== `${resolved.provider}/${resolved.model}`) {
       return parseAliasTarget(normalizedPair);
@@ -590,7 +590,7 @@ async function resolveModelByProviderInference(modelId: string, extendedContext:
     shouldPreferClaudeCodeForUnprefixedClaudeModel(
       modelId,
       activeProviders,
-      preferClaudeCodeForUnprefixedClaudeModels
+      preferClaudeCodeForUnprefixedClaudeModels,
     )
   ) {
     return {
@@ -629,7 +629,7 @@ async function resolveModelByProviderInference(modelId: string, extendedContext:
       shouldPreferClaudeCodeForUnprefixedClaudeModel(
         modelId,
         activeProviders,
-        preferClaudeCodeForUnprefixedClaudeModels
+        preferClaudeCodeForUnprefixedClaudeModels,
       )
     ) {
       return { provider: "claude", model: modelId, extendedContext };
@@ -663,7 +663,7 @@ async function resolveModelByProviderInference(modelId: string, extendedContext:
  */
 export async function getModelInfoCore(
   modelStr: string,
-  aliasesOrGetter: ModelAliasMap | (() => Promise<ModelAliasMap>) | null
+  aliasesOrGetter: ModelAliasMap | (() => Promise<ModelAliasMap>) | null,
 ) {
   const parsed = parseModel(modelStr);
   const { extendedContext } = parsed;

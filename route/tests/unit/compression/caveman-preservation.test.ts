@@ -38,7 +38,7 @@ describe("preservation", () => {
     const { blocks } = extractPreservedBlocks(text);
     assert.ok(
       blocks.some((b) => b.content.includes("TypeError")),
-      "Error should be preserved"
+      "Error should be preserved",
     );
   });
 

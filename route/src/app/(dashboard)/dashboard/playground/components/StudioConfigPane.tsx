@@ -18,10 +18,7 @@ import {
 } from "@/shared/constants/providers";
 import { filterModelsByQuery, pickDefaultModel, resolveModelFilterKey } from "./modelSelection";
 import ReasoningControls from "./ReasoningControls";
-import {
-  resolveReasoningControls,
-  type ReasoningControlSpec,
-} from "./reasoningControlUtils";
+import { resolveReasoningControls, type ReasoningControlSpec } from "./reasoningControlUtils";
 
 export interface ConfigState {
   endpoint: PlaygroundEndpoint;
@@ -79,7 +76,7 @@ export default function StudioConfigPane({ configState, setConfigState }: Studio
   // emit models under their node prefix (e.g. "myprefix/gpt-4o"), not under the connection id,
   // so use the option's modelPrefix when present; fall back to the id for built-in providers.
   const selectedProviderOption = providerOptions.find(
-    (opt: { value: string; modelPrefix?: string }) => opt.value === provider
+    (opt: { value: string; modelPrefix?: string }) => opt.value === provider,
   );
   // #3731: a custom OpenAI/Anthropic-compatible connection emits catalog models under a
   // node prefix, NOT under its connection id. When the prefix doesn't resolve, filtering
@@ -91,10 +88,13 @@ export default function StudioConfigPane({ configState, setConfigState }: Studio
   const modelFilterKey = resolveModelFilterKey(
     provider,
     selectedProviderOption?.modelPrefix,
-    isCompatibleConnectionId
+    isCompatibleConnectionId,
   );
-  const { availableModels, modelCapabilities, loading: loadingModels } =
-    useAvailableModels(modelFilterKey);
+  const {
+    availableModels,
+    modelCapabilities,
+    loading: loadingModels,
+  } = useAvailableModels(modelFilterKey);
 
   // #4086: filter the dropdown by the search query, but always keep the currently selected
   // model in the list even when it doesn't match — otherwise typing a query would silently

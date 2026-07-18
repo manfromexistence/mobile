@@ -19,9 +19,9 @@ process.env.DATA_DIR = TEST_DATA_DIR;
 const MIGRATION_SQL = fs.readFileSync(
   path.resolve(
     import.meta.dirname ?? __dirname,
-    "../../src/lib/db/migrations/097_model_intelligence.sql"
+    "../../src/lib/db/migrations/097_model_intelligence.sql",
   ),
-  "utf8"
+  "utf8",
 );
 
 import { tryOpenSync } from "../../src/lib/db/adapters/driverFactory";
@@ -38,8 +38,9 @@ const {
   initArenaEloSync,
   stopArenaEloSync,
 } = await import("../../src/lib/arenaEloSync.ts");
-const { setFeatureFlagOverride, removeFeatureFlagOverride } =
-  await import("../../src/lib/db/featureFlags.ts");
+const { setFeatureFlagOverride, removeFeatureFlagOverride } = await import(
+  "../../src/lib/db/featureFlags.ts"
+);
 
 import type {
   ArenaLeaderboardData,
@@ -79,7 +80,7 @@ function makeModelEntry(overrides: Partial<ArenaModelEntry> = {}): ArenaModelEnt
 
 function makeLeaderboardData(
   models: ArenaModelEntry[] = [],
-  category = "text"
+  category = "text",
 ): ArenaLeaderboardData {
   return {
     meta: { leaderboard: category, model_count: models.length },
@@ -88,7 +89,7 @@ function makeLeaderboardData(
 }
 
 function makeLeaderboardMap(
-  categories: Partial<Record<string, ArenaModelEntry[]>>
+  categories: Partial<Record<string, ArenaModelEntry[]>>,
 ): ArenaLeaderboardMap {
   const map: ArenaLeaderboardMap = {};
   for (const [cat, models] of Object.entries(categories)) {
@@ -102,7 +103,7 @@ let testAdapter: SqliteAdapter;
 function createTestAdapter(): SqliteAdapter {
   const patchedSql = MIGRATION_SQL.replace(
     /\n\s*synced_at TEXT NOT NULL DEFAULT \(datetime\('now'\)\)/,
-    "\n  synced_at TEXT NOT NULL"
+    "\n  synced_at TEXT NOT NULL",
   );
   const adapter = tryOpenSync(":memory:")!;
   adapter.exec(`
@@ -153,7 +154,7 @@ describe("normalizeModelName()", () => {
   it("strips 'anthropic/' vendor prefix", () => {
     assert.strictEqual(
       normalizeModelName("anthropic/claude-opus-4-6-thinking"),
-      "claude-opus-4-6-thinking"
+      "claude-opus-4-6-thinking",
     );
   });
 
@@ -417,11 +418,11 @@ describe("fetchArenaLeaderboards()", () => {
   it("successful fetch with valid JSON returns both leaderboards", async () => {
     const textData = makeLeaderboardData(
       [makeModelEntry({ model: "text-model", score: 1200, votes: 5000, rank: 1 })],
-      "text"
+      "text",
     );
     const codeData = makeLeaderboardData(
       [makeModelEntry({ model: "code-model", score: 1300, votes: 5000, rank: 1 })],
-      "code"
+      "code",
     );
 
     mockFetch(async (url: string) => {
@@ -449,7 +450,7 @@ describe("fetchArenaLeaderboards()", () => {
         assert.ok(err instanceof Error);
         assert.ok(err.message.includes("All Arena leaderboard fetches failed"));
         return true;
-      }
+      },
     );
   });
 
@@ -464,14 +465,14 @@ describe("fetchArenaLeaderboards()", () => {
         assert.ok(err instanceof Error);
         assert.ok(err.message.includes("All Arena leaderboard fetches failed"));
         return true;
-      }
+      },
     );
   });
 
   it("succeeds when one category fails but another succeeds", async () => {
     const textData = makeLeaderboardData(
       [makeModelEntry({ model: "text-model", score: 1200, votes: 5000, rank: 1 })],
-      "text"
+      "text",
     );
 
     mockFetch(async (url: string) => {
@@ -499,7 +500,7 @@ describe("fetchArenaLeaderboards()", () => {
         assert.ok(err instanceof Error);
         assert.ok(err.message.includes("All Arena leaderboard fetches failed"));
         return true;
-      }
+      },
     );
   });
 });
@@ -512,11 +513,11 @@ describe("syncArenaElo()", () => {
   it("happy path: returns success=true with correct modelCount", async () => {
     const textData = makeLeaderboardData(
       [makeModelEntry({ model: "gpt-5.5", score: 1200, votes: 5000, rank: 1 })],
-      "text"
+      "text",
     );
     const codeData = makeLeaderboardData(
       [makeModelEntry({ model: "deepseek-r1", score: 1300, votes: 5000, rank: 1 })],
-      "code"
+      "code",
     );
 
     mockFetch(async (url: string) => {
@@ -539,7 +540,7 @@ describe("syncArenaElo()", () => {
   it("happy path: entries in DB have correct source and categories", async () => {
     const textData = makeLeaderboardData(
       [makeModelEntry({ model: "unique-test-model", score: 1200, votes: 5000, rank: 1 })],
-      "text"
+      "text",
     );
 
     mockFetch(async (url: string) => {
@@ -562,7 +563,7 @@ describe("syncArenaElo()", () => {
   it("dryRun=true → does not call bulkUpsertModelIntelligence", async () => {
     const textData = makeLeaderboardData(
       [makeModelEntry({ model: "test-model", score: 1200, votes: 5000, rank: 1 })],
-      "text"
+      "text",
     );
 
     mockFetch(async (url: string) => {
@@ -589,7 +590,7 @@ describe("syncArenaElo()", () => {
 
     const textData = makeLeaderboardData(
       [makeModelEntry({ model: "test-model", score: 1200, votes: 5000, rank: 1 })],
-      "text"
+      "text",
     );
 
     mockFetch(async (url: string) => {
@@ -618,14 +619,14 @@ describe("syncArenaElo()", () => {
     assert.ok(result.error);
     assert.ok(
       result.error!.includes("All Arena leaderboard fetches failed"),
-      `unexpected: ${result.error}`
+      `unexpected: ${result.error}`,
     );
   });
 
   it("calls deleteExpiredIntelligence before writing new entries", async () => {
     testAdapter
       .prepare(
-        "INSERT INTO model_intelligence (model, source, category, score, elo_raw, confidence, synced_at, expires_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+        "INSERT INTO model_intelligence (model, source, category, score, elo_raw, confidence, synced_at, expires_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
       )
       .run(
         "old-model",
@@ -635,14 +636,14 @@ describe("syncArenaElo()", () => {
         1000,
         "low",
         "2025-01-01T00:00:00Z",
-        "2020-01-01T00:00:00Z"
+        "2020-01-01T00:00:00Z",
       );
 
     assert.strictEqual(countArenaEloEntries(), 1);
 
     const textData = makeLeaderboardData(
       [makeModelEntry({ model: "new-model", score: 1200, votes: 5000, rank: 1 })],
-      "text"
+      "text",
     );
 
     mockFetch(async (url: string) => {
@@ -677,7 +678,7 @@ describe("syncArenaElo()", () => {
   it("updates lastSyncTime after successful sync", async () => {
     const textData = makeLeaderboardData(
       [makeModelEntry({ model: "test-model", score: 1200, votes: 5000, rank: 1 })],
-      "text"
+      "text",
     );
 
     mockFetch(async (url: string) => {
@@ -703,7 +704,7 @@ describe("syncArenaElo()", () => {
           rank: 1,
         }),
       ],
-      "text"
+      "text",
     );
 
     mockFetch(async (url: string) => {

@@ -1,39 +1,36 @@
-import { Geist } from 'next/font/google';
-import localFont from 'next/font/local';
-import type { ReactNode } from 'react';
+import { Geist } from "next/font/google";
+import localFont from "next/font/local";
+import type { ReactNode } from "react";
 
-import { PreloadHighlighter } from '@/components/PreloadHighlighter';
-import { ScrollbarGutterVariables } from '@/components/ScrollbarGutterVariables';
-import { ThemeProvider } from '@/components/ThemeProvider';
-import { Toaster } from '@/components/Toaster';
-import { WorkerPoolContext } from '@/components/WorkerPoolContext';
+import { PreloadHighlighter } from "@/components/PreloadHighlighter";
+import { ScrollbarGutterVariables } from "@/components/ScrollbarGutterVariables";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { Toaster } from "@/components/Toaster";
+import { WorkerPoolContext } from "@/components/WorkerPoolContext";
 
 const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
 });
 
 const berkeleyMono = localFont({
-  src: '../public/fonts/BerkeleyMonoVariable.woff2',
-  variable: '--font-berkeley-mono',
+  src: "../public/fonts/BerkeleyMonoVariable.woff2",
+  variable: "--font-berkeley-mono",
 });
 
 const themeBootstrapScript = `(${String(function applyInitialTheme() {
   try {
-    const storedTheme = window.localStorage.getItem('theme');
-    const theme =
-      storedTheme === 'light' || storedTheme === 'dark'
-        ? storedTheme
-        : 'system';
+    const storedTheme = window.localStorage.getItem("theme");
+    const theme = storedTheme === "light" || storedTheme === "dark" ? storedTheme : "system";
     const resolvedTheme =
-      theme === 'system'
-        ? window.matchMedia('(prefers-color-scheme: dark)').matches
-          ? 'dark'
-          : 'light'
+      theme === "system"
+        ? window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light"
         : theme;
     const root = document.documentElement;
 
-    root.classList.remove('light', 'dark');
+    root.classList.remove("light", "dark");
     root.classList.add(resolvedTheme);
     root.style.colorScheme = resolvedTheme;
 
@@ -44,14 +41,11 @@ const themeBootstrapScript = `(${String(function applyInitialTheme() {
     // script can't import it); keep them in sync.
     let themeColorMeta = document.querySelector('meta[name="theme-color"]');
     if (themeColorMeta == null) {
-      themeColorMeta = document.createElement('meta');
-      themeColorMeta.setAttribute('name', 'theme-color');
+      themeColorMeta = document.createElement("meta");
+      themeColorMeta.setAttribute("name", "theme-color");
       document.head.appendChild(themeColorMeta);
     }
-    themeColorMeta.setAttribute(
-      'content',
-      resolvedTheme === 'dark' ? '#0a0a0a' : '#ffffff'
-    );
+    themeColorMeta.setAttribute("content", resolvedTheme === "dark" ? "#0a0a0a" : "#ffffff");
   } catch {
     // Ignore storage/media failures and let CSS defaults apply.
   }
@@ -84,16 +78,8 @@ export function RootLayout({
           <ThemeProvider attribute="class">
             {children}
             <Toaster />
-            <div
-              id="dark-mode-portal-container"
-              className="dark"
-              data-theme="dark"
-            ></div>
-            <div
-              id="light-mode-portal-container"
-              className="light"
-              data-theme="light"
-            ></div>
+            <div id="dark-mode-portal-container" className="dark" data-theme="dark"></div>
+            <div id="light-mode-portal-container" className="light" data-theme="light"></div>
           </ThemeProvider>
         </WorkerPoolContext>
         <PreloadHighlighter />

@@ -1,15 +1,15 @@
-import { ProviderAuth } from "@/provider/auth"
-import { Provider } from "@/provider/provider"
+import { ProviderAuth } from "@/provider/auth";
+import { Provider } from "@/provider/provider";
 
-import { Schema } from "effect"
-import { HttpApi, HttpApiEndpoint, HttpApiGroup, OpenApi } from "effect/unstable/httpapi"
-import { Authorization } from "../middleware/authorization"
-import { InstanceContextMiddleware } from "../middleware/instance-context"
-import { WorkspaceRoutingMiddleware, WorkspaceRoutingQuery } from "../middleware/workspace-routing"
-import { described } from "./metadata"
-import { ProviderV2 } from "@opencode-ai/core/provider"
+import { Schema } from "effect";
+import { HttpApi, HttpApiEndpoint, HttpApiGroup, OpenApi } from "effect/unstable/httpapi";
+import { Authorization } from "../middleware/authorization";
+import { InstanceContextMiddleware } from "../middleware/instance-context";
+import { WorkspaceRoutingMiddleware, WorkspaceRoutingQuery } from "../middleware/workspace-routing";
+import { described } from "./metadata";
+import { ProviderV2 } from "@opencode-ai/core/provider";
 
-const root = "/provider"
+const root = "/provider";
 
 const ProviderAuthErrorName = Schema.Union([
   Schema.Literal("BadRequest"),
@@ -17,8 +17,10 @@ const ProviderAuthErrorName = Schema.Union([
   Schema.Literal("ProviderAuthOauthCodeMissing"),
   Schema.Literal("ProviderAuthOauthCallbackFailed"),
   Schema.Literal("ProviderAuthValidationFailed"),
-])
-export class ProviderAuthApiError extends Schema.ErrorClass<ProviderAuthApiError>("ProviderAuthError")(
+]);
+export class ProviderAuthApiError extends Schema.ErrorClass<ProviderAuthApiError>(
+  "ProviderAuthError",
+)(
   {
     name: ProviderAuthErrorName,
     data: Schema.Struct({
@@ -42,7 +44,8 @@ export const ProviderApi = HttpApi.make("provider")
           OpenApi.annotations({
             identifier: "provider.list",
             summary: "List providers",
-            description: "Get a list of all available AI providers, including both available and connected ones.",
+            description:
+              "Get a list of all available AI providers, including both available and connected ones.",
           }),
         ),
         HttpApiEndpoint.get("auth", `${root}/auth`, {
@@ -59,7 +62,10 @@ export const ProviderApi = HttpApi.make("provider")
           params: { providerID: ProviderV2.ID },
           query: WorkspaceRoutingQuery,
           payload: ProviderAuth.AuthorizeInput,
-          success: described(Schema.UndefinedOr(ProviderAuth.Authorization), "Authorization URL and method"),
+          success: described(
+            Schema.UndefinedOr(ProviderAuth.Authorization),
+            "Authorization URL and method",
+          ),
           error: ProviderAuthApiError,
         }).annotateMerge(
           OpenApi.annotations({
@@ -98,4 +104,4 @@ export const ProviderApi = HttpApi.make("provider")
       version: "0.0.1",
       description: "Experimental HttpApi surface for selected instance routes.",
     }),
-  )
+  );

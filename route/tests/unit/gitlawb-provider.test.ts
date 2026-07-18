@@ -38,7 +38,7 @@ describe("Gitlawb Opengateway providers", () => {
       const entry = REGISTRY["gitlawb"];
       assert.ok(
         entry.models.length >= 5,
-        `should have at least 5 models, got ${entry.models.length}`
+        `should have at least 5 models, got ${entry.models.length}`,
       );
       const pro = entry.models.find((m: any) => m.id === "mimo-v2.5-pro");
       assert.ok(pro, "mimo-v2.5-pro should be listed");
@@ -75,15 +75,15 @@ describe("Gitlawb Opengateway providers", () => {
       assert.ok(modelIds.includes("openai/gpt-5.5"), "should have GPT-5.5");
       assert.ok(
         modelIds.some((id: string) => id.startsWith("anthropic/claude")),
-        "should have Claude models"
+        "should have Claude models",
       );
       assert.ok(
         modelIds.some((id: string) => id.startsWith("deepseek-ai/")),
-        "should have DeepSeek models"
+        "should have DeepSeek models",
       );
       assert.ok(
         modelIds.some((id: string) => id.startsWith("google/gemini")),
-        "should have Gemini models"
+        "should have Gemini models",
       );
     });
 

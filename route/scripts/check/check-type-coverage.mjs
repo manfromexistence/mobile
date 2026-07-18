@@ -33,7 +33,7 @@ const UPDATE = process.argv.includes("--update");
 const BASELINE_PATH = path.resolve(
   process.argv.includes("--baseline")
     ? process.argv[process.argv.indexOf("--baseline") + 1]
-    : path.join(ROOT, "config/quality/quality-baseline.json")
+    : path.join(ROOT, "config/quality/quality-baseline.json"),
 );
 
 // Small epsilon to absorb float noise between runs (type-coverage can vary ~0.01%).
@@ -56,7 +56,7 @@ export function parseTypeCoverageOutput(jsonText) {
 
   if (typeof parsed.percent !== "number") {
     throw new Error(
-      `[type-coverage] Unexpected output shape — missing numeric 'percent' field. Got: ${JSON.stringify(parsed)}`
+      `[type-coverage] Unexpected output shape — missing numeric 'percent' field. Got: ${JSON.stringify(parsed)}`,
     );
   }
 
@@ -117,7 +117,7 @@ function main() {
   const baselineMetric = baselineJson.metrics && baselineJson.metrics.typeCoveragePct;
   if (!baselineMetric || typeof baselineMetric.value !== "number") {
     process.stderr.write(
-      "[type-coverage] FAIL — metrics.typeCoveragePct ausente em quality-baseline.json.\n"
+      "[type-coverage] FAIL — metrics.typeCoveragePct ausente em quality-baseline.json.\n",
     );
     process.exit(2);
   }
@@ -150,13 +150,13 @@ function main() {
     process.stderr.write(
       `[type-coverage] REGRESSÃO — ${pct}% < baseline ${baselineValue}% (eps=${eps})\n` +
         `  → Adicione anotações de tipo ou rode\n` +
-        `    'node scripts/check/check-type-coverage.mjs --update' se a % subiu legitimamente.\n`
+        `    'node scripts/check/check-type-coverage.mjs --update' se a % subiu legitimamente.\n`,
     );
     process.exit(1);
   }
 
   console.log(
-    `[type-coverage] OK — ${pct}% symbols typed (baseline ${baselineValue}%, eps=${eps})`
+    `[type-coverage] OK — ${pct}% symbols typed (baseline ${baselineValue}%, eps=${eps})`,
   );
   process.exit(0);
 }

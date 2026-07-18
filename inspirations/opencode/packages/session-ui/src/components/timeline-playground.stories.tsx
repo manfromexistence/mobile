@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { createSignal, createMemo, createEffect, on, For, Show, batch } from "solid-js"
-import { createStore, produce } from "solid-js/store"
+import { createSignal, createMemo, createEffect, on, For, Show, batch } from "solid-js";
+import { createStore, produce } from "solid-js/store";
 import type {
   Message,
   UserMessage,
@@ -11,16 +11,16 @@ import type {
   ToolPart,
   FilePart,
   AgentPart,
-} from "@opencode-ai/sdk/v2"
-import { DataProvider } from "../context/data"
-import { FileComponentProvider } from "@opencode-ai/ui/context/file"
-import { SessionTurn } from "./session-turn"
+} from "@opencode-ai/sdk/v2";
+import { DataProvider } from "../context/data";
+import { FileComponentProvider } from "@opencode-ai/ui/context/file";
+import { SessionTurn } from "./session-turn";
 
 // ---------------------------------------------------------------------------
 // ID helpers
 // ---------------------------------------------------------------------------
-let seq = 0
-const uid = () => `pg-${++seq}-${Date.now().toString(36)}`
+let seq = 0;
+const uid = () => `pg-${++seq}-${Date.now().toString(36)}`;
 
 // ---------------------------------------------------------------------------
 // Lorem ipsum content
@@ -31,7 +31,7 @@ const LOREM = [
   "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
   "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
   "Cras justo odio, dapibus ut facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper.",
-]
+];
 
 // ---------------------------------------------------------------------------
 // User message variants
@@ -63,7 +63,7 @@ Please also add appropriate CSS containment hints and make sure we don't break t
     label: "with @file",
     text: "Update @src/components/session-turn.tsx to fix the spacing issue between parts",
     parts: (() => {
-      const id = `static-file-${Date.now()}`
+      const id = `static-file-${Date.now()}`;
       return [
         {
           id,
@@ -81,7 +81,7 @@ Please also add appropriate CSS containment hints and make sure we don't break t
             },
           },
         } as FilePart,
-      ]
+      ];
     })(),
   },
   "with @agent": {
@@ -95,7 +95,7 @@ Please also add appropriate CSS containment hints and make sure we don't break t
           name: "explore",
           source: { start: 4, end: 12 },
         } as AgentPart,
-      ]
+      ];
     })(),
   },
   "with image": {
@@ -104,7 +104,7 @@ Please also add appropriate CSS containment hints and make sure we don't break t
     parts: (() => {
       // 1x1 blue pixel PNG as data URI for a realistic attachment
       const pixel =
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
       return [
         {
           id: `static-img-${Date.now()}`,
@@ -113,7 +113,7 @@ Please also add appropriate CSS containment hints and make sure we don't break t
           filename: "screenshot.png",
           url: pixel,
         } as FilePart,
-      ]
+      ];
     })(),
   },
   "with file attachment": {
@@ -128,7 +128,7 @@ Please also add appropriate CSS containment hints and make sure we don't break t
           filename: "tsconfig.json",
           url: "data:application/json;base64,e30=",
         } as FilePart,
-      ]
+      ];
     })(),
   },
   "multi attachment": {
@@ -136,7 +136,7 @@ Please also add appropriate CSS containment hints and make sure we don't break t
     text: "Look at these files and the screenshot, then fix the layout",
     parts: (() => {
       const pixel =
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=="
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
       return [
         {
           id: `static-multi-img-${Date.now()}`,
@@ -164,10 +164,10 @@ Please also add appropriate CSS containment hints and make sure we don't break t
             text: { value: "@src/components/session-turn.tsx", start: 0, end: 0 },
           },
         } as FilePart,
-      ]
+      ];
     })(),
   },
-} satisfies Record<string, { label: string; text: string; parts: Part[] }>
+} satisfies Record<string, { label: string; text: string; parts: Part[] }>;
 
 const MARKDOWN_SAMPLES = {
   headings: `# Heading 1
@@ -263,7 +263,7 @@ Here's what the output looks like:
 ![Alt text](https://via.placeholder.com/400x200)
 
 And below is the final result.`,
-}
+};
 
 const REASONING_SAMPLES = [
   `**Analyzing the request**
@@ -290,13 +290,14 @@ I'll need to:
 4. Implement the export functionality
 
 This should be straightforward given the existing component architecture.`,
-]
+];
 
 const TOOL_SAMPLES = {
   read: {
     tool: "read",
     input: { filePath: "src/components/session-turn.tsx", offset: 1, limit: 50 },
-    output: "export function SessionTurn(props) {\n  // component implementation\n  return <div>...</div>\n}",
+    output:
+      "export function SessionTurn(props) {\n  // component implementation\n  return <div>...</div>\n}",
     title: "Read src/components/session-turn.tsx",
     metadata: {},
   },
@@ -354,7 +355,11 @@ const TOOL_SAMPLES = {
   },
   task: {
     tool: "task",
-    input: { description: "Explore components", subagent_type: "explore", prompt: "Find all session components" },
+    input: {
+      description: "Explore components",
+      subagent_type: "explore",
+      prompt: "Find all session components",
+    },
     output: "Found 12 session-related components across 3 directories.",
     title: "Agent (Explore)",
     metadata: { sessionId: "sub-session-1" },
@@ -418,37 +423,37 @@ const TOOL_SAMPLES = {
       ],
     },
   },
-}
+};
 
 // ---------------------------------------------------------------------------
 // Fake data generators
 // ---------------------------------------------------------------------------
-const SESSION_ID = "playground-session"
-const DEFAULT_SESSION = { id: SESSION_ID, title: "Timeline Playground" }
+const SESSION_ID = "playground-session";
+const DEFAULT_SESSION = { id: SESSION_ID, title: "Timeline Playground" };
 
 function record(value: unknown): value is Record<string, unknown> {
-  return !!value && typeof value === "object" && !Array.isArray(value)
+  return !!value && typeof value === "object" && !Array.isArray(value);
 }
 
 function normalize(raw: unknown) {
   if (Array.isArray(raw)) {
-    const info = raw.find((row) => record(row) && row.type === "session" && record(row.data))?.data
+    const info = raw.find((row) => record(row) && row.type === "session" && record(row.data))?.data;
     if (!record(info) || typeof info.id !== "string") {
-      throw new Error("No session found in JSON")
+      throw new Error("No session found in JSON");
     }
 
-    const part = new Map<string, Part[]>()
+    const part = new Map<string, Part[]>();
     const messages = raw.flatMap((row) => {
-      if (!record(row) || !record(row.data)) return []
+      if (!record(row) || !record(row.data)) return [];
       if (row.type === "part" && typeof row.data.messageID === "string") {
-        const list = part.get(row.data.messageID) ?? []
-        list.push(row.data as Part)
-        part.set(row.data.messageID, list)
-        return []
+        const list = part.get(row.data.messageID) ?? [];
+        list.push(row.data as Part);
+        part.set(row.data.messageID, list);
+        return [];
       }
-      if (row.type !== "message" || typeof row.data.id !== "string") return []
-      return [{ info: row.data as Message, parts: [] as Part[] }]
-    })
+      if (row.type !== "message" || typeof row.data.id !== "string") return [];
+      return [{ info: row.data as Message, parts: [] as Part[] }];
+    });
 
     return {
       info,
@@ -456,24 +461,35 @@ function normalize(raw: unknown) {
         info: msg.info,
         parts: part.get(msg.info.id) ?? [],
       })),
-    }
+    };
   }
 
-  if (!record(raw) || !record(raw.info) || typeof raw.info.id !== "string" || !Array.isArray(raw.messages)) {
-    throw new Error("Expected an `opencode export` JSON file")
+  if (
+    !record(raw) ||
+    !record(raw.info) ||
+    typeof raw.info.id !== "string" ||
+    !Array.isArray(raw.messages)
+  ) {
+    throw new Error("Expected an `opencode export` JSON file");
   }
 
   return {
     info: raw.info,
     messages: raw.messages.flatMap((row) => {
-      if (!record(row) || !record(row.info) || typeof row.info.id !== "string") return []
-      return [{ info: row.info as Message, parts: Array.isArray(row.parts) ? (row.parts as Part[]) : [] }]
+      if (!record(row) || !record(row.info) || typeof row.info.id !== "string") return [];
+      return [
+        { info: row.info as Message, parts: Array.isArray(row.parts) ? (row.parts as Part[]) : [] },
+      ];
     }),
-  }
+  };
 }
 
-function mkUser(text: string, extra: Part[] = [], sessionID = SESSION_ID): { message: UserMessage; parts: Part[] } {
-  const id = uid()
+function mkUser(
+  text: string,
+  extra: Part[] = [],
+  sessionID = SESSION_ID,
+): { message: UserMessage; parts: Part[] } {
+  const id = uid();
   return {
     message: {
       id,
@@ -488,7 +504,7 @@ function mkUser(text: string, extra: Part[] = [], sessionID = SESSION_ID): { mes
       // Clone extra parts with fresh ids so each user message owns unique part instances
       ...extra.map((p) => ({ ...p, id: uid() })),
     ],
-  }
+  };
 }
 
 function mkAssistant(parentID: string, sessionID = SESSION_ID): AssistantMessage {
@@ -505,24 +521,32 @@ function mkAssistant(parentID: string, sessionID = SESSION_ID): AssistantMessage
     path: { cwd: "/project", root: "/project" },
     cost: 0.003,
     tokens: { input: 1200, output: 800, reasoning: 200, cache: { read: 0, write: 0 } },
-  } as AssistantMessage
+  } as AssistantMessage;
 }
 
 function textPart(text: string): TextPart {
-  return { id: uid(), type: "text", text, time: { created: Date.now() } } as TextPart
+  return { id: uid(), type: "text", text, time: { created: Date.now() } } as TextPart;
 }
 
 function reasoningPart(text: string): ReasoningPart {
-  return { id: uid(), type: "reasoning", text, time: { start: Date.now(), end: Date.now() + 500 } } as ReasoningPart
+  return {
+    id: uid(),
+    type: "reasoning",
+    text,
+    time: { start: Date.now(), end: Date.now() + 500 },
+  } as ReasoningPart;
 }
 
-function toolPart(sample: (typeof TOOL_SAMPLES)[keyof typeof TOOL_SAMPLES], status = "completed"): ToolPart {
+function toolPart(
+  sample: (typeof TOOL_SAMPLES)[keyof typeof TOOL_SAMPLES],
+  status = "completed",
+): ToolPart {
   const base = {
     id: uid(),
     type: "tool" as const,
     callID: uid(),
     tool: sample.tool,
-  }
+  };
   if (status === "completed") {
     return {
       ...base,
@@ -534,7 +558,7 @@ function toolPart(sample: (typeof TOOL_SAMPLES)[keyof typeof TOOL_SAMPLES], stat
         metadata: sample.metadata ?? {},
         time: { start: Date.now(), end: Date.now() + 1000 },
       },
-    } as ToolPart
+    } as ToolPart;
   }
   if (status === "running") {
     return {
@@ -546,12 +570,12 @@ function toolPart(sample: (typeof TOOL_SAMPLES)[keyof typeof TOOL_SAMPLES], stat
         metadata: sample.metadata ?? {},
         time: { start: Date.now() },
       },
-    } as ToolPart
+    } as ToolPart;
   }
   return {
     ...base,
     state: { status: "pending", input: sample.input, raw: "" },
-  } as ToolPart
+  } as ToolPart;
 }
 
 // ---------------------------------------------------------------------------
@@ -559,11 +583,11 @@ function toolPart(sample: (typeof TOOL_SAMPLES)[keyof typeof TOOL_SAMPLES], stat
 // ---------------------------------------------------------------------------
 
 // Source file basenames inside the UI component packages.
-const MD = "markdown.css"
-const MP = "message-part.css"
-const ST = "session-turn.css"
-const CL = "collapsible.css"
-const BT = "basic-tool.css"
+const MD = "markdown.css";
+const MP = "message-part.css";
+const ST = "session-turn.css";
+const CL = "collapsible.css";
+const BT = "basic-tool.css";
 
 /**
  * Source mapping for a CSS control.
@@ -573,31 +597,31 @@ const BT = "basic-tool.css"
  * - `format`: turns the slider number into a CSS value string.
  */
 type CSSSource = {
-  file: string
-  anchor: string
-  prop: string
-  format: (v: string) => string
-}
+  file: string;
+  anchor: string;
+  prop: string;
+  format: (v: string) => string;
+};
 
 type CSSControl = {
-  key: string
-  label: string
-  group: string
-  type: "range" | "color" | "select"
-  initial: string
-  selector: string
-  property: string
-  min?: string
-  max?: string
-  step?: string
-  options?: string[]
-  unit?: string
-  source?: CSSSource
-}
+  key: string;
+  label: string;
+  group: string;
+  type: "range" | "color" | "select";
+  initial: string;
+  selector: string;
+  property: string;
+  min?: string;
+  max?: string;
+  step?: string;
+  options?: string[];
+  unit?: string;
+  source?: CSSSource;
+};
 
-const px = (v: string) => `${v}px`
-const pxZero = (v: string) => `${v}px 0`
-const pct = (v: string) => `${v}%`
+const px = (v: string) => `${v}px`;
+const pxZero = (v: string) => `${v}px 0`;
+const pct = (v: string) => `${v}%`;
 
 const CSS_CONTROLS: CSSControl[] = [
   // --- Timeline spacing ---
@@ -627,7 +651,12 @@ const CSS_CONTROLS: CSSControl[] = [
     max: "60",
     step: "1",
     unit: "px",
-    source: { file: ST, anchor: '[data-slot="session-turn-message-container"]', prop: "gap", format: px },
+    source: {
+      file: ST,
+      anchor: '[data-slot="session-turn-message-container"]',
+      prop: "gap",
+      format: px,
+    },
   },
   {
     key: "assistant-gap",
@@ -641,7 +670,12 @@ const CSS_CONTROLS: CSSControl[] = [
     max: "40",
     step: "1",
     unit: "px",
-    source: { file: ST, anchor: '[data-slot="session-turn-assistant-content"]', prop: "gap", format: px },
+    source: {
+      file: ST,
+      anchor: '[data-slot="session-turn-assistant-content"]',
+      prop: "gap",
+      format: px,
+    },
   },
   {
     key: "text-part-margin",
@@ -988,7 +1022,12 @@ const CSS_CONTROLS: CSSControl[] = [
     max: "22",
     step: "1",
     unit: "px",
-    source: { file: MP, anchor: '[data-component="reasoning-part"]', prop: "font-size", format: px },
+    source: {
+      file: MP,
+      anchor: '[data-component="reasoning-part"]',
+      prop: "font-size",
+      format: px,
+    },
   },
   {
     key: "reasoning-md-margin-top",
@@ -1002,7 +1041,12 @@ const CSS_CONTROLS: CSSControl[] = [
     max: "60",
     step: "1",
     unit: "px",
-    source: { file: MP, anchor: '[data-component="reasoning-part"]', prop: "margin-top", format: px },
+    source: {
+      file: MP,
+      anchor: '[data-component="reasoning-part"]',
+      prop: "margin-top",
+      format: px,
+    },
   },
 
   // --- User message ---
@@ -1032,7 +1076,12 @@ const CSS_CONTROLS: CSSControl[] = [
     max: "24",
     step: "1",
     unit: "px",
-    source: { file: MP, anchor: '[data-slot="user-message-text"]', prop: "border-radius", format: px },
+    source: {
+      file: MP,
+      anchor: '[data-slot="user-message-text"]',
+      prop: "border-radius",
+      format: px,
+    },
   },
 
   // --- Tool parts ---
@@ -1048,7 +1097,12 @@ const CSS_CONTROLS: CSSControl[] = [
     max: "22",
     step: "1",
     unit: "px",
-    source: { file: BT, anchor: '[data-slot="basic-tool-tool-subtitle"]', prop: "font-size", format: px },
+    source: {
+      file: BT,
+      anchor: '[data-slot="basic-tool-tool-subtitle"]',
+      prop: "font-size",
+      format: px,
+    },
   },
   {
     key: "exa-output-font-size",
@@ -1062,7 +1116,12 @@ const CSS_CONTROLS: CSSControl[] = [
     max: "22",
     step: "1",
     unit: "px",
-    source: { file: MP, anchor: '[data-component="exa-tool-output"]', prop: "font-size", format: px },
+    source: {
+      file: MP,
+      anchor: '[data-component="exa-tool-output"]',
+      prop: "font-size",
+      format: px,
+    },
   },
   {
     key: "tool-content-gap",
@@ -1090,7 +1149,12 @@ const CSS_CONTROLS: CSSControl[] = [
     max: "40",
     step: "1",
     unit: "px",
-    source: { file: MP, anchor: '[data-component="context-tool-group-list"]', prop: "gap", format: px },
+    source: {
+      file: MP,
+      anchor: '[data-component="context-tool-group-list"]',
+      prop: "gap",
+      format: px,
+    },
   },
   {
     key: "context-tool-indent",
@@ -1104,7 +1168,12 @@ const CSS_CONTROLS: CSSControl[] = [
     max: "48",
     step: "1",
     unit: "px",
-    source: { file: MP, anchor: '[data-component="context-tool-group-list"]', prop: "padding-left", format: px },
+    source: {
+      file: MP,
+      anchor: '[data-component="context-tool-group-list"]',
+      prop: "padding-left",
+      format: px,
+    },
   },
   {
     key: "bash-max-height",
@@ -1120,99 +1189,106 @@ const CSS_CONTROLS: CSSControl[] = [
     unit: "px",
     source: { file: MP, anchor: '[data-slot="bash-scroll"]', prop: "max-height", format: px },
   },
-]
+];
 
 // ---------------------------------------------------------------------------
 // Playground component
 // ---------------------------------------------------------------------------
 function FileStub() {
-  return <div style={{ padding: "8px", color: "var(--text-weak)", "font-size": "13px" }}>File viewer stub</div>
+  return (
+    <div style={{ padding: "8px", color: "var(--text-weak)", "font-size": "13px" }}>
+      File viewer stub
+    </div>
+  );
 }
 
 function Playground() {
   // ---- Messages & parts state ----
   const [state, setState] = createStore<{
-    messages: Message[]
-    parts: Record<string, Part[]>
+    messages: Message[];
+    parts: Record<string, Part[]>;
   }>({
     messages: [],
     parts: {},
-  })
-  const [session, setSession] = createSignal({ ...DEFAULT_SESSION })
-  const [loaded, setLoaded] = createSignal("")
-  const [issue, setIssue] = createSignal("")
+  });
+  const [session, setSession] = createSignal({ ...DEFAULT_SESSION });
+  const [loaded, setLoaded] = createSignal("");
+  const [issue, setIssue] = createSignal("");
 
   // ---- CSS overrides ----
-  const [css, setCss] = createStore<Record<string, string>>({})
-  const [defaults, setDefaults] = createStore<Record<string, string>>({})
-  let styleEl: HTMLStyleElement | undefined
-  let previewRef: HTMLDivElement | undefined
-  let pick: HTMLInputElement | undefined
+  const [css, setCss] = createStore<Record<string, string>>({});
+  const [defaults, setDefaults] = createStore<Record<string, string>>({});
+  let styleEl: HTMLStyleElement | undefined;
+  let previewRef: HTMLDivElement | undefined;
+  let pick: HTMLInputElement | undefined;
 
   const sample = (ctrl: CSSControl) => {
-    if (!ctrl.group.startsWith("Markdown")) return ctrl.selector
+    if (!ctrl.group.startsWith("Markdown")) return ctrl.selector;
     return ctrl.selector.replace(
       '[data-component="markdown"]',
       '[data-component="text-part"] [data-component="markdown"]',
-    )
-  }
+    );
+  };
 
   /** Read computed styles from the DOM to seed slider defaults */
   const readDefaults = () => {
-    const root = previewRef
-    if (!root) return
-    const next: Record<string, string> = {}
+    const root = previewRef;
+    if (!root) return;
+    const next: Record<string, string> = {};
     for (const ctrl of CSS_CONTROLS) {
-      const el = (root.querySelector(sample(ctrl)) ?? root.querySelector(ctrl.selector)) as HTMLElement | null
-      if (!el) continue
-      const styles = getComputedStyle(el)
+      const el = (root.querySelector(sample(ctrl)) ??
+        root.querySelector(ctrl.selector)) as HTMLElement | null;
+      if (!el) continue;
+      const styles = getComputedStyle(el);
       const raw = ctrl.property.startsWith("--")
         ? styles.getPropertyValue(ctrl.property).trim()
-        : ((styles as any)[ctrl.property] as string)
-      if (!raw) continue
+        : ((styles as any)[ctrl.property] as string);
+      if (!raw) continue;
       // Shorthands may return "24px 0px" — take the first value
-      const num = parseFloat(raw.split(" ")[0])
-      if (!Number.isFinite(num)) continue
+      const num = parseFloat(raw.split(" ")[0]);
+      if (!Number.isFinite(num)) continue;
       // line-height returns px — convert back to % relative to font-size
       if (ctrl.unit === "%") {
-        const fs = parseFloat(styles.fontSize)
+        const fs = parseFloat(styles.fontSize);
         if (fs > 0) {
-          next[ctrl.key] = String(Math.round((num / fs) * 100))
-          continue
+          next[ctrl.key] = String(Math.round((num / fs) * 100));
+          continue;
         }
       }
-      next[ctrl.key] = String(Math.round(num))
+      next[ctrl.key] = String(Math.round(num));
     }
-    setDefaults(next)
-  }
+    setDefaults(next);
+  };
 
   const updateStyle = () => {
-    const rules: string[] = []
+    const rules: string[] = [];
     for (const ctrl of CSS_CONTROLS) {
-      const val = css[ctrl.key]
-      if (val === undefined) continue
-      const value = ctrl.unit ? `${val}${ctrl.unit}` : val
-      rules.push(`${ctrl.selector} { ${ctrl.property}: ${value} !important; }`)
+      const val = css[ctrl.key];
+      if (val === undefined) continue;
+      const value = ctrl.unit ? `${val}${ctrl.unit}` : val;
+      rules.push(`${ctrl.selector} { ${ctrl.property}: ${value} !important; }`);
     }
-    if (styleEl) styleEl.textContent = rules.join("\n")
-  }
+    if (styleEl) styleEl.textContent = rules.join("\n");
+  };
 
   const setCssValue = (key: string, value: string) => {
-    setCss(key, value)
-    updateStyle()
-  }
+    setCss(key, value);
+    updateStyle();
+  };
 
   const resetCss = () => {
     batch(() => {
       for (const ctrl of CSS_CONTROLS) {
-        setCss(ctrl.key, undefined as any)
+        setCss(ctrl.key, undefined as any);
       }
-    })
-    if (styleEl) styleEl.textContent = ""
-  }
+    });
+    if (styleEl) styleEl.textContent = "";
+  };
 
   // ---- Derived ----
-  const userMessages = createMemo(() => state.messages.filter((m): m is UserMessage => m.role === "user"))
+  const userMessages = createMemo(() =>
+    state.messages.filter((m): m is UserMessage => m.role === "user"),
+  );
 
   const data = createMemo(() => ({
     session: [session()],
@@ -1222,104 +1298,107 @@ function Playground() {
     part: state.parts,
     provider: {
       all: new Map([
-        ["anthropic", { id: "anthropic", models: { "claude-sonnet-4-20250514": { name: "Claude Sonnet" } } }],
+        [
+          "anthropic",
+          { id: "anthropic", models: { "claude-sonnet-4-20250514": { name: "Claude Sonnet" } } },
+        ],
       ]),
       connected: ["anthropic"],
       default: {},
     },
-  }))
+  }));
 
   // Read computed defaults once DOM has turn elements to query
   createEffect(
     on(
       () => userMessages().length,
       (len) => {
-        if (len === 0) return
+        if (len === 0) return;
         // Wait a frame for the DOM to settle after render
-        requestAnimationFrame(readDefaults)
+        requestAnimationFrame(readDefaults);
       },
     ),
-  )
+  );
 
   // ---- Find or create the last assistant message to append parts to ----
   const lastAssistantID = createMemo(() => {
     for (let i = state.messages.length - 1; i >= 0; i--) {
-      if (state.messages[i].role === "assistant") return state.messages[i].id
+      if (state.messages[i].role === "assistant") return state.messages[i].id;
     }
-    return undefined
-  })
+    return undefined;
+  });
 
   /** Ensure a turn (user + assistant) exists and return the assistant message id */
   const ensureTurn = (): string => {
-    const id = lastAssistantID()
-    if (id) return id
+    const id = lastAssistantID();
+    if (id) return id;
     // Create a minimal placeholder turn
-    const user = mkUser("...", [], session().id)
-    const asst = mkAssistant(user.message.id, session().id)
+    const user = mkUser("...", [], session().id);
+    const asst = mkAssistant(user.message.id, session().id);
     setState(
       produce((draft) => {
-        draft.messages.push(user.message)
-        draft.messages.push(asst)
-        draft.parts[user.message.id] = user.parts
-        draft.parts[asst.id] = []
+        draft.messages.push(user.message);
+        draft.messages.push(asst);
+        draft.parts[user.message.id] = user.parts;
+        draft.parts[asst.id] = [];
       }),
-    )
-    return asst.id
-  }
+    );
+    return asst.id;
+  };
 
   /** Append parts to the last assistant message */
   const appendParts = (parts: Part[]) => {
-    const id = ensureTurn()
+    const id = ensureTurn();
     setState(
       produce((draft) => {
-        const existing = draft.parts[id] ?? []
-        draft.parts[id] = [...existing, ...parts]
+        const existing = draft.parts[id] ?? [];
+        draft.parts[id] = [...existing, ...parts];
       }),
-    )
-  }
+    );
+  };
 
   // ---- User message helpers ----
   const addUser = (variant: keyof typeof USER_VARIANTS) => {
-    const v = USER_VARIANTS[variant]
-    const user = mkUser(v.text, v.parts, session().id)
-    const asst = mkAssistant(user.message.id, session().id)
+    const v = USER_VARIANTS[variant];
+    const user = mkUser(v.text, v.parts, session().id);
+    const asst = mkAssistant(user.message.id, session().id);
     setState(
       produce((draft) => {
-        draft.messages.push(user.message)
-        draft.messages.push(asst)
-        draft.parts[user.message.id] = user.parts
-        draft.parts[asst.id] = []
+        draft.messages.push(user.message);
+        draft.messages.push(asst);
+        draft.parts[user.message.id] = user.parts;
+        draft.parts[asst.id] = [];
       }),
-    )
-  }
+    );
+  };
 
   // ---- Part helpers (append to last turn) ----
   const addText = (variant: keyof typeof MARKDOWN_SAMPLES) => {
-    appendParts([textPart(MARKDOWN_SAMPLES[variant])])
-  }
+    appendParts([textPart(MARKDOWN_SAMPLES[variant])]);
+  };
 
   const addReasoning = () => {
-    const idx = Math.floor(Math.random() * REASONING_SAMPLES.length)
-    appendParts([reasoningPart(REASONING_SAMPLES[idx])])
-  }
+    const idx = Math.floor(Math.random() * REASONING_SAMPLES.length);
+    appendParts([reasoningPart(REASONING_SAMPLES[idx])]);
+  };
 
   const addTool = (name: keyof typeof TOOL_SAMPLES) => {
-    appendParts([toolPart(TOOL_SAMPLES[name])])
-  }
+    appendParts([toolPart(TOOL_SAMPLES[name])]);
+  };
 
   // ---- Composite helpers (create full turns with user + assistant) ----
   const addFullTurn = (userText: string, parts: Part[]) => {
-    const user = mkUser(userText, [], session().id)
-    const asst = mkAssistant(user.message.id, session().id)
+    const user = mkUser(userText, [], session().id);
+    const asst = mkAssistant(user.message.id, session().id);
     setState(
       produce((draft) => {
-        draft.messages.push(user.message)
-        draft.messages.push(asst)
-        draft.parts[user.message.id] = user.parts
-        draft.parts[asst.id] = parts
+        draft.messages.push(user.message);
+        draft.messages.push(asst);
+        draft.parts[user.message.id] = user.parts;
+        draft.parts[asst.id] = parts;
       }),
-    )
-  }
+    );
+  };
 
   const addContextGroupTurn = () => {
     addFullTurn("Read some files", [
@@ -1327,8 +1406,8 @@ function Playground() {
       toolPart(TOOL_SAMPLES.glob),
       toolPart(TOOL_SAMPLES.grep),
       textPart("After gathering context, here's what I found:\n\n" + LOREM[2]),
-    ])
-  }
+    ]);
+  };
 
   const addReasoningFullTurn = () => {
     addFullTurn("Make the changes described above", [
@@ -1339,22 +1418,22 @@ function Playground() {
       toolPart(TOOL_SAMPLES.edit),
       toolPart(TOOL_SAMPLES.bash),
       textPart(MARKDOWN_SAMPLES.mixed),
-    ])
-  }
+    ]);
+  };
 
   const addKitchenSink = () => {
     // User message variants
-    addUser("short")
-    appendParts([textPart(MARKDOWN_SAMPLES.headings)])
-    addUser("medium")
-    appendParts([textPart(MARKDOWN_SAMPLES.lists)])
-    addUser("long")
-    appendParts([textPart(MARKDOWN_SAMPLES.code)])
-    addUser("with @file")
-    appendParts([textPart(MARKDOWN_SAMPLES.mixed)])
-    addUser("with image")
-    appendParts([reasoningPart(REASONING_SAMPLES[0]), textPart(MARKDOWN_SAMPLES.table)])
-    addUser("multi attachment")
+    addUser("short");
+    appendParts([textPart(MARKDOWN_SAMPLES.headings)]);
+    addUser("medium");
+    appendParts([textPart(MARKDOWN_SAMPLES.lists)]);
+    addUser("long");
+    appendParts([textPart(MARKDOWN_SAMPLES.code)]);
+    addUser("with @file");
+    appendParts([textPart(MARKDOWN_SAMPLES.mixed)]);
+    addUser("with image");
+    appendParts([reasoningPart(REASONING_SAMPLES[0]), textPart(MARKDOWN_SAMPLES.table)]);
+    addUser("multi attachment");
     appendParts([
       toolPart(TOOL_SAMPLES.read),
       toolPart(TOOL_SAMPLES.glob),
@@ -1362,48 +1441,49 @@ function Playground() {
       toolPart(TOOL_SAMPLES.edit),
       toolPart(TOOL_SAMPLES.bash),
       textPart(MARKDOWN_SAMPLES.blockquote),
-    ])
-    addContextGroupTurn()
-    addReasoningFullTurn()
-  }
+    ]);
+    addContextGroupTurn();
+    addReasoningFullTurn();
+  };
 
   const interrupt = () => {
-    const user = userMessages().at(-1)
-    if (!user) return
-    const now = Date.now()
+    const user = userMessages().at(-1);
+    if (!user) return;
+    const now = Date.now();
 
     setState(
       produce((draft) => {
         const msg = draft.messages.findLast(
-          (item): item is AssistantMessage => item.role === "assistant" && item.parentID === user.id,
-        )
+          (item): item is AssistantMessage =>
+            item.role === "assistant" && item.parentID === user.id,
+        );
 
         if (msg) {
-          const time = msg.time ?? { created: now }
-          msg.time = { ...time, completed: time.completed ?? now }
-          msg.error = { name: "MessageAbortedError", message: "Interrupted" }
-          return
+          const time = msg.time ?? { created: now };
+          msg.time = { ...time, completed: time.completed ?? now };
+          msg.error = { name: "MessageAbortedError", message: "Interrupted" };
+          return;
         }
 
-        const asst = mkAssistant(user.id, session().id)
-        asst.time = { created: now, completed: now }
-        asst.error = { name: "MessageAbortedError", message: "Interrupted" }
-        draft.messages.push(asst)
-        draft.parts[asst.id] = []
+        const asst = mkAssistant(user.id, session().id);
+        asst.time = { created: now, completed: now };
+        asst.error = { name: "MessageAbortedError", message: "Interrupted" };
+        draft.messages.push(asst);
+        draft.parts[asst.id] = [];
       }),
-    )
-  }
+    );
+  };
 
   const load = (raw: unknown, name: string) => {
-    const next = normalize(raw)
-    const id = typeof next.info.id === "string" && next.info.id ? next.info.id : SESSION_ID
+    const next = normalize(raw);
+    const id = typeof next.info.id === "string" && next.info.id ? next.info.id : SESSION_ID;
     const messages = next.messages.map((msg) => ({
       ...msg.info,
       sessionID: typeof msg.info.sessionID === "string" ? msg.info.sessionID : id,
-    }))
+    }));
     const parts = Object.fromEntries(
       next.messages.map((msg, idx) => {
-        const info = messages[idx]
+        const info = messages[idx];
         return [
           info.id,
           msg.parts.map((part) => ({
@@ -1411,9 +1491,9 @@ function Playground() {
             messageID: typeof part.messageID === "string" ? part.messageID : info.id,
             sessionID: typeof part.sessionID === "string" ? part.sessionID : info.sessionID,
           })),
-        ]
+        ];
       }),
-    )
+    );
 
     batch(() => {
       setSession({
@@ -1421,139 +1501,146 @@ function Playground() {
         ...next.info,
         id,
         title: typeof next.info.title === "string" && next.info.title ? next.info.title : name,
-      })
-      setState({ messages, parts })
-      setLoaded(name)
-      setIssue("")
-    })
-  }
+      });
+      setState({ messages, parts });
+      setLoaded(name);
+      setIssue("");
+    });
+  };
 
   const importFile = async (event: Event) => {
-    const input = event.currentTarget as HTMLInputElement
-    const file = input.files?.[0]
-    if (!file) return
+    const input = event.currentTarget as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
 
-    setIssue("")
+    setIssue("");
 
     try {
-      load(JSON.parse(await file.text()), file.name)
+      load(JSON.parse(await file.text()), file.name);
     } catch (err) {
-      setIssue(err instanceof Error ? err.message : String(err))
+      setIssue(err instanceof Error ? err.message : String(err));
     } finally {
-      input.value = ""
+      input.value = "";
     }
-  }
+  };
 
   const clearAll = () => {
     batch(() => {
-      setState({ messages: [], parts: {} })
-      setSession({ ...DEFAULT_SESSION })
-      setLoaded("")
-      setIssue("")
-      seq = 0
-    })
-  }
+      setState({ messages: [], parts: {} });
+      setSession({ ...DEFAULT_SESSION });
+      setLoaded("");
+      setIssue("");
+      seq = 0;
+    });
+  };
 
   // ---- CSS export ----
   const exportCss = () => {
-    const lines: string[] = ["/* Timeline Playground CSS Overrides */", ""]
-    const groups = new Map<string, string[]>()
+    const lines: string[] = ["/* Timeline Playground CSS Overrides */", ""];
+    const groups = new Map<string, string[]>();
 
     for (const ctrl of CSS_CONTROLS) {
-      const val = css[ctrl.key]
-      if (val === undefined) continue
-      const value = ctrl.unit ? `${val}${ctrl.unit}` : val
-      const group = ctrl.group
-      if (!groups.has(group)) groups.set(group, [])
-      groups.get(group)!.push(`/* ${ctrl.label}: ${value} */`)
-      groups.get(group)!.push(`${ctrl.selector} { ${ctrl.property}: ${value}; }`)
+      const val = css[ctrl.key];
+      if (val === undefined) continue;
+      const value = ctrl.unit ? `${val}${ctrl.unit}` : val;
+      const group = ctrl.group;
+      if (!groups.has(group)) groups.set(group, []);
+      groups.get(group)!.push(`/* ${ctrl.label}: ${value} */`);
+      groups.get(group)!.push(`${ctrl.selector} { ${ctrl.property}: ${value}; }`);
     }
 
     if (groups.size === 0) {
-      lines.push("/* No overrides applied */")
+      lines.push("/* No overrides applied */");
     } else {
       for (const [group, rules] of groups) {
-        lines.push(`/* --- ${group} --- */`)
-        lines.push(...rules)
-        lines.push("")
+        lines.push(`/* --- ${group} --- */`);
+        lines.push(...rules);
+        lines.push("");
       }
     }
 
-    const text = lines.join("\n")
-    navigator.clipboard.writeText(text).catch(() => {})
-    return text
-  }
+    const text = lines.join("\n");
+    navigator.clipboard.writeText(text).catch(() => {});
+    return text;
+  };
 
-  const [exported, setExported] = createSignal("")
+  const [exported, setExported] = createSignal("");
 
   // ---- Apply to source files ----
-  const [applying, setApplying] = createSignal(false)
-  const [applyResult, setApplyResult] = createSignal("")
+  const [applying, setApplying] = createSignal(false);
+  const [applyResult, setApplyResult] = createSignal("");
 
-  const changedControls = createMemo(() => CSS_CONTROLS.filter((ctrl) => css[ctrl.key] !== undefined && ctrl.source))
+  const changedControls = createMemo(() =>
+    CSS_CONTROLS.filter((ctrl) => css[ctrl.key] !== undefined && ctrl.source),
+  );
 
   const applyToSource = async () => {
-    const controls = changedControls()
-    if (controls.length === 0) return
+    const controls = changedControls();
+    if (controls.length === 0) return;
 
-    setApplying(true)
-    setApplyResult("")
+    setApplying(true);
+    setApplyResult("");
 
     const edits = controls.map((ctrl) => {
-      const src = ctrl.source!
-      return { file: src.file, anchor: src.anchor, prop: src.prop, value: src.format(css[ctrl.key]!) }
-    })
+      const src = ctrl.source!;
+      return {
+        file: src.file,
+        anchor: src.anchor,
+        prop: src.prop,
+        value: src.format(css[ctrl.key]!),
+      };
+    });
 
     try {
       const resp = await fetch("/__playground/apply-css", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ edits }),
-      })
-      const data = await resp.json()
-      const ok = data.results?.filter((r: any) => r.ok).length ?? 0
-      const fail = data.results?.filter((r: any) => !r.ok) ?? []
-      const lines = [`Applied ${ok}/${edits.length} edits`]
+      });
+      const data = await resp.json();
+      const ok = data.results?.filter((r: any) => r.ok).length ?? 0;
+      const fail = data.results?.filter((r: any) => !r.ok) ?? [];
+      const lines = [`Applied ${ok}/${edits.length} edits`];
       for (const f of fail) {
-        lines.push(`  FAIL ${f.file} ${f.prop}: ${f.error}`)
+        lines.push(`  FAIL ${f.file} ${f.prop}: ${f.error}`);
       }
-      setApplyResult(lines.join("\n"))
+      setApplyResult(lines.join("\n"));
 
       if (ok === edits.length) {
         batch(() => {
           for (const ctrl of controls) {
-            setDefaults(ctrl.key, css[ctrl.key]!)
-            setCss(ctrl.key, undefined as any)
+            setDefaults(ctrl.key, css[ctrl.key]!);
+            setCss(ctrl.key, undefined as any);
           }
-        })
-        updateStyle()
+        });
+        updateStyle();
         // Wait for Vite HMR then re-read computed defaults
-        setTimeout(readDefaults, 500)
+        setTimeout(readDefaults, 500);
       }
     } catch (err) {
-      setApplyResult(`Error: ${err}`)
+      setApplyResult(`Error: ${err}`);
     } finally {
-      setApplying(false)
+      setApplying(false);
     }
-  }
+  };
 
   // ---- Panel collapse state ----
   const [panels, setPanels] = createStore({
     generators: true,
     css: true,
     export: false,
-  })
+  });
 
   // ---- Group collapse state for CSS ----
-  const [collapsed, setCollapsed] = createStore<Record<string, boolean>>({})
+  const [collapsed, setCollapsed] = createStore<Record<string, boolean>>({});
   const groups = createMemo(() => {
-    const result = new Map<string, CSSControl[]>()
+    const result = new Map<string, CSSControl[]>();
     for (const ctrl of CSS_CONTROLS) {
-      if (!result.has(ctrl.group)) result.set(ctrl.group, [])
-      result.get(ctrl.group)!.push(ctrl)
+      if (!result.has(ctrl.group)) result.set(ctrl.group, []);
+      result.get(ctrl.group)!.push(ctrl);
     }
-    return result
-  })
+    return result;
+  });
 
   // ---- Shared button styles ----
   const sectionLabel = {
@@ -1562,7 +1649,7 @@ function Playground() {
     "margin-bottom": "4px",
     "text-transform": "uppercase",
     "letter-spacing": "0.5px",
-  } as const
+  } as const;
   const btnStyle = {
     padding: "4px 8px",
     "border-radius": "4px",
@@ -1571,23 +1658,31 @@ function Playground() {
     cursor: "pointer",
     "font-size": "12px",
     color: "var(--text-base)",
-  } as const
+  } as const;
   const btnAccent = {
     ...btnStyle,
     border: "1px solid var(--border-interactive-base)",
     background: "var(--surface-interactive-weak)",
     "font-weight": "500",
     color: "var(--text-interactive-base)",
-  } as const
+  } as const;
   const btnDanger = {
     ...btnStyle,
     border: "1px solid var(--border-critical-base)",
     background: "transparent",
     color: "var(--text-on-critical-base)",
-  } as const
+  } as const;
 
   return (
-    <div style={{ display: "flex", height: "calc(100vh - 48px)", gap: "0", overflow: "hidden", margin: "-24px" }}>
+    <div
+      style={{
+        display: "flex",
+        height: "calc(100vh - 48px)",
+        gap: "0",
+        overflow: "hidden",
+        margin: "-24px",
+      }}
+    >
       {/* Inject dynamic style element */}
       <style ref={styleEl!} />
 
@@ -1624,10 +1719,19 @@ function Playground() {
             <span>{panels.generators ? "−" : "+"}</span>
           </button>
           <Show when={panels.generators}>
-            <div style={{ padding: "0 12px 12px", display: "flex", "flex-direction": "column", gap: "6px" }}>
+            <div
+              style={{
+                padding: "0 12px 12px",
+                display: "flex",
+                "flex-direction": "column",
+                gap: "6px",
+              }}
+            >
               {/* ---- Session import ---- */}
               <div style={sectionLabel}>Import session</div>
-              <div style={{ "font-size": "10px", color: "var(--text-weaker)", "margin-bottom": "2px" }}>
+              <div
+                style={{ "font-size": "10px", color: "var(--text-weaker)", "margin-bottom": "2px" }}
+              >
                 Replaces the current timeline with an `opencode export` JSON file
               </div>
               <div style={{ display: "flex", "flex-wrap": "wrap", gap: "4px" }}>
@@ -1643,20 +1747,30 @@ function Playground() {
                 />
               </div>
               <Show when={loaded()}>
-                <div style={{ "font-size": "10px", color: "var(--text-weaker)", "line-height": "1.4" }}>
+                <div
+                  style={{ "font-size": "10px", color: "var(--text-weaker)", "line-height": "1.4" }}
+                >
                   {loaded()} • {session().title || session().id} • {state.messages.length} message
                   {state.messages.length === 1 ? "" : "s"}
                 </div>
               </Show>
               <Show when={issue()}>
-                <div style={{ "font-size": "10px", color: "var(--text-on-critical-base)", "line-height": "1.4" }}>
+                <div
+                  style={{
+                    "font-size": "10px",
+                    color: "var(--text-on-critical-base)",
+                    "line-height": "1.4",
+                  }}
+                >
                   {issue()}
                 </div>
               </Show>
 
               {/* ---- User messages ---- */}
               <div style={sectionLabel}>User messages</div>
-              <div style={{ "font-size": "10px", color: "var(--text-weaker)", "margin-bottom": "2px" }}>
+              <div
+                style={{ "font-size": "10px", color: "var(--text-weaker)", "margin-bottom": "2px" }}
+              >
                 Creates a new turn (user + empty assistant)
               </div>
               <div style={{ display: "flex", "flex-wrap": "wrap", gap: "4px" }}>
@@ -1684,7 +1798,9 @@ function Playground() {
 
               {/* ---- Text and reasoning blocks ---- */}
               <div style={{ ...sectionLabel, "margin-top": "8px" }}>Text and reasoning blocks</div>
-              <div style={{ "font-size": "10px", color: "var(--text-weaker)", "margin-bottom": "2px" }}>
+              <div
+                style={{ "font-size": "10px", color: "var(--text-weaker)", "margin-bottom": "2px" }}
+              >
                 Appends to the last turn's assistant parts
               </div>
               <div style={{ display: "flex", "flex-wrap": "wrap", gap: "4px" }}>
@@ -1702,7 +1818,9 @@ function Playground() {
 
               {/* ---- Tool calls ---- */}
               <div style={{ ...sectionLabel, "margin-top": "8px" }}>Tool calls</div>
-              <div style={{ "font-size": "10px", color: "var(--text-weaker)", "margin-bottom": "2px" }}>
+              <div
+                style={{ "font-size": "10px", color: "var(--text-weaker)", "margin-bottom": "2px" }}
+              >
                 Appends to the last turn's assistant parts
               </div>
               <div style={{ display: "flex", "flex-wrap": "wrap", gap: "4px" }}>
@@ -1717,7 +1835,9 @@ function Playground() {
 
               {/* ---- Composite (full turns) ---- */}
               <div style={{ ...sectionLabel, "margin-top": "8px" }}>Composite turns</div>
-              <div style={{ "font-size": "10px", color: "var(--text-weaker)", "margin-bottom": "2px" }}>
+              <div
+                style={{ "font-size": "10px", color: "var(--text-weaker)", "margin-bottom": "2px" }}
+              >
                 Creates complete user + assistant turns
               </div>
               <div style={{ display: "flex", "flex-wrap": "wrap", gap: "4px" }}>
@@ -1806,12 +1926,25 @@ function Playground() {
                       <span style={{ "font-size": "10px" }}>{collapsed[group] ? "+" : "−"}</span>
                     </button>
                     <Show when={!collapsed[group]}>
-                      <div style={{ padding: "6px 0", display: "flex", "flex-direction": "column", gap: "8px" }}>
+                      <div
+                        style={{
+                          padding: "6px 0",
+                          display: "flex",
+                          "flex-direction": "column",
+                          gap: "8px",
+                        }}
+                      >
                         <For each={controls}>
                           {(ctrl) => (
-                            <div style={{ display: "flex", "flex-direction": "column", gap: "2px" }}>
+                            <div
+                              style={{ display: "flex", "flex-direction": "column", gap: "2px" }}
+                            >
                               <div
-                                style={{ display: "flex", "justify-content": "space-between", "align-items": "center" }}
+                                style={{
+                                  display: "flex",
+                                  "justify-content": "space-between",
+                                  "align-items": "center",
+                                }}
                               >
                                 <label
                                   style={{
@@ -1825,7 +1958,9 @@ function Playground() {
                                   style={{
                                     "font-size": "11px",
                                     color:
-                                      css[ctrl.key] !== undefined ? "var(--text-interactive-base)" : "var(--text-weak)",
+                                      css[ctrl.key] !== undefined
+                                        ? "var(--text-interactive-base)"
+                                        : "var(--text-weak)",
                                     "font-family": "var(--font-family-mono)",
                                     "min-width": "40px",
                                     "text-align": "right",
@@ -1883,7 +2018,14 @@ function Playground() {
             <span>{panels.export ? "−" : "+"}</span>
           </button>
           <Show when={panels.export}>
-            <div style={{ padding: "0 12px 12px", display: "flex", "flex-direction": "column", gap: "8px" }}>
+            <div
+              style={{
+                padding: "0 12px 12px",
+                display: "flex",
+                "flex-direction": "column",
+                gap: "8px",
+              }}
+            >
               <button style={btnAccent} onClick={() => setExported(exportCss())}>
                 Copy CSS to clipboard
               </button>
@@ -1966,7 +2108,12 @@ function Playground() {
       {/* Main area: timeline preview */}
       <div
         ref={previewRef!}
-        style={{ flex: "1", overflow: "auto", "min-width": "0", "background-color": "var(--background-stronger)" }}
+        style={{
+          flex: "1",
+          overflow: "auto",
+          "min-width": "0",
+          "background-color": "var(--background-stronger)",
+        }}
       >
         <DataProvider data={data()} directory="/project">
           <FileComponentProvider component={FileStub}>
@@ -1997,7 +2144,12 @@ function Playground() {
                 <div
                   role="log"
                   data-slot="session-turn-list"
-                  style={{ display: "flex", "flex-direction": "column", width: "100%", padding: "0 20px" }}
+                  style={{
+                    display: "flex",
+                    "flex-direction": "column",
+                    width: "100%",
+                    padding: "0 20px",
+                  }}
                 >
                   <For each={userMessages()}>
                     {(msg) => (
@@ -2026,7 +2178,7 @@ function Playground() {
         </DataProvider>
       </div>
     </div>
-  )
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -2038,8 +2190,8 @@ export default {
   parameters: {
     layout: "fullscreen",
   },
-}
+};
 
 export const Basic = {
   render: () => <Playground />,
-}
+};

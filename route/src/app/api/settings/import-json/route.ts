@@ -50,7 +50,7 @@ export async function POST(request: Request) {
         {
           error: "Invalid JSON: the file could not be parsed. Please upload a valid .json backup.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -79,7 +79,7 @@ export async function POST(request: Request) {
       `[JSON Import] Imported ${counts.connections} connections, ${counts.nodes} nodes, ` +
         `${counts.combos} combos, ${counts.apiKeys} API keys, ` +
         `${counts.usageHistory} usage rows, ${counts.domainCostHistory} cost rows, ` +
-        `${counts.domainBudgets} budgets`
+        `${counts.domainBudgets} budgets`,
     );
 
     return NextResponse.json({
@@ -91,7 +91,7 @@ export async function POST(request: Request) {
     console.error("[API] Error importing JSON backup:", err);
     return NextResponse.json(
       { error: sanitizeErrorMessage(err instanceof Error ? err.message : String(err)) },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

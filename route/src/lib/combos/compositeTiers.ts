@@ -89,7 +89,7 @@ export function validateCompositeTiersConfig(combo: {
   const stepIds = new Set(
     normalizedSteps
       .map((step) => toTrimmedString(step.id))
-      .filter((value): value is string => !!value)
+      .filter((value): value is string => !!value),
   );
   const tierEntries = new Map<string, { stepId: string; fallbackTier: string | null }>();
   const stepIdOwners = new Map<string, string>();

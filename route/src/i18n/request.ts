@@ -12,7 +12,7 @@ const FALLBACK_LOCALE = "en";
  */
 export function deepMergeFallback(
   target: Record<string, unknown>,
-  source: Record<string, unknown>
+  source: Record<string, unknown>,
 ): Record<string, unknown> {
   for (const [key, sourceValue] of Object.entries(source)) {
     // Guard against prototype pollution from a crafted locale message tree.
@@ -26,7 +26,10 @@ export function deepMergeFallback(
       typeof targetValue === "object" &&
       !Array.isArray(targetValue)
     ) {
-      deepMergeFallback(targetValue as Record<string, unknown>, sourceValue as Record<string, unknown>);
+      deepMergeFallback(
+        targetValue as Record<string, unknown>,
+        sourceValue as Record<string, unknown>,
+      );
     } else if (targetValue === undefined) {
       target[key] = sourceValue;
     }
@@ -40,7 +43,12 @@ function setNestedValue(target: Record<string, unknown>, dottedKey: string, valu
 
   for (let index = 0; index < segments.length; index += 1) {
     const segment = segments[index];
-    if (!segment || segment === "__proto__" || segment === "constructor" || segment === "prototype") {
+    if (
+      !segment ||
+      segment === "__proto__" ||
+      segment === "constructor" ||
+      segment === "prototype"
+    ) {
       return;
     }
 
@@ -62,10 +70,12 @@ function setNestedValue(target: Record<string, unknown>, dottedKey: string, valu
 }
 
 export function normalizeComplianceEventTypes(
-  messages: Record<string, unknown>
+  messages: Record<string, unknown>,
 ): Record<string, unknown> {
   const compliance =
-    messages.compliance && typeof messages.compliance === "object" && !Array.isArray(messages.compliance)
+    messages.compliance &&
+    typeof messages.compliance === "object" &&
+    !Array.isArray(messages.compliance)
       ? (messages.compliance as Record<string, unknown>)
       : null;
   const eventTypes =
@@ -109,7 +119,7 @@ export default getRequestConfig(async () => {
   }
 
   const localeMessages = normalizeComplianceEventTypes(
-    (await import(`./messages/${locale}.json`)).default as Record<string, unknown>
+    (await import(`./messages/${locale}.json`)).default as Record<string, unknown>,
   );
 
   // G1: fall back to EN for any missing key. EN is loaded only once per request
@@ -117,7 +127,7 @@ export default getRequestConfig(async () => {
   let messages = localeMessages as Record<string, unknown>;
   if (locale !== FALLBACK_LOCALE) {
     const fallbackMessages = normalizeComplianceEventTypes(
-      (await import(`./messages/${FALLBACK_LOCALE}.json`)).default as Record<string, unknown>
+      (await import(`./messages/${FALLBACK_LOCALE}.json`)).default as Record<string, unknown>,
     );
     messages = deepMergeFallback({ ...localeMessages }, fallbackMessages);
   }
@@ -132,7 +142,7 @@ export default getRequestConfig(async () => {
   let mergedMessages: Record<string, unknown> = messages as Record<string, unknown>;
   if (locale !== DEFAULT_LOCALE) {
     const enMessages = normalizeComplianceEventTypes(
-      (await import(`./messages/${DEFAULT_LOCALE}.json`)).default as Record<string, unknown>
+      (await import(`./messages/${DEFAULT_LOCALE}.json`)).default as Record<string, unknown>,
     );
     mergedMessages = { ...enMessages, ...mergedMessages };
   }

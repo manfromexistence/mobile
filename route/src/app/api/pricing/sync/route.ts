@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 

@@ -19,8 +19,6 @@
   "meta": {
     "createdAt": "2026-03-28"
   },
-  "categories": [
-    "marketing"
-  ],
+  "categories": ["marketing"],
   "type": "registry:block"
 }

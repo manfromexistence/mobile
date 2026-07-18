@@ -5,21 +5,27 @@
 // footer.event() respectively, adding trace writes along the way. It also
 // defaults status updates to phase "running" if the caller didn't set a
 // phase -- a convenience so reducer code doesn't have to repeat that.
-import type { FooterApi, FooterOutput, FooterPatch, FooterSubagentState, StreamCommit } from "./types"
+import type {
+  FooterApi,
+  FooterOutput,
+  FooterPatch,
+  FooterSubagentState,
+  StreamCommit,
+} from "./types";
 
 type Trace = {
-  write(type: string, data?: unknown): void
-}
+  write(type: string, data?: unknown): void;
+};
 
 type OutputInput = {
-  footer: FooterApi
-  trace?: Trace
-}
+  footer: FooterApi;
+  trace?: Trace;
+};
 
 type StreamOutput = {
-  commits: StreamCommit[]
-  footer?: FooterOutput
-}
+  commits: StreamCommit[];
+  footer?: FooterOutput;
+};
 
 // Default to "running" phase when a status string arrives without an explicit phase.
 function patch(next: FooterPatch): FooterPatch {
@@ -27,40 +33,40 @@ function patch(next: FooterPatch): FooterPatch {
     return {
       phase: "running",
       ...next,
-    }
+    };
   }
 
-  return next
+  return next;
 }
 
 function summarize(value: unknown): unknown {
   if (typeof value === "string") {
     if (value.length <= 160) {
-      return value
+      return value;
     }
 
     return {
       type: "string",
       length: value.length,
       preview: `${value.slice(0, 160)}...`,
-    }
+    };
   }
 
   if (Array.isArray(value)) {
     return {
       type: "array",
       length: value.length,
-    }
+    };
   }
 
   if (!value || typeof value !== "object") {
-    return value
+    return value;
   }
 
   return {
     type: "object",
     keys: Object.keys(value),
-  }
+  };
 }
 
 function traceCommit(commit: StreamCommit) {
@@ -81,11 +87,12 @@ function traceCommit(commit: StreamCommit) {
             error: "error" in commit.part.state ? summarize(commit.part.state.error) : undefined,
             time: "time" in commit.part.state ? summarize(commit.part.state.time) : undefined,
             input: summarize(commit.part.state.input),
-            metadata: "metadata" in commit.part.state ? summarize(commit.part.state.metadata) : undefined,
+            metadata:
+              "metadata" in commit.part.state ? summarize(commit.part.state.metadata) : undefined,
           },
         }
       : undefined,
-  }
+  };
 }
 
 export function traceSubagentState(state: FooterSubagentState) {
@@ -123,53 +130,53 @@ export function traceSubagentState(state: FooterSubagentState) {
         multiple: question.multiple,
       })),
     })),
-  }
+  };
 }
 
 export function traceFooterOutput(footer?: FooterOutput) {
   if (!footer?.subagent) {
-    return footer
+    return footer;
   }
 
   return {
     ...footer,
     subagent: traceSubagentState(footer.subagent),
-  }
+  };
 }
 
 // Forwards reducer output to the footer: commits go to scrollback, patches update the status bar.
 export function writeSessionOutput(input: OutputInput, out: StreamOutput): void {
   for (const commit of out.commits) {
-    input.trace?.write("ui.commit", commit)
-    input.footer.append(commit)
+    input.trace?.write("ui.commit", commit);
+    input.footer.append(commit);
   }
 
   if (out.footer?.patch) {
-    const next = patch(out.footer.patch)
-    input.trace?.write("ui.patch", next)
+    const next = patch(out.footer.patch);
+    input.trace?.write("ui.patch", next);
     input.footer.event({
       type: "stream.patch",
       patch: next,
-    })
+    });
   }
 
   if (out.footer?.subagent) {
-    input.trace?.write("ui.subagent", traceSubagentState(out.footer.subagent))
+    input.trace?.write("ui.subagent", traceSubagentState(out.footer.subagent));
     input.footer.event({
       type: "stream.subagent",
       state: out.footer.subagent,
-    })
+    });
   }
 
   if (!out.footer?.view) {
-    return
+    return;
   }
 
   input.trace?.write("ui.patch", {
     view: out.footer.view,
-  })
+  });
   input.footer.event({
     type: "stream.view",
     view: out.footer.view,
-  })
+  });
 }

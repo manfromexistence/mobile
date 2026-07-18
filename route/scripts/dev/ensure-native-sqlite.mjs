@@ -37,7 +37,7 @@ export const SQLITE_BINARY = join(
   "better-sqlite3",
   "build",
   "Release",
-  "better_sqlite3.node"
+  "better_sqlite3.node",
 );
 
 /**
@@ -99,12 +99,12 @@ export function ensureNativeSqlite(opts = {}) {
     }
     logger.warn(
       `[dev] better-sqlite3 was built for a different Node ABI than ${process.version} — ` +
-        "rebuilding (one-time)…"
+        "rebuilding (one-time)…",
     );
     if (!rebuild()) {
       logger.error(
         "[dev] Automatic 'npm rebuild better-sqlite3' failed. Run it manually:\n" +
-          "      npm rebuild better-sqlite3"
+          "      npm rebuild better-sqlite3",
       );
       return { ok: false, rebuilt: false };
     }

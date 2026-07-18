@@ -16,5 +16,5 @@ export function wrapUnsafeCSS(unsafeCSS: string): string {
 }
 
 export function escapeStyleTextForHtml(css: string): string {
-  return css.replace(STYLE_CLOSE_TAG_PATTERN, '<\\/style');
+  return css.replace(STYLE_CLOSE_TAG_PATTERN, "<\\/style");
 }

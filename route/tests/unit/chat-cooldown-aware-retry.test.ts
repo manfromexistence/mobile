@@ -46,7 +46,7 @@ function buildZombieSseResponse() {
     {
       status: 200,
       headers: { "Content-Type": "text/event-stream" },
-    }
+    },
   );
 }
 
@@ -92,7 +92,7 @@ test("handleChat waits for a short cooldown and retries once within the configur
         stream: false,
         messages: [{ role: "user", content: "retry after short cooldown" }],
       },
-    })
+    }),
   );
   const elapsedMs = Date.now() - startedAt;
   const body = (await response.json()) as any;
@@ -128,7 +128,7 @@ test("handleChat recovers from a real 429 once the connection cooldown expires",
             "Content-Type": "application/json",
             "Retry-After": "2",
           },
-        }
+        },
       );
     }
 
@@ -143,7 +143,7 @@ test("handleChat recovers from a real 429 once the connection cooldown expires",
         stream: false,
         messages: [{ role: "user", content: "trigger upstream 429 then recover" }],
       },
-    })
+    }),
   );
   const elapsedMs = Date.now() - startedAt;
   const body = (await response.json()) as any;
@@ -179,7 +179,7 @@ test("handleChat does not wait when the cooldown exceeds maxRetryIntervalSec", a
         stream: false,
         messages: [{ role: "user", content: "do not wait beyond configured interval" }],
       },
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -206,14 +206,14 @@ test("handleChat returns model_cooldown when every credential for the requested 
     429,
     "too many requests",
     "gemini",
-    "gemini-2.5-pro"
+    "gemini-2.5-pro",
   );
   await auth.markAccountUnavailable(
     (second as any).id,
     429,
     "too many requests",
     "gemini",
-    "gemini-2.5-pro"
+    "gemini-2.5-pro",
   );
 
   let fetchCalls = 0;
@@ -229,7 +229,7 @@ test("handleChat returns model_cooldown when every credential for the requested 
         stream: false,
         messages: [{ role: "user", content: "model cooldown response" }],
       },
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -264,7 +264,7 @@ test("handleChat returns stream readiness timeout without entering cooldown-awar
         stream: true,
         messages: [{ role: "user", content: "trigger zombie stream" }],
       },
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -308,8 +308,8 @@ test("handleChat aborts the pending cooldown wait when the client disconnects", 
         stream: false,
         messages: [{ role: "user", content: "abort retry wait" }],
       },
-      controller.signal
-    )
+      controller.signal,
+    ),
   );
   const elapsedMs = Date.now() - startedAt;
   const body = (await response.json()) as any;

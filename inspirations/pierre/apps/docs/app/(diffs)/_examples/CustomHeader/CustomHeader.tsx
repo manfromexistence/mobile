@@ -1,24 +1,21 @@
-'use client';
+"use client";
 
-import { MultiFileDiff } from '@pierre/diffs/react';
-import type {
-  FileDiffMetadata,
-  PreloadMultiFileDiffResult,
-} from '@pierre/diffs/ssr';
-import { IconCheckboxFill, IconChevronSm, IconSquircleLg } from '@pierre/icons';
-import { useMemo, useState } from 'react';
+import { MultiFileDiff } from "@pierre/diffs/react";
+import type { FileDiffMetadata, PreloadMultiFileDiffResult } from "@pierre/diffs/ssr";
+import { IconCheckboxFill, IconChevronSm, IconSquircleLg } from "@pierre/icons";
+import { useMemo, useState } from "react";
 
-import { FeatureHeader } from '@/components/FeatureHeader';
-import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group';
+import { FeatureHeader } from "@/components/FeatureHeader";
+import { ButtonGroup, ButtonGroupItem } from "@/components/ui/button-group";
 
-type HeaderMode = 'custom' | 'metadata';
+type HeaderMode = "custom" | "metadata";
 
 interface CustomHeaderProps {
   prerenderedDiff: PreloadMultiFileDiffResult<undefined>;
 }
 
 export function CustomHeader({ prerenderedDiff }: CustomHeaderProps) {
-  const [headerMode, setHeaderMode] = useState<HeaderMode>('metadata');
+  const [headerMode, setHeaderMode] = useState<HeaderMode>("metadata");
   const [isViewed, setIsViewed] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
@@ -41,15 +38,12 @@ export function CustomHeader({ prerenderedDiff }: CustomHeaderProps) {
         title="Custom headers"
         description={
           <>
-            Switch between lightweight header metadata and a fully custom header
-            rendered inside the built-in <code>data-diffs-header</code> shell.
+            Switch between lightweight header metadata and a fully custom header rendered inside the
+            built-in <code>data-diffs-header</code> shell.
           </>
         }
       />
-      <ButtonGroup
-        value={headerMode}
-        onValueChange={(value) => setHeaderMode(value as HeaderMode)}
-      >
+      <ButtonGroup value={headerMode} onValueChange={(value) => setHeaderMode(value as HeaderMode)}>
         <ButtonGroupItem value="metadata">Metadata</ButtonGroupItem>
         <ButtonGroupItem value="custom">Custom header</ButtonGroupItem>
       </ButtonGroup>
@@ -61,7 +55,7 @@ export function CustomHeader({ prerenderedDiff }: CustomHeaderProps) {
           collapsed,
         }}
         renderCustomHeader={
-          headerMode === 'custom'
+          headerMode === "custom"
             ? (fileDiff: FileDiffMetadata) => {
                 return (
                   <CustomHeaderComponent
@@ -74,21 +68,10 @@ export function CustomHeader({ prerenderedDiff }: CustomHeaderProps) {
             : undefined
         }
         renderHeaderPrefix={() => {
-          return (
-            <HeaderPrefix
-              toggleCollapsed={toggleCollapsed}
-              collapsed={collapsed}
-            />
-          );
+          return <HeaderPrefix toggleCollapsed={toggleCollapsed} collapsed={collapsed} />;
         }}
         renderHeaderMetadata={() => {
-          return (
-            <ViewedButton
-              isViewed={isViewed}
-              onClick={toggleViewed}
-              className="mr-[-8px]"
-            />
-          );
+          return <ViewedButton isViewed={isViewed} onClick={toggleViewed} className="mr-[-8px]" />;
         }}
       />
     </div>
@@ -118,18 +101,18 @@ function CustomHeaderComponent({
 
   return (
     <div
-      className={`flex w-full flex-wrap items-center justify-between gap-3 p-2 text-white ${collapsed ? '' : 'mb-2 border-b border-white/25 '}`}
+      className={`flex w-full flex-wrap items-center justify-between gap-3 p-2 text-white ${collapsed ? "" : "mb-2 border-b border-white/25 "}`}
     >
       <div className="flex min-w-0 items-center gap-3">
         <button
           type="button"
           onClick={toggleCollapsed}
-          aria-label={collapsed ? 'Expand file' : 'Collapse file'}
+          aria-label={collapsed ? "Expand file" : "Collapse file"}
           aria-pressed={collapsed}
-          className={`inline-flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-sm text-white/70 transition ${collapsed ? 'bg-white/15 hover:bg-white/20' : 'bg-[#F05138] hover:bg-[#F05138]/80 '}`}
+          className={`inline-flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-sm text-white/70 transition ${collapsed ? "bg-white/15 hover:bg-white/20" : "bg-[#F05138] hover:bg-[#F05138]/80 "}`}
         >
           <IconChevronSm
-            className={`transition-transform ${collapsed ? 'block -rotate-90' : 'hidden'}`}
+            className={`transition-transform ${collapsed ? "block -rotate-90" : "hidden"}`}
           />
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -137,7 +120,7 @@ function CustomHeaderComponent({
             height="16"
             fill="none"
             viewBox="0 0 16 16"
-            className={`${collapsed ? 'hidden' : 'block'} text-white`}
+            className={`${collapsed ? "hidden" : "block"} text-white`}
           >
             <path
               fill="currentColor"
@@ -148,18 +131,18 @@ function CustomHeaderComponent({
         <div className="min-w-0">
           <div
             className="-mb-0.5 truncate text-sm font-medium"
-            style={{ color: 'var(--diffs-fg)' }}
+            style={{ color: "var(--diffs-fg)" }}
           >
             AppConfig.swift
           </div>
           <div
             className="flex flex-wrap items-center gap-x-1 text-xs"
-            style={{ color: 'var(--diffs-fg-number)' }}
+            style={{ color: "var(--diffs-fg-number)" }}
           >
             <span>Single slot layout</span>
             <span
               className="hidden h-1 w-1 rounded-full opacity-50 sm:block"
-              style={{ backgroundColor: 'var(--diffs-fg-number)' }}
+              style={{ backgroundColor: "var(--diffs-fg-number)" }}
             />
             <span>Custom UI</span>
           </div>
@@ -169,8 +152,8 @@ function CustomHeaderComponent({
         <span
           className="rounded-md px-2 py-0.5 text-[11px] font-medium"
           style={{
-            color: 'var(--diffs-deletion-base)',
-            backgroundColor: 'var(--diffs-bg-deletion)',
+            color: "var(--diffs-deletion-base)",
+            backgroundColor: "var(--diffs-bg-deletion)",
           }}
         >
           {deletions} deletions
@@ -178,8 +161,8 @@ function CustomHeaderComponent({
         <span
           className="rounded-md px-2 py-0.5 text-[11px] font-medium"
           style={{
-            color: 'var(--diffs-addition-base)',
-            backgroundColor: 'var(--diffs-bg-addition)',
+            color: "var(--diffs-addition-base)",
+            backgroundColor: "var(--diffs-bg-addition)",
           }}
         >
           {additions} additions
@@ -199,14 +182,12 @@ function HeaderPrefix({ collapsed, toggleCollapsed }: HeaderPrefixProps) {
     <button
       type="button"
       onClick={toggleCollapsed}
-      aria-label={collapsed ? 'Expand file' : 'Collapse file'}
+      aria-label={collapsed ? "Expand file" : "Collapse file"}
       aria-pressed={collapsed}
       style={{ marginLeft: -5 }}
       className="inline-flex size-6 cursor-pointer items-center justify-center rounded-md text-white/65 transition hover:bg-white/10 hover:text-white"
     >
-      <IconChevronSm
-        className={`transition-transform ${collapsed ? '-rotate-90' : ''}`}
-      />
+      <IconChevronSm className={`transition-transform ${collapsed ? "-rotate-90" : ""}`} />
     </button>
   );
 }
@@ -227,9 +208,9 @@ function ViewedButton({
       aria-pressed={isViewed}
       className={`flex cursor-pointer items-center gap-1.5 rounded-md border py-1 pr-2 pl-1 text-xs transition ${
         isViewed
-          ? 'border-blue-400/50 bg-blue-500/25 text-blue-200'
-          : 'border-white/20 bg-transparent text-white/70 hover:border-white/35 hover:bg-white/5 hover:text-white/85'
-      } ${className ?? ''}`}
+          ? "border-blue-400/50 bg-blue-500/25 text-blue-200"
+          : "border-white/20 bg-transparent text-white/70 hover:border-white/35 hover:bg-white/5 hover:text-white/85"
+      } ${className ?? ""}`}
     >
       {isViewed ? (
         <IconCheckboxFill className="text-blue-400" />

@@ -1,11 +1,11 @@
-import { A } from "@solidjs/router"
-import { LanguagePicker } from "~/component/language-picker"
-import { useI18n } from "~/context/i18n"
-import { useLanguage } from "~/context/language"
+import { A } from "@solidjs/router";
+import { LanguagePicker } from "~/component/language-picker";
+import { useI18n } from "~/context/i18n";
+import { useLanguage } from "~/context/language";
 
 export function Legal() {
-  const i18n = useI18n()
-  const language = useLanguage()
+  const i18n = useI18n();
+  const language = useLanguage();
   return (
     <div data-component="legal">
       <span>
@@ -24,5 +24,5 @@ export function Legal() {
         <LanguagePicker align="right" />
       </span>
     </div>
-  )
+  );
 }

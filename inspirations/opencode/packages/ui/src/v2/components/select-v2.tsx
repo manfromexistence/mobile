@@ -1,23 +1,33 @@
-import { Select as Kobalte } from "@kobalte/core/select"
-import { Show, createMemo, onCleanup, splitProps, type ComponentProps, type JSX } from "solid-js"
-import "./select-v2.css"
+import { Select as Kobalte } from "@kobalte/core/select";
+import { Show, createMemo, onCleanup, splitProps, type ComponentProps, type JSX } from "solid-js";
+import "./select-v2.css";
 
-function groupOptions<T>(options: T[], groupBy?: (x: T) => string): { category: string; options: T[] }[] {
+function groupOptions<T>(
+  options: T[],
+  groupBy?: (x: T) => string,
+): { category: string; options: T[] }[] {
   if (!groupBy) {
-    return [{ category: "", options }]
+    return [{ category: "", options }];
   }
-  const map = new Map<string, T[]>()
+  const map = new Map<string, T[]>();
   for (const opt of options) {
-    const key = groupBy(opt)
-    const arr = map.get(key)
-    if (arr) arr.push(opt)
-    else map.set(key, [opt])
+    const key = groupBy(opt);
+    const arr = map.get(key);
+    if (arr) arr.push(opt);
+    else map.set(key, [opt]);
   }
-  return [...map.entries()].map(([category, opts]) => ({ category, options: opts }))
+  return [...map.entries()].map(([category, opts]) => ({ category, options: opts }));
 }
 
 const ChevronDown = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+  >
     <path
       d="M11 9.5L8 6.5L5 9.5"
       stroke="currentColor"
@@ -26,10 +36,17 @@ const ChevronDown = () => (
       stroke-linejoin="round"
     />
   </svg>
-)
+);
 
 const CheckSmall = () => (
-  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden="true"
+  >
     <path
       d="M3.53564 8.17857L6.39279 11.75L12.4642 4.25"
       stroke="currentColor"
@@ -38,28 +55,35 @@ const CheckSmall = () => (
       stroke-linejoin="round"
     />
   </svg>
-)
+);
 
 export type SelectV2Props<T> = Omit<
   ComponentProps<typeof Kobalte<T, { category: string; options: T[] }>>,
-  "value" | "onSelect" | "children" | "options" | "itemComponent" | "sectionComponent" | "defaultValue" | "multiple"
+  | "value"
+  | "onSelect"
+  | "children"
+  | "options"
+  | "itemComponent"
+  | "sectionComponent"
+  | "defaultValue"
+  | "multiple"
 > & {
-  placeholder?: string
-  options: T[]
+  placeholder?: string;
+  options: T[];
   /** Selected option (single selection). */
-  current?: T
-  value?: (x: T) => string
-  label?: (x: T) => string
-  groupBy?: (x: T) => string
-  onSelect?: (value: T | null) => void
-  onHighlight?: (value: T | undefined) => void | (() => void)
+  current?: T;
+  value?: (x: T) => string;
+  label?: (x: T) => string;
+  groupBy?: (x: T) => string;
+  onSelect?: (value: T | null) => void;
+  onHighlight?: (value: T | undefined) => void | (() => void);
   /** `base` / `large` match text-input-v2; `inline` is a compact settings-row trigger. */
-  appearance?: "base" | "large" | "inline"
-  invalid?: boolean
-  numeric?: boolean
-  children?: (item: T) => JSX.Element
-  valueClass?: string
-}
+  appearance?: "base" | "large" | "inline";
+  invalid?: boolean;
+  numeric?: boolean;
+  children?: (item: T) => JSX.Element;
+  valueClass?: string;
+};
 
 export function SelectV2<T>(props: SelectV2Props<T>) {
   const [local, others] = splitProps(props, [
@@ -86,36 +110,36 @@ export function SelectV2<T>(props: SelectV2Props<T>) {
     "flip",
     "slide",
     "fitViewport",
-  ])
+  ]);
 
-  const inline = () => (local.appearance ?? "base") === "inline"
+  const inline = () => (local.appearance ?? "base") === "inline";
 
-  const state: { key?: string; cleanup?: void | (() => void) } = {}
+  const state: { key?: string; cleanup?: void | (() => void) } = {};
 
   const stop = () => {
-    state.cleanup?.()
-    state.cleanup = undefined
-    state.key = undefined
-  }
+    state.cleanup?.();
+    state.cleanup = undefined;
+    state.key = undefined;
+  };
 
-  const keyFor = (item: T) => (local.value ? local.value(item) : String(item as string))
+  const keyFor = (item: T) => (local.value ? local.value(item) : String(item as string));
 
   const move = (item: T | undefined) => {
-    if (!local.onHighlight) return
+    if (!local.onHighlight) return;
     if (!item) {
-      stop()
-      return
+      stop();
+      return;
     }
-    const key = keyFor(item)
-    if (state.key === key) return
-    state.cleanup?.()
-    state.cleanup = local.onHighlight(item)
-    state.key = key
-  }
+    const key = keyFor(item);
+    if (state.key === key) return;
+    state.cleanup?.();
+    state.cleanup = local.onHighlight(item);
+    state.key = key;
+  };
 
-  onCleanup(stop)
+  onCleanup(stop);
 
-  const grouped = createMemo(() => groupOptions(local.options, local.groupBy))
+  const grouped = createMemo(() => groupOptions(local.options, local.groupBy));
 
   return (
     <Kobalte<T, { category: string; options: T[] }>
@@ -163,13 +187,14 @@ export function SelectV2<T>(props: SelectV2Props<T>) {
         </Kobalte.Item>
       )}
       onChange={(next) => {
-        const v = next == null ? null : Array.isArray(next) ? ((next[0] as T) ?? null) : (next as T)
-        local.onSelect?.(v)
-        stop()
+        const v =
+          next == null ? null : Array.isArray(next) ? ((next[0] as T) ?? null) : (next as T);
+        local.onSelect?.(v);
+        stop();
       }}
       onOpenChange={(open) => {
-        local.onOpenChange?.(open)
-        if (!open) stop()
+        local.onOpenChange?.(open);
+        if (!open) stop();
       }}
     >
       <Kobalte.Trigger
@@ -188,9 +213,9 @@ export function SelectV2<T>(props: SelectV2Props<T>) {
         <div data-slot="select-v2-value">
           <Kobalte.Value<T> data-slot="select-v2-value-text" class={local.valueClass}>
             {(st) => {
-              const selected = st.selectedOption()
-              if (local.label && selected != null) return local.label(selected)
-              return selected != null ? (selected as string) : ""
+              const selected = st.selectedOption();
+              if (local.label && selected != null) return local.label(selected);
+              return selected != null ? (selected as string) : "";
             }}
           </Kobalte.Value>
         </div>
@@ -204,5 +229,5 @@ export function SelectV2<T>(props: SelectV2Props<T>) {
         </Kobalte.Content>
       </Kobalte.Portal>
     </Kobalte>
-  )
+  );
 }

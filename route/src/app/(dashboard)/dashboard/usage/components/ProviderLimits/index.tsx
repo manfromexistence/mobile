@@ -98,7 +98,7 @@ function shouldAutoRefreshQuota(provider: string, cached: any): boolean {
       typeof q.modelKey === "string" &&
       q.modelKey.startsWith("gemini-") &&
       !q.isCredits &&
-      q.quotaSource !== "retrieveUserQuota"
+      q.quotaSource !== "retrieveUserQuota",
   );
 }
 
@@ -186,7 +186,7 @@ export default function ProviderLimits({
   const tr = useCallback(
     (key: string, fallback: string, values?: UsageTranslationValues) =>
       translateUsageOrFallback(t, key, fallback, values),
-    [t]
+    [t],
   );
   const emailsVisible = useEmailPrivacyStore((s) => s.emailsVisible);
   const notify = useNotificationStore();
@@ -203,7 +203,7 @@ export default function ProviderLimits({
     tr,
     setErrors,
     setQuotaData,
-    setLastRefreshedAt
+    setLastRefreshedAt,
   );
 
   const [purchaseTypeFilter, setPurchaseTypeFilter] = useState<PurchaseTypeKey>(() => {
@@ -269,10 +269,10 @@ export default function ProviderLimits({
       const data = await res.json();
       const newValue = data?.connection?.quotaWindowThresholds ?? null;
       setConnections((prev) =>
-        prev.map((c) => (c.id === connectionId ? { ...c, quotaWindowThresholds: newValue } : c))
+        prev.map((c) => (c.id === connectionId ? { ...c, quotaWindowThresholds: newValue } : c)),
       );
     },
-    []
+    [],
   );
 
   const fetchConnections = useCallback(async () => {
@@ -305,12 +305,12 @@ export default function ProviderLimits({
         });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         setConnections((prev) =>
-          prev.map((c) => (c.id === connectionId ? { ...c, isActive: nextActive } : c))
+          prev.map((c) => (c.id === connectionId ? { ...c, isActive: nextActive } : c)),
         );
         notify.success(
           nextActive
             ? tr("accountActivated", "Account activated")
-            : tr("accountDeactivated", "Account deactivated")
+            : tr("accountDeactivated", "Account deactivated"),
         );
       } catch {
         notify.error(tr("toggleActiveFailed", "Failed to update account status"));
@@ -318,7 +318,7 @@ export default function ProviderLimits({
         setTogglingActiveId(null);
       }
     },
-    [notify, tr]
+    [notify, tr],
   );
 
   const applyCachedQuotaState = useCallback(
@@ -345,7 +345,7 @@ export default function ProviderLimits({
       setQuotaData(nextQuotaData);
       setLastRefreshedAt(nextLastRefreshedAt);
     },
-    []
+    [],
   );
 
   const fetchCachedProviderLimits = useCallback(async () => {
@@ -432,14 +432,14 @@ export default function ProviderLimits({
         setLoading((prev) => ({ ...prev, [connectionId]: false }));
       }
     },
-    []
+    [],
   );
 
   const refreshProvider = useCallback(
     async (connectionId: string, provider: string) => {
       await fetchQuota(connectionId, provider, { force: true });
     },
-    [fetchQuota]
+    [fetchQuota],
   );
 
   const refreshingAllRef = useRef(false);
@@ -517,14 +517,14 @@ export default function ProviderLimits({
       connections.filter(
         (conn) =>
           USAGE_SUPPORTED_PROVIDERS.includes(conn.provider) &&
-          (conn.authType === "oauth" || conn.authType === "apikey")
+          (conn.authType === "oauth" || conn.authType === "apikey"),
       ),
-    [connections]
+    [connections],
   );
 
   const sortedConnections = useMemo(() => {
     return [...filteredConnections].sort(
-      (a, b) => (PROVIDER_ORDER[a.provider] || 99) - (PROVIDER_ORDER[b.provider] || 99)
+      (a, b) => (PROVIDER_ORDER[a.provider] || 99) - (PROVIDER_ORDER[b.provider] || 99),
     );
   }, [filteredConnections]);
   const visibleQuotaData = useVisibleQuotaData(sortedConnections, quotaData);
@@ -683,7 +683,7 @@ export default function ProviderLimits({
   // the i18n-aware comparator so the dropdown follows the locale's collation.
   const providerOptions = useMemo(
     () => buildProviderOptions(sortedConnections, compareTr),
-    [sortedConnections]
+    [sortedConnections],
   );
 
   // Auto-fetch LIVE quota on open for visible connections that have no cached
@@ -829,8 +829,8 @@ export default function ProviderLimits({
               ? `${tr("autoRefreshing", "Auto-refreshing")} ${formatAutoRefreshCountdown(
                   Math.max(
                     0,
-                    autoRefreshIntervalMs - (autoRefreshClock - lastRefreshAllAtRef.current)
-                  )
+                    autoRefreshIntervalMs - (autoRefreshClock - lastRefreshAllAtRef.current),
+                  ),
                 )}`
               : t("refreshAll")}
         </button>
@@ -1029,7 +1029,7 @@ export default function ProviderLimits({
           onRefresh={refreshProvider}
           onOpenCutoff={(conn) => {
             const windows = (visibleQuotaData[conn.id]?.quotas || []).filter(
-              (q: any) => q && typeof q.name === "string" && !q.isCredits
+              (q: any) => q && typeof q.name === "string" && !q.isCredits,
             );
             setCutoffModalWindows(windows);
             setCutoffModalConn(conn);
@@ -1052,7 +1052,7 @@ export default function ProviderLimits({
             pickDisplayValue(
               [cutoffModalConn.name, cutoffModalConn.displayName, cutoffModalConn.email],
               emailsVisible,
-              cutoffModalConn.provider
+              cutoffModalConn.provider,
             ) || cutoffModalConn.provider
           }
           provider={cutoffModalConn.provider}

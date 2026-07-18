@@ -1,10 +1,10 @@
 export function defer(fn: () => void | Promise<void>): AsyncDisposable & Disposable {
   return {
     [Symbol.dispose]() {
-      void fn()
+      void fn();
     },
     [Symbol.asyncDispose]() {
-      return Promise.resolve(fn())
+      return Promise.resolve(fn());
     },
-  }
+  };
 }

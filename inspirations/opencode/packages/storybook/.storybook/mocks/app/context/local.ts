@@ -1,16 +1,16 @@
-import { createSignal } from "solid-js"
+import { createSignal } from "solid-js";
 
 const model = {
   id: "claude-3-7-sonnet",
   name: "Claude 3.7 Sonnet",
   provider: { id: "anthropic" },
   variants: { fast: {}, thinking: {} },
-}
+};
 
-const agents = [{ name: "build" }, { name: "review" }, { name: "plan" }]
+const agents = [{ name: "build" }, { name: "review" }, { name: "plan" }];
 
-const [agent, setAgent] = createSignal(agents[0].name)
-const [variant, setVariant] = createSignal<string | undefined>(undefined)
+const [agent, setAgent] = createSignal(agents[0].name);
+const [variant, setVariant] = createSignal<string | undefined>(undefined);
 
 export function useLocal() {
   return {
@@ -20,11 +20,11 @@ export function useLocal() {
       current: () => agents.find((item) => item.name === agent()) ?? agents[0],
       set(value?: string) {
         if (!value) {
-          setAgent(agents[0].name)
-          return
+          setAgent(agents[0].name);
+          return;
         }
-        const hit = agents.find((item) => item.name === value)
-        setAgent(hit?.name ?? agents[0].name)
+        const hit = agents.find((item) => item.name === value);
+        setAgent(hit?.name ?? agents[0].name);
       },
     },
     model: {
@@ -33,9 +33,9 @@ export function useLocal() {
         list: () => Object.keys(model.variants),
         current: () => variant(),
         set(next?: string) {
-          setVariant(next)
+          setVariant(next);
         },
       },
     },
-  }
+  };
 }

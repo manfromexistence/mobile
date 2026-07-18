@@ -14,7 +14,7 @@ import { promises as fs } from "node:fs";
 import path from "node:path";
 
 console.warn(
-  "[generate-multilang] DEPRECATED: prefer `npm run i18n:run` for docs (this script will be removed in v3.10)."
+  "[generate-multilang] DEPRECATED: prefer `npm run i18n:run` for docs (this script will be removed in v3.10).",
 );
 
 const ROOT = process.cwd();
@@ -908,8 +908,8 @@ async function generateMessageTranslations() {
           Math.max(
             0,
             Math.ceil((leaves.length * coverageThreshold) / 100) -
-              (leaves.length - missingLeaves.length)
-          )
+              (leaves.length - missingLeaves.length),
+          ),
         )
       : missingLeaves;
 

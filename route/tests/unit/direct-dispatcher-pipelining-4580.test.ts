@@ -36,7 +36,7 @@ describe("#4580 direct dispatcher options", () => {
     assert.equal(proxy.keepAliveTimeout, 1);
     assert.ok(
       (direct.keepAliveTimeout ?? 0) > 1,
-      `direct keepAliveTimeout should stay > 1 (got ${direct.keepAliveTimeout})`
+      `direct keepAliveTimeout should stay > 1 (got ${direct.keepAliveTimeout})`,
     );
   });
 
@@ -47,7 +47,7 @@ describe("#4580 direct dispatcher options", () => {
     assert.equal(
       direct.connect?.autoSelectFamily,
       true,
-      "direct egress must race IPv4/IPv6 so a broken IPv6 route does not ETIMEDOUT"
+      "direct egress must race IPv4/IPv6 so a broken IPv6 route does not ETIMEDOUT",
     );
     assert.equal(typeof direct.connect?.autoSelectFamilyAttemptTimeout, "number");
   });
@@ -55,14 +55,14 @@ describe("#4580 direct dispatcher options", () => {
   it("connection limit honors OMNIROUTE_DIRECT_DISPATCHER_CONNECTIONS", () => {
     assert.equal(
       getDefaultDispatcherConnectionLimit({ OMNIROUTE_DIRECT_DISPATCHER_CONNECTIONS: "8" }),
-      8
+      8,
     );
   });
 
   it("connection limit clamps invalid values to the default", () => {
     assert.equal(
       getDefaultDispatcherConnectionLimit({ OMNIROUTE_DIRECT_DISPATCHER_CONNECTIONS: "nonsense" }),
-      32
+      32,
     );
     assert.equal(getDefaultDispatcherConnectionLimit({}), 32);
   });
@@ -78,7 +78,7 @@ describe("#4580 direct dispatcher options", () => {
           },
           close() {},
           destroy() {},
-        }) as unknown as Dispatcher
+        }) as unknown as Dispatcher,
     );
     const dispatcher = __createRoundRobinDispatcherForTest(dispatchers);
     const dispatchOptions = {

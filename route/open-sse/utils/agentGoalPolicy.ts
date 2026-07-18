@@ -78,7 +78,7 @@ export function isAgentGoalRequestBody(body: unknown): boolean {
 export function resolveAgentGoalPolicy(
   body: unknown,
   headers: HeaderLike = null,
-  env: EnvSource = process.env
+  env: EnvSource = process.env,
 ): AgentGoalPolicy {
   // Kill-switch (default ON — preserves existing behavior). When explicitly
   // disabled, the whole heuristic is a no-op: it never elevates readiness
@@ -99,7 +99,7 @@ export function resolveAgentGoalPolicy(
   const readinessMaxTimeoutMs = readPositiveMs(
     env,
     "OMNIROUTE_AGENT_GOAL_READINESS_MAX_TIMEOUT_MS",
-    DEFAULT_AGENT_GOAL_READINESS_MAX_TIMEOUT_MS
+    DEFAULT_AGENT_GOAL_READINESS_MAX_TIMEOUT_MS,
   );
   const streamRecoveryEnabled =
     detected && parseBoolean(env.OMNIROUTE_AGENT_GOAL_STREAM_RECOVERY, true);

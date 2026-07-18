@@ -52,7 +52,7 @@ function parseArgs(argv) {
           "",
           "  --report   Print findings and exit 0 regardless",
           "  --json     Emit JSON report to stdout",
-        ].join("\n")
+        ].join("\n"),
       );
       process.exit(0);
     }
@@ -189,8 +189,8 @@ function main() {
           broken,
         },
         null,
-        2
-      ) + "\n"
+        2,
+      ) + "\n",
     );
     process.exit(broken.length && !opts.report ? 1 : 0);
   }

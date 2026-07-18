@@ -7,7 +7,7 @@ import {
   preparePaths as prepareCanonicalPaths,
   preparePresortedInput as prepareCanonicalPresortedInput,
   preparePathEntries,
-} from './builder';
+} from "./builder";
 import {
   addPath,
   collectAncestorIds,
@@ -19,15 +19,12 @@ import {
   recomputeCountsRecursive,
   removePath,
   requireNode,
-} from './canonical';
+} from "./canonical";
 import {
   PATH_STORE_CHILD_INDEX_CHUNK_THRESHOLD_EXTERNAL,
   rebuildVisibleChildChunks,
-} from './child-index';
-import {
-  cleanupPathStoreState,
-  hasActiveCleanupBlockingLoads,
-} from './cleanup';
+} from "./child-index";
+import { cleanupPathStoreState, hasActiveCleanupBlockingLoads } from "./cleanup";
 import {
   batchEvents,
   createApplyChildPatchEvent,
@@ -39,14 +36,14 @@ import {
   finalizeEvent,
   recordEvent,
   subscribe,
-} from './events';
-import { getFlattenedChildDirectoryId } from './flatten';
-import { getNodeDepth, isDirectoryNode } from './internal-types';
-import type { NodeId } from './internal-types';
+} from "./events";
+import { getFlattenedChildDirectoryId } from "./flatten";
+import { getNodeDepth, isDirectoryNode } from "./internal-types";
+import type { NodeId } from "./internal-types";
 import {
   getBenchmarkInstrumentation,
   withBenchmarkPhase,
-} from './internal/benchmarkInstrumentation';
+} from "./internal/benchmarkInstrumentation";
 import {
   collapsePath,
   expandPath,
@@ -56,7 +53,7 @@ import {
   getVisibleSlice,
   getVisibleTreeProjectionData as getVisibleTreeProjectionDataFromState,
   getVisibleTreeProjection as getVisibleTreeProjectionFromState,
-} from './projection';
+} from "./projection";
 import type {
   PathStoreChildPatch,
   PathStoreCleanupOptions,
@@ -76,13 +73,9 @@ import type {
   PathStoreVisibleRowContext,
   PathStoreVisibleTreeProjection,
   PathStoreVisibleTreeProjectionData,
-} from './public-types';
-import { buildSoaNodeStore, sweepOpenVisibleCountsSoa } from './soa-node-store';
-import {
-  compareSegmentSortKeys,
-  createSegmentSortKey,
-  getSegmentSortKey,
-} from './sort';
+} from "./public-types";
+import { buildSoaNodeStore, sweepOpenVisibleCountsSoa } from "./soa-node-store";
+import { compareSegmentSortKeys, createSegmentSortKey, getSegmentSortKey } from "./sort";
 import {
   beginDirectoryLoad,
   completeDirectoryLoad,
@@ -92,17 +85,16 @@ import {
   isDirectoryLoadAttemptCurrent,
   markDirectoryUnloadedState,
   setDirectoryExpanded,
-} from './state';
-import { createPathStoreState } from './state';
-import type { PathStoreState } from './state';
+} from "./state";
+import { createPathStoreState } from "./state";
+import type { PathStoreState } from "./state";
 
 // Initializes the common all-directories-open startup shape without rerunning
 // the generic count-repair walk the constructor uses for arbitrary expansion
 // overrides. This keeps the presorted first-render path from paying for a
 // second full-tree pass after the builder has already finalized subtree counts.
 function initializeOpenVisibleCounts(state: PathStoreState): void {
-  const { directories, nodes, options, rootId, presortedDirectoryNodeIds } =
-    state.snapshot;
+  const { directories, nodes, options, rootId, presortedDirectoryNodeIds } = state.snapshot;
   const flattenEmptyDirectories = options.flattenEmptyDirectories === true;
 
   // Iterative reverse-order walk processing directories in post-order.
@@ -132,9 +124,7 @@ function initializeOpenVisibleCounts(state: PathStoreState): void {
 
     const currentIndex = directories.get(nodeId);
     if (currentIndex == null) {
-      throw new Error(
-        `Unknown directory child index for node ${String(nodeId)}`
-      );
+      throw new Error(`Unknown directory child index for node ${String(nodeId)}`);
     }
 
     const childIds = currentIndex.childIds;
@@ -273,22 +263,16 @@ function initializeOpenVisibleCountsViaSoa(state: PathStoreState): void {
     }
     currentIndex.totalChildSubtreeNodeCount = totalChildSubtreeNodeCount;
     currentIndex.totalChildVisibleSubtreeCount = totalChildVisibleSubtreeCount;
-    if (
-      dirId === rootId ||
-      childCount >= PATH_STORE_CHILD_INDEX_CHUNK_THRESHOLD_EXTERNAL
-    ) {
+    if (dirId === rootId || childCount >= PATH_STORE_CHILD_INDEX_CHUNK_THRESHOLD_EXTERNAL) {
       rebuildVisibleChildChunks(nodes, currentIndex);
     }
   }
 }
 
-function canInitializeOpenVisibleCounts(
-  options: PathStoreConstructorOptions
-): boolean {
+function canInitializeOpenVisibleCounts(options: PathStoreConstructorOptions): boolean {
   return (
-    options.initialExpansion === 'open' &&
-    (options.initialExpandedPaths == null ||
-      options.initialExpandedPaths.length === 0)
+    options.initialExpansion === "open" &&
+    (options.initialExpandedPaths == null || options.initialExpandedPaths.length === 0)
   );
 }
 
@@ -299,28 +283,21 @@ export class PathStore {
     const instrumentation = getBenchmarkInstrumentation(options);
     const builder = withBenchmarkPhase(
       instrumentation,
-      'store.builder.create',
-      () => new PathStoreBuilder(options)
+      "store.builder.create",
+      () => new PathStoreBuilder(options),
     );
     if (options.preparedInput != null) {
-      const presortedPaths = getPreparedInputPresortedPaths(
-        options.preparedInput
-      );
+      const presortedPaths = getPreparedInputPresortedPaths(options.preparedInput);
       if (presortedPaths != null) {
         builder.appendPresortedPaths(
           presortedPaths,
-          getPreparedInputPresortedPathsContainDirectories(
-            options.preparedInput
-          )
+          getPreparedInputPresortedPathsContainDirectories(options.preparedInput),
         );
       } else {
         // preparedInput is the caller's explicit fast path, so skip the
         // builder's redundant monotonic-order validation and only keep
         // duplicate checks.
-        builder.appendPreparedPaths(
-          getPreparedInputEntries(options.preparedInput),
-          false
-        );
+        builder.appendPreparedPaths(getPreparedInputEntries(options.preparedInput), false);
       }
     } else {
       const inputPaths = options.paths ?? [];
@@ -329,42 +306,34 @@ export class PathStore {
         builder.appendPaths(inputPaths);
       } else {
         builder.appendPreparedPaths(
-          withBenchmarkPhase(instrumentation, 'store.preparePathEntries', () =>
-            preparePathEntries(inputPaths, options)
-          )
+          withBenchmarkPhase(instrumentation, "store.preparePathEntries", () =>
+            preparePathEntries(inputPaths, options),
+          ),
         );
       }
     }
 
-    const snapshot = withBenchmarkPhase(
-      instrumentation,
-      'store.builder.finish',
-      () =>
-        // Either initializeOpenVisibleCounts or recomputeCountsRecursive runs
-        // below, and both populate subtreeNodeCount + visibleSubtreeCount
-        // from each directory's childIds. Skip the builder's own backward
-        // accumulation pass to avoid doing the same work twice on large
-        // presorted ingests.
-        builder.finish({ skipSubtreeCountPass: true })
+    const snapshot = withBenchmarkPhase(instrumentation, "store.builder.finish", () =>
+      // Either initializeOpenVisibleCounts or recomputeCountsRecursive runs
+      // below, and both populate subtreeNodeCount + visibleSubtreeCount
+      // from each directory's childIds. Skip the builder's own backward
+      // accumulation pass to avoid doing the same work twice on large
+      // presorted ingests.
+      builder.finish({ skipSubtreeCountPass: true }),
     );
     const useExplicitOpenExpansionFastPath = withBenchmarkPhase(
       instrumentation,
-      'store.state.detectAllDirectoriesExpanded',
+      "store.state.detectAllDirectoriesExpanded",
       () =>
-        (options.initialExpansion ?? 'closed') === 'closed' &&
-        builder.didMatchAllInitialExpandedPaths()
+        (options.initialExpansion ?? "closed") === "closed" &&
+        builder.didMatchAllInitialExpandedPaths(),
     );
-    this.#state = withBenchmarkPhase(
-      instrumentation,
-      'store.state.create',
-      () =>
-        createPathStoreState(
-          snapshot,
-          useExplicitOpenExpansionFastPath
-            ? 'open'
-            : (options.initialExpansion ?? 'closed'),
-          instrumentation
-        )
+    this.#state = withBenchmarkPhase(instrumentation, "store.state.create", () =>
+      createPathStoreState(
+        snapshot,
+        useExplicitOpenExpansionFastPath ? "open" : (options.initialExpansion ?? "closed"),
+        instrumentation,
+      ),
     );
     if (useExplicitOpenExpansionFastPath) {
       this.#state.collapseNewDirectoriesByDefault = true;
@@ -372,132 +341,102 @@ export class PathStore {
 
     const expandedDirectoryCount = useExplicitOpenExpansionFastPath
       ? this.#state.snapshot.directories.size - 1
-      : withBenchmarkPhase(
-          instrumentation,
-          'store.state.initializeExpandedPaths',
-          () => this.initializeExpandedPaths(options.initialExpandedPaths)
+      : withBenchmarkPhase(instrumentation, "store.state.initializeExpandedPaths", () =>
+          this.initializeExpandedPaths(options.initialExpandedPaths),
         );
     const canUseOpenVisibleCounts =
       useExplicitOpenExpansionFastPath ||
       canInitializeOpenVisibleCounts(options) ||
-      ((options.initialExpansion ?? 'closed') === 'closed' &&
+      ((options.initialExpansion ?? "closed") === "closed" &&
         expandedDirectoryCount === this.#state.snapshot.directories.size - 1) ||
       ((options.initialExpandedPaths?.length ?? 0) > 0 &&
-        withBenchmarkPhase(
-          instrumentation,
-          'store.state.checkAllDirectoriesExpanded',
-          () => this.hasAllDirectoriesExpanded()
+        withBenchmarkPhase(instrumentation, "store.state.checkAllDirectoriesExpanded", () =>
+          this.hasAllDirectoriesExpanded(),
         ));
     if (canUseOpenVisibleCounts) {
       if (options.useSoaCountSweep === true) {
-        withBenchmarkPhase(
-          instrumentation,
-          'store.state.initializeOpenVisibleCountsViaSoa',
-          () => initializeOpenVisibleCountsViaSoa(this.#state)
+        withBenchmarkPhase(instrumentation, "store.state.initializeOpenVisibleCountsViaSoa", () =>
+          initializeOpenVisibleCountsViaSoa(this.#state),
         );
       } else {
-        withBenchmarkPhase(
-          instrumentation,
-          'store.state.initializeOpenVisibleCounts',
-          () => initializeOpenVisibleCounts(this.#state)
+        withBenchmarkPhase(instrumentation, "store.state.initializeOpenVisibleCounts", () =>
+          initializeOpenVisibleCounts(this.#state),
         );
       }
     } else {
-      withBenchmarkPhase(instrumentation, 'store.state.recomputeCounts', () =>
-        recomputeCountsRecursive(this.#state, this.#state.snapshot.rootId)
+      withBenchmarkPhase(instrumentation, "store.state.recomputeCounts", () =>
+        recomputeCountsRecursive(this.#state, this.#state.snapshot.rootId),
       );
     }
   }
 
-  public static preparePaths(
-    paths: readonly string[],
-    options: PathStoreOptions = {}
-  ): string[] {
+  public static preparePaths(paths: readonly string[], options: PathStoreOptions = {}): string[] {
     return prepareCanonicalPaths(paths, options);
   }
 
   public static prepareInput(
     paths: readonly string[],
-    options: PathStoreOptions = {}
+    options: PathStoreOptions = {},
   ): PathStorePreparedInput {
     return prepareCanonicalInput(paths, options);
   }
 
-  public static preparePresortedInput(
-    paths: readonly string[]
-  ): PathStorePreparedInput {
+  public static preparePresortedInput(paths: readonly string[]): PathStorePreparedInput {
     return prepareCanonicalPresortedInput(paths);
   }
 
   public list(path?: string): string[] {
-    return withBenchmarkPhase(this.#state.instrumentation, 'store.list', () =>
-      listPaths(this.#state, path)
+    return withBenchmarkPhase(this.#state.instrumentation, "store.list", () =>
+      listPaths(this.#state, path),
     );
   }
 
   public add(path: string): void {
-    withBenchmarkPhase(this.#state.instrumentation, 'store.add', () => {
+    withBenchmarkPhase(this.#state.instrumentation, "store.add", () => {
       const previousVisibleCount = getVisibleCount(this.#state);
       recordEvent(
         this.#state,
-        finalizeEvent(
-          this.#state,
-          previousVisibleCount,
-          addPath(this.#state, path)
-        )
+        finalizeEvent(this.#state, previousVisibleCount, addPath(this.#state, path)),
       );
     });
   }
 
   public remove(path: string, options: PathStoreRemoveOptions = {}): void {
-    withBenchmarkPhase(this.#state.instrumentation, 'store.remove', () => {
+    withBenchmarkPhase(this.#state.instrumentation, "store.remove", () => {
       const previousVisibleCount = getVisibleCount(this.#state);
       recordEvent(
         this.#state,
-        finalizeEvent(
-          this.#state,
-          previousVisibleCount,
-          removePath(this.#state, path, options)
-        )
+        finalizeEvent(this.#state, previousVisibleCount, removePath(this.#state, path, options)),
       );
     });
   }
 
-  public move(
-    fromPath: string,
-    toPath: string,
-    options: PathStoreMoveOptions = {}
-  ): void {
-    withBenchmarkPhase(this.#state.instrumentation, 'store.move', () => {
+  public move(fromPath: string, toPath: string, options: PathStoreMoveOptions = {}): void {
+    withBenchmarkPhase(this.#state.instrumentation, "store.move", () => {
       const previousVisibleCount = getVisibleCount(this.#state);
       const event = movePath(this.#state, fromPath, toPath, options);
       if (event != null) {
-        recordEvent(
-          this.#state,
-          finalizeEvent(this.#state, previousVisibleCount, event)
-        );
+        recordEvent(this.#state, finalizeEvent(this.#state, previousVisibleCount, event));
       }
     });
   }
 
-  public batch(
-    operations: readonly PathStoreOperation[] | ((store: PathStore) => void)
-  ): void {
+  public batch(operations: readonly PathStoreOperation[] | ((store: PathStore) => void)): void {
     batchEvents(this.#state, () => {
-      if (typeof operations === 'function') {
+      if (typeof operations === "function") {
         operations(this);
         return;
       }
 
       for (const operation of operations) {
         switch (operation.type) {
-          case 'add':
+          case "add":
             this.add(operation.path);
             break;
-          case 'remove':
+          case "remove":
             this.remove(operation.path, { recursive: operation.recursive });
             break;
-          case 'move':
+          case "move":
             this.move(operation.from, operation.to, {
               collision: operation.collision,
             });
@@ -508,31 +447,20 @@ export class PathStore {
   }
 
   public getVisibleCount(): number {
-    return withBenchmarkPhase(
-      this.#state.instrumentation,
-      'store.getVisibleCount',
-      () => getVisibleCount(this.#state)
+    return withBenchmarkPhase(this.#state.instrumentation, "store.getVisibleCount", () =>
+      getVisibleCount(this.#state),
     );
   }
 
-  public getVisibleSlice(
-    start: number,
-    end: number
-  ): readonly PathStoreVisibleRow[] {
-    return withBenchmarkPhase(
-      this.#state.instrumentation,
-      'store.getVisibleSlice',
-      () => getVisibleSlice(this.#state, start, end)
+  public getVisibleSlice(start: number, end: number): readonly PathStoreVisibleRow[] {
+    return withBenchmarkPhase(this.#state.instrumentation, "store.getVisibleSlice", () =>
+      getVisibleSlice(this.#state, start, end),
     );
   }
 
-  public getVisibleRowContext(
-    index: number
-  ): PathStoreVisibleRowContext | null {
-    return withBenchmarkPhase(
-      this.#state.instrumentation,
-      'store.getVisibleRowContext',
-      () => getVisibleRowContext(this.#state, index)
+  public getVisibleRowContext(index: number): PathStoreVisibleRowContext | null {
+    return withBenchmarkPhase(this.#state.instrumentation, "store.getVisibleRowContext", () =>
+      getVisibleRowContext(this.#state, index),
     );
   }
 
@@ -540,9 +468,7 @@ export class PathStore {
     return getVisibleTreeProjectionFromState(this.#state);
   }
 
-  public getVisibleTreeProjectionData(
-    maxRows?: number
-  ): PathStoreVisibleTreeProjectionData {
+  public getVisibleTreeProjectionData(maxRows?: number): PathStoreVisibleTreeProjectionData {
     return getVisibleTreeProjectionDataFromState(this.#state, maxRows);
   }
 
@@ -551,10 +477,8 @@ export class PathStore {
    * index. Returns null when the path is unknown or currently hidden.
    */
   public getVisibleIndex(path: string): number | null {
-    return withBenchmarkPhase(
-      this.#state.instrumentation,
-      'store.getVisibleIndex',
-      () => getVisibleIndexByPath(this.#state, path)
+    return withBenchmarkPhase(this.#state.instrumentation, "store.getVisibleIndex", () =>
+      getVisibleIndexByPath(this.#state, path),
     );
   }
 
@@ -564,66 +488,52 @@ export class PathStore {
    * whole-tree metadata index alongside the store.
    */
   public getPathInfo(path: string): PathStorePathInfo | null {
-    return withBenchmarkPhase(
-      this.#state.instrumentation,
-      'store.getPathInfo',
-      () => {
-        const nodeId = findNodeId(this.#state, path);
-        if (nodeId == null) {
-          return null;
-        }
-
-        const node = requireNode(this.#state, nodeId);
-        return {
-          depth: getNodeDepth(node),
-          kind: isDirectoryNode(node) ? 'directory' : 'file',
-          path: materializeNodePath(this.#state, nodeId),
-        } satisfies PathStorePathInfo;
+    return withBenchmarkPhase(this.#state.instrumentation, "store.getPathInfo", () => {
+      const nodeId = findNodeId(this.#state, path);
+      if (nodeId == null) {
+        return null;
       }
-    );
+
+      const node = requireNode(this.#state, nodeId);
+      return {
+        depth: getNodeDepth(node),
+        kind: isDirectoryNode(node) ? "directory" : "file",
+        path: materializeNodePath(this.#state, nodeId),
+      } satisfies PathStorePathInfo;
+    });
   }
 
   public isExpanded(path: string): boolean {
-    return withBenchmarkPhase(
-      this.#state.instrumentation,
-      'store.isExpanded',
-      () => {
-        const directoryNodeId = this.requireDirectoryNodeId(path);
-        const directoryNode = requireNode(this.#state, directoryNodeId);
-        return isDirectoryExpanded(this.#state, directoryNodeId, directoryNode);
-      }
-    );
+    return withBenchmarkPhase(this.#state.instrumentation, "store.isExpanded", () => {
+      const directoryNodeId = this.requireDirectoryNodeId(path);
+      const directoryNode = requireNode(this.#state, directoryNodeId);
+      return isDirectoryExpanded(this.#state, directoryNodeId, directoryNode);
+    });
   }
 
   public expand(path: string): void {
-    withBenchmarkPhase(this.#state.instrumentation, 'store.expand', () => {
+    withBenchmarkPhase(this.#state.instrumentation, "store.expand", () => {
       const previousVisibleCount = getVisibleCount(this.#state);
       const event = expandPath(this.#state, path);
       if (event != null) {
-        recordEvent(
-          this.#state,
-          finalizeEvent(this.#state, previousVisibleCount, event)
-        );
+        recordEvent(this.#state, finalizeEvent(this.#state, previousVisibleCount, event));
       }
     });
   }
 
   public collapse(path: string): void {
-    withBenchmarkPhase(this.#state.instrumentation, 'store.collapse', () => {
+    withBenchmarkPhase(this.#state.instrumentation, "store.collapse", () => {
       const previousVisibleCount = getVisibleCount(this.#state);
       const event = collapsePath(this.#state, path);
       if (event != null) {
-        recordEvent(
-          this.#state,
-          finalizeEvent(this.#state, previousVisibleCount, event)
-        );
+        recordEvent(this.#state, finalizeEvent(this.#state, previousVisibleCount, event));
       }
     });
   }
 
-  public on<TType extends PathStoreEventType | '*'>(
+  public on<TType extends PathStoreEventType | "*">(
     type: TType,
-    handler: (event: PathStoreEventForType<TType>) => void
+    handler: (event: PathStoreEventForType<TType>) => void,
   ): () => void {
     return subscribe(this.#state, type, handler);
   }
@@ -634,310 +544,225 @@ export class PathStore {
   }
 
   public markDirectoryUnloaded(path: string): void {
-    withBenchmarkPhase(
-      this.#state.instrumentation,
-      'store.markDirectoryUnloaded',
-      () => {
-        const directoryNodeId = this.requireDirectoryNodeId(path);
-        if (
-          getDirectoryIndex(this.#state, directoryNodeId).childIds.length > 0
-        ) {
-          throw new Error(
-            `Cannot mark a directory with known children as unloaded: "${path}"`
-          );
-        }
-
-        const previousVisibleCount = getVisibleCount(this.#state);
-        markDirectoryUnloadedState(this.#state, directoryNodeId);
-        recordEvent(
-          this.#state,
-          finalizeEvent(
-            this.#state,
-            previousVisibleCount,
-            createMarkDirectoryUnloadedEvent({
-              affectedAncestorIds: collectAncestorIds(
-                this.#state,
-                directoryNodeId
-              ),
-              affectedNodeIds: [directoryNodeId],
-              path,
-              projectionChanged:
-                this.isDirectoryProjectionVisible(directoryNodeId),
-            })
-          )
-        );
+    withBenchmarkPhase(this.#state.instrumentation, "store.markDirectoryUnloaded", () => {
+      const directoryNodeId = this.requireDirectoryNodeId(path);
+      if (getDirectoryIndex(this.#state, directoryNodeId).childIds.length > 0) {
+        throw new Error(`Cannot mark a directory with known children as unloaded: "${path}"`);
       }
-    );
+
+      const previousVisibleCount = getVisibleCount(this.#state);
+      markDirectoryUnloadedState(this.#state, directoryNodeId);
+      recordEvent(
+        this.#state,
+        finalizeEvent(
+          this.#state,
+          previousVisibleCount,
+          createMarkDirectoryUnloadedEvent({
+            affectedAncestorIds: collectAncestorIds(this.#state, directoryNodeId),
+            affectedNodeIds: [directoryNodeId],
+            path,
+            projectionChanged: this.isDirectoryProjectionVisible(directoryNodeId),
+          }),
+        ),
+      );
+    });
   }
 
   public beginChildLoad(path: string): PathStoreLoadAttempt {
-    return withBenchmarkPhase(
-      this.#state.instrumentation,
-      'store.beginChildLoad',
-      () => {
-        const directoryNodeId = this.requireDirectoryNodeId(path);
-        const previousVisibleCount = getVisibleCount(this.#state);
-        const attempt = beginDirectoryLoad(this.#state, directoryNodeId);
-        recordEvent(
+    return withBenchmarkPhase(this.#state.instrumentation, "store.beginChildLoad", () => {
+      const directoryNodeId = this.requireDirectoryNodeId(path);
+      const previousVisibleCount = getVisibleCount(this.#state);
+      const attempt = beginDirectoryLoad(this.#state, directoryNodeId);
+      recordEvent(
+        this.#state,
+        finalizeEvent(
           this.#state,
-          finalizeEvent(
-            this.#state,
-            previousVisibleCount,
-            createBeginChildLoadEvent({
-              affectedAncestorIds: collectAncestorIds(
-                this.#state,
-                directoryNodeId
-              ),
-              affectedNodeIds: [directoryNodeId],
-              attemptId: attempt.attemptId,
-              path,
-              projectionChanged:
-                this.isDirectoryProjectionVisible(directoryNodeId),
-              reused: attempt.reused,
-            })
-          )
-        );
-        return attempt;
-      }
-    );
+          previousVisibleCount,
+          createBeginChildLoadEvent({
+            affectedAncestorIds: collectAncestorIds(this.#state, directoryNodeId),
+            affectedNodeIds: [directoryNodeId],
+            attemptId: attempt.attemptId,
+            path,
+            projectionChanged: this.isDirectoryProjectionVisible(directoryNodeId),
+            reused: attempt.reused,
+          }),
+        ),
+      );
+      return attempt;
+    });
   }
 
-  public applyChildPatch(
-    attempt: PathStoreLoadAttempt,
-    patch: PathStoreChildPatch
-  ): boolean {
-    return withBenchmarkPhase(
-      this.#state.instrumentation,
-      'store.applyChildPatch',
-      () => {
-        const directoryNodeId = this.resolveActiveDirectoryNodeId(
-          attempt.nodeId
-        );
-        if (
-          directoryNodeId == null ||
-          getStoredDirectoryLoadState(this.#state, directoryNodeId) !==
-            'loading' ||
-          !isDirectoryLoadAttemptCurrent(
-            this.#state,
-            directoryNodeId,
-            attempt.attemptId
-          )
-        ) {
-          return false;
-        }
+  public applyChildPatch(attempt: PathStoreLoadAttempt, patch: PathStoreChildPatch): boolean {
+    return withBenchmarkPhase(this.#state.instrumentation, "store.applyChildPatch", () => {
+      const directoryNodeId = this.resolveActiveDirectoryNodeId(attempt.nodeId);
+      if (
+        directoryNodeId == null ||
+        getStoredDirectoryLoadState(this.#state, directoryNodeId) !== "loading" ||
+        !isDirectoryLoadAttemptCurrent(this.#state, directoryNodeId, attempt.attemptId)
+      ) {
+        return false;
+      }
 
-        const directoryPath = materializeNodePath(this.#state, directoryNodeId);
-        this.validateChildPatch(directoryPath, patch);
-        const previousVisibleCount = getVisibleCount(this.#state);
-        const childEvents: import('./public-types').PathStoreSemanticEvent[] =
-          [];
+      const directoryPath = materializeNodePath(this.#state, directoryNodeId);
+      this.validateChildPatch(directoryPath, patch);
+      const previousVisibleCount = getVisibleCount(this.#state);
+      const childEvents: import("./public-types").PathStoreSemanticEvent[] = [];
 
-        for (const operation of patch.operations) {
-          assertOperationTargetsDirectory(directoryPath, operation);
-          const operationVisibleCount = getVisibleCount(this.#state);
+      for (const operation of patch.operations) {
+        assertOperationTargetsDirectory(directoryPath, operation);
+        const operationVisibleCount = getVisibleCount(this.#state);
 
-          switch (operation.type) {
-            case 'add':
-              childEvents.push(
-                finalizeEvent(
-                  this.#state,
-                  operationVisibleCount,
-                  addPath(this.#state, operation.path)
-                )
-              );
-              break;
-            case 'remove':
-              childEvents.push(
-                finalizeEvent(
-                  this.#state,
-                  operationVisibleCount,
-                  removePath(this.#state, operation.path, {
-                    recursive: operation.recursive,
-                  })
-                )
-              );
-              break;
-            case 'move': {
-              const event = movePath(
+        switch (operation.type) {
+          case "add":
+            childEvents.push(
+              finalizeEvent(
                 this.#state,
-                operation.from,
-                operation.to,
-                { collision: operation.collision }
-              );
-              if (event != null) {
-                childEvents.push(
-                  finalizeEvent(this.#state, operationVisibleCount, event)
-                );
-              }
-              break;
+                operationVisibleCount,
+                addPath(this.#state, operation.path),
+              ),
+            );
+            break;
+          case "remove":
+            childEvents.push(
+              finalizeEvent(
+                this.#state,
+                operationVisibleCount,
+                removePath(this.#state, operation.path, {
+                  recursive: operation.recursive,
+                }),
+              ),
+            );
+            break;
+          case "move": {
+            const event = movePath(this.#state, operation.from, operation.to, {
+              collision: operation.collision,
+            });
+            if (event != null) {
+              childEvents.push(finalizeEvent(this.#state, operationVisibleCount, event));
             }
+            break;
           }
         }
-
-        const projectionChanged =
-          childEvents.some((event) => event.projectionChanged) ||
-          this.isDirectoryProjectionVisible(directoryNodeId);
-
-        recordEvent(
-          this.#state,
-          finalizeEvent(
-            this.#state,
-            previousVisibleCount,
-            createApplyChildPatchEvent({
-              affectedAncestorIds: collectAncestorIds(
-                this.#state,
-                directoryNodeId
-              ),
-              affectedNodeIds: [directoryNodeId],
-              attemptId: attempt.attemptId,
-              childEvents,
-              path: materializeNodePath(this.#state, directoryNodeId),
-              projectionChanged,
-            })
-          )
-        );
-
-        return true;
       }
-    );
+
+      const projectionChanged =
+        childEvents.some((event) => event.projectionChanged) ||
+        this.isDirectoryProjectionVisible(directoryNodeId);
+
+      recordEvent(
+        this.#state,
+        finalizeEvent(
+          this.#state,
+          previousVisibleCount,
+          createApplyChildPatchEvent({
+            affectedAncestorIds: collectAncestorIds(this.#state, directoryNodeId),
+            affectedNodeIds: [directoryNodeId],
+            attemptId: attempt.attemptId,
+            childEvents,
+            path: materializeNodePath(this.#state, directoryNodeId),
+            projectionChanged,
+          }),
+        ),
+      );
+
+      return true;
+    });
   }
 
   public completeChildLoad(attempt: PathStoreLoadAttempt): boolean {
-    return withBenchmarkPhase(
-      this.#state.instrumentation,
-      'store.completeChildLoad',
-      () => {
-        const directoryNodeId = this.resolveActiveDirectoryNodeId(
-          attempt.nodeId
-        );
-        if (directoryNodeId == null) {
-          return false;
-        }
-        const previousVisibleCount = getVisibleCount(this.#state);
-        const applied = completeDirectoryLoad(
-          this.#state,
-          directoryNodeId,
-          attempt.attemptId
-        );
-        recordEvent(
-          this.#state,
-          finalizeEvent(
-            this.#state,
-            previousVisibleCount,
-            createCompleteChildLoadEvent({
-              affectedAncestorIds: collectAncestorIds(
-                this.#state,
-                directoryNodeId
-              ),
-              affectedNodeIds: [directoryNodeId],
-              attemptId: attempt.attemptId,
-              path: materializeNodePath(this.#state, directoryNodeId),
-              projectionChanged:
-                this.isDirectoryProjectionVisible(directoryNodeId),
-              stale: !applied,
-            })
-          )
-        );
-        return applied;
+    return withBenchmarkPhase(this.#state.instrumentation, "store.completeChildLoad", () => {
+      const directoryNodeId = this.resolveActiveDirectoryNodeId(attempt.nodeId);
+      if (directoryNodeId == null) {
+        return false;
       }
-    );
+      const previousVisibleCount = getVisibleCount(this.#state);
+      const applied = completeDirectoryLoad(this.#state, directoryNodeId, attempt.attemptId);
+      recordEvent(
+        this.#state,
+        finalizeEvent(
+          this.#state,
+          previousVisibleCount,
+          createCompleteChildLoadEvent({
+            affectedAncestorIds: collectAncestorIds(this.#state, directoryNodeId),
+            affectedNodeIds: [directoryNodeId],
+            attemptId: attempt.attemptId,
+            path: materializeNodePath(this.#state, directoryNodeId),
+            projectionChanged: this.isDirectoryProjectionVisible(directoryNodeId),
+            stale: !applied,
+          }),
+        ),
+      );
+      return applied;
+    });
   }
 
-  public failChildLoad(
-    attempt: PathStoreLoadAttempt,
-    errorMessage?: string
-  ): boolean {
-    return withBenchmarkPhase(
-      this.#state.instrumentation,
-      'store.failChildLoad',
-      () => {
-        const directoryNodeId = this.resolveActiveDirectoryNodeId(
-          attempt.nodeId
-        );
-        if (directoryNodeId == null) {
-          return false;
-        }
-        const previousVisibleCount = getVisibleCount(this.#state);
-        const applied = failDirectoryLoad(
-          this.#state,
-          directoryNodeId,
-          attempt.attemptId,
-          errorMessage
-        );
-        recordEvent(
-          this.#state,
-          finalizeEvent(
-            this.#state,
-            previousVisibleCount,
-            createFailChildLoadEvent({
-              affectedAncestorIds: collectAncestorIds(
-                this.#state,
-                directoryNodeId
-              ),
-              affectedNodeIds: [directoryNodeId],
-              attemptId: attempt.attemptId,
-              errorMessage,
-              path: materializeNodePath(this.#state, directoryNodeId),
-              projectionChanged:
-                this.isDirectoryProjectionVisible(directoryNodeId),
-              stale: !applied,
-            })
-          )
-        );
-        return applied;
+  public failChildLoad(attempt: PathStoreLoadAttempt, errorMessage?: string): boolean {
+    return withBenchmarkPhase(this.#state.instrumentation, "store.failChildLoad", () => {
+      const directoryNodeId = this.resolveActiveDirectoryNodeId(attempt.nodeId);
+      if (directoryNodeId == null) {
+        return false;
       }
-    );
+      const previousVisibleCount = getVisibleCount(this.#state);
+      const applied = failDirectoryLoad(
+        this.#state,
+        directoryNodeId,
+        attempt.attemptId,
+        errorMessage,
+      );
+      recordEvent(
+        this.#state,
+        finalizeEvent(
+          this.#state,
+          previousVisibleCount,
+          createFailChildLoadEvent({
+            affectedAncestorIds: collectAncestorIds(this.#state, directoryNodeId),
+            affectedNodeIds: [directoryNodeId],
+            attemptId: attempt.attemptId,
+            errorMessage,
+            path: materializeNodePath(this.#state, directoryNodeId),
+            projectionChanged: this.isDirectoryProjectionVisible(directoryNodeId),
+            stale: !applied,
+          }),
+        ),
+      );
+      return applied;
+    });
   }
 
-  public cleanup(
-    options: PathStoreCleanupOptions = {}
-  ): PathStoreCleanupResult {
-    return withBenchmarkPhase(
-      this.#state.instrumentation,
-      'store.cleanup',
-      () => {
-        if (this.#state.transactionStack.length > 0) {
-          throw new Error(
-            'Cleanup cannot run during an open batch or transaction.'
-          );
-        }
-
-        if (hasActiveCleanupBlockingLoads(this.#state)) {
-          throw new Error(
-            'Cleanup cannot run while directory loads are active.'
-          );
-        }
-
-        const previousVisibleCount = getVisibleCount(this.#state);
-        const result = cleanupPathStoreState(
-          this.#state,
-          options.mode ?? 'stable'
-        );
-        recordEvent(
-          this.#state,
-          finalizeEvent(
-            this.#state,
-            previousVisibleCount,
-            createCleanupEvent({
-              ...result,
-              affectedAncestorIds: [],
-              affectedNodeIds: [],
-              projectionChanged: result.idsPreserved === false,
-            })
-          )
-        );
-        return result;
+  public cleanup(options: PathStoreCleanupOptions = {}): PathStoreCleanupResult {
+    return withBenchmarkPhase(this.#state.instrumentation, "store.cleanup", () => {
+      if (this.#state.transactionStack.length > 0) {
+        throw new Error("Cleanup cannot run during an open batch or transaction.");
       }
-    );
+
+      if (hasActiveCleanupBlockingLoads(this.#state)) {
+        throw new Error("Cleanup cannot run while directory loads are active.");
+      }
+
+      const previousVisibleCount = getVisibleCount(this.#state);
+      const result = cleanupPathStoreState(this.#state, options.mode ?? "stable");
+      recordEvent(
+        this.#state,
+        finalizeEvent(
+          this.#state,
+          previousVisibleCount,
+          createCleanupEvent({
+            ...result,
+            affectedAncestorIds: [],
+            affectedNodeIds: [],
+            projectionChanged: result.idsPreserved === false,
+          }),
+        ),
+      );
+      return result;
+    });
   }
 
   public getNodeCount(): number {
     return this.#state.activeNodeCount;
   }
 
-  private initializeExpandedPaths(
-    expandedPaths: readonly string[] | undefined
-  ): number {
+  private initializeExpandedPaths(expandedPaths: readonly string[] | undefined): number {
     if (expandedPaths == null || expandedPaths.length === 0) {
       return 0;
     }
@@ -950,10 +775,7 @@ export class PathStore {
     const segmentTable = this.#state.snapshot.segmentTable;
     const segmentValues = segmentTable.valueById;
     const nodes = this.#state.snapshot.nodes;
-    const targetSegmentSortKeyCache = new Map<
-      string,
-      ReturnType<typeof createSegmentSortKey>
-    >();
+    const targetSegmentSortKeyCache = new Map<string, ReturnType<typeof createSegmentSortKey>>();
 
     for (const path of expandedPaths) {
       if (previousPath != null && path < previousPath) {
@@ -963,8 +785,7 @@ export class PathStore {
         previousNodeIds.length = 0;
       }
 
-      const hasTrailingSlash =
-        path.length > 0 && path.charCodeAt(path.length - 1) === 47;
+      const hasTrailingSlash = path.length > 0 && path.charCodeAt(path.length - 1) === 47;
       const endIndex = hasTrailingSlash ? path.length - 1 : path.length;
       if (endIndex === 0) {
         previousPath = path;
@@ -1021,31 +842,20 @@ export class PathStore {
       let segmentStart = unsharedSegmentStart;
 
       while (segmentStart <= endIndex) {
-        const slashIndex = path.indexOf('/', segmentStart);
-        const segmentEnd =
-          slashIndex === -1 || slashIndex > endIndex ? endIndex : slashIndex;
+        const slashIndex = path.indexOf("/", segmentStart);
+        const segmentEnd = slashIndex === -1 || slashIndex > endIndex ? endIndex : slashIndex;
         const segment = path.slice(segmentStart, segmentEnd);
         const currentIndex = getDirectoryIndex(this.#state, currentDirectoryId);
         const childIds = currentIndex.childIds;
         const searchStartIndex =
-          resolvedDepth === sharedDepth
-            ? (previousChildOffsets[resolvedDepth] ?? 0)
-            : 0;
+          resolvedDepth === sharedDepth ? (previousChildOffsets[resolvedDepth] ?? 0) : 0;
         let nextChildOffset = searchStartIndex;
         let nextNodeId: number | undefined;
         const targetSegmentSortKey =
-          targetSegmentSortKeyCache.get(segment) ??
-          createSegmentSortKey(segment);
+          targetSegmentSortKeyCache.get(segment) ?? createSegmentSortKey(segment);
         targetSegmentSortKeyCache.set(segment, targetSegmentSortKey);
-        const searchForSegment = (
-          startIndex: number,
-          endIndex: number
-        ): boolean => {
-          for (
-            nextChildOffset = startIndex;
-            nextChildOffset < endIndex;
-            nextChildOffset += 1
-          ) {
+        const searchForSegment = (startIndex: number, endIndex: number): boolean => {
+          for (nextChildOffset = startIndex; nextChildOffset < endIndex; nextChildOffset += 1) {
             const candidateNodeId = childIds[nextChildOffset];
             const candidateNode = nodes[candidateNodeId];
             const candidateSegment = segmentValues[candidateNode.nameId];
@@ -1055,22 +865,16 @@ export class PathStore {
             }
             const orderComparison = compareSegmentSortKeys(
               getSegmentSortKey(segmentTable, candidateNode.nameId),
-              targetSegmentSortKey
+              targetSegmentSortKey,
             );
-            if (
-              orderComparison > 0 ||
-              (orderComparison === 0 && candidateSegment > segment)
-            ) {
+            if (orderComparison > 0 || (orderComparison === 0 && candidateSegment > segment)) {
               return false;
             }
           }
           return false;
         };
 
-        const foundFromStart = searchForSegment(
-          searchStartIndex,
-          childIds.length
-        );
+        const foundFromStart = searchForSegment(searchStartIndex, childIds.length);
         if (!foundFromStart && searchStartIndex > 0) {
           searchForSegment(0, searchStartIndex);
         }
@@ -1110,11 +914,7 @@ export class PathStore {
         continue;
       }
 
-      for (
-        let depthIndex = sharedDepth;
-        depthIndex < resolvedDepth;
-        depthIndex += 1
-      ) {
+      for (let depthIndex = sharedDepth; depthIndex < resolvedDepth; depthIndex += 1) {
         const directoryNodeId = previousNodeIds[depthIndex];
         if (directoryNodeId == null) {
           continue;
@@ -1183,10 +983,7 @@ export class PathStore {
       const parentId = currentNode.parentId;
       if (parentId !== this.#state.snapshot.rootId) {
         const parentNode = requireNode(this.#state, parentId);
-        const flattenedChildDirectoryId = getFlattenedChildDirectoryId(
-          this.#state,
-          parentId
-        );
+        const flattenedChildDirectoryId = getFlattenedChildDirectoryId(this.#state, parentId);
         if (
           !isDirectoryExpanded(this.#state, parentId, parentNode) &&
           flattenedChildDirectoryId !== currentNodeId
@@ -1200,10 +997,7 @@ export class PathStore {
     return true;
   }
 
-  private validateChildPatch(
-    directoryPath: string,
-    patch: PathStoreChildPatch
-  ): void {
+  private validateChildPatch(directoryPath: string, patch: PathStoreChildPatch): void {
     // Validate the whole child patch against a throwaway subtree store first so
     // the real store stays atomic if any later operation would fail. This is an
     // intentionally heavier O(n) preflight for large directories and a targeted
@@ -1219,21 +1013,18 @@ export class PathStore {
 
 function assertOperationTargetsDirectory(
   directoryPath: string,
-  operation: PathStoreOperation
+  operation: PathStoreOperation,
 ): void {
   switch (operation.type) {
-    case 'add':
-    case 'remove':
-      if (
-        !operation.path.startsWith(directoryPath) ||
-        operation.path === directoryPath
-      ) {
+    case "add":
+    case "remove":
+      if (!operation.path.startsWith(directoryPath) || operation.path === directoryPath) {
         throw new Error(
-          `Child patch operation must stay within ${directoryPath}: "${operation.path}"`
+          `Child patch operation must stay within ${directoryPath}: "${operation.path}"`,
         );
       }
       break;
-    case 'move':
+    case "move":
       if (
         !operation.from.startsWith(directoryPath) ||
         !operation.to.startsWith(directoryPath) ||
@@ -1241,7 +1032,7 @@ function assertOperationTargetsDirectory(
         operation.to === directoryPath
       ) {
         throw new Error(
-          `Child patch move must stay within ${directoryPath}: "${operation.from}" -> "${operation.to}"`
+          `Child patch move must stay within ${directoryPath}: "${operation.from}" -> "${operation.to}"`,
         );
       }
       break;

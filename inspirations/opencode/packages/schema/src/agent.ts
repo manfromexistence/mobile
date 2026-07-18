@@ -1,20 +1,20 @@
-export * as Agent from "./agent"
+export * as Agent from "./agent";
 
-import { Schema } from "effect"
-import { optional } from "./schema"
-import { Model } from "./model"
-import { Permission } from "./permission"
-import { Provider } from "./provider"
-import { PositiveInt, statics } from "./schema"
+import { Schema } from "effect";
+import { optional } from "./schema";
+import { Model } from "./model";
+import { Permission } from "./permission";
+import { Provider } from "./provider";
+import { PositiveInt, statics } from "./schema";
 
-export const ID = Schema.String.pipe(Schema.brand("AgentV2.ID"))
-export type ID = typeof ID.Type
+export const ID = Schema.String.pipe(Schema.brand("AgentV2.ID"));
+export type ID = typeof ID.Type;
 
 export const Color = Schema.Union([
   Schema.String.check(Schema.isPattern(/^#[0-9a-fA-F]{6}$/)),
   Schema.Literals(["primary", "secondary", "accent", "success", "warning", "error", "info"]),
-]).annotate({ identifier: "Agent.Color" })
-export type Color = typeof Color.Type
+]).annotate({ identifier: "Agent.Color" });
+export type Color = typeof Color.Type;
 
 export interface Info extends Schema.Schema.Type<typeof Info> {}
 export const Info = Schema.Struct({
@@ -33,6 +33,12 @@ export const Info = Schema.Struct({
   .pipe(
     statics((schema) => ({
       empty: (id: ID) =>
-        schema.make({ id, request: { headers: {}, body: {} }, mode: "all", hidden: false, permissions: [] }),
+        schema.make({
+          id,
+          request: { headers: {}, body: {} },
+          mode: "all",
+          hidden: false,
+          permissions: [],
+        }),
     })),
-  )
+  );

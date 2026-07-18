@@ -1,8 +1,8 @@
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
-const packageJson = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
-const outputPath = './src/wasm-from-cdn.ts';
+const packageJson = JSON.parse(fs.readFileSync("./package.json", "utf8"));
+const outputPath = "./src/wasm-from-cdn.ts";
 
 const version = packageJson.version;
 const outputContent = `

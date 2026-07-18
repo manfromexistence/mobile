@@ -27,10 +27,10 @@ function parseStringArray(match) {
 
 const guardSrc = fs.readFileSync(ROUTE_GUARD_PATH, "utf-8");
 const LOCAL_ONLY_PREFIXES = parseStringArray(
-  guardSrc.match(/export const LOCAL_ONLY_API_PREFIXES.*?=\s*\[([^\]]+)\]/s)
+  guardSrc.match(/export const LOCAL_ONLY_API_PREFIXES.*?=\s*\[([^\]]+)\]/s),
 );
 const ALWAYS_PROTECTED_PATHS = parseStringArray(
-  guardSrc.match(/export const ALWAYS_PROTECTED_API_PATHS.*?=\s*\[([^\]]+)\]/s)
+  guardSrc.match(/export const ALWAYS_PROTECTED_API_PATHS.*?=\s*\[([^\]]+)\]/s),
 );
 
 if (LOCAL_ONLY_PREFIXES.length === 0 || ALWAYS_PROTECTED_PATHS.length === 0) {
@@ -56,19 +56,19 @@ for (const [pathStr, methods] of Object.entries(paths)) {
       if (!matchesPrefix) {
         errors.push(
           `${method.toUpperCase()} ${pathStr}: has x-loopback-only but is NOT covered by ` +
-            `LOCAL_ONLY_API_PREFIXES [${LOCAL_ONLY_PREFIXES.join(", ")}]`
+            `LOCAL_ONLY_API_PREFIXES [${LOCAL_ONLY_PREFIXES.join(", ")}]`,
         );
       }
     }
 
     if (spec["x-always-protected"] === true) {
       const matchesPath = ALWAYS_PROTECTED_PATHS.some(
-        (p) => pathStr === p || pathStr.startsWith(`${p}/`)
+        (p) => pathStr === p || pathStr.startsWith(`${p}/`),
       );
       if (!matchesPath) {
         errors.push(
           `${method.toUpperCase()} ${pathStr}: has x-always-protected but is NOT in ` +
-            `ALWAYS_PROTECTED_API_PATHS [${ALWAYS_PROTECTED_PATHS.join(", ")}]`
+            `ALWAYS_PROTECTED_API_PATHS [${ALWAYS_PROTECTED_PATHS.join(", ")}]`,
         );
       }
     }
@@ -97,7 +97,7 @@ for (const [pathStr, methods] of Object.entries(paths)) {
     if (spec["x-loopback-only"] !== true) {
       reverseWarnings.push(
         `${method.toUpperCase()} ${pathStr}: falls under LOCAL_ONLY_API_PREFIXES ` +
-          `but is missing x-loopback-only: true annotation`
+          `but is missing x-loopback-only: true annotation`,
       );
     }
   }
@@ -105,7 +105,7 @@ for (const [pathStr, methods] of Object.entries(paths)) {
 
 if (reverseWarnings.length > 0) {
   console.warn(
-    `[openapi-security-tiers] WARN — ${reverseWarnings.length} LOCAL_ONLY paths missing x-loopback-only annotation (non-fatal, follow-up doc PR):`
+    `[openapi-security-tiers] WARN — ${reverseWarnings.length} LOCAL_ONLY paths missing x-loopback-only annotation (non-fatal, follow-up doc PR):`,
   );
   reverseWarnings.forEach((w) => console.warn(`  - ${w}`));
 }

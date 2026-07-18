@@ -37,7 +37,10 @@ try {
   process.exit(2);
 }
 // Always skip VCS + the exclude dirs (normalise to bare top-level names).
-const SKIP_DIRS = new Set([".git", ...exclude.map((e) => e.replace(/^\.\//, "").replace(/\/.*$/, ""))]);
+const SKIP_DIRS = new Set([
+  ".git",
+  ...exclude.map((e) => e.replace(/^\.\//, "").replace(/\/.*$/, "")),
+]);
 
 let count = 0;
 const byTop = {};
@@ -88,7 +91,7 @@ if (count > MAX) {
       `   tsconfig include scope (worktree, vendored copy, or build output). This poisons\n` +
       `   \`next build\` (OOM/GC-livelock). Add the offending dir to tsconfig.json "exclude"\n` +
       `   (and .dockerignore). Worktrees MUST live under .claude/worktrees/ (already excluded).\n` +
-      `   Heap size does NOT fix this — a clean scope does. See incident 2026-06-25.`
+      `   Heap size does NOT fix this — a clean scope does. See incident 2026-06-25.`,
   );
   process.exit(1);
 }

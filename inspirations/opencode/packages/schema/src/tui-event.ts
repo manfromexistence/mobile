@@ -1,14 +1,17 @@
-export * as TuiEvent from "./tui-event"
+export * as TuiEvent from "./tui-event";
 
-import { Effect, Schema } from "effect"
-import { optional } from "./schema"
-import { Event } from "./event"
-import { PositiveInt } from "./schema"
-import { SessionID } from "./session-id"
+import { Effect, Schema } from "effect";
+import { optional } from "./schema";
+import { Event } from "./event";
+import { PositiveInt } from "./schema";
+import { SessionID } from "./session-id";
 
-const DEFAULT_TOAST_DURATION = 5000
+const DEFAULT_TOAST_DURATION = 5000;
 
-export const PromptAppend = Event.define({ type: "tui.prompt.append", schema: { text: Schema.String } })
+export const PromptAppend = Event.define({
+  type: "tui.prompt.append",
+  schema: { text: Schema.String },
+});
 
 export const CommandExecute = Event.define({
   type: "tui.command.execute",
@@ -35,7 +38,7 @@ export const CommandExecute = Event.define({
       Schema.String,
     ]),
   },
-})
+});
 
 export const ToastShow = Event.define({
   type: "tui.toast.show",
@@ -43,17 +46,19 @@ export const ToastShow = Event.define({
     title: optional(Schema.String),
     message: Schema.String,
     variant: Schema.Literals(["info", "success", "warning", "error"]),
-    duration: PositiveInt.pipe(Schema.withDecodingDefault(Effect.succeed(DEFAULT_TOAST_DURATION))).annotate({
+    duration: PositiveInt.pipe(
+      Schema.withDecodingDefault(Effect.succeed(DEFAULT_TOAST_DURATION)),
+    ).annotate({
       description: "Duration in milliseconds",
     }),
   },
-})
+});
 
 export const SessionSelect = Event.define({
   type: "tui.session.select",
   schema: {
     sessionID: SessionID.annotate({ description: "Session ID to navigate to" }),
   },
-})
+});
 
-export const Definitions = Event.inventory(PromptAppend, CommandExecute, ToastShow, SessionSelect)
+export const Definitions = Event.inventory(PromptAppend, CommandExecute, ToastShow, SessionSelect);

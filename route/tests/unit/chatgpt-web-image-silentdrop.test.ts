@@ -62,7 +62,7 @@ test("handler surfaces a specific 502 when the image was generated but not retri
   // must NOT be the misleading "completed without returning image markdown"
   assert.ok(
     !/completed without returning image markdown/i.test(res.error),
-    `expected specific retrieval error, got: ${res.error}`
+    `expected specific retrieval error, got: ${res.error}`,
   );
   // must clearly say the image was generated but could not be retrieved
   assert.match(res.error, /could not (be )?retriev|generated an image but/i);

@@ -56,11 +56,11 @@ test("#7149: a proxy assigned to a Combo via the dashboard (registry scope='comb
 
   const directRegistryLookup = (await proxiesDb.resolveProxyForScopeFromRegistry(
     "combo",
-    comboId
+    comboId,
   )) as ProxyResolutionLike;
   assert.ok(
     directRegistryLookup?.proxy,
-    "the registry must be able to answer a direct combo-scope lookup"
+    "the registry must be able to answer a direct combo-scope lookup",
   );
   assert.equal(directRegistryLookup?.proxy?.host, "10.20.30.40");
 
@@ -75,13 +75,13 @@ test("#7149: a proxy assigned to a Combo via the dashboard (registry scope='comb
   assert.ok(connectionId, "test setup requires a real connection id");
 
   const resolved = (await settingsDb.resolveProxyForConnection(
-    connectionId
+    connectionId,
   )) as ProxyResolutionLike;
 
   assert.equal(
     resolved?.level,
     "combo",
-    `expected the combo-assigned proxy to be resolved (level="combo"), got level="${resolved?.level}" — the registry-based combo proxy assignment is never consulted by resolveProxyForConnection()`
+    `expected the combo-assigned proxy to be resolved (level="combo"), got level="${resolved?.level}" — the registry-based combo proxy assignment is never consulted by resolveProxyForConnection()`,
   );
   assert.equal(resolved?.proxy?.host, "10.20.30.40");
 });

@@ -48,7 +48,7 @@ export async function GET(request?: Request) {
   return getSpecialtyModelsResponse(
     request,
     "/v1/images/generations",
-    (model) => model.type === "image"
+    (model) => model.type === "image",
   );
 }
 
@@ -141,7 +141,7 @@ async function postHandler(request, context) {
   if (!provider) {
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
-      `Invalid image model: ${body.model}. Use format: provider/model`
+      `Invalid image model: ${body.model}. Use format: provider/model`,
     );
   }
 
@@ -157,14 +157,14 @@ async function postHandler(request, context) {
   if (requiresPrompt && !hasPrompt) {
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
-      `Prompt is required for image model: ${body.model}`
+      `Prompt is required for image model: ${body.model}`,
     );
   }
 
   if (requiresImageInput && !hasImageInput) {
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
-      `Image input is required for image model: ${body.model}`
+      `Image input is required for image model: ${body.model}`,
     );
   }
 
@@ -175,7 +175,7 @@ async function postHandler(request, context) {
     if (!credentials) {
       return errorResponse(
         HTTP_STATUS.BAD_REQUEST,
-        `No credentials for image provider: ${provider}`
+        `No credentials for image provider: ${provider}`,
       );
     }
     if (credentials.allRateLimited) {
@@ -183,7 +183,7 @@ async function postHandler(request, context) {
         HTTP_STATUS.RATE_LIMITED,
         `[${provider}] All accounts rate limited`,
         credentials.retryAfter,
-        credentials.retryAfterHuman
+        credentials.retryAfterHuman,
       );
     }
   } else if (isCustomModel) {
@@ -191,7 +191,7 @@ async function postHandler(request, context) {
     if (!credentials) {
       return errorResponse(
         HTTP_STATUS.BAD_REQUEST,
-        `No credentials for custom image provider: ${provider}`
+        `No credentials for custom image provider: ${provider}`,
       );
     }
     if (credentials.allRateLimited) {
@@ -199,7 +199,7 @@ async function postHandler(request, context) {
         HTTP_STATUS.RATE_LIMITED,
         `[${provider}] All accounts rate limited`,
         credentials.retryAfter,
-        credentials.retryAfterHuman
+        credentials.retryAfterHuman,
       );
     }
   }
@@ -237,7 +237,7 @@ async function postHandler(request, context) {
     await clearRecoveredProviderState(credentials);
     const n = Math.max(
       Number(body.n) || 1,
-      (result as { data?: { data?: unknown[] } }).data?.data?.length || 0
+      (result as { data?: { data?: unknown[] } }).data?.data?.length || 0,
     );
     const costUsd = await calculateModalCost("image", provider, body.model, { n });
     const headers = new Headers({ "Content-Type": "application/json" });

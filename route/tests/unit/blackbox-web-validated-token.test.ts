@@ -68,7 +68,7 @@ test("#2252 — whitespace-only env falls back to random UUID", () => {
     const token = resolveBlackboxValidatedToken();
     assert.match(
       token,
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
     );
   } finally {
     restoreEnv();
@@ -88,7 +88,7 @@ test("#2252 — executor uses resolveBlackboxValidatedToken in transformedBody",
   assert.doesNotMatch(
     source.split("transformedBody = {")[1]?.split("};")[0] ?? "",
     /validated: crypto\.randomUUID\(\)/,
-    "transformedBody must call resolveBlackboxValidatedToken() instead of crypto.randomUUID() directly"
+    "transformedBody must call resolveBlackboxValidatedToken() instead of crypto.randomUUID() directly",
   );
   assert.match(source, /validated: resolveBlackboxValidatedToken\(\)/);
 });

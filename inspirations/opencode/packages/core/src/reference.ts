@@ -1,41 +1,41 @@
-export * as Reference from "./reference"
+export * as Reference from "./reference";
 
-import { makeLocationNode } from "./effect/app-node"
-import { Context, Effect, Layer, Scope, Types } from "effect"
-import { Reference } from "@opencode-ai/schema/reference"
-import { Global } from "./global"
-import { EventV2 } from "./event"
-import { Repository } from "./repository"
-import { RepositoryCache } from "./repository-cache"
-import { AbsolutePath } from "./schema"
-import { State } from "./state"
+import { makeLocationNode } from "./effect/app-node";
+import { Context, Effect, Layer, Scope, Types } from "effect";
+import { Reference } from "@opencode-ai/schema/reference";
+import { Global } from "./global";
+import { EventV2 } from "./event";
+import { Repository } from "./repository";
+import { RepositoryCache } from "./repository-cache";
+import { AbsolutePath } from "./schema";
+import { State } from "./state";
 
-export const LocalSource = Reference.LocalSource
-export type LocalSource = Reference.LocalSource
+export const LocalSource = Reference.LocalSource;
+export type LocalSource = Reference.LocalSource;
 
-export const GitSource = Reference.GitSource
-export type GitSource = Reference.GitSource
+export const GitSource = Reference.GitSource;
+export type GitSource = Reference.GitSource;
 
-export const Source = Reference.Source
-export type Source = Reference.Source
+export const Source = Reference.Source;
+export type Source = Reference.Source;
 
-export const Event = Reference.Event
+export const Event = Reference.Event;
 
-export const Info = Reference.Info
-export type Info = Reference.Info
+export const Info = Reference.Info;
+export type Info = Reference.Info;
 
 type Data = {
-  sources: Map<string, Types.DeepMutable<Source>>
-}
+  sources: Map<string, Types.DeepMutable<Source>>;
+};
 
 type Draft = {
-  add(name: string, source: Source): void
-  remove(name: string): void
-  list(): readonly [string, Source][]
-}
+  add(name: string, source: Source): void;
+  remove(name: string): void;
+  list(): readonly [string, Source][];
+};
 
 export interface Interface extends State.Transformable<Draft> {
-  readonly list: () => Effect.Effect<Info[]>
+  readonly list: () => Effect.Effect<Info[]>;
 }
 
 export class Service extends Context.Service<Service, Interface>()("@opencode/v2/Reference") {}
@@ -43,11 +43,11 @@ export class Service extends Context.Service<Service, Interface>()("@opencode/v2
 const layer = Layer.effect(
   Service,
   Effect.gen(function* () {
-    const global = yield* Global.Service
-    const events = yield* EventV2.Service
-    const cache = yield* RepositoryCache.Service
-    const scope = yield* Scope.Scope
-    const materialized = new Map<string, Info>()
+    const global = yield* Global.Service;
+    const events = yield* EventV2.Service;
+    const cache = yield* RepositoryCache.Service;
+    const scope = yield* Scope.Scope;
+    const materialized = new Map<string, Info>();
     const state = State.create<Data, Draft>({
       initial: () => ({ sources: new Map() }),
       draft: (draft) => ({
@@ -57,8 +57,8 @@ const layer = Layer.effect(
       }),
       finalize: (draft) =>
         Effect.gen(function* () {
-          materialized.clear()
-          const seen = new Map<string, string | undefined>()
+          materialized.clear();
+          const seen = new Map<string, string | undefined>();
           for (const [name, source] of draft.list()) {
             if (source.type === "local") {
               materialized.set(
@@ -70,21 +70,21 @@ const layer = Layer.effect(
                   ...(source.hidden === undefined ? {} : { hidden: source.hidden }),
                   source,
                 }),
-              )
-              continue
+              );
+              continue;
             }
-            const repository = Repository.parse(source.repository)
-            if (!repository || !Repository.isRemote(repository)) continue
+            const repository = Repository.parse(source.repository);
+            if (!repository || !Repository.isRemote(repository)) continue;
             if (source.branch) {
               try {
-                Repository.validateBranch(source.branch)
+                Repository.validateBranch(source.branch);
               } catch {
-                continue
+                continue;
               }
             }
-            const target = Repository.cachePath(global.repos, repository)
-            if (seen.has(target) && seen.get(target) !== source.branch) continue
-            seen.set(target, source.branch)
+            const target = Repository.cachePath(global.repos, repository);
+            if (seen.has(target) && seen.get(target) !== source.branch) continue;
+            seen.set(target, source.branch);
             materialized.set(
               name,
               new Info({
@@ -94,36 +94,38 @@ const layer = Layer.effect(
                 ...(source.hidden === undefined ? {} : { hidden: source.hidden }),
                 source,
               }),
-            )
-            yield* cache.ensure({ reference: repository, branch: source.branch, refresh: true }).pipe(
-              Effect.catchCause((cause) =>
-                Effect.logWarning("failed to materialize reference", {
-                  name,
-                  repository: source.repository,
-                  cause,
-                }),
-              ),
-              Effect.forkIn(scope),
-            )
+            );
+            yield* cache
+              .ensure({ reference: repository, branch: source.branch, refresh: true })
+              .pipe(
+                Effect.catchCause((cause) =>
+                  Effect.logWarning("failed to materialize reference", {
+                    name,
+                    repository: source.repository,
+                    cause,
+                  }),
+                ),
+                Effect.forkIn(scope),
+              );
           }
-          yield* events.publish(Event.Updated, {})
+          yield* events.publish(Event.Updated, {});
         }),
-    })
+    });
 
     return Service.of({
       transform: state.transform,
       reload: state.reload,
       list: Effect.fn("Reference.list")(function* () {
-        return Array.from(materialized.values())
+        return Array.from(materialized.values());
       }),
-    })
+    });
   }),
-)
+);
 
-export const locationLayer = layer
+export const locationLayer = layer;
 
 export const node = makeLocationNode({
   service: Service,
   layer,
   deps: [Global.node, EventV2.node, RepositoryCache.node],
-})
+});

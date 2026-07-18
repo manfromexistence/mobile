@@ -1,5 +1,5 @@
-import { For, Show } from "solid-js"
-import type { LookupResult, WorkspaceSection } from "~/lib/lookup"
+import { For, Show } from "solid-js";
+import type { LookupResult, WorkspaceSection } from "~/lib/lookup";
 
 export function Result(props: { data: LookupResult }) {
   return (
@@ -24,7 +24,7 @@ export function Result(props: { data: LookupResult }) {
 
       <For each={props.data.workspaces}>{(ws) => <WorkspaceView section={ws} />}</For>
     </>
-  )
+  );
 }
 
 function WorkspaceView(props: { section: WorkspaceSection }) {
@@ -50,17 +50,17 @@ function WorkspaceView(props: { section: WorkspaceSection }) {
       <h3>Disabled Models</h3>
       <DataTable rows={props.section.disabledModels} />
     </section>
-  )
+  );
 }
 
 function DataTable(props: { rows: Record<string, unknown>[] }) {
   const columns = () => {
-    const cols = new Set<string>()
+    const cols = new Set<string>();
     for (const row of props.rows) {
-      for (const key of Object.keys(row)) cols.add(key)
+      for (const key of Object.keys(row)) cols.add(key);
     }
-    return [...cols]
-  }
+    return [...cols];
+  };
 
   return (
     <Show when={props.rows.length > 0} fallback={<div data-empty>(no data)</div>}>
@@ -81,20 +81,20 @@ function DataTable(props: { rows: Record<string, unknown>[] }) {
         </tbody>
       </table>
     </Show>
-  )
+  );
 }
 
 function renderCell(value: unknown) {
-  if (value === null || value === undefined) return ""
+  if (value === null || value === undefined) return "";
   if (typeof value === "string" && value.startsWith("https://")) {
     return (
       <a href={value} target="_blank" rel="noopener noreferrer">
         {value}
       </a>
-    )
+    );
   }
   if (isLinkCell(value)) {
-    const external = value.__link.startsWith("http")
+    const external = value.__link.startsWith("http");
     return (
       <a
         href={value.__link}
@@ -103,10 +103,10 @@ function renderCell(value: unknown) {
       >
         {value.label}
       </a>
-    )
+    );
   }
-  if (typeof value === "object") return JSON.stringify(value)
-  return String(value)
+  if (typeof value === "object") return JSON.stringify(value);
+  return String(value);
 }
 
 function isLinkCell(value: unknown): value is { __link: string; label: string } {
@@ -115,5 +115,5 @@ function isLinkCell(value: unknown): value is { __link: string; label: string } 
     value !== null &&
     "__link" in value &&
     typeof (value as { __link: unknown }).__link === "string"
-  )
+  );
 }

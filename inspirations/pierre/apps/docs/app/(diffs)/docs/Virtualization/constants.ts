@@ -1,16 +1,16 @@
-import type { PreloadFileOptions } from '@pierre/diffs/ssr';
+import type { PreloadFileOptions } from "@pierre/diffs/ssr";
 
-import { CustomScrollbarCSS } from '@/components/CustomScrollbarCSS';
+import { CustomScrollbarCSS } from "@/components/CustomScrollbarCSS";
 
 const options = {
-  theme: { dark: 'pierre-dark', light: 'pierre-light' },
+  theme: { dark: "pierre-dark", light: "pierre-light" },
   disableFileHeader: true,
   unsafeCSS: CustomScrollbarCSS,
 } as const;
 
 export const VIRTUALIZATION_REACT_BASIC: PreloadFileOptions<undefined> = {
   file: {
-    name: 'react_virtualizer_basic.tsx',
+    name: "react_virtualizer_basic.tsx",
     contents: `import {
   MultiFileDiff,
   Virtualizer,
@@ -56,7 +56,7 @@ function Example({ oldFile, newFile }) {
 
 export const VIRTUALIZATION_REACT_CONFIG: PreloadFileOptions<undefined> = {
   file: {
-    name: 'react_virtualizer_config.tsx',
+    name: "react_virtualizer_config.tsx",
     contents: `import { MultiFileDiff, Virtualizer } from '@pierre/diffs/react';
 
 function Example({ oldFile, newFile }) {
@@ -89,7 +89,7 @@ function Example({ oldFile, newFile }) {
 
 export const VIRTUALIZATION_VANILLA_DIFF: PreloadFileOptions<undefined> = {
   file: {
-    name: 'vanilla_virtualized_file_diff.ts',
+    name: "vanilla_virtualized_file_diff.ts",
     contents: `import {
   Virtualizer,
   VirtualizedFile,

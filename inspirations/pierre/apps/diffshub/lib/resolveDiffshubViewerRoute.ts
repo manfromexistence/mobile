@@ -1,11 +1,11 @@
-import { normalizeGitHubPath } from './normalizeGitHubPath';
+import { normalizeGitHubPath } from "./normalizeGitHubPath";
 
-const GITHUB_HOST = 'github.com';
+const GITHUB_HOST = "github.com";
 
 export type DiffshubViewerRoute =
-  | { kind: 'redirect'; target: string }
+  | { kind: "redirect"; target: string }
   | {
-      kind: 'render';
+      kind: "render";
       upstreamPath: string;
       url: string;
       domain: string | undefined;
@@ -19,29 +19,26 @@ export type DiffshubViewerRoute =
 // hosts are passed through unchanged because their canonical form is unknown.
 export function resolveDiffshubViewerRoute(
   pathSegments: readonly string[],
-  requestedDomainInput: string | undefined
+  requestedDomainInput: string | undefined,
 ): DiffshubViewerRoute {
   if (pathSegments.length === 0) {
-    return { kind: 'redirect', target: '/' };
+    return { kind: "redirect", target: "/" };
   }
 
   const domain =
-    requestedDomainInput == null || requestedDomainInput === ''
-      ? undefined
-      : requestedDomainInput;
-  const joinedPath = `/${pathSegments.join('/')}`;
-  const upstreamPath =
-    domain == null ? normalizeGitHubPath(joinedPath) : joinedPath;
+    requestedDomainInput == null || requestedDomainInput === "" ? undefined : requestedDomainInput;
+  const joinedPath = `/${pathSegments.join("/")}`;
+  const upstreamPath = domain == null ? normalizeGitHubPath(joinedPath) : joinedPath;
 
   if (upstreamPath !== joinedPath) {
-    const query = domain == null ? '' : `?domain=${encodeURIComponent(domain)}`;
-    return { kind: 'redirect', target: `${upstreamPath}${query}` };
+    const query = domain == null ? "" : `?domain=${encodeURIComponent(domain)}`;
+    return { kind: "redirect", target: `${upstreamPath}${query}` };
   }
 
   const host = domain ?? GITHUB_HOST;
   return {
     domain,
-    kind: 'render',
+    kind: "render",
     upstreamPath,
     url: `https://${host}${upstreamPath}`,
   };

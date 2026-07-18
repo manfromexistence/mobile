@@ -1,8 +1,8 @@
-import { SECRET } from "./secret"
-import { domain } from "./stage"
+import { SECRET } from "./secret";
+import { domain } from "./stage";
 
-const description = "Managed by SST (Don't edit in Honeycomb UI)"
-const alertsDisabled = $app.stage !== "production"
+const description = "Managed by SST (Don't edit in Honeycomb UI)";
+const alertsDisabled = $app.stage !== "production";
 
 const webhookRecipient = new honeycombio.WebhookRecipient("DiscordAlerts", {
   name: $app.stage === "production" ? "Discord Alerts" : `Discord Alerts (${$app.stage})`,
@@ -26,7 +26,7 @@ const webhookRecipient = new honeycombio.WebhookRecipient("DiscordAlerts", {
       name: "type",
     },
   ],
-})
+});
 
 // Honeycomb can keep stale query-local calculated fields when the name is unchanged,
 // so tie the field name to the expression while avoiding deploy-to-deploy churn.
@@ -34,9 +34,12 @@ const webhookRecipient = new honeycombio.WebhookRecipient("DiscordAlerts", {
 const calculatedField = (field: { name: string; expression: string }) => ({
   ...field,
   name: `${field.name}_${(
-    Array.from(field.expression).reduce((result, char) => Math.imul(31, result) + char.charCodeAt(0), 0) >>> 0
+    Array.from(field.expression).reduce(
+      (result, char) => Math.imul(31, result) + char.charCodeAt(0),
+      0,
+    ) >>> 0
   ).toString(36)}`,
-})
+});
 
 const modelHttpErrorsQuery = (product: "go" | "zen") => {
   const filters = [
@@ -44,7 +47,7 @@ const modelHttpErrorsQuery = (product: "go" | "zen") => {
     { column: "event_type", op: "=", value: "completions" },
     { column: "user_agent", op: "contains", value: "opencode" },
     { column: "isGoTier", op: "=", value: product === "go" ? "true" : "false" },
-  ]
+  ];
   const failedHttpStatus = calculatedField({
     name: "is_failed_http_status",
     expression: `
@@ -65,7 +68,7 @@ IF(
   1,
   0
 )`,
-  })
+  });
 
   return honeycombio.getQuerySpecificationOutput({
     breakdowns: ["model"],
@@ -82,22 +85,22 @@ IF(
     ],
     formulas: [{ name: "ERROR", expression: "IF(GTE($TOTAL, 150), DIV($FAILED, $TOTAL), 0)" }],
     timeRange: 900,
-  }).json
-}
+  }).json;
+};
 
 const providerHttpErrorsQuery = () => {
   const filters = [
     { column: "provider", op: "exists" },
     { column: "user_agent", op: "contains", value: "opencode" },
-  ]
+  ];
   const successHttpStatus = calculatedField({
     name: "is_success_http_status",
     expression: `IF(AND(GTE($status, "200"), LT($status, "400")), 1, 0)`,
-  })
+  });
   const failedProviderHttpStatus = calculatedField({
     name: "is_failed_provider_http_status",
     expression: `IF(GT($llm.error.code, "400"), 1, 0)`,
-  })
+  });
 
   return honeycombio.getQuerySpecificationOutput({
     breakdowns: ["provider"],
@@ -123,11 +126,14 @@ const providerHttpErrorsQuery = () => {
       },
     ],
     formulas: [
-      { name: "ERROR", expression: "IF(GTE(SUM($SUCCESS, $FAILED), 150), DIV($FAILED, SUM($SUCCESS, $FAILED)), 0)" },
+      {
+        name: "ERROR",
+        expression: "IF(GTE(SUM($SUCCESS, $FAILED), 150), DIV($FAILED, SUM($SUCCESS, $FAILED)), 0)",
+      },
     ],
     timeRange: 900,
-  }).json
-}
+  }).json;
+};
 
 const modelLowTpsQuery = (product: "go" | "zen") => {
   const filters = [
@@ -138,7 +144,7 @@ const modelLowTpsQuery = (product: "go" | "zen") => {
     { column: "status", op: ">=", value: "200" },
     { column: "status", op: "<", value: "400" },
     { column: "tps.output", op: "exists" },
-  ]
+  ];
 
   return honeycombio.getQuerySpecificationOutput({
     breakdowns: ["model"],
@@ -154,8 +160,8 @@ const modelLowTpsQuery = (product: "go" | "zen") => {
     ],
     formulas: [{ name: "LOW_TPS", expression: "IF(GTE($TOTAL, 100), $TPS, 999)" }],
     timeRange: 1800,
-  }).json
-}
+  }).json;
+};
 
 new honeycombio.Trigger("IncreasedModelHttpErrorsGo", {
   name: "Increased Model HTTP Errors [Go]",
@@ -175,7 +181,7 @@ new honeycombio.Trigger("IncreasedModelHttpErrorsGo", {
       ],
     },
   ],
-})
+});
 
 new honeycombio.Trigger("IncreasedModelHttpErrorsZen", {
   name: "Increased Model HTTP Errors [Zen]",
@@ -195,7 +201,7 @@ new honeycombio.Trigger("IncreasedModelHttpErrorsZen", {
       ],
     },
   ],
-})
+});
 
 new honeycombio.Trigger("LowModelTpsGo", {
   name: "Low Model TPS [Go]",
@@ -215,7 +221,7 @@ new honeycombio.Trigger("LowModelTpsGo", {
       ],
     },
   ],
-})
+});
 
 new honeycombio.Trigger("LowModelTpsZen", {
   name: "Low Model TPS [Zen]",
@@ -235,7 +241,7 @@ new honeycombio.Trigger("LowModelTpsZen", {
       ],
     },
   ],
-})
+});
 
 new honeycombio.Trigger("IncreasedProviderHttpErrors", {
   name: "Increased Provider HTTP Errors",
@@ -255,7 +261,7 @@ new honeycombio.Trigger("IncreasedProviderHttpErrors", {
       ],
     },
   ],
-})
+});
 
 new honeycombio.Trigger("IncreasedFreeTierRequests", {
   name: "Increased Free Tier Requests",
@@ -284,4 +290,4 @@ new honeycombio.Trigger("IncreasedFreeTierRequests", {
       ],
     },
   ],
-})
+});

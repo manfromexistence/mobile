@@ -148,7 +148,7 @@ export default function PricingTab() {
         matchesSearch(provider.alias, searchQuery) ||
         matchesSearch(provider.id, searchQuery) ||
         provider.models.some(
-          (model) => matchesSearch(model.id, searchQuery) || matchesSearch(model.name, searchQuery)
+          (model) => matchesSearch(model.id, searchQuery) || matchesSearch(model.name, searchQuery),
         )
       );
     };
@@ -170,7 +170,7 @@ export default function PricingTab() {
     };
 
     const filtered = allProviders.filter(
-      (p) => providerMatchesSearch(p) && matchesCoverage(p) && matchesAuth(p)
+      (p) => providerMatchesSearch(p) && matchesCoverage(p) && matchesAuth(p),
     );
 
     // Sort
@@ -205,7 +205,7 @@ export default function PricingTab() {
 
   const coverageGapCount = useMemo(
     () => allProviders.filter((p) => p.modelCount > 0 && p.pricedModels / p.modelCount < 1).length,
-    [allProviders]
+    [allProviders],
   );
 
   // Reset visible count when filters change
@@ -217,11 +217,11 @@ export default function PricingTab() {
     const totalModels = allProviders.reduce((sum, provider) => sum + provider.modelCount, 0);
     const pricedCount = Object.values(pricingData).reduce(
       (sum, models) => sum + Object.keys(models).length,
-      0
+      0,
     );
     const overriddenCount = Object.values(pricingSources).reduce(
       (sum, models) => sum + Object.values(models).filter((source) => source === "user").length,
-      0
+      0,
     );
     return {
       providers: allProviders.length,
@@ -254,7 +254,7 @@ export default function PricingTab() {
         return value;
       }
     },
-    [t]
+    [t],
   );
 
   const getSourceLabel = useCallback(
@@ -270,7 +270,7 @@ export default function PricingTab() {
           return t("pricingSourceDefault");
       }
     },
-    [t]
+    [t],
   );
 
   const toggleProvider = useCallback((alias: string) => {
@@ -308,7 +308,7 @@ export default function PricingTab() {
 
       setEditedProviders((previous) => new Set(previous).add(provider));
     },
-    []
+    [],
   );
 
   const saveProvider = useCallback(
@@ -338,13 +338,13 @@ export default function PricingTab() {
           "error",
           t("pricingSaveFailedWithReason", {
             reason: error?.message || t("unknownError"),
-          })
+          }),
         );
       } finally {
         setSaving(false);
       }
     },
-    [loadData, pricingData, showStatus, t]
+    [loadData, pricingData, showStatus, t],
   );
 
   const resetProvider = useCallback(
@@ -373,11 +373,11 @@ export default function PricingTab() {
           "error",
           t("pricingResetFailedWithReason", {
             reason: error?.message || t("unknownError"),
-          })
+          }),
         );
       }
     },
-    [loadData, showStatus, t]
+    [loadData, showStatus, t],
   );
 
   const triggerSync = useCallback(async () => {
@@ -405,7 +405,7 @@ export default function PricingTab() {
         "error",
         t("pricingSyncFailedWithReason", {
           reason: error?.message || t("unknownError"),
-        })
+        }),
       );
     } finally {
       setSyncing(false);
@@ -430,7 +430,7 @@ export default function PricingTab() {
         "error",
         t("clearSyncedPricingFailedWithReason", {
           reason: error?.message || t("unknownError"),
-        })
+        }),
       );
     } finally {
       setSyncing(false);
@@ -796,7 +796,7 @@ function ProviderSection({
       counts[source] = (counts[source] || 0) + 1;
       return counts;
     },
-    { default: 0, litellm: 0, modelsDev: 0, user: 0 } as Record<PricingSource, number>
+    { default: 0, litellm: 0, modelsDev: 0, user: 0 } as Record<PricingSource, number>,
   );
   const authBadge =
     provider.authType === "oauth"

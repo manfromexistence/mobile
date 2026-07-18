@@ -8,7 +8,7 @@ const DENSE =
   "\n" +
   Array.from(
     { length: 400 },
-    (_, i) => `const row_${i} = compute(${i * 17}, "${"v".repeat(80)}");`
+    (_, i) => `const row_${i} = compute(${i * 17}, "${"v".repeat(80)}");`,
   ).join("\n");
 function claudeBody(): Record<string, unknown> {
   return {

@@ -131,7 +131,7 @@ export async function getClaudeUsage(accessToken?: string) {
           typeof data.tier === "string" ? data.tier : null,
           typeof data.plan === "string" ? data.plan : null,
           typeof data.subscription_type === "string" ? data.subscription_type : null,
-          bootstrap?.organization_rate_limit_tier
+          bootstrap?.organization_rate_limit_tier,
         ) ?? undefined;
 
       return {
@@ -149,7 +149,7 @@ export async function getClaudeUsage(accessToken?: string) {
 
     // Fallback: OAuth endpoint returned non-OK, try legacy settings/org endpoint
     console.warn(
-      `[Claude Usage] OAuth endpoint returned ${oauthResponse.status}, falling back to legacy`
+      `[Claude Usage] OAuth endpoint returned ${oauthResponse.status}, falling back to legacy`,
     );
     const legacy = await getClaudeUsageLegacy(accessToken);
     return { ...legacy, bootstrap: await bootstrapPromise };
@@ -189,7 +189,7 @@ async function getClaudeUsageLegacy(accessToken?: string) {
               Authorization: `Bearer ${accessToken}`,
               "anthropic-version": CLAUDE_CONFIG.apiVersion,
             },
-          }
+          },
         );
 
         if (usageResponse.ok) {

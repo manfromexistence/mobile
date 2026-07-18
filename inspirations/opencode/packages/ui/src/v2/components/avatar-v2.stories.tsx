@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Avatar } from "./avatar-v2"
+import { Avatar } from "./avatar-v2";
 
 const docs = `### Overview
 Avatar matching OpenCode DS variants from Figma.
@@ -24,7 +24,7 @@ Use in user lists and headers.
 ### Theming/tokens
 - Uses \`data-component="avatar"\` with size and image state attributes.
 
-`
+`;
 
 export default {
   title: "UI V2/Avatar",
@@ -53,16 +53,16 @@ export default {
     size: "large",
     kind: "user",
   },
-}
+};
 
-export const Basic = {}
+export const Basic = {};
 
 export const WithImage = {
   args: {
     src: "https://placehold.co/80x80/png",
     fallback: "WW",
   },
-}
+};
 
 export const Sizes = {
   render: () => (
@@ -72,7 +72,7 @@ export const Sizes = {
       <Avatar size="large" fallback="WW" />
     </div>
   ),
-}
+};
 
 export const OrgVariant = {
   render: () => (
@@ -82,4 +82,4 @@ export const OrgVariant = {
       <Avatar kind="org" size="large" fallback="WW" />
     </div>
   ),
-}
+};

@@ -114,7 +114,7 @@ export function renderContributors(version, agg, maintainerNote = "maintainer") 
           .join(", ")
       : "direct commit / report";
   const rows = [...agg.entries()].sort((a, b) =>
-    a[0].toLowerCase().localeCompare(b[0].toLowerCase())
+    a[0].toLowerCase().localeCompare(b[0].toLowerCase()),
   );
   const lines = [
     "### 🙌 Contributors",

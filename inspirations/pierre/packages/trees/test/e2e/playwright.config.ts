@@ -1,10 +1,6 @@
-import {
-  defineConfig,
-  devices,
-  type PlaywrightTestConfig,
-} from '@playwright/test';
+import { defineConfig, devices, type PlaywrightTestConfig } from "@playwright/test";
 
-import { loadWorktreeEnv } from '../../../../scripts/load-worktree-env.mjs';
+import { loadWorktreeEnv } from "../../../../scripts/load-worktree-env.mjs";
 
 // Pull `PIERRE_PORT_OFFSET` from `.env.worktree` when Playwright is launched
 // outside a moon task (e.g. `pnpm exec playwright test` from the package root).
@@ -13,14 +9,14 @@ loadWorktreeEnv();
 const portOffset = Number(process.env.PIERRE_PORT_OFFSET ?? 0);
 const e2ePort = 4173 + portOffset;
 const e2eBaseUrl = `http://127.0.0.1:${e2ePort}`;
-const e2eOutputDir = `/tmp/pierre-trees-playwright-results${portOffset > 0 ? `-${portOffset}` : ''}`;
+const e2eOutputDir = `/tmp/pierre-trees-playwright-results${portOffset > 0 ? `-${portOffset}` : ""}`;
 
 const config: PlaywrightTestConfig = defineConfig({
-  testDir: '.',
-  testMatch: ['**/*.pw.ts'],
+  testDir: ".",
+  testMatch: ["**/*.pw.ts"],
   outputDir: e2eOutputDir,
   fullyParallel: true,
-  reporter: 'list',
+  reporter: "list",
   timeout: 30_000,
   // Two retries in CI absorb the rare HTML5-drag flake when mousemove events
   // race with the browser's dragover handoff under parallel worker pressure.
@@ -42,8 +38,8 @@ const config: PlaywrightTestConfig = defineConfig({
   },
   projects: [
     {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
     },
   ],
 });

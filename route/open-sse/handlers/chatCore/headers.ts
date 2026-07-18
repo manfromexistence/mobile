@@ -1,6 +1,6 @@
 export function getHeaderValueCaseInsensitive(
   headers: Record<string, unknown> | Headers | null | undefined,
-  targetName: string
+  targetName: string,
 ) {
   if (!headers || typeof headers !== "object") return null;
   if (headers instanceof Headers) {
@@ -24,7 +24,7 @@ export function getHeaderValueCaseInsensitive(
  * every chat call. See _tasks/PRD-2026-06-19-no-memory-header.md.
  */
 export function isNoMemoryRequested(
-  headers: Record<string, unknown> | Headers | null | undefined
+  headers: Record<string, unknown> | Headers | null | undefined,
 ): boolean {
   const value = (getHeaderValueCaseInsensitive(headers, "x-omniroute-no-memory") || "")
     .trim()
@@ -39,7 +39,7 @@ export function isNoMemoryRequested(
  * helper only reads the wire.
  */
 export function resolveCompressionHeader(
-  headers: Record<string, unknown> | Headers | null | undefined
+  headers: Record<string, unknown> | Headers | null | undefined,
 ): string | null {
   const value = (getHeaderValueCaseInsensitive(headers, "x-omniroute-compression") || "").trim();
   return value || null;
@@ -56,7 +56,7 @@ export function resolveCompressionHeader(
  * before this header is consulted, so the cache feature is unaffected.
  */
 export function isStripReasoningRequested(
-  headers: Record<string, unknown> | Headers | null | undefined
+  headers: Record<string, unknown> | Headers | null | undefined,
 ): boolean {
   const value = (getHeaderValueCaseInsensitive(headers, "x-omniroute-strip-reasoning") || "")
     .trim()

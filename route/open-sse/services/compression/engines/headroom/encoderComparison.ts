@@ -38,7 +38,7 @@ function pickWinner(
   toon: EncoderSize,
   toonAvailable: boolean,
   dx: EncoderSize,
-  dxAvailable: boolean
+  dxAvailable: boolean,
 ): "gcf" | "toon" | "dx" | "json" {
   const candidates: Array<["gcf" | "toon" | "dx" | "json", EncoderSize]> = [
     ["gcf", gcf],
@@ -53,7 +53,7 @@ function pickWinner(
 export function summarizeEncoderCandidates(
   messages: MessageLike[],
   minRows: number,
-  countTokens: (text: string) => number
+  countTokens: (text: string) => number,
 ): EncoderComparison {
   const arrays = collectCompactableArrays(messages as never, minRows);
   let json = { ...ZERO },

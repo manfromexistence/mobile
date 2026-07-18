@@ -1,4 +1,4 @@
-import type { Accessor } from "solid-js"
+import type { Accessor } from "solid-js";
 
 export type UpdaterState =
   | { status: "disabled" }
@@ -8,10 +8,10 @@ export type UpdaterState =
   | { status: "ready"; version: string }
   | { status: "up-to-date" }
   | { status: "installing"; version: string }
-  | { status: "error"; message: string }
+  | { status: "error"; message: string };
 
 export type UpdaterPlatform = {
-  state: Accessor<UpdaterState>
-  check(): Promise<UpdaterState>
-  install(): Promise<void>
-}
+  state: Accessor<UpdaterState>;
+  check(): Promise<UpdaterState>;
+  install(): Promise<void>;
+};

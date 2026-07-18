@@ -15,8 +15,9 @@ process.env.DISABLE_SQLITE_AUTO_BACKUP = "true";
 
 // Initialise DB first.
 const core = await import("../../../../src/lib/db/core.ts");
-const { upsertVersionManagerTool, getVersionManagerTool } =
-  await import("../../../../src/lib/db/versionManager.ts");
+const { upsertVersionManagerTool, getVersionManagerTool } = await import(
+  "../../../../src/lib/db/versionManager.ts"
+);
 
 const { POST } = await import("../../../../src/app/api/services/cliproxy/provider-expose/route.ts");
 

@@ -1,8 +1,8 @@
-import type { DiffLineAnnotation } from '../types';
+import type { DiffLineAnnotation } from "../types";
 
 export function areDiffLineAnnotationsEqual<LAnnotation = undefined>(
   annotationA: DiffLineAnnotation<LAnnotation>,
-  annotationB: DiffLineAnnotation<LAnnotation>
+  annotationB: DiffLineAnnotation<LAnnotation>,
 ): boolean {
   return (
     annotationA.lineNumber === annotationB.lineNumber &&

@@ -104,7 +104,7 @@ function getProviderSpecificString(data: JsonRecord | undefined, keys: string[])
 }
 
 function resolveOpenCodeGoDashboardConfig(
-  providerSpecificData?: JsonRecord
+  providerSpecificData?: JsonRecord,
 ): OpenCodeGoDashboardConfig {
   const workspaceId =
     process.env.OMNIROUTE_OPENCODE_GO_WORKSPACE_ID?.trim() ||
@@ -148,7 +148,7 @@ function buildBearerAuthorization(value: string): string {
 
 function getOpenCodeGoTokenQuotaName(
   limit: JsonRecord,
-  existingQuotas: Record<string, UsageQuota>
+  existingQuotas: Record<string, UsageQuota>,
 ): "session" | "weekly" {
   const unit = toNumber(limit.unit, 0);
   const number = toNumber(limit.number, 0);
@@ -163,13 +163,13 @@ function buildOpenCodeGoDollarQuota(
   percentage: unknown,
   resetAt: string | null,
   usedOverride?: unknown,
-  details?: UsageQuota["details"]
+  details?: UsageQuota["details"],
 ): UsageQuota {
   const total = OPENCODE_GO_QUOTA_TOTALS[quotaName];
   const percentUsed = toPercentage(percentage);
   const rawUsed = toNumber(usedOverride, Number.NaN);
   const used = roundCurrency(
-    Number.isFinite(rawUsed) ? Math.max(0, Math.min(total, rawUsed)) : (total * percentUsed) / 100
+    Number.isFinite(rawUsed) ? Math.max(0, Math.min(total, rawUsed)) : (total * percentUsed) / 100,
   );
   const remaining = roundCurrency(Math.max(0, total - used));
   return {
@@ -252,7 +252,7 @@ function parseOpenCodeGoDashboardHtml(html: string): OpenCodeGoDashboardUsage | 
       .toLowerCase();
     const usagePercent = toNumber(
       content.match(/data-slot="usage-value">[^0-9]*(\d+(?:\.\d+)?)/)?.[1],
-      Number.NaN
+      Number.NaN,
     );
     const resetMatch = content.match(/data-slot="(reset-time|reset-now)">([\s\S]*?)<\/span>/);
     if (!label || !Number.isFinite(usagePercent) || !resetMatch) continue;
@@ -264,7 +264,9 @@ function parseOpenCodeGoDashboardHtml(html: string): OpenCodeGoDashboardUsage | 
             // <!--$--> / <!--/--> hydration markers). The `(?:-->|$)` arm consumes a
             // trailing "<!--" with no closing "-->" too, so no partial "<!--" can survive
             // (js/incomplete-multi-character-sanitization).
-            resetMatch[2].replace(/<!--[\s\S]*?(?:-->|$)/g, "").replace(/Resets?\s*in\s*/i, "")
+            resetMatch[2]
+              .replace(/<!--[\s\S]*?(?:-->|$)/g, "")
+              .replace(/Resets?\s*in\s*/i, ""),
           );
     if (resetInSec === null || !Number.isFinite(resetInSec)) continue;
     const window = {
@@ -279,10 +281,10 @@ function parseOpenCodeGoDashboardHtml(html: string): OpenCodeGoDashboardUsage | 
 }
 
 async function fetchOpenCodeGoDashboardUsage(
-  config: Extract<OpenCodeGoDashboardConfig, { state: "configured" }>
+  config: Extract<OpenCodeGoDashboardConfig, { state: "configured" }>,
 ) {
   const url = `${OPENCODE_GO_DASHBOARD_BASE_URL.replace(/\/+$/, "")}/${encodeURIComponent(
-    config.workspaceId
+    config.workspaceId,
   )}/go`;
   const response = await fetch(url, {
     headers: {
@@ -321,7 +323,7 @@ export async function getOpenCodeGoUsage(apiKey: string, providerSpecificData?: 
           quotas[quotaName] = buildOpenCodeGoDollarQuota(
             quotaName,
             usage.usagePercent,
-            usage.resetAt
+            usage.resetAt,
           );
         }
       }
@@ -416,7 +418,7 @@ export async function getOpenCodeGoUsage(apiKey: string, providerSpecificData?: 
                   used: toNumber(modelInfo.percentage, 0),
                 };
               })
-            : undefined
+            : undefined,
         );
       } else if (type === "TIME_LIMIT" || type === "TIME_USAGE_LIMIT") {
         quotas.mcp_monthly = buildOpenCodeGoDollarQuota(
@@ -432,7 +434,7 @@ export async function getOpenCodeGoUsage(apiKey: string, providerSpecificData?: 
                   used: toNumber(detail.usage, 0),
                 };
               })
-            : undefined
+            : undefined,
         );
       }
     }
@@ -517,7 +519,7 @@ function parseOllamaCloudSettingsHtml(html: string): OllamaCloudUsage | null {
 }
 
 async function fetchOllamaCloudUsageFromSettings(
-  config: Extract<OllamaCloudConfig, { state: "configured" }>
+  config: Extract<OllamaCloudConfig, { state: "configured" }>,
 ) {
   const response = await fetch(OLLAMA_CLOUD_USAGE_URL, {
     redirect: "manual",

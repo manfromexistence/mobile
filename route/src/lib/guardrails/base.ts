@@ -51,14 +51,14 @@ export class BaseGuardrail {
 
   async preCall(
     _payload: unknown,
-    _context: GuardrailContext
+    _context: GuardrailContext,
   ): Promise<GuardrailResult<unknown> | void> {
     return { block: false };
   }
 
   async postCall(
     _response: unknown,
-    _context: GuardrailContext
+    _context: GuardrailContext,
   ): Promise<GuardrailResult<unknown> | void> {
     return { block: false };
   }

@@ -75,16 +75,16 @@ export async function install(version = "latest"): Promise<InstallResult> {
       JSON.stringify(
         { name: "omniroute-bifrost-host", version: "0.0.0", private: true, dependencies: {} },
         null,
-        2
+        2,
       ),
-      "utf8"
+      "utf8",
     );
   }
 
   await runNpm(
     ["install", `${BIFROST_PACKAGE}@${version}`, "--omit=dev", "--no-audit", "--no-fund"],
     // `--prefix` via `prefix` (→ npm_config_prefix env) so paths with spaces survive Windows shell
-    { cwd: BIFROST_INSTALL_DIR, prefix: BIFROST_INSTALL_DIR }
+    { cwd: BIFROST_INSTALL_DIR, prefix: BIFROST_INSTALL_DIR },
   );
 
   const installedVersion = await getInstalledVersion();
@@ -92,7 +92,7 @@ export async function install(version = "latest"): Promise<InstallResult> {
     throw new InstallError(
       "Could not read installed version from node_modules/@maximhq/bifrost/package.json",
       "Bifrost instalado mas versão não pôde ser lida.",
-      500
+      500,
     );
   }
 

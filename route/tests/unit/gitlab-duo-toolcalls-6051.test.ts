@@ -61,7 +61,7 @@ test("GitlabExecutor emulates OpenAI tool_calls when body.tools is present (#605
     assert.match(
       String((calls[0].body.current_file as any)?.content_above_cursor ?? ""),
       /get_weather/,
-      "tool contract must be serialized into the GitLab prompt"
+      "tool contract must be serialized into the GitLab prompt",
     );
 
     const body = (await result.response.json()) as any;

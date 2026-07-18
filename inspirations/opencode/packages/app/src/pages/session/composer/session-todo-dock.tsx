@@ -1,21 +1,21 @@
-import type { Todo } from "@opencode-ai/sdk/v2"
-import { AnimatedNumber } from "@opencode-ai/ui/animated-number"
-import { Checkbox } from "@opencode-ai/ui/checkbox"
-import { DockTray } from "@opencode-ai/ui/dock-surface"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { useSpring } from "@opencode-ai/ui/motion-spring"
-import { TextReveal } from "@opencode-ai/ui/text-reveal"
-import { TextStrikethrough } from "@opencode-ai/ui/text-strikethrough"
-import { createResizeObserver } from "@solid-primitives/resize-observer"
-import { Index, createEffect, createMemo } from "solid-js"
-import { createStore } from "solid-js/store"
-import { useLanguage } from "@/context/language"
+import type { Todo } from "@opencode-ai/sdk/v2";
+import { AnimatedNumber } from "@opencode-ai/ui/animated-number";
+import { Checkbox } from "@opencode-ai/ui/checkbox";
+import { DockTray } from "@opencode-ai/ui/dock-surface";
+import { IconButton } from "@opencode-ai/ui/icon-button";
+import { useSpring } from "@opencode-ai/ui/motion-spring";
+import { TextReveal } from "@opencode-ai/ui/text-reveal";
+import { TextStrikethrough } from "@opencode-ai/ui/text-strikethrough";
+import { createResizeObserver } from "@solid-primitives/resize-observer";
+import { Index, createEffect, createMemo } from "solid-js";
+import { createStore } from "solid-js/store";
+import { useLanguage } from "@/context/language";
 
-const doneToken = "\u0000done\u0000"
-const totalToken = "\u0000total\u0000"
+const doneToken = "\u0000done\u0000";
+const totalToken = "\u0000total\u0000";
 
 function dot(status: Todo["status"]) {
-  if (status !== "in_progress") return undefined
+  if (status !== "in_progress") return undefined;
   return (
     <svg
       viewBox="0 0 12 12"
@@ -36,30 +36,32 @@ function dot(status: Todo["status"]) {
         }}
       />
     </svg>
-  )
+  );
 }
 
 export function SessionTodoDock(props: {
-  todos: Todo[]
-  collapsed: boolean
-  onToggle: () => void
-  collapseLabel: string
-  expandLabel: string
-  dockProgress: number
+  todos: Todo[];
+  collapsed: boolean;
+  onToggle: () => void;
+  collapseLabel: string;
+  expandLabel: string;
+  dockProgress: number;
 }) {
-  const language = useLanguage()
+  const language = useLanguage();
   const [store, setStore] = createStore({
     height: 78,
-  })
+  });
 
-  const total = createMemo(() => props.todos.length)
-  const done = createMemo(() => props.todos.filter((todo) => todo.status === "completed").length)
-  const label = createMemo(() => language.t("session.todo.progress", { done: done(), total: total() }))
+  const total = createMemo(() => props.todos.length);
+  const done = createMemo(() => props.todos.filter((todo) => todo.status === "completed").length);
+  const label = createMemo(() =>
+    language.t("session.todo.progress", { done: done(), total: total() }),
+  );
   const progress = createMemo(() =>
     language
       .t("session.todo.progress", { done: doneToken, total: totalToken })
       .split(/(\u0000done\u0000|\u0000total\u0000)/),
-  )
+  );
 
   const active = createMemo(
     () =>
@@ -67,28 +69,28 @@ export function SessionTodoDock(props: {
       props.todos.find((todo) => todo.status === "pending") ??
       props.todos.filter((todo) => todo.status === "completed").at(-1) ??
       props.todos[0],
-  )
+  );
 
-  const preview = createMemo(() => active()?.content ?? "")
-  const collapse = useSpring(() => (props.collapsed ? 1 : 0), { visualDuration: 0.3, bounce: 0 })
-  const dock = createMemo(() => Math.max(0, Math.min(1, props.dockProgress)))
-  const shut = createMemo(() => 1 - dock())
-  const value = createMemo(() => Math.max(0, Math.min(1, collapse())))
-  const hide = createMemo(() => Math.max(value(), shut()))
-  const off = createMemo(() => hide() > 0.98)
-  const turn = createMemo(() => Math.max(0, Math.min(1, value())))
-  const full = createMemo(() => Math.max(78, store.height))
-  let contentRef: HTMLDivElement | undefined
+  const preview = createMemo(() => active()?.content ?? "");
+  const collapse = useSpring(() => (props.collapsed ? 1 : 0), { visualDuration: 0.3, bounce: 0 });
+  const dock = createMemo(() => Math.max(0, Math.min(1, props.dockProgress)));
+  const shut = createMemo(() => 1 - dock());
+  const value = createMemo(() => Math.max(0, Math.min(1, collapse())));
+  const hide = createMemo(() => Math.max(value(), shut()));
+  const off = createMemo(() => hide() > 0.98);
+  const turn = createMemo(() => Math.max(0, Math.min(1, value())));
+  const full = createMemo(() => Math.max(78, store.height));
+  let contentRef: HTMLDivElement | undefined;
 
   createEffect(() => {
-    const el = contentRef
-    if (!el) return
+    const el = contentRef;
+    if (!el) return;
     const update = () => {
-      setStore("height", (height) => Math.max(height, el.scrollHeight))
-    }
-    update()
-    createResizeObserver(el, update)
-  })
+      setStore("height", (height) => Math.max(height, el.scrollHeight));
+    };
+    update();
+    createResizeObserver(el, update);
+  });
 
   return (
     <DockTray
@@ -107,9 +109,9 @@ export function SessionTodoDock(props: {
           tabIndex={0}
           onClick={props.onToggle}
           onKeyDown={(event) => {
-            if (event.key !== "Enter" && event.key !== " ") return
-            event.preventDefault()
-            props.onToggle()
+            if (event.key !== "Enter" && event.key !== " ") return;
+            event.preventDefault();
+            props.onToggle();
           }}
         >
           <span
@@ -165,12 +167,12 @@ export function SessionTodoDock(props: {
               variant="ghost"
               style={{ transform: `rotate(${turn() * 180}deg)` }}
               onMouseDown={(event) => {
-                event.preventDefault()
-                event.stopPropagation()
+                event.preventDefault();
+                event.stopPropagation();
               }}
               onClick={(event) => {
-                event.stopPropagation()
-                props.onToggle()
+                event.stopPropagation();
+                props.onToggle();
               }}
               aria-label={props.collapsed ? props.expandLabel : props.collapseLabel}
             />
@@ -192,13 +194,13 @@ export function SessionTodoDock(props: {
         </div>
       </div>
     </DockTray>
-  )
+  );
 }
 
 function TodoList(props: { todos: Todo[] }) {
   const [store, setStore] = createStore({
     stuck: false,
-  })
+  });
 
   return (
     <div class="relative">
@@ -206,7 +208,7 @@ function TodoList(props: { todos: Todo[] }) {
         class="px-3 pb-11 flex flex-col gap-1.5 max-h-42 overflow-y-auto no-scrollbar"
         style={{ "overflow-anchor": "none" }}
         onScroll={(e) => {
-          setStore("stuck", e.currentTarget.scrollTop > 0)
+          setStore("stuck", e.currentTarget.scrollTop > 0);
         }}
       >
         <Index each={props.todos}>
@@ -252,5 +254,5 @@ function TodoList(props: { todos: Todo[] }) {
         }}
       />
     </div>
-  )
+  );
 }

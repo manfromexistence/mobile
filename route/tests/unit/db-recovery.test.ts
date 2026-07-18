@@ -28,15 +28,16 @@ test("countEncryptedCredentials returns 0 on fresh db", async () => {
 
 test("resetEncryptedColumns dry-run returns affected count without mutating", async () => {
   await withRecoveryEnv(async () => {
-    const { resetEncryptedColumns, countEncryptedCredentials } =
-      await import("../../src/lib/db/recovery.ts");
+    const { resetEncryptedColumns, countEncryptedCredentials } = await import(
+      "../../src/lib/db/recovery.ts"
+    );
 
     // Insert a fake encrypted row directly using the DB instance
     const { getDbInstance } = await import("../../src/lib/db/core.ts");
     const db = getDbInstance();
     const now = new Date().toISOString();
     db.prepare(
-      "INSERT INTO provider_connections (id, provider, name, api_key, created_at, updated_at) VALUES (?,?,?,?,?,?)"
+      "INSERT INTO provider_connections (id, provider, name, api_key, created_at, updated_at) VALUES (?,?,?,?,?,?)",
     ).run("test-id", "openai", "test-conn", "enc:v1:fake-encrypted-value", now, now);
 
     const countBefore = countEncryptedCredentials();
@@ -59,7 +60,7 @@ test("resetEncryptedColumns force mode nulls encrypted columns", async () => {
     const db = getDbInstance();
     const now = new Date().toISOString();
     db.prepare(
-      "INSERT INTO provider_connections (id, provider, name, api_key, access_token, created_at, updated_at) VALUES (?,?,?,?,?,?,?)"
+      "INSERT INTO provider_connections (id, provider, name, api_key, access_token, created_at, updated_at) VALUES (?,?,?,?,?,?,?)",
     ).run("rec-id", "anthropic", "rec-conn", "enc:v1:key123", "enc:v1:tok456", now, now);
 
     const { affected } = resetEncryptedColumns({ dryRun: false });

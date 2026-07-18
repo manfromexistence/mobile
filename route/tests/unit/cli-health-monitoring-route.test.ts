@@ -27,7 +27,7 @@ test.before(async () => {
           activeConnections: 0,
           circuitBreakers: { open: 0, halfOpen: 0, closed: 3 },
           memoryUsage: { rss: 1000, heapUsed: 500 },
-        })
+        }),
       );
       return;
     }
@@ -71,6 +71,6 @@ test("GH #6677: omniroute health should succeed against a server that only imple
     exitCode,
     0,
     `runHealthCommand() should return 0 against a live server that implements ` +
-      `/api/monitoring/health, but got exit code ${exitCode}. Captured stderr: ${errors.join(" | ")}`
+      `/api/monitoring/health, but got exit code ${exitCode}. Captured stderr: ${errors.join(" | ")}`,
   );
 });

@@ -136,7 +136,7 @@ test("#3685 empty Claude stream (content_filter, no content blocks) is marked in
   assert.equal(
     out.valid,
     false,
-    `expected invalid for empty content-filtered stream, got valid=true (reason: ${out.reason})`
+    `expected invalid for empty content-filtered stream, got valid=true (reason: ${out.reason})`,
   );
   assert.match(out.reason ?? "", /empty/i, `reason should mention 'empty', got: "${out.reason}"`);
 });
@@ -260,7 +260,7 @@ test("#3685 streaming is preserved for non-empty response: clonedResponse body y
   assert.deepEqual(
     reconstructed,
     originalBytes,
-    "clonedResponse body must reproduce the FULL original SSE byte sequence (buffered prefix + piped remainder = original)"
+    "clonedResponse body must reproduce the FULL original SSE byte sequence (buffered prefix + piped remainder = original)",
   );
 
   // Verify the response carries SSE content blocks in the decoded text,
@@ -268,7 +268,7 @@ test("#3685 streaming is preserved for non-empty response: clonedResponse body y
   const decoded = new TextDecoder().decode(reconstructed);
   assert.ok(
     decoded.includes("content_block_start"),
-    "decoded body must contain content_block_start"
+    "decoded body must contain content_block_start",
   );
   assert.ok(decoded.includes("Hello"), "decoded body must contain the actual text content");
   assert.ok(decoded.includes(", world!"), "decoded body must contain the full text delta");

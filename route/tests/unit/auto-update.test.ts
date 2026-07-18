@@ -71,7 +71,7 @@ test("validateAutoUpdateRuntime covers source, docker preconditions and successf
       }
       throw new Error(`unexpected: ${command}`);
     },
-    async () => true
+    async () => true,
   );
 
   assert.deepEqual(sourceValidation, {
@@ -92,7 +92,7 @@ test("validateAutoUpdateRuntime covers source, docker preconditions and successf
       logPath: "/tmp/log",
     },
     async () => ({ stdout: "git version 2.0", stderr: "" }),
-    async () => false
+    async () => false,
   );
   assert.equal(sourceMissingGitRepo.supported, false);
   assert.match(sourceMissingGitRepo.reason, /Not a git repository/);
@@ -111,7 +111,7 @@ test("validateAutoUpdateRuntime covers source, docker preconditions and successf
     async () => {
       throw new Error("git missing");
     },
-    async () => true
+    async () => true,
   );
   assert.equal(sourceMissingGit.supported, false);
   assert.match(sourceMissingGit.reason, /git is not available/);
@@ -128,7 +128,7 @@ test("validateAutoUpdateRuntime covers source, docker preconditions and successf
       logPath: "/tmp/log",
     },
     async () => ({ stdout: "", stderr: "" }),
-    async (targetPath) => targetPath !== "/repo"
+    async (targetPath) => targetPath !== "/repo",
   );
   assert.equal(missingRepo.supported, false);
   assert.match(missingRepo.reason, /Repository directory not found/);
@@ -145,7 +145,7 @@ test("validateAutoUpdateRuntime covers source, docker preconditions and successf
       logPath: "/tmp/log",
     },
     async () => ({ stdout: "", stderr: "" }),
-    async (targetPath) => targetPath === "/repo"
+    async (targetPath) => targetPath === "/repo",
   );
   assert.equal(missingComposeFile.supported, false);
   assert.match(missingComposeFile.reason, /Compose file not found/);
@@ -165,7 +165,7 @@ test("validateAutoUpdateRuntime covers source, docker preconditions and successf
       if (command === "git") throw new Error("git missing");
       return { stdout: "", stderr: "" };
     },
-    async () => true
+    async () => true,
   );
   assert.equal(missingGit.supported, false);
   assert.match(missingGit.reason, /git is not available/);
@@ -185,7 +185,7 @@ test("validateAutoUpdateRuntime covers source, docker preconditions and successf
       if (command === "git") return { stdout: "git version 2", stderr: "" };
       throw new Error("compose missing");
     },
-    async () => true
+    async () => true,
   );
   assert.equal(missingComposeCommand.supported, false);
   assert.match(missingComposeCommand.reason, /Neither docker compose nor docker-compose/);
@@ -210,7 +210,7 @@ test("validateAutoUpdateRuntime covers source, docker preconditions and successf
       }
       throw new Error(`unexpected: ${command}`);
     },
-    async () => true
+    async () => true,
   );
   assert.deepEqual(supported, {
     supported: true,
@@ -241,7 +241,7 @@ test("ensureGitTagExists verifies refs/tags paths and throws a clear error when 
     autoUpdate.ensureGitTagExists("v9.9.9", async () => {
       throw new Error("missing tag");
     }),
-    /Git tag not found: v9\.9\.9/
+    /Git tag not found: v9\.9\.9/,
   );
 });
 
@@ -380,11 +380,11 @@ test("launchAutoUpdate returns validation failures and starts detached update sc
     assert.equal(started.logPath, logPath);
     assert.equal(
       execCalls.some(([command]) => command === "git"),
-      true
+      true,
     );
     assert.equal(
       execCalls.some(([command]) => command === "docker"),
-      true
+      true,
     );
     assert.equal(spawnCalls.length, 1);
     assert.equal(spawnCalls[0].command, "sh");

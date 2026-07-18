@@ -5,7 +5,7 @@ import { serializeFrontmatter } from "../../../scripts/features/lib/frontmatter.
 
 function makeIdeaFile(
   meta,
-  body = "# Feature: X\n\n## Community Discussion\n\nInitial summary.\n"
+  body = "# Feature: X\n\n## Community Discussion\n\nInitial summary.\n",
 ) {
   return serializeFrontmatter(meta, body);
 }

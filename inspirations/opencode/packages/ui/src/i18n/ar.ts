@@ -14,7 +14,8 @@ export const dict = {
   "ui.sessionReview.image.loading": "جار التحميل...",
   "ui.sessionReview.image.placeholder": "صورة",
   "ui.sessionReview.largeDiff.title": "Diff كبير جدا لعرضه",
-  "ui.sessionReview.largeDiff.meta": "الحد: {{limit}} سطرًا متغيرًا. الحالي: {{current}} سطرًا متغيرًا.",
+  "ui.sessionReview.largeDiff.meta":
+    "الحد: {{limit}} سطرًا متغيرًا. الحالي: {{current}} سطرًا متغيرًا.",
   "ui.sessionReview.largeDiff.renderAnyway": "اعرض على أي حال",
   "ui.fileMedia.kind.image": "صورة",
   "ui.fileMedia.kind.audio": "صوت",
@@ -165,4 +166,4 @@ export const dict = {
   "ui.toolErrorCard.copyError": "نسخ الخطأ",
   "ui.message.duration.seconds": "{{count}}ث",
   "ui.message.duration.minutesSeconds": "{{minutes}}د {{seconds}}ث",
-}
+};

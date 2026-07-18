@@ -35,7 +35,7 @@ function getExistingMaxTokens(body: JsonRecord): number | null {
 
 export function applyProviderRequestDefaults(
   body: unknown,
-  defaults?: ProviderRequestDefaults | null
+  defaults?: ProviderRequestDefaults | null,
 ): unknown {
   const record = asRecord(body);
   if (!record || !defaults) return body;

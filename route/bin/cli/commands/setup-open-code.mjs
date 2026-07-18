@@ -97,7 +97,7 @@ function resolveBundledPlugin() {
       `Bundled @omniroute/opencode-plugin not found at ${BUNDLED_PLUGIN_DIR}.\n` +
         `This usually means omniroute was installed from a source tree that does not ` +
         `include the workspace package. Try reinstalling omniroute (npm install -g omniroute) ` +
-        `or run \`cd @omniroute/opencode-plugin && npm install && npm run build\` from the source repo.`
+        `or run \`cd @omniroute/opencode-plugin && npm install && npm run build\` from the source repo.`,
     );
   }
 
@@ -106,7 +106,7 @@ function resolveBundledPlugin() {
   if (!existsSync(esmEntry)) {
     throw new Error(
       `@omniroute/opencode-plugin dist/ not built (looked for ${esmEntry}).\n` +
-        `Run \`cd ${BUNDLED_PLUGIN_DIR} && npm install && npm run build\` and re-run this command.`
+        `Run \`cd ${BUNDLED_PLUGIN_DIR} && npm install && npm run build\` and re-run this command.`,
     );
   }
 
@@ -163,7 +163,7 @@ function registerPluginInOpenCodeConfig({
     } catch (err) {
       throw new Error(
         `Failed to parse existing ${configPath}: ${err.message}\n` +
-          `Fix or remove the file manually, then re-run \`omniroute setup opencode\`.`
+          `Fix or remove the file manually, then re-run \`omniroute setup opencode\`.`,
       );
     }
   }
@@ -229,7 +229,7 @@ function runOpenCodeAuth(providerId) {
     // ENOENT = opencode is not on PATH
     if (res.error.code === "ENOENT") {
       printInfo(
-        `opencode CLI not found on PATH. Run \`opencode auth login --provider ${providerId}\` manually after installing OpenCode.`
+        `opencode CLI not found on PATH. Run \`opencode auth login --provider ${providerId}\` manually after installing OpenCode.`,
       );
       return 1;
     }
@@ -337,7 +337,7 @@ export async function runSetupOpenCodeCommand(opts = {}) {
     }
   } else {
     printInfo(
-      `Next step: opencode auth login --provider ${providerId}   (pass --auth to do this automatically)`
+      `Next step: opencode auth login --provider ${providerId}   (pass --auth to do this automatically)`,
     );
   }
 
@@ -358,26 +358,26 @@ export function registerSetupOpenCode(setupCommand) {
     .command("opencode")
     .description(
       t("setup.opencode") ||
-        "Install and register the bundled @omniroute/opencode-plugin with a local OpenCode install"
+        "Install and register the bundled @omniroute/opencode-plugin with a local OpenCode install",
     )
     .option(
       "--provider-id <id>",
       "OpenCode provider id to register (default: omniroute)",
-      "omniroute"
+      "omniroute",
     )
     .option(
       "--base-url <url>",
-      "OmniRoute base URL the plugin should talk to (default: active context or http://localhost:20128)"
+      "OmniRoute base URL the plugin should talk to (default: active context or http://localhost:20128)",
     )
     .option(
       "--remote <url>",
-      "Remote OmniRoute URL, e.g. http://192.168.0.15:20128 (overrides --base-url and the context)"
+      "Remote OmniRoute URL, e.g. http://192.168.0.15:20128 (overrides --base-url and the context)",
     )
     .option("--display-name <name>", "Display name in the OpenCode UI (optional)")
     .option(
       "--auth",
       "Run `opencode auth login --provider <providerId>` after wiring (interactive)",
-      false
+      false,
     )
     .option("--non-interactive", "Do not prompt; skip the auth login step", false)
     .action(async (opts, cmd) => {

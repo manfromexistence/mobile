@@ -228,7 +228,7 @@ function buildChatMessage(msg: WsChatMessage): Uint8Array {
 function buildGetChatMessageRequest(
   apiKey: string,
   model: string,
-  messages: WsChatMessage[]
+  messages: WsChatMessage[],
 ): Uint8Array {
   const sessionId = randomUUID();
   const cascadeId = randomUUID();
@@ -575,7 +575,7 @@ export class WindsurfExecutor extends BaseExecutor {
                     choices: [
                       { index: 0, delta: { role: "assistant", content: "" }, finish_reason: null },
                     ],
-                  })}\n\n`
+                  })}\n\n`,
                 );
                 roleEmitted = true;
               }
@@ -586,7 +586,7 @@ export class WindsurfExecutor extends BaseExecutor {
                   created,
                   model,
                   choices: [{ index: 0, delta: { content: chunk.text }, finish_reason: null }],
-                })}\n\n`
+                })}\n\n`,
               );
             } else if (chunk.kind === "done") {
               promptTokens = chunk.promptTokens;
@@ -631,7 +631,7 @@ export class WindsurfExecutor extends BaseExecutor {
             emit(
               `data: ${JSON.stringify({
                 error: { message: hadError, type: "windsurf_error", code: "upstream_error" },
-              })}\n\n`
+              })}\n\n`,
             );
             emit("data: [DONE]\n\n");
             controller.close();
@@ -650,7 +650,7 @@ export class WindsurfExecutor extends BaseExecutor {
                 choices: [
                   { index: 0, delta: { role: "assistant", content: "" }, finish_reason: null },
                 ],
-              })}\n\n`
+              })}\n\n`,
             );
             emit(
               `data: ${JSON.stringify({
@@ -659,7 +659,7 @@ export class WindsurfExecutor extends BaseExecutor {
                 created,
                 model,
                 choices: [{ index: 0, delta: { content: totalText }, finish_reason: null }],
-              })}\n\n`
+              })}\n\n`,
             );
           }
 
@@ -685,7 +685,7 @@ export class WindsurfExecutor extends BaseExecutor {
           emit(
             `data: ${JSON.stringify({
               error: { message: `Windsurf stream error: ${msg}`, type: "windsurf_error" },
-            })}\n\n`
+            })}\n\n`,
           );
           emit("data: [DONE]\n\n");
         }

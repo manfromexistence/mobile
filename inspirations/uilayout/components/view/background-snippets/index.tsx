@@ -60,9 +60,7 @@ export default function BackgroundPatternGenerator() {
 
   const [gradientSizeX, setGradientSizeX] = useState(125);
   const [gradientSizeY, setGradientSizeY] = useState(125);
-  const [activePresetId, setActivePresetId] = useState<string | undefined>(
-    undefined,
-  );
+  const [activePresetId, setActivePresetId] = useState<string | undefined>(undefined);
 
   const [gradientPositionX, setGradientPositionX] = useState(30);
   const [gradientPositionY, setGradientPositionY] = useState(10);
@@ -114,11 +112,7 @@ export default function BackgroundPatternGenerator() {
       setLineGridSizeY(config.lineGridSizeY);
     }
 
-    if (
-      config.patternType === "dotGrid" &&
-      config.dotGridColor &&
-      config.dotGridSize
-    ) {
+    if (config.patternType === "dotGrid" && config.dotGridColor && config.dotGridSize) {
       setDotGridColor(config.dotGridColor);
       setDotGridSize(config.dotGridSize);
     }
@@ -156,10 +150,7 @@ export default function BackgroundPatternGenerator() {
         setGradientPositionY(config.gradientPositionY);
       }
 
-      if (
-        config.gradientType === "linear" &&
-        config.linearGradientAngle !== undefined
-      ) {
+      if (config.gradientType === "linear" && config.linearGradientAngle !== undefined) {
         setLinearGradientAngle(config.linearGradientAngle);
       }
     }
@@ -261,10 +252,7 @@ export default function BackgroundPatternGenerator() {
           <PresetCard
             key={preset.id}
             preset={preset}
-            cardClassName={cn(
-              " w-full",
-              viewAll ? "h-28 2xl:h-36" : "h-full 2xl:h-full",
-            )}
+            cardClassName={cn(" w-full", viewAll ? "h-28 2xl:h-36" : "h-full 2xl:h-full")}
             hideName={true}
             className="border-0 bg-card-bg p-2 shadow-[0px_1px_0px_0px_rgba(17,17,26,0.1)] lg:p-5 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]"
             onSelect={handleSelectPreset}
@@ -285,11 +273,7 @@ export default function BackgroundPatternGenerator() {
           <ScrollArea className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] max-h-[95vh] rounded-xl border bg-card-bg p-3 lg:col-span-4 xl:col-span-1 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0 ">
             <div className="space-y-3">
               <div className="space-y-2 rounded-lg border bg-main p-3">
-                <ColorPickerPopover
-                  color={bgColor}
-                  onChange={setBgColor}
-                  label="Background"
-                />
+                <ColorPickerPopover color={bgColor} onChange={setBgColor} label="Background" />
                 <PatternControls
                   patternType={patternType}
                   setPatternType={setPatternType}
@@ -448,10 +432,7 @@ export default function BackgroundPatternGenerator() {
             />
           </div>
           <div className="inset-shadow-[0_1px_rgb(0_0_0/0.10)] flex h-44 w-full gap-2 rounded-xl border border-t-0 bg-card-bg p-2 2xl:h-60 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-0">
-            <PresetGallery
-              onSelectPreset={handleSelectPreset}
-              activePresetId={activePresetId}
-            />
+            <PresetGallery onSelectPreset={handleSelectPreset} activePresetId={activePresetId} />
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { expect, type Locator, type Page } from "@playwright/test";
 
 // Shared test utilities for scrolling the virtualized tree until a specific
 // path is pinned in the sticky overlay. The drag-and-drop and rename suites
@@ -43,17 +43,9 @@ export async function scrollUntilSticky(
   page: Page,
   stickyPath: string,
   predicate: (state: StickyRowState) => boolean = () => true,
-  {
-    startScrollTop = 8,
-    maxScrollTop = 600,
-    step = 8,
-  }: StepUntilStickyOptions = {}
+  { startScrollTop = 8, maxScrollTop = 600, step = 8 }: StepUntilStickyOptions = {},
 ): Promise<number> {
-  for (
-    let scrollTop = startScrollTop;
-    scrollTop <= maxScrollTop;
-    scrollTop += step
-  ) {
+  for (let scrollTop = startScrollTop; scrollTop <= maxScrollTop; scrollTop += step) {
     await page.evaluate(async (nextScrollTop) => {
       await window.__setScrollTop?.(nextScrollTop);
     }, scrollTop);
@@ -64,7 +56,7 @@ export async function scrollUntilSticky(
   }
 
   throw new Error(
-    `scrollUntilSticky: ${stickyPath} never satisfied predicate within scrollTop <= ${maxScrollTop}.`
+    `scrollUntilSticky: ${stickyPath} never satisfied predicate within scrollTop <= ${maxScrollTop}.`,
   );
 }
 
@@ -74,13 +66,13 @@ export function scrollUntilStickyWithVisible(
   page: Page,
   stickyPath: string,
   visiblePath: string,
-  options?: StepUntilStickyOptions
+  options?: StepUntilStickyOptions,
 ): Promise<number> {
   return scrollUntilSticky(
     page,
     stickyPath,
     (state) => state.visiblePaths.includes(visiblePath),
-    options
+    options,
   );
 }
 
@@ -96,11 +88,9 @@ export type ScrollByClientHeightOptions = {
 export async function scrollUntilLocatorPresent(
   treeLocator: Locator,
   target: Locator,
-  { maxAttempts = 40 }: ScrollByClientHeightOptions = {}
+  { maxAttempts = 40 }: ScrollByClientHeightOptions = {},
 ): Promise<Locator> {
-  const scrollViewport = treeLocator.locator(
-    '[data-file-tree-virtualized-scroll="true"]'
-  );
+  const scrollViewport = treeLocator.locator('[data-file-tree-virtualized-scroll="true"]');
 
   let attempt = 0;
   await expect
@@ -117,19 +107,15 @@ export async function scrollUntilLocatorPresent(
       return scrollViewport.evaluate(async (element) => {
         const nextScrollTop = Math.min(
           element.scrollTop + Math.max(element.clientHeight / 2, 30),
-          element.scrollHeight - element.clientHeight
+          element.scrollHeight - element.clientHeight,
         );
         if (nextScrollTop <= element.scrollTop) {
           return false;
         }
         element.scrollTop = nextScrollTop;
-        element.dispatchEvent(new Event('scroll'));
-        await new Promise<void>((resolve) =>
-          requestAnimationFrame(() => resolve())
-        );
-        await new Promise<void>((resolve) =>
-          requestAnimationFrame(() => resolve())
-        );
+        element.dispatchEvent(new Event("scroll"));
+        await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+        await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
         return false;
       });
     })

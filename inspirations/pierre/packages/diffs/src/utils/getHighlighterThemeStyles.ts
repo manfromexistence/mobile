@@ -1,13 +1,13 @@
-import { normalizeThemeColors } from '@pierre/theming/color';
+import { normalizeThemeColors } from "@pierre/theming/color";
 
-import { DEFAULT_THEMES } from '../constants';
+import { DEFAULT_THEMES } from "../constants";
 import type {
   DiffsHighlighter,
   DiffsThemeNames,
   ThemeRegistrationResolved,
   ThemesType,
-} from '../types';
-import { formatCSSVariablePrefix } from './formatCSSVariablePrefix';
+} from "../types";
+import { formatCSSVariablePrefix } from "./formatCSSVariablePrefix";
 
 interface GetHighlighterThemeStylesProps {
   theme?: DiffsThemeNames | ThemesType;
@@ -30,27 +30,27 @@ export function getHighlighterThemeStyles({
   highlighter,
   prefix,
 }: GetHighlighterThemeStylesProps): string {
-  let styles = '';
-  if (typeof theme === 'string') {
+  let styles = "";
+  if (typeof theme === "string") {
     const themeData = highlighter.getTheme(theme);
     const normalized = normalizeThemeColors(themeData);
     styles += `color:${normalized.fg};`;
     styles += `background-color:${normalized.bg};`;
-    styles += `${formatCSSVariablePrefix('global')}fg:${normalized.fg};`;
-    styles += `${formatCSSVariablePrefix('global')}bg:${normalized.bg};`;
+    styles += `${formatCSSVariablePrefix("global")}fg:${normalized.fg};`;
+    styles += `${formatCSSVariablePrefix("global")}bg:${normalized.bg};`;
     styles += getGitVariables(themeData, prefix);
   } else {
     let themeData = highlighter.getTheme(theme.dark);
     let normalized = normalizeThemeColors(themeData);
-    styles += `${formatCSSVariablePrefix('global')}dark:${normalized.fg};`;
-    styles += `${formatCSSVariablePrefix('global')}dark-bg:${normalized.bg};`;
-    styles += getGitVariables(themeData, 'dark');
+    styles += `${formatCSSVariablePrefix("global")}dark:${normalized.fg};`;
+    styles += `${formatCSSVariablePrefix("global")}dark-bg:${normalized.bg};`;
+    styles += getGitVariables(themeData, "dark");
 
     themeData = highlighter.getTheme(theme.light);
     normalized = normalizeThemeColors(themeData);
-    styles += `${formatCSSVariablePrefix('global')}light:${normalized.fg};`;
-    styles += `${formatCSSVariablePrefix('global')}light-bg:${normalized.bg};`;
-    styles += getGitVariables(themeData, 'light');
+    styles += `${formatCSSVariablePrefix("global")}light:${normalized.fg};`;
+    styles += `${formatCSSVariablePrefix("global")}light-bg:${normalized.bg};`;
+    styles += getGitVariables(themeData, "light");
   }
   return styles;
 }
@@ -62,29 +62,26 @@ export function getHighlighterThemeStyles({
 // byte-identical to the pre-theming output. Adopting the gutter fallback for
 // diffs is a deliberate follow-up. A variable is omitted entirely when neither
 // source key is present, matching the previous behavior.
-function getGitVariables(
-  themeData: ThemeRegistrationResolved,
-  modePrefix?: string
-) {
-  modePrefix = modePrefix != null ? `${modePrefix}-` : '';
-  let styles = '';
+function getGitVariables(themeData: ThemeRegistrationResolved, modePrefix?: string) {
+  modePrefix = modePrefix != null ? `${modePrefix}-` : "";
+  let styles = "";
   const additionGreen =
-    themeData.colors?.['gitDecoration.addedResourceForeground'] ??
-    themeData.colors?.['terminal.ansiGreen'];
+    themeData.colors?.["gitDecoration.addedResourceForeground"] ??
+    themeData.colors?.["terminal.ansiGreen"];
   if (additionGreen != null) {
-    styles += `${formatCSSVariablePrefix('global')}${modePrefix}addition-color:${additionGreen};`;
+    styles += `${formatCSSVariablePrefix("global")}${modePrefix}addition-color:${additionGreen};`;
   }
   const deletionRed =
-    themeData.colors?.['gitDecoration.deletedResourceForeground'] ??
-    themeData.colors?.['terminal.ansiRed'];
+    themeData.colors?.["gitDecoration.deletedResourceForeground"] ??
+    themeData.colors?.["terminal.ansiRed"];
   if (deletionRed != null) {
-    styles += `${formatCSSVariablePrefix('global')}${modePrefix}deletion-color:${deletionRed};`;
+    styles += `${formatCSSVariablePrefix("global")}${modePrefix}deletion-color:${deletionRed};`;
   }
   const modifiedBlue =
-    themeData.colors?.['gitDecoration.modifiedResourceForeground'] ??
-    themeData.colors?.['terminal.ansiBlue'];
+    themeData.colors?.["gitDecoration.modifiedResourceForeground"] ??
+    themeData.colors?.["terminal.ansiBlue"];
   if (modifiedBlue != null) {
-    styles += `${formatCSSVariablePrefix('global')}${modePrefix}modified-color:${modifiedBlue};`;
+    styles += `${formatCSSVariablePrefix("global")}${modePrefix}modified-color:${modifiedBlue};`;
   }
   return styles;
 }

@@ -47,7 +47,7 @@ function candidate(
   provider: string,
   model: string,
   connectionId: string,
-  overrides: Partial<AutoProviderCandidate> = {}
+  overrides: Partial<AutoProviderCandidate> = {},
 ): AutoProviderCandidate {
   return {
     provider,
@@ -80,7 +80,7 @@ test("#4540: exhausted (statusPenalty) candidate scores strictly BELOW an identi
       candidate("healthy", "m", "healthy-conn"),
     ],
     "coding",
-    quotaOnlyWeights
+    quotaOnlyWeights,
   );
 
   // Soft penalty: NOT hard-blocked — both candidates are still in the pool.
@@ -93,7 +93,7 @@ test("#4540: exhausted (statusPenalty) candidate scores strictly BELOW an identi
   // The fix: exhausted scores STRICTLY less than the identical healthy one (was a tie).
   assert.ok(
     (dead!.score as number) < (healthy!.score as number),
-    `exhausted score (${dead!.score}) must be strictly < healthy score (${healthy!.score})`
+    `exhausted score (${dead!.score}) must be strictly < healthy score (${healthy!.score})`,
   );
 
   // And ranking puts healthy first.

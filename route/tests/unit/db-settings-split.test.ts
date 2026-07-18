@@ -83,7 +83,7 @@ describe("settings.ts public API surface", () => {
       assert.strictEqual(
         typeof (settingsModule as Record<string, unknown>)[name],
         "function",
-        `Expected "${name}" to be exported as a function`
+        `Expected "${name}" to be exported as a function`,
       );
     });
   }

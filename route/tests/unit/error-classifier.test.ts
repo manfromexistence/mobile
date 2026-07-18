@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { classifyProviderError, PROVIDER_ERROR_TYPES } =
-  await import("../../open-sse/services/errorClassifier.ts");
+const { classifyProviderError, PROVIDER_ERROR_TYPES } = await import(
+  "../../open-sse/services/errorClassifier.ts"
+);
 
 test("classifyProviderError: 401 + account_deactivated => ACCOUNT_DEACTIVATED", () => {
   const body = JSON.stringify({
@@ -47,7 +48,7 @@ test("classifyProviderError: API-key provider 429 with billing signal => RATE_LI
     {
       error: { message: "insufficient_quota: exceeded your current quota" },
     },
-    "openai"
+    "openai",
   );
   assert.equal(result, PROVIDER_ERROR_TYPES.RATE_LIMITED);
 });
@@ -58,7 +59,7 @@ test("classifyProviderError: OAuth provider 429 with billing signal => QUOTA_EXH
     {
       error: { message: "insufficient_quota: exceeded your current quota" },
     },
-    "codex"
+    "codex",
   );
   assert.equal(result, PROVIDER_ERROR_TYPES.QUOTA_EXHAUSTED);
 });
@@ -86,7 +87,7 @@ test("classifyProviderError: API-key provider plain 403 is recoverable", () => {
     {
       error: { message: "The caller does not have permission" },
     },
-    "glm"
+    "glm",
   );
   assert.equal(result, null);
 });
@@ -116,7 +117,7 @@ test("classifyProviderError: OAuth provider 429 with daily quota signal => QUOTA
     {
       error: { message: "You have reached your daily quota limit" },
     },
-    "codex"
+    "codex",
   );
   assert.equal(result, PROVIDER_ERROR_TYPES.QUOTA_EXHAUSTED);
 });
@@ -132,10 +133,6 @@ test("classifyProviderError: 404 => MODEL_NOT_FOUND", () => {
 });
 
 test("classifyProviderError: 404 with provider => MODEL_NOT_FOUND", () => {
-  const result = classifyProviderError(
-    404,
-    { error: { message: "Not Found" } },
-    "v0-vercel"
-  );
+  const result = classifyProviderError(404, { error: { message: "Not Found" } }, "v0-vercel");
   assert.equal(result, PROVIDER_ERROR_TYPES.MODEL_NOT_FOUND);
 });

@@ -26,7 +26,7 @@ test("nestDottedKeys expands flat compliance.eventTypes keys into nested objects
   assert.equal(
     JSON.stringify(out).includes('"apiKey.activate"'),
     false,
-    "dotted keys must be gone"
+    "dotted keys must be gone",
   );
 });
 

@@ -23,7 +23,7 @@ export async function forwardDashboardEventToLiveWs(
   event: string,
   payload: unknown,
   fetchImpl: typeof fetch = fetch,
-  now: () => number = Date.now
+  now: () => number = Date.now,
 ): Promise<void> {
   // Skip while the bridge is in a cooldown window after repeated failures.
   if (liveWsDisabledUntil > now()) return;

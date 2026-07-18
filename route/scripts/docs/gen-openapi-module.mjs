@@ -150,7 +150,7 @@ export const OPENAPI_TAGS: string[] = Array.from(
   await fs.writeFile(OUT_PATH, `${header}${body}`, "utf8");
 
   console.log(
-    `[gen-openapi-module] wrote ${path.relative(ROOT, OUT_PATH)} (${endpoints.length} endpoints, v${version}, skipped ${totalManagement} management paths)`
+    `[gen-openapi-module] wrote ${path.relative(ROOT, OUT_PATH)} (${endpoints.length} endpoints, v${version}, skipped ${totalManagement} management paths)`,
   );
 }
 

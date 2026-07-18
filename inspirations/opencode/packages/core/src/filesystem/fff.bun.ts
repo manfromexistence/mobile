@@ -10,115 +10,115 @@ import {
   type MixedItem,
   type MixedSearchResult,
   type SearchResult,
-} from "@ff-labs/fff-bun"
+} from "@ff-labs/fff-bun";
 
 declare global {
-  const FFF_LIBC: "gnu" | "musl"
+  const FFF_LIBC: "gnu" | "musl";
 }
 
-export type Result<T> = { ok: true; value: T } | { ok: false; error: string }
+export type Result<T> = { ok: true; value: T } | { ok: false; error: string };
 
-export type Init = InitOptions
+export type Init = InitOptions;
 
 export interface Search {
-  items: FileItem[]
-  scores: SearchResult["scores"]
-  totalMatched: number
-  totalFiles: number
+  items: FileItem[];
+  scores: SearchResult["scores"];
+  totalMatched: number;
+  totalFiles: number;
 }
 
 export interface DirSearch {
-  items: DirItem[]
-  scores: DirSearchResult["scores"]
-  totalMatched: number
-  totalDirs: number
+  items: DirItem[];
+  scores: DirSearchResult["scores"];
+  totalMatched: number;
+  totalDirs: number;
 }
 
 export interface MixedSearch {
-  items: MixedItem[]
-  scores: MixedSearchResult["scores"]
-  totalMatched: number
-  totalFiles: number
-  totalDirs: number
+  items: MixedItem[];
+  scores: MixedSearchResult["scores"];
+  totalMatched: number;
+  totalFiles: number;
+  totalDirs: number;
 }
 
-export type File = FileItem
-export type Directory = DirItem
-export type Mixed = MixedItem
-export type Cursor = GrepCursor | null
-export type Hit = GrepMatch
+export type File = FileItem;
+export type Directory = DirItem;
+export type Mixed = MixedItem;
+export type Cursor = GrepCursor | null;
+export type Hit = GrepMatch;
 
 export interface Grep {
-  items: GrepResult["items"]
-  totalMatched: number
-  totalFilesSearched: number
-  totalFiles: number
-  filteredFileCount: number
-  nextCursor: Cursor
-  regexFallbackError?: string
+  items: GrepResult["items"];
+  totalMatched: number;
+  totalFilesSearched: number;
+  totalFiles: number;
+  filteredFileCount: number;
+  nextCursor: Cursor;
+  regexFallbackError?: string;
 }
 
 export interface Picker {
-  destroy(): void
-  isScanning(): boolean
-  waitForScan(timeoutMs?: number): Promise<Result<boolean>>
-  refreshGitStatus(): Result<number>
+  destroy(): void;
+  isScanning(): boolean;
+  waitForScan(timeoutMs?: number): Promise<Result<boolean>>;
+  refreshGitStatus(): Result<number>;
   fileSearch(
     query: string,
     opts?: {
-      currentFile?: string
-      pageIndex?: number
-      pageSize?: number
+      currentFile?: string;
+      pageIndex?: number;
+      pageSize?: number;
     },
-  ): Result<Search>
+  ): Result<Search>;
   glob(
     pattern: string,
     opts?: {
-      currentFile?: string
-      pageIndex?: number
-      pageSize?: number
+      currentFile?: string;
+      pageIndex?: number;
+      pageSize?: number;
     },
-  ): Result<Search>
+  ): Result<Search>;
   directorySearch(
     query: string,
     opts?: {
-      currentFile?: string
-      pageIndex?: number
-      pageSize?: number
+      currentFile?: string;
+      pageIndex?: number;
+      pageSize?: number;
     },
-  ): Result<DirSearch>
+  ): Result<DirSearch>;
   mixedSearch(
     query: string,
     opts?: {
-      currentFile?: string
-      pageIndex?: number
-      pageSize?: number
+      currentFile?: string;
+      pageIndex?: number;
+      pageSize?: number;
     },
-  ): Result<MixedSearch>
+  ): Result<MixedSearch>;
   grep(
     query: string,
     opts?: {
-      mode?: "plain" | "regex" | "fuzzy"
-      maxMatchesPerFile?: number
-      timeBudgetMs?: number
-      beforeContext?: number
-      afterContext?: number
-      cursor?: Cursor
-      pageSize?: number
+      mode?: "plain" | "regex" | "fuzzy";
+      maxMatchesPerFile?: number;
+      timeBudgetMs?: number;
+      beforeContext?: number;
+      afterContext?: number;
+      cursor?: Cursor;
+      pageSize?: number;
     },
-  ): Result<Grep>
-  trackQuery(query: string, file: string): Result<boolean>
-  getHistoricalQuery(offset: number): Result<string | null>
+  ): Result<Grep>;
+  trackQuery(query: string, file: string): Result<boolean>;
+  getHistoricalQuery(offset: number): Result<string | null>;
 }
 
 export function available() {
-  return FileFinder.isAvailable()
+  return FileFinder.isAvailable();
 }
 
 export function create(opts: Init): Result<Picker> {
-  const made = FileFinder.create(opts)
-  if (!made.ok) return made
-  const pick = made.value
+  const made = FileFinder.create(opts);
+  if (!made.ok) return made;
+  const pick = made.value;
   return {
     ok: true,
     value: {
@@ -134,7 +134,7 @@ export function create(opts: Init): Result<Picker> {
       trackQuery: (query, file) => pick.trackQuery(query, file),
       getHistoricalQuery: (offset) => pick.getHistoricalQuery(offset),
     },
-  }
+  };
 }
 
-export * as Fff from "./fff.bun"
+export * as Fff from "./fff.bun";

@@ -31,7 +31,7 @@ test("(b) a non-ok upstream response becomes a real error body, not an empty cha
   const body = buildAntigravityUpstreamError(
     400,
     "Bad Request",
-    JSON.stringify({ error: { code: 400, message: "Model not found: gemini-3.1-pro-high" } })
+    JSON.stringify({ error: { code: 400, message: "Model not found: gemini-3.1-pro-high" } }),
   );
   assert.notEqual((body as { object?: string }).object, "chat.completion");
   assert.ok(body.error, "must carry an error object");

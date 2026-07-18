@@ -25,4 +25,4 @@ export const dict = {
     "CLI встановлено до {{path}}\n\nПерезапустіть термінал, щоб використовувати команду 'opencode'.",
   "desktop.cli.failed.title": "Не вдалося встановити",
   "desktop.cli.failed.message": "Не вдалося встановити CLI: {{error}}",
-}
+};

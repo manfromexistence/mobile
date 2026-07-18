@@ -98,7 +98,7 @@ const MAX_FRAME_LEN = 8 * 1024 * 1024;
  */
 export function decodeConnectFrame(
   buf: Uint8Array,
-  byteOffset: number
+  byteOffset: number,
 ): { consumed: number; frame: ConnectFrame | null } {
   if (byteOffset + 5 > buf.length) return { consumed: 0, frame: null };
   const flags = buf[byteOffset];
@@ -137,7 +137,7 @@ type DeltaKind = "text" | "think" | null;
  * suppressed; we only surface text to the client.
  */
 export function extractDelta(
-  msg: Record<string, unknown> | null
+  msg: Record<string, unknown> | null,
 ): { kind: DeltaKind; text: string } | null {
   if (!msg) return null;
   const op = String(msg.op ?? "");
@@ -259,7 +259,7 @@ export class KimiWebExecutor extends BaseExecutor {
         400,
         "Missing Kimi session — paste the full Cookie header from www.kimi.com (must contain kimi-auth=<JWT>) or just the JWT itself.",
         body,
-        CHAT_URL
+        CHAT_URL,
       );
     }
 
@@ -291,7 +291,7 @@ export class KimiWebExecutor extends BaseExecutor {
         502,
         `Kimi fetch failed: ${err instanceof Error ? err.message : "unknown"}`,
         body,
-        CHAT_URL
+        CHAT_URL,
       );
     }
 
@@ -301,7 +301,7 @@ export class KimiWebExecutor extends BaseExecutor {
         upstream.status,
         `Kimi error: ${sanitizeErrorMessage(errText)}`,
         body,
-        CHAT_URL
+        CHAT_URL,
       );
     }
 
@@ -312,7 +312,7 @@ export class KimiWebExecutor extends BaseExecutor {
     const emitChunk = (
       controller: ReadableStreamDefaultController,
       delta: Record<string, unknown>,
-      finish: string | null = null
+      finish: string | null = null,
     ) => {
       const chunk = {
         id,

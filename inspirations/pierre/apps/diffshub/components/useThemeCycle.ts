@@ -1,18 +1,17 @@
-'use client';
+"use client";
 
-import { type ColorMode } from '@pierre/theming';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { type ColorMode } from "@pierre/theming";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-import { docsThemeCatalog } from '@/components/themeCatalog';
-import type { DarkThemeName, LightThemeName } from '@/lib/themeNames';
+import { docsThemeCatalog } from "@/components/themeCatalog";
+import type { DarkThemeName, LightThemeName } from "@/lib/themeNames";
 
 // Step durations available on the System Monitor's theme-cycle button.
 // Plain-clicking the button advances through these in order; the
 // shift-click gesture starts/stops the actual rotation.
 export const THEME_CYCLE_DURATIONS_SECONDS = [3, 0.8, 0.4, 0.1] as const;
 
-export type ThemeCycleDurationSeconds =
-  (typeof THEME_CYCLE_DURATIONS_SECONDS)[number];
+export type ThemeCycleDurationSeconds = (typeof THEME_CYCLE_DURATIONS_SECONDS)[number];
 
 export interface ThemeCycleControls {
   cycling: boolean;
@@ -28,7 +27,7 @@ interface UseThemeCycleArgs {
   // localStorage hydration is still pending. Cycling waits for a resolved
   // value before starting so the first step doesn't anchor on the wrong
   // phase.
-  resolvedThemeMode: 'light' | 'dark' | undefined;
+  resolvedThemeMode: "light" | "dark" | undefined;
   setLightThemeName: (theme: LightThemeName) => void;
   setDarkThemeName: (theme: DarkThemeName) => void;
   setColorMode: (mode: ColorMode) => void;
@@ -65,9 +64,7 @@ export function useThemeCycle({
   const bumpDuration = useCallback(() => {
     setStepSeconds((prev) => {
       const idx = THEME_CYCLE_DURATIONS_SECONDS.indexOf(prev);
-      return THEME_CYCLE_DURATIONS_SECONDS[
-        (idx + 1) % THEME_CYCLE_DURATIONS_SECONDS.length
-      ];
+      return THEME_CYCLE_DURATIONS_SECONDS[(idx + 1) % THEME_CYCLE_DURATIONS_SECONDS.length];
     });
   }, []);
 
@@ -77,34 +74,26 @@ export function useThemeCycle({
 
   useEffect(() => {
     if (!cycling) return undefined;
-    const startMode = resolvedModeRef.current ?? 'light';
+    const startMode = resolvedModeRef.current ?? "light";
     // Snapshot the catalog once per cycle start; each tick reads the same
     // captured sequence.
     const lightThemes = docsThemeCatalog.getThemeNames({
-      colorScheme: 'light',
+      colorScheme: "light",
     });
-    const darkThemes = docsThemeCatalog.getThemeNames({ colorScheme: 'dark' });
-    const lightStartIdx = Math.max(
-      0,
-      lightThemes.indexOf(lightThemeNameRef.current)
-    );
-    const darkStartIdx = Math.max(
-      0,
-      darkThemes.indexOf(darkThemeNameRef.current)
-    );
-    type Step =
-      | { mode: 'light'; theme: LightThemeName }
-      | { mode: 'dark'; theme: DarkThemeName };
+    const darkThemes = docsThemeCatalog.getThemeNames({ colorScheme: "dark" });
+    const lightStartIdx = Math.max(0, lightThemes.indexOf(lightThemeNameRef.current));
+    const darkStartIdx = Math.max(0, darkThemes.indexOf(darkThemeNameRef.current));
+    type Step = { mode: "light"; theme: LightThemeName } | { mode: "dark"; theme: DarkThemeName };
     const lightSequence: Step[] = lightThemes.map((theme) => ({
-      mode: 'light',
+      mode: "light",
       theme,
     }));
     const darkSequence: Step[] = darkThemes.map((theme) => ({
-      mode: 'dark',
+      mode: "dark",
       theme,
     }));
     const order: Step[] =
-      startMode === 'dark'
+      startMode === "dark"
         ? [
             ...darkSequence.slice(darkStartIdx),
             ...lightSequence,
@@ -120,12 +109,12 @@ export function useThemeCycle({
     let idx = 1;
     const tick = () => {
       const step = order[idx % order.length];
-      if (step.mode === 'light') {
+      if (step.mode === "light") {
         setLightThemeName(step.theme);
-        setColorMode('light');
+        setColorMode("light");
       } else {
         setDarkThemeName(step.theme);
-        setColorMode('dark');
+        setColorMode("dark");
       }
       idx++;
     };
@@ -136,6 +125,6 @@ export function useThemeCycle({
 
   return useMemo(
     () => ({ cycling, stepSeconds, bumpDuration, toggleCycle }),
-    [cycling, stepSeconds, bumpDuration, toggleCycle]
+    [cycling, stepSeconds, bumpDuration, toggleCycle],
   );
 }

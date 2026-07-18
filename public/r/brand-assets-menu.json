@@ -4,13 +4,8 @@
   "title": "Brand Assets Menu",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "Context menu for copying brand SVGs and opening asset links.",
-  "dependencies": [
-    "@rexa-developer/tiks"
-  ],
-  "registryDependencies": [
-    "context-menu",
-    "sonner"
-  ],
+  "dependencies": ["@rexa-developer/tiks"],
+  "registryDependencies": ["context-menu", "sonner"],
   "files": [
     {
       "path": "src/registry/components/brand-assets-menu/brand-assets-menu.tsx",
@@ -20,8 +15,6 @@
     }
   ],
   "docs": "https://chanhdai.com/components/brand-assets-menu",
-  "categories": [
-    "menus"
-  ],
+  "categories": ["menus"],
   "type": "registry:component"
 }

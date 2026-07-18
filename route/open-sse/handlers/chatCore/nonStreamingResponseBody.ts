@@ -27,7 +27,7 @@ export class NonStreamingResponseTooLargeError extends Error {
   readonly maxBytes: number;
   constructor(bytesSeen: number, maxBytes: number) {
     super(
-      `Upstream non-streaming response exceeded the ${maxBytes}-byte cap (saw at least ${bytesSeen} bytes)`
+      `Upstream non-streaming response exceeded the ${maxBytes}-byte cap (saw at least ${bytesSeen} bytes)`,
     );
     this.name = "NonStreamingResponseTooLargeError";
     this.bytesSeen = bytesSeen;
@@ -51,7 +51,7 @@ export async function readNonStreamingResponseBody(
   response: Response,
   contentType: string,
   upstreamStream: boolean,
-  maxBytes: number = MAX_NONSTREAMING_RESPONSE_BYTES
+  maxBytes: number = MAX_NONSTREAMING_RESPONSE_BYTES,
 ): Promise<string> {
   if (
     !upstreamStream ||
@@ -78,7 +78,7 @@ type NonStreamingChunk = { kind: "done" } | { kind: "skip" } | { kind: "chunk"; 
 
 function cancelNonStreamingReader(
   reader: ReadableStreamDefaultReader<Uint8Array>,
-  reason: unknown
+  reason: unknown,
 ): void {
   try {
     void reader.cancel(reason).catch(() => {});
@@ -90,7 +90,7 @@ function cancelNonStreamingReader(
 /** Read the next chunk under the body-timeout deadline, normalizing end/empty cases. */
 async function readNextNonStreamingChunk(
   reader: ReadableStreamDefaultReader<Uint8Array>,
-  deadline: number
+  deadline: number,
 ): Promise<NonStreamingChunk> {
   const timeoutMs = deadline > 0 ? deadline - Date.now() : 0;
   if (deadline > 0 && timeoutMs <= 0) {
@@ -104,7 +104,7 @@ async function readNextNonStreamingChunk(
 
 async function drainNonStreamingSseBody(
   body: ReadableStream<Uint8Array>,
-  maxBytes: number
+  maxBytes: number,
 ): Promise<string> {
   const reader = body.getReader();
   const decoder = new TextDecoder();

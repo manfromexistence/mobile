@@ -14,11 +14,11 @@ test("toApiUrlPath maps [id] and [...slug] to OpenAPI-style braces", () => {
   const apiRoot = path.join("C:", "repo", "src", "app", "api");
   assert.equal(
     toApiUrlPath(path.join(apiRoot, "providers", "[id]", "models"), apiRoot).replace(/\\/g, "/"),
-    "/api/providers/{id}/models"
+    "/api/providers/{id}/models",
   );
   assert.equal(
     toApiUrlPath(path.join(apiRoot, "files", "[...path]"), apiRoot).replace(/\\/g, "/"),
-    "/api/files/{path}"
+    "/api/files/{path}",
   );
 });
 

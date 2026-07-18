@@ -134,7 +134,7 @@ export const headroomEngine: CompressionEngine = {
         content?: string | Array<Record<string, unknown>>;
         [key: string]: unknown;
       }>,
-      minRows
+      minRows,
     );
 
     if (!changed) {
@@ -153,7 +153,7 @@ export const headroomEngine: CompressionEngine = {
       "stacked",
       ["headroom-smartcrusher"],
       ["tabular-compaction"],
-      durationMs
+      durationMs,
     );
 
     return { body: newBody, compressed: true, stats };

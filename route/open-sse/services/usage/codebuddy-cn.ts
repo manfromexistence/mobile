@@ -81,7 +81,7 @@ function cycleEndMs(acc: TencentAccount): number {
 
 function deductionEndMs(acc: TencentAccount): number {
   const v = acc.DeductionEndTime;
-  if (typeof v === "number") return (v < 1e12 ? v * 1000 : v);
+  if (typeof v === "number") return v < 1e12 ? v * 1000 : v;
   if (typeof v === "string" && /^\d+$/.test(v)) {
     const n = Number(v);
     return n < 1e12 ? n * 1000 : n;
@@ -116,7 +116,7 @@ interface CodeBuddyUsageResult {
 export async function getCodeBuddyCnUsage(
   accessToken?: string,
   apiKey?: string,
-  _providerSpecificData?: unknown
+  _providerSpecificData?: unknown,
 ): Promise<CodeBuddyUsageResult> {
   const token = accessToken || apiKey;
   if (!token) {

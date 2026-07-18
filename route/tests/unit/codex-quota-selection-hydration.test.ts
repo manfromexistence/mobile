@@ -76,7 +76,7 @@ test("Codex selection ignores hydrated Spark-only exhaustion for normal Codex mo
     "codex",
     null,
     null,
-    "gpt-5.3-codex-spark"
+    "gpt-5.3-codex-spark",
   );
 
   assert.equal(normalSelected.connectionId, connectionId);

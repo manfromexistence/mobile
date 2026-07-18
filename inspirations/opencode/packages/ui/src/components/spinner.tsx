@@ -1,7 +1,7 @@
-import { ComponentProps, For } from "solid-js"
+import { ComponentProps, For } from "solid-js";
 
-const outerIndices = new Set([1, 2, 4, 7, 8, 11, 13, 14])
-const cornerIndices = new Set([0, 3, 12, 15])
+const outerIndices = new Set([1, 2, 4, 7, 8, 11, 13, 14]);
+const cornerIndices = new Set([0, 3, 12, 15]);
 const squares = Array.from({ length: 16 }, (_, i) => ({
   id: i,
   x: (i % 4) * 4,
@@ -10,12 +10,12 @@ const squares = Array.from({ length: 16 }, (_, i) => ({
   duration: 1 + Math.random() * 1,
   outer: outerIndices.has(i),
   corner: cornerIndices.has(i),
-}))
+}));
 
 export function Spinner(props: {
-  class?: string
-  classList?: ComponentProps<"div">["classList"]
-  style?: ComponentProps<"div">["style"]
+  class?: string;
+  classList?: ComponentProps<"div">["classList"];
+  style?: ComponentProps<"div">["style"];
 }) {
   return (
     <svg
@@ -48,5 +48,5 @@ export function Spinner(props: {
         )}
       </For>
     </svg>
-  )
+  );
 }

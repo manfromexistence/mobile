@@ -21,8 +21,9 @@ const {
   listCompressionCombosTool,
   compressionComboStatsTool,
 } = await import("../../../open-sse/mcp-server/schemas/tools.ts");
-const { maybeCompressMcpDescription, resetMcpDescriptionCompressionStats } =
-  await import("../../../open-sse/mcp-server/descriptionCompressor.ts");
+const { maybeCompressMcpDescription, resetMcpDescriptionCompressionStats } = await import(
+  "../../../open-sse/mcp-server/descriptionCompressor.ts"
+);
 
 describe("compression MCP tool schemas", () => {
   it("uses canonical read/write compression scopes", () => {
@@ -90,7 +91,7 @@ describe("handleCompressionStatus", () => {
     resetMcpDescriptionCompressionStats();
     const compressed = maybeCompressMcpDescription(
       "The function returns the current weather for a city and the detailed forecast summary.",
-      { enabled: true }
+      { enabled: true },
     );
     assert.match(compressed, /weather/i);
 

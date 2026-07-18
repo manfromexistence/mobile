@@ -21,7 +21,7 @@ export function computeFingerprint(firstUserMessageText: string, version: string
 }
 
 export function extractFirstUserMessageText(
-  messages: Array<{ role?: string; content?: unknown }> | undefined
+  messages: Array<{ role?: string; content?: unknown }> | undefined,
 ): string {
   if (!Array.isArray(messages)) return "";
   for (const msg of messages) {

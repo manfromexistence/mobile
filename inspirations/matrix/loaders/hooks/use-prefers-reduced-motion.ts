@@ -1,6 +1,13 @@
 "use client";
 
-import { createContext, createElement, useContext, useEffect, useState, type ReactNode } from "react";
+import {
+  createContext,
+  createElement,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 
 const ReducedMotionOverrideContext = createContext<boolean | null>(null);
 
@@ -11,13 +18,9 @@ interface ReducedMotionOverrideProviderProps {
 
 export function ReducedMotionOverrideProvider({
   reducedMotion,
-  children
+  children,
 }: ReducedMotionOverrideProviderProps) {
-  return createElement(
-    ReducedMotionOverrideContext.Provider,
-    { value: reducedMotion },
-    children
-  );
+  return createElement(ReducedMotionOverrideContext.Provider, { value: reducedMotion }, children);
 }
 
 export function usePrefersReducedMotion(): boolean {

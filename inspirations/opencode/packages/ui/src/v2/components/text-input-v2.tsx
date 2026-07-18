@@ -1,27 +1,27 @@
-import { type ComponentProps, type JSX, Show, splitProps } from "solid-js"
-import { Icon } from "./icon"
-import "./text-input-v2.css"
+import { type ComponentProps, type JSX, Show, splitProps } from "solid-js";
+import { Icon } from "./icon";
+import "./text-input-v2.css";
 
 export interface TextInputV2Props extends Omit<ComponentProps<"input">, "type"> {
   /** Icon or adornment shown before the field value. */
-  leadingIcon?: JSX.Element
+  leadingIcon?: JSX.Element;
   /** Show the trailing copy action. */
-  showCopyButton?: boolean
+  showCopyButton?: boolean;
   /** Show the trailing clear action. */
-  showClearButton?: boolean
+  showClearButton?: boolean;
   /** Accessible label for the copy button. */
-  copyLabel?: string
+  copyLabel?: string;
   /** Accessible label for the clear button. */
-  clearLabel?: string
-  onCopyClick?: (event: MouseEvent) => void
-  onClearClick?: (event: MouseEvent) => void
+  clearLabel?: string;
+  onCopyClick?: (event: MouseEvent) => void;
+  onClearClick?: (event: MouseEvent) => void;
   /** Apply tabular numerals to the field value. */
-  numeric?: boolean
+  numeric?: boolean;
   /** Error styling for the field and value text. */
-  invalid?: boolean
+  invalid?: boolean;
   /** `base` is 28px tall; `large` is 32px tall. */
-  appearance?: "base" | "large"
-  type?: ComponentProps<"input">["type"]
+  appearance?: "base" | "large";
+  type?: ComponentProps<"input">["type"];
 }
 
 export function TextInputV2(props: TextInputV2Props) {
@@ -39,7 +39,7 @@ export function TextInputV2(props: TextInputV2Props) {
     "invalid",
     "appearance",
     "disabled",
-  ])
+  ]);
 
   return (
     <div
@@ -71,23 +71,25 @@ export function TextInputV2(props: TextInputV2Props) {
           type="button"
           data-slot="text-input-v2-icon-button"
           data-variant={local.showClearButton ? "clear" : "copy"}
-          aria-label={local.showClearButton ? (local.clearLabel ?? "Clear") : (local.copyLabel ?? "Copy")}
+          aria-label={
+            local.showClearButton ? (local.clearLabel ?? "Clear") : (local.copyLabel ?? "Copy")
+          }
           disabled={local.disabled}
           onMouseDown={(event) => {
-            if (!local.showClearButton) return
-            event.preventDefault()
+            if (!local.showClearButton) return;
+            event.preventDefault();
           }}
           onClick={(event) => {
             if (local.showClearButton) {
-              local.onClearClick?.(event)
-              return
+              local.onClearClick?.(event);
+              return;
             }
-            local.onCopyClick?.(event)
+            local.onCopyClick?.(event);
           }}
         >
           <Icon name={local.showClearButton ? "xmark-small" : "copy"} />
         </button>
       </Show>
     </div>
-  )
+  );
 }

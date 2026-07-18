@@ -38,7 +38,7 @@ test("combo suggest chama omniroute_best_combo_for_task via MCP", async () => {
           },
         ],
         rationale: "Best latency for real-time tasks",
-      })
+      }),
     );
   }) as any;
 

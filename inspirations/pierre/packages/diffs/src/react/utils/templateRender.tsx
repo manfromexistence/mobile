@@ -1,10 +1,7 @@
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
 
-export function templateRender(
-  children: ReactNode,
-  __html: string | undefined
-): ReactNode {
-  if (typeof window === 'undefined' && __html != null) {
+export function templateRender(children: ReactNode, __html: string | undefined): ReactNode {
+  if (typeof window === "undefined" && __html != null) {
     return (
       <>
         <template

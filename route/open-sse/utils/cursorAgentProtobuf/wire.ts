@@ -89,7 +89,7 @@ export type Field =
 export function checkedLen(len: bigint, pos: number, buf: Buffer): number {
   if (len < 0n || len > BigInt(buf.length - pos)) {
     throw new Error(
-      `length-delimited field overruns buffer (len=${len}, remaining=${buf.length - pos})`
+      `length-delimited field overruns buffer (len=${len}, remaining=${buf.length - pos})`,
     );
   }
   return Number(len);

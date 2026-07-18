@@ -40,7 +40,7 @@ test("discoverPlugins descobre plugin com package.json válido", async () => {
       version: "1.0.0",
       type: "module",
       main: "index.mjs",
-    })
+    }),
   );
   writeFileSync(join(pkgDir, "index.mjs"), `export function register() {}`);
 
@@ -50,7 +50,7 @@ test("discoverPlugins descobre plugin com package.json válido", async () => {
     const plugins = await discoverPlugins();
     assert.ok(
       plugins.some((p) => p.name === "omniroute-cmd-test-hello"),
-      "deve encontrar o plugin"
+      "deve encontrar o plugin",
     );
   } finally {
     if (orig === undefined) delete process.env.OMNIROUTE_PLUGIN_PATH;
@@ -68,7 +68,7 @@ test("discoverPlugins ignora pacotes sem prefixo omniroute-cmd-", async () => {
   mkdirSync(pkgDir, { recursive: true });
   writeFileSync(
     join(pkgDir, "package.json"),
-    JSON.stringify({ name: "some-unrelated-package", version: "1.0.0" })
+    JSON.stringify({ name: "some-unrelated-package", version: "1.0.0" }),
   );
 
   const orig = process.env.OMNIROUTE_PLUGIN_PATH;
@@ -77,7 +77,7 @@ test("discoverPlugins ignora pacotes sem prefixo omniroute-cmd-", async () => {
     const plugins = await discoverPlugins();
     assert.ok(
       !plugins.some((p) => p.name === "some-unrelated-package"),
-      "não deve descobrir pacotes sem prefixo"
+      "não deve descobrir pacotes sem prefixo",
     );
   } finally {
     if (orig === undefined) delete process.env.OMNIROUTE_PLUGIN_PATH;
@@ -100,7 +100,7 @@ test("loadPlugins não quebra CLI quando plugin tem erro de load (try/catch)", a
       version: "1.0.0",
       type: "module",
       main: "broken.mjs",
-    })
+    }),
   );
   writeFileSync(join(pkgDir, "broken.mjs"), "throw new Error('intentional load error');");
 
@@ -132,12 +132,12 @@ test("loadPlugins carrega plugin válido e chama register()", async () => {
       version: "1.0.0",
       type: "module",
       main: "index.mjs",
-    })
+    }),
   );
   // Plugin que adiciona um comando 'testcmd'
   writeFileSync(
     join(pkgDir, "index.mjs"),
-    `export function register(program) { program.command('testcmd-from-plugin'); }`
+    `export function register(program) { program.command('testcmd-from-plugin'); }`,
   );
 
   const orig = process.env.OMNIROUTE_PLUGIN_PATH;
@@ -149,7 +149,7 @@ test("loadPlugins carrega plugin válido e chama register()", async () => {
     assert.ok(count >= 1, "deve ter carregado pelo menos 1 plugin");
     assert.ok(
       prog.commands.some((c) => c.name() === "testcmd-from-plugin"),
-      "comando do plugin deve estar registrado"
+      "comando do plugin deve estar registrado",
     );
   } finally {
     if (orig === undefined) delete process.env.OMNIROUTE_PLUGIN_PATH;

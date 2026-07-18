@@ -1,64 +1,67 @@
-import type { ModelMessage, ToolResultPart } from "ai"
-import { mergeDeep, unique } from "remeda"
-import type { JSONSchema7 } from "@ai-sdk/provider"
-import type * as Provider from "./provider"
-import type * as ModelsDev from "@opencode-ai/core/models-dev"
-import { iife } from "@/util/iife"
+import type { ModelMessage, ToolResultPart } from "ai";
+import { mergeDeep, unique } from "remeda";
+import type { JSONSchema7 } from "@ai-sdk/provider";
+import type * as Provider from "./provider";
+import type * as ModelsDev from "@opencode-ai/core/models-dev";
+import { iife } from "@/util/iife";
 
-type Modality = NonNullable<ModelsDev.Model["modalities"]>["input"][number]
+type Modality = NonNullable<ModelsDev.Model["modalities"]>["input"][number];
 
 function mimeToModality(mime: string): Modality | undefined {
-  if (mime.startsWith("image/")) return "image"
-  if (mime.startsWith("audio/")) return "audio"
-  if (mime.startsWith("video/")) return "video"
-  if (mime === "application/pdf") return "pdf"
-  return undefined
+  if (mime.startsWith("image/")) return "image";
+  if (mime.startsWith("audio/")) return "audio";
+  if (mime.startsWith("video/")) return "video";
+  if (mime === "application/pdf") return "pdf";
+  return undefined;
 }
 
-export const OUTPUT_TOKEN_MAX = 32_000
+export const OUTPUT_TOKEN_MAX = 32_000;
 
 // OpenAI Responses `include` value that returns the encrypted reasoning state
 // needed for stateless multi-turn reasoning (store: false). Hoisted so every
 // branch that requests it stays in lockstep.
-const INCLUDE_ENCRYPTED_REASONING = ["reasoning.encrypted_content"] as const
+const INCLUDE_ENCRYPTED_REASONING = ["reasoning.encrypted_content"] as const;
 
 export function sanitizeSurrogates(content: string) {
-  return content.replace(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g, "\uFFFD")
+  return content.replace(
+    /[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g,
+    "\uFFFD",
+  );
 }
 
 // Maps npm package to the key the AI SDK expects for providerOptions
 function sdkKey(npm: string): string | undefined {
   switch (npm) {
     case "@ai-sdk/github-copilot":
-      return "copilot"
+      return "copilot";
     case "@ai-sdk/azure":
-      return "azure"
+      return "azure";
     case "@ai-sdk/openai":
-      return "openai"
+      return "openai";
     case "@ai-sdk/amazon-bedrock/mantle":
-      return "openai"
+      return "openai";
     case "@ai-sdk/amazon-bedrock":
-      return "bedrock"
+      return "bedrock";
     case "@ai-sdk/anthropic":
     case "@ai-sdk/google-vertex/anthropic":
-      return "anthropic"
+      return "anthropic";
     case "@ai-sdk/google-vertex":
-      return "vertex"
+      return "vertex";
     case "@ai-sdk/google":
-      return "google"
+      return "google";
     case "@ai-sdk/gateway":
-      return "gateway"
+      return "gateway";
     case "@openrouter/ai-sdk-provider":
-      return "openrouter"
+      return "openrouter";
     case "ai-gateway-provider":
       // ai-gateway-provider/unified wraps createOpenAICompatible({ name: "Unified" }),
       // and @ai-sdk/openai-compatible parses compatibleOptions from one of
       // "openai-compatible" / "openaiCompatible" / "Unified" / "unified". The
       // "openai-compatible" key emits a deprecation warning at runtime, so we
       // pick the camelCase form the SDK now treats as canonical.
-      return "openaiCompatible"
+      return "openaiCompatible";
   }
-  return undefined
+  return undefined;
 }
 
 // TODO: fix this stupid inefficient dogshit function
@@ -69,65 +72,65 @@ function normalizeMessages(
 ): ModelMessage[] {
   const sanitizeToolResultOutput = (content: ToolResultPart) => {
     if (content.output.type === "text" || content.output.type === "error-text") {
-      content.output.value = sanitizeSurrogates(content.output.value)
+      content.output.value = sanitizeSurrogates(content.output.value);
     }
     if (content.output.type === "content") {
       content.output.value = content.output.value.map((item) => {
         if (item.type === "text") {
-          item.text = sanitizeSurrogates(item.text)
+          item.text = sanitizeSurrogates(item.text);
         }
-        return item
-      })
+        return item;
+      });
     }
-    return content
-  }
+    return content;
+  };
 
   msgs = msgs.map((msg) => {
     switch (msg.role) {
       case "tool":
-        if (!Array.isArray(msg.content)) return msg
+        if (!Array.isArray(msg.content)) return msg;
         msg.content = msg.content.map((content) => {
           if (content.type === "tool-result") {
-            return sanitizeToolResultOutput(content)
+            return sanitizeToolResultOutput(content);
           }
-          return content
-        })
-        return msg
+          return content;
+        });
+        return msg;
 
       case "system":
-        msg.content = sanitizeSurrogates(msg.content)
-        return msg
+        msg.content = sanitizeSurrogates(msg.content);
+        return msg;
 
       case "user":
         if (typeof msg.content === "string") {
-          msg.content = sanitizeSurrogates(msg.content)
+          msg.content = sanitizeSurrogates(msg.content);
         } else {
           msg.content = msg.content.map((content) => {
             if (content.type === "text") {
-              content.text = sanitizeSurrogates(content.text)
+              content.text = sanitizeSurrogates(content.text);
             }
-            return content
-          })
+            return content;
+          });
         }
-        return msg
+        return msg;
 
       case "assistant":
         if (typeof msg.content === "string") {
-          msg.content = sanitizeSurrogates(msg.content)
+          msg.content = sanitizeSurrogates(msg.content);
         } else {
           msg.content = msg.content.map((content) => {
             if (content.type === "text" || content.type === "reasoning") {
-              content.text = sanitizeSurrogates(content.text)
+              content.text = sanitizeSurrogates(content.text);
             }
             if (content.type === "tool-result") {
-              return sanitizeToolResultOutput(content)
+              return sanitizeToolResultOutput(content);
             }
-            return content
-          })
+            return content;
+          });
         }
-        return msg
+        return msg;
     }
-  })
+  });
 
   // Anthropic rejects messages with empty content - filter out empty string messages
   // and remove empty text/reasoning parts from array content
@@ -135,27 +138,27 @@ function normalizeMessages(
     msgs = msgs
       .map((msg) => {
         if (typeof msg.content === "string") {
-          if (msg.content === "") return undefined
-          return msg
+          if (msg.content === "") return undefined;
+          return msg;
         }
-        if (!Array.isArray(msg.content)) return msg
+        if (!Array.isArray(msg.content)) return msg;
         const filtered = msg.content.filter((part) => {
           if (part.type === "text") {
-            return part.text !== ""
+            return part.text !== "";
           }
           if (part.type === "reasoning") {
             return (
               part.text.trim().length > 0 ||
               part.providerOptions?.anthropic?.signature != null ||
               part.providerOptions?.anthropic?.redactedData != null
-            )
+            );
           }
-          return true
-        })
-        if (filtered.length === 0) return undefined
-        return { ...msg, content: filtered }
+          return true;
+        });
+        if (filtered.length === 0) return undefined;
+        return { ...msg, content: filtered };
       })
-      .filter((msg): msg is ModelMessage => msg !== undefined && msg.content !== "")
+      .filter((msg): msg is ModelMessage => msg !== undefined && msg.content !== "");
   }
 
   // Bedrock specific transforms
@@ -163,56 +166,56 @@ function normalizeMessages(
     msgs = msgs
       .map((msg) => {
         if (typeof msg.content === "string") {
-          if (msg.content === "") return undefined
-          return msg
+          if (msg.content === "") return undefined;
+          return msg;
         }
-        if (!Array.isArray(msg.content)) return msg
+        if (!Array.isArray(msg.content)) return msg;
         const filtered = msg.content.filter((part) => {
           if (part.type === "text") {
-            return part.text !== ""
+            return part.text !== "";
           }
           if (part.type === "reasoning") {
             return (
               part.text.trim().length > 0 ||
               part.providerOptions?.bedrock?.signature != null ||
               part.providerOptions?.bedrock?.redactedData != null
-            )
+            );
           }
-          return true
-        })
-        if (filtered.length === 0) return undefined
-        return { ...msg, content: filtered }
+          return true;
+        });
+        if (filtered.length === 0) return undefined;
+        return { ...msg, content: filtered };
       })
-      .filter((msg): msg is ModelMessage => msg !== undefined && msg.content !== "")
+      .filter((msg): msg is ModelMessage => msg !== undefined && msg.content !== "");
   }
 
   if (model.api.id.includes("claude")) {
-    const scrub = (id: string) => id.replace(/[^a-zA-Z0-9_-]/g, "_")
+    const scrub = (id: string) => id.replace(/[^a-zA-Z0-9_-]/g, "_");
     msgs = msgs.map((msg) => {
       if (msg.role === "assistant" && Array.isArray(msg.content)) {
         return {
           ...msg,
           content: msg.content.map((part) => {
             if (part.type === "tool-call" || part.type === "tool-result") {
-              return { ...part, toolCallId: scrub(part.toolCallId) }
+              return { ...part, toolCallId: scrub(part.toolCallId) };
             }
-            return part
+            return part;
           }),
-        }
+        };
       }
       if (msg.role === "tool" && Array.isArray(msg.content)) {
         return {
           ...msg,
           content: msg.content.map((part) => {
             if (part.type === "tool-result") {
-              return { ...part, toolCallId: scrub(part.toolCallId) }
+              return { ...part, toolCallId: scrub(part.toolCallId) };
             }
-            return part
+            return part;
           }),
-        }
+        };
       }
-      return msg
-    })
+      return msg;
+    });
   }
 
   if (
@@ -224,30 +227,30 @@ function normalizeMessages(
       return id
         .replace(/[^a-zA-Z0-9]/g, "") // Remove non-alphanumeric characters
         .substring(0, 9) // Take first 9 characters
-        .padEnd(9, "0") // Pad with zeros if less than 9 characters
-    }
-    const result: ModelMessage[] = []
+        .padEnd(9, "0"); // Pad with zeros if less than 9 characters
+    };
+    const result: ModelMessage[] = [];
     for (let i = 0; i < msgs.length; i++) {
-      const msg = msgs[i]
-      const nextMsg = msgs[i + 1]
+      const msg = msgs[i];
+      const nextMsg = msgs[i + 1];
 
       if (msg.role === "assistant" && Array.isArray(msg.content)) {
         msg.content = msg.content.map((part) => {
           if (part.type === "tool-call" || part.type === "tool-result") {
-            return { ...part, toolCallId: scrub(part.toolCallId) }
+            return { ...part, toolCallId: scrub(part.toolCallId) };
           }
-          return part
-        })
+          return part;
+        });
       }
       if (msg.role === "tool" && Array.isArray(msg.content)) {
         msg.content = msg.content.map((part) => {
           if (part.type === "tool-result") {
-            return { ...part, toolCallId: scrub(part.toolCallId) }
+            return { ...part, toolCallId: scrub(part.toolCallId) };
           }
-          return part
-        })
+          return part;
+        });
       }
-      result.push(msg)
+      result.push(msg);
 
       // Fix message sequence: tool messages cannot be followed by user messages
       if (msg.role === "tool" && nextMsg?.role === "user") {
@@ -259,19 +262,19 @@ function normalizeMessages(
               text: "Done.",
             },
           ],
-        })
+        });
       }
     }
-    return result
+    return result;
   }
 
   // Deepseek requires all assistant messages to have reasoning on them
   if (model.api.id.toLowerCase().includes("deepseek")) {
     msgs = msgs.map((msg) => {
-      if (msg.role !== "assistant") return msg
+      if (msg.role !== "assistant") return msg;
       if (Array.isArray(msg.content)) {
-        if (msg.content.some((part) => part.type === "reasoning")) return msg
-        return { ...msg, content: [...msg.content, { type: "reasoning", text: "" }] }
+        if (msg.content.some((part) => part.type === "reasoning")) return msg;
+        return { ...msg, content: [...msg.content, { type: "reasoning", text: "" }] };
       }
       return {
         ...msg,
@@ -279,8 +282,8 @@ function normalizeMessages(
           ...(msg.content ? [{ type: "text" as const, text: msg.content }] : []),
           { type: "reasoning" as const, text: "" },
         ],
-      }
-    })
+      };
+    });
   }
 
   if (
@@ -288,14 +291,14 @@ function normalizeMessages(
     model.capabilities.interleaved.field &&
     model.api.npm !== "@openrouter/ai-sdk-provider"
   ) {
-    const field = model.capabilities.interleaved.field
+    const field = model.capabilities.interleaved.field;
     return msgs.map((msg) => {
       if (msg.role === "assistant" && Array.isArray(msg.content)) {
-        const reasoningParts = msg.content.filter((part: any) => part.type === "reasoning")
-        const reasoningText = reasoningParts.map((part: any) => part.text).join("")
+        const reasoningParts = msg.content.filter((part: any) => part.type === "reasoning");
+        const reasoningText = reasoningParts.map((part: any) => part.text).join("");
 
         // Filter out reasoning parts from content
-        const filteredContent = msg.content.filter((part: any) => part.type !== "reasoning")
+        const filteredContent = msg.content.filter((part: any) => part.type !== "reasoning");
 
         // Include reasoning_content | reasoning_details directly on the message for all assistant messages.
         // Always set the field even when empty — some providers (e.g. DeepSeek) may return empty
@@ -310,19 +313,19 @@ function normalizeMessages(
               [field]: reasoningText,
             },
           },
-        }
+        };
       }
 
-      return msg
-    })
+      return msg;
+    });
   }
 
-  return msgs
+  return msgs;
 }
 
 function applyCaching(msgs: ModelMessage[], model: Provider.Model): ModelMessage[] {
-  const system = msgs.filter((msg) => msg.role === "system").slice(0, 2)
-  const final = msgs.filter((msg) => msg.role !== "system").slice(-2)
+  const system = msgs.filter((msg) => msg.role === "system").slice(0, 2);
+  const final = msgs.filter((msg) => msg.role !== "system").slice(-2);
 
   const providerOptions = {
     anthropic: {
@@ -343,70 +346,74 @@ function applyCaching(msgs: ModelMessage[], model: Provider.Model): ModelMessage
     alibaba: {
       cacheControl: { type: "ephemeral" },
     },
-  }
+  };
 
   for (const msg of unique([...system, ...final])) {
     const useMessageLevelOptions =
       model.providerID === "anthropic" ||
       model.providerID.includes("bedrock") ||
-      model.api.npm === "@ai-sdk/amazon-bedrock"
-    const shouldUseContentOptions = !useMessageLevelOptions && Array.isArray(msg.content) && msg.content.length > 0
+      model.api.npm === "@ai-sdk/amazon-bedrock";
+    const shouldUseContentOptions =
+      !useMessageLevelOptions && Array.isArray(msg.content) && msg.content.length > 0;
 
     if (shouldUseContentOptions) {
-      const lastContent = msg.content[msg.content.length - 1]
+      const lastContent = msg.content[msg.content.length - 1];
       if (
         lastContent &&
         typeof lastContent === "object" &&
         lastContent.type !== "tool-approval-request" &&
         lastContent.type !== "tool-approval-response"
       ) {
-        lastContent.providerOptions = mergeDeep(lastContent.providerOptions ?? {}, providerOptions)
-        continue
+        lastContent.providerOptions = mergeDeep(lastContent.providerOptions ?? {}, providerOptions);
+        continue;
       }
     }
 
-    msg.providerOptions = mergeDeep(msg.providerOptions ?? {}, providerOptions)
+    msg.providerOptions = mergeDeep(msg.providerOptions ?? {}, providerOptions);
   }
 
-  return msgs
+  return msgs;
 }
 
 function unsupportedParts(msgs: ModelMessage[], model: Provider.Model): ModelMessage[] {
   return msgs.map((msg) => {
-    if (msg.role !== "user" || !Array.isArray(msg.content)) return msg
+    if (msg.role !== "user" || !Array.isArray(msg.content)) return msg;
 
     const filtered = msg.content.map((part) => {
-      if (part.type !== "file" && part.type !== "image") return part
+      if (part.type !== "file" && part.type !== "image") return part;
 
       // Check for empty base64 image data
       if (part.type === "image") {
-        const imageStr = String(part.image)
+        const imageStr = String(part.image);
         if (imageStr.startsWith("data:")) {
-          const match = imageStr.match(/^data:([^;]+);base64,(.*)$/)
+          const match = imageStr.match(/^data:([^;]+);base64,(.*)$/);
           if (match && (!match[2] || match[2].length === 0)) {
             return {
               type: "text" as const,
               text: "ERROR: Image file is empty or corrupted. Please provide a valid image.",
-            }
+            };
           }
         }
       }
 
-      const mime = part.type === "image" ? String(part.image).split(";")[0].replace("data:", "") : part.mediaType
-      const filename = part.type === "file" ? part.filename : undefined
-      const modality = mimeToModality(mime)
-      if (!modality) return part
-      if (model.capabilities.input[modality]) return part
+      const mime =
+        part.type === "image"
+          ? String(part.image).split(";")[0].replace("data:", "")
+          : part.mediaType;
+      const filename = part.type === "file" ? part.filename : undefined;
+      const modality = mimeToModality(mime);
+      if (!modality) return part;
+      if (model.capabilities.input[modality]) return part;
 
-      const name = filename ? `"${filename}"` : modality
+      const name = filename ? `"${filename}"` : modality;
       return {
         type: "text" as const,
         text: `ERROR: Cannot read ${name} (this model does not support ${modality} input). Inform the user.`,
-      }
-    })
+      };
+    });
 
-    return { ...msg, content: filtered }
-  })
+    return { ...msg, content: filtered };
+  });
 }
 
 function mapProviderOptions(
@@ -414,7 +421,8 @@ function mapProviderOptions(
   transform: (options: Record<string, any> | undefined) => Record<string, any> | undefined,
 ) {
   return msgs.map((msg) => {
-    if (!Array.isArray(msg.content)) return { ...msg, providerOptions: transform(msg.providerOptions) }
+    if (!Array.isArray(msg.content))
+      return { ...msg, providerOptions: transform(msg.providerOptions) };
     return {
       ...msg,
       providerOptions: transform(msg.providerOptions),
@@ -423,13 +431,17 @@ function mapProviderOptions(
           ? part
           : { ...part, providerOptions: transform(part.providerOptions) },
       ),
-    } as typeof msg
-  })
+    } as typeof msg;
+  });
 }
 
-export function message(msgs: ModelMessage[], model: Provider.Model, options: Record<string, unknown>) {
-  msgs = unsupportedParts(msgs, model)
-  msgs = normalizeMessages(msgs, model, options)
+export function message(
+  msgs: ModelMessage[],
+  model: Provider.Model,
+  options: Record<string, unknown>,
+) {
+  msgs = unsupportedParts(msgs, model);
+  msgs = normalizeMessages(msgs, model, options);
   if (
     (model.providerID === "anthropic" ||
       model.providerID === "google-vertex-anthropic" ||
@@ -441,242 +453,263 @@ export function message(msgs: ModelMessage[], model: Provider.Model, options: Re
       model.api.npm === "@ai-sdk/alibaba") &&
     model.api.npm !== "@ai-sdk/gateway"
   ) {
-    msgs = applyCaching(msgs, model)
+    msgs = applyCaching(msgs, model);
   }
 
   // Remap providerOptions keys from stored providerID to expected SDK key
-  const key = sdkKey(model.api.npm)
+  const key = sdkKey(model.api.npm);
   if (key && key !== model.providerID) {
     const remap = (opts: Record<string, any> | undefined) => {
-      if (!opts) return opts
-      if (!(model.providerID in opts)) return opts
-      const result = { ...opts }
-      result[key] = result[model.providerID]
-      delete result[model.providerID]
-      return result
-    }
+      if (!opts) return opts;
+      if (!(model.providerID in opts)) return opts;
+      const result = { ...opts };
+      result[key] = result[model.providerID];
+      delete result[model.providerID];
+      return result;
+    };
 
-    msgs = mapProviderOptions(msgs, remap)
+    msgs = mapProviderOptions(msgs, remap);
   }
 
   // Strip Responses item IDs before serialization, following Codex and keeping signed request bodies immutable.
   if (
     options.store !== true &&
     key &&
-    ["@ai-sdk/openai", "@ai-sdk/azure", "@ai-sdk/amazon-bedrock/mantle", "@ai-sdk/github-copilot"].includes(
-      model.api.npm,
-    )
+    [
+      "@ai-sdk/openai",
+      "@ai-sdk/azure",
+      "@ai-sdk/amazon-bedrock/mantle",
+      "@ai-sdk/github-copilot",
+    ].includes(model.api.npm)
   ) {
     msgs = mapProviderOptions(msgs, (options) => {
-      if (!options?.[key] || !("itemId" in options[key])) return options
-      const metadata = { ...options[key] }
-      delete metadata.itemId
-      return { ...options, [key]: metadata }
-    })
+      if (!options?.[key] || !("itemId" in options[key])) return options;
+      const metadata = { ...options[key] };
+      delete metadata.itemId;
+      return { ...options, [key]: metadata };
+    });
   }
 
-  return msgs
+  return msgs;
 }
 
 export function temperature(model: Provider.Model) {
-  const id = model.id.toLowerCase()
-  if (id.includes("north-mini-code")) return 1.0
-  if (id.includes("qwen")) return 0.55
-  if (id.includes("claude")) return undefined
-  if (id.includes("gemini")) return 1.0
-  if (id.includes("glm-4.6")) return 1.0
-  if (id.includes("glm-4.7")) return 1.0
-  if (id.includes("minimax-m2")) return 1.0
+  const id = model.id.toLowerCase();
+  if (id.includes("north-mini-code")) return 1.0;
+  if (id.includes("qwen")) return 0.55;
+  if (id.includes("claude")) return undefined;
+  if (id.includes("gemini")) return 1.0;
+  if (id.includes("glm-4.6")) return 1.0;
+  if (id.includes("glm-4.7")) return 1.0;
+  if (id.includes("minimax-m2")) return 1.0;
   if (id.includes("kimi-k2")) {
     // kimi-k2-thinking & kimi-k2.5 && kimi-k2p5 && kimi-k2-5
     if (["thinking", "k2.", "k2p", "k2-5"].some((s) => id.includes(s))) {
-      return 1.0
+      return 1.0;
     }
-    return 0.6
+    return 0.6;
   }
-  return undefined
+  return undefined;
 }
 
 export function topP(model: Provider.Model) {
-  const id = model.id.toLowerCase()
-  if (id.includes("qwen")) return 1
+  const id = model.id.toLowerCase();
+  if (id.includes("qwen")) return 1;
   if (["minimax-m2", "gemini", "kimi-k2.5", "kimi-k2p5", "kimi-k2-5"].some((s) => id.includes(s))) {
-    return 0.95
+    return 0.95;
   }
-  return undefined
+  return undefined;
 }
 
 export function topK(model: Provider.Model) {
-  const id = model.id.toLowerCase()
+  const id = model.id.toLowerCase();
   if (id.includes("minimax-m2")) {
-    if (["m2.", "m25", "m21"].some((s) => id.includes(s))) return 40
-    return 20
+    if (["m2.", "m25", "m21"].some((s) => id.includes(s))) return 40;
+    return 20;
   }
-  if (id.includes("gemini")) return 64
-  return undefined
+  if (id.includes("gemini")) return 64;
+  return undefined;
 }
 
-const WIDELY_SUPPORTED_EFFORTS = ["low", "medium", "high"]
-const OPENAI_EFFORTS = ["none", "minimal", ...WIDELY_SUPPORTED_EFFORTS, "xhigh"]
-const OPENAI_GPT5_1_EFFORTS = ["none", ...WIDELY_SUPPORTED_EFFORTS]
-const OPENAI_GPT5_2_PLUS_EFFORTS = [...OPENAI_GPT5_1_EFFORTS, "xhigh"]
-const OPENAI_GPT5_PRO_EFFORTS = ["high"]
-const OPENAI_GPT5_PRO_2_PLUS_EFFORTS = ["medium", "high", "xhigh"]
-const OPENAI_GPT5_CHAT_EFFORTS = ["medium"]
-const OPENAI_GPT5_CODEX_XHIGH_EFFORTS = [...WIDELY_SUPPORTED_EFFORTS, "xhigh"]
-const OPENAI_GPT5_CODEX_3_PLUS_EFFORTS = ["none", ...OPENAI_GPT5_CODEX_XHIGH_EFFORTS]
+const WIDELY_SUPPORTED_EFFORTS = ["low", "medium", "high"];
+const OPENAI_EFFORTS = ["none", "minimal", ...WIDELY_SUPPORTED_EFFORTS, "xhigh"];
+const OPENAI_GPT5_1_EFFORTS = ["none", ...WIDELY_SUPPORTED_EFFORTS];
+const OPENAI_GPT5_2_PLUS_EFFORTS = [...OPENAI_GPT5_1_EFFORTS, "xhigh"];
+const OPENAI_GPT5_PRO_EFFORTS = ["high"];
+const OPENAI_GPT5_PRO_2_PLUS_EFFORTS = ["medium", "high", "xhigh"];
+const OPENAI_GPT5_CHAT_EFFORTS = ["medium"];
+const OPENAI_GPT5_CODEX_XHIGH_EFFORTS = [...WIDELY_SUPPORTED_EFFORTS, "xhigh"];
+const OPENAI_GPT5_CODEX_3_PLUS_EFFORTS = ["none", ...OPENAI_GPT5_CODEX_XHIGH_EFFORTS];
 
 // OpenAI rolled out the `none` reasoning_effort tier on this date (Responses API).
 // Models released before it 400 on `reasoning_effort: "none"`, so we only expose
 // it as a variant for models new enough to accept it.
-const OPENAI_NONE_EFFORT_RELEASE_DATE = "2025-11-13"
+const OPENAI_NONE_EFFORT_RELEASE_DATE = "2025-11-13";
 
 // OpenAI rolled out the `xhigh` reasoning_effort tier on this date. Same reasoning.
-const OPENAI_XHIGH_EFFORT_RELEASE_DATE = "2025-12-04"
+const OPENAI_XHIGH_EFFORT_RELEASE_DATE = "2025-12-04";
 
 // Matches members of the gpt-5 family across the id formats we encounter:
 //   "gpt-5", "gpt-5-nano", "gpt-5.4", "openai/gpt-5.4-codex".
 // Anchored to start-of-string or "/" so it doesn't false-match "gpt-50" or "gpt-5o".
-const GPT5_FAMILY_RE = /(?:^|\/)gpt-5(?:[.-]|$)/
-const GPT5_VERSION_RE = /(?:^|\/)gpt-5[.-](\d+)(?:[.-]|$)/
-const GPT5_PRO_RE = /(?:^|\/)gpt-5[.-]?pro(?:[.-]|$)/
-const GPT5_VERSIONED_PRO_RE = /(?:^|\/)gpt-5[.-]\d+[.-]pro(?:[.-]|$)/
+const GPT5_FAMILY_RE = /(?:^|\/)gpt-5(?:[.-]|$)/;
+const GPT5_VERSION_RE = /(?:^|\/)gpt-5[.-](\d+)(?:[.-]|$)/;
+const GPT5_PRO_RE = /(?:^|\/)gpt-5[.-]?pro(?:[.-]|$)/;
+const GPT5_VERSIONED_PRO_RE = /(?:^|\/)gpt-5[.-]\d+[.-]pro(?:[.-]|$)/;
 
 function gpt5Version(apiId: string) {
-  return Number(GPT5_VERSION_RE.exec(apiId)?.[1]) || undefined
+  return Number(GPT5_VERSION_RE.exec(apiId)?.[1]) || undefined;
 }
 
 function versionedGpt5ReasoningEfforts(apiId: string) {
-  if (GPT5_VERSIONED_PRO_RE.test(apiId)) return OPENAI_GPT5_PRO_2_PLUS_EFFORTS
-  const version = gpt5Version(apiId)
-  if (version === undefined) return undefined
-  if (version === 1) return OPENAI_GPT5_1_EFFORTS
-  return OPENAI_GPT5_2_PLUS_EFFORTS
+  if (GPT5_VERSIONED_PRO_RE.test(apiId)) return OPENAI_GPT5_PRO_2_PLUS_EFFORTS;
+  const version = gpt5Version(apiId);
+  if (version === undefined) return undefined;
+  if (version === 1) return OPENAI_GPT5_1_EFFORTS;
+  return OPENAI_GPT5_2_PLUS_EFFORTS;
 }
 
 function gpt5CodexReasoningEfforts(apiId: string) {
-  if (!GPT5_FAMILY_RE.test(apiId) || !apiId.includes("codex")) return undefined
-  const version = gpt5Version(apiId)
-  if (version !== undefined && version >= 3) return OPENAI_GPT5_CODEX_3_PLUS_EFFORTS
-  if (apiId.includes("codex-max") || (version !== undefined && version >= 2)) return OPENAI_GPT5_CODEX_XHIGH_EFFORTS
-  return WIDELY_SUPPORTED_EFFORTS
+  if (!GPT5_FAMILY_RE.test(apiId) || !apiId.includes("codex")) return undefined;
+  const version = gpt5Version(apiId);
+  if (version !== undefined && version >= 3) return OPENAI_GPT5_CODEX_3_PLUS_EFFORTS;
+  if (apiId.includes("codex-max") || (version !== undefined && version >= 2))
+    return OPENAI_GPT5_CODEX_XHIGH_EFFORTS;
+  return WIDELY_SUPPORTED_EFFORTS;
 }
 
 function gpt5ChatReasoningEfforts(apiId: string) {
-  if (!GPT5_FAMILY_RE.test(apiId) || !apiId.includes("-chat")) return undefined
-  return gpt5Version(apiId) === undefined ? [] : OPENAI_GPT5_CHAT_EFFORTS
+  if (!GPT5_FAMILY_RE.test(apiId) || !apiId.includes("-chat")) return undefined;
+  return gpt5Version(apiId) === undefined ? [] : OPENAI_GPT5_CHAT_EFFORTS;
 }
 
 // Computes the reasoning_effort tiers an OpenAI (or OpenAI-compatible upstream
 // routed through it, e.g. cf-ai-gateway) model exposes. Effort order: weakest
 // to strongest.
 function openaiReasoningEfforts(apiId: string, releaseDate: string) {
-  const id = apiId.toLowerCase()
-  if (id.includes("deep-research")) return ["medium"]
-  const chatEfforts = gpt5ChatReasoningEfforts(id)
-  if (chatEfforts) return chatEfforts
-  if (GPT5_PRO_RE.test(id)) return OPENAI_GPT5_PRO_EFFORTS
-  const codexEfforts = gpt5CodexReasoningEfforts(id)
-  if (codexEfforts) return codexEfforts
-  const versionedEfforts = versionedGpt5ReasoningEfforts(id)
+  const id = apiId.toLowerCase();
+  if (id.includes("deep-research")) return ["medium"];
+  const chatEfforts = gpt5ChatReasoningEfforts(id);
+  if (chatEfforts) return chatEfforts;
+  if (GPT5_PRO_RE.test(id)) return OPENAI_GPT5_PRO_EFFORTS;
+  const codexEfforts = gpt5CodexReasoningEfforts(id);
+  if (codexEfforts) return codexEfforts;
+  const versionedEfforts = versionedGpt5ReasoningEfforts(id);
   // GPT-5.1 replaced GPT-5's `minimal` effort with `none`; GPT-5.2+
   // additionally accepts `xhigh`. Model pages list the supported subset.
-  if (versionedEfforts) return versionedEfforts
-  const efforts = [...WIDELY_SUPPORTED_EFFORTS]
-  if (GPT5_FAMILY_RE.test(id)) efforts.unshift("minimal")
-  if (releaseDate >= OPENAI_NONE_EFFORT_RELEASE_DATE) efforts.unshift("none")
-  if (releaseDate >= OPENAI_XHIGH_EFFORT_RELEASE_DATE) efforts.push("xhigh")
-  return efforts
+  if (versionedEfforts) return versionedEfforts;
+  const efforts = [...WIDELY_SUPPORTED_EFFORTS];
+  if (GPT5_FAMILY_RE.test(id)) efforts.unshift("minimal");
+  if (releaseDate >= OPENAI_NONE_EFFORT_RELEASE_DATE) efforts.unshift("none");
+  if (releaseDate >= OPENAI_XHIGH_EFFORT_RELEASE_DATE) efforts.push("xhigh");
+  return efforts;
 }
 
 function openaiCompatibleReasoningEfforts(id: string) {
-  const apiId = id.toLowerCase()
-  const chatEfforts = gpt5ChatReasoningEfforts(apiId)
-  if (chatEfforts) return chatEfforts
-  if (GPT5_PRO_RE.test(apiId)) return OPENAI_GPT5_PRO_EFFORTS
-  return gpt5CodexReasoningEfforts(apiId) ?? versionedGpt5ReasoningEfforts(apiId) ?? OPENAI_EFFORTS
+  const apiId = id.toLowerCase();
+  const chatEfforts = gpt5ChatReasoningEfforts(apiId);
+  if (chatEfforts) return chatEfforts;
+  if (GPT5_PRO_RE.test(apiId)) return OPENAI_GPT5_PRO_EFFORTS;
+  return gpt5CodexReasoningEfforts(apiId) ?? versionedGpt5ReasoningEfforts(apiId) ?? OPENAI_EFFORTS;
 }
 
 function anthropicOpus47OrLater(apiId: string) {
   // Matches "opus-4.7" (Anthropic/Bedrock/Vertex) and "claude-4.7-opus" (SAP AI Core inverted).
   // Greedy \d+ correctly extends to multi-digit majors (e.g. "claude-10.0-opus") for forward compatibility.
-  const version = /opus-(\d+)[.-](\d+)(?:[.@-]|$)|claude-(\d+)[.-](\d+)-opus(?:[.@-]|$)/i.exec(apiId)
-  if (!version) return false
-  const major = Number(version[1] ?? version[3])
-  const minor = Number(version[2] ?? version[4])
-  return major > 4 || (major === 4 && minor >= 7)
+  const version = /opus-(\d+)[.-](\d+)(?:[.@-]|$)|claude-(\d+)[.-](\d+)-opus(?:[.@-]|$)/i.exec(
+    apiId,
+  );
+  if (!version) return false;
+  const major = Number(version[1] ?? version[3]);
+  const minor = Number(version[2] ?? version[4]);
+  return major > 4 || (major === 4 && minor >= 7);
 }
 
 function anthropicSonnet5OrLater(apiId: string) {
-  const version = /sonnet-(\d+)(?:[.@-]|$)|claude-(\d+)-sonnet(?:[.@-]|$)/i.exec(apiId)
-  if (!version) return false
-  return Number(version[1] ?? version[2]) >= 5
+  const version = /sonnet-(\d+)(?:[.@-]|$)|claude-(\d+)-sonnet(?:[.@-]|$)/i.exec(apiId);
+  if (!version) return false;
+  return Number(version[1] ?? version[2]) >= 5;
 }
 
 function anthropicAdaptiveEfforts(apiId: string): string[] | null {
-  if (anthropicOpus47OrLater(apiId) || anthropicSonnet5OrLater(apiId) || apiId.includes("fable-5")) {
-    return ["low", "medium", "high", "xhigh", "max"]
+  if (
+    anthropicOpus47OrLater(apiId) ||
+    anthropicSonnet5OrLater(apiId) ||
+    apiId.includes("fable-5")
+  ) {
+    return ["low", "medium", "high", "xhigh", "max"];
   }
   if (
-    ["opus-4-6", "opus-4.6", "4-6-opus", "4.6-opus", "sonnet-4-6", "sonnet-4.6", "4-6-sonnet", "4.6-sonnet"].some((v) =>
-      apiId.includes(v),
-    )
+    [
+      "opus-4-6",
+      "opus-4.6",
+      "4-6-opus",
+      "4.6-opus",
+      "sonnet-4-6",
+      "sonnet-4.6",
+      "4-6-sonnet",
+      "4.6-sonnet",
+    ].some((v) => apiId.includes(v))
   ) {
-    return ["low", "medium", "high", "max"]
+    return ["low", "medium", "high", "max"];
   }
-  return null
+  return null;
 }
 
 function anthropicOmitsThinking(apiId: string) {
-  return anthropicOpus47OrLater(apiId) || anthropicSonnet5OrLater(apiId) || apiId.includes("fable-5")
+  return (
+    anthropicOpus47OrLater(apiId) || anthropicSonnet5OrLater(apiId) || apiId.includes("fable-5")
+  );
 }
 
 function googleThinkingLevelEfforts(apiId: string) {
-  const id = apiId.toLowerCase()
-  if (!id.includes("gemini-3")) return ["low", "high"]
-  if (id.includes("flash-image")) return ["minimal", "high"]
-  if (id.includes("pro-image")) return ["high"]
-  if (id.includes("flash")) return ["minimal", "low", "medium", "high"]
-  return ["low", "medium", "high"]
+  const id = apiId.toLowerCase();
+  if (!id.includes("gemini-3")) return ["low", "high"];
+  if (id.includes("flash-image")) return ["minimal", "high"];
+  if (id.includes("pro-image")) return ["high"];
+  if (id.includes("flash")) return ["minimal", "low", "medium", "high"];
+  return ["low", "medium", "high"];
 }
 
 function googleThinkingBudgetMax(apiId: string) {
-  const id = apiId.toLowerCase()
-  if (id.includes("2.5") && id.includes("pro") && !id.includes("flash")) return 32_768
-  return 24_576
+  const id = apiId.toLowerCase();
+  if (id.includes("2.5") && id.includes("pro") && !id.includes("flash")) return 32_768;
+  return 24_576;
 }
 
 // SAP's Zod schema drops unknown top-level keys; reasoning controls survive
 // only via `modelParams` (catchall), forwarded verbatim by the SAP SDKs.
-function wrapInSapModelParams(variants: Record<string, Record<string, any>>): Record<string, Record<string, any>> {
-  return Object.fromEntries(Object.entries(variants).map(([k, v]) => [k, { modelParams: v }]))
+function wrapInSapModelParams(
+  variants: Record<string, Record<string, any>>,
+): Record<string, Record<string, any>> {
+  return Object.fromEntries(Object.entries(variants).map(([k, v]) => [k, { modelParams: v }]));
 }
 
 function googleThinkingVariants(model: Provider.Model): Record<string, Record<string, any>> {
-  const id = model.api.id.toLowerCase()
+  const id = model.api.id.toLowerCase();
   if (id.includes("2.5")) {
     return {
       high: { thinkingConfig: { includeThoughts: true, thinkingBudget: 16000 } },
       max: {
         thinkingConfig: { includeThoughts: true, thinkingBudget: googleThinkingBudgetMax(id) },
       },
-    }
+    };
   }
   return Object.fromEntries(
     googleThinkingLevelEfforts(id).map((effort) => [
       effort,
       { thinkingConfig: { includeThoughts: true, thinkingLevel: effort } },
     ]),
-  )
+  );
 }
 
 export function variants(model: Provider.Model): Record<string, Record<string, any>> {
-  if (!model.capabilities.reasoning) return {}
+  if (!model.capabilities.reasoning) return {};
 
-  const id = model.id.toLowerCase()
+  const id = model.id.toLowerCase();
   const glm52 = ["glm-5.2", "glm-5-2", "glm-5p2"].some(
     (name) => id.includes(name) || model.api.id.toLowerCase().includes(name),
-  )
+  );
   if (
     model.api.id.toLowerCase().includes("minimax-m3") &&
     ["@ai-sdk/anthropic", "@ai-sdk/openai-compatible"].includes(model.api.npm)
@@ -684,28 +717,28 @@ export function variants(model: Provider.Model): Record<string, Record<string, a
     return {
       none: { thinking: { type: "disabled" } },
       thinking: { thinking: { type: "adaptive" } },
-    }
+    };
   }
-  const adaptiveThinkingOmitted = anthropicOmitsThinking(model.api.id)
-  const adaptiveEfforts = anthropicAdaptiveEfforts(model.api.id)
+  const adaptiveThinkingOmitted = anthropicOmitsThinking(model.api.id);
+  const adaptiveEfforts = anthropicAdaptiveEfforts(model.api.id);
   if (glm52 && model.api.npm === "@openrouter/ai-sdk-provider") {
     // OpenRouter maps xhigh to GLM-5.2's native max effort.
     return {
       high: { reasoning: { effort: "high" } },
       xhigh: { reasoning: { effort: "xhigh" } },
-    }
+    };
   }
   if (glm52 && model.api.npm === "@ai-sdk/openai-compatible") {
     return {
       high: { reasoningEffort: "high" },
       max: { reasoningEffort: "max" },
-    }
+    };
   }
   if (glm52 && model.api.npm === "@ai-sdk/anthropic") {
     return {
       high: { effort: "high" },
       max: { effort: "max" },
-    }
+    };
   }
   if (
     id.includes("deepseek-chat") ||
@@ -719,7 +752,7 @@ export function variants(model: Provider.Model): Record<string, Record<string, a
     id.includes("qwen") ||
     id.includes("big-pickle")
   )
-    return {}
+    return {};
 
   // see: https://docs.x.ai/docs/guides/reasoning#control-how-hard-the-model-thinks
   if (id.includes("grok") && id.includes("grok-3-mini")) {
@@ -727,14 +760,14 @@ export function variants(model: Provider.Model): Record<string, Record<string, a
       return {
         low: { reasoning: { effort: "low" } },
         high: { reasoning: { effort: "high" } },
-      }
+      };
     }
     return {
       low: { reasoningEffort: "low" },
       high: { reasoningEffort: "high" },
-    }
+    };
   }
-  if (id.includes("grok")) return {}
+  if (id.includes("grok")) return {};
 
   switch (model.api.npm) {
     case "@openrouter/ai-sdk-provider":
@@ -743,7 +776,7 @@ export function variants(model: Provider.Model): Record<string, Record<string, a
           ? openaiCompatibleReasoningEfforts(model.api.id)
           : WIDELY_SUPPORTED_EFFORTS
         ).map((effort) => [effort, { reasoning: { effort } }]),
-      )
+      );
 
     case "ai-gateway-provider": {
       // Cloudflare AI Gateway routes every upstream through its OpenAI-compatible
@@ -753,10 +786,12 @@ export function variants(model: Provider.Model): Record<string, Record<string, a
       // OAI-style for all upstreams, with an extended effort set for OpenAI
       // models that support it.
       if (model.api.id.startsWith("openai/")) {
-        const efforts = openaiReasoningEfforts(model.api.id, model.release_date)
-        return Object.fromEntries(efforts.map((effort) => [effort, { reasoningEffort: effort }]))
+        const efforts = openaiReasoningEfforts(model.api.id, model.release_date);
+        return Object.fromEntries(efforts.map((effort) => [effort, { reasoningEffort: effort }]));
       }
-      return Object.fromEntries(WIDELY_SUPPORTED_EFFORTS.map((effort) => [effort, { reasoningEffort: effort }]))
+      return Object.fromEntries(
+        WIDELY_SUPPORTED_EFFORTS.map((effort) => [effort, { reasoningEffort: effort }]),
+      );
     }
 
     case "@ai-sdk/gateway":
@@ -776,7 +811,7 @@ export function variants(model: Provider.Model): Record<string, Record<string, a
                 effort,
               },
             ]),
-          )
+          );
         }
         return {
           high: {
@@ -791,7 +826,7 @@ export function variants(model: Provider.Model): Record<string, Record<string, a
               budgetTokens: 31999,
             },
           },
-        }
+        };
       }
       if (model.id.includes("google")) {
         if (id.includes("2.5")) {
@@ -808,7 +843,7 @@ export function variants(model: Provider.Model): Record<string, Record<string, a
                 thinkingBudget: googleThinkingBudgetMax(id),
               },
             },
-          }
+          };
         }
         return Object.fromEntries(
           ["low", "high"].map((effort) => [
@@ -818,27 +853,32 @@ export function variants(model: Provider.Model): Record<string, Record<string, a
               thinkingLevel: effort,
             },
           ]),
-        )
+        );
       }
       return Object.fromEntries(
-        openaiCompatibleReasoningEfforts(model.api.id).map((effort) => [effort, { reasoningEffort: effort }]),
-      )
+        openaiCompatibleReasoningEfforts(model.api.id).map((effort) => [
+          effort,
+          { reasoningEffort: effort },
+        ]),
+      );
 
     case "@ai-sdk/github-copilot":
       if (model.id.includes("gemini")) {
         // currently github copilot only returns thinking
-        return {}
+        return {};
       }
       if (model.id.includes("claude")) {
-        return Object.fromEntries(WIDELY_SUPPORTED_EFFORTS.map((effort) => [effort, { reasoningEffort: effort }]))
+        return Object.fromEntries(
+          WIDELY_SUPPORTED_EFFORTS.map((effort) => [effort, { reasoningEffort: effort }]),
+        );
       }
       const copilotEfforts = iife(() => {
         if (id.includes("5.1-codex-max") || id.includes("5.2") || id.includes("5.3"))
-          return [...WIDELY_SUPPORTED_EFFORTS, "xhigh"]
-        const arr = [...WIDELY_SUPPORTED_EFFORTS]
-        if (id.includes("gpt-5") && model.release_date >= "2025-12-04") arr.push("xhigh")
-        return arr
-      })
+          return [...WIDELY_SUPPORTED_EFFORTS, "xhigh"];
+        const arr = [...WIDELY_SUPPORTED_EFFORTS];
+        if (id.includes("gpt-5") && model.release_date >= "2025-12-04") arr.push("xhigh");
+        return arr;
+      });
       return Object.fromEntries(
         copilotEfforts.map((effort) => [
           effort,
@@ -848,7 +888,7 @@ export function variants(model: Provider.Model): Record<string, Record<string, a
             include: INCLUDE_ENCRYPTED_REASONING,
           },
         ]),
-      )
+      );
 
     case "@ai-sdk/cerebras":
     // https://v5.ai-sdk.dev/providers/ai-sdk-providers/cerebras
@@ -862,17 +902,19 @@ export function variants(model: Provider.Model): Record<string, Record<string, a
     // https://docs.venice.ai/overview/guides/reasoning-models#reasoning-effort
     case "@ai-sdk/openai-compatible":
       if (model.api.id.toLowerCase().includes("north-mini-code")) {
-        return Object.fromEntries(["none", "high"].map((effort) => [effort, { reasoningEffort: effort }]))
+        return Object.fromEntries(
+          ["none", "high"].map((effort) => [effort, { reasoningEffort: effort }]),
+        );
       }
-      const efforts = [...WIDELY_SUPPORTED_EFFORTS]
+      const efforts = [...WIDELY_SUPPORTED_EFFORTS];
       if (model.api.id.toLowerCase().includes("deepseek-v4")) {
-        efforts.push("max")
+        efforts.push("max");
       }
-      return Object.fromEntries(efforts.map((effort) => [effort, { reasoningEffort: effort }]))
+      return Object.fromEntries(efforts.map((effort) => [effort, { reasoningEffort: effort }]));
 
     case "@ai-sdk/azure":
       // https://v5.ai-sdk.dev/providers/ai-sdk-providers/azure
-      if (id === "o1-mini") return {}
+      if (id === "o1-mini") return {};
       return Object.fromEntries(
         openaiReasoningEfforts(id, model.release_date).map((effort) => [
           effort,
@@ -882,11 +924,11 @@ export function variants(model: Provider.Model): Record<string, Record<string, a
             include: INCLUDE_ENCRYPTED_REASONING,
           },
         ]),
-      )
+      );
     case "@ai-sdk/amazon-bedrock/mantle":
     case "@ai-sdk/openai": {
       // https://v5.ai-sdk.dev/providers/ai-sdk-providers/openai
-      const efforts = openaiReasoningEfforts(model.api.id, model.release_date)
+      const efforts = openaiReasoningEfforts(model.api.id, model.release_date);
       return Object.fromEntries(
         efforts.map((effort) => [
           effort,
@@ -896,7 +938,7 @@ export function variants(model: Provider.Model): Record<string, Record<string, a
             include: INCLUDE_ENCRYPTED_REASONING,
           },
         ]),
-      )
+      );
     }
 
     case "@ai-sdk/anthropic":
@@ -904,13 +946,13 @@ export function variants(model: Provider.Model): Record<string, Record<string, a
     case "@ai-sdk/google-vertex/anthropic":
       // https://v5.ai-sdk.dev/providers/ai-sdk-providers/google-vertex#anthropic-provider
       if (adaptiveEfforts) {
-        let efforts = [...adaptiveEfforts]
+        let efforts = [...adaptiveEfforts];
         if (model.providerID === "github-copilot") {
           if (model.api.id.includes("opus-4.7")) {
-            efforts = ["medium"]
+            efforts = ["medium"];
           }
           // Efforts currently supported are: low, medium, high
-          efforts = efforts.filter((v) => v !== "max" && v !== "xhigh")
+          efforts = efforts.filter((v) => v !== "max" && v !== "xhigh");
         }
         return Object.fromEntries(
           efforts.map((effort) => [
@@ -923,11 +965,11 @@ export function variants(model: Provider.Model): Record<string, Record<string, a
               effort,
             },
           ]),
-        )
+        );
       }
 
       if (["opus-4-5", "opus-4.5"].some((v) => model.api.id.includes(v))) {
-        return Object.fromEntries(WIDELY_SUPPORTED_EFFORTS.map((effort) => [effort, { effort }]))
+        return Object.fromEntries(WIDELY_SUPPORTED_EFFORTS.map((effort) => [effort, { effort }]));
       }
 
       return {
@@ -943,7 +985,7 @@ export function variants(model: Provider.Model): Record<string, Record<string, a
             budgetTokens: Math.min(31_999, model.limit.output - 1),
           },
         },
-      }
+      };
 
     case "@ai-sdk/amazon-bedrock":
       // https://v5.ai-sdk.dev/providers/ai-sdk-providers/amazon-bedrock
@@ -959,7 +1001,7 @@ export function variants(model: Provider.Model): Record<string, Record<string, a
               },
             },
           ]),
-        )
+        );
       }
       // For Anthropic models on Bedrock, use reasoningConfig with budgetTokens
       if (model.api.id.includes("anthropic")) {
@@ -976,7 +1018,7 @@ export function variants(model: Provider.Model): Record<string, Record<string, a
               budgetTokens: 31999,
             },
           },
-        }
+        };
       }
 
       // For Amazon Nova models, use reasoningConfig with maxReasoningEffort
@@ -990,38 +1032,38 @@ export function variants(model: Provider.Model): Record<string, Record<string, a
             },
           },
         ]),
-      )
+      );
 
     case "@ai-sdk/google-vertex":
     // https://v5.ai-sdk.dev/providers/ai-sdk-providers/google-vertex
     case "@ai-sdk/google":
       // https://v5.ai-sdk.dev/providers/ai-sdk-providers/google-generative-ai
-      return googleThinkingVariants(model)
+      return googleThinkingVariants(model);
 
     case "@ai-sdk/mistral":
       // https://v5.ai-sdk.dev/providers/ai-sdk-providers/mistral
       // https://docs.mistral.ai/capabilities/reasoning/adjustable
-      if (!model.capabilities.reasoning) return {}
+      if (!model.capabilities.reasoning) return {};
       // Only Mistral Small 4 and Medium 3.5 support reasoning
       const MISTRAL_REASONING_IDS = [
         "mistral-small-2603",
         "mistral-small-latest",
         "mistral-medium-3.5",
         "mistral-medium-2604",
-      ]
-      const mistralId = model.api.id.toLowerCase()
-      if (!MISTRAL_REASONING_IDS.some((id) => mistralId.includes(id))) return {}
+      ];
+      const mistralId = model.api.id.toLowerCase();
+      if (!MISTRAL_REASONING_IDS.some((id) => mistralId.includes(id))) return {};
       return {
         high: { reasoningEffort: "high" },
-      }
+      };
 
     case "@ai-sdk/cohere":
       // https://v5.ai-sdk.dev/providers/ai-sdk-providers/cohere
-      return {}
+      return {};
 
     case "@ai-sdk/groq":
       // https://v5.ai-sdk.dev/providers/ai-sdk-providers/groq
-      const groqEffort = ["none", ...WIDELY_SUPPORTED_EFFORTS]
+      const groqEffort = ["none", ...WIDELY_SUPPORTED_EFFORTS];
       return Object.fromEntries(
         groqEffort.map((effort) => [
           effort,
@@ -1029,11 +1071,11 @@ export function variants(model: Provider.Model): Record<string, Record<string, a
             reasoningEffort: effort,
           },
         ]),
-      )
+      );
 
     case "@ai-sdk/perplexity":
       // https://v5.ai-sdk.dev/providers/ai-sdk-providers/perplexity
-      return {}
+      return {};
 
     case "@jerome-benoit/sap-ai-provider-v2": {
       if (id.includes("anthropic")) {
@@ -1045,45 +1087,52 @@ export function variants(model: Provider.Model): Record<string, Record<string, a
               adaptiveEfforts.map((effort) => [
                 effort,
                 {
-                  thinking: { type: "adaptive", ...(adaptiveThinkingOmitted ? { display: "summarized" } : {}) },
+                  thinking: {
+                    type: "adaptive",
+                    ...(adaptiveThinkingOmitted ? { display: "summarized" } : {}),
+                  },
                   output_config: { effort },
                 },
               ]),
             ),
-          )
+          );
         }
         return wrapInSapModelParams({
           high: { thinking: { type: "enabled", budget_tokens: 16000 } },
           max: { thinking: { type: "enabled", budget_tokens: 31999 } },
-        })
+        });
       }
       if (id.includes("gemini") && id.includes("2.5")) {
-        return wrapInSapModelParams(googleThinkingVariants(model))
+        return wrapInSapModelParams(googleThinkingVariants(model));
       }
       if (id.includes("gpt") || /\bo[1-9]/.test(id)) {
-        const efforts = openaiReasoningEfforts(id, model.release_date)
-        return wrapInSapModelParams(Object.fromEntries(efforts.map((effort) => [effort, { reasoning_effort: effort }])))
+        const efforts = openaiReasoningEfforts(id, model.release_date);
+        return wrapInSapModelParams(
+          Object.fromEntries(efforts.map((effort) => [effort, { reasoning_effort: effort }])),
+        );
       }
       return wrapInSapModelParams(
-        Object.fromEntries(["low", "medium", "high"].map((effort) => [effort, { reasoning_effort: effort }])),
-      )
+        Object.fromEntries(
+          ["low", "medium", "high"].map((effort) => [effort, { reasoning_effort: effort }]),
+        ),
+      );
     }
   }
-  return {}
+  return {};
 }
 
 export function options(input: {
-  model: Provider.Model
-  sessionID: string
-  providerOptions?: Record<string, any>
+  model: Provider.Model;
+  sessionID: string;
+  providerOptions?: Record<string, any>;
 }): Record<string, any> {
-  const result: Record<string, any> = {}
+  const result: Record<string, any> = {};
 
   if (
     input.model.api.npm === "@ai-sdk/google-vertex/anthropic" ||
     (!input.model.api.id.includes("claude") && input.model.api.npm === "@ai-sdk/anthropic")
   ) {
-    result["toolStreaming"] = false
+    result["toolStreaming"] = false;
   }
 
   // openai and providers using openai package should set store to false by default.
@@ -1093,28 +1142,32 @@ export function options(input: {
     input.model.api.npm === "@ai-sdk/github-copilot" ||
     input.model.api.npm === "@ai-sdk/amazon-bedrock/mantle"
   ) {
-    result["store"] = false
+    result["store"] = false;
   }
 
   if (input.model.api.npm === "@ai-sdk/azure") {
-    result["store"] = false
-    result["promptCacheKey"] = input.sessionID
+    result["store"] = false;
+    result["promptCacheKey"] = input.sessionID;
   }
 
-  if (input.model.api.npm === "@openrouter/ai-sdk-provider" || input.model.api.npm === "@llmgateway/ai-sdk-provider") {
+  if (
+    input.model.api.npm === "@openrouter/ai-sdk-provider" ||
+    input.model.api.npm === "@llmgateway/ai-sdk-provider"
+  ) {
     result["usage"] = {
       include: true,
-    }
+    };
     if (input.model.api.id.includes("gemini-3")) {
-      result["reasoning"] = { effort: "high" }
+      result["reasoning"] = { effort: "high" };
     }
   }
 
   if (
     input.model.providerID === "baseten" ||
-    (input.model.providerID === "opencode" && ["kimi-k2-thinking", "glm-4.6"].includes(input.model.api.id))
+    (input.model.providerID === "opencode" &&
+      ["kimi-k2-thinking", "glm-4.6"].includes(input.model.api.id))
   ) {
-    result["chat_template_args"] = { enable_thinking: true }
+    result["chat_template_args"] = { enable_thinking: true };
   }
 
   if (
@@ -1124,40 +1177,41 @@ export function options(input: {
     result["thinking"] = {
       type: "enabled",
       clear_thinking: false,
-    }
+    };
   }
 
   if (input.model.providerID === "openai" || input.providerOptions?.setCacheKey) {
-    result["promptCacheKey"] = input.sessionID
+    result["promptCacheKey"] = input.sessionID;
   }
 
   if (input.model.api.npm === "@ai-sdk/google" || input.model.api.npm === "@ai-sdk/google-vertex") {
     if (input.model.capabilities.reasoning) {
       result["thinkingConfig"] = {
         includeThoughts: true,
-      }
+      };
       if (input.model.api.id.includes("gemini-3")) {
-        result["thinkingConfig"]["thinkingLevel"] = "high"
+        result["thinkingConfig"]["thinkingLevel"] = "high";
       }
     }
   }
 
-  const modelId = input.model.api.id.toLowerCase()
+  const modelId = input.model.api.id.toLowerCase();
 
   // MiniMax's Anthropic interface defaults thinking off, unlike Chat Completions.
   if (modelId.includes("minimax-m3") && input.model.api.npm === "@ai-sdk/anthropic") {
-    result["thinking"] = { type: "adaptive" }
+    result["thinking"] = { type: "adaptive" };
   }
 
   // Enable thinking by default for kimi models using anthropic SDK
   if (
-    (input.model.api.npm === "@ai-sdk/anthropic" || input.model.api.npm === "@ai-sdk/google-vertex/anthropic") &&
+    (input.model.api.npm === "@ai-sdk/anthropic" ||
+      input.model.api.npm === "@ai-sdk/google-vertex/anthropic") &&
     (modelId.includes("k2p") || modelId.includes("kimi-k2.") || modelId.includes("kimi-k2p"))
   ) {
     result["thinking"] = {
       type: "enabled",
       budgetTokens: Math.min(16_000, Math.floor(input.model.limit.output / 2 - 1)),
-    }
+    };
   }
 
   // Enable thinking for reasoning models on alibaba-cn (DashScope).
@@ -1171,27 +1225,30 @@ export function options(input: {
     input.model.api.npm === "@ai-sdk/openai-compatible" &&
     !modelId.includes("kimi-k2-thinking")
   ) {
-    result["enable_thinking"] = true
+    result["enable_thinking"] = true;
   }
 
   if (input.model.api.npm === "@ai-sdk/azure" && input.model.api.id.includes("gpt-5.5")) {
-    result["reasoningSummary"] = "auto"
-    return result
+    result["reasoningSummary"] = "auto";
+    return result;
   }
 
   if (input.model.api.id.includes("gpt-5") && !input.model.api.id.includes("gpt-5-chat")) {
     if (!input.model.api.id.includes("gpt-5-pro")) {
-      result["reasoningEffort"] = "medium"
+      result["reasoningEffort"] = "medium";
       if (
         input.model.api.npm === "@ai-sdk/openai" ||
         input.model.api.npm === "@ai-sdk/azure" ||
         input.model.api.npm === "@ai-sdk/github-copilot" ||
         input.model.api.npm === "@ai-sdk/amazon-bedrock/mantle"
       ) {
-        result["reasoningSummary"] = "auto"
+        result["reasoningSummary"] = "auto";
       }
-      if (input.model.api.npm === "@ai-sdk/openai" || input.model.api.npm === "@ai-sdk/amazon-bedrock/mantle") {
-        result["include"] = INCLUDE_ENCRYPTED_REASONING
+      if (
+        input.model.api.npm === "@ai-sdk/openai" ||
+        input.model.api.npm === "@ai-sdk/amazon-bedrock/mantle"
+      ) {
+        result["include"] = INCLUDE_ENCRYPTED_REASONING;
       }
     }
 
@@ -1203,75 +1260,77 @@ export function options(input: {
       !input.model.api.id.includes("-chat") &&
       input.model.providerID !== "azure"
     ) {
-      result["textVerbosity"] = "low"
+      result["textVerbosity"] = "low";
     }
 
     if (input.model.providerID.startsWith("opencode")) {
-      result["promptCacheKey"] = input.sessionID
-      result["include"] = INCLUDE_ENCRYPTED_REASONING
-      result["reasoningSummary"] = "auto"
+      result["promptCacheKey"] = input.sessionID;
+      result["include"] = INCLUDE_ENCRYPTED_REASONING;
+      result["reasoningSummary"] = "auto";
     }
   }
 
   if (input.model.providerID === "venice") {
-    result["promptCacheKey"] = input.sessionID
+    result["promptCacheKey"] = input.sessionID;
   }
 
   if (input.model.providerID === "openrouter") {
-    result["prompt_cache_key"] = input.sessionID
+    result["prompt_cache_key"] = input.sessionID;
   }
   if (input.model.api.npm === "@ai-sdk/gateway") {
     result["gateway"] = {
       caching: "auto",
-    }
+    };
   }
 
-  return result
+  return result;
 }
 
 export function smallOptions(model: Provider.Model) {
-  const small = Object.values(model.variants ?? {})[0] ?? {}
+  const small = Object.values(model.variants ?? {})[0] ?? {};
   if (
     model.providerID === "openai" ||
     model.api.npm === "@ai-sdk/openai" ||
     model.api.npm === "@ai-sdk/github-copilot"
   ) {
-    const base = { store: false }
-    return mergeDeep(base, small)
+    const base = { store: false };
+    return mergeDeep(base, small);
   }
   if (model.providerID === "openrouter" || model.providerID === "llmgateway") {
     if (model.providerID === "openrouter" && small.reasoning?.effort === "low") {
-      return { reasoning: { effort: "none" } }
+      return { reasoning: { effort: "none" } };
     }
     if (Object.keys(small).length === 0 && model.api.id.includes("google")) {
-      return { reasoning: { enabled: false } }
+      return { reasoning: { enabled: false } };
     }
   }
 
   if (model.providerID === "venice") {
-    if (Object.keys(small).length > 0) return small
-    return { veniceParameters: { disableThinking: true } }
+    if (Object.keys(small).length > 0) return small;
+    return { veniceParameters: { disableThinking: true } };
   }
 
-  return small
+  return small;
 }
 
 // Maps model ID prefix to provider slug used in providerOptions.
 // Example: "amazon/nova-2-lite" → "bedrock"
 const SLUG_OVERRIDES: Record<string, string> = {
   amazon: "bedrock",
-}
+};
 
 export function providerOptions(model: Provider.Model, options: { [x: string]: any }) {
   const usesOpenAIReasoningGate =
     model.api.npm === "@ai-sdk/openai" ||
     model.api.npm === "@ai-sdk/azure" ||
-    model.api.npm === "@ai-sdk/amazon-bedrock/mantle"
+    model.api.npm === "@ai-sdk/amazon-bedrock/mantle";
   const normalized =
     usesOpenAIReasoningGate &&
-    (model.capabilities.reasoning || options.reasoningEffort !== undefined || options.reasoningSummary !== undefined)
+    (model.capabilities.reasoning ||
+      options.reasoningEffort !== undefined ||
+      options.reasoningSummary !== undefined)
       ? { ...options, forceReasoning: true }
-      : options
+      : options;
 
   if (model.api.npm === "@ai-sdk/gateway") {
     // Gateway providerOptions are split across two namespaces:
@@ -1279,28 +1338,28 @@ export function providerOptions(model: Provider.Model, options: { [x: string]: a
     // - `<upstream slug>`: provider-specific model options (anthropic/openai/...)
     // We keep `gateway` as-is and route every other top-level option under the
     // model-derived upstream slug.
-    const i = model.api.id.indexOf("/")
-    const rawSlug = i > 0 ? model.api.id.slice(0, i) : undefined
-    const slug = rawSlug ? (SLUG_OVERRIDES[rawSlug] ?? rawSlug) : undefined
-    const gateway = normalized.gateway
-    const rest = Object.fromEntries(Object.entries(normalized).filter(([k]) => k !== "gateway"))
-    const has = Object.keys(rest).length > 0
+    const i = model.api.id.indexOf("/");
+    const rawSlug = i > 0 ? model.api.id.slice(0, i) : undefined;
+    const slug = rawSlug ? (SLUG_OVERRIDES[rawSlug] ?? rawSlug) : undefined;
+    const gateway = normalized.gateway;
+    const rest = Object.fromEntries(Object.entries(normalized).filter(([k]) => k !== "gateway"));
+    const has = Object.keys(rest).length > 0;
 
-    const result: Record<string, any> = {}
-    if (gateway !== undefined) result.gateway = gateway
+    const result: Record<string, any> = {};
+    if (gateway !== undefined) result.gateway = gateway;
 
     if (has) {
       if (slug) {
         // Route model-specific options under the provider slug
-        result[slug] = rest
+        result[slug] = rest;
       } else if (gateway && typeof gateway === "object" && !Array.isArray(gateway)) {
-        result.gateway = { ...gateway, ...rest }
+        result.gateway = { ...gateway, ...rest };
       } else {
-        result.gateway = rest
+        result.gateway = rest;
       }
     }
 
-    return result
+    return result;
   }
 
   // AI SDK packages that resolve providerOptionsName by splitting the
@@ -1311,72 +1370,74 @@ export function providerOptions(model: Provider.Model, options: { [x: string]: a
   const usesDotSplitOptions =
     model.api.npm === "@ai-sdk/openai-compatible" ||
     model.api.npm === "@ai-sdk/openai" ||
-    model.api.npm === "@ai-sdk/anthropic"
-  const key = sdkKey(model.api.npm) ?? (usesDotSplitOptions ? model.providerID.split(".")[0] : model.providerID)
+    model.api.npm === "@ai-sdk/anthropic";
+  const key =
+    sdkKey(model.api.npm) ??
+    (usesDotSplitOptions ? model.providerID.split(".")[0] : model.providerID);
   // @ai-sdk/azure delegates to OpenAIChatLanguageModel which reads from
   // providerOptions["openai"], but OpenAIResponsesLanguageModel checks
   // "azure" first. Pass both so model options work on either code path.
   if (model.api.npm === "@ai-sdk/azure") {
-    return { openai: normalized, azure: normalized }
+    return { openai: normalized, azure: normalized };
   }
-  return { [key]: normalized }
+  return { [key]: normalized };
 }
 
 export function maxOutputTokens(model: Provider.Model, outputTokenMax = OUTPUT_TOKEN_MAX): number {
-  return Math.min(model.limit.output, outputTokenMax) || outputTokenMax
+  return Math.min(model.limit.output, outputTokenMax) || outputTokenMax;
 }
 
-type JsonRecord = Record<string, unknown>
+type JsonRecord = Record<string, unknown>;
 
 function isPlainObject(value: unknown): value is JsonRecord {
-  return typeof value === "object" && value !== null && !Array.isArray(value)
+  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 // Mirrors Codex's Rust JSON schema compatibility lowering for OpenAI tool schemas.
 function sanitizeOpenAISchema(value: unknown): unknown {
-  const types = ["string", "number", "boolean", "integer", "object", "array", "null"]
-  const compositionKeys = ["anyOf", "oneOf", "allOf"]
+  const types = ["string", "number", "boolean", "integer", "object", "array", "null"];
+  const compositionKeys = ["anyOf", "oneOf", "allOf"];
 
   // JSON Schema's boolean form (`true`/`false`) is unsupported by OpenAI tool schemas.
-  if (typeof value === "boolean") return { type: "string" }
-  if (Array.isArray(value)) return value.map(sanitizeOpenAISchema)
-  if (!isPlainObject(value)) return value
+  if (typeof value === "boolean") return { type: "string" };
+  if (Array.isArray(value)) return value.map(sanitizeOpenAISchema);
+  if (!isPlainObject(value)) return value;
 
-  const result: JsonRecord = {}
+  const result: JsonRecord = {};
 
-  if (typeof value.$ref === "string") result.$ref = value.$ref
-  if (typeof value.description === "string") result.description = value.description
-  if ("const" in value) result.enum = [value.const]
-  else if (Array.isArray(value.enum)) result.enum = value.enum
+  if (typeof value.$ref === "string") result.$ref = value.$ref;
+  if (typeof value.description === "string") result.description = value.description;
+  if ("const" in value) result.enum = [value.const];
+  else if (Array.isArray(value.enum)) result.enum = value.enum;
 
   if (isPlainObject(value.properties)) {
     result.properties = Object.fromEntries(
       Object.entries(value.properties).map(([key, item]) => [key, sanitizeOpenAISchema(item)]),
-    )
+    );
   }
 
   if (Array.isArray(value.required)) {
-    result.required = value.required.filter((item) => typeof item === "string")
+    result.required = value.required.filter((item) => typeof item === "string");
   }
 
-  if ("items" in value) result.items = sanitizeOpenAISchema(value.items)
+  if ("items" in value) result.items = sanitizeOpenAISchema(value.items);
 
   if ("additionalProperties" in value) {
     result.additionalProperties =
       typeof value.additionalProperties === "boolean"
         ? value.additionalProperties
-        : sanitizeOpenAISchema(value.additionalProperties)
+        : sanitizeOpenAISchema(value.additionalProperties);
   }
 
   for (const key of compositionKeys) {
-    if (Array.isArray(value[key])) result[key] = value[key].map(sanitizeOpenAISchema)
+    if (Array.isArray(value[key])) result[key] = value[key].map(sanitizeOpenAISchema);
   }
 
   for (const key of ["$defs", "definitions"]) {
     if (isPlainObject(value[key])) {
       result[key] = Object.fromEntries(
         Object.entries(value[key]).map(([name, item]) => [name, sanitizeOpenAISchema(item)]),
-      )
+      );
     }
   }
 
@@ -1387,10 +1448,13 @@ function sanitizeOpenAISchema(value: unknown): unknown {
         : []
       : Array.isArray(value.type)
         ? value.type.filter((item) => typeof item === "string" && types.includes(item))
-        : []
+        : [];
 
-  if (schemaTypes.length === 0 && (typeof result.$ref === "string" || compositionKeys.some((key) => key in result))) {
-    return result
+  if (
+    schemaTypes.length === 0 &&
+    (typeof result.$ref === "string" || compositionKeys.some((key) => key in result))
+  ) {
+    return result;
   }
 
   // MCP schemas may omit `type` while still using keywords that imply one.
@@ -1404,16 +1468,18 @@ function sanitizeOpenAISchema(value: unknown): unknown {
           ? ["array"]
           : "enum" in result || "format" in value
             ? ["string"]
-            : ["minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum", "multipleOf"].some((key) => key in value)
+            : ["minimum", "maximum", "exclusiveMinimum", "exclusiveMaximum", "multipleOf"].some(
+                  (key) => key in value,
+                )
               ? ["number"]
-              : []
+              : [];
 
-  if (inferredTypes.length === 0) return {}
+  if (inferredTypes.length === 0) return {};
 
-  result.type = inferredTypes.length === 1 ? inferredTypes[0] : inferredTypes
-  if (inferredTypes.includes("object") && !("properties" in result)) result.properties = {}
-  if (inferredTypes.includes("array") && !("items" in result)) result.items = { type: "string" }
-  return result
+  result.type = inferredTypes.length === 1 ? inferredTypes[0] : inferredTypes;
+  if (inferredTypes.includes("object") && !("properties" in result)) result.properties = {};
+  if (inferredTypes.includes("array") && !("items" in result)) result.items = { type: "string" };
+  return result;
 }
 
 export function schema(model: Provider.Model, schema: JSONSchema7): JSONSchema7 {
@@ -1436,37 +1502,40 @@ export function schema(model: Provider.Model, schema: JSONSchema7): JSONSchema7 
   */
 
   if (model.api.npm === "@ai-sdk/openai" || model.api.npm === "@ai-sdk/azure") {
-    schema = sanitizeOpenAISchema(schema) as JSONSchema7
+    schema = sanitizeOpenAISchema(schema) as JSONSchema7;
     // Codex also applies lossy compaction above 4 KB; defer that until OpenCode needs the same schema budget.
   }
 
   if (model.providerID === "moonshotai" || model.api.id.toLowerCase().includes("kimi")) {
     const sanitizeMoonshot = (obj: unknown): unknown => {
-      if (obj === null || typeof obj !== "object") return obj
-      if (Array.isArray(obj)) return obj.map(sanitizeMoonshot)
+      if (obj === null || typeof obj !== "object") return obj;
+      if (Array.isArray(obj)) return obj.map(sanitizeMoonshot);
       // Moonshot expands $ref before validation and rejects sibling keywords like description on the same node.
-      if ("$ref" in obj && typeof obj.$ref === "string") return { $ref: obj.$ref }
-      const result = Object.fromEntries(Object.entries(obj).map(([key, value]) => [key, sanitizeMoonshot(value)]))
+      if ("$ref" in obj && typeof obj.$ref === "string") return { $ref: obj.$ref };
+      const result = Object.fromEntries(
+        Object.entries(obj).map(([key, value]) => [key, sanitizeMoonshot(value)]),
+      );
       // MFJS does not support tuple-style `items` arrays; it requires one schema object for all array items.
-      if (Array.isArray(result.items)) result.items = result.items[0] ?? {}
-      return result
-    }
+      if (Array.isArray(result.items)) result.items = result.items[0] ?? {};
+      return result;
+    };
 
-    const sanitized = sanitizeMoonshot(schema)
+    const sanitized = sanitizeMoonshot(schema);
     if (typeof sanitized === "object" && sanitized !== null && !Array.isArray(sanitized)) {
-      schema = sanitized
+      schema = sanitized;
     }
   }
 
   // Convert integer enums to string enums for Google/Gemini
   if (model.providerID === "google" || model.api.id.includes("gemini")) {
     const isPlainObject = (node: unknown): node is Record<string, any> =>
-      typeof node === "object" && node !== null && !Array.isArray(node)
+      typeof node === "object" && node !== null && !Array.isArray(node);
     const hasCombiner = (node: unknown) =>
-      isPlainObject(node) && (Array.isArray(node.anyOf) || Array.isArray(node.oneOf) || Array.isArray(node.allOf))
+      isPlainObject(node) &&
+      (Array.isArray(node.anyOf) || Array.isArray(node.oneOf) || Array.isArray(node.allOf));
     const hasSchemaIntent = (node: unknown) => {
-      if (!isPlainObject(node)) return false
-      if (hasCombiner(node)) return true
+      if (!isPlainObject(node)) return false;
+      if (hasCombiner(node)) return true;
       return [
         "type",
         "properties",
@@ -1482,31 +1551,31 @@ export function schema(model: Provider.Model, schema: JSONSchema7): JSONSchema7 
         "if",
         "then",
         "else",
-      ].some((key) => key in node)
-    }
+      ].some((key) => key in node);
+    };
 
     const sanitizeGemini = (obj: any): any => {
       if (obj === null || typeof obj !== "object") {
-        return obj
+        return obj;
       }
 
       if (Array.isArray(obj)) {
-        return obj.map(sanitizeGemini)
+        return obj.map(sanitizeGemini);
       }
 
-      const result: any = {}
+      const result: any = {};
       for (const [key, value] of Object.entries(obj)) {
         if (key === "enum" && Array.isArray(value)) {
           // Convert all enum values to strings
-          result[key] = value.map((v) => String(v))
+          result[key] = value.map((v) => String(v));
           // If we have integer type with enum, change type to string
           if (result.type === "integer" || result.type === "number") {
-            result.type = "string"
+            result.type = "string";
           }
         } else if (typeof value === "object" && value !== null) {
-          result[key] = sanitizeGemini(value)
+          result[key] = sanitizeGemini(value);
         } else {
-          result[key] = value
+          result[key] = value;
         }
       }
 
@@ -1517,45 +1586,45 @@ export function schema(model: Provider.Model, schema: JSONSchema7): JSONSchema7 
       // and the backend rejects the array form. Mirror the SDK: split non-null
       // types into `anyOf`, and lift `null` into `nullable`.
       if (Array.isArray(result.type)) {
-        const hasNull = result.type.includes("null")
-        const nonNull = result.type.filter((entry: unknown) => entry !== "null")
+        const hasNull = result.type.includes("null");
+        const nonNull = result.type.filter((entry: unknown) => entry !== "null");
         if (nonNull.length === 0) {
-          result.type = "null"
+          result.type = "null";
         } else {
-          delete result.type
-          result.anyOf = nonNull.map((entry: unknown) => ({ type: entry }))
-          if (hasNull) result.nullable = true
+          delete result.type;
+          result.anyOf = nonNull.map((entry: unknown) => ({ type: entry }));
+          if (hasNull) result.nullable = true;
         }
       }
 
       // Filter required array to only include fields that exist in properties
       if (result.type === "object" && result.properties && Array.isArray(result.required)) {
-        result.required = result.required.filter((field: any) => field in result.properties)
+        result.required = result.required.filter((field: any) => field in result.properties);
       }
 
       if (result.type === "array" && !hasCombiner(result)) {
         if (result.items == null) {
-          result.items = {}
+          result.items = {};
         }
         // Ensure items has a type only when it's still schema-empty.
         if (isPlainObject(result.items) && !hasSchemaIntent(result.items)) {
-          result.items.type = "string"
+          result.items.type = "string";
         }
       }
 
       // Remove properties/required from non-object types (Gemini rejects these)
       if (result.type && result.type !== "object" && !hasCombiner(result)) {
-        delete result.properties
-        delete result.required
+        delete result.properties;
+        delete result.required;
       }
 
-      return result
-    }
+      return result;
+    };
 
-    schema = sanitizeGemini(schema)
+    schema = sanitizeGemini(schema);
   }
 
-  return schema
+  return schema;
 }
 
-export * as ProviderTransform from "./transform"
+export * as ProviderTransform from "./transform";

@@ -125,7 +125,7 @@ export class TraeExecutor extends BaseExecutor {
     query: string,
     model: string,
     psd: JsonRecord,
-    signal?: AbortSignal | null
+    signal?: AbortSignal | null,
   ): Promise<{ sessionId: string; messageId: string }> {
     const { mode, strategy, modelName } = this.resolveMode(model);
     const body = {
@@ -166,7 +166,7 @@ export class TraeExecutor extends BaseExecutor {
     sessionId: string,
     replyTo: string,
     onEvent: (ev: string | null, data: JsonRecord) => boolean,
-    signal?: AbortSignal | null
+    signal?: AbortSignal | null,
   ): Promise<void> {
     const url = `${this.base()}/chat_sessions/${sessionId}/events?reply_to_message_id=${encodeURIComponent(replyTo)}`;
     const ctrl = new AbortController();
@@ -228,7 +228,7 @@ export class TraeExecutor extends BaseExecutor {
         JSON.stringify({
           error: { message: sanitizeErrorMessage(message), type: "api_error", code: "" },
         }),
-        { status, headers: { "Content-Type": "application/json" } }
+        { status, headers: { "Content-Type": "application/json" } },
       );
 
     let session: { sessionId: string; messageId: string };
@@ -238,7 +238,7 @@ export class TraeExecutor extends BaseExecutor {
         query,
         model as string,
         psd,
-        signal as AbortSignal
+        signal as AbortSignal,
       );
     } catch (err) {
       return {
@@ -306,7 +306,7 @@ export class TraeExecutor extends BaseExecutor {
                 }
                 return ev === "done";
               },
-              signal as AbortSignal
+              signal as AbortSignal,
             );
             void roleEmitted;
             if (errorEvent) {
@@ -380,7 +380,7 @@ export class TraeExecutor extends BaseExecutor {
           if (ev === "plan_item") renderNewText(data);
           return ev === "done";
         },
-        signal as AbortSignal
+        signal as AbortSignal,
       );
     } catch (err) {
       return {

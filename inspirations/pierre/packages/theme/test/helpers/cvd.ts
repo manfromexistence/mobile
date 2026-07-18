@@ -5,7 +5,7 @@ import {
   filterDeficiencyTrit,
   formatHex,
   wcagContrast,
-} from 'culori';
+} from "culori";
 
 /**
  * Color-science utilities shared by the CVD accessibility gate:
@@ -13,16 +13,11 @@ import {
  * separation after simulation, and cross-validate our hand-rolled math against
  * culori.
  */
-import {
-  contrastRatio,
-  type CVDType,
-  deltaE2000,
-  simulateCVD,
-} from '../../src/color';
+import { contrastRatio, type CVDType, deltaE2000, simulateCVD } from "../../src/color";
 
 // The two common Machado gamma conventions: linear RGB (our implementation) and
 // gamma-encoded sRGB (culori / the `colorspace` R package). The gate checks both.
-export type SimulationConvention = 'linear' | 'gamma';
+export type SimulationConvention = "linear" | "gamma";
 
 type CuloriColorInput = Parameters<typeof formatHex>[0];
 
@@ -35,9 +30,9 @@ const gammaSim: Record<CVDType, (c: string) => CuloriColorInput> = {
 export function simulateForConvention(
   hex: string,
   cvd: CVDType,
-  convention: SimulationConvention
+  convention: SimulationConvention,
 ): string {
-  if (convention === 'linear') return simulateCVD(hex, cvd);
+  if (convention === "linear") return simulateCVD(hex, cvd);
   const simulated = formatHex(gammaSim[cvd](hex));
   if (simulated === undefined) {
     throw new Error(`culori could not simulate ${hex} for ${cvd}`);
@@ -47,19 +42,15 @@ export function simulateForConvention(
 
 // Worst-case contrast of fg on bg after simulation, across both gamma conventions
 // (the same linear + gamma pair the distinguishability check uses).
-export function simulatedContrast(
-  fg: string,
-  bg: string,
-  cvd: CVDType
-): number {
+export function simulatedContrast(fg: string, bg: string, cvd: CVDType): number {
   let worst = Infinity;
-  for (const convention of ['linear', 'gamma'] as const) {
+  for (const convention of ["linear", "gamma"] as const) {
     worst = Math.min(
       worst,
       contrastRatio(
         simulateForConvention(fg, cvd, convention),
-        simulateForConvention(bg, cvd, convention)
-      )
+        simulateForConvention(bg, cvd, convention),
+      ),
     );
   }
   return worst;
@@ -70,12 +61,12 @@ export function simulatedContrast(
 export function worstDeltaE(aHex: string, bHex: string, cvds: CVDType[]) {
   let worst = Infinity;
   let worstCvd: CVDType = cvds[0];
-  let worstConvention: SimulationConvention = 'linear';
+  let worstConvention: SimulationConvention = "linear";
   for (const cvd of cvds) {
-    for (const convention of ['linear', 'gamma'] as const) {
+    for (const convention of ["linear", "gamma"] as const) {
       const d = deltaE2000(
         simulateForConvention(aHex, cvd, convention),
-        simulateForConvention(bHex, cvd, convention)
+        simulateForConvention(bHex, cvd, convention),
       );
       if (d < worst) {
         worst = d;
@@ -102,18 +93,18 @@ export function referenceCrossChecks(): {
   // culori parses hex strings at runtime; its types want parsed Color objects, so
   // we loosen the signatures here (dev-only oracle).
   const samples = [
-    '#009fff',
-    '#d52c36',
-    '#199f43',
-    '#ffca00',
-    '#1a85d4',
-    '#d47628',
-    '#a13cee',
-    '#00c5d2',
-    '#ff5d36',
-    '#737373',
-    '#ffffff',
-    '#0a0a0a',
+    "#009fff",
+    "#d52c36",
+    "#199f43",
+    "#ffca00",
+    "#1a85d4",
+    "#d47628",
+    "#a13cee",
+    "#00c5d2",
+    "#ff5d36",
+    "#737373",
+    "#ffffff",
+    "#0a0a0a",
   ];
 
   // contrast & ΔE: must match culori to floating-point noise.
@@ -130,15 +121,12 @@ export function referenceCrossChecks(): {
 
   // simulation: differs from culori only in gamma convention, but must collapse
   // the same axis — verify each maps the confusable pair to a much smaller ΔE.
-  const axisOk = (['protan', 'deutan', 'tritan'] as CVDType[]).every((t) => {
-    const x = t === 'tritan' ? '#009fff' : '#ff2e3f'; // blue (tritan) / red (protan,deutan)
-    const y = '#199f43'; // green
+  const axisOk = (["protan", "deutan", "tritan"] as CVDType[]).every((t) => {
+    const x = t === "tritan" ? "#009fff" : "#ff2e3f"; // blue (tritan) / red (protan,deutan)
+    const y = "#199f43"; // green
     const before = deltaE2000(x, y);
     const ours = deltaE2000(simulateCVD(x, t), simulateCVD(y, t));
-    const lib = ciede(
-      simulateForConvention(x, t, 'gamma'),
-      simulateForConvention(y, t, 'gamma')
-    );
+    const lib = ciede(simulateForConvention(x, t, "gamma"), simulateForConvention(y, t, "gamma"));
     // Both implementations must collapse the confusable pair to under half its
     // un-simulated separation (exact residual differs by gamma convention).
     return ours < before * 0.5 && lib < before * 0.5;
@@ -146,19 +134,19 @@ export function referenceCrossChecks(): {
 
   return [
     {
-      name: 'contrast matches culori',
+      name: "contrast matches culori",
       ok: maxC < 0.01,
       detail: `max |Δ| ${maxC.toFixed(4)}`,
     },
     {
-      name: 'ΔE2000 matches culori',
+      name: "ΔE2000 matches culori",
       ok: maxDe < 0.1,
       detail: `max |Δ| ${maxDe.toFixed(4)}`,
     },
     {
-      name: 'simulation collapses same axis',
+      name: "simulation collapses same axis",
       ok: axisOk,
-      detail: axisOk ? 'ours & culori agree' : 'axis mismatch',
+      detail: axisOk ? "ours & culori agree" : "axis mismatch",
     },
   ];
 }

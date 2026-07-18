@@ -48,7 +48,7 @@ test("header helpers behave via base.ts (the public import path)", async () => {
   const stripped = mod.stripStainlessHeadersForOpenAICompat(
     headers,
     "openai-compatible-x",
-    "https://x/v1/chat/completions"
+    "https://x/v1/chat/completions",
   );
   assert.ok(stripped.includes("x-stainless-lang"));
   assert.equal(headers["x-stainless-lang"], undefined);

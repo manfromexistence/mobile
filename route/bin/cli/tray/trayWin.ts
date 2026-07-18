@@ -40,7 +40,7 @@ export function initWindowsTray(opts: WinTrayOptions): WinTrayHandle | null {
         "-Tooltip",
         opts.tooltip,
       ],
-      { stdio: ["pipe", "pipe", "pipe"], windowsHide: true }
+      { stdio: ["pipe", "pipe", "pipe"], windowsHide: true },
     );
   } catch (err) {
     opts.onEvent({ type: "error", error: String(err) });

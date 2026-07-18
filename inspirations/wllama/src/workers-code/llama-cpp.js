@@ -7,7 +7,7 @@ let wllamaDebug;
 
 let Module = null;
 let isCompat = false;
-let lastStack = '';
+let lastStack = "";
 let isAborted = false;
 let hasMultithread = false;
 
@@ -23,10 +23,10 @@ const cppLogToJSLog = (line) => {
   const matched = line.match(/@@(DEBUG|INFO|WARN|ERROR)@@(.*)/);
   return !!matched
     ? {
-        level: (matched[1] === 'INFO' ? 'debug' : matched[1]).toLowerCase(),
+        level: (matched[1] === "INFO" ? "debug" : matched[1]).toLowerCase(),
         text: matched[2],
       }
-    : { level: 'log', text: line };
+    : { level: "log", text: line };
 };
 
 const getHeapU8 = () => {
@@ -48,46 +48,41 @@ const getWModuleConfig = (_argMainScriptBlob) => {
   hasMultithread = pthreadPoolSize > 1;
 
   msg({
-    verb: 'console.debug',
-    args: [
-      `Multithread enabled: ${hasMultithread}, pthreadPoolSize: ${pthreadPoolSize}`,
-    ],
+    verb: "console.debug",
+    args: [`Multithread enabled: ${hasMultithread}, pthreadPoolSize: ${pthreadPoolSize}`],
   });
 
-  if (!pathConfig['wllama.wasm']) {
+  if (!pathConfig["wllama.wasm"]) {
     throw new Error('"wllama.wasm" is missing in pathConfig');
   }
   return {
     noInitialRun: true,
     print: function (text) {
-      if (arguments.length > 1)
-        text = Array.prototype.slice.call(arguments).join(' ');
-      msg({ verb: 'console.log', args: [text] });
+      if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(" ");
+      msg({ verb: "console.log", args: [text] });
     },
     printErr: function (text) {
-      if (arguments.length > 1)
-        text = Array.prototype.slice.call(arguments).join(' ');
-      if (text.startsWith('@@STACK@@')) {
-        lastStack = text.slice('@@STACK@@'.length);
+      if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(" ");
+      if (text.startsWith("@@STACK@@")) {
+        lastStack = text.slice("@@STACK@@".length);
         return;
       }
       const logLine = cppLogToJSLog(text);
-      msg({ verb: 'console.' + logLine.level, args: [logLine.text] });
+      msg({ verb: "console." + logLine.level, args: [logLine.text] });
     },
     locateFile: function (filename, basePath) {
       const p = pathConfig[filename];
-      const truncate = (str) =>
-        str.length > 128 ? `${str.substr(0, 128)}...` : str;
+      const truncate = (str) => (str.length > 128 ? `${str.substr(0, 128)}...` : str);
       if (filename.match(/wllama\.worker\.js/)) {
         msg({
-          verb: 'console.error',
+          verb: "console.error",
           args: [
             '"wllama.worker.js" is removed from v2.2.1. Hint: make sure to clear browser\'s cache.',
           ],
         });
       } else {
         msg({
-          verb: 'console.debug',
+          verb: "console.debug",
           args: [`Loading "${filename}" from "${truncate(p)}"`],
         });
         return p;
@@ -100,14 +95,14 @@ const getWModuleConfig = (_argMainScriptBlob) => {
     wasmMemory: hasMultithread ? getWasmMemory() : null,
     onAbort: function (message) {
       isAborted = true;
-      msg({ verb: 'signal.abort', args: ['abort', message, lastStack, null] });
+      msg({ verb: "signal.abort", args: ["abort", message, lastStack, null] });
     },
     onExit: function (code) {
       isAborted = true;
       const callstack = new Error().stack.toString();
       msg({
-        verb: 'signal.abort',
-        args: ['abort', 'exit(' + code + ')', callstack, null],
+        verb: "signal.abort",
+        args: ["abort", "exit(" + code + ")", callstack, null],
       });
     },
   };
@@ -127,7 +122,7 @@ const getWasmMemory = () => {
         initial: toSizeT(minBytes / 65536),
         maximum: toSizeT(maxBytes / 65536),
         shared: true,
-        address: isCompat ? undefined : 'i64',
+        address: isCompat ? undefined : "i64",
       });
       return wasmMemory;
     } catch (e) {
@@ -135,7 +130,7 @@ const getWasmMemory = () => {
       continue; // retry
     }
   }
-  throw new Error('Cannot allocate WebAssembly.Memory');
+  throw new Error("Cannot allocate WebAssembly.Memory");
 };
 
 //////////////////////////////////////////////////////////////
@@ -188,13 +183,7 @@ const patchHeapFS = () => {
   };
 
   // replace "read" functions
-  m.MEMFS.stream_ops.read = function (
-    stream,
-    buffer,
-    offset,
-    length,
-    position
-  ) {
+  m.MEMFS.stream_ops.read = function (stream, buffer, offset, length, position) {
     patchStream(stream);
     return m.MEMFS.stream_ops._read(stream, buffer, offset, length, position);
   };
@@ -225,14 +214,14 @@ const patchHeapFS = () => {
   m.MEMFS.ops_table.file.stream.mmap = m.MEMFS.stream_ops.mmap;
 
   // mount FS
-  m.FS.mkdir('/models');
-  m.FS.mount(m.MEMFS, { root: '.' }, '/models');
+  m.FS.mkdir("/models");
+  m.FS.mount(m.MEMFS, { root: "." }, "/models");
 };
 
 // Allocate a new file in wllama heapfs, returns file ID
 const heapfsAlloc = (name, size, allocBuffer) => {
   if (size < 1) {
-    throw new Error('File size must be bigger than 0');
+    throw new Error("File size must be bigger than 0");
   }
   const m = Module;
   const ptr = toSizeT(allocBuffer ? m.mmapAlloc(size) : 0);
@@ -253,7 +242,7 @@ const heapfsWrite = (id, buffer, offset) => {
     const afterWriteByte = offset + buffer.byteLength;
     if (afterWriteByte > size) {
       throw new Error(
-        `File ID ${id} write out of bound, afterWriteByte = ${afterWriteByte} while size = ${size}`
+        `File ID ${id} write out of bound, afterWriteByte = ${afterWriteByte} while size = ${size}`,
       );
     }
     getHeapU8().set(buffer, Number(ptr) + offset);
@@ -272,7 +261,7 @@ let pendingReadPromise = null;
 let pendingReadResolve = null;
 let pendingReadReject = null;
 
-const _stripModelsPrefix = (path) => path.replace(/^\/?models\//, '');
+const _stripModelsPrefix = (path) => path.replace(/^\/?models\//, "");
 
 // Called from EM_ASYNC_JS stub in wllama-fs.h (path is already a JS string)
 const _wllama_js_file_read = async (path, offset, req_size, out_ptr) => {
@@ -284,7 +273,7 @@ const _wllama_js_file_read = async (path, offset, req_size, out_ptr) => {
   });
   isAwaitReading = true;
 
-  postMessage({ verb: 'fs.read_req', args: [name, offset, req_size] });
+  postMessage({ verb: "fs.read_req", args: [name, offset, req_size] });
 
   let data;
   try {
@@ -305,12 +294,7 @@ const _wllama_js_file_read = async (path, offset, req_size, out_ptr) => {
 //////////////////////////////////////////////////////////////
 
 const callWrapper = (name, ret, args, isAsync) => {
-  const fn = Module.cwrap(
-    name,
-    ret,
-    args,
-    isAsync ? { async: true } : undefined
-  );
+  const fn = Module.cwrap(name, ret, args, isAsync ? { async: true } : undefined);
   return async (action, req) => {
     // console.log(`Calling ${name} with action:`, action, 'and req:', req);
     let result;
@@ -333,11 +317,11 @@ function handleError(err) {
   // re-reporting the resulting WebAssembly.RuntimeError as a JS exception.
   if (isAborted) return;
 
-  const message = err ? err.message || String(err) : 'Unknown error';
-  const stack = err ? err.stack || String(err) : '';
+  const message = err ? err.message || String(err) : "Unknown error";
+  const stack = err ? err.stack || String(err) : "";
   msg({
-    verb: 'signal.abort',
-    args: ['exception', message, stack, err],
+    verb: "signal.abort",
+    args: ["exception", message, stack, err],
   });
 }
 
@@ -346,7 +330,7 @@ onmessage = async (e) => {
   const { verb, args, callbackId } = e.data;
 
   // fs.read_res arrives while wasm is JSPI-suspended; resolve the pending promise.
-  if (verb === 'fs.read_res') {
+  if (verb === "fs.read_res") {
     if (pendingReadResolve) {
       pendingReadResolve(args[0]);
     }
@@ -358,25 +342,25 @@ onmessage = async (e) => {
     if (callbackId) {
       msg({
         callbackId,
-        err: 'Worker is suspended waiting for file data (JSPI)',
+        err: "Worker is suspended waiting for file data (JSPI)",
       });
     }
     return;
   }
 
   if (!callbackId) {
-    msg({ verb: 'console.error', args: ['callbackId is required', e.data] });
+    msg({ verb: "console.error", args: ["callbackId is required", e.data] });
     return;
   }
 
-  if (verb === 'module.init') {
+  if (verb === "module.init") {
     const argMainScriptBlob = args[0];
     const argUseAsyncFile = args[1];
     try {
       Module = getWModuleConfig(argMainScriptBlob);
       Module.preRun = () => {
         if (argUseAsyncFile) {
-          Module.ENV['USE_ASYNC_FILE'] = '1';
+          Module.ENV["USE_ASYNC_FILE"] = "1";
         }
       };
       Module.onRuntimeInitialized = () => {
@@ -384,21 +368,13 @@ onmessage = async (e) => {
         // init FS
         patchHeapFS();
         // init cwrap
-        const pointer = isCompat ? 'number' : 'bigint';
+        const pointer = isCompat ? "number" : "bigint";
         // TODO: note sure why emscripten cannot bind if there is only 1 argument
-        wllamaMalloc = callWrapper('wllama_malloc', pointer, [
-          'number',
-          pointer,
-        ]);
-        wllamaStart = callWrapper('wllama_start', 'string', [], true);
-        wllamaAction = callWrapper(
-          'wllama_action',
-          pointer,
-          ['string', pointer],
-          true
-        );
-        wllamaExit = callWrapper('wllama_exit', 'string', []);
-        wllamaDebug = callWrapper('wllama_debug', 'string', []);
+        wllamaMalloc = callWrapper("wllama_malloc", pointer, ["number", pointer]);
+        wllamaStart = callWrapper("wllama_start", "string", [], true);
+        wllamaAction = callWrapper("wllama_action", pointer, ["string", pointer], true);
+        wllamaExit = callWrapper("wllama_exit", "string", []);
+        wllamaDebug = callWrapper("wllama_debug", "string", []);
         msg({ callbackId, result: null });
       };
       wModuleInit();
@@ -408,21 +384,14 @@ onmessage = async (e) => {
     return;
   }
 
-  if (verb === 'fs.alloc') {
+  if (verb === "fs.alloc") {
     const argFilename = args[0];
     const argSize = args[1];
     const argAllocBuffer = args[2];
     try {
       // create blank file
       const emptyBuffer = new ArrayBuffer(0);
-      Module['FS_createDataFile'](
-        '/models',
-        argFilename,
-        emptyBuffer,
-        true,
-        true,
-        true
-      );
+      Module["FS_createDataFile"]("/models", argFilename, emptyBuffer, true, true, true);
       // alloc data on heap
       const fileId = heapfsAlloc(argFilename, argSize, argAllocBuffer);
       msg({ callbackId, result: { fileId } });
@@ -432,7 +401,7 @@ onmessage = async (e) => {
     return;
   }
 
-  if (verb === 'fs.write') {
+  if (verb === "fs.write") {
     const argFileId = args[0];
     const argBuffer = args[1];
     const argOffset = args[2];
@@ -445,7 +414,7 @@ onmessage = async (e) => {
     return;
   }
 
-  if (verb === 'wllama.start') {
+  if (verb === "wllama.start") {
     try {
       const result = await wllamaStart();
       msg({ callbackId, result });
@@ -455,7 +424,7 @@ onmessage = async (e) => {
     return;
   }
 
-  if (verb === 'wllama.action') {
+  if (verb === "wllama.action") {
     const argAction = args[0];
     const argEncodedMsg = args[1];
     try {
@@ -464,23 +433,15 @@ onmessage = async (e) => {
       const inputBuffer = new Uint8Array(
         getHeapU8().buffer,
         Number(inputPtr),
-        argEncodedMsg.byteLength
+        argEncodedMsg.byteLength,
       );
       inputBuffer.set(argEncodedMsg, 0);
       const outputPtr = await wllamaAction(argAction, inputPtr);
       // length of output buffer is written at the first 4 bytes of input buffer
-      const outputLen = new Uint32Array(
-        getHeapU8().buffer,
-        Number(inputPtr),
-        1
-      )[0];
+      const outputLen = new Uint32Array(getHeapU8().buffer, Number(inputPtr), 1)[0];
       // copy the output buffer to JS heap
       const outputBuffer = new Uint8Array(outputLen);
-      const outputSrcView = new Uint8Array(
-        getHeapU8().buffer,
-        Number(outputPtr),
-        outputLen
-      );
+      const outputSrcView = new Uint8Array(getHeapU8().buffer, Number(outputPtr), outputLen);
       outputBuffer.set(outputSrcView, 0); // copy it
       msg({ callbackId, result: outputBuffer }, [outputBuffer.buffer]);
     } catch (err) {
@@ -489,7 +450,7 @@ onmessage = async (e) => {
     return;
   }
 
-  if (verb === 'wllama.exit') {
+  if (verb === "wllama.exit") {
     try {
       const result = await wllamaExit();
       msg({ callbackId, result });
@@ -499,7 +460,7 @@ onmessage = async (e) => {
     return;
   }
 
-  if (verb === 'wllama.debug') {
+  if (verb === "wllama.debug") {
     try {
       const result = await wllamaDebug();
       msg({ callbackId, result });

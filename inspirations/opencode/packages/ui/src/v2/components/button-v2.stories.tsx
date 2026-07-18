@@ -1,4 +1,4 @@
-import { ButtonV2 } from "./button-v2"
+import { ButtonV2 } from "./button-v2";
 
 const docs = `### Overview
 Button v2 with visual variants and three sizes.
@@ -12,7 +12,7 @@ Button v2 with visual variants and three sizes.
 ### States
 - default, hover, pressed, focus, disabled.
 - State selectors are available via pseudo-classes and \`[data-state]\`.
-`
+`;
 
 export default {
   title: "UI V2/Button",
@@ -46,9 +46,9 @@ export default {
       options: ["normal", "large"],
     },
   },
-}
+};
 
-export const Playground = {}
+export const Playground = {};
 
 export const Variants = {
   render: () => (
@@ -70,7 +70,7 @@ export const Variants = {
       <ButtonV2 variant="loading">Loading</ButtonV2>
     </div>
   ),
-}
+};
 
 export const Sizes = {
   render: () => (
@@ -93,7 +93,7 @@ export const Sizes = {
       </ButtonV2>
     </div>
   ),
-}
+};
 
 export const Icon = {
   render: () => (
@@ -113,13 +113,13 @@ export const Icon = {
       </ButtonV2>
     </div>
   ),
-}
+};
 
 export const AllStates = {
   render: () => {
-    const variants = ["neutral", "danger", "contrast", "ghost", "ghost-muted", "loading"] as const
-    const states = ["default", "hover", "pressed", "focus", "disabled"] as const
-    const toTitleCase = (value: string) => value.charAt(0).toUpperCase() + value.slice(1)
+    const variants = ["neutral", "danger", "contrast", "ghost", "ghost-muted", "loading"] as const;
+    const states = ["default", "hover", "pressed", "focus", "disabled"] as const;
+    const toTitleCase = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
     return (
       <div style={{ display: "grid", gap: "12px" }}>
         {variants.map((variant) => (
@@ -147,6 +147,6 @@ export const AllStates = {
           </div>
         ))}
       </div>
-    )
+    );
   },
-}
+};

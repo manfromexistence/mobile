@@ -1,44 +1,50 @@
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { showToast } from "@opencode-ai/ui/toast"
-import { ButtonV2 } from "@opencode-ai/ui/v2/button-v2"
-import { Dialog, DialogBody, DialogFooter, DialogHeader, DialogTitle } from "@opencode-ai/ui/v2/dialog-v2"
-import { DividerV2 } from "@opencode-ai/ui/v2/divider-v2"
-import { LoaderV2 } from "@opencode-ai/ui/v2/loader-v2"
-import { RadioGroupV2, RadioItemV2 } from "@opencode-ai/ui/v2/radio-v2"
-import { TextInputV2 } from "@opencode-ai/ui/v2/text-input-v2"
-import { createMemo, For, Show } from "solid-js"
-import { createStore } from "solid-js/store"
-import { useLanguage } from "@/context/language"
-import { usePlatform } from "@/context/platform"
-import { useWslAddServerProbes } from "./add-server-probes"
-import { useWslServers } from "./context"
-import { addServerViewModel, type AddServerText } from "./settings-model"
-import "./dialog-add-wsl-server.css"
+import { useDialog } from "@opencode-ai/ui/context/dialog";
+import { showToast } from "@opencode-ai/ui/toast";
+import { ButtonV2 } from "@opencode-ai/ui/v2/button-v2";
+import {
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@opencode-ai/ui/v2/dialog-v2";
+import { DividerV2 } from "@opencode-ai/ui/v2/divider-v2";
+import { LoaderV2 } from "@opencode-ai/ui/v2/loader-v2";
+import { RadioGroupV2, RadioItemV2 } from "@opencode-ai/ui/v2/radio-v2";
+import { TextInputV2 } from "@opencode-ai/ui/v2/text-input-v2";
+import { createMemo, For, Show } from "solid-js";
+import { createStore } from "solid-js/store";
+import { useLanguage } from "@/context/language";
+import { usePlatform } from "@/context/platform";
+import { useWslAddServerProbes } from "./add-server-probes";
+import { useWslServers } from "./context";
+import { addServerViewModel, type AddServerText } from "./settings-model";
+import "./dialog-add-wsl-server.css";
 
 function isWslRuntimeMissing(error: string | null | undefined) {
-  if (!error) return true
-  return /WSL is not installed|not been installed|wsl(?:\.exe)? --install/i.test(error)
+  if (!error) return true;
+  return /WSL is not installed|not been installed|wsl(?:\.exe)? --install/i.test(error);
 }
 
 function translate(language: ReturnType<typeof useLanguage>, value: AddServerText) {
-  if (value.params) return language.t(value.key, value.params)
-  return language.t(value.key)
+  if (value.params) return language.t(value.key, value.params);
+  return language.t(value.key);
 }
 
 interface DialogWslServerProps {
-  onAdded?: (distro: string) => void | Promise<void>
+  onAdded?: (distro: string) => void | Promise<void>;
 }
 
 export function DialogAddWslServer(props: DialogWslServerProps = {}) {
-  const language = useLanguage()
-  const controller = useWslAddServerController(props)
-  const model = controller.model
-  const primaryButton = () => model().primaryButton
+  const language = useLanguage();
+  const controller = useWslAddServerController(props);
+  const model = controller.model;
+  const primaryButton = () => model().primaryButton;
   const primaryButtonStyle = () => {
-    const width = primaryButton().width
-    if (!width) return undefined
-    return { width }
-  }
+    const width = primaryButton().width;
+    if (!width) return undefined;
+    return { width };
+  };
 
   return (
     <Show
@@ -82,7 +88,9 @@ export function DialogAddWslServer(props: DialogWslServerProps = {}) {
         <Dialog fit class="settings-v2-wsl-dialog">
           <DialogHeader hideClose={true}>
             <DialogTitle>
-              {controller.view() === "main" ? language.t("wsl.server.add") : language.t("wsl.onboarding.installDistro")}
+              {controller.view() === "main"
+                ? language.t("wsl.server.add")
+                : language.t("wsl.onboarding.installDistro")}
             </DialogTitle>
           </DialogHeader>
           <DividerV2 />
@@ -122,16 +130,25 @@ export function DialogAddWslServer(props: DialogWslServerProps = {}) {
                   </div>
                 </DialogBody>
                 <DialogFooter>
-                  <ButtonV2 variant="neutral" disabled={model().busy} onClick={controller.closeCatalog}>
+                  <ButtonV2
+                    variant="neutral"
+                    disabled={model().busy}
+                    onClick={controller.closeCatalog}
+                  >
                     {language.t("common.cancel")}
                   </ButtonV2>
                   <ButtonV2
                     variant={model().installingCatalogDistro ? "loading" : "contrast"}
-                    disabled={!model().installingCatalogDistro && (model().busy || !model().catalogTarget)}
+                    disabled={
+                      !model().installingCatalogDistro && (model().busy || !model().catalogTarget)
+                    }
                     style={{ width: "99px" }}
                     onClick={controller.installCatalogDistro}
                   >
-                    <Show when={model().installingCatalogDistro} fallback={language.t("wsl.onboarding.installDistro")}>
+                    <Show
+                      when={model().installingCatalogDistro}
+                      fallback={language.t("wsl.onboarding.installDistro")}
+                    >
                       <LoaderV2 />
                     </Show>
                   </ButtonV2>
@@ -141,7 +158,9 @@ export function DialogAddWslServer(props: DialogWslServerProps = {}) {
           >
             <DialogBody class="settings-v2-wsl-dialog-body">
               <div class="settings-v2-wsl-section-header">
-                <span class="settings-v2-wsl-section-title">{language.t("wsl.onboarding.installedDistros")}</span>
+                <span class="settings-v2-wsl-section-title">
+                  {language.t("wsl.onboarding.installedDistros")}
+                </span>
                 <ButtonV2
                   variant="ghost-muted"
                   size="small"
@@ -175,7 +194,7 @@ export function DialogAddWslServer(props: DialogWslServerProps = {}) {
                   >
                     <For each={model().addableInstalledDistros}>
                       {(item) => {
-                        const status = () => model().distroStatuses[item.name] ?? null
+                        const status = () => model().distroStatuses[item.name] ?? null;
                         return (
                           <RadioItemV2
                             class={`settings-v2-wsl-distro-row${item.version === 1 ? " settings-v2-wsl-distro-row--unsupported" : ""}`}
@@ -185,14 +204,17 @@ export function DialogAddWslServer(props: DialogWslServerProps = {}) {
                             description={
                               <Show when={status()}>
                                 {(value) => (
-                                  <span class="settings-v2-wsl-distro-status" data-tone={value().tone}>
+                                  <span
+                                    class="settings-v2-wsl-distro-status"
+                                    data-tone={value().tone}
+                                  >
                                     {translate(language, value().label)}
                                   </span>
                                 )}
                               </Show>
                             }
                           />
-                        )
+                        );
                       }}
                     </For>
                   </RadioGroupV2>
@@ -207,7 +229,13 @@ export function DialogAddWslServer(props: DialogWslServerProps = {}) {
                   onClick={controller.openCatalog}
                 >
                   <span class="settings-v2-wsl-catalog-icon" aria-hidden="true">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
                       <path
                         d="M13.5564 10.4443V13.5554H4.22309C3.24087 13.5554 2.44531 13.5554 2.44531 13.5554V10.4443M11.112 5.99989L8.00087 9.111L4.88976 5.99989M8.00087 9.111L8.00087 2.44434"
                         stroke="currentColor"
@@ -215,13 +243,21 @@ export function DialogAddWslServer(props: DialogWslServerProps = {}) {
                     </svg>
                   </span>
                   <span class="settings-v2-wsl-catalog-copy">
-                    <span class="settings-v2-wsl-catalog-title">{language.t("wsl.onboarding.needAnotherDistro")}</span>
+                    <span class="settings-v2-wsl-catalog-title">
+                      {language.t("wsl.onboarding.needAnotherDistro")}
+                    </span>
                     <span class="settings-v2-wsl-catalog-description">
                       {language.t("wsl.onboarding.needAnotherDistroHint")}
                     </span>
                   </span>
                   <span class="settings-v2-wsl-catalog-chevron" aria-hidden="true">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
                       <path d="M6 12L10 8L6 4" stroke="currentColor" />
                     </svg>
                   </span>
@@ -239,7 +275,10 @@ export function DialogAddWslServer(props: DialogWslServerProps = {}) {
                 style={primaryButtonStyle()}
                 onClick={controller.runPrimary}
               >
-                <Show when={primaryButton().loading} fallback={translate(language, primaryButton().label)}>
+                <Show
+                  when={primaryButton().loading}
+                  fallback={translate(language, primaryButton().label)}
+                >
                   <LoaderV2 />
                 </Show>
               </ButtonV2>
@@ -248,23 +287,23 @@ export function DialogAddWslServer(props: DialogWslServerProps = {}) {
         </Dialog>
       </Show>
     </Show>
-  )
+  );
 }
 
 function useWslAddServerController(props: DialogWslServerProps) {
-  const language = useLanguage()
-  const platform = usePlatform()
-  const dialog = useDialog()
-  const wslServers = useWslServers()
-  const api = platform.wslServers!
+  const language = useLanguage();
+  const platform = usePlatform();
+  const dialog = useDialog();
+  const wslServers = useWslServers();
+  const api = platform.wslServers!;
   const [store, setStore] = createStore({
     view: "main" as "main" | "catalog",
     selectedDistro: null as string | null,
     catalogSearch: "",
     catalogTarget: null as string | null,
     adding: false,
-  })
-  const current = () => wslServers.data
+  });
+  const current = () => wslServers.data;
   const viewModel = (probingAddable: boolean) =>
     addServerViewModel({
       state: current(),
@@ -274,8 +313,8 @@ function useWslAddServerController(props: DialogWslServerProps) {
       catalogTarget: store.catalogTarget,
       adding: store.adding,
       probingAddable,
-    })
-  const baseModel = createMemo(() => viewModel(false))
+    });
+  const baseModel = createMemo(() => viewModel(false));
   const probes = useWslAddServerProbes({
     state: current,
     api,
@@ -285,83 +324,83 @@ function useWslAddServerController(props: DialogWslServerProps) {
     selectedDistro: () => baseModel().selectedDistro,
     addableInstalledDistros: () => baseModel().addableInstalledDistros,
     onError: (error) => requestError(language, error),
-  })
-  const model = createMemo(() => viewModel(probes.probingAddable()))
+  });
+  const model = createMemo(() => viewModel(probes.probingAddable()));
 
   const openCatalog = () => {
-    const first = model().installableDistros[0]
+    const first = model().installableDistros[0];
     setStore({
       view: "catalog",
       catalogSearch: "",
       catalogTarget: first?.name ?? null,
-    })
-  }
+    });
+  };
 
   const run = async (action: () => Promise<unknown>) => {
     try {
-      await action()
+      await action();
     } catch (err) {
-      requestError(language, err)
+      requestError(language, err);
     }
-  }
+  };
 
   const refreshDistros = () => {
     void run(async () => {
-      probes.resetProbeFailure()
-      await api.refreshDistros()
-    })
-  }
+      probes.resetProbeFailure();
+      await api.refreshDistros();
+    });
+  };
 
   const installDistro = (name: string) => {
     void run(async () => {
-      probes.resetProbeFailure()
-      await api.installDistro(name)
-      setStore("view", "main")
-    })
-  }
+      probes.resetProbeFailure();
+      await api.installDistro(name);
+      setStore("view", "main");
+    });
+  };
 
   const installCatalogDistro = () => {
-    if (model().installingCatalogDistro) return
-    const name = model().catalogTarget
-    if (!name) return
-    installDistro(name)
-  }
+    if (model().installingCatalogDistro) return;
+    const name = model().catalogTarget;
+    if (!name) return;
+    installDistro(name);
+  };
 
   const closeCatalog = () => {
-    probes.resetProbeFailure()
-    setStore({ view: "main", catalogSearch: "", catalogTarget: null })
-  }
+    probes.resetProbeFailure();
+    setStore({ view: "main", catalogSearch: "", catalogTarget: null });
+  };
 
   const runPrimary = async () => {
-    const button = model().primaryButton
-    if (button.loading) return
-    const distro = model().selectedDistro
-    const action = button.action
-    if (!distro || !action) return
+    const button = model().primaryButton;
+    if (button.loading) return;
+    const distro = model().selectedDistro;
+    const action = button.action;
+    if (!distro || !action) return;
     if (action === "install-opencode") {
-      await run(() => api.installOpencode(distro))
-      return
+      await run(() => api.installOpencode(distro));
+      return;
     }
-    setStore("adding", true)
+    setStore("adding", true);
     try {
-      await api.addServer(distro)
+      await api.addServer(distro);
       if (props.onAdded) {
-        await props.onAdded(distro)
+        await props.onAdded(distro);
       } else {
-        dialog.close()
+        dialog.close();
       }
     } catch (err) {
-      requestError(language, err)
+      requestError(language, err);
     } finally {
-      setStore("adding", false)
+      setStore("adding", false);
     }
-  }
+  };
 
   const loadError = () => {
-    const error = wslServers.error
-    if (!error) return language.t("wsl.onboarding.loadFailed")
-    return error instanceof Error ? error.message : String(error)
-  }
+    const error = wslServers.error;
+    if (!error) return language.t("wsl.onboarding.loadFailed");
+    return error instanceof Error ? error.message : String(error);
+  };
 
   return {
     wslServers,
@@ -381,29 +420,30 @@ function useWslAddServerController(props: DialogWslServerProps) {
     installWsl: () => void run(() => api.installWsl()),
     runPrimary: () => void runPrimary(),
     close: () => dialog.close(),
-  }
+  };
 }
 
 function DialogWslSetup(props: {
-  state: string
-  error: string | null
-  installable: boolean
-  busy: boolean
-  onInstall: () => void
+  state: string;
+  error: string | null;
+  installable: boolean;
+  busy: boolean;
+  onInstall: () => void;
 }) {
-  const language = useLanguage()
-  const dialog = useDialog()
+  const language = useLanguage();
+  const dialog = useDialog();
   const title = () =>
     props.state === "pendingRestart"
       ? language.t("wsl.onboarding.restartRequired")
       : props.installable
         ? language.t("wsl.onboarding.wslNotInstalled.title")
-        : language.t("wsl.onboarding.wslUnavailable.title")
+        : language.t("wsl.onboarding.wslUnavailable.title");
   const description = () => {
-    if (props.state === "pendingRestart") return language.t("wsl.onboarding.windowsRestartRequired")
-    if (!props.installable) return language.t("wsl.onboarding.wslUnavailable.description")
-    return language.t("wsl.onboarding.wslNotInstalled.description")
-  }
+    if (props.state === "pendingRestart")
+      return language.t("wsl.onboarding.windowsRestartRequired");
+    if (!props.installable) return language.t("wsl.onboarding.wslUnavailable.description");
+    return language.t("wsl.onboarding.wslNotInstalled.description");
+  };
 
   return (
     <Dialog fit class="settings-v2-wsl-not-installed-dialog">
@@ -450,14 +490,17 @@ function DialogWslSetup(props: {
         </Show>
       </div>
     </Dialog>
-  )
+  );
 }
 
 function requestError(language: ReturnType<typeof useLanguage>, err: unknown) {
-  console.error("WSL servers request failed", err instanceof Error ? (err.stack ?? err.message) : String(err))
+  console.error(
+    "WSL servers request failed",
+    err instanceof Error ? (err.stack ?? err.message) : String(err),
+  );
   showToast({
     variant: "error",
     title: language.t("common.requestFailed"),
     description: err instanceof Error ? err.message : String(err),
-  })
+  });
 }

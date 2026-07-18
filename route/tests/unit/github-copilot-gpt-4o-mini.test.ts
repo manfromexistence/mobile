@@ -19,7 +19,7 @@ test("github (Copilot) provider exposes gpt-4o-mini next to curated GPT-4o", () 
   assert.ok(ids.includes("gpt-4o-2024-11-20"), "date-pinned gpt-4o should remain registered");
   assert.ok(
     ids.includes("gpt-4o-mini"),
-    "gpt-4o-mini should be registered on the Copilot (gh) provider"
+    "gpt-4o-mini should be registered on the Copilot (gh) provider",
   );
 
   const mini = entry.models!.find((m) => m.id === "gpt-4o-mini");
@@ -41,6 +41,6 @@ test("Copilot gpt-4o-mini is distinct from the github-models openai/gpt-4o-mini"
   assert.ok(marketplaceIds.includes("openai/gpt-4o-mini"));
   assert.ok(
     !copilotIds.includes("openai/gpt-4o-mini"),
-    "Copilot should not carry the marketplace-prefixed id"
+    "Copilot should not carry the marketplace-prefixed id",
   );
 });

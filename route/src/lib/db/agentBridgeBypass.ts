@@ -25,7 +25,7 @@ export function getAllBypassPatterns(): AgentBridgeBypassRow[] {
   const db = getDbInstance();
   const rows = db
     .prepare(
-      "SELECT pattern, source, created_at FROM agent_bridge_bypass ORDER BY source ASC, pattern ASC"
+      "SELECT pattern, source, created_at FROM agent_bridge_bypass ORDER BY source ASC, pattern ASC",
     )
     .all() as AgentBridgeBypassDbRow[];
   return rows.map(mapRow);
@@ -45,7 +45,7 @@ export function replaceUserBypassPatterns(patterns: string[]): void {
 
   const deleteUserStmt = db.prepare("DELETE FROM agent_bridge_bypass WHERE source = 'user'");
   const insertStmt = db.prepare(
-    `INSERT INTO agent_bridge_bypass (pattern, source, created_at) VALUES (?, 'user', ?)`
+    `INSERT INTO agent_bridge_bypass (pattern, source, created_at) VALUES (?, 'user', ?)`,
   );
 
   const runTransaction = db.transaction(() => {
@@ -68,7 +68,7 @@ export function seedDefaultBypassPatterns(defaults: string[]): void {
   const now = new Date().toISOString();
 
   const insertIfMissing = db.prepare(
-    `INSERT OR IGNORE INTO agent_bridge_bypass (pattern, source, created_at) VALUES (?, 'default', ?)`
+    `INSERT OR IGNORE INTO agent_bridge_bypass (pattern, source, created_at) VALUES (?, 'default', ?)`,
   );
 
   const runTransaction = db.transaction(() => {

@@ -102,10 +102,10 @@ test("cliTokenAuth must NOT derive loopback from the spoofable Host header", asy
   // Host: 127.0.0.1 if locality came from new URL(request.url).hostname.
   assert.ok(
     !/isLoopback\(\s*new URL\(request\.url\)\.hostname/.test(src),
-    "must not call isLoopback(new URL(request.url).hostname)"
+    "must not call isLoopback(new URL(request.url).hostname)",
   );
   assert.ok(
     src.includes("AUTHZ_HEADER_PEER_LOCALITY"),
-    "must trust the middleware-stamped locality verdict instead"
+    "must trust the middleware-stamped locality verdict instead",
   );
 });

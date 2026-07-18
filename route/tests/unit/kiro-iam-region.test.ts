@@ -16,7 +16,10 @@ import { resolveKiroRegion, kiroRuntimeHost } from "../../open-sse/executors/kir
 import { kiro } from "@/lib/oauth/providers/kiro";
 
 test("resolveKiroRegion prefers the stored region", () => {
-  assert.equal(resolveKiroRegion({ providerSpecificData: { region: "eu-central-1" } }), "eu-central-1");
+  assert.equal(
+    resolveKiroRegion({ providerSpecificData: { region: "eu-central-1" } }),
+    "eu-central-1",
+  );
 });
 
 test("resolveKiroRegion falls back to the region in the profileArn", () => {
@@ -26,7 +29,7 @@ test("resolveKiroRegion falls back to the region in the profileArn", () => {
         profileArn: "arn:aws:codewhisperer:ap-southeast-2:123456789012:profile/ABC123",
       },
     }),
-    "ap-southeast-2"
+    "ap-southeast-2",
   );
 });
 
@@ -39,7 +42,7 @@ test("resolveKiroRegion defaults to us-east-1 when nothing is set", () => {
 test("resolveKiroRegion normalizes case and whitespace", () => {
   assert.equal(
     resolveKiroRegion({ providerSpecificData: { region: "  EU-CENTRAL-1 " } }),
-    "eu-central-1"
+    "eu-central-1",
   );
 });
 
@@ -64,7 +67,7 @@ test("kiro.postExchange discovers the region-matched profileArn via ListAvailabl
           { arn: "arn:aws:codewhisperer:eu-central-1:820374639727:profile/RX4VNUHGHGAQ" },
         ],
       }),
-      { status: 200 }
+      { status: 200 },
     );
   }) as typeof fetch;
 
@@ -106,18 +109,18 @@ test("kiro.postExchange never throws on network failure", async () => {
 test("kiro.mapTokens stores the discovered profileArn from postExchange extra", () => {
   const mapped = kiro.mapTokens(
     { access_token: "at", refresh_token: "rt", expires_in: 3600, _region: "eu-central-1" },
-    { profileArn: "arn:aws:codewhisperer:eu-central-1:820374639727:profile/RX4VNUHGHGAQ" }
+    { profileArn: "arn:aws:codewhisperer:eu-central-1:820374639727:profile/RX4VNUHGHGAQ" },
   );
   assert.equal(
     mapped.providerSpecificData.profileArn,
-    "arn:aws:codewhisperer:eu-central-1:820374639727:profile/RX4VNUHGHGAQ"
+    "arn:aws:codewhisperer:eu-central-1:820374639727:profile/RX4VNUHGHGAQ",
   );
 });
 
 test("kiro.mapTokens omits profileArn when postExchange found none", () => {
   const mapped = kiro.mapTokens(
     { access_token: "at", refresh_token: "rt", expires_in: 3600, _region: "us-east-1" },
-    null
+    null,
   );
   assert.equal("profileArn" in mapped.providerSpecificData, false);
 });

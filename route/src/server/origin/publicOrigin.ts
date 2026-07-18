@@ -132,7 +132,7 @@ export function trustsForwardedHeaders(request: Request): boolean {
 
   const peer = resolveStampedPeer(
     request.headers.get(PEER_IP_HEADER),
-    process.env.OMNIROUTE_PEER_STAMP_TOKEN
+    process.env.OMNIROUTE_PEER_STAMP_TOKEN,
   );
   const locality = classifyHostLocality(peer);
   if (mode === "loopback") return locality === "loopback";
@@ -144,10 +144,10 @@ function trustedForwardedOrigin(request: Request): string | null {
 
   const forwarded = parseForwardedHeader(request.headers.get("forwarded"));
   const proto = sanitizeForwardedProto(
-    forwarded.proto ?? firstHeaderValue(request.headers.get("x-forwarded-proto"))
+    forwarded.proto ?? firstHeaderValue(request.headers.get("x-forwarded-proto")),
   );
   const host = sanitizeForwardedHost(
-    forwarded.host ?? firstHeaderValue(request.headers.get("x-forwarded-host"))
+    forwarded.host ?? firstHeaderValue(request.headers.get("x-forwarded-host")),
   );
   if (!proto || !host) return null;
 
@@ -195,12 +195,12 @@ function requestUrlProtocol(request: Request): "http" | "https" {
 function directLocalHostOrigin(request: Request): string | null {
   const peer = resolveStampedPeer(
     request.headers.get(PEER_IP_HEADER),
-    process.env.OMNIROUTE_PEER_STAMP_TOKEN
+    process.env.OMNIROUTE_PEER_STAMP_TOKEN,
   );
   if (classifyHostLocality(peer) === "remote") return null;
 
   const rawHost = trustsForwardedHeaders(request)
-    ? firstHeaderValue(request.headers.get("x-forwarded-host")) ?? request.headers.get("host")
+    ? (firstHeaderValue(request.headers.get("x-forwarded-host")) ?? request.headers.get("host"))
     : request.headers.get("host");
   const host = sanitizeForwardedHost(rawHost);
   if (!host) return null;

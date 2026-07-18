@@ -17,13 +17,13 @@ export const docsLocale = [
   "uk",
   "zh-cn",
   "zh-tw",
-] as const
+] as const;
 
-export type DocsLocale = (typeof docsLocale)[number]
+export type DocsLocale = (typeof docsLocale)[number];
 
-export const locale = ["root", ...docsLocale] as const
+export const locale = ["root", ...docsLocale] as const;
 
-export type Locale = (typeof locale)[number]
+export type Locale = (typeof locale)[number];
 
 export const localeAlias = {
   ar: "ar",
@@ -52,7 +52,7 @@ export const localeAlias = {
   "zh-cn": "zh-cn",
   zht: "zh-tw",
   "zh-tw": "zh-tw",
-} as const satisfies Record<string, Locale>
+} as const satisfies Record<string, Locale>;
 
 const starts = [
   ["ko", "ko"],
@@ -70,48 +70,53 @@ const starts = [
   ["th", "th"],
   ["tr", "tr"],
   ["en", "root"],
-] as const
+] as const;
 
 function parse(input: string) {
-  let decoded = ""
+  let decoded = "";
   try {
-    decoded = decodeURIComponent(input)
+    decoded = decodeURIComponent(input);
   } catch {
-    return null
+    return null;
   }
 
-  const value = decoded.trim().toLowerCase()
-  if (!value) return null
-  return value
+  const value = decoded.trim().toLowerCase();
+  if (!value) return null;
+  return value;
 }
 
 export function exactLocale(input: string) {
-  const value = parse(input)
-  if (!value) return null
+  const value = parse(input);
+  if (!value) return null;
   if (value in localeAlias) {
-    return localeAlias[value as keyof typeof localeAlias]
+    return localeAlias[value as keyof typeof localeAlias];
   }
 
-  return null
+  return null;
 }
 
 export function matchLocale(input: string) {
-  const value = parse(input)
-  if (!value) return null
+  const value = parse(input);
+  if (!value) return null;
 
   if (value.startsWith("zh")) {
-    if (value.includes("hant") || value.includes("-tw") || value.includes("-hk") || value.includes("-mo")) {
-      return "zh-tw"
+    if (
+      value.includes("hant") ||
+      value.includes("-tw") ||
+      value.includes("-hk") ||
+      value.includes("-mo")
+    ) {
+      return "zh-tw";
     }
-    return "zh-cn"
+    return "zh-cn";
   }
 
   if (value in localeAlias) {
-    return localeAlias[value as keyof typeof localeAlias]
+    return localeAlias[value as keyof typeof localeAlias];
   }
 
-  if (value.startsWith("pt")) return "pt-br"
-  if (value.startsWith("no") || value.startsWith("nb") || value.startsWith("nn")) return "nb"
+  if (value.startsWith("pt")) return "pt-br";
+  if (value.startsWith("no") || value.startsWith("nb") || value.startsWith("nn")) return "nb";
 
-  return starts.find((item) => value.startsWith(item[0]))?.[1] ?? null
+  return starts.find((item) => value.startsWith(item[0]))?.[1] ?? null;
 }

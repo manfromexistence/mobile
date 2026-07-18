@@ -26,8 +26,9 @@ test("host imports the resolvers back from the leaf", () => {
 });
 
 test("resolveChatGptModel maps a dot-form model id to a chatgpt slug", async () => {
-  const { resolveChatGptModel, MODEL_MAP } =
-    await import("../../open-sse/executors/chatgpt-web/models.ts");
+  const { resolveChatGptModel, MODEL_MAP } = await import(
+    "../../open-sse/executors/chatgpt-web/models.ts"
+  );
   const firstKey = Object.keys(MODEL_MAP)[0];
   const resolved = resolveChatGptModel(firstKey);
   assert.equal(typeof resolved.slug, "string");

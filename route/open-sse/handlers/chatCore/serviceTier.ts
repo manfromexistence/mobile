@@ -26,7 +26,7 @@ export type EffectiveServiceTier = "standard" | CodexServiceTier;
 export function resolveEffectiveServiceTier(
   provider: string | null | undefined,
   providerSpecificData: unknown,
-  requestBody?: unknown
+  requestBody?: unknown,
 ): EffectiveServiceTier {
   if (provider !== "codex") return "standard";
   const requestRecord =
@@ -49,7 +49,7 @@ export function resolveEffectiveServiceTier(
 export function resolveReportedServiceTier(
   provider: string | null | undefined,
   payload?: unknown,
-  maxDepth = 3
+  maxDepth = 3,
 ): EffectiveServiceTier | null {
   if (
     maxDepth <= 0 ||

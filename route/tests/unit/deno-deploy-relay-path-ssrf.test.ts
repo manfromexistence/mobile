@@ -86,11 +86,11 @@ describe("buildRelayWorker — generated worker has no string-concat SSRF hole",
     // The vulnerable pattern was: target.replace(/\/$/, "") + relayPath
     assert.ok(
       !/\.replace\(\s*\/\\?\/\$\/\s*,\s*["']{2}\s*\)\s*\+\s*relayPath/.test(worker),
-      "worker must not append relayPath to target by string concatenation"
+      "worker must not append relayPath to target by string concatenation",
     );
     assert.ok(
-      !worker.includes('+ relayPath'),
-      "worker must not contain `+ relayPath` string concatenation"
+      !worker.includes("+ relayPath"),
+      "worker must not contain `+ relayPath` string concatenation",
     );
   });
 
@@ -98,7 +98,7 @@ describe("buildRelayWorker — generated worker has no string-concat SSRF hole",
     const worker = __buildRelayWorkerForTest("deadbeefcafe");
     assert.ok(
       worker.includes("resolveRelayTarget"),
-      "the worker must call the shared resolveRelayTarget guard"
+      "the worker must call the shared resolveRelayTarget guard",
     );
   });
 });

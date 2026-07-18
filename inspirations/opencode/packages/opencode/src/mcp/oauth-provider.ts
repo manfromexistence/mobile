@@ -1,26 +1,26 @@
-import type { OAuthClientProvider } from "@modelcontextprotocol/sdk/client/auth.js"
+import type { OAuthClientProvider } from "@modelcontextprotocol/sdk/client/auth.js";
 import type {
   OAuthClientMetadata,
   OAuthTokens,
   OAuthClientInformation,
   OAuthClientInformationFull,
-} from "@modelcontextprotocol/sdk/shared/auth.js"
-import { Effect } from "effect"
-import { McpAuth } from "./auth"
+} from "@modelcontextprotocol/sdk/shared/auth.js";
+import { Effect } from "effect";
+import { McpAuth } from "./auth";
 
-const OAUTH_CALLBACK_PORT = 19876
-const OAUTH_CALLBACK_PATH = "/mcp/oauth/callback"
+const OAUTH_CALLBACK_PORT = 19876;
+const OAUTH_CALLBACK_PATH = "/mcp/oauth/callback";
 
 export interface McpOAuthConfig {
-  clientId?: string
-  clientSecret?: string
-  scope?: string
-  callbackPort?: number
-  redirectUri?: string
+  clientId?: string;
+  clientSecret?: string;
+  scope?: string;
+  callbackPort?: number;
+  redirectUri?: string;
 }
 
 export interface McpOAuthCallbacks {
-  onRedirect: (url: URL) => void | Promise<void>
+  onRedirect: (url: URL) => void | Promise<void>;
 }
 
 export class McpOAuthProvider implements OAuthClientProvider {
@@ -34,10 +34,10 @@ export class McpOAuthProvider implements OAuthClientProvider {
 
   get redirectUrl(): string {
     if (this.config.redirectUri) {
-      return this.config.redirectUri
+      return this.config.redirectUri;
     }
-    const port = this.config.callbackPort ?? OAUTH_CALLBACK_PORT
-    return `http://127.0.0.1:${port}${OAUTH_CALLBACK_PATH}`
+    const port = this.config.callbackPort ?? OAUTH_CALLBACK_PORT;
+    return `http://127.0.0.1:${port}${OAUTH_CALLBACK_PATH}`;
   }
 
   get clientMetadata(): OAuthClientMetadata {
@@ -49,7 +49,7 @@ export class McpOAuthProvider implements OAuthClientProvider {
       response_types: ["code"],
       token_endpoint_auth_method: this.config.clientSecret ? "client_secret_post" : "none",
       ...(this.config.scope ? { scope: this.config.scope } : {}),
-    }
+    };
   }
 
   async clientInformation(): Promise<OAuthClientInformation | undefined> {
@@ -57,25 +57,28 @@ export class McpOAuthProvider implements OAuthClientProvider {
       return {
         client_id: this.config.clientId,
         client_secret: this.config.clientSecret,
-      }
+      };
     }
 
     // Check stored client info (from dynamic registration)
     // Use getForUrl to validate credentials are for the current server URL
-    const entry = await Effect.runPromise(this.auth.getForUrl(this.mcpName, this.serverUrl))
+    const entry = await Effect.runPromise(this.auth.getForUrl(this.mcpName, this.serverUrl));
     if (entry?.clientInfo) {
       // Check if client secret has expired
-      if (entry.clientInfo.clientSecretExpiresAt && entry.clientInfo.clientSecretExpiresAt < Date.now() / 1000) {
-        return undefined
+      if (
+        entry.clientInfo.clientSecretExpiresAt &&
+        entry.clientInfo.clientSecretExpiresAt < Date.now() / 1000
+      ) {
+        return undefined;
       }
       return {
         client_id: entry.clientInfo.clientId,
         client_secret: entry.clientInfo.clientSecret,
-      }
+      };
     }
 
     // No client info or URL changed - will trigger dynamic registration
-    return undefined
+    return undefined;
   }
 
   async saveClientInformation(info: OAuthClientInformationFull): Promise<void> {
@@ -90,13 +93,13 @@ export class McpOAuthProvider implements OAuthClientProvider {
         },
         this.serverUrl,
       ),
-    )
+    );
   }
 
   async tokens(): Promise<OAuthTokens | undefined> {
     // Use getForUrl to validate tokens are for the current server URL
-    const entry = await Effect.runPromise(this.auth.getForUrl(this.mcpName, this.serverUrl))
-    if (!entry?.tokens) return undefined
+    const entry = await Effect.runPromise(this.auth.getForUrl(this.mcpName, this.serverUrl));
+    if (!entry?.tokens) return undefined;
 
     return {
       access_token: entry.tokens.accessToken,
@@ -106,7 +109,7 @@ export class McpOAuthProvider implements OAuthClientProvider {
         ? Math.max(0, Math.floor(entry.tokens.expiresAt - Date.now() / 1000))
         : undefined,
       scope: entry.tokens.scope,
-    }
+    };
   }
 
   async saveTokens(tokens: OAuthTokens): Promise<void> {
@@ -121,33 +124,33 @@ export class McpOAuthProvider implements OAuthClientProvider {
         },
         this.serverUrl,
       ),
-    )
+    );
   }
 
   async redirectToAuthorization(authorizationUrl: URL): Promise<void> {
-    await this.callbacks.onRedirect(authorizationUrl)
+    await this.callbacks.onRedirect(authorizationUrl);
   }
 
   async saveCodeVerifier(codeVerifier: string): Promise<void> {
-    await Effect.runPromise(this.auth.updateCodeVerifier(this.mcpName, codeVerifier))
+    await Effect.runPromise(this.auth.updateCodeVerifier(this.mcpName, codeVerifier));
   }
 
   async codeVerifier(): Promise<string> {
-    const entry = await Effect.runPromise(this.auth.get(this.mcpName))
+    const entry = await Effect.runPromise(this.auth.get(this.mcpName));
     if (!entry?.codeVerifier) {
-      throw new Error(`No code verifier saved for MCP server: ${this.mcpName}`)
+      throw new Error(`No code verifier saved for MCP server: ${this.mcpName}`);
     }
-    return entry.codeVerifier
+    return entry.codeVerifier;
   }
 
   async saveState(state: string): Promise<void> {
-    await Effect.runPromise(this.auth.updateOAuthState(this.mcpName, state))
+    await Effect.runPromise(this.auth.updateOAuthState(this.mcpName, state));
   }
 
   async state(): Promise<string> {
-    const entry = await Effect.runPromise(this.auth.get(this.mcpName))
+    const entry = await Effect.runPromise(this.auth.get(this.mcpName));
     if (entry?.oauthState) {
-      return entry.oauthState
+      return entry.oauthState;
     }
 
     // Generate a new state if none exists — the SDK calls state() as a
@@ -156,61 +159,61 @@ export class McpOAuthProvider implements OAuthClientProvider {
     // connect).
     const newState = Array.from(crypto.getRandomValues(new Uint8Array(32)))
       .map((b) => b.toString(16).padStart(2, "0"))
-      .join("")
-    await Effect.runPromise(this.auth.updateOAuthState(this.mcpName, newState))
-    return newState
+      .join("");
+    await Effect.runPromise(this.auth.updateOAuthState(this.mcpName, newState));
+    return newState;
   }
 
   async invalidateCredentials(type: "all" | "client" | "tokens"): Promise<void> {
-    const entry = await Effect.runPromise(this.auth.get(this.mcpName))
-    if (!entry) return
+    const entry = await Effect.runPromise(this.auth.get(this.mcpName));
+    if (!entry) return;
     switch (type) {
       case "all":
-        await Effect.runPromise(this.auth.remove(this.mcpName))
-        break
+        await Effect.runPromise(this.auth.remove(this.mcpName));
+        break;
       case "client":
-        delete entry.clientInfo
-        await Effect.runPromise(this.auth.set(this.mcpName, entry))
-        break
+        delete entry.clientInfo;
+        await Effect.runPromise(this.auth.set(this.mcpName, entry));
+        break;
       case "tokens":
-        delete entry.tokens
-        await Effect.runPromise(this.auth.set(this.mcpName, entry))
-        break
+        delete entry.tokens;
+        await Effect.runPromise(this.auth.set(this.mcpName, entry));
+        break;
     }
   }
 }
 
 export class McpOAuthPendingProvider extends McpOAuthProvider {
-  private pendingClientInfo?: OAuthClientInformationFull
-  private pendingTokens?: OAuthTokens
+  private pendingClientInfo?: OAuthClientInformationFull;
+  private pendingTokens?: OAuthTokens;
 
   override async clientInformation(): Promise<OAuthClientInformation | undefined> {
-    if (!this.config.clientId) return this.pendingClientInfo
+    if (!this.config.clientId) return this.pendingClientInfo;
     return {
       client_id: this.config.clientId,
       client_secret: this.config.clientSecret,
-    }
+    };
   }
 
   override async saveClientInformation(info: OAuthClientInformationFull): Promise<void> {
-    this.pendingClientInfo = info
+    this.pendingClientInfo = info;
   }
 
   override async tokens(): Promise<OAuthTokens | undefined> {
-    return this.pendingTokens
+    return this.pendingTokens;
   }
 
   override async saveTokens(tokens: OAuthTokens): Promise<void> {
-    this.pendingTokens = tokens
+    this.pendingTokens = tokens;
   }
 
   override async invalidateCredentials(type: "all" | "client" | "tokens"): Promise<void> {
-    if (type === "all" || type === "client") this.pendingClientInfo = undefined
-    if (type === "all" || type === "tokens") this.pendingTokens = undefined
+    if (type === "all" || type === "client") this.pendingClientInfo = undefined;
+    if (type === "all" || type === "tokens") this.pendingTokens = undefined;
   }
 
   async commit(): Promise<void> {
-    if (!this.pendingTokens) return
+    if (!this.pendingTokens) return;
     await Effect.runPromise(
       this.auth.set(
         this.mcpName,
@@ -218,7 +221,9 @@ export class McpOAuthPendingProvider extends McpOAuthProvider {
           tokens: {
             accessToken: this.pendingTokens.access_token,
             refreshToken: this.pendingTokens.refresh_token,
-            expiresAt: this.pendingTokens.expires_in ? Date.now() / 1000 + this.pendingTokens.expires_in : undefined,
+            expiresAt: this.pendingTokens.expires_in
+              ? Date.now() / 1000 + this.pendingTokens.expires_in
+              : undefined,
             scope: this.pendingTokens.scope,
           },
           clientInfo:
@@ -233,11 +238,11 @@ export class McpOAuthPendingProvider extends McpOAuthProvider {
         },
         this.serverUrl,
       ),
-    )
+    );
   }
 }
 
-export { OAUTH_CALLBACK_PORT, OAUTH_CALLBACK_PATH }
+export { OAUTH_CALLBACK_PORT, OAUTH_CALLBACK_PATH };
 
 /**
  * Parse a redirect URI to extract port and path for the callback server.
@@ -245,15 +250,15 @@ export { OAUTH_CALLBACK_PORT, OAUTH_CALLBACK_PATH }
  */
 export function parseRedirectUri(redirectUri?: string): { port: number; path: string } {
   if (!redirectUri) {
-    return { port: OAUTH_CALLBACK_PORT, path: OAUTH_CALLBACK_PATH }
+    return { port: OAUTH_CALLBACK_PORT, path: OAUTH_CALLBACK_PATH };
   }
 
   try {
-    const url = new URL(redirectUri)
-    const port = url.port ? parseInt(url.port, 10) : url.protocol === "https:" ? 443 : 80
-    const path = url.pathname || OAUTH_CALLBACK_PATH
-    return { port, path }
+    const url = new URL(redirectUri);
+    const port = url.port ? parseInt(url.port, 10) : url.protocol === "https:" ? 443 : 80;
+    const path = url.pathname || OAUTH_CALLBACK_PATH;
+    return { port, path };
   } catch {
-    return { port: OAUTH_CALLBACK_PORT, path: OAUTH_CALLBACK_PATH }
+    return { port: OAUTH_CALLBACK_PORT, path: OAUTH_CALLBACK_PATH };
   }
 }

@@ -1,7 +1,7 @@
-import { describe, expect } from "bun:test"
-import { Config, ConfigProvider, Context, Effect, Layer, Option } from "effect"
-import { ConfigService } from "../../src/effect/config-service"
-import { it } from "../lib/effect"
+import { describe, expect } from "bun:test";
+import { Config, ConfigProvider, Context, Effect, Layer, Option } from "effect";
+import { ConfigService } from "../../src/effect/config-service";
+import { it } from "../lib/effect";
 
 class TestConfig extends ConfigService.Service<TestConfig>()("@test/ConfigService", {
   name: Config.string("NAME"),
@@ -10,9 +10,9 @@ class TestConfig extends ConfigService.Service<TestConfig>()("@test/ConfigServic
 }) {}
 
 const fromConfig = (input: Record<string, unknown>) =>
-  TestConfig.layer.pipe(Layer.provide(ConfigProvider.layer(ConfigProvider.fromUnknown(input))))
+  TestConfig.layer.pipe(Layer.provide(ConfigProvider.layer(ConfigProvider.fromUnknown(input))));
 
-const readConfig = TestConfig.useSync((config) => config)
+const readConfig = TestConfig.useSync((config) => config);
 
 describe("ConfigService", () => {
   it.effect("layer parses values from the active ConfigProvider", () =>
@@ -25,23 +25,23 @@ describe("ConfigService", () => {
             PORT: "4096",
           }),
         ),
-      )
+      );
 
-      expect(config.name).toBe("kit")
-      expect(config.token).toEqual(Option.some("secret"))
-      expect(config.port).toBe(4096)
+      expect(config.name).toBe("kit");
+      expect(config.token).toEqual(Option.some("secret"));
+      expect(config.port).toBe(4096);
     }),
-  )
+  );
 
   it.effect("layer applies Effect Config defaults", () =>
     Effect.gen(function* () {
-      const config = yield* readConfig.pipe(Effect.provide(fromConfig({ NAME: "kit" })))
+      const config = yield* readConfig.pipe(Effect.provide(fromConfig({ NAME: "kit" })));
 
-      expect(config.name).toBe("kit")
-      expect(config.token).toEqual(Option.none())
-      expect(config.port).toBe(3000)
+      expect(config.name).toBe("kit");
+      expect(config.token).toEqual(Option.none());
+      expect(config.port).toBe(3000);
     }),
-  )
+  );
 
   it.effect("layer provides an already parsed service value", () =>
     Effect.gen(function* () {
@@ -53,13 +53,13 @@ describe("ConfigService", () => {
             port: 9000,
           }),
         ),
-      )
+      );
 
       expect(config).toEqual({
         name: "direct",
         token: Option.some("parsed"),
         port: 9000,
-      } satisfies Context.Service.Shape<typeof TestConfig>)
+      } satisfies Context.Service.Shape<typeof TestConfig>);
     }),
-  )
-})
+  );
+});

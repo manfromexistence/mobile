@@ -12,7 +12,7 @@ export function useCodexResetCreditRedemption(
   tr: TranslateUsage,
   setErrors: React.Dispatch<React.SetStateAction<Record<string, string | null>>>,
   setQuotaData: React.Dispatch<React.SetStateAction<Record<string, any>>>,
-  setLastRefreshedAt: React.Dispatch<React.SetStateAction<Record<string, string>>>
+  setLastRefreshedAt: React.Dispatch<React.SetStateAction<Record<string, string>>>,
 ) {
   const notify = useNotificationStore();
   const [redeemingResetCreditId, setRedeemingResetCreditId] = useState<string | null>(null);
@@ -24,8 +24,8 @@ export function useCodexResetCreditRedemption(
       const confirmed = window.confirm(
         tr(
           "confirmRedeemResetCredit",
-          "Redeem one Codex reset credit for this account? This consumes one reset credit."
-        )
+          "Redeem one Codex reset credit for this account? This consumes one reset credit.",
+        ),
       );
       if (!confirmed) return;
 
@@ -69,7 +69,7 @@ export function useCodexResetCreditRedemption(
         setRedeemingResetCreditId(null);
       }
     },
-    [notify, redeemingResetCreditId, setErrors, setLastRefreshedAt, setQuotaData, tr]
+    [notify, redeemingResetCreditId, setErrors, setLastRefreshedAt, setQuotaData, tr],
   );
 
   return { redeemCodexResetCredit, redeemingResetCreditId };

@@ -16,7 +16,7 @@ const metrics = new Map<string, ToolLatencyEntry>();
 export function recordToolLatency(
   provider: string,
   ttftAfterToolMs: number | null,
-  gapAfterToolMs: number | null
+  gapAfterToolMs: number | null,
 ): void {
   if (!provider) return;
 

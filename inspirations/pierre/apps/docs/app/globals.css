@@ -1,5 +1,5 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant light (&:is(.light *));
 @custom-variant dark (&:is(.dark *, .dark));
@@ -318,10 +318,10 @@
   }
 }
 
-[data-slot='header'] {
+[data-slot="header"] {
   @apply border-b border-transparent transition-[border-color] duration-200;
 }
-[data-slot='header'].is-stuck {
+[data-slot="header"].is-stuck {
   @apply border-foreground/10;
 }
 
@@ -353,9 +353,7 @@
   .faq-item::details-content {
     block-size: 0;
     overflow-y: clip;
-    transition:
-      content-visibility 0.2s ease allow-discrete,
-      block-size 0.2s;
+    transition: content-visibility 0.2s ease allow-discrete, block-size 0.2s;
   }
 
   .faq-item[open]::details-content {

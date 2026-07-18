@@ -1,16 +1,16 @@
-import { action, useParams, useAction, createAsync, useSubmission, json } from "@solidjs/router"
-import { createMemo, Match, Show, Switch, createEffect } from "solid-js"
-import { createStore } from "solid-js/store"
-import { Billing } from "@opencode-ai/console-core/billing.js"
-import { withActor } from "~/context/auth.withActor"
-import { IconAlipay, IconCreditCard, IconStripe, IconUpi, IconWechat } from "~/component/icon"
-import styles from "./billing-section.module.css"
-import { createCheckoutUrl, formatBalance, queryBillingInfo } from "../../common"
-import { useI18n } from "~/context/i18n"
-import { localizeError } from "~/lib/form-error"
+import { action, useParams, useAction, createAsync, useSubmission, json } from "@solidjs/router";
+import { createMemo, Match, Show, Switch, createEffect } from "solid-js";
+import { createStore } from "solid-js/store";
+import { Billing } from "@opencode-ai/console-core/billing.js";
+import { withActor } from "~/context/auth.withActor";
+import { IconAlipay, IconCreditCard, IconStripe, IconUpi, IconWechat } from "~/component/icon";
+import styles from "./billing-section.module.css";
+import { createCheckoutUrl, formatBalance, queryBillingInfo } from "../../common";
+import { useI18n } from "~/context/i18n";
+import { localizeError } from "~/lib/form-error";
 
 const createSessionUrl = action(async (workspaceID: string, returnUrl: string) => {
-  "use server"
+  "use server";
   return json(
     await withActor(
       () =>
@@ -23,66 +23,66 @@ const createSessionUrl = action(async (workspaceID: string, returnUrl: string) =
       workspaceID,
     ),
     { revalidate: queryBillingInfo.key },
-  )
-}, "sessionUrl")
+  );
+}, "sessionUrl");
 
 export function BillingSection() {
-  const params = useParams()
-  const i18n = useI18n()
+  const params = useParams();
+  const i18n = useI18n();
   // ORIGINAL CODE - COMMENTED OUT FOR TESTING
-  const billingInfo = createAsync(() => queryBillingInfo(params.id!))
-  const checkoutAction = useAction(createCheckoutUrl)
-  const checkoutSubmission = useSubmission(createCheckoutUrl)
-  const sessionAction = useAction(createSessionUrl)
-  const sessionSubmission = useSubmission(createSessionUrl)
+  const billingInfo = createAsync(() => queryBillingInfo(params.id!));
+  const checkoutAction = useAction(createCheckoutUrl);
+  const checkoutSubmission = useSubmission(createCheckoutUrl);
+  const sessionAction = useAction(createSessionUrl);
+  const sessionSubmission = useSubmission(createSessionUrl);
   const [store, setStore] = createStore({
     showAddBalanceForm: false,
     addBalanceAmount: billingInfo()?.reloadAmount.toString() ?? "",
     checkoutRedirecting: false,
     sessionRedirecting: false,
-  })
+  });
 
   createEffect(() => {
-    const info = billingInfo()
+    const info = billingInfo();
     if (info) {
-      setStore("addBalanceAmount", info.reloadAmount.toString())
+      setStore("addBalanceAmount", info.reloadAmount.toString());
     }
-  })
-  const balance = createMemo(() => formatBalance(billingInfo()?.balance ?? 0))
+  });
+  const balance = createMemo(() => formatBalance(billingInfo()?.balance ?? 0));
 
   async function onClickCheckout() {
-    const amount = parseInt(store.addBalanceAmount)
-    const baseUrl = window.location.href
+    const amount = parseInt(store.addBalanceAmount);
+    const baseUrl = window.location.href;
 
-    const checkout = await checkoutAction(params.id!, amount, baseUrl, baseUrl)
+    const checkout = await checkoutAction(params.id!, amount, baseUrl, baseUrl);
     if (checkout && checkout.data) {
-      setStore("checkoutRedirecting", true)
-      window.location.href = checkout.data
+      setStore("checkoutRedirecting", true);
+      window.location.href = checkout.data;
     }
   }
 
   async function onClickSession() {
-    const baseUrl = window.location.href
-    const sessionUrl = await sessionAction(params.id!, baseUrl)
+    const baseUrl = window.location.href;
+    const sessionUrl = await sessionAction(params.id!, baseUrl);
     if (sessionUrl && sessionUrl.data) {
-      setStore("sessionRedirecting", true)
-      window.location.href = sessionUrl.data
+      setStore("sessionRedirecting", true);
+      window.location.href = sessionUrl.data;
     }
   }
 
   function showAddBalanceForm() {
     while (true) {
-      checkoutSubmission.clear()
-      if (!checkoutSubmission.result) break
+      checkoutSubmission.clear();
+      if (!checkoutSubmission.result) break;
     }
     setStore({
       showAddBalanceForm: true,
-    })
+    });
   }
 
   function hideAddBalanceForm() {
-    setStore("showAddBalanceForm", false)
-    checkoutSubmission.clear()
+    setStore("showAddBalanceForm", false);
+    checkoutSubmission.clear();
   }
 
   // DUMMY DATA FOR TESTING - UNCOMMENT ONE OF THE SCENARIOS BELOW
@@ -168,19 +168,27 @@ export function BillingSection() {
                         step="1"
                         value={store.addBalanceAmount}
                         onInput={(e) => {
-                          setStore("addBalanceAmount", e.currentTarget.value)
-                          checkoutSubmission.clear()
+                          setStore("addBalanceAmount", e.currentTarget.value);
+                          checkoutSubmission.clear();
                         }}
                         placeholder={i18n.t("workspace.billing.enterAmount")}
                       />
                       <div data-slot="form-actions">
-                        <button data-color="ghost" type="button" onClick={() => hideAddBalanceForm()}>
+                        <button
+                          data-color="ghost"
+                          type="button"
+                          onClick={() => hideAddBalanceForm()}
+                        >
                           {i18n.t("common.cancel")}
                         </button>
                         <button
                           data-color="primary"
                           type="button"
-                          disabled={!store.addBalanceAmount || checkoutSubmission.pending || store.checkoutRedirecting}
+                          disabled={
+                            !store.addBalanceAmount ||
+                            checkoutSubmission.pending ||
+                            store.checkoutRedirecting
+                          }
                           onClick={onClickCheckout}
                         >
                           {checkoutSubmission.pending || store.checkoutRedirecting
@@ -189,8 +197,12 @@ export function BillingSection() {
                         </button>
                       </div>
                     </div>
-                    <Show when={checkoutSubmission.result && (checkoutSubmission.result as any).error}>
-                      {(err: any) => <div data-slot="form-error">{localizeError(i18n.t, err())}</div>}
+                    <Show
+                      when={checkoutSubmission.result && (checkoutSubmission.result as any).error}
+                    >
+                      {(err: any) => (
+                        <div data-slot="form-error">{localizeError(i18n.t, err())}</div>
+                      )}
                     </Show>
                   </div>
                 }
@@ -219,7 +231,10 @@ export function BillingSection() {
                 <div data-slot="card-details">
                   <Switch>
                     <Match when={billingInfo()?.paymentMethodType === "card"}>
-                      <Show when={billingInfo()?.paymentMethodLast4} fallback={<span data-slot="number">----</span>}>
+                      <Show
+                        when={billingInfo()?.paymentMethodLast4}
+                        fallback={<span data-slot="number">----</span>}
+                      >
                         <span data-slot="secret">••••</span>
                         <span data-slot="number">{billingInfo()?.paymentMethodLast4}</span>
                       </Show>
@@ -262,5 +277,5 @@ export function BillingSection() {
         </Show>
       </div>
     </section>
-  )
+  );
 }

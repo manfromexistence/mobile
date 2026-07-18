@@ -42,7 +42,7 @@ describe("Cache Control Policy - Claude Protocol Providers", () => {
         targetFormat: "claude",
         settings: { alwaysPreserveClientCache: "auto" },
       }),
-      true
+      true,
     );
 
     assert.equal(
@@ -53,7 +53,7 @@ describe("Cache Control Policy - Claude Protocol Providers", () => {
         targetFormat: "claude",
         settings: { alwaysPreserveClientCache: "auto" },
       }),
-      true
+      true,
     );
 
     assert.equal(
@@ -64,7 +64,7 @@ describe("Cache Control Policy - Claude Protocol Providers", () => {
         targetFormat: "claude",
         settings: { alwaysPreserveClientCache: "auto" },
       }),
-      true
+      true,
     );
 
     assert.equal(
@@ -75,7 +75,7 @@ describe("Cache Control Policy - Claude Protocol Providers", () => {
         targetFormat: "claude",
         settings: { alwaysPreserveClientCache: "auto" },
       }),
-      true
+      true,
     );
   });
 
@@ -91,7 +91,7 @@ describe("Cache Control Policy - Claude Protocol Providers", () => {
         targetFormat: "claude",
         settings: { alwaysPreserveClientCache: "always" },
       }),
-      true
+      true,
     );
   });
 
@@ -107,7 +107,7 @@ describe("Cache Control Policy - Claude Protocol Providers", () => {
         targetFormat: "claude",
         settings: { alwaysPreserveClientCache: "never" },
       }),
-      false
+      false,
     );
   });
 
@@ -122,7 +122,7 @@ describe("Cache Control Policy - Claude Protocol Providers", () => {
         targetFormat: "claude",
         settings: { alwaysPreserveClientCache: "auto" },
       }),
-      false
+      false,
     );
   });
 
@@ -138,7 +138,7 @@ describe("Cache Control Policy - Claude Protocol Providers", () => {
         targetFormat: "gemini",
         settings: { alwaysPreserveClientCache: "auto" },
       }),
-      false
+      false,
     );
   });
 
@@ -153,7 +153,7 @@ describe("Cache Control Policy - Claude Protocol Providers", () => {
         targetFormat: "claude",
         settings: { alwaysPreserveClientCache: "auto" },
       }),
-      true
+      true,
     );
   });
 });

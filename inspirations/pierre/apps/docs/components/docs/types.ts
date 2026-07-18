@@ -1,1 +1,1 @@
-export type DocsExampleTypes = 'vanilla' | 'react';
+export type DocsExampleTypes = "vanilla" | "react";

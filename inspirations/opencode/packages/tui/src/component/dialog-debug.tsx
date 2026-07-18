@@ -1,28 +1,28 @@
-import { TextAttributes } from "@opentui/core"
-import { createMemo, createSignal, For } from "solid-js"
-import { InstallationChannel, InstallationVersion } from "@opencode-ai/core/installation/version"
-import { useTheme } from "../context/theme"
-import { useDialog } from "../ui/dialog"
-import { useRoute } from "../context/route"
-import { useLocal } from "../context/local"
-import { useClipboard } from "../context/clipboard"
-import { useToast } from "../ui/toast"
-import { useBindings } from "../keymap"
-import { describeOS, describeTerminal } from "../util/system"
+import { TextAttributes } from "@opentui/core";
+import { createMemo, createSignal, For } from "solid-js";
+import { InstallationChannel, InstallationVersion } from "@opencode-ai/core/installation/version";
+import { useTheme } from "../context/theme";
+import { useDialog } from "../ui/dialog";
+import { useRoute } from "../context/route";
+import { useLocal } from "../context/local";
+import { useClipboard } from "../context/clipboard";
+import { useToast } from "../ui/toast";
+import { useBindings } from "../keymap";
+import { describeOS, describeTerminal } from "../util/system";
 
 export function DialogDebug() {
-  const { theme } = useTheme()
-  const dialog = useDialog()
-  const route = useRoute()
-  const local = useLocal()
-  const clipboard = useClipboard()
-  const toast = useToast()
-  const [copied, setCopied] = createSignal(false)
+  const { theme } = useTheme();
+  const dialog = useDialog();
+  const route = useRoute();
+  const local = useLocal();
+  const clipboard = useClipboard();
+  const toast = useToast();
+  const [copied, setCopied] = createSignal(false);
 
-  dialog.setSize("large")
+  dialog.setSize("large");
 
   const entries = createMemo(() => {
-    const model = local.model.current()
+    const model = local.model.current();
     return [
       { label: "Version", value: `${InstallationVersion} (${InstallationChannel})` },
       { label: "Date", value: new Date().toISOString() },
@@ -30,25 +30,25 @@ export function DialogDebug() {
       { label: "Terminal", value: describeTerminal() },
       { label: "Session ID", value: route.data.type === "session" ? route.data.sessionID : "n/a" },
       { label: "Model", value: model ? `${model.providerID}/${model.modelID}` : "n/a" },
-    ]
-  })
+    ];
+  });
 
   const copy = () => {
     const text = entries()
       .map((entry) => `${entry.label}: ${entry.value}`)
-      .join("\n")
+      .join("\n");
     void clipboard
       .write?.(text)
       .then(() => {
-        setCopied(true)
-        toast.show({ message: "Debug info copied to clipboard", variant: "info" })
+        setCopied(true);
+        toast.show({ message: "Debug info copied to clipboard", variant: "info" });
       })
-      .catch(toast.error)
-  }
+      .catch(toast.error);
+  };
 
   useBindings(() => ({
     bindings: [{ key: "return", desc: "Copy debug info", group: "Dialog", cmd: copy }],
-  }))
+  }));
 
   return (
     <box paddingLeft={2} paddingRight={2} gap={1} paddingBottom={1}>
@@ -86,5 +86,5 @@ export function DialogDebug() {
         </text>
       </box>
     </box>
-  )
+  );
 }

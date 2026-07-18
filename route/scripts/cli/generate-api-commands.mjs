@@ -99,7 +99,7 @@ for (const [tag, ops] of Object.entries(byTag)) {
     lines.push(`    .description("${summary}")`);
     for (const p of pathParams) {
       lines.push(
-        `    .requiredOption("--${kebab(p.name)} <${p.name}>", "${escapeStr(p.description)}")`
+        `    .requiredOption("--${kebab(p.name)} <${p.name}>", "${escapeStr(p.description)}")`,
       );
     }
     for (const p of queryParams) {
@@ -115,7 +115,7 @@ for (const [tag, ops] of Object.entries(byTag)) {
     lines.push(`      let url = "${path}";`);
     for (const p of pathParams) {
       lines.push(
-        `      url = url.replace("{${p.name}}", encodeURIComponent(opts.${camelCase(kebab(p.name))} ?? ""));`
+        `      url = url.replace("{${p.name}}", encodeURIComponent(opts.${camelCase(kebab(p.name))} ?? ""));`,
       );
     }
     // Build query string from query params
@@ -124,7 +124,7 @@ for (const [tag, ops] of Object.entries(byTag)) {
       for (const p of queryParams) {
         const optName = camelCase(kebab(p.name));
         lines.push(
-          `      if (opts.${optName} != null) qs.set("${p.name}", String(opts.${optName}));`
+          `      if (opts.${optName} != null) qs.set("${p.name}", String(opts.${optName}));`,
         );
       }
       lines.push(`      if (qs.toString()) url += "?" + qs.toString();`);
@@ -140,7 +140,7 @@ for (const [tag, ops] of Object.entries(byTag)) {
     }
     const bodyArg = hasBody ? ", body" : "";
     lines.push(
-      `      const res = await apiFetch(url, { method: "${method.toUpperCase()}"${hasBody ? ", body" : ""}, baseUrl: gOpts.baseUrl, apiKey: gOpts.apiKey });`
+      `      const res = await apiFetch(url, { method: "${method.toUpperCase()}"${hasBody ? ", body" : ""}, baseUrl: gOpts.baseUrl, apiKey: gOpts.apiKey });`,
     );
     lines.push(`      const data = res.ok ? await res.json() : await res.text();`);
     lines.push(`      emit(data, gOpts);`);

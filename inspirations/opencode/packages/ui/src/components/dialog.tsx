@@ -1,21 +1,21 @@
-import { Dialog as Kobalte } from "@kobalte/core/dialog"
-import { ComponentProps, JSXElement, Match, ParentProps, Show, Switch } from "solid-js"
-import { useI18n } from "../context/i18n"
-import { IconButton } from "./icon-button"
+import { Dialog as Kobalte } from "@kobalte/core/dialog";
+import { ComponentProps, JSXElement, Match, ParentProps, Show, Switch } from "solid-js";
+import { useI18n } from "../context/i18n";
+import { IconButton } from "./icon-button";
 
 export interface DialogProps extends ParentProps {
-  title?: JSXElement
-  description?: JSXElement
-  action?: JSXElement
-  size?: "normal" | "large" | "x-large"
-  class?: ComponentProps<"div">["class"]
-  classList?: ComponentProps<"div">["classList"]
-  fit?: boolean
-  transition?: boolean
+  title?: JSXElement;
+  description?: JSXElement;
+  action?: JSXElement;
+  size?: "normal" | "large" | "x-large";
+  class?: ComponentProps<"div">["class"];
+  classList?: ComponentProps<"div">["classList"];
+  fit?: boolean;
+  transition?: boolean;
 }
 
 export function Dialog(props: DialogProps) {
-  const i18n = useI18n()
+  const i18n = useI18n();
   return (
     <div
       data-component="dialog"
@@ -32,11 +32,11 @@ export function Dialog(props: DialogProps) {
             [props.class ?? ""]: !!props.class,
           }}
           onOpenAutoFocus={(e) => {
-            const target = e.currentTarget as HTMLElement | null
-            const autofocusEl = target?.querySelector("[autofocus]") as HTMLElement | null
+            const target = e.currentTarget as HTMLElement | null;
+            const autofocusEl = target?.querySelector("[autofocus]") as HTMLElement | null;
             if (autofocusEl) {
-              e.preventDefault()
-              autofocusEl.focus()
+              e.preventDefault();
+              autofocusEl.focus();
             }
           }}
         >
@@ -68,5 +68,5 @@ export function Dialog(props: DialogProps) {
         </Kobalte.Content>
       </div>
     </div>
-  )
+  );
 }

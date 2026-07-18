@@ -28,7 +28,7 @@ export const ANTIGRAVITY_API_CLIENT = ANTIGRAVITY_CREDIT_PROBE_API_CLIENT;
 
 function withOptionalBearerAuth(
   headers: Record<string, string>,
-  accessToken?: string | null
+  accessToken?: string | null,
 ): Record<string, string> {
   if (accessToken) {
     headers.Authorization = `Bearer ${accessToken}`;
@@ -54,13 +54,13 @@ function getAntigravityPlatformInfo(platform: NodeJS.Platform = process.platform
  */
 export function antigravityUserAgent(
   version = getCachedAntigravityVersion(),
-  platform: NodeJS.Platform = process.platform
+  platform: NodeJS.Platform = process.platform,
 ): string {
   return `Antigravity/${version} (${getAntigravityPlatformInfo(platform)}) Chrome/${ANTIGRAVITY_CHROME_VERSION} Electron/${ANTIGRAVITY_ELECTRON_VERSION}`;
 }
 
 export async function resolveAntigravityUserAgent(
-  platform: NodeJS.Platform = process.platform
+  platform: NodeJS.Platform = process.platform,
 ): Promise<string> {
   const version = await resolveAntigravityVersion();
   return antigravityUserAgent(version, platform);
@@ -83,7 +83,7 @@ export function getAntigravityLoadCodeAssistClientMetadata(): string {
 
 export function getAntigravityHeaders(
   profile: AntigravityHeaderProfile,
-  accessToken?: string | null
+  accessToken?: string | null,
 ): Record<string, string> {
   switch (profile) {
     case "loadCodeAssist":
@@ -92,7 +92,7 @@ export function getAntigravityHeaders(
           "Content-Type": "application/json",
           "User-Agent": antigravityNativeOAuthUserAgent(),
         },
-        accessToken
+        accessToken,
       );
     case "fetchAvailableModels":
     case "models":
@@ -101,7 +101,7 @@ export function getAntigravityHeaders(
           "Content-Type": "application/json",
           "User-Agent": antigravityUserAgent(),
         },
-        accessToken
+        accessToken,
       );
     default:
       return withOptionalBearerAuth({ "Content-Type": "application/json" }, accessToken);

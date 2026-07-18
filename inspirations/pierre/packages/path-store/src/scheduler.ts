@@ -2,16 +2,16 @@ import {
   getBenchmarkInstrumentation,
   setBenchmarkCounter,
   withBenchmarkPhase,
-} from './internal/benchmarkInstrumentation';
-import type { PathStoreChildPatch, PathStoreLoadAttempt } from './public-types';
-import { PathStore } from './store';
+} from "./internal/benchmarkInstrumentation";
+import type { PathStoreChildPatch, PathStoreLoadAttempt } from "./public-types";
+import { PathStore } from "./store";
 
 export type PathStoreSchedulerTaskStatus =
-  | 'queued'
-  | 'running'
-  | 'completed'
-  | 'cancelled'
-  | 'failed';
+  | "queued"
+  | "running"
+  | "completed"
+  | "cancelled"
+  | "failed";
 
 export interface PathStoreSchedulerMetrics {
   activeTaskCount: number;
@@ -39,9 +39,7 @@ export interface PathStoreSchedulerTask {
   completeOnSuccess?: boolean;
   createPatch:
     | ((context: PathStoreSchedulerTaskContext) => PathStoreChildPatch)
-    | ((
-        context: PathStoreSchedulerTaskContext
-      ) => Promise<PathStoreChildPatch>);
+    | ((context: PathStoreSchedulerTaskContext) => Promise<PathStoreChildPatch>);
   descriptor?: PathStoreSchedulerTaskDescriptor;
   path: string;
   priority: number;
@@ -67,11 +65,11 @@ export interface PathStoreSchedulerHandle {
 export type PathStoreSchedulerEnqueueResult =
   | {
       handle: PathStoreSchedulerHandle;
-      status: 'queued' | 'reused';
+      status: "queued" | "reused";
     }
   | {
-      reason: 'disposed' | 'queue-overflow';
-      status: 'rejected';
+      reason: "disposed" | "queue-overflow";
+      status: "rejected";
     };
 
 export interface PathStoreSchedulerOptions {
@@ -87,9 +85,7 @@ export interface PathStoreScheduler {
   dispose: () => void;
   enqueue: (task: PathStoreSchedulerTask) => PathStoreSchedulerEnqueueResult;
   getMetrics: () => PathStoreSchedulerMetrics;
-  subscribe: (
-    listener: (metrics: PathStoreSchedulerMetrics) => void
-  ) => () => void;
+  subscribe: (listener: (metrics: PathStoreSchedulerMetrics) => void) => () => void;
   whenIdle: () => Promise<void>;
 }
 
@@ -104,9 +100,7 @@ interface InternalTask {
   resolveCompletion: (completion: PathStoreSchedulerCompletion) => void;
   run:
     | ((context: PathStoreSchedulerTaskContext) => PathStoreChildPatch)
-    | ((
-        context: PathStoreSchedulerTaskContext
-      ) => Promise<PathStoreChildPatch>);
+    | ((context: PathStoreSchedulerTaskContext) => Promise<PathStoreChildPatch>);
   signal?: AbortSignal;
   status: PathStoreSchedulerTaskStatus;
 }
@@ -148,8 +142,8 @@ function waitForTaskAbort(task: InternalTask): Promise<void> {
 
   return new Promise((resolve) => {
     const cleanup = () => {
-      task.abortController.signal.removeEventListener('abort', handleAbort);
-      task.signal?.removeEventListener('abort', handleAbort);
+      task.abortController.signal.removeEventListener("abort", handleAbort);
+      task.signal?.removeEventListener("abort", handleAbort);
     };
 
     const handleAbort = () => {
@@ -157,18 +151,16 @@ function waitForTaskAbort(task: InternalTask): Promise<void> {
       resolve();
     };
 
-    task.abortController.signal.addEventListener('abort', handleAbort, {
+    task.abortController.signal.addEventListener("abort", handleAbort, {
       once: true,
     });
-    task.signal?.addEventListener('abort', handleAbort, {
+    task.signal?.addEventListener("abort", handleAbort, {
       once: true,
     });
   });
 }
 
-export function createPathStoreScheduler(
-  options: PathStoreSchedulerOptions
-): PathStoreScheduler {
+export function createPathStoreScheduler(options: PathStoreSchedulerOptions): PathStoreScheduler {
   const instrumentation = getBenchmarkInstrumentation(options);
   const listeners = new Set<(metrics: PathStoreSchedulerMetrics) => void>();
   const queue: InternalTask[] = [];
@@ -188,8 +180,7 @@ export function createPathStoreScheduler(
 
   const chunkBudgetMs = options.chunkBudgetMs ?? DEFAULT_CHUNK_BUDGET_MS;
   const maxQueueSize = options.maxQueueSize ?? DEFAULT_MAX_QUEUE_SIZE;
-  const maxTasksPerSlice =
-    options.maxTasksPerSlice ?? DEFAULT_MAX_TASKS_PER_SLICE;
+  const maxTasksPerSlice = options.maxTasksPerSlice ?? DEFAULT_MAX_TASKS_PER_SLICE;
 
   function getMetrics(): PathStoreSchedulerMetrics {
     return {
@@ -206,41 +197,21 @@ export function createPathStoreScheduler(
 
   function notify(): void {
     const metrics = getMetrics();
+    setBenchmarkCounter(instrumentation, "scheduler.queueDepth", metrics.backlogDepth);
+    setBenchmarkCounter(instrumentation, "scheduler.yieldCount", metrics.yieldCount);
     setBenchmarkCounter(
       instrumentation,
-      'scheduler.queueDepth',
-      metrics.backlogDepth
+      "scheduler.cancelledTaskCount",
+      metrics.cancelledTaskCount,
     );
+    setBenchmarkCounter(instrumentation, "scheduler.rejectedTaskCount", metrics.rejectedTaskCount);
+    setBenchmarkCounter(instrumentation, "scheduler.activeTaskCount", metrics.activeTaskCount);
     setBenchmarkCounter(
       instrumentation,
-      'scheduler.yieldCount',
-      metrics.yieldCount
+      "scheduler.completedTaskCount",
+      metrics.completedTaskCount,
     );
-    setBenchmarkCounter(
-      instrumentation,
-      'scheduler.cancelledTaskCount',
-      metrics.cancelledTaskCount
-    );
-    setBenchmarkCounter(
-      instrumentation,
-      'scheduler.rejectedTaskCount',
-      metrics.rejectedTaskCount
-    );
-    setBenchmarkCounter(
-      instrumentation,
-      'scheduler.activeTaskCount',
-      metrics.activeTaskCount
-    );
-    setBenchmarkCounter(
-      instrumentation,
-      'scheduler.completedTaskCount',
-      metrics.completedTaskCount
-    );
-    setBenchmarkCounter(
-      instrumentation,
-      'scheduler.failedTaskCount',
-      metrics.failedTaskCount
-    );
+    setBenchmarkCounter(instrumentation, "scheduler.failedTaskCount", metrics.failedTaskCount);
     for (const listener of listeners) {
       listener(metrics);
     }
@@ -256,9 +227,7 @@ export function createPathStoreScheduler(
   async function yieldToMainThread(): Promise<void> {
     yieldCount += 1;
     notify();
-    await new Promise((resolve) =>
-      setTimeout(resolve, options.yieldDelayMs ?? 0)
-    );
+    await new Promise((resolve) => setTimeout(resolve, options.yieldDelayMs ?? 0));
   }
 
   function scheduleDrain(): void {
@@ -273,32 +242,25 @@ export function createPathStoreScheduler(
     });
   }
 
-  function settleTask(
-    task: InternalTask,
-    completion: PathStoreSchedulerCompletion
-  ): void {
-    if (
-      task.status === 'cancelled' ||
-      task.status === 'completed' ||
-      task.status === 'failed'
-    ) {
+  function settleTask(task: InternalTask, completion: PathStoreSchedulerCompletion): void {
+    if (task.status === "cancelled" || task.status === "completed" || task.status === "failed") {
       return;
     }
 
     task.status = completion.status;
     taskByPath.delete(task.path);
     switch (completion.status) {
-      case 'cancelled':
+      case "cancelled":
         cancelledTaskCount += 1;
         break;
-      case 'completed':
+      case "completed":
         completedTaskCount += 1;
         break;
-      case 'failed':
+      case "failed":
         failedTaskCount += 1;
         break;
-      case 'queued':
-      case 'running':
+      case "queued":
+      case "running":
         break;
     }
     task.resolveCompletion(completion);
@@ -306,7 +268,7 @@ export function createPathStoreScheduler(
   }
 
   async function runTask(task: InternalTask): Promise<void> {
-    task.status = 'running';
+    task.status = "running";
     activeTaskCount += 1;
     runningTaskPath = task.path;
     notify();
@@ -317,108 +279,98 @@ export function createPathStoreScheduler(
       if (isTaskAborted(task)) {
         settleTask(task, {
           path: task.path,
-          status: 'cancelled',
+          status: "cancelled",
         });
         return;
       }
 
-      attempt = withBenchmarkPhase(instrumentation, 'scheduler.begin', () =>
-        options.store.beginChildLoad(task.path)
+      attempt = withBenchmarkPhase(instrumentation, "scheduler.begin", () =>
+        options.store.beginChildLoad(task.path),
       );
 
       if (isTaskAborted(task)) {
-        withBenchmarkPhase(instrumentation, 'scheduler.cancel', () => {
-          options.store.failChildLoad(
-            attempt as PathStoreLoadAttempt,
-            'cancelled'
-          );
+        withBenchmarkPhase(instrumentation, "scheduler.cancel", () => {
+          options.store.failChildLoad(attempt as PathStoreLoadAttempt, "cancelled");
         });
         settleTask(task, {
           path: task.path,
-          status: 'cancelled',
+          status: "cancelled",
         });
         return;
       }
 
-      const patch = await withBenchmarkPhase(
-        instrumentation,
-        'scheduler.createPatch',
-        async () => {
-          const patchPromise = Promise.resolve(
-            task.run({
-              attempt: attempt as PathStoreLoadAttempt,
-              signal: task.abortController.signal,
-              store: options.store,
-            })
-          );
-          const result = await Promise.race([
-            patchPromise.then(
-              (patch) => ({
-                kind: 'patch' as const,
-                patch,
-              }),
-              (error) => ({
-                error,
-                kind: 'error' as const,
-              })
-            ),
-            waitForTaskAbort(task).then(() => ({
-              kind: 'aborted' as const,
-            })),
-          ]);
+      const patch = await withBenchmarkPhase(instrumentation, "scheduler.createPatch", async () => {
+        const patchPromise = Promise.resolve(
+          task.run({
+            attempt: attempt as PathStoreLoadAttempt,
+            signal: task.abortController.signal,
+            store: options.store,
+          }),
+        );
+        const result = await Promise.race([
+          patchPromise.then(
+            (patch) => ({
+              kind: "patch" as const,
+              patch,
+            }),
+            (error) => ({
+              error,
+              kind: "error" as const,
+            }),
+          ),
+          waitForTaskAbort(task).then(() => ({
+            kind: "aborted" as const,
+          })),
+        ]);
 
-          if (result.kind === 'aborted') {
-            void patchPromise.catch(() => undefined);
-            return null;
-          }
-
-          if (result.kind === 'error') {
-            throw result.error;
-          }
-
-          return result.patch;
+        if (result.kind === "aborted") {
+          void patchPromise.catch(() => undefined);
+          return null;
         }
-      );
+
+        if (result.kind === "error") {
+          throw result.error;
+        }
+
+        return result.patch;
+      });
 
       if (patch == null || isTaskAborted(task)) {
-        withBenchmarkPhase(instrumentation, 'scheduler.cancel', () => {
-          options.store.failChildLoad(
-            attempt as PathStoreLoadAttempt,
-            'cancelled'
-          );
+        withBenchmarkPhase(instrumentation, "scheduler.cancel", () => {
+          options.store.failChildLoad(attempt as PathStoreLoadAttempt, "cancelled");
         });
         settleTask(task, {
           path: task.path,
-          status: 'cancelled',
+          status: "cancelled",
         });
         return;
       }
 
-      withBenchmarkPhase(instrumentation, 'scheduler.apply', () => {
+      withBenchmarkPhase(instrumentation, "scheduler.apply", () => {
         options.store.applyChildPatch(attempt as PathStoreLoadAttempt, patch);
       });
       if (task.completeOnSuccess !== false) {
-        withBenchmarkPhase(instrumentation, 'scheduler.complete', () => {
+        withBenchmarkPhase(instrumentation, "scheduler.complete", () => {
           options.store.completeChildLoad(attempt as PathStoreLoadAttempt);
         });
       }
       settleTask(task, {
         path: task.path,
-        status: 'completed',
+        status: "completed",
       });
     } catch (error) {
       if (attempt != null) {
-        withBenchmarkPhase(instrumentation, 'scheduler.fail', () => {
+        withBenchmarkPhase(instrumentation, "scheduler.fail", () => {
           options.store.failChildLoad(
             attempt as PathStoreLoadAttempt,
-            error instanceof Error ? error.message : String(error)
+            error instanceof Error ? error.message : String(error),
           );
         });
       }
       settleTask(task, {
         error,
         path: task.path,
-        status: 'failed',
+        status: "failed",
       });
     } finally {
       activeTaskCount -= 1;
@@ -447,8 +399,7 @@ export function createPathStoreScheduler(
           !disposed &&
           queue.length > 0 &&
           processedTaskCount < maxTasksPerSlice &&
-          (processedTaskCount === 0 ||
-            performance.now() - sliceStartedAt < chunkBudgetMs)
+          (processedTaskCount === 0 || performance.now() - sliceStartedAt < chunkBudgetMs)
         ) {
           const task = queue.shift();
           if (task == null) {
@@ -459,7 +410,7 @@ export function createPathStoreScheduler(
             taskByPath.delete(task.path);
             settleTask(task, {
               path: task.path,
-              status: 'cancelled',
+              status: "cancelled",
             });
             continue;
           }
@@ -469,9 +420,7 @@ export function createPathStoreScheduler(
         }
 
         if (!disposed && queue.length > 0) {
-          await withBenchmarkPhase(instrumentation, 'scheduler.yield', () =>
-            yieldToMainThread()
-          );
+          await withBenchmarkPhase(instrumentation, "scheduler.yield", () => yieldToMainThread());
         }
       }
     } finally {
@@ -481,21 +430,19 @@ export function createPathStoreScheduler(
   }
 
   function cancelTask(task: InternalTask): boolean {
-    if (task.status === 'completed' || task.status === 'failed') {
+    if (task.status === "completed" || task.status === "failed") {
       return false;
     }
 
     task.abortController.abort();
-    if (task.status === 'queued') {
-      const queueIndex = queue.findIndex(
-        (queuedTask) => queuedTask.id === task.id
-      );
+    if (task.status === "queued") {
+      const queueIndex = queue.findIndex((queuedTask) => queuedTask.id === task.id);
       if (queueIndex >= 0) {
         queue.splice(queueIndex, 1);
       }
       settleTask(task, {
         path: task.path,
-        status: 'cancelled',
+        status: "cancelled",
       });
     }
     notify();
@@ -504,8 +451,7 @@ export function createPathStoreScheduler(
 
   return {
     cancel(handleOrPath) {
-      const path =
-        typeof handleOrPath === 'string' ? handleOrPath : handleOrPath.path;
+      const path = typeof handleOrPath === "string" ? handleOrPath : handleOrPath.path;
       const task = taskByPath.get(path);
       if (task == null) {
         return false;
@@ -521,20 +467,20 @@ export function createPathStoreScheduler(
       for (const task of queue.splice(0)) {
         settleTask(task, {
           path: task.path,
-          status: 'cancelled',
+          status: "cancelled",
         });
       }
       notify();
     },
 
     enqueue(task) {
-      return withBenchmarkPhase(instrumentation, 'scheduler.enqueue', () => {
+      return withBenchmarkPhase(instrumentation, "scheduler.enqueue", () => {
         if (disposed) {
           rejectedTaskCount += 1;
           notify();
           return {
-            reason: 'disposed' as const,
-            status: 'rejected' as const,
+            reason: "disposed" as const,
+            status: "rejected" as const,
           };
         }
 
@@ -542,7 +488,7 @@ export function createPathStoreScheduler(
         if (existingTask != null) {
           return {
             handle: createHandle(existingTask, true),
-            status: 'reused' as const,
+            status: "reused" as const,
           };
         }
 
@@ -550,15 +496,13 @@ export function createPathStoreScheduler(
           rejectedTaskCount += 1;
           notify();
           return {
-            reason: 'queue-overflow' as const,
-            status: 'rejected' as const,
+            reason: "queue-overflow" as const,
+            status: "rejected" as const,
           };
         }
 
         const abortController = new AbortController();
-        let resolveCompletion!: (
-          completion: PathStoreSchedulerCompletion
-        ) => void;
+        let resolveCompletion!: (completion: PathStoreSchedulerCompletion) => void;
         const result = new Promise<PathStoreSchedulerCompletion>((resolve) => {
           resolveCompletion = resolve;
         });
@@ -574,7 +518,7 @@ export function createPathStoreScheduler(
           resolveCompletion,
           run: task.createPatch,
           signal: task.signal,
-          status: 'queued',
+          status: "queued",
         };
 
         taskByPath.set(internalTask.path, internalTask);
@@ -584,7 +528,7 @@ export function createPathStoreScheduler(
 
         return {
           handle: createHandle(internalTask, false),
-          status: 'queued' as const,
+          status: "queued" as const,
         };
       });
     },
@@ -612,10 +556,7 @@ export function createPathStoreScheduler(
     },
   };
 
-  function createHandle(
-    task: InternalTask,
-    reused: boolean
-  ): PathStoreSchedulerHandle {
+  function createHandle(task: InternalTask, reused: boolean): PathStoreSchedulerHandle {
     return {
       cancel: () => cancelTask(task),
       id: task.id,

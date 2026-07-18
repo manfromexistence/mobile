@@ -148,7 +148,7 @@ export function isContextOverflowError(status: number, errorMessage: string): bo
  */
 export function getNextFamilyFallback(
   currentModel: string,
-  triedModels: Set<string>
+  triedModels: Set<string>,
 ): string | null {
   const parsed = parseModel(currentModel);
   const bareModel = parsed.model || currentModel;
@@ -213,7 +213,7 @@ export function getModelFamily(model: string): string[] {
  */
 export function findLargerContextModel(
   currentModel: string,
-  availableModels: string[]
+  availableModels: string[],
 ): string | null {
   const currentParsed = parseModel(currentModel);
   const currentProvider = currentParsed.provider || currentParsed.providerAlias || "unknown";

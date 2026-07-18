@@ -49,7 +49,7 @@ const CLAUDE_CODE_FAMILY_BLOCK_PATTERNS: Record<ClaudeCodeBlockableFamilyId, str
   haiku: ["claude-haiku*", "haiku"],
 };
 const CLAUDE_CODE_BLOCK_PATTERN_SET = new Set(
-  Object.values(CLAUDE_CODE_FAMILY_BLOCK_PATTERNS).flat()
+  Object.values(CLAUDE_CODE_FAMILY_BLOCK_PATTERNS).flat(),
 );
 
 // Debounce hook for search optimization
@@ -77,7 +77,7 @@ function sanitizeInput(input: string): string {
 // Validate key name
 function validateKeyName(
   name: string,
-  t: (key: string, values?: Record<string, unknown>) => string
+  t: (key: string, values?: Record<string, unknown>) => string,
 ): { valid: boolean; error?: string } {
   if (!name || !name.trim()) {
     return { valid: false, error: t("keyNameRequired") };
@@ -185,7 +185,9 @@ function withClaudeCodeDefaultModel(models: Model[]): Model[] {
 function getBlockedClaudeCodeFamilies(blockedModels: string[]): ClaudeCodeBlockableFamilyId[] {
   return (Object.keys(CLAUDE_CODE_FAMILY_BLOCK_PATTERNS) as ClaudeCodeBlockableFamilyId[]).filter(
     (familyId) =>
-      CLAUDE_CODE_FAMILY_BLOCK_PATTERNS[familyId].some((pattern) => blockedModels.includes(pattern))
+      CLAUDE_CODE_FAMILY_BLOCK_PATTERNS[familyId].some((pattern) =>
+        blockedModels.includes(pattern),
+      ),
   );
 }
 
@@ -354,7 +356,7 @@ export default function ApiManagerPageClient() {
               combo?.isActive !== false &&
               combo?.isHidden !== true &&
               typeof combo?.name === "string" &&
-              combo.name.trim().length > 0
+              combo.name.trim().length > 0,
           )
           .map((combo: any) => ({
             id: combo.name,
@@ -374,7 +376,7 @@ export default function ApiManagerPageClient() {
             if (seen.has(m.id)) return false;
             seen.add(m.id);
             return true;
-          })
+          }),
         );
       } else {
         setAllModels([]);
@@ -394,7 +396,7 @@ export default function ApiManagerPageClient() {
         const data = await res.json();
         const combos = Array.isArray(data.combos) ? data.combos : [];
         setAllCombos(
-          combos.filter((combo: any) => typeof combo?.name === "string" && combo.name.trim())
+          combos.filter((combo: any) => typeof combo?.name === "string" && combo.name.trim()),
         );
       }
     } catch (error) {
@@ -453,7 +455,7 @@ export default function ApiManagerPageClient() {
         const matches = byApiKey.filter((entry: any) => entry.apiKeyId === key.id);
         const totalRequests = matches.reduce(
           (sum: number, entry: any) => sum + (Number(entry.requests) || 0),
-          0
+          0,
         );
         const totalCost = matches.reduce((sum: number, entry: any) => {
           const cost = Number(entry.cost);
@@ -465,7 +467,7 @@ export default function ApiManagerPageClient() {
         // logs that predate per-key IDs (apiKeyId absent).
         const lastUsed =
           (logs || []).find(
-            (log: any) => log.apiKeyId === key.id || (!log.apiKeyId && log.apiKeyName === key.name)
+            (log: any) => log.apiKeyId === key.id || (!log.apiKeyId && log.apiKeyName === key.name),
           )?.timestamp || null;
 
         stats[key.id] = {
@@ -527,7 +529,7 @@ export default function ApiManagerPageClient() {
           } catch {
             return [key.id, 0] as const;
           }
-        })
+        }),
       );
       setDeviceCounts(Object.fromEntries(results));
     } catch (error) {
@@ -563,7 +565,7 @@ export default function ApiManagerPageClient() {
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       list = list.filter(
-        (k) => k.name.toLowerCase().includes(q) || k.key.toLowerCase().includes(q)
+        (k) => k.name.toLowerCase().includes(q) || k.key.toLowerCase().includes(q),
       );
     }
 
@@ -796,7 +798,7 @@ export default function ApiManagerPageClient() {
     dailyUsageLimitUsd: number | null,
     weeklyUsageLimitUsd: number | null,
     blockedModels: string[],
-    chaosModeEnabled: boolean
+    chaosModeEnabled: boolean,
   ) => {
     if (!editingKey || !editingKey.id) return;
 
@@ -814,19 +816,19 @@ export default function ApiManagerPageClient() {
 
     // Validate each model ID
     const validModels = allowedModels.filter(
-      (id) => typeof id === "string" && id.length > 0 && id.length < 200
+      (id) => typeof id === "string" && id.length > 0 && id.length < 200,
     );
     const validBlockedModels = blockedModels.filter(
-      (id) => typeof id === "string" && id.length > 0 && id.length < 200
+      (id) => typeof id === "string" && id.length > 0 && id.length < 200,
     );
 
     const validCombos = allowedCombos.filter(
-      (name) => typeof name === "string" && name.trim().length > 0 && name.length < 200
+      (name) => typeof name === "string" && name.trim().length > 0 && name.length < 200,
     );
 
     // Validate connections (must be UUIDs)
     const validConnections = allowedConnections.filter(
-      (id) => typeof id === "string" && /^[0-9a-f-]{36}$/i.test(id)
+      (id) => typeof id === "string" && /^[0-9a-f-]{36}$/i.test(id),
     );
     const normalizedMaxSessions =
       typeof maxSessions === "number" && Number.isFinite(maxSessions)
@@ -909,15 +911,17 @@ export default function ApiManagerPageClient() {
     if (!debouncedSearchModel.trim()) return modelsByProvider;
 
     return modelsByProvider
-      .map(([provider, models]): ProviderGroup => [
-        provider,
-        models.filter(
-          (m) =>
-            matchesSearch(m.id, debouncedSearchModel) ||
-            matchesSearch(m.name || "", debouncedSearchModel) ||
-            matchesSearch(provider, debouncedSearchModel)
-        ),
-      ])
+      .map(
+        ([provider, models]): ProviderGroup => [
+          provider,
+          models.filter(
+            (m) =>
+              matchesSearch(m.id, debouncedSearchModel) ||
+              matchesSearch(m.name || "", debouncedSearchModel) ||
+              matchesSearch(provider, debouncedSearchModel),
+          ),
+        ],
+      )
       .filter(([, models]) => models.length > 0);
   }, [modelsByProvider, debouncedSearchModel]);
 
@@ -1652,7 +1656,7 @@ const PermissionsModal = memo(function PermissionsModal({
     dailyUsageLimitUsd: number | null,
     weeklyUsageLimitUsd: number | null,
     blockedModels: string[],
-    chaosModeEnabled: boolean
+    chaosModeEnabled: boolean,
   ) => void;
 }) {
   const t = useTranslations("apiManager");
@@ -1662,7 +1666,7 @@ const PermissionsModal = memo(function PermissionsModal({
   const initialModels = Array.isArray(apiKey?.allowedModels) ? apiKey.allowedModels : [];
   const initialBlockedModels = useMemo(
     () => (Array.isArray(apiKey?.blockedModels) ? apiKey.blockedModels : []),
-    [apiKey?.blockedModels]
+    [apiKey?.blockedModels],
   );
   const initialCombos = Array.isArray(apiKey?.allowedCombos) ? apiKey.allowedCombos : [];
   const initialConnections = Array.isArray(apiKey?.allowedConnections)
@@ -1683,39 +1687,39 @@ const PermissionsModal = memo(function PermissionsModal({
   const [throttleDelayMs, setThrottleDelayMs] = useState(
     typeof apiKey?.throttleDelayMs === "number" && apiKey.throttleDelayMs > 0
       ? apiKey.throttleDelayMs
-      : 0
+      : 0,
   );
   const [keyIsBanned, setKeyIsBanned] = useState(apiKey?.isBanned === true);
   const [expiresAt, setExpiresAt] = useState(apiKey?.expiresAt ?? "");
   const [manageEnabled, setManageEnabled] = useState(
-    Array.isArray(apiKey?.scopes) && apiKey.scopes.includes("manage")
+    Array.isArray(apiKey?.scopes) && apiKey.scopes.includes("manage"),
   );
   const [selfUsageEnabled, setSelfUsageEnabled] = useState(
-    Array.isArray(apiKey?.scopes) && apiKey.scopes.includes(SELF_USAGE_SCOPE)
+    Array.isArray(apiKey?.scopes) && apiKey.scopes.includes(SELF_USAGE_SCOPE),
   );
   const [selfAccountQuotaEnabled, setSelfAccountQuotaEnabled] = useState(
-    Array.isArray(apiKey?.scopes) && apiKey.scopes.includes(SELF_ACCOUNT_QUOTA_SCOPE)
+    Array.isArray(apiKey?.scopes) && apiKey.scopes.includes(SELF_ACCOUNT_QUOTA_SCOPE),
   );
   const [bypassProviderQuotaPolicyEnabled, setBypassProviderQuotaPolicyEnabled] = useState(
-    hasProviderQuotaBypassScope(apiKey?.scopes)
+    hasProviderQuotaBypassScope(apiKey?.scopes),
   );
   const [maxSessions, setMaxSessions] = useState(
-    typeof apiKey?.maxSessions === "number" && apiKey.maxSessions > 0 ? apiKey.maxSessions : 0
+    typeof apiKey?.maxSessions === "number" && apiKey.maxSessions > 0 ? apiKey.maxSessions : 0,
   );
   const [scheduleEnabled, setScheduleEnabled] = useState(apiKey?.accessSchedule?.enabled === true);
   const [scheduleFrom, setScheduleFrom] = useState(apiKey?.accessSchedule?.from ?? "08:00");
   const [scheduleUntil, setScheduleUntil] = useState(apiKey?.accessSchedule?.until ?? "18:00");
   const [scheduleDays, setScheduleDays] = useState<number[]>(
-    apiKey?.accessSchedule?.days ?? [1, 2, 3, 4, 5]
+    apiKey?.accessSchedule?.days ?? [1, 2, 3, 4, 5],
   );
   const [scheduleTz, setScheduleTz] = useState(
-    apiKey?.accessSchedule?.tz ?? Intl.DateTimeFormat().resolvedOptions().timeZone
+    apiKey?.accessSchedule?.tz ?? Intl.DateTimeFormat().resolvedOptions().timeZone,
   );
   const [rateLimits, setRateLimits] = useState<Array<{ limit: number; window: number }>>(
-    Array.isArray(apiKey?.rateLimits) ? apiKey.rateLimits : []
+    Array.isArray(apiKey?.rateLimits) ? apiKey.rateLimits : [],
   );
   const [streamDefaultMode, setStreamDefaultMode] = useState<StreamDefaultMode>(
-    apiKey?.streamDefaultMode === "json" ? "json" : "legacy"
+    apiKey?.streamDefaultMode === "json" ? "json" : "legacy",
   );
   const [nameError, setNameError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
@@ -1733,27 +1737,27 @@ const PermissionsModal = memo(function PermissionsModal({
   const [selectedEndpoints, setSelectedEndpoints] = useState<string[]>(initialEndpoints);
   const [allowAllEndpoints, setAllowAllEndpoints] = useState(initialEndpoints.length === 0);
   const [disableNonPublicModels, setDisableNonPublicModels] = useState(
-    apiKey?.disableNonPublicModels === true
+    apiKey?.disableNonPublicModels === true,
   );
   const [usageCommandEnabled, setUsageCommandEnabled] = useState(
-    apiKey?.allowUsageCommand === true
+    apiKey?.allowUsageCommand === true,
   );
   const [chaosModeEnabled, setChaosModeEnabled] = useState(apiKey?.chaosModeEnabled === true);
   const [usageLimitEnabled, setUsageLimitEnabled] = useState(apiKey?.usageLimitEnabled === true);
   const [dailyUsageLimitUsd, setDailyUsageLimitUsd] = useState(
     typeof apiKey?.dailyUsageLimitUsd === "number" && apiKey.dailyUsageLimitUsd > 0
       ? String(apiKey.dailyUsageLimitUsd)
-      : ""
+      : "",
   );
   const [weeklyUsageLimitUsd, setWeeklyUsageLimitUsd] = useState(
     typeof apiKey?.weeklyUsageLimitUsd === "number" && apiKey.weeklyUsageLimitUsd > 0
       ? String(apiKey.weeklyUsageLimitUsd)
-      : ""
+      : "",
   );
   const getModelDisplayName = useCallback(
     (modelId: string) =>
       modelId === CLAUDE_CODE_DEFAULT_MODEL_ID ? CLAUDE_CODE_DEFAULT_MODEL_NAME : modelId,
-    []
+    [],
   );
 
   // Memoize callbacks to prevent child re-renders
@@ -1771,7 +1775,7 @@ const PermissionsModal = memo(function PermissionsModal({
         return [...prev, modelId];
       });
     },
-    [allowAll]
+    [allowAll],
   );
 
   const handleToggleProvider = useCallback(
@@ -1787,7 +1791,7 @@ const PermissionsModal = memo(function PermissionsModal({
         return [...new Set([...prev, ...modelIds])];
       });
     },
-    [allowAll]
+    [allowAll],
   );
 
   const handleSelectAll = useCallback(() => {
@@ -1832,7 +1836,7 @@ const PermissionsModal = memo(function PermissionsModal({
   const handleBlockClaudeCodeFamily = useCallback((familyId: ClaudeCodeBlockableFamilyId) => {
     setBlockedClaudeCodeFamilies((prev) => (prev.includes(familyId) ? prev : [...prev, familyId]));
     setSelectedModels((prev) =>
-      prev.filter((modelId) => !isClaudeCodeFamilyModel(modelId, familyId))
+      prev.filter((modelId) => !isClaudeCodeFamilyModel(modelId, familyId)),
     );
   }, []);
 
@@ -1840,10 +1844,10 @@ const PermissionsModal = memo(function PermissionsModal({
     (comboName: string) => {
       if (allowAllCombos) return;
       setSelectedCombos((prev) =>
-        prev.includes(comboName) ? prev.filter((name) => name !== comboName) : [...prev, comboName]
+        prev.includes(comboName) ? prev.filter((name) => name !== comboName) : [...prev, comboName],
       );
     },
-    [allowAllCombos]
+    [allowAllCombos],
   );
 
   const handleToggleConnection = useCallback(
@@ -1852,20 +1856,20 @@ const PermissionsModal = memo(function PermissionsModal({
       setSelectedConnections((prev) =>
         prev.includes(connectionId)
           ? prev.filter((c) => c !== connectionId)
-          : [...prev, connectionId]
+          : [...prev, connectionId],
       );
     },
-    [allowAllConnections]
+    [allowAllConnections],
   );
 
   const handleToggleEndpoint = useCallback(
     (categoryId: string) => {
       if (allowAllEndpoints) return;
       setSelectedEndpoints((prev) =>
-        prev.includes(categoryId) ? prev.filter((e) => e !== categoryId) : [...prev, categoryId]
+        prev.includes(categoryId) ? prev.filter((e) => e !== categoryId) : [...prev, categoryId],
       );
     },
-    [allowAllEndpoints]
+    [allowAllEndpoints],
   );
 
   const parseUsdLimitInput = useCallback((value: string): number | null => {
@@ -1909,7 +1913,7 @@ const PermissionsModal = memo(function PermissionsModal({
     const hasClaudeCodeDefaultSelected =
       !allowAll && selectedModels.includes(CLAUDE_CODE_DEFAULT_MODEL_ID);
     const blockedModels = initialBlockedModels.filter(
-      (pattern) => !CLAUDE_CODE_BLOCK_PATTERN_SET.has(pattern)
+      (pattern) => !CLAUDE_CODE_BLOCK_PATTERN_SET.has(pattern),
     );
     if (hasClaudeCodeDefaultSelected) {
       for (const familyId of blockedClaudeCodeFamilies) {
@@ -1944,7 +1948,7 @@ const PermissionsModal = memo(function PermissionsModal({
       parseUsdLimitInput(dailyUsageLimitUsd),
       parseUsdLimitInput(weeklyUsageLimitUsd),
       blockedModels,
-      chaosModeEnabled
+      chaosModeEnabled,
     );
   }, [
     onSave,
@@ -2004,9 +2008,9 @@ const PermissionsModal = memo(function PermissionsModal({
       CLAUDE_CODE_DEFAULT_FAMILIES.filter(
         (family) =>
           family.id === "other" ||
-          !blockedClaudeCodeFamilies.includes(family.id as ClaudeCodeBlockableFamilyId)
+          !blockedClaudeCodeFamilies.includes(family.id as ClaudeCodeBlockableFamilyId),
       ),
-    [blockedClaudeCodeFamilies]
+    [blockedClaudeCodeFamilies],
   );
 
   return (
@@ -2164,7 +2168,7 @@ const PermissionsModal = memo(function PermissionsModal({
               onChange={(e) => {
                 const parsed = Number.parseInt(e.target.value || "0", 10);
                 setThrottleDelayMs(
-                  Number.isFinite(parsed) && parsed > 0 ? Math.min(parsed, 300000) : 0
+                  Number.isFinite(parsed) && parsed > 0 ? Math.min(parsed, 300000) : 0,
                 );
               }}
             />
@@ -2307,7 +2311,7 @@ const PermissionsModal = memo(function PermissionsModal({
                           setScheduleDays((prev) =>
                             prev.includes(dayIdx)
                               ? prev.filter((d) => d !== dayIdx)
-                              : [...prev, dayIdx].sort((a, b) => a - b)
+                              : [...prev, dayIdx].sort((a, b) => a - b),
                           )
                         }
                         className={`px-2 py-1 text-[11px] font-medium rounded transition-all ${
@@ -2693,7 +2697,7 @@ const PermissionsModal = memo(function PermissionsModal({
                                     type="button"
                                     onClick={() =>
                                       handleBlockClaudeCodeFamily(
-                                        family.id as ClaudeCodeBlockableFamilyId
+                                        family.id as ClaudeCodeBlockableFamilyId,
                                       )
                                     }
                                     className="text-text-muted hover:text-red-500 transition-colors"
@@ -2764,7 +2768,7 @@ const PermissionsModal = memo(function PermissionsModal({
               ) : (
                 modelsByProvider.map(([provider, models]) => {
                   const selectedInProvider = selectedModels.filter((m) =>
-                    models.some((model) => model.id === m)
+                    models.some((model) => model.id === m),
                   ).length;
                   const allSelected = models.every((m) => selectedModels.includes(m.id));
                   const someSelected = selectedInProvider > 0 && !allSelected;
@@ -2901,7 +2905,7 @@ const PermissionsModal = memo(function PermissionsModal({
                     if (!acc[p]) acc[p] = [];
                     acc[p].push(conn);
                     return acc;
-                  }, {})
+                  }, {}),
                 )
                   .sort(([a], [b]) => compareTr(a, b))
                   .map(([provider, conns]) => (

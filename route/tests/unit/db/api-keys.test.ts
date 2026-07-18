@@ -112,7 +112,7 @@ test("updateApiKeyPermissions granting manage emits apiKey.scopes.grant", async 
 
   const before = compliance.getAuditLog({ limit: 100 });
   const beforeGrant = before.filter(
-    (e) => e.action === "apiKey.scopes.grant" && e.target === created.id
+    (e) => e.action === "apiKey.scopes.grant" && e.target === created.id,
   );
   assert.equal(beforeGrant.length, 0);
 
@@ -137,7 +137,7 @@ test("updateApiKeyPermissions revoking manage emits apiKey.scopes.revoke", async
 
   const after = compliance.getAuditLog({ limit: 100 });
   const revokes = after.filter(
-    (e) => e.action === "apiKey.scopes.revoke" && e.target === created.id
+    (e) => e.action === "apiKey.scopes.revoke" && e.target === created.id,
   );
   assert.equal(revokes.length, 1, "expected exactly one revoke audit event");
 
@@ -158,12 +158,12 @@ test("updateApiKeyPermissions setting same manage scope does not emit duplicate 
       (e.action === "apiKey.scopes.grant" ||
         e.action === "apiKey.scopes.revoke" ||
         e.action === "apiKey.scopes.update") &&
-      e.target === created.id
+      e.target === created.id,
   );
   assert.equal(
     scopeEvents.length,
     0,
-    "no-op scope update should not emit grant/revoke/update events"
+    "no-op scope update should not emit grant/revoke/update events",
   );
 });
 
@@ -175,7 +175,7 @@ test("updateApiKeyPermissions changing non-manage scopes emits apiKey.scopes.upd
 
   const after = compliance.getAuditLog({ limit: 100 });
   const updates = after.filter(
-    (e) => e.action === "apiKey.scopes.update" && e.target === created.id
+    (e) => e.action === "apiKey.scopes.update" && e.target === created.id,
   );
   assert.equal(updates.length, 1, "expected exactly one non-manage scope update event");
 });
@@ -236,7 +236,7 @@ test("updateApiKeyPermissions without scopes field does not emit any scope audit
       (e.action === "apiKey.scopes.grant" ||
         e.action === "apiKey.scopes.revoke" ||
         e.action === "apiKey.scopes.update") &&
-      e.target === created.id
+      e.target === created.id,
   );
   assert.equal(scopeEvents.length, 0);
 });

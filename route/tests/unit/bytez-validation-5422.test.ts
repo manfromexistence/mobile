@@ -40,6 +40,6 @@ test("#5422 bytez status→result: other non-OK is a generic validation failure"
 test("#5422 bytez registry baseUrl carries the full OpenAI-compat chat path", () => {
   assert.ok(
     bytezProvider.baseUrl.endsWith("/models/v2/openai/v1/chat/completions"),
-    `baseUrl must end with the OpenAI-compat chat path, got: ${bytezProvider.baseUrl}`
+    `baseUrl must end with the OpenAI-compat chat path, got: ${bytezProvider.baseUrl}`,
   );
 });

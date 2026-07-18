@@ -79,7 +79,7 @@ test("v1 image models GET exposes current Codex image models and hides inactive 
   assert.equal(response.status, 200);
   assert.deepEqual(
     ids.filter((id) => id.startsWith("codex/")),
-    ["codex/gpt-5.6-sol", "codex/gpt-5.6-terra", "codex/gpt-5.6-luna"]
+    ["codex/gpt-5.6-sol", "codex/gpt-5.6-terra", "codex/gpt-5.6-luna"],
   );
   assert.ok(!ids.includes("codex/gpt-5.5"));
   assert.ok(!ids.includes("openai/gpt-image-2"));
@@ -120,7 +120,7 @@ test("v1 image generation POST accepts promptless requests for image-only models
         size: "2048x2048",
         response_format: "b64_json",
       }),
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -137,7 +137,7 @@ test("v1 image generation POST still requires prompts for text-input models", as
         model: "openai/gpt-image-2",
         image_url: "https://example.com/source.png",
       }),
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -159,7 +159,7 @@ test("v1 image edit POST enforces disabled API key policy", async () => {
       method: "POST",
       headers: { Authorization: `Bearer ${createdKey.key}` },
       body: formData,
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -190,7 +190,7 @@ test("v1 image generation POST resolves proxy and executes with proxy context wh
         model: "openai/gpt-image-2",
         prompt: "proxy test image",
       }),
-    })
+    }),
   );
 
   assert.equal(response.status, 503);
@@ -203,7 +203,7 @@ test("v1 image generation POST executes directly when proxy resolution fails gra
 
   const db = core.getDbInstance();
   db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('proxyConfig', 'keys', 'corrupt-json')"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('proxyConfig', 'keys', 'corrupt-json')",
   ).run();
 
   globalThis.fetch = async (url) => {
@@ -211,7 +211,7 @@ test("v1 image generation POST executes directly when proxy resolution fails gra
     if (stringUrl === "https://api.openai.com/v1/images/generations") {
       return new Response(
         JSON.stringify({ created: 123, data: [{ url: "https://cdn.example.com/proxy-fail.png" }] }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
     throw new Error(`Unexpected URL: ${stringUrl}`);
@@ -225,7 +225,7 @@ test("v1 image generation POST executes directly when proxy resolution fails gra
         model: "openai/gpt-image-2",
         prompt: "proxy failover image",
       }),
-    })
+    }),
   );
 
   const body = (await response.json()) as any;
@@ -253,7 +253,7 @@ test("v1 image generation POST executes directly when credentials.connectionId i
         model: "sdwebui/stable-diffusion-v1-5",
         prompt: "no credentials test",
       }),
-    })
+    }),
   );
 
   const body = (await response.json()) as any;

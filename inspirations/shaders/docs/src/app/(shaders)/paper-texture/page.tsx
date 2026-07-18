@@ -1,45 +1,45 @@
-'use client';
+"use client";
 
-import { PaperTexture, paperTexturePresets } from '@paper-design/shaders-react';
-import { useControls, button, folder } from 'leva';
-import { setParamsSafe, useResetLevaParams } from '@/helpers/use-reset-leva-params';
-import { usePresetHighlight } from '@/helpers/use-preset-highlight';
-import { cleanUpLevaParams } from '@/helpers/clean-up-leva-params';
-import { ShaderFit } from '@paper-design/shaders';
-import { levaImageButton, levaDeleteImageButton } from '@/helpers/leva-image-button';
-import { useState, useEffect, useCallback } from 'react';
-import { toHsla } from '@/helpers/color-utils';
-import { ShaderDetails } from '@/components/shader-details';
-import { paperTextureDef } from '@/shader-defs/paper-texture-def';
-import { ShaderContainer } from '@/components/shader-container';
-import { useUrlParams } from '@/helpers/use-url-params';
+import { PaperTexture, paperTexturePresets } from "@paper-design/shaders-react";
+import { useControls, button, folder } from "leva";
+import { setParamsSafe, useResetLevaParams } from "@/helpers/use-reset-leva-params";
+import { usePresetHighlight } from "@/helpers/use-preset-highlight";
+import { cleanUpLevaParams } from "@/helpers/clean-up-leva-params";
+import { ShaderFit } from "@paper-design/shaders";
+import { levaImageButton, levaDeleteImageButton } from "@/helpers/leva-image-button";
+import { useState, useEffect, useCallback } from "react";
+import { toHsla } from "@/helpers/color-utils";
+import { ShaderDetails } from "@/components/shader-details";
+import { paperTextureDef } from "@/shader-defs/paper-texture-def";
+import { ShaderContainer } from "@/components/shader-container";
+import { useUrlParams } from "@/helpers/use-url-params";
 
 const { worldWidth, worldHeight, ...defaults } = paperTexturePresets[0].params;
 
 const imageFiles = [
-  '001.webp',
-  '002.webp',
-  '003.webp',
-  '004.webp',
-  '005.webp',
-  '006.webp',
-  '007.webp',
-  '008.webp',
-  '009.webp',
-  '0010.webp',
-  '0011.webp',
-  '0012.webp',
-  '0013.webp',
-  '0014.webp',
-  '0015.webp',
-  '0016.webp',
-  '0017.webp',
-  '0018.webp',
+  "001.webp",
+  "002.webp",
+  "003.webp",
+  "004.webp",
+  "005.webp",
+  "006.webp",
+  "007.webp",
+  "008.webp",
+  "009.webp",
+  "0010.webp",
+  "0011.webp",
+  "0012.webp",
+  "0013.webp",
+  "0014.webp",
+  "0015.webp",
+  "0016.webp",
+  "0017.webp",
+  "0018.webp",
 ] as const;
 
 const PaperTextureWithControls = () => {
   const [imageIdx, setImageIdx] = useState(-1);
-  const [image, setImage] = useState<HTMLImageElement | string>('/images/image-filters/0018.webp');
+  const [image, setImage] = useState<HTMLImageElement | string>("/images/image-filters/0018.webp");
 
   useEffect(() => {
     if (imageIdx >= 0) {
@@ -55,7 +55,7 @@ const PaperTextureWithControls = () => {
   }, []);
 
   const setImageWithoutStatus = useCallback((img?: HTMLImageElement) => {
-    setImage(img ?? '');
+    setImage(img ?? "");
     setImageIdx(-1);
   }, []);
 
@@ -64,7 +64,7 @@ const PaperTextureWithControls = () => {
       paperTexturePresets.map(({ name, params: { worldWidth, worldHeight, ...preset } }) => [
         name,
         button(() => setParamsSafe(params, setParams, preset)),
-      ])
+      ]),
     );
     return {
       colorBack: { value: toHsla(defaults.colorBack), order: 100 },
@@ -81,13 +81,13 @@ const PaperTextureWithControls = () => {
       fade: { value: defaults.fade, min: 0, max: 1, order: 208 },
       seed: { value: defaults.seed, min: 0, step: 1, max: 1000, order: 250 },
       scale: { value: defaults.scale, min: 0.5, max: 4, order: 300 },
-      fit: { value: defaults.fit, options: ['contain', 'cover'] as ShaderFit[], order: 301 },
+      fit: { value: defaults.fit, options: ["contain", "cover"] as ShaderFit[], order: 301 },
       Image: folder(
         {
-          'Upload image': levaImageButton(setImageWithoutStatus),
-          ...(image && { 'Delete image': levaDeleteImageButton(() => setImage('')) }),
+          "Upload image": levaImageButton(setImageWithoutStatus),
+          ...(image && { "Delete image": levaDeleteImageButton(() => setImage("")) }),
         },
-        { order: 0 }
+        { order: 0 },
       ),
       Presets: folder(presets, { order: -1 }),
     };
@@ -105,7 +105,10 @@ const PaperTextureWithControls = () => {
       <ShaderContainer shaderDef={paperTextureDef} currentParams={params}>
         <PaperTexture onClick={handleClick} {...params} image={image} />
       </ShaderContainer>
-      <div onClick={handleClick} className="mx-auto mt-16 mb-48 w-fit text-base text-current/70 select-none">
+      <div
+        onClick={handleClick}
+        className="mx-auto mt-16 mb-48 w-fit text-base text-current/70 select-none"
+      >
         Click to change the sample image
       </div>
       <ShaderDetails shaderDef={paperTextureDef} currentParams={params} />

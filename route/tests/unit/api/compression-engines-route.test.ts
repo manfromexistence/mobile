@@ -16,7 +16,7 @@ import { makeManagementSessionRequest } from "../../helpers/managementSession.ts
 // ─── isolated temp DB ─────────────────────────────────────────────────────────
 
 const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-compression-engines-route-")
+  path.join(os.tmpdir(), "omniroute-compression-engines-route-"),
 );
 const originalDataDir = process.env.DATA_DIR;
 const originalJwtSecret = process.env.JWT_SECRET;
@@ -97,12 +97,12 @@ describe("GET /api/compression/engines", () => {
     assert.ok(headroom, "headroom engine should be present");
     assert.ok(
       Array.isArray(headroom.configSchema) && headroom.configSchema.length > 0,
-      "headroom configSchema should be a non-empty array"
+      "headroom configSchema should be a non-empty array",
     );
     assert.strictEqual(
       typeof headroom.stackPriority,
       "number",
-      "headroom stackPriority should be a number"
+      "headroom stackPriority should be a number",
     );
   });
 
@@ -120,7 +120,7 @@ describe("GET /api/compression/engines", () => {
     const hasMinRows = headroom.configSchema.some((f) => f.key === "minRows");
     assert.ok(
       hasMinRows,
-      `headroom configSchema should contain a field with key 'minRows', got keys: ${headroom.configSchema.map((f) => f.key).join(", ")}`
+      `headroom configSchema should contain a field with key 'minRows', got keys: ${headroom.configSchema.map((f) => f.key).join(", ")}`,
     );
   });
 });

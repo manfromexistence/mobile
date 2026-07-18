@@ -77,7 +77,7 @@ describe("ccr engine", () => {
     assert.match(
       content,
       /\[CCR retrieve hash=[0-9a-f]{24} chars=\d+\]/,
-      "content must contain a [CCR retrieve hash=<24hex> chars=N] marker"
+      "content must contain a [CCR retrieve hash=<24hex> chars=N] marker",
     );
 
     // Original large text must be gone
@@ -129,7 +129,7 @@ describe("ccr engine", () => {
     const messages = result.body.messages as Array<{ role: string; content: string }>;
     assert.ok(
       !messages[0].content.match(/\[CCR retrieve/),
-      "system message must not contain a CCR marker"
+      "system message must not contain a CCR marker",
     );
   });
 
@@ -170,7 +170,7 @@ describe("ccr engine", () => {
     assert.equal(
       shouldSkipCompression(hash),
       true,
-      "after enough retrievals, shouldSkipCompression must return true"
+      "after enough retrievals, shouldSkipCompression must return true",
     );
   });
 
@@ -205,7 +205,7 @@ describe("ccr engine", () => {
     const largePart = messages[0].content[0];
     assert.ok(
       largePart.text.match(/\[CCR retrieve hash=[0-9a-f]{24} chars=\d+\]/),
-      "large text part must be replaced by a CCR marker"
+      "large text part must be replaced by a CCR marker",
     );
     // Small part untouched
     const smallPart = messages[0].content[1];

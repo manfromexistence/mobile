@@ -23,16 +23,22 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 const { checkFallbackError } = await import("../../open-sse/services/accountFallback.ts");
-const { isSessionUsageLimitText, buildSessionQuotaFallback, isWeeklyUsageLimitText } =
-  await import("../../open-sse/services/quotaTextCooldowns.ts");
+const { isSessionUsageLimitText, buildSessionQuotaFallback, isWeeklyUsageLimitText } = await import(
+  "../../open-sse/services/quotaTextCooldowns.ts"
+);
 const { RateLimitReason, BACKOFF_CONFIG } = await import("../../open-sse/config/constants.ts");
-const { BACKOFF_CONFIG: ERROR_BACKOFF_CONFIG } = await import("../../open-sse/config/errorConfig.ts");
+const { BACKOFF_CONFIG: ERROR_BACKOFF_CONFIG } = await import(
+  "../../open-sse/config/errorConfig.ts"
+);
 
 const SESSION_BODY = "you (acme-corp) have reached your session usage limit";
 const SESSION_COOLDOWN_MS = 5 * 60 * 60 * 1000; // 5 hours
 
 test("#7071 sanity: weekly text IS recognized (already fixed by #3709/#6638)", () => {
-  assert.equal(isWeeklyUsageLimitText("you (acme-corp) have reached your weekly usage limit"), true);
+  assert.equal(
+    isWeeklyUsageLimitText("you (acme-corp) have reached your weekly usage limit"),
+    true,
+  );
 });
 
 test("#7071 isSessionUsageLimitText matches the ollama-cloud 429 body", () => {
@@ -66,14 +72,14 @@ test("#7071 BUG: checkFallbackError misclassifies ollama-cloud session-quota 429
     "ollama-cloud", // provider (apikey category)
     null, // headers
     null, // profileOverride
-    null // structuredError
+    null, // structuredError
   );
 
   assert.equal(out.shouldFallback, true);
   assert.equal(
     out.reason,
     RateLimitReason.QUOTA_EXHAUSTED,
-    `expected QUOTA_EXHAUSTED for session-usage-limit text, got reason=${out.reason} cooldownMs=${out.cooldownMs}`
+    `expected QUOTA_EXHAUSTED for session-usage-limit text, got reason=${out.reason} cooldownMs=${out.cooldownMs}`,
   );
   assert.equal(out.cooldownMs, SESSION_COOLDOWN_MS);
 });
@@ -93,11 +99,11 @@ test("#7071 checkFallbackError: ollama-cloud generic rate-limit body is unaffect
     "ollama-cloud",
     null,
     null,
-    null
+    null,
   );
   assert.equal(out.reason, RateLimitReason.RATE_LIMIT_EXCEEDED);
   assert.ok(
     out.cooldownMs <= 2 * 60 * 1000,
-    "generic rate limit text must keep the normal short backoff, not the 5h session cooldown"
+    "generic rate limit text must keep the normal short backoff, not the 5h session cooldown",
   );
 });

@@ -28,7 +28,12 @@ test("standard mode compresses even when cavemanConfig.enabled is false (B-MODE-
   };
   const res = applyCompression(body, "standard", {
     config: {
-      cavemanConfig: { enabled: false, compressRoles: ["user"], intensity: "full", minMessageLength: 0 },
+      cavemanConfig: {
+        enabled: false,
+        compressRoles: ["user"],
+        intensity: "full",
+        minMessageLength: 0,
+      },
     },
   } as Record<string, unknown>);
   assert.ok(res.compressed, "standard mode must run caveman regardless of cavemanConfig.enabled");
@@ -37,7 +42,7 @@ test("standard mode compresses even when cavemanConfig.enabled is false (B-MODE-
 test("rtk mode compresses even when rtkConfig.enabled is false (B-MODE-ENGINE-DECOUPLE)", () => {
   const content =
     Array.from({ length: 60 }, (_, i) => `line ${String(i).padStart(3, "0")} routine output`).join(
-      "\n"
+      "\n",
     ) + "\nERROR: boom";
   const res = applyCompression({ messages: [{ role: "tool", content }] }, "rtk", {
     config: { rtkConfig: { enabled: false, intensity: "standard", applyToToolResults: true } },

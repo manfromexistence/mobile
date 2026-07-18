@@ -31,7 +31,11 @@
   top: 0;
   z-index: 10;
   padding: 40px 40px 32px;
-  background: linear-gradient(to bottom, var(--v2-background-bg-base) calc(100% - 24px), transparent);
+  background: linear-gradient(
+    to bottom,
+    var(--v2-background-bg-base) calc(100% - 24px),
+    transparent
+  );
 }
 
 .settings-v2-tab-title {
@@ -163,7 +167,8 @@
   max-width: 100%;
 }
 
-[data-component="tabs-v2"][data-variant="settings"][data-orientation="vertical"] [data-slot="tabs-v2-list"] {
+[data-component="tabs-v2"][data-variant="settings"][data-orientation="vertical"]
+  [data-slot="tabs-v2-list"] {
   background-color: var(--v2-background-bg-layer-01);
 }
 
@@ -481,9 +486,7 @@
   line-height: 1;
   letter-spacing: 0.05px;
   font-variant-numeric: tabular-nums;
-  font-feature-settings:
-    "tnum" on,
-    "lnum" on;
+  font-feature-settings: "tnum" on, "lnum" on;
   font-variation-settings: "slnt" 0;
   color: var(--v2-text-text-faint);
 }

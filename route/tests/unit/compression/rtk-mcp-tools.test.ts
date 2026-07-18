@@ -66,7 +66,10 @@ describe("RTK MCP tools (T07)", () => {
     const result = await handleRtkLearn({ command: "gradle build", limit: 100 });
     assert.equal(result.command, "gradle build");
     assert.ok(result.sampleCount >= 1, "expected at least one matching sample");
-    assert.ok(result.filter && typeof result.filter === "object", "expected a suggested filter draft");
+    assert.ok(
+      result.filter && typeof result.filter === "object",
+      "expected a suggested filter draft",
+    );
   });
 
   it("returns an empty/baseline result with no samples (no throw)", async () => {

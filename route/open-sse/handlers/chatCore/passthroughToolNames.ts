@@ -1,6 +1,8 @@
 import { CLAUDE_OAUTH_TOOL_PREFIX } from "../../translator/request/openai-to-claude.ts";
 
-export function buildClaudePassthroughToolNameMap(body: Record<string, unknown> | null | undefined) {
+export function buildClaudePassthroughToolNameMap(
+  body: Record<string, unknown> | null | undefined,
+) {
   if (!body || !Array.isArray(body.tools)) return null;
 
   const toolNameMap = new Map<string, string>();
@@ -22,7 +24,7 @@ export function buildClaudePassthroughToolNameMap(body: Record<string, unknown> 
 
 export function restoreClaudePassthroughToolNames(
   responseBody: Record<string, unknown>,
-  toolNameMap: Map<string, string> | null
+  toolNameMap: Map<string, string> | null,
 ) {
   if (!toolNameMap || !Array.isArray(responseBody?.content)) return responseBody;
 
@@ -47,7 +49,7 @@ export function restoreClaudePassthroughToolNames(
 
 export function mergeResponseToolNameMap(
   baseToolNameMap: Map<string, string> | null,
-  transformedBody: Record<string, unknown> | null | undefined
+  transformedBody: Record<string, unknown> | null | undefined,
 ) {
   const executorToolNameMap =
     transformedBody && transformedBody._toolNameMap instanceof Map

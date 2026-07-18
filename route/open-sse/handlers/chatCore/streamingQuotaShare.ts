@@ -14,7 +14,7 @@ type CostResolver = (
   provider: string,
   model: string,
   usage: Record<string, number | undefined> | null | undefined,
-  options: { serviceTier?: string }
+  options: { serviceTier?: string },
 ) => Promise<number>;
 
 export function scheduleStreamingQuotaShareConsumption(args: {
@@ -45,8 +45,8 @@ export function scheduleStreamingQuotaShareConsumption(args: {
           streamStatus: args.streamStatus,
           serviceTier: args.serviceTier,
         },
-        { calculateCost: args.calculateCost, log: args.log }
-      )
+        { calculateCost: args.calculateCost, log: args.log },
+      ),
     )
     .catch(() => {
       // Outer fail-open — never throws to caller

@@ -1,17 +1,14 @@
-import { describe, expect, test } from 'bun:test';
-import { JSDOM } from 'jsdom';
+import { describe, expect, test } from "bun:test";
+import { JSDOM } from "jsdom";
 
-import {
-  prepareFileTreeInput,
-  preparePresortedFileTreeInput,
-} from '../src/index';
-import { flushDom, installDom } from './helpers/dom';
-import { loadFileTree, loadFileTreeController } from './helpers/loadFileTree';
+import { prepareFileTreeInput, preparePresortedFileTreeInput } from "../src/index";
+import { flushDom, installDom } from "./helpers/dom";
+import { loadFileTree, loadFileTreeController } from "./helpers/loadFileTree";
 
 function getItemButton(
   shadowRoot: ShadowRoot | null | undefined,
   dom: JSDOM,
-  path: string
+  path: string,
 ): HTMLButtonElement {
   const button = shadowRoot?.querySelector(`[data-item-path="${path}"]`);
   if (!(button instanceof dom.window.HTMLButtonElement)) {
@@ -21,46 +18,38 @@ function getItemButton(
   return button;
 }
 
-describe('file-tree dynamic files / mutation API', () => {
-  test('controller emits add, move, batch, and reset mutation events', async () => {
+describe("file-tree dynamic files / mutation API", () => {
+  test("controller emits add, move, batch, and reset mutation events", async () => {
     const FileTreeController = await loadFileTreeController();
 
     const controller = new FileTreeController({
       flattenEmptyDirectories: false,
-      initialExpansion: 'open',
-      paths: ['README.md', 'src/index.ts'],
+      initialExpansion: "open",
+      paths: ["README.md", "src/index.ts"],
     });
     const events: Array<{
       events?: readonly { operation: string }[];
       operation: string;
     }> = [];
-    const unsubscribe = controller.onMutation('*', (event) => {
+    const unsubscribe = controller.onMutation("*", (event) => {
       events.push(event);
     });
 
-    controller.add('src/utils.ts');
-    controller.move('src/utils.ts', 'src/helpers.ts');
+    controller.add("src/utils.ts");
+    controller.move("src/utils.ts", "src/helpers.ts");
     controller.batch([
-      { path: 'src/lib/', type: 'add' },
-      { path: 'src/lib/theme.ts', type: 'add' },
+      { path: "src/lib/", type: "add" },
+      { path: "src/lib/theme.ts", type: "add" },
     ]);
-    controller.resetPaths(['README.md'], {
-      preparedInput: prepareFileTreeInput(['README.md']),
+    controller.resetPaths(["README.md"], {
+      preparedInput: prepareFileTreeInput(["README.md"]),
     });
 
-    expect(events.map((event) => event.operation)).toEqual([
-      'add',
-      'move',
-      'batch',
-      'reset',
-    ]);
-    expect(events[2]).toMatchObject({ operation: 'batch' });
-    expect(events[2]?.events?.map((event) => event.operation)).toEqual([
-      'add',
-      'add',
-    ]);
+    expect(events.map((event) => event.operation)).toEqual(["add", "move", "batch", "reset"]);
+    expect(events[2]).toMatchObject({ operation: "batch" });
+    expect(events[2]?.events?.map((event) => event.operation)).toEqual(["add", "add"]);
     expect(events[3]).toMatchObject({
-      operation: 'reset',
+      operation: "reset",
       pathCountBefore: 4,
       pathCountAfter: 1,
       usedPreparedInput: true,
@@ -70,17 +59,17 @@ describe('file-tree dynamic files / mutation API', () => {
     controller.destroy();
   });
 
-  test('file-tree renders from preparedInput without duplicate raw paths', async () => {
+  test("file-tree renders from preparedInput without duplicate raw paths", async () => {
     const { cleanup, dom } = installDom();
     try {
       const FileTree = await loadFileTree();
-      const mount = dom.window.document.createElement('div');
+      const mount = dom.window.document.createElement("div");
       dom.window.document.body.appendChild(mount);
 
       const fileTree = new FileTree({
         flattenEmptyDirectories: false,
-        initialExpansion: 'open',
-        preparedInput: prepareFileTreeInput(['README.md', 'src/index.ts']),
+        initialExpansion: "open",
+        preparedInput: prepareFileTreeInput(["README.md", "src/index.ts"]),
         initialVisibleRowCount: 140 / 30,
       });
 
@@ -88,11 +77,7 @@ describe('file-tree dynamic files / mutation API', () => {
       await flushDom();
 
       expect(
-        getItemButton(
-          fileTree.getFileTreeContainer()?.shadowRoot,
-          dom,
-          'README.md'
-        )
+        getItemButton(fileTree.getFileTreeContainer()?.shadowRoot, dom, "README.md"),
       ).not.toBeNull();
 
       fileTree.cleanUp();
@@ -101,34 +86,32 @@ describe('file-tree dynamic files / mutation API', () => {
     }
   });
 
-  test('resetPaths rejects mismatched preparedInput', async () => {
+  test("resetPaths rejects mismatched preparedInput", async () => {
     const FileTreeController = await loadFileTreeController();
 
     const controller = new FileTreeController({
       flattenEmptyDirectories: false,
-      initialExpansion: 'open',
-      paths: ['README.md', 'src/index.ts'],
+      initialExpansion: "open",
+      paths: ["README.md", "src/index.ts"],
     });
 
     expect(() =>
-      controller.resetPaths(['README.md'], {
-        preparedInput: prepareFileTreeInput(['src/index.ts']),
-      })
-    ).toThrow(
-      'FileTree resetPaths received paths and preparedInput for different path lists'
-    );
+      controller.resetPaths(["README.md"], {
+        preparedInput: prepareFileTreeInput(["src/index.ts"]),
+      }),
+    ).toThrow("FileTree resetPaths received paths and preparedInput for different path lists");
 
     controller.destroy();
   });
 
-  test('resetPaths accepts preparedInput generated from the same unsorted raw path list', async () => {
+  test("resetPaths accepts preparedInput generated from the same unsorted raw path list", async () => {
     const FileTreeController = await loadFileTreeController();
 
-    const rawPaths = ['src/index.ts', 'README.md'] as const;
+    const rawPaths = ["src/index.ts", "README.md"] as const;
     const controller = new FileTreeController({
       flattenEmptyDirectories: false,
-      initialExpansion: 'open',
-      paths: ['README.md'],
+      initialExpansion: "open",
+      paths: ["README.md"],
     });
 
     controller.resetPaths([...rawPaths], {
@@ -136,24 +119,24 @@ describe('file-tree dynamic files / mutation API', () => {
     });
 
     expect(controller.getVisibleRows(0, 3).map((row) => row.path)).toEqual([
-      'src/',
-      'src/index.ts',
-      'README.md',
+      "src/",
+      "src/index.ts",
+      "README.md",
     ]);
 
     controller.destroy();
   });
 
-  test('resetPaths accepts a preparedInput-only call with no raw paths', async () => {
+  test("resetPaths accepts a preparedInput-only call with no raw paths", async () => {
     const FileTreeController = await loadFileTreeController();
 
     // Server-canonical (already sorted) folder paths, the scale-oriented input
     // that preparePresortedFileTreeInput exists to fast-path.
-    const folderPaths = ['src/', 'src/index.ts', 'README.md'] as const;
+    const folderPaths = ["src/", "src/index.ts", "README.md"] as const;
     const controller = new FileTreeController({
       flattenEmptyDirectories: false,
-      initialExpansion: 'open',
-      paths: ['README.md'],
+      initialExpansion: "open",
+      paths: ["README.md"],
     });
 
     // The preparedInput-only overload: no dummy `paths` argument required.
@@ -162,31 +145,31 @@ describe('file-tree dynamic files / mutation API', () => {
     });
 
     expect(controller.getVisibleRows(0, 3).map((row) => row.path)).toEqual([
-      'src/',
-      'src/index.ts',
-      'README.md',
+      "src/",
+      "src/index.ts",
+      "README.md",
     ]);
 
     controller.destroy();
   });
 
-  test('resetPaths overloads type-check as documented (compile-only assertions)', async () => {
+  test("resetPaths overloads type-check as documented (compile-only assertions)", async () => {
     const FileTreeController = await loadFileTreeController();
 
     const controller = new FileTreeController({
       flattenEmptyDirectories: false,
-      initialExpansion: 'open',
-      paths: ['README.md'],
+      initialExpansion: "open",
+      paths: ["README.md"],
     });
 
     const assertOverloadTyping = (): void => {
       // Passing only preparedInput type-checks: `paths` is no longer required.
       controller.resetPaths({
-        preparedInput: prepareFileTreeInput(['README.md']),
+        preparedInput: prepareFileTreeInput(["README.md"]),
       });
 
       // Passing only raw paths still type-checks.
-      controller.resetPaths(['README.md']);
+      controller.resetPaths(["README.md"]);
 
       // @ts-expect-error neither paths nor preparedInput is supplied
       controller.resetPaths({});
@@ -199,13 +182,13 @@ describe('file-tree dynamic files / mutation API', () => {
     controller.destroy();
   });
 
-  test('typed onMutation listeners stay filtered while subscribe still tracks non-mutation rerenders', async () => {
+  test("typed onMutation listeners stay filtered while subscribe still tracks non-mutation rerenders", async () => {
     const FileTreeController = await loadFileTreeController();
 
     const controller = new FileTreeController({
       flattenEmptyDirectories: false,
-      initialExpansion: 'open',
-      paths: ['README.md', 'src/index.ts'],
+      initialExpansion: "open",
+      paths: ["README.md", "src/index.ts"],
     });
     const subscribeNotifications: number[] = [];
     const addEvents: string[] = [];
@@ -214,10 +197,10 @@ describe('file-tree dynamic files / mutation API', () => {
     const unsubscribeRerender = controller.subscribe(() => {
       subscribeNotifications.push(controller.getVisibleCount());
     });
-    const unsubscribeAdd = controller.onMutation('add', (event) => {
+    const unsubscribeAdd = controller.onMutation("add", (event) => {
       addEvents.push(event.path);
     });
-    const unsubscribeRemove = controller.onMutation('remove', (event) => {
+    const unsubscribeRemove = controller.onMutation("remove", (event) => {
       removeEvents.push({
         path: event.path,
         recursive: event.recursive,
@@ -225,29 +208,27 @@ describe('file-tree dynamic files / mutation API', () => {
     });
 
     const subscribeCountBeforeCollapse = subscribeNotifications.length;
-    const srcDirectory = controller.getItem('src/');
+    const srcDirectory = controller.getItem("src/");
     if (
       srcDirectory == null ||
       srcDirectory.isDirectory() !== true ||
-      !('collapse' in srcDirectory)
+      !("collapse" in srcDirectory)
     ) {
-      throw new Error('expected src/ directory handle');
+      throw new Error("expected src/ directory handle");
     }
     srcDirectory.collapse();
 
-    expect(subscribeNotifications.length).toBeGreaterThan(
-      subscribeCountBeforeCollapse
-    );
+    expect(subscribeNotifications.length).toBeGreaterThan(subscribeCountBeforeCollapse);
     expect(addEvents).toEqual([]);
     expect(removeEvents).toEqual([]);
 
-    controller.add('src/utils.ts');
-    controller.remove('README.md');
+    controller.add("src/utils.ts");
+    controller.remove("README.md");
 
-    expect(addEvents).toEqual(['src/utils.ts']);
+    expect(addEvents).toEqual(["src/utils.ts"]);
     expect(removeEvents).toEqual([
       {
-        path: 'README.md',
+        path: "README.md",
         recursive: false,
       },
     ]);
@@ -258,186 +239,174 @@ describe('file-tree dynamic files / mutation API', () => {
     controller.destroy();
   });
 
-  test('controller keeps focus and selection aligned to moved paths', async () => {
+  test("controller keeps focus and selection aligned to moved paths", async () => {
     const FileTreeController = await loadFileTreeController();
 
     const controller = new FileTreeController({
       flattenEmptyDirectories: false,
-      initialExpansion: 'open',
-      paths: ['docs/readme.md', 'src/index.ts'],
+      initialExpansion: "open",
+      paths: ["docs/readme.md", "src/index.ts"],
     });
 
-    controller.focusPath('docs/readme.md');
-    controller.selectOnlyPath('docs/readme.md');
-    controller.move('docs/readme.md', 'src/readme.md');
+    controller.focusPath("docs/readme.md");
+    controller.selectOnlyPath("docs/readme.md");
+    controller.move("docs/readme.md", "src/readme.md");
 
-    expect(controller.getFocusedPath()).toBe('src/readme.md');
-    expect(controller.getSelectedPaths()).toEqual(['src/readme.md']);
+    expect(controller.getFocusedPath()).toBe("src/readme.md");
+    expect(controller.getSelectedPaths()).toEqual(["src/readme.md"]);
 
-    controller.remove('src/readme.md');
+    controller.remove("src/readme.md");
 
     expect(controller.getSelectedPaths()).toEqual([]);
-    expect(controller.getFocusedPath()).toBe('src/');
+    expect(controller.getFocusedPath()).toBe("src/");
 
     controller.destroy();
   });
 
-  test('directory moves remap focused selections and range anchors', async () => {
+  test("directory moves remap focused selections and range anchors", async () => {
     const FileTreeController = await loadFileTreeController();
 
     const controller = new FileTreeController({
       flattenEmptyDirectories: false,
-      initialExpansion: 'open',
-      paths: ['README.md', 'src/index.ts', 'src/utils.ts'],
+      initialExpansion: "open",
+      paths: ["README.md", "src/index.ts", "src/utils.ts"],
     });
 
-    controller.focusPath('src/index.ts');
-    controller.selectOnlyPath('src/index.ts');
-    controller.move('src/', 'lib/');
+    controller.focusPath("src/index.ts");
+    controller.selectOnlyPath("src/index.ts");
+    controller.move("src/", "lib/");
 
-    expect(controller.getFocusedPath()).toBe('lib/index.ts');
-    expect(controller.getSelectedPaths()).toEqual(['lib/index.ts']);
+    expect(controller.getFocusedPath()).toBe("lib/index.ts");
+    expect(controller.getSelectedPaths()).toEqual(["lib/index.ts"]);
 
-    controller.selectPathRange('lib/utils.ts', false);
+    controller.selectPathRange("lib/utils.ts", false);
 
-    expect(controller.getSelectedPaths()).toEqual([
-      'lib/index.ts',
-      'lib/utils.ts',
-    ]);
+    expect(controller.getSelectedPaths()).toEqual(["lib/index.ts", "lib/utils.ts"]);
 
     controller.destroy();
   });
 
-  test('directory lookup-path moves still remap focused descendants', async () => {
+  test("directory lookup-path moves still remap focused descendants", async () => {
     const FileTreeController = await loadFileTreeController();
 
     const controller = new FileTreeController({
       flattenEmptyDirectories: false,
-      initialExpansion: 'open',
-      paths: ['README.md', 'src/index.ts', 'src/utils.ts'],
+      initialExpansion: "open",
+      paths: ["README.md", "src/index.ts", "src/utils.ts"],
     });
 
-    controller.focusPath('src/index.ts');
-    controller.selectOnlyPath('src/index.ts');
-    controller.selectPath('src/utils.ts');
-    controller.move('src', 'lib/');
+    controller.focusPath("src/index.ts");
+    controller.selectOnlyPath("src/index.ts");
+    controller.selectPath("src/utils.ts");
+    controller.move("src", "lib/");
 
-    expect(controller.getFocusedPath()).toBe('lib/index.ts');
-    expect(controller.getSelectedPaths()).toEqual([
-      'lib/index.ts',
-      'lib/utils.ts',
-    ]);
+    expect(controller.getFocusedPath()).toBe("lib/index.ts");
+    expect(controller.getSelectedPaths()).toEqual(["lib/index.ts", "lib/utils.ts"]);
 
     controller.destroy();
   });
 
-  test('recursive directory removal falls focus back to the nearest surviving row', async () => {
+  test("recursive directory removal falls focus back to the nearest surviving row", async () => {
     const FileTreeController = await loadFileTreeController();
 
     const controller = new FileTreeController({
       flattenEmptyDirectories: false,
-      initialExpansion: 'open',
-      paths: ['README.md', 'src/index.ts', 'src/utils.ts'],
+      initialExpansion: "open",
+      paths: ["README.md", "src/index.ts", "src/utils.ts"],
     });
 
-    controller.focusPath('src/index.ts');
-    controller.remove('src/', { recursive: true });
+    controller.focusPath("src/index.ts");
+    controller.remove("src/", { recursive: true });
 
-    expect(controller.getFocusedPath()).toBe('README.md');
-    expect(controller.getItem('src/')).toBeNull();
+    expect(controller.getFocusedPath()).toBe("README.md");
+    expect(controller.getItem("src/")).toBeNull();
 
     controller.destroy();
   });
 
-  test('directory lookup-path removals clear descendant selections and focused paths', async () => {
+  test("directory lookup-path removals clear descendant selections and focused paths", async () => {
     const FileTreeController = await loadFileTreeController();
 
     const controller = new FileTreeController({
       flattenEmptyDirectories: false,
-      initialExpansion: 'open',
-      paths: ['README.md', 'src/index.ts', 'src/utils.ts'],
+      initialExpansion: "open",
+      paths: ["README.md", "src/index.ts", "src/utils.ts"],
     });
 
-    controller.focusPath('src/index.ts');
-    controller.selectOnlyPath('src/index.ts');
-    controller.selectPath('src/utils.ts');
-    controller.remove('src', { recursive: true });
+    controller.focusPath("src/index.ts");
+    controller.selectOnlyPath("src/index.ts");
+    controller.selectPath("src/utils.ts");
+    controller.remove("src", { recursive: true });
 
     expect(controller.getSelectedPaths()).toEqual([]);
-    expect(controller.getFocusedPath()).toBe('README.md');
+    expect(controller.getFocusedPath()).toBe("README.md");
 
     controller.destroy();
   });
 
-  test('batch supports mixed add, move, and remove operations', async () => {
+  test("batch supports mixed add, move, and remove operations", async () => {
     const FileTreeController = await loadFileTreeController();
 
     const controller = new FileTreeController({
       flattenEmptyDirectories: false,
-      initialExpansion: 'open',
-      paths: ['README.md', 'src/old.ts'],
+      initialExpansion: "open",
+      paths: ["README.md", "src/old.ts"],
     });
     const batchEvents: Array<readonly string[]> = [];
-    const unsubscribe = controller.onMutation('batch', (event) => {
+    const unsubscribe = controller.onMutation("batch", (event) => {
       batchEvents.push(event.events.map((entry) => entry.operation));
     });
 
     controller.batch([
-      { path: 'src/new.ts', type: 'add' },
-      { from: 'src/new.ts', to: 'src/renamed.ts', type: 'move' },
-      { path: 'src/old.ts', type: 'remove' },
+      { path: "src/new.ts", type: "add" },
+      { from: "src/new.ts", to: "src/renamed.ts", type: "move" },
+      { path: "src/old.ts", type: "remove" },
     ]);
 
-    expect(batchEvents).toEqual([['add', 'move', 'remove']]);
-    expect(controller.getItem('src/old.ts')).toBeNull();
-    expect(controller.getItem('src/renamed.ts')).not.toBeNull();
+    expect(batchEvents).toEqual([["add", "move", "remove"]]);
+    expect(controller.getItem("src/old.ts")).toBeNull();
+    expect(controller.getItem("src/renamed.ts")).not.toBeNull();
 
     unsubscribe();
     controller.destroy();
   });
 
-  test('file-tree delegates the shared mutation handle and rerenders after resetPaths', async () => {
+  test("file-tree delegates the shared mutation handle and rerenders after resetPaths", async () => {
     const { cleanup, dom } = installDom();
     try {
       const FileTree = await loadFileTree();
-      const mount = dom.window.document.createElement('div');
+      const mount = dom.window.document.createElement("div");
       dom.window.document.body.appendChild(mount);
       const events: string[] = [];
 
       const fileTree = new FileTree({
         flattenEmptyDirectories: false,
-        initialExpansion: 'open',
-        paths: ['README.md', 'src/index.ts'],
+        initialExpansion: "open",
+        paths: ["README.md", "src/index.ts"],
         initialVisibleRowCount: 140 / 30,
       });
-      const unsubscribe = fileTree.onMutation('*', (event) => {
+      const unsubscribe = fileTree.onMutation("*", (event) => {
         events.push(event.operation);
       });
 
       fileTree.render({ containerWrapper: mount });
       await flushDom();
 
-      fileTree.add('src/utils.ts');
+      fileTree.add("src/utils.ts");
       await flushDom();
 
       const shadowRootAfterAdd = fileTree.getFileTreeContainer()?.shadowRoot;
-      expect(
-        getItemButton(shadowRootAfterAdd, dom, 'src/utils.ts')
-      ).not.toBeNull();
+      expect(getItemButton(shadowRootAfterAdd, dom, "src/utils.ts")).not.toBeNull();
 
-      fileTree.resetPaths(['README.md'], {
-        preparedInput: prepareFileTreeInput(['README.md']),
+      fileTree.resetPaths(["README.md"], {
+        preparedInput: prepareFileTreeInput(["README.md"]),
       });
       await flushDom();
 
       const shadowRootAfterReset = fileTree.getFileTreeContainer()?.shadowRoot;
-      expect(
-        getItemButton(shadowRootAfterReset, dom, 'README.md')
-      ).not.toBeNull();
-      expect(
-        shadowRootAfterReset?.querySelector('[data-item-path="src/index.ts"]')
-      ).toBeNull();
-      expect(events).toEqual(['add', 'reset']);
+      expect(getItemButton(shadowRootAfterReset, dom, "README.md")).not.toBeNull();
+      expect(shadowRootAfterReset?.querySelector('[data-item-path="src/index.ts"]')).toBeNull();
+      expect(events).toEqual(["add", "reset"]);
 
       unsubscribe();
       fileTree.cleanUp();
@@ -446,17 +415,17 @@ describe('file-tree dynamic files / mutation API', () => {
     }
   });
 
-  test('empty directories render as folders even before they gain children', async () => {
+  test("empty directories render as folders even before they gain children", async () => {
     const { cleanup, dom } = installDom();
     try {
       const FileTree = await loadFileTree();
-      const mount = dom.window.document.createElement('div');
+      const mount = dom.window.document.createElement("div");
       dom.window.document.body.appendChild(mount);
 
       const fileTree = new FileTree({
         flattenEmptyDirectories: false,
-        initialExpansion: 'open',
-        paths: ['docs/'],
+        initialExpansion: "open",
+        paths: ["docs/"],
         initialVisibleRowCount: 120 / 30,
       });
 
@@ -464,10 +433,10 @@ describe('file-tree dynamic files / mutation API', () => {
       await flushDom();
 
       const shadowRoot = fileTree.getFileTreeContainer()?.shadowRoot;
-      const docsButton = getItemButton(shadowRoot, dom, 'docs/');
+      const docsButton = getItemButton(shadowRoot, dom, "docs/");
 
-      expect(docsButton.dataset.itemType).toBe('folder');
-      expect(docsButton.getAttribute('aria-expanded')).toBe('true');
+      expect(docsButton.dataset.itemType).toBe("folder");
+      expect(docsButton.getAttribute("aria-expanded")).toBe("true");
 
       fileTree.cleanUp();
     } finally {
@@ -475,63 +444,61 @@ describe('file-tree dynamic files / mutation API', () => {
     }
   });
 
-  test('getItem returns fresh handles after move and remove mutations', async () => {
+  test("getItem returns fresh handles after move and remove mutations", async () => {
     const FileTreeController = await loadFileTreeController();
 
     const controller = new FileTreeController({
       flattenEmptyDirectories: false,
-      initialExpansion: 'open',
-      paths: ['README.md', 'lib/', 'src/foo.ts'],
+      initialExpansion: "open",
+      paths: ["README.md", "lib/", "src/foo.ts"],
     });
 
-    const movedHandleBefore = controller.getItem('src/foo.ts');
+    const movedHandleBefore = controller.getItem("src/foo.ts");
     expect(movedHandleBefore).not.toBeNull();
 
-    controller.move('src/foo.ts', 'lib/foo.ts');
+    controller.move("src/foo.ts", "lib/foo.ts");
 
-    expect(controller.getItem('src/foo.ts')).toBeNull();
-    const movedHandleAfter = controller.getItem('lib/foo.ts');
+    expect(controller.getItem("src/foo.ts")).toBeNull();
+    const movedHandleAfter = controller.getItem("lib/foo.ts");
     expect(movedHandleAfter).not.toBeNull();
-    expect(movedHandleAfter?.getPath()).toBe('lib/foo.ts');
+    expect(movedHandleAfter?.getPath()).toBe("lib/foo.ts");
     expect(movedHandleAfter?.isDirectory()).toBe(false);
 
-    controller.remove('lib/foo.ts');
+    controller.remove("lib/foo.ts");
 
-    expect(controller.getItem('lib/foo.ts')).toBeNull();
+    expect(controller.getItem("lib/foo.ts")).toBeNull();
 
     controller.destroy();
   });
 
-  test('adding under a collapsed directory keeps the directory collapsed until re-expanded', async () => {
+  test("adding under a collapsed directory keeps the directory collapsed until re-expanded", async () => {
     const FileTreeController = await loadFileTreeController();
 
     const controller = new FileTreeController({
       flattenEmptyDirectories: false,
-      initialExpansion: 'open',
-      paths: ['README.md', 'src/index.ts'],
+      initialExpansion: "open",
+      paths: ["README.md", "src/index.ts"],
     });
 
-    const srcDirectory = controller.getItem('src/');
+    const srcDirectory = controller.getItem("src/");
     if (
       srcDirectory == null ||
       srcDirectory.isDirectory() !== true ||
-      !('collapse' in srcDirectory) ||
-      !('expand' in srcDirectory)
+      !("collapse" in srcDirectory) ||
+      !("expand" in srcDirectory)
     ) {
-      throw new Error('expected src/ directory handle');
+      throw new Error("expected src/ directory handle");
     }
 
     srcDirectory.collapse();
-    controller.add('src/utils.ts');
+    controller.add("src/utils.ts");
 
-    expect(
-      controller.getVisibleRows(0, controller.getVisibleCount())
-    ).not.toEqual(
+    expect(controller.getVisibleRows(0, controller.getVisibleCount())).not.toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          path: 'src/utils.ts',
+          path: "src/utils.ts",
         }),
-      ])
+      ]),
     );
 
     srcDirectory.expand();
@@ -539,27 +506,27 @@ describe('file-tree dynamic files / mutation API', () => {
     expect(controller.getVisibleRows(0, controller.getVisibleCount())).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          path: 'src/utils.ts',
+          path: "src/utils.ts",
         }),
-      ])
+      ]),
     );
 
     controller.destroy();
   });
 
-  test('shared mutation handle intentionally omits raw-store callback batching', async () => {
+  test("shared mutation handle intentionally omits raw-store callback batching", async () => {
     const FileTreeController = await loadFileTreeController();
 
     const controller = new FileTreeController({
       flattenEmptyDirectories: false,
-      initialExpansion: 'open',
-      paths: ['README.md'],
+      initialExpansion: "open",
+      paths: ["README.md"],
     });
 
     const assertBatchCallbackIsRejected = (): void => {
       // @ts-expect-error raw PathStore callback batching is intentionally not exposed on the shared trees handle
       controller.batch((store) => {
-        store.add('src/index.ts');
+        store.add("src/index.ts");
       });
     };
     void assertBatchCallbackIsRejected;
@@ -567,11 +534,11 @@ describe('file-tree dynamic files / mutation API', () => {
     controller.destroy();
   });
 
-  test('context-menu delete proof removes the item and restores focus coherently', async () => {
+  test("context-menu delete proof removes the item and restores focus coherently", async () => {
     const { cleanup, dom } = installDom();
     try {
       const FileTree = await loadFileTree();
-      const mount = dom.window.document.createElement('div');
+      const mount = dom.window.document.createElement("div");
       dom.window.document.body.appendChild(mount);
       let fileTree: InstanceType<typeof FileTree> | null = null;
 
@@ -580,13 +547,13 @@ describe('file-tree dynamic files / mutation API', () => {
           contextMenu: {
             enabled: true,
             render: (item, context): HTMLElement => {
-              const menu = dom.window.document.createElement('div');
-              const deleteButton = dom.window.document.createElement('button');
-              deleteButton.textContent = 'Delete';
-              deleteButton.addEventListener('click', () => {
+              const menu = dom.window.document.createElement("div");
+              const deleteButton = dom.window.document.createElement("button");
+              deleteButton.textContent = "Delete";
+              deleteButton.addEventListener("click", () => {
                 fileTree?.remove(
                   item.path,
-                  item.kind === 'directory' ? { recursive: true } : undefined
+                  item.kind === "directory" ? { recursive: true } : undefined,
                 );
                 context.close();
               });
@@ -596,8 +563,8 @@ describe('file-tree dynamic files / mutation API', () => {
           },
         },
         flattenEmptyDirectories: true,
-        initialExpansion: 'open',
-        paths: ['README.md', 'src/index.ts'],
+        initialExpansion: "open",
+        paths: ["README.md", "src/index.ts"],
         initialVisibleRowCount: 120 / 30,
       });
 
@@ -606,33 +573,29 @@ describe('file-tree dynamic files / mutation API', () => {
 
       const host = fileTree.getFileTreeContainer();
       const shadowRoot = host?.shadowRoot;
-      const readmeButton = getItemButton(shadowRoot, dom, 'README.md');
+      const readmeButton = getItemButton(shadowRoot, dom, "README.md");
       readmeButton.focus();
       readmeButton.dispatchEvent(
-        new dom.window.MouseEvent('contextmenu', {
+        new dom.window.MouseEvent("contextmenu", {
           bubbles: true,
           clientX: 24,
           clientY: 36,
-        })
+        }),
       );
       await flushDom();
 
       const deleteButton = host?.querySelector('[slot="context-menu"] button');
       if (!(deleteButton instanceof dom.window.HTMLButtonElement)) {
-        throw new Error('expected slotted delete button');
+        throw new Error("expected slotted delete button");
       }
       const menuDeleteButton = deleteButton;
       menuDeleteButton.click();
       await flushDom();
 
-      expect(
-        shadowRoot?.querySelector('[data-item-path="README.md"]')
-      ).toBeNull();
+      expect(shadowRoot?.querySelector('[data-item-path="README.md"]')).toBeNull();
       expect(host?.querySelector('[slot="context-menu"]')).toBeNull();
       expect(
-        shadowRoot?.querySelector(
-          'button[data-type="item"][data-item-focused="true"]'
-        )
+        shadowRoot?.querySelector('button[data-type="item"][data-item-focused="true"]'),
       ).not.toBeNull();
 
       fileTree.cleanUp();

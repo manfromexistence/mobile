@@ -16,7 +16,7 @@ import assert from "node:assert/strict";
 function resolveHostname(
   envServerHost: string | undefined,
   envHostname: string | undefined,
-  machineHostname: string
+  machineHostname: string,
 ): string {
   return envServerHost || (envHostname !== machineHostname ? envHostname : undefined) || "0.0.0.0";
 }

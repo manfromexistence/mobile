@@ -112,7 +112,7 @@ test("legacy encryption migration parses ciphertext in canonical payload order",
   const encryption = await importFresh("src/lib/db/encryption.ts");
   const legacyCiphertext = encryptWithLegacyDynamicSalt(
     process.env.STORAGE_ENCRYPTION_KEY,
-    "legacy-provider-token"
+    "legacy-provider-token",
   );
 
   assert.equal(encryption.decrypt(legacyCiphertext), null);

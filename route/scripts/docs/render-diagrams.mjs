@@ -40,7 +40,7 @@ if (!existsSync(outDir)) {
 const puppeteerConfigPath = join(tmpdir(), "omniroute-mmdc-puppeteer.json");
 writeFileSync(
   puppeteerConfigPath,
-  JSON.stringify({ args: ["--no-sandbox", "--disable-setuid-sandbox"] }, null, 2)
+  JSON.stringify({ args: ["--no-sandbox", "--disable-setuid-sandbox"] }, null, 2),
 );
 
 const sources = readdirSync(srcDir)
@@ -70,7 +70,7 @@ for (const src of sources) {
       "--puppeteerConfigFile",
       puppeteerConfigPath,
     ],
-    { stdio: "inherit" }
+    { stdio: "inherit" },
   );
   if (result.status !== 0) {
     console.error(`    [FAIL] ${src} (exit ${result.status})`);

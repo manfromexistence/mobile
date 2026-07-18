@@ -68,7 +68,7 @@ test("#3121 a model NOT in the live response is not advertised (entitlement filt
   // gemini-3.1-pro-preview is in the OLD static catalog but NOT entitled here.
   assert.ok(
     !ids.includes("gemini-3.1-pro-preview"),
-    "non-entitled gemini preview must NOT be advertised"
+    "non-entitled gemini preview must NOT be advertised",
   );
 });
 
@@ -93,7 +93,7 @@ test("#3120 fetchGitHubCopilotModels does a live fetch and returns parsed models
   assert.equal(
     capturedHeaders.Authorization,
     "Bearer copilot-tok-abc",
-    "must authenticate with the Copilot bearer token"
+    "must authenticate with the Copilot bearer token",
   );
   // Copilot chat headers must be present (e.g. copilot-integration-id).
   assert.ok(capturedHeaders["copilot-integration-id"], "must send Copilot integration header");
@@ -121,7 +121,7 @@ test("#3120/#3121 fetch falls back to static catalog when the live fetch fails",
   assert.deepEqual(
     result.models.map((m) => m.id),
     ["gpt-5.4", "gemini-3.1-pro-preview"],
-    "offline/failed discovery must preserve only the curated static catalog"
+    "offline/failed discovery must preserve only the curated static catalog",
   );
 });
 
@@ -151,7 +151,7 @@ test("curated Copilot allowlist contains the final approved model ids only", () 
       "kimi-k2.7-code",
       "mai-code-1-flash",
       "oswe-vscode-prime",
-    ]
+    ],
   );
 });
 
@@ -172,6 +172,6 @@ test("fetch falls back when no token is provided (unauthed refresh stays safe)",
   assert.equal(result.source, "fallback");
   assert.deepEqual(
     result.models.map((m) => m.id),
-    ["gpt-5.4"]
+    ["gpt-5.4"],
   );
 });

@@ -85,7 +85,7 @@ export function getPlan(connectionId: string): ProviderPlan | null {
   const row = getDb()
     .prepare<PlanRow>(
       `SELECT connection_id, provider, dimensions_json, source, updated_at
-       FROM provider_plans WHERE connection_id = ?`
+       FROM provider_plans WHERE connection_id = ?`,
     )
     .get(connectionId);
   if (!row) return null;
@@ -99,7 +99,7 @@ export function listPlans(): ProviderPlan[] {
   const rows = getDb()
     .prepare<PlanRow>(
       `SELECT connection_id, provider, dimensions_json, source, updated_at
-       FROM provider_plans ORDER BY provider ASC`
+       FROM provider_plans ORDER BY provider ASC`,
     )
     .all();
   return rows.map(rowToPlan);
@@ -118,7 +118,7 @@ export function upsertPlan(
   connectionId: string,
   provider: string,
   dimensions: QuotaDimension[],
-  source: "auto" | "manual"
+  source: "auto" | "manual",
 ): void {
   const now = new Date().toISOString();
   const dimensionsJson = JSON.stringify(dimensions);
@@ -132,7 +132,7 @@ export function upsertPlan(
          provider = excluded.provider,
          dimensions_json = excluded.dimensions_json,
          source = excluded.source,
-         updated_at = excluded.updated_at`
+         updated_at = excluded.updated_at`,
     )
     .run(connectionId, provider, dimensionsJson, source, now);
 }

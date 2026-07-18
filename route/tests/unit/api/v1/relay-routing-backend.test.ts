@@ -84,9 +84,9 @@ test("relay routing backend exposes TS fallback header only for enabled auto bif
       getBifrostRoutingConfig({
         BIFROST_BASE_URL: "http://127.0.0.1:8080",
         BIFROST_ENABLED: "0",
-      })
+      }),
     ),
-    undefined
+    undefined,
   );
   assert.equal(getRoutingFallbackHeader("auto", null), undefined);
 });
@@ -111,7 +111,7 @@ test("relay routing backend auto mode tries bifrost for manifest-eligible provid
       eligible: true,
       reasons: [],
     })),
-    { tryBifrost: true }
+    { tryBifrost: true },
   );
 });
 
@@ -125,7 +125,7 @@ test("relay routing backend auto mode skips bifrost for manifest-ineligible prov
       eligible: false,
       reasons: ["custom executor: claude-web"],
     })),
-    { tryBifrost: false, fallbackReason: "bifrost-ineligible" }
+    { tryBifrost: false, fallbackReason: "bifrost-ineligible" },
   );
 });
 
@@ -136,7 +136,7 @@ test("relay routing backend auto mode keeps unknown providers on TS fallback", (
 
   assert.deepEqual(
     shouldTryBifrostForRequest("auto", config, { model: "unknown/model" }, () => null),
-    { tryBifrost: false, fallbackReason: "bifrost-provider-unknown" }
+    { tryBifrost: false, fallbackReason: "bifrost-provider-unknown" },
   );
 });
 
@@ -150,27 +150,27 @@ test("relay routing backend strict bifrost bypasses manifest eligibility", () =>
       eligible: false,
       reasons: ["custom executor: claude-web"],
     })),
-    { tryBifrost: true }
+    { tryBifrost: true },
   );
 });
 
 test("automatic relay keeps the Bifrost timeout active until an SSE stream finalizes", () => {
   const routeSource = readFileSync(
     new URL("../../../../src/app/api/v1/relay/chat/completions/route.ts", import.meta.url),
-    "utf8"
+    "utf8",
   );
   const forwardToBifrost = routeSource.slice(
     routeSource.indexOf("async function forwardToBifrost"),
-    routeSource.indexOf("export async function OPTIONS")
+    routeSource.indexOf("export async function OPTIONS"),
   );
   const streamBranch = forwardToBifrost.slice(
     forwardToBifrost.indexOf("if (wantsStream && upstream.body)"),
-    forwardToBifrost.indexOf("clearTimeout(tid);\n    recordUsage(")
+    forwardToBifrost.indexOf("clearTimeout(tid);\n    recordUsage("),
   );
 
   assert.match(
     streamBranch,
-    /finalizeReadableStream\(upstream\.body, \(error\) => \{\s*clearTimeout\(tid\)/
+    /finalizeReadableStream\(upstream\.body, \(error\) => \{\s*clearTimeout\(tid\)/,
   );
   assert.match(streamBranch, /const statusCode = timedOut \? 504 : upstream\.status/);
   assert.match(streamBranch, /error && backend === "auto"/);

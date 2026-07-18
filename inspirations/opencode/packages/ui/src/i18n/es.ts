@@ -14,7 +14,8 @@ export const dict = {
   "ui.sessionReview.image.loading": "Cargando...",
   "ui.sessionReview.image.placeholder": "Imagen",
   "ui.sessionReview.largeDiff.title": "Diff demasiado grande para renderizar",
-  "ui.sessionReview.largeDiff.meta": "Límite: {{limit}} líneas modificadas. Actual: {{current}} líneas modificadas.",
+  "ui.sessionReview.largeDiff.meta":
+    "Límite: {{limit}} líneas modificadas. Actual: {{current}} líneas modificadas.",
   "ui.sessionReview.largeDiff.renderAnyway": "Renderizar de todos modos",
   "ui.fileMedia.kind.image": "imagen",
   "ui.fileMedia.kind.audio": "audio",
@@ -23,8 +24,10 @@ export const dict = {
   "ui.fileMedia.state.error": "Error en el archivo de {{kind}}",
   "ui.fileMedia.state.unavailable": "Archivo de {{kind}} no disponible",
   "ui.fileMedia.binary.title": "Archivo binario",
-  "ui.fileMedia.binary.description.path": "No se puede mostrar {{path}} porque es un archivo binario.",
-  "ui.fileMedia.binary.description.default": "No se puede mostrar este archivo porque es un archivo binario.",
+  "ui.fileMedia.binary.description.path":
+    "No se puede mostrar {{path}} porque es un archivo binario.",
+  "ui.fileMedia.binary.description.default":
+    "No se puede mostrar este archivo porque es un archivo binario.",
 
   "ui.lineComment.label.prefix": "Comentar en ",
   "ui.lineComment.label.suffix": "",
@@ -165,4 +168,4 @@ export const dict = {
   "ui.toolErrorCard.copyError": "Copiar error",
   "ui.message.duration.seconds": "{{count}}s",
   "ui.message.duration.minutesSeconds": "{{minutes}}m {{seconds}}s",
-}
+};

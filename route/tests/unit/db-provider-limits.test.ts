@@ -91,12 +91,12 @@ test("providerLimits cache ignores malformed stored values", () => {
   db.prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "providerLimitsCache",
     "broken-json",
-    "{not-json"
+    "{not-json",
   );
   db.prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "providerLimitsCache",
     "missing-fetched-at",
-    JSON.stringify({ quotas: { remaining: 5 } })
+    JSON.stringify({ quotas: { remaining: 5 } }),
   );
 
   assert.equal(providerLimitsDb.getProviderLimitsCache("broken-json"), null);

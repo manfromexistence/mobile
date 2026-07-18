@@ -19,7 +19,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // scans follow the code to the leaf that now owns the `target.modelStr` usages.
 const STRATEGY_SRC = path.resolve(
   __dirname,
-  "../../open-sse/services/combo/applyStrategyOrdering.ts"
+  "../../open-sse/services/combo/applyStrategyOrdering.ts",
 );
 const TEST_ROUTE_SRC = path.resolve(__dirname, "../../src/app/api/combos/test/route.ts");
 
@@ -29,7 +29,7 @@ test("#2359 LKGP findIndex guards modelStr against non-string", () => {
   // before calling .startsWith. Anchor on the LKGP fallback branch.
   assert.ok(
     /typeof target\.modelStr === "string"[\s\S]{0,80}target\.modelStr\.startsWith/.test(src),
-    "LKGP fallback must type-check target.modelStr before calling .startsWith"
+    "LKGP fallback must type-check target.modelStr before calling .startsWith",
   );
 });
 
@@ -39,11 +39,11 @@ test("#2359 combo test route falls back instead of throwing on missing modelStr"
   // return when the combo step is malformed.
   assert.ok(
     /typeof target\?\.modelStr === "string"/.test(src),
-    "testComboTarget must coerce target.modelStr before lowercasing"
+    "testComboTarget must coerce target.modelStr before lowercasing",
   );
   assert.ok(
     /Combo step is missing a model id/i.test(src),
-    "testComboTarget must surface a helpful error on missing modelStr"
+    "testComboTarget must surface a helpful error on missing modelStr",
   );
 });
 
@@ -60,6 +60,6 @@ test("#2359 strategy ordering has no remaining unguarded target.modelStr.<method
   assert.ok(
     !RE.test(stripped),
     `Found an unguarded target.modelStr.<method> call. ` +
-      `Audit the LKGP / sortTargets paths and add a typeof guard before calling string methods.`
+      `Audit the LKGP / sortTargets paths and add a typeof guard before calling string methods.`,
   );
 });

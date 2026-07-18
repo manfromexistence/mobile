@@ -1,33 +1,33 @@
-import { createResource, createMemo, createSignal } from "solid-js"
-import { TextAttributes } from "@opentui/core"
-import { DialogSelect } from "../ui/dialog-select"
-import { useSDK } from "../context/sdk"
-import { useDialog } from "../ui/dialog"
-import { useToast } from "../ui/toast"
-import { useTheme } from "../context/theme"
-import { errorMessage } from "../util/error"
-import type { ExperimentalConsoleListOrgsResponse } from "@opencode-ai/sdk/v2"
+import { createResource, createMemo, createSignal } from "solid-js";
+import { TextAttributes } from "@opentui/core";
+import { DialogSelect } from "../ui/dialog-select";
+import { useSDK } from "../context/sdk";
+import { useDialog } from "../ui/dialog";
+import { useToast } from "../ui/toast";
+import { useTheme } from "../context/theme";
+import { errorMessage } from "../util/error";
+import type { ExperimentalConsoleListOrgsResponse } from "@opencode-ai/sdk/v2";
 
-type OrgOption = ExperimentalConsoleListOrgsResponse["orgs"][number]
+type OrgOption = ExperimentalConsoleListOrgsResponse["orgs"][number];
 
 const accountHost = (url: string) => {
   try {
-    return new URL(url).host
+    return new URL(url).host;
   } catch {
-    return url
+    return url;
   }
-}
+};
 
 const accountLabel = (item: Pick<OrgOption, "accountEmail" | "accountUrl">) =>
-  `${item.accountEmail}  ${accountHost(item.accountUrl)}`
+  `${item.accountEmail}  ${accountHost(item.accountUrl)}`;
 
 export function DialogConsoleOrg() {
-  const sdk = useSDK()
-  const dialog = useDialog()
-  const toast = useToast()
-  const { theme } = useTheme()
+  const sdk = useSDK();
+  const dialog = useDialog();
+  const toast = useToast();
+  const { theme } = useTheme();
 
-  const [loadError, setLoadError] = createSignal<unknown>()
+  const [loadError, setLoadError] = createSignal<unknown>();
 
   const [orgs] = createResource(() =>
     sdk.client.experimental.console
@@ -36,18 +36,18 @@ export function DialogConsoleOrg() {
       // Catch so the rejected resource never reaches the memos below: reading
       // orgs() in an errored state re-throws and tears down the dialog.
       .catch((error) => {
-        setLoadError(error)
-        return undefined
+        setLoadError(error);
+        return undefined;
       }),
-  )
+  );
 
-  const showError = createMemo(() => Boolean(loadError()))
+  const showError = createMemo(() => Boolean(loadError()));
 
-  const current = createMemo(() => orgs()?.find((item) => item.active))
+  const current = createMemo(() => orgs()?.find((item) => item.active));
 
   const options = createMemo(() => {
-    if (showError()) return []
-    const listed = orgs()
+    if (showError()) return [];
+    const listed = orgs();
     if (listed === undefined) {
       return [
         {
@@ -55,7 +55,7 @@ export function DialogConsoleOrg() {
           value: "loading",
           onSelect: () => {},
         },
-      ]
+      ];
     }
 
     if (listed.length === 0) {
@@ -65,19 +65,19 @@ export function DialogConsoleOrg() {
           value: "empty",
           onSelect: () => {},
         },
-      ]
+      ];
     }
 
     return listed
       .toSorted((a, b) => {
-        const activeAccountA = a.active ? 0 : 1
-        const activeAccountB = b.active ? 0 : 1
-        if (activeAccountA !== activeAccountB) return activeAccountA - activeAccountB
+        const activeAccountA = a.active ? 0 : 1;
+        const activeAccountB = b.active ? 0 : 1;
+        if (activeAccountA !== activeAccountB) return activeAccountA - activeAccountB;
 
-        const accountCompare = accountLabel(a).localeCompare(accountLabel(b))
-        if (accountCompare !== 0) return accountCompare
+        const accountCompare = accountLabel(a).localeCompare(accountLabel(b));
+        if (accountCompare !== 0) return accountCompare;
 
-        return a.orgName.localeCompare(b.orgName)
+        return a.orgName.localeCompare(b.orgName);
       })
       .map((item) => ({
         title: item.orgName,
@@ -91,8 +91,8 @@ export function DialogConsoleOrg() {
         ),
         onSelect: async () => {
           if (item.active) {
-            dialog.clear()
-            return
+            dialog.clear();
+            return;
           }
 
           await sdk.client.experimental.console.switchOrg(
@@ -101,17 +101,17 @@ export function DialogConsoleOrg() {
               orgID: item.orgID,
             },
             { throwOnError: true },
-          )
+          );
 
-          await sdk.client.instance.dispose()
+          await sdk.client.instance.dispose();
           toast.show({
             message: `Switched to ${item.orgName}`,
             variant: "info",
-          })
-          dialog.clear()
+          });
+          dialog.clear();
         },
-      }))
-  })
+      }));
+  });
 
   return (
     <DialogSelect<string | OrgOption>
@@ -131,5 +131,5 @@ export function DialogConsoleOrg() {
         ) : undefined
       }
     />
-  )
+  );
 }

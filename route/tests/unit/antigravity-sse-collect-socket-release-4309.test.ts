@@ -48,16 +48,16 @@ test("collectStreamToResponse releases the reader and cancels the body on abort 
     {},
     {},
     null,
-    controller.signal
+    controller.signal,
   );
 
   assert.ok(
     releaseLockCalls >= 1,
-    "reader.releaseLock() must be called on the abort/error path (was never released before the fix)"
+    "reader.releaseLock() must be called on the abort/error path (was never released before the fix)",
   );
   assert.equal(
     cancelCalls,
     1,
-    "response.body.cancel() must be called exactly once to return the socket to the Undici pool"
+    "response.body.cancel() must be called exactly once to return the socket to the Undici pool",
   );
 });

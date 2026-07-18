@@ -3,8 +3,9 @@ import assert from "node:assert/strict";
 
 const { ClaudeWebExecutor } = await import("../../open-sse/executors/claude-web.ts");
 const { getExecutor, hasSpecializedExecutor } = await import("../../open-sse/executors/index.ts");
-const { __setTlsFetchOverrideForTesting } =
-  await import("../../open-sse/services/claudeTlsClient.ts");
+const { __setTlsFetchOverrideForTesting } = await import(
+  "../../open-sse/services/claudeTlsClient.ts"
+);
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
 

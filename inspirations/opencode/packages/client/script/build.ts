@@ -1,10 +1,10 @@
-import { NodeFileSystem } from "@effect/platform-node"
-import { compile, emitEffectImported, emitPromise, write } from "@opencode-ai/httpapi-codegen"
-import { ClientApi, endpointNames, groupNames, omitEndpoints } from "../src/contract"
-import { Effect } from "effect"
-import { fileURLToPath } from "url"
+import { NodeFileSystem } from "@effect/platform-node";
+import { compile, emitEffectImported, emitPromise, write } from "@opencode-ai/httpapi-codegen";
+import { ClientApi, endpointNames, groupNames, omitEndpoints } from "../src/contract";
+import { Effect } from "effect";
+import { fileURLToPath } from "url";
 
-const contract = compile(ClientApi, { groupNames, endpointNames, omitEndpoints })
+const contract = compile(ClientApi, { groupNames, endpointNames, omitEndpoints });
 
 await Effect.runPromise(
   Effect.all(
@@ -14,7 +14,8 @@ await Effect.runPromise(
           outputTypes: {
             "events.subscribe": {
               name: "OpenCodeEventEncoded",
-              import: 'import type { OpenCodeEventEncoded } from "@opencode-ai/protocol/groups/event"',
+              import:
+                'import type { OpenCodeEventEncoded } from "@opencode-ai/protocol/groups/event"',
             },
           },
         }),
@@ -27,4 +28,4 @@ await Effect.runPromise(
     ],
     { concurrency: 2, discard: true },
   ).pipe(Effect.provide(NodeFileSystem.layer)),
-)
+);

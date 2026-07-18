@@ -1,15 +1,15 @@
-import "./index.css"
-import { Link, Meta, Title } from "@solidjs/meta"
-import { ProviderIcon } from "@opencode-ai/ui/provider-icon"
-import { geoEquirectangular, geoPath } from "d3-geo"
-import { scaleSqrt } from "d3-scale"
-import countryCodesSource from "i18n-iso-countries/codes.json?raw"
-import { feature, mesh } from "topojson-client"
-import countriesTopologySource from "world-atlas/countries-50m.json?raw"
-import ibmPlexMonoRegularLatin1 from "@ibm/plex/IBM-Plex-Mono/fonts/split/woff2/IBMPlexMono-Regular-Latin1.woff2?url"
-import ibmPlexMonoMediumLatin1 from "@ibm/plex/IBM-Plex-Mono/fonts/split/woff2/IBMPlexMono-Medium-Latin1.woff2?url"
-import ibmPlexMonoSemiBoldLatin1 from "@ibm/plex/IBM-Plex-Mono/fonts/split/woff2/IBMPlexMono-SemiBold-Latin1.woff2?url"
-import ibmPlexMonoBoldLatin1 from "@ibm/plex/IBM-Plex-Mono/fonts/split/woff2/IBMPlexMono-Bold-Latin1.woff2?url"
+import "./index.css";
+import { Link, Meta, Title } from "@solidjs/meta";
+import { ProviderIcon } from "@opencode-ai/ui/provider-icon";
+import { geoEquirectangular, geoPath } from "d3-geo";
+import { scaleSqrt } from "d3-scale";
+import countryCodesSource from "i18n-iso-countries/codes.json?raw";
+import { feature, mesh } from "topojson-client";
+import countriesTopologySource from "world-atlas/countries-50m.json?raw";
+import ibmPlexMonoRegularLatin1 from "@ibm/plex/IBM-Plex-Mono/fonts/split/woff2/IBMPlexMono-Regular-Latin1.woff2?url";
+import ibmPlexMonoMediumLatin1 from "@ibm/plex/IBM-Plex-Mono/fonts/split/woff2/IBMPlexMono-Medium-Latin1.woff2?url";
+import ibmPlexMonoSemiBoldLatin1 from "@ibm/plex/IBM-Plex-Mono/fonts/split/woff2/IBMPlexMono-SemiBold-Latin1.woff2?url";
+import ibmPlexMonoBoldLatin1 from "@ibm/plex/IBM-Plex-Mono/fonts/split/woff2/IBMPlexMono-Bold-Latin1.woff2?url";
 import {
   getStatsHomeData,
   type CacheRatioEntry,
@@ -20,20 +20,29 @@ import {
   type SessionCostEntry,
   type TokenCostEntry,
   type UsagePoint,
-} from "@opencode-ai/stats-core/domain/home"
-import { createAsync, query } from "@solidjs/router"
-import { createEffect, createMemo, createSignal, For, onCleanup, onMount, Show, type JSX } from "solid-js"
-import { getRequestEvent } from "solid-js/web"
-import type { FeatureCollection, GeometryObject, GeoJsonProperties } from "geojson"
-import type { GeometryCollection, Topology } from "topojson-specification"
-import { runStatsEffect } from "../stats-runtime"
-import { LocaleLinks } from "../component/locale-links"
-import { useI18n } from "../context/i18n"
-import { useLanguage } from "../context/language"
-import { localizedUrl } from "../lib/language"
-import { findModelCatalogEntry, getModelCatalog, type ModelCatalog } from "./model-catalog"
-import { SectionHeading } from "./section-heading"
-import { setStatsPageCacheHeaders } from "./stats-cache"
+} from "@opencode-ai/stats-core/domain/home";
+import { createAsync, query } from "@solidjs/router";
+import {
+  createEffect,
+  createMemo,
+  createSignal,
+  For,
+  onCleanup,
+  onMount,
+  Show,
+  type JSX,
+} from "solid-js";
+import { getRequestEvent } from "solid-js/web";
+import type { FeatureCollection, GeometryObject, GeoJsonProperties } from "geojson";
+import type { GeometryCollection, Topology } from "topojson-specification";
+import { runStatsEffect } from "../stats-runtime";
+import { LocaleLinks } from "../component/locale-links";
+import { useI18n } from "../context/i18n";
+import { useLanguage } from "../context/language";
+import { localizedUrl } from "../lib/language";
+import { findModelCatalogEntry, getModelCatalog, type ModelCatalog } from "./model-catalog";
+import { SectionHeading } from "./section-heading";
+import { setStatsPageCacheHeaders } from "./stats-cache";
 import {
   applyThemePreference,
   Footer,
@@ -43,12 +52,12 @@ import {
   isThemePreference,
   themeStorageKey,
   type ThemePreference,
-} from "./stats-shell"
+} from "./stats-shell";
 
-const products = ["All Users", "Zen", "Go"] as const
-const tokenProducts = ["Zen", "Go"] as const
-const ranges = ["1D", "1W", "2W", "1M", "2M"] as const
-const statsUnfurlPath = "banner.jpg"
+const products = ["All Users", "Zen", "Go"] as const;
+const tokenProducts = ["Zen", "Go"] as const;
+const ranges = ["1D", "1W", "2W", "1M", "2M"] as const;
+const statsUnfurlPath = "banner.jpg";
 const usageColors = [
   "#ed6aff",
   "#a684ff",
@@ -61,89 +70,104 @@ const usageColors = [
   "#ffb900",
   "#ff8904",
   "#ff6467",
-]
-const marketColors = ["#ed6aff", "#a684ff", "#7c86ff", "#51a2ff", "#00d3f2", "#00d5be", "#00bc7d", "#9ae600", "#ffb900"]
-const geoMapWidth = 960
-const geoMapHeight = 430
+];
+const marketColors = [
+  "#ed6aff",
+  "#a684ff",
+  "#7c86ff",
+  "#51a2ff",
+  "#00d3f2",
+  "#00d5be",
+  "#00bc7d",
+  "#9ae600",
+  "#ffb900",
+];
+const geoMapWidth = 960;
+const geoMapHeight = 430;
 
-type UsageProduct = (typeof products)[number]
-type TokenProduct = (typeof tokenProducts)[number]
-type UsageRange = (typeof ranges)[number]
-type IsoCountryCode = readonly [string, string, string]
-type WorldCountryProperties = GeoJsonProperties & { name?: string }
-type WorldTopology = Topology<{ countries: GeometryCollection<WorldCountryProperties> }>
+type UsageProduct = (typeof products)[number];
+type TokenProduct = (typeof tokenProducts)[number];
+type UsageRange = (typeof ranges)[number];
+type IsoCountryCode = readonly [string, string, string];
+type WorldCountryProperties = GeoJsonProperties & { name?: string };
+type WorldTopology = Topology<{ countries: GeometryCollection<WorldCountryProperties> }>;
 
 function productLabel(product: UsageProduct | TokenProduct, i18n: ReturnType<typeof useI18n>) {
-  if (product === "All Users") return i18n.t("product.allUsers")
-  if (product === "Zen") return i18n.t("product.zen")
-  return i18n.t("product.go")
+  if (product === "All Users") return i18n.t("product.allUsers");
+  if (product === "Zen") return i18n.t("product.zen");
+  return i18n.t("product.go");
 }
 
 function rangeLabel(range: UsageRange, i18n: ReturnType<typeof useI18n>) {
-  if (range === "1D") return i18n.t("range.1D")
-  if (range === "1W") return i18n.t("range.1W")
-  if (range === "2W") return i18n.t("range.2W")
-  if (range === "1M") return i18n.t("range.1M")
-  return i18n.t("range.2M")
+  if (range === "1D") return i18n.t("range.1D");
+  if (range === "1W") return i18n.t("range.1W");
+  if (range === "2W") return i18n.t("range.2W");
+  if (range === "1M") return i18n.t("range.1M");
+  return i18n.t("range.2M");
 }
 
 const countryNumericIds = new Map(
-  (JSON.parse(countryCodesSource) as IsoCountryCode[]).map((country) => [country[0], country[2]] as const),
-)
-const worldTopology = JSON.parse(countriesTopologySource) as WorldTopology
+  (JSON.parse(countryCodesSource) as IsoCountryCode[]).map(
+    (country) => [country[0], country[2]] as const,
+  ),
+);
+const worldTopology = JSON.parse(countriesTopologySource) as WorldTopology;
 const worldCountryGeometries: GeometryCollection<WorldCountryProperties> = {
   ...worldTopology.objects.countries,
-  geometries: worldTopology.objects.countries.geometries.filter((country) => String(country.id ?? "") !== "010"),
-}
-const worldCountries = feature<WorldCountryProperties>(worldTopology, worldCountryGeometries) as FeatureCollection<
-  GeometryObject,
-  WorldCountryProperties
->
+  geometries: worldTopology.objects.countries.geometries.filter(
+    (country) => String(country.id ?? "") !== "010",
+  ),
+};
+const worldCountries = feature<WorldCountryProperties>(
+  worldTopology,
+  worldCountryGeometries,
+) as FeatureCollection<GeometryObject, WorldCountryProperties>;
 const worldProjection = geoEquirectangular().fitExtent(
   [
     [10, 12],
     [geoMapWidth - 10, geoMapHeight - 12],
   ],
   worldCountries,
-)
-const worldPath = geoPath(worldProjection)
+);
+const worldPath = geoPath(worldProjection);
 const worldCountryPaths = worldCountries.features.map((country) => ({
   id: String(country.id ?? "").padStart(3, "0"),
   path: worldPath(country) ?? "",
   marker: geoCountryMarker(country),
-}))
-const worldBorderPath = worldPath(mesh(worldTopology, worldCountryGeometries, (a, b) => a !== b)) ?? ""
+}));
+const worldBorderPath =
+  worldPath(mesh(worldTopology, worldCountryGeometries, (a, b) => a !== b)) ?? "";
 
 const getData = query(async () => {
-  "use server"
-  return runStatsEffect(getStatsHomeData())
-}, "getStatsHomeData")
+  "use server";
+  return runStatsEffect(getStatsHomeData());
+}, "getStatsHomeData");
 
 export default function StatsHome() {
-  const i18n = useI18n()
-  const language = useLanguage()
-  const event = getRequestEvent()
-  setStatsPageCacheHeaders(event?.response.headers)
-  const statsHomeUrl = localizedUrl(language.locale(), "/data/")
-  const statsUnfurlUrl = new URL(statsUnfurlPath, localizedUrl("en", "/data/")).toString()
-  const data = createAsync(() => getData())
-  const catalog = createAsync(() => getModelCatalog())
-  const githubStars = createAsync(() => getGitHubStars())
-  const [themePreference, setThemePreference] = createSignal<ThemePreference>("system")
+  const i18n = useI18n();
+  const language = useLanguage();
+  const event = getRequestEvent();
+  setStatsPageCacheHeaders(event?.response.headers);
+  const statsHomeUrl = localizedUrl(language.locale(), "/data/");
+  const statsUnfurlUrl = new URL(statsUnfurlPath, localizedUrl("en", "/data/")).toString();
+  const data = createAsync(() => getData());
+  const catalog = createAsync(() => getModelCatalog());
+  const githubStars = createAsync(() => getGitHubStars());
+  const [themePreference, setThemePreference] = createSignal<ThemePreference>("system");
   const updateThemePreference = (preference: ThemePreference) => {
-    applyThemePreference(preference)
-    setThemePreference(preference)
-    if (typeof window === "undefined") return
-    window.localStorage.setItem(themeStorageKey, preference)
-  }
+    applyThemePreference(preference);
+    setThemePreference(preference);
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(themeStorageKey, preference);
+  };
 
   onMount(() => {
-    if (typeof window === "undefined") return
-    const preference = window.localStorage.getItem(themeStorageKey)
-    const nextPreference = isThemePreference(preference) ? preference : "system"
-    applyThemePreference(nextPreference)
-    setThemePreference(nextPreference)
-  })
+    if (typeof window === "undefined") return;
+    const preference = window.localStorage.getItem(themeStorageKey);
+    const nextPreference = isThemePreference(preference) ? preference : "system";
+    applyThemePreference(nextPreference);
+    setThemePreference(nextPreference);
+  });
 
   return (
     <main data-page="stats" data-theme={themePreference()}>
@@ -165,10 +189,34 @@ export default function StatsHome() {
       <Meta name="twitter:description" content={i18n.t("app.description")} />
       <Meta name="twitter:image" content={statsUnfurlUrl} />
       <Meta name="twitter:image:alt" content={i18n.t("app.unfurlAlt")} />
-      <Link rel="preload" href={ibmPlexMonoRegularLatin1} as="font" type="font/woff2" crossorigin="anonymous" />
-      <Link rel="preload" href={ibmPlexMonoMediumLatin1} as="font" type="font/woff2" crossorigin="anonymous" />
-      <Link rel="preload" href={ibmPlexMonoSemiBoldLatin1} as="font" type="font/woff2" crossorigin="anonymous" />
-      <Link rel="preload" href={ibmPlexMonoBoldLatin1} as="font" type="font/woff2" crossorigin="anonymous" />
+      <Link
+        rel="preload"
+        href={ibmPlexMonoRegularLatin1}
+        as="font"
+        type="font/woff2"
+        crossorigin="anonymous"
+      />
+      <Link
+        rel="preload"
+        href={ibmPlexMonoMediumLatin1}
+        as="font"
+        type="font/woff2"
+        crossorigin="anonymous"
+      />
+      <Link
+        rel="preload"
+        href={ibmPlexMonoSemiBoldLatin1}
+        as="font"
+        type="font/woff2"
+        crossorigin="anonymous"
+      />
+      <Link
+        rel="preload"
+        href={ibmPlexMonoBoldLatin1}
+        as="font"
+        type="font/woff2"
+        crossorigin="anonymous"
+      />
       <Header githubStars={githubStars() ?? githubLink.fallbackStars} />
       <div data-component="container">
         <div data-component="content">
@@ -187,60 +235,84 @@ export default function StatsHome() {
             )}
           </Show>
         </div>
-        <Footer themePreference={themePreference()} onThemePreferenceChange={updateThemePreference} />
+        <Footer
+          themePreference={themePreference()}
+          onThemePreferenceChange={updateThemePreference}
+        />
       </div>
     </main>
-  )
+  );
 }
 
 function Hero(props: { updatedAt: string | null }) {
-  const i18n = useI18n()
-  const language = useLanguage()
-  const [timeZone, setTimeZone] = createSignal("UTC")
-  const [previousTimeZone, setPreviousTimeZone] = createSignal("UTC")
-  const [isTicking, setIsTicking] = createSignal(false)
+  const i18n = useI18n();
+  const language = useLanguage();
+  const [timeZone, setTimeZone] = createSignal("UTC");
+  const [previousTimeZone, setPreviousTimeZone] = createSignal("UTC");
+  const [isTicking, setIsTicking] = createSignal(false);
   const updatedAtParts = (timeZone: string) =>
     props.updatedAt
-      ? formatUpdatedAtParts(props.updatedAt, timeZone, language.tag(language.locale()), i18n.t("home.justNow"))
-      : { date: i18n.t("home.noRows"), time: "" }
-  const previousUpdatedAt = createMemo(() => updatedAtParts(previousTimeZone()))
-  const currentUpdatedAt = createMemo(() => updatedAtParts(timeZone()))
+      ? formatUpdatedAtParts(
+          props.updatedAt,
+          timeZone,
+          language.tag(language.locale()),
+          i18n.t("home.justNow"),
+        )
+      : { date: i18n.t("home.noRows"), time: "" };
+  const previousUpdatedAt = createMemo(() => updatedAtParts(previousTimeZone()));
+  const currentUpdatedAt = createMemo(() => updatedAtParts(timeZone()));
   const currentUpdatedLabel = createMemo(() =>
-    props.updatedAt ? `${i18n.t("home.updated")} ${formatUpdatedAtLabel(currentUpdatedAt())}` : i18n.t("home.noRows"),
-  )
-  const isDateTicking = createMemo(() => isTicking() && previousUpdatedAt().date !== currentUpdatedAt().date)
-  const isTimeTicking = createMemo(() => isTicking() && previousUpdatedAt().time !== currentUpdatedAt().time)
+    props.updatedAt
+      ? `${i18n.t("home.updated")} ${formatUpdatedAtLabel(currentUpdatedAt())}`
+      : i18n.t("home.noRows"),
+  );
+  const isDateTicking = createMemo(
+    () => isTicking() && previousUpdatedAt().date !== currentUpdatedAt().date,
+  );
+  const isTimeTicking = createMemo(
+    () => isTicking() && previousUpdatedAt().time !== currentUpdatedAt().time,
+  );
 
   onMount(() => {
-    if (!props.updatedAt) return
-    const nextTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC"
-    if (nextTimeZone === "UTC") return
+    if (!props.updatedAt) return;
+    const nextTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+    if (nextTimeZone === "UTC") return;
     if (
       formatUpdatedAtLabel(
-        formatUpdatedAtParts(props.updatedAt, nextTimeZone, language.tag(language.locale()), i18n.t("home.justNow")),
+        formatUpdatedAtParts(
+          props.updatedAt,
+          nextTimeZone,
+          language.tag(language.locale()),
+          i18n.t("home.justNow"),
+        ),
       ) === formatUpdatedAtLabel(updatedAtParts("UTC"))
     )
-      return
-    const timeouts: number[] = []
+      return;
+    const timeouts: number[] = [];
     timeouts.push(
       window.setTimeout(() => {
-        setPreviousTimeZone(timeZone())
-        setTimeZone(nextTimeZone)
-        setIsTicking(true)
+        setPreviousTimeZone(timeZone());
+        setTimeZone(nextTimeZone);
+        setIsTicking(true);
         timeouts.push(
           window.setTimeout(() => {
-            setPreviousTimeZone(nextTimeZone)
-            setIsTicking(false)
+            setPreviousTimeZone(nextTimeZone);
+            setIsTicking(false);
           }, 720),
-        )
+        );
       }, 480),
-    )
-    onCleanup(() => timeouts.forEach((timeout) => window.clearTimeout(timeout)))
-  })
+    );
+    onCleanup(() => timeouts.forEach((timeout) => window.clearTimeout(timeout)));
+  });
 
   return (
     <section data-section="hero">
-      <p data-slot="hero-meta" aria-live="polite" aria-atomic="true" aria-label={currentUpdatedLabel()}>
+      <p
+        data-slot="hero-meta"
+        aria-live="polite"
+        aria-atomic="true"
+        aria-label={currentUpdatedLabel()}
+      >
         <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16">
           <path
             fill-rule="evenodd"
@@ -282,7 +354,7 @@ function Hero(props: { updatedAt: string | null }) {
         <p data-slot="hero-copy">{i18n.t("home.heroCopy")}</p>
       </div>
     </section>
-  )
+  );
 }
 
 function HeroMetaTickerPart(props: { previous: string; current: string; ticking: boolean }) {
@@ -293,27 +365,30 @@ function HeroMetaTickerPart(props: { previous: string; current: string; ticking:
         <span data-slot="hero-meta-ticker-item">{props.current}</span>
       </span>
     </span>
-  )
+  );
 }
 
 function StatsLoading() {
-  const i18n = useI18n()
+  const i18n = useI18n();
   return (
     <>
       <Hero updatedAt={null} />
       <ChartSection id="top-models" title={i18n.t("home.usageTitle")}>
-        <EmptyState title={i18n.t("home.loadingTitle")} description={i18n.t("home.loadingDescription")} />
+        <EmptyState
+          title={i18n.t("home.loadingTitle")}
+          description={i18n.t("home.loadingDescription")}
+        />
       </ChartSection>
     </>
-  )
+  );
 }
 
 function ChartSection(props: {
-  id?: string
-  title: string
-  description?: string
-  controls?: JSX.Element
-  children: JSX.Element
+  id?: string;
+  title: string;
+  description?: string;
+  controls?: JSX.Element;
+  children: JSX.Element;
 }) {
   return (
     <section id={props.id} data-section="chart">
@@ -334,15 +409,17 @@ function ChartSection(props: {
       </div>
       {props.children}
     </section>
-  )
+  );
 }
 
 function SectionTitle(props: { id: string; title: string; description: string }) {
-  return <SectionHeading href={`#${props.id}`} title={props.title} description={props.description} />
+  return (
+    <SectionHeading href={`#${props.id}`} title={props.title} description={props.description} />
+  );
 }
 
 function SectionBridge(props: { label: string; href: string }) {
-  const i18n = useI18n()
+  const i18n = useI18n();
   return (
     <a data-component="section-bridge" href={props.href}>
       <span>{i18n.t("bridge.learnMore")}</span>
@@ -350,7 +427,7 @@ function SectionBridge(props: { label: string; href: string }) {
       <strong>{props.label}</strong>
       <b>▸</b>
     </a>
-  )
+  );
 }
 
 function EmptyState(props: { title: string; description: string }) {
@@ -359,12 +436,12 @@ function EmptyState(props: { title: string; description: string }) {
       <strong>{props.title}</strong>
       <p>{props.description}</p>
     </div>
-  )
+  );
 }
 
 function formatUpdatedAtParts(value: string, timeZone: string, locale: string, fallback: string) {
-  const date = new Date(value)
-  if (Number.isNaN(date.getTime())) return { date: fallback, time: "" }
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return { date: fallback, time: "" };
   return {
     date: new Intl.DateTimeFormat(locale, {
       month: "short",
@@ -377,40 +454,43 @@ function formatUpdatedAtParts(value: string, timeZone: string, locale: string, f
       timeZone,
       timeZoneName: "short",
     }).format(date),
-  }
+  };
 }
 
 function formatUpdatedAtLabel(value: { date: string; time: string }) {
-  if (!value.time) return value.date
-  return `${value.date}, ${value.time}`
+  if (!value.time) return value.date;
+  return `${value.date}, ${value.time}`;
 }
 
-function TopModelsSection(props: { data: StatsHomeData["usage"]; leaderboard: StatsHomeData["leaderboard"] }) {
-  const i18n = useI18n()
-  const [product, setProduct] = createSignal<UsageProduct>("Go")
-  const [range, setRange] = createSignal<UsageRange>("2M")
-  const [sheet, setSheet] = createSignal<"product" | "range">()
-  const [activeModel, setActiveModel] = createSignal<string>()
-  const data = createMemo(() => props.data[product()][range()])
-  const leaderboard = createMemo(() => props.leaderboard[product()][range()])
+function TopModelsSection(props: {
+  data: StatsHomeData["usage"];
+  leaderboard: StatsHomeData["leaderboard"];
+}) {
+  const i18n = useI18n();
+  const [product, setProduct] = createSignal<UsageProduct>("Go");
+  const [range, setRange] = createSignal<UsageRange>("2M");
+  const [sheet, setSheet] = createSignal<"product" | "range">();
+  const [activeModel, setActiveModel] = createSignal<string>();
+  const data = createMemo(() => props.data[product()][range()]);
+  const leaderboard = createMemo(() => props.leaderboard[product()][range()]);
 
   createEffect(() => {
-    if (!sheet()) return
-    if (typeof document === "undefined") return
-    const htmlOverflow = document.documentElement.style.overflow
-    const bodyOverflow = document.body.style.overflow
-    document.documentElement.style.overflow = "hidden"
-    document.body.style.overflow = "hidden"
+    if (!sheet()) return;
+    if (typeof document === "undefined") return;
+    const htmlOverflow = document.documentElement.style.overflow;
+    const bodyOverflow = document.body.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setSheet(undefined)
-    }
-    document.addEventListener("keydown", onKeyDown)
+      if (event.key === "Escape") setSheet(undefined);
+    };
+    document.addEventListener("keydown", onKeyDown);
     onCleanup(() => {
-      document.documentElement.style.overflow = htmlOverflow
-      document.body.style.overflow = bodyOverflow
-      document.removeEventListener("keydown", onKeyDown)
-    })
-  })
+      document.documentElement.style.overflow = htmlOverflow;
+      document.body.style.overflow = bodyOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+    });
+  });
 
   return (
     <section id="top-models" data-section="top-models">
@@ -423,7 +503,12 @@ function TopModelsSection(props: { data: StatsHomeData["usage"]; leaderboard: St
       />
       <Show
         when={data().some((item) => usageTotal(item) > 0)}
-        fallback={<EmptyState title={i18n.t("home.noUsageTitle")} description={i18n.t("home.noUsageDescription")} />}
+        fallback={
+          <EmptyState
+            title={i18n.t("home.noUsageTitle")}
+            description={i18n.t("home.noUsageDescription")}
+          />
+        }
       >
         <TopModelsChart
           data={data()}
@@ -435,13 +520,25 @@ function TopModelsSection(props: { data: StatsHomeData["usage"]; leaderboard: St
       <Show
         when={leaderboard().length > 0}
         fallback={
-          <EmptyState title={i18n.t("home.noLeaderboardTitle")} description={i18n.t("home.noLeaderboardDescription")} />
+          <EmptyState
+            title={i18n.t("home.noLeaderboardTitle")}
+            description={i18n.t("home.noLeaderboardDescription")}
+          />
         }
       >
-        <Leaderboard data={leaderboard()} activeModel={activeModel()} onActiveModelChange={setActiveModel} />
+        <Leaderboard
+          data={leaderboard()}
+          activeModel={activeModel()}
+          onActiveModelChange={setActiveModel}
+        />
       </Show>
       <div data-slot="chart-footer" hidden>
-        <StatsFilters product={product()} range={range()} onProductSelect={setProduct} onRangeSelect={setRange} />
+        <StatsFilters
+          product={product()}
+          range={range()}
+          onProductSelect={setProduct}
+          onRangeSelect={setRange}
+        />
         <div data-slot="top-models-mobile-controls">
           <MobileFilterButton
             label={i18n.t("home.productFilter")}
@@ -464,22 +561,27 @@ function TopModelsSection(props: { data: StatsHomeData["usage"]; leaderboard: St
             product={product()}
             range={range()}
             onProductSelect={(value) => {
-              setProduct(value)
-              setSheet(undefined)
+              setProduct(value);
+              setSheet(undefined);
             }}
             onRangeSelect={(value) => {
-              setRange(value)
-              setSheet(undefined)
+              setRange(value);
+              setSheet(undefined);
             }}
             onClose={() => setSheet(undefined)}
           />
         )}
       </Show>
     </section>
-  )
+  );
 }
 
-function MobileFilterButton(props: { label: string; value: string; expanded: boolean; onClick: () => void }) {
+function MobileFilterButton(props: {
+  label: string;
+  value: string;
+  expanded: boolean;
+  onClick: () => void;
+}) {
   return (
     <button
       data-slot="mobile-filter-button"
@@ -491,24 +593,26 @@ function MobileFilterButton(props: { label: string; value: string; expanded: boo
       <span>{props.value}</span>
       <ChevronDown />
     </button>
-  )
+  );
 }
 
 function MobileFilterSheet(props: {
-  kind: "product" | "range"
-  product: UsageProduct
-  range: UsageRange
-  onProductSelect: (product: UsageProduct) => void
-  onRangeSelect: (range: UsageRange) => void
-  onClose: () => void
+  kind: "product" | "range";
+  product: UsageProduct;
+  range: UsageRange;
+  onProductSelect: (product: UsageProduct) => void;
+  onRangeSelect: (range: UsageRange) => void;
+  onClose: () => void;
 }) {
-  const i18n = useI18n()
+  const i18n = useI18n();
   return (
     <div data-component="mobile-filter-sheet" role="presentation" onClick={props.onClose}>
       <div
         data-slot="filter-sheet-panel"
         role="radiogroup"
-        aria-label={props.kind === "product" ? i18n.t("home.productFilter") : i18n.t("home.dateRange")}
+        aria-label={
+          props.kind === "product" ? i18n.t("home.productFilter") : i18n.t("home.dateRange")
+        }
       >
         <Show
           when={props.kind === "product"}
@@ -521,8 +625,8 @@ function MobileFilterSheet(props: {
                   aria-checked={props.range === item}
                   data-active={props.range === item ? "true" : undefined}
                   onClick={(event) => {
-                    event.stopPropagation()
-                    props.onRangeSelect(item)
+                    event.stopPropagation();
+                    props.onRangeSelect(item);
                   }}
                 >
                   {rangeLabel(item, i18n)}
@@ -539,8 +643,8 @@ function MobileFilterSheet(props: {
                 aria-checked={props.product === item}
                 data-active={props.product === item ? "true" : undefined}
                 onClick={(event) => {
-                  event.stopPropagation()
-                  props.onProductSelect(item)
+                  event.stopPropagation();
+                  props.onProductSelect(item);
                 }}
               >
                 {productLabel(item, i18n)}
@@ -550,7 +654,7 @@ function MobileFilterSheet(props: {
         </Show>
       </div>
     </div>
-  )
+  );
 }
 
 function ChevronDown() {
@@ -558,16 +662,16 @@ function ChevronDown() {
     <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none">
       <path d="M5 7L8 10L11 7" stroke="currentColor" />
     </svg>
-  )
+  );
 }
 
 function StatsFilters(props: {
-  product: UsageProduct
-  range: UsageRange
-  onProductSelect: (product: UsageProduct) => void
-  onRangeSelect: (range: UsageRange) => void
+  product: UsageProduct;
+  range: UsageRange;
+  onProductSelect: (product: UsageProduct) => void;
+  onRangeSelect: (range: UsageRange) => void;
 }) {
-  const i18n = useI18n()
+  const i18n = useI18n();
   return (
     <>
       <FilterPills
@@ -587,19 +691,24 @@ function StatsFilters(props: {
         onSelect={props.onRangeSelect}
       />
     </>
-  )
+  );
 }
 
 function FilterPills<T extends string>(props: {
-  items: readonly T[]
-  selected: T
-  label: string
-  variant: "product" | "range"
-  formatLabel?: (item: T) => string
-  onSelect: (item: T) => void
+  items: readonly T[];
+  selected: T;
+  label: string;
+  variant: "product" | "range";
+  formatLabel?: (item: T) => string;
+  onSelect: (item: T) => void;
 }) {
   return (
-    <div data-component="usage-filter" data-variant={props.variant} role="radiogroup" aria-label={props.label}>
+    <div
+      data-component="usage-filter"
+      data-variant={props.variant}
+      role="radiogroup"
+      aria-label={props.label}
+    >
       <For each={props.items}>
         {(item) => (
           <button
@@ -614,26 +723,26 @@ function FilterPills<T extends string>(props: {
         )}
       </For>
     </div>
-  )
+  );
 }
 
 function TopModelsChart(props: {
-  data: UsagePoint[]
-  range: UsageRange
-  metric?: "tokens" | "users"
-  ariaLabel?: string
-  activeModel: string | undefined
-  onActiveModelChange: (model: string | undefined) => void
+  data: UsagePoint[];
+  range: UsageRange;
+  metric?: "tokens" | "users";
+  ariaLabel?: string;
+  activeModel: string | undefined;
+  onActiveModelChange: (model: string | undefined) => void;
 }) {
-  const i18n = useI18n()
-  let chartRef: HTMLDivElement | undefined
-  const [activeIndex, setActiveIndex] = createSignal<number>()
-  const maxTotal = createMemo(() => getTopModelsMaxTotal(props.data))
-  const segmentOrder = createMemo(() => getTopModelsSegmentOrder(props.data))
-  const activePoint = createMemo(() => props.data[activeIndex() ?? -1])
-  const metric = createMemo(() => props.metric ?? "tokens")
+  const i18n = useI18n();
+  let chartRef: HTMLDivElement | undefined;
+  const [activeIndex, setActiveIndex] = createSignal<number>();
+  const maxTotal = createMemo(() => getTopModelsMaxTotal(props.data));
+  const segmentOrder = createMemo(() => getTopModelsSegmentOrder(props.data));
+  const activePoint = createMemo(() => props.data[activeIndex() ?? -1]);
+  const metric = createMemo(() => props.metric ?? "tokens");
 
-  createEffect(() => scrollDenseChartToEnd(chartRef, props.range, props.data.length))
+  createEffect(() => scrollDenseChartToEnd(chartRef, props.range, props.data.length));
 
   return (
     <div
@@ -646,9 +755,9 @@ function TopModelsChart(props: {
       aria-label={props.ariaLabel ?? i18n.t("home.stackedUsageChart")}
       style={{ "--top-models-count": props.data.length } as JSX.CSSProperties}
       onPointerLeave={(event) => {
-        if (event.pointerType === "touch") return
-        setActiveIndex(undefined)
-        props.onActiveModelChange(undefined)
+        if (event.pointerType === "touch") return;
+        setActiveIndex(undefined);
+        props.onActiveModelChange(undefined);
       }}
     >
       <div data-slot="top-models-axis" aria-hidden="true">
@@ -656,14 +765,22 @@ function TopModelsChart(props: {
           {(day, index) => (
             <div
               data-active={activeIndex() === index() ? "true" : undefined}
-              data-label-hidden={isColumnLabelHidden(index(), props.data.length) ? "true" : undefined}
-              data-mobile-hidden={isTopModelsMobileAxisHidden(index(), props.data.length) ? "true" : undefined}
+              data-label-hidden={
+                isColumnLabelHidden(index(), props.data.length) ? "true" : undefined
+              }
+              data-mobile-hidden={
+                isTopModelsMobileAxisHidden(index(), props.data.length) ? "true" : undefined
+              }
             >
               <span data-slot="axis-label">
-                <span data-slot="axis-total">{formatUsageChartValue(usageTotal(day), metric())}</span>
+                <span data-slot="axis-total">
+                  {formatUsageChartValue(usageTotal(day), metric())}
+                </span>
                 <span data-slot="axis-date">
                   <span data-slot="axis-date-full">{day.date}</span>
-                  <span data-slot="axis-date-mobile">{formatTopModelsMobileDate(day.date, props.range)}</span>
+                  <span data-slot="axis-date-mobile">
+                    {formatTopModelsMobileDate(day.date, props.range)}
+                  </span>
                 </span>
               </span>
             </div>
@@ -673,9 +790,9 @@ function TopModelsChart(props: {
       <div
         data-slot="top-models-bars"
         onPointerLeave={(event) => {
-          if (event.pointerType === "touch") return
-          setActiveIndex(undefined)
-          props.onActiveModelChange(undefined)
+          if (event.pointerType === "touch") return;
+          setActiveIndex(undefined);
+          props.onActiveModelChange(undefined);
         }}
       >
         <For each={props.data}>
@@ -686,39 +803,45 @@ function TopModelsChart(props: {
               tabIndex={0}
               aria-label={`${day.date} ${formatUsageChartValue(usageTotal(day), metric())} ${usageChartTotalLabel(metric(), i18n)}`}
               data-active={activeIndex() === dayIndex() ? "true" : undefined}
-              data-muted={activeIndex() !== undefined && activeIndex() !== dayIndex() ? "true" : undefined}
-              style={{ "--top-models-bar-height": `${getTopModelsBarHeight(usageTotal(day), maxTotal())}%` }}
+              data-muted={
+                activeIndex() !== undefined && activeIndex() !== dayIndex() ? "true" : undefined
+              }
+              style={{
+                "--top-models-bar-height": `${getTopModelsBarHeight(usageTotal(day), maxTotal())}%`,
+              }}
               onPointerDown={(event) => {
-                if (event.pointerType !== "touch") return
-                setActiveIndex(dayIndex())
-                props.onActiveModelChange(undefined)
+                if (event.pointerType !== "touch") return;
+                setActiveIndex(dayIndex());
+                props.onActiveModelChange(undefined);
               }}
               onPointerEnter={(event) => {
-                setActiveIndex(dayIndex())
-                if (isTopModelsBlankHover(event.currentTarget, event.clientY)) props.onActiveModelChange(undefined)
+                setActiveIndex(dayIndex());
+                if (isTopModelsBlankHover(event.currentTarget, event.clientY))
+                  props.onActiveModelChange(undefined);
               }}
               onPointerMove={(event) => {
-                if (event.pointerType === "touch") return
-                setActiveIndex(dayIndex())
-                if (isTopModelsBlankHover(event.currentTarget, event.clientY)) props.onActiveModelChange(undefined)
+                if (event.pointerType === "touch") return;
+                setActiveIndex(dayIndex());
+                if (isTopModelsBlankHover(event.currentTarget, event.clientY))
+                  props.onActiveModelChange(undefined);
               }}
               onClick={() => {
-                setActiveIndex(dayIndex())
-                props.onActiveModelChange(undefined)
+                setActiveIndex(dayIndex());
+                props.onActiveModelChange(undefined);
               }}
               onFocus={() => {
-                setActiveIndex(dayIndex())
-                props.onActiveModelChange(undefined)
+                setActiveIndex(dayIndex());
+                props.onActiveModelChange(undefined);
               }}
               onBlur={() => {
-                setActiveIndex(undefined)
-                props.onActiveModelChange(undefined)
+                setActiveIndex(undefined);
+                props.onActiveModelChange(undefined);
               }}
               onKeyDown={(event) => {
-                if (event.key !== "Enter" && event.key !== " ") return
-                event.preventDefault()
-                setActiveIndex(dayIndex())
-                props.onActiveModelChange(undefined)
+                if (event.key !== "Enter" && event.key !== " ") return;
+                event.preventDefault();
+                setActiveIndex(dayIndex());
+                props.onActiveModelChange(undefined);
               }}
             >
               <div
@@ -741,19 +864,19 @@ function TopModelsChart(props: {
                         ),
                       }}
                       onPointerEnter={(event) => {
-                        event.stopPropagation()
-                        setActiveIndex(dayIndex())
-                        props.onActiveModelChange(item.segment.model)
+                        event.stopPropagation();
+                        setActiveIndex(dayIndex());
+                        props.onActiveModelChange(item.segment.model);
                       }}
                       onPointerDown={(event) => {
-                        event.stopPropagation()
-                        setActiveIndex(dayIndex())
-                        props.onActiveModelChange(item.segment.model)
+                        event.stopPropagation();
+                        setActiveIndex(dayIndex());
+                        props.onActiveModelChange(item.segment.model);
                       }}
                       onClick={(event) => {
-                        event.stopPropagation()
-                        setActiveIndex(dayIndex())
-                        props.onActiveModelChange(item.segment.model)
+                        event.stopPropagation();
+                        setActiveIndex(dayIndex());
+                        props.onActiveModelChange(item.segment.model);
                       }}
                     />
                   )}
@@ -768,7 +891,8 @@ function TopModelsChart(props: {
                     <strong>{point().date}</strong>
                     <Show when={metric() === "tokens"}>
                       <span>
-                        {formatUsageChartValue(usageTotal(point()), metric())} {usageChartTotalLabel(metric(), i18n)}
+                        {formatUsageChartValue(usageTotal(point()), metric())}{" "}
+                        {usageChartTotalLabel(metric(), i18n)}
                       </span>
                     </Show>
                     <Show when={metric() === "tokens"}>
@@ -777,9 +901,12 @@ function TopModelsChart(props: {
                     <For each={visibleTopModelsSegments(point())}>
                       {(item) => (
                         <p
-                          data-active={props.activeModel === item.segment.model ? "true" : undefined}
+                          data-active={
+                            props.activeModel === item.segment.model ? "true" : undefined
+                          }
                           data-muted={
-                            props.activeModel !== undefined && props.activeModel !== item.segment.model
+                            props.activeModel !== undefined &&
+                            props.activeModel !== item.segment.model
                               ? "true"
                               : undefined
                           }
@@ -787,7 +914,12 @@ function TopModelsChart(props: {
                           <span data-slot="tooltip-label">
                             <i
                               style={{
-                                background: getRankColor(item.segment.model, item.index, segmentOrder(), usageColors),
+                                background: getRankColor(
+                                  item.segment.model,
+                                  item.index,
+                                  segmentOrder(),
+                                  usageColors,
+                                ),
                               }}
                             />{" "}
                             {item.segment.model}
@@ -804,13 +936,13 @@ function TopModelsChart(props: {
         </For>
       </div>
     </div>
-  )
+  );
 }
 
 function UniqueUsersSection(props: { data: StatsHomeData["users"] }) {
-  const i18n = useI18n()
-  const [activeModel, setActiveModel] = createSignal<string>()
-  const data = createMemo(() => props.data.Go["2M"])
+  const i18n = useI18n();
+  const [activeModel, setActiveModel] = createSignal<string>();
+  const data = createMemo(() => props.data.Go["2M"]);
 
   return (
     <section id="unique-users" data-section="unique-users">
@@ -823,7 +955,10 @@ function UniqueUsersSection(props: { data: StatsHomeData["users"] }) {
       <Show
         when={data().some((item) => usageTotal(item) > 0)}
         fallback={
-          <EmptyState title={i18n.t("home.noUserDataTitle")} description={i18n.t("home.noUserDataDescription")} />
+          <EmptyState
+            title={i18n.t("home.noUserDataTitle")}
+            description={i18n.t("home.noUserDataDescription")}
+          />
         }
       >
         <TopModelsChart
@@ -836,49 +971,55 @@ function UniqueUsersSection(props: { data: StatsHomeData["users"] }) {
         />
       </Show>
     </section>
-  )
+  );
 }
 
 function isTopModelsBlankHover(bar: HTMLElement, clientY: number) {
-  const stack = bar.querySelector<HTMLElement>('[data-slot="top-models-stack"]')
-  if (!stack) return true
-  return clientY < stack.getBoundingClientRect().top - 6
+  const stack = bar.querySelector<HTMLElement>('[data-slot="top-models-stack"]');
+  if (!stack) return true;
+  return clientY < stack.getBoundingClientRect().top - 6;
 }
 
 function getTopModelsBarHeight(total: number, max: number) {
-  if (total <= 0) return 0
-  return Math.max(2, Math.min(100, (total / max) * 100))
+  if (total <= 0) return 0;
+  return Math.max(2, Math.min(100, (total / max) * 100));
 }
 
 function getTopModelsMaxTotal(data: UsagePoint[]) {
-  const max = Math.max(0, ...data.map((item) => usageTotal(item)))
-  if (max === 0) return 1
-  if (data.length === 1) return max * 1.75
-  return max
+  const max = Math.max(0, ...data.map((item) => usageTotal(item)));
+  if (max === 0) return 1;
+  if (data.length === 1) return max * 1.75;
+  return max;
 }
 
 function getTopModelsSegmentRows(point: UsagePoint, order: Map<string, number>) {
-  const total = usageTotal(point)
-  if (total <= 0) return ""
+  const total = usageTotal(point);
+  if (total <= 0) return "";
   return stackedTopModelsSegments(point, order)
     .map((item) => `${(item.segment.value / total) * 100}%`)
-    .join(" ")
+    .join(" ");
 }
 
 function visibleTopModelsSegments(point: UsagePoint) {
-  return point.segments.map((segment, index) => ({ segment, index })).filter((item) => item.segment.value > 0)
+  return point.segments
+    .map((segment, index) => ({ segment, index }))
+    .filter((item) => item.segment.value > 0);
 }
 
 function stackedTopModelsSegments(point: UsagePoint, order: Map<string, number>) {
   return visibleTopModelsSegments(point)
     .slice()
-    .sort((a, b) => (order.get(b.segment.model) ?? b.index) - (order.get(a.segment.model) ?? a.index))
+    .sort(
+      (a, b) => (order.get(b.segment.model) ?? b.index) - (order.get(a.segment.model) ?? a.index),
+    );
 }
 
 function getTopModelsSegmentOrder(data: UsagePoint[]) {
   return new Map(
-    data.find((point) => point.segments.length > 0)?.segments.map((segment, index) => [segment.model, index]) ?? [],
-  )
+    data
+      .find((point) => point.segments.length > 0)
+      ?.segments.map((segment, index) => [segment.model, index]) ?? [],
+  );
 }
 
 function getTopModelsSegmentColor(
@@ -889,73 +1030,84 @@ function getTopModelsSegmentColor(
   activeModel: string | undefined,
 ) {
   if (activeModel !== undefined)
-    return activeModel === model ? getRankColor(model, index, order, usageColors) : "var(--stats-layer-2)"
-  if (muted) return "var(--stats-layer-2)"
-  return getRankColor(model, index, order, usageColors)
+    return activeModel === model
+      ? getRankColor(model, index, order, usageColors)
+      : "var(--stats-layer-2)";
+  if (muted) return "var(--stats-layer-2)";
+  return getRankColor(model, index, order, usageColors);
 }
 
 function isTopModelsMobileAxisHidden(index: number, count: number) {
-  return count > 7 && index % 2 === 1
+  return count > 7 && index % 2 === 1;
 }
 
 function isColumnLabelHidden(index: number, count: number) {
-  if (count <= 20) return false
-  const interval = Math.ceil(count / 8)
-  return index !== count - 1 && index % interval !== 0
+  if (count <= 20) return false;
+  const interval = Math.ceil(count / 8);
+  return index !== count - 1 && index % interval !== 0;
 }
 
 function isDenseColumnRange(range: UsageRange) {
-  return range === "1M" || range === "2M"
+  return range === "1M" || range === "2M";
 }
 
-function scrollDenseChartToEnd(element: HTMLDivElement | undefined, range: UsageRange, count: number) {
-  if (!element || count <= 0 || !isDenseColumnRange(range) || typeof window === "undefined") return
+function scrollDenseChartToEnd(
+  element: HTMLDivElement | undefined,
+  range: UsageRange,
+  count: number,
+) {
+  if (!element || count <= 0 || !isDenseColumnRange(range) || typeof window === "undefined") return;
   window.requestAnimationFrame(() => {
-    element.scrollLeft = element.scrollWidth - element.clientWidth
-  })
+    element.scrollLeft = element.scrollWidth - element.clientWidth;
+  });
 }
 
 function formatTopModelsMobileDate(label: string, range: UsageRange) {
-  if (range === "1M" || range === "2M") return label.split(" - ")[0] ?? label
-  return label
+  if (range === "1M" || range === "2M") return label.split(" - ")[0] ?? label;
+  return label;
 }
 
 function usageTotal(point: UsagePoint) {
-  return point.segments.reduce((sum, item) => sum + item.value, 0)
+  return point.segments.reduce((sum, item) => sum + item.value, 0);
 }
 
 function formatTokens(value: number) {
-  if (value >= 1) return `${value.toFixed(value >= 10 ? 0 : 1)}T`
-  return `${Math.round(value * 1000)}B`
+  if (value >= 1) return `${value.toFixed(value >= 10 ? 0 : 1)}T`;
+  return `${Math.round(value * 1000)}B`;
 }
 
 function formatUsageChartValue(value: number, metric: "tokens" | "users") {
-  if (metric === "users") return formatUsers(value)
-  return formatTokens(value)
+  if (metric === "users") return formatUsers(value);
+  return formatTokens(value);
 }
 
 function usageChartTotalLabel(metric: "tokens" | "users", i18n: ReturnType<typeof useI18n>) {
-  if (metric === "users") return i18n.t("home.modelUsers")
-  return i18n.t("home.total")
+  if (metric === "users") return i18n.t("home.modelUsers");
+  return i18n.t("home.total");
 }
 
 function formatUsers(value: number) {
-  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(value >= 10_000_000 ? 0 : 1)}M`
-  if (value >= 1_000) return `${(value / 1_000).toFixed(value >= 10_000 ? 0 : 1)}K`
-  return new Intl.NumberFormat("en").format(Math.round(value))
+  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(value >= 10_000_000 ? 0 : 1)}M`;
+  if (value >= 1_000) return `${(value / 1_000).toFixed(value >= 10_000 ? 0 : 1)}K`;
+  return new Intl.NumberFormat("en").format(Math.round(value));
 }
 
 function Leaderboard(props: {
-  data: LeaderboardEntry[]
-  activeModel: string | undefined
-  onActiveModelChange: (model: string | undefined) => void
+  data: LeaderboardEntry[];
+  activeModel: string | undefined;
+  onActiveModelChange: (model: string | undefined) => void;
 }) {
-  const i18n = useI18n()
-  const featured = createMemo(() => props.data.slice(0, 3))
-  const compact = createMemo(() => props.data.slice(3))
+  const i18n = useI18n();
+  const featured = createMemo(() => props.data.slice(0, 3));
+  const compact = createMemo(() => props.data.slice(3));
 
   return (
-    <div id="leaderboard" data-component="leaderboard" role="list" aria-label={i18n.t("chart.leaderboardAria")}>
+    <div
+      id="leaderboard"
+      data-component="leaderboard"
+      role="list"
+      aria-label={i18n.t("chart.leaderboardAria")}
+    >
       <div data-slot="leaderboard-featured">
         <For each={featured()}>
           {(entry) => (
@@ -994,17 +1146,17 @@ function Leaderboard(props: {
         </For>
       </div>
     </div>
-  )
+  );
 }
 
 function LeaderboardCard(props: {
-  entry: LeaderboardEntry
-  size: "featured" | "compact"
-  active: boolean
-  onActiveModelChange: (model: string | undefined) => void
+  entry: LeaderboardEntry;
+  size: "featured" | "compact";
+  active: boolean;
+  onActiveModelChange: (model: string | undefined) => void;
 }) {
-  const i18n = useI18n()
-  const language = useLanguage()
+  const i18n = useI18n();
+  const language = useLanguage();
   return (
     <a
       data-component="leader-card"
@@ -1018,17 +1170,25 @@ function LeaderboardCard(props: {
       aria-label={`${String(props.entry.rank).padStart(2, "0")} ${props.entry.model} ${i18n.t("chart.byAuthor", { author: props.entry.author })}`}
       onPointerEnter={() => props.onActiveModelChange(props.entry.model)}
       onPointerLeave={(event) => {
-        if (event.pointerType === "touch") return
-        props.onActiveModelChange(undefined)
+        if (event.pointerType === "touch") return;
+        props.onActiveModelChange(undefined);
       }}
       onFocus={() => props.onActiveModelChange(props.entry.model)}
       onBlur={() => props.onActiveModelChange(undefined)}
       onClick={() => props.onActiveModelChange(props.entry.model)}
     >
       <span data-slot="rank">{String(props.entry.rank).padStart(2, "0")}</span>
-      <ProviderIcon data-slot="leader-watermark" aria-hidden="true" id={getProviderIconId(props.entry.author)} />
+      <ProviderIcon
+        data-slot="leader-watermark"
+        aria-hidden="true"
+        id={getProviderIconId(props.entry.author)}
+      />
       <div data-slot="leader-body">
-        <ProviderIcon data-slot="leader-avatar" aria-hidden="true" id={getProviderIconId(props.entry.author)} />
+        <ProviderIcon
+          data-slot="leader-avatar"
+          aria-hidden="true"
+          id={getProviderIconId(props.entry.author)}
+        />
         <div data-slot="leader-copy">
           <div>
             <strong>{props.entry.model}</strong>
@@ -1039,7 +1199,9 @@ function LeaderboardCard(props: {
             <span
               data-slot="delta"
               data-new={props.entry.change === null ? "true" : undefined}
-              data-negative={props.entry.change !== null && props.entry.change < 0 ? "true" : undefined}
+              data-negative={
+                props.entry.change !== null && props.entry.change < 0 ? "true" : undefined
+              }
             >
               {formatChange(props.entry.change, i18n)}
             </span>
@@ -1047,46 +1209,46 @@ function LeaderboardCard(props: {
         </div>
       </div>
     </a>
-  )
+  );
 }
 
 function getProviderIconId(author: string) {
-  if (author === "MiniMax") return "minimax"
-  if (author === "Moonshot") return "moonshotai"
-  if (author === "Zhipu") return "zhipuai"
-  return author.toLowerCase()
+  if (author === "MiniMax") return "minimax";
+  if (author === "Moonshot") return "moonshotai";
+  if (author === "Zhipu") return "zhipuai";
+  return author.toLowerCase();
 }
 
 function formatBillions(value: number) {
-  if (value >= 1000) return `${(value / 1000).toFixed(value >= 10000 ? 0 : 1)}T`
-  return `${value}B`
+  if (value >= 1000) return `${(value / 1000).toFixed(value >= 10000 ? 0 : 1)}T`;
+  return `${value}B`;
 }
 
 function formatChange(value: number | null, i18n: ReturnType<typeof useI18n>) {
-  if (value === null) return i18n.t("home.new")
-  if (value > 0) return `+${value}%`
-  return `${value}%`
+  if (value === null) return i18n.t("home.new");
+  if (value > 0) return `+${value}%`;
+  return `${value}%`;
 }
 
 function MarketShareSection(props: { data: StatsHomeData["market"] }) {
-  const i18n = useI18n()
-  const [range, setRange] = createSignal<UsageRange>("2M")
-  const [activeIndex, setActiveIndex] = createSignal(2)
-  const [activeAuthor, setActiveAuthor] = createSignal<string>()
-  const [inspecting, setInspecting] = createSignal(false)
-  const data = createMemo(() => props.data[range()])
-  const authorOrder = createMemo(() => getMarketAuthorOrder(data()))
-  const selectedIndex = createMemo(() => Math.min(activeIndex(), Math.max(data().length - 1, 0)))
-  const activeDay = createMemo(() => data()[selectedIndex()])
+  const i18n = useI18n();
+  const [range, setRange] = createSignal<UsageRange>("2M");
+  const [activeIndex, setActiveIndex] = createSignal(2);
+  const [activeAuthor, setActiveAuthor] = createSignal<string>();
+  const [inspecting, setInspecting] = createSignal(false);
+  const data = createMemo(() => props.data[range()]);
+  const authorOrder = createMemo(() => getMarketAuthorOrder(data()));
+  const selectedIndex = createMemo(() => Math.min(activeIndex(), Math.max(data().length - 1, 0)));
+  const activeDay = createMemo(() => data()[selectedIndex()]);
 
   return (
     <section
       id="market-share"
       data-section="market-share"
       onPointerLeave={(event) => {
-        if (event.pointerType === "touch") return
-        setActiveAuthor(undefined)
-        setInspecting(false)
+        if (event.pointerType === "touch") return;
+        setActiveAuthor(undefined);
+        setInspecting(false);
       }}
     >
       <SectionBridge label={i18n.t("nav.cacheRatio").toUpperCase()} href="#cache-ratio" />
@@ -1097,7 +1259,12 @@ function MarketShareSection(props: { data: StatsHomeData["market"] }) {
       />
       <Show
         when={activeDay()}
-        fallback={<EmptyState title={i18n.t("home.noMarketTitle")} description={i18n.t("home.noMarketDescription")} />}
+        fallback={
+          <EmptyState
+            title={i18n.t("home.noMarketTitle")}
+            description={i18n.t("home.noMarketDescription")}
+          />
+        }
       >
         {(day) => (
           <>
@@ -1109,12 +1276,12 @@ function MarketShareSection(props: { data: StatsHomeData["market"] }) {
               activeAuthor={activeAuthor()}
               inspecting={inspecting()}
               onActiveIndexChange={(index) => {
-                setActiveIndex(index)
-                setInspecting(true)
+                setActiveIndex(index);
+                setInspecting(true);
               }}
               onActiveAuthorChange={(author) => {
-                setActiveAuthor(author)
-                setInspecting(true)
+                setActiveAuthor(author);
+                setInspecting(true);
               }}
             />
             <MarketShareList
@@ -1122,8 +1289,8 @@ function MarketShareSection(props: { data: StatsHomeData["market"] }) {
               authorOrder={authorOrder()}
               activeAuthor={activeAuthor()}
               onActiveAuthorChange={(author) => {
-                setActiveAuthor(author)
-                setInspecting(true)
+                setActiveAuthor(author);
+                setInspecting(true);
               }}
             />
           </>
@@ -1145,31 +1312,31 @@ function MarketShareSection(props: { data: StatsHomeData["market"] }) {
             label={i18n.t("home.dateRange")}
             variant="range"
             onSelect={(item) => {
-              setRange(item)
-              setActiveAuthor(undefined)
-              setInspecting(false)
+              setRange(item);
+              setActiveAuthor(undefined);
+              setInspecting(false);
             }}
           />
         </div>
       </div>
     </section>
-  )
+  );
 }
 
 function MarketShare(props: {
-  data: MarketDay[]
-  range: UsageRange
-  authorOrder: Map<string, number>
-  activeIndex: number
-  activeAuthor: string | undefined
-  inspecting: boolean
-  onActiveIndexChange: (index: number) => void
-  onActiveAuthorChange: (author: string) => void
+  data: MarketDay[];
+  range: UsageRange;
+  authorOrder: Map<string, number>;
+  activeIndex: number;
+  activeAuthor: string | undefined;
+  inspecting: boolean;
+  onActiveIndexChange: (index: number) => void;
+  onActiveAuthorChange: (author: string) => void;
 }) {
-  const i18n = useI18n()
-  let chartRef: HTMLDivElement | undefined
+  const i18n = useI18n();
+  let chartRef: HTMLDivElement | undefined;
 
-  createEffect(() => scrollDenseChartToEnd(chartRef, props.range, props.data.length))
+  createEffect(() => scrollDenseChartToEnd(chartRef, props.range, props.data.length));
 
   return (
     <div
@@ -1187,8 +1354,12 @@ function MarketShare(props: {
             <button
               type="button"
               data-active={props.inspecting && props.activeIndex === index() ? "true" : undefined}
-              data-label-hidden={isColumnLabelHidden(index(), props.data.length) ? "true" : undefined}
-              data-mobile-hidden={isMarketMobileLabelHidden(index(), props.data.length) ? "true" : undefined}
+              data-label-hidden={
+                isColumnLabelHidden(index(), props.data.length) ? "true" : undefined
+              }
+              data-mobile-hidden={
+                isMarketMobileLabelHidden(index(), props.data.length) ? "true" : undefined
+              }
               onClick={() => props.onActiveIndexChange(index())}
               onPointerEnter={() => props.onActiveIndexChange(index())}
             >
@@ -1219,30 +1390,37 @@ function MarketShare(props: {
                     data-author={item.author.author}
                     data-active={props.activeAuthor === item.author.author ? "true" : undefined}
                     data-muted={
-                      props.activeAuthor !== undefined && props.activeAuthor !== item.author.author ? "true" : undefined
+                      props.activeAuthor !== undefined && props.activeAuthor !== item.author.author
+                        ? "true"
+                        : undefined
                     }
                     style={{
                       "background-color": getMarketSegmentColor(
                         item.author.author,
-                        getRankColor(item.author.author, item.index, props.authorOrder, marketColors),
+                        getRankColor(
+                          item.author.author,
+                          item.index,
+                          props.authorOrder,
+                          marketColors,
+                        ),
                         props.activeAuthor,
                       ),
                       "flex-grow": item.author.share,
                     }}
                     onPointerEnter={(event) => {
-                      event.stopPropagation()
-                      props.onActiveIndexChange(index())
-                      props.onActiveAuthorChange(item.author.author)
+                      event.stopPropagation();
+                      props.onActiveIndexChange(index());
+                      props.onActiveAuthorChange(item.author.author);
                     }}
                     onPointerDown={(event) => {
-                      event.stopPropagation()
-                      props.onActiveIndexChange(index())
-                      props.onActiveAuthorChange(item.author.author)
+                      event.stopPropagation();
+                      props.onActiveIndexChange(index());
+                      props.onActiveAuthorChange(item.author.author);
                     }}
                     onClick={(event) => {
-                      event.stopPropagation()
-                      props.onActiveIndexChange(index())
-                      props.onActiveAuthorChange(item.author.author)
+                      event.stopPropagation();
+                      props.onActiveIndexChange(index());
+                      props.onActiveAuthorChange(item.author.author);
                     }}
                   />
                 )}
@@ -1252,16 +1430,16 @@ function MarketShare(props: {
         </For>
       </div>
     </div>
-  )
+  );
 }
 
 function MarketShareList(props: {
-  data: MarketDay["authors"]
-  authorOrder: Map<string, number>
-  activeAuthor: string | undefined
-  onActiveAuthorChange: (author: string) => void
+  data: MarketDay["authors"];
+  authorOrder: Map<string, number>;
+  activeAuthor: string | undefined;
+  onActiveAuthorChange: (author: string) => void;
 }) {
-  const i18n = useI18n()
+  const i18n = useI18n();
   return (
     <ol data-component="market-share-list">
       <For each={props.data}>
@@ -1274,13 +1452,17 @@ function MarketShareList(props: {
             onPointerEnter={() => props.onActiveAuthorChange(item.author)}
             onFocus={() => props.onActiveAuthorChange(item.author)}
             onKeyDown={(event) => {
-              if (event.key !== "Enter" && event.key !== " ") return
-              event.preventDefault()
-              props.onActiveAuthorChange(item.author)
+              if (event.key !== "Enter" && event.key !== " ") return;
+              event.preventDefault();
+              props.onActiveAuthorChange(item.author);
             }}
           >
             <span>{String(index() + 1).padStart(2, "0")}</span>
-            <i style={{ background: getRankColor(item.author, index(), props.authorOrder, marketColors) }} />
+            <i
+              style={{
+                background: getRankColor(item.author, index(), props.authorOrder, marketColors),
+              }}
+            />
             <strong>{item.author}</strong>
             <em>{formatTrillions(item.tokens)}</em>
             <b>{item.share.toFixed(1)}%</b>
@@ -1288,41 +1470,52 @@ function MarketShareList(props: {
         )}
       </For>
     </ol>
-  )
+  );
 }
 
 function GeoBreakdownSection(props: { data: StatsHomeData["country"] }) {
-  const i18n = useI18n()
-  const language = useLanguage()
-  const [activeCountry, setActiveCountry] = createSignal<string>()
-  const data = createMemo(() => props.data["2M"])
+  const i18n = useI18n();
+  const language = useLanguage();
+  const [activeCountry, setActiveCountry] = createSignal<string>();
+  const data = createMemo(() => props.data["2M"]);
   const countryById = createMemo(
     () =>
       new Map(
         data().flatMap((country) => {
-          const id = countryNumericId(country.country)
-          return id ? [[id, country] as const] : []
+          const id = countryNumericId(country.country);
+          return id ? [[id, country] as const] : [];
         }),
       ),
-  )
-  const maxTokens = createMemo(() => Math.max(0, ...data().map((country) => country.tokens)) || 1)
-  const topCountries = createMemo(() => data().slice(0, 15))
-  const active = createMemo(() => data().find((country) => country.country === activeCountry()) ?? data()[0])
+  );
+  const maxTokens = createMemo(() => Math.max(0, ...data().map((country) => country.tokens)) || 1);
+  const topCountries = createMemo(() => data().slice(0, 15));
+  const active = createMemo(
+    () => data().find((country) => country.country === activeCountry()) ?? data()[0],
+  );
 
   return (
     <section
       id="geo-breakdown"
       data-section="geo-breakdown"
       onPointerLeave={(event) => {
-        if (event.pointerType === "touch") return
-        setActiveCountry(undefined)
+        if (event.pointerType === "touch") return;
+        setActiveCountry(undefined);
       }}
     >
       <SectionBridge label={i18n.t("nav.marketShare").toUpperCase()} href="#market-share" />
-      <SectionTitle id="geo-breakdown" title={i18n.t("home.geoTitle")} description={i18n.t("home.geoDescription")} />
+      <SectionTitle
+        id="geo-breakdown"
+        title={i18n.t("home.geoTitle")}
+        description={i18n.t("home.geoDescription")}
+      />
       <Show
         when={data().length > 0}
-        fallback={<EmptyState title={i18n.t("home.noGeoTitle")} description={i18n.t("home.noGeoDescription")} />}
+        fallback={
+          <EmptyState
+            title={i18n.t("home.noGeoTitle")}
+            description={i18n.t("home.noGeoDescription")}
+          />
+        }
       >
         <div data-component="geo-breakdown">
           <div data-slot="geo-map-panel">
@@ -1337,7 +1530,11 @@ function GeoBreakdownSection(props: { data: StatsHomeData["country"] }) {
                 <div data-slot="geo-active-country">
                   <span>#{String(country().rank).padStart(2, "0")}</span>
                   <strong>
-                    {formatCountryName(country().country, language.tag(language.locale()), i18n.t("home.unknown"))}
+                    {formatCountryName(
+                      country().country,
+                      language.tag(language.locale()),
+                      i18n.t("home.unknown"),
+                    )}
                   </strong>
                   <p>
                     <b>{formatGeoTokens(country().tokens)}</b>
@@ -1356,23 +1553,25 @@ function GeoBreakdownSection(props: { data: StatsHomeData["country"] }) {
         </div>
       </Show>
     </section>
-  )
+  );
 }
 
 function GeoWorldMap(props: {
-  countryById: Map<string, CountryEntry>
-  activeCountry: string | undefined
-  maxTokens: number
-  onActiveCountryChange: (country: string | undefined) => void
+  countryById: Map<string, CountryEntry>;
+  activeCountry: string | undefined;
+  maxTokens: number;
+  onActiveCountryChange: (country: string | undefined) => void;
 }) {
-  const i18n = useI18n()
-  const opacityScale = createMemo(() => scaleSqrt().domain([0, props.maxTokens]).range([0.26, 0.96]).clamp(true))
+  const i18n = useI18n();
+  const opacityScale = createMemo(() =>
+    scaleSqrt().domain([0, props.maxTokens]).range([0.26, 0.96]).clamp(true),
+  );
   const countryOpacity = (country: CountryEntry | undefined) => {
-    if (!country) return 0
-    const opacity = opacityScale()(country.tokens)
-    if (!props.activeCountry || props.activeCountry === country.country) return opacity
-    return Math.max(0.18, opacity * 0.36)
-  }
+    if (!country) return 0;
+    const opacity = opacityScale()(country.tokens);
+    if (!props.activeCountry || props.activeCountry === country.country) return opacity;
+    return Math.max(0.18, opacity * 0.36);
+  };
 
   return (
     <svg
@@ -1385,34 +1584,36 @@ function GeoWorldMap(props: {
       <g data-slot="geo-countries">
         <For each={worldCountryPaths}>
           {(country) => {
-            const entry = () => props.countryById.get(country.id)
+            const entry = () => props.countryById.get(country.id);
             return (
               <path
                 d={country.path}
                 data-country-id={country.id}
                 data-has-data={entry() ? "true" : undefined}
                 data-active={entry()?.country === props.activeCountry ? "true" : undefined}
-                style={{ "--geo-country-opacity": String(countryOpacity(entry())) } as JSX.CSSProperties}
+                style={
+                  { "--geo-country-opacity": String(countryOpacity(entry())) } as JSX.CSSProperties
+                }
                 aria-hidden="true"
                 onPointerEnter={() => {
-                  const item = entry()
-                  if (!item) return
-                  props.onActiveCountryChange(item.country)
+                  const item = entry();
+                  if (!item) return;
+                  props.onActiveCountryChange(item.country);
                 }}
                 onClick={() => {
-                  const item = entry()
-                  if (!item) return
-                  props.onActiveCountryChange(item.country)
+                  const item = entry();
+                  if (!item) return;
+                  props.onActiveCountryChange(item.country);
                 }}
               />
-            )
+            );
           }}
         </For>
       </g>
       <g data-slot="geo-country-markers">
         <For each={worldCountryPaths}>
           {(country) => {
-            const entry = () => props.countryById.get(country.id)
+            const entry = () => props.countryById.get(country.id);
             return (
               <Show when={country.marker && entry() ? country.marker : undefined}>
                 {(marker) => (
@@ -1421,39 +1622,45 @@ function GeoWorldMap(props: {
                     cy={marker().y}
                     r={entry()?.country === props.activeCountry ? 3.4 : 2.4}
                     data-active={entry()?.country === props.activeCountry ? "true" : undefined}
-                    style={{ "--geo-country-opacity": String(countryOpacity(entry())) } as JSX.CSSProperties}
+                    style={
+                      {
+                        "--geo-country-opacity": String(countryOpacity(entry())),
+                      } as JSX.CSSProperties
+                    }
                     aria-hidden="true"
                     onPointerEnter={() => {
-                      const item = entry()
-                      if (!item) return
-                      props.onActiveCountryChange(item.country)
+                      const item = entry();
+                      if (!item) return;
+                      props.onActiveCountryChange(item.country);
                     }}
                     onClick={() => {
-                      const item = entry()
-                      if (!item) return
-                      props.onActiveCountryChange(item.country)
+                      const item = entry();
+                      if (!item) return;
+                      props.onActiveCountryChange(item.country);
                     }}
                   />
                 )}
               </Show>
-            )
+            );
           }}
         </For>
       </g>
       <path data-slot="geo-borders" d={worldBorderPath} aria-hidden="true" />
     </svg>
-  )
+  );
 }
 
 function GeoCountryList(props: {
-  data: CountryEntry[]
-  activeCountry: string | undefined
-  maxTokens: number
-  onActiveCountryChange: (country: string | undefined) => void
+  data: CountryEntry[];
+  activeCountry: string | undefined;
+  maxTokens: number;
+  onActiveCountryChange: (country: string | undefined) => void;
 }) {
-  const i18n = useI18n()
-  const language = useLanguage()
-  const opacityScale = createMemo(() => scaleSqrt().domain([0, props.maxTokens]).range([0.26, 0.96]).clamp(true))
+  const i18n = useI18n();
+  const language = useLanguage();
+  const opacityScale = createMemo(() =>
+    scaleSqrt().domain([0, props.maxTokens]).range([0.26, 0.96]).clamp(true),
+  );
 
   return (
     <ol data-component="geo-country-list">
@@ -1463,7 +1670,9 @@ function GeoCountryList(props: {
             <button
               type="button"
               data-active={props.activeCountry === country.country ? "true" : undefined}
-              style={{ "--geo-row-opacity": String(opacityScale()(country.tokens)) } as JSX.CSSProperties}
+              style={
+                { "--geo-row-opacity": String(opacityScale()(country.tokens)) } as JSX.CSSProperties
+              }
               aria-label={`${formatCountryName(country.country, language.tag(language.locale()), i18n.t("home.unknown"))} ${formatGeoTokens(country.tokens)} ${formatGeoShare(country.share)}`}
               onClick={() => props.onActiveCountryChange(country.country)}
               onPointerEnter={() => props.onActiveCountryChange(country.country)}
@@ -1472,7 +1681,11 @@ function GeoCountryList(props: {
               <span>{String(country.rank).padStart(2, "0")}</span>
               <i />
               <strong>
-                {formatCountryName(country.country, language.tag(language.locale()), i18n.t("home.unknown"))}
+                {formatCountryName(
+                  country.country,
+                  language.tag(language.locale()),
+                  i18n.t("home.unknown"),
+                )}
               </strong>
               <em>{formatGeoTokens(country.tokens)}</em>
               <b>{formatGeoShare(country.share)}</b>
@@ -1481,125 +1694,142 @@ function GeoCountryList(props: {
         )}
       </For>
     </ol>
-  )
+  );
 }
 
 function countryNumericId(country: string) {
-  return countryNumericIds.get(country.toUpperCase())?.padStart(3, "0")
+  return countryNumericIds.get(country.toUpperCase())?.padStart(3, "0");
 }
 
 function geoCountryMarker(country: (typeof worldCountries.features)[number]) {
-  const bounds = worldPath.bounds(country)
-  const [x, y] = worldPath.centroid(country)
-  if (!Number.isFinite(x) || !Number.isFinite(y)) return undefined
-  if (bounds[1][0] - bounds[0][0] >= 3 && bounds[1][1] - bounds[0][1] >= 3) return undefined
-  return { x, y }
+  const bounds = worldPath.bounds(country);
+  const [x, y] = worldPath.centroid(country);
+  if (!Number.isFinite(x) || !Number.isFinite(y)) return undefined;
+  if (bounds[1][0] - bounds[0][0] >= 3 && bounds[1][1] - bounds[0][1] >= 3) return undefined;
+  return { x, y };
 }
 
 function formatCountryName(country: string, locale: string, unknown: string) {
-  const code = country.toUpperCase()
-  if (code === "ZZ") return unknown
-  if (!countryNumericId(code)) return code
-  return new Intl.DisplayNames([locale], { type: "region" }).of(code) ?? code
+  const code = country.toUpperCase();
+  if (code === "ZZ") return unknown;
+  if (!countryNumericId(code)) return code;
+  return new Intl.DisplayNames([locale], { type: "region" }).of(code) ?? code;
 }
 
 function formatGeoTokens(value: number) {
-  return formatTrillions(value)
+  return formatTrillions(value);
 }
 
 function formatGeoShare(value: number) {
-  return `${value.toFixed(value > 0 && value < 1 ? 1 : 0)}%`
+  return `${value.toFixed(value > 0 && value < 1 ? 1 : 0)}%`;
 }
 
 function getMarketSegmentColor(author: string, color: string, activeAuthor: string | undefined) {
-  if (!activeAuthor) return color
-  if (activeAuthor === author) return color
-  return "var(--stats-bar-idle)"
+  if (!activeAuthor) return color;
+  if (activeAuthor === author) return color;
+  return "var(--stats-bar-idle)";
 }
 
 function stackedMarketAuthors(day: MarketDay, order: Map<string, number>) {
   return day.authors
     .map((author, index) => ({ author, index }))
     .slice()
-    .sort((a, b) => (order.get(b.author.author) ?? b.index) - (order.get(a.author.author) ?? a.index))
+    .sort(
+      (a, b) => (order.get(b.author.author) ?? b.index) - (order.get(a.author.author) ?? a.index),
+    );
 }
 
 function getMarketAuthorOrder(data: MarketDay[]) {
   return getRankOrder(
-    data.flatMap((day) => day.authors.map((author, index) => ({ key: author.author, value: author.tokens, index }))),
-  )
+    data.flatMap((day) =>
+      day.authors.map((author, index) => ({ key: author.author, value: author.tokens, index })),
+    ),
+  );
 }
 
 function getRankOrder(items: { key: string; value: number; index: number }[]) {
   return new Map<string, number>(
     Object.values(
-      items.reduce<Record<string, { key: string; value: number; index: number }>>((result, item) => {
-        result[item.key] = {
-          key: item.key,
-          value: (result[item.key]?.value ?? 0) + item.value,
-          index: Math.min(result[item.key]?.index ?? item.index, item.index),
-        }
-        return result
-      }, {}),
+      items.reduce<Record<string, { key: string; value: number; index: number }>>(
+        (result, item) => {
+          result[item.key] = {
+            key: item.key,
+            value: (result[item.key]?.value ?? 0) + item.value,
+            index: Math.min(result[item.key]?.index ?? item.index, item.index),
+          };
+          return result;
+        },
+        {},
+      ),
     )
       .toSorted((a, b) => b.value - a.value || a.index - b.index || a.key.localeCompare(b.key))
       .map((item, index) => [item.key, index] as const),
-  )
+  );
 }
 
-function getRankColor(key: string, fallbackIndex: number, order: Map<string, number>, colors: readonly string[]) {
-  return colors[order.get(key) ?? fallbackIndex] ?? "var(--stats-text)"
+function getRankColor(
+  key: string,
+  fallbackIndex: number,
+  order: Map<string, number>,
+  colors: readonly string[],
+) {
+  return colors[order.get(key) ?? fallbackIndex] ?? "var(--stats-text)";
 }
 
 function isMarketMobileLabelHidden(index: number, count: number) {
-  return count > 7 && index % 2 === 1
+  return count > 7 && index % 2 === 1;
 }
 
 function formatMarketMobileDate(label: string) {
-  return marketDateParts(label).start
+  return marketDateParts(label).start;
 }
 
 function formatTrillions(value: number) {
-  if (value === 0) return "0"
-  if (value < 0.001) return `${Number((value * 1_000_000).toFixed(value >= 0.00001 ? 0 : 1))}M`
-  if (value < 1) return `${Number((value * 1_000).toFixed(value >= 0.01 ? 0 : 1))}B`
-  return `${value.toFixed(value >= 10 ? 0 : 1)}T`
+  if (value === 0) return "0";
+  if (value < 0.001) return `${Number((value * 1_000_000).toFixed(value >= 0.00001 ? 0 : 1))}M`;
+  if (value < 1) return `${Number((value * 1_000).toFixed(value >= 0.01 ? 0 : 1))}B`;
+  return `${value.toFixed(value >= 10 ? 0 : 1)}T`;
 }
 
 function formatMarketDate(day: MarketDay | undefined, fallback: string) {
-  if (!day) return fallback
-  return formatMarketDateLabel(day.date)
+  if (!day) return fallback;
+  return formatMarketDateLabel(day.date);
 }
 
 function formatMarketRange(data: MarketDay[], fallback: string) {
-  const first = data[0]?.date
-  const last = data[data.length - 1]?.date
-  if (!first || !last) return fallback
-  const start = marketDateParts(first).start
-  const end = marketDateParts(last).end
-  if (start === end) return formatMarketDateLabel(start)
-  return `${start} ${new Date().getFullYear()} → ${end} ${new Date().getFullYear()}`
+  const first = data[0]?.date;
+  const last = data[data.length - 1]?.date;
+  if (!first || !last) return fallback;
+  const start = marketDateParts(first).start;
+  const end = marketDateParts(last).end;
+  if (start === end) return formatMarketDateLabel(start);
+  return `${start} ${new Date().getFullYear()} → ${end} ${new Date().getFullYear()}`;
 }
 
 function formatMarketDateLabel(label: string) {
-  const parts = marketDateParts(label)
-  const year = new Date().getFullYear()
-  if (parts.start === parts.end) return `${parts.start} ${year}`
-  return `${parts.start} ${year} → ${parts.end} ${year}`
+  const parts = marketDateParts(label);
+  const year = new Date().getFullYear();
+  if (parts.start === parts.end) return `${parts.start} ${year}`;
+  return `${parts.start} ${year} → ${parts.end} ${year}`;
 }
 
 function marketDateParts(label: string) {
-  const [start, end] = label.split(" - ")
-  return { start: start ?? label, end: end ?? start ?? label }
+  const [start, end] = label.split(" - ");
+  return { start: start ?? label, end: end ?? start ?? label };
 }
 
-function TokenCostSection(props: { data: StatsHomeData["tokenCost"]; catalog: ModelCatalog | null }) {
-  const i18n = useI18n()
-  const [product, setProduct] = createSignal<TokenProduct>("Go")
-  const [activeIndex, setActiveIndex] = createSignal(2)
-  const data = createMemo(() => priceTokenCostFromCatalog(props.data[product()], props.catalog))
-  const visible = createMemo(() => data().slice(0, 13))
-  const selectedIndex = createMemo(() => Math.min(activeIndex(), Math.max(visible().length - 1, 0)))
+function TokenCostSection(props: {
+  data: StatsHomeData["tokenCost"];
+  catalog: ModelCatalog | null;
+}) {
+  const i18n = useI18n();
+  const [product, setProduct] = createSignal<TokenProduct>("Go");
+  const [activeIndex, setActiveIndex] = createSignal(2);
+  const data = createMemo(() => priceTokenCostFromCatalog(props.data[product()], props.catalog));
+  const visible = createMemo(() => data().slice(0, 13));
+  const selectedIndex = createMemo(() =>
+    Math.min(activeIndex(), Math.max(visible().length - 1, 0)),
+  );
 
   return (
     <section id="token-cost" data-section="token-cost">
@@ -1612,10 +1842,17 @@ function TokenCostSection(props: { data: StatsHomeData["tokenCost"]; catalog: Mo
       <Show
         when={visible().length > 0}
         fallback={
-          <EmptyState title={i18n.t("home.noTokenCostTitle")} description={i18n.t("home.noTokenCostDescription")} />
+          <EmptyState
+            title={i18n.t("home.noTokenCostTitle")}
+            description={i18n.t("home.noTokenCostDescription")}
+          />
         }
       >
-        <TokenCostChart data={visible()} activeIndex={selectedIndex()} onActiveIndexChange={setActiveIndex} />
+        <TokenCostChart
+          data={visible()}
+          activeIndex={selectedIndex()}
+          onActiveIndexChange={setActiveIndex}
+        />
       </Show>
       <div data-slot="token-footer" hidden>
         <FilterPills
@@ -1629,17 +1866,17 @@ function TokenCostSection(props: { data: StatsHomeData["tokenCost"]; catalog: Mo
         <LiveIndicator />
       </div>
     </section>
-  )
+  );
 }
 
 function TokenCostChart(props: {
-  data: TokenCostEntry[]
-  activeIndex: number
-  onActiveIndexChange: (index: number) => void
+  data: TokenCostEntry[];
+  activeIndex: number;
+  onActiveIndexChange: (index: number) => void;
 }) {
-  const i18n = useI18n()
-  const max = createMemo(() => Math.max(0, ...props.data.map((item) => item.total)) || 1)
-  const active = createMemo(() => props.data[props.activeIndex] ?? props.data[0])
+  const i18n = useI18n();
+  const max = createMemo(() => Math.max(0, ...props.data.map((item) => item.total)) || 1);
+  const active = createMemo(() => props.data[props.activeIndex] ?? props.data[0]);
 
   return (
     <div data-component="token-cost">
@@ -1677,16 +1914,18 @@ function TokenCostChart(props: {
         )}
       </Show>
     </div>
-  )
+  );
 }
 
 function CacheRatioSection(props: { data: StatsHomeData["cacheRatio"] }) {
-  const i18n = useI18n()
-  const [product, setProduct] = createSignal<TokenProduct>("Go")
-  const [activeIndex, setActiveIndex] = createSignal(2)
-  const data = createMemo(() => props.data[product()])
-  const visible = createMemo(() => data().slice(0, 16))
-  const selectedIndex = createMemo(() => Math.min(activeIndex(), Math.max(visible().length - 1, 0)))
+  const i18n = useI18n();
+  const [product, setProduct] = createSignal<TokenProduct>("Go");
+  const [activeIndex, setActiveIndex] = createSignal(2);
+  const data = createMemo(() => props.data[product()]);
+  const visible = createMemo(() => data().slice(0, 16));
+  const selectedIndex = createMemo(() =>
+    Math.min(activeIndex(), Math.max(visible().length - 1, 0)),
+  );
 
   return (
     <section id="cache-ratio" data-section="cache-ratio">
@@ -1698,9 +1937,18 @@ function CacheRatioSection(props: { data: StatsHomeData["cacheRatio"] }) {
       />
       <Show
         when={visible().length > 0}
-        fallback={<EmptyState title={i18n.t("home.noCacheTitle")} description={i18n.t("home.noCacheDescription")} />}
+        fallback={
+          <EmptyState
+            title={i18n.t("home.noCacheTitle")}
+            description={i18n.t("home.noCacheDescription")}
+          />
+        }
       >
-        <CacheRatioChart data={visible()} activeIndex={selectedIndex()} onActiveIndexChange={setActiveIndex} />
+        <CacheRatioChart
+          data={visible()}
+          activeIndex={selectedIndex()}
+          onActiveIndexChange={setActiveIndex}
+        />
       </Show>
       <div data-slot="token-footer" hidden>
         <FilterPills
@@ -1714,16 +1962,16 @@ function CacheRatioSection(props: { data: StatsHomeData["cacheRatio"] }) {
         <LiveIndicator />
       </div>
     </section>
-  )
+  );
 }
 
 function CacheRatioChart(props: {
-  data: CacheRatioEntry[]
-  activeIndex: number
-  onActiveIndexChange: (index: number) => void
+  data: CacheRatioEntry[];
+  activeIndex: number;
+  onActiveIndexChange: (index: number) => void;
 }) {
-  const i18n = useI18n()
-  const active = createMemo(() => props.data[props.activeIndex] ?? props.data[0])
+  const i18n = useI18n();
+  const active = createMemo(() => props.data[props.activeIndex] ?? props.data[0]);
 
   return (
     <div data-component="cache-ratio" data-variant="marker">
@@ -1772,11 +2020,11 @@ function CacheRatioChart(props: {
         )}
       </Show>
     </div>
-  )
+  );
 }
 
 function CacheRatioMarker(props: { ratio: number; active: boolean }) {
-  const fill = createMemo(() => Math.min(100, Math.max(0, props.ratio)))
+  const fill = createMemo(() => Math.min(100, Math.max(0, props.ratio)));
   return (
     <i
       data-component="cache-ratio-marker"
@@ -1785,19 +2033,21 @@ function CacheRatioMarker(props: { ratio: number; active: boolean }) {
     >
       <em />
     </i>
-  )
+  );
 }
 
 function formatRatio(value: number) {
-  return `${value.toFixed(value > 0 && value < 10 ? 1 : 0)}%`
+  return `${value.toFixed(value > 0 && value < 10 ? 1 : 0)}%`;
 }
 
 function formatDollars(value: number) {
-  return `$${value.toFixed(value > 0 && value < 0.01 ? 4 : 2)}`
+  return `$${value.toFixed(value > 0 && value < 0.01 ? 4 : 2)}`;
 }
 
 function MetricBar(props: { value: number; max: number; active: boolean }) {
-  const fill = createMemo(() => Math.min(1, Math.max(props.value / props.max, props.value > 0 ? 0.03 : 0)))
+  const fill = createMemo(() =>
+    Math.min(1, Math.max(props.value / props.max, props.value > 0 ? 0.03 : 0)),
+  );
   return (
     <i
       data-component="metric-bar"
@@ -1807,16 +2057,18 @@ function MetricBar(props: { value: number; max: number; active: boolean }) {
       <b />
       <em />
     </i>
-  )
+  );
 }
 
 function SessionCostSection(props: { data: StatsHomeData["sessionCost"] }) {
-  const i18n = useI18n()
-  const [product, setProduct] = createSignal<TokenProduct>("Go")
-  const [activeIndex, setActiveIndex] = createSignal(2)
-  const data = createMemo(() => props.data[product()])
-  const visible = createMemo(() => data().slice(0, 16))
-  const selectedIndex = createMemo(() => Math.min(activeIndex(), Math.max(visible().length - 1, 0)))
+  const i18n = useI18n();
+  const [product, setProduct] = createSignal<TokenProduct>("Go");
+  const [activeIndex, setActiveIndex] = createSignal(2);
+  const data = createMemo(() => props.data[product()]);
+  const visible = createMemo(() => data().slice(0, 16));
+  const selectedIndex = createMemo(() =>
+    Math.min(activeIndex(), Math.max(visible().length - 1, 0)),
+  );
 
   return (
     <section id="session-cost" data-section="session-cost">
@@ -1829,10 +2081,17 @@ function SessionCostSection(props: { data: StatsHomeData["sessionCost"] }) {
       <Show
         when={visible().length > 0}
         fallback={
-          <EmptyState title={i18n.t("home.noSessionCostTitle")} description={i18n.t("home.noSessionCostDescription")} />
+          <EmptyState
+            title={i18n.t("home.noSessionCostTitle")}
+            description={i18n.t("home.noSessionCostDescription")}
+          />
         }
       >
-        <SessionCostChart data={visible()} activeIndex={selectedIndex()} onActiveIndexChange={setActiveIndex} />
+        <SessionCostChart
+          data={visible()}
+          activeIndex={selectedIndex()}
+          onActiveIndexChange={setActiveIndex}
+        />
       </Show>
       <div data-slot="token-footer" hidden>
         <FilterPills
@@ -1846,18 +2105,18 @@ function SessionCostSection(props: { data: StatsHomeData["sessionCost"] }) {
         <LiveIndicator />
       </div>
     </section>
-  )
+  );
 }
 
 function SessionCostChart(props: {
-  data: SessionCostEntry[]
-  activeIndex: number
-  onActiveIndexChange: (index: number) => void
+  data: SessionCostEntry[];
+  activeIndex: number;
+  onActiveIndexChange: (index: number) => void;
 }) {
-  const i18n = useI18n()
-  const maxCost = createMemo(() => Math.max(0, ...props.data.map((item) => item.cost)) || 1)
-  const maxTokens = createMemo(() => Math.max(0, ...props.data.map((item) => item.tokens)) || 1)
-  const active = createMemo(() => props.data[props.activeIndex] ?? props.data[0])
+  const i18n = useI18n();
+  const maxCost = createMemo(() => Math.max(0, ...props.data.map((item) => item.cost)) || 1);
+  const maxTokens = createMemo(() => Math.max(0, ...props.data.map((item) => item.tokens)) || 1);
+  const active = createMemo(() => props.data[props.activeIndex] ?? props.data[0]);
 
   return (
     <div data-component="session-cost">
@@ -1880,7 +2139,11 @@ function SessionCostChart(props: {
             <strong>{formatSessionCost(item.cost)}</strong>
             <span>{item.model}</span>
             <MetricBar value={item.cost} max={maxCost()} active={props.activeIndex === index()} />
-            <MetricBar value={item.tokens} max={maxTokens()} active={props.activeIndex === index()} />
+            <MetricBar
+              value={item.tokens}
+              max={maxTokens()}
+              active={props.activeIndex === index()}
+            />
           </button>
         )}
       </For>
@@ -1903,25 +2166,25 @@ function SessionCostChart(props: {
         )}
       </Show>
     </div>
-  )
+  );
 }
 
 function LiveIndicator() {
-  const i18n = useI18n()
-  return <span data-component="live-filter">{i18n.t("chart.live")}</span>
+  const i18n = useI18n();
+  return <span data-component="live-filter">{i18n.t("chart.live")}</span>;
 }
 
 function formatTokenCount(value: number) {
-  if (value >= 1_000_000) return `${Number((value / 1_000_000).toFixed(1))}M`
-  return `${Math.round(value / 1_000)}K`
+  if (value >= 1_000_000) return `${Number((value / 1_000_000).toFixed(1))}M`;
+  return `${Math.round(value / 1_000)}K`;
 }
 
 function priceTokenCostFromCatalog(data: TokenCostEntry[], catalog: ModelCatalog | null) {
-  if (!catalog) return data
+  if (!catalog) return data;
   return data
     .flatMap((item) => {
-      const cost = catalogModelCost(catalog, item.model)
-      if (!cost) return []
+      const cost = catalogModelCost(catalog, item.model);
+      if (!cost) return [];
       return [
         {
           ...item,
@@ -1930,17 +2193,17 @@ function priceTokenCostFromCatalog(data: TokenCostEntry[], catalog: ModelCatalog
           output: cost.output,
           cached: cost.cacheRead ?? cost.input,
         },
-      ]
+      ];
     })
-    .toSorted((a, b) => a.total - b.total || a.model.localeCompare(b.model))
+    .toSorted((a, b) => a.total - b.total || a.model.localeCompare(b.model));
 }
 
 function catalogModelCost(catalog: ModelCatalog, model: string) {
-  return findModelCatalogEntry(catalog, model)?.cost
+  return findModelCatalogEntry(catalog, model)?.cost;
 }
 
 function formatSessionCost(value: number) {
-  return `$${value.toFixed(4)}`
+  return `$${value.toFixed(4)}`;
 }
 
 function modelSlug(value: string) {
@@ -1949,5 +2212,5 @@ function modelSlug(value: string) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
-    .replace(/-{2,}/g, "-")
+    .replace(/-{2,}/g, "-");
 }

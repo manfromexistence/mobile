@@ -1,6 +1,6 @@
 // @ts-nocheck
-import * as mod from "./radio-group"
-import { create } from "../storybook/scaffold"
+import * as mod from "./radio-group";
+import { create } from "../storybook/scaffold";
 
 const docs = `### Overview
 Segmented radio group for choosing a single option.
@@ -25,7 +25,7 @@ Use for view toggles or mode selection.
 ### Theming/tokens
 - Uses \`data-component="radio-group"\` with size/pad data attributes.
 
-`
+`;
 
 const story = create({
   title: "UI/RadioGroup",
@@ -34,7 +34,7 @@ const story = create({
     options: ["One", "Two", "Three"],
     defaultValue: "One",
   },
-})
+});
 
 export default {
   title: "UI/RadioGroup",
@@ -61,9 +61,9 @@ export default {
       control: "boolean",
     },
   },
-}
+};
 
-export const Basic = story.Basic
+export const Basic = story.Basic;
 
 export const Sizes = {
   render: () => (
@@ -72,14 +72,14 @@ export const Sizes = {
       <mod.RadioGroup options={["One", "Two"]} defaultValue="One" size="medium" />
     </div>
   ),
-}
+};
 
 export const Filled = {
   args: {
     fill: true,
     pad: "none",
   },
-}
+};
 
 export const CustomLabels = {
   render: () => (
@@ -89,4 +89,4 @@ export const CustomLabels = {
       label={(value) => (value === "list" ? "List view" : "Grid view")}
     />
   ),
-}
+};

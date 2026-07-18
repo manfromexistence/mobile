@@ -62,6 +62,6 @@ test("every shipped locale has real (non-__MISSING__, present) providers.filter*
   assert.equal(
     offenders.length,
     0,
-    `Untranslated provider filter labels (#6290 regression):\n${offenders.join("\n")}`
+    `Untranslated provider filter labels (#6290 regression):\n${offenders.join("\n")}`,
   );
 });

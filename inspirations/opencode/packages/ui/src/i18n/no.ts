@@ -1,5 +1,5 @@
-import { dict as en } from "./en"
-type Keys = keyof typeof en
+import { dict as en } from "./en";
+type Keys = keyof typeof en;
 
 export const dict: Record<Keys, string> = {
   "ui.sessionReview.title": "Sesjonsendringer",
@@ -17,7 +17,8 @@ export const dict: Record<Keys, string> = {
   "ui.sessionReview.image.loading": "Laster...",
   "ui.sessionReview.image.placeholder": "Bilde",
   "ui.sessionReview.largeDiff.title": "Diff er for stor til å gjengi",
-  "ui.sessionReview.largeDiff.meta": "Grense: {{limit}} endrede linjer. Nåværende: {{current}} endrede linjer.",
+  "ui.sessionReview.largeDiff.meta":
+    "Grense: {{limit}} endrede linjer. Nåværende: {{current}} endrede linjer.",
   "ui.sessionReview.largeDiff.renderAnyway": "Gjengi likevel",
   "ui.fileMedia.kind.image": "bilde",
   "ui.fileMedia.kind.audio": "lyd",
@@ -168,4 +169,4 @@ export const dict: Record<Keys, string> = {
   "ui.toolErrorCard.copyError": "Kopier feil",
   "ui.message.duration.seconds": "{{count}}s",
   "ui.message.duration.minutesSeconds": "{{minutes}}m {{seconds}}s",
-}
+};

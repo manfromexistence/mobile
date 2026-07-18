@@ -30,7 +30,7 @@ test("breaker OPENs after real timeouts, then refreshes to HALF_OPEN", { skip: !
   });
   for (let i = 0; i < 3; i++) {
     await assert.rejects(() =>
-      breaker.execute(() => fetch(up.url, { signal: AbortSignal.timeout(120) }))
+      breaker.execute(() => fetch(up.url, { signal: AbortSignal.timeout(120) })),
     );
   }
   assert.equal(breaker.canExecute(), false);
@@ -53,11 +53,15 @@ test("breaker trips on a real connection reset", { skip: !RUN }, async () => {
   assert.equal(breaker.getStatus().state, STATE.OPEN);
 });
 
-test("checkFallbackError classifies a real 503 response as recoverable fallback", { skip: !RUN }, async () => {
-  up.setMode({ kind: "status", code: 503, body: "service unavailable" });
-  const res = await fetch(up.url);
-  const text = await res.text();
-  const decision = checkFallbackError(res.status, text, 0, null, "chaos-provider", res.headers);
-  assert.equal(decision.shouldFallback, true);
-  assert.ok(decision.cooldownMs > 0, "503 should yield a positive cooldown");
-});
+test(
+  "checkFallbackError classifies a real 503 response as recoverable fallback",
+  { skip: !RUN },
+  async () => {
+    up.setMode({ kind: "status", code: 503, body: "service unavailable" });
+    const res = await fetch(up.url);
+    const text = await res.text();
+    const decision = checkFallbackError(res.status, text, 0, null, "chaos-provider", res.headers);
+    assert.equal(decision.shouldFallback, true);
+    assert.ok(decision.cooldownMs > 0, "503 should yield a positive cooldown");
+  },
+);

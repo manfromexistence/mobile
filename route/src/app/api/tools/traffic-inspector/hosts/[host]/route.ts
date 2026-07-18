@@ -79,7 +79,7 @@ export async function PATCH(request: Request, { params }: Params): Promise<Respo
   if (!parsed.success) {
     return new Response(
       JSON.stringify(buildErrorBody(400, parsed.error.issues[0]?.message ?? "Validation error")),
-      { status: 400, headers: { "content-type": "application/json" } }
+      { status: 400, headers: { "content-type": "application/json" } },
     );
   }
 

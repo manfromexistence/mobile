@@ -1,5 +1,5 @@
-import { Schema } from "effect"
-import { HttpApi, HttpApiEndpoint, HttpApiGroup, HttpApiSchema } from "effect/unstable/httpapi"
+import { Schema } from "effect";
+import { HttpApi, HttpApiEndpoint, HttpApiGroup, HttpApiSchema } from "effect/unstable/httpapi";
 
 export class Missing extends Schema.TaggedErrorClass<Missing>()("Missing", {
   message: Schema.String,
@@ -42,4 +42,4 @@ export const Api = HttpApi.make("fixture")
     HttpApiGroup.make("system", { topLevel: true }).add(
       HttpApiEndpoint.get("status", "/status", { success: Schema.String }),
     ),
-  )
+  );

@@ -87,7 +87,7 @@ test("POST /v1/chat/completions allows a model registered for both chat and imag
     assert.doesNotMatch(
       msg,
       /image-generation model/i,
-      "a model present in the chat catalog must not trip the image-only guard"
+      "a model present in the chat catalog must not trip the image-only guard",
     );
   }
 });

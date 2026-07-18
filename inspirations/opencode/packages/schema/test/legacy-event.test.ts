@@ -1,9 +1,9 @@
-import { describe, expect, test } from "bun:test"
-import { LegacyEvent } from "../src/legacy-event"
-import { PermissionV1 } from "../src/permission-v1"
-import { QuestionV1 } from "../src/question-v1"
-import { Project } from "../src/project"
-import { SessionV1 } from "../src/session-v1"
+import { describe, expect, test } from "bun:test";
+import { LegacyEvent } from "../src/legacy-event";
+import { PermissionV1 } from "../src/permission-v1";
+import { QuestionV1 } from "../src/question-v1";
+import { Project } from "../src/project";
+import { SessionV1 } from "../src/session-v1";
 
 describe("legacy public event schemas", () => {
   test("owns all SessionV1 definitions", () => {
@@ -18,12 +18,12 @@ describe("legacy public event schemas", () => {
       "message.part.delta",
       "session.diff",
       "session.error",
-    ])
-    const durable = SessionV1.Event.Definitions.filter((event) => event.durable !== undefined)
-    expect(durable).toHaveLength(7)
-    expect(durable.every((event) => event.durable?.aggregate === "sessionID")).toBe(true)
-    expect(durable.every((event) => event.durable?.version === 1)).toBe(true)
-  })
+    ]);
+    const durable = SessionV1.Event.Definitions.filter((event) => event.durable !== undefined);
+    expect(durable).toHaveLength(7);
+    expect(durable.every((event) => event.durable?.aggregate === "sessionID")).toBe(true);
+    expect(durable.every((event) => event.durable?.version === 1)).toBe(true);
+  });
 
   test("owns the legacy transient public definitions", () => {
     expect([
@@ -48,6 +48,6 @@ describe("legacy public event schemas", () => {
       "question.rejected",
       "project.updated",
       "command.executed",
-    ])
-  })
-})
+    ]);
+  });
+});

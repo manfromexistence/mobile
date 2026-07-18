@@ -31,7 +31,7 @@ export interface RoutingHint {
 
 export function generateRoutingHints(
   targets: ResolvedComboTarget[],
-  input: RuleInput
+  input: RuleInput,
 ): RoutingHint {
   const tierAssignments = new Map<string, TierAssignment>();
   for (const target of targets) {
@@ -73,7 +73,7 @@ export function generateRoutingHints(
   const strategyModifier = determineStrategyModifier(
     specificityLevel,
     eligibleTargets.length,
-    underqualifiedTargets.length
+    underqualifiedTargets.length,
   );
 
   return {
@@ -91,7 +91,7 @@ export function generateRoutingHints(
 function determineStrategyModifier(
   level: SpecificityLevel,
   eligibleCount: number,
-  underqualifiedCount: number
+  underqualifiedCount: number,
 ): StrategyModifier {
   if (level === "expert") return "require-premium";
   if (level === "complex") return "prefer-cheap";
@@ -107,7 +107,7 @@ export function getTargetTier(target: ResolvedComboTarget): TierAssignment {
 export function estimateRequestCost(
   target: ResolvedComboTarget,
   inputTokens: number,
-  estimatedOutputTokens: number
+  estimatedOutputTokens: number,
 ): number {
   const pricing = getTargetTier(target);
   const inputCost = (inputTokens / 1_000_000) * pricing.costPer1MInput;
@@ -118,7 +118,7 @@ export function estimateRequestCost(
 export function compareByCostEffectiveness(
   a: ResolvedComboTarget,
   b: ResolvedComboTarget,
-  hint: RoutingHint
+  hint: RoutingHint,
 ): number {
   const aTier = getTargetTier(a);
   const bTier = getTargetTier(b);

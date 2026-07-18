@@ -281,7 +281,7 @@ interface BuildBillingHeaderOptions {
  */
 export function buildBillingHeaderValue(
   messages: Message[],
-  options: BuildBillingHeaderOptions
+  options: BuildBillingHeaderOptions,
 ): string {
   const version = options.version || DEFAULT_CLAUDE_CODE_VERSION;
   const firstUserText = extractFirstUserMessageText(messages);
@@ -353,7 +353,7 @@ function startsWithString(haystack: string, prefix: string, caseSensitive: boole
 
 function applyDropParagraphIfContains(
   blocks: SystemBlock[],
-  op: DropParagraphIfContainsOp
+  op: DropParagraphIfContainsOp,
 ): SystemBlock[] {
   const caseSensitive = op.caseSensitive !== false;
   const needles = op.needles || [];
@@ -363,7 +363,7 @@ function applyDropParagraphIfContains(
     if (!isTextBlock(block)) return block;
     const paragraphs = block.text.split(/\n\n+/);
     const filtered = paragraphs.filter(
-      (p) => !needles.some((n) => containsString(p, n, caseSensitive))
+      (p) => !needles.some((n) => containsString(p, n, caseSensitive)),
     );
     return { ...block, text: filtered.join("\n\n") };
   });
@@ -371,7 +371,7 @@ function applyDropParagraphIfContains(
 
 function applyDropParagraphIfStartsWith(
   blocks: SystemBlock[],
-  op: DropParagraphIfStartsWithOp
+  op: DropParagraphIfStartsWithOp,
 ): SystemBlock[] {
   const caseSensitive = op.caseSensitive !== false;
   const prefixes = op.prefixes || [];
@@ -381,7 +381,7 @@ function applyDropParagraphIfStartsWith(
     if (!isTextBlock(block)) return block;
     const paragraphs = block.text.split(/\n\n+/);
     const filtered = paragraphs.filter(
-      (p) => !prefixes.some((prefix) => startsWithString(p.trimStart(), prefix, caseSensitive))
+      (p) => !prefixes.some((prefix) => startsWithString(p.trimStart(), prefix, caseSensitive)),
     );
     return { ...block, text: filtered.join("\n\n") };
   });
@@ -450,7 +450,7 @@ function applyAppendSystemBlock(blocks: SystemBlock[], op: AppendSystemBlockOp):
 function applyInjectBillingHeader(
   body: RequestBody,
   blocks: SystemBlock[],
-  op: InjectBillingHeaderOp
+  op: InjectBillingHeaderOp,
 ): SystemBlock[] {
   // No user message → no billing header (ex-machina parity, transform.ts:340).
   const messages = Array.isArray(body.messages) ? body.messages : [];
@@ -490,7 +490,7 @@ export interface ApplyPipelineResult {
  */
 export function applyCcBridgeTransformPipeline(
   body: RequestBody,
-  config: CcBridgeTransformsConfig = getCcBridgeTransformsConfig()
+  config: CcBridgeTransformsConfig = getCcBridgeTransformsConfig(),
 ): ApplyPipelineResult {
   if (!body || typeof body !== "object") {
     return { body, appliedOpKinds: [] };

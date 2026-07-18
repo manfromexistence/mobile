@@ -1,7 +1,7 @@
-import { docsCodeSnippet } from '@/lib/docsCodeSnippet';
+import { docsCodeSnippet } from "@/lib/docsCodeSnippet";
 
 export const VANILLA_API_EXAMPLE = docsCodeSnippet(
-  'vanilla-api.ts',
+  "vanilla-api.ts",
   `import { FileTree } from '@pierre/trees';
 
 const fileTree = new FileTree({
@@ -9,5 +9,5 @@ const fileTree = new FileTree({
   search: true,
 });
 
-fileTree.render({ fileTreeContainer: container });`
+fileTree.render({ fileTreeContainer: container });`,
 );

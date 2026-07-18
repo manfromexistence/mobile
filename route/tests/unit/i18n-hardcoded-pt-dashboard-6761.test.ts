@@ -38,7 +38,7 @@ for (const rel of FILES) {
     assert.deepEqual(
       hits,
       [],
-      `Hardcoded Portuguese found in ${rel}: ${hits.join(", ")} — translate to English or route through t().`
+      `Hardcoded Portuguese found in ${rel}: ${hits.join(", ")} — translate to English or route through t().`,
     );
   });
 }

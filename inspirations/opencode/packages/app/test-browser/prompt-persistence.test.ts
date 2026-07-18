@@ -1,10 +1,10 @@
-import { beforeAll, describe, expect, mock, test } from "bun:test"
-import type { AsyncStorage } from "@solid-primitives/storage"
-import { createEffect, createRoot } from "solid-js"
-import { ServerScope } from "@/utils/server-scope"
+import { beforeAll, describe, expect, mock, test } from "bun:test";
+import type { AsyncStorage } from "@solid-primitives/storage";
+import { createEffect, createRoot } from "solid-js";
+import { ServerScope } from "@/utils/server-scope";
 
-let Prompt: typeof import("@/context/prompt")
-let read: ((value: string | null) => void) | undefined
+let Prompt: typeof import("@/context/prompt");
+let read: ((value: string | null) => void) | undefined;
 
 const storage: AsyncStorage = {
   getItem: () => new Promise((resolve) => (read = resolve)),
@@ -14,7 +14,7 @@ const storage: AsyncStorage = {
   key: async () => null,
   getLength: async () => 0,
   length: Promise.resolve(0),
-}
+};
 
 beforeAll(async () => {
   mock.module("@solidjs/router", () => ({
@@ -22,29 +22,29 @@ beforeAll(async () => {
     useSearchParams: () => [{}],
     useLocation: () => ({ pathname: "", query: {} }),
     useNavigate: () => () => undefined,
-  }))
+  }));
   mock.module("@opencode-ai/ui/context", () => ({
     createSimpleContext: () => ({
       use: () => undefined,
       provider: () => undefined,
     }),
-  }))
+  }));
   mock.module("@/context/platform", () => ({
     usePlatform: () => ({ platform: "desktop", storage: () => storage }),
-  }))
+  }));
 
-  Prompt = await import("@/context/prompt")
-})
+  Prompt = await import("@/context/prompt");
+});
 
 describe("prompt persistence", () => {
   test("waits for an async draft to hydrate before reporting ready", async () => {
     await new Promise<void>((resolve, reject) => {
       createRoot((dispose) => {
-        const session = Prompt.createPromptSession(ServerScope.local, { draftID: "draft-async" })
-        const ready = Prompt.createPromptReady(() => session)
+        const session = Prompt.createPromptSession(ServerScope.local, { draftID: "draft-async" });
+        const ready = Prompt.createPromptReady(() => session);
 
-        expect(ready()).toBe(false)
-        expect(session.current()[0]).toMatchObject({ type: "text", content: "" })
+        expect(ready()).toBe(false);
+        expect(session.current()[0]).toMatchObject({ type: "text", content: "" });
 
         read?.(
           JSON.stringify({
@@ -52,20 +52,23 @@ describe("prompt persistence", () => {
             cursor: 15,
             context: { items: [] },
           }),
-        )
+        );
 
         createEffect(() => {
-          if (!ready()) return
+          if (!ready()) return;
           try {
-            expect(session.current()[0]).toMatchObject({ type: "text", content: "persisted draft" })
-            dispose()
-            resolve()
+            expect(session.current()[0]).toMatchObject({
+              type: "text",
+              content: "persisted draft",
+            });
+            dispose();
+            resolve();
           } catch (error) {
-            dispose()
-            reject(error)
+            dispose();
+            reject(error);
           }
-        })
-      })
-    })
-  })
-})
+        });
+      });
+    });
+  });
+});

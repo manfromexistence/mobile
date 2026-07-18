@@ -7,7 +7,7 @@ const PLUGIN_PREFIX_RE = /^(@[^/]+\/)?omniroute-cmd-/;
 
 function getPluginDirs() {
   return [join(homedir(), ".omniroute", "plugins"), process.env.OMNIROUTE_PLUGIN_PATH].filter(
-    Boolean
+    Boolean,
   );
 }
 

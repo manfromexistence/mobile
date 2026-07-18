@@ -1,6 +1,6 @@
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { rotation2, colorBandingFix } from '../shader-utils.js';
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { rotation2, colorBandingFix } from "../shader-utils.js";
 
 /**
  * A glowing, web-like structure of fluid lines and soft intersections.
@@ -53,7 +53,7 @@ in vec2 v_patternUV;
 
 out vec4 fragColor;
 
-${ rotation2 }
+${rotation2}
 
 float neuroShape(vec2 uv, float t) {
   vec2 sine_acc = vec2(0.);
@@ -99,7 +99,7 @@ void main() {
   color = color + bgColor * (1. - opacity);
   opacity = opacity + u_colorBack.a * (1. - opacity);
 
-  ${ colorBandingFix }
+  ${colorBandingFix}
 
   fragColor = vec4(color, opacity);
 }

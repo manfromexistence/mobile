@@ -1,4 +1,4 @@
-import { expect, type Page, test, type TestInfo } from '@playwright/test';
+import { expect, type Page, test, type TestInfo } from "@playwright/test";
 
 // Keep this regression directly invokable, but out of the default e2e sweep.
 // It locks internal debug hooks and tiny scroll steps so sticky-row trigger
@@ -165,9 +165,7 @@ declare global {
   interface Window {
     __stickyContextMenuDriftFixtureReady?: boolean;
     __stickyContextMenuDriftProbe?: {
-      dispatchStickyContextMenu: (
-        path: string
-      ) => StickyContextMenuDispatchResult;
+      dispatchStickyContextMenu: (path: string) => StickyContextMenuDispatchResult;
       findScenarioCandidate: (options?: {
         maxScrollTop?: number;
         minDepth?: number;
@@ -180,7 +178,7 @@ declare global {
       runScenario: (
         path: string,
         scrollTops: readonly number[],
-        settleFrames?: number
+        settleFrames?: number,
       ) => Promise<
         Array<{
           before: StickyContextMenuSample;
@@ -200,9 +198,9 @@ declare global {
 const mismatchTolerance = 0.5;
 const settleFrames = 2;
 const scenarioSteps = [
-  { delta: 2, label: 'down-2' },
-  { delta: 4, label: 'down-4' },
-  { delta: 1, label: 'up-1' },
+  { delta: 2, label: "down-2" },
+  { delta: 4, label: "down-4" },
+  { delta: 1, label: "up-1" },
 ] as const;
 
 const delta = (next: number | null, previous: number | null): number | null => {
@@ -213,10 +211,7 @@ const delta = (next: number | null, previous: number | null): number | null => {
   return next - previous;
 };
 
-const nextFrames = async (
-  page: Page,
-  count: number = settleFrames
-): Promise<void> => {
+const nextFrames = async (page: Page, count: number = settleFrames): Promise<void> => {
   await page.evaluate((nextCount) => {
     return window.__stickyContextMenuDriftProbe?.nextFrames(nextCount);
   }, count);
@@ -230,22 +225,14 @@ const setScrollTop = async (page: Page, scrollTop: number): Promise<void> => {
 
 // Uses real pointer movement for native :hover coverage; the fixture-level
 // hover hook only covers React's context-hover state.
-const getStickyRowRect = async (
-  page: Page,
-  path: string
-): Promise<StickyRowRect> => {
+const getStickyRowRect = async (page: Page, path: string): Promise<StickyRowRect> => {
   const rect = await page.evaluate((nextPath) => {
-    const host = document.querySelector('file-tree-container');
+    const host = document.querySelector("file-tree-container");
     const shadowRoot = host?.shadowRoot;
     const row = Array.from(
-      shadowRoot?.querySelectorAll(
-        'button[data-file-tree-sticky-row="true"]'
-      ) ?? []
+      shadowRoot?.querySelectorAll('button[data-file-tree-sticky-row="true"]') ?? [],
     ).find((button): button is HTMLButtonElement => {
-      return (
-        button instanceof HTMLButtonElement &&
-        button.dataset.fileTreeStickyPath === nextPath
-      );
+      return button instanceof HTMLButtonElement && button.dataset.fileTreeStickyPath === nextPath;
     });
     if (!(row instanceof HTMLButtonElement)) {
       return null;
@@ -275,7 +262,7 @@ const toMeasuredStep = (
     scrollTop: number;
     settled: StickyContextMenuSample;
   },
-  label: string
+  label: string,
 ): StickyContextMenuStep => {
   const { before, immediate, scrollTop, settled } = rawStep;
 
@@ -285,88 +272,76 @@ const toMeasuredStep = (
       immediate: {
         anchorRectTopWithinRoot: delta(
           immediate.anchorRectTopWithinRoot,
-          before.anchorRectTopWithinRoot
+          before.anchorRectTopWithinRoot,
         ),
         anchorRectTopWithinScroll: delta(
           immediate.anchorRectTopWithinScroll,
-          before.anchorRectTopWithinScroll
+          before.anchorRectTopWithinScroll,
         ),
         anchorStyleTop: delta(immediate.anchorStyleTop, before.anchorStyleTop),
         driftFromRectWithinRoot: delta(
           immediate.driftFromRectWithinRoot,
-          before.driftFromRectWithinRoot
+          before.driftFromRectWithinRoot,
         ),
         driftFromRectWithinScroll: delta(
           immediate.driftFromRectWithinScroll,
-          before.driftFromRectWithinScroll
+          before.driftFromRectWithinScroll,
         ),
         driftFromTriggerWithinRoot: delta(
           immediate.driftFromTriggerWithinRoot,
-          before.driftFromTriggerWithinRoot
+          before.driftFromTriggerWithinRoot,
         ),
         driftFromTriggerWithinScroll: delta(
           immediate.driftFromTriggerWithinScroll,
-          before.driftFromTriggerWithinScroll
+          before.driftFromTriggerWithinScroll,
         ),
-        rowTopWithinRoot: delta(
-          immediate.rowTopWithinRoot,
-          before.rowTopWithinRoot
-        ),
-        rowTopWithinScroll: delta(
-          immediate.rowTopWithinScroll,
-          before.rowTopWithinScroll
-        ),
+        rowTopWithinRoot: delta(immediate.rowTopWithinRoot, before.rowTopWithinRoot),
+        rowTopWithinScroll: delta(immediate.rowTopWithinScroll, before.rowTopWithinScroll),
         triggerRectTopWithinRoot: delta(
           immediate.triggerRectTopWithinRoot,
-          before.triggerRectTopWithinRoot
+          before.triggerRectTopWithinRoot,
         ),
         triggerRectTopWithinScroll: delta(
           immediate.triggerRectTopWithinScroll,
-          before.triggerRectTopWithinScroll
+          before.triggerRectTopWithinScroll,
         ),
       },
       scrollTop: immediate.scrollTop - before.scrollTop,
       settled: {
         anchorRectTopWithinRoot: delta(
           settled.anchorRectTopWithinRoot,
-          before.anchorRectTopWithinRoot
+          before.anchorRectTopWithinRoot,
         ),
         anchorRectTopWithinScroll: delta(
           settled.anchorRectTopWithinScroll,
-          before.anchorRectTopWithinScroll
+          before.anchorRectTopWithinScroll,
         ),
         anchorStyleTop: delta(settled.anchorStyleTop, before.anchorStyleTop),
         driftFromRectWithinRoot: delta(
           settled.driftFromRectWithinRoot,
-          before.driftFromRectWithinRoot
+          before.driftFromRectWithinRoot,
         ),
         driftFromRectWithinScroll: delta(
           settled.driftFromRectWithinScroll,
-          before.driftFromRectWithinScroll
+          before.driftFromRectWithinScroll,
         ),
         driftFromTriggerWithinRoot: delta(
           settled.driftFromTriggerWithinRoot,
-          before.driftFromTriggerWithinRoot
+          before.driftFromTriggerWithinRoot,
         ),
         driftFromTriggerWithinScroll: delta(
           settled.driftFromTriggerWithinScroll,
-          before.driftFromTriggerWithinScroll
+          before.driftFromTriggerWithinScroll,
         ),
-        rowTopWithinRoot: delta(
-          settled.rowTopWithinRoot,
-          before.rowTopWithinRoot
-        ),
-        rowTopWithinScroll: delta(
-          settled.rowTopWithinScroll,
-          before.rowTopWithinScroll
-        ),
+        rowTopWithinRoot: delta(settled.rowTopWithinRoot, before.rowTopWithinRoot),
+        rowTopWithinScroll: delta(settled.rowTopWithinScroll, before.rowTopWithinScroll),
         triggerRectTopWithinRoot: delta(
           settled.triggerRectTopWithinRoot,
-          before.triggerRectTopWithinRoot
+          before.triggerRectTopWithinRoot,
         ),
         triggerRectTopWithinScroll: delta(
           settled.triggerRectTopWithinScroll,
-          before.triggerRectTopWithinScroll
+          before.triggerRectTopWithinScroll,
         ),
       },
     },
@@ -380,7 +355,7 @@ const toMeasuredStep = (
 const runScenario = async (
   page: Page,
   path: string,
-  scrollTops: readonly number[]
+  scrollTops: readonly number[],
 ): Promise<StickyContextMenuStep[]> => {
   const steps = await page.evaluate(
     ({ path: nextPath, scrollTops: nextScrollTops, nextSettleFrames }) => {
@@ -388,11 +363,11 @@ const runScenario = async (
         window.__stickyContextMenuDriftProbe?.runScenario(
           nextPath,
           nextScrollTops,
-          nextSettleFrames
+          nextSettleFrames,
         ) ?? null
       );
     },
-    { path, scrollTops, nextSettleFrames: settleFrames }
+    { path, scrollTops, nextSettleFrames: settleFrames },
   );
 
   expect(steps).not.toBeNull();
@@ -414,15 +389,15 @@ const captureMismatchScreenshots = async (
   page: Page,
   testInfo: TestInfo,
   path: string,
-  step: StickyContextMenuStep
-): Promise<StickyContextMenuMeasurement['screenshotPaths']> => {
+  step: StickyContextMenuStep,
+): Promise<StickyContextMenuMeasurement["screenshotPaths"]> => {
   await page.evaluate(
     ({ beforeScrollTop, lockedPath }) => {
       const probe = window.__stickyContextMenuDriftProbe;
       probe?.setTriggerPath(lockedPath);
       probe?.setScrollTop(beforeScrollTop);
     },
-    { beforeScrollTop: step.before.scrollTop, lockedPath: path }
+    { beforeScrollTop: step.before.scrollTop, lockedPath: path },
   );
   await nextFrames(page);
 
@@ -440,16 +415,12 @@ const captureMismatchScreenshots = async (
   };
 };
 
-test.describe('sticky context-menu drift fixture @diagnostic', () => {
-  test('keeps the floating trigger aligned to the deepest sticky row during tiny scroll steps', async ({
+test.describe("sticky context-menu drift fixture @diagnostic", () => {
+  test("keeps the floating trigger aligned to the deepest sticky row during tiny scroll steps", async ({
     page,
   }, testInfo) => {
-    await page.goto(
-      '/test/e2e/fixtures/file-tree-sticky-context-menu-scroll-drift.html'
-    );
-    await page.waitForFunction(
-      () => window.__stickyContextMenuDriftFixtureReady === true
-    );
+    await page.goto("/test/e2e/fixtures/file-tree-sticky-context-menu-scroll-drift.html");
+    await page.waitForFunction(() => window.__stickyContextMenuDriftFixtureReady === true);
 
     const candidate = await page.evaluate(async (nextSettleFrames) => {
       return (
@@ -477,19 +448,17 @@ test.describe('sticky context-menu drift fixture @diagnostic', () => {
         probe?.setScrollTop(scrollTop);
         probe?.setTriggerPath(path);
       },
-      { path: targetPath, scrollTop: candidate.scrollTop }
+      { path: targetPath, scrollTop: candidate.scrollTop },
     );
     const steps = await runScenario(
       page,
       targetPath,
-      scenarioSteps.map(
-        ({ delta: stepDelta }) => candidate.scrollTop + stepDelta
-      )
+      scenarioSteps.map(({ delta: stepDelta }) => candidate.scrollTop + stepDelta),
     );
     const baselineStep = steps[0];
     expect(baselineStep).toBeDefined();
     if (baselineStep == null) {
-      throw new Error('Missing sticky drift baseline step');
+      throw new Error("Missing sticky drift baseline step");
     }
     const baseline = baselineStep.before;
 
@@ -497,27 +466,22 @@ test.describe('sticky context-menu drift fixture @diagnostic', () => {
       ...steps.map((step) =>
         Math.max(
           Math.abs(step.deltas.immediate.driftFromRectWithinRoot ?? 0),
-          Math.abs(step.deltas.immediate.driftFromTriggerWithinRoot ?? 0)
-        )
-      )
+          Math.abs(step.deltas.immediate.driftFromTriggerWithinRoot ?? 0),
+        ),
+      ),
     );
     const screenshotStep = steps.find((step) => {
       return (
         Math.max(
           Math.abs(step.deltas.immediate.driftFromRectWithinRoot ?? 0),
-          Math.abs(step.deltas.immediate.driftFromTriggerWithinRoot ?? 0)
+          Math.abs(step.deltas.immediate.driftFromTriggerWithinRoot ?? 0),
         ) > mismatchTolerance
       );
     });
     const screenshotPaths =
       screenshotStep == null
         ? null
-        : await captureMismatchScreenshots(
-            page,
-            testInfo,
-            targetPath,
-            screenshotStep
-          );
+        : await captureMismatchScreenshots(page, testInfo, targetPath, screenshotStep);
 
     const measurement: StickyContextMenuMeasurement = {
       baseline,
@@ -531,22 +495,21 @@ test.describe('sticky context-menu drift fixture @diagnostic', () => {
         }),
         anchorOffsetParent: baseline.anchorOffsetParent,
         stickyWindowTransform: baseline.stickyWindow?.style.transform ?? null,
-        virtualizedListTransform:
-          baseline.virtualizedList?.style.transform ?? null,
+        virtualizedListTransform: baseline.virtualizedList?.style.transform ?? null,
       },
       screenshotPaths,
       steps,
     };
 
     await page.evaluate((value) => {
-      const report = document.querySelector('[data-sticky-drift-report]');
+      const report = document.querySelector("[data-sticky-drift-report]");
       if (report instanceof HTMLPreElement) {
         report.textContent = JSON.stringify(value, null, 2);
       }
     }, measurement);
 
     expect(candidate.stickyCount).toBeGreaterThanOrEqual(3);
-    expect(targetPath).not.toBe('');
+    expect(targetPath).not.toBe("");
     expect(baseline.triggerVisible).toBe(true);
     expect(baseline.anchorVisible).toBe(true);
     expect(baseline.rowMounted).toBe(true);
@@ -556,26 +519,18 @@ test.describe('sticky context-menu drift fixture @diagnostic', () => {
     expect(steps[0]?.immediate.triggerVisible).toBe(true);
     expect(maxImmediateDrift).toBeLessThanOrEqual(mismatchTolerance);
 
-    const reportText = await page
-      .locator('[data-sticky-drift-report]')
-      .innerText();
+    const reportText = await page.locator("[data-sticky-drift-report]").innerText();
     expect(reportText).toContain(targetPath);
-    expect(reportText).toContain('anchorOffsetParent');
-    expect(reportText).toContain('stickyWindowTransform');
-    expect(reportText).toContain('down-2');
+    expect(reportText).toContain("anchorOffsetParent");
+    expect(reportText).toContain("stickyWindowTransform");
+    expect(reportText).toContain("down-2");
   });
 });
 
-test.describe('sticky focused row context-menu regressions', () => {
-  test('suppresses sticky hover and context-menu opening while scrolling', async ({
-    page,
-  }) => {
-    await page.goto(
-      '/test/e2e/fixtures/file-tree-sticky-context-menu-scroll-drift.html'
-    );
-    await page.waitForFunction(
-      () => window.__stickyContextMenuDriftFixtureReady === true
-    );
+test.describe("sticky focused row context-menu regressions", () => {
+  test("suppresses sticky hover and context-menu opening while scrolling", async ({ page }) => {
+    await page.goto("/test/e2e/fixtures/file-tree-sticky-context-menu-scroll-drift.html");
+    await page.waitForFunction(() => window.__stickyContextMenuDriftFixtureReady === true);
 
     const candidate = await page.evaluate(async (nextSettleFrames) => {
       return (
@@ -596,7 +551,7 @@ test.describe('sticky focused row context-menu regressions', () => {
     const hoverPath = candidate.stickyPaths[0];
     expect(hoverPath).toBeDefined();
     if (hoverPath == null) {
-      throw new Error('Missing sticky row path to hover.');
+      throw new Error("Missing sticky row path to hover.");
     }
 
     await setScrollTop(page, candidate.scrollTop);
@@ -604,10 +559,7 @@ test.describe('sticky focused row context-menu regressions', () => {
     await nextFrames(page);
 
     const resting = await page.evaluate((path) => {
-      return (
-        window.__stickyContextMenuDriftProbe?.sampleHoverSuppression(path) ??
-        null
-      );
+      return window.__stickyContextMenuDriftProbe?.sampleHoverSuppression(path) ?? null;
     }, hoverPath);
     expect(resting).not.toBeNull();
     if (resting == null) {
@@ -620,7 +572,7 @@ test.describe('sticky focused row context-menu regressions', () => {
     const stickyRect = await getStickyRowRect(page, hoverPath);
     await page.mouse.move(
       stickyRect.left + stickyRect.width / 2,
-      stickyRect.top + stickyRect.height / 2
+      stickyRect.top + stickyRect.height / 2,
     );
     await page.evaluate((path) => {
       window.__stickyContextMenuDriftProbe?.hoverRow(path);
@@ -628,17 +580,14 @@ test.describe('sticky focused row context-menu regressions', () => {
     await nextFrames(page);
 
     const hovered = await page.evaluate((path) => {
-      return (
-        window.__stickyContextMenuDriftProbe?.sampleHoverSuppression(path) ??
-        null
-      );
+      return window.__stickyContextMenuDriftProbe?.sampleHoverSuppression(path) ?? null;
     }, hoverPath);
     expect(hovered).not.toBeNull();
     if (hovered == null) {
       return;
     }
     expect(hovered.rowContextHovered).toBe(true);
-    expect(hovered.rowPointerEvents).toBe('auto');
+    expect(hovered.rowPointerEvents).toBe("auto");
     expect(hovered.anchorVisible).toBe(true);
     expect(hovered.triggerVisible).toBe(true);
     expect(hovered.rowBackgroundColor).not.toBe(resting.rowBackgroundColor);
@@ -649,7 +598,7 @@ test.describe('sticky focused row context-menu regressions', () => {
         probe?.setScrollTop(scrollTop);
         return probe?.sampleHoverSuppression(path) ?? null;
       },
-      { path: hoverPath, scrollTop: candidate.scrollTop + 2 }
+      { path: hoverPath, scrollTop: candidate.scrollTop + 2 },
     );
     expect(scrolling).not.toBeNull();
     if (scrolling == null) {
@@ -657,55 +606,45 @@ test.describe('sticky focused row context-menu regressions', () => {
     }
     expect(scrolling.rootIsScrolling).toBe(true);
     expect(scrolling.virtualizedListIsScrolling).toBe(true);
-    expect(scrolling.rowPointerEvents).toBe('none');
+    expect(scrolling.rowPointerEvents).toBe("none");
     expect(scrolling.rowBackgroundColor).toBe(resting.rowBackgroundColor);
-    expect(scrolling.anchorDisplay).toBe('none');
+    expect(scrolling.anchorDisplay).toBe("none");
 
     const contextMenuAttempt = await page.evaluate((path) => {
-      return (
-        window.__stickyContextMenuDriftProbe?.dispatchStickyContextMenu(path) ??
-        null
-      );
+      return window.__stickyContextMenuDriftProbe?.dispatchStickyContextMenu(path) ?? null;
     }, hoverPath);
     expect(contextMenuAttempt).not.toBeNull();
     expect(contextMenuAttempt?.defaultPrevented).toBe(true);
     await nextFrames(page);
 
     const afterContextMenuAttempt = await page.evaluate((path) => {
-      return (
-        window.__stickyContextMenuDriftProbe?.sampleHoverSuppression(path) ??
-        null
-      );
+      return window.__stickyContextMenuDriftProbe?.sampleHoverSuppression(path) ?? null;
     }, hoverPath);
     expect(afterContextMenuAttempt?.menuPath).toBeNull();
     expect(contextMenuAttempt?.menuPath).toBeNull();
   });
 
-  test('does not restore the trigger to a parked focused row after hover clears', async ({
+  test("does not restore the trigger to a parked focused row after hover clears", async ({
     page,
   }) => {
-    await page.goto(
-      '/test/e2e/fixtures/file-tree-sticky-context-menu-scroll-drift.html'
-    );
-    await page.waitForFunction(
-      () => window.__stickyContextMenuDriftFixtureReady === true
-    );
+    await page.goto("/test/e2e/fixtures/file-tree-sticky-context-menu-scroll-drift.html");
+    await page.waitForFunction(() => window.__stickyContextMenuDriftFixtureReady === true);
 
     const focusedPath = await page.evaluate(() => {
-      const host = document.querySelector('file-tree-container');
+      const host = document.querySelector("file-tree-container");
       const shadowRoot = host?.shadowRoot;
-      const row = Array.from(
-        shadowRoot?.querySelectorAll('button[data-type="item"]') ?? []
-      ).find((button) => {
-        return (
-          button instanceof HTMLButtonElement &&
-          button.dataset.fileTreeStickyRow !== 'true' &&
-          button.dataset.itemParked !== 'true' &&
-          button.dataset.itemType === 'file'
-        );
-      });
+      const row = Array.from(shadowRoot?.querySelectorAll('button[data-type="item"]') ?? []).find(
+        (button) => {
+          return (
+            button instanceof HTMLButtonElement &&
+            button.dataset.fileTreeStickyRow !== "true" &&
+            button.dataset.itemParked !== "true" &&
+            button.dataset.itemType === "file"
+          );
+        },
+      );
       if (!(row instanceof HTMLButtonElement) || row.dataset.itemPath == null) {
-        throw new Error('Expected a visible file row to focus.');
+        throw new Error("Expected a visible file row to focus.");
       }
 
       row.click();
@@ -717,13 +656,13 @@ test.describe('sticky focused row context-menu regressions', () => {
       ({ scrollTop }) => {
         window.__stickyContextMenuDriftProbe?.setScrollTop(scrollTop);
       },
-      { scrollTop: 1500 }
+      { scrollTop: 1500 },
     );
     await nextFrames(page);
     await page.waitForFunction((path) => {
-      const host = document.querySelector('file-tree-container');
+      const host = document.querySelector("file-tree-container");
       const parkedRow = host?.shadowRoot?.querySelector<HTMLButtonElement>(
-        `button[data-item-path="${path}"][data-item-parked="true"]`
+        `button[data-item-path="${path}"][data-item-parked="true"]`,
       );
       return parkedRow instanceof HTMLButtonElement;
     }, focusedPath);
@@ -731,87 +670,73 @@ test.describe('sticky focused row context-menu regressions', () => {
     await nextFrames(page);
 
     const hoveredPath = await page.evaluate((path) => {
-      const host = document.querySelector('file-tree-container');
+      const host = document.querySelector("file-tree-container");
       const shadowRoot = host?.shadowRoot;
-      const row = Array.from(
-        shadowRoot?.querySelectorAll('button[data-type="item"]') ?? []
-      ).find((button) => {
-        return (
-          button instanceof HTMLButtonElement &&
-          button.dataset.fileTreeStickyRow !== 'true' &&
-          button.dataset.itemParked !== 'true' &&
-          button.dataset.itemPath !== path
-        );
-      });
+      const row = Array.from(shadowRoot?.querySelectorAll('button[data-type="item"]') ?? []).find(
+        (button) => {
+          return (
+            button instanceof HTMLButtonElement &&
+            button.dataset.fileTreeStickyRow !== "true" &&
+            button.dataset.itemParked !== "true" &&
+            button.dataset.itemPath !== path
+          );
+        },
+      );
       if (!(row instanceof HTMLButtonElement) || row.dataset.itemPath == null) {
-        throw new Error('Expected a visible row to hover.');
+        throw new Error("Expected a visible row to hover.");
       }
 
-      row.dispatchEvent(
-        new PointerEvent('pointerover', { bubbles: true, composed: true })
-      );
+      row.dispatchEvent(new PointerEvent("pointerover", { bubbles: true, composed: true }));
       return row.dataset.itemPath;
     }, focusedPath);
     await nextFrames(page);
 
     await expect(
-      page.locator(
-        'file-tree-container button[data-type="context-menu-trigger"]'
-      )
-    ).toHaveAttribute('data-visible', 'true');
+      page.locator('file-tree-container button[data-type="context-menu-trigger"]'),
+    ).toHaveAttribute("data-visible", "true");
 
     await page.evaluate(() => {
-      const host = document.querySelector('file-tree-container');
-      const root = host?.shadowRoot?.querySelector(
-        '[data-file-tree-virtualized-root="true"]'
-      );
-      root?.dispatchEvent(new PointerEvent('pointerleave', { bubbles: true }));
+      const host = document.querySelector("file-tree-container");
+      const root = host?.shadowRoot?.querySelector('[data-file-tree-virtualized-root="true"]');
+      root?.dispatchEvent(new PointerEvent("pointerleave", { bubbles: true }));
     });
     await nextFrames(page);
 
     await expect(
-      page.locator(
-        'file-tree-container button[data-type="context-menu-trigger"]'
-      )
-    ).toHaveAttribute('data-visible', 'false');
+      page.locator('file-tree-container button[data-type="context-menu-trigger"]'),
+    ).toHaveAttribute("data-visible", "false");
     await expect(
-      page.locator('file-tree-container [data-type="context-menu-anchor"]')
-    ).toHaveAttribute('data-visible', 'false');
+      page.locator('file-tree-container [data-type="context-menu-anchor"]'),
+    ).toHaveAttribute("data-visible", "false");
 
     expect(hoveredPath).not.toBe(focusedPath);
   });
 
-  test('clears visual focus after a focused row is parked and restored', async ({
-    page,
-  }) => {
-    await page.goto(
-      '/test/e2e/fixtures/file-tree-sticky-context-menu-scroll-drift.html'
-    );
-    await page.waitForFunction(
-      () => window.__stickyContextMenuDriftFixtureReady === true
-    );
+  test("clears visual focus after a focused row is parked and restored", async ({ page }) => {
+    await page.goto("/test/e2e/fixtures/file-tree-sticky-context-menu-scroll-drift.html");
+    await page.waitForFunction(() => window.__stickyContextMenuDriftFixtureReady === true);
 
     const focusedPath = await page.evaluate(() => {
-      const outsideButton = document.createElement('button');
-      outsideButton.dataset.testOutsideFocus = 'true';
-      outsideButton.type = 'button';
-      outsideButton.textContent = 'Outside focus';
+      const outsideButton = document.createElement("button");
+      outsideButton.dataset.testOutsideFocus = "true";
+      outsideButton.type = "button";
+      outsideButton.textContent = "Outside focus";
       document.body.append(outsideButton);
 
-      const host = document.querySelector('file-tree-container');
+      const host = document.querySelector("file-tree-container");
       const shadowRoot = host?.shadowRoot;
-      const row = Array.from(
-        shadowRoot?.querySelectorAll('button[data-type="item"]') ?? []
-      ).find((button) => {
-        return (
-          button instanceof HTMLButtonElement &&
-          button.dataset.fileTreeStickyRow !== 'true' &&
-          button.dataset.itemParked !== 'true' &&
-          button.dataset.itemType === 'file'
-        );
-      });
+      const row = Array.from(shadowRoot?.querySelectorAll('button[data-type="item"]') ?? []).find(
+        (button) => {
+          return (
+            button instanceof HTMLButtonElement &&
+            button.dataset.fileTreeStickyRow !== "true" &&
+            button.dataset.itemParked !== "true" &&
+            button.dataset.itemType === "file"
+          );
+        },
+      );
       if (!(row instanceof HTMLButtonElement) || row.dataset.itemPath == null) {
-        throw new Error('Expected a visible file row to focus.');
+        throw new Error("Expected a visible file row to focus.");
       }
 
       row.click();
@@ -823,13 +748,13 @@ test.describe('sticky focused row context-menu regressions', () => {
       ({ scrollTop }) => {
         window.__stickyContextMenuDriftProbe?.setScrollTop(scrollTop);
       },
-      { scrollTop: 1500 }
+      { scrollTop: 1500 },
     );
     await nextFrames(page);
     await page.waitForFunction((path) => {
-      const host = document.querySelector('file-tree-container');
+      const host = document.querySelector("file-tree-container");
       const parkedRow = host?.shadowRoot?.querySelector<HTMLButtonElement>(
-        `button[data-item-path="${path}"][data-item-parked="true"]`
+        `button[data-item-path="${path}"][data-item-parked="true"]`,
       );
       return parkedRow instanceof HTMLButtonElement;
     }, focusedPath);
@@ -844,20 +769,18 @@ test.describe('sticky focused row context-menu regressions', () => {
 
     await expect(
       page.locator(
-        `file-tree-container button[data-item-path="${focusedPath}"][data-item-focused="true"]`
-      )
+        `file-tree-container button[data-item-path="${focusedPath}"][data-item-focused="true"]`,
+      ),
     ).toHaveCount(1);
 
     await page.locator('[data-test-outside-focus="true"]').focus();
     await nextFrames(page);
 
+    await expect(page.locator('file-tree-container button[data-item-focused="true"]')).toHaveCount(
+      0,
+    );
     await expect(
-      page.locator('file-tree-container button[data-item-focused="true"]')
-    ).toHaveCount(0);
-    await expect(
-      page.locator(
-        'file-tree-container button[data-type="context-menu-trigger"]'
-      )
-    ).toHaveAttribute('data-visible', 'false');
+      page.locator('file-tree-container button[data-type="context-menu-trigger"]'),
+    ).toHaveAttribute("data-visible", "false");
   });
 });

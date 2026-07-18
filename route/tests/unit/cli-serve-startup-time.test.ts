@@ -19,12 +19,12 @@ test("serve startup banner includes started in elapsed time", () => {
 test("serve daemon mode does not accept startedAt", () => {
   assert.match(
     serveSource,
-    /function\s+runDaemon\s*\(\s*serverJs\s*,\s*env\s*,\s*memoryLimit\s*,\s*dashboardPort\s*,\s*apiPort\s*\)/
+    /function\s+runDaemon\s*\(\s*serverJs\s*,\s*env\s*,\s*memoryLimit\s*,\s*dashboardPort\s*,\s*apiPort\s*\)/,
   );
   assert.ok(
     !/function\s+runDaemon\s*\(\s*serverJs\s*,\s*env\s*,\s*memoryLimit\s*,\s*dashboardPort\s*,\s*apiPort\s*,\s*startedAt\s*\)/.test(
-      serveSource
-    )
+      serveSource,
+    ),
   );
 });
 
@@ -34,13 +34,13 @@ test("serve runWithSupervisor uses startedAt before defaulted useTray", () => {
   assert.match(
     serveSource,
     signatureRegex,
-    "runWithSupervisor should declare startedAt before the defaulted useTray parameter"
+    "runWithSupervisor should declare startedAt before the defaulted useTray parameter",
   );
 
   const callRegex = /runWithSupervisor\s*\([\s\S]*?startedAt\s*,\s*useTray\s*\)/;
   assert.match(
     serveSource,
     callRegex,
-    "runWithSupervisor should be called with startedAt before useTray"
+    "runWithSupervisor should be called with startedAt before useTray",
   );
 });

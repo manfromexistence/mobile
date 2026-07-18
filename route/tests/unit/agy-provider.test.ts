@@ -68,7 +68,7 @@ test("agy model helpers resolve catalog ids and display names", () => {
   assert.equal(isUserCallableAgyModelId(""), false);
   assert.equal(
     getClientVisibleAgyModelName("claude-opus-4-6-thinking"),
-    "Claude Opus 4.6 (Thinking)"
+    "Claude Opus 4.6 (Thinking)",
   );
   assert.equal(getClientVisibleAgyModelName("unknown-model", "Fallback"), "Fallback");
 });

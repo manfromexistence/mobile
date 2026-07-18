@@ -22,9 +22,13 @@ test("#2929 route-restriction 403 does NOT cool down the connection", () => {
     "Fire Pass API keys are not authorized for this route.",
     0,
     null,
-    "fireworks"
+    "fireworks",
   );
-  assert.equal(result.shouldFallback, false, "route-restriction 403 must not trigger fallback/cooldown");
+  assert.equal(
+    result.shouldFallback,
+    false,
+    "route-restriction 403 must not trigger fallback/cooldown",
+  );
   assert.equal(result.cooldownMs, 0, "route-restriction 403 must not impose a cooldown");
 });
 
@@ -36,7 +40,7 @@ test("#2929 a genuine api-key 403 still triggers fallback (no over-broadening)",
   assert.equal(
     result.shouldFallback,
     true,
-    "a non-route-restriction 403 must still be treated as fallback-worthy"
+    "a non-route-restriction 403 must still be treated as fallback-worthy",
   );
 });
 
@@ -46,7 +50,7 @@ test("#2929 case-insensitive match on the route-restriction phrase", () => {
     "ERROR: Not Authorized For This Route",
     0,
     null,
-    "fireworks"
+    "fireworks",
   );
   assert.equal(result.shouldFallback, false);
 });

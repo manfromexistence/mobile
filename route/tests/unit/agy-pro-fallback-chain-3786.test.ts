@@ -75,14 +75,14 @@ test("(#3786) every chain starts with its own key (each candidate listed once)",
 function makeSuccessSSE(): Response {
   return new Response(
     'data: {"response":{"candidates":[{"content":{"parts":[{"text":"OK"}]},"finishReason":"STOP"}]}}\n\n',
-    { status: 200, headers: { "Content-Type": "text/event-stream" } }
+    { status: 200, headers: { "Content-Type": "text/event-stream" } },
   );
 }
 
 function make400(modelId: string): Response {
   return new Response(
     JSON.stringify({ error: { code: 400, message: `Model not found: ${modelId}` } }),
-    { status: 400, headers: { "Content-Type": "application/json" } }
+    { status: 400, headers: { "Content-Type": "application/json" } },
   );
 }
 

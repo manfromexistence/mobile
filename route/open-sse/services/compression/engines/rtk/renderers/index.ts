@@ -36,11 +36,15 @@ REGISTRY["json-output"] = renderStructuredTable;
 export function applyRenderer(
   text: string,
   detection: CommandDetectionResult,
-  config: RtkConfig
+  config: RtkConfig,
 ): RenderResult {
   const r = REGISTRY[detection.type];
   if (!r) return NO_RENDER(text);
-  if (config.renderers && config.renderers.length > 0 && !config.renderers.includes(detection.type)) {
+  if (
+    config.renderers &&
+    config.renderers.length > 0 &&
+    !config.renderers.includes(detection.type)
+  ) {
     return NO_RENDER(text);
   }
   return r(text, detection);

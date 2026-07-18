@@ -1,41 +1,41 @@
-import { For, Show } from "solid-js"
-import { MenuV2 } from "@opencode-ai/ui/v2/menu-v2"
-import { Icon } from "@opencode-ai/ui/icon"
-import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon"
-import { getFilename } from "@opencode-ai/core/util/path"
-import { useLanguage } from "@/context/language"
+import { For, Show } from "solid-js";
+import { MenuV2 } from "@opencode-ai/ui/v2/menu-v2";
+import { Icon } from "@opencode-ai/ui/icon";
+import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon";
+import { getFilename } from "@opencode-ai/core/util/path";
+import { useLanguage } from "@/context/language";
 
 export function PromptWorkspaceSelector(props: {
-  value: string
-  projectRoot: string
-  workspaces: string[]
-  branch?: string
-  onChange: (value: string) => void
-  onDone: () => void
+  value: string;
+  projectRoot: string;
+  workspaces: string[];
+  branch?: string;
+  onChange: (value: string) => void;
+  onDone: () => void;
 }) {
-  const language = useLanguage()
-  let pending: string | undefined
-  const selected = () => (props.value === props.projectRoot ? "main" : props.value)
+  const language = useLanguage();
+  let pending: string | undefined;
+  const selected = () => (props.value === props.projectRoot ? "main" : props.value);
   const icon = () => {
-    if (selected() === "main") return "monitor"
-    if (selected() === "create") return "workspace-new"
-    return "workspace"
-  }
+    if (selected() === "main") return "monitor";
+    if (selected() === "create") return "workspace-new";
+    return "workspace";
+  };
   const select = (value: string) => {
-    pending = value
-  }
+    pending = value;
+  };
   const onOpenChange = (open: boolean) => {
-    if (open) return
-    const value = pending
-    pending = undefined
-    if (value) props.onChange(value)
-    props.onDone()
-  }
+    if (open) return;
+    const value = pending;
+    pending = undefined;
+    if (value) props.onChange(value);
+    props.onDone();
+  };
   const label = () => {
-    if (selected() === "main") return language.t("session.new.workspace.triggerLocal")
-    if (props.value === "create") return language.t("workspace.new")
-    return getFilename(props.value)
-  }
+    if (selected() === "main") return language.t("session.new.workspace.triggerLocal");
+    if (props.value === "create") return language.t("workspace.new");
+    return getFilename(props.value);
+  };
 
   return (
     <>
@@ -52,7 +52,9 @@ export function PromptWorkspaceSelector(props: {
               <MenuV2.GroupLabel>{language.t("session.new.workspace.runIn")}</MenuV2.GroupLabel>
               <MenuV2.Item onSelect={() => select("main")}>
                 <IconV2 name="monitor" />
-                <span class="min-w-0 flex-1 truncate">{language.t("session.new.workspace.local")}</span>
+                <span class="min-w-0 flex-1 truncate">
+                  {language.t("session.new.workspace.local")}
+                </span>
                 <Show when={selected() === "main"}>
                   <Icon name="check" size="small" class="shrink-0" />
                 </Show>
@@ -104,5 +106,5 @@ export function PromptWorkspaceSelector(props: {
         )}
       </Show>
     </>
-  )
+  );
 }

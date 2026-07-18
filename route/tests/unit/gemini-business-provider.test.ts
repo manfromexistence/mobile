@@ -28,17 +28,14 @@ test("Gemini Business credential requirements use __Secure-1PSID cookies", () =>
   assert.ok(req, "credential requirements must be defined");
   assert.equal(req.kind, "cookie");
   assert.equal(req.acceptsFullCookieHeader, true);
-  assert.ok(
-    req.storageKeys.includes("__Secure-1PSID"),
-    "storageKeys must include __Secure-1PSID"
-  );
+  assert.ok(req.storageKeys.includes("__Secure-1PSID"), "storageKeys must include __Secure-1PSID");
   assert.ok(
     req.storageKeys.includes("__Secure-1PSIDTS"),
-    "storageKeys must include __Secure-1PSIDTS"
+    "storageKeys must include __Secure-1PSIDTS",
   );
   assert.ok(
     req.placeholder.includes("business.gemini.google"),
-    "placeholder must reference business.gemini.google"
+    "placeholder must reference business.gemini.google",
   );
 });
 

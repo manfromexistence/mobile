@@ -1,6 +1,6 @@
-import type { SessionV1 } from "@opencode-ai/core/v1/session"
+import type { SessionV1 } from "@opencode-ai/core/v1/session";
 
-export { parseGitHubRemote } from "@/util/repository"
+export { parseGitHubRemote } from "@/util/repository";
 
 /**
  * Extracts displayable text from assistant response parts.
@@ -8,13 +8,13 @@ export { parseGitHubRemote } from "@/util/repository"
  * Throws only for truly empty responses.
  */
 export function extractResponseText(parts: SessionV1.Part[]): string | null {
-  const textPart = parts.findLast((p) => p.type === "text")
-  if (textPart) return textPart.text
+  const textPart = parts.findLast((p) => p.type === "text");
+  if (textPart) return textPart.text;
 
   // Non-text parts (tools, reasoning, step-start/step-finish, etc.) - signal summary needed
-  if (parts.length > 0) return null
+  if (parts.length > 0) return null;
 
-  throw new Error("Failed to parse response: no parts returned")
+  throw new Error("Failed to parse response: no parts returned");
 }
 
 /**
@@ -25,6 +25,6 @@ export function formatPromptTooLargeError(files: { filename: string; content: st
   const fileDetails =
     files.length > 0
       ? `\n\nFiles in prompt:\n${files.map((f) => `  - ${f.filename} (${((f.content.length * 0.75) / 1024).toFixed(0)} KB)`).join("\n")}`
-      : ""
-  return `PROMPT_TOO_LARGE: The prompt exceeds the model's context limit.${fileDetails}`
+      : "";
+  return `PROMPT_TOO_LARGE: The prompt exceeds the model's context limit.${fileDetails}`;
 }

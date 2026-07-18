@@ -50,7 +50,7 @@ export default function WebSessionCredentialGuide({
                 t,
                 "webNoAuthGuideBody",
                 "{provider} does not need an API key or cookie. Save the connection to use its free web endpoint.",
-                { provider: providerName }
+                { provider: providerName },
               )}
             </p>
           </div>
@@ -78,7 +78,7 @@ export default function WebSessionCredentialGuide({
                 t,
                 "webSessionGuideIntro",
                 "{provider} uses a browser web session instead of an API key.",
-                { provider: providerName }
+                { provider: providerName },
               )}
             </p>
           </div>
@@ -112,7 +112,7 @@ export default function WebSessionCredentialGuide({
               {providerText(
                 t,
                 "webSessionGuideStep2",
-                "Open the browser developer tools and inspect a request made by the web app."
+                "Open the browser developer tools and inspect a request made by the web app.",
               )}
             </li>
             <li>
@@ -120,14 +120,14 @@ export default function WebSessionCredentialGuide({
                 t,
                 "webSessionGuideStep3",
                 "Copy the required credential from the provider's own domain. For cookies, copy only the Cookie header value and omit Cookie:.",
-                { credential: requirement.credentialName }
+                { credential: requirement.credentialName },
               )}
             </li>
             <li>
               {providerText(
                 t,
                 "webSessionGuideStep4",
-                "Paste it here and check the connection. If it stops working, sign in again and replace it with a fresh value."
+                "Paste it here and check the connection. If it stops working, sign in again and replace it with a fresh value.",
               )}
             </li>
           </ol>
@@ -135,7 +135,7 @@ export default function WebSessionCredentialGuide({
             {providerText(
               t,
               "webSessionSecurityHint",
-              "Treat this like a password: it may access your signed-in web account until it expires or is revoked."
+              "Treat this like a password: it may access your signed-in web account until it expires or is revoked.",
             )}
           </p>
         </div>

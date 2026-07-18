@@ -43,7 +43,7 @@ test("electron smoke treats Electron process errors as fatal startup logs", () =
   for (const log of logs) {
     assert.ok(
       FATAL_LOG_PATTERNS.some((pattern) => pattern.test(log)),
-      `${log} should match a fatal log pattern`
+      `${log} should match a fatal log pattern`,
     );
   }
 });

@@ -208,8 +208,9 @@ export async function PUT(request: Request) {
     }
 
     if (typeof parsed.data.enabled === "boolean") {
-      const { getCachedPassword, setCachedPassword, startMitm, stopMitm } =
-        await import("@/mitm/manager.runtime");
+      const { getCachedPassword, setCachedPassword, startMitm, stopMitm } = await import(
+        "@/mitm/manager.runtime"
+      );
       const { isRoot } = await import("@/mitm/systemCommands");
       const isWin = process.platform === "win32";
       const isRootUser = !isWin && isRoot();
@@ -220,7 +221,7 @@ export async function PUT(request: Request) {
         if (!apiKey || (!isWin && !isRootUser && !sudoPassword)) {
           return NextResponse.json(
             { error: isWin ? "Missing apiKey" : "Missing apiKey or sudoPassword" },
-            { status: 400 }
+            { status: 400 },
           );
         }
         await startMitm(apiKey, sudoPassword, { port: config.port });
@@ -257,7 +258,7 @@ export async function POST(request: Request) {
     if (status.running) {
       return NextResponse.json(
         { error: "Stop the MITM proxy before regenerating certificates" },
-        { status: 409 }
+        { status: 409 },
       );
     }
 

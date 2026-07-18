@@ -12,11 +12,11 @@ const nextConfig = {
         fs: false, // the solution
         module: false,
         perf_hooks: false,
-      }
+      };
     }
 
-    return config
+    return config;
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

@@ -1,1 +1,1 @@
-export * from "../../prompt/stash"
+export * from "../../prompt/stash";

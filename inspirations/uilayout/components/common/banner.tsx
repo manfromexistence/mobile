@@ -61,9 +61,7 @@ export function Banner({
           className={cn(
             "relative z-50 flex flex-row font-mono items-center justify-center px-4 text-center text-sm font-medium transition-all duration-300",
             variant === "rainbow" && " ",
-            pathname === "/" || pathname === "/work-with-us"
-              ? ""
-              : "dark:bg-zinc-950 bg-zinc-50",
+            pathname === "/" || pathname === "/work-with-us" ? "" : "dark:bg-zinc-950 bg-zinc-50",
             !open && "hidden",
             props.className,
           )}
@@ -73,9 +71,7 @@ export function Banner({
         :root:not(.${globalKey ?? "banner-never"}) { --banner-height: ${height}; }
         `}</style>
           ) : null}
-          {globalKey ? (
-            <style>{`.${globalKey} #${id} { display: none; }`}</style>
-          ) : null}
+          {globalKey ? <style>{`.${globalKey} #${id} { display: none; }`}</style> : null}
           {id ? (
             <script
               dangerouslySetInnerHTML={{
@@ -94,8 +90,7 @@ export function Banner({
               className={cn(
                 buttonVariants({
                   variant: "ghost",
-                  className:
-                    "absolute end-2 top-1/2 -translate-y-1/2 text-muted-foreground",
+                  className: "absolute end-2 top-1/2 -translate-y-1/2 text-muted-foreground",
                   size: "icon",
                 }),
               )}

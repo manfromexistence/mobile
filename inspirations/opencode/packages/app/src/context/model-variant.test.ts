@@ -1,5 +1,5 @@
-import { describe, expect, test } from "bun:test"
-import { cycleModelVariant, getConfiguredAgentVariant, resolveModelVariant } from "./model-variant"
+import { describe, expect, test } from "bun:test";
+import { cycleModelVariant, getConfiguredAgentVariant, resolveModelVariant } from "./model-variant";
 
 describe("model variant", () => {
   test("resolves configured agent variant when model matches", () => {
@@ -13,10 +13,10 @@ describe("model variant", () => {
         modelID: "gpt-5.2",
         variants: { low: {}, high: {}, xhigh: {} },
       },
-    })
+    });
 
-    expect(value).toBe("xhigh")
-  })
+    expect(value).toBe("xhigh");
+  });
 
   test("ignores configured variant when model does not match", () => {
     const value = getConfiguredAgentVariant({
@@ -29,58 +29,58 @@ describe("model variant", () => {
         modelID: "claude-sonnet-4",
         variants: { low: {}, high: {}, xhigh: {} },
       },
-    })
+    });
 
-    expect(value).toBeUndefined()
-  })
+    expect(value).toBeUndefined();
+  });
 
   test("prefers selected variant over configured variant", () => {
     const value = resolveModelVariant({
       variants: ["low", "high", "xhigh"],
       selected: "high",
       configured: "xhigh",
-    })
+    });
 
-    expect(value).toBe("high")
-  })
+    expect(value).toBe("high");
+  });
 
   test("lets an explicit default override the configured variant", () => {
     const value = resolveModelVariant({
       variants: ["low", "high", "xhigh"],
       selected: null,
       configured: "xhigh",
-    })
+    });
 
-    expect(value).toBeUndefined()
-  })
+    expect(value).toBeUndefined();
+  });
 
   test("cycles from configured variant to next", () => {
     const value = cycleModelVariant({
       variants: ["low", "high", "xhigh"],
       selected: undefined,
       configured: "high",
-    })
+    });
 
-    expect(value).toBe("xhigh")
-  })
+    expect(value).toBe("xhigh");
+  });
 
   test("wraps from configured last variant to first", () => {
     const value = cycleModelVariant({
       variants: ["low", "high", "xhigh"],
       selected: undefined,
       configured: "xhigh",
-    })
+    });
 
-    expect(value).toBe("low")
-  })
+    expect(value).toBe("low");
+  });
 
   test("cycles from an explicit default to the first variant", () => {
     const value = cycleModelVariant({
       variants: ["low", "high", "xhigh"],
       selected: null,
       configured: "xhigh",
-    })
+    });
 
-    expect(value).toBe("low")
-  })
-})
+    expect(value).toBe("low");
+  });
+});

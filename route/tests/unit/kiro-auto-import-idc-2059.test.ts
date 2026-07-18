@@ -99,7 +99,7 @@ function writeAwsSsoCache(opts: {
   if (opts.clientIdHash && opts.clientData) {
     fs.writeFileSync(
       path.join(cacheDir, `${opts.clientIdHash}.json`),
-      JSON.stringify(opts.clientData)
+      JSON.stringify(opts.clientData),
     );
   }
 }
@@ -120,7 +120,7 @@ function stubFetchForRefresh() {
     if (u.includes("oidc.") && u.endsWith("/client/register")) {
       return new Response(
         JSON.stringify({ clientId: "reg-cid", clientSecret: "reg-secret", expiresIn: 86400 }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
     // OIDC token refresh (IDC / Builder ID path)
@@ -131,7 +131,7 @@ function stubFetchForRefresh() {
           refreshToken: "aorAAAAAGrefreshed",
           expiresIn: 3600,
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
     // Social/Builder-ID token refresh (prod.*.auth.desktop.kiro.dev/refreshToken)
@@ -142,7 +142,7 @@ function stubFetchForRefresh() {
           refreshToken: "aorAAAAAGsocial-refreshed",
           expiresIn: 3600,
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
     throw new Error(`[kiro-idc-2059 test] unexpected fetch to ${u}`);
@@ -183,7 +183,7 @@ test("auto-import: when clientIdHash is present, reads client registration file 
     if (u.includes("oidc.") && u.endsWith("/client/register")) {
       return new Response(
         JSON.stringify({ clientId: "reg-cid", clientSecret: "reg-secret", expiresIn: 86400 }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
     if (u.includes("oidc.") && u.endsWith("/token")) {
@@ -193,7 +193,7 @@ test("auto-import: when clientIdHash is present, reads client registration file 
           refreshToken: "aorAAAAAGrefreshed",
           expiresIn: 3600,
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
     if (u.includes("kiro.dev") && u.endsWith("/refreshToken")) {
@@ -203,7 +203,7 @@ test("auto-import: when clientIdHash is present, reads client registration file 
           refreshToken: "aorAAAAAGsocial",
           expiresIn: 3600,
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
     throw new Error(`[kiro-idc-2059 test] unexpected fetch to ${u}`);
@@ -217,19 +217,19 @@ test("auto-import: when clientIdHash is present, reads client registration file 
   // kiro.dev/refreshToken endpoint. This proves the registration file was read
   // and the IDC credentials were used for token refresh.
   const usedOidcTokenEndpoint = fetchedUrls.some(
-    (u) => u.includes("oidc.") && u.endsWith("/token")
+    (u) => u.includes("oidc.") && u.endsWith("/token"),
   );
   assert.ok(
     usedOidcTokenEndpoint,
-    `expected OIDC /token endpoint to be called for IDC refresh, fetched URLs: ${JSON.stringify(fetchedUrls)}`
+    `expected OIDC /token endpoint to be called for IDC refresh, fetched URLs: ${JSON.stringify(fetchedUrls)}`,
   );
   const usedSocialEndpoint = fetchedUrls.some(
-    (u) => u.includes("kiro.dev") && u.endsWith("/refreshToken")
+    (u) => u.includes("kiro.dev") && u.endsWith("/refreshToken"),
   );
   assert.equal(
     usedSocialEndpoint,
     false,
-    `social kiro.dev/refreshToken must NOT be called for IDC tokens, fetched URLs: ${JSON.stringify(fetchedUrls)}`
+    `social kiro.dev/refreshToken must NOT be called for IDC tokens, fetched URLs: ${JSON.stringify(fetchedUrls)}`,
   );
 });
 
@@ -262,11 +262,11 @@ test("auto-import: when clientIdHash is present and profile.json exists, preserv
   assert.equal(
     body.profileArn,
     "arn:aws:codewhisperer:ap-southeast-1:123456789012:profile/MyProfile",
-    `profileArn region must be preserved verbatim (not forced to us-east-1), got: ${body.profileArn}`
+    `profileArn region must be preserved verbatim (not forced to us-east-1), got: ${body.profileArn}`,
   );
   assert.ok(
     !(body.profileArn as string).includes("us-east-1"),
-    `profileArn must NOT be rewritten to us-east-1, got: ${body.profileArn}`
+    `profileArn must NOT be rewritten to us-east-1, got: ${body.profileArn}`,
   );
 });
 
@@ -294,7 +294,7 @@ test("auto-import: when the profile.json ARN is already us-east-1, it is left un
   assert.equal(
     body.profileArn,
     "arn:aws:codewhisperer:us-east-1:123456789012:profile/MyProfile",
-    `us-east-1 ARN must be left unchanged, got: ${body.profileArn}`
+    `us-east-1 ARN must be left unchanged, got: ${body.profileArn}`,
   );
 });
 
@@ -320,7 +320,7 @@ test("auto-import: when profile.json is missing/malformed, profileArn is null an
   assert.equal(body.found, true, `expected found:true, got: ${JSON.stringify(body)}`);
   assert.ok(
     body.profileArn === null || body.profileArn === undefined,
-    `profileArn must be null/undefined when profile.json is absent, got: ${body.profileArn}`
+    `profileArn must be null/undefined when profile.json is absent, got: ${body.profileArn}`,
   );
 });
 
@@ -340,11 +340,11 @@ test("auto-import: without clientIdHash, fallback still works and clientId/clien
   // clientId/clientSecret should be null or undefined (not set from non-IDC cache)
   assert.ok(
     body.clientId === null || body.clientId === undefined,
-    `clientId must be null/undefined when no clientIdHash, got: ${body.clientId}`
+    `clientId must be null/undefined when no clientIdHash, got: ${body.clientId}`,
   );
   assert.ok(
     body.clientSecret === null || body.clientSecret === undefined,
-    `clientSecret must be null/undefined when no clientIdHash, got: ${body.clientSecret}`
+    `clientSecret must be null/undefined when no clientIdHash, got: ${body.clientSecret}`,
   );
 });
 
@@ -368,7 +368,7 @@ test("auto-import: clientIdHash present but registration file missing — gracef
   // clientId must be null — file not found
   assert.ok(
     body.clientId === null || body.clientId === undefined,
-    `clientId must be null when registration file is missing, got: ${body.clientId}`
+    `clientId must be null when registration file is missing, got: ${body.clientId}`,
   );
 });
 
@@ -389,7 +389,7 @@ test("kiroImportSchema: accepts optional IDC fields (clientId, clientSecret, aut
   assert.equal(
     result.success,
     true,
-    `schema must accept IDC fields, errors: ${JSON.stringify(result.error?.errors)}`
+    `schema must accept IDC fields, errors: ${JSON.stringify(result.error?.errors)}`,
   );
   if (result.success) {
     assert.equal(result.data.clientId, "idc-client-id");
@@ -397,7 +397,7 @@ test("kiroImportSchema: accepts optional IDC fields (clientId, clientSecret, aut
     assert.equal(result.data.authMethod, "idc");
     assert.equal(
       result.data.profileArn,
-      "arn:aws:codewhisperer:us-east-1:123456789012:profile/MyProfile"
+      "arn:aws:codewhisperer:us-east-1:123456789012:profile/MyProfile",
     );
   }
 });
@@ -412,7 +412,7 @@ test("kiroImportSchema: still valid without IDC fields (backward compat)", async
   assert.equal(
     result.success,
     true,
-    `schema must be valid without IDC fields, errors: ${JSON.stringify(result.error?.errors)}`
+    `schema must be valid without IDC fields, errors: ${JSON.stringify(result.error?.errors)}`,
   );
 });
 

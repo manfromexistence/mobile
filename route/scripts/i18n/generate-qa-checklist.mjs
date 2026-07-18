@@ -85,7 +85,7 @@ async function collectRouteRiskMetrics(pageFile) {
       fixedWidth: countRegex(raw, /\bw-(?:\d+|\[[^\]]+\]|\d+\/\d+)\b/g),
       directional: countRegex(
         raw,
-        /\b(?:left|right|ml|mr|pl|pr)-[\w\[\]-]+\b|\btext-(?:left|right)\b/g
+        /\b(?:left|right|ml|mr|pl|pr)-[\w\[\]-]+\b|\btext-(?:left|right)\b/g,
       ),
       clipping: countRegex(raw, /\btruncate\b|\bline-clamp-\d+\b|\boverflow-hidden\b/g),
     };
@@ -125,7 +125,7 @@ async function collectRouteRiskMetrics(pageFile) {
     fixedWidth += countRegex(raw, /\bw-(?:\d+|\[[^\]]+\]|\d+\/\d+)\b/g);
     directional += countRegex(
       raw,
-      /\b(?:left|right|ml|mr|pl|pr)-[\w\[\]-]+\b|\btext-(?:left|right)\b/g
+      /\b(?:left|right|ml|mr|pl|pr)-[\w\[\]-]+\b|\btext-(?:left|right)\b/g,
     );
     clipping += countRegex(raw, /\btruncate\b|\bline-clamp-\d+\b|\boverflow-hidden\b/g);
   }
@@ -265,8 +265,8 @@ async function main() {
   if (automated.parityIssues.length > 0) {
     automatedChecksLines.push(
       ...automated.parityIssues.map(
-        (issue) => `  - ${issue.code}: missing=${issue.missing} extra=${issue.extra}`
-      )
+        (issue) => `  - ${issue.code}: missing=${issue.missing} extra=${issue.extra}`,
+      ),
     );
   }
 
@@ -274,7 +274,7 @@ async function main() {
     `- Language selector (🌐 **Languages:**) in README (es/fr/de/ja/ar): **${automated.readmeLabelChecks.every((item) => item.ok) ? "OK" : "FALHAS"}**`,
     `- Linha legacy EN/PT removida em ja/ar: **${automated.anchorLineRemoved ? "OK" : "PENDENTE"}**`,
     `- Apêndice "## 🇧🇷 OmniRoute" removido em ja/ar: **${automated.brAppendixRemoved ? "OK" : "PENDENTE"}**`,
-    "- RTL habilitado globalmente para `ar` e `he` via `dir=rtl` no layout."
+    "- RTL habilitado globalmente para `ar` e `he` via `dir=rtl` no layout.",
   );
 
   const routeTableHeader =
@@ -282,7 +282,7 @@ async function main() {
   const routeTableDivider = "|---|---|---:|---:|---:|---:|---|";
   const routeTableRows = routeRows.map(
     (row) =>
-      `| \`${row.route}\` | ${row.priority} | ${row.files} | ${row.fixedWidth} | ${row.directional} | ${row.clipping} | ${row.status} |`
+      `| \`${row.route}\` | ${row.priority} | ${row.files} | ${row.fixedWidth} | ${row.directional} | ${row.clipping} | ${row.status} |`,
   );
 
   const content = [

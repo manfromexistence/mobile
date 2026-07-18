@@ -62,14 +62,14 @@ describe("RTK file-read tool result — #4559 no over-truncation", () => {
     assert.ok(
       !result.techniquesUsed.includes("rtk-truncate"),
       `file-read content must not be hard-cap truncated; techniquesUsed: ${result.techniquesUsed.join(
-        ", "
-      )}`
+        ", ",
+      )}`,
     );
 
     // The truncation marker must be absent and the middle content retained.
     assert.ok(
       !result.text.includes("[rtk:truncated"),
-      "no truncation marker should be injected into a file read"
+      "no truncation marker should be injected into a file read",
     );
 
     // Sample lines from the head, middle, and tail must all survive.
@@ -82,7 +82,7 @@ describe("RTK file-read tool result — #4559 no over-truncation", () => {
     const outLines = result.text.split("\n").length;
     assert.ok(
       outLines >= totalLines * 0.9,
-      `expected to retain >=90% of lines; kept ${outLines}/${totalLines}`
+      `expected to retain >=90% of lines; kept ${outLines}/${totalLines}`,
     );
   });
 
@@ -91,7 +91,7 @@ describe("RTK file-read tool result — #4559 no over-truncation", () => {
     // recognizes it as repetitive output worth truncating.
     const noise = Array.from(
       { length: 300 },
-      (_, i) => `added package-${i}@1.0.0 to node_modules`
+      (_, i) => `added package-${i}@1.0.0 to node_modules`,
     ).join("\n");
     const input = `$ npm install\n${noise}`;
 
@@ -100,9 +100,6 @@ describe("RTK file-read tool result — #4559 no over-truncation", () => {
       config: { maxLinesPerResult: 120, maxCharsPerResult: 12000 },
     });
 
-    assert.ok(
-      result.compressed,
-      "repetitive npm install output should still be compressed"
-    );
+    assert.ok(result.compressed, "repetitive npm install output should still be compressed");
   });
 });

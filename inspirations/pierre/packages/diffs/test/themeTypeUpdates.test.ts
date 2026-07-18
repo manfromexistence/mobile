@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from "bun:test";
 
 import {
   CodeView,
@@ -13,13 +13,13 @@ import {
   type RenderRange,
   VirtualizedFile,
   VirtualizedFileDiff,
-} from '../src';
-import { createRoot, installDom, wait } from './domHarness';
+} from "../src";
+import { createRoot, installDom, wait } from "./domHarness";
 
 function makeFile(name: string): FileContents {
   return {
     name,
-    contents: 'const value = 1;\n',
+    contents: "const value = 1;\n",
   };
 }
 
@@ -39,7 +39,7 @@ function makeLongFile(name: string, changedValue: number): FileContents {
   });
   return {
     name,
-    contents: `${lines.join('\n')}\n`,
+    contents: `${lines.join("\n")}\n`,
     cacheKey: `${name}:${changedValue}`,
   };
 }
@@ -47,17 +47,17 @@ function makeLongFile(name: string, changedValue: number): FileContents {
 function makeDiffItem(id: string): CodeViewDiffItem<undefined> {
   return {
     id,
-    type: 'diff',
+    type: "diff",
     fileDiff: parseDiffFromFile(
-      { name: 'example.ts', contents: 'const value = 1;\n' },
-      { name: 'example.ts', contents: 'const value = 2;\n' }
+      { name: "example.ts", contents: "const value = 1;\n" },
+      { name: "example.ts", contents: "const value = 2;\n" },
     ),
   };
 }
 
 async function waitForRenderedItems(
   viewer: CodeView,
-  count: number
+  count: number,
 ): Promise<CodeViewRenderedItem<undefined>[]> {
   for (let attempt = 0; attempt < 50; attempt++) {
     const renderedItems = viewer.getRenderedItems();
@@ -66,18 +66,16 @@ async function waitForRenderedItems(
     }
     await wait(10);
   }
-  throw new Error('Timed out waiting for CodeView items');
+  throw new Error("Timed out waiting for CodeView items");
 }
 
 async function waitForThemeScheme(
   element: HTMLElement,
-  scheme: 'light' | 'dark'
+  scheme: "light" | "dark",
 ): Promise<HTMLStyleElement> {
   const expected = `color-scheme: ${scheme};`;
   for (let attempt = 0; attempt < 50; attempt++) {
-    const style = element.shadowRoot?.querySelector<HTMLStyleElement>(
-      'style[data-theme-css]'
-    );
+    const style = element.shadowRoot?.querySelector<HTMLStyleElement>("style[data-theme-css]");
     if (style?.textContent?.includes(expected) === true) {
       return style;
     }
@@ -86,23 +84,23 @@ async function waitForThemeScheme(
   throw new Error(`Timed out waiting for ${expected}`);
 }
 
-describe('themeType updates', () => {
-  test('CodeView applies paired themeType changes on the next render tick', async () => {
+describe("themeType updates", () => {
+  test("CodeView applies paired themeType changes on the next render tick", async () => {
     const { cleanup } = installDom();
     const viewer = new CodeView({
       disableFileHeader: true,
       theme: DEFAULT_THEMES,
-      themeType: 'light',
+      themeType: "light",
     });
     try {
       viewer.setup(createRoot());
       viewer.setItems([
         {
-          id: 'file:example.ts',
-          type: 'file',
-          file: makeFile('example.ts'),
+          id: "file:example.ts",
+          type: "file",
+          file: makeFile("example.ts"),
         },
-        makeDiffItem('diff:example.ts'),
+        makeDiffItem("diff:example.ts"),
       ]);
       viewer.render(true);
 
@@ -110,34 +108,34 @@ describe('themeType updates', () => {
       expect(fileItem).toBeDefined();
       expect(diffItem).toBeDefined();
 
-      const fileStyle = await waitForThemeScheme(fileItem.element, 'light');
-      const diffStyle = await waitForThemeScheme(diffItem.element, 'light');
+      const fileStyle = await waitForThemeScheme(fileItem.element, "light");
+      const diffStyle = await waitForThemeScheme(diffItem.element, "light");
 
       viewer.setOptions({
         disableFileHeader: true,
         theme: DEFAULT_THEMES,
-        themeType: 'dark',
+        themeType: "dark",
       });
 
       await wait(0);
 
-      expect(fileStyle.textContent).toContain('color-scheme: dark;');
-      expect(fileStyle.textContent).not.toContain('color-scheme: light;');
-      expect(diffStyle.textContent).toContain('color-scheme: dark;');
-      expect(diffStyle.textContent).not.toContain('color-scheme: light;');
+      expect(fileStyle.textContent).toContain("color-scheme: dark;");
+      expect(fileStyle.textContent).not.toContain("color-scheme: light;");
+      expect(diffStyle.textContent).toContain("color-scheme: dark;");
+      expect(diffStyle.textContent).not.toContain("color-scheme: light;");
 
       viewer.setOptions({
         disableFileHeader: true,
         theme: DEFAULT_THEMES,
-        themeType: 'light',
+        themeType: "light",
       });
 
       await wait(0);
 
-      expect(fileStyle.textContent).toContain('color-scheme: light;');
-      expect(fileStyle.textContent).not.toContain('color-scheme: dark;');
-      expect(diffStyle.textContent).toContain('color-scheme: light;');
-      expect(diffStyle.textContent).not.toContain('color-scheme: dark;');
+      expect(fileStyle.textContent).toContain("color-scheme: light;");
+      expect(fileStyle.textContent).not.toContain("color-scheme: dark;");
+      expect(diffStyle.textContent).toContain("color-scheme: light;");
+      expect(diffStyle.textContent).not.toContain("color-scheme: dark;");
     } finally {
       viewer.cleanUp();
       await wait(0);
@@ -146,34 +144,34 @@ describe('themeType updates', () => {
     }
   });
 
-  test('File.setThemeType applies paired themeType changes immediately', async () => {
+  test("File.setThemeType applies paired themeType changes immediately", async () => {
     const { cleanup } = installDom();
     let instance: File | undefined;
     try {
-      const fileContainer = document.createElement('div');
+      const fileContainer = document.createElement("div");
       instance = new File({
         disableErrorHandling: true,
         disableFileHeader: true,
         theme: DEFAULT_THEMES,
-        themeType: 'light',
+        themeType: "light",
       });
 
       instance.render({
-        file: makeFile('example.ts'),
+        file: makeFile("example.ts"),
         fileContainer,
         deferManagers: true,
         preventEmit: true,
       });
 
-      const style = await waitForThemeScheme(fileContainer, 'light');
+      const style = await waitForThemeScheme(fileContainer, "light");
 
-      instance.setThemeType('dark');
-      expect(style.textContent).toContain('color-scheme: dark;');
-      expect(style.textContent).not.toContain('color-scheme: light;');
+      instance.setThemeType("dark");
+      expect(style.textContent).toContain("color-scheme: dark;");
+      expect(style.textContent).not.toContain("color-scheme: light;");
 
-      instance.setThemeType('light');
-      expect(style.textContent).toContain('color-scheme: light;');
-      expect(style.textContent).not.toContain('color-scheme: dark;');
+      instance.setThemeType("light");
+      expect(style.textContent).toContain("color-scheme: light;");
+      expect(style.textContent).not.toContain("color-scheme: dark;");
     } finally {
       instance?.cleanUp();
       cleanup();
@@ -181,34 +179,34 @@ describe('themeType updates', () => {
     }
   });
 
-  test('FileDiff.setThemeType applies paired themeType changes immediately', async () => {
+  test("FileDiff.setThemeType applies paired themeType changes immediately", async () => {
     const { cleanup } = installDom();
     let instance: FileDiff | undefined;
     try {
-      const fileContainer = document.createElement('div');
+      const fileContainer = document.createElement("div");
       instance = new FileDiff({
         disableErrorHandling: true,
         disableFileHeader: true,
         theme: DEFAULT_THEMES,
-        themeType: 'light',
+        themeType: "light",
       });
 
       instance.render({
         fileContainer,
-        fileDiff: makeDiffItem('diff:example.ts').fileDiff,
+        fileDiff: makeDiffItem("diff:example.ts").fileDiff,
         deferManagers: true,
         preventEmit: true,
       });
 
-      const style = await waitForThemeScheme(fileContainer, 'light');
+      const style = await waitForThemeScheme(fileContainer, "light");
 
-      instance.setThemeType('dark');
-      expect(style.textContent).toContain('color-scheme: dark;');
-      expect(style.textContent).not.toContain('color-scheme: light;');
+      instance.setThemeType("dark");
+      expect(style.textContent).toContain("color-scheme: dark;");
+      expect(style.textContent).not.toContain("color-scheme: light;");
 
-      instance.setThemeType('light');
-      expect(style.textContent).toContain('color-scheme: light;');
-      expect(style.textContent).not.toContain('color-scheme: dark;');
+      instance.setThemeType("light");
+      expect(style.textContent).toContain("color-scheme: light;");
+      expect(style.textContent).not.toContain("color-scheme: dark;");
     } finally {
       instance?.cleanUp();
       cleanup();
@@ -216,35 +214,35 @@ describe('themeType updates', () => {
     }
   });
 
-  test('CodeView-owned virtualized items reject direct themeType changes', () => {
+  test("CodeView-owned virtualized items reject direct themeType changes", () => {
     const { cleanup } = installDom();
     try {
       const viewer = new CodeView();
       const file = new VirtualizedFile({}, viewer);
       const diff = new VirtualizedFileDiff({}, viewer);
 
-      expect(() => file.setThemeType('dark')).toThrow(
-        'VirtualizedFile.setThemeType cannot be used inside CodeView. Update CodeView options instead.'
+      expect(() => file.setThemeType("dark")).toThrow(
+        "VirtualizedFile.setThemeType cannot be used inside CodeView. Update CodeView options instead.",
       );
-      expect(() => diff.setThemeType('dark')).toThrow(
-        'VirtualizedFileDiff.setThemeType cannot be used inside CodeView. Update CodeView options instead.'
+      expect(() => diff.setThemeType("dark")).toThrow(
+        "VirtualizedFileDiff.setThemeType cannot be used inside CodeView. Update CodeView options instead.",
       );
     } finally {
       cleanup();
     }
   });
 
-  test('File.render applies themeType changes during partial renders', async () => {
+  test("File.render applies themeType changes during partial renders", async () => {
     const { cleanup } = installDom();
     let instance: File | undefined;
     try {
-      const file = makeLongFile('example.ts', 8);
-      const fileContainer = document.createElement('div');
+      const file = makeLongFile("example.ts", 8);
+      const fileContainer = document.createElement("div");
       instance = new File({
         disableErrorHandling: true,
         disableFileHeader: true,
         theme: DEFAULT_THEMES,
-        themeType: 'light',
+        themeType: "light",
       });
 
       instance.render({
@@ -255,9 +253,9 @@ describe('themeType updates', () => {
         preventEmit: true,
       });
 
-      const style = await waitForThemeScheme(fileContainer, 'light');
+      const style = await waitForThemeScheme(fileContainer, "light");
 
-      instance.setOptions({ ...instance.options, themeType: 'dark' });
+      instance.setOptions({ ...instance.options, themeType: "dark" });
       instance.render({
         file,
         fileContainer,
@@ -266,8 +264,8 @@ describe('themeType updates', () => {
         preventEmit: true,
       });
 
-      expect(style.textContent).toContain('color-scheme: dark;');
-      expect(style.textContent).not.toContain('color-scheme: light;');
+      expect(style.textContent).toContain("color-scheme: dark;");
+      expect(style.textContent).not.toContain("color-scheme: light;");
     } finally {
       instance?.cleanUp();
       cleanup();
@@ -275,20 +273,20 @@ describe('themeType updates', () => {
     }
   });
 
-  test('FileDiff.render applies themeType changes during partial renders', async () => {
+  test("FileDiff.render applies themeType changes during partial renders", async () => {
     const { cleanup } = installDom();
     let instance: FileDiff | undefined;
     try {
       const fileDiff = parseDiffFromFile(
-        makeLongFile('example.ts', 8),
-        makeLongFile('example.ts', 9)
+        makeLongFile("example.ts", 8),
+        makeLongFile("example.ts", 9),
       );
-      const fileContainer = document.createElement('div');
+      const fileContainer = document.createElement("div");
       instance = new FileDiff({
         disableErrorHandling: true,
         disableFileHeader: true,
         theme: DEFAULT_THEMES,
-        themeType: 'light',
+        themeType: "light",
       });
 
       instance.render({
@@ -299,9 +297,9 @@ describe('themeType updates', () => {
         preventEmit: true,
       });
 
-      const style = await waitForThemeScheme(fileContainer, 'light');
+      const style = await waitForThemeScheme(fileContainer, "light");
 
-      instance.setOptions({ ...instance.options, themeType: 'dark' });
+      instance.setOptions({ ...instance.options, themeType: "dark" });
       instance.render({
         fileContainer,
         fileDiff,
@@ -310,8 +308,8 @@ describe('themeType updates', () => {
         preventEmit: true,
       });
 
-      expect(style.textContent).toContain('color-scheme: dark;');
-      expect(style.textContent).not.toContain('color-scheme: light;');
+      expect(style.textContent).toContain("color-scheme: dark;");
+      expect(style.textContent).not.toContain("color-scheme: light;");
     } finally {
       instance?.cleanUp();
       cleanup();

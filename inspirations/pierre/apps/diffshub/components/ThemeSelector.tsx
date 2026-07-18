@@ -1,11 +1,8 @@
-'use client';
+"use client";
 
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
 
-import {
-  type ThemeSelectionResult,
-  useThemeSelection,
-} from './useThemeSelection';
+import { type ThemeSelectionResult, useThemeSelection } from "./useThemeSelection";
 
 interface ThemeSelectorProps {
   // Render-prop: receives the current selection + setters and renders the UI.

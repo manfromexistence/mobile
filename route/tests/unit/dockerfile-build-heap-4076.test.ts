@@ -48,7 +48,7 @@ test("#4076 builder stage raises the Node heap ceiling via NODE_OPTIONS", () => 
   const heapLineIdx = findInstructionIndex(stage, /NODE_OPTIONS.*--max-old-space-size/);
   assert.ok(
     heapLineIdx >= 0,
-    "builder stage must set NODE_OPTIONS with --max-old-space-size to avoid the #4076 build OOM"
+    "builder stage must set NODE_OPTIONS with --max-old-space-size to avoid the #4076 build OOM",
   );
 });
 
@@ -61,7 +61,7 @@ test("#4076 the heap ceiling is set BEFORE `npm run build` so it reaches `next b
   assert.ok(heapLineIdx >= 0, "builder stage must set the heap ceiling");
   assert.ok(
     heapLineIdx < buildLineIdx,
-    "NODE_OPTIONS heap ceiling must be set before the `npm run build` step"
+    "NODE_OPTIONS heap ceiling must be set before the `npm run build` step",
   );
 });
 
@@ -75,6 +75,6 @@ test("#4076 the build heap default is at least 4096 MB (the V8 default ~2 GB OOM
   const value = Number(direct?.[1] ?? argDefault?.[1] ?? 0);
   assert.ok(
     value >= 4096,
-    `build heap default must be >= 4096 MB to clear the #4076 OOM (found ${value})`
+    `build heap default must be >= 4096 MB to clear the #4076 OOM (found ${value})`,
   );
 });

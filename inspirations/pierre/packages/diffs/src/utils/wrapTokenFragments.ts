@@ -1,9 +1,9 @@
-import type { ElementContent, Element as HASTElement } from 'hast';
+import type { ElementContent, Element as HASTElement } from "hast";
 
-import { createHastElement } from './hast_utils';
+import { createHastElement } from "./hast_utils";
 
-const NO_TOKEN: unique symbol = Symbol('no-token');
-const MULTIPLE_TOKENS: unique symbol = Symbol('multiple-tokens');
+const NO_TOKEN: unique symbol = Symbol("no-token");
+const MULTIPLE_TOKENS: unique symbol = Symbol("multiple-tokens");
 
 type TokenFragmentState = number | typeof NO_TOKEN | typeof MULTIPLE_TOKENS;
 
@@ -29,7 +29,7 @@ export function wrapTokenFragments(container: HASTElement): TokenFragmentState {
 
     if (currentTokenChildren.length === 1) {
       const child = currentTokenChildren[0];
-      if (child?.type === 'element') {
+      if (child?.type === "element") {
         setTokenChar(child, currentTokenChar);
         for (const grandChild of child.children) {
           stripTokenChar(grandChild);
@@ -49,10 +49,10 @@ export function wrapTokenFragments(container: HASTElement): TokenFragmentState {
 
     wrappedChildren.push(
       createHastElement({
-        tagName: 'span',
-        properties: { 'data-char': currentTokenChar },
+        tagName: "span",
+        properties: { "data-char": currentTokenChar },
         children: currentTokenChildren,
-      })
+      }),
     );
 
     currentTokenChildren = [];
@@ -78,10 +78,10 @@ export function wrapTokenFragments(container: HASTElement): TokenFragmentState {
 
   for (const child of container.children) {
     const childTokenState: TokenFragmentState =
-      child.type === 'element' ? wrapTokenFragments(child) : NO_TOKEN;
+      child.type === "element" ? wrapTokenFragments(child) : NO_TOKEN;
     mergeContainerTokenState(childTokenState);
 
-    if (typeof childTokenState !== 'number') {
+    if (typeof childTokenState !== "number") {
       flushTokenChildren();
       wrappedChildren.push(child);
       continue;
@@ -101,21 +101,21 @@ export function wrapTokenFragments(container: HASTElement): TokenFragmentState {
 }
 
 function getTokenChar(node: HASTElement): number | undefined {
-  const value = node.properties['data-char'];
-  if (typeof value === 'number') {
+  const value = node.properties["data-char"];
+  if (typeof value === "number") {
     return value;
   }
   return undefined;
 }
 
 function stripTokenChar(node: ElementContent): void {
-  if (node.type !== 'element') return;
-  node.properties['data-char'] = undefined;
+  if (node.type !== "element") return;
+  node.properties["data-char"] = undefined;
   for (const child of node.children) {
     stripTokenChar(child);
   }
 }
 
 function setTokenChar(node: HASTElement, char: number): void {
-  node.properties['data-char'] = char;
+  node.properties["data-char"] = char;
 }

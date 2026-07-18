@@ -1,18 +1,23 @@
-import { DiffLineAnnotation, FileContents, FileDiffOptions, type SelectedLineRange } from "@pierre/diffs"
-import { ComponentProps } from "solid-js"
-import { lineCommentStyles } from "../components/line-comment-styles"
+import {
+  DiffLineAnnotation,
+  FileContents,
+  FileDiffOptions,
+  type SelectedLineRange,
+} from "@pierre/diffs";
+import { ComponentProps } from "solid-js";
+import { lineCommentStyles } from "../components/line-comment-styles";
 
 export type DiffProps<T = {}> = FileDiffOptions<T> & {
-  before: FileContents
-  after: FileContents
-  annotations?: DiffLineAnnotation<T>[]
-  selectedLines?: SelectedLineRange | null
-  commentedLines?: SelectedLineRange[]
-  onLineNumberSelectionEnd?: (selection: SelectedLineRange | null) => void
-  onRendered?: () => void
-  class?: string
-  classList?: ComponentProps<"div">["classList"]
-}
+  before: FileContents;
+  after: FileContents;
+  annotations?: DiffLineAnnotation<T>[];
+  selectedLines?: SelectedLineRange | null;
+  commentedLines?: SelectedLineRange[];
+  onLineNumberSelectionEnd?: (selection: SelectedLineRange | null) => void;
+  onRendered?: () => void;
+  class?: string;
+  classList?: ComponentProps<"div">["classList"];
+};
 
 const unsafeCSS = `
 [data-diff],
@@ -148,7 +153,7 @@ const unsafeCSS = `
 
 ${lineCommentStyles}
 
-`
+`;
 
 export function createDefaultOptions<T>(style: FileDiffOptions<T>["diffStyle"]) {
   return {
@@ -167,7 +172,7 @@ export function createDefaultOptions<T>(style: FileDiffOptions<T>["diffStyle"]) 
     maxLineLengthForHighlighting: 1000,
     disableFileHeader: true,
     unsafeCSS,
-  } as const
+  } as const;
 }
 
 export const styleVariables = {
@@ -179,4 +184,4 @@ export const styleVariables = {
   "--diffs-header-font-family": "var(--font-family-sans)",
   "--diffs-gap-block": 0,
   "--diffs-min-number-column-width": "4ch",
-}
+};

@@ -217,7 +217,7 @@ export async function upsertVersionManagerTool(data: {
       config_overrides = excluded.config_overrides,
       error_message = excluded.error_message,
       updated_at = datetime('now')
-  `
+  `,
   ).run(
     data.tool,
     data.currentVersion ?? null,
@@ -233,7 +233,7 @@ export async function upsertVersionManagerTool(data: {
     data.autoStart !== undefined ? (data.autoStart ? 1 : 0) : 0,
     data.healthStatus ?? "unknown",
     stringifyConfigOverrides(data.configOverrides ?? null),
-    data.errorMessage ?? null
+    data.errorMessage ?? null,
   );
   const result = await getVersionManagerTool(data.tool);
   if (!result) throw new Error("Failed to retrieve inserted version manager tool");
@@ -242,7 +242,7 @@ export async function upsertVersionManagerTool(data: {
 
 export async function updateVersionManagerTool(
   tool: string,
-  updates: Record<string, unknown>
+  updates: Record<string, unknown>,
 ): Promise<VersionManagerTool | null> {
   const db = getDbInstance();
   const existing = await getVersionManagerTool(tool);
@@ -303,7 +303,7 @@ export async function updateToolHealth(tool: string, healthStatus: string): Prom
   const db = getDbInstance();
   const result = db
     .prepare(
-      "UPDATE version_manager SET health_status = ?, last_health_check = datetime('now') WHERE tool = ?"
+      "UPDATE version_manager SET health_status = ?, last_health_check = datetime('now') WHERE tool = ?",
     )
     .run(healthStatus, tool);
   return result.changes > 0;
@@ -312,7 +312,7 @@ export async function updateToolHealth(tool: string, healthStatus: string): Prom
 export async function updateToolVersion(
   tool: string,
   field: "current_version" | "installed_version",
-  version: string
+  version: string,
 ): Promise<boolean> {
   const db = getDbInstance();
   const result = db
@@ -325,19 +325,19 @@ export async function setToolStatus(
   tool: string,
   status: string,
   pid?: number,
-  errorMessage?: string
+  errorMessage?: string,
 ): Promise<boolean> {
   const db = getDbInstance();
   const result = db
     .prepare(
       pid !== undefined
         ? "UPDATE version_manager SET status = ?, pid = ?, error_message = ?, updated_at = datetime('now') WHERE tool = ?"
-        : "UPDATE version_manager SET status = ?, error_message = ?, updated_at = datetime('now') WHERE tool = ?"
+        : "UPDATE version_manager SET status = ?, error_message = ?, updated_at = datetime('now') WHERE tool = ?",
     )
     .run(
       ...(pid !== undefined
         ? [status, pid, errorMessage ?? null, tool]
-        : [status, errorMessage ?? null, tool])
+        : [status, errorMessage ?? null, tool]),
     );
   return result.changes > 0;
 }
@@ -368,7 +368,7 @@ const SERVICE_FIELD_WHITELIST: Set<string> = new Set([
 export async function updateServiceField(
   tool: string,
   field: string,
-  value: unknown
+  value: unknown,
 ): Promise<VersionManagerTool | null> {
   if (!SERVICE_FIELD_WHITELIST.has(field)) {
     throw new Error(`updateServiceField: field "${field}" is not in the allowed list`);

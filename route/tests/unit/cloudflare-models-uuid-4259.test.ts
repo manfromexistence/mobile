@@ -40,7 +40,7 @@ async function seedConnection(provider: string, overrides: Record<string, any> =
 async function callRoute(connectionId: string, search = "") {
   return providerModelsRoute.GET(
     new Request(`http://localhost/api/providers/${connectionId}/models${search}`),
-    { params: { id: connectionId } }
+    { params: { id: connectionId } },
   );
 }
 
@@ -90,7 +90,7 @@ test("#4259 cloudflare-ai discovery uses the model name (slug) as id, not the UU
   // Sanity: hit the Cloudflare models search endpoint with the configured account.
   assert.ok(
     calledUrl.includes("/accounts/acc-123/ai/models/search"),
-    `unexpected discovery URL: ${calledUrl}`
+    `unexpected discovery URL: ${calledUrl}`,
   );
 
   const body = await response.json();
@@ -100,11 +100,11 @@ test("#4259 cloudflare-ai discovery uses the model name (slug) as id, not the UU
   // The human-usable slug must be the id (RED before the fix — id was the UUID).
   assert.ok(
     ids.includes("@cf/meta/llama-3.1-8b-instruct"),
-    `expected slug id, got ${JSON.stringify(ids)}`
+    `expected slug id, got ${JSON.stringify(ids)}`,
   );
   assert.ok(
     ids.includes("@cf/qwen/qwen1.5-0.5b-chat"),
-    `expected slug id, got ${JSON.stringify(ids)}`
+    `expected slug id, got ${JSON.stringify(ids)}`,
   );
   // The internal UUID must never be exposed as a callable model id.
   assert.ok(!ids.includes(LLAMA_UUID), "UUID must not be used as a model id");

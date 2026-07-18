@@ -1,9 +1,9 @@
-import type { RenderFileOptions } from '../types';
-import { areThemesEqual } from './areThemesEqual';
+import type { RenderFileOptions } from "../types";
+import { areThemesEqual } from "./areThemesEqual";
 
 export function areFileRenderOptionsEqual(
   optionsA: RenderFileOptions,
-  optionsB: RenderFileOptions
+  optionsB: RenderFileOptions,
 ): boolean {
   return (
     areThemesEqual(optionsA.theme, optionsB.theme) &&

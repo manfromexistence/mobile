@@ -22,7 +22,7 @@ function uuidFromStableValue(value: string): string {
 }
 
 export function getCodexInstallationId(
-  providerSpecificData?: Record<string, unknown> | null
+  providerSpecificData?: Record<string, unknown> | null,
 ): string {
   const explicit = normalizeUuid(providerSpecificData?.codexInstallationId);
   if (explicit) return explicit;
@@ -41,7 +41,7 @@ export function getCodexInstallationId(
 
 export function createCodexClientIdentity(
   sessionId: string | null,
-  providerSpecificData?: Record<string, unknown> | null
+  providerSpecificData?: Record<string, unknown> | null,
 ): CodexClientIdentity | null {
   const normalizedSessionId = normalizeCodexSessionId(sessionId);
   if (!normalizedSessionId) return null;
@@ -55,7 +55,7 @@ export function createCodexClientIdentity(
 
 export function applyCodexClientIdentityHeaders(
   headers: Record<string, string>,
-  identity?: CodexClientIdentity | null
+  identity?: CodexClientIdentity | null,
 ): void {
   if (!identity) return;
   headers["session_id"] = identity.sessionId;
@@ -80,7 +80,7 @@ export function applyCodexClientIdentityHeaders(
  * since chatCore's `clientRawRequest.headers` is not always a `Request`.
  */
 export function isCodexOriginatedHeaders(
-  headers: Headers | Record<string, unknown> | null | undefined
+  headers: Headers | Record<string, unknown> | null | undefined,
 ): boolean {
   const getHeader = (name: string): string => {
     if (headers instanceof Headers) {
@@ -102,7 +102,7 @@ export function isCodexOriginatedHeaders(
 
 export function applyCodexClientMetadata(
   body: Record<string, unknown>,
-  identity?: CodexClientIdentity | null
+  identity?: CodexClientIdentity | null,
 ): void {
   if (!identity) return;
   const existing =

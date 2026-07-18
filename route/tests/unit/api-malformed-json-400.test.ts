@@ -102,7 +102,7 @@ test("PUT /api/plugins/[name]/config — valid body does NOT 400 on parse (404 f
   const req = jsonRequest(
     "http://localhost/api/plugins/does-not-exist/config",
     { config: { foo: "bar" } },
-    "PUT"
+    "PUT",
   );
   const res = await pluginConfigRoute.PUT(req, {
     params: Promise.resolve({ name: "does-not-exist" }),
@@ -168,6 +168,6 @@ test("POST /api/model-combo-mappings — well-formed but invalid body still retu
   assert.equal(body.error?.message, "Invalid request");
   assert.ok(
     body.error?.details?.some((d) => d.field === "pattern"),
-    "validation failure should name the offending field"
+    "validation failure should name the offending field",
   );
 });

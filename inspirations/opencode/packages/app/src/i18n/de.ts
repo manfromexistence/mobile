@@ -1,6 +1,6 @@
-import { dict as en } from "./en"
+import { dict as en } from "./en";
 
-type Keys = keyof typeof en
+type Keys = keyof typeof en;
 
 export const dict = {
   "command.category.suggested": "Vorgeschlagen",
@@ -44,7 +44,8 @@ export const dict = {
   "command.file.open": "Datei öffnen",
   "command.tab.close": "Tab schließen",
   "command.context.addSelection": "Auswahl zum Kontext hinzufügen",
-  "command.context.addSelection.description": "Ausgewählte Zeilen aus der aktuellen Datei hinzufügen",
+  "command.context.addSelection.description":
+    "Ausgewählte Zeilen aus der aktuellen Datei hinzufügen",
   "command.input.focus": "Eingabefeld fokussieren",
   "command.terminal.toggle": "Terminal umschalten",
   "command.fileTree.toggle": "Dateibaum umschalten",
@@ -52,7 +53,8 @@ export const dict = {
   "command.terminal.new": "Neues Terminal",
   "command.terminal.new.description": "Neuen Terminal-Tab erstellen",
   "command.steps.toggle": "Schritte umschalten",
-  "command.steps.toggle.description": "Schritte für die aktuelle Nachricht anzeigen oder ausblenden",
+  "command.steps.toggle.description":
+    "Schritte für die aktuelle Nachricht anzeigen oder ausblenden",
   "command.message.previous": "Vorherige Nachricht",
   "command.message.previous.description": "Zur vorherigen Benutzernachricht gehen",
   "command.message.next": "Nächste Nachricht",
@@ -72,17 +74,20 @@ export const dict = {
   "command.permissions.autoaccept.enable": "Berechtigungen automatisch akzeptieren",
   "command.permissions.autoaccept.disable": "Automatische Akzeptanz von Berechtigungen stoppen",
   "command.workspace.toggle": "Arbeitsbereiche umschalten",
-  "command.workspace.toggle.description": "Mehrere Arbeitsbereiche in der Seitenleiste aktivieren oder deaktivieren",
+  "command.workspace.toggle.description":
+    "Mehrere Arbeitsbereiche in der Seitenleiste aktivieren oder deaktivieren",
   "command.session.undo": "Rückgängig",
   "command.session.undo.description": "Letzte Nachricht rückgängig machen",
   "command.session.redo": "Wiederherstellen",
   "command.session.redo.description": "Letzte rückgängig gemachte Nachricht wiederherstellen",
   "command.session.compact": "Sitzung komprimieren",
-  "command.session.compact.description": "Sitzung zusammenfassen, um die Kontextgröße zu reduzieren",
+  "command.session.compact.description":
+    "Sitzung zusammenfassen, um die Kontextgröße zu reduzieren",
   "command.session.fork": "Von Nachricht abzweigen",
   "command.session.fork.description": "Neue Sitzung aus einer früheren Nachricht erstellen",
   "command.session.share": "Sitzung teilen",
-  "command.session.share.description": "Diese Sitzung teilen und URL in die Zwischenablage kopieren",
+  "command.session.share.description":
+    "Diese Sitzung teilen und URL in die Zwischenablage kopieren",
   "command.session.unshare": "Teilen der Sitzung aufheben",
   "command.session.unshare.description": "Teilen dieser Sitzung beenden",
   "palette.search.placeholder": "Dateien, Befehle und Sitzungen durchsuchen",
@@ -147,12 +152,14 @@ export const dict = {
   "provider.connect.toast.connected.title": "{{provider}} verbunden",
   "provider.connect.toast.connected.description": "{{provider}} Modelle sind jetzt verfügbar.",
   "provider.custom.title": "Benutzerdefinierter Anbieter",
-  "provider.custom.description.prefix": "Konfigurieren Sie einen OpenAI-kompatiblen Anbieter. Siehe die ",
+  "provider.custom.description.prefix":
+    "Konfigurieren Sie einen OpenAI-kompatiblen Anbieter. Siehe die ",
   "provider.custom.description.link": "Anbieter-Konfigurationsdokumente",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "Anbieter-ID",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "Kleinbuchstaben, Zahlen, Bindestriche oder Unterstriche",
+  "provider.custom.field.providerID.description":
+    "Kleinbuchstaben, Zahlen, Bindestriche oder Unterstriche",
   "provider.custom.field.name.label": "Anzeigename",
   "provider.custom.field.name.placeholder": "Mein KI-Anbieter",
   "provider.custom.field.baseURL.label": "Basis-URL",
@@ -176,7 +183,8 @@ export const dict = {
   "provider.custom.headers.remove": "Header entfernen",
   "provider.custom.headers.add": "Header hinzufügen",
   "provider.custom.error.providerID.required": "Anbieter-ID ist erforderlich",
-  "provider.custom.error.providerID.format": "Verwenden Sie Kleinbuchstaben, Zahlen, Bindestriche oder Unterstriche",
+  "provider.custom.error.providerID.format":
+    "Verwenden Sie Kleinbuchstaben, Zahlen, Bindestriche oder Unterstriche",
   "provider.custom.error.providerID.exists": "Diese Anbieter-ID existiert bereits",
   "provider.custom.error.name.required": "Anzeigename ist erforderlich",
   "provider.custom.error.baseURL.required": "Basis-URL ist erforderlich",
@@ -184,7 +192,8 @@ export const dict = {
   "provider.custom.error.required": "Erforderlich",
   "provider.custom.error.duplicate": "Duplikat",
   "provider.disconnect.toast.disconnected.title": "{{provider}} getrennt",
-  "provider.disconnect.toast.disconnected.description": "Die {{provider}}-Modelle sind nicht mehr verfügbar.",
+  "provider.disconnect.toast.disconnected.description":
+    "Die {{provider}}-Modelle sind nicht mehr verfügbar.",
   "model.tag.free": "Kostenlos",
   "model.tag.latest": "Neueste",
   "model.provider.anthropic": "Anthropic",
@@ -264,7 +273,8 @@ export const dict = {
   "prompt.action.send": "Senden",
   "prompt.action.stop": "Stopp",
   "prompt.toast.pasteUnsupported.title": "Nicht unterstützter Anhang",
-  "prompt.toast.pasteUnsupported.description": "Hier können nur Bilder, PDFs oder Textdateien angehängt werden.",
+  "prompt.toast.pasteUnsupported.description":
+    "Hier können nur Bilder, PDFs oder Textdateien angehängt werden.",
   "prompt.toast.modelAgentRequired.title": "Wählen Sie einen Agenten und ein Modell",
   "prompt.toast.modelAgentRequired.description":
     "Wählen Sie einen Agenten und ein Modell, bevor Sie eine Eingabe senden.",
@@ -293,7 +303,8 @@ export const dict = {
   "dialog.directory.parent": "Übergeordnet",
   "dialog.directory.readError": "Dieser Ordner kann nicht gelesen werden",
   "dialog.server.title": "Server",
-  "dialog.server.description": "Wechseln Sie den OpenCode-Server, mit dem sich diese App verbindet.",
+  "dialog.server.description":
+    "Wechseln Sie den OpenCode-Server, mit dem sich diese App verbindet.",
   "dialog.server.search.placeholder": "Server durchsuchen",
   "dialog.server.empty": "Noch keine Server",
   "dialog.server.add.title": "Server hinzufügen",
@@ -385,19 +396,24 @@ export const dict = {
   "toast.theme.title": "Thema gewechselt",
   "toast.scheme.title": "Farbschema",
   "toast.workspace.enabled.title": "Arbeitsbereiche aktiviert",
-  "toast.workspace.enabled.description": "Mehrere Worktrees werden jetzt in der Seitenleiste angezeigt",
+  "toast.workspace.enabled.description":
+    "Mehrere Worktrees werden jetzt in der Seitenleiste angezeigt",
   "toast.workspace.disabled.title": "Arbeitsbereiche deaktiviert",
-  "toast.workspace.disabled.description": "Nur der Haupt-Worktree wird in der Seitenleiste angezeigt",
+  "toast.workspace.disabled.description":
+    "Nur der Haupt-Worktree wird in der Seitenleiste angezeigt",
   "toast.permissions.autoaccept.on.title": "Berechtigungen werden automatisch akzeptiert",
-  "toast.permissions.autoaccept.on.description": "Berechtigungsanfragen werden automatisch genehmigt",
+  "toast.permissions.autoaccept.on.description":
+    "Berechtigungsanfragen werden automatisch genehmigt",
   "toast.permissions.autoaccept.off.title": "Automatische Akzeptanz von Berechtigungen gestoppt",
-  "toast.permissions.autoaccept.off.description": "Berechtigungsanfragen erfordern eine Genehmigung",
+  "toast.permissions.autoaccept.off.description":
+    "Berechtigungsanfragen erfordern eine Genehmigung",
   "toast.model.none.title": "Kein Modell ausgewählt",
   "toast.model.none.description": "Verbinden Sie einen Anbieter, um diese Sitzung zusammenzufassen",
   "toast.file.loadFailed.title": "Datei konnte nicht geladen werden",
   "toast.file.listFailed.title": "Dateien konnten nicht aufgelistet werden",
   "toast.context.noLineSelection.title": "Keine Zeilenauswahl",
-  "toast.context.noLineSelection.description": "Wählen Sie zuerst einen Zeilenbereich in einem Datei-Tab aus.",
+  "toast.context.noLineSelection.description":
+    "Wählen Sie zuerst einen Zeilenbereich in einem Datei-Tab aus.",
   "toast.session.share.copyFailed.title": "URL konnte nicht in die Zwischenablage kopiert werden",
   "toast.session.share.success.title": "Sitzung geteilt",
   "toast.session.share.success.description": "Teilen-URL in die Zwischenablage kopiert!",
@@ -406,10 +422,12 @@ export const dict = {
   "toast.session.unshare.success.title": "Teilen der Sitzung aufgehoben",
   "toast.session.unshare.success.description": "Teilen der Sitzung erfolgreich aufgehoben!",
   "toast.session.unshare.failed.title": "Aufheben des Teilens fehlgeschlagen",
-  "toast.session.unshare.failed.description": "Beim Aufheben des Teilens ist ein Fehler aufgetreten",
+  "toast.session.unshare.failed.description":
+    "Beim Aufheben des Teilens ist ein Fehler aufgetreten",
   "toast.session.listFailed.title": "Sitzungen für {{project}} konnten nicht geladen werden",
   "toast.update.title": "Update verfügbar",
-  "toast.update.description": "Eine neue Version von OpenCode ({{version}}) ist zur Installation verfügbar.",
+  "toast.update.description":
+    "Eine neue Version von OpenCode ({{version}}) ist zur Installation verfügbar.",
   "toast.update.action.installRestart": "Installieren und neu starten",
   "toast.update.action.notYet": "Noch nicht",
   "error.page.title": "Etwas ist schiefgelaufen",
@@ -426,7 +444,8 @@ export const dict = {
   "error.page.version": "Version: {{version}}",
   "error.dev.rootNotFound":
     "Wurzelelement nicht gefunden. Haben Sie vergessen, es in Ihre index.html aufzunehmen? Oder wurde das id-Attribut falsch geschrieben?",
-  "error.serverSync.connectFailed": "Verbindung zum Server fehlgeschlagen. Läuft ein Server unter `{{url}}`?",
+  "error.serverSync.connectFailed":
+    "Verbindung zum Server fehlgeschlagen. Läuft ein Server unter `{{url}}`?",
   "directory.error.invalidUrl": "Ungültiges Verzeichnis in der URL.",
   "error.chain.unknown": "Unbekannter Fehler",
   "error.chain.causedBy": "Verursacht durch:",
@@ -436,10 +455,12 @@ export const dict = {
   "error.chain.responseBody": "Antwort-Body:\n{{body}}",
   "error.chain.didYouMean": "Meinten Sie: {{suggestions}}",
   "error.chain.modelNotFound": "Modell nicht gefunden: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Überprüfen Sie Ihre Konfiguration (opencode.json) auf Anbieter-/Modellnamen",
+  "error.chain.checkConfig":
+    "Überprüfen Sie Ihre Konfiguration (opencode.json) auf Anbieter-/Modellnamen",
   "error.chain.mcpFailed":
     'MCP-Server "{{name}}" fehlgeschlagen. Hinweis: OpenCode unterstützt noch keine MCP-Authentifizierung.',
-  "error.chain.providerAuthFailed": "Anbieter-Authentifizierung fehlgeschlagen ({{provider}}): {{message}}",
+  "error.chain.providerAuthFailed":
+    "Anbieter-Authentifizierung fehlgeschlagen ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'Anbieter "{{provider}}" konnte nicht initialisiert werden. Überprüfen Sie Anmeldeinformationen und Konfiguration.',
   "error.chain.configJsonInvalid": "Konfigurationsdatei unter {{path}} ist kein gültiges JSON(C)",
@@ -447,11 +468,14 @@ export const dict = {
     "Konfigurationsdatei unter {{path}} ist kein gültiges JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'Verzeichnis "{{dir}}" in {{path}} ist ungültig. Benennen Sie das Verzeichnis in "{{suggestion}}" um oder entfernen Sie es. Dies ist ein häufiger Tippfehler.',
-  "error.chain.configFrontmatterError": "Frontmatter in {{path}} konnte nicht geparst werden:\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "Frontmatter in {{path}} konnte nicht geparst werden:\n{{message}}",
   "error.chain.configInvalid": "Konfigurationsdatei unter {{path}} ist ungültig",
-  "error.chain.configInvalidWithMessage": "Konfigurationsdatei unter {{path}} ist ungültig: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "Konfigurationsdatei unter {{path}} ist ungültig: {{message}}",
   "notification.permission.title": "Berechtigung erforderlich",
-  "notification.permission.description": "{{sessionTitle}} in {{projectName}} benötigt Berechtigung",
+  "notification.permission.description":
+    "{{sessionTitle}} in {{projectName}} benötigt Berechtigung",
   "notification.question.title": "Frage",
   "notification.question.description": "{{sessionTitle}} in {{projectName}} hat eine Frage",
   "notification.action.goToSession": "Zur Sitzung gehen",
@@ -470,7 +494,8 @@ export const dict = {
   "session.review.change.other": "Änderungen",
   "session.review.loadingChanges": "Lade Änderungen...",
   "session.review.empty": "Noch keine Änderungen in dieser Sitzung",
-  "session.review.noVcs": "Kein Git-Versionskontrollsystem erkannt, Änderungen werden nicht angezeigt",
+  "session.review.noVcs":
+    "Kein Git-Versionskontrollsystem erkannt, Änderungen werden nicht angezeigt",
   "session.review.noSnapshot":
     "Snapshot-Tracking ist in der Konfiguration deaktiviert, daher sind Sitzungsänderungen nicht verfügbar",
   "session.review.noChanges": "Keine Änderungen",
@@ -560,7 +585,8 @@ export const dict = {
   "sidebar.workspaces.enable": "Arbeitsbereiche aktivieren",
   "sidebar.workspaces.disable": "Arbeitsbereiche deaktivieren",
   "sidebar.gettingStarted.title": "Erste Schritte",
-  "sidebar.gettingStarted.line1": "OpenCode enthält kostenlose Modelle, damit Sie sofort loslegen können.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode enthält kostenlose Modelle, damit Sie sofort loslegen können.",
   "sidebar.gettingStarted.line2":
     "Verbinden Sie einen beliebigen Anbieter, um Modelle wie Claude, GPT, Gemini usw. zu nutzen.",
   "sidebar.project.recentSessions": "Letzte Sitzungen",
@@ -594,7 +620,8 @@ export const dict = {
   "settings.general.row.terminalFont.title": "Terminal Font",
   "settings.general.row.terminalFont.description": "Customise the font used in the terminal",
   "settings.general.row.uiFont.title": "UI-Schriftart",
-  "settings.general.row.uiFont.description": "Die im gesamten Interface verwendete Schriftart anpassen",
+  "settings.general.row.uiFont.description":
+    "Die im gesamten Interface verwendete Schriftart anpassen",
   "settings.general.row.followup.title": "Verhalten bei Folgefragen",
   "settings.general.row.followup.description":
     "Wählen Sie, ob Folgefragen sofort steuern oder in einer Warteschlange warten",
@@ -610,15 +637,18 @@ export const dict = {
   "settings.general.row.editToolPartsExpanded.description":
     "Edit-, Write- und Patch-Tool-Abschnitte standardmäßig in der Timeline ausgeklappt anzeigen",
   "settings.general.row.wayland.title": "Natives Wayland verwenden",
-  "settings.general.row.wayland.description": "X11-Fallback unter Wayland deaktivieren. Erfordert Neustart.",
+  "settings.general.row.wayland.description":
+    "X11-Fallback unter Wayland deaktivieren. Erfordert Neustart.",
   "settings.general.row.wayland.tooltip":
     "Unter Linux mit Monitoren unterschiedlicher Bildwiederholraten kann natives Wayland stabiler sein.",
   "settings.general.row.releaseNotes.title": "Versionshinweise",
   "settings.general.row.releaseNotes.description": '"Neuigkeiten"-Pop-ups nach Updates anzeigen',
   "settings.updates.row.startup.title": "Beim Start nach Updates suchen",
-  "settings.updates.row.startup.description": "Beim Start von OpenCode automatisch nach Updates suchen",
+  "settings.updates.row.startup.description":
+    "Beim Start von OpenCode automatisch nach Updates suchen",
   "settings.updates.row.check.title": "Nach Updates suchen",
-  "settings.updates.row.check.description": "Manuell nach Updates suchen und installieren, wenn verfügbar",
+  "settings.updates.row.check.description":
+    "Manuell nach Updates suchen und installieren, wenn verfügbar",
   "settings.updates.action.checkNow": "Jetzt prüfen",
   "settings.updates.action.checking": "Wird geprüft...",
   "settings.updates.toast.latest.title": "Du bist auf dem neuesten Stand",
@@ -676,17 +706,21 @@ export const dict = {
   "settings.general.notifications.permissions.description":
     "Systembenachrichtigung anzeigen, wenn eine Berechtigung erforderlich ist",
   "settings.general.notifications.errors.title": "Fehler",
-  "settings.general.notifications.errors.description": "Systembenachrichtigung anzeigen, wenn ein Fehler auftritt",
+  "settings.general.notifications.errors.description":
+    "Systembenachrichtigung anzeigen, wenn ein Fehler auftritt",
   "settings.general.sounds.agent.title": "Agent",
-  "settings.general.sounds.agent.description": "Ton abspielen, wenn der Agent fertig ist oder Aufmerksamkeit benötigt",
+  "settings.general.sounds.agent.description":
+    "Ton abspielen, wenn der Agent fertig ist oder Aufmerksamkeit benötigt",
   "settings.general.sounds.permissions.title": "Berechtigungen",
-  "settings.general.sounds.permissions.description": "Ton abspielen, wenn eine Berechtigung erforderlich ist",
+  "settings.general.sounds.permissions.description":
+    "Ton abspielen, wenn eine Berechtigung erforderlich ist",
   "settings.general.sounds.errors.title": "Fehler",
   "settings.general.sounds.errors.description": "Ton abspielen, wenn ein Fehler auftritt",
   "settings.shortcuts.title": "Tastenkombinationen",
   "settings.shortcuts.reset.button": "Auf Standard zurücksetzen",
   "settings.shortcuts.reset.toast.title": "Tastenkombinationen zurückgesetzt",
-  "settings.shortcuts.reset.toast.description": "Die Tastenkombinationen wurden auf die Standardwerte zurückgesetzt.",
+  "settings.shortcuts.reset.toast.description":
+    "Die Tastenkombinationen wurden auf die Standardwerte zurückgesetzt.",
   "settings.shortcuts.conflict.title": "Tastenkombination bereits in Verwendung",
   "settings.shortcuts.conflict.description": "{{keybind}} ist bereits {{titles}} zugewiesen.",
   "settings.shortcuts.unassigned": "Nicht zugewiesen",
@@ -717,14 +751,17 @@ export const dict = {
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "MCP-Einstellungen können hier konfiguriert werden.",
   "settings.permissions.title": "Berechtigungen",
-  "settings.permissions.description": "Steuern Sie, welche Tools der Server standardmäßig verwenden darf.",
+  "settings.permissions.description":
+    "Steuern Sie, welche Tools der Server standardmäßig verwenden darf.",
   "settings.permissions.section.tools": "Tools",
-  "settings.permissions.toast.updateFailed.title": "Berechtigungen konnten nicht aktualisiert werden",
+  "settings.permissions.toast.updateFailed.title":
+    "Berechtigungen konnten nicht aktualisiert werden",
   "settings.permissions.action.allow": "Erlauben",
   "settings.permissions.action.ask": "Fragen",
   "settings.permissions.action.deny": "Verweigern",
   "settings.permissions.tool.read.title": "Lesen",
-  "settings.permissions.tool.read.description": "Lesen einer Datei (stimmt mit dem Dateipfad überein)",
+  "settings.permissions.tool.read.description":
+    "Lesen einer Datei (stimmt mit dem Dateipfad überein)",
   "settings.permissions.tool.edit.title": "Bearbeiten",
   "settings.permissions.tool.edit.description":
     "Dateien ändern, einschließlich Bearbeitungen, Schreibvorgängen, Patches und Mehrfachbearbeitungen",
@@ -749,9 +786,11 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "Web-Suche",
   "settings.permissions.tool.websearch.description": "Das Web durchsuchen",
   "settings.permissions.tool.external_directory.title": "Externes Verzeichnis",
-  "settings.permissions.tool.external_directory.description": "Zugriff auf Dateien außerhalb des Projektverzeichnisses",
+  "settings.permissions.tool.external_directory.description":
+    "Zugriff auf Dateien außerhalb des Projektverzeichnisses",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "Wiederholte Tool-Aufrufe mit identischer Eingabe erkennen",
+  "settings.permissions.tool.doom_loop.description":
+    "Wiederholte Tool-Aufrufe mit identischer Eingabe erkennen",
   "session.delete.failed.title": "Sitzung konnte nicht gelöscht werden",
   "session.delete.title": "Sitzung löschen",
   "session.delete.confirm": 'Sitzung "{{name}}" löschen?',
@@ -794,7 +833,8 @@ export const dict = {
   "common.time.hoursAgo.short": "vor {{count}} Std",
   "common.time.daysAgo.short": "vor {{count}} Tg",
   "settings.providers.connected.environmentDescription": "Verbunden aus Ihren Umgebungsvariablen",
-  "settings.providers.custom.description": "Fügen Sie einen OpenAI-kompatiblen Anbieter per Basis-URL hinzu.",
+  "settings.providers.custom.description":
+    "Fügen Sie einen OpenAI-kompatiblen Anbieter per Basis-URL hinzu.",
 
   "app.server.unreachable": "Konnte {{server}} nicht erreichen",
   "app.server.retrying": "Automatische erneute Verbindung...",
@@ -837,7 +877,8 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "Frames über 32ms in den letzten 5 Sekunden.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "Blockierte Zeit und Anzahl langer Aufgaben in den letzten 5 Sekunden. Max Aufgabe: {{max}}.",
+  "debugBar.long.tip":
+    "Blockierte Zeit und Anzahl langer Aufgaben in den letzten 5 Sekunden. Max Aufgabe: {{max}}.",
   "debugBar.delay.label": "DELAY",
   "debugBar.delay.tip": "Schlechteste beobachtete Eingabeverzögerung in den letzten 5 Sekunden.",
   "debugBar.inp.label": "INP",
@@ -867,8 +908,10 @@ export const dict = {
   "error.serverSDK.noServerAvailable": "Kein Server verfügbar",
   "error.serverSDK.serverNotAvailable": "Server nicht verfügbar",
   "error.childStore.persistedCacheCreateFailed": "Dauerhafter Cache konnte nicht erstellt werden",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Dauerhafte Projektmetadaten konnten nicht erstellt werden",
-  "error.childStore.persistedProjectIconCreateFailed": "Dauerhaftes Projekticon konnte nicht erstellt werden",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Dauerhafte Projektmetadaten konnten nicht erstellt werden",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Dauerhaftes Projekticon konnte nicht erstellt werden",
   "error.childStore.storeCreateFailed": "Speicher konnte nicht erstellt werden",
   "terminal.connectionLost.abnormalClose": "WebSocket abnormal geschlossen: {{code}}",
-} satisfies Partial<Record<Keys, string>>
+} satisfies Partial<Record<Keys, string>>;

@@ -12,15 +12,15 @@ function buildWhereClause(): string {
 
 export function countEncryptedCredentials(db: DbInstance = getDbInstance()): number {
   const where = buildWhereClause();
-  const row = db
-    .prepare(`SELECT COUNT(*) AS cnt FROM provider_connections WHERE ${where}`)
-    .get() as { cnt: number } | undefined;
+  const row = db.prepare(`SELECT COUNT(*) AS cnt FROM provider_connections WHERE ${where}`).get() as
+    | { cnt: number }
+    | undefined;
   return row?.cnt ?? 0;
 }
 
 export function resetEncryptedColumns(
   { dryRun }: { dryRun: boolean },
-  db: DbInstance = getDbInstance()
+  db: DbInstance = getDbInstance(),
 ): { affected: number } {
   const affected = countEncryptedCredentials(db);
   if (dryRun || affected === 0) return { affected };

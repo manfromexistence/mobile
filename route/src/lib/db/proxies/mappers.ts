@@ -74,7 +74,7 @@ export function extractRelayAuth(notes: unknown): string | undefined {
       if (looksEncrypted(parsed.relayAuthEnc)) {
         console.warn(
           `[relay] Failed to decrypt relayAuthEnc for proxy — ` +
-            `STORAGE_ENCRYPTION_KEY may have changed or been unset`
+            `STORAGE_ENCRYPTION_KEY may have changed or been unset`,
         );
       }
     }

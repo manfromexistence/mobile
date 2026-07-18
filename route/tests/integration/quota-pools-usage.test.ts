@@ -66,7 +66,7 @@ test("GET /api/quota/pools/[id]/usage without auth → 401", async () => {
 
 test("GET /api/quota/pools/[id]/usage with nonexistent pool → 404", async () => {
   const req = await makeManagementSessionRequest(
-    "http://localhost/api/quota/pools/not-a-real-pool/usage"
+    "http://localhost/api/quota/pools/not-a-real-pool/usage",
   );
   const res = await usageRoute.GET(req, {
     params: Promise.resolve({ id: "not-a-real-pool" }),
@@ -105,7 +105,7 @@ test("GET /api/quota/pools/[id]/usage → PoolUsageSnapshot shape with correct f
 
   // 4. GET usage — endpoint uses poolUsageWithDimensions if available
   const usageReq = await makeManagementSessionRequest(
-    `http://localhost/api/quota/pools/${poolId}/usage`
+    `http://localhost/api/quota/pools/${poolId}/usage`,
   );
   const usageRes = await usageRoute.GET(usageReq, { params: Promise.resolve({ id: poolId }) });
   assert.equal(usageRes.status, 200);
@@ -137,11 +137,7 @@ test("GET /api/quota/pools/[id]/usage → PoolUsageSnapshot shape with correct f
   // Even with no plan dimensions (empty plan for unknown provider), the response
   // is valid with an empty dimensions array — endpoint falls back to poolUsage()
   // which returns what's available from the store.
-  assert.doesNotMatch(
-    JSON.stringify(body),
-    /\s+at\s+\//,
-    "No stack trace in usage response"
-  );
+  assert.doesNotMatch(JSON.stringify(body), /\s+at\s+\//, "No stack trace in usage response");
 });
 
 test("GET /api/quota/pools/[id]/usage response has required PoolUsageSnapshot fields", async () => {
@@ -154,7 +150,7 @@ test("GET /api/quota/pools/[id]/usage response has required PoolUsageSnapshot fi
   const { pool } = (await createRes.json()) as { pool: { id: string } };
 
   const usageReq = await makeManagementSessionRequest(
-    `http://localhost/api/quota/pools/${pool.id}/usage`
+    `http://localhost/api/quota/pools/${pool.id}/usage`,
   );
   const usageRes = await usageRoute.GET(usageReq, {
     params: Promise.resolve({ id: pool.id }),

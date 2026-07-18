@@ -31,13 +31,13 @@ function rowToSource(row: ContextSourceRow): ApiKeyContextSource {
 
 export function getApiKeyContextSource(
   apiKeyId: string | null | undefined,
-  sourceType: string
+  sourceType: string,
 ): (ApiKeyContextSource & { enabled: true }) | null {
   if (!apiKeyId) return null;
   const db = getDbInstance();
   const row = db
     .prepare(
-      "SELECT * FROM api_key_context_sources WHERE api_key_id = ? AND source_type = ? AND enabled = 1"
+      "SELECT * FROM api_key_context_sources WHERE api_key_id = ? AND source_type = ? AND enabled = 1",
     )
     .get(apiKeyId, sourceType) as ContextSourceRow | undefined;
   if (!row) return null;
@@ -47,7 +47,7 @@ export function getApiKeyContextSource(
 export function setApiKeyContextSource(
   apiKeyId: string,
   sourceType: string,
-  config: { token?: string; baseUrl?: string; vaultPath?: string; enabled?: boolean }
+  config: { token?: string; baseUrl?: string; vaultPath?: string; enabled?: boolean },
 ): void {
   const db = getDbInstance();
   const existing = db
@@ -63,7 +63,7 @@ export function setApiKeyContextSource(
         vault_path = COALESCE(?, vault_path),
         enabled = COALESCE(?, enabled),
         updated_at = ?
-      WHERE api_key_id = ? AND source_type = ?`
+      WHERE api_key_id = ? AND source_type = ?`,
     ).run(
       config.token ?? null,
       config.baseUrl ?? null,
@@ -71,13 +71,13 @@ export function setApiKeyContextSource(
       config.enabled !== undefined ? (config.enabled ? 1 : 0) : null,
       now,
       apiKeyId,
-      sourceType
+      sourceType,
     );
   } else {
     db.prepare(
       `INSERT INTO api_key_context_sources
         (api_key_id, source_type, token, base_url, vault_path, enabled, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
     ).run(
       apiKeyId,
       sourceType,
@@ -86,16 +86,17 @@ export function setApiKeyContextSource(
       config.vaultPath ?? null,
       config.enabled !== undefined ? (config.enabled ? 1 : 0) : 1,
       now,
-      now
+      now,
     );
   }
 }
 
 export function deleteApiKeyContextSource(apiKeyId: string, sourceType: string): void {
   const db = getDbInstance();
-  db.prepare(
-    "DELETE FROM api_key_context_sources WHERE api_key_id = ? AND source_type = ?"
-  ).run(apiKeyId, sourceType);
+  db.prepare("DELETE FROM api_key_context_sources WHERE api_key_id = ? AND source_type = ?").run(
+    apiKeyId,
+    sourceType,
+  );
 }
 
 export function listApiKeyContextSources(apiKeyId: string): ApiKeyContextSource[] {

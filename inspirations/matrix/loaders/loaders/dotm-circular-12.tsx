@@ -23,10 +23,14 @@ export function DotmCircular12({
   ...rest
 }: DotmCircular12Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
   const step = useSteppedCycle({
     active: !reducedMotion && matrixPhase !== "idle",
@@ -50,7 +54,10 @@ export function DotmCircular12({
       const targetAngle = stepBand * (Math.PI / 4);
       const angleDelta = Math.acos(Math.cos(angle - targetAngle));
       const beam = Math.max(0, 1 - angleDelta / 0.42);
-      const oppositeBeam = Math.max(0, 1 - Math.acos(Math.cos(angle - (targetAngle + Math.PI))) / 0.62);
+      const oppositeBeam = Math.max(
+        0,
+        1 - Math.acos(Math.cos(angle - (targetAngle + Math.PI))) / 0.62,
+      );
       const spokePulse = Math.max(0, 1 - Math.abs(Math.abs(x) - Math.abs(y)) / 0.35);
       const ringTier = ring < 1 ? 0 : ring < 2 ? 1 : 2;
 

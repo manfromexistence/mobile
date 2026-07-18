@@ -59,13 +59,13 @@ test("#2877(A) Codex-only bare gpt-5.5 Responses request keeps the bare model id
     "gpt-5.5",
     { input: [{ role: "user", content: [{ type: "input_text", text: "hi" }] }] },
     "/v1/responses",
-    null
+    null,
   )) as { provider?: string; model?: string };
 
   assert.equal(result.provider, "codex", "Codex-only account must reroute gpt-5.5 to codex");
   assert.equal(
     result.model,
     "gpt-5.5",
-    "must NOT inject a -medium suffix (that would override a client reasoning.effort=xhigh)"
+    "must NOT inject a -medium suffix (that would override a client reasoning.effort=xhigh)",
   );
 });

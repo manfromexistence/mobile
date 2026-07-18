@@ -74,7 +74,7 @@ test("non-object usage is a no-op (null, undefined, number, string)", async () =
 test("valid usage persists a row with the mapped fields", async () => {
   recordNonStreamingUsageStats(
     { prompt_tokens: 11, completion_tokens: 7 },
-    baseCtx({ provider: "map-prov", model: "gpt-map", connectionId: "conn-abc", isCombo: false })
+    baseCtx({ provider: "map-prov", model: "gpt-map", connectionId: "conn-abc", isCombo: false }),
   );
   const rows = await waitForRows("map-prov", 1);
   assert.equal(rows.length, 1);
@@ -102,7 +102,7 @@ test("valid usage persists a row with the mapped fields", async () => {
 test("falls back to 'unknown' provider/model when absent", async () => {
   recordNonStreamingUsageStats(
     { prompt_tokens: 1, completion_tokens: 1 },
-    baseCtx({ provider: null, model: null, apiKeyInfo: null })
+    baseCtx({ provider: null, model: null, apiKeyInfo: null }),
   );
   const rows = await waitForRows("unknown", 1);
   const mine = rows.find((r) => (r as { model?: string }).model === "unknown");
@@ -118,7 +118,7 @@ test("trace log emits a [USAGE] line with the upper-cased provider when traceEna
   try {
     recordNonStreamingUsageStats(
       { prompt_tokens: 3, completion_tokens: 2 },
-      baseCtx({ provider: "trace-prov", traceEnabled: true })
+      baseCtx({ provider: "trace-prov", traceEnabled: true }),
     );
   } finally {
     console.log = original;

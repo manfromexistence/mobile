@@ -68,7 +68,7 @@ test("Gemini 2.5 Flash 5 RPM hit: 429 classifies as RATE_LIMIT_EXCEEDED (not QUO
     "gemini-2.5-flash",
     "gemini",
     null,
-    PROFILE
+    PROFILE,
   );
 
   assert.equal(result.shouldFallback, true);
@@ -89,7 +89,7 @@ test("Gemini 2.5 Flash 20 RPD hit: 429 classifies as QUOTA_EXHAUSTED", () => {
     "gemini-2.5-flash",
     "gemini",
     null,
-    PROFILE
+    PROFILE,
   );
 
   assert.equal(result.shouldFallback, true);
@@ -111,7 +111,7 @@ test("Gemini 2.5 Flash 3 requests (below both): 429 falls through to generic RAT
     "gemini-2.5-flash",
     "gemini",
     null,
-    PROFILE
+    PROFILE,
   );
 
   assert.equal(result.shouldFallback, true);
@@ -133,7 +133,7 @@ test("Gemini 2.5 Flash both RPM and RPD hit: RPD check runs first → QUOTA_EXHA
     "gemini-2.5-flash",
     "gemini",
     null,
-    PROFILE
+    PROFILE,
   );
 
   // RPD check is first in the if-chain, so it takes priority
@@ -154,7 +154,7 @@ test("Gemma 4 15 RPM hit (RPD=1500 untouched): 429 classifies as RATE_LIMIT_EXCE
     "gemini/gemma-4-31b-it",
     "gemini",
     null,
-    PROFILE
+    PROFILE,
   );
 
   assert.equal(result.reason, RateLimitReason.RATE_LIMIT_EXCEEDED);
@@ -174,7 +174,7 @@ test("Non-Gemini provider: tracker state is irrelevant, 429 goes through generic
     "gemini-2.5-flash",
     "openai",
     null,
-    PROFILE
+    PROFILE,
   );
 
   // Falls through to generic 429 handling → RATE_LIMIT_EXCEEDED
@@ -204,7 +204,7 @@ test("resetCounters clears both RPM and RPD exhaustion", () => {
     "gemini-2.5-flash",
     "gemini",
     null,
-    PROFILE
+    PROFILE,
   );
 
   assert.equal(result.reason, RateLimitReason.RATE_LIMIT_EXCEEDED);
@@ -225,7 +225,7 @@ test("Gemma 4 1500 RPD exhaustion overrides RPM classification", () => {
     "gemini/gemma-4-31b-it",
     "gemini",
     null,
-    PROFILE
+    PROFILE,
   );
 
   // RPD check runs first
@@ -246,7 +246,7 @@ test("Unknown Gemini model without published limits falls through to generic 429
     "gemini/unknown-model",
     "gemini",
     null,
-    PROFILE
+    PROFILE,
   );
 
   assert.equal(result.reason, RateLimitReason.RATE_LIMIT_EXCEEDED);

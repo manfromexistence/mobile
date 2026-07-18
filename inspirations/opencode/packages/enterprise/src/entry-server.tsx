@@ -1,22 +1,22 @@
 // @refresh reload
-import { createHandler, StartServer } from "@solidjs/start/server"
-import { getRequestEvent } from "solid-js/web"
+import { createHandler, StartServer } from "@solidjs/start/server";
+import { getRequestEvent } from "solid-js/web";
 
 export default createHandler(() => (
   <StartServer
     document={({ assets, children, scripts }) => {
       const lang = (() => {
-        const event = getRequestEvent()
-        const header = event?.request.headers.get("accept-language")
-        if (!header) return "en"
+        const event = getRequestEvent();
+        const header = event?.request.headers.get("accept-language");
+        if (!header) return "en";
         for (const item of header.split(",")) {
-          const value = item.trim().split(";")[0]?.toLowerCase()
-          if (!value) continue
-          if (value.startsWith("zh")) return "zh"
-          if (value.startsWith("en")) return "en"
+          const value = item.trim().split(";")[0]?.toLowerCase();
+          if (!value) continue;
+          if (value.startsWith("zh")) return "zh";
+          if (value.startsWith("en")) return "en";
         }
-        return "en"
-      })()
+        return "en";
+      })();
 
       return (
         <html lang={lang}>
@@ -32,7 +32,7 @@ export default createHandler(() => (
             {scripts}
           </body>
         </html>
-      )
+      );
     }}
   />
-))
+));

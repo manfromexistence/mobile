@@ -110,7 +110,7 @@ function suppressedAlert(
   sessionId: string,
   provider: string,
   accountId: string,
-  percentUsed: number
+  percentUsed: number,
 ): boolean {
   const key = `${sessionId}:${provider}:${accountId}`;
   const last = alertSuppression.get(key) ?? 0;
@@ -121,7 +121,7 @@ function suppressedAlert(
   }
   alertSuppression.set(key, Date.now());
   console.warn(
-    `[QuotaMonitor] session=${sessionId} ${provider}/${accountId}: ${(percentUsed * 100).toFixed(1)}% quota used`
+    `[QuotaMonitor] session=${sessionId} ${provider}/${accountId}: ${(percentUsed * 100).toFixed(1)}% quota used`,
   );
   return true;
 }
@@ -238,7 +238,7 @@ function scheduleNextPoll(sessionId: string, intervalMs: number): void {
         }
         if (emittedAlert || previousStatus !== "exhausted") {
           console.info(
-            `[QuotaMonitor] session=${sessionId}: marking ${accountId} for next-session cooldown`
+            `[QuotaMonitor] session=${sessionId}: marking ${accountId} for next-session cooldown`,
           );
         }
         scheduleNextPoll(sessionId, CRITICAL_INTERVAL_MS);
@@ -269,7 +269,7 @@ export function startQuotaMonitor(
   sessionId: string,
   provider: string,
   accountId: string,
-  connection: Record<string, unknown>
+  connection: Record<string, unknown>,
 ): void {
   if (!isQuotaMonitorEnabled(connection)) return;
   const current = activeMonitors.get(sessionId);

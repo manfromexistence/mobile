@@ -82,7 +82,7 @@ test("isLoopbackHost: rejects non-loopback hosts", () => {
 function makeCtx(
   path: string,
   headers: Record<string, string>,
-  requestExtras: Record<string, unknown> = {}
+  requestExtras: Record<string, unknown> = {},
 ) {
   return {
     request: {
@@ -130,7 +130,7 @@ test("management policy rejects /api/mcp/ when host is spoofed from a remote soc
       "x-forwarded-for": "127.0.0.1",
       [CLI_TOKEN_HEADER]: token,
     },
-    { socket: { remoteAddress: "203.0.113.10" } }
+    { socket: { remoteAddress: "203.0.113.10" } },
   );
   const outcome = await managementPolicy.evaluate(ctx);
   assert.equal(outcome.allow, false);
@@ -169,7 +169,7 @@ test("management policy allows /api/mcp/ from localhost with valid CLI token", a
       host: "localhost",
       [CLI_TOKEN_HEADER]: token,
     },
-    { socket: { remoteAddress: "127.0.0.1" } }
+    { socket: { remoteAddress: "127.0.0.1" } },
   );
   const outcome = await managementPolicy.evaluate(ctx);
   assert.equal(outcome.allow, true);
@@ -225,7 +225,7 @@ test("management policy allows /api/services/ from localhost with valid CLI toke
       host: "localhost",
       [CLI_TOKEN_HEADER]: token,
     },
-    { socket: { remoteAddress: "127.0.0.1" } }
+    { socket: { remoteAddress: "127.0.0.1" } },
   );
   const outcome = await managementPolicy.evaluate(ctx);
   assert.equal(outcome.allow, true);
@@ -246,7 +246,7 @@ test("isLocalOnlyBypassableByManageScope: /dashboard/providers/services/ is NOT 
   // is enabled and admin adds the prefix to the bypass list.
   assert.equal(
     isLocalOnlyBypassableByManageScope("/dashboard/providers/services/9router/embed/foo"),
-    false
+    false,
   );
   assert.equal(isLocalOnlyBypassableByManageScope("/dashboard/providers/services/"), false);
 });
@@ -298,7 +298,7 @@ test("management policy allows /api/copilot/chat from localhost with valid CLI t
       host: "localhost",
       [CLI_TOKEN_HEADER]: token,
     },
-    { socket: { remoteAddress: "127.0.0.1" } }
+    { socket: { remoteAddress: "127.0.0.1" } },
   );
   const outcome = await managementPolicy.evaluate(ctx);
   assert.equal(outcome.allow, true);

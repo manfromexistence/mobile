@@ -70,7 +70,7 @@ function coerceNumericString(value: unknown): unknown {
 
 function mapRecordValues(record: JsonRecord): JsonRecord {
   return Object.fromEntries(
-    Object.entries(record).map(([key, value]) => [key, coerceSchemaNumericFields(value)])
+    Object.entries(record).map(([key, value]) => [key, coerceSchemaNumericFields(value)]),
   );
 }
 
@@ -173,7 +173,7 @@ const REGEX_STRIP_ARRAY_MAP_FIELDS = ["prefixItems", "anyOf", "oneOf", "allOf"] 
 /** Recursively strips unsupported regex lookaround from every value of an object map field. */
 function stripRegexFromObjectMap(record: JsonRecord): JsonRecord {
   return Object.fromEntries(
-    Object.entries(record).map(([key, value]) => [key, stripUnsupportedRegexPatterns(value)])
+    Object.entries(record).map(([key, value]) => [key, stripUnsupportedRegexPatterns(value)]),
   );
 }
 
@@ -205,7 +205,7 @@ export function stripUnsupportedRegexPatterns(schema: unknown): unknown {
   for (const field of REGEX_STRIP_ARRAY_MAP_FIELDS) {
     if (Array.isArray(result[field])) {
       result[field] = (result[field] as unknown[]).map((entry) =>
-        stripUnsupportedRegexPatterns(entry)
+        stripUnsupportedRegexPatterns(entry),
       );
     }
   }
@@ -304,7 +304,7 @@ export function sanitizeToolId(id: string | undefined): string {
 export function injectEmptyReasoningContentForToolCalls(
   messages: unknown,
   provider: unknown,
-  model: unknown
+  model: unknown,
 ): unknown {
   const normalizedProvider = String(provider ?? "");
   const normalizedModel = String(model ?? "");

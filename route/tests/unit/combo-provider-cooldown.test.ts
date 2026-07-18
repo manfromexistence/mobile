@@ -14,12 +14,8 @@ const {
   seedConnection,
   settingsDb,
 } = harness;
-const { preScreenTargets } = await import(
-  "../../open-sse/services/combo.ts"
-);
-const { getCircuitBreaker } = await import(
-  "../../src/shared/utils/circuitBreaker.ts"
-);
+const { preScreenTargets } = await import("../../open-sse/services/combo.ts");
+const { getCircuitBreaker } = await import("../../src/shared/utils/circuitBreaker.ts");
 
 test.beforeEach(async () => {
   await resetStorage();
@@ -67,7 +63,7 @@ test("combo failover skips the cooled provider target on the next request", asyn
         {
           status: 503,
           headers: { "Content-Type": "application/json" },
-        }
+        },
       );
     }
 
@@ -89,7 +85,7 @@ test("combo failover skips the cooled provider target on the next request", asyn
         stream: false,
         messages: [{ role: "user", content: "first combo request" }],
       },
-    })
+    }),
   );
   const firstBody = (await firstResponse.json()) as any;
 
@@ -100,7 +96,7 @@ test("combo failover skips the cooled provider target on the next request", asyn
         stream: false,
         messages: [{ role: "user", content: "second combo request" }],
       },
-    })
+    }),
   );
   const secondBody = (await secondResponse.json()) as any;
 

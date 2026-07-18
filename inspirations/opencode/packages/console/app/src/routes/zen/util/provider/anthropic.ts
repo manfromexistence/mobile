@@ -1,27 +1,27 @@
-import { EventStreamCodec } from "@smithy/eventstream-codec"
-import { ProviderHelper, CommonRequest, CommonResponse, CommonChunk } from "./provider"
-import { fromUtf8, toUtf8 } from "@smithy/util-utf8"
+import { EventStreamCodec } from "@smithy/eventstream-codec";
+import { ProviderHelper, CommonRequest, CommonResponse, CommonChunk } from "./provider";
+import { fromUtf8, toUtf8 } from "@smithy/util-utf8";
 
 type Usage = {
   cache_creation?: {
-    ephemeral_5m_input_tokens?: number
-    ephemeral_1h_input_tokens?: number
-  }
-  cache_creation_input_tokens?: number
-  cache_read_input_tokens?: number
-  input_tokens?: number
-  output_tokens?: number
+    ephemeral_5m_input_tokens?: number;
+    ephemeral_1h_input_tokens?: number;
+  };
+  cache_creation_input_tokens?: number;
+  cache_read_input_tokens?: number;
+  input_tokens?: number;
+  output_tokens?: number;
   server_tool_use?: {
-    web_search_requests?: number
-  }
-}
+    web_search_requests?: number;
+  };
+};
 
 export const anthropicHelper: ProviderHelper = ({ reqModel, providerModel }) => {
-  const isBedrockModelArn = providerModel.startsWith("arn:aws:bedrock:")
-  const isBedrockModelID = providerModel.startsWith("global.anthropic.")
-  const isBedrock = isBedrockModelArn || isBedrockModelID
-  const isDatabricks = providerModel.startsWith("databricks-claude-")
-  const supports1m = reqModel.includes("sonnet") || reqModel.includes("opus-4-6")
+  const isBedrockModelArn = providerModel.startsWith("arn:aws:bedrock:");
+  const isBedrockModelID = providerModel.startsWith("global.anthropic.");
+  const isBedrock = isBedrockModelArn || isBedrockModelID;
+  const isDatabricks = providerModel.startsWith("databricks-claude-");
+  const supports1m = reqModel.includes("sonnet") || reqModel.includes("opus-4-6");
   return {
     format: "anthropic",
     modifyUrl: (providerApi: string, isStream?: boolean) =>
@@ -30,12 +30,12 @@ export const anthropicHelper: ProviderHelper = ({ reqModel, providerModel }) => 
         : providerApi + "/messages",
     modifyHeaders: (headers: Headers, apiKey: string, _stickyId: string) => {
       if (isBedrock || isDatabricks) {
-        headers.set("Authorization", `Bearer ${apiKey}`)
+        headers.set("Authorization", `Bearer ${apiKey}`);
       } else {
-        headers.set("x-api-key", apiKey)
-        headers.set("anthropic-version", headers.get("anthropic-version") ?? "2023-06-01")
+        headers.set("x-api-key", apiKey);
+        headers.set("anthropic-version", headers.get("anthropic-version") ?? "2023-06-01");
         if (supports1m) {
-          headers.set("anthropic-beta", "context-1m-2025-08-07")
+          headers.set("anthropic-beta", "context-1m-2025-08-07");
         }
       }
     },
@@ -56,30 +56,34 @@ export const anthropicHelper: ProviderHelper = ({ reqModel, providerModel }) => 
           : {}),
     }),
     createBinaryStreamDecoder: () => {
-      if (!isBedrock) return undefined
+      if (!isBedrock) return undefined;
 
-      const decoder = new TextDecoder()
-      const encoder = new TextEncoder()
-      const codec = new EventStreamCodec(toUtf8, fromUtf8)
-      let buffer = new Uint8Array(0)
+      const decoder = new TextDecoder();
+      const encoder = new TextEncoder();
+      const codec = new EventStreamCodec(toUtf8, fromUtf8);
+      let buffer = new Uint8Array(0);
       return (value: Uint8Array) => {
-        const newBuffer = new Uint8Array(buffer.length + value.length)
-        newBuffer.set(buffer)
-        newBuffer.set(value, buffer.length)
-        buffer = newBuffer
+        const newBuffer = new Uint8Array(buffer.length + value.length);
+        newBuffer.set(buffer);
+        newBuffer.set(value, buffer.length);
+        buffer = newBuffer;
 
-        const messages = []
+        const messages = [];
         while (buffer.length >= 4) {
           // first 4 bytes are the total length (big-endian)
-          const totalLength = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength).getUint32(0, false)
+          const totalLength = new DataView(
+            buffer.buffer,
+            buffer.byteOffset,
+            buffer.byteLength,
+          ).getUint32(0, false);
 
           // wait for more chunks
-          if (buffer.length < totalLength) break
+          if (buffer.length < totalLength) break;
 
           try {
-            const subView = buffer.subarray(0, totalLength)
-            const decoded = codec.decode(subView)
-            buffer = buffer.slice(totalLength)
+            const subView = buffer.subarray(0, totalLength);
+            const decoded = codec.decode(subView);
+            buffer = buffer.slice(totalLength);
 
             /* Example of Bedrock data
       ```
@@ -120,44 +124,44 @@ export const anthropicHelper: ProviderHelper = ({ reqModel, providerModel }) => 
       ```
       */
             if (decoded.headers[":message-type"]?.value === "event") {
-              const data = decoder.decode(decoded.body, { stream: true })
+              const data = decoder.decode(decoded.body, { stream: true });
 
-              const parsedDataResult = JSON.parse(data)
-              delete parsedDataResult.p
-              const binary = atob(parsedDataResult.bytes)
-              const uint8 = Uint8Array.from(binary, (c) => c.charCodeAt(0))
-              const bytes = decoder.decode(uint8)
-              const eventName = JSON.parse(bytes).type
-              messages.push([`event: ${eventName}`, "\n", `data: ${bytes}`, "\n\n"].join(""))
+              const parsedDataResult = JSON.parse(data);
+              delete parsedDataResult.p;
+              const binary = atob(parsedDataResult.bytes);
+              const uint8 = Uint8Array.from(binary, (c) => c.charCodeAt(0));
+              const bytes = decoder.decode(uint8);
+              const eventName = JSON.parse(bytes).type;
+              messages.push([`event: ${eventName}`, "\n", `data: ${bytes}`, "\n\n"].join(""));
             }
           } catch (e) {
-            console.log("@@@EE@@@")
-            console.log(e)
-            break
+            console.log("@@@EE@@@");
+            console.log(e);
+            break;
           }
         }
-        return encoder.encode(messages.join(""))
-      }
+        return encoder.encode(messages.join(""));
+      };
     },
     createUsageParser: () => {
-      let usage: Usage
+      let usage: Usage;
 
       return {
         parse: (chunk: string) => {
-          const data = chunk.split("\n")[1]
+          const data = chunk.split("\n")[1];
           // Claude models start with "data: {"
           // Alibaba models start with "data:{"
-          if (!data.startsWith("data:")) return
+          if (!data.startsWith("data:")) return;
 
-          let json
+          let json;
           try {
-            json = JSON.parse(data.replace(/^data:\s*/, ""))
+            json = JSON.parse(data.replace(/^data:\s*/, ""));
           } catch {
-            return
+            return;
           }
 
-          const usageUpdate = json.usage ?? json.message?.usage
-          if (!usageUpdate) return
+          const usageUpdate = json.usage ?? json.message?.usage;
+          if (!usageUpdate) return;
           usage = {
             ...usage,
             ...usageUpdate,
@@ -169,10 +173,10 @@ export const anthropicHelper: ProviderHelper = ({ reqModel, providerModel }) => 
               ...usage?.server_tool_use,
               ...usageUpdate.server_tool_use,
             },
-          }
+          };
         },
         retrieve: () => usage,
-      }
+      };
     },
     extractUsage: (response: any) => response.usage,
     normalizeUsage: (usage: Usage) => ({
@@ -181,32 +185,34 @@ export const anthropicHelper: ProviderHelper = ({ reqModel, providerModel }) => 
       reasoningTokens: undefined,
       cacheReadTokens: usage.cache_read_input_tokens ?? undefined,
       cacheWrite5mTokens:
-        usage.cache_creation?.ephemeral_5m_input_tokens ?? usage.cache_creation_input_tokens ?? undefined,
+        usage.cache_creation?.ephemeral_5m_input_tokens ??
+        usage.cache_creation_input_tokens ??
+        undefined,
       cacheWrite1hTokens: usage.cache_creation?.ephemeral_1h_input_tokens ?? undefined,
     }),
-  }
-}
+  };
+};
 
 export function fromAnthropicRequest(body: any): CommonRequest {
-  if (!body || typeof body !== "object") return body
+  if (!body || typeof body !== "object") return body;
 
-  const msgs: any[] = []
+  const msgs: any[] = [];
 
-  const sys = Array.isArray(body.system) ? body.system : undefined
+  const sys = Array.isArray(body.system) ? body.system : undefined;
   if (sys && sys.length > 0) {
     for (const s of sys) {
-      if (!s) continue
-      if ((s as any).type !== "text") continue
-      if (typeof (s as any).text !== "string") continue
-      if ((s as any).text.length === 0) continue
-      msgs.push({ role: "system", content: (s as any).text })
+      if (!s) continue;
+      if ((s as any).type !== "text") continue;
+      if (typeof (s as any).text !== "string") continue;
+      if ((s as any).text.length === 0) continue;
+      msgs.push({ role: "system", content: (s as any).text });
     }
   }
 
   const toImg = (src: any) => {
-    if (!src || typeof src !== "object") return undefined
+    if (!src || typeof src !== "object") return undefined;
     if ((src as any).type === "url" && typeof (src as any).url === "string")
-      return { type: "image_url", image_url: { url: (src as any).url } }
+      return { type: "image_url", image_url: { url: (src as any).url } };
     if (
       (src as any).type === "base64" &&
       typeof (src as any).media_type === "string" &&
@@ -215,65 +221,69 @@ export function fromAnthropicRequest(body: any): CommonRequest {
       return {
         type: "image_url",
         image_url: { url: `data:${(src as any).media_type};base64,${(src as any).data}` },
-      }
-    return undefined
-  }
+      };
+    return undefined;
+  };
 
-  const inMsgs = Array.isArray(body.messages) ? body.messages : []
+  const inMsgs = Array.isArray(body.messages) ? body.messages : [];
   for (const m of inMsgs) {
-    if (!m || !(m as any).role) continue
+    if (!m || !(m as any).role) continue;
 
     if ((m as any).role === "user") {
-      const partsIn = Array.isArray((m as any).content) ? (m as any).content : []
-      const partsOut: any[] = []
+      const partsIn = Array.isArray((m as any).content) ? (m as any).content : [];
+      const partsOut: any[] = [];
       for (const p of partsIn) {
-        if (!p || !(p as any).type) continue
+        if (!p || !(p as any).type) continue;
         if ((p as any).type === "text" && typeof (p as any).text === "string")
-          partsOut.push({ type: "text", text: (p as any).text })
+          partsOut.push({ type: "text", text: (p as any).text });
         if ((p as any).type === "image") {
-          const ip = toImg((p as any).source)
-          if (ip) partsOut.push(ip)
+          const ip = toImg((p as any).source);
+          if (ip) partsOut.push(ip);
         }
         if ((p as any).type === "tool_result") {
-          const id = (p as any).tool_use_id
+          const id = (p as any).tool_use_id;
           const content =
-            typeof (p as any).content === "string" ? (p as any).content : JSON.stringify((p as any).content)
-          msgs.push({ role: "tool", tool_call_id: id, content })
+            typeof (p as any).content === "string"
+              ? (p as any).content
+              : JSON.stringify((p as any).content);
+          msgs.push({ role: "tool", tool_call_id: id, content });
         }
       }
       if (partsOut.length > 0) {
-        if (partsOut.length === 1 && partsOut[0].type === "text") msgs.push({ role: "user", content: partsOut[0].text })
-        else msgs.push({ role: "user", content: partsOut })
+        if (partsOut.length === 1 && partsOut[0].type === "text")
+          msgs.push({ role: "user", content: partsOut[0].text });
+        else msgs.push({ role: "user", content: partsOut });
       }
-      continue
+      continue;
     }
 
     if ((m as any).role === "assistant") {
-      const partsIn = Array.isArray((m as any).content) ? (m as any).content : []
-      const texts: string[] = []
-      const tcs: any[] = []
+      const partsIn = Array.isArray((m as any).content) ? (m as any).content : [];
+      const texts: string[] = [];
+      const tcs: any[] = [];
       for (const p of partsIn) {
-        if (!p || !(p as any).type) continue
-        if ((p as any).type === "text" && typeof (p as any).text === "string") texts.push((p as any).text)
+        if (!p || !(p as any).type) continue;
+        if ((p as any).type === "text" && typeof (p as any).text === "string")
+          texts.push((p as any).text);
         if ((p as any).type === "tool_use") {
-          const name = (p as any).name
-          const id = (p as any).id
-          const inp = (p as any).input
+          const name = (p as any).name;
+          const id = (p as any).id;
+          const inp = (p as any).input;
           const input = (() => {
-            if (typeof inp === "string") return inp
+            if (typeof inp === "string") return inp;
             try {
-              return JSON.stringify(inp ?? {})
+              return JSON.stringify(inp ?? {});
             } catch {
-              return String(inp ?? "")
+              return String(inp ?? "");
             }
-          })()
-          tcs.push({ id, type: "function", function: { name, arguments: input } })
+          })();
+          tcs.push({ id, type: "function", function: { name, arguments: input } });
         }
       }
-      const out: any = { role: "assistant", content: texts.join("") }
-      if (tcs.length > 0) out.tool_calls = tcs
-      msgs.push(out)
-      continue
+      const out: any = { role: "assistant", content: texts.join("") };
+      if (tcs.length > 0) out.tool_calls = tcs;
+      msgs.push(out);
+      continue;
     }
   }
 
@@ -288,25 +298,25 @@ export function fromAnthropicRequest(body: any): CommonRequest {
             parameters: (t as any).input_schema,
           },
         }))
-    : undefined
+    : undefined;
 
-  const tcin = body.tool_choice
+  const tcin = body.tool_choice;
   const tc = (() => {
-    if (!tcin) return undefined
-    if ((tcin as any).type === "auto") return "auto"
-    if ((tcin as any).type === "any") return "required"
+    if (!tcin) return undefined;
+    if ((tcin as any).type === "auto") return "auto";
+    if ((tcin as any).type === "any") return "required";
     if ((tcin as any).type === "tool" && typeof (tcin as any).name === "string")
-      return { type: "function" as const, function: { name: (tcin as any).name } }
-    return undefined
-  })()
+      return { type: "function" as const, function: { name: (tcin as any).name } };
+    return undefined;
+  })();
 
   const stop = (() => {
-    const v = body.stop_sequences
-    if (!v) return undefined
-    if (Array.isArray(v)) return v.length === 1 ? v[0] : v
-    if (typeof v === "string") return v
-    return undefined
-  })()
+    const v = body.stop_sequences;
+    if (!v) return undefined;
+    if (Array.isArray(v)) return v.length === 1 ? v[0] : v;
+    if (typeof v === "string") return v;
+    return undefined;
+  })();
 
   return {
     model: body.model,
@@ -318,93 +328,95 @@ export function fromAnthropicRequest(body: any): CommonRequest {
     stream: !!body.stream,
     tools,
     tool_choice: tc,
-  }
+  };
 }
 
 export function toAnthropicRequest(body: CommonRequest) {
-  if (!body || typeof body !== "object") return body
+  if (!body || typeof body !== "object") return body;
 
-  const sysIn = Array.isArray(body.messages) ? body.messages.filter((m: any) => m && m.role === "system") : []
-  let ccCount = 0
+  const sysIn = Array.isArray(body.messages)
+    ? body.messages.filter((m: any) => m && m.role === "system")
+    : [];
+  let ccCount = 0;
   const cc = () => {
-    ccCount++
-    return ccCount <= 4 ? { cache_control: { type: "ephemeral" } } : {}
-  }
+    ccCount++;
+    return ccCount <= 4 ? { cache_control: { type: "ephemeral" } } : {};
+  };
   const system = sysIn
     .filter((m: any) => typeof m.content === "string" && m.content.length > 0)
-    .map((m: any) => ({ type: "text", text: m.content, ...cc() }))
+    .map((m: any) => ({ type: "text", text: m.content, ...cc() }));
 
-  const msgsIn = Array.isArray(body.messages) ? body.messages : []
-  const msgsOut: any[] = []
+  const msgsIn = Array.isArray(body.messages) ? body.messages : [];
+  const msgsOut: any[] = [];
 
   const toSrc = (p: any) => {
-    if (!p || typeof p !== "object") return undefined
+    if (!p || typeof p !== "object") return undefined;
     if ((p as any).type === "image_url" && (p as any).image_url) {
-      const u = (p as any).image_url.url ?? (p as any).image_url
+      const u = (p as any).image_url.url ?? (p as any).image_url;
       if (typeof u === "string" && u.startsWith("data:")) {
-        const m = u.match(/^data:([^;]+);base64,(.*)$/)
-        if (m) return { type: "base64", media_type: m[1], data: m[2] }
+        const m = u.match(/^data:([^;]+);base64,(.*)$/);
+        if (m) return { type: "base64", media_type: m[1], data: m[2] };
       }
-      if (typeof u === "string") return { type: "url", url: u }
+      if (typeof u === "string") return { type: "url", url: u };
     }
-    return undefined
-  }
+    return undefined;
+  };
 
   for (const m of msgsIn) {
-    if (!m || !(m as any).role) continue
+    if (!m || !(m as any).role) continue;
 
     if ((m as any).role === "user") {
       if (typeof (m as any).content === "string") {
         msgsOut.push({
           role: "user",
           content: [{ type: "text", text: (m as any).content, ...cc() }],
-        })
+        });
       } else if (Array.isArray((m as any).content)) {
-        const parts: any[] = []
+        const parts: any[] = [];
         for (const p of (m as any).content) {
-          if (!p || !(p as any).type) continue
+          if (!p || !(p as any).type) continue;
           if ((p as any).type === "text" && typeof (p as any).text === "string")
-            parts.push({ type: "text", text: (p as any).text, ...cc() })
+            parts.push({ type: "text", text: (p as any).text, ...cc() });
           if ((p as any).type === "image_url") {
-            const s = toSrc(p)
-            if (s) parts.push({ type: "image", source: s, ...cc() })
+            const s = toSrc(p);
+            if (s) parts.push({ type: "image", source: s, ...cc() });
           }
         }
-        if (parts.length > 0) msgsOut.push({ role: "user", content: parts })
+        if (parts.length > 0) msgsOut.push({ role: "user", content: parts });
       }
-      continue
+      continue;
     }
 
     if ((m as any).role === "assistant") {
-      const out: any = { role: "assistant", content: [] as any[] }
+      const out: any = { role: "assistant", content: [] as any[] };
       if (typeof (m as any).content === "string" && (m as any).content.length > 0) {
-        ;(out.content as any[]).push({ type: "text", text: (m as any).content, ...cc() })
+        (out.content as any[]).push({ type: "text", text: (m as any).content, ...cc() });
       }
       if (Array.isArray((m as any).tool_calls)) {
         for (const tc of (m as any).tool_calls) {
           if ((tc as any).type === "function" && (tc as any).function) {
-            let input: any
-            const a = (tc as any).function.arguments
+            let input: any;
+            const a = (tc as any).function.arguments;
             if (typeof a === "string") {
               try {
-                input = JSON.parse(a)
+                input = JSON.parse(a);
               } catch {
-                input = a
+                input = a;
               }
-            } else input = a
-            const id = (tc as any).id || `toolu_${Math.random().toString(36).slice(2)}`
-            ;(out.content as any[]).push({
+            } else input = a;
+            const id = (tc as any).id || `toolu_${Math.random().toString(36).slice(2)}`;
+            (out.content as any[]).push({
               type: "tool_use",
               id,
               name: (tc as any).function.name,
               input,
               ...cc(),
-            })
+            });
           }
         }
       }
-      if ((out.content as any[]).length > 0) msgsOut.push(out)
-      continue
+      if ((out.content as any[]).length > 0) msgsOut.push(out);
+      continue;
     }
 
     if ((m as any).role === "tool") {
@@ -418,8 +430,8 @@ export function toAnthropicRequest(body: CommonRequest) {
             ...cc(),
           },
         ],
-      })
-      continue
+      });
+      continue;
     }
   }
 
@@ -432,25 +444,25 @@ export function toAnthropicRequest(body: CommonRequest) {
           input_schema: (t as any).function.parameters,
           ...cc(),
         }))
-    : undefined
+    : undefined;
 
-  const tcIn = body.tool_choice
+  const tcIn = body.tool_choice;
   const tool_choice = (() => {
-    if (!tcIn) return undefined
-    if (tcIn === "auto") return { type: "auto" }
-    if (tcIn === "required") return { type: "any" }
+    if (!tcIn) return undefined;
+    if (tcIn === "auto") return { type: "auto" };
+    if (tcIn === "required") return { type: "any" };
     if ((tcIn as any).type === "function" && (tcIn as any).function?.name)
-      return { type: "tool", name: (tcIn as any).function.name }
-    return undefined
-  })()
+      return { type: "tool", name: (tcIn as any).function.name };
+    return undefined;
+  })();
 
   const stop_sequences = (() => {
-    const v = body.stop
-    if (!v) return undefined
-    if (Array.isArray(v)) return v
-    if (typeof v === "string") return [v]
-    return undefined
-  })()
+    const v = body.stop;
+    if (!v) return undefined;
+    if (Array.isArray(v)) return v;
+    if (typeof v === "string") return [v];
+    return undefined;
+  })();
 
   return {
     max_tokens: body.max_tokens ?? 32_000,
@@ -462,71 +474,75 @@ export function toAnthropicRequest(body: CommonRequest) {
     tools,
     tool_choice,
     stop_sequences,
-  }
+  };
 }
 
 export function fromAnthropicResponse(resp: any): CommonResponse {
-  if (!resp || typeof resp !== "object") return resp
+  if (!resp || typeof resp !== "object") return resp;
 
-  if (Array.isArray((resp as any).choices)) return resp
+  if (Array.isArray((resp as any).choices)) return resp;
 
-  const isAnthropic = typeof (resp as any).type === "string" && (resp as any).type === "message"
-  if (!isAnthropic) return resp
+  const isAnthropic = typeof (resp as any).type === "string" && (resp as any).type === "message";
+  if (!isAnthropic) return resp;
 
-  const idIn = (resp as any).id
+  const idIn = (resp as any).id;
   const id =
-    typeof idIn === "string" ? idIn.replace(/^msg_/, "chatcmpl_") : `chatcmpl_${Math.random().toString(36).slice(2)}`
-  const model = (resp as any).model
+    typeof idIn === "string"
+      ? idIn.replace(/^msg_/, "chatcmpl_")
+      : `chatcmpl_${Math.random().toString(36).slice(2)}`;
+  const model = (resp as any).model;
 
-  const blocks: any[] = Array.isArray((resp as any).content) ? (resp as any).content : []
+  const blocks: any[] = Array.isArray((resp as any).content) ? (resp as any).content : [];
   const text = blocks
     .filter((b) => b && b.type === "text" && typeof (b as any).text === "string")
     .map((b: any) => b.text)
-    .join("")
+    .join("");
   const tcs = blocks
     .filter((b) => b && b.type === "tool_use")
     .map((b: any) => {
-      const name = (b as any).name
+      const name = (b as any).name;
       const args = (() => {
-        const inp = (b as any).input
-        if (typeof inp === "string") return inp
+        const inp = (b as any).input;
+        if (typeof inp === "string") return inp;
         try {
-          return JSON.stringify(inp ?? {})
+          return JSON.stringify(inp ?? {});
         } catch {
-          return String(inp ?? "")
+          return String(inp ?? "");
         }
-      })()
+      })();
       const tid =
         typeof (b as any).id === "string" && (b as any).id.length > 0
           ? (b as any).id
-          : `toolu_${Math.random().toString(36).slice(2)}`
-      return { id: tid, type: "function" as const, function: { name, arguments: args } }
-    })
+          : `toolu_${Math.random().toString(36).slice(2)}`;
+      return { id: tid, type: "function" as const, function: { name, arguments: args } };
+    });
 
   const finish = (r: string | null) => {
-    if (r === "end_turn") return "stop"
-    if (r === "tool_use") return "tool_calls"
-    if (r === "max_tokens") return "length"
-    if (r === "content_filter") return "content_filter"
-    return null
-  }
+    if (r === "end_turn") return "stop";
+    if (r === "tool_use") return "tool_calls";
+    if (r === "max_tokens") return "length";
+    if (r === "content_filter") return "content_filter";
+    return null;
+  };
 
-  const u = (resp as any).usage
+  const u = (resp as any).usage;
   const usage = (() => {
-    if (!u) return undefined as any
-    const pt = typeof (u as any).input_tokens === "number" ? (u as any).input_tokens : undefined
-    const ct = typeof (u as any).output_tokens === "number" ? (u as any).output_tokens : undefined
-    const total = pt != null && ct != null ? pt + ct : undefined
+    if (!u) return undefined as any;
+    const pt = typeof (u as any).input_tokens === "number" ? (u as any).input_tokens : undefined;
+    const ct = typeof (u as any).output_tokens === "number" ? (u as any).output_tokens : undefined;
+    const total = pt != null && ct != null ? pt + ct : undefined;
     const cached =
-      typeof (u as any).cache_read_input_tokens === "number" ? (u as any).cache_read_input_tokens : undefined
-    const details = cached != null ? { cached_tokens: cached } : undefined
+      typeof (u as any).cache_read_input_tokens === "number"
+        ? (u as any).cache_read_input_tokens
+        : undefined;
+    const details = cached != null ? { cached_tokens: cached } : undefined;
     return {
       prompt_tokens: pt,
       completion_tokens: ct,
       total_tokens: total,
       ...(details ? { prompt_tokens_details: details } : {}),
-    }
-  })()
+    };
+  })();
 
   return {
     id,
@@ -545,62 +561,62 @@ export function fromAnthropicResponse(resp: any): CommonResponse {
       },
     ],
     ...(usage ? { usage } : {}),
-  }
+  };
 }
 
 export function toAnthropicResponse(resp: CommonResponse) {
-  if (!resp || typeof resp !== "object") return resp
+  if (!resp || typeof resp !== "object") return resp;
 
-  if (!Array.isArray((resp as any).choices)) return resp
+  if (!Array.isArray((resp as any).choices)) return resp;
 
-  const choice = (resp as any).choices[0]
-  if (!choice) return resp
+  const choice = (resp as any).choices[0];
+  if (!choice) return resp;
 
-  const message = choice.message
-  if (!message) return resp
+  const message = choice.message;
+  if (!message) return resp;
 
-  const content: any[] = []
+  const content: any[] = [];
 
   if (typeof message.content === "string" && message.content.length > 0)
-    content.push({ type: "text", text: message.content })
+    content.push({ type: "text", text: message.content });
 
   if (Array.isArray(message.tool_calls)) {
     for (const tc of message.tool_calls) {
       if ((tc as any).type === "function" && (tc as any).function) {
-        let input: any
+        let input: any;
         try {
-          input = JSON.parse((tc as any).function.arguments)
+          input = JSON.parse((tc as any).function.arguments);
         } catch {
-          input = (tc as any).function.arguments
+          input = (tc as any).function.arguments;
         }
         content.push({
           type: "tool_use",
           id: (tc as any).id,
           name: (tc as any).function.name,
           input,
-        })
+        });
       }
     }
   }
 
   const stop_reason = (() => {
-    const r = choice.finish_reason
-    if (r === "stop") return "end_turn"
-    if (r === "tool_calls") return "tool_use"
-    if (r === "length") return "max_tokens"
-    if (r === "content_filter") return "content_filter"
-    return null
-  })()
+    const r = choice.finish_reason;
+    if (r === "stop") return "end_turn";
+    if (r === "tool_calls") return "tool_use";
+    if (r === "length") return "max_tokens";
+    if (r === "content_filter") return "content_filter";
+    return null;
+  })();
 
   const usage = (() => {
-    const u = (resp as any).usage
-    if (!u) return undefined
+    const u = (resp as any).usage;
+    if (!u) return undefined;
     return {
       input_tokens: u.prompt_tokens,
       output_tokens: u.completion_tokens,
       cache_read_input_tokens: u.prompt_tokens_details?.cached_tokens,
-    }
-  })()
+    };
+  })();
 
   return {
     id: (resp as any).id,
@@ -610,20 +626,20 @@ export function toAnthropicResponse(resp: CommonResponse) {
     model: (resp as any).model,
     stop_reason,
     usage,
-  }
+  };
 }
 
 export function fromAnthropicChunk(chunk: string): CommonChunk | string {
   // Anthropic sends two lines per part: "event: <type>\n" + "data: <json>"
-  const lines = chunk.split("\n")
-  const dataLine = lines.find((l) => l.startsWith("data: "))
-  if (!dataLine) return chunk
+  const lines = chunk.split("\n");
+  const dataLine = lines.find((l) => l.startsWith("data: "));
+  if (!dataLine) return chunk;
 
-  let json
+  let json;
   try {
-    json = JSON.parse(dataLine.slice(6))
+    json = JSON.parse(dataLine.slice(6));
   } catch {
-    return chunk
+    return chunk;
   }
 
   const out: CommonChunk = {
@@ -632,16 +648,16 @@ export function fromAnthropicChunk(chunk: string): CommonChunk | string {
     created: Math.floor(Date.now() / 1000),
     model: json.model ?? json.message?.model ?? "",
     choices: [],
-  }
+  };
 
   if (json.type === "content_block_start") {
-    const cb = json.content_block
+    const cb = json.content_block;
     if (cb?.type === "text") {
       out.choices.push({
         index: json.index ?? 0,
         delta: { role: "assistant", content: "" },
         finish_reason: null,
-      })
+      });
     } else if (cb?.type === "tool_use") {
       out.choices.push({
         index: json.index ?? 0,
@@ -656,14 +672,14 @@ export function fromAnthropicChunk(chunk: string): CommonChunk | string {
           ],
         },
         finish_reason: null,
-      })
+      });
     }
   }
 
   if (json.type === "content_block_delta") {
-    const d = json.delta
+    const d = json.delta;
     if (d?.type === "text_delta") {
-      out.choices.push({ index: json.index ?? 0, delta: { content: d.text }, finish_reason: null })
+      out.choices.push({ index: json.index ?? 0, delta: { content: d.text }, finish_reason: null });
     } else if (d?.type === "input_json_delta") {
       out.choices.push({
         index: json.index ?? 0,
@@ -671,89 +687,91 @@ export function fromAnthropicChunk(chunk: string): CommonChunk | string {
           tool_calls: [{ index: json.index ?? 0, function: { arguments: d.partial_json } }],
         },
         finish_reason: null,
-      })
+      });
     }
   }
 
   if (json.type === "message_delta") {
-    const d = json.delta
+    const d = json.delta;
     const finish_reason = (() => {
-      const r = d?.stop_reason
-      if (r === "end_turn") return "stop"
-      if (r === "tool_use") return "tool_calls"
-      if (r === "max_tokens") return "length"
-      if (r === "content_filter") return "content_filter"
-      return null
-    })()
+      const r = d?.stop_reason;
+      if (r === "end_turn") return "stop";
+      if (r === "tool_use") return "tool_calls";
+      if (r === "max_tokens") return "length";
+      if (r === "content_filter") return "content_filter";
+      return null;
+    })();
 
-    out.choices.push({ index: 0, delta: {}, finish_reason })
+    out.choices.push({ index: 0, delta: {}, finish_reason });
   }
 
   if (json.usage) {
-    const u = json.usage
+    const u = json.usage;
     out.usage = {
       prompt_tokens: u.input_tokens,
       completion_tokens: u.output_tokens,
       total_tokens: (u.input_tokens || 0) + (u.output_tokens || 0),
-      ...(u.cache_read_input_tokens ? { prompt_tokens_details: { cached_tokens: u.cache_read_input_tokens } } : {}),
-    }
+      ...(u.cache_read_input_tokens
+        ? { prompt_tokens_details: { cached_tokens: u.cache_read_input_tokens } }
+        : {}),
+    };
   }
 
-  return out
+  return out;
 }
 
 export function toAnthropicChunk(chunk: CommonChunk): string {
   if (!chunk.choices || !Array.isArray(chunk.choices) || chunk.choices.length === 0) {
-    return JSON.stringify({})
+    return JSON.stringify({});
   }
 
-  const choice = chunk.choices[0]
-  const delta = choice.delta
-  if (!delta) return JSON.stringify({})
+  const choice = chunk.choices[0];
+  const delta = choice.delta;
+  if (!delta) return JSON.stringify({});
 
-  const result: any = {}
+  const result: any = {};
 
   if (delta.content) {
-    result.type = "content_block_delta"
-    result.index = 0
-    result.delta = { type: "text_delta", text: delta.content }
+    result.type = "content_block_delta";
+    result.index = 0;
+    result.delta = { type: "text_delta", text: delta.content };
   }
 
   if (delta.tool_calls) {
     for (const tc of delta.tool_calls) {
       if (tc.function?.name) {
-        result.type = "content_block_start"
-        result.index = tc.index ?? 0
-        result.content_block = { type: "tool_use", id: tc.id, name: tc.function.name, input: {} }
+        result.type = "content_block_start";
+        result.index = tc.index ?? 0;
+        result.content_block = { type: "tool_use", id: tc.id, name: tc.function.name, input: {} };
       } else if (tc.function?.arguments) {
-        result.type = "content_block_delta"
-        result.index = tc.index ?? 0
-        result.delta = { type: "input_json_delta", partial_json: tc.function.arguments }
+        result.type = "content_block_delta";
+        result.index = tc.index ?? 0;
+        result.delta = { type: "input_json_delta", partial_json: tc.function.arguments };
       }
     }
   }
 
   if (choice.finish_reason) {
     const stop_reason = (() => {
-      const r = choice.finish_reason
-      if (r === "stop") return "end_turn"
-      if (r === "tool_calls") return "tool_use"
-      if (r === "length") return "max_tokens"
-      if (r === "content_filter") return "content_filter"
-      return null
-    })()
-    result.type = "message_delta"
-    result.delta = { stop_reason, stop_sequence: null }
+      const r = choice.finish_reason;
+      if (r === "stop") return "end_turn";
+      if (r === "tool_calls") return "tool_use";
+      if (r === "length") return "max_tokens";
+      if (r === "content_filter") return "content_filter";
+      return null;
+    })();
+    result.type = "message_delta";
+    result.delta = { stop_reason, stop_sequence: null };
   }
 
   if (chunk.usage) {
-    const u = chunk.usage
+    const u = chunk.usage;
     result.usage = {
       input_tokens: u.prompt_tokens,
       output_tokens: u.completion_tokens,
       cache_read_input_tokens: u.prompt_tokens_details?.cached_tokens,
-    }
+    };
   }
 
-  return JSON.stringify(result)
+  return JSON.stringify(result);
 }

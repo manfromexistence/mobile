@@ -11,9 +11,7 @@ import assert from "node:assert/strict";
  * paths (path assertion mirrors the URL the handler sees post-rewrite).
  */
 
-const catchAll = await import(
-  "../../../src/app/api/[...omnirouteApiCatchAll]/route.ts"
-);
+const catchAll = await import("../../../src/app/api/[...omnirouteApiCatchAll]/route.ts");
 
 function makeReq(pathname: string, method = "GET"): Request {
   return new Request(`http://localhost:20128${pathname}`, { method });

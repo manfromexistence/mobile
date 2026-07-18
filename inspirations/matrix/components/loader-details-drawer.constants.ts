@@ -16,5 +16,5 @@ export const CLOSE_CROSS_CHASE_ORDER: Record<number, number> = {
   16: 5,
   20: 6,
   8: 7,
-  4: 8
+  4: 8,
 };

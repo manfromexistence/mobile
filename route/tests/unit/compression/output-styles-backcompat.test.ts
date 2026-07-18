@@ -24,7 +24,7 @@ test("disabled legacy mode and no styles → empty selection", () => {
     resolveOutputStyleSelection({
       cavemanOutputMode: { enabled: false, intensity: "full", autoClarity: true },
     }),
-    []
+    [],
   );
   assert.deepEqual(resolveOutputStyleSelection({}), []);
 });

@@ -13,7 +13,7 @@ test("AzureOpenAIExecutor builds deployment-based chat URLs from the resource en
 
   assert.equal(
     url,
-    "https://my-resource.openai.azure.com/openai/deployments/my-gpt4o-deployment/chat/completions?api-version=2024-12-01-preview"
+    "https://my-resource.openai.azure.com/openai/deployments/my-gpt4o-deployment/chat/completions?api-version=2024-12-01-preview",
   );
 });
 
@@ -28,7 +28,7 @@ test("AzureOpenAIExecutor strips duplicated /openai suffixes from configured bas
 
   assert.equal(
     url,
-    "https://my-resource.openai.azure.com/openai/deployments/deploy-1/chat/completions?api-version=2025-01-01-preview"
+    "https://my-resource.openai.azure.com/openai/deployments/deploy-1/chat/completions?api-version=2025-01-01-preview",
   );
 });
 

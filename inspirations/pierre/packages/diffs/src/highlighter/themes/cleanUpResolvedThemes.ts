@@ -1,5 +1,5 @@
-import { AttachedThemes } from './constants';
-import { themeResolver } from './themeResolver';
+import { AttachedThemes } from "./constants";
+import { themeResolver } from "./themeResolver";
 
 // Clears the resolved-theme cache (and any in-flight loads) plus the set of
 // themes attached to the highlighter. Registered loaders are intentionally

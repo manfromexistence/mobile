@@ -1,6 +1,6 @@
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { proceduralHash21, declarePI } from '../shader-utils.js';
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { proceduralHash21, declarePI } from "../shader-utils.js";
 
 /**
  * A dithering image filter with support for 4 dithering modes and multiple color palettes
@@ -70,8 +70,8 @@ uniform float u_colorSteps;
 out vec4 fragColor;
 
 
-${ proceduralHash21 }
-${ declarePI }
+${proceduralHash21}
+${declarePI}
 
 float getUvFrame(vec2 uv, vec2 pad) {
   float aa = 0.0001;
@@ -247,10 +247,10 @@ export interface ImageDitheringParams extends ShaderSizingParams, ShaderMotionPa
 }
 
 export const DitheringTypes = {
-  'random': 1,
-  '2x2': 2,
-  '4x4': 3,
-  '8x8': 4,
+  random: 1,
+  "2x2": 2,
+  "4x4": 3,
+  "8x8": 4,
 } as const;
 
 export type DitheringType = keyof typeof DitheringTypes;

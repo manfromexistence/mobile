@@ -1,5 +1,5 @@
-import { permanentRedirect } from 'next/navigation';
+import { permanentRedirect } from "next/navigation";
 
 export function GitHubRedirectPage() {
-  permanentRedirect('https://diffshub.com');
+  permanentRedirect("https://diffshub.com");
 }

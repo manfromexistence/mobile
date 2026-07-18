@@ -1,35 +1,21 @@
-import type { DiffLineAnnotation } from '@pierre/diffs';
-import { IconArrowRight } from '@pierre/icons';
-import { useEffect, useRef, useState } from 'react';
+import type { DiffLineAnnotation } from "@pierre/diffs";
+import { IconArrowRight } from "@pierre/icons";
+import { useEffect, useRef, useState } from "react";
 
-import { CommentAuthorAvatar } from './CommentAuthorAvatar';
-import { Button } from '@/components/Button';
-import {
-  annotationCardBase,
-  type AvatarName,
-  getRandomPersona,
-} from '@/lib/annotation';
-import { cn } from '@/lib/cn';
-import type { DraftCommentMetadata } from '@/lib/types';
+import { CommentAuthorAvatar } from "./CommentAuthorAvatar";
+import { Button } from "@/components/Button";
+import { annotationCardBase, type AvatarName, getRandomPersona } from "@/lib/annotation";
+import { cn } from "@/lib/cn";
+import type { DraftCommentMetadata } from "@/lib/types";
 
 interface DraftAnnotationProps {
   annotation: DiffLineAnnotation<DraftCommentMetadata>;
   itemId: string;
   onCancel(itemId: string, key: string): void;
-  onSave(
-    itemId: string,
-    key: string,
-    message: string,
-    author: AvatarName
-  ): void;
+  onSave(itemId: string, key: string, message: string, author: AvatarName): void;
 }
 
-export function DraftAnnotation({
-  annotation,
-  itemId,
-  onCancel,
-  onSave,
-}: DraftAnnotationProps) {
+export function DraftAnnotation({ annotation, itemId, onCancel, onSave }: DraftAnnotationProps) {
   const [message, setMessage] = useState(annotation.metadata.message);
   const [persona] = useState(getRandomPersona);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -43,7 +29,7 @@ export function DraftAnnotation({
   }
 
   function tryCancel() {
-    if (trimmedMessage.length > 0 && !window.confirm('Discard this comment?')) {
+    if (trimmedMessage.length > 0 && !window.confirm("Discard this comment?")) {
       return;
     }
     onCancel(itemId, annotation.metadata.key);
@@ -62,7 +48,7 @@ export function DraftAnnotation({
 
   return (
     <form
-      className={cn(annotationCardBase, 'flex-col md:flex-row')}
+      className={cn(annotationCardBase, "flex-col md:flex-row")}
       onSubmit={(event) => {
         event.preventDefault();
         handleSave();
@@ -75,13 +61,13 @@ export function DraftAnnotation({
           value={message}
           onChange={({ currentTarget }) => setMessage(currentTarget.value)}
           onKeyDown={(event) => {
-            if (event.key === 'Escape') {
+            if (event.key === "Escape") {
               event.preventDefault();
               tryCancel();
               return;
             }
 
-            if ((!event.shiftKey && !event.metaKey) || event.key !== 'Enter') {
+            if ((!event.shiftKey && !event.metaKey) || event.key !== "Enter") {
               return;
             }
 

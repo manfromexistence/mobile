@@ -47,7 +47,7 @@ test("records a weekly window transition and getWindowStart returns the prior wi
 test("getWindowStart returns null for a reset day with no recorded event", () => {
   assert.equal(
     getProviderQuotaWindowStartIso(CONN, "2026-02-01T00:00:00.000Z", Date.parse(OBSERVED) + 1000),
-    null
+    null,
   );
 });
 
@@ -63,7 +63,7 @@ test("observed same-resetAt quota drop overrides an older recorded weekly window
        observed_at, previous_remaining_percentage, new_remaining_percentage,
        previous_used_percentage, new_used_percentage, raw_data)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `
+  `,
   ).run(
     "claude",
     connectionId,
@@ -75,7 +75,7 @@ test("observed same-resetAt quota drop overrides an older recorded weekly window
     100,
     100,
     0,
-    null
+    null,
   );
 
   const insertSnapshot = db.prepare(`
@@ -100,7 +100,7 @@ test("observed same-resetAt quota drop overrides an older recorded weekly window
     targetResetAt,
     null,
     null,
-    "2026-06-25T23:04:00.000Z"
+    "2026-06-25T23:04:00.000Z",
   );
   insertSnapshot.run(
     "claude",
@@ -111,7 +111,7 @@ test("observed same-resetAt quota drop overrides an older recorded weekly window
     targetResetAt,
     null,
     null,
-    "2026-07-01T00:05:00.000Z"
+    "2026-07-01T00:05:00.000Z",
   );
   insertSnapshot.run(
     "claude",
@@ -122,13 +122,13 @@ test("observed same-resetAt quota drop overrides an older recorded weekly window
     targetResetAt,
     null,
     null,
-    "2026-07-01T21:41:13.293Z"
+    "2026-07-01T21:41:13.293Z",
   );
 
   const start = getProviderQuotaWindowStart(
     connectionId,
     targetResetAt,
-    Date.parse("2026-07-02T00:00:00.000Z")
+    Date.parse("2026-07-02T00:00:00.000Z"),
   );
 
   assert.deepEqual(start, {
@@ -139,9 +139,9 @@ test("observed same-resetAt quota drop overrides an older recorded weekly window
     getProviderQuotaWindowStartIso(
       connectionId,
       targetResetAt,
-      Date.parse("2026-07-02T00:00:00.000Z")
+      Date.parse("2026-07-02T00:00:00.000Z"),
     ),
-    "2026-07-01T21:41:13.293Z"
+    "2026-07-01T21:41:13.293Z",
   );
 });
 
@@ -164,9 +164,9 @@ test("records same-resetAt weekly resets when usage drops back to the reset floo
     getProviderQuotaWindowStartIso(
       connectionId,
       targetResetAt,
-      Date.parse("2026-07-02T00:00:00.000Z")
+      Date.parse("2026-07-02T00:00:00.000Z"),
     ),
-    observedAt
+    observedAt,
   );
 });
 
@@ -184,9 +184,9 @@ test("does not record when previous and current reset fall on the same day witho
     getProviderQuotaWindowStartIso(
       "conn-sameday",
       "2026-03-10T23:00:00.000Z",
-      Date.parse("2026-03-11T00:00:00.000Z")
+      Date.parse("2026-03-11T00:00:00.000Z"),
     ),
-    null
+    null,
   );
 });
 
@@ -202,6 +202,6 @@ test("does not record for a non-weekly (e.g. daily) window", () => {
   });
   assert.equal(
     getProviderQuotaWindowStartIso("conn-daily", CUR_RESET, Date.parse(OBSERVED) + 1000),
-    null
+    null,
   );
 });

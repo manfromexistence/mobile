@@ -44,7 +44,7 @@ function observeAndCheckPrefixFreeze(body: Record<string, unknown>): boolean {
 export function resolveCacheAwareConfig(
   config: CompressionConfig,
   body?: Record<string, unknown>,
-  context?: CachingDetectionContext
+  context?: CachingDetectionContext,
 ): CompressionConfig {
   const mode = normalizePreserveSystemPromptMode(config);
   // No request body → no cacheable prefix to detect; honor the mode at its no-cache baseline.

@@ -60,11 +60,11 @@ test("isFlatRateProvider: empty / nullish is not flat-rate", () => {
 test("computeCostFromPricing: flat-rate provider with flatRateAsZero → $0", () => {
   assert.equal(
     computeCostFromPricing(PRICING, TOKENS, { provider: "chatgpt-web", flatRateAsZero: true }),
-    0
+    0,
   );
   assert.equal(
     computeCostFromPricing(PRICING, TOKENS, { provider: "minimax", flatRateAsZero: true }),
-    0
+    0,
   );
 });
 
@@ -76,11 +76,11 @@ test("computeCostFromPricing: opt-in only — flat-rate provider WITHOUT the fla
 test("computeCostFromPricing: metered provider with the flag still estimates", () => {
   assert.equal(
     computeCostFromPricing(PRICING, TOKENS, { provider: "openai", flatRateAsZero: true }),
-    3
+    3,
   );
   // byteplus is metered despite being a subscription-ish gateway — must NOT be zeroed.
   assert.equal(
     computeCostFromPricing(PRICING, TOKENS, { provider: "byteplus", flatRateAsZero: true }),
-    3
+    3,
   );
 });

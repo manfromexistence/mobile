@@ -5,4 +5,4 @@ export {
   ensureFileTreeStyles,
   FileTreeContainerLoaded,
   prepareFileTreeShadowRoot,
-} from './components/web-components';
+} from "./components/web-components";

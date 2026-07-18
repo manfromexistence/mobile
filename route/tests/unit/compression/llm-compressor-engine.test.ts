@@ -72,7 +72,7 @@ describe("llmCompressorEngine (T05/C3)", () => {
     assert.equal(out.compressed, false);
     assert.equal(
       (out.body as { messages: { content: string }[] }).messages[0].content,
-      "prose that the backend will choke on"
+      "prose that the backend will choke on",
     );
   });
 
@@ -95,8 +95,9 @@ describe("llmCompressorEngine (T05/C3)", () => {
   it("validateConfig accepts valid config and rejects bad fields", () => {
     assert.equal(llmCompressorEngine.validateConfig({ enabled: false }).valid, true);
     assert.equal(
-      llmCompressorEngine.validateConfig({ enabled: true, compressionRate: 0.5, minTokens: 1000 }).valid,
-      true
+      llmCompressorEngine.validateConfig({ enabled: true, compressionRate: 0.5, minTokens: 1000 })
+        .valid,
+      true,
     );
     assert.equal(llmCompressorEngine.validateConfig({ enabled: "yes" }).valid, false);
     assert.equal(llmCompressorEngine.validateConfig({ compressionRate: 2 }).valid, false);

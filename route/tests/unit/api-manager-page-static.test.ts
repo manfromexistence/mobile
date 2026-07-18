@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const pagePath = path.join(
   repoRoot,
-  "src/app/(dashboard)/dashboard/api-manager/ApiManagerPageClient.tsx"
+  "src/app/(dashboard)/dashboard/api-manager/ApiManagerPageClient.tsx",
 );
 const messagesDir = path.join(repoRoot, "src/i18n/messages");
 
@@ -28,7 +28,7 @@ test("permissions modal uses i18n for management access description", () => {
   const source = readApiManagerPage();
   const managementBlock = source.slice(
     source.indexOf("{/* Management Access */}", source.indexOf("const PermissionsModal")),
-    source.indexOf("{/* Self-service Visibility */}", source.indexOf("const PermissionsModal"))
+    source.indexOf("{/* Self-service Visibility */}", source.indexOf("const PermissionsModal")),
   );
 
   assert.match(managementBlock, /\{t\("managementAccessDesc"\)\}/);
@@ -39,7 +39,7 @@ test("permissions modal converts API key expiration ISO timestamps to local date
   const source = readApiManagerPage();
   const expirationBlock = source.slice(
     source.indexOf("{/* Expiration Date */}", source.indexOf("const PermissionsModal")),
-    source.indexOf("{/* Management Access */}", source.indexOf("const PermissionsModal"))
+    source.indexOf("{/* Management Access */}", source.indexOf("const PermissionsModal")),
   );
 
   assert.match(expirationBlock, /value=\{toLocalDateTimeInputValue\(expiresAt\)\}/);
@@ -94,7 +94,7 @@ test("permissions modal exposes Claude Code default wildcard model", () => {
   assert.match(source, /getModelDisplayName\(model\.id\)/);
   assert.match(
     source,
-    /modelId === CLAUDE_CODE_DEFAULT_MODEL_ID\s+\?\s+CLAUDE_CODE_DEFAULT_MODEL_NAME\s+:\s+modelId/
+    /modelId === CLAUDE_CODE_DEFAULT_MODEL_ID\s+\?\s+CLAUDE_CODE_DEFAULT_MODEL_NAME\s+:\s+modelId/,
   );
   assert.doesNotMatch(source, /modelById\.get\(modelId\)\?\.name/);
 });
@@ -113,7 +113,7 @@ test("permissions modal expands Claude Code default families in selected models 
   assert.match(source, /setClaudeCodeFamiliesExpanded/);
   assert.match(
     source,
-    /const \[claudeCodeFamiliesExpanded,\s*setClaudeCodeFamiliesExpanded\] = useState\(false\)/
+    /const \[claudeCodeFamiliesExpanded,\s*setClaudeCodeFamiliesExpanded\] = useState\(false\)/,
   );
   assert.doesNotMatch(source, /setClaudeCodeFamiliesExpanded\(true\)/);
   assert.match(source, /aria-expanded=\{claudeCodeFamiliesExpanded\}/);
@@ -122,7 +122,7 @@ test("permissions modal expands Claude Code default families in selected models 
   assert.match(source, /blockedModels: validBlockedModels/);
   assert.match(
     source,
-    /blockedModels\.push\(\.\.\.CLAUDE_CODE_FAMILY_BLOCK_PATTERNS\[familyId\]\)/
+    /blockedModels\.push\(\.\.\.CLAUDE_CODE_FAMILY_BLOCK_PATTERNS\[familyId\]\)/,
   );
   assert.doesNotMatch(source, /Block Fable family/);
 });
@@ -131,7 +131,10 @@ test("API-key model fallback preserves combo pseudo-models", () => {
   const source = readApiManagerPage();
   const fallbackBlock = source.slice(
     source.indexOf("const [fallbackRes, combosRes] = await Promise.all"),
-    source.indexOf("} catch (error)", source.indexOf("const [fallbackRes, combosRes] = await Promise.all"))
+    source.indexOf(
+      "} catch (error)",
+      source.indexOf("const [fallbackRes, combosRes] = await Promise.all"),
+    ),
   );
 
   assert.match(fallbackBlock, /fetch\("\/api\/models\?all=true"\)/);
@@ -154,7 +157,7 @@ test("self-service API key scope labels do not expose missing placeholders", () 
       assert.ok(value.length > 0, `${file}: apiManager.${key} should not be empty`);
       assert.ok(
         !value.startsWith("__MISSING__:"),
-        `${file}: apiManager.${key} should not expose a missing placeholder`
+        `${file}: apiManager.${key} should not expose a missing placeholder`,
       );
     }
   }

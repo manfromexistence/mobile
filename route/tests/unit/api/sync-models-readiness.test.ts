@@ -140,8 +140,8 @@ test("ensureLoopbackServerReady: 17 concurrent callers trigger exactly ONE probe
 
   await Promise.all(
     Array.from({ length: 17 }, () =>
-      ensureLoopbackServerReady({ fetch: mockFetch, pollMs: 5, maxWaitMs: 1000 })
-    )
+      ensureLoopbackServerReady({ fetch: mockFetch, pollMs: 5, maxWaitMs: 1000 }),
+    ),
   );
 
   // Probe may have polled multiple times before server came up -- that is fine.
@@ -162,7 +162,7 @@ test("ensureLoopbackServerReady: rejects after maxWaitMs with consistent network
         maxWaitMs: 50,
         pollMs: 10,
       }),
-    /loopback server not ready/
+    /loopback server not ready/,
   );
 });
 
@@ -205,8 +205,8 @@ test("selfFetchWithRetry with gate: 17 concurrent callers produce one probe + on
         fetch: mockFetch,
         maxRetries: 3,
         backoffMs: 5,
-      })
-    )
+      }),
+    ),
   );
 
   // After readiness gate succeeds, each connection makes EXACTLY one model fetch
@@ -237,14 +237,14 @@ test("sanity: without readiness gate, 17 callers retry independently (amplificat
         maxRetries: 5,
         backoffMs: 5,
         skipReadinessGate: true,
-      })
-    )
+      }),
+    ),
   );
 
   // Without gate: each of the 17 callers retries independently during boot race.
   // Expect well above 17 total fetch attempts.
   assert.ok(
     modelFetchCalls > 17,
-    "without gate, callers retry independently, got " + modelFetchCalls + " (expected >17)"
+    "without gate, callers retry independently, got " + modelFetchCalls + " (expected >17)",
   );
 });

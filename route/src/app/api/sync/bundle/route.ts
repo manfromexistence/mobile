@@ -48,7 +48,7 @@ export async function GET(request: Request) {
       },
       {
         headers: responseHeaders(version),
-      }
+      },
     );
   } catch (error) {
     return createErrorResponseFromUnknown(error, "Failed to build sync bundle");

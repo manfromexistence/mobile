@@ -1,4 +1,4 @@
-import { type JSX } from "solid-js"
+import { type JSX } from "solid-js";
 // heroicons
 
 export function IconAcademicCap(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
@@ -13,7 +13,7 @@ export function IconAcademicCap(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconAdjustmentsHorizontal(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -27,7 +27,7 @@ export function IconAdjustmentsHorizontal(props: JSX.SvgSVGAttributes<SVGSVGElem
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconAdjustmentsVertical(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -41,7 +41,7 @@ export function IconAdjustmentsVertical(props: JSX.SvgSVGAttributes<SVGSVGElemen
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArchiveBoxArrowDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -55,7 +55,7 @@ export function IconArchiveBoxArrowDown(props: JSX.SvgSVGAttributes<SVGSVGElemen
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArchiveBoxXMark(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -69,7 +69,7 @@ export function IconArchiveBoxXMark(props: JSX.SvgSVGAttributes<SVGSVGElement>) 
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArchiveBox(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -83,7 +83,7 @@ export function IconArchiveBox(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowDownCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -97,7 +97,7 @@ export function IconArrowDownCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) 
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowDownLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -111,7 +111,7 @@ export function IconArrowDownLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowDownOnSquareStack(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -125,7 +125,7 @@ export function IconArrowDownOnSquareStack(props: JSX.SvgSVGAttributes<SVGSVGEle
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowDownOnSquare(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -139,7 +139,7 @@ export function IconArrowDownOnSquare(props: JSX.SvgSVGAttributes<SVGSVGElement>
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowDownRight(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -153,7 +153,7 @@ export function IconArrowDownRight(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowDownTray(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -167,7 +167,7 @@ export function IconArrowDownTray(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -181,7 +181,7 @@ export function IconArrowDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowLeftCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -195,7 +195,7 @@ export function IconArrowLeftCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) 
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowLeftOnRectangle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -209,7 +209,7 @@ export function IconArrowLeftOnRectangle(props: JSX.SvgSVGAttributes<SVGSVGEleme
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -223,7 +223,7 @@ export function IconArrowLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowLongDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -237,7 +237,7 @@ export function IconArrowLongDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowLongLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -251,7 +251,7 @@ export function IconArrowLongLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowLongRight(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -265,7 +265,7 @@ export function IconArrowLongRight(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowLongUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -279,7 +279,7 @@ export function IconArrowLongUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowPathRoundedSquare(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -293,7 +293,7 @@ export function IconArrowPathRoundedSquare(props: JSX.SvgSVGAttributes<SVGSVGEle
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowPath(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -307,7 +307,7 @@ export function IconArrowPath(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowRightCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -321,7 +321,7 @@ export function IconArrowRightCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>)
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowRightOnRectangle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -335,7 +335,7 @@ export function IconArrowRightOnRectangle(props: JSX.SvgSVGAttributes<SVGSVGElem
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowRight(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -349,7 +349,7 @@ export function IconArrowRight(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowSmallDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -363,7 +363,7 @@ export function IconArrowSmallDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowSmallLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -377,7 +377,7 @@ export function IconArrowSmallLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowSmallRight(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -391,7 +391,7 @@ export function IconArrowSmallRight(props: JSX.SvgSVGAttributes<SVGSVGElement>) 
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowSmallUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -405,7 +405,7 @@ export function IconArrowSmallUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowTopRightOnSquare(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -419,7 +419,7 @@ export function IconArrowTopRightOnSquare(props: JSX.SvgSVGAttributes<SVGSVGElem
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowTrendingDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -433,7 +433,7 @@ export function IconArrowTrendingDown(props: JSX.SvgSVGAttributes<SVGSVGElement>
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowTrendingUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -447,7 +447,7 @@ export function IconArrowTrendingUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) 
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowUpCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -461,7 +461,7 @@ export function IconArrowUpCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowUpLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -475,7 +475,7 @@ export function IconArrowUpLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowUpOnSquareStack(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -489,7 +489,7 @@ export function IconArrowUpOnSquareStack(props: JSX.SvgSVGAttributes<SVGSVGEleme
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowUpOnSquare(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -503,7 +503,7 @@ export function IconArrowUpOnSquare(props: JSX.SvgSVGAttributes<SVGSVGElement>) 
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowUpRight(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -517,7 +517,7 @@ export function IconArrowUpRight(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowUpTray(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -531,7 +531,7 @@ export function IconArrowUpTray(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -545,7 +545,7 @@ export function IconArrowUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowUturnDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -559,7 +559,7 @@ export function IconArrowUturnDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowUturnLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -573,7 +573,7 @@ export function IconArrowUturnLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowUturnRight(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -587,7 +587,7 @@ export function IconArrowUturnRight(props: JSX.SvgSVGAttributes<SVGSVGElement>) 
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowUturnUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -601,7 +601,7 @@ export function IconArrowUturnUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowsPointingIn(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -615,7 +615,7 @@ export function IconArrowsPointingIn(props: JSX.SvgSVGAttributes<SVGSVGElement>)
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowsPointingOut(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -629,7 +629,7 @@ export function IconArrowsPointingOut(props: JSX.SvgSVGAttributes<SVGSVGElement>
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowsRightLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -643,7 +643,7 @@ export function IconArrowsRightLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) 
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconArrowsUpDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -657,7 +657,7 @@ export function IconArrowsUpDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconAtSymbol(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -670,7 +670,7 @@ export function IconAtSymbol(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linecap="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBackspace(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -684,7 +684,7 @@ export function IconBackspace(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBackward(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -705,7 +705,7 @@ export function IconBackward(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBanknotes(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -719,7 +719,7 @@ export function IconBanknotes(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBars2(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -733,7 +733,7 @@ export function IconBars2(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBars3BottomLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -747,7 +747,7 @@ export function IconBars3BottomLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) 
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBars3BottomRight(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -761,7 +761,7 @@ export function IconBars3BottomRight(props: JSX.SvgSVGAttributes<SVGSVGElement>)
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBars3CenterLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -775,7 +775,7 @@ export function IconBars3CenterLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) 
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBars3(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -789,7 +789,7 @@ export function IconBars3(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBars4(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -803,7 +803,7 @@ export function IconBars4(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBarsArrowDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -817,7 +817,7 @@ export function IconBarsArrowDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBarsArrowUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -831,7 +831,7 @@ export function IconBarsArrowUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBattery0(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -845,7 +845,7 @@ export function IconBattery0(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBattery100(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -859,7 +859,7 @@ export function IconBattery100(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBattery50(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -873,7 +873,7 @@ export function IconBattery50(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBeaker(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -887,7 +887,7 @@ export function IconBeaker(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBellAlert(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -901,7 +901,7 @@ export function IconBellAlert(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBellSlash(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -915,7 +915,7 @@ export function IconBellSlash(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBellSnooze(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -929,7 +929,7 @@ export function IconBellSnooze(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBell(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -943,7 +943,7 @@ export function IconBell(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBoltSlash(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -957,7 +957,7 @@ export function IconBoltSlash(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBolt(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -971,7 +971,7 @@ export function IconBolt(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 
 export function IconBoltSolid(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
@@ -983,7 +983,7 @@ export function IconBoltSolid(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         clip-rule="evenodd"
       />
     </svg>
-  )
+  );
 }
 export function IconBookOpen(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -997,7 +997,7 @@ export function IconBookOpen(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBookmarkSlash(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1011,7 +1011,7 @@ export function IconBookmarkSlash(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBookmarkSquare(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1025,7 +1025,7 @@ export function IconBookmarkSquare(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBookmark(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1039,7 +1039,7 @@ export function IconBookmark(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBriefcase(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1060,7 +1060,7 @@ export function IconBriefcase(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBugAnt(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1074,7 +1074,7 @@ export function IconBugAnt(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBuildingLibrary(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1088,7 +1088,7 @@ export function IconBuildingLibrary(props: JSX.SvgSVGAttributes<SVGSVGElement>) 
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBuildingOffice2(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1102,7 +1102,7 @@ export function IconBuildingOffice2(props: JSX.SvgSVGAttributes<SVGSVGElement>) 
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBuildingOffice(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1116,7 +1116,7 @@ export function IconBuildingOffice(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconBuildingStorefront(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1130,7 +1130,7 @@ export function IconBuildingStorefront(props: JSX.SvgSVGAttributes<SVGSVGElement
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCake(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1144,7 +1144,7 @@ export function IconCake(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCalculator(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1158,7 +1158,7 @@ export function IconCalculator(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCalendarDays(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1172,7 +1172,7 @@ export function IconCalendarDays(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCalendar(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1186,7 +1186,7 @@ export function IconCalendar(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCamera(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1214,7 +1214,7 @@ export function IconCamera(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconChartBarSquare(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1228,7 +1228,7 @@ export function IconChartBarSquare(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconChartBar(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1256,7 +1256,7 @@ export function IconChartBar(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconChartPie(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1277,7 +1277,7 @@ export function IconChartPie(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconChatBubbleBottomCenterText(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1291,7 +1291,7 @@ export function IconChatBubbleBottomCenterText(props: JSX.SvgSVGAttributes<SVGSV
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconChatBubbleBottomCenter(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1305,7 +1305,7 @@ export function IconChatBubbleBottomCenter(props: JSX.SvgSVGAttributes<SVGSVGEle
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconChatBubbleLeftEllipsis(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1319,7 +1319,7 @@ export function IconChatBubbleLeftEllipsis(props: JSX.SvgSVGAttributes<SVGSVGEle
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconChatBubbleLeftRight(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1333,7 +1333,7 @@ export function IconChatBubbleLeftRight(props: JSX.SvgSVGAttributes<SVGSVGElemen
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconChatBubbleLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1347,7 +1347,7 @@ export function IconChatBubbleLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconChatBubbleOvalLeftEllipsis(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1361,7 +1361,7 @@ export function IconChatBubbleOvalLeftEllipsis(props: JSX.SvgSVGAttributes<SVGSV
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconChatBubbleOvalLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1375,7 +1375,7 @@ export function IconChatBubbleOvalLeft(props: JSX.SvgSVGAttributes<SVGSVGElement
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCheckBadge(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1389,7 +1389,7 @@ export function IconCheckBadge(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCheckCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1403,7 +1403,7 @@ export function IconCheckCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCheck(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1417,7 +1417,7 @@ export function IconCheck(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconChevronDoubleDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1431,7 +1431,7 @@ export function IconChevronDoubleDown(props: JSX.SvgSVGAttributes<SVGSVGElement>
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconChevronDoubleLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1445,7 +1445,7 @@ export function IconChevronDoubleLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconChevronDoubleRight(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1459,7 +1459,7 @@ export function IconChevronDoubleRight(props: JSX.SvgSVGAttributes<SVGSVGElement
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconChevronDoubleUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1473,7 +1473,7 @@ export function IconChevronDoubleUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) 
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconChevronDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1487,7 +1487,7 @@ export function IconChevronDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconChevronLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1501,7 +1501,7 @@ export function IconChevronLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconChevronRight(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1515,7 +1515,7 @@ export function IconChevronRight(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconChevronUpDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1529,7 +1529,7 @@ export function IconChevronUpDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconChevronUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1543,7 +1543,7 @@ export function IconChevronUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCircleStack(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1557,7 +1557,7 @@ export function IconCircleStack(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconClipboardDocumentCheck(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1571,7 +1571,7 @@ export function IconClipboardDocumentCheck(props: JSX.SvgSVGAttributes<SVGSVGEle
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconClipboardDocumentList(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1585,7 +1585,7 @@ export function IconClipboardDocumentList(props: JSX.SvgSVGAttributes<SVGSVGElem
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconClipboardDocument(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1599,7 +1599,7 @@ export function IconClipboardDocument(props: JSX.SvgSVGAttributes<SVGSVGElement>
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconClipboard(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1613,7 +1613,7 @@ export function IconClipboard(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconClock(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1627,7 +1627,7 @@ export function IconClock(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCloudArrowDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1641,7 +1641,7 @@ export function IconCloudArrowDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCloudArrowUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1655,7 +1655,7 @@ export function IconCloudArrowUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCloud(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1669,7 +1669,7 @@ export function IconCloud(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCodeBracketSquare(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1683,7 +1683,7 @@ export function IconCodeBracketSquare(props: JSX.SvgSVGAttributes<SVGSVGElement>
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCodeBracket(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1697,7 +1697,7 @@ export function IconCodeBracket(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCog6Tooth(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1718,7 +1718,7 @@ export function IconCog6Tooth(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCog8Tooth(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1739,7 +1739,7 @@ export function IconCog8Tooth(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCog(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1753,7 +1753,7 @@ export function IconCog(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCommandLine(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1767,7 +1767,7 @@ export function IconCommandLine(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconComputerDesktop(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1781,7 +1781,7 @@ export function IconComputerDesktop(props: JSX.SvgSVGAttributes<SVGSVGElement>) 
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCpuChip(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1795,7 +1795,7 @@ export function IconCpuChip(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCreditCard(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1809,7 +1809,7 @@ export function IconCreditCard(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCubeTransparent(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1823,7 +1823,7 @@ export function IconCubeTransparent(props: JSX.SvgSVGAttributes<SVGSVGElement>) 
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCube(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1837,7 +1837,7 @@ export function IconCube(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCurrencyBangladeshi(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1851,7 +1851,7 @@ export function IconCurrencyBangladeshi(props: JSX.SvgSVGAttributes<SVGSVGElemen
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCurrencyDollar(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1865,7 +1865,7 @@ export function IconCurrencyDollar(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCurrencyEuro(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1879,7 +1879,7 @@ export function IconCurrencyEuro(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCurrencyPound(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1893,7 +1893,7 @@ export function IconCurrencyPound(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCurrencyRupee(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1907,7 +1907,7 @@ export function IconCurrencyRupee(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCurrencyYen(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1921,7 +1921,7 @@ export function IconCurrencyYen(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCursorArrowRays(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1935,7 +1935,7 @@ export function IconCursorArrowRays(props: JSX.SvgSVGAttributes<SVGSVGElement>) 
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconCursorArrowRipple(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1949,7 +1949,7 @@ export function IconCursorArrowRipple(props: JSX.SvgSVGAttributes<SVGSVGElement>
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconDevicePhoneMobile(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1963,7 +1963,7 @@ export function IconDevicePhoneMobile(props: JSX.SvgSVGAttributes<SVGSVGElement>
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconDeviceTablet(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1977,7 +1977,7 @@ export function IconDeviceTablet(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconDocumentArrowDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -1991,7 +1991,7 @@ export function IconDocumentArrowDown(props: JSX.SvgSVGAttributes<SVGSVGElement>
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconDocumentArrowUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2005,7 +2005,7 @@ export function IconDocumentArrowUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) 
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconDocumentChartBar(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2019,7 +2019,7 @@ export function IconDocumentChartBar(props: JSX.SvgSVGAttributes<SVGSVGElement>)
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconDocumentCheck(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2033,7 +2033,7 @@ export function IconDocumentCheck(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconDocumentDuplicate(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2047,7 +2047,7 @@ export function IconDocumentDuplicate(props: JSX.SvgSVGAttributes<SVGSVGElement>
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconDocumentMagnifyingGlass(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2061,7 +2061,7 @@ export function IconDocumentMagnifyingGlass(props: JSX.SvgSVGAttributes<SVGSVGEl
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconDocumentMinus(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2075,7 +2075,7 @@ export function IconDocumentMinus(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconDocumentPlus(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2089,7 +2089,7 @@ export function IconDocumentPlus(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconDocumentText(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2103,7 +2103,7 @@ export function IconDocumentText(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconDocument(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2117,7 +2117,7 @@ export function IconDocument(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconEllipsisHorizontalCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2131,7 +2131,7 @@ export function IconEllipsisHorizontalCircle(props: JSX.SvgSVGAttributes<SVGSVGE
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconEllipsisHorizontal(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2159,7 +2159,7 @@ export function IconEllipsisHorizontal(props: JSX.SvgSVGAttributes<SVGSVGElement
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconEllipsisVertical(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2187,7 +2187,7 @@ export function IconEllipsisVertical(props: JSX.SvgSVGAttributes<SVGSVGElement>)
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconEnvelopeOpen(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2201,7 +2201,7 @@ export function IconEnvelopeOpen(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconEnvelope(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2215,7 +2215,7 @@ export function IconEnvelope(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconEnvelopeSolid(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2223,7 +2223,7 @@ export function IconEnvelopeSolid(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
       <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z" />
       <path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z" />
     </svg>
-  )
+  );
 }
 export function IconExclamationCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2237,7 +2237,7 @@ export function IconExclamationCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconExclamationTriangle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2251,7 +2251,7 @@ export function IconExclamationTriangle(props: JSX.SvgSVGAttributes<SVGSVGElemen
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconEyeDropper(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2265,7 +2265,7 @@ export function IconEyeDropper(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconEyeSlash(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2279,7 +2279,7 @@ export function IconEyeSlash(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconEye(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2300,7 +2300,7 @@ export function IconEye(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconFaceFrown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2314,7 +2314,7 @@ export function IconFaceFrown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconFaceSmile(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2328,7 +2328,7 @@ export function IconFaceSmile(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconFilm(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2342,7 +2342,7 @@ export function IconFilm(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconFingerPrint(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2356,7 +2356,7 @@ export function IconFingerPrint(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconFire(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2377,7 +2377,7 @@ export function IconFire(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconFlag(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2391,7 +2391,7 @@ export function IconFlag(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconFolderArrowDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2405,7 +2405,7 @@ export function IconFolderArrowDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) 
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconFolderMinus(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2419,7 +2419,7 @@ export function IconFolderMinus(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconFolderOpen(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2433,7 +2433,7 @@ export function IconFolderOpen(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconFolderPlus(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2447,7 +2447,7 @@ export function IconFolderPlus(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconFolder(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2461,7 +2461,7 @@ export function IconFolder(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconForward(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2482,7 +2482,7 @@ export function IconForward(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconFunnel(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2496,7 +2496,7 @@ export function IconFunnel(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconGif(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2510,7 +2510,7 @@ export function IconGif(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconGiftTop(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2524,7 +2524,7 @@ export function IconGiftTop(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconGift(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2538,7 +2538,7 @@ export function IconGift(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconGlobeAlt(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2552,7 +2552,7 @@ export function IconGlobeAlt(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconGlobeAmericas(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2566,7 +2566,7 @@ export function IconGlobeAmericas(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconGlobeAsiaAustralia(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2580,7 +2580,7 @@ export function IconGlobeAsiaAustralia(props: JSX.SvgSVGAttributes<SVGSVGElement
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconGlobeEuropeAfrica(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2594,7 +2594,7 @@ export function IconGlobeEuropeAfrica(props: JSX.SvgSVGAttributes<SVGSVGElement>
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconHandRaised(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2608,7 +2608,7 @@ export function IconHandRaised(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconHandThumbDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2622,7 +2622,7 @@ export function IconHandThumbDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconHandThumbUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2636,7 +2636,7 @@ export function IconHandThumbUp(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconHashtag(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2650,7 +2650,7 @@ export function IconHashtag(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconHeart(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2664,7 +2664,7 @@ export function IconHeart(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconHomeModern(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2678,7 +2678,7 @@ export function IconHomeModern(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconHome(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2692,7 +2692,7 @@ export function IconHome(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconIdentification(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2706,7 +2706,7 @@ export function IconIdentification(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconInboxArrowDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2720,7 +2720,7 @@ export function IconInboxArrowDown(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconInboxStack(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2734,7 +2734,7 @@ export function IconInboxStack(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconInbox(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2748,7 +2748,7 @@ export function IconInbox(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconInformationCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2762,7 +2762,7 @@ export function IconInformationCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconKey(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2776,7 +2776,7 @@ export function IconKey(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconLanguage(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2790,7 +2790,7 @@ export function IconLanguage(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconLifebuoy(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2804,7 +2804,7 @@ export function IconLifebuoy(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconLightBulb(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2818,7 +2818,7 @@ export function IconLightBulb(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconLink(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2832,7 +2832,7 @@ export function IconLink(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconListBullet(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2846,7 +2846,7 @@ export function IconListBullet(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconLockClosed(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2860,7 +2860,7 @@ export function IconLockClosed(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconLockOpen(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2874,7 +2874,7 @@ export function IconLockOpen(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconMagnifyingGlassCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2888,7 +2888,7 @@ export function IconMagnifyingGlassCircle(props: JSX.SvgSVGAttributes<SVGSVGElem
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconMagnifyingGlassMinus(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2902,7 +2902,7 @@ export function IconMagnifyingGlassMinus(props: JSX.SvgSVGAttributes<SVGSVGEleme
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconMagnifyingGlassPlus(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2916,7 +2916,7 @@ export function IconMagnifyingGlassPlus(props: JSX.SvgSVGAttributes<SVGSVGElemen
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconMagnifyingGlass(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2930,7 +2930,7 @@ export function IconMagnifyingGlass(props: JSX.SvgSVGAttributes<SVGSVGElement>) 
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconMapPin(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2951,7 +2951,7 @@ export function IconMapPin(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconMap(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2965,7 +2965,7 @@ export function IconMap(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconMegaphone(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2979,7 +2979,7 @@ export function IconMegaphone(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconMicrophone(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -2993,7 +2993,7 @@ export function IconMicrophone(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconMinusCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3007,7 +3007,7 @@ export function IconMinusCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconMinusSmall(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3021,7 +3021,7 @@ export function IconMinusSmall(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconMinus(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3035,7 +3035,7 @@ export function IconMinus(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconMoon(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3049,7 +3049,7 @@ export function IconMoon(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconMusicalNote(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3063,7 +3063,7 @@ export function IconMusicalNote(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconNewspaper(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3077,7 +3077,7 @@ export function IconNewspaper(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconNoSymbol(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3091,7 +3091,7 @@ export function IconNoSymbol(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPaintBrush(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3105,7 +3105,7 @@ export function IconPaintBrush(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPaperAirplane(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3119,7 +3119,7 @@ export function IconPaperAirplane(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPaperClip(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3133,7 +3133,7 @@ export function IconPaperClip(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPauseCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3147,7 +3147,7 @@ export function IconPauseCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPause(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3161,7 +3161,7 @@ export function IconPause(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPencilSquare(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3175,7 +3175,7 @@ export function IconPencilSquare(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPencil(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3189,7 +3189,7 @@ export function IconPencil(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPhoneArrowDownLeft(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3203,7 +3203,7 @@ export function IconPhoneArrowDownLeft(props: JSX.SvgSVGAttributes<SVGSVGElement
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPhoneArrowUpRight(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3217,7 +3217,7 @@ export function IconPhoneArrowUpRight(props: JSX.SvgSVGAttributes<SVGSVGElement>
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPhoneXMark(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3231,7 +3231,7 @@ export function IconPhoneXMark(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPhone(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3245,7 +3245,7 @@ export function IconPhone(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPhoto(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3259,7 +3259,7 @@ export function IconPhoto(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPlayCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3280,7 +3280,7 @@ export function IconPlayCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPlayPause(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3294,7 +3294,7 @@ export function IconPlayPause(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPlay(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3308,7 +3308,7 @@ export function IconPlay(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPlusCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3322,7 +3322,7 @@ export function IconPlusCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPlusSmall(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3336,7 +3336,7 @@ export function IconPlusSmall(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPlus(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3350,7 +3350,7 @@ export function IconPlus(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPower(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3364,7 +3364,7 @@ export function IconPower(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPresentationChartBar(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3378,7 +3378,7 @@ export function IconPresentationChartBar(props: JSX.SvgSVGAttributes<SVGSVGEleme
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPresentationChartLine(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3392,7 +3392,7 @@ export function IconPresentationChartLine(props: JSX.SvgSVGAttributes<SVGSVGElem
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPrinter(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3406,7 +3406,7 @@ export function IconPrinter(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconPuzzlePiece(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3420,7 +3420,7 @@ export function IconPuzzlePiece(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconQrCode(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3504,7 +3504,7 @@ export function IconQrCode(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconQuestionMarkCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3518,7 +3518,7 @@ export function IconQuestionMarkCircle(props: JSX.SvgSVGAttributes<SVGSVGElement
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconQueueList(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3532,7 +3532,7 @@ export function IconQueueList(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconRadio(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3546,7 +3546,7 @@ export function IconRadio(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconReceiptPercent(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3560,7 +3560,7 @@ export function IconReceiptPercent(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconReceiptRefund(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3574,7 +3574,7 @@ export function IconReceiptRefund(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconRectangleGroup(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3602,7 +3602,7 @@ export function IconRectangleGroup(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconRectangleStack(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3616,7 +3616,7 @@ export function IconRectangleStack(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconRocketLaunch(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3630,7 +3630,7 @@ export function IconRocketLaunch(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconRss(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3644,7 +3644,7 @@ export function IconRss(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconScale(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3658,7 +3658,7 @@ export function IconScale(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconScissors(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3672,7 +3672,7 @@ export function IconScissors(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconServerStack(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3686,7 +3686,7 @@ export function IconServerStack(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconServer(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3700,7 +3700,7 @@ export function IconServer(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconShare(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3714,7 +3714,7 @@ export function IconShare(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconShieldCheck(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3728,7 +3728,7 @@ export function IconShieldCheck(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconShieldExclamation(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3742,7 +3742,7 @@ export function IconShieldExclamation(props: JSX.SvgSVGAttributes<SVGSVGElement>
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconShoppingBag(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3756,7 +3756,7 @@ export function IconShoppingBag(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconShoppingCart(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3770,7 +3770,7 @@ export function IconShoppingCart(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconSignalSlash(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3784,7 +3784,7 @@ export function IconSignalSlash(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconSignal(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3798,7 +3798,7 @@ export function IconSignal(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconSparkles(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3826,7 +3826,7 @@ export function IconSparkles(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconSpeakerWave(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3840,7 +3840,7 @@ export function IconSpeakerWave(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconSpeakerXMark(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3854,7 +3854,7 @@ export function IconSpeakerXMark(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconSquare2Stack(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3868,7 +3868,7 @@ export function IconSquare2Stack(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconSquare3Stack3d(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3882,7 +3882,7 @@ export function IconSquare3Stack3d(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconSquares2x2(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3917,7 +3917,7 @@ export function IconSquares2x2(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconSquaresPlus(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3931,7 +3931,7 @@ export function IconSquaresPlus(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconStar(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3945,7 +3945,7 @@ export function IconStar(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconStopCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3966,7 +3966,7 @@ export function IconStopCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconStop(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3980,7 +3980,7 @@ export function IconStop(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconSun(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -3994,7 +3994,7 @@ export function IconSun(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconSwatch(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4008,7 +4008,7 @@ export function IconSwatch(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconTableCells(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4022,7 +4022,7 @@ export function IconTableCells(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconTag(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4043,7 +4043,7 @@ export function IconTag(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconTicket(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4057,7 +4057,7 @@ export function IconTicket(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconTrash(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4071,7 +4071,7 @@ export function IconTrash(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconTrophy(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4085,7 +4085,7 @@ export function IconTrophy(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconTruck(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4099,7 +4099,7 @@ export function IconTruck(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconTv(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4113,7 +4113,7 @@ export function IconTv(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconUserCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4127,7 +4127,7 @@ export function IconUserCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconUserGroup(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4141,7 +4141,7 @@ export function IconUserGroup(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconUserMinus(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4155,7 +4155,7 @@ export function IconUserMinus(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconUserPlus(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4169,7 +4169,7 @@ export function IconUserPlus(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconUser(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4190,7 +4190,7 @@ export function IconUser(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconUsers(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4204,7 +4204,7 @@ export function IconUsers(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconVariable(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4218,7 +4218,7 @@ export function IconVariable(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconVideoCameraSlash(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4232,7 +4232,7 @@ export function IconVideoCameraSlash(props: JSX.SvgSVGAttributes<SVGSVGElement>)
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconVideoCamera(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4245,7 +4245,7 @@ export function IconVideoCamera(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linecap="round"
       />
     </svg>
-  )
+  );
 }
 export function IconViewColumns(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4259,7 +4259,7 @@ export function IconViewColumns(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconViewfinderCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4273,7 +4273,7 @@ export function IconViewfinderCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>)
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconWallet(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4287,7 +4287,7 @@ export function IconWallet(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconWifi(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4301,7 +4301,7 @@ export function IconWifi(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconWindow(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4315,7 +4315,7 @@ export function IconWindow(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconWrenchScrewdriver(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4329,7 +4329,7 @@ export function IconWrenchScrewdriver(props: JSX.SvgSVGAttributes<SVGSVGElement>
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconWrench(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4350,7 +4350,7 @@ export function IconWrench(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconXCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4364,7 +4364,7 @@ export function IconXCircle(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 export function IconXMark(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4378,7 +4378,7 @@ export function IconXMark(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         stroke-linejoin="round"
       />
     </svg>
-  )
+  );
 }
 // index
 export function IconCommand(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
@@ -4392,7 +4392,7 @@ export function IconCommand(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         fill="#0D0E10"
       />
     </svg>
-  )
+  );
 }
 export function IconLetter(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4403,7 +4403,7 @@ export function IconLetter(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         fill="#0D0E10"
       />
     </svg>
-  )
+  );
 }
 export function IconMultiSelect(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4414,11 +4414,18 @@ export function IconMultiSelect(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         fill="#0D0E10"
       />
     </svg>
-  )
+  );
 }
 export function IconSettings(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
-    <svg {...props} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg
+      {...props}
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
       <g clip-path="url(#clip0_1256_16163)">
         <path
           fill-rule="evenodd"
@@ -4439,7 +4446,7 @@ export function IconSettings(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         </clipPath>
       </defs>
     </svg>
-  )
+  );
 }
 export function IconSingleSelect(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
   return (
@@ -4450,5 +4457,5 @@ export function IconSingleSelect(props: JSX.SvgSVGAttributes<SVGSVGElement>) {
         fill="#0D0E10"
       />
     </svg>
-  )
+  );
 }

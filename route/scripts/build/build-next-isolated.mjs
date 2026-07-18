@@ -67,7 +67,7 @@ export async function movePath(sourcePath, destinationPath, fsImpl = fs) {
     }
 
     console.warn(
-      `[build-next-isolated] EXDEV while moving ${sourcePath} -> ${destinationPath}; falling back to copy/remove`
+      `[build-next-isolated] EXDEV while moving ${sourcePath} -> ${destinationPath}; falling back to copy/remove`,
     );
     await fsImpl.cp(sourcePath, destinationPath, {
       recursive: true,
@@ -173,7 +173,7 @@ export async function pruneStandaloneArtifacts(rootDir = projectRoot, fsImpl = f
     if (!(await exists(targetPath))) continue;
     await fsImpl.rm(targetPath, { recursive: true, force: true });
     console.log(
-      `[build-next-isolated] Pruned standalone artifact: ${path.relative(rootDir, targetPath)}`
+      `[build-next-isolated] Pruned standalone artifact: ${path.relative(rootDir, targetPath)}`,
     );
   }
 }
@@ -181,7 +181,7 @@ export async function pruneStandaloneArtifacts(rootDir = projectRoot, fsImpl = f
 export async function syncStandaloneNativeAssets(
   rootDir = projectRoot,
   fsImpl = fs,
-  log = console
+  log = console,
 ) {
   return _syncNativeAssets(rootDir, fsImpl, log);
 }
@@ -189,7 +189,7 @@ export async function syncStandaloneNativeAssets(
 export async function syncStandaloneExtraModules(
   rootDir = projectRoot,
   fsImpl = fs,
-  log = console
+  log = console,
 ) {
   return _syncExtraModules(rootDir, fsImpl, log);
 }
@@ -223,7 +223,7 @@ export async function main() {
 
     if (isBackendOnlyBuild()) {
       console.log(
-        "[build-next-isolated] OMNIROUTE_BUILD_BACKEND_ONLY set — building API only (dashboard UI stubbed)"
+        "[build-next-isolated] OMNIROUTE_BUILD_BACKEND_ONLY set — building API only (dashboard UI stubbed)",
       );
       stubbedPages = stubDashboardPages(projectRoot);
       process.once("SIGINT", onFatalSignal);
@@ -249,7 +249,7 @@ export async function main() {
       } catch (pruneErr) {
         console.warn(
           "[build-next-isolated] Non-fatal error pruning standalone artifacts:",
-          pruneErr
+          pruneErr,
         );
       }
 
@@ -263,18 +263,18 @@ export async function main() {
         console.log(
           res.built
             ? "[build-next-isolated] Built TPROXY native addon (transparent.node)"
-            : `[build-next-isolated] TPROXY native addon skipped: ${res.reason}`
+            : `[build-next-isolated] TPROXY native addon skipped: ${res.reason}`,
         );
       } catch (nativeErr) {
         console.warn(
           "[build-next-isolated] Non-fatal error building TPROXY native addon:",
-          nativeErr?.message
+          nativeErr?.message,
         );
       }
 
       try {
         console.log(
-          "[build-next-isolated] Assembling standalone bundle (static + public + natives + extras)..."
+          "[build-next-isolated] Assembling standalone bundle (static + public + natives + extras)...",
         );
         assembleStandalone({
           distDir,
@@ -305,7 +305,7 @@ export async function main() {
       } catch (restoreError) {
         console.error(
           `[build-next-isolated] Failed to restore ${entry.label} from ${entry.backupPath}:`,
-          restoreError
+          restoreError,
         );
         process.exitCode = 1;
       }

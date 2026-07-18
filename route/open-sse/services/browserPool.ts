@@ -152,7 +152,7 @@ function evictStaleContexts(): void {
         "[BrowserPool] Evicted stale context:",
         key,
         "(idle",
-        ((now - pooled.lastUsed) / 1000).toFixed(0) + "s)"
+        ((now - pooled.lastUsed) / 1000).toFixed(0) + "s)",
       );
       state.contexts.delete(key);
       state.metrics.contextsEvicted++;
@@ -185,7 +185,7 @@ interface ResolvePlaywrightProxyDeps {
 // Exported for tests (deps injection avoids mock.module()).
 export async function resolvePlaywrightProxy(
   providerKey: string,
-  deps?: ResolvePlaywrightProxyDeps
+  deps?: ResolvePlaywrightProxyDeps,
 ): Promise<import("playwright").LaunchOptions["proxy"] | undefined> {
   try {
     const resolver =
@@ -254,7 +254,7 @@ async function launchBrowser(): Promise<Browser> {
 
 function parseCookieString(
   raw: string,
-  domain: string
+  domain: string,
 ): Array<{
   name: string;
   value: string;
@@ -308,11 +308,11 @@ function settlePendingContext(key: string, failed: boolean): void {
 
 export async function acquireBrowserContext(
   key: string,
-  options: BrowserPoolContextOptions
+  options: BrowserPoolContextOptions,
 ): Promise<PooledContext> {
   if (!isPoolEnabled()) {
     throw new Error(
-      "browserPool: OMNIROUTE_BROWSER_POOL=off — context requested but pool is disabled"
+      "browserPool: OMNIROUTE_BROWSER_POOL=off — context requested but pool is disabled",
     );
   }
   const existing = state.contexts.get(key);
@@ -490,7 +490,7 @@ export function __resetBrowserPoolMetricsForTest(): void {
 }
 
 export async function readPageResponseBody(
-  response: import("playwright").Response
+  response: import("playwright").Response,
 ): Promise<{ status: number; headers: Record<string, string>; body: Buffer }> {
   const headers: Record<string, string> = {};
   for (const [name, value] of Object.entries(response.headers())) {

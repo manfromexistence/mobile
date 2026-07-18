@@ -1,6 +1,6 @@
-import { mysqlTable, varchar, uniqueIndex } from "drizzle-orm/mysql-core"
-import { timestamps, ulid, utc, workspaceColumns } from "../drizzle/types"
-import { workspaceIndexes } from "./workspace.sql"
+import { mysqlTable, varchar, uniqueIndex } from "drizzle-orm/mysql-core";
+import { timestamps, ulid, utc, workspaceColumns } from "../drizzle/types";
+import { workspaceIndexes } from "./workspace.sql";
 
 export const KeyTable = mysqlTable(
   "key",
@@ -13,4 +13,4 @@ export const KeyTable = mysqlTable(
     timeUsed: utc("time_used"),
   },
   (table) => [...workspaceIndexes(table), uniqueIndex("global_key").on(table.key)],
-)
+);

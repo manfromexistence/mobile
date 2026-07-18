@@ -30,7 +30,7 @@ if (nextAuthMatch && !jwtMatch) {
   // Enforce 32 char minimum for secretsValidator.ts
   if (newJwt.length < 32) {
     console.warn(
-      `Original NEXTAUTH_SECRET was too short (${newJwt.length} chars). Generating a secure one...`
+      `Original NEXTAUTH_SECRET was too short (${newJwt.length} chars). Generating a secure one...`,
     );
     newJwt = crypto.randomBytes(48).toString("base64");
   }
@@ -39,7 +39,7 @@ if (nextAuthMatch && !jwtMatch) {
   modified = true;
 } else if (jwtMatch && jwtMatch[1].trim().length < 32) {
   console.warn(
-    `JWT_SECRET is too short (${jwtMatch[1].trim().length} chars). Generating a secure one for v3.4.0+...`
+    `JWT_SECRET is too short (${jwtMatch[1].trim().length} chars). Generating a secure one for v3.4.0+...`,
   );
   const newJwt = crypto.randomBytes(48).toString("base64");
   content = content.replace(/^JWT_SECRET=(.*)$/m, `JWT_SECRET=${newJwt}`);

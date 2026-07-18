@@ -91,7 +91,7 @@ function buildResponsesSse(text = "Brasilia") {
     {
       status: 200,
       headers: { "Content-Type": "text/event-stream" },
-    }
+    },
   );
 }
 
@@ -133,7 +133,7 @@ function buildResponsesNdjson(text = "Brasilia") {
     {
       status: 200,
       headers: { "Content-Type": "application/x-ndjson" },
-    }
+    },
   );
 }
 
@@ -276,17 +276,17 @@ test("chatCore buffers expected Codex upstream SSE without warning for stream=fa
     log.entries.some(
       (entry) =>
         entry.level === "warn" &&
-        String(entry.msg).includes("Unexpected SSE response for non-streaming request")
+        String(entry.msg).includes("Unexpected SSE response for non-streaming request"),
     ),
-    false
+    false,
   );
   assert.equal(
     log.entries.some(
       (entry) =>
         entry.level === "debug" &&
-        String(entry.msg).includes("Buffering upstream SSE response for non-streaming client")
+        String(entry.msg).includes("Buffering upstream SSE response for non-streaming client"),
     ),
-    true
+    true,
   );
 });
 
@@ -362,9 +362,9 @@ test("handleComboChat validates non-stream quality using the original client str
       (entry) =>
         entry.level === "warn" &&
         String(entry.msg).includes(
-          "failed quality check: empty content and no tool_calls in response"
-        )
-    )
+          "failed quality check: empty content and no tool_calls in response",
+        ),
+    ),
   );
 });
 

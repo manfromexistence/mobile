@@ -1,8 +1,9 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 
-const { tryOpenSync, openDatabaseAsync, preInitSqlJs, getSqlJsAdapter } =
-  await import("../../../src/lib/db/adapters/driverFactory.ts");
+const { tryOpenSync, openDatabaseAsync, preInitSqlJs, getSqlJsAdapter } = await import(
+  "../../../src/lib/db/adapters/driverFactory.ts"
+);
 
 describe("driverFactory", () => {
   test("tryOpenSync retorna adapter síncrono ou null", () => {
@@ -128,7 +129,7 @@ describe("driverFactory", () => {
     assert.equal(
       readCountForTarget,
       1,
-      `expected exactly 1 shared full-file read for 3 concurrent preInitSqlJs() calls, got ${readCountForTarget}`
+      `expected exactly 1 shared full-file read for 3 concurrent preInitSqlJs() calls, got ${readCountForTarget}`,
     );
     assert.equal(a, b, "concurrent callers must resolve to the SAME adapter instance");
     assert.equal(b, c, "concurrent callers must resolve to the SAME adapter instance");

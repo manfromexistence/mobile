@@ -78,7 +78,7 @@ export function normalizeClaudeCodeCompatibleSummarizeThinking(value: unknown): 
 
 export function normalizeRequestDefaults(
   provider: string | null | undefined,
-  value: unknown
+  value: unknown,
 ): JsonRecord | undefined {
   const record = asRecord(value);
   if (Object.keys(record).length === 0) return undefined;
@@ -117,7 +117,7 @@ export function normalizeRequestDefaults(
     }
 
     const summarizeThinking = normalizeClaudeCodeCompatibleSummarizeThinking(
-      record.summarizeThinking
+      record.summarizeThinking,
     );
     if (summarizeThinking) {
       normalized.summarizeThinking = true;
@@ -131,7 +131,7 @@ export function normalizeRequestDefaults(
 
 export function normalizeProviderSpecificData(
   provider: string | null | undefined,
-  value: unknown
+  value: unknown,
 ): JsonRecord | undefined {
   const record = asRecord(value);
   if (Object.keys(record).length === 0) return undefined;
@@ -206,7 +206,7 @@ export function normalizeProviderSpecificData(
 
   if ("excludedModels" in normalized || "excluded_models" in normalized) {
     const excludedModels = normalizeExcludedModelPatterns(
-      normalized.excludedModels ?? normalized.excluded_models
+      normalized.excludedModels ?? normalized.excluded_models,
     );
     if (excludedModels.length > 0) {
       normalized.excludedModels = excludedModels;
@@ -260,7 +260,7 @@ export function buildOpenAIStoreSessionId(sessionId: unknown): string | undefine
 
 export function ensureOpenAIStoreSessionFallback(
   body: Record<string, unknown>,
-  sessionId: unknown
+  sessionId: unknown,
 ): Record<string, unknown> {
   const explicitSessionId = body.session_id;
   const explicitConversationId = body.conversation_id;
@@ -285,7 +285,7 @@ export function ensureOpenAIStoreSessionFallback(
 
 export function getProviderRequestDefaults(
   provider: string | null | undefined,
-  providerSpecificData: unknown
+  providerSpecificData: unknown,
 ): JsonRecord {
   return normalizeRequestDefaults(provider, asRecord(providerSpecificData).requestDefaults) || {};
 }
@@ -310,12 +310,12 @@ export function getClaudeCodeCompatibleRequestDefaults(providerSpecificData: unk
 } {
   const defaults = getProviderRequestDefaults(
     "anthropic-compatible-cc-default",
-    providerSpecificData
+    providerSpecificData,
   );
   const context1m = normalizeClaudeCodeCompatibleContext1m(defaults.context1m);
   const redactThinking = normalizeClaudeCodeCompatibleRedactThinking(defaults.redactThinking);
   const summarizeThinking = normalizeClaudeCodeCompatibleSummarizeThinking(
-    defaults.summarizeThinking
+    defaults.summarizeThinking,
   );
   return {
     ...(context1m ? { context1m } : {}),

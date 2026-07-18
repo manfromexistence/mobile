@@ -52,8 +52,8 @@ test("no two migration files share the same numeric prefix", () => {
     `Migration version collisions detected:\n${realCollisions
       .map((c) => `  ${c.version}: [${c.liveNames.join(", ")}]`)
       .join(
-        "\n"
-      )}\n\nFix by renaming one of the files to a unique number AND adding a retroactive guard in migrationRunner.ts isSchemaAlreadyApplied().`
+        "\n",
+      )}\n\nFix by renaming one of the files to a unique number AND adding a retroactive guard in migrationRunner.ts isSchemaAlreadyApplied().`,
   );
 });
 

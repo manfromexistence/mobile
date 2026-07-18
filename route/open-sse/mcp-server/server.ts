@@ -97,7 +97,7 @@ const MCP_ALLOWED_SCOPES = new Set(
   (process.env.OMNIROUTE_MCP_SCOPES || "")
     .split(",")
     .map((s) => s.trim())
-    .filter(Boolean)
+    .filter(Boolean),
 );
 const TOTAL_MCP_TOOL_COUNT = countUniqueMcpTools({
   MCP_TOOLS,
@@ -167,7 +167,7 @@ function toStringArray(value: unknown, fallback: string[] = []): string[] {
 }
 
 function normalizeComboModels(
-  rawModels: unknown
+  rawModels: unknown,
 ): Array<{ provider: string; model: string; priority: number }> {
   return toArray(rawModels).map((rawModel, index) => {
     const modelRecord = toRecord(rawModel);
@@ -215,7 +215,7 @@ export async function omniRouteFetch(path: string, options: RequestInit = {}): P
 function withScopeEnforcement(
   toolName: string,
   handler: (args: unknown, extra?: McpToolExtraLike) => Promise<TextToolResult>,
-  toolScopes?: readonly string[]
+  toolScopes?: readonly string[],
 ) {
   return async (args: unknown, extra?: McpToolExtraLike): Promise<TextToolResult> => {
     const scopeContext = resolveCallerScopeContext(extra, Array.from(MCP_ALLOWED_SCOPES));
@@ -223,7 +223,7 @@ function withScopeEnforcement(
       toolName,
       scopeContext.scopes,
       MCP_ENFORCE_SCOPES,
-      toolScopes
+      toolScopes,
     );
     if (!scopeCheck.allowed) {
       const missingScopes =
@@ -249,7 +249,7 @@ function withScopeEnforcement(
         null,
         0,
         false,
-        `scope_denied:${reason}`
+        `scope_denied:${reason}`,
       );
       return {
         content: [{ type: "text" as const, text: `Error: ${msg}` }],
@@ -358,7 +358,7 @@ async function handleGetComboMetrics(args: { comboId: string }) {
   const start = Date.now();
   try {
     const result = await omniRouteFetch(
-      `/api/combos/metrics?comboId=${encodeURIComponent(args.comboId)}`
+      `/api/combos/metrics?comboId=${encodeURIComponent(args.comboId)}`,
     );
     await logToolCall("omniroute_get_combo_metrics", args, result, Date.now() - start, true);
     return { content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }] };
@@ -451,7 +451,7 @@ async function handleRouteRequest(args: {
         latencyMs: Date.now() - start,
         routingExplanation: toString(
           raw.routingExplanation,
-          "Request routed through primary provider"
+          "Request routed through primary provider",
         ),
       },
     };
@@ -461,7 +461,7 @@ async function handleRouteRequest(args: {
       { model: args.model, messageCount: args.messages.length },
       result.routing,
       Date.now() - start,
-      true
+      true,
     );
     return { content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }] };
   } catch (err) {
@@ -472,7 +472,7 @@ async function handleRouteRequest(args: {
       null,
       Date.now() - start,
       false,
-      msg
+      msg,
     );
     return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
   }
@@ -490,7 +490,7 @@ async function handleCostReport(args: { period?: string }) {
     };
     const range = rangeMap[period] || "30d";
     const raw = toRecord(
-      await omniRouteFetch(`/api/usage/analytics?range=${encodeURIComponent(range)}`)
+      await omniRouteFetch(`/api/usage/analytics?range=${encodeURIComponent(range)}`),
     );
     const tokenCount = toRecord(raw.tokenCount);
     const budget = toRecord(raw.budget);
@@ -530,7 +530,7 @@ async function handleListModelsCatalog(args: { provider?: string; capability?: s
       args,
       { modelCount: result.models.length },
       Date.now() - start,
-      true
+      true,
     );
     return { content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }] };
   } catch (err) {
@@ -629,7 +629,7 @@ export function createMcpServer(): McpServer {
       ? async (args: unknown, extra?: unknown) => {
           const result = await (handler as (a: unknown, e?: unknown) => Promise<TextToolResult>)(
             args,
-            extra
+            extra,
           );
           if (Array.isArray(result?.content)) {
             for (const block of result.content) {
@@ -662,7 +662,7 @@ export function createMcpServer(): McpServer {
     name: string,
     uriOrTemplate: unknown,
     config: Record<string, unknown>,
-    readCallback: unknown
+    readCallback: unknown,
   ) => {
     const metadata = compressMcpRegistryMetadata(config, {
       enabled: mcpDescriptionCompressionEnabled,
@@ -692,7 +692,7 @@ export function createMcpServer(): McpServer {
     withScopeEnforcement("omniroute_get_health", async (args) => {
       getHealthInput.parse(args ?? {});
       return handleGetHealth();
-    })
+    }),
   );
 
   server.registerTool(
@@ -703,8 +703,8 @@ export function createMcpServer(): McpServer {
       inputSchema: listCombosInput,
     },
     withScopeEnforcement("omniroute_list_combos", (args) =>
-      handleListCombos(listCombosInput.parse(args))
-    )
+      handleListCombos(listCombosInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -714,8 +714,8 @@ export function createMcpServer(): McpServer {
       inputSchema: getComboMetricsInput,
     },
     withScopeEnforcement("omniroute_get_combo_metrics", (args) =>
-      handleGetComboMetrics(getComboMetricsInput.parse(args))
-    )
+      handleGetComboMetrics(getComboMetricsInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -725,8 +725,8 @@ export function createMcpServer(): McpServer {
       inputSchema: switchComboInput,
     },
     withScopeEnforcement("omniroute_switch_combo", (args) =>
-      handleSwitchCombo(switchComboInput.parse(args))
-    )
+      handleSwitchCombo(switchComboInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -736,8 +736,8 @@ export function createMcpServer(): McpServer {
       inputSchema: checkQuotaInput,
     },
     withScopeEnforcement("omniroute_check_quota", (args) =>
-      handleCheckQuota(checkQuotaInput.parse(args))
-    )
+      handleCheckQuota(checkQuotaInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -747,8 +747,8 @@ export function createMcpServer(): McpServer {
       inputSchema: routeRequestInput,
     },
     withScopeEnforcement("omniroute_route_request", (args) =>
-      handleRouteRequest(routeRequestInput.parse(args))
-    )
+      handleRouteRequest(routeRequestInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -758,8 +758,8 @@ export function createMcpServer(): McpServer {
       inputSchema: costReportInput,
     },
     withScopeEnforcement("omniroute_cost_report", (args) =>
-      handleCostReport(costReportInput.parse(args))
-    )
+      handleCostReport(costReportInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -769,8 +769,8 @@ export function createMcpServer(): McpServer {
       inputSchema: listModelsCatalogInput,
     },
     withScopeEnforcement("omniroute_list_models_catalog", (args) =>
-      handleListModelsCatalog(listModelsCatalogInput.parse(args))
-    )
+      handleListModelsCatalog(listModelsCatalogInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -780,8 +780,8 @@ export function createMcpServer(): McpServer {
       inputSchema: simulateRouteInput,
     },
     withScopeEnforcement("omniroute_simulate_route", (args) =>
-      handleSimulateRoute(simulateRouteInput.parse(args))
-    )
+      handleSimulateRoute(simulateRouteInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -792,8 +792,8 @@ export function createMcpServer(): McpServer {
       inputSchema: setBudgetGuardInput,
     },
     withScopeEnforcement("omniroute_set_budget_guard", (args) =>
-      handleSetBudgetGuard(setBudgetGuardInput.parse(args))
-    )
+      handleSetBudgetGuard(setBudgetGuardInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -804,8 +804,8 @@ export function createMcpServer(): McpServer {
       inputSchema: setRoutingStrategyInput,
     },
     withScopeEnforcement("omniroute_set_routing_strategy", (args) =>
-      handleSetRoutingStrategy(setRoutingStrategyInput.parse(args))
-    )
+      handleSetRoutingStrategy(setRoutingStrategyInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -816,8 +816,8 @@ export function createMcpServer(): McpServer {
       inputSchema: setResilienceProfileInput,
     },
     withScopeEnforcement("omniroute_set_resilience_profile", (args) =>
-      handleSetResilienceProfile(setResilienceProfileInput.parse(args))
-    )
+      handleSetResilienceProfile(setResilienceProfileInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -828,8 +828,8 @@ export function createMcpServer(): McpServer {
       inputSchema: testComboInput,
     },
     withScopeEnforcement("omniroute_test_combo", (args) =>
-      handleTestCombo(testComboInput.parse(args))
-    )
+      handleTestCombo(testComboInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -840,8 +840,8 @@ export function createMcpServer(): McpServer {
       inputSchema: getProviderMetricsInput,
     },
     withScopeEnforcement("omniroute_get_provider_metrics", (args) =>
-      handleGetProviderMetrics(getProviderMetricsInput.parse(args))
-    )
+      handleGetProviderMetrics(getProviderMetricsInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -852,8 +852,8 @@ export function createMcpServer(): McpServer {
       inputSchema: bestComboForTaskInput,
     },
     withScopeEnforcement("omniroute_best_combo_for_task", (args) =>
-      handleBestComboForTask(bestComboForTaskInput.parse(args))
-    )
+      handleBestComboForTask(bestComboForTaskInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -864,8 +864,8 @@ export function createMcpServer(): McpServer {
       inputSchema: explainRouteInput,
     },
     withScopeEnforcement("omniroute_explain_route", (args) =>
-      handleExplainRoute(explainRouteInput.parse(args))
-    )
+      handleExplainRoute(explainRouteInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -875,8 +875,8 @@ export function createMcpServer(): McpServer {
       inputSchema: pickFastestModelInput,
     },
     withScopeEnforcement("omniroute_pick_fastest_model", (args) =>
-      handlePickFastestModel(pickFastestModelInput.parse(args))
-    )
+      handlePickFastestModel(pickFastestModelInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -889,7 +889,7 @@ export function createMcpServer(): McpServer {
     withScopeEnforcement("omniroute_get_session_snapshot", async (args) => {
       getSessionSnapshotInput.parse(args ?? {});
       return handleGetSessionSnapshot();
-    })
+    }),
   );
 
   server.registerTool(
@@ -900,8 +900,8 @@ export function createMcpServer(): McpServer {
       inputSchema: dbHealthCheckInput,
     },
     withScopeEnforcement("omniroute_db_health_check", (args) =>
-      handleDbHealthCheck(dbHealthCheckInput.parse(args ?? {}))
-    )
+      handleDbHealthCheck(dbHealthCheckInput.parse(args ?? {})),
+    ),
   );
 
   server.registerTool(
@@ -912,8 +912,8 @@ export function createMcpServer(): McpServer {
       inputSchema: syncPricingInput,
     },
     withScopeEnforcement("omniroute_sync_pricing", (args) =>
-      handleSyncPricing(syncPricingInput.parse(args))
-    )
+      handleSyncPricing(syncPricingInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -924,8 +924,8 @@ export function createMcpServer(): McpServer {
       inputSchema: webSearchInput,
     },
     withScopeEnforcement("omniroute_web_search", (args) =>
-      handleWebSearch(webSearchInput.parse(args))
-    )
+      handleWebSearch(webSearchInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -935,7 +935,9 @@ export function createMcpServer(): McpServer {
         "Fetches and extracts content from a URL using OmniRoute's web fetch gateway. Supports multiple providers (Firecrawl, Jina Reader, Tavily) with automatic failover. Returns the page content as markdown, HTML, links, or screenshot, along with metadata.",
       inputSchema: webFetchInput,
     },
-    withScopeEnforcement("omniroute_web_fetch", (args) => handleWebFetch(webFetchInput.parse(args)))
+    withScopeEnforcement("omniroute_web_fetch", (args) =>
+      handleWebFetch(webFetchInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -945,7 +947,7 @@ export function createMcpServer(): McpServer {
         "Returns cache statistics including semantic cache hit rate, prompt cache metrics by provider, and idempotency layer stats.",
       inputSchema: cacheStatsInput,
     },
-    withScopeEnforcement("omniroute_cache_stats", () => handleCacheStats())
+    withScopeEnforcement("omniroute_cache_stats", () => handleCacheStats()),
   );
 
   server.registerTool(
@@ -956,8 +958,8 @@ export function createMcpServer(): McpServer {
       inputSchema: cacheFlushInput,
     },
     withScopeEnforcement("omniroute_cache_flush", (args) =>
-      handleCacheFlush(cacheFlushInput.parse(args))
-    )
+      handleCacheFlush(cacheFlushInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -968,8 +970,8 @@ export function createMcpServer(): McpServer {
       inputSchema: oneproxyFetchInput,
     },
     withScopeEnforcement("omniroute_oneproxy_fetch", (args) =>
-      handleOneproxyFetch(oneproxyFetchInput.parse(args))
-    )
+      handleOneproxyFetch(oneproxyFetchInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -980,8 +982,8 @@ export function createMcpServer(): McpServer {
       inputSchema: oneproxyRotateInput,
     },
     withScopeEnforcement("omniroute_oneproxy_rotate", (args) =>
-      handleOneproxyRotate(oneproxyRotateInput.parse(args))
-    )
+      handleOneproxyRotate(oneproxyRotateInput.parse(args)),
+    ),
   );
 
   server.registerTool(
@@ -992,8 +994,8 @@ export function createMcpServer(): McpServer {
       inputSchema: oneproxyStatsInput,
     },
     withScopeEnforcement("omniroute_oneproxy_stats", (args) =>
-      handleOneproxyStats(oneproxyStatsInput.parse(args))
-    )
+      handleOneproxyStats(oneproxyStatsInput.parse(args)),
+    ),
   );
 
   registerToolSearchTool(server, withScopeEnforcement);
@@ -1020,8 +1022,8 @@ export function createMcpServer(): McpServer {
             return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
           }
         },
-        toolDef.scopes
-      )
+        toolDef.scopes,
+      ),
     );
   });
 
@@ -1047,8 +1049,8 @@ export function createMcpServer(): McpServer {
             return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
           }
         },
-        toolDef.scopes
-      )
+        toolDef.scopes,
+      ),
     );
   });
 
@@ -1071,7 +1073,7 @@ export function createMcpServer(): McpServer {
           const msg = err instanceof Error ? err.message : String(err);
           return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
         }
-      })
+      }),
     );
   });
 
@@ -1097,8 +1099,8 @@ export function createMcpServer(): McpServer {
             return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
           }
         },
-        toolDef.scopes
-      )
+        toolDef.scopes,
+      ),
     );
   });
 
@@ -1124,8 +1126,8 @@ export function createMcpServer(): McpServer {
             return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
           }
         },
-        toolDef.scopes
-      )
+        toolDef.scopes,
+      ),
     );
   });
 
@@ -1151,8 +1153,8 @@ export function createMcpServer(): McpServer {
             return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
           }
         },
-        toolDef.scopes
-      )
+        toolDef.scopes,
+      ),
     );
   });
 
@@ -1188,10 +1190,10 @@ export function createMcpServer(): McpServer {
               return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
             }
           },
-          toolDef.scopes
-        )
+          toolDef.scopes,
+        ),
       );
-    }
+    },
   );
 
   // ── Gamification Tools ────────────────────────
@@ -1216,8 +1218,8 @@ export function createMcpServer(): McpServer {
             return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
           }
         },
-        toolDef.scopes
-      )
+        toolDef.scopes,
+      ),
     );
   });
 
@@ -1243,8 +1245,8 @@ export function createMcpServer(): McpServer {
             return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
           }
         },
-        toolDef.scopes
-      )
+        toolDef.scopes,
+      ),
     );
   });
 
@@ -1270,8 +1272,8 @@ export function createMcpServer(): McpServer {
             return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
           }
         },
-        toolDef.scopes
-      )
+        toolDef.scopes,
+      ),
     );
   });
 
@@ -1299,7 +1301,7 @@ export function createMcpServer(): McpServer {
               const execution = await skillExecutor.execute(
                 skill.name,
                 (args ?? {}) as Record<string, unknown>,
-                { apiKeyId }
+                { apiKeyId },
               );
               return {
                 content: [
@@ -1314,8 +1316,8 @@ export function createMcpServer(): McpServer {
               };
             }
           },
-          ["execute:skills"]
-        )
+          ["execute:skills"],
+        ),
       );
     }
   } catch {

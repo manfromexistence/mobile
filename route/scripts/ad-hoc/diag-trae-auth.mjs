@@ -79,5 +79,5 @@ console.log(
     : "\n→ No header-only variant worked. The web client likely authenticates via a COOKIE, not a\n" +
         "  bearer header. Next step: in DevTools → Network, right-click a request to\n" +
         "  core-normal.trae.ai → Copy → Copy as cURL, and paste it here (redact the token). That\n" +
-        "  shows the exact auth header/cookie the server actually accepts."
+        "  shows the exact auth header/cookie the server actually accepts.",
 );

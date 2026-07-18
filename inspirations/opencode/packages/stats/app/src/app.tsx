@@ -1,20 +1,20 @@
-import { MetaProvider, Meta, Title } from "@solidjs/meta"
-import { Router } from "@solidjs/router"
-import { FileRoutes } from "@solidjs/start/router"
-import { Suspense } from "solid-js"
-import { I18nProvider, useI18n } from "./context/i18n"
-import { LanguageProvider } from "./context/language"
-import { strip } from "./lib/language"
-import "./app.css"
+import { MetaProvider, Meta, Title } from "@solidjs/meta";
+import { Router } from "@solidjs/router";
+import { FileRoutes } from "@solidjs/start/router";
+import { Suspense } from "solid-js";
+import { I18nProvider, useI18n } from "./context/i18n";
+import { LanguageProvider } from "./context/language";
+import { strip } from "./lib/language";
+import "./app.css";
 
 function AppMeta() {
-  const i18n = useI18n()
+  const i18n = useI18n();
   return (
     <>
       <Title>{i18n.t("app.title")}</Title>
       <Meta name="description" content={i18n.t("app.description")} />
     </>
-  )
+  );
 }
 
 export default function App() {
@@ -36,5 +36,5 @@ export default function App() {
     >
       <FileRoutes />
     </Router>
-  )
+  );
 }

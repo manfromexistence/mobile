@@ -21,7 +21,7 @@ const CLAUDE_OAUTH_EXTRA_BETAS = Object.freeze(["fine-grained-tool-streaming-202
 
 export const ANTHROPIC_BETA_FULL = ANTHROPIC_BETA_BASE.join(",");
 export const ANTHROPIC_BETA_API_KEY = ANTHROPIC_BETA_BASE.filter(
-  (beta) => beta !== "oauth-2025-04-20"
+  (beta) => beta !== "oauth-2025-04-20",
 ).join(",");
 export const ANTHROPIC_BETA_CLAUDE_OAUTH = [
   ...ANTHROPIC_BETA_BASE.slice(0, 3),
@@ -48,7 +48,7 @@ export const FORWARDABLE_CLIENT_BETAS = Object.freeze(["tool-search-tool-2025-10
 export function mergeClientAnthropicBeta(
   base: string,
   clientBeta: string | null | undefined,
-  allow: readonly string[] = FORWARDABLE_CLIENT_BETAS
+  allow: readonly string[] = FORWARDABLE_CLIENT_BETAS,
 ): string {
   const baseList = base
     .split(",")
@@ -82,7 +82,7 @@ function uniqueCommaValues(values: Array<string | undefined | null>): string[] {
         .filter((value) => value !== undefined && value !== null && value !== "")
         .flatMap((value) => String(value).split(","))
         .map((value) => value.trim())
-        .filter(Boolean)
+        .filter(Boolean),
     ),
   ];
 }

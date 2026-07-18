@@ -51,7 +51,7 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json(
       { error: "Could not parse the content as JSON", code: "invalid_json" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -88,12 +88,12 @@ export async function POST(request: Request) {
     if (error instanceof ClaudeAuthFileError) {
       return NextResponse.json(
         { error: error.message, code: error.code },
-        { status: error.status }
+        { status: error.status },
       );
     }
     return NextResponse.json(
       { error: sanitizeErrorMessage(error) || "Failed to import Claude auth" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

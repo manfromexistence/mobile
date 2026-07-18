@@ -1,8 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-const { wizardDestinationSchema, wizardCsvMappingSchema, csvToJsonlInputSchema } =
-  await import("../../../../src/lib/batches/schemas.ts");
+const { wizardDestinationSchema, wizardCsvMappingSchema, csvToJsonlInputSchema } = await import(
+  "../../../../src/lib/batches/schemas.ts"
+);
 const { BATCH_SUPPORTED_PROVIDERS } = await import("../../../../src/lib/batches/types.ts");
 
 test("batch types module keeps the supported providers catalog exported", () => {
@@ -66,7 +67,7 @@ test("wizardCsvMappingSchema: rejects mapping without custom_id target", () => {
     const messages = result.error.issues.map((e) => e.message);
     assert.ok(
       messages.some((m) => m.includes("custom_id")),
-      "error should mention custom_id"
+      "error should mention custom_id",
     );
   }
 });
@@ -80,7 +81,7 @@ test("wizardCsvMappingSchema: rejects mapping with custom_id only (no content/in
     const messages = result.error.issues.map((e) => e.message);
     assert.ok(
       messages.some((m) => m.includes("request body content")),
-      "error should mention body content requirement"
+      "error should mention body content requirement",
     );
   }
 });

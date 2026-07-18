@@ -58,7 +58,7 @@ function sortByStringKeys<T extends JsonRecord>(items: T[], keys: string[]) {
 
 function pickDefined(record: JsonRecord, keys: string[]) {
   return Object.fromEntries(
-    keys.filter((key) => record[key] !== undefined).map((key) => [key, record[key]])
+    keys.filter((key) => record[key] !== undefined).map((key) => [key, record[key]]),
   );
 }
 
@@ -139,7 +139,7 @@ function canonicalizeJson(value: unknown): unknown {
     return Object.fromEntries(
       Object.keys(value as JsonRecord)
         .sort((a, b) => a.localeCompare(b))
-        .map((key) => [key, canonicalizeJson((value as JsonRecord)[key])])
+        .map((key) => [key, canonicalizeJson((value as JsonRecord)[key])]),
     );
   }
 
@@ -169,20 +169,20 @@ export async function buildConfigSyncBundle(): Promise<ConfigSyncBundle> {
     settings: sanitizeSettingsForSync(settings),
     providerConnections: sortByStringKeys(
       providerConnections.map((connection) => sanitizeProviderConnectionForSync(connection)),
-      ["provider", "name", "id"]
+      ["provider", "name", "id"],
     ),
     providerNodes: sortByStringKeys(
       providerNodes.map((node) => sanitizeProviderNodeForSync(node)),
-      ["type", "name", "id"]
+      ["type", "name", "id"],
     ),
     modelAliases: asRecord(modelAliases),
     combos: sortByStringKeys(
       combos.map((combo) => sanitizeComboForSync(combo)),
-      ["sortOrder", "name", "id"]
+      ["sortOrder", "name", "id"],
     ),
     apiKeys: sortByStringKeys(
       apiKeys.map((apiKey) => sanitizeApiKeyForSync(apiKey)),
-      ["name", "id"]
+      ["name", "id"],
     ),
   };
 }

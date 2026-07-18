@@ -32,7 +32,7 @@ const MINIMAX_USAGE_CONFIG = {
 export function inferMiniMaxPlanLabelFromTotals(models: JsonRecord[]): string | null {
   const maxSessionTotal = models.reduce(
     (maxTotal, model) => Math.max(maxTotal, getMiniMaxSessionTotal(model)),
-    0
+    0,
   );
 
   if (maxSessionTotal >= 15_000) return "Max";
@@ -47,7 +47,7 @@ export function getMiniMaxPlanLabel(payload: JsonRecord, models: JsonRecord[] = 
     getFieldValue(payload, "plan_name", "planName"),
     getFieldValue(payload, "plan", "plan"),
     getFieldValue(payload, "current_plan_title", "currentPlanTitle"),
-    getFieldValue(payload, "combo_title", "comboTitle")
+    getFieldValue(payload, "combo_title", "comboTitle"),
   );
 
   if (!raw) return inferMiniMaxPlanLabelFromTotals(models) || "Coding Plan";
@@ -67,7 +67,7 @@ export function getMiniMaxQuotaResetAt(
   remainsTimeSnakeKey: string,
   remainsTimeCamelKey: string,
   endTimeSnakeKey: string,
-  endTimeCamelKey: string
+  endTimeCamelKey: string,
 ): string | null {
   const remainsMs = toNumber(getFieldValue(model, remainsTimeSnakeKey, remainsTimeCamelKey), 0);
   if (remainsMs > 0) {
@@ -91,20 +91,20 @@ export function isMiniMaxTextQuotaModel(modelName: string): boolean {
 export function getMiniMaxSessionTotal(model: JsonRecord): number {
   return Math.max(
     0,
-    toNumber(getFieldValue(model, "current_interval_total_count", "currentIntervalTotalCount"), 0)
+    toNumber(getFieldValue(model, "current_interval_total_count", "currentIntervalTotalCount"), 0),
   );
 }
 
 export function getMiniMaxWeeklyTotal(model: JsonRecord): number {
   return Math.max(
     0,
-    toNumber(getFieldValue(model, "current_weekly_total_count", "currentWeeklyTotalCount"), 0)
+    toNumber(getFieldValue(model, "current_weekly_total_count", "currentWeeklyTotalCount"), 0),
   );
 }
 
 function pickMiniMaxRepresentativeModel(
   models: JsonRecord[],
-  getTotal: (model: JsonRecord) => number
+  getTotal: (model: JsonRecord) => number,
 ): JsonRecord | null {
   const withQuota = models.filter((model) => getTotal(model) > 0);
   const pool = withQuota.length > 0 ? withQuota : models;
@@ -117,7 +117,7 @@ export function createMiniMaxQuotaFromCount(
   total: number,
   count: number,
   resetAt: string | null,
-  countMeansRemaining: boolean
+  countMeansRemaining: boolean,
 ): UsageQuota {
   const used = countMeansRemaining ? Math.max(total - count, 0) : count;
   return createQuotaFromUsage(used, total, resetAt);
@@ -131,7 +131,7 @@ export function createMiniMaxQuotaFromCount(
 export function getMiniMaxRemainingPercent(
   model: JsonRecord,
   snakeKey: string,
-  camelKey: string
+  camelKey: string,
 ): number | null {
   const raw = getFieldValue(model, snakeKey, camelKey);
   if (raw === null || raw === undefined || raw === "") return null;
@@ -142,7 +142,7 @@ export function getMiniMaxRemainingPercent(
 /** Build a 0–100 percent-based window quota (used = 100 − remaining). */
 export function createMiniMaxQuotaFromPercent(
   remainingPercent: number,
-  resetAt: string | null
+  resetAt: string | null,
 ): UsageQuota {
   const clamped = Math.max(0, Math.min(100, remainingPercent));
   return createQuotaFromUsage(100 - clamped, 100, resetAt);
@@ -164,7 +164,7 @@ function buildMiniMaxWindow(
   percentKeys: [string, string],
   resetKeys: [string, string, string, string],
   capturedAtMs: number,
-  countMeansRemaining: boolean
+  countMeansRemaining: boolean,
 ): UsageQuota | null {
   const model = pickMiniMaxRepresentativeModel(models, getTotal);
   if (!model) return null;
@@ -245,7 +245,7 @@ export async function getMiniMaxUsage(apiKey: string, provider: "minimax" | "min
       const baseResp = toRecord(getFieldValue(payload, "base_resp", "baseResp"));
       const apiStatusCode = toNumber(getFieldValue(baseResp, "status_code", "statusCode"), 0);
       const apiStatusMessage = String(
-        getFieldValue(baseResp, "status_msg", "statusMsg") ?? ""
+        getFieldValue(baseResp, "status_msg", "statusMsg") ?? "",
       ).trim();
       const combinedMessage = `${apiStatusMessage} ${rawText}`.trim();
       const authLikeStatusMessage =
@@ -306,7 +306,7 @@ export async function getMiniMaxUsage(apiKey: string, provider: "minimax" | "min
         ["current_interval_remaining_percent", "currentIntervalRemainingPercent"],
         ["remains_time", "remainsTime", "end_time", "endTime"],
         capturedAtMs,
-        countMeansRemaining
+        countMeansRemaining,
       );
       if (sessionQuota) {
         quotas["session (5h)"] = sessionQuota;
@@ -319,7 +319,7 @@ export async function getMiniMaxUsage(apiKey: string, provider: "minimax" | "min
         ["current_weekly_remaining_percent", "currentWeeklyRemainingPercent"],
         ["weekly_remains_time", "weeklyRemainsTime", "weekly_end_time", "weeklyEndTime"],
         capturedAtMs,
-        countMeansRemaining
+        countMeansRemaining,
       );
       if (weeklyQuota) {
         quotas["weekly (7d)"] = weeklyQuota;

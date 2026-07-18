@@ -1,4 +1,4 @@
-import { getGitHubPathFromURL } from './getGitHubPathFromURL';
+import { getGitHubPathFromURL } from "./getGitHubPathFromURL";
 
 export function getGitHubPath(input: string): string | undefined {
   try {

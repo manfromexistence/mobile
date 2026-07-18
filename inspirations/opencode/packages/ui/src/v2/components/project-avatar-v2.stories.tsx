@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { For } from "solid-js"
-import { ProjectAvatar, PROJECT_AVATAR_VARIANTS } from "./project-avatar-v2"
+import { For } from "solid-js";
+import { ProjectAvatar, PROJECT_AVATAR_VARIANTS } from "./project-avatar-v2";
 
 const docs = `### Overview
 Saturated 16px project avatar with color variants and optional unread dot.
@@ -17,7 +17,7 @@ Saturated 16px project avatar with color variants and optional unread dot.
 
 ### Theming
 - Uses \`--v2-avatar-bg-*\` and \`--v2-avatar-border-*\` tokens with inset box-shadow borders.
-`
+`;
 
 export default {
   title: "UI V2/ProjectAvatar",
@@ -41,9 +41,9 @@ export default {
     fallback: "O",
     variant: "orange",
   },
-}
+};
 
-export const Basic = {}
+export const Basic = {};
 
 export const WithImage = {
   args: {
@@ -51,7 +51,7 @@ export const WithImage = {
     fallback: "O",
     variant: "blue",
   },
-}
+};
 
 export const AllVariants = {
   render: () => (
@@ -61,14 +61,14 @@ export const AllVariants = {
       </For>
     </div>
   ),
-}
+};
 
 export const Outline = {
   args: {
     fallback: "O",
     variant: "outline",
   },
-}
+};
 
 export const Unread = {
   args: {
@@ -76,14 +76,16 @@ export const Unread = {
     variant: "orange",
     unread: true,
   },
-}
+};
 
 export const AllVariantsUnread = {
   render: () => (
     <div style={{ display: "flex", gap: "16px", "align-items": "center" }}>
       <For each={PROJECT_AVATAR_VARIANTS}>
-        {(variant) => <ProjectAvatar fallback={variant[0].toUpperCase()} variant={variant} unread />}
+        {(variant) => (
+          <ProjectAvatar fallback={variant[0].toUpperCase()} variant={variant} unread />
+        )}
       </For>
     </div>
   ),
-}
+};

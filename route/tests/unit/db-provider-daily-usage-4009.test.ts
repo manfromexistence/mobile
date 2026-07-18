@@ -49,7 +49,7 @@ function insertUsageHistory(row: Record<string, unknown>) {
       @timestamp, @provider, @model,
       @tokens_input, @tokens_output, @tokens_cache_read, @tokens_cache_creation, @tokens_reasoning,
       @service_tier, @success, @latency_ms, @connection_id, @api_key_id, @api_key_name
-    )`
+    )`,
   ).run(full);
 }
 

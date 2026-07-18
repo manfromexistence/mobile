@@ -70,7 +70,7 @@ export class GithubExecutor extends BaseExecutor {
       formatInstruction = `Respond only with valid JSON matching this schema:\n${JSON.stringify(
         responseFormat.json_schema.schema,
         null,
-        2
+        2,
       )}\nDo not include any text before or after the JSON.`;
     }
 
@@ -79,7 +79,7 @@ export class GithubExecutor extends BaseExecutor {
     const systemIdx = messages.findIndex((m) => m.role === "system");
     if (systemIdx >= 0) {
       return messages.map((m, i: number) =>
-        i === systemIdx ? { ...m, content: `${m.content}\n\n${formatInstruction}` } : m
+        i === systemIdx ? { ...m, content: `${m.content}\n\n${formatInstruction}` } : m,
       );
     }
 
@@ -113,7 +113,7 @@ export class GithubExecutor extends BaseExecutor {
     if (modifiedBody.response_format && model.toLowerCase().includes("claude")) {
       modifiedBody.messages = this.injectResponseFormat(
         Array.isArray(modifiedBody.messages) ? modifiedBody.messages : [],
-        modifiedBody.response_format
+        modifiedBody.response_format,
       );
       delete modifiedBody.response_format;
     }
@@ -145,7 +145,7 @@ export class GithubExecutor extends BaseExecutor {
     // Port from 9router#220 (fixes 9router#219).
     if (Array.isArray(modifiedBody.messages)) {
       modifiedBody.messages = modifiedBody.messages.map((msg: any) =>
-        this.sanitizeChatCompletionsMessage(msg)
+        this.sanitizeChatCompletionsMessage(msg),
       );
     }
 
@@ -235,7 +235,7 @@ export class GithubExecutor extends BaseExecutor {
   buildHeaders(
     credentials: ProviderCredentials,
     stream = true,
-    clientHeaders?: Record<string, string> | null
+    clientHeaders?: Record<string, string> | null,
   ): Record<string, string> {
     const token = this.getCopilotToken(credentials) || credentials.accessToken;
 

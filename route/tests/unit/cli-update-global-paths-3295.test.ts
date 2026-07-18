@@ -9,7 +9,7 @@ const update = await import("../../bin/cli/commands/update.mjs");
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const REAL_VERSION = JSON.parse(
-  readFileSync(path.join(REPO_ROOT, "package.json"), "utf-8")
+  readFileSync(path.join(REPO_ROOT, "package.json"), "utf-8"),
 ).version;
 
 // #3295 issue 1: getCurrentVersion() must resolve package.json relative to the
@@ -51,10 +51,7 @@ test("createBackup resolves bin/ from a foreign cwd and copies cli/ recursively 
     const cliBackup = path.join(backupDir, "cli");
     assert.ok(existsSync(cliBackup), "cli/ directory copied");
     assert.ok(statSync(cliBackup).isDirectory(), "cli/ backup is a directory");
-    assert.ok(
-      existsSync(path.join(cliBackup, "commands")),
-      "cli/ contents copied recursively"
-    );
+    assert.ok(existsSync(path.join(cliBackup, "commands")), "cli/ contents copied recursively");
   } finally {
     process.chdir(originalCwd);
     if (originalHome === undefined) delete process.env.HOME;

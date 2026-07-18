@@ -55,7 +55,7 @@ test("frozen test file that grew is a violation", () => {
   const r = evaluateFileSizes(
     { "tests/unit/combo-routing-engine.test.ts": 3300 },
     { "tests/unit/combo-routing-engine.test.ts": 3213 },
-    testCap
+    testCap,
   );
   assert.equal(r.violations.length, 1);
   assert.match(r.violations[0], /combo-routing-engine\.test\.ts/);
@@ -65,7 +65,7 @@ test("frozen test file that shrank is an improvement, not a violation", () => {
   const r = evaluateFileSizes(
     { "tests/unit/combo-routing-engine.test.ts": 3000 },
     { "tests/unit/combo-routing-engine.test.ts": 3213 },
-    testCap
+    testCap,
   );
   assert.deepEqual(r.violations, []);
   assert.deepEqual(r.improvements, [["tests/unit/combo-routing-engine.test.ts", 3000]]);

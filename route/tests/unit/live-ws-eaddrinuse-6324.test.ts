@@ -40,7 +40,7 @@ describe("#6324 LiveWS start degrades gracefully on port conflict", () => {
         (err: NodeJS.ErrnoException) => {
           assert.equal(err.code, "EADDRINUSE");
           return true;
-        }
+        },
       );
     } finally {
       await release();

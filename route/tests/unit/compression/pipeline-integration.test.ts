@@ -29,7 +29,7 @@ describe("compression pipeline integration", () => {
     assert.equal(result.stats?.engine, "stacked");
     assert.deepEqual(
       result.stats?.engineBreakdown?.map((entry) => entry.engine),
-      ["rtk", "caveman"]
+      ["rtk", "caveman"],
     );
     assert.ok(result.stats?.techniquesUsed.includes("rtk-dedup"));
   });
@@ -65,7 +65,7 @@ describe("compression pipeline integration", () => {
     assert.equal(result.stats?.engine, "stacked");
     assert.deepEqual(
       result.stats?.engineBreakdown?.map((entry) => entry.engine),
-      ["rtk", "caveman"]
+      ["rtk", "caveman"],
     );
   });
 

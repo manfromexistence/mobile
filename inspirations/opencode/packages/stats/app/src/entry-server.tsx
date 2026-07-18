@@ -1,7 +1,7 @@
 // @refresh reload
-import { createHandler, StartServer } from "@solidjs/start/server"
-import { getRequestEvent } from "solid-js/web"
-import { dir, localeFromRequest, tag } from "./lib/language"
+import { createHandler, StartServer } from "@solidjs/start/server";
+import { getRequestEvent } from "solid-js/web";
+import { dir, localeFromRequest, tag } from "./lib/language";
 
 const statsThemePreloadScript = `;(function () {
   var preference = "system"
@@ -12,14 +12,14 @@ const statsThemePreloadScript = `;(function () {
   document.documentElement.dataset.statsTheme = preference
   if (preference === "system") document.documentElement.style.removeProperty("color-scheme")
   else document.documentElement.style.setProperty("color-scheme", preference)
-})()`
+})()`;
 
 export default createHandler(
   () => (
     <StartServer
       document={({ assets, children, scripts }) => {
-        const event = getRequestEvent()
-        const locale = event ? localeFromRequest(event.request) : "en"
+        const event = getRequestEvent();
+        const locale = event ? localeFromRequest(event.request) : "en";
 
         return (
           <html lang={tag(locale)} dir={dir(locale)} data-locale={locale}>
@@ -34,11 +34,11 @@ export default createHandler(
               {scripts}
             </body>
           </html>
-        )
+        );
       }}
     />
   ),
   {
     mode: "async",
   },
-)
+);

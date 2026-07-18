@@ -21,7 +21,7 @@ const hermesAgentSettingsSchema = z.object({
       z.object({
         role: z.string(),
         model: z.string(),
-      })
+      }),
     )
     .min(1, "selections must be a non-empty array of { role, model }"),
   preview: z.boolean().optional(),
@@ -64,7 +64,7 @@ export async function GET(request: Request) {
   } catch (error) {
     return NextResponse.json(
       { success: false, error: sanitizeErrorMessage(error) },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -84,7 +84,7 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: parsed.error.issues[0]?.message ?? "Invalid request" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -132,7 +132,7 @@ export async function POST(request: Request) {
     await fs.writeFile(
       metaPath,
       JSON.stringify({ firstSetupAt: new Date().toISOString() }),
-      "utf8"
+      "utf8",
     );
   }
 

@@ -85,7 +85,7 @@ async function capturePreparedRequest(
   headers: Record<string, string>,
   body: unknown,
   bodyString: string,
-  log?: WarnLog | null
+  log?: WarnLog | null,
 ) {
   if (!requestCapture) return;
   const latest = requestCapture.latest?.();
@@ -96,7 +96,7 @@ async function capturePreparedRequest(
   } catch (error) {
     log?.warn?.(
       "REQUEST_LOG",
-      `Provider request logging hook failed: ${error instanceof Error ? error.message : String(error)}`
+      `Provider request logging hook failed: ${error instanceof Error ? error.message : String(error)}`,
     );
   }
 }
@@ -106,7 +106,7 @@ export function captureCurrentProviderRequest(
   headers: Record<string, string>,
   body: unknown,
   bodyString: string,
-  log?: WarnLog | null
+  log?: WarnLog | null,
 ) {
   return capturePreparedRequest(
     captureState.context.getStore(),
@@ -114,7 +114,7 @@ export function captureCurrentProviderRequest(
     headers,
     body,
     bodyString,
-    log
+    log,
   );
 }
 
@@ -122,7 +122,7 @@ export function captureCurrentProviderBody(
   url: string,
   headers: Record<string, string>,
   bodyString: string,
-  log?: WarnLog | null
+  log?: WarnLog | null,
 ) {
   return captureCurrentProviderRequest(url, headers, parseBody(bodyString), bodyString, log);
 }
@@ -161,7 +161,7 @@ async function captureFetchRequest(requestCapture: Capture, input: FetchInput, i
     getFetchUrl(input),
     getFetchHeaders(input, init),
     body,
-    bodyString
+    bodyString,
   );
 }
 
@@ -196,7 +196,7 @@ function bodyToString(body: BodyInit | null | undefined): string | null {
   if (body instanceof ArrayBuffer) return new TextDecoder().decode(body);
   if (ArrayBuffer.isView(body)) {
     return new TextDecoder().decode(
-      body.buffer.slice(body.byteOffset, body.byteOffset + body.byteLength)
+      body.buffer.slice(body.byteOffset, body.byteOffset + body.byteLength),
     );
   }
   return null;
@@ -220,7 +220,7 @@ function looksLikeProviderRequestBody(body: unknown) {
 
 export function createPreparedRequestLogger(
   reqLogger: RequestLoggerLike,
-  scope: PendingRequestScope
+  scope: PendingRequestScope,
 ): Capture {
   let latest: ProviderRequestPrepared | null = null;
   return {

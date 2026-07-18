@@ -60,20 +60,20 @@ function toNonNegativeInt(raw: string | undefined, fallback: number): number {
  */
 export function resolvePipelineBreakerConfig(
   partial?: Partial<PipelineCircuitBreakerConfig>,
-  env: NodeJS.ProcessEnv = process.env
+  env: NodeJS.ProcessEnv = process.env,
 ): PipelineCircuitBreakerConfig {
   const enabled = partial?.enabled ?? env.COMPRESSION_PIPELINE_BREAKER_ENABLED === "true";
   const failureThreshold =
     partial?.failureThreshold ??
     toNonNegativeInt(
       env.COMPRESSION_PIPELINE_BREAKER_THRESHOLD,
-      DEFAULT_PIPELINE_BREAKER.failureThreshold
+      DEFAULT_PIPELINE_BREAKER.failureThreshold,
     );
   const cooldownMs =
     partial?.cooldownMs ??
     toNonNegativeInt(
       env.COMPRESSION_PIPELINE_BREAKER_COOLDOWN_MS,
-      DEFAULT_PIPELINE_BREAKER.cooldownMs
+      DEFAULT_PIPELINE_BREAKER.cooldownMs,
     );
   return {
     enabled: enabled === true,
@@ -90,7 +90,7 @@ export function resolvePipelineBreakerConfig(
 export function canRunEngine(
   engine: string,
   config: PipelineCircuitBreakerConfig,
-  now: number = Date.now()
+  now: number = Date.now(),
 ): boolean {
   if (!config.enabled) return true;
   const s = get(engine);
@@ -109,7 +109,7 @@ export function canRunEngine(
 export function recordEngineFailure(
   engine: string,
   config: PipelineCircuitBreakerConfig,
-  now: number = Date.now()
+  now: number = Date.now(),
 ): void {
   if (!config.enabled) return;
   const s = get(engine);

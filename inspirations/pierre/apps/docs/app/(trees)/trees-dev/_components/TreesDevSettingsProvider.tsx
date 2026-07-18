@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   createContext,
@@ -10,14 +10,14 @@ import {
   useMemo,
   useRef,
   useState,
-} from 'react';
+} from "react";
 
 import {
   FILE_TREE_COOKIE_FLATTEN,
   FILE_TREE_COOKIE_VERSION,
   FILE_TREE_COOKIE_VERSION_NAME,
-} from '../cookies';
-import { sharedDemoFileTreeOptions } from '../demo-data';
+} from "../cookies";
+import { sharedDemoFileTreeOptions } from "../demo-data";
 
 interface TreesDevSettingsContextValue {
   flattenEmptyDirectories: boolean;
@@ -25,15 +25,12 @@ interface TreesDevSettingsContextValue {
   handleResetControls: () => void;
 }
 
-const TreesDevSettingsContext =
-  createContext<TreesDevSettingsContextValue | null>(null);
+const TreesDevSettingsContext = createContext<TreesDevSettingsContextValue | null>(null);
 
 export function useTreesDevSettings(): TreesDevSettingsContextValue {
   const ctx = useContext(TreesDevSettingsContext);
   if (ctx == null) {
-    throw new Error(
-      'useTreesDevSettings must be used within TreesDevSettingsProvider'
-    );
+    throw new Error("useTreesDevSettings must be used within TreesDevSettingsProvider");
   }
   return ctx;
 }
@@ -45,10 +42,9 @@ export function TreesDevSettingsProvider({
   initialFlattenEmptyDirectories: boolean;
   children: ReactNode;
 }) {
-  const defaultFlattenEmptyDirectories =
-    sharedDemoFileTreeOptions.flattenEmptyDirectories ?? false;
+  const defaultFlattenEmptyDirectories = sharedDemoFileTreeOptions.flattenEmptyDirectories ?? false;
   const [flattenEmptyDirectories, setFlattenEmptyDirectoriesState] = useState(
-    initialFlattenEmptyDirectories
+    initialFlattenEmptyDirectories,
   );
   const skipCookieWriteRef = useRef(false);
 
@@ -74,7 +70,7 @@ export function TreesDevSettingsProvider({
     const cookieSuffix = `; path=/; max-age=${cookieMaxAge}`;
     document.cookie = `${FILE_TREE_COOKIE_VERSION_NAME}=${FILE_TREE_COOKIE_VERSION}${cookieSuffix}`;
     document.cookie = `${FILE_TREE_COOKIE_FLATTEN}=${
-      flattenEmptyDirectories ? '1' : '0'
+      flattenEmptyDirectories ? "1" : "0"
     }${cookieSuffix}`;
   }, [cookieMaxAge, flattenEmptyDirectories]);
 
@@ -84,12 +80,10 @@ export function TreesDevSettingsProvider({
       setFlattenEmptyDirectories,
       handleResetControls,
     }),
-    [flattenEmptyDirectories, handleResetControls, setFlattenEmptyDirectories]
+    [flattenEmptyDirectories, handleResetControls, setFlattenEmptyDirectories],
   );
 
   return (
-    <TreesDevSettingsContext.Provider value={value}>
-      {children}
-    </TreesDevSettingsContext.Provider>
+    <TreesDevSettingsContext.Provider value={value}>{children}</TreesDevSettingsContext.Provider>
   );
 }

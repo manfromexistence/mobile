@@ -1,18 +1,18 @@
-import { faStop } from "@fortawesome/free-solid-svg-icons"
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import { useRef, useState } from "react"
-import { useMessages } from "../utils/messages.context"
-import { type MediaData, type Message, Screen } from "../utils/types"
-import { useIntervalWhen } from "../utils/use-interval-when"
-import { useWllama } from "../utils/wllama.context"
-import { MarkdownMessage } from "./MarkdownMessage"
-import ScreenWrapper from "./ScreenWrapper"
+import { faStop } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRef, useState } from "react";
+import { useMessages } from "../utils/messages.context";
+import { type MediaData, type Message, Screen } from "../utils/types";
+import { useIntervalWhen } from "../utils/use-interval-when";
+import { useWllama } from "../utils/wllama.context";
+import { MarkdownMessage } from "./MarkdownMessage";
+import ScreenWrapper from "./ScreenWrapper";
 
 export default function ChatScreen() {
-  const [input, setInput] = useState("")
-  const [pendingMedia, setPendingMedia] = useState<MediaData | null>(null)
-  const imageInputRef = useRef<HTMLInputElement>(null)
-  const audioInputRef = useRef<HTMLInputElement>(null)
+  const [input, setInput] = useState("");
+  const [pendingMedia, setPendingMedia] = useState<MediaData | null>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const audioInputRef = useRef<HTMLInputElement>(null);
   const {
     currentConvId,
     isGenerating,
@@ -21,71 +21,69 @@ export default function ChatScreen() {
     loadedModel,
     stopCompletion,
     currRuntimeInfo,
-  } = useWllama()
+  } = useWllama();
   const {
     getConversationById,
     addMessageToConversation,
     editMessageInConversation,
     newConversation,
-  } = useMessages()
+  } = useMessages();
 
-  useIntervalWhen(chatScrollToBottom, 500, isGenerating, true)
+  useIntervalWhen(chatScrollToBottom, 500, isGenerating, true);
 
-  const currConv = getConversationById(currentConvId)
-  const supportsMedia =
-    currRuntimeInfo?.supportsImage || currRuntimeInfo?.supportsAudio
+  const currConv = getConversationById(currentConvId);
+  const supportsMedia = currRuntimeInfo?.supportsImage || currRuntimeInfo?.supportsAudio;
 
-  const onPickFile =
-    (type: "image" | "audio") => (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0]
-      if (!file) return
-      const reader = new FileReader()
-      reader.onload = (ev) => {
-        setPendingMedia({
-          type,
-          data: ev.target!.result as ArrayBuffer,
-          dataUrl: URL.createObjectURL(file),
-        })
-      }
-      reader.readAsArrayBuffer(file)
-      e.target.value = ""
-    }
+  const onPickFile = (type: "image" | "audio") => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setPendingMedia({
+        type,
+        data: ev.target!.result as ArrayBuffer,
+        dataUrl: URL.createObjectURL(file),
+      });
+    };
+    reader.readAsArrayBuffer(file);
+    e.target.value = "";
+  };
 
   const onSubmit = async () => {
-    if (isGenerating) return
+    if (isGenerating) return;
 
-    const currHistory = currConv?.messages ?? []
-    const userInput = input
-    const media = pendingMedia
-    setInput("")
-    setPendingMedia(null)
+    const currHistory = currConv?.messages ?? [];
+    const userInput = input;
+    const media = pendingMedia;
+    setInput("");
+    setPendingMedia(null);
     const userMsg: Message = {
       id: Date.now(),
       content: userInput,
       role: "user",
       mediaData: media ?? undefined,
-    }
+    };
     const assistantMsg: Message = {
       id: Date.now() + 1,
       content: "",
       role: "assistant",
-    }
+    };
 
-    let convId = currConv?.id
+    let convId = currConv?.id;
     if (!convId) {
-      const newConv = newConversation(userMsg)
-      convId = newConv.id
-      navigateTo(Screen.CHAT, convId)
-      addMessageToConversation(convId, assistantMsg)
+      const newConv = newConversation(userMsg);
+      convId = newConv.id;
+      navigateTo(Screen.CHAT, convId);
+      addMessageToConversation(convId, assistantMsg);
     } else {
-      addMessageToConversation(convId, userMsg)
-      addMessageToConversation(convId, assistantMsg)
+      addMessageToConversation(convId, userMsg);
+      addMessageToConversation(convId, assistantMsg);
     }
 
     await createCompletion([...currHistory, userMsg], (newContent) => {
-      editMessageInConversation(convId, assistantMsg.id, newContent)
-    })
-  }
+      editMessageInConversation(convId, assistantMsg.id, newContent);
+    });
+  };
 
   return (
     <ScreenWrapper fitScreen>
@@ -99,21 +97,12 @@ export default function ChatScreen() {
                 <div className="chat chat-end" key={msg.id}>
                   <div className="chat-bubble">
                     {msg.mediaData?.type === "image" && (
-                      <img
-                        src={msg.mediaData.dataUrl}
-                        className="max-w-48 rounded mb-1"
-                      />
+                      <img src={msg.mediaData.dataUrl} className="max-w-48 rounded mb-1" />
                     )}
                     {msg.mediaData?.type === "audio" && (
-                      <audio
-                        controls
-                        src={msg.mediaData.dataUrl}
-                        className="mb-1"
-                      />
+                      <audio controls src={msg.mediaData.dataUrl} className="mb-1" />
                     )}
-                    {msg.content.length > 0 && (
-                      <MarkdownMessage content={msg.content} />
-                    )}
+                    {msg.content.length > 0 && <MarkdownMessage content={msg.content} />}
                   </div>
                 </div>
               ) : (
@@ -122,12 +111,10 @@ export default function ChatScreen() {
                     {msg.content.length === 0 && isGenerating && (
                       <span className="loading loading-dots"></span>
                     )}
-                    {msg.content.length > 0 && (
-                      <MarkdownMessage content={msg.content} />
-                    )}
+                    {msg.content.length > 0 && <MarkdownMessage content={msg.content} />}
                   </div>
                 </div>
-              )
+              ),
             )}
           </>
         ) : (
@@ -137,10 +124,7 @@ export default function ChatScreen() {
       <div className="flex flex-col input-message py-4">
         {isGenerating && (
           <div className="text-center">
-            <button
-              className="btn btn-outline btn-sm mb-4"
-              onClick={stopCompletion}
-            >
+            <button className="btn btn-outline btn-sm mb-4" onClick={stopCompletion}>
               <FontAwesomeIcon icon={faStop} />
               Stop generation
             </button>
@@ -152,10 +136,7 @@ export default function ChatScreen() {
             {pendingMedia && (
               <div className="flex items-center gap-2 mb-2">
                 {pendingMedia.type === "image" ? (
-                  <img
-                    src={pendingMedia.dataUrl}
-                    className="h-16 w-16 object-cover rounded"
-                  />
+                  <img src={pendingMedia.dataUrl} className="h-16 w-16 object-cover rounded" />
                 ) : (
                   <audio controls src={pendingMedia.dataUrl} />
                 )}
@@ -197,8 +178,8 @@ export default function ChatScreen() {
                         <li>
                           <a
                             onMouseDown={(e) => {
-                              e.preventDefault()
-                              imageInputRef.current?.click()
+                              e.preventDefault();
+                              imageInputRef.current?.click();
                             }}
                           >
                             Image
@@ -209,8 +190,8 @@ export default function ChatScreen() {
                         <li>
                           <a
                             onMouseDown={(e) => {
-                              e.preventDefault()
-                              audioInputRef.current?.click()
+                              e.preventDefault();
+                              audioInputRef.current?.click();
                             }}
                           >
                             Audio
@@ -229,8 +210,8 @@ export default function ChatScreen() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.keyCode == 13 && e.shiftKey == false) {
-                    e.preventDefault()
-                    onSubmit()
+                    e.preventDefault();
+                    onSubmit();
                   }
                 }}
               />
@@ -245,11 +226,11 @@ export default function ChatScreen() {
         </small>
       </div>
     </ScreenWrapper>
-  )
+  );
 }
 
 function WarnNoModel() {
-  const { navigateTo } = useWllama()
+  const { navigateTo } = useWllama();
 
   return (
     <div role="alert" className="alert">
@@ -268,21 +249,18 @@ function WarnNoModel() {
       </svg>
       <span>Model is not loaded</span>
       <div>
-        <button
-          className="btn btn-sm btn-primary"
-          onClick={() => navigateTo(Screen.MODEL)}
-        >
+        <button className="btn btn-sm btn-primary" onClick={() => navigateTo(Screen.MODEL)}>
           Select model
         </button>
       </div>
     </div>
-  )
+  );
 }
 
 const chatScrollToBottom = () => {
-  const elem = document.getElementById("chat-history")
+  const elem = document.getElementById("chat-history");
   elem?.scrollTo({
     top: elem.scrollHeight,
     behavior: "smooth",
-  })
-}
+  });
+};

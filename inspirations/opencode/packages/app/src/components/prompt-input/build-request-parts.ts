@@ -1,56 +1,61 @@
-import { getFilename } from "@opencode-ai/core/util/path"
-import { type AgentPartInput, type FilePartInput, type Part, type TextPartInput } from "@opencode-ai/sdk/v2/client"
-import type { FileSelection } from "@/context/file"
-import { encodeFilePath } from "@/context/file/path"
-import type { AgentPart, FileAttachmentPart, ImageAttachmentPart, Prompt } from "@/context/prompt"
-import { Identifier } from "@/utils/id"
-import { createCommentMetadata, formatCommentNote } from "@/utils/comment-note"
+import { getFilename } from "@opencode-ai/core/util/path";
+import {
+  type AgentPartInput,
+  type FilePartInput,
+  type Part,
+  type TextPartInput,
+} from "@opencode-ai/sdk/v2/client";
+import type { FileSelection } from "@/context/file";
+import { encodeFilePath } from "@/context/file/path";
+import type { AgentPart, FileAttachmentPart, ImageAttachmentPart, Prompt } from "@/context/prompt";
+import { Identifier } from "@/utils/id";
+import { createCommentMetadata, formatCommentNote } from "@/utils/comment-note";
 
-type PromptRequestPart = (TextPartInput | FilePartInput | AgentPartInput) & { id: string }
+type PromptRequestPart = (TextPartInput | FilePartInput | AgentPartInput) & { id: string };
 
 type ContextFile = {
-  key: string
-  type: "file"
-  path: string
-  selection?: FileSelection
-  comment?: string
-  commentID?: string
-  commentOrigin?: "review" | "file"
-  preview?: string
-}
+  key: string;
+  type: "file";
+  path: string;
+  selection?: FileSelection;
+  comment?: string;
+  commentID?: string;
+  commentOrigin?: "review" | "file";
+  preview?: string;
+};
 
 type BuildRequestPartsInput = {
-  prompt: Prompt
-  context: ContextFile[]
-  images: ImageAttachmentPart[]
-  text: string
-  messageID: string
-  sessionID: string
-  sessionDirectory: string
-}
+  prompt: Prompt;
+  context: ContextFile[];
+  images: ImageAttachmentPart[];
+  text: string;
+  messageID: string;
+  sessionID: string;
+  sessionDirectory: string;
+};
 
 const absolute = (directory: string, path: string) => {
-  if (path.startsWith("/")) return path
-  if (/^[A-Za-z]:[\\/]/.test(path) || /^[A-Za-z]:$/.test(path)) return path
-  if (path.startsWith("\\\\") || path.startsWith("//")) return path
-  return `${directory.replace(/[\\/]+$/, "")}/${path}`
-}
+  if (path.startsWith("/")) return path;
+  if (/^[A-Za-z]:[\\/]/.test(path) || /^[A-Za-z]:$/.test(path)) return path;
+  if (path.startsWith("\\\\") || path.startsWith("//")) return path;
+  return `${directory.replace(/[\\/]+$/, "")}/${path}`;
+};
 
 const fileQuery = (selection: FileSelection | undefined) =>
-  selection ? `?start=${selection.startLine}&end=${selection.endLine}` : ""
+  selection ? `?start=${selection.startLine}&end=${selection.endLine}` : "";
 
-const mention = /(^|[\s([{"'])@(\S+)/g
+const mention = /(^|[\s([{"'])@(\S+)/g;
 
 const parseCommentMentions = (comment: string) => {
   return Array.from(comment.matchAll(mention)).flatMap((match) => {
-    const path = (match[2] ?? "").replace(/[.,!?;:)}\]"']+$/, "")
-    if (!path) return []
-    return [path]
-  })
-}
+    const path = (match[2] ?? "").replace(/[.,!?;:)}\]"']+$/, "");
+    if (!path) return [];
+    return [path];
+  });
+};
 
-const isFileAttachment = (part: Prompt[number]): part is FileAttachmentPart => part.type === "file"
-const isAgentAttachment = (part: Prompt[number]): part is AgentPart => part.type === "agent"
+const isFileAttachment = (part: Prompt[number]): part is FileAttachmentPart => part.type === "file";
+const isAgentAttachment = (part: Prompt[number]): part is AgentPart => part.type === "agent";
 
 const toOptimisticPart = (part: PromptRequestPart, sessionID: string, messageID: string): Part => {
   if (part.type === "text") {
@@ -64,7 +69,7 @@ const toOptimisticPart = (part: PromptRequestPart, sessionID: string, messageID:
       metadata: part.metadata,
       sessionID,
       messageID,
-    }
+    };
   }
   if (part.type === "file") {
     return {
@@ -76,7 +81,7 @@ const toOptimisticPart = (part: PromptRequestPart, sessionID: string, messageID:
       source: part.source,
       sessionID,
       messageID,
-    }
+    };
   }
   return {
     id: part.id,
@@ -85,8 +90,8 @@ const toOptimisticPart = (part: PromptRequestPart, sessionID: string, messageID:
     source: part.source,
     sessionID,
     messageID,
-  }
-}
+  };
+};
 
 export function buildRequestParts(input: BuildRequestPartsInput) {
   const requestParts: PromptRequestPart[] = [
@@ -95,10 +100,10 @@ export function buildRequestParts(input: BuildRequestPartsInput) {
       type: "text",
       text: input.text,
     },
-  ]
+  ];
 
   const files = input.prompt.filter(isFileAttachment).map((attachment) => {
-    const path = absolute(input.sessionDirectory, attachment.path)
+    const path = absolute(input.sessionDirectory, attachment.path);
     const source = attachment.source
       ? {
           ...attachment.source,
@@ -116,7 +121,7 @@ export function buildRequestParts(input: BuildRequestPartsInput) {
             end: attachment.end,
           },
           path,
-        }
+        };
     return {
       id: Identifier.ascending("part"),
       type: "file",
@@ -124,8 +129,8 @@ export function buildRequestParts(input: BuildRequestPartsInput) {
       url: attachment.url ?? `file://${encodeFilePath(path)}${fileQuery(attachment.selection)}`,
       filename: attachment.filename ?? getFilename(attachment.path),
       source,
-    } satisfies PromptRequestPart
-  })
+    } satisfies PromptRequestPart;
+  });
 
   const agents = input.prompt.filter(isAgentAttachment).map((attachment) => {
     return {
@@ -137,16 +142,16 @@ export function buildRequestParts(input: BuildRequestPartsInput) {
         start: attachment.start,
         end: attachment.end,
       },
-    } satisfies PromptRequestPart
-  })
+    } satisfies PromptRequestPart;
+  });
 
-  const used = new Set(files.map((part) => part.url))
+  const used = new Set(files.map((part) => part.url));
   const context = input.context.flatMap((item) => {
-    const path = absolute(input.sessionDirectory, item.path)
-    const url = `file://${encodeFilePath(path)}${fileQuery(item.selection)}`
-    const comment = item.comment?.trim()
-    if (!comment && used.has(url)) return []
-    used.add(url)
+    const path = absolute(input.sessionDirectory, item.path);
+    const url = `file://${encodeFilePath(path)}${fileQuery(item.selection)}`;
+    const comment = item.comment?.trim();
+    if (!comment && used.has(url)) return [];
+    used.add(url);
 
     const filePart = {
       id: Identifier.ascending("part"),
@@ -154,14 +159,14 @@ export function buildRequestParts(input: BuildRequestPartsInput) {
       mime: "text/plain",
       url,
       filename: getFilename(item.path),
-    } satisfies PromptRequestPart
+    } satisfies PromptRequestPart;
 
-    if (!comment) return [filePart]
+    if (!comment) return [filePart];
 
     const mentions = parseCommentMentions(comment).flatMap((path) => {
-      const url = `file://${encodeFilePath(absolute(input.sessionDirectory, path))}`
-      if (used.has(url)) return []
-      used.add(url)
+      const url = `file://${encodeFilePath(absolute(input.sessionDirectory, path))}`;
+      if (used.has(url)) return [];
+      used.add(url);
       return [
         {
           id: Identifier.ascending("part"),
@@ -170,8 +175,8 @@ export function buildRequestParts(input: BuildRequestPartsInput) {
           url,
           filename: getFilename(path),
         } satisfies PromptRequestPart,
-      ]
-    })
+      ];
+    });
 
     return [
       {
@@ -189,8 +194,8 @@ export function buildRequestParts(input: BuildRequestPartsInput) {
       } satisfies PromptRequestPart,
       filePart,
       ...mentions,
-    ]
-  })
+    ];
+  });
 
   const images = input.images.map((attachment) => {
     return {
@@ -199,13 +204,15 @@ export function buildRequestParts(input: BuildRequestPartsInput) {
       mime: attachment.mime,
       url: attachment.dataUrl,
       filename: attachment.sourcePath ?? attachment.filename,
-    } satisfies PromptRequestPart
-  })
+    } satisfies PromptRequestPart;
+  });
 
-  requestParts.push(...files, ...context, ...agents, ...images)
+  requestParts.push(...files, ...context, ...agents, ...images);
 
   return {
     requestParts,
-    optimisticParts: requestParts.map((part) => toOptimisticPart(part, input.sessionID, input.messageID)),
-  }
+    optimisticParts: requestParts.map((part) =>
+      toOptimisticPart(part, input.sessionID, input.messageID),
+    ),
+  };
 }

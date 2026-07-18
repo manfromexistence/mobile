@@ -35,7 +35,7 @@ describe("benchmark — engineToCompressFn adapter", () => {
     // The adapter must return a string and it must not be longer than the input
     assert.ok(
       out.length <= repetitive.length,
-      `expected shorter output, got ${out.length} vs ${repetitive.length}`
+      `expected shorter output, got ${out.length} vs ${repetitive.length}`,
     );
   });
 });
@@ -56,7 +56,7 @@ describe("benchmark — benchmarkEngines", () => {
       assert.equal(
         typeof report.meanSavingsPercent,
         "number",
-        `${engineId}: meanSavingsPercent must be a number`
+        `${engineId}: meanSavingsPercent must be a number`,
       );
     }
   });
@@ -65,7 +65,7 @@ describe("benchmark — benchmarkEngines", () => {
     for (const [engineId, report] of Object.entries(reports)) {
       assert.ok(
         report.meanRetention >= 0 && report.meanRetention <= 1,
-        `${engineId}: meanRetention ${report.meanRetention} must be in [0,1]`
+        `${engineId}: meanRetention ${report.meanRetention} must be in [0,1]`,
       );
     }
   });
@@ -75,7 +75,7 @@ describe("benchmark — benchmarkEngines", () => {
       assert.equal(
         report.results.length,
         BENCHMARK_CORPUS.length,
-        `${engineId}: expected ${BENCHMARK_CORPUS.length} result(s), got ${report.results.length}`
+        `${engineId}: expected ${BENCHMARK_CORPUS.length} result(s), got ${report.results.length}`,
       );
     }
   });
@@ -100,7 +100,7 @@ describe("benchmark — compareReports", () => {
     for (let i = 1; i < summary.length; i++) {
       assert.ok(
         summary[i - 1].meanSavingsPercent >= summary[i].meanSavingsPercent,
-        `row ${i - 1} savings ${summary[i - 1].meanSavingsPercent} should be >= row ${i} savings ${summary[i].meanSavingsPercent}`
+        `row ${i - 1} savings ${summary[i - 1].meanSavingsPercent} should be >= row ${i} savings ${summary[i].meanSavingsPercent}`,
       );
     }
   });
@@ -121,7 +121,7 @@ describe("benchmark — runBenchmarkGate (N4)", () => {
     }
     baselines["rtk"] = {
       tasks: Object.fromEntries(
-        Object.entries(taskTotals).map(([k, v]) => [k, Math.round(v.sum / v.count)])
+        Object.entries(taskTotals).map(([k, v]) => [k, Math.round(v.sum / v.count)]),
       ),
     };
 
@@ -157,17 +157,17 @@ describe("benchmark — reproducibility", () => {
       assert.equal(
         r1[id].meanSavingsPercent,
         r2[id].meanSavingsPercent,
-        `${id}: non-deterministic meanSavingsPercent`
+        `${id}: non-deterministic meanSavingsPercent`,
       );
       assert.equal(
         r1[id].meanRetention,
         r2[id].meanRetention,
-        `${id}: non-deterministic meanRetention`
+        `${id}: non-deterministic meanRetention`,
       );
       assert.equal(
         r1[id].totalCompressedTokens,
         r2[id].totalCompressedTokens,
-        `${id}: non-deterministic totalCompressedTokens`
+        `${id}: non-deterministic totalCompressedTokens`,
       );
     }
   });

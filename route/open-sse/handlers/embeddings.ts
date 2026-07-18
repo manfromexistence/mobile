@@ -89,9 +89,9 @@ export async function handleEmbedding({
       enabled: detailedLoggingEnabled,
       captureStreamChunks,
       connectionId: connectionId || undefined,
-      model: model || body.model as string,
+      model: model || (body.model as string),
       provider: provider || undefined,
-    }
+    },
   );
 
   // Log client raw request
@@ -99,7 +99,7 @@ export async function handleEmbedding({
     reqLogger.logClientRawRequest(
       clientRawRequest.endpoint,
       clientRawRequest.body,
-      clientRawRequest.headers
+      clientRawRequest.headers,
     );
   }
 
@@ -196,7 +196,7 @@ export async function handleEmbedding({
   if (log) {
     log.info(
       "EMBED",
-      `${provider}/${model} | input: ${Array.isArray(body.input) ? body.input.length + " items" : "1 item"}`
+      `${provider}/${model} | input: ${Array.isArray(body.input) ? body.input.length + " items" : "1 item"}`,
     );
   }
 
@@ -245,7 +245,7 @@ export async function handleEmbedding({
       // Build client error response
       const clientErrorBody = toJsonErrorPayload(
         errorText.slice(0, 500),
-        "Embedding provider error"
+        "Embedding provider error",
       );
       reqLogger.logConvertedResponse(clientErrorBody);
 

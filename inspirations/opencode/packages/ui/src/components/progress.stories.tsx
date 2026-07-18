@@ -1,6 +1,6 @@
 // @ts-nocheck
-import * as mod from "./progress"
-import { create } from "../storybook/scaffold"
+import * as mod from "./progress";
+import { create } from "../storybook/scaffold";
 
 const docs = `### Overview
 Linear progress indicator with optional label and value display.
@@ -24,7 +24,7 @@ Use in forms, uploads, or background tasks.
 ### Theming/tokens
 - Uses \`data-component="progress"\` with track/fill slots.
 
-`
+`;
 
 const story = create({
   title: "UI/Progress",
@@ -35,7 +35,7 @@ const story = create({
     children: "Progress",
     showValueLabel: true,
   },
-})
+});
 
 export default {
   title: "UI/Progress",
@@ -49,9 +49,9 @@ export default {
       },
     },
   },
-}
+};
 
-export const Basic = story.Basic
+export const Basic = story.Basic;
 
 export const NoLabel = {
   args: {
@@ -60,8 +60,8 @@ export const NoLabel = {
     showValueLabel: false,
     value: 30,
   },
-}
+};
 
 export const Indeterminate = {
   render: () => <mod.Progress>Loading</mod.Progress>,
-}
+};

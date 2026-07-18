@@ -33,13 +33,13 @@ describe("GLM Coding provider registry surfaces", () => {
     };
 
     expect(buildGlmOpenAIChatUrl(providerSpecificData)).toBe(
-      "https://proxy.example/glm/api/coding/paas/v4/chat/completions?tenant=alpha&route=glm"
+      "https://proxy.example/glm/api/coding/paas/v4/chat/completions?tenant=alpha&route=glm",
     );
     expect(
       buildGlmAnthropicMessagesUrl({
         anthropicBaseUrl:
           "https://proxy.example/glm/api/anthropic/v1/messages?tenant=alpha&route=glm",
-      })
+      }),
     ).toBe("https://proxy.example/glm/api/anthropic/v1/messages?tenant=alpha&route=glm&beta=true");
   });
 
@@ -76,7 +76,7 @@ describe("GLM Coding provider registry surfaces", () => {
     expect(entry?.requestDefaults).toEqual({ maxTokens: 16384 });
     expect(entry?.timeoutMs).toBe(3000000);
     expect(getProviderModels("glmcn").map((model) => model.id)).toEqual(
-      getProviderModels("glm").map((model) => model.id)
+      getProviderModels("glm").map((model) => model.id),
     );
   });
 

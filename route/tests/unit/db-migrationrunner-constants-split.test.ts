@@ -42,7 +42,7 @@ describe("migrationRunner/constants — exact small-table snapshots", () => {
         "033:add_batch_id_to_call_logs",
         "046:remove_status_from_files",
         "051:remove_status_from_files",
-      ]
+      ],
     );
   });
 
@@ -101,7 +101,7 @@ describe("migrationRunner/constants — large-table integrity", () => {
       assert.equal(typeof e.description, "string");
     }
     const byVersion = Object.fromEntries(
-      PHYSICAL_SCHEMA_SENTINELS.map((e) => [e.version, e.tableName])
+      PHYSICAL_SCHEMA_SENTINELS.map((e) => [e.version, e.tableName]),
     );
     assert.equal(byVersion["064"], "session_model_history");
     assert.equal(byVersion["002"], "mcp_tool_audit");

@@ -72,7 +72,7 @@ function extractClaudePlan(tokens: unknown, extra: unknown): string | undefined 
   return firstNonEmptyString(
     extractPlanFromPayload(tokens),
     extractPlanFromPayload(extraData.userInfo),
-    extractPlanFromPayload(extra)
+    extractPlanFromPayload(extra),
   );
 }
 

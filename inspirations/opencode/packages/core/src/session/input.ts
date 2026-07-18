@@ -1,22 +1,22 @@
-export * as SessionInput from "./input"
+export * as SessionInput from "./input";
 
-import { and, asc, eq, isNull, lte } from "drizzle-orm"
-import { DateTime, Effect, Schema } from "effect"
-import { Admitted, Delivery } from "@opencode-ai/schema/session-input"
-import type { Database } from "../database/database"
-import type { EventV2 } from "../event"
-import { SessionEvent } from "./event"
-import { SessionMessage } from "./message"
-import { Prompt } from "./prompt"
-import { SessionSchema } from "./schema"
-import { SessionInputTable, SessionMessageTable } from "./sql"
+import { and, asc, eq, isNull, lte } from "drizzle-orm";
+import { DateTime, Effect, Schema } from "effect";
+import { Admitted, Delivery } from "@opencode-ai/schema/session-input";
+import type { Database } from "../database/database";
+import type { EventV2 } from "../event";
+import { SessionEvent } from "./event";
+import { SessionMessage } from "./message";
+import { Prompt } from "./prompt";
+import { SessionSchema } from "./schema";
+import { SessionInputTable, SessionMessageTable } from "./sql";
 
-type DatabaseService = Database.Interface["db"]
+type DatabaseService = Database.Interface["db"];
 
-export { Admitted, Delivery }
+export { Admitted, Delivery };
 
-const decodePrompt = Schema.decodeUnknownSync(Prompt)
-const encodePrompt = Schema.encodeSync(Prompt)
+const decodePrompt = Schema.decodeUnknownSync(Prompt);
+const encodePrompt = Schema.encodeSync(Prompt);
 
 const fromRow = (row: typeof SessionInputTable.$inferSelect): Admitted =>
   Admitted.make({
@@ -27,30 +27,41 @@ const fromRow = (row: typeof SessionInputTable.$inferSelect): Admitted =>
     delivery: row.delivery,
     timeCreated: DateTime.makeUnsafe(row.time_created),
     ...(row.promoted_seq === null ? {} : { promotedSeq: row.promoted_seq }),
-  })
+  });
 
-export const find = Effect.fn("SessionInput.find")(function* (db: DatabaseService, id: SessionMessage.ID) {
-  const row = yield* db.select().from(SessionInputTable).where(eq(SessionInputTable.id, id)).get().pipe(Effect.orDie)
-  return row === undefined ? undefined : fromRow(row)
-})
-
-export class LifecycleConflict extends Schema.TaggedErrorClass<LifecycleConflict>()("SessionInput.LifecycleConflict", {
+export const find = Effect.fn("SessionInput.find")(function* (
+  db: DatabaseService,
   id: SessionMessage.ID,
-}) {}
+) {
+  const row = yield* db
+    .select()
+    .from(SessionInputTable)
+    .where(eq(SessionInputTable.id, id))
+    .get()
+    .pipe(Effect.orDie);
+  return row === undefined ? undefined : fromRow(row);
+});
+
+export class LifecycleConflict extends Schema.TaggedErrorClass<LifecycleConflict>()(
+  "SessionInput.LifecycleConflict",
+  {
+    id: SessionMessage.ID,
+  },
+) {}
 
 export const admit = Effect.fn("SessionInput.admit")(function* (
   db: DatabaseService,
   events: EventV2.Interface,
   input: {
-    readonly id: SessionMessage.ID
-    readonly sessionID: SessionSchema.ID
-    readonly prompt: Prompt
-    readonly delivery: Delivery
+    readonly id: SessionMessage.ID;
+    readonly sessionID: SessionSchema.ID;
+    readonly prompt: Prompt;
+    readonly delivery: Delivery;
   },
 ) {
-  const existing = yield* find(db, input.id)
-  if (existing !== undefined) return existing
-  const timestamp = yield* DateTime.now
+  const existing = yield* find(db, input.id);
+  if (existing !== undefined) return existing;
+  const timestamp = yield* DateTime.now;
   return yield* events
     .publish(SessionEvent.PromptAdmitted, {
       messageID: input.id,
@@ -75,20 +86,22 @@ export const admit = Effect.fn("SessionInput.admit")(function* (
             ),
       ),
       Effect.catchDefect((defect) =>
-        find(db, input.id).pipe(Effect.flatMap((stored) => (stored ? Effect.succeed(stored) : Effect.die(defect)))),
+        find(db, input.id).pipe(
+          Effect.flatMap((stored) => (stored ? Effect.succeed(stored) : Effect.die(defect))),
+        ),
       ),
-    )
-})
+    );
+});
 
 export const projectAdmitted = Effect.fn("SessionInput.projectAdmitted")(function* (
   db: DatabaseService,
   input: {
-    readonly admittedSeq: number
-    readonly id: SessionMessage.ID
-    readonly sessionID: SessionSchema.ID
-    readonly prompt: Prompt
-    readonly delivery: Delivery
-    readonly timeCreated: DateTime.Utc
+    readonly admittedSeq: number;
+    readonly id: SessionMessage.ID;
+    readonly sessionID: SessionSchema.ID;
+    readonly prompt: Prompt;
+    readonly delivery: Delivery;
+    readonly timeCreated: DateTime.Utc;
   },
 ) {
   const message = yield* db
@@ -96,8 +109,8 @@ export const projectAdmitted = Effect.fn("SessionInput.projectAdmitted")(functio
     .from(SessionMessageTable)
     .where(eq(SessionMessageTable.id, input.id))
     .get()
-    .pipe(Effect.orDie)
-  if (message !== undefined) return yield* Effect.die(new LifecycleConflict({ id: input.id }))
+    .pipe(Effect.orDie);
+  if (message !== undefined) return yield* Effect.die(new LifecycleConflict({ id: input.id }));
   const stored = yield* db
     .insert(SessionInputTable)
     .values({
@@ -111,19 +124,19 @@ export const projectAdmitted = Effect.fn("SessionInput.projectAdmitted")(functio
     .onConflictDoNothing()
     .returning({ id: SessionInputTable.id })
     .get()
-    .pipe(Effect.orDie)
-  if (!stored) return yield* Effect.die(new LifecycleConflict({ id: input.id }))
-})
+    .pipe(Effect.orDie);
+  if (!stored) return yield* Effect.die(new LifecycleConflict({ id: input.id }));
+});
 
 export const projectPrompted = Effect.fn("SessionInput.projectPrompted")(function* (
   db: DatabaseService,
   input: {
-    readonly id: SessionMessage.ID
-    readonly sessionID: SessionSchema.ID
-    readonly prompt: Prompt
-    readonly delivery: Delivery
-    readonly timeCreated: DateTime.Utc
-    readonly promotedSeq: number
+    readonly id: SessionMessage.ID;
+    readonly sessionID: SessionSchema.ID;
+    readonly prompt: Prompt;
+    readonly delivery: Delivery;
+    readonly timeCreated: DateTime.Utc;
+    readonly promotedSeq: number;
   },
 ) {
   const updated = yield* db
@@ -138,18 +151,19 @@ export const projectPrompted = Effect.fn("SessionInput.projectPrompted")(functio
     )
     .returning()
     .get()
-    .pipe(Effect.orDie)
+    .pipe(Effect.orDie);
   if (updated) {
-    const stored = fromRow(updated)
-    if (!matchesProjection(stored, input)) return yield* Effect.die(new LifecycleConflict({ id: input.id }))
-    return
+    const stored = fromRow(updated);
+    if (!matchesProjection(stored, input))
+      return yield* Effect.die(new LifecycleConflict({ id: input.id }));
+    return;
   }
 
-  const stored = yield* find(db, input.id)
+  const stored = yield* find(db, input.id);
   if (stored) {
     if (!matchesProjection(stored, input) || stored.promotedSeq !== input.promotedSeq)
-      return yield* Effect.die(new LifecycleConflict({ id: input.id }))
-    return
+      return yield* Effect.die(new LifecycleConflict({ id: input.id }));
+    return;
   }
 
   yield* db
@@ -164,8 +178,8 @@ export const projectPrompted = Effect.fn("SessionInput.projectPrompted")(functio
       time_created: DateTime.toEpochMillis(input.timeCreated),
     })
     .run()
-    .pipe(Effect.orDie)
-})
+    .pipe(Effect.orDie);
+});
 
 export const hasPending = Effect.fn("SessionInput.hasPending")(function* (
   db: DatabaseService,
@@ -184,34 +198,37 @@ export const hasPending = Effect.fn("SessionInput.hasPending")(function* (
     )
     .limit(1)
     .get()
-    .pipe(Effect.orDie)
-  return row !== undefined
-})
+    .pipe(Effect.orDie);
+  return row !== undefined;
+});
 
 export const equivalent = (
   input: Admitted,
   expected: {
-    readonly sessionID: SessionSchema.ID
-    readonly prompt: Prompt
-    readonly delivery: Delivery
+    readonly sessionID: SessionSchema.ID;
+    readonly prompt: Prompt;
+    readonly delivery: Delivery;
   },
-) => input.delivery === expected.delivery && matchesPrompt(input, expected)
+) => input.delivery === expected.delivery && matchesPrompt(input, expected);
 
-const matchesPrompt = (input: Admitted, expected: { readonly sessionID: SessionSchema.ID; readonly prompt: Prompt }) =>
+const matchesPrompt = (
+  input: Admitted,
+  expected: { readonly sessionID: SessionSchema.ID; readonly prompt: Prompt },
+) =>
   input.sessionID === expected.sessionID &&
-  JSON.stringify(encodePrompt(input.prompt)) === JSON.stringify(encodePrompt(expected.prompt))
+  JSON.stringify(encodePrompt(input.prompt)) === JSON.stringify(encodePrompt(expected.prompt));
 
 const matchesProjection = (
   input: Admitted,
   expected: {
-    readonly sessionID: SessionSchema.ID
-    readonly prompt: Prompt
-    readonly delivery: Delivery
-    readonly timeCreated: DateTime.Utc
+    readonly sessionID: SessionSchema.ID;
+    readonly prompt: Prompt;
+    readonly delivery: Delivery;
+    readonly timeCreated: DateTime.Utc;
   },
 ) =>
   equivalent(input, expected) &&
-  DateTime.toEpochMillis(input.timeCreated) === DateTime.toEpochMillis(expected.timeCreated)
+  DateTime.toEpochMillis(input.timeCreated) === DateTime.toEpochMillis(expected.timeCreated);
 
 const publish = Effect.fn("SessionInput.publish")(function* (
   db: DatabaseService,
@@ -220,7 +237,7 @@ const publish = Effect.fn("SessionInput.publish")(function* (
   rows: ReadonlyArray<typeof SessionInputTable.$inferSelect>,
 ) {
   for (const row of rows) {
-    const id = SessionMessage.ID.make(row.id)
+    const id = SessionMessage.ID.make(row.id);
     yield* events
       .publish(SessionEvent.Prompted, {
         sessionID,
@@ -233,14 +250,16 @@ const publish = Effect.fn("SessionInput.publish")(function* (
         Effect.catchDefect((defect) =>
           defect instanceof LifecycleConflict
             ? find(db, id).pipe(
-                Effect.flatMap((stored) => (stored?.promotedSeq === undefined ? Effect.die(defect) : Effect.void)),
+                Effect.flatMap((stored) =>
+                  stored?.promotedSeq === undefined ? Effect.die(defect) : Effect.void,
+                ),
               )
             : Effect.die(defect),
         ),
-      )
+      );
   }
-  return rows.length
-})
+  return rows.length;
+});
 
 export const promoteSteers = Effect.fn("SessionInput.promoteSteers")(function* (
   db: DatabaseService,
@@ -261,9 +280,9 @@ export const promoteSteers = Effect.fn("SessionInput.promoteSteers")(function* (
     )
     .orderBy(asc(SessionInputTable.admitted_seq))
     .all()
-    .pipe(Effect.orDie)
-  return yield* publish(db, events, sessionID, rows)
-})
+    .pipe(Effect.orDie);
+  return yield* publish(db, events, sessionID, rows);
+});
 
 export const promoteNextQueued = Effect.fn("SessionInput.promoteNextQueued")(function* (
   db: DatabaseService,
@@ -283,6 +302,8 @@ export const promoteNextQueued = Effect.fn("SessionInput.promoteNextQueued")(fun
     .orderBy(asc(SessionInputTable.admitted_seq))
     .limit(1)
     .get()
-    .pipe(Effect.orDie)
-  return row === undefined ? false : yield* publish(db, events, sessionID, [row]).pipe(Effect.as(true))
-})
+    .pipe(Effect.orDie);
+  return row === undefined
+    ? false
+    : yield* publish(db, events, sessionID, [row]).pipe(Effect.as(true));
+});

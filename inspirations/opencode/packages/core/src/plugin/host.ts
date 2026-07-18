@@ -1,30 +1,30 @@
-export * as PluginHost from "./host"
+export * as PluginHost from "./host";
 
-import type { PluginContext as Interface } from "@opencode-ai/plugin/v2/effect"
-import { Effect, Schema } from "effect"
-import { AgentV2 } from "../agent"
-import { AISDK } from "../aisdk"
-import { Catalog } from "../catalog"
-import { CommandV2 } from "../command"
-import { Credential } from "../credential"
-import { Integration } from "../integration"
-import { ModelV2 } from "../model"
-import { PluginV2 } from "../plugin"
-import { ProviderV2 } from "../provider"
-import { Reference } from "../reference"
-import type { DeepMutable } from "../schema"
-import { SkillV2 } from "../skill"
+import type { PluginContext as Interface } from "@opencode-ai/plugin/v2/effect";
+import { Effect, Schema } from "effect";
+import { AgentV2 } from "../agent";
+import { AISDK } from "../aisdk";
+import { Catalog } from "../catalog";
+import { CommandV2 } from "../command";
+import { Credential } from "../credential";
+import { Integration } from "../integration";
+import { ModelV2 } from "../model";
+import { PluginV2 } from "../plugin";
+import { ProviderV2 } from "../provider";
+import { Reference } from "../reference";
+import type { DeepMutable } from "../schema";
+import { SkillV2 } from "../skill";
 
-const mutable = <T>(value: T) => value as DeepMutable<T>
+const mutable = <T>(value: T) => value as DeepMutable<T>;
 
 export const make = Effect.fn("PluginHost.make")(function* (plugin: PluginV2.Interface) {
-  const agents = yield* AgentV2.Service
-  const aisdk = yield* AISDK.Service
-  const catalog = yield* Catalog.Service
-  const commands = yield* CommandV2.Service
-  const integration = yield* Integration.Service
-  const reference = yield* Reference.Service
-  const skill = yield* SkillV2.Service
+  const agents = yield* AgentV2.Service;
+  const aisdk = yield* AISDK.Service;
+  const catalog = yield* Catalog.Service;
+  const commands = yield* CommandV2.Service;
+  const integration = yield* Integration.Service;
+  const reference = yield* Reference.Service;
+  const skill = yield* SkillV2.Service;
 
   return {
     options: {},
@@ -49,11 +49,11 @@ export const make = Effect.fn("PluginHost.make")(function* (plugin: PluginV2.Int
             package: event.package,
             options: event.options,
             sdk: event.sdk,
-          }
-          const result = callback(output)
+          };
+          const result = callback(output);
           return Effect.suspend(() => (Effect.isEffect(result) ? result : Effect.void)).pipe(
             Effect.tap(() => Effect.sync(() => (event.sdk = output.sdk))),
-          )
+          );
         }),
       language: (callback) =>
         aisdk.hook.language((event) => {
@@ -62,11 +62,11 @@ export const make = Effect.fn("PluginHost.make")(function* (plugin: PluginV2.Int
             sdk: event.sdk,
             options: event.options,
             language: event.language,
-          }
-          const result = callback(output)
+          };
+          const result = callback(output);
           return Effect.suspend(() => (Effect.isEffect(result) ? result : Effect.void)).pipe(
             Effect.tap(() => Effect.sync(() => (event.language = output.language))),
-          )
+          );
         }),
     },
     catalog: {
@@ -84,7 +84,11 @@ export const make = Effect.fn("PluginHost.make")(function* (plugin: PluginV2.Int
               get: (providerID, modelID) =>
                 mutable(draft.model.get(ProviderV2.ID.make(providerID), ModelV2.ID.make(modelID))),
               update: (providerID, modelID, update) =>
-                draft.model.update(ProviderV2.ID.make(providerID), ModelV2.ID.make(modelID), update),
+                draft.model.update(
+                  ProviderV2.ID.make(providerID),
+                  ModelV2.ID.make(modelID),
+                  update,
+                ),
               remove: (providerID, modelID) =>
                 draft.model.remove(ProviderV2.ID.make(providerID), ModelV2.ID.make(modelID)),
               default: {
@@ -106,7 +110,9 @@ export const make = Effect.fn("PluginHost.make")(function* (plugin: PluginV2.Int
         active: (id) => integration.connection.active(Integration.ID.make(id)),
         resolve: (connection) =>
           integration.connection.resolve(
-            connection.type === "credential" ? { ...connection, id: Credential.ID.make(connection.id) } : connection,
+            connection.type === "credential"
+              ? { ...connection, id: Credential.ID.make(connection.id) }
+              : connection,
           ),
       },
       transform: (callback) =>
@@ -120,8 +126,8 @@ export const make = Effect.fn("PluginHost.make")(function* (plugin: PluginV2.Int
               list: (id) => mutable(draft.method.list(Integration.ID.make(id))),
               update: (input) => {
                 if ("authorize" in input) {
-                  const methodID = Integration.MethodID.make(input.method.id)
-                  const refresh = input.refresh
+                  const methodID = Integration.MethodID.make(input.method.id);
+                  const refresh = input.refresh;
                   draft.method.update({
                     integrationID: Integration.ID.make(input.integrationID),
                     method: { ...input.method, id: methodID },
@@ -139,7 +145,7 @@ export const make = Effect.fn("PluginHost.make")(function* (plugin: PluginV2.Int
                                   }),
                                 ),
                               ),
-                            }
+                            };
                           }
                           return {
                             ...authorization,
@@ -152,7 +158,7 @@ export const make = Effect.fn("PluginHost.make")(function* (plugin: PluginV2.Int
                                   }),
                                 ),
                               ),
-                          }
+                          };
                         }),
                       ),
                     ...(refresh
@@ -169,23 +175,26 @@ export const make = Effect.fn("PluginHost.make")(function* (plugin: PluginV2.Int
                         }
                       : {}),
                     ...(input.label ? { label: input.label } : {}),
-                  })
-                  return
+                  });
+                  return;
                 }
                 if (input.method.type === "env") {
                   draft.method.update({
                     integrationID: Integration.ID.make(input.integrationID),
                     method: { type: "env", names: input.method.names },
-                  })
-                  return
+                  });
+                  return;
                 }
                 draft.method.update({
                   integrationID: Integration.ID.make(input.integrationID),
                   method: { type: "key", label: input.method.label },
-                })
+                });
               },
               remove: (id, method) =>
-                draft.method.remove(Integration.ID.make(id), Schema.decodeUnknownSync(Integration.Method)(method)),
+                draft.method.remove(
+                  Integration.ID.make(id),
+                  Schema.decodeUnknownSync(Integration.Method)(method),
+                ),
             },
           }),
         ),
@@ -199,7 +208,8 @@ export const make = Effect.fn("PluginHost.make")(function* (plugin: PluginV2.Int
       transform: (callback) =>
         reference.transform((draft) =>
           callback({
-            add: (name, source) => draft.add(name, Schema.decodeUnknownSync(Reference.Source)(source)),
+            add: (name, source) =>
+              draft.add(name, Schema.decodeUnknownSync(Reference.Source)(source)),
             remove: draft.remove,
             list: draft.list,
           }),
@@ -215,5 +225,5 @@ export const make = Effect.fn("PluginHost.make")(function* (plugin: PluginV2.Int
           }),
         ),
     },
-  } satisfies Interface
-})
+  } satisfies Interface;
+});

@@ -11,15 +11,15 @@ import {
   type ThemeRegistrationResolved,
   type ThemesType,
   type ThemeTypes,
-} from '@pierre/diffs';
-import type { ThemeLike } from '@pierre/theming';
+} from "@pierre/diffs";
+import type { ThemeLike } from "@pierre/theming";
 
 import {
   isThemePair,
   requireThemeValueName,
   type ThemeNameSelection,
   type ThemePair,
-} from './ThemeSource';
+} from "./ThemeSource";
 
 export type DiffThemeValue = string | (ThemeLike & { name: string });
 export type DiffThemeInput = DiffThemeValue | ThemePair<DiffThemeValue>;
@@ -41,7 +41,7 @@ export function diffThemeProps(sel: ThemeNameSelection): {
 
 export function diffThemeSelectionFromInput(
   input: DiffThemeInput,
-  colorScheme: 'dark' | 'light'
+  colorScheme: "dark" | "light",
 ): ThemeNameSelection {
   if (isThemePair(input)) {
     return {
@@ -55,14 +55,12 @@ export function diffThemeSelectionFromInput(
 }
 
 function nameForDiffThemeValue(value: DiffThemeValue): string {
-  if (typeof value === 'string') return value;
+  if (typeof value === "string") return value;
 
   const name = requireThemeValueName(value);
   if (!seededDiffThemeNames.has(name)) {
     seededDiffThemeNames.add(name);
-    registerCustomTheme(name, () =>
-      Promise.resolve(value as ThemeRegistrationResolved)
-    );
+    registerCustomTheme(name, () => Promise.resolve(value as ThemeRegistrationResolved));
   }
   return name;
 }

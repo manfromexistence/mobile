@@ -46,10 +46,10 @@ export type HfSuggestedModelSortBy = "downloads" | "likes";
 export function sortHfSuggestedModels(
   models: readonly HfModelSummary[],
   sortBy: HfSuggestedModelSortBy = "downloads",
-  limit = 20
+  limit = 20,
 ): HfModelSummary[] {
   const valid = (models ?? []).filter(
-    (m): m is HfModelSummary => !!m && typeof m.id === "string" && m.id.trim().length > 0
+    (m): m is HfModelSummary => !!m && typeof m.id === "string" && m.id.trim().length > 0,
   );
 
   const sorted = [...valid].sort((a, b) => {

@@ -48,7 +48,7 @@ function extractExpiresAt(idToken: string): string | null {
 
 function extractCodexAccountId(
   idToken: string,
-  tokensAccountId: string | undefined
+  tokensAccountId: string | undefined,
 ): string | null {
   if (tokensAccountId && tokensAccountId.trim()) return tokensAccountId.trim();
   const payload = decodeJwtPayload(idToken);

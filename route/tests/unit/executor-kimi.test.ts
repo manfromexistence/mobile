@@ -35,7 +35,7 @@ describe("KimiExecutor", () => {
         ],
       },
       false,
-      { apiKey: "test" }
+      { apiKey: "test" },
     ) as TransformedBody;
 
     assert.ok(Array.isArray(transformed.messages));
@@ -63,7 +63,7 @@ describe("KimiExecutor", () => {
         ],
       },
       false,
-      { apiKey: "test" }
+      { apiKey: "test" },
     ) as TransformedBody;
 
     const assistant = transformed.messages?.[1];
@@ -72,7 +72,7 @@ describe("KimiExecutor", () => {
     const content = assistant.content as Array<Record<string, unknown>>;
     assert.deepEqual(
       content.map((block) => block.type),
-      ["text", "thinking", "tool_use", "text"]
+      ["text", "thinking", "tool_use", "text"],
     );
     assert.deepEqual(content[1], {
       type: "thinking",
@@ -90,7 +90,7 @@ describe("KimiExecutor", () => {
         messages: [{ role: "user", content: [{ type: "text", text: "hi" }] }],
       },
       false,
-      { apiKey: "test" }
+      { apiKey: "test" },
     ) as TransformedBody;
 
     assert.deepEqual(transformed.thinking, {
@@ -123,7 +123,7 @@ describe("KimiExecutor", () => {
         ],
       },
       false,
-      { apiKey: "test" }
+      { apiKey: "test" },
     ) as TransformedBody;
 
     assert.equal(transformed.messages?.[1]?.reasoning_content, undefined);

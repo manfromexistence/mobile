@@ -93,7 +93,7 @@ test("polyfill UUID has correct variant bits (8, 9, a, or b in the 17th position
   const variantNibble = uuid[19];
   assert.ok(
     ["8", "9", "a", "b"].includes(variantNibble),
-    `Variant nibble should be 8/9/a/b, got '${variantNibble}'`
+    `Variant nibble should be 8/9/a/b, got '${variantNibble}'`,
   );
 });
 
@@ -107,7 +107,7 @@ test("polyfill prefers getRandomValues when available", () => {
   assert.equal(
     getRandomValuesCalled(),
     true,
-    "Should have called getRandomValues instead of Math.random"
+    "Should have called getRandomValues instead of Math.random",
   );
 });
 

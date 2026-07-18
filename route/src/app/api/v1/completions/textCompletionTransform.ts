@@ -79,7 +79,7 @@ function transformLine(line: string, requestedModel?: string): string {
  * shape to text-completion shape, passing through blank separators and `[DONE]`.
  */
 export function createTextCompletionStreamTransformer(
-  requestedModel?: string
+  requestedModel?: string,
 ): TransformStream<Uint8Array, Uint8Array> {
   const decoder = new TextDecoder();
   const encoder = new TextEncoder();
@@ -110,7 +110,7 @@ export function createTextCompletionStreamTransformer(
  */
 export async function asTextCompletionResponse(
   res: Response,
-  requestedModel?: string
+  requestedModel?: string,
 ): Promise<Response> {
   if (!res.ok) return res;
   const contentType = res.headers.get("content-type") || "";
@@ -126,7 +126,7 @@ export async function asTextCompletionResponse(
       {
         status: res.status,
         headers,
-      }
+      },
     );
   }
 

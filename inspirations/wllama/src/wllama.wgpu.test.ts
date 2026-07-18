@@ -1,8 +1,8 @@
-import { test, expect } from 'vitest';
-import { Wllama } from './wllama';
+import { test, expect } from "vitest";
+import { Wllama } from "./wllama";
 
 const CONFIG_PATHS = {
-  default: '/src/wasm/wllama.wasm',
+  default: "/src/wasm/wllama.wasm",
 };
 
 // TODO: enable compat mode in tests once test infrastructure supports Safari/asyncify
@@ -13,14 +13,14 @@ const createWllama = (): Wllama => {
 };
 
 const TINY_MODEL =
-  'https://huggingface.co/ggml-org/models/resolve/main/tinyllamas/stories15M-q4_0.gguf';
+  "https://huggingface.co/ggml-org/models/resolve/main/tinyllamas/stories15M-q4_0.gguf";
 
-test('WebGPU is supported in this browser', () => {
+test("WebGPU is supported in this browser", () => {
   const wllama = createWllama();
   expect(wllama.isSupportWebGPU()).toBe(true);
 });
 
-test.sequential('loads model with WebGPU', async () => {
+test.sequential("loads model with WebGPU", async () => {
   const wllama = createWllama();
 
   expect(wllama.isSupportWebGPU()).toBe(true);
@@ -36,7 +36,7 @@ test.sequential('loads model with WebGPU', async () => {
   await wllama.exit();
 });
 
-test.sequential('generates completion with WebGPU', async () => {
+test.sequential("generates completion with WebGPU", async () => {
   const wllama = createWllama();
 
   expect(wllama.isSupportWebGPU()).toBe(true);
@@ -47,7 +47,7 @@ test.sequential('generates completion with WebGPU', async () => {
   });
 
   const res = await wllama.createCompletion({
-    prompt: 'Once upon a time',
+    prompt: "Once upon a time",
     max_tokens: 10,
     temperature: 0.0,
     top_p: 0.95,

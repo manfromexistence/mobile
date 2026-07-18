@@ -85,7 +85,7 @@ test("AC-9: successful PATCH writes settings.update with diff of changed keys", 
         localOnlyManageScopeBypassEnabled: false,
         currentPassword: "initial-pass-ac9",
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -117,7 +117,7 @@ test("AC-10a: PASSWORD_REQUIRED failure writes settings.update_failed", async ()
     await makeManagementSessionRequest("http://localhost/api/settings", {
       method: "PATCH",
       body: { localOnlyManageScopeBypassEnabled: false },
-    })
+    }),
   );
 
   assert.equal(response.status, 400);
@@ -132,7 +132,7 @@ test("AC-10a: PASSWORD_REQUIRED failure writes settings.update_failed", async ()
   assert.deepEqual(
     Object.keys(details).sort(),
     ["attempted_keys", "reason"],
-    "failure details must only contain reason + attempted_keys (no payload echo)"
+    "failure details must only contain reason + attempted_keys (no payload echo)",
   );
 
   // Persisted state unchanged.
@@ -150,7 +150,7 @@ test("AC-10b: PASSWORD_MISMATCH failure writes settings.update_failed", async ()
         localOnlyManageScopeBypassEnabled: false,
         currentPassword: "definitely-wrong",
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 401);
@@ -163,7 +163,7 @@ test("AC-10b: PASSWORD_MISMATCH failure writes settings.update_failed", async ()
   assert.equal(
     serialized.includes("definitely-wrong"),
     false,
-    "rejected currentPassword must not appear in audit row"
+    "rejected currentPassword must not appear in audit row",
   );
 
   const after = await settingsDb.getSettings();
@@ -180,7 +180,7 @@ test("AC-10c: BYPASS_PREFIX_NOT_ALLOWED failure writes settings.update_failed", 
         localOnlyManageScopeBypassPrefixes: ["/api/mcp/", "/api/cli-tools/runtime/"],
         currentPassword: "initial-pass-ac10c",
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 400);
@@ -204,7 +204,7 @@ test("AC-10d: zod validation failure (wrong type) writes settings.update_failed"
         localOnlyManageScopeBypassEnabled: "definitely-not-a-boolean",
         currentPassword: "initial-pass-ac10d",
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 400);
@@ -236,7 +236,7 @@ test("AC-11: diff records every changed key, including non-security keys", async
         localOnlyManageScopeBypassEnabled: false,
         currentPassword: "initial-pass-ac11",
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -264,7 +264,7 @@ test("idempotent PATCH (body matches current state) writes NO audit row", async 
         localOnlyManageScopeBypassEnabled: true, // same as default
         currentPassword: "initial-pass-noop",
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -272,7 +272,7 @@ test("idempotent PATCH (body matches current state) writes NO audit row", async 
   assert.equal(
     rows.length,
     0,
-    `idempotent PATCH must not emit an audit row, got: ${JSON.stringify(rows)}`
+    `idempotent PATCH must not emit an audit row, got: ${JSON.stringify(rows)}`,
   );
 });
 
@@ -286,7 +286,7 @@ test("sequence: failure then success produces exactly 1 failure row + 1 success 
     await makeManagementSessionRequest("http://localhost/api/settings", {
       method: "PATCH",
       body: { localOnlyManageScopeBypassEnabled: false, currentPassword: "wrong" },
-    })
+    }),
   );
   // 2) success
   await settingsRoute.PATCH(
@@ -296,7 +296,7 @@ test("sequence: failure then success produces exactly 1 failure row + 1 success 
         localOnlyManageScopeBypassEnabled: false,
         currentPassword: "initial-pass-seq",
       },
-    })
+    }),
   );
 
   const rows = settingsRows();

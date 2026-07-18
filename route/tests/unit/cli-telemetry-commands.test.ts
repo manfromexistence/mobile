@@ -45,7 +45,7 @@ test("telemetry summary chama /api/telemetry/summary com period", async () => {
           total_requests: { value: 150000, delta: 0.12, trend: "up" },
           error_rate: { value: 0.005, delta: -0.002, trend: "down" },
         },
-      })
+      }),
     );
   }) as any;
 

@@ -1,46 +1,48 @@
-export * as GlobTool from "./glob"
+export * as GlobTool from "./glob";
 
-import { ToolFailure } from "@opencode-ai/llm"
-import { Effect, Layer, Schema } from "effect"
-import path from "path"
-import { makeLocationNode } from "../effect/app-node"
-import { FileSystem } from "../filesystem"
-import { Location } from "../location"
-import { Ripgrep } from "../ripgrep"
-import { RelativePath } from "../schema"
-import { PermissionV2 } from "../permission"
-import { ToolRegistry } from "./registry"
-import { Tool } from "./tool"
-import { Tools } from "./tools"
+import { ToolFailure } from "@opencode-ai/llm";
+import { Effect, Layer, Schema } from "effect";
+import path from "path";
+import { makeLocationNode } from "../effect/app-node";
+import { FileSystem } from "../filesystem";
+import { Location } from "../location";
+import { Ripgrep } from "../ripgrep";
+import { RelativePath } from "../schema";
+import { PermissionV2 } from "../permission";
+import { ToolRegistry } from "./registry";
+import { Tool } from "./tool";
+import { Tools } from "./tools";
 
-export const name = "glob"
+export const name = "glob";
 
 export const Input = Schema.Struct({
-  pattern: FileSystem.GlobInput.fields.pattern.annotate({ description: "Glob pattern to match files against" }),
+  pattern: FileSystem.GlobInput.fields.pattern.annotate({
+    description: "Glob pattern to match files against",
+  }),
   path: RelativePath.pipe(Schema.optional).annotate({
     description: "Relative directory to search. Defaults to the active Location.",
   }),
   limit: FileSystem.GlobInput.fields.limit.annotate({
     description: "Maximum results to return",
   }),
-})
+});
 
-export const Output = Schema.Array(FileSystem.Entry)
-type ModelOutput = typeof Output.Encoded
+export const Output = Schema.Array(FileSystem.Entry);
+type ModelOutput = typeof Output.Encoded;
 
 /** Format raw search results into the concise line-oriented output models expect. */
 export const toModelOutput = (output: ModelOutput) => {
-  const lines = output.length === 0 ? ["No files found"] : output.map((item) => item.path)
-  return lines.join("\n")
-}
+  const lines = output.length === 0 ? ["No files found"] : output.map((item) => item.path);
+  return lines.join("\n");
+};
 
 /** Glob leaf that defaults its filesystem root to the active Location. */
 const layer = Layer.effectDiscard(
   Effect.gen(function* () {
-    const tools = yield* Tools.Service
-    const ripgrep = yield* Ripgrep.Service
-    const location = yield* Location.Service
-    const permission = yield* PermissionV2.Service
+    const tools = yield* Tools.Service;
+    const ripgrep = yield* Ripgrep.Service;
+    const location = yield* Location.Service;
+    const permission = yield* PermissionV2.Service;
 
     yield* tools
       .register({
@@ -53,7 +55,10 @@ const layer = Layer.effectDiscard(
             {
               type: "text",
               text: toModelOutput(
-                output.map((entry) => ({ ...entry, path: path.resolve(location.directory, entry.path) })),
+                output.map((entry) => ({
+                  ...entry,
+                  path: path.resolve(location.directory, entry.path),
+                })),
               ),
             },
           ],
@@ -70,9 +75,13 @@ const layer = Layer.effectDiscard(
                 },
                 sessionID: context.sessionID,
                 agent: context.agent,
-                source: { type: "tool", messageID: context.assistantMessageID, callID: context.toolCallID },
-              })
-              const cwd = path.resolve(location.directory, input.path ?? ".")
+                source: {
+                  type: "tool",
+                  messageID: context.assistantMessageID,
+                  callID: context.toolCallID,
+                },
+              });
+              const cwd = path.resolve(location.directory, input.path ?? ".");
               return yield* ripgrep
                 .glob({
                   cwd,
@@ -84,22 +93,27 @@ const layer = Layer.effectDiscard(
                     result.map((entry) =>
                       FileSystem.Entry.make({
                         ...entry,
-                        path: RelativePath.make(path.relative(location.directory, path.resolve(cwd, entry.path))),
+                        path: RelativePath.make(
+                          path.relative(location.directory, path.resolve(cwd, entry.path)),
+                        ),
                       }),
                     ),
                   ),
-                )
+                );
             }).pipe(
-              Effect.mapError(() => new ToolFailure({ message: `Unable to find files matching ${input.pattern}` })),
+              Effect.mapError(
+                () =>
+                  new ToolFailure({ message: `Unable to find files matching ${input.pattern}` }),
+              ),
             ),
         }),
       })
-      .pipe(Effect.orDie)
+      .pipe(Effect.orDie);
   }),
-)
+);
 
 export const node = makeLocationNode({
   name: "tool/glob",
   layer,
   deps: [ToolRegistry.node, Ripgrep.node, Location.node, PermissionV2.node],
-})
+});

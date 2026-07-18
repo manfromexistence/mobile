@@ -40,11 +40,7 @@ async function writeCodexConfig(opts: {
 
   if (opts.authApiKey !== undefined) {
     const authPath = path.join(tmpDir, "auth.json");
-    await fs.writeFile(
-      authPath,
-      JSON.stringify({ OPENAI_API_KEY: opts.authApiKey }),
-      "utf-8"
-    );
+    await fs.writeFile(authPath, JSON.stringify({ OPENAI_API_KEY: opts.authApiKey }), "utf-8");
   }
 
   return configPath;
@@ -55,17 +51,14 @@ async function writeCodexConfig(opts: {
 test("claude: returns 'configured' when ANTHROPIC_BASE_URL is set", async () => {
   const configPath = await writeTempFile(
     "settings.json",
-    JSON.stringify({ env: { ANTHROPIC_BASE_URL: "http://localhost:20128" } })
+    JSON.stringify({ env: { ANTHROPIC_BASE_URL: "http://localhost:20128" } }),
   );
   const result = await checkToolConfigStatus("claude", configPath);
   assert.equal(result, "configured");
 });
 
 test("claude: returns 'not_configured' when ANTHROPIC_BASE_URL is absent", async () => {
-  const configPath = await writeTempFile(
-    "settings.json",
-    JSON.stringify({ env: {} })
-  );
+  const configPath = await writeTempFile("settings.json", JSON.stringify({ env: {} }));
   const result = await checkToolConfigStatus("claude", configPath);
   assert.equal(result, "not_configured");
 });
@@ -103,7 +96,7 @@ test("qwen: returns 'configured' when modelProviders has OmniRoute URL", async (
     "qwen.json",
     JSON.stringify({
       modelProviders: [{ apiBase: "http://localhost:20128/v1", name: "omniroute" }],
-    })
+    }),
   );
   const result = await checkToolConfigStatus("qwen", configPath);
   assert.equal(result, "configured");
@@ -120,7 +113,7 @@ test("qwen: returns 'not_configured' when modelProviders is missing", async () =
 test("hermes: returns 'configured' when config contains OmniRoute", async () => {
   const configPath = await writeTempFile(
     "hermes.toml",
-    `[openai]\nbase_url = "http://localhost:20128/v1"\n`
+    `[openai]\nbase_url = "http://localhost:20128/v1"\n`,
   );
   const result = await checkToolConfigStatus("hermes", configPath);
   assert.equal(result, "configured");
@@ -129,7 +122,7 @@ test("hermes: returns 'configured' when config contains OmniRoute", async () => 
 test("hermes: returns 'not_configured' when config points elsewhere", async () => {
   const configPath = await writeTempFile(
     "hermes.toml",
-    `[openai]\nbase_url = "https://api.openai.com"\n`
+    `[openai]\nbase_url = "https://api.openai.com"\n`,
   );
   const result = await checkToolConfigStatus("hermes", configPath);
   assert.equal(result, "not_configured");
@@ -140,7 +133,7 @@ test("hermes: returns 'not_configured' when config points elsewhere", async () =
 test("droid: returns 'configured' when JSON config contains sk_omniroute marker", async () => {
   const configPath = await writeTempFile(
     "droid.json",
-    JSON.stringify({ apiKey: "sk_omniroute_somekey", baseUrl: "http://localhost:20128/v1" })
+    JSON.stringify({ apiKey: "sk_omniroute_somekey", baseUrl: "http://localhost:20128/v1" }),
   );
   const result = await checkToolConfigStatus("droid", configPath);
   assert.equal(result, "configured");
@@ -149,7 +142,7 @@ test("droid: returns 'configured' when JSON config contains sk_omniroute marker"
 test("openclaw: returns 'configured' when JSON config contains omniroute text", async () => {
   const configPath = await writeTempFile(
     "openclaw.json",
-    JSON.stringify({ openAiBaseUrl: "http://omniroute.local/v1", openAiApiKey: "sk-test" })
+    JSON.stringify({ openAiBaseUrl: "http://omniroute.local/v1", openAiApiKey: "sk-test" }),
   );
   const result = await checkToolConfigStatus("openclaw", configPath);
   assert.equal(result, "configured");
@@ -161,7 +154,7 @@ test("cline: returns 'configured' when openAiBaseUrl is set with openai provider
     JSON.stringify({
       actModeApiProvider: "openai",
       openAiBaseUrl: "http://localhost:20128/v1",
-    })
+    }),
   );
   const result = await checkToolConfigStatus("cline", configPath);
   assert.equal(result, "configured");
@@ -170,7 +163,7 @@ test("cline: returns 'configured' when openAiBaseUrl is set with openai provider
 test("kilo: returns 'not_configured' when no OmniRoute markers present", async () => {
   const configPath = await writeTempFile(
     "kilo.json",
-    JSON.stringify({ apiProvider: "anthropic", model: "claude-3-sonnet" })
+    JSON.stringify({ apiProvider: "anthropic", model: "claude-3-sonnet" }),
   );
   const result = await checkToolConfigStatus("kilo", configPath);
   assert.equal(result, "not_configured");
@@ -186,10 +179,7 @@ test("error path: non-existent file returns 'not_configured' (no throw)", async 
 test("unknown toolId: returns 'unknown' (no configPath for unknown tool)", async () => {
   // unknown tool has no config path via getCliPrimaryConfigPath — configPathOverride not needed
   // but we can also test via override with a valid JSON file to hit the default branch
-  const configPath = await writeTempFile(
-    "unknown.json",
-    JSON.stringify({ foo: "bar" })
-  );
+  const configPath = await writeTempFile("unknown.json", JSON.stringify({ foo: "bar" }));
   const result = await checkToolConfigStatus("totally-unknown-tool-id", configPath);
   assert.equal(result, "unknown");
 });

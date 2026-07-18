@@ -18,9 +18,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-image-compat-shadow-")
-);
+const TEST_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-image-compat-shadow-"));
 process.env.DATA_DIR = TEST_DATA_DIR;
 
 const core = await import("../../src/lib/db/core.ts");
@@ -61,7 +59,7 @@ test("compatible node with prefix=cf must NOT shadow the built-in cloudflare-ai 
   assert.equal(
     info.provider,
     "cloudflare-ai",
-    "cf/ must keep routing to the built-in cloudflare-ai provider (not the compatible node)"
+    "cf/ must keep routing to the built-in cloudflare-ai provider (not the compatible node)",
   );
   assert.equal(info.model, "@cf/black-forest-labs/flux-2-klein-9b");
 });
@@ -74,7 +72,7 @@ test("non-reserved compatible-node prefix (oct) still routes to the compatible n
   assert.equal(
     info.provider,
     "openai-compatible-oct-passthrough",
-    "user-defined prefixes that don't collide with built-in aliases must still resolve to the compatible node"
+    "user-defined prefixes that don't collide with built-in aliases must still resolve to the compatible node",
   );
   assert.equal(info.model, "gpt-image-1");
 });

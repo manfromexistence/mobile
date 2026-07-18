@@ -4,13 +4,8 @@
   "title": "Metrics 01",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "A metrics section with a line chart.",
-  "dependencies": [
-    "date-fns"
-  ],
-  "registryDependencies": [
-    "@bklit/line-chart",
-    "https://chanhdai.com/r/style.json"
-  ],
+  "dependencies": ["date-fns"],
+  "registryDependencies": ["@bklit/line-chart", "https://chanhdai.com/r/style.json"],
   "files": [
     {
       "path": "src/registry/blocks/metrics-01/metrics-01.tsx",
@@ -29,8 +24,6 @@
     "createdAt": "2026-05-24",
     "previewClassName": "min-h-svh content-center-safe"
   },
-  "categories": [
-    "marketing"
-  ],
+  "categories": ["marketing"],
   "type": "registry:block"
 }

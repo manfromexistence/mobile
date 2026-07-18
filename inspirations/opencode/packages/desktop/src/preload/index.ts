@@ -1,14 +1,14 @@
-import { contextBridge, ipcRenderer, webUtils } from "electron"
-import type { ElectronAPI, WslServersEvent } from "./types"
-import type { UpdaterState } from "@opencode-ai/app/updater"
+import { contextBridge, ipcRenderer, webUtils } from "electron";
+import type { ElectronAPI, WslServersEvent } from "./types";
+import type { UpdaterState } from "@opencode-ai/app/updater";
 
-const updaterCallbacks = new Set<(state: UpdaterState) => void>()
-let updaterState: UpdaterState | undefined
-let updaterSubscription: Promise<void> | undefined
+const updaterCallbacks = new Set<(state: UpdaterState) => void>();
+let updaterState: UpdaterState | undefined;
+let updaterSubscription: Promise<void> | undefined;
 const updaterHandler = (_: unknown, state: UpdaterState) => {
-  updaterState = state
-  updaterCallbacks.forEach((callback) => callback(state))
-}
+  updaterState = state;
+  updaterCallbacks.forEach((callback) => callback(state));
+};
 
 const api: ElectronAPI = {
   killSidecar: () => ipcRenderer.invoke("kill-sidecar"),
@@ -17,13 +17,13 @@ const api: ElectronAPI = {
   wslServers: {
     getState: () => ipcRenderer.invoke("wsl-servers-get-state"),
     subscribe: (cb) => {
-      const handler = (_: unknown, event: WslServersEvent) => cb(event)
-      ipcRenderer.on("wsl-servers-event", handler)
-      void ipcRenderer.invoke("wsl-servers-subscribe")
+      const handler = (_: unknown, event: WslServersEvent) => cb(event);
+      ipcRenderer.on("wsl-servers-event", handler);
+      void ipcRenderer.invoke("wsl-servers-subscribe");
       return () => {
-        ipcRenderer.removeListener("wsl-servers-event", handler)
-        void ipcRenderer.invoke("wsl-servers-unsubscribe")
-      }
+        ipcRenderer.removeListener("wsl-servers-event", handler);
+        void ipcRenderer.invoke("wsl-servers-unsubscribe");
+      };
     },
     probeRuntime: () => ipcRenderer.invoke("wsl-servers-probe-runtime"),
     refreshDistros: () => ipcRenderer.invoke("wsl-servers-refresh-distros"),
@@ -38,20 +38,20 @@ const api: ElectronAPI = {
   },
   updater: {
     subscribe: async (cb) => {
-      updaterCallbacks.add(cb)
-      if (updaterState) cb(updaterState)
+      updaterCallbacks.add(cb);
+      if (updaterState) cb(updaterState);
       if (!updaterSubscription) {
-        ipcRenderer.on("updater-state", updaterHandler)
-        updaterSubscription = ipcRenderer.invoke("updater-subscribe")
+        ipcRenderer.on("updater-state", updaterHandler);
+        updaterSubscription = ipcRenderer.invoke("updater-subscribe");
       }
-      await updaterSubscription
+      await updaterSubscription;
       return () => {
-        updaterCallbacks.delete(cb)
-        if (updaterCallbacks.size > 0) return
-        ipcRenderer.removeListener("updater-state", updaterHandler)
-        updaterSubscription = undefined
-        void ipcRenderer.invoke("updater-unsubscribe")
-      }
+        updaterCallbacks.delete(cb);
+        if (updaterCallbacks.size > 0) return;
+        ipcRenderer.removeListener("updater-state", updaterHandler);
+        updaterSubscription = undefined;
+        void ipcRenderer.invoke("updater-unsubscribe");
+      };
     },
     check: () => ipcRenderer.invoke("updater-check"),
     install: () => ipcRenderer.invoke("updater-install"),
@@ -74,14 +74,14 @@ const api: ElectronAPI = {
   getWindowCount: () => ipcRenderer.invoke("get-window-count"),
   getWindowID: () => ipcRenderer.invoke("get-window-id"),
   onMenuCommand: (cb) => {
-    const handler = (_: unknown, id: string) => cb(id)
-    ipcRenderer.on("menu-command", handler)
-    return () => ipcRenderer.removeListener("menu-command", handler)
+    const handler = (_: unknown, id: string) => cb(id);
+    ipcRenderer.on("menu-command", handler);
+    return () => ipcRenderer.removeListener("menu-command", handler);
   },
   onDeepLink: (cb) => {
-    const handler = (_: unknown, urls: string[]) => cb(urls)
-    ipcRenderer.on("deep-link", handler)
-    return () => ipcRenderer.removeListener("deep-link", handler)
+    const handler = (_: unknown, urls: string[]) => cb(urls);
+    ipcRenderer.on("deep-link", handler);
+    return () => ipcRenderer.removeListener("deep-link", handler);
   },
 
   openDirectoryPicker: (opts) => ipcRenderer.invoke("open-directory-picker", opts),
@@ -103,20 +103,20 @@ const api: ElectronAPI = {
   getPinchZoomEnabled: () => ipcRenderer.invoke("get-pinch-zoom-enabled"),
   setPinchZoomEnabled: (enabled) => ipcRenderer.invoke("set-pinch-zoom-enabled", enabled),
   onPinchZoomEnabledChanged: (cb) => {
-    const handler = (_: unknown, enabled: boolean) => cb(enabled)
-    ipcRenderer.on("pinch-zoom-enabled-changed", handler)
-    return () => ipcRenderer.removeListener("pinch-zoom-enabled-changed", handler)
+    const handler = (_: unknown, enabled: boolean) => cb(enabled);
+    ipcRenderer.on("pinch-zoom-enabled-changed", handler);
+    return () => ipcRenderer.removeListener("pinch-zoom-enabled-changed", handler);
   },
   onZoomFactorChanged: (cb) => {
-    const handler = (_: unknown, factor: number) => cb(factor)
-    ipcRenderer.on("zoom-factor-changed", handler)
-    return () => ipcRenderer.removeListener("zoom-factor-changed", handler)
+    const handler = (_: unknown, factor: number) => cb(factor);
+    ipcRenderer.on("zoom-factor-changed", handler);
+    return () => ipcRenderer.removeListener("zoom-factor-changed", handler);
   },
   setTitlebar: (theme) => ipcRenderer.invoke("set-titlebar", theme),
   runDesktopMenuAction: (action) => ipcRenderer.invoke("run-desktop-menu-action", action),
   setBackgroundColor: (color: string) => ipcRenderer.invoke("set-background-color", color),
   exportDebugLogs: () => ipcRenderer.invoke("export-debug-logs"),
   recordFatalRendererError: (error) => ipcRenderer.invoke("record-fatal-renderer-error", error),
-}
+};
 
-contextBridge.exposeInMainWorld("api", api)
+contextBridge.exposeInMainWorld("api", api);

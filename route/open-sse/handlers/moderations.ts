@@ -33,7 +33,7 @@ export async function handleModeration({ body, credentials }) {
   if (!providerConfig) {
     return errorResponse(
       400,
-      `No moderation provider found for model "${model}". Available: openai`
+      `No moderation provider found for model "${model}". Available: openai`,
     );
   }
 

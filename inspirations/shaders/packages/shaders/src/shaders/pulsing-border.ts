@@ -1,7 +1,7 @@
-import type { vec4 } from '../types.js';
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { declarePI, textureRandomizerGB, colorBandingFix } from '../shader-utils.js';
+import type { vec4 } from "../types.js";
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { declarePI, textureRandomizerGB, colorBandingFix } from "../shader-utils.js";
 
 export const pulsingBorderMeta = {
   maxColorCount: 5,
@@ -60,7 +60,7 @@ precision lowp float;
 uniform float u_time;
 
 uniform vec4 u_colorBack;
-uniform vec4 u_colors[${ pulsingBorderMeta.maxColorCount }];
+uniform vec4 u_colors[${pulsingBorderMeta.maxColorCount}];
 uniform float u_colorsCount;
 uniform float u_roundness;
 uniform float u_thickness;
@@ -86,7 +86,7 @@ in vec2 v_patternUV;
 
 out vec4 fragColor;
 
-${ declarePI }
+${declarePI}
 
 float beat(float time) {
   float first = pow(abs(sin(time * TWO_PI)), 10.);
@@ -115,7 +115,7 @@ float roundedBox(vec2 uv, vec2 halfSize, float distance, float cornerDistance, f
   return border;
 }
 
-${ textureRandomizerGB }
+${textureRandomizerGB}
 
 float randomG(vec2 p) {
   vec2 uv = floor(p) / 100. + .5;
@@ -215,14 +215,14 @@ void main() {
 
   float angle = atan(borderUV.y, borderUV.x) / TWO_PI;
 
-  for (int colorIdx = 0; colorIdx < ${ pulsingBorderMeta.maxColorCount }; colorIdx++) {
+  for (int colorIdx = 0; colorIdx < ${pulsingBorderMeta.maxColorCount}; colorIdx++) {
     if (colorIdx >= int(u_colorsCount)) break;
     float colorIdxF = float(colorIdx);
 
     vec3 c = u_colors[colorIdx].rgb * u_colors[colorIdx].a;
     float a = u_colors[colorIdx].a;
 
-    for (int spotIdx = 0; spotIdx < ${ pulsingBorderMeta.maxSpots }; spotIdx++) {
+    for (int spotIdx = 0; spotIdx < ${pulsingBorderMeta.maxSpots}; spotIdx++) {
       if (spotIdx >= int(u_spots)) break;
       float spotIdxF = float(spotIdx);
 
@@ -268,7 +268,7 @@ void main() {
   vec3 color = accumColor + (1. - accumAlpha) * bgColor;
   float opacity = accumAlpha + (1. - accumAlpha) * u_colorBack.a;
 
-  ${ colorBandingFix }
+  ${colorBandingFix}
 
   fragColor = vec4(color, opacity);
 }`;

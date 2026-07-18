@@ -8,7 +8,7 @@ const DENSE =
   "\n" +
   Array.from(
     { length: 400 },
-    (_, i) => `const row_${i} = compute(${i * 17}, "${"v".repeat(80)}");`
+    (_, i) => `const row_${i} = compute(${i * 17}, "${"v".repeat(80)}");`,
   ).join("\n");
 
 const body = () => ({
@@ -37,13 +37,13 @@ test("stacked com step omniglyph recebe providerTransport (engine roda, não é 
   assert.ok(
     omniglyphStep!.techniquesUsed.includes("omniglyph:context-as-image"),
     `omniglyph deveria ter rodado (não pulado) — techniquesUsed=${JSON.stringify(
-      omniglyphStep!.techniquesUsed
-    )}`
+      omniglyphStep!.techniquesUsed,
+    )}`,
   );
   assert.equal(r.compressed, true);
   assert.ok(
     JSON.stringify(r.body).includes('"type":"image"'),
-    "stacked mantém a saída imageada (guard não reverte mais)"
+    "stacked mantém a saída imageada (guard não reverte mais)",
   );
 });
 

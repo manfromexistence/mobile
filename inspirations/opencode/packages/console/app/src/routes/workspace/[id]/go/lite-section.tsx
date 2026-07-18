@@ -1,30 +1,38 @@
-import { action, useParams, useAction, useSubmission, json, query, createAsync } from "@solidjs/router"
-import { createStore } from "solid-js/store"
-import { createMemo, For, Show } from "solid-js"
-import { Modal } from "~/component/modal"
-import { Billing } from "@opencode-ai/console-core/billing.js"
-import { Database, eq, and, isNull } from "@opencode-ai/console-core/drizzle/index.js"
-import { BillingTable, LiteTable } from "@opencode-ai/console-core/schema/billing.sql.js"
-import { WorkspaceTable } from "@opencode-ai/console-core/schema/workspace.sql.js"
-import { Actor } from "@opencode-ai/console-core/actor.js"
-import { Workspace } from "@opencode-ai/console-core/workspace.js"
-import { Subscription } from "@opencode-ai/console-core/subscription.js"
-import { LiteData } from "@opencode-ai/console-core/lite.js"
-import { withActor } from "~/context/auth.withActor"
-import { queryBillingInfo } from "../../common"
-import styles from "./lite-section.module.css"
-import { useI18n } from "~/context/i18n"
-import { useLanguage } from "~/context/language"
-import { formError } from "~/lib/form-error"
-import { formatResetTime, liteResetTimeKeys } from "~/lib/format-reset-time"
-import { createReferralFromCookie } from "~/lib/referral-invite"
-import { getRequestEvent } from "solid-js/web"
-import { countryFromRequest } from "~/lib/request-country"
+import {
+  action,
+  useParams,
+  useAction,
+  useSubmission,
+  json,
+  query,
+  createAsync,
+} from "@solidjs/router";
+import { createStore } from "solid-js/store";
+import { createMemo, For, Show } from "solid-js";
+import { Modal } from "~/component/modal";
+import { Billing } from "@opencode-ai/console-core/billing.js";
+import { Database, eq, and, isNull } from "@opencode-ai/console-core/drizzle/index.js";
+import { BillingTable, LiteTable } from "@opencode-ai/console-core/schema/billing.sql.js";
+import { WorkspaceTable } from "@opencode-ai/console-core/schema/workspace.sql.js";
+import { Actor } from "@opencode-ai/console-core/actor.js";
+import { Workspace } from "@opencode-ai/console-core/workspace.js";
+import { Subscription } from "@opencode-ai/console-core/subscription.js";
+import { LiteData } from "@opencode-ai/console-core/lite.js";
+import { withActor } from "~/context/auth.withActor";
+import { queryBillingInfo } from "../../common";
+import styles from "./lite-section.module.css";
+import { useI18n } from "~/context/i18n";
+import { useLanguage } from "~/context/language";
+import { formError } from "~/lib/form-error";
+import { formatResetTime, liteResetTimeKeys } from "~/lib/format-reset-time";
+import { createReferralFromCookie } from "~/lib/referral-invite";
+import { getRequestEvent } from "solid-js/web";
+import { countryFromRequest } from "~/lib/request-country";
 
-import { IconAlipay, IconUpi } from "~/component/icon"
+import { IconAlipay, IconUpi } from "~/component/icon";
 
 export const queryLiteSubscription = query(async (workspaceID: string) => {
-  "use server"
+  "use server";
   return withActor(async () => {
     const row = await Database.use((tx) =>
       tx
@@ -45,17 +53,20 @@ export const queryLiteSubscription = query(async (workspaceID: string) => {
         .innerJoin(WorkspaceTable, eq(WorkspaceTable.id, BillingTable.workspaceID))
         .where(and(eq(LiteTable.workspaceID, Actor.workspace()), isNull(LiteTable.timeDeleted)))
         .then((r) => r[0]),
-    )
-    if (!row) return null
+    );
+    if (!row) return null;
 
-    const limits = LiteData.getLimits()
-    const mine = row.userID === Actor.userID()
+    const limits = LiteData.getLimits();
+    const mine = row.userID === Actor.userID();
 
     return {
       mine,
       useBalance: row.lite?.useBalance ?? false,
       region:
-        row.region ?? (await Workspace.setDefaultRegion({ country: countryFromRequest(getRequestEvent()?.request) })),
+        row.region ??
+        (await Workspace.setDefaultRegion({
+          country: countryFromRequest(getRequestEvent()?.request),
+        })),
       rollingUsage: Subscription.analyzeRollingUsage({
         limit: limits.rollingLimit,
         window: limits.rollingWindow,
@@ -73,32 +84,32 @@ export const queryLiteSubscription = query(async (workspaceID: string) => {
         timeUpdated: row.timeMonthlyUpdated ?? new Date(),
         timeSubscribed: row.timeCreated,
       }),
-    }
-  }, workspaceID)
-}, "lite.subscription.get")
+    };
+  }, workspaceID);
+}, "lite.subscription.get");
 
-type LiteSubscription = Awaited<ReturnType<typeof queryLiteSubscription>>
+type LiteSubscription = Awaited<ReturnType<typeof queryLiteSubscription>>;
 
 const createLiteCheckoutUrl = action(
   async (workspaceID: string, successUrl: string, cancelUrl: string, method?: "alipay" | "upi") => {
-    "use server"
+    "use server";
     return json(
       await withActor(async () => {
-        const data = await Billing.generateLiteCheckoutUrl({ successUrl, cancelUrl, method })
-        await createReferralFromCookie()
-        return { error: undefined, data }
+        const data = await Billing.generateLiteCheckoutUrl({ successUrl, cancelUrl, method });
+        await createReferralFromCookie();
+        return { error: undefined, data };
       }, workspaceID).catch((e) => ({
         error: e.message as string,
         data: undefined,
       })),
       { revalidate: [queryBillingInfo.key, queryLiteSubscription.key] },
-    )
+    );
   },
   "liteCheckoutUrl",
-)
+);
 
 const createSessionUrl = action(async (workspaceID: string, returnUrl: string) => {
-  "use server"
+  "use server";
   return json(
     await withActor(
       () =>
@@ -111,14 +122,14 @@ const createSessionUrl = action(async (workspaceID: string, returnUrl: string) =
       workspaceID,
     ),
     { revalidate: [queryBillingInfo.key, queryLiteSubscription.key] },
-  )
-}, "liteSessionUrl")
+  );
+}, "liteSessionUrl");
 
 const setLiteUseBalance = action(async (form: FormData) => {
-  "use server"
-  const workspaceID = form.get("workspaceID") as string | null
-  if (!workspaceID) return { error: formError.workspaceRequired }
-  const useBalance = (form.get("useBalance") as string | null) === "true"
+  "use server";
+  const workspaceID = form.get("workspaceID") as string | null;
+  if (!workspaceID) return { error: formError.workspaceRequired };
+  const useBalance = (form.get("useBalance") as string | null) === "true";
 
   return json(
     await withActor(async () => {
@@ -129,33 +140,38 @@ const setLiteUseBalance = action(async (form: FormData) => {
             lite: useBalance ? { useBalance: true } : {},
           })
           .where(eq(BillingTable.workspaceID, workspaceID)),
-      )
-      return { error: undefined }
+      );
+      return { error: undefined };
     }, workspaceID).catch((e) => ({ error: e.message as string })),
     { revalidate: [queryBillingInfo.key, queryLiteSubscription.key] },
-  )
-}, "setLiteUseBalance")
+  );
+}, "setLiteUseBalance");
 
 const setGoProviderRouting = action(async (form: FormData) => {
-  "use server"
-  const workspaceID = form.get("workspaceID") as string | null
-  if (!workspaceID) return { error: formError.workspaceRequired }
-  const useChinaProviders = (form.get("useChinaProviders") as string | null) === "true"
+  "use server";
+  const workspaceID = form.get("workspaceID") as string | null;
+  if (!workspaceID) return { error: formError.workspaceRequired };
+  const useChinaProviders = (form.get("useChinaProviders") as string | null) === "true";
 
   return json(
     await withActor(
       () =>
-        Workspace.update({ region: useChinaProviders ? ["us", "eu", "sg"] : ["us", "eu", "sg", "cn"] })
+        Workspace.update({
+          region: useChinaProviders ? ["us", "eu", "sg"] : ["us", "eu", "sg", "cn"],
+        })
           .then(() => ({ error: undefined }))
           .catch((e) => ({ error: e.message as string })),
       workspaceID,
     ),
     { revalidate: queryLiteSubscription.key },
-  )
-}, "go.providerRouting.set")
+  );
+}, "go.providerRouting.set");
 
-function LiteUsageItem(props: { label: string; usage: { usagePercent: number; resetInSec: number } }) {
-  const i18n = useI18n()
+function LiteUsageItem(props: {
+  label: string;
+  usage: { usagePercent: number; resetInSec: number };
+}) {
+  const i18n = useI18n();
 
   return (
     <div data-slot="usage-item">
@@ -171,46 +187,53 @@ function LiteUsageItem(props: { label: string; usage: { usagePercent: number; re
         {formatResetTime(props.usage.resetInSec, i18n, liteResetTimeKeys)}
       </span>
     </div>
-  )
+  );
 }
 
 export function LiteSection(props: { lite: LiteSubscription | undefined }) {
-  const params = useParams()
-  const i18n = useI18n()
-  const language = useLanguage()
-  const billingInfo = createAsync(() => queryBillingInfo(params.id!))
-  const isBlack = createMemo(() => billingInfo()?.subscriptionID || billingInfo()?.timeSubscriptionBooked)
-  const sessionAction = useAction(createSessionUrl)
-  const sessionSubmission = useSubmission(createSessionUrl)
-  const checkoutAction = useAction(createLiteCheckoutUrl)
-  const checkoutSubmission = useSubmission(createLiteCheckoutUrl)
-  const useBalanceSubmission = useSubmission(setLiteUseBalance)
-  const providerRoutingSubmission = useSubmission(setGoProviderRouting)
+  const params = useParams();
+  const i18n = useI18n();
+  const language = useLanguage();
+  const billingInfo = createAsync(() => queryBillingInfo(params.id!));
+  const isBlack = createMemo(
+    () => billingInfo()?.subscriptionID || billingInfo()?.timeSubscriptionBooked,
+  );
+  const sessionAction = useAction(createSessionUrl);
+  const sessionSubmission = useSubmission(createSessionUrl);
+  const checkoutAction = useAction(createLiteCheckoutUrl);
+  const checkoutSubmission = useSubmission(createLiteCheckoutUrl);
+  const useBalanceSubmission = useSubmission(setLiteUseBalance);
+  const providerRoutingSubmission = useSubmission(setGoProviderRouting);
   const [store, setStore] = createStore({
     loading: undefined as undefined | "session" | "checkout" | "alipay" | "upi",
     showModal: false,
-  })
+  });
 
-  const busy = createMemo(() => !!store.loading)
+  const busy = createMemo(() => !!store.loading);
 
   async function onClickSession() {
-    setStore("loading", "session")
-    const result = await sessionAction(params.id!, window.location.href)
+    setStore("loading", "session");
+    const result = await sessionAction(params.id!, window.location.href);
     if (result.data) {
-      window.location.href = result.data
-      return
+      window.location.href = result.data;
+      return;
     }
-    setStore("loading", undefined)
+    setStore("loading", undefined);
   }
 
   async function onClickSubscribe(method?: "alipay" | "upi") {
-    setStore("loading", method ?? "checkout")
-    const result = await checkoutAction(params.id!, window.location.href, window.location.href, method)
+    setStore("loading", method ?? "checkout");
+    const result = await checkoutAction(
+      params.id!,
+      window.location.href,
+      window.location.href,
+      method,
+    );
     if (result.data) {
-      window.location.href = result.data
-      return
+      window.location.href = result.data;
+      return;
     }
-    setStore("loading", undefined)
+    setStore("loading", undefined);
   }
 
   return (
@@ -226,7 +249,11 @@ export function LiteSection(props: { lite: LiteSubscription | undefined }) {
             <div data-slot="section-title">
               <div data-slot="title-row">
                 <p>{i18n.t("workspace.lite.subscription.message")}</p>
-                <button data-color="primary" disabled={sessionSubmission.pending || busy()} onClick={onClickSession}>
+                <button
+                  data-color="primary"
+                  disabled={sessionSubmission.pending || busy()}
+                  onClick={onClickSession}
+                >
                   {store.loading === "session"
                     ? i18n.t("workspace.lite.loading")
                     : i18n.t("workspace.lite.subscription.manage")}
@@ -235,15 +262,28 @@ export function LiteSection(props: { lite: LiteSubscription | undefined }) {
             </div>
             <div data-slot="beta-notice">
               {i18n.t("workspace.lite.subscription.selectProvider")}{" "}
-              <a href={language.route("/docs/providers/#opencode-go")} target="_blank" rel="noopener noreferrer">
+              <a
+                href={language.route("/docs/providers/#opencode-go")}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {i18n.t("common.learnMore")}
               </a>
               .
             </div>
             <div data-slot="usage">
-              <LiteUsageItem label={i18n.t("workspace.lite.subscription.rollingUsage")} usage={sub().rollingUsage} />
-              <LiteUsageItem label={i18n.t("workspace.lite.subscription.weeklyUsage")} usage={sub().weeklyUsage} />
-              <LiteUsageItem label={i18n.t("workspace.lite.subscription.monthlyUsage")} usage={sub().monthlyUsage} />
+              <LiteUsageItem
+                label={i18n.t("workspace.lite.subscription.rollingUsage")}
+                usage={sub().rollingUsage}
+              />
+              <LiteUsageItem
+                label={i18n.t("workspace.lite.subscription.weeklyUsage")}
+                usage={sub().weeklyUsage}
+              />
+              <LiteUsageItem
+                label={i18n.t("workspace.lite.subscription.monthlyUsage")}
+                usage={sub().monthlyUsage}
+              />
             </div>
             <form action={setLiteUseBalance} method="post" data-slot="setting-row">
               <p>{i18n.t("workspace.lite.subscription.useBalance")}</p>
@@ -299,8 +339,9 @@ export function LiteSection(props: { lite: LiteSubscription | undefined }) {
                 .filter(Boolean)}
             >
               {(part) => {
-                if (part === "{{price}}") return <strong>{i18n.t("workspace.lite.promo.price")}</strong>
-                return part
+                if (part === "{{price}}")
+                  return <strong>{i18n.t("workspace.lite.promo.price")}</strong>;
+                return part;
               }}
             </For>
           </p>
@@ -364,7 +405,9 @@ export function LiteSection(props: { lite: LiteSubscription | undefined }) {
                   <Show when={store.loading !== "alipay"}>
                     <IconAlipay style={{ width: "24px", height: "24px" }} />
                   </Show>
-                  {store.loading === "alipay" ? i18n.t("workspace.lite.promo.subscribing") : "Alipay"}
+                  {store.loading === "alipay"
+                    ? i18n.t("workspace.lite.promo.subscribing")
+                    : "Alipay"}
                 </button>
                 <button
                   type="button"
@@ -384,5 +427,5 @@ export function LiteSection(props: { lite: LiteSubscription | undefined }) {
         </section>
       </Show>
     </>
-  )
+  );
 }

@@ -34,7 +34,7 @@ test("parseOmniRoutePluginOptions: valid providerId → returns it", () => {
 test("parseOmniRoutePluginOptions: invalid providerId (special chars) → throws", () => {
   assert.throws(
     () => parseOmniRoutePluginOptions({ providerId: "omniroute prod!" }),
-    /providerId.*slug/i
+    /providerId.*slug/i,
   );
 });
 
@@ -66,7 +66,7 @@ test("parseOmniRoutePluginOptions: unknown key → throws (strict mode catches t
         providerId: "omniroute",
         provider_id: "typo-here",
       }),
-    /provider_id|unrecognized/i
+    /provider_id|unrecognized/i,
   );
 });
 

@@ -34,7 +34,7 @@ export function normalizeOciBaseUrl(value: string | null | undefined): string {
 
 export function buildOciChatUrl(
   value: string | null | undefined,
-  apiType: "chat" | "responses" = "chat"
+  apiType: "chat" | "responses" = "chat",
 ): string {
   return `${normalizeOciBaseUrl(value)}/${apiType === "responses" ? "responses" : "chat/completions"}`;
 }

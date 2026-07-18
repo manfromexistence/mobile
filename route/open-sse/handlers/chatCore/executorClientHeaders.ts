@@ -10,7 +10,7 @@
 
 export function buildExecutorClientHeaders(
   headers: Headers | Record<string, unknown> | null | undefined,
-  userAgent?: string | null
+  userAgent?: string | null,
 ) {
   const normalized: Record<string, string> = {};
 

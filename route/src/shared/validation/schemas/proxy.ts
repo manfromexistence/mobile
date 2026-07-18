@@ -19,7 +19,7 @@ export const proxyConfigSchema = z
     type: z
       .preprocess(
         (value) => (typeof value === "string" ? value.trim().toLowerCase() : value),
-        z.enum(["http", "https", "socks5"])
+        z.enum(["http", "https", "socks5"]),
       )
       .optional(),
     host: z.string().trim().min(1).optional(),
@@ -106,7 +106,7 @@ export const proxyRegistryFieldsSchema = z
     type: z
       .preprocess(
         (value) => (typeof value === "string" ? value.trim().toLowerCase() : value),
-        z.enum(["http", "https", "socks5", "vercel", "deno", "cloudflare"])
+        z.enum(["http", "https", "socks5", "vercel", "deno", "cloudflare"]),
       )
       .optional(),
     host: z.string().trim().min(1, "host is required").max(255),
@@ -137,7 +137,7 @@ export const createProxyRegistrySchema = proxyRegistryFieldsSchema
     type: z
       .preprocess(
         (value) => (typeof value === "string" ? value.trim().toLowerCase() : value),
-        z.enum(["http", "https", "socks5", "vercel", "deno", "cloudflare"])
+        z.enum(["http", "https", "socks5", "vercel", "deno", "cloudflare"]),
       )
       .optional()
       .default("http"),

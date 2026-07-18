@@ -256,7 +256,7 @@ class WebSocketSession {
       this.onData(chunk).catch((error) => {
         this.sendProtocolError(
           "frame_decode_failed",
-          error instanceof Error ? error.message : String(error)
+          error instanceof Error ? error.message : String(error),
         );
       });
     });
@@ -373,7 +373,7 @@ class WebSocketSession {
         this.sendProtocolError(
           "unknown_request",
           "No active request matches the provided id",
-          requestId
+          requestId,
         );
         return;
       }
@@ -384,7 +384,7 @@ class WebSocketSession {
     if (message.type !== "request") {
       this.sendProtocolError(
         "unsupported_type",
-        "Supported message types are request, cancel, and ping"
+        "Supported message types are request, cancel, and ping",
       );
       return;
     }
@@ -399,7 +399,7 @@ class WebSocketSession {
       this.sendProtocolError(
         "duplicate_request",
         "A request with this id is already in flight",
-        requestId
+        requestId,
       );
       return;
     }
@@ -408,7 +408,7 @@ class WebSocketSession {
       this.sendProtocolError(
         "invalid_payload",
         "request envelopes require an object payload",
-        requestId
+        requestId,
       );
       return;
     }
@@ -418,7 +418,7 @@ class WebSocketSession {
       this.sendProtocolError(
         "invalid_endpoint",
         "Endpoint must target a supported /v1 chat surface",
-        requestId
+        requestId,
       );
       return;
     }
@@ -592,7 +592,7 @@ export function createOmnirouteWsBridge({
               code: "upgrade_required",
             },
           }),
-          { Upgrade: "websocket" }
+          { Upgrade: "websocket" },
         );
         return true;
       }
@@ -614,7 +614,7 @@ export function createOmnirouteWsBridge({
                 message: "Missing sec-websocket-key header",
                 code: "bad_websocket_handshake",
               },
-            })
+            }),
           );
           return true;
         }
@@ -662,7 +662,7 @@ export function createOmnirouteWsBridge({
               message: error instanceof Error ? error.message : String(error),
               code: "websocket_bridge_failed",
             },
-          })
+          }),
         );
         return true;
       }

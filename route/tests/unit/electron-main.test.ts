@@ -69,7 +69,7 @@ describe("Electron packaging manifest completeness (#3292)", () => {
       for (const dep of localRequires(entry)) {
         assert.ok(
           files.includes(dep),
-          `electron/${dep} is require()d by ${entry} but missing from package.json build.files — the packaged app will crash with "Cannot find module"`
+          `electron/${dep} is require()d by ${entry} but missing from package.json build.files — the packaged app will crash with "Cannot find module"`,
         );
       }
     });
@@ -96,12 +96,12 @@ describe("Electron auto-updater rejection handling (v3.8.13)", () => {
     assert.match(
       body,
       /catch\s*\([\s\S]*?\)\s*\{/,
-      "checkForUpdates must catch the rejecting autoUpdater.checkForUpdates() call"
+      "checkForUpdates must catch the rejecting autoUpdater.checkForUpdates() call",
     );
     assert.match(
       body,
       /try[\s\S]*await autoUpdater\.checkForUpdates\(\)[\s\S]*catch/,
-      "autoUpdater.checkForUpdates() must sit inside the try block"
+      "autoUpdater.checkForUpdates() must sit inside the try block",
     );
   });
 });

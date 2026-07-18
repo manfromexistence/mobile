@@ -18,14 +18,14 @@ test("registry.mjs foi gerado e exporta registerApiCommands e API_TAGS", () => {
   const src = readFileSync(REGISTRY, "utf8");
   assert.ok(
     src.includes("export function registerApiCommands"),
-    "deve exportar registerApiCommands"
+    "deve exportar registerApiCommands",
   );
   assert.ok(src.includes("export const API_TAGS"), "deve exportar API_TAGS");
 });
 
 test("api-commands/ tem pelo menos 20 tag files gerados", () => {
   const files = readdirSync(API_COMMANDS_DIR).filter(
-    (f) => f.endsWith(".mjs") && f !== "registry.mjs"
+    (f) => f.endsWith(".mjs") && f !== "registry.mjs",
   );
   assert.ok(files.length >= 20, `esperado >=20 arquivos, encontrado ${files.length}`);
 });
@@ -82,7 +82,7 @@ test("generate-api-commands.mjs existe em scripts/cli/", () => {
   assert.ok(src.includes("IGNORED_OP_IDS"), "deve ter lista IGNORED_OP_IDS");
   assert.ok(
     src.includes("prepublishOnly") || src.includes("build:cli-api") || src.includes("generate"),
-    "deve mencionar build"
+    "deve mencionar build",
   );
 });
 

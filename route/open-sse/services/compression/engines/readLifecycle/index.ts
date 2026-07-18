@@ -155,7 +155,7 @@ function replaceResultText(content: unknown, stub: string): unknown {
     return content.map((part) =>
       isRecord(part) && part.type === "text" && typeof part.text === "string"
         ? { ...part, text: stub }
-        : part
+        : part,
     );
   }
   return stub;
@@ -168,7 +168,7 @@ function replaceResultText(content: unknown, stub: string): unknown {
 export function collapseSupersededReads(
   messages: MessageLike[],
   superseded: Set<string>,
-  readPathByCallId: Map<string, string>
+  readPathByCallId: Map<string, string>,
 ): { messages: MessageLike[]; collapsedCount: number } {
   if (superseded.size === 0) return { messages, collapsedCount: 0 };
   let collapsedCount = 0;
@@ -263,7 +263,7 @@ export const readLifecycleEngine: CompressionEngine = {
       const { messages: newMessages, collapsedCount } = collapseSupersededReads(
         messages as MessageLike[],
         superseded,
-        readPathByCallId
+        readPathByCallId,
       );
       if (collapsedCount === 0) {
         return { body, compressed: false, stats: null };
@@ -276,7 +276,7 @@ export const readLifecycleEngine: CompressionEngine = {
         "stacked",
         [ENGINE_ID],
         [`read-lifecycle-collapsed-${collapsedCount}`],
-        durationMs
+        durationMs,
       );
       return { body: newBody, compressed: true, stats };
     } catch {

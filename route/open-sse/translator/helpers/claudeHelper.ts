@@ -9,10 +9,7 @@ import { getModelTargetFormat } from "../../config/providerModels.ts";
 // dispatching Claude-shape requests to these providers. Anthropic Claude and
 // other Claude-compatible upstreams that do accept it are unaffected.
 // Ported from upstream decolua/9router#820 by @hiepau1231.
-const CLAUDE_FORMAT_PROVIDERS_WITHOUT_OUTPUT_CONFIG = new Set<string>([
-  "minimax",
-  "minimax-cn",
-]);
+const CLAUDE_FORMAT_PROVIDERS_WITHOUT_OUTPUT_CONFIG = new Set<string>(["minimax", "minimax-cn"]);
 
 // Placeholder thinking text used as last-resort fallback when:
 //   - Target upstream is a non-Anthropic Claude-shape provider
@@ -63,7 +60,7 @@ export function hasValidContent(msg: ClaudeMessage): boolean {
       (block) =>
         (block.type === "text" && block.text?.trim()) ||
         block.type === "tool_use" ||
-        block.type === "tool_result"
+        block.type === "tool_result",
     );
   }
   return false;
@@ -101,7 +98,7 @@ export function splitMisplacedToolResults(messages: ClaudeMessage[]): ClaudeMess
     }
 
     const validToolResults = toolResults.filter(
-      (b) => typeof b?.tool_use_id === "string" && seenToolUseIds.has(b.tool_use_id)
+      (b) => typeof b?.tool_use_id === "string" && seenToolUseIds.has(b.tool_use_id),
     );
     const remaining = msg.content.filter((b) => b?.type !== "tool_result");
 
@@ -222,7 +219,7 @@ export function prepareClaudeRequest(
   body: ClaudeRequestBody,
   provider: string | null = null,
   preserveCacheControl = false,
-  model: string | null = null
+  model: string | null = null,
 ): ClaudeRequestBody {
   // 0. Strip Anthropic `output_config` for providers that reject it on their
   // Claude-compatible endpoints (MiniMax). Must run before any downstream
@@ -294,10 +291,10 @@ export function prepareClaudeRequest(
     for (const msg of filtered) {
       if (Array.isArray(msg.content)) {
         msg.content = msg.content.filter(
-          (block) => block.type !== "tool_use" || (block.name && block.name?.trim())
+          (block) => block.type !== "tool_use" || (block.name && block.name?.trim()),
         );
         msg.content = msg.content.filter(
-          (block) => block.type !== "tool_result" || block.tool_use_id
+          (block) => block.type !== "tool_result" || block.tool_use_id,
         );
       }
     }

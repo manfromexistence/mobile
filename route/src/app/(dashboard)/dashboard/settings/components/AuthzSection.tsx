@@ -45,7 +45,7 @@ function tierBadgeVariant(
   prefix: string,
   spawnCapable: ReadonlyArray<string>,
   bypassPrefixes: ReadonlyArray<string>,
-  bypassEnabled: boolean
+  bypassEnabled: boolean,
 ): { variant: "default" | "success" | "warning" | "error" | "info"; key: string } {
   if (spawnCapable.some((p) => prefix === p || prefix.startsWith(p))) {
     return { variant: "error", key: "spawn_capable" };
@@ -150,7 +150,7 @@ export default function AuthzSection() {
 
   const isSpawnCapable = useCallback(
     (prefix: string) => spawnCapable.some((p) => prefix === p || prefix.startsWith(p)),
-    [spawnCapable]
+    [spawnCapable],
   );
 
   const handleAddPrefix = () => {
@@ -425,7 +425,7 @@ export default function AuthzSection() {
                     prefix,
                     inventory.spawnCapablePrefixes,
                     inventory.bypassPrefixes,
-                    inventory.bypassEnabled
+                    inventory.bypassEnabled,
                   );
                   return (
                     <li

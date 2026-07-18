@@ -57,7 +57,7 @@ test("runMemorySearch retorna items como array JSON", async () => {
 
   const { runMemorySearch } = await import("../../bin/cli/commands/memory.mjs");
   const out = await captureStdout(() =>
-    runMemorySearch("dark mode", { limit: 20 }, makeCmd() as any)
+    runMemorySearch("dark mode", { limit: 20 }, makeCmd() as any),
   );
 
   globalThis.fetch = origFetch;
@@ -77,7 +77,7 @@ test("runMemorySearch envia q e type na query", async () => {
 
   const { runMemorySearch } = await import("../../bin/cli/commands/memory.mjs");
   await captureStdout(() =>
-    runMemorySearch("react hooks", { limit: 10, type: "project" }, makeCmd() as any)
+    runMemorySearch("react hooks", { limit: 10, type: "project" }, makeCmd() as any),
   );
 
   globalThis.fetch = origFetch;
@@ -97,14 +97,12 @@ test("runMemoryAdd envia POST com content e type", async () => {
   globalThis.fetch = ((url: string, init: any) => {
     capturedUrl = url;
     capturedInit = init;
-    return Promise.resolve(
-      makeResp({ id: "mem_new", type: "factual", content: "test content" })
-    );
+    return Promise.resolve(makeResp({ id: "mem_new", type: "factual", content: "test content" }));
   }) as any;
 
   const { runMemoryAdd } = await import("../../bin/cli/commands/memory.mjs");
   await captureStdout(() =>
-    runMemoryAdd({ content: "test content", type: "user" }, makeCmd() as any)
+    runMemoryAdd({ content: "test content", type: "user" }, makeCmd() as any),
   );
 
   globalThis.fetch = origFetch;

@@ -29,7 +29,7 @@ describe("RTK truncate – filter preserve patterns propagate to smartTruncate",
     // 50 filler lines that don't match make's collapsePatterns (^cc|gcc|clang|g\+\+)
     const filler = Array.from(
       { length: 50 },
-      (_, i) => `ld -rpath module${i}.o -o module${i}`
+      (_, i) => `ld -rpath module${i}.o -o module${i}`,
     ).join("\n");
     // "linking" matches make's summaryPatterns but NOT the hardcoded defaults.
     const summaryLine = "linking all objects into the final binary";
@@ -46,21 +46,21 @@ describe("RTK truncate – filter preserve patterns propagate to smartTruncate",
 
     assert.ok(
       result.techniquesUsed.includes("rtk-truncate"),
-      `expected rtk-truncate; techniquesUsed: ${result.techniquesUsed.join(", ")}`
+      `expected rtk-truncate; techniquesUsed: ${result.techniquesUsed.join(", ")}`,
     );
 
     // After the fix, "linking" must survive because the make filter's
     // preserve.summaryPatterns includes "linking".
     assert.ok(
       result.text.includes("linking"),
-      `summary line was truncated away; got:\n${result.text}`
+      `summary line was truncated away; got:\n${result.text}`,
     );
   });
 
   it("error sentinel declared in filter preserve.errorPatterns survives truncation", () => {
     const filler = Array.from(
       { length: 50 },
-      (_, i) => `ld -rpath module${i}.o -o module${i}`
+      (_, i) => `ld -rpath module${i}.o -o module${i}`,
     ).join("\n");
     // "***" matches make's errorPatterns but NOT the default hardcoded pattern
     // (/error|failed|exception|traceback|TS\d{4}|FAIL|✖/i) — no "error"/"failed".
@@ -76,13 +76,13 @@ describe("RTK truncate – filter preserve patterns propagate to smartTruncate",
 
     assert.ok(
       result.techniquesUsed.includes("rtk-truncate"),
-      `expected rtk-truncate; techniquesUsed: ${result.techniquesUsed.join(", ")}`
+      `expected rtk-truncate; techniquesUsed: ${result.techniquesUsed.join(", ")}`,
     );
 
     // "***" is in make filter's errorPatterns — must survive after the fix.
     assert.ok(
       result.text.includes("compilation-sentinel-37f4"),
-      `error sentinel line was truncated away; got:\n${result.text}`
+      `error sentinel line was truncated away; got:\n${result.text}`,
     );
   });
 });

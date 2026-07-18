@@ -267,7 +267,12 @@ export function openaiToClaudeResponse(chunk, state) {
         results.push({
           type: "content_block_start",
           index: toolInfo.blockIndex,
-          content_block: { type: "tool_use", id: toolInfo.id, name: toolInfo.name || "", input: {} },
+          content_block: {
+            type: "tool_use",
+            id: toolInfo.id,
+            name: toolInfo.name || "",
+            input: {},
+          },
         });
       }
 

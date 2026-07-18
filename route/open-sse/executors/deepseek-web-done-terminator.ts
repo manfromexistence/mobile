@@ -37,7 +37,7 @@ export function createFinishOnceGuard(finish: () => void): {
  * upstream body stays open past that window. */
 export function createFinishedDrainScheduler(
   finishStream: () => void,
-  drainMs: number = DEEPSEEK_FINISHED_DRAIN_MS
+  drainMs: number = DEEPSEEK_FINISHED_DRAIN_MS,
 ): {
   scheduleFinishAfterDrain: () => void;
   clearFinishedDrain: () => void;

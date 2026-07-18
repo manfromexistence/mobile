@@ -30,7 +30,10 @@ vi.mock("next/link", () => ({
 
 // ── next/dynamic stub — renders placeholder immediately ───────────────────────
 vi.mock("next/dynamic", () => ({
-  default: (loader: () => Promise<{ default: React.ComponentType<{ children: string }> }>, _opts?: unknown) => {
+  default: (
+    loader: () => Promise<{ default: React.ComponentType<{ children: string }> }>,
+    _opts?: unknown,
+  ) => {
     // Return a synchronous stub that renders children as plain text.
     return function DynamicStub({ children }: { children: string }) {
       return <div data-testid="react-markdown">{children}</div>;
@@ -49,7 +52,8 @@ function makeSkill(overrides: Partial<AgentSkill> = {}): AgentSkill {
     area: "providers",
     icon: "hub",
     endpoints: ["POST /api/providers", "GET /api/providers"],
-    rawUrl: "https://raw.githubusercontent.com/diegosouzapw/OmniRoute/refs/heads/main/skills/omni-providers/SKILL.md",
+    rawUrl:
+      "https://raw.githubusercontent.com/diegosouzapw/OmniRoute/refs/heads/main/skills/omni-providers/SKILL.md",
     githubUrl: "https://github.com/diegosouzapw/OmniRoute/blob/main/skills/omni-providers/SKILL.md",
     ...overrides,
   };
@@ -96,7 +100,11 @@ const PARTIAL_COVERAGE: SkillCoverage = {
 
 // ── Fetch mock factory ───────────────────────────────────────────────────────
 
-function mockFetch(skills: AgentSkill[], coverage: SkillCoverage, rawMarkdown = "# Test Skill\nContent here.") {
+function mockFetch(
+  skills: AgentSkill[],
+  coverage: SkillCoverage,
+  rawMarkdown = "# Test Skill\nContent here.",
+) {
   return vi.fn(async (url: string | Request) => {
     const urlStr = typeof url === "string" ? url : url.toString();
     if (urlStr === "/api/agent-skills") {
@@ -128,7 +136,9 @@ function makeContainer(): HTMLElement {
 }
 
 beforeEach(() => {
-  (globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;
+  (
+    globalThis as typeof globalThis & { IS_REACT_ACT_ENVIRONMENT?: boolean }
+  ).IS_REACT_ACT_ENVIRONMENT = true;
   // Mock clipboard
   Object.defineProperty(navigator, "clipboard", {
     value: { writeText: vi.fn().mockResolvedValue(undefined) },
@@ -207,7 +217,9 @@ describe("AgentSkillsPageClient", () => {
       root?.render(<AgentSkillsPageClient />);
     });
 
-    const filterApiBtn = container.querySelector("[data-testid='filter-api']") as HTMLButtonElement | null;
+    const filterApiBtn = container.querySelector(
+      "[data-testid='filter-api']",
+    ) as HTMLButtonElement | null;
     expect(filterApiBtn).not.toBeNull();
 
     await act(async () => {
@@ -231,7 +243,9 @@ describe("AgentSkillsPageClient", () => {
       root?.render(<AgentSkillsPageClient />);
     });
 
-    const filterCliBtn = container.querySelector("[data-testid='filter-cli']") as HTMLButtonElement | null;
+    const filterCliBtn = container.querySelector(
+      "[data-testid='filter-cli']",
+    ) as HTMLButtonElement | null;
     await act(async () => {
       filterCliBtn?.click();
     });
@@ -255,7 +269,9 @@ describe("AgentSkillsPageClient", () => {
       root?.render(<AgentSkillsPageClient />);
     });
 
-    const firstCard = container.querySelector("[data-testid='skill-card-omni-skill-0']") as HTMLElement | null;
+    const firstCard = container.querySelector(
+      "[data-testid='skill-card-omni-skill-0']",
+    ) as HTMLElement | null;
     expect(firstCard).not.toBeNull();
 
     await act(async () => {
@@ -370,7 +386,9 @@ describe("AgentSkillsPageClient", () => {
       root?.render(<AgentSkillsPageClient />);
     });
 
-    const searchInput = container.querySelector("[data-testid='search-input']") as HTMLInputElement | null;
+    const searchInput = container.querySelector(
+      "[data-testid='search-input']",
+    ) as HTMLInputElement | null;
     expect(searchInput).not.toBeNull();
 
     await act(async () => {
@@ -589,9 +607,7 @@ describe("SkillPreviewPane", () => {
     const container = makeContainer();
     const localRoot = createRoot(container);
     await act(async () => {
-      localRoot.render(
-        <SkillPreviewPane skillId={null} markdown={null} loading={false} />,
-      );
+      localRoot.render(<SkillPreviewPane skillId={null} markdown={null} loading={false} />);
     });
 
     const empty = container.querySelector("[data-testid='skill-preview-empty']");
@@ -631,9 +647,7 @@ describe("SkillPreviewPane", () => {
     const container = makeContainer();
     const localRoot = createRoot(container);
     await act(async () => {
-      localRoot.render(
-        <SkillPreviewPane skillId="omni-providers" markdown="" loading={false} />,
-      );
+      localRoot.render(<SkillPreviewPane skillId="omni-providers" markdown="" loading={false} />);
     });
 
     // markdown is "" (falsy) — should show error state

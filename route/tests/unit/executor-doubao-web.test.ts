@@ -15,7 +15,7 @@ describe("DoubaoWebExecutor", () => {
         sessionid: "sid",
         ttwid: "tt",
         s_v_web_id: "verify_abc",
-      })
+      }),
     );
 
     assert.equal(cookie, "sessionid=sid; ttwid=tt; s_v_web_id=verify_abc");
@@ -23,7 +23,7 @@ describe("DoubaoWebExecutor", () => {
 
   it("strips Cookie prefix from full Dola cookie headers", () => {
     const cookie = mod.buildDolaCookieHeader(
-      "Cookie: sessionid=sid; ttwid=tt; s_v_web_id=verify_abc"
+      "Cookie: sessionid=sid; ttwid=tt; s_v_web_id=verify_abc",
     );
     assert.equal(cookie, "sessionid=sid; ttwid=tt; s_v_web_id=verify_abc");
   });
@@ -61,7 +61,7 @@ describe("DoubaoWebExecutor", () => {
     const payload = mod.buildDolaPayload(
       "user: hello",
       "dola-speed",
-      "sessionid=sid; ttwid=tt; s_v_web_id=verify_abc"
+      "sessionid=sid; ttwid=tt; s_v_web_id=verify_abc",
     );
     const clientMeta = payload.client_meta as Record<string, unknown>;
     const option = payload.option as Record<string, unknown>;
@@ -83,7 +83,7 @@ describe("DoubaoWebExecutor", () => {
     const payload = mod.buildDolaPayload(
       "user: hello",
       "dola-pro",
-      "sessionid=sid; ttwid=tt; s_v_web_id=verify_abc"
+      "sessionid=sid; ttwid=tt; s_v_web_id=verify_abc",
     );
     const option = payload.option as Record<string, unknown>;
     const ext = payload.ext as Record<string, unknown>;
@@ -152,7 +152,7 @@ describe("DoubaoWebExecutor", () => {
           },
         ],
       },
-      state
+      state,
     );
     const answer = mod.extractDolaTextDeltas(
       {
@@ -167,7 +167,7 @@ describe("DoubaoWebExecutor", () => {
           },
         ],
       },
-      state
+      state,
     );
 
     assert.deepEqual(reasoning, []);
@@ -177,7 +177,7 @@ describe("DoubaoWebExecutor", () => {
   it("detects Dola busy messages", () => {
     assert.equal(
       mod.isDolaBusyMessage("A lot of people are using the app right now. Please try again later."),
-      true
+      true,
     );
     assert.equal(mod.isDolaBusyMessage("2"), false);
   });
@@ -233,7 +233,7 @@ describe("DoubaoWebExecutor", () => {
           "",
           "",
         ].join("\n"),
-        { headers: { "Content-Type": "text/event-stream" } }
+        { headers: { "Content-Type": "text/event-stream" } },
       )) as typeof fetch;
 
     try {

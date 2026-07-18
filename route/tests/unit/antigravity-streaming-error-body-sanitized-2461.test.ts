@@ -49,7 +49,7 @@ test("AntigravityExecutor.execute (stream=true) sanitizes a non-ok upstream body
     // The raw gzip magic bytes must never reach the client-visible error text.
     assert.ok(
       !bodyText.includes("\x1f\x8b"),
-      `expected sanitized error body, got raw bytes leaking through: ${JSON.stringify(bodyText)}`
+      `expected sanitized error body, got raw bytes leaking through: ${JSON.stringify(bodyText)}`,
     );
 
     // Must be routed through buildErrorBody()/buildAntigravityUpstreamError() — a clean,

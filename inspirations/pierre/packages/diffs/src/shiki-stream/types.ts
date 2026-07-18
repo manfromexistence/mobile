@@ -3,7 +3,7 @@ import type {
   HighlighterCore,
   HighlighterGeneric,
   ThemedToken,
-} from 'shiki/core';
+} from "shiki/core";
 
 /**
  * A special token that indicates the number of tokens to be removed from the previous streamed tokens.
@@ -28,10 +28,7 @@ export type CodeToTokenTransformStreamOptions = ShikiStreamTokenizerOptions & {
   allowRecalls?: boolean;
 };
 
-export type ShikiStreamTokenizerOptions = CodeToTokensOptions<
-  string,
-  string
-> & {
+export type ShikiStreamTokenizerOptions = CodeToTokensOptions<string, string> & {
   // oxlint-disable-next-line typescript/no-explicit-any
   highlighter: HighlighterCore | HighlighterGeneric<any, any>;
 };

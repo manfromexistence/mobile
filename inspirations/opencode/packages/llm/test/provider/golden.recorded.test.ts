@@ -1,70 +1,75 @@
-import * as Anthropic from "../../src/providers/anthropic"
-import { CloudflareAIGateway, CloudflareWorkersAI } from "../../src/providers/cloudflare"
-import * as Google from "../../src/providers/google"
-import * as OpenAI from "../../src/providers/openai"
-import * as OpenAICompatible from "../../src/providers/openai-compatible"
-import * as OpenRouter from "../../src/providers/openrouter"
-import * as XAI from "../../src/providers/xai"
-import { describeRecordedGoldenScenarios } from "../recorded-golden"
+import * as Anthropic from "../../src/providers/anthropic";
+import { CloudflareAIGateway, CloudflareWorkersAI } from "../../src/providers/cloudflare";
+import * as Google from "../../src/providers/google";
+import * as OpenAI from "../../src/providers/openai";
+import * as OpenAICompatible from "../../src/providers/openai-compatible";
+import * as OpenRouter from "../../src/providers/openrouter";
+import * as XAI from "../../src/providers/xai";
+import { describeRecordedGoldenScenarios } from "../recorded-golden";
 
 const openAI = OpenAI.configure({
   apiKey: process.env.OPENAI_API_KEY ?? "fixture",
-})
-const openAIChat = openAI.chat("gpt-4o-mini")
-const openAIResponses = openAI.responses("gpt-5.5")
-const openAIResponsesWebSocket = openAI.responsesWebSocket("gpt-4.1-mini")
+});
+const openAIChat = openAI.chat("gpt-4o-mini");
+const openAIResponses = openAI.responses("gpt-5.5");
+const openAIResponsesWebSocket = openAI.responsesWebSocket("gpt-4.1-mini");
 const anthropic = Anthropic.configure({
   apiKey: process.env.ANTHROPIC_API_KEY ?? "fixture",
-})
-const anthropicHaiku = anthropic.model("claude-haiku-4-5-20251001")
-const anthropicOpus = anthropic.model("claude-opus-4-7")
-const google = Google.configure({ apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY ?? "fixture" })
-const gemini = google.model("gemini-2.5-flash")
-const xai = XAI.configure({ apiKey: process.env.XAI_API_KEY ?? "fixture" })
-const xaiBasic = xai.model("grok-3-mini")
-const xaiFlagship = xai.model("grok-4.3")
+});
+const anthropicHaiku = anthropic.model("claude-haiku-4-5-20251001");
+const anthropicOpus = anthropic.model("claude-opus-4-7");
+const google = Google.configure({ apiKey: process.env.GOOGLE_GENERATIVE_AI_API_KEY ?? "fixture" });
+const gemini = google.model("gemini-2.5-flash");
+const xai = XAI.configure({ apiKey: process.env.XAI_API_KEY ?? "fixture" });
+const xaiBasic = xai.model("grok-3-mini");
+const xaiFlagship = xai.model("grok-4.3");
 const cloudflareAIGateway = CloudflareAIGateway.configure({
   accountId: process.env.CLOUDFLARE_ACCOUNT_ID ?? "fixture-account",
   gatewayId:
-    process.env.CLOUDFLARE_GATEWAY_ID && process.env.CLOUDFLARE_GATEWAY_ID !== process.env.CLOUDFLARE_ACCOUNT_ID
+    process.env.CLOUDFLARE_GATEWAY_ID &&
+    process.env.CLOUDFLARE_GATEWAY_ID !== process.env.CLOUDFLARE_ACCOUNT_ID
       ? process.env.CLOUDFLARE_GATEWAY_ID
       : undefined,
   gatewayApiKey: process.env.CLOUDFLARE_API_TOKEN ?? "fixture",
-})
+});
 const cloudflareWorkers = CloudflareWorkersAI.configure({
   accountId: process.env.CLOUDFLARE_ACCOUNT_ID ?? "fixture-account",
   apiKey: process.env.CLOUDFLARE_API_KEY ?? "fixture",
-})
-const cloudflareAIGatewayWorkers = cloudflareAIGateway.model("workers-ai/@cf/meta/llama-3.1-8b-instruct")
-const cloudflareAIGatewayWorkersTools = cloudflareAIGateway.model("workers-ai/@cf/openai/gpt-oss-20b")
-const cloudflareWorkersAI = cloudflareWorkers.model("@cf/meta/llama-3.1-8b-instruct")
-const cloudflareWorkersAITools = cloudflareWorkers.model("@cf/openai/gpt-oss-20b")
+});
+const cloudflareAIGatewayWorkers = cloudflareAIGateway.model(
+  "workers-ai/@cf/meta/llama-3.1-8b-instruct",
+);
+const cloudflareAIGatewayWorkersTools = cloudflareAIGateway.model(
+  "workers-ai/@cf/openai/gpt-oss-20b",
+);
+const cloudflareWorkersAI = cloudflareWorkers.model("@cf/meta/llama-3.1-8b-instruct");
+const cloudflareWorkersAITools = cloudflareWorkers.model("@cf/openai/gpt-oss-20b");
 const deepseek = OpenAICompatible.deepseek
   .configure({ apiKey: process.env.DEEPSEEK_API_KEY ?? "fixture" })
-  .model("deepseek-chat")
+  .model("deepseek-chat");
 const together = OpenAICompatible.togetherai
   .configure({
     apiKey: process.env.TOGETHER_AI_API_KEY ?? "fixture",
   })
-  .model("meta-llama/Llama-3.3-70B-Instruct-Turbo")
+  .model("meta-llama/Llama-3.3-70B-Instruct-Turbo");
 const groq = OpenAICompatible.groq
   .configure({ apiKey: process.env.GROQ_API_KEY ?? "fixture" })
-  .model("llama-3.3-70b-versatile")
-const openRouter = OpenRouter.configure({ apiKey: process.env.OPENROUTER_API_KEY ?? "fixture" })
-const openrouter = openRouter.model("openai/gpt-4o-mini")
-const openrouterGpt55 = openRouter.model("openai/gpt-5.5")
+  .model("llama-3.3-70b-versatile");
+const openRouter = OpenRouter.configure({ apiKey: process.env.OPENROUTER_API_KEY ?? "fixture" });
+const openrouter = openRouter.model("openai/gpt-4o-mini");
+const openrouterGpt55 = openRouter.model("openai/gpt-5.5");
 const openrouterOpus = OpenRouter.configure({
   apiKey: process.env.OPENROUTER_API_KEY ?? "fixture",
-}).model("anthropic/claude-opus-4.7")
+}).model("anthropic/claude-opus-4.7");
 
 const redactCloudflareURL = (url: string) =>
   url
     .replace(/\/client\/v4\/accounts\/[^/]+\/ai\/v1\//, "/client/v4/accounts/{account}/ai/v1/")
-    .replace(/\/v1\/[^/]+\/[^/]+\/compat\//, "/v1/{account}/{gateway}/compat/")
+    .replace(/\/v1\/[^/]+\/[^/]+\/compat\//, "/v1/{account}/{gateway}/compat/");
 
 const cloudflareOptions = {
   redact: { url: redactCloudflareURL },
-}
+};
 
 describeRecordedGoldenScenarios([
   {
@@ -220,4 +225,4 @@ describeRecordedGoldenScenarios([
     tags: ["flagship"],
     scenarios: ["tool-loop"],
   },
-])
+]);

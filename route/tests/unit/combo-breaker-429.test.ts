@@ -13,8 +13,9 @@ import test from "node:test";
  * connection-cooldown scope.
  */
 
-const { shouldRecordProviderBreakerFailure } =
-  await import("../../open-sse/services/combo/comboPredicates.ts");
+const { shouldRecordProviderBreakerFailure } = await import(
+  "../../open-sse/services/combo/comboPredicates.ts"
+);
 
 const OTHER_ARGS = {
   isStreamReadinessFailure: false,
@@ -26,7 +27,7 @@ test("429 (plain rate limit) does NOT record a whole-provider breaker failure", 
   assert.equal(
     shouldRecordProviderBreakerFailure({ ...OTHER_ARGS, status: 429 }),
     false,
-    "a plain 429 must not open the whole-provider breaker (cooldown/lockout scope)"
+    "a plain 429 must not open the whole-provider breaker (cooldown/lockout scope)",
   );
 });
 
@@ -35,7 +36,7 @@ for (const status of [408, 500, 502, 503, 504]) {
     assert.equal(
       shouldRecordProviderBreakerFailure({ ...OTHER_ARGS, status }),
       true,
-      `status ${status} must trip the whole-provider breaker`
+      `status ${status} must trip the whole-provider breaker`,
     );
   });
 }
@@ -49,7 +50,7 @@ test("sameProviderNext:true suppresses recording regardless of status", () => {
         status,
       }),
       false,
-      `sameProviderNext must suppress recording for status ${status}`
+      `sameProviderNext must suppress recording for status ${status}`,
     );
   }
 });
@@ -63,7 +64,7 @@ test("skipProviderBreaker:true suppresses recording regardless of status", () =>
         status,
       }),
       false,
-      `skipProviderBreaker must suppress recording for status ${status}`
+      `skipProviderBreaker must suppress recording for status ${status}`,
     );
   }
 });

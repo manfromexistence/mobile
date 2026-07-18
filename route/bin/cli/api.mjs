@@ -196,7 +196,7 @@ export async function apiFetch(path, opts = {}) {
         const delay = computeBackoff(attempt, res.headers.get("retry-after"));
         if (verbose) {
           process.stderr.write(
-            `[retry ${attempt}/${maxAttempts - 1}] ${method} ${url} → HTTP ${res.status}; wait ${Math.round(delay)}ms\n`
+            `[retry ${attempt}/${maxAttempts - 1}] ${method} ${url} → HTTP ${res.status}; wait ${Math.round(delay)}ms\n`,
           );
         }
         await sleep(delay);
@@ -209,7 +209,7 @@ export async function apiFetch(path, opts = {}) {
         const delay = computeBackoff(attempt, null);
         if (verbose) {
           process.stderr.write(
-            `[retry ${attempt}/${maxAttempts - 1}] ${method} ${url} → ${err.code || err.message}; wait ${Math.round(delay)}ms\n`
+            `[retry ${attempt}/${maxAttempts - 1}] ${method} ${url} → ${err.code || err.message}; wait ${Math.round(delay)}ms\n`,
           );
         }
         await sleep(delay);

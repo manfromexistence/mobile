@@ -8,7 +8,7 @@ export interface SmartTruncateOptions {
 
 export function smartTruncate(
   text: string,
-  options: SmartTruncateOptions = {}
+  options: SmartTruncateOptions = {},
 ): {
   text: string;
   truncated: boolean;

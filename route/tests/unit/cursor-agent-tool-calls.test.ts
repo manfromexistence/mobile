@@ -43,7 +43,7 @@ function buildMcpArgsEvent(
   execId: string,
   toolName: string,
   toolCallId: string,
-  args: Record<string, unknown>
+  args: Record<string, unknown>,
 ): Buffer {
   const mcaParts: Buffer[] = [
     stringField(1, toolName), // name
@@ -111,7 +111,7 @@ test("decodeProtobufValue handles deeply nested OpenAI tool args", () => {
 test("decodeExecServerEvent populates args dict from McpArgs map entries", () => {
   const args = { city: "Paris", units: "celsius" };
   const event = decodeExecServerEvent(
-    buildMcpArgsEvent(1, "exec-w", "get_weather", "call_abc", args)
+    buildMcpArgsEvent(1, "exec-w", "get_weather", "call_abc", args),
   );
   assert.equal(event?.kind, "exec_mcp");
   if (event?.kind !== "exec_mcp") return;
@@ -255,7 +255,7 @@ test("transformRequest prepends the tool-commit directive when tools are declare
     "composer-2.5",
     { messages: [{ role: "user", content: "how's the weather?" }], tools: [weatherTool] },
     false,
-    {}
+    {},
   ) as Uint8Array;
   const text = Buffer.from(body).toString("utf8");
   assert.ok(text.includes("you MUST issue the actual tool call"), "directive present with tools");
@@ -268,7 +268,7 @@ test("transformRequest omits the directive when no tools are declared", () => {
     "composer-2.5",
     { messages: [{ role: "user", content: "hi there" }] },
     false,
-    {}
+    {},
   ) as Uint8Array;
   const text = Buffer.from(body).toString("utf8");
   assert.ok(!text.includes("you MUST issue the actual tool call"), "no directive without tools");
@@ -284,10 +284,13 @@ test("transformRequest honors CURSOR_TOOL_DIRECTIVE=0 opt-out", () => {
       "composer-2.5",
       { messages: [{ role: "user", content: "weather?" }], tools: [weatherTool] },
       false,
-      {}
+      {},
     ) as Uint8Array;
     const text = Buffer.from(body).toString("utf8");
-    assert.ok(!text.includes("you MUST issue the actual tool call"), "directive suppressed by opt-out");
+    assert.ok(
+      !text.includes("you MUST issue the actual tool call"),
+      "directive suppressed by opt-out",
+    );
   } finally {
     if (prev === undefined) delete process.env.CURSOR_TOOL_DIRECTIVE;
     else process.env.CURSOR_TOOL_DIRECTIVE = prev;
@@ -308,7 +311,10 @@ test("tool_choice:'none' drops tools and the directive", () => {
     tools: [weatherTool],
     tool_choice: "none",
   });
-  assert.ok(!text.includes("you MUST issue the actual tool call"), "no directive when tool_choice none");
+  assert.ok(
+    !text.includes("you MUST issue the actual tool call"),
+    "no directive when tool_choice none",
+  );
   assert.ok(!text.includes("web_search"), "tool not advertised when tool_choice none");
 });
 

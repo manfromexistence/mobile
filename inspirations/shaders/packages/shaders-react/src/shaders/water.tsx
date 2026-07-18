@@ -1,6 +1,6 @@
-import { memo } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '../shader-mount.js';
-import { colorPropsAreEqual } from '../color-props-are-equal.js';
+import { memo } from "react";
+import { ShaderMount, type ShaderComponentProps } from "../shader-mount.js";
+import { colorPropsAreEqual } from "../color-props-are-equal.js";
 import {
   waterFragmentShader,
   getShaderColorFromString,
@@ -9,7 +9,7 @@ import {
   type WaterParams,
   defaultObjectSizing,
   type ImageShaderPreset,
-} from '@paper-design/shaders';
+} from "@paper-design/shaders";
 
 export interface WaterProps extends ShaderComponentProps, WaterParams {
   /** @deprecated use `size` instead */
@@ -19,14 +19,14 @@ export interface WaterProps extends ShaderComponentProps, WaterParams {
 type WaterPreset = ImageShaderPreset<WaterParams>;
 
 export const defaultPreset: WaterPreset = {
-  name: 'Default',
+  name: "Default",
   params: {
     ...defaultObjectSizing,
     scale: 0.8,
     speed: 1,
     frame: 0,
-    colorBack: '#909090',
-    colorHighlight: '#ffffff',
+    colorBack: "#909090",
+    colorHighlight: "#ffffff",
     highlights: 0.07,
     layering: 0.5,
     edges: 0.8,
@@ -37,15 +37,15 @@ export const defaultPreset: WaterPreset = {
 };
 
 export const abstractPreset: WaterPreset = {
-  name: 'Abstract',
+  name: "Abstract",
   params: {
     ...defaultObjectSizing,
-    fit: 'cover',
+    fit: "cover",
     scale: 3,
     speed: 1,
     frame: 0,
-    colorBack: '#909090',
-    colorHighlight: '#ffffff',
+    colorBack: "#909090",
+    colorHighlight: "#ffffff",
     highlights: 0,
     layering: 0,
     edges: 1,
@@ -56,15 +56,15 @@ export const abstractPreset: WaterPreset = {
 };
 
 export const streamingPreset: WaterPreset = {
-  name: 'Streaming',
+  name: "Streaming",
   params: {
     ...defaultObjectSizing,
-    fit: 'contain',
+    fit: "contain",
     scale: 0.4,
     speed: 2,
     frame: 0,
-    colorBack: '#909090',
-    colorHighlight: '#ffffff',
+    colorBack: "#909090",
+    colorHighlight: "#ffffff",
     highlights: 0,
     layering: 0,
     edges: 0,
@@ -75,15 +75,15 @@ export const streamingPreset: WaterPreset = {
 };
 
 export const slowMoPreset: WaterPreset = {
-  name: 'Slow-mo',
+  name: "Slow-mo",
   params: {
     ...defaultObjectSizing,
-    fit: 'cover',
+    fit: "cover",
     scale: 1,
     speed: 0.1,
     frame: 0,
-    colorBack: '#909090',
-    colorHighlight: '#ffffff',
+    colorBack: "#909090",
+    colorHighlight: "#ffffff",
     highlights: 0.4,
     layering: 0,
     edges: 0,
@@ -93,7 +93,12 @@ export const slowMoPreset: WaterPreset = {
   },
 };
 
-export const waterPresets: WaterPreset[] = [defaultPreset, slowMoPreset, abstractPreset, streamingPreset];
+export const waterPresets: WaterPreset[] = [
+  defaultPreset,
+  slowMoPreset,
+  abstractPreset,
+  streamingPreset,
+];
 
 export const Water: React.FC<WaterProps> = memo(function WaterImpl({
   // Own props
@@ -101,7 +106,7 @@ export const Water: React.FC<WaterProps> = memo(function WaterImpl({
   frame = defaultPreset.params.frame,
   colorBack = defaultPreset.params.colorBack,
   colorHighlight = defaultPreset.params.colorHighlight,
-  image = '',
+  image = "",
   highlights = defaultPreset.params.highlights,
   layering = defaultPreset.params.layering,
   waves = defaultPreset.params.waves,
@@ -155,7 +160,7 @@ export const Water: React.FC<WaterProps> = memo(function WaterImpl({
       speed={speed}
       frame={frame}
       fragmentShader={waterFragmentShader}
-      mipmaps={['u_image']}
+      mipmaps={["u_image"]}
       uniforms={uniforms}
     />
   );

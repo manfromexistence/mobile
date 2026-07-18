@@ -180,7 +180,7 @@ export function prepareWebSearchFallbackBody<T extends JsonRecord>(
     targetFormat?: string | null;
     nativeCodexPassthrough: boolean;
     interceptSearchOverride?: boolean;
-  }
+  },
 ): { body: T; fallback: WebSearchFallbackPlan } {
   const tools = Array.isArray(body.tools) ? body.tools : null;
   if (!tools || tools.length === 0) {
@@ -226,7 +226,7 @@ export function prepareWebSearchFallbackBody<T extends JsonRecord>(
 
   if (!toolNames.has(OMNIROUTE_WEB_SEARCH_FALLBACK_TOOL_NAME)) {
     preservedTools.unshift(
-      buildFallbackTool(toRecord(builtInSearchTools[0]), options.targetFormat)
+      buildFallbackTool(toRecord(builtInSearchTools[0]), options.targetFormat),
     );
   }
 

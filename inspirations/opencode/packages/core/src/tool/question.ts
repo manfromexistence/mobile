@@ -1,15 +1,15 @@
-export * as QuestionTool from "./question"
+export * as QuestionTool from "./question";
 
-import { ToolFailure } from "@opencode-ai/llm"
-import { Effect, Layer, Schema } from "effect"
-import { makeLocationNode } from "../effect/app-node"
-import { PermissionV2 } from "../permission"
-import { QuestionV2 } from "../question"
-import { ToolRegistry } from "./registry"
-import { Tool } from "./tool"
-import { Tools } from "./tools"
+import { ToolFailure } from "@opencode-ai/llm";
+import { Effect, Layer, Schema } from "effect";
+import { makeLocationNode } from "../effect/app-node";
+import { PermissionV2 } from "../permission";
+import { QuestionV2 } from "../question";
+import { ToolRegistry } from "./registry";
+import { Tool } from "./tool";
+import { Tools } from "./tools";
 
-export const name = "question"
+export const name = "question";
 
 export const description = `Use this tool when you need to ask the user questions during execution. This allows you to:
 1. Gather user preferences or requirements
@@ -20,16 +20,16 @@ export const description = `Use this tool when you need to ask the user question
 Usage notes:
 - When \`custom\` is enabled (default), a "Type your own answer" option is added automatically; don't include "Other" or catch-all options
 - Answers are returned as arrays of labels; set \`multiple: true\` to allow selecting more than one
-- If you recommend a specific option, make that the first option in the list and add "(Recommended)" at the end of the label`
+- If you recommend a specific option, make that the first option in the list and add "(Recommended)" at the end of the label`;
 
 export const Input = Schema.Struct({
   questions: Schema.Array(QuestionV2.Prompt).annotate({ description: "Questions to ask" }),
-})
+});
 
 export const Output = Schema.Struct({
   answers: Schema.Array(QuestionV2.Answer),
-})
-export type Output = typeof Output.Type
+});
+export type Output = typeof Output.Type;
 
 export const toModelOutput = (
   questions: ReadonlyArray<QuestionV2.Prompt>,
@@ -40,15 +40,15 @@ export const toModelOutput = (
       (question, index) =>
         `"${question.question}"="${answers[index]?.length ? answers[index].join(", ") : "Unanswered"}"`,
     )
-    .join(", ")
-  return `User has answered your questions: ${formatted}. You can now continue with the user's answers in mind.`
-}
+    .join(", ");
+  return `User has answered your questions: ${formatted}. You can now continue with the user's answers in mind.`;
+};
 
 const layer = Layer.effectDiscard(
   Effect.gen(function* () {
-    const tools = yield* Tools.Service
-    const question = yield* QuestionV2.Service
-    const permission = yield* PermissionV2.Service
+    const tools = yield* Tools.Service;
+    const question = yield* QuestionV2.Service;
+    const permission = yield* PermissionV2.Service;
 
     yield* tools
       .register({
@@ -66,7 +66,11 @@ const layer = Layer.effectDiscard(
                 resources: ["*"],
                 sessionID: context.sessionID,
                 agent: context.agent,
-                source: { type: "tool", messageID: context.assistantMessageID, callID: context.toolCallID },
+                source: {
+                  type: "tool",
+                  messageID: context.assistantMessageID,
+                  callID: context.toolCallID,
+                },
               })
               .pipe(
                 Effect.mapError(() => new ToolFailure({ message: "Permission denied: question" })),
@@ -83,12 +87,12 @@ const layer = Layer.effectDiscard(
               ),
         }),
       })
-      .pipe(Effect.orDie)
+      .pipe(Effect.orDie);
   }),
-)
+);
 
 export const node = makeLocationNode({
   name: "tool/question",
   layer,
   deps: [ToolRegistry.node, PermissionV2.node, QuestionV2.node],
-})
+});

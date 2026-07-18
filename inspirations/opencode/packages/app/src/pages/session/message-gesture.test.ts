@@ -1,19 +1,19 @@
-import { describe, expect, test } from "bun:test"
-import { normalizeWheelDelta, shouldMarkBoundaryGesture } from "./message-gesture"
+import { describe, expect, test } from "bun:test";
+import { normalizeWheelDelta, shouldMarkBoundaryGesture } from "./message-gesture";
 
 describe("normalizeWheelDelta", () => {
   test("converts line mode to px", () => {
-    expect(normalizeWheelDelta({ deltaY: 3, deltaMode: 1, rootHeight: 500 })).toBe(120)
-  })
+    expect(normalizeWheelDelta({ deltaY: 3, deltaMode: 1, rootHeight: 500 })).toBe(120);
+  });
 
   test("converts page mode to container height", () => {
-    expect(normalizeWheelDelta({ deltaY: -1, deltaMode: 2, rootHeight: 600 })).toBe(-600)
-  })
+    expect(normalizeWheelDelta({ deltaY: -1, deltaMode: 2, rootHeight: 600 })).toBe(-600);
+  });
 
   test("keeps pixel mode unchanged", () => {
-    expect(normalizeWheelDelta({ deltaY: 16, deltaMode: 0, rootHeight: 600 })).toBe(16)
-  })
-})
+    expect(normalizeWheelDelta({ deltaY: 16, deltaMode: 0, rootHeight: 600 })).toBe(16);
+  });
+});
 
 describe("shouldMarkBoundaryGesture", () => {
   test("marks when nested scroller cannot scroll", () => {
@@ -24,8 +24,8 @@ describe("shouldMarkBoundaryGesture", () => {
         scrollHeight: 300,
         clientHeight: 300,
       }),
-    ).toBe(true)
-  })
+    ).toBe(true);
+  });
 
   test("marks when scrolling beyond top boundary", () => {
     expect(
@@ -35,8 +35,8 @@ describe("shouldMarkBoundaryGesture", () => {
         scrollHeight: 1000,
         clientHeight: 400,
       }),
-    ).toBe(true)
-  })
+    ).toBe(true);
+  });
 
   test("marks when scrolling beyond bottom boundary", () => {
     expect(
@@ -46,8 +46,8 @@ describe("shouldMarkBoundaryGesture", () => {
         scrollHeight: 1000,
         clientHeight: 400,
       }),
-    ).toBe(true)
-  })
+    ).toBe(true);
+  });
 
   test("does not mark when nested scroller can consume movement", () => {
     expect(
@@ -57,6 +57,6 @@ describe("shouldMarkBoundaryGesture", () => {
         scrollHeight: 1000,
         clientHeight: 400,
       }),
-    ).toBe(false)
-  })
-})
+    ).toBe(false);
+  });
+});

@@ -76,7 +76,7 @@ export function resolveStreamFlag(
   bodyStream: unknown,
   acceptHeader: unknown,
   sourceFormat?: string,
-  optionsOrUserAgent?: unknown
+  optionsOrUserAgent?: unknown,
 ): boolean {
   const options = normalizeResolveStreamFlagOptions(optionsOrUserAgent);
 

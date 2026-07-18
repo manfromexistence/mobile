@@ -1,5 +1,5 @@
-import { Effect } from "effect"
-import type { DatabaseMigration } from "../migration"
+import { Effect } from "effect";
+import type { DatabaseMigration } from "../migration";
 
 export default {
   id: "20260413175956_chief_energizer",
@@ -15,10 +15,16 @@ export default {
           \`data\` text NOT NULL,
           CONSTRAINT \`fk_session_entry_session_id_session_id_fk\` FOREIGN KEY (\`session_id\`) REFERENCES \`session\`(\`id\`) ON DELETE CASCADE
         );
-      `)
-      yield* tx.run(`CREATE INDEX \`session_entry_session_idx\` ON \`session_entry\` (\`session_id\`);`)
-      yield* tx.run(`CREATE INDEX \`session_entry_session_type_idx\` ON \`session_entry\` (\`session_id\`,\`type\`);`)
-      yield* tx.run(`CREATE INDEX \`session_entry_time_created_idx\` ON \`session_entry\` (\`time_created\`);`)
-    })
+      `);
+      yield* tx.run(
+        `CREATE INDEX \`session_entry_session_idx\` ON \`session_entry\` (\`session_id\`);`,
+      );
+      yield* tx.run(
+        `CREATE INDEX \`session_entry_session_type_idx\` ON \`session_entry\` (\`session_id\`,\`type\`);`,
+      );
+      yield* tx.run(
+        `CREATE INDEX \`session_entry_time_created_idx\` ON \`session_entry\` (\`time_created\`);`,
+      );
+    });
   },
-} satisfies DatabaseMigration.Migration
+} satisfies DatabaseMigration.Migration;

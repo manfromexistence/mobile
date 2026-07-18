@@ -1,11 +1,11 @@
-import { DEFAULT_THEMES } from '@pierre/diffs';
-import type { PreloadMultiFileDiffOptions } from '@pierre/diffs/ssr';
+import { DEFAULT_THEMES } from "@pierre/diffs";
+import type { PreloadMultiFileDiffOptions } from "@pierre/diffs/ssr";
 
-import { CustomScrollbarCSS } from '@/components/CustomScrollbarCSS';
+import { CustomScrollbarCSS } from "@/components/CustomScrollbarCSS";
 
 export const SHIKI_THEMES: PreloadMultiFileDiffOptions<undefined> = {
   oldFile: {
-    name: 'main.rs',
+    name: "main.rs",
     contents: `use std::io;
 
 fn main() {
@@ -21,7 +21,7 @@ fn add(x: i32, y: i32) -> i32 {
 `,
   },
   newFile: {
-    name: 'main.rs',
+    name: "main.rs",
     contents: `use std::io;
 
 fn main() {
@@ -37,7 +37,7 @@ fn add(a: i32, b: i32) -> i32 {
 `,
   },
   options: {
-    diffStyle: 'split',
+    diffStyle: "split",
     theme: DEFAULT_THEMES,
     unsafeCSS: CustomScrollbarCSS,
     enableLineSelection: true,

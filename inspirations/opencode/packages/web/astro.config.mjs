@@ -1,13 +1,13 @@
 // @ts-check
-import { defineConfig } from "astro/config"
-import starlight from "@astrojs/starlight"
-import solidJs from "@astrojs/solid-js"
-import cloudflare from "@astrojs/cloudflare"
-import theme from "toolbeam-docs-theme"
-import config from "./config.mjs"
-import { rehypeHeadingIds } from "@astrojs/markdown-remark"
-import rehypeAutolinkHeadings from "rehype-autolink-headings"
-import { spawnSync } from "child_process"
+import { defineConfig } from "astro/config";
+import starlight from "@astrojs/starlight";
+import solidJs from "@astrojs/solid-js";
+import cloudflare from "@astrojs/cloudflare";
+import theme from "toolbeam-docs-theme";
+import config from "./config.mjs";
+import { rehypeHeadingIds } from "@astrojs/markdown-remark";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import { spawnSync } from "child_process";
 
 // https://astro.build/config
 export default defineConfig({
@@ -309,16 +309,16 @@ export default defineConfig({
       ],
     }),
   ],
-})
+});
 
 function configSchema() {
   return {
     name: "configSchema",
     hooks: {
       "astro:build:done": async () => {
-        console.log("generating config schema")
-        spawnSync("../opencode/script/schema.ts", ["./dist/config.json", "./dist/tui.json"])
+        console.log("generating config schema");
+        spawnSync("../opencode/script/schema.ts", ["./dist/config.json", "./dist/tui.json"]);
       },
     },
-  }
+  };
 }

@@ -137,7 +137,7 @@ function applyMetricOutcome(
   metric: ModelMetrics,
   success: boolean,
   latencyMs: number,
-  usedAt: string
+  usedAt: string,
 ): void {
   metric.requests++;
   metric.totalLatencyMs += latencyMs;
@@ -155,7 +155,7 @@ function applyMetricOutcome(
 
 function buildTargetMetric(
   modelStr: string,
-  target: ComboRequestTargetMeta
+  target: ComboRequestTargetMeta,
 ): ComboTargetMetrics | null {
   const executionKey = toNonEmptyString(target.executionKey) || toNonEmptyString(modelStr);
   const model = toNonEmptyString(modelStr);
@@ -175,7 +175,7 @@ function buildTargetMetric(
 }
 
 function toMetricView<T extends ModelMetrics>(
-  metric: T
+  metric: T,
 ): T & {
   avgLatencyMs: number;
   successRate: number;
@@ -195,13 +195,16 @@ const METRICS_TTL_MS = 60 * 60 * 1000; // 1 hour
 
 function evictOldestMetric(
   targetMap: Map<string, { lastUsedAt: string | null }>,
-  options: { deletePairedShadow?: boolean } = {}
+  options: { deletePairedShadow?: boolean } = {},
 ): void {
   let oldest: string | null = null;
   let oldestTime = Infinity;
   for (const [name, entry] of targetMap) {
     const t = entry.lastUsedAt ? new Date(entry.lastUsedAt).getTime() : Date.now();
-    if (t < oldestTime) { oldestTime = t; oldest = name; }
+    if (t < oldestTime) {
+      oldestTime = t;
+      oldest = name;
+    }
   }
   if (oldest) {
     targetMap.delete(oldest);
@@ -211,23 +214,26 @@ function evictOldestMetric(
   }
 }
 
-const _metricsCleanupTimer = setInterval(() => {
-  const now = Date.now();
-  for (const [name, entry] of metrics) {
-    const lastUsed = entry.lastUsedAt ? new Date(entry.lastUsedAt).getTime() : now;
-    if (now - lastUsed > METRICS_TTL_MS) {
-      metrics.delete(name);
-      shadowMetrics.delete(name);
+const _metricsCleanupTimer = setInterval(
+  () => {
+    const now = Date.now();
+    for (const [name, entry] of metrics) {
+      const lastUsed = entry.lastUsedAt ? new Date(entry.lastUsedAt).getTime() : now;
+      if (now - lastUsed > METRICS_TTL_MS) {
+        metrics.delete(name);
+        shadowMetrics.delete(name);
+      }
     }
-  }
-  for (const [name, entry] of shadowMetrics) {
-    const lastUsed = entry.lastUsedAt ? new Date(entry.lastUsedAt).getTime() : now;
-    if (now - lastUsed > METRICS_TTL_MS) {
-      metrics.delete(name);
-      shadowMetrics.delete(name);
+    for (const [name, entry] of shadowMetrics) {
+      const lastUsed = entry.lastUsedAt ? new Date(entry.lastUsedAt).getTime() : now;
+      if (now - lastUsed > METRICS_TTL_MS) {
+        metrics.delete(name);
+        shadowMetrics.delete(name);
+      }
     }
-  }
-}, 5 * 60 * 1000); // every 5 minutes
+  },
+  5 * 60 * 1000,
+); // every 5 minutes
 _metricsCleanupTimer.unref?.(); // Don't prevent process exit
 
 /**
@@ -256,7 +262,7 @@ export function recordComboRequest(
     fallbackCount?: number;
     strategy?: string;
     target?: ComboRequestTargetMeta | null;
-  }
+  },
 ): void {
   if (!metrics.has(comboName) && metrics.size >= MAX_METRICS_ENTRIES) {
     evictOldestMetric(metrics, { deletePairedShadow: true });
@@ -331,7 +337,7 @@ export function recordComboShadowRequest(
     success: boolean;
     latencyMs: number;
     target?: ComboRequestTargetMeta | null;
-  }
+  },
 ): void {
   if (!shadowMetrics.has(comboName) && shadowMetrics.size >= MAX_METRICS_ENTRIES) {
     evictOldestMetric(shadowMetrics);
@@ -388,13 +394,13 @@ function getComboShadowMetrics(comboName: string): ComboShadowMetricsView {
     successRate:
       combo.totalRequests > 0 ? Math.round((combo.totalSuccesses / combo.totalRequests) * 100) : 0,
     byModel: Object.fromEntries(
-      Object.entries(combo.byModel).map(([model, metric]) => [model, toMetricView(metric)])
+      Object.entries(combo.byModel).map(([model, metric]) => [model, toMetricView(metric)]),
     ),
     byTarget: Object.fromEntries(
       Object.entries(combo.byTarget).map(([executionKey, metric]) => [
         executionKey,
         toMetricView(metric),
-      ])
+      ]),
     ),
   };
 }
@@ -421,13 +427,13 @@ export function getComboMetrics(comboName: string): ComboMetricsView | null {
       combo.totalRequests > 0 ? Math.round((combo.totalFallbacks / combo.totalRequests) * 100) : 0,
     intentCounts: { ...combo.intentCounts },
     byModel: Object.fromEntries(
-      Object.entries(combo.byModel).map(([model, metric]) => [model, toMetricView(metric)])
+      Object.entries(combo.byModel).map(([model, metric]) => [model, toMetricView(metric)]),
     ),
     byTarget: Object.fromEntries(
       Object.entries(combo.byTarget).map(([executionKey, metric]) => [
         executionKey,
         toMetricView(metric),
-      ])
+      ]),
     ),
     shadow: getComboShadowMetrics(comboName),
   };

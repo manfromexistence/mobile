@@ -48,7 +48,7 @@ const HEADERS_TO_REMOVE = [
  * from an outgoing request to Antigravity's upstream API.
  */
 export function scrubProxyAndFingerprintHeaders(
-  headers: Record<string, string>
+  headers: Record<string, string>,
 ): Record<string, string> {
   const cleaned: Record<string, string> = {};
   let authorizationValue: string | undefined;

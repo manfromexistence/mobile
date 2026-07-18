@@ -48,7 +48,7 @@ test("claudeToOpenAIResponse emits </think> close marker on message finish (defe
       index: 0,
       content_block: { type: "thinking", thinking: "" },
     },
-    state
+    state,
   );
 
   // Stream reasoning delta.
@@ -58,43 +58,42 @@ test("claudeToOpenAIResponse emits </think> close marker on message finish (defe
       index: 0,
       delta: { type: "thinking_delta", thinking: "Plan first." },
     },
-    state
+    state,
   );
 
   // Close the thinking block — marker is now DEFERRED (not emitted here).
-  const closeChunks = claudeToOpenAIResponse(
-    { type: "content_block_stop", index: 0 },
-    state
-  );
+  const closeChunks = claudeToOpenAIResponse({ type: "content_block_stop", index: 0 }, state);
   // content_block_stop for a thinking block no longer emits </think> immediately
   // (the marker is deferred to prevent leaking before tool_calls — see #5123).
   const immediateClose = Array.isArray(closeChunks) ? closeChunks : [];
   const hasImmediateMarker = immediateClose.some(
-    (chunk) => chunk?.choices?.[0]?.delta?.content === "</think>"
+    (chunk) => chunk?.choices?.[0]?.delta?.content === "</think>",
   );
   assert.equal(
     hasImmediateMarker,
     false,
-    "content_block_stop must NOT emit </think> immediately (deferred — see #5123)"
+    "content_block_stop must NOT emit </think> immediately (deferred — see #5123)",
   );
 
   // After close, the thinking-block flag is cleared and the pending marker is queued.
   assert.equal(state.inThinkingBlock, false);
-  assert.equal(state.pendingThinkClose, true, "pendingThinkClose must be set after thinking block stop");
+  assert.equal(
+    state.pendingThinkClose,
+    true,
+    "pendingThinkClose must be set after thinking block stop",
+  );
 
   // message_delta with stop_reason=end_turn and no tool_calls → marker must be flushed here.
   const finishChunks = claudeToOpenAIResponse(
     { type: "message_delta", delta: { stop_reason: "end_turn" }, usage: { output_tokens: 5 } },
-    state
+    state,
   );
 
   const arr = Array.isArray(finishChunks) ? finishChunks : [];
-  const hasCloseMarker = arr.some(
-    (chunk) => chunk?.choices?.[0]?.delta?.content === "</think>"
-  );
+  const hasCloseMarker = arr.some((chunk) => chunk?.choices?.[0]?.delta?.content === "</think>");
   assert.ok(
     hasCloseMarker,
-    `expected a chunk with delta.content === "</think>" in message_delta result; got ${JSON.stringify(arr)}`
+    `expected a chunk with delta.content === "</think>" in message_delta result; got ${JSON.stringify(arr)}`,
   );
 
   // pendingThinkClose must be cleared after flush.
@@ -111,20 +110,11 @@ test("claudeToOpenAIResponse does not emit </think> on stop of non-thinking bloc
       index: 0,
       content_block: { type: "text", text: "" },
     },
-    state
+    state,
   );
-  const closeChunks = claudeToOpenAIResponse(
-    { type: "content_block_stop", index: 0 },
-    state
-  );
+  const closeChunks = claudeToOpenAIResponse({ type: "content_block_stop", index: 0 }, state);
 
   const arr = Array.isArray(closeChunks) ? closeChunks : [];
-  const hasCloseMarker = arr.some(
-    (chunk) => chunk?.choices?.[0]?.delta?.content === "</think>"
-  );
-  assert.equal(
-    hasCloseMarker,
-    false,
-    "text-block close must not emit </think> sentinel"
-  );
+  const hasCloseMarker = arr.some((chunk) => chunk?.choices?.[0]?.delta?.content === "</think>");
+  assert.equal(hasCloseMarker, false, "text-block close must not emit </think> sentinel");
 });

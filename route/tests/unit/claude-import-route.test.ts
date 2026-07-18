@@ -24,7 +24,7 @@ const importClaudeAuthBulkSchema = z.object({
         json: z.unknown(),
         name: z.string().min(1).max(200).optional(),
         email: z.string().email("Must be a valid email").optional(),
-      })
+      }),
     )
     .min(1, "At least one entry is required")
     .max(50, "At most 50 entries per bulk import"),
@@ -164,7 +164,7 @@ function parseAndValidateClaudeAuth(raw: unknown) {
     throw new ParseError(
       "accessToken is missing or empty in claudeAiOauth",
       400,
-      "missing_access_token"
+      "missing_access_token",
     );
   }
 
@@ -172,7 +172,7 @@ function parseAndValidateClaudeAuth(raw: unknown) {
     throw new ParseError(
       "refreshToken is missing or empty in claudeAiOauth",
       400,
-      "missing_refresh_token"
+      "missing_refresh_token",
     );
   }
 
@@ -213,7 +213,7 @@ test("parse: rejects payload without claudeAiOauth (400)", () => {
     (err: Error & { status?: number }) => {
       assert.ok(err.status === 400);
       return true;
-    }
+    },
   );
 });
 
@@ -227,7 +227,7 @@ test("parse: rejects empty accessToken (400)", () => {
       assert.equal(err.status, 400);
       assert.equal(err.code, "missing_access_token");
       return true;
-    }
+    },
   );
 });
 
@@ -241,7 +241,7 @@ test("parse: rejects empty refreshToken (400)", () => {
       assert.equal(err.status, 400);
       assert.equal(err.code, "missing_refresh_token");
       return true;
-    }
+    },
   );
 });
 

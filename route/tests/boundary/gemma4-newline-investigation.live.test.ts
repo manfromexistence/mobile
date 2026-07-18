@@ -11,11 +11,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 const BASE = process.env.OMNIROUTE_TEST_BASE || "http://localhost:20128/v1";
-const AUTH = process.env.OMNIROUTE_TEST_BEARER
-    ? `Bearer ${process.env.OMNIROUTE_TEST_BEARER}`
-    : "";
-const COOKIE =
-  process.env.OMNIROUTE_TEST_COOKIE || "";
+const AUTH = process.env.OMNIROUTE_TEST_BEARER ? `Bearer ${process.env.OMNIROUTE_TEST_BEARER}` : "";
+const COOKIE = process.env.OMNIROUTE_TEST_COOKIE || "";
 
 const MODEL = "gemini/gemma-4-26b-a4b-it";
 
@@ -90,7 +87,7 @@ interface ToolCallResult {
 async function getToolCalls(
   prompt: string,
   tools: Record<string, unknown>[],
-  includeContent?: string
+  includeContent?: string,
 ): Promise<ToolCallResult[]> {
   const body: Record<string, unknown> = {
     model: MODEL,
@@ -208,7 +205,7 @@ const WRITE_AND_EXEC_TOOLS = [WRITE_TOOL, EXEC_TOOL];
 test("Gemma4: plain text (hello/world)", { skip }, async () => {
   const results = await getToolCalls(
     "Write a file /tmp/test1.txt with content: hello\\nworld\\ntest",
-    WRITE_AND_EXEC_TOOLS
+    WRITE_AND_EXEC_TOOLS,
   );
 
   for (const r of results) {
@@ -221,13 +218,13 @@ test("Gemma4: plain text (hello/world)", { skip }, async () => {
 
 test("Gemma4: short bash script", { skip }, async () => {
   const bashContent = ["#!/bin/bash", "echo 'Hello World'", "ls -la /tmp", 'echo "Done"'].join(
-    "\n"
+    "\n",
   );
 
   const results = await getToolCalls(
     "Write a bash script at /tmp/test2.sh and then run it",
     WRITE_AND_EXEC_TOOLS,
-    bashContent
+    bashContent,
   );
 
   for (const r of results) {
@@ -257,7 +254,7 @@ test("Gemma4: Python code (the suspected trigger)", { skip }, async () => {
   const results = await getToolCalls(
     "Write a Python script at /tmp/test3.py and run it",
     WRITE_AND_EXEC_TOOLS,
-    pythonContent
+    pythonContent,
   );
 
   for (const r of results) {
@@ -291,7 +288,7 @@ test("Gemma4: Python with colon patterns (theoretical trigger: `:\\n    `)", { s
   const results = await getToolCalls(
     "Write a Python script at /tmp/test4.py and run it",
     WRITE_AND_EXEC_TOOLS,
-    pythonContent
+    pythonContent,
   );
 
   for (const r of results) {
@@ -305,7 +302,7 @@ test("Gemma4: Python with colon patterns (theoretical trigger: `:\\n    `)", { s
 test("Gemma4: Just exec command (heredoc style)", { skip }, async () => {
   const results = await getToolCalls(
     "Write and run: use cat with heredoc to create /tmp/test5.txt with content hello world and then cat it",
-    WRITE_AND_EXEC_TOOLS
+    WRITE_AND_EXEC_TOOLS,
   );
 
   for (const r of results) {
@@ -342,7 +339,7 @@ test("Gemma4: Mixed code (JS + CSS)", { skip }, async () => {
   const results = await getToolCalls(
     "Write a JavaScript/CSS module at /tmp/test6.js",
     WRITE_AND_EXEC_TOOLS,
-    mixedContent
+    mixedContent,
   );
 
   for (const r of results) {
@@ -374,7 +371,7 @@ test("Gemma4: Simple YAML config", { skip }, async () => {
   const results = await getToolCalls(
     "Write a YAML config file at /tmp/config.yaml",
     WRITE_AND_EXEC_TOOLS,
-    yamlContent
+    yamlContent,
   );
 
   for (const r of results) {
@@ -389,7 +386,7 @@ test("Gemma4: Model-generated content (no prompt content)", { skip }, async () =
   // Let the model come up with its own multi-line content
   const results = await getToolCalls(
     "Write a Python script to the file /tmp/test7.py that generates fibonacci numbers up to 100 and saves them to a JSON file. Use the write tool.",
-    WRITE_AND_EXEC_TOOLS
+    WRITE_AND_EXEC_TOOLS,
   );
 
   for (const r of results) {
@@ -403,7 +400,7 @@ test("Gemma4: Model-generated content (no prompt content)", { skip }, async () =
 test("Gemma4: Short single-line content", { skip }, async () => {
   const results = await getToolCalls(
     "Write a file /tmp/test8.txt with content 'just one line'",
-    WRITE_AND_EXEC_TOOLS
+    WRITE_AND_EXEC_TOOLS,
   );
 
   for (const r of results) {
@@ -416,7 +413,7 @@ test("Gemma4: Many short lines (10 simple lines)", { skip }, async () => {
   const results = await getToolCalls(
     "Write a file /tmp/test9.txt with these lines",
     WRITE_AND_EXEC_TOOLS,
-    lines
+    lines,
   );
 
   for (const r of results) {
@@ -439,13 +436,13 @@ test("Gemma4: Content with JSON-like syntax (potential confusion)", { skip }, as
       },
     },
     null,
-    2
+    2,
   );
 
   const results = await getToolCalls(
     "Write a JSON data file at /tmp/test10.json",
     WRITE_AND_EXEC_TOOLS,
-    jsonContent
+    jsonContent,
   );
 
   for (const r of results) {
@@ -470,7 +467,7 @@ test("Gemma4: Template literal content (JS with ${})", { skip }, async () => {
   const results = await getToolCalls(
     "Write a JavaScript file at /tmp/test11.js with template literals",
     WRITE_AND_EXEC_TOOLS,
-    templateContent
+    templateContent,
   );
 
   for (const r of results) {

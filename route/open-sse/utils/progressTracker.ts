@@ -61,7 +61,7 @@ export function createProgressTransform({
           () => {
             clearInterval(intervalId);
           },
-          { once: true }
+          { once: true },
         );
       },
 
@@ -96,7 +96,7 @@ export function createProgressTransform({
       },
     },
     { highWaterMark: 16384 },
-    { highWaterMark: 16384 }
+    { highWaterMark: 16384 },
   );
 }
 

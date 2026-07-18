@@ -16,7 +16,7 @@ test("tinyfishFetch posts to api.fetch.tinyfish.ai with X-API-Key auth and a url
         results: [{ url: "https://example.com", text: "# Hello from TinyFish" }],
         errors: [],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -94,7 +94,7 @@ test("tinyfishFetch parses results[0].text as content and includes metadata when
         ],
         errors: [],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   try {
@@ -127,7 +127,7 @@ test("tinyfishFetch omits metadata when includeMetadata is false", async () => {
         results: [{ url: "https://example.com", title: "Example", text: "content" }],
         errors: [],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   try {
@@ -153,7 +153,7 @@ test("tinyfishFetch maps 'html' format to the html request format", async () => 
     capturedBody = JSON.parse(String((init as RequestInit).body));
     return new Response(
       JSON.stringify({ results: [{ url: "https://example.com", text: "<html></html>" }] }),
-      { status: 200 }
+      { status: 200 },
     );
   };
 
@@ -179,7 +179,7 @@ test("tinyfishFetch falls back to markdown for unsupported 'links'/'screenshot' 
     capturedBody = JSON.parse(String((init as RequestInit).body));
     return new Response(
       JSON.stringify({ results: [{ url: "https://example.com", text: "content" }] }),
-      { status: 200 }
+      { status: 200 },
     );
   };
 
@@ -209,7 +209,7 @@ test("tinyfishFetch returns a failure when the URL is only present in the errors
         results: [],
         errors: [{ url: "https://example.com", message: "could not reach host" }],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   try {

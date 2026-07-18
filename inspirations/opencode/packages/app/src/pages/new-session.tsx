@@ -1,27 +1,27 @@
-import { Show, createEffect, createMemo, createResource, untrack } from "solid-js"
-import { createStore } from "solid-js/store"
-import { useSearchParams } from "@solidjs/router"
-import { NewSessionDesignView } from "@/components/session"
-import { PromptInput } from "@/components/prompt-input"
-import { useSettingsCommand } from "@/components/settings-dialog"
+import { Show, createEffect, createMemo, createResource, untrack } from "solid-js";
+import { createStore } from "solid-js/store";
+import { useSearchParams } from "@solidjs/router";
+import { NewSessionDesignView } from "@/components/session";
+import { PromptInput } from "@/components/prompt-input";
+import { useSettingsCommand } from "@/components/settings-dialog";
 import {
   PromptProjectAddButton,
   PromptProjectSelector,
   createPromptProjectController,
-} from "@/components/prompt-project-selector"
-import { useComments } from "@/context/comments"
-import { usePrompt } from "@/context/prompt"
-import { useSDK } from "@/context/sdk"
-import { useSync } from "@/context/sync"
-import { useServerSync } from "@/context/server-sync"
-import { useLanguage } from "@/context/language"
-import { createPromptInputController, createPromptProjectControls } from "@/pages/session/composer"
-import { useSessionKey } from "@/pages/session/session-layout"
-import { useComposerCommands } from "@/pages/session/use-composer-commands"
-import { NEW_SESSION_CONTENT_WIDTH } from "@/pages/session/new-session-layout"
-import { PromptWorkspaceSelector } from "@/components/prompt-workspace-selector"
+} from "@/components/prompt-project-selector";
+import { useComments } from "@/context/comments";
+import { usePrompt } from "@/context/prompt";
+import { useSDK } from "@/context/sdk";
+import { useSync } from "@/context/sync";
+import { useServerSync } from "@/context/server-sync";
+import { useLanguage } from "@/context/language";
+import { createPromptInputController, createPromptProjectControls } from "@/pages/session/composer";
+import { useSessionKey } from "@/pages/session/session-layout";
+import { useComposerCommands } from "@/pages/session/use-composer-commands";
+import { NEW_SESSION_CONTENT_WIDTH } from "@/pages/session/new-session-layout";
+import { PromptWorkspaceSelector } from "@/components/prompt-workspace-selector";
 
-const showWorkspaceBar = import.meta.env.VITE_OPENCODE_CHANNEL !== "prod"
+const showWorkspaceBar = import.meta.env.VITE_OPENCODE_CHANNEL !== "prod";
 
 /**
  * The `/new-session` draft page. Unlike `session.tsx`, this only renders the prompt
@@ -29,66 +29,66 @@ const showWorkspaceBar = import.meta.env.VITE_OPENCODE_CHANNEL !== "prod"
  * timeline. Submitting promotes the draft into a real session (see prompt-input/submit).
  */
 export default function NewSessionPage() {
-  const prompt = usePrompt()
-  const sdk = useSDK()
-  const sync = useSync()
-  const serverSync = useServerSync()
-  const comments = useComments()
-  const language = useLanguage()
-  const route = useSessionKey()
-  const [searchParams, setSearchParams] = useSearchParams<{ draftId?: string; prompt?: string }>()
+  const prompt = usePrompt();
+  const sdk = useSDK();
+  const sync = useSync();
+  const serverSync = useServerSync();
+  const comments = useComments();
+  const language = useLanguage();
+  const route = useSessionKey();
+  const [searchParams, setSearchParams] = useSearchParams<{ draftId?: string; prompt?: string }>();
 
-  useComposerCommands()
-  useSettingsCommand()
+  useComposerCommands();
+  useSettingsCommand();
 
-  let inputRef: HTMLDivElement | undefined
+  let inputRef: HTMLDivElement | undefined;
 
   const inputController = createPromptInputController({
     sessionKey: route.sessionKey,
     sessionID: () => route.params.id,
     queryOptions: serverSync().queryOptions,
-  })
-  const projectControls = createPromptProjectControls()
+  });
+  const projectControls = createPromptProjectControls();
   const projectController = createPromptProjectController({
     controls: projectControls,
     onDone: () => inputRef?.focus(),
-  })
+  });
 
-  const [store, setStore] = createStore<{ worktree?: string }>({})
+  const [store, setStore] = createStore<{ worktree?: string }>({});
 
   const newSessionWorktree = createMemo(() => {
-    if (store.worktree) return store.worktree
-    const project = sync().project
-    if (project && sdk().directory !== project.worktree) return sdk().directory
-    return "main"
-  })
-  const projectRoot = createMemo(() => sync().project?.worktree ?? sdk().directory)
-  const localBranch = createMemo(() => serverSync().child(projectRoot())[0].vcs?.branch)
+    if (store.worktree) return store.worktree;
+    const project = sync().project;
+    if (project && sdk().directory !== project.worktree) return sdk().directory;
+    return "main";
+  });
+  const projectRoot = createMemo(() => sync().project?.worktree ?? sdk().directory);
+  const localBranch = createMemo(() => serverSync().child(projectRoot())[0].vcs?.branch);
   const selectedBranch = createMemo(() => {
-    const worktree = newSessionWorktree()
-    if (worktree === "main" || worktree === "create") return localBranch()
-    return serverSync().child(worktree)[0].vcs?.branch ?? localBranch()
-  })
+    const worktree = newSessionWorktree();
+    if (worktree === "main" || worktree === "create") return localBranch();
+    return serverSync().child(worktree)[0].vcs?.branch ?? localBranch();
+  });
 
   createEffect(() => {
-    if (!prompt.ready()) return
+    if (!prompt.ready()) return;
     untrack(() => {
-      const text = searchParams.prompt
-      if (!text) return
-      prompt.set([{ type: "text", content: text, start: 0, end: text.length }], text.length)
-      setSearchParams({ ...searchParams, prompt: undefined })
-    })
-  })
+      const text = searchParams.prompt;
+      if (!text) return;
+      prompt.set([{ type: "text", content: text, start: 0, end: text.length }], text.length);
+      setSearchParams({ ...searchParams, prompt: undefined });
+    });
+  });
 
   createEffect(() => {
-    if (!prompt.ready()) return
-    requestAnimationFrame(() => inputRef?.focus())
-  })
-  const ready = Promise.resolve()
+    if (!prompt.ready()) return;
+    requestAnimationFrame(() => inputRef?.focus());
+  });
+  const ready = Promise.resolve();
   const [promptReady] = createResource(
     () => prompt.ready.promise ?? ready,
     (promise) => promise.then(() => true),
-  )
+  );
 
   return (
     <div class="relative size-full overflow-hidden flex flex-col">
@@ -105,12 +105,15 @@ export default function NewSessionPage() {
                     </div>
                   }
                 >
-                  <div class="flex flex-col" classList={{ "gap-8": showWorkspaceBar, "gap-3": !showWorkspaceBar }}>
+                  <div
+                    class="flex flex-col"
+                    classList={{ "gap-8": showWorkspaceBar, "gap-3": !showWorkspaceBar }}
+                  >
                     <PromptInput
                       controls={inputController()}
                       variant="new-session"
                       ref={(el) => {
-                        inputRef = el
+                        inputRef = el;
                       }}
                       newSessionWorktree={newSessionWorktree()}
                       onNewSessionWorktreeReset={() => setStore("worktree", undefined)}
@@ -160,5 +163,5 @@ export default function NewSessionPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

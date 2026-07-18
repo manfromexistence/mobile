@@ -53,7 +53,7 @@ test("AC-1: GET returns 5 tiers with prefixes + bypass state envelope", async ()
 
   const request = await makeManagementSessionRequest(
     "http://localhost/api/settings/authz-inventory",
-    { method: "GET" }
+    { method: "GET" },
   );
   const response = await inventoryRoute.GET(request);
   assert.equal(response.status, 200);
@@ -105,7 +105,7 @@ test("AC-2: bypassEnabled + bypassPrefixes reflect getSettings() (defaults)", as
   const response = await inventoryRoute.GET(
     await makeManagementSessionRequest("http://localhost/api/settings/authz-inventory", {
       method: "GET",
-    })
+    }),
   );
   assert.equal(response.status, 200);
   const body = (await response.json()) as {
@@ -130,7 +130,7 @@ test("AC-2: bypassEnabled flips after settings mutation", async () => {
   const response = await inventoryRoute.GET(
     await makeManagementSessionRequest("http://localhost/api/settings/authz-inventory", {
       method: "GET",
-    })
+    }),
   );
   assert.equal(response.status, 200);
   const body = (await response.json()) as { bypassEnabled: boolean };
@@ -149,7 +149,7 @@ test("AC-2: bypassPrefixes additions land in the inventory", async () => {
   const response = await inventoryRoute.GET(
     await makeManagementSessionRequest("http://localhost/api/settings/authz-inventory", {
       method: "GET",
-    })
+    }),
   );
   assert.equal(response.status, 200);
   const body = (await response.json()) as { bypassPrefixes: string[] };
@@ -167,7 +167,7 @@ test("#5602: cors.allowAll is false by default (no CORS_ALLOW_ALL)", async () =>
   const response = await inventoryRoute.GET(
     await makeManagementSessionRequest("http://localhost/api/settings/authz-inventory", {
       method: "GET",
-    })
+    }),
   );
   assert.equal(response.status, 200);
   const body = (await response.json()) as {
@@ -187,7 +187,7 @@ test("#5602: cors.allowAll reflects CORS_ALLOW_ALL=true", async () => {
   const response = await inventoryRoute.GET(
     await makeManagementSessionRequest("http://localhost/api/settings/authz-inventory", {
       method: "GET",
-    })
+    }),
   );
   assert.equal(response.status, 200);
   const body = (await response.json()) as { cors: { allowAll: boolean } };
@@ -201,8 +201,9 @@ test("AC-12: anonymous request (no cookie, no Bearer) → 401", async () => {
   process.env.INITIAL_PASSWORD = "initial-pass-ac12";
   // Bootstrap a password so isAuthRequired() returns true even on loopback.
   await settingsDb.updateSettings({ requireLogin: true });
-  const { ensurePersistentManagementPasswordHash } =
-    await import("../../../src/lib/auth/managementPassword.ts");
+  const { ensurePersistentManagementPasswordHash } = await import(
+    "../../../src/lib/auth/managementPassword.ts"
+  );
   await ensurePersistentManagementPasswordHash({ source: "test.bootstrap" });
 
   const anonRequest = new Request("https://dashboard.example/api/settings/authz-inventory", {
@@ -211,7 +212,7 @@ test("AC-12: anonymous request (no cookie, no Bearer) → 401", async () => {
   const response = await inventoryRoute.GET(anonRequest);
   assert.ok(
     response.status === 401 || response.status === 403,
-    `expected 401/403, got ${response.status}`
+    `expected 401/403, got ${response.status}`,
   );
   const body = (await response.json()) as { error?: { message?: string } };
   // Should NOT leak the inventory shape.
@@ -222,8 +223,9 @@ test("AC-12: anonymous request with bogus Bearer → 403", async () => {
   process.env.JWT_SECRET = "test-jwt-secret-authz-inventory";
   process.env.INITIAL_PASSWORD = "initial-pass-ac12b";
   await settingsDb.updateSettings({ requireLogin: true });
-  const { ensurePersistentManagementPasswordHash } =
-    await import("../../../src/lib/auth/managementPassword.ts");
+  const { ensurePersistentManagementPasswordHash } = await import(
+    "../../../src/lib/auth/managementPassword.ts"
+  );
   await ensurePersistentManagementPasswordHash({ source: "test.bootstrap" });
 
   const bogus = new Request("https://dashboard.example/api/settings/authz-inventory", {
@@ -240,8 +242,9 @@ test("OQ-5: any valid API key (read-only scope) → 200 inventory", async () => 
   process.env.JWT_SECRET = "test-jwt-secret-authz-inventory";
   process.env.INITIAL_PASSWORD = "initial-pass-oq5";
   await settingsDb.updateSettings({ requireLogin: true });
-  const { ensurePersistentManagementPasswordHash } =
-    await import("../../../src/lib/auth/managementPassword.ts");
+  const { ensurePersistentManagementPasswordHash } = await import(
+    "../../../src/lib/auth/managementPassword.ts"
+  );
   await ensurePersistentManagementPasswordHash({ source: "test.bootstrap" });
 
   // Key with NO manage scope — would be rejected by /api/settings PATCH,

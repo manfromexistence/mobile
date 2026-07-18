@@ -59,7 +59,7 @@ export default function CacheEntriesTab() {
         setLoading(false);
       }
     },
-    [pagination.limit, search, t]
+    [pagination.limit, search, t],
   );
 
   useEffect(() => {

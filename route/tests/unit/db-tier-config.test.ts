@@ -49,7 +49,7 @@ describe("tierConfig DB module", () => {
     const { getDbInstance } = await import("../../src/lib/db/core.ts");
     const db = getDbInstance();
     db.prepare(
-      "INSERT OR REPLACE INTO tier_config (key, value, updated_at) VALUES ('tier_config', ?, datetime('now'))"
+      "INSERT OR REPLACE INTO tier_config (key, value, updated_at) VALUES ('tier_config', ?, datetime('now'))",
     ).run("not-valid-json{{{");
 
     // Spy on the logger to confirm we emit a warning that operators can spot.
@@ -61,7 +61,7 @@ describe("tierConfig DB module", () => {
       assert.equal(result, null, "should return null for corrupted JSON");
       assert.ok(
         warnSpy.mock.calls.length > 0,
-        "should emit at least one warning so operators can spot the corruption"
+        "should emit at least one warning so operators can spot the corruption",
       );
       // Sanity: loadTierConfig() still returns DEFAULT_TIER_CONFIG.
       const fallback = loadTierConfig();
@@ -84,7 +84,7 @@ describe("tierConfig DB module", () => {
       freeProviders: [],
     });
     db.prepare(
-      "INSERT OR REPLACE INTO tier_config (key, value, updated_at) VALUES ('tier_config', ?, datetime('now'))"
+      "INSERT OR REPLACE INTO tier_config (key, value, updated_at) VALUES ('tier_config', ?, datetime('now'))",
     ).run(badShape);
 
     const loggerModule = await import("@omniroute/open-sse/utils/logger.ts");
@@ -105,7 +105,7 @@ describe("tierConfig DB module", () => {
     // 1000 chars of garbage — the warning preview must truncate to avoid log floods.
     const long = "{".repeat(1000);
     db.prepare(
-      "INSERT OR REPLACE INTO tier_config (key, value, updated_at) VALUES ('tier_config', ?, datetime('now'))"
+      "INSERT OR REPLACE INTO tier_config (key, value, updated_at) VALUES ('tier_config', ?, datetime('now'))",
     ).run(long);
 
     const loggerModule = await import("@omniroute/open-sse/utils/logger.ts");
@@ -119,7 +119,7 @@ describe("tierConfig DB module", () => {
       const preview = typeof payload.value === "string" ? payload.value : "";
       assert.ok(
         preview.length <= 250,
-        `warning preview should be truncated, got length=${preview.length}`
+        `warning preview should be truncated, got length=${preview.length}`,
       );
     } finally {
       warnSpy.mock.restore();

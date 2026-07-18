@@ -33,7 +33,7 @@ describe("Context Requirements Integration", () => {
     assert.ok(result.length < targets.length);
     assert.ok(
       result.every((target) => targets.some((original) => original.modelStr === target.modelStr)),
-      "Filtered targets should be a subset of the original list"
+      "Filtered targets should be a subset of the original list",
     );
   });
 
@@ -75,7 +75,7 @@ describe("Context Requirements Integration", () => {
     // Should include unknown-model in lenient mode
     assert.ok(
       result.some((t) => t.modelStr === "unknown-model"),
-      "Should include unknown model in lenient mode"
+      "Should include unknown model in lenient mode",
     );
   });
 
@@ -95,7 +95,7 @@ describe("Context Requirements Integration", () => {
     // Should exclude unknown-model in strict mode
     assert.ok(
       !result.some((t) => t.modelStr === "unknown-model"),
-      "Should exclude unknown model in strict mode"
+      "Should exclude unknown model in strict mode",
     );
   });
 });

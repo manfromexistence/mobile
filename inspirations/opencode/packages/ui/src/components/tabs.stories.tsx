@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { IconButton } from "./icon-button"
-import { createSignal } from "solid-js"
-import * as mod from "./tabs"
+import { IconButton } from "./icon-button";
+import { createSignal } from "solid-js";
+import * as mod from "./tabs";
 
 const docs = `### Overview
 Tabbed navigation for switching between related panels.
@@ -27,7 +27,7 @@ Compose \`Tabs.List\` + \`Tabs.Trigger\` + \`Tabs.Content\`.
 ### Theming/tokens
 - Uses \`data-component="tabs"\` with variant/orientation data attributes.
 
-`
+`;
 
 export default {
   title: "UI/Tabs",
@@ -51,7 +51,7 @@ export default {
       options: ["horizontal", "vertical"],
     },
   },
-}
+};
 
 export const Basic = {
   args: {
@@ -71,7 +71,7 @@ export const Basic = {
       <mod.Tabs.Content value="activity">Activity content</mod.Tabs.Content>
     </mod.Tabs>
   ),
-}
+};
 
 export const Settings = {
   args: {
@@ -89,7 +89,7 @@ export const Settings = {
       <mod.Tabs.Content value="appearance">Appearance settings</mod.Tabs.Content>
     </mod.Tabs>
   ),
-}
+};
 
 export const Alt = {
   args: {
@@ -107,7 +107,7 @@ export const Alt = {
       <mod.Tabs.Content value="second">Alt content 2</mod.Tabs.Content>
     </mod.Tabs>
   ),
-}
+};
 
 export const Vertical = {
   args: {
@@ -125,7 +125,7 @@ export const Vertical = {
       <mod.Tabs.Content value="beta">Beta content</mod.Tabs.Content>
     </mod.Tabs>
   ),
-}
+};
 
 export const Closable = {
   args: {
@@ -138,7 +138,9 @@ export const Closable = {
       <mod.Tabs.List>
         <mod.Tabs.Trigger
           value="tab-1"
-          closeButton={<IconButton icon="close" size="small" variant="ghost" aria-label="Close tab" />}
+          closeButton={
+            <IconButton icon="close" size="small" variant="ghost" aria-label="Close tab" />
+          }
         >
           Tab 1
         </mod.Tabs.Trigger>
@@ -148,7 +150,7 @@ export const Closable = {
       <mod.Tabs.Content value="tab-2">Standard content</mod.Tabs.Content>
     </mod.Tabs>
   ),
-}
+};
 
 export const MiddleClick = {
   args: {
@@ -157,16 +159,22 @@ export const MiddleClick = {
     defaultValue: "tab-1",
   },
   render: (props) => {
-    const [message, setMessage] = createSignal("Middle click a tab")
+    const [message, setMessage] = createSignal("Middle click a tab");
     return (
       <div style={{ display: "grid", gap: "8px" }}>
         <div style={{ "font-size": "12px", color: "var(--text-weak)" }}>{message()}</div>
         <mod.Tabs {...props}>
           <mod.Tabs.List>
-            <mod.Tabs.Trigger value="tab-1" onMiddleClick={() => setMessage("Middle clicked tab-1")}>
+            <mod.Tabs.Trigger
+              value="tab-1"
+              onMiddleClick={() => setMessage("Middle clicked tab-1")}
+            >
               Tab 1
             </mod.Tabs.Trigger>
-            <mod.Tabs.Trigger value="tab-2" onMiddleClick={() => setMessage("Middle clicked tab-2")}>
+            <mod.Tabs.Trigger
+              value="tab-2"
+              onMiddleClick={() => setMessage("Middle clicked tab-2")}
+            >
               Tab 2
             </mod.Tabs.Trigger>
           </mod.Tabs.List>
@@ -174,6 +182,6 @@ export const MiddleClick = {
           <mod.Tabs.Content value="tab-2">Tab 2 content</mod.Tabs.Content>
         </mod.Tabs>
       </div>
-    )
+    );
   },
-}
+};

@@ -25,7 +25,7 @@ async function drain(out: ReadableStream, timeoutMs = 5000): Promise<string> {
   const dec = new TextDecoder();
   let s = "";
   const timeout = new Promise<never>((_, reject) =>
-    setTimeout(() => reject(new Error(`drain timeout after ${timeoutMs}ms`)), timeoutMs)
+    setTimeout(() => reject(new Error(`drain timeout after ${timeoutMs}ms`)), timeoutMs),
   );
   const read = async () => {
     for (;;) {
@@ -101,7 +101,7 @@ test("4. final snapshot does not duplicate tail text", async () => {
   assert.equal(
     occurrences,
     1,
-    `'Hello' appeared ${occurrences} times; expected 1. Output: ${JSON.stringify(text)}`
+    `'Hello' appeared ${occurrences} times; expected 1. Output: ${JSON.stringify(text)}`,
   );
 });
 
@@ -115,6 +115,6 @@ test("5. upstream error propagates and closes stream (no hang, Hard Rule #6)", a
       await drain(out, 2000);
     },
     undefined, // any error is acceptable — just must not hang
-    "upstream error must propagate as a rejection to the consumer"
+    "upstream error must propagate as a rejection to the consumer",
   );
 });

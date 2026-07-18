@@ -1,5 +1,5 @@
-import { Effect } from "effect"
-import type { DatabaseMigration } from "../migration"
+import { Effect } from "effect";
+import type { DatabaseMigration } from "../migration";
 
 export default {
   id: "20260213144116_wakeful_the_professor",
@@ -17,7 +17,7 @@ export default {
           \`time_updated\` integer NOT NULL,
           CONSTRAINT \`control_account_pk\` PRIMARY KEY(\`email\`, \`url\`)
         );
-      `)
-    })
+      `);
+    });
   },
-} satisfies DatabaseMigration.Migration
+} satisfies DatabaseMigration.Migration;

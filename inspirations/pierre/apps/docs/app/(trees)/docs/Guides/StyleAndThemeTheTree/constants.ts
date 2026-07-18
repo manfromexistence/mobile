@@ -1,7 +1,7 @@
-import { docsCodeSnippet } from '@/lib/docsCodeSnippet';
+import { docsCodeSnippet } from "@/lib/docsCodeSnippet";
 
 export const STYLE_THEME_HOST_STYLING = docsCodeSnippet(
-  'host-styling.tsx',
+  "host-styling.tsx",
   `<FileTree
   model={model}
   className="h-96 rounded-xl border"
@@ -9,11 +9,11 @@ export const STYLE_THEME_HOST_STYLING = docsCodeSnippet(
     backgroundColor: 'var(--panel)',
     borderColor: 'var(--border)',
   }}
-/>`
+/>`,
 );
 
 export const STYLE_THEME_CSS_VARIABLES = docsCodeSnippet(
-  'css-variables.tsx',
+  "css-variables.tsx",
   `<FileTree
   model={model}
   style={
@@ -25,11 +25,11 @@ export const STYLE_THEME_CSS_VARIABLES = docsCodeSnippet(
       '--trees-theme-focus-ring': 'var(--accent)',
     } as React.CSSProperties
   }
-/>`
+/>`,
 );
 
 export const STYLE_THEME_TO_TREE_STYLES = docsCodeSnippet(
-  'theme-to-tree-styles.tsx',
+  "theme-to-tree-styles.tsx",
   `import { themeToTreeStyles } from '@pierre/trees';
 
 const treeStyles = themeToTreeStyles(theme);
@@ -43,11 +43,11 @@ const treeStyles = themeToTreeStyles(theme);
         'color-mix(in oklab, var(--accent) 28%, transparent)',
     } as React.CSSProperties
   }
-/>;`
+/>;`,
 );
 
 export const STYLE_THEME_UNSAFE_CSS = docsCodeSnippet(
-  'unsafe-css.ts',
+  "unsafe-css.ts",
   `const fileTree = new FileTree({
   paths,
   unsafeCSS: \`
@@ -55,5 +55,5 @@ export const STYLE_THEME_UNSAFE_CSS = docsCodeSnippet(
       text-decoration: underline;
     }
   \`,
-});`
+});`,
 );

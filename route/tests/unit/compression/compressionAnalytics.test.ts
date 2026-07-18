@@ -9,10 +9,12 @@ process.env.DATA_DIR = tmpDir;
 
 const core = await import("../../../src/lib/db/core.ts");
 core.resetDbInstance();
-const { insertCompressionAnalyticsRow, getCompressionAnalyticsSummary } =
-  await import("../../../src/lib/db/compressionAnalytics.ts");
-const { attachCompressionUsageReceipt } =
-  await import("../../../src/lib/db/compressionAnalytics.ts");
+const { insertCompressionAnalyticsRow, getCompressionAnalyticsSummary } = await import(
+  "../../../src/lib/db/compressionAnalytics.ts"
+);
+const { attachCompressionUsageReceipt } = await import(
+  "../../../src/lib/db/compressionAnalytics.ts"
+);
 const { getDbInstance } = core;
 
 describe("compressionAnalytics", () => {
@@ -107,7 +109,7 @@ describe("compressionAnalytics", () => {
     const db = getDbInstance();
     const row = db
       .prepare(
-        "SELECT rtk_raw_output_pointer, rtk_raw_output_bytes, rtk_raw_output_pointers, rtk_raw_output_total_bytes FROM compression_analytics LIMIT 1"
+        "SELECT rtk_raw_output_pointer, rtk_raw_output_bytes, rtk_raw_output_pointers, rtk_raw_output_total_bytes FROM compression_analytics LIMIT 1",
       )
       .get() as {
       rtk_raw_output_pointer: string;
@@ -320,7 +322,7 @@ describe("compressionAnalytics", () => {
         total_tokens: 752,
         prompt_tokens_details: { cached_tokens: 100, cache_creation_tokens: 12 },
       },
-      "provider"
+      "provider",
     );
     const summary = getCompressionAnalyticsSummary();
     assert.equal(summary.realUsage.requestsWithReceipts, 1);
@@ -363,7 +365,7 @@ describe("compressionAnalytics", () => {
     attachCompressionUsageReceipt(
       "req-output",
       { prompt_tokens: 900, completion_tokens: 120, total_tokens: 1020 },
-      "provider"
+      "provider",
     );
 
     const summary = getCompressionAnalyticsSummary();

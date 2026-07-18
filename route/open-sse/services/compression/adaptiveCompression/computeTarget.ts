@@ -13,7 +13,7 @@ export function computeTarget(
   policy: ContextBudgetPolicy,
   modelContextLimit: number,
   requestMaxTokens: number | null,
-  config: Pick<ContextBudgetConfig, "outputReserve" | "safetyMargin" | "pct" | "absoluteBudget">
+  config: Pick<ContextBudgetConfig, "outputReserve" | "safetyMargin" | "pct" | "absoluteBudget">,
 ): number {
   if (policy === "absolute") {
     return Math.max(0, Math.floor(config.absoluteBudget));

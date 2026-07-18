@@ -4,12 +4,8 @@
   "title": "Consent Manager",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "Cookie and tracking consent banner for Next.js, built on c15t.",
-  "dependencies": [
-    "@c15t/nextjs"
-  ],
-  "registryDependencies": [
-    "button"
-  ],
+  "dependencies": ["@c15t/nextjs"],
+  "registryDependencies": ["button"],
   "files": [
     {
       "path": "src/registry/components/consent-manager/consent-manager.tsx",
@@ -19,8 +15,6 @@
     }
   ],
   "docs": "https://chanhdai.com/components/consent-manager",
-  "categories": [
-    "utilities"
-  ],
+  "categories": ["utilities"],
   "type": "registry:component"
 }

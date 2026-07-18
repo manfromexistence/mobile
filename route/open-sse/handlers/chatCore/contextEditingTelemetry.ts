@@ -30,7 +30,7 @@ export function recordContextEditingTelemetryHook(args: {
         recordContextEditingTelemetry(skillRequestId, tele, provider);
         log?.debug?.(
           "CONTEXT_EDITING",
-          `cleared ${tele.clearedInputTokens} input tokens / ${tele.clearedToolUses} tool uses (${tele.editCount} edits)`
+          `cleared ${tele.clearedInputTokens} input tokens / ${tele.clearedToolUses} tool uses (${tele.editCount} edits)`,
         );
       }
     } catch {

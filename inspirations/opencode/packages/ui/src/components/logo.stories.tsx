@@ -1,5 +1,5 @@
 // @ts-nocheck
-import * as mod from "./logo"
+import * as mod from "./logo";
 
 const docs = `### Overview
 OpenCode logo assets: mark, splash, and wordmark.
@@ -21,7 +21,7 @@ Use Mark for compact spaces, Logo for headers, Splash for hero sections.
 ### Theming/tokens
 - Uses theme color tokens via CSS variables.
 
-`
+`;
 
 export default {
   title: "UI/Logo",
@@ -35,7 +35,7 @@ export default {
       },
     },
   },
-}
+};
 
 export const Basic = {
   render: () => (
@@ -54,4 +54,4 @@ export const Basic = {
       </div>
     </div>
   ),
-}
+};

@@ -90,7 +90,7 @@ function toRecord(value: unknown): Record<string, unknown> {
 
 function getAuthKey(
   providerSpecificData: Record<string, unknown> | undefined,
-  apiKey: string
+  apiKey: string,
 ): string {
   // [Oracle CONDITIONAL] consoleApiKey is bailian-coding-plan specific only
   const consoleKey = providerSpecificData?.consoleApiKey;
@@ -226,7 +226,7 @@ function parseBailianQuotaResponse(data: unknown): BailianTripleWindowQuota | nu
  */
 export async function fetchBailianQuota(
   connectionId: string,
-  connection?: Record<string, unknown>
+  connection?: Record<string, unknown>,
 ): Promise<QuotaInfo | null> {
   // Check cache first
   const cached = quotaCache.get(connectionId);

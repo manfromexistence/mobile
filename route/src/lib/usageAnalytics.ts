@@ -78,7 +78,7 @@ function shortModelName(model: string) {
 
 function getApiKeyAnalyticsKey(
   apiKeyId: string | null | undefined,
-  apiKeyName: string | null | undefined
+  apiKeyName: string | null | undefined,
 ) {
   return apiKeyId ? `id:${apiKeyId}` : `name:${apiKeyName || "unknown"}`;
 }
@@ -94,7 +94,7 @@ export async function computeAnalytics(
   history: any[],
   range = "30d",
   connectionMap: Record<string, string> = {},
-  options: { startDate?: string; endDate?: string } = {}
+  options: { startDate?: string; endDate?: string } = {},
 ) {
   const { start, end } = getDateRange(range, options.startDate, options.endDate);
 
@@ -166,7 +166,7 @@ export async function computeAnalytics(
         }
       }
       pricingCache.set(key, pricing ?? null);
-    })
+    }),
   );
 
   // ---- Single pass over filtered entries for everything else ----

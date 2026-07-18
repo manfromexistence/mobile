@@ -1,72 +1,73 @@
-import { ProviderHelper, CommonRequest, CommonResponse, CommonChunk } from "./provider"
+import { ProviderHelper, CommonRequest, CommonResponse, CommonChunk } from "./provider";
 
 type Usage = {
-  prompt_tokens?: number
-  completion_tokens?: number
-  total_tokens?: number
+  prompt_tokens?: number;
+  completion_tokens?: number;
+  total_tokens?: number;
   // used by moonshot
-  cached_tokens?: number
+  cached_tokens?: number;
   // used by xai & alibaba
   prompt_tokens_details?: {
-    text_tokens?: number
-    audio_tokens?: number
-    image_tokens?: number
-    cached_tokens?: number
+    text_tokens?: number;
+    audio_tokens?: number;
+    image_tokens?: number;
+    cached_tokens?: number;
     // used by alibaba
-    cache_creation_input_tokens?: number
-  }
+    cache_creation_input_tokens?: number;
+  };
   completion_tokens_details?: {
-    reasoning_tokens?: number
-    audio_tokens?: number
-    accepted_prediction_tokens?: number
-    rejected_prediction_tokens?: number
-  }
-}
+    reasoning_tokens?: number;
+    audio_tokens?: number;
+    accepted_prediction_tokens?: number;
+    rejected_prediction_tokens?: number;
+  };
+};
 
 export const oaCompatHelper: ProviderHelper = ({ adjustCacheUsage }) => ({
   format: "oa-compat",
   modifyUrl: (providerApi: string) => providerApi + "/chat/completions",
   modifyHeaders: (headers: Headers, apiKey: string, stickyId: string) => {
-    headers.set("authorization", `Bearer ${apiKey}`)
-    headers.set("x-session-affinity", stickyId)
+    headers.set("authorization", `Bearer ${apiKey}`);
+    headers.set("x-session-affinity", stickyId);
   },
   modifyBody: (body: Record<string, any>, _workspaceID?: string) => {
     return {
       ...body,
       ...(body.stream ? { stream_options: { include_usage: true } } : {}),
-    }
+    };
   },
   createBinaryStreamDecoder: () => undefined,
   createUsageParser: () => {
-    let usage: Usage
+    let usage: Usage;
 
     return {
       parse: (chunk: string) => {
-        if (!chunk.startsWith("data: ")) return
+        if (!chunk.startsWith("data: ")) return;
 
-        let json
+        let json;
         try {
-          json = JSON.parse(chunk.slice(6)) as { usage?: Usage }
+          json = JSON.parse(chunk.slice(6)) as { usage?: Usage };
         } catch {
-          return
+          return;
         }
 
-        if (!json.usage) return
-        usage = json.usage
+        if (!json.usage) return;
+        usage = json.usage;
       },
       retrieve: () => usage,
-    }
+    };
   },
   extractUsage: (response: any) => response.usage,
   normalizeUsage: (usage: Usage) => {
-    let inputTokens = usage.prompt_tokens ?? 0
-    const outputTokens = usage.completion_tokens ?? 0
-    const reasoningTokens = usage.completion_tokens_details?.reasoning_tokens ?? undefined
-    let cacheReadTokens = usage.cached_tokens ?? usage.prompt_tokens_details?.cached_tokens ?? undefined
-    const cacheWriteTokens = usage.prompt_tokens_details?.cache_creation_input_tokens ?? undefined
+    let inputTokens = usage.prompt_tokens ?? 0;
+    const outputTokens = usage.completion_tokens ?? 0;
+    const reasoningTokens = usage.completion_tokens_details?.reasoning_tokens ?? undefined;
+    let cacheReadTokens =
+      usage.cached_tokens ?? usage.prompt_tokens_details?.cached_tokens ?? undefined;
+    const cacheWriteTokens = usage.prompt_tokens_details?.cache_creation_input_tokens ?? undefined;
 
     if (adjustCacheUsage && !cacheReadTokens) {
-      cacheReadTokens = Math.floor(inputTokens * 0.9)
+      cacheReadTokens = Math.floor(inputTokens * 0.9);
     }
 
     return {
@@ -76,51 +77,54 @@ export const oaCompatHelper: ProviderHelper = ({ adjustCacheUsage }) => ({
       cacheReadTokens,
       cacheWrite5mTokens: cacheWriteTokens,
       cacheWrite1hTokens: undefined,
-    }
+    };
   },
-})
+});
 
 export function fromOaCompatibleRequest(body: any): CommonRequest {
-  if (!body || typeof body !== "object") return body
+  if (!body || typeof body !== "object") return body;
 
-  const msgsIn = Array.isArray(body.messages) ? body.messages : []
-  const msgsOut: any[] = []
+  const msgsIn = Array.isArray(body.messages) ? body.messages : [];
+  const msgsOut: any[] = [];
 
   for (const m of msgsIn) {
-    if (!m || !m.role) continue
+    if (!m || !m.role) continue;
 
     if (m.role === "system") {
-      if (typeof m.content === "string" && m.content.length > 0) msgsOut.push({ role: "system", content: m.content })
-      continue
+      if (typeof m.content === "string" && m.content.length > 0)
+        msgsOut.push({ role: "system", content: m.content });
+      continue;
     }
 
     if (m.role === "user") {
       if (typeof m.content === "string") {
-        msgsOut.push({ role: "user", content: m.content })
+        msgsOut.push({ role: "user", content: m.content });
       } else if (Array.isArray(m.content)) {
-        const parts: any[] = []
+        const parts: any[] = [];
         for (const p of m.content) {
-          if (!p || !p.type) continue
-          if (p.type === "text" && typeof p.text === "string") parts.push({ type: "text", text: p.text })
-          if (p.type === "image_url") parts.push({ type: "image_url", image_url: p.image_url })
+          if (!p || !p.type) continue;
+          if (p.type === "text" && typeof p.text === "string")
+            parts.push({ type: "text", text: p.text });
+          if (p.type === "image_url") parts.push({ type: "image_url", image_url: p.image_url });
         }
-        if (parts.length === 1 && parts[0].type === "text") msgsOut.push({ role: "user", content: parts[0].text })
-        else if (parts.length > 0) msgsOut.push({ role: "user", content: parts })
+        if (parts.length === 1 && parts[0].type === "text")
+          msgsOut.push({ role: "user", content: parts[0].text });
+        else if (parts.length > 0) msgsOut.push({ role: "user", content: parts });
       }
-      continue
+      continue;
     }
 
     if (m.role === "assistant") {
-      const out: any = { role: "assistant" }
-      if (typeof m.content === "string") out.content = m.content
-      if (Array.isArray(m.tool_calls)) out.tool_calls = m.tool_calls
-      msgsOut.push(out)
-      continue
+      const out: any = { role: "assistant" };
+      if (typeof m.content === "string") out.content = m.content;
+      if (Array.isArray(m.tool_calls)) out.tool_calls = m.tool_calls;
+      msgsOut.push(out);
+      continue;
     }
 
     if (m.role === "tool") {
-      msgsOut.push({ role: "tool", tool_call_id: m.tool_call_id, content: m.content })
-      continue
+      msgsOut.push({ role: "tool", tool_call_id: m.tool_call_id, content: m.content });
+      continue;
     }
   }
 
@@ -134,64 +138,68 @@ export function fromOaCompatibleRequest(body: any): CommonRequest {
     stream: !!body.stream,
     tools: Array.isArray(body.tools) ? body.tools : undefined,
     tool_choice: body.tool_choice,
-  }
+  };
 }
 
 export function toOaCompatibleRequest(body: CommonRequest) {
-  if (!body || typeof body !== "object") return body
+  if (!body || typeof body !== "object") return body;
 
-  const msgsIn = Array.isArray(body.messages) ? body.messages : []
-  const msgsOut: any[] = []
+  const msgsIn = Array.isArray(body.messages) ? body.messages : [];
+  const msgsOut: any[] = [];
 
   const toImg = (p: any) => {
-    if (!p || typeof p !== "object") return undefined
-    if (p.type === "image_url" && p.image_url) return { type: "image_url", image_url: p.image_url }
-    const s = (p as any).source
-    if (!s || typeof s !== "object") return undefined
-    if (s.type === "url" && typeof s.url === "string") return { type: "image_url", image_url: { url: s.url } }
+    if (!p || typeof p !== "object") return undefined;
+    if (p.type === "image_url" && p.image_url) return { type: "image_url", image_url: p.image_url };
+    const s = (p as any).source;
+    if (!s || typeof s !== "object") return undefined;
+    if (s.type === "url" && typeof s.url === "string")
+      return { type: "image_url", image_url: { url: s.url } };
     if (s.type === "base64" && typeof s.media_type === "string" && typeof s.data === "string")
-      return { type: "image_url", image_url: { url: `data:${s.media_type};base64,${s.data}` } }
-    return undefined
-  }
+      return { type: "image_url", image_url: { url: `data:${s.media_type};base64,${s.data}` } };
+    return undefined;
+  };
 
   for (const m of msgsIn) {
-    if (!m || !m.role) continue
+    if (!m || !m.role) continue;
 
     if (m.role === "system") {
-      if (typeof m.content === "string" && m.content.length > 0) msgsOut.push({ role: "system", content: m.content })
-      continue
+      if (typeof m.content === "string" && m.content.length > 0)
+        msgsOut.push({ role: "system", content: m.content });
+      continue;
     }
 
     if (m.role === "user") {
       if (typeof m.content === "string") {
-        msgsOut.push({ role: "user", content: m.content })
-        continue
+        msgsOut.push({ role: "user", content: m.content });
+        continue;
       }
       if (Array.isArray(m.content)) {
-        const parts: any[] = []
+        const parts: any[] = [];
         for (const p of m.content) {
-          if (!p || !p.type) continue
-          if (p.type === "text" && typeof p.text === "string") parts.push({ type: "text", text: p.text })
-          const ip = toImg(p)
-          if (ip) parts.push(ip)
+          if (!p || !p.type) continue;
+          if (p.type === "text" && typeof p.text === "string")
+            parts.push({ type: "text", text: p.text });
+          const ip = toImg(p);
+          if (ip) parts.push(ip);
         }
-        if (parts.length === 1 && parts[0].type === "text") msgsOut.push({ role: "user", content: parts[0].text })
-        else if (parts.length > 0) msgsOut.push({ role: "user", content: parts })
+        if (parts.length === 1 && parts[0].type === "text")
+          msgsOut.push({ role: "user", content: parts[0].text });
+        else if (parts.length > 0) msgsOut.push({ role: "user", content: parts });
       }
-      continue
+      continue;
     }
 
     if (m.role === "assistant") {
-      const out: any = { role: "assistant" }
-      if (typeof m.content === "string") out.content = m.content
-      if (Array.isArray(m.tool_calls)) out.tool_calls = m.tool_calls
-      msgsOut.push(out)
-      continue
+      const out: any = { role: "assistant" };
+      if (typeof m.content === "string") out.content = m.content;
+      if (Array.isArray(m.tool_calls)) out.tool_calls = m.tool_calls;
+      msgsOut.push(out);
+      continue;
     }
 
     if (m.role === "tool") {
-      msgsOut.push({ role: "tool", tool_call_id: m.tool_call_id, content: m.content })
-      continue
+      msgsOut.push({ role: "tool", tool_call_id: m.tool_call_id, content: m.content });
+      continue;
     }
   }
 
@@ -204,7 +212,7 @@ export function toOaCompatibleRequest(body: CommonRequest) {
           parameters: tool.parameters,
         },
       }))
-    : undefined
+    : undefined;
 
   return {
     model: body.model,
@@ -217,57 +225,57 @@ export function toOaCompatibleRequest(body: CommonRequest) {
     tools,
     tool_choice: body.tool_choice,
     response_format: (body as any).response_format,
-  }
+  };
 }
 
 export function fromOaCompatibleResponse(resp: any): CommonResponse {
-  if (!resp || typeof resp !== "object") return resp
+  if (!resp || typeof resp !== "object") return resp;
 
-  if (!Array.isArray((resp as any).choices)) return resp
+  if (!Array.isArray((resp as any).choices)) return resp;
 
-  const choice = (resp as any).choices[0]
-  if (!choice) return resp
+  const choice = (resp as any).choices[0];
+  if (!choice) return resp;
 
-  const message = choice.message
-  if (!message) return resp
+  const message = choice.message;
+  if (!message) return resp;
 
-  const content: any[] = []
+  const content: any[] = [];
 
   if (typeof message.content === "string" && message.content.length > 0) {
-    content.push({ type: "text", text: message.content })
+    content.push({ type: "text", text: message.content });
   }
 
   if (Array.isArray(message.tool_calls)) {
     for (const toolCall of message.tool_calls) {
       if (toolCall.type === "function" && toolCall.function) {
-        let input
+        let input;
         try {
-          input = JSON.parse(toolCall.function.arguments)
+          input = JSON.parse(toolCall.function.arguments);
         } catch {
-          input = toolCall.function.arguments
+          input = toolCall.function.arguments;
         }
         content.push({
           type: "tool_use",
           id: toolCall.id,
           name: toolCall.function.name,
           input,
-        })
+        });
       }
     }
   }
 
   const stopReason = (() => {
-    const reason = choice.finish_reason
-    if (reason === "stop") return "stop"
-    if (reason === "tool_calls") return "tool_calls"
-    if (reason === "length") return "length"
-    if (reason === "content_filter") return "content_filter"
-    return null
-  })()
+    const reason = choice.finish_reason;
+    if (reason === "stop") return "stop";
+    if (reason === "tool_calls") return "tool_calls";
+    if (reason === "length") return "length";
+    if (reason === "content_filter") return "content_filter";
+    return null;
+  })();
 
   const usage = (() => {
-    const u = (resp as any).usage
-    if (!u) return undefined
+    const u = (resp as any).usage;
+    if (!u) return undefined;
     return {
       prompt_tokens: u.prompt_tokens,
       completion_tokens: u.completion_tokens,
@@ -275,8 +283,8 @@ export function fromOaCompatibleResponse(resp: any): CommonResponse {
       ...(u.prompt_tokens_details?.cached_tokens
         ? { prompt_tokens_details: { cached_tokens: u.prompt_tokens_details.cached_tokens } }
         : {}),
-    }
-  })()
+    };
+  })();
 
   return {
     id: (resp as any).id,
@@ -315,70 +323,73 @@ export function fromOaCompatibleResponse(resp: any): CommonResponse {
       },
     ],
     ...(usage ? { usage } : {}),
-  }
+  };
 }
 
 export function toOaCompatibleResponse(resp: CommonResponse) {
-  if (!resp || typeof resp !== "object") return resp
+  if (!resp || typeof resp !== "object") return resp;
 
-  if (Array.isArray((resp as any).choices)) return resp
+  if (Array.isArray((resp as any).choices)) return resp;
 
-  const isAnthropic = typeof (resp as any).type === "string" && (resp as any).type === "message"
-  if (!isAnthropic) return resp
+  const isAnthropic = typeof (resp as any).type === "string" && (resp as any).type === "message";
+  if (!isAnthropic) return resp;
 
-  const idIn = (resp as any).id
+  const idIn = (resp as any).id;
   const id =
-    typeof idIn === "string" ? idIn.replace(/^msg_/, "chatcmpl_") : `chatcmpl_${Math.random().toString(36).slice(2)}`
-  const model = (resp as any).model
+    typeof idIn === "string"
+      ? idIn.replace(/^msg_/, "chatcmpl_")
+      : `chatcmpl_${Math.random().toString(36).slice(2)}`;
+  const model = (resp as any).model;
 
-  const blocks: any[] = Array.isArray((resp as any).content) ? (resp as any).content : []
+  const blocks: any[] = Array.isArray((resp as any).content) ? (resp as any).content : [];
   const text = blocks
     .filter((b) => b && b.type === "text" && typeof b.text === "string")
     .map((b) => b.text)
-    .join("")
+    .join("");
   const tcs = blocks
     .filter((b) => b && b.type === "tool_use")
     .map((b) => {
-      const name = (b as any).name
+      const name = (b as any).name;
       const args = (() => {
-        const inp = (b as any).input
-        if (typeof inp === "string") return inp
+        const inp = (b as any).input;
+        if (typeof inp === "string") return inp;
         try {
-          return JSON.stringify(inp ?? {})
+          return JSON.stringify(inp ?? {});
         } catch {
-          return String(inp ?? "")
+          return String(inp ?? "");
         }
-      })()
+      })();
       const tid =
         typeof (b as any).id === "string" && (b as any).id.length > 0
           ? (b as any).id
-          : `toolu_${Math.random().toString(36).slice(2)}`
-      return { id: tid, type: "function" as const, function: { name, arguments: args } }
-    })
+          : `toolu_${Math.random().toString(36).slice(2)}`;
+      return { id: tid, type: "function" as const, function: { name, arguments: args } };
+    });
 
   const finish = (r: string | null) => {
-    if (r === "end_turn") return "stop"
-    if (r === "tool_use") return "tool_calls"
-    if (r === "max_tokens") return "length"
-    if (r === "content_filter") return "content_filter"
-    return null
-  }
+    if (r === "end_turn") return "stop";
+    if (r === "tool_use") return "tool_calls";
+    if (r === "max_tokens") return "length";
+    if (r === "content_filter") return "content_filter";
+    return null;
+  };
 
-  const u = (resp as any).usage
+  const u = (resp as any).usage;
   const usage = (() => {
-    if (!u) return undefined as any
-    const pt = typeof u.input_tokens === "number" ? u.input_tokens : undefined
-    const ct = typeof u.output_tokens === "number" ? u.output_tokens : undefined
-    const total = pt != null && ct != null ? pt + ct : undefined
-    const cached = typeof u.cache_read_input_tokens === "number" ? u.cache_read_input_tokens : undefined
-    const details = cached != null ? { cached_tokens: cached } : undefined
+    if (!u) return undefined as any;
+    const pt = typeof u.input_tokens === "number" ? u.input_tokens : undefined;
+    const ct = typeof u.output_tokens === "number" ? u.output_tokens : undefined;
+    const total = pt != null && ct != null ? pt + ct : undefined;
+    const cached =
+      typeof u.cache_read_input_tokens === "number" ? u.cache_read_input_tokens : undefined;
+    const details = cached != null ? { cached_tokens: cached } : undefined;
     return {
       prompt_tokens: pt,
       completion_tokens: ct,
       total_tokens: total,
       ...(details ? { prompt_tokens_details: details } : {}),
-    }
-  })()
+    };
+  })();
 
   return {
     id,
@@ -397,27 +408,27 @@ export function toOaCompatibleResponse(resp: CommonResponse) {
       },
     ],
     ...(usage ? { usage } : {}),
-  }
+  };
 }
 
 export function fromOaCompatibleChunk(chunk: string): CommonChunk | string {
-  if (!chunk.startsWith("data: ")) return chunk
+  if (!chunk.startsWith("data: ")) return chunk;
 
-  let json
+  let json;
   try {
-    json = JSON.parse(chunk.slice(6))
+    json = JSON.parse(chunk.slice(6));
   } catch {
-    return chunk
+    return chunk;
   }
 
   if (!json.choices || !Array.isArray(json.choices) || json.choices.length === 0) {
-    return chunk
+    return chunk;
   }
 
-  const choice = json.choices[0]
-  const delta = choice.delta
+  const choice = json.choices[0];
+  const delta = choice.delta;
 
-  if (!delta) return chunk
+  if (!delta) return chunk;
 
   const result: CommonChunk = {
     id: json.id ?? "",
@@ -425,14 +436,14 @@ export function fromOaCompatibleChunk(chunk: string): CommonChunk | string {
     created: json.created ?? Math.floor(Date.now() / 1000),
     model: json.model ?? "",
     choices: [],
-  }
+  };
 
   if (delta.content) {
     result.choices.push({
       index: choice.index ?? 0,
       delta: { content: delta.content },
       finish_reason: null,
-    })
+    });
   }
 
   if (delta.tool_calls) {
@@ -450,7 +461,7 @@ export function fromOaCompatibleChunk(chunk: string): CommonChunk | string {
           ],
         },
         finish_reason: null,
-      })
+      });
     }
   }
 
@@ -459,11 +470,11 @@ export function fromOaCompatibleChunk(chunk: string): CommonChunk | string {
       index: choice.index ?? 0,
       delta: {},
       finish_reason: choice.finish_reason,
-    })
+    });
   }
 
   if (json.usage) {
-    const usage = json.usage
+    const usage = json.usage;
     result.usage = {
       prompt_tokens: usage.prompt_tokens,
       completion_tokens: usage.completion_tokens,
@@ -471,10 +482,10 @@ export function fromOaCompatibleChunk(chunk: string): CommonChunk | string {
       ...(usage.prompt_tokens_details?.cached_tokens
         ? { prompt_tokens_details: { cached_tokens: usage.prompt_tokens_details.cached_tokens } }
         : {}),
-    }
+    };
   }
 
-  return result
+  return result;
 }
 
 export function toOaCompatibleChunk(chunk: CommonChunk): string {
@@ -484,21 +495,21 @@ export function toOaCompatibleChunk(chunk: CommonChunk): string {
     created: chunk.created,
     model: chunk.model,
     choices: [],
-  }
+  };
 
   if (!chunk.choices || chunk.choices.length === 0) {
-    return `data: ${JSON.stringify(result)}`
+    return `data: ${JSON.stringify(result)}`;
   }
 
-  const choice = chunk.choices[0]
-  const delta = choice.delta
+  const choice = chunk.choices[0];
+  const delta = choice.delta;
 
   if (delta?.role) {
     result.choices.push({
       index: choice.index,
       delta: { role: delta.role },
       finish_reason: null,
-    })
+    });
   }
 
   if (delta?.content) {
@@ -506,7 +517,7 @@ export function toOaCompatibleChunk(chunk: CommonChunk): string {
       index: choice.index,
       delta: { content: delta.content },
       finish_reason: null,
-    })
+    });
   }
 
   if (delta?.tool_calls) {
@@ -524,7 +535,7 @@ export function toOaCompatibleChunk(chunk: CommonChunk): string {
           ],
         },
         finish_reason: null,
-      })
+      });
     }
   }
 
@@ -533,7 +544,7 @@ export function toOaCompatibleChunk(chunk: CommonChunk): string {
       index: choice.index,
       delta: {},
       finish_reason: choice.finish_reason,
-    })
+    });
   }
 
   if (chunk.usage) {
@@ -548,8 +559,8 @@ export function toOaCompatibleChunk(chunk: CommonChunk): string {
             },
           }
         : {}),
-    }
+    };
   }
 
-  return `data: ${JSON.stringify(result)}`
+  return `data: ${JSON.stringify(result)}`;
 }

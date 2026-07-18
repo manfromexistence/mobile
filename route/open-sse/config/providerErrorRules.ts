@@ -178,7 +178,7 @@ export function getProviderErrorRuleMatch(
   provider: string | null | undefined,
   status: number,
   headers: Headers | Record<string, string> | null | undefined,
-  body?: unknown
+  body?: unknown,
 ): ProviderErrorRuleMatch | null {
   if (!provider) return null;
   const rules = providerRuleRegistry.get(provider.toLowerCase());
@@ -193,7 +193,7 @@ export function getProviderErrorRuleMatch(
           Object.entries(headers as Record<string, string>).map(([key, value]) => [
             key.toLowerCase(),
             value,
-          ])
+          ]),
         );
   for (const rule of rules) {
     const match = rule.match({ status, headers: safeHeaders, body });
@@ -221,7 +221,7 @@ export function getProviderErrorRuleMatch(
 export function parseResetCountdownMs(text: string): number | null {
   if (typeof text !== "string" || text.length === 0) return null;
   const match = text.match(
-    /resets?\s+in\s+(\d+)\s+(day|days|hour|hours|minute|minutes|second|seconds)\b/
+    /resets?\s+in\s+(\d+)\s+(day|days|hour|hours|minute|minutes|second|seconds)\b/,
   );
   if (!match) return null;
   const n = Number(match[1]);

@@ -235,7 +235,7 @@ My fundamental commitment is to never settle. I am tasked with questioning, refl
   assert.strictEqual(
     requestBody.input,
     inputText,
-    "Input should be preserved after buildRequestBody"
+    "Input should be preserved after buildRequestBody",
   );
 
   const jsonBody = JSON.stringify(requestBody);
@@ -256,10 +256,10 @@ My fundamental commitment is to never settle. I am tasked with questioning, refl
   assert.strictEqual(
     receivedBody.input,
     inputText,
-    "Input should be preserved through Request object"
+    "Input should be preserved through Request object",
   );
   assert.ok(
     receivedBody.input.includes("`"),
-    "Backticks should be preserved through Request object"
+    "Backticks should be preserved through Request object",
   );
 });

@@ -62,11 +62,11 @@ function getDurationConfig(value: unknown, fallback: number, max: number): numbe
 export function resolveResetAwareConfig(config: Record<string, unknown> | null | undefined) {
   const sessionWeight = getWeightConfig(
     config?.resetAwareSessionWeight,
-    RESET_AWARE_DEFAULTS.sessionWeight
+    RESET_AWARE_DEFAULTS.sessionWeight,
   );
   const weeklyWeight = getWeightConfig(
     config?.resetAwareWeeklyWeight,
-    RESET_AWARE_DEFAULTS.weeklyWeight
+    RESET_AWARE_DEFAULTS.weeklyWeight,
   );
   const totalWeight = sessionWeight + weeklyWeight;
   const normalizedSessionWeight =
@@ -80,7 +80,7 @@ export function resolveResetAwareConfig(config: Record<string, unknown> | null |
     exhaustionGuard:
       getPercentConfig(
         config?.resetAwareExhaustionGuardPercent,
-        RESET_AWARE_DEFAULTS.exhaustionGuardPercent
+        RESET_AWARE_DEFAULTS.exhaustionGuardPercent,
       ) / 100,
     quotaCacheTtlMs: getDurationConfig(config?.resetAwareQuotaCacheTtlMs, 0, 300_000),
     quotaCacheMaxStaleMs: getDurationConfig(config?.resetAwareQuotaCacheMaxStaleMs, 0, 3_600_000),
@@ -91,7 +91,7 @@ export function resolveResetWindowConfig(config: Record<string, unknown> | null 
   const rawWindows = Array.isArray(config?.resetWindowWindows) ? config.resetWindowWindows : null;
   const windows = rawWindows
     ?.filter((windowName): windowName is ResetWindowName =>
-      (RESET_WINDOW_NAMES as readonly string[]).includes(String(windowName))
+      (RESET_WINDOW_NAMES as readonly string[]).includes(String(windowName)),
     )
     .filter((windowName, index, array) => array.indexOf(windowName) === index);
 
@@ -106,7 +106,7 @@ export function resolveResetWindowConfig(config: Record<string, unknown> | null 
     windows: effectiveWindows,
     tieBandMs: Math.max(
       0,
-      finiteNumberOrNull(config?.resetWindowTieBandMs) ?? RESET_WINDOW_DEFAULT_TIE_BAND_MS
+      finiteNumberOrNull(config?.resetWindowTieBandMs) ?? RESET_WINDOW_DEFAULT_TIE_BAND_MS,
     ),
     quotaCacheTtlMs: getDurationConfig(config?.resetWindowQuotaCacheTtlMs, 0, 300_000),
     quotaCacheMaxStaleMs: getDurationConfig(config?.resetWindowQuotaCacheMaxStaleMs, 0, 3_600_000),
@@ -114,14 +114,14 @@ export function resolveResetWindowConfig(config: Record<string, unknown> | null 
 }
 
 export function resolveSlaRoutingPolicy(
-  config: Record<string, unknown> | null | undefined
+  config: Record<string, unknown> | null | undefined,
 ): SlaRoutingPolicy | undefined {
   if (!config) return undefined;
   const nestedSla = isRecord(config.sla) ? config.sla : {};
   const targetP95Ms = finiteNumberOrNull(config.slaTargetP95Ms ?? nestedSla.targetP95Ms);
   const maxErrorRate = finiteNumberOrNull(config.slaMaxErrorRate ?? nestedSla.maxErrorRate);
   const maxCostPer1MTokens = finiteNumberOrNull(
-    config.slaMaxCostPer1MTokens ?? nestedSla.maxCostPer1MTokens
+    config.slaMaxCostPer1MTokens ?? nestedSla.maxCostPer1MTokens,
   );
   const hardConstraints = config.slaHardConstraints ?? nestedSla.hardConstraints;
 
@@ -160,7 +160,7 @@ function parseResetTimeMs(resetAt: string | null | undefined): number {
 
 function getQuotaWindow(
   quota: unknown,
-  key: "window5h" | "window7d" | "windowWeekly" | "windowMonthly"
+  key: "window5h" | "window7d" | "windowWeekly" | "windowMonthly",
 ): { percentUsed: number | null; resetAt: string | null } | null {
   if (!isRecord(quota)) return null;
   const window = quota[key];
@@ -179,7 +179,7 @@ function normalizeWindowPercentUsed(value: unknown): number | null {
 
 function getNamedQuotaWindow(
   quota: unknown,
-  windowName: ResetWindowName
+  windowName: ResetWindowName,
 ): { percentUsed: number | null; resetAt: string | null } | null {
   if (!quota || !isRecord(quota)) return null;
 
@@ -194,7 +194,7 @@ function getNamedQuotaWindow(
 
 function getWindowsMapQuotaWindow(
   quota: unknown,
-  windowName: ResetWindowName
+  windowName: ResetWindowName,
 ): { percentUsed: number | null; resetAt: string | null } | null {
   if (!quota || !isRecord(quota) || !isRecord(quota.windows)) return null;
   const candidates = Object.entries(quota.windows)
@@ -214,7 +214,7 @@ function getWindowsMapQuotaWindow(
 
 function resolveQuotaWindowByName(
   quota: unknown,
-  windowName: ResetWindowName
+  windowName: ResetWindowName,
 ): { percentUsed: number | null; resetAt: string | null } | null {
   return getNamedQuotaWindow(quota, windowName) || getWindowsMapQuotaWindow(quota, windowName);
 }
@@ -233,7 +233,7 @@ function scoreQuotaWindow(
   resetAt: string | null | undefined,
   windowMs: number,
   remainingWeight: number,
-  resetPressureWeight: number
+  resetPressureWeight: number,
 ): number {
   const normalizedRemaining = clamp01(remaining);
   const resetUrgency = getResetUrgency(resetAt, windowMs);
@@ -243,7 +243,7 @@ function scoreQuotaWindow(
 
 export function scoreResetAwareQuota(
   quota: unknown,
-  config: ReturnType<typeof resolveResetAwareConfig>
+  config: ReturnType<typeof resolveResetAwareConfig>,
 ) {
   if (!quota || !isRecord(quota)) return { score: 0.5 };
   if (quota.limitReached === true) return { score: -Infinity };
@@ -258,14 +258,14 @@ export function scoreResetAwareQuota(
     sessionWindow?.resetAt,
     RESET_AWARE_SESSION_WINDOW_MS,
     RESET_AWARE_SESSION_REMAINING_WEIGHT,
-    RESET_AWARE_SESSION_RESET_PRESSURE_WEIGHT
+    RESET_AWARE_SESSION_RESET_PRESSURE_WEIGHT,
   );
   const weeklyScore = scoreQuotaWindow(
     weeklyRemaining,
     weeklyWindow?.resetAt ?? normalizeResetAt(quota.resetAt),
     RESET_AWARE_WEEKLY_WINDOW_MS,
     RESET_AWARE_WEEKLY_REMAINING_WEIGHT,
-    RESET_AWARE_WEEKLY_RESET_PRESSURE_WEIGHT
+    RESET_AWARE_WEEKLY_RESET_PRESSURE_WEIGHT,
   );
   let score = config.sessionWeight * sessionScore + config.weeklyWeight * weeklyScore;
 

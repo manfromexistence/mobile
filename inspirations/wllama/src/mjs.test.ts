@@ -1,13 +1,13 @@
-import { test, expect } from 'vitest';
-import { Wllama as WllamaMJS } from '../esm/index.js';
-import { Wllama as WllamaMJSMinified } from '../esm/index.min.js';
+import { test, expect } from "vitest";
+import { Wllama as WllamaMJS } from "../esm/index.js";
+import { Wllama as WllamaMJSMinified } from "../esm/index.min.js";
 
 const CONFIG_PATHS = {
-  default: '/src/wasm/wllama.wasm',
+  default: "/src/wasm/wllama.wasm",
 };
 
 const TINY_MODEL =
-  'https://huggingface.co/ggml-org/models/resolve/main/tinyllamas/stories15M-q4_0.gguf';
+  "https://huggingface.co/ggml-org/models/resolve/main/tinyllamas/stories15M-q4_0.gguf";
 
 const testFunc = async (wllama: WllamaMJS) => {
   await wllama.loadModelFromUrl(TINY_MODEL, {
@@ -15,7 +15,7 @@ const testFunc = async (wllama: WllamaMJS) => {
   });
 
   const res = await wllama.createCompletion({
-    prompt: 'Once upon a time',
+    prompt: "Once upon a time",
     max_tokens: 10,
     temperature: 0.0,
     top_p: 0.95,
@@ -31,13 +31,13 @@ const testFunc = async (wllama: WllamaMJS) => {
 };
 
 // TODO: enable compat mode in tests once test infrastructure supports Safari/asyncify
-test.sequential('(mjs) generates completion', async () => {
+test.sequential("(mjs) generates completion", async () => {
   const wllama = new WllamaMJS(CONFIG_PATHS);
   wllama.setCompat(null);
   await testFunc(wllama);
 });
 
-test.sequential('(mjs/minified) generates completion', async () => {
+test.sequential("(mjs/minified) generates completion", async () => {
   const wllama = new WllamaMJSMinified(CONFIG_PATHS);
   wllama.setCompat(null);
   await testFunc(wllama as unknown as WllamaMJS);

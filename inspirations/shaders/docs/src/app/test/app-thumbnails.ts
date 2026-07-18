@@ -1,4 +1,4 @@
-import { flatHomeThumbnails } from '@/app/home-thumbnails';
+import { flatHomeThumbnails } from "@/app/home-thumbnails";
 import {
   Dithering,
   DotGrid,
@@ -12,7 +12,7 @@ import {
   Spiral,
   StaticRadialGradient,
   Waves,
-} from '@paper-design/shaders-react';
+} from "@paper-design/shaders-react";
 
 export const appThumbnails = flatHomeThumbnails.map((item) => {
   if (item.ShaderComponent === StaticRadialGradient) {

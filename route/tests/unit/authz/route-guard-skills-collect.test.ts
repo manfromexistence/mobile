@@ -45,7 +45,7 @@ test("SPAWN_CAPABLE_ROUTE_ROOTS includes src/app/api/skills/collect (route-guard
   assert.ok(
     SPAWN_CAPABLE_ROUTE_ROOTS.includes("src/app/api/skills/collect"),
     `Expected SPAWN_CAPABLE_ROUTE_ROOTS to include "src/app/api/skills/collect", got: ${JSON.stringify(
-      SPAWN_CAPABLE_ROUTE_ROOTS
-    )}`
+      SPAWN_CAPABLE_ROUTE_ROOTS,
+    )}`,
   );
 });

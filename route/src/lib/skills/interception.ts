@@ -27,12 +27,12 @@ const BUILTIN_TOOL_ALIASES: Record<string, string> = {
 
 function resolveBuiltinHandlerName(
   toolName: string,
-  context: ExecutionContext
+  context: ExecutionContext,
 ): keyof typeof builtinSkills | null {
   const [rawName] = toolName.includes("@") ? toolName.split("@") : [toolName];
   const canonicalName = BUILTIN_TOOL_ALIASES[rawName] || rawName;
   const allowed = new Set(
-    (context.builtinToolNames || []).map((name) => BUILTIN_TOOL_ALIASES[name] || name)
+    (context.builtinToolNames || []).map((name) => BUILTIN_TOOL_ALIASES[name] || name),
   );
 
   if (!allowed.has(canonicalName)) {
@@ -75,7 +75,7 @@ function getResponsesOutputContainer(response: Record<string, unknown> | null | 
 
 export async function interceptToolCalls(
   toolCalls: ToolCall[],
-  context: ExecutionContext
+  context: ExecutionContext,
 ): Promise<{ id: string; result: unknown }[]> {
   const results = await Promise.all(
     toolCalls.map(async (call) => {
@@ -146,7 +146,7 @@ export async function interceptToolCalls(
           result: { error: err instanceof Error ? err.message : String(err) },
         };
       }
-    })
+    }),
   );
 
   return results;
@@ -160,7 +160,7 @@ export function extractToolCalls(response: any, modelId: string): ToolCall[] {
       const rootToolCalls = Array.isArray(response?.tool_calls) ? response.tool_calls : [];
       const choiceToolCalls = Array.isArray(response?.choices)
         ? response.choices.flatMap((choice: any) =>
-            Array.isArray(choice?.message?.tool_calls) ? choice.message.tool_calls : []
+            Array.isArray(choice?.message?.tool_calls) ? choice.message.tool_calls : [],
           )
         : [];
       const responsesOutput = getResponsesOutputContainer(response);
@@ -225,7 +225,7 @@ function isRegisteredCustomSkill(toolName: string, apiKeyId: string): boolean {
 export async function handleToolCallExecution(
   response: any,
   modelId: string,
-  context: ExecutionContext
+  context: ExecutionContext,
 ): Promise<any> {
   // Only intercept tool_use blocks that resolve to a builtin handler or a
   // registered custom skill. Unknown tool names are forwarded untouched so
@@ -306,16 +306,14 @@ export async function handleToolCallExecution(
       const handledToolCallIds = new Set(results.map((r) => r.id));
       const toolNamesById = new Map(toolCalls.map((call) => [call.id, call.name]));
       const remainingContent = (Array.isArray(response.content) ? response.content : []).filter(
-        (block: any) => !(block?.type === "tool_use" && handledToolCallIds.has(block.id))
+        (block: any) => !(block?.type === "tool_use" && handledToolCallIds.has(block.id)),
       );
       const resultTextBlocks = results.map((r) => ({
         type: "text",
-        text: `[Skill result: ${toolNamesById.get(r.id) || r.id}]\n${JSON.stringify(
-          r.result
-        )}`,
+        text: `[Skill result: ${toolNamesById.get(r.id) || r.id}]\n${JSON.stringify(r.result)}`,
       }));
       const firstRemainingToolUseIndex = remainingContent.findIndex(
-        (block: any) => block?.type === "tool_use"
+        (block: any) => block?.type === "tool_use",
       );
 
       if (firstRemainingToolUseIndex === -1) {

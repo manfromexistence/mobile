@@ -37,12 +37,12 @@ test("#6651: CodexExecutor.transformRequest drops image_generation for gpt-5.3-c
   assert.equal(
     result.tools.some((t) => t.type === "image_generation"),
     false,
-    "image_generation must be dropped for gpt-5.3-codex-spark regardless of account plan (#6651)"
+    "image_generation must be dropped for gpt-5.3-codex-spark regardless of account plan (#6651)",
   );
   assert.equal(
     result.tools.some((t) => t.type === "function"),
     true,
-    "the function tool must survive"
+    "the function tool must survive",
   );
 });
 
@@ -56,6 +56,6 @@ test("#6651: CodexExecutor.transformRequest still preserves image_generation for
   assert.equal(
     result.tools.some((t) => t.type === "image_generation"),
     true,
-    "image_generation must still be preserved for non-Spark models on paid plans"
+    "image_generation must still be preserved for non-Spark models on paid plans",
   );
 });

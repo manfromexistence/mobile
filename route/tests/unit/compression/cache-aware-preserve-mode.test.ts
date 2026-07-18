@@ -37,7 +37,7 @@ function resolved(mode: PreserveSystemPromptMode, caching: boolean): boolean {
   const out = resolveCacheAwareConfig(
     cfg({ preserveSystemPromptMode: mode, preserveSystemPrompt: true }),
     caching ? CACHING_BODY : NON_CACHING_BODY,
-    caching ? CACHING_CTX : NON_CACHING_CTX
+    caching ? CACHING_CTX : NON_CACHING_CTX,
   );
   return out.preserveSystemPrompt;
 }
@@ -63,19 +63,20 @@ describe("T05/C5 preserveSystemPromptMode -> effective boolean", () => {
     const out = resolveCacheAwareConfig(
       cfg({ preserveSystemPromptMode: "never", preserveSystemPrompt: true }),
       CACHING_BODY,
-      CACHING_CTX
+      CACHING_CTX,
     );
     assert.equal(out.preserveSystemPrompt, false);
   });
 
   it("no body: honors the mode at its no-cache baseline", () => {
     assert.equal(
-      resolveCacheAwareConfig(cfg({ preserveSystemPromptMode: "whenNoCache" })).preserveSystemPrompt,
-      false
+      resolveCacheAwareConfig(cfg({ preserveSystemPromptMode: "whenNoCache" }))
+        .preserveSystemPrompt,
+      false,
     );
     assert.equal(
       resolveCacheAwareConfig(cfg({ preserveSystemPromptMode: "always" })).preserveSystemPrompt,
-      true
+      true,
     );
   });
 });

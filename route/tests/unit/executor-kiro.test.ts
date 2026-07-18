@@ -86,7 +86,7 @@ function buildEventStreamResponseFromChunks(chunks) {
     {
       status: 200,
       headers: { "Content-Type": "application/vnd.amazon.eventstream" },
-    }
+    },
   );
 }
 
@@ -151,7 +151,7 @@ test("KiroExecutor.buildHeaders marks long-lived Kiro API keys", () => {
   const executor = new KiroExecutor();
   const headers = executor.buildHeaders(
     { apiKey: "kiro-api-key", providerSpecificData: { authMethod: "api_key" } },
-    true
+    true,
   );
 
   assert.equal(headers.Authorization, "Bearer kiro-api-key");
@@ -269,7 +269,7 @@ test("KiroExecutor.transformEventStreamToSSE surfaces native reasoning frames as
   assert.equal(
     reasoning,
     "Let me think... step two. variant.",
-    "reasoningContentEvent frames + reasoningText variant must all surface"
+    "reasoningContentEvent frames + reasoningText variant must all surface",
   );
   assert.match(content, /The answer is 42\./, "normal content must still flow");
 });
@@ -281,7 +281,7 @@ test("KiroExecutor.transformEventStreamToSSE parses fragmented frames and waits 
     buildEventFrame("messageStopEvent", {}),
     buildEventFrame("metricsEvent", { inputTokens: 11, outputTokens: 13 }),
     buildEventFrame("contextUsageEvent", { contextUsagePercentage: 17 }),
-    buildEventFrame("meteringEvent", {})
+    buildEventFrame("meteringEvent", {}),
   );
   const response = buildEventStreamResponseFromChunks([
     bytes.subarray(0, 2),
@@ -387,7 +387,7 @@ test("KiroExecutor.refreshCredentials handles missing and AWS-style refresh toke
         refreshToken: "new-refresh-token",
         expiresIn: 3600,
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   };
 
@@ -396,16 +396,16 @@ test("KiroExecutor.refreshCredentials handles missing and AWS-style refresh toke
     assert.equal(
       await executor.refreshCredentials(
         { refreshToken: "ignored", providerSpecificData: { authMethod: "api_key" } },
-        null
+        null,
       ),
-      null
+      null,
     );
     const result = await executor.refreshCredentials(
       {
         refreshToken: "refresh",
         providerSpecificData: { clientId: "client", clientSecret: "secret" },
       },
-      null
+      null,
     );
     assert.deepEqual(result, {
       accessToken: "new-access-token",
@@ -430,7 +430,7 @@ test("KiroExecutor.refreshCredentials returns null when the token refresh fails"
         refreshToken: "refresh",
         providerSpecificData: { clientId: "client", clientSecret: "secret" },
       },
-      null
+      null,
     );
     assert.equal(result, null);
   } finally {

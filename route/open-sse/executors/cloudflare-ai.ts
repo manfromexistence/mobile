@@ -31,7 +31,7 @@ export class CloudflareAIExecutor extends BaseExecutor {
     _model: string,
     _stream: boolean,
     _urlIndex = 0,
-    credentials: CloudflareCredentials = null
+    credentials: CloudflareCredentials = null,
   ): string {
     // Account ID can be stored in providerSpecificData or at top level credentials
     const accountId =
@@ -43,7 +43,7 @@ export class CloudflareAIExecutor extends BaseExecutor {
       throw new Error(
         "Cloudflare Workers AI requires an Account ID. " +
           "Add it in provider settings under 'Account ID'. " +
-          "Find it at: https://dash.cloudflare.com (right sidebar)."
+          "Find it at: https://dash.cloudflare.com (right sidebar).",
       );
     }
 
@@ -67,7 +67,7 @@ export class CloudflareAIExecutor extends BaseExecutor {
     _model: string,
     body: Record<string, unknown>,
     _stream: boolean,
-    _credentials: CloudflareCredentials
+    _credentials: CloudflareCredentials,
   ): Record<string, unknown> {
     // Cloudflare uses full model paths like @cf/meta/llama-3.3-70b-instruct — the model id
     // needs no transformation. But the Workers AI /ai/v1/chat/completions endpoint requires
@@ -91,14 +91,14 @@ export class CloudflareAIExecutor extends BaseExecutor {
           throw new Error(
             "Cloudflare Workers AI chat endpoint does not accept image/non-text content parts " +
               `(got type "${typeof p.type === "string" ? p.type : "unknown"}"). ` +
-              "Remove image/file attachments or route this request to a vision-capable provider."
+              "Remove image/file attachments or route this request to a vision-capable provider.",
           );
         })
         .join("");
     };
 
     const messages = (body.messages as Array<Record<string, unknown>>).map((msg) =>
-      msg && Array.isArray(msg.content) ? { ...msg, content: flattenContent(msg.content) } : msg
+      msg && Array.isArray(msg.content) ? { ...msg, content: flattenContent(msg.content) } : msg,
     );
 
     return { ...body, messages };

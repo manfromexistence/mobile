@@ -1,14 +1,11 @@
-import { describe, expect, test } from 'bun:test';
-import { readdirSync, readFileSync } from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { describe, expect, test } from "bun:test";
+import { readdirSync, readFileSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const docsRoot = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  '..'
-);
-const appRoot = path.join(docsRoot, 'app');
-const SOURCE_FILE_EXTENSIONS = new Set(['.js', '.jsx', '.mjs', '.ts', '.tsx']);
+const docsRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const appRoot = path.join(docsRoot, "app");
+const SOURCE_FILE_EXTENSIONS = new Set([".js", ".jsx", ".mjs", ".ts", ".tsx"]);
 const REACT_DOM_SERVER_PATTERN =
   /(?:from\s+['"]react-dom\/server['"]|import\(\s*['"]react-dom\/server['"]\s*\)|require\(\s*['"]react-dom\/server['"]\s*\))/;
 
@@ -33,12 +30,10 @@ function collectSourceFiles(rootDir) {
   return files;
 }
 
-describe('docs app route import guard', () => {
-  test('app routes do not import react-dom/server', () => {
+describe("docs app route import guard", () => {
+  test("app routes do not import react-dom/server", () => {
     const offenders = collectSourceFiles(appRoot)
-      .filter((filePath) =>
-        REACT_DOM_SERVER_PATTERN.test(readFileSync(filePath, 'utf8'))
-      )
+      .filter((filePath) => REACT_DOM_SERVER_PATTERN.test(readFileSync(filePath, "utf8")))
       .map((filePath) => path.relative(docsRoot, filePath))
       .sort();
 

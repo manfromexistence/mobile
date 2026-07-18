@@ -116,7 +116,7 @@ const SEARCH_ROOTS = [
 test("INTENTIONALLY_INTERNAL is exported from check-db-rules.mjs", () => {
   assert.ok(
     INTENTIONALLY_INTERNAL instanceof Set,
-    "INTENTIONALLY_INTERNAL must be a Set exported from the gate script"
+    "INTENTIONALLY_INTERNAL must be a Set exported from the gate script",
   );
   assert.ok(INTENTIONALLY_INTERNAL.size > 0, "INTENTIONALLY_INTERNAL must not be empty");
 });
@@ -162,13 +162,13 @@ test("INTENTIONALLY_INTERNAL contains the expected 35 audited modules", () => {
   for (const mod of expected) {
     assert.ok(
       INTENTIONALLY_INTERNAL.has(mod),
-      `Expected ${mod} to be in INTENTIONALLY_INTERNAL after audit`
+      `Expected ${mod} to be in INTENTIONALLY_INTERNAL after audit`,
     );
   }
   assert.equal(
     INTENTIONALLY_INTERNAL.size,
     expected.length,
-    `INTENTIONALLY_INTERNAL has ${INTENTIONALLY_INTERNAL.size} entries; expected ${expected.length}`
+    `INTENTIONALLY_INTERNAL has ${INTENTIONALLY_INTERNAL.size} entries; expected ${expected.length}`,
   );
 });
 
@@ -185,7 +185,7 @@ test("every non-type-only, non-dead module in INTENTIONALLY_INTERNAL has ≥1 re
     failures,
     [],
     `These INTENTIONALLY_INTERNAL modules have ZERO importers — either they became dead ` +
-      `(add to DOCUMENTED_DEAD with a DEAD? comment) or they were misclassified:\n  ${failures.join(", ")}`
+      `(add to DOCUMENTED_DEAD with a DEAD? comment) or they were misclassified:\n  ${failures.join(", ")}`,
   );
 });
 
@@ -207,7 +207,7 @@ test("type-only module _rowTypes is imported within src/lib/db/ by its consumers
   }
   assert.ok(
     found,
-    "_rowTypes must be imported (as type) by at least one sibling module in src/lib/db/"
+    "_rowTypes must be imported (as type) by at least one sibling module in src/lib/db/",
   );
 });
 
@@ -216,7 +216,7 @@ test("DOCUMENTED_DEAD modules are still in INTENTIONALLY_INTERNAL (dead list mus
     assert.ok(
       INTENTIONALLY_INTERNAL.has(mod),
       `DOCUMENTED_DEAD module "${mod}" is no longer in INTENTIONALLY_INTERNAL — ` +
-        `remove it from DOCUMENTED_DEAD in this test if it was intentionally removed from the gate`
+        `remove it from DOCUMENTED_DEAD in this test if it was intentionally removed from the gate`,
     );
   }
 });

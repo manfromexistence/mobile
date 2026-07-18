@@ -74,7 +74,7 @@ describe("Kiro tool-result compression (port of decolua/9router#1194)", () => {
     assert.ok(adapter.adapted, "Kiro body must be flagged as adapted");
     assert.ok(
       messages.some((m) => m.role === "tool" && typeof m.content === "string"),
-      "adapter must surface tool-result text as a role:tool message"
+      "adapter must surface tool-result text as a role:tool message",
     );
   });
 
@@ -93,7 +93,7 @@ describe("Kiro tool-result compression (port of decolua/9router#1194)", () => {
     assert.ok(result.stats, "stats must be returned");
     assert.ok(
       result.stats!.compressedTokens < result.stats!.originalTokens,
-      "compressedTokens must drop"
+      "compressedTokens must drop",
     );
 
     const restored = (
@@ -103,11 +103,11 @@ describe("Kiro tool-result compression (port of decolua/9router#1194)", () => {
         userInputMessageContext: { toolResults: Array<{ content: Array<{ text: string }> }> };
       };
     };
-    const afterLen = restored.userInputMessage.userInputMessageContext.toolResults[0].content[0]
-      .text.length;
+    const afterLen =
+      restored.userInputMessage.userInputMessageContext.toolResults[0].content[0].text.length;
     assert.ok(
       afterLen < originalLen,
-      `Kiro tool-result text must shrink (before=${originalLen}, after=${afterLen})`
+      `Kiro tool-result text must shrink (before=${originalLen}, after=${afterLen})`,
     );
   });
 
@@ -174,11 +174,12 @@ describe("Kiro tool-result compression (port of decolua/9router#1194)", () => {
         };
       }>;
     };
-    const afterLen = state.history[0].userInputMessage.userInputMessageContext.toolResults[0]
-      .content[0].text.length;
+    const afterLen =
+      state.history[0].userInputMessage.userInputMessageContext.toolResults[0].content[0].text
+        .length;
     assert.ok(
       afterLen < originalLen,
-      `history tool-result text must shrink (before=${originalLen}, after=${afterLen})`
+      `history tool-result text must shrink (before=${originalLen}, after=${afterLen})`,
     );
   });
 

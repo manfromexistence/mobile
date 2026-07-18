@@ -16,7 +16,7 @@ function getArg(name, fallback) {
   return i >= 0 && process.argv[i + 1] ? process.argv[i + 1] : fallback;
 }
 const BASELINE_PATH = path.resolve(
-  getArg("--baseline", path.join(ROOT, "config/quality/file-size-baseline.json"))
+  getArg("--baseline", path.join(ROOT, "config/quality/file-size-baseline.json")),
 );
 const UPDATE = process.argv.includes("--update");
 const SCAN_DIRS = ["src", "open-sse", "electron", "bin"];
@@ -138,7 +138,7 @@ function main() {
       baseline.testFrozen = Object.fromEntries(Object.entries(testFrozen).sort());
       changed = true;
       console.log(
-        `[test-file-size] baseline ratcheado: ${testImprovements.length} arquivo(s) de teste encolheram`
+        `[test-file-size] baseline ratcheado: ${testImprovements.length} arquivo(s) de teste encolheram`,
       );
     }
     if (changed) fs.writeFileSync(BASELINE_PATH, JSON.stringify(baseline, null, 2) + "\n");
@@ -149,12 +149,12 @@ function main() {
     console.error(
       `[file-size] ${violations.length} violação(ões):\n` +
         violations.map((v) => "  ✗ " + v).join("\n") +
-        `\n  → modularize/extraia (DRY) para encolher, ou (último caso) ajuste file-size-baseline.json com justificativa.`
+        `\n  → modularize/extraia (DRY) para encolher, ou (último caso) ajuste file-size-baseline.json com justificativa.`,
     );
     failed = true;
   } else {
     console.log(
-      `[file-size] OK — ${Object.keys(frozen).length} arquivos congelados, cap ${cap} para novos (${Object.keys(current).length} arquivos verificados)`
+      `[file-size] OK — ${Object.keys(frozen).length} arquivos congelados, cap ${cap} para novos (${Object.keys(current).length} arquivos verificados)`,
     );
   }
 
@@ -163,12 +163,12 @@ function main() {
       console.error(
         `[test-file-size] ${testViolations.length} test file violation(s) (testCap ${testCap}):\n` +
           testViolations.map((v) => "  ✗ " + v).join("\n") +
-          `\n  → split the test file (extract helpers/sub-suites) to shrink it, or (last resort) adjust testFrozen in file-size-baseline.json with justification.`
+          `\n  → split the test file (extract helpers/sub-suites) to shrink it, or (last resort) adjust testFrozen in file-size-baseline.json with justification.`,
       );
       failed = true;
     } else {
       console.log(
-        `[test-file-size] OK — ${Object.keys(testFrozen).length} test files congelados, testCap ${testCap} para novos (${Object.keys(currentTests).length} test files verificados)`
+        `[test-file-size] OK — ${Object.keys(testFrozen).length} test files congelados, testCap ${testCap} para novos (${Object.keys(currentTests).length} test files verificados)`,
       );
     }
   }

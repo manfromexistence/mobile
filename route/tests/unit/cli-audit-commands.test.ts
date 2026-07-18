@@ -89,7 +89,7 @@ test("runAuditTail --source all mescla compliance e mcp", async () => {
 
   const { runAuditTail } = await import("../../bin/cli/commands/audit.mjs");
   const out = await captureStdout(() =>
-    runAuditTail({ source: "all", limit: 50 }, makeCmd() as any)
+    runAuditTail({ source: "all", limit: 50 }, makeCmd() as any),
   );
 
   globalThis.fetch = origFetch;
@@ -109,7 +109,7 @@ test("runAuditTail --source compliance retorna apenas compliance", async () => {
 
   const { runAuditTail } = await import("../../bin/cli/commands/audit.mjs");
   const out = await captureStdout(() =>
-    runAuditTail({ source: "compliance", limit: 50 }, makeCmd() as any)
+    runAuditTail({ source: "compliance", limit: 50 }, makeCmd() as any),
   );
 
   globalThis.fetch = origFetch;
@@ -131,8 +131,8 @@ test("runAuditSearch envia q e filtros na query", async () => {
     runAuditSearch(
       "scope_denied",
       { source: "compliance", limit: 100, actor: "admin" },
-      makeCmd() as any
-    )
+      makeCmd() as any,
+    ),
   );
 
   globalThis.fetch = origFetch;
@@ -150,7 +150,7 @@ test("runAuditStats consulta endpoint stats do mcp", async () => {
 
   const { runAuditStats } = await import("../../bin/cli/commands/audit.mjs");
   const out = await captureStdout(() =>
-    runAuditStats({ source: "mcp", period: "7d" }, makeCmd() as any)
+    runAuditStats({ source: "mcp", period: "7d" }, makeCmd() as any),
   );
 
   globalThis.fetch = origFetch;
@@ -170,7 +170,7 @@ test("runAuditGet busca entrada por id", async () => {
 
   const { runAuditGet } = await import("../../bin/cli/commands/audit.mjs");
   const out = await captureStdout(() =>
-    runAuditGet("c1", { source: "compliance" }, makeCmd() as any)
+    runAuditGet("c1", { source: "compliance" }, makeCmd() as any),
   );
 
   globalThis.fetch = origFetch;
@@ -185,7 +185,7 @@ test("runAuditTail mascaramento de actor em output table", async () => {
 
   const { runAuditTail } = await import("../../bin/cli/commands/audit.mjs");
   const out = await captureStdout(() =>
-    runAuditTail({ source: "compliance", limit: 10 }, makeCmd("table") as any)
+    runAuditTail({ source: "compliance", limit: 10 }, makeCmd("table") as any),
   );
 
   globalThis.fetch = origFetch;

@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
-import { DocsSidebar } from './DocsSidebar';
+import { DocsSidebar } from "./DocsSidebar";
 
 export interface SidebarWrapperProps {
   isMobileMenuOpen?: boolean;
@@ -16,21 +16,16 @@ export function SidebarWrapper({
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
-      document.body.classList.add('overflow-hidden');
+      document.body.classList.add("overflow-hidden");
     } else {
-      document.body.classList.remove('overflow-hidden');
+      document.body.classList.remove("overflow-hidden");
     }
 
     // Cleanup on unmount
     return () => {
-      document.body.classList.remove('overflow-hidden');
+      document.body.classList.remove("overflow-hidden");
     };
   }, [isMobileMenuOpen]);
 
-  return (
-    <DocsSidebar
-      isMobileOpen={isMobileMenuOpen}
-      onMobileClose={onMobileMenuClose}
-    />
-  );
+  return <DocsSidebar isMobileOpen={isMobileMenuOpen} onMobileClose={onMobileMenuClose} />;
 }

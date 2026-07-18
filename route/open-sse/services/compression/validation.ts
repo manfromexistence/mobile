@@ -11,7 +11,7 @@ function requireExactPresence(
   label: string,
   originalItems: string[],
   compressed: string,
-  errors: string[]
+  errors: string[],
 ) {
   for (const item of originalItems) {
     if (!compressed.includes(item)) {
@@ -125,7 +125,7 @@ export function validateCompression(original: string, compressed: string): Valid
   const compressedFenceCount = findFencedCodeBlocks(compressed).length;
   if (compressedFenceCount < originalFenceCount) {
     errors.push(
-      `fenced code block count dropped: ${originalFenceCount} -> ${compressedFenceCount}`
+      `fenced code block count dropped: ${originalFenceCount} -> ${compressedFenceCount}`,
     );
   }
 

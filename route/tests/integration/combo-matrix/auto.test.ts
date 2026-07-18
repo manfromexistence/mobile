@@ -67,7 +67,7 @@ test("auto: LKGP record biases dispatch toward the seeded provider", async () =>
   assert.equal(
     seen[0],
     "openai",
-    `Expected openai to be dispatched first (LKGP-biased), got: ${JSON.stringify(seen)}`
+    `Expected openai to be dispatched first (LKGP-biased), got: ${JSON.stringify(seen)}`,
   );
 });
 
@@ -94,6 +94,6 @@ test("auto/coding: virtual pool resolves and dispatches a seeded provider", asyn
   const seededProviders = new Set(["openai", "claude"]);
   assert.ok(
     seededProviders.has(seen[0]),
-    `Expected a seeded provider (openai or claude), got: ${seen[0]} (all: ${JSON.stringify(seen)})`
+    `Expected a seeded provider (openai or claude), got: ${seen[0]} (all: ${JSON.stringify(seen)})`,
   );
 });

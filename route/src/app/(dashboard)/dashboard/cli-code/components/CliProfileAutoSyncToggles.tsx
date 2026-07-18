@@ -65,7 +65,7 @@ export default function CliProfileAutoSyncToggles() {
         setSavingKey(null);
       }
     },
-    []
+    [],
   );
 
   return (

@@ -53,7 +53,7 @@ function maybeHandleDisallowedMethod(req, res) {
           code: "METHOD_NOT_ALLOWED",
           message: `${method} is not allowed`,
         },
-      })
+      }),
     );
     return true;
   }
@@ -70,7 +70,7 @@ function maybeHandleDisallowedMethod(req, res) {
         code: "METHOD_NOT_ALLOWED",
         message: `${method || "Method"} is not allowed`,
       },
-    })
+    }),
   );
   return true;
 }

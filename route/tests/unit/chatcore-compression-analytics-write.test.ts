@@ -37,7 +37,7 @@ function analyticsRow(requestId: string): Record<string, unknown> | undefined {
     return coreDb
       .getDbInstance()
       .prepare(
-        "SELECT mode, engine, original_tokens AS orig, compressed_tokens AS comp, tokens_saved AS saved, validation_fallback AS vf FROM compression_analytics WHERE request_id = ?"
+        "SELECT mode, engine, original_tokens AS orig, compressed_tokens AS comp, tokens_saved AS saved, validation_fallback AS vf FROM compression_analytics WHERE request_id = ?",
       )
       .get(requestId) as Record<string, unknown> | undefined;
   } catch {
@@ -116,7 +116,7 @@ test("inserts a per-engine breakdown when present", async () => {
         { engine: "rtk", originalTokens: 200, compressedTokens: 120, durationMs: 5 },
         { engine: "caveman", originalTokens: 120, compressedTokens: 80, durationMs: 4 },
       ],
-    })
+    }),
   );
   await waitFor(() => breakdownCount("ca-req-3") >= 2);
   assert.equal(breakdownCount("ca-req-3"), 2);

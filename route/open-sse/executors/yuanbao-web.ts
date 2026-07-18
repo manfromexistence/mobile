@@ -192,7 +192,7 @@ export class YuanbaoWebExecutor extends BaseExecutor {
         401,
         "Yuanbao credentials are encrypted but STORAGE_ENCRYPTION_KEY is not loaded. " +
           "Restore the encryption key or re-save the Yuanbao cookie.",
-        CREATE_URL
+        CREATE_URL,
       );
     }
 
@@ -203,7 +203,7 @@ export class YuanbaoWebExecutor extends BaseExecutor {
         "Yuanbao requires a session cookie. Log in to yuanbao.tencent.com, open " +
           "DevTools > Application > Cookies, and paste the full Cookie header " +
           "(it must contain hy_user and hy_token).",
-        CREATE_URL
+        CREATE_URL,
       );
     }
 
@@ -253,11 +253,7 @@ export class YuanbaoWebExecutor extends BaseExecutor {
       const createData = (await createRes.json()) as Record<string, unknown>;
       conversationId = String(createData.id || "");
       if (!conversationId) {
-        return this.errorResponse(
-          502,
-          "Yuanbao did not return a conversation id",
-          CREATE_URL
-        );
+        return this.errorResponse(502, "Yuanbao did not return a conversation id", CREATE_URL);
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
@@ -265,7 +261,7 @@ export class YuanbaoWebExecutor extends BaseExecutor {
       return this.errorResponse(
         502,
         `Yuanbao connection failed: ${sanitizeErrorMessage(message)}`,
-        CREATE_URL
+        CREATE_URL,
       );
     }
 
@@ -313,7 +309,7 @@ export class YuanbaoWebExecutor extends BaseExecutor {
       return this.errorResponse(
         502,
         `Yuanbao connection failed: ${sanitizeErrorMessage(message)}`,
-        messageUrl
+        messageUrl,
       );
     }
 
@@ -349,7 +345,7 @@ export class YuanbaoWebExecutor extends BaseExecutor {
               "Cache-Control": "no-cache",
               "X-Accel-Buffering": "no",
             },
-          }
+          },
         ),
         url: messageUrl,
         headers: chatHeaders,
@@ -376,7 +372,7 @@ export class YuanbaoWebExecutor extends BaseExecutor {
             total_tokens: estimateTokens(prompt) + completionTokens,
           },
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       ),
       url: messageUrl,
       headers: chatHeaders,
@@ -411,7 +407,7 @@ function transformYuanbaoStream(
   id: string,
   created: number,
   signal: AbortSignal | null | undefined,
-  log?: ExecuteInput["log"]
+  log?: ExecuteInput["log"],
 ): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder();
   const decoder = new TextDecoder();
@@ -431,8 +427,8 @@ function transformYuanbaoStream(
               created,
               model,
               choices: [{ index: 0, delta, finish_reason: finish ?? null }],
-            })}\n\n`
-          )
+            })}\n\n`,
+          ),
         );
       };
 
@@ -478,7 +474,7 @@ function transformYuanbaoStream(
 
 async function collectYuanbaoResponse(
   upstream: ReadableStream<Uint8Array>,
-  signal: AbortSignal | null | undefined
+  signal: AbortSignal | null | undefined,
 ): Promise<{ content: string; reasoning: string }> {
   const decoder = new TextDecoder();
   const reader = upstream.getReader();

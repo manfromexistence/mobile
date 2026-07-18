@@ -104,7 +104,7 @@ function scoreToolName(emitted: string, requested: RequestedToolName): number {
 
 export function resolveRequestedToolName(
   emitted: string,
-  requestedTools: RequestedToolName[]
+  requestedTools: RequestedToolName[],
 ): string | null {
   if (requestedTools.length === 0) return emitted;
 
@@ -301,7 +301,7 @@ function findBareJsonCandidates(text: string): ToolParseCandidate[] {
 
 function rangesOverlap(
   a: { start: number; end: number },
-  b: { start: number; end: number }
+  b: { start: number; end: number },
 ): boolean {
   return a.start < b.end && b.start < a.end;
 }
@@ -361,7 +361,7 @@ export function serializeToolsToPrompt(tools: unknown): string {
       params = "";
     }
     lines.push(
-      `- ${fn.name}${desc ? `: ${desc}` : ""}${params ? `\n  parameters: ${params}` : ""}`
+      `- ${fn.name}${desc ? `: ${desc}` : ""}${params ? `\n  parameters: ${params}` : ""}`,
     );
   }
 
@@ -390,7 +390,7 @@ export function serializeToolsToPrompt(tools: unknown): string {
 export function parseToolCallsFromText(
   text: string,
   idSeed = "call",
-  requestedTools?: unknown
+  requestedTools?: unknown,
 ): { content: string; toolCalls: OpenAIToolCall[] | null } {
   const requestedToolNames = getRequestedToolNames(requestedTools);
   const canParseBareJson = requestedToolNames.length > 0;
@@ -487,7 +487,7 @@ interface ToolPrepResult {
  */
 export function prepareToolMessages(
   bodyObj: Record<string, unknown>,
-  messages: Array<{ role: string; content: unknown }>
+  messages: Array<{ role: string; content: unknown }>,
 ): ToolPrepResult {
   const requestedTools = bodyObj.tools;
   const hasTools = Array.isArray(requestedTools) && requestedTools.length > 0;
@@ -516,12 +516,12 @@ interface ToolCompletionResult {
 export function buildToolAwareResult(
   rawContent: string,
   requestedTools: unknown,
-  idSeed = "call"
+  idSeed = "call",
 ): ToolCompletionResult {
   const { content, toolCalls } = parseToolCallsFromText(
     rawContent,
     `${idSeed}-${Date.now()}`,
-    requestedTools
+    requestedTools,
   );
   return {
     content,

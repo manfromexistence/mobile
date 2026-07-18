@@ -101,17 +101,17 @@ function normalizePendingMetadata(metadata?: PendingRequestMetadata): PendingReq
   }
   if (metadata.providerRequest !== undefined) {
     normalized.providerRequest = truncatePendingPreview(
-      protectPayloadForLog(metadata.providerRequest)
+      protectPayloadForLog(metadata.providerRequest),
     );
   }
   if (metadata.providerResponse !== undefined) {
     normalized.providerResponse = truncatePendingPreview(
-      protectPayloadForLog(metadata.providerResponse)
+      protectPayloadForLog(metadata.providerResponse),
     );
   }
   if (metadata.clientResponse !== undefined) {
     normalized.clientResponse = truncatePendingPreview(
-      protectPayloadForLog(metadata.clientResponse)
+      protectPayloadForLog(metadata.clientResponse),
     );
   }
   if (metadata.status !== undefined) {
@@ -155,7 +155,7 @@ const PENDING_SWEEP_INTERVAL_MS = 5 * 60 * 1000;
 let _pendingSweepTimer: ReturnType<typeof setInterval> | null = null;
 
 export function getMaxPendingRequestAgeMs(
-  rawValue: string | undefined = process.env.MAX_PENDING_REQUEST_AGE_MS
+  rawValue: string | undefined = process.env.MAX_PENDING_REQUEST_AGE_MS,
 ): number {
   const parsed = Number.parseInt(rawValue ?? "", 10);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_MAX_PENDING_REQUEST_AGE_MS;
@@ -182,7 +182,7 @@ function ensurePendingSweepTimer(): void {
  */
 export function sweepStalePendingRequests(
   now: number = Date.now(),
-  maxAgeMs: number = getMaxPendingRequestAgeMs()
+  maxAgeMs: number = getMaxPendingRequestAgeMs(),
 ): number {
   let removed = 0;
 
@@ -232,7 +232,7 @@ export function trackPendingRequest(
   provider: string,
   connectionId: string | null,
   started: boolean,
-  metadata?: PendingRequestMetadata
+  metadata?: PendingRequestMetadata,
 ) {
   const modelKey = provider ? `${model} (${provider})` : model;
   if (!isSafeKey(modelKey)) return;
@@ -247,7 +247,7 @@ export function trackPendingRequest(
   }
   pendingRequests.byModel[modelKey] = Math.max(
     0,
-    pendingRequests.byModel[modelKey] + (started ? 1 : -1)
+    pendingRequests.byModel[modelKey] + (started ? 1 : -1),
   );
 
   if (connectionId) {
@@ -265,7 +265,7 @@ export function trackPendingRequest(
     }
     pendingRequests.byAccount[connectionId][modelKey] = Math.max(
       0,
-      pendingRequests.byAccount[connectionId][modelKey] + (started ? 1 : -1)
+      pendingRequests.byAccount[connectionId][modelKey] + (started ? 1 : -1),
     );
 
     const nextCount = pendingRequests.byAccount[connectionId][modelKey];
@@ -307,7 +307,7 @@ export function updatePendingRequest(
   model: string,
   provider: string,
   connectionId: string | null,
-  metadata: PendingRequestMetadata
+  metadata: PendingRequestMetadata,
 ) {
   if (!connectionId) return;
   const modelKey = provider ? `${model} (${provider})` : model;
@@ -340,7 +340,7 @@ function decrementPendingCounters(modelKey: string, connectionId: string) {
     if (Object.hasOwn(pendingRequests.byAccount[connectionId], modelKey)) {
       pendingRequests.byAccount[connectionId][modelKey] = Math.max(
         0,
-        pendingRequests.byAccount[connectionId][modelKey] - 1
+        pendingRequests.byAccount[connectionId][modelKey] - 1,
       );
       if (pendingRequests.byAccount[connectionId][modelKey] === 0) {
         delete pendingRequests.byAccount[connectionId][modelKey];
@@ -371,7 +371,7 @@ function finalizePendingDetailAt(
   connectionId: string,
   modelKey: string,
   index: number,
-  metadata: PendingRequestMetadata
+  metadata: PendingRequestMetadata,
 ): string | null {
   if (!isSafeKey(modelKey)) return null;
   const details = pendingRequests.details[connectionId]?.[modelKey];
@@ -399,7 +399,7 @@ export function finalizePendingRequest(
   model: string,
   provider: string,
   connectionId: string | null,
-  metadata: PendingRequestMetadata
+  metadata: PendingRequestMetadata,
 ) {
   if (!connectionId) return;
   const modelKey = provider ? `${model} (${provider})` : model;
@@ -408,7 +408,7 @@ export function finalizePendingRequest(
 
 export function finalizePendingRequestById(
   id: string | null | undefined,
-  metadata: PendingRequestMetadata
+  metadata: PendingRequestMetadata,
 ): boolean {
   if (!id) return false;
   const detail = pendingById.get(id);
@@ -428,7 +428,7 @@ export function finalizeMostRecentPendingRequest(
   model: string,
   provider: string,
   connectionId: string | null,
-  metadata: PendingRequestMetadata
+  metadata: PendingRequestMetadata,
 ) {
   if (!connectionId) return;
   const modelKey = provider ? `${model} (${provider})` : model;
@@ -448,7 +448,7 @@ export function updatePendingRequestStreamChunks(
     provider?: string[];
     openai?: string[];
     client?: string[];
-  } | null
+  } | null,
 ) {
   if (!connectionId) return;
   const modelKey = provider ? `${model} (${provider})` : model;
@@ -511,7 +511,7 @@ export async function getUsageDb(sinceIso?: string | null, limit?: number, curso
     rows = sinceIso
       ? db
           .prepare(
-            `SELECT * FROM usage_history WHERE timestamp >= ? AND timestamp > ? ORDER BY timestamp ASC LIMIT ?`
+            `SELECT * FROM usage_history WHERE timestamp >= ? AND timestamp > ? ORDER BY timestamp ASC LIMIT ?`,
           )
           .all(sinceIso, cursor, maxRows)
       : db
@@ -635,7 +635,7 @@ export async function saveRequestUsage(entry: UsageEntry) {
              AND COALESCE(api_key_id, '')   = COALESCE(?, '')
              AND tokens_input  = ?
              AND tokens_output = ?
-           ORDER BY id DESC LIMIT 1`
+           ORDER BY id DESC LIMIT 1`,
         )
         .get(
           timestamp,
@@ -644,7 +644,7 @@ export async function saveRequestUsage(entry: UsageEntry) {
           entry.connectionId || null,
           entry.apiKeyId || null,
           tokensInput,
-          tokensOutput
+          tokensOutput,
         ) as { id: number; endpoint: string | null } | undefined;
 
       if (existing) {
@@ -652,7 +652,7 @@ export async function saveRequestUsage(entry: UsageEntry) {
         if (!existing.endpoint && entry.endpoint) {
           db.prepare(`UPDATE usage_history SET endpoint = ? WHERE id = ?`).run(
             entry.endpoint,
-            existing.id
+            existing.id,
           );
         }
         return; // duplicate — do not insert
@@ -664,7 +664,7 @@ export async function saveRequestUsage(entry: UsageEntry) {
           tokens_input, tokens_output, tokens_cache_read, tokens_cache_creation, tokens_reasoning,
           service_tier, status, success, latency_ms, ttft_ms, error_code, combo_strategy, endpoint, timestamp)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `
+      `,
       ).run(
         entry.provider || null,
         entry.model || null,
@@ -688,7 +688,7 @@ export async function saveRequestUsage(entry: UsageEntry) {
         entry.errorCode || null,
         entry.comboStrategy || entry.combo_strategy || null,
         entry.endpoint || null,
-        timestamp
+        timestamp,
       );
 
       inserted = true;
@@ -792,7 +792,7 @@ export interface ModelLatencyStatsEntry {
  * Used by auto-combo routing to incorporate real-world latency and reliability.
  */
 export async function getModelLatencyStats(
-  options: { windowHours?: number; minSamples?: number; maxRows?: number } = {}
+  options: { windowHours?: number; minSamples?: number; maxRows?: number } = {},
 ): Promise<Record<string, ModelLatencyStatsEntry>> {
   const windowHours =
     Number.isFinite(Number(options.windowHours)) && Number(options.windowHours) > 0
@@ -827,7 +827,7 @@ export async function getModelLatencyStats(
         AND model IS NOT NULL
       ORDER BY timestamp DESC
       LIMIT @maxRows
-    `
+    `,
     )
     .all({ sinceIso, maxRows }) as LatencyRow[];
 
@@ -942,7 +942,7 @@ export async function getRecentLogs(limit = 200) {
         FROM call_logs
         ORDER BY timestamp DESC
         LIMIT ?
-      `
+      `,
       )
       .all(limit) as Array<Record<string, unknown>>;
 
@@ -960,7 +960,7 @@ export async function getRecentLogs(limit = 200) {
   } catch (error) {
     console.error(
       "[usageDb] Failed to read recent call logs:",
-      error instanceof Error ? error.message : String(error)
+      error instanceof Error ? error.message : String(error),
     );
     return [];
   }

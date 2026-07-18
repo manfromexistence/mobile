@@ -18,7 +18,7 @@ test("auto-names lines without pipe (Key 1, Key 2, ...)", () => {
   const { entries } = parseBulkApiKeys("sk-a\nsk-b\nsk-c");
   assert.deepEqual(
     entries.map((e) => e.name),
-    ["Key 1", "Key 2", "Key 3"]
+    ["Key 1", "Key 2", "Key 3"],
   );
 });
 
@@ -26,7 +26,7 @@ test("auto-name index only advances on unnamed lines", () => {
   const { entries } = parseBulkApiKeys("named|sk-1\nsk-2\nnamed2|sk-3\nsk-4");
   assert.deepEqual(
     entries.map((e) => e.name),
-    ["named", "Key 1", "named2", "Key 2"]
+    ["named", "Key 1", "named2", "Key 2"],
   );
 });
 

@@ -1,10 +1,10 @@
-import { describe, expect, test } from "bun:test"
-import { writeSessionOutput } from "@/cli/cmd/run/stream"
-import type { FooterApi, FooterEvent, StreamCommit } from "@/cli/cmd/run/types"
+import { describe, expect, test } from "bun:test";
+import { writeSessionOutput } from "@/cli/cmd/run/stream";
+import type { FooterApi, FooterEvent, StreamCommit } from "@/cli/cmd/run/types";
 
 function footer() {
-  const events: FooterEvent[] = []
-  const commits: StreamCommit[] = []
+  const events: FooterEvent[] = [];
+  const commits: StreamCommit[] = [];
 
   const api: FooterApi = {
     isClosed: false,
@@ -12,22 +12,22 @@ function footer() {
     onQueuedRemove: () => () => {},
     onClose: () => () => {},
     event: (next) => {
-      events.push(next)
+      events.push(next);
     },
     append: (next) => {
-      commits.push(next)
+      commits.push(next);
     },
     idle: () => Promise.resolve(),
     close: () => {},
     destroy: () => {},
-  }
+  };
 
-  return { api, events, commits }
+  return { api, events, commits };
 }
 
 describe("run stream bridge", () => {
   test("defaults status patches to running phase", () => {
-    const out = footer()
+    const out = footer();
 
     writeSessionOutput(
       {
@@ -41,7 +41,7 @@ describe("run stream bridge", () => {
           },
         },
       },
-    )
+    );
 
     expect(out.events).toEqual([
       {
@@ -51,6 +51,6 @@ describe("run stream bridge", () => {
           status: "assistant responding",
         },
       },
-    ])
-  })
-})
+    ]);
+  });
+});

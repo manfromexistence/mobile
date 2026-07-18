@@ -19,7 +19,7 @@ interface HandoffContentChunk {
 
 type HandoffContentReader = (
   eventStream: ReadableStream<Uint8Array>,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ) => AsyncIterable<HandoffContentChunk>;
 
 interface ResumeHandoffOptions {
@@ -32,10 +32,11 @@ interface ResumeHandoffOptions {
   readContent: HandoffContentReader;
 }
 
-interface ResumeAttemptOptions extends Pick<
-  ResumeHandoffOptions,
-  "conversationId" | "timeoutMs" | "signal" | "log" | "readContent"
-> {
+interface ResumeAttemptOptions
+  extends Pick<
+    ResumeHandoffOptions,
+    "conversationId" | "timeoutMs" | "signal" | "log" | "readContent"
+  > {
   offset: (typeof RESUME_OFFSETS)[number];
   resumeHeaders: Record<string, string>;
 }
@@ -58,7 +59,7 @@ function stringToStream(text: string): ReadableStream<Uint8Array> {
 async function readFinalAssistantAnswer(
   eventStream: ReadableStream<Uint8Array>,
   signal: AbortSignal | null | undefined,
-  readContent: HandoffContentReader
+  readContent: HandoffContentReader,
 ): Promise<FinalAssistantAnswer | null> {
   let text = "";
   let messageId: string | undefined;
@@ -98,7 +99,7 @@ async function attemptResumeOffset({
     if (response.status >= 400) {
       log?.warn?.(
         "CGPT-WEB",
-        `conversation resume ${response.status}: ${(response.text || "").slice(0, 300)}`
+        `conversation resume ${response.status}: ${(response.text || "").slice(0, 300)}`,
       );
       return { answer: null, shouldRetry: false };
     }
@@ -111,7 +112,7 @@ async function attemptResumeOffset({
   } catch (error) {
     log?.warn?.(
       "CGPT-WEB",
-      `conversation resume failed: ${error instanceof Error ? error.message : String(error)}`
+      `conversation resume failed: ${error instanceof Error ? error.message : String(error)}`,
     );
     return { answer: null, shouldRetry: false };
   }

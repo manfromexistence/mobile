@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { compressContext, estimateTokens, getTokenLimit } =
-  await import("../../open-sse/services/contextManager.ts");
+const { compressContext, estimateTokens, getTokenLimit } = await import(
+  "../../open-sse/services/contextManager.ts"
+);
 
 // ─── estimateTokens ─────────────────────────────────────────────────────────
 
@@ -145,12 +146,12 @@ test("compressContext: Layer 2 preserves prompt-format thinking tags in string c
   };
   const result = compressContext(body, { maxTokens: 2000, reserveTokens: 500 });
   const firstAssistant = (result.body as any).messages.find(
-    (m: any) => m.role === "assistant" && typeof m.content === "string"
+    (m: any) => m.role === "assistant" && typeof m.content === "string",
   );
 
   assert.equal(
     firstAssistant.content,
-    "<thinking>visible prompt protocol</thinking><content>answer1</content>"
+    "<thinking>visible prompt protocol</thinking><content>answer1</content>",
   );
 });
 
@@ -207,7 +208,7 @@ test("Layer 3: removes orphaned tool_result (OpenAI format) when tool_use is dro
     if (msg.role === "tool" && msg.tool_call_id) {
       assert.ok(
         toolCallIds.has(msg.tool_call_id),
-        `tool_result "${msg.tool_call_id}" has no matching tool_use`
+        `tool_result "${msg.tool_call_id}" has no matching tool_use`,
       );
     }
   }
@@ -256,7 +257,7 @@ test("Layer 3: removes orphaned tool_result (Claude format) when tool_use is dro
         if (block.type === "tool_result" && block.tool_use_id) {
           assert.ok(
             toolUseIds.has(block.tool_use_id),
-            `Claude tool_result "${block.tool_use_id}" has no matching tool_use`
+            `Claude tool_result "${block.tool_use_id}" has no matching tool_use`,
           );
         }
       }
@@ -280,7 +281,7 @@ test("Layer 3: preserves intact tool_use/tool_result pairs after compression", (
   const body = { model: "test", messages };
   const result = compressContext(body, { maxTokens: 50000, reserveTokens: 10000 });
   const toolMsg = (result.body.messages as any).find(
-    (m: any) => m.role === "tool" && m.tool_call_id === "call_1"
+    (m: any) => m.role === "tool" && m.tool_call_id === "call_1",
   );
   assert.ok(toolMsg, "tool_result for call_1 should survive compression");
 });

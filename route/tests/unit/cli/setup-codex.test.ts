@@ -33,7 +33,7 @@ test("fallbackCodexProfile skips media and non-text models", () => {
       type: "image",
       output_modalities: ["image"],
     }),
-    false
+    false,
   );
   assert.equal(
     fallbackCodexProfile("veo-free/seedance", {
@@ -41,7 +41,7 @@ test("fallbackCodexProfile skips media and non-text models", () => {
       name: "Seedance",
       context_length: 128000,
     }),
-    null
+    null,
   );
 });
 
@@ -61,19 +61,19 @@ test("syncCodexProfilesFromModels writes compatible profiles and skips media", a
           output_modalities: ["video"],
         },
       ],
-      { codexHome }
+      { codexHome },
     );
 
     assert.equal(result.written, 1);
     assert.equal(result.skipped, 1);
     const content = await fs.readFile(
       path.join(codexHome, "new-provider-future-chat-1.config.toml"),
-      "utf8"
+      "utf8",
     );
     assert.match(content, /model\s+= "new-provider\/future-chat-1"/);
     await assert.rejects(
       fs.stat(path.join(codexHome, "video-provider-seedance.config.toml")),
-      /ENOENT/
+      /ENOENT/,
     );
   } finally {
     await fs.rm(codexHome, { recursive: true, force: true });

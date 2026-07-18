@@ -82,7 +82,7 @@ export function expandPathsSafe(value: JsonValue, strict: boolean): JsonValue {
           // Conflict: incompatible types
           if (strict) {
             throw new TypeError(
-              `Path expansion conflict at key "${key}": cannot merge ${typeof conflictingValue} with ${typeof expandedValue}`
+              `Path expansion conflict at key "${key}": cannot merge ${typeof conflictingValue} with ${typeof expandedValue}`,
             );
           }
           // Non-strict: overwrite (LWW)
@@ -122,7 +122,7 @@ function insertPathSafe(
   target: JsonObject,
   segments: readonly string[],
   value: JsonValue,
-  strict: boolean
+  strict: boolean,
 ): void {
   let currentNode: JsonObject = target;
 
@@ -143,7 +143,7 @@ function insertPathSafe(
       // Conflict: existing value is not an object
       if (strict) {
         throw new TypeError(
-          `Path expansion conflict at segment "${currentSegment}": expected object but found ${typeof segmentValue}`
+          `Path expansion conflict at segment "${currentSegment}": expected object but found ${typeof segmentValue}`,
         );
       }
       // Non-strict: overwrite with new object
@@ -167,7 +167,7 @@ function insertPathSafe(
     // Conflict: incompatible types
     if (strict) {
       throw new TypeError(
-        `Path expansion conflict at key "${lastSeg}": cannot merge ${typeof destinationValue} with ${typeof value}`
+        `Path expansion conflict at key "${lastSeg}": cannot merge ${typeof destinationValue} with ${typeof value}`,
       );
     }
     // Non-strict: overwrite (LWW)
@@ -203,7 +203,7 @@ function mergeObjects(target: JsonObject, source: JsonObject, strict: boolean): 
       // Conflict: incompatible types
       if (strict) {
         throw new TypeError(
-          `Path expansion conflict at key "${key}": cannot merge ${typeof targetValue} with ${typeof sourceValue}`
+          `Path expansion conflict at key "${key}": cannot merge ${typeof targetValue} with ${typeof sourceValue}`,
         );
       }
       // Non-strict: overwrite (LWW)

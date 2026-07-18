@@ -9,7 +9,7 @@ import fs from "node:fs";
 const globalsCss = fs.readFileSync(new URL("../../src/app/globals.css", import.meta.url), "utf8");
 const dashboardLayout = fs.readFileSync(
   new URL("../../src/shared/components/layouts/DashboardLayout.tsx", import.meta.url),
-  "utf8"
+  "utf8",
 );
 
 test("globals.css defines the grid wallpaper tokens for both themes", () => {
@@ -42,7 +42,7 @@ test("globals.css adds the shared identity tokens", () => {
   assert.match(globalsCss, /--radius:\s*14px/);
   assert.match(
     globalsCss,
-    /--grad-brand:\s*linear-gradient\(135deg,\s*var\(--color-primary\),\s*var\(--color-accent-light\)\)/
+    /--grad-brand:\s*linear-gradient\(135deg,\s*var\(--color-primary\),\s*var\(--color-accent-light\)\)/,
   );
   // exposed to Tailwind as bg-surface-2 for later phases
   assert.match(globalsCss, /--color-surface-2:\s*var\(--surface-2\)/);
@@ -52,11 +52,11 @@ test("DashboardLayout wrapper stays transparent so the grid shows through", () =
   // Regression guard: the outer shell must NOT paint an opaque bg over the body grid.
   assert.ok(
     !dashboardLayout.includes("overflow-hidden bg-bg"),
-    "DashboardLayout outer wrapper must not use bg-bg (it would hide the grid wallpaper)"
+    "DashboardLayout outer wrapper must not use bg-bg (it would hide the grid wallpaper)",
   );
   assert.ok(
     dashboardLayout.includes('className="flex h-dvh min-h-0 w-full overflow-hidden"'),
-    "DashboardLayout outer wrapper is present and transparent"
+    "DashboardLayout outer wrapper is present and transparent",
   );
 });
 
@@ -76,7 +76,7 @@ test("Button uses the brand gradient + accent variant + control radius", () => {
   assert.match(button, /accent:\s*"bg-accent/);
   assert.ok(
     !button.includes("from-primary to-primary-hover"),
-    "the flat red→red gradient is replaced by --grad-brand"
+    "the flat red→red gradient is replaced by --grad-brand",
   );
   assert.ok(button.includes("rounded-control"), "button sizes use the control radius");
 });
@@ -107,7 +107,7 @@ test("status colors come from one canonical module", () => {
   const badge = read("../../src/shared/components/TokenHealthBadge.tsx");
   assert.ok(
     edges.includes('from "@/shared/constants/statusColors"'),
-    "edgeStyles imports the module"
+    "edgeStyles imports the module",
   );
   assert.ok(edges.includes("STATUS_HEX.success"), "edgeStyles uses STATUS_HEX, not a literal");
   assert.ok(!edges.includes('"#22c55e"'), "edgeStyles no longer hardcodes the success hex");
@@ -134,11 +134,11 @@ test("DataTable is theme-aware via --table-* tokens (dark = the exact old values
   assert.ok(dt.includes("var(--color-border)"), "header border uses the brand token");
   assert.ok(
     !/rgba\(|#[0-9a-fA-F]{3,6}/.test(dt),
-    "DataTable no longer hardcodes any color literal"
+    "DataTable no longer hardcodes any color literal",
   );
   assert.ok(
     !dt.includes("--text-secondary") && !dt.includes("--bg-table-header"),
-    "the dead var fallbacks are gone"
+    "the dead var fallbacks are gone",
   );
 });
 
@@ -159,7 +159,7 @@ test("Checkbox + Textarea primitives exist and are exported", () => {
   const textarea = read("../../src/shared/components/Textarea.tsx");
   assert.ok(
     checkbox.includes("accent-[var(--color-accent)]"),
-    "checkbox uses the brand accent token"
+    "checkbox uses the brand accent token",
   );
   assert.ok(textarea.includes("rounded-control"), "textarea uses the control radius");
 });
@@ -176,7 +176,7 @@ test("form controls focus on the accent ring, not the red primary", () => {
     assert.ok(/ring-accent\/30/.test(src), `${name} uses the accent focus ring`);
     assert.ok(
       !/(?:focus|focus-visible):ring-primary\/30/.test(src),
-      `${name} no longer uses the red primary focus ring`
+      `${name} no longer uses the red primary focus ring`,
     );
     // the red error ring stays intact where the control has an error state
     if (src.includes("error")) {
@@ -209,7 +209,7 @@ test("standalone full-screen pages stay transparent so the grid shows through", 
     assert.ok(
       !/min-h-screen[^"]*\bbg-bg(?![\w-])/.test(src) &&
         !/\bbg-bg(?![\w-])[^"]*min-h-screen/.test(src),
-      `${p} must not paint bg-bg on a min-h-screen wrapper (it would hide the grid)`
+      `${p} must not paint bg-bg on a min-h-screen wrapper (it would hide the grid)`,
     );
   }
 });
@@ -219,7 +219,7 @@ test("DashboardLayout content shell is fluid up to ~4K before centering", () => 
   // of the old max-w-7xl (1280px) that left wide side gutters on large monitors.
   assert.ok(
     dashboardLayout.includes("max-w-[3840px] mx-auto"),
-    "content wrapper caps at 3840px (4K) and centers only beyond that"
+    "content wrapper caps at 3840px (4K) and centers only beyond that",
   );
   assert.ok(!dashboardLayout.includes("max-w-7xl"), "the old 1280px max-w-7xl cap is gone");
 });
@@ -237,7 +237,7 @@ test("DataTable primitive paints its own opaque surface", () => {
   const dt = read("../../src/shared/components/DataTable.tsx");
   assert.ok(
     dt.includes("var(--color-surface)"),
-    "DataTable scroll container is opaque (its even rows are transparent by design)"
+    "DataTable scroll container is opaque (its even rows are transparent by design)",
   );
 });
 
@@ -251,7 +251,7 @@ test("log table cards are opaque (no semi-transparent bg-black tint)", () => {
     const src = read(p);
     assert.ok(
       !src.includes("bg-black/5") && !src.includes("bg-black/20"),
-      `${p} must not tint the table Card with bg-black/5|20 (it drops the Card's opaque surface)`
+      `${p} must not tint the table Card with bg-black/5|20 (it drops the Card's opaque surface)`,
     );
     assert.ok(src.includes("bg-surface"), `${p} table card uses the opaque bg-surface`);
   }
@@ -288,7 +288,7 @@ test("card-less data tables wrap their table in an opaque surface", () => {
     const src = read(p);
     assert.ok(
       src.includes(needle),
-      `${p} must include "${needle}" so the table is opaque over the grid`
+      `${p} must include "${needle}" so the table is opaque over the grid`,
     );
   }
 });
@@ -301,7 +301,7 @@ test("semi-transparent cache table boxes are now opaque", () => {
     const src = read(p);
     assert.ok(
       !src.includes("bg-surface/35"),
-      `${p} table box no longer uses the ~35%-opaque bg-surface/35 (the grid bled through it)`
+      `${p} table box no longer uses the ~35%-opaque bg-surface/35 (the grid bled through it)`,
     );
   }
 });

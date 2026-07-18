@@ -203,7 +203,7 @@ export function fallbackCodexProfile(modelId, model) {
       : (firstPositiveNumber(
           model.context_length,
           model.max_context_window_tokens,
-          model.max_input_tokens
+          model.max_input_tokens,
         ) ?? 128000);
   const maxOutput =
     typeof model === "string"
@@ -239,7 +239,7 @@ function buildProfileToml(modelId, cfg) {
   lines.push(
     `model_context_window           = ${cfg.ctx}`,
     `model_auto_compact_token_limit = ${cfg.compact}`,
-    `tool_output_token_limit        = ${cfg.toolLimit}`
+    `tool_output_token_limit        = ${cfg.toolLimit}`,
   );
 
   return lines.join("\n") + "\n";
@@ -325,7 +325,7 @@ export async function runSetupCodexCommand(opts = {}) {
     printError(`Failed to fetch models: ${err.message}`);
     printInfo(
       "Make sure OmniRoute is running and the --remote URL is correct.\n" +
-        "You may also need --api-key if OmniRoute requires authentication."
+        "You may also need --api-key if OmniRoute requires authentication.",
     );
     return 1;
   }
@@ -363,21 +363,21 @@ export function registerSetupCodex(program) {
     .command("setup-codex")
     .description(
       "Fetch the live model catalog from OmniRoute (local or remote VPS) and generate " +
-        "~/.codex/<name>.config.toml profiles for each supported model"
+        "~/.codex/<name>.config.toml profiles for each supported model",
     )
     .option("--port <port>", "Local OmniRoute port (ignored when --remote is set)", "20128")
     .option(
       "--remote <url>",
-      "Remote OmniRoute URL, e.g. http://100.67.86.91:20128 — fetches models from there"
+      "Remote OmniRoute URL, e.g. http://100.67.86.91:20128 — fetches models from there",
     )
     .option(
       "--api-key <key>",
-      "OmniRoute API key for the remote instance (defaults to OMNIROUTE_API_KEY env var)"
+      "OmniRoute API key for the remote instance (defaults to OMNIROUTE_API_KEY env var)",
     )
     .option("--codex-home <dir>", "Directory where profile files are written (default: ~/.codex)")
     .option(
       "--only <patterns>",
-      "Comma-separated substrings — only generate profiles for matching model IDs (e.g. glm,kimi)"
+      "Comma-separated substrings — only generate profiles for matching model IDs (e.g. glm,kimi)",
     )
     .option("--dry-run", "Print what would be written without touching the filesystem")
     .action(async (opts) => {

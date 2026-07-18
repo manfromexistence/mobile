@@ -82,7 +82,7 @@ export async function getWsRuntimeConfig(): Promise<WsRuntimeConfig> {
 }
 
 export async function authorizeWebSocketHandshake(
-  request: Request
+  request: Request,
 ): Promise<WsHandshakeAuthResult> {
   const config = await getWsRuntimeConfig();
   const token = extractWsTokenFromRequest(request);

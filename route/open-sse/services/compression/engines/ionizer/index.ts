@@ -90,7 +90,7 @@ export const ionizerEngine: CompressionEngine = {
     const { messages: finalMessages, ionizedCount } = runIonizerPass(
       messages as MessageLike[],
       stepConfig,
-      options?.principalId
+      options?.principalId,
     );
 
     if (ionizedCount === 0) {
@@ -105,7 +105,7 @@ export const ionizerEngine: CompressionEngine = {
       "stacked",
       ["ionizer"],
       [`ionizer-${ionizedCount}-arrays-sampled`],
-      durationMs
+      durationMs,
     );
     return { body: newBody, compressed: true, stats };
   },

@@ -24,7 +24,7 @@ export function filterClinepassModels(rawList: unknown): ClinepassModel[] {
       (m): m is { id: string; name?: string } =>
         !!m &&
         typeof (m as { id?: unknown }).id === "string" &&
-        (m as { id: string }).id.startsWith("cline-pass/")
+        (m as { id: string }).id.startsWith("cline-pass/"),
     )
     .map((m) => ({ id: m.id, name: m.name || m.id }));
 }

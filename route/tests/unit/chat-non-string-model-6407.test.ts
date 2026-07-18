@@ -46,7 +46,7 @@ for (const [label, value, expectedType] of [
           model: value,
           messages: [{ role: "user", content: "hi" }],
         },
-      })
+      }),
     );
 
     assert.equal(response.status, 400, `${label} model must be a 400, not 500`);
@@ -54,16 +54,16 @@ for (const [label, value, expectedType] of [
     assert.match(
       body.error?.message ?? "",
       /model:\s*Expected string, received/i,
-      `error should say "model: Expected string, received ${expectedType}"`
+      `error should say "model: Expected string, received ${expectedType}"`,
     );
     assert.ok(
       body.error?.message?.includes(expectedType),
-      `error should include the received type "${expectedType}"`
+      `error should include the received type "${expectedType}"`,
     );
     // Sanitized: no leaked stack frames per Hard Rule #12 / #6407 impact 3.
     assert.ok(
       !(body.error?.message ?? "").includes("at /"),
-      "error must not leak stack trace frames"
+      "error must not leak stack trace frames",
     );
     assert.equal(upstreamCalled, false, "must not forward a non-string-model request upstream");
   });
@@ -78,9 +78,7 @@ test("#6407: string model still routes normally (guard is not over-broad)", asyn
     return Response.json({
       id: "x",
       object: "chat.completion",
-      choices: [
-        { index: 0, message: { role: "assistant", content: "hi" }, finish_reason: "stop" },
-      ],
+      choices: [{ index: 0, message: { role: "assistant", content: "hi" }, finish_reason: "stop" }],
     });
   };
 
@@ -91,7 +89,7 @@ test("#6407: string model still routes normally (guard is not over-broad)", asyn
         stream: false,
         messages: [{ role: "user", content: "Hello" }],
       },
-    })
+    }),
   );
 
   assert.notEqual(response.status, 400, "a valid string model must not be caught by the guard");
@@ -110,7 +108,7 @@ test("#6407: null model still routed to the existing 'Missing model' 400 (not th
         model: null,
         messages: [{ role: "user", content: "hi" }],
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 400, "null model stays a 400");
@@ -118,6 +116,6 @@ test("#6407: null model still routed to the existing 'Missing model' 400 (not th
   assert.match(
     body.error?.message ?? "",
     /missing model/i,
-    "null model keeps the existing 'Missing model' message (not the new type guard)"
+    "null model keeps the existing 'Missing model' message (not the new type guard)",
   );
 });

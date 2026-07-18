@@ -16,7 +16,7 @@ export function normalizeScopeId(scopeId?: string | null) {
 export function isSameScopeAssignment(
   assignment: ProxyAssignmentItem,
   scope: string,
-  scopeId: string | null
+  scopeId: string | null,
 ) {
   return (
     assignment.scope === scope && normalizeScopeId(assignment.scopeId) === normalizeScopeId(scopeId)
@@ -34,7 +34,7 @@ export function isSameScopeAssignment(
 export function selectScopeAssignment(
   items: ProxyAssignmentItem[],
   scope: string,
-  scopeId: string | null
+  scopeId: string | null,
 ): ProxyAssignmentItem | null {
   return items.find((item) => isSameScopeAssignment(item, scope, scopeId)) ?? null;
 }

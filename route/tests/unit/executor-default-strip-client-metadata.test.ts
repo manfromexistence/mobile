@@ -30,12 +30,12 @@ test("DefaultExecutor.transformRequest strips client_metadata for cerebras", () 
     "any",
     bodyWithClientMetadata(),
     STREAM,
-    CREDENTIALS
+    CREDENTIALS,
   ) as Record<string, unknown>;
   assert.equal(
     Object.prototype.hasOwnProperty.call(out, "client_metadata"),
     false,
-    "cerebras forward body must not contain client_metadata"
+    "cerebras forward body must not contain client_metadata",
   );
 });
 
@@ -45,12 +45,12 @@ test("DefaultExecutor.transformRequest strips client_metadata for mistral", () =
     "any",
     bodyWithClientMetadata(),
     STREAM,
-    CREDENTIALS
+    CREDENTIALS,
   ) as Record<string, unknown>;
   assert.equal(
     Object.prototype.hasOwnProperty.call(out, "client_metadata"),
     false,
-    "mistral forward body must not contain client_metadata"
+    "mistral forward body must not contain client_metadata",
   );
 });
 
@@ -60,12 +60,12 @@ test("DefaultExecutor.transformRequest strips client_metadata for nvidia (port f
     "any",
     bodyWithClientMetadata(),
     STREAM,
-    CREDENTIALS
+    CREDENTIALS,
   ) as Record<string, unknown>;
   assert.equal(
     Object.prototype.hasOwnProperty.call(out, "client_metadata"),
     false,
-    "nvidia forward body must not contain client_metadata"
+    "nvidia forward body must not contain client_metadata",
   );
 });
 
@@ -77,7 +77,7 @@ test("DefaultExecutor.transformRequest preserves client_metadata for other provi
     "any",
     bodyWithClientMetadata(),
     STREAM,
-    CREDENTIALS
+    CREDENTIALS,
   ) as Record<string, unknown>;
   assert.deepEqual(out.client_metadata, { foo: "bar" });
 });

@@ -46,7 +46,7 @@ export default function ServicesPage() {
               "inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors",
               active === tab.id
                 ? "border-primary text-text-primary"
-                : "border-transparent text-text-muted hover:text-text-primary hover:border-border"
+                : "border-transparent text-text-muted hover:text-text-primary hover:border-border",
             )}
             aria-current={active === tab.id ? "page" : undefined}
           >

@@ -101,7 +101,7 @@ async function fetchStream(url: string, body: Record<string, unknown>): Promise<
 
 async function fetchJson(
   url: string,
-  body: Record<string, unknown>
+  body: Record<string, unknown>,
 ): Promise<Record<string, unknown>> {
   const response = await fetch(url, {
     method: "POST",
@@ -135,7 +135,7 @@ function verifyNoDoubleEscaping(content: string): void {
     assert.equal(
       escapedNInContent,
       null,
-      `no literal backslash-n in content (found ${literalBSN.length} occurrences)`
+      `no literal backslash-n in content (found ${literalBSN.length} occurrences)`,
     );
   }
 
@@ -163,28 +163,28 @@ interface ChatToolCall {
 
 function findToolCallOutput(
   output: Record<string, unknown>[],
-  name: string
+  name: string,
 ): ToolCallOutput | null {
   const found = output.find(
     (item) =>
       typeof item.type === "string" &&
       item.type === "function_call" &&
       typeof item.name === "string" &&
-      item.name === name
+      item.name === name,
   );
   return found ? (found as unknown as ToolCallOutput) : null;
 }
 
 function findChatToolCall(
   message: Record<string, unknown> | null | undefined,
-  name: string
+  name: string,
 ): ChatToolCall | null {
   if (!message?.tool_calls || !Array.isArray(message.tool_calls)) return null;
   const found = (message.tool_calls as Record<string, unknown>[]).find(
     (tc) =>
       tc.function &&
       typeof tc.function === "object" &&
-      (tc.function as Record<string, unknown>).name === name
+      (tc.function as Record<string, unknown>).name === name,
   );
   return found && typeof found.function === "object" ? (found as unknown as ChatToolCall) : null;
 }
@@ -218,13 +218,13 @@ test(
     assert.ok(
       Array.isArray((response as Record<string, unknown>).choices) &&
         (response as Record<string, unknown>).choices.length > 0,
-      "should have choices"
+      "should have choices",
     );
 
     const choices = (response as Record<string, unknown>).choices as Record<string, unknown>[];
     const toolCall = findChatToolCall(
       choices[0]?.message as Record<string, unknown> | undefined,
-      "write"
+      "write",
     );
     assert.ok(toolCall, "should have write tool call");
 
@@ -232,7 +232,7 @@ test(
     assert.equal(typeof args.content, "string");
 
     verifyNoDoubleEscaping(args.content);
-  }
+  },
 );
 
 // ============================================================
@@ -280,7 +280,7 @@ test(
     assert.equal(typeof args.content, "string");
 
     verifyNoDoubleEscaping(args.content);
-  }
+  },
 );
 
 // ============================================================
@@ -314,7 +314,7 @@ test(
     assert.equal(typeof args.content, "string");
 
     verifyNoDoubleEscaping(args.content);
-  }
+  },
 );
 
 // ============================================================
@@ -352,7 +352,7 @@ test(
     assert.equal(typeof args.content, "string");
 
     verifyNoDoubleEscaping(args.content);
-  }
+  },
 );
 
 // ============================================================
@@ -375,10 +375,11 @@ test(
     };
     const ccResp = await fetchJson(`${OMNIROUTE_URL}/chat/completions`, ccBody);
     const ccChoices = (ccResp as Record<string, unknown>).choices as
-      Record<string, unknown>[] | undefined;
+      | Record<string, unknown>[]
+      | undefined;
     const ccToolCall = findChatToolCall(
       ccChoices?.[0]?.message as Record<string, unknown> | undefined,
-      "write"
+      "write",
     );
     assert.ok(ccToolCall, "Chat Completions should have write tool call");
     const ccArgs = JSON.parse(ccToolCall.function.arguments);
@@ -411,7 +412,7 @@ test(
     // Both should contain newlines (content may differ slightly due to model non-determinism)
     assert.ok(ccArgs.content.includes("\n"), "Chat Completions content has newlines");
     assert.ok(respArgs.content.includes("\n"), "Responses API content has newlines");
-  }
+  },
 );
 
 // ============================================================
@@ -438,10 +439,11 @@ test("Chat Completions args survive round-trip through Responses API", { skip },
   };
   const ccResp = await fetchJson(`${OMNIROUTE_URL}/chat/completions`, ccBody);
   const ccChoices = (ccResp as Record<string, unknown>).choices as
-    Record<string, unknown>[] | undefined;
+    | Record<string, unknown>[]
+    | undefined;
   const ccToolCall = findChatToolCall(
     ccChoices?.[0]?.message as Record<string, unknown> | undefined,
-    "write"
+    "write",
   );
   assert.ok(ccToolCall, "Chat Completions should have write tool call");
   const ccArgs = JSON.parse(ccToolCall.function.arguments);
@@ -450,8 +452,9 @@ test("Chat Completions args survive round-trip through Responses API", { skip },
 
   // Feed the Chat Completions args through the OpenAI -> Responses translator
   // by simulating what OpenClaw does: receiving tool call, extracting args
-  const { openaiToOpenAIResponsesResponse } =
-    await import("../../open-sse/translator/response/openai-responses.ts");
+  const { openaiToOpenAIResponsesResponse } = await import(
+    "../../open-sse/translator/response/openai-responses.ts"
+  );
   const { initState } = await import("../../open-sse/translator/index.ts");
   const { FORMATS } = await import("../../open-sse/translator/formats.ts");
 
@@ -495,7 +498,7 @@ test("Chat Completions args survive round-trip through Responses API", { skip },
 
   // Extract the final arguments from the completed response
   const completedEvent = events.find(
-    (e) => (e as Record<string, unknown>).event === "response.completed"
+    (e) => (e as Record<string, unknown>).event === "response.completed",
   );
   assert.ok(completedEvent, "should have response.completed");
 
@@ -510,7 +513,7 @@ test("Chat Completions args survive round-trip through Responses API", { skip },
   assert.equal(
     respArgs.content,
     originalContent,
-    "content must survive round-trip without corruption"
+    "content must survive round-trip without corruption",
   );
 
   // Verify no double-escaping

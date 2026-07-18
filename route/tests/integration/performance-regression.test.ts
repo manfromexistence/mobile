@@ -104,7 +104,7 @@ describe("Performance: listMemories pagination (1000 records)", () => {
     assert.equal(result.total, MEMORY_COUNT, "Total should be 1000");
     assert.ok(
       elapsed < THRESHOLD_LIST_MEMORIES_MS,
-      `listMemories took ${elapsed.toFixed(1)}ms, expected <${THRESHOLD_LIST_MEMORIES_MS}ms`
+      `listMemories took ${elapsed.toFixed(1)}ms, expected <${THRESHOLD_LIST_MEMORIES_MS}ms`,
     );
   });
 });
@@ -145,7 +145,7 @@ describe("Performance: skills registry cached vs uncached", () => {
 
     assert.ok(
       elapsed < THRESHOLD_SKILLS_UNCACHED_MS,
-      `Uncached loadFromDatabase took ${elapsed.toFixed(1)}ms, expected <${THRESHOLD_SKILLS_UNCACHED_MS}ms`
+      `Uncached loadFromDatabase took ${elapsed.toFixed(1)}ms, expected <${THRESHOLD_SKILLS_UNCACHED_MS}ms`,
     );
   });
 
@@ -159,7 +159,7 @@ describe("Performance: skills registry cached vs uncached", () => {
     assert.ok(skills.length >= SKILL_COUNT, `Should have at least ${SKILL_COUNT} skills`);
     assert.ok(
       elapsed < THRESHOLD_SKILLS_CACHED_MS,
-      `Cached list() took ${elapsed.toFixed(1)}ms, expected <${THRESHOLD_SKILLS_CACHED_MS}ms`
+      `Cached list() took ${elapsed.toFixed(1)}ms, expected <${THRESHOLD_SKILLS_CACHED_MS}ms`,
     );
   });
 });
@@ -200,7 +200,7 @@ describe("Performance: memory search (1000 records)", () => {
     assert.ok(results.length > 0, "Should find matching memories");
     assert.ok(
       elapsed < THRESHOLD_SEARCH_MS,
-      `retrieveMemories search took ${elapsed.toFixed(1)}ms, expected <${THRESHOLD_SEARCH_MS}ms`
+      `retrieveMemories search took ${elapsed.toFixed(1)}ms, expected <${THRESHOLD_SEARCH_MS}ms`,
     );
   });
 });
@@ -236,7 +236,7 @@ describe("Performance: memory API route handler (1000 records)", () => {
       {
         method: "GET",
         headers: { authorization: `Bearer ${managementApiKey}` },
-      }
+      },
     );
 
     const start = performance.now();
@@ -252,7 +252,7 @@ describe("Performance: memory API route handler (1000 records)", () => {
 
     assert.ok(
       elapsed < THRESHOLD_API_ROUTE_MS,
-      `API route handler took ${elapsed.toFixed(1)}ms, expected <${THRESHOLD_API_ROUTE_MS}ms`
+      `API route handler took ${elapsed.toFixed(1)}ms, expected <${THRESHOLD_API_ROUTE_MS}ms`,
     );
   });
 });

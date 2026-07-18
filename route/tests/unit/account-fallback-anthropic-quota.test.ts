@@ -58,7 +58,7 @@ test("#2321 checkFallbackError returns ~1h cooldown for OAuth 429 + Usage Limit 
     "Usage Limit Reached. Please wait until 5h.",
     0,
     null,
-    "claude" // OAuth provider
+    "claude", // OAuth provider
   );
   assert.equal(out.shouldFallback, true);
   assert.equal(out.reason, RateLimitReason.QUOTA_EXHAUSTED);
@@ -66,7 +66,7 @@ test("#2321 checkFallbackError returns ~1h cooldown for OAuth 429 + Usage Limit 
   // the ~5s base cooldown that caused the cascade.
   assert.ok(
     out.cooldownMs >= 5 * 60 * 1000,
-    `expected long cooldown (>=5min), got ${out.cooldownMs}ms`
+    `expected long cooldown (>=5min), got ${out.cooldownMs}ms`,
   );
 });
 
@@ -77,7 +77,7 @@ test("#2321 checkFallbackError ignores ISO timestamp when upstream retry hints a
     `Claude Pro usage limit reached. Try again at ${future}`,
     0,
     null,
-    "claude"
+    "claude",
   );
   assert.equal(out.reason, RateLimitReason.QUOTA_EXHAUSTED);
   assert.equal(out.usedUpstreamRetryHint, false);
@@ -95,13 +95,13 @@ test("#2321 checkFallbackError honors ISO timestamp when upstream retry hints ar
     null,
     "claude",
     null,
-    profile
+    profile,
   );
   assert.equal(out.reason, RateLimitReason.QUOTA_EXHAUSTED);
   // Within ~30s of the requested wait time.
   assert.ok(
     Math.abs(out.cooldownMs - futureMs) < 30_000,
-    `expected ~${futureMs}ms cooldown, got ${out.cooldownMs}ms`
+    `expected ~${futureMs}ms cooldown, got ${out.cooldownMs}ms`,
   );
 });
 
@@ -112,6 +112,6 @@ test("#2321 generic 429 without quota keyword still gets the short cooldown path
   // Generic 429 keeps the short retryable path (< 5 min).
   assert.ok(
     out.cooldownMs < 5 * 60 * 1000,
-    `expected short cooldown (<5min), got ${out.cooldownMs}ms`
+    `expected short cooldown (<5min), got ${out.cooldownMs}ms`,
   );
 });

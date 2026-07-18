@@ -123,7 +123,7 @@ test("batches output verifica output_file_id antes de baixar", async () => {
     callCount++;
     if (url.includes("/v1/batches/batch-1") && !url.includes("/content")) {
       return Promise.resolve(
-        makeResp({ id: "batch-1", status: "completed", output_file_id: "file-out-1" })
+        makeResp({ id: "batch-1", status: "completed", output_file_id: "file-out-1" }),
       );
     }
     return Promise.resolve({

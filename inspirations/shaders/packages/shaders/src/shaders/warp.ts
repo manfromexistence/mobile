@@ -1,7 +1,7 @@
-import type { vec4 } from '../types.js';
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { declarePI, rotation2, colorBandingFix } from '../shader-utils.js';
+import type { vec4 } from "../types.js";
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { declarePI, rotation2, colorBandingFix } from "../shader-utils.js";
 
 export const warpMeta = {
   maxColorCount: 10,
@@ -53,7 +53,7 @@ uniform float u_scale;
 
 uniform sampler2D u_noiseTexture;
 
-uniform vec4 u_colors[${ warpMeta.maxColorCount }];
+uniform vec4 u_colors[${warpMeta.maxColorCount}];
 uniform float u_colorsCount;
 uniform float u_proportion;
 uniform float u_softness;
@@ -67,8 +67,8 @@ in vec2 v_patternUV;
 
 out vec4 fragColor;
 
-${ declarePI }
-${ rotation2 }
+${declarePI}
+${rotation2}
 float randomG(vec2 p) {
   vec2 uv = floor(p) / 100. + .5;
   return texture(u_noiseTexture, fract(uv)).g;
@@ -132,7 +132,7 @@ void main() {
   vec4 gradient = u_colors[0];
   gradient.rgb *= gradient.a;
   float aa = fwidth(shape);
-  for (int i = 1; i < ${ warpMeta.maxColorCount }; i++) {
+  for (int i = 1; i < ${warpMeta.maxColorCount}; i++) {
     if (i >= int(u_colorsCount)) break;
     float m = clamp(mixer - float(i - 1), 0.0, 1.0);
 
@@ -151,7 +151,7 @@ void main() {
   vec3 color = gradient.rgb;
   float opacity = gradient.a;
 
-  ${ colorBandingFix }
+  ${colorBandingFix}
 
   fragColor = vec4(color, opacity);
 }

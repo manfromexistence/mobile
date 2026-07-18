@@ -52,7 +52,7 @@ function FleetOverview({ comboEvents }: FleetOverviewProps) {
   }, []);
   const sets = useMemo(
     () => aggregateComboEventsToSets(comboEvents, FLEET_WINDOW_MS, now),
-    [comboEvents, now]
+    [comboEvents, now],
   );
 
   const total = sets.active.size + sets.error.size + sets.last.size;
@@ -252,14 +252,14 @@ export function ComboLiveStudio({
           ? null
           : eventsForCombo.reduce<ComboRunModel | null>(
               (acc, ev) => reduceComboEvent(acc, ev),
-              null
+              null,
             );
     }
     // Compose overlays: breaker state first, then connection cooldown. Both are
     // pure no-ops when their health map is absent, and they touch disjoint fields.
     return enrichRunWithConnectionCooldown(
       enrichRunWithBreakers(baseRun, providerHealth),
-      connectionHealth
+      connectionHealth,
     );
   }, [runProp, selectedCombo, comboEvents, providerHealth, connectionHealth]);
 

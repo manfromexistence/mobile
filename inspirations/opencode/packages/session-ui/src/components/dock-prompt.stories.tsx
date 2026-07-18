@@ -1,6 +1,6 @@
 // @ts-nocheck
-import * as mod from "./dock-prompt"
-import { create } from "@opencode-ai/ui/storybook/scaffold"
+import * as mod from "./dock-prompt";
+import { create } from "@opencode-ai/ui/storybook/scaffold";
 
 const docs = `### Overview
 Docked prompt layout for questions and permission requests.
@@ -23,7 +23,7 @@ Use with form controls or confirmation buttons in the footer.
 ### Theming/tokens
 - Uses \`data-component="dock-prompt"\` with kind data attribute.
 
-`
+`;
 
 const story = create({
   title: "UI/DockPrompt",
@@ -34,7 +34,7 @@ const story = create({
     children: "Prompt content",
     footer: "Footer",
   },
-})
+});
 
 export default {
   title: "UI/DockPrompt",
@@ -48,9 +48,9 @@ export default {
       },
     },
   },
-}
+};
 
-export const Basic = story.Basic
+export const Basic = story.Basic;
 
 export const Permission = {
   args: {
@@ -59,4 +59,4 @@ export const Permission = {
     children: "This action needs permission to proceed.",
     footer: "Approve or deny",
   },
-}
+};

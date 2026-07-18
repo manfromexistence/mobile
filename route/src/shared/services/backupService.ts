@@ -71,7 +71,7 @@ export async function createBackup(toolId: string, filePath: string) {
       backupName,
       toolId,
       createdAt: new Date().toISOString(),
-    })
+    }),
   );
 
   // Enforce rotation (max backups per tool)

@@ -45,8 +45,8 @@ function normalizeModelForComparison(model: unknown) {
         new Set(
           record.supportedEndpoints
             .map((endpoint) => toNonEmptyString(endpoint))
-            .filter((endpoint): endpoint is string => Boolean(endpoint))
-        )
+            .filter((endpoint): endpoint is string => Boolean(endpoint)),
+        ),
       ).sort()
     : ["chat"];
 
@@ -108,13 +108,13 @@ function summarizeModelChanges(previousModels: unknown, nextModels: unknown) {
     previousList
       .map((model) => normalizeModelForComparison(model))
       .filter((model) => model.id)
-      .map((model) => [model.id, JSON.stringify(model)])
+      .map((model) => [model.id, JSON.stringify(model)]),
   );
   const nextMap = new Map(
     nextList
       .map((model) => normalizeModelForComparison(model))
       .filter((model) => model.id)
-      .map((model) => [model.id, JSON.stringify(model)])
+      .map((model) => [model.id, JSON.stringify(model)]),
   );
 
   let added = 0;
@@ -198,7 +198,7 @@ export async function ensureLoopbackServerReady(opts: EnsureReadyOptions = {}): 
           {
             redirect: "error",
             signal: AbortSignal.timeout(2_000),
-          }
+          },
         );
         if (res.status >= 200 && res.status < 600) return;
       } catch (err) {
@@ -264,7 +264,7 @@ export type SelfFetchWithRetryOptions = {
  */
 export async function selfFetchWithRetry(
   url: string,
-  opts: SelfFetchWithRetryOptions = {}
+  opts: SelfFetchWithRetryOptions = {},
 ): Promise<Response> {
   const f = opts.fetch ?? fetchModelSyncInternal;
   // Reduced from 5 to 3: the readiness gate now handles the boot race.
@@ -282,7 +282,7 @@ export async function selfFetchWithRetry(
     } catch (err) {
       // Readiness probe timed out — fall straight through to in-process fallback.
       console.warn(
-        `[ModelSync] Loopback server readiness probe failed; falling back to in-process route immediately (${connLabel}): ${String(err)}`
+        `[ModelSync] Loopback server readiness probe failed; falling back to in-process route immediately (${connLabel}): ${String(err)}`,
       );
       if (opts.inProcessFallback) {
         return opts.inProcessFallback();
@@ -309,7 +309,7 @@ export async function selfFetchWithRetry(
 
   // All retries exhausted (network-level failures only) — fall back to in-process route
   console.warn(
-    `[ModelSync] Internal /models self-fetch failed for ${connLabel} after ${maxRetries} attempt(s); falling back to in-process route (last err: ${String(lastErr)})`
+    `[ModelSync] Internal /models self-fetch failed for ${connLabel} after ${maxRetries} attempt(s); falling back to in-process route (last err: ${String(lastErr)})`,
   );
 
   if (opts.inProcessFallback) {
@@ -347,7 +347,7 @@ async function fetchProviderModelsForSync(request: Request, connectionId: string
           method: "GET",
           headers,
         }),
-        { params: { id: connectionId } }
+        { params: { id: connectionId } },
       ),
   });
 }
@@ -381,7 +381,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     if (!(await isAuthenticated(request)) && !isModelSyncInternalRequest(request)) {
       return NextResponse.json(
         { error: { message: "Authentication required", type: "invalid_api_key" } },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -394,7 +394,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     channelLabel = getModelSyncChannelLabel(connection);
     const previousSyncedAvailableModelsForConnection = await getSyncedAvailableModelsForConnection(
       logProvider,
-      id
+      id,
     );
 
     const modelsRes = await fetchProviderModelsForSync(request, id);
@@ -434,7 +434,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
           error: responseError,
           ...(parseError ? { upstreamStatus: modelsRes.status } : {}),
         },
-        { status: responseStatus }
+        { status: responseStatus },
       );
     }
 
@@ -468,18 +468,19 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
           source: modelSource,
           ...(modelWarning ? { warning: modelWarning } : {}),
         },
-        { status: 502 }
+        { status: 502 },
       );
     }
 
     const allFetchedModels = modelsData.models || [];
     const importFreeOnly = Boolean(
-      (connection.providerSpecificData as Record<string, unknown> | undefined)?.importFreeModelsOnly
+      (connection.providerSpecificData as Record<string, unknown> | undefined)
+        ?.importFreeModelsOnly,
     );
     const { models: fetchedModels, freeFilterEmpty } = selectModelsForImport(
       logProvider,
       allFetchedModels,
-      importFreeOnly
+      importFreeOnly,
     );
     const {
       previousModels,
@@ -502,7 +503,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       discoveredModels.length > 0 ? discoveredModels : syncedAvailableModels;
     const modelChanges = summarizeModelChanges(
       previousSyncedAvailableModels,
-      effectiveAvailableModels
+      effectiveAvailableModels,
     );
     const customModelChanges = summarizeModelChanges(previousModels, persistedModels);
     const syncedModelsCount =
@@ -512,7 +513,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     const availableModelsCount = new Set(
       [...persistedModels, ...effectiveAvailableModels]
         .map((model) => toNonEmptyString(asRecord(model).id))
-        .filter((modelId): modelId is string => Boolean(modelId))
+        .filter((modelId): modelId is string => Boolean(modelId)),
     ).size;
     const importedCount = importedChanges.added;
     const updatedCount = importedChanges.updated;
@@ -523,18 +524,18 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         .then((syncResult) => {
           if (syncResult.ok) {
             console.log(
-              `[ModelSync] Codex profile auto-sync wrote ${syncResult.written} profile(s), skipped ${syncResult.skipped} (${logProvider})`
+              `[ModelSync] Codex profile auto-sync wrote ${syncResult.written} profile(s), skipped ${syncResult.skipped} (${logProvider})`,
             );
           } else {
             console.log(
-              `[ModelSync] Codex profile auto-sync skipped for ${logProvider}: ${syncResult.reason}`
+              `[ModelSync] Codex profile auto-sync skipped for ${logProvider}: ${syncResult.reason}`,
             );
           }
         })
         .catch((err) => {
           console.log(
             `[ModelSync] Codex profile auto-sync failed for ${logProvider}:`,
-            err?.message || err
+            err?.message || err,
           );
         });
 
@@ -542,27 +543,27 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
         .then((syncResult) => {
           if (syncResult.ok) {
             console.log(
-              `[ModelSync] Claude profile auto-sync wrote ${syncResult.written} profile(s), skipped ${syncResult.skipped} (${logProvider})`
+              `[ModelSync] Claude profile auto-sync wrote ${syncResult.written} profile(s), skipped ${syncResult.skipped} (${logProvider})`,
             );
           } else {
             console.log(
-              `[ModelSync] Claude profile auto-sync skipped for ${logProvider}: ${syncResult.reason}`
+              `[ModelSync] Claude profile auto-sync skipped for ${logProvider}: ${syncResult.reason}`,
             );
           }
         })
         .catch((err) => {
           console.log(
             `[ModelSync] Claude profile auto-sync failed for ${logProvider}:`,
-            err?.message || err
+            err?.message || err,
           );
         });
     } else if (shouldLog && quiet) {
       // Still update profiles; suppress console noise from boot revalidation.
       void autoSyncCodexProfilesFromLiveCatalog(request, `model-sync:${logProvider}`).catch(
-        () => undefined
+        () => undefined,
       );
       void autoSyncClaudeProfilesFromLiveCatalog(request, `model-sync:${logProvider}`).catch(
-        () => undefined
+        () => undefined,
       );
     }
 
@@ -634,7 +635,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
 
     return NextResponse.json(
       { error: sanitizeErrorMessage(error) || "Failed to sync models" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

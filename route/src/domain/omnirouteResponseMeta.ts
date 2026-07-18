@@ -62,14 +62,14 @@ export function getOmniRouteTokenCounts(usage: UsageLike): { input: number; outp
         usage.prompt_tokens ??
         usage.input_tokens ??
         usage.promptTokens ??
-        usage.inputTokens
+        usage.inputTokens,
     ),
     output: toNonNegativeInteger(
       usage.output ??
         usage.completion_tokens ??
         usage.output_tokens ??
         usage.completionTokens ??
-        usage.outputTokens
+        usage.outputTokens,
     ),
   };
 }
@@ -133,7 +133,7 @@ export function buildOmniRouteResponseMetaHeaders({
   // non-cache responses keep their existing header shape. `0` is a valid saved cost.
   if (costSavedUsd != null) {
     headers[OMNIROUTE_RESPONSE_HEADERS.costSaved] = toHeaderValue(
-      formatOmniRouteCost(costSavedUsd)
+      formatOmniRouteCost(costSavedUsd),
     );
   }
 
@@ -146,7 +146,7 @@ export function buildOmniRouteResponseMetaHeaders({
 }
 
 export function buildOmniRouteSseMetadataComment(
-  options: Parameters<typeof buildOmniRouteResponseMetaHeaders>[0]
+  options: Parameters<typeof buildOmniRouteResponseMetaHeaders>[0],
 ): string {
   const headers = buildOmniRouteResponseMetaHeaders(options);
   const lines = Object.entries(headers)
@@ -163,7 +163,7 @@ export function buildOmniRouteSseMetadataComment(
  */
 export function attachOmniRouteMetaHeaders(
   headers: Headers | Record<string, string>,
-  meta: Parameters<typeof buildOmniRouteResponseMetaHeaders>[0]
+  meta: Parameters<typeof buildOmniRouteResponseMetaHeaders>[0],
 ): void {
   const built = buildOmniRouteResponseMetaHeaders(meta);
   if (headers instanceof Headers) {
@@ -183,7 +183,7 @@ export function attachOmniRouteMetaHeaders(
  */
 export function attachOmniRouteMetaToResponse(
   response: Response,
-  meta: Parameters<typeof buildOmniRouteResponseMetaHeaders>[0]
+  meta: Parameters<typeof buildOmniRouteResponseMetaHeaders>[0],
 ): Response {
   if (!response) return response;
 

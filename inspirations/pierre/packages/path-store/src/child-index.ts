@@ -1,15 +1,9 @@
-import type {
-  DirectoryChildIndex,
-  NodeId,
-  PathStoreNode,
-} from './internal-types';
-import type { SegmentId } from './internal-types';
+import type { DirectoryChildIndex, NodeId, PathStoreNode } from "./internal-types";
+import type { SegmentId } from "./internal-types";
 
 const PATH_STORE_CHILD_INDEX_CHUNK_SHIFT = 5;
-const PATH_STORE_CHILD_INDEX_CHUNK_SIZE =
-  1 << PATH_STORE_CHILD_INDEX_CHUNK_SHIFT;
-const PATH_STORE_CHILD_INDEX_CHUNK_THRESHOLD =
-  PATH_STORE_CHILD_INDEX_CHUNK_SIZE * 4;
+const PATH_STORE_CHILD_INDEX_CHUNK_SIZE = 1 << PATH_STORE_CHILD_INDEX_CHUNK_SHIFT;
+const PATH_STORE_CHILD_INDEX_CHUNK_THRESHOLD = PATH_STORE_CHILD_INDEX_CHUNK_SIZE * 4;
 
 // Exposed so hot callers can avoid the rebuildVisibleChildChunks function
 // call for directories that fall below the chunk threshold (the vast
@@ -48,7 +42,7 @@ export function createPresortedDirectoryChildIndex(): DirectoryChildIndex {
 // Map.set overhead during construction.
 export function ensureChildIdByNameId(
   nodes: readonly PathStoreNode[],
-  index: DirectoryChildIndex
+  index: DirectoryChildIndex,
 ): Map<SegmentId, NodeId> {
   if (index.childIdByNameId != null) {
     return index.childIdByNameId;
@@ -66,9 +60,7 @@ export function ensureChildIdByNameId(
   return map;
 }
 
-export function ensureChildPositions(
-  index: DirectoryChildIndex
-): Map<NodeId, number> {
+export function ensureChildPositions(index: DirectoryChildIndex): Map<NodeId, number> {
   if (index.childPositionById != null) {
     return index.childPositionById;
   }
@@ -85,10 +77,7 @@ export function ensureChildPositions(
   return positions;
 }
 
-export function appendChildReference(
-  index: DirectoryChildIndex,
-  childId: NodeId
-): void {
+export function appendChildReference(index: DirectoryChildIndex, childId: NodeId): void {
   if (index.childPositionById != null) {
     index.childPositionById.set(childId, index.childIds.length);
   }
@@ -96,19 +85,12 @@ export function appendChildReference(
 }
 
 // Rebuilds the child-position map from the first changed index after a splice.
-export function updateChildPositionsFrom(
-  index: DirectoryChildIndex,
-  startIndex: number
-): void {
+export function updateChildPositionsFrom(index: DirectoryChildIndex, startIndex: number): void {
   if (index.childPositionById == null) {
     return;
   }
 
-  for (
-    let position = startIndex;
-    position < index.childIds.length;
-    position++
-  ) {
+  for (let position = startIndex; position < index.childIds.length; position++) {
     const childId = index.childIds[position];
     if (childId != null) {
       index.childPositionById.set(childId, position);
@@ -120,7 +102,7 @@ export function updateChildPositionsFrom(
 // doesn't need to rescan every child after small edits.
 export function rebuildDirectoryChildAggregates(
   nodes: readonly PathStoreNode[],
-  index: DirectoryChildIndex
+  index: DirectoryChildIndex,
 ): void {
   let totalChildSubtreeNodeCount = 0;
   let totalChildVisibleSubtreeCount = 0;
@@ -144,7 +126,7 @@ export function applyChildAggregateDelta(
   index: DirectoryChildIndex,
   childId: NodeId,
   subtreeNodeDelta: number,
-  visibleSubtreeDelta: number
+  visibleSubtreeDelta: number,
 ): void {
   index.totalChildSubtreeNodeCount += subtreeNodeDelta;
   index.totalChildVisibleSubtreeCount += visibleSubtreeDelta;
@@ -167,7 +149,7 @@ export function applyChildAggregateDelta(
 export function selectChildIndexByVisibleIndex(
   nodes: readonly PathStoreNode[],
   index: DirectoryChildIndex,
-  visibleIndex: number
+  visibleIndex: number,
 ): {
   childIndex: number;
   childVisibleIndex: number;
@@ -180,12 +162,7 @@ export function selectChildIndexByVisibleIndex(
     let childIndex = 0;
     for (const chunkVisibleCount of chunkSums) {
       if (remainingIndex < chunkVisibleCount) {
-        const selected = selectChildIndexWithinChunk(
-          nodes,
-          index,
-          childIndex,
-          remainingIndex
-        );
+        const selected = selectChildIndexWithinChunk(nodes, index, childIndex, remainingIndex);
         return {
           ...selected,
           childVisibleIndex: visibleIndex - selected.localVisibleIndex,
@@ -196,9 +173,7 @@ export function selectChildIndexByVisibleIndex(
       childIndex += PATH_STORE_CHILD_INDEX_CHUNK_SIZE;
     }
 
-    throw new Error(
-      `Visible child index ${String(visibleIndex)} is out of range`
-    );
+    throw new Error(`Visible child index ${String(visibleIndex)} is out of range`);
   }
 
   let remainingIndex = visibleIndex;
@@ -224,9 +199,7 @@ export function selectChildIndexByVisibleIndex(
     remainingIndex -= childNode.visibleSubtreeCount;
   }
 
-  throw new Error(
-    `Visible child index ${String(visibleIndex)} is out of range`
-  );
+  throw new Error(`Visible child index ${String(visibleIndex)} is out of range`);
 }
 
 // Returns the number of visible rows contributed by siblings before a child.
@@ -235,7 +208,7 @@ export function selectChildIndexByVisibleIndex(
 export function getVisibleChildPrefixCount(
   nodes: readonly PathStoreNode[],
   index: DirectoryChildIndex,
-  childPosition: number
+  childPosition: number,
 ): number {
   let visibleCount = 0;
   const chunkSums = index.childVisibleChunkSums;
@@ -249,11 +222,7 @@ export function getVisibleChildPrefixCount(
     scanStart = chunkIndex << PATH_STORE_CHILD_INDEX_CHUNK_SHIFT;
   }
 
-  for (
-    let childIndex = scanStart;
-    childIndex < childPosition;
-    childIndex += 1
-  ) {
+  for (let childIndex = scanStart; childIndex < childPosition; childIndex += 1) {
     const childId = index.childIds[childIndex];
     if (childId == null) {
       continue;
@@ -272,16 +241,14 @@ export function getVisibleChildPrefixCount(
 
 export function rebuildVisibleChildChunks(
   nodes: readonly PathStoreNode[],
-  index: DirectoryChildIndex
+  index: DirectoryChildIndex,
 ): void {
   if (index.childIds.length < PATH_STORE_CHILD_INDEX_CHUNK_THRESHOLD) {
     index.childVisibleChunkSums = null;
     return;
   }
 
-  const chunkCount = Math.ceil(
-    index.childIds.length / PATH_STORE_CHILD_INDEX_CHUNK_SIZE
-  );
+  const chunkCount = Math.ceil(index.childIds.length / PATH_STORE_CHILD_INDEX_CHUNK_SIZE);
   const chunkSums = new Int32Array(chunkCount);
 
   for (let childIndex = 0; childIndex < index.childIds.length; childIndex++) {
@@ -295,8 +262,7 @@ export function rebuildVisibleChildChunks(
       continue;
     }
 
-    chunkSums[childIndex >> PATH_STORE_CHILD_INDEX_CHUNK_SHIFT] +=
-      childNode.visibleSubtreeCount;
+    chunkSums[childIndex >> PATH_STORE_CHILD_INDEX_CHUNK_SHIFT] += childNode.visibleSubtreeCount;
   }
 
   index.childVisibleChunkSums = chunkSums;
@@ -306,19 +272,15 @@ function selectChildIndexWithinChunk(
   nodes: readonly PathStoreNode[],
   index: DirectoryChildIndex,
   chunkStartIndex: number,
-  visibleIndex: number
+  visibleIndex: number,
 ): { childIndex: number; localVisibleIndex: number } {
   const chunkEndIndex = Math.min(
     index.childIds.length,
-    chunkStartIndex + PATH_STORE_CHILD_INDEX_CHUNK_SIZE
+    chunkStartIndex + PATH_STORE_CHILD_INDEX_CHUNK_SIZE,
   );
   let remainingIndex = visibleIndex;
 
-  for (
-    let childIndex = chunkStartIndex;
-    childIndex < chunkEndIndex;
-    childIndex++
-  ) {
+  for (let childIndex = chunkStartIndex; childIndex < chunkEndIndex; childIndex++) {
     const childId = index.childIds[childIndex];
     if (childId == null) {
       continue;
@@ -336,7 +298,5 @@ function selectChildIndexWithinChunk(
     remainingIndex -= childNode.visibleSubtreeCount;
   }
 
-  throw new Error(
-    `Visible child index ${String(visibleIndex)} is out of range`
-  );
+  throw new Error(`Visible child index ${String(visibleIndex)} is out of range`);
 }

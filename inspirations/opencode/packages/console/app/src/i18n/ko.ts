@@ -1,5 +1,5 @@
-import type { Dict } from "./en"
-import { dict as en } from "./en"
+import type { Dict } from "./en";
+import { dict as en } from "./en";
 
 export const dict = {
   ...en,
@@ -152,10 +152,12 @@ export const dict = {
   "home.faq.a2.before": "가장 쉬운 시작 방법은",
   "home.faq.a2.link": "소개",
   "home.faq.q3": "OpenCode를 사용하려면 별도의 AI 구독이 필요한가요?",
-  "home.faq.a3.p1": "꼭 그렇지는 않습니다. OpenCode에는 계정 없이도 사용할 수 있는 무료 모델 세트가 포함되어 있습니다.",
+  "home.faq.a3.p1":
+    "꼭 그렇지는 않습니다. OpenCode에는 계정 없이도 사용할 수 있는 무료 모델 세트가 포함되어 있습니다.",
   "home.faq.a3.p2.beforeZen": "이 외에도,",
   "home.faq.a3.p2.afterZen": " 계정을 생성하여 인기 있는 코딩 모델들을 사용할 수 있습니다.",
-  "home.faq.a3.p3": "Zen 사용을 권장하지만, OpenCode는 OpenAI, Anthropic, xAI 등 모든 인기 제공자와도 작동합니다.",
+  "home.faq.a3.p3":
+    "Zen 사용을 권장하지만, OpenCode는 OpenAI, Anthropic, xAI 등 모든 인기 제공자와도 작동합니다.",
   "home.faq.a3.p4.beforeLocal": "또한",
   "home.faq.a3.p4.localLink": "로컬 모델",
   "home.faq.q4": "기존 AI 구독을 OpenCode에서 사용할 수 있나요?",
@@ -193,7 +195,8 @@ export const dict = {
     "Zen은 OpenCode가 코딩 에이전트를 위해 특별히 테스트하고 벤치마킹한 엄선된 AI 모델 세트에 대한 액세스를 제공합니다. 일관되지 않은 성능과 품질에 대해 걱정할 필요 없이, 검증된 모델을 사용하세요.",
 
   "zen.faq.q1": "OpenCode Zen이란 무엇인가요?",
-  "zen.faq.a1": "Zen은 OpenCode 팀이 코딩 에이전트를 위해 테스트하고 벤치마킹한 엄선된 AI 모델 세트입니다.",
+  "zen.faq.a1":
+    "Zen은 OpenCode 팀이 코딩 에이전트를 위해 테스트하고 벤치마킹한 엄선된 AI 모델 세트입니다.",
   "zen.faq.q2": "Zen은 왜 더 정확한가요?",
   "zen.faq.a2":
     "Zen은 코딩 에이전트를 위해 특별히 테스트되고 벤치마킹된 모델만 제공합니다. 스테이크를 버터 나이프로 자르지 않듯이, 코딩에 품질이 낮은 모델을 사용하지 마세요.",
@@ -203,10 +206,12 @@ export const dict = {
   "zen.faq.q4": "Zen 비용은 얼마인가요?",
   "zen.faq.a4.p1.beforePricing": "Zen은",
   "zen.faq.a4.p1.pricingLink": "요청당 비용을 청구하며",
-  "zen.faq.a4.p1.afterPricing": ", 마크업이 0이므로 모델 제공자가 청구하는 금액 그대로 지불하게 됩니다.",
+  "zen.faq.a4.p1.afterPricing":
+    ", 마크업이 0이므로 모델 제공자가 청구하는 금액 그대로 지불하게 됩니다.",
   "zen.faq.a4.p2.beforeAccount": "총 비용은 사용량에 따라 달라지며, 월간 지출 한도를",
   "zen.faq.a4.p2.accountLink": "계정",
-  "zen.faq.a4.p3": "비용을 충당하기 위해 OpenCode는 $20 잔액 충전 시 $1.23의 소액 결제 처리 수수료만 추가합니다.",
+  "zen.faq.a4.p3":
+    "비용을 충당하기 위해 OpenCode는 $20 잔액 충전 시 $1.23의 소액 결제 처리 수수료만 추가합니다.",
   "zen.faq.q5": "데이터와 프라이버시는 어떤가요?",
   "zen.faq.a5.beforeExceptions":
     "모든 Zen 모델은 미국에서 호스팅됩니다. 제공자들은 데이터 보존 금지(zero-retention) 정책을 따르며, 모델 학습에 귀하의 데이터를 사용하지 않습니다. 단,",
@@ -222,16 +227,19 @@ export const dict = {
   "zen.cta.start": "Zen 시작하기",
   "zen.pricing.title": "$20 선불 잔액 추가",
   "zen.pricing.fee": "(+$1.23 카드 처리 수수료)",
-  "zen.pricing.body": "모든 에이전트와 함께 사용하세요. 월간 지출 한도 설정 가능. 언제든지 취소 가능.",
+  "zen.pricing.body":
+    "모든 에이전트와 함께 사용하세요. 월간 지출 한도 설정 가능. 언제든지 취소 가능.",
   "zen.problem.title": "Zen은 어떤 문제를 해결하나요?",
   "zen.problem.body":
     "사용 가능한 모델은 매우 많지만, 코딩 에이전트와 잘 작동하는 모델은 소수에 불과합니다. 대부분의 제공자들은 모델을 다르게 구성하여 결과가 제각각입니다.",
-  "zen.problem.subtitle": "우리는 OpenCode 사용자뿐만 아니라 모든 분들을 위해 이 문제를 해결하고 있습니다.",
+  "zen.problem.subtitle":
+    "우리는 OpenCode 사용자뿐만 아니라 모든 분들을 위해 이 문제를 해결하고 있습니다.",
   "zen.problem.item1": "선별된 모델 테스트 및 팀 자문",
   "zen.problem.item2": "제공자와 협력하여 올바른 모델 전달 보장",
   "zen.problem.item3": "권장하는 모든 모델-제공자 조합 벤치마킹",
   "zen.how.title": "Zen 작동 방식",
-  "zen.how.body": "OpenCode와 함께 사용하는 것을 권장하지만, Zen은 어떤 에이전트와도 사용할 수 있습니다.",
+  "zen.how.body":
+    "OpenCode와 함께 사용하는 것을 권장하지만, Zen은 어떤 에이전트와도 사용할 수 있습니다.",
   "zen.how.step1.title": "가입 및 $20 잔액 추가",
   "zen.how.step1.beforeLink": "",
   "zen.how.step1.link": "설정 지침",
@@ -299,7 +307,8 @@ export const dict = {
   "go.problem.item4":
     "GLM-5.2, GLM-5.1, Kimi K2.7 Code, Kimi K2.6, MiMo-V2.5-Pro, MiMo-V2.5, Qwen3.7 Max, Qwen3.7 Plus, Qwen3.6 Plus, MiniMax M2.7, MiniMax M3, DeepSeek V4 Pro, DeepSeek V4 Flash 포함",
   "go.how.title": "Go 작동 방식",
-  "go.how.body": "Go는 첫 달 $5, 이후 $10/월로 시작합니다. OpenCode 또는 어떤 에이전트와도 함께 사용할 수 있습니다.",
+  "go.how.body":
+    "Go는 첫 달 $5, 이후 $10/월로 시작합니다. OpenCode 또는 어떤 에이전트와도 함께 사용할 수 있습니다.",
   "go.how.step1.title": "계정 생성",
   "go.how.step1.beforeLink": "",
   "go.how.step1.link": "설정 지침을 따르세요",
@@ -316,7 +325,8 @@ export const dict = {
     "Go 모델은 미국에서 호스팅됩니다. 제공자들은 데이터 보존 금지 정책을 따르며 모델 학습에 데이터를 사용하지 않습니다. 단,",
   "go.privacy.exceptionsLink": "다음 예외",
   "go.faq.q1": "OpenCode Go란 무엇인가요?",
-  "go.faq.a1": "Go는 에이전트 코딩을 위한 유능한 오픈 소스 모델에 대해 안정적인 액세스를 제공하는 저비용 구독입니다.",
+  "go.faq.a1":
+    "Go는 에이전트 코딩을 위한 유능한 오픈 소스 모델에 대해 안정적인 액세스를 제공하는 저비용 구독입니다.",
   "go.faq.q2": "Go에는 어떤 모델이 포함되나요?",
   "go.faq.a2": "Go에는 넉넉한 한도와 안정적인 액세스를 제공하는 아래 모델이 포함됩니다.",
   "go.faq.q3": "Go는 Zen과 같은가요?",
@@ -340,7 +350,8 @@ export const dict = {
   "go.faq.q7": "취소할 수 있나요?",
   "go.faq.a7": "네, 언제든지 취소할 수 있습니다.",
   "go.faq.q8": "다른 코딩 에이전트와 Go를 사용할 수 있나요?",
-  "go.faq.a8": "네, Go는 어떤 에이전트와도 사용할 수 있습니다. 선호하는 코딩 에이전트의 설정 지침을 따르세요.",
+  "go.faq.a8":
+    "네, Go는 어떤 에이전트와도 사용할 수 있습니다. 선호하는 코딩 에이전트의 설정 지침을 따르세요.",
 
   "go.faq.q9": "무료 모델과 Go의 차이점은 무엇인가요?",
   "go.faq.a9":
@@ -348,12 +359,14 @@ export const dict = {
 
   "zen.api.error.rateLimitExceeded": "속도 제한을 초과했습니다. 나중에 다시 시도해 주세요.",
   "zen.api.error.modelNotSupported": "{{model}} 모델은 지원되지 않습니다",
-  "zen.api.error.modelFormatNotSupported": "{{model}} 모델은 {{format}} 형식에 대해 지원되지 않습니다",
+  "zen.api.error.modelFormatNotSupported":
+    "{{model}} 모델은 {{format}} 형식에 대해 지원되지 않습니다",
   "zen.api.error.noProviderAvailable": "사용 가능한 제공자가 없습니다",
   "zen.api.error.providerNotSupported": "{{provider}} 제공자는 지원되지 않습니다",
   "zen.api.error.missingApiKey": "API 키가 누락되었습니다.",
   "zen.api.error.invalidApiKey": "유효하지 않은 API 키입니다.",
-  "zen.api.error.subscriptionQuotaExceeded": "구독 할당량을 초과했습니다. {{retryIn}} 후 다시 시도해 주세요.",
+  "zen.api.error.subscriptionQuotaExceeded":
+    "구독 할당량을 초과했습니다. {{retryIn}} 후 다시 시도해 주세요.",
   "zen.api.error.goSubscriptionRollingLimitExceeded":
     "5시간 사용 한도에 도달했습니다. {{retryIn}} 후 초기화됩니다. 이 모델을 지금 계속 사용하려면 사용 가능한 잔액에서 사용을 활성화하세요: {{consoleGoUrl}}",
   "zen.api.error.goSubscriptionWeeklyLimitExceeded":
@@ -361,7 +374,8 @@ export const dict = {
   "zen.api.error.goSubscriptionMonthlyLimitExceeded":
     "월간 사용 한도에 도달했습니다. {{retryIn}} 후 초기화됩니다. 이 모델을 지금 계속 사용하려면 사용 가능한 잔액에서 사용을 활성화하세요: {{consoleGoUrl}}",
   "zen.api.error.noPaymentMethod": "결제 수단이 없습니다. 결제 수단을 추가하세요: {{billingUrl}}",
-  "zen.api.error.insufficientBalance": "잔액이 부족합니다. 결제 관리를 여기서 하세요: {{billingUrl}}",
+  "zen.api.error.insufficientBalance":
+    "잔액이 부족합니다. 결제 관리를 여기서 하세요: {{billingUrl}}",
   "zen.api.error.workspaceMonthlyLimitReached":
     "워크스페이스의 월간 지출 한도인 ${{amount}}에 도달했습니다. 한도 관리를 여기서 하세요: {{billingUrl}}",
   "zen.api.error.userMonthlyLimitReached":
@@ -388,7 +402,8 @@ export const dict = {
   "black.terms.1": "구독이 즉시 시작되지 않습니다",
   "black.terms.2": "대기 명단에 추가되며 곧 활성화됩니다",
   "black.terms.3": "구독이 활성화될 때만 카드가 청구됩니다",
-  "black.terms.4": "사용량 제한이 적용되며, 과도한 자동화 사용 시 제한에 더 빨리 도달할 수 있습니다",
+  "black.terms.4":
+    "사용량 제한이 적용되며, 과도한 자동화 사용 시 제한에 더 빨리 도달할 수 있습니다",
   "black.terms.5": "구독은 개인용이며, 팀용은 엔터프라이즈에 문의하세요",
   "black.terms.6": "향후 제한이 조정되거나 플랜이 중단될 수 있습니다",
   "black.terms.7": "언제든지 구독을 취소할 수 있습니다",
@@ -574,7 +589,8 @@ export const dict = {
   "workspace.reload.title": "자동 충전",
   "workspace.reload.disabled.before": "자동 충전이",
   "workspace.reload.disabled.state": "비활성화",
-  "workspace.reload.disabled.after": "되었습니다. 잔액이 부족할 때 자동으로 충전하려면 활성화하세요.",
+  "workspace.reload.disabled.after":
+    "되었습니다. 잔액이 부족할 때 자동으로 충전하려면 활성화하세요.",
   "workspace.reload.enabled.before": "자동 충전이",
   "workspace.reload.enabled.state": "활성화",
   "workspace.reload.enabled.middle": "되었습니다. 잔액이",
@@ -628,7 +644,8 @@ export const dict = {
   "workspace.black.waitlist.enroll": "등록",
   "workspace.black.waitlist.enrolling": "등록 중...",
   "workspace.black.waitlist.enrolled": "등록됨",
-  "workspace.black.waitlist.enrollNote": "등록을 클릭하면 구독이 즉시 시작되며 카드에 요금이 청구됩니다.",
+  "workspace.black.waitlist.enrollNote":
+    "등록을 클릭하면 구독이 즉시 시작되며 카드에 요금이 청구됩니다.",
 
   "workspace.lite.loading": "로드 중...",
   "workspace.lite.time.day": "일",
@@ -671,7 +688,8 @@ export const dict = {
   "workspace.referral.overview.subtitle": "친구가 구독하면 $5를 받으세요. 친구도 $5를 받습니다.",
   "workspace.referral.instructions.share": "추천 링크 공유",
   "workspace.referral.instructions.subscribe": "친구가 가입하고 Go를 구독",
-  "workspace.referral.instructions.claim": "두 분 모두 $5 사용 크레딧을 받아 Go 사용 한도에 적용할 수 있습니다",
+  "workspace.referral.instructions.claim":
+    "두 분 모두 $5 사용 크레딧을 받아 Go 사용 한도에 적용할 수 있습니다",
   "workspace.referral.rewards.title": "추천 보상",
   "workspace.referral.rewards.description": "사용 가능한 추천 크레딧을 Go 사용량에 적용합니다.",
   "workspace.referral.rewards.subtitle": "{{applied}} / {{total}}개 보상 사용됨.",
@@ -695,7 +713,8 @@ export const dict = {
   "workspace.referral.apply.preview": "보상 보기",
   "workspace.referral.apply.action": "사용",
   "workspace.referral.apply.confirmTitle": "보상 사용",
-  "workspace.referral.apply.confirmBody": "{{amount}}를 사용하여 이 워크스페이스의 현재 사용량을 줄입니다.",
+  "workspace.referral.apply.confirmBody":
+    "{{amount}}를 사용하여 이 워크스페이스의 현재 사용량을 줄입니다.",
   "workspace.referral.apply.confirmAction": "사용",
 
   "download.title": "OpenCode | 다운로드",
@@ -720,7 +739,8 @@ export const dict = {
     "꼭 그렇지는 않지만, 아마도 필요할 것입니다. OpenCode를 유료 제공자에 연결하려면 AI 구독이 필요할 수 있습니다. 하지만",
   "download.faq.a3.localLink": "로컬 모델",
   "download.faq.a3.afterLocal.beforeZen": "은 무료로 사용할 수 있습니다. 우리는",
-  "download.faq.a3.afterZen": " 사용을 권장하지만, OpenCode는 OpenAI, Anthropic, xAI 등 모든 인기 제공자와 작동합니다.",
+  "download.faq.a3.afterZen":
+    " 사용을 권장하지만, OpenCode는 OpenAI, Anthropic, xAI 등 모든 인기 제공자와 작동합니다.",
 
   "download.faq.a5.p1": "OpenCode는 100% 무료로 사용할 수 있습니다.",
   "download.faq.a5.p2.beforeZen":
@@ -816,4 +836,4 @@ export const dict = {
   "bench.detail.table.duration": "소요 시간",
   "bench.detail.run.title": "실행 {{n}}",
   "bench.detail.rawJson": "Raw JSON",
-} satisfies Dict
+} satisfies Dict;

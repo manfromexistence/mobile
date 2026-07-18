@@ -48,7 +48,7 @@ export const TaskInputSchema = z.object({
       z.object({
         role: z.string(),
         content: z.string(),
-      })
+      }),
     )
     .optional(),
   model: z.string().optional(),

@@ -1,27 +1,16 @@
-'use client';
+"use client";
 
-import {
-  type ContextMenuItem,
-  type ContextMenuOpenContext,
-  FileTree,
-} from '@pierre/trees';
-import type { FileTreePathOptions } from '@trees/_lib/fileTreePathOptions';
-import {
-  type ChangeEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import { createRoot, type Root as ReactDomRoot } from 'react-dom/client';
+import { type ContextMenuItem, type ContextMenuOpenContext, FileTree } from "@pierre/trees";
+import type { FileTreePathOptions } from "@trees/_lib/fileTreePathOptions";
+import { type ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { createRoot, type Root as ReactDomRoot } from "react-dom/client";
 
-import { ExampleCard } from '../_components/ExampleCard';
-import { createPresortedPreparedInput } from '../_lib/createPresortedPreparedInput';
+import { ExampleCard } from "../_components/ExampleCard";
+import { createPresortedPreparedInput } from "../_lib/createPresortedPreparedInput";
 import {
   getContextMenuSideOffset,
   getFloatingContextMenuTriggerStyle,
-} from '../_lib/getFloatingContextMenuTriggerStyle';
+} from "../_lib/getFloatingContextMenuTriggerStyle";
 import {
   getItemCustomizationDecorationPreset,
   getTreesDevGitStatusPreset,
@@ -30,7 +19,7 @@ import {
   type ItemCustomizationDecorationPresetId,
   TREES_DEV_GIT_STATUS_PRESETS,
   type TreesDevGitStatusPresetId,
-} from '../_lib/itemCustomizationDemoData';
+} from "../_lib/itemCustomizationDemoData";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,7 +27,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 
 interface ItemCustomizationDemoClientProps {
   containerHtml: string;
@@ -46,12 +35,12 @@ interface ItemCustomizationDemoClientProps {
   pathsArePresorted: boolean;
   sharedOptions: Omit<
     FileTreePathOptions,
-    | 'composition'
-    | 'gitStatus'
-    | 'id'
-    | 'onSelectionChange'
-    | 'renderRowDecoration'
-    | 'preparedInput'
+    | "composition"
+    | "gitStatus"
+    | "id"
+    | "onSelectionChange"
+    | "renderRowDecoration"
+    | "preparedInput"
   >;
 }
 
@@ -61,20 +50,13 @@ function ItemCustomizationContextMenu({
   onAction,
 }: {
   item: ContextMenuItem;
-  context: Pick<
-    ContextMenuOpenContext,
-    'anchorRect' | 'close' | 'restoreFocus'
-  >;
+  context: Pick<ContextMenuOpenContext, "anchorRect" | "close" | "restoreFocus">;
   onAction: (label: string) => void;
 }) {
-  const itemType = item.kind === 'directory' ? 'Folder' : 'File';
+  const itemType = item.kind === "directory" ? "Folder" : "File";
 
   return (
-    <DropdownMenu
-      open
-      modal={false}
-      onOpenChange={(open) => !open && context.close()}
-    >
+    <DropdownMenu open modal={false} onOpenChange={(open) => !open && context.close()}>
       <DropdownMenuTrigger asChild>
         <button
           type="button"
@@ -110,16 +92,14 @@ function ItemCustomizationContextMenu({
         <DropdownMenuItem
           onSelect={() => {
             onAction(
-              item.kind === 'directory'
+              item.kind === "directory"
                 ? `Preview directory layout: ${item.path}`
-                : `Preview file decoration: ${item.path}`
+                : `Preview file decoration: ${item.path}`,
             );
             context.close();
           }}
         >
-          {item.kind === 'directory'
-            ? 'Preview directory layout'
-            : 'Preview file decoration'}
+          {item.kind === "directory" ? "Preview directory layout" : "Preview file decoration"}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -139,19 +119,12 @@ function renderItemCustomizationContextMenuSlot({
   menuRootRef: { current: ReactDomRoot | null };
   onAction: (label: string) => void;
   slotElement: HTMLDivElement;
-  context: Pick<
-    ContextMenuOpenContext,
-    'anchorRect' | 'close' | 'restoreFocus'
-  >;
+  context: Pick<ContextMenuOpenContext, "anchorRect" | "close" | "restoreFocus">;
 }): void {
   menuRootRef.current ??= createRoot(slotElement);
-  slotElement.style.display = 'block';
+  slotElement.style.display = "block";
   menuRootRef.current.render(
-    <ItemCustomizationContextMenu
-      item={item}
-      context={context}
-      onAction={onAction}
-    />
+    <ItemCustomizationContextMenu item={item} context={context} onAction={onAction} />,
   );
 }
 
@@ -169,7 +142,7 @@ function clearItemCustomizationContextMenuSlot({
     return;
   }
 
-  slotElement.style.display = 'none';
+  slotElement.style.display = "none";
   if (unmount) {
     menuRootRef.current = null;
     queueMicrotask(() => {
@@ -183,10 +156,7 @@ function clearItemCustomizationContextMenuSlot({
 
 // Restores any selected rows after the tree is recreated so decoration presets
 // that react to selection keep their signal when composition options change.
-function restoreSelectedPaths(
-  fileTree: FileTree,
-  selectedPaths: readonly string[]
-): void {
+function restoreSelectedPaths(fileTree: FileTree, selectedPaths: readonly string[]): void {
   for (const path of selectedPaths) {
     fileTree.getItem(path)?.select();
   }
@@ -196,10 +166,7 @@ function readCheckboxValue(event: ChangeEvent<HTMLInputElement>): boolean {
   return event.currentTarget.checked;
 }
 
-function areSamePathLists(
-  left: readonly string[],
-  right: readonly string[]
-): boolean {
+function areSamePathLists(left: readonly string[], right: readonly string[]): boolean {
   if (left.length !== right.length) {
     return false;
   }
@@ -227,7 +194,7 @@ function HydratedItemCustomizationTree({
   contextMenuRootRef: { current: ReactDomRoot | null };
   contextMenuSlotRef: { current: HTMLDivElement | null };
   desiredSelectedPaths: readonly string[];
-  gitStatus: FileTreePathOptions['gitStatus'];
+  gitStatus: FileTreePathOptions["gitStatus"];
   hasHydratedTreeRef: { current: boolean };
   isRestoringSelectionRef: { current: boolean };
   options: FileTreePathOptions;
@@ -240,21 +207,17 @@ function HydratedItemCustomizationTree({
       return;
     }
 
-    const contextMenuSlotElement =
-      contextMenuSlotRef.current ?? document.createElement('div');
+    const contextMenuSlotElement = contextMenuSlotRef.current ?? document.createElement("div");
     contextMenuSlotRef.current = contextMenuSlotElement;
     const fileTree = new FileTree({
       ...options,
       gitStatus,
     });
-    const fileTreeContainer = node.querySelector('file-tree-container');
-    if (
-      !hasHydratedTreeRef.current &&
-      fileTreeContainer instanceof HTMLElement
-    ) {
+    const fileTreeContainer = node.querySelector("file-tree-container");
+    if (!hasHydratedTreeRef.current && fileTreeContainer instanceof HTMLElement) {
       fileTree.hydrate({ fileTreeContainer });
     } else {
-      node.innerHTML = '';
+      node.innerHTML = "";
       fileTree.render({ containerWrapper: node });
     }
     hasHydratedTreeRef.current = true;
@@ -294,7 +257,7 @@ function HydratedItemCustomizationTree({
     <div
       ref={mountRef}
       data-test-item-customization-tree="true"
-      style={{ height: '360px' }}
+      style={{ height: "360px" }}
       dangerouslySetInnerHTML={{ __html: containerHtml }}
       suppressHydrationWarning
     />
@@ -313,69 +276,56 @@ export function ItemCustomizationDemoClient({
   const contextMenuRootRef = useRef<ReactDomRoot | null>(null);
   const contextMenuSlotRef = useRef<HTMLDivElement | null>(null);
   const [contextMenuEnabled, setContextMenuEnabled] = useState(
-    ITEM_CUSTOMIZATION_DEMO_DEFAULTS.contextMenuEnabled
+    ITEM_CUSTOMIZATION_DEMO_DEFAULTS.contextMenuEnabled,
   );
-  const [triggerMode, setTriggerMode] = useState(
-    ITEM_CUSTOMIZATION_DEMO_DEFAULTS.triggerMode
-  );
+  const [triggerMode, setTriggerMode] = useState(ITEM_CUSTOMIZATION_DEMO_DEFAULTS.triggerMode);
   const [buttonVisibility, setButtonVisibility] = useState(
-    ITEM_CUSTOMIZATION_DEMO_DEFAULTS.buttonVisibility
+    ITEM_CUSTOMIZATION_DEMO_DEFAULTS.buttonVisibility,
   );
   const [gitStatusEnabled, setGitStatusEnabled] = useState(
-    ITEM_CUSTOMIZATION_DEMO_DEFAULTS.gitStatusEnabled
+    ITEM_CUSTOMIZATION_DEMO_DEFAULTS.gitStatusEnabled,
   );
-  const [gitStatusPresetId, setGitStatusPresetId] =
-    useState<TreesDevGitStatusPresetId>(
-      ITEM_CUSTOMIZATION_DEMO_DEFAULTS.gitStatusPresetId
-    );
-  const [decorationPresetId, setDecorationPresetId] =
-    useState<ItemCustomizationDecorationPresetId>(
-      ITEM_CUSTOMIZATION_DEMO_DEFAULTS.decorationPresetId
-    );
+  const [gitStatusPresetId, setGitStatusPresetId] = useState<TreesDevGitStatusPresetId>(
+    ITEM_CUSTOMIZATION_DEMO_DEFAULTS.gitStatusPresetId,
+  );
+  const [decorationPresetId, setDecorationPresetId] = useState<ItemCustomizationDecorationPresetId>(
+    ITEM_CUSTOMIZATION_DEMO_DEFAULTS.decorationPresetId,
+  );
   const [selectedPaths, setSelectedPaths] = useState<readonly string[]>([]);
   const [lastMenuInteraction, setLastMenuInteraction] = useState(
-    'Open the context menu to inspect a row.'
+    "Open the context menu to inspect a row.",
   );
   const preparedInput = useMemo(
-    () =>
-      pathsArePresorted
-        ? createPresortedPreparedInput(sharedOptions.paths)
-        : undefined,
-    [pathsArePresorted, sharedOptions.paths]
+    () => (pathsArePresorted ? createPresortedPreparedInput(sharedOptions.paths) : undefined),
+    [pathsArePresorted, sharedOptions.paths],
   );
 
   const activeGitStatusPreset = useMemo(
     () => getTreesDevGitStatusPreset(gitStatusPresetId),
-    [gitStatusPresetId]
+    [gitStatusPresetId],
   );
   const activeDecorationPreset = useMemo(
     () => getItemCustomizationDecorationPreset(decorationPresetId),
-    [decorationPresetId]
+    [decorationPresetId],
   );
-  const gitStatus = gitStatusEnabled
-    ? activeGitStatusPreset.entries
-    : undefined;
-  const showButtonVisibilityControl =
-    contextMenuEnabled && triggerMode !== 'right-click';
+  const gitStatus = gitStatusEnabled ? activeGitStatusPreset.entries : undefined;
+  const showButtonVisibilityControl = contextMenuEnabled && triggerMode !== "right-click";
 
   const activeDecorationRenderer = activeDecorationPreset.renderer ?? undefined;
 
-  const handleSelectionChange = useCallback(
-    (nextSelectedPaths: readonly string[]) => {
-      const desiredSelectedPaths = desiredSelectedPathsRef.current;
-      if (isRestoringSelectionRef.current) {
-        if (areSamePathLists(nextSelectedPaths, desiredSelectedPaths)) {
-          isRestoringSelectionRef.current = false;
-          setSelectedPaths(nextSelectedPaths);
-        }
-        return;
+  const handleSelectionChange = useCallback((nextSelectedPaths: readonly string[]) => {
+    const desiredSelectedPaths = desiredSelectedPathsRef.current;
+    if (isRestoringSelectionRef.current) {
+      if (areSamePathLists(nextSelectedPaths, desiredSelectedPaths)) {
+        isRestoringSelectionRef.current = false;
+        setSelectedPaths(nextSelectedPaths);
       }
+      return;
+    }
 
-      desiredSelectedPathsRef.current = nextSelectedPaths;
-      setSelectedPaths(nextSelectedPaths);
-    },
-    []
-  );
+    desiredSelectedPathsRef.current = nextSelectedPaths;
+    setSelectedPaths(nextSelectedPaths);
+  }, []);
 
   const handleMenuAction = useCallback((label: string) => {
     setLastMenuInteraction(label);
@@ -387,8 +337,7 @@ export function ItemCustomizationDemoClient({
       composition: {
         contextMenu: contextMenuEnabled
           ? {
-              buttonVisibility:
-                triggerMode === 'right-click' ? undefined : buttonVisibility,
+              buttonVisibility: triggerMode === "right-click" ? undefined : buttonVisibility,
               enabled: true,
               onClose: () => {
                 if (contextMenuSlotRef.current != null) {
@@ -401,11 +350,8 @@ export function ItemCustomizationDemoClient({
               onOpen: (item) => {
                 setLastMenuInteraction(`Opened menu for ${item.path}`);
               },
-              render: (
-                item: ContextMenuItem,
-                context: ContextMenuOpenContext
-              ) => {
-                contextMenuSlotRef.current ??= document.createElement('div');
+              render: (item: ContextMenuItem, context: ContextMenuOpenContext) => {
+                contextMenuSlotRef.current ??= document.createElement("div");
                 renderItemCustomizationContextMenuSlot({
                   context,
                   item,
@@ -419,7 +365,7 @@ export function ItemCustomizationDemoClient({
             }
           : { enabled: false },
       },
-      id: 'trees-dev-item-customization',
+      id: "trees-dev-item-customization",
       onSelectionChange: handleSelectionChange,
       preparedInput,
       renderRowDecoration: activeDecorationRenderer,
@@ -437,25 +383,24 @@ export function ItemCustomizationDemoClient({
 
   const selectedPathSummary =
     selectedPaths.length === 0
-      ? 'None yet. Click a file row to exercise the selected-file icon preset.'
-      : selectedPaths.join(', ');
+      ? "None yet. Click a file row to exercise the selected-file icon preset."
+      : selectedPaths.join(", ");
   const treeMountKey = [
-    contextMenuEnabled ? 'context-menu-on' : 'context-menu-off',
+    contextMenuEnabled ? "context-menu-on" : "context-menu-off",
     triggerMode,
     buttonVisibility,
-    gitStatusEnabled ? gitStatusPresetId : 'git-status-off',
+    gitStatusEnabled ? gitStatusPresetId : "git-status-off",
     decorationPresetId,
-  ].join(':');
+  ].join(":");
 
   return (
     <div className="space-y-6">
       <header className="space-y-2">
         <h1 className="text-2xl font-bold">Item Customization</h1>
         <p className="text-muted-foreground max-w-3xl text-sm leading-6">
-          This route fixes the content base to the demo-small workload so the
-          same {fileCountLabel} can be viewed through different context-menu,
-          decoration, and git-status combinations. Toggle the controls to see
-          how the custom decoration lane, built-in git lane, and action
+          This route fixes the content base to the demo-small workload so the same {fileCountLabel}{" "}
+          can be viewed through different context-menu, decoration, and git-status combinations.
+          Toggle the controls to see how the custom decoration lane, built-in git lane, and action
           affordance coexist on realistic rows.
         </p>
       </header>
@@ -465,8 +410,8 @@ export function ItemCustomizationDemoClient({
           <div className="space-y-1">
             <h2 className="text-sm font-bold">Controls</h2>
             <p className="text-muted-foreground text-xs leading-5">
-              State stays local to this page. Change the controls, then click
-              rows to compare the combined right-side lanes.
+              State stays local to this page. Change the controls, then click rows to compare the
+              combined right-side lanes.
             </p>
           </div>
 
@@ -494,11 +439,7 @@ export function ItemCustomizationDemoClient({
                 disabled={!contextMenuEnabled}
                 onChange={(event) => {
                   const value = event.currentTarget.value;
-                  if (
-                    value === 'both' ||
-                    value === 'button' ||
-                    value === 'right-click'
-                  ) {
+                  if (value === "both" || value === "button" || value === "right-click") {
                     setTriggerMode(value);
                   }
                 }}
@@ -517,7 +458,7 @@ export function ItemCustomizationDemoClient({
                 disabled={!showButtonVisibilityControl}
                 onChange={(event) => {
                   const value = event.currentTarget.value;
-                  if (value === 'always' || value === 'when-needed') {
+                  if (value === "always" || value === "when-needed") {
                     setButtonVisibility(value);
                   }
                 }}
@@ -527,9 +468,9 @@ export function ItemCustomizationDemoClient({
               </select>
             </label>
             <p className="text-muted-foreground text-xs leading-5">
-              {triggerMode === 'right-click'
-                ? 'Right-click mode removes the action lane, so button visibility is disabled.'
-                : 'Button-capable modes keep the action lane mounted and let you compare decorative versus hover-only affordances.'}
+              {triggerMode === "right-click"
+                ? "Right-click mode removes the action lane, so button visibility is disabled."
+                : "Button-capable modes keep the action lane mounted and let you compare decorative versus hover-only affordances."}
             </p>
           </div>
 
@@ -545,8 +486,7 @@ export function ItemCustomizationDemoClient({
                 value={decorationPresetId}
                 onChange={(event) => {
                   setDecorationPresetId(
-                    event.currentTarget
-                      .value as ItemCustomizationDecorationPresetId
+                    event.currentTarget.value as ItemCustomizationDecorationPresetId,
                   );
                 }}
               >
@@ -588,9 +528,7 @@ export function ItemCustomizationDemoClient({
                 value={gitStatusPresetId}
                 disabled={!gitStatusEnabled}
                 onChange={(event) => {
-                  setGitStatusPresetId(
-                    event.currentTarget.value as TreesDevGitStatusPresetId
-                  );
+                  setGitStatusPresetId(event.currentTarget.value as TreesDevGitStatusPresetId);
                 }}
               >
                 {TREES_DEV_GIT_STATUS_PRESETS.map((preset) => (
@@ -610,13 +548,11 @@ export function ItemCustomizationDemoClient({
 
           <div className="space-y-2 rounded-md border border-dashed border-[var(--color-border)] p-3 text-xs leading-5">
             <p>
-              <strong>Selected rows:</strong>{' '}
-              <span data-test-item-customization-selected-paths="true">
-                {selectedPathSummary}
-              </span>
+              <strong>Selected rows:</strong>{" "}
+              <span data-test-item-customization-selected-paths="true">{selectedPathSummary}</span>
             </p>
             <p>
-              <strong>Last menu interaction:</strong>{' '}
+              <strong>Last menu interaction:</strong>{" "}
               <span data-test-item-customization-last-menu-action="true">
                 {lastMenuInteraction}
               </span>
@@ -630,12 +566,10 @@ export function ItemCustomizationDemoClient({
           footer={
             <div className="text-muted-foreground mt-3 space-y-1 text-xs leading-5">
               <p>
-                Active decoration preset:{' '}
-                <strong>{activeDecorationPreset.label}</strong>
+                Active decoration preset: <strong>{activeDecorationPreset.label}</strong>
               </p>
               <p>
-                Active git-status preset:{' '}
-                <strong>{activeGitStatusPreset.label}</strong>
+                Active git-status preset: <strong>{activeGitStatusPreset.label}</strong>
               </p>
             </div>
           }

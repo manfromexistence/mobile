@@ -1,6 +1,6 @@
-import { Schema } from "effect"
+import { Schema } from "effect";
 
-export const REDACTED = "[REDACTED]"
+export const REDACTED = "[REDACTED]";
 
 const DEFAULT_REDACT_HEADERS = [
   "authorization",
@@ -10,7 +10,7 @@ const DEFAULT_REDACT_HEADERS = [
   "x-api-key",
   "x-amz-security-token",
   "x-goog-api-key",
-]
+];
 
 const DEFAULT_REDACT_QUERY = [
   "access_token",
@@ -25,7 +25,7 @@ const DEFAULT_REDACT_QUERY = [
   "x-amz-credential",
   "x-amz-security-token",
   "x-amz-signature",
-]
+];
 
 const SECRET_PATTERNS: ReadonlyArray<{ readonly label: string; readonly pattern: RegExp }> = [
   { label: "bearer token", pattern: /\bBearer\s+[A-Za-z0-9._~+/=-]{16,}\b/i },
@@ -35,76 +35,82 @@ const SECRET_PATTERNS: ReadonlyArray<{ readonly label: string; readonly pattern:
   { label: "AWS access key", pattern: /\b(?:AKIA|ASIA)[0-9A-Z]{16}\b/ },
   { label: "GitHub token", pattern: /\bgh[pousr]_[A-Za-z0-9_]{20,}\b/ },
   { label: "private key", pattern: /-----BEGIN [A-Z ]*PRIVATE KEY-----/ },
-]
+];
 
-const ENV_SECRET_NAMES = /(?:API|AUTH|BEARER|CREDENTIAL|KEY|PASSWORD|SECRET|TOKEN)/i
-const SAFE_ENV_VALUES = new Set(["fixture", "test", "test-key"])
+const ENV_SECRET_NAMES = /(?:API|AUTH|BEARER|CREDENTIAL|KEY|PASSWORD|SECRET|TOKEN)/i;
+const SAFE_ENV_VALUES = new Set(["fixture", "test", "test-key"]);
 
 const envSecrets = () =>
   Object.entries(process.env).flatMap(([name, value]) => {
-    if (!value) return []
-    if (!ENV_SECRET_NAMES.test(name)) return []
-    if (value.length < 12) return []
-    if (SAFE_ENV_VALUES.has(value.toLowerCase())) return []
-    return [{ name, value }]
-  })
+    if (!value) return [];
+    if (!ENV_SECRET_NAMES.test(name)) return [];
+    if (value.length < 12) return [];
+    if (SAFE_ENV_VALUES.has(value.toLowerCase())) return [];
+    return [{ name, value }];
+  });
 
-const pathFor = (base: string, key: string) => (base ? `${base}.${key}` : key)
+const pathFor = (base: string, key: string) => (base ? `${base}.${key}` : key);
 
-const stringEntries = (value: unknown, base = ""): ReadonlyArray<{ readonly path: string; readonly value: string }> => {
-  if (typeof value === "string") return [{ path: base, value }]
-  if (Array.isArray(value)) return value.flatMap((item, index) => stringEntries(item, `${base}[${index}]`))
+const stringEntries = (
+  value: unknown,
+  base = "",
+): ReadonlyArray<{ readonly path: string; readonly value: string }> => {
+  if (typeof value === "string") return [{ path: base, value }];
+  if (Array.isArray(value))
+    return value.flatMap((item, index) => stringEntries(item, `${base}[${index}]`));
   if (value && typeof value === "object") {
-    return Object.entries(value).flatMap(([key, child]) => stringEntries(child, pathFor(base, key)))
+    return Object.entries(value).flatMap(([key, child]) =>
+      stringEntries(child, pathFor(base, key)),
+    );
   }
-  return []
-}
+  return [];
+};
 
 const redactionSet = (values: ReadonlyArray<string> | undefined, defaults: ReadonlyArray<string>) =>
-  new Set([...defaults, ...(values ?? [])].map((value) => value.toLowerCase()))
+  new Set([...defaults, ...(values ?? [])].map((value) => value.toLowerCase()));
 
-export type UrlRedactor = (url: string) => string
+export type UrlRedactor = (url: string) => string;
 
 export const redactUrl = (
   raw: string,
   query: ReadonlyArray<string> = DEFAULT_REDACT_QUERY,
   urlRedactor?: UrlRedactor,
 ) => {
-  if (!URL.canParse(raw)) return urlRedactor?.(raw) ?? raw
-  const url = new URL(raw)
-  if (url.username) url.username = REDACTED
-  if (url.password) url.password = REDACTED
-  const redacted = redactionSet(query, DEFAULT_REDACT_QUERY)
+  if (!URL.canParse(raw)) return urlRedactor?.(raw) ?? raw;
+  const url = new URL(raw);
+  if (url.username) url.username = REDACTED;
+  if (url.password) url.password = REDACTED;
+  const redacted = redactionSet(query, DEFAULT_REDACT_QUERY);
   for (const key of url.searchParams.keys()) {
-    if (redacted.has(key.toLowerCase())) url.searchParams.set(key, REDACTED)
+    if (redacted.has(key.toLowerCase())) url.searchParams.set(key, REDACTED);
   }
-  return urlRedactor?.(url.toString()) ?? url.toString()
-}
+  return urlRedactor?.(url.toString()) ?? url.toString();
+};
 
 export const redactHeaders = (
   headers: Record<string, string>,
   allow: ReadonlyArray<string>,
   redact: ReadonlyArray<string> = DEFAULT_REDACT_HEADERS,
 ) => {
-  const allowed = new Set(allow.map((name) => name.toLowerCase()))
-  const redacted = redactionSet(redact, DEFAULT_REDACT_HEADERS)
+  const allowed = new Set(allow.map((name) => name.toLowerCase()));
+  const redacted = redactionSet(redact, DEFAULT_REDACT_HEADERS);
   return Object.fromEntries(
     Object.entries(headers)
       .map(([name, value]) => [name.toLowerCase(), value] as const)
       .filter(([name]) => allowed.has(name))
       .map(([name, value]) => [name, redacted.has(name) ? REDACTED : value] as const)
       .toSorted(([a], [b]) => a.localeCompare(b)),
-  )
-}
+  );
+};
 
 export const SecretFindingSchema = Schema.Struct({
   path: Schema.String,
   reason: Schema.String,
-})
-export type SecretFinding = Schema.Schema.Type<typeof SecretFindingSchema>
+});
+export type SecretFinding = Schema.Schema.Type<typeof SecretFindingSchema>;
 
 export const secretFindings = (value: unknown): ReadonlyArray<SecretFinding> => {
-  const environment = envSecrets()
+  const environment = envSecrets();
   return stringEntries(value).flatMap((entry) => [
     ...SECRET_PATTERNS.filter((item) => item.pattern.test(entry.value)).map((item) => ({
       path: entry.path,
@@ -113,5 +119,5 @@ export const secretFindings = (value: unknown): ReadonlyArray<SecretFinding> => 
     ...environment
       .filter((item) => entry.value.includes(item.value))
       .map((item) => ({ path: entry.path, reason: `environment secret ${item.name}` })),
-  ])
-}
+  ]);
+};

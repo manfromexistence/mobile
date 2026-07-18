@@ -1,16 +1,16 @@
-import { afterEach, describe, expect, test } from "bun:test"
-import path from "path"
-import { Server } from "../../src/server/server"
-import { Global } from "@opencode-ai/core/global"
-import { resetDatabase } from "../fixture/db"
-import { disposeAllInstances, tmpdir } from "../fixture/fixture"
-import { Effect } from "effect"
-import { pollWithTimeout } from "../lib/effect"
+import { afterEach, describe, expect, test } from "bun:test";
+import path from "path";
+import { Server } from "../../src/server/server";
+import { Global } from "@opencode-ai/core/global";
+import { resetDatabase } from "../fixture/db";
+import { disposeAllInstances, tmpdir } from "../fixture/fixture";
+import { Effect } from "effect";
+import { pollWithTimeout } from "../lib/effect";
 
 afterEach(async () => {
-  await disposeAllInstances()
-  await resetDatabase()
-})
+  await disposeAllInstances();
+  await resetDatabase();
+});
 
 describe("reference HttpApi", () => {
   test("lists usable references resolved in the server workspace", async () => {
@@ -24,22 +24,22 @@ describe("reference HttpApi", () => {
           bad: "not-a-repo",
         },
       },
-    })
+    });
 
     const body = await Effect.runPromise(
       pollWithTimeout(
         Effect.promise(async () => {
           const response = await Server.Default().app.request("/api/reference", {
             headers: { "x-opencode-directory": tmp.path },
-          })
-          expect(response.status).toBe(200)
-          const body = await response.json()
-          return body.data.length === 0 ? undefined : body
+          });
+          expect(response.status).toBe(200);
+          const body = await response.json();
+          return body.data.length === 0 ? undefined : body;
         }),
         "references were not loaded",
       ),
-    )
-    expect(body).toMatchObject({ location: { directory: tmp.path } })
+    );
+    expect(body).toMatchObject({ location: { directory: tmp.path } });
     expect(body.data).toEqual([
       {
         name: "docs",
@@ -58,6 +58,6 @@ describe("reference HttpApi", () => {
           branch: "main",
         },
       },
-    ])
-  })
-})
+    ]);
+  });
+});

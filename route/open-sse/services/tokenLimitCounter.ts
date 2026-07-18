@@ -61,21 +61,21 @@ export function seedWindowUsageFromHistory(limit: TokenLimit, now = Date.now()):
     row = db
       .prepare(
         `SELECT ${tokenSum} FROM usage_history
-         WHERE api_key_id = ? AND model = ? AND timestamp >= ?`
+         WHERE api_key_id = ? AND model = ? AND timestamp >= ?`,
       )
       .get(limit.apiKeyId, limit.scopeValue, lowerBound);
   } else if (limit.scopeType === "provider") {
     row = db
       .prepare(
         `SELECT ${tokenSum} FROM usage_history
-         WHERE api_key_id = ? AND provider = ? AND timestamp >= ?`
+         WHERE api_key_id = ? AND provider = ? AND timestamp >= ?`,
       )
       .get(limit.apiKeyId, limit.scopeValue, lowerBound);
   } else {
     row = db
       .prepare(
         `SELECT ${tokenSum} FROM usage_history
-         WHERE api_key_id = ? AND timestamp >= ?`
+         WHERE api_key_id = ? AND timestamp >= ?`,
       )
       .get(limit.apiKeyId, lowerBound);
   }
@@ -95,7 +95,7 @@ export function seedWindowUsageFromHistory(limit: TokenLimit, now = Date.now()):
 export function getCurrentWindowUsage(
   limit: TokenLimit,
   now = Date.now(),
-  forceFresh = false
+  forceFresh = false,
 ): number {
   const { windowStart } = resetWindowIfElapsed(limit, now);
   const cached = cache.get(limit.id);
@@ -193,7 +193,7 @@ export function checkTokenLimits(
   apiKeyId: string,
   provider = "",
   model = "",
-  now = Date.now()
+  now = Date.now(),
 ): TokenLimitBreach | null {
   if (!apiKeyId) return null;
 
@@ -258,7 +258,7 @@ export function recordTokenUsage(
   apiKeyId: string,
   provider: string,
   model: string,
-  tokens: number
+  tokens: number,
 ): void {
   if (!apiKeyId) return;
   const delta = Number.isFinite(tokens) && tokens > 0 ? Math.floor(tokens) : 0;
@@ -282,7 +282,7 @@ export function recordTokenUsage(
 
           const currentRow = db
             .prepare(
-              "SELECT tokens_used FROM api_key_token_counters WHERE limit_id = ? AND window_start = ?"
+              "SELECT tokens_used FROM api_key_token_counters WHERE limit_id = ? AND window_start = ?",
             )
             .get(limit.id, windowStart) as { tokens_used?: number } | undefined;
 
@@ -292,7 +292,7 @@ export function recordTokenUsage(
               .prepare(
                 `SELECT window_start, tokens_used FROM api_key_token_counters
                  WHERE limit_id = ? AND window_start < ?
-                 ORDER BY window_start DESC LIMIT 1`
+                 ORDER BY window_start DESC LIMIT 1`,
               )
               .get(limit.id, windowStart) as
               | { window_start?: string; tokens_used?: number }

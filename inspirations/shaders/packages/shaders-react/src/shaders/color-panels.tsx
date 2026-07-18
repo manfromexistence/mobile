@@ -1,6 +1,6 @@
-import { memo } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '../shader-mount.js';
-import { colorPropsAreEqual } from '../color-props-are-equal.js';
+import { memo } from "react";
+import { ShaderMount, type ShaderComponentProps } from "../shader-mount.js";
+import { colorPropsAreEqual } from "../color-props-are-equal.js";
 import {
   getShaderColorFromString,
   colorPanelsFragmentShader,
@@ -9,20 +9,20 @@ import {
   type ColorPanelsParams,
   type ShaderPreset,
   defaultObjectSizing,
-} from '@paper-design/shaders';
+} from "@paper-design/shaders";
 
 export interface ColorPanelsProps extends ShaderComponentProps, ColorPanelsParams {}
 
 type ColorPanelsPreset = ShaderPreset<ColorPanelsParams>;
 
 export const defaultPreset: ColorPanelsPreset = {
-  name: 'Default',
+  name: "Default",
   params: {
     ...defaultObjectSizing,
     speed: 0.5,
     frame: 0,
-    colors: ['#ff9d00', '#fd4f30', '#809bff', '#6d2eff', '#333aff', '#f15cff', '#ffd557'],
-    colorBack: '#000000',
+    colors: ["#ff9d00", "#fd4f30", "#809bff", "#6d2eff", "#333aff", "#f15cff", "#ffd557"],
+    colorBack: "#000000",
     angle1: 0,
     angle2: 0,
     length: 1.1,
@@ -37,14 +37,14 @@ export const defaultPreset: ColorPanelsPreset = {
 };
 
 export const glassPreset: ColorPanelsPreset = {
-  name: 'Glass',
+  name: "Glass",
   params: {
     ...defaultObjectSizing,
     rotation: 112,
     speed: 1,
     frame: 0,
-    colors: ['#00cfff', '#ff2d55', '#34c759', '#af52de'],
-    colorBack: '#ffffff00',
+    colors: ["#00cfff", "#ff2d55", "#34c759", "#af52de"],
+    colorBack: "#ffffff00",
     angle1: 0.3,
     angle2: 0.3,
     length: 1,
@@ -58,13 +58,13 @@ export const glassPreset: ColorPanelsPreset = {
 };
 
 export const gradientPreset: ColorPanelsPreset = {
-  name: 'Gradient',
+  name: "Gradient",
   params: {
     ...defaultObjectSizing,
     speed: 0.5,
     frame: 0,
-    colors: ['#f2ff00', '#00000000', '#00000000', '#5a0283', '#005eff'],
-    colorBack: '#8ffff2',
+    colors: ["#f2ff00", "#00000000", "#00000000", "#5a0283", "#005eff"],
+    colorBack: "#8ffff2",
     angle1: 0.4,
     angle2: 0.4,
     length: 3,
@@ -81,13 +81,13 @@ export const gradientPreset: ColorPanelsPreset = {
 };
 
 export const openingPreset: ColorPanelsPreset = {
-  name: 'Opening',
+  name: "Opening",
   params: {
     ...defaultObjectSizing,
     speed: 2.0,
     frame: 0,
-    colors: ['#00ffff'],
-    colorBack: '#570044',
+    colors: ["#00ffff"],
+    colorBack: "#570044",
     angle1: -1.0,
     angle2: -1.0,
     length: 0.52,
@@ -104,7 +104,12 @@ export const openingPreset: ColorPanelsPreset = {
   },
 };
 
-export const colorPanelsPresets: ColorPanelsPreset[] = [defaultPreset, glassPreset, gradientPreset, openingPreset];
+export const colorPanelsPresets: ColorPanelsPreset[] = [
+  defaultPreset,
+  glassPreset,
+  gradientPreset,
+  openingPreset,
+];
 
 export const ColorPanels: React.FC<ColorPanelsProps> = memo(function ColorPanelsImpl({
   // Own props

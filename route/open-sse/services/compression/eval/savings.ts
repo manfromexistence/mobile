@@ -16,7 +16,7 @@ export interface SavingsResult {
 export function computeSavings(
   fullBody: Record<string, unknown>,
   compressedBody: Record<string, unknown>,
-  costPerKTokenIn?: number
+  costPerKTokenIn?: number,
 ): SavingsResult {
   const tokensBefore = estimateCompressionTokens(fullBody);
   const tokensAfter = estimateCompressionTokens(compressedBody);

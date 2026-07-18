@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { AccordionV2 } from "./accordion-v2"
+import { AccordionV2 } from "./accordion-v2";
 
 const docs = `### Overview
 Compound accordion built on Kobalte's \`Accordion\` primitive. The trigger automatically renders a chevron that rotates open.
@@ -15,7 +15,7 @@ Compound accordion built on Kobalte's \`Accordion\` primitive. The trigger autom
 - Single-select by default (\`collapsible\` allows closing the active item). Use \`multiple\` to let several items open at once.
 - Open/closed state is reflected on items, triggers, and content via \`data-expanded\` / \`data-closed\`.
 - Content height animates using Kobalte's \`--kb-collapsible-content-height\` variable.
-`
+`;
 
 export default {
   title: "UI V2/Accordion",
@@ -30,9 +30,13 @@ export default {
       },
     },
   },
-}
+};
 
-const frame = { width: "346px", "font-family": "var(--v2-font-family-sans)", "font-size": "13px" } as const
+const frame = {
+  width: "346px",
+  "font-family": "var(--v2-font-family-sans)",
+  "font-size": "13px",
+} as const;
 
 export const Basic = {
   render: () => (
@@ -56,12 +60,14 @@ export const Basic = {
           <AccordionV2.Header>
             <AccordionV2.Trigger>Is it animated?</AccordionV2.Trigger>
           </AccordionV2.Header>
-          <AccordionV2.Content>Yes. Height animates via Kobalte's collapsible height variable.</AccordionV2.Content>
+          <AccordionV2.Content>
+            Yes. Height animates via Kobalte's collapsible height variable.
+          </AccordionV2.Content>
         </AccordionV2.Item>
       </AccordionV2>
     </div>
   ),
-}
+};
 
 export const Multiple = {
   render: () => (
@@ -88,7 +94,7 @@ export const Multiple = {
       </AccordionV2>
     </div>
   ),
-}
+};
 
 export const Disabled = {
   render: () => (
@@ -115,7 +121,7 @@ export const Disabled = {
       </AccordionV2>
     </div>
   ),
-}
+};
 
 export const LongContent = {
   render: () => (
@@ -128,8 +134,8 @@ export const LongContent = {
           <AccordionV2.Content>
             <div style={{ display: "grid", gap: "8px" }}>
               <p style={{ margin: 0 }}>
-                Accordions are useful for compressing dense content into scannable sections. They preserve heading
-                semantics and announce open/closed state to screen readers.
+                Accordions are useful for compressing dense content into scannable sections. They
+                preserve heading semantics and announce open/closed state to screen readers.
               </p>
               <p style={{ margin: 0 }}>
                 The body can hold arbitrary content — paragraphs, lists, even nested components.
@@ -151,7 +157,7 @@ export const LongContent = {
       </AccordionV2>
     </div>
   ),
-}
+};
 
 export const NoChevron = {
   render: () => (
@@ -174,4 +180,4 @@ export const NoChevron = {
       </AccordionV2>
     </div>
   ),
-}
+};

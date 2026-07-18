@@ -69,7 +69,7 @@ export function useResizablePanels(): [ResizablePanelsState, ResizablePanelsActi
       window.addEventListener("mousemove", onMouseMoveRef.current);
       window.addEventListener("mouseup", onMouseUpRef.current);
     },
-    [collapsed, listWidth]
+    [collapsed, listWidth],
   );
 
   const toggleCollapse = useCallback(() => {
@@ -78,5 +78,8 @@ export function useResizablePanels(): [ResizablePanelsState, ResizablePanelsActi
 
   const effectiveWidth = collapsed ? COLLAPSED_RAIL : listWidth;
 
-  return [{ listWidth: effectiveWidth, collapsed }, { startDrag, toggleCollapse }];
+  return [
+    { listWidth: effectiveWidth, collapsed },
+    { startDrag, toggleCollapse },
+  ];
 }

@@ -44,20 +44,17 @@ const hookState = {
   error: null as string | null,
 };
 
-vi.mock(
-  "../../../../../src/app/(dashboard)/dashboard/batch/components/useBatchActions",
-  () => ({
-    useBatchActions: vi.fn(() => ({
-      cancel: mockCancel,
-      retry: mockRetry,
-      downloadHrefOutput: mockDownloadHrefOutput,
-      downloadHrefErrors: mockDownloadHrefErrors,
-      cancelling: hookState.cancelling,
-      retrying: hookState.retrying,
-      error: hookState.error,
-    })),
-  }),
-);
+vi.mock("../../../../../src/app/(dashboard)/dashboard/batch/components/useBatchActions", () => ({
+  useBatchActions: vi.fn(() => ({
+    cancel: mockCancel,
+    retry: mockRetry,
+    downloadHrefOutput: mockDownloadHrefOutput,
+    downloadHrefErrors: mockDownloadHrefErrors,
+    cancelling: hookState.cancelling,
+    retrying: hookState.retrying,
+    error: hookState.error,
+  })),
+}));
 
 // ── Import after mocks ─────────────────────────────────────────────────────────
 
@@ -102,9 +99,27 @@ function makeBatch(overrides: Partial<BatchLike> = {}): BatchLike {
 }
 
 const FILES: FileLike[] = [
-  { id: "file_input_1", filename: "input.jsonl", bytes: 10240, purpose: "batch", createdAt: 1700000000 },
-  { id: "file_output_1", filename: "output.jsonl", bytes: 20480, purpose: "batch_output", createdAt: 1700000100 },
-  { id: "file_error_1", filename: "errors.jsonl", bytes: 512, purpose: "batch_output", createdAt: 1700000100 },
+  {
+    id: "file_input_1",
+    filename: "input.jsonl",
+    bytes: 10240,
+    purpose: "batch",
+    createdAt: 1700000000,
+  },
+  {
+    id: "file_output_1",
+    filename: "output.jsonl",
+    bytes: 20480,
+    purpose: "batch_output",
+    createdAt: 1700000100,
+  },
+  {
+    id: "file_error_1",
+    filename: "errors.jsonl",
+    bytes: 512,
+    purpose: "batch_output",
+    createdAt: 1700000100,
+  },
 ];
 
 // ── Render helpers ────────────────────────────────────────────────────────────

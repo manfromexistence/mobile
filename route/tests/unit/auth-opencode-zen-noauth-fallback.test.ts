@@ -32,7 +32,7 @@ test("#2962 opencode-zen with no connection falls back to anonymous no-auth cred
   assert.equal(
     (creds as { connectionId?: string }).connectionId,
     "noauth",
-    "should be synthetic no-auth credentials"
+    "should be synthetic no-auth credentials",
   );
   assert.equal((creds as { apiKey?: unknown }).apiKey, null, "anonymous access carries no api key");
 });

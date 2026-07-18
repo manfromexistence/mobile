@@ -46,7 +46,7 @@ function translate(mode: "native" | "text" | "context") {
     { model: "gemini-2.5-flash", messages: MESSAGES, tools: TOOLS, stream: false },
     false,
     null,
-    { signaturelessToolCallMode: mode }
+    { signaturelessToolCallMode: mode },
   );
 }
 
@@ -57,24 +57,24 @@ test('standard Gemini "text" mode: signature-less tool call/response stay as tex
   assert.equal(
     allParts.some((p) => p.functionCall),
     false,
-    "no native functionCall on the text-mode standard-Gemini path"
+    "no native functionCall on the text-mode standard-Gemini path",
   );
   assert.equal(
     allParts.some((p) => p.functionResponse),
     false,
-    "no native functionResponse on the text-mode standard-Gemini path"
+    "no native functionResponse on the text-mode standard-Gemini path",
   );
   assert.equal(
     allParts.some((p) => p.thoughtSignature === "skip_thought_signature_validator"),
     false,
-    "the bypass sentinel must never be injected on the standard-Gemini path"
+    "the bypass sentinel must never be injected on the standard-Gemini path",
   );
 });
 
 test('standard Gemini "native" mode: native functionCall with no fake signature', () => {
   const result = translate("native");
   const modelTurn = (result.contents as GContent[]).find(
-    (c) => c.role === "model" && (c.parts ?? []).some((p) => p.functionCall)
+    (c) => c.role === "model" && (c.parts ?? []).some((p) => p.functionCall),
   );
   assert.ok(modelTurn, "native mode emits a native functionCall");
   const fc = (modelTurn.parts ?? []).find((p) => p.functionCall);

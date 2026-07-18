@@ -1,10 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import {
-  BudgetExceededError,
-  selectProvider,
-} from "../../open-sse/services/autoCombo/engine.ts";
+import { BudgetExceededError, selectProvider } from "../../open-sse/services/autoCombo/engine.ts";
 import {
   parseRequestBudgetFallback,
   resolveRequestAutoControls,
@@ -78,9 +75,9 @@ test("selectProvider throws BudgetExceededError when budgetFallback='strict' and
       selectProvider(
         { ...baseConfig, budgetCap: 0.001, budgetFallback: "strict" },
         overBudgetCandidates,
-        "default"
+        "default",
       ),
-    BudgetExceededError
+    BudgetExceededError,
   );
 });
 
@@ -89,7 +86,7 @@ test("BudgetExceededError message reports the cap and the cheapest candidate's c
     selectProvider(
       { ...baseConfig, budgetCap: 0.001, budgetFallback: "strict" },
       overBudgetCandidates,
-      "default"
+      "default",
     );
     assert.fail("expected selectProvider to throw");
   } catch (err) {
@@ -103,13 +100,17 @@ test("selectProvider still falls back to cheapest when budgetFallback is 'cheape
   const result = selectProvider(
     { ...baseConfig, budgetCap: 0.001, budgetFallback: "cheapest" },
     overBudgetCandidates,
-    "default"
+    "default",
   );
   assert.equal(result.provider, "cheap");
 });
 
 test("selectProvider defaults to cheapest fallback when budgetFallback is unset (backward compatible)", () => {
-  const result = selectProvider({ ...baseConfig, budgetCap: 0.001 }, overBudgetCandidates, "default");
+  const result = selectProvider(
+    { ...baseConfig, budgetCap: 0.001 },
+    overBudgetCandidates,
+    "default",
+  );
   assert.equal(result.provider, "cheap");
 });
 
@@ -117,7 +118,7 @@ test("selectProvider with strict fallback still picks a within-budget candidate 
   const result = selectProvider(
     { ...baseConfig, budgetCap: 1, budgetFallback: "strict" },
     overBudgetCandidates,
-    "default"
+    "default",
   );
   assert.equal(result.provider, "cheap");
 });

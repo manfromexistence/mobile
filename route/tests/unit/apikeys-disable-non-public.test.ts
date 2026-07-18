@@ -67,7 +67,7 @@ test("disableNonPublicModels: defaults to false when not set on a new key", asyn
   assert.equal(
     metadata.disableNonPublicModels,
     false,
-    "disableNonPublicModels should default to false"
+    "disableNonPublicModels should default to false",
   );
 });
 
@@ -93,14 +93,11 @@ test("3 columns coexist: disableNonPublicModels, allowedQuotas, streamDefaultMod
   assert.deepEqual(
     metadata.allowedQuotas,
     ["pool-alpha", "pool-beta"],
-    "allowedQuotas should match"
+    "allowedQuotas should match",
   );
 
   // Verify streamDefaultMode is still present
-  assert.ok(
-    metadata.streamDefaultMode !== undefined,
-    "streamDefaultMode should be present"
-  );
+  assert.ok(metadata.streamDefaultMode !== undefined, "streamDefaultMode should be present");
   assert.equal(metadata.streamDefaultMode, "json", "streamDefaultMode should be 'json'");
 });
 

@@ -12,8 +12,9 @@ process.env.DATA_DIR = TEST_DATA_DIR;
 
 const dbCore = await import("../../src/lib/db/core.ts");
 const { handleComboChat } = await import("../../open-sse/services/combo.ts");
-const { clearAllStickyBindings } =
-  await import("../../open-sse/services/combo/sessionStickiness.ts");
+const { clearAllStickyBindings } = await import(
+  "../../open-sse/services/combo/sessionStickiness.ts"
+);
 const { invalidateCodexQuotaCache, registerCodexConnection, registerCodexQuotaFetcher } =
   await import("../../open-sse/services/codexQuotaFetcher.ts");
 const { registerQuotaFetcher } = await import("../../open-sse/services/quotaPreflight.ts");
@@ -145,7 +146,7 @@ function installCodexQuotaMock(quotasByToken: Record<string, unknown>) {
 function resetAwareCombo(
   name: string,
   connections: Array<{ id: string; token: string }>,
-  config: Record<string, unknown> = {}
+  config: Record<string, unknown> = {},
 ) {
   registerCodexQuotaFetcher();
 
@@ -171,7 +172,7 @@ function resetAwareCombo(
 
 async function selectedConnectionFor(
   combo: Record<string, unknown>,
-  options: { apiKeyAllowedConnections?: string[] | null } = {}
+  options: { apiKeyAllowedConnections?: string[] | null } = {},
 ) {
   // Isolate strategy/round-robin assertions from session stickiness (#5): this helper
   // reuses the same body, so a sticky binding from a prior call would pin the connection
@@ -191,7 +192,7 @@ async function selectedConnectionFor(
     handleSingleModel: async (
       _body: unknown,
       modelStr: string,
-      target?: { connectionId?: string | null; allowedConnectionIds?: string[] | null }
+      target?: { connectionId?: string | null; allowedConnectionIds?: string[] | null },
     ) => {
       calls.push(target?.connectionId ?? null);
       return okResponse(modelStr);
@@ -252,7 +253,7 @@ test("auto strategy handles null and empty prompt edge cases without throwing", 
       model: combo.name,
       messages: [{ role: "user", content: null }],
     }),
-    "openai/gpt-4"
+    "openai/gpt-4",
   );
   assert.equal(await selectedModelFor(combo, { model: combo.name, messages: [] }), "openai/gpt-4");
 });
@@ -274,7 +275,7 @@ test("reset-aware strategy prefers lower weekly remaining quota when reset is mu
         used7d: 20,
         reset7dSeconds: 5 * 24 * 3600,
       }),
-    })
+    }),
   );
 
   const combo = resetAwareCombo(`reset-aware-soon-${randomUUID()}`, [soon, later]);
@@ -316,7 +317,7 @@ test("reset-aware strategy aggressively spends quota that resets soon", async (t
         used7d: 84,
         reset7dSeconds: 1.5 * 3600,
       }),
-    })
+    }),
   );
 
   const combo = resetAwareCombo(`reset-aware-pressure-${randomUUID()}`, [
@@ -353,7 +354,7 @@ test("reset-aware strategy prioritizes soon-reset weekly quota over empty later 
         used7d: 0,
         reset7dSeconds: 7 * 24 * 3600,
       }),
-    })
+    }),
   );
 
   const combo = resetAwareCombo(`reset-aware-weekly-pressure-${randomUUID()}`, [
@@ -387,7 +388,7 @@ test("reset-aware strategy keeps 5h reset pressure softer than weekly pressure",
         used7d: 0,
         reset7dSeconds: 7 * 24 * 3600,
       }),
-    })
+    }),
   );
 
   const combo = resetAwareCombo(`reset-aware-session-pressure-${randomUUID()}`, [
@@ -421,7 +422,7 @@ test("reset-aware strategy avoids accounts near 5h exhaustion", async (t) => {
         used7d: 50,
         reset7dSeconds: 4 * 24 * 3600,
       }),
-    })
+    }),
   );
 
   const combo = resetAwareCombo(`reset-aware-guard-${randomUUID()}`, [exhausted5h, healthy5h]);
@@ -627,7 +628,7 @@ test("reset-aware strategy respects API-key allowed connections during expansion
 
   assert.equal(
     await selectedConnectionFor(combo, { apiKeyAllowedConnections: [allowedId] }),
-    allowedId
+    allowedId,
   );
   assert.deepEqual(fetchedConnectionIds, [allowedId]);
 });
@@ -732,7 +733,7 @@ test("priority combo advances to next model when first returns 400 'model not su
       if (modelStr === "openai/gpt-4") {
         return Response.json(
           { error: { message: "requested model is not supported" } },
-          { status: 400 }
+          { status: 400 },
         );
       }
       return okResponse(modelStr);

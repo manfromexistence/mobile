@@ -172,7 +172,7 @@ function checkI18nChangelogFile(sourcePath) {
     const missingVersions = sourceVersions.filter((v) => !targetVersions.includes(v));
     if (missingVersions.length > 0) {
       fail(
-        `docs/i18n/${locale}/${fileName} is missing version sections: ${missingVersions.slice(0, 3).join(", ")}${missingVersions.length > 3 ? ` (+${missingVersions.length - 3} more)` : ""}`
+        `docs/i18n/${locale}/${fileName} is missing version sections: ${missingVersions.slice(0, 3).join(", ")}${missingVersions.length > 3 ? ` (+${missingVersions.length - 3} more)` : ""}`,
       );
       continue;
     }
@@ -185,7 +185,7 @@ function checkI18nChangelogFile(sourcePath) {
     const sizeDiff = Math.abs(targetLines - sourceLines) / sourceLines;
     if (sizeDiff > 0.25) {
       fail(
-        `docs/i18n/${locale}/${fileName} body line count differs by ${(sizeDiff * 100).toFixed(0)}% from root (expected within 25%)`
+        `docs/i18n/${locale}/${fileName} body line count differs by ${(sizeDiff * 100).toFixed(0)}% from root (expected within 25%)`,
       );
       continue;
     }
@@ -195,7 +195,7 @@ function checkI18nChangelogFile(sourcePath) {
 
   if (checked > 0) {
     console.log(
-      `[docs-sync] ${fileName} i18n translations validated: ${checked} locales (version sections + size check)`
+      `[docs-sync] ${fileName} i18n translations validated: ${checked} locales (version sections + size check)`,
     );
   }
 }
@@ -234,11 +234,11 @@ try {
       fail("CHANGELOG.md has no semver release section");
     } else if (semverSections[0] !== packageVersion) {
       fail(
-        `Latest changelog release (${semverSections[0]}) differs from package.json (${packageVersion})`
+        `Latest changelog release (${semverSections[0]}) differs from package.json (${packageVersion})`,
       );
     } else {
       console.log(
-        `[docs-sync] latest changelog release matches package version: ${packageVersion}`
+        `[docs-sync] latest changelog release matches package version: ${packageVersion}`,
       );
     }
   }
@@ -255,7 +255,7 @@ try {
     const legacyAbs = path.resolve(cwd, legacy);
     if (fs.existsSync(legacyAbs)) {
       fail(
-        `legacy duplicate ${legacy} reappeared — use ${current} instead (single source of truth)`
+        `legacy duplicate ${legacy} reappeared — use ${current} instead (single source of truth)`,
       );
     }
   }

@@ -22,7 +22,7 @@ function rowFor(requestId: string): Record<string, unknown> | undefined {
     return coreDb
       .getDbInstance()
       .prepare(
-        "SELECT request_id, model, provider, source FROM compression_run_telemetry WHERE request_id = ?"
+        "SELECT request_id, model, provider, source FROM compression_run_telemetry WHERE request_id = ?",
       )
       .get(requestId) as Record<string, unknown> | undefined;
   } catch {
@@ -63,7 +63,7 @@ test("null outputStyleResult is a no-op (returns synchronously, no throw)", asyn
       provider: "openai",
       compressionComboId: null,
       estimatedTokens: 100,
-    })
+    }),
   );
   await new Promise((r) => setTimeout(r, 80));
   assert.equal(rowFor("os-noop"), undefined);
@@ -71,7 +71,12 @@ test("null outputStyleResult is a no-op (returns synchronously, no throw)", asyn
 
 test("applied output-style result records a run-telemetry row (source=active-profile when combo id set)", async () => {
   emitOutputStyleTelemetry({
-    outputStyleResult: { body: {} as never, applied: true, appliedStyles: [], skippedReason: undefined },
+    outputStyleResult: {
+      body: {} as never,
+      applied: true,
+      appliedStyles: [],
+      skippedReason: undefined,
+    },
     skillRequestId: "os-req-1",
     traceId: "trace-1",
     effectiveModel: "gpt-os",

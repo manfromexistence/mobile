@@ -71,7 +71,7 @@ test("A2A JSON-RPC rejects requests while the endpoint is disabled", async () =>
       id: "disabled-check",
       method: "message/send",
       params: { message: { role: "user", content: "hello" } },
-    })
+    }),
   );
   const body = (await response.json()) as {
     id?: string | number | null;
@@ -93,7 +93,7 @@ test("A2A JSON-RPC checks auth before returning disabled state", async () => {
       id: "unauthorized-disabled-check",
       method: "message/send",
       params: { message: { role: "user", content: "hello" } },
-    })
+    }),
   );
   const body = (await response.json()) as {
     error?: { code?: number; message?: string };

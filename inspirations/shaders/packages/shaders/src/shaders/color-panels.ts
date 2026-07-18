@@ -1,7 +1,7 @@
-import type { vec4 } from '../types.js';
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { declarePI, colorBandingFix } from '../shader-utils.js';
+import type { vec4 } from "../types.js";
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { declarePI, colorBandingFix } from "../shader-utils.js";
 
 export const colorPanelsMeta = {
   maxColorCount: 7,
@@ -51,7 +51,7 @@ precision lowp float;
 uniform float u_time;
 uniform mediump float u_scale;
 
-uniform vec4 u_colors[${ colorPanelsMeta.maxColorCount }];
+uniform vec4 u_colors[${colorPanelsMeta.maxColorCount}];
 uniform float u_colorsCount;
 uniform vec4 u_colorBack;
 uniform float u_density;
@@ -68,7 +68,7 @@ in vec2 v_objectUV;
 
 out vec4 fragColor;
 
-${ declarePI }
+${declarePI}
 
 const float zLimit = .5;
 
@@ -135,8 +135,8 @@ void main() {
   float aa = .005 / u_scale;
   int colorsCount = int(u_colorsCount);
 
-  vec4 premultipliedColors[${ colorPanelsMeta.maxColorCount }];
-  for (int i = 0; i < ${ colorPanelsMeta.maxColorCount }; i++) {
+  vec4 premultipliedColors[${colorPanelsMeta.maxColorCount}];
+  for (int i = 0; i < ${colorPanelsMeta.maxColorCount}; i++) {
     if (i >= colorsCount) break;
     vec4 c = u_colors[i];
     c.rgb *= c.a;
@@ -249,7 +249,7 @@ void main() {
   color = color + bgColor * (1.0 - opacity);
   opacity = opacity + u_colorBack.a * (1.0 - opacity);
 
-  ${ colorBandingFix }
+  ${colorBandingFix}
 
   fragColor = vec4(color, opacity);
 }

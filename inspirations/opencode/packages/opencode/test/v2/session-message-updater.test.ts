@@ -1,18 +1,18 @@
-import { expect, test } from "bun:test"
-import { Effect } from "effect"
-import * as DateTime from "effect/DateTime"
-import { SessionID } from "../../src/session/schema"
-import { EventV2 } from "@opencode-ai/core/event"
-import { ModelV2 } from "@opencode-ai/core/model"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { SessionEvent } from "@opencode-ai/core/session/event"
-import { SessionMessageUpdater } from "@opencode-ai/core/session/message-updater"
-import { SessionMessage } from "@opencode-ai/core/session/message"
+import { expect, test } from "bun:test";
+import { Effect } from "effect";
+import * as DateTime from "effect/DateTime";
+import { SessionID } from "../../src/session/schema";
+import { EventV2 } from "@opencode-ai/core/event";
+import { ModelV2 } from "@opencode-ai/core/model";
+import { ProviderV2 } from "@opencode-ai/core/provider";
+import { SessionEvent } from "@opencode-ai/core/session/event";
+import { SessionMessageUpdater } from "@opencode-ai/core/session/message-updater";
+import { SessionMessage } from "@opencode-ai/core/session/message";
 
 test.skip("step snapshots carry over to assistant messages", () => {
-  const state: SessionMessageUpdater.MemoryState = { messages: [] }
-  const sessionID = SessionID.make("session")
-  const assistantMessageID = SessionMessage.ID.create()
+  const state: SessionMessageUpdater.MemoryState = { messages: [] };
+  const sessionID = SessionID.make("session");
+  const assistantMessageID = SessionMessage.ID.create();
 
   Effect.runSync(
     SessionMessageUpdater.update(SessionMessageUpdater.memory(state), {
@@ -31,9 +31,9 @@ test.skip("step snapshots carry over to assistant messages", () => {
         snapshot: "before",
       },
     } satisfies SessionEvent.Event),
-  )
+  );
 
-  expect(state.messages).toEqual([])
+  expect(state.messages).toEqual([]);
 
   Effect.runSync(
     SessionMessageUpdater.update(SessionMessageUpdater.memory(state), {
@@ -54,18 +54,18 @@ test.skip("step snapshots carry over to assistant messages", () => {
         snapshot: "after",
       },
     } satisfies SessionEvent.Event),
-  )
+  );
 
-  expect(state.messages[0]?.type).toBe("assistant")
-  if (state.messages[0]?.type !== "assistant") return
-  expect(state.messages[0].snapshot).toEqual({ start: "before", end: "after" })
-  expect(state.messages[0].finish).toBe("stop")
-})
+  expect(state.messages[0]?.type).toBe("assistant");
+  if (state.messages[0]?.type !== "assistant") return;
+  expect(state.messages[0].snapshot).toEqual({ start: "before", end: "after" });
+  expect(state.messages[0].finish).toBe("stop");
+});
 
 test.skip("text ended populates assistant text content", () => {
-  const state: SessionMessageUpdater.MemoryState = { messages: [] }
-  const sessionID = SessionID.make("session")
-  const assistantMessageID = SessionMessage.ID.create()
+  const state: SessionMessageUpdater.MemoryState = { messages: [] };
+  const sessionID = SessionID.make("session");
+  const assistantMessageID = SessionMessage.ID.create();
 
   Effect.runSync(
     SessionMessageUpdater.update(SessionMessageUpdater.memory(state), {
@@ -83,7 +83,7 @@ test.skip("text ended populates assistant text content", () => {
         },
       },
     } satisfies SessionEvent.Event),
-  )
+  );
 
   Effect.runSync(
     SessionMessageUpdater.update(SessionMessageUpdater.memory(state), {
@@ -96,7 +96,7 @@ test.skip("text ended populates assistant text content", () => {
         textID: "text-1",
       },
     } satisfies SessionEvent.Event),
-  )
+  );
 
   Effect.runSync(
     SessionMessageUpdater.update(SessionMessageUpdater.memory(state), {
@@ -110,18 +110,20 @@ test.skip("text ended populates assistant text content", () => {
         text: "hello assistant",
       },
     } satisfies SessionEvent.Event),
-  )
+  );
 
-  expect(state.messages[0]?.type).toBe("assistant")
-  if (state.messages[0]?.type !== "assistant") return
-  expect(state.messages[0].content).toEqual([{ type: "text", id: "text-1", text: "hello assistant" }])
-})
+  expect(state.messages[0]?.type).toBe("assistant");
+  if (state.messages[0]?.type !== "assistant") return;
+  expect(state.messages[0].content).toEqual([
+    { type: "text", id: "text-1", text: "hello assistant" },
+  ]);
+});
 
 test.skip("tool completion stores completed timestamp", () => {
-  const state: SessionMessageUpdater.MemoryState = { messages: [] }
-  const sessionID = SessionID.make("session")
-  const callID = "call"
-  const assistantMessageID = SessionMessage.ID.create()
+  const state: SessionMessageUpdater.MemoryState = { messages: [] };
+  const sessionID = SessionID.make("session");
+  const callID = "call";
+  const assistantMessageID = SessionMessage.ID.create();
 
   Effect.runSync(
     SessionMessageUpdater.update(SessionMessageUpdater.memory(state), {
@@ -139,7 +141,7 @@ test.skip("tool completion stores completed timestamp", () => {
         },
       },
     } satisfies SessionEvent.Event),
-  )
+  );
 
   Effect.runSync(
     SessionMessageUpdater.update(SessionMessageUpdater.memory(state), {
@@ -153,7 +155,7 @@ test.skip("tool completion stores completed timestamp", () => {
         name: "bash",
       },
     } satisfies SessionEvent.Event),
-  )
+  );
 
   Effect.runSync(
     SessionMessageUpdater.update(SessionMessageUpdater.memory(state), {
@@ -169,7 +171,7 @@ test.skip("tool completion stores completed timestamp", () => {
         provider: { executed: true, metadata: { fake: { source: "provider" } } },
       },
     } satisfies SessionEvent.Event),
-  )
+  );
 
   Effect.runSync(
     SessionMessageUpdater.update(SessionMessageUpdater.memory(state), {
@@ -185,21 +187,24 @@ test.skip("tool completion stores completed timestamp", () => {
         provider: { executed: true, metadata: { fake: { status: "done" } } },
       },
     } satisfies SessionEvent.Event),
-  )
+  );
 
-  expect(state.messages[0]?.type).toBe("assistant")
-  if (state.messages[0]?.type !== "assistant") return
-  expect(state.messages[0].content[0]?.type).toBe("tool")
-  if (state.messages[0].content[0]?.type !== "tool") return
-  expect(state.messages[0].content[0].time.completed).toEqual(DateTime.makeUnsafe(4))
-  expect(state.messages[0].content[0].provider).toEqual({ executed: true, metadata: { fake: { status: "done" } } })
-})
+  expect(state.messages[0]?.type).toBe("assistant");
+  if (state.messages[0]?.type !== "assistant") return;
+  expect(state.messages[0].content[0]?.type).toBe("tool");
+  if (state.messages[0].content[0]?.type !== "tool") return;
+  expect(state.messages[0].content[0].time.completed).toEqual(DateTime.makeUnsafe(4));
+  expect(state.messages[0].content[0].provider).toEqual({
+    executed: true,
+    metadata: { fake: { status: "done" } },
+  });
+});
 
 test("compaction events reduce to compaction message only when completed", () => {
-  const state: SessionMessageUpdater.MemoryState = { messages: [] }
-  const sessionID = SessionID.make("session")
-  const id = EventV2.ID.create()
-  const compactionID = SessionMessage.ID.create()
+  const state: SessionMessageUpdater.MemoryState = { messages: [] };
+  const sessionID = SessionID.make("session");
+  const id = EventV2.ID.create();
+  const compactionID = SessionMessage.ID.create();
 
   Effect.runSync(
     SessionMessageUpdater.update(SessionMessageUpdater.memory(state), {
@@ -212,9 +217,9 @@ test("compaction events reduce to compaction message only when completed", () =>
         reason: "auto",
       },
     } satisfies SessionEvent.Event),
-  )
+  );
 
-  expect(state.messages).toEqual([])
+  expect(state.messages).toEqual([]);
 
   Effect.runSync(
     SessionMessageUpdater.update(SessionMessageUpdater.memory(state), {
@@ -227,7 +232,7 @@ test("compaction events reduce to compaction message only when completed", () =>
         text: "hello ",
       },
     } satisfies SessionEvent.Event),
-  )
+  );
 
   Effect.runSync(
     SessionMessageUpdater.update(SessionMessageUpdater.memory(state), {
@@ -240,7 +245,7 @@ test("compaction events reduce to compaction message only when completed", () =>
         text: "summary",
       },
     } satisfies SessionEvent.Event),
-  )
+  );
 
   Effect.runSync(
     SessionMessageUpdater.update(SessionMessageUpdater.memory(state), {
@@ -255,9 +260,9 @@ test("compaction events reduce to compaction message only when completed", () =>
         recent: "recent context",
       },
     } satisfies SessionEvent.Event),
-  )
+  );
 
-  expect(state.messages).toHaveLength(1)
+  expect(state.messages).toHaveLength(1);
   expect(state.messages[0]).toMatchObject({
     id: compactionID,
     type: "compaction",
@@ -265,5 +270,5 @@ test("compaction events reduce to compaction message only when completed", () =>
     summary: "final summary",
     recent: "recent context",
     time: { created: DateTime.makeUnsafe(4) },
-  })
-})
+  });
+});

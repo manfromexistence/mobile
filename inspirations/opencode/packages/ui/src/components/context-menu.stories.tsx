@@ -1,5 +1,5 @@
 // @ts-nocheck
-import * as mod from "./context-menu"
+import * as mod from "./context-menu";
 
 const docs = `### Overview
 Context menu for right-click interactions with composable items and submenus.
@@ -22,7 +22,7 @@ Use \`ItemLabel\` and \`ItemDescription\` for rich items.
 ### Theming/tokens
 - Uses \`data-component="context-menu"\` and slot attributes for styling.
 
-`
+`;
 
 export default {
   title: "UI/ContextMenu",
@@ -36,7 +36,7 @@ export default {
       },
     },
   },
-}
+};
 
 export const Basic = {
   render: () => (
@@ -80,7 +80,7 @@ export const Basic = {
       </mod.ContextMenu.Portal>
     </mod.ContextMenu>
   ),
-}
+};
 
 export const CheckboxRadio = {
   render: () => (
@@ -110,4 +110,4 @@ export const CheckboxRadio = {
       </mod.ContextMenu.Portal>
     </mod.ContextMenu>
   ),
-}
+};

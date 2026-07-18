@@ -11,23 +11,23 @@ export interface LoadModelParams {
   embeddings?: boolean;
   offload_kqv?: boolean;
   pooling_type?: // legacy values
-  | 'LLAMA_POOLING_TYPE_UNSPECIFIED'
-    | 'LLAMA_POOLING_TYPE_NONE'
-    | 'LLAMA_POOLING_TYPE_MEAN'
-    | 'LLAMA_POOLING_TYPE_CLS'
+    | "LLAMA_POOLING_TYPE_UNSPECIFIED"
+    | "LLAMA_POOLING_TYPE_NONE"
+    | "LLAMA_POOLING_TYPE_MEAN"
+    | "LLAMA_POOLING_TYPE_CLS"
     // new values
-    | 'unspecified'
-    | 'none'
-    | 'mean'
-    | 'cls'
-    | 'last'
-    | 'rank';
+    | "unspecified"
+    | "none"
+    | "mean"
+    | "cls"
+    | "last"
+    | "rank";
   // context extending
   rope_scaling_type?:
-    | 'LLAMA_ROPE_SCALING_TYPE_UNSPECIFIED'
-    | 'LLAMA_ROPE_SCALING_TYPE_NONE'
-    | 'LLAMA_ROPE_SCALING_TYPE_LINEAR'
-    | 'LLAMA_ROPE_SCALING_TYPE_YARN';
+    | "LLAMA_ROPE_SCALING_TYPE_UNSPECIFIED"
+    | "LLAMA_ROPE_SCALING_TYPE_NONE"
+    | "LLAMA_ROPE_SCALING_TYPE_LINEAR"
+    | "LLAMA_ROPE_SCALING_TYPE_YARN";
   rope_freq_base?: number;
   rope_freq_scale?: number;
   yarn_ext_factor?: number;
@@ -36,8 +36,8 @@ export interface LoadModelParams {
   yarn_beta_slow?: number;
   yarn_orig_ctx?: number;
   // optimizations
-  cache_type_k?: 'f32' | 'f16' | 'q8_0' | 'q5_1' | 'q5_0' | 'q4_1' | 'q4_0';
-  cache_type_v?: 'f32' | 'f16' | 'q8_0' | 'q5_1' | 'q5_0' | 'q4_1' | 'q4_0';
+  cache_type_k?: "f32" | "f16" | "q8_0" | "q5_1" | "q5_0" | "q4_1" | "q4_0";
+  cache_type_v?: "f32" | "f16" | "q8_0" | "q5_1" | "q5_0" | "q4_1" | "q4_0";
   flash_attn?: boolean; // true is auto, false is disabled
   swa_full?: boolean;
   chat_template?: string;
@@ -65,7 +65,7 @@ export interface LoadModelParams {
   kv_overrides?: Record<string, string>;
   reasoning_budget_tokens?: number;
   reasoning_budget_message?: string;
-  reasoning_format?: 'none' | 'deepseek-legacy' | 'deepseek';
+  reasoning_format?: "none" | "deepseek-legacy" | "deepseek";
   skip_chat_parsing?: boolean;
   prefill_assistant?: boolean;
   default_template_kwargs?: Record<string, any>;

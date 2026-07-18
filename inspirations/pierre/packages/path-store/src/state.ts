@@ -1,19 +1,14 @@
-import { getNodeDepth, hasNodeFlag, isDirectoryNode } from './internal-types';
-import type {
-  DirectoryLoadInfo,
-  NodeId,
-  PathStoreNode,
-  PathStoreSnapshot,
-} from './internal-types';
-import { PATH_STORE_NODE_FLAG_ROOT } from './internal-types';
-import type { BenchmarkInstrumentation } from './internal/benchmarkInstrumentation';
+import { getNodeDepth, hasNodeFlag, isDirectoryNode } from "./internal-types";
+import type { DirectoryLoadInfo, NodeId, PathStoreNode, PathStoreSnapshot } from "./internal-types";
+import { PATH_STORE_NODE_FLAG_ROOT } from "./internal-types";
+import type { BenchmarkInstrumentation } from "./internal/benchmarkInstrumentation";
 import type {
   PathStoreDirectoryLoadState,
   PathStoreEvent,
   PathStoreInitialExpansion,
   PathStoreLoadAttempt,
   PathStoreSemanticEvent,
-} from './public-types';
+} from "./public-types";
 
 export interface TransactionFrame {
   readonly affectedAncestorIds: Set<NodeId>;
@@ -46,8 +41,8 @@ export interface PathStoreState {
 
 export function createPathStoreState(
   snapshot: PathStoreSnapshot,
-  initialExpansion: PathStoreInitialExpansion = 'closed',
-  instrumentation: BenchmarkInstrumentation | null = null
+  initialExpansion: PathStoreInitialExpansion = "closed",
+  instrumentation: BenchmarkInstrumentation | null = null,
 ): PathStoreState {
   const defaultExpansion = resolveInitialExpansion(initialExpansion);
   return {
@@ -55,14 +50,14 @@ export function createPathStoreState(
     collapsedDirectoryIds: new Set<NodeId>(),
     collapseNewDirectoriesByDefault: false,
     defaultExpansion,
-    directoriesOpenByDefault: defaultExpansion === 'open',
+    directoriesOpenByDefault: defaultExpansion === "open",
     hasCollapsedDirectoryOverrides: false,
     directoryLoadInfoById: new Map<NodeId, DirectoryLoadInfo>(),
     expandedDirectoryIds: new Set<NodeId>(),
     instrumentation,
     listeners: new Map<string, Set<(event: PathStoreEvent) => void>>(),
     pathCacheByNodeId: new Map<NodeId, { path: string; version: number }>([
-      [snapshot.rootId, { path: '', version: 0 }],
+      [snapshot.rootId, { path: "", version: 0 }],
     ]),
     pathCacheVersion: 0,
     snapshot,
@@ -79,36 +74,33 @@ export function createTransactionFrame(): TransactionFrame {
 }
 
 export function resolveInitialExpansion(
-  initialExpansion: PathStoreInitialExpansion
+  initialExpansion: PathStoreInitialExpansion,
 ): PathStoreInitialExpansion {
-  if (typeof initialExpansion !== 'number') {
+  if (typeof initialExpansion !== "number") {
     return initialExpansion;
   }
 
   if (!Number.isInteger(initialExpansion) || initialExpansion < 0) {
     throw new Error(
       `initialExpansion must be "open", "closed", or a non-negative integer depth. Received: ${String(
-        initialExpansion
-      )}`
+        initialExpansion,
+      )}`,
     );
   }
 
   return initialExpansion;
 }
 
-function isDirectoryExpandedByDefault(
-  state: PathStoreState,
-  node: PathStoreNode
-): boolean {
+function isDirectoryExpandedByDefault(state: PathStoreState, node: PathStoreNode): boolean {
   if (hasNodeFlag(node, PATH_STORE_NODE_FLAG_ROOT)) {
     return true;
   }
 
-  if (state.defaultExpansion === 'open') {
+  if (state.defaultExpansion === "open") {
     return true;
   }
 
-  if (state.defaultExpansion === 'closed') {
+  if (state.defaultExpansion === "closed") {
     return false;
   }
 
@@ -118,7 +110,7 @@ function isDirectoryExpandedByDefault(
 export function isDirectoryExpanded(
   state: PathStoreState,
   nodeId: NodeId,
-  node: PathStoreNode | undefined = state.snapshot.nodes[nodeId]
+  node: PathStoreNode | undefined = state.snapshot.nodes[nodeId],
 ): boolean {
   if (node == null || !isDirectoryNode(node)) {
     return false;
@@ -143,7 +135,7 @@ export function setDirectoryExpanded(
   state: PathStoreState,
   nodeId: NodeId,
   expanded: boolean,
-  node: PathStoreNode | undefined = state.snapshot.nodes[nodeId]
+  node: PathStoreNode | undefined = state.snapshot.nodes[nodeId],
 ): void {
   if (node == null || !isDirectoryNode(node)) {
     return;
@@ -153,8 +145,7 @@ export function setDirectoryExpanded(
   if (expanded) {
     if (expandedByDefault) {
       state.collapsedDirectoryIds.delete(nodeId);
-      state.hasCollapsedDirectoryOverrides =
-        state.collapsedDirectoryIds.size > 0;
+      state.hasCollapsedDirectoryOverrides = state.collapsedDirectoryIds.size > 0;
       return;
     }
 
@@ -171,10 +162,7 @@ export function setDirectoryExpanded(
   state.expandedDirectoryIds.delete(nodeId);
 }
 
-function getOrCreateDirectoryLoadInfo(
-  state: PathStoreState,
-  nodeId: NodeId
-): DirectoryLoadInfo {
+function getOrCreateDirectoryLoadInfo(state: PathStoreState, nodeId: NodeId): DirectoryLoadInfo {
   const existingInfo = state.directoryLoadInfoById.get(nodeId);
   if (existingInfo != null) {
     return existingInfo;
@@ -184,7 +172,7 @@ function getOrCreateDirectoryLoadInfo(
     activeAttemptId: null,
     errorMessage: null,
     nextAttemptId: 1,
-    state: 'loaded',
+    state: "loaded",
   };
   state.directoryLoadInfoById.set(nodeId, nextInfo);
   return nextInfo;
@@ -192,24 +180,18 @@ function getOrCreateDirectoryLoadInfo(
 
 export function getDirectoryLoadState(
   state: PathStoreState,
-  nodeId: NodeId
+  nodeId: NodeId,
 ): PathStoreDirectoryLoadState {
-  return state.directoryLoadInfoById.get(nodeId)?.state ?? 'loaded';
+  return state.directoryLoadInfoById.get(nodeId)?.state ?? "loaded";
 }
 
-export function getDirectoryLoadError(
-  state: PathStoreState,
-  nodeId: NodeId
-): string | null {
+export function getDirectoryLoadError(state: PathStoreState, nodeId: NodeId): string | null {
   return state.directoryLoadInfoById.get(nodeId)?.errorMessage ?? null;
 }
 
-export function beginDirectoryLoad(
-  state: PathStoreState,
-  nodeId: NodeId
-): PathStoreLoadAttempt {
+export function beginDirectoryLoad(state: PathStoreState, nodeId: NodeId): PathStoreLoadAttempt {
   const loadInfo = getOrCreateDirectoryLoadInfo(state, nodeId);
-  if (loadInfo.state === 'loading' && loadInfo.activeAttemptId != null) {
+  if (loadInfo.state === "loading" && loadInfo.activeAttemptId != null) {
     return {
       attemptId: loadInfo.activeAttemptId,
       nodeId,
@@ -221,7 +203,7 @@ export function beginDirectoryLoad(
   loadInfo.activeAttemptId = attemptId;
   loadInfo.errorMessage = null;
   loadInfo.nextAttemptId += 1;
-  loadInfo.state = 'loading';
+  loadInfo.state = "loading";
   return {
     attemptId,
     nodeId,
@@ -229,20 +211,17 @@ export function beginDirectoryLoad(
   };
 }
 
-export function markDirectoryUnloadedState(
-  state: PathStoreState,
-  nodeId: NodeId
-): void {
+export function markDirectoryUnloadedState(state: PathStoreState, nodeId: NodeId): void {
   const loadInfo = getOrCreateDirectoryLoadInfo(state, nodeId);
   loadInfo.activeAttemptId = null;
   loadInfo.errorMessage = null;
-  loadInfo.state = 'unloaded';
+  loadInfo.state = "unloaded";
 }
 
 export function completeDirectoryLoad(
   state: PathStoreState,
   nodeId: NodeId,
-  attemptId: number
+  attemptId: number,
 ): boolean {
   const loadInfo = state.directoryLoadInfoById.get(nodeId);
   if (loadInfo == null || loadInfo.activeAttemptId !== attemptId) {
@@ -251,14 +230,14 @@ export function completeDirectoryLoad(
 
   loadInfo.activeAttemptId = null;
   loadInfo.errorMessage = null;
-  loadInfo.state = 'loaded';
+  loadInfo.state = "loaded";
   return true;
 }
 
 export function isDirectoryLoadAttemptCurrent(
   state: PathStoreState,
   nodeId: NodeId,
-  attemptId: number
+  attemptId: number,
 ): boolean {
   return state.directoryLoadInfoById.get(nodeId)?.activeAttemptId === attemptId;
 }
@@ -267,7 +246,7 @@ export function failDirectoryLoad(
   state: PathStoreState,
   nodeId: NodeId,
   attemptId: number,
-  errorMessage: string | undefined
+  errorMessage: string | undefined,
 ): boolean {
   const loadInfo = state.directoryLoadInfoById.get(nodeId);
   if (loadInfo == null || loadInfo.activeAttemptId !== attemptId) {
@@ -276,13 +255,10 @@ export function failDirectoryLoad(
 
   loadInfo.activeAttemptId = null;
   loadInfo.errorMessage = errorMessage ?? null;
-  loadInfo.state = 'error';
+  loadInfo.state = "error";
   return true;
 }
 
-export function clearDirectoryLoadInfo(
-  state: PathStoreState,
-  nodeId: NodeId
-): void {
+export function clearDirectoryLoadInfo(state: PathStoreState, nodeId: NodeId): void {
   state.directoryLoadInfoById.delete(nodeId);
 }

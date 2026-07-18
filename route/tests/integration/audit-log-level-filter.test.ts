@@ -88,7 +88,7 @@ test("GET /api/compliance/audit-log (no level) returns all 5 entries", async () 
   seedEntries();
 
   const res = await auditRoute.GET(
-    await makeRequest("http://localhost/api/compliance/audit-log?limit=100")
+    await makeRequest("http://localhost/api/compliance/audit-log?limit=100"),
   );
 
   assert.equal(res.status, 200);
@@ -101,7 +101,7 @@ test("GET /api/compliance/audit-log?level=all returns all 5 entries", async () =
   seedEntries();
 
   const res = await auditRoute.GET(
-    await makeRequest("http://localhost/api/compliance/audit-log?level=all&limit=100")
+    await makeRequest("http://localhost/api/compliance/audit-log?level=all&limit=100"),
   );
 
   assert.equal(res.status, 200);
@@ -114,7 +114,7 @@ test("GET /api/compliance/audit-log?level=high returns only 2 HIGH_LEVEL entries
   seedEntries();
 
   const res = await auditRoute.GET(
-    await makeRequest("http://localhost/api/compliance/audit-log?level=high&limit=100")
+    await makeRequest("http://localhost/api/compliance/audit-log?level=high&limit=100"),
   );
 
   assert.equal(res.status, 200);
@@ -130,7 +130,7 @@ test("GET /api/compliance/audit-log?level=high x-total-count reflects filtered C
   seedEntries();
 
   const res = await auditRoute.GET(
-    await makeRequest("http://localhost/api/compliance/audit-log?level=high&limit=100")
+    await makeRequest("http://localhost/api/compliance/audit-log?level=high&limit=100"),
   );
 
   assert.equal(res.status, 200);
@@ -167,13 +167,13 @@ test("GET /api/compliance/audit-log error path does not leak stack trace (Hard R
 
   // Real test: ensure a normal response body is not a stack trace
   const res = await auditRoute.GET(
-    await makeRequest("http://localhost/api/compliance/audit-log?level=high")
+    await makeRequest("http://localhost/api/compliance/audit-log?level=high"),
   );
   const text = await res.text();
   assert.doesNotMatch(
     text,
     /\s+at\s+\//,
-    "Response body must not contain stack trace (Hard Rule #12)"
+    "Response body must not contain stack trace (Hard Rule #12)",
   );
 });
 
@@ -181,7 +181,7 @@ test("GET /api/compliance/audit-log?level=high with limit=1 returns correct pagi
   seedEntries();
 
   const res = await auditRoute.GET(
-    await makeRequest("http://localhost/api/compliance/audit-log?level=high&limit=1&offset=0")
+    await makeRequest("http://localhost/api/compliance/audit-log?level=high&limit=1&offset=0"),
   );
 
   assert.equal(res.status, 200);

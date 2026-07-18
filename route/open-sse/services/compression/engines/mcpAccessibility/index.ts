@@ -24,7 +24,7 @@ export function smartFilterText(text: string, config: McpAccessibilityConfig): s
     out,
     config.collapseThreshold,
     config.collapseKeepHead,
-    config.collapseKeepTail
+    config.collapseKeepTail,
   );
 
   if (out.length > config.maxTextChars) {

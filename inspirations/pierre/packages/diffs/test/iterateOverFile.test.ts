@@ -1,14 +1,11 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from "bun:test";
 
-import {
-  type FileLineCallbackProps,
-  iterateOverFile,
-} from '../src/utils/iterateOverFile';
-import { splitFileContents } from '../src/utils/splitFileContents';
+import { type FileLineCallbackProps, iterateOverFile } from "../src/utils/iterateOverFile";
+import { splitFileContents } from "../src/utils/splitFileContents";
 
-describe('iterateOverFile', () => {
-  test('basic iteration', () => {
-    const lines = splitFileContents('line1\nline2\nline3\nline4\nline5');
+describe("iterateOverFile", () => {
+  test("basic iteration", () => {
+    const lines = splitFileContents("line1\nline2\nline3\nline4\nline5");
 
     const results: FileLineCallbackProps[] = [];
     iterateOverFile({
@@ -24,7 +21,7 @@ describe('iterateOverFile', () => {
     expect(results[0]).toEqual({
       lineIndex: 0, // 0-based
       lineNumber: 1, // 1-based
-      content: 'line1\n',
+      content: "line1\n",
       isLastLine: false,
     });
 
@@ -32,7 +29,7 @@ describe('iterateOverFile', () => {
     expect(results[2]).toEqual({
       lineIndex: 2,
       lineNumber: 3,
-      content: 'line3\n',
+      content: "line3\n",
       isLastLine: false,
     });
 
@@ -40,13 +37,13 @@ describe('iterateOverFile', () => {
     expect(results[4]).toEqual({
       lineIndex: 4,
       lineNumber: 5,
-      content: 'line5',
+      content: "line5",
       isLastLine: true,
     });
   });
 
-  test('empty file', () => {
-    const lines = splitFileContents('');
+  test("empty file", () => {
+    const lines = splitFileContents("");
 
     const results: FileLineCallbackProps[] = [];
     iterateOverFile({
@@ -59,8 +56,8 @@ describe('iterateOverFile', () => {
     expect(results).toHaveLength(0);
   });
 
-  test('single line file', () => {
-    const lines = splitFileContents('only line');
+  test("single line file", () => {
+    const lines = splitFileContents("only line");
 
     const results: FileLineCallbackProps[] = [];
     iterateOverFile({
@@ -74,11 +71,11 @@ describe('iterateOverFile', () => {
     expect(results[0].isLastLine).toBe(true);
     expect(results[0].lineIndex).toBe(0);
     expect(results[0].lineNumber).toBe(1);
-    expect(results[0].content).toBe('only line');
+    expect(results[0].content).toBe("only line");
   });
 
-  test('preserves empty lines', () => {
-    const lines = splitFileContents('line1\n\nline3\n\n\nline6');
+  test("preserves empty lines", () => {
+    const lines = splitFileContents("line1\n\nline3\n\n\nline6");
 
     const results: string[] = [];
     iterateOverFile({
@@ -89,15 +86,15 @@ describe('iterateOverFile', () => {
     });
 
     // Newlines are preserved except on last line
-    expect(results).toEqual(['line1\n', '\n', 'line3\n', '\n', '\n', 'line6']);
+    expect(results).toEqual(["line1\n", "\n", "line3\n", "\n", "\n", "line6"]);
   });
 
-  test('windowing', () => {
+  test("windowing", () => {
     const lines = splitFileContents(
       Array(100)
         .fill(0)
         .map((_, i) => `line${i}`)
-        .join('\n')
+        .join("\n"),
     );
 
     // Windowing from start
@@ -125,7 +122,7 @@ describe('iterateOverFile', () => {
     expect(results).toEqual([50, 51, 52, 53, 54, 55, 56, 57, 58, 59]);
 
     // Windowing past end - request more lines than available
-    const shortLines = splitFileContents('line1\nline2\nline3\nline4\nline5');
+    const shortLines = splitFileContents("line1\nline2\nline3\nline4\nline5");
     results = [];
     iterateOverFile({
       lines: shortLines,
@@ -150,8 +147,8 @@ describe('iterateOverFile', () => {
     expect(results).toHaveLength(0);
   });
 
-  test('last new line is not iterated over', () => {
-    const lines = splitFileContents('line1\nline2\nline3\n\n\n');
+  test("last new line is not iterated over", () => {
+    const lines = splitFileContents("line1\nline2\nline3\n\n\n");
 
     const results: string[] = [];
     iterateOverFile({
@@ -163,15 +160,15 @@ describe('iterateOverFile', () => {
 
     // Split creates: ['line1\n', 'line2\n', 'line3\n', '\n', '\n']
     // Only skips the LAST line if it's a newline, not all trailing newlines
-    expect(results).toEqual(['line1\n', 'line2\n', 'line3\n', '\n']);
+    expect(results).toEqual(["line1\n", "line2\n", "line3\n", "\n"]);
   });
 
-  test('isLastLine with windowing', () => {
+  test("isLastLine with windowing", () => {
     const lines = splitFileContents(
       Array(10)
         .fill(0)
         .map((_, i) => `line${i}`)
-        .join('\n')
+        .join("\n"),
     );
 
     // Window lines 5-7 (not including the actual last line of the file)
@@ -207,12 +204,12 @@ describe('iterateOverFile', () => {
     expect(results[0].isLastLine).toBe(true);
   });
 
-  test('early termination', () => {
+  test("early termination", () => {
     const lines = splitFileContents(
       Array(100)
         .fill(0)
         .map((_, i) => `line${i}`)
-        .join('\n')
+        .join("\n"),
     );
 
     // Returning true stops iteration
@@ -230,7 +227,7 @@ describe('iterateOverFile', () => {
     expect(results).toEqual([0, 1, 2, 3, 4]);
 
     // Returning false continues
-    const shortLines = splitFileContents('a\nb\nc\nd\ne');
+    const shortLines = splitFileContents("a\nb\nc\nd\ne");
     results = [];
     iterateOverFile({
       lines: shortLines,

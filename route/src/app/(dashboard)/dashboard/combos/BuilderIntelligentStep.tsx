@@ -81,7 +81,7 @@ export default function BuilderIntelligentStep({
   const isSlaAwareStrategy = ["sla-aware", "sla"].includes(normalizedConfig.routerStrategy);
   const providerOptions = useMemo(
     () => toProviderOptions(activeProviders, normalizedConfig.candidatePool),
-    [activeProviders, normalizedConfig.candidatePool]
+    [activeProviders, normalizedConfig.candidatePool],
   );
 
   const updateConfig = (patch: Record<string, unknown>) => {
@@ -115,7 +115,7 @@ export default function BuilderIntelligentStep({
               {getI18nOrFallback(
                 t,
                 "builderIntelligentDesc",
-                "Configure the multi-factor scoring engine for this auto-routing combo."
+                "Configure the multi-factor scoring engine for this auto-routing combo.",
               )}
             </p>
           </div>
@@ -136,7 +136,7 @@ export default function BuilderIntelligentStep({
               {getI18nOrFallback(
                 t,
                 "candidatePoolHint",
-                "Select which providers this engine should evaluate. Leave empty to use all active providers."
+                "Select which providers this engine should evaluate. Leave empty to use all active providers.",
               )}
             </p>
           </div>
@@ -193,7 +193,7 @@ export default function BuilderIntelligentStep({
                 {getI18nOrFallback(
                   t,
                   `modePack${modePack.id[0].toUpperCase()}${modePack.id.slice(1)}`,
-                  modePack.label
+                  modePack.label,
                 )}
               </option>
             ))}
@@ -231,7 +231,7 @@ export default function BuilderIntelligentStep({
                 {getI18nOrFallback(
                   t,
                   "slaRoutingHint",
-                  "Prefer providers that satisfy p95 latency, error-rate and optional cost targets."
+                  "Prefer providers that satisfy p95 latency, error-rate and optional cost targets.",
                 )}
               </p>
             </div>
@@ -307,7 +307,7 @@ export default function BuilderIntelligentStep({
             {getI18nOrFallback(
               t,
               "slaHardConstraintsLabel",
-              "Prefer strict SLA-compliant candidates before soft scoring."
+              "Prefer strict SLA-compliant candidates before soft scoring.",
             )}
           </label>
         </Card.Section>
@@ -331,7 +331,7 @@ export default function BuilderIntelligentStep({
             {getI18nOrFallback(
               t,
               "explorationRateHint",
-              "{percent}% of requests can explore non-optimal providers."
+              "{percent}% of requests can explore non-optimal providers.",
             ).replace("{percent}", `${Math.round(normalizedConfig.explorationRate * 100)}`)}
           </p>
         </Card.Section>
@@ -371,7 +371,7 @@ export default function BuilderIntelligentStep({
                   {getI18nOrFallback(
                     t,
                     `weight${weightKey[0].toUpperCase()}${weightKey.slice(1)}`,
-                    FACTOR_LABELS[weightKey as keyof typeof DEFAULT_INTELLIGENT_WEIGHTS]
+                    FACTOR_LABELS[weightKey as keyof typeof DEFAULT_INTELLIGENT_WEIGHTS],
                   )}
                 </label>
                 <span className="text-[11px] text-text-muted">

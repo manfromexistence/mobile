@@ -170,7 +170,7 @@ export default function BudgetTab() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusKey>("all");
   const [sortKey, setSortKey] = useState<"usedDesc" | "todayDesc" | "monthDesc" | "name">(
-    "usedDesc"
+    "usedDesc",
   );
   const [expandedKeyId, setExpandedKeyId] = useState<string | null>(null);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -194,7 +194,7 @@ export default function BudgetTab() {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       }).format(Number(value || 0)),
-    [locale]
+    [locale],
   );
 
   const formatDateTime = useCallback(
@@ -206,7 +206,7 @@ export default function BudgetTab() {
             timeZone: "UTC",
           }).format(new Date(value))
         : "—",
-    [locale]
+    [locale],
   );
 
   // ── Data fetching ────────────────────────────────────────────────────────
@@ -324,7 +324,7 @@ export default function BudgetTab() {
   const saveBudgetForKey = useCallback(
     async (
       apiKeyId: string,
-      payload: Partial<BudgetSummary> & { warningThresholdPct?: number }
+      payload: Partial<BudgetSummary> & { warningThresholdPct?: number },
     ) => {
       setSaving(true);
       try {
@@ -358,7 +358,7 @@ export default function BudgetTab() {
         setSaving(false);
       }
     },
-    [loadAll, notify, t]
+    [loadAll, notify, t],
   );
 
   const applyTemplateToSelected = useCallback(
@@ -383,8 +383,8 @@ export default function BudgetTab() {
                 resetInterval: template.resetInterval,
                 resetTime: template.resetTime,
               }),
-            })
-          )
+            }),
+          ),
         );
         notify.success(`Applied "${template.name}" to ${selectedIds.size} keys`);
         setSelectedIds(new Set());
@@ -395,7 +395,7 @@ export default function BudgetTab() {
         setSaving(false);
       }
     },
-    [loadAll, notify, selectedIds]
+    [loadAll, notify, selectedIds],
   );
 
   // ── Effects ──────────────────────────────────────────────────────────────
@@ -538,7 +538,7 @@ export default function BudgetTab() {
                   <span className="opacity-70">{count}</span>
                 </button>
               );
-            }
+            },
           )}
         </div>
 

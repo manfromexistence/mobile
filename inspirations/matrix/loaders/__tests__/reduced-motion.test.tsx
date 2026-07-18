@@ -2,7 +2,7 @@ import { render } from "@testing-library/react";
 
 import {
   ReducedMotionOverrideProvider,
-  usePrefersReducedMotion
+  usePrefersReducedMotion,
 } from "../hooks/use-prefers-reduced-motion";
 import { DotMatrixIcon } from "../loaders/dot-matrix-icon";
 
@@ -18,8 +18,8 @@ describe("reduced motion", () => {
         removeEventListener: vi.fn(),
         addListener: vi.fn(),
         removeListener: vi.fn(),
-        dispatchEvent: vi.fn()
-      })
+        dispatchEvent: vi.fn(),
+      }),
     );
   });
 
@@ -42,7 +42,7 @@ describe("reduced motion", () => {
     const { getByTestId } = render(
       <ReducedMotionOverrideProvider reducedMotion={false}>
         <Probe />
-      </ReducedMotionOverrideProvider>
+      </ReducedMotionOverrideProvider>,
     );
 
     expect(getByTestId("reduced-motion").textContent).toBe("false");

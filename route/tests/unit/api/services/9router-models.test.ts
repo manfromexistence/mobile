@@ -18,8 +18,9 @@ process.env.NINEROUTER_PORT = "20130";
 
 // Must import db core first so the DB is initialised at the test path.
 const core = await import("../../../../src/lib/db/core.ts");
-const { saveServiceModels, getServiceModels } =
-  await import("../../../../src/lib/db/serviceModels.ts");
+const { saveServiceModels, getServiceModels } = await import(
+  "../../../../src/lib/db/serviceModels.ts"
+);
 
 // Import the route handler under test (after env is set).
 const { GET } = await import("../../../../src/app/api/services/9router/models/route.ts");
@@ -90,7 +91,7 @@ describe("GET /api/services/9router/models", () => {
       return new Response(
         // Upstream returns an unprefixed id — sync should prefix it as "9router/new-model".
         JSON.stringify({ data: [{ id: "new-model", object: "model" }] }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     };
 

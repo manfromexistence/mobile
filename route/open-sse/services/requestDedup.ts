@@ -57,7 +57,7 @@ export function computeRequestHash(requestBody: unknown): string {
 /** Determine whether a request should be deduplicated */
 export function shouldDeduplicate(
   requestBody: unknown,
-  config: DedupConfig = DEFAULT_DEDUP_CONFIG
+  config: DedupConfig = DEFAULT_DEDUP_CONFIG,
 ): boolean {
   if (!config.enabled) return false;
   const body = requestBody as Record<string, unknown>;
@@ -74,7 +74,7 @@ export function shouldDeduplicate(
 export async function deduplicate<T>(
   hash: string,
   fn: () => Promise<T>,
-  config: DedupConfig = DEFAULT_DEDUP_CONFIG
+  config: DedupConfig = DEFAULT_DEDUP_CONFIG,
 ): Promise<DedupResult<T>> {
   if (!config.enabled) {
     return { result: await fn(), wasDeduplicated: false, hash };

@@ -62,24 +62,24 @@ export default function QuotaCard({
   const tierMeta = useMemo(
     () =>
       normalizePlanTier(
-        resolvePlanValue(quota?.plan ?? null, connection.providerSpecificData ?? null)
+        resolvePlanValue(quota?.plan ?? null, connection.providerSpecificData ?? null),
       ),
-    [quota?.plan, connection.providerSpecificData]
+    [quota?.plan, connection.providerSpecificData],
   );
   const resolvedPlan = useMemo(
     () => resolvePlanValue(quota?.plan ?? null, connection.providerSpecificData ?? null),
-    [quota?.plan, connection.providerSpecificData]
+    [quota?.plan, connection.providerSpecificData],
   );
   const accountLabel = useMemo(
     () =>
       pickDisplayValue(
         [connection.name, connection.displayName, connection.email],
         emailsVisible,
-        connection.provider
+        connection.provider,
       ) ||
       connection.id ||
       connection.provider,
-    [connection, emailsVisible]
+    [connection, emailsVisible],
   );
 
   const overrides = (connection.quotaWindowThresholds as Record<string, number> | null) || null;

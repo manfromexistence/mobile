@@ -1,19 +1,25 @@
-import { Project } from "@/project/project"
-import { ProjectV2 } from "@opencode-ai/core/project"
-import { Schema } from "effect"
-import { HttpApi, HttpApiEndpoint, HttpApiError, HttpApiGroup, OpenApi } from "effect/unstable/httpapi"
-import { ProjectNotFoundError } from "../errors"
-import { Authorization } from "../middleware/authorization"
-import { InstanceContextMiddleware } from "../middleware/instance-context"
-import { WorkspaceRoutingMiddleware, WorkspaceRoutingQuery } from "../middleware/workspace-routing"
-import { described } from "./metadata"
+import { Project } from "@/project/project";
+import { ProjectV2 } from "@opencode-ai/core/project";
+import { Schema } from "effect";
+import {
+  HttpApi,
+  HttpApiEndpoint,
+  HttpApiError,
+  HttpApiGroup,
+  OpenApi,
+} from "effect/unstable/httpapi";
+import { ProjectNotFoundError } from "../errors";
+import { Authorization } from "../middleware/authorization";
+import { InstanceContextMiddleware } from "../middleware/instance-context";
+import { WorkspaceRoutingMiddleware, WorkspaceRoutingQuery } from "../middleware/workspace-routing";
+import { described } from "./metadata";
 
-const root = "/project"
+const root = "/project";
 const UpdatePayload = Schema.Struct({
   name: Schema.optional(Schema.String),
   icon: Schema.optional(Project.Info.fields.icon),
   commands: Schema.optional(Project.Info.fields.commands),
-})
+});
 
 export const ProjectApi = HttpApi.make("project")
   .add(
@@ -46,7 +52,8 @@ export const ProjectApi = HttpApi.make("project")
           OpenApi.annotations({
             identifier: "project.initGit",
             summary: "Initialize git repository",
-            description: "Create a git repository for the current project and return the refreshed project info.",
+            description:
+              "Create a git repository for the current project and return the refreshed project info.",
           }),
         ),
         HttpApiEndpoint.patch("update", `${root}/:projectID`, {
@@ -90,4 +97,4 @@ export const ProjectApi = HttpApi.make("project")
       version: "0.0.1",
       description: "Experimental HttpApi surface for selected instance routes.",
     }),
-  )
+  );

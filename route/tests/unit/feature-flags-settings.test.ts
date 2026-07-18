@@ -10,8 +10,9 @@ process.env.DATA_DIR = tmpDir;
 
 const core = await import("../../src/lib/db/core.ts");
 
-const { FEATURE_FLAG_DEFINITIONS } =
-  await import("../../src/shared/constants/featureFlagDefinitions.ts");
+const { FEATURE_FLAG_DEFINITIONS } = await import(
+  "../../src/shared/constants/featureFlagDefinitions.ts"
+);
 const {
   getFeatureFlagOverrides,
   getFeatureFlagOverride,
@@ -64,7 +65,7 @@ describe("featureFlagDefinitions", () => {
     for (const d of enumFlags) {
       assert.ok(
         Array.isArray(d.enumValues) && d.enumValues.length > 0,
-        `Missing enumValues for ${d.key}`
+        `Missing enumValues for ${d.key}`,
       );
     }
   });
@@ -74,7 +75,7 @@ describe("featureFlagDefinitions", () => {
     for (const d of boolFlags) {
       assert.ok(
         !d.enumValues || d.enumValues.length === 0,
-        `Boolean flag ${d.key} should not have enumValues`
+        `Boolean flag ${d.key} should not have enumValues`,
       );
     }
   });
@@ -85,7 +86,7 @@ describe("featureFlagDefinitions", () => {
       if (d.warningLevel !== undefined) {
         assert.ok(
           valid.has(d.warningLevel),
-          `Invalid warningLevel "${d.warningLevel}" for ${d.key}`
+          `Invalid warningLevel "${d.warningLevel}" for ${d.key}`,
         );
       }
     }
@@ -131,7 +132,7 @@ describe("featureFlagDefinitions", () => {
   it("defines stream recovery as runtime boolean flags disabled by default", () => {
     const early = FEATURE_FLAG_DEFINITIONS.find((d) => d.key === "STREAM_RECOVERY_ENABLED");
     const midstream = FEATURE_FLAG_DEFINITIONS.find(
-      (d) => d.key === "STREAM_RECOVERY_MIDSTREAM_ENABLED"
+      (d) => d.key === "STREAM_RECOVERY_MIDSTREAM_ENABLED",
     );
 
     assert.ok(early, "STREAM_RECOVERY_ENABLED should exist");
@@ -151,7 +152,7 @@ describe("featureFlagDefinitions", () => {
 
   it("defines control-plane proxy direct fallback as a network boolean flag disabled by default", () => {
     const def = FEATURE_FLAG_DEFINITIONS.find(
-      (d) => d.key === "OMNIROUTE_CONTROL_PLANE_PROXY_DIRECT_FALLBACK"
+      (d) => d.key === "OMNIROUTE_CONTROL_PLANE_PROXY_DIRECT_FALLBACK",
     );
     assert.ok(def, "OMNIROUTE_CONTROL_PLANE_PROXY_DIRECT_FALLBACK should exist");
     assert.strictEqual(def.category, "network");
@@ -424,14 +425,14 @@ describe("featureFlagUpdateSchema validation", () => {
   it("setFeatureFlagOverride throws for unknown keys", () => {
     assert.throws(
       () => setFeatureFlagOverride("UNKNOWN_FLAG_XYZ", "true"),
-      /Unknown feature flag key/
+      /Unknown feature flag key/,
     );
   });
 
   it("setFeatureFlagOverride throws for invalid enum value", () => {
     assert.throws(
       () => setFeatureFlagOverride("INJECTION_GUARD_MODE", "invalid_mode"),
-      /Invalid value/
+      /Invalid value/,
     );
   });
 });

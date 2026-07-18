@@ -112,7 +112,7 @@ export function emit<E extends DashboardEventName>(event: E, payload: DashboardE
  */
 export function on<E extends DashboardEventName>(
   event: E,
-  listener: DashboardEventListener<E>
+  listener: DashboardEventListener<E>,
 ): () => void {
   const state = getBusState();
   if (!state.listeners.has(event)) {

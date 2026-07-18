@@ -132,7 +132,7 @@ export function assignEditApiKeyProviderSpecificData(options: {
   if (o.isCcCompatible) {
     o.target.requestDefaults = mergeCcCompatibleRequestDefaults(
       o.target.requestDefaults,
-      o.formData
+      o.formData,
     );
   }
 }

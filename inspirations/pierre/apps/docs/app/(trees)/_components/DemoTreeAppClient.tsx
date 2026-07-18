@@ -1,26 +1,23 @@
-'use client';
+"use client";
 
-import type { FileContents } from '@pierre/diffs';
-import { FILE_TREE_DENSITY_PRESETS } from '@pierre/trees';
-import type { GitStatusEntry } from '@pierre/trees';
-import type { FileTreePreloadedData } from '@pierre/trees/react';
-import { useFileTree } from '@pierre/trees/react';
-import { TreeApp } from '@trees/_components/TreeApp';
-import type { TreeAppTheme } from '@trees/_components/TreeApp';
-import type { CSSProperties } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import type { FileContents } from "@pierre/diffs";
+import { FILE_TREE_DENSITY_PRESETS } from "@pierre/trees";
+import type { GitStatusEntry } from "@pierre/trees";
+import type { FileTreePreloadedData } from "@pierre/trees/react";
+import { useFileTree } from "@pierre/trees/react";
+import { TreeApp } from "@trees/_components/TreeApp";
+import type { TreeAppTheme } from "@trees/_components/TreeApp";
+import type { CSSProperties } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import { TREE_NEW_VIEWPORT_HEIGHTS } from '../_lib/dimensions';
-import {
-  TREE_APP_DEMO_GIT_STATUSES,
-  TREE_APP_DEMO_UNSAFE_CSS,
-} from '../_lib/treeAppDemoData';
+import { TREE_NEW_VIEWPORT_HEIGHTS } from "../_lib/dimensions";
+import { TREE_APP_DEMO_GIT_STATUSES, TREE_APP_DEMO_UNSAFE_CSS } from "../_lib/treeAppDemoData";
 
-const COMPACT_DENSITY = 'compact' as const;
+const COMPACT_DENSITY = "compact" as const;
 
 const darkTreePanelStyle = {
-  colorScheme: 'dark',
-  '--trees-search-bg-override': '#1f2631',
+  colorScheme: "dark",
+  "--trees-search-bg-override": "#1f2631",
 } as CSSProperties;
 
 // Light variant drops the dark-specific search background override so the
@@ -28,7 +25,7 @@ const darkTreePanelStyle = {
 // panel. Density (row height + spacing factor) lives on the model via the
 // `density` option, so it stays consistent across both themes.
 const lightTreePanelStyle = {
-  colorScheme: 'light',
+  colorScheme: "light",
 } as CSSProperties;
 
 const treeStyleByTheme = {
@@ -37,23 +34,23 @@ const treeStyleByTheme = {
 };
 
 const treeClassNameByTheme = {
-  dark: 'dark h-full min-h-0 overflow-auto',
-  light: 'h-full min-h-0 overflow-auto',
+  dark: "dark h-full min-h-0 overflow-auto",
+  light: "h-full min-h-0 overflow-auto",
 };
 
 const darkFileOptions = {
   disableFileHeader: true,
-  theme: 'pierre-dark',
-  themeType: 'dark',
-  overflow: 'wrap' as const,
+  theme: "pierre-dark",
+  themeType: "dark",
+  overflow: "wrap" as const,
   enableLineSelection: true as const,
 } as const;
 
 const lightFileOptions = {
   disableFileHeader: true,
-  theme: 'pierre-light',
-  themeType: 'light',
-  overflow: 'wrap' as const,
+  theme: "pierre-light",
+  themeType: "light",
+  overflow: "wrap" as const,
   enableLineSelection: true as const,
 } as const;
 
@@ -65,7 +62,7 @@ const fileOptionsByTheme = {
 const composition = {
   contextMenu: {
     enabled: true,
-    triggerMode: 'right-click',
+    triggerMode: "right-click",
   },
 } as const;
 
@@ -87,16 +84,12 @@ interface DemoTreeAppClientProps {
 
 // Remaps one path after a tree move so the demo's file-content maps continue
 // to line up with the same files after drag-and-drop or inline rename.
-function remapMovedPath(
-  path: string,
-  fromPath: string,
-  toPath: string
-): string {
+function remapMovedPath(path: string, fromPath: string, toPath: string): string {
   if (path === fromPath) {
     return toPath;
   }
 
-  const descendantPrefix = fromPath.endsWith('/') ? fromPath : `${fromPath}/`;
+  const descendantPrefix = fromPath.endsWith("/") ? fromPath : `${fromPath}/`;
   if (!path.startsWith(descendantPrefix)) {
     return path;
   }
@@ -105,43 +98,40 @@ function remapMovedPath(
 }
 
 function basename(path: string): string {
-  const lastSlashIndex = path.lastIndexOf('/');
+  const lastSlashIndex = path.lastIndexOf("/");
   return lastSlashIndex < 0 ? path : path.slice(lastSlashIndex + 1);
 }
 
 function remapFileMap(
   filesByPath: Readonly<Record<string, FileContents>>,
   fromPath: string,
-  toPath: string
+  toPath: string,
 ): Readonly<Record<string, FileContents>> {
   return Object.fromEntries(
     Object.entries(filesByPath).map(([path, file]) => {
       const nextPath = remapMovedPath(path, fromPath, toPath);
-      return [
-        nextPath,
-        nextPath === path ? file : { ...file, name: basename(nextPath) },
-      ] as const;
-    })
+      return [nextPath, nextPath === path ? file : { ...file, name: basename(nextPath) }] as const;
+    }),
   );
 }
 
 function remapHtmlMap(
   htmlByPath: Readonly<Record<string, string>>,
   fromPath: string,
-  toPath: string
+  toPath: string,
 ): Readonly<Record<string, string>> {
   return Object.fromEntries(
     Object.entries(htmlByPath).map(([path, html]) => [
       remapMovedPath(path, fromPath, toPath),
       html,
-    ])
+    ]),
   );
 }
 
 function remapGitStatusEntries(
   entries: readonly GitStatusEntry[],
   fromPath: string,
-  toPath: string
+  toPath: string,
 ): readonly GitStatusEntry[] {
   const nextEntries = entries.map((entry) => ({
     ...entry,
@@ -150,14 +140,14 @@ function remapGitStatusEntries(
 
   const ignoredDirectoryPaths = new Set(
     nextEntries
-      .filter((entry) => entry.status === 'ignored' && entry.path.endsWith('/'))
-      .map((entry) => entry.path)
+      .filter((entry) => entry.status === "ignored" && entry.path.endsWith("/"))
+      .map((entry) => entry.path),
   );
 
   return nextEntries.filter(
     (entry) =>
-      (entry.status === 'ignored' && entry.path.endsWith('/')) ||
-      !isPathInsideIgnoredDirectory(entry.path, ignoredDirectoryPaths)
+      (entry.status === "ignored" && entry.path.endsWith("/")) ||
+      !isPathInsideIgnoredDirectory(entry.path, ignoredDirectoryPaths),
   );
 }
 
@@ -165,15 +155,15 @@ function remapGitStatusEntries(
 // move drops that entry underneath an ignored directory like node_modules/.
 function isPathInsideIgnoredDirectory(
   path: string,
-  ignoredDirectoryPaths: ReadonlySet<string>
+  ignoredDirectoryPaths: ReadonlySet<string>,
 ): boolean {
-  const normalizedPath = path.endsWith('/') ? path.slice(0, -1) : path;
+  const normalizedPath = path.endsWith("/") ? path.slice(0, -1) : path;
   if (normalizedPath.length === 0) {
     return false;
   }
 
-  const segments = normalizedPath.split('/');
-  let ancestorPath = '';
+  const segments = normalizedPath.split("/");
+  let ancestorPath = "";
   for (let index = 0; index < segments.length - 1; index += 1) {
     ancestorPath = `${ancestorPath}${segments[index]}/`;
     if (ignoredDirectoryPaths.has(ancestorPath)) {
@@ -193,23 +183,18 @@ export function DemoTreeAppClient({
   treeId,
   treePreloadedData,
 }: DemoTreeAppClientProps) {
-  const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(
-    null
-  );
+  const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
   // Owned here (rather than inside TreeApp) so the mobile fade overlay
   // rendered alongside <TreeApp /> below can pick the right gradient color
   // for the active theme.
-  const [theme, setTheme] = useState<TreeAppTheme>('dark');
+  const [theme, setTheme] = useState<TreeAppTheme>("dark");
   const [filesByPath, setFilesByPath] = useState(files);
-  const [gitStatusEntries, setGitStatusEntries] = useState(
-    TREE_APP_DEMO_GIT_STATUSES
-  );
-  const [prerenderedHtmlByPathState, setPrerenderedHtmlByPathState] = useState(
-    prerenderedHTMLByPath
-  );
+  const [gitStatusEntries, setGitStatusEntries] = useState(TREE_APP_DEMO_GIT_STATUSES);
+  const [prerenderedHtmlByPathState, setPrerenderedHtmlByPathState] =
+    useState(prerenderedHTMLByPath);
 
   useEffect(() => {
-    setPortalContainer(document.getElementById('dark-mode-portal-container'));
+    setPortalContainer(document.getElementById("dark-mode-portal-container"));
   }, []);
 
   useEffect(() => {
@@ -224,7 +209,7 @@ export function DemoTreeAppClient({
     () => ({
       composition,
       dragAndDrop: true as const,
-      fileTreeSearchMode: 'hide-non-matches' as const,
+      fileTreeSearchMode: "hide-non-matches" as const,
       flattenEmptyDirectories: true,
       gitStatus: TREE_APP_DEMO_GIT_STATUSES,
       id: treeId,
@@ -236,10 +221,9 @@ export function DemoTreeAppClient({
       search: true as const,
       unsafeCSS: TREE_APP_DEMO_UNSAFE_CSS,
       initialVisibleRowCount:
-        TREE_NEW_VIEWPORT_HEIGHTS.treeApp /
-        FILE_TREE_DENSITY_PRESETS[COMPACT_DENSITY].itemHeight,
+        TREE_NEW_VIEWPORT_HEIGHTS.treeApp / FILE_TREE_DENSITY_PRESETS[COMPACT_DENSITY].itemHeight,
     }),
-    [initialActivePath, initialExpandedPaths, paths, treeId]
+    [initialActivePath, initialExpandedPaths, paths, treeId],
   );
 
   const { model } = useFileTree(treeOptions);
@@ -250,12 +234,12 @@ export function DemoTreeAppClient({
 
   useEffect(
     () =>
-      model.onMutation('*', (event) => {
+      model.onMutation("*", (event) => {
         const moveEvents =
-          event.operation === 'move'
+          event.operation === "move"
             ? [event]
-            : event.operation === 'batch'
-              ? event.events.filter((entry) => entry.operation === 'move')
+            : event.operation === "batch"
+              ? event.events.filter((entry) => entry.operation === "move")
               : [];
         if (moveEvents.length === 0) {
           return;
@@ -283,16 +267,12 @@ export function DemoTreeAppClient({
         setGitStatusEntries((current) => {
           let nextEntries = current;
           for (const moveEvent of moveEvents) {
-            nextEntries = remapGitStatusEntries(
-              nextEntries,
-              moveEvent.from,
-              moveEvent.to
-            );
+            nextEntries = remapGitStatusEntries(nextEntries, moveEvent.from, moveEvent.to);
           }
           return nextEntries;
         });
       }),
-    [model]
+    [model],
   );
 
   return (
@@ -315,7 +295,7 @@ export function DemoTreeAppClient({
         treeClassName={treeClassNameByTheme}
         treeStyle={treeStyleByTheme}
       />
-      {theme === 'dark' ? (
+      {theme === "dark" ? (
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-y-[1px] right-0 left-[310px] hidden bg-gradient-to-r from-transparent via-[#070707]/70 to-[#070707] max-md:block"

@@ -24,7 +24,7 @@ test("unknown compression engine surfaces a validationErrors entry (sync)", () =
   const errors = result.stats?.validationErrors ?? [];
   assert.ok(
     errors.some((e) => e.includes("definitely-not-a-real-engine")),
-    `expected a validationErrors entry naming the unknown engine, got: ${JSON.stringify(errors)}`
+    `expected a validationErrors entry naming the unknown engine, got: ${JSON.stringify(errors)}`,
   );
 });
 
@@ -36,10 +36,10 @@ test("known + unknown mixed pipeline reports only the unknown engine (sync)", ()
   const errors = result.stats?.validationErrors ?? [];
   assert.ok(
     errors.some((e) => e.includes("ghost-engine")),
-    `expected the unknown engine to be reported, got: ${JSON.stringify(errors)}`
+    `expected the unknown engine to be reported, got: ${JSON.stringify(errors)}`,
   );
   assert.ok(
     !errors.some((e) => e.includes("session-dedup")),
-    "a real engine must not be reported as unknown"
+    "a real engine must not be reported as unknown",
   );
 });

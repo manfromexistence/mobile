@@ -227,7 +227,7 @@ export function claudeToOpenAIRequest(model, body, stream, credentials: unknown 
   if (body.tool_choice) {
     result.tool_choice = convertToolChoice(
       body.tool_choice,
-      useNativeResponsesWebSearch && hasClaudeServerWebSearchTool(body.tools)
+      useNativeResponsesWebSearch && hasClaudeServerWebSearchTool(body.tools),
     );
   }
 

@@ -26,7 +26,7 @@ test("#1731v2: skips when the provider:connection pair is in exhaustedConnection
   const reason = getExhaustedTargetSkipReason(target(), new Set(), new Set(["openai:conn-1"]));
   assert.equal(
     reason,
-    "Skipping openai/gpt-4o — connection conn-1 for provider openai had connection error (#1731v2)"
+    "Skipping openai/gpt-4o — connection conn-1 for provider openai had connection error (#1731v2)",
   );
 });
 
@@ -34,7 +34,7 @@ test("#1731: skips when the provider is in exhaustedProviders", () => {
   const reason = getExhaustedTargetSkipReason(target(), new Set(["openai"]), new Set());
   assert.equal(
     reason,
-    "Skipping openai/gpt-4o — provider openai marked exhausted this request (#1731)"
+    "Skipping openai/gpt-4o — provider openai marked exhausted this request (#1731)",
   );
 });
 
@@ -42,7 +42,7 @@ test("connection exhaustion takes precedence over provider exhaustion", () => {
   const reason = getExhaustedTargetSkipReason(
     target(),
     new Set(["openai"]),
-    new Set(["openai:conn-1"])
+    new Set(["openai:conn-1"]),
   );
   assert.ok(reason?.includes("(#1731v2)"));
 });
@@ -51,23 +51,28 @@ test("a different connection of an exhausted pair is NOT skipped on the connecti
   const reason = getExhaustedTargetSkipReason(
     target({ connectionId: "conn-2" }),
     new Set(),
-    new Set(["openai:conn-1"])
+    new Set(["openai:conn-1"]),
   );
   assert.equal(reason, null);
 });
 
 test("no connectionId: only the provider-level check applies", () => {
-  assert.equal(getExhaustedTargetSkipReason(target({ connectionId: null }), new Set(), new Set()), null);
+  assert.equal(
+    getExhaustedTargetSkipReason(target({ connectionId: null }), new Set(), new Set()),
+    null,
+  );
   assert.ok(
-    getExhaustedTargetSkipReason(target({ connectionId: null }), new Set(["openai"]), new Set())?.includes(
-      "(#1731)"
-    )
+    getExhaustedTargetSkipReason(
+      target({ connectionId: null }),
+      new Set(["openai"]),
+      new Set(),
+    )?.includes("(#1731)"),
   );
 });
 
 test("empty provider string is treated as falsy (no skip)", () => {
   assert.equal(
     getExhaustedTargetSkipReason(target({ provider: "" }), new Set([""]), new Set([":conn-1"])),
-    null
+    null,
   );
 });

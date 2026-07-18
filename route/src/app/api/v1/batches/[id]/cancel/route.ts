@@ -19,7 +19,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   if (!batch || (batch.apiKeyId !== null && batch.apiKeyId !== apiKeyId)) {
     return NextResponse.json(
       { error: { message: "Batch not found", type: "invalid_request_error" } },
-      { status: 404, headers: CORS_HEADERS }
+      { status: 404, headers: CORS_HEADERS },
     );
   }
 
@@ -28,7 +28,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
       {
         error: { message: `Batch ${id} is already ${batch.status}`, type: "invalid_request_error" },
       },
-      { status: 400, headers: CORS_HEADERS }
+      { status: 400, headers: CORS_HEADERS },
     );
   }
 

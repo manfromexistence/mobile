@@ -8,7 +8,7 @@ interface LoaderGalleryHeroInstallCommandProps {
 }
 
 export const LoaderGalleryHeroInstallCommand = memo(function LoaderGalleryHeroInstallCommand({
-  installCommand
+  installCommand,
 }: LoaderGalleryHeroInstallCommandProps) {
   const [heroInstallCopied, setHeroInstallCopied] = useState(false);
   const heroCopyResetRef = useRef<ReturnType<typeof setTimeout> | null>(null);

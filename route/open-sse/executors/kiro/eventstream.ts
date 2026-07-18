@@ -109,7 +109,7 @@ export function parseEventFrame(data: Uint8Array): EventFrame | null {
     const computedPreludeCRC = crc32(data.slice(0, 8));
     if (preludeCRC !== computedPreludeCRC) {
       console.warn(
-        `[Kiro] Prelude CRC mismatch: expected ${preludeCRC}, got ${computedPreludeCRC} — skipping corrupted frame`
+        `[Kiro] Prelude CRC mismatch: expected ${preludeCRC}, got ${computedPreludeCRC} — skipping corrupted frame`,
       );
       return null;
     }
@@ -123,7 +123,7 @@ export function parseEventFrame(data: Uint8Array): EventFrame | null {
       const computedMessageCRC = crc32(data.slice(0, data.length - 4));
       if (messageCRC !== computedMessageCRC) {
         console.warn(
-          `[Kiro] Message CRC mismatch: expected ${messageCRC}, got ${computedMessageCRC} — skipping corrupted frame`
+          `[Kiro] Message CRC mismatch: expected ${messageCRC}, got ${computedMessageCRC} — skipping corrupted frame`,
         );
         return null;
       }
@@ -177,7 +177,7 @@ export function parseEventFrame(data: Uint8Array): EventFrame | null {
         const err = parseError instanceof Error ? parseError : new Error(String(parseError));
         // Log parse error for debugging
         console.warn(
-          `[Kiro] Failed to parse payload: ${err.message} | payload: ${payloadStr.substring(0, 100)}`
+          `[Kiro] Failed to parse payload: ${err.message} | payload: ${payloadStr.substring(0, 100)}`,
         );
         payload = { raw: payloadStr };
       }

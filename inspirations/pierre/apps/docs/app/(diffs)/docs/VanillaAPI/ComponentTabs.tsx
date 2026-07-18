@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import type { PreloadedFileResult } from '@pierre/diffs/ssr';
-import { useState } from 'react';
+import type { PreloadedFileResult } from "@pierre/diffs/ssr";
+import { useState } from "react";
 
-import { DocsCodeExample } from '@/components/docs/DocsCodeExample';
-import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group';
+import { DocsCodeExample } from "@/components/docs/DocsCodeExample";
+import { ButtonGroup, ButtonGroupItem } from "@/components/ui/button-group";
 
-type ComponentType = 'code-view' | 'file-diff' | 'file' | 'unresolved-file';
-type PropsType = 'file-diff' | 'file';
-type DiffHunksType = 'from-file' | 'from-patch';
+type ComponentType = "code-view" | "file-diff" | "file" | "unresolved-file";
+type PropsType = "file-diff" | "file";
+type DiffHunksType = "from-file" | "from-patch";
 
 interface VanillaComponentTabsProps {
   codeViewExample: PreloadedFileResult<undefined>;
@@ -23,8 +23,7 @@ export function VanillaComponentTabs({
   fileExample,
   unresolvedFileExample,
 }: VanillaComponentTabsProps) {
-  const [componentType, setComponentType] =
-    useState<ComponentType>('code-view');
+  const [componentType, setComponentType] = useState<ComponentType>("code-view");
 
   return (
     <>
@@ -35,39 +34,19 @@ export function VanillaComponentTabs({
         <ButtonGroupItem value="code-view">CodeView</ButtonGroupItem>
         <ButtonGroupItem value="file-diff">FileDiff</ButtonGroupItem>
         <ButtonGroupItem value="file">File</ButtonGroupItem>
-        <ButtonGroupItem value="unresolved-file">
-          UnresolvedFile
-        </ButtonGroupItem>
+        <ButtonGroupItem value="unresolved-file">UnresolvedFile</ButtonGroupItem>
       </ButtonGroup>
       {(() => {
         switch (componentType) {
-          case 'code-view':
+          case "code-view":
+            return <DocsCodeExample {...codeViewExample} key={`component-type-${componentType}`} />;
+          case "file-diff":
+            return <DocsCodeExample {...fileDiffExample} key={`component-type-${componentType}`} />;
+          case "file":
+            return <DocsCodeExample {...fileExample} key={`component-type-${componentType}`} />;
+          case "unresolved-file":
             return (
-              <DocsCodeExample
-                {...codeViewExample}
-                key={`component-type-${componentType}`}
-              />
-            );
-          case 'file-diff':
-            return (
-              <DocsCodeExample
-                {...fileDiffExample}
-                key={`component-type-${componentType}`}
-              />
-            );
-          case 'file':
-            return (
-              <DocsCodeExample
-                {...fileExample}
-                key={`component-type-${componentType}`}
-              />
-            );
-          case 'unresolved-file':
-            return (
-              <DocsCodeExample
-                {...unresolvedFileExample}
-                key={`component-type-${componentType}`}
-              />
+              <DocsCodeExample {...unresolvedFileExample} key={`component-type-${componentType}`} />
             );
         }
       })()}
@@ -80,22 +59,16 @@ interface VanillaPropTabsProps {
   fileProps: PreloadedFileResult<undefined>;
 }
 
-export function VanillaPropTabs({
-  fileDiffProps,
-  fileProps,
-}: VanillaPropTabsProps) {
-  const [propsType, setPropsType] = useState<PropsType>('file-diff');
+export function VanillaPropTabs({ fileDiffProps, fileProps }: VanillaPropTabsProps) {
+  const [propsType, setPropsType] = useState<PropsType>("file-diff");
 
   return (
     <>
-      <ButtonGroup
-        value={propsType}
-        onValueChange={(value) => setPropsType(value as PropsType)}
-      >
+      <ButtonGroup value={propsType} onValueChange={(value) => setPropsType(value as PropsType)}>
         <ButtonGroupItem value="file-diff">FileDiff Props</ButtonGroupItem>
         <ButtonGroupItem value="file">File Props</ButtonGroupItem>
       </ButtonGroup>
-      {propsType === 'file-diff' ? (
+      {propsType === "file-diff" ? (
         <DocsCodeExample {...fileDiffProps} key={`props-type-${propsType}`} />
       ) : (
         <DocsCodeExample {...fileProps} key={`props-type-${propsType}`} />
@@ -109,12 +82,8 @@ interface DiffHunksTabsProps {
   diffHunksRendererPatch: PreloadedFileResult<undefined>;
 }
 
-export function DiffHunksTabs({
-  diffHunksRenderer,
-  diffHunksRendererPatch,
-}: DiffHunksTabsProps) {
-  const [diffHunksType, setDiffHunksType] =
-    useState<DiffHunksType>('from-file');
+export function DiffHunksTabs({ diffHunksRenderer, diffHunksRendererPatch }: DiffHunksTabsProps) {
+  const [diffHunksType, setDiffHunksType] = useState<DiffHunksType>("from-file");
 
   return (
     <>
@@ -125,7 +94,7 @@ export function DiffHunksTabs({
         <ButtonGroupItem value="from-file">Two Files</ButtonGroupItem>
         <ButtonGroupItem value="from-patch">Patch File</ButtonGroupItem>
       </ButtonGroup>
-      {diffHunksType === 'from-file' ? (
+      {diffHunksType === "from-file" ? (
         <DocsCodeExample {...diffHunksRenderer} key={diffHunksType} />
       ) : (
         <DocsCodeExample {...diffHunksRendererPatch} key={diffHunksType} />

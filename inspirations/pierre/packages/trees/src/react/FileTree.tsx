@@ -1,54 +1,35 @@
 /** @jsxImportSource react */
-'use client';
+"use client";
 
-import type { CSSProperties, HTMLAttributes, ReactNode } from 'react';
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import type { CSSProperties, HTMLAttributes, ReactNode } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
-import {
-  CONTEXT_MENU_SLOT_NAME,
-  FILE_TREE_TAG_NAME,
-  HEADER_SLOT_NAME,
-} from '../constants';
+import { CONTEXT_MENU_SLOT_NAME, FILE_TREE_TAG_NAME, HEADER_SLOT_NAME } from "../constants";
 import type {
   FileTreeCompositionOptions,
   FileTreeContextMenuItem,
   FileTreeContextMenuOpenContext,
   FileTreeSsrPayload,
-} from '../model/publicTypes';
-import type { FileTree as FileTreeModel } from '../render/FileTree';
+} from "../model/publicTypes";
+import type { FileTree as FileTreeModel } from "../render/FileTree";
 
-const useClientLayoutEffect =
-  typeof window === 'undefined' ? useEffect : useLayoutEffect;
+const useClientLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 interface ActiveContextMenuState {
   context: FileTreeContextMenuOpenContext;
   item: FileTreeContextMenuItem;
 }
 
-export type FileTreePreloadedData = Pick<
-  FileTreeSsrPayload,
-  'id' | 'shadowHtml'
->;
+export type FileTreePreloadedData = Pick<FileTreeSsrPayload, "id" | "shadowHtml">;
 
 function renderFileTreeChildren(
   header: ReactNode,
   renderContextMenu:
-    | ((
-        item: FileTreeContextMenuItem,
-        context: FileTreeContextMenuOpenContext
-      ) => ReactNode)
+    | ((item: FileTreeContextMenuItem, context: FileTreeContextMenuOpenContext) => ReactNode)
     | undefined,
-  activeContextMenu: ActiveContextMenuState | null
+  activeContextMenu: ActiveContextMenuState | null,
 ): ReactNode {
-  const headerChild =
-    header != null ? <div slot={HEADER_SLOT_NAME}>{header}</div> : null;
+  const headerChild = header != null ? <div slot={HEADER_SLOT_NAME}>{header}</div> : null;
   const contextMenuChild =
     renderContextMenu != null && activeContextMenu != null ? (
       <div slot={CONTEXT_MENU_SLOT_NAME}>
@@ -70,9 +51,9 @@ function renderFileTreeChildren(
 
 function renderPreloadedShadowDom(
   children: ReactNode,
-  preloadedData: FileTreePreloadedData | undefined
+  preloadedData: FileTreePreloadedData | undefined,
 ): ReactNode {
-  if (typeof window === 'undefined' && preloadedData != null) {
+  if (typeof window === "undefined" && preloadedData != null) {
     return (
       <>
         <template
@@ -91,16 +72,13 @@ function renderPreloadedShadowDom(
 function hasExistingPreloadedContent(host: HTMLElement): boolean {
   const shadowRoot = host.shadowRoot;
   if (
-    shadowRoot?.querySelector('[data-file-tree-id]') instanceof HTMLElement ||
-    shadowRoot?.querySelector('[data-file-tree-id]') instanceof SVGElement
+    shadowRoot?.querySelector("[data-file-tree-id]") instanceof HTMLElement ||
+    shadowRoot?.querySelector("[data-file-tree-id]") instanceof SVGElement
   ) {
     return true;
   }
 
-  return (
-    host.querySelector('template[shadowrootmode="open"]') instanceof
-    HTMLTemplateElement
-  );
+  return host.querySelector('template[shadowrootmode="open"]') instanceof HTMLTemplateElement;
 }
 
 function resolveComposition(
@@ -108,10 +86,7 @@ function resolveComposition(
   header: ReactNode,
   hasContextMenu: boolean,
   onClose: () => void,
-  onOpen: (
-    item: FileTreeContextMenuItem,
-    context: FileTreeContextMenuOpenContext
-  ) => void
+  onOpen: (item: FileTreeContextMenuItem, context: FileTreeContextMenuOpenContext) => void,
 ): FileTreeCompositionOptions | undefined {
   const nextComposition: FileTreeCompositionOptions = {
     ...(baselineComposition ?? {}),
@@ -146,16 +121,13 @@ function resolveComposition(
     : undefined;
 }
 
-export interface FileTreeProps extends Omit<
-  HTMLAttributes<HTMLElement>,
-  'children'
-> {
+export interface FileTreeProps extends Omit<HTMLAttributes<HTMLElement>, "children"> {
   header?: ReactNode;
   model: FileTreeModel;
   preloadedData?: FileTreePreloadedData;
   renderContextMenu?: (
     item: FileTreeContextMenuItem,
-    context: FileTreeContextMenuOpenContext
+    context: FileTreeContextMenuOpenContext,
   ) => ReactNode;
 }
 
@@ -167,11 +139,10 @@ export function FileTree({
   renderContextMenu,
   ...hostProps
 }: FileTreeProps): React.JSX.Element {
-  const [activeContextMenu, setActiveContextMenu] =
-    useState<ActiveContextMenuState | null>(null);
+  const [activeContextMenu, setActiveContextMenu] = useState<ActiveContextMenuState | null>(null);
   const [hostElement, setHostElement] = useState<HTMLElement | null>(null);
   const baselineCompositionRef = useRef<FileTreeCompositionOptions | undefined>(
-    model.getComposition()
+    model.getComposition(),
   );
   const baselineModelRef = useRef(model);
   if (baselineModelRef.current !== model) {
@@ -184,13 +155,10 @@ export function FileTree({
     setActiveContextMenu(null);
   }, []);
   const handleContextMenuOpen = useCallback(
-    (
-      item: FileTreeContextMenuItem,
-      context: FileTreeContextMenuOpenContext
-    ) => {
+    (item: FileTreeContextMenuItem, context: FileTreeContextMenuOpenContext) => {
       setActiveContextMenu({ context, item });
     },
-    []
+    [],
   );
   const baselineComposition = baselineCompositionRef.current;
   const composition = useMemo<FileTreeCompositionOptions | undefined>(
@@ -200,15 +168,9 @@ export function FileTree({
         header,
         hasContextMenu,
         handleContextMenuClose,
-        handleContextMenuOpen
+        handleContextMenuOpen,
       ),
-    [
-      baselineComposition,
-      handleContextMenuClose,
-      handleContextMenuOpen,
-      hasContextMenu,
-      header,
-    ]
+    [baselineComposition, handleContextMenuClose, handleContextMenuOpen, hasContextMenu, header],
   );
 
   const handleHostRef = useCallback((node: HTMLElement | null) => {
@@ -246,7 +208,7 @@ export function FileTree({
 
   const children = renderPreloadedShadowDom(
     renderFileTreeChildren(header, renderContextMenu, activeContextMenu),
-    preloadedData
+    preloadedData,
   );
   const resolvedHostId = id ?? preloadedData?.id;
 
@@ -254,8 +216,8 @@ export function FileTree({
   // set `--trees-item-height` and `--trees-density-override` themselves.
   // Caller-provided `style` keys still win via spread order.
   const mergedStyle: CSSProperties = {
-    ['--trees-item-height' as string]: `${String(model.getItemHeight())}px`,
-    ['--trees-density-override' as string]: model.getDensityFactor(),
+    ["--trees-item-height" as string]: `${String(model.getItemHeight())}px`,
+    ["--trees-density-override" as string]: model.getDensityFactor(),
     ...hostProps.style,
   };
 

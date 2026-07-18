@@ -1,6 +1,6 @@
-import { describe, expect, test } from "bun:test"
-import type { FilePart } from "@opencode-ai/sdk/v2"
-import { attached, inline, kind } from "./message-file"
+import { describe, expect, test } from "bun:test";
+import type { FilePart } from "@opencode-ai/sdk/v2";
+import { attached, inline, kind } from "./message-file";
 
 function file(part: Partial<FilePart> = {}): FilePart {
   return {
@@ -12,14 +12,14 @@ function file(part: Partial<FilePart> = {}): FilePart {
     url: "file:///repo/README.txt",
     filename: "README.txt",
     ...part,
-  }
+  };
 }
 
 describe("message-file", () => {
   test("treats data URLs as attachments", () => {
-    expect(attached(file({ url: "data:text/plain;base64,SGVsbG8=" }))).toBe(true)
-    expect(attached(file())).toBe(false)
-  })
+    expect(attached(file({ url: "data:text/plain;base64,SGVsbG8=" }))).toBe(true);
+    expect(attached(file())).toBe(false);
+  });
 
   test("treats only non-attachment source ranges as inline references", () => {
     expect(
@@ -32,7 +32,7 @@ describe("message-file", () => {
           },
         }),
       ),
-    ).toBe(true)
+    ).toBe(true);
 
     expect(
       inline(
@@ -45,11 +45,11 @@ describe("message-file", () => {
           },
         }),
       ),
-    ).toBe(false)
-  })
+    ).toBe(false);
+  });
 
   test("separates image and file attachment kinds", () => {
-    expect(kind(file({ mime: "image/png" }))).toBe("image")
-    expect(kind(file({ mime: "application/pdf" }))).toBe("file")
-  })
-})
+    expect(kind(file({ mime: "image/png" }))).toBe("image");
+    expect(kind(file({ mime: "application/pdf" }))).toBe("file");
+  });
+});

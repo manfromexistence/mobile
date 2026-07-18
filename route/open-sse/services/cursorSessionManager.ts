@@ -80,7 +80,7 @@ export class CursorSessionManager {
     conversationId: string,
     h2Client: ClientHttp2Session,
     h2Req: ClientHttp2Stream,
-    blobStore: Map<string, Buffer>
+    blobStore: Map<string, Buffer>,
   ): CursorSession {
     const existing = this.sessions.get(conversationId);
     if (existing) this.close(existing);
@@ -140,7 +140,7 @@ export class CursorSessionManager {
     session: CursorSession,
     openAIToolCallId: string,
     content: string,
-    isError: boolean
+    isError: boolean,
   ): boolean {
     const pending = session.pendingToolCalls.get(openAIToolCallId);
     if (!pending) return false;
@@ -187,7 +187,7 @@ export class CursorSessionManager {
   private enforceMaxSessions(): void {
     if (this.sessions.size <= this.maxSessions) return;
     const oldest = Array.from(this.sessions.values()).sort(
-      (a, b) => a.lastActivityTs - b.lastActivityTs
+      (a, b) => a.lastActivityTs - b.lastActivityTs,
     )[0];
     if (oldest) this.close(oldest);
   }

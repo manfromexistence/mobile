@@ -61,7 +61,7 @@ const _inflightMap = new Map<string, InflightSlot>();
 export function incrementInflight(
   connectionId: string,
   leaseMs: number = DEFAULT_LEASE_MS,
-  nowMs: number = Date.now()
+  nowMs: number = Date.now(),
 ): number {
   if (!connectionId) return 0;
   pruneExpired(nowMs);

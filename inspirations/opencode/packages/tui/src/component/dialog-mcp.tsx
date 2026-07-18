@@ -1,34 +1,34 @@
-import { createMemo, createSignal } from "solid-js"
-import { useLocal } from "../context/local"
-import { useSync } from "../context/sync"
-import { map, pipe, entries, sortBy } from "remeda"
-import { DialogSelect, type DialogSelectRef, type DialogSelectOption } from "../ui/dialog-select"
-import { useTheme } from "../context/theme"
-import { TextAttributes } from "@opentui/core"
-import { useSDK } from "../context/sdk"
+import { createMemo, createSignal } from "solid-js";
+import { useLocal } from "../context/local";
+import { useSync } from "../context/sync";
+import { map, pipe, entries, sortBy } from "remeda";
+import { DialogSelect, type DialogSelectRef, type DialogSelectOption } from "../ui/dialog-select";
+import { useTheme } from "../context/theme";
+import { TextAttributes } from "@opentui/core";
+import { useSDK } from "../context/sdk";
 
 function Status(props: { enabled: boolean; loading: boolean }) {
-  const { theme } = useTheme()
+  const { theme } = useTheme();
   if (props.loading) {
-    return <span style={{ fg: theme.textMuted }}>⋯ Loading</span>
+    return <span style={{ fg: theme.textMuted }}>⋯ Loading</span>;
   }
   if (props.enabled) {
-    return <span style={{ fg: theme.success, attributes: TextAttributes.BOLD }}>✓ Enabled</span>
+    return <span style={{ fg: theme.success, attributes: TextAttributes.BOLD }}>✓ Enabled</span>;
   }
-  return <span style={{ fg: theme.textMuted }}>○ Disabled</span>
+  return <span style={{ fg: theme.textMuted }}>○ Disabled</span>;
 }
 
 export function DialogMcp() {
-  const local = useLocal()
-  const sync = useSync()
-  const sdk = useSDK()
-  const [, setRef] = createSignal<DialogSelectRef<unknown>>()
-  const [loading, setLoading] = createSignal<string | null>(null)
+  const local = useLocal();
+  const sync = useSync();
+  const sdk = useSDK();
+  const [, setRef] = createSignal<DialogSelectRef<unknown>>();
+  const [loading, setLoading] = createSignal<string | null>(null);
 
   const options = createMemo(() => {
     // Track sync data and loading state to trigger re-render when they change
-    const mcpData = sync.data.mcp
-    const loadingMcp = loading()
+    const mcpData = sync.data.mcp;
+    const loadingMcp = loading();
 
     return pipe(
       mcpData ?? {},
@@ -41,8 +41,8 @@ export function DialogMcp() {
         footer: <Status enabled={local.mcp.isEnabled(name)} loading={loadingMcp === name} />,
         category: undefined,
       })),
-    )
-  })
+    );
+  });
 
   const actions = createMemo(() => [
     {
@@ -50,26 +50,26 @@ export function DialogMcp() {
       title: "toggle",
       onTrigger: async (option: DialogSelectOption<string>) => {
         // Prevent toggling while an operation is already in progress
-        if (loading() !== null) return
+        if (loading() !== null) return;
 
-        setLoading(option.value)
+        setLoading(option.value);
         try {
-          await local.mcp.toggle(option.value)
+          await local.mcp.toggle(option.value);
           // Refresh MCP status from server
-          const status = await sdk.client.mcp.status()
+          const status = await sdk.client.mcp.status();
           if (status.data) {
-            sync.set("mcp", status.data)
+            sync.set("mcp", status.data);
           } else {
-            console.error("Failed to refresh MCP status: no data returned")
+            console.error("Failed to refresh MCP status: no data returned");
           }
         } catch (error) {
-          console.error("Failed to toggle MCP:", error)
+          console.error("Failed to toggle MCP:", error);
         } finally {
-          setLoading(null)
+          setLoading(null);
         }
       },
     },
-  ])
+  ]);
 
   return (
     <DialogSelect
@@ -81,5 +81,5 @@ export function DialogMcp() {
         // Don't close on select, only on escape
       }}
     />
-  )
+  );
 }

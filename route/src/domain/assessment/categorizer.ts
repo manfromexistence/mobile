@@ -105,7 +105,7 @@ export class Categorizer {
     const tier = this.assignTier(assessment);
     const fitnessScores = categories.reduce(
       (acc, cat) => ({ ...acc, [cat]: this.calculateFitness(assessment, cat) }),
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
 
     return {

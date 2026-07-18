@@ -15,7 +15,9 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 
-const { API_SKILL_IDS, CLI_SKILL_IDS, CONFIG_SKILL_IDS } = await import("../../src/lib/agentSkills/catalog.ts");
+const { API_SKILL_IDS, CLI_SKILL_IDS, CONFIG_SKILL_IDS } = await import(
+  "../../src/lib/agentSkills/catalog.ts"
+);
 
 const SKILLS_DIR = path.resolve(process.cwd(), "skills");
 const ALL_IDS = [...API_SKILL_IDS, ...CLI_SKILL_IDS, ...CONFIG_SKILL_IDS] as string[];
@@ -84,11 +86,7 @@ test("skills/ directory only contains expected catalog IDs plus README", () => {
   const dirs = entries.filter((e) => e.isDirectory()).map((e) => e.name);
   const expectedSet = new Set(ALL_IDS);
   const unexpected = dirs.filter((d) => !expectedSet.has(d));
-  assert.deepEqual(
-    unexpected,
-    [],
-    `Unexpected directories in skills/: ${unexpected.join(", ")}`,
-  );
+  assert.deepEqual(unexpected, [], `Unexpected directories in skills/: ${unexpected.join(", ")}`);
 });
 
 // ── §3: 10 specific IDs have custom blocks ───────────────────────────────────
@@ -96,10 +94,7 @@ test("skills/ directory only contains expected catalog IDs plus README", () => {
 for (const id of CUSTOM_BLOCK_IDS) {
   test(`skills/${id}/SKILL.md has <!-- skill:custom-start --> block`, () => {
     const skillPath = path.join(SKILLS_DIR, id, "SKILL.md");
-    assert.ok(
-      fs.existsSync(skillPath),
-      `skills/${id}/SKILL.md does not exist`,
-    );
+    assert.ok(fs.existsSync(skillPath), `skills/${id}/SKILL.md does not exist`);
     const content = fs.readFileSync(skillPath, "utf-8");
     assert.ok(
       content.includes("<!-- skill:custom-start -->"),

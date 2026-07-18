@@ -10,7 +10,7 @@ function toErrorResponse(error: unknown) {
         error: error.message,
         code: error.code,
       },
-      { status: error.status }
+      { status: error.status },
     );
   }
 

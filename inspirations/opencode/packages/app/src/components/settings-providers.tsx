@@ -1,21 +1,21 @@
-import { Button } from "@opencode-ai/ui/button"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { ProviderIcon } from "@opencode-ai/ui/provider-icon"
-import { Tag } from "@opencode-ai/ui/tag"
-import { showToast } from "@/utils/toast"
-import { popularProviders, useProviders } from "@/hooks/use-providers"
-import { createMemo, type Component, For, Show } from "solid-js"
-import { useLanguage } from "@/context/language"
-import { useServerSDK } from "@/context/server-sdk"
-import { useServerSync } from "@/context/server-sync"
-import { DialogConnectProvider } from "./dialog-connect-provider"
-import { DialogSelectProvider } from "./dialog-select-provider"
-import { DialogCustomProvider } from "./dialog-custom-provider"
-import { SettingsList } from "./settings-list"
-import { SettingsServerPicker, SettingsServerScope } from "./settings-server-picker"
+import { Button } from "@opencode-ai/ui/button";
+import { useDialog } from "@opencode-ai/ui/context/dialog";
+import { ProviderIcon } from "@opencode-ai/ui/provider-icon";
+import { Tag } from "@opencode-ai/ui/tag";
+import { showToast } from "@/utils/toast";
+import { popularProviders, useProviders } from "@/hooks/use-providers";
+import { createMemo, type Component, For, Show } from "solid-js";
+import { useLanguage } from "@/context/language";
+import { useServerSDK } from "@/context/server-sdk";
+import { useServerSync } from "@/context/server-sync";
+import { DialogConnectProvider } from "./dialog-connect-provider";
+import { DialogSelectProvider } from "./dialog-select-provider";
+import { DialogCustomProvider } from "./dialog-custom-provider";
+import { SettingsList } from "./settings-list";
+import { SettingsServerPicker, SettingsServerScope } from "./settings-server-picker";
 
-type ProviderSource = "env" | "api" | "config" | "custom"
-type ProviderItem = ReturnType<ReturnType<typeof useProviders>["connected"]>[number]
+type ProviderSource = "env" | "api" | "config" | "custom";
+type ProviderItem = ReturnType<ReturnType<typeof useProviders>["connected"]>[number];
 
 const PROVIDER_NOTES = [
   { match: (id: string) => id === "opencode", key: "dialog.provider.opencode.note" },
@@ -26,74 +26,75 @@ const PROVIDER_NOTES = [
   { match: (id: string) => id === "google", key: "dialog.provider.google.note" },
   { match: (id: string) => id === "openrouter", key: "dialog.provider.openrouter.note" },
   { match: (id: string) => id === "vercel", key: "dialog.provider.vercel.note" },
-] as const
+] as const;
 
 export const SettingsProviders: Component = () => {
   return (
     <SettingsServerScope>
       <SettingsProvidersContent />
     </SettingsServerScope>
-  )
-}
+  );
+};
 
 const SettingsProvidersContent: Component = () => {
-  const dialog = useDialog()
-  const language = useLanguage()
-  const serverSDK = useServerSDK()
-  const serverSync = useServerSync()
-  const providers = useProviders()
+  const dialog = useDialog();
+  const language = useLanguage();
+  const serverSDK = useServerSDK();
+  const serverSync = useServerSync();
+  const providers = useProviders();
 
   const connected = createMemo(() => {
     return providers
       .connected()
-      .filter((p) => p.id !== "opencode" || Object.values(p.models).find((m) => m.cost?.input))
-  })
+      .filter((p) => p.id !== "opencode" || Object.values(p.models).find((m) => m.cost?.input));
+  });
 
   const popular = createMemo(() => {
-    const connectedIDs = new Set(connected().map((p) => p.id))
+    const connectedIDs = new Set(connected().map((p) => p.id));
     const items = providers
       .popular()
       .filter((p) => !connectedIDs.has(p.id))
-      .slice()
-    items.sort((a, b) => popularProviders.indexOf(a.id) - popularProviders.indexOf(b.id))
-    return items
-  })
+      .slice();
+    items.sort((a, b) => popularProviders.indexOf(a.id) - popularProviders.indexOf(b.id));
+    return items;
+  });
 
   const source = (item: ProviderItem): ProviderSource | undefined => {
-    if (!("source" in item)) return
-    const value = item.source
-    if (value === "env" || value === "api" || value === "config" || value === "custom") return value
-    return
-  }
+    if (!("source" in item)) return;
+    const value = item.source;
+    if (value === "env" || value === "api" || value === "config" || value === "custom")
+      return value;
+    return;
+  };
 
   const type = (item: ProviderItem) => {
-    const current = source(item)
-    if (current === "env") return language.t("settings.providers.tag.environment")
-    if (current === "api") return language.t("provider.connect.method.apiKey")
+    const current = source(item);
+    if (current === "env") return language.t("settings.providers.tag.environment");
+    if (current === "api") return language.t("provider.connect.method.apiKey");
     if (current === "config") {
-      if (isConfigCustom(item.id)) return language.t("settings.providers.tag.custom")
-      return language.t("settings.providers.tag.config")
+      if (isConfigCustom(item.id)) return language.t("settings.providers.tag.custom");
+      return language.t("settings.providers.tag.config");
     }
-    if (current === "custom") return language.t("settings.providers.tag.custom")
-    return language.t("settings.providers.tag.other")
-  }
+    if (current === "custom") return language.t("settings.providers.tag.custom");
+    return language.t("settings.providers.tag.other");
+  };
 
-  const canDisconnect = (item: ProviderItem) => source(item) !== "env"
+  const canDisconnect = (item: ProviderItem) => source(item) !== "env";
 
-  const note = (id: string) => PROVIDER_NOTES.find((item) => item.match(id))?.key
+  const note = (id: string) => PROVIDER_NOTES.find((item) => item.match(id))?.key;
 
   const isConfigCustom = (providerID: string) => {
-    const provider = serverSync().data.config.provider?.[providerID]
-    if (!provider) return false
-    if (provider.npm !== "@ai-sdk/openai-compatible") return false
-    if (!provider.models || Object.keys(provider.models).length === 0) return false
-    return true
-  }
+    const provider = serverSync().data.config.provider?.[providerID];
+    if (!provider) return false;
+    if (provider.npm !== "@ai-sdk/openai-compatible") return false;
+    if (!provider.models || Object.keys(provider.models).length === 0) return false;
+    return true;
+  };
 
   const disableProvider = async (providerID: string, name: string) => {
-    const before = serverSync().data.config.disabled_providers ?? []
-    const next = before.includes(providerID) ? before : [...before, providerID]
-    serverSync().set("config", "disabled_providers", next)
+    const before = serverSync().data.config.disabled_providers ?? [];
+    const next = before.includes(providerID) ? before : [...before, providerID];
+    serverSync().set("config", "disabled_providers", next);
 
     await serverSync()
       .updateConfig({ disabled_providers: next })
@@ -102,40 +103,44 @@ const SettingsProvidersContent: Component = () => {
           variant: "success",
           icon: "circle-check",
           title: language.t("provider.disconnect.toast.disconnected.title", { provider: name }),
-          description: language.t("provider.disconnect.toast.disconnected.description", { provider: name }),
-        })
+          description: language.t("provider.disconnect.toast.disconnected.description", {
+            provider: name,
+          }),
+        });
       })
       .catch((err: unknown) => {
-        serverSync().set("config", "disabled_providers", before)
-        const message = err instanceof Error ? err.message : String(err)
-        showToast({ title: language.t("common.requestFailed"), description: message })
-      })
-  }
+        serverSync().set("config", "disabled_providers", before);
+        const message = err instanceof Error ? err.message : String(err);
+        showToast({ title: language.t("common.requestFailed"), description: message });
+      });
+  };
 
   const disconnect = async (providerID: string, name: string) => {
     if (isConfigCustom(providerID)) {
       await serverSDK()
         .client.auth.remove({ providerID })
-        .catch(() => undefined)
-      await disableProvider(providerID, name)
-      return
+        .catch(() => undefined);
+      await disableProvider(providerID, name);
+      return;
     }
     await serverSDK()
       .client.auth.remove({ providerID })
       .then(async () => {
-        await serverSDK().client.global.dispose()
+        await serverSDK().client.global.dispose();
         showToast({
           variant: "success",
           icon: "circle-check",
           title: language.t("provider.disconnect.toast.disconnected.title", { provider: name }),
-          description: language.t("provider.disconnect.toast.disconnected.description", { provider: name }),
-        })
+          description: language.t("provider.disconnect.toast.disconnected.description", {
+            provider: name,
+          }),
+        });
       })
       .catch((err: unknown) => {
-        const message = err instanceof Error ? err.message : String(err)
-        showToast({ title: language.t("common.requestFailed"), description: message })
-      })
-  }
+        const message = err instanceof Error ? err.message : String(err);
+        showToast({ title: language.t("common.requestFailed"), description: message });
+      });
+  };
 
   return (
     <div class="flex flex-col h-full overflow-y-auto no-scrollbar px-4 pb-10 sm:px-10 sm:pb-10">
@@ -148,7 +153,9 @@ const SettingsProvidersContent: Component = () => {
 
       <div class="flex flex-col gap-8 max-w-[720px]">
         <div class="flex flex-col gap-1" data-component="connected-providers-section">
-          <h3 class="text-14-medium text-text-strong pb-2">{language.t("settings.providers.section.connected")}</h3>
+          <h3 class="text-14-medium text-text-strong pb-2">
+            {language.t("settings.providers.section.connected")}
+          </h3>
           <SettingsList>
             <Show
               when={connected().length > 0}
@@ -174,7 +181,11 @@ const SettingsProvidersContent: Component = () => {
                         </span>
                       }
                     >
-                      <Button size="large" variant="ghost" onClick={() => void disconnect(item.id, item.name)}>
+                      <Button
+                        size="large"
+                        variant="ghost"
+                        onClick={() => void disconnect(item.id, item.name)}
+                      >
                         {language.t("common.disconnect")}
                       </Button>
                     </Show>
@@ -186,7 +197,9 @@ const SettingsProvidersContent: Component = () => {
         </div>
 
         <div class="flex flex-col gap-1">
-          <h3 class="text-14-medium text-text-strong pb-2">{language.t("settings.providers.section.popular")}</h3>
+          <h3 class="text-14-medium text-text-strong pb-2">
+            {language.t("settings.providers.section.popular")}
+          </h3>
           <SettingsList>
             <For each={popular()}>
               {(item) => (
@@ -203,7 +216,9 @@ const SettingsProvidersContent: Component = () => {
                       </Show>
                     </div>
                     <Show when={note(item.id)}>
-                      {(key) => <span class="text-12-regular text-text-weak pl-8">{language.t(key())}</span>}
+                      {(key) => (
+                        <span class="text-12-regular text-text-weak pl-8">{language.t(key())}</span>
+                      )}
                     </Show>
                   </div>
                   <Button
@@ -211,7 +226,7 @@ const SettingsProvidersContent: Component = () => {
                     variant="secondary"
                     icon="plus-small"
                     onClick={() => {
-                      dialog.show(() => <DialogConnectProvider provider={item.id} />)
+                      dialog.show(() => <DialogConnectProvider provider={item.id} />);
                     }}
                   >
                     {language.t("common.connect")}
@@ -227,7 +242,9 @@ const SettingsProvidersContent: Component = () => {
               <div class="flex flex-col min-w-0">
                 <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
                   <ProviderIcon id="synthetic" class="size-5 shrink-0 icon-strong-base" />
-                  <span class="text-14-medium text-text-strong">{language.t("provider.custom.title")}</span>
+                  <span class="text-14-medium text-text-strong">
+                    {language.t("provider.custom.title")}
+                  </span>
                   <Tag>{language.t("settings.providers.tag.custom")}</Tag>
                 </div>
                 <span class="text-12-regular text-text-weak pl-8">
@@ -239,7 +256,7 @@ const SettingsProvidersContent: Component = () => {
                 variant="secondary"
                 icon="plus-small"
                 onClick={() => {
-                  dialog.show(() => <DialogCustomProvider back="close" />)
+                  dialog.show(() => <DialogCustomProvider back="close" />);
                 }}
               >
                 {language.t("common.connect")}
@@ -251,7 +268,7 @@ const SettingsProvidersContent: Component = () => {
             variant="ghost"
             class="px-0 py-0 mt-5 text-14-medium text-text-interactive-base text-left justify-start hover:bg-transparent active:bg-transparent"
             onClick={() => {
-              dialog.show(() => <DialogSelectProvider />)
+              dialog.show(() => <DialogSelectProvider />);
             }}
           >
             {language.t("dialog.provider.viewAll")}
@@ -259,5 +276,5 @@ const SettingsProvidersContent: Component = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

@@ -27,7 +27,7 @@ function renderComments(comments) {
   return comments
     .map(
       (c) =>
-        `- **@${c.author?.login ?? "unknown"}** (${c.createdAt}):\n  > ${(c.body ?? "").split("\n").join("\n  > ")}`
+        `- **@${c.author?.login ?? "unknown"}** (${c.createdAt}):\n  > ${(c.body ?? "").split("\n").join("\n  > ")}`,
     )
     .join("\n");
 }

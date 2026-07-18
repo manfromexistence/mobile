@@ -34,7 +34,7 @@ export function isFingerprintProvider(provider: string): boolean {
  * fall through to the unpinned resolution path unchanged.
  */
 export function splitFingerprintPin(
-  connectionId: string
+  connectionId: string,
 ): { realConnectionId: string; pinnedFingerprint: string } | null {
   const separatorIndex = connectionId.indexOf(FP_PIN_SEPARATOR);
   if (separatorIndex === -1) return null;
@@ -48,7 +48,7 @@ export function splitFingerprintPin(
 
 /** Safely extract the fingerprints array from a connection record. */
 export function getConnectionFingerprints(
-  connection: Record<string, unknown> | undefined | null
+  connection: Record<string, unknown> | undefined | null,
 ): string[] {
   if (!connection || typeof connection !== "object") return [];
   const psd = connection["providerSpecificData"];
@@ -60,7 +60,7 @@ export function getConnectionFingerprints(
 
 /** True when a connection carries more than one fingerprint. */
 export function hasMultipleFingerprints(
-  connection: Record<string, unknown> | undefined | null
+  connection: Record<string, unknown> | undefined | null,
 ): boolean {
   return getConnectionFingerprints(connection).length > 1;
 }
@@ -73,7 +73,7 @@ export function hasMultipleFingerprints(
 export function buildFingerprintExecutionKey(
   originalKey: string,
   fingerprint: string,
-  isFirst: boolean
+  isFirst: boolean,
 ): string {
   if (isFirst) return originalKey;
   return `${originalKey}@fp:${fingerprint}`;
@@ -95,7 +95,7 @@ export function buildFingerprintExecutionKey(
 export function expandTargetsByFingerprints(
   targets: ResolvedComboTarget[],
   connectionById: Map<string, Record<string, unknown>>,
-  getProvider: (target: ResolvedComboTarget) => string
+  getProvider: (target: ResolvedComboTarget) => string,
 ): ResolvedComboTarget[] {
   const result: ResolvedComboTarget[] = [];
 
@@ -123,7 +123,7 @@ export function expandTargetsByFingerprints(
         executionKey: buildFingerprintExecutionKey(
           target.executionKey,
           pin.pinnedFingerprint,
-          false
+          false,
         ),
       });
       continue;

@@ -702,7 +702,7 @@ export function parseImageModel(modelStr) {
  */
 function imageProviderCatalogEntries(
   providerId: string,
-  config: ImageProviderConfig
+  config: ImageProviderConfig,
 ): ImageCatalogModelEntry[] {
   return config.models.map((model) => ({
     id: `${providerId}/${model.id}`,
@@ -716,7 +716,7 @@ function imageProviderCatalogEntries(
 
 function imageAliasCatalogEntry(
   alias: string,
-  target: ImageModelAliasEntry
+  target: ImageModelAliasEntry,
 ): ImageCatalogModelEntry | null {
   if (!target.listInCatalog) return null;
 
@@ -734,7 +734,7 @@ function imageAliasCatalogEntry(
 
 export function getAllImageModels(): ImageCatalogModelEntry[] {
   const providerModels = Object.entries(IMAGE_PROVIDERS).flatMap(([providerId, config]) =>
-    imageProviderCatalogEntries(providerId, config)
+    imageProviderCatalogEntries(providerId, config),
   );
   const aliasModels = Object.entries(IMAGE_MODEL_ALIASES).flatMap(([alias, target]) => {
     const entry = imageAliasCatalogEntry(alias, target);

@@ -1,8 +1,8 @@
-import type { DiffsHubSavedCommentEntry } from './types';
+import type { DiffsHubSavedCommentEntry } from "./types";
 
 export function insertCommentInLineOrder(
   comments: readonly DiffsHubSavedCommentEntry[],
-  entry: DiffsHubSavedCommentEntry
+  entry: DiffsHubSavedCommentEntry,
 ): DiffsHubSavedCommentEntry[] {
   let existingIndex = -1;
   for (let index = 0; index < comments.length; index++) {
@@ -13,9 +13,7 @@ export function insertCommentInLineOrder(
   }
 
   const nextComments =
-    existingIndex === -1
-      ? [...comments]
-      : comments.filter((_, index) => index !== existingIndex);
+    existingIndex === -1 ? [...comments] : comments.filter((_, index) => index !== existingIndex);
 
   let insertIndex = nextComments.length;
   for (let index = 0; index < nextComments.length; index++) {

@@ -113,14 +113,14 @@ test("huggingchat registry preserves supported boolean capabilities", () => {
     assert.equal(
       model.supportsReasoning === true,
       REASONING_MODELS.has(id),
-      `${id} reasoning flag`
+      `${id} reasoning flag`,
     );
   }
 });
 
 test("huggingchat free catalog tracks final concrete models without router budget duplication", () => {
   const freeModelIds = FREE_MODEL_BUDGETS.filter((budget) => budget.provider === "huggingchat").map(
-    (budget) => budget.modelId
+    (budget) => budget.modelId,
   );
 
   assert.deepEqual(freeModelIds, HUGGINGCHAT_CONCRETE_MODELS);

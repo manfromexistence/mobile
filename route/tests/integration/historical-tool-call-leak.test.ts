@@ -127,7 +127,7 @@ test("historical tool calls mapped natively — no text leak in response", { ski
       `finish_reason: ${finishReason}\n` +
       `content: ${content.slice(0, 200)}\n` +
       `reasoning: ${reasoning.slice(0, 200)}\n` +
-      `tool_calls: ${JSON.stringify(toolCalls).slice(0, 300)}`
+      `tool_calls: ${JSON.stringify(toolCalls).slice(0, 300)}`,
   );
 
   // If the model made tool calls, verify they are valid OpenAI format
@@ -170,7 +170,7 @@ test(
     assert.equal(
       res.status,
       200,
-      `expected 200, got ${res.status} — thinking model rejected native functionCall without signature`
+      `expected 200, got ${res.status} — thinking model rejected native functionCall without signature`,
     );
 
     const data = (await res.json()) as Record<string, unknown>;
@@ -188,7 +188,7 @@ test(
 
     const leaks = detectLeaks(allText);
     assert.equal(leaks.length, 0, `thinking model leaked patterns: ${leaks.join(", ")}`);
-  }
+  },
 );
 
 test("simple Q&A without tool calls — baseline", { skip }, async () => {

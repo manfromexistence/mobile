@@ -103,7 +103,7 @@ export async function GET(request: Request): Promise<Response> {
       "Connection: Upgrade",
       `Sec-WebSocket-Accept: ${acceptHeader}`,
       "\r\n",
-    ].join("\r\n")
+    ].join("\r\n"),
   );
 
   const unsubscribe = globalTrafficBuffer.subscribe((ev) => {

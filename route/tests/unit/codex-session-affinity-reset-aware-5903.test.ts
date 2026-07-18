@@ -73,11 +73,15 @@ test("codex session affinity wins over a per-request reset-aware forcedConnectio
     sessionKey: "session-S",
     forcedConnectionId: connectionA.id,
   });
-  assert.equal(request1?.connectionId, connectionA.id, "request 1 should pin to the scored winner A");
+  assert.equal(
+    request1?.connectionId,
+    connectionA.id,
+    "request 1 should pin to the scored winner A",
+  );
   assert.equal(
     affinityDb.getSessionAccountAffinity("session-S", "codex", 60_000)?.connectionId,
     connectionA.id,
-    "affinity row must be created for session-S pointing at A"
+    "affinity row must be created for session-S pointing at A",
   );
 
   // Request 2: quota state shifted and reset-aware now scores B higher for
@@ -91,12 +95,12 @@ test("codex session affinity wins over a per-request reset-aware forcedConnectio
   assert.equal(
     request2?.connectionId,
     connectionA.id,
-    "request 2 must still use the pinned connection A, not the freshly re-scored B"
+    "request 2 must still use the pinned connection A, not the freshly re-scored B",
   );
   assert.equal(
     affinityDb.getSessionAccountAffinity("session-S", "codex", 60_000)?.connectionId,
     connectionA.id,
-    "affinity row for session-S must remain pinned to A after re-scoring"
+    "affinity row for session-S must remain pinned to A after re-scoring",
   );
 
   // A brand-new session (S2) has no existing pin, so the freshly re-scored
@@ -105,18 +109,22 @@ test("codex session affinity wins over a per-request reset-aware forcedConnectio
     sessionKey: "session-S2",
     forcedConnectionId: connectionB.id,
   });
-  assert.equal(request3?.connectionId, connectionB.id, "a new session must honor the fresh re-scored pick");
+  assert.equal(
+    request3?.connectionId,
+    connectionB.id,
+    "a new session must honor the fresh re-scored pick",
+  );
   assert.equal(
     affinityDb.getSessionAccountAffinity("session-S2", "codex", 60_000)?.connectionId,
     connectionB.id,
-    "a new affinity row for session-S2 must be created pointing at B"
+    "a new affinity row for session-S2 must be created pointing at B",
   );
 
   // Session S must remain unaffected by S2's independent pin.
   assert.equal(
     affinityDb.getSessionAccountAffinity("session-S", "codex", 60_000)?.connectionId,
     connectionA.id,
-    "session-S pin must stay isolated from session-S2"
+    "session-S pin must stay isolated from session-S2",
   );
 });
 
@@ -150,7 +158,7 @@ test("reset-aware forcedConnectionId is honored when the pinned connection becom
   assert.equal(
     request2?.connectionId,
     connectionB.id,
-    "an ineligible pin must fall through to the freshly forced connection"
+    "an ineligible pin must fall through to the freshly forced connection",
   );
 });
 
@@ -176,6 +184,6 @@ test("no session affinity configured: reset-aware forcedConnectionId applies exa
   assert.equal(
     request2?.connectionId,
     connectionB.id,
-    "with affinity disabled (ttl=0) each request must honor the fresh forcedConnectionId"
+    "with affinity disabled (ttl=0) each request must honor the fresh forcedConnectionId",
   );
 });

@@ -241,7 +241,7 @@ export interface ContinuableBody {
  */
 export function makeContinuationBody(
   body: ContinuableBody,
-  assistantSoFar: string
+  assistantSoFar: string,
 ): (ContinuableBody & { messages: unknown[] }) | null {
   if (!body || typeof body !== "object") return null;
   if (!Array.isArray(body.messages) || body.messages.length === 0) return null;
@@ -303,7 +303,7 @@ export interface RecoverableStreamOptions {
 export function createRecoverableStream(
   initialStream: ReadableStream<Uint8Array>,
   reopen: () => Promise<ReadableStream<Uint8Array> | null>,
-  options: RecoverableStreamOptions
+  options: RecoverableStreamOptions,
 ): ReadableStream<Uint8Array> {
   const maxRetries = options.maxEarlyRetries ?? STREAM_RECOVERY.EARLY_RETRY_MAX;
 
@@ -361,7 +361,7 @@ export function createRecoverableStream(
   // running scan so a later continuation can be prefilled with exactly what was sent.
   const emit = (
     controller: ReadableStreamDefaultController<Uint8Array>,
-    chunk: Uint8Array
+    chunk: Uint8Array,
   ): void => {
     controller.enqueue(chunk);
     if (!continueEnabled) return;
@@ -393,7 +393,7 @@ export function createRecoverableStream(
 
   const emitCleanTerminal = (controller: ReadableStreamDefaultController<Uint8Array>) => {
     controller.enqueue(
-      encoder.encode('data: {"choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}\n\n')
+      encoder.encode('data: {"choices":[{"index":0,"delta":{},"finish_reason":"stop"}]}\n\n'),
     );
     controller.enqueue(encoder.encode("data: [DONE]\n\n"));
   };
@@ -402,7 +402,7 @@ export function createRecoverableStream(
   // Returns true once the recovered stream has been terminated (caller closes); false to
   // fall back to the unchanged #4131 error/close behavior.
   const tryContinue = async (
-    controller: ReadableStreamDefaultController<Uint8Array>
+    controller: ReadableStreamDefaultController<Uint8Array>,
   ): Promise<boolean> => {
     if (!canContinue()) return false;
     continuations += 1;
@@ -438,8 +438,8 @@ export function createRecoverableStream(
       emit(
         controller,
         encoder.encode(
-          `data: ${JSON.stringify({ choices: [{ index: 0, delta: { content: suffix } }] })}\n\n`
-        )
+          `data: ${JSON.stringify({ choices: [{ index: 0, delta: { content: suffix } }] })}\n\n`,
+        ),
       );
     }
     // A clean finish, or a tool call we cannot safely stitch, ends the recovered stream.

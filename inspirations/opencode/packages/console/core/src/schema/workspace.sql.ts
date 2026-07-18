@@ -1,5 +1,5 @@
-import { json, primaryKey, mysqlTable, uniqueIndex, varchar } from "drizzle-orm/mysql-core"
-import { timestamps, ulid } from "../drizzle/types"
+import { json, primaryKey, mysqlTable, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
+import { timestamps, ulid } from "../drizzle/types";
 
 export const WorkspaceTable = mysqlTable(
   "workspace",
@@ -11,12 +11,12 @@ export const WorkspaceTable = mysqlTable(
     ...timestamps,
   },
   (table) => [uniqueIndex("slug").on(table.slug)],
-)
+);
 
 export function workspaceIndexes(table: any) {
   return [
     primaryKey({
       columns: [table.workspaceID, table.id],
     }),
-  ]
+  ];
 }

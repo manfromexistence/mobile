@@ -37,7 +37,7 @@ function getSqlJsPendingCache(): Map<string, Promise<SqliteAdapter>> {
 /** Tenta abrir com better-sqlite3 e node:sqlite sincronamente. Retorna null se ambos falharem. */
 export function tryOpenSync(
   filePath: string,
-  options?: Record<string, unknown>
+  options?: Record<string, unknown>,
 ): SqliteAdapter | null {
   // better-sqlite3: rápido, nativo — skip em Bun
   if (!process.versions.bun) {
@@ -123,7 +123,7 @@ export function getSqlJsAdapter(filePath: string): SqliteAdapter | null {
  */
 export async function openDatabaseAsync(
   filePath: string,
-  options?: Record<string, unknown>
+  options?: Record<string, unknown>,
 ): Promise<SqliteAdapter> {
   const sync = tryOpenSync(filePath, options);
   if (sync) {

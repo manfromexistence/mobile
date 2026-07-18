@@ -51,7 +51,7 @@ export function parseJsonStringArray(value: unknown): string[] {
 
 export function maybeOmitCatalogModelName<T extends Record<string, unknown>>(
   model: T,
-  includeNames: boolean
+  includeNames: boolean,
 ): T | Omit<T, "name"> {
   if (includeNames || !Object.prototype.hasOwnProperty.call(model, "name")) return model;
 

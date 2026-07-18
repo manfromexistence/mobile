@@ -40,7 +40,7 @@ describe("replaceTextContent — multi-text-block fidelity (B-AGG-TEXTDROP)", ()
     const blocks = replaced.content as Array<{ type?: string }>;
     assert.ok(
       blocks.some((b) => b.type === "image"),
-      "non-text block must be preserved"
+      "non-text block must be preserved",
     );
   });
 
@@ -89,7 +89,7 @@ describe("replaceTextContent — multi-text-block fidelity (B-AGG-TEXTDROP)", ()
 describe("aggressive — Anthropic tool_result compression (B-AGG-ANTHROPIC-TR)", () => {
   it("compresses the text inside an Anthropic tool_result block", () => {
     const bigJsonArray = JSON.stringify(
-      Array.from({ length: 200 }, (_, i) => ({ id: i, name: `item${i}`, data: "x".repeat(40) }))
+      Array.from({ length: 200 }, (_, i) => ({ id: i, name: `item${i}`, data: "x".repeat(40) })),
     );
     const userMsg: ChatMessageLike = {
       role: "user",
@@ -121,7 +121,7 @@ describe("aggressive — Anthropic tool_result compression (B-AGG-ANTHROPIC-TR)"
             .join("\n");
     assert.ok(
       innerText.length < bigJsonArray.length,
-      `tool_result inner text was not compressed (orig ${bigJsonArray.length}, got ${innerText.length})`
+      `tool_result inner text was not compressed (orig ${bigJsonArray.length}, got ${innerText.length})`,
     );
     assert.ok(result.stats.aggressive!.toolResultSavings > 0, "toolResultSavings must be > 0");
   });
@@ -130,7 +130,7 @@ describe("aggressive — Anthropic tool_result compression (B-AGG-ANTHROPIC-TR)"
     const errorOutput =
       "TypeError: Cannot read property 'x' of undefined\n" +
       Array.from({ length: 40 }, (_, i) => `    at fn${i} (file${i}.ts:${i + 1}:${i + 5})`).join(
-        "\n"
+        "\n",
       );
     const userMsg: ChatMessageLike = {
       role: "user",
@@ -138,11 +138,14 @@ describe("aggressive — Anthropic tool_result compression (B-AGG-ANTHROPIC-TR)"
     };
     const result = compressAggressive([userMsg]);
     const tr = (result.messages[0].content as Array<Record<string, unknown>>).find(
-      (b) => b.type === "tool_result"
+      (b) => b.type === "tool_result",
     );
     assert.ok(tr, "tool_result block must survive");
     assert.equal(tr!.tool_use_id, "toolu_ERR");
-    assert.ok((tr!.content as string).length < errorOutput.length, "string tool_result not compressed");
+    assert.ok(
+      (tr!.content as string).length < errorOutput.length,
+      "string tool_result not compressed",
+    );
   });
 });
 
@@ -176,7 +179,7 @@ describe("progressiveAging — structured-content tag safety (B-AGG-JSONTAG)", (
   });
 
   it("keeps a fenced code block valid after aging (tag outside the fence)", () => {
-    const fenced = "```json\n{\n  \"a\": 1,\n  \"b\": [1, 2, 3]\n}\n```";
+    const fenced = '```json\n{\n  "a": 1,\n  "b": [1, 2, 3]\n}\n```';
     const aged = agedFirstContent(fenced, thresholds);
     // The fenced block must still be present and intact.
     assert.ok(aged.includes("```json"), "opening fence lost");
@@ -194,16 +197,15 @@ describe("progressiveAging — structured-content tag safety (B-AGG-JSONTAG)", (
     ];
     const first = applyAging(msgs, thresholds);
     const second = applyAging(first.messages as ChatMessageLike[], thresholds);
-    const firstContent = JSON.stringify(
-      first.messages.map((m) => (m as ChatMessageLike).content)
-    );
+    const firstContent = JSON.stringify(first.messages.map((m) => (m as ChatMessageLike).content));
     const secondContent = JSON.stringify(
-      second.messages.map((m) => (m as ChatMessageLike).content)
+      second.messages.map((m) => (m as ChatMessageLike).content),
     );
     assert.equal(secondContent, firstContent, "second aging pass changed structured content");
     // And it must still be parseable.
     const c0 = (second.messages[0] as ChatMessageLike).content;
-    const text0 = typeof c0 === "string" ? c0 : extractTextContent(c0 as ChatMessageLike["content"]);
+    const text0 =
+      typeof c0 === "string" ? c0 : extractTextContent(c0 as ChatMessageLike["content"]);
     assert.doesNotThrow(() => JSON.parse(text0), "JSON corrupted after two aging passes");
   });
 });

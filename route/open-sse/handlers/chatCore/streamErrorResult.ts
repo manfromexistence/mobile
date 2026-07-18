@@ -23,7 +23,7 @@ export function createStreamingErrorResult(
   statusCode: number,
   message: string,
   code?: string,
-  type?: string
+  type?: string,
 ) {
   const errorBody = buildErrorBody(statusCode, message);
   if (code) {

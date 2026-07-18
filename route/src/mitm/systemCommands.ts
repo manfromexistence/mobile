@@ -96,7 +96,7 @@ export interface ResolvedSpawn {
 export function resolveSudoSpawn(
   command: string,
   args: string[],
-  overrides: { root?: boolean; sudoAvailable?: boolean; noSudo?: boolean } = {}
+  overrides: { root?: boolean; sudoAvailable?: boolean; noSudo?: boolean } = {},
 ): ResolvedSpawn {
   const root = overrides.root ?? isRoot();
   const sudoAvailable = overrides.sudoAvailable ?? isSudoAvailable();
@@ -121,7 +121,7 @@ export function execFileWithPassword(
   command: string,
   args: string[],
   password: string,
-  stdinAfterPassword = ""
+  stdinAfterPassword = "",
 ): Promise<string> {
   // When running as root, when `sudo` is not installed on the host (slim
   // Docker images / containerized non-root runtime), OR when the operator sets
@@ -140,7 +140,8 @@ export function execFileWithPassword(
     // `spawn` is used (not `exec`) so each arg is a separate argv entry and
     // shell metacharacters do not expand. See docs/security/SOCKET_DEV_FINDINGS.md §3.
     // nosemgrep
-    const child = spawn(finalCommand, finalArgs, { // nosemgrep
+    const child = spawn(finalCommand, finalArgs, {
+      // nosemgrep
       stdio: ["pipe", "pipe", "pipe"],
     });
     let stdout = "";
@@ -262,7 +263,7 @@ export async function runElevatedPowerShell(script: string): Promise<string> {
  */
 export async function _runElevatedPowerShellForTest(
   script: string,
-  runner: (wrapper: string, scriptPath: string) => Promise<string>
+  runner: (wrapper: string, scriptPath: string) => Promise<string>,
 ): Promise<string> {
   const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-elevate-"));
   const scriptName = `omniroute-elevate-${crypto.randomUUID()}.ps1`;

@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { Accordion } from "./accordion"
-import * as mod from "./sticky-accordion-header"
+import { Accordion } from "./accordion";
+import * as mod from "./sticky-accordion-header";
 
 const docs = `### Overview
 Sticky accordion header wrapper for persistent section labels.
@@ -22,7 +22,7 @@ Use only inside \`Accordion.Item\` with \`Accordion.Trigger\`.
 ### Theming/tokens
 - Uses \`data-component="sticky-accordion-header"\`.
 
-`
+`;
 
 export default {
   title: "UI/StickyAccordionHeader",
@@ -36,7 +36,7 @@ export default {
       },
     },
   },
-}
+};
 
 export const Basic = {
   render: () => (
@@ -51,4 +51,4 @@ export const Basic = {
       </Accordion.Item>
     </Accordion>
   ),
-}
+};

@@ -107,7 +107,7 @@ export const antigravity = {
       const loadRes = await fetchFirstOk(
         ANTIGRAVITY_CONFIG.loadCodeAssistEndpoints,
         { method: "POST", headers, body: JSON.stringify({ metadata }) },
-        POSTEXCHANGE_TIMEOUT_MS
+        POSTEXCHANGE_TIMEOUT_MS,
       );
       const data = await loadRes.json();
       projectId = data.cloudaicompanionProject?.id || data.cloudaicompanionProject || "";
@@ -129,7 +129,7 @@ export const antigravity = {
             const onboardRes = await fetchFirstOk(
               ANTIGRAVITY_CONFIG.onboardUserEndpoints,
               { method: "POST", headers, body: JSON.stringify({ tier_id: tierId, metadata }) },
-              POSTEXCHANGE_TIMEOUT_MS
+              POSTEXCHANGE_TIMEOUT_MS,
             );
             const result = await onboardRes.json();
             if (result.done === true) break;

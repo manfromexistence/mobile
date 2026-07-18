@@ -116,7 +116,7 @@ export const ENDPOINT_CATEGORIES: readonly EndpointCategory[] = [
  */
 const SORTED_PREFIXES: readonly { prefix: string; categoryId: string }[] =
   ENDPOINT_CATEGORIES.flatMap((cat) =>
-    cat.prefixes.map((prefix) => ({ prefix, categoryId: cat.id }))
+    cat.prefixes.map((prefix) => ({ prefix, categoryId: cat.id })),
   ).sort((a, b) => b.prefix.length - a.prefix.length);
 
 /**

@@ -96,7 +96,7 @@ export class QwenWebExecutor extends BaseExecutor {
   private buildHeaders(
     token: string,
     cookieHeader: string,
-    chatId?: string
+    chatId?: string,
   ): Record<string, string> {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
@@ -159,7 +159,7 @@ export class QwenWebExecutor extends BaseExecutor {
           newChatRes.status || 502,
           `Qwen create-chat failed: ${text.slice(0, 300)}`,
           body,
-          CHATS_NEW_URL
+          CHATS_NEW_URL,
         );
       }
 
@@ -173,7 +173,7 @@ export class QwenWebExecutor extends BaseExecutor {
         502,
         `Qwen create-chat error: ${err instanceof Error ? err.message : "unknown"}`,
         body,
-        CHATS_NEW_URL
+        CHATS_NEW_URL,
       );
     }
 
@@ -194,7 +194,7 @@ export class QwenWebExecutor extends BaseExecutor {
         502,
         `Qwen completion fetch failed: ${err instanceof Error ? err.message : "unknown"}`,
         body,
-        completionUrl
+        completionUrl,
       );
     }
 
@@ -208,7 +208,7 @@ export class QwenWebExecutor extends BaseExecutor {
         upstream.status || 502,
         `Qwen error: ${errText.slice(0, 300)}`,
         body,
-        completionUrl
+        completionUrl,
       );
     }
 
@@ -235,7 +235,7 @@ export class QwenWebExecutor extends BaseExecutor {
         { role: "assistant", content: finalText },
         "stop",
         completionUrl,
-        msgPayload
+        msgPayload,
       );
     }
 
@@ -294,7 +294,7 @@ export class QwenWebExecutor extends BaseExecutor {
     chatId: string,
     modelId: string,
     prompt: string,
-    requestedModel: string
+    requestedModel: string,
   ): Record<string, unknown> {
     const fid = uuid();
     const enableThinking = /think|reason|r1/i.test(requestedModel);
@@ -367,7 +367,7 @@ export class QwenWebExecutor extends BaseExecutor {
     modelId: string,
     hasTools: boolean,
     requestedTools: unknown,
-    signal: AbortSignal | null | undefined
+    signal: AbortSignal | null | undefined,
   ): ReadableStream {
     const encoder = new TextEncoder();
     const decoder = new TextDecoder();
@@ -410,7 +410,7 @@ export class QwenWebExecutor extends BaseExecutor {
                 }
               } else if (delta.kind === "think" && !hasTools) {
                 controller.enqueue(
-                  encoder.encode(emitChunk({ reasoning_content: delta.text }, null))
+                  encoder.encode(emitChunk({ reasoning_content: delta.text }, null)),
                 );
               }
             }
@@ -426,7 +426,7 @@ export class QwenWebExecutor extends BaseExecutor {
           const { content, toolCalls, finishReason } = buildToolAwareResult(
             fullContent,
             requestedTools,
-            "qwen"
+            "qwen",
           );
           const delta = toolCalls
             ? { role: "assistant", content: null, tool_calls: toolCalls }
@@ -447,7 +447,7 @@ export class QwenWebExecutor extends BaseExecutor {
     message: Record<string, unknown>,
     finishReason: string,
     url: string,
-    transformedBody: unknown
+    transformedBody: unknown,
   ) {
     return {
       response: new Response(
@@ -458,7 +458,7 @@ export class QwenWebExecutor extends BaseExecutor {
           model: modelId,
           choices: [{ index: 0, message, finish_reason: finishReason }],
         }),
-        { headers: { "Content-Type": "application/json" } }
+        { headers: { "Content-Type": "application/json" } },
       ),
       url,
       headers: {} as Record<string, string>,

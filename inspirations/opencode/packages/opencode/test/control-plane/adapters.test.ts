@@ -1,7 +1,7 @@
-import { describe, expect, test } from "bun:test"
-import { getAdapter, registerAdapter } from "../../src/control-plane/adapters"
-import { ProjectV2 } from "@opencode-ai/core/project"
-import type { WorkspaceInfo } from "../../src/control-plane/types"
+import { describe, expect, test } from "bun:test";
+import { getAdapter, registerAdapter } from "../../src/control-plane/adapters";
+import { ProjectV2 } from "@opencode-ai/core/project";
+import type { WorkspaceInfo } from "../../src/control-plane/types";
 
 function info(projectID: WorkspaceInfo["projectID"], type: string): WorkspaceInfo {
   return {
@@ -12,7 +12,7 @@ function info(projectID: WorkspaceInfo["projectID"], type: string): WorkspaceInf
     directory: null,
     extra: null,
     projectID,
-  }
+  };
 }
 
 function adapter(dir: string) {
@@ -20,7 +20,7 @@ function adapter(dir: string) {
     name: dir,
     description: dir,
     configure(input: WorkspaceInfo) {
-      return input
+      return input;
     },
     async create() {},
     async remove() {},
@@ -28,44 +28,44 @@ function adapter(dir: string) {
       return {
         type: "local" as const,
         directory: dir,
-      }
+      };
     },
-  }
+  };
 }
 
 describe("control-plane/adapters", () => {
   test("isolates custom adapters by project", async () => {
-    const type = `demo-${Math.random().toString(36).slice(2)}`
-    const one = ProjectV2.ID.make(`project-${Math.random().toString(36).slice(2)}`)
-    const two = ProjectV2.ID.make(`project-${Math.random().toString(36).slice(2)}`)
-    registerAdapter(one, type, adapter("/one"))
-    registerAdapter(two, type, adapter("/two"))
+    const type = `demo-${Math.random().toString(36).slice(2)}`;
+    const one = ProjectV2.ID.make(`project-${Math.random().toString(36).slice(2)}`);
+    const two = ProjectV2.ID.make(`project-${Math.random().toString(36).slice(2)}`);
+    registerAdapter(one, type, adapter("/one"));
+    registerAdapter(two, type, adapter("/two"));
 
     expect(await (await getAdapter(one, type)).target(info(one, type))).toEqual({
       type: "local",
       directory: "/one",
-    })
+    });
     expect(await (await getAdapter(two, type)).target(info(two, type))).toEqual({
       type: "local",
       directory: "/two",
-    })
-  })
+    });
+  });
 
   test("latest install wins within a project", async () => {
-    const type = `demo-${Math.random().toString(36).slice(2)}`
-    const id = ProjectV2.ID.make(`project-${Math.random().toString(36).slice(2)}`)
-    registerAdapter(id, type, adapter("/one"))
+    const type = `demo-${Math.random().toString(36).slice(2)}`;
+    const id = ProjectV2.ID.make(`project-${Math.random().toString(36).slice(2)}`);
+    registerAdapter(id, type, adapter("/one"));
 
     expect(await (await getAdapter(id, type)).target(info(id, type))).toEqual({
       type: "local",
       directory: "/one",
-    })
+    });
 
-    registerAdapter(id, type, adapter("/two"))
+    registerAdapter(id, type, adapter("/two"));
 
     expect(await (await getAdapter(id, type)).target(info(id, type))).toEqual({
       type: "local",
       directory: "/two",
-    })
-  })
-})
+    });
+  });
+});

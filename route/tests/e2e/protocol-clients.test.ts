@@ -142,7 +142,7 @@ describe("Protocol clients E2E", () => {
         expect(entries.some((entry: any) => entry.toolName === "omniroute_get_health")).toBe(true);
       }
     },
-    TEST_TIMEOUT_MS * 2
+    TEST_TIMEOUT_MS * 2,
   );
 
   it(
@@ -160,7 +160,7 @@ describe("Protocol clients E2E", () => {
           skill: "quota-management",
           messages: [{ role: "user", content: "Return a short quota summary." }],
         },
-        "protocol-send"
+        "protocol-send",
       );
       if (send.response.status === 401) {
         expect(API_KEY).toBe("");
@@ -191,7 +191,7 @@ describe("Protocol clients E2E", () => {
       expect(typeof stream.taskId === "string" || stream.taskId === null).toBe(true);
       expect(
         stream.terminalState === null ||
-          ["completed", "failed", "cancelled"].includes(stream.terminalState)
+          ["completed", "failed", "cancelled"].includes(stream.terminalState),
       ).toBe(true);
 
       const taskIdForGet = stream.taskId || sendTaskId;
@@ -203,7 +203,7 @@ describe("Protocol clients E2E", () => {
         `/api/a2a/tasks/${encodeURIComponent(taskIdForGet)}/cancel`,
         {
           method: "POST",
-        }
+        },
       );
       expect([200, 400, 401, 404]).toContain(cancelRes.status);
 
@@ -216,6 +216,6 @@ describe("Protocol clients E2E", () => {
         expect(tasks.some((task: any) => task.id === sendTaskId)).toBe(true);
       }
     },
-    TEST_TIMEOUT_MS * 2
+    TEST_TIMEOUT_MS * 2,
   );
 });

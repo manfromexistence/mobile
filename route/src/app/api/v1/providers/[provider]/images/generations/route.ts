@@ -64,7 +64,7 @@ export async function POST(request, { params }) {
   if (modelProvider !== rawProvider) {
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
-      `Model "${body.model}" does not belong to image provider "${rawProvider}"`
+      `Model "${body.model}" does not belong to image provider "${rawProvider}"`,
     );
   }
 
@@ -72,7 +72,7 @@ export async function POST(request, { params }) {
   if (!credentials) {
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
-      `No credentials for image provider: ${rawProvider}`
+      `No credentials for image provider: ${rawProvider}`,
     );
   }
   if (credentials.allRateLimited) {
@@ -80,7 +80,7 @@ export async function POST(request, { params }) {
       HTTP_STATUS.RATE_LIMITED,
       `[${rawProvider}] All accounts rate limited`,
       credentials.retryAfter,
-      credentials.retryAfterHuman
+      credentials.retryAfterHuman,
     );
   }
 

@@ -55,7 +55,7 @@ export function isCodexSparkLimitDescriptor(...values: unknown[]): boolean {
 }
 
 export function getCodexQuotaWindowFilterForModel(
-  model: string | null | undefined
+  model: string | null | undefined,
 ): ((windowName: string) => boolean) | undefined {
   if (!model) return undefined;
   const scope = getCodexModelScope(model);
@@ -67,7 +67,7 @@ export function getCodexQuotaWindowFilterForModel(
 
 export function toCodexScopedQuotaWindowName(
   baseWindowName: string,
-  model: string | null | undefined
+  model: string | null | undefined,
 ): string {
   if (!model || getCodexModelScope(model) !== "spark") return baseWindowName;
   const normalized = baseWindowName.trim().toLowerCase();

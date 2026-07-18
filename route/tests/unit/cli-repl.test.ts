@@ -167,7 +167,7 @@ test("autosave não lança erro em condições normais", async () => {
   try {
     const { autosave } = await import("../../bin/cli/tui/session.mjs");
     assert.doesNotThrow(() =>
-      autosave({ model: "auto", messages: [], totalUsage: { in: 0, out: 0 }, totalCost: 0 })
+      autosave({ model: "auto", messages: [], totalUsage: { in: 0, out: 0 }, totalCost: 0 }),
     );
   } finally {
     process.env.DATA_DIR = origDataDir ?? "";

@@ -270,7 +270,7 @@ export function orderFields<T extends Record<string, unknown>>(obj: T, fieldOrde
  */
 export function orderHeaders(
   headers: Record<string, string>,
-  headerOrder: string[]
+  headerOrder: string[],
 ): Record<string, string> {
   if (!headerOrder?.length || !headers) return headers;
 
@@ -317,7 +317,7 @@ function stripInternalBodyFields(body: unknown): unknown {
 export function applyFingerprint(
   provider: string,
   headers: Record<string, string>,
-  body: unknown
+  body: unknown,
 ): { headers: Record<string, string>; bodyString: string } {
   body = stripInternalBodyFields(body);
   const normalizedProvider = normalizeCliCompatProviderId(provider || "");
@@ -370,7 +370,7 @@ export function setCliCompatProviders(providers: string[]): void {
   _cliCompatProviders = new Set(
     (providers || [])
       .map((p) => normalizeCliCompatProviderId(p))
-      .filter((provider) => provider in CLI_FINGERPRINTS)
+      .filter((provider) => provider in CLI_FINGERPRINTS),
   );
 }
 

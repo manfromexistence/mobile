@@ -48,14 +48,14 @@ test("model suffix -high triggers strip; -none keeps sampling", () => {
   const high = stripGpt5SamplingWhenReasoning(
     { model: "gpt-5.4-high", temperature: 0.3 },
     "openai",
-    "gpt-5.4-high"
+    "gpt-5.4-high",
   );
   assert.equal(high.temperature, undefined);
 
   const none = stripGpt5SamplingWhenReasoning(
     { model: "gpt-5.4-none", temperature: 0.3 },
     "openai",
-    "gpt-5.4-none"
+    "gpt-5.4-none",
   );
   assert.equal(none.temperature, 0.3);
 });
@@ -91,7 +91,7 @@ test("logs the stripped params when a logger is provided", () => {
     { model: "gpt-5.4", temperature: 0.7, reasoning_effort: "high" },
     "openai",
     "gpt-5.4",
-    log
+    log,
   );
   assert.equal(calls.length, 1);
   assert.equal(calls[0][0], "PARAMS");

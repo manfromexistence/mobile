@@ -1,6 +1,6 @@
-import { Accordion as Kobalte } from "@kobalte/core/accordion"
-import { splitProps } from "solid-js"
-import type { ComponentProps, ParentProps } from "solid-js"
+import { Accordion as Kobalte } from "@kobalte/core/accordion";
+import { splitProps } from "solid-js";
+import type { ComponentProps, ParentProps } from "solid-js";
 
 export interface AccordionProps extends ComponentProps<typeof Kobalte> {}
 export interface AccordionItemProps extends ComponentProps<typeof Kobalte.Item> {}
@@ -9,7 +9,7 @@ export interface AccordionTriggerProps extends ComponentProps<typeof Kobalte.Tri
 export interface AccordionContentProps extends ComponentProps<typeof Kobalte.Content> {}
 
 function AccordionRoot(props: AccordionProps) {
-  const [split, rest] = splitProps(props, ["class", "classList"])
+  const [split, rest] = splitProps(props, ["class", "classList"]);
   return (
     <Kobalte
       {...rest}
@@ -19,11 +19,11 @@ function AccordionRoot(props: AccordionProps) {
         [split.class ?? ""]: !!split.class,
       }}
     />
-  )
+  );
 }
 
 function AccordionItem(props: AccordionItemProps) {
-  const [split, rest] = splitProps(props, ["class", "classList"])
+  const [split, rest] = splitProps(props, ["class", "classList"]);
   return (
     <Kobalte.Item
       {...rest}
@@ -33,11 +33,11 @@ function AccordionItem(props: AccordionItemProps) {
         [split.class ?? ""]: !!split.class,
       }}
     />
-  )
+  );
 }
 
 function AccordionHeader(props: ParentProps<AccordionHeaderProps>) {
-  const [split, rest] = splitProps(props, ["class", "classList", "children"])
+  const [split, rest] = splitProps(props, ["class", "classList", "children"]);
   return (
     <Kobalte.Header
       {...rest}
@@ -49,11 +49,11 @@ function AccordionHeader(props: ParentProps<AccordionHeaderProps>) {
     >
       {split.children}
     </Kobalte.Header>
-  )
+  );
 }
 
 function AccordionTrigger(props: ParentProps<AccordionTriggerProps>) {
-  const [split, rest] = splitProps(props, ["class", "classList", "children"])
+  const [split, rest] = splitProps(props, ["class", "classList", "children"]);
   return (
     <Kobalte.Trigger
       {...rest}
@@ -65,11 +65,11 @@ function AccordionTrigger(props: ParentProps<AccordionTriggerProps>) {
     >
       {split.children}
     </Kobalte.Trigger>
-  )
+  );
 }
 
 function AccordionContent(props: ParentProps<AccordionContentProps>) {
-  const [split, rest] = splitProps(props, ["class", "classList", "children"])
+  const [split, rest] = splitProps(props, ["class", "classList", "children"]);
   return (
     <Kobalte.Content
       {...rest}
@@ -81,7 +81,7 @@ function AccordionContent(props: ParentProps<AccordionContentProps>) {
     >
       {split.children}
     </Kobalte.Content>
-  )
+  );
 }
 
 export const Accordion = Object.assign(AccordionRoot, {
@@ -89,4 +89,4 @@ export const Accordion = Object.assign(AccordionRoot, {
   Header: AccordionHeader,
   Trigger: AccordionTrigger,
   Content: AccordionContent,
-})
+});

@@ -1,5 +1,5 @@
-import { TooltipV2 } from "./tooltip-v2"
-import { KeybindV2 } from "./keybind-v2"
+import { TooltipV2 } from "./tooltip-v2";
+import { KeybindV2 } from "./keybind-v2";
 
 const docs = `### Overview
 Floating tooltip built on Kobalte's tooltip primitive with v2 styling.
@@ -11,7 +11,7 @@ Floating tooltip built on Kobalte's tooltip primitive with v2 styling.
 - \`inactive\`: When true, renders only the trigger without tooltip behavior.
 - \`forceOpen\`: Forces the tooltip to stay open.
 - Inherits Kobalte Tooltip root props.
-`
+`;
 
 export default {
   title: "UI V2/Tooltip",
@@ -27,7 +27,7 @@ export default {
       },
     },
   },
-}
+};
 
 export const Simple = {
   render: () => (
@@ -37,7 +37,7 @@ export const Simple = {
       </TooltipV2>
     </div>
   ),
-}
+};
 
 export const WithKeybind = {
   render: () => (
@@ -54,7 +54,7 @@ export const WithKeybind = {
       </TooltipV2>
     </div>
   ),
-}
+};
 
 export const Path = {
   render: () => (
@@ -70,7 +70,7 @@ export const Path = {
       </TooltipV2>
     </div>
   ),
-}
+};
 
 export const TitleDescription = {
   render: () => (
@@ -88,4 +88,4 @@ export const TitleDescription = {
       </TooltipV2>
     </div>
   ),
-}
+};

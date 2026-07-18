@@ -1,20 +1,20 @@
-import { describe, expect } from "bun:test"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
-import { httpClient } from "@opencode-ai/core/effect/app-node-platform"
-import { Effect, Layer } from "effect"
-import { FetchHttpClient, HttpClient } from "effect/unstable/http"
-import { Agent } from "../../src/agent/agent"
-import { Truncate } from "@/tool/truncate"
-import { WebFetchTool } from "../../src/tool/webfetch"
-import { SessionID, MessageID } from "../../src/session/schema"
-import { Tool } from "@/tool/tool"
-import { testEffect } from "../lib/effect"
+import { describe, expect } from "bun:test";
+import { LayerNode } from "@opencode-ai/core/effect/layer-node";
+import { httpClient } from "@opencode-ai/core/effect/app-node-platform";
+import { Effect, Layer } from "effect";
+import { FetchHttpClient, HttpClient } from "effect/unstable/http";
+import { Agent } from "../../src/agent/agent";
+import { Truncate } from "@/tool/truncate";
+import { WebFetchTool } from "../../src/tool/webfetch";
+import { SessionID, MessageID } from "../../src/session/schema";
+import { Tool } from "@/tool/tool";
+import { testEffect } from "../lib/effect";
 
 const it = testEffect(
   LayerNode.compile(LayerNode.group([httpClient, Truncate.node, Agent.node]), [
     [httpClient, FetchHttpClient.layer as Layer.Layer<HttpClient.HttpClient>],
   ]),
-)
+);
 
 const ctx = {
   sessionID: SessionID.make("ses_test"),
@@ -25,7 +25,7 @@ const ctx = {
   messages: [],
   metadata: () => Effect.void,
   ask: () => Effect.void,
-}
+};
 
 const withFetch = <A, E, R>(
   fetch: (req: Request) => Response | Promise<Response>,
@@ -35,36 +35,45 @@ const withFetch = <A, E, R>(
     Effect.sync(() => Bun.serve({ port: 0, fetch })),
     (server) => fn(server.url),
     (server) => Effect.sync(() => server.stop(true)),
-  )
+  );
 
-const exec = Effect.fn("WebFetchToolTest.exec")(function* (args: Tool.InferParameters<typeof WebFetchTool>) {
-  const info = yield* WebFetchTool
-  const tool = yield* info.init()
-  return yield* tool.execute(args, ctx)
-})
+const exec = Effect.fn("WebFetchToolTest.exec")(function* (
+  args: Tool.InferParameters<typeof WebFetchTool>,
+) {
+  const info = yield* WebFetchTool;
+  const tool = yield* info.init();
+  return yield* tool.execute(args, ctx);
+});
 
 describe("tool.webfetch", () => {
   it.instance("returns image responses as file attachments", () =>
     Effect.gen(function* () {
-      const bytes = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10])
+      const bytes = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]);
       yield* withFetch(
-        () => new Response(bytes, { status: 200, headers: { "content-type": "IMAGE/PNG; charset=binary" } }),
+        () =>
+          new Response(bytes, {
+            status: 200,
+            headers: { "content-type": "IMAGE/PNG; charset=binary" },
+          }),
         (url) =>
           Effect.gen(function* () {
-            const result = yield* exec({ url: new URL("/image.png", url).toString(), format: "markdown" })
-            expect(result.output).toBe("Image fetched successfully")
-            expect(result.attachments).toBeDefined()
-            expect(result.attachments?.length).toBe(1)
-            expect(result.attachments?.[0].type).toBe("file")
-            expect(result.attachments?.[0].mime).toBe("image/png")
-            expect(result.attachments?.[0].url.startsWith("data:image/png;base64,")).toBe(true)
-            expect(result.attachments?.[0]).not.toHaveProperty("id")
-            expect(result.attachments?.[0]).not.toHaveProperty("sessionID")
-            expect(result.attachments?.[0]).not.toHaveProperty("messageID")
+            const result = yield* exec({
+              url: new URL("/image.png", url).toString(),
+              format: "markdown",
+            });
+            expect(result.output).toBe("Image fetched successfully");
+            expect(result.attachments).toBeDefined();
+            expect(result.attachments?.length).toBe(1);
+            expect(result.attachments?.[0].type).toBe("file");
+            expect(result.attachments?.[0].mime).toBe("image/png");
+            expect(result.attachments?.[0].url.startsWith("data:image/png;base64,")).toBe(true);
+            expect(result.attachments?.[0]).not.toHaveProperty("id");
+            expect(result.attachments?.[0]).not.toHaveProperty("sessionID");
+            expect(result.attachments?.[0]).not.toHaveProperty("messageID");
           }),
-      )
+      );
     }),
-  )
+  );
 
   it.instance("keeps svg as text output", () =>
     withFetch(
@@ -75,12 +84,15 @@ describe("tool.webfetch", () => {
         }),
       (url) =>
         Effect.gen(function* () {
-          const result = yield* exec({ url: new URL("/image.svg", url).toString(), format: "html" })
-          expect(result.output).toContain("<svg")
-          expect(result.attachments).toBeUndefined()
+          const result = yield* exec({
+            url: new URL("/image.svg", url).toString(),
+            format: "html",
+          });
+          expect(result.output).toContain("<svg");
+          expect(result.attachments).toBeUndefined();
         }),
     ),
-  )
+  );
 
   it.instance("keeps text responses as text output", () =>
     withFetch(
@@ -91,12 +103,12 @@ describe("tool.webfetch", () => {
         }),
       (url) =>
         Effect.gen(function* () {
-          const result = yield* exec({ url: new URL("/file.txt", url).toString(), format: "text" })
-          expect(result.output).toBe("hello from webfetch")
-          expect(result.attachments).toBeUndefined()
+          const result = yield* exec({ url: new URL("/file.txt", url).toString(), format: "text" });
+          expect(result.output).toBe("hello from webfetch");
+          expect(result.attachments).toBeUndefined();
         }),
     ),
-  )
+  );
 
   it.instance("extracts text from html without scripts or styles", () =>
     withFetch(
@@ -110,10 +122,13 @@ describe("tool.webfetch", () => {
         ),
       (url) =>
         Effect.gen(function* () {
-          const result = yield* exec({ url: new URL("/page.html", url).toString(), format: "text" })
-          expect(result.output).toBe("Hello world")
-          expect(result.attachments).toBeUndefined()
+          const result = yield* exec({
+            url: new URL("/page.html", url).toString(),
+            format: "text",
+          });
+          expect(result.output).toBe("Hello world");
+          expect(result.attachments).toBeUndefined();
         }),
     ),
-  )
-})
+  );
+});

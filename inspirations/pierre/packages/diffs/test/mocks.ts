@@ -1,21 +1,21 @@
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import { readFileSync } from "fs";
+import { resolve } from "path";
 
-import type { FileContents } from '../src/types';
+import type { FileContents } from "../src/types";
 
 export const fileOld: string = readFileSync(
-  resolve(__dirname, '../../../apps/demo/src/mocks/fileOld.txt'),
-  'utf-8'
+  resolve(__dirname, "../../../apps/demo/src/mocks/fileOld.txt"),
+  "utf-8",
 );
 
 export const fileNew: string = readFileSync(
-  resolve(__dirname, '../../../apps/demo/src/mocks/fileNew.txt'),
-  'utf-8'
+  resolve(__dirname, "../../../apps/demo/src/mocks/fileNew.txt"),
+  "utf-8",
 );
 
 export const diffPatch: string = readFileSync(
-  resolve(__dirname, '../../../apps/demo/src/mocks/diff.patch'),
-  'utf-8'
+  resolve(__dirname, "../../../apps/demo/src/mocks/diff.patch"),
+  "utf-8",
 );
 
 export const formatPatchWithVersionTrailer = `From 02a2e4e6806f7e8f3adf685fde57cc773196f206 Mon Sep 17 00:00:00 2001
@@ -42,7 +42,7 @@ index 626799f..8c1202a 100644
 
 export const mockFiles: Record<string, FileContents> = {
   file1: {
-    name: 'file1.ts',
+    name: "file1.ts",
     contents: `import type { DiffsThemeNames, ThemesType } from '../types';
 
 export function areThemesEqual(
@@ -61,7 +61,7 @@ export function areThemesEqual(
 }`,
   },
   file2: {
-    name: 'file2.js',
+    name: "file2.js",
     contents: `function calculateTotal(items) {
   const total = items.reduce((sum, item) => {
     return sum + item.price;
@@ -76,7 +76,7 @@ export default calculateTotal;`,
 export const mockDiffs = {
   diffRowBufferTest: {
     oldFile: {
-      name: 'file.tsx',
+      name: "file.tsx",
       contents: `import * as 'react';
 import IconSprite from './IconSprite';
 import Header from './Header';
@@ -92,7 +92,7 @@ export default function Home() {
 `,
     },
     newFile: {
-      name: 'file.tsx',
+      name: "file.tsx",
       contents: `import IconSprite from './IconSprite';
 import HeaderSimple from '../components/HeaderSimple';
 import Hero from '../components/Hero';
@@ -109,8 +109,8 @@ export default function Home() {
 `,
     },
     options: {
-      diffStyle: 'split',
-      theme: { dark: 'pierre-dark', light: 'pierre-light' },
+      diffStyle: "split",
+      theme: { dark: "pierre-dark", light: "pierre-light" },
     },
   },
 } as const;

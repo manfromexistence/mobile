@@ -220,8 +220,8 @@ export function claudeToGeminiRequest(model, body, stream, credentials = null) {
 
   const changedToolNameMap = new Map(
     [...toolNameMap.entries()].filter(
-      ([sanitizedName, originalName]) => sanitizedName !== originalName
-    )
+      ([sanitizedName, originalName]) => sanitizedName !== originalName,
+    ),
   );
   if (changedToolNameMap.size > 0) {
     result._toolNameMap = changedToolNameMap;

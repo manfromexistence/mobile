@@ -14,9 +14,7 @@ import path from "node:path";
 const TEST_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-ti-local-"));
 process.env.DATA_DIR = TEST_DATA_DIR;
 
-const { isLocalOnlyPath, isLoopbackHost } = await import(
-  "../../src/server/authz/routeGuard.ts"
-);
+const { isLocalOnlyPath, isLoopbackHost } = await import("../../src/server/authz/routeGuard.ts");
 
 test.after(() => {
   fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true });
@@ -28,7 +26,7 @@ test("isLocalOnlyPath: traffic-inspector prefix is LOCAL_ONLY", () => {
   assert.equal(
     isLocalOnlyPath("/api/tools/traffic-inspector/"),
     true,
-    "root prefix should be LOCAL_ONLY"
+    "root prefix should be LOCAL_ONLY",
   );
 });
 

@@ -1,21 +1,21 @@
-import { expect, spyOn, test } from "bun:test"
-import fs from "fs/promises"
-import path from "path"
-import { pathToFileURL } from "url"
-import { tmpdir } from "../../fixture/fixture"
-import { createTuiPluginApi } from "../../fixture/tui-plugin"
-import { createTuiResolvedConfig } from "../../fixture/tui-runtime"
-import { TuiConfig } from "../../../src/config/tui"
-import { Npm } from "@opencode-ai/core/npm"
+import { expect, spyOn, test } from "bun:test";
+import fs from "fs/promises";
+import path from "path";
+import { pathToFileURL } from "url";
+import { tmpdir } from "../../fixture/fixture";
+import { createTuiPluginApi } from "../../fixture/tui-plugin";
+import { createTuiResolvedConfig } from "../../fixture/tui-runtime";
+import { TuiConfig } from "../../../src/config/tui";
+import { Npm } from "@opencode-ai/core/npm";
 
-const { TuiPluginRuntime } = await import("../../../src/plugin/tui/runtime")
+const { TuiPluginRuntime } = await import("../../../src/plugin/tui/runtime");
 
 test("loads npm tui plugin from package ./tui export", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      const mod = path.join(dir, "mods", "acme-plugin")
-      const marker = path.join(dir, "tui-called.txt")
-      await fs.mkdir(mod, { recursive: true })
+      const mod = path.join(dir, "mods", "acme-plugin");
+      const marker = path.join(dir, "tui-called.txt");
+      await fs.mkdir(mod, { recursive: true });
 
       await Bun.write(
         path.join(mod, "package.json"),
@@ -24,10 +24,10 @@ test("loads npm tui plugin from package ./tui export", async () => {
           type: "module",
           exports: { ".": "./index.js", "./server": "./server.js", "./tui": "./tui.js" },
         }),
-      )
-      await Bun.write(path.join(mod, "index.js"), 'import "./main-throws.js"\nexport default {}\n')
-      await Bun.write(path.join(mod, "main-throws.js"), 'throw new Error("main loaded")\n')
-      await Bun.write(path.join(mod, "server.js"), "export default {}\n")
+      );
+      await Bun.write(path.join(mod, "index.js"), 'import "./main-throws.js"\nexport default {}\n');
+      await Bun.write(path.join(mod, "main-throws.js"), 'throw new Error("main loaded")\n');
+      await Bun.write(path.join(mod, "server.js"), "export default {}\n");
       await Bun.write(
         path.join(mod, "tui.js"),
         `export default {
@@ -38,13 +38,13 @@ test("loads npm tui plugin from package ./tui export", async () => {
   },
 }
 `,
-      )
+      );
 
-      return { mod, marker, spec: "acme-plugin@1.0.0" }
+      return { mod, marker, spec: "acme-plugin@1.0.0" };
     },
-  })
+  });
 
-  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json")
+  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json");
   const config = createTuiResolvedConfig({
     plugin: [[tmp.extra.spec, { marker: tmp.extra.marker }]],
     plugin_origins: [
@@ -54,33 +54,36 @@ test("loads npm tui plugin from package ./tui export", async () => {
         source: path.join(tmp.path, "tui.json"),
       },
     ],
-  })
-  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue()
-  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path)
-  const install = spyOn(Npm, "add").mockResolvedValue({ directory: tmp.extra.mod, entrypoint: undefined })
+  });
+  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue();
+  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path);
+  const install = spyOn(Npm, "add").mockResolvedValue({
+    directory: tmp.extra.mod,
+    entrypoint: undefined,
+  });
 
   try {
-    await TuiPluginRuntime.init({ api: createTuiPluginApi(), config })
-    await expect(fs.readFile(tmp.extra.marker, "utf8")).resolves.toBe("called")
-    const hit = TuiPluginRuntime.list().find((item) => item.id === "demo.tui.export")
-    expect(hit?.enabled).toBe(true)
-    expect(hit?.active).toBe(true)
-    expect(hit?.source).toBe("npm")
+    await TuiPluginRuntime.init({ api: createTuiPluginApi(), config });
+    await expect(fs.readFile(tmp.extra.marker, "utf8")).resolves.toBe("called");
+    const hit = TuiPluginRuntime.list().find((item) => item.id === "demo.tui.export");
+    expect(hit?.enabled).toBe(true);
+    expect(hit?.active).toBe(true);
+    expect(hit?.source).toBe("npm");
   } finally {
-    await TuiPluginRuntime.dispose()
-    install.mockRestore()
-    cwd.mockRestore()
-    wait.mockRestore()
-    delete process.env.OPENCODE_PLUGIN_META_FILE
+    await TuiPluginRuntime.dispose();
+    install.mockRestore();
+    cwd.mockRestore();
+    wait.mockRestore();
+    delete process.env.OPENCODE_PLUGIN_META_FILE;
   }
-})
+});
 
 test("does not use npm package exports dot for tui entry", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      const mod = path.join(dir, "mods", "acme-plugin")
-      const marker = path.join(dir, "dot-called.txt")
-      await fs.mkdir(mod, { recursive: true })
+      const mod = path.join(dir, "mods", "acme-plugin");
+      const marker = path.join(dir, "dot-called.txt");
+      await fs.mkdir(mod, { recursive: true });
 
       await Bun.write(
         path.join(mod, "package.json"),
@@ -89,7 +92,7 @@ test("does not use npm package exports dot for tui entry", async () => {
           type: "module",
           exports: { ".": "./index.js" },
         }),
-      )
+      );
       await Bun.write(
         path.join(mod, "index.js"),
         `export default {
@@ -99,13 +102,13 @@ test("does not use npm package exports dot for tui entry", async () => {
   },
 }
 `,
-      )
+      );
 
-      return { mod, marker, spec: "acme-plugin@1.0.0" }
+      return { mod, marker, spec: "acme-plugin@1.0.0" };
     },
-  })
+  });
 
-  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json")
+  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json");
   const config = createTuiResolvedConfig({
     plugin: [tmp.extra.spec],
     plugin_origins: [
@@ -115,32 +118,35 @@ test("does not use npm package exports dot for tui entry", async () => {
         source: path.join(tmp.path, "tui.json"),
       },
     ],
-  })
-  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue()
-  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path)
-  const install = spyOn(Npm, "add").mockResolvedValue({ directory: tmp.extra.mod, entrypoint: undefined })
+  });
+  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue();
+  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path);
+  const install = spyOn(Npm, "add").mockResolvedValue({
+    directory: tmp.extra.mod,
+    entrypoint: undefined,
+  });
 
   try {
-    await TuiPluginRuntime.init({ api: createTuiPluginApi(), config })
-    await expect(fs.readFile(tmp.extra.marker, "utf8")).rejects.toThrow()
-    expect(TuiPluginRuntime.list().some((item) => item.spec === tmp.extra.spec)).toBe(false)
+    await TuiPluginRuntime.init({ api: createTuiPluginApi(), config });
+    await expect(fs.readFile(tmp.extra.marker, "utf8")).rejects.toThrow();
+    expect(TuiPluginRuntime.list().some((item) => item.spec === tmp.extra.spec)).toBe(false);
   } finally {
-    await TuiPluginRuntime.dispose()
-    install.mockRestore()
-    cwd.mockRestore()
-    wait.mockRestore()
-    delete process.env.OPENCODE_PLUGIN_META_FILE
+    await TuiPluginRuntime.dispose();
+    install.mockRestore();
+    cwd.mockRestore();
+    wait.mockRestore();
+    delete process.env.OPENCODE_PLUGIN_META_FILE;
   }
-})
+});
 
 test("rejects npm tui export that resolves outside plugin directory", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      const mod = path.join(dir, "mods", "acme-plugin")
-      const outside = path.join(dir, "outside")
-      const marker = path.join(dir, "outside-called.txt")
-      await fs.mkdir(mod, { recursive: true })
-      await fs.mkdir(outside, { recursive: true })
+      const mod = path.join(dir, "mods", "acme-plugin");
+      const outside = path.join(dir, "outside");
+      const marker = path.join(dir, "outside-called.txt");
+      await fs.mkdir(mod, { recursive: true });
+      await fs.mkdir(outside, { recursive: true });
 
       await Bun.write(
         path.join(mod, "package.json"),
@@ -149,8 +155,8 @@ test("rejects npm tui export that resolves outside plugin directory", async () =
           type: "module",
           exports: { ".": "./index.js", "./tui": "./escape/tui.js" },
         }),
-      )
-      await Bun.write(path.join(mod, "index.js"), "export default {}\n")
+      );
+      await Bun.write(path.join(mod, "index.js"), "export default {}\n");
       await Bun.write(
         path.join(outside, "tui.js"),
         `export default {
@@ -160,14 +166,18 @@ test("rejects npm tui export that resolves outside plugin directory", async () =
   },
 }
 `,
-      )
-      await fs.symlink(outside, path.join(mod, "escape"), process.platform === "win32" ? "junction" : "dir")
+      );
+      await fs.symlink(
+        outside,
+        path.join(mod, "escape"),
+        process.platform === "win32" ? "junction" : "dir",
+      );
 
-      return { mod, marker, spec: "acme-plugin@1.0.0" }
+      return { mod, marker, spec: "acme-plugin@1.0.0" };
     },
-  })
+  });
 
-  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json")
+  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json");
   const config = createTuiResolvedConfig({
     plugin: [tmp.extra.spec],
     plugin_origins: [
@@ -177,32 +187,35 @@ test("rejects npm tui export that resolves outside plugin directory", async () =
         source: path.join(tmp.path, "tui.json"),
       },
     ],
-  })
-  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue()
-  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path)
-  const install = spyOn(Npm, "add").mockResolvedValue({ directory: tmp.extra.mod, entrypoint: undefined })
+  });
+  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue();
+  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path);
+  const install = spyOn(Npm, "add").mockResolvedValue({
+    directory: tmp.extra.mod,
+    entrypoint: undefined,
+  });
 
   try {
-    await TuiPluginRuntime.init({ api: createTuiPluginApi(), config })
+    await TuiPluginRuntime.init({ api: createTuiPluginApi(), config });
     // plugin code never ran
-    await expect(fs.readFile(tmp.extra.marker, "utf8")).rejects.toThrow()
+    await expect(fs.readFile(tmp.extra.marker, "utf8")).rejects.toThrow();
     // plugin not listed
-    expect(TuiPluginRuntime.list().some((item) => item.spec === tmp.extra.spec)).toBe(false)
+    expect(TuiPluginRuntime.list().some((item) => item.spec === tmp.extra.spec)).toBe(false);
   } finally {
-    await TuiPluginRuntime.dispose()
-    install.mockRestore()
-    cwd.mockRestore()
-    wait.mockRestore()
-    delete process.env.OPENCODE_PLUGIN_META_FILE
+    await TuiPluginRuntime.dispose();
+    install.mockRestore();
+    cwd.mockRestore();
+    wait.mockRestore();
+    delete process.env.OPENCODE_PLUGIN_META_FILE;
   }
-})
+});
 
 test("rejects npm tui plugin that exports server and tui together", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      const mod = path.join(dir, "mods", "acme-plugin")
-      const marker = path.join(dir, "mixed-called.txt")
-      await fs.mkdir(mod, { recursive: true })
+      const mod = path.join(dir, "mods", "acme-plugin");
+      const marker = path.join(dir, "mixed-called.txt");
+      await fs.mkdir(mod, { recursive: true });
 
       await Bun.write(
         path.join(mod, "package.json"),
@@ -211,8 +224,8 @@ test("rejects npm tui plugin that exports server and tui together", async () => 
           type: "module",
           exports: { ".": "./index.js", "./tui": "./tui.js" },
         }),
-      )
-      await Bun.write(path.join(mod, "index.js"), "export default {}\n")
+      );
+      await Bun.write(path.join(mod, "index.js"), "export default {}\n");
       await Bun.write(
         path.join(mod, "tui.js"),
         `export default {
@@ -223,13 +236,13 @@ test("rejects npm tui plugin that exports server and tui together", async () => 
   },
 }
 `,
-      )
+      );
 
-      return { mod, marker, spec: "acme-plugin@1.0.0" }
+      return { mod, marker, spec: "acme-plugin@1.0.0" };
     },
-  })
+  });
 
-  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json")
+  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json");
   const config = createTuiResolvedConfig({
     plugin: [tmp.extra.spec],
     plugin_origins: [
@@ -239,30 +252,33 @@ test("rejects npm tui plugin that exports server and tui together", async () => 
         source: path.join(tmp.path, "tui.json"),
       },
     ],
-  })
-  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue()
-  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path)
-  const install = spyOn(Npm, "add").mockResolvedValue({ directory: tmp.extra.mod, entrypoint: undefined })
+  });
+  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue();
+  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path);
+  const install = spyOn(Npm, "add").mockResolvedValue({
+    directory: tmp.extra.mod,
+    entrypoint: undefined,
+  });
 
   try {
-    await TuiPluginRuntime.init({ api: createTuiPluginApi(), config })
-    await expect(fs.readFile(tmp.extra.marker, "utf8")).rejects.toThrow()
-    expect(TuiPluginRuntime.list().some((item) => item.spec === tmp.extra.spec)).toBe(false)
+    await TuiPluginRuntime.init({ api: createTuiPluginApi(), config });
+    await expect(fs.readFile(tmp.extra.marker, "utf8")).rejects.toThrow();
+    expect(TuiPluginRuntime.list().some((item) => item.spec === tmp.extra.spec)).toBe(false);
   } finally {
-    await TuiPluginRuntime.dispose()
-    install.mockRestore()
-    cwd.mockRestore()
-    wait.mockRestore()
-    delete process.env.OPENCODE_PLUGIN_META_FILE
+    await TuiPluginRuntime.dispose();
+    install.mockRestore();
+    cwd.mockRestore();
+    wait.mockRestore();
+    delete process.env.OPENCODE_PLUGIN_META_FILE;
   }
-})
+});
 
 test("does not use npm package main for tui entry", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      const mod = path.join(dir, "mods", "acme-plugin")
-      const marker = path.join(dir, "main-called.txt")
-      await fs.mkdir(mod, { recursive: true })
+      const mod = path.join(dir, "mods", "acme-plugin");
+      const marker = path.join(dir, "main-called.txt");
+      await fs.mkdir(mod, { recursive: true });
 
       await Bun.write(
         path.join(mod, "package.json"),
@@ -271,7 +287,7 @@ test("does not use npm package main for tui entry", async () => {
           type: "module",
           main: "./index.js",
         }),
-      )
+      );
       await Bun.write(
         path.join(mod, "index.js"),
         `export default {
@@ -281,13 +297,13 @@ test("does not use npm package main for tui entry", async () => {
   },
 }
 `,
-      )
+      );
 
-      return { mod, marker, spec: "acme-plugin@1.0.0" }
+      return { mod, marker, spec: "acme-plugin@1.0.0" };
     },
-  })
+  });
 
-  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json")
+  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json");
   const config = createTuiResolvedConfig({
     plugin: [tmp.extra.spec],
     plugin_origins: [
@@ -297,37 +313,42 @@ test("does not use npm package main for tui entry", async () => {
         source: path.join(tmp.path, "tui.json"),
       },
     ],
-  })
-  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue()
-  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path)
-  const install = spyOn(Npm, "add").mockResolvedValue({ directory: tmp.extra.mod, entrypoint: undefined })
-  const warn = spyOn(console, "warn").mockImplementation(() => {})
-  const error = spyOn(console, "error").mockImplementation(() => {})
+  });
+  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue();
+  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path);
+  const install = spyOn(Npm, "add").mockResolvedValue({
+    directory: tmp.extra.mod,
+    entrypoint: undefined,
+  });
+  const warn = spyOn(console, "warn").mockImplementation(() => {});
+  const error = spyOn(console, "error").mockImplementation(() => {});
 
   try {
-    await TuiPluginRuntime.init({ api: createTuiPluginApi(), config })
-    await expect(fs.readFile(tmp.extra.marker, "utf8")).rejects.toThrow()
-    expect(TuiPluginRuntime.list().some((item) => item.spec === tmp.extra.spec)).toBe(false)
-    expect(error).not.toHaveBeenCalled()
-    expect(warn.mock.calls.some((call) => String(call[0]).includes("tui plugin has no entrypoint"))).toBe(true)
+    await TuiPluginRuntime.init({ api: createTuiPluginApi(), config });
+    await expect(fs.readFile(tmp.extra.marker, "utf8")).rejects.toThrow();
+    expect(TuiPluginRuntime.list().some((item) => item.spec === tmp.extra.spec)).toBe(false);
+    expect(error).not.toHaveBeenCalled();
+    expect(
+      warn.mock.calls.some((call) => String(call[0]).includes("tui plugin has no entrypoint")),
+    ).toBe(true);
   } finally {
-    await TuiPluginRuntime.dispose()
-    install.mockRestore()
-    cwd.mockRestore()
-    wait.mockRestore()
-    warn.mockRestore()
-    error.mockRestore()
-    delete process.env.OPENCODE_PLUGIN_META_FILE
+    await TuiPluginRuntime.dispose();
+    install.mockRestore();
+    cwd.mockRestore();
+    wait.mockRestore();
+    warn.mockRestore();
+    error.mockRestore();
+    delete process.env.OPENCODE_PLUGIN_META_FILE;
   }
-})
+});
 
 test("does not use directory package main for tui entry", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      const mod = path.join(dir, "mods", "dir-plugin")
-      const spec = pathToFileURL(mod).href
-      const marker = path.join(dir, "dir-main-called.txt")
-      await fs.mkdir(mod, { recursive: true })
+      const mod = path.join(dir, "mods", "dir-plugin");
+      const spec = pathToFileURL(mod).href;
+      const marker = path.join(dir, "dir-main-called.txt");
+      await fs.mkdir(mod, { recursive: true });
 
       await Bun.write(
         path.join(mod, "package.json"),
@@ -336,7 +357,7 @@ test("does not use directory package main for tui entry", async () => {
           type: "module",
           main: "./main.js",
         }),
-      )
+      );
       await Bun.write(
         path.join(mod, "main.js"),
         `export default {
@@ -346,13 +367,13 @@ test("does not use directory package main for tui entry", async () => {
   },
 }
 `,
-      )
+      );
 
-      return { marker, spec }
+      return { marker, spec };
     },
-  })
+  });
 
-  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json")
+  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json");
   const config = createTuiResolvedConfig({
     plugin: [tmp.extra.spec],
     plugin_origins: [
@@ -362,29 +383,29 @@ test("does not use directory package main for tui entry", async () => {
         source: path.join(tmp.path, "tui.json"),
       },
     ],
-  })
-  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue()
-  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path)
+  });
+  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue();
+  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path);
 
   try {
-    await TuiPluginRuntime.init({ api: createTuiPluginApi(), config })
-    await expect(fs.readFile(tmp.extra.marker, "utf8")).rejects.toThrow()
-    expect(TuiPluginRuntime.list().some((item) => item.spec === tmp.extra.spec)).toBe(false)
+    await TuiPluginRuntime.init({ api: createTuiPluginApi(), config });
+    await expect(fs.readFile(tmp.extra.marker, "utf8")).rejects.toThrow();
+    expect(TuiPluginRuntime.list().some((item) => item.spec === tmp.extra.spec)).toBe(false);
   } finally {
-    await TuiPluginRuntime.dispose()
-    cwd.mockRestore()
-    wait.mockRestore()
-    delete process.env.OPENCODE_PLUGIN_META_FILE
+    await TuiPluginRuntime.dispose();
+    cwd.mockRestore();
+    wait.mockRestore();
+    delete process.env.OPENCODE_PLUGIN_META_FILE;
   }
-})
+});
 
 test("uses directory index fallback for tui when package.json is missing", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      const mod = path.join(dir, "mods", "dir-index")
-      const spec = pathToFileURL(mod).href
-      const marker = path.join(dir, "dir-index-called.txt")
-      await fs.mkdir(mod, { recursive: true })
+      const mod = path.join(dir, "mods", "dir-index");
+      const spec = pathToFileURL(mod).href;
+      const marker = path.join(dir, "dir-index-called.txt");
+      await fs.mkdir(mod, { recursive: true });
       await Bun.write(
         path.join(mod, "index.ts"),
         `export default {
@@ -394,12 +415,12 @@ test("uses directory index fallback for tui when package.json is missing", async
   },
 }
 `,
-      )
-      return { marker, spec }
+      );
+      return { marker, spec };
     },
-  })
+  });
 
-  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json")
+  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json");
   const config = createTuiResolvedConfig({
     plugin: [tmp.extra.spec],
     plugin_origins: [
@@ -409,28 +430,28 @@ test("uses directory index fallback for tui when package.json is missing", async
         source: path.join(tmp.path, "tui.json"),
       },
     ],
-  })
-  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue()
-  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path)
+  });
+  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue();
+  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path);
 
   try {
-    await TuiPluginRuntime.init({ api: createTuiPluginApi(), config })
-    await expect(fs.readFile(tmp.extra.marker, "utf8")).resolves.toBe("called")
-    expect(TuiPluginRuntime.list().find((item) => item.id === "demo.dir.index")?.active).toBe(true)
+    await TuiPluginRuntime.init({ api: createTuiPluginApi(), config });
+    await expect(fs.readFile(tmp.extra.marker, "utf8")).resolves.toBe("called");
+    expect(TuiPluginRuntime.list().find((item) => item.id === "demo.dir.index")?.active).toBe(true);
   } finally {
-    await TuiPluginRuntime.dispose()
-    cwd.mockRestore()
-    wait.mockRestore()
-    delete process.env.OPENCODE_PLUGIN_META_FILE
+    await TuiPluginRuntime.dispose();
+    cwd.mockRestore();
+    wait.mockRestore();
+    delete process.env.OPENCODE_PLUGIN_META_FILE;
   }
-})
+});
 
 test("uses npm package name when tui plugin id is omitted", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      const mod = path.join(dir, "mods", "acme-plugin")
-      const marker = path.join(dir, "name-id-called.txt")
-      await fs.mkdir(mod, { recursive: true })
+      const mod = path.join(dir, "mods", "acme-plugin");
+      const marker = path.join(dir, "name-id-called.txt");
+      await fs.mkdir(mod, { recursive: true });
 
       await Bun.write(
         path.join(mod, "package.json"),
@@ -439,8 +460,8 @@ test("uses npm package name when tui plugin id is omitted", async () => {
           type: "module",
           exports: { ".": "./index.js", "./tui": "./tui.js" },
         }),
-      )
-      await Bun.write(path.join(mod, "index.js"), "export default {}\n")
+      );
+      await Bun.write(path.join(mod, "index.js"), "export default {}\n");
       await Bun.write(
         path.join(mod, "tui.js"),
         `export default {
@@ -450,13 +471,13 @@ test("uses npm package name when tui plugin id is omitted", async () => {
   },
 }
 `,
-      )
+      );
 
-      return { mod, marker, spec: "acme-plugin@1.0.0" }
+      return { mod, marker, spec: "acme-plugin@1.0.0" };
     },
-  })
+  });
 
-  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json")
+  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json");
   const config = createTuiResolvedConfig({
     plugin: [[tmp.extra.spec, { marker: tmp.extra.marker }]],
     plugin_origins: [
@@ -466,20 +487,25 @@ test("uses npm package name when tui plugin id is omitted", async () => {
         source: path.join(tmp.path, "tui.json"),
       },
     ],
-  })
-  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue()
-  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path)
-  const install = spyOn(Npm, "add").mockResolvedValue({ directory: tmp.extra.mod, entrypoint: undefined })
+  });
+  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue();
+  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path);
+  const install = spyOn(Npm, "add").mockResolvedValue({
+    directory: tmp.extra.mod,
+    entrypoint: undefined,
+  });
 
   try {
-    await TuiPluginRuntime.init({ api: createTuiPluginApi(), config })
-    await expect(fs.readFile(tmp.extra.marker, "utf8")).resolves.toBe("called")
-    expect(TuiPluginRuntime.list().find((item) => item.spec === tmp.extra.spec)?.id).toBe("acme-plugin")
+    await TuiPluginRuntime.init({ api: createTuiPluginApi(), config });
+    await expect(fs.readFile(tmp.extra.marker, "utf8")).resolves.toBe("called");
+    expect(TuiPluginRuntime.list().find((item) => item.spec === tmp.extra.spec)?.id).toBe(
+      "acme-plugin",
+    );
   } finally {
-    await TuiPluginRuntime.dispose()
-    install.mockRestore()
-    cwd.mockRestore()
-    wait.mockRestore()
-    delete process.env.OPENCODE_PLUGIN_META_FILE
+    await TuiPluginRuntime.dispose();
+    install.mockRestore();
+    cwd.mockRestore();
+    wait.mockRestore();
+    delete process.env.OPENCODE_PLUGIN_META_FILE;
   }
-})
+});

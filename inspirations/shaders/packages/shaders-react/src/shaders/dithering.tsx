@@ -1,5 +1,5 @@
-import { memo } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '../shader-mount.js';
+import { memo } from "react";
+import { ShaderMount, type ShaderComponentProps } from "../shader-mount.js";
 import {
   getShaderColorFromString,
   ditheringFragmentShader,
@@ -10,8 +10,8 @@ import {
   defaultPatternSizing,
   defaultObjectSizing,
   DitheringTypes,
-} from '@paper-design/shaders';
-import { DitheringShapes } from '@paper-design/shaders';
+} from "@paper-design/shaders";
+import { DitheringShapes } from "@paper-design/shaders";
 
 export interface DitheringProps extends ShaderComponentProps, DitheringParams {
   /** @deprecated use `size` instead */
@@ -21,87 +21,87 @@ export interface DitheringProps extends ShaderComponentProps, DitheringParams {
 type DitheringPreset = ShaderPreset<DitheringParams>;
 
 export const defaultPreset: DitheringPreset = {
-  name: 'Default',
+  name: "Default",
   params: {
     ...defaultPatternSizing,
     speed: 1,
     frame: 0,
     scale: 0.6,
-    colorBack: '#000000',
-    colorFront: '#00b2ff',
-    shape: 'sphere',
-    type: '4x4',
+    colorBack: "#000000",
+    colorFront: "#00b2ff",
+    shape: "sphere",
+    type: "4x4",
     size: 2,
   },
 } as const;
 
 export const sinePreset: DitheringPreset = {
-  name: 'Sine Wave',
+  name: "Sine Wave",
   params: {
     ...defaultPatternSizing,
     speed: 1,
     frame: 0,
-    colorBack: '#730d54',
-    colorFront: '#00becc',
-    shape: 'wave',
-    type: '4x4',
+    colorBack: "#730d54",
+    colorFront: "#00becc",
+    shape: "wave",
+    type: "4x4",
     size: 11,
     scale: 1.2,
   },
 } as const;
 
 export const bugsPreset: DitheringPreset = {
-  name: 'Bugs',
+  name: "Bugs",
   params: {
     ...defaultPatternSizing,
     speed: 1,
     frame: 0,
-    colorBack: '#000000',
-    colorFront: '#008000',
-    shape: 'dots',
-    type: 'random',
+    colorBack: "#000000",
+    colorFront: "#008000",
+    shape: "dots",
+    type: "random",
     size: 9,
   },
 } as const;
 
 export const ripplePreset: DitheringPreset = {
-  name: 'Ripple',
+  name: "Ripple",
   params: {
     ...defaultObjectSizing,
     speed: 1,
     frame: 0,
-    colorBack: '#603520',
-    colorFront: '#c67953',
-    shape: 'ripple',
-    type: '2x2',
+    colorBack: "#603520",
+    colorFront: "#c67953",
+    shape: "ripple",
+    type: "2x2",
     size: 3,
   },
 } as const;
 
 export const swirlPreset: DitheringPreset = {
-  name: 'Swirl',
+  name: "Swirl",
   params: {
     ...defaultObjectSizing,
     speed: 1,
     frame: 0,
-    colorBack: '#00000000',
-    colorFront: '#47a8e1',
-    shape: 'swirl',
-    type: '8x8',
+    colorBack: "#00000000",
+    colorFront: "#47a8e1",
+    shape: "swirl",
+    type: "8x8",
     size: 2,
   },
 } as const;
 
 export const warpPreset: DitheringPreset = {
-  name: 'Warp',
+  name: "Warp",
   params: {
     ...defaultObjectSizing,
     speed: 1,
     frame: 0,
-    colorBack: '#301c2a',
-    colorFront: '#56ae6c',
-    shape: 'warp',
-    type: '4x4',
+    colorBack: "#301c2a",
+    colorFront: "#56ae6c",
+    shape: "warp",
+    type: "4x4",
     size: 2.5,
   },
 } as const;
@@ -159,6 +159,12 @@ export const Dithering: React.FC<DitheringProps> = memo(function DitheringImpl({
   } satisfies DitheringUniforms;
 
   return (
-    <ShaderMount {...props} speed={speed} frame={frame} fragmentShader={ditheringFragmentShader} uniforms={uniforms} />
+    <ShaderMount
+      {...props}
+      speed={speed}
+      frame={frame}
+      fragmentShader={ditheringFragmentShader}
+      uniforms={uniforms}
+    />
   );
 });

@@ -194,7 +194,7 @@ export async function POST(request: Request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -218,7 +218,7 @@ export async function POST(request: Request) {
     if (!apiKey) {
       return NextResponse.json(
         { error: "baseUrl, apiKey and model are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 

@@ -21,7 +21,7 @@ export interface AliasBackedModel {
 }
 
 export function extractAliasBackedModels(
-  aliases: Record<string, unknown> | null | undefined
+  aliases: Record<string, unknown> | null | undefined,
 ): AliasBackedModel[] {
   if (!aliases || typeof aliases !== "object") return [];
 

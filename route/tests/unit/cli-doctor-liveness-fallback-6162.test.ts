@@ -31,7 +31,7 @@ test("doctor.mjs implements a /favicon.ico fallback for unauthenticated liveness
 
   assert.ok(
     content.includes("/favicon.ico"),
-    "doctor.mjs must include /favicon.ico as a fallback probe (fix for #6162)"
+    "doctor.mjs must include /favicon.ico as a fallback probe (fix for #6162)",
   );
 
   // The probe order matters: try the configured health endpoint first, then
@@ -39,7 +39,7 @@ test("doctor.mjs implements a /favicon.ico fallback for unauthenticated liveness
   // back to "always report WARN on 401".
   assert.ok(
     /\bprimary\.ok\b/.test(content),
-    "doctor.mjs must branch on `primary.ok` to decide whether to fall back to /favicon.ico"
+    "doctor.mjs must branch on `primary.ok` to decide whether to fall back to /favicon.ico",
   );
 });
 
@@ -48,7 +48,7 @@ test("doctor.mjs derives fallback URL from primary URL via new URL() (Gemini rev
 
   assert.ok(
     content.includes("new URL("),
-    "doctor.mjs must derive the fallback URL from the primary URL via `new URL()` to preserve protocol/host/port (Gemini review feedback on PR #6163)"
+    "doctor.mjs must derive the fallback URL from the primary URL via `new URL()` to preserve protocol/host/port (Gemini review feedback on PR #6163)",
   );
 });
 
@@ -61,6 +61,6 @@ test("doctor.mjs no longer reports WARN on HTTP 401/403 alone", () => {
   // The fix should NOT contain that exact phrase anymore.
   assert.ok(
     !content.includes("`Server responded with HTTP ${response.status}`"),
-    "doctor.mjs must not contain the buggy 'Server responded with HTTP ${response.status}' warn message (would be hit on auth-required 401)"
+    "doctor.mjs must not contain the buggy 'Server responded with HTTP ${response.status}' warn message (would be hit on auth-required 401)",
   );
 });

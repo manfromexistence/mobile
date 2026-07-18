@@ -17,12 +17,12 @@ export function isAllRateLimitedCredentials(value: unknown): value is RateLimite
 
 export function rateLimitedProviderResponse(
   provider: string,
-  credentials: RateLimitedCredentials
+  credentials: RateLimitedCredentials,
 ): Response {
   return unavailableResponse(
     HTTP_STATUS.RATE_LIMITED,
     `[${provider}] All accounts rate limited`,
     credentials.retryAfter,
-    credentials.retryAfterHuman
+    credentials.retryAfterHuman,
   );
 }

@@ -128,6 +128,6 @@ test("applyStackedCompression reverts to the original body when the pipeline inf
   assert.deepEqual(result.body, body);
   assert.ok(
     (result.stats.validationWarnings ?? []).some((w) => w.includes("pipeline-inflation-guard")),
-    "expected the inflation-guard warning in stats.validationWarnings"
+    "expected the inflation-guard warning in stats.validationWarnings",
   );
 });

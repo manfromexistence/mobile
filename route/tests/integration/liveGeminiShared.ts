@@ -58,7 +58,7 @@ async function ensureGeminiProvider(): Promise<boolean> {
     const geminiActive = Array.isArray(connections)
       ? connections.find(
           (c: Record<string, unknown>) =>
-            c.provider === "gemini" && c.isActive && c.testStatus !== "expired"
+            c.provider === "gemini" && c.isActive && c.testStatus !== "expired",
         )
       : null;
 
@@ -74,7 +74,7 @@ async function ensureGeminiProvider(): Promise<boolean> {
 
     if (geminiExpired) {
       console.log(
-        `  [setup] gemini provider expired (id=${geminiExpired.id.slice(0, 8)}…), reactivating via DB...`
+        `  [setup] gemini provider expired (id=${geminiExpired.id.slice(0, 8)}…), reactivating via DB...`,
       );
       // The health check marks API-key connections as expired because it expects
       // OAuth refresh tokens. Force test_status=active via direct DB update.
@@ -82,7 +82,7 @@ async function ensureGeminiProvider(): Promise<boolean> {
         const { getDbInstance } = await import("../../src/lib/db/core.ts");
         const db = getDbInstance();
         db.prepare(
-          "UPDATE provider_connections SET test_status = 'active', error_code = NULL, last_error = NULL WHERE id = ?"
+          "UPDATE provider_connections SET test_status = 'active', error_code = NULL, last_error = NULL WHERE id = ?",
         ).run(geminiExpired.id);
         console.log(`  [setup] Reactivated gemini connection ${geminiExpired.id.slice(0, 8)}…`);
         return true;
@@ -123,7 +123,7 @@ async function ensureGeminiProvider(): Promise<boolean> {
         const { getDbInstance } = await import("../../src/lib/db/core.ts");
         const db = getDbInstance();
         db.prepare(
-          "UPDATE provider_connections SET test_status = 'active', error_code = NULL, last_error = NULL WHERE id = ?"
+          "UPDATE provider_connections SET test_status = 'active', error_code = NULL, last_error = NULL WHERE id = ?",
         ).run(connId);
         console.log(`  [setup] gemini provider created and activated (id=${connId.slice(0, 8)}…)`);
       } catch (dbErr) {
@@ -150,7 +150,7 @@ async function ensureDefaultCombo(): Promise<void> {
 
     if (existing) {
       console.log(
-        `  [setup] "default" combo exists (strategy=${existing.strategy}, models=${existing.models?.length})`
+        `  [setup] "default" combo exists (strategy=${existing.strategy}, models=${existing.models?.length})`,
       );
       return;
     }
@@ -530,12 +530,12 @@ export async function readSSEStream(response: Response): Promise<StreamResult> {
 
   if (fullContent.length === 0 && rawChunkCount > 0) {
     console.log(
-      `    [DEBUG] empty content: ${rawChunkCount} raw chunks, ${dataLineCount} data lines`
+      `    [DEBUG] empty content: ${rawChunkCount} raw chunks, ${dataLineCount} data lines`,
     );
     for (const d of debugLines) console.log(`    [DEBUG] data: ${d}`);
   } else if (fullContent.length > 0 && fullContent.length < 1000 && finishReason === "unknown") {
     console.log(
-      `    [DEBUG] suspicious content (${fullContent.length} chars, finish=${finishReason}): ${fullContent.slice(0, 300)}`
+      `    [DEBUG] suspicious content (${fullContent.length} chars, finish=${finishReason}): ${fullContent.slice(0, 300)}`,
     );
   }
 
@@ -653,7 +653,7 @@ export function validateToolCallArguments(toolCalls: ToolCall[] | ResponsesToolC
       assert.fail(
         `tool call arguments are NOT valid JSON: ${e}\n` +
           `arguments repr: ${JSON.stringify(rawArgs)}\n` +
-          `arguments first 500 chars: ${rawArgs.slice(0, 500)}`
+          `arguments first 500 chars: ${rawArgs.slice(0, 500)}`,
       );
       return;
     }
@@ -671,7 +671,7 @@ export function validateToolCallArguments(toolCalls: ToolCall[] | ResponsesToolC
     const doubleEscaped = rawArgs.includes(String.raw`\\n`);
     assert.ok(
       !doubleEscaped,
-      String.raw`arguments should NOT contain double-escaped \\n sequences`
+      String.raw`arguments should NOT contain double-escaped \\n sequences`,
     );
 
     const reSerialized = JSON.stringify(parsed);
@@ -681,7 +681,7 @@ export function validateToolCallArguments(toolCalls: ToolCall[] | ResponsesToolC
 
 export async function sendToolCallChatRequest(
   model: string,
-  prompt: string
+  prompt: string,
 ): Promise<ChatResponse> {
   const res = await fetch(`${BASE_URL}/v1/chat/completions`, {
     method: "POST",
@@ -708,7 +708,7 @@ export async function sendToolCallChatRequest(
 
 export async function sendStreamingToolCallChatRequest(
   model: string,
-  prompt: string
+  prompt: string,
 ): Promise<ChatResponse> {
   const res = await fetch(`${BASE_URL}/v1/chat/completions`, {
     method: "POST",
@@ -810,7 +810,7 @@ export async function sendStreamingToolCallChatRequest(
 
 export async function sendToolCallResponsesRequest(
   model: string,
-  prompt: string
+  prompt: string,
 ): Promise<ResponsesResponse> {
   const res = await fetch(`${BASE_URL}/v1/responses`, {
     method: "POST",
@@ -844,7 +844,7 @@ export async function sendToolCallResponsesRequest(
 
 export async function sendStreamingToolCallResponsesRequest(
   model: string,
-  prompt: string
+  prompt: string,
 ): Promise<ResponsesToolCall[]> {
   const res = await fetch(`${BASE_URL}/v1/responses`, {
     method: "POST",
@@ -952,7 +952,7 @@ function ts(): string {
 export async function sendAndValidate(
   tcName: string,
   buildMessages: () => Message[],
-  stream = true
+  stream = true,
 ): Promise<{
   status: number;
   duration: number;
@@ -1020,7 +1020,7 @@ export async function sendAndValidate(
           `${msPerToken.padStart(4)} ms/tok | ` +
           `finish: ${finishReason} | ` +
           `response: ${content.length} chars | ` +
-          `cid: ${correlationId}`
+          `cid: ${correlationId}`,
       );
 
       if (response.status === 200) {
@@ -1037,20 +1037,20 @@ export async function sendAndValidate(
           const backoff = Math.min(RETRY_DELAY_MS * 2 ** (attempt - 1), 30_000);
           const reason = content.length === 0 ? "empty content" : `finish: ${finishReason}`;
           console.log(
-            `${ts()} ${tcName.padEnd(45)} RETRY ${attempt}/${MAX_RETRIES} after ${reason} (waiting ${Math.round(backoff / 1000)}s) | cid: ${correlationId}`
+            `${ts()} ${tcName.padEnd(45)} RETRY ${attempt}/${MAX_RETRIES} after ${reason} (waiting ${Math.round(backoff / 1000)}s) | cid: ${correlationId}`,
           );
           await new Promise((r) => setTimeout(r, backoff));
           continue;
         } else if (isRetryable) {
           assert.fail(
-            `${ts()} ${tcName.padEnd(45)} ${finishReason === "malformed_response" ? "malformed_response" : "empty content"} after ${MAX_RETRIES} attempts | cid: ${correlationId}`
+            `${ts()} ${tcName.padEnd(45)} ${finishReason === "malformed_response" ? "malformed_response" : "empty content"} after ${MAX_RETRIES} attempts | cid: ${correlationId}`,
           );
         } else {
           assert.fail(`expected stop/length finish, got ${finishReason} | cid: ${correlationId}`);
         }
       } else if ((response.status === 503 || response.status === 429) && attempt < MAX_RETRIES) {
         console.log(
-          `${ts()} ${tcName.padEnd(45)} RETRY ${attempt}/${MAX_RETRIES} after ${response.status} (waiting ${RETRY_DELAY_MS / 1000}s)`
+          `${ts()} ${tcName.padEnd(45)} RETRY ${attempt}/${MAX_RETRIES} after ${response.status} (waiting ${RETRY_DELAY_MS / 1000}s)`,
         );
         await new Promise((r) => setTimeout(r, RETRY_DELAY_MS));
         continue;
@@ -1071,7 +1071,7 @@ export async function sendAndValidate(
       const errorMessage = err instanceof Error ? err.message : String(err);
       if ((errorMessage.includes("503") || errorMessage.includes("429")) && attempt < MAX_RETRIES) {
         console.log(
-          `${ts()} ${tcName.padEnd(45)} RETRY ${attempt}/${MAX_RETRIES} after error (waiting ${RETRY_DELAY_MS / 1000}s)`
+          `${ts()} ${tcName.padEnd(45)} RETRY ${attempt}/${MAX_RETRIES} after error (waiting ${RETRY_DELAY_MS / 1000}s)`,
         );
         await new Promise((r) => setTimeout(r, RETRY_DELAY_MS));
         continue;
@@ -1228,7 +1228,7 @@ export const CASE_BUILDERS = [
             },
           },
           null,
-          2
+          2,
         )}`,
       },
     ],
@@ -1503,7 +1503,7 @@ The mitigation (kernel RSB stuffing) involves executing 32 fake CALL instruction
             },
           },
           null,
-          2
+          2,
         )}\n\nHere's a SQL query that aggregates the deployment data:\n\n${pick(CODE_BLOCKS)}`,
       },
       {

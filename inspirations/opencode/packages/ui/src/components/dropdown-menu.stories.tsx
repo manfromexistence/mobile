@@ -1,6 +1,6 @@
 // @ts-nocheck
-import * as mod from "./dropdown-menu"
-import { Button } from "./button"
+import * as mod from "./dropdown-menu";
+import { Button } from "./button";
 
 const docs = `### Overview
 Dropdown menu built on Kobalte with composable items, groups, and submenus.
@@ -23,7 +23,7 @@ Use \`DropdownMenu.ItemLabel\`/\`ItemDescription\` for richer rows.
 ### Theming/tokens
 - Uses \`data-component="dropdown-menu"\` and slot attributes for styling.
 
-`
+`;
 
 export default {
   title: "UI/DropdownMenu",
@@ -37,7 +37,7 @@ export default {
       },
     },
   },
-}
+};
 
 export const Basic = {
   render: () => (
@@ -73,7 +73,7 @@ export const Basic = {
       </mod.DropdownMenu.Portal>
     </mod.DropdownMenu>
   ),
-}
+};
 
 export const CheckboxRadio = {
   render: () => (
@@ -94,4 +94,4 @@ export const CheckboxRadio = {
       </mod.DropdownMenu.Portal>
     </mod.DropdownMenu>
   ),
-}
+};

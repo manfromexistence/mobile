@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { SmokeRing, smokeRingPresets } from '@paper-design/shaders-react';
-import { useControls, button, folder } from 'leva';
-import { setParamsSafe, useResetLevaParams } from '@/helpers/use-reset-leva-params';
-import { usePresetHighlight } from '@/helpers/use-preset-highlight';
-import { cleanUpLevaParams } from '@/helpers/clean-up-leva-params';
-import { smokeRingMeta } from '@paper-design/shaders';
-import { useColors } from '@/helpers/use-colors';
-import { toHsla } from '@/helpers/color-utils';
-import { ShaderDetails } from '@/components/shader-details';
-import { smokeRingDef } from '@/shader-defs/smoke-ring-def';
-import { ShaderContainer } from '@/components/shader-container';
-import { useUrlParams } from '@/helpers/use-url-params';
+import { SmokeRing, smokeRingPresets } from "@paper-design/shaders-react";
+import { useControls, button, folder } from "leva";
+import { setParamsSafe, useResetLevaParams } from "@/helpers/use-reset-leva-params";
+import { usePresetHighlight } from "@/helpers/use-preset-highlight";
+import { cleanUpLevaParams } from "@/helpers/clean-up-leva-params";
+import { smokeRingMeta } from "@paper-design/shaders";
+import { useColors } from "@/helpers/use-colors";
+import { toHsla } from "@/helpers/color-utils";
+import { ShaderDetails } from "@/components/shader-details";
+import { smokeRingDef } from "@/shader-defs/smoke-ring-def";
+import { ShaderContainer } from "@/components/shader-container";
+import { useUrlParams } from "@/helpers/use-url-params";
 
 const { worldWidth, worldHeight, ...defaults } = smokeRingPresets[0].params;
 
@@ -52,7 +52,7 @@ const SmokeRingWithControls = () => {
           setColors(colors);
           setParamsSafe(params, setParams, presetParams);
         }),
-      ])
+      ]),
     );
     return {
       Presets: folder(presets, { order: -1 }),

@@ -41,7 +41,7 @@ test("regionFromKiroProfileArn extracts the region from a CodeWhisperer ARN", ()
   assert.equal(regionFromKiroProfileArn(EU_CENTRAL_ARN), "eu-central-1");
   assert.equal(
     regionFromKiroProfileArn("arn:aws:codewhisperer:us-east-1:1:profile/X"),
-    "us-east-1"
+    "us-east-1",
   );
   assert.equal(regionFromKiroProfileArn(undefined), undefined);
   assert.equal(regionFromKiroProfileArn("not-an-arn"), undefined);
@@ -51,7 +51,7 @@ test("resolveKiroRuntimeRegion: profileArn region beats the IdC (eu-north-1) sto
   // The exact failing scenario: IdC token region eu-north-1, profile in eu-central-1.
   assert.equal(
     resolveKiroRuntimeRegion({ region: "eu-north-1", profileArn: EU_CENTRAL_ARN }),
-    "eu-central-1"
+    "eu-central-1",
   );
 });
 
@@ -73,7 +73,7 @@ test("the executor's resolveKiroRegion routes an eu-north-1 IdC account to the p
     resolveExecutorRegion({
       providerSpecificData: { region: "eu-north-1", profileArn: EU_CENTRAL_ARN },
     }),
-    "eu-central-1"
+    "eu-central-1",
   );
   // generateAssistantResponse must therefore target the real Q host, not q.eu-north-1.
   assert.equal(kiroRuntimeHost("eu-central-1"), "https://q.eu-central-1.amazonaws.com");
@@ -131,11 +131,11 @@ test("discoverKiroProfileArnAcrossRegions: eu-north-1 IdC finds the eu-central-1
   assert.equal(arn, EU_CENTRAL_ARN);
   assert.ok(
     requested.every((u) => !u.includes("eu-north-1")),
-    `must never probe q.eu-north-1, got: ${JSON.stringify(requested)}`
+    `must never probe q.eu-north-1, got: ${JSON.stringify(requested)}`,
   );
   assert.ok(
     requested.some((u) => u.startsWith("https://q.eu-central-1.amazonaws.com/")),
-    "must probe the eu-central-1 Q Developer host"
+    "must probe the eu-central-1 Q Developer host",
   );
 });
 
@@ -157,7 +157,7 @@ test("discoverKiroProfileArnAcrossRegions: a non-EU (ap-southeast-2) IdC resolve
   assert.equal(arn, US_EAST_ARN);
   assert.equal(
     resolveKiroRuntimeRegion({ region: "ap-southeast-2", profileArn: arn }),
-    "us-east-1"
+    "us-east-1",
   );
   // The us-east-1 profile region is probed before the ap-southeast-2 IdC-region fallback.
   assert.ok(requested.some((u) => u.startsWith("https://codewhisperer.us-east-1.amazonaws.com/")));
@@ -169,7 +169,7 @@ test("discoverKiroProfileArnAcrossRegions: no token / no profile yields undefine
     new Response(JSON.stringify({ profiles: [] }), { status: 200 })) as unknown as typeof fetch;
   assert.equal(
     await discoverKiroProfileArnAcrossRegions("tok", "eu-north-1", emptyFetch),
-    undefined
+    undefined,
   );
 });
 
@@ -198,7 +198,7 @@ test("kiro.postExchange (login) discovers the eu-central-1 profile for an eu-nor
 test("kiro.mapTokens keeps region=eu-north-1 (for OIDC refresh) AND stores the eu-central-1 profileArn", () => {
   const mapped = kiro.mapTokens(
     { access_token: "at", refresh_token: "rt", expires_in: 3600, _region: "eu-north-1" },
-    { profileArn: EU_CENTRAL_ARN }
+    { profileArn: EU_CENTRAL_ARN },
   );
   // region stays the IdC/OIDC region so token refresh hits oidc.eu-north-1.amazonaws.com …
   assert.equal(mapped.providerSpecificData.region, "eu-north-1");
@@ -212,7 +212,7 @@ test("getKiroUsage: eu-north-1 IdC account resolves quota via the eu-central-1 p
   globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
     const url = String(input);
     const target = String(
-      (init?.headers as Record<string, string> | undefined)?.["x-amz-target"] || ""
+      (init?.headers as Record<string, string> | undefined)?.["x-amz-target"] || "",
     );
     requested.push(`${target} ${url}`);
     // q.eu-north-1 must never be contacted.
@@ -237,7 +237,7 @@ test("getKiroUsage: eu-north-1 IdC account resolves quota via the eu-central-1 p
           },
         ],
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   }) as typeof fetch;
 
@@ -258,7 +258,7 @@ test("getKiroUsage: eu-north-1 IdC account resolves quota via the eu-central-1 p
     // GetUsageLimits must have gone to the eu-central-1 runtime host, never q.eu-north-1.
     assert.ok(
       requested.some((r) => r.includes("GetUsageLimits") && r.includes("eu-central-1")),
-      `GetUsageLimits should hit eu-central-1, got: ${JSON.stringify(requested)}`
+      `GetUsageLimits should hit eu-central-1, got: ${JSON.stringify(requested)}`,
     );
     assert.ok(requested.every((r) => !r.includes("eu-north-1")));
   } finally {

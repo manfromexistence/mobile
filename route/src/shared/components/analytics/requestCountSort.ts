@@ -9,7 +9,7 @@ import type { ProviderDailyUsageRow, RequestCountSortField } from "./RequestCoun
 export function sortProviderDailyUsageRows(
   rows: ProviderDailyUsageRow[],
   sortBy: RequestCountSortField,
-  sortOrder: "asc" | "desc"
+  sortOrder: "asc" | "desc",
 ): ProviderDailyUsageRow[] {
   const arr = [...rows];
   arr.sort((a, b) => {

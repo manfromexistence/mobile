@@ -18,8 +18,9 @@ const ORIGINAL_DATA_DIR = process.env.DATA_DIR;
 process.env.DATA_DIR = TEST_DATA_DIR;
 
 const core = await import("../../../src/lib/db/core.ts");
-const { getMcpAccessibilityConfig, setMcpAccessibilityConfig } =
-  await import("../../../src/lib/db/compression.ts");
+const { getMcpAccessibilityConfig, setMcpAccessibilityConfig } = await import(
+  "../../../src/lib/db/compression.ts"
+);
 const route = await import("../../../src/app/api/settings/compression/mcp-accessibility/route.ts");
 
 function resetDir() {
@@ -41,7 +42,7 @@ describe("mcpAccessibility config reachability", () => {
   it("validates partial updates and rejects unknown / invalid fields", () => {
     assert.equal(
       mcpAccessibilityConfigSchema.safeParse({ enabled: false, maxTextChars: 8000 }).success,
-      true
+      true,
     );
     // unknown key rejected (.strict)
     assert.equal(mcpAccessibilityConfigSchema.safeParse({ bogus: 1 }).success, false);
@@ -70,7 +71,7 @@ describe("mcpAccessibility config reachability", () => {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ maxTextChars: 12000, minLengthToProcess: 500 }),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      }) as any
+      }) as any,
     );
     assert.equal(putRes.status, 200);
     const putBody = await putRes.json();
@@ -81,7 +82,7 @@ describe("mcpAccessibility config reachability", () => {
     core.resetDbInstance();
     const getRes = await route.GET(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      new Request("http://localhost/api/settings/compression/mcp-accessibility") as any
+      new Request("http://localhost/api/settings/compression/mcp-accessibility") as any,
     );
     assert.equal(getRes.status, 200);
     const getBody = await getRes.json();
@@ -98,7 +99,7 @@ describe("mcpAccessibility config reachability", () => {
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ enabled: false }),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      }) as any
+      }) as any,
     );
     assert.equal(putRes.status, 200);
     const body = await putRes.json();

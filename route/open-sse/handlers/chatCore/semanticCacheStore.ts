@@ -51,7 +51,7 @@ export function storeSemanticCacheResponse(
     usage?: UsageLike;
     log?: LoggerLike;
   },
-  deps: SemanticCacheStoreDeps = DEFAULT_DEPS
+  deps: SemanticCacheStoreDeps = DEFAULT_DEPS,
 ): void {
   if (
     !args.enabled ||
@@ -65,7 +65,7 @@ export function storeSemanticCacheResponse(
     args.body.messages ?? args.body.input,
     args.body.temperature,
     args.body.top_p,
-    args.apiKeyId ?? undefined
+    args.apiKeyId ?? undefined,
   );
   const tokensSaved = args.usage?.prompt_tokens + args.usage?.completion_tokens || 0;
   deps.setCachedResponse(signature, args.model, args.translatedResponse, tokensSaved);

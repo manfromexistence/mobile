@@ -24,7 +24,7 @@ interface AggregationResult {
  */
 export async function rollupDailyUsage(
   fromDate: string,
-  toDate: string
+  toDate: string,
 ): Promise<AggregationResult> {
   const db = getDbInstance();
 
@@ -81,7 +81,7 @@ export async function rollupDailyUsage(
  */
 export async function rollupHourlyQuota(
   fromDate: string,
-  toDate: string
+  toDate: string,
 ): Promise<AggregationResult> {
   const db = getDbInstance();
 
@@ -120,7 +120,7 @@ export async function rollupHourlyQuota(
     result.inserted = runResult.changes;
 
     console.log(
-      `[Aggregation] Hourly rollup: ${result.inserted} rows for ${fromDate} to ${toDate}`
+      `[Aggregation] Hourly rollup: ${result.inserted} rows for ${fromDate} to ${toDate}`,
     );
   } catch (err: any) {
     console.error("[Aggregation] Hourly rollup error:", err);
@@ -179,7 +179,7 @@ export async function rollupUsageHistoryBeforeDate(beforeDate: string): Promise<
     result.inserted = runResult.changes;
 
     console.log(
-      `[Aggregation] usage_history rollup: ${result.inserted} rows for dates before ${beforeDate}`
+      `[Aggregation] usage_history rollup: ${result.inserted} rows for dates before ${beforeDate}`,
     );
   } catch (err: any) {
     console.error("[Aggregation] usage_history rollup error:", err);

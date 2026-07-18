@@ -1,26 +1,26 @@
-import type { KVNamespace } from "@cloudflare/workers-types"
-import { z } from "zod"
-import { issuer } from "@openauthjs/openauth"
-import type { Theme } from "@openauthjs/openauth/ui/theme"
-import { createSubjects } from "@openauthjs/openauth/subject"
-import { THEME_OPENAUTH } from "@openauthjs/openauth/ui/theme"
-import { GithubProvider } from "@openauthjs/openauth/provider/github"
-import { GoogleOidcProvider } from "@openauthjs/openauth/provider/google"
-import { CloudflareStorage } from "@openauthjs/openauth/storage/cloudflare"
-import { Account } from "@opencode-ai/console-core/account.js"
-import { Workspace } from "@opencode-ai/console-core/workspace.js"
-import { Actor } from "@opencode-ai/console-core/actor.js"
-import { Resource } from "@opencode-ai/console-resource"
-import { User } from "@opencode-ai/console-core/user.js"
-import { and, Database, eq, isNull, or } from "@opencode-ai/console-core/drizzle/index.js"
-import { WorkspaceTable } from "@opencode-ai/console-core/schema/workspace.sql.js"
-import { UserTable } from "@opencode-ai/console-core/schema/user.sql.js"
-import { AuthTable } from "@opencode-ai/console-core/schema/auth.sql.js"
-import { Identifier } from "@opencode-ai/console-core/identifier.js"
+import type { KVNamespace } from "@cloudflare/workers-types";
+import { z } from "zod";
+import { issuer } from "@openauthjs/openauth";
+import type { Theme } from "@openauthjs/openauth/ui/theme";
+import { createSubjects } from "@openauthjs/openauth/subject";
+import { THEME_OPENAUTH } from "@openauthjs/openauth/ui/theme";
+import { GithubProvider } from "@openauthjs/openauth/provider/github";
+import { GoogleOidcProvider } from "@openauthjs/openauth/provider/google";
+import { CloudflareStorage } from "@openauthjs/openauth/storage/cloudflare";
+import { Account } from "@opencode-ai/console-core/account.js";
+import { Workspace } from "@opencode-ai/console-core/workspace.js";
+import { Actor } from "@opencode-ai/console-core/actor.js";
+import { Resource } from "@opencode-ai/console-resource";
+import { User } from "@opencode-ai/console-core/user.js";
+import { and, Database, eq, isNull, or } from "@opencode-ai/console-core/drizzle/index.js";
+import { WorkspaceTable } from "@opencode-ai/console-core/schema/workspace.sql.js";
+import { UserTable } from "@opencode-ai/console-core/schema/user.sql.js";
+import { AuthTable } from "@opencode-ai/console-core/schema/auth.sql.js";
+import { Identifier } from "@opencode-ai/console-core/identifier.js";
 
 type Env = {
-  AuthStorage: KVNamespace
-}
+  AuthStorage: KVNamespace;
+};
 
 export const subjects = createSubjects({
   account: z.object({
@@ -32,12 +32,12 @@ export const subjects = createSubjects({
     userID: z.string(),
     workspaceID: z.string(),
   }),
-})
+});
 
 const MY_THEME: Theme = {
   ...THEME_OPENAUTH,
   logo: "https://opencode.ai/favicon-v3.svg",
-}
+};
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext) {
@@ -103,10 +103,10 @@ export default {
       }),
       subjects,
       async success(ctx, response) {
-        console.log(response)
+        console.log(response);
 
-        let subject: string | undefined
-        let email: string | undefined
+        let subject: string | undefined;
+        let email: string | undefined;
 
         if (response.provider === "github") {
           const emails = (await fetch("https://api.github.com/user/emails", {
@@ -115,35 +115,35 @@ export default {
               "User-Agent": "opencode",
               Accept: "application/vnd.github+json",
             },
-          }).then((x) => x.json())) as any
+          }).then((x) => x.json())) as any;
           const user = (await fetch("https://api.github.com/user", {
             headers: {
               Authorization: `Bearer ${response.tokenset.access}`,
               "User-Agent": "opencode",
               Accept: "application/vnd.github+json",
             },
-          }).then((x) => x.json())) as any
-          subject = user.id.toString()
+          }).then((x) => x.json())) as any;
+          subject = user.id.toString();
 
-          const primaryEmail = emails.find((x: any) => x.primary)
-          if (!primaryEmail) throw new Error("No primary email found for GitHub user")
-          if (!primaryEmail.verified) throw new Error("Primary email for GitHub user not verified")
-          email = primaryEmail.email
+          const primaryEmail = emails.find((x: any) => x.primary);
+          if (!primaryEmail) throw new Error("No primary email found for GitHub user");
+          if (!primaryEmail.verified) throw new Error("Primary email for GitHub user not verified");
+          email = primaryEmail.email;
         } else if (response.provider === "google") {
-          if (!response.id.email_verified) throw new Error("Google email not verified")
-          subject = response.id.sub as string
-          email = response.id.email as string
-        } else throw new Error("Unsupported provider")
+          if (!response.id.email_verified) throw new Error("Google email not verified");
+          subject = response.id.sub as string;
+          email = response.id.email as string;
+        } else throw new Error("Unsupported provider");
 
-        if (!email) throw new Error("No email found")
-        if (!subject) throw new Error("No subject found")
+        if (!email) throw new Error("No email found");
+        if (!subject) throw new Error("No subject found");
 
         if (Resource.App.stage !== "production" && !email.endsWith("@anoma.ly")) {
-          throw new Error("Invalid email")
+          throw new Error("Invalid email");
         }
 
         // Get account
-        let newAccount = false
+        let newAccount = false;
         const accountID = await (async () => {
           const matches = await Database.use(async (tx) =>
             tx
@@ -158,17 +158,17 @@ export default {
                   and(eq(AuthTable.provider, "email"), eq(AuthTable.subject, email)),
                 ),
               ),
-          )
-          const idByProvider = matches.find((x) => x.provider === response.provider)?.accountID
-          const idByEmail = matches.find((x) => x.provider === "email")?.accountID
-          if (idByProvider && idByEmail) return idByProvider
+          );
+          const idByProvider = matches.find((x) => x.provider === response.provider)?.accountID;
+          const idByEmail = matches.find((x) => x.provider === "email")?.accountID;
+          if (idByProvider && idByEmail) return idByProvider;
 
           // create account if not found
-          let accountID = idByProvider ?? idByEmail
+          let accountID = idByProvider ?? idByEmail;
           if (!accountID) {
-            console.log("creating account for", email)
-            accountID = await Account.create({})
-            newAccount = true
+            console.log("creating account for", email);
+            accountID = await Account.create({});
+            newAccount = true;
           }
 
           await Database.use(async (tx) =>
@@ -193,14 +193,14 @@ export default {
                   timeDeleted: null,
                 },
               }),
-          )
+          );
 
-          return accountID
-        })()
+          return accountID;
+        })();
 
         // Get workspace
         await Actor.provide("account", { accountID, email }, async () => {
-          await User.joinInvitedWorkspaces()
+          await User.joinInvitedWorkspaces();
           const workspaces = await Database.use((tx) =>
             tx
               .select({ id: WorkspaceTable.id })
@@ -213,14 +213,14 @@ export default {
                   isNull(WorkspaceTable.timeDeleted),
                 ),
               ),
-          )
+          );
           if (workspaces.length === 0) {
-            await Workspace.create({ name: "Default" })
+            await Workspace.create({ name: "Default" });
           }
-        })
-        return ctx.subject("account", accountID, { accountID, email, newAccount })
+        });
+        return ctx.subject("account", accountID, { accountID, email, newAccount });
       },
-    }).fetch(request, env, ctx)
-    return result
+    }).fetch(request, env, ctx);
+    return result;
   },
-}
+};

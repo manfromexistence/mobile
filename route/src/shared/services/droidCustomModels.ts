@@ -66,7 +66,7 @@ export function normalizeDroidModelList(input: {
  */
 export function buildDroidCustomModels(
   models: string[],
-  opts: DroidCustomModelOptions
+  opts: DroidCustomModelOptions,
 ): DroidCustomModelEntry[] {
   if (models.length === 0) {
     throw new Error("buildDroidCustomModels requires at least one model");

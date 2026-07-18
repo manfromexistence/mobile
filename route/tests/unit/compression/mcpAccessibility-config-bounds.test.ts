@@ -15,7 +15,7 @@ test("clamps maxTextChars below the tail reserve to the default", () => {
     assert.equal(
       clampMcpAccessibilityConfig({ maxTextChars: bad }).maxTextChars,
       DEFAULT_MCP_ACCESSIBILITY_CONFIG.maxTextChars,
-      `maxTextChars=${bad} must fall back to default`
+      `maxTextChars=${bad} must fall back to default`,
     );
   }
 });

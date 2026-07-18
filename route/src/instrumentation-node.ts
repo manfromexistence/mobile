@@ -72,7 +72,7 @@ const TRANSIENT_DB_CLOSED_RE = /database\s*(connection\s*)?(is\s*)?closed/i;
  * module-mocking (`node:test` does not support `mock.module` reliably here).
  */
 export async function ensureDbReadyForBoot(
-  ensureDbInitializedFn?: () => Promise<void>
+  ensureDbInitializedFn?: () => Promise<void>,
 ): Promise<void> {
   const ensureDbInitialized =
     ensureDbInitializedFn ?? (await import("@/lib/db/core")).ensureDbInitialized;
@@ -86,7 +86,7 @@ export async function ensureDbReadyForBoot(
     }
     console.warn(
       "[STARTUP] Database was closed by a prior reload/shutdown — retrying with a fresh connection (#6560):",
-      normalized.message
+      normalized.message,
     );
     try {
       await ensureDbInitialized();
@@ -112,7 +112,7 @@ async function ensureSecrets(): Promise<void> {
     const msg = err instanceof Error ? err.message : String(err);
     console.warn(
       "[STARTUP] Secret persistence unavailable; falling back to process-local secrets:",
-      msg
+      msg,
     );
   }
 
@@ -138,7 +138,7 @@ async function ensureSecrets(): Promise<void> {
       process.env.API_KEY_SECRET = generated;
       persistSecret("apiKeySecret", generated);
       console.log(
-        "[STARTUP] API_KEY_SECRET auto-generated and persisted (random 64-char hex secret)"
+        "[STARTUP] API_KEY_SECRET auto-generated and persisted (random 64-char hex secret)",
       );
     }
   }
@@ -174,7 +174,7 @@ export async function registerNodejs(): Promise<void> {
     const { cleared } = clearStaleCrashCooldowns();
     if (cleared > 0) {
       console.log(
-        `[STARTUP] Cleared ${cleared} stale transient connection cooldown(s) from prior crash (#3625)`
+        `[STARTUP] Cleared ${cleared} stale transient connection cooldown(s) from prior crash (#3625)`,
       );
     }
   } catch (err: unknown) {
@@ -230,7 +230,7 @@ export async function registerNodejs(): Promise<void> {
     console.log("[STARTUP] Provider limits sync scheduler started");
     const cloudSyncInitialized = await ensureCloudSyncInitialized();
     console.log(
-      `[STARTUP] Cloud/model sync background bootstrap ${cloudSyncInitialized ? "initialized" : "skipped"}`
+      `[STARTUP] Cloud/model sync background bootstrap ${cloudSyncInitialized ? "initialized" : "skipped"}`,
     );
     const { initBatchProcessor } = await import("@omniroute/open-sse/services/batchProcessor");
     initBatchProcessor();
@@ -259,14 +259,15 @@ export async function registerNodejs(): Promise<void> {
       console.log(
         `[STARTUP] Runtime settings hydrated: ${runtimeChanges
           .map((entry) => entry.section)
-          .join(", ")}`
+          .join(", ")}`,
       );
     }
 
     // Restore Global System Prompt into in-memory config (#2468/#2470)
     if (settings.systemPrompt) {
-      const { setSystemPromptConfig } =
-        await import("@omniroute/open-sse/services/systemPrompt.ts");
+      const { setSystemPromptConfig } = await import(
+        "@omniroute/open-sse/services/systemPrompt.ts"
+      );
       setSystemPromptConfig(settings.systemPrompt);
       console.log("[STARTUP] Global System Prompt restored from settings");
     }
@@ -276,22 +277,23 @@ export async function registerNodejs(): Promise<void> {
     // without this the dashboard mode (auto/custom/adaptive) silently reverts to
     // the passthrough default on every restart. Previously this was only wired into
     // the unused `server-init.ts`, so it never ran in production.
-    const { hydrateThinkingBudgetConfig } =
-      await import("@omniroute/open-sse/services/thinkingBudget.ts");
+    const { hydrateThinkingBudgetConfig } = await import(
+      "@omniroute/open-sse/services/thinkingBudget.ts"
+    );
     if (hydrateThinkingBudgetConfig(settings)) {
       console.log("[STARTUP] Thinking-Budget config restored from settings");
     }
 
     const seededModelAliases = await seedDefaultModelAliases();
     console.log(
-      `[STARTUP] Model alias seed: applied=${seededModelAliases.applied.length}, skipped=${seededModelAliases.skipped.length}, failed=${seededModelAliases.failed.length}`
+      `[STARTUP] Model alias seed: applied=${seededModelAliases.applied.length}, skipped=${seededModelAliases.skipped.length}, failed=${seededModelAliases.failed.length}`,
     );
     startSessionAccountAffinityCleanup();
 
     const migration = await migrateCodexConnectionDefaultsFromLegacySettings();
     if (migration.migrated) {
       console.log(
-        `[STARTUP] Migrated Codex connection defaults for ${migration.updatedConnectionIds.length} connection(s)`
+        `[STARTUP] Migrated Codex connection defaults for ${migration.updatedConnectionIds.length} connection(s)`,
       );
       if (settings.cloudEnabled === true) {
         const [{ syncToCloud }, { getConsistentMachineId }] = await Promise.all([

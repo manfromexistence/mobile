@@ -20,18 +20,18 @@ test("kilocode buildHeaders sends `Bearer anonymous` + editor header when no cre
   // Synthetic noauth credential shape: no apiKey, no accessToken.
   const headers = executor.buildHeaders(
     { apiKey: null, accessToken: null } as never,
-    true
+    true,
   ) as Record<string, string>;
 
   assert.equal(
     headers["Authorization"],
     "Bearer anonymous",
-    "anonymous free-tier request must carry the literal `anonymous` bearer token"
+    "anonymous free-tier request must carry the literal `anonymous` bearer token",
   );
   assert.equal(
     headers["X-KILOCODE-EDITORNAME"],
     "OmniRoute",
-    "Kilo's gateway requires the editor-name header"
+    "Kilo's gateway requires the editor-name header",
   );
 });
 
@@ -39,13 +39,13 @@ test("kilocode buildHeaders prefers a real OAuth token over the anonymous fallba
   const executor = new DefaultExecutor("kilocode");
   const headers = executor.buildHeaders(
     { apiKey: null, accessToken: "kc-real-oauth-token" } as never,
-    true
+    true,
   ) as Record<string, string>;
 
   assert.equal(
     headers["Authorization"],
     "Bearer kc-real-oauth-token",
-    "an authenticated account must use its own token, never `anonymous`"
+    "an authenticated account must use its own token, never `anonymous`",
   );
 });
 
@@ -53,7 +53,7 @@ test("kilocode buildHeaders prefers a real API key over the anonymous fallback",
   const executor = new DefaultExecutor("kilocode");
   const headers = executor.buildHeaders(
     { apiKey: "kc-user-key", accessToken: null } as never,
-    true
+    true,
   ) as Record<string, string>;
 
   assert.equal(headers["Authorization"], "Bearer kc-user-key");
@@ -65,6 +65,6 @@ test("kilocode provider is flagged anonymousFallback so no-auth requests synthes
   assert.equal(
     provider?.anonymousFallback,
     true,
-    "anonymousFallback drives providerCanUseSyntheticNoAuthFallback → synthetic noauth credential"
+    "anonymousFallback drives providerCanUseSyntheticNoAuthFallback → synthetic noauth credential",
   );
 });

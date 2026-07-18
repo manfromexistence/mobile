@@ -41,7 +41,7 @@ function getLinuxCertConfig(): LinuxCertConfig {
 
 async function updateNssDatabases(
   certPath: string | null,
-  action: "add" | "delete" = "add"
+  action: "add" | "delete" = "add",
 ): Promise<void> {
   // Pass the runtime values via environment variables instead of string
   // interpolation. The shell receives them through its env and dereferences
@@ -97,7 +97,7 @@ async function updateNssDatabases(
           ACTION: action,
         },
       },
-      () => resolve()
+      () => resolve(),
     );
   });
 }
@@ -244,7 +244,7 @@ export function classifyCertInstallError(message: string): CertInstallReason {
  */
 export function buildCertManualGuide(
   certPath: string,
-  platform: NodeJS.Platform = process.platform
+  platform: NodeJS.Platform = process.platform,
 ): CertManualGuide {
   let steps: string[];
   if (platform === "win32") {
@@ -277,7 +277,7 @@ export function buildCertManualGuide(
  */
 export async function installCertResult(
   sudoPassword: string,
-  certPath: string
+  certPath: string,
 ): Promise<CertInstallResult> {
   try {
     await installCert(sudoPassword, certPath);
@@ -313,7 +313,7 @@ async function installCertMac(sudoPassword: string, certPath: string): Promise<v
         "/Library/Keychains/System.keychain",
         certPath,
       ],
-      sudoPassword
+      sudoPassword,
     );
     console.log(`✅ Installed certificate to system keychain: ${certPath}`);
   } catch (error) {
@@ -402,7 +402,7 @@ async function uninstallCertMac(sudoPassword: string, certPath: string): Promise
         fingerprint,
         "/Library/Keychains/System.keychain",
       ],
-      sudoPassword
+      sudoPassword,
     );
     console.log("✅ Uninstalled certificate from system keychain");
   } catch (err) {

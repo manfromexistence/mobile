@@ -123,7 +123,7 @@ export function pushUniqueResponsesOutputItems(target: unknown[], items: readonl
 
 export function backfillResponsesCompletedOutput(
   parsed: unknown,
-  collectedItems: readonly unknown[]
+  collectedItems: readonly unknown[],
 ): boolean {
   if (!collectedItems.length) return false;
   if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return false;

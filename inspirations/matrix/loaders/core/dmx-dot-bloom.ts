@@ -1,4 +1,9 @@
-import { clampHalo, opacityToBloomLevel, remapOpacityToTriplet, remappedOpacityQualifiesForBloom } from "./opacity-triplet";
+import {
+  clampHalo,
+  opacityToBloomLevel,
+  remapOpacityToTriplet,
+  remappedOpacityQualifiesForBloom,
+} from "./opacity-triplet";
 
 export function dmxBloomRootActive(bloom: boolean, halo: number | undefined): boolean {
   return bloom || clampHalo(halo) > 0;
@@ -20,7 +25,7 @@ export function dmxDotBloomParts(
   halo: number | undefined,
   ob: number | undefined,
   om: number | undefined,
-  op: number | undefined
+  op: number | undefined,
 ): { level: number; bloomDot: boolean } {
   const haloN = clampHalo(halo);
   if (!isActive) {
@@ -30,6 +35,6 @@ export function dmxDotBloomParts(
   const fromBloom = bloom ? opacityToBloomLevel(remapped) : 0;
   return {
     level: fromBloom,
-    bloomDot: haloN > 0 || (bloom && remappedOpacityQualifiesForBloom(remapped))
+    bloomDot: haloN > 0 || (bloom && remappedOpacityQualifiesForBloom(remapped)),
   };
 }

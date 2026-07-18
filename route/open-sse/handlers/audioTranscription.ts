@@ -55,7 +55,7 @@ function upstreamErrorResponse(res, errText) {
     {
       status: res.status,
       headers: { ...CORS_HEADERS },
-    }
+    },
   );
 }
 
@@ -72,7 +72,7 @@ function getUploadedFileName(file: Blob & { name?: unknown }): string {
 
 export async function buildMultipartBody(
   file: Blob & { name?: unknown },
-  fields: Record<string, string>
+  fields: Record<string, string>,
 ): Promise<{ body: Uint8Array; contentType: string }> {
   const boundary = "----OmniRouteAudioBoundary" + Date.now().toString(36);
   const parts: Uint8Array[] = [];
@@ -81,8 +81,8 @@ export async function buildMultipartBody(
   for (const [name, value] of Object.entries(fields)) {
     parts.push(
       encoder.encode(
-        `--${boundary}\r\nContent-Disposition: form-data; name="${name}"\r\n\r\n${value}\r\n`
-      )
+        `--${boundary}\r\nContent-Disposition: form-data; name="${name}"\r\n\r\n${value}\r\n`,
+      ),
     );
   }
 
@@ -92,8 +92,8 @@ export async function buildMultipartBody(
   const fileBytes = new Uint8Array(await file.arrayBuffer());
   parts.push(
     encoder.encode(
-      `--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${fileName}"\r\nContent-Type: ${file.type || "application/octet-stream"}\r\n\r\n`
-    )
+      `--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="${fileName}"\r\nContent-Type: ${file.type || "application/octet-stream"}\r\n\r\n`,
+    ),
   );
   parts.push(fileBytes);
   parts.push(encoder.encode(`\r\n--${boundary}--\r\n`));
@@ -156,7 +156,7 @@ async function handleDeepgramTranscription(
   file,
   modelId,
   token,
-  formData?: FormData
+  formData?: FormData,
 ) {
   const url = new URL(providerConfig.baseUrl);
   url.searchParams.set("model", modelId);
@@ -194,7 +194,7 @@ async function handleDeepgramTranscription(
   // Return it explicitly so the client can distinguish from a credentials error
   return Response.json(
     { text: text ?? "", noSpeechDetected: text === null || text === "" },
-    { headers: { ...CORS_HEADERS } }
+    { headers: { ...CORS_HEADERS } },
   );
 }
 
@@ -356,7 +356,7 @@ async function handleKieAudioTranscription(providerConfig, file, modelId, token)
       {
         status,
         headers: { ...CORS_HEADERS },
-      }
+      },
     );
   }
   const taskId = data?.data?.taskId || data?.taskId;
@@ -367,7 +367,7 @@ async function handleKieAudioTranscription(providerConfig, file, modelId, token)
 
   return Response.json(
     { text: data?.data?.text || data?.text || "" },
-    { headers: { ...CORS_HEADERS } }
+    { headers: { ...CORS_HEADERS } },
   );
 }
 
@@ -402,7 +402,7 @@ async function pollKieTranscriptionResult(baseUrl, modelId, taskId, token) {
         : 504;
     return errorResponse(
       status,
-      err instanceof Error ? err.message : "Kie transcription generation timed out or failed"
+      err instanceof Error ? err.message : "Kie transcription generation timed out or failed",
     );
   }
 
@@ -451,7 +451,7 @@ export async function handleAudioTranscription({
   if (!providerConfig) {
     return errorResponse(
       400,
-      `No transcription provider found for model "${model}". Available: openai, groq, deepgram, assemblyai, nvidia, huggingface, qwen`
+      `No transcription provider found for model "${model}". Available: openai, groq, deepgram, assemblyai, nvidia, huggingface, qwen`,
     );
   }
 
@@ -484,7 +484,7 @@ export async function handleAudioTranscription({
       const error = err as { message?: string; status?: number };
       return errorResponse(
         typeof error?.status === "number" ? error.status : 500,
-        `Vertex transcription failed: ${error?.message || "unknown error"}`
+        `Vertex transcription failed: ${error?.message || "unknown error"}`,
       );
     }
   }

@@ -63,7 +63,7 @@ describe("Memory + Skills Integration", () => {
     mockedGetSettings.mockResolvedValue({ skillsEnabled: false } as any);
 
     await expect(skillExecutor.execute("some-skill", {}, { apiKeyId })).rejects.toThrow(
-      /skills.*disabled/i
+      /skills.*disabled/i,
     );
   });
 
@@ -71,7 +71,7 @@ describe("Memory + Skills Integration", () => {
     mockedGetSettings.mockResolvedValue({ skillsEnabled: true } as any);
 
     await expect(skillExecutor.execute("nonexistent-skill", {}, { apiKeyId })).rejects.toThrow(
-      /not found/i
+      /not found/i,
     );
   });
 

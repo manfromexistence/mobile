@@ -33,7 +33,7 @@ function seedRelayToken(rawToken: string) {
         allowed_models, max_tokens_per_request, max_requests_per_minute, max_requests_per_day,
         max_cost_per_day, enabled, created_at, updated_at, expires_at, metadata)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?)
-    `
+    `,
     )
     .run(
       id,
@@ -50,7 +50,7 @@ function seedRelayToken(rawToken: string) {
       now,
       now,
       null,
-      "{}"
+      "{}",
     );
   return { id, rawToken };
 }
@@ -79,8 +79,9 @@ test("bifrost route: returns 503 + fallback header when BIFROST_BASE_URL is unse
   delete process.env.BIFROST_STREAMING_ENABLED;
 
   // Dynamic import after env is set so the module reads the empty value.
-  const { POST } =
-    await import("../../../../src/app/api/v1/relay/chat/completions/bifrost/route.ts");
+  const { POST } = await import(
+    "../../../../src/app/api/v1/relay/chat/completions/bifrost/route.ts"
+  );
 
   const req = new Request("http://localhost/api/v1/relay/chat/completions/bifrost", {
     method: "POST",
@@ -150,11 +151,11 @@ test("bifrost route: OPTIONS responds with CORS headers", async () => {
   assert.ok(res.status === 200 || res.status === 204, `expected 200/204, got ${res.status}`);
   assert.ok(
     res.headers.get("Access-Control-Allow-Methods"),
-    "missing Access-Control-Allow-Methods header"
+    "missing Access-Control-Allow-Methods header",
   );
   assert.ok(
     res.headers.get("Access-Control-Allow-Headers"),
-    "missing Access-Control-Allow-Headers header"
+    "missing Access-Control-Allow-Headers header",
   );
 });
 
@@ -204,7 +205,7 @@ test("bifrost route: records relay usage after SSE stream completion", async () 
       {
         status: 200,
         headers: { "content-type": "text/event-stream" },
-      }
+      },
     );
   };
 

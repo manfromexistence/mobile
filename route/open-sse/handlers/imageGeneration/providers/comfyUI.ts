@@ -75,7 +75,7 @@ export async function handleComfyUIImageGeneration({ model, provider, providerCo
         providerConfig.baseUrl,
         file.filename,
         file.subfolder,
-        file.type
+        file.type,
       );
       const base64 = Buffer.from(buffer).toString("base64");
       images.push({ b64_json: base64, revised_prompt: body.prompt });
@@ -113,4 +113,3 @@ export async function handleComfyUIImageGeneration({ model, provider, providerCo
     };
   }
 }
-

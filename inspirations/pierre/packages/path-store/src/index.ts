@@ -1,7 +1,7 @@
-export { PathStore } from './store';
-export { createPathStoreScheduler } from './scheduler';
-export { StaticPathStore } from './static-store';
-export { createVisibleTreeProjection } from './visible-tree-projection';
+export { PathStore } from "./store";
+export { createPathStoreScheduler } from "./scheduler";
+export { StaticPathStore } from "./static-store";
+export { createVisibleTreeProjection } from "./visible-tree-projection";
 export type {
   PathStoreChildPatch,
   PathStoreCleanupEvent,
@@ -29,7 +29,7 @@ export type {
   PathStoreVisibleTreeProjection,
   PathStoreVisibleTreeProjectionData,
   PathStoreVisibleTreeProjectionRow,
-} from './public-types';
+} from "./public-types";
 export type {
   PathStoreScheduler,
   PathStoreSchedulerCompletion,
@@ -41,4 +41,4 @@ export type {
   PathStoreSchedulerTaskContext,
   PathStoreSchedulerTaskDescriptor,
   PathStoreSchedulerTaskStatus,
-} from './scheduler';
+} from "./scheduler";

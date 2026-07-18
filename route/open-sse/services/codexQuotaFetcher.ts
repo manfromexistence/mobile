@@ -119,7 +119,7 @@ function getQuotaCacheKey(connectionId: string, requestedModel?: string | null):
 function deleteQuotaCacheForConnection(connectionId: string): void {
   quotaCache.delete(connectionId);
   const scopedKeys = Array.from(quotaCache.keys()).filter((key) =>
-    key.startsWith(`${connectionId}:`)
+    key.startsWith(`${connectionId}:`),
   );
   for (const key of scopedKeys) quotaCache.delete(key);
 }
@@ -139,7 +139,7 @@ function getRequestedModel(connection?: Record<string, unknown>): string | null 
 
 function getCodexConnectionMeta(
   connectionId: string,
-  connection?: Record<string, unknown>
+  connection?: Record<string, unknown>,
 ): CodexConnectionMeta | null {
   if (connection && typeof connection === "object") {
     const providerSpecificData =
@@ -199,7 +199,7 @@ function getDominantResetAt(quota: {
  */
 export async function fetchCodexQuota(
   connectionId: string,
-  connection?: Record<string, unknown>
+  connection?: Record<string, unknown>,
 ): Promise<CodexDualWindowQuota | null> {
   const requestedModel = getRequestedModel(connection);
   const cacheKey = getQuotaCacheKey(connectionId, requestedModel);
@@ -294,7 +294,7 @@ function parseWindowReset(window: Record<string, unknown>): string | null {
   }
   const resetAfterSeconds = toNumber(
     window["reset_after_seconds"] ?? window["resetAfterSeconds"],
-    0
+    0,
   );
   if (resetAfterSeconds > 0) {
     return new Date(Date.now() + resetAfterSeconds * 1000).toISOString();
@@ -303,7 +303,7 @@ function parseWindowReset(window: Record<string, unknown>): string | null {
 }
 
 function parseCodexWindow(
-  window: Record<string, unknown> | null | undefined
+  window: Record<string, unknown> | null | undefined,
 ): { percentUsed: number; resetAt: string | null } | null {
   if (!window || Object.keys(window).length === 0) return null;
   const percentUsed = toNumber(window["used_percent"] ?? window["usedPercent"], 0) / 100;
@@ -349,7 +349,7 @@ function findSparkRateLimit(data: Record<string, unknown>): Record<string, unkno
         entry["title"],
         entry["model"],
         entry["model_id"],
-        entry["modelId"]
+        entry["modelId"],
       )
     ) {
       continue;
@@ -367,7 +367,7 @@ function getCodexRateLimitWindows(rateLimit: Record<string, unknown>): {
   return {
     primary: parseCodexWindow(toRecord(rateLimit["primary_window"] ?? rateLimit["primaryWindow"])),
     secondary: parseCodexWindow(
-      toRecord(rateLimit["secondary_window"] ?? rateLimit["secondaryWindow"])
+      toRecord(rateLimit["secondary_window"] ?? rateLimit["secondaryWindow"]),
     ),
   };
 }
@@ -375,7 +375,7 @@ function getCodexRateLimitWindows(rateLimit: Record<string, unknown>): {
 function assignCodexWindows(
   target: Record<string, { percentUsed: number; resetAt: string | null }>,
   rateLimit: Record<string, unknown>,
-  names: { primary: string; secondary: string }
+  names: { primary: string; secondary: string },
 ): void {
   const { primary, secondary } = getCodexRateLimitWindows(rateLimit);
   if (primary) target[names.primary] = primary;
@@ -385,7 +385,7 @@ function assignCodexWindows(
 function getSelectedCodexRateLimit(
   normalRateLimit: Record<string, unknown>,
   sparkRateLimit: Record<string, unknown> | null,
-  useSparkWindows: boolean
+  useSparkWindows: boolean,
 ): Record<string, unknown> | null {
   if (useSparkWindows) return sparkRateLimit;
   return normalRateLimit;
@@ -393,7 +393,7 @@ function getSelectedCodexRateLimit(
 
 function parseCodexUsageResponse(
   data: unknown,
-  requestedModel?: string | null
+  requestedModel?: string | null,
 ): CodexDualWindowQuota | null {
   const obj = toRecord(data);
   const normalRateLimit = toRecord(obj["rate_limit"] ?? obj["rateLimit"]);
@@ -402,7 +402,7 @@ function parseCodexUsageResponse(
   const selectedRateLimit = getSelectedCodexRateLimit(
     normalRateLimit,
     sparkRateLimit,
-    useSparkWindows
+    useSparkWindows,
   );
   if (!selectedRateLimit) return null;
 
@@ -415,7 +415,7 @@ function parseCodexUsageResponse(
   const window7d = parsedSecondary ?? { percentUsed: 0, resetAt: null };
   const worstPercentUsed = Math.max(window5h.percentUsed, window7d.percentUsed);
   const limitReached = Boolean(
-    selectedRateLimit["limit_reached"] ?? selectedRateLimit["limitReached"]
+    selectedRateLimit["limit_reached"] ?? selectedRateLimit["limitReached"],
   );
 
   const windows: Record<string, { percentUsed: number; resetAt: string | null }> = {};

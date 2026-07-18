@@ -23,10 +23,14 @@ export function DotmCircular9({
   ...rest
 }: DotmCircular9Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
   const step = useSteppedCycle({
     active: !reducedMotion && matrixPhase !== "idle",
@@ -47,7 +51,8 @@ export function DotmCircular9({
       const angle = Math.atan2(y, x);
       const t = reducedMotion || phase === "idle" ? 0 : (step / STEP_COUNT) * Math.PI * 2;
       const cardinalCenters = [0, Math.PI / 2, Math.PI, -Math.PI / 2];
-      const beaconIndex = Math.floor((step / STEP_COUNT) * cardinalCenters.length) % cardinalCenters.length;
+      const beaconIndex =
+        Math.floor((step / STEP_COUNT) * cardinalCenters.length) % cardinalCenters.length;
       const activeCenter = cardinalCenters[beaconIndex]!;
       const oppositeCenter = cardinalCenters[(beaconIndex + 2) % cardinalCenters.length]!;
 

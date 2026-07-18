@@ -13,7 +13,7 @@ const MAX_SOCKS_HANDSHAKE_TIMEOUT_MS = 120_000;
  * above the ceiling are clamped.
  */
 export function resolveSocksHandshakeTimeoutMs(
-  env: Record<string, string | undefined> = process.env
+  env: Record<string, string | undefined> = process.env,
 ): number {
   const raw = env.SOCKS_HANDSHAKE_TIMEOUT_MS;
   if (raw == null || raw.trim() === "") return DEFAULT_SOCKS_HANDSHAKE_TIMEOUT_MS;
@@ -42,7 +42,7 @@ function resolvePort(protocol: string, port: string): number {
 function socksConnectorWithFamily(
   proxy: SocksProxy,
   family: 4 | 6 | null,
-  tlsOpts: buildConnector.BuildOptions = {}
+  tlsOpts: buildConnector.BuildOptions = {},
 ): buildConnector.connector {
   const undiciConnect = buildConnector(tlsOpts);
   const socketOptions = buildSocksFamilySocketOptions(family);
@@ -77,7 +77,7 @@ function socksConnectorWithFamily(
 export function createSocksDispatcherWithFamily(
   proxy: SocksProxy,
   family: 4 | 6 | null,
-  agentOptions: Agent.Options = {}
+  agentOptions: Agent.Options = {},
 ): Dispatcher {
   const { connect, ...rest } = agentOptions as Agent.Options & {
     connect?: buildConnector.BuildOptions;

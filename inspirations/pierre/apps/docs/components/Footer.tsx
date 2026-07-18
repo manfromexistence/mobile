@@ -1,19 +1,18 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
+import Link from "next/link";
 
-import { getExternalUrl, PRODUCTS } from '@/lib/product-config';
+import { getExternalUrl, PRODUCTS } from "@/lib/product-config";
 
-const siteProduct = process.env.NEXT_PUBLIC_SITE ?? 'diffs';
-const isDiffs = siteProduct === 'diffs';
-const isTrees = siteProduct === 'trees';
+const siteProduct = process.env.NEXT_PUBLIC_SITE ?? "diffs";
+const isDiffs = siteProduct === "diffs";
+const isTrees = siteProduct === "trees";
 
-const linkClass =
-  'text-muted-foreground hover:text-foreground text-sm transition-colors';
+const linkClass = "text-muted-foreground hover:text-foreground text-sm transition-colors";
 
 export default function Footer() {
-  const diffsExternal = getExternalUrl('diffs');
-  const treesExternal = getExternalUrl('trees');
+  const diffsExternal = getExternalUrl("diffs");
+  const treesExternal = getExternalUrl("trees");
 
   return (
     <footer className="pt-12 pb-12">
@@ -64,11 +63,7 @@ export default function Footer() {
             {isTrees ? (
               <>
                 <Link
-                  href={
-                    PRODUCTS.trees.basePath !== ''
-                      ? PRODUCTS.trees.basePath
-                      : '/'
-                  }
+                  href={PRODUCTS.trees.basePath !== "" ? PRODUCTS.trees.basePath : "/"}
                   className={linkClass}
                 >
                   Home

@@ -80,7 +80,7 @@ export async function handleGoogleFlowVideoGeneration({
   try {
     log?.info?.(
       "VIDEO",
-      `googleflow/${model} (veo) | submitting | aspect: ${params.aspectRatio ?? "default"}`
+      `googleflow/${model} (veo) | submitting | aspect: ${params.aspectRatio ?? "default"}`,
     );
     const submitRes = await fetch(`${baseUrl}${GOOGLE_FLOW_SUBMIT_PATH}`, {
       method: "POST",

@@ -1,18 +1,13 @@
-import { ModelState, Screen } from '../utils/types';
-import { useWllama } from '../utils/wllama.context';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faTrashAlt,
-  faXmark,
-  faWarning,
-  faCheck,
-} from '@fortawesome/free-solid-svg-icons';
-import { DEFAULT_INFERENCE_PARAMS, MAX_GGUF_SIZE } from '../config';
-import { toHumanReadableSize, useDebounce } from '../utils/utils';
-import { useEffect, useState } from 'react';
-import ScreenWrapper from './ScreenWrapper';
-import { DisplayedModel } from '../utils/displayed-model';
-import { isValidGgufFile } from '@wllama/wllama';
+import { ModelState, Screen } from "../utils/types";
+import { useWllama } from "../utils/wllama.context";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashAlt, faXmark, faWarning, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { DEFAULT_INFERENCE_PARAMS, MAX_GGUF_SIZE } from "../config";
+import { toHumanReadableSize, useDebounce } from "../utils/utils";
+import { useEffect, useState } from "react";
+import ScreenWrapper from "./ScreenWrapper";
+import { DisplayedModel } from "../utils/displayed-model";
+import { isValidGgufFile } from "@wllama/wllama";
 
 export default function ModelScreen() {
   const [showAddCustom, setShowAddCustom] = useState(false);
@@ -45,8 +40,8 @@ export default function ModelScreen() {
             min="1"
             max="100"
             step="1"
-            onChange={onChange('nThreads')}
-            value={currParams.nThreads < 1 ? '' : currParams.nThreads}
+            onChange={onChange("nThreads")}
+            value={currParams.nThreads < 1 ? "" : currParams.nThreads}
             disabled={blockModelBtn}
           />
         </label>
@@ -58,7 +53,7 @@ export default function ModelScreen() {
             className="grow"
             min="128"
             step="1"
-            onChange={onChange('nContext')}
+            onChange={onChange("nContext")}
             value={currParams.nContext}
             disabled={blockModelBtn}
           />
@@ -71,7 +66,7 @@ export default function ModelScreen() {
             className="grow"
             min="10"
             step="1"
-            onChange={onChange('nPredict')}
+            onChange={onChange("nPredict")}
             value={currParams.nPredict}
           />
         </label>
@@ -83,25 +78,18 @@ export default function ModelScreen() {
             className="grow"
             min="0.0"
             step="0.05"
-            onChange={onChange('temperature')}
+            onChange={onChange("temperature")}
             value={currParams.temperature}
           />
         </label>
 
-        <button
-          className="btn btn-sm mr-2"
-          onClick={() => setParams(DEFAULT_INFERENCE_PARAMS)}
-        >
+        <button className="btn btn-sm mr-2" onClick={() => setParams(DEFAULT_INFERENCE_PARAMS)}>
           Reset params
         </button>
         <button
           className="btn btn-sm mr-2"
           onClick={async () => {
-            if (
-              confirm(
-                'This will remove all downloaded model files from cache. Continue?'
-              )
-            ) {
+            if (confirm("This will remove all downloaded model files from cache. Continue?")) {
               for (const m of models) {
                 await removeCachedModel(m);
               }
@@ -143,23 +131,19 @@ export default function ModelScreen() {
 
       <div className="h-10" />
 
-      {showAddCustom && (
-        <AddCustomModelDialog onClose={() => setShowAddCustom(false)} />
-      )}
+      {showAddCustom && <AddCustomModelDialog onClose={() => setShowAddCustom(false)} />}
     </ScreenWrapper>
   );
 }
 
 function AddCustomModelDialog({ onClose }: { onClose(): void }) {
   const { isLoadingModel, addCustomModel } = useWllama();
-  const [hfRepo, setHfRepo] = useState<string>('');
-  const [hfFile, setHfFile] = useState<string>('');
-  const [hfMmprojFile, setHfMmprojFile] = useState<string>('');
+  const [hfRepo, setHfRepo] = useState<string>("");
+  const [hfFile, setHfFile] = useState<string>("");
+  const [hfMmprojFile, setHfMmprojFile] = useState<string>("");
   const [hfModelFiles, setHfModelFiles] = useState<string[]>([]);
   const [hfMmprojFiles, setHfMmprojFiles] = useState<string[]>([]);
-  const [abortSignal, setAbortSignal] = useState<AbortController>(
-    new AbortController()
-  );
+  const [abortSignal, setAbortSignal] = useState<AbortController>(new AbortController());
   const [err, setErr] = useState<string>();
 
   useDebounce(
@@ -175,39 +159,33 @@ function AddCustomModelDialog({ onClose }: { onClose(): void }) {
         });
         const data: { siblings?: { rfilename: string }[] } = await res.json();
         if (data.siblings) {
-          const ggufFiles = data.siblings
-            .map((s) => s.rfilename)
-            .filter((f) => isValidGgufFile(f));
-          setHfModelFiles(
-            ggufFiles.filter((f) => !f.toLowerCase().includes('mmproj'))
-          );
-          setHfMmprojFiles(
-            ggufFiles.filter((f) => f.toLowerCase().includes('mmproj'))
-          );
-          setErr('');
+          const ggufFiles = data.siblings.map((s) => s.rfilename).filter((f) => isValidGgufFile(f));
+          setHfModelFiles(ggufFiles.filter((f) => !f.toLowerCase().includes("mmproj")));
+          setHfMmprojFiles(ggufFiles.filter((f) => f.toLowerCase().includes("mmproj")));
+          setErr("");
         } else {
-          setErr('no model found or it is private');
+          setErr("no model found or it is private");
           setHfModelFiles([]);
           setHfMmprojFiles([]);
         }
       } catch (e) {
-        if ((e as Error).name !== 'AbortError') {
-          setErr((e as any)?.message ?? 'unknown error');
+        if ((e as Error).name !== "AbortError") {
+          setErr((e as any)?.message ?? "unknown error");
           setHfModelFiles([]);
           setHfMmprojFiles([]);
         }
       }
     },
     [hfRepo],
-    500
+    500,
   );
 
   useEffect(() => {
-    if (hfModelFiles.length === 0) setHfFile('');
+    if (hfModelFiles.length === 0) setHfFile("");
   }, [hfModelFiles]);
 
   useEffect(() => {
-    if (hfMmprojFiles.length === 0) setHfMmprojFile('');
+    if (hfMmprojFiles.length === 0) setHfMmprojFile("");
   }, [hfMmprojFiles]);
 
   const hfBase = `https://huggingface.co/${hfRepo}/resolve/main`;
@@ -216,11 +194,11 @@ function AddCustomModelDialog({ onClose }: { onClose(): void }) {
     try {
       await addCustomModel(
         `${hfBase}/${hfFile}`,
-        hfMmprojFile ? `${hfBase}/${hfMmprojFile}` : undefined
+        hfMmprojFile ? `${hfBase}/${hfMmprojFile}` : undefined,
       );
       onClose();
     } catch (e) {
-      setErr((e as any)?.message ?? 'unknown error');
+      setErr((e as any)?.message ?? "unknown error");
     }
   };
 
@@ -229,7 +207,7 @@ function AddCustomModelDialog({ onClose }: { onClose(): void }) {
       <div className="modal-box">
         <h3 className="font-bold text-lg">Add custom GGUF</h3>
         <div className="mt-4">
-          Max GGUF file size is 2GB. If your model is bigger than 2GB, please{' '}
+          Max GGUF file size is 2GB. If your model is bigger than 2GB, please{" "}
           <a
             href="https://github.com/ngxson/wllama?tab=readme-ov-file#split-model"
             target="_blank"
@@ -237,7 +215,7 @@ function AddCustomModelDialog({ onClose }: { onClose(): void }) {
             className="text-primary"
           >
             follow this guide
-          </a>{' '}
+          </a>{" "}
           to split it into smaller shards.
         </div>
         <div className="mt-4">
@@ -289,9 +267,7 @@ function AddCustomModelDialog({ onClose }: { onClose(): void }) {
             disabled={isLoadingModel || hfRepo.length < 2 || hfFile.length < 5}
             onClick={onSubmit}
           >
-            {isLoadingModel && (
-              <span className="loading loading-spinner"></span>
-            )}
+            {isLoadingModel && <span className="loading loading-spinner"></span>}
             Add model
           </button>
           <button className="btn" disabled={isLoadingModel} onClick={onClose}>
@@ -324,12 +300,12 @@ function ModelCard({
   const percent = parseInt(Math.round(m.downloadPercent * 100).toString());
   return (
     <div
-      className={`card bg-base-100 w-full mb-2 ${m.state === ModelState.LOADED ? 'border-2 border-primary' : ''}`}
+      className={`card bg-base-100 w-full mb-2 ${m.state === ModelState.LOADED ? "border-2 border-primary" : ""}`}
       key={m.url}
     >
       <div className="card-body p-4 flex flex-row">
         <div className="grow">
-          <b>{m.hfPath.replace(/-\d{5}-of-\d{5}/, '-(shards)')}</b>
+          <b>{m.hfPath.replace(/-\d{5}-of-\d{5}/, "-(shards)")}</b>
           <br />
           <small>
             HF repo: {m.hfModel}
@@ -345,12 +321,10 @@ function ModelCard({
                 </span>
               </div>
             )}
-            {m.state == ModelState.DOWNLOADING
-              ? ` - Downloaded: ${percent}%`
-              : ''}
+            {m.state == ModelState.DOWNLOADING ? ` - Downloaded: ${percent}%` : ""}
             {m.modalities && m.modalities.length > 0 && (
               <>
-                {' '}
+                {" "}
                 {m.modalities.map((mod) => (
                   <span key={mod} className="badge badge-sm badge-accent ml-1">
                     {mod}
@@ -363,15 +337,9 @@ function ModelCard({
           {m.state === ModelState.LOADED && currRuntimeInfo && (
             <>
               <br />
-              <InfoOnOffDisplay
-                text="Multithread"
-                on={currRuntimeInfo.isMultithread}
-              />
+              <InfoOnOffDisplay text="Multithread" on={currRuntimeInfo.isMultithread} />
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <InfoOnOffDisplay
-                text="Chat template"
-                on={currRuntimeInfo.hasChatTemplate}
-              />
+              <InfoOnOffDisplay text="Chat template" on={currRuntimeInfo.hasChatTemplate} />
             </>
           )}
 
@@ -413,9 +381,7 @@ function ModelCard({
               <button
                 className="btn btn-outline btn-error btn-sm mr-2"
                 onClick={() => {
-                  if (
-                    confirm('Are you sure to remove this model from cache?')
-                  ) {
+                  if (confirm("Are you sure to remove this model from cache?")) {
                     removeCachedModel(m);
                   }
                 }}
@@ -445,9 +411,7 @@ function ModelCard({
             <button
               className="btn btn-outline btn-error btn-sm mr-2"
               onClick={() => {
-                if (
-                  confirm('Are you sure to remove this model from the list?')
-                ) {
+                if (confirm("Are you sure to remove this model from the list?")) {
                   removeCustomModel(m);
                 }
               }}
@@ -456,9 +420,7 @@ function ModelCard({
               <FontAwesomeIcon icon={faXmark} />
             </button>
           )}
-          {m.state == ModelState.DOWNLOADING && (
-            <span className="loading loading-spinner"></span>
-          )}
+          {m.state == ModelState.DOWNLOADING && <span className="loading loading-spinner"></span>}
         </div>
       </div>
     </div>

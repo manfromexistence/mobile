@@ -1,22 +1,22 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "bun:test";
 import {
   createSession,
   sessionHistory,
   sessionVariant,
   type RunSession,
   type SessionMessages,
-} from "@/cli/cmd/run/session.shared"
+} from "@/cli/cmd/run/session.shared";
 
-type Message = SessionMessages[number]
-type Part = Message["parts"][number]
-type TextPart = Extract<Part, { type: "text" }>
-type AgentPart = Extract<Part, { type: "agent" }>
-type FilePart = Extract<Part, { type: "file" }>
+type Message = SessionMessages[number];
+type Part = Message["parts"][number];
+type TextPart = Extract<Part, { type: "text" }>;
+type AgentPart = Extract<Part, { type: "agent" }>;
+type FilePart = Extract<Part, { type: "file" }>;
 
 const model = {
   providerID: "openai",
   modelID: "gpt-5",
-}
+};
 
 function userMessage(id: string, parts: Message["parts"], variant = "high"): Message {
   return {
@@ -34,7 +34,7 @@ function userMessage(id: string, parts: Message["parts"], variant = "high"): Mes
       },
     },
     parts,
-  }
+  };
 }
 
 function assistantMessage(id: string, parts: Message["parts"]): Message {
@@ -67,10 +67,15 @@ function assistantMessage(id: string, parts: Message["parts"]): Message {
       },
     },
     parts,
-  }
+  };
 }
 
-function textPart(id: string, messageID: string, text: string, input: Partial<TextPart> = {}): TextPart {
+function textPart(
+  id: string,
+  messageID: string,
+  text: string,
+  input: Partial<TextPart> = {},
+): TextPart {
   return {
     id,
     sessionID: "session-1",
@@ -78,10 +83,15 @@ function textPart(id: string, messageID: string, text: string, input: Partial<Te
     type: "text",
     text,
     synthetic: input.synthetic,
-  }
+  };
 }
 
-function agentPart(id: string, messageID: string, name: string, source?: AgentPart["source"]): AgentPart {
+function agentPart(
+  id: string,
+  messageID: string,
+  name: string,
+  source?: AgentPart["source"],
+): AgentPart {
   return {
     id,
     sessionID: "session-1",
@@ -89,10 +99,15 @@ function agentPart(id: string, messageID: string, name: string, source?: AgentPa
     type: "agent",
     name,
     source,
-  }
+  };
 }
 
-function filePart(id: string, messageID: string, url: string, input: Partial<FilePart> = {}): FilePart {
+function filePart(
+  id: string,
+  messageID: string,
+  url: string,
+  input: Partial<FilePart> = {},
+): FilePart {
   return {
     id,
     sessionID: "session-1",
@@ -102,13 +117,15 @@ function filePart(id: string, messageID: string, url: string, input: Partial<Fil
     filename: input.filename,
     url,
     source: input.source,
-  }
+  };
 }
 
 describe("run session shared", () => {
   test("builds user prompt text from text, file, and agent parts", () => {
     const msgs: SessionMessages = [
-      assistantMessage("msg-assistant-1", [textPart("txt-assistant-1", "msg-assistant-1", "ignore me")]),
+      assistantMessage("msg-assistant-1", [
+        textPart("txt-assistant-1", "msg-assistant-1", "ignore me"),
+      ]),
       userMessage("msg-user-1", [
         textPart("txt-user-1", "msg-user-1", "look @scan"),
         textPart("txt-user-2", "msg-user-1", "hidden", { synthetic: true }),
@@ -119,12 +136,12 @@ describe("run session shared", () => {
         }),
         filePart("file-user-1", "msg-user-1", "file:///tmp/note.ts"),
       ]),
-    ]
+    ];
 
-    const out = createSession(msgs)
-    expect(out.first).toBe(false)
-    expect(out.turns).toHaveLength(1)
-    expect(out.turns[0]?.prompt.text).toBe("look @scan @note.ts")
+    const out = createSession(msgs);
+    expect(out.first).toBe(false);
+    expect(out.turns).toHaveLength(1);
+    expect(out.turns[0]?.prompt.text).toBe("look @scan @note.ts");
     expect(out.turns[0]?.prompt.parts).toEqual([
       {
         type: "agent",
@@ -150,8 +167,8 @@ describe("run session shared", () => {
           },
         },
       },
-    ])
-  })
+    ]);
+  });
 
   test("reuses existing mentions when file and agent parts have no source", () => {
     const out = createSession([
@@ -160,7 +177,7 @@ describe("run session shared", () => {
         agentPart("agent-user-1", "msg-user-1", "scan"),
         filePart("file-user-1", "msg-user-1", "file:///tmp/note.ts"),
       ]),
-    ])
+    ]);
 
     expect(out.turns[0]?.prompt).toEqual({
       text: "look @scan @note.ts",
@@ -190,8 +207,8 @@ describe("run session shared", () => {
           },
         },
       ],
-    })
-  })
+    });
+  });
 
   test("dedupes consecutive history entries, drops blanks, and copies prompt parts", () => {
     const parts = [
@@ -204,44 +221,64 @@ describe("run session shared", () => {
           value: "@scan",
         },
       },
-    ]
+    ];
     const session: RunSession = {
       first: false,
       turns: [
         { prompt: { text: "one", parts }, provider: "openai", model: "gpt-5", variant: "high" },
-        { prompt: { text: "one", parts: structuredClone(parts) }, provider: "openai", model: "gpt-5", variant: "high" },
+        {
+          prompt: { text: "one", parts: structuredClone(parts) },
+          provider: "openai",
+          model: "gpt-5",
+          variant: "high",
+        },
         { prompt: { text: "   ", parts: [] }, provider: "openai", model: "gpt-5", variant: "high" },
-        { prompt: { text: "two", parts: [] }, provider: "openai", model: "gpt-5", variant: undefined },
+        {
+          prompt: { text: "two", parts: [] },
+          provider: "openai",
+          model: "gpt-5",
+          variant: undefined,
+        },
       ],
-    }
+    };
 
-    const out = sessionHistory(session)
+    const out = sessionHistory(session);
 
-    expect(out.map((item) => item.text)).toEqual(["one", "two"])
-    expect(out[0]?.parts).toEqual(parts)
-    expect(out[0]?.parts).not.toBe(parts)
-    expect(out[0]?.parts[0]).not.toBe(parts[0])
-  })
+    expect(out.map((item) => item.text)).toEqual(["one", "two"]);
+    expect(out[0]?.parts).toEqual(parts);
+    expect(out[0]?.parts).not.toBe(parts);
+    expect(out[0]?.parts[0]).not.toBe(parts[0]);
+  });
 
   test("returns the latest matching variant for the active model", () => {
     const session: RunSession = {
       first: false,
       turns: [
         { prompt: { text: "one", parts: [] }, provider: "openai", model: "gpt-5", variant: "high" },
-        { prompt: { text: "two", parts: [] }, provider: "anthropic", model: "sonnet", variant: "max" },
-        { prompt: { text: "three", parts: [] }, provider: "openai", model: "gpt-5", variant: undefined },
+        {
+          prompt: { text: "two", parts: [] },
+          provider: "anthropic",
+          model: "sonnet",
+          variant: "max",
+        },
+        {
+          prompt: { text: "three", parts: [] },
+          provider: "openai",
+          model: "gpt-5",
+          variant: undefined,
+        },
       ],
-    }
+    };
 
-    expect(sessionVariant(session, model)).toBeUndefined()
+    expect(sessionVariant(session, model)).toBeUndefined();
 
     session.turns.push({
       prompt: { text: "four", parts: [] },
       provider: "openai",
       model: "gpt-5",
       variant: "minimal",
-    })
+    });
 
-    expect(sessionVariant(session, model)).toBe("minimal")
-  })
-})
+    expect(sessionVariant(session, model)).toBe("minimal");
+  });
+});

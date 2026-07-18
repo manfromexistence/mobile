@@ -40,7 +40,7 @@ describe("claudeIdentity — passthroughUpstreamSessionId", () => {
   it("returns null for non-UUID value", () => {
     assert.equal(
       mod.passthroughUpstreamSessionId({ "x-claude-code-session-id": "not-a-uuid" }),
-      null
+      null,
     );
   });
 

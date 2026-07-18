@@ -1,6 +1,13 @@
-import { lakeAthenaWorkgroup, lakeCatalog, lakeCluster, lakeQueryPermissions, lakeRegion, tableBucket } from "./lake"
-import { EMAILOCTOPUS_API_KEY } from "./app"
-import { domain } from "./stage"
+import {
+  lakeAthenaWorkgroup,
+  lakeCatalog,
+  lakeCluster,
+  lakeQueryPermissions,
+  lakeRegion,
+  tableBucket,
+} from "./lake";
+import { EMAILOCTOPUS_API_KEY } from "./app";
+import { domain } from "./stage";
 
 ////////////////
 // LAKE
@@ -9,7 +16,7 @@ import { domain } from "./stage"
 const inferenceNamespace = new aws.s3tables.Namespace("LakeInferenceNamespace", {
   namespace: "inference",
   tableBucketArn: tableBucket.arn,
-})
+});
 
 const inferenceEventTable = new aws.s3tables.Table(
   "LakeInferenceEventTable",
@@ -87,7 +94,7 @@ const inferenceEventTable = new aws.s3tables.Table(
     },
   },
   { deleteBeforeReplace: $app.stage !== "production", ignoreChanges: ["metadata"] },
-)
+);
 
 export const inferenceEvent = new sst.Linkable("InferenceEvent", {
   properties: {
@@ -98,7 +105,7 @@ export const inferenceEvent = new sst.Linkable("InferenceEvent", {
     tableBucket: tableBucket.name,
     workgroup: lakeAthenaWorkgroup.name,
   },
-})
+});
 
 ////////////////
 // DATABASE
@@ -107,7 +114,7 @@ export const inferenceEvent = new sst.Linkable("InferenceEvent", {
 const cluster = planetscale.getDatabaseOutput({
   name: "opencode-stats",
   organization: "anomalyco",
-})
+});
 
 const branch =
   $app.stage === "production"
@@ -121,18 +128,18 @@ const branch =
         organization: cluster.organization,
         name: $app.stage,
         parentBranch: "production",
-      })
+      });
 
 const password = new planetscale.Password("StatsDatabasePassword", {
   name: $app.stage,
   database: cluster.name,
   organization: cluster.organization,
   branch: branch.name,
-})
+});
 
 const databaseUrl = $interpolate`mysql://${password.username.apply(encodeURIComponent)}:${password.plaintext.apply(
   encodeURIComponent,
-)}@${password.accessHostUrl}/${cluster.name}`
+)}@${password.accessHostUrl}/${cluster.name}`;
 
 export const database = new sst.Linkable("StatsDatabase", {
   properties: {
@@ -143,7 +150,7 @@ export const database = new sst.Linkable("StatsDatabase", {
     port: 3306,
     url: databaseUrl,
   },
-})
+});
 
 new sst.x.DevCommand("StatsStudio", {
   link: [database],
@@ -155,7 +162,7 @@ new sst.x.DevCommand("StatsStudio", {
     directory: "packages/stats/core",
     autostart: false,
   },
-})
+});
 
 ////////////////
 // APP
@@ -169,7 +176,7 @@ export const app = new sst.cloudflare.x.SolidStart("Stats", {
   environment: {
     PUBLIC_URL: `https://${domain}/data`,
   },
-})
+});
 
 ////////////////
 // SERVICES
@@ -179,7 +186,7 @@ const statsSyncConfig = new sst.Linkable("StatsSyncConfig", {
   properties: {
     dataset: "zen",
   },
-})
+});
 
 export const statSync = new sst.aws.Service("StatsSyncService", {
   cluster: lakeCluster,
@@ -202,4 +209,4 @@ export const statSync = new sst.aws.Service("StatsSyncService", {
     directory: "packages/stats/server",
     autostart: false,
   },
-})
+});

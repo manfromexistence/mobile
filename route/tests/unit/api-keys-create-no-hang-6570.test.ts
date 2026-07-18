@@ -77,10 +77,10 @@ test("POST /api/keys responds promptly even when the Cloud-sync fetch hangs fore
         await makeManagementSessionRequest("http://localhost/api/keys", {
           method: "POST",
           body: { name: "Fresh Install Key" },
-        })
+        }),
       ),
       new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("POST /api/keys did not respond within 2s")), 2000)
+        setTimeout(() => reject(new Error("POST /api/keys did not respond within 2s")), 2000),
       ),
     ]);
     const elapsedMs = Date.now() - start;
@@ -90,7 +90,7 @@ test("POST /api/keys responds promptly even when the Cloud-sync fetch hangs fore
     assert.match(body.key, /^sk-[a-z0-9-]+/i);
     assert.ok(
       elapsedMs < 2000,
-      `expected POST /api/keys to resolve well under 2s even with a hung Cloud fetch, took ${elapsedMs}ms`
+      `expected POST /api/keys to resolve well under 2s even with a hung Cloud fetch, took ${elapsedMs}ms`,
     );
 
     // The cloud-sync side effect is fire-and-forget: give the still-pending

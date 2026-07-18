@@ -1,5 +1,5 @@
-import { describe, expect, test } from "bun:test"
-import { getRevertDiffFiles } from "../../src/util/revert-diff"
+import { describe, expect, test } from "bun:test";
+import { getRevertDiffFiles } from "../../src/util/revert-diff";
 
 describe("revert diff", () => {
   test("prefers the actual file path over /dev/null for added and deleted files", () => {
@@ -17,7 +17,7 @@ index 3b18e51..0000000
 +++ /dev/null
 @@ -1 +0,0 @@
 -old content
-`)
+`);
 
     expect(files).toEqual([
       {
@@ -30,6 +30,6 @@ index 3b18e51..0000000
         additions: 0,
         deletions: 1,
       },
-    ])
-  })
-})
+    ]);
+  });
+});

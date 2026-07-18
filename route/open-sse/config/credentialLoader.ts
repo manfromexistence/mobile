@@ -48,7 +48,7 @@ function resolveCredentialsPath(): string {
   } catch (err) {
     const fallbackDataDir = process.env.DATA_DIR || join(process.cwd(), "data");
     console.warn(
-      `[CREDENTIALS] Could not load dataPaths module, using fallback: ${fallbackDataDir}`
+      `[CREDENTIALS] Could not load dataPaths module, using fallback: ${fallbackDataDir}`,
     );
     return join(fallbackDataDir, "provider-credentials.json");
   }
@@ -84,14 +84,14 @@ export function loadProviderCredentials<T extends Record<string, unknown>>(provi
     for (const [providerKey, creds] of Object.entries(external)) {
       if (!mutableProviders[providerKey]) {
         console.log(
-          `[CREDENTIALS] Warning: unknown provider "${providerKey}" in credentials file, skipping.`
+          `[CREDENTIALS] Warning: unknown provider "${providerKey}" in credentials file, skipping.`,
         );
         continue;
       }
 
       if (!creds || typeof creds !== "object") {
         console.log(
-          `[CREDENTIALS] Warning: provider "${providerKey}" value must be an object, got ${typeof creds}. Skipping.`
+          `[CREDENTIALS] Warning: provider "${providerKey}" value must be an object, got ${typeof creds}. Skipping.`,
         );
         continue;
       }
@@ -107,7 +107,7 @@ export function loadProviderCredentials<T extends Record<string, unknown>>(provi
 
     const isReload = cachedProviders !== null;
     console.log(
-      `[CREDENTIALS] ${isReload ? "Reloaded" : "Loaded"} external credentials: ${overrideCount} field(s) from ${credPath}`
+      `[CREDENTIALS] ${isReload ? "Reloaded" : "Loaded"} external credentials: ${overrideCount} field(s) from ${credPath}`,
     );
   } catch (err) {
     const reason =

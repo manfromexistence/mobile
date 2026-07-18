@@ -15,9 +15,7 @@ const { parseCliRegistry, getCommandsForFamily } = await import(
  * Creates a temporary directory mirroring bin/cli/commands/,
  * writes fixture .mjs files, changes CWD, returns cleanup fn.
  */
-function withFixtureCli(
-  files: Record<string, string>,
-): { cleanup: () => void } {
+function withFixtureCli(files: Record<string, string>): { cleanup: () => void } {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "omni-cli-test-"));
   const commandsDir = path.join(tmpDir, "bin", "cli", "commands");
   fs.mkdirSync(commandsDir, { recursive: true });
@@ -174,10 +172,7 @@ test("parseCliRegistry() recognises health family commands", () => {
     const { families } = parseCliRegistry();
     const healthCmds = families.get("cli-health");
     assert.ok(healthCmds, "Expected 'cli-health' family to exist");
-    assert.ok(
-      healthCmds!.length >= 2,
-      `Expected ≥2 health commands, got ${healthCmds!.length}`,
-    );
+    assert.ok(healthCmds!.length >= 2, `Expected ≥2 health commands, got ${healthCmds!.length}`);
   } finally {
     cleanup();
   }
@@ -232,10 +227,7 @@ test("parseCliRegistry() extracts flags from .option() calls", () => {
     if (rotate) {
       // If rotate exists and has flags, verify format
       for (const flag of rotate.flags) {
-        assert.ok(
-          typeof flag === "string" && flag.length > 0,
-          `Invalid flag: "${flag}"`,
-        );
+        assert.ok(typeof flag === "string" && flag.length > 0, `Invalid flag: "${flag}"`);
       }
     }
   } finally {
@@ -251,9 +243,7 @@ test("parseCliRegistry() skips unrecognised .mjs files", () => {
   try {
     const { families } = parseCliRegistry();
     // No family should be mapped from unknown-custom
-    const hasUnknown = [...families.keys()].some((k) =>
-      String(k).includes("unknown-custom"),
-    );
+    const hasUnknown = [...families.keys()].some((k) => String(k).includes("unknown-custom"));
     assert.equal(hasUnknown, false, "unknown-custom.mjs should not create a family");
     // providers.mjs should still be parsed
     assert.ok(families.has("cli-providers"), "Expected cli-providers family from providers.mjs");
@@ -294,10 +284,7 @@ test("parseCliRegistry() with real providers.mjs: providers family has ≥5 comm
 
 test("getCommandsForFamily('cli-providers') with real files: returns ≥5 strings", () => {
   const commands = getCommandsForFamily("cli-providers");
-  assert.ok(
-    commands.length >= 5,
-    `Expected ≥5 cli-providers commands, got ${commands.length}`,
-  );
+  assert.ok(commands.length >= 5, `Expected ≥5 cli-providers commands, got ${commands.length}`);
   for (const cmd of commands) {
     assert.ok(typeof cmd === "string" && cmd.length > 0, `Invalid command name: "${cmd}"`);
   }

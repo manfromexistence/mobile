@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
   if (!apiKeyId) {
     return NextResponse.json(
       { error: "apiKeyId required" },
-      { status: 400, headers: CORS_HEADERS }
+      { status: 400, headers: CORS_HEADERS },
     );
   }
 
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
   } catch {
     return NextResponse.json(
       { error: "Invalid JSON body" },
-      { status: 400, headers: CORS_HEADERS }
+      { status: 400, headers: CORS_HEADERS },
     );
   }
 
@@ -49,14 +49,14 @@ export async function POST(request: NextRequest) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Invalid request", details: parsed.error.issues },
-      { status: 400, headers: CORS_HEADERS }
+      { status: 400, headers: CORS_HEADERS },
     );
   }
 
   const { code, token } = await createInvite(
     parsed.data.apiKeyId,
     parsed.data.serverUrl,
-    parsed.data.maxUses
+    parsed.data.maxUses,
   );
 
   return NextResponse.json({ code, token }, { status: 201, headers: CORS_HEADERS });

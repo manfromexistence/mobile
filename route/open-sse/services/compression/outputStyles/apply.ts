@@ -38,7 +38,7 @@ export const OUTPUT_STYLE_MARKER = "[OmniRoute Output Styles]";
  */
 function resolveStyles(
   selection: OutputStyleSelectionEntry[],
-  language: string
+  language: string,
 ): OutputStyleSelectionEntry[] {
   const byId = new Map(selection.map((entry) => [entry.id, entry]));
   const resolved: OutputStyleSelectionEntry[] = [];
@@ -54,10 +54,7 @@ function resolveStyles(
 }
 
 /** Build the combined instruction body (no marker, no trailing boundary). Pure / deterministic. */
-function buildStyleInstructions(
-  resolved: OutputStyleSelectionEntry[],
-  language: string
-): string {
+function buildStyleInstructions(resolved: OutputStyleSelectionEntry[], language: string): string {
   const parts: string[] = [];
   for (const { id, level } of resolved) {
     const meta = outputStyleMeta(id);
@@ -79,7 +76,7 @@ function buildStyleInstructions(
 export function applyOutputStyles(
   body: ChatRequestBody,
   selection: OutputStyleSelectionEntry[],
-  language = "en"
+  language = "en",
 ): OutputStylesResult {
   const resolved = resolveStyles(selection ?? [], language);
   if (resolved.length === 0) {
@@ -104,7 +101,11 @@ export function applyOutputStyles(
       };
     }
     if (typeof body.input === "string" || Array.isArray(body.input)) {
-      return { body: { ...body, instructions: instruction }, applied: true, appliedStyles: resolved };
+      return {
+        body: { ...body, instructions: instruction },
+        applied: true,
+        appliedStyles: resolved,
+      };
     }
     return { body, applied: false, skippedReason: "no_messages" };
   }
@@ -115,7 +116,7 @@ export function applyOutputStyles(
     (message) =>
       message.role === "system" &&
       typeof message.content === "string" &&
-      message.content.includes(OUTPUT_STYLE_MARKER)
+      message.content.includes(OUTPUT_STYLE_MARKER),
   );
   if (alreadyApplied) return { body, applied: false, skippedReason: "already_applied" };
 

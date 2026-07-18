@@ -1,16 +1,16 @@
 // Builds preview/p3.html: a compact comparison of basic and enhanced Display P3
 // conversions for representative Pierre palette colors.
-import { srgbHexToP3Color } from '../color';
+import { srgbHexToP3Color } from "../color";
 
 const testColors = [
-  { name: 'Blue', srgb: '#008cff' },
-  { name: 'Green', srgb: '#0dbe4e' },
-  { name: 'Red', srgb: '#ff2e3f' },
-  { name: 'Purple', srgb: '#c635e4' },
-  { name: 'Pink', srgb: '#fc2b73' },
-  { name: 'Orange', srgb: '#fe8c2c' },
-  { name: 'Cyan', srgb: '#08c0ef' },
-  { name: 'Teal', srgb: '#00c5d2' },
+  { name: "Blue", srgb: "#008cff" },
+  { name: "Green", srgb: "#0dbe4e" },
+  { name: "Red", srgb: "#ff2e3f" },
+  { name: "Purple", srgb: "#c635e4" },
+  { name: "Pink", srgb: "#fc2b73" },
+  { name: "Orange", srgb: "#fe8c2c" },
+  { name: "Cyan", srgb: "#08c0ef" },
+  { name: "Teal", srgb: "#00c5d2" },
 ];
 
 function renderP3Html(): string {
@@ -25,7 +25,7 @@ function renderP3Html(): string {
         <td><span class="swatch" style="background:${enhanced}"></span><code>${enhanced}</code></td>
       </tr>`;
     })
-    .join('\n');
+    .join("\n");
 
   return `<!doctype html>
 <html lang="en">
@@ -108,6 +108,6 @@ ${rows}
 }
 
 export const p3 = {
-  filename: 'p3.html',
+  filename: "p3.html",
   render: renderP3Html,
 };

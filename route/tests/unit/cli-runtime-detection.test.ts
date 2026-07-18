@@ -9,8 +9,9 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-const { getCliRuntimeStatus, getKnownToolPaths, CLI_TOOL_IDS } =
-  await import("../../src/shared/services/cliRuntime.ts");
+const { getCliRuntimeStatus, getKnownToolPaths, CLI_TOOL_IDS } = await import(
+  "../../src/shared/services/cliRuntime.ts"
+);
 
 // ─── Helpers ──────────────────────────────────────────────────
 
@@ -32,7 +33,7 @@ describe("Claude Code Windows known paths", () => {
           "WinGet",
           "Packages",
           "Anthropic.ClaudeCode_Microsoft.Winget.Source_8wekyb3d8bbwe",
-          "claude.exe"
+          "claude.exe",
         )
       : null;
 
@@ -40,7 +41,7 @@ describe("Claude Code Windows known paths", () => {
 
     assert.ok(
       getKnownToolPaths("claude").includes(expected),
-      "Claude Code installed by WinGet should be discoverable without CLI_CLAUDE_BIN"
+      "Claude Code installed by WinGet should be discoverable without CLI_CLAUDE_BIN",
     );
   });
 });
@@ -135,7 +136,7 @@ describe("Size threshold — checkKnownPath", () => {
       assert.ok(result.installed, `Expected installed=true, got reason=${result.reason}`);
       assert.ok(
         result.commandPath === script,
-        `Expected commandPath=${script}, got ${result.commandPath}`
+        `Expected commandPath=${script}, got ${result.commandPath}`,
       );
     } finally {
       if (prev !== undefined) process.env.CLI_DROID_BIN = prev;
@@ -236,15 +237,16 @@ describe("windsurf tool — guide-only integration (cliRuntime.ts)", () => {
 
 // ─── resolveOpencodeConfigPath — cross-platform ─────────────────
 
-const { resolveOpencodeConfigPath: resolveOpencodeConfigPathFn } =
-  await import("../../src/shared/services/cliRuntime.ts");
+const { resolveOpencodeConfigPath: resolveOpencodeConfigPathFn } = await import(
+  "../../src/shared/services/cliRuntime.ts"
+);
 
 describe("resolveOpencodeConfigPath — cross-platform", () => {
   it("should resolve on Linux with XDG_CONFIG_HOME", () => {
     const result = resolveOpencodeConfigPathFn(
       "linux",
       { XDG_CONFIG_HOME: "/tmp/xdg" },
-      "/home/dev"
+      "/home/dev",
     );
     assert.equal(result, path.join("/tmp/xdg", "opencode", "opencode.json"));
   });
@@ -260,7 +262,7 @@ describe("resolveOpencodeConfigPath — cross-platform", () => {
     const result = resolveOpencodeConfigPathFn(
       "win32",
       { APPDATA: "C:\\Users\\dev\\AppData\\Roaming" },
-      "C:\\Users\\dev"
+      "C:\\Users\\dev",
     );
     assert.equal(result, path.join("C:\\Users\\dev", ".config", "opencode", "opencode.json"));
   });
@@ -274,7 +276,7 @@ describe("resolveOpencodeConfigPath — cross-platform", () => {
     const result = resolveOpencodeConfigPathFn(
       "win32",
       { XDG_CONFIG_HOME: "D:\\xdg" },
-      "C:\\Users\\dev"
+      "C:\\Users\\dev",
     );
     assert.equal(result, path.join("D:\\xdg", "opencode", "opencode.json"));
   });

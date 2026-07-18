@@ -73,6 +73,6 @@ test("#6584: no two source files in the same directory differ only by casing", (
   assert.deepEqual(
     collisions,
     [],
-    `Found case-only filename collisions (breaks webpack builds on case-insensitive filesystems): ${JSON.stringify(collisions, null, 2)}`
+    `Found case-only filename collisions (breaks webpack builds on case-insensitive filesystems): ${JSON.stringify(collisions, null, 2)}`,
   );
 });

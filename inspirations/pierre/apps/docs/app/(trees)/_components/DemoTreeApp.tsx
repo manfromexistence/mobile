@@ -1,8 +1,8 @@
-import { preloadFile } from '@pierre/diffs/ssr';
-import { FILE_TREE_DENSITY_PRESETS } from '@pierre/trees';
-import { preloadFileTree } from '@pierre/trees/ssr';
+import { preloadFile } from "@pierre/diffs/ssr";
+import { FILE_TREE_DENSITY_PRESETS } from "@pierre/trees";
+import { preloadFileTree } from "@pierre/trees/ssr";
 
-import { TREE_NEW_VIEWPORT_HEIGHTS } from '../_lib/dimensions';
+import { TREE_NEW_VIEWPORT_HEIGHTS } from "../_lib/dimensions";
 import {
   TREE_APP_DEMO_FILES,
   TREE_APP_DEMO_GIT_STATUSES,
@@ -10,30 +10,30 @@ import {
   TREE_APP_DEMO_INITIAL_EXPANDED_PATHS,
   TREE_APP_DEMO_PATHS,
   TREE_APP_DEMO_UNSAFE_CSS,
-} from '../_lib/treeAppDemoData';
-import { DemoTreeAppClient } from './DemoTreeAppClient';
+} from "../_lib/treeAppDemoData";
+import { DemoTreeAppClient } from "./DemoTreeAppClient";
 
-const TREE_APP_DEMO_TREE_ID = 'tree-app-hero-demo';
-const TREE_APP_DEMO_DENSITY = 'compact' as const;
+const TREE_APP_DEMO_TREE_ID = "tree-app-hero-demo";
+const TREE_APP_DEMO_DENSITY = "compact" as const;
 
 const TREE_APP_DARK_FILE_OPTIONS = {
   disableFileHeader: true,
-  overflow: 'wrap',
-  theme: 'pierre-dark',
-  themeType: 'dark',
+  overflow: "wrap",
+  theme: "pierre-dark",
+  themeType: "dark",
 } as const;
 
 const TREE_APP_LIGHT_FILE_OPTIONS = {
   disableFileHeader: true,
-  overflow: 'wrap',
-  theme: 'pierre-light',
-  themeType: 'light',
+  overflow: "wrap",
+  theme: "pierre-light",
+  themeType: "light",
 } as const;
 
 export async function DemoTreeApp() {
   const treePreloadedData = preloadFileTree({
     dragAndDrop: true,
-    fileTreeSearchMode: 'hide-non-matches',
+    fileTreeSearchMode: "hide-non-matches",
     flattenEmptyDirectories: true,
     gitStatus: TREE_APP_DEMO_GIT_STATUSES,
     id: TREE_APP_DEMO_TREE_ID,
@@ -66,16 +66,14 @@ export async function DemoTreeApp() {
           light: lightResult.prerenderedHTML,
         },
       ] as const;
-    })
+    }),
   );
   const prerenderedHTMLByPath = {
     dark: Object.fromEntries(
-      preloadedEntries.map(([path, variants]) => [path, variants.dark] as const)
+      preloadedEntries.map(([path, variants]) => [path, variants.dark] as const),
     ),
     light: Object.fromEntries(
-      preloadedEntries.map(
-        ([path, variants]) => [path, variants.light] as const
-      )
+      preloadedEntries.map(([path, variants]) => [path, variants.light] as const),
     ),
   };
 

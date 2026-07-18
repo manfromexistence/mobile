@@ -31,10 +31,8 @@ export async function PUT(request: Request, { params }: Params): Promise<Respons
   const parsed = InspectorAnnotationPutSchema.safeParse(body);
   if (!parsed.success) {
     return new Response(
-      JSON.stringify(
-        buildErrorBody(400, parsed.error.issues[0]?.message ?? "Validation error")
-      ),
-      { status: 400, headers: { "content-type": "application/json" } }
+      JSON.stringify(buildErrorBody(400, parsed.error.issues[0]?.message ?? "Validation error")),
+      { status: 400, headers: { "content-type": "application/json" } },
     );
   }
 

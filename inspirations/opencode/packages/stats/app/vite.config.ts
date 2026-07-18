@@ -1,6 +1,6 @@
-import { solidStart } from "@solidjs/start/config"
-import { nitro } from "nitro/vite"
-import { defineConfig, type PluginOption } from "vite"
+import { solidStart } from "@solidjs/start/config";
+import { nitro } from "nitro/vite";
+import { defineConfig, type PluginOption } from "vite";
 
 export default defineConfig({
   base: "/data/",
@@ -20,4 +20,4 @@ export default defineConfig({
   build: {
     minify: false,
   },
-})
+});

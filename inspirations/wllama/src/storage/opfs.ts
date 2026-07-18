@@ -1,12 +1,12 @@
-import { createWorker, isSafariMobile } from '../utils';
-import { OPFS_UTILS_WORKER_CODE } from '../workers-code/generated';
-import type { StorageBackend } from './index';
+import { createWorker, isSafariMobile } from "../utils";
+import { OPFS_UTILS_WORKER_CODE } from "../workers-code/generated";
+import type { StorageBackend } from "./index";
 
 export class OPFSBackend implements StorageBackend {
   isSupported(): boolean {
     return (
-      typeof navigator !== 'undefined' &&
-      'storage' in navigator &&
+      typeof navigator !== "undefined" &&
+      "storage" in navigator &&
       !!navigator.storage?.getDirectory
     );
   }
@@ -53,7 +53,7 @@ export class OPFSBackend implements StorageBackend {
     const result: Array<{ key: string; size: number }> = [];
     // @ts-ignore
     for await (const [name, handle] of cacheDir.entries()) {
-      if (handle.kind === 'file') {
+      if (handle.kind === "file") {
         const file = await (handle as FileSystemFileHandle).getFile();
         result.push({ key: name, size: file.size });
       }
@@ -66,14 +66,14 @@ export class OPFSBackend implements StorageBackend {
       const cacheDir = await getCacheDir();
       await cacheDir.removeEntry(key);
     } catch (e: any) {
-      if (e?.name !== 'NotFoundError') throw e;
+      if (e?.name !== "NotFoundError") throw e;
     }
   }
 }
 
 async function getCacheDir(): Promise<FileSystemDirectoryHandle> {
   const opfsRoot = await navigator.storage.getDirectory();
-  return opfsRoot.getDirectoryHandle('cache', { create: true });
+  return opfsRoot.getDirectoryHandle("cache", { create: true });
 }
 
 async function openWritable(fileName: string): Promise<{
@@ -91,9 +91,9 @@ async function openWritable(fileName: string): Promise<{
   worker.onerror = (e) => pReject?.(e.message ?? e);
   const workerExec = (
     data:
-      | { action: 'open'; filename: string }
-      | { action: 'write'; buf: Uint8Array }
-      | { action: 'close' }
+      | { action: "open"; filename: string }
+      | { action: "write"; buf: Uint8Array }
+      | { action: "close" },
   ) =>
     new Promise<void>((resolve, reject) => {
       pResolve = resolve;
@@ -102,17 +102,17 @@ async function openWritable(fileName: string): Promise<{
         data,
         isSafariMobile()
           ? undefined
-          : { transfer: 'buf' in data && data.buf ? [data.buf.buffer] : [] }
+          : { transfer: "buf" in data && data.buf ? [data.buf.buffer] : [] },
       );
     });
-  await workerExec({ action: 'open', filename: fileName });
+  await workerExec({ action: "open", filename: fileName });
   return {
     truncate: async () => {
       /* worker's openFile already calls truncate(0) on open */
     },
-    write: (value) => workerExec({ action: 'write', buf: value }),
+    write: (value) => workerExec({ action: "write", buf: value }),
     close: async () => {
-      await workerExec({ action: 'close' });
+      await workerExec({ action: "close" });
       worker.terminate();
     },
   };

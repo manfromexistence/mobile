@@ -14,8 +14,8 @@ describe("DotMatrixIcon", () => {
         removeEventListener: vi.fn(),
         addListener: vi.fn(),
         removeListener: vi.fn(),
-        dispatchEvent: vi.fn()
-      })
+        dispatchEvent: vi.fn(),
+      }),
     );
   });
 

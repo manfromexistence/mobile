@@ -1,39 +1,39 @@
-export * from './constants';
+export * from "./constants";
 export type {
   ContextMenuAnchorRect,
   GitStatus,
   GitStatusEntry,
-} from './publicTypes';
+} from "./publicTypes";
 export type {
   FileTreeBuiltInIconSet,
   FileTreeIconConfig,
   FileTreeIcons,
   RemappedIcon,
-} from './iconConfig';
-export { getBuiltInSpriteSheet } from './builtInIcons';
-export { createFileTreeIconResolver } from './render/iconResolver';
+} from "./iconConfig";
+export { getBuiltInSpriteSheet } from "./builtInIcons";
+export { createFileTreeIconResolver } from "./render/iconResolver";
 export type {
   TreeThemeInput,
   TreeThemeStyles,
-} from './utils/themeToTreeStyles';
-export { themeToTreeStyles } from './utils/themeToTreeStyles';
-export type { FileTreePreparedInput } from './preparedInput';
+} from "./utils/themeToTreeStyles";
+export { themeToTreeStyles } from "./utils/themeToTreeStyles";
+export type { FileTreePreparedInput } from "./preparedInput";
 export {
   prepareFileTreeInput,
   preparePresortedFileTreeInput,
-} from './preparedInput';
-export { FILE_TREE_DEFAULT_ITEM_HEIGHT } from './model/virtualization';
+} from "./preparedInput";
+export { FILE_TREE_DEFAULT_ITEM_HEIGHT } from "./model/virtualization";
 export {
   FILE_TREE_DENSITY_PRESETS,
   type FileTreeDensity,
   type FileTreeDensityKeyword,
   type FileTreeDensityPreset,
-} from './model/density';
+} from "./model/density";
 export {
   FileTree,
   preloadFileTree,
   serializeFileTreeSsrPayload,
-} from './render/FileTree';
+} from "./render/FileTree";
 export type {
   FileTreeAddEvent,
   FileTreeBatchEvent,
@@ -89,4 +89,4 @@ export type {
   FileTreeSortEntry,
   FileTreeSsrPayload,
   FileTreeVisibleRow,
-} from './model/publicTypes';
+} from "./model/publicTypes";

@@ -47,7 +47,7 @@ function normalizeShadowRoutingConfig(config: Record<string, unknown>): ShadowRo
 export function resolveShadowTargets(
   combo: ComboLike,
   config: Record<string, unknown>,
-  allCombos: ComboCollectionLike
+  allCombos: ComboCollectionLike,
 ): ResolvedComboTarget[] {
   const shadowConfig = normalizeShadowRoutingConfig(config);
   if (!shadowConfig.enabled || shadowConfig.targets.length === 0) return [];
@@ -86,7 +86,7 @@ function withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
       (error) => {
         clearTimeout(timer);
         reject(error);
-      }
+      },
     );
   });
 }
@@ -107,7 +107,7 @@ export function scheduleShadowRouting(
   handleSingleModel: HandleSingleModel,
   isModelAvailable: IsModelAvailable | undefined,
   strategy: string,
-  log: ComboLogger
+  log: ComboLogger,
 ): void {
   if (targets.length === 0) return;
   const shadowConfig = normalizeShadowRoutingConfig(config);
@@ -149,7 +149,7 @@ export function scheduleShadowRouting(
               failoverBeforeRetry: true,
               trafficType: "shadow",
             }),
-            shadowConfig.timeoutMs
+            shadowConfig.timeoutMs,
           );
           await drainShadowResponse(response.clone());
           recordComboShadowRequest(combo.name, target.modelStr, {
@@ -159,7 +159,7 @@ export function scheduleShadowRouting(
           });
           log.info(
             "COMBO",
-            `Shadow target ${target.modelStr} completed with status ${response.status} (${strategy})`
+            `Shadow target ${target.modelStr} completed with status ${response.status} (${strategy})`,
           );
         } catch (error) {
           recordComboShadowRequest(combo.name, target.modelStr, {
@@ -171,7 +171,7 @@ export function scheduleShadowRouting(
             error: error instanceof Error ? error.message : String(error),
           });
         }
-      })
+      }),
     );
   };
 

@@ -15,7 +15,7 @@ function parseId(raw: string): number | null {
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ): Promise<Response> {
   const authError = await requireManagementAuth(request);
   if (authError) return authError;
@@ -39,7 +39,7 @@ export async function GET(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ): Promise<Response> {
   const authError = await requireManagementAuth(request);
   if (authError) return authError;

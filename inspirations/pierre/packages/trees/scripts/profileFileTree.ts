@@ -1,19 +1,19 @@
-import { randomUUID } from 'node:crypto';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { dirname, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { randomUUID } from "node:crypto";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-import { loadWorktreeEnv } from '../../../scripts/load-worktree-env.mjs';
+import { loadWorktreeEnv } from "../../../scripts/load-worktree-env.mjs";
 import {
   DEFAULT_FILE_TREE_PROFILE_WORKLOAD_NAME,
   FILE_TREE_PROFILE_WORKLOAD_NAMES,
   type FileTreeProfileActionSummary,
   type FileTreeProfilePageSummary,
   type FileTreeProfileWorkloadName,
-} from './lib/fileTreeProfileShared';
+} from "./lib/fileTreeProfileShared";
 
-type ProfileActionsMode = 'expansion' | 'off';
+type ProfileActionsMode = "expansion" | "off";
 
 interface ProfileConfig {
   actionsMode: ProfileActionsMode;
@@ -23,7 +23,7 @@ interface ProfileConfig {
   timeoutMs: number;
   runs: number;
   warmupRuns: number;
-  instrumentationMode: 'on' | 'off';
+  instrumentationMode: "on" | "off";
   includeCallCounts: boolean;
   showDominantTraceEvents: boolean;
   outputJson: boolean;
@@ -164,15 +164,15 @@ interface AggregateMetricSummary {
 }
 
 type AggregateMetricKey =
-  | 'actionDurationMs'
-  | 'visibleRowsReadyMs'
-  | 'postPaintReadyMs'
-  | 'clickDispatchMs'
-  | 'clickToRenderReadyMs'
-  | 'traceWindowMs'
-  | 'mainThreadBusyMs'
-  | 'longestTopLevelTaskMs'
-  | 'sampledCpuTimeMs';
+  | "actionDurationMs"
+  | "visibleRowsReadyMs"
+  | "postPaintReadyMs"
+  | "clickDispatchMs"
+  | "clickToRenderReadyMs"
+  | "traceWindowMs"
+  | "mainThreadBusyMs"
+  | "longestTopLevelTaskMs"
+  | "sampledCpuTimeMs";
 
 interface JsonAggregateSummary {
   measuredRuns: number;
@@ -201,7 +201,7 @@ interface ProfileConfigSummary {
   timeoutMs: number;
   runs: number;
   warmupRuns: number;
-  instrumentationMode: 'on' | 'off';
+  instrumentationMode: "on" | "off";
   includeCallCounts: boolean;
   profileRender: boolean;
   showDominantTraceEvents: boolean;
@@ -248,7 +248,7 @@ interface ProfileComparisonSummary {
 }
 
 interface ProfileBenchmarkOutput {
-  benchmark: 'treesFileTreeProfile';
+  benchmark: "treesFileTreeProfile";
   config: ProfileConfigSummary;
   workloads: ProfileWorkloadOutput[];
   comparison?: ProfileComparisonSummary;
@@ -348,97 +348,83 @@ function readWorktreePortOffset(): number {
 const WORKTREE_PORT_OFFSET = readWorktreePortOffset();
 const DEFAULT_BROWSER_DEBUG_PORT = 9222 + WORKTREE_PORT_OFFSET;
 const DEFAULT_FIXTURE_SERVER_PORT = 9221 + WORKTREE_PORT_OFFSET;
-const packageRoot = fileURLToPath(new URL('../', import.meta.url));
-const repoRoot = resolve(packageRoot, '../..');
+const packageRoot = fileURLToPath(new URL("../", import.meta.url));
+const repoRoot = resolve(packageRoot, "../..");
 const DEFAULT_BROWSER_URL = `http://127.0.0.1:${DEFAULT_BROWSER_DEBUG_PORT}`;
 const DEFAULT_URL = `http://127.0.0.1:${DEFAULT_FIXTURE_SERVER_PORT}/test/e2e/fixtures/file-tree-profile.html`;
 const DEFAULT_WORKLOAD_NAME = DEFAULT_FILE_TREE_PROFILE_WORKLOAD_NAME;
-const KNOWN_WORKLOAD_NAMES = new Set<FileTreeProfileWorkloadName>(
-  FILE_TREE_PROFILE_WORKLOAD_NAMES
-);
+const KNOWN_WORKLOAD_NAMES = new Set<FileTreeProfileWorkloadName>(FILE_TREE_PROFILE_WORKLOAD_NAMES);
 const DEFAULT_TIMEOUT_MS = 30_000;
 const DEFAULT_RUN_COUNT = 1;
 const DEFAULT_WARMUP_RUN_COUNT = 0;
-const DEFAULT_TRACE_OUTPUT_DIR = resolve(tmpdir(), 'pierrejs-trees-traces');
+const DEFAULT_TRACE_OUTPUT_DIR = resolve(tmpdir(), "pierrejs-trees-traces");
 const DEFAULT_TRACE_OUTPUT_EXAMPLE_PATH = resolve(
   DEFAULT_TRACE_OUTPUT_DIR,
-  'trees-file-tree-profile-trace-<run-id>.json'
+  "trees-file-tree-profile-trace-<run-id>.json",
 );
-const START_MARK_NAME = 'trees-file-tree-profile-start';
-const END_MARK_NAME = 'trees-file-tree-profile-end';
-const START_TRACE_LABEL = 'trees-file-tree-profile-trace-start';
-const END_TRACE_LABEL = 'trees-file-tree-profile-trace-end';
-const MEASURE_NAME = 'trees-file-tree-profile-measure';
+const START_MARK_NAME = "trees-file-tree-profile-start";
+const END_MARK_NAME = "trees-file-tree-profile-end";
+const START_TRACE_LABEL = "trees-file-tree-profile-trace-start";
+const END_TRACE_LABEL = "trees-file-tree-profile-trace-end";
+const MEASURE_NAME = "trees-file-tree-profile-measure";
 const TRACE_START_SETTLE_MS = 200;
 const TRACE_COMPLETION_TIMEOUT_MS = 30_000;
 const CPU_PROFILE_SAMPLING_INTERVAL_US = 1_000;
 const BOTTOM_UP_FUNCTION_LIMIT = 8;
-const TRACE_CATEGORIES = [
-  'blink.user_timing',
-  'devtools.timeline',
-  'toplevel',
-  'v8.execute',
-].join(',');
-const TOP_LEVEL_TASK_NAMES = new Set([
-  'RunTask',
-  'ThreadControllerImpl::RunTask',
-]);
+const TRACE_CATEGORIES = ["blink.user_timing", "devtools.timeline", "toplevel", "v8.execute"].join(
+  ",",
+);
+const TOP_LEVEL_TASK_NAMES = new Set(["RunTask", "ThreadControllerImpl::RunTask"]);
 const SCRIPT_EVENT_NAMES = new Set([
-  'EventDispatch',
-  'EvaluateScript',
-  'FunctionCall',
-  'V8.Execute',
-  'TimerFire',
-  'FireAnimationFrame',
-  'RequestAnimationFrame',
-  'RunMicrotasks',
-  'v8.callFunction',
+  "EventDispatch",
+  "EvaluateScript",
+  "FunctionCall",
+  "V8.Execute",
+  "TimerFire",
+  "FireAnimationFrame",
+  "RequestAnimationFrame",
+  "RunMicrotasks",
+  "v8.callFunction",
 ]);
-const GC_EVENT_NAMES = new Set(['MinorGC', 'MajorGC']);
+const GC_EVENT_NAMES = new Set(["MinorGC", "MajorGC"]);
 const STYLE_LAYOUT_EVENT_NAMES = new Set([
-  'UpdateLayoutTree',
-  'Layout',
-  'ScheduleStyleRecalculation',
-  'InvalidateLayout',
-  'RecalculateStyles',
+  "UpdateLayoutTree",
+  "Layout",
+  "ScheduleStyleRecalculation",
+  "InvalidateLayout",
+  "RecalculateStyles",
 ]);
-const PAINT_EVENT_NAMES = new Set([
-  'PrePaint',
-  'Paint',
-  'PaintImage',
-  'Commit',
-  'CompositeLayers',
-]);
-const CLICK_EVENT_TYPES = new Set(['click', 'DOMActivate']);
+const PAINT_EVENT_NAMES = new Set(["PrePaint", "Paint", "PaintImage", "Commit", "CompositeLayers"]);
+const CLICK_EVENT_TYPES = new Set(["click", "DOMActivate"]);
 const CPU_PROFILE_IGNORED_FUNCTION_NAMES = new Set([
-  '(root)',
-  '(program)',
-  '(idle)',
-  '(garbage collector)',
+  "(root)",
+  "(program)",
+  "(idle)",
+  "(garbage collector)",
 ]);
-const DOMINANT_EVENT_IGNORED_PREFIXES = ['V8.GC_'];
+const DOMINANT_EVENT_IGNORED_PREFIXES = ["V8.GC_"];
 const INTERNAL_CPU_PROFILE_URL_SNIPPETS = [
-  '/node_modules/',
-  '/.vite/deps/',
-  'extensions::',
-  'native ',
-  'node:',
-  'inspector://',
+  "/node_modules/",
+  "/.vite/deps/",
+  "extensions::",
+  "native ",
+  "node:",
+  "inspector://",
 ];
 const MAJOR_PHASE_ORDER = [
-  'root.fileListToTree',
-  'root.pathToId',
-  'root.stateConfig',
-  'expandPathsWithAncestors',
-  'root.dataLoader',
-  'core.rebuildItemMeta',
-  'fileTree.render.mount',
+  "root.fileListToTree",
+  "root.pathToId",
+  "root.stateConfig",
+  "expandPathsWithAncestors",
+  "root.dataLoader",
+  "core.rebuildItemMeta",
+  "fileTree.render.mount",
 ] as const;
 const TREE_BUILD_PHASE_ORDER = [
-  'fileListToTree.pathGraph',
-  'fileListToTree.flattenedNodes',
-  'fileListToTree.folderNodes',
-  'fileListToTree.hashKeys',
+  "fileListToTree.pathGraph",
+  "fileListToTree.flattenedNodes",
+  "fileListToTree.folderNodes",
+  "fileListToTree.hashKeys",
 ] as const;
 const AGGREGATE_METRIC_DEFINITIONS: Array<{
   key: AggregateMetricKey;
@@ -446,111 +432,97 @@ const AGGREGATE_METRIC_DEFINITIONS: Array<{
   select: (result: ProfileResult) => number | null;
 }> = [
   {
-    key: 'actionDurationMs',
-    label: 'API action dispatch',
+    key: "actionDurationMs",
+    label: "API action dispatch",
     select: (result) => result.actionDurationMs,
   },
   {
-    key: 'visibleRowsReadyMs',
-    label: 'Visible rows ready',
+    key: "visibleRowsReadyMs",
+    label: "Visible rows ready",
     select: (result) => result.visibleRowsReadyMs,
   },
   {
-    key: 'postPaintReadyMs',
-    label: 'Post-paint ready',
+    key: "postPaintReadyMs",
+    label: "Post-paint ready",
     select: (result) => result.renderDurationMs,
   },
   {
-    key: 'clickDispatchMs',
-    label: 'Click dispatch task',
+    key: "clickDispatchMs",
+    label: "Click dispatch task",
     select: (result) => result.trace.clickDispatchMs,
   },
   {
-    key: 'clickToRenderReadyMs',
-    label: 'Click-to-post-paint-ready',
+    key: "clickToRenderReadyMs",
+    label: "Click-to-post-paint-ready",
     select: (result) => result.trace.clickToRenderReadyMs,
   },
   {
-    key: 'traceWindowMs',
-    label: 'Trace window',
+    key: "traceWindowMs",
+    label: "Trace window",
     select: (result) => result.trace.windowDurationMs,
   },
   {
-    key: 'mainThreadBusyMs',
-    label: 'Main-thread busy',
+    key: "mainThreadBusyMs",
+    label: "Main-thread busy",
     select: (result) => result.trace.mainThreadBusyMs,
   },
   {
-    key: 'longestTopLevelTaskMs',
-    label: 'Longest top-level task',
+    key: "longestTopLevelTaskMs",
+    label: "Longest top-level task",
     select: (result) => result.trace.longestTaskMs,
   },
   {
-    key: 'sampledCpuTimeMs',
-    label: 'Sampled CPU time',
+    key: "sampledCpuTimeMs",
+    label: "Sampled CPU time",
     select: (result) => result.cpuProfile.sampledMs,
   },
 ];
-const INTEGER_FORMATTER = new Intl.NumberFormat('en-US');
+const INTEGER_FORMATTER = new Intl.NumberFormat("en-US");
 
 function printHelpAndExit(): never {
-  console.log('Usage: moonx trees:profile-file-tree -- [options]');
-  console.log('');
+  console.log("Usage: moonx trees:profile-file-tree -- [options]");
+  console.log("");
+  console.log("Assumes Chrome is already running with --remote-debugging-port enabled.");
+  console.log("");
+  console.log("Options:");
   console.log(
-    'Assumes Chrome is already running with --remote-debugging-port enabled.'
-  );
-  console.log('');
-  console.log('Options:');
-  console.log(
-    `  --browser-url <url>    Chrome remote debugging base URL (default: ${DEFAULT_BROWSER_URL})`
+    `  --browser-url <url>    Chrome remote debugging base URL (default: ${DEFAULT_BROWSER_URL})`,
   );
   console.log(
-    '                         If the local debug port is closed, the profiler starts `scripts/chrome-remote-debug.sh` automatically'
+    "                         If the local debug port is closed, the profiler starts `scripts/chrome-remote-debug.sh` automatically",
+  );
+  console.log(`  --url <url>            Page to profile (default: ${DEFAULT_URL})`);
+  console.log(
+    `  --workload <name>      Fixture workload to run (repeatable, default: ${DEFAULT_WORKLOAD_NAME})`,
   );
   console.log(
-    `  --url <url>            Page to profile (default: ${DEFAULT_URL})`
+    `  --timeout <ms>         Navigation/render timeout in milliseconds (default: ${DEFAULT_TIMEOUT_MS})`,
   );
   console.log(
-    `  --workload <name>      Fixture workload to run (repeatable, default: ${DEFAULT_WORKLOAD_NAME})`
+    `  --runs <count>         Number of benchmark runs to execute (default: ${DEFAULT_RUN_COUNT})`,
   );
   console.log(
-    `  --timeout <ms>         Navigation/render timeout in milliseconds (default: ${DEFAULT_TIMEOUT_MS})`
+    `  --warmup-runs <count>  Number of warm-up runs to discard before reporting (default: ${DEFAULT_WARMUP_RUN_COUNT})`,
+  );
+  console.log("  --instrumentation <mode> Benchmark fixture instrumentation mode: on or off");
+  console.log(
+    "  --call-counts         Run a second precise-coverage pass to annotate bottom-up functions with invocation counts",
   );
   console.log(
-    `  --runs <count>         Number of benchmark runs to execute (default: ${DEFAULT_RUN_COUNT})`
+    "  --dominant-trace-events Show the lower-signal dominant trace event table in human output",
+  );
+  console.log("  --actions <mode>      Run action profiles: off or expansion (default: off)");
+  console.log(
+    "  --actions-only        Run expansion action profiles without the standalone render profile",
   );
   console.log(
-    `  --warmup-runs <count>  Number of warm-up runs to discard before reporting (default: ${DEFAULT_WARMUP_RUN_COUNT})`
+    `  --trace-out <path>     Where to save the Chrome trace JSON when tracing succeeds (default: ${DEFAULT_TRACE_OUTPUT_EXAMPLE_PATH})`,
   );
-  console.log(
-    '  --instrumentation <mode> Benchmark fixture instrumentation mode: on or off'
-  );
-  console.log(
-    '  --call-counts         Run a second precise-coverage pass to annotate bottom-up functions with invocation counts'
-  );
-  console.log(
-    '  --dominant-trace-events Show the lower-signal dominant trace event table in human output'
-  );
-  console.log(
-    '  --actions <mode>      Run action profiles: off or expansion (default: off)'
-  );
-  console.log(
-    '  --actions-only        Run expansion action profiles without the standalone render profile'
-  );
-  console.log(
-    `  --trace-out <path>     Where to save the Chrome trace JSON when tracing succeeds (default: ${DEFAULT_TRACE_OUTPUT_EXAMPLE_PATH})`
-  );
-  console.log(
-    '  --compare <path>       Compare against a prior --json file-tree profile run'
-  );
-  console.log(
-    '  --no-build             Skip rebuilding @pierre/trees before profiling'
-  );
-  console.log(
-    '  --no-server            Assume the fixture server is already running'
-  );
-  console.log('  --json                 Emit machine-readable JSON output');
-  console.log('  -h, --help             Show this help output');
+  console.log("  --compare <path>       Compare against a prior --json file-tree profile run");
+  console.log("  --no-build             Skip rebuilding @pierre/trees before profiling");
+  console.log("  --no-server            Assume the fixture server is already running");
+  console.log("  --json                 Emit machine-readable JSON output");
+  console.log("  -h, --help             Show this help output");
   process.exit(0);
 }
 
@@ -570,23 +542,19 @@ function parseNonNegativeInteger(value: string, flag: string): number {
   return parsed;
 }
 
-function parseInstrumentationMode(value: string): 'on' | 'off' {
-  if (value === 'on' || value === 'off') {
+function parseInstrumentationMode(value: string): "on" | "off" {
+  if (value === "on" || value === "off") {
     return value;
   }
-  throw new Error(
-    `Invalid --instrumentation value '${value}'. Expected 'on' or 'off'.`
-  );
+  throw new Error(`Invalid --instrumentation value '${value}'. Expected 'on' or 'off'.`);
 }
 
 function parseActionsMode(value: string): ProfileActionsMode {
-  if (value === 'off' || value === 'expansion') {
+  if (value === "off" || value === "expansion") {
     return value;
   }
 
-  throw new Error(
-    `Invalid --actions value '${value}'. Expected 'off' or 'expansion'.`
-  );
+  throw new Error(`Invalid --actions value '${value}'. Expected 'off' or 'expansion'.`);
 }
 
 function parseWorkloadName(value: string): FileTreeProfileWorkloadName {
@@ -595,23 +563,23 @@ function parseWorkloadName(value: string): FileTreeProfileWorkloadName {
   }
 
   throw new Error(
-    `Invalid --workload value '${value}'. Expected one of: ${[
-      ...KNOWN_WORKLOAD_NAMES,
-    ].join(', ')}.`
+    `Invalid --workload value '${value}'. Expected one of: ${[...KNOWN_WORKLOAD_NAMES].join(
+      ", ",
+    )}.`,
   );
 }
 
 function createTraceRunId(): string {
   return `${new Date()
     .toISOString()
-    .replaceAll(':', '-')
-    .replaceAll('.', '-')}-${randomUUID().slice(0, 8)}`;
+    .replaceAll(":", "-")
+    .replaceAll(".", "-")}-${randomUUID().slice(0, 8)}`;
 }
 
 function createDefaultTraceOutputPath(): string {
   return resolve(
     DEFAULT_TRACE_OUTPUT_DIR,
-    `trees-file-tree-profile-trace-${createTraceRunId()}.json`
+    `trees-file-tree-profile-trace-${createTraceRunId()}.json`,
   );
 }
 
@@ -619,9 +587,9 @@ function slugifyTracePart(value: string): string {
   const slug = value
     .trim()
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-  return slug.length > 0 ? slug : 'item';
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return slug.length > 0 ? slug : "item";
 }
 
 function createRunTraceOutputPath(
@@ -629,7 +597,7 @@ function createRunTraceOutputPath(
   workloadName: string,
   workloadCount: number,
   runNumber: number,
-  totalRuns: number
+  totalRuns: number,
 ): string {
   const suffixParts: string[] = [];
   if (workloadCount > 1) {
@@ -637,17 +605,15 @@ function createRunTraceOutputPath(
   }
 
   if (totalRuns > 1) {
-    suffixParts.push(
-      `run-${String(runNumber).padStart(String(totalRuns).length, '0')}`
-    );
+    suffixParts.push(`run-${String(runNumber).padStart(String(totalRuns).length, "0")}`);
   }
 
   if (suffixParts.length === 0) {
     return traceOutputPath;
   }
 
-  const runSuffix = `-${suffixParts.join('-')}`;
-  const extensionIndex = traceOutputPath.lastIndexOf('.');
+  const runSuffix = `-${suffixParts.join("-")}`;
+  const extensionIndex = traceOutputPath.lastIndexOf(".");
   if (extensionIndex <= 0) {
     return `${traceOutputPath}${runSuffix}`;
   }
@@ -655,12 +621,9 @@ function createRunTraceOutputPath(
   return `${traceOutputPath.slice(0, extensionIndex)}${runSuffix}${traceOutputPath.slice(extensionIndex)}`;
 }
 
-function createActionTraceOutputPath(
-  traceOutputPath: string,
-  actionId: string
-): string {
+function createActionTraceOutputPath(traceOutputPath: string, actionId: string): string {
   const actionSuffix = `-${slugifyTracePart(actionId)}`;
-  const extensionIndex = traceOutputPath.lastIndexOf('.');
+  const extensionIndex = traceOutputPath.lastIndexOf(".");
   if (extensionIndex <= 0) {
     return `${traceOutputPath}${actionSuffix}`;
   }
@@ -680,19 +643,16 @@ function isFileTreeProfileFixtureUrl(url: string): boolean {
 
 function createProfileUrl(
   url: string,
-  instrumentationMode: 'on' | 'off',
-  workloadName: string
+  instrumentationMode: "on" | "off",
+  workloadName: string,
 ): string {
   const parsedUrl = new URL(url);
   if (isFileTreeProfileFixtureUrl(url)) {
-    if (!parsedUrl.searchParams.has('instrumentation')) {
-      parsedUrl.searchParams.set(
-        'instrumentation',
-        instrumentationMode === 'on' ? '1' : '0'
-      );
+    if (!parsedUrl.searchParams.has("instrumentation")) {
+      parsedUrl.searchParams.set("instrumentation", instrumentationMode === "on" ? "1" : "0");
     }
-    if (!parsedUrl.searchParams.has('workload')) {
-      parsedUrl.searchParams.set('workload', workloadName);
+    if (!parsedUrl.searchParams.has("workload")) {
+      parsedUrl.searchParams.set("workload", workloadName);
     }
   }
   return parsedUrl.toString();
@@ -700,14 +660,14 @@ function createProfileUrl(
 
 function parseArgs(argv: string[]): ProfileConfig {
   const config: ProfileConfig = {
-    actionsMode: 'off',
+    actionsMode: "off",
     browserUrl: DEFAULT_BROWSER_URL,
     url: DEFAULT_URL,
     workloads: [DEFAULT_WORKLOAD_NAME],
     timeoutMs: DEFAULT_TIMEOUT_MS,
     runs: DEFAULT_RUN_COUNT,
     warmupRuns: DEFAULT_WARMUP_RUN_COUNT,
-    instrumentationMode: 'on',
+    instrumentationMode: "on",
     includeCallCounts: false,
     showDominantTraceEvents: false,
     outputJson: false,
@@ -719,53 +679,53 @@ function parseArgs(argv: string[]): ProfileConfig {
 
   for (let index = 0; index < argv.length; index += 1) {
     const rawArg = argv[index];
-    if (rawArg === '--help' || rawArg === '-h') {
+    if (rawArg === "--help" || rawArg === "-h") {
       printHelpAndExit();
     }
 
-    if (rawArg === '--json') {
+    if (rawArg === "--json") {
       config.outputJson = true;
       continue;
     }
 
-    if (rawArg === '--call-counts') {
+    if (rawArg === "--call-counts") {
       config.includeCallCounts = true;
       continue;
     }
 
-    if (rawArg === '--dominant-trace-events') {
+    if (rawArg === "--dominant-trace-events") {
       config.showDominantTraceEvents = true;
       continue;
     }
 
-    if (rawArg === '--actions-only') {
-      config.actionsMode = 'expansion';
+    if (rawArg === "--actions-only") {
+      config.actionsMode = "expansion";
       config.profileRender = false;
       continue;
     }
 
-    if (rawArg === '--no-build') {
+    if (rawArg === "--no-build") {
       config.ensureBuild = false;
       continue;
     }
 
-    if (rawArg === '--no-server') {
+    if (rawArg === "--no-server") {
       config.ensureServer = false;
       continue;
     }
 
-    const [flag, inlineValue] = rawArg.split('=', 2);
+    const [flag, inlineValue] = rawArg.split("=", 2);
     if (
-      flag === '--browser-url' ||
-      flag === '--url' ||
-      flag === '--workload' ||
-      flag === '--timeout' ||
-      flag === '--runs' ||
-      flag === '--warmup-runs' ||
-      flag === '--instrumentation' ||
-      flag === '--actions' ||
-      flag === '--trace-out' ||
-      flag === '--compare'
+      flag === "--browser-url" ||
+      flag === "--url" ||
+      flag === "--workload" ||
+      flag === "--timeout" ||
+      flag === "--runs" ||
+      flag === "--warmup-runs" ||
+      flag === "--instrumentation" ||
+      flag === "--actions" ||
+      flag === "--trace-out" ||
+      flag === "--compare"
     ) {
       const value = inlineValue ?? argv[index + 1];
       if (value == null) {
@@ -775,29 +735,26 @@ function parseArgs(argv: string[]): ProfileConfig {
         index += 1;
       }
 
-      if (flag === '--browser-url') {
-        config.browserUrl = value.replace(/\/$/, '');
-      } else if (flag === '--url') {
+      if (flag === "--browser-url") {
+        config.browserUrl = value.replace(/\/$/, "");
+      } else if (flag === "--url") {
         config.url = value;
-      } else if (flag === '--workload') {
-        if (
-          config.workloads.length === 1 &&
-          config.workloads[0] === DEFAULT_WORKLOAD_NAME
-        ) {
+      } else if (flag === "--workload") {
+        if (config.workloads.length === 1 && config.workloads[0] === DEFAULT_WORKLOAD_NAME) {
           config.workloads = [];
         }
         config.workloads.push(parseWorkloadName(value));
-      } else if (flag === '--timeout') {
-        config.timeoutMs = parsePositiveInteger(value, '--timeout');
-      } else if (flag === '--runs') {
-        config.runs = parsePositiveInteger(value, '--runs');
-      } else if (flag === '--warmup-runs') {
-        config.warmupRuns = parseNonNegativeInteger(value, '--warmup-runs');
-      } else if (flag === '--instrumentation') {
+      } else if (flag === "--timeout") {
+        config.timeoutMs = parsePositiveInteger(value, "--timeout");
+      } else if (flag === "--runs") {
+        config.runs = parsePositiveInteger(value, "--runs");
+      } else if (flag === "--warmup-runs") {
+        config.warmupRuns = parseNonNegativeInteger(value, "--warmup-runs");
+      } else if (flag === "--instrumentation") {
         config.instrumentationMode = parseInstrumentationMode(value);
-      } else if (flag === '--actions') {
+      } else if (flag === "--actions") {
         config.actionsMode = parseActionsMode(value);
-      } else if (flag === '--compare') {
+      } else if (flag === "--compare") {
         config.comparePath = resolve(process.cwd(), value);
       } else {
         config.traceOutputPath = resolve(process.cwd(), value);
@@ -809,36 +766,36 @@ function parseArgs(argv: string[]): ProfileConfig {
   }
 
   config.workloads = [...new Set(config.workloads)];
-  if (!config.profileRender && config.actionsMode === 'off') {
-    throw new Error('--actions-only requires action profiling.');
+  if (!config.profileRender && config.actionsMode === "off") {
+    throw new Error("--actions-only requires action profiling.");
   }
   return config;
 }
 
 function formatMs(value: number | null): string {
   if (value == null || !Number.isFinite(value)) {
-    return 'n/a';
+    return "n/a";
   }
   return `${value.toFixed(2)} ms`;
 }
 
 function formatPercent(value: number | null): string {
   if (value == null || !Number.isFinite(value)) {
-    return 'n/a';
+    return "n/a";
   }
   return `${value.toFixed(1)}%`;
 }
 
 function formatCount(value: number | null): string {
   if (value == null || !Number.isFinite(value)) {
-    return 'n/a';
+    return "n/a";
   }
   return INTEGER_FORMATTER.format(Math.round(value));
 }
 
 function formatBytes(value: number | null): string {
   if (value == null || !Number.isFinite(value)) {
-    return 'n/a';
+    return "n/a";
   }
 
   const absoluteValue = Math.abs(value);
@@ -854,7 +811,7 @@ function formatBytes(value: number | null): string {
   return `${(value / 1024 ** 3).toFixed(2)} GiB`;
 }
 
-type TableAlignment = 'left' | 'right';
+type TableAlignment = "left" | "right";
 
 interface TableOptions {
   alignments?: TableAlignment[];
@@ -871,39 +828,26 @@ function truncateText(value: string, maxWidth: number | undefined): string {
   return `${value.slice(0, maxWidth - 3)}...`;
 }
 
-function padTableCell(
-  value: string,
-  width: number,
-  alignment: TableAlignment
-): string {
-  return alignment === 'right' ? value.padStart(width) : value.padEnd(width);
+function padTableCell(value: string, width: number, alignment: TableAlignment): string {
+  return alignment === "right" ? value.padStart(width) : value.padEnd(width);
 }
 
-function createTable(
-  headers: string[],
-  rows: string[][],
-  options: TableOptions = {}
-): string {
+function createTable(headers: string[], rows: string[][], options: TableOptions = {}): string {
   const alignments = options.alignments ?? [];
   const normalizedHeaders = headers.map((header, index) =>
-    truncateText(header, options.maxWidths?.[index])
+    truncateText(header, options.maxWidths?.[index]),
   );
   const normalizedRows = rows.map((row) =>
-    row.map((value, index) => truncateText(value, options.maxWidths?.[index]))
+    row.map((value, index) => truncateText(value, options.maxWidths?.[index])),
   );
   const widths = normalizedHeaders.map((header, index) => {
-    return Math.max(
-      header.length,
-      ...normalizedRows.map((row) => row[index]?.length ?? 0)
-    );
+    return Math.max(header.length, ...normalizedRows.map((row) => row[index]?.length ?? 0));
   });
-  const border = `+${widths.map((width) => '-'.repeat(width + 2)).join('+')}+`;
+  const border = `+${widths.map((width) => "-".repeat(width + 2)).join("+")}+`;
   const formatRow = (row: string[]): string => {
     return `| ${row
-      .map((value, index) =>
-        padTableCell(value, widths[index], alignments[index] ?? 'left')
-      )
-      .join(' | ')} |`;
+      .map((value, index) => padTableCell(value, widths[index], alignments[index] ?? "left"))
+      .join(" | ")} |`;
   };
 
   return [
@@ -912,19 +856,17 @@ function createTable(
     border,
     ...normalizedRows.map((row) => formatRow(row)),
     border,
-  ].join('\n');
+  ].join("\n");
 }
 
 function summarizeAggregateMetric(
   label: string,
   results: ProfileResult[],
-  selector: (result: ProfileResult) => number | null
+  selector: (result: ProfileResult) => number | null,
 ): AggregateMetricSummary {
   const values = results
     .map(selector)
-    .filter(
-      (value): value is number => value != null && Number.isFinite(value)
-    );
+    .filter((value): value is number => value != null && Number.isFinite(value));
   if (values.length === 0) {
     return {
       label,
@@ -948,9 +890,7 @@ function summarizeAggregateMetric(
   };
 }
 
-function createProfileConfigSummary(
-  config: ProfileConfig
-): ProfileConfigSummary {
+function createProfileConfigSummary(config: ProfileConfig): ProfileConfigSummary {
   return {
     actionsMode: config.actionsMode,
     browserUrl: config.browserUrl,
@@ -969,17 +909,16 @@ function createProfileConfigSummary(
 function createWorkloadOutput(
   workload: PageWorkloadSummary,
   results: ProfileResult[],
-  actionProfiles: ProfileActionOutput[]
+  actionProfiles: ProfileActionOutput[],
 ): ProfileWorkloadOutput {
   if (results.length === 0 && actionProfiles.length === 0) {
-    throw new Error('Cannot summarize an empty workload result set.');
+    throw new Error("Cannot summarize an empty workload result set.");
   }
 
   const actionRuns = actionProfiles.flatMap((profile) => profile.runs);
   return {
     actionProfiles,
-    actionSummary:
-      actionRuns.length === 0 ? null : createJsonAggregateSummary(actionRuns),
+    actionSummary: actionRuns.length === 0 ? null : createJsonAggregateSummary(actionRuns),
     runs: results,
     summary: createJsonAggregateSummary(results),
     workload,
@@ -1003,9 +942,7 @@ function percentile(sortedValues: number[], percentileValue: number): number {
   }
 
   const weight = index - lowerIndex;
-  return (
-    sortedValues[lowerIndex] * (1 - weight) + sortedValues[upperIndex] * weight
-  );
+  return sortedValues[lowerIndex] * (1 - weight) + sortedValues[upperIndex] * weight;
 }
 
 function decodeOutput(output: Uint8Array): string {
@@ -1016,7 +953,7 @@ function overlapDurationUs(
   startTs: number,
   durationUs: number,
   windowStartTs: number,
-  windowEndTs: number
+  windowEndTs: number,
 ): number {
   const overlapStartTs = Math.max(startTs, windowStartTs);
   const overlapEndTs = Math.min(startTs + durationUs, windowEndTs);
@@ -1025,7 +962,7 @@ function overlapDurationUs(
 
 function createManagedTimeout(
   timeoutMs: number,
-  callback: () => void
+  callback: () => void,
 ): ReturnType<typeof setTimeout> {
   const timeout = setTimeout(callback, timeoutMs);
   timeout.unref?.();
@@ -1035,7 +972,7 @@ function createManagedTimeout(
 async function fetchWithTimeout(
   url: string,
   init: RequestInit | undefined,
-  timeoutMs: number
+  timeoutMs: number,
 ): Promise<Response> {
   const controller = new AbortController();
   const timeout = createManagedTimeout(timeoutMs, () => {
@@ -1055,7 +992,7 @@ async function fetchWithTimeout(
 async function withTimeout<TValue>(
   promise: Promise<TValue>,
   timeoutMs: number,
-  message: string
+  message: string,
 ): Promise<TValue> {
   return await new Promise<TValue>((resolve, reject) => {
     const timeout = createManagedTimeout(timeoutMs, () => {
@@ -1070,7 +1007,7 @@ async function withTimeout<TValue>(
       (error: unknown) => {
         clearTimeout(timeout);
         reject(error);
-      }
+      },
     );
   });
 }
@@ -1078,7 +1015,7 @@ async function withTimeout<TValue>(
 async function fetchJson<TValue>(
   url: string,
   init: RequestInit | undefined,
-  timeoutMs: number
+  timeoutMs: number,
 ): Promise<TValue> {
   const response = await fetchWithTimeout(url, init, timeoutMs);
   if (!response.ok) {
@@ -1087,28 +1024,23 @@ async function fetchJson<TValue>(
   return (await response.json()) as TValue;
 }
 
-async function isUrlReachable(
-  url: string,
-  timeoutMs: number
-): Promise<boolean> {
-  const isReachableWithMethod = async (
-    method: 'HEAD' | 'GET'
-  ): Promise<boolean> => {
+async function isUrlReachable(url: string, timeoutMs: number): Promise<boolean> {
+  const isReachableWithMethod = async (method: "HEAD" | "GET"): Promise<boolean> => {
     const response = await fetchWithTimeout(
       url,
       {
         method,
       },
-      timeoutMs
+      timeoutMs,
     );
-    if (method === 'GET') {
+    if (method === "GET") {
       response.body?.cancel().catch(() => {});
     }
     return response.ok;
   };
 
   try {
-    if (await isReachableWithMethod('HEAD')) {
+    if (await isReachableWithMethod("HEAD")) {
       return true;
     }
   } catch {
@@ -1116,7 +1048,7 @@ async function isUrlReachable(
   }
 
   try {
-    return await isReachableWithMethod('GET');
+    return await isReachableWithMethod("GET");
   } catch {
     return false;
   }
@@ -1125,14 +1057,14 @@ async function isUrlReachable(
 /** Builds dist output so the fixture always reflects the current tree implementation. */
 function ensureProductionDistBuild(): void {
   const buildResult = Bun.spawnSync({
-    cmd: ['moon', 'run', 'trees:build'],
+    cmd: ["moon", "run", "trees:build"],
     cwd: packageRoot,
     env: {
       ...process.env,
-      AGENT: '1',
+      AGENT: "1",
     },
-    stdout: 'pipe',
-    stderr: 'pipe',
+    stdout: "pipe",
+    stderr: "pipe",
   });
 
   if (buildResult.exitCode !== 0) {
@@ -1140,38 +1072,35 @@ function ensureProductionDistBuild(): void {
     const stderr = decodeOutput(buildResult.stderr);
     throw new Error(
       [
-        'Failed to build @pierre/trees before profiling.',
-        stdout !== '' ? `stdout:\n${stdout}` : null,
-        stderr !== '' ? `stderr:\n${stderr}` : null,
+        "Failed to build @pierre/trees before profiling.",
+        stdout !== "" ? `stdout:\n${stdout}` : null,
+        stderr !== "" ? `stderr:\n${stderr}` : null,
       ]
         .filter((value): value is string => value != null)
-        .join('\n\n')
+        .join("\n\n"),
     );
   }
 }
 
 function createBrowserVersionUrl(browserUrl: string): string {
   try {
-    return new URL('/json/version', browserUrl).toString();
+    return new URL("/json/version", browserUrl).toString();
   } catch {
-    return `${browserUrl.replace(/\/$/, '')}/json/version`;
+    return `${browserUrl.replace(/\/$/, "")}/json/version`;
   }
 }
 
 async function isChromeDebugEndpointAvailable(
   browserUrl: string,
-  timeoutMs: number
+  timeoutMs: number,
 ): Promise<boolean> {
   try {
     const version = await fetchJson<Partial<InspectVersionResponse>>(
       createBrowserVersionUrl(browserUrl),
       undefined,
-      timeoutMs
+      timeoutMs,
     );
-    return (
-      typeof version.webSocketDebuggerUrl === 'string' &&
-      version.webSocketDebuggerUrl !== ''
-    );
+    return typeof version.webSocketDebuggerUrl === "string" && version.webSocketDebuggerUrl !== "";
   } catch {
     return false;
   }
@@ -1185,11 +1114,11 @@ function readLocalBrowserDebugPort(browserUrl: string): number | null {
     return null;
   }
 
-  const localHosts = new Set(['127.0.0.1', '::1', '[::1]', 'localhost']);
+  const localHosts = new Set(["127.0.0.1", "::1", "[::1]", "localhost"]);
   if (
-    parsedUrl.protocol !== 'http:' ||
+    parsedUrl.protocol !== "http:" ||
     !localHosts.has(parsedUrl.hostname) ||
-    parsedUrl.port === ''
+    parsedUrl.port === ""
   ) {
     return null;
   }
@@ -1203,21 +1132,21 @@ function launchChromeDebugPort(browserUrl: string): void {
   if (browserDebugPort == null) {
     throw new Error(
       `Chrome debug endpoint ${createBrowserVersionUrl(
-        browserUrl
-      )} is not reachable. Automatic launch is only supported for localhost browser URLs with an explicit port.`
+        browserUrl,
+      )} is not reachable. Automatic launch is only supported for localhost browser URLs with an explicit port.`,
     );
   }
 
   const launchResult = Bun.spawnSync({
-    cmd: ['./scripts/chrome-remote-debug.sh'],
+    cmd: ["./scripts/chrome-remote-debug.sh"],
     cwd: repoRoot,
     env: {
       ...process.env,
-      AGENT: '1',
+      AGENT: "1",
       PIERRE_PORT_OFFSET: String(browserDebugPort - 9222),
     },
-    stdout: 'pipe',
-    stderr: 'pipe',
+    stdout: "pipe",
+    stderr: "pipe",
   });
 
   if (launchResult.exitCode !== 0) {
@@ -1226,11 +1155,11 @@ function launchChromeDebugPort(browserUrl: string): void {
     throw new Error(
       [
         `Failed to launch Chrome debug port ${browserDebugPort}.`,
-        stdout !== '' ? `stdout:\n${stdout}` : null,
-        stderr !== '' ? `stderr:\n${stderr}` : null,
+        stdout !== "" ? `stdout:\n${stdout}` : null,
+        stderr !== "" ? `stderr:\n${stderr}` : null,
       ]
         .filter((value): value is string => value != null)
-        .join('\n\n')
+        .join("\n\n"),
     );
   }
 }
@@ -1241,16 +1170,14 @@ async function ensureChromeDebugPort(config: ProfileConfig): Promise<void> {
   }
 
   launchChromeDebugPort(config.browserUrl);
-  if (
-    await isChromeDebugEndpointAvailable(config.browserUrl, config.timeoutMs)
-  ) {
+  if (await isChromeDebugEndpointAvailable(config.browserUrl, config.timeoutMs)) {
     return;
   }
 
   throw new Error(
     `Chrome debug endpoint ${createBrowserVersionUrl(
-      config.browserUrl
-    )} is still not reachable after launching Chrome.`
+      config.browserUrl,
+    )} is still not reachable after launching Chrome.`,
   );
 }
 
@@ -1267,13 +1194,11 @@ async function waitForUrl(url: string, timeoutMs: number): Promise<void> {
   throw new Error(`Timed out waiting for ${url}`);
 }
 
-async function startFixtureServerIfNeeded(
-  config: ProfileConfig
-): Promise<Bun.Subprocess | null> {
+async function startFixtureServerIfNeeded(config: ProfileConfig): Promise<Bun.Subprocess | null> {
   const profileUrl = createProfileUrl(
     config.url,
     config.instrumentationMode,
-    config.workloads[0] ?? DEFAULT_WORKLOAD_NAME
+    config.workloads[0] ?? DEFAULT_WORKLOAD_NAME,
   );
   if (!config.ensureBuild && !config.ensureServer) {
     return null;
@@ -1292,14 +1217,14 @@ async function startFixtureServerIfNeeded(
   }
 
   const serverProcess = Bun.spawn({
-    cmd: ['moon', 'run', 'trees:test-e2e-server'],
+    cmd: ["moon", "run", "trees:test-e2e-server"],
     cwd: packageRoot,
     env: {
       ...process.env,
-      AGENT: '1',
+      AGENT: "1",
     },
-    stdout: 'ignore',
-    stderr: 'ignore',
+    stdout: "ignore",
+    stderr: "ignore",
   });
 
   try {
@@ -1311,16 +1236,14 @@ async function startFixtureServerIfNeeded(
   }
 }
 
-function normalizeWebSocketMessage(
-  data: string | ArrayBuffer | Buffer
-): string {
-  if (typeof data === 'string') {
+function normalizeWebSocketMessage(data: string | ArrayBuffer | Buffer): string {
+  if (typeof data === "string") {
     return data;
   }
   if (data instanceof ArrayBuffer) {
-    return Buffer.from(data).toString('utf8');
+    return Buffer.from(data).toString("utf8");
   }
-  return data.toString('utf8');
+  return data.toString("utf8");
 }
 
 class CdpClient {
@@ -1333,19 +1256,16 @@ class CdpClient {
       reject: (error: Error) => void;
     }
   >();
-  private readonly listeners = new Map<
-    string,
-    Set<(params: unknown) => void>
-  >();
+  private readonly listeners = new Map<string, Set<(params: unknown) => void>>();
 
   private constructor(ws: WebSocket) {
     this.ws = ws;
-    this.ws.addEventListener('message', (event) => {
+    this.ws.addEventListener("message", (event) => {
       const message = JSON.parse(
-        normalizeWebSocketMessage(event.data as string | ArrayBuffer | Buffer)
+        normalizeWebSocketMessage(event.data as string | ArrayBuffer | Buffer),
       ) as CdpMessage;
 
-      if (typeof message.id === 'number') {
+      if (typeof message.id === "number") {
         const pending = this.pending.get(message.id);
         if (pending == null) {
           return;
@@ -1385,21 +1305,21 @@ class CdpClient {
       });
 
       ws.addEventListener(
-        'open',
+        "open",
         () => {
           clearTimeout(timeout);
           resolve();
         },
-        { once: true }
+        { once: true },
       );
 
       ws.addEventListener(
-        'error',
+        "error",
         () => {
           clearTimeout(timeout);
           reject(new Error(`Failed to connect to ${url}`));
         },
-        { once: true }
+        { once: true },
       );
     });
 
@@ -1436,7 +1356,7 @@ class CdpClient {
   once<TParams>(
     method: string,
     timeoutMs: number,
-    predicate?: (params: TParams) => boolean
+    predicate?: (params: TParams) => boolean,
   ): Promise<TParams> {
     return new Promise<TParams>((resolve, reject) => {
       const timeout = createManagedTimeout(timeoutMs, () => {
@@ -1466,38 +1386,29 @@ class CdpClient {
   }
 }
 
-async function evaluateJson<TValue>(
-  cdp: CdpClient,
-  expression: string
-): Promise<TValue> {
-  const response = await cdp.send<RuntimeEvaluateResult<TValue>>(
-    'Runtime.evaluate',
-    {
-      expression,
-      awaitPromise: true,
-      returnByValue: true,
-    }
-  );
+async function evaluateJson<TValue>(cdp: CdpClient, expression: string): Promise<TValue> {
+  const response = await cdp.send<RuntimeEvaluateResult<TValue>>("Runtime.evaluate", {
+    expression,
+    awaitPromise: true,
+    returnByValue: true,
+  });
 
   if (response.exceptionDetails != null) {
     const detail =
       response.exceptionDetails.exception?.description ??
       response.exceptionDetails.exception?.value ??
       response.exceptionDetails.text ??
-      'Unknown runtime error';
+      "Unknown runtime error";
     throw new Error(detail);
   }
 
   return response.result?.value as TValue;
 }
 
-function findMarkerEvent(
-  events: TraceEvent[],
-  label: string
-): TraceEvent | null {
+function findMarkerEvent(events: TraceEvent[], label: string): TraceEvent | null {
   return (
     events.find((event) => {
-      if (typeof event.ts !== 'number') {
+      if (typeof event.ts !== "number") {
         return false;
       }
 
@@ -1505,12 +1416,11 @@ function findMarkerEvent(
         return true;
       }
 
-      if (event.name !== 'TimeStamp') {
+      if (event.name !== "TimeStamp") {
         return false;
       }
 
-      const message =
-        event.args?.data?.message ?? event.args?.data?.name ?? event.args?.name;
+      const message = event.args?.data?.message ?? event.args?.data?.name ?? event.args?.name;
       return message === label;
     }) ?? null
   );
@@ -1538,15 +1448,15 @@ function findWindowFromMarkers(
   events: TraceEvent[],
   startLabel: string,
   endLabel: string,
-  source: string
+  source: string,
 ): TraceWindow | null {
   const startEvent = findMarkerEvent(events, startLabel);
   const endEvent = findMarkerEvent(events, endLabel);
   if (
     startEvent == null ||
     endEvent == null ||
-    typeof startEvent.ts !== 'number' ||
-    typeof endEvent.ts !== 'number' ||
+    typeof startEvent.ts !== "number" ||
+    typeof endEvent.ts !== "number" ||
     endEvent.ts < startEvent.ts
   ) {
     return null;
@@ -1564,15 +1474,15 @@ function findWindowFromMarkers(
 function findWindowFromCompleteEvent(
   events: TraceEvent[],
   eventName: string,
-  source: string
+  source: string,
 ): TraceWindow | null {
   const completeEvent =
     events.find(
       (event) =>
         event.name === eventName &&
-        event.ph === 'X' &&
-        typeof event.ts === 'number' &&
-        typeof event.dur === 'number'
+        event.ph === "X" &&
+        typeof event.ts === "number" &&
+        typeof event.dur === "number",
     ) ?? null;
   if (completeEvent != null) {
     return {
@@ -1585,16 +1495,10 @@ function findWindowFromCompleteEvent(
   }
 
   const beginEvents = events.filter(
-    (event) =>
-      event.name === eventName &&
-      event.ph === 'b' &&
-      typeof event.ts === 'number'
+    (event) => event.name === eventName && event.ph === "b" && typeof event.ts === "number",
   );
   const endEvents = events.filter(
-    (event) =>
-      event.name === eventName &&
-      event.ph === 'e' &&
-      typeof event.ts === 'number'
+    (event) => event.name === eventName && event.ph === "e" && typeof event.ts === "number",
   );
 
   for (const beginEvent of beginEvents) {
@@ -1627,14 +1531,14 @@ function findWindowFromCompleteEvent(
 
 function findTraceInteractionEvent(
   events: TraceEvent[],
-  window: TraceWindow | null
+  window: TraceWindow | null,
 ): TraceEvent | null {
   const candidates = events.filter((event) => {
     if (
-      event.name !== 'EventDispatch' ||
-      event.ph !== 'X' ||
-      typeof event.ts !== 'number' ||
-      typeof event.dur !== 'number'
+      event.name !== "EventDispatch" ||
+      event.ph !== "X" ||
+      typeof event.ts !== "number" ||
+      typeof event.dur !== "number"
     ) {
       return false;
     }
@@ -1656,13 +1560,12 @@ function findTraceInteractionEvent(
             (window.tid == null || event.tid === window.tid)
           );
         });
-  const relevantCandidates =
-    threadCandidates.length > 0 ? threadCandidates : candidates;
+  const relevantCandidates = threadCandidates.length > 0 ? threadCandidates : candidates;
 
   if (window == null) {
     return relevantCandidates.sort((left, right) => {
-      const leftPriority = left.args?.data?.type === 'click' ? 0 : 1;
-      const rightPriority = right.args?.data?.type === 'click' ? 0 : 1;
+      const leftPriority = left.args?.data?.type === "click" ? 0 : 1;
+      const rightPriority = right.args?.data?.type === "click" ? 0 : 1;
       if (leftPriority !== rightPriority) {
         return leftPriority - rightPriority;
       }
@@ -1671,16 +1574,14 @@ function findTraceInteractionEvent(
   }
 
   const overlapCandidates = relevantCandidates.filter((event) => {
-    return (
-      overlapDurationUs(event.ts!, event.dur!, window.startTs, window.endTs) > 0
-    );
+    return overlapDurationUs(event.ts!, event.dur!, window.startTs, window.endTs) > 0;
   });
   const candidatesNearWindow =
     overlapCandidates.length > 0 ? overlapCandidates : relevantCandidates;
 
   return candidatesNearWindow.sort((left, right) => {
-    const leftPriority = left.args?.data?.type === 'click' ? 0 : 1;
-    const rightPriority = right.args?.data?.type === 'click' ? 0 : 1;
+    const leftPriority = left.args?.data?.type === "click" ? 0 : 1;
+    const rightPriority = right.args?.data?.type === "click" ? 0 : 1;
     if (leftPriority !== rightPriority) {
       return leftPriority - rightPriority;
     }
@@ -1696,15 +1597,12 @@ function findTraceInteractionEvent(
 }
 
 /** Finds the render window even when Chrome drops the explicit start timestamp marker. */
-function findTraceWindow(
-  events: TraceEvent[],
-  pageSummary: PageRenderSummary
-): TraceWindow | null {
+function findTraceWindow(events: TraceEvent[], pageSummary: PageRenderSummary): TraceWindow | null {
   const explicitTraceWindow = findWindowFromMarkers(
     events,
     START_TRACE_LABEL,
     END_TRACE_LABEL,
-    'trace-labels'
+    "trace-labels",
   );
   if (explicitTraceWindow != null) {
     return explicitTraceWindow;
@@ -1714,7 +1612,7 @@ function findTraceWindow(
     events,
     START_MARK_NAME,
     END_MARK_NAME,
-    'user-timing-marks'
+    "user-timing-marks",
   );
   if (explicitUserTimingWindow != null) {
     return explicitUserTimingWindow;
@@ -1723,15 +1621,14 @@ function findTraceWindow(
   const renderDurationUs = Math.round(pageSummary.renderDurationMs * 1000);
   if (renderDurationUs > 0) {
     const endEvent =
-      findMarkerEvent(events, END_TRACE_LABEL) ??
-      findMarkerEvent(events, END_MARK_NAME);
-    if (endEvent != null && typeof endEvent.ts === 'number') {
+      findMarkerEvent(events, END_TRACE_LABEL) ?? findMarkerEvent(events, END_MARK_NAME);
+    if (endEvent != null && typeof endEvent.ts === "number") {
       return {
         startTs: endEvent.ts - renderDurationUs,
         endTs: endEvent.ts,
         pid: endEvent.pid,
         tid: endEvent.tid,
-        source: 'trace-end+page-measure',
+        source: "trace-end+page-measure",
       };
     }
 
@@ -1742,53 +1639,39 @@ function findTraceWindow(
         endTs: interactionEvent.ts! + renderDurationUs,
         pid: interactionEvent.pid,
         tid: interactionEvent.tid,
-        source: 'input-dispatch+page-measure',
+        source: "input-dispatch+page-measure",
       };
     }
   }
 
-  return findWindowFromCompleteEvent(
-    events,
-    MEASURE_NAME,
-    'user-timing-measure'
-  );
+  return findWindowFromCompleteEvent(events, MEASURE_NAME, "user-timing-measure");
 }
 
 function summarizeEventsByName(
   events: TraceEvent[],
   window: TraceWindow,
-  ignoredNames: Set<string>
+  ignoredNames: Set<string>,
 ): Array<{ name: string; durationMs: number; percentOfWindow: number | null }> {
   const totalsByName = new Map<string, number>();
   const windowDurationUs = window.endTs - window.startTs;
 
   for (const event of events) {
     if (
-      event.name === '' ||
+      event.name === "" ||
       ignoredNames.has(event.name) ||
-      DOMINANT_EVENT_IGNORED_PREFIXES.some((prefix) =>
-        event.name.startsWith(prefix)
-      ) ||
-      typeof event.ts !== 'number' ||
-      typeof event.dur !== 'number'
+      DOMINANT_EVENT_IGNORED_PREFIXES.some((prefix) => event.name.startsWith(prefix)) ||
+      typeof event.ts !== "number" ||
+      typeof event.dur !== "number"
     ) {
       continue;
     }
 
-    const overlapUs = overlapDurationUs(
-      event.ts,
-      event.dur,
-      window.startTs,
-      window.endTs
-    );
+    const overlapUs = overlapDurationUs(event.ts, event.dur, window.startTs, window.endTs);
     if (overlapUs <= 0) {
       continue;
     }
 
-    totalsByName.set(
-      event.name,
-      (totalsByName.get(event.name) ?? 0) + overlapUs
-    );
+    totalsByName.set(event.name, (totalsByName.get(event.name) ?? 0) + overlapUs);
   }
 
   return [...totalsByName.entries()]
@@ -1796,26 +1679,24 @@ function summarizeEventsByName(
       name,
       durationMs: durationUs / 1000,
       percentOfWindow:
-        windowDurationUs <= 0
-          ? null
-          : Number(((durationUs / windowDurationUs) * 100).toFixed(1)),
+        windowDurationUs <= 0 ? null : Number(((durationUs / windowDurationUs) * 100).toFixed(1)),
     }))
     .sort((left, right) => right.durationMs - left.durationMs)
     .slice(0, 5);
 }
 
 function formatSourcePath(url: string | undefined): string | null {
-  if (url == null || url === '') {
+  if (url == null || url === "") {
     return null;
   }
 
   try {
     const parsedUrl = new URL(url);
-    const segments = parsedUrl.pathname.split('/').filter(Boolean);
+    const segments = parsedUrl.pathname.split("/").filter(Boolean);
     if (segments.length === 0) {
       return parsedUrl.pathname;
     }
-    return segments.slice(-2).join('/');
+    return segments.slice(-2).join("/");
   } catch {
     return url;
   }
@@ -1823,27 +1704,20 @@ function formatSourcePath(url: string | undefined): string | null {
 
 function formatCallFrameLabel(callFrame: CpuProfileNodeCallFrame): string {
   const functionName =
-    callFrame.functionName.trim() === ''
-      ? '(anonymous)'
-      : callFrame.functionName;
+    callFrame.functionName.trim() === "" ? "(anonymous)" : callFrame.functionName;
   const sourcePath = formatSourcePath(callFrame.url);
   if (sourcePath == null) {
     return functionName;
   }
 
-  const lineNumber =
-    typeof callFrame.lineNumber === 'number' ? callFrame.lineNumber + 1 : null;
+  const lineNumber = typeof callFrame.lineNumber === "number" ? callFrame.lineNumber + 1 : null;
   return lineNumber == null
     ? `${functionName} [${sourcePath}]`
     : `${functionName} [${sourcePath}:${lineNumber}]`;
 }
 
-function isInternalCpuProfileFrame(
-  callFrame: CpuProfileNodeCallFrame
-): boolean {
-  return INTERNAL_CPU_PROFILE_URL_SNIPPETS.some((snippet) =>
-    callFrame.url.includes(snippet)
-  );
+function isInternalCpuProfileFrame(callFrame: CpuProfileNodeCallFrame): boolean {
+  return INTERNAL_CPU_PROFILE_URL_SNIPPETS.some((snippet) => callFrame.url.includes(snippet));
 }
 
 function createFunctionKey(functionName: string, url: string): string {
@@ -1859,9 +1733,7 @@ function createUnavailableCpuProfileSummary(): CpuProfileSummary {
   };
 }
 
-function buildFunctionCallCountMap(
-  scripts: ScriptCoverage[]
-): Map<string, number | null> {
+function buildFunctionCallCountMap(scripts: ScriptCoverage[]): Map<string, number | null> {
   const totals = new Map<string, number>();
   const ambiguousKeys = new Set<string>();
 
@@ -1888,7 +1760,7 @@ function buildFunctionCallCountMap(
 
 function summarizeCpuProfile(
   profile: CpuProfile | null,
-  callCountsByFunction: Map<string, number | null> | null
+  callCountsByFunction: Map<string, number | null> | null,
 ): CpuProfileSummary {
   if (
     profile == null ||
@@ -1900,10 +1772,7 @@ function summarizeCpuProfile(
     return createUnavailableCpuProfileSummary();
   }
 
-  const sampleCount = Math.min(
-    profile.samples.length,
-    profile.timeDeltas.length
-  );
+  const sampleCount = Math.min(profile.samples.length, profile.timeDeltas.length);
   if (sampleCount === 0) {
     return createUnavailableCpuProfileSummary();
   }
@@ -1932,7 +1801,7 @@ function summarizeCpuProfile(
   const addDuration = (
     nodeId: number | undefined,
     durationUs: number,
-    kind: 'self' | 'total'
+    kind: "self" | "total",
   ): void => {
     if (nodeId == null || durationUs <= 0) {
       return;
@@ -1960,15 +1829,14 @@ function summarizeCpuProfile(
       totalUs: 0,
       isInternal: isInternalCpuProfileFrame(node.callFrame),
       isAnonymousWithoutSource:
-        functionName === '' &&
-        (node.callFrame.url == null || node.callFrame.url === ''),
+        functionName === "" && (node.callFrame.url == null || node.callFrame.url === ""),
       callCount:
         callCountsByFunction?.get(
-          createFunctionKey(node.callFrame.functionName, node.callFrame.url)
+          createFunctionKey(node.callFrame.functionName, node.callFrame.url),
         ) ?? null,
     };
 
-    if (kind === 'self') {
+    if (kind === "self") {
       existingEntry.selfUs += durationUs;
     }
     existingEntry.totalUs += durationUs;
@@ -1984,13 +1852,13 @@ function summarizeCpuProfile(
     }
 
     sampledUs += durationUs;
-    addDuration(leafNodeId, durationUs, 'self');
+    addDuration(leafNodeId, durationUs, "self");
 
     const visitedNodeIds = new Set<number>();
     let currentNodeId: number | undefined = leafNodeId;
     while (currentNodeId != null && !visitedNodeIds.has(currentNodeId)) {
       visitedNodeIds.add(currentNodeId);
-      addDuration(currentNodeId, durationUs, 'total');
+      addDuration(currentNodeId, durationUs, "total");
       currentNodeId = parentById.get(currentNodeId);
     }
   }
@@ -2001,14 +1869,8 @@ function summarizeCpuProfile(
       name: entry.name,
       selfMs: Number((entry.selfUs / 1000).toFixed(3)),
       totalMs: Number((entry.totalUs / 1000).toFixed(3)),
-      selfPercent:
-        sampledUs <= 0
-          ? null
-          : Number(((entry.selfUs / sampledUs) * 100).toFixed(1)),
-      totalPercent:
-        sampledUs <= 0
-          ? null
-          : Number(((entry.totalUs / sampledUs) * 100).toFixed(1)),
+      selfPercent: sampledUs <= 0 ? null : Number(((entry.selfUs / sampledUs) * 100).toFixed(1)),
+      totalPercent: sampledUs <= 0 ? null : Number(((entry.totalUs / sampledUs) * 100).toFixed(1)),
       callCount: entry.callCount,
       isInternal: entry.isInternal,
       isAnonymousWithoutSource: entry.isAnonymousWithoutSource,
@@ -2022,8 +1884,7 @@ function summarizeCpuProfile(
   const preferredFunctions = allFunctions.filter((entry) => {
     return !entry.isInternal && !entry.isAnonymousWithoutSource;
   });
-  const selectedFunctions =
-    preferredFunctions.length > 0 ? preferredFunctions : allFunctions;
+  const selectedFunctions = preferredFunctions.length > 0 ? preferredFunctions : allFunctions;
 
   return {
     available: totalsByFrame.size > 0,
@@ -2035,16 +1896,13 @@ function summarizeCpuProfile(
           isInternal: _isInternal,
           isAnonymousWithoutSource: _isAnonymousWithoutSource,
           ...entry
-        }) => entry
+        }) => entry,
       )
       .slice(0, BOTTOM_UP_FUNCTION_LIMIT),
   };
 }
 
-function summarizeTrace(
-  trace: TraceFile | null,
-  pageSummary: PageRenderSummary
-): TraceSummary {
+function summarizeTrace(trace: TraceFile | null, pageSummary: PageRenderSummary): TraceSummary {
   if (trace == null) {
     return createUnavailableTraceSummary();
   }
@@ -2056,28 +1914,23 @@ function summarizeTrace(
 
   const threadEvents = trace.traceEvents.filter(
     (event) =>
-      event.ph === 'X' &&
-      typeof event.ts === 'number' &&
-      typeof event.dur === 'number' &&
+      event.ph === "X" &&
+      typeof event.ts === "number" &&
+      typeof event.dur === "number" &&
       (window.pid == null || event.pid === window.pid) &&
-      (window.tid == null || event.tid === window.tid)
+      (window.tid == null || event.tid === window.tid),
   );
 
-  const topLevelTasks = threadEvents.filter((event) =>
-    TOP_LEVEL_TASK_NAMES.has(event.name)
-  );
+  const topLevelTasks = threadEvents.filter((event) => TOP_LEVEL_TASK_NAMES.has(event.name));
 
   const mainThreadBusyUs = topLevelTasks.reduce((totalUs, event) => {
-    return (
-      totalUs +
-      overlapDurationUs(event.ts!, event.dur!, window.startTs, window.endTs)
-    );
+    return totalUs + overlapDurationUs(event.ts!, event.dur!, window.startTs, window.endTs);
   }, 0);
 
   const longestTaskUs = topLevelTasks.reduce((longestUs, event) => {
     return Math.max(
       longestUs,
-      overlapDurationUs(event.ts!, event.dur!, window.startTs, window.endTs)
+      overlapDurationUs(event.ts!, event.dur!, window.startTs, window.endTs),
     );
   }, 0);
 
@@ -2086,10 +1939,7 @@ function summarizeTrace(
       if (!eventNames.has(event.name)) {
         return totalUs;
       }
-      return (
-        totalUs +
-        overlapDurationUs(event.ts!, event.dur!, window.startTs, window.endTs)
-      );
+      return totalUs + overlapDurationUs(event.ts!, event.dur!, window.startTs, window.endTs);
     }, 0);
   };
 
@@ -2100,46 +1950,25 @@ function summarizeTrace(
     windowSource: window.source,
     windowDurationMs: (window.endTs - window.startTs) / 1000,
     clickDispatchMs:
-      interactionEvent?.dur == null
-        ? null
-        : Number((interactionEvent.dur / 1000).toFixed(3)),
+      interactionEvent?.dur == null ? null : Number((interactionEvent.dur / 1000).toFixed(3)),
     clickToRenderReadyMs:
       interactionEvent?.ts == null
         ? null
         : Number(((window.endTs - interactionEvent.ts) / 1000).toFixed(3)),
     mainThreadBusyMs:
-      topLevelTasks.length === 0
-        ? null
-        : Number((mainThreadBusyUs / 1000).toFixed(3)),
-    longestTaskMs:
-      topLevelTasks.length === 0
-        ? null
-        : Number((longestTaskUs / 1000).toFixed(3)),
+      topLevelTasks.length === 0 ? null : Number((mainThreadBusyUs / 1000).toFixed(3)),
+    longestTaskMs: topLevelTasks.length === 0 ? null : Number((longestTaskUs / 1000).toFixed(3)),
     topLevelTaskCount: topLevelTasks.filter((event) => {
-      return (
-        overlapDurationUs(event.ts!, event.dur!, window.startTs, window.endTs) >
-        0
-      );
+      return overlapDurationUs(event.ts!, event.dur!, window.startTs, window.endTs) > 0;
     }).length,
-    overlappingScriptingSlicesMs: Number(
-      (sumNamedEventsUs(SCRIPT_EVENT_NAMES) / 1000).toFixed(3)
-    ),
+    overlappingScriptingSlicesMs: Number((sumNamedEventsUs(SCRIPT_EVENT_NAMES) / 1000).toFixed(3)),
     gcMs: Number((sumNamedEventsUs(GC_EVENT_NAMES) / 1000).toFixed(3)),
-    styleLayoutMs: Number(
-      (sumNamedEventsUs(STYLE_LAYOUT_EVENT_NAMES) / 1000).toFixed(3)
-    ),
-    paintCompositeMs: Number(
-      (sumNamedEventsUs(PAINT_EVENT_NAMES) / 1000).toFixed(3)
-    ),
+    styleLayoutMs: Number((sumNamedEventsUs(STYLE_LAYOUT_EVENT_NAMES) / 1000).toFixed(3)),
+    paintCompositeMs: Number((sumNamedEventsUs(PAINT_EVENT_NAMES) / 1000).toFixed(3)),
     dominantEvents: summarizeEventsByName(
       threadEvents,
       window,
-      new Set([
-        ...TOP_LEVEL_TASK_NAMES,
-        START_TRACE_LABEL,
-        END_TRACE_LABEL,
-        MEASURE_NAME,
-      ])
+      new Set([...TOP_LEVEL_TASK_NAMES, START_TRACE_LABEL, END_TRACE_LABEL, MEASURE_NAME]),
     ),
   };
 }
@@ -2155,24 +1984,17 @@ function createUnavailableHeapSummary(): HeapSummary {
   };
 }
 
-function getCounterValue(
-  counters: Record<string, number>,
-  key: string
-): number | null {
+function getCounterValue(counters: Record<string, number>, key: string): number | null {
   const value = counters[key];
   return Number.isFinite(value) ? value : null;
 }
 
-function getPageWorkloadSummary(
-  pageSummary: PageRenderSummary,
-  url: string
-): PageWorkloadSummary {
+function getPageWorkloadSummary(pageSummary: PageRenderSummary, url: string): PageWorkloadSummary {
   if (pageSummary.workload != null) {
     return pageSummary.workload;
   }
 
-  const workloadName =
-    new URL(url).searchParams.get('workload') ?? 'custom-workload';
+  const workloadName = new URL(url).searchParams.get("workload") ?? "custom-workload";
   return {
     name: workloadName,
     label: workloadName,
@@ -2184,23 +2006,21 @@ function getPageWorkloadSummary(
 function formatWorkloadPair(
   counters: Record<string, number>,
   key: string,
-  suffix: string
+  suffix: string,
 ): string | null {
   const value = getCounterValue(counters, key);
   return value == null ? null : `${formatCount(value)} ${suffix}`;
 }
 
 function joinWorkloadParts(parts: Array<string | null>): string | null {
-  const availableParts = parts.filter(
-    (part): part is string => part != null && part !== ''
-  );
-  return availableParts.length === 0 ? null : availableParts.join(', ');
+  const availableParts = parts.filter((part): part is string => part != null && part !== "");
+  return availableParts.length === 0 ? null : availableParts.join(", ");
 }
 
 function formatWorkloadRate(
   numerator: number | null,
   denominator: number | null,
-  label: string
+  label: string,
 ): string | null {
   if (
     numerator == null ||
@@ -2218,86 +2038,60 @@ function formatWorkloadRate(
 function formatPhaseWorkload(
   name: string,
   counters: Record<string, number>,
-  renderedItemCount: number
+  renderedItemCount: number,
 ): string | null {
   switch (name) {
-    case 'root.fileListToTree': {
+    case "root.fileListToTree": {
       return joinWorkloadParts([
-        formatWorkloadPair(counters, 'workload.inputFiles', 'files'),
-        formatWorkloadPair(counters, 'workload.treeNodes', 'nodes'),
+        formatWorkloadPair(counters, "workload.inputFiles", "files"),
+        formatWorkloadPair(counters, "workload.treeNodes", "nodes"),
       ]);
     }
-    case 'fileListToTree.pathGraph': {
-      const totalSegments = getCounterValue(
-        counters,
-        'workload.inputPathSegments'
-      );
-      const reusedSegments = getCounterValue(
-        counters,
-        'workload.pathGraphReusedPrefixSegments'
-      );
+    case "fileListToTree.pathGraph": {
+      const totalSegments = getCounterValue(counters, "workload.inputPathSegments");
+      const reusedSegments = getCounterValue(counters, "workload.pathGraphReusedPrefixSegments");
       return joinWorkloadParts([
-        formatWorkloadPair(counters, 'workload.inputFiles', 'files'),
-        formatWorkloadPair(counters, 'workload.inputPathSegments', 'segments'),
-        formatWorkloadRate(reusedSegments, totalSegments, 'prefix reuse'),
-        formatWorkloadPair(counters, 'workload.pathGraphFolders', 'folders'),
+        formatWorkloadPair(counters, "workload.inputFiles", "files"),
+        formatWorkloadPair(counters, "workload.inputPathSegments", "segments"),
+        formatWorkloadRate(reusedSegments, totalSegments, "prefix reuse"),
+        formatWorkloadPair(counters, "workload.pathGraphFolders", "folders"),
       ]);
     }
-    case 'fileListToTree.flattenedNodes': {
+    case "fileListToTree.flattenedNodes": {
       return joinWorkloadParts([
+        formatWorkloadPair(counters, "workload.flattenedNodes", "flattened nodes"),
         formatWorkloadPair(
           counters,
-          'workload.flattenedNodes',
-          'flattened nodes'
-        ),
-        formatWorkloadPair(
-          counters,
-          'workload.intermediateFlattenedFolders',
-          'intermediate folders'
+          "workload.intermediateFlattenedFolders",
+          "intermediate folders",
         ),
       ]);
     }
-    case 'fileListToTree.folderNodes': {
-      return formatWorkloadPair(counters, 'workload.folderNodes', 'folders');
+    case "fileListToTree.folderNodes": {
+      return formatWorkloadPair(counters, "workload.folderNodes", "folders");
     }
-    case 'fileListToTree.hashKeys':
-    case 'root.dataLoader': {
-      if (name === 'root.dataLoader') {
-        return formatWorkloadPair(counters, 'workload.treeNodes', 'nodes');
+    case "fileListToTree.hashKeys":
+    case "root.dataLoader": {
+      if (name === "root.dataLoader") {
+        return formatWorkloadPair(counters, "workload.treeNodes", "nodes");
       }
 
-      const resolveIdCalls = getCounterValue(
-        counters,
-        'workload.hashKeysResolveIdCalls'
-      );
-      const resolveIdCacheHits = getCounterValue(
-        counters,
-        'workload.hashKeysResolveIdCacheHits'
-      );
+      const resolveIdCalls = getCounterValue(counters, "workload.hashKeysResolveIdCalls");
+      const resolveIdCacheHits = getCounterValue(counters, "workload.hashKeysResolveIdCacheHits");
       return joinWorkloadParts([
-        formatWorkloadPair(counters, 'workload.treeNodes', 'nodes'),
+        formatWorkloadPair(counters, "workload.treeNodes", "nodes"),
         resolveIdCalls == null ? null : `${formatCount(resolveIdCalls)} remaps`,
-        formatWorkloadRate(resolveIdCacheHits, resolveIdCalls, 'cache hits'),
+        formatWorkloadRate(resolveIdCacheHits, resolveIdCalls, "cache hits"),
       ]);
     }
-    case 'root.pathToId': {
-      return formatWorkloadPair(
-        counters,
-        'workload.pathToIdEntries',
-        'entries'
-      );
+    case "root.pathToId": {
+      return formatWorkloadPair(counters, "workload.pathToIdEntries", "entries");
     }
-    case 'root.stateConfig': {
+    case "root.stateConfig": {
       return joinWorkloadParts([
         (() => {
-          const inputCount = getCounterValue(
-            counters,
-            'workload.state.initialExpandedPaths'
-          );
-          const outputCount = getCounterValue(
-            counters,
-            'workload.state.initialExpandedIds'
-          );
+          const inputCount = getCounterValue(counters, "workload.state.initialExpandedPaths");
+          const outputCount = getCounterValue(counters, "workload.state.initialExpandedIds");
           if (inputCount == null && outputCount == null) {
             return null;
           }
@@ -2305,32 +2099,17 @@ function formatPhaseWorkload(
         })(),
       ]);
     }
-    case 'expandPathsWithAncestors': {
-      const pathCacheHits = getCounterValue(
-        counters,
-        'workload.expandPathsPathCacheHits'
-      );
-      const pathCacheMisses = getCounterValue(
-        counters,
-        'workload.expandPathsPathCacheMisses'
-      );
-      const ancestorCacheHits = getCounterValue(
-        counters,
-        'workload.expandPathsAncestorCacheHits'
-      );
+    case "expandPathsWithAncestors": {
+      const pathCacheHits = getCounterValue(counters, "workload.expandPathsPathCacheHits");
+      const pathCacheMisses = getCounterValue(counters, "workload.expandPathsPathCacheMisses");
+      const ancestorCacheHits = getCounterValue(counters, "workload.expandPathsAncestorCacheHits");
       const ancestorCacheMisses = getCounterValue(
         counters,
-        'workload.expandPathsAncestorCacheMisses'
+        "workload.expandPathsAncestorCacheMisses",
       );
       return (() => {
-        const inputCount = getCounterValue(
-          counters,
-          'workload.expandPathsInputCount'
-        );
-        const outputCount = getCounterValue(
-          counters,
-          'workload.expandPathsResolvedIds'
-        );
+        const inputCount = getCounterValue(counters, "workload.expandPathsInputCount");
+        const outputCount = getCounterValue(counters, "workload.expandPathsResolvedIds");
         if (inputCount == null && outputCount == null) {
           return null;
         }
@@ -2341,26 +2120,22 @@ function formatPhaseWorkload(
             pathCacheHits != null && pathCacheMisses != null
               ? pathCacheHits + pathCacheMisses
               : null,
-            'path cache hits'
+            "path cache hits",
           ),
           formatWorkloadRate(
             ancestorCacheHits,
             ancestorCacheHits != null && ancestorCacheMisses != null
               ? ancestorCacheHits + ancestorCacheMisses
               : null,
-            'ancestor cache hits'
+            "ancestor cache hits",
           ),
         ]);
       })();
     }
-    case 'core.rebuildItemMeta': {
-      return formatWorkloadPair(
-        counters,
-        'workload.visibleItemMeta',
-        'visible items'
-      );
+    case "core.rebuildItemMeta": {
+      return formatWorkloadPair(counters, "workload.visibleItemMeta", "visible items");
     }
-    case 'fileTree.render.mount': {
+    case "fileTree.render.mount": {
       return `${formatCount(renderedItemCount)} visible rows`;
     }
     default: {
@@ -2371,36 +2146,36 @@ function formatPhaseWorkload(
 
 function formatPhaseLabel(name: string): string {
   switch (name) {
-    case 'root.fileListToTree':
-      return 'Build tree data';
-    case 'root.pathToId':
-      return 'Map paths to ids';
-    case 'root.stateConfig':
-      return 'Derive tree state';
-    case 'expandPathsWithAncestors':
-      return 'Resolve expanded ancestors';
-    case 'root.dataLoader':
-      return 'Create data loader';
-    case 'core.rebuildItemMeta':
-      return 'Rebuild item metadata';
-    case 'fileTree.render.mount':
-      return 'Mount Preact tree';
-    case 'fileListToTree.pathGraph':
-      return 'Build path graph';
-    case 'fileListToTree.flattenedNodes':
-      return 'Build flattened nodes';
-    case 'fileListToTree.folderNodes':
-      return 'Build folder nodes';
-    case 'fileListToTree.hashKeys':
-      return 'Hash node ids';
+    case "root.fileListToTree":
+      return "Build tree data";
+    case "root.pathToId":
+      return "Map paths to ids";
+    case "root.stateConfig":
+      return "Derive tree state";
+    case "expandPathsWithAncestors":
+      return "Resolve expanded ancestors";
+    case "root.dataLoader":
+      return "Create data loader";
+    case "core.rebuildItemMeta":
+      return "Rebuild item metadata";
+    case "fileTree.render.mount":
+      return "Mount Preact tree";
+    case "fileListToTree.pathGraph":
+      return "Build path graph";
+    case "fileListToTree.flattenedNodes":
+      return "Build flattened nodes";
+    case "fileListToTree.folderNodes":
+      return "Build folder nodes";
+    case "fileListToTree.hashKeys":
+      return "Hash node ids";
     default:
       return name;
   }
 }
 
 function summarizeInstrumentation(
-  pageSummary: PageRenderSummary
-): ProfileResult['instrumentation'] {
+  pageSummary: PageRenderSummary,
+): ProfileResult["instrumentation"] {
   const counters = pageSummary.instrumentation?.counters ?? {};
   const phases = (pageSummary.instrumentation?.phases ?? [])
     .map((phase) => ({
@@ -2411,32 +2186,19 @@ function summarizeInstrumentation(
       percentOfRender:
         pageSummary.renderDurationMs <= 0
           ? null
-          : Number(
-              ((phase.durationMs / pageSummary.renderDurationMs) * 100).toFixed(
-                1
-              )
-            ),
+          : Number(((phase.durationMs / pageSummary.renderDurationMs) * 100).toFixed(1)),
       selfPercentOfRender:
         pageSummary.renderDurationMs <= 0
           ? null
-          : Number(
-              (
-                (phase.selfDurationMs / pageSummary.renderDurationMs) *
-                100
-              ).toFixed(1)
-            ),
-      workload: formatPhaseWorkload(
-        phase.name,
-        counters,
-        pageSummary.renderedItemCount
-      ),
+          : Number(((phase.selfDurationMs / pageSummary.renderDurationMs) * 100).toFixed(1)),
+      workload: formatPhaseWorkload(phase.name, counters, pageSummary.renderedItemCount),
     }))
     .sort((left, right) => {
       const majorLeftIndex = MAJOR_PHASE_ORDER.indexOf(
-        left.name as (typeof MAJOR_PHASE_ORDER)[number]
+        left.name as (typeof MAJOR_PHASE_ORDER)[number],
       );
       const majorRightIndex = MAJOR_PHASE_ORDER.indexOf(
-        right.name as (typeof MAJOR_PHASE_ORDER)[number]
+        right.name as (typeof MAJOR_PHASE_ORDER)[number],
       );
       if (majorLeftIndex !== -1 || majorRightIndex !== -1) {
         if (majorLeftIndex === -1) {
@@ -2449,10 +2211,10 @@ function summarizeInstrumentation(
       }
 
       const treeLeftIndex = TREE_BUILD_PHASE_ORDER.indexOf(
-        left.name as (typeof TREE_BUILD_PHASE_ORDER)[number]
+        left.name as (typeof TREE_BUILD_PHASE_ORDER)[number],
       );
       const treeRightIndex = TREE_BUILD_PHASE_ORDER.indexOf(
-        right.name as (typeof TREE_BUILD_PHASE_ORDER)[number]
+        right.name as (typeof TREE_BUILD_PHASE_ORDER)[number],
       );
       if (treeLeftIndex !== -1 || treeRightIndex !== -1) {
         if (treeLeftIndex === -1) {
@@ -2511,20 +2273,17 @@ function createNestedPhaseRows(phases: InstrumentedPhaseSummary[]): Array<{
     rows.push({ label, phase });
   };
 
-  pushPhase('root.fileListToTree', formatPhaseLabel('root.fileListToTree'));
+  pushPhase("root.fileListToTree", formatPhaseLabel("root.fileListToTree"));
   for (const childPhaseName of TREE_BUILD_PHASE_ORDER) {
     pushPhase(childPhaseName, `  - ${formatPhaseLabel(childPhaseName)}`);
   }
 
-  pushPhase('root.pathToId', formatPhaseLabel('root.pathToId'));
-  pushPhase('root.stateConfig', formatPhaseLabel('root.stateConfig'));
-  pushPhase(
-    'expandPathsWithAncestors',
-    `  - ${formatPhaseLabel('expandPathsWithAncestors')}`
-  );
-  pushPhase('root.dataLoader', formatPhaseLabel('root.dataLoader'));
-  pushPhase('core.rebuildItemMeta', formatPhaseLabel('core.rebuildItemMeta'));
-  pushPhase('fileTree.render.mount', formatPhaseLabel('fileTree.render.mount'));
+  pushPhase("root.pathToId", formatPhaseLabel("root.pathToId"));
+  pushPhase("root.stateConfig", formatPhaseLabel("root.stateConfig"));
+  pushPhase("expandPathsWithAncestors", `  - ${formatPhaseLabel("expandPathsWithAncestors")}`);
+  pushPhase("root.dataLoader", formatPhaseLabel("root.dataLoader"));
+  pushPhase("core.rebuildItemMeta", formatPhaseLabel("core.rebuildItemMeta"));
+  pushPhase("fileTree.render.mount", formatPhaseLabel("fileTree.render.mount"));
 
   const remainingPhases = phases
     .filter((phase) => !consumedNames.has(phase.name))
@@ -2548,7 +2307,7 @@ async function startTrace(cdp: CdpClient): Promise<{
   traceComplete: Promise<TraceFile>;
 }> {
   const traceEvents: TraceEvent[] = [];
-  const removeListener = cdp.on('Tracing.dataCollected', (params) => {
+  const removeListener = cdp.on("Tracing.dataCollected", (params) => {
     const payload = params as { value?: TraceEvent[] };
     if (payload.value != null) {
       traceEvents.push(...payload.value);
@@ -2556,66 +2315,58 @@ async function startTrace(cdp: CdpClient): Promise<{
   });
 
   const traceComplete = cdp
-    .once('Tracing.tracingComplete', TRACE_COMPLETION_TIMEOUT_MS)
+    .once("Tracing.tracingComplete", TRACE_COMPLETION_TIMEOUT_MS)
     .then(() => {
       removeListener();
       return { traceEvents };
     });
 
-  await cdp.send('Tracing.start', {
+  await cdp.send("Tracing.start", {
     categories: TRACE_CATEGORIES,
-    transferMode: 'ReportEvents',
+    transferMode: "ReportEvents",
   });
   await Bun.sleep(TRACE_START_SETTLE_MS);
   return { traceComplete };
 }
 
 async function startCpuProfile(cdp: CdpClient): Promise<void> {
-  await cdp.send('Profiler.enable');
-  await cdp.send('Profiler.setSamplingInterval', {
+  await cdp.send("Profiler.enable");
+  await cdp.send("Profiler.setSamplingInterval", {
     interval: CPU_PROFILE_SAMPLING_INTERVAL_US,
   });
-  await cdp.send('Profiler.start');
+  await cdp.send("Profiler.start");
 }
 
 async function stopCpuProfile(cdp: CdpClient): Promise<CpuProfile | null> {
   try {
-    const response = await cdp.send<{ profile?: CpuProfile }>('Profiler.stop');
+    const response = await cdp.send<{ profile?: CpuProfile }>("Profiler.stop");
     return response.profile ?? null;
   } finally {
-    await cdp.send('Profiler.disable').catch(() => {});
+    await cdp.send("Profiler.disable").catch(() => {});
   }
 }
 
 async function startPreciseCoverage(cdp: CdpClient): Promise<void> {
-  await cdp.send('Profiler.enable');
-  await cdp.send('Profiler.startPreciseCoverage', {
+  await cdp.send("Profiler.enable");
+  await cdp.send("Profiler.startPreciseCoverage", {
     callCount: true,
     detailed: false,
   });
 }
 
-async function stopPreciseCoverage(
-  cdp: CdpClient
-): Promise<ScriptCoverage[] | null> {
+async function stopPreciseCoverage(cdp: CdpClient): Promise<ScriptCoverage[] | null> {
   try {
-    const response = await cdp.send<{ result?: ScriptCoverage[] }>(
-      'Profiler.takePreciseCoverage'
-    );
+    const response = await cdp.send<{ result?: ScriptCoverage[] }>("Profiler.takePreciseCoverage");
     return response.result ?? null;
   } finally {
-    await cdp.send('Profiler.stopPreciseCoverage').catch(() => {});
-    await cdp.send('Profiler.disable').catch(() => {});
+    await cdp.send("Profiler.stopPreciseCoverage").catch(() => {});
+    await cdp.send("Profiler.disable").catch(() => {});
   }
 }
 
-async function navigateToFixture(
-  cdp: CdpClient,
-  url: string,
-  timeoutMs: number
-): Promise<void> {
-  const loadEvent = cdp.once('Page.loadEventFired', timeoutMs);
-  await cdp.send('Page.navigate', { url });
+async function navigateToFixture(cdp: CdpClient, url: string, timeoutMs: number): Promise<void> {
+  const loadEvent = cdp.once("Page.loadEventFired", timeoutMs);
+  await cdp.send("Page.navigate", { url });
   await loadEvent;
 
   const ready = await evaluateJson<boolean>(
@@ -2629,45 +2380,39 @@ async function navigateToFixture(
         await new Promise((resolve) => setTimeout(resolve, 50));
       }
       return false;
-    })()`
+    })()`,
   );
 
   if (!ready) {
-    throw new Error(
-      'Timed out waiting for the file-tree profile fixture to load.'
-    );
+    throw new Error("Timed out waiting for the file-tree profile fixture to load.");
   }
 
-  await cdp.send('Page.bringToFront');
+  await cdp.send("Page.bringToFront");
 }
 
 async function createPageTarget(
   browserUrl: string,
   targetUrl: string,
-  timeoutMs: number
+  timeoutMs: number,
 ): Promise<NewTargetResponse> {
   return await fetchJson<NewTargetResponse>(
     `${browserUrl}/json/new?${encodeURIComponent(targetUrl)}`,
-    { method: 'PUT' },
-    timeoutMs
+    { method: "PUT" },
+    timeoutMs,
   );
 }
 
 async function closePageTarget(
   browserUrl: string,
   targetId: string,
-  timeoutMs: number
+  timeoutMs: number,
 ): Promise<void> {
-  await fetchJson(
-    `${browserUrl}/json/close/${targetId}`,
-    undefined,
-    timeoutMs
-  ).catch(() => {});
+  await fetchJson(`${browserUrl}/json/close/${targetId}`, undefined, timeoutMs).catch(() => {});
 }
 
 async function waitForProfileSummary(
   cdp: CdpClient,
-  timeoutMs: number
+  timeoutMs: number,
 ): Promise<PageRenderSummary> {
   const summary = await evaluateJson<{
     done: boolean;
@@ -2694,7 +2439,7 @@ async function waitForProfileSummary(
         done: false,
         profile: window.__treesFileTreeProfile ?? null,
       };
-    })()`
+    })()`,
   );
 
   if (summary.error != null) {
@@ -2702,42 +2447,38 @@ async function waitForProfileSummary(
   }
 
   if (!summary.done || summary.profile == null) {
-    throw new Error('Timed out waiting for the file-tree render summary.');
+    throw new Error("Timed out waiting for the file-tree render summary.");
   }
 
   return summary.profile;
 }
 
-async function dispatchMouseClick(
-  cdp: CdpClient,
-  x: number,
-  y: number
-): Promise<void> {
-  await cdp.send('Input.dispatchMouseEvent', {
-    type: 'mouseMoved',
+async function dispatchMouseClick(cdp: CdpClient, x: number, y: number): Promise<void> {
+  await cdp.send("Input.dispatchMouseEvent", {
+    type: "mouseMoved",
     x,
     y,
-    button: 'none',
-    pointerType: 'mouse',
+    button: "none",
+    pointerType: "mouse",
   });
-  await cdp.send('Input.dispatchMouseEvent', {
-    type: 'mousePressed',
+  await cdp.send("Input.dispatchMouseEvent", {
+    type: "mousePressed",
     x,
     y,
-    button: 'left',
+    button: "left",
     buttons: 1,
     clickCount: 1,
-    pointerType: 'mouse',
+    pointerType: "mouse",
   });
   await Bun.sleep(16);
-  await cdp.send('Input.dispatchMouseEvent', {
-    type: 'mouseReleased',
+  await cdp.send("Input.dispatchMouseEvent", {
+    type: "mouseReleased",
     x,
     y,
-    button: 'left',
+    button: "left",
     buttons: 0,
     clickCount: 1,
-    pointerType: 'mouse',
+    pointerType: "mouse",
   });
 }
 
@@ -2760,18 +2501,18 @@ async function clickRenderButton(cdp: CdpClient): Promise<void> {
         x: rect.left + rect.width / 2,
         y: rect.top + rect.height / 2,
       };
-    })()`
+    })()`,
   );
 
   if (!result.ok || result.x == null || result.y == null) {
-    throw new Error(result.reason ?? 'Failed to click the render button.');
+    throw new Error(result.reason ?? "Failed to click the render button.");
   }
 
   await dispatchMouseClick(cdp, result.x, result.y);
 }
 
 async function listExpansionActionScenarios(
-  cdp: CdpClient
+  cdp: CdpClient,
 ): Promise<FileTreeProfileActionSummary[]> {
   return await evaluateJson<FileTreeProfileActionSummary[]>(
     cdp,
@@ -2781,13 +2522,13 @@ async function listExpansionActionScenarios(
         throw new Error('Missing treesFileTreeProfile fixture API.');
       }
       return await api.listExpansionActionScenarios();
-    })()`
+    })()`,
   );
 }
 
 async function prepareActionProfile(
   cdp: CdpClient,
-  actionId: string
+  actionId: string,
 ): Promise<FileTreeProfileActionSummary> {
   return await evaluateJson<FileTreeProfileActionSummary>(
     cdp,
@@ -2797,13 +2538,11 @@ async function prepareActionProfile(
         throw new Error('Missing treesFileTreeProfile fixture API.');
       }
       return await api.prepareActionProfile(${JSON.stringify(actionId)});
-    })()`
+    })()`,
   );
 }
 
-async function profilePreparedAction(
-  cdp: CdpClient
-): Promise<PageRenderSummary> {
+async function profilePreparedAction(cdp: CdpClient): Promise<PageRenderSummary> {
   return await evaluateJson<PageRenderSummary>(
     cdp,
     `(async () => {
@@ -2812,7 +2551,7 @@ async function profilePreparedAction(
         throw new Error('Missing treesFileTreeProfile fixture API.');
       }
       return await api.profilePreparedAction();
-    })()`
+    })()`,
   );
 }
 
@@ -2828,13 +2567,13 @@ async function beginPreparedActionClickProfile(cdp: CdpClient): Promise<{
         throw new Error('Missing treesFileTreeProfile fixture API.');
       }
       return await api.beginPreparedActionClickProfile();
-    })()`
+    })()`,
   );
 }
 
 async function clickPreparedActionAndWaitForSummary(
   cdp: CdpClient,
-  timeoutMs: number
+  timeoutMs: number,
 ): Promise<PageRenderSummary> {
   const target = await beginPreparedActionClickProfile(cdp);
   await dispatchMouseClick(cdp, target.x, target.y);
@@ -2844,16 +2583,16 @@ async function clickPreparedActionAndWaitForSummary(
 async function profilePreparedActionForScenario(
   cdp: CdpClient,
   scenario: FileTreeProfileActionSummary,
-  timeoutMs: number
+  timeoutMs: number,
 ): Promise<PageRenderSummary> {
-  return scenario.dispatch === 'dom-click'
+  return scenario.dispatch === "dom-click"
     ? await clickPreparedActionAndWaitForSummary(cdp, timeoutMs)
     : await profilePreparedAction(cdp);
 }
 
 async function clickAndWaitForRenderSummary(
   cdp: CdpClient,
-  timeoutMs: number
+  timeoutMs: number,
 ): Promise<PageRenderSummary> {
   await clickRenderButton(cdp);
   return await waitForProfileSummary(cdp, timeoutMs);
@@ -2862,7 +2601,7 @@ async function clickAndWaitForRenderSummary(
 async function collectProfilingArtifacts(
   cdp: CdpClient,
   timeoutMs: number,
-  action: () => Promise<PageRenderSummary>
+  action: () => Promise<PageRenderSummary>,
 ): Promise<{
   pageSummary: PageRenderSummary;
   trace: TraceFile | null;
@@ -2902,7 +2641,7 @@ async function collectProfilingArtifacts(
   }
 
   if (actionError != null || pageSummary == null) {
-    throw actionError ?? new Error('Failed to collect the render summary.');
+    throw actionError ?? new Error("Failed to collect the render summary.");
   }
 
   if (tracePromise == null) {
@@ -2910,11 +2649,11 @@ async function collectProfilingArtifacts(
   }
 
   try {
-    await cdp.send('Tracing.end');
+    await cdp.send("Tracing.end");
     const trace = await withTimeout(
       tracePromise,
       Math.max(timeoutMs, TRACE_COMPLETION_TIMEOUT_MS),
-      'Timed out waiting for trace completion'
+      "Timed out waiting for trace completion",
     );
     return { pageSummary, trace, cpuProfile };
   } catch {
@@ -2926,7 +2665,7 @@ async function collectFunctionCallCounts(
   cdp: CdpClient,
   url: string,
   timeoutMs: number,
-  action: () => Promise<unknown>
+  action: () => Promise<unknown>,
 ): Promise<Map<string, number | null> | null> {
   try {
     await navigateToFixture(cdp, url, timeoutMs);
@@ -2938,15 +2677,15 @@ async function collectFunctionCallCounts(
     }
     return buildFunctionCallCountMap(coverage);
   } catch {
-    await cdp.send('Profiler.stopPreciseCoverage').catch(() => {});
-    await cdp.send('Profiler.disable').catch(() => {});
+    await cdp.send("Profiler.stopPreciseCoverage").catch(() => {});
+    await cdp.send("Profiler.disable").catch(() => {});
     return null;
   }
 }
 
 function writeTraceIfAvailable(
   trace: TraceFile | null,
-  traceOutputPath: string | null
+  traceOutputPath: string | null,
 ): string | null {
   if (trace == null || traceOutputPath == null) {
     return null;
@@ -2979,9 +2718,7 @@ function createProfileResult({
   return {
     action: pageSummary.action ?? null,
     actionDurationMs:
-      pageSummary.actionDurationMs == null
-        ? null
-        : Number(pageSummary.actionDurationMs.toFixed(3)),
+      pageSummary.actionDurationMs == null ? null : Number(pageSummary.actionDurationMs.toFixed(3)),
     runNumber,
     browserUrl,
     url,
@@ -2995,9 +2732,7 @@ function createProfileResult({
     renderDurationMs: Number(pageSummary.renderDurationMs.toFixed(3)),
     longTaskCount: pageSummary.longTaskCount ?? null,
     longTaskTotalMs:
-      pageSummary.longTaskTotalMs == null
-        ? null
-        : Number(pageSummary.longTaskTotalMs.toFixed(3)),
+      pageSummary.longTaskTotalMs == null ? null : Number(pageSummary.longTaskTotalMs.toFixed(3)),
     longestLongTaskMs:
       pageSummary.longestLongTaskMs == null
         ? null
@@ -3012,47 +2747,34 @@ async function profileFileTreeRender(
   config: ProfileConfig,
   workloadName: string,
   runNumber: number,
-  traceOutputPath: string | null
+  traceOutputPath: string | null,
 ): Promise<ProfileResult> {
-  const profileUrl = createProfileUrl(
-    config.url,
-    config.instrumentationMode,
-    workloadName
-  );
+  const profileUrl = createProfileUrl(config.url, config.instrumentationMode, workloadName);
   const version = await fetchJson<InspectVersionResponse>(
     `${config.browserUrl}/json/version`,
     undefined,
-    config.timeoutMs
+    config.timeoutMs,
   );
-  if (version.webSocketDebuggerUrl === '') {
-    throw new Error(
-      `Chrome at ${config.browserUrl} did not expose a browser WebSocket URL.`
-    );
+  if (version.webSocketDebuggerUrl === "") {
+    throw new Error(`Chrome at ${config.browserUrl} did not expose a browser WebSocket URL.`);
   }
 
-  const target = await createPageTarget(
-    config.browserUrl,
-    profileUrl,
-    config.timeoutMs
-  );
-  const cdp = await CdpClient.connect(
-    target.webSocketDebuggerUrl,
-    config.timeoutMs
-  );
+  const target = await createPageTarget(config.browserUrl, profileUrl, config.timeoutMs);
+  const cdp = await CdpClient.connect(target.webSocketDebuggerUrl, config.timeoutMs);
 
   try {
-    await cdp.send('Page.enable');
-    await cdp.send('Runtime.enable');
+    await cdp.send("Page.enable");
+    await cdp.send("Runtime.enable");
     await navigateToFixture(cdp, profileUrl, config.timeoutMs);
 
     const { pageSummary, trace, cpuProfile } = await collectProfilingArtifacts(
       cdp,
       config.timeoutMs,
-      () => clickAndWaitForRenderSummary(cdp, config.timeoutMs)
+      () => clickAndWaitForRenderSummary(cdp, config.timeoutMs),
     );
     const callCountsByFunction = config.includeCallCounts
       ? await collectFunctionCallCounts(cdp, profileUrl, config.timeoutMs, () =>
-          clickAndWaitForRenderSummary(cdp, config.timeoutMs)
+          clickAndWaitForRenderSummary(cdp, config.timeoutMs),
         )
       : null;
 
@@ -3076,85 +2798,55 @@ async function collectActionFunctionCallCounts(
   cdp: CdpClient,
   profileUrl: string,
   timeoutMs: number,
-  scenario: FileTreeProfileActionSummary
+  scenario: FileTreeProfileActionSummary,
 ): Promise<Map<string, number | null> | null> {
-  return await collectFunctionCallCounts(
-    cdp,
-    profileUrl,
-    timeoutMs,
-    async () => {
-      const preparedScenario = await prepareActionProfile(cdp, scenario.id);
-      await profilePreparedActionForScenario(cdp, preparedScenario, timeoutMs);
-    }
-  );
+  return await collectFunctionCallCounts(cdp, profileUrl, timeoutMs, async () => {
+    const preparedScenario = await prepareActionProfile(cdp, scenario.id);
+    await profilePreparedActionForScenario(cdp, preparedScenario, timeoutMs);
+  });
 }
 
 async function profileFileTreeExpansionActions(
   config: ProfileConfig,
   workloadName: string,
   runNumber: number,
-  traceOutputPath: string | null
+  traceOutputPath: string | null,
 ): Promise<ProfileResult[]> {
-  const profileUrl = createProfileUrl(
-    config.url,
-    config.instrumentationMode,
-    workloadName
-  );
+  const profileUrl = createProfileUrl(config.url, config.instrumentationMode, workloadName);
   const version = await fetchJson<InspectVersionResponse>(
     `${config.browserUrl}/json/version`,
     undefined,
-    config.timeoutMs
+    config.timeoutMs,
   );
-  if (version.webSocketDebuggerUrl === '') {
-    throw new Error(
-      `Chrome at ${config.browserUrl} did not expose a browser WebSocket URL.`
-    );
+  if (version.webSocketDebuggerUrl === "") {
+    throw new Error(`Chrome at ${config.browserUrl} did not expose a browser WebSocket URL.`);
   }
 
-  const target = await createPageTarget(
-    config.browserUrl,
-    profileUrl,
-    config.timeoutMs
-  );
-  const cdp = await CdpClient.connect(
-    target.webSocketDebuggerUrl,
-    config.timeoutMs
-  );
+  const target = await createPageTarget(config.browserUrl, profileUrl, config.timeoutMs);
+  const cdp = await CdpClient.connect(target.webSocketDebuggerUrl, config.timeoutMs);
 
   try {
-    await cdp.send('Page.enable');
-    await cdp.send('Runtime.enable');
+    await cdp.send("Page.enable");
+    await cdp.send("Runtime.enable");
     await navigateToFixture(cdp, profileUrl, config.timeoutMs);
 
     const scenarios = await listExpansionActionScenarios(cdp);
     if (scenarios.length === 0) {
-      throw new Error(
-        `No expansion action scenarios were available for workload ${workloadName}.`
-      );
+      throw new Error(`No expansion action scenarios were available for workload ${workloadName}.`);
     }
 
     const results: ProfileResult[] = [];
     for (const scenario of scenarios) {
       const preparedScenario = await prepareActionProfile(cdp, scenario.id);
       const actionTraceOutputPath =
-        traceOutputPath == null
-          ? null
-          : createActionTraceOutputPath(traceOutputPath, scenario.id);
-      const { pageSummary, trace, cpuProfile } =
-        await collectProfilingArtifacts(cdp, config.timeoutMs, () =>
-          profilePreparedActionForScenario(
-            cdp,
-            preparedScenario,
-            config.timeoutMs
-          )
-        );
+        traceOutputPath == null ? null : createActionTraceOutputPath(traceOutputPath, scenario.id);
+      const { pageSummary, trace, cpuProfile } = await collectProfilingArtifacts(
+        cdp,
+        config.timeoutMs,
+        () => profilePreparedActionForScenario(cdp, preparedScenario, config.timeoutMs),
+      );
       const callCountsByFunction = config.includeCallCounts
-        ? await collectActionFunctionCallCounts(
-            cdp,
-            profileUrl,
-            config.timeoutMs,
-            preparedScenario
-          )
+        ? await collectActionFunctionCallCounts(cdp, profileUrl, config.timeoutMs, preparedScenario)
         : null;
 
       results.push(
@@ -3167,7 +2859,7 @@ async function profileFileTreeExpansionActions(
           trace,
           traceOutputPath: actionTraceOutputPath,
           url: profileUrl,
-        })
+        }),
       );
     }
 
@@ -3181,212 +2873,172 @@ async function profileFileTreeExpansionActions(
 function printRunHumanSummary(
   result: ProfileResult,
   totalRuns: number,
-  showDominantTraceEvents: boolean
+  showDominantTraceEvents: boolean,
 ): void {
-  const summaryRows = [['Visible rows', String(result.renderedItemCount)]];
+  const summaryRows = [["Visible rows", String(result.renderedItemCount)]];
   if (result.actionDurationMs != null) {
-    summaryRows.push([
-      'API action dispatch',
-      formatMs(result.actionDurationMs),
-    ]);
+    summaryRows.push(["API action dispatch", formatMs(result.actionDurationMs)]);
   }
 
   if (result.visibleRowsReadyMs != null) {
-    summaryRows.push([
-      'Visible rows ready',
-      formatMs(result.visibleRowsReadyMs),
-    ]);
+    summaryRows.push(["Visible rows ready", formatMs(result.visibleRowsReadyMs)]);
   }
-  summaryRows.push(['Post-paint ready', formatMs(result.renderDurationMs)]);
+  summaryRows.push(["Post-paint ready", formatMs(result.renderDurationMs)]);
 
   if (result.trace.available) {
     if (result.trace.clickDispatchMs != null) {
-      summaryRows.push([
-        'Click dispatch task',
-        formatMs(result.trace.clickDispatchMs),
-      ]);
+      summaryRows.push(["Click dispatch task", formatMs(result.trace.clickDispatchMs)]);
     }
     if (result.trace.clickToRenderReadyMs != null) {
-      summaryRows.push([
-        'Click-to-post-paint-ready',
-        formatMs(result.trace.clickToRenderReadyMs),
-      ]);
+      summaryRows.push(["Click-to-post-paint-ready", formatMs(result.trace.clickToRenderReadyMs)]);
     }
-    summaryRows.push(['Trace window', formatMs(result.trace.windowDurationMs)]);
-    summaryRows.push([
-      'Main-thread busy',
-      formatMs(result.trace.mainThreadBusyMs),
-    ]);
-    summaryRows.push([
-      'Longest top-level task',
-      formatMs(result.trace.longestTaskMs),
-    ]);
-    summaryRows.push([
-      'Top-level task count',
-      String(result.trace.topLevelTaskCount ?? 'n/a'),
-    ]);
-    summaryRows.push(['GC time', formatMs(result.trace.gcMs)]);
-    summaryRows.push([
-      'Style/layout time',
-      formatMs(result.trace.styleLayoutMs),
-    ]);
-    summaryRows.push([
-      'Paint/composite time',
-      formatMs(result.trace.paintCompositeMs),
-    ]);
+    summaryRows.push(["Trace window", formatMs(result.trace.windowDurationMs)]);
+    summaryRows.push(["Main-thread busy", formatMs(result.trace.mainThreadBusyMs)]);
+    summaryRows.push(["Longest top-level task", formatMs(result.trace.longestTaskMs)]);
+    summaryRows.push(["Top-level task count", String(result.trace.topLevelTaskCount ?? "n/a")]);
+    summaryRows.push(["GC time", formatMs(result.trace.gcMs)]);
+    summaryRows.push(["Style/layout time", formatMs(result.trace.styleLayoutMs)]);
+    summaryRows.push(["Paint/composite time", formatMs(result.trace.paintCompositeMs)]);
   } else {
-    summaryRows.push(['Trace summary', 'unavailable']);
+    summaryRows.push(["Trace summary", "unavailable"]);
   }
 
   console.log(`Run ${result.runNumber}/${totalRuns}`);
   if (result.action != null) {
     console.log(
       createTable(
-        ['Action', 'Value'],
+        ["Action", "Value"],
         [
-          ['Scenario', result.action.label],
-          ['Operation', result.action.operation],
-          ['Dispatch', result.action.dispatch],
-          ['Initial expansion', result.action.initialExpansion],
-          ['Target visibility', result.action.targetVisibility],
-          ['Target depth', String(result.action.targetDepth)],
-          ['Target path', result.action.targetPath],
+          ["Scenario", result.action.label],
+          ["Operation", result.action.operation],
+          ["Dispatch", result.action.dispatch],
+          ["Initial expansion", result.action.initialExpansion],
+          ["Target visibility", result.action.targetVisibility],
+          ["Target depth", String(result.action.targetDepth)],
+          ["Target path", result.action.targetPath],
           [
-            'Target expanded',
-            `${String(result.action.targetWasExpandedBefore ?? 'n/a')} -> ${String(result.action.targetIsExpandedAfter ?? 'n/a')}`,
+            "Target expanded",
+            `${String(result.action.targetWasExpandedBefore ?? "n/a")} -> ${String(result.action.targetIsExpandedAfter ?? "n/a")}`,
           ],
           [
-            'Rendered rows',
-            `${String(result.action.renderedItemCountBefore ?? 'n/a')} -> ${String(result.action.renderedItemCountAfter ?? 'n/a')}`,
+            "Rendered rows",
+            `${String(result.action.renderedItemCountBefore ?? "n/a")} -> ${String(result.action.renderedItemCountAfter ?? "n/a")}`,
           ],
         ],
         {
-          alignments: ['left', 'left'],
+          alignments: ["left", "left"],
           maxWidths: [22, 78],
-        }
-      )
+        },
+      ),
     );
-    console.log('');
+    console.log("");
   }
   console.log(
-    createTable(['Metric', 'Value'], summaryRows, {
-      alignments: ['left', 'right'],
+    createTable(["Metric", "Value"], summaryRows, {
+      alignments: ["left", "right"],
       maxWidths: [28, 18],
-    })
+    }),
   );
 
   const phaseRows = createNestedPhaseRows(result.instrumentation.phases);
   if (phaseRows.length > 0) {
-    console.log('');
-    console.log('Phases');
-    console.log('Total includes nested child phases. Own excludes them.');
+    console.log("");
+    console.log("Phases");
+    console.log("Total includes nested child phases. Own excludes them.");
     console.log(
       createTable(
-        ['Phase', 'Total', 'Own', 'Own %', 'Calls', 'Workload'],
+        ["Phase", "Total", "Own", "Own %", "Calls", "Workload"],
         phaseRows.map(({ label, phase }) => [
           label,
           formatMs(phase.durationMs),
           formatMs(phase.selfDurationMs),
           formatPercent(phase.selfPercentOfRender),
           formatCount(phase.count),
-          phase.workload ?? 'n/a',
+          phase.workload ?? "n/a",
         ]),
         {
-          alignments: ['left', 'right', 'right', 'right', 'right', 'left'],
+          alignments: ["left", "right", "right", "right", "right", "left"],
           maxWidths: [32, 12, 12, 9, 8, 38],
-        }
-      )
+        },
+      ),
     );
   }
 
   if (result.instrumentation.heap.available) {
-    console.log('');
-    console.log('Heap');
+    console.log("");
+    console.log("Heap");
     console.log(
       createTable(
-        ['Metric', 'Value'],
+        ["Metric", "Value"],
         [
           [
-            'Used JS heap before',
+            "Used JS heap before",
             formatBytes(result.instrumentation.heap.usedJSHeapSizeBeforeBytes),
           ],
+          ["Used JS heap after", formatBytes(result.instrumentation.heap.usedJSHeapSizeAfterBytes)],
+          ["Used JS heap delta", formatBytes(result.instrumentation.heap.usedJSHeapSizeDeltaBytes)],
           [
-            'Used JS heap after',
-            formatBytes(result.instrumentation.heap.usedJSHeapSizeAfterBytes),
-          ],
-          [
-            'Used JS heap delta',
-            formatBytes(result.instrumentation.heap.usedJSHeapSizeDeltaBytes),
-          ],
-          [
-            'Total JS heap after',
+            "Total JS heap after",
             formatBytes(result.instrumentation.heap.totalJSHeapSizeAfterBytes),
           ],
-          [
-            'JS heap limit',
-            formatBytes(result.instrumentation.heap.jsHeapSizeLimitBytes),
-          ],
+          ["JS heap limit", formatBytes(result.instrumentation.heap.jsHeapSizeLimitBytes)],
         ],
         {
-          alignments: ['left', 'right'],
+          alignments: ["left", "right"],
           maxWidths: [24, 18],
-        }
-      )
+        },
+      ),
     );
   }
 
-  if (
-    showDominantTraceEvents &&
-    result.trace.available &&
-    result.trace.dominantEvents.length > 0
-  ) {
-    console.log('');
-    console.log('Dominant Trace Events (Lower Signal)');
+  if (showDominantTraceEvents && result.trace.available && result.trace.dominantEvents.length > 0) {
+    console.log("");
+    console.log("Dominant Trace Events (Lower Signal)");
     console.log(
       createTable(
-        ['Event', 'Time', 'Window %'],
+        ["Event", "Time", "Window %"],
         result.trace.dominantEvents.map((event) => [
           event.name,
           formatMs(event.durationMs),
           formatPercent(event.percentOfWindow),
         ]),
         {
-          alignments: ['left', 'right', 'right'],
+          alignments: ["left", "right", "right"],
           maxWidths: [42, 12, 10],
-        }
-      )
+        },
+      ),
     );
   }
 
   if (result.cpuProfile.available) {
     const hasCallCounts = result.cpuProfile.bottomUpFunctions.some(
-      (functionSummary) => functionSummary.callCount != null
+      (functionSummary) => functionSummary.callCount != null,
     );
-    console.log('');
-    console.log('CPU Summary');
+    console.log("");
+    console.log("CPU Summary");
     console.log(
       createTable(
-        ['Metric', 'Value'],
+        ["Metric", "Value"],
         [
-          ['Sampled CPU time', formatMs(result.cpuProfile.sampledMs)],
-          ['Samples', String(result.cpuProfile.sampleCount ?? 'n/a')],
-          ...(hasCallCounts ? [['Call counts', 'auxiliary pass']] : []),
+          ["Sampled CPU time", formatMs(result.cpuProfile.sampledMs)],
+          ["Samples", String(result.cpuProfile.sampleCount ?? "n/a")],
+          ...(hasCallCounts ? [["Call counts", "auxiliary pass"]] : []),
         ],
         {
-          alignments: ['left', 'right'],
+          alignments: ["left", "right"],
           maxWidths: [24, 18],
-        }
-      )
+        },
+      ),
     );
 
     if (result.cpuProfile.bottomUpFunctions.length > 0) {
-      console.log('');
-      console.log('Bottom-Up CPU');
+      console.log("");
+      console.log("Bottom-Up CPU");
       console.log(
         createTable(
           hasCallCounts
-            ? ['Function', 'Calls', 'Self', 'Self %', 'Total', 'Total %']
-            : ['Function', 'Self', 'Self %', 'Total', 'Total %'],
+            ? ["Function", "Calls", "Self", "Self %", "Total", "Total %"]
+            : ["Function", "Self", "Self %", "Total", "Total %"],
           result.cpuProfile.bottomUpFunctions.map((functionSummary) => {
             const baseRow = [
               functionSummary.name,
@@ -3398,40 +3050,34 @@ function printRunHumanSummary(
             return hasCallCounts
               ? [
                   functionSummary.name,
-                  functionSummary.callCount == null
-                    ? 'n/a'
-                    : String(functionSummary.callCount),
+                  functionSummary.callCount == null ? "n/a" : String(functionSummary.callCount),
                   ...baseRow.slice(1),
                 ]
               : baseRow;
           }),
           {
             alignments: hasCallCounts
-              ? ['left', 'right', 'right', 'right', 'right', 'right']
-              : ['left', 'right', 'right', 'right', 'right'],
-            maxWidths: hasCallCounts
-              ? [68, 10, 12, 9, 12, 9]
-              : [78, 12, 9, 12, 9],
-          }
-        )
+              ? ["left", "right", "right", "right", "right", "right"]
+              : ["left", "right", "right", "right", "right"],
+            maxWidths: hasCallCounts ? [68, 10, 12, 9, 12, 9] : [78, 12, 9, 12, 9],
+          },
+        ),
       );
     }
   }
 
   if (result.traceOutputPath != null) {
-    console.log('');
+    console.log("");
     console.log(`Trace file: ${result.traceOutputPath}`);
   }
 }
 
-function createJsonAggregateSummary(
-  results: ProfileResult[]
-): JsonAggregateSummary {
+function createJsonAggregateSummary(results: ProfileResult[]): JsonAggregateSummary {
   const metrics = Object.fromEntries(
     AGGREGATE_METRIC_DEFINITIONS.map((definition) => [
       definition.key,
       summarizeAggregateMetric(definition.label, results, definition.select),
-    ])
+    ]),
   ) as Record<AggregateMetricKey, AggregateMetricSummary>;
 
   return {
@@ -3470,18 +3116,15 @@ function createActionOutputs(results: ProfileResult[]): ProfileActionOutput[] {
   }));
 }
 
-function printAggregateHumanSummary(
-  summary: JsonAggregateSummary,
-  measuredRuns: number
-): void {
+function printAggregateHumanSummary(summary: JsonAggregateSummary, measuredRuns: number): void {
   const aggregateRows = AGGREGATE_METRIC_DEFINITIONS.map((definition) => {
     return summary.metrics[definition.key];
   });
 
-  console.log('Aggregate Summary');
+  console.log("Aggregate Summary");
   console.log(
     createTable(
-      ['Metric', 'Total', 'Average', 'Median', 'P95', 'Runs'],
+      ["Metric", "Total", "Average", "Median", "P95", "Runs"],
       aggregateRows.map((row) => [
         row.label,
         formatMs(row.totalMs),
@@ -3491,38 +3134,38 @@ function printAggregateHumanSummary(
         `${row.availableRuns}/${measuredRuns}`,
       ]),
       {
-        alignments: ['left', 'right', 'right', 'right', 'right', 'right'],
+        alignments: ["left", "right", "right", "right", "right", "right"],
         maxWidths: [28, 14, 14, 14, 14, 8],
-      }
-    )
+      },
+    ),
   );
 }
 
 function printActionProfilesHumanSummary(
   actionProfiles: ProfileActionOutput[],
   actionSummary: JsonAggregateSummary | null,
-  measuredRuns: number
+  measuredRuns: number,
 ): void {
   if (actionProfiles.length === 0) {
     return;
   }
 
-  console.log('Action Profile Summary');
+  console.log("Action Profile Summary");
   console.log(
     createTable(
       [
-        'Action',
-        'Op',
-        'State',
-        'Input',
-        'Visibility',
-        'Depth',
-        'API med',
-        'Click med',
-        'Ready med',
-        'Paint med',
-        'CPU med',
-        'Runs',
+        "Action",
+        "Op",
+        "State",
+        "Input",
+        "Visibility",
+        "Depth",
+        "API med",
+        "Click med",
+        "Ready med",
+        "Paint med",
+        "CPU med",
+        "Runs",
       ],
       actionProfiles.map((profile) => [
         profile.action.label,
@@ -3540,72 +3183,61 @@ function printActionProfilesHumanSummary(
       ]),
       {
         alignments: [
-          'left',
-          'left',
-          'left',
-          'left',
-          'left',
-          'right',
-          'right',
-          'right',
-          'right',
-          'right',
-          'right',
-          'right',
+          "left",
+          "left",
+          "left",
+          "left",
+          "left",
+          "right",
+          "right",
+          "right",
+          "right",
+          "right",
+          "right",
+          "right",
         ],
         maxWidths: [32, 8, 8, 9, 10, 7, 12, 12, 12, 12, 12, 8],
-      }
-    )
+      },
+    ),
   );
 
   if (actionSummary != null) {
-    console.log('');
+    console.log("");
     printAggregateHumanSummary(actionSummary, actionSummary.measuredRuns);
   }
 }
 
-function formatSignedNumber(
-  value: number | null,
-  digits: number,
-  suffix: string
-): string {
+function formatSignedNumber(value: number | null, digits: number, suffix: string): string {
   if (value == null || !Number.isFinite(value)) {
-    return 'n/a';
+    return "n/a";
   }
 
-  const prefix = value > 0 ? '+' : '';
+  const prefix = value > 0 ? "+" : "";
   return `${prefix}${value.toFixed(digits)}${suffix}`;
 }
 
-function formatDeltaMsPct(
-  deltaMs: number | null,
-  deltaPct: number | null
-): string {
+function formatDeltaMsPct(deltaMs: number | null, deltaPct: number | null): string {
   if (
     (deltaMs == null || !Number.isFinite(deltaMs)) &&
     (deltaPct == null || !Number.isFinite(deltaPct))
   ) {
-    return 'n/a';
+    return "n/a";
   }
 
   if (deltaMs == null || !Number.isFinite(deltaMs)) {
-    return formatSignedNumber(deltaPct, 1, '%');
+    return formatSignedNumber(deltaPct, 1, "%");
   }
 
   if (deltaPct == null || !Number.isFinite(deltaPct)) {
-    return formatSignedNumber(deltaMs, 2, ' ms');
+    return formatSignedNumber(deltaMs, 2, " ms");
   }
 
-  return `${formatSignedNumber(deltaMs, 2, ' ms')} (${formatSignedNumber(
-    deltaPct,
-    1,
-    '%'
-  )})`;
+  return `${formatSignedNumber(deltaMs, 2, " ms")} (${formatSignedNumber(deltaPct, 1, "%")})`;
 }
 
 function createMetricDelta(
   baseline: number | null,
-  current: number | null
+  current: number | null,
 ): {
   baseline: number | null;
   current: number | null;
@@ -3613,14 +3245,9 @@ function createMetricDelta(
   deltaPct: number | null;
 } {
   const deltaMs =
-    baseline == null || current == null
-      ? null
-      : Number((current - baseline).toFixed(3));
+    baseline == null || current == null ? null : Number((current - baseline).toFixed(3));
   const deltaPct =
-    baseline == null ||
-    current == null ||
-    !Number.isFinite(baseline) ||
-    baseline === 0
+    baseline == null || current == null || !Number.isFinite(baseline) || baseline === 0
       ? null
       : Number((((current - baseline) / baseline) * 100).toFixed(1));
 
@@ -3634,7 +3261,7 @@ function createMetricDelta(
 
 function createMetricComparisonSummary(
   baseline: AggregateMetricSummary,
-  current: AggregateMetricSummary
+  current: AggregateMetricSummary,
 ): MetricComparisonSummary {
   return {
     label: current.label,
@@ -3649,34 +3276,30 @@ function createMetricComparisonSummary(
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === 'object' && value != null;
+  return typeof value === "object" && value != null;
 }
 
 function normalizeComparableUrl(url: string): string {
   try {
     const parsedUrl = new URL(url);
-    parsedUrl.searchParams.delete('instrumentation');
-    parsedUrl.searchParams.delete('workload');
+    parsedUrl.searchParams.delete("instrumentation");
+    parsedUrl.searchParams.delete("workload");
     return parsedUrl.toString();
   } catch {
     return url;
   }
 }
 
-function inferInstrumentationModeFromUrl(url: string): 'on' | 'off' {
+function inferInstrumentationModeFromUrl(url: string): "on" | "off" {
   try {
-    return new URL(url).searchParams.get('instrumentation') === '0'
-      ? 'off'
-      : 'on';
+    return new URL(url).searchParams.get("instrumentation") === "0" ? "off" : "on";
   } catch {
-    return 'on';
+    return "on";
   }
 }
 
 /** Reads older single-workload JSON so compare mode keeps working across script revisions. */
-function createLegacyConfigSummaryFromRuns(
-  runs: ProfileResult[]
-): ProfileConfigSummary {
+function createLegacyConfigSummaryFromRuns(runs: ProfileResult[]): ProfileConfigSummary {
   const firstRun = runs[0];
   const workloadNames = [...new Set(runs.map((run) => run.workload.name))];
   const includeCallCounts = runs.some((run) => {
@@ -3684,15 +3307,14 @@ function createLegacyConfigSummaryFromRuns(
   });
 
   return {
-    actionsMode: 'off',
+    actionsMode: "off",
     browserUrl: firstRun?.browserUrl ?? DEFAULT_BROWSER_URL,
     url: normalizeComparableUrl(firstRun?.url ?? DEFAULT_URL),
-    workloads:
-      workloadNames.length > 0 ? workloadNames : [DEFAULT_WORKLOAD_NAME],
+    workloads: workloadNames.length > 0 ? workloadNames : [DEFAULT_WORKLOAD_NAME],
     timeoutMs: DEFAULT_TIMEOUT_MS,
     runs: runs.length,
     warmupRuns: 0,
-    instrumentationMode: inferInstrumentationModeFromUrl(firstRun?.url ?? ''),
+    instrumentationMode: inferInstrumentationModeFromUrl(firstRun?.url ?? ""),
     includeCallCounts,
     profileRender: true,
     showDominantTraceEvents: false,
@@ -3701,75 +3323,63 @@ function createLegacyConfigSummaryFromRuns(
 
 function normalizeProfileBenchmarkOutput(
   rawValue: unknown,
-  sourcePath: string
+  sourcePath: string,
 ): ProfileBenchmarkOutput {
   if (!isRecord(rawValue)) {
     throw new Error(`Invalid benchmark JSON in ${sourcePath}.`);
   }
 
-  if (
-    rawValue.benchmark != null &&
-    rawValue.benchmark !== 'treesFileTreeProfile'
-  ) {
+  if (rawValue.benchmark != null && rawValue.benchmark !== "treesFileTreeProfile") {
     const benchmarkDescription =
-      typeof rawValue.benchmark === 'string'
+      typeof rawValue.benchmark === "string"
         ? rawValue.benchmark
         : JSON.stringify(rawValue.benchmark);
     throw new Error(
-      `Unsupported benchmark type in ${sourcePath}: ${benchmarkDescription ?? 'unknown'}`
+      `Unsupported benchmark type in ${sourcePath}: ${benchmarkDescription ?? "unknown"}`,
     );
   }
 
   if (Array.isArray(rawValue.workloads)) {
-    const workloads = (rawValue.workloads as ProfileWorkloadOutput[]).map(
-      (workloadOutput) => {
-        const actionProfiles = workloadOutput.actionProfiles ?? [];
-        return {
-          actionProfiles,
-          actionSummary:
-            workloadOutput.actionSummary ??
-            (actionProfiles.length === 0
-              ? null
-              : createJsonAggregateSummary(
-                  actionProfiles.flatMap((profile) => profile.runs)
-                )),
-          workload: workloadOutput.workload,
-          runs: workloadOutput.runs,
-          summary: createJsonAggregateSummary(workloadOutput.runs),
-        };
-      }
-    );
+    const workloads = (rawValue.workloads as ProfileWorkloadOutput[]).map((workloadOutput) => {
+      const actionProfiles = workloadOutput.actionProfiles ?? [];
+      return {
+        actionProfiles,
+        actionSummary:
+          workloadOutput.actionSummary ??
+          (actionProfiles.length === 0
+            ? null
+            : createJsonAggregateSummary(actionProfiles.flatMap((profile) => profile.runs))),
+        workload: workloadOutput.workload,
+        runs: workloadOutput.runs,
+        summary: createJsonAggregateSummary(workloadOutput.runs),
+      };
+    });
     if (workloads.length === 0) {
       throw new Error(`No workload results found in ${sourcePath}.`);
     }
 
     const fallbackConfig = createLegacyConfigSummaryFromRuns(
-      workloads.flatMap((workloadOutput) => workloadOutput.runs)
+      workloads.flatMap((workloadOutput) => workloadOutput.runs),
     );
     const rawConfig = isRecord(rawValue.config)
       ? (rawValue.config as Partial<ProfileConfigSummary>)
       : {};
 
     return {
-      benchmark: 'treesFileTreeProfile',
+      benchmark: "treesFileTreeProfile",
       config: {
         ...fallbackConfig,
         ...rawConfig,
         url: normalizeComparableUrl(rawConfig.url ?? fallbackConfig.url),
-        workloads: workloads.map(
-          (workloadOutput) => workloadOutput.workload.name
-        ),
+        workloads: workloads.map((workloadOutput) => workloadOutput.workload.name),
         runs: rawConfig.runs ?? workloads[0].runs.length,
         warmupRuns: rawConfig.warmupRuns ?? fallbackConfig.warmupRuns,
         actionsMode: rawConfig.actionsMode ?? fallbackConfig.actionsMode,
-        instrumentationMode:
-          rawConfig.instrumentationMode ?? fallbackConfig.instrumentationMode,
-        includeCallCounts:
-          rawConfig.includeCallCounts ?? fallbackConfig.includeCallCounts,
+        instrumentationMode: rawConfig.instrumentationMode ?? fallbackConfig.instrumentationMode,
+        includeCallCounts: rawConfig.includeCallCounts ?? fallbackConfig.includeCallCounts,
         profileRender: rawConfig.profileRender ?? fallbackConfig.profileRender,
         showDominantTraceEvents:
-          rawConfig.showDominantTraceEvents ??
-          fallbackConfig.showDominantTraceEvents,
+          rawConfig.showDominantTraceEvents ?? fallbackConfig.showDominantTraceEvents,
       },
       workloads,
     };
@@ -3783,51 +3393,44 @@ function normalizeProfileBenchmarkOutput(
 
     const workloadOutput = createWorkloadOutput(runs[0].workload, runs, []);
     return {
-      benchmark: 'treesFileTreeProfile',
+      benchmark: "treesFileTreeProfile",
       config: createLegacyConfigSummaryFromRuns(runs),
       workloads: [workloadOutput],
     };
   }
 
   throw new Error(
-    `Expected ${sourcePath} to contain either { workloads: [...] } or { runs: [...] }.`
+    `Expected ${sourcePath} to contain either { workloads: [...] } or { runs: [...] }.`,
   );
 }
 
-function readProfileBenchmarkOutput(
-  benchmarkPath: string
-): ProfileBenchmarkOutput {
-  const rawText = readFileSync(benchmarkPath, 'utf8');
+function readProfileBenchmarkOutput(benchmarkPath: string): ProfileBenchmarkOutput {
+  const rawText = readFileSync(benchmarkPath, "utf8");
   const rawValue = JSON.parse(rawText) as unknown;
   return normalizeProfileBenchmarkOutput(rawValue, benchmarkPath);
 }
 
 function assertComparableBenchmarkOutputs(
   baseline: ProfileBenchmarkOutput,
-  current: ProfileBenchmarkOutput
+  current: ProfileBenchmarkOutput,
 ): void {
-  if (
-    normalizeComparableUrl(baseline.config.url) !==
-    normalizeComparableUrl(current.config.url)
-  ) {
+  if (normalizeComparableUrl(baseline.config.url) !== normalizeComparableUrl(current.config.url)) {
     throw new Error(
       [
-        'Cannot compare benchmark outputs with different URLs.',
+        "Cannot compare benchmark outputs with different URLs.",
         `Baseline: ${baseline.config.url}`,
         `Current: ${current.config.url}`,
-      ].join('\n')
+      ].join("\n"),
     );
   }
 
-  if (
-    baseline.config.instrumentationMode !== current.config.instrumentationMode
-  ) {
+  if (baseline.config.instrumentationMode !== current.config.instrumentationMode) {
     throw new Error(
       [
-        'Cannot compare benchmark outputs with different instrumentation modes.',
+        "Cannot compare benchmark outputs with different instrumentation modes.",
         `Baseline: ${baseline.config.instrumentationMode}`,
         `Current: ${current.config.instrumentationMode}`,
-      ].join('\n')
+      ].join("\n"),
     );
   }
 }
@@ -3835,28 +3438,20 @@ function assertComparableBenchmarkOutputs(
 function createProfileComparisonSummary(
   baselinePath: string,
   baseline: ProfileBenchmarkOutput,
-  current: ProfileBenchmarkOutput
+  current: ProfileBenchmarkOutput,
 ): ProfileComparisonSummary {
   assertComparableBenchmarkOutputs(baseline, current);
 
   const baselineByWorkloadName = new Map(
-    baseline.workloads.map((workloadOutput) => [
-      workloadOutput.workload.name,
-      workloadOutput,
-    ])
+    baseline.workloads.map((workloadOutput) => [workloadOutput.workload.name, workloadOutput]),
   );
   const currentByWorkloadName = new Map(
-    current.workloads.map((workloadOutput) => [
-      workloadOutput.workload.name,
-      workloadOutput,
-    ])
+    current.workloads.map((workloadOutput) => [workloadOutput.workload.name, workloadOutput]),
   );
 
   const workloads: WorkloadComparisonSummary[] = [];
   for (const currentWorkloadOutput of current.workloads) {
-    const baselineWorkloadOutput = baselineByWorkloadName.get(
-      currentWorkloadOutput.workload.name
-    );
+    const baselineWorkloadOutput = baselineByWorkloadName.get(currentWorkloadOutput.workload.name);
     if (baselineWorkloadOutput == null) {
       continue;
     }
@@ -3866,17 +3461,16 @@ function createProfileComparisonSummary(
         definition.key,
         createMetricComparisonSummary(
           baselineWorkloadOutput.summary.metrics[definition.key],
-          currentWorkloadOutput.summary.metrics[definition.key]
+          currentWorkloadOutput.summary.metrics[definition.key],
         ),
-      ])
+      ]),
     ) as Record<AggregateMetricKey, MetricComparisonSummary>;
 
     workloads.push({
       workload: currentWorkloadOutput.workload,
       baselineWorkload: baselineWorkloadOutput.workload,
       workloadShapeMatches:
-        baselineWorkloadOutput.workload.fileCount ===
-          currentWorkloadOutput.workload.fileCount &&
+        baselineWorkloadOutput.workload.fileCount === currentWorkloadOutput.workload.fileCount &&
         baselineWorkloadOutput.workload.expandedFolderCount ===
           currentWorkloadOutput.workload.expandedFolderCount,
       metrics,
@@ -3897,134 +3491,117 @@ function createProfileComparisonSummary(
 
 function printWorkloadHumanSummary(
   workloadOutput: ProfileWorkloadOutput,
-  config: ProfileConfigSummary
+  config: ProfileConfigSummary,
 ): void {
   const workloadRows = [
-    [
-      'Workload',
-      `${workloadOutput.workload.label} (${workloadOutput.workload.name})`,
-    ],
-    ['Files', formatCount(workloadOutput.workload.fileCount)],
-    [
-      'Expanded folders',
-      formatCount(workloadOutput.workload.expandedFolderCount),
-    ],
-    ['Render runs', String(workloadOutput.runs.length)],
-    ['Action scenarios', String(workloadOutput.actionProfiles.length)],
-    ['Warmup runs', String(config.warmupRuns)],
+    ["Workload", `${workloadOutput.workload.label} (${workloadOutput.workload.name})`],
+    ["Files", formatCount(workloadOutput.workload.fileCount)],
+    ["Expanded folders", formatCount(workloadOutput.workload.expandedFolderCount)],
+    ["Render runs", String(workloadOutput.runs.length)],
+    ["Action scenarios", String(workloadOutput.actionProfiles.length)],
+    ["Warmup runs", String(config.warmupRuns)],
   ];
 
-  console.log('Workload');
+  console.log("Workload");
   console.log(
-    createTable(['Field', 'Value'], workloadRows, {
+    createTable(["Field", "Value"], workloadRows, {
       maxWidths: [18, 96],
-    })
+    }),
   );
 
   for (const [index, result] of workloadOutput.runs.entries()) {
-    console.log('');
-    printRunHumanSummary(
-      result,
-      workloadOutput.runs.length,
-      config.showDominantTraceEvents
-    );
+    console.log("");
+    printRunHumanSummary(result, workloadOutput.runs.length, config.showDominantTraceEvents);
     if (index < workloadOutput.runs.length - 1) {
-      console.log('');
+      console.log("");
     }
   }
 
   if (workloadOutput.runs.length > 1) {
-    console.log('');
-    printAggregateHumanSummary(
-      workloadOutput.summary,
-      workloadOutput.runs.length
-    );
+    console.log("");
+    printAggregateHumanSummary(workloadOutput.summary, workloadOutput.runs.length);
   }
 
   if (workloadOutput.actionProfiles.length > 0) {
     if (workloadOutput.runs.length > 0) {
-      console.log('');
+      console.log("");
     }
     printActionProfilesHumanSummary(
       workloadOutput.actionProfiles,
       workloadOutput.actionSummary,
-      config.runs
+      config.runs,
     );
   }
 }
 
-function printComparisonHumanSummary(
-  comparison: ProfileComparisonSummary
-): void {
-  console.log('Comparison');
+function printComparisonHumanSummary(comparison: ProfileComparisonSummary): void {
+  console.log("Comparison");
   console.log(
     createTable(
-      ['Field', 'Value'],
+      ["Field", "Value"],
       [
-        ['Baseline JSON', comparison.baselinePath],
-        ['Matched workloads', String(comparison.workloads.length)],
+        ["Baseline JSON", comparison.baselinePath],
+        ["Matched workloads", String(comparison.workloads.length)],
         [
-          'Baseline-only workloads',
+          "Baseline-only workloads",
           comparison.unmatchedBaselineWorkloads.length === 0
-            ? 'none'
-            : comparison.unmatchedBaselineWorkloads.join(', '),
+            ? "none"
+            : comparison.unmatchedBaselineWorkloads.join(", "),
         ],
         [
-          'Current-only workloads',
+          "Current-only workloads",
           comparison.unmatchedCurrentWorkloads.length === 0
-            ? 'none'
-            : comparison.unmatchedCurrentWorkloads.join(', '),
+            ? "none"
+            : comparison.unmatchedCurrentWorkloads.join(", "),
         ],
       ],
       {
         maxWidths: [22, 96],
-      }
-    )
+      },
+    ),
   );
 
   for (const workloadComparison of comparison.workloads) {
-    console.log('');
+    console.log("");
     console.log(
-      `Workload: ${workloadComparison.workload.label} (${workloadComparison.workload.name})`
+      `Workload: ${workloadComparison.workload.label} (${workloadComparison.workload.name})`,
     );
 
     if (!workloadComparison.workloadShapeMatches) {
       console.log(
         createTable(
-          ['Shape', 'Files', 'Expanded folders'],
+          ["Shape", "Files", "Expanded folders"],
           [
             [
-              'Baseline',
+              "Baseline",
               formatCount(workloadComparison.baselineWorkload.fileCount),
-              formatCount(
-                workloadComparison.baselineWorkload.expandedFolderCount
-              ),
+              formatCount(workloadComparison.baselineWorkload.expandedFolderCount),
             ],
             [
-              'Current',
+              "Current",
               formatCount(workloadComparison.workload.fileCount),
               formatCount(workloadComparison.workload.expandedFolderCount),
             ],
           ],
           {
-            alignments: ['left', 'right', 'right'],
+            alignments: ["left", "right", "right"],
             maxWidths: [12, 16, 18],
-          }
-        )
+          },
+        ),
       );
-      console.log('');
+      console.log("");
     }
 
     console.log(
       createTable(
         [
-          'Metric',
-          'Baseline median',
-          'Current median',
-          'Median delta',
-          'Baseline P95',
-          'Current P95',
-          'P95 delta',
+          "Metric",
+          "Baseline median",
+          "Current median",
+          "Median delta",
+          "Baseline P95",
+          "Current P95",
+          "P95 delta",
         ],
         AGGREGATE_METRIC_DEFINITIONS.map((definition) => {
           const metric = workloadComparison.metrics[definition.key];
@@ -4039,18 +3616,10 @@ function printComparisonHumanSummary(
           ];
         }),
         {
-          alignments: [
-            'left',
-            'right',
-            'right',
-            'right',
-            'right',
-            'right',
-            'right',
-          ],
+          alignments: ["left", "right", "right", "right", "right", "right", "right"],
           maxWidths: [28, 16, 16, 22, 16, 16, 22],
-        }
-      )
+        },
+      ),
     );
   }
 }
@@ -4061,73 +3630,59 @@ function printRunsHumanSummary(output: ProfileBenchmarkOutput): void {
   }
 
   const runInfoRows = [
-    ['Browser', output.config.browserUrl],
-    ['URL', output.config.url],
-    ['Workloads', output.config.workloads.join(', ')],
-    ['Measured runs/workload', String(output.config.runs)],
-    ['Warmup runs/workload', String(output.config.warmupRuns)],
-    ['Instrumentation', output.config.instrumentationMode],
-    ['Render profile', output.config.profileRender ? 'on' : 'off'],
-    ['Action profiles', output.config.actionsMode],
-    ['Call counts', output.config.includeCallCounts ? 'on' : 'off'],
+    ["Browser", output.config.browserUrl],
+    ["URL", output.config.url],
+    ["Workloads", output.config.workloads.join(", ")],
+    ["Measured runs/workload", String(output.config.runs)],
+    ["Warmup runs/workload", String(output.config.warmupRuns)],
+    ["Instrumentation", output.config.instrumentationMode],
+    ["Render profile", output.config.profileRender ? "on" : "off"],
+    ["Action profiles", output.config.actionsMode],
+    ["Call counts", output.config.includeCallCounts ? "on" : "off"],
     [
-      'Dominant trace events',
-      output.config.showDominantTraceEvents ? 'on (lower-signal)' : 'hidden',
+      "Dominant trace events",
+      output.config.showDominantTraceEvents ? "on (lower-signal)" : "hidden",
     ],
   ];
 
-  console.log('Benchmark');
+  console.log("Benchmark");
   console.log(
-    createTable(['Field', 'Value'], runInfoRows, {
+    createTable(["Field", "Value"], runInfoRows, {
       maxWidths: [22, 96],
-    })
+    }),
   );
 
   for (const [index, workloadOutput] of output.workloads.entries()) {
-    console.log('');
+    console.log("");
     printWorkloadHumanSummary(workloadOutput, output.config);
     if (index < output.workloads.length - 1) {
-      console.log('');
+      console.log("");
     }
   }
 
   if (output.comparison != null) {
-    console.log('');
+    console.log("");
     printComparisonHumanSummary(output.comparison);
   }
 }
 
 async function runWorkloadProfile(
   config: ProfileConfig,
-  workloadName: string
+  workloadName: string,
 ): Promise<ProfileWorkloadOutput> {
   const results: ProfileResult[] = [];
   const actionResults: ProfileResult[] = [];
 
-  for (
-    let warmupRunNumber = 1;
-    warmupRunNumber <= config.warmupRuns;
-    warmupRunNumber += 1
-  ) {
+  for (let warmupRunNumber = 1; warmupRunNumber <= config.warmupRuns; warmupRunNumber += 1) {
     const warmupConfig = {
       ...config,
       includeCallCounts: false,
     };
     if (config.profileRender) {
-      await profileFileTreeRender(
-        warmupConfig,
-        workloadName,
-        warmupRunNumber,
-        null
-      );
+      await profileFileTreeRender(warmupConfig, workloadName, warmupRunNumber, null);
     }
-    if (config.actionsMode === 'expansion') {
-      await profileFileTreeExpansionActions(
-        warmupConfig,
-        workloadName,
-        warmupRunNumber,
-        null
-      );
+    if (config.actionsMode === "expansion") {
+      await profileFileTreeExpansionActions(warmupConfig, workloadName, warmupRunNumber, null);
     }
   }
 
@@ -4137,25 +3692,20 @@ async function runWorkloadProfile(
       workloadName,
       config.workloads.length,
       runNumber,
-      config.runs
+      config.runs,
     );
     if (config.profileRender) {
-      const result = await profileFileTreeRender(
-        config,
-        workloadName,
-        runNumber,
-        traceOutputPath
-      );
+      const result = await profileFileTreeRender(config, workloadName, runNumber, traceOutputPath);
       results.push(result);
     }
-    if (config.actionsMode === 'expansion') {
+    if (config.actionsMode === "expansion") {
       actionResults.push(
         ...(await profileFileTreeExpansionActions(
           config,
           workloadName,
           runNumber,
-          traceOutputPath
-        ))
+          traceOutputPath,
+        )),
       );
     }
   }
@@ -4183,7 +3733,7 @@ async function main(): Promise<void> {
     }
 
     const output: ProfileBenchmarkOutput = {
-      benchmark: 'treesFileTreeProfile',
+      benchmark: "treesFileTreeProfile",
       config: createProfileConfigSummary(config),
       workloads,
     };
@@ -4193,7 +3743,7 @@ async function main(): Promise<void> {
       output.comparison = createProfileComparisonSummary(
         config.comparePath,
         baselineOutput,
-        output
+        output,
       );
     }
 
@@ -4206,8 +3756,8 @@ async function main(): Promise<void> {
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(
       `${message}\n\nThe profiler checks ${createBrowserVersionUrl(
-        config.browserUrl
-      )} before profiling and starts \`scripts/chrome-remote-debug.sh\` automatically when a local debug port is closed.`
+        config.browserUrl,
+      )} before profiling and starts \`scripts/chrome-remote-debug.sh\` automatically when a local debug port is closed.`,
     );
   } finally {
     serverProcess?.kill();

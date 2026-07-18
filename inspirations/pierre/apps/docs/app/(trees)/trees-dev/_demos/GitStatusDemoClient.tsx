@@ -1,25 +1,22 @@
-'use client';
+"use client";
 
-import { FileTree } from '@pierre/trees';
-import type { FileTreePathOptions } from '@trees/_lib/fileTreePathOptions';
-import { useEffect, useMemo, useRef } from 'react';
+import { FileTree } from "@pierre/trees";
+import type { FileTreePathOptions } from "@trees/_lib/fileTreePathOptions";
+import { useEffect, useMemo, useRef } from "react";
 
-import { ExampleCard } from '../_components/ExampleCard';
-import { useGitStatusControls } from '../_components/useGitStatusControls';
-import { createPresortedPreparedInput } from '../_lib/createPresortedPreparedInput';
+import { ExampleCard } from "../_components/ExampleCard";
+import { useGitStatusControls } from "../_components/useGitStatusControls";
+import { createPresortedPreparedInput } from "../_lib/createPresortedPreparedInput";
 import {
   ITEM_CUSTOMIZATION_DEMO_DEFAULTS,
   TREES_DEV_GIT_STATUS_PRESETS,
-} from '../_lib/itemCustomizationDemoData';
+} from "../_lib/itemCustomizationDemoData";
 
 interface GitStatusDemoClientProps {
   containerHtml: string;
   fileCountLabel: string;
   pathsArePresorted: boolean;
-  sharedOptions: Omit<
-    FileTreePathOptions,
-    'gitStatus' | 'id' | 'preparedInput'
-  >;
+  sharedOptions: Omit<FileTreePathOptions, "gitStatus" | "id" | "preparedInput">;
 }
 
 export function GitStatusDemoClient({
@@ -32,24 +29,21 @@ export function GitStatusDemoClient({
   const treeRef = useRef<FileTree | null>(null);
   const { activePreset, gitStatus, controls } = useGitStatusControls({
     defaultPresetId: ITEM_CUSTOMIZATION_DEMO_DEFAULTS.gitStatusPresetId,
-    idSuffix: 'canonical',
+    idSuffix: "canonical",
     presets: TREES_DEV_GIT_STATUS_PRESETS,
   });
   const initialGitStatusRef = useRef(gitStatus);
   const preparedInput = useMemo(
-    () =>
-      pathsArePresorted
-        ? createPresortedPreparedInput(sharedOptions.paths)
-        : undefined,
-    [pathsArePresorted, sharedOptions.paths]
+    () => (pathsArePresorted ? createPresortedPreparedInput(sharedOptions.paths) : undefined),
+    [pathsArePresorted, sharedOptions.paths],
   );
   const options = useMemo<FileTreePathOptions>(
     () => ({
       ...sharedOptions,
       preparedInput,
-      id: 'trees-git-status',
+      id: "trees-git-status",
     }),
-    [preparedInput, sharedOptions]
+    [preparedInput, sharedOptions],
   );
 
   useEffect(() => {
@@ -64,11 +58,11 @@ export function GitStatusDemoClient({
     });
     treeRef.current = fileTree;
 
-    const fileTreeContainer = node.querySelector('file-tree-container');
+    const fileTreeContainer = node.querySelector("file-tree-container");
     if (fileTreeContainer instanceof HTMLElement) {
       fileTree.hydrate({ fileTreeContainer });
     } else {
-      node.innerHTML = '';
+      node.innerHTML = "";
       fileTree.render({ containerWrapper: node });
     }
 
@@ -87,11 +81,10 @@ export function GitStatusDemoClient({
       <header className="space-y-2">
         <h1 className="text-2xl font-bold">Git Status</h1>
         <p className="text-muted-foreground max-w-3xl text-sm leading-6">
-          This route now shares the same demo-small {fileCountLabel} and preset
-          source as Item Customization. The controls below swap between direct
-          file badges, ignored-directory inheritance with overrides, and
-          descendant-dot scenarios while <code>setGitStatus()</code> updates the
-          hydrated tree in place.
+          This route now shares the same demo-small {fileCountLabel} and preset source as Item
+          Customization. The controls below swap between direct file badges, ignored-directory
+          inheritance with overrides, and descendant-dot scenarios while <code>setGitStatus()</code>{" "}
+          updates the hydrated tree in place.
         </p>
       </header>
 
@@ -104,15 +97,13 @@ export function GitStatusDemoClient({
             <p>
               Active preset: <strong>{activePreset.label}</strong>
             </p>
-            <p data-test-git-status-active-description="true">
-              {activePreset.description}
-            </p>
+            <p data-test-git-status-active-description="true">{activePreset.description}</p>
           </div>
         }
       >
         <div
           ref={mountRef}
-          style={{ height: '280px' }}
+          style={{ height: "280px" }}
           dangerouslySetInnerHTML={{ __html: containerHtml }}
           suppressHydrationWarning
         />

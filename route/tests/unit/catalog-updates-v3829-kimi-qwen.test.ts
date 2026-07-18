@@ -22,7 +22,7 @@ test("kmca (kimi-coding-apikey) catalog includes moonshotai/kimi-k2.7-code", () 
   const ids = new Set(models.map((m) => m.id));
   assert.ok(
     ids.has("moonshotai/kimi-k2.7-code"),
-    "moonshotai/kimi-k2.7-code missing from kmca — add to KIMI_CODING_SHARED.models in shared.ts"
+    "moonshotai/kimi-k2.7-code missing from kmca — add to KIMI_CODING_SHARED.models in shared.ts",
   );
 });
 
@@ -54,7 +54,7 @@ const CONFIG_FILE = path.join(
   "[id]",
   "models",
   "discovery",
-  "providerModelsConfig.ts"
+  "providerModelsConfig.ts",
 );
 
 test("PROVIDER_MODELS_CONFIG contains a qwen-web entry (issue #3931 bug #3)", () => {
@@ -62,7 +62,7 @@ test("PROVIDER_MODELS_CONFIG contains a qwen-web entry (issue #3931 bug #3)", ()
   assert.match(
     src,
     /"qwen-web"\s*:/,
-    '"qwen-web" key missing from PROVIDER_MODELS_CONFIG in discovery/providerModelsConfig.ts'
+    '"qwen-web" key missing from PROVIDER_MODELS_CONFIG in discovery/providerModelsConfig.ts',
   );
 });
 
@@ -71,7 +71,7 @@ test("qwen-web PROVIDER_MODELS_CONFIG entry targets chat.qwen.ai/api/v2/models/"
   assert.match(
     src,
     /chat\.qwen\.ai\/api\/v2\/models\//,
-    "qwen-web discovery URL must be https://chat.qwen.ai/api/v2/models/"
+    "qwen-web discovery URL must be https://chat.qwen.ai/api/v2/models/",
   );
 });
 

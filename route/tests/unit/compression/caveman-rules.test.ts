@@ -18,7 +18,7 @@ describe("cavemanRules", () => {
       assert.ok(rule.replacement !== undefined, `Rule ${rule.name} missing replacement`);
       assert.ok(
         ["all", "user", "system", "assistant"].includes(rule.context),
-        `Rule ${rule.name} has invalid context: ${rule.context}`
+        `Rule ${rule.name} has invalid context: ${rule.context}`,
       );
     }
   });
@@ -38,13 +38,13 @@ describe("cavemanRules", () => {
     assert.ok(systemRules.length >= 15, `Expected 15+ system rules, got ${systemRules.length}`);
     assert.ok(
       assistantRules.length >= 15,
-      `Expected 15+ assistant rules, got ${assistantRules.length}`
+      `Expected 15+ assistant rules, got ${assistantRules.length}`,
     );
 
     for (const rule of userRules) {
       assert.ok(
         rule.context === "all" || rule.context === "user",
-        `User rules should include ${rule.name}`
+        `User rules should include ${rule.name}`,
       );
     }
   });
@@ -64,7 +64,7 @@ describe("cavemanRules", () => {
     const result = "Please analyze this code".replace(rule.pattern, rule.replacement);
     assert.ok(
       !result.toLowerCase().includes("please"),
-      `Expected 'please' removed, got: ${result}`
+      `Expected 'please' removed, got: ${result}`,
     );
   });
 
@@ -74,7 +74,7 @@ describe("cavemanRules", () => {
     const result = "It seems like this works".replace(rule.pattern, rule.replacement);
     assert.ok(
       !result.toLowerCase().includes("it seems like"),
-      `Expected hedging removed, got: ${result}`
+      `Expected hedging removed, got: ${result}`,
     );
   });
 
@@ -85,7 +85,7 @@ describe("cavemanRules", () => {
       rule.pattern,
       typeof rule.replacement === "function"
         ? (...args: string[]) => rule.replacement(args[0], ...args.slice(1))
-        : rule.replacement
+        : rule.replacement,
     );
     assert.ok(result.includes("provide"), `Expected 'provide', got: ${result}`);
     assert.ok(!result.includes("detailed"), `Expected 'detailed' removed, got: ${result}`);
@@ -97,7 +97,7 @@ describe("cavemanRules", () => {
     const result = "This is basically a test".replace(rule.pattern, rule.replacement);
     assert.ok(
       !result.toLowerCase().includes("basically"),
-      `Expected 'basically' removed, got: ${result}`
+      `Expected 'basically' removed, got: ${result}`,
     );
   });
 
@@ -107,7 +107,7 @@ describe("cavemanRules", () => {
     const result = "Thank you so much for your help!".replace(rule.pattern, rule.replacement);
     assert.ok(
       !result.toLowerCase().includes("thank you so much"),
-      `Expected gratitude removed, got: ${result}`
+      `Expected gratitude removed, got: ${result}`,
     );
   });
 
@@ -140,7 +140,7 @@ describe("cavemanRules", () => {
       rule.pattern,
       typeof rule.replacement === "function"
         ? (...args: string[]) => rule.replacement(args[0])
-        : rule.replacement
+        : rule.replacement,
     );
     assert.ok(result.includes("uses"), `Expected 'uses', got: ${result}`);
   });
@@ -150,7 +150,7 @@ describe("cavemanRules", () => {
     assert.ok(rule);
     const result = "As we discussed earlier, this needs fixing".replace(
       rule.pattern,
-      rule.replacement
+      rule.replacement,
     );
     assert.ok(result.includes("See above"), `Expected 'See above', got: ${result}`);
   });

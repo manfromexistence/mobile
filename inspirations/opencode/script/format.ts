@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
 
-import { $ } from "bun"
+import { $ } from "bun";
 
-await $`bun run prettier --ignore-unknown --write .`
+await $`bun run prettier --ignore-unknown --write .`;

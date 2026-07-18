@@ -103,14 +103,14 @@ test("pricing layers merge synced, models.dev and user overrides", async () => {
     "layered-provider",
     JSON.stringify({
       "model-a": { prompt: 1, completion: 2 },
-    })
+    }),
   );
   db.prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "models_dev_pricing",
     "layered-provider",
     JSON.stringify({
       "model-a": { completion: 5, cached: 3 },
-    })
+    }),
   );
 
   await settingsDb.updatePricing({
@@ -159,7 +159,7 @@ test("getPricingWithSources reports the winning layer for each provider/model", 
     JSON.stringify({
       "model-litellm": { prompt: 1, completion: 2 },
       "model-user": { prompt: 3 },
-    })
+    }),
   );
   db.prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "models_dev_pricing",
@@ -167,7 +167,7 @@ test("getPricingWithSources reports the winning layer for each provider/model", 
     JSON.stringify({
       "model-modelsdev": { prompt: 4, completion: 5 },
       "model-user": { completion: 6 },
-    })
+    }),
   );
 
   await settingsDb.updatePricing({
@@ -240,19 +240,19 @@ test("pricing helpers ignore malformed synced data and LKGP falls back to raw va
   db.prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "models_dev_pricing",
     "broken-provider",
-    "{not-json"
+    "{not-json",
   );
   db.prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "pricing",
     "alias-provider",
     JSON.stringify({
       "model-a": { prompt: 7 },
-    })
+    }),
   );
   db.prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "lkgp",
     "combo-raw:model-raw",
-    "raw-provider-id"
+    "raw-provider-id",
   );
 
   const pricing = await settingsDb.getPricing();
@@ -272,7 +272,7 @@ test("pricing helpers resolve aliased providers and tolerate no-op resets", asyn
     "cc",
     JSON.stringify({
       "claude-3-5-sonnet": { prompt: 4, completion: 6 },
-    })
+    }),
   );
 
   const aliasPricing = await settingsDb.getPricingForModel("claude", "claude-3-5-sonnet");
@@ -383,14 +383,14 @@ test("proxy config migrates legacy strings and supports bulk merge updates", asy
   db.prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "proxyConfig",
     "global",
-    JSON.stringify("http://user:pass@global.local:8080")
+    JSON.stringify("http://user:pass@global.local:8080"),
   );
   db.prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "proxyConfig",
     "providers",
     JSON.stringify({
       openai: "https://provider.local:8443",
-    })
+    }),
   );
 
   const migrated = await settingsDb.getProxyConfig();
@@ -442,14 +442,14 @@ test("proxy config migrates socks5 and host-only entries while preserving plural
   db.prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "proxyConfig",
     "global",
-    JSON.stringify("fallback-only-host")
+    JSON.stringify("fallback-only-host"),
   );
   db.prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "proxyConfig",
     "providers",
     JSON.stringify({
       claude: "socks5://sockshost",
-    })
+    }),
   );
 
   const migrated = await settingsDb.getProxyConfig();
@@ -491,7 +491,7 @@ test("proxy helpers resolve key, provider, global, and direct paths while tolera
     apiKey: "sk-proxy-resolution",
   });
   db.prepare("UPDATE provider_connections SET proxy_enabled = 1 WHERE id = ?").run(
-    (connection as any).id
+    (connection as any).id,
   );
 
   await settingsDb.setProxyConfig({
@@ -565,7 +565,7 @@ test("proxy resolution skips combos without serialized data and falls back to pr
     apiKey: "sk-claude-proxy",
   });
   db.prepare("UPDATE provider_connections SET proxy_enabled = 1 WHERE id = ?").run(
-    (connection as any).id
+    (connection as any).id,
   );
 
   await settingsDb.setProxyForLevel("provider", "claude", {
@@ -668,7 +668,7 @@ test("proxy resolution prefers legacy key and provider proxies over registry glo
 
   const keyResolved = await settingsDb.resolveProxyForConnection((keyConnection as any).id);
   const providerResolved = await settingsDb.resolveProxyForConnection(
-    (providerConnection as any).id
+    (providerConnection as any).id,
   );
 
   assert.equal(keyResolved.level, "key");
@@ -764,7 +764,7 @@ test("cache metrics, trend and no-op update/reset methods read from usage_histor
     100,
     40,
     null,
-    oneHourAgo
+    oneHourAgo,
   );
   insertUsage.run(
     "anthropic",
@@ -782,7 +782,7 @@ test("cache metrics, trend and no-op update/reset methods read from usage_histor
     90,
     30,
     null,
-    now
+    now,
   );
 
   const metrics = await settingsDb.getCacheMetrics();

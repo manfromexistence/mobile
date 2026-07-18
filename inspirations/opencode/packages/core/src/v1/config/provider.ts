@@ -1,9 +1,9 @@
-export * as ConfigProviderV1 from "./provider"
+export * as ConfigProviderV1 from "./provider";
 
-import { Schema } from "effect"
-import { PositiveInt } from "../../schema"
+import { Schema } from "effect";
+import { PositiveInt } from "../../schema";
 
-export const ModelStatus = Schema.Literals(["alpha", "beta", "deprecated", "active"])
+export const ModelStatus = Schema.Literals(["alpha", "beta", "deprecated", "active"]);
 
 export const Model = Schema.Struct({
   id: Schema.optional(Schema.String),
@@ -47,7 +47,9 @@ export const Model = Schema.Struct({
   ),
   modalities: Schema.optional(
     Schema.Struct({
-      input: Schema.optional(Schema.mutable(Schema.Array(Schema.Literals(["text", "audio", "image", "video", "pdf"])))),
+      input: Schema.optional(
+        Schema.mutable(Schema.Array(Schema.Literals(["text", "audio", "image", "video", "pdf"]))),
+      ),
       output: Schema.optional(
         Schema.mutable(Schema.Array(Schema.Literals(["text", "audio", "image", "video", "pdf"]))),
       ),
@@ -65,13 +67,15 @@ export const Model = Schema.Struct({
       Schema.String,
       Schema.StructWithRest(
         Schema.Struct({
-          disabled: Schema.optional(Schema.Boolean).annotate({ description: "Disable this variant for the model" }),
+          disabled: Schema.optional(Schema.Boolean).annotate({
+            description: "Disable this variant for the model",
+          }),
         }),
         [Schema.Record(Schema.String, Schema.Any)],
       ),
     ).annotate({ description: "Variant-specific configuration" }),
   ),
-})
+});
 
 export const Info = Schema.Struct({
   api: Schema.optional(Schema.String),
@@ -94,10 +98,12 @@ export const Info = Schema.Struct({
         }),
         timeout: Schema.optional(
           Schema.Union([PositiveInt, Schema.Literal(false)]).annotate({
-            description: "Timeout in milliseconds for full requests to this provider. Set to false to disable timeout.",
+            description:
+              "Timeout in milliseconds for full requests to this provider. Set to false to disable timeout.",
           }),
         ).annotate({
-          description: "Timeout in milliseconds for full requests to this provider. Set to false to disable timeout.",
+          description:
+            "Timeout in milliseconds for full requests to this provider. Set to false to disable timeout.",
         }),
         headerTimeout: Schema.optional(
           Schema.Union([PositiveInt, Schema.Literal(false)]).annotate({
@@ -117,5 +123,5 @@ export const Info = Schema.Struct({
     ),
   ),
   models: Schema.optional(Schema.Record(Schema.String, Model)),
-}).annotate({ identifier: "ProviderConfig" })
-export type Info = Schema.Schema.Type<typeof Info>
+}).annotate({ identifier: "ProviderConfig" });
+export type Info = Schema.Schema.Type<typeof Info>;

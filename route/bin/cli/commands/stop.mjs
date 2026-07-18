@@ -46,7 +46,7 @@ export async function runStopCommand(opts = {}) {
       return 0;
     } catch (err) {
       console.error(
-        t("common.error", { message: err instanceof Error ? err.message : String(err) })
+        t("common.error", { message: err instanceof Error ? err.message : String(err) }),
       );
       return 1;
     }

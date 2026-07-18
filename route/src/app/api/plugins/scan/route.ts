@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     const result = await pluginManager.scan();
     return NextResponse.json(
       { discovered: result.discovered, errors: result.errors },
-      { headers: CORS_HEADERS }
+      { headers: CORS_HEADERS },
     );
   } catch (err: unknown) {
     console.error("[plugins] Failed to scan plugin directory:", err);

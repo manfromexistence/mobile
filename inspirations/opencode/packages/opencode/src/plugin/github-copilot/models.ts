@@ -1,5 +1,5 @@
-import type { Model } from "@opencode-ai/sdk/v2"
-import { Option, Schema } from "effect"
+import type { Model } from "@opencode-ai/sdk/v2";
+import { Option, Schema } from "effect";
 
 const item = Schema.Struct({
   model_picker_enabled: Schema.Boolean,
@@ -54,52 +54,54 @@ const item = Schema.Struct({
       vision: Schema.optional(Schema.Boolean),
     }),
   }),
-})
+});
 
 export const schema = Schema.Struct({
   data: Schema.Array(Schema.Unknown),
-})
+});
 
-type Item = Schema.Schema.Type<typeof item>
+type Item = Schema.Schema.Type<typeof item>;
 type SelectableItem = Item & {
   capabilities: Item["capabilities"] & {
     limits: NonNullable<Item["capabilities"]["limits"]> & {
-      max_output_tokens: number
-      max_prompt_tokens: number
-    }
+      max_output_tokens: number;
+      max_prompt_tokens: number;
+    };
     supports: Item["capabilities"]["supports"] & {
-      tool_calls: boolean
-    }
-  }
-}
-type CopilotEndpoint = "chat" | "responses" | "messages"
+      tool_calls: boolean;
+    };
+  };
+};
+type CopilotEndpoint = "chat" | "responses" | "messages";
 type CopilotModel = Omit<Model, "api"> & {
-  api: Model["api"] & { endpoint?: CopilotEndpoint }
-}
-const decodeModels = Schema.decodeUnknownSync(schema)
-const decodeItem = Schema.decodeUnknownOption(item)
+  api: Model["api"] & { endpoint?: CopilotEndpoint };
+};
+const decodeModels = Schema.decodeUnknownSync(schema);
+const decodeItem = Schema.decodeUnknownOption(item);
 
 function build(key: string, remote: SelectableItem, url: string, prev?: Model): Model {
   const reasoning =
     !!remote.capabilities.supports.adaptive_thinking ||
     !!remote.capabilities.supports.reasoning_effort?.length ||
     remote.capabilities.supports.max_thinking_budget !== undefined ||
-    remote.capabilities.supports.min_thinking_budget !== undefined
+    remote.capabilities.supports.min_thinking_budget !== undefined;
   const image =
     (remote.capabilities.supports.vision ?? false) ||
-    (remote.capabilities.limits.vision?.supported_media_types ?? []).some((item) => item.startsWith("image/"))
+    (remote.capabilities.limits.vision?.supported_media_types ?? []).some((item) =>
+      item.startsWith("image/"),
+    );
 
-  const isMsgApi = remote.supported_endpoints?.includes("/v1/messages")
+  const isMsgApi = remote.supported_endpoints?.includes("/v1/messages");
   const endpoint: CopilotEndpoint | undefined = isMsgApi
     ? "messages"
     : remote.supported_endpoints?.includes("/responses")
       ? "responses"
       : remote.supported_endpoints?.includes("/chat/completions")
         ? "chat"
-        : undefined
-  const prices = remote.billing?.token_prices
+        : undefined;
+  const prices = remote.billing?.token_prices;
   // Copilot prices are AIC per billing batch; OpenCode stores USD per million tokens.
-  const usdPerMillion = prices ? 10_000 / prices.batch_size : 0
+  const usdPerMillion = prices ? 10_000 / prices.batch_size : 0;
 
   const model: CopilotModel = {
     id: key,
@@ -113,7 +115,9 @@ function build(key: string, remote: SelectableItem, url: string, prev?: Model): 
     // API response wins
     status: "active",
     limit: {
-      context: remote.capabilities.limits.max_context_window_tokens ?? remote.capabilities.limits.max_prompt_tokens,
+      context:
+        remote.capabilities.limits.max_context_window_tokens ??
+        remote.capabilities.limits.max_prompt_tokens,
       input: remote.capabilities.limits.max_prompt_tokens,
       output: remote.capabilities.limits.max_output_tokens,
     },
@@ -154,19 +158,21 @@ function build(key: string, remote: SelectableItem, url: string, prev?: Model): 
     headers: prev?.headers ?? {},
     release_date:
       prev?.release_date ??
-      (remote.version.startsWith(`${remote.id}-`) ? remote.version.slice(remote.id.length + 1) : remote.version),
-  }
+      (remote.version.startsWith(`${remote.id}-`)
+        ? remote.version.slice(remote.id.length + 1)
+        : remote.version),
+  };
 
-  const efforts = remote.capabilities.supports.reasoning_effort
-  const variants: NonNullable<Model["variants"]> = {}
+  const efforts = remote.capabilities.supports.reasoning_effort;
+  const variants: NonNullable<Model["variants"]> = {};
   if (!isMsgApi && efforts?.length) {
     efforts.forEach((effort) => {
       variants[effort] = {
         reasoningEffort: effort,
         reasoningSummary: "auto",
         include: ["reasoning.encrypted_content"],
-      }
-    })
+      };
+    });
   } else {
     if (efforts?.length && remote.capabilities.supports.adaptive_thinking) {
       efforts.forEach((effort) => {
@@ -176,29 +182,29 @@ function build(key: string, remote: SelectableItem, url: string, prev?: Model): 
             ...(model.api.id.includes("opus-4.7") ? { display: "summarized" } : {}),
           },
           effort,
-        }
-      })
+        };
+      });
     } else if (remote.capabilities.supports.max_thinking_budget) {
-      const max = remote.capabilities.supports.max_thinking_budget
+      const max = remote.capabilities.supports.max_thinking_budget;
       variants["max"] = {
         thinking: {
           type: "enabled",
           budgetTokens: max - 1,
         },
-      }
+      };
       variants["high"] = {
         thinking: {
           type: "enabled",
           budgetTokens: Math.floor(max / 2),
         },
-      }
+      };
     }
   }
   if (Object.keys(variants).length > 0) {
-    model.variants = variants
+    model.variants = variants;
   }
 
-  return model
+  return model;
 }
 
 function usable(item: Item): item is SelectableItem {
@@ -207,7 +213,7 @@ function usable(item: Item): item is SelectableItem {
     item.capabilities.limits?.max_output_tokens !== undefined &&
     item.capabilities.limits.max_prompt_tokens !== undefined &&
     item.capabilities.supports.tool_calls !== undefined
-  )
+  );
 }
 
 export async function get(
@@ -220,39 +226,41 @@ export async function get(
     signal: AbortSignal.timeout(5_000),
   }).then(async (res) => {
     if (!res.ok) {
-      throw new Error(`Failed to fetch models: ${res.status}`)
+      throw new Error(`Failed to fetch models: ${res.status}`);
     }
-    return decodeModels(await res.json())
-  })
+    return decodeModels(await res.json());
+  });
 
-  const result = { ...existing }
+  const result = { ...existing };
   const remote = new Map(
     data.data.flatMap((raw) => {
-      const item = Option.getOrUndefined(decodeItem(raw))
-      return item && usable(item) ? ([[item.id, item]] as const) : []
+      const item = Option.getOrUndefined(decodeItem(raw));
+      return item && usable(item) ? ([[item.id, item]] as const) : [];
     }),
-  )
+  );
 
   // prune existing models whose api.id isn't in the endpoint response
   for (const [key, model] of Object.entries(result)) {
-    const m = remote.get(model.api.id)
+    const m = remote.get(model.api.id);
     if (!m) {
-      delete result[key]
-      continue
+      delete result[key];
+      continue;
     }
-    result[key] = build(key, m, baseURL, model)
+    result[key] = build(key, m, baseURL, model);
   }
 
   // add new endpoint models not already keyed in result
   for (const [id, m] of remote) {
-    if (id in result) continue
-    result[id] = build(id, m, baseURL)
+    if (id in result) continue;
+    result[id] = build(id, m, baseURL);
   }
 
   return {
     models: result,
-    pickerEnabled: new Set([...remote].filter(([, item]) => item.model_picker_enabled).map(([id]) => id)),
-  }
+    pickerEnabled: new Set(
+      [...remote].filter(([, item]) => item.model_picker_enabled).map(([id]) => id),
+    ),
+  };
 }
 
-export * as CopilotModels from "./models"
+export * as CopilotModels from "./models";

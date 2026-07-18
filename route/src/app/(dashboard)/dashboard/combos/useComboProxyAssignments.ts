@@ -10,7 +10,7 @@ export function parseComboProxyAssignmentIds(data: unknown): string[] {
   return items
     .filter(
       (entry): entry is { scopeId: string; proxyId: string } =>
-        !!(entry as { scopeId?: unknown })?.scopeId && !!(entry as { proxyId?: unknown })?.proxyId
+        !!(entry as { scopeId?: unknown })?.scopeId && !!(entry as { proxyId?: unknown })?.proxyId,
     )
     .map((entry) => entry.scopeId);
 }

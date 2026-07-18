@@ -28,8 +28,9 @@ async function withEnv(fn: (dataDir: string) => Promise<void>) {
 }
 
 async function createConnection(dataDir: string) {
-  const { ensureProviderSchema, upsertApiKeyProviderConnection } =
-    await import("../../bin/cli/provider-store.mjs");
+  const { ensureProviderSchema, upsertApiKeyProviderConnection } = await import(
+    "../../bin/cli/provider-store.mjs"
+  );
   const db = new Database(path.join(dataDir, "storage.sqlite"));
   ensureProviderSchema(db);
   const conn = upsertApiKeyProviderConnection(db, {
@@ -80,8 +81,9 @@ test("providers rotate --from-env reads key from process.env and writes DB", asy
     assert.equal(exitCode, 0, "rotate should succeed with valid env var");
 
     // Verify key changed in DB
-    const { findProviderConnection, getProviderApiKey } =
-      await import("../../bin/cli/provider-store.mjs");
+    const { findProviderConnection, getProviderApiKey } = await import(
+      "../../bin/cli/provider-store.mjs"
+    );
     const db = new Database(path.join(dataDir, "storage.sqlite"));
     const updated = findProviderConnection(db, conn.id);
     db.close();
@@ -125,7 +127,7 @@ test("providers rotate prints oauth hint for non-apikey connections", async () =
     const now = new Date().toISOString();
     db.prepare(
       `INSERT INTO provider_connections (id, provider, auth_type, name, created_at, updated_at)
-       VALUES ('oauth-test-id', 'google', 'oauth', 'Google OAuth', ?, ?)`
+       VALUES ('oauth-test-id', 'google', 'oauth', 'Google OAuth', ?, ?)`,
     ).run(now, now);
     db.close();
 

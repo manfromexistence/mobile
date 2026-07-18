@@ -12,7 +12,7 @@ export function saveSession(name, session) {
   const path = join(sessionsDir(), `${name}.json`);
   writeFileSync(
     path,
-    JSON.stringify({ ...session, name, updatedAt: new Date().toISOString() }, null, 2)
+    JSON.stringify({ ...session, name, updatedAt: new Date().toISOString() }, null, 2),
   );
 }
 

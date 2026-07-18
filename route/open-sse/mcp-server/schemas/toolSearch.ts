@@ -20,7 +20,7 @@ export const toolSearchOutput = z.object({
       description: z.string(),
       scopes: z.array(z.string()),
       signature: z.string(),
-    })
+    }),
   ),
 });
 

@@ -83,28 +83,28 @@ describe("effectiveStatus — with failures", () => {
   it("completed + failures → completed_with_failures", () => {
     assert.equal(
       effectiveStatus({ status: "completed", requestCountsFailed: 3 }),
-      "completed_with_failures"
+      "completed_with_failures",
     );
   });
 
   it("in_progress + failures → in_progress_with_failures", () => {
     assert.equal(
       effectiveStatus({ status: "in_progress", requestCountsFailed: 1 }),
-      "in_progress_with_failures"
+      "in_progress_with_failures",
     );
   });
 
   it("finalizing + failures → finalizing_with_failures", () => {
     assert.equal(
       effectiveStatus({ status: "finalizing", requestCountsFailed: 2 }),
-      "finalizing_with_failures"
+      "finalizing_with_failures",
     );
   });
 
   it("cancelled + failures → cancelled_with_failures", () => {
     assert.equal(
       effectiveStatus({ status: "cancelled", requestCountsFailed: 5 }),
-      "cancelled_with_failures"
+      "cancelled_with_failures",
     );
   });
 

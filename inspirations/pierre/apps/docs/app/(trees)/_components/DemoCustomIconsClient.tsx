@@ -1,30 +1,26 @@
-'use client';
+"use client";
 
-import { IconBrush, IconFileTreeFill, IconFire } from '@pierre/icons';
-import type { FileTreeIcons } from '@pierre/trees';
-import {
-  FileTree,
-  type FileTreePreloadedData,
-  useFileTree,
-} from '@pierre/trees/react';
-import { type CSSProperties, type JSX, useState } from 'react';
+import { IconBrush, IconFileTreeFill, IconFire } from "@pierre/icons";
+import type { FileTreeIcons } from "@pierre/trees";
+import { FileTree, type FileTreePreloadedData, useFileTree } from "@pierre/trees/react";
+import { type CSSProperties, type JSX, useState } from "react";
 
-import { sampleFileList } from '../_lib/demo-data';
-import { TREE_NEW_VIEWPORT_HEIGHTS } from '../_lib/dimensions';
+import { sampleFileList } from "../_lib/demo-data";
+import { TREE_NEW_VIEWPORT_HEIGHTS } from "../_lib/dimensions";
 import {
   DEFAULT_FILE_TREE_PANEL_STYLE,
   getDefaultFileTreePanelClass,
-} from './tree-examples/demo-data';
-import { TreeExampleSection } from './tree-examples/TreeExampleSection';
-import { TreeExampleHeading } from './TreeExampleHeading';
-import { FeatureHeader } from '@/components/FeatureHeader';
-import { PierreIconsFootnote } from '@/components/footnotes/PierreIconsFootnote';
-import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group';
-import { PRODUCTS } from '@/lib/product-config';
+} from "./tree-examples/demo-data";
+import { TreeExampleSection } from "./tree-examples/TreeExampleSection";
+import { TreeExampleHeading } from "./TreeExampleHeading";
+import { FeatureHeader } from "@/components/FeatureHeader";
+import { PierreIconsFootnote } from "@/components/footnotes/PierreIconsFootnote";
+import { ButtonGroup, ButtonGroupItem } from "@/components/ui/button-group";
+import { PRODUCTS } from "@/lib/product-config";
 
 const panelStyle = {
   ...DEFAULT_FILE_TREE_PANEL_STYLE,
-  '--trees-search-bg-override': 'light-dark(#fff, oklch(14.5% 0 0))',
+  "--trees-search-bg-override": "light-dark(#fff, oklch(14.5% 0 0))",
   height: TREE_NEW_VIEWPORT_HEIGHTS.customIcons,
 } as CSSProperties;
 
@@ -40,23 +36,23 @@ const ICON_DEMO_CONFIGS: readonly IconDemoConfig[] = [
   {
     description: <>Generic file, folder, and image icons with no file types.</>,
     icon: <IconFileTreeFill />,
-    icons: 'minimal',
-    id: 'trees-built-in-icons-minimal',
-    title: 'Minimal',
+    icons: "minimal",
+    id: "trees-built-in-icons-minimal",
+    title: "Minimal",
   },
   {
     description: <>Icons for common languages and file types.</>,
     icon: <IconFire />,
-    icons: 'standard',
-    id: 'trees-built-in-icons-standard',
-    title: 'Standard',
+    icons: "standard",
+    id: "trees-built-in-icons-standard",
+    title: "Standard",
   },
   {
     description: <>Full, colored suite with brands and frameworks.</>,
     icon: <IconBrush />,
-    icons: 'complete',
-    id: 'trees-built-in-icons-complete',
-    title: 'Complete',
+    icons: "complete",
+    id: "trees-built-in-icons-complete",
+    title: "Complete",
   },
 ] as const;
 
@@ -71,19 +67,18 @@ function IconDemoTree({
 }) {
   const { model } = useFileTree({
     dragAndDrop: {
-      canDrag: (draggedPaths) =>
-        draggedPaths.includes('package.json') === false,
+      canDrag: (draggedPaths) => draggedPaths.includes("package.json") === false,
     },
     flattenEmptyDirectories: true,
     icons: config.icons,
     id: config.id,
-    initialExpandedPaths: ['src', 'src/components'],
+    initialExpandedPaths: ["src", "src/components"],
     paths: sampleFileList,
     initialVisibleRowCount: TREE_NEW_VIEWPORT_HEIGHTS.customIcons / 30,
   });
 
   return (
-    <div className={isMobileActive ? undefined : 'hidden md:block'}>
+    <div className={isMobileActive ? undefined : "hidden md:block"}>
       <TreeExampleHeading icon={config.icon} description={config.description}>
         {config.title}
       </TreeExampleHeading>
@@ -101,9 +96,7 @@ interface DemoCustomIconsClientProps {
   preloadedDataById: Readonly<Record<string, FileTreePreloadedData>>;
 }
 
-export function DemoCustomIconsClient({
-  preloadedDataById,
-}: DemoCustomIconsClientProps) {
+export function DemoCustomIconsClient({ preloadedDataById }: DemoCustomIconsClientProps) {
   const [mobileView, setMobileView] = useState<string>(ICON_DEMO_CONFIGS[0].id);
 
   return (
@@ -113,32 +106,23 @@ export function DemoCustomIconsClient({
         title="Built-in icon sets"
         description={
           <>
-            Choose between the shipped <code>minimal</code>,{' '}
-            <code>standard</code>, and <code>complete</code> icon tiers. Each
-            tier is cumulative. Override the built-in palette with CSS variables
-            like <code>--trees-file-icon-color-javascript</code>, or fall back
-            to a fully custom sprite. See the{' '}
+            Choose between the shipped <code>minimal</code>, <code>standard</code>, and{" "}
+            <code>complete</code> icon tiers. Each tier is cumulative. Override the built-in palette
+            with CSS variables like <code>--trees-file-icon-color-javascript</code>, or fall back to
+            a fully custom sprite. See the{" "}
             <a
               href={`${PRODUCTS.trees.docsPath}#icons-configuration-shape`}
               className="inline-link"
             >
               <code>FileTreeIconConfig</code> reference
-            </a>{' '}
+            </a>{" "}
             for the full API.
           </>
         }
       />
-      <ButtonGroup
-        className="md:hidden"
-        value={mobileView}
-        onValueChange={setMobileView}
-      >
+      <ButtonGroup className="md:hidden" value={mobileView} onValueChange={setMobileView}>
         {ICON_DEMO_CONFIGS.map((config) => (
-          <ButtonGroupItem
-            key={config.id}
-            value={config.id}
-            aria-label={config.title}
-          >
+          <ButtonGroupItem key={config.id} value={config.id} aria-label={config.title}>
             {config.icon}
             {config.title}
           </ButtonGroupItem>

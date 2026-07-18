@@ -53,7 +53,7 @@ test("runLlmlinguaUltra throws when the backend fail-opens (no gain)", async () 
   // Deps absent → workerBackend returns the original text unchanged (no-op) → throw.
   await assert.rejects(
     () => runLlmlinguaUltra("hello world this is some prose to compress"),
-    /no gain/
+    /no gain/,
   );
 });
 
@@ -133,7 +133,7 @@ test("GATED real ultra-SLM compression (RUN_LLMLINGUA_INT=1)", async () => {
   }
   const LONG_PROSE =
     "The quick brown fox jumps over the lazy dog while the sun sets slowly behind the distant hills. ".repeat(
-      120
+      120,
     );
   const r = await ultraCompress([{ role: "user", content: LONG_PROSE }], {
     enabled: true,
@@ -165,7 +165,7 @@ test("GATED forced-unavailable ultra falls back to heuristic", async () => {
         slmFallbackToAggressive: false,
         maxTokensPerMessage: 0,
         ultraEngine: "slm",
-      }
+      },
     );
     assert.equal(r.stats.ultraTier, "heuristic");
   } finally {

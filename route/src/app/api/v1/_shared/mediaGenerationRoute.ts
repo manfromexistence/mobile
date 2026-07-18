@@ -38,7 +38,7 @@ export function mediaGenerationOptionsResponse() {
 
 export function mediaGenerationModelListResponse(
   models: MediaModelListEntry[],
-  type: "music" | "video"
+  type: "music" | "video",
 ) {
   return new Response(
     JSON.stringify({
@@ -53,14 +53,14 @@ export function mediaGenerationModelListResponse(
     }),
     {
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 
 export async function readMediaGenerationBody(
   request: Request,
   log: { warn: (scope: string, message: string) => void },
-  logScope: string
+  logScope: string,
 ): Promise<ValidatedMediaGenerationBody> {
   let rawBody: unknown;
   try {
@@ -123,7 +123,7 @@ export async function successfulMediaGenerationResponse({
 
 export function failedMediaGenerationResponse(
   result: MediaGenerationResult,
-  fallbackMessage: string
+  fallbackMessage: string,
 ) {
   const errorPayload = toJsonErrorPayload(result.error, fallbackMessage);
   return new Response(JSON.stringify(errorPayload), {

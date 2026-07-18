@@ -134,7 +134,7 @@ describe("deleteBatch", () => {
       assert.strictEqual(
         deleteBatch(b.id),
         true,
-        `deleteBatch for status '${status}' should succeed`
+        `deleteBatch for status '${status}' should succeed`,
       );
       assert.strictEqual(getBatch(b.id), null, `batch with status '${status}' should be gone`);
       assert.strictEqual(getFile(f.id), null, `file for status '${status}' should be gone`);

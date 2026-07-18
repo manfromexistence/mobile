@@ -14,7 +14,7 @@ import type { CompressionResult } from "../types.ts";
  */
 export async function applyOmniglyphSingleMode(
   body: Record<string, unknown>,
-  options?: CompressionEngineApplyOptions
+  options?: CompressionEngineApplyOptions,
 ): Promise<CompressionResult> {
   registerBuiltinCompressionEngines();
   const engine = getCompressionEngine("omniglyph");

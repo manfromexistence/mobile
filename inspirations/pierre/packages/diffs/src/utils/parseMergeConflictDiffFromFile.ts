@@ -46,7 +46,7 @@ import type {
   MergeConflictMarkerRowType,
   MergeConflictRegion,
   ProcessFileConflictData,
-} from '../types';
+} from "../types";
 
 export interface ParseMergeConflictDiffFromFileResult {
   fileDiff: FileDiffMetadata;
@@ -76,15 +76,15 @@ interface GetMergeConflictActionAnchorReturn {
 
 // Which section of a conflict we're currently inside while scanning lines.
 // Progresses: current → (optional) base → incoming.
-type MergeConflictStage = 'current' | 'base' | 'incoming';
+type MergeConflictStage = "current" | "base" | "incoming";
 type MergeConflictSide = MergeConflictStage;
-type MergeConflictMarkerType = 'start' | 'base' | 'separator' | 'end';
+type MergeConflictMarkerType = "start" | "base" | "separator" | "end";
 
 // Controls how buffered context lines are trimmed when flushed to hunkContent:
 //   'leading'       — first flush of a hunk; trim excess from the start
 //   'before-change' — flush between changes; emit all buffered lines
 //   'trailing'      — last flush of a hunk; trim excess from the end
-type ContextFlushMode = 'before-change' | 'leading' | 'trailing';
+type ContextFlushMode = "before-change" | "leading" | "trailing";
 
 // Mutable accumulator for building a single Hunk. Tracks line counts, the
 // hunkContent array (sequence of context/change groups), and a "context buffer"
@@ -104,7 +104,7 @@ interface HunkBuilder {
   deletionLines: number;
   additionLineIndex: number;
   deletionLineIndex: number;
-  hunkContent: Hunk['hunkContent'];
+  hunkContent: Hunk["hunkContent"];
   // Context buffer: instead of storing per-line index arrays, we track the
   // starting indices and a count. Since context lines always push to both
   // additionLines and deletionLines consecutively, indices can be derived.
@@ -174,7 +174,7 @@ interface ParseState {
 
 export function getMergeConflictActionAnchor(
   action: MergeConflictDiffAction,
-  fileDiff: FileDiffMetadata
+  fileDiff: FileDiffMetadata,
 ): GetMergeConflictActionAnchorReturn | undefined {
   const hunk = fileDiff.hunks[action.hunkIndex];
   if (hunk == null) {
@@ -197,7 +197,7 @@ export function getMergeConflictActionAnchor(
 //   3. Result assembly    — joins line arrays, builds marker rows for the UI
 export function parseMergeConflictDiffFromFile(
   file: FileContents,
-  maxContextLines: number = 6
+  maxContextLines: number = 6,
 ): ParseMergeConflictDiffFromFileResult {
   // Never allow maxContextLines to drop below 1 or else things break.
   maxContextLines = Math.max(maxContextLines, 1);
@@ -226,12 +226,12 @@ export function parseMergeConflictDiffFromFile(
   if (contentLength > 0) {
     let lineStart = 0;
     let lineIndex = 0;
-    let newlinePos = contents.indexOf('\n', lineStart);
+    let newlinePos = contents.indexOf("\n", lineStart);
     while (newlinePos !== -1) {
       processLine(s, contents.slice(lineStart, newlinePos + 1), lineIndex);
       lineStart = newlinePos + 1;
       lineIndex++;
-      newlinePos = contents.indexOf('\n', lineStart);
+      newlinePos = contents.indexOf("\n", lineStart);
     }
     if (lineStart < contentLength) {
       processLine(s, contents.slice(lineStart), lineIndex);
@@ -242,64 +242,45 @@ export function parseMergeConflictDiffFromFile(
   // last hunk has buffered context lines, flush them as trailing context and
   // finalize the hunk.
   if (s.conflictStack.length > 0) {
-    throw new Error(
-      'parseMergeConflictDiffFromFile: unfinished merge conflict marker stack'
-    );
+    throw new Error("parseMergeConflictDiffFromFile: unfinished merge conflict marker stack");
   }
 
   if (s.activeHunk != null && s.activeHunk.hunkContent.length > 0) {
-    flushBufferedContext(s, s.activeHunk, 'trailing');
+    flushBufferedContext(s, s.activeHunk, "trailing");
     finalizeActiveHunk(s);
   }
 
-  for (
-    let conflictIndex = 0;
-    conflictIndex < s.conflictBuilders.length;
-    conflictIndex++
-  ) {
+  for (let conflictIndex = 0; conflictIndex < s.conflictBuilders.length; conflictIndex++) {
     const builder = s.conflictBuilders[conflictIndex];
     if (builder == null || !builder.completed) {
       throw new Error(
-        `parseMergeConflictDiffFromFile: failed to build merge conflict action ${conflictIndex}`
+        `parseMergeConflictDiffFromFile: failed to build merge conflict action ${conflictIndex}`,
       );
     }
   }
 
   // Phase 3: Result assembly. Account for any collapsed lines after the last
   // hunk, then join the line arrays to produce resolved file contents.
-  if (
-    s.hunks.length > 0 &&
-    s.additionLines.length > 0 &&
-    s.deletionLines.length > 0
-  ) {
+  if (s.hunks.length > 0 && s.additionLines.length > 0 && s.deletionLines.length > 0) {
     const lastHunk = s.hunks[s.hunks.length - 1];
     const collapsedAfter = Math.max(
-      s.additionLines.length -
-        (lastHunk.additionStart + lastHunk.additionCount - 1),
-      0
+      s.additionLines.length - (lastHunk.additionStart + lastHunk.additionCount - 1),
+      0,
     );
     s.splitLineCount += collapsedAfter;
     s.unifiedLineCount += collapsedAfter;
   }
 
-  const currentContents = s.deletionLines.join('');
-  const incomingContents = s.additionLines.join('');
-  const currentFile = createResolvedConflictFile(
-    file,
-    'current',
-    currentContents
-  );
-  const incomingFile = createResolvedConflictFile(
-    file,
-    'incoming',
-    incomingContents
-  );
+  const currentContents = s.deletionLines.join("");
+  const incomingContents = s.additionLines.join("");
+  const currentFile = createResolvedConflictFile(file, "current", currentContents);
+  const incomingFile = createResolvedConflictFile(file, "incoming", incomingContents);
 
-  let type: FileDiffMetadata['type'] = 'change';
-  if (incomingContents === '') {
-    type = 'deleted';
-  } else if (currentContents === '') {
-    type = 'new';
+  let type: FileDiffMetadata["type"] = "change";
+  if (incomingContents === "") {
+    type = "deleted";
+  } else if (currentContents === "") {
+    type = "new";
   }
 
   const fileDiff: FileDiffMetadata = {
@@ -312,10 +293,7 @@ export function parseMergeConflictDiffFromFile(
     isPartial: false,
     deletionLines: s.deletionLines,
     additionLines: s.additionLines,
-    cacheKey:
-      file.cacheKey != null
-        ? `${file.cacheKey}:merge-conflict-diff`
-        : undefined,
+    cacheKey: file.cacheKey != null ? `${file.cacheKey}:merge-conflict-diff` : undefined,
   };
 
   return {
@@ -353,7 +331,7 @@ function processLine(s: ParseState, line: string, index: number): void {
     if (
       line.length >= 7 &&
       line.charCodeAt(0) === 60 &&
-      getMergeConflictMarkerType(line) === 'start'
+      getMergeConflictMarkerType(line) === "start"
     ) {
       handleStartMarker(s, line, index);
       return;
@@ -365,42 +343,40 @@ function processLine(s: ParseState, line: string, index: number): void {
   // Inside a conflict: all marker types must be checked.
   const markerType = getMergeConflictMarkerType(line);
 
-  if (markerType === 'start') {
+  if (markerType === "start") {
     handleStartMarker(s, line, index);
     return;
   }
 
-  if (markerType === 'base') {
-    frame.stage = 'base';
+  if (markerType === "base") {
+    frame.stage = "base";
     frame.baseMarkerLineIndex = index;
     frame.markerLines.base = line;
     return;
   }
 
-  if (markerType === 'separator') {
-    frame.stage = 'incoming';
+  if (markerType === "separator") {
+    frame.stage = "incoming";
     frame.separatorLineIndex = index;
     frame.markerLines.separator = line;
     return;
   }
 
-  if (markerType === 'end') {
+  if (markerType === "end") {
     const completedFrame = s.conflictStack.pop();
     if (completedFrame == null) {
-      throw new Error(
-        'parseMergeConflictDiffFromFile: encountered end marker before start marker'
-      );
+      throw new Error("parseMergeConflictDiffFromFile: encountered end marker before start marker");
     }
     finalizeConflict(s, completedFrame, index, line);
     return;
   }
 
-  if (frame.stage === 'current') {
-    emitChangeLine(s, 'deletion', line, frame.conflictIndex, 'current');
-  } else if (frame.stage === 'base') {
+  if (frame.stage === "current") {
+    emitChangeLine(s, "deletion", line, frame.conflictIndex, "current");
+  } else if (frame.stage === "base") {
     emitContextLine(s, line, frame.conflictIndex);
   } else {
-    emitChangeLine(s, 'addition', line, frame.conflictIndex, 'incoming');
+    emitChangeLine(s, "addition", line, frame.conflictIndex, "incoming");
   }
 }
 
@@ -408,10 +384,7 @@ function processLine(s: ParseState, line: string, index: number): void {
 // start positions are derived from the current length of the line arrays
 // (1-based, matching unified diff conventions).
 function ensureActiveHunk(s: ParseState): HunkBuilder {
-  s.activeHunk ??= createHunkBuilder(
-    s.additionLines.length + 1,
-    s.deletionLines.length + 1
-  );
+  s.activeHunk ??= createHunkBuilder(s.additionLines.length + 1, s.deletionLines.length + 1);
   return s.activeHunk;
 }
 
@@ -424,12 +397,12 @@ function assignConflictContent(
   s: ParseState,
   conflictIndex: number,
   role: MergeConflictSide,
-  contentIndex: number
+  contentIndex: number,
 ): void {
   const builder = s.conflictBuilders[conflictIndex];
   if (builder == null) {
     throw new Error(
-      `parseMergeConflictDiffFromFile: failed to locate conflict action ${conflictIndex}`
+      `parseMergeConflictDiffFromFile: failed to locate conflict action ${conflictIndex}`,
     );
   }
 
@@ -439,7 +412,7 @@ function assignConflictContent(
     action.hunkIndex = hunkIndex;
   } else if (action.hunkIndex !== hunkIndex) {
     throw new Error(
-      `parseMergeConflictDiffFromFile: conflict ${conflictIndex} spans multiple hunks and cannot be anchored`
+      `parseMergeConflictDiffFromFile: conflict ${conflictIndex} spans multiple hunks and cannot be anchored`,
     );
   }
 
@@ -449,11 +422,11 @@ function assignConflictContent(
   action.endContentIndex = contentIndex;
   action.endMarkerContentIndex = contentIndex;
 
-  if (role === 'current') {
+  if (role === "current") {
     action.currentContentIndex ??= contentIndex;
     return;
   }
-  if (role === 'base') {
+  if (role === "base") {
     action.baseContentIndex ??= contentIndex;
     return;
   }
@@ -466,14 +439,14 @@ function assignConflictContent(
 // content index so the caller can anchor the conflict to it.
 function appendChangeLine(
   hunk: HunkBuilder,
-  lineType: 'addition' | 'deletion',
+  lineType: "addition" | "deletion",
   additionLineIndex: number,
-  deletionLineIndex: number
+  deletionLineIndex: number,
 ): number {
   const hunkContent = hunk.hunkContent;
   const lastContent = hunkContent[hunkContent.length - 1];
-  if (lastContent?.type === 'change') {
-    if (lineType === 'addition') {
+  if (lastContent?.type === "change") {
+    if (lineType === "addition") {
       lastContent.additions++;
     } else {
       lastContent.deletions++;
@@ -481,9 +454,9 @@ function appendChangeLine(
     return hunkContent.length - 1;
   }
   hunkContent.push({
-    type: 'change',
-    additions: lineType === 'addition' ? 1 : 0,
-    deletions: lineType === 'deletion' ? 1 : 0,
+    type: "change",
+    additions: lineType === "addition" ? 1 : 0,
+    deletions: lineType === "deletion" ? 1 : 0,
     additionLineIndex,
     deletionLineIndex,
   });
@@ -502,16 +475,12 @@ function appendChangeLine(
 //   'trailing'      — last flush before hunk finalization; keep at most
 //                     maxContextLines from the front of the buffer.
 //   'before-change' — mid-hunk context between two changes; emit everything.
-function flushBufferedContext(
-  s: ParseState,
-  hunk: HunkBuilder,
-  mode: ContextFlushMode
-): void {
+function flushBufferedContext(s: ParseState, hunk: HunkBuilder, mode: ContextFlushMode): void {
   let count = hunk.contextBufferCount;
   let addStart = hunk.contextBufferAdditionStart;
   let delStart = hunk.contextBufferDeletionStart;
 
-  if (mode === 'leading' && count > s.maxContextLines) {
+  if (mode === "leading" && count > s.maxContextLines) {
     const difference = count - s.maxContextLines;
     addStart += difference;
     delStart += difference;
@@ -522,7 +491,7 @@ function flushBufferedContext(
     hunk.deletionLineIndex += difference;
   }
 
-  if (mode === 'trailing' && count > s.maxContextLines) {
+  if (mode === "trailing" && count > s.maxContextLines) {
     count = s.maxContextLines;
   }
 
@@ -538,12 +507,12 @@ function flushBufferedContext(
   const hunkContent = hunk.hunkContent;
   const lastContent = hunkContent[hunkContent.length - 1];
   let contentIndex: number;
-  if (lastContent?.type === 'context') {
+  if (lastContent?.type === "context") {
     lastContent.lines += count;
     contentIndex = hunkContent.length - 1;
   } else {
     hunkContent.push({
-      type: 'context',
+      type: "context",
       lines: count,
       additionLineIndex: addStart,
       deletionLineIndex: delStart,
@@ -559,7 +528,7 @@ function flushBufferedContext(
     const bufferStartOffset = addStart - hunk.contextBufferAdditionStart;
     for (const [offset, conflictIndex] of baseConflicts) {
       if (offset >= bufferStartOffset && offset < bufferStartOffset + count) {
-        assignConflictContent(s, conflictIndex, 'base', contentIndex);
+        assignConflictContent(s, conflictIndex, "base", contentIndex);
       }
     }
   }
@@ -585,7 +554,7 @@ function finalizeActiveHunk(s: ParseState): void {
   let hunkSplitLineCount = 0;
   let hunkUnifiedLineCount = 0;
   for (const content of hunk.hunkContent) {
-    if (content.type === 'context') {
+    if (content.type === "context") {
       hunkSplitLineCount += content.lines;
       hunkUnifiedLineCount += content.lines;
     } else {
@@ -640,10 +609,8 @@ function splitHunkWithBufferedContext(s: ParseState): void {
   const omittedContextLineCount = count - s.maxContextLines2;
 
   // Save trailing context start indices for the next hunk.
-  const nextAddStart =
-    hunk.contextBufferAdditionStart + count - s.maxContextLines;
-  const nextDelStart =
-    hunk.contextBufferDeletionStart + count - s.maxContextLines;
+  const nextAddStart = hunk.contextBufferAdditionStart + count - s.maxContextLines;
+  const nextDelStart = hunk.contextBufferDeletionStart + count - s.maxContextLines;
 
   // Extract base conflicts that fall within the trailing portion.
   let nextBaseConflicts: Map<number, number> | undefined;
@@ -657,14 +624,14 @@ function splitHunkWithBufferedContext(s: ParseState): void {
     }
   }
 
-  flushBufferedContext(s, hunk, 'trailing');
+  flushBufferedContext(s, hunk, "trailing");
   const emittedAdditionCount = hunk.additionCount;
   const emittedDeletionCount = hunk.deletionCount;
   finalizeActiveHunk(s);
 
   s.activeHunk = createHunkBuilder(
     hunk.additionStart + emittedAdditionCount + omittedContextLineCount,
-    hunk.deletionStart + emittedDeletionCount + omittedContextLineCount
+    hunk.deletionStart + emittedDeletionCount + omittedContextLineCount,
   );
   s.activeHunk.contextBufferAdditionStart = nextAddStart;
   s.activeHunk.contextBufferDeletionStart = nextDelStart;
@@ -680,11 +647,7 @@ function splitHunkWithBufferedContext(s: ParseState): void {
 // For base-section lines inside a diff3 conflict, pass the conflict index so
 // the buffer can record the association; when the buffer is flushed, those
 // lines get anchored to the conflict via assignConflictContent.
-function emitContextLine(
-  s: ParseState,
-  line: string,
-  baseConflictIndex: number = -1
-): void {
+function emitContextLine(s: ParseState, line: string, baseConflictIndex: number = -1): void {
   const hunk = ensureActiveHunk(s);
   // Reset buffer start on first line after a flush/creation.
   if (hunk.contextBufferCount === 0) {
@@ -695,10 +658,7 @@ function emitContextLine(
   s.deletionLines.push(line);
   if (baseConflictIndex >= 0) {
     hunk.contextBufferBaseConflicts ??= new Map();
-    hunk.contextBufferBaseConflicts.set(
-      hunk.contextBufferCount,
-      baseConflictIndex
-    );
+    hunk.contextBufferBaseConflicts.set(hunk.contextBufferCount, baseConflictIndex);
   }
   hunk.contextBufferCount++;
 }
@@ -713,44 +673,32 @@ function emitContextLine(
 //   5. Anchor the conflict action to the content index
 function emitChangeLine(
   s: ParseState,
-  lineType: 'addition' | 'deletion',
+  lineType: "addition" | "deletion",
   line: string,
   conflictIndex: number,
-  role: MergeConflictSide
+  role: MergeConflictSide,
 ): void {
   let hunk = ensureActiveHunk(s);
   // If the context gap since the last change exceeds 2x maxContextLines,
   // split into two hunks: trailing context for the old, leading for the new.
-  if (
-    hunk.hunkContent.length > 0 &&
-    hunk.contextBufferCount > s.maxContextLines2
-  ) {
+  if (hunk.hunkContent.length > 0 && hunk.contextBufferCount > s.maxContextLines2) {
     splitHunkWithBufferedContext(s);
     hunk = s.activeHunk!;
   }
 
-  flushBufferedContext(
-    s,
-    hunk,
-    hunk.hunkContent.length === 0 ? 'leading' : 'before-change'
-  );
+  flushBufferedContext(s, hunk, hunk.hunkContent.length === 0 ? "leading" : "before-change");
 
   const additionLineIndex = s.additionLines.length;
   const deletionLineIndex = s.deletionLines.length;
-  if (lineType === 'addition') {
+  if (lineType === "addition") {
     s.additionLines.push(line);
   } else {
     s.deletionLines.push(line);
   }
 
-  const contentIndex = appendChangeLine(
-    hunk,
-    lineType,
-    additionLineIndex,
-    deletionLineIndex
-  );
+  const contentIndex = appendChangeLine(hunk, lineType, additionLineIndex, deletionLineIndex);
 
-  if (lineType === 'addition') {
+  if (lineType === "addition") {
     hunk.additionCount++;
     hunk.additionLines++;
   } else {
@@ -770,18 +718,18 @@ function finalizeConflict(
   s: ParseState,
   frame: ConflictFrame,
   endLineIndex: number,
-  endMarkerLine: string
+  endMarkerLine: string,
 ): void {
   if (frame.separatorLineIndex == null || frame.markerLines.separator == null) {
     throw new Error(
-      `parseMergeConflictDiffFromFile: conflict ${frame.conflictIndex} is missing a separator marker`
+      `parseMergeConflictDiffFromFile: conflict ${frame.conflictIndex} is missing a separator marker`,
     );
   }
 
   const builder = s.conflictBuilders[frame.conflictIndex];
   if (builder == null) {
     throw new Error(
-      `parseMergeConflictDiffFromFile: failed to finalize conflict ${frame.conflictIndex}`
+      `parseMergeConflictDiffFromFile: failed to finalize conflict ${frame.conflictIndex}`,
     );
   }
 
@@ -802,16 +750,13 @@ function finalizeConflict(
     endLineNumber: endLineIndex + 1,
     baseMarkerLineIndex: frame.baseMarkerLineIndex,
     baseMarkerLineNumber:
-      frame.baseMarkerLineIndex != null
-        ? frame.baseMarkerLineIndex + 1
-        : undefined,
+      frame.baseMarkerLineIndex != null ? frame.baseMarkerLineIndex + 1 : undefined,
   };
 
   // If one side of the conflict was empty (e.g. "add vs nothing"), its content
   // index will be undefined. Use the other side as a fallback so the action
   // always has a valid anchor for the UI to render.
-  const fallbackContentIndex =
-    action.currentContentIndex ?? action.incomingContentIndex;
+  const fallbackContentIndex = action.currentContentIndex ?? action.incomingContentIndex;
   action.currentContentIndex ??= fallbackContentIndex;
   action.incomingContentIndex ??= fallbackContentIndex;
   if (action.startContentIndex < 0 && fallbackContentIndex != null) {
@@ -831,7 +776,7 @@ function finalizeConflict(
     action.endMarkerContentIndex < 0
   ) {
     throw new Error(
-      `parseMergeConflictDiffFromFile: failed to anchor merge conflict ${frame.conflictIndex}`
+      `parseMergeConflictDiffFromFile: failed to anchor merge conflict ${frame.conflictIndex}`,
     );
   }
 
@@ -844,16 +789,12 @@ function finalizeConflict(
 // indices) that get filled in as we encounter content lines and markers.
 // The frame tracks which section we're scanning (current → base → incoming);
 // the builder accumulates the final action that downstream consumers use.
-function handleStartMarker(
-  s: ParseState,
-  line: string,
-  lineIndex: number
-): void {
+function handleStartMarker(s: ParseState, line: string, lineIndex: number): void {
   const conflictIndex = s.nextConflictIndex;
   s.nextConflictIndex++;
   s.conflictStack.push({
     conflictIndex,
-    stage: 'current',
+    stage: "current",
     startLineIndex: lineIndex,
     markerLines: { start: line },
   });
@@ -878,17 +819,14 @@ function handleStartMarker(
       endMarkerContentIndex: -1,
       markerLines: {
         start: line,
-        separator: '',
-        end: '',
+        separator: "",
+        end: "",
       },
     },
   };
 }
 
-function createHunkBuilder(
-  additionStart: number,
-  deletionStart: number
-): HunkBuilder {
+function createHunkBuilder(additionStart: number, deletionStart: number): HunkBuilder {
   return {
     additionStart,
     deletionStart,
@@ -919,20 +857,13 @@ function formatHunkRange(start: number, count: number): string {
 //   '>' (62)  = end     (>>>>>>> incoming)
 // The separator must be exactly '=======' with no trailing text; other markers
 // allow an optional space + label (e.g. "<<<<<<< HEAD").
-function getMergeConflictMarkerType(
-  line: string
-): MergeConflictMarkerType | undefined {
+function getMergeConflictMarkerType(line: string): MergeConflictMarkerType | undefined {
   if (line.length < 7) {
     return undefined;
   }
 
   const markerCode = line.charCodeAt(0);
-  if (
-    markerCode !== 60 &&
-    markerCode !== 62 &&
-    markerCode !== 61 &&
-    markerCode !== 124
-  ) {
+  if (markerCode !== 60 && markerCode !== 62 && markerCode !== 61 && markerCode !== 124) {
     return undefined;
   }
 
@@ -942,10 +873,7 @@ function getMergeConflictMarkerType(
   }
 
   let markerLength = 1;
-  while (
-    markerLength < lineEnd &&
-    line.charCodeAt(markerLength) === markerCode
-  ) {
+  while (markerLength < lineEnd && line.charCodeAt(markerLength) === markerCode) {
     markerLength++;
   }
 
@@ -954,23 +882,20 @@ function getMergeConflictMarkerType(
   }
 
   if (markerCode === 61) {
-    return markerLength === lineEnd ? 'separator' : undefined;
+    return markerLength === lineEnd ? "separator" : undefined;
   }
 
-  if (
-    markerLength !== lineEnd &&
-    !isWhitespaceCode(line.charCodeAt(markerLength))
-  ) {
+  if (markerLength !== lineEnd && !isWhitespaceCode(line.charCodeAt(markerLength))) {
     return undefined;
   }
 
   if (markerCode === 60) {
-    return 'start';
+    return "start";
   }
   if (markerCode === 62) {
-    return 'end';
+    return "end";
   }
-  return 'base';
+  return "base";
 }
 
 function getLineContentEndIndex(line: string): number {
@@ -985,28 +910,18 @@ function getLineContentEndIndex(line: string): number {
 }
 
 function isWhitespaceCode(code: number): boolean {
-  return (
-    code === 9 ||
-    code === 10 ||
-    code === 11 ||
-    code === 12 ||
-    code === 13 ||
-    code === 32
-  );
+  return code === 9 || code === 10 || code === 11 || code === 12 || code === 13 || code === 32;
 }
 
 function createResolvedConflictFile(
   file: FileContents,
-  side: 'current' | 'incoming',
-  contents: string
+  side: "current" | "incoming",
+  contents: string,
 ): FileContents {
   return {
     ...file,
     contents,
-    cacheKey:
-      file.cacheKey != null
-        ? `${file.cacheKey}:merge-conflict-${side}`
-        : undefined,
+    cacheKey: file.cacheKey != null ? `${file.cacheKey}:merge-conflict-${side}` : undefined,
   };
 }
 
@@ -1019,12 +934,10 @@ function createResolvedConflictFile(
 // for every marker.
 export function buildMergeConflictMarkerRows(
   fileDiff: FileDiffMetadata,
-  actions: (MergeConflictDiffAction | undefined)[]
+  actions: (MergeConflictDiffAction | undefined)[],
 ): MergeConflictMarkerRow[] {
   const markerRows: MergeConflictMarkerRow[] = [];
-  const hunkLineStartCache: (number[] | undefined)[] = new Array(
-    fileDiff.hunks.length
-  );
+  const hunkLineStartCache: (number[] | undefined)[] = new Array(fileDiff.hunks.length);
 
   const getLineStart = (hunkIndex: number, contentIndex: number): number => {
     const hunk = fileDiff.hunks[hunkIndex];
@@ -1039,9 +952,7 @@ export function buildMergeConflictMarkerRows(
       for (let index = 0; index < hunk.hunkContent.length; index++) {
         const content = hunk.hunkContent[index];
         lineIndex +=
-          content.type === 'context'
-            ? content.lines
-            : content.deletions + content.additions;
+          content.type === "context" ? content.lines : content.deletions + content.additions;
         starts[index + 1] = lineIndex;
       }
       hunkLineStartCache[hunkIndex] = starts;
@@ -1053,8 +964,7 @@ export function buildMergeConflictMarkerRows(
     const lineStart = getLineStart(hunkIndex, contentIndex);
     const starts = hunkLineStartCache[hunkIndex];
     const lineEndExclusive =
-      starts?.[Math.max(contentIndex + 1, 0)] ??
-      getLineStart(hunkIndex, contentIndex + 1);
+      starts?.[Math.max(contentIndex + 1, 0)] ?? getLineStart(hunkIndex, contentIndex + 1);
     return Math.max(lineStart, lineEndExclusive - 1);
   };
 
@@ -1068,18 +978,15 @@ export function buildMergeConflictMarkerRows(
       continue;
     }
 
-    const actionLineIndex = getLineStart(
-      action.hunkIndex,
-      action.startContentIndex
-    );
+    const actionLineIndex = getLineStart(action.hunkIndex, action.startContentIndex);
     markerRows.push(
       createMergeConflictMarkerRow(
         action,
-        'marker-start',
+        "marker-start",
         action.startContentIndex,
         action.markerLines.start,
-        actionLineIndex
-      )
+        actionLineIndex,
+      ),
     );
 
     if (action.baseContentIndex != null) {
@@ -1098,43 +1005,40 @@ export function buildMergeConflictMarkerRows(
       const baseContext = hunk.hunkContent[action.baseContentIndex];
       const incomingChange = hunk.hunkContent[incomingContentIndex];
       if (
-        currentChange?.type !== 'change' ||
-        baseContext?.type !== 'context' ||
-        incomingChange?.type !== 'change'
+        currentChange?.type !== "change" ||
+        baseContext?.type !== "context" ||
+        incomingChange?.type !== "change"
       ) {
         continue;
       }
 
       const currentStart = getLineStart(action.hunkIndex, currentContentIndex);
-      const incomingStart = getLineStart(
-        action.hunkIndex,
-        incomingContentIndex
-      );
+      const incomingStart = getLineStart(action.hunkIndex, incomingContentIndex);
       markerRows.push(
         createMergeConflictMarkerRow(
           action,
-          'marker-base',
+          "marker-base",
           action.baseContentIndex,
           baseMarkerLine,
-          currentStart + currentChange.deletions
-        )
+          currentStart + currentChange.deletions,
+        ),
       );
 
       markerRows.push(
         createMergeConflictMarkerRow(
           action,
-          'marker-separator',
+          "marker-separator",
           action.baseContentIndex,
           action.markerLines.separator,
-          incomingStart
+          incomingStart,
         ),
         createMergeConflictMarkerRow(
           action,
-          'marker-end',
+          "marker-end",
           action.endMarkerContentIndex,
           action.markerLines.end,
-          getLineEnd(action.hunkIndex, action.endMarkerContentIndex)
-        )
+          getLineEnd(action.hunkIndex, action.endMarkerContentIndex),
+        ),
       );
       continue;
     }
@@ -1144,31 +1048,29 @@ export function buildMergeConflictMarkerRows(
       continue;
     }
     const content = hunk.hunkContent[currentContentIndex];
-    if (content?.type !== 'change') {
+    if (content?.type !== "change") {
       continue;
     }
 
     const contentStart = getLineStart(action.hunkIndex, currentContentIndex);
     const separatorLineIndex =
-      content.deletions > 0
-        ? contentStart + content.deletions
-        : actionLineIndex;
+      content.deletions > 0 ? contentStart + content.deletions : actionLineIndex;
 
     markerRows.push(
       createMergeConflictMarkerRow(
         action,
-        'marker-separator',
+        "marker-separator",
         currentContentIndex,
         action.markerLines.separator,
-        separatorLineIndex
+        separatorLineIndex,
       ),
       createMergeConflictMarkerRow(
         action,
-        'marker-end',
+        "marker-end",
         action.endMarkerContentIndex,
         action.markerLines.end,
-        getLineEnd(action.hunkIndex, action.endMarkerContentIndex)
-      )
+        getLineEnd(action.hunkIndex, action.endMarkerContentIndex),
+      ),
     );
   }
 
@@ -1180,7 +1082,7 @@ function createMergeConflictMarkerRow(
   type: MergeConflictMarkerRowType,
   contentIndex: number,
   lineText: string,
-  lineIndex: number
+  lineIndex: number,
 ): MergeConflictMarkerRow {
   return {
     type,
@@ -1192,17 +1094,11 @@ function createMergeConflictMarkerRow(
   };
 }
 
-function getUnifiedLineStartForContent(
-  hunk: Hunk,
-  contentIndex: number
-): number {
+function getUnifiedLineStartForContent(hunk: Hunk, contentIndex: number): number {
   let lineIndex = hunk.unifiedLineStart;
   for (let index = 0; index < contentIndex; index++) {
     const content = hunk.hunkContent[index];
-    lineIndex +=
-      content.type === 'context'
-        ? content.lines
-        : content.deletions + content.additions;
+    lineIndex += content.type === "context" ? content.lines : content.deletions + content.additions;
   }
   return lineIndex;
 }

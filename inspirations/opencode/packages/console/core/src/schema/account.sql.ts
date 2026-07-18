@@ -1,5 +1,5 @@
-import { mysqlTable, primaryKey } from "drizzle-orm/mysql-core"
-import { id, timestamps } from "../drizzle/types"
+import { mysqlTable, primaryKey } from "drizzle-orm/mysql-core";
+import { id, timestamps } from "../drizzle/types";
 
 export const AccountTable = mysqlTable(
   "account",
@@ -8,4 +8,4 @@ export const AccountTable = mysqlTable(
     ...timestamps,
   },
   (table) => [primaryKey({ columns: [table.id] })],
-)
+);

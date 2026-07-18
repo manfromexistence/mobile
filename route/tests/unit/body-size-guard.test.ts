@@ -19,26 +19,26 @@ test("body size guard public surface excludes the removed default MB helper", ()
 test("body size guard uses maxBodySizeMb from settings for regular API routes", () => {
   assert.equal(
     getBodySizeLimit("/api/v1/responses", { maxBodySizeMb: 100 }),
-    requestBodyLimitMbToBytes(100)
+    requestBodyLimitMbToBytes(100),
   );
 });
 
 test("body size guard keeps dedicated upload limits as lower bounds", () => {
   assert.equal(
     getBodySizeLimit("/api/v1/responses", { maxBodySizeMb: 10 }),
-    MAX_BODY_BYTES_LLM_API
+    MAX_BODY_BYTES_LLM_API,
   );
   assert.equal(
     getBodySizeLimit("/api/v1/chat/completions", { maxBodySizeMb: 10 }),
-    MAX_BODY_BYTES_LLM_API
+    MAX_BODY_BYTES_LLM_API,
   );
   assert.equal(
     getBodySizeLimit("/api/v1/audio/transcriptions", { maxBodySizeMb: 1 }),
-    MAX_BODY_BYTES_AUDIO
+    MAX_BODY_BYTES_AUDIO,
   );
   assert.equal(
     getBodySizeLimit("/api/v1/audio/transcriptions", { maxBodySizeMb: 200 }),
-    requestBodyLimitMbToBytes(200)
+    requestBodyLimitMbToBytes(200),
   );
 });
 
@@ -97,7 +97,7 @@ test("/api/v1/files route guard allows 500 MB file upload", () => {
   });
   assert.equal(
     checkBodySize(request, getBodySizeLimit("/api/v1/files", { maxBodySizeMb: 10 })),
-    null
+    null,
   );
 });
 

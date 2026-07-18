@@ -159,7 +159,7 @@ export function extractResponsesReasoningSummaryText(item) {
   if (!item || !Array.isArray(item.summary)) return "";
   return item.summary
     .map((part) =>
-      part && typeof part === "object" && typeof part.text === "string" ? part.text : ""
+      part && typeof part === "object" && typeof part.text === "string" ? part.text : "",
     )
     .join("");
 }

@@ -22,8 +22,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { shouldWaitForComboCooldown, resolveComboCooldownWaitDecision, COMBO_COOLDOWN_WAIT_MARGIN_MS } =
-  await import("../../open-sse/services/combo/comboCooldownRetry.ts");
+const {
+  shouldWaitForComboCooldown,
+  resolveComboCooldownWaitDecision,
+  COMBO_COOLDOWN_WAIT_MARGIN_MS,
+} = await import("../../open-sse/services/combo/comboCooldownRetry.ts");
 
 function baseSettings(overrides: Partial<Record<string, unknown>> = {}) {
   return {
@@ -79,7 +82,7 @@ test("missing/unknown reason (null) → no wait (only an explicit transient reas
 
 test("waitMs above the configured ceiling → no wait", () => {
   const r = shouldWaitForComboCooldown(
-    baseInput({ waitMs: 5001, settings: baseSettings({ maxWaitMs: 5000 }) }) as never
+    baseInput({ waitMs: 5001, settings: baseSettings({ maxWaitMs: 5000 }) }) as never,
   );
   assert.equal(r.wait, false);
   // waitMs is still surfaced for logging even when we decline to wait.
@@ -88,7 +91,7 @@ test("waitMs above the configured ceiling → no wait", () => {
 
 test("waitMs exactly at the ceiling → wait (inclusive bound)", () => {
   const r = shouldWaitForComboCooldown(
-    baseInput({ waitMs: 5000, settings: baseSettings({ maxWaitMs: 5000 }) }) as never
+    baseInput({ waitMs: 5000, settings: baseSettings({ maxWaitMs: 5000 }) }) as never,
   );
   assert.equal(r.wait, true);
 });
@@ -100,14 +103,14 @@ test("waitMs <= 0 → no wait", () => {
 
 test("attempt >= maxAttempts → no wait", () => {
   const r = shouldWaitForComboCooldown(
-    baseInput({ attempt: 2, settings: baseSettings({ maxAttempts: 2 }) }) as never
+    baseInput({ attempt: 2, settings: baseSettings({ maxAttempts: 2 }) }) as never,
   );
   assert.equal(r.wait, false);
 });
 
 test("attempt below maxAttempts (last allowed) → wait", () => {
   const r = shouldWaitForComboCooldown(
-    baseInput({ attempt: 1, settings: baseSettings({ maxAttempts: 2 }) }) as never
+    baseInput({ attempt: 1, settings: baseSettings({ maxAttempts: 2 }) }) as never,
   );
   assert.equal(r.wait, true);
 });
@@ -124,7 +127,7 @@ test("budget exactly equal to waitMs → wait (inclusive bound)", () => {
 
 test("settings.enabled === false → no wait", () => {
   const r = shouldWaitForComboCooldown(
-    baseInput({ settings: baseSettings({ enabled: false }) }) as never
+    baseInput({ settings: baseSettings({ enabled: false }) }) as never,
   );
   assert.equal(r.wait, false);
 });
@@ -133,7 +136,7 @@ test("non-finite / garbage waitMs → no wait (defensive)", () => {
   assert.equal(shouldWaitForComboCooldown(baseInput({ waitMs: Number.NaN }) as never).wait, false);
   assert.equal(
     shouldWaitForComboCooldown(baseInput({ waitMs: Number.POSITIVE_INFINITY }) as never).wait,
-    false
+    false,
   );
 });
 
@@ -172,7 +175,7 @@ test("resolve: quota_exhausted lock → no wait (the critical security guard)", 
   const r = resolveComboCooldownWaitDecision(
     decisionInput({
       lookupLock: () => ({ reason: "quota_exhausted", remainingMs: 3000 }),
-    }) as never
+    }) as never,
   );
   assert.equal(r.wait, false);
 });
@@ -186,7 +189,7 @@ test("resolve: settings.enabled false short-circuits before any lookup", () => {
         lookups += 1;
         return { reason: "rate_limit", remainingMs: 3000 };
       },
-    }) as never
+    }) as never,
   );
   assert.equal(r.wait, false);
   assert.equal(lookups, 0);
@@ -200,7 +203,7 @@ test("resolve: no locked target → no wait", () => {
 
 test("resolve: expired lock (remainingMs <= 0) is ignored → no wait", () => {
   const r = resolveComboCooldownWaitDecision(
-    decisionInput({ lookupLock: () => ({ reason: "rate_limit", remainingMs: 0 }) }) as never
+    decisionInput({ lookupLock: () => ({ reason: "rate_limit", remainingMs: 0 }) }) as never,
   );
   assert.equal(r.wait, false);
 });
@@ -219,7 +222,7 @@ test("resolve: picks the soonest-to-recover locked target across many", () => {
           ? { reason: "rate_limit", remainingMs: 2000 }
           : { reason: "rate_limit", remainingMs: 3000 },
       computeWaitMs: () => null,
-    }) as never
+    }) as never,
   );
   assert.equal(r.wait, true);
   assert.equal(r.waitMs, 2000 + M);
@@ -230,7 +233,7 @@ test("resolve: uses lock remainingMs (+margin) when the retry-after hint yields 
     decisionInput({
       computeWaitMs: () => null,
       lookupLock: () => ({ reason: "rate_limit", remainingMs: 1500 }),
-    }) as never
+    }) as never,
   );
   assert.equal(r.wait, true);
   assert.equal(r.waitMs, 1500 + M);
@@ -242,7 +245,7 @@ test("resolve: honors a LONGER upstream hint over the lock remaining (still capp
     decisionInput({
       computeWaitMs: () => 3000,
       lookupLock: () => ({ reason: "rate_limit", remainingMs: 1000 }),
-    }) as never
+    }) as never,
   );
   assert.equal(r.wait, true);
   assert.equal(r.waitMs, 3000 + M);
@@ -254,7 +257,7 @@ test("resolve: hint above the ceiling → no wait even if lock remaining is shor
       settings: baseSettings({ maxWaitMs: 5000 }),
       computeWaitMs: () => 6000,
       lookupLock: () => ({ reason: "rate_limit", remainingMs: 1000 }),
-    }) as never
+    }) as never,
   );
   assert.equal(r.wait, false);
 });
@@ -265,7 +268,7 @@ test("resolve: lock remaining above the ceiling → no wait (not a SHORT cooldow
       settings: baseSettings({ maxWaitMs: 5000 }),
       computeWaitMs: () => null,
       lookupLock: () => ({ reason: "rate_limit", remainingMs: 6000 }),
-    }) as never
+    }) as never,
   );
   assert.equal(r.wait, false);
 });

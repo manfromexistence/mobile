@@ -151,7 +151,7 @@ type MessageLike = {
 async function compressProseText(
   text: string,
   backend: LlmlinguaBackend,
-  opts?: LlmlinguaBackendOptions
+  opts?: LlmlinguaBackendOptions,
 ): Promise<{ text: string; didCompress: boolean }> {
   if (!text.trim()) return { text, didCompress: false };
   try {
@@ -177,7 +177,7 @@ async function compressProseText(
 async function compressMessageText(
   text: string,
   backend: LlmlinguaBackend,
-  opts?: LlmlinguaBackendOptions
+  opts?: LlmlinguaBackendOptions,
 ): Promise<{ text: string; didCompress: boolean }> {
   const segments = splitProseAndPreserved(text);
   let anyCompressed = false;
@@ -204,7 +204,7 @@ async function compressMessageText(
 async function processMessages(
   messages: MessageLike[],
   backend: LlmlinguaBackend,
-  opts?: LlmlinguaBackendOptions
+  opts?: LlmlinguaBackendOptions,
 ): Promise<{ messages: MessageLike[]; compressedCount: number }> {
   let compressedCount = 0;
   const result: MessageLike[] = [];
@@ -233,7 +233,7 @@ async function processMessages(
             const { text, didCompress } = await compressMessageText(
               part["text"] as string,
               backend,
-              opts
+              opts,
             );
             if (didCompress) {
               changed = true;
@@ -389,7 +389,7 @@ export const llmlinguaEngine: CompressionEngine = {
    */
   async applyAsync(
     body: Record<string, unknown>,
-    options?: CompressionEngineApplyOptions
+    options?: CompressionEngineApplyOptions,
   ): Promise<CompressionResult> {
     const stepConfig = options?.stepConfig ?? {};
     if (stepConfig["enabled"] === false) {
@@ -435,7 +435,7 @@ export const llmlinguaEngine: CompressionEngine = {
       const { messages: newMessages, compressedCount } = await processMessages(
         messages as MessageLike[],
         backend,
-        backendOpts
+        backendOpts,
       );
 
       if (compressedCount === 0) {
@@ -450,7 +450,7 @@ export const llmlinguaEngine: CompressionEngine = {
         "stacked",
         [ENGINE_ID],
         [`llmlingua-compressed-${compressedCount}-messages`],
-        durationMs
+        durationMs,
       );
 
       return { body: newBody, compressed: true, stats };

@@ -170,7 +170,7 @@ export class DevinCliExecutor extends BaseExecutor {
               ? `Devin CLI not found: ${devinBin}. Install via https://cli.devin.ai or set CLI_DEVIN_BIN env var.`
               : `Devin CLI spawn error: ${err.message}`;
           emit(
-            `data: ${JSON.stringify({ error: { message: msg, type: "devin_cli_error", code: "spawn_failed" } })}\n\n`
+            `data: ${JSON.stringify({ error: { message: msg, type: "devin_cli_error", code: "spawn_failed" } })}\n\n`,
           );
           emit("data: [DONE]\n\n");
           controller.close();
@@ -211,7 +211,7 @@ export class DevinCliExecutor extends BaseExecutor {
 
           if (error) {
             emit(
-              `data: ${JSON.stringify({ error: { message: error, type: "devin_cli_error" } })}\n\n`
+              `data: ${JSON.stringify({ error: { message: error, type: "devin_cli_error" } })}\n\n`,
             );
           } else {
             // Emit finish chunk
@@ -228,7 +228,7 @@ export class DevinCliExecutor extends BaseExecutor {
                   total_tokens: Math.ceil((promptText.length + totalText.length) / 4),
                   estimated: true,
                 },
-              })}\n\n`
+              })}\n\n`,
             );
           }
           emit("data: [DONE]\n\n");
@@ -334,7 +334,7 @@ export class DevinCliExecutor extends BaseExecutor {
                             finish_reason: null,
                           },
                         ],
-                      })}\n\n`
+                      })}\n\n`,
                     );
                     roleEmitted = true;
                   }
@@ -346,7 +346,7 @@ export class DevinCliExecutor extends BaseExecutor {
                       created,
                       model,
                       choices: [{ index: 0, delta: { content: delta }, finish_reason: null }],
-                    })}\n\n`
+                    })}\n\n`,
                   );
                 }
               } else if (type === "message_stop" || type === "stop" || type === "done") {
@@ -379,7 +379,7 @@ export class DevinCliExecutor extends BaseExecutor {
                           finish_reason: null,
                         },
                       ],
-                    })}\n\n`
+                    })}\n\n`,
                   );
                   totalText = content;
                   emit(
@@ -389,7 +389,7 @@ export class DevinCliExecutor extends BaseExecutor {
                       created,
                       model,
                       choices: [{ index: 0, delta: { content }, finish_reason: null }],
-                    })}\n\n`
+                    })}\n\n`,
                   );
                 }
               }

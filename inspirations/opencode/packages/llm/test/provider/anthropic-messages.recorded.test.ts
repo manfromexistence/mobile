@@ -1,14 +1,14 @@
-import { describe, expect } from "bun:test"
-import { Effect } from "effect"
-import { LLM, LLMError, Message, ToolCallPart } from "../../src"
-import { LLMClient } from "../../src/route"
-import * as Anthropic from "../../src/providers/anthropic"
-import { weatherToolName } from "../recorded-scenarios"
-import { recordedTests } from "../recorded-test"
+import { describe, expect } from "bun:test";
+import { Effect } from "effect";
+import { LLM, LLMError, Message, ToolCallPart } from "../../src";
+import { LLMClient } from "../../src/route";
+import * as Anthropic from "../../src/providers/anthropic";
+import { weatherToolName } from "../recorded-scenarios";
+import { recordedTests } from "../recorded-test";
 
 const model = Anthropic.configure({
   apiKey: process.env.ANTHROPIC_API_KEY ?? "fixture",
-}).model("claude-haiku-4-5-20251001")
+}).model("claude-haiku-4-5-20251001");
 
 const malformedToolOrderRequest = LLM.request({
   id: "recorded_anthropic_malformed_tool_order",
@@ -21,8 +21,14 @@ const malformedToolOrderRequest = LLM.request({
     Message.tool({ id: "call_1", name: weatherToolName, result: { temperature: "72F" } }),
     Message.user("Use that result to answer briefly."),
   ],
-  tools: [{ name: weatherToolName, description: "Get weather", inputSchema: { type: "object", properties: {} } }],
-})
+  tools: [
+    {
+      name: weatherToolName,
+      description: "Get weather",
+      inputSchema: { type: "object", properties: {} },
+    },
+  ],
+});
 
 const recorded = recordedTests({
   prefix: "anthropic-messages",
@@ -30,16 +36,19 @@ const recorded = recordedTests({
   protocol: "anthropic-messages",
   requires: ["ANTHROPIC_API_KEY"],
   options: { redact: { allowRequestHeaders: ["anthropic-version"] } },
-})
+});
 
 describe("Anthropic Messages sad-path recorded", () => {
-  recorded.effect.with("rejects malformed assistant tool order", { tags: ["tool", "sad-path"] }, () =>
-    Effect.gen(function* () {
-      const error = yield* LLMClient.generate(malformedToolOrderRequest).pipe(Effect.flip)
+  recorded.effect.with(
+    "rejects malformed assistant tool order",
+    { tags: ["tool", "sad-path"] },
+    () =>
+      Effect.gen(function* () {
+        const error = yield* LLMClient.generate(malformedToolOrderRequest).pipe(Effect.flip);
 
-      expect(error).toBeInstanceOf(LLMError)
-      expect(error.reason).toMatchObject({ _tag: "InvalidRequest" })
-      expect(error.message).toContain("HTTP 400")
-    }),
-  )
-})
+        expect(error).toBeInstanceOf(LLMError);
+        expect(error.reason).toMatchObject({ _tag: "InvalidRequest" });
+        expect(error.message).toContain("HTTP 400");
+      }),
+  );
+});

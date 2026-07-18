@@ -1,1 +1,1 @@
-export { GitHubRedirectPage as default } from './GitHubRedirectPage';
+export { GitHubRedirectPage as default } from "./GitHubRedirectPage";

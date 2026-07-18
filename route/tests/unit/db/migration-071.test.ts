@@ -89,7 +89,7 @@ test("migration 071 — existing CLIProxyAPI data survives the migration", async
   // Simulate a pre-existing cliproxyapi row (it's seeded by T-11, not this migration).
   db.prepare(
     `INSERT OR IGNORE INTO version_manager (tool, status, port, auto_start, auto_update)
-     VALUES ('cliproxyapi', 'stopped', 8317, 1, 1)`
+     VALUES ('cliproxyapi', 'stopped', 8317, 1, 1)`,
   ).run();
 
   const row = await versionManager.getServiceRow("cliproxyapi");
@@ -108,7 +108,7 @@ test("updateServiceField — updates a whitelisted field", async () => {
   const updated = await versionManager.updateServiceField(
     "9router",
     "logsBufferPath",
-    "/tmp/ring.log"
+    "/tmp/ring.log",
   );
   assert.ok(updated !== null);
   assert.equal(updated.logsBufferPath, "/tmp/ring.log");
@@ -132,9 +132,9 @@ test("updateServiceField — rejects non-whitelisted field", async () => {
       versionManager.updateServiceField(
         "9router",
         "injected_column; DROP TABLE version_manager--",
-        "evil"
+        "evil",
       ),
-    /not in the allowed list/
+    /not in the allowed list/,
   );
 });
 

@@ -167,7 +167,7 @@ export async function runBudgetSet(amount, opts, cmd) {
   }
   if (!globalOpts.quiet)
     process.stdout.write(
-      `Budget set: $${Number(amount).toFixed(2)} / ${opts.scope ?? "global"} / ${opts.period ?? "monthly"}\n`
+      `Budget set: $${Number(amount).toFixed(2)} / ${opts.scope ?? "global"} / ${opts.period ?? "monthly"}\n`,
     );
 }
 
@@ -202,7 +202,7 @@ export async function runUsageQuota(opts, cmd) {
       remaining: r.remaining ?? r.percentRemaining ?? null,
       resetAt: r.resetAt ?? r.nextReset ?? null,
       state: r.state ?? (r.percentRemaining > 0 ? "available" : "exhausted"),
-    })
+    }),
   );
   emit(rows, globalOpts, quotaSchema);
 }

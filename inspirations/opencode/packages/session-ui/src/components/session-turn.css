@@ -131,7 +131,8 @@
     opacity: 1;
   }
 
-  [data-component="session-turn-diffs-group"][data-show-all] [data-slot="session-turn-diffs-toggle"] {
+  [data-component="session-turn-diffs-group"][data-show-all]
+    [data-slot="session-turn-diffs-toggle"] {
     opacity: 1;
   }
 

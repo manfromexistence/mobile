@@ -45,7 +45,7 @@ const thresholds = Object.fromEntries(
   metrics.map(([metric]) => {
     const fallback = metric === "branches" && !hasGlobalThreshold ? "70" : String(defaultThreshold);
     return [metric, parseThreshold(`--${metric}`, fallback)];
-  })
+  }),
 );
 
 const total = summary.total ?? {};
@@ -97,7 +97,7 @@ const report = [
   "| --- | ---: | ---: | ---: | ---: |",
   ...files.map(
     (entry) =>
-      `| \`${entry.name}\` | ${formatPercent(entry.lines)} | ${formatPercent(entry.branches)} | ${formatPercent(entry.functions)} | ${entry.missingLines} |`
+      `| \`${entry.name}\` | ${formatPercent(entry.lines)} | ${formatPercent(entry.branches)} | ${formatPercent(entry.functions)} | ${entry.missingLines} |`,
   ),
 ];
 

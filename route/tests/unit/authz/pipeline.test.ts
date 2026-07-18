@@ -193,7 +193,7 @@ test("runAuthzPipeline allows onboarding when login is required but no password 
 
   const response = await pipeline.runAuthzPipeline(
     request("https://example.com/dashboard/onboarding"),
-    { enforce: true }
+    { enforce: true },
   );
 
   assert.equal(response.status, 200);
@@ -210,7 +210,7 @@ test("runAuthzPipeline allows first password writes when login is required but n
 
   const response = await pipeline.runAuthzPipeline(
     request("https://example.com/api/settings/require-login", { method: "POST" }),
-    { enforce: true }
+    { enforce: true },
   );
 
   assert.equal(response.status, 200);
@@ -239,7 +239,7 @@ test("runAuthzPipeline rejects oversized API bodies before auth", async () => {
         origin: "https://app.example.com",
       },
     }),
-    { enforce: true }
+    { enforce: true },
   );
 
   assert.equal(response.status, 413);
@@ -247,7 +247,7 @@ test("runAuthzPipeline rejects oversized API bodies before auth", async () => {
   assert.ok(response.headers.get("x-request-id"));
   assert.equal(
     response.headers.get("Access-Control-Allow-Methods"),
-    "GET, POST, PUT, DELETE, PATCH, OPTIONS"
+    "GET, POST, PUT, DELETE, PATCH, OPTIONS",
   );
 });
 
@@ -260,7 +260,7 @@ test("runAuthzPipeline rejects oversized rewritten alias API bodies before auth"
         origin: "https://app.example.com",
       },
     }),
-    { enforce: true }
+    { enforce: true },
   );
 
   assert.equal(response.status, 413);
@@ -273,7 +273,7 @@ test("runAuthzPipeline rejects unauthenticated v1beta Gemini aliases as client A
     request("http://localhost/v1beta/models/gemini-pro:generateContent", {
       method: "POST",
     }),
-    { enforce: true }
+    { enforce: true },
   );
   const body = await response.json();
 
@@ -287,7 +287,7 @@ test("runAuthzPipeline rejects unauthenticated internal api v1beta routes as cli
     request("http://localhost/api/v1beta/models/gemini-pro:generateContent", {
       method: "POST",
     }),
-    { enforce: true }
+    { enforce: true },
   );
   const body = await response.json();
 
@@ -328,7 +328,7 @@ test("runAuthzPipeline allows dashboard sessions to read model catalog aliases",
     request("http://localhost/v1/models", {
       headers: { cookie: await dashboardCookie() },
     }),
-    { enforce: true }
+    { enforce: true },
   );
 
   assert.equal(response.status, 200);
@@ -342,7 +342,7 @@ test("runAuthzPipeline allows dashboard sessions to reach DB health management A
     request("http://localhost/api/db/health", {
       headers: { cookie: await dashboardCookie() },
     }),
-    { enforce: true }
+    { enforce: true },
   );
 
   assert.equal(response.status, 200);
@@ -363,7 +363,7 @@ test("runAuthzPipeline accepts dashboard mutations from configured public origin
       },
       body: "{}",
     }),
-    { enforce: true }
+    { enforce: true },
   );
 
   assert.equal(response.status, 200);
@@ -385,7 +385,7 @@ test("runAuthzPipeline rejects dashboard mutations from dynamic public origins w
       },
       body: "{}",
     }),
-    { enforce: true }
+    { enforce: true },
   );
   const body = await response.json();
 
@@ -400,7 +400,7 @@ test("runAuthzPipeline accepts dashboard mutations from dynamic public origins w
   const issued = csrf.issueDashboardCsrfToken(
     request("http://127.0.0.1:20128/api/auth/csrf", {
       headers: { cookie },
-    })
+    }),
   );
   assert.ok(issued);
 
@@ -424,7 +424,7 @@ test("runAuthzPipeline accepts dashboard mutations from dynamic public origins w
         },
         body: "{}",
       }),
-      { enforce: true }
+      { enforce: true },
     );
 
     assert.equal(response.status, 200, path);
@@ -439,7 +439,7 @@ test("runAuthzPipeline does not let CSRF bypass cross-site fetch metadata", asyn
   const issued = csrf.issueDashboardCsrfToken(
     request("http://127.0.0.1:20128/api/auth/csrf", {
       headers: { cookie },
-    })
+    }),
   );
   assert.ok(issued);
 
@@ -456,7 +456,7 @@ test("runAuthzPipeline does not let CSRF bypass cross-site fetch metadata", asyn
       },
       body: "{}",
     }),
-    { enforce: true }
+    { enforce: true },
   );
   const body = await response.json();
 
@@ -478,7 +478,7 @@ test("runAuthzPipeline rejects dashboard mutations from invalid browser origin",
       },
       body: "{}",
     }),
-    { enforce: true }
+    { enforce: true },
   );
   const body = await response.json();
 
@@ -500,7 +500,7 @@ test("runAuthzPipeline answers OPTIONS /v1/models preflight with Allow-Origin (#
       method: "OPTIONS",
       headers: { origin: "http://localhost" },
     }),
-    { enforce: true }
+    { enforce: true },
   );
 
   assert.equal(response.status, 204);
@@ -520,7 +520,7 @@ test("runAuthzPipeline serves GET /v1/models with Allow-Origin to dashboard sess
     request("http://localhost/v1/models", {
       headers: { cookie: await dashboardCookie(), origin: "http://localhost" },
     }),
-    { enforce: true }
+    { enforce: true },
   );
 
   assert.equal(response.status, 200);
@@ -538,7 +538,7 @@ test("runAuthzPipeline keeps MANAGEMENT OPTIONS fail-closed for arbitrary origin
       method: "OPTIONS",
       headers: { origin: "http://localhost" },
     }),
-    { enforce: true }
+    { enforce: true },
   );
 
   assert.equal(response.status, 204);
@@ -559,7 +559,7 @@ test("runAuthzPipeline refreshes dashboard JWTs near expiry", async () => {
     request("http://localhost/dashboard", {
       headers: { cookie: `auth_token=${expiringToken}` },
     }),
-    { enforce: true }
+    { enforce: true },
   );
 
   assert.equal(response.status, 200);
@@ -587,7 +587,7 @@ test("runAuthzPipeline clears stale dashboard JWTs without error-stack noise", a
       request("http://localhost/dashboard", {
         headers: { cookie: `auth_token=${staleToken}` },
       }),
-      { enforce: true }
+      { enforce: true },
     );
 
     assert.equal(response.status, 307);

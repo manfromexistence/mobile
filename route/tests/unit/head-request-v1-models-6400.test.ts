@@ -24,14 +24,16 @@ describe("issue #6400 — HEAD /v1/models returns immediately", () => {
     assert.equal(
       typeof (modelsRoute as { HEAD?: unknown }).HEAD,
       "function",
-      "HEAD export missing — Next.js will auto-derive from GET and stream the body"
+      "HEAD export missing — Next.js will auto-derive from GET and stream the body",
     );
   });
 
   it("HEAD returns 200 with a null body (no streaming)", async () => {
-    const head = (modelsRoute as unknown as {
-      HEAD: () => Promise<Response>;
-    }).HEAD;
+    const head = (
+      modelsRoute as unknown as {
+        HEAD: () => Promise<Response>;
+      }
+    ).HEAD;
     const response = await head();
     assert.equal(response.status, 200);
     assert.equal(response.body, null, "HEAD body must be null per RFC 9110 §9.3.2");
@@ -42,7 +44,7 @@ describe("issue #6400 — HEAD /v1/models returns immediately", () => {
     const methods = response.headers.get("Access-Control-Allow-Methods") ?? "";
     assert.ok(
       /\bHEAD\b/.test(methods),
-      `expected HEAD in Access-Control-Allow-Methods, got: ${methods}`
+      `expected HEAD in Access-Control-Allow-Methods, got: ${methods}`,
     );
   });
 });

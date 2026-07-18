@@ -54,7 +54,15 @@ const sections = [
     subtitle: "Deep dive into architecture, APIs, and internals",
     icon: "code",
     color: "blue",
-    folders: ["architecture", "reference", "frameworks", "routing", "security", "compression", "ops"],
+    folders: [
+      "architecture",
+      "reference",
+      "frameworks",
+      "routing",
+      "security",
+      "compression",
+      "ops",
+    ],
   },
 ];
 
@@ -99,7 +107,7 @@ export default function DocsHomePage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 pb-12">
         {sections.map((section) => {
           const sectionPages = pages.filter((p) =>
-            section.folders.some((folder) => p.url.startsWith(`/docs/${folder}/`))
+            section.folders.some((folder) => p.url.startsWith(`/docs/${folder}/`)),
           );
           return (
             <div

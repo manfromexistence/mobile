@@ -4,8 +4,9 @@ import assert from "node:assert/strict";
 // #5298: `/dashboard/context` had only sub-routes and no parent page, so RSC
 // prefetches of the bare parent 404'd. The new parent page redirects to a
 // canonical sub-route; this guards the pure route resolver it uses.
-const { resolveContextRoute } =
-  await import("../../../src/app/(dashboard)/dashboard/context/page.tsx");
+const { resolveContextRoute } = await import(
+  "../../../src/app/(dashboard)/dashboard/context/page.tsx"
+);
 
 test("#5298: resolveContextRoute defaults the bare parent to the canonical sub-route", () => {
   assert.equal(resolveContextRoute(undefined), "/dashboard/context/settings");

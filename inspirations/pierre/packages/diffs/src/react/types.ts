@@ -1,8 +1,8 @@
-import { type CSSProperties, type ReactNode } from 'react';
+import { type CSSProperties, type ReactNode } from "react";
 
-import type { FileOptions } from '../components/File';
-import type { FileDiffOptions } from '../components/FileDiff';
-import type { GetHoveredLineResult } from '../managers/InteractionManager';
+import type { FileOptions } from "../components/File";
+import type { FileDiffOptions } from "../components/FileDiff";
+import type { GetHoveredLineResult } from "../managers/InteractionManager";
 import type {
   DiffLineAnnotation,
   FileContents,
@@ -10,7 +10,7 @@ import type {
   LineAnnotation,
   SelectedLineRange,
   VirtualFileMetrics,
-} from '../types';
+} from "../types";
 
 export interface DiffBasePropsReact<LAnnotation> {
   options?: FileDiffOptions<LAnnotation>;
@@ -21,9 +21,7 @@ export interface DiffBasePropsReact<LAnnotation> {
   renderCustomHeader?(fileDiff: FileDiffMetadata): ReactNode;
   renderHeaderPrefix?(fileDiff: FileDiffMetadata): ReactNode;
   renderHeaderMetadata?(fileDiff: FileDiffMetadata): ReactNode;
-  renderGutterUtility?(
-    getHoveredLine: () => GetHoveredLineResult<'diff'> | undefined
-  ): ReactNode;
+  renderGutterUtility?(getHoveredLine: () => GetHoveredLineResult<"diff"> | undefined): ReactNode;
   className?: string;
   style?: CSSProperties;
   prerenderedHTML?: string;
@@ -39,9 +37,7 @@ export interface FileProps<LAnnotation> {
   renderCustomHeader?(file: FileContents): ReactNode;
   renderHeaderPrefix?(file: FileContents): ReactNode;
   renderHeaderMetadata?(file: FileContents): ReactNode;
-  renderGutterUtility?(
-    getHoveredLine: () => GetHoveredLineResult<'file'> | undefined
-  ): ReactNode;
+  renderGutterUtility?(getHoveredLine: () => GetHoveredLineResult<"file"> | undefined): ReactNode;
   className?: string;
   style?: CSSProperties;
   prerenderedHTML?: string;

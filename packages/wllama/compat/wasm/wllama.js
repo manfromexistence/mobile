@@ -1,439 +1,430 @@
-var Module = typeof Module != "undefined" ? Module : {}
-var ENVIRONMENT_IS_WEB = !!globalThis.window
-var ENVIRONMENT_IS_WORKER = !!globalThis.WorkerGlobalScope
+var Module = typeof Module != "undefined" ? Module : {};
+var ENVIRONMENT_IS_WEB = !!globalThis.window;
+var ENVIRONMENT_IS_WORKER = !!globalThis.WorkerGlobalScope;
 var ENVIRONMENT_IS_NODE =
-  globalThis.process?.versions?.node && globalThis.process?.type != "renderer"
-var ENVIRONMENT_IS_PTHREAD =
-  ENVIRONMENT_IS_WORKER && self.name?.startsWith("em-pthread")
+  globalThis.process?.versions?.node && globalThis.process?.type != "renderer";
+var ENVIRONMENT_IS_PTHREAD = ENVIRONMENT_IS_WORKER && self.name?.startsWith("em-pthread");
 if (ENVIRONMENT_IS_NODE) {
-  var worker_threads = require("worker_threads")
-  global.Worker = worker_threads.Worker
-  ENVIRONMENT_IS_WORKER = !worker_threads.isMainThread
-  ENVIRONMENT_IS_PTHREAD =
-    ENVIRONMENT_IS_WORKER && worker_threads["workerData"] == "em-pthread"
+  var worker_threads = require("worker_threads");
+  global.Worker = worker_threads.Worker;
+  ENVIRONMENT_IS_WORKER = !worker_threads.isMainThread;
+  ENVIRONMENT_IS_PTHREAD = ENVIRONMENT_IS_WORKER && worker_threads["workerData"] == "em-pthread";
 }
-var arguments_ = []
-var thisProgram = "./this.program"
+var arguments_ = [];
+var thisProgram = "./this.program";
 var quit_ = (status, toThrow) => {
-  throw toThrow
-}
-var _scriptName = globalThis.document?.currentScript?.src
+  throw toThrow;
+};
+var _scriptName = globalThis.document?.currentScript?.src;
 if (typeof __filename != "undefined") {
-  _scriptName = __filename
+  _scriptName = __filename;
 } else if (ENVIRONMENT_IS_WORKER) {
-  _scriptName = self.location.href
+  _scriptName = self.location.href;
 }
-var scriptDirectory = ""
+var scriptDirectory = "";
 function locateFile(path) {
   if (Module["locateFile"]) {
-    return Module["locateFile"](path, scriptDirectory)
+    return Module["locateFile"](path, scriptDirectory);
   }
-  return scriptDirectory + path
+  return scriptDirectory + path;
 }
-var readAsync, readBinary
+var readAsync, readBinary;
 if (ENVIRONMENT_IS_NODE) {
-  var fs = require("fs")
-  scriptDirectory = __dirname + "/"
+  var fs = require("fs");
+  scriptDirectory = __dirname + "/";
   readBinary = (filename) => {
-    filename = isFileURI(filename) ? new URL(filename) : filename
-    var ret = fs.readFileSync(filename)
-    return ret
-  }
+    filename = isFileURI(filename) ? new URL(filename) : filename;
+    var ret = fs.readFileSync(filename);
+    return ret;
+  };
   readAsync = async (filename, binary = true) => {
-    filename = isFileURI(filename) ? new URL(filename) : filename
-    var ret = fs.readFileSync(filename, binary ? undefined : "utf8")
-    return ret
-  }
+    filename = isFileURI(filename) ? new URL(filename) : filename;
+    var ret = fs.readFileSync(filename, binary ? undefined : "utf8");
+    return ret;
+  };
   if (process.argv.length > 1) {
-    thisProgram = process.argv[1].replace(/\\/g, "/")
+    thisProgram = process.argv[1].replace(/\\/g, "/");
   }
-  arguments_ = process.argv.slice(2)
+  arguments_ = process.argv.slice(2);
   if (typeof module != "undefined") {
-    module["exports"] = Module
+    module["exports"] = Module;
   }
   quit_ = (status, toThrow) => {
-    process.exitCode = status
-    throw toThrow
-  }
+    process.exitCode = status;
+    throw toThrow;
+  };
 } else if (ENVIRONMENT_IS_WEB || ENVIRONMENT_IS_WORKER) {
   try {
-    scriptDirectory = new URL(".", _scriptName).href
+    scriptDirectory = new URL(".", _scriptName).href;
   } catch {}
   if (!ENVIRONMENT_IS_NODE) {
     if (ENVIRONMENT_IS_WORKER) {
       readBinary = (url) => {
-        var xhr = new XMLHttpRequest()
-        xhr.open("GET", url, false)
-        xhr.responseType = "arraybuffer"
-        xhr.send(null)
-        return new Uint8Array(xhr.response)
-      }
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url, false);
+        xhr.responseType = "arraybuffer";
+        xhr.send(null);
+        return new Uint8Array(xhr.response);
+      };
     }
     readAsync = async (url) => {
       if (isFileURI(url)) {
         return new Promise((resolve, reject) => {
-          var xhr = new XMLHttpRequest()
-          xhr.open("GET", url, true)
-          xhr.responseType = "arraybuffer"
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", url, true);
+          xhr.responseType = "arraybuffer";
           xhr.onload = () => {
             if (xhr.status == 200 || (xhr.status == 0 && xhr.response)) {
-              resolve(xhr.response)
-              return
+              resolve(xhr.response);
+              return;
             }
-            reject(xhr.status)
-          }
-          xhr.onerror = reject
-          xhr.send(null)
-        })
+            reject(xhr.status);
+          };
+          xhr.onerror = reject;
+          xhr.send(null);
+        });
       }
-      var response = await fetch(url, { credentials: "same-origin" })
+      var response = await fetch(url, { credentials: "same-origin" });
       if (response.ok) {
-        return response.arrayBuffer()
+        return response.arrayBuffer();
       }
-      throw new Error(response.status + " : " + response.url)
-    }
+      throw new Error(response.status + " : " + response.url);
+    };
   }
 } else {
 }
-var defaultPrint = console.log.bind(console)
-var defaultPrintErr = console.error.bind(console)
+var defaultPrint = console.log.bind(console);
+var defaultPrintErr = console.error.bind(console);
 if (ENVIRONMENT_IS_NODE) {
-  var utils = require("util")
-  var stringify = (a) => (typeof a == "object" ? utils.inspect(a) : a)
-  defaultPrint = (...args) =>
-    fs.writeSync(1, args.map(stringify).join(" ") + "\n")
-  defaultPrintErr = (...args) =>
-    fs.writeSync(2, args.map(stringify).join(" ") + "\n")
+  var utils = require("util");
+  var stringify = (a) => (typeof a == "object" ? utils.inspect(a) : a);
+  defaultPrint = (...args) => fs.writeSync(1, args.map(stringify).join(" ") + "\n");
+  defaultPrintErr = (...args) => fs.writeSync(2, args.map(stringify).join(" ") + "\n");
 }
-var out = defaultPrint
-var err = defaultPrintErr
-var wasmBinary
-var wasmModule
-var ABORT = false
-var EXITSTATUS
+var out = defaultPrint;
+var err = defaultPrintErr;
+var wasmBinary;
+var wasmModule;
+var ABORT = false;
+var EXITSTATUS;
 function assert(condition, text) {
   if (!condition) {
-    abort(text)
+    abort(text);
   }
 }
-var isFileURI = (filename) => filename.startsWith("file://")
+var isFileURI = (filename) => filename.startsWith("file://");
 function growMemViews() {
   if (wasmMemory.buffer != HEAP8.buffer) {
-    updateMemoryViews()
+    updateMemoryViews();
   }
 }
 if (ENVIRONMENT_IS_NODE && ENVIRONMENT_IS_PTHREAD) {
-  var parentPort = worker_threads["parentPort"]
-  parentPort.on("message", (msg) => global.onmessage?.({ data: msg }))
+  var parentPort = worker_threads["parentPort"];
+  parentPort.on("message", (msg) => global.onmessage?.({ data: msg }));
   Object.assign(globalThis, {
     self: global,
     postMessage: (msg) => parentPort["postMessage"](msg),
-  })
+  });
   process.on("uncaughtException", (err) => {
-    postMessage({ cmd: "uncaughtException", error: err })
-    process.exit(1)
-  })
+    postMessage({ cmd: "uncaughtException", error: err });
+    process.exit(1);
+  });
 }
-var startWorker
+var startWorker;
 if (ENVIRONMENT_IS_PTHREAD) {
-  var initializedJS = false
+  var initializedJS = false;
   self.onunhandledrejection = (e) => {
-    throw e.reason || e
-  }
+    throw e.reason || e;
+  };
   function handleMessage(e) {
     try {
-      var msgData = e["data"]
-      var cmd = msgData.cmd
+      var msgData = e["data"];
+      var cmd = msgData.cmd;
       if (cmd === "load") {
-        const messageQueue = []
-        self.onmessage = (e) => messageQueue.push(e)
+        const messageQueue = [];
+        self.onmessage = (e) => messageQueue.push(e);
         startWorker = () => {
-          postMessage({ cmd: "loaded" })
+          postMessage({ cmd: "loaded" });
           for (const msg of messageQueue) {
-            handleMessage(msg)
+            handleMessage(msg);
           }
-          self.onmessage = handleMessage
-        }
+          self.onmessage = handleMessage;
+        };
         for (const handler of msgData.handlers) {
           if (!Module[handler] || Module[handler].proxy) {
             Module[handler] = (...args) => {
-              postMessage({ cmd: "callHandler", handler, args })
-            }
-            if (handler == "print") out = Module[handler]
-            if (handler == "printErr") err = Module[handler]
+              postMessage({ cmd: "callHandler", handler, args });
+            };
+            if (handler == "print") out = Module[handler];
+            if (handler == "printErr") err = Module[handler];
           }
         }
-        wasmMemory = msgData.wasmMemory
-        updateMemoryViews()
-        wasmModule = msgData.wasmModule
-        createWasm()
-        run()
+        wasmMemory = msgData.wasmMemory;
+        updateMemoryViews();
+        wasmModule = msgData.wasmModule;
+        createWasm();
+        run();
       } else if (cmd === "run") {
-        establishStackSpace(msgData.pthread_ptr)
-        __emscripten_thread_init(msgData.pthread_ptr, 0, 0, 1, 0, 0)
-        PThread.threadInitTLS()
-        __emscripten_thread_mailbox_await(msgData.pthread_ptr)
+        establishStackSpace(msgData.pthread_ptr);
+        __emscripten_thread_init(msgData.pthread_ptr, 0, 0, 1, 0, 0);
+        PThread.threadInitTLS();
+        __emscripten_thread_mailbox_await(msgData.pthread_ptr);
         if (!initializedJS) {
-          initializedJS = true
+          initializedJS = true;
         }
         try {
-          invokeEntryPoint(msgData.start_routine, msgData.arg)
+          invokeEntryPoint(msgData.start_routine, msgData.arg);
         } catch (ex) {
           if (ex != "unwind") {
-            throw ex
+            throw ex;
           }
         }
       } else if (msgData.target === "setimmediate") {
       } else if (cmd === "checkMailbox") {
         if (initializedJS) {
-          checkMailbox()
+          checkMailbox();
         }
       } else if (cmd) {
-        err(`worker: received unknown command ${cmd}`)
-        err(msgData)
+        err(`worker: received unknown command ${cmd}`);
+        err(msgData);
       }
     } catch (ex) {
-      __emscripten_thread_crashed()
-      throw ex
+      __emscripten_thread_crashed();
+      throw ex;
     }
   }
-  self.onmessage = handleMessage
+  self.onmessage = handleMessage;
 }
-var HEAP8, HEAPU8, HEAP16, HEAPU16, HEAP32, HEAPU32, HEAPF32, HEAPF64
-var HEAP64, HEAPU64
-var runtimeInitialized = false
+var HEAP8, HEAPU8, HEAP16, HEAPU16, HEAP32, HEAPU32, HEAPF32, HEAPF64;
+var HEAP64, HEAPU64;
+var runtimeInitialized = false;
 function updateMemoryViews() {
-  var b = wasmMemory.buffer
-  HEAP8 = new Int8Array(b)
-  HEAP16 = new Int16Array(b)
-  Module["HEAPU8"] = HEAPU8 = new Uint8Array(b)
-  HEAPU16 = new Uint16Array(b)
-  HEAP32 = new Int32Array(b)
-  HEAPU32 = new Uint32Array(b)
-  HEAPF32 = new Float32Array(b)
-  HEAPF64 = new Float64Array(b)
-  HEAP64 = new BigInt64Array(b)
-  HEAPU64 = new BigUint64Array(b)
+  var b = wasmMemory.buffer;
+  HEAP8 = new Int8Array(b);
+  HEAP16 = new Int16Array(b);
+  Module["HEAPU8"] = HEAPU8 = new Uint8Array(b);
+  HEAPU16 = new Uint16Array(b);
+  HEAP32 = new Int32Array(b);
+  HEAPU32 = new Uint32Array(b);
+  HEAPF32 = new Float32Array(b);
+  HEAPF64 = new Float64Array(b);
+  HEAP64 = new BigInt64Array(b);
+  HEAPU64 = new BigUint64Array(b);
 }
 function initMemory() {
   if (ENVIRONMENT_IS_PTHREAD) {
-    return
+    return;
   }
   if (Module["wasmMemory"]) {
-    wasmMemory = Module["wasmMemory"]
+    wasmMemory = Module["wasmMemory"];
   } else {
-    var INITIAL_MEMORY = Module["INITIAL_MEMORY"] || 134217728
+    var INITIAL_MEMORY = Module["INITIAL_MEMORY"] || 134217728;
     wasmMemory = new WebAssembly.Memory({
       initial: INITIAL_MEMORY / 65536,
       maximum: 65536,
       shared: true,
-    })
+    });
   }
-  updateMemoryViews()
+  updateMemoryViews();
 }
 function preRun() {
   if (Module["preRun"]) {
-    if (typeof Module["preRun"] == "function")
-      Module["preRun"] = [Module["preRun"]]
+    if (typeof Module["preRun"] == "function") Module["preRun"] = [Module["preRun"]];
     while (Module["preRun"].length) {
-      addOnPreRun(Module["preRun"].shift())
+      addOnPreRun(Module["preRun"].shift());
     }
   }
-  callRuntimeCallbacks(onPreRuns)
+  callRuntimeCallbacks(onPreRuns);
 }
 function initRuntime() {
-  runtimeInitialized = true
-  if (ENVIRONMENT_IS_PTHREAD) return startWorker()
-  if (!Module["noFSInit"] && !FS.initialized) FS.init()
-  TTY.init()
-  wasmExports["sc"]()
-  FS.ignorePermissions = false
+  runtimeInitialized = true;
+  if (ENVIRONMENT_IS_PTHREAD) return startWorker();
+  if (!Module["noFSInit"] && !FS.initialized) FS.init();
+  TTY.init();
+  wasmExports["sc"]();
+  FS.ignorePermissions = false;
 }
 function preMain() {}
 function postRun() {
   if (ENVIRONMENT_IS_PTHREAD) {
-    return
+    return;
   }
   if (Module["postRun"]) {
-    if (typeof Module["postRun"] == "function")
-      Module["postRun"] = [Module["postRun"]]
+    if (typeof Module["postRun"] == "function") Module["postRun"] = [Module["postRun"]];
     while (Module["postRun"].length) {
-      addOnPostRun(Module["postRun"].shift())
+      addOnPostRun(Module["postRun"].shift());
     }
   }
-  callRuntimeCallbacks(onPostRuns)
+  callRuntimeCallbacks(onPostRuns);
 }
 function abort(what) {
-  Module["onAbort"]?.(what)
-  what = "Aborted(" + what + ")"
-  err(what)
-  ABORT = true
-  what += ". Build with -sASSERTIONS for more info."
-  var e = new WebAssembly.RuntimeError(what)
-  throw e
+  Module["onAbort"]?.(what);
+  what = "Aborted(" + what + ")";
+  err(what);
+  ABORT = true;
+  what += ". Build with -sASSERTIONS for more info.";
+  var e = new WebAssembly.RuntimeError(what);
+  throw e;
 }
-var wasmBinaryFile
+var wasmBinaryFile;
 function findWasmBinary() {
-  return locateFile("wllama.wasm")
+  return locateFile("wllama.wasm");
 }
 function getBinarySync(file) {
   if (file == wasmBinaryFile && wasmBinary) {
-    return new Uint8Array(wasmBinary)
+    return new Uint8Array(wasmBinary);
   }
   if (readBinary) {
-    return readBinary(file)
+    return readBinary(file);
   }
-  throw "both async and sync fetching of the wasm failed"
+  throw "both async and sync fetching of the wasm failed";
 }
 async function getWasmBinary(binaryFile) {
   if (!wasmBinary) {
     try {
-      var response = await readAsync(binaryFile)
-      return new Uint8Array(response)
+      var response = await readAsync(binaryFile);
+      return new Uint8Array(response);
     } catch {}
   }
-  return getBinarySync(binaryFile)
+  return getBinarySync(binaryFile);
 }
 async function instantiateArrayBuffer(binaryFile, imports) {
   try {
-    var binary = await getWasmBinary(binaryFile)
-    var instance = await WebAssembly.instantiate(binary, imports)
-    return instance
+    var binary = await getWasmBinary(binaryFile);
+    var instance = await WebAssembly.instantiate(binary, imports);
+    return instance;
   } catch (reason) {
-    err(`failed to asynchronously prepare wasm: ${reason}`)
-    abort(reason)
+    err(`failed to asynchronously prepare wasm: ${reason}`);
+    abort(reason);
   }
 }
 async function instantiateAsync(binary, binaryFile, imports) {
   if (!binary && !isFileURI(binaryFile) && !ENVIRONMENT_IS_NODE) {
     try {
-      var response = fetch(binaryFile, { credentials: "same-origin" })
-      var instantiationResult = await WebAssembly.instantiateStreaming(
-        response,
-        imports
-      )
-      return instantiationResult
+      var response = fetch(binaryFile, { credentials: "same-origin" });
+      var instantiationResult = await WebAssembly.instantiateStreaming(response, imports);
+      return instantiationResult;
     } catch (reason) {
-      err(`wasm streaming compile failed: ${reason}`)
-      err("falling back to ArrayBuffer instantiation")
+      err(`wasm streaming compile failed: ${reason}`);
+      err("falling back to ArrayBuffer instantiation");
     }
   }
-  return instantiateArrayBuffer(binaryFile, imports)
+  return instantiateArrayBuffer(binaryFile, imports);
 }
 function getWasmImports() {
-  assignWasmImports()
-  var imports = { a: wasmImports }
-  return imports
+  assignWasmImports();
+  var imports = { a: wasmImports };
+  return imports;
 }
 async function createWasm() {
   function receiveInstance(instance, module) {
-    wasmExports = instance.exports
-    wasmExports = Asyncify.instrumentWasmExports(wasmExports)
-    wasmExports = applySignatureConversions(wasmExports)
-    registerTLSInit(wasmExports["cd"])
-    assignWasmExports(wasmExports)
-    wasmModule = module
-    removeRunDependency("wasm-instantiate")
-    return wasmExports
+    wasmExports = instance.exports;
+    wasmExports = Asyncify.instrumentWasmExports(wasmExports);
+    wasmExports = applySignatureConversions(wasmExports);
+    registerTLSInit(wasmExports["cd"]);
+    assignWasmExports(wasmExports);
+    wasmModule = module;
+    removeRunDependency("wasm-instantiate");
+    return wasmExports;
   }
-  addRunDependency("wasm-instantiate")
+  addRunDependency("wasm-instantiate");
   function receiveInstantiationResult(result) {
-    return receiveInstance(result["instance"], result["module"])
+    return receiveInstance(result["instance"], result["module"]);
   }
-  var info = getWasmImports()
+  var info = getWasmImports();
   if (Module["instantiateWasm"]) {
     return new Promise((resolve, reject) => {
       Module["instantiateWasm"](info, (inst, mod) => {
-        resolve(receiveInstance(inst, mod))
-      })
-    })
+        resolve(receiveInstance(inst, mod));
+      });
+    });
   }
   if (ENVIRONMENT_IS_PTHREAD) {
-    var instance = new WebAssembly.Instance(wasmModule, getWasmImports())
-    return receiveInstance(instance, wasmModule)
+    var instance = new WebAssembly.Instance(wasmModule, getWasmImports());
+    return receiveInstance(instance, wasmModule);
   }
-  wasmBinaryFile ??= findWasmBinary()
-  var result = await instantiateAsync(wasmBinary, wasmBinaryFile, info)
-  var exports = receiveInstantiationResult(result)
-  return exports
+  wasmBinaryFile ??= findWasmBinary();
+  var result = await instantiateAsync(wasmBinary, wasmBinaryFile, info);
+  var exports = receiveInstantiationResult(result);
+  return exports;
 }
 class ExitStatus {
-  name = "ExitStatus"
+  name = "ExitStatus";
   constructor(status) {
-    this.message = `Program terminated with exit(${status})`
-    this.status = status
+    this.message = `Program terminated with exit(${status})`;
+    this.status = status;
   }
 }
 var terminateWorker = (worker) => {
-  worker.terminate()
-  worker.onmessage = (e) => {}
-}
+  worker.terminate();
+  worker.onmessage = (e) => {};
+};
 var cleanupThread = (pthread_ptr) => {
-  var worker = PThread.pthreads[pthread_ptr]
-  PThread.returnWorkerToPool(worker)
-}
+  var worker = PThread.pthreads[pthread_ptr];
+  PThread.returnWorkerToPool(worker);
+};
 var callRuntimeCallbacks = (callbacks) => {
   while (callbacks.length > 0) {
-    callbacks.shift()(Module)
+    callbacks.shift()(Module);
   }
-}
-var onPreRuns = []
-var addOnPreRun = (cb) => onPreRuns.push(cb)
-var runDependencies = 0
-var dependenciesFulfilled = null
+};
+var onPreRuns = [];
+var addOnPreRun = (cb) => onPreRuns.push(cb);
+var runDependencies = 0;
+var dependenciesFulfilled = null;
 var removeRunDependency = (id) => {
-  runDependencies--
-  Module["monitorRunDependencies"]?.(runDependencies)
+  runDependencies--;
+  Module["monitorRunDependencies"]?.(runDependencies);
   if (runDependencies == 0) {
     if (dependenciesFulfilled) {
-      var callback = dependenciesFulfilled
-      dependenciesFulfilled = null
-      callback()
+      var callback = dependenciesFulfilled;
+      dependenciesFulfilled = null;
+      callback();
     }
   }
-}
+};
 var addRunDependency = (id) => {
-  runDependencies++
-  Module["monitorRunDependencies"]?.(runDependencies)
-}
+  runDependencies++;
+  Module["monitorRunDependencies"]?.(runDependencies);
+};
 var spawnThread = (threadParams) => {
-  var worker = PThread.getNewWorker()
+  var worker = PThread.getNewWorker();
   if (!worker) {
-    return 6
+    return 6;
   }
-  PThread.runningWorkers.push(worker)
-  PThread.pthreads[threadParams.pthread_ptr] = worker
-  worker.pthread_ptr = threadParams.pthread_ptr
+  PThread.runningWorkers.push(worker);
+  PThread.pthreads[threadParams.pthread_ptr] = worker;
+  worker.pthread_ptr = threadParams.pthread_ptr;
   var msg = {
     cmd: "run",
     start_routine: threadParams.startRoutine,
     arg: threadParams.arg,
     pthread_ptr: threadParams.pthread_ptr,
-  }
+  };
   if (ENVIRONMENT_IS_NODE) {
-    worker.unref()
+    worker.unref();
   }
-  worker.postMessage(msg, threadParams.transferList)
-  return 0
-}
-var runtimeKeepaliveCounter = 0
-var keepRuntimeAlive = () => noExitRuntime || runtimeKeepaliveCounter > 0
-var stackSave = () => _emscripten_stack_get_current()
-var stackRestore = (val) => __emscripten_stack_restore(val)
-var stackAlloc = (sz) => __emscripten_stack_alloc(sz)
+  worker.postMessage(msg, threadParams.transferList);
+  return 0;
+};
+var runtimeKeepaliveCounter = 0;
+var keepRuntimeAlive = () => noExitRuntime || runtimeKeepaliveCounter > 0;
+var stackSave = () => _emscripten_stack_get_current();
+var stackRestore = (val) => __emscripten_stack_restore(val);
+var stackAlloc = (sz) => __emscripten_stack_alloc(sz);
 var proxyToMainThread = (funcIndex, emAsmAddr, sync, ...callArgs) => {
-  var serializedNumCallArgs = callArgs.length * 2
-  var sp = stackSave()
-  var args = stackAlloc(serializedNumCallArgs * 8)
-  var b = args >>> 3
+  var serializedNumCallArgs = callArgs.length * 2;
+  var sp = stackSave();
+  var args = stackAlloc(serializedNumCallArgs * 8);
+  var b = args >>> 3;
   for (var i = 0; i < callArgs.length; i++) {
-    var arg = callArgs[i]
+    var arg = callArgs[i];
     if (typeof arg == "bigint") {
-      ;(growMemViews(), HEAP64)[(b + 2 * i) >>> 0] = 1n
-      ;(growMemViews(), HEAP64)[(b + 2 * i + 1) >>> 0] = arg
+      (growMemViews(), HEAP64)[(b + 2 * i) >>> 0] = 1n;
+      (growMemViews(), HEAP64)[(b + 2 * i + 1) >>> 0] = arg;
     } else {
-      ;(growMemViews(), HEAP64)[(b + 2 * i) >>> 0] = 0n
-      ;(growMemViews(), HEAPF64)[(b + 2 * i + 1) >>> 0] = arg
+      (growMemViews(), HEAP64)[(b + 2 * i) >>> 0] = 0n;
+      (growMemViews(), HEAPF64)[(b + 2 * i + 1) >>> 0] = arg;
     }
   }
   var rtn = __emscripten_run_js_on_main_thread(
@@ -441,34 +432,34 @@ var proxyToMainThread = (funcIndex, emAsmAddr, sync, ...callArgs) => {
     emAsmAddr,
     serializedNumCallArgs,
     args,
-    sync
-  )
-  stackRestore(sp)
-  return rtn
-}
+    sync,
+  );
+  stackRestore(sp);
+  return rtn;
+};
 function _proc_exit(code) {
-  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(0, 0, 1, code)
-  EXITSTATUS = code
+  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(0, 0, 1, code);
+  EXITSTATUS = code;
   if (!keepRuntimeAlive()) {
-    PThread.terminateAllThreads()
-    Module["onExit"]?.(code)
-    ABORT = true
+    PThread.terminateAllThreads();
+    Module["onExit"]?.(code);
+    ABORT = true;
   }
-  quit_(code, new ExitStatus(code))
+  quit_(code, new ExitStatus(code));
 }
 function exitOnMainThread(returnCode) {
-  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(1, 0, 0, returnCode)
-  _exit(returnCode)
+  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(1, 0, 0, returnCode);
+  _exit(returnCode);
 }
 var exitJS = (status, implicit) => {
-  EXITSTATUS = status
+  EXITSTATUS = status;
   if (ENVIRONMENT_IS_PTHREAD) {
-    exitOnMainThread(status)
-    throw "unwind"
+    exitOnMainThread(status);
+    throw "unwind";
   }
-  _proc_exit(status)
-}
-var _exit = exitJS
+  _proc_exit(status);
+};
+var _exit = exitJS;
 var PThread = {
   unusedWorkers: [],
   runningWorkers: [],
@@ -476,691 +467,685 @@ var PThread = {
   pthreads: {},
   init() {
     if (!ENVIRONMENT_IS_PTHREAD) {
-      PThread.initMainThread()
+      PThread.initMainThread();
     }
   },
   initMainThread() {
-    var pthreadPoolSize = Module["pthreadPoolSize"]
+    var pthreadPoolSize = Module["pthreadPoolSize"];
     while (pthreadPoolSize--) {
-      PThread.allocateUnusedWorker()
+      PThread.allocateUnusedWorker();
     }
     addOnPreRun(async () => {
-      var pthreadPoolReady = PThread.loadWasmModuleToAllWorkers()
-      addRunDependency("loading-workers")
-      await pthreadPoolReady
-      removeRunDependency("loading-workers")
-    })
+      var pthreadPoolReady = PThread.loadWasmModuleToAllWorkers();
+      addRunDependency("loading-workers");
+      await pthreadPoolReady;
+      removeRunDependency("loading-workers");
+    });
   },
   terminateAllThreads: () => {
     for (var worker of PThread.runningWorkers) {
-      terminateWorker(worker)
+      terminateWorker(worker);
     }
     for (var worker of PThread.unusedWorkers) {
-      terminateWorker(worker)
+      terminateWorker(worker);
     }
-    PThread.unusedWorkers = []
-    PThread.runningWorkers = []
-    PThread.pthreads = {}
+    PThread.unusedWorkers = [];
+    PThread.runningWorkers = [];
+    PThread.pthreads = {};
   },
   returnWorkerToPool: (worker) => {
-    var pthread_ptr = worker.pthread_ptr
-    delete PThread.pthreads[pthread_ptr]
-    PThread.unusedWorkers.push(worker)
-    PThread.runningWorkers.splice(PThread.runningWorkers.indexOf(worker), 1)
-    worker.pthread_ptr = 0
-    __emscripten_thread_free_data(pthread_ptr)
+    var pthread_ptr = worker.pthread_ptr;
+    delete PThread.pthreads[pthread_ptr];
+    PThread.unusedWorkers.push(worker);
+    PThread.runningWorkers.splice(PThread.runningWorkers.indexOf(worker), 1);
+    worker.pthread_ptr = 0;
+    __emscripten_thread_free_data(pthread_ptr);
   },
   threadInitTLS() {
-    PThread.tlsInitFunctions.forEach((f) => f())
+    PThread.tlsInitFunctions.forEach((f) => f());
   },
   loadWasmModuleToWorker: (worker) =>
     new Promise((onFinishedLoading) => {
       worker.onmessage = (e) => {
-        var d = e["data"]
-        var cmd = d.cmd
+        var d = e["data"];
+        var cmd = d.cmd;
         if (d.targetThread && d.targetThread != _pthread_self()) {
-          var targetWorker = PThread.pthreads[d.targetThread]
+          var targetWorker = PThread.pthreads[d.targetThread];
           if (targetWorker) {
-            targetWorker.postMessage(d, d.transferList)
+            targetWorker.postMessage(d, d.transferList);
           } else {
             err(
-              `Internal error! Worker sent a message "${cmd}" to target pthread ${d.targetThread}, but that thread no longer exists!`
-            )
+              `Internal error! Worker sent a message "${cmd}" to target pthread ${d.targetThread}, but that thread no longer exists!`,
+            );
           }
-          return
+          return;
         }
         if (cmd === "checkMailbox") {
-          checkMailbox()
+          checkMailbox();
         } else if (cmd === "spawnThread") {
-          spawnThread(d)
+          spawnThread(d);
         } else if (cmd === "cleanupThread") {
-          callUserCallback(() => cleanupThread(d.thread))
+          callUserCallback(() => cleanupThread(d.thread));
         } else if (cmd === "loaded") {
-          worker.loaded = true
+          worker.loaded = true;
           if (ENVIRONMENT_IS_NODE && !worker.pthread_ptr) {
-            worker.unref()
+            worker.unref();
           }
-          onFinishedLoading(worker)
+          onFinishedLoading(worker);
         } else if (d.target === "setimmediate") {
-          worker.postMessage(d)
+          worker.postMessage(d);
         } else if (cmd === "uncaughtException") {
-          worker.onerror(d.error)
+          worker.onerror(d.error);
         } else if (cmd === "callHandler") {
-          Module[d.handler](...d.args)
+          Module[d.handler](...d.args);
         } else if (cmd) {
-          err(`worker sent an unknown command ${cmd}`)
+          err(`worker sent an unknown command ${cmd}`);
         }
-      }
+      };
       worker.onerror = (e) => {
-        var message = "worker sent an error!"
-        err(`${message} ${e.filename}:${e.lineno}: ${e.message}`)
-        throw e
-      }
+        var message = "worker sent an error!";
+        err(`${message} ${e.filename}:${e.lineno}: ${e.message}`);
+        throw e;
+      };
       if (ENVIRONMENT_IS_NODE) {
-        worker.on("message", (data) => worker.onmessage({ data }))
-        worker.on("error", (e) => worker.onerror(e))
+        worker.on("message", (data) => worker.onmessage({ data }));
+        worker.on("error", (e) => worker.onerror(e));
       }
-      var handlers = []
-      var knownHandlers = ["onExit", "onAbort", "print", "printErr"]
+      var handlers = [];
+      var knownHandlers = ["onExit", "onAbort", "print", "printErr"];
       for (var handler of knownHandlers) {
         if (Module.propertyIsEnumerable(handler)) {
-          handlers.push(handler)
+          handlers.push(handler);
         }
       }
-      worker.postMessage({ cmd: "load", handlers, wasmMemory, wasmModule })
+      worker.postMessage({ cmd: "load", handlers, wasmMemory, wasmModule });
     }),
   async loadWasmModuleToAllWorkers() {
     if (ENVIRONMENT_IS_PTHREAD) {
-      return
+      return;
     }
-    const pthreadPoolReady = Promise.all(
-      PThread.unusedWorkers.map(PThread.loadWasmModuleToWorker)
-    )
-    return pthreadPoolReady
+    const pthreadPoolReady = Promise.all(PThread.unusedWorkers.map(PThread.loadWasmModuleToWorker));
+    return pthreadPoolReady;
   },
   allocateUnusedWorker() {
-    var worker
-    var pthreadMainJs = _scriptName
+    var worker;
+    var pthreadMainJs = _scriptName;
     if (Module["mainScriptUrlOrBlob"]) {
-      pthreadMainJs = Module["mainScriptUrlOrBlob"]
+      pthreadMainJs = Module["mainScriptUrlOrBlob"];
       if (typeof pthreadMainJs != "string") {
-        pthreadMainJs = URL.createObjectURL(pthreadMainJs)
+        pthreadMainJs = URL.createObjectURL(pthreadMainJs);
       }
     }
     worker = new Worker(pthreadMainJs, {
       workerData: "em-pthread",
       name: "em-pthread",
-    })
-    PThread.unusedWorkers.push(worker)
+    });
+    PThread.unusedWorkers.push(worker);
   },
   getNewWorker() {
     if (PThread.unusedWorkers.length == 0) {
-      PThread.allocateUnusedWorker()
-      PThread.loadWasmModuleToWorker(PThread.unusedWorkers[0])
+      PThread.allocateUnusedWorker();
+      PThread.loadWasmModuleToWorker(PThread.unusedWorkers[0]);
     }
-    return PThread.unusedWorkers.pop()
+    return PThread.unusedWorkers.pop();
   },
-}
-var onPostRuns = []
-var addOnPostRun = (cb) => onPostRuns.push(cb)
-var dynCalls = {}
+};
+var onPostRuns = [];
+var addOnPostRun = (cb) => onPostRuns.push(cb);
+var dynCalls = {};
 function establishStackSpace(pthread_ptr) {
-  var stackHigh = (growMemViews(), HEAPU32)[((pthread_ptr + 52) >>> 2) >>> 0]
-  var stackSize = (growMemViews(), HEAPU32)[((pthread_ptr + 56) >>> 2) >>> 0]
-  var stackLow = stackHigh - stackSize
-  _emscripten_stack_set_limits(stackHigh, stackLow)
-  stackRestore(stackHigh)
+  var stackHigh = (growMemViews(), HEAPU32)[((pthread_ptr + 52) >>> 2) >>> 0];
+  var stackSize = (growMemViews(), HEAPU32)[((pthread_ptr + 56) >>> 2) >>> 0];
+  var stackLow = stackHigh - stackSize;
+  _emscripten_stack_set_limits(stackHigh, stackLow);
+  stackRestore(stackHigh);
 }
 var invokeEntryPoint = (ptr, arg) => {
-  runtimeKeepaliveCounter = 0
-  noExitRuntime = 0
-  var result = ((a1) => dynCall_ii(ptr, a1))(arg)
+  runtimeKeepaliveCounter = 0;
+  noExitRuntime = 0;
+  var result = ((a1) => dynCall_ii(ptr, a1))(arg);
   function finish(result) {
     if (keepRuntimeAlive()) {
-      EXITSTATUS = result
-      return
+      EXITSTATUS = result;
+      return;
     }
-    __emscripten_thread_exit(result)
+    __emscripten_thread_exit(result);
   }
-  finish(result)
-}
-invokeEntryPoint.isAsync = true
-var noExitRuntime = true
-var registerTLSInit = (tlsInitFunc) =>
-  PThread.tlsInitFunctions.push(tlsInitFunc)
-var wasmMemory
-var exceptionCaught = []
-var uncaughtExceptionCount = 0
-var INT53_MAX = 9007199254740992
-var INT53_MIN = -9007199254740992
-var bigintToI53Checked = (num) =>
-  num < INT53_MIN || num > INT53_MAX ? NaN : Number(num)
+  finish(result);
+};
+invokeEntryPoint.isAsync = true;
+var noExitRuntime = true;
+var registerTLSInit = (tlsInitFunc) => PThread.tlsInitFunctions.push(tlsInitFunc);
+var wasmMemory;
+var exceptionCaught = [];
+var uncaughtExceptionCount = 0;
+var INT53_MAX = 9007199254740992;
+var INT53_MIN = -9007199254740992;
+var bigintToI53Checked = (num) => (num < INT53_MIN || num > INT53_MAX ? NaN : Number(num));
 function ___cxa_begin_catch(ptr) {
-  ptr >>>= 0
-  var info = new ExceptionInfo(ptr)
+  ptr >>>= 0;
+  var info = new ExceptionInfo(ptr);
   if (!info.get_caught()) {
-    info.set_caught(true)
-    uncaughtExceptionCount--
+    info.set_caught(true);
+    uncaughtExceptionCount--;
   }
-  info.set_rethrown(false)
-  exceptionCaught.push(info)
-  ___cxa_increment_exception_refcount(ptr)
-  return ___cxa_get_exception_ptr(ptr)
+  info.set_rethrown(false);
+  exceptionCaught.push(info);
+  ___cxa_increment_exception_refcount(ptr);
+  return ___cxa_get_exception_ptr(ptr);
 }
 function ___cxa_current_primary_exception() {
   if (!exceptionCaught.length) {
-    return 0
+    return 0;
   }
-  var info = exceptionCaught[exceptionCaught.length - 1]
-  ___cxa_increment_exception_refcount(info.excPtr)
-  return info.excPtr
+  var info = exceptionCaught[exceptionCaught.length - 1];
+  ___cxa_increment_exception_refcount(info.excPtr);
+  return info.excPtr;
 }
-var exceptionLast = 0
+var exceptionLast = 0;
 var ___cxa_end_catch = () => {
-  _setThrew(0, 0)
-  var info = exceptionCaught.pop()
-  ___cxa_decrement_exception_refcount(info.excPtr)
-  exceptionLast = 0
-}
+  _setThrew(0, 0);
+  var info = exceptionCaught.pop();
+  ___cxa_decrement_exception_refcount(info.excPtr);
+  exceptionLast = 0;
+};
 class ExceptionInfo {
   constructor(excPtr) {
-    this.excPtr = excPtr
-    this.ptr = excPtr - 24
+    this.excPtr = excPtr;
+    this.ptr = excPtr - 24;
   }
   set_type(type) {
-    ;(growMemViews(), HEAPU32)[((this.ptr + 4) >>> 2) >>> 0] = type
+    (growMemViews(), HEAPU32)[((this.ptr + 4) >>> 2) >>> 0] = type;
   }
   get_type() {
-    return (growMemViews(), HEAPU32)[((this.ptr + 4) >>> 2) >>> 0]
+    return (growMemViews(), HEAPU32)[((this.ptr + 4) >>> 2) >>> 0];
   }
   set_destructor(destructor) {
-    ;(growMemViews(), HEAPU32)[((this.ptr + 8) >>> 2) >>> 0] = destructor
+    (growMemViews(), HEAPU32)[((this.ptr + 8) >>> 2) >>> 0] = destructor;
   }
   get_destructor() {
-    return (growMemViews(), HEAPU32)[((this.ptr + 8) >>> 2) >>> 0]
+    return (growMemViews(), HEAPU32)[((this.ptr + 8) >>> 2) >>> 0];
   }
   set_caught(caught) {
-    caught = caught ? 1 : 0
-    ;(growMemViews(), HEAP8)[(this.ptr + 12) >>> 0] = caught
+    caught = caught ? 1 : 0;
+    (growMemViews(), HEAP8)[(this.ptr + 12) >>> 0] = caught;
   }
   get_caught() {
-    return (growMemViews(), HEAP8)[(this.ptr + 12) >>> 0] != 0
+    return (growMemViews(), HEAP8)[(this.ptr + 12) >>> 0] != 0;
   }
   set_rethrown(rethrown) {
-    rethrown = rethrown ? 1 : 0
-    ;(growMemViews(), HEAP8)[(this.ptr + 13) >>> 0] = rethrown
+    rethrown = rethrown ? 1 : 0;
+    (growMemViews(), HEAP8)[(this.ptr + 13) >>> 0] = rethrown;
   }
   get_rethrown() {
-    return (growMemViews(), HEAP8)[(this.ptr + 13) >>> 0] != 0
+    return (growMemViews(), HEAP8)[(this.ptr + 13) >>> 0] != 0;
   }
   init(type, destructor) {
-    this.set_adjusted_ptr(0)
-    this.set_type(type)
-    this.set_destructor(destructor)
+    this.set_adjusted_ptr(0);
+    this.set_type(type);
+    this.set_destructor(destructor);
   }
   set_adjusted_ptr(adjustedPtr) {
-    ;(growMemViews(), HEAPU32)[((this.ptr + 16) >>> 2) >>> 0] = adjustedPtr
+    (growMemViews(), HEAPU32)[((this.ptr + 16) >>> 2) >>> 0] = adjustedPtr;
   }
   get_adjusted_ptr() {
-    return (growMemViews(), HEAPU32)[((this.ptr + 16) >>> 2) >>> 0]
+    return (growMemViews(), HEAPU32)[((this.ptr + 16) >>> 2) >>> 0];
   }
 }
-var setTempRet0 = (val) => __emscripten_tempret_set(val)
+var setTempRet0 = (val) => __emscripten_tempret_set(val);
 var findMatchingCatch = (args) => {
-  var thrown = exceptionLast
+  var thrown = exceptionLast;
   if (!thrown) {
-    setTempRet0(0)
-    return 0
+    setTempRet0(0);
+    return 0;
   }
-  var info = new ExceptionInfo(thrown)
-  info.set_adjusted_ptr(thrown)
-  var thrownType = info.get_type()
+  var info = new ExceptionInfo(thrown);
+  info.set_adjusted_ptr(thrown);
+  var thrownType = info.get_type();
   if (!thrownType) {
-    setTempRet0(0)
-    return thrown
+    setTempRet0(0);
+    return thrown;
   }
   for (var caughtType of args) {
     if (caughtType === 0 || caughtType === thrownType) {
-      break
+      break;
     }
-    var adjusted_ptr_addr = info.ptr + 16
+    var adjusted_ptr_addr = info.ptr + 16;
     if (___cxa_can_catch(caughtType, thrownType, adjusted_ptr_addr)) {
-      setTempRet0(caughtType)
-      return thrown
+      setTempRet0(caughtType);
+      return thrown;
     }
   }
-  setTempRet0(thrownType)
-  return thrown
-}
+  setTempRet0(thrownType);
+  return thrown;
+};
 function ___cxa_find_matching_catch_2() {
-  return findMatchingCatch([])
+  return findMatchingCatch([]);
 }
 function ___cxa_find_matching_catch_3(arg0) {
-  arg0 >>>= 0
-  return findMatchingCatch([arg0])
+  arg0 >>>= 0;
+  return findMatchingCatch([arg0]);
 }
 function ___cxa_find_matching_catch_4(arg0, arg1) {
-  arg0 >>>= 0
-  arg1 >>>= 0
-  return findMatchingCatch([arg0, arg1])
+  arg0 >>>= 0;
+  arg1 >>>= 0;
+  return findMatchingCatch([arg0, arg1]);
 }
 function ___cxa_find_matching_catch_7(arg0, arg1, arg2, arg3, arg4) {
-  arg0 >>>= 0
-  arg1 >>>= 0
-  arg2 >>>= 0
-  arg3 >>>= 0
-  arg4 >>>= 0
-  return findMatchingCatch([arg0, arg1, arg2, arg3, arg4])
+  arg0 >>>= 0;
+  arg1 >>>= 0;
+  arg2 >>>= 0;
+  arg3 >>>= 0;
+  arg4 >>>= 0;
+  return findMatchingCatch([arg0, arg1, arg2, arg3, arg4]);
 }
 var ___cxa_rethrow = () => {
-  var info = exceptionCaught.pop()
+  var info = exceptionCaught.pop();
   if (!info) {
-    abort("no exception to throw")
+    abort("no exception to throw");
   }
-  var ptr = info.excPtr
+  var ptr = info.excPtr;
   if (!info.get_rethrown()) {
-    exceptionCaught.push(info)
-    info.set_rethrown(true)
-    info.set_caught(false)
-    uncaughtExceptionCount++
+    exceptionCaught.push(info);
+    info.set_rethrown(true);
+    info.set_caught(false);
+    uncaughtExceptionCount++;
   }
-  exceptionLast = ptr
-  throw exceptionLast
-}
+  exceptionLast = ptr;
+  throw exceptionLast;
+};
 function ___cxa_rethrow_primary_exception(ptr) {
-  ptr >>>= 0
-  if (!ptr) return
-  var info = new ExceptionInfo(ptr)
-  exceptionCaught.push(info)
-  info.set_rethrown(true)
-  ___cxa_rethrow()
+  ptr >>>= 0;
+  if (!ptr) return;
+  var info = new ExceptionInfo(ptr);
+  exceptionCaught.push(info);
+  info.set_rethrown(true);
+  ___cxa_rethrow();
 }
 function ___cxa_throw(ptr, type, destructor) {
-  ptr >>>= 0
-  type >>>= 0
-  destructor >>>= 0
-  var info = new ExceptionInfo(ptr)
-  info.init(type, destructor)
-  exceptionLast = ptr
-  uncaughtExceptionCount++
-  throw exceptionLast
+  ptr >>>= 0;
+  type >>>= 0;
+  destructor >>>= 0;
+  var info = new ExceptionInfo(ptr);
+  info.init(type, destructor);
+  exceptionLast = ptr;
+  uncaughtExceptionCount++;
+  throw exceptionLast;
 }
-var ___cxa_uncaught_exceptions = () => uncaughtExceptionCount
+var ___cxa_uncaught_exceptions = () => uncaughtExceptionCount;
 function pthreadCreateProxied(pthread_ptr, attr, startRoutine, arg) {
   if (ENVIRONMENT_IS_PTHREAD)
-    return proxyToMainThread(2, 0, 1, pthread_ptr, attr, startRoutine, arg)
-  return ___pthread_create_js(pthread_ptr, attr, startRoutine, arg)
+    return proxyToMainThread(2, 0, 1, pthread_ptr, attr, startRoutine, arg);
+  return ___pthread_create_js(pthread_ptr, attr, startRoutine, arg);
 }
-var _emscripten_has_threading_support = () => !!globalThis.SharedArrayBuffer
+var _emscripten_has_threading_support = () => !!globalThis.SharedArrayBuffer;
 function ___pthread_create_js(pthread_ptr, attr, startRoutine, arg) {
-  pthread_ptr >>>= 0
-  attr >>>= 0
-  startRoutine >>>= 0
-  arg >>>= 0
+  pthread_ptr >>>= 0;
+  attr >>>= 0;
+  startRoutine >>>= 0;
+  arg >>>= 0;
   if (!_emscripten_has_threading_support()) {
-    return 6
+    return 6;
   }
-  var transferList = []
-  var error = 0
+  var transferList = [];
+  var error = 0;
   if (ENVIRONMENT_IS_PTHREAD && (transferList.length === 0 || error)) {
-    return pthreadCreateProxied(pthread_ptr, attr, startRoutine, arg)
+    return pthreadCreateProxied(pthread_ptr, attr, startRoutine, arg);
   }
-  if (error) return error
-  var threadParams = { startRoutine, pthread_ptr, arg, transferList }
+  if (error) return error;
+  var threadParams = { startRoutine, pthread_ptr, arg, transferList };
   if (ENVIRONMENT_IS_PTHREAD) {
-    threadParams.cmd = "spawnThread"
-    postMessage(threadParams, transferList)
-    return 0
+    threadParams.cmd = "spawnThread";
+    postMessage(threadParams, transferList);
+    return 0;
   }
-  return spawnThread(threadParams)
+  return spawnThread(threadParams);
 }
 function ___resumeException(ptr) {
-  ptr >>>= 0
+  ptr >>>= 0;
   if (!exceptionLast) {
-    exceptionLast = ptr
+    exceptionLast = ptr;
   }
-  throw exceptionLast
+  throw exceptionLast;
 }
 var syscallGetVarargI = () => {
-  var ret = (growMemViews(), HEAP32)[(+SYSCALLS.varargs >>> 2) >>> 0]
-  SYSCALLS.varargs += 4
-  return ret
-}
-var syscallGetVarargP = syscallGetVarargI
+  var ret = (growMemViews(), HEAP32)[(+SYSCALLS.varargs >>> 2) >>> 0];
+  SYSCALLS.varargs += 4;
+  return ret;
+};
+var syscallGetVarargP = syscallGetVarargI;
 var PATH = {
   isAbs: (path) => path.charAt(0) === "/",
   splitPath: (filename) => {
-    var splitPathRe =
-      /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^/]+?|)(\.[^./]*|))(?:[/]*)$/
-    return splitPathRe.exec(filename).slice(1)
+    var splitPathRe = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^/]+?|)(\.[^./]*|))(?:[/]*)$/;
+    return splitPathRe.exec(filename).slice(1);
   },
   normalizeArray: (parts, allowAboveRoot) => {
-    var up = 0
+    var up = 0;
     for (var i = parts.length - 1; i >= 0; i--) {
-      var last = parts[i]
+      var last = parts[i];
       if (last === ".") {
-        parts.splice(i, 1)
+        parts.splice(i, 1);
       } else if (last === "..") {
-        parts.splice(i, 1)
-        up++
+        parts.splice(i, 1);
+        up++;
       } else if (up) {
-        parts.splice(i, 1)
-        up--
+        parts.splice(i, 1);
+        up--;
       }
     }
     if (allowAboveRoot) {
       for (; up; up--) {
-        parts.unshift("..")
+        parts.unshift("..");
       }
     }
-    return parts
+    return parts;
   },
   normalize: (path) => {
     var isAbsolute = PATH.isAbs(path),
-      trailingSlash = path.slice(-1) === "/"
+      trailingSlash = path.slice(-1) === "/";
     path = PATH.normalizeArray(
       path.split("/").filter((p) => !!p),
-      !isAbsolute
-    ).join("/")
+      !isAbsolute,
+    ).join("/");
     if (!path && !isAbsolute) {
-      path = "."
+      path = ".";
     }
     if (path && trailingSlash) {
-      path += "/"
+      path += "/";
     }
-    return (isAbsolute ? "/" : "") + path
+    return (isAbsolute ? "/" : "") + path;
   },
   dirname: (path) => {
     var result = PATH.splitPath(path),
       root = result[0],
-      dir = result[1]
+      dir = result[1];
     if (!root && !dir) {
-      return "."
+      return ".";
     }
     if (dir) {
-      dir = dir.slice(0, -1)
+      dir = dir.slice(0, -1);
     }
-    return root + dir
+    return root + dir;
   },
   basename: (path) => path && path.match(/([^/]+|\/)\/*$/)[1],
   join: (...paths) => PATH.normalize(paths.join("/")),
   join2: (l, r) => PATH.normalize(l + "/" + r),
-}
+};
 var initRandomFill = () => {
   if (ENVIRONMENT_IS_NODE) {
-    var nodeCrypto = require("crypto")
-    return (view) => nodeCrypto.randomFillSync(view)
+    var nodeCrypto = require("crypto");
+    return (view) => nodeCrypto.randomFillSync(view);
   }
-  return (view) =>
-    view.set(crypto.getRandomValues(new Uint8Array(view.byteLength)))
-}
+  return (view) => view.set(crypto.getRandomValues(new Uint8Array(view.byteLength)));
+};
 var randomFill = (view) => {
-  ;(randomFill = initRandomFill())(view)
-}
+  (randomFill = initRandomFill())(view);
+};
 var PATH_FS = {
   resolve: (...args) => {
     var resolvedPath = "",
-      resolvedAbsolute = false
+      resolvedAbsolute = false;
     for (var i = args.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-      var path = i >= 0 ? args[i] : FS.cwd()
+      var path = i >= 0 ? args[i] : FS.cwd();
       if (typeof path != "string") {
-        throw new TypeError("Arguments to path.resolve must be strings")
+        throw new TypeError("Arguments to path.resolve must be strings");
       } else if (!path) {
-        return ""
+        return "";
       }
-      resolvedPath = path + "/" + resolvedPath
-      resolvedAbsolute = PATH.isAbs(path)
+      resolvedPath = path + "/" + resolvedPath;
+      resolvedAbsolute = PATH.isAbs(path);
     }
     resolvedPath = PATH.normalizeArray(
       resolvedPath.split("/").filter((p) => !!p),
-      !resolvedAbsolute
-    ).join("/")
-    return (resolvedAbsolute ? "/" : "") + resolvedPath || "."
+      !resolvedAbsolute,
+    ).join("/");
+    return (resolvedAbsolute ? "/" : "") + resolvedPath || ".";
   },
   relative: (from, to) => {
-    from = PATH_FS.resolve(from).slice(1)
-    to = PATH_FS.resolve(to).slice(1)
+    from = PATH_FS.resolve(from).slice(1);
+    to = PATH_FS.resolve(to).slice(1);
     function trim(arr) {
-      var start = 0
+      var start = 0;
       for (; start < arr.length; start++) {
-        if (arr[start] !== "") break
+        if (arr[start] !== "") break;
       }
-      var end = arr.length - 1
+      var end = arr.length - 1;
       for (; end >= 0; end--) {
-        if (arr[end] !== "") break
+        if (arr[end] !== "") break;
       }
-      if (start > end) return []
-      return arr.slice(start, end - start + 1)
+      if (start > end) return [];
+      return arr.slice(start, end - start + 1);
     }
-    var fromParts = trim(from.split("/"))
-    var toParts = trim(to.split("/"))
-    var length = Math.min(fromParts.length, toParts.length)
-    var samePartsLength = length
+    var fromParts = trim(from.split("/"));
+    var toParts = trim(to.split("/"));
+    var length = Math.min(fromParts.length, toParts.length);
+    var samePartsLength = length;
     for (var i = 0; i < length; i++) {
       if (fromParts[i] !== toParts[i]) {
-        samePartsLength = i
-        break
+        samePartsLength = i;
+        break;
       }
     }
-    var outputParts = []
+    var outputParts = [];
     for (var i = samePartsLength; i < fromParts.length; i++) {
-      outputParts.push("..")
+      outputParts.push("..");
     }
-    outputParts = outputParts.concat(toParts.slice(samePartsLength))
-    return outputParts.join("/")
+    outputParts = outputParts.concat(toParts.slice(samePartsLength));
+    return outputParts.join("/");
   },
-}
-var UTF8Decoder = globalThis.TextDecoder && new TextDecoder()
+};
+var UTF8Decoder = globalThis.TextDecoder && new TextDecoder();
 var findStringEnd = (heapOrArray, idx, maxBytesToRead, ignoreNul) => {
-  var maxIdx = idx + maxBytesToRead
-  if (ignoreNul) return maxIdx
-  while (heapOrArray[idx] && !(idx >= maxIdx)) ++idx
-  return idx
-}
+  var maxIdx = idx + maxBytesToRead;
+  if (ignoreNul) return maxIdx;
+  while (heapOrArray[idx] && !(idx >= maxIdx)) ++idx;
+  return idx;
+};
 var UTF8ArrayToString = (heapOrArray, idx = 0, maxBytesToRead, ignoreNul) => {
-  idx >>>= 0
-  var endPtr = findStringEnd(heapOrArray, idx, maxBytesToRead, ignoreNul)
+  idx >>>= 0;
+  var endPtr = findStringEnd(heapOrArray, idx, maxBytesToRead, ignoreNul);
   if (endPtr - idx > 16 && heapOrArray.buffer && UTF8Decoder) {
     return UTF8Decoder.decode(
       heapOrArray.buffer instanceof ArrayBuffer
         ? heapOrArray.subarray(idx, endPtr)
-        : heapOrArray.slice(idx, endPtr)
-    )
+        : heapOrArray.slice(idx, endPtr),
+    );
   }
-  var str = ""
+  var str = "";
   while (idx < endPtr) {
-    var u0 = heapOrArray[idx++]
+    var u0 = heapOrArray[idx++];
     if (!(u0 & 128)) {
-      str += String.fromCharCode(u0)
-      continue
+      str += String.fromCharCode(u0);
+      continue;
     }
-    var u1 = heapOrArray[idx++] & 63
+    var u1 = heapOrArray[idx++] & 63;
     if ((u0 & 224) == 192) {
-      str += String.fromCharCode(((u0 & 31) << 6) | u1)
-      continue
+      str += String.fromCharCode(((u0 & 31) << 6) | u1);
+      continue;
     }
-    var u2 = heapOrArray[idx++] & 63
+    var u2 = heapOrArray[idx++] & 63;
     if ((u0 & 240) == 224) {
-      u0 = ((u0 & 15) << 12) | (u1 << 6) | u2
+      u0 = ((u0 & 15) << 12) | (u1 << 6) | u2;
     } else {
-      u0 = ((u0 & 7) << 18) | (u1 << 12) | (u2 << 6) | (heapOrArray[idx++] & 63)
+      u0 = ((u0 & 7) << 18) | (u1 << 12) | (u2 << 6) | (heapOrArray[idx++] & 63);
     }
     if (u0 < 65536) {
-      str += String.fromCharCode(u0)
+      str += String.fromCharCode(u0);
     } else {
-      var ch = u0 - 65536
-      str += String.fromCharCode(55296 | (ch >> 10), 56320 | (ch & 1023))
+      var ch = u0 - 65536;
+      str += String.fromCharCode(55296 | (ch >> 10), 56320 | (ch & 1023));
     }
   }
-  return str
-}
-var FS_stdin_getChar_buffer = []
+  return str;
+};
+var FS_stdin_getChar_buffer = [];
 var lengthBytesUTF8 = (str) => {
-  var len = 0
+  var len = 0;
   for (var i = 0; i < str.length; ++i) {
-    var c = str.charCodeAt(i)
+    var c = str.charCodeAt(i);
     if (c <= 127) {
-      len++
+      len++;
     } else if (c <= 2047) {
-      len += 2
+      len += 2;
     } else if (c >= 55296 && c <= 57343) {
-      len += 4
-      ++i
+      len += 4;
+      ++i;
     } else {
-      len += 3
+      len += 3;
     }
   }
-  return len
-}
+  return len;
+};
 var stringToUTF8Array = (str, heap, outIdx, maxBytesToWrite) => {
-  outIdx >>>= 0
-  if (!(maxBytesToWrite > 0)) return 0
-  var startIdx = outIdx
-  var endIdx = outIdx + maxBytesToWrite - 1
+  outIdx >>>= 0;
+  if (!(maxBytesToWrite > 0)) return 0;
+  var startIdx = outIdx;
+  var endIdx = outIdx + maxBytesToWrite - 1;
   for (var i = 0; i < str.length; ++i) {
-    var u = str.codePointAt(i)
+    var u = str.codePointAt(i);
     if (u <= 127) {
-      if (outIdx >= endIdx) break
-      heap[outIdx++ >>> 0] = u
+      if (outIdx >= endIdx) break;
+      heap[outIdx++ >>> 0] = u;
     } else if (u <= 2047) {
-      if (outIdx + 1 >= endIdx) break
-      heap[outIdx++ >>> 0] = 192 | (u >> 6)
-      heap[outIdx++ >>> 0] = 128 | (u & 63)
+      if (outIdx + 1 >= endIdx) break;
+      heap[outIdx++ >>> 0] = 192 | (u >> 6);
+      heap[outIdx++ >>> 0] = 128 | (u & 63);
     } else if (u <= 65535) {
-      if (outIdx + 2 >= endIdx) break
-      heap[outIdx++ >>> 0] = 224 | (u >> 12)
-      heap[outIdx++ >>> 0] = 128 | ((u >> 6) & 63)
-      heap[outIdx++ >>> 0] = 128 | (u & 63)
+      if (outIdx + 2 >= endIdx) break;
+      heap[outIdx++ >>> 0] = 224 | (u >> 12);
+      heap[outIdx++ >>> 0] = 128 | ((u >> 6) & 63);
+      heap[outIdx++ >>> 0] = 128 | (u & 63);
     } else {
-      if (outIdx + 3 >= endIdx) break
-      heap[outIdx++ >>> 0] = 240 | (u >> 18)
-      heap[outIdx++ >>> 0] = 128 | ((u >> 12) & 63)
-      heap[outIdx++ >>> 0] = 128 | ((u >> 6) & 63)
-      heap[outIdx++ >>> 0] = 128 | (u & 63)
-      i++
+      if (outIdx + 3 >= endIdx) break;
+      heap[outIdx++ >>> 0] = 240 | (u >> 18);
+      heap[outIdx++ >>> 0] = 128 | ((u >> 12) & 63);
+      heap[outIdx++ >>> 0] = 128 | ((u >> 6) & 63);
+      heap[outIdx++ >>> 0] = 128 | (u & 63);
+      i++;
     }
   }
-  heap[outIdx >>> 0] = 0
-  return outIdx - startIdx
-}
+  heap[outIdx >>> 0] = 0;
+  return outIdx - startIdx;
+};
 var intArrayFromString = (stringy, dontAddNull, length) => {
-  var len = length > 0 ? length : lengthBytesUTF8(stringy) + 1
-  var u8array = new Array(len)
-  var numBytesWritten = stringToUTF8Array(stringy, u8array, 0, u8array.length)
-  if (dontAddNull) u8array.length = numBytesWritten
-  return u8array
-}
+  var len = length > 0 ? length : lengthBytesUTF8(stringy) + 1;
+  var u8array = new Array(len);
+  var numBytesWritten = stringToUTF8Array(stringy, u8array, 0, u8array.length);
+  if (dontAddNull) u8array.length = numBytesWritten;
+  return u8array;
+};
 var FS_stdin_getChar = () => {
   if (!FS_stdin_getChar_buffer.length) {
-    var result = null
+    var result = null;
     if (ENVIRONMENT_IS_NODE) {
-      var BUFSIZE = 256
-      var buf = Buffer.alloc(BUFSIZE)
-      var bytesRead = 0
-      var fd = process.stdin.fd
+      var BUFSIZE = 256;
+      var buf = Buffer.alloc(BUFSIZE);
+      var bytesRead = 0;
+      var fd = process.stdin.fd;
       try {
-        bytesRead = fs.readSync(fd, buf, 0, BUFSIZE)
+        bytesRead = fs.readSync(fd, buf, 0, BUFSIZE);
       } catch (e) {
-        if (e.toString().includes("EOF")) bytesRead = 0
-        else throw e
+        if (e.toString().includes("EOF")) bytesRead = 0;
+        else throw e;
       }
       if (bytesRead > 0) {
-        result = buf.slice(0, bytesRead).toString("utf-8")
+        result = buf.slice(0, bytesRead).toString("utf-8");
       }
     } else if (globalThis.window?.prompt) {
-      result = window.prompt("Input: ")
+      result = window.prompt("Input: ");
       if (result !== null) {
-        result += "\n"
+        result += "\n";
       }
     } else {
     }
     if (!result) {
-      return null
+      return null;
     }
-    FS_stdin_getChar_buffer = intArrayFromString(result, true)
+    FS_stdin_getChar_buffer = intArrayFromString(result, true);
   }
-  return FS_stdin_getChar_buffer.shift()
-}
+  return FS_stdin_getChar_buffer.shift();
+};
 var TTY = {
   ttys: [],
   init() {},
   shutdown() {},
   register(dev, ops) {
-    TTY.ttys[dev] = { input: [], output: [], ops }
-    FS.registerDevice(dev, TTY.stream_ops)
+    TTY.ttys[dev] = { input: [], output: [], ops };
+    FS.registerDevice(dev, TTY.stream_ops);
   },
   stream_ops: {
     open(stream) {
-      var tty = TTY.ttys[stream.node.rdev]
+      var tty = TTY.ttys[stream.node.rdev];
       if (!tty) {
-        throw new FS.ErrnoError(43)
+        throw new FS.ErrnoError(43);
       }
-      stream.tty = tty
-      stream.seekable = false
+      stream.tty = tty;
+      stream.seekable = false;
     },
     close(stream) {
-      stream.tty.ops.fsync(stream.tty)
+      stream.tty.ops.fsync(stream.tty);
     },
     fsync(stream) {
-      stream.tty.ops.fsync(stream.tty)
+      stream.tty.ops.fsync(stream.tty);
     },
     read(stream, buffer, offset, length, pos) {
       if (!stream.tty || !stream.tty.ops.get_char) {
-        throw new FS.ErrnoError(60)
+        throw new FS.ErrnoError(60);
       }
-      var bytesRead = 0
+      var bytesRead = 0;
       for (var i = 0; i < length; i++) {
-        var result
+        var result;
         try {
-          result = stream.tty.ops.get_char(stream.tty)
+          result = stream.tty.ops.get_char(stream.tty);
         } catch (e) {
-          throw new FS.ErrnoError(29)
+          throw new FS.ErrnoError(29);
         }
         if (result === undefined && bytesRead === 0) {
-          throw new FS.ErrnoError(6)
+          throw new FS.ErrnoError(6);
         }
-        if (result === null || result === undefined) break
-        bytesRead++
-        buffer[offset + i] = result
+        if (result === null || result === undefined) break;
+        bytesRead++;
+        buffer[offset + i] = result;
       }
       if (bytesRead) {
-        stream.node.atime = Date.now()
+        stream.node.atime = Date.now();
       }
-      return bytesRead
+      return bytesRead;
     },
     write(stream, buffer, offset, length, pos) {
       if (!stream.tty || !stream.tty.ops.put_char) {
-        throw new FS.ErrnoError(60)
+        throw new FS.ErrnoError(60);
       }
       try {
         for (var i = 0; i < length; i++) {
-          stream.tty.ops.put_char(stream.tty, buffer[offset + i])
+          stream.tty.ops.put_char(stream.tty, buffer[offset + i]);
         }
       } catch (e) {
-        throw new FS.ErrnoError(29)
+        throw new FS.ErrnoError(29);
       }
       if (length) {
-        stream.node.mtime = stream.node.ctime = Date.now()
+        stream.node.mtime = stream.node.ctime = Date.now();
       }
-      return i
+      return i;
     },
   },
   default_tty_ops: {
     get_char(tty) {
-      return FS_stdin_getChar()
+      return FS_stdin_getChar();
     },
     put_char(tty, val) {
       if (val === null || val === 10) {
-        out(UTF8ArrayToString(tty.output))
-        tty.output = []
+        out(UTF8ArrayToString(tty.output));
+        tty.output = [];
       } else {
-        if (val != 0) tty.output.push(val)
+        if (val != 0) tty.output.push(val);
       }
     },
     fsync(tty) {
       if (tty.output?.length > 0) {
-        out(UTF8ArrayToString(tty.output))
-        tty.output = []
+        out(UTF8ArrayToString(tty.output));
+        tty.output = [];
       }
     },
     ioctl_tcgets(tty) {
@@ -1170,52 +1155,51 @@ var TTY = {
         c_cflag: 191,
         c_lflag: 35387,
         c_cc: [
-          3, 28, 127, 21, 4, 0, 1, 0, 17, 19, 26, 0, 18, 15, 23, 22, 0, 0, 0, 0,
-          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          3, 28, 127, 21, 4, 0, 1, 0, 17, 19, 26, 0, 18, 15, 23, 22, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0, 0, 0, 0, 0,
         ],
-      }
+      };
     },
     ioctl_tcsets(tty, optional_actions, data) {
-      return 0
+      return 0;
     },
     ioctl_tiocgwinsz(tty) {
-      return [24, 80]
+      return [24, 80];
     },
   },
   default_tty1_ops: {
     put_char(tty, val) {
       if (val === null || val === 10) {
-        err(UTF8ArrayToString(tty.output))
-        tty.output = []
+        err(UTF8ArrayToString(tty.output));
+        tty.output = [];
       } else {
-        if (val != 0) tty.output.push(val)
+        if (val != 0) tty.output.push(val);
       }
     },
     fsync(tty) {
       if (tty.output?.length > 0) {
-        err(UTF8ArrayToString(tty.output))
-        tty.output = []
+        err(UTF8ArrayToString(tty.output));
+        tty.output = [];
       }
     },
   },
-}
-var zeroMemory = (ptr, size) =>
-  (growMemViews(), HEAPU8).fill(0, ptr, ptr + size)
-var alignMemory = (size, alignment) => Math.ceil(size / alignment) * alignment
+};
+var zeroMemory = (ptr, size) => (growMemViews(), HEAPU8).fill(0, ptr, ptr + size);
+var alignMemory = (size, alignment) => Math.ceil(size / alignment) * alignment;
 var mmapAlloc = (size) => {
-  size = alignMemory(size, 65536)
-  var ptr = _emscripten_builtin_memalign(65536, size)
-  if (ptr) zeroMemory(ptr, size)
-  return ptr
-}
+  size = alignMemory(size, 65536);
+  var ptr = _emscripten_builtin_memalign(65536, size);
+  if (ptr) zeroMemory(ptr, size);
+  return ptr;
+};
 var MEMFS = {
   ops_table: null,
   mount(mount) {
-    return MEMFS.createNode(null, "/", 16895, 0)
+    return MEMFS.createNode(null, "/", 16895, 0);
   },
   createNode(parent, name, mode, dev) {
     if (FS.isBlkdev(mode) || FS.isFIFO(mode)) {
-      throw new FS.ErrnoError(63)
+      throw new FS.ErrnoError(63);
     }
     MEMFS.ops_table ||= {
       dir: {
@@ -1260,263 +1244,247 @@ var MEMFS = {
         },
         stream: FS.chrdev_stream_ops,
       },
-    }
-    var node = FS.createNode(parent, name, mode, dev)
+    };
+    var node = FS.createNode(parent, name, mode, dev);
     if (FS.isDir(node.mode)) {
-      node.node_ops = MEMFS.ops_table.dir.node
-      node.stream_ops = MEMFS.ops_table.dir.stream
-      node.contents = {}
+      node.node_ops = MEMFS.ops_table.dir.node;
+      node.stream_ops = MEMFS.ops_table.dir.stream;
+      node.contents = {};
     } else if (FS.isFile(node.mode)) {
-      node.node_ops = MEMFS.ops_table.file.node
-      node.stream_ops = MEMFS.ops_table.file.stream
-      node.usedBytes = 0
-      node.contents = null
+      node.node_ops = MEMFS.ops_table.file.node;
+      node.stream_ops = MEMFS.ops_table.file.stream;
+      node.usedBytes = 0;
+      node.contents = null;
     } else if (FS.isLink(node.mode)) {
-      node.node_ops = MEMFS.ops_table.link.node
-      node.stream_ops = MEMFS.ops_table.link.stream
+      node.node_ops = MEMFS.ops_table.link.node;
+      node.stream_ops = MEMFS.ops_table.link.stream;
     } else if (FS.isChrdev(node.mode)) {
-      node.node_ops = MEMFS.ops_table.chrdev.node
-      node.stream_ops = MEMFS.ops_table.chrdev.stream
+      node.node_ops = MEMFS.ops_table.chrdev.node;
+      node.stream_ops = MEMFS.ops_table.chrdev.stream;
     }
-    node.atime = node.mtime = node.ctime = Date.now()
+    node.atime = node.mtime = node.ctime = Date.now();
     if (parent) {
-      parent.contents[name] = node
-      parent.atime = parent.mtime = parent.ctime = node.atime
+      parent.contents[name] = node;
+      parent.atime = parent.mtime = parent.ctime = node.atime;
     }
-    return node
+    return node;
   },
   getFileDataAsTypedArray(node) {
-    if (!node.contents) return new Uint8Array(0)
-    if (node.contents.subarray) return node.contents.subarray(0, node.usedBytes)
-    return new Uint8Array(node.contents)
+    if (!node.contents) return new Uint8Array(0);
+    if (node.contents.subarray) return node.contents.subarray(0, node.usedBytes);
+    return new Uint8Array(node.contents);
   },
   expandFileStorage(node, newCapacity) {
-    var prevCapacity = node.contents ? node.contents.length : 0
-    if (prevCapacity >= newCapacity) return
-    var CAPACITY_DOUBLING_MAX = 1024 * 1024
+    var prevCapacity = node.contents ? node.contents.length : 0;
+    if (prevCapacity >= newCapacity) return;
+    var CAPACITY_DOUBLING_MAX = 1024 * 1024;
     newCapacity = Math.max(
       newCapacity,
-      (prevCapacity * (prevCapacity < CAPACITY_DOUBLING_MAX ? 2 : 1.125)) >>> 0
-    )
-    if (prevCapacity != 0) newCapacity = Math.max(newCapacity, 256)
-    var oldContents = node.contents
-    node.contents = new Uint8Array(newCapacity)
-    if (node.usedBytes > 0)
-      node.contents.set(oldContents.subarray(0, node.usedBytes), 0)
+      (prevCapacity * (prevCapacity < CAPACITY_DOUBLING_MAX ? 2 : 1.125)) >>> 0,
+    );
+    if (prevCapacity != 0) newCapacity = Math.max(newCapacity, 256);
+    var oldContents = node.contents;
+    node.contents = new Uint8Array(newCapacity);
+    if (node.usedBytes > 0) node.contents.set(oldContents.subarray(0, node.usedBytes), 0);
   },
   resizeFileStorage(node, newSize) {
-    if (node.usedBytes == newSize) return
+    if (node.usedBytes == newSize) return;
     if (newSize == 0) {
-      node.contents = null
-      node.usedBytes = 0
+      node.contents = null;
+      node.usedBytes = 0;
     } else {
-      var oldContents = node.contents
-      node.contents = new Uint8Array(newSize)
+      var oldContents = node.contents;
+      node.contents = new Uint8Array(newSize);
       if (oldContents) {
-        node.contents.set(
-          oldContents.subarray(0, Math.min(newSize, node.usedBytes))
-        )
+        node.contents.set(oldContents.subarray(0, Math.min(newSize, node.usedBytes)));
       }
-      node.usedBytes = newSize
+      node.usedBytes = newSize;
     }
   },
   node_ops: {
     getattr(node) {
-      var attr = {}
-      attr.dev = FS.isChrdev(node.mode) ? node.id : 1
-      attr.ino = node.id
-      attr.mode = node.mode
-      attr.nlink = 1
-      attr.uid = 0
-      attr.gid = 0
-      attr.rdev = node.rdev
+      var attr = {};
+      attr.dev = FS.isChrdev(node.mode) ? node.id : 1;
+      attr.ino = node.id;
+      attr.mode = node.mode;
+      attr.nlink = 1;
+      attr.uid = 0;
+      attr.gid = 0;
+      attr.rdev = node.rdev;
       if (FS.isDir(node.mode)) {
-        attr.size = 4096
+        attr.size = 4096;
       } else if (FS.isFile(node.mode)) {
-        attr.size = node.usedBytes
+        attr.size = node.usedBytes;
       } else if (FS.isLink(node.mode)) {
-        attr.size = node.link.length
+        attr.size = node.link.length;
       } else {
-        attr.size = 0
+        attr.size = 0;
       }
-      attr.atime = new Date(node.atime)
-      attr.mtime = new Date(node.mtime)
-      attr.ctime = new Date(node.ctime)
-      attr.blksize = 4096
-      attr.blocks = Math.ceil(attr.size / attr.blksize)
-      return attr
+      attr.atime = new Date(node.atime);
+      attr.mtime = new Date(node.mtime);
+      attr.ctime = new Date(node.ctime);
+      attr.blksize = 4096;
+      attr.blocks = Math.ceil(attr.size / attr.blksize);
+      return attr;
     },
     setattr(node, attr) {
       for (const key of ["mode", "atime", "mtime", "ctime"]) {
         if (attr[key] != null) {
-          node[key] = attr[key]
+          node[key] = attr[key];
         }
       }
       if (attr.size !== undefined) {
-        MEMFS.resizeFileStorage(node, attr.size)
+        MEMFS.resizeFileStorage(node, attr.size);
       }
     },
     lookup(parent, name) {
       if (!MEMFS.doesNotExistError) {
-        MEMFS.doesNotExistError = new FS.ErrnoError(44)
-        MEMFS.doesNotExistError.stack = "<generic error, no stack>"
+        MEMFS.doesNotExistError = new FS.ErrnoError(44);
+        MEMFS.doesNotExistError.stack = "<generic error, no stack>";
       }
-      throw MEMFS.doesNotExistError
+      throw MEMFS.doesNotExistError;
     },
     mknod(parent, name, mode, dev) {
-      return MEMFS.createNode(parent, name, mode, dev)
+      return MEMFS.createNode(parent, name, mode, dev);
     },
     rename(old_node, new_dir, new_name) {
-      var new_node
+      var new_node;
       try {
-        new_node = FS.lookupNode(new_dir, new_name)
+        new_node = FS.lookupNode(new_dir, new_name);
       } catch (e) {}
       if (new_node) {
         if (FS.isDir(old_node.mode)) {
           for (var i in new_node.contents) {
-            throw new FS.ErrnoError(55)
+            throw new FS.ErrnoError(55);
           }
         }
-        FS.hashRemoveNode(new_node)
+        FS.hashRemoveNode(new_node);
       }
-      delete old_node.parent.contents[old_node.name]
-      new_dir.contents[new_name] = old_node
-      old_node.name = new_name
-      new_dir.ctime =
-        new_dir.mtime =
-        old_node.parent.ctime =
-        old_node.parent.mtime =
-          Date.now()
+      delete old_node.parent.contents[old_node.name];
+      new_dir.contents[new_name] = old_node;
+      old_node.name = new_name;
+      new_dir.ctime = new_dir.mtime = old_node.parent.ctime = old_node.parent.mtime = Date.now();
     },
     unlink(parent, name) {
-      delete parent.contents[name]
-      parent.ctime = parent.mtime = Date.now()
+      delete parent.contents[name];
+      parent.ctime = parent.mtime = Date.now();
     },
     rmdir(parent, name) {
-      var node = FS.lookupNode(parent, name)
+      var node = FS.lookupNode(parent, name);
       for (var i in node.contents) {
-        throw new FS.ErrnoError(55)
+        throw new FS.ErrnoError(55);
       }
-      delete parent.contents[name]
-      parent.ctime = parent.mtime = Date.now()
+      delete parent.contents[name];
+      parent.ctime = parent.mtime = Date.now();
     },
     readdir(node) {
-      return [".", "..", ...Object.keys(node.contents)]
+      return [".", "..", ...Object.keys(node.contents)];
     },
     symlink(parent, newname, oldpath) {
-      var node = MEMFS.createNode(parent, newname, 511 | 40960, 0)
-      node.link = oldpath
-      return node
+      var node = MEMFS.createNode(parent, newname, 511 | 40960, 0);
+      node.link = oldpath;
+      return node;
     },
     readlink(node) {
       if (!FS.isLink(node.mode)) {
-        throw new FS.ErrnoError(28)
+        throw new FS.ErrnoError(28);
       }
-      return node.link
+      return node.link;
     },
   },
   stream_ops: {
     read(stream, buffer, offset, length, position) {
-      var contents = stream.node.contents
-      if (position >= stream.node.usedBytes) return 0
-      var size = Math.min(stream.node.usedBytes - position, length)
+      var contents = stream.node.contents;
+      if (position >= stream.node.usedBytes) return 0;
+      var size = Math.min(stream.node.usedBytes - position, length);
       if (size > 8 && contents.subarray) {
-        buffer.set(contents.subarray(position, position + size), offset)
+        buffer.set(contents.subarray(position, position + size), offset);
       } else {
-        for (var i = 0; i < size; i++)
-          buffer[offset + i] = contents[position + i]
+        for (var i = 0; i < size; i++) buffer[offset + i] = contents[position + i];
       }
-      return size
+      return size;
     },
     write(stream, buffer, offset, length, position, canOwn) {
       if (buffer.buffer === (growMemViews(), HEAP8).buffer) {
-        canOwn = false
+        canOwn = false;
       }
-      if (!length) return 0
-      var node = stream.node
-      node.mtime = node.ctime = Date.now()
+      if (!length) return 0;
+      var node = stream.node;
+      node.mtime = node.ctime = Date.now();
       if (buffer.subarray && (!node.contents || node.contents.subarray)) {
         if (canOwn) {
-          node.contents = buffer.subarray(offset, offset + length)
-          node.usedBytes = length
-          return length
+          node.contents = buffer.subarray(offset, offset + length);
+          node.usedBytes = length;
+          return length;
         } else if (node.usedBytes === 0 && position === 0) {
-          node.contents = buffer.slice(offset, offset + length)
-          node.usedBytes = length
-          return length
+          node.contents = buffer.slice(offset, offset + length);
+          node.usedBytes = length;
+          return length;
         } else if (position + length <= node.usedBytes) {
-          node.contents.set(buffer.subarray(offset, offset + length), position)
-          return length
+          node.contents.set(buffer.subarray(offset, offset + length), position);
+          return length;
         }
       }
-      MEMFS.expandFileStorage(node, position + length)
+      MEMFS.expandFileStorage(node, position + length);
       if (node.contents.subarray && buffer.subarray) {
-        node.contents.set(buffer.subarray(offset, offset + length), position)
+        node.contents.set(buffer.subarray(offset, offset + length), position);
       } else {
         for (var i = 0; i < length; i++) {
-          node.contents[position + i] = buffer[offset + i]
+          node.contents[position + i] = buffer[offset + i];
         }
       }
-      node.usedBytes = Math.max(node.usedBytes, position + length)
-      return length
+      node.usedBytes = Math.max(node.usedBytes, position + length);
+      return length;
     },
     llseek(stream, offset, whence) {
-      var position = offset
+      var position = offset;
       if (whence === 1) {
-        position += stream.position
+        position += stream.position;
       } else if (whence === 2) {
         if (FS.isFile(stream.node.mode)) {
-          position += stream.node.usedBytes
+          position += stream.node.usedBytes;
         }
       }
       if (position < 0) {
-        throw new FS.ErrnoError(28)
+        throw new FS.ErrnoError(28);
       }
-      return position
+      return position;
     },
     mmap(stream, length, position, prot, flags) {
       if (!FS.isFile(stream.node.mode)) {
-        throw new FS.ErrnoError(43)
+        throw new FS.ErrnoError(43);
       }
-      var ptr
-      var allocated
-      var contents = stream.node.contents
-      if (
-        !(flags & 2) &&
-        contents &&
-        contents.buffer === (growMemViews(), HEAP8).buffer
-      ) {
-        allocated = false
-        ptr = contents.byteOffset
+      var ptr;
+      var allocated;
+      var contents = stream.node.contents;
+      if (!(flags & 2) && contents && contents.buffer === (growMemViews(), HEAP8).buffer) {
+        allocated = false;
+        ptr = contents.byteOffset;
       } else {
-        allocated = true
-        ptr = mmapAlloc(length)
+        allocated = true;
+        ptr = mmapAlloc(length);
         if (!ptr) {
-          throw new FS.ErrnoError(48)
+          throw new FS.ErrnoError(48);
         }
         if (contents) {
           if (position > 0 || position + length < contents.length) {
             if (contents.subarray) {
-              contents = contents.subarray(position, position + length)
+              contents = contents.subarray(position, position + length);
             } else {
-              contents = Array.prototype.slice.call(
-                contents,
-                position,
-                position + length
-              )
+              contents = Array.prototype.slice.call(contents, position, position + length);
             }
           }
-          ;(growMemViews(), HEAP8).set(contents, ptr >>> 0)
+          (growMemViews(), HEAP8).set(contents, ptr >>> 0);
         }
       }
-      return { ptr, allocated }
+      return { ptr, allocated };
     },
     msync(stream, buffer, offset, length, mmapFlags) {
-      MEMFS.stream_ops.write(stream, buffer, 0, length, offset, false)
-      return 0
+      MEMFS.stream_ops.write(stream, buffer, 0, length, offset, false);
+      return 0;
     },
   },
-}
+};
 var FS_modeStringToFlags = (str) => {
   var flagModes = {
     r: 0,
@@ -1525,35 +1493,35 @@ var FS_modeStringToFlags = (str) => {
     "w+": 512 | 64 | 2,
     a: 1024 | 64 | 1,
     "a+": 1024 | 64 | 2,
-  }
-  var flags = flagModes[str]
+  };
+  var flags = flagModes[str];
   if (typeof flags == "undefined") {
-    throw new Error(`Unknown file open mode: ${str}`)
+    throw new Error(`Unknown file open mode: ${str}`);
   }
-  return flags
-}
+  return flags;
+};
 var FS_getMode = (canRead, canWrite) => {
-  var mode = 0
-  if (canRead) mode |= 292 | 73
-  if (canWrite) mode |= 146
-  return mode
-}
+  var mode = 0;
+  if (canRead) mode |= 292 | 73;
+  if (canWrite) mode |= 146;
+  return mode;
+};
 var asyncLoad = async (url) => {
-  var arrayBuffer = await readAsync(url)
-  return new Uint8Array(arrayBuffer)
-}
-var FS_createDataFile = (...args) => FS.createDataFile(...args)
-var getUniqueRunDependency = (id) => id
-var preloadPlugins = []
+  var arrayBuffer = await readAsync(url);
+  return new Uint8Array(arrayBuffer);
+};
+var FS_createDataFile = (...args) => FS.createDataFile(...args);
+var getUniqueRunDependency = (id) => id;
+var preloadPlugins = [];
 var FS_handledByPreloadPlugin = async (byteArray, fullname) => {
-  if (typeof Browser != "undefined") Browser.init()
+  if (typeof Browser != "undefined") Browser.init();
   for (var plugin of preloadPlugins) {
     if (plugin["canHandle"](fullname)) {
-      return plugin["handle"](byteArray, fullname)
+      return plugin["handle"](byteArray, fullname);
     }
   }
-  return byteArray
-}
+  return byteArray;
+};
 var FS_preloadFile = async (
   parent,
   name,
@@ -1562,25 +1530,25 @@ var FS_preloadFile = async (
   canWrite,
   dontCreateFile,
   canOwn,
-  preFinish
+  preFinish,
 ) => {
-  var fullname = name ? PATH_FS.resolve(PATH.join2(parent, name)) : parent
-  var dep = getUniqueRunDependency(`cp ${fullname}`)
-  addRunDependency(dep)
+  var fullname = name ? PATH_FS.resolve(PATH.join2(parent, name)) : parent;
+  var dep = getUniqueRunDependency(`cp ${fullname}`);
+  addRunDependency(dep);
   try {
-    var byteArray = url
+    var byteArray = url;
     if (typeof url == "string") {
-      byteArray = await asyncLoad(url)
+      byteArray = await asyncLoad(url);
     }
-    byteArray = await FS_handledByPreloadPlugin(byteArray, fullname)
-    preFinish?.()
+    byteArray = await FS_handledByPreloadPlugin(byteArray, fullname);
+    preFinish?.();
     if (!dontCreateFile) {
-      FS_createDataFile(parent, name, byteArray, canRead, canWrite, canOwn)
+      FS_createDataFile(parent, name, byteArray, canRead, canWrite, canOwn);
     }
   } finally {
-    removeRunDependency(dep)
+    removeRunDependency(dep);
   }
-}
+};
 var FS_createPreloadedFile = (
   parent,
   name,
@@ -1591,21 +1559,12 @@ var FS_createPreloadedFile = (
   onerror,
   dontCreateFile,
   canOwn,
-  preFinish
+  preFinish,
 ) => {
-  FS_preloadFile(
-    parent,
-    name,
-    url,
-    canRead,
-    canWrite,
-    dontCreateFile,
-    canOwn,
-    preFinish
-  )
+  FS_preloadFile(parent, name, url, canRead, canWrite, dontCreateFile, canOwn, preFinish)
     .then(onload)
-    .catch(onerror)
-}
+    .catch(onerror);
+};
 var FS = {
   root: null,
   mounts: [],
@@ -1620,492 +1579,490 @@ var FS = {
   syncFSRequests: 0,
   readFiles: {},
   ErrnoError: class {
-    name = "ErrnoError"
+    name = "ErrnoError";
     constructor(errno) {
-      this.errno = errno
+      this.errno = errno;
     }
   },
   FSStream: class {
-    shared = {}
+    shared = {};
     get object() {
-      return this.node
+      return this.node;
     }
     set object(val) {
-      this.node = val
+      this.node = val;
     }
     get isRead() {
-      return (this.flags & 2097155) !== 1
+      return (this.flags & 2097155) !== 1;
     }
     get isWrite() {
-      return (this.flags & 2097155) !== 0
+      return (this.flags & 2097155) !== 0;
     }
     get isAppend() {
-      return this.flags & 1024
+      return this.flags & 1024;
     }
     get flags() {
-      return this.shared.flags
+      return this.shared.flags;
     }
     set flags(val) {
-      this.shared.flags = val
+      this.shared.flags = val;
     }
     get position() {
-      return this.shared.position
+      return this.shared.position;
     }
     set position(val) {
-      this.shared.position = val
+      this.shared.position = val;
     }
   },
   FSNode: class {
-    node_ops = {}
-    stream_ops = {}
-    readMode = 292 | 73
-    writeMode = 146
-    mounted = null
+    node_ops = {};
+    stream_ops = {};
+    readMode = 292 | 73;
+    writeMode = 146;
+    mounted = null;
     constructor(parent, name, mode, rdev) {
       if (!parent) {
-        parent = this
+        parent = this;
       }
-      this.parent = parent
-      this.mount = parent.mount
-      this.id = FS.nextInode++
-      this.name = name
-      this.mode = mode
-      this.rdev = rdev
-      this.atime = this.mtime = this.ctime = Date.now()
+      this.parent = parent;
+      this.mount = parent.mount;
+      this.id = FS.nextInode++;
+      this.name = name;
+      this.mode = mode;
+      this.rdev = rdev;
+      this.atime = this.mtime = this.ctime = Date.now();
     }
     get read() {
-      return (this.mode & this.readMode) === this.readMode
+      return (this.mode & this.readMode) === this.readMode;
     }
     set read(val) {
-      val ? (this.mode |= this.readMode) : (this.mode &= ~this.readMode)
+      val ? (this.mode |= this.readMode) : (this.mode &= ~this.readMode);
     }
     get write() {
-      return (this.mode & this.writeMode) === this.writeMode
+      return (this.mode & this.writeMode) === this.writeMode;
     }
     set write(val) {
-      val ? (this.mode |= this.writeMode) : (this.mode &= ~this.writeMode)
+      val ? (this.mode |= this.writeMode) : (this.mode &= ~this.writeMode);
     }
     get isFolder() {
-      return FS.isDir(this.mode)
+      return FS.isDir(this.mode);
     }
     get isDevice() {
-      return FS.isChrdev(this.mode)
+      return FS.isChrdev(this.mode);
     }
   },
   lookupPath(path, opts = {}) {
     if (!path) {
-      throw new FS.ErrnoError(44)
+      throw new FS.ErrnoError(44);
     }
-    opts.follow_mount ??= true
+    opts.follow_mount ??= true;
     if (!PATH.isAbs(path)) {
-      path = FS.cwd() + "/" + path
+      path = FS.cwd() + "/" + path;
     }
     linkloop: for (var nlinks = 0; nlinks < 40; nlinks++) {
-      var parts = path.split("/").filter((p) => !!p)
-      var current = FS.root
-      var current_path = "/"
+      var parts = path.split("/").filter((p) => !!p);
+      var current = FS.root;
+      var current_path = "/";
       for (var i = 0; i < parts.length; i++) {
-        var islast = i === parts.length - 1
+        var islast = i === parts.length - 1;
         if (islast && opts.parent) {
-          break
+          break;
         }
         if (parts[i] === ".") {
-          continue
+          continue;
         }
         if (parts[i] === "..") {
-          current_path = PATH.dirname(current_path)
+          current_path = PATH.dirname(current_path);
           if (FS.isRoot(current)) {
-            path = current_path + "/" + parts.slice(i + 1).join("/")
-            nlinks--
-            continue linkloop
+            path = current_path + "/" + parts.slice(i + 1).join("/");
+            nlinks--;
+            continue linkloop;
           } else {
-            current = current.parent
+            current = current.parent;
           }
-          continue
+          continue;
         }
-        current_path = PATH.join2(current_path, parts[i])
+        current_path = PATH.join2(current_path, parts[i]);
         try {
-          current = FS.lookupNode(current, parts[i])
+          current = FS.lookupNode(current, parts[i]);
         } catch (e) {
           if (e?.errno === 44 && islast && opts.noent_okay) {
-            return { path: current_path }
+            return { path: current_path };
           }
-          throw e
+          throw e;
         }
         if (FS.isMountpoint(current) && (!islast || opts.follow_mount)) {
-          current = current.mounted.root
+          current = current.mounted.root;
         }
         if (FS.isLink(current.mode) && (!islast || opts.follow)) {
           if (!current.node_ops.readlink) {
-            throw new FS.ErrnoError(52)
+            throw new FS.ErrnoError(52);
           }
-          var link = current.node_ops.readlink(current)
+          var link = current.node_ops.readlink(current);
           if (!PATH.isAbs(link)) {
-            link = PATH.dirname(current_path) + "/" + link
+            link = PATH.dirname(current_path) + "/" + link;
           }
-          path = link + "/" + parts.slice(i + 1).join("/")
-          continue linkloop
+          path = link + "/" + parts.slice(i + 1).join("/");
+          continue linkloop;
         }
       }
-      return { path: current_path, node: current }
+      return { path: current_path, node: current };
     }
-    throw new FS.ErrnoError(32)
+    throw new FS.ErrnoError(32);
   },
   getPath(node) {
-    var path
+    var path;
     while (true) {
       if (FS.isRoot(node)) {
-        var mount = node.mount.mountpoint
-        if (!path) return mount
-        return mount[mount.length - 1] !== "/"
-          ? `${mount}/${path}`
-          : mount + path
+        var mount = node.mount.mountpoint;
+        if (!path) return mount;
+        return mount[mount.length - 1] !== "/" ? `${mount}/${path}` : mount + path;
       }
-      path = path ? `${node.name}/${path}` : node.name
-      node = node.parent
+      path = path ? `${node.name}/${path}` : node.name;
+      node = node.parent;
     }
   },
   hashName(parentid, name) {
-    var hash = 0
+    var hash = 0;
     for (var i = 0; i < name.length; i++) {
-      hash = ((hash << 5) - hash + name.charCodeAt(i)) | 0
+      hash = ((hash << 5) - hash + name.charCodeAt(i)) | 0;
     }
-    return ((parentid + hash) >>> 0) % FS.nameTable.length
+    return ((parentid + hash) >>> 0) % FS.nameTable.length;
   },
   hashAddNode(node) {
-    var hash = FS.hashName(node.parent.id, node.name)
-    node.name_next = FS.nameTable[hash]
-    FS.nameTable[hash] = node
+    var hash = FS.hashName(node.parent.id, node.name);
+    node.name_next = FS.nameTable[hash];
+    FS.nameTable[hash] = node;
   },
   hashRemoveNode(node) {
-    var hash = FS.hashName(node.parent.id, node.name)
+    var hash = FS.hashName(node.parent.id, node.name);
     if (FS.nameTable[hash] === node) {
-      FS.nameTable[hash] = node.name_next
+      FS.nameTable[hash] = node.name_next;
     } else {
-      var current = FS.nameTable[hash]
+      var current = FS.nameTable[hash];
       while (current) {
         if (current.name_next === node) {
-          current.name_next = node.name_next
-          break
+          current.name_next = node.name_next;
+          break;
         }
-        current = current.name_next
+        current = current.name_next;
       }
     }
   },
   lookupNode(parent, name) {
-    var errCode = FS.mayLookup(parent)
+    var errCode = FS.mayLookup(parent);
     if (errCode) {
-      throw new FS.ErrnoError(errCode)
+      throw new FS.ErrnoError(errCode);
     }
-    var hash = FS.hashName(parent.id, name)
+    var hash = FS.hashName(parent.id, name);
     for (var node = FS.nameTable[hash]; node; node = node.name_next) {
-      var nodeName = node.name
+      var nodeName = node.name;
       if (node.parent.id === parent.id && nodeName === name) {
-        return node
+        return node;
       }
     }
-    return FS.lookup(parent, name)
+    return FS.lookup(parent, name);
   },
   createNode(parent, name, mode, rdev) {
-    var node = new FS.FSNode(parent, name, mode, rdev)
-    FS.hashAddNode(node)
-    return node
+    var node = new FS.FSNode(parent, name, mode, rdev);
+    FS.hashAddNode(node);
+    return node;
   },
   destroyNode(node) {
-    FS.hashRemoveNode(node)
+    FS.hashRemoveNode(node);
   },
   isRoot(node) {
-    return node === node.parent
+    return node === node.parent;
   },
   isMountpoint(node) {
-    return !!node.mounted
+    return !!node.mounted;
   },
   isFile(mode) {
-    return (mode & 61440) === 32768
+    return (mode & 61440) === 32768;
   },
   isDir(mode) {
-    return (mode & 61440) === 16384
+    return (mode & 61440) === 16384;
   },
   isLink(mode) {
-    return (mode & 61440) === 40960
+    return (mode & 61440) === 40960;
   },
   isChrdev(mode) {
-    return (mode & 61440) === 8192
+    return (mode & 61440) === 8192;
   },
   isBlkdev(mode) {
-    return (mode & 61440) === 24576
+    return (mode & 61440) === 24576;
   },
   isFIFO(mode) {
-    return (mode & 61440) === 4096
+    return (mode & 61440) === 4096;
   },
   isSocket(mode) {
-    return (mode & 49152) === 49152
+    return (mode & 49152) === 49152;
   },
   flagsToPermissionString(flag) {
-    var perms = ["r", "w", "rw"][flag & 3]
+    var perms = ["r", "w", "rw"][flag & 3];
     if (flag & 512) {
-      perms += "w"
+      perms += "w";
     }
-    return perms
+    return perms;
   },
   nodePermissions(node, perms) {
     if (FS.ignorePermissions) {
-      return 0
+      return 0;
     }
     if (perms.includes("r") && !(node.mode & 292)) {
-      return 2
+      return 2;
     } else if (perms.includes("w") && !(node.mode & 146)) {
-      return 2
+      return 2;
     } else if (perms.includes("x") && !(node.mode & 73)) {
-      return 2
+      return 2;
     }
-    return 0
+    return 0;
   },
   mayLookup(dir) {
-    if (!FS.isDir(dir.mode)) return 54
-    var errCode = FS.nodePermissions(dir, "x")
-    if (errCode) return errCode
-    if (!dir.node_ops.lookup) return 2
-    return 0
+    if (!FS.isDir(dir.mode)) return 54;
+    var errCode = FS.nodePermissions(dir, "x");
+    if (errCode) return errCode;
+    if (!dir.node_ops.lookup) return 2;
+    return 0;
   },
   mayCreate(dir, name) {
     if (!FS.isDir(dir.mode)) {
-      return 54
+      return 54;
     }
     try {
-      var node = FS.lookupNode(dir, name)
-      return 20
+      var node = FS.lookupNode(dir, name);
+      return 20;
     } catch (e) {}
-    return FS.nodePermissions(dir, "wx")
+    return FS.nodePermissions(dir, "wx");
   },
   mayDelete(dir, name, isdir) {
-    var node
+    var node;
     try {
-      node = FS.lookupNode(dir, name)
+      node = FS.lookupNode(dir, name);
     } catch (e) {
-      return e.errno
+      return e.errno;
     }
-    var errCode = FS.nodePermissions(dir, "wx")
+    var errCode = FS.nodePermissions(dir, "wx");
     if (errCode) {
-      return errCode
+      return errCode;
     }
     if (isdir) {
       if (!FS.isDir(node.mode)) {
-        return 54
+        return 54;
       }
       if (FS.isRoot(node) || FS.getPath(node) === FS.cwd()) {
-        return 10
+        return 10;
       }
     } else {
       if (FS.isDir(node.mode)) {
-        return 31
+        return 31;
       }
     }
-    return 0
+    return 0;
   },
   mayOpen(node, flags) {
     if (!node) {
-      return 44
+      return 44;
     }
     if (FS.isLink(node.mode)) {
-      return 32
+      return 32;
     } else if (FS.isDir(node.mode)) {
       if (FS.flagsToPermissionString(flags) !== "r" || flags & (512 | 64)) {
-        return 31
+        return 31;
       }
     }
-    return FS.nodePermissions(node, FS.flagsToPermissionString(flags))
+    return FS.nodePermissions(node, FS.flagsToPermissionString(flags));
   },
   checkOpExists(op, err) {
     if (!op) {
-      throw new FS.ErrnoError(err)
+      throw new FS.ErrnoError(err);
     }
-    return op
+    return op;
   },
   MAX_OPEN_FDS: 4096,
   nextfd() {
     for (var fd = 0; fd <= FS.MAX_OPEN_FDS; fd++) {
       if (!FS.streams[fd]) {
-        return fd
+        return fd;
       }
     }
-    throw new FS.ErrnoError(33)
+    throw new FS.ErrnoError(33);
   },
   getStreamChecked(fd) {
-    var stream = FS.getStream(fd)
+    var stream = FS.getStream(fd);
     if (!stream) {
-      throw new FS.ErrnoError(8)
+      throw new FS.ErrnoError(8);
     }
-    return stream
+    return stream;
   },
   getStream: (fd) => FS.streams[fd],
   createStream(stream, fd = -1) {
-    stream = Object.assign(new FS.FSStream(), stream)
+    stream = Object.assign(new FS.FSStream(), stream);
     if (fd == -1) {
-      fd = FS.nextfd()
+      fd = FS.nextfd();
     }
-    stream.fd = fd
-    FS.streams[fd] = stream
-    return stream
+    stream.fd = fd;
+    FS.streams[fd] = stream;
+    return stream;
   },
   closeStream(fd) {
-    FS.streams[fd] = null
+    FS.streams[fd] = null;
   },
   dupStream(origStream, fd = -1) {
-    var stream = FS.createStream(origStream, fd)
-    stream.stream_ops?.dup?.(stream)
-    return stream
+    var stream = FS.createStream(origStream, fd);
+    stream.stream_ops?.dup?.(stream);
+    return stream;
   },
   doSetAttr(stream, node, attr) {
-    var setattr = stream?.stream_ops.setattr
-    var arg = setattr ? stream : node
-    setattr ??= node.node_ops.setattr
-    FS.checkOpExists(setattr, 63)
-    setattr(arg, attr)
+    var setattr = stream?.stream_ops.setattr;
+    var arg = setattr ? stream : node;
+    setattr ??= node.node_ops.setattr;
+    FS.checkOpExists(setattr, 63);
+    setattr(arg, attr);
   },
   chrdev_stream_ops: {
     open(stream) {
-      var device = FS.getDevice(stream.node.rdev)
-      stream.stream_ops = device.stream_ops
-      stream.stream_ops.open?.(stream)
+      var device = FS.getDevice(stream.node.rdev);
+      stream.stream_ops = device.stream_ops;
+      stream.stream_ops.open?.(stream);
     },
     llseek() {
-      throw new FS.ErrnoError(70)
+      throw new FS.ErrnoError(70);
     },
   },
   major: (dev) => dev >> 8,
   minor: (dev) => dev & 255,
   makedev: (ma, mi) => (ma << 8) | mi,
   registerDevice(dev, ops) {
-    FS.devices[dev] = { stream_ops: ops }
+    FS.devices[dev] = { stream_ops: ops };
   },
   getDevice: (dev) => FS.devices[dev],
   getMounts(mount) {
-    var mounts = []
-    var check = [mount]
+    var mounts = [];
+    var check = [mount];
     while (check.length) {
-      var m = check.pop()
-      mounts.push(m)
-      check.push(...m.mounts)
+      var m = check.pop();
+      mounts.push(m);
+      check.push(...m.mounts);
     }
-    return mounts
+    return mounts;
   },
   syncfs(populate, callback) {
     if (typeof populate == "function") {
-      callback = populate
-      populate = false
+      callback = populate;
+      populate = false;
     }
-    FS.syncFSRequests++
+    FS.syncFSRequests++;
     if (FS.syncFSRequests > 1) {
       err(
-        `warning: ${FS.syncFSRequests} FS.syncfs operations in flight at once, probably just doing extra work`
-      )
+        `warning: ${FS.syncFSRequests} FS.syncfs operations in flight at once, probably just doing extra work`,
+      );
     }
-    var mounts = FS.getMounts(FS.root.mount)
-    var completed = 0
+    var mounts = FS.getMounts(FS.root.mount);
+    var completed = 0;
     function doCallback(errCode) {
-      FS.syncFSRequests--
-      return callback(errCode)
+      FS.syncFSRequests--;
+      return callback(errCode);
     }
     function done(errCode) {
       if (errCode) {
         if (!done.errored) {
-          done.errored = true
-          return doCallback(errCode)
+          done.errored = true;
+          return doCallback(errCode);
         }
-        return
+        return;
       }
       if (++completed >= mounts.length) {
-        doCallback(null)
+        doCallback(null);
       }
     }
     for (var mount of mounts) {
       if (mount.type.syncfs) {
-        mount.type.syncfs(mount, populate, done)
+        mount.type.syncfs(mount, populate, done);
       } else {
-        done(null)
+        done(null);
       }
     }
   },
   mount(type, opts, mountpoint) {
-    var root = mountpoint === "/"
-    var pseudo = !mountpoint
-    var node
+    var root = mountpoint === "/";
+    var pseudo = !mountpoint;
+    var node;
     if (root && FS.root) {
-      throw new FS.ErrnoError(10)
+      throw new FS.ErrnoError(10);
     } else if (!root && !pseudo) {
-      var lookup = FS.lookupPath(mountpoint, { follow_mount: false })
-      mountpoint = lookup.path
-      node = lookup.node
+      var lookup = FS.lookupPath(mountpoint, { follow_mount: false });
+      mountpoint = lookup.path;
+      node = lookup.node;
       if (FS.isMountpoint(node)) {
-        throw new FS.ErrnoError(10)
+        throw new FS.ErrnoError(10);
       }
       if (!FS.isDir(node.mode)) {
-        throw new FS.ErrnoError(54)
+        throw new FS.ErrnoError(54);
       }
     }
-    var mount = { type, opts, mountpoint, mounts: [] }
-    var mountRoot = type.mount(mount)
-    mountRoot.mount = mount
-    mount.root = mountRoot
+    var mount = { type, opts, mountpoint, mounts: [] };
+    var mountRoot = type.mount(mount);
+    mountRoot.mount = mount;
+    mount.root = mountRoot;
     if (root) {
-      FS.root = mountRoot
+      FS.root = mountRoot;
     } else if (node) {
-      node.mounted = mount
+      node.mounted = mount;
       if (node.mount) {
-        node.mount.mounts.push(mount)
+        node.mount.mounts.push(mount);
       }
     }
-    return mountRoot
+    return mountRoot;
   },
   unmount(mountpoint) {
-    var lookup = FS.lookupPath(mountpoint, { follow_mount: false })
+    var lookup = FS.lookupPath(mountpoint, { follow_mount: false });
     if (!FS.isMountpoint(lookup.node)) {
-      throw new FS.ErrnoError(28)
+      throw new FS.ErrnoError(28);
     }
-    var node = lookup.node
-    var mount = node.mounted
-    var mounts = FS.getMounts(mount)
+    var node = lookup.node;
+    var mount = node.mounted;
+    var mounts = FS.getMounts(mount);
     for (var [hash, current] of Object.entries(FS.nameTable)) {
       while (current) {
-        var next = current.name_next
+        var next = current.name_next;
         if (mounts.includes(current.mount)) {
-          FS.destroyNode(current)
+          FS.destroyNode(current);
         }
-        current = next
+        current = next;
       }
     }
-    node.mounted = null
-    var idx = node.mount.mounts.indexOf(mount)
-    node.mount.mounts.splice(idx, 1)
+    node.mounted = null;
+    var idx = node.mount.mounts.indexOf(mount);
+    node.mount.mounts.splice(idx, 1);
   },
   lookup(parent, name) {
-    return parent.node_ops.lookup(parent, name)
+    return parent.node_ops.lookup(parent, name);
   },
   mknod(path, mode, dev) {
-    var lookup = FS.lookupPath(path, { parent: true })
-    var parent = lookup.node
-    var name = PATH.basename(path)
+    var lookup = FS.lookupPath(path, { parent: true });
+    var parent = lookup.node;
+    var name = PATH.basename(path);
     if (!name) {
-      throw new FS.ErrnoError(28)
+      throw new FS.ErrnoError(28);
     }
     if (name === "." || name === "..") {
-      throw new FS.ErrnoError(20)
+      throw new FS.ErrnoError(20);
     }
-    var errCode = FS.mayCreate(parent, name)
+    var errCode = FS.mayCreate(parent, name);
     if (errCode) {
-      throw new FS.ErrnoError(errCode)
+      throw new FS.ErrnoError(errCode);
     }
     if (!parent.node_ops.mknod) {
-      throw new FS.ErrnoError(63)
+      throw new FS.ErrnoError(63);
     }
-    return parent.node_ops.mknod(parent, name, mode, dev)
+    return parent.node_ops.mknod(parent, name, mode, dev);
   },
   statfs(path) {
-    return FS.statfsNode(FS.lookupPath(path, { follow: true }).node)
+    return FS.statfsNode(FS.lookupPath(path, { follow: true }).node);
   },
   statfsStream(stream) {
-    return FS.statfsNode(stream.node)
+    return FS.statfsNode(stream.node);
   },
   statfsNode(node) {
     var rtn = {
@@ -2119,338 +2076,336 @@ var FS = {
       fsid: 42,
       flags: 2,
       namelen: 255,
-    }
+    };
     if (node.node_ops.statfs) {
-      Object.assign(rtn, node.node_ops.statfs(node.mount.opts.root))
+      Object.assign(rtn, node.node_ops.statfs(node.mount.opts.root));
     }
-    return rtn
+    return rtn;
   },
   create(path, mode = 438) {
-    mode &= 4095
-    mode |= 32768
-    return FS.mknod(path, mode, 0)
+    mode &= 4095;
+    mode |= 32768;
+    return FS.mknod(path, mode, 0);
   },
   mkdir(path, mode = 511) {
-    mode &= 511 | 512
-    mode |= 16384
-    return FS.mknod(path, mode, 0)
+    mode &= 511 | 512;
+    mode |= 16384;
+    return FS.mknod(path, mode, 0);
   },
   mkdirTree(path, mode) {
-    var dirs = path.split("/")
-    var d = ""
+    var dirs = path.split("/");
+    var d = "";
     for (var dir of dirs) {
-      if (!dir) continue
-      if (d || PATH.isAbs(path)) d += "/"
-      d += dir
+      if (!dir) continue;
+      if (d || PATH.isAbs(path)) d += "/";
+      d += dir;
       try {
-        FS.mkdir(d, mode)
+        FS.mkdir(d, mode);
       } catch (e) {
-        if (e.errno != 20) throw e
+        if (e.errno != 20) throw e;
       }
     }
   },
   mkdev(path, mode, dev) {
     if (typeof dev == "undefined") {
-      dev = mode
-      mode = 438
+      dev = mode;
+      mode = 438;
     }
-    mode |= 8192
-    return FS.mknod(path, mode, dev)
+    mode |= 8192;
+    return FS.mknod(path, mode, dev);
   },
   symlink(oldpath, newpath) {
     if (!PATH_FS.resolve(oldpath)) {
-      throw new FS.ErrnoError(44)
+      throw new FS.ErrnoError(44);
     }
-    var lookup = FS.lookupPath(newpath, { parent: true })
-    var parent = lookup.node
+    var lookup = FS.lookupPath(newpath, { parent: true });
+    var parent = lookup.node;
     if (!parent) {
-      throw new FS.ErrnoError(44)
+      throw new FS.ErrnoError(44);
     }
-    var newname = PATH.basename(newpath)
-    var errCode = FS.mayCreate(parent, newname)
+    var newname = PATH.basename(newpath);
+    var errCode = FS.mayCreate(parent, newname);
     if (errCode) {
-      throw new FS.ErrnoError(errCode)
+      throw new FS.ErrnoError(errCode);
     }
     if (!parent.node_ops.symlink) {
-      throw new FS.ErrnoError(63)
+      throw new FS.ErrnoError(63);
     }
-    return parent.node_ops.symlink(parent, newname, oldpath)
+    return parent.node_ops.symlink(parent, newname, oldpath);
   },
   rename(old_path, new_path) {
-    var old_dirname = PATH.dirname(old_path)
-    var new_dirname = PATH.dirname(new_path)
-    var old_name = PATH.basename(old_path)
-    var new_name = PATH.basename(new_path)
-    var lookup, old_dir, new_dir
-    lookup = FS.lookupPath(old_path, { parent: true })
-    old_dir = lookup.node
-    lookup = FS.lookupPath(new_path, { parent: true })
-    new_dir = lookup.node
-    if (!old_dir || !new_dir) throw new FS.ErrnoError(44)
+    var old_dirname = PATH.dirname(old_path);
+    var new_dirname = PATH.dirname(new_path);
+    var old_name = PATH.basename(old_path);
+    var new_name = PATH.basename(new_path);
+    var lookup, old_dir, new_dir;
+    lookup = FS.lookupPath(old_path, { parent: true });
+    old_dir = lookup.node;
+    lookup = FS.lookupPath(new_path, { parent: true });
+    new_dir = lookup.node;
+    if (!old_dir || !new_dir) throw new FS.ErrnoError(44);
     if (old_dir.mount !== new_dir.mount) {
-      throw new FS.ErrnoError(75)
+      throw new FS.ErrnoError(75);
     }
-    var old_node = FS.lookupNode(old_dir, old_name)
-    var relative = PATH_FS.relative(old_path, new_dirname)
+    var old_node = FS.lookupNode(old_dir, old_name);
+    var relative = PATH_FS.relative(old_path, new_dirname);
     if (relative.charAt(0) !== ".") {
-      throw new FS.ErrnoError(28)
+      throw new FS.ErrnoError(28);
     }
-    relative = PATH_FS.relative(new_path, old_dirname)
+    relative = PATH_FS.relative(new_path, old_dirname);
     if (relative.charAt(0) !== ".") {
-      throw new FS.ErrnoError(55)
+      throw new FS.ErrnoError(55);
     }
-    var new_node
+    var new_node;
     try {
-      new_node = FS.lookupNode(new_dir, new_name)
+      new_node = FS.lookupNode(new_dir, new_name);
     } catch (e) {}
     if (old_node === new_node) {
-      return
+      return;
     }
-    var isdir = FS.isDir(old_node.mode)
-    var errCode = FS.mayDelete(old_dir, old_name, isdir)
+    var isdir = FS.isDir(old_node.mode);
+    var errCode = FS.mayDelete(old_dir, old_name, isdir);
     if (errCode) {
-      throw new FS.ErrnoError(errCode)
+      throw new FS.ErrnoError(errCode);
     }
-    errCode = new_node
-      ? FS.mayDelete(new_dir, new_name, isdir)
-      : FS.mayCreate(new_dir, new_name)
+    errCode = new_node ? FS.mayDelete(new_dir, new_name, isdir) : FS.mayCreate(new_dir, new_name);
     if (errCode) {
-      throw new FS.ErrnoError(errCode)
+      throw new FS.ErrnoError(errCode);
     }
     if (!old_dir.node_ops.rename) {
-      throw new FS.ErrnoError(63)
+      throw new FS.ErrnoError(63);
     }
     if (FS.isMountpoint(old_node) || (new_node && FS.isMountpoint(new_node))) {
-      throw new FS.ErrnoError(10)
+      throw new FS.ErrnoError(10);
     }
     if (new_dir !== old_dir) {
-      errCode = FS.nodePermissions(old_dir, "w")
+      errCode = FS.nodePermissions(old_dir, "w");
       if (errCode) {
-        throw new FS.ErrnoError(errCode)
+        throw new FS.ErrnoError(errCode);
       }
     }
-    FS.hashRemoveNode(old_node)
+    FS.hashRemoveNode(old_node);
     try {
-      old_dir.node_ops.rename(old_node, new_dir, new_name)
-      old_node.parent = new_dir
+      old_dir.node_ops.rename(old_node, new_dir, new_name);
+      old_node.parent = new_dir;
     } catch (e) {
-      throw e
+      throw e;
     } finally {
-      FS.hashAddNode(old_node)
+      FS.hashAddNode(old_node);
     }
   },
   rmdir(path) {
-    var lookup = FS.lookupPath(path, { parent: true })
-    var parent = lookup.node
-    var name = PATH.basename(path)
-    var node = FS.lookupNode(parent, name)
-    var errCode = FS.mayDelete(parent, name, true)
+    var lookup = FS.lookupPath(path, { parent: true });
+    var parent = lookup.node;
+    var name = PATH.basename(path);
+    var node = FS.lookupNode(parent, name);
+    var errCode = FS.mayDelete(parent, name, true);
     if (errCode) {
-      throw new FS.ErrnoError(errCode)
+      throw new FS.ErrnoError(errCode);
     }
     if (!parent.node_ops.rmdir) {
-      throw new FS.ErrnoError(63)
+      throw new FS.ErrnoError(63);
     }
     if (FS.isMountpoint(node)) {
-      throw new FS.ErrnoError(10)
+      throw new FS.ErrnoError(10);
     }
-    parent.node_ops.rmdir(parent, name)
-    FS.destroyNode(node)
+    parent.node_ops.rmdir(parent, name);
+    FS.destroyNode(node);
   },
   readdir(path) {
-    var lookup = FS.lookupPath(path, { follow: true })
-    var node = lookup.node
-    var readdir = FS.checkOpExists(node.node_ops.readdir, 54)
-    return readdir(node)
+    var lookup = FS.lookupPath(path, { follow: true });
+    var node = lookup.node;
+    var readdir = FS.checkOpExists(node.node_ops.readdir, 54);
+    return readdir(node);
   },
   unlink(path) {
-    var lookup = FS.lookupPath(path, { parent: true })
-    var parent = lookup.node
+    var lookup = FS.lookupPath(path, { parent: true });
+    var parent = lookup.node;
     if (!parent) {
-      throw new FS.ErrnoError(44)
+      throw new FS.ErrnoError(44);
     }
-    var name = PATH.basename(path)
-    var node = FS.lookupNode(parent, name)
-    var errCode = FS.mayDelete(parent, name, false)
+    var name = PATH.basename(path);
+    var node = FS.lookupNode(parent, name);
+    var errCode = FS.mayDelete(parent, name, false);
     if (errCode) {
-      throw new FS.ErrnoError(errCode)
+      throw new FS.ErrnoError(errCode);
     }
     if (!parent.node_ops.unlink) {
-      throw new FS.ErrnoError(63)
+      throw new FS.ErrnoError(63);
     }
     if (FS.isMountpoint(node)) {
-      throw new FS.ErrnoError(10)
+      throw new FS.ErrnoError(10);
     }
-    parent.node_ops.unlink(parent, name)
-    FS.destroyNode(node)
+    parent.node_ops.unlink(parent, name);
+    FS.destroyNode(node);
   },
   readlink(path) {
-    var lookup = FS.lookupPath(path)
-    var link = lookup.node
+    var lookup = FS.lookupPath(path);
+    var link = lookup.node;
     if (!link) {
-      throw new FS.ErrnoError(44)
+      throw new FS.ErrnoError(44);
     }
     if (!link.node_ops.readlink) {
-      throw new FS.ErrnoError(28)
+      throw new FS.ErrnoError(28);
     }
-    return link.node_ops.readlink(link)
+    return link.node_ops.readlink(link);
   },
   stat(path, dontFollow) {
-    var lookup = FS.lookupPath(path, { follow: !dontFollow })
-    var node = lookup.node
-    var getattr = FS.checkOpExists(node.node_ops.getattr, 63)
-    return getattr(node)
+    var lookup = FS.lookupPath(path, { follow: !dontFollow });
+    var node = lookup.node;
+    var getattr = FS.checkOpExists(node.node_ops.getattr, 63);
+    return getattr(node);
   },
   fstat(fd) {
-    var stream = FS.getStreamChecked(fd)
-    var node = stream.node
-    var getattr = stream.stream_ops.getattr
-    var arg = getattr ? stream : node
-    getattr ??= node.node_ops.getattr
-    FS.checkOpExists(getattr, 63)
-    return getattr(arg)
+    var stream = FS.getStreamChecked(fd);
+    var node = stream.node;
+    var getattr = stream.stream_ops.getattr;
+    var arg = getattr ? stream : node;
+    getattr ??= node.node_ops.getattr;
+    FS.checkOpExists(getattr, 63);
+    return getattr(arg);
   },
   lstat(path) {
-    return FS.stat(path, true)
+    return FS.stat(path, true);
   },
   doChmod(stream, node, mode, dontFollow) {
     FS.doSetAttr(stream, node, {
       mode: (mode & 4095) | (node.mode & ~4095),
       ctime: Date.now(),
       dontFollow,
-    })
+    });
   },
   chmod(path, mode, dontFollow) {
-    var node
+    var node;
     if (typeof path == "string") {
-      var lookup = FS.lookupPath(path, { follow: !dontFollow })
-      node = lookup.node
+      var lookup = FS.lookupPath(path, { follow: !dontFollow });
+      node = lookup.node;
     } else {
-      node = path
+      node = path;
     }
-    FS.doChmod(null, node, mode, dontFollow)
+    FS.doChmod(null, node, mode, dontFollow);
   },
   lchmod(path, mode) {
-    FS.chmod(path, mode, true)
+    FS.chmod(path, mode, true);
   },
   fchmod(fd, mode) {
-    var stream = FS.getStreamChecked(fd)
-    FS.doChmod(stream, stream.node, mode, false)
+    var stream = FS.getStreamChecked(fd);
+    FS.doChmod(stream, stream.node, mode, false);
   },
   doChown(stream, node, dontFollow) {
-    FS.doSetAttr(stream, node, { timestamp: Date.now(), dontFollow })
+    FS.doSetAttr(stream, node, { timestamp: Date.now(), dontFollow });
   },
   chown(path, uid, gid, dontFollow) {
-    var node
+    var node;
     if (typeof path == "string") {
-      var lookup = FS.lookupPath(path, { follow: !dontFollow })
-      node = lookup.node
+      var lookup = FS.lookupPath(path, { follow: !dontFollow });
+      node = lookup.node;
     } else {
-      node = path
+      node = path;
     }
-    FS.doChown(null, node, dontFollow)
+    FS.doChown(null, node, dontFollow);
   },
   lchown(path, uid, gid) {
-    FS.chown(path, uid, gid, true)
+    FS.chown(path, uid, gid, true);
   },
   fchown(fd, uid, gid) {
-    var stream = FS.getStreamChecked(fd)
-    FS.doChown(stream, stream.node, false)
+    var stream = FS.getStreamChecked(fd);
+    FS.doChown(stream, stream.node, false);
   },
   doTruncate(stream, node, len) {
     if (FS.isDir(node.mode)) {
-      throw new FS.ErrnoError(31)
+      throw new FS.ErrnoError(31);
     }
     if (!FS.isFile(node.mode)) {
-      throw new FS.ErrnoError(28)
+      throw new FS.ErrnoError(28);
     }
-    var errCode = FS.nodePermissions(node, "w")
+    var errCode = FS.nodePermissions(node, "w");
     if (errCode) {
-      throw new FS.ErrnoError(errCode)
+      throw new FS.ErrnoError(errCode);
     }
-    FS.doSetAttr(stream, node, { size: len, timestamp: Date.now() })
+    FS.doSetAttr(stream, node, { size: len, timestamp: Date.now() });
   },
   truncate(path, len) {
     if (len < 0) {
-      throw new FS.ErrnoError(28)
+      throw new FS.ErrnoError(28);
     }
-    var node
+    var node;
     if (typeof path == "string") {
-      var lookup = FS.lookupPath(path, { follow: true })
-      node = lookup.node
+      var lookup = FS.lookupPath(path, { follow: true });
+      node = lookup.node;
     } else {
-      node = path
+      node = path;
     }
-    FS.doTruncate(null, node, len)
+    FS.doTruncate(null, node, len);
   },
   ftruncate(fd, len) {
-    var stream = FS.getStreamChecked(fd)
+    var stream = FS.getStreamChecked(fd);
     if (len < 0 || (stream.flags & 2097155) === 0) {
-      throw new FS.ErrnoError(28)
+      throw new FS.ErrnoError(28);
     }
-    FS.doTruncate(stream, stream.node, len)
+    FS.doTruncate(stream, stream.node, len);
   },
   utime(path, atime, mtime) {
-    var lookup = FS.lookupPath(path, { follow: true })
-    var node = lookup.node
-    var setattr = FS.checkOpExists(node.node_ops.setattr, 63)
-    setattr(node, { atime, mtime })
+    var lookup = FS.lookupPath(path, { follow: true });
+    var node = lookup.node;
+    var setattr = FS.checkOpExists(node.node_ops.setattr, 63);
+    setattr(node, { atime, mtime });
   },
   open(path, flags, mode = 438) {
     if (path === "") {
-      throw new FS.ErrnoError(44)
+      throw new FS.ErrnoError(44);
     }
-    flags = typeof flags == "string" ? FS_modeStringToFlags(flags) : flags
+    flags = typeof flags == "string" ? FS_modeStringToFlags(flags) : flags;
     if (flags & 64) {
-      mode = (mode & 4095) | 32768
+      mode = (mode & 4095) | 32768;
     } else {
-      mode = 0
+      mode = 0;
     }
-    var node
-    var isDirPath
+    var node;
+    var isDirPath;
     if (typeof path == "object") {
-      node = path
+      node = path;
     } else {
-      isDirPath = path.endsWith("/")
+      isDirPath = path.endsWith("/");
       var lookup = FS.lookupPath(path, {
         follow: !(flags & 131072),
         noent_okay: true,
-      })
-      node = lookup.node
-      path = lookup.path
+      });
+      node = lookup.node;
+      path = lookup.path;
     }
-    var created = false
+    var created = false;
     if (flags & 64) {
       if (node) {
         if (flags & 128) {
-          throw new FS.ErrnoError(20)
+          throw new FS.ErrnoError(20);
         }
       } else if (isDirPath) {
-        throw new FS.ErrnoError(31)
+        throw new FS.ErrnoError(31);
       } else {
-        node = FS.mknod(path, mode | 511, 0)
-        created = true
+        node = FS.mknod(path, mode | 511, 0);
+        created = true;
       }
     }
     if (!node) {
-      throw new FS.ErrnoError(44)
+      throw new FS.ErrnoError(44);
     }
     if (FS.isChrdev(node.mode)) {
-      flags &= ~512
+      flags &= ~512;
     }
     if (flags & 65536 && !FS.isDir(node.mode)) {
-      throw new FS.ErrnoError(54)
+      throw new FS.ErrnoError(54);
     }
     if (!created) {
-      var errCode = FS.mayOpen(node, flags)
+      var errCode = FS.mayOpen(node, flags);
       if (errCode) {
-        throw new FS.ErrnoError(errCode)
+        throw new FS.ErrnoError(errCode);
       }
     }
     if (flags & 512 && !created) {
-      FS.truncate(node, 0)
+      FS.truncate(node, 0);
     }
-    flags &= ~(128 | 512 | 131072)
+    flags &= ~(128 | 512 | 131072);
     var stream = FS.createStream({
       node,
       path: FS.getPath(node),
@@ -2460,317 +2415,300 @@ var FS = {
       stream_ops: node.stream_ops,
       ungotten: [],
       error: false,
-    })
+    });
     if (stream.stream_ops.open) {
-      stream.stream_ops.open(stream)
+      stream.stream_ops.open(stream);
     }
     if (created) {
-      FS.chmod(node, mode & 511)
+      FS.chmod(node, mode & 511);
     }
     if (Module["logReadFiles"] && !(flags & 1)) {
       if (!(path in FS.readFiles)) {
-        FS.readFiles[path] = 1
+        FS.readFiles[path] = 1;
       }
     }
-    return stream
+    return stream;
   },
   close(stream) {
     if (FS.isClosed(stream)) {
-      throw new FS.ErrnoError(8)
+      throw new FS.ErrnoError(8);
     }
-    if (stream.getdents) stream.getdents = null
+    if (stream.getdents) stream.getdents = null;
     try {
       if (stream.stream_ops.close) {
-        stream.stream_ops.close(stream)
+        stream.stream_ops.close(stream);
       }
     } catch (e) {
-      throw e
+      throw e;
     } finally {
-      FS.closeStream(stream.fd)
+      FS.closeStream(stream.fd);
     }
-    stream.fd = null
+    stream.fd = null;
   },
   isClosed(stream) {
-    return stream.fd === null
+    return stream.fd === null;
   },
   llseek(stream, offset, whence) {
     if (FS.isClosed(stream)) {
-      throw new FS.ErrnoError(8)
+      throw new FS.ErrnoError(8);
     }
     if (!stream.seekable || !stream.stream_ops.llseek) {
-      throw new FS.ErrnoError(70)
+      throw new FS.ErrnoError(70);
     }
     if (whence != 0 && whence != 1 && whence != 2) {
-      throw new FS.ErrnoError(28)
+      throw new FS.ErrnoError(28);
     }
-    stream.position = stream.stream_ops.llseek(stream, offset, whence)
-    stream.ungotten = []
-    return stream.position
+    stream.position = stream.stream_ops.llseek(stream, offset, whence);
+    stream.ungotten = [];
+    return stream.position;
   },
   read(stream, buffer, offset, length, position) {
     if (length < 0 || position < 0) {
-      throw new FS.ErrnoError(28)
+      throw new FS.ErrnoError(28);
     }
     if (FS.isClosed(stream)) {
-      throw new FS.ErrnoError(8)
+      throw new FS.ErrnoError(8);
     }
     if ((stream.flags & 2097155) === 1) {
-      throw new FS.ErrnoError(8)
+      throw new FS.ErrnoError(8);
     }
     if (FS.isDir(stream.node.mode)) {
-      throw new FS.ErrnoError(31)
+      throw new FS.ErrnoError(31);
     }
     if (!stream.stream_ops.read) {
-      throw new FS.ErrnoError(28)
+      throw new FS.ErrnoError(28);
     }
-    var seeking = typeof position != "undefined"
+    var seeking = typeof position != "undefined";
     if (!seeking) {
-      position = stream.position
+      position = stream.position;
     } else if (!stream.seekable) {
-      throw new FS.ErrnoError(70)
+      throw new FS.ErrnoError(70);
     }
-    var bytesRead = stream.stream_ops.read(
-      stream,
-      buffer,
-      offset,
-      length,
-      position
-    )
-    if (!seeking) stream.position += bytesRead
-    return bytesRead
+    var bytesRead = stream.stream_ops.read(stream, buffer, offset, length, position);
+    if (!seeking) stream.position += bytesRead;
+    return bytesRead;
   },
   write(stream, buffer, offset, length, position, canOwn) {
     if (length < 0 || position < 0) {
-      throw new FS.ErrnoError(28)
+      throw new FS.ErrnoError(28);
     }
     if (FS.isClosed(stream)) {
-      throw new FS.ErrnoError(8)
+      throw new FS.ErrnoError(8);
     }
     if ((stream.flags & 2097155) === 0) {
-      throw new FS.ErrnoError(8)
+      throw new FS.ErrnoError(8);
     }
     if (FS.isDir(stream.node.mode)) {
-      throw new FS.ErrnoError(31)
+      throw new FS.ErrnoError(31);
     }
     if (!stream.stream_ops.write) {
-      throw new FS.ErrnoError(28)
+      throw new FS.ErrnoError(28);
     }
     if (stream.seekable && stream.flags & 1024) {
-      FS.llseek(stream, 0, 2)
+      FS.llseek(stream, 0, 2);
     }
-    var seeking = typeof position != "undefined"
+    var seeking = typeof position != "undefined";
     if (!seeking) {
-      position = stream.position
+      position = stream.position;
     } else if (!stream.seekable) {
-      throw new FS.ErrnoError(70)
+      throw new FS.ErrnoError(70);
     }
-    var bytesWritten = stream.stream_ops.write(
-      stream,
-      buffer,
-      offset,
-      length,
-      position,
-      canOwn
-    )
-    if (!seeking) stream.position += bytesWritten
-    return bytesWritten
+    var bytesWritten = stream.stream_ops.write(stream, buffer, offset, length, position, canOwn);
+    if (!seeking) stream.position += bytesWritten;
+    return bytesWritten;
   },
   mmap(stream, length, position, prot, flags) {
-    if (
-      (prot & 2) !== 0 &&
-      (flags & 2) === 0 &&
-      (stream.flags & 2097155) !== 2
-    ) {
-      throw new FS.ErrnoError(2)
+    if ((prot & 2) !== 0 && (flags & 2) === 0 && (stream.flags & 2097155) !== 2) {
+      throw new FS.ErrnoError(2);
     }
     if ((stream.flags & 2097155) === 1) {
-      throw new FS.ErrnoError(2)
+      throw new FS.ErrnoError(2);
     }
     if (!stream.stream_ops.mmap) {
-      throw new FS.ErrnoError(43)
+      throw new FS.ErrnoError(43);
     }
     if (!length) {
-      throw new FS.ErrnoError(28)
+      throw new FS.ErrnoError(28);
     }
-    return stream.stream_ops.mmap(stream, length, position, prot, flags)
+    return stream.stream_ops.mmap(stream, length, position, prot, flags);
   },
   msync(stream, buffer, offset, length, mmapFlags) {
     if (!stream.stream_ops.msync) {
-      return 0
+      return 0;
     }
-    return stream.stream_ops.msync(stream, buffer, offset, length, mmapFlags)
+    return stream.stream_ops.msync(stream, buffer, offset, length, mmapFlags);
   },
   ioctl(stream, cmd, arg) {
     if (!stream.stream_ops.ioctl) {
-      throw new FS.ErrnoError(59)
+      throw new FS.ErrnoError(59);
     }
-    return stream.stream_ops.ioctl(stream, cmd, arg)
+    return stream.stream_ops.ioctl(stream, cmd, arg);
   },
   readFile(path, opts = {}) {
-    opts.flags = opts.flags || 0
-    opts.encoding = opts.encoding || "binary"
+    opts.flags = opts.flags || 0;
+    opts.encoding = opts.encoding || "binary";
     if (opts.encoding !== "utf8" && opts.encoding !== "binary") {
-      abort(`Invalid encoding type "${opts.encoding}"`)
+      abort(`Invalid encoding type "${opts.encoding}"`);
     }
-    var stream = FS.open(path, opts.flags)
-    var stat = FS.stat(path)
-    var length = stat.size
-    var buf = new Uint8Array(length)
-    FS.read(stream, buf, 0, length, 0)
+    var stream = FS.open(path, opts.flags);
+    var stat = FS.stat(path);
+    var length = stat.size;
+    var buf = new Uint8Array(length);
+    FS.read(stream, buf, 0, length, 0);
     if (opts.encoding === "utf8") {
-      buf = UTF8ArrayToString(buf)
+      buf = UTF8ArrayToString(buf);
     }
-    FS.close(stream)
-    return buf
+    FS.close(stream);
+    return buf;
   },
   writeFile(path, data, opts = {}) {
-    opts.flags = opts.flags || 577
-    var stream = FS.open(path, opts.flags, opts.mode)
+    opts.flags = opts.flags || 577;
+    var stream = FS.open(path, opts.flags, opts.mode);
     if (typeof data == "string") {
-      data = new Uint8Array(intArrayFromString(data, true))
+      data = new Uint8Array(intArrayFromString(data, true));
     }
     if (ArrayBuffer.isView(data)) {
-      FS.write(stream, data, 0, data.byteLength, undefined, opts.canOwn)
+      FS.write(stream, data, 0, data.byteLength, undefined, opts.canOwn);
     } else {
-      abort("Unsupported data type")
+      abort("Unsupported data type");
     }
-    FS.close(stream)
+    FS.close(stream);
   },
   cwd: () => FS.currentPath,
   chdir(path) {
-    var lookup = FS.lookupPath(path, { follow: true })
+    var lookup = FS.lookupPath(path, { follow: true });
     if (lookup.node === null) {
-      throw new FS.ErrnoError(44)
+      throw new FS.ErrnoError(44);
     }
     if (!FS.isDir(lookup.node.mode)) {
-      throw new FS.ErrnoError(54)
+      throw new FS.ErrnoError(54);
     }
-    var errCode = FS.nodePermissions(lookup.node, "x")
+    var errCode = FS.nodePermissions(lookup.node, "x");
     if (errCode) {
-      throw new FS.ErrnoError(errCode)
+      throw new FS.ErrnoError(errCode);
     }
-    FS.currentPath = lookup.path
+    FS.currentPath = lookup.path;
   },
   createDefaultDirectories() {
-    FS.mkdir("/tmp")
-    FS.mkdir("/home")
-    FS.mkdir("/home/web_user")
+    FS.mkdir("/tmp");
+    FS.mkdir("/home");
+    FS.mkdir("/home/web_user");
   },
   createDefaultDevices() {
-    FS.mkdir("/dev")
+    FS.mkdir("/dev");
     FS.registerDevice(FS.makedev(1, 3), {
       read: () => 0,
       write: (stream, buffer, offset, length, pos) => length,
       llseek: () => 0,
-    })
-    FS.mkdev("/dev/null", FS.makedev(1, 3))
-    TTY.register(FS.makedev(5, 0), TTY.default_tty_ops)
-    TTY.register(FS.makedev(6, 0), TTY.default_tty1_ops)
-    FS.mkdev("/dev/tty", FS.makedev(5, 0))
-    FS.mkdev("/dev/tty1", FS.makedev(6, 0))
+    });
+    FS.mkdev("/dev/null", FS.makedev(1, 3));
+    TTY.register(FS.makedev(5, 0), TTY.default_tty_ops);
+    TTY.register(FS.makedev(6, 0), TTY.default_tty1_ops);
+    FS.mkdev("/dev/tty", FS.makedev(5, 0));
+    FS.mkdev("/dev/tty1", FS.makedev(6, 0));
     var randomBuffer = new Uint8Array(1024),
-      randomLeft = 0
+      randomLeft = 0;
     var randomByte = () => {
       if (randomLeft === 0) {
-        randomFill(randomBuffer)
-        randomLeft = randomBuffer.byteLength
+        randomFill(randomBuffer);
+        randomLeft = randomBuffer.byteLength;
       }
-      return randomBuffer[--randomLeft]
-    }
-    FS.createDevice("/dev", "random", randomByte)
-    FS.createDevice("/dev", "urandom", randomByte)
-    FS.mkdir("/dev/shm")
-    FS.mkdir("/dev/shm/tmp")
+      return randomBuffer[--randomLeft];
+    };
+    FS.createDevice("/dev", "random", randomByte);
+    FS.createDevice("/dev", "urandom", randomByte);
+    FS.mkdir("/dev/shm");
+    FS.mkdir("/dev/shm/tmp");
   },
   createSpecialDirectories() {
-    FS.mkdir("/proc")
-    var proc_self = FS.mkdir("/proc/self")
-    FS.mkdir("/proc/self/fd")
+    FS.mkdir("/proc");
+    var proc_self = FS.mkdir("/proc/self");
+    FS.mkdir("/proc/self/fd");
     FS.mount(
       {
         mount() {
-          var node = FS.createNode(proc_self, "fd", 16895, 73)
-          node.stream_ops = { llseek: MEMFS.stream_ops.llseek }
+          var node = FS.createNode(proc_self, "fd", 16895, 73);
+          node.stream_ops = { llseek: MEMFS.stream_ops.llseek };
           node.node_ops = {
             lookup(parent, name) {
-              var fd = +name
-              var stream = FS.getStreamChecked(fd)
+              var fd = +name;
+              var stream = FS.getStreamChecked(fd);
               var ret = {
                 parent: null,
                 mount: { mountpoint: "fake" },
                 node_ops: { readlink: () => stream.path },
                 id: fd + 1,
-              }
-              ret.parent = ret
-              return ret
+              };
+              ret.parent = ret;
+              return ret;
             },
             readdir() {
               return Array.from(FS.streams.entries())
                 .filter(([k, v]) => v)
-                .map(([k, v]) => k.toString())
+                .map(([k, v]) => k.toString());
             },
-          }
-          return node
+          };
+          return node;
         },
       },
       {},
-      "/proc/self/fd"
-    )
+      "/proc/self/fd",
+    );
   },
   createStandardStreams(input, output, error) {
     if (input) {
-      FS.createDevice("/dev", "stdin", input)
+      FS.createDevice("/dev", "stdin", input);
     } else {
-      FS.symlink("/dev/tty", "/dev/stdin")
+      FS.symlink("/dev/tty", "/dev/stdin");
     }
     if (output) {
-      FS.createDevice("/dev", "stdout", null, output)
+      FS.createDevice("/dev", "stdout", null, output);
     } else {
-      FS.symlink("/dev/tty", "/dev/stdout")
+      FS.symlink("/dev/tty", "/dev/stdout");
     }
     if (error) {
-      FS.createDevice("/dev", "stderr", null, error)
+      FS.createDevice("/dev", "stderr", null, error);
     } else {
-      FS.symlink("/dev/tty1", "/dev/stderr")
+      FS.symlink("/dev/tty1", "/dev/stderr");
     }
-    var stdin = FS.open("/dev/stdin", 0)
-    var stdout = FS.open("/dev/stdout", 1)
-    var stderr = FS.open("/dev/stderr", 1)
+    var stdin = FS.open("/dev/stdin", 0);
+    var stdout = FS.open("/dev/stdout", 1);
+    var stderr = FS.open("/dev/stderr", 1);
   },
   staticInit() {
-    FS.nameTable = new Array(4096)
-    FS.mount(MEMFS, {}, "/")
-    FS.createDefaultDirectories()
-    FS.createDefaultDevices()
-    FS.createSpecialDirectories()
-    FS.filesystems = { MEMFS }
+    FS.nameTable = new Array(4096);
+    FS.mount(MEMFS, {}, "/");
+    FS.createDefaultDirectories();
+    FS.createDefaultDevices();
+    FS.createSpecialDirectories();
+    FS.filesystems = { MEMFS };
   },
   init(input, output, error) {
-    FS.initialized = true
-    input ??= Module["stdin"]
-    output ??= Module["stdout"]
-    error ??= Module["stderr"]
-    FS.createStandardStreams(input, output, error)
+    FS.initialized = true;
+    input ??= Module["stdin"];
+    output ??= Module["stdout"];
+    error ??= Module["stderr"];
+    FS.createStandardStreams(input, output, error);
   },
   quit() {
-    FS.initialized = false
+    FS.initialized = false;
     for (var stream of FS.streams) {
       if (stream) {
-        FS.close(stream)
+        FS.close(stream);
       }
     }
   },
   findObject(path, dontResolveLastLink) {
-    var ret = FS.analyzePath(path, dontResolveLastLink)
+    var ret = FS.analyzePath(path, dontResolveLastLink);
     if (!ret.exists) {
-      return null
+      return null;
     }
-    return ret.object
+    return ret.object;
   },
   analyzePath(path, dontResolveLastLink) {
     try {
-      var lookup = FS.lookupPath(path, { follow: !dontResolveLastLink })
-      path = lookup.path
+      var lookup = FS.lookupPath(path, { follow: !dontResolveLastLink });
+      path = lookup.path;
     } catch (e) {}
     var ret = {
       isRoot: false,
@@ -2782,572 +2720,529 @@ var FS = {
       parentExists: false,
       parentPath: null,
       parentObject: null,
-    }
+    };
     try {
-      var lookup = FS.lookupPath(path, { parent: true })
-      ret.parentExists = true
-      ret.parentPath = lookup.path
-      ret.parentObject = lookup.node
-      ret.name = PATH.basename(path)
-      lookup = FS.lookupPath(path, { follow: !dontResolveLastLink })
-      ret.exists = true
-      ret.path = lookup.path
-      ret.object = lookup.node
-      ret.name = lookup.node.name
-      ret.isRoot = lookup.path === "/"
+      var lookup = FS.lookupPath(path, { parent: true });
+      ret.parentExists = true;
+      ret.parentPath = lookup.path;
+      ret.parentObject = lookup.node;
+      ret.name = PATH.basename(path);
+      lookup = FS.lookupPath(path, { follow: !dontResolveLastLink });
+      ret.exists = true;
+      ret.path = lookup.path;
+      ret.object = lookup.node;
+      ret.name = lookup.node.name;
+      ret.isRoot = lookup.path === "/";
     } catch (e) {
-      ret.error = e.errno
+      ret.error = e.errno;
     }
-    return ret
+    return ret;
   },
   createPath(parent, path, canRead, canWrite) {
-    parent = typeof parent == "string" ? parent : FS.getPath(parent)
-    var parts = path.split("/").reverse()
+    parent = typeof parent == "string" ? parent : FS.getPath(parent);
+    var parts = path.split("/").reverse();
     while (parts.length) {
-      var part = parts.pop()
-      if (!part) continue
-      var current = PATH.join2(parent, part)
+      var part = parts.pop();
+      if (!part) continue;
+      var current = PATH.join2(parent, part);
       try {
-        FS.mkdir(current)
+        FS.mkdir(current);
       } catch (e) {
-        if (e.errno != 20) throw e
+        if (e.errno != 20) throw e;
       }
-      parent = current
+      parent = current;
     }
-    return current
+    return current;
   },
   createFile(parent, name, properties, canRead, canWrite) {
-    var path = PATH.join2(
-      typeof parent == "string" ? parent : FS.getPath(parent),
-      name
-    )
-    var mode = FS_getMode(canRead, canWrite)
-    return FS.create(path, mode)
+    var path = PATH.join2(typeof parent == "string" ? parent : FS.getPath(parent), name);
+    var mode = FS_getMode(canRead, canWrite);
+    return FS.create(path, mode);
   },
   createDataFile(parent, name, data, canRead, canWrite, canOwn) {
-    var path = name
+    var path = name;
     if (parent) {
-      parent = typeof parent == "string" ? parent : FS.getPath(parent)
-      path = name ? PATH.join2(parent, name) : parent
+      parent = typeof parent == "string" ? parent : FS.getPath(parent);
+      path = name ? PATH.join2(parent, name) : parent;
     }
-    var mode = FS_getMode(canRead, canWrite)
-    var node = FS.create(path, mode)
+    var mode = FS_getMode(canRead, canWrite);
+    var node = FS.create(path, mode);
     if (data) {
       if (typeof data == "string") {
-        var arr = new Array(data.length)
-        for (var i = 0, len = data.length; i < len; ++i)
-          arr[i] = data.charCodeAt(i)
-        data = arr
+        var arr = new Array(data.length);
+        for (var i = 0, len = data.length; i < len; ++i) arr[i] = data.charCodeAt(i);
+        data = arr;
       }
-      FS.chmod(node, mode | 146)
-      var stream = FS.open(node, 577)
-      FS.write(stream, data, 0, data.length, 0, canOwn)
-      FS.close(stream)
-      FS.chmod(node, mode)
+      FS.chmod(node, mode | 146);
+      var stream = FS.open(node, 577);
+      FS.write(stream, data, 0, data.length, 0, canOwn);
+      FS.close(stream);
+      FS.chmod(node, mode);
     }
   },
   createDevice(parent, name, input, output) {
-    var path = PATH.join2(
-      typeof parent == "string" ? parent : FS.getPath(parent),
-      name
-    )
-    var mode = FS_getMode(!!input, !!output)
-    FS.createDevice.major ??= 64
-    var dev = FS.makedev(FS.createDevice.major++, 0)
+    var path = PATH.join2(typeof parent == "string" ? parent : FS.getPath(parent), name);
+    var mode = FS_getMode(!!input, !!output);
+    FS.createDevice.major ??= 64;
+    var dev = FS.makedev(FS.createDevice.major++, 0);
     FS.registerDevice(dev, {
       open(stream) {
-        stream.seekable = false
+        stream.seekable = false;
       },
       close(stream) {
         if (output?.buffer?.length) {
-          output(10)
+          output(10);
         }
       },
       read(stream, buffer, offset, length, pos) {
-        var bytesRead = 0
+        var bytesRead = 0;
         for (var i = 0; i < length; i++) {
-          var result
+          var result;
           try {
-            result = input()
+            result = input();
           } catch (e) {
-            throw new FS.ErrnoError(29)
+            throw new FS.ErrnoError(29);
           }
           if (result === undefined && bytesRead === 0) {
-            throw new FS.ErrnoError(6)
+            throw new FS.ErrnoError(6);
           }
-          if (result === null || result === undefined) break
-          bytesRead++
-          buffer[offset + i] = result
+          if (result === null || result === undefined) break;
+          bytesRead++;
+          buffer[offset + i] = result;
         }
         if (bytesRead) {
-          stream.node.atime = Date.now()
+          stream.node.atime = Date.now();
         }
-        return bytesRead
+        return bytesRead;
       },
       write(stream, buffer, offset, length, pos) {
         for (var i = 0; i < length; i++) {
           try {
-            output(buffer[offset + i])
+            output(buffer[offset + i]);
           } catch (e) {
-            throw new FS.ErrnoError(29)
+            throw new FS.ErrnoError(29);
           }
         }
         if (length) {
-          stream.node.mtime = stream.node.ctime = Date.now()
+          stream.node.mtime = stream.node.ctime = Date.now();
         }
-        return i
+        return i;
       },
-    })
-    return FS.mkdev(path, mode, dev)
+    });
+    return FS.mkdev(path, mode, dev);
   },
   forceLoadFile(obj) {
-    if (obj.isDevice || obj.isFolder || obj.link || obj.contents) return true
+    if (obj.isDevice || obj.isFolder || obj.link || obj.contents) return true;
     if (globalThis.XMLHttpRequest) {
       abort(
-        "Lazy loading should have been performed (contents set) in createLazyFile, but it was not. Lazy loading only works in web workers. Use --embed-file or --preload-file in emcc on the main thread."
-      )
+        "Lazy loading should have been performed (contents set) in createLazyFile, but it was not. Lazy loading only works in web workers. Use --embed-file or --preload-file in emcc on the main thread.",
+      );
     } else {
       try {
-        obj.contents = readBinary(obj.url)
+        obj.contents = readBinary(obj.url);
       } catch (e) {
-        throw new FS.ErrnoError(29)
+        throw new FS.ErrnoError(29);
       }
     }
   },
   createLazyFile(parent, name, url, canRead, canWrite) {
     class LazyUint8Array {
-      lengthKnown = false
-      chunks = []
+      lengthKnown = false;
+      chunks = [];
       get(idx) {
         if (idx > this.length - 1 || idx < 0) {
-          return undefined
+          return undefined;
         }
-        var chunkOffset = idx % this.chunkSize
-        var chunkNum = (idx / this.chunkSize) | 0
-        return this.getter(chunkNum)[chunkOffset]
+        var chunkOffset = idx % this.chunkSize;
+        var chunkNum = (idx / this.chunkSize) | 0;
+        return this.getter(chunkNum)[chunkOffset];
       }
       setDataGetter(getter) {
-        this.getter = getter
+        this.getter = getter;
       }
       cacheLength() {
-        var xhr = new XMLHttpRequest()
-        xhr.open("HEAD", url, false)
-        xhr.send(null)
+        var xhr = new XMLHttpRequest();
+        xhr.open("HEAD", url, false);
+        xhr.send(null);
         if (!((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304))
-          abort("Couldn't load " + url + ". Status: " + xhr.status)
-        var datalength = Number(xhr.getResponseHeader("Content-length"))
-        var header
+          abort("Couldn't load " + url + ". Status: " + xhr.status);
+        var datalength = Number(xhr.getResponseHeader("Content-length"));
+        var header;
         var hasByteServing =
-          (header = xhr.getResponseHeader("Accept-Ranges")) &&
-          header === "bytes"
-        var usesGzip =
-          (header = xhr.getResponseHeader("Content-Encoding")) &&
-          header === "gzip"
-        var chunkSize = 1024 * 1024
-        if (!hasByteServing) chunkSize = datalength
+          (header = xhr.getResponseHeader("Accept-Ranges")) && header === "bytes";
+        var usesGzip = (header = xhr.getResponseHeader("Content-Encoding")) && header === "gzip";
+        var chunkSize = 1024 * 1024;
+        if (!hasByteServing) chunkSize = datalength;
         var doXHR = (from, to) => {
-          if (from > to)
-            abort(
-              "invalid range (" + from + ", " + to + ") or no bytes requested!"
-            )
+          if (from > to) abort("invalid range (" + from + ", " + to + ") or no bytes requested!");
           if (to > datalength - 1)
-            abort("only " + datalength + " bytes available! programmer error!")
-          var xhr = new XMLHttpRequest()
-          xhr.open("GET", url, false)
-          if (datalength !== chunkSize)
-            xhr.setRequestHeader("Range", "bytes=" + from + "-" + to)
-          xhr.responseType = "arraybuffer"
+            abort("only " + datalength + " bytes available! programmer error!");
+          var xhr = new XMLHttpRequest();
+          xhr.open("GET", url, false);
+          if (datalength !== chunkSize) xhr.setRequestHeader("Range", "bytes=" + from + "-" + to);
+          xhr.responseType = "arraybuffer";
           if (xhr.overrideMimeType) {
-            xhr.overrideMimeType("text/plain; charset=x-user-defined")
+            xhr.overrideMimeType("text/plain; charset=x-user-defined");
           }
-          xhr.send(null)
+          xhr.send(null);
           if (!((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304))
-            abort("Couldn't load " + url + ". Status: " + xhr.status)
+            abort("Couldn't load " + url + ". Status: " + xhr.status);
           if (xhr.response !== undefined) {
-            return new Uint8Array(xhr.response || [])
+            return new Uint8Array(xhr.response || []);
           }
-          return intArrayFromString(xhr.responseText || "", true)
-        }
+          return intArrayFromString(xhr.responseText || "", true);
+        };
 
         this.setDataGetter((chunkNum) => {
-          var start = chunkNum * chunkSize
-          var end = (chunkNum + 1) * chunkSize - 1
-          end = Math.min(end, datalength - 1)
+          var start = chunkNum * chunkSize;
+          var end = (chunkNum + 1) * chunkSize - 1;
+          end = Math.min(end, datalength - 1);
           if (typeof this.chunks[chunkNum] == "undefined") {
-            this.chunks[chunkNum] = doXHR(start, end)
+            this.chunks[chunkNum] = doXHR(start, end);
           }
-          if (typeof this.chunks[chunkNum] == "undefined")
-            abort("doXHR failed!")
-          return this.chunks[chunkNum]
-        })
+          if (typeof this.chunks[chunkNum] == "undefined") abort("doXHR failed!");
+          return this.chunks[chunkNum];
+        });
         if (usesGzip || !datalength) {
-          chunkSize = datalength = 1
-          datalength = this.getter(0).length
-          chunkSize = datalength
-          out(
-            "LazyFiles on gzip forces download of the whole file when length is accessed"
-          )
+          chunkSize = datalength = 1;
+          datalength = this.getter(0).length;
+          chunkSize = datalength;
+          out("LazyFiles on gzip forces download of the whole file when length is accessed");
         }
-        this._length = datalength
-        this._chunkSize = chunkSize
-        this.lengthKnown = true
+        this._length = datalength;
+        this._chunkSize = chunkSize;
+        this.lengthKnown = true;
       }
       get length() {
         if (!this.lengthKnown) {
-          this.cacheLength()
+          this.cacheLength();
         }
-        return this._length
+        return this._length;
       }
       get chunkSize() {
         if (!this.lengthKnown) {
-          this.cacheLength()
+          this.cacheLength();
         }
-        return this._chunkSize
+        return this._chunkSize;
       }
     }
     if (globalThis.XMLHttpRequest) {
       if (!ENVIRONMENT_IS_WORKER)
         abort(
-          "Cannot do synchronous binary XHRs outside webworkers in modern browsers. Use --embed-file or --preload-file in emcc"
-        )
-      var lazyArray = new LazyUint8Array()
-      var properties = { isDevice: false, contents: lazyArray }
+          "Cannot do synchronous binary XHRs outside webworkers in modern browsers. Use --embed-file or --preload-file in emcc",
+        );
+      var lazyArray = new LazyUint8Array();
+      var properties = { isDevice: false, contents: lazyArray };
     } else {
-      var properties = { isDevice: false, url }
+      var properties = { isDevice: false, url };
     }
-    var node = FS.createFile(parent, name, properties, canRead, canWrite)
+    var node = FS.createFile(parent, name, properties, canRead, canWrite);
     if (properties.contents) {
-      node.contents = properties.contents
+      node.contents = properties.contents;
     } else if (properties.url) {
-      node.contents = null
-      node.url = properties.url
+      node.contents = null;
+      node.url = properties.url;
     }
     Object.defineProperties(node, {
       usedBytes: {
         get: function () {
-          return this.contents.length
+          return this.contents.length;
         },
       },
-    })
-    var stream_ops = {}
+    });
+    var stream_ops = {};
     for (const [key, fn] of Object.entries(node.stream_ops)) {
       stream_ops[key] = (...args) => {
-        FS.forceLoadFile(node)
-        return fn(...args)
-      }
+        FS.forceLoadFile(node);
+        return fn(...args);
+      };
     }
     function writeChunks(stream, buffer, offset, length, position) {
-      var contents = stream.node.contents
-      if (position >= contents.length) return 0
-      var size = Math.min(contents.length - position, length)
+      var contents = stream.node.contents;
+      if (position >= contents.length) return 0;
+      var size = Math.min(contents.length - position, length);
       if (contents.slice) {
         for (var i = 0; i < size; i++) {
-          buffer[offset + i] = contents[position + i]
+          buffer[offset + i] = contents[position + i];
         }
       } else {
         for (var i = 0; i < size; i++) {
-          buffer[offset + i] = contents.get(position + i)
+          buffer[offset + i] = contents.get(position + i);
         }
       }
-      return size
+      return size;
     }
     stream_ops.read = (stream, buffer, offset, length, position) => {
-      FS.forceLoadFile(node)
-      return writeChunks(stream, buffer, offset, length, position)
-    }
+      FS.forceLoadFile(node);
+      return writeChunks(stream, buffer, offset, length, position);
+    };
     stream_ops.mmap = (stream, length, position, prot, flags) => {
-      FS.forceLoadFile(node)
-      var ptr = mmapAlloc(length)
+      FS.forceLoadFile(node);
+      var ptr = mmapAlloc(length);
       if (!ptr) {
-        throw new FS.ErrnoError(48)
+        throw new FS.ErrnoError(48);
       }
-      writeChunks(stream, (growMemViews(), HEAP8), ptr, length, position)
-      return { ptr, allocated: true }
-    }
-    node.stream_ops = stream_ops
-    return node
+      writeChunks(stream, (growMemViews(), HEAP8), ptr, length, position);
+      return { ptr, allocated: true };
+    };
+    node.stream_ops = stream_ops;
+    return node;
   },
-}
+};
 var UTF8ToString = (ptr, maxBytesToRead, ignoreNul) => {
-  ptr >>>= 0
-  return ptr
-    ? UTF8ArrayToString(
-        (growMemViews(), HEAPU8),
-        ptr,
-        maxBytesToRead,
-        ignoreNul
-      )
-    : ""
-}
+  ptr >>>= 0;
+  return ptr ? UTF8ArrayToString((growMemViews(), HEAPU8), ptr, maxBytesToRead, ignoreNul) : "";
+};
 var SYSCALLS = {
   DEFAULT_POLLMASK: 5,
   calculateAt(dirfd, path, allowEmpty) {
     if (PATH.isAbs(path)) {
-      return path
+      return path;
     }
-    var dir
+    var dir;
     if (dirfd === -100) {
-      dir = FS.cwd()
+      dir = FS.cwd();
     } else {
-      var dirstream = SYSCALLS.getStreamFromFD(dirfd)
-      dir = dirstream.path
+      var dirstream = SYSCALLS.getStreamFromFD(dirfd);
+      dir = dirstream.path;
     }
     if (path.length == 0) {
       if (!allowEmpty) {
-        throw new FS.ErrnoError(44)
+        throw new FS.ErrnoError(44);
       }
-      return dir
+      return dir;
     }
-    return dir + "/" + path
+    return dir + "/" + path;
   },
   writeStat(buf, stat) {
-    ;(growMemViews(), HEAPU32)[(buf >>> 2) >>> 0] = stat.dev
-    ;(growMemViews(), HEAPU32)[((buf + 4) >>> 2) >>> 0] = stat.mode
-    ;(growMemViews(), HEAPU32)[((buf + 8) >>> 2) >>> 0] = stat.nlink
-    ;(growMemViews(), HEAPU32)[((buf + 12) >>> 2) >>> 0] = stat.uid
-    ;(growMemViews(), HEAPU32)[((buf + 16) >>> 2) >>> 0] = stat.gid
-    ;(growMemViews(), HEAPU32)[((buf + 20) >>> 2) >>> 0] = stat.rdev
-    ;(growMemViews(), HEAP64)[((buf + 24) >>> 3) >>> 0] = BigInt(stat.size)
-    ;(growMemViews(), HEAP32)[((buf + 32) >>> 2) >>> 0] = 4096
-    ;(growMemViews(), HEAP32)[((buf + 36) >>> 2) >>> 0] = stat.blocks
-    var atime = stat.atime.getTime()
-    var mtime = stat.mtime.getTime()
-    var ctime = stat.ctime.getTime()
-    ;(growMemViews(), HEAP64)[((buf + 40) >>> 3) >>> 0] = BigInt(
-      Math.floor(atime / 1e3)
-    )
-    ;(growMemViews(), HEAPU32)[((buf + 48) >>> 2) >>> 0] =
-      (atime % 1e3) * 1e3 * 1e3
-    ;(growMemViews(), HEAP64)[((buf + 56) >>> 3) >>> 0] = BigInt(
-      Math.floor(mtime / 1e3)
-    )
-    ;(growMemViews(), HEAPU32)[((buf + 64) >>> 2) >>> 0] =
-      (mtime % 1e3) * 1e3 * 1e3
-    ;(growMemViews(), HEAP64)[((buf + 72) >>> 3) >>> 0] = BigInt(
-      Math.floor(ctime / 1e3)
-    )
-    ;(growMemViews(), HEAPU32)[((buf + 80) >>> 2) >>> 0] =
-      (ctime % 1e3) * 1e3 * 1e3
-    ;(growMemViews(), HEAP64)[((buf + 88) >>> 3) >>> 0] = BigInt(stat.ino)
-    return 0
+    (growMemViews(), HEAPU32)[(buf >>> 2) >>> 0] = stat.dev;
+    (growMemViews(), HEAPU32)[((buf + 4) >>> 2) >>> 0] = stat.mode;
+    (growMemViews(), HEAPU32)[((buf + 8) >>> 2) >>> 0] = stat.nlink;
+    (growMemViews(), HEAPU32)[((buf + 12) >>> 2) >>> 0] = stat.uid;
+    (growMemViews(), HEAPU32)[((buf + 16) >>> 2) >>> 0] = stat.gid;
+    (growMemViews(), HEAPU32)[((buf + 20) >>> 2) >>> 0] = stat.rdev;
+    (growMemViews(), HEAP64)[((buf + 24) >>> 3) >>> 0] = BigInt(stat.size);
+    (growMemViews(), HEAP32)[((buf + 32) >>> 2) >>> 0] = 4096;
+    (growMemViews(), HEAP32)[((buf + 36) >>> 2) >>> 0] = stat.blocks;
+    var atime = stat.atime.getTime();
+    var mtime = stat.mtime.getTime();
+    var ctime = stat.ctime.getTime();
+    (growMemViews(), HEAP64)[((buf + 40) >>> 3) >>> 0] = BigInt(Math.floor(atime / 1e3));
+    (growMemViews(), HEAPU32)[((buf + 48) >>> 2) >>> 0] = (atime % 1e3) * 1e3 * 1e3;
+    (growMemViews(), HEAP64)[((buf + 56) >>> 3) >>> 0] = BigInt(Math.floor(mtime / 1e3));
+    (growMemViews(), HEAPU32)[((buf + 64) >>> 2) >>> 0] = (mtime % 1e3) * 1e3 * 1e3;
+    (growMemViews(), HEAP64)[((buf + 72) >>> 3) >>> 0] = BigInt(Math.floor(ctime / 1e3));
+    (growMemViews(), HEAPU32)[((buf + 80) >>> 2) >>> 0] = (ctime % 1e3) * 1e3 * 1e3;
+    (growMemViews(), HEAP64)[((buf + 88) >>> 3) >>> 0] = BigInt(stat.ino);
+    return 0;
   },
   writeStatFs(buf, stats) {
-    ;(growMemViews(), HEAPU32)[((buf + 4) >>> 2) >>> 0] = stats.bsize
-    ;(growMemViews(), HEAPU32)[((buf + 60) >>> 2) >>> 0] = stats.bsize
-    ;(growMemViews(), HEAP64)[((buf + 8) >>> 3) >>> 0] = BigInt(stats.blocks)
-    ;(growMemViews(), HEAP64)[((buf + 16) >>> 3) >>> 0] = BigInt(stats.bfree)
-    ;(growMemViews(), HEAP64)[((buf + 24) >>> 3) >>> 0] = BigInt(stats.bavail)
-    ;(growMemViews(), HEAP64)[((buf + 32) >>> 3) >>> 0] = BigInt(stats.files)
-    ;(growMemViews(), HEAP64)[((buf + 40) >>> 3) >>> 0] = BigInt(stats.ffree)
-    ;(growMemViews(), HEAPU32)[((buf + 48) >>> 2) >>> 0] = stats.fsid
-    ;(growMemViews(), HEAPU32)[((buf + 64) >>> 2) >>> 0] = stats.flags
-    ;(growMemViews(), HEAPU32)[((buf + 56) >>> 2) >>> 0] = stats.namelen
+    (growMemViews(), HEAPU32)[((buf + 4) >>> 2) >>> 0] = stats.bsize;
+    (growMemViews(), HEAPU32)[((buf + 60) >>> 2) >>> 0] = stats.bsize;
+    (growMemViews(), HEAP64)[((buf + 8) >>> 3) >>> 0] = BigInt(stats.blocks);
+    (growMemViews(), HEAP64)[((buf + 16) >>> 3) >>> 0] = BigInt(stats.bfree);
+    (growMemViews(), HEAP64)[((buf + 24) >>> 3) >>> 0] = BigInt(stats.bavail);
+    (growMemViews(), HEAP64)[((buf + 32) >>> 3) >>> 0] = BigInt(stats.files);
+    (growMemViews(), HEAP64)[((buf + 40) >>> 3) >>> 0] = BigInt(stats.ffree);
+    (growMemViews(), HEAPU32)[((buf + 48) >>> 2) >>> 0] = stats.fsid;
+    (growMemViews(), HEAPU32)[((buf + 64) >>> 2) >>> 0] = stats.flags;
+    (growMemViews(), HEAPU32)[((buf + 56) >>> 2) >>> 0] = stats.namelen;
   },
   doMsync(addr, stream, len, flags, offset) {
     if (!FS.isFile(stream.node.mode)) {
-      throw new FS.ErrnoError(43)
+      throw new FS.ErrnoError(43);
     }
     if (flags & 2) {
-      return 0
+      return 0;
     }
-    var buffer = (growMemViews(), HEAPU8).slice(addr, addr + len)
-    FS.msync(stream, buffer, offset, len, flags)
+    var buffer = (growMemViews(), HEAPU8).slice(addr, addr + len);
+    FS.msync(stream, buffer, offset, len, flags);
   },
   getStreamFromFD(fd) {
-    var stream = FS.getStreamChecked(fd)
-    return stream
+    var stream = FS.getStreamChecked(fd);
+    return stream;
   },
   varargs: undefined,
   getStr(ptr) {
-    var ret = UTF8ToString(ptr)
-    return ret
+    var ret = UTF8ToString(ptr);
+    return ret;
   },
-}
+};
 function ___syscall_fcntl64(fd, cmd, varargs) {
-  if (ENVIRONMENT_IS_PTHREAD)
-    return proxyToMainThread(3, 0, 1, fd, cmd, varargs)
-  varargs >>>= 0
-  SYSCALLS.varargs = varargs
+  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(3, 0, 1, fd, cmd, varargs);
+  varargs >>>= 0;
+  SYSCALLS.varargs = varargs;
   try {
-    var stream = SYSCALLS.getStreamFromFD(fd)
+    var stream = SYSCALLS.getStreamFromFD(fd);
     switch (cmd) {
       case 0: {
-        var arg = syscallGetVarargI()
+        var arg = syscallGetVarargI();
         if (arg < 0) {
-          return -28
+          return -28;
         }
         while (FS.streams[arg]) {
-          arg++
+          arg++;
         }
-        var newStream
-        newStream = FS.dupStream(stream, arg)
-        return newStream.fd
+        var newStream;
+        newStream = FS.dupStream(stream, arg);
+        return newStream.fd;
       }
       case 1:
       case 2:
-        return 0
+        return 0;
       case 3:
-        return stream.flags
+        return stream.flags;
       case 4: {
-        var arg = syscallGetVarargI()
-        stream.flags |= arg
-        return 0
+        var arg = syscallGetVarargI();
+        stream.flags |= arg;
+        return 0;
       }
       case 12: {
-        var arg = syscallGetVarargP()
-        var offset = 0
-        ;(growMemViews(), HEAP16)[((arg + offset) >>> 1) >>> 0] = 2
-        return 0
+        var arg = syscallGetVarargP();
+        var offset = 0;
+        (growMemViews(), HEAP16)[((arg + offset) >>> 1) >>> 0] = 2;
+        return 0;
       }
       case 13:
       case 14:
-        return 0
+        return 0;
     }
-    return -28
+    return -28;
   } catch (e) {
-    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e
-    return -e.errno
+    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e;
+    return -e.errno;
   }
 }
 function ___syscall_fstat64(fd, buf) {
-  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(4, 0, 1, fd, buf)
-  buf >>>= 0
+  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(4, 0, 1, fd, buf);
+  buf >>>= 0;
   try {
-    return SYSCALLS.writeStat(buf, FS.fstat(fd))
+    return SYSCALLS.writeStat(buf, FS.fstat(fd));
   } catch (e) {
-    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e
-    return -e.errno
+    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e;
+    return -e.errno;
   }
 }
 var stringToUTF8 = (str, outPtr, maxBytesToWrite) =>
-  stringToUTF8Array(str, (growMemViews(), HEAPU8), outPtr, maxBytesToWrite)
+  stringToUTF8Array(str, (growMemViews(), HEAPU8), outPtr, maxBytesToWrite);
 function ___syscall_getcwd(buf, size) {
-  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(5, 0, 1, buf, size)
-  buf >>>= 0
-  size >>>= 0
+  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(5, 0, 1, buf, size);
+  buf >>>= 0;
+  size >>>= 0;
   try {
-    if (size === 0) return -28
-    var cwd = FS.cwd()
-    var cwdLengthInBytes = lengthBytesUTF8(cwd) + 1
-    if (size < cwdLengthInBytes) return -68
-    stringToUTF8(cwd, buf, size)
-    return cwdLengthInBytes
+    if (size === 0) return -28;
+    var cwd = FS.cwd();
+    var cwdLengthInBytes = lengthBytesUTF8(cwd) + 1;
+    if (size < cwdLengthInBytes) return -68;
+    stringToUTF8(cwd, buf, size);
+    return cwdLengthInBytes;
   } catch (e) {
-    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e
-    return -e.errno
+    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e;
+    return -e.errno;
   }
 }
 function ___syscall_getdents64(fd, dirp, count) {
-  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(6, 0, 1, fd, dirp, count)
-  dirp >>>= 0
-  count >>>= 0
+  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(6, 0, 1, fd, dirp, count);
+  dirp >>>= 0;
+  count >>>= 0;
   try {
-    var stream = SYSCALLS.getStreamFromFD(fd)
-    stream.getdents ||= FS.readdir(stream.path)
-    var struct_size = 280
-    var pos = 0
-    var off = FS.llseek(stream, 0, 1)
-    var startIdx = Math.floor(off / struct_size)
-    var endIdx = Math.min(
-      stream.getdents.length,
-      startIdx + Math.floor(count / struct_size)
-    )
+    var stream = SYSCALLS.getStreamFromFD(fd);
+    stream.getdents ||= FS.readdir(stream.path);
+    var struct_size = 280;
+    var pos = 0;
+    var off = FS.llseek(stream, 0, 1);
+    var startIdx = Math.floor(off / struct_size);
+    var endIdx = Math.min(stream.getdents.length, startIdx + Math.floor(count / struct_size));
     for (var idx = startIdx; idx < endIdx; idx++) {
-      var id
-      var type
-      var name = stream.getdents[idx]
+      var id;
+      var type;
+      var name = stream.getdents[idx];
       if (name === ".") {
-        id = stream.node.id
-        type = 4
+        id = stream.node.id;
+        type = 4;
       } else if (name === "..") {
-        var lookup = FS.lookupPath(stream.path, { parent: true })
-        id = lookup.node.id
-        type = 4
+        var lookup = FS.lookupPath(stream.path, { parent: true });
+        id = lookup.node.id;
+        type = 4;
       } else {
-        var child
+        var child;
         try {
-          child = FS.lookupNode(stream.node, name)
+          child = FS.lookupNode(stream.node, name);
         } catch (e) {
           if (e?.errno === 28) {
-            continue
+            continue;
           }
-          throw e
+          throw e;
         }
-        id = child.id
+        id = child.id;
         type = FS.isChrdev(child.mode)
           ? 2
           : FS.isDir(child.mode)
             ? 4
             : FS.isLink(child.mode)
               ? 10
-              : 8
+              : 8;
       }
-      ;(growMemViews(), HEAP64)[((dirp + pos) >>> 3) >>> 0] = BigInt(id)
-      ;(growMemViews(), HEAP64)[((dirp + pos + 8) >>> 3) >>> 0] = BigInt(
-        (idx + 1) * struct_size
-      )
-      ;(growMemViews(), HEAP16)[((dirp + pos + 16) >>> 1) >>> 0] = 280
-      ;(growMemViews(), HEAP8)[(dirp + pos + 18) >>> 0] = type
-      stringToUTF8(name, dirp + pos + 19, 256)
-      pos += struct_size
+      (growMemViews(), HEAP64)[((dirp + pos) >>> 3) >>> 0] = BigInt(id);
+      (growMemViews(), HEAP64)[((dirp + pos + 8) >>> 3) >>> 0] = BigInt((idx + 1) * struct_size);
+      (growMemViews(), HEAP16)[((dirp + pos + 16) >>> 1) >>> 0] = 280;
+      (growMemViews(), HEAP8)[(dirp + pos + 18) >>> 0] = type;
+      stringToUTF8(name, dirp + pos + 19, 256);
+      pos += struct_size;
     }
-    FS.llseek(stream, idx * struct_size, 0)
-    return pos
+    FS.llseek(stream, idx * struct_size, 0);
+    return pos;
   } catch (e) {
-    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e
-    return -e.errno
+    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e;
+    return -e.errno;
   }
 }
 function ___syscall_ioctl(fd, op, varargs) {
-  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(7, 0, 1, fd, op, varargs)
-  varargs >>>= 0
-  SYSCALLS.varargs = varargs
+  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(7, 0, 1, fd, op, varargs);
+  varargs >>>= 0;
+  SYSCALLS.varargs = varargs;
   try {
-    var stream = SYSCALLS.getStreamFromFD(fd)
+    var stream = SYSCALLS.getStreamFromFD(fd);
     switch (op) {
       case 21509: {
-        if (!stream.tty) return -59
-        return 0
+        if (!stream.tty) return -59;
+        return 0;
       }
       case 21505: {
-        if (!stream.tty) return -59
+        if (!stream.tty) return -59;
         if (stream.tty.ops.ioctl_tcgets) {
-          var termios = stream.tty.ops.ioctl_tcgets(stream)
-          var argp = syscallGetVarargP()
-          ;(growMemViews(), HEAP32)[(argp >>> 2) >>> 0] = termios.c_iflag || 0
-          ;(growMemViews(), HEAP32)[((argp + 4) >>> 2) >>> 0] =
-            termios.c_oflag || 0
-          ;(growMemViews(), HEAP32)[((argp + 8) >>> 2) >>> 0] =
-            termios.c_cflag || 0
-          ;(growMemViews(), HEAP32)[((argp + 12) >>> 2) >>> 0] =
-            termios.c_lflag || 0
+          var termios = stream.tty.ops.ioctl_tcgets(stream);
+          var argp = syscallGetVarargP();
+          (growMemViews(), HEAP32)[(argp >>> 2) >>> 0] = termios.c_iflag || 0;
+          (growMemViews(), HEAP32)[((argp + 4) >>> 2) >>> 0] = termios.c_oflag || 0;
+          (growMemViews(), HEAP32)[((argp + 8) >>> 2) >>> 0] = termios.c_cflag || 0;
+          (growMemViews(), HEAP32)[((argp + 12) >>> 2) >>> 0] = termios.c_lflag || 0;
           for (var i = 0; i < 32; i++) {
-            ;(growMemViews(), HEAP8)[(argp + i + 17) >>> 0] =
-              termios.c_cc[i] || 0
+            (growMemViews(), HEAP8)[(argp + i + 17) >>> 0] = termios.c_cc[i] || 0;
           }
-          return 0
+          return 0;
         }
-        return 0
+        return 0;
       }
       case 21510:
       case 21511:
       case 21512: {
-        if (!stream.tty) return -59
-        return 0
+        if (!stream.tty) return -59;
+        return 0;
       }
       case 21506:
       case 21507:
       case 21508: {
-        if (!stream.tty) return -59
+        if (!stream.tty) return -59;
         if (stream.tty.ops.ioctl_tcsets) {
-          var argp = syscallGetVarargP()
-          var c_iflag = (growMemViews(), HEAP32)[(argp >>> 2) >>> 0]
-          var c_oflag = (growMemViews(), HEAP32)[((argp + 4) >>> 2) >>> 0]
-          var c_cflag = (growMemViews(), HEAP32)[((argp + 8) >>> 2) >>> 0]
-          var c_lflag = (growMemViews(), HEAP32)[((argp + 12) >>> 2) >>> 0]
-          var c_cc = []
+          var argp = syscallGetVarargP();
+          var c_iflag = (growMemViews(), HEAP32)[(argp >>> 2) >>> 0];
+          var c_oflag = (growMemViews(), HEAP32)[((argp + 4) >>> 2) >>> 0];
+          var c_cflag = (growMemViews(), HEAP32)[((argp + 8) >>> 2) >>> 0];
+          var c_lflag = (growMemViews(), HEAP32)[((argp + 12) >>> 2) >>> 0];
+          var c_cc = [];
           for (var i = 0; i < 32; i++) {
-            c_cc.push((growMemViews(), HEAP8)[(argp + i + 17) >>> 0])
+            c_cc.push((growMemViews(), HEAP8)[(argp + i + 17) >>> 0]);
           }
           return stream.tty.ops.ioctl_tcsets(stream.tty, op, {
             c_iflag,
@@ -3355,635 +3250,589 @@ function ___syscall_ioctl(fd, op, varargs) {
             c_cflag,
             c_lflag,
             c_cc,
-          })
+          });
         }
-        return 0
+        return 0;
       }
       case 21519: {
-        if (!stream.tty) return -59
-        var argp = syscallGetVarargP()
-        ;(growMemViews(), HEAP32)[(argp >>> 2) >>> 0] = 0
-        return 0
+        if (!stream.tty) return -59;
+        var argp = syscallGetVarargP();
+        (growMemViews(), HEAP32)[(argp >>> 2) >>> 0] = 0;
+        return 0;
       }
       case 21520: {
-        if (!stream.tty) return -59
-        return -28
+        if (!stream.tty) return -59;
+        return -28;
       }
       case 21537:
       case 21531: {
-        var argp = syscallGetVarargP()
-        return FS.ioctl(stream, op, argp)
+        var argp = syscallGetVarargP();
+        return FS.ioctl(stream, op, argp);
       }
       case 21523: {
-        if (!stream.tty) return -59
+        if (!stream.tty) return -59;
         if (stream.tty.ops.ioctl_tiocgwinsz) {
-          var winsize = stream.tty.ops.ioctl_tiocgwinsz(stream.tty)
-          var argp = syscallGetVarargP()
-          ;(growMemViews(), HEAP16)[(argp >>> 1) >>> 0] = winsize[0]
-          ;(growMemViews(), HEAP16)[((argp + 2) >>> 1) >>> 0] = winsize[1]
+          var winsize = stream.tty.ops.ioctl_tiocgwinsz(stream.tty);
+          var argp = syscallGetVarargP();
+          (growMemViews(), HEAP16)[(argp >>> 1) >>> 0] = winsize[0];
+          (growMemViews(), HEAP16)[((argp + 2) >>> 1) >>> 0] = winsize[1];
         }
-        return 0
+        return 0;
       }
       case 21524: {
-        if (!stream.tty) return -59
-        return 0
+        if (!stream.tty) return -59;
+        return 0;
       }
       case 21515: {
-        if (!stream.tty) return -59
-        return 0
+        if (!stream.tty) return -59;
+        return 0;
       }
       default:
-        return -28
+        return -28;
     }
   } catch (e) {
-    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e
-    return -e.errno
+    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e;
+    return -e.errno;
   }
 }
 function ___syscall_lstat64(path, buf) {
-  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(8, 0, 1, path, buf)
-  path >>>= 0
-  buf >>>= 0
+  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(8, 0, 1, path, buf);
+  path >>>= 0;
+  buf >>>= 0;
   try {
-    path = SYSCALLS.getStr(path)
-    return SYSCALLS.writeStat(buf, FS.lstat(path))
+    path = SYSCALLS.getStr(path);
+    return SYSCALLS.writeStat(buf, FS.lstat(path));
   } catch (e) {
-    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e
-    return -e.errno
+    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e;
+    return -e.errno;
   }
 }
 function ___syscall_newfstatat(dirfd, path, buf, flags) {
-  if (ENVIRONMENT_IS_PTHREAD)
-    return proxyToMainThread(9, 0, 1, dirfd, path, buf, flags)
-  path >>>= 0
-  buf >>>= 0
+  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(9, 0, 1, dirfd, path, buf, flags);
+  path >>>= 0;
+  buf >>>= 0;
   try {
-    path = SYSCALLS.getStr(path)
-    var nofollow = flags & 256
-    var allowEmpty = flags & 4096
-    flags = flags & ~6400
-    path = SYSCALLS.calculateAt(dirfd, path, allowEmpty)
-    return SYSCALLS.writeStat(buf, nofollow ? FS.lstat(path) : FS.stat(path))
+    path = SYSCALLS.getStr(path);
+    var nofollow = flags & 256;
+    var allowEmpty = flags & 4096;
+    flags = flags & ~6400;
+    path = SYSCALLS.calculateAt(dirfd, path, allowEmpty);
+    return SYSCALLS.writeStat(buf, nofollow ? FS.lstat(path) : FS.stat(path));
   } catch (e) {
-    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e
-    return -e.errno
+    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e;
+    return -e.errno;
   }
 }
 function ___syscall_openat(dirfd, path, flags, varargs) {
-  if (ENVIRONMENT_IS_PTHREAD)
-    return proxyToMainThread(10, 0, 1, dirfd, path, flags, varargs)
-  path >>>= 0
-  varargs >>>= 0
-  SYSCALLS.varargs = varargs
+  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(10, 0, 1, dirfd, path, flags, varargs);
+  path >>>= 0;
+  varargs >>>= 0;
+  SYSCALLS.varargs = varargs;
   try {
-    path = SYSCALLS.getStr(path)
-    path = SYSCALLS.calculateAt(dirfd, path)
-    var mode = varargs ? syscallGetVarargI() : 0
-    return FS.open(path, flags, mode).fd
+    path = SYSCALLS.getStr(path);
+    path = SYSCALLS.calculateAt(dirfd, path);
+    var mode = varargs ? syscallGetVarargI() : 0;
+    return FS.open(path, flags, mode).fd;
   } catch (e) {
-    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e
-    return -e.errno
+    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e;
+    return -e.errno;
   }
 }
 function ___syscall_stat64(path, buf) {
-  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(11, 0, 1, path, buf)
-  path >>>= 0
-  buf >>>= 0
+  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(11, 0, 1, path, buf);
+  path >>>= 0;
+  buf >>>= 0;
   try {
-    path = SYSCALLS.getStr(path)
-    return SYSCALLS.writeStat(buf, FS.stat(path))
+    path = SYSCALLS.getStr(path);
+    return SYSCALLS.writeStat(buf, FS.stat(path));
   } catch (e) {
-    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e
-    return -e.errno
+    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e;
+    return -e.errno;
   }
 }
-var __abort_js = () => abort("")
+var __abort_js = () => abort("");
 function __emscripten_init_main_thread_js(tb) {
-  tb >>>= 0
-  __emscripten_thread_init(
-    tb,
-    !ENVIRONMENT_IS_WORKER,
-    1,
-    !ENVIRONMENT_IS_WEB,
-    5242880,
-    false
-  )
-  PThread.threadInitTLS()
+  tb >>>= 0;
+  __emscripten_thread_init(tb, !ENVIRONMENT_IS_WORKER, 1, !ENVIRONMENT_IS_WEB, 5242880, false);
+  PThread.threadInitTLS();
 }
 var handleException = (e) => {
   if (e instanceof ExitStatus || e == "unwind") {
-    return EXITSTATUS
+    return EXITSTATUS;
   }
-  quit_(1, e)
-}
+  quit_(1, e);
+};
 var maybeExit = () => {
   if (!keepRuntimeAlive()) {
     try {
       if (ENVIRONMENT_IS_PTHREAD) {
-        if (_pthread_self()) __emscripten_thread_exit(EXITSTATUS)
-        return
+        if (_pthread_self()) __emscripten_thread_exit(EXITSTATUS);
+        return;
       }
-      _exit(EXITSTATUS)
+      _exit(EXITSTATUS);
     } catch (e) {
-      handleException(e)
+      handleException(e);
     }
   }
-}
+};
 var callUserCallback = (func) => {
   if (ABORT) {
-    return
+    return;
   }
   try {
-    func()
-    maybeExit()
+    func();
+    maybeExit();
   } catch (e) {
-    handleException(e)
+    handleException(e);
   }
-}
+};
 function __emscripten_thread_mailbox_await(pthread_ptr) {
-  pthread_ptr >>>= 0
+  pthread_ptr >>>= 0;
   if (Atomics.waitAsync) {
-    var wait = Atomics.waitAsync(
-      (growMemViews(), HEAP32),
-      pthread_ptr >>> 2,
-      pthread_ptr
-    )
-    wait.value.then(checkMailbox)
-    var waitingAsync = pthread_ptr + 128
-    Atomics.store((growMemViews(), HEAP32), waitingAsync >>> 2, 1)
+    var wait = Atomics.waitAsync((growMemViews(), HEAP32), pthread_ptr >>> 2, pthread_ptr);
+    wait.value.then(checkMailbox);
+    var waitingAsync = pthread_ptr + 128;
+    Atomics.store((growMemViews(), HEAP32), waitingAsync >>> 2, 1);
   }
 }
 var checkMailbox = () =>
   callUserCallback(() => {
-    var pthread_ptr = _pthread_self()
+    var pthread_ptr = _pthread_self();
     if (pthread_ptr) {
-      __emscripten_thread_mailbox_await(pthread_ptr)
-      __emscripten_check_mailbox()
+      __emscripten_thread_mailbox_await(pthread_ptr);
+      __emscripten_check_mailbox();
     }
-  })
+  });
 function __emscripten_notify_mailbox_postmessage(targetThread, currThreadId) {
-  targetThread >>>= 0
-  currThreadId >>>= 0
+  targetThread >>>= 0;
+  currThreadId >>>= 0;
   if (targetThread == currThreadId) {
-    setTimeout(checkMailbox)
+    setTimeout(checkMailbox);
   } else if (ENVIRONMENT_IS_PTHREAD) {
-    postMessage({ targetThread, cmd: "checkMailbox" })
+    postMessage({ targetThread, cmd: "checkMailbox" });
   } else {
-    var worker = PThread.pthreads[targetThread]
+    var worker = PThread.pthreads[targetThread];
     if (!worker) {
-      return
+      return;
     }
-    worker.postMessage({ cmd: "checkMailbox" })
+    worker.postMessage({ cmd: "checkMailbox" });
   }
 }
-var proxiedJSCallArgs = []
+var proxiedJSCallArgs = [];
 function __emscripten_receive_on_main_thread_js(
   funcIndex,
   emAsmAddr,
   callingThread,
   numCallArgs,
-  args
+  args,
 ) {
-  emAsmAddr >>>= 0
-  callingThread >>>= 0
-  args >>>= 0
-  numCallArgs /= 2
-  proxiedJSCallArgs.length = numCallArgs
-  var b = args >>> 3
+  emAsmAddr >>>= 0;
+  callingThread >>>= 0;
+  args >>>= 0;
+  numCallArgs /= 2;
+  proxiedJSCallArgs.length = numCallArgs;
+  var b = args >>> 3;
   for (var i = 0; i < numCallArgs; i++) {
     if ((growMemViews(), HEAP64)[(b + 2 * i) >>> 0]) {
-      proxiedJSCallArgs[i] = (growMemViews(), HEAP64)[(b + 2 * i + 1) >>> 0]
+      proxiedJSCallArgs[i] = (growMemViews(), HEAP64)[(b + 2 * i + 1) >>> 0];
     } else {
-      proxiedJSCallArgs[i] = (growMemViews(), HEAPF64)[(b + 2 * i + 1) >>> 0]
+      proxiedJSCallArgs[i] = (growMemViews(), HEAPF64)[(b + 2 * i + 1) >>> 0];
     }
   }
-  var func = proxiedFunctionTable[funcIndex]
-  PThread.currentProxiedOperationCallerThread = callingThread
-  var rtn = func(...proxiedJSCallArgs)
-  PThread.currentProxiedOperationCallerThread = 0
-  return rtn
+  var func = proxiedFunctionTable[funcIndex];
+  PThread.currentProxiedOperationCallerThread = callingThread;
+  var rtn = func(...proxiedJSCallArgs);
+  PThread.currentProxiedOperationCallerThread = 0;
+  return rtn;
 }
 function __emscripten_thread_cleanup(thread) {
-  thread >>>= 0
-  if (!ENVIRONMENT_IS_PTHREAD) cleanupThread(thread)
-  else postMessage({ cmd: "cleanupThread", thread })
+  thread >>>= 0;
+  if (!ENVIRONMENT_IS_PTHREAD) cleanupThread(thread);
+  else postMessage({ cmd: "cleanupThread", thread });
 }
 function __emscripten_thread_set_strongref(thread) {
-  thread >>>= 0
+  thread >>>= 0;
   if (ENVIRONMENT_IS_NODE) {
-    PThread.pthreads[thread].ref()
+    PThread.pthreads[thread].ref();
   }
 }
-var isLeapYear = (year) =>
-  year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0)
-var MONTH_DAYS_LEAP_CUMULATIVE = [
-  0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335,
-]
-var MONTH_DAYS_REGULAR_CUMULATIVE = [
-  0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334,
-]
+var isLeapYear = (year) => year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+var MONTH_DAYS_LEAP_CUMULATIVE = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335];
+var MONTH_DAYS_REGULAR_CUMULATIVE = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
 var ydayFromDate = (date) => {
-  var leap = isLeapYear(date.getFullYear())
-  var monthDaysCumulative = leap
-    ? MONTH_DAYS_LEAP_CUMULATIVE
-    : MONTH_DAYS_REGULAR_CUMULATIVE
-  var yday = monthDaysCumulative[date.getMonth()] + date.getDate() - 1
-  return yday
-}
+  var leap = isLeapYear(date.getFullYear());
+  var monthDaysCumulative = leap ? MONTH_DAYS_LEAP_CUMULATIVE : MONTH_DAYS_REGULAR_CUMULATIVE;
+  var yday = monthDaysCumulative[date.getMonth()] + date.getDate() - 1;
+  return yday;
+};
 function __localtime_js(time, tmPtr) {
-  time = bigintToI53Checked(time)
-  tmPtr >>>= 0
-  var date = new Date(time * 1e3)
-  ;(growMemViews(), HEAP32)[(tmPtr >>> 2) >>> 0] = date.getSeconds()
-  ;(growMemViews(), HEAP32)[((tmPtr + 4) >>> 2) >>> 0] = date.getMinutes()
-  ;(growMemViews(), HEAP32)[((tmPtr + 8) >>> 2) >>> 0] = date.getHours()
-  ;(growMemViews(), HEAP32)[((tmPtr + 12) >>> 2) >>> 0] = date.getDate()
-  ;(growMemViews(), HEAP32)[((tmPtr + 16) >>> 2) >>> 0] = date.getMonth()
-  ;(growMemViews(), HEAP32)[((tmPtr + 20) >>> 2) >>> 0] =
-    date.getFullYear() - 1900
-  ;(growMemViews(), HEAP32)[((tmPtr + 24) >>> 2) >>> 0] = date.getDay()
-  var yday = ydayFromDate(date) | 0
-  ;(growMemViews(), HEAP32)[((tmPtr + 28) >>> 2) >>> 0] = yday
-  ;(growMemViews(), HEAP32)[((tmPtr + 36) >>> 2) >>> 0] = -(
-    date.getTimezoneOffset() * 60
-  )
-  var start = new Date(date.getFullYear(), 0, 1)
-  var summerOffset = new Date(date.getFullYear(), 6, 1).getTimezoneOffset()
-  var winterOffset = start.getTimezoneOffset()
+  time = bigintToI53Checked(time);
+  tmPtr >>>= 0;
+  var date = new Date(time * 1e3);
+  (growMemViews(), HEAP32)[(tmPtr >>> 2) >>> 0] = date.getSeconds();
+  (growMemViews(), HEAP32)[((tmPtr + 4) >>> 2) >>> 0] = date.getMinutes();
+  (growMemViews(), HEAP32)[((tmPtr + 8) >>> 2) >>> 0] = date.getHours();
+  (growMemViews(), HEAP32)[((tmPtr + 12) >>> 2) >>> 0] = date.getDate();
+  (growMemViews(), HEAP32)[((tmPtr + 16) >>> 2) >>> 0] = date.getMonth();
+  (growMemViews(), HEAP32)[((tmPtr + 20) >>> 2) >>> 0] = date.getFullYear() - 1900;
+  (growMemViews(), HEAP32)[((tmPtr + 24) >>> 2) >>> 0] = date.getDay();
+  var yday = ydayFromDate(date) | 0;
+  (growMemViews(), HEAP32)[((tmPtr + 28) >>> 2) >>> 0] = yday;
+  (growMemViews(), HEAP32)[((tmPtr + 36) >>> 2) >>> 0] = -(date.getTimezoneOffset() * 60);
+  var start = new Date(date.getFullYear(), 0, 1);
+  var summerOffset = new Date(date.getFullYear(), 6, 1).getTimezoneOffset();
+  var winterOffset = start.getTimezoneOffset();
   var dst =
     (summerOffset != winterOffset &&
-      date.getTimezoneOffset() == Math.min(winterOffset, summerOffset)) | 0
-  ;(growMemViews(), HEAP32)[((tmPtr + 32) >>> 2) >>> 0] = dst
+      date.getTimezoneOffset() == Math.min(winterOffset, summerOffset)) | 0;
+  (growMemViews(), HEAP32)[((tmPtr + 32) >>> 2) >>> 0] = dst;
 }
 function __mmap_js(len, prot, flags, fd, offset, allocated, addr) {
   if (ENVIRONMENT_IS_PTHREAD)
-    return proxyToMainThread(
-      12,
-      0,
-      1,
-      len,
-      prot,
-      flags,
-      fd,
-      offset,
-      allocated,
-      addr
-    )
-  len >>>= 0
-  offset = bigintToI53Checked(offset)
-  allocated >>>= 0
-  addr >>>= 0
+    return proxyToMainThread(12, 0, 1, len, prot, flags, fd, offset, allocated, addr);
+  len >>>= 0;
+  offset = bigintToI53Checked(offset);
+  allocated >>>= 0;
+  addr >>>= 0;
   try {
-    var stream = SYSCALLS.getStreamFromFD(fd)
-    var res = FS.mmap(stream, len, offset, prot, flags)
-    var ptr = res.ptr
-    ;(growMemViews(), HEAP32)[(allocated >>> 2) >>> 0] = res.allocated
-    ;(growMemViews(), HEAPU32)[(addr >>> 2) >>> 0] = ptr
-    return 0
+    var stream = SYSCALLS.getStreamFromFD(fd);
+    var res = FS.mmap(stream, len, offset, prot, flags);
+    var ptr = res.ptr;
+    (growMemViews(), HEAP32)[(allocated >>> 2) >>> 0] = res.allocated;
+    (growMemViews(), HEAPU32)[(addr >>> 2) >>> 0] = ptr;
+    return 0;
   } catch (e) {
-    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e
-    return -e.errno
+    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e;
+    return -e.errno;
   }
 }
 function __munmap_js(addr, len, prot, flags, fd, offset) {
   if (ENVIRONMENT_IS_PTHREAD)
-    return proxyToMainThread(13, 0, 1, addr, len, prot, flags, fd, offset)
-  addr >>>= 0
-  len >>>= 0
-  offset = bigintToI53Checked(offset)
+    return proxyToMainThread(13, 0, 1, addr, len, prot, flags, fd, offset);
+  addr >>>= 0;
+  len >>>= 0;
+  offset = bigintToI53Checked(offset);
   try {
-    var stream = SYSCALLS.getStreamFromFD(fd)
+    var stream = SYSCALLS.getStreamFromFD(fd);
     if (prot & 2) {
-      SYSCALLS.doMsync(addr, stream, len, flags, offset)
+      SYSCALLS.doMsync(addr, stream, len, flags, offset);
     }
   } catch (e) {
-    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e
-    return -e.errno
+    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e;
+    return -e.errno;
   }
 }
 var __tzset_js = (timezone, daylight, std_name, dst_name) => {
-  timezone >>>= 0
-  daylight >>>= 0
-  std_name >>>= 0
-  dst_name >>>= 0
-  var currentYear = new Date().getFullYear()
-  var winter = new Date(currentYear, 0, 1)
-  var summer = new Date(currentYear, 6, 1)
-  var winterOffset = winter.getTimezoneOffset()
-  var summerOffset = summer.getTimezoneOffset()
-  var stdTimezoneOffset = Math.max(winterOffset, summerOffset)
-  ;(growMemViews(), HEAPU32)[(timezone >>> 2) >>> 0] = stdTimezoneOffset * 60
-  ;(growMemViews(), HEAP32)[(daylight >>> 2) >>> 0] = Number(
-    winterOffset != summerOffset
-  )
+  timezone >>>= 0;
+  daylight >>>= 0;
+  std_name >>>= 0;
+  dst_name >>>= 0;
+  var currentYear = new Date().getFullYear();
+  var winter = new Date(currentYear, 0, 1);
+  var summer = new Date(currentYear, 6, 1);
+  var winterOffset = winter.getTimezoneOffset();
+  var summerOffset = summer.getTimezoneOffset();
+  var stdTimezoneOffset = Math.max(winterOffset, summerOffset);
+  (growMemViews(), HEAPU32)[(timezone >>> 2) >>> 0] = stdTimezoneOffset * 60;
+  (growMemViews(), HEAP32)[(daylight >>> 2) >>> 0] = Number(winterOffset != summerOffset);
   var extractZone = (timezoneOffset) => {
-    var sign = timezoneOffset >= 0 ? "-" : "+"
-    var absOffset = Math.abs(timezoneOffset)
-    var hours = String(Math.floor(absOffset / 60)).padStart(2, "0")
-    var minutes = String(absOffset % 60).padStart(2, "0")
-    return `UTC${sign}${hours}${minutes}`
-  }
-  var winterName = extractZone(winterOffset)
-  var summerName = extractZone(summerOffset)
+    var sign = timezoneOffset >= 0 ? "-" : "+";
+    var absOffset = Math.abs(timezoneOffset);
+    var hours = String(Math.floor(absOffset / 60)).padStart(2, "0");
+    var minutes = String(absOffset % 60).padStart(2, "0");
+    return `UTC${sign}${hours}${minutes}`;
+  };
+  var winterName = extractZone(winterOffset);
+  var summerName = extractZone(summerOffset);
   if (summerOffset < winterOffset) {
-    stringToUTF8(winterName, std_name, 17)
-    stringToUTF8(summerName, dst_name, 17)
+    stringToUTF8(winterName, std_name, 17);
+    stringToUTF8(summerName, dst_name, 17);
   } else {
-    stringToUTF8(winterName, dst_name, 17)
-    stringToUTF8(summerName, std_name, 17)
+    stringToUTF8(winterName, dst_name, 17);
+    stringToUTF8(summerName, std_name, 17);
   }
-}
-var _emscripten_get_now = () => performance.timeOrigin + performance.now()
-var _emscripten_date_now = () => Date.now()
-var nowIsMonotonic = 1
-var checkWasiClock = (clock_id) => clock_id >= 0 && clock_id <= 3
+};
+var _emscripten_get_now = () => performance.timeOrigin + performance.now();
+var _emscripten_date_now = () => Date.now();
+var nowIsMonotonic = 1;
+var checkWasiClock = (clock_id) => clock_id >= 0 && clock_id <= 3;
 function _clock_time_get(clk_id, ignored_precision, ptime) {
-  ignored_precision = bigintToI53Checked(ignored_precision)
-  ptime >>>= 0
+  ignored_precision = bigintToI53Checked(ignored_precision);
+  ptime >>>= 0;
   if (!checkWasiClock(clk_id)) {
-    return 28
+    return 28;
   }
-  var now
+  var now;
   if (clk_id === 0) {
-    now = _emscripten_date_now()
+    now = _emscripten_date_now();
   } else if (nowIsMonotonic) {
-    now = _emscripten_get_now()
+    now = _emscripten_get_now();
   } else {
-    return 52
+    return 52;
   }
-  var nsec = Math.round(now * 1e3 * 1e3)
-  ;(growMemViews(), HEAP64)[(ptime >>> 3) >>> 0] = BigInt(nsec)
-  return 0
+  var nsec = Math.round(now * 1e3 * 1e3);
+  (growMemViews(), HEAP64)[(ptime >>> 3) >>> 0] = BigInt(nsec);
+  return 0;
 }
-var _emscripten_check_blocking_allowed = () => {}
+var _emscripten_check_blocking_allowed = () => {};
 var runtimeKeepalivePush = () => {
-  runtimeKeepaliveCounter += 1
-}
+  runtimeKeepaliveCounter += 1;
+};
 var _emscripten_exit_with_live_runtime = () => {
-  runtimeKeepalivePush()
-  throw "unwind"
-}
-var jsStackTrace = () => new Error().stack.toString()
+  runtimeKeepalivePush();
+  throw "unwind";
+};
+var jsStackTrace = () => new Error().stack.toString();
 var getCallstack = (flags) => {
-  var callstack = jsStackTrace()
-  var lines = callstack.split("\n")
-  callstack = ""
-  var firefoxRe = /\s*(.*?)@(.*?):([0-9]+):([0-9]+)/
-  var chromeRe = /\s*at (.*?) \((.*):(.*):(.*)\)/
+  var callstack = jsStackTrace();
+  var lines = callstack.split("\n");
+  callstack = "";
+  var firefoxRe = /\s*(.*?)@(.*?):([0-9]+):([0-9]+)/;
+  var chromeRe = /\s*at (.*?) \((.*):(.*):(.*)\)/;
   for (var line of lines) {
-    var symbolName = ""
-    var file = ""
-    var lineno = 0
-    var column = 0
-    var parts = chromeRe.exec(line)
+    var symbolName = "";
+    var file = "";
+    var lineno = 0;
+    var column = 0;
+    var parts = chromeRe.exec(line);
     if (parts?.length == 5) {
-      symbolName = parts[1]
-      file = parts[2]
-      lineno = parts[3]
-      column = parts[4]
+      symbolName = parts[1];
+      file = parts[2];
+      lineno = parts[3];
+      column = parts[4];
     } else {
-      parts = firefoxRe.exec(line)
+      parts = firefoxRe.exec(line);
       if (parts?.length >= 4) {
-        symbolName = parts[1]
-        file = parts[2]
-        lineno = parts[3]
-        column = parts[4] | 0
+        symbolName = parts[1];
+        file = parts[2];
+        lineno = parts[3];
+        column = parts[4] | 0;
       } else {
-        callstack += line + "\n"
-        continue
+        callstack += line + "\n";
+        continue;
       }
     }
-    if (
-      symbolName == "_emscripten_log" ||
-      symbolName == "_emscripten_get_callstack"
-    ) {
-      callstack = ""
-      continue
+    if (symbolName == "_emscripten_log" || symbolName == "_emscripten_get_callstack") {
+      callstack = "";
+      continue;
     }
     if (flags & 24) {
       if (flags & 64) {
-        file = file.substring(file.replace(/\\/g, "/").lastIndexOf("/") + 1)
+        file = file.substring(file.replace(/\\/g, "/").lastIndexOf("/") + 1);
       }
-      callstack += `    at ${symbolName} (${file}:${lineno}:${column})\n`
+      callstack += `    at ${symbolName} (${file}:${lineno}:${column})\n`;
     }
   }
-  callstack = callstack.replace(/\s+$/, "")
-  return callstack
-}
+  callstack = callstack.replace(/\s+$/, "");
+  return callstack;
+};
 function _emscripten_get_callstack(flags, str, maxbytes) {
-  str >>>= 0
-  var callstack = getCallstack(flags)
+  str >>>= 0;
+  var callstack = getCallstack(flags);
   if (!str || maxbytes <= 0) {
-    return lengthBytesUTF8(callstack) + 1
+    return lengthBytesUTF8(callstack) + 1;
   }
-  var bytesWrittenExcludingNull = stringToUTF8(callstack, str, maxbytes)
-  return bytesWrittenExcludingNull + 1
+  var bytesWrittenExcludingNull = stringToUTF8(callstack, str, maxbytes);
+  return bytesWrittenExcludingNull + 1;
 }
-var getHeapMax = () => 4294901760
+var getHeapMax = () => 4294901760;
 function _emscripten_get_heap_max() {
-  return getHeapMax()
+  return getHeapMax();
 }
-var _emscripten_has_asyncify = () => 1
+var _emscripten_has_asyncify = () => 1;
 var _emscripten_num_logical_cores = () =>
-  ENVIRONMENT_IS_NODE
-    ? require("os").cpus().length
-    : navigator["hardwareConcurrency"]
+  ENVIRONMENT_IS_NODE ? require("os").cpus().length : navigator["hardwareConcurrency"];
 var growMemory = (size) => {
-  var oldHeapSize = wasmMemory.buffer.byteLength
-  var pages = ((size - oldHeapSize + 65535) / 65536) | 0
+  var oldHeapSize = wasmMemory.buffer.byteLength;
+  var pages = ((size - oldHeapSize + 65535) / 65536) | 0;
   try {
-    wasmMemory.grow(pages)
-    updateMemoryViews()
-    return 1
+    wasmMemory.grow(pages);
+    updateMemoryViews();
+    return 1;
   } catch (e) {}
-}
+};
 function _emscripten_resize_heap(requestedSize) {
-  requestedSize >>>= 0
-  var oldSize = (growMemViews(), HEAPU8).length
+  requestedSize >>>= 0;
+  var oldSize = (growMemViews(), HEAPU8).length;
   if (requestedSize <= oldSize) {
-    return false
+    return false;
   }
-  var maxHeapSize = getHeapMax()
+  var maxHeapSize = getHeapMax();
   if (requestedSize > maxHeapSize) {
-    return false
+    return false;
   }
   for (var cutDown = 1; cutDown <= 4; cutDown *= 2) {
-    var overGrownHeapSize = oldSize * (1 + 0.2 / cutDown)
-    overGrownHeapSize = Math.min(overGrownHeapSize, requestedSize + 100663296)
+    var overGrownHeapSize = oldSize * (1 + 0.2 / cutDown);
+    overGrownHeapSize = Math.min(overGrownHeapSize, requestedSize + 100663296);
     var newSize = Math.min(
       maxHeapSize,
-      alignMemory(Math.max(requestedSize, overGrownHeapSize), 65536)
-    )
-    var replacement = growMemory(newSize)
+      alignMemory(Math.max(requestedSize, overGrownHeapSize), 65536),
+    );
+    var replacement = growMemory(newSize);
     if (replacement) {
-      return true
+      return true;
     }
   }
-  return false
+  return false;
 }
 var stringToUTF8OnStack = (str) => {
-  var size = lengthBytesUTF8(str) + 1
-  var ret = stackAlloc(size)
-  stringToUTF8(str, ret, size)
-  return ret
-}
+  var size = lengthBytesUTF8(str) + 1;
+  var ret = stackAlloc(size);
+  stringToUTF8(str, ret, size);
+  return ret;
+};
 var writeI53ToI64 = (ptr, num) => {
-  ;(growMemViews(), HEAPU32)[(ptr >>> 2) >>> 0] = num
-  var lower = (growMemViews(), HEAPU32)[(ptr >>> 2) >>> 0]
-  ;(growMemViews(), HEAPU32)[((ptr + 4) >>> 2) >>> 0] =
-    (num - lower) / 4294967296
-}
+  (growMemViews(), HEAPU32)[(ptr >>> 2) >>> 0] = num;
+  var lower = (growMemViews(), HEAPU32)[(ptr >>> 2) >>> 0];
+  (growMemViews(), HEAPU32)[((ptr + 4) >>> 2) >>> 0] = (num - lower) / 4294967296;
+};
 var stringToNewUTF8 = (str) => {
-  var size = lengthBytesUTF8(str) + 1
-  var ret = _malloc(size)
-  if (ret) stringToUTF8(str, ret, size)
-  return ret
-}
+  var size = lengthBytesUTF8(str) + 1;
+  var ret = _malloc(size);
+  if (ret) stringToUTF8(str, ret, size);
+  return ret;
+};
 var readI53FromI64 = (ptr) =>
   (growMemViews(), HEAPU32)[(ptr >>> 2) >>> 0] +
-  (growMemViews(), HEAP32)[((ptr + 4) >>> 2) >>> 0] * 4294967296
+  (growMemViews(), HEAP32)[((ptr + 4) >>> 2) >>> 0] * 4294967296;
 var WebGPU = {
   Internals: {
     jsObjects: [],
     jsObjectInsert: (ptr, jsObject) => {
-      ptr >>>= 0
-      WebGPU.Internals.jsObjects[ptr] = jsObject
+      ptr >>>= 0;
+      WebGPU.Internals.jsObjects[ptr] = jsObject;
     },
     bufferOnUnmaps: [],
     futures: [],
     futureInsert: (futureId, promise) => {
       WebGPU.Internals.futures[futureId] = new Promise((resolve) =>
-        promise.finally(() => resolve(futureId))
-      )
+        promise.finally(() => resolve(futureId)),
+      );
     },
   },
   getJsObject: (ptr) => {
-    if (!ptr) return undefined
-    ptr >>>= 0
-    return WebGPU.Internals.jsObjects[ptr]
+    if (!ptr) return undefined;
+    ptr >>>= 0;
+    return WebGPU.Internals.jsObjects[ptr];
   },
   importJsAdapter: (obj, parentPtr = 0) => {
-    var ptr = _emwgpuCreateAdapter(parentPtr)
-    WebGPU.Internals.jsObjects[ptr] = obj
-    return ptr
+    var ptr = _emwgpuCreateAdapter(parentPtr);
+    WebGPU.Internals.jsObjects[ptr] = obj;
+    return ptr;
   },
   importJsBindGroup: (obj, parentPtr = 0) => {
-    var ptr = _emwgpuCreateBindGroup(parentPtr)
-    WebGPU.Internals.jsObjects[ptr] = obj
-    return ptr
+    var ptr = _emwgpuCreateBindGroup(parentPtr);
+    WebGPU.Internals.jsObjects[ptr] = obj;
+    return ptr;
   },
   importJsBindGroupLayout: (obj, parentPtr = 0) => {
-    var ptr = _emwgpuCreateBindGroupLayout(parentPtr)
-    WebGPU.Internals.jsObjects[ptr] = obj
-    return ptr
+    var ptr = _emwgpuCreateBindGroupLayout(parentPtr);
+    WebGPU.Internals.jsObjects[ptr] = obj;
+    return ptr;
   },
   importJsBuffer: (buffer, parentPtr = 0) => {
-    assert(buffer.mapState === "unmapped")
-    var bufferPtr = _emwgpuCreateBuffer(parentPtr)
-    WebGPU.Internals.jsObjectInsert(bufferPtr, buffer)
-    return bufferPtr
+    assert(buffer.mapState === "unmapped");
+    var bufferPtr = _emwgpuCreateBuffer(parentPtr);
+    WebGPU.Internals.jsObjectInsert(bufferPtr, buffer);
+    return bufferPtr;
   },
   importJsCommandBuffer: (obj, parentPtr = 0) => {
-    var ptr = _emwgpuCreateCommandBuffer(parentPtr)
-    WebGPU.Internals.jsObjects[ptr] = obj
-    return ptr
+    var ptr = _emwgpuCreateCommandBuffer(parentPtr);
+    WebGPU.Internals.jsObjects[ptr] = obj;
+    return ptr;
   },
   importJsCommandEncoder: (obj, parentPtr = 0) => {
-    var ptr = _emwgpuCreateCommandEncoder(parentPtr)
-    WebGPU.Internals.jsObjects[ptr] = obj
-    return ptr
+    var ptr = _emwgpuCreateCommandEncoder(parentPtr);
+    WebGPU.Internals.jsObjects[ptr] = obj;
+    return ptr;
   },
   importJsComputePassEncoder: (obj, parentPtr = 0) => {
-    var ptr = _emwgpuCreateComputePassEncoder(parentPtr)
-    WebGPU.Internals.jsObjects[ptr] = obj
-    return ptr
+    var ptr = _emwgpuCreateComputePassEncoder(parentPtr);
+    WebGPU.Internals.jsObjects[ptr] = obj;
+    return ptr;
   },
   importJsComputePipeline: (obj, parentPtr = 0) => {
-    var ptr = _emwgpuCreateComputePipeline(parentPtr)
-    WebGPU.Internals.jsObjects[ptr] = obj
-    return ptr
+    var ptr = _emwgpuCreateComputePipeline(parentPtr);
+    WebGPU.Internals.jsObjects[ptr] = obj;
+    return ptr;
   },
   importJsDevice: (device, parentPtr = 0) => {
-    var queuePtr = _emwgpuCreateQueue(parentPtr)
-    var devicePtr = _emwgpuCreateDevice(parentPtr, queuePtr)
-    WebGPU.Internals.jsObjectInsert(queuePtr, device.queue)
-    WebGPU.Internals.jsObjectInsert(devicePtr, device)
-    return devicePtr
+    var queuePtr = _emwgpuCreateQueue(parentPtr);
+    var devicePtr = _emwgpuCreateDevice(parentPtr, queuePtr);
+    WebGPU.Internals.jsObjectInsert(queuePtr, device.queue);
+    WebGPU.Internals.jsObjectInsert(devicePtr, device);
+    return devicePtr;
   },
   importJsExternalTexture: (obj, parentPtr = 0) => {
-    var ptr = _emwgpuCreateExternalTexture(parentPtr)
-    WebGPU.Internals.jsObjects[ptr] = obj
-    return ptr
+    var ptr = _emwgpuCreateExternalTexture(parentPtr);
+    WebGPU.Internals.jsObjects[ptr] = obj;
+    return ptr;
   },
   importJsPipelineLayout: (obj, parentPtr = 0) => {
-    var ptr = _emwgpuCreatePipelineLayout(parentPtr)
-    WebGPU.Internals.jsObjects[ptr] = obj
-    return ptr
+    var ptr = _emwgpuCreatePipelineLayout(parentPtr);
+    WebGPU.Internals.jsObjects[ptr] = obj;
+    return ptr;
   },
   importJsQuerySet: (obj, parentPtr = 0) => {
-    var ptr = _emwgpuCreateQuerySet(parentPtr)
-    WebGPU.Internals.jsObjects[ptr] = obj
-    return ptr
+    var ptr = _emwgpuCreateQuerySet(parentPtr);
+    WebGPU.Internals.jsObjects[ptr] = obj;
+    return ptr;
   },
   importJsQueue: (obj, parentPtr = 0) => {
-    var ptr = _emwgpuCreateQueue(parentPtr)
-    WebGPU.Internals.jsObjects[ptr] = obj
-    return ptr
+    var ptr = _emwgpuCreateQueue(parentPtr);
+    WebGPU.Internals.jsObjects[ptr] = obj;
+    return ptr;
   },
   importJsRenderBundle: (obj, parentPtr = 0) => {
-    var ptr = _emwgpuCreateRenderBundle(parentPtr)
-    WebGPU.Internals.jsObjects[ptr] = obj
-    return ptr
+    var ptr = _emwgpuCreateRenderBundle(parentPtr);
+    WebGPU.Internals.jsObjects[ptr] = obj;
+    return ptr;
   },
   importJsRenderBundleEncoder: (obj, parentPtr = 0) => {
-    var ptr = _emwgpuCreateRenderBundleEncoder(parentPtr)
-    WebGPU.Internals.jsObjects[ptr] = obj
-    return ptr
+    var ptr = _emwgpuCreateRenderBundleEncoder(parentPtr);
+    WebGPU.Internals.jsObjects[ptr] = obj;
+    return ptr;
   },
   importJsRenderPassEncoder: (obj, parentPtr = 0) => {
-    var ptr = _emwgpuCreateRenderPassEncoder(parentPtr)
-    WebGPU.Internals.jsObjects[ptr] = obj
-    return ptr
+    var ptr = _emwgpuCreateRenderPassEncoder(parentPtr);
+    WebGPU.Internals.jsObjects[ptr] = obj;
+    return ptr;
   },
   importJsRenderPipeline: (obj, parentPtr = 0) => {
-    var ptr = _emwgpuCreateRenderPipeline(parentPtr)
-    WebGPU.Internals.jsObjects[ptr] = obj
-    return ptr
+    var ptr = _emwgpuCreateRenderPipeline(parentPtr);
+    WebGPU.Internals.jsObjects[ptr] = obj;
+    return ptr;
   },
   importJsSampler: (obj, parentPtr = 0) => {
-    var ptr = _emwgpuCreateSampler(parentPtr)
-    WebGPU.Internals.jsObjects[ptr] = obj
-    return ptr
+    var ptr = _emwgpuCreateSampler(parentPtr);
+    WebGPU.Internals.jsObjects[ptr] = obj;
+    return ptr;
   },
   importJsShaderModule: (obj, parentPtr = 0) => {
-    var ptr = _emwgpuCreateShaderModule(parentPtr)
-    WebGPU.Internals.jsObjects[ptr] = obj
-    return ptr
+    var ptr = _emwgpuCreateShaderModule(parentPtr);
+    WebGPU.Internals.jsObjects[ptr] = obj;
+    return ptr;
   },
   importJsSurface: (obj, parentPtr = 0) => {
-    var ptr = _emwgpuCreateSurface(parentPtr)
-    WebGPU.Internals.jsObjects[ptr] = obj
-    return ptr
+    var ptr = _emwgpuCreateSurface(parentPtr);
+    WebGPU.Internals.jsObjects[ptr] = obj;
+    return ptr;
   },
   importJsTexture: (obj, parentPtr = 0) => {
-    var ptr = _emwgpuCreateTexture(parentPtr)
-    WebGPU.Internals.jsObjects[ptr] = obj
-    return ptr
+    var ptr = _emwgpuCreateTexture(parentPtr);
+    WebGPU.Internals.jsObjects[ptr] = obj;
+    return ptr;
   },
   importJsTextureView: (obj, parentPtr = 0) => {
-    var ptr = _emwgpuCreateTextureView(parentPtr)
-    WebGPU.Internals.jsObjects[ptr] = obj
-    return ptr
+    var ptr = _emwgpuCreateTextureView(parentPtr);
+    WebGPU.Internals.jsObjects[ptr] = obj;
+    return ptr;
   },
   errorCallback: (callback, type, message, userdata) => {
-    var sp = stackSave()
-    var messagePtr = stringToUTF8OnStack(message)
-    ;((a1, a2, a3) => dynCall_viii(callback, a1, a2, a3))(
-      type,
-      messagePtr,
-      userdata
-    )
-    stackRestore(sp)
+    var sp = stackSave();
+    var messagePtr = stringToUTF8OnStack(message);
+    ((a1, a2, a3) => dynCall_viii(callback, a1, a2, a3))(type, messagePtr, userdata);
+    stackRestore(sp);
   },
   iterateExtensions: (root, handlers) => {
     for (
@@ -3991,29 +3840,29 @@ var WebGPU = {
       ptr;
       ptr = (growMemViews(), HEAPU32)[(ptr >>> 2) >>> 0]
     ) {
-      var sType = (growMemViews(), HEAP32)[((ptr + 4) >>> 2) >>> 0]
-      var handler = handlers[sType](ptr)
+      var sType = (growMemViews(), HEAP32)[((ptr + 4) >>> 2) >>> 0];
+      var handler = handlers[sType](ptr);
     }
   },
   setStringView: (ptr, data, length) => {
-    ;(growMemViews(), HEAPU32)[(ptr >>> 2) >>> 0] = data
-    ;(growMemViews(), HEAPU32)[((ptr + 4) >>> 2) >>> 0] = length
+    (growMemViews(), HEAPU32)[(ptr >>> 2) >>> 0] = data;
+    (growMemViews(), HEAPU32)[((ptr + 4) >>> 2) >>> 0] = length;
   },
   makeStringFromStringView: (stringViewPtr) => {
-    var ptr = (growMemViews(), HEAPU32)[(stringViewPtr >>> 2) >>> 0]
-    var length = (growMemViews(), HEAPU32)[((stringViewPtr + 4) >>> 2) >>> 0]
-    return UTF8ToString(ptr, length)
+    var ptr = (growMemViews(), HEAPU32)[(stringViewPtr >>> 2) >>> 0];
+    var length = (growMemViews(), HEAPU32)[((stringViewPtr + 4) >>> 2) >>> 0];
+    return UTF8ToString(ptr, length);
   },
   makeStringFromOptionalStringView: (stringViewPtr) => {
-    var ptr = (growMemViews(), HEAPU32)[(stringViewPtr >>> 2) >>> 0]
-    var length = (growMemViews(), HEAPU32)[((stringViewPtr + 4) >>> 2) >>> 0]
+    var ptr = (growMemViews(), HEAPU32)[(stringViewPtr >>> 2) >>> 0];
+    var length = (growMemViews(), HEAPU32)[((stringViewPtr + 4) >>> 2) >>> 0];
     if (!ptr) {
       if (length === 0) {
-        return ""
+        return "";
       }
-      return undefined
+      return undefined;
     }
-    return UTF8ToString(ptr, length)
+    return UTF8ToString(ptr, length);
   },
   makeColor: (ptr) => ({
     r: (growMemViews(), HEAPF64)[(ptr >>> 3) >>> 0],
@@ -4035,399 +3884,317 @@ var WebGPU = {
     texture: WebGPU.getJsObject((growMemViews(), HEAPU32)[(ptr >>> 2) >>> 0]),
     mipLevel: (growMemViews(), HEAPU32)[((ptr + 4) >>> 2) >>> 0],
     origin: WebGPU.makeOrigin3D(ptr + 8),
-    aspect:
-      WebGPU.TextureAspect[(growMemViews(), HEAP32)[((ptr + 20) >>> 2) >>> 0]],
+    aspect: WebGPU.TextureAspect[(growMemViews(), HEAP32)[((ptr + 20) >>> 2) >>> 0]],
   }),
   makeTexelCopyBufferLayout: (ptr) => {
-    var bytesPerRow = (growMemViews(), HEAPU32)[((ptr + 8) >>> 2) >>> 0]
-    var rowsPerImage = (growMemViews(), HEAPU32)[((ptr + 12) >>> 2) >>> 0]
+    var bytesPerRow = (growMemViews(), HEAPU32)[((ptr + 8) >>> 2) >>> 0];
+    var rowsPerImage = (growMemViews(), HEAPU32)[((ptr + 12) >>> 2) >>> 0];
     return {
       offset: readI53FromI64(ptr),
       bytesPerRow: bytesPerRow === 4294967295 ? undefined : bytesPerRow,
       rowsPerImage: rowsPerImage === 4294967295 ? undefined : rowsPerImage,
-    }
+    };
   },
   makeTexelCopyBufferInfo: (ptr) => {
-    var layoutPtr = ptr + 0
-    var bufferCopyView = WebGPU.makeTexelCopyBufferLayout(layoutPtr)
+    var layoutPtr = ptr + 0;
+    var bufferCopyView = WebGPU.makeTexelCopyBufferLayout(layoutPtr);
     bufferCopyView["buffer"] = WebGPU.getJsObject(
-      (growMemViews(), HEAPU32)[((ptr + 16) >>> 2) >>> 0]
-    )
-    return bufferCopyView
+      (growMemViews(), HEAPU32)[((ptr + 16) >>> 2) >>> 0],
+    );
+    return bufferCopyView;
   },
   makePassTimestampWrites: (ptr) => {
-    if (ptr === 0) return undefined
+    if (ptr === 0) return undefined;
     return {
-      querySet: WebGPU.getJsObject(
-        (growMemViews(), HEAPU32)[((ptr + 4) >>> 2) >>> 0]
-      ),
-      beginningOfPassWriteIndex: (growMemViews(), HEAPU32)[
-        ((ptr + 8) >>> 2) >>> 0
-      ],
+      querySet: WebGPU.getJsObject((growMemViews(), HEAPU32)[((ptr + 4) >>> 2) >>> 0]),
+      beginningOfPassWriteIndex: (growMemViews(), HEAPU32)[((ptr + 8) >>> 2) >>> 0],
       endOfPassWriteIndex: (growMemViews(), HEAPU32)[((ptr + 12) >>> 2) >>> 0],
-    }
+    };
   },
   makePipelineConstants: (constantCount, constantsPtr) => {
-    if (!constantCount) return
-    var constants = {}
+    if (!constantCount) return;
+    var constants = {};
     for (var i = 0; i < constantCount; ++i) {
-      var entryPtr = constantsPtr + 24 * i
-      var key = WebGPU.makeStringFromStringView(entryPtr + 4)
-      constants[key] = (growMemViews(), HEAPF64)[((entryPtr + 16) >>> 3) >>> 0]
+      var entryPtr = constantsPtr + 24 * i;
+      var key = WebGPU.makeStringFromStringView(entryPtr + 4);
+      constants[key] = (growMemViews(), HEAPF64)[((entryPtr + 16) >>> 3) >>> 0];
     }
-    return constants
+    return constants;
   },
   makePipelineLayout: (layoutPtr) => {
-    if (!layoutPtr) return "auto"
-    return WebGPU.getJsObject(layoutPtr)
+    if (!layoutPtr) return "auto";
+    return WebGPU.getJsObject(layoutPtr);
   },
   makeComputeState: (ptr) => {
-    if (!ptr) return undefined
+    if (!ptr) return undefined;
     var desc = {
-      module: WebGPU.getJsObject(
-        (growMemViews(), HEAPU32)[((ptr + 4) >>> 2) >>> 0]
-      ),
+      module: WebGPU.getJsObject((growMemViews(), HEAPU32)[((ptr + 4) >>> 2) >>> 0]),
       constants: WebGPU.makePipelineConstants(
         (growMemViews(), HEAPU32)[((ptr + 16) >>> 2) >>> 0],
-        (growMemViews(), HEAPU32)[((ptr + 20) >>> 2) >>> 0]
+        (growMemViews(), HEAPU32)[((ptr + 20) >>> 2) >>> 0],
       ),
       entryPoint: WebGPU.makeStringFromOptionalStringView(ptr + 8),
-    }
-    return desc
+    };
+    return desc;
   },
   makeComputePipelineDesc: (descriptor) => {
     var desc = {
       label: WebGPU.makeStringFromOptionalStringView(descriptor + 4),
-      layout: WebGPU.makePipelineLayout(
-        (growMemViews(), HEAPU32)[((descriptor + 12) >>> 2) >>> 0]
-      ),
+      layout: WebGPU.makePipelineLayout((growMemViews(), HEAPU32)[((descriptor + 12) >>> 2) >>> 0]),
       compute: WebGPU.makeComputeState(descriptor + 16),
-    }
-    return desc
+    };
+    return desc;
   },
   makeRenderPipelineDesc: (descriptor) => {
     function makePrimitiveState(psPtr) {
-      if (!psPtr) return undefined
+      if (!psPtr) return undefined;
       return {
-        topology:
-          WebGPU.PrimitiveTopology[
-            (growMemViews(), HEAP32)[((psPtr + 4) >>> 2) >>> 0]
-          ],
-        stripIndexFormat:
-          WebGPU.IndexFormat[
-            (growMemViews(), HEAP32)[((psPtr + 8) >>> 2) >>> 0]
-          ],
-        frontFace:
-          WebGPU.FrontFace[
-            (growMemViews(), HEAP32)[((psPtr + 12) >>> 2) >>> 0]
-          ],
-        cullMode:
-          WebGPU.CullMode[(growMemViews(), HEAP32)[((psPtr + 16) >>> 2) >>> 0]],
+        topology: WebGPU.PrimitiveTopology[(growMemViews(), HEAP32)[((psPtr + 4) >>> 2) >>> 0]],
+        stripIndexFormat: WebGPU.IndexFormat[(growMemViews(), HEAP32)[((psPtr + 8) >>> 2) >>> 0]],
+        frontFace: WebGPU.FrontFace[(growMemViews(), HEAP32)[((psPtr + 12) >>> 2) >>> 0]],
+        cullMode: WebGPU.CullMode[(growMemViews(), HEAP32)[((psPtr + 16) >>> 2) >>> 0]],
         unclippedDepth: !!(growMemViews(), HEAPU32)[((psPtr + 20) >>> 2) >>> 0],
-      }
+      };
     }
     function makeBlendComponent(bdPtr) {
-      if (!bdPtr) return undefined
+      if (!bdPtr) return undefined;
       return {
-        operation:
-          WebGPU.BlendOperation[(growMemViews(), HEAP32)[(bdPtr >>> 2) >>> 0]],
-        srcFactor:
-          WebGPU.BlendFactor[
-            (growMemViews(), HEAP32)[((bdPtr + 4) >>> 2) >>> 0]
-          ],
-        dstFactor:
-          WebGPU.BlendFactor[
-            (growMemViews(), HEAP32)[((bdPtr + 8) >>> 2) >>> 0]
-          ],
-      }
+        operation: WebGPU.BlendOperation[(growMemViews(), HEAP32)[(bdPtr >>> 2) >>> 0]],
+        srcFactor: WebGPU.BlendFactor[(growMemViews(), HEAP32)[((bdPtr + 4) >>> 2) >>> 0]],
+        dstFactor: WebGPU.BlendFactor[(growMemViews(), HEAP32)[((bdPtr + 8) >>> 2) >>> 0]],
+      };
     }
     function makeBlendState(bsPtr) {
-      if (!bsPtr) return undefined
+      if (!bsPtr) return undefined;
       return {
         alpha: makeBlendComponent(bsPtr + 12),
         color: makeBlendComponent(bsPtr + 0),
-      }
+      };
     }
     function makeColorState(csPtr) {
-      var format =
-        WebGPU.TextureFormat[
-          (growMemViews(), HEAP32)[((csPtr + 4) >>> 2) >>> 0]
-        ]
+      var format = WebGPU.TextureFormat[(growMemViews(), HEAP32)[((csPtr + 4) >>> 2) >>> 0]];
       return format
         ? {
             format,
-            blend: makeBlendState(
-              (growMemViews(), HEAPU32)[((csPtr + 8) >>> 2) >>> 0]
-            ),
+            blend: makeBlendState((growMemViews(), HEAPU32)[((csPtr + 8) >>> 2) >>> 0]),
             writeMask: (growMemViews(), HEAPU32)[((csPtr + 16) >>> 2) >>> 0],
           }
-        : undefined
+        : undefined;
     }
     function makeColorStates(count, csArrayPtr) {
-      var states = []
+      var states = [];
       for (var i = 0; i < count; ++i) {
-        states.push(makeColorState(csArrayPtr + 24 * i))
+        states.push(makeColorState(csArrayPtr + 24 * i));
       }
-      return states
+      return states;
     }
     function makeStencilStateFace(ssfPtr) {
       return {
-        compare:
-          WebGPU.CompareFunction[
-            (growMemViews(), HEAP32)[(ssfPtr >>> 2) >>> 0]
-          ],
-        failOp:
-          WebGPU.StencilOperation[
-            (growMemViews(), HEAP32)[((ssfPtr + 4) >>> 2) >>> 0]
-          ],
-        depthFailOp:
-          WebGPU.StencilOperation[
-            (growMemViews(), HEAP32)[((ssfPtr + 8) >>> 2) >>> 0]
-          ],
-        passOp:
-          WebGPU.StencilOperation[
-            (growMemViews(), HEAP32)[((ssfPtr + 12) >>> 2) >>> 0]
-          ],
-      }
+        compare: WebGPU.CompareFunction[(growMemViews(), HEAP32)[(ssfPtr >>> 2) >>> 0]],
+        failOp: WebGPU.StencilOperation[(growMemViews(), HEAP32)[((ssfPtr + 4) >>> 2) >>> 0]],
+        depthFailOp: WebGPU.StencilOperation[(growMemViews(), HEAP32)[((ssfPtr + 8) >>> 2) >>> 0]],
+        passOp: WebGPU.StencilOperation[(growMemViews(), HEAP32)[((ssfPtr + 12) >>> 2) >>> 0]],
+      };
     }
     function makeDepthStencilState(dssPtr) {
-      if (!dssPtr) return undefined
+      if (!dssPtr) return undefined;
       return {
-        format:
-          WebGPU.TextureFormat[
-            (growMemViews(), HEAP32)[((dssPtr + 4) >>> 2) >>> 0]
-          ],
-        depthWriteEnabled: !!(growMemViews(), HEAPU32)[
-          ((dssPtr + 8) >>> 2) >>> 0
-        ],
-        depthCompare:
-          WebGPU.CompareFunction[
-            (growMemViews(), HEAP32)[((dssPtr + 12) >>> 2) >>> 0]
-          ],
+        format: WebGPU.TextureFormat[(growMemViews(), HEAP32)[((dssPtr + 4) >>> 2) >>> 0]],
+        depthWriteEnabled: !!(growMemViews(), HEAPU32)[((dssPtr + 8) >>> 2) >>> 0],
+        depthCompare: WebGPU.CompareFunction[(growMemViews(), HEAP32)[((dssPtr + 12) >>> 2) >>> 0]],
         stencilFront: makeStencilStateFace(dssPtr + 16),
         stencilBack: makeStencilStateFace(dssPtr + 32),
         stencilReadMask: (growMemViews(), HEAPU32)[((dssPtr + 48) >>> 2) >>> 0],
-        stencilWriteMask: (growMemViews(), HEAPU32)[
-          ((dssPtr + 52) >>> 2) >>> 0
-        ],
+        stencilWriteMask: (growMemViews(), HEAPU32)[((dssPtr + 52) >>> 2) >>> 0],
         depthBias: (growMemViews(), HEAP32)[((dssPtr + 56) >>> 2) >>> 0],
-        depthBiasSlopeScale: (growMemViews(), HEAPF32)[
-          ((dssPtr + 60) >>> 2) >>> 0
-        ],
+        depthBiasSlopeScale: (growMemViews(), HEAPF32)[((dssPtr + 60) >>> 2) >>> 0],
         depthBiasClamp: (growMemViews(), HEAPF32)[((dssPtr + 64) >>> 2) >>> 0],
-      }
+      };
     }
     function makeVertexAttribute(vaPtr) {
       return {
-        format:
-          WebGPU.VertexFormat[
-            (growMemViews(), HEAP32)[((vaPtr + 4) >>> 2) >>> 0]
-          ],
+        format: WebGPU.VertexFormat[(growMemViews(), HEAP32)[((vaPtr + 4) >>> 2) >>> 0]],
         offset: readI53FromI64(vaPtr + 8),
         shaderLocation: (growMemViews(), HEAPU32)[((vaPtr + 16) >>> 2) >>> 0],
-      }
+      };
     }
     function makeVertexAttributes(count, vaArrayPtr) {
-      var vas = []
+      var vas = [];
       for (var i = 0; i < count; ++i) {
-        vas.push(makeVertexAttribute(vaArrayPtr + i * 24))
+        vas.push(makeVertexAttribute(vaArrayPtr + i * 24));
       }
-      return vas
+      return vas;
     }
     function makeVertexBuffer(vbPtr) {
-      if (!vbPtr) return undefined
-      var stepMode =
-        WebGPU.VertexStepMode[
-          (growMemViews(), HEAP32)[((vbPtr + 4) >>> 2) >>> 0]
-        ]
-      var attributeCount = (growMemViews(), HEAPU32)[((vbPtr + 16) >>> 2) >>> 0]
+      if (!vbPtr) return undefined;
+      var stepMode = WebGPU.VertexStepMode[(growMemViews(), HEAP32)[((vbPtr + 4) >>> 2) >>> 0]];
+      var attributeCount = (growMemViews(), HEAPU32)[((vbPtr + 16) >>> 2) >>> 0];
       if (!stepMode && !attributeCount) {
-        return null
+        return null;
       }
       return {
         arrayStride: readI53FromI64(vbPtr + 8),
         stepMode,
         attributes: makeVertexAttributes(
           attributeCount,
-          (growMemViews(), HEAPU32)[((vbPtr + 20) >>> 2) >>> 0]
+          (growMemViews(), HEAPU32)[((vbPtr + 20) >>> 2) >>> 0],
         ),
-      }
+      };
     }
     function makeVertexBuffers(count, vbArrayPtr) {
-      if (!count) return undefined
-      var vbs = []
+      if (!count) return undefined;
+      var vbs = [];
       for (var i = 0; i < count; ++i) {
-        vbs.push(makeVertexBuffer(vbArrayPtr + i * 24))
+        vbs.push(makeVertexBuffer(vbArrayPtr + i * 24));
       }
-      return vbs
+      return vbs;
     }
     function makeVertexState(viPtr) {
-      if (!viPtr) return undefined
+      if (!viPtr) return undefined;
       var desc = {
-        module: WebGPU.getJsObject(
-          (growMemViews(), HEAPU32)[((viPtr + 4) >>> 2) >>> 0]
-        ),
+        module: WebGPU.getJsObject((growMemViews(), HEAPU32)[((viPtr + 4) >>> 2) >>> 0]),
         constants: WebGPU.makePipelineConstants(
           (growMemViews(), HEAPU32)[((viPtr + 16) >>> 2) >>> 0],
-          (growMemViews(), HEAPU32)[((viPtr + 20) >>> 2) >>> 0]
+          (growMemViews(), HEAPU32)[((viPtr + 20) >>> 2) >>> 0],
         ),
         buffers: makeVertexBuffers(
           (growMemViews(), HEAPU32)[((viPtr + 24) >>> 2) >>> 0],
-          (growMemViews(), HEAPU32)[((viPtr + 28) >>> 2) >>> 0]
+          (growMemViews(), HEAPU32)[((viPtr + 28) >>> 2) >>> 0],
         ),
         entryPoint: WebGPU.makeStringFromOptionalStringView(viPtr + 8),
-      }
-      return desc
+      };
+      return desc;
     }
     function makeMultisampleState(msPtr) {
-      if (!msPtr) return undefined
+      if (!msPtr) return undefined;
       return {
         count: (growMemViews(), HEAPU32)[((msPtr + 4) >>> 2) >>> 0],
         mask: (growMemViews(), HEAPU32)[((msPtr + 8) >>> 2) >>> 0],
-        alphaToCoverageEnabled: !!(growMemViews(), HEAPU32)[
-          ((msPtr + 12) >>> 2) >>> 0
-        ],
-      }
+        alphaToCoverageEnabled: !!(growMemViews(), HEAPU32)[((msPtr + 12) >>> 2) >>> 0],
+      };
     }
     function makeFragmentState(fsPtr) {
-      if (!fsPtr) return undefined
+      if (!fsPtr) return undefined;
       var desc = {
-        module: WebGPU.getJsObject(
-          (growMemViews(), HEAPU32)[((fsPtr + 4) >>> 2) >>> 0]
-        ),
+        module: WebGPU.getJsObject((growMemViews(), HEAPU32)[((fsPtr + 4) >>> 2) >>> 0]),
         constants: WebGPU.makePipelineConstants(
           (growMemViews(), HEAPU32)[((fsPtr + 16) >>> 2) >>> 0],
-          (growMemViews(), HEAPU32)[((fsPtr + 20) >>> 2) >>> 0]
+          (growMemViews(), HEAPU32)[((fsPtr + 20) >>> 2) >>> 0],
         ),
         targets: makeColorStates(
           (growMemViews(), HEAPU32)[((fsPtr + 24) >>> 2) >>> 0],
-          (growMemViews(), HEAPU32)[((fsPtr + 28) >>> 2) >>> 0]
+          (growMemViews(), HEAPU32)[((fsPtr + 28) >>> 2) >>> 0],
         ),
         entryPoint: WebGPU.makeStringFromOptionalStringView(fsPtr + 8),
-      }
-      return desc
+      };
+      return desc;
     }
     var desc = {
       label: WebGPU.makeStringFromOptionalStringView(descriptor + 4),
-      layout: WebGPU.makePipelineLayout(
-        (growMemViews(), HEAPU32)[((descriptor + 12) >>> 2) >>> 0]
-      ),
+      layout: WebGPU.makePipelineLayout((growMemViews(), HEAPU32)[((descriptor + 12) >>> 2) >>> 0]),
       vertex: makeVertexState(descriptor + 16),
       primitive: makePrimitiveState(descriptor + 48),
       depthStencil: makeDepthStencilState(
-        (growMemViews(), HEAPU32)[((descriptor + 72) >>> 2) >>> 0]
+        (growMemViews(), HEAPU32)[((descriptor + 72) >>> 2) >>> 0],
       ),
       multisample: makeMultisampleState(descriptor + 76),
-      fragment: makeFragmentState(
-        (growMemViews(), HEAPU32)[((descriptor + 92) >>> 2) >>> 0]
-      ),
-    }
-    return desc
+      fragment: makeFragmentState((growMemViews(), HEAPU32)[((descriptor + 92) >>> 2) >>> 0]),
+    };
+    return desc;
   },
   fillLimitStruct: (limits, limitsOutPtr) => {
-    var nextInChainPtr = (growMemViews(), HEAPU32)[(limitsOutPtr >>> 2) >>> 0]
+    var nextInChainPtr = (growMemViews(), HEAPU32)[(limitsOutPtr >>> 2) >>> 0];
     function setLimitValueU32(name, basePtr, limitOffset, fallbackValue = 0) {
-      var limitValue = limits[name] ?? fallbackValue
-      ;(growMemViews(), HEAPU32)[((basePtr + limitOffset) >>> 2) >>> 0] =
-        limitValue
+      var limitValue = limits[name] ?? fallbackValue;
+      (growMemViews(), HEAPU32)[((basePtr + limitOffset) >>> 2) >>> 0] = limitValue;
     }
     function setLimitValueU64(name, basePtr, limitOffset, fallbackValue = 0) {
-      var limitValue = limits[name] ?? fallbackValue
-      writeI53ToI64(basePtr + limitOffset, limitValue)
+      var limitValue = limits[name] ?? fallbackValue;
+      writeI53ToI64(basePtr + limitOffset, limitValue);
     }
-    setLimitValueU32("maxTextureDimension1D", limitsOutPtr, 4)
-    setLimitValueU32("maxTextureDimension2D", limitsOutPtr, 8)
-    setLimitValueU32("maxTextureDimension3D", limitsOutPtr, 12)
-    setLimitValueU32("maxTextureArrayLayers", limitsOutPtr, 16)
-    setLimitValueU32("maxBindGroups", limitsOutPtr, 20)
-    setLimitValueU32("maxBindGroupsPlusVertexBuffers", limitsOutPtr, 24)
-    setLimitValueU32("maxBindingsPerBindGroup", limitsOutPtr, 28)
-    setLimitValueU32(
-      "maxDynamicUniformBuffersPerPipelineLayout",
-      limitsOutPtr,
-      32
-    )
-    setLimitValueU32(
-      "maxDynamicStorageBuffersPerPipelineLayout",
-      limitsOutPtr,
-      36
-    )
-    setLimitValueU32("maxSampledTexturesPerShaderStage", limitsOutPtr, 40)
-    setLimitValueU32("maxSamplersPerShaderStage", limitsOutPtr, 44)
-    setLimitValueU32("maxStorageBuffersPerShaderStage", limitsOutPtr, 48)
-    setLimitValueU32("maxStorageTexturesPerShaderStage", limitsOutPtr, 52)
-    setLimitValueU32("maxUniformBuffersPerShaderStage", limitsOutPtr, 56)
-    setLimitValueU32("minUniformBufferOffsetAlignment", limitsOutPtr, 80)
-    setLimitValueU32("minStorageBufferOffsetAlignment", limitsOutPtr, 84)
-    setLimitValueU64("maxUniformBufferBindingSize", limitsOutPtr, 64)
-    setLimitValueU64("maxStorageBufferBindingSize", limitsOutPtr, 72)
-    setLimitValueU32("maxVertexBuffers", limitsOutPtr, 88)
-    setLimitValueU64("maxBufferSize", limitsOutPtr, 96)
-    setLimitValueU32("maxVertexAttributes", limitsOutPtr, 104)
-    setLimitValueU32("maxVertexBufferArrayStride", limitsOutPtr, 108)
-    setLimitValueU32("maxInterStageShaderVariables", limitsOutPtr, 112)
-    setLimitValueU32("maxColorAttachments", limitsOutPtr, 116)
-    setLimitValueU32("maxColorAttachmentBytesPerSample", limitsOutPtr, 120)
-    setLimitValueU32("maxComputeWorkgroupStorageSize", limitsOutPtr, 124)
-    setLimitValueU32("maxComputeInvocationsPerWorkgroup", limitsOutPtr, 128)
-    setLimitValueU32("maxComputeWorkgroupSizeX", limitsOutPtr, 132)
-    setLimitValueU32("maxComputeWorkgroupSizeY", limitsOutPtr, 136)
-    setLimitValueU32("maxComputeWorkgroupSizeZ", limitsOutPtr, 140)
-    setLimitValueU32("maxComputeWorkgroupsPerDimension", limitsOutPtr, 144)
-    setLimitValueU32("maxImmediateSize", limitsOutPtr, 148)
+    setLimitValueU32("maxTextureDimension1D", limitsOutPtr, 4);
+    setLimitValueU32("maxTextureDimension2D", limitsOutPtr, 8);
+    setLimitValueU32("maxTextureDimension3D", limitsOutPtr, 12);
+    setLimitValueU32("maxTextureArrayLayers", limitsOutPtr, 16);
+    setLimitValueU32("maxBindGroups", limitsOutPtr, 20);
+    setLimitValueU32("maxBindGroupsPlusVertexBuffers", limitsOutPtr, 24);
+    setLimitValueU32("maxBindingsPerBindGroup", limitsOutPtr, 28);
+    setLimitValueU32("maxDynamicUniformBuffersPerPipelineLayout", limitsOutPtr, 32);
+    setLimitValueU32("maxDynamicStorageBuffersPerPipelineLayout", limitsOutPtr, 36);
+    setLimitValueU32("maxSampledTexturesPerShaderStage", limitsOutPtr, 40);
+    setLimitValueU32("maxSamplersPerShaderStage", limitsOutPtr, 44);
+    setLimitValueU32("maxStorageBuffersPerShaderStage", limitsOutPtr, 48);
+    setLimitValueU32("maxStorageTexturesPerShaderStage", limitsOutPtr, 52);
+    setLimitValueU32("maxUniformBuffersPerShaderStage", limitsOutPtr, 56);
+    setLimitValueU32("minUniformBufferOffsetAlignment", limitsOutPtr, 80);
+    setLimitValueU32("minStorageBufferOffsetAlignment", limitsOutPtr, 84);
+    setLimitValueU64("maxUniformBufferBindingSize", limitsOutPtr, 64);
+    setLimitValueU64("maxStorageBufferBindingSize", limitsOutPtr, 72);
+    setLimitValueU32("maxVertexBuffers", limitsOutPtr, 88);
+    setLimitValueU64("maxBufferSize", limitsOutPtr, 96);
+    setLimitValueU32("maxVertexAttributes", limitsOutPtr, 104);
+    setLimitValueU32("maxVertexBufferArrayStride", limitsOutPtr, 108);
+    setLimitValueU32("maxInterStageShaderVariables", limitsOutPtr, 112);
+    setLimitValueU32("maxColorAttachments", limitsOutPtr, 116);
+    setLimitValueU32("maxColorAttachmentBytesPerSample", limitsOutPtr, 120);
+    setLimitValueU32("maxComputeWorkgroupStorageSize", limitsOutPtr, 124);
+    setLimitValueU32("maxComputeInvocationsPerWorkgroup", limitsOutPtr, 128);
+    setLimitValueU32("maxComputeWorkgroupSizeX", limitsOutPtr, 132);
+    setLimitValueU32("maxComputeWorkgroupSizeY", limitsOutPtr, 136);
+    setLimitValueU32("maxComputeWorkgroupSizeZ", limitsOutPtr, 140);
+    setLimitValueU32("maxComputeWorkgroupsPerDimension", limitsOutPtr, 144);
+    setLimitValueU32("maxImmediateSize", limitsOutPtr, 148);
     if (nextInChainPtr !== 0) {
-      var sType = (growMemViews(), HEAP32)[((nextInChainPtr + 4) >>> 2) >>> 0]
-      var compatibilityModeLimitsPtr = nextInChainPtr
+      var sType = (growMemViews(), HEAP32)[((nextInChainPtr + 4) >>> 2) >>> 0];
+      var compatibilityModeLimitsPtr = nextInChainPtr;
       setLimitValueU32(
         "maxStorageBuffersInVertexStage",
         compatibilityModeLimitsPtr,
         8,
-        limits.maxStorageBuffersPerShaderStage
-      )
+        limits.maxStorageBuffersPerShaderStage,
+      );
       setLimitValueU32(
         "maxStorageBuffersInFragmentStage",
         compatibilityModeLimitsPtr,
         16,
-        limits.maxStorageBuffersPerShaderStage
-      )
+        limits.maxStorageBuffersPerShaderStage,
+      );
       setLimitValueU32(
         "maxStorageTexturesInVertexStage",
         compatibilityModeLimitsPtr,
         12,
-        limits.maxStorageTexturesPerShaderStage
-      )
+        limits.maxStorageTexturesPerShaderStage,
+      );
       setLimitValueU32(
         "maxStorageTexturesInFragmentStage",
         compatibilityModeLimitsPtr,
         20,
-        limits.maxStorageTexturesPerShaderStage
-      )
+        limits.maxStorageTexturesPerShaderStage,
+      );
     }
   },
   fillAdapterInfoStruct: (info, infoStruct) => {
-    ;(growMemViews(), HEAPU32)[((infoStruct + 52) >>> 2) >>> 0] =
-      info.subgroupMinSize
-    ;(growMemViews(), HEAPU32)[((infoStruct + 56) >>> 2) >>> 0] =
-      info.subgroupMaxSize
-    var strs = info.vendor + info.architecture + info.device + info.description
-    var strPtr = stringToNewUTF8(strs)
-    var vendorLen = lengthBytesUTF8(info.vendor)
-    WebGPU.setStringView(infoStruct + 4, strPtr, vendorLen)
-    strPtr += vendorLen
-    var architectureLen = lengthBytesUTF8(info.architecture)
-    WebGPU.setStringView(infoStruct + 12, strPtr, architectureLen)
-    strPtr += architectureLen
-    var deviceLen = lengthBytesUTF8(info.device)
-    WebGPU.setStringView(infoStruct + 20, strPtr, deviceLen)
-    strPtr += deviceLen
-    var descriptionLen = lengthBytesUTF8(info.description)
-    WebGPU.setStringView(infoStruct + 28, strPtr, descriptionLen)
-    strPtr += descriptionLen
-    ;(growMemViews(), HEAP32)[((infoStruct + 36) >>> 2) >>> 0] = 2
-    var adapterType = info.isFallbackAdapter ? 3 : 4
-    ;(growMemViews(), HEAP32)[((infoStruct + 40) >>> 2) >>> 0] = adapterType
-    ;(growMemViews(), HEAPU32)[((infoStruct + 44) >>> 2) >>> 0] = 0
-    ;(growMemViews(), HEAPU32)[((infoStruct + 48) >>> 2) >>> 0] = 0
+    (growMemViews(), HEAPU32)[((infoStruct + 52) >>> 2) >>> 0] = info.subgroupMinSize;
+    (growMemViews(), HEAPU32)[((infoStruct + 56) >>> 2) >>> 0] = info.subgroupMaxSize;
+    var strs = info.vendor + info.architecture + info.device + info.description;
+    var strPtr = stringToNewUTF8(strs);
+    var vendorLen = lengthBytesUTF8(info.vendor);
+    WebGPU.setStringView(infoStruct + 4, strPtr, vendorLen);
+    strPtr += vendorLen;
+    var architectureLen = lengthBytesUTF8(info.architecture);
+    WebGPU.setStringView(infoStruct + 12, strPtr, architectureLen);
+    strPtr += architectureLen;
+    var deviceLen = lengthBytesUTF8(info.device);
+    WebGPU.setStringView(infoStruct + 20, strPtr, deviceLen);
+    strPtr += deviceLen;
+    var descriptionLen = lengthBytesUTF8(info.description);
+    WebGPU.setStringView(infoStruct + 28, strPtr, descriptionLen);
+    strPtr += descriptionLen;
+    (growMemViews(), HEAP32)[((infoStruct + 36) >>> 2) >>> 0] = 2;
+    var adapterType = info.isFallbackAdapter ? 3 : 4;
+    (growMemViews(), HEAP32)[((infoStruct + 40) >>> 2) >>> 0] = adapterType;
+    (growMemViews(), HEAPU32)[((infoStruct + 44) >>> 2) >>> 0] = 0;
+    (growMemViews(), HEAPU32)[((infoStruct + 48) >>> 2) >>> 0] = 0;
   },
   AddressMode: [, "clamp-to-edge", "repeat", "mirror-repeat"],
   BlendFactor: [
@@ -4466,13 +4233,7 @@ var WebGPU = {
   ],
   CompilationInfoRequestStatus: [, "success", "callback-cancelled"],
   ComponentSwizzle: [, "0", "1", "r", "g", "b", "a"],
-  CompositeAlphaMode: [
-    ,
-    "opaque",
-    "premultiplied",
-    "unpremultiplied",
-    "inherit",
-  ],
+  CompositeAlphaMode: [, "opaque", "premultiplied", "unpremultiplied", "inherit"],
   CullMode: [, "none", "front", "back"],
   ErrorFilter: [, "validation", "out-of-memory", "internal"],
   FeatureLevel: [, "compatibility", "core"],
@@ -4505,25 +4266,13 @@ var WebGPU = {
   FilterMode: [, "nearest", "linear"],
   FrontFace: [, "ccw", "cw"],
   IndexFormat: [, "uint16", "uint32"],
-  InstanceFeatureName: [
-    ,
-    "timed-wait-any",
-    "shader-source-spirv",
-    "multiple-devices-per-adapter",
-  ],
+  InstanceFeatureName: [, "timed-wait-any", "shader-source-spirv", "multiple-devices-per-adapter"],
   LoadOp: [, "load", "clear"],
   MipmapFilterMode: [, "nearest", "linear"],
   OptionalBool: ["false", "true"],
   PowerPreference: [, "low-power", "high-performance"],
   PredefinedColorSpace: [, "srgb", "display-p3"],
-  PrimitiveTopology: [
-    ,
-    "point-list",
-    "line-list",
-    "line-strip",
-    "triangle-list",
-    "triangle-strip",
-  ],
+  PrimitiveTopology: [, "point-list", "line-list", "line-strip", "triangle-list", "triangle-strip"],
   QueryType: [, "occlusion", "timestamp"],
   SamplerBindingType: [, , "filtering", "non-filtering", "comparison"],
   Status: [, "success", "error"],
@@ -4655,15 +4404,7 @@ var WebGPU = {
     "astc-12x12-unorm",
     "astc-12x12-unorm-srgb",
   ],
-  TextureSampleType: [
-    ,
-    ,
-    "float",
-    "unfilterable-float",
-    "depth",
-    "sint",
-    "uint",
-  ],
+  TextureSampleType: [, , "float", "unfilterable-float", "depth", "sint", "uint"],
   TextureViewDimension: [, "1d", "2d", "2d-array", "cube", "cube-array", "3d"],
   ToneMappingMode: [, "standard", "extended"],
   VertexFormat: [
@@ -4723,479 +4464,410 @@ var WebGPU = {
     "subgroup_uniformity",
     "texture_formats_tier1",
   ],
-}
+};
 var emwgpuStringToInt_DeviceLostReason = {
   undefined: 1,
   unknown: 1,
   destroyed: 2,
-}
+};
 var runtimeKeepalivePop = () => {
-  runtimeKeepaliveCounter -= 1
-}
+  runtimeKeepaliveCounter -= 1;
+};
 function _emwgpuAdapterRequestDevice(
   adapterPtr,
   futureId,
   deviceLostFutureId,
   devicePtr,
   queuePtr,
-  descriptor
+  descriptor,
 ) {
-  adapterPtr >>>= 0
-  futureId = bigintToI53Checked(futureId)
-  deviceLostFutureId = bigintToI53Checked(deviceLostFutureId)
-  devicePtr >>>= 0
-  queuePtr >>>= 0
-  descriptor >>>= 0
-  var adapter = WebGPU.getJsObject(adapterPtr)
-  var desc = {}
+  adapterPtr >>>= 0;
+  futureId = bigintToI53Checked(futureId);
+  deviceLostFutureId = bigintToI53Checked(deviceLostFutureId);
+  devicePtr >>>= 0;
+  queuePtr >>>= 0;
+  descriptor >>>= 0;
+  var adapter = WebGPU.getJsObject(adapterPtr);
+  var desc = {};
   if (descriptor) {
-    var requiredFeatureCount = (growMemViews(), HEAPU32)[
-      ((descriptor + 12) >>> 2) >>> 0
-    ]
+    var requiredFeatureCount = (growMemViews(), HEAPU32)[((descriptor + 12) >>> 2) >>> 0];
     if (requiredFeatureCount) {
-      var requiredFeaturesPtr = (growMemViews(), HEAPU32)[
-        ((descriptor + 16) >>> 2) >>> 0
-      ]
+      var requiredFeaturesPtr = (growMemViews(), HEAPU32)[((descriptor + 16) >>> 2) >>> 0];
       desc["requiredFeatures"] = Array.from(
         (growMemViews(), HEAPU32).subarray(
           (requiredFeaturesPtr >>> 2) >>> 0,
-          ((requiredFeaturesPtr + requiredFeatureCount * 4) >>> 2) >>> 0
+          ((requiredFeaturesPtr + requiredFeatureCount * 4) >>> 2) >>> 0,
         ),
-        (feature) => WebGPU.FeatureName[feature]
-      )
+        (feature) => WebGPU.FeatureName[feature],
+      );
     }
-    var limitsPtr = (growMemViews(), HEAPU32)[((descriptor + 20) >>> 2) >>> 0]
+    var limitsPtr = (growMemViews(), HEAPU32)[((descriptor + 20) >>> 2) >>> 0];
     if (limitsPtr) {
-      var nextInChainPtr = (growMemViews(), HEAPU32)[(limitsPtr >>> 2) >>> 0]
-      var requiredLimits = {}
-      function setLimitU32IfDefined(
-        name,
-        basePtr,
-        limitOffset,
-        ignoreIfZero = false
-      ) {
-        var ptr = basePtr + limitOffset
-        var value = (growMemViews(), HEAPU32)[(ptr >>> 2) >>> 0]
+      var nextInChainPtr = (growMemViews(), HEAPU32)[(limitsPtr >>> 2) >>> 0];
+      var requiredLimits = {};
+      function setLimitU32IfDefined(name, basePtr, limitOffset, ignoreIfZero = false) {
+        var ptr = basePtr + limitOffset;
+        var value = (growMemViews(), HEAPU32)[(ptr >>> 2) >>> 0];
         if (value != 4294967295 && (!ignoreIfZero || value != 0)) {
-          requiredLimits[name] = value
+          requiredLimits[name] = value;
         }
       }
       function setLimitU64IfDefined(name, basePtr, limitOffset) {
-        var ptr = basePtr + limitOffset
-        var limitPart1 = (growMemViews(), HEAPU32)[(ptr >>> 2) >>> 0]
-        var limitPart2 = (growMemViews(), HEAPU32)[((ptr + 4) >>> 2) >>> 0]
+        var ptr = basePtr + limitOffset;
+        var limitPart1 = (growMemViews(), HEAPU32)[(ptr >>> 2) >>> 0];
+        var limitPart2 = (growMemViews(), HEAPU32)[((ptr + 4) >>> 2) >>> 0];
         if (limitPart1 != 4294967295 || limitPart2 != 4294967295) {
-          requiredLimits[name] = readI53FromI64(ptr)
+          requiredLimits[name] = readI53FromI64(ptr);
         }
       }
-      setLimitU32IfDefined("maxTextureDimension1D", limitsPtr, 4)
-      setLimitU32IfDefined("maxTextureDimension2D", limitsPtr, 8)
-      setLimitU32IfDefined("maxTextureDimension3D", limitsPtr, 12)
-      setLimitU32IfDefined("maxTextureArrayLayers", limitsPtr, 16)
-      setLimitU32IfDefined("maxBindGroups", limitsPtr, 20)
-      setLimitU32IfDefined("maxBindGroupsPlusVertexBuffers", limitsPtr, 24)
-      setLimitU32IfDefined("maxBindingsPerBindGroup", limitsPtr, 28)
-      setLimitU32IfDefined(
-        "maxDynamicUniformBuffersPerPipelineLayout",
-        limitsPtr,
-        32
-      )
-      setLimitU32IfDefined(
-        "maxDynamicStorageBuffersPerPipelineLayout",
-        limitsPtr,
-        36
-      )
-      setLimitU32IfDefined("maxSampledTexturesPerShaderStage", limitsPtr, 40)
-      setLimitU32IfDefined("maxSamplersPerShaderStage", limitsPtr, 44)
-      setLimitU32IfDefined("maxStorageBuffersPerShaderStage", limitsPtr, 48)
-      setLimitU32IfDefined("maxStorageTexturesPerShaderStage", limitsPtr, 52)
-      setLimitU32IfDefined("maxUniformBuffersPerShaderStage", limitsPtr, 56)
-      setLimitU32IfDefined("minUniformBufferOffsetAlignment", limitsPtr, 80)
-      setLimitU32IfDefined("minStorageBufferOffsetAlignment", limitsPtr, 84)
-      setLimitU64IfDefined("maxUniformBufferBindingSize", limitsPtr, 64)
-      setLimitU64IfDefined("maxStorageBufferBindingSize", limitsPtr, 72)
-      setLimitU32IfDefined("maxVertexBuffers", limitsPtr, 88)
-      setLimitU64IfDefined("maxBufferSize", limitsPtr, 96)
-      setLimitU32IfDefined("maxVertexAttributes", limitsPtr, 104)
-      setLimitU32IfDefined("maxVertexBufferArrayStride", limitsPtr, 108)
-      setLimitU32IfDefined("maxInterStageShaderVariables", limitsPtr, 112)
-      setLimitU32IfDefined("maxColorAttachments", limitsPtr, 116)
-      setLimitU32IfDefined("maxColorAttachmentBytesPerSample", limitsPtr, 120)
-      setLimitU32IfDefined("maxComputeWorkgroupStorageSize", limitsPtr, 124)
-      setLimitU32IfDefined("maxComputeInvocationsPerWorkgroup", limitsPtr, 128)
-      setLimitU32IfDefined("maxComputeWorkgroupSizeX", limitsPtr, 132)
-      setLimitU32IfDefined("maxComputeWorkgroupSizeY", limitsPtr, 136)
-      setLimitU32IfDefined("maxComputeWorkgroupSizeZ", limitsPtr, 140)
-      setLimitU32IfDefined("maxComputeWorkgroupsPerDimension", limitsPtr, 144)
-      setLimitU32IfDefined("maxImmediateSize", limitsPtr, 148, true)
+      setLimitU32IfDefined("maxTextureDimension1D", limitsPtr, 4);
+      setLimitU32IfDefined("maxTextureDimension2D", limitsPtr, 8);
+      setLimitU32IfDefined("maxTextureDimension3D", limitsPtr, 12);
+      setLimitU32IfDefined("maxTextureArrayLayers", limitsPtr, 16);
+      setLimitU32IfDefined("maxBindGroups", limitsPtr, 20);
+      setLimitU32IfDefined("maxBindGroupsPlusVertexBuffers", limitsPtr, 24);
+      setLimitU32IfDefined("maxBindingsPerBindGroup", limitsPtr, 28);
+      setLimitU32IfDefined("maxDynamicUniformBuffersPerPipelineLayout", limitsPtr, 32);
+      setLimitU32IfDefined("maxDynamicStorageBuffersPerPipelineLayout", limitsPtr, 36);
+      setLimitU32IfDefined("maxSampledTexturesPerShaderStage", limitsPtr, 40);
+      setLimitU32IfDefined("maxSamplersPerShaderStage", limitsPtr, 44);
+      setLimitU32IfDefined("maxStorageBuffersPerShaderStage", limitsPtr, 48);
+      setLimitU32IfDefined("maxStorageTexturesPerShaderStage", limitsPtr, 52);
+      setLimitU32IfDefined("maxUniformBuffersPerShaderStage", limitsPtr, 56);
+      setLimitU32IfDefined("minUniformBufferOffsetAlignment", limitsPtr, 80);
+      setLimitU32IfDefined("minStorageBufferOffsetAlignment", limitsPtr, 84);
+      setLimitU64IfDefined("maxUniformBufferBindingSize", limitsPtr, 64);
+      setLimitU64IfDefined("maxStorageBufferBindingSize", limitsPtr, 72);
+      setLimitU32IfDefined("maxVertexBuffers", limitsPtr, 88);
+      setLimitU64IfDefined("maxBufferSize", limitsPtr, 96);
+      setLimitU32IfDefined("maxVertexAttributes", limitsPtr, 104);
+      setLimitU32IfDefined("maxVertexBufferArrayStride", limitsPtr, 108);
+      setLimitU32IfDefined("maxInterStageShaderVariables", limitsPtr, 112);
+      setLimitU32IfDefined("maxColorAttachments", limitsPtr, 116);
+      setLimitU32IfDefined("maxColorAttachmentBytesPerSample", limitsPtr, 120);
+      setLimitU32IfDefined("maxComputeWorkgroupStorageSize", limitsPtr, 124);
+      setLimitU32IfDefined("maxComputeInvocationsPerWorkgroup", limitsPtr, 128);
+      setLimitU32IfDefined("maxComputeWorkgroupSizeX", limitsPtr, 132);
+      setLimitU32IfDefined("maxComputeWorkgroupSizeY", limitsPtr, 136);
+      setLimitU32IfDefined("maxComputeWorkgroupSizeZ", limitsPtr, 140);
+      setLimitU32IfDefined("maxComputeWorkgroupsPerDimension", limitsPtr, 144);
+      setLimitU32IfDefined("maxImmediateSize", limitsPtr, 148, true);
       if (nextInChainPtr !== 0) {
-        var sType = (growMemViews(), HEAP32)[((nextInChainPtr + 4) >>> 2) >>> 0]
-        var compatibilityModeLimitsPtr = nextInChainPtr
+        var sType = (growMemViews(), HEAP32)[((nextInChainPtr + 4) >>> 2) >>> 0];
+        var compatibilityModeLimitsPtr = nextInChainPtr;
         if ("maxStorageBuffersInVertexStage" in GPUSupportedLimits.prototype) {
-          setLimitU32IfDefined(
-            "maxStorageBuffersInVertexStage",
-            compatibilityModeLimitsPtr,
-            8
-          )
-          setLimitU32IfDefined(
-            "maxStorageTexturesInVertexStage",
-            compatibilityModeLimitsPtr,
-            12
-          )
-          setLimitU32IfDefined(
-            "maxStorageBuffersInFragmentStage",
-            compatibilityModeLimitsPtr,
-            16
-          )
-          setLimitU32IfDefined(
-            "maxStorageTexturesInFragmentStage",
-            compatibilityModeLimitsPtr,
-            20
-          )
+          setLimitU32IfDefined("maxStorageBuffersInVertexStage", compatibilityModeLimitsPtr, 8);
+          setLimitU32IfDefined("maxStorageTexturesInVertexStage", compatibilityModeLimitsPtr, 12);
+          setLimitU32IfDefined("maxStorageBuffersInFragmentStage", compatibilityModeLimitsPtr, 16);
+          setLimitU32IfDefined("maxStorageTexturesInFragmentStage", compatibilityModeLimitsPtr, 20);
         }
       }
-      desc["requiredLimits"] = requiredLimits
+      desc["requiredLimits"] = requiredLimits;
     }
-    var defaultQueuePtr = (growMemViews(), HEAPU32)[
-      ((descriptor + 24) >>> 2) >>> 0
-    ]
+    var defaultQueuePtr = (growMemViews(), HEAPU32)[((descriptor + 24) >>> 2) >>> 0];
     if (defaultQueuePtr) {
       var defaultQueueDesc = {
         label: WebGPU.makeStringFromOptionalStringView(defaultQueuePtr + 4),
-      }
-      desc["defaultQueue"] = defaultQueueDesc
+      };
+      desc["defaultQueue"] = defaultQueueDesc;
     }
-    desc["label"] = WebGPU.makeStringFromOptionalStringView(descriptor + 4)
+    desc["label"] = WebGPU.makeStringFromOptionalStringView(descriptor + 4);
   }
-  runtimeKeepalivePush()
+  runtimeKeepalivePush();
   WebGPU.Internals.futureInsert(
     futureId,
     adapter.requestDevice(desc).then(
       (device) => {
-        runtimeKeepalivePop()
+        runtimeKeepalivePop();
         callUserCallback(() => {
-          WebGPU.Internals.jsObjectInsert(queuePtr, device.queue)
-          WebGPU.Internals.jsObjectInsert(devicePtr, device)
+          WebGPU.Internals.jsObjectInsert(queuePtr, device.queue);
+          WebGPU.Internals.jsObjectInsert(devicePtr, device);
           WebGPU.Internals.futureInsert(
             deviceLostFutureId,
             device.lost.then((info) => {
               callUserCallback(() => {
-                device.onuncapturederror = (ev) => {}
-                var sp = stackSave()
-                var messagePtr = stringToUTF8OnStack(info.message)
+                device.onuncapturederror = (ev) => {};
+                var sp = stackSave();
+                var messagePtr = stringToUTF8OnStack(info.message);
                 _emwgpuOnDeviceLostCompleted(
                   deviceLostFutureId,
                   emwgpuStringToInt_DeviceLostReason[info.reason],
-                  messagePtr
-                )
-                stackRestore(sp)
-              })
-            })
-          )
+                  messagePtr,
+                );
+                stackRestore(sp);
+              });
+            }),
+          );
           device.onuncapturederror = (ev) => {
-            var type = 5
-            if (ev.error instanceof GPUValidationError) type = 2
-            else if (ev.error instanceof GPUOutOfMemoryError) type = 3
-            else if (ev.error instanceof GPUInternalError) type = 4
-            var sp = stackSave()
-            var messagePtr = stringToUTF8OnStack(ev.error.message)
-            _emwgpuOnUncapturedError(devicePtr, type, messagePtr)
-            stackRestore(sp)
-          }
-          _emwgpuOnRequestDeviceCompleted(futureId, 1, devicePtr, 0)
-        })
+            var type = 5;
+            if (ev.error instanceof GPUValidationError) type = 2;
+            else if (ev.error instanceof GPUOutOfMemoryError) type = 3;
+            else if (ev.error instanceof GPUInternalError) type = 4;
+            var sp = stackSave();
+            var messagePtr = stringToUTF8OnStack(ev.error.message);
+            _emwgpuOnUncapturedError(devicePtr, type, messagePtr);
+            stackRestore(sp);
+          };
+          _emwgpuOnRequestDeviceCompleted(futureId, 1, devicePtr, 0);
+        });
       },
       (ex) => {
-        runtimeKeepalivePop()
+        runtimeKeepalivePop();
         callUserCallback(() => {
-          var sp = stackSave()
-          var messagePtr = stringToUTF8OnStack(ex.message)
-          _emwgpuOnRequestDeviceCompleted(futureId, 3, devicePtr, messagePtr)
+          var sp = stackSave();
+          var messagePtr = stringToUTF8OnStack(ex.message);
+          _emwgpuOnRequestDeviceCompleted(futureId, 3, devicePtr, messagePtr);
           if (deviceLostFutureId) {
-            _emwgpuOnDeviceLostCompleted(deviceLostFutureId, 4, messagePtr)
+            _emwgpuOnDeviceLostCompleted(deviceLostFutureId, 4, messagePtr);
           }
-          stackRestore(sp)
-        })
-      }
-    )
-  )
+          stackRestore(sp);
+        });
+      },
+    ),
+  );
 }
 function _emwgpuBufferDestroy(bufferPtr) {
-  bufferPtr >>>= 0
-  var buffer = WebGPU.getJsObject(bufferPtr)
-  var onUnmap = WebGPU.Internals.bufferOnUnmaps[bufferPtr]
+  bufferPtr >>>= 0;
+  var buffer = WebGPU.getJsObject(bufferPtr);
+  var onUnmap = WebGPU.Internals.bufferOnUnmaps[bufferPtr];
   if (onUnmap) {
     for (var i = 0; i < onUnmap.length; ++i) {
-      onUnmap[i]()
+      onUnmap[i]();
     }
-    delete WebGPU.Internals.bufferOnUnmaps[bufferPtr]
+    delete WebGPU.Internals.bufferOnUnmaps[bufferPtr];
   }
-  buffer.destroy()
+  buffer.destroy();
 }
 var warnOnce = (text) => {
-  warnOnce.shown ||= {}
+  warnOnce.shown ||= {};
   if (!warnOnce.shown[text]) {
-    warnOnce.shown[text] = 1
-    if (ENVIRONMENT_IS_NODE) text = "warning: " + text
-    err(text)
+    warnOnce.shown[text] = 1;
+    if (ENVIRONMENT_IS_NODE) text = "warning: " + text;
+    err(text);
   }
-}
+};
 function _emwgpuBufferGetConstMappedRange(bufferPtr, offset, size) {
-  bufferPtr >>>= 0
-  offset >>>= 0
-  size >>>= 0
-  var buffer = WebGPU.getJsObject(bufferPtr)
-  if (size == 4294967295) size = undefined
-  var mapped
+  bufferPtr >>>= 0;
+  offset >>>= 0;
+  size >>>= 0;
+  var buffer = WebGPU.getJsObject(bufferPtr);
+  if (size == 4294967295) size = undefined;
+  var mapped;
   try {
-    mapped = buffer.getMappedRange(offset, size)
+    mapped = buffer.getMappedRange(offset, size);
   } catch (ex) {
-    return 0
+    return 0;
   }
-  var data = _memalign(16, mapped.byteLength)
-  ;(growMemViews(), HEAPU8).set(new Uint8Array(mapped), data >>> 0)
-  WebGPU.Internals.bufferOnUnmaps[bufferPtr].push(() => _free(data))
-  return data
+  var data = _memalign(16, mapped.byteLength);
+  (growMemViews(), HEAPU8).set(new Uint8Array(mapped), data >>> 0);
+  WebGPU.Internals.bufferOnUnmaps[bufferPtr].push(() => _free(data));
+  return data;
 }
 var _emwgpuBufferMapAsync = (bufferPtr, futureId, mode, offset, size) => {
-  bufferPtr >>>= 0
-  futureId = bigintToI53Checked(futureId)
-  mode = bigintToI53Checked(mode)
-  offset >>>= 0
-  size >>>= 0
-  var buffer = WebGPU.getJsObject(bufferPtr)
-  WebGPU.Internals.bufferOnUnmaps[bufferPtr] = []
-  if (size == 4294967295) size = undefined
-  runtimeKeepalivePush()
+  bufferPtr >>>= 0;
+  futureId = bigintToI53Checked(futureId);
+  mode = bigintToI53Checked(mode);
+  offset >>>= 0;
+  size >>>= 0;
+  var buffer = WebGPU.getJsObject(bufferPtr);
+  WebGPU.Internals.bufferOnUnmaps[bufferPtr] = [];
+  if (size == 4294967295) size = undefined;
+  runtimeKeepalivePush();
   WebGPU.Internals.futureInsert(
     futureId,
     buffer.mapAsync(mode, offset, size).then(
       () => {
-        runtimeKeepalivePop()
+        runtimeKeepalivePop();
         callUserCallback(() => {
-          _emwgpuOnMapAsyncCompleted(futureId, 1, 0)
-        })
+          _emwgpuOnMapAsyncCompleted(futureId, 1, 0);
+        });
       },
       (ex) => {
-        runtimeKeepalivePop()
+        runtimeKeepalivePop();
         callUserCallback(() => {
-          var sp = stackSave()
-          var messagePtr = stringToUTF8OnStack(ex.message)
-          var status =
-            ex.name === "AbortError" ? 4 : ex.name === "OperationError" ? 3 : 0
-          _emwgpuOnMapAsyncCompleted(futureId, status, messagePtr)
-          delete WebGPU.Internals.bufferOnUnmaps[bufferPtr]
-        })
-      }
-    )
-  )
-}
+          var sp = stackSave();
+          var messagePtr = stringToUTF8OnStack(ex.message);
+          var status = ex.name === "AbortError" ? 4 : ex.name === "OperationError" ? 3 : 0;
+          _emwgpuOnMapAsyncCompleted(futureId, status, messagePtr);
+          delete WebGPU.Internals.bufferOnUnmaps[bufferPtr];
+        });
+      },
+    ),
+  );
+};
 function _emwgpuBufferUnmap(bufferPtr) {
-  bufferPtr >>>= 0
-  var buffer = WebGPU.getJsObject(bufferPtr)
-  var onUnmap = WebGPU.Internals.bufferOnUnmaps[bufferPtr]
+  bufferPtr >>>= 0;
+  var buffer = WebGPU.getJsObject(bufferPtr);
+  var onUnmap = WebGPU.Internals.bufferOnUnmaps[bufferPtr];
   if (!onUnmap) {
-    return
+    return;
   }
   for (var i = 0; i < onUnmap.length; ++i) {
-    onUnmap[i]()
+    onUnmap[i]();
   }
-  delete WebGPU.Internals.bufferOnUnmaps[bufferPtr]
-  buffer.unmap()
+  delete WebGPU.Internals.bufferOnUnmaps[bufferPtr];
+  buffer.unmap();
 }
 function _emwgpuDelete(ptr) {
-  ptr >>>= 0
-  delete WebGPU.Internals.jsObjects[ptr]
+  ptr >>>= 0;
+  delete WebGPU.Internals.jsObjects[ptr];
 }
 function _emwgpuDeviceCreateBuffer(devicePtr, descriptor, bufferPtr) {
-  devicePtr >>>= 0
-  descriptor >>>= 0
-  bufferPtr >>>= 0
-  var mappedAtCreation = !!(growMemViews(), HEAPU32)[
-    ((descriptor + 32) >>> 2) >>> 0
-  ]
+  devicePtr >>>= 0;
+  descriptor >>>= 0;
+  bufferPtr >>>= 0;
+  var mappedAtCreation = !!(growMemViews(), HEAPU32)[((descriptor + 32) >>> 2) >>> 0];
   var desc = {
     label: WebGPU.makeStringFromOptionalStringView(descriptor + 4),
     usage: (growMemViews(), HEAPU32)[((descriptor + 16) >>> 2) >>> 0],
     size: readI53FromI64(descriptor + 24),
     mappedAtCreation,
-  }
-  var device = WebGPU.getJsObject(devicePtr)
-  var buffer
+  };
+  var device = WebGPU.getJsObject(devicePtr);
+  var buffer;
   try {
-    buffer = device.createBuffer(desc)
+    buffer = device.createBuffer(desc);
   } catch (ex) {
-    return false
+    return false;
   }
-  WebGPU.Internals.jsObjectInsert(bufferPtr, buffer)
+  WebGPU.Internals.jsObjectInsert(bufferPtr, buffer);
   if (mappedAtCreation) {
-    WebGPU.Internals.bufferOnUnmaps[bufferPtr] = []
+    WebGPU.Internals.bufferOnUnmaps[bufferPtr] = [];
   }
-  return true
+  return true;
 }
-function _emwgpuDeviceCreateShaderModule(
-  devicePtr,
-  descriptor,
-  shaderModulePtr
-) {
-  devicePtr >>>= 0
-  descriptor >>>= 0
-  shaderModulePtr >>>= 0
-  var nextInChainPtr = (growMemViews(), HEAPU32)[(descriptor >>> 2) >>> 0]
-  var sType = (growMemViews(), HEAP32)[((nextInChainPtr + 4) >>> 2) >>> 0]
+function _emwgpuDeviceCreateShaderModule(devicePtr, descriptor, shaderModulePtr) {
+  devicePtr >>>= 0;
+  descriptor >>>= 0;
+  shaderModulePtr >>>= 0;
+  var nextInChainPtr = (growMemViews(), HEAPU32)[(descriptor >>> 2) >>> 0];
+  var sType = (growMemViews(), HEAP32)[((nextInChainPtr + 4) >>> 2) >>> 0];
   var desc = {
     label: WebGPU.makeStringFromOptionalStringView(descriptor + 4),
     code: "",
-  }
+  };
   switch (sType) {
     case 2: {
-      desc["code"] = WebGPU.makeStringFromStringView(nextInChainPtr + 8)
-      break
+      desc["code"] = WebGPU.makeStringFromStringView(nextInChainPtr + 8);
+      break;
     }
   }
-  var device = WebGPU.getJsObject(devicePtr)
-  WebGPU.Internals.jsObjectInsert(
-    shaderModulePtr,
-    device.createShaderModule(desc)
-  )
+  var device = WebGPU.getJsObject(devicePtr);
+  WebGPU.Internals.jsObjectInsert(shaderModulePtr, device.createShaderModule(desc));
 }
 var _emwgpuDeviceDestroy = (devicePtr) => {
-  const device = WebGPU.getJsObject(devicePtr)
-  device.onuncapturederror = null
-  device.destroy()
-}
-function _emwgpuInstanceRequestAdapter(
-  instancePtr,
-  futureId,
-  options,
-  adapterPtr
-) {
-  instancePtr >>>= 0
-  futureId = bigintToI53Checked(futureId)
-  options >>>= 0
-  adapterPtr >>>= 0
-  var opts
+  const device = WebGPU.getJsObject(devicePtr);
+  device.onuncapturederror = null;
+  device.destroy();
+};
+function _emwgpuInstanceRequestAdapter(instancePtr, futureId, options, adapterPtr) {
+  instancePtr >>>= 0;
+  futureId = bigintToI53Checked(futureId);
+  options >>>= 0;
+  adapterPtr >>>= 0;
+  var opts;
   if (options) {
     opts = {
-      featureLevel:
-        WebGPU.FeatureLevel[
-          (growMemViews(), HEAP32)[((options + 4) >>> 2) >>> 0]
-        ],
+      featureLevel: WebGPU.FeatureLevel[(growMemViews(), HEAP32)[((options + 4) >>> 2) >>> 0]],
       powerPreference:
-        WebGPU.PowerPreference[
-          (growMemViews(), HEAP32)[((options + 8) >>> 2) >>> 0]
-        ],
-      forceFallbackAdapter: !!(growMemViews(), HEAPU32)[
-        ((options + 12) >>> 2) >>> 0
-      ],
-    }
-    var nextInChainPtr = (growMemViews(), HEAPU32)[(options >>> 2) >>> 0]
+        WebGPU.PowerPreference[(growMemViews(), HEAP32)[((options + 8) >>> 2) >>> 0]],
+      forceFallbackAdapter: !!(growMemViews(), HEAPU32)[((options + 12) >>> 2) >>> 0],
+    };
+    var nextInChainPtr = (growMemViews(), HEAPU32)[(options >>> 2) >>> 0];
     if (nextInChainPtr !== 0) {
-      var sType = (growMemViews(), HEAP32)[((nextInChainPtr + 4) >>> 2) >>> 0]
-      var webxrOptions = nextInChainPtr
-      opts.xrCompatible = !!(growMemViews(), HEAPU32)[
-        ((webxrOptions + 8) >>> 2) >>> 0
-      ]
+      var sType = (growMemViews(), HEAP32)[((nextInChainPtr + 4) >>> 2) >>> 0];
+      var webxrOptions = nextInChainPtr;
+      opts.xrCompatible = !!(growMemViews(), HEAPU32)[((webxrOptions + 8) >>> 2) >>> 0];
     }
   }
   if (!("gpu" in navigator)) {
-    var sp = stackSave()
+    var sp = stackSave();
     var messagePtr = stringToUTF8OnStack(
-      "WebGPU not available on this browser (navigator.gpu is not available)"
-    )
-    _emwgpuOnRequestAdapterCompleted(futureId, 3, adapterPtr, messagePtr)
-    stackRestore(sp)
-    return
+      "WebGPU not available on this browser (navigator.gpu is not available)",
+    );
+    _emwgpuOnRequestAdapterCompleted(futureId, 3, adapterPtr, messagePtr);
+    stackRestore(sp);
+    return;
   }
-  runtimeKeepalivePush()
+  runtimeKeepalivePush();
   WebGPU.Internals.futureInsert(
     futureId,
     navigator.gpu.requestAdapter(opts).then(
       (adapter) => {
-        runtimeKeepalivePop()
+        runtimeKeepalivePop();
         callUserCallback(() => {
           if (adapter) {
-            WebGPU.Internals.jsObjectInsert(adapterPtr, adapter)
-            _emwgpuOnRequestAdapterCompleted(futureId, 1, adapterPtr, 0)
+            WebGPU.Internals.jsObjectInsert(adapterPtr, adapter);
+            _emwgpuOnRequestAdapterCompleted(futureId, 1, adapterPtr, 0);
           } else {
-            var sp = stackSave()
+            var sp = stackSave();
             var messagePtr = stringToUTF8OnStack(
-              "WebGPU not available on this browser (requestAdapter returned null)"
-            )
-            _emwgpuOnRequestAdapterCompleted(
-              futureId,
-              3,
-              adapterPtr,
-              messagePtr
-            )
-            stackRestore(sp)
+              "WebGPU not available on this browser (requestAdapter returned null)",
+            );
+            _emwgpuOnRequestAdapterCompleted(futureId, 3, adapterPtr, messagePtr);
+            stackRestore(sp);
           }
-        })
+        });
       },
       (ex) => {
-        runtimeKeepalivePop()
+        runtimeKeepalivePop();
         callUserCallback(() => {
-          var sp = stackSave()
-          var messagePtr = stringToUTF8OnStack(ex.message)
-          _emwgpuOnRequestAdapterCompleted(futureId, 4, adapterPtr, messagePtr)
-          stackRestore(sp)
-        })
-      }
-    )
-  )
+          var sp = stackSave();
+          var messagePtr = stringToUTF8OnStack(ex.message);
+          _emwgpuOnRequestAdapterCompleted(futureId, 4, adapterPtr, messagePtr);
+          stackRestore(sp);
+        });
+      },
+    ),
+  );
 }
 var _emwgpuQueueOnSubmittedWorkDone = (queuePtr, futureId) => {
-  queuePtr >>>= 0
-  futureId = bigintToI53Checked(futureId)
-  var queue = WebGPU.getJsObject(queuePtr)
-  runtimeKeepalivePush()
+  queuePtr >>>= 0;
+  futureId = bigintToI53Checked(futureId);
+  var queue = WebGPU.getJsObject(queuePtr);
+  runtimeKeepalivePush();
   WebGPU.Internals.futureInsert(
     futureId,
     queue.onSubmittedWorkDone().then(() => {
-      runtimeKeepalivePop()
+      runtimeKeepalivePop();
       callUserCallback(() => {
-        _emwgpuOnWorkDoneCompleted(futureId, 1)
-      })
-    })
-  )
-}
+        _emwgpuOnWorkDoneCompleted(futureId, 1);
+      });
+    }),
+  );
+};
 var _emwgpuWaitAny = (futurePtr, futureCount, timeoutMSPtr) => {
-  futurePtr >>>= 0
-  futureCount >>>= 0
-  timeoutMSPtr >>>= 0
+  futurePtr >>>= 0;
+  futureCount >>>= 0;
+  timeoutMSPtr >>>= 0;
   return Asyncify.handleAsync(async () => {
-    var promises = []
+    var promises = [];
     if (timeoutMSPtr) {
-      var timeoutMS = (growMemViews(), HEAP32)[(timeoutMSPtr >>> 2) >>> 0]
-      promises.length = futureCount + 1
-      promises[futureCount] = new Promise((resolve) =>
-        setTimeout(resolve, timeoutMS, 0)
-      )
+      var timeoutMS = (growMemViews(), HEAP32)[(timeoutMSPtr >>> 2) >>> 0];
+      promises.length = futureCount + 1;
+      promises[futureCount] = new Promise((resolve) => setTimeout(resolve, timeoutMS, 0));
     } else {
-      promises.length = futureCount
+      promises.length = futureCount;
     }
     for (var i = 0; i < futureCount; ++i) {
-      var futureId = readI53FromI64(futurePtr + i * 8)
+      var futureId = readI53FromI64(futurePtr + i * 8);
       if (!(futureId in WebGPU.Internals.futures)) {
-        return futureId
+        return futureId;
       }
-      promises[i] = WebGPU.Internals.futures[futureId]
+      promises[i] = WebGPU.Internals.futures[futureId];
     }
-    const firstResolvedFuture = await Promise.race(promises)
-    delete WebGPU.Internals.futures[firstResolvedFuture]
-    return firstResolvedFuture
-  })
-}
-_emwgpuWaitAny.isAsync = true
-var ENV = {}
-var getExecutableName = () => thisProgram || "./this.program"
+    const firstResolvedFuture = await Promise.race(promises);
+    delete WebGPU.Internals.futures[firstResolvedFuture];
+    return firstResolvedFuture;
+  });
+};
+_emwgpuWaitAny.isAsync = true;
+var ENV = {};
+var getExecutableName = () => thisProgram || "./this.program";
 var getEnvStrings = () => {
   if (!getEnvStrings.strings) {
     var lang =
-      ((typeof navigator == "object" && navigator.language) || "C").replace(
-        "-",
-        "_"
-      ) + ".UTF-8"
+      ((typeof navigator == "object" && navigator.language) || "C").replace("-", "_") + ".UTF-8";
     var env = {
       USER: "web_user",
       LOGNAME: "web_user",
@@ -5204,202 +4876,195 @@ var getEnvStrings = () => {
       HOME: "/home/web_user",
       LANG: lang,
       _: getExecutableName(),
-    }
+    };
     for (var x in ENV) {
-      if (ENV[x] === undefined) delete env[x]
-      else env[x] = ENV[x]
+      if (ENV[x] === undefined) delete env[x];
+      else env[x] = ENV[x];
     }
-    var strings = []
+    var strings = [];
     for (var x in env) {
-      strings.push(`${x}=${env[x]}`)
+      strings.push(`${x}=${env[x]}`);
     }
-    getEnvStrings.strings = strings
+    getEnvStrings.strings = strings;
   }
-  return getEnvStrings.strings
-}
+  return getEnvStrings.strings;
+};
 function _environ_get(__environ, environ_buf) {
-  if (ENVIRONMENT_IS_PTHREAD)
-    return proxyToMainThread(14, 0, 1, __environ, environ_buf)
-  __environ >>>= 0
-  environ_buf >>>= 0
-  var bufSize = 0
-  var envp = 0
+  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(14, 0, 1, __environ, environ_buf);
+  __environ >>>= 0;
+  environ_buf >>>= 0;
+  var bufSize = 0;
+  var envp = 0;
   for (var string of getEnvStrings()) {
-    var ptr = environ_buf + bufSize
-    ;(growMemViews(), HEAPU32)[((__environ + envp) >>> 2) >>> 0] = ptr
-    bufSize += stringToUTF8(string, ptr, Infinity) + 1
-    envp += 4
+    var ptr = environ_buf + bufSize;
+    (growMemViews(), HEAPU32)[((__environ + envp) >>> 2) >>> 0] = ptr;
+    bufSize += stringToUTF8(string, ptr, Infinity) + 1;
+    envp += 4;
   }
-  return 0
+  return 0;
 }
 function _environ_sizes_get(penviron_count, penviron_buf_size) {
-  if (ENVIRONMENT_IS_PTHREAD)
-    return proxyToMainThread(15, 0, 1, penviron_count, penviron_buf_size)
-  penviron_count >>>= 0
-  penviron_buf_size >>>= 0
-  var strings = getEnvStrings()
-  ;(growMemViews(), HEAPU32)[(penviron_count >>> 2) >>> 0] = strings.length
-  var bufSize = 0
+  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(15, 0, 1, penviron_count, penviron_buf_size);
+  penviron_count >>>= 0;
+  penviron_buf_size >>>= 0;
+  var strings = getEnvStrings();
+  (growMemViews(), HEAPU32)[(penviron_count >>> 2) >>> 0] = strings.length;
+  var bufSize = 0;
   for (var string of strings) {
-    bufSize += lengthBytesUTF8(string) + 1
+    bufSize += lengthBytesUTF8(string) + 1;
   }
-  ;(growMemViews(), HEAPU32)[(penviron_buf_size >>> 2) >>> 0] = bufSize
-  return 0
+  (growMemViews(), HEAPU32)[(penviron_buf_size >>> 2) >>> 0] = bufSize;
+  return 0;
 }
 function _fd_close(fd) {
-  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(16, 0, 1, fd)
+  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(16, 0, 1, fd);
   try {
-    var stream = SYSCALLS.getStreamFromFD(fd)
-    FS.close(stream)
-    return 0
+    var stream = SYSCALLS.getStreamFromFD(fd);
+    FS.close(stream);
+    return 0;
   } catch (e) {
-    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e
-    return e.errno
+    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e;
+    return e.errno;
   }
 }
 var doReadv = (stream, iov, iovcnt, offset) => {
-  var ret = 0
+  var ret = 0;
   for (var i = 0; i < iovcnt; i++) {
-    var ptr = (growMemViews(), HEAPU32)[(iov >>> 2) >>> 0]
-    var len = (growMemViews(), HEAPU32)[((iov + 4) >>> 2) >>> 0]
-    iov += 8
-    var curr = FS.read(stream, (growMemViews(), HEAP8), ptr, len, offset)
-    if (curr < 0) return -1
-    ret += curr
-    if (curr < len) break
+    var ptr = (growMemViews(), HEAPU32)[(iov >>> 2) >>> 0];
+    var len = (growMemViews(), HEAPU32)[((iov + 4) >>> 2) >>> 0];
+    iov += 8;
+    var curr = FS.read(stream, (growMemViews(), HEAP8), ptr, len, offset);
+    if (curr < 0) return -1;
+    ret += curr;
+    if (curr < len) break;
     if (typeof offset != "undefined") {
-      offset += curr
+      offset += curr;
     }
   }
-  return ret
-}
+  return ret;
+};
 function _fd_read(fd, iov, iovcnt, pnum) {
-  if (ENVIRONMENT_IS_PTHREAD)
-    return proxyToMainThread(17, 0, 1, fd, iov, iovcnt, pnum)
-  iov >>>= 0
-  iovcnt >>>= 0
-  pnum >>>= 0
+  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(17, 0, 1, fd, iov, iovcnt, pnum);
+  iov >>>= 0;
+  iovcnt >>>= 0;
+  pnum >>>= 0;
   try {
-    var stream = SYSCALLS.getStreamFromFD(fd)
-    var num = doReadv(stream, iov, iovcnt)
-    ;(growMemViews(), HEAPU32)[(pnum >>> 2) >>> 0] = num
-    return 0
+    var stream = SYSCALLS.getStreamFromFD(fd);
+    var num = doReadv(stream, iov, iovcnt);
+    (growMemViews(), HEAPU32)[(pnum >>> 2) >>> 0] = num;
+    return 0;
   } catch (e) {
-    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e
-    return e.errno
+    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e;
+    return e.errno;
   }
 }
 function _fd_seek(fd, offset, whence, newOffset) {
-  if (ENVIRONMENT_IS_PTHREAD)
-    return proxyToMainThread(18, 0, 1, fd, offset, whence, newOffset)
-  offset = bigintToI53Checked(offset)
-  newOffset >>>= 0
+  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(18, 0, 1, fd, offset, whence, newOffset);
+  offset = bigintToI53Checked(offset);
+  newOffset >>>= 0;
   try {
-    if (isNaN(offset)) return 61
-    var stream = SYSCALLS.getStreamFromFD(fd)
-    FS.llseek(stream, offset, whence)
-    ;(growMemViews(), HEAP64)[(newOffset >>> 3) >>> 0] = BigInt(stream.position)
-    if (stream.getdents && offset === 0 && whence === 0) stream.getdents = null
-    return 0
+    if (isNaN(offset)) return 61;
+    var stream = SYSCALLS.getStreamFromFD(fd);
+    FS.llseek(stream, offset, whence);
+    (growMemViews(), HEAP64)[(newOffset >>> 3) >>> 0] = BigInt(stream.position);
+    if (stream.getdents && offset === 0 && whence === 0) stream.getdents = null;
+    return 0;
   } catch (e) {
-    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e
-    return e.errno
+    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e;
+    return e.errno;
   }
 }
 var doWritev = (stream, iov, iovcnt, offset) => {
-  var ret = 0
+  var ret = 0;
   for (var i = 0; i < iovcnt; i++) {
-    var ptr = (growMemViews(), HEAPU32)[(iov >>> 2) >>> 0]
-    var len = (growMemViews(), HEAPU32)[((iov + 4) >>> 2) >>> 0]
-    iov += 8
-    var curr = FS.write(stream, (growMemViews(), HEAP8), ptr, len, offset)
-    if (curr < 0) return -1
-    ret += curr
+    var ptr = (growMemViews(), HEAPU32)[(iov >>> 2) >>> 0];
+    var len = (growMemViews(), HEAPU32)[((iov + 4) >>> 2) >>> 0];
+    iov += 8;
+    var curr = FS.write(stream, (growMemViews(), HEAP8), ptr, len, offset);
+    if (curr < 0) return -1;
+    ret += curr;
     if (curr < len) {
-      break
+      break;
     }
     if (typeof offset != "undefined") {
-      offset += curr
+      offset += curr;
     }
   }
-  return ret
-}
+  return ret;
+};
 function _fd_write(fd, iov, iovcnt, pnum) {
-  if (ENVIRONMENT_IS_PTHREAD)
-    return proxyToMainThread(19, 0, 1, fd, iov, iovcnt, pnum)
-  iov >>>= 0
-  iovcnt >>>= 0
-  pnum >>>= 0
+  if (ENVIRONMENT_IS_PTHREAD) return proxyToMainThread(19, 0, 1, fd, iov, iovcnt, pnum);
+  iov >>>= 0;
+  iovcnt >>>= 0;
+  pnum >>>= 0;
   try {
-    var stream = SYSCALLS.getStreamFromFD(fd)
-    var num = doWritev(stream, iov, iovcnt)
-    ;(growMemViews(), HEAPU32)[(pnum >>> 2) >>> 0] = num
-    return 0
+    var stream = SYSCALLS.getStreamFromFD(fd);
+    var num = doWritev(stream, iov, iovcnt);
+    (growMemViews(), HEAPU32)[(pnum >>> 2) >>> 0] = num;
+    return 0;
   } catch (e) {
-    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e
-    return e.errno
+    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e;
+    return e.errno;
   }
 }
 function _llvm_eh_typeid_for(type) {
-  type >>>= 0
-  return type
+  type >>>= 0;
+  return type;
 }
 function _random_get(buffer, size) {
-  buffer >>>= 0
-  size >>>= 0
+  buffer >>>= 0;
+  size >>>= 0;
   try {
-    randomFill(
-      (growMemViews(), HEAPU8).subarray(buffer >>> 0, (buffer + size) >>> 0)
-    )
-    return 0
+    randomFill((growMemViews(), HEAPU8).subarray(buffer >>> 0, (buffer + size) >>> 0));
+    return 0;
   } catch (e) {
-    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e
-    return e.errno
+    if (typeof FS == "undefined" || !(e.name === "ErrnoError")) throw e;
+    return e.errno;
   }
 }
 function _wgpuAdapterGetInfo(adapterPtr, info) {
-  adapterPtr >>>= 0
-  info >>>= 0
-  var adapter = WebGPU.getJsObject(adapterPtr)
-  WebGPU.fillAdapterInfoStruct(adapter.info, info)
-  return 1
+  adapterPtr >>>= 0;
+  info >>>= 0;
+  var adapter = WebGPU.getJsObject(adapterPtr);
+  WebGPU.fillAdapterInfoStruct(adapter.info, info);
+  return 1;
 }
 function _wgpuAdapterGetLimits(adapterPtr, limitsOutPtr) {
-  adapterPtr >>>= 0
-  limitsOutPtr >>>= 0
-  var adapter = WebGPU.getJsObject(adapterPtr)
-  WebGPU.fillLimitStruct(adapter.limits, limitsOutPtr)
-  return 1
+  adapterPtr >>>= 0;
+  limitsOutPtr >>>= 0;
+  var adapter = WebGPU.getJsObject(adapterPtr);
+  WebGPU.fillLimitStruct(adapter.limits, limitsOutPtr);
+  return 1;
 }
 function _wgpuAdapterHasFeature(adapterPtr, featureEnumValue) {
-  adapterPtr >>>= 0
-  var adapter = WebGPU.getJsObject(adapterPtr)
-  return adapter.features.has(WebGPU.FeatureName[featureEnumValue])
+  adapterPtr >>>= 0;
+  var adapter = WebGPU.getJsObject(adapterPtr);
+  return adapter.features.has(WebGPU.FeatureName[featureEnumValue]);
 }
 var _wgpuBufferGetSize = (bufferPtr) => {
-  bufferPtr >>>= 0
+  bufferPtr >>>= 0;
   var ret = (() => {
-    var buffer = WebGPU.getJsObject(bufferPtr)
-    return buffer.size
-  })()
-  return BigInt(ret)
-}
+    var buffer = WebGPU.getJsObject(bufferPtr);
+    return buffer.size;
+  })();
+  return BigInt(ret);
+};
 function _wgpuCommandEncoderBeginComputePass(encoderPtr, descriptor) {
-  encoderPtr >>>= 0
-  descriptor >>>= 0
-  var desc
+  encoderPtr >>>= 0;
+  descriptor >>>= 0;
+  var desc;
   if (descriptor) {
     desc = {
       label: WebGPU.makeStringFromOptionalStringView(descriptor + 4),
       timestampWrites: WebGPU.makePassTimestampWrites(
-        (growMemViews(), HEAPU32)[((descriptor + 12) >>> 2) >>> 0]
+        (growMemViews(), HEAPU32)[((descriptor + 12) >>> 2) >>> 0],
       ),
-    }
+    };
   }
-  var commandEncoder = WebGPU.getJsObject(encoderPtr)
-  var ptr = _emwgpuCreateComputePassEncoder(0)
-  WebGPU.Internals.jsObjectInsert(ptr, commandEncoder.beginComputePass(desc))
-  return ptr
+  var commandEncoder = WebGPU.getJsObject(encoderPtr);
+  var ptr = _emwgpuCreateComputePassEncoder(0);
+  WebGPU.Internals.jsObjectInsert(ptr, commandEncoder.beginComputePass(desc));
+  return ptr;
 }
 function _wgpuCommandEncoderCopyBufferToBuffer(
   encoderPtr,
@@ -5407,232 +5072,221 @@ function _wgpuCommandEncoderCopyBufferToBuffer(
   srcOffset,
   dstPtr,
   dstOffset,
-  size
+  size,
 ) {
-  encoderPtr >>>= 0
-  srcPtr >>>= 0
-  srcOffset = bigintToI53Checked(srcOffset)
-  dstPtr >>>= 0
-  dstOffset = bigintToI53Checked(dstOffset)
-  size = bigintToI53Checked(size)
-  var commandEncoder = WebGPU.getJsObject(encoderPtr)
-  var src = WebGPU.getJsObject(srcPtr)
-  var dst = WebGPU.getJsObject(dstPtr)
-  commandEncoder.copyBufferToBuffer(src, srcOffset, dst, dstOffset, size)
+  encoderPtr >>>= 0;
+  srcPtr >>>= 0;
+  srcOffset = bigintToI53Checked(srcOffset);
+  dstPtr >>>= 0;
+  dstOffset = bigintToI53Checked(dstOffset);
+  size = bigintToI53Checked(size);
+  var commandEncoder = WebGPU.getJsObject(encoderPtr);
+  var src = WebGPU.getJsObject(srcPtr);
+  var dst = WebGPU.getJsObject(dstPtr);
+  commandEncoder.copyBufferToBuffer(src, srcOffset, dst, dstOffset, size);
 }
 function _wgpuCommandEncoderFinish(encoderPtr, descriptor) {
-  encoderPtr >>>= 0
-  descriptor >>>= 0
-  var commandEncoder = WebGPU.getJsObject(encoderPtr)
-  var ptr = _emwgpuCreateCommandBuffer(0)
-  WebGPU.Internals.jsObjectInsert(ptr, commandEncoder.finish())
-  return ptr
+  encoderPtr >>>= 0;
+  descriptor >>>= 0;
+  var commandEncoder = WebGPU.getJsObject(encoderPtr);
+  var ptr = _emwgpuCreateCommandBuffer(0);
+  WebGPU.Internals.jsObjectInsert(ptr, commandEncoder.finish());
+  return ptr;
 }
 function _wgpuComputePassEncoderDispatchWorkgroups(passPtr, x, y, z) {
-  passPtr >>>= 0
-  var pass = WebGPU.getJsObject(passPtr)
-  pass.dispatchWorkgroups(x, y, z)
+  passPtr >>>= 0;
+  var pass = WebGPU.getJsObject(passPtr);
+  pass.dispatchWorkgroups(x, y, z);
 }
 function _wgpuComputePassEncoderEnd(passPtr) {
-  passPtr >>>= 0
-  var pass = WebGPU.getJsObject(passPtr)
-  pass.end()
+  passPtr >>>= 0;
+  var pass = WebGPU.getJsObject(passPtr);
+  pass.end();
 }
 function _wgpuComputePassEncoderSetBindGroup(
   passPtr,
   groupIndex,
   groupPtr,
   dynamicOffsetCount,
-  dynamicOffsetsPtr
+  dynamicOffsetsPtr,
 ) {
-  passPtr >>>= 0
-  groupPtr >>>= 0
-  dynamicOffsetCount >>>= 0
-  dynamicOffsetsPtr >>>= 0
-  var pass = WebGPU.getJsObject(passPtr)
-  var group = WebGPU.getJsObject(groupPtr)
+  passPtr >>>= 0;
+  groupPtr >>>= 0;
+  dynamicOffsetCount >>>= 0;
+  dynamicOffsetsPtr >>>= 0;
+  var pass = WebGPU.getJsObject(passPtr);
+  var group = WebGPU.getJsObject(groupPtr);
   if (dynamicOffsetCount == 0) {
-    pass.setBindGroup(groupIndex, group)
+    pass.setBindGroup(groupIndex, group);
   } else {
     pass.setBindGroup(
       groupIndex,
       group,
       (growMemViews(), HEAPU32),
       dynamicOffsetsPtr >>> 2,
-      dynamicOffsetCount
-    )
+      dynamicOffsetCount,
+    );
   }
 }
 function _wgpuComputePassEncoderSetPipeline(passPtr, pipelinePtr) {
-  passPtr >>>= 0
-  pipelinePtr >>>= 0
-  var pass = WebGPU.getJsObject(passPtr)
-  var pipeline = WebGPU.getJsObject(pipelinePtr)
-  pass.setPipeline(pipeline)
+  passPtr >>>= 0;
+  pipelinePtr >>>= 0;
+  var pass = WebGPU.getJsObject(passPtr);
+  var pipeline = WebGPU.getJsObject(pipelinePtr);
+  pass.setPipeline(pipeline);
 }
 function _wgpuComputePipelineGetBindGroupLayout(pipelinePtr, groupIndex) {
-  pipelinePtr >>>= 0
-  var pipeline = WebGPU.getJsObject(pipelinePtr)
-  var ptr = _emwgpuCreateBindGroupLayout(0)
-  WebGPU.Internals.jsObjectInsert(ptr, pipeline.getBindGroupLayout(groupIndex))
-  return ptr
+  pipelinePtr >>>= 0;
+  var pipeline = WebGPU.getJsObject(pipelinePtr);
+  var ptr = _emwgpuCreateBindGroupLayout(0);
+  WebGPU.Internals.jsObjectInsert(ptr, pipeline.getBindGroupLayout(groupIndex));
+  return ptr;
 }
 var _wgpuDeviceCreateBindGroup = (devicePtr, descriptor) => {
-  devicePtr >>>= 0
-  descriptor >>>= 0
+  devicePtr >>>= 0;
+  descriptor >>>= 0;
   function makeEntry(entryPtr) {
-    var bufferPtr = (growMemViews(), HEAPU32)[((entryPtr + 8) >>> 2) >>> 0]
-    var samplerPtr = (growMemViews(), HEAPU32)[((entryPtr + 32) >>> 2) >>> 0]
-    var textureViewPtr = (growMemViews(), HEAPU32)[
-      ((entryPtr + 36) >>> 2) >>> 0
-    ]
-    var externalTexturePtr = 0
+    var bufferPtr = (growMemViews(), HEAPU32)[((entryPtr + 8) >>> 2) >>> 0];
+    var samplerPtr = (growMemViews(), HEAPU32)[((entryPtr + 32) >>> 2) >>> 0];
+    var textureViewPtr = (growMemViews(), HEAPU32)[((entryPtr + 36) >>> 2) >>> 0];
+    var externalTexturePtr = 0;
     WebGPU.iterateExtensions(entryPtr, {
       327681: (ptr) => {
-        externalTexturePtr = (growMemViews(), HEAPU32)[((ptr + 8) >>> 2) >>> 0]
+        externalTexturePtr = (growMemViews(), HEAPU32)[((ptr + 8) >>> 2) >>> 0];
       },
-    })
-    var resource
+    });
+    var resource;
     if (bufferPtr) {
-      var size = readI53FromI64(entryPtr + 24)
-      if (size == -1) size = undefined
+      var size = readI53FromI64(entryPtr + 24);
+      if (size == -1) size = undefined;
       resource = {
         buffer: WebGPU.getJsObject(bufferPtr),
         offset: readI53FromI64(entryPtr + 16),
         size,
-      }
+      };
     } else {
-      resource = WebGPU.getJsObject(
-        samplerPtr || textureViewPtr || externalTexturePtr
-      )
+      resource = WebGPU.getJsObject(samplerPtr || textureViewPtr || externalTexturePtr);
     }
     return {
       binding: (growMemViews(), HEAPU32)[((entryPtr + 4) >>> 2) >>> 0],
       resource,
-    }
+    };
   }
   function makeEntries(count, entriesPtrs) {
-    var entries = []
+    var entries = [];
     for (var i = 0; i < count; ++i) {
-      entries.push(makeEntry(entriesPtrs + 40 * i))
+      entries.push(makeEntry(entriesPtrs + 40 * i));
     }
-    return entries
+    return entries;
   }
   var desc = {
     label: WebGPU.makeStringFromOptionalStringView(descriptor + 4),
-    layout: WebGPU.getJsObject(
-      (growMemViews(), HEAPU32)[((descriptor + 12) >>> 2) >>> 0]
-    ),
+    layout: WebGPU.getJsObject((growMemViews(), HEAPU32)[((descriptor + 12) >>> 2) >>> 0]),
     entries: makeEntries(
       (growMemViews(), HEAPU32)[((descriptor + 16) >>> 2) >>> 0],
-      (growMemViews(), HEAPU32)[((descriptor + 20) >>> 2) >>> 0]
+      (growMemViews(), HEAPU32)[((descriptor + 20) >>> 2) >>> 0],
     ),
-  }
-  var device = WebGPU.getJsObject(devicePtr)
-  var ptr = _emwgpuCreateBindGroup(0)
-  WebGPU.Internals.jsObjectInsert(ptr, device.createBindGroup(desc))
-  return ptr
-}
+  };
+  var device = WebGPU.getJsObject(devicePtr);
+  var ptr = _emwgpuCreateBindGroup(0);
+  WebGPU.Internals.jsObjectInsert(ptr, device.createBindGroup(desc));
+  return ptr;
+};
 function _wgpuDeviceCreateCommandEncoder(devicePtr, descriptor) {
-  devicePtr >>>= 0
-  descriptor >>>= 0
-  var desc
+  devicePtr >>>= 0;
+  descriptor >>>= 0;
+  var desc;
   if (descriptor) {
-    desc = { label: WebGPU.makeStringFromOptionalStringView(descriptor + 4) }
+    desc = { label: WebGPU.makeStringFromOptionalStringView(descriptor + 4) };
   }
-  var device = WebGPU.getJsObject(devicePtr)
-  var ptr = _emwgpuCreateCommandEncoder(0)
-  WebGPU.Internals.jsObjectInsert(ptr, device.createCommandEncoder(desc))
-  return ptr
+  var device = WebGPU.getJsObject(devicePtr);
+  var ptr = _emwgpuCreateCommandEncoder(0);
+  WebGPU.Internals.jsObjectInsert(ptr, device.createCommandEncoder(desc));
+  return ptr;
 }
 function _wgpuDeviceCreateComputePipeline(devicePtr, descriptor) {
-  devicePtr >>>= 0
-  descriptor >>>= 0
-  var desc = WebGPU.makeComputePipelineDesc(descriptor)
-  var device = WebGPU.getJsObject(devicePtr)
-  var ptr = _emwgpuCreateComputePipeline(0)
-  WebGPU.Internals.jsObjectInsert(ptr, device.createComputePipeline(desc))
-  return ptr
+  devicePtr >>>= 0;
+  descriptor >>>= 0;
+  var desc = WebGPU.makeComputePipelineDesc(descriptor);
+  var device = WebGPU.getJsObject(devicePtr);
+  var ptr = _emwgpuCreateComputePipeline(0);
+  WebGPU.Internals.jsObjectInsert(ptr, device.createComputePipeline(desc));
+  return ptr;
 }
 function _wgpuInstanceHasWGSLLanguageFeature(instance, featureEnumValue) {
-  instance >>>= 0
+  instance >>>= 0;
   if (!("wgslLanguageFeatures" in navigator.gpu)) {
-    return false
+    return false;
   }
-  return navigator.gpu.wgslLanguageFeatures.has(
-    WebGPU.WGSLLanguageFeatureName[featureEnumValue]
-  )
+  return navigator.gpu.wgslLanguageFeatures.has(WebGPU.WGSLLanguageFeatureName[featureEnumValue]);
 }
 var _wgpuQueueSubmit = (queuePtr, commandCount, commands) => {
-  queuePtr >>>= 0
-  commandCount >>>= 0
-  commands >>>= 0
-  var queue = WebGPU.getJsObject(queuePtr)
+  queuePtr >>>= 0;
+  commandCount >>>= 0;
+  commands >>>= 0;
+  var queue = WebGPU.getJsObject(queuePtr);
   var cmds = Array.from(
     (growMemViews(), HEAP32).subarray(
       (commands >>> 2) >>> 0,
-      ((commands + commandCount * 4) >>> 2) >>> 0
+      ((commands + commandCount * 4) >>> 2) >>> 0,
     ),
-    (id) => WebGPU.getJsObject(id)
-  )
-  queue.submit(cmds)
-}
+    (id) => WebGPU.getJsObject(id),
+  );
+  queue.submit(cmds);
+};
 function _wgpuQueueWriteBuffer(queuePtr, bufferPtr, bufferOffset, data, size) {
-  queuePtr >>>= 0
-  bufferPtr >>>= 0
-  bufferOffset = bigintToI53Checked(bufferOffset)
-  data >>>= 0
-  size >>>= 0
-  var queue = WebGPU.getJsObject(queuePtr)
-  var buffer = WebGPU.getJsObject(bufferPtr)
-  var subarray = (growMemViews(), HEAPU8).subarray(
-    data >>> 0,
-    (data + size) >>> 0
-  )
-  queue.writeBuffer(buffer, bufferOffset, subarray, 0, size)
+  queuePtr >>>= 0;
+  bufferPtr >>>= 0;
+  bufferOffset = bigintToI53Checked(bufferOffset);
+  data >>>= 0;
+  size >>>= 0;
+  var queue = WebGPU.getJsObject(queuePtr);
+  var buffer = WebGPU.getJsObject(bufferPtr);
+  var subarray = (growMemViews(), HEAPU8).subarray(data >>> 0, (data + size) >>> 0);
+  queue.writeBuffer(buffer, bufferOffset, subarray, 0, size);
 }
 var runAndAbortIfError = (func) => {
   try {
-    return func()
+    return func();
   } catch (e) {
-    abort(e)
+    abort(e);
   }
-}
+};
 var Asyncify = {
   instrumentWasmImports(imports) {
-    var importPattern = /^(invoke_.*|__asyncjs__.*)$/
+    var importPattern = /^(invoke_.*|__asyncjs__.*)$/;
     for (const [x, original] of Object.entries(imports)) {
       if (typeof original == "function") {
-        const isAsyncifyImport = original.isAsync || importPattern.test(x)
+        const isAsyncifyImport = original.isAsync || importPattern.test(x);
       }
     }
   },
   instrumentFunction(original) {
     var wrapper = (...args) => {
-      Asyncify.exportCallStack.push(original)
+      Asyncify.exportCallStack.push(original);
       try {
-        return original(...args)
+        return original(...args);
       } finally {
         if (!ABORT) {
-          var top = Asyncify.exportCallStack.pop()
-          Asyncify.maybeStopUnwind()
+          var top = Asyncify.exportCallStack.pop();
+          Asyncify.maybeStopUnwind();
         }
       }
-    }
-    Asyncify.funcWrappers.set(original, wrapper)
-    return wrapper
+    };
+    Asyncify.funcWrappers.set(original, wrapper);
+    return wrapper;
   },
   instrumentWasmExports(exports) {
-    var ret = {}
+    var ret = {};
     for (const [x, original] of Object.entries(exports)) {
       if (typeof original == "function") {
-        var wrapper = Asyncify.instrumentFunction(original)
-        ret[x] = wrapper
+        var wrapper = Asyncify.instrumentFunction(original);
+        ret[x] = wrapper;
       } else {
-        ret[x] = original
+        ret[x] = original;
       }
     }
-    return ret
+    return ret;
   },
   State: { Normal: 0, Unwinding: 1, Rewinding: 2, Disabled: 3 },
   state: 0,
@@ -5648,11 +5302,11 @@ var Asyncify = {
   sleepCallbacks: [],
   getCallStackId(func) {
     if (!Asyncify.callstackFuncToId.has(func)) {
-      var id = Asyncify.callStackId++
-      Asyncify.callstackFuncToId.set(func, id)
-      Asyncify.callStackIdToFunc.set(id, func)
+      var id = Asyncify.callStackId++;
+      Asyncify.callstackFuncToId.set(func, id);
+      Asyncify.callStackIdToFunc.set(id, func);
     }
-    return Asyncify.callstackFuncToId.get(func)
+    return Asyncify.callstackFuncToId.get(func);
   },
   maybeStopUnwind() {
     if (
@@ -5660,220 +5314,217 @@ var Asyncify = {
       Asyncify.state === Asyncify.State.Unwinding &&
       Asyncify.exportCallStack.length === 0
     ) {
-      Asyncify.state = Asyncify.State.Normal
-      runtimeKeepalivePush()
-      runAndAbortIfError(_asyncify_stop_unwind)
+      Asyncify.state = Asyncify.State.Normal;
+      runtimeKeepalivePush();
+      runAndAbortIfError(_asyncify_stop_unwind);
       if (typeof Fibers != "undefined") {
-        Fibers.trampoline()
+        Fibers.trampoline();
       }
     }
   },
   whenDone() {
     return new Promise((resolve, reject) => {
-      Asyncify.asyncPromiseHandlers = { resolve, reject }
-    })
+      Asyncify.asyncPromiseHandlers = { resolve, reject };
+    });
   },
   allocateData() {
-    var ptr = _malloc(12 + Asyncify.StackSize)
-    Asyncify.setDataHeader(ptr, ptr + 12, Asyncify.StackSize)
-    Asyncify.setDataRewindFunc(ptr)
-    return ptr
+    var ptr = _malloc(12 + Asyncify.StackSize);
+    Asyncify.setDataHeader(ptr, ptr + 12, Asyncify.StackSize);
+    Asyncify.setDataRewindFunc(ptr);
+    return ptr;
   },
   setDataHeader(ptr, stack, stackSize) {
-    ;(growMemViews(), HEAPU32)[(ptr >>> 2) >>> 0] = stack
-    ;(growMemViews(), HEAPU32)[((ptr + 4) >>> 2) >>> 0] = stack + stackSize
+    (growMemViews(), HEAPU32)[(ptr >>> 2) >>> 0] = stack;
+    (growMemViews(), HEAPU32)[((ptr + 4) >>> 2) >>> 0] = stack + stackSize;
   },
   setDataRewindFunc(ptr) {
-    var bottomOfCallStack = Asyncify.exportCallStack[0]
-    var rewindId = Asyncify.getCallStackId(bottomOfCallStack)
-    ;(growMemViews(), HEAP32)[((ptr + 8) >>> 2) >>> 0] = rewindId
+    var bottomOfCallStack = Asyncify.exportCallStack[0];
+    var rewindId = Asyncify.getCallStackId(bottomOfCallStack);
+    (growMemViews(), HEAP32)[((ptr + 8) >>> 2) >>> 0] = rewindId;
   },
   getDataRewindFunc(ptr) {
-    var id = (growMemViews(), HEAP32)[((ptr + 8) >>> 2) >>> 0]
-    var func = Asyncify.callStackIdToFunc.get(id)
-    return func
+    var id = (growMemViews(), HEAP32)[((ptr + 8) >>> 2) >>> 0];
+    var func = Asyncify.callStackIdToFunc.get(id);
+    return func;
   },
   doRewind(ptr) {
-    var original = Asyncify.getDataRewindFunc(ptr)
-    var func = Asyncify.funcWrappers.get(original)
-    runtimeKeepalivePop()
-    return func()
+    var original = Asyncify.getDataRewindFunc(ptr);
+    var func = Asyncify.funcWrappers.get(original);
+    runtimeKeepalivePop();
+    return func();
   },
   handleSleep(startAsync) {
-    if (ABORT) return
+    if (ABORT) return;
     if (Asyncify.state === Asyncify.State.Normal) {
-      var reachedCallback = false
-      var reachedAfterCallback = false
+      var reachedCallback = false;
+      var reachedAfterCallback = false;
       startAsync((handleSleepReturnValue = 0) => {
-        if (ABORT) return
-        Asyncify.handleSleepReturnValue = handleSleepReturnValue
-        reachedCallback = true
+        if (ABORT) return;
+        Asyncify.handleSleepReturnValue = handleSleepReturnValue;
+        reachedCallback = true;
         if (!reachedAfterCallback) {
-          return
+          return;
         }
-        Asyncify.state = Asyncify.State.Rewinding
-        runAndAbortIfError(() => _asyncify_start_rewind(Asyncify.currData))
+        Asyncify.state = Asyncify.State.Rewinding;
+        runAndAbortIfError(() => _asyncify_start_rewind(Asyncify.currData));
         if (typeof MainLoop != "undefined" && MainLoop.func) {
-          MainLoop.resume()
+          MainLoop.resume();
         }
         var asyncWasmReturnValue,
-          isError = false
+          isError = false;
         try {
-          asyncWasmReturnValue = Asyncify.doRewind(Asyncify.currData)
+          asyncWasmReturnValue = Asyncify.doRewind(Asyncify.currData);
         } catch (err) {
-          asyncWasmReturnValue = err
-          isError = true
+          asyncWasmReturnValue = err;
+          isError = true;
         }
-        var handled = false
+        var handled = false;
         if (!Asyncify.currData) {
-          var asyncPromiseHandlers = Asyncify.asyncPromiseHandlers
+          var asyncPromiseHandlers = Asyncify.asyncPromiseHandlers;
           if (asyncPromiseHandlers) {
-            Asyncify.asyncPromiseHandlers = null
-            ;(isError
-              ? asyncPromiseHandlers.reject
-              : asyncPromiseHandlers.resolve)(asyncWasmReturnValue)
-            handled = true
+            Asyncify.asyncPromiseHandlers = null;
+            (isError ? asyncPromiseHandlers.reject : asyncPromiseHandlers.resolve)(
+              asyncWasmReturnValue,
+            );
+            handled = true;
           }
         }
         if (isError && !handled) {
-          throw asyncWasmReturnValue
+          throw asyncWasmReturnValue;
         }
-      })
-      reachedAfterCallback = true
+      });
+      reachedAfterCallback = true;
       if (!reachedCallback) {
-        Asyncify.state = Asyncify.State.Unwinding
-        Asyncify.currData = Asyncify.allocateData()
+        Asyncify.state = Asyncify.State.Unwinding;
+        Asyncify.currData = Asyncify.allocateData();
         if (typeof MainLoop != "undefined" && MainLoop.func) {
-          MainLoop.pause()
+          MainLoop.pause();
         }
-        runAndAbortIfError(() => _asyncify_start_unwind(Asyncify.currData))
+        runAndAbortIfError(() => _asyncify_start_unwind(Asyncify.currData));
       }
     } else if (Asyncify.state === Asyncify.State.Rewinding) {
-      Asyncify.state = Asyncify.State.Normal
-      runAndAbortIfError(_asyncify_stop_rewind)
-      _free(Asyncify.currData)
-      Asyncify.currData = null
-      Asyncify.sleepCallbacks.forEach(callUserCallback)
+      Asyncify.state = Asyncify.State.Normal;
+      runAndAbortIfError(_asyncify_stop_rewind);
+      _free(Asyncify.currData);
+      Asyncify.currData = null;
+      Asyncify.sleepCallbacks.forEach(callUserCallback);
     } else {
-      abort(`invalid state: ${Asyncify.state}`)
+      abort(`invalid state: ${Asyncify.state}`);
     }
-    return Asyncify.handleSleepReturnValue
+    return Asyncify.handleSleepReturnValue;
   },
   handleAsync: (startAsync) =>
     Asyncify.handleSleep((wakeUp) => {
-      startAsync().then(wakeUp)
+      startAsync().then(wakeUp);
     }),
-}
+};
 var getCFunc = (ident) => {
-  var func = Module["_" + ident]
-  return func
-}
+  var func = Module["_" + ident];
+  return func;
+};
 var writeArrayToMemory = (array, buffer) => {
-  ;(growMemViews(), HEAP8).set(array, buffer >>> 0)
-}
+  (growMemViews(), HEAP8).set(array, buffer >>> 0);
+};
 var ccall = (ident, returnType, argTypes, args, opts) => {
   var toC = {
     string: (str) => {
-      var ret = 0
+      var ret = 0;
       if (str !== null && str !== undefined && str !== 0) {
-        ret = stringToUTF8OnStack(str)
+        ret = stringToUTF8OnStack(str);
       }
-      return ret
+      return ret;
     },
     array: (arr) => {
-      var ret = stackAlloc(arr.length)
-      writeArrayToMemory(arr, ret)
-      return ret
+      var ret = stackAlloc(arr.length);
+      writeArrayToMemory(arr, ret);
+      return ret;
     },
-  }
+  };
   function convertReturnValue(ret) {
     if (returnType === "string") {
-      return UTF8ToString(ret)
+      return UTF8ToString(ret);
     }
-    if (returnType === "pointer") return ret >>> 0
-    if (returnType === "boolean") return Boolean(ret)
-    return ret
+    if (returnType === "pointer") return ret >>> 0;
+    if (returnType === "boolean") return Boolean(ret);
+    return ret;
   }
-  var func = getCFunc(ident)
-  var cArgs = []
-  var stack = 0
+  var func = getCFunc(ident);
+  var cArgs = [];
+  var stack = 0;
   if (args) {
     for (var i = 0; i < args.length; i++) {
-      var converter = toC[argTypes[i]]
+      var converter = toC[argTypes[i]];
       if (converter) {
-        if (stack === 0) stack = stackSave()
-        cArgs[i] = converter(args[i])
+        if (stack === 0) stack = stackSave();
+        cArgs[i] = converter(args[i]);
       } else {
-        cArgs[i] = args[i]
+        cArgs[i] = args[i];
       }
     }
   }
-  var previousAsync = Asyncify.currData
-  var ret = func(...cArgs)
+  var previousAsync = Asyncify.currData;
+  var ret = func(...cArgs);
   function onDone(ret) {
-    runtimeKeepalivePop()
-    if (stack !== 0) stackRestore(stack)
-    return convertReturnValue(ret)
+    runtimeKeepalivePop();
+    if (stack !== 0) stackRestore(stack);
+    return convertReturnValue(ret);
   }
-  var asyncMode = opts?.async
-  runtimeKeepalivePush()
+  var asyncMode = opts?.async;
+  runtimeKeepalivePush();
   if (Asyncify.currData != previousAsync) {
-    return Asyncify.whenDone().then(onDone)
+    return Asyncify.whenDone().then(onDone);
   }
-  ret = onDone(ret)
-  if (asyncMode) return Promise.resolve(ret)
-  return ret
-}
+  ret = onDone(ret);
+  if (asyncMode) return Promise.resolve(ret);
+  return ret;
+};
 var cwrap = (ident, returnType, argTypes, opts) => {
-  var numericArgs =
-    !argTypes ||
-    argTypes.every((type) => type === "number" || type === "boolean")
-  var numericRet = returnType !== "string"
+  var numericArgs = !argTypes || argTypes.every((type) => type === "number" || type === "boolean");
+  var numericRet = returnType !== "string";
   if (numericRet && numericArgs && !opts) {
-    return getCFunc(ident)
+    return getCFunc(ident);
   }
-  return (...args) => ccall(ident, returnType, argTypes, args, opts)
-}
-var FS_createPath = (...args) => FS.createPath(...args)
-var FS_unlink = (...args) => FS.unlink(...args)
-var FS_createLazyFile = (...args) => FS.createLazyFile(...args)
-var FS_createDevice = (...args) => FS.createDevice(...args)
-PThread.init()
-FS.createPreloadedFile = FS_createPreloadedFile
-FS.preloadFile = FS_preloadFile
-FS.staticInit()
+  return (...args) => ccall(ident, returnType, argTypes, args, opts);
+};
+var FS_createPath = (...args) => FS.createPath(...args);
+var FS_unlink = (...args) => FS.unlink(...args);
+var FS_createLazyFile = (...args) => FS.createLazyFile(...args);
+var FS_createDevice = (...args) => FS.createDevice(...args);
+PThread.init();
+FS.createPreloadedFile = FS_createPreloadedFile;
+FS.preloadFile = FS_preloadFile;
+FS.staticInit();
 {
-  initMemory()
-  if (Module["noExitRuntime"]) noExitRuntime = Module["noExitRuntime"]
-  if (Module["preloadPlugins"]) preloadPlugins = Module["preloadPlugins"]
-  if (Module["print"]) out = Module["print"]
-  if (Module["printErr"]) err = Module["printErr"]
-  if (Module["wasmBinary"]) wasmBinary = Module["wasmBinary"]
-  if (Module["arguments"]) arguments_ = Module["arguments"]
-  if (Module["thisProgram"]) thisProgram = Module["thisProgram"]
+  initMemory();
+  if (Module["noExitRuntime"]) noExitRuntime = Module["noExitRuntime"];
+  if (Module["preloadPlugins"]) preloadPlugins = Module["preloadPlugins"];
+  if (Module["print"]) out = Module["print"];
+  if (Module["printErr"]) err = Module["printErr"];
+  if (Module["wasmBinary"]) wasmBinary = Module["wasmBinary"];
+  if (Module["arguments"]) arguments_ = Module["arguments"];
+  if (Module["thisProgram"]) thisProgram = Module["thisProgram"];
   if (Module["preInit"]) {
-    if (typeof Module["preInit"] == "function")
-      Module["preInit"] = [Module["preInit"]]
+    if (typeof Module["preInit"] == "function") Module["preInit"] = [Module["preInit"]];
     while (Module["preInit"].length > 0) {
-      Module["preInit"].shift()()
+      Module["preInit"].shift()();
     }
   }
 }
-Module["ENV"] = ENV
-Module["mmapAlloc"] = mmapAlloc
-Module["wasmMemory"] = wasmMemory
-Module["addRunDependency"] = addRunDependency
-Module["removeRunDependency"] = removeRunDependency
-Module["ccall"] = ccall
-Module["cwrap"] = cwrap
-Module["FS_preloadFile"] = FS_preloadFile
-Module["FS_unlink"] = FS_unlink
-Module["FS_createPath"] = FS_createPath
-Module["FS_createDevice"] = FS_createDevice
-Module["FS"] = FS
-Module["FS_createDataFile"] = FS_createDataFile
-Module["FS_createLazyFile"] = FS_createLazyFile
-Module["MEMFS"] = MEMFS
+Module["ENV"] = ENV;
+Module["mmapAlloc"] = mmapAlloc;
+Module["wasmMemory"] = wasmMemory;
+Module["addRunDependency"] = addRunDependency;
+Module["removeRunDependency"] = removeRunDependency;
+Module["ccall"] = ccall;
+Module["cwrap"] = cwrap;
+Module["FS_preloadFile"] = FS_preloadFile;
+Module["FS_unlink"] = FS_unlink;
+Module["FS_createPath"] = FS_createPath;
+Module["FS_createDevice"] = FS_createDevice;
+Module["FS"] = FS;
+Module["FS_createDataFile"] = FS_createDataFile;
+Module["FS_createLazyFile"] = FS_createLazyFile;
+Module["MEMFS"] = MEMFS;
 var proxiedFunctionTable = [
   _proc_exit,
   exitOnMainThread,
@@ -5895,7 +5546,7 @@ var proxiedFunctionTable = [
   _fd_read,
   _fd_seek,
   _fd_write,
-]
+];
 function __asyncjs__js_file_read(path_ptr, offset, req_size, out_ptr) {
   return Asyncify.handleAsync(
     async () =>
@@ -5903,9 +5554,9 @@ function __asyncjs__js_file_read(path_ptr, offset, req_size, out_ptr) {
         UTF8ToString(Number(path_ptr)),
         Number(offset),
         Number(req_size),
-        Number(out_ptr)
-      )
-  )
+        Number(out_ptr),
+      ),
+  );
 }
 var _malloc,
   _free,
@@ -6075,182 +5726,178 @@ var _malloc,
   _asyncify_start_rewind,
   _asyncify_stop_rewind,
   __indirect_function_table,
-  wasmTable
+  wasmTable;
 function assignWasmExports(wasmExports) {
-  _malloc = wasmExports["uc"]
-  _free = wasmExports["vc"]
-  _wllama_malloc = Module["_wllama_malloc"] = wasmExports["wc"]
-  _wllama_start = Module["_wllama_start"] = wasmExports["xc"]
-  _wllama_action = Module["_wllama_action"] = wasmExports["yc"]
-  _wllama_exit = Module["_wllama_exit"] = wasmExports["zc"]
-  _wllama_debug = Module["_wllama_debug"] = wasmExports["Ac"]
-  _main = Module["_main"] = wasmExports["Bc"]
-  _emwgpuCreateBindGroup = wasmExports["Cc"]
-  _emwgpuCreateBindGroupLayout = wasmExports["Dc"]
-  _emwgpuCreateCommandBuffer = wasmExports["Ec"]
-  _emwgpuCreateCommandEncoder = wasmExports["Fc"]
-  _emwgpuCreateComputePassEncoder = wasmExports["Gc"]
-  _emwgpuCreateComputePipeline = wasmExports["Hc"]
-  _emwgpuCreateExternalTexture = wasmExports["Ic"]
-  _emwgpuCreatePipelineLayout = wasmExports["Jc"]
-  _emwgpuCreateQuerySet = wasmExports["Kc"]
-  _emwgpuCreateRenderBundle = wasmExports["Lc"]
-  _emwgpuCreateRenderBundleEncoder = wasmExports["Mc"]
-  _emwgpuCreateRenderPassEncoder = wasmExports["Nc"]
-  _emwgpuCreateRenderPipeline = wasmExports["Oc"]
-  _emwgpuCreateSampler = wasmExports["Pc"]
-  _emwgpuCreateSurface = wasmExports["Qc"]
-  _emwgpuCreateTexture = wasmExports["Rc"]
-  _emwgpuCreateTextureView = wasmExports["Sc"]
-  _emwgpuCreateAdapter = wasmExports["Tc"]
-  _emwgpuCreateBuffer = wasmExports["Uc"]
-  _emwgpuCreateDevice = wasmExports["Vc"]
-  _emwgpuCreateQueue = wasmExports["Wc"]
-  _emwgpuCreateShaderModule = wasmExports["Xc"]
-  _emwgpuOnDeviceLostCompleted = wasmExports["Yc"]
-  _emwgpuOnMapAsyncCompleted = wasmExports["Zc"]
-  _emwgpuOnRequestAdapterCompleted = wasmExports["_c"]
-  _emwgpuOnRequestDeviceCompleted = wasmExports["$c"]
-  _emwgpuOnWorkDoneCompleted = wasmExports["ad"]
-  _emwgpuOnUncapturedError = wasmExports["bd"]
-  __emscripten_tls_init = wasmExports["cd"]
-  _pthread_self = wasmExports["dd"]
-  _emscripten_builtin_memalign = wasmExports["ed"]
-  __emscripten_thread_init = wasmExports["fd"]
-  __emscripten_thread_crashed = wasmExports["gd"]
-  __emscripten_run_js_on_main_thread = wasmExports["hd"]
-  __emscripten_thread_free_data = wasmExports["id"]
-  __emscripten_thread_exit = wasmExports["jd"]
-  __emscripten_check_mailbox = wasmExports["kd"]
-  _memalign = wasmExports["ld"]
-  _setThrew = wasmExports["md"]
-  __emscripten_tempret_set = wasmExports["nd"]
-  _emscripten_stack_set_limits = wasmExports["od"]
-  __emscripten_stack_restore = wasmExports["pd"]
-  __emscripten_stack_alloc = wasmExports["qd"]
-  _emscripten_stack_get_current = wasmExports["rd"]
-  ___cxa_decrement_exception_refcount = wasmExports["sd"]
-  ___cxa_increment_exception_refcount = wasmExports["td"]
-  ___cxa_can_catch = wasmExports["ud"]
-  ___cxa_get_exception_ptr = wasmExports["vd"]
-  dynCall_iii = dynCalls["iii"] = wasmExports["wd"]
-  dynCall_viii = dynCalls["viii"] = wasmExports["xd"]
-  dynCall_viiii = dynCalls["viiii"] = wasmExports["yd"]
-  dynCall_v = dynCalls["v"] = wasmExports["zd"]
-  dynCall_ii = dynCalls["ii"] = wasmExports["Ad"]
-  dynCall_iiii = dynCalls["iiii"] = wasmExports["Bd"]
-  dynCall_vii = dynCalls["vii"] = wasmExports["Cd"]
-  dynCall_viiiii = dynCalls["viiiii"] = wasmExports["Dd"]
-  dynCall_viiiiiiiiiiiiii = dynCalls["viiiiiiiiiiiiii"] = wasmExports["Ed"]
-  dynCall_viiiiii = dynCalls["viiiiii"] = wasmExports["Fd"]
-  dynCall_iiiii = dynCalls["iiiii"] = wasmExports["Gd"]
-  dynCall_viiiiiiii = dynCalls["viiiiiiii"] = wasmExports["Hd"]
-  dynCall_vi = dynCalls["vi"] = wasmExports["Id"]
-  dynCall_i = dynCalls["i"] = wasmExports["Jd"]
-  dynCall_iiiiiii = dynCalls["iiiiiii"] = wasmExports["Kd"]
-  dynCall_iiiiii = dynCalls["iiiiii"] = wasmExports["Ld"]
-  dynCall_viiiiiii = dynCalls["viiiiiii"] = wasmExports["Md"]
-  dynCall_ji = dynCalls["ji"] = wasmExports["Nd"]
-  dynCall_iiiiiiii = dynCalls["iiiiiiii"] = wasmExports["Od"]
-  dynCall_di = dynCalls["di"] = wasmExports["Pd"]
-  dynCall_iiji = dynCalls["iiji"] = wasmExports["Qd"]
-  dynCall_iij = dynCalls["iij"] = wasmExports["Rd"]
-  dynCall_j = dynCalls["j"] = wasmExports["Sd"]
-  dynCall_iiiiiiiii = dynCalls["iiiiiiiii"] = wasmExports["Td"]
-  dynCall_dii = dynCalls["dii"] = wasmExports["Ud"]
-  dynCall_jiii = dynCalls["jiii"] = wasmExports["Vd"]
-  dynCall_vij = dynCalls["vij"] = wasmExports["Wd"]
-  dynCall_iid = dynCalls["iid"] = wasmExports["Xd"]
-  dynCall_viiiijj = dynCalls["viiiijj"] = wasmExports["Yd"]
-  dynCall_vjjiii = dynCalls["vjjiii"] = wasmExports["Zd"]
-  dynCall_ifi = dynCalls["ifi"] = wasmExports["_d"]
-  dynCall_if = dynCalls["if"] = wasmExports["$d"]
-  dynCall_iffii = dynCalls["iffii"] = wasmExports["ae"]
-  dynCall_ifff = dynCalls["ifff"] = wasmExports["be"]
-  dynCall_iifff = dynCalls["iifff"] = wasmExports["ce"]
-  dynCall_iiiffiiii = dynCalls["iiiffiiii"] = wasmExports["de"]
-  dynCall_iiff = dynCalls["iiff"] = wasmExports["ee"]
-  dynCall_iiiffi = dynCalls["iiiffi"] = wasmExports["fe"]
-  dynCall_iffi = dynCalls["iffi"] = wasmExports["ge"]
-  dynCall_viiiiiiiii = dynCalls["viiiiiiiii"] = wasmExports["he"]
-  dynCall_vijii = dynCalls["vijii"] = wasmExports["ie"]
-  dynCall_viijii = dynCalls["viijii"] = wasmExports["je"]
-  dynCall_fiii = dynCalls["fiii"] = wasmExports["ke"]
-  dynCall_iiiiiiiiiiiiii = dynCalls["iiiiiiiiiiiiii"] = wasmExports["le"]
-  dynCall_iiij = dynCalls["iiij"] = wasmExports["me"]
-  dynCall_jii = dynCalls["jii"] = wasmExports["ne"]
-  dynCall_fij = dynCalls["fij"] = wasmExports["oe"]
-  dynCall_iiiji = dynCalls["iiiji"] = wasmExports["pe"]
-  dynCall_iiijj = dynCalls["iiijj"] = wasmExports["qe"]
-  dynCall_iiif = dynCalls["iiif"] = wasmExports["re"]
-  dynCall_iiijjii = dynCalls["iiijjii"] = wasmExports["se"]
-  dynCall_iiijjj = dynCalls["iiijjj"] = wasmExports["te"]
-  dynCall_iiijjjj = dynCalls["iiijjjj"] = wasmExports["ue"]
-  dynCall_iiiiiiiiiiii = dynCalls["iiiiiiiiiiii"] = wasmExports["ve"]
-  dynCall_iiiijjji = dynCalls["iiiijjji"] = wasmExports["we"]
-  dynCall_iiijjjiii = dynCalls["iiijjjiii"] = wasmExports["xe"]
-  dynCall_iiiiiiiiffi = dynCalls["iiiiiiiiffi"] = wasmExports["ye"]
-  dynCall_iiiiiiiiiiiiiiiiii = dynCalls["iiiiiiiiiiiiiiiiii"] =
-    wasmExports["ze"]
-  dynCall_iiiiiiiiii = dynCalls["iiiiiiiiii"] = wasmExports["Ae"]
-  dynCall_iiiiiiiiiiiiiiiii = dynCalls["iiiiiiiiiiiiiiiii"] = wasmExports["Be"]
-  dynCall_iiiiiij = dynCalls["iiiiiij"] = wasmExports["Ce"]
-  dynCall_iiiiiiiiffffff = dynCalls["iiiiiiiiffffff"] = wasmExports["De"]
-  dynCall_iiiiiiiiiiiiiii = dynCalls["iiiiiiiiiiiiiii"] = wasmExports["Ee"]
-  dynCall_iiiiiiiiiiiiiiiiiii = dynCalls["iiiiiiiiiiiiiiiiiii"] =
-    wasmExports["Fe"]
-  dynCall_viiiijjji = dynCalls["viiiijjji"] = wasmExports["Ge"]
-  dynCall_iiiiiiiiiiiifi = dynCalls["iiiiiiiiiiiifi"] = wasmExports["He"]
-  dynCall_iiiiiiiijjiifiiiiiii = dynCalls["iiiiiiiijjiifiiiiiii"] =
-    wasmExports["Ie"]
-  dynCall_iiiiiiiiiiiiiiii = dynCalls["iiiiiiiiiiiiiiii"] = wasmExports["Je"]
-  dynCall_iiiffff = dynCalls["iiiffff"] = wasmExports["Ke"]
-  dynCall_iiiff = dynCalls["iiiff"] = wasmExports["Le"]
-  dynCall_viiijjjji = dynCalls["viiijjjji"] = wasmExports["Me"]
-  dynCall_viiijjji = dynCalls["viiijjji"] = wasmExports["Ne"]
-  dynCall_iiijjjjiiii = dynCalls["iiijjjjiiii"] = wasmExports["Oe"]
-  dynCall_iiiiiiiiiiiiifi = dynCalls["iiiiiiiiiiiiifi"] = wasmExports["Pe"]
-  dynCall_iiiiiiiiiffffff = dynCalls["iiiiiiiiiffffff"] = wasmExports["Qe"]
-  dynCall_iiiiiiji = dynCalls["iiiiiiji"] = wasmExports["Re"]
-  dynCall_iiiiijiiijjjjjjj = dynCalls["iiiiijiiijjjjjjj"] = wasmExports["Se"]
-  dynCall_iiiiiji = dynCalls["iiiiiji"] = wasmExports["Te"]
-  dynCall_iiiiiiiiiiiijjiifiiiiiiii = dynCalls["iiiiiiiiiiiijjiifiiiiiiii"] =
-    wasmExports["Ue"]
-  dynCall_iiiiff = dynCalls["iiiiff"] = wasmExports["Ve"]
-  dynCall_iiiiiiiiiiiii = dynCalls["iiiiiiiiiiiii"] = wasmExports["We"]
-  dynCall_viiiiiiiiii = dynCalls["viiiiiiiiii"] = wasmExports["Xe"]
-  dynCall_viiiif = dynCalls["viiiif"] = wasmExports["Ye"]
-  dynCall_iiijiiiii = dynCalls["iiijiiiii"] = wasmExports["Ze"]
-  dynCall_iiiiiifi = dynCalls["iiiiiifi"] = wasmExports["_e"]
-  dynCall_iiiiiiiifii = dynCalls["iiiiiiiifii"] = wasmExports["$e"]
-  dynCall_iiiiiiiiiii = dynCalls["iiiiiiiiiii"] = wasmExports["af"]
-  dynCall_iiiiiiiiif = dynCalls["iiiiiiiiif"] = wasmExports["bf"]
-  dynCall_iiiiiiiiff = dynCalls["iiiiiiiiff"] = wasmExports["cf"]
-  dynCall_viij = dynCalls["viij"] = wasmExports["df"]
-  dynCall_iiiij = dynCalls["iiiij"] = wasmExports["ef"]
-  dynCall_viijijj = dynCalls["viijijj"] = wasmExports["ff"]
-  dynCall_jijiii = dynCalls["jijiii"] = wasmExports["gf"]
-  dynCall_viifffi = dynCalls["viifffi"] = wasmExports["hf"]
-  dynCall_iiid = dynCalls["iiid"] = wasmExports["jf"]
-  dynCall_viji = dynCalls["viji"] = wasmExports["kf"]
-  dynCall_jiji = dynCalls["jiji"] = wasmExports["lf"]
-  dynCall_iidiiii = dynCalls["iidiiii"] = wasmExports["mf"]
-  dynCall_iiiiij = dynCalls["iiiiij"] = wasmExports["nf"]
-  dynCall_iiiiid = dynCalls["iiiiid"] = wasmExports["of"]
-  dynCall_jiiii = dynCalls["jiiii"] = wasmExports["pf"]
-  dynCall_diii = dynCalls["diii"] = wasmExports["qf"]
-  dynCall_viiiiiiiiiiiiiii = dynCalls["viiiiiiiiiiiiiii"] = wasmExports["rf"]
-  dynCall_iiiiijj = dynCalls["iiiiijj"] = wasmExports["sf"]
-  dynCall_iiiiiijj = dynCalls["iiiiiijj"] = wasmExports["tf"]
-  dynCall_viif = dynCalls["viif"] = wasmExports["uf"]
-  dynCall_viid = dynCalls["viid"] = wasmExports["vf"]
-  _asyncify_start_unwind = wasmExports["wf"]
-  _asyncify_stop_unwind = wasmExports["xf"]
-  _asyncify_start_rewind = wasmExports["yf"]
-  _asyncify_stop_rewind = wasmExports["zf"]
-  __indirect_function_table = wasmTable = wasmExports["tc"]
+  _malloc = wasmExports["uc"];
+  _free = wasmExports["vc"];
+  _wllama_malloc = Module["_wllama_malloc"] = wasmExports["wc"];
+  _wllama_start = Module["_wllama_start"] = wasmExports["xc"];
+  _wllama_action = Module["_wllama_action"] = wasmExports["yc"];
+  _wllama_exit = Module["_wllama_exit"] = wasmExports["zc"];
+  _wllama_debug = Module["_wllama_debug"] = wasmExports["Ac"];
+  _main = Module["_main"] = wasmExports["Bc"];
+  _emwgpuCreateBindGroup = wasmExports["Cc"];
+  _emwgpuCreateBindGroupLayout = wasmExports["Dc"];
+  _emwgpuCreateCommandBuffer = wasmExports["Ec"];
+  _emwgpuCreateCommandEncoder = wasmExports["Fc"];
+  _emwgpuCreateComputePassEncoder = wasmExports["Gc"];
+  _emwgpuCreateComputePipeline = wasmExports["Hc"];
+  _emwgpuCreateExternalTexture = wasmExports["Ic"];
+  _emwgpuCreatePipelineLayout = wasmExports["Jc"];
+  _emwgpuCreateQuerySet = wasmExports["Kc"];
+  _emwgpuCreateRenderBundle = wasmExports["Lc"];
+  _emwgpuCreateRenderBundleEncoder = wasmExports["Mc"];
+  _emwgpuCreateRenderPassEncoder = wasmExports["Nc"];
+  _emwgpuCreateRenderPipeline = wasmExports["Oc"];
+  _emwgpuCreateSampler = wasmExports["Pc"];
+  _emwgpuCreateSurface = wasmExports["Qc"];
+  _emwgpuCreateTexture = wasmExports["Rc"];
+  _emwgpuCreateTextureView = wasmExports["Sc"];
+  _emwgpuCreateAdapter = wasmExports["Tc"];
+  _emwgpuCreateBuffer = wasmExports["Uc"];
+  _emwgpuCreateDevice = wasmExports["Vc"];
+  _emwgpuCreateQueue = wasmExports["Wc"];
+  _emwgpuCreateShaderModule = wasmExports["Xc"];
+  _emwgpuOnDeviceLostCompleted = wasmExports["Yc"];
+  _emwgpuOnMapAsyncCompleted = wasmExports["Zc"];
+  _emwgpuOnRequestAdapterCompleted = wasmExports["_c"];
+  _emwgpuOnRequestDeviceCompleted = wasmExports["$c"];
+  _emwgpuOnWorkDoneCompleted = wasmExports["ad"];
+  _emwgpuOnUncapturedError = wasmExports["bd"];
+  __emscripten_tls_init = wasmExports["cd"];
+  _pthread_self = wasmExports["dd"];
+  _emscripten_builtin_memalign = wasmExports["ed"];
+  __emscripten_thread_init = wasmExports["fd"];
+  __emscripten_thread_crashed = wasmExports["gd"];
+  __emscripten_run_js_on_main_thread = wasmExports["hd"];
+  __emscripten_thread_free_data = wasmExports["id"];
+  __emscripten_thread_exit = wasmExports["jd"];
+  __emscripten_check_mailbox = wasmExports["kd"];
+  _memalign = wasmExports["ld"];
+  _setThrew = wasmExports["md"];
+  __emscripten_tempret_set = wasmExports["nd"];
+  _emscripten_stack_set_limits = wasmExports["od"];
+  __emscripten_stack_restore = wasmExports["pd"];
+  __emscripten_stack_alloc = wasmExports["qd"];
+  _emscripten_stack_get_current = wasmExports["rd"];
+  ___cxa_decrement_exception_refcount = wasmExports["sd"];
+  ___cxa_increment_exception_refcount = wasmExports["td"];
+  ___cxa_can_catch = wasmExports["ud"];
+  ___cxa_get_exception_ptr = wasmExports["vd"];
+  dynCall_iii = dynCalls["iii"] = wasmExports["wd"];
+  dynCall_viii = dynCalls["viii"] = wasmExports["xd"];
+  dynCall_viiii = dynCalls["viiii"] = wasmExports["yd"];
+  dynCall_v = dynCalls["v"] = wasmExports["zd"];
+  dynCall_ii = dynCalls["ii"] = wasmExports["Ad"];
+  dynCall_iiii = dynCalls["iiii"] = wasmExports["Bd"];
+  dynCall_vii = dynCalls["vii"] = wasmExports["Cd"];
+  dynCall_viiiii = dynCalls["viiiii"] = wasmExports["Dd"];
+  dynCall_viiiiiiiiiiiiii = dynCalls["viiiiiiiiiiiiii"] = wasmExports["Ed"];
+  dynCall_viiiiii = dynCalls["viiiiii"] = wasmExports["Fd"];
+  dynCall_iiiii = dynCalls["iiiii"] = wasmExports["Gd"];
+  dynCall_viiiiiiii = dynCalls["viiiiiiii"] = wasmExports["Hd"];
+  dynCall_vi = dynCalls["vi"] = wasmExports["Id"];
+  dynCall_i = dynCalls["i"] = wasmExports["Jd"];
+  dynCall_iiiiiii = dynCalls["iiiiiii"] = wasmExports["Kd"];
+  dynCall_iiiiii = dynCalls["iiiiii"] = wasmExports["Ld"];
+  dynCall_viiiiiii = dynCalls["viiiiiii"] = wasmExports["Md"];
+  dynCall_ji = dynCalls["ji"] = wasmExports["Nd"];
+  dynCall_iiiiiiii = dynCalls["iiiiiiii"] = wasmExports["Od"];
+  dynCall_di = dynCalls["di"] = wasmExports["Pd"];
+  dynCall_iiji = dynCalls["iiji"] = wasmExports["Qd"];
+  dynCall_iij = dynCalls["iij"] = wasmExports["Rd"];
+  dynCall_j = dynCalls["j"] = wasmExports["Sd"];
+  dynCall_iiiiiiiii = dynCalls["iiiiiiiii"] = wasmExports["Td"];
+  dynCall_dii = dynCalls["dii"] = wasmExports["Ud"];
+  dynCall_jiii = dynCalls["jiii"] = wasmExports["Vd"];
+  dynCall_vij = dynCalls["vij"] = wasmExports["Wd"];
+  dynCall_iid = dynCalls["iid"] = wasmExports["Xd"];
+  dynCall_viiiijj = dynCalls["viiiijj"] = wasmExports["Yd"];
+  dynCall_vjjiii = dynCalls["vjjiii"] = wasmExports["Zd"];
+  dynCall_ifi = dynCalls["ifi"] = wasmExports["_d"];
+  dynCall_if = dynCalls["if"] = wasmExports["$d"];
+  dynCall_iffii = dynCalls["iffii"] = wasmExports["ae"];
+  dynCall_ifff = dynCalls["ifff"] = wasmExports["be"];
+  dynCall_iifff = dynCalls["iifff"] = wasmExports["ce"];
+  dynCall_iiiffiiii = dynCalls["iiiffiiii"] = wasmExports["de"];
+  dynCall_iiff = dynCalls["iiff"] = wasmExports["ee"];
+  dynCall_iiiffi = dynCalls["iiiffi"] = wasmExports["fe"];
+  dynCall_iffi = dynCalls["iffi"] = wasmExports["ge"];
+  dynCall_viiiiiiiii = dynCalls["viiiiiiiii"] = wasmExports["he"];
+  dynCall_vijii = dynCalls["vijii"] = wasmExports["ie"];
+  dynCall_viijii = dynCalls["viijii"] = wasmExports["je"];
+  dynCall_fiii = dynCalls["fiii"] = wasmExports["ke"];
+  dynCall_iiiiiiiiiiiiii = dynCalls["iiiiiiiiiiiiii"] = wasmExports["le"];
+  dynCall_iiij = dynCalls["iiij"] = wasmExports["me"];
+  dynCall_jii = dynCalls["jii"] = wasmExports["ne"];
+  dynCall_fij = dynCalls["fij"] = wasmExports["oe"];
+  dynCall_iiiji = dynCalls["iiiji"] = wasmExports["pe"];
+  dynCall_iiijj = dynCalls["iiijj"] = wasmExports["qe"];
+  dynCall_iiif = dynCalls["iiif"] = wasmExports["re"];
+  dynCall_iiijjii = dynCalls["iiijjii"] = wasmExports["se"];
+  dynCall_iiijjj = dynCalls["iiijjj"] = wasmExports["te"];
+  dynCall_iiijjjj = dynCalls["iiijjjj"] = wasmExports["ue"];
+  dynCall_iiiiiiiiiiii = dynCalls["iiiiiiiiiiii"] = wasmExports["ve"];
+  dynCall_iiiijjji = dynCalls["iiiijjji"] = wasmExports["we"];
+  dynCall_iiijjjiii = dynCalls["iiijjjiii"] = wasmExports["xe"];
+  dynCall_iiiiiiiiffi = dynCalls["iiiiiiiiffi"] = wasmExports["ye"];
+  dynCall_iiiiiiiiiiiiiiiiii = dynCalls["iiiiiiiiiiiiiiiiii"] = wasmExports["ze"];
+  dynCall_iiiiiiiiii = dynCalls["iiiiiiiiii"] = wasmExports["Ae"];
+  dynCall_iiiiiiiiiiiiiiiii = dynCalls["iiiiiiiiiiiiiiiii"] = wasmExports["Be"];
+  dynCall_iiiiiij = dynCalls["iiiiiij"] = wasmExports["Ce"];
+  dynCall_iiiiiiiiffffff = dynCalls["iiiiiiiiffffff"] = wasmExports["De"];
+  dynCall_iiiiiiiiiiiiiii = dynCalls["iiiiiiiiiiiiiii"] = wasmExports["Ee"];
+  dynCall_iiiiiiiiiiiiiiiiiii = dynCalls["iiiiiiiiiiiiiiiiiii"] = wasmExports["Fe"];
+  dynCall_viiiijjji = dynCalls["viiiijjji"] = wasmExports["Ge"];
+  dynCall_iiiiiiiiiiiifi = dynCalls["iiiiiiiiiiiifi"] = wasmExports["He"];
+  dynCall_iiiiiiiijjiifiiiiiii = dynCalls["iiiiiiiijjiifiiiiiii"] = wasmExports["Ie"];
+  dynCall_iiiiiiiiiiiiiiii = dynCalls["iiiiiiiiiiiiiiii"] = wasmExports["Je"];
+  dynCall_iiiffff = dynCalls["iiiffff"] = wasmExports["Ke"];
+  dynCall_iiiff = dynCalls["iiiff"] = wasmExports["Le"];
+  dynCall_viiijjjji = dynCalls["viiijjjji"] = wasmExports["Me"];
+  dynCall_viiijjji = dynCalls["viiijjji"] = wasmExports["Ne"];
+  dynCall_iiijjjjiiii = dynCalls["iiijjjjiiii"] = wasmExports["Oe"];
+  dynCall_iiiiiiiiiiiiifi = dynCalls["iiiiiiiiiiiiifi"] = wasmExports["Pe"];
+  dynCall_iiiiiiiiiffffff = dynCalls["iiiiiiiiiffffff"] = wasmExports["Qe"];
+  dynCall_iiiiiiji = dynCalls["iiiiiiji"] = wasmExports["Re"];
+  dynCall_iiiiijiiijjjjjjj = dynCalls["iiiiijiiijjjjjjj"] = wasmExports["Se"];
+  dynCall_iiiiiji = dynCalls["iiiiiji"] = wasmExports["Te"];
+  dynCall_iiiiiiiiiiiijjiifiiiiiiii = dynCalls["iiiiiiiiiiiijjiifiiiiiiii"] = wasmExports["Ue"];
+  dynCall_iiiiff = dynCalls["iiiiff"] = wasmExports["Ve"];
+  dynCall_iiiiiiiiiiiii = dynCalls["iiiiiiiiiiiii"] = wasmExports["We"];
+  dynCall_viiiiiiiiii = dynCalls["viiiiiiiiii"] = wasmExports["Xe"];
+  dynCall_viiiif = dynCalls["viiiif"] = wasmExports["Ye"];
+  dynCall_iiijiiiii = dynCalls["iiijiiiii"] = wasmExports["Ze"];
+  dynCall_iiiiiifi = dynCalls["iiiiiifi"] = wasmExports["_e"];
+  dynCall_iiiiiiiifii = dynCalls["iiiiiiiifii"] = wasmExports["$e"];
+  dynCall_iiiiiiiiiii = dynCalls["iiiiiiiiiii"] = wasmExports["af"];
+  dynCall_iiiiiiiiif = dynCalls["iiiiiiiiif"] = wasmExports["bf"];
+  dynCall_iiiiiiiiff = dynCalls["iiiiiiiiff"] = wasmExports["cf"];
+  dynCall_viij = dynCalls["viij"] = wasmExports["df"];
+  dynCall_iiiij = dynCalls["iiiij"] = wasmExports["ef"];
+  dynCall_viijijj = dynCalls["viijijj"] = wasmExports["ff"];
+  dynCall_jijiii = dynCalls["jijiii"] = wasmExports["gf"];
+  dynCall_viifffi = dynCalls["viifffi"] = wasmExports["hf"];
+  dynCall_iiid = dynCalls["iiid"] = wasmExports["jf"];
+  dynCall_viji = dynCalls["viji"] = wasmExports["kf"];
+  dynCall_jiji = dynCalls["jiji"] = wasmExports["lf"];
+  dynCall_iidiiii = dynCalls["iidiiii"] = wasmExports["mf"];
+  dynCall_iiiiij = dynCalls["iiiiij"] = wasmExports["nf"];
+  dynCall_iiiiid = dynCalls["iiiiid"] = wasmExports["of"];
+  dynCall_jiiii = dynCalls["jiiii"] = wasmExports["pf"];
+  dynCall_diii = dynCalls["diii"] = wasmExports["qf"];
+  dynCall_viiiiiiiiiiiiiii = dynCalls["viiiiiiiiiiiiiii"] = wasmExports["rf"];
+  dynCall_iiiiijj = dynCalls["iiiiijj"] = wasmExports["sf"];
+  dynCall_iiiiiijj = dynCalls["iiiiiijj"] = wasmExports["tf"];
+  dynCall_viif = dynCalls["viif"] = wasmExports["uf"];
+  dynCall_viid = dynCalls["viid"] = wasmExports["vf"];
+  _asyncify_start_unwind = wasmExports["wf"];
+  _asyncify_stop_unwind = wasmExports["xf"];
+  _asyncify_start_rewind = wasmExports["yf"];
+  _asyncify_stop_rewind = wasmExports["zf"];
+  __indirect_function_table = wasmTable = wasmExports["tc"];
 }
-var wasmImports
+var wasmImports;
 function assignWasmImports() {
   wasmImports = {
     xa: __asyncjs__js_file_read,
@@ -6433,86 +6080,86 @@ function assignWasmImports() {
     Pa: _wgpuInstanceHasWGSLLanguageFeature,
     Oa: _wgpuQueueSubmit,
     pa: _wgpuQueueWriteBuffer,
-  }
+  };
 }
 function invoke_iii(index, a1, a2) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iii(index, a1, a2)
+    return dynCall_iii(index, a1, a2);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_vii(index, a1, a2) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_vii(index, a1, a2)
+    dynCall_vii(index, a1, a2);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_viiii(index, a1, a2, a3, a4) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_viiii(index, a1, a2, a3, a4)
+    dynCall_viiii(index, a1, a2, a3, a4);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_viii(index, a1, a2, a3) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_viii(index, a1, a2, a3)
+    dynCall_viii(index, a1, a2, a3);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_v(index) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_v(index)
+    dynCall_v(index);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_ii(index, a1) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_ii(index, a1)
+    return dynCall_ii(index, a1);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiii(index, a1, a2, a3) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiii(index, a1, a2, a3)
+    return dynCall_iiii(index, a1, a2, a3);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_viiiii(index, a1, a2, a3, a4, a5) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_viiiii(index, a1, a2, a3, a4, a5)
+    dynCall_viiiii(index, a1, a2, a3, a4, a5);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_viiiiiiiiiiiiii(
@@ -6530,581 +6177,509 @@ function invoke_viiiiiiiiiiiiii(
   a11,
   a12,
   a13,
-  a14
+  a14,
 ) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_viiiiiiiiiiiiii(
-      index,
-      a1,
-      a2,
-      a3,
-      a4,
-      a5,
-      a6,
-      a7,
-      a8,
-      a9,
-      a10,
-      a11,
-      a12,
-      a13,
-      a14
-    )
+    dynCall_viiiiiiiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_viiiiii(index, a1, a2, a3, a4, a5, a6) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_viiiiii(index, a1, a2, a3, a4, a5, a6)
+    dynCall_viiiiii(index, a1, a2, a3, a4, a5, a6);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiii(index, a1, a2, a3, a4) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiii(index, a1, a2, a3, a4)
+    return dynCall_iiiii(index, a1, a2, a3, a4);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_viiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_viiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8)
+    dynCall_viiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_i(index) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_i(index)
+    return dynCall_i(index);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_vi(index, a1) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_vi(index, a1)
+    dynCall_vi(index, a1);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiii(index, a1, a2, a3, a4, a5) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiiii(index, a1, a2, a3, a4, a5)
+    return dynCall_iiiiii(index, a1, a2, a3, a4, a5);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiiii(index, a1, a2, a3, a4, a5, a6) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiiiii(index, a1, a2, a3, a4, a5, a6)
+    return dynCall_iiiiiii(index, a1, a2, a3, a4, a5, a6);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_viiiiiii(index, a1, a2, a3, a4, a5, a6, a7) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_viiiiiii(index, a1, a2, a3, a4, a5, a6, a7)
+    dynCall_viiiiiii(index, a1, a2, a3, a4, a5, a6, a7);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_ji(index, a1) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_ji(index, a1)
+    return dynCall_ji(index, a1);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
-    return 0n
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
+    return 0n;
   }
 }
 function invoke_iiiiiiii(index, a1, a2, a3, a4, a5, a6, a7) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiiiiii(index, a1, a2, a3, a4, a5, a6, a7)
+    return dynCall_iiiiiiii(index, a1, a2, a3, a4, a5, a6, a7);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_j(index) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_j(index)
+    return dynCall_j(index);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
-    return 0n
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
+    return 0n;
   }
 }
 function invoke_jiii(index, a1, a2, a3) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_jiii(index, a1, a2, a3)
+    return dynCall_jiii(index, a1, a2, a3);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
-    return 0n
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
+    return 0n;
   }
 }
 function invoke_jii(index, a1, a2) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_jii(index, a1, a2)
+    return dynCall_jii(index, a1, a2);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
-    return 0n
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
+    return 0n;
   }
 }
 function invoke_iiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8)
+    return dynCall_iiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iij(index, a1, a2) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iij(index, a1, a2)
+    return dynCall_iij(index, a1, a2);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_dii(index, a1, a2) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_dii(index, a1, a2)
+    return dynCall_dii(index, a1, a2);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_vij(index, a1, a2) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_vij(index, a1, a2)
+    dynCall_vij(index, a1, a2);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iid(index, a1, a2) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iid(index, a1, a2)
+    return dynCall_iid(index, a1, a2);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_di(index, a1) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_di(index, a1)
+    return dynCall_di(index, a1);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_viiiijj(index, a1, a2, a3, a4, a5, a6) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_viiiijj(index, a1, a2, a3, a4, a5, a6)
+    dynCall_viiiijj(index, a1, a2, a3, a4, a5, a6);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiji(index, a1, a2, a3) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiji(index, a1, a2, a3)
+    return dynCall_iiji(index, a1, a2, a3);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_vjjiii(index, a1, a2, a3, a4, a5) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_vjjiii(index, a1, a2, a3, a4, a5)
+    dynCall_vjjiii(index, a1, a2, a3, a4, a5);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_ifi(index, a1, a2) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_ifi(index, a1, a2)
+    return dynCall_ifi(index, a1, a2);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_if(index, a1) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_if(index, a1)
+    return dynCall_if(index, a1);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iffii(index, a1, a2, a3, a4) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iffii(index, a1, a2, a3, a4)
+    return dynCall_iffii(index, a1, a2, a3, a4);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_ifff(index, a1, a2, a3) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_ifff(index, a1, a2, a3)
+    return dynCall_ifff(index, a1, a2, a3);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iifff(index, a1, a2, a3, a4) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iifff(index, a1, a2, a3, a4)
+    return dynCall_iifff(index, a1, a2, a3, a4);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiffiiii(index, a1, a2, a3, a4, a5, a6, a7, a8) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiffiiii(index, a1, a2, a3, a4, a5, a6, a7, a8)
+    return dynCall_iiiffiiii(index, a1, a2, a3, a4, a5, a6, a7, a8);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiff(index, a1, a2, a3) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiff(index, a1, a2, a3)
+    return dynCall_iiff(index, a1, a2, a3);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiffi(index, a1, a2, a3, a4, a5) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiffi(index, a1, a2, a3, a4, a5)
+    return dynCall_iiiffi(index, a1, a2, a3, a4, a5);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iffi(index, a1, a2, a3) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iffi(index, a1, a2, a3)
+    return dynCall_iffi(index, a1, a2, a3);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_viiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_viiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9)
+    dynCall_viiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_viijii(index, a1, a2, a3, a4, a5) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_viijii(index, a1, a2, a3, a4, a5)
+    dynCall_viijii(index, a1, a2, a3, a4, a5);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_viiiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_viiiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+    dynCall_viiiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_fiii(index, a1, a2, a3) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_fiii(index, a1, a2, a3)
+    return dynCall_fiii(index, a1, a2, a3);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_diii(index, a1, a2, a3) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_diii(index, a1, a2, a3)
+    return dynCall_diii(index, a1, a2, a3);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
-function invoke_iiiiiiiiiiiiii(
-  index,
-  a1,
-  a2,
-  a3,
-  a4,
-  a5,
-  a6,
-  a7,
-  a8,
-  a9,
-  a10,
-  a11,
-  a12,
-  a13
-) {
-  var sp = stackSave()
+function invoke_iiiiiiiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13) {
+  var sp = stackSave();
   try {
-    return dynCall_iiiiiiiiiiiiii(
-      index,
-      a1,
-      a2,
-      a3,
-      a4,
-      a5,
-      a6,
-      a7,
-      a8,
-      a9,
-      a10,
-      a11,
-      a12,
-      a13
-    )
+    return dynCall_iiiiiiiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiij(index, a1, a2, a3) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiij(index, a1, a2, a3)
+    return dynCall_iiij(index, a1, a2, a3);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_fij(index, a1, a2) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_fij(index, a1, a2)
+    return dynCall_fij(index, a1, a2);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiji(index, a1, a2, a3, a4) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiji(index, a1, a2, a3, a4)
+    return dynCall_iiiji(index, a1, a2, a3, a4);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiijj(index, a1, a2, a3, a4) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiijj(index, a1, a2, a3, a4)
+    return dynCall_iiijj(index, a1, a2, a3, a4);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiif(index, a1, a2, a3) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiif(index, a1, a2, a3)
+    return dynCall_iiif(index, a1, a2, a3);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiijjii(index, a1, a2, a3, a4, a5, a6) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiijjii(index, a1, a2, a3, a4, a5, a6)
+    return dynCall_iiijjii(index, a1, a2, a3, a4, a5, a6);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiijjj(index, a1, a2, a3, a4, a5) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiijjj(index, a1, a2, a3, a4, a5)
+    return dynCall_iiijjj(index, a1, a2, a3, a4, a5);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiijjjj(index, a1, a2, a3, a4, a5, a6) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiijjjj(index, a1, a2, a3, a4, a5, a6)
+    return dynCall_iiijjjj(index, a1, a2, a3, a4, a5, a6);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
-function invoke_iiiiiiiiiiii(
-  index,
-  a1,
-  a2,
-  a3,
-  a4,
-  a5,
-  a6,
-  a7,
-  a8,
-  a9,
-  a10,
-  a11
-) {
-  var sp = stackSave()
+function invoke_iiiiiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11) {
+  var sp = stackSave();
   try {
-    return dynCall_iiiiiiiiiiii(
-      index,
-      a1,
-      a2,
-      a3,
-      a4,
-      a5,
-      a6,
-      a7,
-      a8,
-      a9,
-      a10,
-      a11
-    )
+    return dynCall_iiiiiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiijjji(index, a1, a2, a3, a4, a5, a6, a7) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiijjji(index, a1, a2, a3, a4, a5, a6, a7)
+    return dynCall_iiiijjji(index, a1, a2, a3, a4, a5, a6, a7);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiijjjiii(index, a1, a2, a3, a4, a5, a6, a7, a8) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiijjjiii(index, a1, a2, a3, a4, a5, a6, a7, a8)
+    return dynCall_iiijjjiii(index, a1, a2, a3, a4, a5, a6, a7, a8);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiiiiiffi(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiiiiiiffi(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+    return dynCall_iiiiiiiiffi(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiiiiiiiiiiiiiii(
@@ -7125,9 +6700,9 @@ function invoke_iiiiiiiiiiiiiiiiii(
   a14,
   a15,
   a16,
-  a17
+  a17,
 ) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
     return dynCall_iiiiiiiiiiiiiiiiii(
       index,
@@ -7147,22 +6722,22 @@ function invoke_iiiiiiiiiiiiiiiiii(
       a14,
       a15,
       a16,
-      a17
-    )
+      a17,
+    );
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9)
+    return dynCall_iiiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiiiiiiiiiiiiii(
@@ -7182,9 +6757,9 @@ function invoke_iiiiiiiiiiiiiiiii(
   a13,
   a14,
   a15,
-  a16
+  a16,
 ) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
     return dynCall_iiiiiiiiiiiiiiiii(
       index,
@@ -7203,72 +6778,42 @@ function invoke_iiiiiiiiiiiiiiiii(
       a13,
       a14,
       a15,
-      a16
-    )
+      a16,
+    );
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiiij(index, a1, a2, a3, a4, a5, a6) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiiiij(index, a1, a2, a3, a4, a5, a6)
+    return dynCall_iiiiiij(index, a1, a2, a3, a4, a5, a6);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
-function invoke_iiiiiiiiffffff(
-  index,
-  a1,
-  a2,
-  a3,
-  a4,
-  a5,
-  a6,
-  a7,
-  a8,
-  a9,
-  a10,
-  a11,
-  a12,
-  a13
-) {
-  var sp = stackSave()
+function invoke_iiiiiiiiffffff(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13) {
+  var sp = stackSave();
   try {
-    return dynCall_iiiiiiiiffffff(
-      index,
-      a1,
-      a2,
-      a3,
-      a4,
-      a5,
-      a6,
-      a7,
-      a8,
-      a9,
-      a10,
-      a11,
-      a12,
-      a13
-    )
+    return dynCall_iiiiiiiiffffff(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_viif(index, a1, a2, a3) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_viif(index, a1, a2, a3)
+    dynCall_viif(index, a1, a2, a3);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiiiiiiiiiiii(
@@ -7286,9 +6831,9 @@ function invoke_iiiiiiiiiiiiiii(
   a11,
   a12,
   a13,
-  a14
+  a14,
 ) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
     return dynCall_iiiiiiiiiiiiiii(
       index,
@@ -7305,12 +6850,12 @@ function invoke_iiiiiiiiiiiiiii(
       a11,
       a12,
       a13,
-      a14
-    )
+      a14,
+    );
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiiiiiiiiiiiiiiii(
@@ -7332,9 +6877,9 @@ function invoke_iiiiiiiiiiiiiiiiiii(
   a15,
   a16,
   a17,
-  a18
+  a18,
 ) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
     return dynCall_iiiiiiiiiiiiiiiiiii(
       index,
@@ -7355,62 +6900,32 @@ function invoke_iiiiiiiiiiiiiiiiiii(
       a15,
       a16,
       a17,
-      a18
-    )
+      a18,
+    );
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_viiiijjji(index, a1, a2, a3, a4, a5, a6, a7, a8) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_viiiijjji(index, a1, a2, a3, a4, a5, a6, a7, a8)
+    dynCall_viiiijjji(index, a1, a2, a3, a4, a5, a6, a7, a8);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
-function invoke_iiiiiiiiiiiifi(
-  index,
-  a1,
-  a2,
-  a3,
-  a4,
-  a5,
-  a6,
-  a7,
-  a8,
-  a9,
-  a10,
-  a11,
-  a12,
-  a13
-) {
-  var sp = stackSave()
+function invoke_iiiiiiiiiiiifi(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13) {
+  var sp = stackSave();
   try {
-    return dynCall_iiiiiiiiiiiifi(
-      index,
-      a1,
-      a2,
-      a3,
-      a4,
-      a5,
-      a6,
-      a7,
-      a8,
-      a9,
-      a10,
-      a11,
-      a12,
-      a13
-    )
+    return dynCall_iiiiiiiiiiiifi(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiiiiijjiifiiiiiii(
@@ -7433,9 +6948,9 @@ function invoke_iiiiiiiijjiifiiiiiii(
   a16,
   a17,
   a18,
-  a19
+  a19,
 ) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
     return dynCall_iiiiiiiijjiifiiiiiii(
       index,
@@ -7457,12 +6972,12 @@ function invoke_iiiiiiiijjiifiiiiiii(
       a16,
       a17,
       a18,
-      a19
-    )
+      a19,
+    );
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiiiiiiiiiiiii(
@@ -7481,9 +6996,9 @@ function invoke_iiiiiiiiiiiiiiii(
   a12,
   a13,
   a14,
-  a15
+  a15,
 ) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
     return dynCall_iiiiiiiiiiiiiiii(
       index,
@@ -7501,62 +7016,62 @@ function invoke_iiiiiiiiiiiiiiii(
       a12,
       a13,
       a14,
-      a15
-    )
+      a15,
+    );
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiffff(index, a1, a2, a3, a4, a5, a6) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiffff(index, a1, a2, a3, a4, a5, a6)
+    return dynCall_iiiffff(index, a1, a2, a3, a4, a5, a6);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiff(index, a1, a2, a3, a4) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiff(index, a1, a2, a3, a4)
+    return dynCall_iiiff(index, a1, a2, a3, a4);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_viiijjjji(index, a1, a2, a3, a4, a5, a6, a7, a8) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_viiijjjji(index, a1, a2, a3, a4, a5, a6, a7, a8)
+    dynCall_viiijjjji(index, a1, a2, a3, a4, a5, a6, a7, a8);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_viiijjji(index, a1, a2, a3, a4, a5, a6, a7) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_viiijjji(index, a1, a2, a3, a4, a5, a6, a7)
+    dynCall_viiijjji(index, a1, a2, a3, a4, a5, a6, a7);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiijjjjiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiijjjjiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+    return dynCall_iiijjjjiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiiiiiiiiiifi(
@@ -7574,9 +7089,9 @@ function invoke_iiiiiiiiiiiiifi(
   a11,
   a12,
   a13,
-  a14
+  a14,
 ) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
     return dynCall_iiiiiiiiiiiiifi(
       index,
@@ -7593,12 +7108,12 @@ function invoke_iiiiiiiiiiiiifi(
       a11,
       a12,
       a13,
-      a14
-    )
+      a14,
+    );
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiiiiiiffffff(
@@ -7616,9 +7131,9 @@ function invoke_iiiiiiiiiffffff(
   a11,
   a12,
   a13,
-  a14
+  a14,
 ) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
     return dynCall_iiiiiiiiiffffff(
       index,
@@ -7635,22 +7150,22 @@ function invoke_iiiiiiiiiffffff(
       a11,
       a12,
       a13,
-      a14
-    )
+      a14,
+    );
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiiiji(index, a1, a2, a3, a4, a5, a6, a7) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiiiiji(index, a1, a2, a3, a4, a5, a6, a7)
+    return dynCall_iiiiiiji(index, a1, a2, a3, a4, a5, a6, a7);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiijiiijjjjjjj(
@@ -7669,9 +7184,9 @@ function invoke_iiiiijiiijjjjjjj(
   a12,
   a13,
   a14,
-  a15
+  a15,
 ) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
     return dynCall_iiiiijiiijjjjjjj(
       index,
@@ -7689,22 +7204,22 @@ function invoke_iiiiijiiijjjjjjj(
       a12,
       a13,
       a14,
-      a15
-    )
+      a15,
+    );
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiiji(index, a1, a2, a3, a4, a5, a6) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiiiji(index, a1, a2, a3, a4, a5, a6)
+    return dynCall_iiiiiji(index, a1, a2, a3, a4, a5, a6);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiiiiiiiiijjiifiiiiiiii(
@@ -7732,9 +7247,9 @@ function invoke_iiiiiiiiiiiijjiifiiiiiiii(
   a21,
   a22,
   a23,
-  a24
+  a24,
 ) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
     return dynCall_iiiiiiiiiiiijjiifiiiiiiii(
       index,
@@ -7761,202 +7276,174 @@ function invoke_iiiiiiiiiiiijjiifiiiiiiii(
       a21,
       a22,
       a23,
-      a24
-    )
+      a24,
+    );
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiff(index, a1, a2, a3, a4, a5) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiiff(index, a1, a2, a3, a4, a5)
+    return dynCall_iiiiff(index, a1, a2, a3, a4, a5);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
-function invoke_iiiiiiiiiiiii(
-  index,
-  a1,
-  a2,
-  a3,
-  a4,
-  a5,
-  a6,
-  a7,
-  a8,
-  a9,
-  a10,
-  a11,
-  a12
-) {
-  var sp = stackSave()
+function invoke_iiiiiiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12) {
+  var sp = stackSave();
   try {
-    return dynCall_iiiiiiiiiiiii(
-      index,
-      a1,
-      a2,
-      a3,
-      a4,
-      a5,
-      a6,
-      a7,
-      a8,
-      a9,
-      a10,
-      a11,
-      a12
-    )
+    return dynCall_iiiiiiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_viiiif(index, a1, a2, a3, a4, a5) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_viiiif(index, a1, a2, a3, a4, a5)
+    dynCall_viiiif(index, a1, a2, a3, a4, a5);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiijiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiijiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8)
+    return dynCall_iiijiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiiifi(index, a1, a2, a3, a4, a5, a6, a7) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiiiifi(index, a1, a2, a3, a4, a5, a6, a7)
+    return dynCall_iiiiiifi(index, a1, a2, a3, a4, a5, a6, a7);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiiiiifii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiiiiiifii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+    return dynCall_iiiiiiiifii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+    return dynCall_iiiiiiiiiii(index, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiiiiiif(index, a1, a2, a3, a4, a5, a6, a7, a8, a9) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiiiiiiif(index, a1, a2, a3, a4, a5, a6, a7, a8, a9)
+    return dynCall_iiiiiiiiif(index, a1, a2, a3, a4, a5, a6, a7, a8, a9);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiiiiiff(index, a1, a2, a3, a4, a5, a6, a7, a8, a9) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiiiiiiff(index, a1, a2, a3, a4, a5, a6, a7, a8, a9)
+    return dynCall_iiiiiiiiff(index, a1, a2, a3, a4, a5, a6, a7, a8, a9);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiij(index, a1, a2, a3, a4) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiij(index, a1, a2, a3, a4)
+    return dynCall_iiiij(index, a1, a2, a3, a4);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_viijijj(index, a1, a2, a3, a4, a5, a6) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_viijijj(index, a1, a2, a3, a4, a5, a6)
+    dynCall_viijijj(index, a1, a2, a3, a4, a5, a6);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_jijiii(index, a1, a2, a3, a4, a5) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_jijiii(index, a1, a2, a3, a4, a5)
+    return dynCall_jijiii(index, a1, a2, a3, a4, a5);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
-    return 0n
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
+    return 0n;
   }
 }
 function invoke_iiid(index, a1, a2, a3) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiid(index, a1, a2, a3)
+    return dynCall_iiid(index, a1, a2, a3);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiij(index, a1, a2, a3, a4, a5) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiiij(index, a1, a2, a3, a4, a5)
+    return dynCall_iiiiij(index, a1, a2, a3, a4, a5);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_iiiiid(index, a1, a2, a3, a4, a5) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_iiiiid(index, a1, a2, a3, a4, a5)
+    return dynCall_iiiiid(index, a1, a2, a3, a4, a5);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_jiiii(index, a1, a2, a3, a4) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    return dynCall_jiiii(index, a1, a2, a3, a4)
+    return dynCall_jiiii(index, a1, a2, a3, a4);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
-    return 0n
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
+    return 0n;
   }
 }
 function invoke_viiiiiiiiiiiiiii(
@@ -7975,9 +7462,9 @@ function invoke_viiiiiiiiiiiiiii(
   a12,
   a13,
   a14,
-  a15
+  a15,
 ) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
     dynCall_viiiiiiiiiiiiiii(
       index,
@@ -7995,86 +7482,86 @@ function invoke_viiiiiiiiiiiiiii(
       a12,
       a13,
       a14,
-      a15
-    )
+      a15,
+    );
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function invoke_viid(index, a1, a2, a3) {
-  var sp = stackSave()
+  var sp = stackSave();
   try {
-    dynCall_viid(index, a1, a2, a3)
+    dynCall_viid(index, a1, a2, a3);
   } catch (e) {
-    stackRestore(sp)
-    if (e !== e + 0) throw e
-    _setThrew(1, 0)
+    stackRestore(sp);
+    if (e !== e + 0) throw e;
+    _setThrew(1, 0);
   }
 }
 function applySignatureConversions(wasmExports) {
-  wasmExports = Object.assign({}, wasmExports)
-  var makeWrapper_pp = (f) => (a0) => f(a0) >>> 0
-  var makeWrapper_p = (f) => () => f() >>> 0
-  var makeWrapper_ppp = (f) => (a0, a1) => f(a0, a1) >>> 0
-  wasmExports["uc"] = makeWrapper_pp(wasmExports["uc"])
-  wasmExports["dd"] = makeWrapper_p(wasmExports["dd"])
-  wasmExports["ed"] = makeWrapper_ppp(wasmExports["ed"])
-  wasmExports["ld"] = makeWrapper_ppp(wasmExports["ld"])
-  wasmExports["qd"] = makeWrapper_pp(wasmExports["qd"])
-  wasmExports["rd"] = makeWrapper_p(wasmExports["rd"])
-  wasmExports["vd"] = makeWrapper_pp(wasmExports["vd"])
-  return wasmExports
+  wasmExports = Object.assign({}, wasmExports);
+  var makeWrapper_pp = (f) => (a0) => f(a0) >>> 0;
+  var makeWrapper_p = (f) => () => f() >>> 0;
+  var makeWrapper_ppp = (f) => (a0, a1) => f(a0, a1) >>> 0;
+  wasmExports["uc"] = makeWrapper_pp(wasmExports["uc"]);
+  wasmExports["dd"] = makeWrapper_p(wasmExports["dd"]);
+  wasmExports["ed"] = makeWrapper_ppp(wasmExports["ed"]);
+  wasmExports["ld"] = makeWrapper_ppp(wasmExports["ld"]);
+  wasmExports["qd"] = makeWrapper_pp(wasmExports["qd"]);
+  wasmExports["rd"] = makeWrapper_p(wasmExports["rd"]);
+  wasmExports["vd"] = makeWrapper_pp(wasmExports["vd"]);
+  return wasmExports;
 }
 function callMain() {
-  var entryFunction = _main
-  var argc = 0
-  var argv = 0
+  var entryFunction = _main;
+  var argc = 0;
+  var argv = 0;
   try {
-    var ret = entryFunction(argc, argv)
-    exitJS(ret, true)
-    return ret
+    var ret = entryFunction(argc, argv);
+    exitJS(ret, true);
+    return ret;
   } catch (e) {
-    return handleException(e)
+    return handleException(e);
   }
 }
 function run() {
   if (runDependencies > 0) {
-    dependenciesFulfilled = run
-    return
+    dependenciesFulfilled = run;
+    return;
   }
   if (ENVIRONMENT_IS_PTHREAD) {
-    initRuntime()
-    return
+    initRuntime();
+    return;
   }
-  preRun()
+  preRun();
   if (runDependencies > 0) {
-    dependenciesFulfilled = run
-    return
+    dependenciesFulfilled = run;
+    return;
   }
   function doRun() {
-    Module["calledRun"] = true
-    if (ABORT) return
-    initRuntime()
-    preMain()
-    Module["onRuntimeInitialized"]?.()
-    var noInitialRun = Module["noInitialRun"] || false
-    if (!noInitialRun) callMain()
-    postRun()
+    Module["calledRun"] = true;
+    if (ABORT) return;
+    initRuntime();
+    preMain();
+    Module["onRuntimeInitialized"]?.();
+    var noInitialRun = Module["noInitialRun"] || false;
+    if (!noInitialRun) callMain();
+    postRun();
   }
   if (Module["setStatus"]) {
-    Module["setStatus"]("Running...")
+    Module["setStatus"]("Running...");
     setTimeout(() => {
-      setTimeout(() => Module["setStatus"](""), 1)
-      doRun()
-    }, 1)
+      setTimeout(() => Module["setStatus"](""), 1);
+      doRun();
+    }, 1);
   } else {
-    doRun()
+    doRun();
   }
 }
-var wasmExports
+var wasmExports;
 if (!ENVIRONMENT_IS_PTHREAD) {
-  createWasm()
-  run()
+  createWasm();
+  run();
 }

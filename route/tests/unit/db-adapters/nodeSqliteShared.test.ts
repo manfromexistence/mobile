@@ -10,7 +10,7 @@ class FakeStatement {
 
   constructor(
     private readonly sql: string,
-    private readonly rows: Row[] = []
+    private readonly rows: Row[] = [],
   ) {}
 
   run(..._params: unknown[]) {
@@ -95,6 +95,6 @@ test("createNodeSqliteAdapterFromDatabase finalizes cached statements on close",
   assert.equal(adapter.open, false);
   assert.equal(
     db.statements.every((statement) => statement.finalized),
-    true
+    true,
   );
 });

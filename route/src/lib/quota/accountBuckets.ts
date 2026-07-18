@@ -100,7 +100,7 @@ function parseResetAtMs(resetAt: string | null | undefined): number {
 export function isBucketSaturated(
   connectionId: string,
   windowKey: string,
-  nowMs: number = Date.now()
+  nowMs: number = Date.now(),
 ): boolean {
   if (!connectionId || !windowKey) return false; // fail-open
   const key = storeKey(connectionId, windowKey);
@@ -136,7 +136,7 @@ export function recordUsage(
   windowKey: string,
   usedPct: number,
   resetAt: string | null,
-  nowMs: number = Date.now()
+  nowMs: number = Date.now(),
 ): void {
   if (!connectionId || !windowKey) return;
   const key = storeKey(connectionId, windowKey);
@@ -178,7 +178,7 @@ export function recordUsage(
 export function updateAccountBuckets(
   connectionId: string,
   usageResult: ClaudeUsageResult | null | undefined,
-  nowMs: number = Date.now()
+  nowMs: number = Date.now(),
 ): void {
   if (!connectionId || !usageResult?.quotas) return;
   const { quotas } = usageResult;
@@ -204,7 +204,7 @@ function processQuotaEntry(
   connectionId: string,
   windowKey: string,
   entry: UsageQuotaSlim | undefined | null,
-  nowMs: number
+  nowMs: number,
 ): void {
   if (!entry || typeof entry.used !== "number") return;
   recordUsage(connectionId, windowKey, entry.used, entry.resetAt ?? null, nowMs);

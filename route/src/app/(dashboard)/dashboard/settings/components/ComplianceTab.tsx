@@ -88,7 +88,7 @@ export default function ComplianceTab() {
           return row[col.key] || "—";
       }
     },
-    [t]
+    [t],
   );
 
   return (

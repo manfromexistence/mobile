@@ -138,7 +138,7 @@ function isChatAutoComboNoAuthProvider(providerDef: NoAuthProviderDefinition): b
 function getNoAuthCandidates(
   excludedProviders: Set<string>,
   blockedProviders: Set<string>,
-  disabledNoAuthProviders: Set<string>
+  disabledNoAuthProviders: Set<string>,
 ): VirtualAutoComboCandidate[] {
   const registry = getProviderRegistry();
   const candidates: VirtualAutoComboCandidate[] = [];
@@ -240,7 +240,7 @@ export function computeAdvertisedLimits(candidates: Array<{ provider: string; mo
 
 export async function createVirtualAutoCombo(
   variant: AutoVariant | undefined,
-  spec?: AutoComboSpec
+  spec?: AutoComboSpec,
 ): Promise<VirtualAutoCombo> {
   const [connections, disabledNoAuthConnections, settings] = await Promise.all([
     getProviderConnections({ isActive: true }) as Promise<VirtualFactoryConn[]>,
@@ -253,12 +253,12 @@ export async function createVirtualAutoCombo(
     getSettings().catch(() => ({}) as Record<string, unknown>),
   ]);
   const blockedProviders = new Set(
-    Array.isArray(settings.blockedProviders) ? (settings.blockedProviders as string[]) : []
+    Array.isArray(settings.blockedProviders) ? (settings.blockedProviders as string[]) : [],
   );
   const disabledNoAuthProviders = new Set(
     disabledNoAuthConnections
       .filter((conn) => conn.provider in NOAUTH_PROVIDERS)
-      .map((conn) => conn.provider)
+      .map((conn) => conn.provider),
   );
   const hiddenModelsMap = getHiddenModelsByProvider();
 
@@ -296,8 +296,8 @@ export async function createVirtualAutoCombo(
     ...getNoAuthCandidates(
       new Set(validConnections.map((conn) => conn.provider)),
       blockedProviders,
-      disabledNoAuthProviders
-    )
+      disabledNoAuthProviders,
+    ),
   );
 
   // #6512 (follow-up to #6328/#6495): when the operator opts into `hidePaidModels`,
@@ -305,7 +305,10 @@ export async function createVirtualAutoCombo(
   // `/v1/models` listing — so auto-routing never picks a model that will 402/403.
   // If this empties the pool the existing graceful empty-pool path below handles it
   // (consistent with the opt-in intent). Default OFF → pool unchanged.
-  const paidFilteredPool = filterPaidOnlyCandidates(candidatePool, settings.hidePaidModels === true);
+  const paidFilteredPool = filterPaidOnlyCandidates(
+    candidatePool,
+    settings.hidePaidModels === true,
+  );
   if (paidFilteredPool !== candidatePool) {
     candidatePool.length = 0;
     candidatePool.push(...paidFilteredPool);
@@ -357,7 +360,7 @@ export async function createVirtualAutoCombo(
       : null;
   if (candidateFilter) {
     const narrowed = candidatePool.filter((c) =>
-      candidateFilter({ provider: c.provider, model: c.model })
+      candidateFilter({ provider: c.provider, model: c.model }),
     );
     const label = spec?.family
       ? `auto/${spec.family}`
@@ -372,7 +375,7 @@ export async function createVirtualAutoCombo(
       // Opt-in legacy behavior (category/tier only): warn loudly, then keep the full pool.
       log.warn(
         "AUTO",
-        `${label} matched no connected models; falling back to the full pool (OMNIROUTE_AUTO_FREE_FALLBACK_TO_FULL_POOL=true)`
+        `${label} matched no connected models; falling back to the full pool (OMNIROUTE_AUTO_FREE_FALLBACK_TO_FULL_POOL=true)`,
       );
     } else {
       // Family combos always degrade to an empty pool when unavailable — a family
@@ -380,7 +383,7 @@ export async function createVirtualAutoCombo(
       // no sensible "fall back to the full pool" behavior for it.
       log.warn(
         "AUTO",
-        `${label} matched no connected models; returning an empty pool.${spec?.family ? "" : ' Set OMNIROUTE_AUTO_FREE_FALLBACK_TO_FULL_POOL=true to restore the legacy "use full pool" behavior.'}`
+        `${label} matched no connected models; returning an empty pool.${spec?.family ? "" : ' Set OMNIROUTE_AUTO_FREE_FALLBACK_TO_FULL_POOL=true to restore the legacy "use full pool" behavior.'}`,
       );
       effectivePool = [];
     }

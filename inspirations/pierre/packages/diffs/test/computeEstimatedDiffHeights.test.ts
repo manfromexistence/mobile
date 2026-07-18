@@ -1,13 +1,13 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from "bun:test";
 
-import { DEFAULT_COLLAPSED_CONTEXT_THRESHOLD } from '../src/constants';
-import type { FileDiffMetadata, VirtualFileMetrics } from '../src/types';
+import { DEFAULT_COLLAPSED_CONTEXT_THRESHOLD } from "../src/constants";
+import type { FileDiffMetadata, VirtualFileMetrics } from "../src/types";
 import {
   computeEstimatedDiffHeights,
   type ComputeEstimatedDiffHeightsOptions,
-} from '../src/utils/computeEstimatedDiffHeights';
-import { parseDiffFromFile } from '../src/utils/parseDiffFromFile';
-import { countDeclaredRows } from './testUtils';
+} from "../src/utils/computeEstimatedDiffHeights";
+import { parseDiffFromFile } from "../src/utils/parseDiffFromFile";
+import { countDeclaredRows } from "./testUtils";
 
 const metrics: VirtualFileMetrics = {
   hunkLineCount: 2,
@@ -26,10 +26,8 @@ const metadataSeparatorHeight = 32;
 // the first separator and below the trailing one, mirroring
 // getLeadingHunkSeparatorLayout and getTrailingHunkSeparatorLayout.
 const firstLineInfoSeparatorHeight = lineInfoSeparatorHeight + metrics.spacing;
-const middleLineInfoSeparatorHeight =
-  metrics.spacing + lineInfoSeparatorHeight + metrics.spacing;
-const trailingLineInfoSeparatorHeight =
-  metrics.spacing + lineInfoSeparatorHeight;
+const middleLineInfoSeparatorHeight = metrics.spacing + lineInfoSeparatorHeight + metrics.spacing;
+const trailingLineInfoSeparatorHeight = metrics.spacing + lineInfoSeparatorHeight;
 
 // Diffs with at least one hunk always end with bottom padding, which falls
 // back to `spacing` when `paddingBottom` is not configured.
@@ -42,17 +40,14 @@ const twoHunkFileLineCount = 140;
 const twoHunkChangedLines = [40, 100];
 
 function createTwoHunkDiff(): FileDiffMetadata {
-  const oldLines = Array.from(
-    { length: twoHunkFileLineCount },
-    (_, index) => `${index + 1}`
-  );
+  const oldLines = Array.from({ length: twoHunkFileLineCount }, (_, index) => `${index + 1}`);
   const newLines = oldLines.map((line, index) =>
-    twoHunkChangedLines.includes(index + 1) ? `changed-${index + 1}` : line
+    twoHunkChangedLines.includes(index + 1) ? `changed-${index + 1}` : line,
   );
 
   const fileDiff = parseDiffFromFile(
-    { name: 'two-hunks.ts', contents: `${oldLines.join('\n')}\n` },
-    { name: 'two-hunks.ts', contents: `${newLines.join('\n')}\n` }
+    { name: "two-hunks.ts", contents: `${oldLines.join("\n")}\n` },
+    { name: "two-hunks.ts", contents: `${newLines.join("\n")}\n` },
   );
   const [firstHunk, secondHunk] = fileDiff.hunks;
   if (
@@ -62,7 +57,7 @@ function createTwoHunkDiff(): FileDiffMetadata {
     firstHunk.collapsedBefore <= 0 ||
     secondHunk.collapsedBefore <= 0
   ) {
-    throw new Error('Expected two hunks with collapsed leading context');
+    throw new Error("Expected two hunks with collapsed leading context");
   }
   return fileDiff;
 }
@@ -74,23 +69,23 @@ function getDeclaredRowHeights(fileDiff: FileDiffMetadata): {
   unified: number;
 } {
   return {
-    split: countDeclaredRows(fileDiff, 'split') * metrics.lineHeight,
-    unified: countDeclaredRows(fileDiff, 'unified') * metrics.lineHeight,
+    split: countDeclaredRows(fileDiff, "split") * metrics.lineHeight,
+    unified: countDeclaredRows(fileDiff, "unified") * metrics.lineHeight,
   };
 }
 
 function compute(
   fileDiff: FileDiffMetadata,
-  options: Partial<
-    Omit<ComputeEstimatedDiffHeightsOptions, 'fileDiff' | 'metrics'>
-  > & { metrics?: VirtualFileMetrics } = {}
+  options: Partial<Omit<ComputeEstimatedDiffHeightsOptions, "fileDiff" | "metrics">> & {
+    metrics?: VirtualFileMetrics;
+  } = {},
 ) {
   const { metrics: overrideMetrics = metrics, ...rest } = options;
   return computeEstimatedDiffHeights({
     fileDiff,
     metrics: overrideMetrics,
     disableFileHeader: false,
-    hunkSeparators: 'line-info',
+    hunkSeparators: "line-info",
     expandUnchanged: false,
     expandedHunks: undefined,
     collapsedContextThreshold: DEFAULT_COLLAPSED_CONTEXT_THRESHOLD,
@@ -98,11 +93,11 @@ function compute(
   });
 }
 
-describe('computeEstimatedDiffHeights', () => {
-  test('returns only the top region when a diff has no hunks', () => {
+describe("computeEstimatedDiffHeights", () => {
+  test("returns only the top region when a diff has no hunks", () => {
     const fileDiff = parseDiffFromFile(
-      { name: 'same.ts', contents: 'one\n' },
-      { name: 'same.ts', contents: 'one\n' }
+      { name: "same.ts", contents: "one\n" },
+      { name: "same.ts", contents: "one\n" },
     );
     const paddingTop = 6;
     const headerRegion = metrics.diffHeaderHeight + paddingTop;
@@ -111,17 +106,17 @@ describe('computeEstimatedDiffHeights', () => {
     expect(
       compute(fileDiff, {
         metrics: { ...metrics, paddingTop, paddingBottom: 13 },
-      })
+      }),
     ).toEqual({
       splitHeight: headerRegion,
       unifiedHeight: headerRegion,
     });
   });
 
-  test('computes split and unified heights with no-newline metadata rows', () => {
+  test("computes split and unified heights with no-newline metadata rows", () => {
     const fileDiff = parseDiffFromFile(
-      { name: 'no-newline.ts', contents: 'one\ntwo' },
-      { name: 'no-newline.ts', contents: 'one\nTWO' }
+      { name: "no-newline.ts", contents: "one\ntwo" },
+      { name: "no-newline.ts", contents: "one\nTWO" },
     );
     const rowHeights = getDeclaredRowHeights(fileDiff);
     // Both sides lose their trailing newline on the changed final line, so
@@ -144,10 +139,10 @@ describe('computeEstimatedDiffHeights', () => {
     });
   });
 
-  test('computes split metadata when the no-newline deletion side is shorter', () => {
+  test("computes split metadata when the no-newline deletion side is shorter", () => {
     const fileDiff = parseDiffFromFile(
-      { name: 'deletion-shorter.ts', contents: 'same\nold-final' },
-      { name: 'deletion-shorter.ts', contents: 'same\nnew-a\nnew-b\n' }
+      { name: "deletion-shorter.ts", contents: "same\nold-final" },
+      { name: "deletion-shorter.ts", contents: "same\nnew-a\nnew-b\n" },
     );
     const rowHeights = getDeclaredRowHeights(fileDiff);
     // Only the deletion side loses its trailing newline, producing a single
@@ -168,10 +163,10 @@ describe('computeEstimatedDiffHeights', () => {
     });
   });
 
-  test('computes split metadata when the no-newline addition side is shorter', () => {
+  test("computes split metadata when the no-newline addition side is shorter", () => {
     const fileDiff = parseDiffFromFile(
-      { name: 'addition-shorter.ts', contents: 'same\nold-a\nold-b\n' },
-      { name: 'addition-shorter.ts', contents: 'same\nnew-final' }
+      { name: "addition-shorter.ts", contents: "same\nold-a\nold-b\n" },
+      { name: "addition-shorter.ts", contents: "same\nnew-final" },
     );
     const rowHeights = getDeclaredRowHeights(fileDiff);
     // Only the addition side loses its trailing newline, producing a single
@@ -192,7 +187,7 @@ describe('computeEstimatedDiffHeights', () => {
     });
   });
 
-  test('accounts for collapsed leading and trailing line-info separators', () => {
+  test("accounts for collapsed leading and trailing line-info separators", () => {
     const fileDiff = createTwoHunkDiff();
     const rowHeights = getDeclaredRowHeights(fileDiff);
 
@@ -214,18 +209,15 @@ describe('computeEstimatedDiffHeights', () => {
     });
   });
 
-  test('preserves current simple separator behavior', () => {
+  test("preserves current simple separator behavior", () => {
     const fileDiff = createTwoHunkDiff();
     const rowHeights = getDeclaredRowHeights(fileDiff);
 
     // 'simple' separators render no rule before the first hunk and reserve
     // nothing for trailing collapsed context, leaving only the middle rule.
-    expect(compute(fileDiff, { hunkSeparators: 'simple' })).toEqual({
+    expect(compute(fileDiff, { hunkSeparators: "simple" })).toEqual({
       splitHeight:
-        metrics.diffHeaderHeight +
-        rowHeights.split +
-        simpleSeparatorHeight +
-        defaultPaddingBottom,
+        metrics.diffHeaderHeight + rowHeights.split + simpleSeparatorHeight + defaultPaddingBottom,
       unifiedHeight:
         metrics.diffHeaderHeight +
         rowHeights.unified +
@@ -234,7 +226,7 @@ describe('computeEstimatedDiffHeights', () => {
     });
   });
 
-  test('expands unchanged context as rows without separators', () => {
+  test("expands unchanged context as rows without separators", () => {
     const fileDiff = createTwoHunkDiff();
     // Full expansion renders every file line as one split row; unified adds
     // an extra row per single-line change (deletion plus addition rows).
@@ -242,18 +234,13 @@ describe('computeEstimatedDiffHeights', () => {
     const unifiedRows = twoHunkFileLineCount + twoHunkChangedLines.length;
 
     expect(compute(fileDiff, { expandUnchanged: true })).toEqual({
-      splitHeight:
-        metrics.diffHeaderHeight +
-        splitRows * metrics.lineHeight +
-        defaultPaddingBottom,
+      splitHeight: metrics.diffHeaderHeight + splitRows * metrics.lineHeight + defaultPaddingBottom,
       unifiedHeight:
-        metrics.diffHeaderHeight +
-        unifiedRows * metrics.lineHeight +
-        defaultPaddingBottom,
+        metrics.diffHeaderHeight + unifiedRows * metrics.lineHeight + defaultPaddingBottom,
     });
   });
 
-  test('accounts for partially expanded leading context', () => {
+  test("accounts for partially expanded leading context", () => {
     const fileDiff = createTwoHunkDiff();
     const rowHeights = getDeclaredRowHeights(fileDiff);
     const expansion = { fromStart: 2, fromEnd: 3 };
@@ -282,7 +269,7 @@ describe('computeEstimatedDiffHeights', () => {
     });
   });
 
-  test('accounts for partially expanded trailing context from the start only', () => {
+  test("accounts for partially expanded trailing context from the start only", () => {
     const fileDiff = createTwoHunkDiff();
     const rowHeights = getDeclaredRowHeights(fileDiff);
     const expansion = { fromStart: 2, fromEnd: 3 };
@@ -311,7 +298,7 @@ describe('computeEstimatedDiffHeights', () => {
     });
   });
 
-  test('does not estimate trailing collapsed context for partial diffs', () => {
+  test("does not estimate trailing collapsed context for partial diffs", () => {
     const fileDiff = { ...createTwoHunkDiff(), isPartial: true };
     const rowHeights = getDeclaredRowHeights(fileDiff);
 
@@ -333,17 +320,15 @@ describe('computeEstimatedDiffHeights', () => {
     });
   });
 
-  test('reserves metadata separators only for hunk specs', () => {
+  test("reserves metadata separators only for hunk specs", () => {
     const fileDiff = createTwoHunkDiff();
     const rowHeights = getDeclaredRowHeights(fileDiff);
     // 'metadata' separators render gapless before each hunk that carries
     // hunk specs and reserve nothing for trailing collapsed context.
-    const hunksWithSpecs = fileDiff.hunks.filter(
-      (hunk) => hunk.hunkSpecs != null
-    );
+    const hunksWithSpecs = fileDiff.hunks.filter((hunk) => hunk.hunkSpecs != null);
 
     expect(hunksWithSpecs).toHaveLength(fileDiff.hunks.length);
-    expect(compute(fileDiff, { hunkSeparators: 'metadata' })).toEqual({
+    expect(compute(fileDiff, { hunkSeparators: "metadata" })).toEqual({
       splitHeight:
         metrics.diffHeaderHeight +
         metadataSeparatorHeight * hunksWithSpecs.length +

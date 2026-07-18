@@ -57,5 +57,5 @@ export interface SkillConfig {
 
 export type SkillHandler = (
   input: Record<string, unknown>,
-  context: { apiKeyId: string; sessionId: string }
+  context: { apiKeyId: string; sessionId: string },
 ) => Promise<Record<string, unknown>>;

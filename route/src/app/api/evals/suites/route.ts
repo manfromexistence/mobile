@@ -19,7 +19,7 @@ export async function POST(request: Request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
   } catch (error: any) {
     return NextResponse.json(
       { error: error?.message || "Failed to create eval suite" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

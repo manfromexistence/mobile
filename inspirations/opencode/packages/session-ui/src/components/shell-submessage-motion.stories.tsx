@@ -1,8 +1,8 @@
 // @ts-nocheck
-import { createEffect, onCleanup } from "solid-js"
-import { createStore } from "solid-js/store"
-import { BasicTool } from "./basic-tool"
-import { animate } from "motion"
+import { createEffect, onCleanup } from "solid-js";
+import { createStore } from "solid-js/store";
+import { BasicTool } from "./basic-tool";
+import { animate } from "motion";
 
 export default {
   title: "UI/Shell Submessage Motion",
@@ -25,7 +25,7 @@ Interactive playground for animating the Shell tool subtitle ("submessage") in t
       },
     },
   },
-}
+};
 
 const btn = (accent?: boolean) =>
   ({
@@ -36,7 +36,7 @@ const btn = (accent?: boolean) =>
     color: "var(--color-text, #eee)",
     cursor: "pointer",
     "font-size": "13px",
-  }) as const
+  }) as const;
 
 const sliderLabel = {
   "font-size": "11px",
@@ -45,14 +45,14 @@ const sliderLabel = {
   "min-width": "84px",
   "flex-shrink": "0",
   "text-align": "right",
-}
+};
 
 const sliderValue = {
   "font-family": "monospace",
   "font-size": "11px",
   color: "var(--color-text-weak, #aaa)",
   "min-width": "76px",
-}
+};
 
 const shellCss = `
 [data-component="shell-submessage-scene"] [data-component="tool-trigger"] [data-slot="basic-tool-tool-info-main"] {
@@ -92,39 +92,44 @@ const shellCss = `
   opacity: 1;
   filter: blur(0px);
 }
-`
+`;
 
 const ease = {
   smooth: "cubic-bezier(0.16, 1, 0.3, 1)",
   snappy: "cubic-bezier(0.22, 1, 0.36, 1)",
   standard: "cubic-bezier(0.2, 0.8, 0.2, 1)",
   linear: "linear",
-}
+};
 
-function SpringSubmessage(props: { text: string; visible: boolean; visualDuration: number; bounce: number }) {
-  let ref: HTMLSpanElement | undefined
-  let widthRef: HTMLSpanElement | undefined
+function SpringSubmessage(props: {
+  text: string;
+  visible: boolean;
+  visualDuration: number;
+  bounce: number;
+}) {
+  let ref: HTMLSpanElement | undefined;
+  let widthRef: HTMLSpanElement | undefined;
 
   createEffect(() => {
-    if (!widthRef) return
+    if (!widthRef) return;
     if (props.visible) {
       requestAnimationFrame(() => {
-        ref?.setAttribute("data-visible", "")
+        ref?.setAttribute("data-visible", "");
         animate(
           widthRef!,
           { width: "auto" },
           { type: "spring", visualDuration: props.visualDuration, bounce: props.bounce },
-        )
-      })
+        );
+      });
     } else {
-      ref?.removeAttribute("data-visible")
+      ref?.removeAttribute("data-visible");
       animate(
         widthRef,
         { width: "0px" },
         { type: "spring", visualDuration: props.visualDuration, bounce: props.bounce },
-      )
+      );
     }
-  })
+  });
 
   return (
     <span ref={ref} data-component="shell-submessage">
@@ -134,7 +139,7 @@ function SpringSubmessage(props: { text: string; visible: boolean; visualDuratio
         </span>
       </span>
     </span>
-  )
+  );
 }
 
 export const Playground = {
@@ -148,45 +153,45 @@ export const Playground = {
       blur: 2,
       fadeEase: "snappy",
       auto: false,
-    })
-    const text = () => state.text
-    const show = () => state.show
-    const visualDuration = () => state.visualDuration
-    const bounce = () => state.bounce
-    const fadeMs = () => state.fadeMs
-    const blur = () => state.blur
-    const fadeEase = () => state.fadeEase
-    const auto = () => state.auto
-    let replayTimer
-    let autoTimer
+    });
+    const text = () => state.text;
+    const show = () => state.show;
+    const visualDuration = () => state.visualDuration;
+    const bounce = () => state.bounce;
+    const fadeMs = () => state.fadeMs;
+    const blur = () => state.blur;
+    const fadeEase = () => state.fadeEase;
+    const auto = () => state.auto;
+    let replayTimer;
+    let autoTimer;
 
     const replay = () => {
-      setState("show", false)
-      if (replayTimer) clearTimeout(replayTimer)
+      setState("show", false);
+      if (replayTimer) clearTimeout(replayTimer);
       replayTimer = setTimeout(() => {
-        setState("show", true)
-      }, 50)
-    }
+        setState("show", true);
+      }, 50);
+    };
 
     const stopAuto = () => {
-      if (autoTimer) clearInterval(autoTimer)
-      autoTimer = undefined
-      setState("auto", false)
-    }
+      if (autoTimer) clearInterval(autoTimer);
+      autoTimer = undefined;
+      setState("auto", false);
+    };
 
     const toggleAuto = () => {
       if (auto()) {
-        stopAuto()
-        return
+        stopAuto();
+        return;
       }
-      setState("auto", true)
-      autoTimer = setInterval(replay, 2200)
-    }
+      setState("auto", true);
+      autoTimer = setInterval(replay, 2200);
+    };
 
     onCleanup(() => {
-      if (replayTimer) clearTimeout(replayTimer)
-      if (autoTimer) clearInterval(autoTimer)
-    })
+      if (replayTimer) clearTimeout(replayTimer);
+      if (autoTimer) clearInterval(autoTimer);
+    });
 
     return (
       <div
@@ -210,7 +215,12 @@ export const Playground = {
             <div data-slot="basic-tool-tool-info-structured">
               <div data-slot="basic-tool-tool-info-main">
                 <span data-slot="basic-tool-tool-title">Shell</span>
-                <SpringSubmessage text={text()} visible={show()} visualDuration={visualDuration()} bounce={bounce()} />
+                <SpringSubmessage
+                  text={text()}
+                  visible={show()}
+                  visualDuration={visualDuration()}
+                  bounce={bounce()}
+                />
               </div>
             </div>
           }
@@ -341,6 +351,6 @@ export const Playground = {
           </div>
         </div>
       </div>
-    )
+    );
   },
-}
+};

@@ -126,16 +126,13 @@ test("findKiroConnectionByProfileArn returns the matching connection", async () 
   // The function should scan existing kiro connections and match by profileArn.
   const result = await findKiroConnectionByProfileArn(
     [fakeConnectionWithArn, fakeConnectionNoArn],
-    FAKE_PROFILE_ARN
+    FAKE_PROFILE_ARN,
   );
   assert.deepEqual(result, fakeConnectionWithArn);
 });
 
 test("findKiroConnectionByProfileArn returns null when no match exists", async () => {
-  const result = await findKiroConnectionByProfileArn(
-    [fakeConnectionNoArn],
-    FAKE_PROFILE_ARN
-  );
+  const result = await findKiroConnectionByProfileArn([fakeConnectionNoArn], FAKE_PROFILE_ARN);
   assert.equal(result, null);
 });
 
@@ -145,9 +142,6 @@ test("findKiroConnectionByProfileArn returns null for empty connection list", as
 });
 
 test("findKiroConnectionByProfileArn returns null when profileArn arg is undefined", async () => {
-  const result = await findKiroConnectionByProfileArn(
-    [fakeConnectionWithArn],
-    undefined
-  );
+  const result = await findKiroConnectionByProfileArn([fakeConnectionWithArn], undefined);
   assert.equal(result, null);
 });

@@ -1,19 +1,19 @@
-import { Billing } from "../src/billing.js"
-import { and, Database, eq, isNull } from "../src/drizzle/index.js"
-import { UserTable } from "../src/schema/user.sql.js"
-import { BillingTable, SubscriptionTable } from "../src/schema/billing.sql.js"
-import { Identifier } from "../src/identifier.js"
-import { AuthTable } from "../src/schema/auth.sql.js"
-import { BlackData } from "../src/black.js"
+import { Billing } from "../src/billing.js";
+import { and, Database, eq, isNull } from "../src/drizzle/index.js";
+import { UserTable } from "../src/schema/user.sql.js";
+import { BillingTable, SubscriptionTable } from "../src/schema/billing.sql.js";
+import { Identifier } from "../src/identifier.js";
+import { AuthTable } from "../src/schema/auth.sql.js";
+import { BlackData } from "../src/black.js";
 
-const plan = "200"
-const couponID = "JAIr0Pe1"
-const workspaceID = process.argv[2]
-const seats = parseInt(process.argv[3])
+const plan = "200";
+const couponID = "JAIr0Pe1";
+const workspaceID = process.argv[2];
+const seats = parseInt(process.argv[3]);
 
-console.log(`Gifting ${seats} seats of Black to workspace ${workspaceID}`)
+console.log(`Gifting ${seats} seats of Black to workspace ${workspaceID}`);
 
-if (!workspaceID || !seats) throw new Error("Usage: bun foo.ts <workspaceID> <seats>")
+if (!workspaceID || !seats) throw new Error("Usage: bun foo.ts <workspaceID> <seats>");
 
 // Get workspace user
 const users = await Database.use((tx) =>
@@ -24,15 +24,18 @@ const users = await Database.use((tx) =>
       email: AuthTable.subject,
     })
     .from(UserTable)
-    .leftJoin(AuthTable, and(eq(AuthTable.accountID, UserTable.accountID), eq(AuthTable.provider, "email")))
+    .leftJoin(
+      AuthTable,
+      and(eq(AuthTable.accountID, UserTable.accountID), eq(AuthTable.provider, "email")),
+    )
     .where(and(eq(UserTable.workspaceID, workspaceID), isNull(UserTable.timeDeleted))),
-)
-if (users.length === 0) throw new Error(`Error: No users found in workspace ${workspaceID}`)
+);
+if (users.length === 0) throw new Error(`Error: No users found in workspace ${workspaceID}`);
 if (users.length !== seats)
-  throw new Error(`Error: Workspace ${workspaceID} has ${users.length} users, expected ${seats}`)
-const adminUser = users.find((user) => user.role === "admin")
-if (!adminUser) throw new Error(`Error: No admin user found in workspace ${workspaceID}`)
-if (!adminUser.email) throw new Error(`Error: Admin user ${adminUser.id} has no email`)
+  throw new Error(`Error: Workspace ${workspaceID} has ${users.length} users, expected ${seats}`);
+const adminUser = users.find((user) => user.role === "admin");
+if (!adminUser) throw new Error(`Error: No admin user found in workspace ${workspaceID}`);
+if (!adminUser.email) throw new Error(`Error: Admin user ${adminUser.id} has no email`);
 
 // Get Billing
 const billing = await Database.use((tx) =>
@@ -44,9 +47,10 @@ const billing = await Database.use((tx) =>
     .from(BillingTable)
     .where(eq(BillingTable.workspaceID, workspaceID))
     .then((rows) => rows[0]),
-)
-if (!billing) throw new Error(`Error: Workspace ${workspaceID} has no billing record`)
-if (billing.subscriptionID) throw new Error(`Error: Workspace ${workspaceID} already has a subscription`)
+);
+if (!billing) throw new Error(`Error: Workspace ${workspaceID} has no billing record`);
+if (billing.subscriptionID)
+  throw new Error(`Error: Workspace ${workspaceID} already has a subscription`);
 
 // Look up the Stripe customer by email
 const customerID =
@@ -59,8 +63,8 @@ const customerID =
           workspaceID,
         },
       })
-      .then((customer) => customer.id))())
-console.log(`Customer ID: ${customerID}`)
+      .then((customer) => customer.id))());
+console.log(`Customer ID: ${customerID}`);
 
 const subscription = await Billing.stripe().subscriptions.create({
   customer: customerID!,
@@ -74,8 +78,8 @@ const subscription = await Billing.stripe().subscriptions.create({
   metadata: {
     workspaceID,
   },
-})
-console.log(`Subscription ID: ${subscription.id}`)
+});
+console.log(`Subscription ID: ${subscription.id}`);
 
 await Database.transaction(async (tx) => {
   // Set customer id, subscription id, and payment method on workspace billing
@@ -86,7 +90,7 @@ await Database.transaction(async (tx) => {
       subscriptionID: subscription.id,
       subscription: { status: "subscribed", coupon: couponID, seats, plan },
     })
-    .where(eq(BillingTable.workspaceID, workspaceID))
+    .where(eq(BillingTable.workspaceID, workspaceID));
 
   // Create a row in subscription table
   for (const user of users) {
@@ -94,7 +98,7 @@ await Database.transaction(async (tx) => {
       workspaceID,
       id: Identifier.create("subscription"),
       userID: user.id,
-    })
+    });
   }
   //
   //  // Create a row in payments table
@@ -110,6 +114,6 @@ await Database.transaction(async (tx) => {
   //      couponID,
   //    },
   //  })
-})
+});
 
-console.log(`done`)
+console.log(`done`);

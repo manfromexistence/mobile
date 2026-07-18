@@ -20,7 +20,10 @@ test.after(() => {
   fs.rmSync(TEST_DATA_DIR, { recursive: true, force: true });
 });
 
-async function withHttpServer(handler: http.RequestListener, fn: (baseUrl: string) => Promise<void>) {
+async function withHttpServer(
+  handler: http.RequestListener,
+  fn: (baseUrl: string) => Promise<void>,
+) {
   const server = http.createServer(handler);
   await new Promise<void>((resolve, reject) => {
     server.once("error", reject);
@@ -79,7 +82,7 @@ test("embeddings forward the connection-level (key) pinned proxy to the upstream
             data: [{ object: "embedding", embedding: [0.1, 0.2], index: 0 }],
             usage: { prompt_tokens: 3, total_tokens: 3 },
           }),
-          { status: 200, headers: { "content-type": "application/json" } }
+          { status: 200, headers: { "content-type": "application/json" } },
         );
       };
 
@@ -99,12 +102,12 @@ test("embeddings forward the connection-level (key) pinned proxy to the upstream
       assert.equal(
         capturedProxySource,
         "context",
-        `expected the embeddings upstream fetch to run inside a proxy context, got source="${capturedProxySource}"`
+        `expected the embeddings upstream fetch to run inside a proxy context, got source="${capturedProxySource}"`,
       );
       assert.ok(
         capturedProxyUrl && capturedProxyUrl.includes(`${proxyUrl.hostname}:${proxyUrl.port}`),
-        `expected the connection's pinned proxy to be forwarded, got "${capturedProxyUrl}"`
+        `expected the connection's pinned proxy to be forwarded, got "${capturedProxyUrl}"`,
       );
-    }
+    },
   );
 });

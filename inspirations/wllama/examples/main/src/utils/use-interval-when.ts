@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect } from "react";
 
 const noop = () => {};
 
@@ -16,7 +16,7 @@ function useIntervalWhen(
   callback: () => void,
   intervalDurationMs = 0,
   when = true,
-  startImmediate = false
+  startImmediate = false,
 ): void {
   const savedRefCallback = useRef<() => void>();
 

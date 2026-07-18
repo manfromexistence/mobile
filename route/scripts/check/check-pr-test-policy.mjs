@@ -118,7 +118,7 @@ if (hasRequiredTests) {
   reportLines.push(
     "Result: FAIL",
     "",
-    "This PR changes production code under `src/`, `open-sse/`, `electron/`, or `bin/` but does not add or update automated tests."
+    "This PR changes production code under `src/`, `open-sse/`, `electron/`, or `bin/` but does not add or update automated tests.",
   );
 }
 

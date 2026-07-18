@@ -38,7 +38,7 @@ class ClaudeWebWithAutoRefresh extends ClaudeWebExecutor {
       this.retryCount++;
       log?.warn?.(
         "CLAUDE-WEB",
-        `HTTP ${result.response.status} detected - attempt ${this.retryCount}/${this.maxRetries}`
+        `HTTP ${result.response.status} detected - attempt ${this.retryCount}/${this.maxRetries}`,
       );
 
       try {
@@ -48,7 +48,7 @@ class ClaudeWebWithAutoRefresh extends ClaudeWebExecutor {
 
         log?.info?.(
           "CLAUDE-WEB",
-          `Solving Turnstile (cache: ${cacheStatus.hasCached ? `${Math.round((cacheStatus.expiresIn || 0) / 1000)}s left` : "empty"})...`
+          `Solving Turnstile (cache: ${cacheStatus.hasCached ? `${Math.round((cacheStatus.expiresIn || 0) / 1000)}s left` : "empty"})...`,
         );
 
         const freshCfClearance = await getCfClearanceToken({ force: shouldForce });
@@ -90,7 +90,7 @@ class ClaudeWebWithAutoRefresh extends ClaudeWebExecutor {
 
   async testConnection(
     credentials: Record<string, unknown>,
-    signal?: AbortSignal
+    signal?: AbortSignal,
   ): Promise<boolean> {
     try {
       // Try basic connection first

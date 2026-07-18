@@ -21,8 +21,7 @@ import assert from "node:assert/strict";
 import { GitlabExecutor, buildPrompt } from "../../open-sse/executors/gitlab.ts";
 
 // A tool result large enough to blow the small_file generation contract if unbounded.
-const HUGE_TOOL_RESULT =
-  "TOOLRESULT_START " + "x".repeat(60_000) + " TOOLRESULT_END";
+const HUGE_TOOL_RESULT = "TOOLRESULT_START " + "x".repeat(60_000) + " TOOLRESULT_END";
 
 function buildLongToolConversation() {
   const messages: Array<Record<string, unknown>> = [
@@ -58,7 +57,7 @@ test("buildPrompt: long tool-exchange history is bounded (char cap) [#6220]", ()
   // Sane bound for the small_file generation contract.
   assert.ok(
     prompt.length < 30_000,
-    `bounded prompt should stay under 30k chars, got ${prompt.length}`
+    `bounded prompt should stay under 30k chars, got ${prompt.length}`,
   );
   // The most-recent tool result must still be present (its head survives the cap).
   assert.match(prompt, /TOOLRESULT_START/);
@@ -71,7 +70,7 @@ test("transformRequest: content_above_cursor and user_instruction are both bound
     "gitlab-duo/model",
     { messages },
     false,
-    {} as never
+    {} as never,
   ) as Record<string, unknown>;
 
   const currentFile = out.current_file as Record<string, unknown>;
@@ -81,7 +80,7 @@ test("transformRequest: content_above_cursor and user_instruction are both bound
   // content_above_cursor carries the (bounded) folded history + the tool observation.
   assert.ok(
     contentAbove.length < 30_000,
-    `content_above_cursor should be bounded, got ${contentAbove.length}`
+    `content_above_cursor should be bounded, got ${contentAbove.length}`,
   );
   assert.match(contentAbove, /TOOLRESULT_START/);
 
@@ -89,7 +88,7 @@ test("transformRequest: content_above_cursor and user_instruction are both bound
   // likely offending 422 field. It carries only the short latest user message.
   assert.ok(
     userInstruction.length < 5_000,
-    `user_instruction should be short (not the full prompt), got ${userInstruction.length}`
+    `user_instruction should be short (not the full prompt), got ${userInstruction.length}`,
   );
   assert.match(userInstruction, /summarize the repo/);
 });

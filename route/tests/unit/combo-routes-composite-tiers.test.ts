@@ -86,7 +86,7 @@ test("POST /api/combos persists names with spaces and square brackets", async ()
       name: "Claude [1m]",
       strategy: "priority",
       models: [{ providerId: "claude", model: "claude-sonnet-4-6" }],
-    })
+    }),
   );
   const body = (await response.json()) as any;
   const stored = await combosDb.getComboByName("Claude [1m]");
@@ -108,7 +108,7 @@ test("POST /api/combos rejects duplicate bracketed names", async () => {
       name: "Claude [1m]",
       strategy: "priority",
       models: [{ providerId: "claude", model: "claude-opus-4-6" }],
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -147,7 +147,7 @@ test("POST /api/combos rejects composite tiers that point to unknown steps", asy
           },
         },
       },
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -193,7 +193,7 @@ test("POST /api/combos preserves legacy string combo refs during normalization",
       name: "parent-ref",
       strategy: "priority",
       models: ["child-ref"],
-    })
+    }),
   );
   const body = (await response.json()) as any;
   const stored = await combosDb.getComboByName("parent-ref");
@@ -220,7 +220,7 @@ test("PUT /api/combos rejects updates that orphan an existing composite tier ste
         },
       ],
     }),
-    { params: Promise.resolve({ id: combo.id }) }
+    { params: Promise.resolve({ id: combo.id }) },
   );
   const body = (await response.json()) as any;
 
@@ -259,7 +259,7 @@ test("PUT /api/combos preserves legacy string combo refs during normalization", 
     makeUpdateRequest({
       models: ["child-ref"],
     }),
-    { params: Promise.resolve({ id: combo.id }) }
+    { params: Promise.resolve({ id: combo.id }) },
   );
   const body = (await response.json()) as any;
   const stored = await combosDb.getComboById((combo as any).id);

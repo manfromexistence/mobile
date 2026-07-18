@@ -129,7 +129,7 @@ function prepareAppDir() {
 
   if (usingAlternativeBackupDir) {
     console.warn(
-      "[Playwright WebServer] Existing app.__qa_backup detected; using a per-run backup dir instead."
+      "[Playwright WebServer] Existing app.__qa_backup detected; using a per-run backup dir instead.",
     );
   }
 

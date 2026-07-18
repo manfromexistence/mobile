@@ -30,7 +30,7 @@ test("Antigravity payload sets include_server_side_tool_invocations when built-i
     "generate_image",
   ];
   const injectedBuiltinShapedDecoys = BUILTIN_SHAPED_DECOY_NAMES.filter((name) =>
-    serialized.includes(`"${name}"`)
+    serialized.includes(`"${name}"`),
   );
   const hasOptInFlag =
     serialized.includes("include_server_side_tool_invocations") ||
@@ -40,7 +40,7 @@ test("Antigravity payload sets include_server_side_tool_invocations when built-i
   assert.equal(
     hasOptInFlag,
     true,
-    "expected the includeServerSideToolInvocations opt-in flag to be set alongside decoy tools"
+    "expected the includeServerSideToolInvocations opt-in flag to be set alongside decoy tools",
   );
 });
 

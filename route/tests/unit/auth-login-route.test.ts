@@ -51,7 +51,7 @@ test("auth login route returns 400 for malformed JSON bodies", async () => {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: "a��",
-    })
+    }),
   );
 
   assert.equal(response.status, 400);
@@ -69,7 +69,7 @@ test("auth login route returns needsSetup when no management password is configu
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ password: "missing-password" }),
-    })
+    }),
   );
 
   assert.equal(response.status, 403);
@@ -91,7 +91,7 @@ test("auth login route lazily migrates INITIAL_PASSWORD to a persisted hash befo
       method: "POST",
       headers: { "content-type": "application/json", "x-forwarded-proto": "https" },
       body: JSON.stringify({ password: "bootstrap-secret" }),
-    })
+    }),
   );
   const settings = await settingsDb.getSettings();
 
@@ -102,9 +102,9 @@ test("auth login route lazily migrates INITIAL_PASSWORD to a persisted hash befo
   assert.equal(
     await managementPassword.verifyManagementPassword(
       "bootstrap-secret",
-      (settings as any).password
+      (settings as any).password,
     ),
-    true
+    true,
   );
 });
 
@@ -120,7 +120,7 @@ test("auth login route sets a bounded maxAge on the auth_token cookie (Seg3)", a
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ password: "bootstrap-secret" }),
-    })
+    }),
   );
 
   assert.equal(response.status, 200);

@@ -58,20 +58,20 @@ describe("session-dedup engine", () => {
     // Turn 0 (index 0): first occurrence — must keep the block intact
     assert.ok(
       messages[0].content.includes(REPEATED_BLOCK),
-      "first occurrence must remain intact in turn 0"
+      "first occurrence must remain intact in turn 0",
     );
 
     // Turn 2 (index 2): duplicate — must NOT contain the raw repeated block text
     assert.ok(
       !messages[2].content.includes(REPEATED_BLOCK),
-      "duplicate block must be removed from turn 2"
+      "duplicate block must be removed from turn 2",
     );
 
     // Turn 2: must contain a reference marker
     assert.match(
       messages[2].content,
       /\[dedup:ref sha=[0-9a-f]{24}\]/,
-      "turn 2 must contain a [dedup:ref sha=<24hex>] marker"
+      "turn 2 must contain a [dedup:ref sha=<24hex>] marker",
     );
 
     // Output must be shorter than input

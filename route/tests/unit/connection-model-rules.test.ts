@@ -39,9 +39,9 @@ test("hasEligibleConnectionForModel only returns true when at least one connecti
         { providerSpecificData: { excludedModels: ["gpt-4o*"] } },
         { providerSpecificData: { excludedModels: ["gpt-4o-mini"] } },
       ],
-      "gpt-4o-mini"
+      "gpt-4o-mini",
     ),
-    false
+    false,
   );
   assert.deepEqual(getConnectionExcludedModels({ excluded_models: ["gpt-4o*"] }), ["gpt-4o*"]);
 });

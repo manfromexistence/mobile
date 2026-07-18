@@ -13,7 +13,8 @@ export const dict: Record<string, string> = {
   "ui.sessionReview.image.loading": "Завантаження...",
   "ui.sessionReview.image.placeholder": "Зображення",
   "ui.sessionReview.largeDiff.title": "Завеликий diff для відображення",
-  "ui.sessionReview.largeDiff.meta": "Ліміт: {{limit}} змінених рядків. Поточно: {{current}} змінених рядків.",
+  "ui.sessionReview.largeDiff.meta":
+    "Ліміт: {{limit}} змінених рядків. Поточно: {{current}} змінених рядків.",
   "ui.sessionReview.largeDiff.renderAnyway": "Все одно відобразити",
   "ui.sessionReview.openFile": "Відкрити файл",
   "ui.sessionReview.selection.line": "рядок {{line}}",
@@ -26,8 +27,10 @@ export const dict: Record<string, string> = {
   "ui.fileMedia.state.error": "Не вдалося завантажити {{kind}}",
   "ui.fileMedia.state.unavailable": "{{kind}} недоступне",
   "ui.fileMedia.binary.title": "Бінарний файл",
-  "ui.fileMedia.binary.description.path": "Неможливо відобразити {{path}}, оскільки це бінарний файл.",
-  "ui.fileMedia.binary.description.default": "Неможливо відобразити цей файл, оскільки він бінарний.",
+  "ui.fileMedia.binary.description.path":
+    "Неможливо відобразити {{path}}, оскільки це бінарний файл.",
+  "ui.fileMedia.binary.description.default":
+    "Неможливо відобразити цей файл, оскільки він бінарний.",
 
   "ui.lineComment.label.prefix": "Коментар до ",
   "ui.lineComment.label.suffix": "",
@@ -164,4 +167,4 @@ export const dict: Record<string, string> = {
   "ui.question.multiHint": "Виберіть усі відповідні варіанти",
   "ui.question.singleHint": "Виберіть одну відповідь",
   "ui.question.custom.placeholder": "Введіть свою відповідь...",
-}
+};

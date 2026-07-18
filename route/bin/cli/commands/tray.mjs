@@ -10,7 +10,7 @@ export function registerTray(program) {
     .description(t("tray.show") || "Show the tray icon (if server is running with --tray)")
     .action(() => {
       process.stderr.write(
-        "The tray is managed by `omniroute serve --tray`. Start the server with --tray to enable it.\n"
+        "The tray is managed by `omniroute serve --tray`. Start the server with --tray to enable it.\n",
       );
     });
 
@@ -19,7 +19,7 @@ export function registerTray(program) {
     .description(t("tray.hide") || "Hide the tray icon")
     .action(() => {
       process.stderr.write(
-        "Send SIGUSR1 to the serve process to toggle the tray, or restart without --tray.\n"
+        "Send SIGUSR1 to the serve process to toggle the tray, or restart without --tray.\n",
       );
     });
 

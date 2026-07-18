@@ -137,7 +137,7 @@ for (const item of budget) {
   }
 
   console.log(
-    `[t11:any-budget] ${status} - ${item.file} (explicit any: ${count}, budget: ${item.maxAny})`
+    `[t11:any-budget] ${status} - ${item.file} (explicit any: ${count}, budget: ${item.maxAny})`,
   );
 }
 

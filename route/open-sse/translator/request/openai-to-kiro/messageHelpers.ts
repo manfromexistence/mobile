@@ -63,7 +63,7 @@ export function normalizeKiroToolSchema(schema: unknown): Record<string, unknown
       result[key] = value.map((item) =>
         typeof item === "object" && item !== null && !Array.isArray(item)
           ? normalizeKiroToolSchema(item)
-          : item
+          : item,
       );
     } else {
       result[key] = value;

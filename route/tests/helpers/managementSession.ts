@@ -8,7 +8,7 @@ function appendCookie(existingCookieHeader: string | null, cookie: string): stri
 }
 
 export async function createManagementSessionToken(
-  secret = process.env.JWT_SECRET || TEST_MANAGEMENT_JWT_SECRET
+  secret = process.env.JWT_SECRET || TEST_MANAGEMENT_JWT_SECRET,
 ): Promise<string> {
   process.env.JWT_SECRET = secret;
 
@@ -33,7 +33,7 @@ export async function makeManagementSessionRequest(
     token?: string;
     headers?: HeadersInit;
     body?: BodyInit | Record<string, unknown> | unknown[] | number | boolean | null;
-  } = {}
+  } = {},
 ): Promise<Request> {
   const { method = "GET", token, headers, body } = options;
   const requestHeaders = await createManagementSessionHeaders(headers);
@@ -52,7 +52,7 @@ export async function makeManagementSessionRequest(
   if (body !== undefined && !requestHeaders.has("content-type") && !isFormData) {
     requestHeaders.set(
       "content-type",
-      isUrlSearchParams ? "application/x-www-form-urlencoded;charset=UTF-8" : "application/json"
+      isUrlSearchParams ? "application/x-www-form-urlencoded;charset=UTF-8" : "application/json",
     );
   }
 

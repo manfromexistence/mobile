@@ -20,8 +20,9 @@ before(async () => {
   decodeTabular = tabMod.decodeTabular;
   encodeTabularBlockLegacy = tabMod.encodeTabularBlockLegacy;
 
-  const scMod =
-    await import("../../../open-sse/services/compression/engines/headroom/smartcrusher.ts");
+  const scMod = await import(
+    "../../../open-sse/services/compression/engines/headroom/smartcrusher.ts"
+  );
   detectHomogeneous = scMod.detectHomogeneous;
 
   const idxMod = await import("../../../open-sse/services/compression/engines/headroom/index.ts");
@@ -139,7 +140,7 @@ describe("GCF benchmark — compression savings", () => {
       const savings = ((jsonStr.length - gcfEncoded.length) / jsonStr.length) * 100;
       assert.ok(
         savings > 0,
-        `GCF should save space on ${payload.name} (got ${savings.toFixed(1)}%)`
+        `GCF should save space on ${payload.name} (got ${savings.toFixed(1)}%)`,
       );
     });
   }
@@ -167,7 +168,7 @@ describe("GCF benchmark — coverage comparison with legacy", () => {
         assert.equal(
           isHomogeneous,
           false,
-          `${payload.name}: legacy should NOT detect as homogeneous`
+          `${payload.name}: legacy should NOT detect as homogeneous`,
         );
       }
     }
@@ -208,7 +209,7 @@ describe("GCF benchmark — savings table", () => {
       }
 
       rows.push(
-        `| ${payload.name} | ${jsonStr.length} | ${gcfEncoded.length} | ${gcfSavings.toFixed(1)}% | ${legacySize} | ${legacySavings} | ${advantage} |`
+        `| ${payload.name} | ${jsonStr.length} | ${gcfEncoded.length} | ${gcfSavings.toFixed(1)}% | ${legacySize} | ${legacySavings} | ${advantage} |`,
       );
     }
 

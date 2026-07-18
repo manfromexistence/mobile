@@ -146,7 +146,8 @@ export const dict = {
   "lab.usageTitle": "{{lab}}-Tokennutzung",
   "lab.usageDescription": "Tägliches OpenCode-Tokenvolumen der letzten zwei Monate.",
   "lab.noUsageTitle": "Noch keine Nutzung",
-  "lab.noUsageDescription": "Aktuelle Tokennutzung erscheint hier, sobald dieses Lab Aktivität hat.",
+  "lab.noUsageDescription":
+    "Aktuelle Tokennutzung erscheint hier, sobald dieses Lab Aktivität hat.",
   "lab.dailyTokenChart": "Diagramm der täglichen {{lab}}-Tokennutzung",
   "lab.dailyTokens": "Tägliche Tokens",
   "lab.tokens": "Tokens",
@@ -197,11 +198,13 @@ export const dict = {
   "model.noUsageTitle": "Keine Nutzung",
   "model.noUsageDescription": "Im aktuellen Fenster ist keine Nutzung eingegangen.",
   "model.dailyTokenChart": "Diagramm der täglichen Tokennutzung",
-  "model.usersDescription": "Täglich eindeutige OpenCode Go-Nutzer im aktuellen Zwei-Monats-Fenster.",
+  "model.usersDescription":
+    "Täglich eindeutige OpenCode Go-Nutzer im aktuellen Zwei-Monats-Fenster.",
   "model.noUsersTitle": "Keine Nutzerdaten",
   "model.noUsersDescription": "Im aktuellen Fenster sind keine Zeilen mit Nutzern eingegangen.",
   "model.dailyUserChart": "Diagramm der täglich eindeutigen Nutzer",
-  "model.efficiencyDescription": "Kosten, Cache-Verhalten und durchschnittliche OpenCode Go-Sitzungsform.",
+  "model.efficiencyDescription":
+    "Kosten, Cache-Verhalten und durchschnittliche OpenCode Go-Sitzungsform.",
   "model.noEfficiencyTitle": "Keine Effizienzdaten",
   "model.noEfficiencyDescription": "Effizienzdaten erscheinen, nachdem Nutzung eingegangen ist.",
   "model.cost": "Kosten",
@@ -228,4 +231,4 @@ export const dict = {
   "model.pdf": "PDF",
   "format.users": "Nutzer",
   "format.tokens": "Tokens",
-} as const
+} as const;

@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useControls, button, folder } from 'leva';
-import { setParamsSafe, useResetLevaParams } from '@/helpers/use-reset-leva-params';
-import { usePresetHighlight } from '@/helpers/use-preset-highlight';
-import { cleanUpLevaParams } from '@/helpers/clean-up-leva-params';
-import { memo } from 'react';
-import { getShaderColorFromString, type ShaderPreset } from '@paper-design/shaders';
-import { ShaderMount, ShaderComponentProps } from '@paper-design/shaders-react';
-import { useColors } from '@/helpers/use-colors';
-import { ShaderContainer } from '@/components/shader-container';
+import { useControls, button, folder } from "leva";
+import { setParamsSafe, useResetLevaParams } from "@/helpers/use-reset-leva-params";
+import { usePresetHighlight } from "@/helpers/use-preset-highlight";
+import { cleanUpLevaParams } from "@/helpers/clean-up-leva-params";
+import { memo } from "react";
+import { getShaderColorFromString, type ShaderPreset } from "@paper-design/shaders";
+import { ShaderMount, ShaderComponentProps } from "@paper-design/shaders-react";
+import { useColors } from "@/helpers/use-colors";
+import { ShaderContainer } from "@/components/shader-container";
 
 type vec4 = [number, number, number, number];
 const gradientDemoCSSMaxColorCount = 7;
@@ -156,17 +156,17 @@ interface GradientDemoCSSProps extends ShaderComponentProps, GradientDemoCSSPara
 type GradientDemoCSSPreset = ShaderPreset<GradientDemoCSSParams>;
 
 const defaultPreset: GradientDemoCSSPreset = {
-  name: 'Default',
+  name: "Default",
   params: {
     colorSpace: 1,
     colors: [
-      'hsla(0, 100%, 50%, 1)',
-      'hsla(240, 100%, 50%, 1)',
-      'hsla(72, 76%, 20%, 1)',
-      'hsla(259, 29%, 73%, 1)',
-      'hsla(263, 57%, 39%, 1)',
-      'hsla(48, 73%, 84%, 1)',
-      'hsla(295, 32%, 70%, 1)',
+      "hsla(0, 100%, 50%, 1)",
+      "hsla(240, 100%, 50%, 1)",
+      "hsla(72, 76%, 20%, 1)",
+      "hsla(259, 29%, 73%, 1)",
+      "hsla(263, 57%, 39%, 1)",
+      "hsla(48, 73%, 84%, 1)",
+      "hsla(295, 32%, 70%, 1)",
     ],
   },
 };
@@ -184,7 +184,9 @@ const GradientDemoCSS: React.FC<GradientDemoCSSProps> = memo(function GradientDe
     u_colorSpace: colorSpace ?? defaultPreset.params.colorSpace,
   };
 
-  return <ShaderMount {...props} fragmentShader={gradientDemoCSSFragmentShader} uniforms={uniforms} />;
+  return (
+    <ShaderMount {...props} fragmentShader={gradientDemoCSSFragmentShader} uniforms={uniforms} />
+  );
 });
 
 const defaults = gradientDemoCSSPresets[0].params;
@@ -206,7 +208,7 @@ export default function Page() {
             setParamsSafe(params, setParams, presetParams);
           }),
         ];
-      })
+      }),
     );
 
     return {
@@ -214,7 +216,7 @@ export default function Page() {
         {
           colorSpace: { value: defaults.colorSpace, min: 0, max: 1, step: 1, order: 400 },
         },
-        { order: 1 }
+        { order: 1 },
       ),
       Presets: folder(presets as Record<string, string>, { order: 2 }),
     };
@@ -233,7 +235,7 @@ export default function Page() {
         <div
           className="h-full"
           style={{
-            background: `linear-gradient(to right in oklch, ${colors.join(', ')})`,
+            background: `linear-gradient(to right in oklch, ${colors.join(", ")})`,
           }}
         />
       </div>
@@ -248,7 +250,7 @@ export default function Page() {
         <div
           className="h-full"
           style={{
-            background: `linear-gradient(to right, ${colors.join(', ')})`,
+            background: `linear-gradient(to right, ${colors.join(", ")})`,
           }}
         />
       </div>

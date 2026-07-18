@@ -23,7 +23,7 @@ test("getExecutor('antigravity') returns AntigravityExecutor", () => {
   const executor = getExecutor("antigravity");
   assert.ok(
     executor instanceof AntigravityExecutor,
-    "antigravity provider should use AntigravityExecutor"
+    "antigravity provider should use AntigravityExecutor",
   );
 });
 
@@ -32,7 +32,7 @@ test("getExecutor('agy') builds valid streaming URL", () => {
   const url = executor.buildUrl("gemini-3.5-flash-high", true);
   assert.ok(
     url.includes("streamGenerateContent?alt=sse"),
-    `expected streaming endpoint URL, got: ${url}`
+    `expected streaming endpoint URL, got: ${url}`,
   );
 });
 
@@ -42,7 +42,7 @@ test("getExecutor('agy') builds valid non-streaming URL", () => {
   // Antigravity executor always uses streaming endpoint (buildUrl ignores stream flag)
   assert.ok(
     url.includes("streamGenerateContent?alt=sse"),
-    `expected streaming endpoint URL (always), got: ${url}`
+    `expected streaming endpoint URL (always), got: ${url}`,
   );
 });
 
@@ -63,8 +63,10 @@ test("processAntigravitySSEPayload accumulates top-level markdown into textConte
 test("processAntigravitySSEPayload uses candidate parts text when no markdown is present", () => {
   const collected = emptyCollected();
   processAntigravitySSEPayload(
-    JSON.stringify({ response: { candidates: [{ content: { parts: [{ text: "from parts" }] } }] } }),
-    collected
+    JSON.stringify({
+      response: { candidates: [{ content: { parts: [{ text: "from parts" }] } }] },
+    }),
+    collected,
   );
   assert.equal(collected.textContent, "from parts");
 });

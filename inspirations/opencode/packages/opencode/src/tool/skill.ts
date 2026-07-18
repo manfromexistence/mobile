@@ -1,19 +1,19 @@
-import path from "path"
-import { Effect, Schema } from "effect"
-import { Ripgrep } from "@opencode-ai/core/ripgrep"
-import { Skill } from "../skill"
-import * as Tool from "./tool"
-import DESCRIPTION from "./skill.txt"
+import path from "path";
+import { Effect, Schema } from "effect";
+import { Ripgrep } from "@opencode-ai/core/ripgrep";
+import { Skill } from "../skill";
+import * as Tool from "./tool";
+import DESCRIPTION from "./skill.txt";
 
 export const Parameters = Schema.Struct({
   name: Schema.String.annotate({ description: "The name of the skill from available_skills" }),
-})
+});
 
 export const SkillTool = Tool.define(
   "skill",
   Effect.gen(function* () {
-    const skill = yield* Skill.Service
-    const ripgrep = yield* Ripgrep.Service
+    const skill = yield* Skill.Service;
+    const ripgrep = yield* Ripgrep.Service;
 
     return {
       description: DESCRIPTION,
@@ -22,17 +22,21 @@ export const SkillTool = Tool.define(
         Effect.gen(function* () {
           const info = yield* skill
             .require(params.name)
-            .pipe(Effect.catchTag("Skill.NotFoundError", (error) => Effect.die(new Error(error.message))))
+            .pipe(
+              Effect.catchTag("Skill.NotFoundError", (error) =>
+                Effect.die(new Error(error.message)),
+              ),
+            );
 
           yield* ctx.ask({
             permission: "skill",
             patterns: [params.name],
             always: [params.name],
             metadata: {},
-          })
+          });
 
-          const dir = path.dirname(info.location)
-          const base = dir
+          const dir = path.dirname(info.location);
+          const base = dir;
           const files = yield* ripgrep.find({
             cwd: dir,
             pattern: "!**/SKILL.md",
@@ -40,7 +44,7 @@ export const SkillTool = Tool.define(
             follow: false,
             signal: ctx.abort,
             limit: 10,
-          })
+          });
 
           return {
             title: `Loaded skill: ${info.name}`,
@@ -63,8 +67,8 @@ export const SkillTool = Tool.define(
               name: info.name,
               dir,
             },
-          }
+          };
         }).pipe(Effect.orDie),
-    }
+    };
   }),
-)
+);

@@ -26,14 +26,14 @@ test("translateRequest openai->claude never throws and keeps messages", () => {
         FORMATS.CLAUDE,
         body.model,
         body,
-        true
+        true,
       ) as Record<string, unknown>;
       assert.ok(out && typeof out === "object");
       // Either messages array is non-empty, or content went to system field (system-only body)
       const hasMessages = Array.isArray(out.messages) && (out.messages as unknown[]).length > 0;
       const hasSystem = Array.isArray(out.system) && (out.system as unknown[]).length > 0;
       assert.ok(hasMessages || hasSystem, "output must have messages or non-empty system");
-    })
+    }),
   );
 });
 
@@ -62,17 +62,17 @@ test("translateRequest round-trip openai->claude->openai preserves message count
         FORMATS.CLAUDE,
         body.model,
         body,
-        true
+        true,
       ) as Record<string, unknown>;
       const back = translateRequest(
         FORMATS.CLAUDE,
         FORMATS.OPENAI,
         body.model,
         claude,
-        true
+        true,
       ) as Record<string, unknown>;
       assert.ok(Array.isArray(back.messages));
       assert.equal((back.messages as unknown[]).length, body.messages.length);
-    })
+    }),
   );
 });

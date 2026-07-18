@@ -40,14 +40,14 @@ test("#2901 no-auth OpenCode combo models use the oc/ prefix (not opencode/)", a
   assert.equal(
     bigPickle.qualifiedModel,
     "oc/big-pickle",
-    "no-auth opencode/big-pickle combo entry must use the 'oc/' routing alias"
+    "no-auth opencode/big-pickle combo entry must use the 'oc/' routing alias",
   );
 
   // Every model under the no-auth provider must use the alias prefix.
   for (const m of opencode.models) {
     assert.ok(
       m.qualifiedModel.startsWith("oc/"),
-      `qualifiedModel '${m.qualifiedModel}' must start with 'oc/' (got id-prefix instead)`
+      `qualifiedModel '${m.qualifiedModel}' must start with 'oc/' (got id-prefix instead)`,
     );
   }
 });

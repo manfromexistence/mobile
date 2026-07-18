@@ -1,15 +1,14 @@
-import { useCallback, useEffect } from 'react';
-import { Screen } from './types';
+import { useCallback, useEffect } from "react";
+import { Screen } from "./types";
 
-export const delay = (ms: number) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
+export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const useDidMount = (callback: () => any) =>
   useEffect(() => {
     callback();
   }, []);
 
-type StorageKey = 'conversations' | 'params' | 'welcome' | 'custom_models';
+type StorageKey = "conversations" | "params" | "welcome" | "custom_models";
 
 export const WllamaStorage = {
   save<T>(key: StorageKey, data: T) {
@@ -25,12 +24,12 @@ export const WllamaStorage = {
 };
 
 export const getDefaultScreen = (): Screen => {
-  const welcome: boolean = WllamaStorage.load('welcome', true);
+  const welcome: boolean = WllamaStorage.load("welcome", true);
   return welcome ? Screen.GUIDE : Screen.MODEL;
 };
 
 export const toHumanReadableSize = (bytes: number): string => {
-  const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const units = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
   let size = bytes;
   let unitIndex = 0;
 
@@ -45,19 +44,19 @@ export const toHumanReadableSize = (bytes: number): string => {
 export const DebugLogger = {
   content: [] as string[],
   debug(...args: any) {
-    console.debug('🔧', ...args);
+    console.debug("🔧", ...args);
     DebugLogger.content.push(`🔧 ${DebugLogger.argsToStr(args)}`);
   },
   log(...args: any) {
-    console.log('ℹ️', ...args);
+    console.log("ℹ️", ...args);
     DebugLogger.content.push(`ℹ️ ${DebugLogger.argsToStr(args)}`);
   },
   warn(...args: any) {
-    console.warn('⚠️', ...args);
+    console.warn("⚠️", ...args);
     DebugLogger.content.push(`⚠️ ${DebugLogger.argsToStr(args)}`);
   },
   error(...args: any) {
-    console.error('☠️', ...args);
+    console.error("☠️", ...args);
     DebugLogger.content.push(`☠️ ${DebugLogger.argsToStr(args)}`);
   },
   argsToStr(args: any[]): string {
@@ -69,18 +68,18 @@ export const DebugLogger = {
           try {
             return JSON.stringify(arg, null, 2);
           } catch (_) {
-            return '';
+            return "";
           }
         }
       })
-      .join(' ');
+      .join(" ");
   },
 };
 
 export function useDebounce<T extends any[]>(
   effect: (...args: T) => void,
   dependencies: any[],
-  delay: number
+  delay: number,
 ): void {
   const callback = useCallback(effect, dependencies);
   useEffect(() => {

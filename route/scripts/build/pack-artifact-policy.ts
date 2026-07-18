@@ -75,11 +75,11 @@ export const APP_STAGING_ALLOWED_PATH_PREFIXES: string[] = [
 ];
 
 export const PACK_ARTIFACT_ALLOWED_EXACT_PATHS: string[] = APP_STAGING_ALLOWED_EXACT_PATHS.map(
-  (filePath: string) => `dist/${filePath}`
+  (filePath: string) => `dist/${filePath}`,
 );
 
 export const PACK_ARTIFACT_ALLOWED_PATH_PREFIXES: string[] = APP_STAGING_ALLOWED_PATH_PREFIXES.map(
-  (directoryPath: string) => `dist/${directoryPath}`
+  (directoryPath: string) => `dist/${directoryPath}`,
 );
 
 export const PACK_ARTIFACT_ROOT_ALLOWED_EXACT_PATHS: string[] = [
@@ -193,7 +193,7 @@ export function normalizeArtifactPath(filePath: string): string {
 
 export function findUnexpectedArtifactPaths(
   filePaths: string[],
-  { exactPaths = [], prefixPaths = [] }: { exactPaths?: string[]; prefixPaths?: string[] } = {}
+  { exactPaths = [], prefixPaths = [] }: { exactPaths?: string[]; prefixPaths?: string[] } = {},
 ): string[] {
   const normalizedExact = new Set(exactPaths.map(normalizeArtifactPath));
   const normalizedPrefixes = prefixPaths.map(normalizeArtifactPath);
@@ -204,14 +204,14 @@ export function findUnexpectedArtifactPaths(
     .filter(
       (filePath) =>
         !normalizedExact.has(filePath) &&
-        !normalizedPrefixes.some((prefix) => filePath.startsWith(prefix))
+        !normalizedPrefixes.some((prefix) => filePath.startsWith(prefix)),
     )
     .sort();
 }
 
 export function findMissingArtifactPaths(
   filePaths: string[],
-  requiredPaths: string[] = []
+  requiredPaths: string[] = [],
 ): string[] {
   const normalizedPaths = new Set(filePaths.map(normalizeArtifactPath).filter(Boolean));
   return requiredPaths

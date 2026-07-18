@@ -80,9 +80,7 @@ test("copilot-m365-web: WS path emits debug logs for handshake + first frame [#6
     { type: 1, target: "update", arguments: [{ messages: [{ text: "Hi there", author: "bot" }] }] },
     { type: 3 },
   ];
-  const restore = __setCopilotM365WebSocketForTesting(
-    makeFakeWsCtor(frames, captured) as never
-  );
+  const restore = __setCopilotM365WebSocketForTesting(makeFakeWsCtor(frames, captured) as never);
   const sink: LogEntry[] = [];
   try {
     await drainStream(new CopilotM365WebExecutor(), makeCapturingLog(sink));
@@ -95,21 +93,19 @@ test("copilot-m365-web: WS path emits debug logs for handshake + first frame [#6
   // (a) handshake is logged.
   assert.ok(
     wsLogs.some((e) => /handshake complete/i.test(e.message)),
-    "expected a handshake-complete debug log"
+    "expected a handshake-complete debug log",
   );
   // (a) the first received frame's type/target is logged.
   assert.ok(
     wsLogs.some((e) => e.message.includes("frame type=1 target=update")),
-    "expected a per-frame type/target debug log for the first update frame"
+    "expected a per-frame type/target debug log for the first update frame",
   );
 });
 
 test("copilot-m365-web: logged WS URL is redacted — access_token never leaks [#6210]", async () => {
   const captured: { url?: string } = {};
   const frames = [{ type: 3 }];
-  const restore = __setCopilotM365WebSocketForTesting(
-    makeFakeWsCtor(frames, captured) as never
-  );
+  const restore = __setCopilotM365WebSocketForTesting(makeFakeWsCtor(frames, captured) as never);
   const sink: LogEntry[] = [];
   try {
     await drainStream(new CopilotM365WebExecutor(), makeCapturingLog(sink));
@@ -122,19 +118,17 @@ test("copilot-m365-web: logged WS URL is redacted — access_token never leaks [
   // the executor redacts before logging.
   assert.ok(captured.url?.includes(SECRET), "sanity: raw WS URL should contain the token");
 
-  const connectLog = sink.find(
-    (e) => e.tag === "M365_WS" && e.message.startsWith("connecting")
-  );
+  const connectLog = sink.find((e) => e.tag === "M365_WS" && e.message.startsWith("connecting"));
   assert.ok(connectLog, "expected a 'connecting' debug log");
   assert.ok(
     connectLog.message.includes("access_token=REDACTED"),
-    "connect log should show the token as REDACTED"
+    "connect log should show the token as REDACTED",
   );
   // (b) NO logged message anywhere may contain the raw secret.
   for (const entry of sink) {
     assert.ok(
       !entry.message.includes(SECRET),
-      `log leaked the access_token: ${entry.tag} ${entry.message}`
+      `log leaked the access_token: ${entry.tag} ${entry.message}`,
     );
   }
 });

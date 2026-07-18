@@ -1,15 +1,17 @@
-import { HoverCard as Kobalte } from "@kobalte/core/hover-card"
-import { ComponentProps, JSXElement, ParentProps, splitProps } from "solid-js"
+import { HoverCard as Kobalte } from "@kobalte/core/hover-card";
+import { ComponentProps, JSXElement, ParentProps, splitProps } from "solid-js";
 
-export interface HoverCardProps extends ParentProps, Omit<ComponentProps<typeof Kobalte>, "children"> {
-  trigger: JSXElement
-  mount?: HTMLElement
-  class?: ComponentProps<"div">["class"]
-  classList?: ComponentProps<"div">["classList"]
+export interface HoverCardProps
+  extends ParentProps,
+    Omit<ComponentProps<typeof Kobalte>, "children"> {
+  trigger: JSXElement;
+  mount?: HTMLElement;
+  class?: ComponentProps<"div">["class"];
+  classList?: ComponentProps<"div">["classList"];
 }
 
 export function HoverCard(props: HoverCardProps) {
-  const [local, rest] = splitProps(props, ["trigger", "mount", "class", "classList", "children"])
+  const [local, rest] = splitProps(props, ["trigger", "mount", "class", "classList", "children"]);
 
   return (
     <Kobalte gutter={4} {...rest}>
@@ -28,5 +30,5 @@ export function HoverCard(props: HoverCardProps) {
         </Kobalte.Content>
       </Kobalte.Portal>
     </Kobalte>
-  )
+  );
 }

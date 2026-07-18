@@ -77,7 +77,7 @@ type FetchOptions = { body?: string };
 
 async function withMockedFetch<T>(
   fetchImpl: (url: unknown, options?: FetchOptions) => Promise<Response>,
-  fn: () => Promise<T>
+  fn: () => Promise<T>,
 ): Promise<T> {
   const originalFetch = globalThis.fetch;
   globalThis.fetch = fetchImpl as typeof fetch;
@@ -135,7 +135,7 @@ test("checkAndRefreshToken reuses the stored Codex refresh_token, persists the n
       assert.equal(
         params.get("refresh_token"),
         "codex-stored-refresh-token",
-        "must reuse the connection's stored refresh_token"
+        "must reuse the connection's stored refresh_token",
       );
 
       // Simulate OpenAI rotating in a brand-new refresh_token on this refresh.
@@ -161,26 +161,26 @@ test("checkAndRefreshToken reuses the stored Codex refresh_token, persists the n
       assert.equal(refreshed.refreshToken, "codex-rotated-refresh-token");
 
       const stored = (await providersDb.getProviderConnectionById(
-        connectionId
+        connectionId,
       )) as ConnectionRecord;
 
       // (b) PERSIST assertion: the refreshed access_token must be saved to the row.
       assert.equal(
         stored.accessToken,
         "codex-fresh-access-token",
-        "the refreshed access_token must be persisted back to the connection"
+        "the refreshed access_token must be persisted back to the connection",
       );
 
       // (c) ROTATION assertion: the new refresh_token must REPLACE the old one.
       assert.equal(
         stored.refreshToken,
         "codex-rotated-refresh-token",
-        "a rotated refresh_token must replace the previously stored one"
+        "a rotated refresh_token must replace the previously stored one",
       );
       assert.notEqual(
         stored.refreshToken,
         "codex-stored-refresh-token",
-        "the stale, already-consumed refresh_token must not remain stored"
+        "the stale, already-consumed refresh_token must not remain stored",
       );
 
       // (d) CLEAR-STALE-STATE assertion: a successful refresh must clear the
@@ -190,7 +190,7 @@ test("checkAndRefreshToken reuses the stored Codex refresh_token, persists the n
       assert.equal(
         stored.testStatus,
         "active",
-        "testStatus must clear to active after a successful refresh"
+        "testStatus must clear to active after a successful refresh",
       );
       // The read path (getProviderConnectionById) strips null-valued columns via
       // cleanNulls(), so a cleared column surfaces as `undefined`, not `null` —
@@ -199,6 +199,6 @@ test("checkAndRefreshToken reuses the stored Codex refresh_token, persists the n
       assert.equal(stored.lastErrorType ?? null, null, "lastErrorType must be cleared");
       assert.equal(stored.lastErrorSource ?? null, null, "lastErrorSource must be cleared");
       assert.equal(stored.errorCode ?? null, null, "errorCode must be cleared");
-    }
+    },
   );
 });

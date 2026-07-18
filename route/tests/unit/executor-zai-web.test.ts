@@ -18,7 +18,7 @@ describe("ZaiWebExecutor", () => {
     // a bare token with no '=' and no ';' falls through to the raw string
     assert.equal(
       mod.extractZaiToken("eyJhbGciOiJIUzI1NiJ9.payload.sig"),
-      "eyJhbGciOiJIUzI1NiJ9.payload.sig"
+      "eyJhbGciOiJIUzI1NiJ9.payload.sig",
     );
     assert.equal(mod.extractZaiToken("plainsessiontoken"), "plainsessiontoken");
   });
@@ -147,7 +147,7 @@ describe("ZaiWebExecutor", () => {
           "",
           "",
         ].join("\n"),
-        { headers: { "Content-Type": "text/event-stream" } }
+        { headers: { "Content-Type": "text/event-stream" } },
       )) as typeof fetch;
 
     try {
@@ -178,7 +178,7 @@ describe("ZaiWebExecutor", () => {
           "",
           "",
         ].join("\n"),
-        { headers: { "Content-Type": "text/event-stream" } }
+        { headers: { "Content-Type": "text/event-stream" } },
       )) as typeof fetch;
 
     try {

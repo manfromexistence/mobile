@@ -1,10 +1,7 @@
-import type { vec4 } from '../types.js';
-import type { ShaderMotionParams } from '../shader-mount.js';
-import {
-  type ShaderSizingParams,
-  type ShaderSizingUniforms,
-} from '../shader-sizing.js';
-import { declarePI, rotation2, proceduralHash21 } from '../shader-utils.js';
+import type { vec4 } from "../types.js";
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { declarePI, rotation2, proceduralHash21 } from "../shader-utils.js";
 
 export const meshGradientMeta = {
   maxColorCount: 10,

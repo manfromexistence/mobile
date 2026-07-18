@@ -16,7 +16,7 @@ import { makeManagementSessionRequest } from "../../helpers/managementSession.ts
 // ─── temp DB isolation ────────────────────────────────────────────────────────
 
 const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-compression-preview-engine-")
+  path.join(os.tmpdir(), "omniroute-compression-preview-engine-"),
 );
 const originalDataDir = process.env.DATA_DIR;
 const originalJwtSecret = process.env.JWT_SECRET;
@@ -104,15 +104,15 @@ test("POST /api/compression/preview with engineId=headroom returns 200 with toke
 
   assert.ok(
     typeof body.originalTokens === "number" && body.originalTokens > 0,
-    `originalTokens should be > 0, got: ${body.originalTokens}`
+    `originalTokens should be > 0, got: ${body.originalTokens}`,
   );
   assert.ok(
     typeof body.compressedTokens === "number",
-    `compressedTokens should be a number, got: ${body.compressedTokens}`
+    `compressedTokens should be a number, got: ${body.compressedTokens}`,
   );
   assert.ok(
     body.compressedTokens < body.originalTokens,
-    `compressedTokens (${body.compressedTokens}) should be < originalTokens (${body.originalTokens}) — headroom should compact a 10-row homogeneous JSON array`
+    `compressedTokens (${body.compressedTokens}) should be < originalTokens (${body.originalTokens}) — headroom should compact a 10-row homogeneous JSON array`,
   );
   assert.ok(body.tokensSaved > 0, `tokensSaved should be > 0, got: ${body.tokensSaved}`);
   assert.ok(body.savingsPct > 0, `savingsPct should be > 0, got: ${body.savingsPct}`);
@@ -139,7 +139,7 @@ test("POST /api/compression/preview with engineId but no mode still works (mode 
   assert.equal(
     response.status,
     200,
-    `Expected 200 when mode omitted with engineId, got ${response.status}`
+    `Expected 200 when mode omitted with engineId, got ${response.status}`,
   );
 
   const body = (await response.json()) as { tokensSaved: number };
@@ -159,7 +159,7 @@ test("POST /api/compression/preview without engineId still works (existing path 
   assert.equal(
     response.status,
     200,
-    `Existing path should still return 200, got ${response.status}`
+    `Existing path should still return 200, got ${response.status}`,
   );
 
   const body = (await response.json()) as { original: string; mode: string };

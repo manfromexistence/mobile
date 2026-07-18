@@ -56,7 +56,7 @@ export class V0VercelWebExecutor extends BaseExecutor {
         502,
         `v0 fetch failed: ${err instanceof Error ? err.message : "unknown"}`,
         body,
-        CHAT_URL
+        CHAT_URL,
       );
     }
 
@@ -67,8 +67,7 @@ export class V0VercelWebExecutor extends BaseExecutor {
 
     if (!wantStream) {
       const data = (await upstream.json()) as Record<string, unknown>;
-      const message = (data?.choices as Array<{ message?: Record<string, unknown> }>)?.[0]
-        ?.message;
+      const message = (data?.choices as Array<{ message?: Record<string, unknown> }>)?.[0]?.message;
       const content = (message?.content as string) || (data?.content as string) || "";
       const reasoningContent =
         (message?.reasoning_content as string) || (data?.reasoning_content as string) || "";
@@ -89,7 +88,7 @@ export class V0VercelWebExecutor extends BaseExecutor {
               },
             ],
           }),
-          { headers: { "Content-Type": "application/json" } }
+          { headers: { "Content-Type": "application/json" } },
         ),
         url: CHAT_URL,
         headers: reqHeaders,

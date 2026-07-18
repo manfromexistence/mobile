@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
-import type { FileTree } from '../render/FileTree';
-import { areArraysEqual, useFileTreeSelector } from './useFileTreeSelector';
+import type { FileTree } from "../render/FileTree";
+import { areArraysEqual, useFileTreeSelector } from "./useFileTreeSelector";
 
 interface FileTreeSearchSnapshot {
   isOpen: boolean;
@@ -21,7 +21,7 @@ export interface FileTreeSearchState extends FileTreeSearchSnapshot {
 
 function areSearchSnapshotsEqual(
   previous: FileTreeSearchSnapshot,
-  next: FileTreeSearchSnapshot
+  next: FileTreeSearchSnapshot,
 ): boolean {
   return (
     previous.isOpen === next.isOpen &&
@@ -38,7 +38,7 @@ export function useFileTreeSearch(model: FileTree): FileTreeSearchState {
       matchingPaths: currentModel.getSearchMatchingPaths(),
       value: currentModel.getSearchValue(),
     }),
-    areSearchSnapshotsEqual
+    areSearchSnapshotsEqual,
   );
 
   return useMemo(
@@ -60,6 +60,6 @@ export function useFileTreeSearch(model: FileTree): FileTreeSearchState {
         model.setSearch(value);
       },
     }),
-    [model, snapshot]
+    [model, snapshot],
   );
 }

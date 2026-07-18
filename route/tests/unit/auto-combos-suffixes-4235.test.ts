@@ -99,14 +99,14 @@ test("#4235 createBuiltinAutoCombo composes tier weights for auto/coding:fast", 
 test("#4235 createBuiltinAutoCombo composes reliability weights for auto/coding:reliable", async () => {
   const combo = await builtinCatalog.createBuiltinAutoCombo(
     "auto/coding:reliable",
-    "coding:reliable"
+    "coding:reliable",
   );
   assert.deepEqual(combo.weights, modePacks.MODE_PACKS["reliability-first"]);
 });
 
 test("#4235 /v1/models advertises the curated auto/<category>:<tier> combos", async () => {
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   assert.equal(response.status, 200);
   const body = (await response.json()) as { data: Array<{ id: string; owned_by?: string }> };

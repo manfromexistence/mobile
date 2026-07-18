@@ -262,7 +262,7 @@ function TargetTimeline({ targets }: { targets: ExplainTarget[] }) {
             "rounded-lg border p-4",
             target.outcome === "selected"
               ? "border-primary/30 bg-primary/5"
-              : "border-black/5 bg-black/2 dark:border-white/5 dark:bg-white/2"
+              : "border-black/5 bg-black/2 dark:border-white/5 dark:bg-white/2",
           )}
         >
           <div className="flex flex-wrap items-start justify-between gap-3">
@@ -396,7 +396,7 @@ function WhyThisTargetCard({ replay }: { replay: DecisionReplay | undefined }) {
                   "rounded-lg border p-3",
                   candidate.isRuntimeSelected
                     ? "border-primary/30 bg-primary/5"
-                    : "border-black/5 bg-bg dark:border-white/5"
+                    : "border-black/5 bg-bg dark:border-white/5",
                 )}
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
@@ -486,7 +486,7 @@ export default function RouteExplainabilityTab({
         if (!signal?.aborted) setLogsLoading(false);
       }
     },
-    [initialRequestId]
+    [initialRequestId],
   );
 
   const fetchExplanation = useCallback(async (requestId: string, signal?: AbortSignal) => {
@@ -538,7 +538,7 @@ export default function RouteExplainabilityTab({
 
   const selectedLog = useMemo(
     () => logs.find((log) => log.id === selectedId) || null,
-    [logs, selectedId]
+    [logs, selectedId],
   );
 
   return (
@@ -552,7 +552,7 @@ export default function RouteExplainabilityTab({
             {analyticsText(
               t,
               "routeTraceDescription",
-              "Inspect the persisted request trace: selected target, routing factors, fallback evidence, current scoring replay, latency, tokens and target health."
+              "Inspect the persisted request trace: selected target, routing factors, fallback evidence, current scoring replay, latency, tokens and target health.",
             )}
           </p>
         </div>

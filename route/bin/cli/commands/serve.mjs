@@ -50,12 +50,12 @@ export function registerServe(program) {
     .option(
       "--tls-cert <path>",
       t("serve.tls_cert") ||
-        "Path to a TLS certificate (PEM) to serve HTTPS (also OMNIROUTE_TLS_CERT)"
+        "Path to a TLS certificate (PEM) to serve HTTPS (also OMNIROUTE_TLS_CERT)",
     )
     .option(
       "--tls-key <path>",
       t("serve.tls_key") ||
-        "Path to the TLS private key (PEM) to serve HTTPS (also OMNIROUTE_TLS_KEY)"
+        "Path to the TLS private key (PEM) to serve HTTPS (also OMNIROUTE_TLS_KEY)",
     )
     .action(async (opts) => {
       await runServe(opts);
@@ -65,10 +65,12 @@ export function registerServe(program) {
 export async function runServe(opts = {}) {
   const startedAt = performance.now();
 
-  const { isNativeBinaryCompatible } =
-    await import("../../../scripts/build/native-binary-compat.mjs");
-  const { getNodeRuntimeSupport, getNodeRuntimeWarning } =
-    await import("../../nodeRuntimeSupport.mjs");
+  const { isNativeBinaryCompatible } = await import(
+    "../../../scripts/build/native-binary-compat.mjs"
+  );
+  const { getNodeRuntimeSupport, getNodeRuntimeWarning } = await import(
+    "../../nodeRuntimeSupport.mjs"
+  );
 
   const port = parsePort(opts.port ?? process.env.PORT ?? "20128", 20128);
   const apiPort = parsePort(process.env.API_PORT ?? String(port), port);
@@ -110,13 +112,13 @@ export async function runServe(opts = {}) {
     const isNvm = nodeExec.includes(".nvm") || nodeExec.includes("nvm");
     if (isMise) {
       console.error(
-        "  \x1b[33m⚠ mise detected:\x1b[0m If you installed via `npm install -g omniroute`,"
+        "  \x1b[33m⚠ mise detected:\x1b[0m If you installed via `npm install -g omniroute`,",
       );
       console.error("    try: \x1b[36mnpx omniroute@latest\x1b[0m  (downloads a fresh copy)");
       console.error("    or:  \x1b[36mmise exec -- npx omniroute\x1b[0m");
     } else if (isNvm) {
       console.error(
-        "  \x1b[33m⚠ nvm detected:\x1b[0m Try reinstalling after loading the correct Node version:"
+        "  \x1b[33m⚠ nvm detected:\x1b[0m Try reinstalling after loading the correct Node version:",
       );
       console.error("    \x1b[36mnvm use --lts && npm install -g omniroute\x1b[0m");
     } else {
@@ -132,16 +134,16 @@ export async function runServe(opts = {}) {
     "better-sqlite3",
     "build",
     "Release",
-    "better_sqlite3.node"
+    "better_sqlite3.node",
   );
   if (existsSync(sqliteBinary) && !isNativeBinaryCompatible(sqliteBinary)) {
     console.error(
-      "\x1b[31m✖ better-sqlite3 native module is incompatible with this platform.\x1b[0m"
+      "\x1b[31m✖ better-sqlite3 native module is incompatible with this platform.\x1b[0m",
     );
     console.error(`  Run: cd ${APP_DIR} && npm rebuild better-sqlite3`);
     console.error(
       "  Or run: \x1b[36momniroute runtime repair\x1b[0m" +
-        "  (rebuilds into a user-writable runtime; works without a C++ toolchain)"
+        "  (rebuilds into a user-writable runtime; works without a C++ toolchain)",
     );
     if (platform() === "darwin") {
       console.error("  If build tools are missing: xcode-select --install");
@@ -156,7 +158,7 @@ export async function runServe(opts = {}) {
   // of RAM under load. An explicit OMNIROUTE_MEMORY_MB still wins.
   const memoryLimit = resolveMaxOldSpaceMb(
     process.env.OMNIROUTE_MEMORY_MB,
-    calibrateHeapFallbackMb(totalmem())
+    calibrateHeapFallbackMb(totalmem()),
   );
 
   // #5242: opt-in native HTTPS. CLI flags take precedence over env; the child
@@ -209,7 +211,7 @@ export async function runServe(opts = {}) {
       dashboardPort,
       apiPort,
       noOpen,
-      startedAt
+      startedAt,
     );
   }
 
@@ -223,7 +225,7 @@ export async function runServe(opts = {}) {
     opts.log === true,
     opts.maxRestarts ?? 2,
     startedAt,
-    useTray
+    useTray,
   );
 }
 
@@ -313,7 +315,7 @@ async function runWithSupervisor(
   showLog,
   maxRestarts,
   startedAt,
-  useTray = false
+  useTray = false,
 ) {
   if (showLog) process.env.OMNIROUTE_SHOW_LOG = "1";
 
@@ -367,7 +369,7 @@ async function runWithSupervisor(
 export function reportReadinessTimeout(dashboardPort, supervisor) {
   console.error(
     `\n\x1b[33m⚠ Server did not respond within 60s.\x1b[0m It may still be starting, or may` +
-      ` have failed silently.`
+      ` have failed silently.`,
   );
   console.error(`  Try:  curl -I http://localhost:${dashboardPort}/api/monitoring/health`);
   console.error(`  Or:   rerun with \x1b[36m--log\x1b[0m to see live server output.\n`);

@@ -1,44 +1,44 @@
-import { TextAttributes } from "@opentui/core"
-import { fileURLToPath } from "bun"
-import { useTheme } from "../context/theme"
-import { useDialog } from "../ui/dialog"
-import { useSync } from "../context/sync"
-import { For, Match, Switch, Show, createMemo } from "solid-js"
+import { TextAttributes } from "@opentui/core";
+import { fileURLToPath } from "bun";
+import { useTheme } from "../context/theme";
+import { useDialog } from "../ui/dialog";
+import { useSync } from "../context/sync";
+import { For, Match, Switch, Show, createMemo } from "solid-js";
 
-export type DialogStatusProps = {}
+export type DialogStatusProps = {};
 
 export function DialogStatus() {
-  const sync = useSync()
-  const { theme } = useTheme()
-  const dialog = useDialog()
+  const sync = useSync();
+  const { theme } = useTheme();
+  const dialog = useDialog();
 
-  const enabledFormatters = createMemo(() => sync.data.formatter.filter((f) => f.enabled))
+  const enabledFormatters = createMemo(() => sync.data.formatter.filter((f) => f.enabled));
 
   const plugins = createMemo(() => {
-    const list = sync.data.config.plugin ?? []
+    const list = sync.data.config.plugin ?? [];
     const result = list.map((item) => {
-      const value = typeof item === "string" ? item : item[0]
+      const value = typeof item === "string" ? item : item[0];
       if (value.startsWith("file://")) {
-        const path = fileURLToPath(value)
-        const parts = path.split("/")
-        const filename = parts.pop() || path
-        if (!filename.includes(".")) return { name: filename }
-        const basename = filename.split(".")[0]
+        const path = fileURLToPath(value);
+        const parts = path.split("/");
+        const filename = parts.pop() || path;
+        if (!filename.includes(".")) return { name: filename };
+        const basename = filename.split(".")[0];
         if (basename === "index") {
-          const dirname = parts.pop()
-          const name = dirname || basename
-          return { name }
+          const dirname = parts.pop();
+          const name = dirname || basename;
+          return { name };
         }
-        return { name: basename }
+        return { name: basename };
       }
-      const index = value.lastIndexOf("@")
-      if (index <= 0) return { name: value, version: "latest" }
-      const name = value.substring(0, index)
-      const version = value.substring(index + 1)
-      return { name, version }
-    })
-    return result.toSorted((a, b) => a.name.localeCompare(b.name))
-  })
+      const index = value.lastIndexOf("@");
+      if (index <= 0) return { name: value, version: "latest" };
+      const name = value.substring(0, index);
+      const version = value.substring(index + 1);
+      return { name, version };
+    });
+    return result.toSorted((a, b) => a.name.localeCompare(b.name));
+  });
 
   return (
     <box paddingLeft={2} paddingRight={2} gap={1} paddingBottom={1}>
@@ -50,7 +50,10 @@ export function DialogStatus() {
           esc
         </text>
       </box>
-      <Show when={Object.keys(sync.data.mcp).length > 0} fallback={<text fg={theme.text}>No MCP Servers</text>}>
+      <Show
+        when={Object.keys(sync.data.mcp).length > 0}
+        fallback={<text fg={theme.text}>No MCP Servers</text>}
+      >
         <box>
           <text fg={theme.text}>{Object.keys(sync.data.mcp).length} MCP Servers</text>
           <For each={Object.entries(sync.data.mcp)}>
@@ -118,7 +121,10 @@ export function DialogStatus() {
           </For>
         </box>
       )}
-      <Show when={enabledFormatters().length > 0} fallback={<text fg={theme.text}>No Formatters</text>}>
+      <Show
+        when={enabledFormatters().length > 0}
+        fallback={<text fg={theme.text}>No Formatters</text>}
+      >
         <box>
           <text fg={theme.text}>{enabledFormatters().length} Formatters</text>
           <For each={enabledFormatters()}>
@@ -164,5 +170,5 @@ export function DialogStatus() {
         </box>
       </Show>
     </box>
-  )
+  );
 }

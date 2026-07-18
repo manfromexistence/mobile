@@ -58,7 +58,12 @@ const STRIP_RULES: StripRule[] = [
   // MoonshotAI/kimi-cli#1124), and by upstream decolua/9router#2460. Scoped to
   // OmniRoute's actual volcengine Kimi id (not a broad /kimi/i regex) so it
   // never clamps an unrelated future Kimi listing whose Ark cap may differ.
-  { provider: "volcengine", match: /^kimi-k2-5-260127$/, maxOutputCap: 32768, clampToModelMaxOutput: true },
+  {
+    provider: "volcengine",
+    match: /^kimi-k2-5-260127$/,
+    maxOutputCap: 32768,
+    clampToModelMaxOutput: true,
+  },
 ];
 
 function matches(rule: StripRule, model: string): boolean {
@@ -75,7 +80,7 @@ function applyMaxOutputClamp(
   rule: StripRule,
   provider: string | null | undefined,
   model: string,
-  body: Record<string, unknown>
+  body: Record<string, unknown>,
 ): void {
   if (!rule.clampToModelMaxOutput && !Number.isFinite(rule.maxOutputCap)) return;
 
@@ -107,7 +112,7 @@ function applyMaxOutputClamp(
 export function stripUnsupportedParams<T>(
   provider: string | null | undefined,
   model: string | null | undefined,
-  body: T
+  body: T,
 ): T {
   if (!model || !body || typeof body !== "object") return body;
   const rec = body as unknown as Record<string, unknown>;
@@ -139,7 +144,7 @@ export function stripUnsupportedParams<T>(
 function restoreAllowedKeys(
   body: Record<string, unknown>,
   snapshot: Record<string, unknown>,
-  allow: readonly string[]
+  allow: readonly string[],
 ): void {
   for (const key of allow) {
     if (key in snapshot) {
@@ -156,7 +161,7 @@ function restoreAllowedKeys(
 function applyProviderLevelFilters(
   body: Record<string, unknown>,
   snapshot: Record<string, unknown>,
-  config: ProviderParamFilter
+  config: ProviderParamFilter,
 ): void {
   for (const key of config.block) {
     delete body[key];
@@ -174,7 +179,7 @@ function applyProviderLevelFilters(
 function applyModelLevelFilters(
   body: Record<string, unknown>,
   snapshot: Record<string, unknown>,
-  modelCfg: ModelParamFilter | undefined
+  modelCfg: ModelParamFilter | undefined,
 ): void {
   if (modelCfg?.block) {
     for (const key of modelCfg.block) {
@@ -201,7 +206,7 @@ export function applyConfigFilters(
   provider: string | null | undefined,
   model: string | null | undefined,
   body: Record<string, unknown>,
-  snapshot: Record<string, unknown>
+  snapshot: Record<string, unknown>,
 ): void {
   if (!provider || !body) return;
   const config = getParamFilterConfig(provider);

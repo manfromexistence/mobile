@@ -19,7 +19,7 @@ class MockM365WebSocket {
 
   constructor(
     public url: string,
-    public options: unknown
+    public options: unknown,
   ) {
     MockM365WebSocket.instances.push(this);
     queueMicrotask(() => {
@@ -53,7 +53,9 @@ class MockM365WebSocket {
             encodeFrame({
               type: 1,
               target: "update",
-              arguments: [{ messages: [{ text: "In progress...", messageType: "Progress", author: "bot" }] }],
+              arguments: [
+                { messages: [{ text: "In progress...", messageType: "Progress", author: "bot" }] },
+              ],
             }) +
               encodeFrame({
                 type: 1,
@@ -66,8 +68,8 @@ class MockM365WebSocket {
                 arguments: [{ messages: [{ text: "pong", author: "bot" }], isLastUpdate: true }],
               }) +
               encodeFrame({ type: 2, invocationId: "0", item: { messages: [] } }) +
-              encodeFrame({ type: 3, invocationId: "0" })
-          )
+              encodeFrame({ type: 3, invocationId: "0" }),
+          ),
         );
       });
     }
@@ -104,7 +106,7 @@ test("CopilotM365WebExecutor streams OpenAI SSE chunks from accumulated M365 upd
   MockM365WebSocket.instances = [];
   MockM365WebSocket.mode = "success";
   const restore = __setCopilotM365WebSocketForTesting(
-    MockM365WebSocket as unknown as typeof import("ws").default
+    MockM365WebSocket as unknown as typeof import("ws").default,
   );
   try {
     const executor = new CopilotM365WebExecutor();
@@ -126,7 +128,9 @@ test("CopilotM365WebExecutor streams OpenAI SSE chunks from accumulated M365 upd
       .filter((line) => line.startsWith("data: ") && line !== "data: [DONE]");
     const payloads = dataLines.map((line) => JSON.parse(line.slice("data: ".length)));
     const deltas = payloads.map((payload) => payload.choices?.[0]?.delta?.content).filter(Boolean);
-    const finishReasons = payloads.map((payload) => payload.choices?.[0]?.finish_reason).filter(Boolean);
+    const finishReasons = payloads
+      .map((payload) => payload.choices?.[0]?.finish_reason)
+      .filter(Boolean);
 
     assert.deepEqual(deltas, ["po", "ng"]);
     assert.deepEqual(finishReasons, ["stop"]);
@@ -141,7 +145,7 @@ test("CopilotM365WebExecutor sanitizes WebSocket error SSE payloads", async () =
   MockM365WebSocket.instances = [];
   MockM365WebSocket.mode = "error";
   const restore = __setCopilotM365WebSocketForTesting(
-    MockM365WebSocket as unknown as typeof import("ws").default
+    MockM365WebSocket as unknown as typeof import("ws").default,
   );
   try {
     const executor = new CopilotM365WebExecutor();

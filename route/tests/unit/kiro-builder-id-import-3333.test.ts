@@ -22,7 +22,7 @@ function makeFakeSsoCache(home: string, creds: { clientId: string; clientSecret:
     // The OIDC client-registration cache entry also carries unrelated keys.
     fs.writeFileSync(
       path.join(cacheDir, "client-reg.json"),
-      JSON.stringify({ ...creds, region: "us-east-1", expiresAt: "2099-01-01T00:00:00Z" })
+      JSON.stringify({ ...creds, region: "us-east-1", expiresAt: "2099-01-01T00:00:00Z" }),
     );
   }
 }
@@ -53,7 +53,7 @@ test("validateImportToken uses cached Builder ID client creds + OIDC refresh pat
           refreshToken: "refreshed-token",
           expiresIn: 3600,
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
     throw new Error(`unexpected fetch to ${u}`);
@@ -69,7 +69,7 @@ test("validateImportToken uses cached Builder ID client creds + OIDC refresh pat
   // Must have gone through the OIDC token endpoint, NOT the social-auth service.
   assert.ok(
     calledEndpoints.some((u) => u.includes("oidc.") && u.endsWith("/token")),
-    "expected OIDC token endpoint to be used for Builder ID refresh"
+    "expected OIDC token endpoint to be used for Builder ID refresh",
   );
 });
 
@@ -87,7 +87,7 @@ test("validateImportToken falls back to social auth when no cached creds exist",
           refreshToken: "social-rt",
           expiresIn: 3600,
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
     // registerClient() for the isolated OIDC client (may fail gracefully).
@@ -118,7 +118,7 @@ test("validateImportToken forwards the region to the OIDC endpoint (LEDGER-6)", 
     if (u.includes("oidc.") && u.endsWith("/token")) {
       return new Response(
         JSON.stringify({ accessToken: "a", refreshToken: "r", expiresIn: 3600 }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
     throw new Error(`unexpected fetch to ${u}`);
@@ -128,11 +128,11 @@ test("validateImportToken forwards the region to the OIDC endpoint (LEDGER-6)", 
   await svc.validateImportToken("aorAAAAAGtoken", "eu-west-1");
   assert.ok(
     calledEndpoints.some((u) => u.includes("oidc.eu-west-1.amazonaws.com/token")),
-    `expected the eu-west-1 OIDC endpoint, got: ${calledEndpoints.join(", ")}`
+    `expected the eu-west-1 OIDC endpoint, got: ${calledEndpoints.join(", ")}`,
   );
   assert.ok(
     !calledEndpoints.some((u) => u.includes("oidc.us-east-1.amazonaws.com/token")),
-    "must not fall back to us-east-1 when a region was requested"
+    "must not fall back to us-east-1 when a region was requested",
   );
 });
 
@@ -150,7 +150,7 @@ test("validateImportToken prefers the region-matching cached client (LEDGER-8)",
       clientSecret: "secret-useast",
       region: "us-east-1",
       expiresAt: "2099-01-01T00:00:00Z",
-    })
+    }),
   );
   fs.writeFileSync(
     path.join(cacheDir, "z-euwest.json"),
@@ -159,7 +159,7 @@ test("validateImportToken prefers the region-matching cached client (LEDGER-8)",
       clientSecret: "secret-euwest",
       region: "eu-west-1",
       expiresAt: "2099-01-01T00:00:00Z",
-    })
+    }),
   );
 
   globalThis.fetch = (async (url: string | URL | Request) => {
@@ -167,7 +167,7 @@ test("validateImportToken prefers the region-matching cached client (LEDGER-8)",
     if (u.includes("oidc.") && u.endsWith("/token")) {
       return new Response(
         JSON.stringify({ accessToken: "a", refreshToken: "r", expiresIn: 3600 }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
     throw new Error(`unexpected fetch to ${u}`);

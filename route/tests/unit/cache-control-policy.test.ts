@@ -70,7 +70,7 @@ describe("Cache Control Policy", () => {
           isCombo: false,
           targetProvider: "xiaomi-mimo",
         }),
-        true
+        true,
       );
     });
   });
@@ -105,7 +105,7 @@ describe("Cache Control Policy", () => {
           isCombo: false,
           targetProvider: "claude",
         }),
-        true
+        true,
       );
     });
 
@@ -117,7 +117,7 @@ describe("Cache Control Policy", () => {
           comboStrategy: "priority",
           targetProvider: "claude",
         }),
-        true
+        true,
       );
     });
 
@@ -129,7 +129,7 @@ describe("Cache Control Policy", () => {
           comboStrategy: "cost-optimized",
           targetProvider: "anthropic",
         }),
-        true
+        true,
       );
     });
 
@@ -140,7 +140,7 @@ describe("Cache Control Policy", () => {
           isCombo: false,
           targetProvider: "claude",
         }),
-        false
+        false,
       );
     });
 
@@ -152,7 +152,7 @@ describe("Cache Control Policy", () => {
           isCombo: false,
           targetProvider: "gemini",
         }),
-        false
+        false,
       );
     });
 
@@ -164,7 +164,7 @@ describe("Cache Control Policy", () => {
           comboStrategy: "weighted",
           targetProvider: "claude",
         }),
-        false
+        false,
       );
     });
 
@@ -176,7 +176,7 @@ describe("Cache Control Policy", () => {
           comboStrategy: "round-robin",
           targetProvider: "claude",
         }),
-        false
+        false,
       );
     });
 
@@ -188,7 +188,7 @@ describe("Cache Control Policy", () => {
           comboStrategy: "random",
           targetProvider: "claude",
         }),
-        false
+        false,
       );
     });
 
@@ -200,7 +200,7 @@ describe("Cache Control Policy", () => {
           comboStrategy: "fill-first",
           targetProvider: "claude",
         }),
-        false
+        false,
       );
     });
 
@@ -212,7 +212,7 @@ describe("Cache Control Policy", () => {
           comboStrategy: "p2c",
           targetProvider: "claude",
         }),
-        false
+        false,
       );
     });
 
@@ -224,7 +224,7 @@ describe("Cache Control Policy", () => {
           comboStrategy: "least-used",
           targetProvider: "claude",
         }),
-        false
+        false,
       );
     });
 
@@ -236,7 +236,7 @@ describe("Cache Control Policy", () => {
           comboStrategy: "strict-random",
           targetProvider: "claude",
         }),
-        false
+        false,
       );
     });
 
@@ -248,7 +248,7 @@ describe("Cache Control Policy", () => {
           comboStrategy: null,
           targetProvider: "claude",
         }),
-        false
+        false,
       );
     });
 
@@ -259,7 +259,7 @@ describe("Cache Control Policy", () => {
           isCombo: false,
           targetProvider: "claude",
         }),
-        false
+        false,
       );
     });
 
@@ -270,7 +270,7 @@ describe("Cache Control Policy", () => {
           isCombo: false,
           targetProvider: null,
         }),
-        false
+        false,
       );
     });
 
@@ -283,7 +283,7 @@ describe("Cache Control Policy", () => {
             targetProvider: "claude",
             settings: { alwaysPreserveClientCache: "always" },
           }),
-          true
+          true,
         );
       });
 
@@ -295,7 +295,7 @@ describe("Cache Control Policy", () => {
             targetProvider: "claude",
             settings: { alwaysPreserveClientCache: "never" },
           }),
-          false
+          false,
         );
       });
 
@@ -308,7 +308,7 @@ describe("Cache Control Policy", () => {
             targetProvider: "claude",
             settings: { alwaysPreserveClientCache: "auto" },
           }),
-          true
+          true,
         );
 
         // Should NOT preserve for non-Claude client
@@ -319,7 +319,7 @@ describe("Cache Control Policy", () => {
             targetProvider: "claude",
             settings: { alwaysPreserveClientCache: "auto" },
           }),
-          false
+          false,
         );
       });
 
@@ -331,7 +331,7 @@ describe("Cache Control Policy", () => {
             targetProvider: "claude",
             settings: undefined,
           }),
-          true
+          true,
         );
       });
     });

@@ -64,11 +64,11 @@ describe("discoverRepeatedNoise", () => {
     const deprecatedCandidate = hits.find((h) => h.pattern.includes("WARN deprecated"));
     assert.ok(
       deprecatedCandidate !== undefined,
-      "should surface a deprecated-warning drop candidate"
+      "should surface a deprecated-warning drop candidate",
     );
     assert.ok(
       deprecatedCandidate.hits >= samples.length,
-      `expected hits >= ${samples.length}, got ${deprecatedCandidate.hits}`
+      `expected hits >= ${samples.length}, got ${deprecatedCandidate.hits}`,
     );
   });
 
@@ -102,7 +102,7 @@ describe("suggestFilter", () => {
     const pattern = filter.match.commands[0];
     assert.ok(
       new RegExp(pattern).test("npm install"),
-      `command pattern '${pattern}' should match 'npm install'`
+      `command pattern '${pattern}' should match 'npm install'`,
     );
   });
 
@@ -176,7 +176,7 @@ describe("suggestFilter", () => {
       assert.equal(
         droppedByDrop,
         false,
-        `preserved line '${line}' must NOT be matched by a dropPattern`
+        `preserved line '${line}' must NOT be matched by a dropPattern`,
       );
     }
   });

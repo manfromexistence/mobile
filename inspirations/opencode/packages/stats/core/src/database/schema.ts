@@ -1,4 +1,14 @@
-import { bigint, char, datetime, decimal, index, int, mysqlTable, uniqueIndex, varchar } from "drizzle-orm/mysql-core"
+import {
+  bigint,
+  char,
+  datetime,
+  decimal,
+  index,
+  int,
+  mysqlTable,
+  uniqueIndex,
+  varchar,
+} from "drizzle-orm/mysql-core";
 
 export const modelStat = mysqlTable(
   "model_stat",
@@ -24,10 +34,16 @@ export const modelStat = mysqlTable(
       table.provider,
       table.model,
     ),
-    index("idx_leaderboard_tokens").on(table.grain, table.period_key, table.dataset, table.tier, table.total_tokens),
+    index("idx_leaderboard_tokens").on(
+      table.grain,
+      table.period_key,
+      table.dataset,
+      table.tier,
+      table.total_tokens,
+    ),
     index("idx_model").on(table.model, table.grain, table.period_key),
   ],
-)
+);
 
 export const providerStat = mysqlTable(
   "provider_stat",
@@ -66,10 +82,16 @@ export const providerStat = mysqlTable(
       table.tier,
       table.market_share_tokens,
     ),
-    index("idx_provider_rank").on(table.grain, table.period_key, table.dataset, table.tier, table.rank_by_tokens),
+    index("idx_provider_rank").on(
+      table.grain,
+      table.period_key,
+      table.dataset,
+      table.tier,
+      table.rank_by_tokens,
+    ),
     index("idx_provider").on(table.provider, table.grain, table.period_key),
   ],
-)
+);
 
 export const geoStat = mysqlTable(
   "geo_stat",
@@ -99,13 +121,25 @@ export const geoStat = mysqlTable(
       table.model,
       table.country,
     ),
-    index("idx_country_map_tokens").on(table.grain, table.period_key, table.dataset, table.tier, table.total_tokens),
-    index("idx_country_rank").on(table.grain, table.period_key, table.dataset, table.tier, table.rank_by_tokens),
+    index("idx_country_map_tokens").on(
+      table.grain,
+      table.period_key,
+      table.dataset,
+      table.tier,
+      table.total_tokens,
+    ),
+    index("idx_country_rank").on(
+      table.grain,
+      table.period_key,
+      table.dataset,
+      table.tier,
+      table.rank_by_tokens,
+    ),
     index("idx_country").on(table.country, table.grain, table.period_key),
     index("idx_continent").on(table.continent, table.grain, table.period_key),
     index("idx_country_model").on(table.model, table.country, table.grain, table.period_key),
   ],
-)
+);
 
 function periodColumns() {
   return {
@@ -116,7 +150,7 @@ function periodColumns() {
     tier: varchar({ length: 64 }).notNull().default("all"),
     client: varchar({ length: 64 }).notNull().default("all"),
     source: varchar({ length: 64 }).notNull().default("all"),
-  }
+  };
 }
 
 function metricColumns() {
@@ -142,7 +176,7 @@ function metricColumns() {
     success_count: bigint({ mode: "number" }).notNull().default(0),
     error_count: bigint({ mode: "number" }).notNull().default(0),
     sample_count: bigint({ mode: "number" }).notNull().default(0),
-  }
+  };
 }
 
 function marketShareColumns() {
@@ -150,12 +184,12 @@ function marketShareColumns() {
     market_share_tokens: decimal({ precision: 10, scale: 6, mode: "number" }),
     market_share_requests: decimal({ precision: 10, scale: 6, mode: "number" }),
     market_share_sessions: decimal({ precision: 10, scale: 6, mode: "number" }),
-  }
+  };
 }
 
 function timestampColumns() {
   return {
     created_at: datetime({ mode: "date" }).notNull().defaultNow(),
     updated_at: datetime({ mode: "date" }).notNull().defaultNow().onUpdateNow(),
-  }
+  };
 }

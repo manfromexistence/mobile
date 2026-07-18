@@ -52,9 +52,9 @@ test("withSpinner propaga erros da fn", async () => {
         async () => {
           throw new Error("boom");
         },
-        { quiet: true }
+        { quiet: true },
       ),
-    /boom/
+    /boom/,
   );
 });
 
@@ -67,7 +67,7 @@ test("withSpinner aceita update callback sem erro", async () => {
       update("progress 50%");
       updateCalled = true;
     },
-    { quiet: true }
+    { quiet: true },
   );
   assert.ok(updateCalled);
 });

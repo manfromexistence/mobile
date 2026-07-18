@@ -1,4 +1,4 @@
-import { AttachedLanguages, ResolvedLanguages } from './constants';
+import { AttachedLanguages, ResolvedLanguages } from "./constants";
 
 export function cleanUpResolvedLanguages(): void {
   ResolvedLanguages.clear();

@@ -36,7 +36,7 @@ describe("compressToolResult", () => {
   it("compresses grep search output", () => {
     const lines = Array.from(
       { length: 100 },
-      (_, i) => `src/file${i % 5}.ts:${i + 1}:10: match found`
+      (_, i) => `src/file${i % 5}.ts:${i + 1}:10: match found`,
     );
     const content = lines.join("\n");
     const result = compressToolResult(content, ALL_ON);
@@ -94,7 +94,7 @@ describe("compressToolResult", () => {
   it("compresses error messages with stack trace", () => {
     const frames = Array.from(
       { length: 20 },
-      (_, i) => `    at func${i} (file${i}.ts:${i + 1}:${i + 10})`
+      (_, i) => `    at func${i} (file${i}.ts:${i + 1}:${i + 10})`,
     );
     const content = `TypeError: Cannot read property 'x' of undefined\n${frames.join("\n")}`;
     const result = compressToolResult(content, ALL_ON);

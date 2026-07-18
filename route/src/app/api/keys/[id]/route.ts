@@ -53,7 +53,7 @@ export async function PATCH(request, { params }) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 

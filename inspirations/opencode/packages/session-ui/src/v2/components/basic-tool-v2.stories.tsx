@@ -1,5 +1,5 @@
-import { createSignal } from "solid-js"
-import { BasicToolV2 } from "./basic-tool-v2"
+import { createSignal } from "solid-js";
+import { BasicToolV2 } from "./basic-tool-v2";
 
 const docs = `### Overview
 Compact collapsible tool row showing title, subtitle, args, and diff changes, with an expand/collapse chevron.
@@ -12,7 +12,7 @@ Compact collapsible tool row showing title, subtitle, args, and diff changes, wi
 
 ### Theming
 - Uses \`data-component="basic-tool-v2"\` and slot attributes; colors via \`--bt-*\` CSS variables.
-`
+`;
 
 export default {
   title: "UI V2/BasicTool",
@@ -28,7 +28,7 @@ export default {
       },
     },
   },
-}
+};
 
 export const Default = {
   render: () => (
@@ -44,7 +44,7 @@ export const Default = {
       File content appears here.
     </BasicToolV2>
   ),
-}
+};
 
 export const Expanded = {
   render: () => (
@@ -60,7 +60,7 @@ export const Expanded = {
       File content appears here.
     </BasicToolV2>
   ),
-}
+};
 
 export const Pending = {
   render: () => (
@@ -74,7 +74,7 @@ export const Pending = {
       status="pending"
     />
   ),
-}
+};
 
 export const NoChildren = {
   render: () => (
@@ -86,25 +86,29 @@ export const NoChildren = {
       }}
     />
   ),
-}
+};
 
 export const CustomTrigger = {
   render: () => (
     <BasicToolV2
       trigger={
-        <span style={{ color: "#161616", "font-size": "13px", "font-weight": "440" }}>Custom trigger content</span>
+        <span style={{ color: "#161616", "font-size": "13px", "font-weight": "440" }}>
+          Custom trigger content
+        </span>
       }
     >
       Expandable detail for custom trigger.
     </BasicToolV2>
   ),
-}
+};
 
 export const Controlled = {
   render: () => {
-    const [open, setOpen] = createSignal(false)
+    const [open, setOpen] = createSignal(false);
     return (
-      <div style={{ display: "flex", "flex-direction": "column", gap: "16px", "max-width": "420px" }}>
+      <div
+        style={{ display: "flex", "flex-direction": "column", gap: "16px", "max-width": "420px" }}
+      >
         <button
           type="button"
           onClick={() => setOpen((o) => !o)}
@@ -132,6 +136,6 @@ export const Controlled = {
           Controlled content.
         </BasicToolV2>
       </div>
-    )
+    );
   },
-}
+};

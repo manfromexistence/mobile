@@ -1,4 +1,4 @@
-import { DividerV2 } from "./divider-v2"
+import { DividerV2 } from "./divider-v2";
 
 const docs = `### Overview
 Horizontal hairline divider for v2 layouts.
@@ -10,7 +10,7 @@ Horizontal hairline divider for v2 layouts.
 ### Theming/tokens
 - Uses \`data-component="divider-v2"\`.
 - Border color: \`--v2-border-border-strong\`.
-`
+`;
 
 export default {
   title: "UI V2/Divider",
@@ -25,7 +25,7 @@ export default {
       },
     },
   },
-}
+};
 
 export const Basic = {
   render: () => (
@@ -35,4 +35,4 @@ export const Basic = {
       <span>Below</span>
     </div>
   ),
-}
+};

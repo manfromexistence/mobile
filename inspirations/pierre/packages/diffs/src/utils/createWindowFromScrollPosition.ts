@@ -1,4 +1,4 @@
-import type { VirtualWindowSpecs } from '../types';
+import type { VirtualWindowSpecs } from "../types";
 
 interface WindowFromScrollPositionProps {
   scrollTop: number;
@@ -18,9 +18,7 @@ export function createWindowFromScrollPosition({
   overscrollSize,
 }: WindowFromScrollPositionProps): VirtualWindowSpecs {
   const windowHeight = height + overscrollSize * 2;
-  const effectiveHeight = fitPerfectly
-    ? height + fitPerfectlyOverscroll * 2
-    : windowHeight;
+  const effectiveHeight = fitPerfectly ? height + fitPerfectlyOverscroll * 2 : windowHeight;
   scrollHeight = Math.max(scrollHeight, effectiveHeight);
 
   if (windowHeight >= scrollHeight || fitPerfectly) {

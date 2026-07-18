@@ -41,7 +41,7 @@ describe("RTK grouping config persistence (R5)", () => {
   it("accepts enableGrouping / groupingThreshold on the write schema", () => {
     assert.equal(
       rtkConfigSchema.safeParse({ enableGrouping: true, groupingThreshold: 5 }).success,
-      true
+      true,
     );
     // groupingThreshold below the minimum run length (2) is rejected.
     assert.equal(rtkConfigSchema.safeParse({ groupingThreshold: 1 }).success, false);

@@ -24,9 +24,7 @@ async function resetStorage() {
   getDbInstance();
 }
 
-const sessionsRoute = await import(
-  "../../src/app/api/tools/traffic-inspector/sessions/route.ts"
-);
+const sessionsRoute = await import("../../src/app/api/tools/traffic-inspector/sessions/route.ts");
 const sessionDetailRoute = await import(
   "../../src/app/api/tools/traffic-inspector/sessions/[id]/route.ts"
 );
@@ -51,7 +49,7 @@ test("POST /sessions: creates a session", async () => {
   });
   const res = await sessionsRoute.POST(req);
   assert.equal(res.status, 201);
-  const body = await res.json() as { id: string; started_at: string };
+  const body = (await res.json()) as { id: string; started_at: string };
   assert.ok(body.id, "should have an id");
   assert.ok(body.started_at, "should have started_at");
 });
@@ -73,19 +71,19 @@ test("GET /sessions: lists all sessions", async () => {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ name: "s1" }),
-    })
+    }),
   );
   await sessionsRoute.POST(
     new Request("http://localhost/api/tools/traffic-inspector/sessions", {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ name: "s2" }),
-    })
+    }),
   );
 
   const res = await sessionsRoute.GET();
   assert.equal(res.status, 200);
-  const body = await res.json() as { sessions: unknown[] };
+  const body = (await res.json()) as { sessions: unknown[] };
   assert.equal(body.sessions.length, 2);
 });
 
@@ -95,9 +93,9 @@ test("PATCH /sessions/[id]: stop adds ended_at", async () => {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({}),
-    })
+    }),
   );
-  const session = await createRes.json() as { id: string };
+  const session = (await createRes.json()) as { id: string };
 
   const patchReq = new Request("http://localhost/", {
     method: "PATCH",
@@ -108,7 +106,7 @@ test("PATCH /sessions/[id]: stop adds ended_at", async () => {
     params: Promise.resolve({ id: session.id }),
   });
   assert.equal(patchRes.status, 200);
-  const body = await patchRes.json() as { ended_at: string | null };
+  const body = (await patchRes.json()) as { ended_at: string | null };
   assert.ok(body.ended_at !== null, "ended_at should be set after stop");
 });
 
@@ -118,9 +116,9 @@ test("PATCH /sessions/[id]: rename updates name", async () => {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ name: "old-name" }),
-    })
+    }),
   );
-  const session = await createRes.json() as { id: string };
+  const session = (await createRes.json()) as { id: string };
 
   const patchRes = await sessionDetailRoute.PATCH(
     new Request("http://localhost/", {
@@ -128,10 +126,10 @@ test("PATCH /sessions/[id]: rename updates name", async () => {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ action: "rename", name: "new-name" }),
     }),
-    { params: Promise.resolve({ id: session.id }) }
+    { params: Promise.resolve({ id: session.id }) },
   );
   assert.equal(patchRes.status, 200);
-  const body = await patchRes.json() as { name: string };
+  const body = (await patchRes.json()) as { name: string };
   assert.equal(body.name, "new-name");
 });
 
@@ -141,9 +139,9 @@ test("GET /sessions/[id]: returns session with requests", async () => {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ name: "with-reqs" }),
-    })
+    }),
   );
-  const session = await createRes.json() as { id: string };
+  const session = (await createRes.json()) as { id: string };
 
   // Append a fake request
   const payload = JSON.stringify({
@@ -163,12 +161,11 @@ test("GET /sessions/[id]: returns session with requests", async () => {
   });
   appendSessionRequest(session.id, payload);
 
-  const getRes = await sessionDetailRoute.GET(
-    new Request("http://localhost/"),
-    { params: Promise.resolve({ id: session.id }) }
-  );
+  const getRes = await sessionDetailRoute.GET(new Request("http://localhost/"), {
+    params: Promise.resolve({ id: session.id }),
+  });
   assert.equal(getRes.status, 200);
-  const body = await getRes.json() as { session: { id: string }; requests: unknown[] };
+  const body = (await getRes.json()) as { session: { id: string }; requests: unknown[] };
   assert.equal(body.session.id, session.id);
   assert.equal(body.requests.length, 1);
 });
@@ -179,23 +176,21 @@ test("DELETE /sessions/[id]: cascades requests", async () => {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({}),
-    })
+    }),
   );
-  const session = await createRes.json() as { id: string };
+  const session = (await createRes.json()) as { id: string };
 
   appendSessionRequest(session.id, JSON.stringify({ note: "test" }));
 
-  const delRes = await sessionDetailRoute.DELETE(
-    new Request("http://localhost/"),
-    { params: Promise.resolve({ id: session.id }) }
-  );
+  const delRes = await sessionDetailRoute.DELETE(new Request("http://localhost/"), {
+    params: Promise.resolve({ id: session.id }),
+  });
   assert.equal(delRes.status, 204);
 
   // Session should be gone
-  const getRes = await sessionDetailRoute.GET(
-    new Request("http://localhost/"),
-    { params: Promise.resolve({ id: session.id }) }
-  );
+  const getRes = await sessionDetailRoute.GET(new Request("http://localhost/"), {
+    params: Promise.resolve({ id: session.id }),
+  });
   assert.equal(getRes.status, 404);
 });
 
@@ -205,9 +200,9 @@ test("GET /sessions/[id]/export.har: returns HAR file", async () => {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ name: "har-test" }),
-    })
+    }),
   );
-  const session = await createRes.json() as { id: string };
+  const session = (await createRes.json()) as { id: string };
 
   const reqPayload = {
     id: randomUUID(),
@@ -226,16 +221,15 @@ test("GET /sessions/[id]/export.har: returns HAR file", async () => {
   };
   appendSessionRequest(session.id, JSON.stringify(reqPayload));
 
-  const harRes = await sessionHarRoute.GET(
-    new Request("http://localhost/"),
-    { params: Promise.resolve({ id: session.id }) }
-  );
+  const harRes = await sessionHarRoute.GET(new Request("http://localhost/"), {
+    params: Promise.resolve({ id: session.id }),
+  });
   assert.equal(harRes.status, 200);
   assert.ok(
     harRes.headers.get("content-disposition")?.includes(".har"),
-    "should have .har filename"
+    "should have .har filename",
   );
-  const har = await harRes.json() as { log: { entries: unknown[] } };
+  const har = (await harRes.json()) as { log: { entries: unknown[] } };
   assert.ok(har.log, "should be a HAR object");
   assert.equal(har.log.entries.length, 1);
 });

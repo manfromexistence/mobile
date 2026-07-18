@@ -80,7 +80,7 @@ export function useProviderSettings(providerId: string): UseProviderSettingsRetu
         value,
         label: getCodexServiceTierLabel(t, value),
       })),
-    [t]
+    [t],
   );
 
   // ── Codex settings loader ────────────────────────────────────────────────
@@ -115,9 +115,7 @@ export function useProviderSettings(providerId: string): UseProviderSettingsRetu
     } catch (error) {
       if (!isCurrentRequest()) return;
       setCodexSettingsLoaded(false);
-      setCodexSettingsLoadError(
-        error instanceof Error ? error.message : "Failed to load settings"
-      );
+      setCodexSettingsLoadError(error instanceof Error ? error.message : "Failed to load settings");
     }
   }, [providerId]);
 
@@ -146,13 +144,13 @@ export function useProviderSettings(providerId: string): UseProviderSettingsRetu
         throw new Error("Settings response was empty");
       }
       setPreferClaudeCodeForUnprefixedClaudeModels(
-        data.preferClaudeCodeForUnprefixedClaudeModels === true
+        data.preferClaudeCodeForUnprefixedClaudeModels === true,
       );
       setClaudeRoutingSettingsLoaded(true);
     } catch (error) {
       setClaudeRoutingSettingsLoaded(false);
       setClaudeRoutingSettingsLoadError(
-        error instanceof Error ? error.message : "Failed to load settings"
+        error instanceof Error ? error.message : "Failed to load settings",
       );
     }
   }, [providerId]);
@@ -222,19 +220,23 @@ export function useProviderSettings(providerId: string): UseProviderSettingsRetu
       const data = await res.json().catch(() => null);
       if (data && typeof data === "object") {
         setPreferClaudeCodeForUnprefixedClaudeModels(
-          data.preferClaudeCodeForUnprefixedClaudeModels === true
+          data.preferClaudeCodeForUnprefixedClaudeModels === true,
         );
       }
       notify.success(
         enabled
           ? "Unprefixed Claude models now prefer Claude Code"
-          : "Unprefixed Claude models no longer prefer Claude Code"
+          : "Unprefixed Claude models no longer prefer Claude Code",
       );
     } catch (error) {
       setPreferClaudeCodeForUnprefixedClaudeModels(previous);
       console.error("Error updating Claude Code routing preference:", error);
       notify.error(
-        providerText(t, "failedUpdateClaudeRoutingPreference", "Failed to update Claude Code routing preference")
+        providerText(
+          t,
+          "failedUpdateClaudeRoutingPreference",
+          "Failed to update Claude Code routing preference",
+        ),
       );
     } finally {
       setSavingClaudeRoutingPreference(false);

@@ -2,7 +2,7 @@ import type {
   PathStoreVisibleRow,
   PathStoreVisibleTreeProjection,
   PathStoreVisibleTreeProjectionRow,
-} from './public-types';
+} from "./public-types";
 
 const INITIAL_DEPTH_CAPACITY = 64;
 type ProjectionDepthTable = Int32Array<ArrayBufferLike>;
@@ -17,12 +17,10 @@ type ProjectionDepthTable = Int32Array<ArrayBufferLike>;
  * first access, so callers that only need rows don’t pay for the index.
  */
 export function createVisibleTreeProjection(
-  rows: readonly Pick<PathStoreVisibleRow, 'depth' | 'path'>[]
+  rows: readonly Pick<PathStoreVisibleRow, "depth" | "path">[],
 ): PathStoreVisibleTreeProjection {
   const rowCount = rows.length;
-  const projectionRows: PathStoreVisibleTreeProjectionRow[] = new Array(
-    rowCount
-  );
+  const projectionRows: PathStoreVisibleTreeProjectionRow[] = new Array(rowCount);
 
   // parentRowIndex[i] stores the projection-row index of row i’s parent, or -1
   // for root-level items. Lets the setSize fixup use cheap array indexing
@@ -36,9 +34,7 @@ export function createVisibleTreeProjection(
   // lastRowAtDepth[d+1] stores the projection-row index of the most recent row
   // at depth d. Index 0 is the virtual root. Offset by +1 so depth 0 maps to
   // lastRowAtDepth[1] and the virtual root is at lastRowAtDepth[0] = -1.
-  let lastRowAtDepth: ProjectionDepthTable = new Int32Array(
-    INITIAL_DEPTH_CAPACITY
-  );
+  let lastRowAtDepth: ProjectionDepthTable = new Int32Array(INITIAL_DEPTH_CAPACITY);
   lastRowAtDepth.fill(-1);
 
   for (let index = 0; index < rowCount; index++) {
@@ -76,9 +72,7 @@ export function createVisibleTreeProjection(
   let cachedVisibleIndexByPath: Map<string, number> | null = null;
   return {
     getParentIndex(index: number): number {
-      return index < 0 || index >= rowCount
-        ? -1
-        : (parentRowIndex[index] ?? -1);
+      return index < 0 || index >= rowCount ? -1 : (parentRowIndex[index] ?? -1);
     },
     rows: projectionRows,
     get visibleIndexByPath(): Map<string, number> {
@@ -96,7 +90,7 @@ export function createVisibleTreeProjection(
 
 function ensureDepthCapacity(
   depthTable: ProjectionDepthTable,
-  depth: number
+  depth: number,
 ): ProjectionDepthTable {
   const requiredLength = depth + 2;
   if (requiredLength <= depthTable.length) {

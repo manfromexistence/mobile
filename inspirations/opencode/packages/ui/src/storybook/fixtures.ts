@@ -14,7 +14,7 @@ export const diff = {
 }
 `,
   },
-}
+};
 
 export const code = {
   name: "src/calc.ts",
@@ -27,7 +27,7 @@ export function average(values: number[]) {
   return sum(values) / values.length
 }
 `,
-}
+};
 
 export const markdown = [
   "# Markdown",
@@ -43,9 +43,9 @@ export const markdown = [
   "```",
   "",
   "More at https://example.com/docs",
-].join("\n")
+].join("\n");
 
 export const changes = {
   additions: 18,
   deletions: 6,
-}
+};

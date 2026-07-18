@@ -1,28 +1,24 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from "bun:test";
 
-import {
-  File,
-  type FileHydrateProps,
-  type FileRenderProps,
-} from '../src/components/File';
+import { File, type FileHydrateProps, type FileRenderProps } from "../src/components/File";
 import {
   FileDiff,
   type FileDiffHydrationProps,
   type FileDiffRenderProps,
-} from '../src/components/FileDiff';
+} from "../src/components/FileDiff";
 import {
   UnresolvedFile,
   type UnresolvedFileHydrationProps,
   type UnresolvedFileRenderProps,
-} from '../src/components/UnresolvedFile';
-import { VirtualizedFile } from '../src/components/VirtualizedFile';
-import { VirtualizedFileDiff } from '../src/components/VirtualizedFileDiff';
-import type { Virtualizer } from '../src/components/Virtualizer';
-import { DEFAULT_VIRTUAL_FILE_METRICS } from '../src/constants';
-import type { FileContents, FileDiffMetadata } from '../src/types';
-import { parseDiffFromFile } from '../src/utils/parseDiffFromFile';
-import { splitFileContents } from '../src/utils/splitFileContents';
-import { assertDefined } from './testUtils';
+} from "../src/components/UnresolvedFile";
+import { VirtualizedFile } from "../src/components/VirtualizedFile";
+import { VirtualizedFileDiff } from "../src/components/VirtualizedFileDiff";
+import type { Virtualizer } from "../src/components/Virtualizer";
+import { DEFAULT_VIRTUAL_FILE_METRICS } from "../src/constants";
+import type { FileContents, FileDiffMetadata } from "../src/types";
+import { parseDiffFromFile } from "../src/utils/parseDiffFromFile";
+import { splitFileContents } from "../src/utils/splitFileContents";
+import { assertDefined } from "./testUtils";
 
 function installDomConstructors() {
   class FakeHTMLElement {
@@ -45,7 +41,7 @@ function installDomConstructors() {
       this.children.push(element);
     }
 
-    attachShadow(_options: { mode: 'open' | 'closed' }) {
+    attachShadow(_options: { mode: "open" | "closed" }) {
       this.shadowRoot = createFakeShadowRoot();
       return this.shadowRoot;
     }
@@ -73,7 +69,7 @@ function installDomConstructors() {
 
   class FakeHTMLPreElement extends FakeHTMLElement {}
   class FakeHTMLStyleElement extends FakeHTMLElement {
-    textContent = '';
+    textContent = "";
 
     hasAttribute(_name: string): boolean {
       return false;
@@ -82,11 +78,11 @@ function installDomConstructors() {
   class FakeSVGElement {}
 
   const originalValues = {
-    document: Reflect.get(globalThis, 'document'),
-    HTMLElement: Reflect.get(globalThis, 'HTMLElement'),
-    HTMLPreElement: Reflect.get(globalThis, 'HTMLPreElement'),
-    HTMLStyleElement: Reflect.get(globalThis, 'HTMLStyleElement'),
-    SVGElement: Reflect.get(globalThis, 'SVGElement'),
+    document: Reflect.get(globalThis, "document"),
+    HTMLElement: Reflect.get(globalThis, "HTMLElement"),
+    HTMLPreElement: Reflect.get(globalThis, "HTMLPreElement"),
+    HTMLStyleElement: Reflect.get(globalThis, "HTMLStyleElement"),
+    SVGElement: Reflect.get(globalThis, "SVGElement"),
   };
 
   Object.assign(globalThis, {
@@ -116,7 +112,7 @@ function installDomConstructors() {
       container.shadowRoot = createFakeShadowRoot();
       if (header) {
         const headerElement = new FakeHTMLElement();
-        headerElement.dataset.diffsHeader = '';
+        headerElement.dataset.diffsHeader = "";
         container.shadowRoot.appendChild(headerElement);
       }
       return container as unknown as HTMLElement;
@@ -153,9 +149,7 @@ class SpyFileDiff extends FileDiff {
 class SpyUnresolvedFile extends UnresolvedFile {
   renderCalls = 0;
 
-  public override render(
-    _props: UnresolvedFileRenderProps<undefined>
-  ): boolean {
+  public override render(_props: UnresolvedFileRenderProps<undefined>): boolean {
     this.renderCalls += 1;
     return true;
   }
@@ -169,7 +163,7 @@ function createVirtualizer() {
   let connectCalls = 0;
   const virtualizer = {
     config: { resizeDebugging: false },
-    type: 'simple',
+    type: "simple",
     connect() {
       connectCalls += 1;
       return () => {};
@@ -200,35 +194,31 @@ function createVirtualizer() {
 // because the file header is enabled), one lineHeight per content row, and the
 // bottom padding (spacing).
 function getExpectedPlaceholderHeight(rowCount: number): string {
-  const { diffHeaderHeight, lineHeight, spacing } =
-    DEFAULT_VIRTUAL_FILE_METRICS;
+  const { diffHeaderHeight, lineHeight, spacing } = DEFAULT_VIRTUAL_FILE_METRICS;
   return `${diffHeaderHeight + rowCount * lineHeight + spacing}px`;
 }
 
 function getPlaceholderHeight(fileContainer: HTMLElement): string | undefined {
   const placeholder = Array.from(fileContainer.shadowRoot?.children ?? []).find(
-    (element) =>
-      element instanceof HTMLElement && 'placeholder' in element.dataset
+    (element) => element instanceof HTMLElement && "placeholder" in element.dataset,
   );
   return (
-    placeholder as
-      | (HTMLElement & { style: { properties: Map<string, string> } })
-      | undefined
-  )?.style.properties.get('height');
+    placeholder as (HTMLElement & { style: { properties: Map<string, string> } }) | undefined
+  )?.style.properties.get("height");
 }
 
 const file: FileContents = {
-  name: 'file.ts',
-  contents: 'const value = 1;\n',
+  name: "file.ts",
+  contents: "const value = 1;\n",
 };
 
 const modifiedFile: FileContents = {
   ...file,
-  contents: 'const value = 2;\n',
+  contents: "const value = 2;\n",
 };
 
 const unresolvedFile: FileContents = {
-  name: 'file.ts',
+  name: "file.ts",
   contents: `const value = 1;
 <<<<<<< HEAD
 const conflict = 'current';
@@ -239,8 +229,8 @@ const conflict = 'incoming';
 };
 
 const fileDiff: FileDiffMetadata = {
-  name: 'file.ts',
-  type: 'change',
+  name: "file.ts",
+  type: "change",
   hunks: [],
   splitLineCount: 0,
   unifiedLineCount: 0,
@@ -249,8 +239,8 @@ const fileDiff: FileDiffMetadata = {
   additionLines: [],
 };
 
-describe('collapsed hydration', () => {
-  test('File does not rerender missing code while collapsed', () => {
+describe("collapsed hydration", () => {
+  test("File does not rerender missing code while collapsed", () => {
     const dom = installDomConstructors();
     try {
       const instance = new SpyFile({ collapsed: true });
@@ -267,7 +257,7 @@ describe('collapsed hydration', () => {
     }
   });
 
-  test('File rerenders missing code while expanded', () => {
+  test("File rerenders missing code while expanded", () => {
     const dom = installDomConstructors();
     try {
       const instance = new SpyFile();
@@ -284,7 +274,7 @@ describe('collapsed hydration', () => {
     }
   });
 
-  test('File registers empty collapsed hydration container', () => {
+  test("File registers empty collapsed hydration container", () => {
     const dom = installDomConstructors();
     try {
       const instance = new SpyFile({
@@ -306,14 +296,11 @@ describe('collapsed hydration', () => {
     }
   });
 
-  test('VirtualizedFile sets up virtualizer when hydration renders missing code', () => {
+  test("VirtualizedFile sets up virtualizer when hydration renders missing code", () => {
     const dom = installDomConstructors();
     try {
       const virtualizerState = createVirtualizer();
-      const instance = new VirtualizedFile(
-        undefined,
-        virtualizerState.virtualizer
-      );
+      const instance = new VirtualizedFile(undefined, virtualizerState.virtualizer);
       const fileContainer = dom.createHydrationContainer();
       const props: FileHydrateProps<undefined> = {
         file,
@@ -326,17 +313,17 @@ describe('collapsed hydration', () => {
       const placeholderHeight = getPlaceholderHeight(fileContainer);
       assertDefined(
         placeholderHeight,
-        'expected hydration to render a placeholder for the off-screen file'
+        "expected hydration to render a placeholder for the off-screen file",
       );
       expect(placeholderHeight).toBe(
-        getExpectedPlaceholderHeight(splitFileContents(file.contents).length)
+        getExpectedPlaceholderHeight(splitFileContents(file.contents).length),
       );
     } finally {
       dom.cleanup();
     }
   });
 
-  test('FileDiff does not rerender missing code while collapsed', () => {
+  test("FileDiff does not rerender missing code while collapsed", () => {
     const dom = installDomConstructors();
     try {
       const instance = new SpyFileDiff({ collapsed: true });
@@ -355,7 +342,7 @@ describe('collapsed hydration', () => {
     }
   });
 
-  test('FileDiff rerenders missing code while expanded', () => {
+  test("FileDiff rerenders missing code while expanded", () => {
     const dom = installDomConstructors();
     try {
       const instance = new SpyFileDiff();
@@ -374,7 +361,7 @@ describe('collapsed hydration', () => {
     }
   });
 
-  test('FileDiff registers empty collapsed hydration container', () => {
+  test("FileDiff registers empty collapsed hydration container", () => {
     const dom = installDomConstructors();
     try {
       const instance = new SpyFileDiff({
@@ -398,14 +385,11 @@ describe('collapsed hydration', () => {
     }
   });
 
-  test('VirtualizedFileDiff sets up virtualizer when hydration renders missing code', () => {
+  test("VirtualizedFileDiff sets up virtualizer when hydration renders missing code", () => {
     const dom = installDomConstructors();
     try {
       const virtualizerState = createVirtualizer();
-      const instance = new VirtualizedFileDiff(
-        undefined,
-        virtualizerState.virtualizer
-      );
+      const instance = new VirtualizedFileDiff(undefined, virtualizerState.virtualizer);
       const fileContainer = dom.createHydrationContainer();
       const props: FileDiffHydrationProps<undefined> = {
         oldFile: file,
@@ -419,21 +403,19 @@ describe('collapsed hydration', () => {
       const placeholderHeight = getPlaceholderHeight(fileContainer);
       assertDefined(
         placeholderHeight,
-        'expected hydration to render a placeholder for the off-screen file diff'
+        "expected hydration to render a placeholder for the off-screen file diff",
       );
       // The default diff style is split, so the placeholder reserves one row
       // per split line of the parsed old/new diff.
       expect(placeholderHeight).toBe(
-        getExpectedPlaceholderHeight(
-          parseDiffFromFile(file, modifiedFile).splitLineCount
-        )
+        getExpectedPlaceholderHeight(parseDiffFromFile(file, modifiedFile).splitLineCount),
       );
     } finally {
       dom.cleanup();
     }
   });
 
-  test('UnresolvedFile does not rerender missing code while collapsed', () => {
+  test("UnresolvedFile does not rerender missing code while collapsed", () => {
     const dom = installDomConstructors();
     try {
       let actionRenderCalls = 0;
@@ -458,7 +440,7 @@ describe('collapsed hydration', () => {
     }
   });
 
-  test('UnresolvedFile rerenders missing code while expanded', () => {
+  test("UnresolvedFile rerenders missing code while expanded", () => {
     const dom = installDomConstructors();
     try {
       const instance = new SpyUnresolvedFile();
@@ -475,7 +457,7 @@ describe('collapsed hydration', () => {
     }
   });
 
-  test('UnresolvedFile rerenders missing header while collapsed', () => {
+  test("UnresolvedFile rerenders missing header while collapsed", () => {
     const dom = installDomConstructors();
     try {
       const instance = new SpyUnresolvedFile({ collapsed: true });
@@ -492,7 +474,7 @@ describe('collapsed hydration', () => {
     }
   });
 
-  test('UnresolvedFile registers empty collapsed hydration container', () => {
+  test("UnresolvedFile registers empty collapsed hydration container", () => {
     const dom = installDomConstructors();
     try {
       let actionRenderCalls = 0;

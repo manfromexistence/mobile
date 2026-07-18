@@ -43,7 +43,7 @@ export const getHealthOutput = z.object({
       state: z.enum(["CLOSED", "OPEN", "HALF_OPEN"]),
       failureCount: z.number(),
       lastFailure: z.string().nullable(),
-    })
+    }),
   ),
   rateLimits: z.array(
     z.object({
@@ -51,7 +51,7 @@ export const getHealthOutput = z.object({
       rpm: z.number(),
       currentUsage: z.number(),
       isLimited: z.boolean(),
-    })
+    }),
   ),
   cacheStats: z
     .object({
@@ -98,7 +98,7 @@ export const listCombosOutput = z.object({
           provider: z.string(),
           model: z.string(),
           priority: z.number(),
-        })
+        }),
       ),
       strategy: z.enum(ROUTING_STRATEGY_VALUES),
       enabled: z.boolean(),
@@ -110,7 +110,7 @@ export const listCombosOutput = z.object({
           totalCost: z.number(),
         })
         .optional(),
-    })
+    }),
   ),
 });
 
@@ -143,7 +143,7 @@ export const getComboMetricsOutput = z.object({
       requests: z.number(),
       successRate: z.number(),
       avgLatency: z.number(),
-    })
+    }),
   ),
 });
 
@@ -196,7 +196,7 @@ export const checkQuotaInput = z.object({
     .string()
     .optional()
     .describe(
-      "Filter by provider name (e.g., 'claude', 'gemini'). If omitted, returns all providers."
+      "Filter by provider name (e.g., 'claude', 'gemini'). If omitted, returns all providers.",
     ),
   connectionId: z.string().optional().describe("Filter by specific connection ID"),
 });
@@ -212,7 +212,7 @@ export const checkQuotaOutput = z.object({
       percentRemaining: z.number(),
       resetAt: z.string().nullable(),
       tokenStatus: z.enum(["valid", "expiring", "expired", "refreshing"]),
-    })
+    }),
   ),
   meta: z
     .object({
@@ -246,7 +246,7 @@ export const routeRequestInput = z.object({
       z.object({
         role: z.string(),
         content: z.string(),
-      })
+      }),
     )
     .describe("Chat messages in OpenAI format"),
   combo: z.string().optional().describe("Specific combo to route through"),
@@ -314,14 +314,14 @@ export const costReportOutput = z.object({
       name: z.string(),
       cost: z.number(),
       requests: z.number(),
-    })
+    }),
   ),
   byModel: z.array(
     z.object({
       model: z.string(),
       cost: z.number(),
       requests: z.number(),
-    })
+    }),
   ),
   budget: z.object({
     limit: z.number().nullable(),
@@ -364,7 +364,7 @@ export const listModelsCatalogOutput = z.object({
           outputPerMillion: z.number().nullable(),
         })
         .optional(),
-    })
+    }),
   ),
 });
 
@@ -425,7 +425,7 @@ export const webSearchOutput = z.object({
       display_url: z.string().optional(),
       snippet: z.string(),
       position: z.number().int().positive(),
-    })
+    }),
   ),
   cached: z.boolean(),
   usage: z.object({
@@ -523,7 +523,7 @@ export const simulateRouteOutput = z.object({
       estimatedCost: z.number(),
       healthStatus: z.enum(["CLOSED", "OPEN", "HALF_OPEN"]),
       quotaAvailable: z.number(),
-    })
+    }),
   ),
   fallbackTree: z.object({
     primary: z.string(),
@@ -665,7 +665,7 @@ export const testComboOutput = z.object({
       cost: z.number(),
       tokenCount: z.number(),
       error: z.string().optional(),
-    })
+    }),
   ),
   summary: z.object({
     totalProviders: z.number(),
@@ -750,7 +750,7 @@ export const bestComboForTaskOutput = z.object({
       id: z.string(),
       name: z.string(),
       tradeoff: z.string(),
-    })
+    }),
   ),
   freeAlternative: z
     .object({
@@ -793,13 +793,13 @@ export const explainRouteOutput = z.object({
         value: z.number(),
         weight: z.number(),
         contribution: z.number(),
-      })
+      }),
     ),
     fallbacksTriggered: z.array(
       z.object({
         provider: z.string(),
         reason: z.string(),
-      })
+      }),
     ),
     costActual: z.number(),
     latencyActual: z.number(),
@@ -837,13 +837,13 @@ export const getSessionSnapshotOutput = z.object({
     z.object({
       model: z.string(),
       count: z.number(),
-    })
+    }),
   ),
   topProviders: z.array(
     z.object({
       provider: z.string(),
       count: z.number(),
-    })
+    }),
   ),
   errors: z.number(),
   fallbacks: z.number(),
@@ -891,7 +891,7 @@ export const dbHealthCheckOutput = z.object({
       table: z.string(),
       description: z.string(),
       count: z.number(),
-    })
+    }),
   ),
   repairedCount: z.number(),
   backupCreated: z.boolean(),
@@ -1045,7 +1045,7 @@ export const compressionStatusOutput = z.object({
         count: z.number(),
         tokensSaved: z.number(),
         avgSavingsPct: z.number(),
-      })
+      }),
     ),
     validationFallbacks: z.number(),
     requestsWithReceipts: z.number(),
@@ -1227,7 +1227,7 @@ export const oneproxyFetchOutput = z.object({
       anonymity: z.string().nullable(),
       googleAccess: z.boolean(),
       status: z.string(),
-    })
+    }),
   ),
   total: z.number(),
 });
@@ -1337,7 +1337,7 @@ export const agentSkillsListOutput = z.object({
       isNew: z.boolean().optional(),
       rawUrl: z.string(),
       githubUrl: z.string(),
-    })
+    }),
   ),
   count: z.number(),
   coverage: z.object({

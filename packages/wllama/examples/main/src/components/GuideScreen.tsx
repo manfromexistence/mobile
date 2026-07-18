@@ -1,9 +1,9 @@
-import { Screen } from "../utils/types"
-import { useWllama } from "../utils/wllama.context"
-import ScreenWrapper from "./ScreenWrapper"
+import { Screen } from "../utils/types";
+import { useWllama } from "../utils/wllama.context";
+import ScreenWrapper from "./ScreenWrapper";
 
 export default function GuideScreen() {
-  const { navigateTo } = useWllama()
+  const { navigateTo } = useWllama();
 
   return (
     <ScreenWrapper>
@@ -12,28 +12,23 @@ export default function GuideScreen() {
 
         <div className="mb-3">
           Wllama is a project based on{" "}
-          <a
-            href="https://github.com/ggerganov/llama.cpp"
-            target="_blank"
-            rel="noopener"
-          >
+          <a href="https://github.com/ggerganov/llama.cpp" target="_blank" rel="noopener">
             llama.cpp
           </a>
-          . It enables running LLM inference directly on browser by leveraging
-          the power of <b>WebAssembly</b>. It accepts GGUF as model format.
+          . It enables running LLM inference directly on browser by leveraging the power of{" "}
+          <b>WebAssembly</b>. It accepts GGUF as model format.
         </div>
 
         <div className="mb-3">
           Please note that:
           <ul>
             <li>
-              Due to WebAssembly overhead, performance will not be as good as
-              running llama.cpp in native. Performance degradation can range
-              from 25% to 50%.
+              Due to WebAssembly overhead, performance will not be as good as running llama.cpp in
+              native. Performance degradation can range from 25% to 50%.
             </li>
             <li>
-              Due to memory constraint of WebAssembly and emscripten, models
-              larger than 2GB will need to be split.{" "}
+              Due to memory constraint of WebAssembly and emscripten, models larger than 2GB will
+              need to be split.{" "}
               <a
                 href="https://github.com/ngxson/wllama?tab=readme-ov-file#split-model"
                 target="_blank"
@@ -43,8 +38,7 @@ export default function GuideScreen() {
               </a>
             </li>
             <li>
-              Large model may not fit into RAM, (again) due to memory constraint
-              of WebAssembly.
+              Large model may not fit into RAM, (again) due to memory constraint of WebAssembly.
             </li>
             <li>Running on smartphone maybe buggy.</li>
             <li>
@@ -67,13 +61,8 @@ export default function GuideScreen() {
         <h1 className="text-xl font-bold mb-4 mt-6">Reporting bugs</h1>
 
         <div className="mb-3">
-          Wllama is in development and many bugs are expected to happen. If you
-          find a bug, please{" "}
-          <a
-            href="https://github.com/ngxson/wllama/issues"
-            target="_blank"
-            rel="noopener"
-          >
+          Wllama is in development and many bugs are expected to happen. If you find a bug, please{" "}
+          <a href="https://github.com/ngxson/wllama/issues" target="_blank" rel="noopener">
             open a issue
           </a>{" "}
           with log copied from{" "}
@@ -86,5 +75,5 @@ export default function GuideScreen() {
         </div>
       </div>
     </ScreenWrapper>
-  )
+  );
 }

@@ -4,10 +4,7 @@
   "title": "Theme Switcher",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "Toggle between system, light, and dark themes in Next.js apps.",
-  "dependencies": [
-    "next-themes",
-    "motion"
-  ],
+  "dependencies": ["next-themes", "motion"],
   "files": [
     {
       "path": "src/registry/components/theme-switcher/theme-switcher.tsx",
@@ -17,8 +14,6 @@
     }
   ],
   "docs": "https://chanhdai.com/components/theme-switcher",
-  "categories": [
-    "controls"
-  ],
+  "categories": ["controls"],
   "type": "registry:component"
 }

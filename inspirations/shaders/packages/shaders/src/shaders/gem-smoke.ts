@@ -1,7 +1,7 @@
-import type { vec4 } from '../types.js';
-import type { ShaderMotionParams } from '../shader-mount.js';
-import type { ShaderSizingParams, ShaderSizingUniforms } from '../shader-sizing.js';
-import { rotation2, declarePI } from '../shader-utils.js';
+import type { vec4 } from "../types.js";
+import type { ShaderMotionParams } from "../shader-mount.js";
+import type { ShaderSizingParams, ShaderSizingUniforms } from "../shader-sizing.js";
+import { rotation2, declarePI } from "../shader-utils.js";
 
 export const gemSmokeMeta = {
   maxColorCount: 6,
@@ -85,8 +85,8 @@ uniform float u_size;
 uniform float u_shape;
 uniform bool u_isImage;
 
-${ declarePI }
-${ rotation2 }
+${declarePI}
+${rotation2}
 
 // 9x9 Gaussian blur on R and G channels
 vec2 gaussBlur9x9RG(sampler2D tex, vec2 uv, vec2 dudx, vec2 dudy, float radius) {
@@ -304,20 +304,23 @@ interface SparsePixelData {
   neighborIndices: Int32Array;
 }
 
-export function toProcessedGemSmoke(file: File | string): Promise<{ imageData: ImageData; pngBlob: Blob }> {
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  const isBlob = typeof file === 'string' && file.startsWith('blob:');
+export function toProcessedGemSmoke(
+  file: File | string,
+): Promise<{ imageData: ImageData; pngBlob: Blob }> {
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
+  const isBlob = typeof file === "string" && file.startsWith("blob:");
 
   return new Promise((resolve, reject) => {
     if (!file || !ctx) {
-      reject(new Error('Invalid file or canvas context'));
+      reject(new Error("Invalid file or canvas context"));
       return;
     }
 
-    const blobContentTypePromise = isBlob && fetch(file).then((res) => res.headers.get('Content-Type'));
+    const blobContentTypePromise =
+      isBlob && fetch(file).then((res) => res.headers.get("Content-Type"));
     const img = new Image();
-    img.crossOrigin = 'anonymous';
+    img.crossOrigin = "anonymous";
     const totalStartTime = performance.now();
 
     img.onload = async () => {
@@ -327,11 +330,11 @@ export function toProcessedGemSmoke(file: File | string): Promise<{ imageData: I
       const blobContentType = await blobContentTypePromise;
 
       if (blobContentType) {
-        isSVG = blobContentType === 'image/svg+xml';
-      } else if (typeof file === 'string') {
-        isSVG = file.endsWith('.svg') || file.startsWith('data:image/svg+xml');
+        isSVG = blobContentType === "image/svg+xml";
+      } else if (typeof file === "string") {
+        isSVG = file.endsWith(".svg") || file.startsWith("data:image/svg+xml");
       } else {
-        isSVG = file.type === 'image/svg+xml';
+        isSVG = file.type === "image/svg+xml";
       }
 
       let originalWidth = img.width || img.naturalWidth;
@@ -382,11 +385,11 @@ export function toProcessedGemSmoke(file: File | string): Promise<{ imageData: I
       const imgH = height - 2 * padY;
 
       // ── 1. Shape canvas (working res): image centered with padding ──
-      const shapeCanvas = document.createElement('canvas');
+      const shapeCanvas = document.createElement("canvas");
       shapeCanvas.width = width;
       shapeCanvas.height = height;
 
-      const shapeCtx = shapeCanvas.getContext('2d')!;
+      const shapeCtx = shapeCanvas.getContext("2d")!;
       shapeCtx.drawImage(img, padX, padY, imgW, imgH);
 
       // 1) Build optimized masks using TypedArrays
@@ -449,7 +452,7 @@ export function toProcessedGemSmoke(file: File | string): Promise<{ imageData: I
       if (POISSON_CONFIG_OPTIMIZED.measurePerformance) {
         console.log(`[Mask Building] Time: ${(performance.now() - startMask).toFixed(2)}ms`);
         console.log(
-          `  Shape pixels: ${shapePixelCount} / ${width * height} (${((shapePixelCount / (width * height)) * 100).toFixed(1)}%)`
+          `  Shape pixels: ${shapePixelCount} / ${width * height} (${((shapePixelCount / (width * height)) * 100).toFixed(1)}%)`,
         );
         console.log(`  Interior pixels: ${interiorIndices.length}`);
         console.log(`  Boundary pixels: ${boundaryIndices.length}`);
@@ -462,7 +465,7 @@ export function toProcessedGemSmoke(file: File | string): Promise<{ imageData: I
         new Uint32Array(interiorIndices),
         new Uint32Array(boundaryIndices),
         width,
-        height
+        height,
       );
 
       // 4) Solve Poisson equation with optimized sparse solver
@@ -484,10 +487,10 @@ export function toProcessedGemSmoke(file: File | string): Promise<{ imageData: I
       }
 
       // Create roundness image at working resolution
-      const tempCanvas = document.createElement('canvas');
+      const tempCanvas = document.createElement("canvas");
       tempCanvas.width = width;
       tempCanvas.height = height;
-      const tempCtx = tempCanvas.getContext('2d')!;
+      const tempCtx = tempCanvas.getContext("2d")!;
 
       const tempImg = tempCtx.createImageData(width, height);
       for (let y = 0; y < height; y++) {
@@ -514,7 +517,7 @@ export function toProcessedGemSmoke(file: File | string): Promise<{ imageData: I
 
       // Upscale to original resolution with smooth interpolation
       ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
+      ctx.imageSmoothingQuality = "high";
       ctx.drawImage(tempCanvas, 0, 0, width, height, 0, 0, originalWidth, originalHeight);
 
       // Now get the upscaled image data for final output
@@ -524,11 +527,17 @@ export function toProcessedGemSmoke(file: File | string): Promise<{ imageData: I
       // This ensures edges are pixel-perfect while roundness is smooth
       const origPadX = Math.ceil(originalWidth * paddingSize);
       const origPadY = Math.ceil(originalHeight * paddingSize);
-      const originalCanvas = document.createElement('canvas');
+      const originalCanvas = document.createElement("canvas");
       originalCanvas.width = originalWidth;
       originalCanvas.height = originalHeight;
-      const originalCtx = originalCanvas.getContext('2d')!;
-      originalCtx.drawImage(img, origPadX, origPadY, originalWidth - 2 * origPadX, originalHeight - 2 * origPadY);
+      const originalCtx = originalCanvas.getContext("2d")!;
+      originalCtx.drawImage(
+        img,
+        origPadX,
+        origPadY,
+        originalWidth - 2 * origPadX,
+        originalHeight - 2 * origPadY,
+      );
       const originalData = originalCtx.getImageData(0, 0, originalWidth, originalHeight);
 
       // Process each pixel: Red channel = roundness, Alpha channel = original alpha
@@ -557,7 +566,7 @@ export function toProcessedGemSmoke(file: File | string): Promise<{ imageData: I
       finalImageData = outImg;
       canvas.toBlob((blob) => {
         if (!blob) {
-          reject(new Error('Failed to create PNG blob'));
+          reject(new Error("Failed to create PNG blob"));
           return;
         }
 
@@ -565,10 +574,13 @@ export function toProcessedGemSmoke(file: File | string): Promise<{ imageData: I
           const totalTime = performance.now() - totalStartTime;
           console.log(`[Total Processing Time] ${totalTime.toFixed(2)}ms`);
           if (scaleFactor < 1) {
-            const estimatedFullResTime = totalTime * Math.pow((originalWidth * originalHeight) / (width * height), 1.5);
-            console.log(`[Estimated time at full resolution] ~${estimatedFullResTime.toFixed(0)}ms`);
+            const estimatedFullResTime =
+              totalTime * Math.pow((originalWidth * originalHeight) / (width * height), 1.5);
             console.log(
-              `[Time saved] ~${(estimatedFullResTime - totalTime).toFixed(0)}ms (${Math.round(estimatedFullResTime / totalTime)}× faster)`
+              `[Estimated time at full resolution] ~${estimatedFullResTime.toFixed(0)}ms`,
+            );
+            console.log(
+              `[Time saved] ~${(estimatedFullResTime - totalTime).toFixed(0)}ms (${Math.round(estimatedFullResTime / totalTime)}× faster)`,
             );
           }
         }
@@ -577,11 +589,11 @@ export function toProcessedGemSmoke(file: File | string): Promise<{ imageData: I
           imageData: finalImageData,
           pngBlob: blob,
         });
-      }, 'image/png');
+      }, "image/png");
     };
 
-    img.onerror = () => reject(new Error('Failed to load image'));
-    img.src = typeof file === 'string' ? file : URL.createObjectURL(file);
+    img.onerror = () => reject(new Error("Failed to load image"));
+    img.src = typeof file === "string" ? file : URL.createObjectURL(file);
   });
 }
 
@@ -591,7 +603,7 @@ function buildSparseData(
   interiorPixels: Uint32Array,
   boundaryPixels: Uint32Array,
   width: number,
-  height: number
+  height: number,
 ): SparsePixelData {
   const pixelCount = interiorPixels.length;
 
@@ -628,7 +640,7 @@ function solvePoissonSparse(
   shapeMask: Uint8Array,
   boundaryMask: Uint8Array,
   width: number,
-  height: number
+  height: number,
 ): Float32Array {
   // This controls how smooth the falloff roundness will be and extend into the shape
   const ITERATIONS = POISSON_CONFIG_OPTIMIZED.iterations;
@@ -721,10 +733,22 @@ function solvePoissonSparse(
 
       let sum = 0;
       let count = 0;
-      if (eastIdx >= 0) { sum += tmp[eastIdx]!; count++; }
-      if (westIdx >= 0) { sum += tmp[westIdx]!; count++; }
-      if (northIdx >= 0) { sum += tmp[northIdx]!; count++; }
-      if (southIdx >= 0) { sum += tmp[southIdx]!; count++; }
+      if (eastIdx >= 0) {
+        sum += tmp[eastIdx]!;
+        count++;
+      }
+      if (westIdx >= 0) {
+        sum += tmp[westIdx]!;
+        count++;
+      }
+      if (northIdx >= 0) {
+        sum += tmp[northIdx]!;
+        count++;
+      }
+      if (southIdx >= 0) {
+        sum += tmp[southIdx]!;
+        count++;
+      }
 
       u[idx] = count > 0 ? (tmp[idx]! + sum / count) * 0.5 : tmp[idx]!;
     }
@@ -738,7 +762,9 @@ function solvePoissonSparse(
     console.log(`  Iterations: ${ITERATIONS}`);
     console.log(`  Time: ${elapsed.toFixed(2)}ms`);
     console.log(`  Interior pixels processed: ${pixelCount}`);
-    console.log(`  Speed: ${((ITERATIONS * pixelCount) / (elapsed * 1000)).toFixed(2)} Mpixels/sec`);
+    console.log(
+      `  Speed: ${((ITERATIONS * pixelCount) / (elapsed * 1000)).toFixed(2)} Mpixels/sec`,
+    );
   }
 
   return u;

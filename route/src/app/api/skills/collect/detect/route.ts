@@ -78,7 +78,7 @@ async function detectInstalledTools(): Promise<Record<string, DetectedTool>> {
           reason: "check_failed",
         };
       }
-    })
+    }),
   );
 
   return detectedTools;
@@ -119,16 +119,16 @@ function matchSkillsToTools(repos: GitHubSkillRepo[], installedTools: string[]):
 function distributeUnmatchedSkills(
   repos: GitHubSkillRepo[],
   matchedSkills: MatchedSkill[],
-  installedTools: string[]
+  installedTools: string[],
 ): MatchedSkill[] {
   const toolsWithoutMatches = installedTools.filter(
-    (id) => !matchedSkills.some((m) => m.toolId === id)
+    (id) => !matchedSkills.some((m) => m.toolId === id),
   );
   if (toolsWithoutMatches.length === 0 || repos.length === 0) return matchedSkills;
 
   const topSkills = repos.filter((r) => (r.score ?? 0) >= 0.4).slice(0, Math.min(10, repos.length));
   const distributed = topSkills.map((r, i) =>
-    toMatchedSkill(toolsWithoutMatches[i % toolsWithoutMatches.length], r)
+    toMatchedSkill(toolsWithoutMatches[i % toolsWithoutMatches.length], r),
   );
 
   return [...matchedSkills, ...distributed];

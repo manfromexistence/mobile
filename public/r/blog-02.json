@@ -4,13 +4,8 @@
   "title": "Blog 02",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "A blog section with a lined grid layout.",
-  "dependencies": [
-    "date-fns"
-  ],
-  "registryDependencies": [
-    "button",
-    "https://chanhdai.com/r/style.json"
-  ],
+  "dependencies": ["date-fns"],
+  "registryDependencies": ["button", "https://chanhdai.com/r/style.json"],
   "files": [
     {
       "path": "src/registry/blocks/blog-02/blog-02.tsx",
@@ -28,8 +23,6 @@
   "meta": {
     "createdAt": "2026-03-18"
   },
-  "categories": [
-    "marketing"
-  ],
+  "categories": ["marketing"],
   "type": "registry:block"
 }

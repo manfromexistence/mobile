@@ -213,7 +213,7 @@ function getDurablePublicKey(): JsonWebKey {
 function buildDuckDuckGoPayload(
   model: string,
   messages: Array<Record<string, unknown>>,
-  canUseTools = true
+  canUseTools = true,
 ): Record<string, unknown> {
   const capabilities = getDuckDuckGoModelCapabilities(model);
   const payload: Record<string, unknown> = {
@@ -310,7 +310,7 @@ export class DuckDuckGoWebExecutor extends BaseExecutor {
   private async warmFetch(
     url: string,
     headers: Record<string, string>,
-    signal: AbortSignal
+    signal: AbortSignal,
   ): Promise<Response | null> {
     try {
       const response = await fetch(url, { headers, signal });
@@ -324,7 +324,7 @@ export class DuckDuckGoWebExecutor extends BaseExecutor {
 
   async testConnection(
     _credentials: Record<string, unknown>,
-    signal?: AbortSignal
+    signal?: AbortSignal,
   ): Promise<boolean> {
     try {
       const controller = new AbortController();
@@ -370,7 +370,7 @@ export class DuckDuckGoWebExecutor extends BaseExecutor {
       : [];
     const { hasTools, requestedTools, effectiveMessages } = prepareToolMessages(
       bodyObj,
-      rawMessages
+      rawMessages,
     );
     const messages = effectiveMessages as Array<Record<string, unknown>>;
     const isStreaming = stream !== false;
@@ -458,7 +458,7 @@ export class DuckDuckGoWebExecutor extends BaseExecutor {
               "x-fe-version": this.feVersion,
               ...(vqdHeaders.vqd4 ? { "x-vqd-4": vqdHeaders.vqd4 } : {}),
               ...(vqdHeaders.vqdHash1 ? { "x-vqd-hash-1": vqdHeaders.vqdHash1 } : {}),
-            }
+            },
           ),
           body: JSON.stringify(payload),
           signal: mergedSignal,
@@ -488,7 +488,7 @@ export class DuckDuckGoWebExecutor extends BaseExecutor {
           return errorResponse(
             429,
             "Failed to acquire VQD token: upstream rate limited",
-            vqdHeaders.retryAfter
+            vqdHeaders.retryAfter,
           );
         }
         return errorResponse(503, "Failed to acquire VQD token");
@@ -530,7 +530,7 @@ export class DuckDuckGoWebExecutor extends BaseExecutor {
         chatResponse,
         isStreaming,
         hasTools,
-        requestedTools
+        requestedTools,
       );
 
       // Report pool status based on response
@@ -556,7 +556,7 @@ export class DuckDuckGoWebExecutor extends BaseExecutor {
 
       return errorResponse(
         500,
-        sanitizeErrorMessage(error instanceof Error ? error.message : "Unknown error")
+        sanitizeErrorMessage(error instanceof Error ? error.message : "Unknown error"),
       );
     } finally {
       session?.release();
@@ -651,7 +651,7 @@ export class DuckDuckGoWebExecutor extends BaseExecutor {
         "Sec-Fetch-Site": "none",
         "Upgrade-Insecure-Requests": "1",
       }),
-      signal
+      signal,
     );
     if (homepageResponse) {
       try {
@@ -675,7 +675,7 @@ export class DuckDuckGoWebExecutor extends BaseExecutor {
         "Sec-Fetch-Site": "none",
         "Upgrade-Insecure-Requests": "1",
       }),
-      signal
+      signal,
     );
   }
 
@@ -718,7 +718,7 @@ export class DuckDuckGoWebExecutor extends BaseExecutor {
     response: Response,
     streaming: boolean,
     hasTools?: boolean,
-    requestedTools?: unknown
+    requestedTools?: unknown,
   ): Promise<Response> {
     if (!response.ok) {
       const body = await response.text();
@@ -727,7 +727,7 @@ export class DuckDuckGoWebExecutor extends BaseExecutor {
         {
           status: response.status,
           headers: { "Content-Type": "application/json" },
-        }
+        },
       );
     }
 
@@ -789,7 +789,7 @@ export class DuckDuckGoWebExecutor extends BaseExecutor {
             const { content, toolCalls, finishReason } = buildToolAwareResult(
               fullContent,
               requestedTools,
-              "ddg"
+              "ddg",
             );
             const message: Record<string, unknown> = { role: "assistant", content };
             if (toolCalls) {

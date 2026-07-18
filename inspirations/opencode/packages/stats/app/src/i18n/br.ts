@@ -90,7 +90,8 @@ export const dict = {
   "home.noUsageTitle": "Sem dados de uso",
   "home.noUsageDescription": "Nenhuma linha de modelo correspondeu a este produto e intervalo.",
   "home.noLeaderboardTitle": "Sem dados de classificação",
-  "home.noLeaderboardDescription": "Nenhuma linha de modelo correspondeu a este produto e intervalo.",
+  "home.noLeaderboardDescription":
+    "Nenhuma linha de modelo correspondeu a este produto e intervalo.",
   "home.productFilter": "Filtro de produto",
   "home.dateRange": "Intervalo de datas",
   "home.stackedUsageChart": "Gráfico empilhado de uso dos principais modelos",
@@ -122,11 +123,13 @@ export const dict = {
   "home.cacheRatioTitle": "Taxa de cache",
   "home.cacheRatioDescription": "Parcela dos tokens de entrada atendida pelo cache.",
   "home.noCacheTitle": "Sem dados de taxa de cache",
-  "home.noCacheDescription": "Nenhuma linha de modelo com tokens de entrada correspondeu a este produto.",
+  "home.noCacheDescription":
+    "Nenhuma linha de modelo com tokens de entrada correspondeu a este produto.",
   "home.sessionCostTitle": "Custo da sessão",
   "home.sessionCostDescription": "Custo médio por sessão.",
   "home.noSessionCostTitle": "Sem dados de custo da sessão",
-  "home.noSessionCostDescription": "Nenhuma linha de modelo com sessões correspondeu a este produto.",
+  "home.noSessionCostDescription":
+    "Nenhuma linha de modelo com sessões correspondeu a este produto.",
   "home.costSession": "Custo/sessão",
   "lab.title": "Uso e ranking de modelos de IA da {{lab}} | OpenCode Data",
   "lab.description":
@@ -146,7 +149,8 @@ export const dict = {
   "lab.usageTitle": "Uso de tokens da {{lab}}",
   "lab.usageDescription": "Volume diário de tokens do OpenCode nos últimos dois meses.",
   "lab.noUsageTitle": "Ainda sem uso",
-  "lab.noUsageDescription": "O uso recente de tokens aparece aqui quando este laboratório tiver atividade.",
+  "lab.noUsageDescription":
+    "O uso recente de tokens aparece aqui quando este laboratório tiver atividade.",
   "lab.dailyTokenChart": "Gráfico diário de uso de tokens da {{lab}}",
   "lab.dailyTokens": "Tokens diários",
   "lab.tokens": "tokens",
@@ -181,7 +185,8 @@ export const dict = {
   "model.knowledge": "Conhecimento",
   "model.release": "Lançamento",
   "model.inputs": "Entradas",
-  "model.overviewDescription": "Tokens recentes do OpenCode Go, usuários únicos e posição de mercado.",
+  "model.overviewDescription":
+    "Tokens recentes do OpenCode Go, usuários únicos e posição de mercado.",
   "model.noSummaryTitle": "Sem resumo de uso",
   "model.noSummaryDescription": "Este modelo ainda não tem linhas de uso do OpenCode Go.",
   "model.tokens": "Tokens",
@@ -193,15 +198,18 @@ export const dict = {
   "model.totalModels": "{{count}} modelos",
   "model.momentum": "Momento",
   "model.vsPreviousWindow": "vs janela anterior",
-  "model.usageDescription": "Volume diário de tokens do OpenCode Go na janela recente de dois meses.",
+  "model.usageDescription":
+    "Volume diário de tokens do OpenCode Go na janela recente de dois meses.",
   "model.noUsageTitle": "Sem uso",
   "model.noUsageDescription": "Nenhum uso chegou na janela atual.",
   "model.dailyTokenChart": "Gráfico diário de uso de tokens",
-  "model.usersDescription": "Usuários únicos diários do OpenCode Go na janela recente de dois meses.",
+  "model.usersDescription":
+    "Usuários únicos diários do OpenCode Go na janela recente de dois meses.",
   "model.noUsersTitle": "Sem dados de usuários",
   "model.noUsersDescription": "Nenhuma linha com usuários chegou na janela atual.",
   "model.dailyUserChart": "Gráfico diário de usuários únicos",
-  "model.efficiencyDescription": "Custo, comportamento de cache e formato médio da sessão do OpenCode Go.",
+  "model.efficiencyDescription":
+    "Custo, comportamento de cache e formato médio da sessão do OpenCode Go.",
   "model.noEfficiencyTitle": "Sem dados de eficiência",
   "model.noEfficiencyDescription": "Os dados de eficiência aparecem depois que o uso chega.",
   "model.cost": "Custo",
@@ -228,4 +236,4 @@ export const dict = {
   "model.pdf": "PDF",
   "format.users": "usuários",
   "format.tokens": "tokens",
-} as const
+} as const;

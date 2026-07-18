@@ -158,7 +158,7 @@ export function parseOpenapi(): ParsedOpenapi {
   } catch (err) {
     throw new Error(
       `openapiParser: could not read ${yamlPath}. ` +
-        `Run from project root. Underlying error: ${err instanceof Error ? err.message : String(err)}`
+        `Run from project root. Underlying error: ${err instanceof Error ? err.message : String(err)}`,
     );
   }
 

@@ -3,9 +3,7 @@
   "name": "chevrons-up-down-icon",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "Animated chevrons icon that morphs between up and down directions.",
-  "dependencies": [
-    "motion"
-  ],
+  "dependencies": ["motion"],
   "files": [
     {
       "path": "src/registry/components/chevrons-up-down-icon/chevrons-up-down-icon.tsx",
@@ -15,8 +13,6 @@
     }
   ],
   "docs": "https://chanhdai.com/components/chevrons-up-down-icon",
-  "categories": [
-    "effects"
-  ],
+  "categories": ["effects"],
   "type": "registry:component"
 }

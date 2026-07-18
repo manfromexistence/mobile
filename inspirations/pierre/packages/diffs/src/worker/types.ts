@@ -13,7 +13,7 @@ import type {
   ThemedFileResult,
   ThemeRegistrationResolved,
   ThemesType,
-} from '../types';
+} from "../types";
 
 export type WorkerRequestId = string;
 
@@ -30,7 +30,7 @@ export interface FileRendererInstance {
   onHighlightSuccess(
     file: FileContents,
     result: ThemedFileResult,
-    options: RenderFileOptions
+    options: RenderFileOptions,
   ): unknown;
   onHighlightError(error: unknown): unknown;
 }
@@ -40,13 +40,13 @@ export interface DiffRendererInstance {
   onHighlightSuccess(
     diff: FileDiffMetadata,
     result: ThemedDiffResult,
-    options: RenderDiffOptions
+    options: RenderDiffOptions,
   ): unknown;
   onHighlightError(error: unknown): unknown;
 }
 
 export interface RenderFileRequest {
-  type: 'file';
+  type: "file";
   id: WorkerRequestId;
   file: FileContents;
   resolvedLanguages?: ResolvedLanguage[];
@@ -55,7 +55,7 @@ export interface RenderFileRequest {
 }
 
 export interface RenderDiffRequest {
-  type: 'diff';
+  type: "diff";
   id: WorkerRequestId;
   diff: FileDiffMetadata;
   resolvedLanguages?: ResolvedLanguage[];
@@ -64,7 +64,7 @@ export interface RenderDiffRequest {
 }
 
 export interface InitializeWorkerRequest {
-  type: 'initialize';
+  type: "initialize";
   id: WorkerRequestId;
   renderOptions: WorkerRenderingOptions;
   preferredHighlighter: HighlighterTypes;
@@ -75,20 +75,18 @@ export interface InitializeWorkerRequest {
 }
 
 export interface ResolvedLanguage {
-  name: Exclude<SupportedLanguages, 'text'>;
+  name: Exclude<SupportedLanguages, "text">;
   data: LanguageRegistration[];
 }
 
 export interface SetRenderOptionsWorkerRequest {
-  type: 'set-render-options';
+  type: "set-render-options";
   id: WorkerRequestId;
   renderOptions: WorkerRenderingOptions;
   resolvedThemes: ThemeRegistrationResolved[];
 }
 
-export type SubmitRequest =
-  | Omit<RenderFileRequest, 'id'>
-  | Omit<RenderDiffRequest, 'id'>;
+export type SubmitRequest = Omit<RenderFileRequest, "id"> | Omit<RenderDiffRequest, "id">;
 
 export type WorkerRequest =
   | RenderFileRequest
@@ -97,8 +95,8 @@ export type WorkerRequest =
   | SetRenderOptionsWorkerRequest;
 
 export interface RenderFileSuccessResponse {
-  type: 'success';
-  requestType: 'file';
+  type: "success";
+  requestType: "file";
   id: WorkerRequestId;
   result: ThemedFileResult;
   options: RenderFileOptions;
@@ -106,8 +104,8 @@ export interface RenderFileSuccessResponse {
 }
 
 export interface RenderDiffSuccessResponse {
-  type: 'success';
-  requestType: 'diff';
+  type: "success";
+  requestType: "diff";
   id: WorkerRequestId;
   result: ThemedDiffResult;
   options: RenderDiffOptions;
@@ -115,29 +113,27 @@ export interface RenderDiffSuccessResponse {
 }
 
 export interface InitializeSuccessResponse {
-  type: 'success';
-  requestType: 'initialize';
+  type: "success";
+  requestType: "initialize";
   id: WorkerRequestId;
   sentAt: number;
 }
 
 export interface RegisterThemeSuccessResponse {
-  type: 'success';
-  requestType: 'set-render-options';
+  type: "success";
+  requestType: "set-render-options";
   id: WorkerRequestId;
   sentAt: number;
 }
 
 export interface RenderErrorResponse {
-  type: 'error';
+  type: "error";
   id: WorkerRequestId;
   error: string;
   stack?: string;
 }
 
-export type RenderSuccessResponse =
-  | RenderFileSuccessResponse
-  | RenderDiffSuccessResponse;
+export type RenderSuccessResponse = RenderFileSuccessResponse | RenderDiffSuccessResponse;
 
 export type WorkerResponse =
   | RenderSuccessResponse
@@ -167,7 +163,7 @@ export interface WorkerInitializationRenderOptions extends Partial<WorkerRenderi
 }
 
 export interface InitializeWorkerTask {
-  type: 'initialize';
+  type: "initialize";
   id: WorkerRequestId;
   request: InitializeWorkerRequest;
   resolve(value?: undefined): void;
@@ -176,7 +172,7 @@ export interface InitializeWorkerTask {
 }
 
 export interface SetRenderOptionsWorkerTask {
-  type: 'set-render-options';
+  type: "set-render-options";
   id: WorkerRequestId;
   request: SetRenderOptionsWorkerRequest;
   resolve(value?: undefined): void;
@@ -185,7 +181,7 @@ export interface SetRenderOptionsWorkerTask {
 }
 
 export interface RenderFileTask {
-  type: 'file';
+  type: "file";
   id: WorkerRequestId;
   request: RenderFileRequest;
   instances: Set<FileRendererInstance>;
@@ -198,7 +194,7 @@ export interface RenderFileTask {
 }
 
 export interface RenderDiffTask {
-  type: 'diff';
+  type: "diff";
   id: WorkerRequestId;
   request: RenderDiffRequest;
   instances: Set<DiffRendererInstance>;
@@ -217,7 +213,7 @@ export type AllWorkerTasks =
   | RenderDiffTask;
 
 export interface WorkerStats {
-  managerState: 'waiting' | 'initializing' | 'initialized';
+  managerState: "waiting" | "initializing" | "initialized";
   workersFailed: boolean;
   totalWorkers: number;
   busyWorkers: number;

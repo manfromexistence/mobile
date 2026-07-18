@@ -44,7 +44,7 @@ test("GithubExecutor.refreshGitHubToken sends the public client_id and omits cli
   assert.match(body, /client_id=Iv1\./, "the real public github client_id must be sent");
   assert.ok(
     !body.includes("client_secret="),
-    "client_secret must be omitted (never the literal 'undefined')"
+    "client_secret must be omitted (never the literal 'undefined')",
   );
 });
 
@@ -88,13 +88,13 @@ test("GithubExecutor.buildUrl routes unlisted Codex models to /responses (9route
     assert.equal(
       executor.buildUrl(model, true),
       "https://api.githubcopilot.com/responses",
-      `${model} must route to /responses`
+      `${model} must route to /responses`,
     );
   }
   // Non-codex unlisted models keep the chat/completions default.
   assert.equal(
     executor.buildUrl("some-random-chat-model", true),
-    "https://api.githubcopilot.com/chat/completions"
+    "https://api.githubcopilot.com/chat/completions",
   );
 });
 
@@ -173,19 +173,19 @@ test("GithubExecutor.transformRequest sanitizes Anthropic-shape content parts (t
   for (const part of result.messages[1].content) {
     assert.ok(
       part.type === "text" || part.type === "image_url",
-      `unsupported type leaked: ${part.type}`
+      `unsupported type leaked: ${part.type}`,
     );
   }
   assert.ok(result.messages[1].content.some((p: any) => /let me search/.test(p.text)));
   assert.ok(
-    result.messages[1].content.some((p: any) => /search/.test(p.text) && /"q":"X"/.test(p.text))
+    result.messages[1].content.some((p: any) => /search/.test(p.text) && /"q":"X"/.test(p.text)),
   );
 
   // tool message: tool_result serialized to text — no unknown type leaks
   for (const part of result.messages[2].content) {
     assert.ok(
       part.type === "text" || part.type === "image_url",
-      `unsupported type leaked: ${part.type}`
+      `unsupported type leaked: ${part.type}`,
     );
   }
 });
@@ -250,7 +250,7 @@ test("GithubExecutor.buildHeaders prefers Copilot token and sets GitHub-specific
       accessToken: "gh-access-token",
       providerSpecificData: { copilotToken: "copilot-token" },
     },
-    true
+    true,
   );
 
   assert.equal(headers.Authorization, "Bearer copilot-token");
@@ -335,7 +335,7 @@ test("GithubExecutor.refreshCredentials returns Copilot token directly when avai
         token: "copilot-token",
         expires_at: 1_777_777_777,
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   };
 
@@ -375,7 +375,7 @@ test("GithubExecutor.refreshCredentials falls back to GitHub OAuth refresh befor
           refresh_token: "new-refresh-token",
           expires_in: 3600,
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -386,7 +386,7 @@ test("GithubExecutor.refreshCredentials falls back to GitHub OAuth refresh befor
           token: "new-copilot-token",
           expires_at: 1_888_888_888,
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -399,7 +399,7 @@ test("GithubExecutor.refreshCredentials falls back to GitHub OAuth refresh befor
         accessToken: "old-gh-token",
         refreshToken: "refresh-token",
       },
-      null
+      null,
     );
 
     assert.deepEqual(result, {
@@ -429,7 +429,7 @@ test("GithubExecutor.needsRefresh checks missing and expiring Copilot tokens", (
         copilotTokenExpiresAt: Math.floor((Date.now() + 60_000) / 1000),
       },
     }),
-    true
+    true,
   );
   assert.equal(
     executor.needsRefresh({
@@ -438,7 +438,7 @@ test("GithubExecutor.needsRefresh checks missing and expiring Copilot tokens", (
         copilotTokenExpiresAt: Math.floor((Date.now() + 60 * 60 * 1000) / 1000),
       },
     }),
-    false
+    false,
   );
 });
 
@@ -457,7 +457,7 @@ test("GithubExecutor.execute preserves complete SSE responses including terminal
       {
         status: 200,
         headers: { "Content-Type": "text/event-stream" },
-      }
+      },
     );
 
   try {
@@ -489,7 +489,7 @@ test("GithubExecutor.transformRequest strips temperature for gpt-5.4 (port from 
     "gpt-5.4",
     { temperature: 0.7, messages: [{ role: "user", content: "hi" }] },
     true,
-    {}
+    {},
   );
   assert.equal(stripped.temperature, undefined, "temperature must be stripped for gpt-5.4");
 
@@ -497,19 +497,19 @@ test("GithubExecutor.transformRequest strips temperature for gpt-5.4 (port from 
     "gpt-5.4-mini",
     { temperature: 0.3, messages: [{ role: "user", content: "hi" }] },
     true,
-    {}
+    {},
   );
   assert.equal(
     strippedMini.temperature,
     undefined,
-    "temperature must be stripped for gpt-5.4-mini"
+    "temperature must be stripped for gpt-5.4-mini",
   );
 
   const kept = executor.transformRequest(
     "gpt-4.1",
     { temperature: 0.7, messages: [{ role: "user", content: "hi" }] },
     true,
-    {}
+    {},
   );
   assert.equal(kept.temperature, 0.7, "temperature must be preserved for non-gpt-5.4 models");
 });
@@ -528,7 +528,7 @@ test("GithubExecutor.transformRequest strips invalid synthetic Responses reasoni
       ],
     },
     true,
-    {}
+    {},
   );
 
   assert.equal(result.input[0].id, undefined);

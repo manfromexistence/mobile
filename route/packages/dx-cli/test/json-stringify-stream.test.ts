@@ -27,7 +27,7 @@ describe("jsonStringifyLines", () => {
       expect(join(jsonStringifyLines("hello", 0))).toBe(JSON.stringify("hello"));
       expect(join(jsonStringifyLines('with "quotes"', 0))).toBe(JSON.stringify('with "quotes"'));
       expect(join(jsonStringifyLines("with\nnewlines", 2))).toBe(
-        JSON.stringify("with\nnewlines", null, 2)
+        JSON.stringify("with\nnewlines", null, 2),
       );
       expect(join(jsonStringifyLines("with\ttabs", 0))).toBe(JSON.stringify("with\ttabs"));
     });

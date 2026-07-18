@@ -41,7 +41,7 @@ const appBinary = join(
   "better-sqlite3",
   "build",
   "Release",
-  "better_sqlite3.node"
+  "better_sqlite3.node",
 );
 const rootBinary = join(
   ROOT,
@@ -49,7 +49,7 @@ const rootBinary = join(
   "better-sqlite3",
   "build",
   "Release",
-  "better_sqlite3.node"
+  "better_sqlite3.node",
 );
 
 async function fixBetterSqliteBinary() {
@@ -96,7 +96,7 @@ async function fixBetterSqliteBinary() {
       "dist",
       "node_modules",
       ".bin",
-      process.platform === "win32" ? "node-pre-gyp.cmd" : "node-pre-gyp"
+      process.platform === "win32" ? "node-pre-gyp.cmd" : "node-pre-gyp",
     );
     const preGypFallback = join(
       ROOT,
@@ -105,7 +105,7 @@ async function fixBetterSqliteBinary() {
       "@mapbox",
       "node-pre-gyp",
       "bin",
-      "node-pre-gyp"
+      "node-pre-gyp",
     );
     const preGypCmd = existsSync(preGypBin) ? preGypBin : preGypFallback;
 
@@ -202,7 +202,7 @@ async function fixWreqJsBinary() {
   if (process.platform === "android" || isTermux()) {
     console.log(
       "  [postinstall] wreq-js: skipped on Termux/Android " +
-        "(libgcc not available — OAuth TLS fingerprinting will use the fallback path)"
+        "(libgcc not available — OAuth TLS fingerprinting will use the fallback path)",
     );
     return;
   }
@@ -282,7 +282,7 @@ async function fixWreqJsBinary() {
   }
 
   console.warn(
-    `\n  ⚠️  Could not fix wreq-js native module for ${process.platform}-${process.arch}.`
+    `\n  ⚠️  Could not fix wreq-js native module for ${process.platform}-${process.arch}.`,
   );
   console.warn("     OAuth-based providers (Codex, Cursor, etc.) may not work.");
   console.warn(`     Manual fix: cd ${join(ROOT, "dist")} && npm install wreq-js --no-save\n`);
@@ -309,7 +309,7 @@ async function ensureSwcHelpers() {
     } catch (err) {
       console.warn(`  ⚠️  Could not copy @swc/helpers: ${err.message}`);
       console.warn(
-        "     Try manually: cp -r node_modules/@swc/helpers dist/node_modules/@swc/helpers\n"
+        "     Try manually: cp -r node_modules/@swc/helpers dist/node_modules/@swc/helpers\n",
       );
     }
     return;

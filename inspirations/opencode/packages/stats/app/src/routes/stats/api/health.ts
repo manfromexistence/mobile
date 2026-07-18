@@ -1,1 +1,1 @@
-export { GET } from "../../api/health"
+export { GET } from "../../api/health";

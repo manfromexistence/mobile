@@ -1,14 +1,12 @@
-import type { DiffsHighlighter } from '../../types';
-import type { ResolvedLanguage } from '../../worker';
-import { AttachedLanguages, ResolvedLanguages } from './constants';
+import type { DiffsHighlighter } from "../../types";
+import type { ResolvedLanguage } from "../../worker";
+import { AttachedLanguages, ResolvedLanguages } from "./constants";
 
 export function attachResolvedLanguages(
   resolvedLanguages: ResolvedLanguage | ResolvedLanguage[],
-  highlighter: DiffsHighlighter
+  highlighter: DiffsHighlighter,
 ): void {
-  resolvedLanguages = Array.isArray(resolvedLanguages)
-    ? resolvedLanguages
-    : [resolvedLanguages];
+  resolvedLanguages = Array.isArray(resolvedLanguages) ? resolvedLanguages : [resolvedLanguages];
 
   for (const resolvedLang of resolvedLanguages) {
     if (AttachedLanguages.has(resolvedLang.name)) continue;

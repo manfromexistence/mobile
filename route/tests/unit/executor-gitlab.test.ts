@@ -203,7 +203,7 @@ test("GitlabExecutor uses GitLab direct_access for gitlab-duo and persists the c
         (refreshedPatches[0].providerSpecificData as Record<string, unknown>)
           ?.gitlabDirectAccess as Record<string, unknown>
       )?.token,
-      "direct-token"
+      "direct-token",
     );
 
     const body = (await result.response.json()) as any;

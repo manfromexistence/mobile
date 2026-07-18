@@ -37,7 +37,7 @@ test("CrofAI seed model list includes the headline families and unique ids", () 
   for (const family of ["deepseek-v", "kimi-k2", "glm-", "qwen3"]) {
     assert.ok(
       ids.some((id: string) => id.startsWith(family)),
-      `seed list must include ${family}* model`
+      `seed list must include ${family}* model`,
     );
   }
 });

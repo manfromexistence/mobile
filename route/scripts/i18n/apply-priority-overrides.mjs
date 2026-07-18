@@ -208,8 +208,8 @@ function removeEnglishPortugueseAnchorLine(content) {
   const filtered = lines.filter(
     (line) =>
       !line.includes(
-        "**[English](#-omniroute--the-free-ai-gateway)** | **[Português (BR)](#-omniroute--gateway-de-ia-gratuito)**"
-      )
+        "**[English](#-omniroute--the-free-ai-gateway)** | **[Português (BR)](#-omniroute--gateway-de-ia-gratuito)**",
+      ),
   );
   return filtered.join("\n");
 }

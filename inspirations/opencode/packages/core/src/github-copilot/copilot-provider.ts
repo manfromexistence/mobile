@@ -1,45 +1,49 @@
-import type { LanguageModelV3 } from "@ai-sdk/provider"
-import { type FetchFunction, withoutTrailingSlash, withUserAgentSuffix } from "@ai-sdk/provider-utils"
-import { OpenAICompatibleChatLanguageModel } from "./chat/openai-compatible-chat-language-model"
-import { OpenAIResponsesLanguageModel } from "./responses/openai-responses-language-model"
+import type { LanguageModelV3 } from "@ai-sdk/provider";
+import {
+  type FetchFunction,
+  withoutTrailingSlash,
+  withUserAgentSuffix,
+} from "@ai-sdk/provider-utils";
+import { OpenAICompatibleChatLanguageModel } from "./chat/openai-compatible-chat-language-model";
+import { OpenAIResponsesLanguageModel } from "./responses/openai-responses-language-model";
 
 // Import the version or define it
-const VERSION = "0.1.0"
+const VERSION = "0.1.0";
 
-export type OpenaiCompatibleModelId = string
+export type OpenaiCompatibleModelId = string;
 
 export interface OpenaiCompatibleProviderSettings {
   /**
    * API key for authenticating requests.
    */
-  apiKey?: string
+  apiKey?: string;
 
   /**
    * Base URL for the OpenAI Compatible API calls.
    */
-  baseURL?: string
+  baseURL?: string;
 
   /**
    * Name of the provider.
    */
-  name?: string
+  name?: string;
 
   /**
    * Custom headers to include in the requests.
    */
-  headers?: Record<string, string>
+  headers?: Record<string, string>;
 
   /**
    * Custom fetch implementation.
    */
-  fetch?: FetchFunction
+  fetch?: FetchFunction;
 }
 
 export interface OpenaiCompatibleProvider {
-  (modelId: OpenaiCompatibleModelId): LanguageModelV3
-  chat(modelId: OpenaiCompatibleModelId): LanguageModelV3
-  responses(modelId: OpenaiCompatibleModelId): LanguageModelV3
-  languageModel(modelId: OpenaiCompatibleModelId): LanguageModelV3
+  (modelId: OpenaiCompatibleModelId): LanguageModelV3;
+  chat(modelId: OpenaiCompatibleModelId): LanguageModelV3;
+  responses(modelId: OpenaiCompatibleModelId): LanguageModelV3;
+  languageModel(modelId: OpenaiCompatibleModelId): LanguageModelV3;
 
   // embeddingModel(modelId: any): EmbeddingModelV2
 
@@ -49,11 +53,13 @@ export interface OpenaiCompatibleProvider {
 /**
  * Create an OpenAI Compatible provider instance.
  */
-export function createOpenaiCompatible(options: OpenaiCompatibleProviderSettings = {}): OpenaiCompatibleProvider {
-  const baseURL = withoutTrailingSlash(options.baseURL ?? "https://api.openai.com/v1")
+export function createOpenaiCompatible(
+  options: OpenaiCompatibleProviderSettings = {},
+): OpenaiCompatibleProvider {
+  const baseURL = withoutTrailingSlash(options.baseURL ?? "https://api.openai.com/v1");
 
   if (!baseURL) {
-    throw new Error("baseURL is required")
+    throw new Error("baseURL is required");
   }
 
   // Merge headers: defaults first, then user overrides
@@ -61,9 +67,9 @@ export function createOpenaiCompatible(options: OpenaiCompatibleProviderSettings
     // Default OpenAI Compatible headers (can be overridden by user)
     ...(options.apiKey && { Authorization: `Bearer ${options.apiKey}` }),
     ...options.headers,
-  }
+  };
 
-  const getHeaders = () => withUserAgentSuffix(headers, `ai-sdk/openai-compatible/${VERSION}`)
+  const getHeaders = () => withUserAgentSuffix(headers, `ai-sdk/openai-compatible/${VERSION}`);
 
   const createChatModel = (modelId: OpenaiCompatibleModelId) => {
     return new OpenAICompatibleChatLanguageModel(modelId, {
@@ -71,8 +77,8 @@ export function createOpenaiCompatible(options: OpenaiCompatibleProviderSettings
       headers: getHeaders,
       url: ({ path }) => `${baseURL}${path}`,
       fetch: options.fetch,
-    })
-  }
+    });
+  };
 
   const createResponsesModel = (modelId: OpenaiCompatibleModelId) => {
     return new OpenAIResponsesLanguageModel(modelId, {
@@ -80,21 +86,21 @@ export function createOpenaiCompatible(options: OpenaiCompatibleProviderSettings
       headers: getHeaders,
       url: ({ path }) => `${baseURL}${path}`,
       fetch: options.fetch,
-    })
-  }
+    });
+  };
 
-  const createLanguageModel = (modelId: OpenaiCompatibleModelId) => createChatModel(modelId)
+  const createLanguageModel = (modelId: OpenaiCompatibleModelId) => createChatModel(modelId);
 
   const provider = function (modelId: OpenaiCompatibleModelId) {
-    return createChatModel(modelId)
-  }
+    return createChatModel(modelId);
+  };
 
-  provider.languageModel = createLanguageModel
-  provider.chat = createChatModel
-  provider.responses = createResponsesModel
+  provider.languageModel = createLanguageModel;
+  provider.chat = createChatModel;
+  provider.responses = createResponsesModel;
 
-  return provider as OpenaiCompatibleProvider
+  return provider as OpenaiCompatibleProvider;
 }
 
 // Default OpenAI Compatible provider instance
-export const openaiCompatible = createOpenaiCompatible()
+export const openaiCompatible = createOpenaiCompatible();

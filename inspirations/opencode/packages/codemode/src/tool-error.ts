@@ -1,4 +1,4 @@
-import { Schema } from "effect"
+import { Schema } from "effect";
 
 /** Safe operational refusal from a standard tool pack, reported as `ToolFailure`. */
 export class ToolError extends Schema.TaggedErrorClass<ToolError>()("ToolError", {
@@ -8,4 +8,4 @@ export class ToolError extends Schema.TaggedErrorClass<ToolError>()("ToolError",
 
 /** Creates a tool refusal whose message is safe to include in an execution diagnostic. */
 export const toolError = (message: string, cause?: unknown): ToolError =>
-  new ToolError({ message, ...(cause === undefined ? {} : { cause }) })
+  new ToolError({ message, ...(cause === undefined ? {} : { cause }) });

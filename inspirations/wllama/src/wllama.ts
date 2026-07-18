@@ -1,4 +1,4 @@
-import { ProxyToWorker, type WllamaWorkerResources } from './worker';
+import { ProxyToWorker, type WllamaWorkerResources } from "./worker";
 import {
   absoluteUrl,
   canUseAsyncFileRead,
@@ -12,9 +12,9 @@ import {
   MMPROJ_FILE_NAME,
   needCompat,
   prepareBlobs,
-} from './utils';
-import CacheManager, { type DownloadOptions } from './cache-manager';
-import { ModelManager, Model, type ModelSource } from './model-manager';
+} from "./utils";
+import CacheManager, { type DownloadOptions } from "./cache-manager";
+import { ModelManager, Model, type ModelSource } from "./model-manager";
 import type {
   GlueMsgCompletionRes,
   GlueMsgEmbeddingRes,
@@ -22,13 +22,9 @@ import type {
   GlueMsgGetResultRes,
   GlueMsgLoadRes,
   GlueMsgTestBackendOpsRes,
-} from './glue/messages';
-import { LIBLLAMA_VERSION } from './workers-code/generated';
-import type {
-  LoadedContextInfo,
-  LoadModelParams,
-  StreamParams,
-} from './types/types';
+} from "./glue/messages";
+import { LIBLLAMA_VERSION } from "./workers-code/generated";
+import type { LoadedContextInfo, LoadModelParams, StreamParams } from "./types/types";
 import type {
   ChatCompletionChunk,
   ChatCompletionParams,
@@ -41,10 +37,10 @@ import type {
   RawCompletionResponse,
   RerankParams,
   RerankResponse,
-} from './types/oai-compat';
-import { LogLevel } from './types/types';
-import { getHFModelSource, type HuggingFaceParams } from './huggingface';
-import { WasmCompatFromCDN } from './wasm-from-cdn';
+} from "./types/oai-compat";
+import { LogLevel } from "./types/types";
+import { getHFModelSource, type HuggingFaceParams } from "./huggingface";
+import { WasmCompatFromCDN } from "./wasm-from-cdn";
 
 export interface WllamaLogger {
   debug: typeof console.debug;
@@ -86,14 +82,14 @@ export interface WllamaConfig {
 }
 
 export interface WllamaChatMessage {
-  role: 'system' | 'user' | 'assistant';
+  role: "system" | "user" | "assistant";
   content: string;
 }
 
 export interface AssetsPathConfig {
   default: string;
-  'single-thread/wllama.wasm'?: string; // deprecated, use "default" instead
-  'multi-thread/wllama.wasm'?: string; // deprecated, use "default" instead
+  "single-thread/wllama.wasm"?: string; // deprecated, use "default" instead
+  "multi-thread/wllama.wasm"?: string; // deprecated, use "default" instead
 }
 
 export interface ModelMetadata {
@@ -115,16 +111,16 @@ export const LoggerWithoutDebug = {
 };
 
 export type WllamaErrorType =
-  | 'model_not_loaded'
-  | 'download_error'
-  | 'load_error'
-  | 'kv_cache_full'
-  | 'unknown_error'
-  | 'inference_error';
+  | "model_not_loaded"
+  | "download_error"
+  | "load_error"
+  | "kv_cache_full"
+  | "unknown_error"
+  | "inference_error";
 
 export class WllamaError extends Error {
   type: WllamaErrorType;
-  constructor(message: string, type: WllamaErrorType = 'unknown_error') {
+  constructor(message: string, type: WllamaErrorType = "unknown_error") {
     super(message);
     this.type = type;
   }
@@ -135,9 +131,9 @@ export class WllamaError extends Error {
  * This is equivalent to AbortError in Fetch API.
  */
 export class WllamaAbortError extends Error {
-  override name: string = 'AbortError';
+  override name: string = "AbortError";
   constructor() {
-    super('Operation aborted');
+    super("Operation aborted");
   }
 }
 
@@ -146,7 +142,7 @@ export class WllamaAbortError extends Error {
  * Stack trace of the error in the WASM runtime can be included in the error object for debugging purpose.
  */
 export class WllamaRuntimeError extends Error {
-  override name: string = 'RuntimeError';
+  override name: string = "RuntimeError";
   override stack: string;
   constructor(message: string, stack: string) {
     super(message);
@@ -198,7 +194,7 @@ export class Wllama {
 
   constructor(pathConfig: AssetsPathConfig, wllamaConfig: WllamaConfig = {}) {
     checkEnvironmentCompatible();
-    if (!pathConfig) throw new WllamaError('AssetsPathConfig is required');
+    if (!pathConfig) throw new WllamaError("AssetsPathConfig is required");
     this.pathConfig = pathConfig;
     this.config = wllamaConfig;
     this.cacheManager = wllamaConfig.cacheManager ?? new CacheManager();
@@ -210,7 +206,7 @@ export class Wllama {
         parallelDownloads: wllamaConfig.parallelDownloads,
         allowOffline: wllamaConfig.allowOffline,
       });
-    this.setCompat('default');
+    this.setCompat("default");
   }
 
   private logger() {
@@ -219,10 +215,7 @@ export class Wllama {
 
   private checkModelLoaded() {
     if (!this.isModelLoaded()) {
-      throw new WllamaError(
-        'loadModel() is not yet called',
-        'model_not_loaded'
-      );
+      throw new WllamaError("loadModel() is not yet called", "model_not_loaded");
     }
   }
 
@@ -240,17 +233,14 @@ export class Wllama {
    * @param compat Set to null to disable compatibility, or 'default' to use the default compat resources from CDN.
    * @param mode 'safari' by default; If set to 'firefox_safari', the compat mode will **also** be enabled on Firefox, which will significantly degrade the performance but allow using WebGPU on Firefox.
    */
-  setCompat(
-    compat: WllamaCompat | null | 'default',
-    mode: 'safari' | 'firefox_safari' = 'safari'
-  ) {
-    if (mode === 'safari') {
+  setCompat(compat: WllamaCompat | null | "default", mode: "safari" | "firefox_safari" = "safari") {
+    if (mode === "safari") {
       if (isFirefox()) {
         this.compat = null;
         return;
       }
     }
-    this.compat = compat === 'default' ? WasmCompatFromCDN : compat;
+    this.compat = compat === "default" ? WasmCompatFromCDN : compat;
   }
 
   /**
@@ -300,11 +290,7 @@ export class Wllama {
    * @returns true if the token is EOS, EOT, or any other end-of-generation tokens
    */
   isTokenEOG(token: number): boolean {
-    return (
-      token === this.eosToken ||
-      token === this.eotToken ||
-      this.eogTokens.has(token)
-    );
+    return token === this.eosToken || token === this.eotToken || this.eogTokens.has(token);
   }
 
   /**
@@ -419,7 +405,7 @@ export class Wllama {
    */
   async loadModelFromUrl(
     modelSourceOrURL: ModelSource | string,
-    params: LoadModelParams & DownloadOptions & { useCache?: boolean } = {}
+    params: LoadModelParams & DownloadOptions & { useCache?: boolean } = {},
   ): Promise<void> {
     const source: ModelSource = isString(modelSourceOrURL)
       ? ({ url: modelSourceOrURL } as ModelSource)
@@ -440,7 +426,7 @@ export class Wllama {
    */
   async loadModelFromHF(
     hfOptions: HuggingFaceParams,
-    params: LoadModelParams & DownloadOptions & { useCache?: boolean } = {}
+    params: LoadModelParams & DownloadOptions & { useCache?: boolean } = {},
   ) {
     const source = await getHFModelSource(hfOptions);
     return await this.loadModelFromUrl(source, params);
@@ -454,29 +440,20 @@ export class Wllama {
    * @param ggufBlobsOrModel Can be either list of Blobs (in case you use local file), or a Model object (in case you use ModelManager)
    * @param params LoadModelParams
    */
-  async loadModel(
-    ggufBlobsOrModel: Blob[] | Model,
-    params: LoadModelParams = {}
-  ): Promise<void> {
+  async loadModel(ggufBlobsOrModel: Blob[] | Model, params: LoadModelParams = {}): Promise<void> {
     const blobs: Blob[] =
       ggufBlobsOrModel instanceof Model
         ? await ggufBlobsOrModel.open()
         : [...(ggufBlobsOrModel as Blob[])]; // copy array
     if (blobs.some((b) => b.size === 0)) {
-      throw new WllamaError(
-        'Input model (or splits) must be non-empty Blob or File',
-        'load_error'
-      );
+      throw new WllamaError("Input model (or splits) must be non-empty Blob or File", "load_error");
     }
-    if (!this.pathConfig['default']) {
-      throw new WllamaError(
-        '"default" is missing from pathConfig',
-        'load_error'
-      );
+    if (!this.pathConfig["default"]) {
+      throw new WllamaError('"default" is missing from pathConfig', "load_error");
     }
 
     if (this.proxy) {
-      throw new WllamaError('Module is already initialized', 'load_error');
+      throw new WllamaError("Module is already initialized", "load_error");
     }
     // detect if we can use multi-thread and webgpu
     const supportMultiThread = await isSupportMultiThread();
@@ -491,7 +468,7 @@ export class Wllama {
       workerResources,
       this.useMultiThread ? nbThreads : 0, // 0 means disable pthread
       this.config.suppressNativeLog ?? false,
-      this.logger()
+      this.logger(),
     );
     let logLevel = params.log_level ?? LogLevel.INFO;
     if (this.config.suppressNativeLog) {
@@ -502,18 +479,16 @@ export class Wllama {
     await this.proxy.moduleInit(modelFiles.all);
 
     // run it
-    this.logger().debug('Calling wllamaStart...');
+    this.logger().debug("Calling wllamaStart...");
     const startResult: any = await this.proxy.wllamaStart();
     if (!startResult.success) {
-      throw new WllamaError(
-        `Error while calling start function, result = ${startResult}`
-      );
+      throw new WllamaError(`Error while calling start function, result = ${startResult}`);
     }
 
     // load the model
-    this.logger().debug('Loading model...');
-    const loadResult: GlueMsgLoadRes = await this.proxy.wllamaAction('load', {
-      _name: 'load_req',
+    this.logger().debug("Loading model...");
+    const loadResult: GlueMsgLoadRes = await this.proxy.wllamaAction("load", {
+      _name: "load_req",
       log_level: logLevel,
       // if async read is not supported, use mmap; refer to README-dev.md for more details
       use_mmap: !canUseAsyncFileRead(workerResources.compat),
@@ -522,9 +497,7 @@ export class Wllama {
       n_ctx: params.n_ctx ?? 1024,
       n_threads: this.useMultiThread ? nbThreads : 1,
       n_ctx_auto: false, // not supported for now
-      mmproj_path: modelFiles.mmproj
-        ? `/models/${MMPROJ_FILE_NAME}`
-        : undefined,
+      mmproj_path: modelFiles.mmproj ? `/models/${MMPROJ_FILE_NAME}` : undefined,
       model_paths: modelFiles.llm.map((f) => `models/${f.name}`),
       embeddings: params.embeddings,
       offload_kqv: params.offload_kqv,
@@ -567,12 +540,8 @@ export class Wllama {
       spec_draft_p_min: params.spec_draft_p_min,
       spec_draft_threads: params.spec_draft_threads,
       spec_draft_threads_batch: params.spec_draft_threads_batch,
-      kv_overrides_keys: params.kv_overrides
-        ? Object.keys(params.kv_overrides)
-        : undefined,
-      kv_overrides_vals: params.kv_overrides
-        ? Object.values(params.kv_overrides)
-        : undefined,
+      kv_overrides_keys: params.kv_overrides ? Object.keys(params.kv_overrides) : undefined,
+      kv_overrides_vals: params.kv_overrides ? Object.values(params.kv_overrides) : undefined,
       reasoning_budget_tokens: params.reasoning_budget_tokens,
       reasoning_budget_message: params.reasoning_budget_message,
       reasoning_format: params.reasoning_format,
@@ -584,15 +553,14 @@ export class Wllama {
       metadata: {},
     };
     for (let i = 0; i < loadResult.metadata_key.length; i++) {
-      loadedCtxInfo.metadata[loadResult.metadata_key[i]] =
-        loadResult.metadata_val[i];
+      loadedCtxInfo.metadata[loadResult.metadata_key[i]] = loadResult.metadata_val[i];
     }
     this.seed = params.seed;
     this.bosToken = loadedCtxInfo.token_bos;
     this.eosToken = loadedCtxInfo.token_eos;
     this.eotToken = loadedCtxInfo.token_eot;
     this.useEmbeddings = !!params.embeddings;
-    this.useRerank = params.pooling_type == 'rank';
+    this.useRerank = params.pooling_type == "rank";
     this.metadata = {
       hparams: {
         nVocab: loadedCtxInfo.n_vocab,
@@ -606,7 +574,7 @@ export class Wllama {
     this.decoderStartToken = loadedCtxInfo.token_decoder_start;
     this.addBosToken = loadedCtxInfo.add_bos_token;
     this.addEosToken = loadedCtxInfo.add_eos_token;
-    this.chatTemplate = loadedCtxInfo.metadata['tokenizer.chat_template'];
+    this.chatTemplate = loadedCtxInfo.metadata["tokenizer.chat_template"];
     this.loadedContextInfo = loadedCtxInfo;
     this.eogTokens = new Set(loadedCtxInfo.list_tokens_eog);
     this.mediaMarker = loadedCtxInfo.media_marker;
@@ -617,7 +585,7 @@ export class Wllama {
   getLoadedContextInfo(): LoadedContextInfo {
     this.checkModelLoaded();
     if (!this.loadedContextInfo) {
-      throw new WllamaError('Loaded context info is not available');
+      throw new WllamaError("Loaded context info is not available");
     }
     // copy object
     return { ...this.loadedContextInfo };
@@ -632,31 +600,23 @@ export class Wllama {
    * @param options OAI-compatible embedding creation options
    * @returns OAI-compatible embedding response
    */
-  async createEmbedding(
-    options: EmbeddingCreateParams
-  ): Promise<CreateEmbeddingResponse> {
+  async createEmbedding(options: EmbeddingCreateParams): Promise<CreateEmbeddingResponse> {
     this.checkModelLoaded();
 
     if (!this.useEmbeddings) {
       throw new WllamaError(
-        'Embeddings is not enabled. Please set it via LoadModelParams.embeddings'
+        "Embeddings is not enabled. Please set it via LoadModelParams.embeddings",
       );
     }
 
-    const result = await this.proxy.wllamaAction<GlueMsgEmbeddingRes>(
-      'embedding',
-      {
-        _name: 'embd_req',
-        data_json: JSON.stringify(options),
-        files: [], // TODO: support file input
-      }
-    );
+    const result = await this.proxy.wllamaAction<GlueMsgEmbeddingRes>("embedding", {
+      _name: "embd_req",
+      data_json: JSON.stringify(options),
+      files: [], // TODO: support file input
+    });
 
     if (!result.success) {
-      throw new WllamaError(
-        'Model failed to start inference',
-        'inference_error'
-      );
+      throw new WllamaError("Model failed to start inference", "inference_error");
     }
 
     return await this.getResponse(options as any, false);
@@ -673,7 +633,7 @@ export class Wllama {
 
     if (!this.useEmbeddings || !this.useRerank) {
       throw new WllamaError(
-        'Rerank is not enabled. Please set it via LoadModelParams: embeddings = true and pooling_type = rank'
+        "Rerank is not enabled. Please set it via LoadModelParams: embeddings = true and pooling_type = rank",
       );
     }
 
@@ -682,8 +642,8 @@ export class Wllama {
     const rawResults: Array<{ index: number; score: number }> = [];
 
     for (let i = 0; i < options.documents.length; i++) {
-      const result = await this.proxy.wllamaAction<GlueMsgRerankRes>('rerank', {
-        _name: 'rrnk_req',
+      const result = await this.proxy.wllamaAction<GlueMsgRerankRes>("rerank", {
+        _name: "rrnk_req",
         data_json: JSON.stringify({
           query: options.query,
           document: options.documents[i],
@@ -691,10 +651,7 @@ export class Wllama {
       });
 
       if (!result.success) {
-        throw new WllamaError(
-          'Model failed to start reranking',
-          'inference_error'
-        );
+        throw new WllamaError("Model failed to start reranking", "inference_error");
       }
 
       const { score, tokens_evaluated } = await this.getRerankResult();
@@ -704,8 +661,8 @@ export class Wllama {
 
     rawResults.sort((a, b) => b.score - a.score);
     return {
-      model: this.getModelMetadata().meta['general.name'] ?? '',
-      object: 'list',
+      model: this.getModelMetadata().meta["general.name"] ?? "",
+      object: "list",
       usage: { prompt_tokens: totalTokens, total_tokens: totalTokens },
       results: rawResults.slice(0, top_n).map(({ index, score }) => ({
         index,
@@ -720,19 +677,17 @@ export class Wllama {
    * @returns OAI-compatible chat completion response (only the final result when stream=false) or an async iterator of completion chunks (when stream=true)
    */
   async createChatCompletion(
-    options: ChatCompletionParams & { stream?: false }
+    options: ChatCompletionParams & { stream?: false },
   ): Promise<ChatCompletionResponse>;
   async createChatCompletion(
-    options: ChatCompletionParams & StreamParams<ChatCompletionChunk>
+    options: ChatCompletionParams & StreamParams<ChatCompletionChunk>,
   ): Promise<void>;
   async createChatCompletion(
-    options: ChatCompletionParams & { stream: true }
+    options: ChatCompletionParams & { stream: true },
   ): Promise<AsyncIterable<ChatCompletionChunk>>;
   async createChatCompletion(
-    options: ChatCompletionParams
-  ): Promise<
-    ChatCompletionResponse | void | AsyncIterable<ChatCompletionChunk>
-  > {
+    options: ChatCompletionParams,
+  ): Promise<ChatCompletionResponse | void | AsyncIterable<ChatCompletionChunk>> {
     // first, try to overlay chatTemplateKwargs
     if (Object.keys(this.chatTemplateKwargs).length > 0) {
       options = {
@@ -760,16 +715,16 @@ export class Wllama {
    * @returns OAI-compatible completion response (stream=false), void when done (stream=true + onData), or async iterator (stream=true, no onData)
    */
   async createCompletion(
-    options: RawCompletionParams & { stream?: false }
+    options: RawCompletionParams & { stream?: false },
   ): Promise<RawCompletionResponse>;
   async createCompletion(
-    options: RawCompletionParams & StreamParams<RawCompletionChunk>
+    options: RawCompletionParams & StreamParams<RawCompletionChunk>,
   ): Promise<void>;
   async createCompletion(
-    options: RawCompletionParams & { stream: true }
+    options: RawCompletionParams & { stream: true },
   ): Promise<AsyncIterable<RawCompletionChunk>>;
   async createCompletion(
-    options: RawCompletionParams
+    options: RawCompletionParams,
   ): Promise<RawCompletionResponse | void | AsyncIterable<RawCompletionChunk>> {
     if (options.stream && (options as any).onData) {
       await this.createCompletionImpl(options);
@@ -783,9 +738,7 @@ export class Wllama {
   /**
    * Private implementation of createCompletion
    */
-  private async createCompletionImpl<TOpt, TChunk>(
-    options: TOpt
-  ): Promise<TChunk> {
+  private async createCompletionImpl<TOpt, TChunk>(options: TOpt): Promise<TChunk> {
     this.checkModelLoaded();
 
     const isStream = !!(options as any).stream;
@@ -796,32 +749,24 @@ export class Wllama {
     }
     let files: ArrayBuffer[] = [];
     if (isChat) {
-      const tmp = this.prepareMultimodalInput(
-        options as any as ChatCompletionParams
-      );
+      const tmp = this.prepareMultimodalInput(options as any as ChatCompletionParams);
       options = tmp.params as any;
       files = tmp.files;
     }
-    const result = await this.proxy.wllamaAction<GlueMsgCompletionRes>(
-      'completion',
-      {
-        _name: 'cmpl_req',
-        is_chat: isChat,
-        data_json: JSON.stringify({ ...options, ...customOpt }),
-        files: files.map((f) => new Uint8Array(f)),
-      }
-    );
+    const result = await this.proxy.wllamaAction<GlueMsgCompletionRes>("completion", {
+      _name: "cmpl_req",
+      is_chat: isChat,
+      data_json: JSON.stringify({ ...options, ...customOpt }),
+      files: files.map((f) => new Uint8Array(f)),
+    });
 
     if (!result.success) {
-      throw new WllamaError(
-        'Model failed to start inference',
-        'inference_error'
-      );
+      throw new WllamaError("Model failed to start inference", "inference_error");
     }
 
     return await this.getResponse(
       options as StreamParams<TChunk> & { abortSignal?: AbortSignal },
-      isStream
+      isStream,
     );
   }
 
@@ -829,9 +774,7 @@ export class Wllama {
    * Same with `createCompletion`, but returns an async iterator instead.
    * Only called when stream=true and no onData is provided.
    */
-  private createCompletionGenerator<TOpt, TChunk>(
-    options: TOpt
-  ): Promise<AsyncIterable<TChunk>> {
+  private createCompletionGenerator<TOpt, TChunk>(options: TOpt): Promise<AsyncIterable<TChunk>> {
     return new Promise((resolve) => {
       const createGenerator = cbToAsyncIter(
         (callback: (val?: TChunk, done?: boolean, err?: Error) => void) => {
@@ -841,7 +784,7 @@ export class Wllama {
           })
             .then(() => callback(undefined, true))
             .catch((err) => callback(undefined, false, err));
-        }
+        },
       );
       resolve(createGenerator());
     });
@@ -852,17 +795,14 @@ export class Wllama {
    * @param modality
    * @returns
    */
-  supportInputModality(modality: 'image' | 'audio'): boolean {
+  supportInputModality(modality: "image" | "audio"): boolean {
     this.checkModelLoaded();
-    if (modality === 'image') {
+    if (modality === "image") {
       return !!this.loadedContextInfo.has_image_input;
-    } else if (modality === 'audio') {
+    } else if (modality === "audio") {
       return !!this.loadedContextInfo.has_audio_input;
     } else {
-      throw new WllamaError(
-        'Unsupported modality: ' + modality,
-        'unknown_error'
-      );
+      throw new WllamaError("Unsupported modality: " + modality, "unknown_error");
     }
   }
 
@@ -886,19 +826,14 @@ export class Wllama {
    * @param args Arguments forwarded to test-backend-ops (e.g. ["-o", "ADD"])
    * @returns retcode (0 = all tests passed) and success flag
    */
-  async testBackendOps(
-    args: string[] = []
-  ): Promise<{ retcode: number; success: boolean }> {
-    if (!this.pathConfig['default']) {
-      throw new WllamaError(
-        '"default" is missing from pathConfig',
-        'load_error'
-      );
+  async testBackendOps(args: string[] = []): Promise<{ retcode: number; success: boolean }> {
+    if (!this.pathConfig["default"]) {
+      throw new WllamaError('"default" is missing from pathConfig', "load_error");
     }
 
     if (!(await isSupportMultiThread())) {
       throw new WllamaError(
-        'Multi-threading is required to run backend ops tests, but it is not supported in the current environment.'
+        "Multi-threading is required to run backend ops tests, but it is not supported in the current environment.",
       );
     }
 
@@ -906,7 +841,7 @@ export class Wllama {
       this.getWorkerResources(),
       0, // single-thread; no model needed
       this.config.suppressNativeLog ?? false,
-      this.logger()
+      this.logger(),
     );
 
     try {
@@ -914,15 +849,13 @@ export class Wllama {
 
       const startResult: any = await tmpProxy.wllamaStart();
       if (!startResult.success) {
-        throw new WllamaError(
-          `Error while calling start function, result = ${startResult}`
-        );
+        throw new WllamaError(`Error while calling start function, result = ${startResult}`);
       }
 
-      const result = await tmpProxy.wllamaAction<GlueMsgTestBackendOpsRes>(
-        'test_backend_ops',
-        { _name: 'tbop_req', args: ['test-backend-ops', ...args] }
-      );
+      const result = await tmpProxy.wllamaAction<GlueMsgTestBackendOpsRes>("test_backend_ops", {
+        _name: "tbop_req",
+        args: ["test-backend-ops", ...args],
+      });
 
       return { retcode: result.retcode, success: result.success };
     } finally {
@@ -950,8 +883,8 @@ export class Wllama {
     try {
       return JSON.parse(data_json);
     } catch (e) {
-      this.logger().error('Failed to parse JSON:', data_json);
-      throw new WllamaError('Failed to parse model output', 'inference_error');
+      this.logger().error("Failed to parse JSON:", data_json);
+      throw new WllamaError("Failed to parse model output", "inference_error");
     }
   }
 
@@ -966,20 +899,17 @@ export class Wllama {
       if (Array.isArray(m.content)) {
         const newContent: typeof m.content = [];
         for (const c of m.content) {
-          if (c.type === 'text') {
+          if (c.type === "text") {
             // no transform for text content
             newContent.push(c);
           } else {
             // replace multimodal input with media marker
             if (!this.mediaMarker) {
-              throw new WllamaError(
-                'Media marker is undefined',
-                'inference_error'
-              );
+              throw new WllamaError("Media marker is undefined", "inference_error");
             }
             files.push(c.data);
             newContent.push({
-              type: 'text',
+              type: "text",
               text: this.mediaMarker,
             });
           }
@@ -1007,19 +937,15 @@ export class Wllama {
     tokens_evaluated: number;
   }> {
     while (true) {
-      const chunk = await this.proxy.wllamaAction<GlueMsgGetResultRes>(
-        'get_result',
-        { _name: 'gres_req' }
-      );
+      const chunk = await this.proxy.wllamaAction<GlueMsgGetResultRes>("get_result", {
+        _name: "gres_req",
+      });
 
       const jsonString = chunk.data_json;
       if (jsonString && jsonString.length > 0) {
         if (chunk.is_error) {
           const jsonData = this.jsonDecode(jsonString);
-          throw new WllamaError(
-            jsonData.message || 'Unknown reranking error',
-            'inference_error'
-          );
+          throw new WllamaError(jsonData.message || "Unknown reranking error", "inference_error");
         }
         return this.jsonDecode(jsonString);
       }
@@ -1027,12 +953,12 @@ export class Wllama {
       if (!chunk.has_more) break;
     }
 
-    throw new WllamaError('No reranking result received', 'inference_error');
+    throw new WllamaError("No reranking result received", "inference_error");
   }
 
   private async getResponse(
     options: StreamParams<any> & { abortSignal?: AbortSignal },
-    isStream: boolean
+    isStream: boolean,
   ) {
     let finalResult: any = null;
 
@@ -1040,12 +966,9 @@ export class Wllama {
       if (options.abortSignal?.aborted) {
         throw new WllamaAbortError();
       }
-      const result_chunk = await this.proxy.wllamaAction<GlueMsgGetResultRes>(
-        'get_result',
-        {
-          _name: 'gres_req',
-        }
-      );
+      const result_chunk = await this.proxy.wllamaAction<GlueMsgGetResultRes>("get_result", {
+        _name: "gres_req",
+      });
 
       const jsonString = result_chunk.data_json;
       if (!jsonString || jsonString.length === 0) {
@@ -1056,18 +979,15 @@ export class Wllama {
         }
       }
 
-      if (jsonString == 'null') {
+      if (jsonString == "null") {
         continue; // this is the "is_begin = true" chunk on server side, we can ignore it
       }
 
       let jsonData = this.jsonDecode(jsonString);
       finalResult = jsonData;
       if (result_chunk.is_error) {
-        this.logger().error('Model returned an error:', jsonData);
-        throw new WllamaError(
-          jsonData.message || 'Unknown inference error',
-          'inference_error'
-        );
+        this.logger().error("Model returned an error:", jsonData);
+        throw new WllamaError(jsonData.message || "Unknown inference error", "inference_error");
       }
 
       if (isStream) {
@@ -1091,16 +1011,14 @@ export class Wllama {
 
   getWorkerResources(): WllamaWorkerResources {
     const workerResources: WllamaWorkerResources = {
-      wasmPath: absoluteUrl(this.pathConfig['default']),
+      wasmPath: absoluteUrl(this.pathConfig["default"]),
       compat: false,
     };
     if (needCompat()) {
       if (!this.compat) {
         this.logger().warn(
-          'Not using compat mode' +
-            (isFirefox()
-              ? ' (expected on Firefox - WebGPU will be disabled)'
-              : '')
+          "Not using compat mode" +
+            (isFirefox() ? " (expected on Firefox - WebGPU will be disabled)" : ""),
         );
       } else {
         const isUsingDefault =
@@ -1108,10 +1026,10 @@ export class Wllama {
           this.compat.wasm === WasmCompatFromCDN.wasm;
         if (isUsingDefault) {
           this.logger().warn(
-            'Compatibility mode is activated, using resources from CDN. To use local resources, please refer to @wllama/wllama-compat package.'
+            "Compatibility mode is activated, using resources from CDN. To use local resources, please refer to @wllama/wllama-compat package.",
           );
           this.logger().warn(
-            'IMPORTANT: Performance will be significantly degraded in compatibility mode.'
+            "IMPORTANT: Performance will be significantly degraded in compatibility mode.",
           );
         }
 
@@ -1124,11 +1042,11 @@ export class Wllama {
     if (isFirefox()) {
       if (workerResources.compat) {
         this.logger().warn(
-          'Using compat mode on Firefox, performance will be significantly degraded; Consider enabling "javascript.options.wasm_js_promise_integration" in "about:config".'
+          'Using compat mode on Firefox, performance will be significantly degraded; Consider enabling "javascript.options.wasm_js_promise_integration" in "about:config".',
         );
       } else if (!isSupportJSPI()) {
         this.logger().warn(
-          'WebGPU is disabled on Firefox due to missing JSPI support. Please consider enabling compat mode, or enabling "javascript.options.wasm_js_promise_integration" in "about:config".'
+          'WebGPU is disabled on Firefox due to missing JSPI support. Please consider enabling compat mode, or enabling "javascript.options.wasm_js_promise_integration" in "about:config".',
         );
       }
     }

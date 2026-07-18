@@ -44,7 +44,7 @@ function cacheProxyResolution(
   connectionId: string,
   generation: number,
   registryGeneration: number,
-  result: ProxyResolutionResult
+  result: ProxyResolutionResult,
 ) {
   if (generation !== proxyConfigGeneration) return;
   if (registryGeneration !== getProxyRegistryGeneration()) return;
@@ -116,7 +116,7 @@ export async function getSettings() {
     hideEndpointTailscaleFunnel: false,
     hideEndpointNgrokTunnel: false,
     preferClaudeCodeForUnprefixedClaudeModels: isTruthyEnvFlag(
-      process.env.OMNIROUTE_PREFER_CLAUDE_CODE_FOR_UNPREFIXED_CLAUDE_MODELS
+      process.env.OMNIROUTE_PREFER_CLAUDE_CODE_FOR_UNPREFIXED_CLAUDE_MODELS,
     ),
     // Opt-in (default "off"): short-circuits Claude Code's `--permission-mode auto`
     // internal security-classifier request with a synthetic `<block>no</block>` ALLOW
@@ -179,10 +179,10 @@ export async function getSettings() {
     settings.setupComplete = true;
     settings.requireLogin = true;
     db.prepare(
-      "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', 'setupComplete', 'true')"
+      "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', 'setupComplete', 'true')",
     ).run();
     db.prepare(
-      "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', 'requireLogin', 'true')"
+      "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', 'requireLogin', 'true')",
     ).run();
   }
 
@@ -203,7 +203,7 @@ export async function updateSettings(updates: Record<string, unknown>) {
 
   const db = getDbInstance();
   const insert = db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', ?, ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', ?, ?)",
   );
   const tx = db.transaction(() => {
     for (const [key, value] of Object.entries(updates)) {
@@ -228,7 +228,7 @@ export async function updateSettings(updates: Record<string, unknown>) {
   } catch (error) {
     console.warn(
       "[HOT_RELOAD] Failed to apply runtime settings after update:",
-      error instanceof Error ? error.message : error
+      error instanceof Error ? error.message : error,
     );
   }
 
@@ -260,7 +260,7 @@ const ALIAS_TO_PROVIDER_ID = Object.entries(PROVIDER_ID_TO_ALIAS).reduce(
     acc[providerId] = providerId;
     return acc;
   },
-  {} as Record<string, string>
+  {} as Record<string, string>,
 );
 
 function resolveProviderAliasOrId(providerOrAlias: string): string {
@@ -333,7 +333,7 @@ export async function getProxyConfig() {
 
   if (migrated) {
     const insert = db.prepare(
-      "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('proxyConfig', ?, ?)"
+      "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('proxyConfig', ?, ?)",
     );
     if (raw.global !== undefined) insert.run("global", JSON.stringify(raw.global));
     if (raw.providers) insert.run("providers", JSON.stringify(raw.providers));
@@ -356,7 +356,7 @@ export async function setProxyForLevel(level: string, id: string | null, proxy: 
   if (level === "global") {
     config.global = proxy || null;
     db.prepare(
-      "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('proxyConfig', 'global', ?)"
+      "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('proxyConfig', 'global', ?)",
     ).run(JSON.stringify(config.global));
   } else {
     const mapKey = level + "s";
@@ -368,7 +368,7 @@ export async function setProxyForLevel(level: string, id: string | null, proxy: 
     }
     config[mapKey] = map;
     db.prepare(
-      "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('proxyConfig', ?, ?)"
+      "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('proxyConfig', ?, ?)",
     ).run(mapKey, JSON.stringify(map));
   }
 
@@ -424,7 +424,7 @@ export async function resolveProxyForConnection(connectionId: string, apiKeyId?:
 
   const row = db
     .prepare(
-      "SELECT provider, proxy_enabled, per_key_proxy_enabled FROM provider_connections WHERE id = ?"
+      "SELECT provider, proxy_enabled, per_key_proxy_enabled FROM provider_connections WHERE id = ?",
     )
     .get(connectionId);
   if (row) {
@@ -449,7 +449,7 @@ export async function resolveProxyForConnection(connectionId: string, apiKeyId?:
   try {
     const perKeyRow = db
       .prepare(
-        "SELECT value FROM key_value WHERE namespace = 'settings' AND key = 'perKeyProxyEnabled'"
+        "SELECT value FROM key_value WHERE namespace = 'settings' AND key = 'perKeyProxyEnabled'",
       )
       .get() as { value?: string } | undefined;
     if (perKeyRow?.value) {
@@ -469,11 +469,12 @@ export async function resolveProxyForConnection(connectionId: string, apiKeyId?:
     if (perKeyEnabled) {
       try {
         const apiKeyRow = db.prepare("SELECT proxy_id FROM api_keys WHERE id = ?").get(apiKeyId) as
-          { proxy_id?: string | null } | undefined;
+          | { proxy_id?: string | null }
+          | undefined;
         if (apiKeyRow?.proxy_id) {
           const proxyRow = db
             .prepare(
-              "SELECT p.type, p.host, p.port, p.username, p.password, p.family FROM proxy_registry p WHERE p.id = ?"
+              "SELECT p.type, p.host, p.port, p.username, p.password, p.family FROM proxy_registry p WHERE p.id = ?",
             )
             .get(apiKeyRow.proxy_id) as
             | {
@@ -533,7 +534,7 @@ export async function resolveProxyForConnection(connectionId: string, apiKeyId?:
     if (connectionProvider && connectionProxyEnabled) {
       const registryProvider = await resolveProxyForScopeFromRegistry(
         "provider",
-        connectionProvider
+        connectionProvider,
       );
       if (registryProvider?.proxy) {
         cacheProxyResolution(cacheKey, startGeneration, startRegistryGeneration, registryProvider);
@@ -560,7 +561,7 @@ export async function resolveProxyForConnection(connectionId: string, apiKeyId?:
           const combo = toRecord(JSON.parse(comboRaw));
           const comboModels = Array.isArray(combo.models) ? combo.models : [];
           const usesProvider = comboModels.some(
-            (entry) => getComboModelProvider(entry) === connectionProvider
+            (entry) => getComboModelProvider(entry) === connectionProvider,
           );
           if (!usesProvider) continue;
 
@@ -640,7 +641,7 @@ export async function resolveProxyForConnection(connectionId: string, apiKeyId?:
         cacheKey,
         startGeneration,
         startRegistryGeneration,
-        normalizedFallback as ProxyResolutionResult
+        normalizedFallback as ProxyResolutionResult,
       );
       return normalizedFallback;
     }
@@ -663,7 +664,7 @@ export async function setProxyConfig(config: Record<string, unknown>) {
   const db = getDbInstance();
   const current = await getProxyConfig();
   const insert = db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('proxyConfig', ?, ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('proxyConfig', ?, ?)",
   );
 
   const tx = db.transaction(() => {

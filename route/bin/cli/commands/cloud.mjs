@@ -209,7 +209,7 @@ export function registerCloud(program) {
       } else {
         emit(
           AGENTS.map((id) => ({ id })),
-          cmd.optsWithGlobals()
+          cmd.optsWithGlobals(),
         );
       }
     });

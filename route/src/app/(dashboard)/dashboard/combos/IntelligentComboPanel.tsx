@@ -19,7 +19,7 @@ function getI18nOrFallback(t: any, key: string, fallback: string) {
 
 function formatProviderLabel(providerId: string, activeProviders: any[] = []) {
   const matchedProvider = activeProviders.find(
-    (provider) => provider?.providerId === providerId || provider?.provider === providerId
+    (provider) => provider?.providerId === providerId || provider?.provider === providerId,
   );
 
   if (typeof matchedProvider?.displayName === "string" && matchedProvider.displayName.trim()) {
@@ -62,7 +62,7 @@ export default function IntelligentComboPanel({
   const [savingModePack, setSavingModePack] = useState<string | null>(null);
   const normalizedConfig = useMemo(
     () => normalizeIntelligentRoutingConfig(combo?.config),
-    [combo?.config]
+    [combo?.config],
   );
   const providerScores = useMemo(() => buildIntelligentProviderScores(combo), [combo]);
   const providerScopeCount =
@@ -87,7 +87,7 @@ export default function IntelligentComboPanel({
       if (!response.ok) {
         const errorBody = await response.json().catch(() => null);
         throw new Error(
-          errorBody?.error?.message || errorBody?.error || "Failed to update mode pack"
+          errorBody?.error?.message || errorBody?.error || "Failed to update mode pack",
         );
       }
 
@@ -96,8 +96,8 @@ export default function IntelligentComboPanel({
       notify.success(
         getI18nOrFallback(t, "modePackUpdated", "Mode pack updated to {pack}.").replace(
           "{pack}",
-          modePackId
-        )
+          modePackId,
+        ),
       );
     } catch (error: any) {
       notify.error(error?.message || "Failed to update mode pack.");
@@ -126,7 +126,7 @@ export default function IntelligentComboPanel({
               {getI18nOrFallback(
                 t,
                 "intelligentPanelDesc",
-                "Real-time scoring and health status for this auto-routing combo."
+                "Real-time scoring and health status for this auto-routing combo.",
               )}
             </p>
             <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-text-muted">
@@ -155,7 +155,7 @@ export default function IntelligentComboPanel({
                   {getI18nOrFallback(
                     t,
                     "configOnlyHint",
-                    "This panel shows routing inputs only. Live breaker state is available on the Health page."
+                    "This panel shows routing inputs only. Live breaker state is available on the Health page.",
                   )}
                 </p>
               </div>
@@ -178,7 +178,7 @@ export default function IntelligentComboPanel({
                   {getI18nOrFallback(
                     t,
                     "modePackHint",
-                    "Switch presets to bias the routing engine without rebuilding the combo."
+                    "Switch presets to bias the routing engine without rebuilding the combo.",
                   )}
                 </p>
               </div>
@@ -221,7 +221,7 @@ export default function IntelligentComboPanel({
                     : getI18nOrFallback(
                         t,
                         "allProvidersEvaluated",
-                        "No candidate pool configured. All active providers are evaluated at runtime."
+                        "No candidate pool configured. All active providers are evaluated at runtime.",
                       )}
                 </p>
               </div>
@@ -233,7 +233,7 @@ export default function IntelligentComboPanel({
                   {getI18nOrFallback(
                     t,
                     "allProvidersEvaluated",
-                    "No candidate pool configured. All active providers are evaluated at runtime."
+                    "No candidate pool configured. All active providers are evaluated at runtime.",
                   )}
                 </div>
               ) : (
@@ -291,7 +291,7 @@ export default function IntelligentComboPanel({
                   {getI18nOrFallback(
                     t,
                     "routingInputsHint",
-                    "Mode pack and weighting stay here; breaker runtime state stays on the Health page."
+                    "Mode pack and weighting stay here; breaker runtime state stays on the Health page.",
                   )}
                 </p>
               </div>

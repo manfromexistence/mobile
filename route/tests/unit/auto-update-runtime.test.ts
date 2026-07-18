@@ -47,7 +47,7 @@ describe("validateAutoUpdateRuntime", () => {
         if (file === "git") return { stdout: "git version 2.0.0", stderr: "" };
         throw new Error(`unexpected command: ${file}`);
       },
-      async () => true
+      async () => true,
     );
 
     assert.deepEqual(result, {
@@ -67,7 +67,7 @@ describe("validateAutoUpdateRuntime", () => {
     const result = await autoUpdate.validateAutoUpdateRuntime(
       config,
       async () => ({ stdout: "git version 2.0.0", stderr: "" }),
-      async (targetPath) => targetPath !== "/var/run/docker.sock"
+      async (targetPath) => targetPath !== "/var/run/docker.sock",
     );
 
     assert.equal(result.supported, false);
@@ -90,7 +90,7 @@ describe("validateAutoUpdateRuntime", () => {
         }
         throw new Error(`unexpected command: ${file}`);
       },
-      async () => true
+      async () => true,
     );
 
     assert.equal(result.supported, true);

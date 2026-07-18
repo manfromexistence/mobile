@@ -114,7 +114,7 @@ export function handleTproxyConnection(
   cfg: TproxyConfig,
   deps: Pick<TproxyDeps, "connectMarked" | "createUpstreamSocket">,
   onIntercept?: (info: TproxyInterceptInfo) => void,
-  terminate?: (client: net.Socket, dest: { ip: string; port: number }) => void
+  terminate?: (client: net.Socket, dest: { ip: string; port: number }) => void,
 ): void {
   const destIp = normalizeDest(client.localAddress);
   const destPort = client.localPort ?? 0;
@@ -155,7 +155,7 @@ export function handleTproxyConnection(
  */
 export async function startTproxyCapture(
   cfg: TproxyConfig,
-  options: TproxyCaptureOptions = {}
+  options: TproxyCaptureOptions = {},
 ): Promise<TproxyCaptureHandle> {
   const deps: TproxyDeps = { ...realDeps, ...options.deps };
 
@@ -183,7 +183,7 @@ export async function startTproxyCapture(
     if (options.decrypt) {
       const mark = cfg.bypassMark ?? DEFAULT_BYPASS_MARK;
       const forward = createForward((ip, port) =>
-        deps.createUpstreamSocket(deps.connectMarked(ip, port, mark))
+        deps.createUpstreamSocket(deps.connectMarked(ip, port, mark)),
       );
       engine = createTlsCaptureServer(options.decrypt.certStore, { forward });
       if (options.decrypt.installCa) {
@@ -199,7 +199,7 @@ export async function startTproxyCapture(
     const fd = deps.createListenerFd(options.listenIp ?? "0.0.0.0", cfg.onPort);
 
     const server = deps.createServer((client) =>
-      handleTproxyConnection(client, cfg, deps, options.onIntercept, terminate)
+      handleTproxyConnection(client, cfg, deps, options.onIntercept, terminate),
     );
 
     await new Promise<void>((resolve, reject) => {

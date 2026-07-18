@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
       {
         error: error instanceof Error ? error.message : "Failed to load ngrok tunnel status",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
       {
         error: error instanceof Error ? error.message : "Failed to update ngrok tunnel",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -171,7 +171,7 @@ test("createOmniRouteFetchInterceptor: Request input is handled (reads .url)", a
     assert.equal(
       sentHeaders.get("X-Caller"),
       "preserved",
-      "Request-attached headers must survive the merge"
+      "Request-attached headers must survive the merge",
     );
   } finally {
     restore();
@@ -205,7 +205,7 @@ test("createOmniRouteFetchInterceptor: GET without body does NOT set Content-Typ
     assert.equal(
       sentHeaders.get("Content-Type"),
       null,
-      "Content-Type should only default when a body exists"
+      "Content-Type should only default when a body exists",
     );
   } finally {
     restore();
@@ -224,7 +224,7 @@ test("loader: returns fetch fn when apiKey + baseURL both present (via opts)", a
   assert.equal(
     typeof (result as { fetch?: unknown }).fetch,
     "function",
-    "loader must wire fetch interceptor when baseURL resolves"
+    "loader must wire fetch interceptor when baseURL resolves",
   );
 });
 
@@ -234,7 +234,7 @@ test("loader: returns fetch fn when baseURL is stashed on the auth credential", 
   const hook = createOmniRouteAuthHook();
   const result = await hook.loader!(
     async () => ({ type: "api", key: KEY, baseURL: BASE }) as never,
-    {} as never
+    {} as never,
   );
   assert.equal((result as { baseURL?: string }).baseURL, BASE);
   assert.equal(typeof (result as { fetch?: unknown }).fetch, "function");
@@ -256,7 +256,7 @@ test("loader integration: wired interceptor actually injects Bearer when invoked
     const hook = createOmniRouteAuthHook({ baseURL: BASE });
     const result = await hook.loader!(
       async () => ({ type: "api", key: KEY }) as never,
-      {} as never
+      {} as never,
     );
     const wiredFetch = (result as { fetch: typeof fetch }).fetch;
     await wiredFetch(`${BASE}/v1/models`, {});

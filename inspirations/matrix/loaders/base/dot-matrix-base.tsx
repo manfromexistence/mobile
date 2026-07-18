@@ -3,16 +3,15 @@
 import { useMemo, type CSSProperties } from "react";
 
 import { cx } from "../core/cx";
-import { dmxBloomHaloSpreadClass, dmxBloomRootActive, dmxDotBloomParts } from "../core/dmx-dot-bloom";
+import {
+  dmxBloomHaloSpreadClass,
+  dmxBloomRootActive,
+  dmxDotBloomParts,
+} from "../core/dmx-dot-bloom";
 import { getMatrix5Layout, resolveDmxBoxOuterDim } from "../core/matrix-layout";
 import { remapOpacityToTriplet } from "../core/opacity-triplet";
 import { resolveDmxColorTokens } from "../core/color-presets";
-import {
-  distanceFromCenter,
-  getPatternIndexes,
-  indexToCoord,
-  MATRIX_SIZE
-} from "../core/patterns";
+import { distanceFromCenter, getPatternIndexes, indexToCoord, MATRIX_SIZE } from "../core/patterns";
 import { manhattanDistance, normalizedRadius, polarAngle } from "../core/math";
 import type { DotAnimationResolver, DotMatrixCommonProps, DotMatrixPhase } from "../types";
 
@@ -58,7 +57,7 @@ export function DotMatrixBase({
   opacityPeak,
   cellPadding,
   boxSize,
-  minSize
+  minSize,
 }: DotMatrixBaseProps) {
   const safeSpeed = speed > 0 ? speed : 1;
   const speedScale = 1 / safeSpeed;
@@ -86,12 +85,25 @@ export function DotMatrixBase({
       ...(op !== undefined && { ["--dmx-opacity-peak" as const]: op }),
       ...(useWrapper
         ? {
-          transform: `scale(${scale})`,
-          transformOrigin: "center center" as const
-        }
-        : { minWidth: minSize, minHeight: minSize })
+            transform: `scale(${scale})`,
+            transformOrigin: "center center" as const,
+          }
+        : { minWidth: minSize, minHeight: minSize }),
     } as unknown as CSSProperties;
-  }, [matrixSpan, speedScale, dotSize, halo, dotFill, resolvedColor, ob, om, op, useWrapper, scale, minSize]);
+  }, [
+    matrixSpan,
+    speedScale,
+    dotSize,
+    halo,
+    dotFill,
+    resolvedColor,
+    ob,
+    om,
+    op,
+    useWrapper,
+    scale,
+    minSize,
+  ]);
 
   const gridStyle = useMemo(() => ({ gap }), [gap]);
 
@@ -123,7 +135,7 @@ export function DotMatrixBase({
           "--dmx-y": `${deltaY}px`,
           "--dmx-angle": angle,
           "--dmx-radius": radiusNormalizedValue,
-          "--dmx-manhattan": manhattan
+          "--dmx-manhattan": manhattan,
         } as CSSProperties;
 
         return {
@@ -140,28 +152,28 @@ export function DotMatrixBase({
             opacity: 0,
             visibility: "hidden" as const,
             pointerEvents: "none" as const,
-            animation: "none"
-          } as CSSProperties
+            animation: "none",
+          } as CSSProperties,
         };
       }),
-    [dotSize, center, unit]
+    [dotSize, center, unit],
   );
 
   const dots = dotGeometry.map((dot) => {
     const isActive = activeMask[dot.index];
     const animationState = animationResolver
       ? animationResolver({
-        index: dot.index,
-        row: dot.row,
-        col: dot.col,
-        distanceFromCenter: dot.distance,
-        angleFromCenter: dot.angle,
-        radiusNormalized: dot.radiusNormalizedValue,
-        manhattanDistance: dot.manhattan,
-        phase,
-        isActive,
-        reducedMotion
-      })
+          index: dot.index,
+          row: dot.row,
+          col: dot.col,
+          distanceFromCenter: dot.distance,
+          angleFromCenter: dot.angle,
+          radiusNormalized: dot.radiusNormalizedValue,
+          manhattanDistance: dot.manhattan,
+          phase,
+          isActive,
+          reducedMotion,
+        })
       : undefined;
 
     let isBloomDot = false;
@@ -177,12 +189,15 @@ export function DotMatrixBase({
           const remappedOpacity = remapOpacityToTriplet(rawOpacity, ob, om, op);
           resolvedStyle.opacity = remappedOpacity;
           const parts = dmxDotBloomParts(true, rawOpacity, bloom, halo, ob, om, op);
-          (resolvedStyle as CSSProperties & { "--dmx-bloom-level"?: number })["--dmx-bloom-level"] = parts.level;
+          (resolvedStyle as CSSProperties & { "--dmx-bloom-level"?: number })["--dmx-bloom-level"] =
+            parts.level;
           isBloomDot = parts.bloomDot;
         } else {
           const parts = dmxDotBloomParts(true, 0, bloom, halo, ob, om, op);
           if (parts.level > 0) {
-            (resolvedStyle as CSSProperties & { "--dmx-bloom-level"?: number })["--dmx-bloom-level"] = parts.level;
+            (resolvedStyle as CSSProperties & { "--dmx-bloom-level"?: number })[
+              "--dmx-bloom-level"
+            ] = parts.level;
           }
           isBloomDot = parts.bloomDot;
         }
@@ -205,7 +220,7 @@ export function DotMatrixBase({
           !isActive && "dmx-inactive",
           isBloomDot && "dmx-bloom-dot",
           dotClassName,
-          animationState?.className
+          animationState?.className,
         )}
         style={dotStyle}
       />
@@ -220,11 +235,13 @@ export function DotMatrixBase({
         muted && "dmx-muted",
         dmxBloomRootActive(bloom, halo) && "dmx-bloom",
         dmxBloomHaloSpreadClass(halo),
-        !useWrapper && className
+        !useWrapper && className,
       )}
       style={dmxVarStyle}
     >
-      <div className="dmx-grid" style={gridStyle}>{dots}</div>
+      <div className="dmx-grid" style={gridStyle}>
+        {dots}
+      </div>
     </div>
   );
 
@@ -243,7 +260,7 @@ export function DotMatrixBase({
           height: outerDim,
           minWidth: minSize,
           minHeight: minSize,
-          overflow: "hidden"
+          overflow: "hidden",
         }}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
@@ -264,13 +281,15 @@ export function DotMatrixBase({
         muted && "dmx-muted",
         dmxBloomRootActive(bloom, halo) && "dmx-bloom",
         dmxBloomHaloSpreadClass(halo),
-        className
+        className,
       )}
       style={dmxVarStyle}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <div className="dmx-grid" style={gridStyle}>{dots}</div>
+      <div className="dmx-grid" style={gridStyle}>
+        {dots}
+      </div>
     </div>
   );
 }

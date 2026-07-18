@@ -35,7 +35,7 @@ test("buildWsUrl: enterprise params emit agent=work + scenario=officeweb + Premi
       agent: M365_ENTERPRISE_OVERRIDES.agent,
       scenario: M365_ENTERPRISE_OVERRIDES.scenario,
       licenseType: M365_ENTERPRISE_OVERRIDES.licenseType,
-    })
+    }),
   );
   assert.equal(url.searchParams.get("agent"), "work");
   assert.equal(url.searchParams.get("scenario"), "officeweb");

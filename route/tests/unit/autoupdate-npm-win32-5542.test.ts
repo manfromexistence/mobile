@@ -32,18 +32,24 @@ test("#5542 the update version spec is validated before it is shell-joined (Hard
 test("#5542 the auto-update npm call sites route through buildNpmExecOptions", () => {
   const routeSrc = fs.readFileSync(
     new URL("../../src/app/api/system/version/route.ts", import.meta.url),
-    "utf8"
+    "utf8",
   );
   const checkSrc = fs.readFileSync(
     new URL("../../src/lib/system/versionCheck.ts", import.meta.url),
-    "utf8"
+    "utf8",
   );
-  assert.ok(routeSrc.includes("buildNpmExecOptions"), "version route must use the win32-shell helper");
-  assert.ok(checkSrc.includes("buildNpmExecOptions"), "versionCheck must use the win32-shell helper");
+  assert.ok(
+    routeSrc.includes("buildNpmExecOptions"),
+    "version route must use the win32-shell helper",
+  );
+  assert.ok(
+    checkSrc.includes("buildNpmExecOptions"),
+    "versionCheck must use the win32-shell helper",
+  );
   // The global install spec must be guarded before it reaches the shell.
   assert.ok(
     routeSrc.includes("SERVICE_VERSION_PATTERN.test(latest)"),
-    "version route must validate the version spec before shell-joining it"
+    "version route must validate the version spec before shell-joining it",
   );
   // Every npm invocation in the route must pass buildNpmExecOptions (not a bare
   // inline options object that would lack the win32 shell).
@@ -52,6 +58,6 @@ test("#5542 the auto-update npm call sites route through buildNpmExecOptions", (
   assert.equal(
     npmViaHelper.length,
     npmCalls.length,
-    `all ${npmCalls.length} npm calls must route through buildNpmExecOptions`
+    `all ${npmCalls.length} npm calls must route through buildNpmExecOptions`,
   );
 });

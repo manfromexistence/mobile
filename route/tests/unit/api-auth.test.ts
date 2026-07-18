@@ -14,8 +14,9 @@ const localDb = await import("../../src/lib/localDb.ts");
 const apiKeysDb = await import("../../src/lib/db/apiKeys.ts");
 const apiAuth = await import("../../src/shared/utils/apiAuth.ts");
 const { requireManagementAuth } = await import("../../src/lib/api/requireManagementAuth.ts");
-const { getLegacyCliTokenSync, getMachineTokenSync } =
-  await import("../../src/lib/machineToken.ts");
+const { getLegacyCliTokenSync, getMachineTokenSync } = await import(
+  "../../src/lib/machineToken.ts"
+);
 const { CLI_TOKEN_HEADER } = await import("../../src/server/authz/headers.ts");
 
 const ORIGINAL_JWT_SECRET = process.env.JWT_SECRET;
@@ -125,7 +126,7 @@ test("verifyAuth no longer accepts API keys supplied via query string (#3300 fol
 test("isAuthenticated accepts API keys embedded in vscode path aliases", async () => {
   const key = await apiKeysDb.createApiKey("path-auth", "machine1234567890");
   const request = new Request(
-    `https://example.com/api/v1/vscode/${encodeURIComponent(key.key)}/models`
+    `https://example.com/api/v1/vscode/${encodeURIComponent(key.key)}/models`,
   );
 
   const result = await apiAuth.isAuthenticated(request);
@@ -273,7 +274,7 @@ test("monitoring health reset route requires dashboard authentication", async ()
 
   const healthRoute = await import("../../src/app/api/monitoring/health/route.ts");
   const response = await healthRoute.DELETE(
-    new Request("https://example.com/api/monitoring/health", { method: "DELETE" })
+    new Request("https://example.com/api/monitoring/health", { method: "DELETE" }),
   );
 
   assert.equal(response.status, 401);
@@ -314,7 +315,7 @@ test("isAuthRequired keeps fresh bootstrap open only on loopback", async () => {
   assert.equal(await apiAuth.isAuthRequired(new Request("http://127.0.0.1/api/providers")), false);
   assert.equal(
     await apiAuth.isAuthRequired(new Request("https://example.com/api/providers")),
-    true
+    true,
   );
 });
 

@@ -76,7 +76,7 @@ const realDeps: CaTrustDeps = {
 export async function installTproxyCa(
   caPem: string,
   sudoPassword = "",
-  deps: Partial<CaTrustDeps> = {}
+  deps: Partial<CaTrustDeps> = {},
 ): Promise<void> {
   if (process.env.OMNIROUTE_SKIP_SYSTEM_TRUST === "1" && deps.run === undefined) {
     console.log("[tproxy-ca] OMNIROUTE_SKIP_SYSTEM_TRUST=1 — skipping OS trust-store mutation");
@@ -105,7 +105,7 @@ export async function installTproxyCa(
  */
 export async function uninstallTproxyCa(
   sudoPassword = "",
-  deps: Partial<CaTrustDeps> = {}
+  deps: Partial<CaTrustDeps> = {},
 ): Promise<void> {
   if (process.env.OMNIROUTE_SKIP_SYSTEM_TRUST === "1" && deps.run === undefined) {
     console.log("[tproxy-ca] OMNIROUTE_SKIP_SYSTEM_TRUST=1 — skipping OS trust-store mutation");

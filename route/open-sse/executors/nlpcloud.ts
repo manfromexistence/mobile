@@ -140,7 +140,7 @@ function buildOpenAiJsonCompletion(
   content: string,
   model: string,
   id: string,
-  created: number
+  created: number,
 ): Response {
   const completionTokens = estimateTokens(content);
 
@@ -166,7 +166,7 @@ function buildOpenAiJsonCompletion(
     {
       status: 200,
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 
@@ -174,7 +174,7 @@ function buildSynthesizedStream(
   content: string,
   model: string,
   id: string,
-  created: number
+  created: number,
 ): Response {
   const encoder = new TextEncoder();
 
@@ -188,8 +188,8 @@ function buildSynthesizedStream(
             created,
             model,
             choices: [{ index: 0, delta: { role: "assistant" }, finish_reason: null }],
-          })
-        )
+          }),
+        ),
       );
 
       if (content) {
@@ -201,8 +201,8 @@ function buildSynthesizedStream(
               created,
               model,
               choices: [{ index: 0, delta: { content }, finish_reason: null }],
-            })
-          )
+            }),
+          ),
         );
       }
 
@@ -214,8 +214,8 @@ function buildSynthesizedStream(
             created,
             model,
             choices: [{ index: 0, delta: {}, finish_reason: "stop" }],
-          })
-        )
+          }),
+        ),
       );
       controller.enqueue(encoder.encode("data: [DONE]\n\n"));
       controller.close();
@@ -268,7 +268,7 @@ function toOpenAiError(status: number, message: string): Response {
     {
       status,
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 
@@ -281,12 +281,12 @@ export class NlpCloudExecutor extends BaseExecutor {
     model: string,
     _stream: boolean,
     _urlIndex = 0,
-    credentials: ProviderCredentials | null = null
+    credentials: ProviderCredentials | null = null,
   ): string {
     const baseUrl = normalizeBaseUrl(
       typeof credentials?.providerSpecificData?.baseUrl === "string"
         ? credentials.providerSpecificData.baseUrl
-        : this.config.baseUrl
+        : this.config.baseUrl,
     );
     return `${baseUrl}/${encodeURIComponent(model || DEFAULT_MODEL)}/chatbot`;
   }
@@ -332,7 +332,7 @@ export class NlpCloudExecutor extends BaseExecutor {
         "",
         model,
         `chatcmpl-nlpcloud-${randomUUID()}`,
-        Math.floor(Date.now() / 1000)
+        Math.floor(Date.now() / 1000),
       );
     }
 
@@ -351,8 +351,8 @@ export class NlpCloudExecutor extends BaseExecutor {
               created,
               model,
               choices: [{ index: 0, delta: { role: "assistant" }, finish_reason: null }],
-            })
-          )
+            }),
+          ),
         );
 
         const reader = upstream.getReader();
@@ -369,8 +369,8 @@ export class NlpCloudExecutor extends BaseExecutor {
                 created,
                 model,
                 choices: [{ index: 0, delta: { content }, finish_reason: null }],
-              })
-            )
+              }),
+            ),
           );
         };
 
@@ -385,8 +385,8 @@ export class NlpCloudExecutor extends BaseExecutor {
                 created,
                 model,
                 choices: [{ index: 0, delta: {}, finish_reason: "stop" }],
-              })
-            )
+              }),
+            ),
           );
           controller.enqueue(encoder.encode("data: [DONE]\n\n"));
           controller.close();
@@ -483,7 +483,7 @@ export class NlpCloudExecutor extends BaseExecutor {
         return {
           response: toOpenAiError(
             response.status,
-            `NLP Cloud API failed with status ${response.status}: ${errorText || "Unknown error"}`
+            `NLP Cloud API failed with status ${response.status}: ${errorText || "Unknown error"}`,
           ),
           url,
           headers,
@@ -501,7 +501,7 @@ export class NlpCloudExecutor extends BaseExecutor {
               content,
               resolvedModel,
               `chatcmpl-nlpcloud-${randomUUID()}`,
-              Math.floor(Date.now() / 1000)
+              Math.floor(Date.now() / 1000),
             ),
             url,
             headers,
@@ -525,7 +525,7 @@ export class NlpCloudExecutor extends BaseExecutor {
           content,
           resolvedModel,
           `chatcmpl-nlpcloud-${randomUUID()}`,
-          Math.floor(Date.now() / 1000)
+          Math.floor(Date.now() / 1000),
         ),
         url,
         headers,

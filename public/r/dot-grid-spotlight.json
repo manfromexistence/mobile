@@ -13,8 +13,6 @@
     }
   ],
   "docs": "https://chanhdai.com/components/dot-grid-spotlight",
-  "categories": [
-    "effects"
-  ],
+  "categories": ["effects"],
   "type": "registry:component"
 }

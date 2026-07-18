@@ -17,16 +17,16 @@ export async function measureScenariosSequentially<TStats>(
     | ((
         scenario: BenchmarkRunnerScenario<TStats>,
         index: number,
-        total: number
+        total: number,
       ) => void | Promise<void>)
     | undefined,
   onMeasured?:
     | ((
         result: BenchmarkRunnerResult<TStats>,
         index: number,
-        total: number
+        total: number,
       ) => void | Promise<void>)
-    | undefined
+    | undefined,
 ): Promise<BenchmarkRunnerResult<TStats>[]> {
   const results: BenchmarkRunnerResult<TStats>[] = [];
 

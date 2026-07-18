@@ -2,8 +2,9 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 const usageService = await import("../../open-sse/services/usage.ts");
-const providerLimitUtils =
-  await import("../../src/app/(dashboard)/dashboard/usage/components/ProviderLimits/utils.tsx");
+const providerLimitUtils = await import(
+  "../../src/app/(dashboard)/dashboard/usage/components/ProviderLimits/utils.tsx"
+);
 
 test("github copilot business seats infer business plan and hide unlimited buckets", async () => {
   const originalFetch = globalThis.fetch;
@@ -27,7 +28,7 @@ test("github copilot business seats infer business plan and hide unlimited bucke
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
 
   try {
@@ -74,7 +75,7 @@ test("github copilot individual paid plans no longer normalize as free", async (
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
 
   try {

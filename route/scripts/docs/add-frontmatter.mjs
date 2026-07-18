@@ -137,7 +137,7 @@ async function main() {
   console.log(`[add-frontmatter] done — added=${added} skipped=${skipped} total=${targets.length}`);
   if (noHeading.length > 0) {
     console.log(
-      `[add-frontmatter] fallback title used (no leading H1) for: ${noHeading.join(", ")}`
+      `[add-frontmatter] fallback title used (no leading H1) for: ${noHeading.join(", ")}`,
     );
   }
 }

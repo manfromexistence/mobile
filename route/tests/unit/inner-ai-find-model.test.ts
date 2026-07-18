@@ -21,7 +21,7 @@ describe("inner-ai findModel", () => {
     assert.equal(
       result,
       null,
-      "unmatched model must NOT silently fall back to the first plan model (gpt-4o)"
+      "unmatched model must NOT silently fall back to the first plan model (gpt-4o)",
     );
   });
 

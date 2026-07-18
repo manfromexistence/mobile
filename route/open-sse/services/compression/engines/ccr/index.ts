@@ -159,7 +159,7 @@ export function effectiveMinChars(
   baseMinChars: number,
   hash: string,
   principalId: string | undefined,
-  rampFactor: number
+  rampFactor: number,
 ): number {
   const count = retrievalCounts.get(buildStoreKey(hash, principalId)) ?? 0;
   if (count >= RETRIEVAL_THRESHOLD) return Number.POSITIVE_INFINITY;
@@ -197,7 +197,7 @@ export function resetCcrStore(): void {
  */
 export function handleCcrRetrieve(
   args: { hash: string } & CcrQuery,
-  callerId?: string
+  callerId?: string,
 ): { content: string } | { error: string } {
   if (!args.hash || typeof args.hash !== "string") {
     return { error: "hash parameter is required and must be a string" };
@@ -238,7 +238,7 @@ function maybeCcrReplace(
   text: string,
   minChars: number,
   principalId: string | undefined,
-  rampFactor: number
+  rampFactor: number,
 ): { text: string; replaced: boolean; hash: string | null } {
   // Base floor first (no hash cost for tiny blocks that could never compress anyway).
   if (text.length < minChars) {
@@ -272,7 +272,7 @@ function processMessages(
   messages: MessageLike[],
   minChars: number,
   principalId: string | undefined,
-  rampFactor: number
+  rampFactor: number,
 ): { messages: MessageLike[]; replacedCount: number } {
   let replacedCount = 0;
 
@@ -296,7 +296,7 @@ function processMessages(
           part["text"] as string,
           minChars,
           principalId,
-          rampFactor
+          rampFactor,
         );
         if (replaced) {
           changed = true;
@@ -425,7 +425,7 @@ export const ccrEngine: CompressionEngine = {
       messages as MessageLike[],
       minChars,
       options?.principalId,
-      rampFactor
+      rampFactor,
     );
 
     if (replacedCount === 0) {
@@ -440,7 +440,7 @@ export const ccrEngine: CompressionEngine = {
       "stacked",
       ["ccr"],
       [`ccr-replaced-${replacedCount}-blocks`],
-      durationMs
+      durationMs,
     );
 
     return { body: newBody, compressed: true, stats };

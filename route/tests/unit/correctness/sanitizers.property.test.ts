@@ -19,14 +19,14 @@ test("sanitizeErrorMessage never leaks a file path / stack frame", () => {
       fc
         .string()
         .map((s) => s.replace(/\n/g, " "))
-        .map((suffix) => `${prefix} at /home/app/open-sse/foo.ts:42:10 ${suffix}`)
+        .map((suffix) => `${prefix} at /home/app/open-sse/foo.ts:42:10 ${suffix}`),
     );
 
   fc.assert(
     fc.property(firstLineWithPath, (input) => {
       const out = sanitizeErrorMessage(input);
       assert.ok(!out.includes("at /"), `leaked path in: ${JSON.stringify(out)}`);
-    })
+    }),
   );
 });
 
@@ -37,6 +37,6 @@ test("sanitizeErrorMessage terminates on long adversarial input (ReDoS guard)", 
       sanitizeErrorMessage("a".repeat(len) + "@" + "b".repeat(len) + ".com " + "1".repeat(len));
       const ms = Number(process.hrtime.bigint() - start) / 1e6;
       assert.ok(ms < 250, `too slow: ${ms}ms for len=${len}`);
-    })
+    }),
   );
 });

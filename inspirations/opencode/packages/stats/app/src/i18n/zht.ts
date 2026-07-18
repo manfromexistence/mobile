@@ -1,4 +1,4 @@
-import type { Key } from "../i18n"
+import type { Key } from "../i18n";
 
 export const dict = {
   "app.title": "AI 模型使用排名 | OpenCode 數據",
@@ -165,7 +165,8 @@ export const dict = {
   "model.noDataDescription": "請嘗試從排行榜開啟一個模型。",
   "model.noMatched": "沒有符合 {{id}} 的模型事實或使用列。",
   "model.fallback": "模型",
-  "model.catalogFallback": "來自共享模型索引的模型事實。此模型產生活動後會顯示 OpenCode Go 使用量。",
+  "model.catalogFallback":
+    "來自共享模型索引的模型事實。此模型產生活動後會顯示 OpenCode Go 使用量。",
   "model.unranked": "未進入上週 OpenCode Go 使用量排名",
   "model.ranked": "在上週 OpenCode Go 使用量中排名 #{{rank}}",
   "model.observedVolume": "佔觀測到的 2M 用量的 {{share}}。",
@@ -227,4 +228,4 @@ export const dict = {
   "model.pdf": "PDF",
   "format.users": "使用者",
   "format.tokens": "token",
-} satisfies Record<Key, string>
+} satisfies Record<Key, string>;

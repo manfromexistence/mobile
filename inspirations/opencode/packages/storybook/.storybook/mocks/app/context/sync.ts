@@ -1,8 +1,11 @@
-import { createStore } from "solid-js/store"
+import { createStore } from "solid-js/store";
 
 const [data, setData] = createStore({
   session: [] as Array<{ id: string; parentID?: string }>,
-  permission: {} as Record<string, Array<{ id: string; sessionID: string; permission: string; patterns: string[] }>>,
+  permission: {} as Record<
+    string,
+    Array<{ id: string; sessionID: string; permission: string; patterns: string[] }>
+  >,
   question: {} as Record<string, Array<{ id: string; questions: unknown[] }>>,
   session_diff: {} as Record<string, Array<{ file: string }>>,
   message: {
@@ -12,24 +15,24 @@ const [data, setData] = createStore({
   session_working: () => false,
   agent: [{ name: "build", mode: "task", hidden: false }],
   command: [{ name: "fix", description: "Run fix command", source: "project" }],
-})
+});
 
 const sync = {
   data,
   set(...input: unknown[]) {
-    ;(setData as (...args: unknown[]) => void)(...input)
+    (setData as (...args: unknown[]) => void)(...input);
   },
   session: {
     get(id: string) {
-      return { id }
+      return { id };
     },
     optimistic: {
       add() {},
       remove() {},
     },
   },
-}
+};
 
 export function useSync() {
-  return () => sync
+  return () => sync;
 }

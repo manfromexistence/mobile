@@ -4,8 +4,9 @@ import assert from "node:assert/strict";
 const cloudAgentTypes = await import("../../src/lib/cloudAgent/types.ts");
 const { CLOUD_AGENT_STATUS, CloudAgentStatusSchema } = cloudAgentTypes;
 const { CreateCloudAgentTaskSchema, UpdateCloudAgentTaskSchema } = cloudAgentTypes;
-const { isCloudAgentProvider, getAgent, getAvailableAgents } =
-  await import("../../src/lib/cloudAgent/registry.ts");
+const { isCloudAgentProvider, getAgent, getAvailableAgents } = await import(
+  "../../src/lib/cloudAgent/registry.ts"
+);
 
 test("CLOUD_AGENT_STATUS has correct values", () => {
   assert.strictEqual(CLOUD_AGENT_STATUS.QUEUED, "queued");

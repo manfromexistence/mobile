@@ -1,6 +1,6 @@
-import { type CDPSession, expect, type Page, test } from '@playwright/test';
+import { type CDPSession, expect, type Page, test } from "@playwright/test";
 
-import { scrollUntilStickyWithVisible } from './helpers/stickyScroll';
+import { scrollUntilStickyWithVisible } from "./helpers/stickyScroll";
 
 declare global {
   interface Window {
@@ -18,7 +18,7 @@ declare global {
         directoryPath: string | null;
         flattenedSegmentPath: string | null;
         hoveredPath: string | null;
-        kind: 'directory' | 'root';
+        kind: "directory" | "root";
       };
     } | null;
     __lastDropResult?: unknown;
@@ -27,16 +27,14 @@ declare global {
 }
 
 async function openFixture(page: Page) {
-  await page.goto('/test/e2e/fixtures/file-tree-drag-and-drop.html');
+  await page.goto("/test/e2e/fixtures/file-tree-drag-and-drop.html");
   await page.waitForFunction(() => window.__fileTreeDragAndDropReady === true);
 }
 
 async function expectDragStateCleared(page: Page) {
   await page.waitForFunction(() => {
     const state = window.__getDragState?.();
-    return (
-      state != null && state.dragging.length === 0 && state.targets.length === 0
-    );
+    return state != null && state.dragging.length === 0 && state.targets.length === 0;
   });
 }
 
@@ -49,7 +47,7 @@ class TouchSession {
 
   static async create(page: Page): Promise<TouchSession> {
     const cdp = await page.context().newCDPSession(page);
-    await cdp.send('Emulation.setTouchEmulationEnabled', {
+    await cdp.send("Emulation.setTouchEmulationEnabled", {
       enabled: true,
       maxTouchPoints: 1,
     });
@@ -57,32 +55,32 @@ class TouchSession {
   }
 
   async touchStart(x: number, y: number) {
-    await this.cdp.send('Input.dispatchTouchEvent', {
-      type: 'touchStart',
+    await this.cdp.send("Input.dispatchTouchEvent", {
+      type: "touchStart",
       touchPoints: [{ x: Math.round(x), y: Math.round(y) }],
       modifiers: 0,
     });
   }
 
   async touchMove(x: number, y: number) {
-    await this.cdp.send('Input.dispatchTouchEvent', {
-      type: 'touchMove',
+    await this.cdp.send("Input.dispatchTouchEvent", {
+      type: "touchMove",
       touchPoints: [{ x: Math.round(x), y: Math.round(y) }],
       modifiers: 0,
     });
   }
 
   async touchEnd() {
-    await this.cdp.send('Input.dispatchTouchEvent', {
-      type: 'touchEnd',
+    await this.cdp.send("Input.dispatchTouchEvent", {
+      type: "touchEnd",
       touchPoints: [],
       modifiers: 0,
     });
   }
 
   async touchCancel() {
-    await this.cdp.send('Input.dispatchTouchEvent', {
-      type: 'touchCancel',
+    await this.cdp.send("Input.dispatchTouchEvent", {
+      type: "touchCancel",
       touchPoints: [],
       modifiers: 0,
     });
@@ -93,47 +91,35 @@ class TouchSession {
   }
 }
 
-test.describe('file-tree drag-and-drop proof', () => {
-  test('pointer drag moves a row into a folder and clears drag state', async ({
-    page,
-  }) => {
+test.describe("file-tree drag-and-drop proof", () => {
+  test("pointer drag moves a row into a folder and clears drag state", async ({ page }) => {
     await openFixture(page);
 
-    const source = page.locator(
-      'file-tree-container button[data-item-path="README.md"]'
-    );
-    const target = page.locator(
-      'file-tree-container button[data-item-path="src/lib/"]'
-    );
+    const source = page.locator('file-tree-container button[data-item-path="README.md"]');
+    const target = page.locator('file-tree-container button[data-item-path="src/lib/"]');
 
     await source.dragTo(target);
-    await page.waitForFunction(
-      () => window.__hasPath?.('src/lib/README.md') === true
-    );
+    await page.waitForFunction(() => window.__hasPath?.("src/lib/README.md") === true);
     await expect(
-      page.locator(
-        'file-tree-container button[data-item-path="src/lib/README.md"]'
-      )
+      page.locator('file-tree-container button[data-item-path="src/lib/README.md"]'),
     ).toBeVisible();
     await expectDragStateCleared(page);
   });
 
-  test('pointer drag moves a visible row into a sticky folder row', async ({
-    page,
-  }) => {
+  test("pointer drag moves a visible row into a sticky folder row", async ({ page }) => {
     await openFixture(page);
 
-    const sourcePath = 'src/lib/theme.ts';
-    const targetPath = 'src/';
+    const sourcePath = "src/lib/theme.ts";
+    const targetPath = "src/";
     await scrollUntilStickyWithVisible(page, targetPath, sourcePath, {
       maxScrollTop: 480,
     });
 
     const source = page.locator(
-      `file-tree-container button[data-item-path="${sourcePath}"]:not([data-file-tree-sticky-row="true"])`
+      `file-tree-container button[data-item-path="${sourcePath}"]:not([data-file-tree-sticky-row="true"])`,
     );
     const stickyTarget = page.locator(
-      `file-tree-container button[data-file-tree-sticky-row="true"][data-file-tree-sticky-path="${targetPath}"]`
+      `file-tree-container button[data-file-tree-sticky-row="true"][data-file-tree-sticky-path="${targetPath}"]`,
     );
     await expect(source).toBeVisible();
     await expect(stickyTarget).toBeVisible();
@@ -155,26 +141,20 @@ test.describe('file-tree drag-and-drop proof', () => {
 
     await page.waitForFunction(
       () =>
-        window.__hasPath?.('src/theme.ts') === true &&
-        window.__hasPath?.('src/lib/theme.ts') === false
+        window.__hasPath?.("src/theme.ts") === true &&
+        window.__hasPath?.("src/lib/theme.ts") === false,
     );
     await expect(
-      page.locator('file-tree-container button[data-item-path="src/theme.ts"]')
+      page.locator('file-tree-container button[data-item-path="src/theme.ts"]'),
     ).toBeVisible();
     await expectDragStateCleared(page);
   });
 
-  test('touch long-press drag moves a row with the file-tree touch flow', async ({
-    page,
-  }) => {
+  test("touch long-press drag moves a row with the file-tree touch flow", async ({ page }) => {
     await openFixture(page);
 
-    const source = page.locator(
-      'file-tree-container button[data-item-path="package.json"]'
-    );
-    const target = page.locator(
-      'file-tree-container [data-item-flattened-subitem="docs/guides/"]'
-    );
+    const source = page.locator('file-tree-container button[data-item-path="package.json"]');
+    const target = page.locator('file-tree-container [data-item-flattened-subitem="docs/guides/"]');
     const sourceBox = await source.boundingBox();
     const targetBox = await target.boundingBox();
     expect(sourceBox).not.toBeNull();
@@ -184,12 +164,12 @@ test.describe('file-tree drag-and-drop proof', () => {
     try {
       await touch.touchStart(
         sourceBox!.x + sourceBox!.width / 2,
-        sourceBox!.y + sourceBox!.height / 2
+        sourceBox!.y + sourceBox!.height / 2,
       );
       await page.waitForTimeout(500);
       await touch.touchMove(
         targetBox!.x + targetBox!.width / 2,
-        targetBox!.y + targetBox!.height / 2
+        targetBox!.y + targetBox!.height / 2,
       );
       await page.waitForTimeout(100);
       await touch.touchEnd();
@@ -197,23 +177,15 @@ test.describe('file-tree drag-and-drop proof', () => {
       await touch.dispose();
     }
 
-    await page.waitForFunction(
-      () => window.__hasPath?.('docs/guides/package.json') === true
-    );
+    await page.waitForFunction(() => window.__hasPath?.("docs/guides/package.json") === true);
     await expectDragStateCleared(page);
   });
 
-  test('touch cancel clears drag and target state without mutating the tree', async ({
-    page,
-  }) => {
+  test("touch cancel clears drag and target state without mutating the tree", async ({ page }) => {
     await openFixture(page);
 
-    const source = page.locator(
-      'file-tree-container button[data-item-path="README.md"]'
-    );
-    const target = page.locator(
-      'file-tree-container button[data-item-path="src/lib/"]'
-    );
+    const source = page.locator('file-tree-container button[data-item-path="README.md"]');
+    const target = page.locator('file-tree-container button[data-item-path="src/lib/"]');
     const sourceBox = await source.boundingBox();
     const targetBox = await target.boundingBox();
     expect(sourceBox).not.toBeNull();
@@ -223,12 +195,12 @@ test.describe('file-tree drag-and-drop proof', () => {
     try {
       await touch.touchStart(
         sourceBox!.x + sourceBox!.width / 2,
-        sourceBox!.y + sourceBox!.height / 2
+        sourceBox!.y + sourceBox!.height / 2,
       );
       await page.waitForTimeout(500);
       await touch.touchMove(
         targetBox!.x + targetBox!.width / 2,
-        targetBox!.y + targetBox!.height / 2
+        targetBox!.y + targetBox!.height / 2,
       );
       await page.waitForTimeout(100);
       await touch.touchCancel();
@@ -236,7 +208,7 @@ test.describe('file-tree drag-and-drop proof', () => {
       await touch.dispose();
     }
 
-    await page.waitForFunction(() => window.__hasPath?.('README.md') === true);
+    await page.waitForFunction(() => window.__hasPath?.("README.md") === true);
     await expectDragStateCleared(page);
   });
 });

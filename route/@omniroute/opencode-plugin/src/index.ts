@@ -236,9 +236,7 @@ function trimLeadingDashes(value: string): string {
  * applying defaults. Centralises the providerId fallback so every hook
  * sees a consistent identifier.
  */
-export function resolveOmniRoutePluginOptions(
-  opts?: OmniRoutePluginOptions
-): Required<
+export function resolveOmniRoutePluginOptions(opts?: OmniRoutePluginOptions): Required<
   Pick<OmniRoutePluginOptions, "providerId" | "displayName" | "modelCacheTtl">
 > & {
   /**
@@ -292,7 +290,9 @@ export function resolveOmniRoutePluginOptions(
  * idempotent-prefix handling above.
  */
 function trimLeadingOpencodePrefix(rawProviderId: string): string {
-  return rawProviderId.startsWith("opencode-") ? rawProviderId.slice("opencode-".length) : rawProviderId;
+  return rawProviderId.startsWith("opencode-")
+    ? rawProviderId.slice("opencode-".length)
+    : rawProviderId;
 }
 
 /**
@@ -379,7 +379,7 @@ export function ensureV1Suffix(url: string): string {
 export function resolveApiBlock(
   modelId: string,
   baseURL: string,
-  apiFormat?: { anthropicPrefixes?: string[] }
+  apiFormat?: { anthropicPrefixes?: string[] },
 ): { id: string; url: string; npm: string } {
   const prefixes = apiFormat?.anthropicPrefixes ?? DEFAULT_ANTHROPIC_PREFIXES;
   const slash = modelId.indexOf("/");
@@ -541,7 +541,7 @@ export const OmniRoutePlugin: Plugin = async (_input, options) => {
       ` modelCacheTtl=${resolved.modelCacheTtl}ms` +
       ` apiFormat=anthropic:[${_prefixes.join(",")}]` +
       ` debugLog=${resolved.features?.debugLog ?? false}` +
-      ` logLevel=${resolved.features?.startupDebug ? "debug" : (resolved.features?.logLevel ?? "warn")}`
+      ` logLevel=${resolved.features?.startupDebug ? "debug" : (resolved.features?.logLevel ?? "warn")}`,
   );
 
   // Wire log level: startupDebug:true → "debug", explicit logLevel wins.
@@ -624,7 +624,7 @@ export interface OmniRouteRawModelEntry {
 export type OmniRouteModelsFetcher = (
   baseURL: string,
   apiKey: string,
-  timeoutMs?: number
+  timeoutMs?: number,
 ) => Promise<OmniRouteRawModelEntry[]>;
 
 /**
@@ -637,7 +637,7 @@ export type OmniRouteModelsFetcher = (
 export const defaultOmniRouteModelsFetcher: OmniRouteModelsFetcher = async (
   baseURL,
   apiKey,
-  timeoutMs = 10_000
+  timeoutMs = 10_000,
 ) => {
   if (!apiKey) throw new Error("@omniroute/opencode-plugin: apiKey required to fetch /v1/models");
   if (!baseURL) throw new Error("@omniroute/opencode-plugin: baseURL required to fetch /v1/models");
@@ -660,7 +660,7 @@ export const defaultOmniRouteModelsFetcher: OmniRouteModelsFetcher = async (
     });
     if (!res.ok) {
       throw new Error(
-        `@omniroute/opencode-plugin: GET ${url} failed: ${res.status} ${res.statusText}`
+        `@omniroute/opencode-plugin: GET ${url} failed: ${res.status} ${res.statusText}`,
       );
     }
     const body = (await res.json()) as unknown;
@@ -739,7 +739,7 @@ export const defaultOmniRouteModelsFetcher: OmniRouteModelsFetcher = async (
 
 export function mapRawModelToModelV2(
   raw: OmniRouteRawModelEntry,
-  ctx: { providerId: string; baseURL: string; apiFormat?: { anthropicPrefixes?: string[] } }
+  ctx: { providerId: string; baseURL: string; apiFormat?: { anthropicPrefixes?: string[] } },
 ): ModelV2 {
   const caps = raw.capabilities ?? {};
   const inMods = new Set(raw.input_modalities ?? ["text"]);
@@ -865,7 +865,7 @@ export interface OmniRouteRawCombo {
 export type OmniRouteCombosFetcher = (
   baseURL: string,
   apiKey: string,
-  timeoutMs?: number
+  timeoutMs?: number,
 ) => Promise<OmniRouteRawCombo[]>;
 
 /**
@@ -889,7 +889,7 @@ export type OmniRouteCombosFetcher = (
 export const defaultOmniRouteCombosFetcher: OmniRouteCombosFetcher = async (
   baseURL,
   apiKey,
-  timeoutMs = 10_000
+  timeoutMs = 10_000,
 ) => {
   if (!apiKey) throw new Error("@omniroute/opencode-plugin: apiKey required to fetch /api/combos");
   if (!baseURL)
@@ -915,7 +915,7 @@ export const defaultOmniRouteCombosFetcher: OmniRouteCombosFetcher = async (
     });
     if (!res.ok) {
       throw new Error(
-        `@omniroute/opencode-plugin: GET ${url} failed: ${res.status} ${res.statusText}`
+        `@omniroute/opencode-plugin: GET ${url} failed: ${res.status} ${res.statusText}`,
       );
     }
     const body = (await res.json()) as unknown;
@@ -979,7 +979,7 @@ export function mapComboToModelV2(
   members: OmniRouteRawModelEntry[],
   providerId: string,
   baseURL: string,
-  apiFormat?: { anthropicPrefixes?: string[] }
+  apiFormat?: { anthropicPrefixes?: string[] },
 ): ModelV2 {
   // `every` over an empty array returns true (would lie about an empty
   // combo's capabilities) — short-circuit to all-false when no members.
@@ -1036,7 +1036,7 @@ export function mapComboToModelV2(
   const comboApiBlock = (() => {
     if (!hasMembers) return resolveApiBlock("", baseURL, apiFormat);
     const allAnthropic = members.every(
-      (m) => resolveApiBlock(m.id, baseURL, apiFormat).id === "anthropic"
+      (m) => resolveApiBlock(m.id, baseURL, apiFormat).id === "anthropic",
     );
     return allAnthropic
       ? resolveApiBlock(members[0].id, baseURL, apiFormat)
@@ -1114,7 +1114,7 @@ export interface OmniRouteRawAutoCombo {
 export type OmniRouteAutoCombosFetcher = (
   baseURL: string,
   apiKey: string,
-  timeoutMs?: number
+  timeoutMs?: number,
 ) => Promise<OmniRouteRawAutoCombo[]>;
 
 /**
@@ -1126,7 +1126,7 @@ export type OmniRouteAutoCombosFetcher = (
 export const defaultOmniRouteAutoCombosFetcher: OmniRouteAutoCombosFetcher = async (
   baseURL,
   apiKey,
-  timeoutMs = 5_000
+  timeoutMs = 5_000,
 ) => {
   if (!apiKey || !baseURL) return [];
 
@@ -1148,13 +1148,13 @@ export const defaultOmniRouteAutoCombosFetcher: OmniRouteAutoCombosFetcher = asy
     // 404 = endpoint not deployed yet — expected during rollout
     if (res.status === 404) {
       console.warn(
-        `[omniroute-plugin] /api/combos/auto not available (404) — auto combos disabled`
+        `[omniroute-plugin] /api/combos/auto not available (404) — auto combos disabled`,
       );
       return [];
     }
     if (!res.ok) {
       console.warn(
-        `[omniroute-plugin] /api/combos/auto failed: ${res.status} ${res.statusText} — auto combos disabled`
+        `[omniroute-plugin] /api/combos/auto failed: ${res.status} ${res.statusText} — auto combos disabled`,
       );
       return [];
     }
@@ -1174,7 +1174,7 @@ export const defaultOmniRouteAutoCombosFetcher: OmniRouteAutoCombosFetcher = asy
   } catch (err) {
     // Network error, timeout, abort — all non-fatal
     console.warn(
-      `[omniroute-plugin] /api/combos/auto fetch failed: ${err instanceof Error ? err.message : String(err)} — auto combos disabled`
+      `[omniroute-plugin] /api/combos/auto fetch failed: ${err instanceof Error ? err.message : String(err)} — auto combos disabled`,
     );
     return [];
   } finally {
@@ -1199,7 +1199,7 @@ const AUTO_COMBO_FALLBACK_OUTPUT = 8_192;
  * applies when the server omits them. Never 0.
  */
 export function mapAutoComboToStaticEntry(
-  autoCombo: OmniRouteRawAutoCombo
+  autoCombo: OmniRouteRawAutoCombo,
 ): OmniRouteStaticModelEntry {
   const variant = autoCombo.variant;
   const name = formatAutoComboName(variant, autoCombo.candidateCount);
@@ -1290,7 +1290,7 @@ export type OmniRouteEnrichmentMap = Map<string, OmniRouteEnrichmentEntry>;
 export type OmniRouteEnrichmentFetcher = (
   baseURL: string,
   apiKey: string,
-  timeoutMs?: number
+  timeoutMs?: number,
 ) => Promise<OmniRouteEnrichmentMap>;
 
 /**
@@ -1317,7 +1317,7 @@ export type OmniRouteEnrichmentFetcher = (
 export const defaultOmniRouteEnrichmentFetcher: OmniRouteEnrichmentFetcher = async (
   baseURL,
   apiKey,
-  timeoutMs = 10_000
+  timeoutMs = 10_000,
 ) => {
   const out: OmniRouteEnrichmentMap = new Map();
   if (!baseURL || !apiKey) return out;
@@ -1504,7 +1504,7 @@ export const defaultOmniRouteEnrichmentFetcher: OmniRouteEnrichmentFetcher = asy
         }
       }
       _logger.debug(
-        `free-tier/summary: ${perModel.length} models returned, ${matched} matched enrichment entries`
+        `free-tier/summary: ${perModel.length} models returned, ${matched} matched enrichment entries`,
       );
     }
   } catch {
@@ -1548,16 +1548,16 @@ async function writeStartupDiagnostics(params: {
   lines.push(`=== startupDebug ${new Date().toISOString()} ===`);
   lines.push(`providerId=${providerId} baseURL=${baseURL}`);
   lines.push(
-    `models=${modelCount} combos=${comboCount} enrichment=${enrichmentSize} autoCombos=${autoComboCount}`
+    `models=${modelCount} combos=${comboCount} enrichment=${enrichmentSize} autoCombos=${autoComboCount}`,
   );
   lines.push(
-    `enrichment: ${withName.length} with name, ${withPricing.length} with pricing, ${withFree.length} free`
+    `enrichment: ${withName.length} with name, ${withPricing.length} with pricing, ${withFree.length} free`,
   );
   if (withFree.length > 0) {
     lines.push(`free models (${withFree.length}):`);
     for (const [k, e] of withFree.slice(0, 10)) {
       lines.push(
-        `  ${k} → name=${e.name ?? "(none)"}, freeType=${e.freeType}, monthly=${e.monthlyTokens ?? 0}, credits=${e.creditTokens ?? 0}`
+        `  ${k} → name=${e.name ?? "(none)"}, freeType=${e.freeType}, monthly=${e.monthlyTokens ?? 0}, credits=${e.creditTokens ?? 0}`,
       );
     }
   } else {
@@ -1565,7 +1565,7 @@ async function writeStartupDiagnostics(params: {
       `NO free models detected. ` +
         (enrichmentSize === 0
           ? "Enrichment map is EMPTY."
-          : `Enrichment has ${enrichmentSize} entries but none have freeType.`)
+          : `Enrichment has ${enrichmentSize} entries but none have freeType.`),
     );
   }
   const sampleNames = enriched
@@ -1578,7 +1578,7 @@ async function writeStartupDiagnostics(params: {
   }
   if (autoCombos.length > 0) {
     lines.push(
-      `auto combos: ${autoCombos.length} — ${autoCombos.map((ac) => `${ac.id}(${ac.candidateCount ?? "?"}p)`).join(", ")}`
+      `auto combos: ${autoCombos.length} — ${autoCombos.map((ac) => `${ac.id}(${ac.candidateCount ?? "?"}p)`).join(", ")}`,
     );
   }
   lines.push(`=== end startupDebug ===\n`);
@@ -1619,7 +1619,7 @@ export const PROVIDER_TAG_SEPARATOR = _PROVIDER_TAG_SEPARATOR;
 
 // Re-export from naming.ts — thin wrapper preserving OmniRouteEnrichmentEntry signature
 export function shortProviderLabel(
-  enrichment: OmniRouteEnrichmentEntry | undefined
+  enrichment: OmniRouteEnrichmentEntry | undefined,
 ): string | undefined {
   return _shortProviderLabel(enrichment);
 }
@@ -1651,7 +1651,7 @@ export function shortProviderLabel(
  */
 export function applyProviderTag(
   model: ModelV2,
-  enrichment: OmniRouteEnrichmentEntry | undefined
+  enrichment: OmniRouteEnrichmentEntry | undefined,
 ): ModelV2 {
   const label = shortProviderLabel(enrichment);
   if (!label) return model;
@@ -1682,7 +1682,7 @@ export function applyProviderTag(
  * like `kiro`).
  */
 export function buildCanonicalToAliasMap(
-  enrichment: OmniRouteEnrichmentMap | undefined
+  enrichment: OmniRouteEnrichmentMap | undefined,
 ): Map<string, string> {
   const out = new Map<string, string>();
   if (!enrichment) return out;
@@ -1716,7 +1716,7 @@ export function buildCanonicalToAliasMap(
 export function lookupEnrichment(
   rawId: string,
   enrichment: OmniRouteEnrichmentMap | undefined,
-  canonicalToAlias: Map<string, string>
+  canonicalToAlias: Map<string, string>,
 ): OmniRouteEnrichmentEntry | undefined {
   if (!enrichment) return undefined;
   const direct = enrichment.get(rawId);
@@ -1751,7 +1751,7 @@ export function lookupEnrichment(
  */
 export function canonicalDedupSet(
   rawModels: ReadonlyArray<OmniRouteRawModelEntry>,
-  canonicalToAlias: Map<string, string>
+  canonicalToAlias: Map<string, string>,
 ): Set<string> {
   const drop = new Set<string>();
   if (canonicalToAlias.size === 0) return drop;
@@ -1795,7 +1795,7 @@ export function canonicalDedupSet(
  * `buildCanonicalToAliasMap` semantics).
  */
 export function buildAliasIndex(
-  enrichment: OmniRouteEnrichmentMap | undefined
+  enrichment: OmniRouteEnrichmentMap | undefined,
 ): Map<string, OmniRouteEnrichmentEntry> {
   const out = new Map<string, OmniRouteEnrichmentEntry>();
   if (!enrichment) return out;
@@ -1847,7 +1847,7 @@ export function resolveProviderTagEntry(
   rawId: string,
   direct: OmniRouteEnrichmentEntry | undefined,
   aliasIndex: Map<string, OmniRouteEnrichmentEntry>,
-  canonicalToAlias?: Map<string, string>
+  canonicalToAlias?: Map<string, string>,
 ): OmniRouteEnrichmentEntry | undefined {
   if (direct) {
     const alias = typeof direct.providerAlias === "string" ? direct.providerAlias.trim() : "";
@@ -1892,7 +1892,7 @@ export { _normaliseFreeLabel as normaliseFreeLabel };
 
 export function applyEnrichment(
   model: ModelV2,
-  enrichment: OmniRouteEnrichmentEntry | undefined
+  enrichment: OmniRouteEnrichmentEntry | undefined,
 ): ModelV2 {
   if (!enrichment) return model;
   if (enrichment.name && enrichment.name.trim().length > 0) {
@@ -1939,7 +1939,7 @@ export interface OmniRouteCompressionCombo {
 export type OmniRouteCompressionMetaFetcher = (
   baseURL: string,
   apiKey: string,
-  timeoutMs?: number
+  timeoutMs?: number,
 ) => Promise<OmniRouteCompressionCombo[]>;
 
 /**
@@ -1950,7 +1950,7 @@ export type OmniRouteCompressionMetaFetcher = (
 export const defaultOmniRouteCompressionMetaFetcher: OmniRouteCompressionMetaFetcher = async (
   baseURL,
   apiKey,
-  timeoutMs = 10_000
+  timeoutMs = 10_000,
 ) => {
   const empty: OmniRouteCompressionCombo[] = [];
   if (!baseURL || !apiKey) return empty;
@@ -2093,7 +2093,7 @@ export interface OmniRouteProviderConnection {
 export type OmniRouteProvidersFetcher = (
   baseURL: string,
   apiKey: string,
-  timeoutMs?: number
+  timeoutMs?: number,
 ) => Promise<OmniRouteProviderConnection[]>;
 
 /**
@@ -2105,7 +2105,7 @@ export type OmniRouteProvidersFetcher = (
 export const defaultOmniRouteProvidersFetcher: OmniRouteProvidersFetcher = async (
   baseURL,
   apiKey,
-  timeoutMs = 10_000
+  timeoutMs = 10_000,
 ) => {
   const empty: OmniRouteProviderConnection[] = [];
   if (!baseURL || !apiKey) return empty;
@@ -2170,7 +2170,7 @@ export const defaultOmniRouteProvidersFetcher: OmniRouteProvidersFetcher = async
  */
 export function usableProviderAliasSet(
   connections: OmniRouteProviderConnection[],
-  enrichment: OmniRouteEnrichmentMap | undefined
+  enrichment: OmniRouteEnrichmentMap | undefined,
 ): {
   aliases: Set<string>;
   canonicals: Set<string>;
@@ -2229,7 +2229,7 @@ export function isUsableRawModelId(
     canonicals: Set<string>;
     knownAliases: Set<string>;
   },
-  enrichment: OmniRouteEnrichmentMap | undefined
+  enrichment: OmniRouteEnrichmentMap | undefined,
 ): boolean {
   const slash = id.indexOf("/");
   if (slash <= 0) return true;
@@ -2255,7 +2255,7 @@ export function isUsableCombo(
     aliases: Set<string>;
     canonicals: Set<string>;
     knownAliases: Set<string>;
-  }
+  },
 ): boolean {
   const steps = Array.isArray(combo.models) ? combo.models : [];
   if (steps.length === 0) return true;
@@ -2317,7 +2317,7 @@ export function slugifyComboName(name: string): string {
 export function buildComboKey(
   combo: OmniRouteRawCombo,
   used: Set<string>,
-  providerId: string
+  providerId: string,
 ): string {
   const friendlyName = combo.name && combo.name.trim().length > 0 ? combo.name.trim() : combo.id;
   let slug = slugifyComboName(friendlyName);
@@ -2442,7 +2442,7 @@ export function createOmniRouteProviderHook(
     providersFetcher?: OmniRouteProvidersFetcher;
     now?: () => number;
     cache?: OmniRouteFetchCache;
-  } = {}
+  } = {},
 ): ProviderHook {
   const resolved = resolveOmniRoutePluginOptions(opts);
   const fetcher = deps.fetcher ?? defaultOmniRouteModelsFetcher;
@@ -2515,7 +2515,7 @@ export function createOmniRouteProviderHook(
         console.warn(
           `[omniroute-plugin] provider.models(${resolved.providerId}): ` +
             `no baseURL resolvable — checked plugin opts, auth.json, and provider config. ` +
-            `Set baseURL in opencode.json plugin options or run \`opencode connect ${resolved.providerId}\` with a baseURL.`
+            `Set baseURL in opencode.json plugin options or run \`opencode connect ${resolved.providerId}\` with a baseURL.`,
         );
         return {};
       }
@@ -2556,7 +2556,7 @@ export function createOmniRouteProviderHook(
           } catch (err) {
             console.warn(
               "[omniroute-plugin] combos fetch failed, falling back to models-only catalog",
-              err
+              err,
             );
           }
         }
@@ -2583,7 +2583,7 @@ export function createOmniRouteProviderHook(
           } catch (err) {
             console.warn(
               "[omniroute-plugin] enrichment fetch failed, falling back to raw ids",
-              err
+              err,
             );
           }
         }
@@ -2611,7 +2611,7 @@ export function createOmniRouteProviderHook(
           } catch (err) {
             console.warn(
               "[omniroute-plugin] /api/providers fetch failed; usableOnly filter disabled for this refresh",
-              err
+              err,
             );
           }
         }
@@ -2635,7 +2635,7 @@ export function createOmniRouteProviderHook(
             `${rawEnrichment.size} enrichment entries + ` +
             `${rawCompressionCombos.length} compression combos + ` +
             `${rawConnections.length} connections ` +
-            `(TTL=${resolved.modelCacheTtl}ms)`
+            `(TTL=${resolved.modelCacheTtl}ms)`,
         );
 
         // ── Startup debug: deep-dive into enrichment + auto combos ──────
@@ -2709,7 +2709,7 @@ export function createOmniRouteProviderHook(
             entry.id,
             enrichEntry,
             aliasIndex,
-            canonicalToAlias
+            canonicalToAlias,
           );
           applyProviderTag(model, tagEntry);
         }
@@ -2860,7 +2860,7 @@ export function createOmniRouteProviderHook(
             // #6859: server-facing id — NOT the OC-gate-prefixed `resolved.providerId`.
             resolved.omnirouteProviderId,
             baseURL,
-            features.apiFormat
+            features.apiFormat,
           );
           const hasMembers = memberEntries.length > 0;
 
@@ -2906,7 +2906,7 @@ export function createOmniRouteProviderHook(
               if (!collisionWarned.has(dedupeKey)) {
                 collisionWarned.add(dedupeKey);
                 console.warn(
-                  `[omniroute-plugin] combo key "${comboKey}" collides with a model id; combo wins.`
+                  `[omniroute-plugin] combo key "${comboKey}" collides with a model id; combo wins.`,
                 );
               }
             }
@@ -2926,7 +2926,7 @@ export function createOmniRouteProviderHook(
 
       if (pending.length > 0) {
         console.warn(
-          `[omniroute-plugin] ${pending.length} combo(s) could not resolve all nested combo-refs after ${MAX_COMBO_PASSES} passes; they will advertise context=0 to avoid over-claiming.`
+          `[omniroute-plugin] ${pending.length} combo(s) could not resolve all nested combo-refs after ${MAX_COMBO_PASSES} passes; they will advertise context=0 to avoid over-claiming.`,
         );
       }
 
@@ -3300,7 +3300,7 @@ export function createGeminiSanitizingFetch(inner: typeof fetch): typeof fetch {
           geminiStreamingWarningEmitted = true;
 
           console.warn(
-            "[omniroute-plugin] sanitizeGemini: streaming Request body, skipping schema strip (Gemini may reject)"
+            "[omniroute-plugin] sanitizeGemini: streaming Request body, skipping schema strip (Gemini may reject)",
           );
         }
         return inner(input, init);
@@ -3551,7 +3551,7 @@ export function buildStaticProviderEntry(
   enrichment?: OmniRouteEnrichmentMap,
   compressionCombos?: OmniRouteCompressionCombo[],
   connections?: OmniRouteProviderConnection[],
-  rawAutoCombos?: OmniRouteRawAutoCombo[]
+  rawAutoCombos?: OmniRouteRawAutoCombo[],
 ): OmniRouteStaticProviderEntry {
   const models: Record<string, OmniRouteStaticModelEntry> = {};
 
@@ -3623,7 +3623,7 @@ export function buildStaticProviderEntry(
         raw.id,
         enrichmentEntry,
         aliasIndex,
-        canonicalToAlias
+        canonicalToAlias,
       );
       const label = shortProviderLabel(tagEntry);
       if (label) {
@@ -3825,16 +3825,16 @@ export function buildStaticProviderEntry(
         // LCD across capabilities — every member must support for the combo
         // to support. Mirrors mapComboToModelV2.
         entry.attachment = memberEntries.every((m) =>
-          Boolean(m.capabilities?.attachment ?? m.capabilities?.vision ?? false)
+          Boolean(m.capabilities?.attachment ?? m.capabilities?.vision ?? false),
         );
         entry.reasoning = memberEntries.every((m) =>
-          Boolean(m.capabilities?.reasoning || m.capabilities?.thinking)
+          Boolean(m.capabilities?.reasoning || m.capabilities?.thinking),
         );
         entry.temperature = memberEntries.every(
-          (m) => (m.capabilities?.temperature ?? true) !== false
+          (m) => (m.capabilities?.temperature ?? true) !== false,
         );
         entry.tool_call = memberEntries.every((m) =>
-          Boolean(m.capabilities?.tool_calling ?? false)
+          Boolean(m.capabilities?.tool_calling ?? false),
         );
 
         // LCD across limits — min over declared values. OC's SDK static schema
@@ -3910,7 +3910,7 @@ export function buildStaticProviderEntry(
 
   if (pendingStatic.length > 0) {
     console.warn(
-      `[omniroute-plugin] ${pendingStatic.length} combo(s) in the static catalog could not resolve all nested combo-refs after ${MAX_STATIC_COMBO_PASSES} passes; they will be omitted.`
+      `[omniroute-plugin] ${pendingStatic.length} combo(s) in the static catalog could not resolve all nested combo-refs after ${MAX_STATIC_COMBO_PASSES} passes; they will be omitted.`,
     );
   }
 
@@ -3930,7 +3930,7 @@ export function buildStaticProviderEntry(
         if (!reportedCollisions.has(key)) {
           reportedCollisions.add(key);
           console.warn(
-            `[omniroute-plugin] auto combo key "${key}" collides with an existing model; auto combo wins.`
+            `[omniroute-plugin] auto combo key "${key}" collides with an existing model; auto combo wins.`,
           );
         }
       }
@@ -4004,11 +4004,11 @@ export function diskSnapshotPath(providerId: string): string {
 
 export type OmniRouteDiskSnapshotWriter = (
   providerId: string,
-  entry: Omit<OmniRouteFetchCacheEntry, "expiresAt">
+  entry: Omit<OmniRouteFetchCacheEntry, "expiresAt">,
 ) => Promise<void>;
 
 export type OmniRouteDiskSnapshotReader = (
-  providerId: string
+  providerId: string,
 ) => Promise<Omit<OmniRouteFetchCacheEntry, "expiresAt"> | undefined>;
 
 /** Best-effort disk write. Soft-fails on any I/O error (no exception thrown). */
@@ -4088,7 +4088,7 @@ export interface DebugLogEntry {
 function debugLogDir(): string {
   return join(
     process.env.OPENCODE_DATA_DIR ?? join(homedir(), ".local", "share", "opencode"),
-    "plugins"
+    "plugins",
   );
 }
 
@@ -4188,7 +4188,7 @@ export function debugLogClear(providerId: string): void {
 export function createDebugLoggingFetch(
   inner: typeof fetch,
   providerId: string,
-  featureDefault: boolean
+  featureDefault: boolean,
 ): typeof fetch {
   return async (input, init) => {
     const active = featureDefault || debugLogEnabled(providerId);
@@ -4388,7 +4388,7 @@ export function createOmniRouteConfigHook(
     now?: () => number;
     cache?: OmniRouteFetchCache;
     logger?: { warn: (...args: unknown[]) => void };
-  } = {}
+  } = {},
 ): (input: Config) => Promise<void> {
   const resolved = resolveOmniRoutePluginOptions(opts);
   const readAuthJson = deps.readAuthJson ?? defaultReadAuthJson;
@@ -4419,7 +4419,7 @@ export function createOmniRouteConfigHook(
     const existingProviders = (input as { provider?: Record<string, unknown> }).provider;
     if (existingProviders && existingProviders[resolved.providerId] !== undefined) {
       logger.warn(
-        `[omniroute-plugin] config shim skipped: provider.${resolved.providerId} already set by user`
+        `[omniroute-plugin] config shim skipped: provider.${resolved.providerId} already set by user`,
       );
       return;
     }
@@ -4463,7 +4463,7 @@ export function createOmniRouteConfigHook(
       // hasn't run `/connect <providerId>` yet, OR the stored credential
       // isn't api-flavored. OC will handle the `/connect` flow at runtime.
       logger.warn(
-        `[omniroute-plugin] config shim skipped: no apiKey for providerId=${resolved.providerId}`
+        `[omniroute-plugin] config shim skipped: no apiKey for providerId=${resolved.providerId}`,
       );
       return;
     }
@@ -4475,7 +4475,7 @@ export function createOmniRouteConfigHook(
     const baseURL = resolved.baseURL ?? storedBaseURL ?? "";
     if (!baseURL) {
       logger.warn(
-        `[omniroute-plugin] config shim skipped: no baseURL for providerId=${resolved.providerId}`
+        `[omniroute-plugin] config shim skipped: no baseURL for providerId=${resolved.providerId}`,
       );
       return;
     }
@@ -4515,7 +4515,7 @@ export function createOmniRouteConfigHook(
       } catch (err) {
         logger.warn(
           "[omniroute-plugin] config shim: /v1/models fetch failed; publishing stub provider entry",
-          err
+          err,
         );
         rawModels = [];
         modelsFetchThrew = true;
@@ -4528,7 +4528,7 @@ export function createOmniRouteConfigHook(
       } catch (err) {
         logger.warn(
           "[omniroute-plugin] config shim: /api/combos fetch failed; publishing models-only static catalog",
-          err
+          err,
         );
       }
 
@@ -4555,7 +4555,7 @@ export function createOmniRouteConfigHook(
         } catch (err) {
           logger.warn(
             "[omniroute-plugin] config shim: /api/pricing/models fetch failed; publishing raw-id static catalog",
-            err
+            err,
           );
         }
       }
@@ -4570,7 +4570,7 @@ export function createOmniRouteConfigHook(
         } catch (err) {
           logger.warn(
             "[omniroute-plugin] config shim: /api/context/combos fetch failed; publishing combos without compression suffix",
-            err
+            err,
           );
         }
       }
@@ -4586,7 +4586,7 @@ export function createOmniRouteConfigHook(
         } catch (err) {
           logger.warn(
             "[omniroute-plugin] config shim: /api/providers fetch failed; usableOnly filter disabled for this refresh",
-            err
+            err,
           );
         }
       }
@@ -4601,7 +4601,7 @@ export function createOmniRouteConfigHook(
         const snapshot = await diskSnapshotReader(resolved.providerId);
         if (snapshot && snapshot.rawModels.length > 0) {
           logger.warn(
-            `[omniroute-plugin] config shim: /v1/models unreachable; using stale disk cache (${snapshot.rawModels.length} models)`
+            `[omniroute-plugin] config shim: /v1/models unreachable; using stale disk cache (${snapshot.rawModels.length} models)`,
           );
           rawModels = snapshot.rawModels;
           rawCombos = snapshot.rawCombos;
@@ -4663,7 +4663,7 @@ export function createOmniRouteConfigHook(
       rawEnrichment,
       rawCompressionCombos,
       rawConnections,
-      rawAutoCombos
+      rawAutoCombos,
     );
 
     // Mutate the input.provider map. The Config type declares
@@ -4689,7 +4689,7 @@ export function createOmniRouteConfigHook(
       const mcpKey = features.mcpToken ?? apiKey;
       if (!mcpKey) {
         logger.warn(
-          `[omniroute-plugin] mcp auto-emit skipped: no Bearer token for providerId=${resolved.providerId}`
+          `[omniroute-plugin] mcp auto-emit skipped: no Bearer token for providerId=${resolved.providerId}`,
         );
       } else {
         const inputWithMcp = input as { mcp?: Record<string, unknown> };
@@ -4698,7 +4698,7 @@ export function createOmniRouteConfigHook(
         }
         if (inputWithMcp.mcp[resolved.providerId] !== undefined) {
           logger.warn(
-            `[omniroute-plugin] mcp auto-emit skipped: mcp.${resolved.providerId} already set by user`
+            `[omniroute-plugin] mcp auto-emit skipped: mcp.${resolved.providerId} already set by user`,
           );
         } else {
           // Strip a trailing `/v1` from baseURL when present so we land on

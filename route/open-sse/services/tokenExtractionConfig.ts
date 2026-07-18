@@ -76,7 +76,7 @@ function config(
     successUrlPattern?: RegExp;
     pollingConfig?: Partial<PollingConfig>;
     cookieDomain?: string;
-  }
+  },
 ): TokenExtractionConfig {
   return {
     providerId,
@@ -101,7 +101,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
     "https://claude.ai/login",
     "https://claude.ai",
     [{ type: "cookie", name: "sessionKey", domain: ".claude.ai" }],
-    "Log in to your Claude account at claude.ai. After login, the session cookie will be extracted automatically."
+    "Log in to your Claude account at claude.ai. After login, the session cookie will be extracted automatically.",
   ),
 
   // ── ChatGPT Web ───────────────────────────────────────────
@@ -111,7 +111,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
     "https://chatgpt.com/auth/login",
     "https://chatgpt.com",
     [{ type: "cookie", name: "__Secure-next-auth.session-token", domain: ".chatgpt.com" }],
-    "Log in to ChatGPT. The __Secure-next-auth.session-token cookie will be extracted after login."
+    "Log in to ChatGPT. The __Secure-next-auth.session-token cookie will be extracted after login.",
   ),
 
   // ── Gemini Web ────────────────────────────────────────────
@@ -125,7 +125,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
       { type: "cookie", name: "__Secure-1PSIDTS", domain: ".google.com" },
     ],
     "Log in to your Google account at gemini.google.com. Both __Secure-1PSID and __Secure-1PSIDTS cookies will be extracted.",
-    { cookieDomain: ".google.com" }
+    { cookieDomain: ".google.com" },
   ),
 
   // ── Grok Web ──────────────────────────────────────────────
@@ -135,7 +135,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
     "https://grok.com/login",
     "https://grok.com",
     [{ type: "cookie", name: "sso", domain: ".grok.com" }],
-    "Log in to your xAI account at grok.com. The sso session cookie will be extracted."
+    "Log in to your xAI account at grok.com. The sso session cookie will be extracted.",
   ),
 
   // ── Perplexity Web ────────────────────────────────────────
@@ -146,7 +146,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
     "https://www.perplexity.ai",
     [{ type: "cookie", name: "__Secure-next-auth.session-token", domain: ".perplexity.ai" }],
     "Log in to Perplexity. The __Secure-next-auth.session-token cookie will be extracted.",
-    { cookieDomain: ".perplexity.ai" }
+    { cookieDomain: ".perplexity.ai" },
   ),
 
   // ── DeepSeek Web ──────────────────────────────────────────
@@ -160,7 +160,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
       { type: "localStorage", key: "userToken" },
     ],
     "Log in to DeepSeek at chat.deepseek.com. The user-token cookie will be extracted.",
-    { cookieDomain: ".deepseek.com" }
+    { cookieDomain: ".deepseek.com" },
   ),
 
   // ── Qwen Web ──────────────────────────────────────────────
@@ -182,7 +182,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
     ],
     "Log in to Qwen at chat.qwen.ai using your Alibaba account. The session token and the " +
       "Alibaba WAF cookies (cna, ssxmod_itna) will be extracted — all are required by the v2 API.",
-    { cookieDomain: ".chat.qwen.ai" }
+    { cookieDomain: ".chat.qwen.ai" },
   ),
 
   // ── Kimi Web ──────────────────────────────────────────────
@@ -193,7 +193,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
     "https://www.kimi.com",
     [{ type: "cookie", name: "kimi-auth", domain: ".kimi.com" }],
     "Log in to Kimi at www.kimi.com (international). The kimi-auth JWT cookie will be extracted.",
-    { cookieDomain: ".kimi.com" }
+    { cookieDomain: ".kimi.com" },
   ),
 
   // ── Blackbox Web ──────────────────────────────────────────
@@ -207,7 +207,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
       { type: "localStorage", key: "token" },
     ],
     "Log in to Blackbox AI at app.blackbox.ai using Google/GitHub. The session cookie will be extracted.",
-    { cookieDomain: ".blackbox.ai" }
+    { cookieDomain: ".blackbox.ai" },
   ),
 
   // ── Poe Web ───────────────────────────────────────────────
@@ -218,7 +218,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
     "https://poe.com",
     [{ type: "cookie", name: "p-b", domain: ".poe.com" }],
     "Log in to Poe at poe.com. The session cookie will be extracted.",
-    { cookieDomain: ".poe.com" }
+    { cookieDomain: ".poe.com" },
   ),
 
   // ── Copilot Web ───────────────────────────────────────────
@@ -229,7 +229,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
     "https://copilot.microsoft.com",
     [{ type: "cookie", name: "RPSCAuth", domain: ".microsoft.com" }],
     "Log in with your Microsoft account at copilot.microsoft.com. The session auth cookie will be extracted.",
-    { cookieDomain: ".microsoft.com" }
+    { cookieDomain: ".microsoft.com" },
   ),
 
   // ── DuckDuckGo Web ────────────────────────────────────────
@@ -243,7 +243,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
     {
       cookieDomain: ".duckduckgo.com",
       pollingConfig: QUICK_POLLING,
-    }
+    },
   ),
 
   // ── Dola Web ──────────────────────────────────────────────
@@ -258,7 +258,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
       { type: "cookie", name: "s_v_web_id", domain: ".dola.com" },
     ],
     "Log in to Dola at www.dola.com with your ByteDance account. sessionid, ttwid, and s_v_web_id will be extracted.",
-    { cookieDomain: ".dola.com" }
+    { cookieDomain: ".dola.com" },
   ),
 
   // ── T3 Chat Web ───────────────────────────────────────────
@@ -269,7 +269,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
     "https://t3.chat",
     [{ type: "localStorage", key: "token" }],
     "Log in to T3 Chat at t3.chat using Google/GitHub. The token from localStorage will be extracted.",
-    { pollingConfig: QUICK_POLLING }
+    { pollingConfig: QUICK_POLLING },
   ),
 
   // ── Venice Web ────────────────────────────────────────────
@@ -283,7 +283,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
       { type: "localStorage", key: "token" },
     ],
     "Log in to Venice AI at venice.ai. The session cookie will be extracted.",
-    { cookieDomain: ".venice.ai" }
+    { cookieDomain: ".venice.ai" },
   ),
 
   // ── v0 Dev Web ────────────────────────────────────────────
@@ -294,7 +294,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
     "https://v0.dev",
     [{ type: "cookie", name: "__Secure-next-auth.session-token", domain: ".v0.dev" }],
     "Log in to v0.dev with your Vercel/Google/GitHub account. The session cookie will be extracted.",
-    { cookieDomain: ".v0.dev" }
+    { cookieDomain: ".v0.dev" },
   ),
 
   // ── Muse / Spark Web ──────────────────────────────────────
@@ -305,7 +305,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
     "https://www.meta.ai",
     [{ type: "cookie", name: "session", domain: ".meta.ai" }],
     "Log in to Meta AI at meta.ai with your Facebook/Instagram account. The session cookie will be extracted.",
-    { cookieDomain: ".meta.ai" }
+    { cookieDomain: ".meta.ai" },
   ),
 
   // ── Adapta Web ────────────────────────────────────────────
@@ -316,7 +316,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
     "https://agent.adapta.one",
     [{ type: "cookie", name: "__session", domain: ".adapta.one" }],
     "Log in to Adapta at agent.adapta.one. The session token will be extracted.",
-    { cookieDomain: ".adapta.one" }
+    { cookieDomain: ".adapta.one" },
   ),
 
   // ── VeoAI Free Web ────────────────────────────────────────
@@ -330,7 +330,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
     {
       cookieDomain: ".veoaifree.com",
       pollingConfig: QUICK_POLLING,
-    }
+    },
   ),
 
   // ── Missing Provider: ChatGLM (Zhipu) ──────────────────────
@@ -344,7 +344,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
       { type: "localStorage", key: "token" },
     ],
     "Log in to ChatGLM at chatglm.cn with your phone number. The session token will be extracted.",
-    { cookieDomain: ".chatglm.cn" }
+    { cookieDomain: ".chatglm.cn" },
   ),
 
   // ── Missing Provider: Xiaomi MiMo ──────────────────────────
@@ -358,7 +358,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
       { type: "localStorage", key: "access_token" },
     ],
     "Log in to Xiaomi MiMo AI Studio at aistudio.xiaomimimo.com. The session token will be extracted.",
-    { cookieDomain: ".xiaomimimo.com" }
+    { cookieDomain: ".xiaomimimo.com" },
   ),
 
   // ── Missing Provider: Manus ────────────────────────────────
@@ -372,7 +372,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
       { type: "localStorage", key: "auth_token" },
     ],
     "Log in to Manus at manus.im. The session cookie will be extracted.",
-    { cookieDomain: ".manus.im" }
+    { cookieDomain: ".manus.im" },
   ),
 
   // ── Z.ai Web (#4056) ────────────────────────────────────────
@@ -383,7 +383,7 @@ const RAW_CONFIGS: TokenExtractionConfig[] = [
     "https://chat.z.ai",
     [{ type: "cookie", name: "token", domain: ".z.ai" }],
     "Log in to Z.ai at chat.z.ai. The session token will be extracted.",
-    { cookieDomain: ".z.ai" }
+    { cookieDomain: ".z.ai" },
   ),
 ];
 

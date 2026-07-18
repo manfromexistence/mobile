@@ -59,7 +59,7 @@ describe("i18n pt-BR integrity", () => {
       0,
       `pt-BR.json is missing ${missing.length} keys present in en.json. Sample: ${missing
         .slice(0, 10)
-        .join(", ")}`
+        .join(", ")}`,
     );
   });
 });

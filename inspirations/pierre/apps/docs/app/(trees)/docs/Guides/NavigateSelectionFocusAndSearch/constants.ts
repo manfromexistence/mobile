@@ -1,7 +1,7 @@
-import { docsCodeSnippet } from '@/lib/docsCodeSnippet';
+import { docsCodeSnippet } from "@/lib/docsCodeSnippet";
 
 export const NAVIGATE_REACT_SEARCH = docsCodeSnippet(
-  'search-panel.tsx',
+  "search-panel.tsx",
   `import {
   FileTree,
   useFileTree,
@@ -31,11 +31,11 @@ export function SearchPanel({ paths }: { paths: readonly string[] }) {
       <FileTree model={model} className="rounded-lg border" />
     </div>
   );
-}`
+}`,
 );
 
 export const NAVIGATE_VANILLA_SEARCH = docsCodeSnippet(
-  'vanilla-search.ts',
+  "vanilla-search.ts",
   `const fileTree = new FileTree({
   paths,
   search: true,
@@ -49,5 +49,5 @@ searchInput.addEventListener('input', () => {
 
 const selectedPaths = fileTree.getSelectedPaths();
 const focusedPath = fileTree.getFocusedPath();
-const matchingPaths = fileTree.getSearchMatchingPaths();`
+const matchingPaths = fileTree.getSearchMatchingPaths();`,
 );

@@ -10,68 +10,78 @@
  * This test inserts a session row with a missing-patch diff entry and
  * asserts that GET /session/<id>/diff returns 200 with empty data.
  */
-import { afterEach, describe, expect } from "bun:test"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
-import { Effect, Layer } from "effect"
-import { SessionPaths } from "@/server/routes/instance/httpapi/groups/session"
-import { Session } from "@/session/session"
-import { Storage } from "@/storage/storage"
-import { SessionV1 } from "@opencode-ai/core/v1/session"
-import { MessageID } from "@/session/schema"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { ModelV2 } from "@opencode-ai/core/model"
-import { resetDatabase } from "../fixture/db"
-import { disposeAllInstances, TestInstance } from "../fixture/fixture"
-import { testEffect } from "../lib/effect"
-import { httpApiLayer, requestInDirectory } from "./httpapi-layer"
+import { afterEach, describe, expect } from "bun:test";
+import { LayerNode } from "@opencode-ai/core/effect/layer-node";
+import { Effect, Layer } from "effect";
+import { SessionPaths } from "@/server/routes/instance/httpapi/groups/session";
+import { Session } from "@/session/session";
+import { Storage } from "@/storage/storage";
+import { SessionV1 } from "@opencode-ai/core/v1/session";
+import { MessageID } from "@/session/schema";
+import { ProviderV2 } from "@opencode-ai/core/provider";
+import { ModelV2 } from "@opencode-ai/core/model";
+import { resetDatabase } from "../fixture/db";
+import { disposeAllInstances, TestInstance } from "../fixture/fixture";
+import { testEffect } from "../lib/effect";
+import { httpApiLayer, requestInDirectory } from "./httpapi-layer";
 
-const it = testEffect(Layer.mergeAll(LayerNode.compile(LayerNode.group([Session.node, Storage.node])), httpApiLayer))
+const it = testEffect(
+  Layer.mergeAll(LayerNode.compile(LayerNode.group([Session.node, Storage.node])), httpApiLayer),
+);
 
 afterEach(async () => {
-  await disposeAllInstances()
-  await resetDatabase()
-})
+  await disposeAllInstances();
+  await resetDatabase();
+});
 
 function pathFor(template: string, params: Record<string, string>) {
-  return Object.entries(params).reduce((result, [key, value]) => result.replace(`:${key}`, value), template)
+  return Object.entries(params).reduce(
+    (result, [key, value]) => result.replace(`:${key}`, value),
+    template,
+  );
 }
 
 const withSession = (input?: Parameters<Session.Interface["create"]>[0]) =>
-  Effect.acquireRelease(Session.use.create(input), (created) => Session.use.remove(created.id).pipe(Effect.ignore))
+  Effect.acquireRelease(Session.use.create(input), (created) =>
+    Session.use.remove(created.id).pipe(Effect.ignore),
+  );
 
 describe("session diff with missing patch (#26574)", () => {
   it.instance(
     "GET /session/<id>/diff ignores legacy session-level diff storage",
     () =>
       Effect.gen(function* () {
-        const test = yield* TestInstance
-        const session = yield* withSession({ title: "missing-patch" })
+        const test = yield* TestInstance;
+        const session = yield* withSession({ title: "missing-patch" });
 
         // Mimic legacy/imported on-disk shape: a diff entry with no
         // `patch` text. Pre-fix the typed response encoder rejects
         // this and returns 400.
         yield* Storage.Service.use((storage) =>
-          storage.write(["session_diff", session.id], [{ file: "legacy.txt", additions: 1, deletions: 0 }]),
-        )
+          storage.write(
+            ["session_diff", session.id],
+            [{ file: "legacy.txt", additions: 1, deletions: 0 }],
+          ),
+        );
 
         const response = yield* requestInDirectory(
           pathFor(SessionPaths.diff, { sessionID: session.id }),
           test.directory,
-        )
+        );
 
-        expect(response.status).toBe(200)
-        expect(yield* response.json).toEqual([])
+        expect(response.status).toBe(200);
+        expect(yield* response.json).toEqual([]);
       }),
     { git: true, config: { formatter: false, lsp: false } },
-  )
+  );
 
   it.instance(
     "GET /session/<id>/diff returns requested turn diffs",
     () =>
       Effect.gen(function* () {
-        const test = yield* TestInstance
-        const session = yield* withSession({ title: "turn-diff" })
-        const messageID = MessageID.ascending()
+        const test = yield* TestInstance;
+        const session = yield* withSession({ title: "turn-diff" });
+        const messageID = MessageID.ascending();
         yield* Session.use.updateMessage({
           id: messageID,
           sessionID: session.id,
@@ -82,16 +92,18 @@ describe("session diff with missing patch (#26574)", () => {
           summary: {
             diffs: [{ file: "turn.ts", additions: 1, deletions: 0, status: "modified" }],
           },
-        } satisfies SessionV1.User)
+        } satisfies SessionV1.User);
 
         const response = yield* requestInDirectory(
           `${pathFor(SessionPaths.diff, { sessionID: session.id })}?messageID=${messageID}`,
           test.directory,
-        )
+        );
 
-        expect(response.status).toBe(200)
-        expect(yield* response.json).toEqual([{ file: "turn.ts", additions: 1, deletions: 0, status: "modified" }])
+        expect(response.status).toBe(200);
+        expect(yield* response.json).toEqual([
+          { file: "turn.ts", additions: 1, deletions: 0, status: "modified" },
+        ]);
       }),
     { git: true, config: { formatter: false, lsp: false } },
-  )
-})
+  );
+});

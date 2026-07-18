@@ -1,8 +1,8 @@
-export * as SessionTodo from "./session-todo"
+export * as SessionTodo from "./session-todo";
 
-import { Schema } from "effect"
-import { define, inventory } from "./event"
-import { SessionID } from "./session-id"
+import { Schema } from "effect";
+import { define, inventory } from "./event";
+import { SessionID } from "./session-id";
 
 export const Info = Schema.Struct({
   content: Schema.String.annotate({ description: "Brief description of the task" }),
@@ -12,7 +12,7 @@ export const Info = Schema.Struct({
   priority: Schema.String.annotate({
     description: "Priority level of the task: high, medium, low",
   }),
-}).annotate({ identifier: "Todo" })
+}).annotate({ identifier: "Todo" });
 export interface Info extends Schema.Schema.Type<typeof Info> {}
 
 const Updated = define({
@@ -21,5 +21,5 @@ const Updated = define({
     sessionID: SessionID,
     todos: Schema.Array(Info),
   },
-})
-export const Event = { Updated, Definitions: inventory(Updated) }
+});
+export const Event = { Updated, Definitions: inventory(Updated) };

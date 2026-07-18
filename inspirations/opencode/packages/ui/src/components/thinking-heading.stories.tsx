@@ -1,8 +1,8 @@
 // @ts-nocheck
-import { createEffect, on, onMount, onCleanup } from "solid-js"
-import { createStore } from "solid-js/store"
-import { TextShimmer } from "./text-shimmer"
-import { TextReveal } from "./text-reveal"
+import { createEffect, on, onMount, onCleanup } from "solid-js";
+import { createStore } from "solid-js/store";
+import { TextShimmer } from "./text-shimmer";
+import { TextReveal } from "./text-reveal";
 
 export default {
   title: "UI/ThinkingHeading",
@@ -19,7 +19,7 @@ duration, travel, bounce, and fade controls.`,
       },
     },
   },
-}
+};
 
 const HEADINGS = [
   "Planning key generation details",
@@ -33,7 +33,7 @@ const HEADINGS = [
   "Designing the API surface",
   "Mapping dependencies",
   "Outlining test strategy",
-]
+];
 
 // ---------------------------------------------------------------------------
 // CSS
@@ -364,7 +364,7 @@ input[type="range"].heading-slider::-webkit-slider-thumb {
   cursor: pointer;
   border: none;
 }
-`
+`;
 
 // ---------------------------------------------------------------------------
 // Animated heading component
@@ -382,75 +382,75 @@ function AnimatedHeading(props) {
     width: "auto",
     ready: false,
     swapping: false,
-  })
-  const current = () => state.current
-  const leaving = () => state.leaving
-  const width = () => state.width
-  const ready = () => state.ready
-  const swapping = () => state.swapping
-  let enterRef
-  let leaveRef
-  let containerRef
-  let frame
+  });
+  const current = () => state.current;
+  const leaving = () => state.leaving;
+  const width = () => state.width;
+  const ready = () => state.ready;
+  const swapping = () => state.swapping;
+  let enterRef;
+  let leaveRef;
+  let containerRef;
+  let frame;
 
-  const measureEnter = () => enterRef?.scrollWidth ?? 0
-  const measureLeave = () => leaveRef?.scrollWidth ?? 0
+  const measureEnter = () => enterRef?.scrollWidth ?? 0;
+  const measureLeave = () => leaveRef?.scrollWidth ?? 0;
   const widen = (px) => {
-    if (px <= 0) return
-    const w = Number.parseFloat(width())
-    if (Number.isFinite(w) && px <= w) return
-    setState("width", `${px}px`)
-  }
+    if (px <= 0) return;
+    const w = Number.parseFloat(width());
+    if (Number.isFinite(w) && px <= w) return;
+    setState("width", `${px}px`);
+  };
 
   const measure = () => {
     if (!current()) {
-      setState("width", "0px")
-      return
+      setState("width", "0px");
+      return;
     }
-    const px = measureEnter()
-    if (px > 0) setState("width", `${px}px`)
-  }
+    const px = measureEnter();
+    if (px > 0) setState("width", `${px}px`);
+  };
 
   createEffect(
     on(
       () => props.text,
       (next, prev) => {
-        if (next === prev) return
-        setState("swapping", true)
-        setState("leaving", prev)
-        setState("current", next)
+        if (next === prev) return;
+        setState("swapping", true);
+        setState("leaving", prev);
+        setState("current", next);
 
-        if (frame) cancelAnimationFrame(frame)
+        if (frame) cancelAnimationFrame(frame);
         frame = requestAnimationFrame(() => {
           // For odometer keep width as a grow-only max so heading never shrinks.
           if (props.variant === "odometer") {
-            const enterW = measureEnter()
-            const leaveW = measureLeave()
-            widen(Math.max(enterW, leaveW))
-            containerRef?.offsetHeight // reflow with max width + swap positions
-            setState("swapping", false)
+            const enterW = measureEnter();
+            const leaveW = measureLeave();
+            widen(Math.max(enterW, leaveW));
+            containerRef?.offsetHeight; // reflow with max width + swap positions
+            setState("swapping", false);
           } else {
-            containerRef?.offsetHeight
-            setState("swapping", false)
-            measure()
+            containerRef?.offsetHeight;
+            setState("swapping", false);
+            measure();
           }
-          frame = undefined
-        })
+          frame = undefined;
+        });
       },
     ),
-  )
+  );
 
   onMount(() => {
-    measure()
+    measure();
     void document.fonts?.ready.finally(() => {
-      measure()
-      requestAnimationFrame(() => setState("ready", true))
-    })
-  })
+      measure();
+      requestAnimationFrame(() => setState("ready", true));
+    });
+  });
 
   onCleanup(() => {
-    if (frame) cancelAnimationFrame(frame)
-  })
+    if (frame) cancelAnimationFrame(frame);
+  });
 
   return (
     <span
@@ -470,7 +470,7 @@ function AnimatedHeading(props) {
         </span>
       </span>
     </span>
-  )
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -485,7 +485,7 @@ const btn = (accent) => ({
   color: "var(--color-text, #eee)",
   cursor: "pointer",
   "font-size": "13px",
-})
+});
 
 const smallBtn = (active) => ({
   padding: "4px 12px",
@@ -495,7 +495,7 @@ const smallBtn = (active) => ({
   color: "var(--color-text, #eee)",
   cursor: "pointer",
   "font-size": "12px",
-})
+});
 
 const sliderLabel = {
   "font-size": "11px",
@@ -504,20 +504,20 @@ const sliderLabel = {
   "min-width": "70px",
   "flex-shrink": "0",
   "text-align": "right",
-}
+};
 
 const sliderValue = {
   "font-family": "monospace",
   "font-size": "11px",
   color: "var(--color-text-weak, #aaa)",
   "min-width": "60px",
-}
+};
 
 const cardLabel = {
   "font-size": "11px",
   "font-family": "monospace",
   color: "var(--color-text-weak, #666)",
-}
+};
 
 const thinkingRow = {
   display: "flex",
@@ -529,7 +529,7 @@ const thinkingRow = {
   "line-height": "20px",
   "min-height": "20px",
   color: "var(--text-weak, #aaa)",
-}
+};
 
 const headingSlot = {
   "min-width": "0",
@@ -537,7 +537,7 @@ const headingSlot = {
   "white-space": "nowrap",
   color: "var(--text-weaker, #888)",
   "font-weight": "400",
-}
+};
 
 const cardStyle = {
   padding: "16px 20px",
@@ -546,13 +546,13 @@ const cardStyle = {
   background: "var(--h-mask-bg, #1a1a1a)",
   display: "grid",
   gap: "8px",
-}
+};
 
 // ---------------------------------------------------------------------------
 // Variants
 // ---------------------------------------------------------------------------
 
-const VARIANTS: { key: string; label: string }[] = []
+const VARIANTS: { key: string; label: string }[] = [];
 
 // ---------------------------------------------------------------------------
 // Story
@@ -574,62 +574,62 @@ export const Playground = {
       maskHeight: 0,
       debug: false,
       odoBlur: false,
-    })
-    const heading = () => state.heading
-    const headingIndex = () => state.headingIndex
-    const active = () => state.active
-    const cycling = () => state.cycling
-    const duration = () => state.duration
-    const blur = () => state.blur
-    const travel = () => state.travel
-    const bounce = () => state.bounce
-    const maskSize = () => state.maskSize
-    const maskPad = () => state.maskPad
-    const maskHeight = () => state.maskHeight
-    const debug = () => state.debug
-    const odoBlur = () => state.odoBlur
-    let cycleTimer
+    });
+    const heading = () => state.heading;
+    const headingIndex = () => state.headingIndex;
+    const active = () => state.active;
+    const cycling = () => state.cycling;
+    const duration = () => state.duration;
+    const blur = () => state.blur;
+    const travel = () => state.travel;
+    const bounce = () => state.bounce;
+    const maskSize = () => state.maskSize;
+    const maskPad = () => state.maskPad;
+    const maskHeight = () => state.maskHeight;
+    const debug = () => state.debug;
+    const odoBlur = () => state.odoBlur;
+    let cycleTimer;
 
     const nextHeading = () => {
-      const next = (headingIndex() + 1) % HEADINGS.length
-      setState("headingIndex", next)
-      setState("heading", HEADINGS[next])
-    }
+      const next = (headingIndex() + 1) % HEADINGS.length;
+      setState("headingIndex", next);
+      setState("heading", HEADINGS[next]);
+    };
 
     const prevHeading = () => {
-      const prev = (headingIndex() - 1 + HEADINGS.length) % HEADINGS.length
-      setState("headingIndex", prev)
-      setState("heading", HEADINGS[prev])
-    }
+      const prev = (headingIndex() - 1 + HEADINGS.length) % HEADINGS.length;
+      setState("headingIndex", prev);
+      setState("heading", HEADINGS[prev]);
+    };
 
     const toggleCycling = () => {
       if (cycling()) {
-        clearTimeout(cycleTimer)
-        cycleTimer = undefined
-        setState("cycling", false)
-        return
+        clearTimeout(cycleTimer);
+        cycleTimer = undefined;
+        setState("cycling", false);
+        return;
       }
-      setState("cycling", true)
+      setState("cycling", true);
       const tick = () => {
-        if (!cycling()) return
-        nextHeading()
-        cycleTimer = setTimeout(tick, 850 + Math.floor(Math.random() * 550))
-      }
-      cycleTimer = setTimeout(tick, 850 + Math.floor(Math.random() * 550))
-    }
+        if (!cycling()) return;
+        nextHeading();
+        cycleTimer = setTimeout(tick, 850 + Math.floor(Math.random() * 550));
+      };
+      cycleTimer = setTimeout(tick, 850 + Math.floor(Math.random() * 550));
+    };
 
     const clearHeading = () => {
-      setState("heading", undefined)
+      setState("heading", undefined);
       if (cycling()) {
-        clearTimeout(cycleTimer)
-        cycleTimer = undefined
-        setState("cycling", false)
+        clearTimeout(cycleTimer);
+        cycleTimer = undefined;
+        setState("cycling", false);
       }
-    }
+    };
 
     onCleanup(() => {
-      if (cycleTimer) clearTimeout(cycleTimer)
-    })
+      if (cycleTimer) clearTimeout(cycleTimer);
+    });
 
     const vars = () => ({
       "--h-duration": `${duration()}ms`,
@@ -642,10 +642,12 @@ export const Playground = {
       "--h-mask-pad": `${maskPad()}px`,
       "--h-mask-height": `${maskHeight()}px`,
       "--h-mask-bg": "#1a1a1a",
-    })
+    });
 
     return (
-      <div style={{ display: "grid", gap: "24px", padding: "20px", "max-width": "820px", ...vars() }}>
+      <div
+        style={{ display: "grid", gap: "24px", padding: "20px", "max-width": "820px", ...vars() }}
+      >
         <style>{STYLES}</style>
 
         {/* ── Variant cards ─────────────────────────────────── */}
@@ -812,13 +814,19 @@ export const Playground = {
             <button onClick={clearHeading} style={btn()}>
               Clear
             </button>
-            <button onClick={() => setState("active", (value) => !value)} style={smallBtn(active())}>
+            <button
+              onClick={() => setState("active", (value) => !value)}
+              style={smallBtn(active())}
+            >
               {active() ? "Shimmer: on" : "Shimmer: off"}
             </button>
             <button onClick={() => setState("debug", (value) => !value)} style={smallBtn(debug())}>
               {debug() ? "Debug mask: on" : "Debug mask"}
             </button>
-            <button onClick={() => setState("odoBlur", (value) => !value)} style={smallBtn(odoBlur())}>
+            <button
+              onClick={() => setState("odoBlur", (value) => !value)}
+              style={smallBtn(odoBlur())}
+            >
               {odoBlur() ? "Odo blur: on" : "Odo blur"}
             </button>
           </div>
@@ -827,8 +835,8 @@ export const Playground = {
             {HEADINGS.map((h, i) => (
               <button
                 onClick={() => {
-                  setState("headingIndex", i)
-                  setState("heading", h)
+                  setState("headingIndex", i);
+                  setState("heading", h);
                 }}
                 style={smallBtn(headingIndex() === i)}
               >
@@ -844,11 +852,11 @@ export const Playground = {
               "font-family": "monospace",
             }}
           >
-            heading: {heading() ?? "(none)"} · sim: {cycling() ? "on" : "off"} · bounce: {bounce().toFixed(2)} ·
-            odo-blur: {odoBlur() ? "on" : "off"}
+            heading: {heading() ?? "(none)"} · sim: {cycling() ? "on" : "off"} · bounce:{" "}
+            {bounce().toFixed(2)} · odo-blur: {odoBlur() ? "on" : "off"}
           </div>
         </div>
       </div>
-    )
+    );
   },
-}
+};

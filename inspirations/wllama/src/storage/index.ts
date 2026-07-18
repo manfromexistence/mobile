@@ -15,11 +15,7 @@ export interface StorageBackend {
    * Write a ReadableStream to storage under the given key.
    * Overwrites any existing content for that key.
    */
-  write(
-    key: string,
-    stream: ReadableStream,
-    hint?: StorageFileHint
-  ): Promise<void>;
+  write(key: string, stream: ReadableStream, hint?: StorageFileHint): Promise<void>;
 
   /**
    * Get the stored size of a file in bytes.

@@ -17,11 +17,11 @@ test("getCookieValueFromHeader reads auth_token when preceded by other cookies (
   // The standard browser "; " separator — the case the \s-vs-\\s bug broke.
   assert.equal(
     getCookieValueFromHeader({ cookie: "omni_pref=dark; auth_token=abc123" }, "auth_token"),
-    "abc123"
+    "abc123",
   );
   assert.equal(
     getCookieValueFromHeader({ cookie: "a=1; b=2; auth_token=xyz" }, "auth_token"),
-    "xyz"
+    "xyz",
   );
 });
 
@@ -35,8 +35,5 @@ test("getCookieValueFromHeader returns null when the cookie is absent", () => {
 });
 
 test("getCookieValueFromHeader URL-decodes the value", () => {
-  assert.equal(
-    getCookieValueFromHeader({ cookie: "x=1; auth_token=a%20b" }, "auth_token"),
-    "a b"
-  );
+  assert.equal(getCookieValueFromHeader({ cookie: "x=1; auth_token=a%20b" }, "auth_token"), "a b");
 });

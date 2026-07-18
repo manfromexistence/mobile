@@ -1,6 +1,13 @@
-import { Dialog as KobalteDialog } from "@kobalte/core/dialog"
-import { Dialog, DialogBody, DialogFooter, DialogHeader, DialogTitle, DialogTitleGroup } from "./dialog-v2"
-import { ButtonV2 } from "./button-v2"
+import { Dialog as KobalteDialog } from "@kobalte/core/dialog";
+import {
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTitleGroup,
+} from "./dialog-v2";
+import { ButtonV2 } from "./button-v2";
 
 const docs = `### Overview
 Dialog content wrapper built on Kobalte's dialog primitive with v2 styling.
@@ -18,7 +25,7 @@ Compose with \`DialogHeader\`, \`DialogTitle\`, \`DialogTitleGroup\`, \`DialogBo
 
 ### Theming/tokens
 - Uses \`data-component="dialog-v2"\` and slot attributes.
-`
+`;
 
 export default {
   title: "UI V2/Dialog",
@@ -32,14 +39,14 @@ export default {
       },
     },
   },
-}
+};
 
 function dialogHeader(title: string, description: string) {
   return (
     <DialogHeader>
       <DialogTitleGroup title={title} description={description} />
     </DialogHeader>
-  )
+  );
 }
 
 export const Basic = {
@@ -57,7 +64,7 @@ export const Basic = {
       </KobalteDialog.Portal>
     </KobalteDialog>
   ),
-}
+};
 
 export const Sizes = {
   render: () => (
@@ -102,7 +109,7 @@ export const Sizes = {
       </KobalteDialog>
     </div>
   ),
-}
+};
 
 export const TitleOnly = {
   render: () => (
@@ -121,7 +128,7 @@ export const TitleOnly = {
       </KobalteDialog.Portal>
     </KobalteDialog>
   ),
-}
+};
 
 export const HeaderControls = {
   render: () => (
@@ -133,7 +140,10 @@ export const HeaderControls = {
         <KobalteDialog.Overlay />
         <Dialog>
           <DialogHeader>
-            <DialogTitleGroup title="Custom header" description="Dialog with an extra header control" />
+            <DialogTitleGroup
+              title="Custom header"
+              description="Dialog with an extra header control"
+            />
             <ButtonV2 variant="neutral" size="small">
               Help
             </ButtonV2>
@@ -143,7 +153,7 @@ export const HeaderControls = {
       </KobalteDialog.Portal>
     </KobalteDialog>
   ),
-}
+};
 
 export const WithFooter = {
   render: () => (
@@ -163,7 +173,7 @@ export const WithFooter = {
       </KobalteDialog.Portal>
     </KobalteDialog>
   ),
-}
+};
 
 export const WithFooterThreeButtons = {
   render: () => (
@@ -186,7 +196,7 @@ export const WithFooterThreeButtons = {
       </KobalteDialog.Portal>
     </KobalteDialog>
   ),
-}
+};
 
 export const Fit = {
   render: () => (
@@ -203,4 +213,4 @@ export const Fit = {
       </KobalteDialog.Portal>
     </KobalteDialog>
   ),
-}
+};

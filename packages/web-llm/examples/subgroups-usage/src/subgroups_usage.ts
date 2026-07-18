@@ -1,56 +1,53 @@
-import * as webllm from "@mlc-ai/web-llm"
+import * as webllm from "@mlc-ai/web-llm";
 
 function setLabel(id: string, text: string) {
-  const label = document.getElementById(id)
+  const label = document.getElementById(id);
   if (label == null) {
-    throw Error("Cannot find label " + id)
+    throw Error("Cannot find label " + id);
   }
-  label.innerText = text
+  label.innerText = text;
 }
 
 function toSg32ModelLib(modelLib: string): string {
-  const modelLibUrl = new URL(modelLib)
-  const pathParts = modelLibUrl.pathname.split("/")
-  const wasmFileIndex = pathParts.length - 1
-  const variantDirIndex = wasmFileIndex - 1
+  const modelLibUrl = new URL(modelLib);
+  const pathParts = modelLibUrl.pathname.split("/");
+  const wasmFileIndex = pathParts.length - 1;
+  const variantDirIndex = wasmFileIndex - 1;
   if (variantDirIndex < 0 || pathParts[variantDirIndex] !== "base") {
-    throw Error(
-      `Expected model_lib path variant directory to be "base": ${modelLib}`
-    )
+    throw Error(`Expected model_lib path variant directory to be "base": ${modelLib}`);
   }
-  pathParts[variantDirIndex] = "sg32"
-  modelLibUrl.pathname = pathParts.join("/")
-  return modelLibUrl.toString()
+  pathParts[variantDirIndex] = "sg32";
+  modelLibUrl.pathname = pathParts.join("/");
+  return modelLibUrl.toString();
 }
 
 async function main() {
   const initProgressCallback = (report: webllm.InitProgressReport) => {
-    setLabel("init-label", report.text)
-  }
+    setLabel("init-label", report.text);
+  };
 
-  const selectedModel = "Llama-3.1-8B-Instruct-q4f32_1-MLC"
+  const selectedModel = "Llama-3.1-8B-Instruct-q4f32_1-MLC";
   const adapter = await (navigator as any).gpu?.requestAdapter({
     powerPreference: "high-performance",
-  })
+  });
   if (adapter == null) {
-    throw Error("Unable to request a WebGPU adapter.")
+    throw Error("Unable to request a WebGPU adapter.");
   }
-  const adapterInfo =
-    adapter.info || (await (adapter as any).requestAdapterInfo())
-  const subgroupMinSize = adapterInfo.subgroupMinSize
-  const subgroupMaxSize = adapterInfo.subgroupMaxSize
+  const adapterInfo = adapter.info || (await (adapter as any).requestAdapterInfo());
+  const subgroupMinSize = adapterInfo.subgroupMinSize;
+  const subgroupMaxSize = adapterInfo.subgroupMaxSize;
   const supportsSubgroups =
     adapter.features.has("subgroups") &&
     subgroupMinSize !== undefined &&
     subgroupMinSize <= 32 &&
     subgroupMaxSize !== undefined &&
     32 <= subgroupMaxSize &&
-    adapter.limits.maxComputeInvocationsPerWorkgroup >= 1024
-  console.log("supportsSubgroups: ", supportsSubgroups)
+    adapter.limits.maxComputeInvocationsPerWorkgroup >= 1024;
+  console.log("supportsSubgroups: ", supportsSubgroups);
   // Option 1: If we do not specify appConfig, we use `prebuiltAppConfig` defined in `config.ts`
   const modelRecord = webllm.prebuiltAppConfig.model_list.find(
-    (entry: webllm.ModelRecord) => entry.model_id === selectedModel
-  )
+    (entry: webllm.ModelRecord) => entry.model_id === selectedModel,
+  );
   const appConfig =
     supportsSubgroups && modelRecord !== undefined
       ? {
@@ -61,7 +58,7 @@ async function main() {
             },
           ],
         }
-      : undefined
+      : undefined;
   const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
     selectedModel,
     {
@@ -74,8 +71,8 @@ async function main() {
       context_window_size: 2048,
       // sliding_window_size: 1024,
       // attention_sink_size: 4,
-    }
-  )
+    },
+  );
 
   // Option 2: Specify your own model other than the prebuilt ones
   // const appConfig: webllm.AppConfig = {
@@ -126,11 +123,11 @@ async function main() {
     },
     logprobs: true,
     top_logprobs: 2,
-  })
-  console.log(reply0)
-  console.log(reply0.usage)
+  });
+  console.log(reply0);
+  console.log(reply0.usage);
 
   // To change model, either create a new engine via `CreateMLCEngine()`, or call `engine.reload(modelId)`
 }
 
-main()
+main();

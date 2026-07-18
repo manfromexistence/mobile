@@ -51,7 +51,7 @@ export function fisherYatesShuffle<T>(arr: readonly T[]): T[] {
  */
 export async function getNextFromDeck(
   namespace: string,
-  itemIds: readonly string[]
+  itemIds: readonly string[],
 ): Promise<string> {
   if (itemIds.length === 0) return "";
   if (itemIds.length === 1) return itemIds[0];
@@ -63,7 +63,7 @@ export async function getNextFromDeck(
     namespace,
     new Promise<void>((resolve) => {
       resolveMutex = resolve;
-    })
+    }),
   );
 
   try {

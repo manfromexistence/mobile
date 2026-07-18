@@ -1,41 +1,24 @@
-import { type NextRequest } from 'next/server';
+import { type NextRequest } from "next/server";
 
-const CACHE_CONTROL = 'no-store';
-const EMPTY_PATCH_MESSAGE = 'GitHub returned an empty diff.';
-const GITHUB_HOST = 'github.com';
-const GITHUB_RAW_DIFF_HOST = 'patch-diff.githubusercontent.com';
-const NON_DIFF_RESPONSE_MESSAGE = 'GitHub did not return a diff for this URL.';
+const CACHE_CONTROL = "no-store";
+const EMPTY_PATCH_MESSAGE = "GitHub returned an empty diff.";
+const GITHUB_HOST = "github.com";
+const GITHUB_RAW_DIFF_HOST = "patch-diff.githubusercontent.com";
+const NON_DIFF_RESPONSE_MESSAGE = "GitHub did not return a diff for this URL.";
 const NON_WHITESPACE_PATTERN = /\S/;
-const RAW_GITHUB_DIFF_PATH_PATTERN =
-  /^\/raw\/[^/]+\/[^/]+\/pull\/[^/]+\.(?:diff|patch)$/;
-const GITHUB_PULL_TAB_PATH_PATTERN =
-  /^\/([^/]+)\/([^/]+)\/pull\/(\d+)\/(?:changes|files)$/;
+const RAW_GITHUB_DIFF_PATH_PATTERN = /^\/raw\/[^/]+\/[^/]+\/pull\/[^/]+\.(?:diff|patch)$/;
+const GITHUB_PULL_TAB_PATH_PATTERN = /^\/([^/]+)\/([^/]+)\/pull\/(\d+)\/(?:changes|files)$/;
 
 const CACHED_BLOBS = new Map<string, string>([
-  [
-    '/nodejs/oven-sh/bun/pull/30412',
-    'https://diffshub.pierrecdn.com/patches/30412.diff',
-  ],
-  [
-    '/nodejs/node/pull/59805',
-    'https://diffshub.pierrecdn.com/patches/59805.diff',
-  ],
-  [
-    '/ghostty-org/ghostty/pull/12291',
-    'https://diffshub.pierrecdn.com/patches/12291.diff',
-  ],
-  [
-    '/pierrecomputer/pierre/commit/0800fb',
-    'https://diffshub.pierrecdn.com/patches/0800fb.diff',
-  ],
-  [
-    '/torvalds/linux/compare/v6.0...v7.0',
-    'https://diffshub.pierrecdn.com/patches/v6.0-v7.0.diff',
-  ],
+  ["/nodejs/oven-sh/bun/pull/30412", "https://diffshub.pierrecdn.com/patches/30412.diff"],
+  ["/nodejs/node/pull/59805", "https://diffshub.pierrecdn.com/patches/59805.diff"],
+  ["/ghostty-org/ghostty/pull/12291", "https://diffshub.pierrecdn.com/patches/12291.diff"],
+  ["/pierrecomputer/pierre/commit/0800fb", "https://diffshub.pierrecdn.com/patches/0800fb.diff"],
+  ["/torvalds/linux/compare/v6.0...v7.0", "https://diffshub.pierrecdn.com/patches/v6.0-v7.0.diff"],
 ]);
 
 const HIDDEN_PATCH_DOMAIN_RULES = [
-  { domainRoot: 'tangled.org', defaultExtension: '.patch' },
+  { domainRoot: "tangled.org", defaultExtension: ".patch" },
 ] as const;
 
 interface ResolvedPatchRequest {
@@ -48,12 +31,12 @@ interface ResolvedPatchRequest {
 // arrive instead of waiting for the full patch text.
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
-  const path = searchParams.get('path');
-  const domain = searchParams.get('domain');
-  const url = searchParams.get('url');
+  const path = searchParams.get("path");
+  const domain = searchParams.get("domain");
+  const url = searchParams.get("url");
 
   if (path == null && url == null) {
-    return createTextResponse('Path or URL parameter is required', {
+    return createTextResponse("Path or URL parameter is required", {
       status: 400,
     });
   }
@@ -65,23 +48,18 @@ export async function GET(request: NextRequest) {
     // patch endpoint.
     const patchRequest = resolvePatchRequest(path, domain, url);
     if (patchRequest == null) {
-      return createTextResponse('Invalid GitHub patch URL format', {
+      return createTextResponse("Invalid GitHub patch URL format", {
         status: 400,
       });
     }
 
-    return await createPatchStreamResponse(
-      patchRequest.patchURL,
-      request.signal,
-      {
-        sourceURL: patchRequest.sourceURL ?? patchRequest.patchURL,
-      }
-    );
+    return await createPatchStreamResponse(patchRequest.patchURL, request.signal, {
+      sourceURL: patchRequest.sourceURL ?? patchRequest.patchURL,
+    });
   } catch (error) {
-    return createTextResponse(
-      error instanceof Error ? error.message : 'Unknown error',
-      { status: 500 }
-    );
+    return createTextResponse(error instanceof Error ? error.message : "Unknown error", {
+      status: 500,
+    });
   }
 }
 
@@ -91,7 +69,7 @@ export async function GET(request: NextRequest) {
 function resolvePatchRequest(
   path: string | null,
   domain: string | null,
-  url: string | null
+  url: string | null,
 ): ResolvedPatchRequest | undefined {
   if (url != null) {
     return resolvePatchURLInput(url);
@@ -110,7 +88,7 @@ function resolvePatchRequest(
 }
 
 function resolvePatchURLInput(input: string): ResolvedPatchRequest | undefined {
-  if (input.startsWith('/')) {
+  if (input.startsWith("/")) {
     return resolveGitHubPatchRequest(input);
   }
 
@@ -136,33 +114,25 @@ function resolvePatchURLInput(input: string): ResolvedPatchRequest | undefined {
     return { patchURL: parsedURL.href };
   }
 
-  const domainPatchURL = resolveDomainPatchURL(
-    parsedURL.hostname,
-    parsedURL.pathname
-  );
+  const domainPatchURL = resolveDomainPatchURL(parsedURL.hostname, parsedURL.pathname);
   return domainPatchURL == null ? undefined : { patchURL: domainPatchURL };
 }
 
-function resolveGitHubPatchRequest(
-  path: string
-): ResolvedPatchRequest | undefined {
+function resolveGitHubPatchRequest(path: string): ResolvedPatchRequest | undefined {
   const patchURL = resolveGitHubPath(path);
   return patchURL == null ? undefined : { patchURL };
 }
 
-function resolveDomainPatchURL(
-  domain: string,
-  path: string
-): string | undefined {
+function resolveDomainPatchURL(domain: string, path: string): string | undefined {
   const domainRule = getHiddenPatchDomainRule(domain);
   if (domainRule == null) {
     return undefined;
   }
 
-  const pathWithLeadingSlash = path.startsWith('/') ? path : `/${path}`;
+  const pathWithLeadingSlash = path.startsWith("/") ? path : `/${path}`;
   const url = new URL(`https://${domainRule.hostname}`);
-  const normalizedPath = pathWithLeadingSlash.replace(/\/+$/, '');
-  url.pathname = normalizedPath === '' ? '/' : normalizedPath;
+  const normalizedPath = pathWithLeadingSlash.replace(/\/+$/, "");
+  url.pathname = normalizedPath === "" ? "/" : normalizedPath;
   if (!url.pathname.endsWith(domainRule.defaultExtension)) {
     url.pathname += domainRule.defaultExtension;
   }
@@ -171,7 +141,7 @@ function resolveDomainPatchURL(
 }
 
 function getHiddenPatchDomainRule(
-  domain: string
+  domain: string,
 ): { defaultExtension: string; hostname: string } | undefined {
   let hostname: string;
   try {
@@ -181,10 +151,7 @@ function getHiddenPatchDomainRule(
   }
 
   for (const domainRule of HIDDEN_PATCH_DOMAIN_RULES) {
-    if (
-      hostname === domainRule.domainRoot ||
-      hostname.endsWith(`.${domainRule.domainRoot}`)
-    ) {
+    if (hostname === domainRule.domainRoot || hostname.endsWith(`.${domainRule.domainRoot}`)) {
       return { defaultExtension: domainRule.defaultExtension, hostname };
     }
   }
@@ -193,12 +160,12 @@ function getHiddenPatchDomainRule(
 }
 
 function resolveGitHubPath(path: string): string | undefined {
-  if (path === '/') {
+  if (path === "/") {
     return undefined;
   }
 
   let patchPath = normalizeGitHubPath(path);
-  if (patchPath === '') {
+  if (patchPath === "") {
     return undefined;
   }
 
@@ -207,27 +174,27 @@ function resolveGitHubPath(path: string): string | undefined {
     return blobPatchURL;
   }
 
-  if (!patchPath.endsWith('.patch') && !patchPath.endsWith('.diff')) {
-    patchPath += '.diff';
+  if (!patchPath.endsWith(".patch") && !patchPath.endsWith(".diff")) {
+    patchPath += ".diff";
   }
 
   return `https://${GITHUB_HOST}${patchPath}`;
 }
 
 function removeDiffExtension(path: string): string {
-  if (path.endsWith('.patch')) {
-    return path.slice(0, -'.patch'.length);
+  if (path.endsWith(".patch")) {
+    return path.slice(0, -".patch".length);
   }
 
-  if (path.endsWith('.diff')) {
-    return path.slice(0, -'.diff'.length);
+  if (path.endsWith(".diff")) {
+    return path.slice(0, -".diff".length);
   }
 
   return path;
 }
 
 function normalizeGitHubPath(path: string): string {
-  const trimmedPath = path.replace(/\/+$/, '');
+  const trimmedPath = path.replace(/\/+$/, "");
   const pullTabMatch = GITHUB_PULL_TAB_PATH_PATTERN.exec(trimmedPath);
   if (pullTabMatch == null) {
     return trimmedPath;
@@ -237,12 +204,7 @@ function normalizeGitHubPath(path: string): string {
 }
 
 function isAllowedHTTPSURL(url: URL): boolean {
-  return (
-    url.protocol === 'https:' &&
-    url.port === '' &&
-    url.username === '' &&
-    url.password === ''
-  );
+  return url.protocol === "https:" && url.port === "" && url.username === "" && url.password === "";
 }
 
 interface TextResponseOptions {
@@ -255,7 +217,7 @@ interface TextResponseOptions {
 // state.
 function createPatchTextResponse(
   patchText: string,
-  options: Omit<TextResponseOptions, 'status'>
+  options: Omit<TextResponseOptions, "status">,
 ): Response {
   if (!NON_WHITESPACE_PATTERN.test(patchText)) {
     return createTextResponse(EMPTY_PATCH_MESSAGE, { status: 422 });
@@ -270,41 +232,40 @@ function createPatchTextResponse(
 async function createPatchStreamResponse(
   patchURL: string,
   requestSignal: AbortSignal,
-  options: Omit<TextResponseOptions, 'status'>
+  options: Omit<TextResponseOptions, "status">,
 ): Promise<Response> {
   const upstreamController = new AbortController();
   const abortUpstream = () => upstreamController.abort();
-  requestSignal.addEventListener('abort', abortUpstream, { once: true });
+  requestSignal.addEventListener("abort", abortUpstream, { once: true });
 
   let response: Response;
   try {
     response = await fetch(patchURL, {
-      cache: 'no-store',
-      headers: { 'User-Agent': 'pierre-diffshub' },
+      cache: "no-store",
+      headers: { "User-Agent": "pierre-diffshub" },
       signal: upstreamController.signal,
     });
   } catch {
-    requestSignal.removeEventListener('abort', abortUpstream);
-    return createTextResponse('Failed to fetch patch.', { status: 502 });
+    requestSignal.removeEventListener("abort", abortUpstream);
+    return createTextResponse("Failed to fetch patch.", { status: 502 });
   }
 
   if (!response.ok) {
     const status = response.status >= 400 ? response.status : 502;
-    requestSignal.removeEventListener('abort', abortUpstream);
-    return createTextResponse(
-      `Failed to fetch patch: ${response.status} ${response.statusText}`,
-      { status }
-    );
+    requestSignal.removeEventListener("abort", abortUpstream);
+    return createTextResponse(`Failed to fetch patch: ${response.status} ${response.statusText}`, {
+      status,
+    });
   }
 
-  const contentType = response.headers.get('Content-Type');
-  if (contentType == null || !contentType.startsWith('text/plain')) {
-    requestSignal.removeEventListener('abort', abortUpstream);
+  const contentType = response.headers.get("Content-Type");
+  if (contentType == null || !contentType.startsWith("text/plain")) {
+    requestSignal.removeEventListener("abort", abortUpstream);
     return createTextResponse(NON_DIFF_RESPONSE_MESSAGE, { status: 415 });
   }
 
-  if (response.headers.get('Content-Length') === '0') {
-    requestSignal.removeEventListener('abort', abortUpstream);
+  if (response.headers.get("Content-Length") === "0") {
+    requestSignal.removeEventListener("abort", abortUpstream);
     return createTextResponse(EMPTY_PATCH_MESSAGE, { status: 422 });
   }
 
@@ -314,19 +275,19 @@ async function createPatchStreamResponse(
       const patchText = await response.text();
       return createPatchTextResponse(patchText, options);
     } finally {
-      requestSignal.removeEventListener('abort', abortUpstream);
+      requestSignal.removeEventListener("abort", abortUpstream);
     }
   }
 
   const stream = new ReadableStream<Uint8Array>({
     start(controller) {
       void pumpPatchBody(responseBody, controller).finally(() => {
-        requestSignal.removeEventListener('abort', abortUpstream);
+        requestSignal.removeEventListener("abort", abortUpstream);
       });
     },
     cancel() {
       abortUpstream();
-      requestSignal.removeEventListener('abort', abortUpstream);
+      requestSignal.removeEventListener("abort", abortUpstream);
     },
   });
 
@@ -336,7 +297,7 @@ async function createPatchStreamResponse(
 // Forwards each validated upstream diff chunk into the client stream.
 async function pumpPatchBody(
   body: ReadableStream<Uint8Array>,
-  controller: ReadableStreamDefaultController<Uint8Array>
+  controller: ReadableStreamDefaultController<Uint8Array>,
 ): Promise<void> {
   try {
     const reader = body.getReader();
@@ -372,14 +333,14 @@ async function pumpPatchBody(
 // responses can replay poorly and delay the first useful diff bytes.
 function createTextResponse(
   body: string | ReadableStream<Uint8Array>,
-  { status = 200, sourceURL }: TextResponseOptions = {}
+  { status = 200, sourceURL }: TextResponseOptions = {},
 ): Response {
   const headers = new Headers({
-    'Content-Type': 'text/plain; charset=utf-8',
-    'Cache-Control': CACHE_CONTROL,
+    "Content-Type": "text/plain; charset=utf-8",
+    "Cache-Control": CACHE_CONTROL,
   });
   if (sourceURL != null) {
-    headers.set('X-Patch-Source', sourceURL);
+    headers.set("X-Patch-Source", sourceURL);
   }
   return new Response(body, {
     status,

@@ -55,7 +55,7 @@ export function resolveLlmlinguaModel(modelId: string | undefined | null): Llmli
 /** Configure a transformers.js `env` for either Hub download (default) or a local modelPath override. */
 export function configureTransformersEnv(
   env: TransformersEnvLike,
-  opts: { modelPath?: string }
+  opts: { modelPath?: string },
 ): void {
   env.cacheDir = getLlmlinguaModelCacheDir();
   if (typeof opts.modelPath === "string" && opts.modelPath.length > 0) {

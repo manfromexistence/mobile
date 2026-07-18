@@ -1,16 +1,16 @@
-import { describe, expect } from "bun:test"
-import { Effect, Schema } from "effect"
-import { HttpClientRequest } from "effect/unstable/http"
-import { LLM, Message, ToolCallPart } from "../../src"
-import { Auth, LLMClient } from "../../src/route"
-import * as OpenAICompatible from "../../src/providers/openai-compatible"
-import * as OpenAICompatibleChat from "../../src/protocols/openai-compatible-chat"
-import { it } from "../lib/effect"
-import { dynamicResponse } from "../lib/http"
-import { sseEvents } from "../lib/sse"
+import { describe, expect } from "bun:test";
+import { Effect, Schema } from "effect";
+import { HttpClientRequest } from "effect/unstable/http";
+import { LLM, Message, ToolCallPart } from "../../src";
+import { Auth, LLMClient } from "../../src/route";
+import * as OpenAICompatible from "../../src/providers/openai-compatible";
+import * as OpenAICompatibleChat from "../../src/protocols/openai-compatible-chat";
+import { it } from "../lib/effect";
+import { dynamicResponse } from "../lib/http";
+import { sseEvents } from "../lib/sse";
 
-const Json = Schema.fromJsonString(Schema.Unknown)
-const decodeJson = Schema.decodeUnknownSync(Json)
+const Json = Schema.fromJsonString(Schema.Unknown);
+const decodeJson = Schema.decodeUnknownSync(Json);
 
 const model = OpenAICompatibleChat.route
   .with({
@@ -18,7 +18,7 @@ const model = OpenAICompatibleChat.route
     endpoint: { baseURL: "https://api.deepseek.test/v1/", query: { "api-version": "2026-01-01" } },
     auth: Auth.bearer("test-key"),
   })
-  .model({ id: "deepseek-chat" })
+  .model({ id: "deepseek-chat" });
 
 const request = LLM.request({
   id: "req_1",
@@ -26,19 +26,19 @@ const request = LLM.request({
   system: "You are concise.",
   prompt: "Say hello.",
   generation: { maxTokens: 20, temperature: 0 },
-})
+});
 
 const deltaChunk = (delta: object, finishReason: string | null = null) => ({
   id: "chatcmpl_fixture",
   choices: [{ delta, finish_reason: finishReason }],
   usage: null,
-})
+});
 
 const usageChunk = (usage: object) => ({
   id: "chatcmpl_fixture",
   choices: [],
   usage,
-})
+});
 
 const providerFamilies = [
   ["baseten", OpenAICompatible.baseten, "https://inference.baseten.co/v1"],
@@ -47,7 +47,7 @@ const providerFamilies = [
   ["deepseek", OpenAICompatible.deepseek, "https://api.deepseek.com/v1"],
   ["fireworks", OpenAICompatible.fireworks, "https://api.fireworks.ai/inference/v1"],
   ["togetherai", OpenAICompatible.togetherai, "https://api.together.xyz/v1"],
-] as const
+] as const;
 
 describe("OpenAI-compatible Chat route", () => {
   it.effect("prepares generic Chat target", () =>
@@ -57,18 +57,18 @@ describe("OpenAI-compatible Chat route", () => {
           tools: [{ name: "lookup", description: "Lookup data", inputSchema: { type: "object" } }],
           toolChoice: { type: "required" },
         }),
-      )
+      );
 
-      expect(prepared.route).toBe("openai-compatible-chat")
+      expect(prepared.route).toBe("openai-compatible-chat");
       expect(prepared.model).toMatchObject({
         id: "deepseek-chat",
         provider: "deepseek",
         route: { id: "openai-compatible-chat" },
-      })
+      });
       expect(prepared.model.route.endpoint).toMatchObject({
         baseURL: "https://api.deepseek.test/v1/",
         query: { "api-version": "2026-01-01" },
-      })
+      });
       expect(prepared.body).toEqual({
         model: "deepseek-chat",
         messages: [
@@ -78,7 +78,11 @@ describe("OpenAI-compatible Chat route", () => {
         tools: [
           {
             type: "function",
-            function: { name: "lookup", description: "Lookup data", parameters: { type: "object" } },
+            function: {
+              name: "lookup",
+              description: "Lookup data",
+              parameters: { type: "object" },
+            },
           },
         ],
         tool_choice: "required",
@@ -86,21 +90,21 @@ describe("OpenAI-compatible Chat route", () => {
         stream_options: { include_usage: true },
         max_tokens: 20,
         temperature: 0,
-      })
+      });
     }),
-  )
+  );
 
   it.effect("provides model helpers for compatible provider families", () =>
     Effect.gen(function* () {
       expect(
         providerFamilies.map(([provider, family]) => {
-          const model = family.configure({ apiKey: "test-key" }).model(`${provider}-model`)
+          const model = family.configure({ apiKey: "test-key" }).model(`${provider}-model`);
           return {
             id: String(model.id),
             provider: String(model.provider),
             route: model.route.id,
             baseURL: model.route.endpoint.baseURL,
-          }
+          };
         }),
       ).toEqual(
         providerFamilies.map(([provider, _, baseURL]) => ({
@@ -109,25 +113,25 @@ describe("OpenAI-compatible Chat route", () => {
           route: "openai-compatible-chat",
           baseURL,
         })),
-      )
+      );
 
       const custom = OpenAICompatible.deepseek
         .configure({
           apiKey: "test-key",
           baseURL: "https://custom.deepseek.test/v1",
         })
-        .model("deepseek-chat")
+        .model("deepseek-chat");
       expect(custom).toMatchObject({
         provider: "deepseek",
         route: { id: "openai-compatible-chat" },
-      })
-      expect(custom.route.endpoint.baseURL).toBe("https://custom.deepseek.test/v1")
+      });
+      expect(custom.route.endpoint.baseURL).toBe("https://custom.deepseek.test/v1");
     }),
-  )
+  );
 
   it.effect("matches AI SDK compatible basic request body fixture", () =>
     Effect.gen(function* () {
-      const prepared = yield* LLMClient.prepare(request)
+      const prepared = yield* LLMClient.prepare(request);
 
       expect(prepared.body).toEqual({
         model: "deepseek-chat",
@@ -139,9 +143,9 @@ describe("OpenAI-compatible Chat route", () => {
         stream_options: { include_usage: true },
         max_tokens: 20,
         temperature: 0,
-      })
+      });
     }),
-  )
+  );
 
   it.effect("matches AI SDK compatible tool request body fixture", () =>
     Effect.gen(function* () {
@@ -153,17 +157,23 @@ describe("OpenAI-compatible Chat route", () => {
             {
               name: "lookup",
               description: "Lookup data",
-              inputSchema: { type: "object", properties: { query: { type: "string" } }, required: ["query"] },
+              inputSchema: {
+                type: "object",
+                properties: { query: { type: "string" } },
+                required: ["query"],
+              },
             },
           ],
           toolChoice: "lookup",
           messages: [
             Message.user("What is the weather?"),
-            Message.assistant([ToolCallPart.make({ id: "call_1", name: "lookup", input: { query: "weather" } })]),
+            Message.assistant([
+              ToolCallPart.make({ id: "call_1", name: "lookup", input: { query: "weather" } }),
+            ]),
             Message.tool({ id: "call_1", name: "lookup", result: { forecast: "sunny" } }),
           ],
         }),
-      )
+      );
 
       expect(prepared.body).toEqual({
         model: "deepseek-chat",
@@ -188,16 +198,20 @@ describe("OpenAI-compatible Chat route", () => {
             function: {
               name: "lookup",
               description: "Lookup data",
-              parameters: { type: "object", properties: { query: { type: "string" } }, required: ["query"] },
+              parameters: {
+                type: "object",
+                properties: { query: { type: "string" } },
+                required: ["query"],
+              },
             },
           },
         ],
         tool_choice: { type: "function", function: { name: "lookup" } },
         stream: true,
         stream_options: { include_usage: true },
-      })
+      });
     }),
-  )
+  );
 
   it.effect("posts to the configured compatible endpoint and parses text usage", () =>
     Effect.gen(function* () {
@@ -205,9 +219,11 @@ describe("OpenAI-compatible Chat route", () => {
         Effect.provide(
           dynamicResponse((input) =>
             Effect.gen(function* () {
-              const web = yield* HttpClientRequest.toWeb(input.request).pipe(Effect.orDie)
-              expect(web.url).toBe("https://api.deepseek.test/v1/chat/completions?api-version=2026-01-01")
-              expect(web.headers.get("authorization")).toBe("Bearer test-key")
+              const web = yield* HttpClientRequest.toWeb(input.request).pipe(Effect.orDie);
+              expect(web.url).toBe(
+                "https://api.deepseek.test/v1/chat/completions?api-version=2026-01-01",
+              );
+              expect(web.headers.get("authorization")).toBe("Bearer test-key");
               expect(decodeJson(input.text)).toMatchObject({
                 model: "deepseek-chat",
                 stream: true,
@@ -215,7 +231,7 @@ describe("OpenAI-compatible Chat route", () => {
                   { role: "system", content: "You are concise." },
                   { role: "user", content: "Say hello." },
                 ],
-              })
+              });
               return input.respond(
                 sseEvents(
                   deltaChunk({ role: "assistant", content: "Hello" }),
@@ -224,15 +240,15 @@ describe("OpenAI-compatible Chat route", () => {
                   usageChunk({ prompt_tokens: 5, completion_tokens: 2, total_tokens: 7 }),
                 ),
                 { headers: { "content-type": "text/event-stream" } },
-              )
+              );
             }),
           ),
         ),
-      )
+      );
 
-      expect(response.text).toBe("Hello!")
-      expect(response.usage).toMatchObject({ inputTokens: 5, outputTokens: 2, totalTokens: 7 })
-      expect(response.events.at(-1)).toMatchObject({ type: "finish", reason: "stop" })
+      expect(response.text).toBe("Hello!");
+      expect(response.usage).toMatchObject({ inputTokens: 5, outputTokens: 2, totalTokens: 7 });
+      expect(response.events.at(-1)).toMatchObject({ type: "finish", reason: "stop" });
     }),
-  )
-})
+  );
+});

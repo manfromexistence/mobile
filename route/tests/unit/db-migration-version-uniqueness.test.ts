@@ -25,7 +25,7 @@ const MIGRATIONS_DIR = path.join(
   "src",
   "lib",
   "db",
-  "migrations"
+  "migrations",
 );
 
 function migrationFiles(): Array<{ version: string; name: string }> {
@@ -52,7 +52,7 @@ test("no two migration files share the same numeric prefix", () => {
     collisions,
     [],
     `Migration version collision(s) detected: ${collisions.join("; ")}. ` +
-      `Each migration must have a unique numeric prefix (rename to the next free number).`
+      `Each migration must have a unique numeric prefix (rename to the next free number).`,
   );
 });
 

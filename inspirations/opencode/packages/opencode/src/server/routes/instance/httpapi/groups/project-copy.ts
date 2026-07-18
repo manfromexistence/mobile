@@ -1,13 +1,13 @@
-import { ProjectV2 } from "@opencode-ai/core/project"
-import { Schema } from "effect"
-import { HttpApi, HttpApiEndpoint, HttpApiGroup, OpenApi } from "effect/unstable/httpapi"
-import { Authorization } from "../middleware/authorization"
-import { InstanceContextMiddleware } from "../middleware/instance-context"
-import { WorkspaceRoutingMiddleware, WorkspaceRoutingQuery } from "../middleware/workspace-routing"
+import { ProjectV2 } from "@opencode-ai/core/project";
+import { Schema } from "effect";
+import { HttpApi, HttpApiEndpoint, HttpApiGroup, OpenApi } from "effect/unstable/httpapi";
+import { Authorization } from "../middleware/authorization";
+import { InstanceContextMiddleware } from "../middleware/instance-context";
+import { WorkspaceRoutingMiddleware, WorkspaceRoutingQuery } from "../middleware/workspace-routing";
 
 export const GenerateNamePayload = Schema.Struct({
   context: Schema.optional(Schema.String),
-})
+});
 
 export const ProjectCopyApi = HttpApi.make("projectCopyName").add(
   HttpApiGroup.make("projectCopyName")
@@ -25,8 +25,10 @@ export const ProjectCopyApi = HttpApi.make("projectCopyName").add(
         }),
       ),
     )
-    .annotateMerge(OpenApi.annotations({ title: "projectCopy", description: "Project copy naming routes." }))
+    .annotateMerge(
+      OpenApi.annotations({ title: "projectCopy", description: "Project copy naming routes." }),
+    )
     .middleware(InstanceContextMiddleware)
     .middleware(WorkspaceRoutingMiddleware)
     .middleware(Authorization),
-)
+);

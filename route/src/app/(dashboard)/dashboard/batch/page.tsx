@@ -272,7 +272,11 @@ export default function BatchPage() {
       {/* Toolbar: auto-refresh indicator + Refresh + New batch */}
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <span className="text-xs text-[var(--color-text-muted)] flex items-center gap-1">
-          <span className={`material-symbols-outlined text-[14px] ${loading ? "animate-spin" : "animate-pulse"}`}>sync</span>
+          <span
+            className={`material-symbols-outlined text-[14px] ${loading ? "animate-spin" : "animate-pulse"}`}
+          >
+            sync
+          </span>
           {t("batchListAutoRefresh")}
         </span>
         <div className="flex gap-2">

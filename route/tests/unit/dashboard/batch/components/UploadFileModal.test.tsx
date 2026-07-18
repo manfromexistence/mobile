@@ -20,7 +20,7 @@ const { default: UploadFileModal } = await import(
 const containers: Array<{ root: ReturnType<typeof createRoot>; el: HTMLDivElement }> = [];
 
 function renderModal(
-  props: Partial<{ onClose: () => void; onUploaded: (fileId: string) => void }> = {}
+  props: Partial<{ onClose: () => void; onUploaded: (fileId: string) => void }> = {},
 ) {
   const onClose = props.onClose ?? vi.fn();
   const onUploaded = props.onUploaded ?? vi.fn();

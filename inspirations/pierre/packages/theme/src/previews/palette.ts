@@ -1,6 +1,6 @@
 // Builds the palette swatch sheet (every scale in palettes.ts) and returns it as
 // HTML. Writing to disk is done by scripts/createPreviews.ts.
-import { palettes } from '../palettes';
+import { palettes } from "../palettes";
 
 /** Render the palette swatch sheet as a standalone HTML document. */
 function renderPaletteHtml(): string {
@@ -9,18 +9,16 @@ function renderPaletteHtml(): string {
       // JS reorders integer-indexed keys ahead of string keys, which would move
       // "020" / "040" / "060" / "080" after "100". Sort numerically to restore
       // the intended light-to-dark order.
-      const stops = Object.entries(scale).sort(
-        ([a], [b]) => Number(a) - Number(b)
-      );
+      const stops = Object.entries(scale).sort(([a], [b]) => Number(a) - Number(b));
       const swatches = stops
         .map(
           ([stop, hex]) =>
             `          <div class="swatch" style="background:${hex};color:contrast-color(${hex})">` +
             `<span class="stop">${stop}</span>` +
             `<span class="hex">${hex}</span>` +
-            `</div>`
+            `</div>`,
         )
-        .join('\n');
+        .join("\n");
       return `      <section class="palette">
         <div class="palette-name">
           ${name}
@@ -31,7 +29,7 @@ ${swatches}
         </div>
       </section>`;
     })
-    .join('\n');
+    .join("\n");
 
   const html = `<!doctype html>
 <html lang="en">
@@ -151,6 +149,6 @@ ${sections}
 }
 
 export const palette = {
-  filename: 'palette.html',
+  filename: "palette.html",
   render: renderPaletteHtml,
 };

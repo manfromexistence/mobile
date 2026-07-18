@@ -1,23 +1,23 @@
-'use client';
+"use client";
 
-import type { HunkSeparators } from '@pierre/diffs';
-import { MultiFileDiff } from '@pierre/diffs/react';
-import type { PreloadMultiFileDiffResult } from '@pierre/diffs/ssr';
-import { useState } from 'react';
+import type { HunkSeparators } from "@pierre/diffs";
+import { MultiFileDiff } from "@pierre/diffs/react";
+import type { PreloadMultiFileDiffResult } from "@pierre/diffs/ssr";
+import { useState } from "react";
 
-import { CUSTOM_HUNK_SEPARATORS_CUSTOM_CSS } from './constants';
-import { FeatureHeader } from '@/components/FeatureHeader';
-import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group';
+import { CUSTOM_HUNK_SEPARATORS_CUSTOM_CSS } from "./constants";
+import { FeatureHeader } from "@/components/FeatureHeader";
+import { ButtonGroup, ButtonGroupItem } from "@/components/ui/button-group";
 
 const SEPARATOR_OPTIONS: {
   value: HunkSeparators;
   label: string;
 }[] = [
-  { value: 'line-info', label: 'Line Info' },
-  { value: 'line-info-basic', label: 'Line Info Basic' },
-  { value: 'metadata', label: 'Metadata' },
-  { value: 'simple', label: 'Simple' },
-  { value: 'custom', label: 'Custom CSS' },
+  { value: "line-info", label: "Line Info" },
+  { value: "line-info-basic", label: "Line Info Basic" },
+  { value: "metadata", label: "Metadata" },
+  { value: "simple", label: "Simple" },
+  { value: "custom", label: "Custom CSS" },
 ];
 
 function isHunkSeparatorOption(value: unknown): value is HunkSeparators {
@@ -35,15 +35,12 @@ export function CustomHunkSeparators({
 }: CustomHunkSeparatorsProps) {
   const [hunkSeparators, setHunkSeparators] = useState<HunkSeparators>(() => {
     const separator = prerenderedDiff.options?.hunkSeparators;
-    return typeof separator === 'function'
-      ? 'custom'
-      : (separator ?? 'line-info');
+    return typeof separator === "function" ? "custom" : (separator ?? "line-info");
   });
 
   const effectiveUnsafeCSS =
-    hunkSeparators === 'custom'
-      ? (prerenderedDiff.options?.unsafeCSS ?? '') +
-        CUSTOM_HUNK_SEPARATORS_CUSTOM_CSS
+    hunkSeparators === "custom"
+      ? (prerenderedDiff.options?.unsafeCSS ?? "") + CUSTOM_HUNK_SEPARATORS_CUSTOM_CSS
       : prerenderedDiff.options?.unsafeCSS;
 
   return (
@@ -77,8 +74,7 @@ export function CustomHunkSeparators({
         className="overflow-hidden rounded-lg border dark:border-neutral-800"
         options={{
           ...prerenderedDiff.options,
-          hunkSeparators:
-            hunkSeparators === 'custom' ? 'line-info-basic' : hunkSeparators,
+          hunkSeparators: hunkSeparators === "custom" ? "line-info-basic" : hunkSeparators,
           unsafeCSS: effectiveUnsafeCSS,
         }}
       />

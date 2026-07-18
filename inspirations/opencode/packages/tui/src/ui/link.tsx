@@ -1,14 +1,14 @@
-import type { JSX } from "solid-js"
-import type { RGBA } from "@opentui/core"
-import open from "open"
+import type { JSX } from "solid-js";
+import type { RGBA } from "@opentui/core";
+import open from "open";
 
 export interface LinkProps {
-  href: string
-  children?: JSX.Element | string
-  fg?: RGBA
-  bg?: RGBA
-  width?: number | "auto" | `${number}%`
-  wrapMode?: "word" | "none"
+  href: string;
+  children?: JSX.Element | string;
+  fg?: RGBA;
+  bg?: RGBA;
+  width?: number | "auto" | `${number}%`;
+  wrapMode?: "word" | "none";
 }
 
 /**
@@ -16,7 +16,7 @@ export interface LinkProps {
  * Clicking anywhere on the link text opens the URL in the default browser.
  */
 export function Link(props: LinkProps) {
-  const displayText = props.children ?? props.href
+  const displayText = props.children ?? props.href;
 
   return (
     <text
@@ -25,10 +25,10 @@ export function Link(props: LinkProps) {
       width={props.width}
       wrapMode={props.wrapMode}
       onMouseUp={() => {
-        open(props.href).catch(() => {})
+        open(props.href).catch(() => {});
       }}
     >
       {displayText}
     </text>
-  )
+  );
 }

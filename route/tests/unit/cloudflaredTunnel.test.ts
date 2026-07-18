@@ -18,7 +18,7 @@ import {
 
 test("extractTryCloudflareUrl parses trycloudflare URL from log output", () => {
   const url = extractTryCloudflareUrl(
-    "INF +------------------------------------------------------------+\nINF |  https://violet-sky-1234.trycloudflare.com                   |\nINF +------------------------------------------------------------+"
+    "INF +------------------------------------------------------------+\nINF |  https://violet-sky-1234.trycloudflare.com                   |\nINF +------------------------------------------------------------+",
   );
 
   assert.equal(url, "https://violet-sky-1234.trycloudflare.com");
@@ -31,26 +31,26 @@ test("extractTryCloudflareUrl returns null when no tunnel URL is present", () =>
 test("extractTryCloudflareUrl ignores the cloudflared API endpoint host", () => {
   assert.equal(
     extractTryCloudflareUrl(
-      'ERR failed to request quick Tunnel: Post "https://api.trycloudflare.com/tunnel": tls: failed to verify certificate'
+      'ERR failed to request quick Tunnel: Post "https://api.trycloudflare.com/tunnel": tls: failed to verify certificate',
     ),
-    null
+    null,
   );
 });
 
 test("extractCloudflaredErrorMessage keeps the actionable stderr line", () => {
   const error = extractCloudflaredErrorMessage(
-    '2026-03-30T19:56:12Z INF Requesting new quick Tunnel on trycloudflare.com...\n2026-03-30T19:56:12Z ERR failed to request quick Tunnel: Post "https://api.trycloudflare.com/tunnel": tls: failed to verify certificate: x509: certificate signed by unknown authority'
+    '2026-03-30T19:56:12Z INF Requesting new quick Tunnel on trycloudflare.com...\n2026-03-30T19:56:12Z ERR failed to request quick Tunnel: Post "https://api.trycloudflare.com/tunnel": tls: failed to verify certificate: x509: certificate signed by unknown authority',
   );
 
   assert.equal(
     error,
-    'failed to request quick Tunnel: Post "https://api.trycloudflare.com/tunnel": tls: failed to verify certificate: x509: certificate signed by unknown authority'
+    'failed to request quick Tunnel: Post "https://api.trycloudflare.com/tunnel": tls: failed to verify certificate: x509: certificate signed by unknown authority',
   );
 });
 
 test("extractCloudflaredErrorMessage ignores the non-actionable UDP buffer warning", () => {
   const error = extractCloudflaredErrorMessage(
-    "WRN failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details."
+    "WRN failed to sufficiently increase receive buffer size (was: 208 kiB, wanted: 7168 kiB, got: 416 kiB). See https://github.com/quic-go/quic-go/wiki/UDP-Buffer-Sizes for details.",
   );
 
   assert.equal(error, null);
@@ -95,7 +95,7 @@ test("verifyCloudflaredDownloadDigest rejects checksum mismatches", () => {
   verifyCloudflaredDownloadDigest(buffer, expected, "cloudflared-test");
   assert.throws(
     () => verifyCloudflaredDownloadDigest(buffer, "a".repeat(64), "cloudflared-test"),
-    /checksum mismatch/
+    /checksum mismatch/,
   );
 });
 
@@ -118,7 +118,7 @@ test("buildCloudflaredChildEnv keeps runtime essentials, isolates runtime dirs, 
       appDataDir: "/managed/runtime/userprofile/AppData/Roaming",
       localAppDataDir: "/managed/runtime/userprofile/AppData/Local",
     },
-    {}
+    {},
   );
 
   assert.deepEqual(env, {
@@ -155,7 +155,7 @@ test("buildCloudflaredChildEnv allows overriding the tunnel transport protocol",
       appDataDir: "/managed/runtime/userprofile/AppData/Roaming",
       localAppDataDir: "/managed/runtime/userprofile/AppData/Local",
     },
-    {}
+    {},
   );
 
   assert.equal(env.TUNNEL_TRANSPORT_PROTOCOL, "quic");
@@ -178,7 +178,7 @@ test("buildCloudflaredChildEnv preserves auto negotiation when explicitly reques
       appDataDir: "/managed/runtime/userprofile/AppData/Roaming",
       localAppDataDir: "/managed/runtime/userprofile/AppData/Local",
     },
-    {}
+    {},
   );
 
   assert.equal(env.TUNNEL_TRANSPORT_PROTOCOL, undefined);
@@ -186,7 +186,7 @@ test("buildCloudflaredChildEnv preserves auto negotiation when explicitly reques
 
 test("getDefaultCloudflaredCertEnv detects common CA bundle paths", () => {
   const env = getDefaultCloudflaredCertEnv((candidate) =>
-    ["/etc/ssl/certs/ca-certificates.crt", "/etc/ssl/certs"].includes(candidate)
+    ["/etc/ssl/certs/ca-certificates.crt", "/etc/ssl/certs"].includes(candidate),
   );
 
   assert.deepEqual(env, {
@@ -212,7 +212,7 @@ test("buildCloudflaredChildEnv injects discovered CA paths when the parent env o
     {
       SSL_CERT_FILE: "/etc/ssl/certs/ca-certificates.crt",
       SSL_CERT_DIR: "/etc/ssl/certs",
-    }
+    },
   );
 
   assert.equal(env.SSL_CERT_FILE, "/etc/ssl/certs/ca-certificates.crt");
@@ -261,9 +261,9 @@ test("getCloudflaredTunnelStatus resets stale runtime state from a previous serv
           startedAt: "2026-04-02T00:07:16.000Z",
         },
         null,
-        2
+        2,
       ) + "\n",
-      "utf8"
+      "utf8",
     );
 
     const status = await getCloudflaredTunnelStatus();

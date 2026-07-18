@@ -160,7 +160,7 @@ export function findCallers(symbolName: string, limit = 20): CodeGraphQueryResul
      WHERE t.name = ?
      ORDER BY e.kind
      LIMIT ?`,
-    [symbolName, limit]
+    [symbolName, limit],
   );
 }
 
@@ -179,7 +179,7 @@ export function findCallees(symbolName: string, limit = 20): CodeGraphQueryResul
      WHERE s.name = ?
      ORDER BY e.kind
      LIMIT ?`,
-    [symbolName, limit]
+    [symbolName, limit],
   );
 }
 
@@ -193,7 +193,7 @@ export function getFileContext(filePath: string): CodeGraphQueryResult {
      WHERE file_path LIKE ? OR file_path = ?
      ORDER BY start_line
      LIMIT 100`,
-    [`%${filePath}`, filePath]
+    [`%${filePath}`, filePath],
   );
 }
 

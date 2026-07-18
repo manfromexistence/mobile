@@ -196,7 +196,7 @@ export async function runSetupCommand(opts = {}) {
     printInfo(
       `Login: ${after.requireLogin === true ? "enabled" : "disabled"}${
         passwordChanged ? " (password updated)" : ""
-      }`
+      }`,
     );
     if (providerConnection) {
       printInfo(`Provider: ${providerConnection.provider} (${providerConnection.name})`);

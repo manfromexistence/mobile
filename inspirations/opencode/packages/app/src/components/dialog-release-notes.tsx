@@ -1,62 +1,62 @@
-import { createSignal } from "solid-js"
-import { Dialog } from "@opencode-ai/ui/dialog"
-import { Button } from "@opencode-ai/ui/button"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { useLanguage } from "@/context/language"
-import { useSettings } from "@/context/settings"
+import { createSignal } from "solid-js";
+import { Dialog } from "@opencode-ai/ui/dialog";
+import { Button } from "@opencode-ai/ui/button";
+import { useDialog } from "@opencode-ai/ui/context/dialog";
+import { useLanguage } from "@/context/language";
+import { useSettings } from "@/context/settings";
 
 export type Highlight = {
-  title: string
-  description: string
+  title: string;
+  description: string;
   media?: {
-    type: "image" | "video"
-    src: string
-    alt?: string
-  }
-}
+    type: "image" | "video";
+    src: string;
+    alt?: string;
+  };
+};
 
 export function DialogReleaseNotes(props: { highlights: Highlight[] }) {
-  const dialog = useDialog()
-  const language = useLanguage()
-  const settings = useSettings()
-  const [index, setIndex] = createSignal(0)
+  const dialog = useDialog();
+  const language = useLanguage();
+  const settings = useSettings();
+  const [index, setIndex] = createSignal(0);
 
-  const total = () => props.highlights.length
-  const last = () => Math.max(0, total() - 1)
-  const feature = () => props.highlights[index()] ?? props.highlights[last()]
-  const isFirst = () => index() === 0
-  const isLast = () => index() >= last()
-  const paged = () => total() > 1
+  const total = () => props.highlights.length;
+  const last = () => Math.max(0, total() - 1);
+  const feature = () => props.highlights[index()] ?? props.highlights[last()];
+  const isFirst = () => index() === 0;
+  const isLast = () => index() >= last();
+  const paged = () => total() > 1;
 
   function handleNext() {
-    if (isLast()) return
-    setIndex(index() + 1)
+    if (isLast()) return;
+    setIndex(index() + 1);
   }
 
   function handleClose() {
-    dialog.close()
+    dialog.close();
   }
 
   function handleDisable() {
-    settings.general.setReleaseNotes(false)
-    handleClose()
+    settings.general.setReleaseNotes(false);
+    handleClose();
   }
 
   function handleKeyDown(e: KeyboardEvent) {
     if (e.key === "Escape") {
-      e.preventDefault()
-      handleClose()
-      return
+      e.preventDefault();
+      handleClose();
+      return;
     }
 
-    if (!paged()) return
+    if (!paged()) return;
     if (e.key === "ArrowLeft" && !isFirst()) {
-      e.preventDefault()
-      setIndex(index() - 1)
+      e.preventDefault();
+      setIndex(index() - 1);
     }
     if (e.key === "ArrowRight" && !isLast()) {
-      e.preventDefault()
-      setIndex(index() + 1)
+      e.preventDefault();
+      setIndex(index() + 1);
     }
   }
 
@@ -130,15 +130,26 @@ export function DialogReleaseNotes(props: { highlights: Highlight[] }) {
             {feature()!.media!.type === "image" ? (
               <img
                 src={feature()!.media!.src}
-                alt={feature()!.media!.alt ?? feature()?.title ?? language.t("dialog.releaseNotes.media.alt")}
+                alt={
+                  feature()!.media!.alt ??
+                  feature()?.title ??
+                  language.t("dialog.releaseNotes.media.alt")
+                }
                 class="w-full h-full object-cover"
               />
             ) : (
-              <video src={feature()!.media!.src} autoplay loop muted playsinline class="w-full h-full object-cover" />
+              <video
+                src={feature()!.media!.src}
+                autoplay
+                loop
+                muted
+                playsinline
+                class="w-full h-full object-cover"
+              />
             )}
           </div>
         )}
       </div>
     </Dialog>
-  )
+  );
 }

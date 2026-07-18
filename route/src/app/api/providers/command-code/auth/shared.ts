@@ -112,7 +112,7 @@ export function buildCommandCodeCliCallbackUrl(): string {
     ? Number.parseInt(configuredPort, 10)
     : COMMAND_CODE_CLI_CALLBACK_PORTS[0];
   const safePort = COMMAND_CODE_CLI_CALLBACK_PORTS.includes(
-    port as (typeof COMMAND_CODE_CLI_CALLBACK_PORTS)[number]
+    port as (typeof COMMAND_CODE_CLI_CALLBACK_PORTS)[number],
   )
     ? port
     : COMMAND_CODE_CLI_CALLBACK_PORTS[0];

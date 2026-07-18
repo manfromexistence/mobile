@@ -1,6 +1,6 @@
 // @ts-nocheck
-import * as mod from "./keybind"
-import { create } from "../storybook/scaffold"
+import * as mod from "./keybind";
+import { create } from "../storybook/scaffold";
 
 const docs = `### Overview
 Keyboard shortcut pill for displaying keybindings.
@@ -23,9 +23,9 @@ Pair with menu items or command palettes.
 ### Theming/tokens
 - Uses \`data-component="keybind"\`.
 
-`
+`;
 
-const story = create({ title: "UI/Keybind", mod, args: { children: "Cmd+K" } })
+const story = create({ title: "UI/Keybind", mod, args: { children: "Cmd+K" } });
 export default {
   title: "UI/Keybind",
   id: "components-keybind",
@@ -38,6 +38,6 @@ export default {
       },
     },
   },
-}
+};
 
-export const Basic = story.Basic
+export const Basic = story.Basic;

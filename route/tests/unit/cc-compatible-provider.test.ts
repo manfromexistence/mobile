@@ -18,13 +18,15 @@ const {
   CLAUDE_CODE_COMPATIBLE_DEFAULT_MODELS_PATH,
   joinClaudeCodeCompatibleUrl,
 } = await import("../../open-sse/services/claudeCodeCompatible.ts");
-const { getModelsByProviderId, supportsXHighEffort } =
-  await import("../../open-sse/config/providerModels.ts");
+const { getModelsByProviderId, supportsXHighEffort } = await import(
+  "../../open-sse/config/providerModels.ts"
+);
 const { handleChatCore } = await import("../../open-sse/handlers/chatCore.ts");
 const { validateProviderApiKey } = await import("../../src/lib/providers/validation.ts");
 const providerNodesRoute = await import("../../src/app/api/provider-nodes/route.ts");
-const providerNodesValidateRoute =
-  await import("../../src/app/api/provider-nodes/validate/route.ts");
+const providerNodesValidateRoute = await import(
+  "../../src/app/api/provider-nodes/validate/route.ts"
+);
 const providerModelsRoute = await import("../../src/app/api/providers/[id]/models/route.ts");
 
 const originalFetch = globalThis.fetch;
@@ -127,7 +129,7 @@ test("buildClaudeCodeCompatibleRequest keeps prior role history while dropping t
       { role: "user", text: "u1" },
       { role: "assistant", text: "a1" },
       { role: "user", text: "u2" },
-    ]
+    ],
   );
   assert.equal((payload.messages[0].content.at(-1) as any).cache_control, undefined);
   assert.equal((payload.messages[1] as any).content.at(-1).cache_control, undefined);
@@ -157,7 +159,7 @@ test("buildClaudeCodeCompatibleRequest keeps prior role history while dropping t
 
 test("buildClaudeCodeCompatibleRequest preserves xhigh for Claude models that support it", () => {
   const xhighModel = getModelsByProviderId("claude").find((model) =>
-    supportsXHighEffort("claude", model.id)
+    supportsXHighEffort("claude", model.id),
   );
   assert.ok(xhighModel, "expected at least one Claude model with xhigh support");
   const payload = buildClaudeCodeCompatibleRequest({
@@ -318,7 +320,7 @@ test("buildClaudeCodeCompatibleRequest keeps built-in system blocks untagged whe
 test("buildClaudeCodeCompatibleRequest does not add cache markers in non-preserve mode", () => {
   const largeUserPrompt = Array.from(
     { length: 200 },
-    (_, index) => `Context line ${index + 1}: repeated stable context for cache testing.`
+    (_, index) => `Context line ${index + 1}: repeated stable context for cache testing.`,
   ).join("\n");
 
   const payload = buildClaudeCodeCompatibleRequest({
@@ -412,23 +414,23 @@ test("joinClaudeCodeCompatibleUrl preserves a single /v1 segment for CC paths", 
   assert.equal(
     joinClaudeCodeCompatibleUrl(
       "https://proxy.example.com",
-      CLAUDE_CODE_COMPATIBLE_DEFAULT_CHAT_PATH
+      CLAUDE_CODE_COMPATIBLE_DEFAULT_CHAT_PATH,
     ),
-    "https://proxy.example.com/v1/messages?beta=true"
+    "https://proxy.example.com/v1/messages?beta=true",
   );
   assert.equal(
     joinClaudeCodeCompatibleUrl(
       "https://proxy.example.com/v1",
-      CLAUDE_CODE_COMPATIBLE_DEFAULT_CHAT_PATH
+      CLAUDE_CODE_COMPATIBLE_DEFAULT_CHAT_PATH,
     ),
-    "https://proxy.example.com/v1/messages?beta=true"
+    "https://proxy.example.com/v1/messages?beta=true",
   );
   assert.equal(
     joinClaudeCodeCompatibleUrl(
       "https://proxy.example.com/v1/messages?beta=true",
-      CLAUDE_CODE_COMPATIBLE_DEFAULT_CHAT_PATH
+      CLAUDE_CODE_COMPATIBLE_DEFAULT_CHAT_PATH,
     ),
-    "https://proxy.example.com/v1/messages?beta=true"
+    "https://proxy.example.com/v1/messages?beta=true",
   );
 });
 
@@ -445,7 +447,7 @@ test("DefaultExecutor uses CC-compatible path and headers", () => {
 
   assert.equal(
     executor.buildUrl("claude-sonnet-4-6", true, 0, credentials),
-    "https://proxy.example.com/v1/messages?beta=true"
+    "https://proxy.example.com/v1/messages?beta=true",
   );
 
   const headers = executor.buildHeaders(credentials, true);
@@ -486,7 +488,10 @@ test("validateProviderApiKey uses CC skeleton request after /models fallback", a
   assert.match(result.warning, /reached upstream/i);
   assert.deepEqual(
     calls.map((call) => `${call.method} ${call.url}`),
-    ["GET https://proxy.example.com/models", "POST https://proxy.example.com/v1/messages?beta=true"]
+    [
+      "GET https://proxy.example.com/models",
+      "POST https://proxy.example.com/v1/messages?beta=true",
+    ],
   );
   assert.equal(calls[1].body.model, "claude-sonnet-4-6");
   assert.equal(calls[1].body.messages[0].role, "user");
@@ -529,7 +534,7 @@ test("handleChatCore forces SSE upstream for CC compatible providers while retur
         headers: {
           "content-type": "text/event-stream",
         },
-      }
+      },
     );
   };
 
@@ -622,7 +627,7 @@ test("handleChatCore stops buffering CC-compatible SSE once a non-stream respons
         headers: {
           "content-type": "text/event-stream",
         },
-      }
+      },
     );
 
   const result = await handleChatCore({
@@ -701,7 +706,7 @@ test("handleChatCore preserves client cache markers for Claude Code requests to 
         headers: {
           "content-type": "text/event-stream",
         },
-      }
+      },
     );
   };
 
@@ -805,7 +810,7 @@ test("provider-nodes create route rejects CC mode when feature flag is disabled"
         type: "anthropic-compatible",
         compatMode: "cc",
       }),
-    })
+    }),
   );
 
   assert.equal(response.status, 403);
@@ -827,7 +832,7 @@ test("provider-nodes create route creates CC node with dedicated prefix when ena
         chatPath: CLAUDE_CODE_COMPATIBLE_DEFAULT_CHAT_PATH,
         modelsPath: CLAUDE_CODE_COMPATIBLE_DEFAULT_MODELS_PATH,
       }),
-    })
+    }),
   );
 
   assert.equal(response.status, 201);
@@ -851,7 +856,7 @@ test("provider-nodes validate route rejects CC mode when feature flag is disable
         type: "anthropic-compatible",
         compatMode: "cc",
       }),
-    })
+    }),
   );
 
   assert.equal(response.status, 403);
@@ -863,7 +868,7 @@ test("provider-nodes validate route rejects invalid JSON and schema errors", asy
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: "{",
-    })
+    }),
   );
 
   assert.equal(invalidJsonResponse.status, 400);
@@ -882,7 +887,7 @@ test("provider-nodes validate route rejects invalid JSON and schema errors", asy
         baseUrl: "",
         apiKey: "",
       }),
-    })
+    }),
   );
 
   assert.equal(invalidBodyResponse.status, 400);
@@ -909,7 +914,7 @@ test("provider-nodes validate route allows local provider hosts by default", asy
         baseUrl: "http://127.0.0.1:11434/v1",
         apiKey: "sk-private-test",
       }),
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -935,7 +940,7 @@ test("provider-nodes validate route blocks cloud metadata provider hosts before 
         baseUrl: "http://169.254.169.254/latest/meta-data",
         apiKey: "sk-metadata-test",
       }),
-    })
+    }),
   );
 
   assert.equal(response.status, 503);
@@ -977,7 +982,7 @@ test("provider-nodes validate route validates anthropic compatible providers aga
         type: "anthropic-compatible",
         modelsPath: "/catalog",
       }),
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -1022,7 +1027,7 @@ test("provider-nodes validate route supports enabled CC validation and OpenAI-st
         compatMode: "cc",
         chatPath: CLAUDE_CODE_COMPATIBLE_DEFAULT_CHAT_PATH,
       }),
-    })
+    }),
   );
 
   assert.equal(ccResponse.status, 200);
@@ -1043,7 +1048,7 @@ test("provider-nodes validate route supports enabled CC validation and OpenAI-st
         baseUrl: "https://proxy.example.com/",
         apiKey: "sk-openai-test",
       }),
-    })
+    }),
   );
 
   assert.equal(openAiResponse.status, 200);
@@ -1080,7 +1085,7 @@ test("provider-nodes validate route covers default CC paths, null method, anthro
         type: "anthropic-compatible",
         compatMode: "cc",
       }),
-    })
+    }),
   );
 
   assert.equal(ccResponse.status, 200);
@@ -1092,11 +1097,11 @@ test("provider-nodes validate route covers default CC paths, null method, anthro
   });
   assert.equal(
     ccCalls[0].url,
-    `https://proxy.example.com${CLAUDE_CODE_COMPATIBLE_DEFAULT_MODELS_PATH}`
+    `https://proxy.example.com${CLAUDE_CODE_COMPATIBLE_DEFAULT_MODELS_PATH}`,
   );
   assert.equal(
     ccCalls[1].url,
-    `https://proxy.example.com${CLAUDE_CODE_COMPATIBLE_DEFAULT_MODELS_PATH}`
+    `https://proxy.example.com${CLAUDE_CODE_COMPATIBLE_DEFAULT_MODELS_PATH}`,
   );
   assert.equal(ccCalls.length, 2);
 
@@ -1118,7 +1123,7 @@ test("provider-nodes validate route covers default CC paths, null method, anthro
         apiKey: "sk-anthropic-invalid",
         type: "anthropic-compatible",
       }),
-    })
+    }),
   );
 
   assert.equal(anthropicResponse.status, 200);
@@ -1146,7 +1151,7 @@ test("provider-nodes validate route covers default CC paths, null method, anthro
         baseUrl: "https://proxy.example.com/",
         apiKey: "sk-openai-valid",
       }),
-    })
+    }),
   );
 
   assert.equal(openAiResponse.status, 200);
@@ -1171,7 +1176,7 @@ test("provider-nodes validate route reports unexpected upstream failures", async
         baseUrl: "https://proxy.example.com",
         apiKey: "sk-openai-test",
       }),
-    })
+    }),
   );
 
   assert.equal(response.status, 500);
@@ -1206,7 +1211,7 @@ test("provider models route reports CC compatible providers do not support model
 
   const response = await providerModelsRoute.GET(
     new Request(`http://localhost/api/providers/${connection.id}/models`),
-    { params: { id: connection.id } }
+    { params: { id: connection.id } },
   );
 
   assert.equal(response.status, 400);

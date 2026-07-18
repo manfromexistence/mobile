@@ -109,7 +109,7 @@ function messageDeltaEndsLifecycle(parsed: Record<string, unknown>): boolean {
 function applySseLifecycleEvent(
   eventType: string,
   parsed: Record<string, unknown>,
-  flags: SseLifecycleFlags
+  flags: SseLifecycleFlags,
 ): boolean {
   switch (eventType) {
     case "message_start":
@@ -154,7 +154,7 @@ function responsesApiOutputHasContent(output: unknown): boolean {
             !!part &&
             typeof part === "object" &&
             typeof (part as Record<string, unknown>).text === "string" &&
-            ((part as Record<string, string>).text as string).length > 0
+            ((part as Record<string, string>).text as string).length > 0,
         )
       );
     })
@@ -176,7 +176,7 @@ export async function validateResponseQuality(
   response: Response,
   isStreaming: boolean,
   log: { warn?: (...args: unknown[]) => void },
-  responseValidation?: ResponseValidationConfig | null
+  responseValidation?: ResponseValidationConfig | null,
 ): Promise<{ valid: boolean; reason?: string; clonedResponse?: Response }> {
   // Issue #3685: For Claude SSE streaming responses, use a BOUNDED PEEK to
   // detect the empty-content-block pattern (content_filter stop_reason with
@@ -289,7 +289,7 @@ export async function validateResponseQuality(
      * Preserves the original response's status, statusText, and headers.
      */
     function buildReplayResponse(
-      readerToForward: ReadableStreamDefaultReader<Uint8Array>
+      readerToForward: ReadableStreamDefaultReader<Uint8Array>,
     ): Response {
       // Snapshot the prefix so mutations after this point don't affect it.
       const prefix = bufferedChunks.slice();
@@ -343,7 +343,7 @@ export async function validateResponseQuality(
               "COMBO",
               sse.hasContentBlock
                 ? "Streaming Claude response has complete lifecycle but its content block(s) carried no usable text/tool_use — marking as invalid for combo failover"
-                : "Streaming Claude response has complete lifecycle but zero content blocks (content_filter?) — marking as invalid for combo failover"
+                : "Streaming Claude response has complete lifecycle but zero content blocks (content_filter?) — marking as invalid for combo failover",
             );
             return { valid: false, reason: "streaming empty content block" };
           }
@@ -357,7 +357,7 @@ export async function validateResponseQuality(
           if (!anyContentFound && !sse.hasContentBlock && !sawAnyBytes) {
             log.warn?.(
               "COMBO",
-              "Streaming response ended with no recognized content — marking as invalid for combo failover"
+              "Streaming response ended with no recognized content — marking as invalid for combo failover",
             );
             return { valid: false, reason: "streaming no recognized content" };
           }
@@ -460,7 +460,9 @@ export async function validateResponseQuality(
   if (errorIsMeaningful) {
     const envelopeText = extractEnvelopeErrorText(json);
     const errMsg =
-      rawError && typeof rawError === "object" && typeof (rawError as Record<string, unknown>).message === "string"
+      rawError &&
+      typeof rawError === "object" &&
+      typeof (rawError as Record<string, unknown>).message === "string"
         ? ((rawError as Record<string, unknown>).message as string)
         : envelopeText || JSON.stringify(rawError).substring(0, 200);
     return { valid: false, reason: `upstream error in 200 body: ${errMsg}` };
@@ -468,8 +470,7 @@ export async function validateResponseQuality(
   {
     const envelopeText = extractEnvelopeErrorText(json);
     if (envelopeText && EXHAUSTION_MARKER_PATTERN.test(envelopeText)) {
-      const snippet =
-        envelopeText.length > 80 ? `${envelopeText.slice(0, 80)}…` : envelopeText;
+      const snippet = envelopeText.length > 80 ? `${envelopeText.slice(0, 80)}…` : envelopeText;
       return { valid: false, reason: `upstream exhaustion marker in 200 body: ${snippet}` };
     }
   }
@@ -572,7 +573,7 @@ export async function validateResponseQuality(
 export function releaseQualityClone(
   clone: Response,
   original: Response,
-  quality: { clonedResponse?: Response }
+  quality: { clonedResponse?: Response },
 ): void {
   if (clone === original) return;
   void quality.clonedResponse?.body?.cancel().catch(() => {});

@@ -1,21 +1,14 @@
-'use client';
+"use client";
 
-import { useStableCallback } from '@pierre/diffs/react';
-import { IconX } from '@pierre/icons';
-import { useRouter } from 'next/navigation';
-import {
-  type FormEvent,
-  type ReactNode,
-  useEffect,
-  useRef,
-  useState,
-  useTransition,
-} from 'react';
-import { createPortal } from 'react-dom';
+import { useStableCallback } from "@pierre/diffs/react";
+import { IconX } from "@pierre/icons";
+import { useRouter } from "next/navigation";
+import { type FormEvent, type ReactNode, useEffect, useRef, useState, useTransition } from "react";
+import { createPortal } from "react-dom";
 
-import { Button } from '@/components/Button';
-import { cn } from '@/lib/cn';
-import { getPatchViewerHref } from '@/lib/getPatchViewerHref';
+import { Button } from "@/components/Button";
+import { cn } from "@/lib/cn";
+import { getPatchViewerHref } from "@/lib/getPatchViewerHref";
 
 interface DiffUrlFormProps {
   className?: string;
@@ -41,7 +34,7 @@ interface DiffUrlFormProps {
 // escape/blur restore behavior.
 export function DiffUrlForm({
   className,
-  initialUrl = '',
+  initialUrl = "",
   inputClassName,
   onUrlChange,
   placeholder,
@@ -82,56 +75,50 @@ export function DiffUrlForm({
       if (rect != null) setErrorAnchor({ top: rect.bottom, left: rect.left });
     };
 
-    window.addEventListener('resize', updatePosition);
-    window.addEventListener('scroll', updatePosition, true);
+    window.addEventListener("resize", updatePosition);
+    window.addEventListener("scroll", updatePosition, true);
     return () => {
-      window.removeEventListener('resize', updatePosition);
-      window.removeEventListener('scroll', updatePosition, true);
+      window.removeEventListener("resize", updatePosition);
+      window.removeEventListener("scroll", updatePosition, true);
     };
   }, [errorAnchor]);
 
-  const handleSubmit = useStableCallback(
-    (event: FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      isSubmittingRef.current = false;
-      const normalizedURL = url.trim();
-      const viewerHref = getPatchViewerHref(normalizedURL);
-      if (viewerHref == null) {
-        const rect = inputRef.current?.getBoundingClientRect();
-        if (rect != null) setErrorAnchor({ top: rect.bottom, left: rect.left });
-        lastErrorText.current = 'Please enter a valid URL';
-        setValidationError('Please enter a valid URL');
-        return;
-      }
-      setValidationError(null);
-      setURL(normalizedURL);
-      startTransition(() => {
-        router.push(viewerHref);
-      });
+  const handleSubmit = useStableCallback((event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    isSubmittingRef.current = false;
+    const normalizedURL = url.trim();
+    const viewerHref = getPatchViewerHref(normalizedURL);
+    if (viewerHref == null) {
+      const rect = inputRef.current?.getBoundingClientRect();
+      if (rect != null) setErrorAnchor({ top: rect.bottom, left: rect.left });
+      lastErrorText.current = "Please enter a valid URL";
+      setValidationError("Please enter a valid URL");
+      return;
     }
-  );
+    setValidationError(null);
+    setURL(normalizedURL);
+    startTransition(() => {
+      router.push(viewerHref);
+    });
+  });
 
   // Show the clear button when the input has content. When an initialUrl is
   // set (viewer header), hide it while the user is actively editing so it
   // doesn't distract — restore it once committed or on error.
   const showClear =
-    url.length > 0 &&
-    (initialUrl === '' || url === initialUrl || validationError !== null);
+    url.length > 0 && (initialUrl === "" || url === initialUrl || validationError !== null);
 
   return (
     <form
-      className={cn(
-        'group flex min-w-0 items-center gap-1 w-full overflow-hidden',
-        className
-      )}
+      className={cn("group flex min-w-0 items-center gap-1 w-full overflow-hidden", className)}
       noValidate
       onSubmit={handleSubmit}
     >
       <input
         ref={inputRef}
         className={cn(
-          'focus:text-primary block field-sizing-content h-9 min-w-[24ch] rounded-md text-sm focus-visible:outline-none',
-          inputClassName
+          "focus:text-primary block field-sizing-content h-9 min-w-[24ch] rounded-md text-sm focus-visible:outline-none",
+          inputClassName,
         )}
         enterKeyHint="go"
         value={url}
@@ -144,17 +131,17 @@ export function DiffUrlForm({
           if (isSubmittingRef.current) return;
           // Only restore the committed URL when the field is empty — if the
           // user typed something and clicked away, keep their draft.
-          if (url.trim() === '') {
+          if (url.trim() === "") {
             setURL(initialUrl);
             setValidationError(null);
           }
         }}
         onKeyDown={(e) => {
-          if (e.key === 'Escape') {
+          if (e.key === "Escape") {
             setURL(initialUrl);
             setValidationError(null);
             inputRef.current?.blur();
-          } else if (e.key === 'Enter') {
+          } else if (e.key === "Enter") {
             isSubmittingRef.current = true;
           }
         }}
@@ -168,7 +155,7 @@ export function DiffUrlForm({
           aria-label="Clear"
           className="opacity-0 transition-opacity duration-200 will-change-auto group-focus-within:opacity-50 group-hover:opacity-50 hover:opacity-75"
           onClick={() => {
-            setURL('');
+            setURL("");
             setValidationError(null);
             inputRef.current?.focus();
           }}
@@ -185,8 +172,8 @@ export function DiffUrlForm({
             aria-live="polite"
             style={{ top: errorAnchor.top + 8, left: errorAnchor.left }}
             className={cn(
-              'bg-foreground text-background pointer-events-none fixed z-50 rounded-md px-3 py-1.5 text-xs transition-opacity duration-150',
-              validationError !== null ? 'opacity-100' : 'opacity-0'
+              "bg-foreground text-background pointer-events-none fixed z-50 rounded-md px-3 py-1.5 text-xs transition-opacity duration-150",
+              validationError !== null ? "opacity-100" : "opacity-0",
             )}
             onTransitionEnd={() => {
               if (validationError === null) setErrorAnchor(null);
@@ -195,7 +182,7 @@ export function DiffUrlForm({
             <div className="bg-foreground absolute -top-1 left-3 size-2.5 rotate-45 rounded-[2px]" />
             {lastErrorText.current}
           </div>,
-          document.body
+          document.body,
         )}
     </form>
   );

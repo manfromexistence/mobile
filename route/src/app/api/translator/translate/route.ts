@@ -56,7 +56,7 @@ export async function POST(request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -122,7 +122,7 @@ export async function POST(request) {
           actualBody,
           true,
           null,
-          provider
+          provider,
         );
 
         result = {
@@ -148,7 +148,7 @@ export async function POST(request) {
           actualBody,
           true,
           null,
-          provider
+          provider,
         );
 
         result = {
@@ -174,7 +174,7 @@ export async function POST(request) {
               success: false,
               error: `No active connection found for provider: ${provider}`,
             },
-            { status: 400 }
+            { status: 400 },
           );
         }
 
@@ -213,7 +213,7 @@ export async function POST(request) {
     console.error("Error translating:", error);
     return NextResponse.json(
       { success: false, error: "Failed to translate request" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

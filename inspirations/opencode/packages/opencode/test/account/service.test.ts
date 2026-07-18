@@ -1,12 +1,12 @@
-import { expect } from "bun:test"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
-import { httpClient } from "@opencode-ai/core/effect/app-node-platform"
-import { Duration, Effect, Layer, Option, Schema } from "effect"
-import { sql } from "drizzle-orm"
-import { HttpClient, HttpClientError, HttpClientResponse } from "effect/unstable/http"
+import { expect } from "bun:test";
+import { LayerNode } from "@opencode-ai/core/effect/layer-node";
+import { httpClient } from "@opencode-ai/core/effect/app-node-platform";
+import { Duration, Effect, Layer, Option, Schema } from "effect";
+import { sql } from "drizzle-orm";
+import { HttpClient, HttpClientError, HttpClientResponse } from "effect/unstable/http";
 
-import { AccountRepo } from "../../src/account/repo"
-import { Account } from "../../src/account/account"
+import { AccountRepo } from "../../src/account/repo";
+import { Account } from "../../src/account/account";
 import {
   AccessToken,
   AccountID,
@@ -17,26 +17,30 @@ import {
   OrgID,
   RefreshToken,
   UserCode,
-} from "../../src/account/schema"
-import { Database } from "@opencode-ai/core/database/database"
-import { testEffect } from "../lib/effect"
+} from "../../src/account/schema";
+import { Database } from "@opencode-ai/core/database/database";
+import { testEffect } from "../lib/effect";
 
 const truncate = Layer.effectDiscard(
   Effect.gen(function* () {
-    const { db } = yield* Database.Service
-    yield* db.run(sql`DELETE FROM account_state`)
-    yield* db.run(sql`DELETE FROM account`)
+    const { db } = yield* Database.Service;
+    yield* db.run(sql`DELETE FROM account_state`);
+    yield* db.run(sql`DELETE FROM account`);
   }),
-)
-const truncateNode = LayerNode.make({ name: "truncate-account", layer: truncate, deps: [Database.node] })
+);
+const truncateNode = LayerNode.make({
+  name: "truncate-account",
+  layer: truncate,
+  deps: [Database.node],
+});
 
-const it = testEffect(LayerNode.compile(LayerNode.group([AccountRepo.node, truncateNode])))
+const it = testEffect(LayerNode.compile(LayerNode.group([AccountRepo.node, truncateNode])));
 
-const insideEagerRefreshWindow = Duration.toMillis(Duration.minutes(1))
-const outsideEagerRefreshWindow = Duration.toMillis(Duration.minutes(10))
+const insideEagerRefreshWindow = Duration.toMillis(Duration.minutes(1));
+const outsideEagerRefreshWindow = Duration.toMillis(Duration.minutes(10));
 
 const live = (client: HttpClient.HttpClient) =>
-  LayerNode.compile(Account.node, [[httpClient, Layer.succeed(HttpClient.HttpClient, client)]])
+  LayerNode.compile(Account.node, [[httpClient, Layer.succeed(HttpClient.HttpClient, client)]]);
 
 const json = (req: Parameters<typeof HttpClientResponse.fromWeb>[0], body: unknown, status = 200) =>
   HttpClientResponse.fromWeb(
@@ -45,11 +49,11 @@ const json = (req: Parameters<typeof HttpClientResponse.fromWeb>[0], body: unkno
       status,
       headers: { "content-type": "application/json" },
     }),
-  )
+  );
 
-const encodeOrg = Schema.encodeSync(Org)
+const encodeOrg = Schema.encodeSync(Org);
 
-const org = (id: string, name: string) => encodeOrg(new Org({ id: OrgID.make(id), name }))
+const org = (id: string, name: string) => encodeOrg(new Org({ id: OrgID.make(id), name }));
 
 const login = () =>
   new Login({
@@ -59,24 +63,28 @@ const login = () =>
     server: "https://one.example.com",
     expiry: Duration.seconds(600),
     interval: Duration.seconds(5),
-  })
+  });
 
 const deviceTokenClient = (body: unknown, status = 400) =>
   HttpClient.make((req) =>
     Effect.succeed(
-      req.url === "https://one.example.com/auth/device/token" ? json(req, body, status) : json(req, {}, 404),
+      req.url === "https://one.example.com/auth/device/token"
+        ? json(req, body, status)
+        : json(req, {}, 404),
     ),
-  )
+  );
 
 const poll = (body: unknown, status = 400) =>
-  Account.Service.use((s) => s.poll(login())).pipe(Effect.provide(live(deviceTokenClient(body, status))))
+  Account.Service.use((s) => s.poll(login())).pipe(
+    Effect.provide(live(deviceTokenClient(body, status))),
+  );
 
 it.live("login normalizes trailing slashes in the provided server URL", () =>
   Effect.gen(function* () {
-    const seen: Array<string> = []
+    const seen: Array<string> = [];
     const client = HttpClient.make((req) =>
       Effect.gen(function* () {
-        seen.push(`${req.method} ${req.url}`)
+        seen.push(`${req.method} ${req.url}`);
 
         if (req.url === "https://one.example.com/auth/device/code") {
           return json(req, {
@@ -85,20 +93,22 @@ it.live("login normalizes trailing slashes in the provided server URL", () =>
             verification_uri_complete: "/device?user_code=user-code",
             expires_in: 600,
             interval: 5,
-          })
+          });
         }
 
-        return json(req, {}, 404)
+        return json(req, {}, 404);
       }),
-    )
+    );
 
-    const result = yield* Account.use.login("https://one.example.com/").pipe(Effect.provide(live(client)))
+    const result = yield* Account.use
+      .login("https://one.example.com/")
+      .pipe(Effect.provide(live(client)));
 
-    expect(seen).toEqual(["POST https://one.example.com/auth/device/code"])
-    expect(result.server).toBe("https://one.example.com")
-    expect(result.url).toBe("https://one.example.com/device?user_code=user-code")
+    expect(seen).toEqual(["POST https://one.example.com/auth/device/code"]);
+    expect(result.server).toBe("https://one.example.com");
+    expect(result.url).toBe("https://one.example.com/device?user_code=user-code");
   }),
-)
+);
 
 it.live("login maps transport failures to account transport errors", () =>
   Effect.gen(function* () {
@@ -108,17 +118,19 @@ it.live("login maps transport failures to account transport errors", () =>
           reason: new HttpClientError.TransportError({ request: req }),
         }),
       ),
-    )
+    );
 
-    const error = yield* Effect.flip(Account.use.login("https://one.example.com").pipe(Effect.provide(live(client))))
+    const error = yield* Effect.flip(
+      Account.use.login("https://one.example.com").pipe(Effect.provide(live(client))),
+    );
 
-    expect(error).toBeInstanceOf(AccountTransportError)
+    expect(error).toBeInstanceOf(AccountTransportError);
     if (error instanceof AccountTransportError) {
-      expect(error.method).toBe("POST")
-      expect(error.url).toBe("https://one.example.com/auth/device/code")
+      expect(error.method).toBe("POST");
+      expect(error.url).toBe("https://one.example.com/auth/device/code");
     }
   }),
-)
+);
 
 it.live("orgsByAccount groups orgs per account", () =>
   Effect.gen(function* () {
@@ -132,7 +144,7 @@ it.live("orgsByAccount groups orgs per account", () =>
         expiry: Date.now() + outsideEagerRefreshWindow,
         orgID: Option.none(),
       }),
-    )
+    );
 
     yield* AccountRepo.Service.use((r) =>
       r.persistAccount({
@@ -144,38 +156,45 @@ it.live("orgsByAccount groups orgs per account", () =>
         expiry: Date.now() + outsideEagerRefreshWindow,
         orgID: Option.none(),
       }),
-    )
+    );
 
-    const seen: Array<string> = []
+    const seen: Array<string> = [];
     const client = HttpClient.make((req) =>
       Effect.gen(function* () {
-        seen.push(`${req.method} ${req.url}`)
+        seen.push(`${req.method} ${req.url}`);
 
         if (req.url === "https://one.example.com/api/orgs") {
-          return json(req, [org("org-1", "One")])
+          return json(req, [org("org-1", "One")]);
         }
 
         if (req.url === "https://two.example.com/api/orgs") {
-          return json(req, [org("org-2", "Two A"), org("org-3", "Two B")])
+          return json(req, [org("org-2", "Two A"), org("org-3", "Two B")]);
         }
 
-        return json(req, [], 404)
+        return json(req, [], 404);
       }),
-    )
+    );
 
-    const rows = yield* Account.use.orgsByAccount().pipe(Effect.provide(live(client)))
+    const rows = yield* Account.use.orgsByAccount().pipe(Effect.provide(live(client)));
 
-    expect(rows.map((row) => [row.account.id, row.orgs.map((org) => org.id)]).map(([id, orgs]) => [id, orgs])).toEqual([
+    expect(
+      rows
+        .map((row) => [row.account.id, row.orgs.map((org) => org.id)])
+        .map(([id, orgs]) => [id, orgs]),
+    ).toEqual([
       [AccountID.make("user-1"), [OrgID.make("org-1")]],
       [AccountID.make("user-2"), [OrgID.make("org-2"), OrgID.make("org-3")]],
-    ])
-    expect(seen).toEqual(["GET https://one.example.com/api/orgs", "GET https://two.example.com/api/orgs"])
+    ]);
+    expect(seen).toEqual([
+      "GET https://one.example.com/api/orgs",
+      "GET https://two.example.com/api/orgs",
+    ]);
   }),
-)
+);
 
 it.live("token refresh persists the new token", () =>
   Effect.gen(function* () {
-    const id = AccountID.make("user-1")
+    const id = AccountID.make("user-1");
 
     yield* AccountRepo.Service.use((r) =>
       r.persistAccount({
@@ -187,7 +206,7 @@ it.live("token refresh persists the new token", () =>
         expiry: Date.now() - 1_000,
         orgID: Option.none(),
       }),
-    )
+    );
 
     const client = HttpClient.make((req) =>
       Effect.succeed(
@@ -199,24 +218,24 @@ it.live("token refresh persists the new token", () =>
             })
           : json(req, {}, 404),
       ),
-    )
+    );
 
-    const token = yield* Account.use.token(id).pipe(Effect.provide(live(client)))
+    const token = yield* Account.use.token(id).pipe(Effect.provide(live(client)));
 
-    expect(Option.getOrThrow(token)).toBeDefined()
-    expect(String(Option.getOrThrow(token))).toBe("at_new")
+    expect(Option.getOrThrow(token)).toBeDefined();
+    expect(String(Option.getOrThrow(token))).toBe("at_new");
 
-    const row = yield* AccountRepo.use.getRow(id)
-    const value = Option.getOrThrow(row)
-    expect(value.access_token).toBe(AccessToken.make("at_new"))
-    expect(value.refresh_token).toBe(RefreshToken.make("rt_new"))
-    expect(value.token_expiry).toBeGreaterThan(Date.now())
+    const row = yield* AccountRepo.use.getRow(id);
+    const value = Option.getOrThrow(row);
+    expect(value.access_token).toBe(AccessToken.make("at_new"));
+    expect(value.refresh_token).toBe(RefreshToken.make("rt_new"));
+    expect(value.token_expiry).toBeGreaterThan(Date.now());
   }),
-)
+);
 
 it.live("token refreshes before expiry when inside the eager refresh window", () =>
   Effect.gen(function* () {
-    const id = AccountID.make("user-1")
+    const id = AccountID.make("user-1");
 
     yield* AccountRepo.Service.use((r) =>
       r.persistAccount({
@@ -228,39 +247,39 @@ it.live("token refreshes before expiry when inside the eager refresh window", ()
         expiry: Date.now() + insideEagerRefreshWindow,
         orgID: Option.none(),
       }),
-    )
+    );
 
-    let refreshCalls = 0
+    let refreshCalls = 0;
     const client = HttpClient.make((req) =>
       Effect.promise(async () => {
         if (req.url === "https://one.example.com/auth/device/token") {
-          refreshCalls += 1
+          refreshCalls += 1;
           return json(req, {
             access_token: "at_new",
             refresh_token: "rt_new",
             expires_in: 60,
-          })
+          });
         }
 
-        return json(req, {}, 404)
+        return json(req, {}, 404);
       }),
-    )
+    );
 
-    const token = yield* Account.use.token(id).pipe(Effect.provide(live(client)))
+    const token = yield* Account.use.token(id).pipe(Effect.provide(live(client)));
 
-    expect(String(Option.getOrThrow(token))).toBe("at_new")
-    expect(refreshCalls).toBe(1)
+    expect(String(Option.getOrThrow(token))).toBe("at_new");
+    expect(refreshCalls).toBe(1);
 
-    const row = yield* AccountRepo.use.getRow(id)
-    const value = Option.getOrThrow(row)
-    expect(value.access_token).toBe(AccessToken.make("at_new"))
-    expect(value.refresh_token).toBe(RefreshToken.make("rt_new"))
+    const row = yield* AccountRepo.use.getRow(id);
+    const value = Option.getOrThrow(row);
+    expect(value.access_token).toBe(AccessToken.make("at_new"));
+    expect(value.refresh_token).toBe(RefreshToken.make("rt_new"));
   }),
-)
+);
 
 it.live("concurrent config and token requests coalesce token refresh", () =>
   Effect.gen(function* () {
-    const id = AccountID.make("user-1")
+    const id = AccountID.make("user-1");
 
     yield* AccountRepo.Service.use((r) =>
       r.persistAccount({
@@ -272,21 +291,21 @@ it.live("concurrent config and token requests coalesce token refresh", () =>
         expiry: Date.now() - 1_000,
         orgID: Option.some(OrgID.make("org-9")),
       }),
-    )
+    );
 
-    let refreshCalls = 0
+    let refreshCalls = 0;
     const client = HttpClient.make((req) =>
       Effect.promise(async () => {
         if (req.url === "https://one.example.com/auth/device/token") {
-          refreshCalls += 1
+          refreshCalls += 1;
 
           if (refreshCalls === 1) {
-            await new Promise((resolve) => setTimeout(resolve, 25))
+            await new Promise((resolve) => setTimeout(resolve, 25));
             return json(req, {
               access_token: "at_new",
               refresh_token: "rt_new",
               expires_in: 60,
-            })
+            });
           }
 
           return json(
@@ -296,35 +315,35 @@ it.live("concurrent config and token requests coalesce token refresh", () =>
               error_description: "refresh token already used",
             },
             400,
-          )
+          );
         }
 
         if (req.url === "https://one.example.com/api/config") {
-          return json(req, { config: { theme: "light", seats: 5 } })
+          return json(req, { config: { theme: "light", seats: 5 } });
         }
 
-        return json(req, {}, 404)
+        return json(req, {}, 404);
       }),
-    )
+    );
 
     const [cfg, token] = yield* Account.Service.use((s) =>
       Effect.all([s.config(id, OrgID.make("org-9")), s.token(id)], { concurrency: 2 }),
-    ).pipe(Effect.provide(live(client)))
+    ).pipe(Effect.provide(live(client)));
 
-    expect(Option.getOrThrow(cfg)).toEqual({ theme: "light", seats: 5 })
-    expect(String(Option.getOrThrow(token))).toBe("at_new")
-    expect(refreshCalls).toBe(1)
+    expect(Option.getOrThrow(cfg)).toEqual({ theme: "light", seats: 5 });
+    expect(String(Option.getOrThrow(token))).toBe("at_new");
+    expect(refreshCalls).toBe(1);
 
-    const row = yield* AccountRepo.use.getRow(id)
-    const value = Option.getOrThrow(row)
-    expect(value.access_token).toBe(AccessToken.make("at_new"))
-    expect(value.refresh_token).toBe(RefreshToken.make("rt_new"))
+    const row = yield* AccountRepo.use.getRow(id);
+    const value = Option.getOrThrow(row);
+    expect(value.access_token).toBe(AccessToken.make("at_new"));
+    expect(value.refresh_token).toBe(RefreshToken.make("rt_new"));
   }),
-)
+);
 
 it.live("config sends the selected org header", () =>
   Effect.gen(function* () {
-    const id = AccountID.make("user-1")
+    const id = AccountID.make("user-1");
 
     yield* AccountRepo.Service.use((r) =>
       r.persistAccount({
@@ -336,31 +355,33 @@ it.live("config sends the selected org header", () =>
         expiry: Date.now() + outsideEagerRefreshWindow,
         orgID: Option.none(),
       }),
-    )
+    );
 
-    const seen: { auth?: string; org?: string } = {}
+    const seen: { auth?: string; org?: string } = {};
     const client = HttpClient.make((req) =>
       Effect.gen(function* () {
-        seen.auth = req.headers.authorization
-        seen.org = req.headers["x-org-id"]
+        seen.auth = req.headers.authorization;
+        seen.org = req.headers["x-org-id"];
 
         if (req.url === "https://one.example.com/api/config") {
-          return json(req, { config: { theme: "light", seats: 5 } })
+          return json(req, { config: { theme: "light", seats: 5 } });
         }
 
-        return json(req, {}, 404)
+        return json(req, {}, 404);
       }),
-    )
+    );
 
-    const cfg = yield* Account.Service.use((s) => s.config(id, OrgID.make("org-9"))).pipe(Effect.provide(live(client)))
+    const cfg = yield* Account.Service.use((s) => s.config(id, OrgID.make("org-9"))).pipe(
+      Effect.provide(live(client)),
+    );
 
-    expect(Option.getOrThrow(cfg)).toEqual({ theme: "light", seats: 5 })
+    expect(Option.getOrThrow(cfg)).toEqual({ theme: "light", seats: 5 });
     expect(seen).toEqual({
       auth: "Bearer at_1",
       org: "org-9",
-    })
+    });
   }),
-)
+);
 
 it.live("poll stores the account and first org on success", () =>
   Effect.gen(function* () {
@@ -379,25 +400,27 @@ it.live("poll stores the account and first org on success", () =>
               ? json(req, [org("org-1", "One")])
               : json(req, {}, 404),
       ),
-    )
+    );
 
-    const res = yield* Account.Service.use((s) => s.poll(login())).pipe(Effect.provide(live(client)))
+    const res = yield* Account.Service.use((s) => s.poll(login())).pipe(
+      Effect.provide(live(client)),
+    );
 
-    expect(res._tag).toBe("PollSuccess")
+    expect(res._tag).toBe("PollSuccess");
     if (res._tag === "PollSuccess") {
-      expect(res.email).toBe("user@example.com")
+      expect(res.email).toBe("user@example.com");
     }
 
-    const active = yield* AccountRepo.use.active()
+    const active = yield* AccountRepo.use.active();
     expect(Option.getOrThrow(active)).toEqual(
       expect.objectContaining({
         id: "user-1",
         email: "user@example.com",
         active_org_id: "org-1",
       }),
-    )
+    );
   }),
-)
+);
 
 for (const [name, body, expectedTag] of [
   [
@@ -435,10 +458,10 @@ for (const [name, body, expectedTag] of [
 ] as const) {
   it.live(`poll returns ${name} for ${body.error}`, () =>
     Effect.gen(function* () {
-      const result = yield* poll(body)
-      expect(result._tag).toBe(expectedTag)
+      const result = yield* poll(body);
+      expect(result._tag).toBe(expectedTag);
     }),
-  )
+  );
 }
 
 it.live("poll returns poll error for other OAuth errors", () =>
@@ -446,11 +469,11 @@ it.live("poll returns poll error for other OAuth errors", () =>
     const result = yield* poll({
       error: "server_error",
       error_description: "An unexpected error occurred",
-    })
+    });
 
-    expect(result._tag).toBe("PollError")
+    expect(result._tag).toBe("PollError");
     if (result._tag === "PollError") {
-      expect(String(result.cause)).toContain("server_error")
+      expect(String(result.cause)).toContain("server_error");
     }
   }),
-)
+);

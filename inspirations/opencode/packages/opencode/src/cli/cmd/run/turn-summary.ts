@@ -1,12 +1,12 @@
-import * as Locale from "@/util/locale"
-import type { SessionMessages } from "./session.shared"
-import type { RunProvider, StreamCommit } from "./types"
+import * as Locale from "@/util/locale";
+import type { SessionMessages } from "./session.shared";
+import type { RunProvider, StreamCommit } from "./types";
 
 export function turnSummaryCommit(input: {
-  agent: string
-  model: string
-  duration: string
-  messageID?: string
+  agent: string;
+  model: string;
+  duration: string;
+  messageID?: string;
 }): StreamCommit {
   return {
     kind: "system",
@@ -19,29 +19,29 @@ export function turnSummaryCommit(input: {
       duration: input.duration,
     },
     messageID: input.messageID,
-  }
+  };
 }
 
 export function messageTurnSummaryCommit(
   message: SessionMessages[number],
   providers?: RunProvider[],
 ): StreamCommit | undefined {
-  const info = message.info
+  const info = message.info;
   if (info.role !== "assistant") {
-    return
+    return;
   }
 
-  const completed = info.time.completed
+  const completed = info.time.completed;
   if (typeof completed !== "number" || completed <= info.time.created) {
-    return
+    return;
   }
 
-  const model = providers?.find((item) => item.id === info.providerID)?.models[info.modelID]?.name
+  const model = providers?.find((item) => item.id === info.providerID)?.models[info.modelID]?.name;
 
   return turnSummaryCommit({
     agent: Locale.titlecase(info.agent),
     model: model ?? info.modelID,
     duration: Locale.duration(completed - info.time.created),
     messageID: info.id,
-  })
+  });
 }

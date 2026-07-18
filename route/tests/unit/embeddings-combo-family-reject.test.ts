@@ -73,6 +73,6 @@ test("createEmbeddingResponse allows a uniform-dimension embedding combo to proc
   assert.doesNotMatch(
     body,
     /incompatible vector dimensions/,
-    "uniform combo must not trip the dimension guard"
+    "uniform combo must not trip the dimension guard",
   );
 });

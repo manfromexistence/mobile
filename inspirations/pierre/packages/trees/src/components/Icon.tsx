@@ -1,5 +1,5 @@
 /** @jsxImportSource preact */
-import type { JSX } from 'preact';
+import type { JSX } from "preact";
 
 const DEFAULT_WIDTH = 16;
 const DEFAULT_HEIGHT = 16;
@@ -28,26 +28,19 @@ export function Icon({
   label?: string;
   alignCapitals?: boolean;
 }): JSX.Element {
-  'use no memo';
-  const href = `#${name.replace(/^#/, '')}`;
+  "use no memo";
+  const href = `#${name.replace(/^#/, "")}`;
   const override = ICON_SIZE_OVERRIDES[name] ?? {
     width: DEFAULT_WIDTH,
     height: DEFAULT_HEIGHT,
   };
-  const {
-    width: iconWidth,
-    height: iconHeight,
-    viewBox: overrideViewBox,
-  } = override;
+  const { width: iconWidth, height: iconHeight, viewBox: overrideViewBox } = override;
   const width = propWidth ?? iconWidth;
   const height = propHeight ?? iconHeight;
-  const viewBox =
-    propViewBox ?? overrideViewBox ?? `0 0 ${iconWidth} ${iconHeight}`;
+  const viewBox = propViewBox ?? overrideViewBox ?? `0 0 ${iconWidth} ${iconHeight}`;
 
   const a11yProps =
-    label != null
-      ? { 'aria-label': label, role: 'img' as const }
-      : { 'aria-hidden': true };
+    label != null ? { "aria-label": label, role: "img" as const } : { "aria-hidden": true };
 
   return (
     <svg

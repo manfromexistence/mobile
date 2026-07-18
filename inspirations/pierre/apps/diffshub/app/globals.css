@@ -1,5 +1,5 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant light (&:is(.light *));
 @custom-variant dark (&:is(.dark *, .dark));
@@ -63,11 +63,7 @@
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
-  --border-opaque: color-mix(
-    in oklch,
-    var(--border) 100%,
-    var(--diffshub-sidebar-bg) 0%
-  );
+  --border-opaque: color-mix(in oklch, var(--border) 100%, var(--diffshub-sidebar-bg) 0%);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.646 0.222 41.116);
@@ -106,11 +102,7 @@
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
-  --border-opaque: color-mix(
-    in oklch,
-    var(--diffshub-sidebar-bg) 90%,
-    oklch(1 0 0)
-  );
+  --border-opaque: color-mix(in oklch, var(--diffshub-sidebar-bg) 90%, oklch(1 0 0));
   --color-border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
@@ -149,11 +141,7 @@
     --accent-foreground: oklch(0.985 0 0);
     --destructive: oklch(0.704 0.191 22.216);
     --border: oklch(1 0 0 / 10%);
-    --border-opaque: color-mix(
-      in oklch,
-      var(--diffshub-sidebar-bg) 90%,
-      oklch(1 0 0)
-    );
+    --border-opaque: color-mix(in oklch, var(--diffshub-sidebar-bg) 90%, oklch(1 0 0));
     --color-border: oklch(1 0 0 / 10%);
     --input: oklch(1 0 0 / 15%);
     --ring: oklch(0.556 0 0);
@@ -300,8 +288,7 @@
   background: var(--diffshub-scrollbar-track-bg, transparent);
   /* Reuse the inter-file separator so the gutter edge reads as one hairline
      with the file boundaries. */
-  border-left: 1px solid
-    var(--diffshub-diff-separator, var(--color-border-opaque));
+  border-left: 1px solid var(--diffshub-diff-separator, var(--color-border-opaque));
   margin-top: -1px;
 }
 
@@ -342,8 +329,7 @@
 
 @supports (-moz-appearance: none) {
   .cv-scrollbar {
-    scrollbar-color: var(--cv-scrollbar-thumb-bg)
-      var(--diffshub-scrollbar-track-bg, transparent);
+    scrollbar-color: var(--cv-scrollbar-thumb-bg) var(--diffshub-scrollbar-track-bg, transparent);
   }
   .cv-mini-scrollbar {
     scrollbar-color: var(--cv-mini-scrollbar-thumb-bg) transparent;
@@ -351,10 +337,10 @@
   }
 }
 
-[data-slot='header'] {
+[data-slot="header"] {
   @apply border-b border-transparent transition-[border-color] duration-200;
 }
-[data-slot='header'].is-stuck {
+[data-slot="header"].is-stuck {
   @apply border-foreground/10;
 }
 
@@ -386,9 +372,7 @@
   .faq-item::details-content {
     block-size: 0;
     overflow-y: clip;
-    transition:
-      content-visibility 0.2s ease allow-discrete,
-      block-size 0.2s;
+    transition: content-visibility 0.2s ease allow-discrete, block-size 0.2s;
   }
 
   .faq-item[open]::details-content {
@@ -404,7 +388,7 @@
 .diffshub-border-deleted::before {
   flex-shrink: 0;
   display: block;
-  content: '';
+  content: "";
   width: 4px;
   height: 24px;
   background-image: linear-gradient(

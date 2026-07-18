@@ -1,6 +1,6 @@
-import { Collapsible } from "@kobalte/core/collapsible"
-import { type ComponentProps, type JSX, Show, createMemo, splitProps } from "solid-js"
-import "./tool-error-card-v2.css"
+import { Collapsible } from "@kobalte/core/collapsible";
+import { type ComponentProps, type JSX, Show, createMemo, splitProps } from "solid-js";
+import "./tool-error-card-v2.css";
 
 function BanIcon() {
   return (
@@ -18,12 +18,12 @@ function BanIcon() {
         stroke="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 /** duo-progress-25: faint track ring + ~25% solid arc (Figma OpenCode DS) */
 function LoaderIcon() {
-  const r = 5.9
+  const r = 5.9;
   return (
     <svg
       data-slot="tool-error-card-loader"
@@ -54,7 +54,7 @@ function LoaderIcon() {
         />
       </g>
     </svg>
-  )
+  );
 }
 
 function ChevronIcon() {
@@ -73,19 +73,19 @@ function ChevronIcon() {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export interface ToolErrorCardV2Props extends Omit<ComponentProps<"div">, "children" | "title"> {
-  title: JSX.Element | string
-  subtitle: JSX.Element | string
-  suffix?: JSX.Element | string
-  loading?: boolean
-  open?: boolean
-  defaultOpen?: boolean
-  onOpenChange?: (open: boolean) => void
+  title: JSX.Element | string;
+  subtitle: JSX.Element | string;
+  suffix?: JSX.Element | string;
+  loading?: boolean;
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
   /** When set, subtitle renders as a link (clicks do not toggle expand). */
-  subtitleHref?: string
+  subtitleHref?: string;
 }
 
 export function ToolErrorCardV2(props: ToolErrorCardV2Props) {
@@ -100,14 +100,14 @@ export function ToolErrorCardV2(props: ToolErrorCardV2Props) {
     "subtitleHref",
     "class",
     "classList",
-  ])
+  ]);
 
   const hasSuffix = createMemo(() => {
-    const s = local.suffix
-    if (s == null) return false
-    if (typeof s === "string") return s.length > 0
-    return true
-  })
+    const s = local.suffix;
+    if (s == null) return false;
+    if (typeof s === "string") return s.length > 0;
+    return true;
+  });
 
   return (
     <Collapsible
@@ -162,5 +162,5 @@ export function ToolErrorCardV2(props: ToolErrorCardV2Props) {
         </Collapsible.Content>
       </Show>
     </Collapsible>
-  )
+  );
 }

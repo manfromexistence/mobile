@@ -1,38 +1,38 @@
-export * as PluginInternal from "./internal"
+export * as PluginInternal from "./internal";
 
-import { makeLocationNode } from "../effect/app-node"
-import { httpClient } from "../effect/app-node-platform"
-import type { PluginContext } from "@opencode-ai/plugin/v2/effect"
-import { Effect, Layer, Scope } from "effect"
-import { AgentV2 } from "../agent"
-import { Catalog } from "../catalog"
-import { CommandV2 } from "../command"
-import { Config } from "../config"
-import { ConfigAgentPlugin } from "../config/plugin/agent"
-import { ConfigCommandPlugin } from "../config/plugin/command"
-import { ConfigExternalPlugin } from "../config/plugin/external"
-import { ConfigProviderPlugin } from "../config/plugin/provider"
-import { ConfigReferencePlugin } from "../config/plugin/reference"
-import { ConfigSkillPlugin } from "../config/plugin/skill"
-import { EventV2 } from "../event"
-import { FileSystem } from "../filesystem"
-import { FSUtil } from "../fs-util"
-import { Global } from "../global"
-import { Integration } from "../integration"
-import { Location } from "../location"
-import { ModelsDev } from "../models-dev"
-import { Npm } from "../npm"
-import { PluginV2 } from "../plugin"
-import { Reference } from "../reference"
-import { SkillV2 } from "../skill"
-import { State } from "../state"
-import { FetchHttpClient, HttpClient } from "effect/unstable/http"
-import { AgentPlugin } from "./agent"
-import { CommandPlugin } from "./command"
-import { ModelsDevPlugin } from "./models-dev"
-import { ProviderPlugins } from "./provider"
-import { SkillPlugin } from "./skill"
-import { VariantPlugin } from "./variant"
+import { makeLocationNode } from "../effect/app-node";
+import { httpClient } from "../effect/app-node-platform";
+import type { PluginContext } from "@opencode-ai/plugin/v2/effect";
+import { Effect, Layer, Scope } from "effect";
+import { AgentV2 } from "../agent";
+import { Catalog } from "../catalog";
+import { CommandV2 } from "../command";
+import { Config } from "../config";
+import { ConfigAgentPlugin } from "../config/plugin/agent";
+import { ConfigCommandPlugin } from "../config/plugin/command";
+import { ConfigExternalPlugin } from "../config/plugin/external";
+import { ConfigProviderPlugin } from "../config/plugin/provider";
+import { ConfigReferencePlugin } from "../config/plugin/reference";
+import { ConfigSkillPlugin } from "../config/plugin/skill";
+import { EventV2 } from "../event";
+import { FileSystem } from "../filesystem";
+import { FSUtil } from "../fs-util";
+import { Global } from "../global";
+import { Integration } from "../integration";
+import { Location } from "../location";
+import { ModelsDev } from "../models-dev";
+import { Npm } from "../npm";
+import { PluginV2 } from "../plugin";
+import { Reference } from "../reference";
+import { SkillV2 } from "../skill";
+import { State } from "../state";
+import { FetchHttpClient, HttpClient } from "effect/unstable/http";
+import { AgentPlugin } from "./agent";
+import { CommandPlugin } from "./command";
+import { ModelsDevPlugin } from "./models-dev";
+import { ProviderPlugins } from "./provider";
+import { SkillPlugin } from "./skill";
+import { VariantPlugin } from "./variant";
 
 export type Requirements =
   | AgentV2.Service
@@ -49,35 +49,35 @@ export type Requirements =
   | ModelsDev.Service
   | Npm.Service
   | Reference.Service
-  | SkillV2.Service
+  | SkillV2.Service;
 
 export interface Plugin<R = never> {
-  readonly id: string
-  readonly effect: (context: PluginContext) => Effect.Effect<void, never, R | Scope.Scope>
+  readonly id: string;
+  readonly effect: (context: PluginContext) => Effect.Effect<void, never, R | Scope.Scope>;
 }
 
 export function define<R>(plugin: Plugin<R>) {
-  return plugin
+  return plugin;
 }
 
 const layer = Layer.effectDiscard(
   Effect.gen(function* () {
-    const catalog = yield* Catalog.Service
-    const commands = yield* CommandV2.Service
-    const plugin = yield* PluginV2.Service
-    const integration = yield* Integration.Service
-    const agents = yield* AgentV2.Service
-    const config = yield* Config.Service
-    const location = yield* Location.Service
-    const modelsDev = yield* ModelsDev.Service
-    const npm = yield* Npm.Service
-    const events = yield* EventV2.Service
-    const fs = yield* FSUtil.Service
-    const filesystem = yield* FileSystem.Service
-    const global = yield* Global.Service
-    const http = yield* HttpClient.HttpClient
-    const skill = yield* SkillV2.Service
-    const reference = yield* Reference.Service
+    const catalog = yield* Catalog.Service;
+    const commands = yield* CommandV2.Service;
+    const plugin = yield* PluginV2.Service;
+    const integration = yield* Integration.Service;
+    const agents = yield* AgentV2.Service;
+    const config = yield* Config.Service;
+    const location = yield* Location.Service;
+    const modelsDev = yield* ModelsDev.Service;
+    const npm = yield* Npm.Service;
+    const events = yield* EventV2.Service;
+    const fs = yield* FSUtil.Service;
+    const filesystem = yield* FileSystem.Service;
+    const global = yield* Global.Service;
+    const http = yield* HttpClient.HttpClient;
+    const skill = yield* SkillV2.Service;
+    const reference = yield* Reference.Service;
     const add = <R>(input: Plugin<R>) => {
       const loaded = {
         id: input.id,
@@ -101,33 +101,33 @@ const layer = Layer.effectDiscard(
               Effect.provideService(SkillV2.Service, skill),
               Effect.provideService(Reference.Service, reference),
             ),
-      }
-      return plugin.add(PluginV2.ID.make(loaded.id), loaded.effect)
-    }
+      };
+      return plugin.add(PluginV2.ID.make(loaded.id), loaded.effect);
+    };
 
     yield* State.batch(
       Effect.gen(function* () {
-        yield* add(ConfigReferencePlugin.Plugin)
-        yield* add(AgentPlugin.Plugin)
-        yield* add(CommandPlugin.Plugin)
-        yield* add(SkillPlugin.Plugin)
-        yield* add(ModelsDevPlugin)
-        yield* add(ConfigAgentPlugin.Plugin)
-        yield* add(ConfigCommandPlugin.Plugin)
-        yield* add(ConfigSkillPlugin.Plugin)
-        for (const item of ProviderPlugins) yield* add(item)
-        yield* add(ConfigExternalPlugin.Plugin)
-        yield* add(ConfigProviderPlugin.Plugin)
-        yield* add(VariantPlugin.Plugin)
+        yield* add(ConfigReferencePlugin.Plugin);
+        yield* add(AgentPlugin.Plugin);
+        yield* add(CommandPlugin.Plugin);
+        yield* add(SkillPlugin.Plugin);
+        yield* add(ModelsDevPlugin);
+        yield* add(ConfigAgentPlugin.Plugin);
+        yield* add(ConfigCommandPlugin.Plugin);
+        yield* add(ConfigSkillPlugin.Plugin);
+        for (const item of ProviderPlugins) yield* add(item);
+        yield* add(ConfigExternalPlugin.Plugin);
+        yield* add(ConfigProviderPlugin.Plugin);
+        yield* add(VariantPlugin.Plugin);
       }),
-    ).pipe(Effect.withSpan("PluginInternal.boot"), Effect.forkScoped({ startImmediately: true }))
+    ).pipe(Effect.withSpan("PluginInternal.boot"), Effect.forkScoped({ startImmediately: true }));
   }),
-)
+);
 
 export const locationLayer = layer.pipe(
   Layer.provideMerge(Config.locationLayer),
   Layer.provideMerge(FetchHttpClient.layer),
-)
+);
 
 export const node = makeLocationNode({
   name: "plugin-internal",
@@ -150,4 +150,4 @@ export const node = makeLocationNode({
     SkillV2.node,
     Reference.node,
   ],
-})
+});

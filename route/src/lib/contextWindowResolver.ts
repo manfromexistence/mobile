@@ -46,7 +46,7 @@ export interface ReconcileResult {
  */
 export function reconcileContextWindows(
   discovered: DiscoveredWindow[],
-  deps: ReconcileDeps
+  deps: ReconcileDeps,
 ): ReconcileResult {
   const result: ReconcileResult = { scanned: 0, written: 0, removed: 0, skippedManual: 0 };
   for (const { provider, modelId, window } of discovered) {
@@ -75,7 +75,7 @@ export function reconcileContextWindows(
 
 /** Flatten the per-provider discovery map into the reconcile input. */
 function toDiscoveredWindows(
-  byProvider: Record<string, Array<{ id: string; inputTokenLimit?: number }>>
+  byProvider: Record<string, Array<{ id: string; inputTokenLimit?: number }>>,
 ): DiscoveredWindow[] {
   const out: DiscoveredWindow[] = [];
   for (const [provider, models] of Object.entries(byProvider)) {

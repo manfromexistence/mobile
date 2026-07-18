@@ -1,9 +1,9 @@
-import type { Options } from 'tsup';
+import type { Options } from "tsup";
 
 const baseConfig: Options = {
-  entry: ['./index.ts'],
-  format: ['cjs', 'esm'],
-  outDir: 'esm',
+  entry: ["./index.ts"],
+  format: ["cjs", "esm"],
+  outDir: "esm",
   clean: true,
 };
 
@@ -14,10 +14,10 @@ const baseConfig: Options = {
 
 const browserConfig: Options = {
   ...baseConfig,
-  platform: 'browser',
-  target: 'es2015',
+  platform: "browser",
+  target: "es2015",
   splitting: false,
-  outDir: 'esm',
+  outDir: "esm",
 };
 
 export default [browserConfig];

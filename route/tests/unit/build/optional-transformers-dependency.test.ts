@@ -18,20 +18,27 @@ test("@huggingface/transformers is optional so onnxruntime CUDA install failures
   assert.equal(
     pkg.dependencies?.["@huggingface/transformers"],
     undefined,
-    "transformers must not be a regular dependency because it pulls onnxruntime-node install scripts"
+    "transformers must not be a regular dependency because it pulls onnxruntime-node install scripts",
   );
   assert.equal(pkg.optionalDependencies?.["@huggingface/transformers"], "3.5.2");
 });
 
 test("package-lock marks transformers and its onnxruntime runtime as optional", () => {
   const lock = readJson<{
-    packages: Record<string, { optional?: boolean; dependencies?: Record<string, string>; optionalDependencies?: Record<string, string> }>;
+    packages: Record<
+      string,
+      {
+        optional?: boolean;
+        dependencies?: Record<string, string>;
+        optionalDependencies?: Record<string, string>;
+      }
+    >;
   }>("package-lock.json");
 
   assert.equal(
     lock.packages[""]?.dependencies?.["@huggingface/transformers"],
     undefined,
-    "root lock dependencies must not keep transformers as mandatory"
+    "root lock dependencies must not keep transformers as mandatory",
   );
   assert.equal(lock.packages[""]?.optionalDependencies?.["@huggingface/transformers"], "3.5.2");
 

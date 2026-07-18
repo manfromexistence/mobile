@@ -302,7 +302,7 @@ describe("disableThinkingIfToolChoiceForced", () => {
     const thinkingType = body.thinking?.type;
     assert.ok(
       !thinkingType || thinkingType === "disabled" || thinkingType === "none",
-      "thinking must be disabled when tool_choice forces a specific tool"
+      "thinking must be disabled when tool_choice forces a specific tool",
     );
     assert.equal(body.context_management, undefined);
   });

@@ -60,7 +60,7 @@ export function shouldRequestClaudeSummarizedThinking(value: unknown): boolean {
 }
 
 export function unsupportedFeature(
-  message: string
+  message: string,
 ): Error & { statusCode: number; errorType: string } {
   const error = new Error(message) as Error & { statusCode: number; errorType: string };
   error.statusCode = 400;

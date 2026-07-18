@@ -56,7 +56,7 @@ export function saveServiceModels(tool: string, models: ServiceModel[]): void {
     db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
       NAMESPACE,
       tool,
-      JSON.stringify(merged)
+      JSON.stringify(merged),
     );
   }
 }
@@ -74,6 +74,6 @@ export function markAllUnavailable(tool: string): void {
   db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     NAMESPACE,
     tool,
-    JSON.stringify(updated)
+    JSON.stringify(updated),
   );
 }

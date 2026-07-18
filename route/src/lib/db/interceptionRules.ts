@@ -150,7 +150,7 @@ export function setInterceptionRules(provider: string, rules: ProviderIntercepti
 
   const db = getDbInstance();
   const stmt = db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)",
   );
 
   const normalized: ProviderInterceptionRules = {
@@ -173,7 +173,7 @@ export function deleteInterceptionRules(provider: string): void {
   const db = getDbInstance();
   db.prepare("DELETE FROM key_value WHERE namespace = ? AND key = ?").run(
     NAMESPACE,
-    normalizedProvider
+    normalizedProvider,
   );
   invalidateCache();
 }
@@ -186,7 +186,7 @@ export function deleteInterceptionRules(provider: string): void {
  */
 export function resolveInterceptSearch(
   provider: string | null | undefined,
-  model: string | null | undefined
+  model: string | null | undefined,
 ): boolean | undefined {
   const normalizedProvider = toNormalizedString(provider);
   if (!normalizedProvider) return undefined;

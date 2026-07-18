@@ -54,7 +54,7 @@ function normalizeKieMusicTracks(recordData: unknown): Array<Record<string, unkn
     if (Array.isArray(candidate) && candidate.length > 0) {
       return candidate
         .map((track) =>
-          isJsonObject(track) ? track : typeof track === "string" ? { audioUrl: track } : null
+          isJsonObject(track) ? track : typeof track === "string" ? { audioUrl: track } : null,
         )
         .filter((track): track is Record<string, unknown> => track !== null);
     }
@@ -198,7 +198,7 @@ async function handleComfyUIMusicGeneration({ model, provider, providerConfig, b
     const promptPreview = String(body.prompt ?? "").slice(0, 60);
     log.info(
       "MUSIC",
-      `${provider}/${model} (comfyui) | prompt: "${promptPreview}..." | duration: ${duration}s`
+      `${provider}/${model} (comfyui) | prompt: "${promptPreview}..." | duration: ${duration}s`,
     );
   }
 
@@ -213,7 +213,7 @@ async function handleComfyUIMusicGeneration({ model, provider, providerConfig, b
         providerConfig.baseUrl,
         file.filename,
         file.subfolder,
-        file.type
+        file.type,
       );
       const base64 = Buffer.from(buffer).toString("base64");
       audioFiles.push({ b64_json: base64, format: "wav" });
@@ -324,7 +324,7 @@ async function handleKieMusicGeneration({
     const promptPreview = String(body.prompt ?? "").slice(0, 60);
     log.info(
       "MUSIC",
-      `${provider}/${model} (${isMarket ? "market" : "direct"}) | prompt: "${promptPreview}..."`
+      `${provider}/${model} (${isMarket ? "market" : "direct"}) | prompt: "${promptPreview}..."`,
     );
   }
 
@@ -369,7 +369,7 @@ async function handleKieMusicGeneration({
               ? track.audio_url
               : typeof track.url === "string"
                 ? track.url
-                : null
+                : null,
         )
         .filter((url): url is string => typeof url === "string" && url.length > 0)
         .map((url: string) => ({ url, format: "mp3" }));
@@ -579,7 +579,7 @@ async function handleUdioMusicGeneration({
       await new Promise((r) => setTimeout(r, 5000));
       const statusRes = await fetch(
         `https://www.udio.com/api/songs?songIds=${trackIds.join(",")}`,
-        { headers: { Cookie: cookie } }
+        { headers: { Cookie: cookie } },
       );
       const songs = await statusRes.json();
       const ready = songs.filter((s) => s.finished && s.song_path);

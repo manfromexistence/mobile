@@ -36,7 +36,7 @@ test("degenerate input with pipeline=['lite']: engineBreakdown[0] matches outer 
     makeReq({
       messages: [{ role: "user", content: "user: " }],
       pipeline: ["lite"],
-    })
+    }),
   );
   const body = await res.json();
   assert.equal(res.status, 200, `expected 200, got ${res.status}: ${JSON.stringify(body)}`);
@@ -44,7 +44,7 @@ test("degenerate input with pipeline=['lite']: engineBreakdown[0] matches outer 
   const engines = (body.engineBreakdown ?? []).map((e: { engine: string }) => e.engine);
   assert.ok(
     engines.every((e: string) => e === "lite"),
-    `expected engineBreakdown to only contain 'lite', got ${JSON.stringify(engines)}`
+    `expected engineBreakdown to only contain 'lite', got ${JSON.stringify(engines)}`,
   );
 
   assert.equal(body.engineBreakdown.length, 1);
@@ -52,12 +52,12 @@ test("degenerate input with pipeline=['lite']: engineBreakdown[0] matches outer 
   assert.equal(
     step.originalTokens,
     body.originalTokens,
-    `outer originalTokens=${body.originalTokens} vs engine ${step.engine} originalTokens=${step.originalTokens}`
+    `outer originalTokens=${body.originalTokens} vs engine ${step.engine} originalTokens=${step.originalTokens}`,
   );
   assert.equal(
     step.compressedTokens,
     body.compressedTokens,
-    `outer compressedTokens=${body.compressedTokens} vs engine ${step.engine} compressedTokens=${step.compressedTokens}`
+    `outer compressedTokens=${body.compressedTokens} vs engine ${step.engine} compressedTokens=${step.compressedTokens}`,
   );
 });
 
@@ -68,7 +68,7 @@ test("single-engine dispatch (engineId='rtk'): engineBreakdown[0] matches outer 
     makeReq({
       messages: [{ role: "user", content: "a" }],
       engineId: "rtk",
-    })
+    }),
   );
   const body = await res.json();
   assert.equal(res.status, 200, `expected 200, got ${res.status}: ${JSON.stringify(body)}`);

@@ -109,7 +109,7 @@ function encodeSseEvent(
   }: {
     event?: string;
     includeDone?: boolean;
-  } = {}
+  } = {},
 ) {
   if (event && /[\r\n]/.test(event)) {
     throw new Error("SSE event names must not contain newlines");
@@ -227,7 +227,7 @@ export function createStreamController({
     const duration = Date.now() - startTime;
     const p = provider?.toUpperCase() || "UNKNOWN";
     console.log(
-      `[${getTimeString()}] 🌊 [STREAM] ${p} | ${model || "unknown"} | ${duration}ms | ${status}`
+      `[${getTimeString()}] 🌊 [STREAM] ${p} | ${model || "unknown"} | ${duration}ms | ${status}`,
     );
   };
 
@@ -379,7 +379,7 @@ export function createStreamController({
 function buildStreamErrorChunks(
   errorMsg: string,
   statusCode: number,
-  clientResponseFormat?: string | null
+  clientResponseFormat?: string | null,
 ) {
   const statusMapping = getStreamErrorStatusMapping(statusCode);
 
@@ -468,7 +468,7 @@ export function createDisconnectAwareStream(transformStream, streamController) {
     }
     clientTerminalSeen = hasClientTerminalSseMarker(
       terminalTail,
-      streamController.clientResponseFormat
+      streamController.clientResponseFormat,
     );
     if (clientTerminalSeen) {
       streamController.markClientTerminalSeen?.();
@@ -519,7 +519,7 @@ export function createDisconnectAwareStream(transformStream, streamController) {
             for (const chunk of buildStreamErrorChunks(
               errorMsg,
               statusCode,
-              streamController.clientResponseFormat
+              streamController.clientResponseFormat,
             )) {
               controller.enqueue(chunk);
             }
@@ -543,7 +543,7 @@ export function createDisconnectAwareStream(transformStream, streamController) {
         await Promise.allSettled([reader.cancel(reason), writer.abort(reason)]);
       },
     },
-    { highWaterMark: 16384 }
+    { highWaterMark: 16384 },
   );
 }
 
@@ -570,7 +570,7 @@ export function pipeWithDisconnect(
   providerResponse: Response,
   transformStream: TransformStream<Uint8Array, Uint8Array>,
   streamController: StreamController,
-  opts: { stallTimeoutMs?: number } = {}
+  opts: { stallTimeoutMs?: number } = {},
 ) {
   const stallTimeoutMs = opts.stallTimeoutMs ?? DEFAULT_STREAM_STALL_TIMEOUT_MS;
 
@@ -579,7 +579,7 @@ export function pipeWithDisconnect(
     const transformedBody = providerResponse.body.pipeThrough(transformStream);
     return createDisconnectAwareStream(
       { readable: transformedBody, writable: createNoopAbortWritable() },
-      streamController
+      streamController,
     );
   }
 
@@ -675,6 +675,6 @@ export function pipeWithDisconnect(
     .pipeThrough(transformStream);
   return createDisconnectAwareStream(
     { readable: transformedBody, writable: createNoopAbortWritable() },
-    wrappedController
+    wrappedController,
   );
 }

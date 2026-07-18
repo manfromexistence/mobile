@@ -1,11 +1,9 @@
-import type { ResolvedPathStoreOptions } from './internal-types';
-import type { PathStoreOptions } from './public-types';
+import type { ResolvedPathStoreOptions } from "./internal-types";
+import type { PathStoreOptions } from "./public-types";
 
-export function resolvePathStoreOptions(
-  options: PathStoreOptions = {}
-): ResolvedPathStoreOptions {
+export function resolvePathStoreOptions(options: PathStoreOptions = {}): ResolvedPathStoreOptions {
   return {
     flattenEmptyDirectories: options.flattenEmptyDirectories !== false,
-    sort: options.sort ?? 'default',
+    sort: options.sort ?? "default",
   };
 }

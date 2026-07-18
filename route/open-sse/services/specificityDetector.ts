@@ -4,7 +4,7 @@ import { getSpecificityBreakdown, estimateMessageTokens } from "./specificityRul
 const MAX_SPECIFICITY_SCORE = 100;
 
 export function analyzeSpecificity(
-  input: import("./specificityTypes").RuleInput
+  input: import("./specificityTypes").RuleInput,
 ): SpecificityResult {
   const breakdown = getSpecificityBreakdown(input);
   const score = sumBreakdown(breakdown);
@@ -45,7 +45,7 @@ function getTriggeredRules(breakdown: SpecificityBreakdown): string[] {
 
 function calculateConfidence(
   breakdown: SpecificityBreakdown,
-  input: import("./specificityTypes").RuleInput
+  input: import("./specificityTypes").RuleInput,
 ): number {
   const nonZero = Object.values(breakdown).filter((v) => v > 0).length;
   const totalCategories = 6;

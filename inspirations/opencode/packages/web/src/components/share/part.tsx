@@ -1,6 +1,15 @@
-import map from "lang-map"
-import { DateTime } from "luxon"
-import { For, Show, Match, Switch, type JSX, createMemo, createSignal, type ParentProps } from "solid-js"
+import map from "lang-map";
+import { DateTime } from "luxon";
+import {
+  For,
+  Show,
+  Match,
+  Switch,
+  type JSX,
+  createMemo,
+  createSignal,
+  type ParentProps,
+} from "solid-js";
 import {
   IconHashtag,
   IconSparkles,
@@ -18,33 +27,46 @@ import {
   IconRectangleStack,
   IconMagnifyingGlass,
   IconDocumentMagnifyingGlass,
-} from "../icons"
-import { IconMeta, IconRobot, IconOpenAI, IconGemini, IconAnthropic, IconBrain } from "../icons/custom"
-import { ContentCode } from "./content-code"
-import { ContentDiff } from "./content-diff"
-import { ContentText } from "./content-text"
-import { ContentBash } from "./content-bash"
-import { ContentError } from "./content-error"
-import { formatCount, formatDuration, formatNumber, normalizeLocale, useShareMessages } from "../share/common"
-import { ContentMarkdown } from "./content-markdown"
-import type { MessageV2 } from "opencode/session/message-v2"
-import type { Diagnostic } from "vscode-languageserver-types"
+} from "../icons";
+import {
+  IconMeta,
+  IconRobot,
+  IconOpenAI,
+  IconGemini,
+  IconAnthropic,
+  IconBrain,
+} from "../icons/custom";
+import { ContentCode } from "./content-code";
+import { ContentDiff } from "./content-diff";
+import { ContentText } from "./content-text";
+import { ContentBash } from "./content-bash";
+import { ContentError } from "./content-error";
+import {
+  formatCount,
+  formatDuration,
+  formatNumber,
+  normalizeLocale,
+  useShareMessages,
+} from "../share/common";
+import { ContentMarkdown } from "./content-markdown";
+import type { MessageV2 } from "opencode/session/message-v2";
+import type { Diagnostic } from "vscode-languageserver-types";
 
-import styles from "./part.module.css"
+import styles from "./part.module.css";
 
-const MIN_DURATION = 2000
+const MIN_DURATION = 2000;
 
 export interface PartProps {
-  index: number
-  message: MessageV2.Info
-  part: MessageV2.Part
-  last: boolean
+  index: number;
+  message: MessageV2.Info;
+  part: MessageV2.Part;
+  last: boolean;
 }
 
 export function Part(props: PartProps) {
-  const [copied, setCopied] = createSignal(false)
-  const id = createMemo(() => props.message.id + "-" + props.index)
-  const messages = useShareMessages()
+  const [copied, setCopied] = createSignal(false);
+  const id = createMemo(() => props.message.id + "-" + props.index);
+  const messages = useShareMessages();
 
   return (
     <div
@@ -60,16 +82,16 @@ export function Part(props: PartProps) {
           <a
             href={`#${id()}`}
             onClick={(e) => {
-              e.preventDefault()
-              const anchor = e.currentTarget
-              const hash = anchor.getAttribute("href") || ""
-              const { origin, pathname, search } = window.location
+              e.preventDefault();
+              const anchor = e.currentTarget;
+              const hash = anchor.getAttribute("href") || "";
+              const { origin, pathname, search } = window.location;
               navigator.clipboard
                 .writeText(`${origin}${pathname}${search}${hash}`)
-                .catch((err) => console.error("Copy failed", err))
+                .catch((err) => console.error("Copy failed", err));
 
-              setCopied(true)
-              setTimeout(() => setCopied(false), 3000)
+              setCopied(true);
+              setTimeout(() => setCopied(false), 3000);
             }}
           >
             <Switch>
@@ -80,7 +102,11 @@ export function Part(props: PartProps) {
                 <IconPaperClip width={18} height={18} />
               </Match>
               <Match
-                when={props.part.type === "step-start" && props.message.role === "assistant" && props.message.modelID}
+                when={
+                  props.part.type === "step-start" &&
+                  props.message.role === "assistant" &&
+                  props.message.modelID
+                }
               >
                 {(model) => <ProviderIcon model={model()} size={18} />}
               </Match>
@@ -291,50 +317,50 @@ export function Part(props: PartProps) {
           )}
       </div>
     </div>
-  )
+  );
 }
 
 type ToolProps = {
-  id: MessageV2.ToolPart["id"]
-  tool: MessageV2.ToolPart["tool"]
-  state: MessageV2.ToolStateCompleted
-  message: MessageV2.Assistant
-  isLastPart?: boolean
-}
+  id: MessageV2.ToolPart["id"];
+  tool: MessageV2.ToolPart["tool"];
+  state: MessageV2.ToolStateCompleted;
+  message: MessageV2.Assistant;
+  isLastPart?: boolean;
+};
 
 interface Todo {
-  id: string
-  content: string
-  status: "pending" | "in_progress" | "completed"
-  priority: "low" | "medium" | "high"
+  id: string;
+  content: string;
+  status: "pending" | "in_progress" | "completed";
+  priority: "low" | "medium" | "high";
 }
 
 function stripWorkingDirectory(filePath?: string, workingDir?: string) {
-  if (filePath === undefined || workingDir === undefined) return filePath
+  if (filePath === undefined || workingDir === undefined) return filePath;
 
-  const prefix = workingDir.endsWith("/") ? workingDir : workingDir + "/"
+  const prefix = workingDir.endsWith("/") ? workingDir : workingDir + "/";
 
   if (filePath === workingDir) {
-    return ""
+    return "";
   }
 
   if (filePath.startsWith(prefix)) {
-    return filePath.slice(prefix.length)
+    return filePath.slice(prefix.length);
   }
 
-  return filePath
+  return filePath;
 }
 
 function getShikiLang(filename: string) {
-  const ext = filename.split(".").pop()?.toLowerCase() ?? ""
-  const langs = map.languages(ext)
-  const type = langs?.[0]?.toLowerCase()
+  const ext = filename.split(".").pop()?.toLowerCase() ?? "";
+  const langs = map.languages(ext);
+  const type = langs?.[0]?.toLowerCase();
 
   const overrides: Record<string, string> = {
     conf: "shellscript",
-  }
+  };
 
-  return type ? (overrides[type] ?? type) : "plaintext"
+  return type ? (overrides[type] ?? type) : "plaintext";
 }
 
 function getDiagnostics(
@@ -342,15 +368,16 @@ function getDiagnostics(
   currentFile: string,
   label: string,
 ): JSX.Element[] {
-  const result: JSX.Element[] = []
+  const result: JSX.Element[] = [];
 
-  if (diagnosticsByFile === undefined || diagnosticsByFile[currentFile] === undefined) return result
+  if (diagnosticsByFile === undefined || diagnosticsByFile[currentFile] === undefined)
+    return result;
 
   for (const d of diagnosticsByFile[currentFile]) {
-    if (d.severity !== 1) continue
+    if (d.severity !== 1) continue;
 
-    const line = d.range.start.line + 1
-    const column = d.range.start.character + 1
+    const line = d.range.start.line + 1;
+    const column = d.range.start.character + 1;
 
     result.push(
       <pre>
@@ -362,15 +389,15 @@ function getDiagnostics(
         </span>
         <span>{d.message}</span>
       </pre>,
-    )
+    );
   }
 
-  return result
+  return result;
 }
 
 function formatErrorString(error: string, label: string): JSX.Element {
-  const errorMarker = "Error: "
-  const startsWithError = error.startsWith(errorMarker)
+  const errorMarker = "Error: ";
+  const startsWithError = error.startsWith(errorMarker);
 
   return startsWithError ? (
     <pre>
@@ -383,21 +410,23 @@ function formatErrorString(error: string, label: string): JSX.Element {
     <pre>
       <span data-color="dimmed">{error}</span>
     </pre>
-  )
+  );
 }
 
 export function TodoWriteTool(props: ToolProps) {
-  const messages = useShareMessages()
+  const messages = useShareMessages();
   const priority: Record<Todo["status"], number> = {
     in_progress: 0,
     pending: 1,
     completed: 2,
-  }
+  };
   const todos = createMemo(() =>
-    ((props.state.input?.todos ?? []) as Todo[]).slice().sort((a, b) => priority[a.status] - priority[b.status]),
-  )
-  const starting = () => todos().every((t: Todo) => t.status === "pending")
-  const finished = () => todos().every((t: Todo) => t.status === "completed")
+    ((props.state.input?.todos ?? []) as Todo[])
+      .slice()
+      .sort((a, b) => priority[a.status] - priority[b.status]),
+  );
+  const starting = () => todos().every((t: Todo) => t.status === "pending");
+  const finished = () => todos().every((t: Todo) => t.status === "completed");
 
   return (
     <>
@@ -422,11 +451,11 @@ export function TodoWriteTool(props: ToolProps) {
         </ul>
       </Show>
     </>
-  )
+  );
 }
 
 export function GrepTool(props: ToolProps) {
-  const messages = useShareMessages()
+  const messages = useShareMessages();
 
   return (
     <>
@@ -449,12 +478,18 @@ export function GrepTool(props: ToolProps) {
             </ResultsButton>
           </Match>
           <Match when={props.state.output}>
-            <ContentText expand compact text={props.state.output} data-size="sm" data-color="dimmed" />
+            <ContentText
+              expand
+              compact
+              text={props.state.output}
+              data-size="sm"
+              data-color="dimmed"
+            />
           </Match>
         </Switch>
       </div>
     </>
-  )
+  );
 }
 
 export function ListTool(props: ToolProps) {
@@ -462,7 +497,7 @@ export function ListTool(props: ToolProps) {
     props.state.input?.path !== props.message.path.cwd
       ? stripWorkingDirectory(props.state.input?.path, props.message.path.cwd)
       : props.state.input?.path,
-  )
+  );
 
   return (
     <>
@@ -482,11 +517,11 @@ export function ListTool(props: ToolProps) {
         </Switch>
       </div>
     </>
-  )
+  );
 }
 
 export function WebFetchTool(props: ToolProps) {
-  const messages = useShareMessages()
+  const messages = useShareMessages();
 
   return (
     <>
@@ -507,12 +542,14 @@ export function WebFetchTool(props: ToolProps) {
         </Switch>
       </div>
     </>
-  )
+  );
 }
 
 export function ReadTool(props: ToolProps) {
-  const messages = useShareMessages()
-  const filePath = createMemo(() => stripWorkingDirectory(props.state.input?.filePath, props.message.path.cwd))
+  const messages = useShareMessages();
+  const filePath = createMemo(() =>
+    stripWorkingDirectory(props.state.input?.filePath, props.message.path.cwd),
+  );
 
   return (
     <>
@@ -529,7 +566,10 @@ export function ReadTool(props: ToolProps) {
           </Match>
           <Match when={typeof props.state.metadata?.preview === "string"}>
             <ResultsButton showCopy={messages.show_preview} hideCopy={messages.hide_preview}>
-              <ContentCode lang={getShikiLang(filePath() || "")} code={props.state.metadata?.preview} />
+              <ContentCode
+                lang={getShikiLang(filePath() || "")}
+                code={props.state.metadata?.preview}
+              />
             </ResultsButton>
           </Match>
           <Match when={typeof props.state.metadata?.preview !== "string" && props.state.output}>
@@ -540,15 +580,17 @@ export function ReadTool(props: ToolProps) {
         </Switch>
       </div>
     </>
-  )
+  );
 }
 
 export function WriteTool(props: ToolProps) {
-  const messages = useShareMessages()
-  const filePath = createMemo(() => stripWorkingDirectory(props.state.input?.filePath, props.message.path.cwd))
+  const messages = useShareMessages();
+  const filePath = createMemo(() =>
+    stripWorkingDirectory(props.state.input?.filePath, props.message.path.cwd),
+  );
   const diagnostics = createMemo(() =>
     getDiagnostics(props.state.metadata?.diagnostics, props.state.input.filePath, messages.error),
-  )
+  );
 
   return (
     <>
@@ -568,21 +610,26 @@ export function WriteTool(props: ToolProps) {
           </Match>
           <Match when={props.state.input?.content}>
             <ResultsButton showCopy={messages.show_contents} hideCopy={messages.hide_contents}>
-              <ContentCode lang={getShikiLang(filePath() || "")} code={props.state.input?.content} />
+              <ContentCode
+                lang={getShikiLang(filePath() || "")}
+                code={props.state.input?.content}
+              />
             </ResultsButton>
           </Match>
         </Switch>
       </div>
     </>
-  )
+  );
 }
 
 export function EditTool(props: ToolProps) {
-  const messages = useShareMessages()
-  const filePath = createMemo(() => stripWorkingDirectory(props.state.input.filePath, props.message.path.cwd))
+  const messages = useShareMessages();
+  const filePath = createMemo(() =>
+    stripWorkingDirectory(props.state.input.filePath, props.message.path.cwd),
+  );
   const diagnostics = createMemo(() =>
     getDiagnostics(props.state.metadata?.diagnostics, props.state.input.filePath, messages.error),
-  )
+  );
 
   return (
     <>
@@ -595,11 +642,16 @@ export function EditTool(props: ToolProps) {
       <div data-component="tool-result">
         <Switch>
           <Match when={props.state.metadata?.error}>
-            <ContentError>{formatErrorString(props.state.metadata?.message || "", messages.error)}</ContentError>
+            <ContentError>
+              {formatErrorString(props.state.metadata?.message || "", messages.error)}
+            </ContentError>
           </Match>
           <Match when={props.state.metadata?.diff}>
             <div data-component="diff">
-              <ContentDiff diff={props.state.metadata?.diff} lang={getShikiLang(filePath() || "")} />
+              <ContentDiff
+                diff={props.state.metadata?.diff}
+                lang={getShikiLang(filePath() || "")}
+              />
             </div>
           </Match>
         </Switch>
@@ -608,7 +660,7 @@ export function EditTool(props: ToolProps) {
         <ContentError>{diagnostics()}</ContentError>
       </Show>
     </>
-  )
+  );
 }
 
 export function BashTool(props: ToolProps) {
@@ -617,11 +669,11 @@ export function BashTool(props: ToolProps) {
       command={props.state.input.command}
       output={props.state.metadata.output ?? props.state.metadata?.stdout}
     />
-  )
+  );
 }
 
 export function GlobTool(props: ToolProps) {
-  const messages = useShareMessages()
+  const messages = useShareMessages();
 
   return (
     <>
@@ -649,21 +701,30 @@ export function GlobTool(props: ToolProps) {
         </Match>
       </Switch>
     </>
-  )
+  );
 }
 
 interface ResultsButtonProps extends ParentProps {
-  showCopy?: string
-  hideCopy?: string
+  showCopy?: string;
+  hideCopy?: string;
 }
 function ResultsButton(props: ResultsButtonProps) {
-  const [show, setShow] = createSignal(false)
-  const messages = useShareMessages()
+  const [show, setShow] = createSignal(false);
+  const messages = useShareMessages();
 
   return (
     <>
-      <button type="button" data-component="button-text" data-more onClick={() => setShow((e) => !e)}>
-        <span>{show() ? props.hideCopy || messages.hide_results : props.showCopy || messages.show_results}</span>
+      <button
+        type="button"
+        data-component="button-text"
+        data-more
+        onClick={() => setShow((e) => !e)}
+      >
+        <span>
+          {show()
+            ? props.hideCopy || messages.hide_results
+            : props.showCopy || messages.show_results}
+        </span>
         <span data-slot="icon">
           <Show when={show()} fallback={<IconChevronRight width={11} height={11} />}>
             <IconChevronDown width={11} height={11} />
@@ -672,11 +733,11 @@ function ResultsButton(props: ResultsButtonProps) {
       </button>
       <Show when={show()}>{props.children}</Show>
     </>
-  )
+  );
 }
 
 export function Spacer() {
-  return <div data-component="spacer"></div>
+  return <div data-component="spacer"></div>;
 }
 
 function Footer(props: ParentProps<{ title: string }>) {
@@ -684,22 +745,22 @@ function Footer(props: ParentProps<{ title: string }>) {
     <div data-component="content-footer" title={props.title}>
       {props.children}
     </div>
-  )
+  );
 }
 
 function ToolFooter(props: { time: number }) {
-  const messages = useShareMessages()
+  const messages = useShareMessages();
   return (
     props.time > MIN_DURATION && (
       <Footer title={`${formatNumber(props.time, messages.locale)}ms`}>
         {formatDuration(props.time, messages.locale)}
       </Footer>
     )
-  )
+  );
 }
 
 function TaskTool(props: ToolProps) {
-  const messages = useShareMessages()
+  const messages = useShareMessages();
 
   return (
     <>
@@ -714,7 +775,7 @@ function TaskTool(props: ToolProps) {
         </div>
       </ResultsButton>
     </>
-  )
+  );
 }
 
 export function FallbackTool(props: ToolProps) {
@@ -730,7 +791,9 @@ export function FallbackTool(props: ToolProps) {
               <div></div>
               <div>{arg[0]}</div>
               <div>
-                {typeof arg[1] === "string" || typeof arg[1] === "number" || typeof arg[1] === "boolean"
+                {typeof arg[1] === "string" ||
+                typeof arg[1] === "number" ||
+                typeof arg[1] === "boolean"
                   ? String(arg[1])
                   : arg[1] == null
                     ? ""
@@ -744,59 +807,65 @@ export function FallbackTool(props: ToolProps) {
         <Match when={props.state.output}>
           <div data-component="tool-result">
             <ResultsButton>
-              <ContentText expand compact text={props.state.output} data-size="sm" data-color="dimmed" />
+              <ContentText
+                expand
+                compact
+                text={props.state.output}
+                data-size="sm"
+                data-color="dimmed"
+              />
             </ResultsButton>
           </div>
         </Match>
       </Switch>
     </>
-  )
+  );
 }
 
 // Converts nested objects/arrays into [path, value] pairs.
 // E.g. {a:{b:{c:1}}, d:[{e:2}, 3]} => [["a.b.c",1], ["d[0].e",2], ["d[1]",3]]
 function flattenToolArgs(obj: unknown, prefix: string = ""): Array<[string, unknown]> {
-  const entries: Array<[string, unknown]> = []
-  if (typeof obj !== "object" || obj === null) return entries
+  const entries: Array<[string, unknown]> = [];
+  if (typeof obj !== "object" || obj === null) return entries;
 
   for (const [key, value] of Object.entries(obj as Record<string, unknown>)) {
-    const path = prefix ? `${prefix}.${key}` : key
+    const path = prefix ? `${prefix}.${key}` : key;
 
     if (value !== null && typeof value === "object") {
       if (Array.isArray(value)) {
         value.forEach((item, index) => {
-          const arrayPath = `${path}[${index}]`
+          const arrayPath = `${path}[${index}]`;
           if (item !== null && typeof item === "object") {
-            entries.push(...flattenToolArgs(item, arrayPath))
+            entries.push(...flattenToolArgs(item, arrayPath));
           } else {
-            entries.push([arrayPath, item])
+            entries.push([arrayPath, item]);
           }
-        })
+        });
       } else {
-        entries.push(...flattenToolArgs(value, path))
+        entries.push(...flattenToolArgs(value, path));
       }
     } else {
-      entries.push([path, value])
+      entries.push([path, value]);
     }
   }
 
-  return entries
+  return entries;
 }
 
 function getProvider(model: string) {
-  const lowerModel = model.toLowerCase()
+  const lowerModel = model.toLowerCase();
 
-  if (/claude|anthropic/.test(lowerModel)) return "anthropic"
-  if (/gpt|o[1-4]|codex|openai/.test(lowerModel)) return "openai"
-  if (/gemini|palm|bard|google/.test(lowerModel)) return "gemini"
-  if (/llama|meta/.test(lowerModel)) return "meta"
+  if (/claude|anthropic/.test(lowerModel)) return "anthropic";
+  if (/gpt|o[1-4]|codex|openai/.test(lowerModel)) return "openai";
+  if (/gemini|palm|bard|google/.test(lowerModel)) return "gemini";
+  if (/llama|meta/.test(lowerModel)) return "meta";
 
-  return "any"
+  return "any";
 }
 
 export function ProviderIcon(props: { model: string; size?: number }) {
-  const provider = getProvider(props.model)
-  const size = props.size || 16
+  const provider = getProvider(props.model);
+  const size = props.size || 16;
   return (
     <Switch fallback={<IconSparkles width={size} height={size} />}>
       <Match when={provider === "openai"}>
@@ -812,5 +881,5 @@ export function ProviderIcon(props: { model: string; size?: number }) {
         <IconMeta width={size} height={size} />
       </Match>
     </Switch>
-  )
+  );
 }

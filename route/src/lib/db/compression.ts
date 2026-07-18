@@ -87,7 +87,7 @@ function normalizeCavemanConfig(value: unknown): CavemanConfig {
     compressRoles: Array.isArray(record.compressRoles)
       ? record.compressRoles.filter(
           (role): role is "user" | "assistant" | "system" =>
-            role === "user" || role === "assistant" || role === "system"
+            role === "user" || role === "assistant" || role === "system",
         )
       : DEFAULT_CAVEMAN_CONFIG.compressRoles,
     skipRules: Array.isArray(record.skipRules)
@@ -171,19 +171,19 @@ function normalizeRtkConfig(value: unknown): RtkConfig {
       record.maxLinesPerResult,
       DEFAULT_RTK_CONFIG.maxLinesPerResult,
       0,
-      100000
+      100000,
     ),
     maxCharsPerResult: boundedInt(
       record.maxCharsPerResult,
       DEFAULT_RTK_CONFIG.maxCharsPerResult,
       0,
-      1000000
+      1000000,
     ),
     deduplicateThreshold: boundedInt(
       record.deduplicateThreshold,
       DEFAULT_RTK_CONFIG.deduplicateThreshold,
       2,
-      100
+      100,
     ),
     customFiltersEnabled:
       typeof record.customFiltersEnabled === "boolean"
@@ -203,7 +203,7 @@ function normalizeRtkConfig(value: unknown): RtkConfig {
       record.rawOutputMaxBytes,
       DEFAULT_RTK_CONFIG.rawOutputMaxBytes,
       1024,
-      10_000_000
+      10_000_000,
     ),
     enableGrouping:
       typeof record.enableGrouping === "boolean"
@@ -213,7 +213,7 @@ function normalizeRtkConfig(value: unknown): RtkConfig {
       record.groupingThreshold,
       DEFAULT_RTK_CONFIG.groupingThreshold ?? 3,
       2,
-      100
+      100,
     ),
     stripCodeComments:
       typeof record.stripCodeComments === "boolean"
@@ -323,20 +323,20 @@ function normalizeAggressiveConfig(value: unknown): AggressiveConfig {
         thresholds.fullSummary,
         DEFAULT_AGGRESSIVE_CONFIG.thresholds.fullSummary,
         1,
-        100
+        100,
       ),
       moderate: boundedInt(
         thresholds.moderate,
         DEFAULT_AGGRESSIVE_CONFIG.thresholds.moderate,
         1,
-        100
+        100,
       ),
       light: boundedInt(thresholds.light, DEFAULT_AGGRESSIVE_CONFIG.thresholds.light, 1, 100),
       verbatim: boundedInt(
         thresholds.verbatim,
         DEFAULT_AGGRESSIVE_CONFIG.thresholds.verbatim,
         1,
-        100
+        100,
       ),
     },
     toolStrategies: {
@@ -369,13 +369,13 @@ function normalizeAggressiveConfig(value: unknown): AggressiveConfig {
       record.maxTokensPerMessage,
       DEFAULT_AGGRESSIVE_CONFIG.maxTokensPerMessage,
       256,
-      32768
+      32768,
     ),
     minSavingsThreshold: boundedNumber(
       record.minSavingsThreshold,
       DEFAULT_AGGRESSIVE_CONFIG.minSavingsThreshold,
       0,
-      1
+      1,
     ),
   };
 }
@@ -391,13 +391,13 @@ function normalizeUltraConfig(value: unknown): UltraConfig {
       record.compressionRate,
       DEFAULT_ULTRA_CONFIG.compressionRate,
       0,
-      1
+      1,
     ),
     minScoreThreshold: boundedNumber(
       record.minScoreThreshold,
       DEFAULT_ULTRA_CONFIG.minScoreThreshold,
       0,
-      1
+      1,
     ),
     slmFallbackToAggressive:
       typeof record.slmFallbackToAggressive === "boolean"
@@ -408,7 +408,7 @@ function normalizeUltraConfig(value: unknown): UltraConfig {
       record.maxTokensPerMessage,
       DEFAULT_ULTRA_CONFIG.maxTokensPerMessage,
       0,
-      32768
+      32768,
     ),
   };
 }
@@ -726,11 +726,11 @@ export async function getCompressionSettings(): Promise<CompressionConfig> {
 }
 
 export async function updateCompressionSettings(
-  updates: Partial<CompressionConfig>
+  updates: Partial<CompressionConfig>,
 ): Promise<CompressionConfig> {
   const db = getDbInstance();
   const insert = db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)",
   );
 
   const tx = db.transaction(() => {
@@ -776,14 +776,14 @@ export async function getMcpAccessibilityConfig(): Promise<McpAccessibilityConfi
 }
 
 export async function setMcpAccessibilityConfig(
-  value: Partial<McpAccessibilityConfig>
+  value: Partial<McpAccessibilityConfig>,
 ): Promise<void> {
   const next = normalizeMcpAccessibilityConfig({ ...DEFAULT_MCP_ACCESSIBILITY_CONFIG, ...value });
   const db = getDbInstance();
   db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     NAMESPACE,
     "mcpAccessibility",
-    JSON.stringify(next)
+    JSON.stringify(next),
   );
   compressionSettingsCache = null;
   invalidateDbCache();

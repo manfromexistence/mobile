@@ -1,19 +1,19 @@
-import { A, createAsync, RouteSectionProps } from "@solidjs/router"
-import { Title, Meta } from "@solidjs/meta"
-import { createMemo, createSignal } from "solid-js"
-import { github } from "~/lib/github"
-import { config } from "~/config"
-import { useLanguage } from "~/context/language"
-import { LanguagePicker } from "~/component/language-picker"
-import { useI18n } from "~/context/i18n"
-import Spotlight, { defaultConfig, type SpotlightAnimationState } from "~/component/spotlight"
-import { LocaleLinks } from "~/component/locale-links"
-import "./black.css"
+import { A, createAsync, RouteSectionProps } from "@solidjs/router";
+import { Title, Meta } from "@solidjs/meta";
+import { createMemo, createSignal } from "solid-js";
+import { github } from "~/lib/github";
+import { config } from "~/config";
+import { useLanguage } from "~/context/language";
+import { LanguagePicker } from "~/component/language-picker";
+import { useI18n } from "~/context/i18n";
+import Spotlight, { defaultConfig, type SpotlightAnimationState } from "~/component/spotlight";
+import { LocaleLinks } from "~/component/locale-links";
+import "./black.css";
 
 export default function BlackLayout(props: RouteSectionProps) {
-  const language = useLanguage()
-  const i18n = useI18n()
-  const githubData = createAsync(() => github())
+  const language = useLanguage();
+  const i18n = useI18n();
+  const githubData = createAsync(() => github());
   const starCount = createMemo(() =>
     githubData()?.stars
       ? new Intl.NumberFormat(language.tag(language.locale()), {
@@ -21,28 +21,29 @@ export default function BlackLayout(props: RouteSectionProps) {
           compactDisplay: "short",
         }).format(githubData()!.stars!)
       : config.github.starsFormatted.compact,
-  )
+  );
 
-  const [spotlightAnimationState, setSpotlightAnimationState] = createSignal<SpotlightAnimationState>({
-    time: 0,
-    intensity: 0.5,
-    pulseValue: 1,
-  })
+  const [spotlightAnimationState, setSpotlightAnimationState] =
+    createSignal<SpotlightAnimationState>({
+      time: 0,
+      intensity: 0.5,
+      pulseValue: 1,
+    });
 
   const svgLightingValues = createMemo(() => {
-    const state = spotlightAnimationState()
-    const t = state.time
+    const state = spotlightAnimationState();
+    const t = state.time;
 
-    const wave1 = Math.sin(t * 1.5) * 0.5 + 0.5
-    const wave2 = Math.sin(t * 2.3 + 1.2) * 0.5 + 0.5
-    const wave3 = Math.sin(t * 0.8 + 2.5) * 0.5 + 0.5
+    const wave1 = Math.sin(t * 1.5) * 0.5 + 0.5;
+    const wave2 = Math.sin(t * 2.3 + 1.2) * 0.5 + 0.5;
+    const wave3 = Math.sin(t * 0.8 + 2.5) * 0.5 + 0.5;
 
-    const shimmerPos = Math.sin(t * 0.7) * 0.5 + 0.5
-    const glowIntensity = Math.max(state.intensity * state.pulseValue * 0.35, 0.15)
-    const fillOpacity = Math.max(0.1 + wave1 * 0.08 * state.pulseValue, 0.12)
-    const strokeBrightness = Math.max(55 + wave2 * 25 * state.pulseValue, 60)
+    const shimmerPos = Math.sin(t * 0.7) * 0.5 + 0.5;
+    const glowIntensity = Math.max(state.intensity * state.pulseValue * 0.35, 0.15);
+    const fillOpacity = Math.max(0.1 + wave1 * 0.08 * state.pulseValue, 0.12);
+    const strokeBrightness = Math.max(55 + wave2 * 25 * state.pulseValue, 60);
 
-    const shimmerIntensity = Math.max(wave3 * 0.15 * state.pulseValue, 0.08)
+    const shimmerIntensity = Math.max(wave3 * 0.15 * state.pulseValue, 0.08);
 
     return {
       glowIntensity,
@@ -50,22 +51,22 @@ export default function BlackLayout(props: RouteSectionProps) {
       strokeBrightness,
       shimmerPos,
       shimmerIntensity,
-    }
-  })
+    };
+  });
 
   const svgLightingStyle = createMemo(() => {
-    const values = svgLightingValues()
+    const values = svgLightingValues();
     return {
       "--hero-black-glow-intensity": values.glowIntensity.toFixed(3),
       "--hero-black-stroke-brightness": `${values.strokeBrightness.toFixed(0)}%`,
-    } as Record<string, string>
-  })
+    } as Record<string, string>;
+  });
 
   const handleAnimationFrame = (state: SpotlightAnimationState) => {
-    setSpotlightAnimationState(state)
-  }
+    setSpotlightAnimationState(state);
+  };
 
-  const spotlightConfig = () => defaultConfig
+  const spotlightConfig = () => defaultConfig;
 
   return (
     <div data-page="black">
@@ -82,11 +83,21 @@ export default function BlackLayout(props: RouteSectionProps) {
       <Meta name="twitter:description" content={i18n.t("black.meta.description")} />
       <Meta name="twitter:image" content="/social-share-black.png" />
 
-      <Spotlight config={spotlightConfig} class="header-spotlight" onAnimationFrame={handleAnimationFrame} />
+      <Spotlight
+        config={spotlightConfig}
+        class="header-spotlight"
+        onAnimationFrame={handleAnimationFrame}
+      />
 
       <header data-component="header">
         <A href={language.route("/")} data-component="header-logo">
-          <svg xmlns="http://www.w3.org/2000/svg" width="179" height="32" viewBox="0 0 179 32" fill="none">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="179"
+            height="32"
+            viewBox="0 0 179 32"
+            fill="none"
+          >
             <title>opencode</title>
             <g clip-path="url(#clip0_3654_210259)">
               <mask
@@ -157,7 +168,13 @@ export default function BlackLayout(props: RouteSectionProps) {
           <p>{i18n.t("black.hero.subtitle")}</p>
         </div>
         <div data-slot="hero-black" style={svgLightingStyle()}>
-          <svg width="591" height="90" viewBox="0 0 591 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            width="591"
+            height="90"
+            viewBox="0 0 591 90"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <defs>
               <linearGradient
                 id="hero-black-fill-gradient"
@@ -191,12 +208,18 @@ export default function BlackLayout(props: RouteSectionProps) {
                 y2="0"
                 gradientUnits="userSpaceOnUse"
               >
-                <stop offset={Math.max(0, svgLightingValues().shimmerPos - 0.12)} stop-color="transparent" />
+                <stop
+                  offset={Math.max(0, svgLightingValues().shimmerPos - 0.12)}
+                  stop-color="transparent"
+                />
                 <stop
                   offset={svgLightingValues().shimmerPos}
                   stop-color={`rgba(255, 255, 255, ${svgLightingValues().shimmerIntensity})`}
                 />
-                <stop offset={Math.min(1, svgLightingValues().shimmerPos + 0.12)} stop-color="transparent" />
+                <stop
+                  offset={Math.min(1, svgLightingValues().shimmerPos + 0.12)}
+                  stop-color="transparent"
+                />
               </linearGradient>
 
               <linearGradient
@@ -207,7 +230,10 @@ export default function BlackLayout(props: RouteSectionProps) {
                 y2="45"
                 gradientUnits="userSpaceOnUse"
               >
-                <stop offset="0" stop-color={`rgba(255, 255, 255, ${svgLightingValues().glowIntensity})`} />
+                <stop
+                  offset="0"
+                  stop-color={`rgba(255, 255, 255, ${svgLightingValues().glowIntensity})`}
+                />
                 <stop offset="1" stop-color="transparent" />
               </linearGradient>
 
@@ -279,5 +305,5 @@ export default function BlackLayout(props: RouteSectionProps) {
         </span>
       </footer>
     </div>
-  )
+  );
 }

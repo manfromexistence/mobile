@@ -18,7 +18,7 @@ describe("RTK code stripper — real comment removal (R1/N3)", () => {
     const out = stripCode(
       'const url = "https://example.com/a//b"; // real comment',
       "javascript",
-      OPTS
+      OPTS,
     );
     assert.ok(out.text.includes("https://example.com/a//b"), "URL inside string lost");
     assert.ok(!out.text.includes("real comment"), "trailing comment not removed");
@@ -34,11 +34,11 @@ describe("RTK code stripper — real comment removal (R1/N3)", () => {
     const out = stripCode(
       "const t = `a // not a comment /* nor this */ b`; // yes comment",
       "javascript",
-      OPTS
+      OPTS,
     );
     assert.ok(
       out.text.includes("a // not a comment /* nor this */ b"),
-      "template literal corrupted"
+      "template literal corrupted",
     );
     assert.ok(!out.text.includes("yes comment"), "trailing comment not removed");
   });

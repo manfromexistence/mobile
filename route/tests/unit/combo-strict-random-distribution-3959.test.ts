@@ -106,7 +106,7 @@ test("#3959 strict-random spreads the fallback across healthy peers, not a fixed
 
   assert.ok(
     failingWasPickedFirst >= 5,
-    `deck should pick the failing model first several times (saw ${failingWasPickedFirst})`
+    `deck should pick the failing model first several times (saw ${failingWasPickedFirst})`,
   );
   // Pre-fix: `rest` is fixed priority order, so the fallback after the failing
   // pick is ALWAYS the same single model → set size 1 (RED).
@@ -115,7 +115,7 @@ test("#3959 strict-random spreads the fallback across healthy peers, not a fixed
     fallbackAfterFailure.size >= 2,
     `fallback after a failing deck pick must spread across peers, got only ${[
       ...fallbackAfterFailure,
-    ].join(", ")}`
+    ].join(", ")}`,
   );
 });
 

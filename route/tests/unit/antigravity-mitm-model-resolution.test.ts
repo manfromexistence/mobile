@@ -32,7 +32,7 @@ test("transformRequest resolves the upstream model via the dynamic MITM alias ta
     "antigravity/gemini-dynamic",
     { request: { contents: [] } },
     true,
-    { projectId: "project-mitm" }
+    { projectId: "project-mitm" },
   );
 
   if (result instanceof Response) throw new Error("Unexpected Response from transformRequest");
@@ -54,7 +54,7 @@ test("transformRequest tolerates a corrupted non-string MITM alias value (#3144)
     "antigravity/gemini-3.1-pro",
     { request: { contents: [] } },
     true,
-    { projectId: "project-mitm" }
+    { projectId: "project-mitm" },
   );
 
   if (result instanceof Response) throw new Error("Unexpected Response from transformRequest");

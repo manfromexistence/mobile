@@ -70,7 +70,7 @@ test("#6457 image/diffusion model discovered via live sync is NOT listed as a ch
   ]);
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   assert.equal(response.status, 200);
 
@@ -79,7 +79,7 @@ test("#6457 image/diffusion model discovered via live sync is NOT listed as a ch
   };
 
   const imageModelEntries = body.data.filter((m) =>
-    m.id.includes("stabilityai/stable-diffusion-xl-base-1.0")
+    m.id.includes("stabilityai/stable-diffusion-xl-base-1.0"),
   );
 
   assert.ok(imageModelEntries.length > 0, "the image model must still be listed somewhere");
@@ -87,14 +87,14 @@ test("#6457 image/diffusion model discovered via live sync is NOT listed as a ch
     assert.equal(
       entry.type,
       "image",
-      `every listing of the diffusion model must be type:"image", got ${JSON.stringify(entry)}`
+      `every listing of the diffusion model must be type:"image", got ${JSON.stringify(entry)}`,
     );
   }
 
   // A real chat model synced alongside it must still be listed as chat (no `type`,
   // per the OpenAI-compatible convention used throughout this catalog).
   const chatModelEntries = body.data.filter((m) =>
-    m.id.includes("meta-llama/llama-3.1-8b-instruct")
+    m.id.includes("meta-llama/llama-3.1-8b-instruct"),
   );
   assert.ok(chatModelEntries.length > 0, "the real chat model must still be listed");
   for (const entry of chatModelEntries) {
@@ -114,7 +114,7 @@ test("registered image model with explicit chat endpoints keeps both catalog ent
   ]);
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models?prefix=alias")
+    new Request("http://localhost/api/v1/models?prefix=alias"),
   );
   assert.equal(response.status, 200);
 
@@ -125,12 +125,12 @@ test("registered image model with explicit chat endpoints keeps both catalog ent
 
   assert.ok(
     entries.some(
-      (model) => model.type !== "image" && model.supported_endpoints?.includes("responses")
+      (model) => model.type !== "image" && model.supported_endpoints?.includes("responses"),
     ),
-    "explicit responses support must keep the synced chat entry"
+    "explicit responses support must keep the synced chat entry",
   );
   assert.ok(
     entries.some((model) => model.type === "image"),
-    "the registered image entry must remain available under the same model id"
+    "the registered image entry must remain available under the same model id",
   );
 });

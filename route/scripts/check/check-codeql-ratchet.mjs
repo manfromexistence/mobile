@@ -41,7 +41,7 @@ const ROOT = process.cwd();
 const BASELINE_PATH = path.resolve(
   process.argv.includes("--baseline")
     ? process.argv[process.argv.indexOf("--baseline") + 1]
-    : path.join(ROOT, "config/quality/quality-baseline.json")
+    : path.join(ROOT, "config/quality/quality-baseline.json"),
 );
 
 // ---------------------------------------------------------------------------
@@ -143,7 +143,7 @@ export function detectRepo(ghBin) {
       {
         encoding: "utf8",
         timeout: 15_000,
-      }
+      },
     );
     return stdout.trim() || null;
   } catch {
@@ -302,7 +302,7 @@ export function applyRatchet(alertCount) {
   if (baselineValue === null) {
     if (!QUIET) {
       process.stderr.write(
-        "[codeql-ratchet] baseline ausente (metrics.codeqlAlerts) — modo coletor, sem ratchet.\n"
+        "[codeql-ratchet] baseline ausente (metrics.codeqlAlerts) — modo coletor, sem ratchet.\n",
       );
     }
     process.exitCode = 0;
@@ -322,7 +322,7 @@ export function applyRatchet(alertCount) {
     process.stderr.write(
       `[codeql-ratchet] REGRESSÃO — ${alertCount} alertas CodeQL abertos > baseline ${baselineValue}\n` +
         "  → Corrija os novos alertas em Security → Code scanning, ou rode\n" +
-        "    'node scripts/check/check-codeql-ratchet.mjs --update' se a contagem caiu legitimamente.\n"
+        "    'node scripts/check/check-codeql-ratchet.mjs --update' se a contagem caiu legitimamente.\n",
     );
     process.exitCode = 1;
     return;
@@ -331,7 +331,7 @@ export function applyRatchet(alertCount) {
   if (!QUIET) {
     const verdict = regressed ? "ADVISORY — regressão ignorada (--advisory)" : "OK — sem regressão";
     process.stderr.write(
-      `[codeql-ratchet] ${verdict} — ${alertCount} alertas (baseline ${baselineValue})\n`
+      `[codeql-ratchet] ${verdict} — ${alertCount} alertas (baseline ${baselineValue})\n`,
     );
   }
   process.exitCode = 0;
@@ -350,7 +350,7 @@ function main() {
       process.stderr.write(
         "[codeql-ratchet] SKIP — `gh` CLI não encontrado no PATH.\n" +
           "[codeql-ratchet] Instale via: https://cli.github.com/\n" +
-          "[codeql-ratchet] ADVISORY — este gate sai 0 (ratchet entra no CI da Fase 7 INT).\n"
+          "[codeql-ratchet] ADVISORY — este gate sai 0 (ratchet entra no CI da Fase 7 INT).\n",
       );
     }
     process.exitCode = 0;
@@ -364,7 +364,7 @@ function main() {
     if (!QUIET) {
       process.stderr.write(
         "[codeql-ratchet] SKIP — não foi possível detectar o repositório GitHub.\n" +
-          "[codeql-ratchet] Execute dentro de um repositório GitHub com `gh` autenticado.\n"
+          "[codeql-ratchet] Execute dentro de um repositório GitHub com `gh` autenticado.\n",
       );
     }
     process.exitCode = 0;
@@ -384,7 +384,7 @@ function main() {
     console.log(`codeqlAlerts=SKIP reason=${error}`);
     if (!QUIET) {
       process.stderr.write(
-        `[codeql-ratchet] SKIP — erro ao consultar API GitHub: ${message.slice(0, 200)}\n`
+        `[codeql-ratchet] SKIP — erro ao consultar API GitHub: ${message.slice(0, 200)}\n`,
       );
     }
     process.exitCode = 0;
@@ -414,7 +414,7 @@ function main() {
         .join(", ") || "nenhum";
 
     process.stderr.write(
-      `[codeql-ratchet] Alertas CodeQL abertos (não-dismissed): ${alertCount}\n`
+      `[codeql-ratchet] Alertas CodeQL abertos (não-dismissed): ${alertCount}\n`,
     );
     if (alertCount > 0) {
       process.stderr.write(`[codeql-ratchet]   Por severidade: ${severitySummary}\n`);

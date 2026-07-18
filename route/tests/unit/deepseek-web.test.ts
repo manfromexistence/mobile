@@ -2,10 +2,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { DeepSeekWebExecutor, DEEPSEEK_WEB_BASE } =
-  await import("../../open-sse/executors/deepseek-web.ts");
-const { DeepSeekWebWithAutoRefreshExecutor } =
-  await import("../../open-sse/executors/deepseek-web-with-auto-refresh.ts");
+const { DeepSeekWebExecutor, DEEPSEEK_WEB_BASE } = await import(
+  "../../open-sse/executors/deepseek-web.ts"
+);
+const { DeepSeekWebWithAutoRefreshExecutor } = await import(
+  "../../open-sse/executors/deepseek-web-with-auto-refresh.ts"
+);
 const { getExecutor, hasSpecializedExecutor } = await import("../../open-sse/executors/index.ts");
 const { serializeToolsToPrompt } = await import("../../open-sse/translator/webTools.ts");
 
@@ -93,12 +95,12 @@ test("execute does NOT 400 on tools[]=[] (empty array, equivalent to no tools)",
   assert.equal(
     result.response.status,
     400,
-    "still returns 400 but for missing userToken, NOT for tools[]"
+    "still returns 400 but for missing userToken, NOT for tools[]",
   );
   const text = await result.response.text();
   assert.ok(
     text.includes("userToken"),
-    `expected userToken error (not tools error) for empty tools[], got: ${text}`
+    `expected userToken error (not tools error) for empty tools[], got: ${text}`,
   );
 });
 
@@ -130,7 +132,7 @@ async function mockDeepSeekFlow() {
           code: 0,
           data: { biz_data: { token: "test-access-token-123", email: "test@test.com" } },
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -140,7 +142,7 @@ async function mockDeepSeekFlow() {
           code: 0,
           data: { biz_data: { chat_session: { id: "session-abc-123" } } },
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -163,7 +165,7 @@ async function mockDeepSeekFlow() {
             },
           },
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -234,33 +236,33 @@ test("execute: full flow with mocked API (streaming)", async () => {
     // Verify API call sequence
     assert.ok(
       mock.calls.some((c) => c.url.includes("/users/current")),
-      "Called /users/current"
+      "Called /users/current",
     );
     assert.ok(
       mock.calls.some((c) => c.url.includes("/chat_session/create")),
-      "Created session"
+      "Created session",
     );
     assert.ok(
       mock.calls.some((c) => c.url.includes("/create_pow_challenge")),
-      "Got PoW challenge"
+      "Got PoW challenge",
     );
     assert.ok(
       mock.calls.some((c) => c.url.includes("/chat/completion")),
-      "Called completion"
+      "Called completion",
     );
 
     // Verify /users/current used Bearer auth (userToken)
     const usersCall = mock.calls.find((c) => c.url.includes("/users/current"));
     assert.ok(
       usersCall.headers?.Authorization === "Bearer test-user-token-1234",
-      "Should use userToken as Bearer for /users/current"
+      "Should use userToken as Bearer for /users/current",
     );
 
     // Verify completion used the access token (not the userToken)
     const compCall = mock.calls.find((c) => c.url.includes("/chat/completion"));
     assert.ok(
       compCall.headers?.Authorization === "Bearer test-access-token-123",
-      "Should use access token for /completion"
+      "Should use access token for /completion",
     );
     const body = JSON.parse(compCall.body);
     assert.equal(body.chat_session_id, "session-abc-123");
@@ -308,19 +310,19 @@ test("execute: sends PoW response header", async () => {
     const compCall = mock.calls.find((c) => c.url.includes("/chat/completion"));
     assert.ok(
       compCall.headers["Authorization"]?.startsWith("Bearer test-access-token"),
-      "Has Bearer token"
+      "Has Bearer token",
     );
     assert.ok(compCall.headers["X-Ds-Pow-Response"], "Has PoW header");
     // Header set matches the current chat.deepseek.com web client (v2.0.0):
     // legacy X-App-Version dropped, X-Client-Bundle-Id added, version bumped.
     assert.ok(
       !("X-App-Version" in compCall.headers),
-      "Legacy X-App-Version must not be sent (removed in web client 2.0.0)"
+      "Legacy X-App-Version must not be sent (removed in web client 2.0.0)",
     );
     assert.equal(
       compCall.headers["X-Client-Bundle-Id"],
       "com.deepseek.chat",
-      "Sends X-Client-Bundle-Id"
+      "Sends X-Client-Bundle-Id",
     );
     assert.equal(compCall.headers["X-Client-Version"], "2.0.0", "Sends current X-Client-Version");
     assert.equal(compCall.headers["X-Client-Platform"], "web", "Has X-Client-Platform");
@@ -371,7 +373,7 @@ test("execute: handles 401 from DeepSeek", async () => {
     if (url.includes("/chat_session/create")) {
       return new Response(
         JSON.stringify({ code: 0, data: { biz_data: { chat_session: { id: "s" } } } }),
-        { headers: { "Content-Type": "application/json" } }
+        { headers: { "Content-Type": "application/json" } },
       );
     }
     if (url.includes("/create_pow_challenge")) {
@@ -393,7 +395,7 @@ test("execute: handles 401 from DeepSeek", async () => {
             },
           },
         }),
-        { headers: { "Content-Type": "application/json" } }
+        { headers: { "Content-Type": "application/json" } },
       );
     }
     if (url.includes("/chat/completion")) {
@@ -432,7 +434,7 @@ test("execute: handles DeepSeek JSON error (40003 INVALID_TOKEN)", async () => {
     if (url.includes("/chat_session/create")) {
       return new Response(
         JSON.stringify({ code: 0, data: { biz_data: { chat_session: { id: "s" } } } }),
-        { headers: { "Content-Type": "application/json" } }
+        { headers: { "Content-Type": "application/json" } },
       );
     }
     if (url.includes("/create_pow_challenge")) {
@@ -454,7 +456,7 @@ test("execute: handles DeepSeek JSON error (40003 INVALID_TOKEN)", async () => {
             },
           },
         }),
-        { headers: { "Content-Type": "application/json" } }
+        { headers: { "Content-Type": "application/json" } },
       );
     }
     if (url.includes("/chat/completion")) {
@@ -664,7 +666,7 @@ test("execute: handles abort signal gracefully", async () => {
   assert.ok(result.response, "Should return response");
   assert.ok(
     result.response.status >= 400 || result.response.status === 499,
-    "Should indicate error or abort"
+    "Should indicate error or abort",
   );
 });
 
@@ -829,7 +831,7 @@ test("execute: handles JSON-wrapped userToken", async () => {
     const usersCall = mock.calls.find((c) => c.url.includes("/users/current"));
     assert.ok(
       usersCall.headers?.Authorization === "Bearer test-json-wrapped-token",
-      "Should unwrap JSON and use inner value"
+      "Should unwrap JSON and use inner value",
     );
   } finally {
     mock.restore();
@@ -921,7 +923,7 @@ test("execute: THINK fragments emit as reasoning_content, not content", async ()
     if (urlStr.includes("/chat_session/create")) {
       return new Response(
         JSON.stringify({ code: 0, data: { biz_data: { chat_session: { id: "s-think" } } } }),
-        { headers: { "Content-Type": "application/json" } }
+        { headers: { "Content-Type": "application/json" } },
       );
     }
     if (urlStr.includes("/chat_session/delete")) {
@@ -948,7 +950,7 @@ test("execute: THINK fragments emit as reasoning_content, not content", async ()
             },
           },
         }),
-        { headers: { "Content-Type": "application/json" } }
+        { headers: { "Content-Type": "application/json" } },
       );
     }
     if (urlStr.includes("/chat/completion")) {
@@ -985,12 +987,12 @@ test("execute: THINK fragments emit as reasoning_content, not content", async ()
     const text = await result.response.text();
     assert.ok(
       text.includes('"reasoning_content":"I am thinking..."'),
-      "Thinking should be reasoning_content"
+      "Thinking should be reasoning_content",
     );
     assert.ok(text.includes('"content":"Here is the answer."'), "Response should be content");
     assert.ok(
       !text.includes('"content":"I am thinking..."'),
-      "Thinking should NOT be in content field"
+      "Thinking should NOT be in content field",
     );
   } finally {
     globalThis.fetch = original;
@@ -1008,13 +1010,13 @@ test("execute: search model converts citation tags and appends search results", 
     if (urlStr.includes("/users/current")) {
       return new Response(
         JSON.stringify({ code: 0, data: { biz_data: { token: "tok-search" } } }),
-        { headers: { "Content-Type": "application/json" } }
+        { headers: { "Content-Type": "application/json" } },
       );
     }
     if (urlStr.includes("/chat_session/create")) {
       return new Response(
         JSON.stringify({ code: 0, data: { biz_data: { chat_session: { id: "s-search" } } } }),
-        { headers: { "Content-Type": "application/json" } }
+        { headers: { "Content-Type": "application/json" } },
       );
     }
     if (urlStr.includes("/chat_session/delete")) {
@@ -1041,7 +1043,7 @@ test("execute: search model converts citation tags and appends search results", 
             },
           },
         }),
-        { headers: { "Content-Type": "application/json" } }
+        { headers: { "Content-Type": "application/json" } },
       );
     }
     if (urlStr.includes("/chat/completion")) {
@@ -1076,12 +1078,12 @@ test("execute: search model converts citation tags and appends search results", 
     const text = await result.response.text();
     assert.ok(
       text.includes('"model":"deepseek-v4-flash-search"'),
-      "Should preserve client model id"
+      "Should preserve client model id",
     );
     assert.ok(text.includes("Today is Monday [10]."), "Should convert citation tags");
     assert.ok(
       text.includes("[10]: [Example](https://example.com)"),
-      "Should append search citations"
+      "Should append search citations",
     );
     assert.ok(!text.includes("[citation:10]"), "Should not leak raw citation tags");
   } finally {

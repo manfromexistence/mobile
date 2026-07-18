@@ -6,9 +6,9 @@
  * only place React is required.
  */
 
-import { useSyncExternalStore } from 'react';
+import { useSyncExternalStore } from "react";
 
-import type { ThemeController, ThemeControllerState } from './index';
+import type { ThemeController, ThemeControllerState } from "./index";
 
 // Binds a ThemeController to React via useSyncExternalStore and returns its
 // current state — mode, the selected theme names, the resolved theme, and
@@ -16,12 +16,6 @@ import type { ThemeController, ThemeControllerState } from './index';
 // something changes, so the snapshot reference is stable between renders (no
 // tearing, no render loop). getState doubles as the server snapshot — it returns
 // the initial selection on the server and hydrates on the client.
-export function useThemeController(
-  controller: ThemeController
-): ThemeControllerState {
-  return useSyncExternalStore(
-    controller.subscribe,
-    controller.getState,
-    controller.getState
-  );
+export function useThemeController(controller: ThemeController): ThemeControllerState {
+  return useSyncExternalStore(controller.subscribe, controller.getState, controller.getState);
 }

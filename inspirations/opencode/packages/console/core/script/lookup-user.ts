@@ -1,6 +1,6 @@
-import { Database, and, eq, sql } from "../src/drizzle/index.js"
-import { AuthTable } from "../src/schema/auth.sql.js"
-import { UserTable } from "../src/schema/user.sql.js"
+import { Database, and, eq, sql } from "../src/drizzle/index.js";
+import { AuthTable } from "../src/schema/auth.sql.js";
+import { UserTable } from "../src/schema/user.sql.js";
 import {
   BillingTable,
   PaymentTable,
@@ -8,25 +8,25 @@ import {
   BlackPlans,
   UsageTable,
   LiteTable,
-} from "../src/schema/billing.sql.js"
-import { WorkspaceTable } from "../src/schema/workspace.sql.js"
-import { KeyTable } from "../src/schema/key.sql.js"
-import { BlackData } from "../src/black.js"
-import { centsToMicroCents } from "../src/util/price.js"
-import { getWeekBounds } from "../src/util/date.js"
-import { ModelTable } from "../src/schema/model.sql.js"
+} from "../src/schema/billing.sql.js";
+import { WorkspaceTable } from "../src/schema/workspace.sql.js";
+import { KeyTable } from "../src/schema/key.sql.js";
+import { BlackData } from "../src/black.js";
+import { centsToMicroCents } from "../src/util/price.js";
+import { getWeekBounds } from "../src/util/date.js";
+import { ModelTable } from "../src/schema/model.sql.js";
 
 // get input from command line
-const identifier = process.argv[2]
-const verbose = process.argv[process.argv.length - 1] === "-v"
+const identifier = process.argv[2];
+const verbose = process.argv[process.argv.length - 1] === "-v";
 if (!identifier) {
-  console.error("Usage: bun lookup-user.ts <email|workspaceID|apiKey> [-v]")
-  process.exit(1)
+  console.error("Usage: bun lookup-user.ts <email|workspaceID|apiKey> [-v]");
+  process.exit(1);
 }
 
 // loop up by workspace ID
 if (identifier.startsWith("wrk_")) {
-  await printWorkspace(identifier)
+  await printWorkspace(identifier);
 }
 // lookup by API key ID
 else if (identifier.startsWith("key_")) {
@@ -36,12 +36,12 @@ else if (identifier.startsWith("key_")) {
       .from(KeyTable)
       .where(eq(KeyTable.id, identifier))
       .then((rows) => rows[0]),
-  )
+  );
   if (!key) {
-    console.error("API key not found")
-    process.exit(1)
+    console.error("API key not found");
+    process.exit(1);
   }
-  await printWorkspace(key.workspaceID)
+  await printWorkspace(key.workspaceID);
 }
 // lookup by API key value
 else if (identifier.startsWith("sk-")) {
@@ -51,27 +51,29 @@ else if (identifier.startsWith("sk-")) {
       .from(KeyTable)
       .where(eq(KeyTable.key, identifier))
       .then((rows) => rows[0]),
-  )
+  );
   if (!key) {
-    console.error("API key not found")
-    process.exit(1)
+    console.error("API key not found");
+    process.exit(1);
   }
-  await printWorkspace(key.workspaceID)
+  await printWorkspace(key.workspaceID);
 }
 // lookup by email
 else {
   const authData = await Database.use(async (tx) =>
     tx.select().from(AuthTable).where(eq(AuthTable.subject, identifier)),
-  )
+  );
   if (authData.length === 0) {
-    console.error("Email not found")
-    process.exit(1)
+    console.error("Email not found");
+    process.exit(1);
   }
-  if (authData.length > 1) console.warn("Multiple users found for email", identifier)
+  if (authData.length > 1) console.warn("Multiple users found for email", identifier);
 
   // Get all auth records for email
-  const accountID = authData[0].accountID
-  await printTable("Auth", (tx) => tx.select().from(AuthTable).where(eq(AuthTable.accountID, accountID)))
+  const accountID = authData[0].accountID;
+  await printTable("Auth", (tx) =>
+    tx.select().from(AuthTable).where(eq(AuthTable.accountID, accountID)),
+  );
 
   // Get all workspaces for this account
   const users = await printTable("Workspaces", (tx) =>
@@ -99,10 +101,10 @@ else {
           lite: formatDate(row.lite),
         })),
       ),
-  )
+  );
 
   for (const user of users) {
-    await printWorkspace(user.workspaceID)
+    await printWorkspace(user.workspaceID);
   }
 }
 
@@ -113,9 +115,9 @@ async function printWorkspace(workspaceID: string) {
       .from(WorkspaceTable)
       .where(eq(WorkspaceTable.id, workspaceID))
       .then((rows) => rows[0]),
-  )
+  );
 
-  printHeader(`Workspace "${workspace.name}" (${workspace.id})`)
+  printHeader(`Workspace "${workspace.name}" (${workspace.id})`);
 
   await printTable("Users", (tx) =>
     tx
@@ -136,12 +138,15 @@ async function printWorkspace(workspaceID: string) {
       })
       .from(UserTable)
       .innerJoin(BillingTable, eq(BillingTable.workspaceID, workspace.id))
-      .leftJoin(AuthTable, and(eq(UserTable.accountID, AuthTable.accountID), eq(AuthTable.provider, "email")))
+      .leftJoin(
+        AuthTable,
+        and(eq(UserTable.accountID, AuthTable.accountID), eq(AuthTable.provider, "email")),
+      )
       .leftJoin(SubscriptionTable, eq(SubscriptionTable.userID, UserTable.id))
       .where(eq(UserTable.workspaceID, workspace.id))
       .then((rows) =>
         rows.map((row) => {
-          const subStatus = getSubscriptionStatus(row)
+          const subStatus = getSubscriptionStatus(row);
           return {
             email: (row.timeDeleted ? "❌ " : "") + (row.authEmail ?? row.inviteEmail),
             role: row.role,
@@ -152,10 +157,10 @@ async function printWorkspace(workspaceID: string) {
             subRolling: subStatus.rolling,
             rateLimited: subStatus.rateLimited,
             retryIn: subStatus.retryIn,
-          }
+          };
         }),
       ),
-  )
+  );
 
   await printTable("Billing", (tx) =>
     tx
@@ -197,7 +202,7 @@ async function printWorkspace(workspaceID: string) {
                 : undefined,
           }))[0],
       ),
-  )
+  );
 
   await printTable("Payments", (tx) =>
     tx
@@ -222,7 +227,7 @@ async function printWorkspace(workspaceID: string) {
             : null,
         })),
       ),
-  )
+  );
 
   if (verbose) {
     await printTable("28-Day Usage", (tx) =>
@@ -234,8 +239,12 @@ async function printWorkspace(workspaceID: string) {
           outputTokens: sql<number>`SUM(${UsageTable.outputTokens})`.as("output_tokens"),
           reasoningTokens: sql<number>`SUM(${UsageTable.reasoningTokens})`.as("reasoning_tokens"),
           cacheReadTokens: sql<number>`SUM(${UsageTable.cacheReadTokens})`.as("cache_read_tokens"),
-          cacheWrite5mTokens: sql<number>`SUM(${UsageTable.cacheWrite5mTokens})`.as("cache_write_5m_tokens"),
-          cacheWrite1hTokens: sql<number>`SUM(${UsageTable.cacheWrite1hTokens})`.as("cache_write_1h_tokens"),
+          cacheWrite5mTokens: sql<number>`SUM(${UsageTable.cacheWrite5mTokens})`.as(
+            "cache_write_5m_tokens",
+          ),
+          cacheWrite1hTokens: sql<number>`SUM(${UsageTable.cacheWrite1hTokens})`.as(
+            "cache_write_1h_tokens",
+          ),
           cost: sql<number>`SUM(${UsageTable.cost})`.as("cost"),
         })
         .from(UsageTable)
@@ -248,11 +257,11 @@ async function printWorkspace(workspaceID: string) {
         .groupBy(sql`DATE(${UsageTable.timeCreated})`)
         .orderBy(sql`DATE(${UsageTable.timeCreated}) DESC`)
         .then((rows) => {
-          const totalCost = rows.reduce((sum, r) => sum + Number(r.cost), 0)
+          const totalCost = rows.reduce((sum, r) => sum + Number(r.cost), 0);
           const mapped = rows.map((row) => ({
             ...row,
             cost: `$${(Number(row.cost) / 100000000).toFixed(2)}`,
-          }))
+          }));
           if (mapped.length > 0) {
             mapped.push({
               date: "TOTAL",
@@ -264,11 +273,11 @@ async function printWorkspace(workspaceID: string) {
               cacheWrite5mTokens: null as any,
               cacheWrite1hTokens: null as any,
               cost: `$${(totalCost / 100000000).toFixed(2)}`,
-            })
+            });
           }
-          return mapped
+          return mapped;
         }),
-    )
+    );
     await printTable("Disabled Models", (tx) =>
       tx
         .select({
@@ -284,103 +293,111 @@ async function printWorkspace(workspaceID: string) {
             timeCreated: formatDate(row.timeCreated),
           })),
         ),
-    )
+    );
   }
 }
 
 function formatMicroCents(value: number | null | undefined) {
-  if (value === null || value === undefined) return null
-  return `$${(value / 100000000).toFixed(2)}`
+  if (value === null || value === undefined) return null;
+  return `$${(value / 100000000).toFixed(2)}`;
 }
 
 function formatDate(value: Date | null | undefined) {
-  if (!value) return null
-  return value.toISOString().split("T")[0]
+  if (!value) return null;
+  return value.toISOString().split("T")[0];
 }
 
 function formatMonthlyUsage(usage: number | null | undefined, limit: number | null | undefined) {
-  const usageText = formatMicroCents(usage) ?? "$0.00"
-  if (limit === null || limit === undefined) return `${usageText} / no limit`
-  return `${usageText} / $${limit.toFixed(2)}`
+  const usageText = formatMicroCents(usage) ?? "$0.00";
+  if (limit === null || limit === undefined) return `${usageText} / no limit`;
+  return `${usageText} / $${limit.toFixed(2)}`;
 }
 
 function formatRetryTime(seconds: number) {
-  const days = Math.floor(seconds / 86400)
-  if (days >= 1) return `${days} day${days > 1 ? "s" : ""}`
-  const hours = Math.floor(seconds / 3600)
-  const minutes = Math.ceil((seconds % 3600) / 60)
-  if (hours >= 1) return `${hours}hr ${minutes}min`
-  return `${minutes}min`
+  const days = Math.floor(seconds / 86400);
+  if (days >= 1) return `${days} day${days > 1 ? "s" : ""}`;
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.ceil((seconds % 3600) / 60);
+  if (hours >= 1) return `${hours}hr ${minutes}min`;
+  return `${minutes}min`;
 }
 
 function getSubscriptionStatus(row: {
   subscription: {
-    plan: (typeof BlackPlans)[number]
-  } | null
-  timeSubscriptionCreated: Date | null
-  fixedUsage: number | null
-  rollingUsage: number | null
-  timeFixedUpdated: Date | null
-  timeRollingUpdated: Date | null
+    plan: (typeof BlackPlans)[number];
+  } | null;
+  timeSubscriptionCreated: Date | null;
+  fixedUsage: number | null;
+  rollingUsage: number | null;
+  timeFixedUpdated: Date | null;
+  timeRollingUpdated: Date | null;
 }) {
   if (!row.timeSubscriptionCreated || !row.subscription) {
-    return { weekly: null, rolling: null, rateLimited: null, retryIn: null }
+    return { weekly: null, rolling: null, rateLimited: null, retryIn: null };
   }
 
-  const black = BlackData.getLimits({ plan: row.subscription.plan })
-  const now = new Date()
-  const week = getWeekBounds(now)
+  const black = BlackData.getLimits({ plan: row.subscription.plan });
+  const now = new Date();
+  const week = getWeekBounds(now);
 
-  const fixedLimit = black.fixedLimit ? centsToMicroCents(black.fixedLimit * 100) : null
-  const rollingLimit = black.rollingLimit ? centsToMicroCents(black.rollingLimit * 100) : null
-  const rollingWindowMs = (black.rollingWindow ?? 5) * 3600 * 1000
+  const fixedLimit = black.fixedLimit ? centsToMicroCents(black.fixedLimit * 100) : null;
+  const rollingLimit = black.rollingLimit ? centsToMicroCents(black.rollingLimit * 100) : null;
+  const rollingWindowMs = (black.rollingWindow ?? 5) * 3600 * 1000;
 
   // Calculate current weekly usage (reset if outside current week)
   const currentWeekly =
-    row.fixedUsage && row.timeFixedUpdated && row.timeFixedUpdated >= week.start ? row.fixedUsage : 0
+    row.fixedUsage && row.timeFixedUpdated && row.timeFixedUpdated >= week.start
+      ? row.fixedUsage
+      : 0;
 
   // Calculate current rolling usage
-  const windowStart = new Date(now.getTime() - rollingWindowMs)
+  const windowStart = new Date(now.getTime() - rollingWindowMs);
   const currentRolling =
-    row.rollingUsage && row.timeRollingUpdated && row.timeRollingUpdated >= windowStart ? row.rollingUsage : 0
+    row.rollingUsage && row.timeRollingUpdated && row.timeRollingUpdated >= windowStart
+      ? row.rollingUsage
+      : 0;
 
   // Check rate limiting
-  const isWeeklyLimited = fixedLimit !== null && currentWeekly >= fixedLimit
-  const isRollingLimited = rollingLimit !== null && currentRolling >= rollingLimit
+  const isWeeklyLimited = fixedLimit !== null && currentWeekly >= fixedLimit;
+  const isRollingLimited = rollingLimit !== null && currentRolling >= rollingLimit;
 
-  let retryIn: string | null = null
+  let retryIn: string | null = null;
   if (isWeeklyLimited) {
-    const retryAfter = Math.ceil((week.end.getTime() - now.getTime()) / 1000)
-    retryIn = formatRetryTime(retryAfter)
+    const retryAfter = Math.ceil((week.end.getTime() - now.getTime()) / 1000);
+    retryIn = formatRetryTime(retryAfter);
   } else if (isRollingLimited && row.timeRollingUpdated) {
-    const retryAfter = Math.ceil((row.timeRollingUpdated.getTime() + rollingWindowMs - now.getTime()) / 1000)
-    retryIn = formatRetryTime(retryAfter)
+    const retryAfter = Math.ceil(
+      (row.timeRollingUpdated.getTime() + rollingWindowMs - now.getTime()) / 1000,
+    );
+    retryIn = formatRetryTime(retryAfter);
   }
 
   return {
-    weekly: fixedLimit !== null ? `${formatMicroCents(currentWeekly)} / $${black.fixedLimit}` : null,
-    rolling: rollingLimit !== null ? `${formatMicroCents(currentRolling)} / $${black.rollingLimit}` : null,
+    weekly:
+      fixedLimit !== null ? `${formatMicroCents(currentWeekly)} / $${black.fixedLimit}` : null,
+    rolling:
+      rollingLimit !== null ? `${formatMicroCents(currentRolling)} / $${black.rollingLimit}` : null,
     rateLimited: isWeeklyLimited || isRollingLimited ? "yes" : "no",
     retryIn,
-  }
+  };
 }
 
 function printHeader(title: string) {
-  console.log()
-  console.log("─".repeat(title.length))
-  console.log(`${title}`)
-  console.log("─".repeat(title.length))
+  console.log();
+  console.log("─".repeat(title.length));
+  console.log(`${title}`);
+  console.log("─".repeat(title.length));
 }
 
 function printTable(title: string, callback: (tx: Database.TxOrDb) => Promise<any>): Promise<any> {
   return Database.use(async (tx) => {
-    const data = await callback(tx)
-    console.log(`\n== ${title} ==`)
+    const data = await callback(tx);
+    console.log(`\n== ${title} ==`);
     if (data.length === 0) {
-      console.log("(no data)")
+      console.log("(no data)");
     } else {
-      console.table(data)
+      console.table(data);
     }
-    return data
-  })
+    return data;
+  });
 }

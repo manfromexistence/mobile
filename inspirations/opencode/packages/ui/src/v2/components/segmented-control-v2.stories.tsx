@@ -1,5 +1,5 @@
-import { createSignal } from "solid-js"
-import { SegmentedControlItemV2, SegmentedControlV2 } from "./segmented-control-v2"
+import { createSignal } from "solid-js";
+import { SegmentedControlItemV2, SegmentedControlV2 } from "./segmented-control-v2";
 
 const docs = `### Overview
 Single-select segmented control with **custom state** and native \`<button type="button">\` segments.
@@ -19,7 +19,7 @@ Single-select segmented control with **custom state** and native \`<button type=
 
 ### Theming
 - \`data-slot="segmented-control-v2"\` on the track; items use \`data-slot="segmented-control-v2-item"\` and \`data-pressed\` when selected.
-`
+`;
 
 export default {
   title: "UI V2/SegmentedControl",
@@ -33,7 +33,7 @@ export default {
       },
     },
   },
-}
+};
 
 export const Basic = {
   render: () => (
@@ -44,11 +44,11 @@ export const Basic = {
       <SegmentedControlItemV2 value="d">Label</SegmentedControlItemV2>
     </SegmentedControlV2>
   ),
-}
+};
 
 export const Controlled = {
   render: () => {
-    const [value, setValue] = createSignal("b")
+    const [value, setValue] = createSignal("b");
     return (
       <div style={{ display: "grid", gap: "12px", "justify-items": "start" }}>
         <SegmentedControlV2 value={value()} onChange={setValue} aria-label="View mode">
@@ -56,31 +56,48 @@ export const Controlled = {
           <SegmentedControlItemV2 value="b">Grid</SegmentedControlItemV2>
           <SegmentedControlItemV2 value="c">Board</SegmentedControlItemV2>
         </SegmentedControlV2>
-        <div style={{ "font-family": "var(--v2-font-family-sans)", "font-size": "12px", color: "#808080" }}>
+        <div
+          style={{
+            "font-family": "var(--v2-font-family-sans)",
+            "font-size": "12px",
+            color: "#808080",
+          }}
+        >
           Value: {value()}
         </div>
       </div>
-    )
+    );
   },
-}
+};
 
 export const AllowDeselect = {
   render: () => {
-    const [value, setValue] = createSignal<string | null>("a")
+    const [value, setValue] = createSignal<string | null>("a");
     return (
       <div style={{ display: "grid", gap: "12px", "justify-items": "start" }}>
-        <SegmentedControlV2 value={value()} allowDeselect onChange={setValue} aria-label="Optional selection">
+        <SegmentedControlV2
+          value={value()}
+          allowDeselect
+          onChange={setValue}
+          aria-label="Optional selection"
+        >
           <SegmentedControlItemV2 value="a">A</SegmentedControlItemV2>
           <SegmentedControlItemV2 value="b">B</SegmentedControlItemV2>
           <SegmentedControlItemV2 value="c">C</SegmentedControlItemV2>
         </SegmentedControlV2>
-        <div style={{ "font-family": "var(--v2-font-family-sans)", "font-size": "12px", color: "#808080" }}>
+        <div
+          style={{
+            "font-family": "var(--v2-font-family-sans)",
+            "font-size": "12px",
+            color: "#808080",
+          }}
+        >
           Value: {value() === null ? "none" : value()}
         </div>
       </div>
-    )
+    );
   },
-}
+};
 
 export const WithDisabledItem = {
   render: () => (
@@ -92,16 +109,20 @@ export const WithDisabledItem = {
       <SegmentedControlItemV2 value="c">Three</SegmentedControlItemV2>
     </SegmentedControlV2>
   ),
-}
+};
 
 export const FullWidth = {
   render: () => (
     <div style={{ width: "320px" }}>
-      <SegmentedControlV2 defaultValue="x" class="segmented-control-v2--full-width" aria-label="Full width">
+      <SegmentedControlV2
+        defaultValue="x"
+        class="segmented-control-v2--full-width"
+        aria-label="Full width"
+      >
         <SegmentedControlItemV2 value="x">A</SegmentedControlItemV2>
         <SegmentedControlItemV2 value="y">B</SegmentedControlItemV2>
         <SegmentedControlItemV2 value="z">C</SegmentedControlItemV2>
       </SegmentedControlV2>
     </div>
   ),
-}
+};

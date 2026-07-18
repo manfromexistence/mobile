@@ -23,7 +23,7 @@ type Body = Record<string, unknown>;
 type CredentialsLike = { apiKey?: unknown; accessToken?: unknown } | null | undefined;
 
 function buildAppliedRulesSummary(
-  applied: Array<{ type: string; path: string; value?: unknown }>
+  applied: Array<{ type: string; path: string; value?: unknown }>,
 ): string {
   return applied
     .map((rule) => {
@@ -42,7 +42,7 @@ function truncateToolList(
   bodyToSend: Body,
   provider: string | null | undefined,
   bypassDefaultToolLimit: boolean,
-  log?: LoggerLike
+  log?: LoggerLike,
 ): Body {
   if (!Array.isArray(bodyToSend.tools)) return bodyToSend;
 
@@ -54,7 +54,7 @@ function truncateToolList(
       bodyToSend = { ...bodyToSend, tools: truncatedTools };
       log?.debug?.(
         "TOOL_LIMIT",
-        `Truncated ${originalCount} tools to ${knownLimit} for ${provider}`
+        `Truncated ${originalCount} tools to ${knownLimit} for ${provider}`,
       );
     }
     return bodyToSend;
@@ -69,7 +69,7 @@ function truncateToolList(
     bodyToSend = { ...bodyToSend, tools: truncatedTools };
     log?.debug?.(
       "TOOL_LIMIT",
-      `Truncated ${originalCount} tools to ${effectiveToolLimit} for ${provider}`
+      `Truncated ${originalCount} tools to ${effectiveToolLimit} for ${provider}`,
     );
   }
   return bodyToSend;
@@ -81,7 +81,7 @@ function backfillQwenOAuthUser(
   bodyToSend: Body,
   provider: string | null | undefined,
   credentials: CredentialsLike,
-  log?: LoggerLike
+  log?: LoggerLike,
 ): Body {
   const hasValidQwenUser = typeof bodyToSend.user === "string" && bodyToSend.user.trim().length > 0;
   const isQwenOAuthRequest =
@@ -100,7 +100,7 @@ function backfillQwenOAuthUser(
 async function injectPromptCacheKey(
   bodyToSend: Body,
   provider: string | null | undefined,
-  targetFormat: string
+  targetFormat: string,
 ): Promise<Body> {
   if (
     targetFormat === FORMATS.OPENAI &&
@@ -149,14 +149,14 @@ export async function prepareUpstreamBody(opts: {
   const payloadRuleResult = await applyConfiguredPayloadRules(
     bodyToSend,
     payloadRuleModel,
-    payloadRuleProtocols
+    payloadRuleProtocols,
   );
   bodyToSend = payloadRuleResult.payload;
 
   if (payloadRuleResult.applied.length > 0) {
     log?.debug?.(
       "PAYLOAD_RULES",
-      `Applied ${payloadRuleResult.applied.length} rule(s) for ${payloadRuleModel} (${payloadRuleProtocols.join(", ")}): ${buildAppliedRulesSummary(payloadRuleResult.applied)}`
+      `Applied ${payloadRuleResult.applied.length} rule(s) for ${payloadRuleModel} (${payloadRuleProtocols.join(", ")}): ${buildAppliedRulesSummary(payloadRuleResult.applied)}`,
     );
   }
 

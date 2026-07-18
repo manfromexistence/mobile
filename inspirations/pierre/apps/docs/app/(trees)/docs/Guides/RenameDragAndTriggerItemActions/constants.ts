@@ -1,7 +1,7 @@
-import { docsCodeSnippet } from '@/lib/docsCodeSnippet';
+import { docsCodeSnippet } from "@/lib/docsCodeSnippet";
 
 export const RENAME_DRAG_RENAME = docsCodeSnippet(
-  'rename.tsx',
+  "rename.tsx",
   `const { model } = useFileTree({
   paths,
   renaming: {
@@ -15,11 +15,11 @@ export const RENAME_DRAG_RENAME = docsCodeSnippet(
   },
 });
 
-model.startRenaming('src/index.ts');`
+model.startRenaming('src/index.ts');`,
 );
 
 export const RENAME_DRAG_DRAG_AND_DROP = docsCodeSnippet(
-  'drag-and-drop.ts',
+  "drag-and-drop.ts",
   `const fileTree = new FileTree({
   paths,
   dragAndDrop: {
@@ -37,11 +37,11 @@ export const RENAME_DRAG_DRAG_AND_DROP = docsCodeSnippet(
       console.error(message);
     },
   },
-});`
+});`,
 );
 
 export const RENAME_DRAG_CONTEXT_MENU = docsCodeSnippet(
-  'context-menu.tsx',
+  "context-menu.tsx",
   `const { model } = useFileTree({
   paths,
   composition: {
@@ -69,5 +69,5 @@ export const RENAME_DRAG_CONTEXT_MENU = docsCodeSnippet(
       </button>
     </div>
   )}
-/>;`
+/>;`,
 );

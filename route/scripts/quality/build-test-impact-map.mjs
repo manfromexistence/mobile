@@ -68,7 +68,7 @@ const testFiles = globSync(
     // Quarentena serial (P0.3): também são node:test — a TIA precisa mapeá-los.
     "tests/unit/serial/**/*.test.ts",
   ],
-  { cwd: ROOT, absolute: true }
+  { cwd: ROOT, absolute: true },
 );
 const map = {};
 for (const tf of testFiles) {
@@ -79,7 +79,10 @@ for (const tf of testFiles) {
 }
 for (const k of Object.keys(map)) map[k].sort();
 const out = path.join(ROOT, "config/quality/test-impact-map.json");
-fs.writeFileSync(out, JSON.stringify({ generatedFrom: "import-graph", sources: map }, null, 2) + "\n");
+fs.writeFileSync(
+  out,
+  JSON.stringify({ generatedFrom: "import-graph", sources: map }, null, 2) + "\n",
+);
 console.log(
-  `test-impact-map: ${Object.keys(map).length} source files mapped from ${testFiles.length} test files`
+  `test-impact-map: ${Object.keys(map).length} source files mapped from ${testFiles.length} test files`,
 );

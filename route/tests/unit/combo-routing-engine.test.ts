@@ -15,8 +15,9 @@ const {
   resolveNestedComboModels,
   handleComboChat,
 } = await import("../../open-sse/services/combo.ts");
-const { resolveReasoningBufferedMaxTokens } =
-  await import("../../open-sse/services/reasoningTokenBuffer.ts");
+const { resolveReasoningBufferedMaxTokens } = await import(
+  "../../open-sse/services/reasoningTokenBuffer.ts"
+);
 const { normalizeComboStep } = await import("../../src/lib/combos/steps.ts");
 const { registerStrategy } = await import("../../open-sse/services/autoCombo/routerStrategy.ts");
 const { touchSession, clearSessions } = await import("../../open-sse/services/sessionManager.ts");
@@ -24,14 +25,17 @@ const core = await import("../../src/lib/db/core.ts");
 const settingsDb = await import("../../src/lib/db/settings.ts");
 const providersDb = await import("../../src/lib/db/providers.ts");
 const evalsDb = await import("../../src/lib/db/evals.ts");
-const { saveModelsDevCapabilities, clearModelsDevCapabilities } =
-  await import("../../src/lib/modelsDevSync.ts");
-const { getComboMetrics, recordComboRequest, resetAllComboMetrics } =
-  await import("../../open-sse/services/comboMetrics.ts");
+const { saveModelsDevCapabilities, clearModelsDevCapabilities } = await import(
+  "../../src/lib/modelsDevSync.ts"
+);
+const { getComboMetrics, recordComboRequest, resetAllComboMetrics } = await import(
+  "../../open-sse/services/comboMetrics.ts"
+);
 const { resetEvalRoutingCache } = await import("../../open-sse/services/evalRouting.ts");
 const { resetAllCircuitBreakers } = await import("../../src/shared/utils/circuitBreaker.ts");
-const { acquire: acquireSemaphore, resetAll: resetAllSemaphores } =
-  await import("../../open-sse/services/rateLimitSemaphore.ts");
+const { acquire: acquireSemaphore, resetAll: resetAllSemaphores } = await import(
+  "../../open-sse/services/rateLimitSemaphore.ts"
+);
 const { _resetAllDecks } = await import("../../src/shared/utils/shuffleDeck.ts");
 const { _setSecureRandomFloatSource } = await import("../../src/shared/utils/secureRandom.ts");
 
@@ -78,7 +82,7 @@ function providerBreakerOpenResponse() {
         "content-type": "application/json",
         "x-omniroute-provider-breaker": "open",
       },
-    }
+    },
   );
 }
 
@@ -204,7 +208,7 @@ test("validateComboDAG rejects circular references and resolveNestedComboModels 
         { name: "loop-a", models: ["loop-b"] },
         { name: "loop-b", models: ["loop-a"] },
       ]),
-    /Circular combo reference detected/
+    /Circular combo reference detected/,
   );
 });
 
@@ -373,7 +377,7 @@ test("handleComboChat isolates nested shadow request bodies", async () => {
     handleSingleModel: async (
       requestBody: MutableChatBody,
       _modelStr: unknown,
-      target?: unknown
+      target?: unknown,
     ) => {
       const trafficType =
         target && typeof target === "object" && "trafficType" in target
@@ -946,7 +950,7 @@ test("combo helpers short-circuit safely for missing combos, cycles, and excessi
   assert.doesNotThrow(() =>
     validateComboDAG("ghost", {
       combos: [{ name: "alpha", models: ["openai/gpt-4o-mini"] }],
-    })
+    }),
   );
   assert.doesNotThrow(() => validateComboDAG("empty", [{ name: "empty" }]));
 
@@ -954,9 +958,9 @@ test("combo helpers short-circuit safely for missing combos, cycles, and excessi
     resolveNestedComboModels(
       { name: "loop", models: ["model-a", "model-b"] },
       [],
-      new Set(["loop"])
+      new Set(["loop"]),
     ),
-    []
+    [],
   );
 
   assert.deepEqual(
@@ -964,9 +968,9 @@ test("combo helpers short-circuit safely for missing combos, cycles, and excessi
       { name: "deep", models: ["model-a", { model: "model-b", weight: 2 }] },
       [],
       new Set(),
-      99
+      99,
     ),
-    ["model-a", "model-b"]
+    ["model-a", "model-b"],
   );
 });
 
@@ -1130,7 +1134,7 @@ test("handleComboChat returns the earliest retry-after when all priority targets
         {
           status: 429,
           headers: { "content-type": "application/json" },
-        }
+        },
       ),
     isModelAvailable: async () => true,
     log: createLog(),
@@ -1216,7 +1220,7 @@ test("handleComboChat round-robin falls through semaphore timeouts and malformed
     {
       maxConcurrency: 1,
       timeoutMs: 100,
-    }
+    },
   );
   const calls: any[] = [];
 
@@ -1276,7 +1280,7 @@ test("handleComboChat round-robin surfaces retry-after metadata after exhausting
         {
           status: 429,
           headers: { "content-type": "application/json" },
-        }
+        },
       ),
     isModelAvailable: async () => true,
     log: createLog(),
@@ -1480,7 +1484,7 @@ test("handleComboChat starts hedged fallback only after explicit zero-latency op
               clearTimeout(timer);
               resolve(undefined);
             },
-            { once: true }
+            { once: true },
           );
         });
         return okResponse({ choices: [{ message: { content: "slow" } }] });
@@ -1557,7 +1561,7 @@ test("handleComboChat round-robin falls through 400s and returns the final error
           {
             status: 400,
             headers: { "content-type": "application/json" },
-          }
+          },
         );
       }
       return errorResponse(500, "rr-final-fail");
@@ -2370,8 +2374,8 @@ test("handleComboChat auto strategy falls back to rules when a custom router str
   assert.deepEqual(calls, ["openai/gpt-4o-mini"]);
   assert.ok(
     log.entries.some(
-      (entry) => entry.level === "warn" && /falling back to rules/i.test(String(entry.msg))
-    )
+      (entry) => entry.level === "warn" && /falling back to rules/i.test(String(entry.msg)),
+    ),
   );
 });
 
@@ -2434,8 +2438,8 @@ test("handleComboChat auto strategy can route by SLA targets", async () => {
   assert.equal(calls[0], "gemini/gemini-2.5-flash");
   assert.ok(
     log.entries.some(
-      (entry) => entry.level === "info" && /strategy=sla-aware/i.test(String(entry.msg))
-    )
+      (entry) => entry.level === "info" && /strategy=sla-aware/i.test(String(entry.msg)),
+    ),
   );
 });
 
@@ -2678,7 +2682,7 @@ test("handleComboChat round-robin recovers from 400s when a later model succeeds
           {
             status: 400,
             headers: { "content-type": "application/json" },
-          }
+          },
         );
       }
       return okResponse({ choices: [{ message: { content: "recovered" } }] });
@@ -2771,7 +2775,7 @@ test("handleComboChat falls back to next model when first model returns all-acco
         {
           status: 503,
           headers: { "content-type": "application/json" },
-        }
+        },
       );
     },
     isModelAvailable: async () => true,
@@ -2813,7 +2817,7 @@ test("handleComboChat round-robin falls back when all-accounts-rate-limited 503 
         {
           status: 503,
           headers: { "content-type": "application/json" },
-        }
+        },
       );
     },
     isModelAvailable: async () => true,
@@ -2865,7 +2869,7 @@ test("handleComboChat aborts combo when 503 response does NOT contain the unavai
   assert.ok(
     payload.error?.message?.includes("Server error") ||
       payload.error?.message?.includes("unavailable") ||
-      result.status === 503
+      result.status === 503,
   );
 });
 
@@ -2910,22 +2914,22 @@ test("#3587 reasoning buffer preserves max_tokens when the full buffer exceeds m
   assert.equal(
     resolveReasoningBufferedMaxTokens("openai/gemini-high-cap", 64000),
     64000,
-    "near-cap requests should not be inflated beyond the model's accepted range"
+    "near-cap requests should not be inflated beyond the model's accepted range",
   );
   assert.equal(
     resolveReasoningBufferedMaxTokens("openai/gemini-high-cap", "4096"),
     6144,
-    "numeric string max_tokens should be normalized before applying a safe buffer"
+    "numeric string max_tokens should be normalized before applying a safe buffer",
   );
   assert.equal(
     resolveReasoningBufferedMaxTokens("openai/gemini-high-cap", "not-a-number"),
     null,
-    "non-numeric string max_tokens should not be changed"
+    "non-numeric string max_tokens should not be changed",
   );
   assert.equal(
     resolveReasoningBufferedMaxTokens("openai/gemini-high-cap", 70000),
     65536,
-    "already over-cap max_tokens should be clamped to a known explicit cap"
+    "already over-cap max_tokens should be clamped to a known explicit cap",
   );
 
   const bodies: Array<Record<string, unknown>> = [];
@@ -2955,7 +2959,7 @@ test("#3587 reasoning buffer is disabled without explicit model capability data"
   assert.equal(
     resolveReasoningBufferedMaxTokens("missing-provider/unknown-reasoning-model", 100),
     null,
-    "unknown models must not receive heuristic token inflation"
+    "unknown models must not receive heuristic token inflation",
   );
 
   saveModelsDevCapabilities({
@@ -2974,12 +2978,12 @@ test("#3587 reasoning buffer is disabled without explicit model capability data"
   assert.equal(
     resolveReasoningBufferedMaxTokens("openai/capless-reasoning", 100),
     null,
-    "reasoning metadata without an explicit output cap is not safe enough to inflate"
+    "reasoning metadata without an explicit output cap is not safe enough to inflate",
   );
   assert.equal(
     resolveReasoningBufferedMaxTokens("openai/default-cap-reasoning", 300),
     1300,
-    "explicit default-sized caps are treated as real capability data"
+    "explicit default-sized caps are treated as real capability data",
   );
 });
 
@@ -2993,7 +2997,7 @@ test("#3588 reasoning token buffer feature flag preserves client max_tokens", as
   assert.equal(
     resolveReasoningBufferedMaxTokens("openai/flagged-reasoning", 4096, { enabled: false }),
     null,
-    "disabled feature flag should skip reasoning token inflation"
+    "disabled feature flag should skip reasoning token inflation",
   );
 
   const bodies: Array<Record<string, unknown>> = [];
@@ -3054,7 +3058,7 @@ test("#3587 non-reasoning model does not get max_tokens buffer", async () => {
   assert.equal(
     bodies[0].max_tokens,
     4096,
-    "max_tokens should remain unchanged for non-reasoning model"
+    "max_tokens should remain unchanged for non-reasoning model",
   );
 });
 
@@ -3110,7 +3114,7 @@ test("#3587 round-robin buffer does NOT compound across reasoning models", async
   assert.equal(
     seen[1].maxTokens,
     6144,
-    "second reasoning model must ALSO buffer from original 4096, not 6144"
+    "second reasoning model must ALSO buffer from original 4096, not 6144",
   );
 });
 

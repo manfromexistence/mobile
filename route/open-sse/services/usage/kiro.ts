@@ -46,7 +46,7 @@ function buildKiroQuota(
   used: number,
   total: number,
   resetAt: string | null,
-  overageEnabled: boolean
+  overageEnabled: boolean,
 ): UsageQuota {
   const remaining = total - used;
 
@@ -71,7 +71,7 @@ function buildKiroQuota(
  * dashboard renders a blank quota card with no explanation (#3506). Exported for testing.
  */
 export function buildKiroUsageResult(
-  data: JsonRecord
+  data: JsonRecord,
 ): { plan: string; quotas: Record<string, UsageQuota> } | { message: string } {
   const usageList = Array.isArray(data.usageBreakdownList) ? data.usageBreakdownList : [];
   const quotaInfo: Record<string, UsageQuota> = {};
@@ -95,7 +95,7 @@ export function buildKiroUsageResult(
         freeUsed,
         freeTotal,
         resetAt,
-        overageEnabled
+        overageEnabled,
       );
     }
   });
@@ -124,7 +124,7 @@ export async function discoverKiroProfileArn(
   accessToken: string,
   usageBaseUrl: string,
   region: string,
-  authMethod?: string
+  authMethod?: string,
 ): Promise<string | undefined> {
   try {
     const isApiKey = authMethod === "api_key";
@@ -233,7 +233,7 @@ function buildKiroUsageAttempts(opts: {
 function buildKiroAuthHeaders(
   accessToken: string | undefined,
   isApiKey: boolean,
-  providerSpecificData?: JsonRecord
+  providerSpecificData?: JsonRecord,
 ): Record<string, string> {
   const authHeaders: Record<string, string> = {
     Authorization: `Bearer ${accessToken}`,
@@ -254,7 +254,7 @@ function buildKiroAuthHeaders(
  * pick the right user-facing message — extracted for the function-length gate.
  */
 async function runKiroUsageAttempts(
-  attempts: Array<{ name: string; run: () => Promise<Response> }>
+  attempts: Array<{ name: string; run: () => Promise<Response> }>,
 ): Promise<{
   data?: JsonRecord;
   sawAuthError: boolean;
@@ -384,9 +384,7 @@ export async function getKiroUsage(accessToken?: string, providerSpecificData?: 
     // HTTP-status failure (most informative) over a network-level error.
     throw new Error(
       outcome.lastHttpFailure ||
-        (errors.length > 0
-          ? errors[errors.length - 1]
-          : "no usage endpoint responded")
+        (errors.length > 0 ? errors[errors.length - 1] : "no usage endpoint responded"),
     );
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

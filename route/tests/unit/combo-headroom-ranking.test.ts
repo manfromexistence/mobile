@@ -55,7 +55,7 @@ test("rankByHeadroom: higher headroom (more free) first — A busy(0.8) vs B fre
   const ranked = rankByHeadroom(candidates, sat, keyOf);
   assert.deepEqual(
     ranked.map((c) => c.id),
-    ["B", "A"]
+    ["B", "A"],
   );
 });
 
@@ -68,7 +68,7 @@ test("rankByHeadroom: uses max(5h,7d) — B's high weekly sinks it below A", () 
   const ranked = rankByHeadroom(candidates, sat, keyOf);
   assert.deepEqual(
     ranked.map((c) => c.id),
-    ["A", "B"]
+    ["A", "B"],
   );
 });
 
@@ -82,7 +82,7 @@ test("rankByHeadroom: tie → stable (preserves original input order)", () => {
   const ranked = rankByHeadroom(candidates, sat, keyOf);
   assert.deepEqual(
     ranked.map((c) => c.id),
-    ["X", "Y", "Z"]
+    ["X", "Y", "Z"],
   );
 });
 
@@ -97,7 +97,7 @@ test("rankByHeadroom: partial tie keeps stable order within the tied band", () =
   const ranked = rankByHeadroom(candidates, sat, keyOf);
   assert.deepEqual(
     ranked.map((c) => c.id),
-    ["A", "C", "B"]
+    ["A", "C", "B"],
   );
 });
 
@@ -110,7 +110,7 @@ test("rankByHeadroom: missing saturation entry → treated as full headroom (fai
   const ranked = rankByHeadroom(candidates, sat, keyOf);
   assert.deepEqual(
     ranked.map((c) => c.id),
-    ["unknown", "known"]
+    ["unknown", "known"],
   );
 });
 

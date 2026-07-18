@@ -11,8 +11,9 @@ delete process.env.INITIAL_PASSWORD;
 
 const core = await import("../../src/lib/db/core.ts");
 const startRoute = await import("../../src/app/api/providers/command-code/auth/start/route.ts");
-const callbackRoute =
-  await import("../../src/app/api/providers/command-code/auth/callback/route.ts");
+const callbackRoute = await import(
+  "../../src/app/api/providers/command-code/auth/callback/route.ts"
+);
 const statusRoute = await import("../../src/app/api/providers/command-code/auth/status/route.ts");
 const applyRoute = await import("../../src/app/api/providers/command-code/auth/apply/route.ts");
 const providersDb = await import("../../src/lib/db/providers.ts");
@@ -50,7 +51,7 @@ test("Command Code auth assist start/callback/status/apply keeps state hash and 
     new Request("http://localhost:20128/api/providers/command-code/auth/start", {
       method: "POST",
       headers: { origin: "http://localhost:20128" },
-    })
+    }),
   );
   assert.equal(startResponse.status, 200);
   assert.equal(startResponse.headers.get("cache-control"), "no-store");
@@ -73,18 +74,18 @@ test("Command Code auth assist start/callback/status/apply keeps state hash and 
         origin: "https://commandcode.ai",
         "access-control-request-headers": "content-type, x-command-code",
       },
-    })
+    }),
   );
   assert.equal(optionsResponse.status, 204);
   assert.equal(
     optionsResponse.headers.get("access-control-allow-origin"),
-    "https://commandcode.ai"
+    "https://commandcode.ai",
   );
   assert.equal(optionsResponse.headers.get("access-control-allow-methods"), "POST, OPTIONS");
   assert.equal(optionsResponse.headers.get("access-control-allow-private-network"), "true");
   assert.equal(
     optionsResponse.headers.get("access-control-allow-headers"),
-    "content-type, x-command-code"
+    "content-type, x-command-code",
   );
 
   const callbackResponse = await callbackRoute.POST(
@@ -97,8 +98,8 @@ test("Command Code auth assist start/callback/status/apply keeps state hash and 
         userName: "Ada",
         keyName: "Studio Key",
       },
-      { origin: "https://commandcode.ai" }
-    )
+      { origin: "https://commandcode.ai" },
+    ),
   );
   assert.equal(callbackResponse.status, 200);
   const callbackBody = await callbackResponse.json();
@@ -107,9 +108,9 @@ test("Command Code auth assist start/callback/status/apply keeps state hash and 
   const statusResponse = await statusRoute.GET(
     new Request(
       `http://localhost:20128/api/providers/command-code/auth/status?state=${encodeURIComponent(
-        startBody.state
-      )}`
-    )
+        startBody.state,
+      )}`,
+    ),
   );
   assert.equal(statusResponse.status, 200);
   const statusBody = await statusResponse.json();
@@ -123,7 +124,7 @@ test("Command Code auth assist start/callback/status/apply keeps state hash and 
       state: startBody.state,
       name: "Command Code Studio",
       setDefault: true,
-    })
+    }),
   );
   assert.equal(applyResponse.status, 200);
   const applyBody = await applyResponse.json();
@@ -141,7 +142,7 @@ test("Command Code auth assist start/callback/status/apply keeps state hash and 
   const secondApplyResponse = await applyRoute.POST(
     jsonRequest("http://localhost:20128/api/providers/command-code/auth/apply", {
       state: startBody.state,
-    })
+    }),
   );
   assert.equal(secondApplyResponse.status, 409);
 });
@@ -153,7 +154,7 @@ test("Command Code auth assist keeps auth URL callback on CLI localhost contract
     new Request("http://localhost:20128/api/providers/command-code/auth/start", {
       method: "POST",
       headers: { origin: "http://localhost:20128" },
-    })
+    }),
   );
   assert.equal(startResponse.status, 200);
   const startBody = await startResponse.json();
@@ -169,12 +170,12 @@ test("Command Code auth assist allows only configured CLI callback port range", 
     new Request("http://localhost:20128/api/providers/command-code/auth/start", {
       method: "POST",
       headers: { origin: "http://localhost:20128" },
-    })
+    }),
   );
   const configuredPortBody = await configuredPortResponse.json();
   assert.equal(
     new URL(configuredPortBody.authUrl).searchParams.get("callback"),
-    "http://localhost:5962/callback"
+    "http://localhost:5962/callback",
   );
 
   resetDb();
@@ -183,12 +184,12 @@ test("Command Code auth assist allows only configured CLI callback port range", 
     new Request("http://localhost:20128/api/providers/command-code/auth/start", {
       method: "POST",
       headers: { origin: "http://localhost:20128" },
-    })
+    }),
   );
   const invalidPortBody = await invalidPortResponse.json();
   assert.equal(
     new URL(invalidPortBody.authUrl).searchParams.get("callback"),
-    "http://localhost:5959/callback"
+    "http://localhost:5959/callback",
   );
 
   resetDb();
@@ -197,12 +198,12 @@ test("Command Code auth assist allows only configured CLI callback port range", 
     new Request("http://localhost:20128/api/providers/command-code/auth/start", {
       method: "POST",
       headers: { origin: "http://localhost:20128" },
-    })
+    }),
   );
   const partialPortBody = await partialPortResponse.json();
   assert.equal(
     new URL(partialPortBody.authUrl).searchParams.get("callback"),
-    "http://localhost:5959/callback"
+    "http://localhost:5959/callback",
   );
 });
 
@@ -211,8 +212,8 @@ test("Command Code callback rejects disallowed origins and oversized bodies", as
     jsonRequest(
       "http://localhost:20128/api/providers/command-code/auth/callback",
       { apiKey: "secret", state: "x".repeat(32) },
-      { origin: "https://evil.example" }
-    )
+      { origin: "https://evil.example" },
+    ),
   );
   assert.equal(disallowed.status, 403);
   assert.equal((await disallowed.json()).success, false);
@@ -223,7 +224,7 @@ test("Command Code callback rejects disallowed origins and oversized bodies", as
       method: "POST",
       headers: { "content-type": "application/json", origin: "https://commandcode.ai" },
       body: JSON.stringify({ apiKey: "x".repeat(11 * 1024), state: "s".repeat(64) }),
-    })
+    }),
   );
   assert.equal(tooLarge.status, 413);
   assert.equal((await tooLarge.json()).success, false);

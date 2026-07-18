@@ -1,10 +1,10 @@
-import { defineConfig, PluginOption } from "vite"
-import { solidStart } from "@solidjs/start/config"
-import { nitro } from "nitro/vite"
-import tailwindcss from "@tailwindcss/vite"
+import { defineConfig, PluginOption } from "vite";
+import { solidStart } from "@solidjs/start/config";
+import { nitro } from "nitro/vite";
+import tailwindcss from "@tailwindcss/vite";
 
 const nitroConfig: any = (() => {
-  const target = process.env.OPENCODE_DEPLOYMENT_TARGET
+  const target = process.env.OPENCODE_DEPLOYMENT_TARGET;
   if (target === "cloudflare") {
     return {
       compatibilityDate: "2024-09-19",
@@ -12,10 +12,10 @@ const nitroConfig: any = (() => {
       cloudflare: {
         nodeCompat: true,
       },
-    }
+    };
   }
-  return {}
-})()
+  return {};
+})();
 
 export default defineConfig({
   plugins: [
@@ -34,4 +34,4 @@ export default defineConfig({
   worker: {
     format: "es",
   },
-})
+});

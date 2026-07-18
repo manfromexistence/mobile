@@ -12,6 +12,6 @@ test("inclusionai is no longer registered as a first-party provider", () => {
   assert.equal(Object.hasOwn(FREE_TIER_BUDGETS, "inclusionai"), false);
   assert.equal(
     FREE_MODEL_BUDGETS.some((entry) => entry.provider === "inclusionai"),
-    false
+    false,
   );
 });

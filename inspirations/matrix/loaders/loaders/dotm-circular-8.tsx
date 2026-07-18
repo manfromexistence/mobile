@@ -22,15 +22,19 @@ export function DotmCircular8({
   ...rest
 }: DotmCircular8Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
   const phase = useCyclePhase({
     active: !reducedMotion && matrixPhase !== "idle",
     cycleMsBase: 1400,
-    speed
+    speed,
   });
 
   const resolver = useMemo<DotAnimationResolver>(() => {
@@ -42,8 +46,8 @@ export function DotmCircular8({
       const x = col - 2;
       const y = row - 2;
       const radius = Math.hypot(x, y);
-      const beat = reducedMotion || p === "idle" ? 0 : Math.sin((phase) * Math.PI * 2);
-      const spike = reducedMotion || p === "idle" ? 0 : Math.sin((phase) * Math.PI * 4);
+      const beat = reducedMotion || p === "idle" ? 0 : Math.sin(phase * Math.PI * 2);
+      const spike = reducedMotion || p === "idle" ? 0 : Math.sin(phase * Math.PI * 4);
       const pulse = Math.max(0, beat) + Math.max(0, spike) * 0.55;
 
       if (radius < 0.55) {

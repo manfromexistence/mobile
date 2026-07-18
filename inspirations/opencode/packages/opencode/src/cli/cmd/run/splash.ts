@@ -16,101 +16,101 @@ import {
   type ScrollbackRenderContext,
   type ScrollbackSnapshot,
   type ScrollbackWriter,
-} from "@opentui/core"
-import * as Locale from "@/util/locale"
-import { go } from "@/cli/logo"
-import type { RunSplashTheme } from "./theme"
+} from "@opentui/core";
+import * as Locale from "@/util/locale";
+import { go } from "@/cli/logo";
+import type { RunSplashTheme } from "./theme";
 
-export const SPLASH_TITLE_LIMIT = 50
-export const SPLASH_TITLE_FALLBACK = "Untitled session"
+export const SPLASH_TITLE_LIMIT = 50;
+export const SPLASH_TITLE_FALLBACK = "Untitled session";
 
 type SplashInput = {
-  title: string | undefined
-  session_id: string
-}
+  title: string | undefined;
+  session_id: string;
+};
 
 type SplashWriterInput = SplashInput & {
-  theme: RunSplashTheme
-  showSession?: boolean
-  detail?: string
-}
+  theme: RunSplashTheme;
+  showSession?: boolean;
+  detail?: string;
+};
 
 export type SplashMeta = {
-  title: string
-  session_id: string
-}
+  title: string;
+  session_id: string;
+};
 
 type Cell = {
-  char: string
-  mark: "text" | "full" | "mix" | "top"
-}
+  char: string;
+  mark: "text" | "full" | "mix" | "top";
+};
 
 function cells(line: string): Cell[] {
-  const list: Cell[] = []
+  const list: Cell[] = [];
   for (const char of line) {
     if (char === "_") {
-      list.push({ char: " ", mark: "full" })
-      continue
+      list.push({ char: " ", mark: "full" });
+      continue;
     }
 
     if (char === "^") {
-      list.push({ char: "▀", mark: "mix" })
-      continue
+      list.push({ char: "▀", mark: "mix" });
+      continue;
     }
 
     if (char === "~") {
-      list.push({ char: "▀", mark: "top" })
-      continue
+      list.push({ char: "▀", mark: "top" });
+      continue;
     }
 
-    list.push({ char, mark: "text" })
+    list.push({ char, mark: "text" });
   }
 
-  return list
+  return list;
 }
 
 function title(text: string | undefined): string {
   if (!text) {
-    return SPLASH_TITLE_FALLBACK
+    return SPLASH_TITLE_FALLBACK;
   }
 
-  let value = ""
-  let gap = false
+  let value = "";
+  let gap = false;
   for (const char of text.trim()) {
     if (char === " " || char === "\n" || char === "\r" || char === "\t") {
-      gap = true
-      continue
+      gap = true;
+      continue;
     }
 
     if (gap && value.length > 0) {
-      value += " "
+      value += " ";
     }
 
-    value += char
-    gap = false
+    value += char;
+    gap = false;
   }
 
   if (!value) {
-    return SPLASH_TITLE_FALLBACK
+    return SPLASH_TITLE_FALLBACK;
   }
 
-  return Locale.truncate(value, SPLASH_TITLE_LIMIT)
+  return Locale.truncate(value, SPLASH_TITLE_LIMIT);
 }
 
 function write(
   root: BoxRenderable,
   ctx: ScrollbackRenderContext,
   line: {
-    left: number
-    top: number
-    text: string
-    fg: ColorInput
-    bg?: ColorInput
-    attrs?: number
+    left: number;
+    top: number;
+    text: string;
+    fg: ColorInput;
+    bg?: ColorInput;
+    attrs?: number;
   },
 ): void {
   if (line.left >= ctx.width) {
-    return
+    return;
   }
 
   root.add(
@@ -126,11 +126,18 @@ function write(
       bg: line.bg,
       attributes: line.attrs,
     }),
-  )
+  );
 }
 
 function push(
-  lines: Array<{ left: number; top: number; text: string; fg: ColorInput; bg?: ColorInput; attrs?: number }>,
+  lines: Array<{
+    left: number;
+    top: number;
+    text: string;
+    fg: ColorInput;
+    bg?: ColorInput;
+    attrs?: number;
+  }>,
   left: number,
   top: number,
   text: string,
@@ -138,52 +145,70 @@ function push(
   bg?: ColorInput,
   attrs?: number,
 ): void {
-  lines.push({ left, top, text, fg, bg, attrs })
+  lines.push({ left, top, text, fg, bg, attrs });
 }
 
 function draw(
-  lines: Array<{ left: number; top: number; text: string; fg: ColorInput; bg?: ColorInput; attrs?: number }>,
+  lines: Array<{
+    left: number;
+    top: number;
+    text: string;
+    fg: ColorInput;
+    bg?: ColorInput;
+    attrs?: number;
+  }>,
   row: string,
   input: {
-    left: number
-    top: number
-    fg: ColorInput
-    shadow: ColorInput
-    attrs?: number
+    left: number;
+    top: number;
+    fg: ColorInput;
+    shadow: ColorInput;
+    attrs?: number;
   },
 ) {
-  let x = input.left
+  let x = input.left;
   for (const cell of cells(row)) {
     if (cell.mark === "full" || cell.mark === "mix") {
-      push(lines, x, input.top, cell.char, input.fg, input.shadow, input.attrs)
-      x += 1
-      continue
+      push(lines, x, input.top, cell.char, input.fg, input.shadow, input.attrs);
+      x += 1;
+      continue;
     }
 
     if (cell.mark === "top") {
-      push(lines, x, input.top, cell.char, input.shadow, undefined, input.attrs)
-      x += 1
-      continue
+      push(lines, x, input.top, cell.char, input.shadow, undefined, input.attrs);
+      x += 1;
+      continue;
     }
 
-    push(lines, x, input.top, cell.char, input.fg, undefined, input.attrs)
-    x += 1
+    push(lines, x, input.top, cell.char, input.fg, undefined, input.attrs);
+    x += 1;
   }
 }
 
-function build(input: SplashWriterInput, kind: "entry" | "exit", ctx: ScrollbackRenderContext): ScrollbackSnapshot {
-  const width = Math.max(1, ctx.width)
-  const meta = splashMeta(input)
-  const lines: Array<{ left: number; top: number; text: string; fg: ColorInput; bg?: ColorInput; attrs?: number }> = []
-  const left = input.theme.left
-  const right = input.theme.right
-  const leftShadow = input.theme.leftShadow
-  let height = 1
+function build(
+  input: SplashWriterInput,
+  kind: "entry" | "exit",
+  ctx: ScrollbackRenderContext,
+): ScrollbackSnapshot {
+  const width = Math.max(1, ctx.width);
+  const meta = splashMeta(input);
+  const lines: Array<{
+    left: number;
+    top: number;
+    text: string;
+    fg: ColorInput;
+    bg?: ColorInput;
+    attrs?: number;
+  }> = [];
+  const left = input.theme.left;
+  const right = input.theme.right;
+  const leftShadow = input.theme.leftShadow;
+  let height = 1;
 
   if (kind === "entry") {
-    const mark = go.right.slice(1)
-    const top = 1
-    const body_left = (mark[0]?.length ?? 0) + 2
+    const mark = go.right.slice(1);
+    const top = 1;
+    const body_left = (mark[0]?.length ?? 0) + 2;
 
     for (let i = 0; i < mark.length; i += 1) {
       draw(lines, mark[i] ?? "", {
@@ -191,10 +216,10 @@ function build(input: SplashWriterInput, kind: "entry" | "exit", ctx: Scrollback
         top: top + i,
         fg: left,
         shadow: leftShadow,
-      })
+      });
     }
 
-    push(lines, body_left, top, "OpenCode", right, undefined, TextAttributes.BOLD)
+    push(lines, body_left, top, "OpenCode", right, undefined, TextAttributes.BOLD);
     if (input.detail) {
       push(
         lines,
@@ -203,17 +228,17 @@ function build(input: SplashWriterInput, kind: "entry" | "exit", ctx: Scrollback
         Locale.truncateMiddle(input.detail, Math.max(1, width - body_left)),
         left,
         undefined,
-      )
+      );
     }
-    height = top + mark.length
+    height = top + mark.length;
   }
 
   if (kind === "exit") {
-    const mark = go.right.slice(1)
-    const top = 1
-    const body_left = (mark[0]?.length ?? 0) + 2
-    const session = "Session  "
-    const label = "Continue "
+    const mark = go.right.slice(1);
+    const top = 1;
+    const body_left = (mark[0]?.length ?? 0) + 2;
+    const session = "Session  ";
+    const label = "Continue ";
 
     for (let i = 0; i < mark.length; i += 1) {
       draw(lines, mark[i] ?? "", {
@@ -221,15 +246,23 @@ function build(input: SplashWriterInput, kind: "entry" | "exit", ctx: Scrollback
         top: top + i,
         fg: left,
         shadow: leftShadow,
-      })
+      });
     }
 
     if (input.showSession !== false) {
-      push(lines, body_left, top, session, left, undefined, TextAttributes.DIM)
-      push(lines, body_left + session.length, top, meta.title, right, undefined, TextAttributes.BOLD)
+      push(lines, body_left, top, session, left, undefined, TextAttributes.DIM);
+      push(
+        lines,
+        body_left + session.length,
+        top,
+        meta.title,
+        right,
+        undefined,
+        TextAttributes.BOLD,
+      );
     }
 
-    push(lines, body_left, top + 1, label, left, undefined, TextAttributes.DIM)
+    push(lines, body_left, top + 1, label, left, undefined, TextAttributes.DIM);
     push(
       lines,
       body_left + label.length,
@@ -238,8 +271,8 @@ function build(input: SplashWriterInput, kind: "entry" | "exit", ctx: Scrollback
       right,
       undefined,
       TextAttributes.BOLD,
-    )
-    height = top + mark.length
+    );
+    height = top + mark.length;
   }
 
   const root = new BoxRenderable(ctx.renderContext, {
@@ -248,10 +281,10 @@ function build(input: SplashWriterInput, kind: "entry" | "exit", ctx: Scrollback
     top: 0,
     width,
     height,
-  })
+  });
 
   for (const line of lines) {
-    write(root, ctx, line)
+    write(root, ctx, line);
   }
 
   return {
@@ -261,20 +294,20 @@ function build(input: SplashWriterInput, kind: "entry" | "exit", ctx: Scrollback
     rowColumns: width,
     startOnNewLine: true,
     trailingNewline: false,
-  }
+  };
 }
 
 export function splashMeta(input: SplashInput): SplashMeta {
   return {
     title: title(input.title),
     session_id: input.session_id,
-  }
+  };
 }
 
 export function entrySplash(input: SplashWriterInput): ScrollbackWriter {
-  return (ctx) => build(input, "entry", ctx)
+  return (ctx) => build(input, "entry", ctx);
 }
 
 export function exitSplash(input: SplashWriterInput): ScrollbackWriter {
-  return (ctx) => build(input, "exit", ctx)
+  return (ctx) => build(input, "exit", ctx);
 }

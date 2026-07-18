@@ -64,7 +64,7 @@ test("handshake response includes publicUrl when NEXT_PUBLIC_LIVE_WS_PUBLIC_URL 
   const response = await wsRoute.GET(
     new Request("http://localhost/api/v1/ws?handshake=1", {
       headers: { origin: "http://localhost" },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -78,7 +78,7 @@ test("handshake response includes null publicUrl when NEXT_PUBLIC_LIVE_WS_PUBLIC
   const response = await wsRoute.GET(
     new Request("http://localhost/api/v1/ws?handshake=1", {
       headers: { origin: "http://localhost" },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -102,7 +102,7 @@ test("publicUrl with non-WebSocket scheme is rejected (null)", async () => {
   const response = await wsRoute.GET(
     new Request("http://localhost/api/v1/ws?handshake=1", {
       headers: { origin: "http://localhost" },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -117,7 +117,7 @@ test("publicUrl with ws:// scheme is accepted", async () => {
   const response = await wsRoute.GET(
     new Request("http://localhost/api/v1/ws?handshake=1", {
       headers: { origin: "http://localhost" },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -131,7 +131,7 @@ test("handshake path is derived from NEXT_PUBLIC_LIVE_WS_PUBLIC_URL pathname", a
   const response = await wsRoute.GET(
     new Request("http://localhost/api/v1/ws?handshake=1", {
       headers: { origin: "http://localhost" },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -145,7 +145,7 @@ test("handshake path defaults to /live-ws when NEXT_PUBLIC_LIVE_WS_PUBLIC_URL is
   const response = await wsRoute.GET(
     new Request("http://localhost/api/v1/ws?handshake=1", {
       headers: { origin: "http://localhost" },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);

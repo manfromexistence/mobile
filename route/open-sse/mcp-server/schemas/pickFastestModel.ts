@@ -6,13 +6,13 @@ export const pickFastestModelInput = z.object({
     .string()
     .optional()
     .describe(
-      "Optional combo id or name to scope the ranking to. Omit to rank across all enabled combos."
+      "Optional combo id or name to scope the ranking to. Omit to rank across all enabled combos.",
     ),
   includeUnhealthy: z
     .boolean()
     .optional()
     .describe(
-      "When true, OPEN-circuit candidates are scored (sorted to the bottom) instead of filtered out."
+      "When true, OPEN-circuit candidates are scored (sorted to the bottom) instead of filtered out.",
     ),
   weights: z
     .object({
@@ -67,7 +67,7 @@ export const pickFastestModelOutput = z.object({
         circuitBreakerState: z.enum(["CLOSED", "OPEN", "HALF_OPEN"]),
       }),
       reason: z.string(),
-    })
+    }),
   ),
   weights: z.object({
     ttft: z.number(),

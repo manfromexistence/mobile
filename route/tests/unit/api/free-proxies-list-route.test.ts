@@ -50,7 +50,7 @@ test("GET returns the full contract { proxies, total, hasMore, stats, syncErrors
   await freeProxiesDb.upsertFreeProxy(make("bravo.example", 40, 300));
 
   const res = await listRoute.GET(
-    await makeManagementSessionRequest("http://localhost/api/settings/free-proxies?sortBy=quality")
+    await makeManagementSessionRequest("http://localhost/api/settings/free-proxies?sortBy=quality"),
   );
   assert.equal(res.status, 200);
   const body = await res.json();
@@ -71,7 +71,7 @@ test("GET search param filters the returned proxies and total", async () => {
   await freeProxiesDb.upsertFreeProxy(make("bravo.example", 40, 300));
 
   const res = await listRoute.GET(
-    await makeManagementSessionRequest("http://localhost/api/settings/free-proxies?search=alph")
+    await makeManagementSessionRequest("http://localhost/api/settings/free-proxies?search=alph"),
   );
   const body = await res.json();
   assert.equal(body.data.total, 1);
@@ -83,7 +83,7 @@ test("GET surfaces syncErrors when a source previously failed", async () => {
   await freeProxiesDb.recordFreeProxySyncErrors("proxifly", ["HTTP 429 from upstream"]);
 
   const res = await listRoute.GET(
-    await makeManagementSessionRequest("http://localhost/api/settings/free-proxies")
+    await makeManagementSessionRequest("http://localhost/api/settings/free-proxies"),
   );
   const body = await res.json();
   assert.deepEqual(body.data.syncErrors, { proxifly: ["HTTP 429 from upstream"] });

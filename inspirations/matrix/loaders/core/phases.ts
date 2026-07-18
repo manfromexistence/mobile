@@ -23,7 +23,7 @@ interface DotMatrixPhasesResult {
 export function useDotMatrixPhases({
   animated = false,
   hoverAnimated = false,
-  speed = 1
+  speed = 1,
 }: UseDotMatrixPhasesOptions): DotMatrixPhasesResult {
   const safeSpeed = speed > 0 ? speed : 1;
   const autoRun = Boolean(animated && !hoverAnimated);
@@ -78,8 +78,8 @@ export function useDotMatrixPhases({
     () => ({
       phase,
       onMouseEnter,
-      onMouseLeave
+      onMouseLeave,
     }),
-    [phase, onMouseEnter, onMouseLeave]
+    [phase, onMouseEnter, onMouseLeave],
   );
 }

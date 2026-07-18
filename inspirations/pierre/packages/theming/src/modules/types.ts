@@ -3,9 +3,9 @@ export interface ThemeLike {
   colors?: Record<string, string>;
   fg?: string;
   name?: string;
-  type?: 'dark' | 'light';
+  type?: "dark" | "light";
 }
 
-export type ColorScheme = 'dark' | 'light';
+export type ColorScheme = "dark" | "light";
 
-export type ColorMode = ColorScheme | 'system';
+export type ColorMode = ColorScheme | "system";

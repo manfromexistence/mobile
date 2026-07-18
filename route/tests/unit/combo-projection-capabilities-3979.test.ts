@@ -41,7 +41,7 @@ test("#3979 combo where ALL members are multimodal + reasoning advertises both",
         { kind: "model", model: "anthropic/claude-opus" },
       ],
     },
-    { includeCapabilities: true, resolveCapabilities: resolve }
+    { includeCapabilities: true, resolveCapabilities: resolve },
   );
   assert.deepEqual(out?.capabilities, { multimodal: true, reasoning: true, caching: true });
 });
@@ -54,7 +54,7 @@ test("#3979 one non-vision member drops multimodal but keeps reasoning", () => {
         { kind: "model", model: "deepseek/v4" }, // reasoning yes, vision no
       ],
     },
-    resolve
+    resolve,
   );
   assert.deepEqual(result, { multimodal: false, reasoning: true, caching: false });
 });
@@ -62,7 +62,7 @@ test("#3979 one non-vision member drops multimodal but keeps reasoning", () => {
 test("#3979 a non-reasoning, non-vision member drops both", () => {
   const result = computeComboCapabilities(
     { models: [{ kind: "model", model: "meta/llama-text" }] },
-    resolve
+    resolve,
   );
   assert.deepEqual(result, { multimodal: false, reasoning: false, caching: false });
 });
@@ -75,7 +75,7 @@ test("#3979 a nested combo-ref is unprovable → drops multimodal/reasoning", ()
         { kind: "combo-ref", comboName: "other" },
       ],
     },
-    resolve
+    resolve,
   );
   assert.equal(result.multimodal, false);
   assert.equal(result.reasoning, false);
@@ -84,11 +84,11 @@ test("#3979 a nested combo-ref is unprovable → drops multimodal/reasoning", ()
 test("#3979 caching reflects the combo's explicit context_cache_protection only", () => {
   const on = computeComboCapabilities(
     { context_cache_protection: true, models: [{ kind: "model", model: "openai/gpt-5" }] },
-    resolve
+    resolve,
   );
   const off = computeComboCapabilities(
     { models: [{ kind: "model", model: "openai/gpt-5" }] },
-    resolve
+    resolve,
   );
   assert.equal(on.caching, true);
   assert.equal(off.caching, false);
@@ -97,7 +97,7 @@ test("#3979 caching reflects the combo's explicit context_cache_protection only"
 test("#3979 unknown-capability model (null) is not advertised as multimodal", () => {
   const result = computeComboCapabilities(
     { models: [{ kind: "model", model: "vendor/uncatalogued" }] },
-    resolve
+    resolve,
   );
   assert.equal(result.multimodal, false);
   assert.equal(result.reasoning, false);

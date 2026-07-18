@@ -24,7 +24,7 @@ const oauthCooldown = new Map<string, number>();
 /** Returns true while `accessToken` is still inside its 429 cooldown window. */
 export function isClaudeOauthUsageCoolingDown(
   accessToken: string | undefined,
-  now: number = Date.now()
+  now: number = Date.now(),
 ): boolean {
   if (!accessToken) return false;
   const until = oauthCooldown.get(accessToken);
@@ -39,7 +39,7 @@ export function isClaudeOauthUsageCoolingDown(
 export function markClaudeOauthUsage429(
   accessToken: string | undefined,
   now: number = Date.now(),
-  cooldownMs: number = OAUTH_USAGE_429_COOLDOWN_MS
+  cooldownMs: number = OAUTH_USAGE_429_COOLDOWN_MS,
 ): void {
   if (!accessToken) return;
   oauthCooldown.set(accessToken, now + cooldownMs);

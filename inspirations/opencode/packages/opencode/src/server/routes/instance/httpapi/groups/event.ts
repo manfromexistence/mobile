@@ -1,12 +1,18 @@
-import { Schema } from "effect"
-import { HttpApi, HttpApiEndpoint, HttpApiGroup, HttpApiSchema, OpenApi } from "effect/unstable/httpapi"
-import { Authorization } from "../middleware/authorization"
-import { InstanceContextMiddleware } from "../middleware/instance-context"
-import { WorkspaceRoutingMiddleware, WorkspaceRoutingQuery } from "../middleware/workspace-routing"
+import { Schema } from "effect";
+import {
+  HttpApi,
+  HttpApiEndpoint,
+  HttpApiGroup,
+  HttpApiSchema,
+  OpenApi,
+} from "effect/unstable/httpapi";
+import { Authorization } from "../middleware/authorization";
+import { InstanceContextMiddleware } from "../middleware/instance-context";
+import { WorkspaceRoutingMiddleware, WorkspaceRoutingQuery } from "../middleware/workspace-routing";
 
 export const EventPaths = {
   event: "/event",
-} as const
+} as const;
 
 export const EventApi = HttpApi.make("event").add(
   HttpApiGroup.make("event")
@@ -25,5 +31,7 @@ export const EventApi = HttpApi.make("event").add(
     .middleware(InstanceContextMiddleware)
     .middleware(WorkspaceRoutingMiddleware)
     .middleware(Authorization)
-    .annotateMerge(OpenApi.annotations({ title: "event", description: "Instance event stream route." })),
-)
+    .annotateMerge(
+      OpenApi.annotations({ title: "event", description: "Instance event stream route." }),
+    ),
+);

@@ -68,7 +68,7 @@ export default function Select({
             "transition-all disabled:opacity-50 disabled:cursor-not-allowed",
             "text-[16px] sm:text-sm",
             error ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : "",
-            selectClassName
+            selectClassName,
           )}
           {...props}
         >

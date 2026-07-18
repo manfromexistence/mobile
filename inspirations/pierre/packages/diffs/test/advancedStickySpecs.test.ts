@@ -1,13 +1,13 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from "bun:test";
 
-import { VirtualizedFile } from '../src/components/VirtualizedFile';
-import { VirtualizedFileDiff } from '../src/components/VirtualizedFileDiff';
-import type { FileContents, VirtualFileMetrics } from '../src/types';
+import { VirtualizedFile } from "../src/components/VirtualizedFile";
+import { VirtualizedFileDiff } from "../src/components/VirtualizedFileDiff";
+import type { FileContents, VirtualFileMetrics } from "../src/types";
 import {
   getVirtualFileHeaderRegion,
   getVirtualFilePaddingBottom,
-} from '../src/utils/computeVirtualFileMetrics';
-import { parseDiffFromFile } from '../src/utils/parseDiffFromFile';
+} from "../src/utils/computeVirtualFileMetrics";
+import { parseDiffFromFile } from "../src/utils/parseDiffFromFile";
 
 // getAdvancedStickySpecs reports where an item's rendered content actually
 // lives inside the sticky container so CodeView can size/position that
@@ -34,15 +34,14 @@ const metrics: VirtualFileMetrics = {
 // A header-only item reports a height of just its header region plus the
 // trailing padding, regardless of how much (collapsed) content it has.
 const HEADER_ONLY_HEIGHT =
-  getVirtualFileHeaderRegion(metrics, false) +
-  getVirtualFilePaddingBottom(metrics);
+  getVirtualFileHeaderRegion(metrics, false) + getVirtualFilePaddingBottom(metrics);
 
 const ITEM_TOP = 1000;
 
 // Minimal stand-in for the owning virtualizer. getAdvancedStickySpecs is pure
 // layout math over the cached diff/file + metrics, so no DOM is required.
 const virtualizer = {
-  type: 'simple',
+  type: "simple",
   config: {},
   connect() {},
   disconnect() {},
@@ -60,18 +59,15 @@ const virtualizer = {
 
 function makeDiff(): ReturnType<typeof parseDiffFromFile> {
   return parseDiffFromFile(
-    { name: 'example.ts', contents: 'one\ntwo\nthree\n' },
-    { name: 'example.ts', contents: 'one\ntwo changed\nthree\n' }
+    { name: "example.ts", contents: "one\ntwo\nthree\n" },
+    { name: "example.ts", contents: "one\ntwo changed\nthree\n" },
   );
 }
 
 function makeFile(lineCount = 10): FileContents {
   return {
-    name: 'example.ts',
-    contents: Array.from(
-      { length: lineCount },
-      (_, index) => `line ${index + 1}`
-    ).join('\n'),
+    name: "example.ts",
+    contents: Array.from({ length: lineCount }, (_, index) => `line ${index + 1}`).join("\n"),
   };
 }
 
@@ -87,8 +83,8 @@ function leadingWindow(height: number) {
   return { top: ITEM_TOP + height + 1, bottom: ITEM_TOP + height + 100 };
 }
 
-describe('VirtualizedFileDiff.getAdvancedStickySpecs', () => {
-  test('reports a fully rendered item at its top with its full height', () => {
+describe("VirtualizedFileDiff.getAdvancedStickySpecs", () => {
+  test("reports a fully rendered item at its top with its full height", () => {
     const instance = new VirtualizedFileDiff({}, virtualizer, metrics);
     instance.prepareCodeViewItem(makeDiff(), ITEM_TOP);
     const height = instance.getVirtualizedHeight();
@@ -97,11 +93,11 @@ describe('VirtualizedFileDiff.getAdvancedStickySpecs', () => {
       instance.getAdvancedStickySpecs({
         top: ITEM_TOP,
         bottom: ITEM_TOP + height,
-      })
+      }),
     ).toEqual({ topOffset: ITEM_TOP, height });
   });
 
-  test('anchors a trailing header-only item at its top (no bufferAfter)', () => {
+  test("anchors a trailing header-only item at its top (no bufferAfter)", () => {
     const instance = new VirtualizedFileDiff({}, virtualizer, metrics);
     instance.prepareCodeViewItem(makeDiff(), ITEM_TOP);
 
@@ -111,7 +107,7 @@ describe('VirtualizedFileDiff.getAdvancedStickySpecs', () => {
     });
   });
 
-  test('anchors a leading header-only item at its bottom (offset by bufferAfter)', () => {
+  test("anchors a leading header-only item at its bottom (offset by bufferAfter)", () => {
     const instance = new VirtualizedFileDiff({}, virtualizer, metrics);
     instance.prepareCodeViewItem(makeDiff(), ITEM_TOP);
     const height = instance.getVirtualizedHeight();
@@ -127,12 +123,8 @@ describe('VirtualizedFileDiff.getAdvancedStickySpecs', () => {
     expect(specs!.topOffset + specs!.height).toBe(ITEM_TOP + height);
   });
 
-  test('reports a collapsed item as its full (header) height at its top', () => {
-    const instance = new VirtualizedFileDiff(
-      { collapsed: true },
-      virtualizer,
-      metrics
-    );
+  test("reports a collapsed item as its full (header) height at its top", () => {
+    const instance = new VirtualizedFileDiff({ collapsed: true }, virtualizer, metrics);
     instance.prepareCodeViewItem(makeDiff(), ITEM_TOP);
     const height = instance.getVirtualizedHeight();
 
@@ -143,8 +135,8 @@ describe('VirtualizedFileDiff.getAdvancedStickySpecs', () => {
   });
 });
 
-describe('VirtualizedFile.getAdvancedStickySpecs', () => {
-  test('reports a fully rendered item at its top with its full height', () => {
+describe("VirtualizedFile.getAdvancedStickySpecs", () => {
+  test("reports a fully rendered item at its top with its full height", () => {
     const instance = new VirtualizedFile({}, virtualizer, metrics);
     instance.prepareCodeViewItem(makeFile(), ITEM_TOP);
     const height = instance.getVirtualizedHeight();
@@ -153,11 +145,11 @@ describe('VirtualizedFile.getAdvancedStickySpecs', () => {
       instance.getAdvancedStickySpecs({
         top: ITEM_TOP,
         bottom: ITEM_TOP + height,
-      })
+      }),
     ).toEqual({ topOffset: ITEM_TOP, height });
   });
 
-  test('anchors a trailing header-only item at its top (no bufferAfter)', () => {
+  test("anchors a trailing header-only item at its top (no bufferAfter)", () => {
     const instance = new VirtualizedFile({}, virtualizer, metrics);
     instance.prepareCodeViewItem(makeFile(), ITEM_TOP);
 
@@ -167,7 +159,7 @@ describe('VirtualizedFile.getAdvancedStickySpecs', () => {
     });
   });
 
-  test('anchors a leading header-only item at its bottom (offset by bufferAfter)', () => {
+  test("anchors a leading header-only item at its bottom (offset by bufferAfter)", () => {
     const instance = new VirtualizedFile({}, virtualizer, metrics);
     instance.prepareCodeViewItem(makeFile(), ITEM_TOP);
     const height = instance.getVirtualizedHeight();
@@ -181,12 +173,8 @@ describe('VirtualizedFile.getAdvancedStickySpecs', () => {
     expect(specs!.topOffset + specs!.height).toBe(ITEM_TOP + height);
   });
 
-  test('reports a collapsed item as its full (header) height at its top', () => {
-    const instance = new VirtualizedFile(
-      { collapsed: true },
-      virtualizer,
-      metrics
-    );
+  test("reports a collapsed item as its full (header) height at its top", () => {
+    const instance = new VirtualizedFile({ collapsed: true }, virtualizer, metrics);
     instance.prepareCodeViewItem(makeFile(), ITEM_TOP);
     const height = instance.getVirtualizedHeight();
 

@@ -1,4 +1,4 @@
-import type { LookupPath, PreparedPath } from './internal-types';
+import type { LookupPath, PreparedPath } from "./internal-types";
 
 // Canonical path parsing runs once per input path during prepare steps, so keep
 // it as a single pass over the string and avoid constructing an extra
@@ -32,7 +32,7 @@ export function splitCanonicalPath(inputPath: string): {
 
 export function parseInputPath(inputPath: string): PreparedPath {
   const { hasTrailingSlash, segments } = splitCanonicalPath(inputPath);
-  const basename = segments[segments.length - 1] ?? '';
+  const basename = segments[segments.length - 1] ?? "";
 
   return {
     basename,

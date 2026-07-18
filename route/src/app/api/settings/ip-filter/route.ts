@@ -38,7 +38,7 @@ export async function PUT(request: Request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -65,7 +65,7 @@ export async function PUT(request: Request) {
       tempBanIP(
         body.tempBan.ip,
         body.tempBan.durationMs || 3600000,
-        body.tempBan.reason || "Manual ban"
+        body.tempBan.reason || "Manual ban",
       );
     }
     if (body.removeBan) removeTempBan(body.removeBan);

@@ -22,11 +22,11 @@ export const AgentBridgeConfigSchema = z.object({
       host: z.string().min(1),
       kind: z.enum(["llm", "app", "custom"]).default("custom"),
       label: z.string().nullable().optional(),
-    })
+    }),
   ),
   agentMappings: z.record(
     z.string(),
-    z.array(z.object({ source: z.string(), target: z.string() }))
+    z.array(z.object({ source: z.string(), target: z.string() })),
   ),
 });
 

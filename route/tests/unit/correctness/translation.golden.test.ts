@@ -12,7 +12,7 @@ for (const c of loadTranslationFixtures()) {
       c.targetFormat,
       (c.input as { model?: string }).model ?? "m",
       c.input,
-      true
+      true,
     );
     goldenSnapshot(`translation/${c.name}`, out);
   });

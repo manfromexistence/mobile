@@ -1,7 +1,7 @@
-import { docsCodeSnippet } from '@/lib/docsCodeSnippet';
+import { docsCodeSnippet } from "@/lib/docsCodeSnippet";
 
 export const SHAPE_TREE_DATA_PREPARE_LOADER = docsCodeSnippet(
-  'load-project-tree-input.ts',
+  "load-project-tree-input.ts",
   `import { prepareFileTreeInput } from '@pierre/trees';
 
 export async function loadProjectTreeInput(projectId: string) {
@@ -10,11 +10,11 @@ export async function loadProjectTreeInput(projectId: string) {
   return prepareFileTreeInput(paths, {
     flattenEmptyDirectories: true,
   });
-}`
+}`,
 );
 
 export const SHAPE_TREE_DATA_REACT_TREE = docsCodeSnippet(
-  'react-tree.tsx',
+  "react-tree.tsx",
   `import { FileTree, useFileTree } from '@pierre/trees/react';
 import type { FileTreePreparedInput } from '@pierre/trees';
 
@@ -25,11 +25,11 @@ export function ReactTree({
 }) {
   const { model } = useFileTree({ preparedInput });
   return <FileTree model={model} style={{ height: '320px' }} />;
-}`
+}`,
 );
 
 export const SHAPE_TREE_DATA_VANILLA_MOUNT = docsCodeSnippet(
-  'mount-vanilla-tree.ts',
+  "mount-vanilla-tree.ts",
   `import { FileTree, type FileTreePreparedInput } from '@pierre/trees';
 
 export function mountVanillaTree(
@@ -40,23 +40,23 @@ export function mountVanillaTree(
   container.style.height = '320px';
   fileTree.render({ fileTreeContainer: container });
   return fileTree;
-}`
+}`,
 );
 
 export const SHAPE_TREE_DATA_SMALL_PATHS = docsCodeSnippet(
-  'small-paths.ts',
+  "small-paths.ts",
   `const fileTree = new FileTree({
   paths: ['README.md', 'src/index.ts', 'src/components/Button.tsx'],
-});`
+});`,
 );
 
 export const SHAPE_TREE_DATA_PRESORTED = docsCodeSnippet(
-  'presorted.ts',
+  "presorted.ts",
   `import { preparePresortedFileTreeInput } from '@pierre/trees';
 
 const preparedInput = preparePresortedFileTreeInput([
   'README.md',
   'src/index.ts',
   'src/components/Button.tsx',
-]);`
+]);`,
 );

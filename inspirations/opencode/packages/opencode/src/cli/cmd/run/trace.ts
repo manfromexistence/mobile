@@ -11,29 +11,29 @@
 //
 // Lazy-initialized: the first call to trace() decides whether tracing is
 // active based on the env var, and subsequent calls return the cached result.
-import fs from "fs"
-import path from "path"
-import { Global } from "@opencode-ai/core/global"
+import fs from "fs";
+import path from "path";
+import { Global } from "@opencode-ai/core/global";
 
 export type Trace = {
-  write(type: string, data?: unknown): void
-}
+  write(type: string, data?: unknown): void;
+};
 
-let state: Trace | false | undefined
+let state: Trace | false | undefined;
 
 function stamp() {
   return new Date()
     .toISOString()
     .replace(/[-:]/g, "")
-    .replace(/\.\d+Z$/, "Z")
+    .replace(/\.\d+Z$/, "Z");
 }
 
 function file() {
-  return path.join(Global.Path.log, "direct", `${stamp()}-${process.pid}.jsonl`)
+  return path.join(Global.Path.log, "direct", `${stamp()}-${process.pid}.jsonl`);
 }
 
 function latest() {
-  return path.join(Global.Path.log, "direct", "latest.json")
+  return path.join(Global.Path.log, "direct", "latest.json");
 }
 
 function text(data: unknown) {
@@ -41,27 +41,27 @@ function text(data: unknown) {
     data,
     (_key, value) => {
       if (typeof value === "bigint") {
-        return String(value)
+        return String(value);
       }
 
-      return value
+      return value;
     },
     0,
-  )
+  );
 }
 
 export function trace(): Trace | undefined {
   if (state !== undefined) {
-    return state || undefined
+    return state || undefined;
   }
 
   if (!process.env.OPENCODE_DIRECT_TRACE) {
-    state = false
-    return undefined
+    state = false;
+    return undefined;
   }
 
-  const target = file()
-  fs.mkdirSync(path.dirname(target), { recursive: true })
+  const target = file();
+  fs.mkdirSync(path.dirname(target), { recursive: true });
   fs.writeFileSync(
     latest(),
     text({
@@ -71,7 +71,7 @@ export function trace(): Trace | undefined {
       argv: process.argv.slice(2),
       path: target,
     }) + "\n",
-  )
+  );
   state = {
     write(type: string, data?: unknown) {
       fs.appendFileSync(
@@ -82,13 +82,13 @@ export function trace(): Trace | undefined {
           type,
           data,
         }) + "\n",
-      )
+      );
     },
-  }
+  };
   state.write("trace.start", {
     argv: process.argv.slice(2),
     cwd: process.cwd(),
     path: target,
-  })
-  return state
+  });
+  return state;
 }

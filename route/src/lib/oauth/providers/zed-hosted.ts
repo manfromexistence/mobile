@@ -40,7 +40,7 @@ export const zedHosted = {
     config: typeof ZED_HOSTED_CONFIG,
     code: string,
     _redirectUri: string,
-    codeVerifier: string
+    codeVerifier: string,
   ) => {
     const { userId, encryptedAccessToken } = parseZedCallbackPayload(code);
     const accessToken = decryptZedAccessToken(encryptedAccessToken, codeVerifier);

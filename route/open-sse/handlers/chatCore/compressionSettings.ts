@@ -28,7 +28,7 @@ export async function resolveCompressionSettings(log?: LoggerLike): Promise<{
   } catch (err) {
     log?.warn?.(
       "COMPRESSION",
-      "Compression settings lookup skipped: " + (err instanceof Error ? err.message : String(err))
+      "Compression settings lookup skipped: " + (err instanceof Error ? err.message : String(err)),
     );
     return { settings: null, enabled: false, contextEditingEnabled: false };
   }

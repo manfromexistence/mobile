@@ -54,7 +54,7 @@ test("health returns 1 when server is offline", async () => {
       const result = await runHealthCommand({});
       console.error = originalError;
       assert.equal(result, 1);
-    }
+    },
   );
 });
 
@@ -91,7 +91,7 @@ test("quota returns 1 when server is offline", async () => {
       const result = await runQuotaCommand({});
       console.error = originalError;
       assert.equal(result, 1);
-    }
+    },
   );
 });
 

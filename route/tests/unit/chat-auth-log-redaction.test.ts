@@ -25,19 +25,19 @@ test("chat handler AUTH debug log does not interpolate the (masked) api key", ()
   // The leaky pattern: a debug log that interpolates maskKey(apiKey).
   assert.ok(
     !/log\.debug\([^)]*maskKey\(/s.test(src),
-    "chat.ts must not pass log.maskKey(apiKey) into a debug log — it leaks the key into logs/bug reports"
+    "chat.ts must not pass log.maskKey(apiKey) into a debug log — it leaks the key into logs/bug reports",
   );
 
   // And no "API Key: ${...}" style interpolation in a debug AUTH line.
   assert.ok(
     !/log\.debug\(\s*["']AUTH["']\s*,\s*`[^`]*API Key:[^`]*\$\{/s.test(src),
-    'chat.ts must not log `API Key: ${...}` — use a fixed "API key provided" string instead'
+    'chat.ts must not log `API Key: ${...}` — use a fixed "API key provided" string instead',
   );
 
   // Positive assertion: the redacted fixed string is present.
   assert.match(
     src,
     /log\.debug\(\s*["']AUTH["']\s*,\s*["']API key provided["']\s*\)/,
-    'chat.ts should log the fixed "API key provided" string when an api key is present'
+    'chat.ts should log the fixed "API key provided" string when an api key is present',
   );
 });

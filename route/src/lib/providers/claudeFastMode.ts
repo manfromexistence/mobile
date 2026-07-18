@@ -60,7 +60,7 @@ export function getClaudeFastModeSupportedModels(settings: unknown): string[] {
  */
 export function shouldRequestClaudeFastMode(
   settings: unknown,
-  modelId: string | null | undefined
+  modelId: string | null | undefined,
 ): boolean {
   if (!isClaudeFastModeEnabled(settings)) return false;
   if (typeof modelId !== "string" || modelId.length === 0) return false;

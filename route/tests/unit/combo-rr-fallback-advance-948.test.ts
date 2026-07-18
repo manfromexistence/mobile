@@ -39,9 +39,30 @@ function rrCombo(name: string) {
     // per-conversation pin; stickyLimit defaults to 1 (true round-robin).
     config: { maxRetries: 0, disableSessionStickiness: true },
     models: [
-      { kind: "model", provider: "codex", providerId: "codex", model: "m-a", connectionId: "conn-A", id: `${name}-0` },
-      { kind: "model", provider: "codex", providerId: "codex", model: "m-b", connectionId: "conn-B", id: `${name}-1` },
-      { kind: "model", provider: "glm-cn", providerId: "glm-cn", model: "m-c", connectionId: "conn-C", id: `${name}-2` },
+      {
+        kind: "model",
+        provider: "codex",
+        providerId: "codex",
+        model: "m-a",
+        connectionId: "conn-A",
+        id: `${name}-0`,
+      },
+      {
+        kind: "model",
+        provider: "codex",
+        providerId: "codex",
+        model: "m-b",
+        connectionId: "conn-B",
+        id: `${name}-1`,
+      },
+      {
+        kind: "model",
+        provider: "glm-cn",
+        providerId: "glm-cn",
+        model: "m-c",
+        connectionId: "conn-C",
+        id: `${name}-2`,
+      },
     ],
   };
 }
@@ -60,7 +81,7 @@ async function dispatchServedConnection(combo: Record<string, unknown>): Promise
     handleSingleModel: async (
       _b: unknown,
       modelStr: string,
-      target?: { connectionId?: string | null }
+      target?: { connectionId?: string | null },
     ) => {
       const conn = target?.connectionId ?? "?";
       // conn-A always fails with a fallback-eligible status so rotation must fall through.
@@ -102,6 +123,6 @@ test("#948: two consecutive requests do not reuse the fallback-served model", as
   assert.notEqual(
     first,
     second,
-    `round-robin must advance past the served model — got ${first} twice (hot-spotting)`
+    `round-robin must advance past the served model — got ${first} twice (hot-spotting)`,
   );
 });

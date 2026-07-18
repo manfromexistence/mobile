@@ -1,9 +1,9 @@
 // @ts-nocheck
-import { createSignal } from "solid-js"
-import { Field } from "./field-v2"
-import { InlineInputV2 } from "./inline-input-v2"
-import { TextInputV2 } from "./text-input-v2"
-import { TextareaV2 } from "./textarea-v2"
+import { createSignal } from "solid-js";
+import { Field } from "./field-v2";
+import { InlineInputV2 } from "./inline-input-v2";
+import { TextInputV2 } from "./text-input-v2";
+import { TextareaV2 } from "./textarea-v2";
 
 const docs = `### Overview
 Composable field layout for TextInput, Textarea, and InlineInput v2.
@@ -27,7 +27,7 @@ Omit \`Field.Control\` and place the input directly inside \`Field\` — a11y pr
 - \`Field.Label\`: \`tooltip\` shows the info icon with tooltip text.
 - \`Field.Prefix\` / \`Field.Suffix\`: helper copy above / below the control.
 - \`Field.Control\`: optional wrapper (marker only).
-`
+`;
 
 export default {
   title: "UI V2/Field",
@@ -48,7 +48,7 @@ export default {
       },
     },
   },
-}
+};
 
 export const TextInputExample = {
   render: () => (
@@ -63,7 +63,7 @@ export const TextInputExample = {
       </Field>
     </div>
   ),
-}
+};
 
 export const TextInputDirectChild = {
   render: () => (
@@ -76,7 +76,7 @@ export const TextInputDirectChild = {
       </Field>
     </div>
   ),
-}
+};
 
 export const TextareaExample = {
   render: () => (
@@ -89,7 +89,7 @@ export const TextareaExample = {
       </Field>
     </div>
   ),
-}
+};
 
 export const InlineInputExample = {
   render: () => (
@@ -102,7 +102,7 @@ export const InlineInputExample = {
       </Field>
     </div>
   ),
-}
+};
 
 export const Invalid = {
   render: () => (
@@ -115,21 +115,26 @@ export const Invalid = {
       </Field>
     </div>
   ),
-}
+};
 
 export const Controlled = {
   render: () => {
-    const [value, setValue] = createSignal("")
+    const [value, setValue] = createSignal("");
     return (
       <div style={{ width: "280px" }}>
         <Field>
           <Field.Label>Amount</Field.Label>
           <Field.Control>
-            <TextInputV2 placeholder="0.00" value={value()} onInput={(e) => setValue(e.currentTarget.value)} numeric />
+            <TextInputV2
+              placeholder="0.00"
+              value={value()}
+              onInput={(e) => setValue(e.currentTarget.value)}
+              numeric
+            />
           </Field.Control>
           <Field.Suffix>{value() ? `Entered: ${value()}` : "Suffix"}</Field.Suffix>
         </Field>
       </div>
-    )
+    );
   },
-}
+};

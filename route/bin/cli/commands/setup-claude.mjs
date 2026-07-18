@@ -163,7 +163,7 @@ export async function runSetupClaudeCommand(opts = {}) {
     printError(`Failed to fetch models: ${err.message}`);
     printInfo(
       "Make sure OmniRoute is running and the --remote URL is correct.\n" +
-        "You may also need --api-key if OmniRoute requires authentication."
+        "You may also need --api-key if OmniRoute requires authentication.",
     );
     return 1;
   }
@@ -187,7 +187,7 @@ export async function runSetupClaudeCommand(opts = {}) {
     console.log("\nTo use a profile:");
     console.log("  omniroute launch --profile <name>     # e.g. omniroute launch --profile glm52");
     console.log(
-      "  # or: CLAUDE_CONFIG_DIR=~/.claude/profiles/<name> claude  (export ANTHROPIC_AUTH_TOKEN first)"
+      "  # or: CLAUDE_CONFIG_DIR=~/.claude/profiles/<name> claude  (export ANTHROPIC_AUTH_TOKEN first)",
     );
   } else {
     console.log(`\n[dry-run] ${written} profiles would be written (${skipped} skipped)`);
@@ -201,7 +201,7 @@ export function registerSetupClaude(program) {
     .command("setup-claude")
     .description(
       "Fetch the live model catalog from OmniRoute (local or remote VPS) and generate " +
-        "~/.claude/profiles/<name>/ Claude Code profiles (CLAUDE_CONFIG_DIR) for each model"
+        "~/.claude/profiles/<name>/ Claude Code profiles (CLAUDE_CONFIG_DIR) for each model",
     )
     .option("--port <port>", "Local OmniRoute port (ignored when --remote is set)", "20128")
     .option("--remote <url>", "Remote OmniRoute URL, e.g. http://192.168.0.15:20128")
@@ -209,7 +209,7 @@ export function registerSetupClaude(program) {
     .option("--claude-home <dir>", "Claude home dir (default: ~/.claude)")
     .option(
       "--only <patterns>",
-      "Comma-separated substrings — only matching model IDs (e.g. glm,kimi)"
+      "Comma-separated substrings — only matching model IDs (e.g. glm,kimi)",
     )
     .option("--dry-run", "Print what would be written without touching the filesystem")
     .action(async (opts) => {

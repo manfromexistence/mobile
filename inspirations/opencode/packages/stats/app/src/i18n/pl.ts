@@ -81,7 +81,8 @@ export const dict = {
   "home.updated": "Zaktualizowano",
   "home.noRows": "Nie ma jeszcze wierszy",
   "home.justNow": "przed chwilą",
-  "home.heroCopy": "Zobacz, które modele wygrywają w realnym użyciu, jak zmienia się miks i co to oznacza dla kosztów.",
+  "home.heroCopy":
+    "Zobacz, które modele wygrywają w realnym użyciu, jak zmienia się miks i co to oznacza dla kosztów.",
   "home.loadingTitle": "Ładowanie danych",
   "home.loadingDescription": "Odczytywanie agregatów modeli.",
   "home.usageTitle": "Użycie",
@@ -121,7 +122,8 @@ export const dict = {
   "home.cacheRatioTitle": "Współczynnik cache",
   "home.cacheRatioDescription": "Udział tokenów wejściowych obsłużonych z cache.",
   "home.noCacheTitle": "Brak danych współczynnika cache",
-  "home.noCacheDescription": "Żadne wiersze modeli z tokenami wejściowymi nie pasowały do tego produktu.",
+  "home.noCacheDescription":
+    "Żadne wiersze modeli z tokenami wejściowymi nie pasowały do tego produktu.",
   "home.sessionCostTitle": "Koszt sesji",
   "home.sessionCostDescription": "Średni koszt na sesję.",
   "home.noSessionCostTitle": "Brak danych kosztu sesji",
@@ -135,7 +137,8 @@ export const dict = {
   "lab.notFound": "Żadne modele nie pasowały do tego laboratorium.",
   "lab.heroPrefix": "Przeglądaj {{count}} modeli {{lab}} używanych w OpenCode",
   "lab.heroIncluding": "w tym {{models}}",
-  "lab.heroSuffix": "Porównaj ostatnie użycie tokenów, okna kontekstu, daty wydań i dane specyficzne dla modeli.",
+  "lab.heroSuffix":
+    "Porównaj ostatnie użycie tokenów, okna kontekstu, daty wydań i dane specyficzne dla modeli.",
   "lab.tokensProcessed": "Przetworzone tokeny",
   "lab.pending": "Oczekujące",
   "lab.usageAfterActivity": "Użycie pojawi się po nadejściu aktywności modelu",
@@ -144,7 +147,8 @@ export const dict = {
   "lab.usageTitle": "Użycie tokenów {{lab}}",
   "lab.usageDescription": "Dzienny wolumen tokenów OpenCode z ostatnich dwóch miesięcy.",
   "lab.noUsageTitle": "Jeszcze brak użycia",
-  "lab.noUsageDescription": "Ostatnie użycie tokenów pojawi się tutaj, gdy to laboratorium będzie mieć aktywność.",
+  "lab.noUsageDescription":
+    "Ostatnie użycie tokenów pojawi się tutaj, gdy to laboratorium będzie mieć aktywność.",
   "lab.dailyTokenChart": "Dzienny wykres użycia tokenów {{lab}}",
   "lab.dailyTokens": "Dzienne tokeny",
   "lab.tokens": "tokeny",
@@ -179,7 +183,8 @@ export const dict = {
   "model.knowledge": "Wiedza",
   "model.release": "Wydanie",
   "model.inputs": "Wejścia",
-  "model.overviewDescription": "Ostatnie tokeny OpenCode Go, unikalni użytkownicy i pozycja rynkowa.",
+  "model.overviewDescription":
+    "Ostatnie tokeny OpenCode Go, unikalni użytkownicy i pozycja rynkowa.",
   "model.noSummaryTitle": "Brak podsumowania użycia",
   "model.noSummaryDescription": "Ten model nie ma jeszcze wierszy użycia OpenCode Go.",
   "model.tokens": "Tokeny",
@@ -195,7 +200,8 @@ export const dict = {
   "model.noUsageTitle": "Brak użycia",
   "model.noUsageDescription": "W bieżącym oknie nie pojawiło się użycie.",
   "model.dailyTokenChart": "Dzienny wykres użycia tokenów",
-  "model.usersDescription": "Dzienni unikalni użytkownicy OpenCode Go w ostatnim dwumiesięcznym oknie.",
+  "model.usersDescription":
+    "Dzienni unikalni użytkownicy OpenCode Go w ostatnim dwumiesięcznym oknie.",
   "model.noUsersTitle": "Brak danych użytkowników",
   "model.noUsersDescription": "W bieżącym oknie nie pojawiły się wiersze z użytkownikami.",
   "model.dailyUserChart": "Dzienny wykres unikalnych użytkowników",
@@ -226,4 +232,4 @@ export const dict = {
   "model.pdf": "PDF",
   "format.users": "użytkownicy",
   "format.tokens": "tokeny",
-} as const
+} as const;

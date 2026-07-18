@@ -21,7 +21,7 @@ export interface HarnessResult {
 
 function fakeReq(
   headers: Record<string, string> = {},
-  url = "/v1/chat/completions"
+  url = "/v1/chat/completions",
 ): IncomingMessage {
   return {
     method: "POST",
@@ -72,7 +72,7 @@ export async function runHandler(
     upstreamBody?: string;
     headers?: Record<string, string>;
     url?: string;
-  } = {}
+  } = {},
 ): Promise<HarnessResult> {
   const { res, out } = fakeRes();
   const req = fakeReq(opts.headers, opts.url);
@@ -87,7 +87,7 @@ export async function runHandler(
     const upstreamBody = opts.upstreamBody ?? "data: hello\n\n";
     const status = opts.upstreamStatus ?? 200;
     const stream = Readable.toWeb(
-      Readable.from(Buffer.from(upstreamBody))
+      Readable.from(Buffer.from(upstreamBody)),
     ) as unknown as ReadableStream<Uint8Array>;
     return new Response(stream, { status });
   }) as unknown as typeof fetch;

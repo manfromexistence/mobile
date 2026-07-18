@@ -125,7 +125,7 @@ test("PUT /api/providers/[id] persists a Codex OAuth edit when priority already 
 
   const request = await makeManagementSessionRequest(
     `http://localhost/api/providers/${connection.id}`,
-    { method: "PUT", body: payload }
+    { method: "PUT", body: payload },
   );
 
   const response = await providerByIdRoute.PUT(request, {
@@ -136,7 +136,7 @@ test("PUT /api/providers/[id] persists a Codex OAuth edit when priority already 
   assert.equal(
     response.status,
     200,
-    `expected the Codex edit to validate + persist, got ${response.status}: ${JSON.stringify(body)}`
+    `expected the Codex edit to validate + persist, got ${response.status}: ${JSON.stringify(body)}`,
   );
   assert.notEqual(body?.error?.message, "Invalid request");
 
@@ -162,7 +162,7 @@ test("PUT /api/providers/[id] still rejects a genuinely invalid priority (contro
 
   const request = await makeManagementSessionRequest(
     `http://localhost/api/providers/${connection.id}`,
-    { method: "PUT", body: payload }
+    { method: "PUT", body: payload },
   );
 
   const response = await providerByIdRoute.PUT(request, {

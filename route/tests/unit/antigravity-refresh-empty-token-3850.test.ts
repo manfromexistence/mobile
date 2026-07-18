@@ -22,7 +22,7 @@ const OLD_REFRESH = "1//old-non-rotating-refresh-token";
 
 async function withStubbedFetch<T>(
   jsonBody: Record<string, unknown>,
-  fn: () => Promise<T>
+  fn: () => Promise<T>,
 ): Promise<T> {
   const original = globalThis.fetch;
   globalThis.fetch = (async () =>
@@ -41,7 +41,7 @@ test("#3850 empty-string refresh_token from Google preserves the existing token"
   const executor = new AntigravityExecutor();
   const refreshed = await withStubbedFetch(
     { access_token: "new-access", refresh_token: "", expires_in: 3600 },
-    () => executor.refreshCredentials({ refreshToken: OLD_REFRESH, accessToken: "stale" })
+    () => executor.refreshCredentials({ refreshToken: OLD_REFRESH, accessToken: "stale" }),
   );
 
   assert.ok(refreshed, "refreshCredentials should return credentials, not null");
@@ -49,14 +49,14 @@ test("#3850 empty-string refresh_token from Google preserves the existing token"
   assert.equal(
     refreshed.refreshToken,
     OLD_REFRESH,
-    "empty-string refresh_token must NOT overwrite the stored token"
+    "empty-string refresh_token must NOT overwrite the stored token",
   );
 });
 
 test("#3850 omitted refresh_token from Google preserves the existing token", async () => {
   const executor = new AntigravityExecutor();
   const refreshed = await withStubbedFetch({ access_token: "new-access", expires_in: 3600 }, () =>
-    executor.refreshCredentials({ refreshToken: OLD_REFRESH, accessToken: "stale" })
+    executor.refreshCredentials({ refreshToken: OLD_REFRESH, accessToken: "stale" }),
   );
 
   assert.ok(refreshed);
@@ -67,7 +67,7 @@ test("#3850 a real rotated refresh_token still replaces the stored token", async
   const executor = new AntigravityExecutor();
   const refreshed = await withStubbedFetch(
     { access_token: "new-access", refresh_token: "1//brand-new-token", expires_in: 3600 },
-    () => executor.refreshCredentials({ refreshToken: OLD_REFRESH, accessToken: "stale" })
+    () => executor.refreshCredentials({ refreshToken: OLD_REFRESH, accessToken: "stale" }),
   );
 
   assert.ok(refreshed);

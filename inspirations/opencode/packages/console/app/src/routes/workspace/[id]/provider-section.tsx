@@ -1,43 +1,43 @@
-import { json, query, action, useParams, createAsync, useSubmission } from "@solidjs/router"
-import { createEffect, For, Show } from "solid-js"
-import { Provider } from "@opencode-ai/console-core/provider.js"
-import { withActor } from "~/context/auth.withActor"
-import { createStore } from "solid-js/store"
-import styles from "./provider-section.module.css"
-import { useI18n } from "~/context/i18n"
-import { formError, localizeError } from "~/lib/form-error"
+import { json, query, action, useParams, createAsync, useSubmission } from "@solidjs/router";
+import { createEffect, For, Show } from "solid-js";
+import { Provider } from "@opencode-ai/console-core/provider.js";
+import { withActor } from "~/context/auth.withActor";
+import { createStore } from "solid-js/store";
+import styles from "./provider-section.module.css";
+import { useI18n } from "~/context/i18n";
+import { formError, localizeError } from "~/lib/form-error";
 
 const PROVIDERS = [
   { name: "OpenAI", key: "openai", prefix: "sk-" },
   { name: "Anthropic", key: "anthropic", prefix: "sk-ant-" },
   { name: "Google Gemini", key: "google", prefix: "AI" },
-] as const
+] as const;
 
-type Provider = (typeof PROVIDERS)[number]
+type Provider = (typeof PROVIDERS)[number];
 
 function maskCredentials(credentials: string) {
-  return `${credentials.slice(0, 8)}...${credentials.slice(-8)}`
+  return `${credentials.slice(0, 8)}...${credentials.slice(-8)}`;
 }
 
 const removeProvider = action(async (form: FormData) => {
-  "use server"
-  const provider = form.get("provider") as string | null
-  if (!provider) return { error: formError.providerRequired }
-  const workspaceID = form.get("workspaceID") as string | null
-  if (!workspaceID) return { error: formError.workspaceRequired }
+  "use server";
+  const provider = form.get("provider") as string | null;
+  if (!provider) return { error: formError.providerRequired };
+  const workspaceID = form.get("workspaceID") as string | null;
+  if (!workspaceID) return { error: formError.workspaceRequired };
   return json(await withActor(() => Provider.remove({ provider }), workspaceID), {
     revalidate: listProviders.key,
-  })
-}, "provider.remove")
+  });
+}, "provider.remove");
 
 const saveProvider = action(async (form: FormData) => {
-  "use server"
-  const provider = form.get("provider") as string | null
-  const credentials = form.get("credentials") as string | null
-  if (!provider) return { error: formError.providerRequired }
-  if (!credentials) return { error: formError.apiKeyRequired }
-  const workspaceID = form.get("workspaceID") as string | null
-  if (!workspaceID) return { error: formError.workspaceRequired }
+  "use server";
+  const provider = form.get("provider") as string | null;
+  const credentials = form.get("credentials") as string | null;
+  if (!provider) return { error: formError.providerRequired };
+  if (!credentials) return { error: formError.apiKeyRequired };
+  const workspaceID = form.get("workspaceID") as string | null;
+  if (!workspaceID) return { error: formError.workspaceRequired };
   return json(
     await withActor(
       () =>
@@ -47,49 +47,49 @@ const saveProvider = action(async (form: FormData) => {
       workspaceID,
     ),
     { revalidate: listProviders.key },
-  )
-}, "provider.save")
+  );
+}, "provider.save");
 
 const listProviders = query(async (workspaceID: string) => {
-  "use server"
-  return withActor(() => Provider.list(), workspaceID)
-}, "provider.list")
+  "use server";
+  return withActor(() => Provider.list(), workspaceID);
+}, "provider.list");
 
 function ProviderRow(props: { provider: Provider }) {
-  const params = useParams()
-  const i18n = useI18n()
-  const providers = createAsync(() => listProviders(params.id!))
+  const params = useParams();
+  const i18n = useI18n();
+  const providers = createAsync(() => listProviders(params.id!));
   const saveSubmission = useSubmission(
     saveProvider,
     ([fd]) => (fd.get("provider") as string | null) === props.provider.key,
-  )
+  );
   const removeSubmission = useSubmission(
     removeProvider,
     ([fd]) => (fd.get("provider") as string | null) === props.provider.key,
-  )
-  const [store, setStore] = createStore({ editing: false })
+  );
+  const [store, setStore] = createStore({ editing: false });
 
-  let input: HTMLInputElement
+  let input: HTMLInputElement;
 
-  const providerData = () => providers()?.find((p) => p.provider === props.provider.key)
+  const providerData = () => providers()?.find((p) => p.provider === props.provider.key);
 
   createEffect(() => {
     if (!saveSubmission.pending && saveSubmission.result && !saveSubmission.result.error) {
-      hide()
+      hide();
     }
-  })
+  });
 
   function show() {
     while (true) {
-      saveSubmission.clear()
-      if (!saveSubmission.result) break
+      saveSubmission.clear();
+      if (!saveSubmission.result) break;
     }
-    setStore("editing", true)
-    setTimeout(() => input?.focus(), 0)
+    setStore("editing", true);
+    setTimeout(() => input?.focus(), 0);
   }
 
   function hide() {
-    setStore("editing", false)
+    setStore("editing", false);
   }
 
   return (
@@ -98,9 +98,16 @@ function ProviderRow(props: { provider: Provider }) {
       <td data-slot="provider-key">
         <Show
           when={store.editing}
-          fallback={<span>{providerData() ? maskCredentials(providerData()!.credentials) : "-"}</span>}
+          fallback={
+            <span>{providerData() ? maskCredentials(providerData()!.credentials) : "-"}</span>
+          }
         >
-          <form id={`provider-form-${props.provider.key}`} action={saveProvider} method="post" data-slot="edit-form">
+          <form
+            id={`provider-form-${props.provider.key}`}
+            action={saveProvider}
+            method="post"
+            data-slot="edit-form"
+          >
             <div data-slot="input-wrapper">
               <input
                 ref={(r) => (input = r)}
@@ -157,7 +164,9 @@ function ProviderRow(props: { provider: Provider }) {
               disabled={saveSubmission.pending}
               form={`provider-form-${props.provider.key}`}
             >
-              {saveSubmission.pending ? i18n.t("workspace.providers.saving") : i18n.t("workspace.providers.save")}
+              {saveSubmission.pending
+                ? i18n.t("workspace.providers.saving")
+                : i18n.t("workspace.providers.save")}
             </button>
             <Show when={!saveSubmission.pending}>
               <button type="reset" data-color="ghost" onClick={() => hide()}>
@@ -168,11 +177,11 @@ function ProviderRow(props: { provider: Provider }) {
         </Show>
       </td>
     </tr>
-  )
+  );
 }
 
 export function ProviderSection() {
-  const i18n = useI18n()
+  const i18n = useI18n();
 
   return (
     <section class={styles.root}>
@@ -195,5 +204,5 @@ export function ProviderSection() {
         </table>
       </div>
     </section>
-  )
+  );
 }

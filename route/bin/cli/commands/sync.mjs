@@ -107,7 +107,7 @@ export function registerSync(program) {
       const globalOpts = cmd.optsWithGlobals();
       const res = await fetch(
         `${getBaseUrl(globalOpts)}/api/sync/bundle?parts=${opts.include.join(",")}`,
-        { headers: authHeaders(globalOpts) }
+        { headers: authHeaders(globalOpts) },
       );
       if (!res.ok) {
         process.stderr.write(`HTTP ${res.status}\n`);
@@ -134,7 +134,7 @@ export function registerSync(program) {
             "Content-Type": "application/octet-stream",
           },
           body,
-        }
+        },
       );
       if (!res.ok) {
         process.stderr.write(`HTTP ${res.status}\n`);

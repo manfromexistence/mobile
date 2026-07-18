@@ -3,8 +3,9 @@ import assert from "node:assert/strict";
 
 const accountFallback = await import("../../open-sse/services/accountFallback.ts");
 const accountSelector = await import("../../open-sse/services/accountSelector.ts");
-const { RateLimitReason, COOLDOWN_MS, PROVIDER_PROFILES } =
-  await import("../../open-sse/config/constants.ts");
+const { RateLimitReason, COOLDOWN_MS, PROVIDER_PROFILES } = await import(
+  "../../open-sse/config/constants.ts"
+);
 const { getCircuitBreaker } = await import("../../src/shared/utils/circuitBreaker.ts");
 
 const {
@@ -69,7 +70,7 @@ function withMockedNow(now, fn) {
 test("isOAuthInvalidToken detects refreshable oauth failures", () => {
   assert.equal(
     isOAuthInvalidToken("Invalid authentication credentials for this OAuth 2 session"),
-    true
+    true,
   );
   assert.equal(isOAuthInvalidToken("plain rate limit"), false);
 });
@@ -85,9 +86,9 @@ test("parseRetryFromErrorText parses Antigravity 'Resets in XhYmZs' phrasing", (
   assert.equal(
     parseRetryFromErrorText(
       "Individual quota reached. Contact your administrator to enable overages. " +
-        "Resets in 164h27m24s."
+        "Resets in 164h27m24s.",
     ),
-    (164 * 3600 + 27 * 60 + 24) * 1000
+    (164 * 3600 + 27 * 60 + 24) * 1000,
   );
   assert.equal(parseRetryFromErrorText("Resets in 2h7m23s"), 7_643_000);
   assert.equal(parseRetryFromErrorText("Reset in 45m"), 2_700_000);
@@ -112,7 +113,7 @@ test("checkFallbackError locks Antigravity quota-reached 429 for the full reset 
     "gemini-3-flash-agent",
     "antigravity",
     null,
-    makeProfile({ useUpstreamRetryHints: true })
+    makeProfile({ useUpstreamRetryHints: true }),
   );
 
   assert.equal(result.shouldFallback, true);
@@ -137,7 +138,7 @@ test("recordModelLockoutFailure honors a multi-day exactCooldownMs (under 30-day
     429,
     0,
     makeProfile(),
-    { exactCooldownMs }
+    { exactCooldownMs },
   );
 
   assert.equal(lockout.cooldownMs, exactCooldownMs);
@@ -176,7 +177,7 @@ test("checkFallbackError keeps API-key 429 exhausted-credit text on the resilien
     null,
     "openai",
     null,
-    makeProfile()
+    makeProfile(),
   );
 
   assert.equal(result.shouldFallback, true);
@@ -193,7 +194,7 @@ test("checkFallbackError preserves OAuth 429 exhausted-credit semantics", () => 
     null,
     "codex",
     null,
-    makeProfile()
+    makeProfile(),
   );
 
   assert.equal(result.shouldFallback, true);
@@ -284,7 +285,7 @@ test("filterAvailableAccounts skips exclusion and active cooldowns but keeps rec
     const available = filterAvailableAccounts(accounts, "exclude-me");
     assert.deepEqual(
       available.map((account) => account.id),
-      ["recovered", "healthy"]
+      ["recovered", "healthy"],
     );
   });
 });
@@ -339,9 +340,9 @@ test("lockModelIfPerModelQuota only locks supported providers and real models", 
       geminiConnectionId,
       "gemini-2.5-pro",
       RateLimitReason.RATE_LIMIT_EXCEEDED,
-      30_000
+      30_000,
     ),
-    true
+    true,
   );
   assert.equal(isModelLocked("gemini", geminiConnectionId, "gemini-2.5-pro"), true);
 
@@ -351,9 +352,9 @@ test("lockModelIfPerModelQuota only locks supported providers and real models", 
       openAiConnectionId,
       "gpt-5-mini",
       RateLimitReason.RATE_LIMIT_EXCEEDED,
-      30_000
+      30_000,
     ),
-    false
+    false,
   );
   assert.equal(isModelLocked("openai", openAiConnectionId, "gpt-5-mini"), false);
 
@@ -363,9 +364,9 @@ test("lockModelIfPerModelQuota only locks supported providers and real models", 
       compatibleConnectionId,
       compatibleModel,
       RateLimitReason.RATE_LIMIT_EXCEEDED,
-      30_000
+      30_000,
     ),
-    true
+    true,
   );
   assert.equal(isModelLocked(compatibleProvider, compatibleConnectionId, compatibleModel), true);
 });
@@ -375,12 +376,12 @@ test("getProviderProfile differentiates oauth and api-key providers", () => {
   assert.equal(oauthProfile.transientCooldown, PROVIDER_PROFILES.oauth.transientCooldown);
   assert.equal(
     oauthProfile.rateLimitCooldown,
-    oauthProfile.useUpstreamRetryHints ? 0 : oauthProfile.baseCooldownMs
+    oauthProfile.useUpstreamRetryHints ? 0 : oauthProfile.baseCooldownMs,
   );
   assert.equal(oauthProfile.maxBackoffLevel, PROVIDER_PROFILES.oauth.maxBackoffLevel);
   assert.equal(
     oauthProfile.circuitBreakerThreshold,
-    PROVIDER_PROFILES.oauth.circuitBreakerThreshold
+    PROVIDER_PROFILES.oauth.circuitBreakerThreshold,
   );
   assert.equal(oauthProfile.circuitBreakerReset, PROVIDER_PROFILES.oauth.circuitBreakerReset);
   assert.equal(oauthProfile.baseCooldownMs, PROVIDER_PROFILES.oauth.transientCooldown);
@@ -391,12 +392,12 @@ test("getProviderProfile differentiates oauth and api-key providers", () => {
   assert.equal(apiKeyProfile.transientCooldown, PROVIDER_PROFILES.apikey.transientCooldown);
   assert.equal(
     apiKeyProfile.rateLimitCooldown,
-    apiKeyProfile.useUpstreamRetryHints ? 0 : apiKeyProfile.baseCooldownMs
+    apiKeyProfile.useUpstreamRetryHints ? 0 : apiKeyProfile.baseCooldownMs,
   );
   assert.equal(apiKeyProfile.maxBackoffLevel, PROVIDER_PROFILES.apikey.maxBackoffLevel);
   assert.equal(
     apiKeyProfile.circuitBreakerThreshold,
-    PROVIDER_PROFILES.apikey.circuitBreakerThreshold
+    PROVIDER_PROFILES.apikey.circuitBreakerThreshold,
   );
   assert.equal(apiKeyProfile.circuitBreakerReset, PROVIDER_PROFILES.apikey.circuitBreakerReset);
   assert.equal(apiKeyProfile.baseCooldownMs, PROVIDER_PROFILES.apikey.transientCooldown);
@@ -408,7 +409,7 @@ test("shouldMarkAccountExhaustedFrom429 skips connection poisoning for compatibl
   assert.equal(shouldMarkAccountExhaustedFrom429("gemini", "gemini-2.5-pro"), false);
   assert.equal(
     shouldMarkAccountExhaustedFrom429("openai-compatible-custom-node", "any-model"),
-    false
+    false,
   );
   assert.equal(shouldMarkAccountExhaustedFrom429("openai", "gpt-4o-mini"), false);
   assert.equal(shouldMarkAccountExhaustedFrom429("claude", "claude-sonnet-4-6"), true);
@@ -417,15 +418,15 @@ test("shouldMarkAccountExhaustedFrom429 skips connection poisoning for compatibl
 test("shouldMarkAccountExhaustedFrom429 does not poison quota cache for transient 429s", () => {
   assert.equal(
     shouldMarkAccountExhaustedFrom429("kiro", "claude-opus-4.7", undefined, "rate_limit"),
-    false
+    false,
   );
   assert.equal(
     shouldMarkAccountExhaustedFrom429("kiro", "claude-opus-4.7", undefined, "transient"),
-    false
+    false,
   );
   assert.equal(
     shouldMarkAccountExhaustedFrom429("kiro", "claude-opus-4.7", undefined, "quota_exhausted"),
-    true
+    true,
   );
 });
 
@@ -448,9 +449,9 @@ test("Codex Spark 429s are scoped away from normal Codex models", () => {
       connectionId,
       "gpt-5.3-codex-spark",
       RateLimitReason.RATE_LIMIT_EXCEEDED,
-      30_000
+      30_000,
     ),
-    true
+    true,
   );
   assert.equal(isModelLocked("codex", connectionId, "gpt-5.3-codex-spark"), true);
   assert.equal(isModelLocked("codex", connectionId, "codex-spark-mini"), true);
@@ -476,9 +477,9 @@ test("lockModelIfPerModelQuota locks individual GitHub models without poisoning 
       connectionId,
       "gpt-5.1-codex-max",
       RateLimitReason.RATE_LIMIT_EXCEEDED,
-      30_000
+      30_000,
     ),
-    true
+    true,
   );
   assert.equal(isModelLocked("github", connectionId, "gpt-5.1-codex-max"), true);
 
@@ -508,7 +509,7 @@ test("recordModelLockoutFailure uses provider profile cooldowns, backoff, and re
       "rate_limited",
       429,
       0,
-      profile
+      profile,
     );
     now += 50;
     const second = recordModelLockoutFailure(
@@ -518,7 +519,7 @@ test("recordModelLockoutFailure uses provider profile cooldowns, backoff, and re
       "rate_limited",
       429,
       0,
-      profile
+      profile,
     );
     now += 50;
     const third = recordModelLockoutFailure(
@@ -528,7 +529,7 @@ test("recordModelLockoutFailure uses provider profile cooldowns, backoff, and re
       "rate_limited",
       429,
       0,
-      profile
+      profile,
     );
 
     const info = getModelLockoutInfo(compatibleProvider, "conn-compatible", compatibleModel);
@@ -551,7 +552,7 @@ test("recordModelLockoutFailure uses provider profile cooldowns, backoff, and re
       "rate_limited",
       429,
       0,
-      profile
+      profile,
     );
 
     assert.equal(afterReset.failureCount, 1);
@@ -619,7 +620,7 @@ test("recordProviderFailure tracks failures and triggers cooldown after threshol
     assert.equal(getProviderCooldownRemainingMs(provider), null);
     assert.equal(
       getProvidersInCooldown().some((p) => p.provider === provider),
-      false
+      false,
     );
   } finally {
     Date.now = originalNow;
@@ -820,7 +821,7 @@ test("getMsUntilTomorrow returns positive value less than 24 hours", () => {
 test("checkFallbackError locks model until tomorrow for non-429 daily quota exhaustion", () => {
   const result = checkFallbackError(
     402,
-    "You have exceeded today's quota for model moonshotai/Kimi-K2.5, please try again tomorrow"
+    "You have exceeded today's quota for model moonshotai/Kimi-K2.5, please try again tomorrow",
   );
   assert.equal(result.shouldFallback, true);
   assert.equal(result.reason, RateLimitReason.QUOTA_EXHAUSTED);
@@ -837,7 +838,7 @@ test("checkFallbackError routes API-key 429 'try again tomorrow' through resilie
     null,
     "openai",
     null,
-    makeProfile()
+    makeProfile(),
   );
   assert.equal(result.shouldFallback, true);
   assert.equal(result.dailyQuotaExhausted, undefined);
@@ -852,7 +853,7 @@ test("#6638: checkFallbackError routes API-key 429 'daily quota' text as quota_e
     null,
     "openai",
     null,
-    makeProfile()
+    makeProfile(),
   );
   assert.equal(result.shouldFallback, true);
   assert.equal(result.dailyQuotaExhausted, true);
@@ -867,7 +868,7 @@ test("checkFallbackError preserves OAuth 429 daily quota semantics", () => {
     null,
     "codex",
     null,
-    makeProfile()
+    makeProfile(),
   );
 
   assert.equal(result.shouldFallback, true);
@@ -912,7 +913,7 @@ test("recordModelLockoutFailure sets cooldown until tomorrow 0:00 for quota_exha
       "quota_exhausted",
       429,
       0, // fallbackCooldownMs should be overridden to ms until tomorrow
-      profile
+      profile,
     );
 
     // Verify the cooldown is set to ms until tomorrow 0:00 (with tolerance)
@@ -924,7 +925,7 @@ test("recordModelLockoutFailure sets cooldown until tomorrow 0:00 for quota_exha
     // Allow ±5 minutes tolerance (300,000 ms)
     assert.ok(
       diff <= 300_000,
-      `cooldown should be ms until tomorrow 0:00 (expected ${expectedMsUntilTomorrow}ms, got ${result.cooldownMs}ms, diff ${diff}ms)`
+      `cooldown should be ms until tomorrow 0:00 (expected ${expectedMsUntilTomorrow}ms, got ${result.cooldownMs}ms, diff ${diff}ms)`,
     );
 
     // Verify model is locked
@@ -967,13 +968,13 @@ test("recordModelLockoutFailure uses regular backoff for non-quota reasons", () 
       "rate_limited",
       429,
       0,
-      profile
+      profile,
     );
 
     // Verify the cooldown uses regular profile baseCooldownMs (5000ms)
     assert.ok(
       result.cooldownMs < 24 * 60 * 60 * 1000,
-      "cooldown should be less than 24h for non-quota reasons"
+      "cooldown should be less than 24h for non-quota reasons",
     );
     assert.equal(result.cooldownMs, 5000, "cooldown should use profile baseCooldownMs");
 
@@ -992,7 +993,7 @@ test("checkFallbackError classifies hour quota errors correctly", () => {
     "Coding Plan hour quota has been exceeded",
     0,
     null,
-    "codex"
+    "codex",
   );
   assert.equal(result1.shouldFallback, true);
   assert.equal(result1.reason, RateLimitReason.QUOTA_EXHAUSTED);
@@ -1019,7 +1020,7 @@ test("checkFallbackError classifies hour quota errors correctly", () => {
     "Coding Plan hour quota has been exceeded",
     0,
     null,
-    "openai"
+    "openai",
   );
   assert.equal(result6.shouldFallback, true);
   assert.equal(result6.reason, RateLimitReason.QUOTA_EXHAUSTED);
@@ -1031,7 +1032,7 @@ test("classifyErrorText handles hour quota messages", () => {
 
   assert.equal(
     classifyErrorText("Coding Plan hour quota has been exceeded"),
-    RateLimitReason.QUOTA_EXHAUSTED
+    RateLimitReason.QUOTA_EXHAUSTED,
   );
   assert.equal(classifyErrorText("hour quota exceeded"), RateLimitReason.QUOTA_EXHAUSTED);
   assert.equal(classifyErrorText("Your hour quota is exceeded"), RateLimitReason.QUOTA_EXHAUSTED);
@@ -1050,7 +1051,7 @@ test("checkFallbackError detects model access denied via structured error code (
     "openai",
     null,
     null,
-    { code: "model_not_found", type: null }
+    { code: "model_not_found", type: null },
   );
   assert.equal(result.shouldFallback, true);
   assert.equal(result.cooldownMs, 0);
@@ -1066,7 +1067,7 @@ test("checkFallbackError detects model access denied via structured error type (
     "anthropic",
     null,
     null,
-    { code: null, type: "not_found_error" }
+    { code: null, type: "not_found_error" },
   );
   assert.equal(result.shouldFallback, true);
   assert.equal(result.cooldownMs, 0);
@@ -1082,7 +1083,7 @@ test("checkFallbackError detects model access denied via structured error type (
     "anthropic",
     null,
     null,
-    { code: null, type: "permission_error" }
+    { code: null, type: "permission_error" },
   );
   assert.equal(result.shouldFallback, true);
   assert.equal(result.cooldownMs, 0);
@@ -1101,7 +1102,7 @@ test("checkFallbackError does NOT fallback on a permission_error that is a key/f
     "anthropic",
     null,
     null,
-    { code: null, type: "permission_error" }
+    { code: null, type: "permission_error" },
   );
   assert.equal(result.shouldFallback, false);
 });
@@ -1114,7 +1115,7 @@ test("checkFallbackError detects model access denied via regex fallback (invalid
     null,
     "some-provider",
     null,
-    null
+    null,
   );
   assert.equal(result.shouldFallback, true);
   assert.equal(result.cooldownMs, 0);
@@ -1171,7 +1172,7 @@ test("checkFallbackError classifies Gemini RPM 429 as RATE_LIMIT_EXCEEDED (not Q
     null,
     null,
     null,
-    makeProfile()
+    makeProfile(),
   );
   assert.equal(result.shouldFallback, true);
   assert.equal(result.reason, RateLimitReason.RATE_LIMIT_EXCEEDED);
@@ -1189,7 +1190,7 @@ test("checkFallbackError classifies Gemini RPM 429 as RATE_LIMIT_EXCEEDED for AP
     null,
     "gemini",
     null,
-    makeProfile()
+    makeProfile(),
   );
   assert.equal(result.shouldFallback, true);
   assert.equal(result.reason, RateLimitReason.RATE_LIMIT_EXCEEDED);
@@ -1205,7 +1206,7 @@ test("checkFallbackError still classifies genuine OAuth quota-exhausted text as 
     null,
     "codex",
     null,
-    makeProfile()
+    makeProfile(),
   );
   assert.equal(result.shouldFallback, true);
   assert.equal(result.reason, RateLimitReason.QUOTA_EXHAUSTED);
@@ -1215,7 +1216,7 @@ test("checkFallbackError preserves daily-quota exhaustion for non-429 status cod
   // Non-429 status codes with daily quota text must still be QUOTA_EXHAUSTED
   const result = checkFallbackError(
     402,
-    "You have exceeded today's quota, please try again tomorrow"
+    "You have exceeded today's quota, please try again tomorrow",
   );
   assert.equal(result.shouldFallback, true);
   assert.equal(result.reason, RateLimitReason.QUOTA_EXHAUSTED);
@@ -1250,7 +1251,7 @@ test("Gemini RPM 429: recordModelLockoutFailure uses exponential backoff for rat
       "rate_limited",
       429,
       0,
-      profile
+      profile,
     );
     assert.equal(first.failureCount, 1);
     assert.equal(first.cooldownMs, 5000, "first failure: 5s base cooldown");
@@ -1262,7 +1263,7 @@ test("Gemini RPM 429: recordModelLockoutFailure uses exponential backoff for rat
       "rate_limited",
       429,
       0,
-      profile
+      profile,
     );
     assert.equal(second.failureCount, 2);
     assert.equal(second.cooldownMs, 10000, "second failure: 10s exponential backoff");
@@ -1296,7 +1297,7 @@ test("Gemini RPD (quota_exhausted) still triggers midnight lockout in recordMode
       "quota_exhausted",
       429,
       0,
-      profile
+      profile,
     );
 
     // Must lock until midnight, NOT exponential backoff
@@ -1306,7 +1307,7 @@ test("Gemini RPD (quota_exhausted) still triggers midnight lockout in recordMode
     const expected = tomorrow.getTime() - now;
     assert.ok(
       Math.abs(result.cooldownMs - expected) <= 300_000,
-      `cooldown should be until tomorrow (expected ~${expected}, got ${result.cooldownMs})`
+      `cooldown should be until tomorrow (expected ~${expected}, got ${result.cooldownMs})`,
     );
     clearModelLock(provider, connectionId, model);
   } finally {
@@ -1327,7 +1328,7 @@ test("G-02: X-Omni-Fallback-Hint connection_cooldown on 503 returns 5s cooldown 
     0,
     null,
     "9router",
-    headers
+    headers,
   );
   assert.equal(result.shouldFallback, true);
   assert.equal(result.cooldownMs, 5_000);
@@ -1345,7 +1346,7 @@ test("G-02: X-Omni-Fallback-Hint connection_cooldown header lookup is case-insen
     0,
     null,
     "9router",
-    headers
+    headers,
   );
   assert.equal(result.skipProviderBreaker, true);
   assert.equal(result.cooldownMs, 5_000);
@@ -1375,12 +1376,12 @@ test("G-02: five consecutive 503 service_not_running do NOT trip provider circui
       0,
       null,
       "9router",
-      headers
+      headers,
     );
     assert.equal(
       result.skipProviderBreaker,
       true,
-      `call ${i + 1} should have skipProviderBreaker:true`
+      `call ${i + 1} should have skipProviderBreaker:true`,
     );
   }
   // Verify the circuit breaker for 9router is NOT open after those 5 calls
@@ -1388,7 +1389,7 @@ test("G-02: five consecutive 503 service_not_running do NOT trip provider circui
   assert.equal(
     isProviderInCooldown("9router"),
     false,
-    "9router circuit breaker must remain closed"
+    "9router circuit breaker must remain closed",
   );
   clearProviderFailure("9router"); // cleanup
 });
@@ -1416,14 +1417,14 @@ test("recordModelLockoutFailure caps cooldown at BACKOFF_CONFIG.max to prevent a
         "rate_limited",
         429,
         0,
-        null
+        null,
       );
       now += 50; // each failure within the reset window
     }
 
     assert.ok(
       lastResult.cooldownMs <= 120_000,
-      `cooldown ${lastResult.cooldownMs}ms should not exceed BACKOFF_CONFIG.max (120000ms)`
+      `cooldown ${lastResult.cooldownMs}ms should not exceed BACKOFF_CONFIG.max (120000ms)`,
     );
     assert.equal(lastResult.cooldownMs, 120_000);
     assert.equal(lastResult.failureCount, 9);
@@ -1450,7 +1451,7 @@ test("recordModelLockoutFailure groups provider aliases under canonical provider
     "rate_limited",
     429,
     1000,
-    null
+    null,
   );
 
   assert.equal(isModelLocked(providerAlias, connectionId, model), true);
@@ -1484,7 +1485,7 @@ test("recordModelLockoutFailure escalates backoff correctly after cooldown expir
       429,
       120000,
       profile,
-      { maxCooldownMs: 1800000 }
+      { maxCooldownMs: 1800000 },
     );
     assert.equal(first.failureCount, 1);
     assert.equal(first.cooldownMs, 120000);
@@ -1499,7 +1500,7 @@ test("recordModelLockoutFailure escalates backoff correctly after cooldown expir
       429,
       120000,
       profile,
-      { maxCooldownMs: 1800000 }
+      { maxCooldownMs: 1800000 },
     );
     assert.equal(second.failureCount, 2);
     assert.equal(second.cooldownMs, 240000);
@@ -1553,7 +1554,7 @@ test("isAccountDeactivated matches a custom signal after setCustomBannedSignals"
   assert.equal(
     isAccountDeactivated("Error: API key revoked by administrator"),
     false,
-    "custom phrase must not match before it is registered"
+    "custom phrase must not match before it is registered",
   );
 
   setCustomBannedSignals(["api key revoked"]);
@@ -1561,7 +1562,7 @@ test("isAccountDeactivated matches a custom signal after setCustomBannedSignals"
   assert.equal(
     isAccountDeactivated("Error: API key revoked by administrator"),
     true,
-    "custom phrase must match once registered (case-insensitive substring)"
+    "custom phrase must match once registered (case-insensitive substring)",
   );
 
   // Built-ins remain matchable alongside custom signals

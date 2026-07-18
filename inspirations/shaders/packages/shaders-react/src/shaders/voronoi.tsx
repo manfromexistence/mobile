@@ -1,6 +1,6 @@
-import { memo } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '../shader-mount.js';
-import { colorPropsAreEqual } from '../color-props-are-equal.js';
+import { memo } from "react";
+import { ShaderMount, type ShaderComponentProps } from "../shader-mount.js";
+import { colorPropsAreEqual } from "../color-props-are-equal.js";
 import {
   defaultPatternSizing,
   getShaderColorFromString,
@@ -10,22 +10,22 @@ import {
   type VoronoiParams,
   type VoronoiUniforms,
   type ShaderPreset,
-} from '@paper-design/shaders';
+} from "@paper-design/shaders";
 
 export interface VoronoiProps extends ShaderComponentProps, VoronoiParams {}
 
 type VoronoiPreset = ShaderPreset<VoronoiParams>;
 
 export const defaultPreset: VoronoiPreset = {
-  name: 'Default',
+  name: "Default",
   params: {
     ...defaultPatternSizing,
     speed: 0.5,
     frame: 0,
-    colors: ['#ff8247', '#ffe53d'],
+    colors: ["#ff8247", "#ffe53d"],
     stepsPerColor: 3,
-    colorGlow: '#ffffff',
-    colorGap: '#2e0000',
+    colorGlow: "#ffffff",
+    colorGap: "#2e0000",
     distortion: 0.4,
     gap: 0.04,
     glow: 0,
@@ -34,16 +34,16 @@ export const defaultPreset: VoronoiPreset = {
 };
 
 export const cellsPreset: VoronoiPreset = {
-  name: 'Cells',
+  name: "Cells",
   params: {
     ...defaultPatternSizing,
     scale: 0.5,
     speed: 0.5,
     frame: 0,
-    colors: ['#ffffff'],
+    colors: ["#ffffff"],
     stepsPerColor: 1,
-    colorGlow: '#ffffff',
-    colorGap: '#000000',
+    colorGlow: "#ffffff",
+    colorGap: "#000000",
     distortion: 0.5,
     gap: 0.03,
     glow: 0.8,
@@ -51,16 +51,16 @@ export const cellsPreset: VoronoiPreset = {
 };
 
 export const bubblesPreset: VoronoiPreset = {
-  name: 'Bubbles',
+  name: "Bubbles",
   params: {
     ...defaultPatternSizing,
     scale: 0.75,
     speed: 0.5,
     frame: 0,
-    colors: ['#83c9fb'],
+    colors: ["#83c9fb"],
     stepsPerColor: 1,
-    colorGlow: '#ffffff',
-    colorGap: '#ffffff',
+    colorGlow: "#ffffff",
+    colorGap: "#ffffff",
     distortion: 0.4,
     gap: 0,
     glow: 1,
@@ -68,15 +68,15 @@ export const bubblesPreset: VoronoiPreset = {
 };
 
 export const lightsPreset: VoronoiPreset = {
-  name: 'Lights',
+  name: "Lights",
   params: {
     ...defaultPatternSizing,
     scale: 3.3,
     speed: 0.5,
     frame: 0,
-    colors: ['#fffffffc', '#bbff00', '#00ffff'],
-    colorGlow: '#ff00d0',
-    colorGap: '#ff00d0',
+    colors: ["#fffffffc", "#bbff00", "#00ffff"],
+    colorGlow: "#ff00d0",
+    colorGap: "#ff00d0",
     stepsPerColor: 2,
     distortion: 0.38,
     gap: 0.0,
@@ -84,7 +84,12 @@ export const lightsPreset: VoronoiPreset = {
   },
 };
 
-export const voronoiPresets: VoronoiPreset[] = [defaultPreset, lightsPreset, cellsPreset, bubblesPreset];
+export const voronoiPresets: VoronoiPreset[] = [
+  defaultPreset,
+  lightsPreset,
+  cellsPreset,
+  bubblesPreset,
+];
 
 export const Voronoi: React.FC<VoronoiProps> = memo(function VoronoiImpl({
   // Own props
@@ -135,6 +140,12 @@ export const Voronoi: React.FC<VoronoiProps> = memo(function VoronoiImpl({
   } satisfies VoronoiUniforms;
 
   return (
-    <ShaderMount {...props} speed={speed} frame={frame} fragmentShader={voronoiFragmentShader} uniforms={uniforms} />
+    <ShaderMount
+      {...props}
+      speed={speed}
+      frame={frame}
+      fragmentShader={voronoiFragmentShader}
+      uniforms={uniforms}
+    />
   );
 }, colorPropsAreEqual);

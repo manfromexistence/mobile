@@ -1,4 +1,4 @@
-import { Schema } from "effect"
+import { Schema } from "effect";
 
 export class InvalidRequestError extends Schema.TaggedErrorClass<InvalidRequestError>()(
   "InvalidRequestError",
@@ -189,5 +189,5 @@ export function notFound(message: string) {
   return new ApiNotFoundError({
     name: "NotFoundError",
     data: { message },
-  })
+  });
 }

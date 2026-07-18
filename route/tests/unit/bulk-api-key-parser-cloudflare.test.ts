@@ -18,7 +18,7 @@ test("withAccountId: splits name|accountId|apiKey", () => {
   assert.equal(entries.length, 1);
   assert.deepEqual(
     { name: entries[0].name, accountId: entries[0].accountId, apiKey: entries[0].apiKey },
-    { name: "prod", accountId: "acc-123", apiKey: "cf-token-abc" }
+    { name: "prod", accountId: "acc-123", apiKey: "cf-token-abc" },
   );
   assert.equal(warnings.length, 0);
 });

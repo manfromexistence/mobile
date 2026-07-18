@@ -101,7 +101,7 @@ test("markAccountUnavailable does not overwrite terminal status", async () => {
     503,
     "temporary upstream error",
     "openai",
-    "gpt-4.1"
+    "gpt-4.1",
   );
 
   assert.equal(result.shouldFallback, true);
@@ -127,7 +127,7 @@ test("markAccountUnavailable marks 401 connections as expired without adding coo
     401,
     "unauthorized",
     "openai",
-    "gpt-4.1"
+    "gpt-4.1",
   );
   const after = await providersDb.getProviderConnectionById((conn as any).id);
 
@@ -153,7 +153,7 @@ test("markAccountUnavailable marks 402 connections as credits_exhausted without 
     402,
     "payment required",
     "openai",
-    "gpt-4.1"
+    "gpt-4.1",
   );
   const after = await providersDb.getProviderConnectionById((conn as any).id);
 
@@ -179,7 +179,7 @@ test("markAccountUnavailable treats API-key 403 as a recoverable cooldown", asyn
     403,
     "forbidden",
     "glm",
-    "glm-5.1"
+    "glm-5.1",
   );
   const after = await providersDb.getProviderConnectionById((conn as any).id);
 
@@ -206,7 +206,7 @@ test("markAccountUnavailable keeps Grok Web alias 403 errors mode-local", async 
     403,
     "forbidden",
     "gw",
-    "heavy"
+    "heavy",
   );
   const after = await providersDb.getProviderConnectionById((conn as any).id);
   const lockout = accountFallback.getModelLockoutInfo("gw", (conn as any).id, "heavy");
@@ -235,7 +235,7 @@ test("markAccountUnavailable keeps project-route 403 errors non-terminal", async
     403,
     "The service has not been used in project",
     "openai",
-    "gpt-4.1"
+    "gpt-4.1",
   );
   const after = await providersDb.getProviderConnectionById((conn as any).id);
 
@@ -262,7 +262,7 @@ test("markAccountUnavailable keeps oauth-invalid 401 errors non-terminal", async
     401,
     "Invalid authentication credentials provided",
     "openai",
-    "gpt-4.1"
+    "gpt-4.1",
   );
   const after = await providersDb.getProviderConnectionById((conn as any).id);
 

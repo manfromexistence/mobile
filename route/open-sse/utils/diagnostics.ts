@@ -90,7 +90,7 @@ export function reportMalformed200(opts: ReportMalformed200Opts): void {
     `[MALFORMED-200] mode=${mode || "?"} provider=${provider || "?"} model=${model || "?"} ` +
       `conn=${connectionId || "-"} reason=${reason || "empty"} recvBytes=${recvBytes ?? -1} ` +
       `recvLines=${recvLines ?? -1} emitted=${emitted ?? -1} events=${evtStr} ` +
-      `ttft=${ttftMs ?? -1}ms dur=${elapsedMs ?? -1}ms`
+      `ttft=${ttftMs ?? -1}ms dur=${elapsedMs ?? -1}ms`,
   );
 }
 
@@ -111,7 +111,7 @@ export function synthOpenAIErrorChunk(opts: {
   const providerPart = sanitizeErrorMessage(provider ?? "?");
   const safeMessage = sanitizeErrorMessage(
     `[${providerPart}] returned an empty response (${reasonText}). ` +
-      "Likely quota exhaustion, an overloaded upstream, or a proxy/gateway intercepting the stream."
+      "Likely quota exhaustion, an overloaded upstream, or a proxy/gateway intercepting the stream.",
   );
   const body = {
     id: `chatcmpl-empty-${Date.now()}`,
@@ -135,7 +135,7 @@ export function synthOpenAIErrorChunk(opts: {
  */
 export function synthResponsesFailure(reason?: MalformedReason): string {
   const safeMessage = sanitizeErrorMessage(
-    `stream closed before response.completed (${describeReason(reason)})`
+    `stream closed before response.completed (${describeReason(reason)})`,
   );
   const event = {
     type: "response.failed",

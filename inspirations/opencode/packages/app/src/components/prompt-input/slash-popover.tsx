@@ -1,63 +1,64 @@
-import { Component, For, Match, Show, Switch } from "solid-js"
-import { FileIcon } from "@opencode-ai/ui/file-icon"
-import { Icon } from "@opencode-ai/ui/icon"
-import { Tag } from "@opencode-ai/ui/v2/badge-v2"
-import { KeybindV2 } from "@opencode-ai/ui/v2/keybind-v2"
-import { getDirectory, getFilename } from "@opencode-ai/core/util/path"
+import { Component, For, Match, Show, Switch } from "solid-js";
+import { FileIcon } from "@opencode-ai/ui/file-icon";
+import { Icon } from "@opencode-ai/ui/icon";
+import { Tag } from "@opencode-ai/ui/v2/badge-v2";
+import { KeybindV2 } from "@opencode-ai/ui/v2/keybind-v2";
+import { getDirectory, getFilename } from "@opencode-ai/core/util/path";
 
 export type AtOption =
   | { type: "agent"; name: string; display: string }
   | {
-      type: "resource"
-      name: string
-      uri: string
-      client: string
-      display: string
-      description?: string
-      mime?: string
+      type: "resource";
+      name: string;
+      uri: string;
+      client: string;
+      display: string;
+      description?: string;
+      mime?: string;
     }
   | { type: "reference"; name: string; path: string; display: string; description: string }
-  | { type: "file"; path: string; display: string; recent?: boolean }
+  | { type: "file"; path: string; display: string; recent?: boolean };
 
 export interface SlashCommand {
-  id: string
-  trigger: string
-  title: string
-  description?: string
-  keybind?: string
-  type: "builtin" | "custom"
-  source?: "command" | "mcp" | "skill"
+  id: string;
+  trigger: string;
+  title: string;
+  description?: string;
+  keybind?: string;
+  type: "builtin" | "custom";
+  source?: "command" | "mcp" | "skill";
 }
 
 type PromptPopoverProps = {
-  popover: "at" | "slash" | null
-  setSlashPopoverRef: (el: HTMLDivElement) => void
-  atFlat: AtOption[]
-  atActive?: string
-  atKey: (item: AtOption) => string
-  setAtActive: (id: string) => void
-  onAtSelect: (item: AtOption) => void
-  slashFlat: SlashCommand[]
-  slashActive?: string
-  setSlashActive: (id: string) => void
-  onSlashSelect: (item: SlashCommand) => void
-  commandKeybind: (id: string) => string | undefined
-  commandKeybindParts: (id: string) => string[]
-  newLayoutDesigns: boolean
-  t: (key: string) => string
-}
+  popover: "at" | "slash" | null;
+  setSlashPopoverRef: (el: HTMLDivElement) => void;
+  atFlat: AtOption[];
+  atActive?: string;
+  atKey: (item: AtOption) => string;
+  setAtActive: (id: string) => void;
+  onAtSelect: (item: AtOption) => void;
+  slashFlat: SlashCommand[];
+  slashActive?: string;
+  setSlashActive: (id: string) => void;
+  onSlashSelect: (item: SlashCommand) => void;
+  commandKeybind: (id: string) => string | undefined;
+  commandKeybindParts: (id: string) => string[];
+  newLayoutDesigns: boolean;
+  t: (key: string) => string;
+};
 
 export const PromptPopover: Component<PromptPopoverProps> = (props) => {
   return (
     <Show when={props.popover}>
       <div
         ref={(el) => {
-          if (props.popover === "slash") props.setSlashPopoverRef(el)
+          if (props.popover === "slash") props.setSlashPopoverRef(el);
         }}
         class="absolute inset-x-0 -top-2 -translate-y-full origin-bottom-left max-h-80 min-h-10
                  overflow-auto no-scrollbar flex flex-col p-2"
         classList={{
-          "z-[70] rounded-[10px] bg-v2-background-bg-base shadow-[var(--v2-elevation-raised)]": props.newLayoutDesigns,
+          "z-[70] rounded-[10px] bg-v2-background-bg-base shadow-[var(--v2-elevation-raised)]":
+            props.newLayoutDesigns,
           "rounded-[12px] bg-surface-raised-stronger-non-alpha shadow-[var(--shadow-lg-border-base)]":
             !props.newLayoutDesigns,
         }}
@@ -81,7 +82,7 @@ export const PromptPopover: Component<PromptPopoverProps> = (props) => {
             >
               <For each={props.atFlat.slice(0, 10)}>
                 {(item) => {
-                  const key = props.atKey(item)
+                  const key = props.atKey(item);
 
                   if (item.type === "agent") {
                     return (
@@ -90,8 +91,10 @@ export const PromptPopover: Component<PromptPopoverProps> = (props) => {
                         classList={{
                           "rounded-[4px]": props.newLayoutDesigns,
                           "rounded-md": !props.newLayoutDesigns,
-                          "bg-v2-overlay-simple-overlay-hover": props.newLayoutDesigns && props.atActive === key,
-                          "bg-surface-raised-base-hover": !props.newLayoutDesigns && props.atActive === key,
+                          "bg-v2-overlay-simple-overlay-hover":
+                            props.newLayoutDesigns && props.atActive === key,
+                          "bg-surface-raised-base-hover":
+                            !props.newLayoutDesigns && props.atActive === key,
                         }}
                         onClick={() => props.onAtSelect(item)}
                         onPointerMove={() => props.setAtActive(key)}
@@ -110,7 +113,7 @@ export const PromptPopover: Component<PromptPopoverProps> = (props) => {
                           @{item.name}
                         </span>
                       </button>
-                    )
+                    );
                   }
 
                   if (item.type === "resource") {
@@ -120,8 +123,10 @@ export const PromptPopover: Component<PromptPopoverProps> = (props) => {
                         classList={{
                           "rounded-[4px]": props.newLayoutDesigns,
                           "rounded-md": !props.newLayoutDesigns,
-                          "bg-v2-overlay-simple-overlay-hover": props.newLayoutDesigns && props.atActive === key,
-                          "bg-surface-raised-base-hover": !props.newLayoutDesigns && props.atActive === key,
+                          "bg-v2-overlay-simple-overlay-hover":
+                            props.newLayoutDesigns && props.atActive === key,
+                          "bg-surface-raised-base-hover":
+                            !props.newLayoutDesigns && props.atActive === key,
                         }}
                         onClick={() => props.onAtSelect(item)}
                         onPointerMove={() => props.setAtActive(key)}
@@ -156,7 +161,7 @@ export const PromptPopover: Component<PromptPopoverProps> = (props) => {
                           </Show>
                         </div>
                       </button>
-                    )
+                    );
                   }
 
                   if (item.type === "reference") {
@@ -166,13 +171,18 @@ export const PromptPopover: Component<PromptPopoverProps> = (props) => {
                         classList={{
                           "rounded-[4px]": props.newLayoutDesigns,
                           "rounded-md": !props.newLayoutDesigns,
-                          "bg-v2-overlay-simple-overlay-hover": props.newLayoutDesigns && props.atActive === key,
-                          "bg-surface-raised-base-hover": !props.newLayoutDesigns && props.atActive === key,
+                          "bg-v2-overlay-simple-overlay-hover":
+                            props.newLayoutDesigns && props.atActive === key,
+                          "bg-surface-raised-base-hover":
+                            !props.newLayoutDesigns && props.atActive === key,
                         }}
                         onClick={() => props.onAtSelect(item)}
                         onPointerMove={() => props.setAtActive(key)}
                       >
-                        <FileIcon node={{ path: item.path, type: "directory" }} class="shrink-0 size-4" />
+                        <FileIcon
+                          node={{ path: item.path, type: "directory" }}
+                          class="shrink-0 size-4"
+                        />
                         <div
                           class="flex items-center min-w-0"
                           classList={{
@@ -198,12 +208,12 @@ export const PromptPopover: Component<PromptPopoverProps> = (props) => {
                           </span>
                         </div>
                       </button>
-                    )
+                    );
                   }
 
-                  const isDirectory = item.path.endsWith("/")
-                  const directory = isDirectory ? item.path : getDirectory(item.path)
-                  const filename = isDirectory ? "" : getFilename(item.path)
+                  const isDirectory = item.path.endsWith("/");
+                  const directory = isDirectory ? item.path : getDirectory(item.path);
+                  const filename = isDirectory ? "" : getFilename(item.path);
 
                   return (
                     <button
@@ -211,8 +221,10 @@ export const PromptPopover: Component<PromptPopoverProps> = (props) => {
                       classList={{
                         "rounded-[4px]": props.newLayoutDesigns,
                         "rounded-md": !props.newLayoutDesigns,
-                        "bg-v2-overlay-simple-overlay-hover": props.newLayoutDesigns && props.atActive === key,
-                        "bg-surface-raised-base-hover": !props.newLayoutDesigns && props.atActive === key,
+                        "bg-v2-overlay-simple-overlay-hover":
+                          props.newLayoutDesigns && props.atActive === key,
+                        "bg-surface-raised-base-hover":
+                          !props.newLayoutDesigns && props.atActive === key,
                       }}
                       onClick={() => props.onAtSelect(item)}
                       onPointerMove={() => props.setAtActive(key)}
@@ -248,7 +260,7 @@ export const PromptPopover: Component<PromptPopoverProps> = (props) => {
                         </Show>
                       </div>
                     </button>
-                  )
+                  );
                 }}
               </For>
             </Show>
@@ -270,8 +282,8 @@ export const PromptPopover: Component<PromptPopoverProps> = (props) => {
             >
               <For each={props.slashFlat}>
                 {(cmd) => {
-                  const keybind = () => props.commandKeybind(cmd.id)
-                  const keybindParts = () => props.commandKeybindParts(cmd.id)
+                  const keybind = () => props.commandKeybind(cmd.id);
+                  const keybindParts = () => props.commandKeybindParts(cmd.id);
                   return (
                     <button
                       data-slash-id={cmd.id}
@@ -279,8 +291,10 @@ export const PromptPopover: Component<PromptPopoverProps> = (props) => {
                         "w-full flex items-center justify-between gap-4 px-2 py-1": true,
                         "rounded-[4px] scroll-my-2": props.newLayoutDesigns,
                         "rounded-md": !props.newLayoutDesigns,
-                        "bg-v2-overlay-simple-overlay-hover": props.newLayoutDesigns && props.slashActive === cmd.id,
-                        "bg-surface-raised-base-hover": !props.newLayoutDesigns && props.slashActive === cmd.id,
+                        "bg-v2-overlay-simple-overlay-hover":
+                          props.newLayoutDesigns && props.slashActive === cmd.id,
+                        "bg-surface-raised-base-hover":
+                          !props.newLayoutDesigns && props.slashActive === cmd.id,
                       }}
                       onClick={() => props.onSlashSelect(cmd)}
                       onPointerMove={() => props.setSlashActive(cmd.id)}
@@ -339,14 +353,16 @@ export const PromptPopover: Component<PromptPopoverProps> = (props) => {
                         <Show when={props.newLayoutDesigns ? keybindParts().length > 0 : keybind()}>
                           <Show
                             when={props.newLayoutDesigns}
-                            fallback={<span class="text-12-regular text-text-subtle">{keybind()}</span>}
+                            fallback={
+                              <span class="text-12-regular text-text-subtle">{keybind()}</span>
+                            }
                           >
                             <KeybindV2 keys={keybindParts()} variant="neutral" />
                           </Show>
                         </Show>
                       </div>
                     </button>
-                  )
+                  );
                 }}
               </For>
             </Show>
@@ -354,5 +370,5 @@ export const PromptPopover: Component<PromptPopoverProps> = (props) => {
         </Switch>
       </div>
     </Show>
-  )
-}
+  );
+};

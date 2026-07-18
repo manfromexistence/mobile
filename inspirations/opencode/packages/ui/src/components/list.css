@@ -212,7 +212,11 @@
           left: 0;
           right: 0;
           height: 16px;
-          background: linear-gradient(to bottom, var(--surface-raised-stronger-non-alpha), transparent);
+          background: linear-gradient(
+            to bottom,
+            var(--surface-raised-stronger-non-alpha),
+            transparent
+          );
           pointer-events: none;
           opacity: 0;
           transition: opacity 0.15s ease;
@@ -251,7 +255,7 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            aspect-ratio: 1/1;
+            aspect-ratio: 1 / 1;
             [data-component="icon"] {
               color: var(--icon-strong-base);
             }
@@ -261,7 +265,7 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            aspect-ratio: 1/1;
+            aspect-ratio: 1 / 1;
             [data-component="icon"] {
               color: var(--icon-strong-base);
             }

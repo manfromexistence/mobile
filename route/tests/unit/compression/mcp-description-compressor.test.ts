@@ -76,7 +76,7 @@ describe("MCP description compression", () => {
     assert.doesNotMatch(output.result.resourceTemplates[0].description, /\bthe\b/i);
     assert.equal(
       output.result.content[0].description,
-      "The tool response body should remain unchanged."
+      "The tool response body should remain unchanged.",
     );
   });
 

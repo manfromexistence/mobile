@@ -53,7 +53,7 @@ export async function GET(request: Request) {
   } catch (error: any) {
     return NextResponse.json(
       { error: sanitizeErrorMessage(error) || "Failed to list webhooks" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -74,7 +74,7 @@ export async function POST(request: Request) {
     if (data.kind === "telegram" && !isEncryptionEnabled()) {
       return NextResponse.json(
         { error: "Telegram webhooks require STORAGE_ENCRYPTION_KEY to be configured" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -92,7 +92,7 @@ export async function POST(request: Request) {
   } catch (error: any) {
     return NextResponse.json(
       { error: sanitizeErrorMessage(error) || "Failed to create webhook" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

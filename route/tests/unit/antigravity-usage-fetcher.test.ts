@@ -209,7 +209,7 @@ describe("getUsageForProvider (antigravity in fetcher.ts)", () => {
         assert.equal(
           Object.keys(result.modelQuotas).length,
           0,
-          "should not include credit-based models"
+          "should not include credit-based models",
         );
       }
     } finally {

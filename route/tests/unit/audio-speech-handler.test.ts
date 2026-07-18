@@ -250,7 +250,7 @@ test("handleAudioSpeech signs AWS Polly synthesize requests with SigV4", async (
     assert.equal(captured.headers["x-amz-content-sha256"].length, 64);
     assert.match(
       captured.headers.Authorization,
-      /^AWS4-HMAC-SHA256 Credential=AKIA_TEST\/\d{8}\/us-west-2\/polly\/aws4_request,/
+      /^AWS4-HMAC-SHA256 Credential=AKIA_TEST\/\d{8}\/us-west-2\/polly\/aws4_request,/,
     );
     assert.deepEqual(captured.body, {
       Engine: "neural",
@@ -286,7 +286,7 @@ test("handleAudioSpeech maps Xiaomi MiMo TTS to chat completions audio payload",
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -555,7 +555,7 @@ test("handleAudioSpeech maps Inworld opus output and rejects flac", async () => 
     assert.equal(flacResponse.status, 400);
     assert.equal(
       payload.error.message,
-      "Inworld TTS supports response_format mp3, wav, opus, or pcm only"
+      "Inworld TTS supports response_format mp3, wav, opus, or pcm only",
     );
     assert.equal(callCount, 1);
   } finally {

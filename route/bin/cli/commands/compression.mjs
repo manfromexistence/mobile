@@ -117,7 +117,7 @@ export async function runCompressionConfigure(opts, cmd) {
   if (opts.rtkBudget !== undefined) config.rtk = { tokenBudget: opts.rtkBudget };
   if (opts.languagePack) config.languagePack = opts.languagePack;
   const data = await mcpCall("omniroute_compression_configure", config, () =>
-    restCompressionConfigure(config)
+    restCompressionConfigure(config),
   );
   emit(data, cmd.optsWithGlobals());
 }
@@ -129,7 +129,7 @@ export async function runCompressionEngineSet(name, opts, cmd) {
     process.exit(2);
   }
   await mcpCall("omniroute_set_compression_engine", { engine: normalized }, () =>
-    restSetEngine(normalized)
+    restSetEngine(normalized),
   );
   process.stdout.write(`Engine: ${normalized}\n`);
 }
@@ -145,7 +145,7 @@ export async function runCompressionPreview(opts, cmd) {
   emit(data, cmd.optsWithGlobals());
   if (cmd.optsWithGlobals().output !== "json") {
     process.stderr.write(
-      `\nOriginal: ${data.beforeTokens ?? "?"} tok → After: ${data.afterTokens ?? "?"} tok (${data.savingsPct ?? "?"}%)\n`
+      `\nOriginal: ${data.beforeTokens ?? "?"} tok → After: ${data.afterTokens ?? "?"} tok (${data.savingsPct ?? "?"}%)\n`,
     );
   }
 }
@@ -188,7 +188,7 @@ export function registerCompression(program) {
       const data = await mcpCall(
         "omniroute_compression_combo_stats",
         { period: opts.period ?? "7d" },
-        () => restComboStats(opts.period)
+        () => restComboStats(opts.period),
       );
       emit(data, cmd.optsWithGlobals());
     });

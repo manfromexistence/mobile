@@ -19,7 +19,7 @@ export function assembleStreamingResponseHeaders(
     pendingRequestId: string;
     compressionResponseMeta?: string | null | undefined;
   },
-  buildStreamingResponseHeaders: typeof defaultBuildStreaming = defaultBuildStreaming
+  buildStreamingResponseHeaders: typeof defaultBuildStreaming = defaultBuildStreaming,
 ): Record<string, string> {
   const responseHeaders: Record<string, string> = {
     ...buildStreamingResponseHeaders(args.providerHeaders, {

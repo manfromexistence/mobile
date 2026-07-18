@@ -21,7 +21,7 @@ function parseJsonInput(value, label, schema) {
   const result = schema.safeParse(parsed);
   if (!result.success) {
     process.stderr.write(
-      `Invalid ${label}: ${result.error.issues[0]?.message || "schema error"}\n`
+      `Invalid ${label}: ${result.error.issues[0]?.message || "schema error"}\n`,
     );
     process.exit(2);
   }

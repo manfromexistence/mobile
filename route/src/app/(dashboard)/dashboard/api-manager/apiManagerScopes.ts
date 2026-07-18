@@ -33,7 +33,7 @@ export function buildApiKeyCreateScopes(options: CreateScopeOptions): string[] {
 
 export function mergeApiKeyPermissionScopes(
   currentScopes: readonly string[] | null | undefined,
-  options: PermissionScopeOptions
+  options: PermissionScopeOptions,
 ): string[] {
   const scopes = new Set((currentScopes ?? []).filter((scope) => typeof scope === "string"));
 
@@ -42,7 +42,7 @@ export function mergeApiKeyPermissionScopes(
   setScope(
     scopes,
     SELF_ACCOUNT_QUOTA_SCOPE,
-    options.selfUsageEnabled && options.selfAccountQuotaEnabled
+    options.selfUsageEnabled && options.selfAccountQuotaEnabled,
   );
   setScope(scopes, API_KEY_BYPASS_PROVIDER_QUOTA_SCOPE, options.bypassProviderQuotaPolicyEnabled);
 

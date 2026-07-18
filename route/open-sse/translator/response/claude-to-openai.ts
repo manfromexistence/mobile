@@ -105,7 +105,7 @@ export function claudeToOpenAIResponse(chunk, state) {
                   function: { arguments: delta.partial_json },
                 },
               ],
-            })
+            }),
           );
         }
       }

@@ -38,7 +38,12 @@ import { openaiToOpenAIResponsesRequest } from "../translator/request/openai-res
 import { claudeToOpenAIResponse } from "../translator/response/claude-to-openai.ts";
 import { geminiToOpenAIResponse } from "../translator/response/gemini-to-openai.ts";
 import { openaiResponsesToOpenAIResponse } from "../translator/response/openai-responses.ts";
-import { ZED_HEADERS, resolveZedModels, zedLlmFetch, type ZedCredentials } from "../shared/zedAuth.ts";
+import {
+  ZED_HEADERS,
+  resolveZedModels,
+  zedLlmFetch,
+  type ZedCredentials,
+} from "../shared/zedAuth.ts";
 
 const ZED_PROVIDER = {
   anthropic: "Anthropic",
@@ -68,7 +73,7 @@ function buildProviderRequest(
   model: string,
   body: unknown,
   stream: boolean,
-  credentials: ProviderCredentials
+  credentials: ProviderCredentials,
 ): unknown {
   if (provider === ZED_PROVIDER.anthropic) {
     return openaiToClaudeRequest(model, body, true);
@@ -98,7 +103,7 @@ function initProviderState(provider: ZedProviderName, model: string): Record<str
 function convertProviderEvent(
   provider: ZedProviderName,
   event: unknown,
-  state: Record<string, unknown>
+  state: Record<string, unknown>,
 ): unknown {
   if (provider === ZED_PROVIDER.anthropic) return claudeToOpenAIResponse(event, state);
   if (provider === ZED_PROVIDER.google) return geminiToOpenAIResponse(event, state);
@@ -119,7 +124,7 @@ function createErrorChunk(model: string, message: string): Record<string, unknow
 function enqueueSseObject(
   controller: ReadableStreamDefaultController<Uint8Array>,
   encoder: TextEncoder,
-  chunk: unknown
+  chunk: unknown,
 ): void {
   if (!chunk) return;
   const items = Array.isArray(chunk) ? chunk : [chunk];
@@ -165,7 +170,7 @@ function normalizeStatus(status: unknown): Record<string, unknown> | null {
 function wrapZedCompletionStream(
   response: Response,
   provider: ZedProviderName,
-  model: string
+  model: string,
 ): Response {
   if (!response.ok || !response.body) return response;
 
@@ -226,7 +231,7 @@ function wrapZedCompletionStream(
         }
         finish(controller);
       },
-    })
+    }),
   );
 
   return new Response(transformed, {
@@ -248,7 +253,7 @@ export class ZedHostedExecutor extends BaseExecutor {
     model: string,
     credentials: ZedCredentials,
     signal: AbortSignal | null | undefined,
-    log: ExecuteInput["log"]
+    log: ExecuteInput["log"],
   ): Promise<{ raw: Record<string, unknown> | null; provider: ZedProviderName }> {
     try {
       const catalog = await resolveZedModels(credentials, { config: this.config, signal });
@@ -299,7 +304,8 @@ export class ZedHostedExecutor extends BaseExecutor {
           "Content-Type": "application/json",
           Accept: "application/x-ndjson, text/event-stream, */*",
           "User-Agent": `OmniRoute/zed-hosted`,
-          "x-zed-version": (this.config as Record<string, unknown>)?.appVersion?.toString() || "0.200.0",
+          "x-zed-version":
+            (this.config as Record<string, unknown>)?.appVersion?.toString() || "0.200.0",
           [ZED_HEADERS.clientSupportsStatus]: "true",
           [ZED_HEADERS.clientSupportsStreamEnded]: "true",
         },
@@ -327,7 +333,10 @@ export class ZedHostedExecutor extends BaseExecutor {
     const errorObj = (parsed?.error as Record<string, unknown>) || undefined;
     const code = (parsed?.code as string) || (errorObj?.code as string) || "";
     const rawMessage =
-      (parsed?.message as string) || (errorObj?.message as string) || bodyText || response.statusText;
+      (parsed?.message as string) ||
+      (errorObj?.message as string) ||
+      bodyText ||
+      response.statusText;
     if (code === "trial_blocked") {
       return {
         status: response.status,

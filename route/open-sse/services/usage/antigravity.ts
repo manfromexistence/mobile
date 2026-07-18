@@ -100,7 +100,7 @@ const _antigravityCacheCleanupTimer = setInterval(
         _antigravityCreditProbeCache.delete(key);
     }
   },
-  5 * 60 * 1000
+  5 * 60 * 1000,
 ); // every 5 minutes
 _antigravityCacheCleanupTimer.unref?.(); // Don't prevent process exit
 
@@ -119,7 +119,7 @@ function getAntigravityLocalUsageUnits(
   provider: "antigravity" | "agy",
   connectionId: string | undefined,
   modelId: string,
-  resetAt: string | null
+  resetAt: string | null,
 ): number {
   if (!connectionId || !modelId || !resetAt) return 0;
 
@@ -144,7 +144,7 @@ function getAntigravityLocalUsageUnits(
            AND model = ?
            AND success = 1
            AND timestamp >= ?
-           AND timestamp < ?`
+           AND timestamp < ?`,
       )
       .get(provider, connectionId, modelId, windowStart, windowEnd) as
       | { tokens?: unknown }
@@ -162,7 +162,7 @@ function applyLocalUsageFallback(
   quota: UsageQuota,
   provider: "antigravity" | "agy",
   connectionId: string | undefined,
-  modelId: string
+  modelId: string,
 ): UsageQuota {
   if (quota.quotaSource !== "fetchAvailableModels" || quota.used > 0 || quota.unlimited) {
     return quota;
@@ -187,7 +187,7 @@ function buildAntigravityUsageCacheKey(accessToken: string, projectId?: string |
 async function fetchAntigravityAvailableModelsCached(
   accessToken: string,
   projectId?: string | null,
-  options: AntigravityUsageOptions = {}
+  options: AntigravityUsageOptions = {},
 ): Promise<unknown> {
   if (!accessToken) throw new Error("Access token is required");
 
@@ -251,7 +251,7 @@ async function fetchAntigravityAvailableModelsCached(
 async function fetchAntigravityUserQuotaCached(
   accessToken: string,
   projectId?: string | null,
-  options: AntigravityUsageOptions = {}
+  options: AntigravityUsageOptions = {},
 ): Promise<unknown | null> {
   if (!accessToken || !projectId) return null;
 
@@ -280,7 +280,7 @@ async function fetchAntigravityUserQuotaCached(
           },
           body: JSON.stringify({ project: projectId }),
           signal: AbortSignal.timeout(10000),
-        }
+        },
       );
 
       if (!response.ok) return null;
@@ -364,7 +364,7 @@ export function mapCodeAssistSubscriptionToPlanLabel(subscriptionInfo: unknown):
     getFieldValue(currentTier, "name", "displayName") ||
       subscription.subscriptionType ||
       subscription.tier ||
-      ""
+      "",
   );
   const mappedName = tierName ? mapSubscriptionTierStringToPlanLabel(tierName) : null;
   if (mappedName) return mappedName;
@@ -416,7 +416,7 @@ async function probeAntigravityCreditBalance(
   accountId: string,
   projectId?: string | null,
   options: AntigravityUsageOptions = {},
-  providerSpecificData: JsonRecord = {}
+  providerSpecificData: JsonRecord = {},
 ): Promise<number | null> {
   if (!accessToken) return null;
 
@@ -437,7 +437,7 @@ async function probeAntigravityCreditBalance(
     accessToken,
     accountId,
     projectId,
-    providerSpecificData
+    providerSpecificData,
   )
     .then(
       (data) => {
@@ -447,7 +447,7 @@ async function probeAntigravityCreditBalance(
       (error) => {
         _antigravityCreditProbeCache.set(cacheKey, { data: null, fetchedAt: Date.now() });
         throw error;
-      }
+      },
     )
     .finally(() => {
       _antigravityCreditProbeInflight.delete(cacheKey);
@@ -461,7 +461,7 @@ async function probeAntigravityCreditBalanceUncached(
   accessToken: string,
   accountId: string,
   projectId?: string | null,
-  providerSpecificData: JsonRecord = {}
+  providerSpecificData: JsonRecord = {},
 ): Promise<number | null> {
   try {
     if (!projectId) return null;
@@ -494,7 +494,7 @@ async function probeAntigravityCreditBalanceUncached(
       applyAntigravityClientProfileHeaders(
         headers,
         { connectionId: accountId, projectId, providerSpecificData },
-        body
+        body,
       );
 
       try {
@@ -520,7 +520,7 @@ async function probeAntigravityCreditBalanceUncached(
             const parsed = JSON.parse(payload);
             if (Array.isArray(parsed?.remainingCredits)) {
               const googleCredit = parsed.remainingCredits.find(
-                (c: { creditType?: string }) => c?.creditType === "GOOGLE_ONE_AI"
+                (c: { creditType?: string }) => c?.creditType === "GOOGLE_ONE_AI",
               );
               if (googleCredit) {
                 const balance = parseInt(googleCredit.creditAmount, 10);
@@ -559,7 +559,7 @@ export async function getAntigravityUsage(
   providerSpecificData?: JsonRecord,
   connectionProjectId?: string,
   connectionId?: string,
-  options: AntigravityUsageOptions = {}
+  options: AntigravityUsageOptions = {},
 ) {
   if (!accessToken) {
     return { plan: "Free", message: "Antigravity access token not available." };
@@ -570,7 +570,7 @@ export async function getAntigravityUsage(
     subscriptionInfo = await getAntigravitySubscriptionInfoCached(
       accessToken,
       providerSpecificData,
-      options
+      options,
     );
     const savedProjectId =
       typeof providerSpecificData?.projectId === "string" && providerSpecificData.projectId.trim()
@@ -601,7 +601,7 @@ export async function getAntigravityUsage(
         accountId,
         projectId,
         options,
-        providerSpecificData || {}
+        providerSpecificData || {},
       );
     }
 
@@ -655,7 +655,7 @@ export async function getAntigravityUsage(
       const fractionReported = rawFraction >= 0;
       if (!fractionReported) {
         console.warn(
-          `[Antigravity] model ${modelKey} returned no remainingFraction — quota unknown`
+          `[Antigravity] model ${modelKey} returned no remainingFraction — quota unknown`,
         );
       }
       const remainingFraction = fractionReported ? Math.max(0, Math.min(1, rawFraction)) : 0;
@@ -680,7 +680,7 @@ export async function getAntigravityUsage(
         },
         provider,
         connectionId,
-        modelKey
+        modelKey,
       );
     }
 
@@ -748,7 +748,7 @@ export async function getAntigravityUsage(
 async function getAntigravitySubscriptionInfoCached(
   accessToken: string,
   providerSpecificData?: JsonRecord,
-  options: AntigravityUsageOptions = {}
+  options: AntigravityUsageOptions = {},
 ): Promise<unknown> {
   const profile = getAntigravityClientProfile({ providerSpecificData });
   const cacheKey = `${accessToken.substring(0, 16)}:${profile}`;
@@ -775,7 +775,7 @@ async function getAntigravitySubscriptionInfoCached(
  */
 async function getAntigravitySubscriptionInfo(
   accessToken: string,
-  providerSpecificData?: JsonRecord
+  providerSpecificData?: JsonRecord,
 ): Promise<unknown | null> {
   try {
     const profile = getAntigravityClientProfile({ providerSpecificData });

@@ -1,4 +1,4 @@
-import { ProviderHelper } from "./provider"
+import { ProviderHelper } from "./provider";
 
 /*
 {
@@ -17,52 +17,52 @@ import { ProviderHelper } from "./provider"
 */
 
 type Usage = {
-  promptTokenCount?: number
-  candidatesTokenCount?: number
-  totalTokenCount?: number
-  cachedContentTokenCount?: number
-  promptTokensDetails?: { modality: string; tokenCount: number }[]
-  cacheTokensDetails?: { modality: string; tokenCount: number }[]
-  thoughtsTokenCount?: number
-}
+  promptTokenCount?: number;
+  candidatesTokenCount?: number;
+  totalTokenCount?: number;
+  cachedContentTokenCount?: number;
+  promptTokensDetails?: { modality: string; tokenCount: number }[];
+  cacheTokensDetails?: { modality: string; tokenCount: number }[];
+  thoughtsTokenCount?: number;
+};
 
 export const googleHelper: ProviderHelper = ({ providerModel }) => ({
   format: "google",
   modifyUrl: (providerApi: string, isStream?: boolean) =>
     `${providerApi}/models/${providerModel}:${isStream ? "streamGenerateContent?alt=sse" : "generateContent"}`,
   modifyHeaders: (headers: Headers, apiKey: string, _stickyId: string) => {
-    headers.set("x-goog-api-key", apiKey)
+    headers.set("x-goog-api-key", apiKey);
   },
   modifyBody: (body: Record<string, any>) => {
-    return body
+    return body;
   },
   createBinaryStreamDecoder: () => undefined,
   createUsageParser: () => {
-    let usage: Usage
+    let usage: Usage;
 
     return {
       parse: (chunk: string) => {
-        if (!chunk.startsWith("data: ")) return
+        if (!chunk.startsWith("data: ")) return;
 
-        let json
+        let json;
         try {
-          json = JSON.parse(chunk.slice(6)) as { usageMetadata?: Usage }
+          json = JSON.parse(chunk.slice(6)) as { usageMetadata?: Usage };
         } catch {
-          return
+          return;
         }
 
-        if (!json.usageMetadata) return
-        usage = json.usageMetadata
+        if (!json.usageMetadata) return;
+        usage = json.usageMetadata;
       },
       retrieve: () => usage,
-    }
+    };
   },
   extractUsage: (response: any) => response.usageMetadata,
   normalizeUsage: (usage: Usage) => {
-    const inputTokens = usage.promptTokenCount ?? 0
-    const outputTokens = usage.candidatesTokenCount ?? 0
-    const reasoningTokens = usage.thoughtsTokenCount ?? 0
-    const cacheReadTokens = usage.cachedContentTokenCount ?? 0
+    const inputTokens = usage.promptTokenCount ?? 0;
+    const outputTokens = usage.candidatesTokenCount ?? 0;
+    const reasoningTokens = usage.thoughtsTokenCount ?? 0;
+    const cacheReadTokens = usage.cachedContentTokenCount ?? 0;
     return {
       inputTokens: inputTokens - cacheReadTokens,
       outputTokens,
@@ -70,6 +70,6 @@ export const googleHelper: ProviderHelper = ({ providerModel }) => ({
       cacheReadTokens,
       cacheWrite5mTokens: undefined,
       cacheWrite1hTokens: undefined,
-    }
+    };
   },
-})
+});

@@ -1,4 +1,4 @@
-import { getSelectionPath } from './getSelectionPath';
+import { getSelectionPath } from "./getSelectionPath";
 
 export type RenameFileTreePathsResult =
   | {
@@ -17,9 +17,9 @@ type RenameFileTreePathsParams = {
 };
 
 function splitPath(path: string): { parentPath: string; baseName: string } {
-  const separatorIndex = path.lastIndexOf('/');
+  const separatorIndex = path.lastIndexOf("/");
   if (separatorIndex < 0) {
-    return { parentPath: '', baseName: path };
+    return { parentPath: "", baseName: path };
   }
   return {
     parentPath: path.slice(0, separatorIndex),
@@ -28,7 +28,7 @@ function splitPath(path: string): { parentPath: string; baseName: string } {
 }
 
 function joinPath(parentPath: string, baseName: string): string {
-  return parentPath === '' ? baseName : `${parentPath}/${baseName}`;
+  return parentPath === "" ? baseName : `${parentPath}/${baseName}`;
 }
 
 export function remapExpandedPathsForFolderRename({
@@ -83,9 +83,9 @@ export function renameFileTreePaths({
   const sourcePath = getSelectionPath(path);
   const trimmedBasename = nextBasename.trim();
   if (trimmedBasename.length === 0) {
-    return { error: 'Name cannot be empty.' };
+    return { error: "Name cannot be empty." };
   }
-  if (trimmedBasename.includes('/')) {
+  if (trimmedBasename.includes("/")) {
     return { error: 'Name cannot include "/".' };
   }
 
@@ -122,7 +122,7 @@ export function renameFileTreePaths({
       }
     }
     if (!renamed) {
-      return { error: 'Could not find the selected file to rename.' };
+      return { error: "Could not find the selected file to rename." };
     }
     return {
       nextFiles,
@@ -138,8 +138,7 @@ export function renameFileTreePaths({
 
   for (let index = 0; index < files.length; index++) {
     const file = files[index];
-    const isWithinRenamedFolder =
-      file === sourcePath || file.startsWith(sourcePrefix);
+    const isWithinRenamedFolder = file === sourcePath || file.startsWith(sourcePrefix);
     if (
       !isWithinRenamedFolder &&
       (file === destinationPath || file.startsWith(destinationPrefix))
@@ -162,7 +161,7 @@ export function renameFileTreePaths({
   }
 
   if (renamedPathCount === 0) {
-    return { error: 'Could not find the selected folder to rename.' };
+    return { error: "Could not find the selected folder to rename." };
   }
   return {
     nextFiles,

@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import type { ReactNode } from 'react';
-import { ShaderDef, ParamOption, ParamDef } from '../shader-defs/shader-def-types';
-import { CopyButton } from './copy-button';
-import { hslToHex } from '@/helpers/color-utils';
-import { commonParams } from '@/shader-defs/common-param-def';
+import type { ReactNode } from "react";
+import { ShaderDef, ParamOption, ParamDef } from "../shader-defs/shader-def-types";
+import { CopyButton } from "./copy-button";
+import { hslToHex } from "@/helpers/color-utils";
+import { commonParams } from "@/shader-defs/common-param-def";
 
 const formatJsxAttribute = (key: string, value: unknown): string => {
   if (value === true) {
@@ -13,18 +13,18 @@ const formatJsxAttribute = (key: string, value: unknown): string => {
   if (value === false) {
     return `${key}={false}`;
   }
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     return `${key}="${value}"`;
   }
-  if (typeof value === 'number') {
+  if (typeof value === "number") {
     // Format numbers with at most 2 decimal places if they have decimals
     const formattedNumber = Number.isInteger(value) ? value : parseFloat(value.toFixed(2));
     return `${key}={${formattedNumber}}`;
   }
   if (Array.isArray(value)) {
-    return `${key}={[${value.map((v) => JSON.stringify(v)).join(', ')}]}`;
+    return `${key}={[${value.map((v) => JSON.stringify(v)).join(", ")}]}`;
   }
-  if (typeof value === 'object') {
+  if (typeof value === "object") {
     return `${key}={${JSON.stringify(value)}}`;
   }
 
@@ -49,9 +49,13 @@ function PropsTable({ params }: { params: ParamDef[] }) {
           <tr key={param.name} className="border-table-border not-last:border-b">
             {/* "noiseFrequency" is the longest name (116px + 32px padding = 148px)
              We go a little smaller on mobile to have less whitespace ("maxPixelCount" = 140px) */}
-            <td className="min-w-140 px-16 py-12 align-top font-medium sm:min-w-148">{param.name}</td>
+            <td className="min-w-140 px-16 py-12 align-top font-medium sm:min-w-148">
+              {param.name}
+            </td>
 
-            <td className="w-full min-w-240 px-16 py-12 align-top text-pretty text-current/70">{param.description}</td>
+            <td className="w-full min-w-240 px-16 py-12 align-top text-pretty text-current/70">
+              {param.description}
+            </td>
 
             {/* "number | string" is the longest most common type (118px + 32px padding = 150px)
             There are a few "HTMLImageElement | string ", which are purposely not aligned because too wide */}
@@ -61,15 +65,21 @@ function PropsTable({ params }: { params: ParamDef[] }) {
 
             <td className="min-w-240 px-16 py-12 align-top text-sm text-current/70">
               {param.options && param.options.length > 0 ? (
-                typeof param.options[0] === 'string' ? (
+                typeof param.options[0] === "string" ? (
                   <div className="flex flex-wrap text-pretty">
                     {(param.options as string[]).map((option) => (
                       <span
                         key={option}
-                        className={param.type === 'boolean' || param.type === 'enum' ? 'whitespace-nowrap' : ''}
+                        className={
+                          param.type === "boolean" || param.type === "enum"
+                            ? "whitespace-nowrap"
+                            : ""
+                        }
                       >
                         {<span className="text-stone-400 mx-4"> | </span>}
-                        <code className="font-mono">{param.type === 'enum' ? `"${option}"` : option}</code>
+                        <code className="font-mono">
+                          {param.type === "enum" ? `"${option}"` : option}
+                        </code>
                       </span>
                     ))}
                   </div>
@@ -77,7 +87,9 @@ function PropsTable({ params }: { params: ParamDef[] }) {
                   <ul className="space-y-4">
                     {(param.options as ParamOption[]).map((option) => (
                       <li key={option.name}>
-                        <code className="font-mono">{param.type === 'enum' ? `"${option.name}"` : option.name}</code>{' '}
+                        <code className="font-mono">
+                          {param.type === "enum" ? `"${option.name}"` : option.name}
+                        </code>{" "}
                         <span className="text-stone-400">-</span> {option.description}
                       </li>
                     ))}
@@ -87,14 +99,14 @@ function PropsTable({ params }: { params: ParamDef[] }) {
                 <>
                   <span className="whitespace-nowrap">
                     <span className="font-mono">{param.min}</span>
-                    {' to '}
+                    {" to "}
                     <span className="font-mono">{param.max}</span>
                   </span>
-                  {param.step === 1 && ' (integer)'}
+                  {param.step === 1 && " (integer)"}
                 </>
               ) : param.isColor ? (
                 <span className="whitespace-nowrap">Hex, RGB, or HSL color</span>
-              ) : param.name === 'image' ? (
+              ) : param.name === "image" ? (
                 <span className="whitespace-nowrap">Image object or URL</span>
               ) : (
                 <span className="text-current/40">—</span>
@@ -118,24 +130,24 @@ export function ShaderDetails({
   notes?: ReactNode;
   codeSampleImageName?: string;
 }) {
-  const componentName = shaderDef.name.replace(/ /g, '');
+  const componentName = shaderDef.name.replace(/ /g, "");
 
-  const installationCode = 'npm i @paper-design/shaders-react';
+  const installationCode = "npm i @paper-design/shaders-react";
   const image = codeSampleImageName
     ? `https://shaders.paper.design/${codeSampleImageName}`
-    : 'https://paper.design/flowers.webp';
+    : "https://paper.design/flowers.webp";
 
   const code = `import { ${componentName} } from '@paper-design/shaders-react';
 
 <${componentName}
   width={1280}
-  height={720}${shaderDef.params.find((p) => p.name === 'image') ? `\n  image="${image}"` : ''}
+  height={720}${shaderDef.params.find((p) => p.name === "image") ? `\n  image="${image}"` : ""}
   ${Object.entries(currentParams)
     .filter(([key, value]) => {
-      if (['offsetX', 'offsetY', 'rotation'].includes(key) && value === 0) {
+      if (["offsetX", "offsetY", "rotation"].includes(key) && value === 0) {
         return false;
       }
-      if (key === 'scale' && value === 1) {
+      if (key === "scale" && value === 1) {
         return false;
       }
       return true;
@@ -144,16 +156,16 @@ export function ShaderDetails({
       const isColor = shaderDef.params.find((p) => p.name === key && p.isColor);
       if (!isColor) {
         return formatJsxAttribute(key, value);
-      } else if (typeof value === 'string') {
+      } else if (typeof value === "string") {
         return formatJsxAttribute(key, hslToHex(value));
       } else if (Array.isArray(value)) {
         return formatJsxAttribute(
           key,
-          value.map((v) => hslToHex(v))
+          value.map((v) => hslToHex(v)),
         );
       }
     })
-    .join('\n  ')}
+    .join("\n  ")}
 />
 `;
   const commonPropNames = Object.keys(commonParams);

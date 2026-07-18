@@ -93,7 +93,7 @@ test("chatCore integration: compressContext called proactively when context exce
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -183,7 +183,7 @@ test("chatCore integration: disabled prompt compression leaves combo override re
   const proactiveThreshold = Math.floor(contextLimit * 0.7);
   assert.ok(
     estimateTokens(JSON.stringify(body.messages)) > proactiveThreshold,
-    "Test body should exceed proactive compression threshold"
+    "Test body should exceed proactive compression threshold",
   );
 
   let capturedBody: { messages?: Array<{ role?: string; content?: string }> } | null = null;
@@ -199,7 +199,7 @@ test("chatCore integration: disabled prompt compression leaves combo override re
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -261,7 +261,7 @@ test("chatCore integration: compressContext NOT called when context is below 85%
   const estimatedTokens = estimateTokens(JSON.stringify(body.messages));
   assert.ok(
     estimatedTokens < threshold,
-    `Expected ${estimatedTokens} to be below threshold ${threshold}`
+    `Expected ${estimatedTokens} to be below threshold ${threshold}`,
   );
 
   // Create provider connection
@@ -286,7 +286,7 @@ test("chatCore integration: compressContext NOT called when context is below 85%
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -316,7 +316,7 @@ test("chatCore integration: compressContext NOT called when context is below 85%
     assert.equal(
       finalTokens,
       originalTokens,
-      `Context should NOT be compressed: ${finalTokens} === ${originalTokens}`
+      `Context should NOT be compressed: ${finalTokens} === ${originalTokens}`,
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -368,7 +368,7 @@ test("chatCore integration: compression preserves message structure", async () =
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -447,7 +447,7 @@ test("chatCore integration: compression handles tool messages", async () => {
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -477,7 +477,7 @@ test("chatCore integration: compression handles tool messages", async () => {
     if (toolMessage.content.length < longToolOutput.length) {
       assert.ok(
         toolMessage.content.includes("[truncated]"),
-        "Tool message should have truncation marker"
+        "Tool message should have truncation marker",
       );
     }
   } finally {
@@ -542,7 +542,7 @@ test("chatCore integration: combo requests run proactive compression before Kiro
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -579,7 +579,7 @@ test("chatCore integration: combo requests run proactive compression before Kiro
       : [];
     assert.ok(
       history.length < body.messages.length - 1,
-      "History should be reduced by proactive compression before translation"
+      "History should be reduced by proactive compression before translation",
     );
 
     const currentMessage = conversationState?.currentMessage as Record<string, unknown> | undefined;
@@ -642,7 +642,7 @@ test("chatCore integration: assigned compression combo applies language packs an
   });
   assert.equal(
     compressionCombosDb.assignRoutingCombo(compressionCombo.id, routingCombo.id as string),
-    true
+    true,
   );
 
   let capturedBody: any = null;
@@ -658,7 +658,7 @@ test("chatCore integration: assigned compression combo applies language packs an
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -754,7 +754,7 @@ test("chatCore integration: default stacked compression combo applies for unassi
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -841,7 +841,7 @@ test.skip("chatCore integration: seeded default combo runs RTK before Caveman", 
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -930,7 +930,7 @@ test("chatCore integration: modular compression records analytics row best-effor
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
 
   try {
@@ -1007,7 +1007,7 @@ test("chatCore integration: caveman output mode skipped when compression is glob
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -1035,7 +1035,7 @@ test("chatCore integration: caveman output mode skipped when compression is glob
     assert.equal(
       capturedBody.messages[0].role,
       "user",
-      "No system message should be injected when compression is disabled"
+      "No system message should be injected when compression is disabled",
     );
     assert.doesNotMatch(capturedBody.messages[0].content ?? "", /Output Styles/);
   } finally {
@@ -1077,7 +1077,7 @@ test("chatCore integration: caveman output mode injected when both compression a
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 

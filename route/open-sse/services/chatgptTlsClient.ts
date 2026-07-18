@@ -82,7 +82,7 @@ export class TlsClientHangError extends Error {
 async function raceWithTimeout<T>(
   promise: Promise<T>,
   timeoutMs: number,
-  signal: AbortSignal | null | undefined
+  signal: AbortSignal | null | undefined,
 ): Promise<T> {
   let timer: ReturnType<typeof setTimeout> | null = null;
   let abortListener: (() => void) | null = null;
@@ -93,8 +93,8 @@ async function raceWithTimeout<T>(
         timer = setTimeout(() => {
           reject(
             new TlsClientHangError(
-              `tls-client-node call exceeded ${timeoutMs}ms — native binding likely deadlocked`
-            )
+              `tls-client-node call exceeded ${timeoutMs}ms — native binding likely deadlocked`,
+            ),
           );
         }, timeoutMs);
       }),
@@ -108,7 +108,7 @@ async function raceWithTimeout<T>(
           }
           abortListener = () => reject(makeAbortError(signal));
           signal.addEventListener("abort", abortListener, { once: true });
-        })
+        }),
       );
     }
     return await Promise.race(racers);
@@ -143,7 +143,7 @@ async function getClient(): Promise<{
         const msg = err instanceof Error ? err.message : String(err);
         throw new TlsClientUnavailableError(
           `TLS impersonation client failed to start: ${msg}. ` +
-            `Verify tls-client-node is installed and its native binary downloaded.`
+            `Verify tls-client-node is installed and its native binary downloaded.`,
         );
       }
     })();
@@ -254,7 +254,7 @@ export function __setTlsFetchOverrideForTesting(fn: typeof testOverride): void {
  */
 export async function tlsFetchChatGpt(
   url: string,
-  options: TlsFetchOptions = {}
+  options: TlsFetchOptions = {},
 ): Promise<TlsFetchResult> {
   if (testOverride) return testOverride(url, options);
   // Honor abort signals up-front. tls-client-node's koffi binding doesn't
@@ -296,7 +296,7 @@ export async function tlsFetchChatGpt(
       options.streamEofSymbol,
       options.signal ?? null,
       (options.timeoutMs ?? DEFAULT_TIMEOUT_MS) + HARD_TIMEOUT_GRACE_MS,
-      STREAM_FIRST_BYTE_TIMEOUT_MS
+      STREAM_FIRST_BYTE_TIMEOUT_MS,
     );
   }
 
@@ -305,7 +305,7 @@ export async function tlsFetchChatGpt(
     tlsResponse = await raceWithTimeout(
       client.request(url, requestOptions),
       (options.timeoutMs ?? DEFAULT_TIMEOUT_MS) + HARD_TIMEOUT_GRACE_MS,
-      options.signal ?? null
+      options.signal ?? null,
     );
   } catch (err) {
     if (err instanceof TlsClientHangError) {
@@ -354,7 +354,7 @@ async function tlsFetchStreaming(
   eofSymbol = "[DONE]",
   signal: AbortSignal | null = null,
   hardTimeoutMs: number = DEFAULT_TIMEOUT_MS + HARD_TIMEOUT_GRACE_MS,
-  firstByteTimeoutMs: number = STREAM_FIRST_BYTE_TIMEOUT_MS
+  firstByteTimeoutMs: number = STREAM_FIRST_BYTE_TIMEOUT_MS,
 ): Promise<TlsFetchResult> {
   const dir = await mkdtemp(join(tmpdir(), "cgpt-stream-"));
   const path = join(dir, `${randomUUID()}.sse`);
@@ -375,7 +375,7 @@ async function tlsFetchStreaming(
   const requestPromise = raceWithTimeout(
     client.request(url, streamOpts),
     hardTimeoutMs,
-    signal
+    signal,
   ).catch((err: unknown) => {
     if (resetOnHang && err instanceof TlsClientHangError) {
       resetClientCache();
@@ -399,7 +399,7 @@ async function tlsFetchStreaming(
   const ready = await waitForContent(path, firstByteTimeoutMs, requestPromise);
   if (!ready) {
     const r = await requestPromise.catch(
-      (e) => ({ status: 502, headers: {}, body: String(e) }) as TlsResponseLike
+      (e) => ({ status: 502, headers: {}, body: String(e) }) as TlsResponseLike,
     );
     // If the first byte arrived after our first-byte wait but before the
     // request settled, tls-client-node may have written the full SSE body to
@@ -424,7 +424,7 @@ async function tlsFetchStreaming(
   const peek = await readFirstBytes(path, 256);
   if (!looksLikeSse(peek)) {
     const r = await requestPromise.catch(
-      (e) => ({ status: 502, headers: {}, body: String(e) }) as TlsResponseLike
+      (e) => ({ status: 502, headers: {}, body: String(e) }) as TlsResponseLike,
     );
     const fileText = await readTextFileIfExists(path);
     await cleanupTempPath(path);
@@ -482,7 +482,7 @@ export async function __tlsFetchStreamingForTesting(
   eofSymbol = "[DONE]",
   signal: AbortSignal | null = null,
   hardTimeoutMs: number = DEFAULT_TIMEOUT_MS + HARD_TIMEOUT_GRACE_MS,
-  firstByteTimeoutMs: number = STREAM_FIRST_BYTE_TIMEOUT_MS
+  firstByteTimeoutMs: number = STREAM_FIRST_BYTE_TIMEOUT_MS,
 ): Promise<TlsFetchResult> {
   return tlsFetchStreaming(
     client as { request: (url: string, opts: Record<string, unknown>) => Promise<TlsResponseLike> },
@@ -491,7 +491,7 @@ export async function __tlsFetchStreamingForTesting(
     eofSymbol,
     signal,
     hardTimeoutMs,
-    firstByteTimeoutMs
+    firstByteTimeoutMs,
   );
 }
 
@@ -516,7 +516,7 @@ async function readFirstBytes(path: string, n: number): Promise<string> {
 async function waitForContent(
   path: string,
   timeoutMs: number,
-  requestPromise: Promise<TlsResponseLike>
+  requestPromise: Promise<TlsResponseLike>,
 ): Promise<boolean> {
   let requestSettled = false;
   requestPromise.then(
@@ -525,7 +525,7 @@ async function waitForContent(
     },
     () => {
       requestSettled = true;
-    }
+    },
   );
   const start = Date.now();
   while (Date.now() - start < timeoutMs) {
@@ -547,7 +547,7 @@ function tailFile(
   path: string,
   eofSymbol: string,
   done: Promise<TlsResponseLike>,
-  signal: AbortSignal | null = null
+  signal: AbortSignal | null = null,
 ): ReadableStream<Uint8Array> {
   return new ReadableStream<Uint8Array>({
     async start(controller) {
@@ -569,7 +569,7 @@ function tailFile(
         (err) => {
           upstreamError = err instanceof Error ? err : new Error(String(err));
           finished = true;
-        }
+        },
       );
 
       // If the caller aborts, stop tailing immediately.

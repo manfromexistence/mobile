@@ -1,7 +1,7 @@
-import { h, hydrate, render } from 'preact';
+import { h, hydrate, render } from "preact";
 
-import type { FileTreeViewProps } from '../model/internalTypes';
-import { FileTreeView } from './FileTreeView';
+import type { FileTreeViewProps } from "../model/internalTypes";
+import { FileTreeView } from "./FileTreeView";
 
 export const fileTreeRenderer: {
   hydrateRoot: (element: HTMLElement, props: FileTreeViewProps) => void;
@@ -19,17 +19,11 @@ export const fileTreeRenderer: {
   },
 };
 
-export function renderFileTreeRoot(
-  element: HTMLElement,
-  props: FileTreeViewProps
-): void {
+export function renderFileTreeRoot(element: HTMLElement, props: FileTreeViewProps): void {
   fileTreeRenderer.renderRoot(element, props);
 }
 
-export function hydrateFileTreeRoot(
-  element: HTMLElement,
-  props: FileTreeViewProps
-): void {
+export function hydrateFileTreeRoot(element: HTMLElement, props: FileTreeViewProps): void {
   fileTreeRenderer.hydrateRoot(element, props);
 }
 

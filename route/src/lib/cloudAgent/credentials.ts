@@ -18,7 +18,7 @@ export function getCloudAgentCredentialFromDb(providerId: string): AgentCredenti
   const db = getDbInstance();
   const row = db
     .prepare(
-      "SELECT api_key_encrypted, base_url FROM cloud_agent_credentials WHERE provider_id = ?"
+      "SELECT api_key_encrypted, base_url FROM cloud_agent_credentials WHERE provider_id = ?",
     )
     .get(providerId) as { api_key_encrypted: string; base_url: string | null } | undefined;
 
@@ -42,7 +42,7 @@ export function listCloudAgentCredentials(): Array<{
   const db = getDbInstance();
   const rows = db
     .prepare(
-      "SELECT provider_id, api_key_encrypted, base_url, updated_at FROM cloud_agent_credentials"
+      "SELECT provider_id, api_key_encrypted, base_url, updated_at FROM cloud_agent_credentials",
     )
     .all() as {
     provider_id: string;
@@ -66,7 +66,7 @@ export function listCloudAgentCredentials(): Array<{
 export function saveCloudAgentCredential(
   providerId: string,
   apiKey: string,
-  baseUrl?: string
+  baseUrl?: string,
 ): void {
   const encrypted = encrypt(apiKey);
   if (!encrypted) throw new Error("Failed to encrypt API key");
@@ -78,7 +78,7 @@ export function saveCloudAgentCredential(
      ON CONFLICT(provider_id) DO UPDATE SET
        api_key_encrypted = excluded.api_key_encrypted,
        base_url = excluded.base_url,
-       updated_at = excluded.updated_at`
+       updated_at = excluded.updated_at`,
   ).run({ providerId, apiKey: encrypted, baseUrl: baseUrl ?? null });
 }
 

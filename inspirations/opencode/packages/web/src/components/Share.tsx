@@ -1,65 +1,74 @@
-import { For, Show, onMount, Suspense, onCleanup, createMemo, createSignal, SuspenseList } from "solid-js"
-import { DateTime } from "luxon"
-import { createStore, reconcile } from "solid-js/store"
-import { IconArrowDown } from "./icons"
-import { IconOpencode } from "./icons/custom"
-import { ShareI18nProvider, formatCurrency, formatNumber, normalizeLocale } from "./share/common"
-import styles from "./share.module.css"
-import type { MessageV2 } from "opencode/session/message-v2"
-import type { Message } from "opencode/session/message"
-import type { Session } from "opencode/session/index"
-import { Part, ProviderIcon } from "./share/part"
+import {
+  For,
+  Show,
+  onMount,
+  Suspense,
+  onCleanup,
+  createMemo,
+  createSignal,
+  SuspenseList,
+} from "solid-js";
+import { DateTime } from "luxon";
+import { createStore, reconcile } from "solid-js/store";
+import { IconArrowDown } from "./icons";
+import { IconOpencode } from "./icons/custom";
+import { ShareI18nProvider, formatCurrency, formatNumber, normalizeLocale } from "./share/common";
+import styles from "./share.module.css";
+import type { MessageV2 } from "opencode/session/message-v2";
+import type { Message } from "opencode/session/message";
+import type { Session } from "opencode/session/index";
+import { Part, ProviderIcon } from "./share/part";
 
-type MessageWithParts = MessageV2.Info & { parts: MessageV2.Part[] }
+type MessageWithParts = MessageV2.Info & { parts: MessageV2.Part[] };
 
-type Status = "disconnected" | "connecting" | "connected" | "error" | "reconnecting"
+type Status = "disconnected" | "connecting" | "connected" | "error" | "reconnecting";
 
 function scrollToAnchor(id: string) {
-  const el = document.getElementById(id)
-  if (!el) return
+  const el = document.getElementById(id);
+  if (!el) return;
 
-  el.scrollIntoView({ behavior: "smooth" })
+  el.scrollIntoView({ behavior: "smooth" });
 }
 
 function getStatusText(status: [Status, string?], messages: Record<string, string>): string {
   switch (status[0]) {
     case "connected":
-      return messages.status_connected_waiting
+      return messages.status_connected_waiting;
     case "connecting":
-      return messages.status_connecting
+      return messages.status_connecting;
     case "disconnected":
-      return messages.status_disconnected
+      return messages.status_disconnected;
     case "reconnecting":
-      return messages.status_reconnecting
+      return messages.status_reconnecting;
     case "error":
-      return status[1] || messages.status_error
+      return status[1] || messages.status_error;
     default:
-      return messages.status_unknown
+      return messages.status_unknown;
   }
 }
 
 export default function Share(props: {
-  id: string
-  api: string
-  info: Session.Info
-  messages: { locale: string } & Record<string, string>
+  id: string;
+  api: string;
+  info: Session.Info;
+  messages: { locale: string } & Record<string, string>;
 }) {
-  let lastScrollY = 0
-  let hasScrolledToAnchor = false
-  let scrollTimeout: number | undefined
-  let scrollSentinel: HTMLElement | undefined
-  let scrollObserver: IntersectionObserver | undefined
+  let lastScrollY = 0;
+  let hasScrolledToAnchor = false;
+  let scrollTimeout: number | undefined;
+  let scrollSentinel: HTMLElement | undefined;
+  let scrollObserver: IntersectionObserver | undefined;
 
-  const params = new URLSearchParams(window.location.search)
-  const debug = params.get("debug") === "true"
+  const params = new URLSearchParams(window.location.search);
+  const debug = params.get("debug") === "true";
 
-  const [showScrollButton, setShowScrollButton] = createSignal(false)
-  const [isButtonHovered, setIsButtonHovered] = createSignal(false)
-  const [isNearBottom, setIsNearBottom] = createSignal(false)
+  const [showScrollButton, setShowScrollButton] = createSignal(false);
+  const [isButtonHovered, setIsButtonHovered] = createSignal(false);
+  const [isNearBottom, setIsNearBottom] = createSignal(false);
 
   const [store, setStore] = createStore<{
-    info?: Session.Info
-    messages: Record<string, MessageWithParts>
+    info?: Session.Info;
+    messages: Record<string, MessageWithParts>;
   }>({
     info: {
       id: props.id,
@@ -74,181 +83,183 @@ export default function Share(props: {
       },
     },
     messages: {},
-  })
-  const messages = createMemo(() => Object.values(store.messages).toSorted((a, b) => a.id?.localeCompare(b.id)))
-  const [connectionStatus, setConnectionStatus] = createSignal<[Status, string?]>(["disconnected"])
+  });
+  const messages = createMemo(() =>
+    Object.values(store.messages).toSorted((a, b) => a.id?.localeCompare(b.id)),
+  );
+  const [connectionStatus, setConnectionStatus] = createSignal<[Status, string?]>(["disconnected"]);
 
   onMount(() => {
-    const apiUrl = props.api
+    const apiUrl = props.api;
 
     if (!props.id) {
-      setConnectionStatus(["error", props.messages.error_id_not_found])
-      return
+      setConnectionStatus(["error", props.messages.error_id_not_found]);
+      return;
     }
 
     if (!apiUrl) {
-      console.error("API URL not found in environment variables")
-      setConnectionStatus(["error", props.messages.error_api_url_not_found])
-      return
+      console.error("API URL not found in environment variables");
+      setConnectionStatus(["error", props.messages.error_api_url_not_found]);
+      return;
     }
 
-    let reconnectTimer: number | undefined
-    let socket: WebSocket | null = null
+    let reconnectTimer: number | undefined;
+    let socket: WebSocket | null = null;
 
     // Function to create and set up WebSocket with auto-reconnect
     const setupWebSocket = () => {
       // Close any existing connection
       if (socket) {
-        socket.close()
+        socket.close();
       }
 
-      setConnectionStatus(["connecting"])
+      setConnectionStatus(["connecting"]);
 
       // Always use secure WebSocket protocol (wss)
-      const wsBaseUrl = apiUrl.replace(/^https?:\/\//, "wss://")
-      const wsUrl = `${wsBaseUrl}/share_poll?id=${props.id}`
+      const wsBaseUrl = apiUrl.replace(/^https?:\/\//, "wss://");
+      const wsUrl = `${wsBaseUrl}/share_poll?id=${props.id}`;
       // Create WebSocket connection
-      socket = new WebSocket(wsUrl)
+      socket = new WebSocket(wsUrl);
 
       // Handle connection opening
       socket.onopen = () => {
-        setConnectionStatus(["connected"])
-      }
+        setConnectionStatus(["connected"]);
+      };
 
       // Handle incoming messages
       socket.onmessage = (event) => {
         try {
-          const d = JSON.parse(event.data)
-          const [root, type, ...splits] = d.key.split("/")
-          if (root !== "session") return
+          const d = JSON.parse(event.data);
+          const [root, type, ...splits] = d.key.split("/");
+          if (root !== "session") return;
           if (type === "info") {
-            setStore("info", reconcile(d.content))
-            return
+            setStore("info", reconcile(d.content));
+            return;
           }
           if (type === "message") {
-            const [, messageID] = splits
+            const [, messageID] = splits;
             if ("metadata" in d.content) {
-              d.content = fromV1(d.content)
+              d.content = fromV1(d.content);
             }
-            d.content.parts = d.content.parts ?? store.messages[messageID]?.parts ?? []
-            setStore("messages", messageID, reconcile(d.content))
+            d.content.parts = d.content.parts ?? store.messages[messageID]?.parts ?? [];
+            setStore("messages", messageID, reconcile(d.content));
           }
           if (type === "part") {
             setStore("messages", d.content.messageID, "parts", (arr) => {
-              const index = arr.findIndex((x) => x.id === d.content.id)
-              if (index === -1) arr.push(d.content)
-              if (index > -1) arr[index] = d.content
-              return [...arr]
-            })
+              const index = arr.findIndex((x) => x.id === d.content.id);
+              if (index === -1) arr.push(d.content);
+              if (index > -1) arr[index] = d.content;
+              return [...arr];
+            });
           }
         } catch (error) {
-          console.error("Error parsing WebSocket message:", error)
+          console.error("Error parsing WebSocket message:", error);
         }
-      }
+      };
 
       // Handle errors
       socket.onerror = (error) => {
-        console.error("WebSocket error:", error)
-        setConnectionStatus(["error", props.messages.error_connection_failed])
-      }
+        console.error("WebSocket error:", error);
+        setConnectionStatus(["error", props.messages.error_connection_failed]);
+      };
 
       // Handle connection close and reconnection
       socket.onclose = () => {
-        setConnectionStatus(["reconnecting"])
+        setConnectionStatus(["reconnecting"]);
 
         // Try to reconnect after 2 seconds
-        clearTimeout(reconnectTimer)
-        reconnectTimer = window.setTimeout(setupWebSocket, 2000) as unknown as number
-      }
-    }
+        clearTimeout(reconnectTimer);
+        reconnectTimer = window.setTimeout(setupWebSocket, 2000) as unknown as number;
+      };
+    };
 
     // Initial connection
-    setupWebSocket()
+    setupWebSocket();
 
     // Clean up on component unmount
     onCleanup(() => {
       if (socket) {
-        socket.close()
+        socket.close();
       }
-      clearTimeout(reconnectTimer)
-    })
-  })
+      clearTimeout(reconnectTimer);
+    });
+  });
 
   function checkScrollNeed() {
-    const currentScrollY = window.scrollY
-    const isScrollingDown = currentScrollY > lastScrollY
-    const scrolled = currentScrollY > 200 // Show after scrolling 200px
+    const currentScrollY = window.scrollY;
+    const isScrollingDown = currentScrollY > lastScrollY;
+    const scrolled = currentScrollY > 200; // Show after scrolling 200px
 
     // Only show when scrolling down, scrolled enough, and not near bottom
-    const shouldShow = isScrollingDown && scrolled && !isNearBottom()
+    const shouldShow = isScrollingDown && scrolled && !isNearBottom();
 
     // Update last scroll position
-    lastScrollY = currentScrollY
+    lastScrollY = currentScrollY;
 
     if (shouldShow) {
-      setShowScrollButton(true)
+      setShowScrollButton(true);
       // Clear existing timeout
       if (scrollTimeout) {
-        clearTimeout(scrollTimeout)
+        clearTimeout(scrollTimeout);
       }
       // Hide button after 3 seconds of no scrolling (unless hovered)
       scrollTimeout = window.setTimeout(() => {
         if (!isButtonHovered()) {
-          setShowScrollButton(false)
+          setShowScrollButton(false);
         }
-      }, 1500)
+      }, 1500);
     } else if (!isButtonHovered()) {
       // Only hide if not hovered (to prevent disappearing while user is about to click)
-      setShowScrollButton(false)
+      setShowScrollButton(false);
       if (scrollTimeout) {
-        clearTimeout(scrollTimeout)
+        clearTimeout(scrollTimeout);
       }
     }
   }
 
   onMount(() => {
-    lastScrollY = window.scrollY // Initialize scroll position
+    lastScrollY = window.scrollY; // Initialize scroll position
 
     // Create sentinel element
-    const sentinel = document.createElement("div")
-    sentinel.style.height = "1px"
-    sentinel.style.position = "absolute"
-    sentinel.style.bottom = "100px"
-    sentinel.style.width = "100%"
-    sentinel.style.pointerEvents = "none"
-    document.body.appendChild(sentinel)
+    const sentinel = document.createElement("div");
+    sentinel.style.height = "1px";
+    sentinel.style.position = "absolute";
+    sentinel.style.bottom = "100px";
+    sentinel.style.width = "100%";
+    sentinel.style.pointerEvents = "none";
+    document.body.appendChild(sentinel);
 
     // Create intersection observer
     const observer = new IntersectionObserver((entries) => {
-      setIsNearBottom(entries[0].isIntersecting)
-    })
-    observer.observe(sentinel)
+      setIsNearBottom(entries[0].isIntersecting);
+    });
+    observer.observe(sentinel);
 
     // Store references for cleanup
-    scrollSentinel = sentinel
-    scrollObserver = observer
+    scrollSentinel = sentinel;
+    scrollObserver = observer;
 
-    checkScrollNeed()
-    window.addEventListener("scroll", checkScrollNeed)
-    window.addEventListener("resize", checkScrollNeed)
-  })
+    checkScrollNeed();
+    window.addEventListener("scroll", checkScrollNeed);
+    window.addEventListener("resize", checkScrollNeed);
+  });
 
   onCleanup(() => {
-    window.removeEventListener("scroll", checkScrollNeed)
-    window.removeEventListener("resize", checkScrollNeed)
+    window.removeEventListener("scroll", checkScrollNeed);
+    window.removeEventListener("resize", checkScrollNeed);
 
     // Clean up observer and sentinel
     if (scrollObserver) {
-      scrollObserver.disconnect()
+      scrollObserver.disconnect();
     }
     if (scrollSentinel) {
-      document.body.removeChild(scrollSentinel)
+      document.body.removeChild(scrollSentinel);
     }
 
     if (scrollTimeout) {
-      clearTimeout(scrollTimeout)
+      clearTimeout(scrollTimeout);
     }
-  })
+  });
 
   const data = createMemo(() => {
     const result = {
@@ -263,37 +274,37 @@ export default function Share(props: {
         output: 0,
         reasoning: 0,
       },
-    }
+    };
 
-    if (!store.info) return result
+    if (!store.info) return result;
 
-    result.created = store.info.time.created
+    result.created = store.info.time.created;
 
-    const msgs = messages()
+    const msgs = messages();
     for (let i = 0; i < msgs.length; i++) {
-      const msg = msgs[i]
+      const msg = msgs[i];
 
-      result.messages.push(msg)
+      result.messages.push(msg);
 
       if (msg.role === "assistant") {
-        result.cost += msg.cost
-        result.tokens.input += msg.tokens.input
-        result.tokens.output += msg.tokens.output
-        result.tokens.reasoning += msg.tokens.reasoning
+        result.cost += msg.cost;
+        result.tokens.input += msg.tokens.input;
+        result.tokens.output += msg.tokens.output;
+        result.tokens.reasoning += msg.tokens.reasoning;
 
-        result.models[`${msg.providerID} ${msg.modelID}`] = [msg.providerID, msg.modelID]
+        result.models[`${msg.providerID} ${msg.modelID}`] = [msg.providerID, msg.modelID];
 
         if (msg.path.root) {
-          result.rootDir = msg.path.root
+          result.rootDir = msg.path.root;
         }
 
         if (msg.time.completed) {
-          result.completed = msg.time.completed
+          result.completed = msg.time.completed;
         }
       }
     }
-    return result
-  })
+    return result;
+  });
 
   return (
     <Show when={store.info}>
@@ -343,46 +354,55 @@ export default function Share(props: {
           </div>
 
           <div>
-            <Show when={data().messages.length > 0} fallback={<p>{props.messages.waiting_for_messages}</p>}>
+            <Show
+              when={data().messages.length > 0}
+              fallback={<p>{props.messages.waiting_for_messages}</p>}
+            >
               <div class={styles.parts}>
                 <SuspenseList revealOrder="forwards">
                   <For each={data().messages}>
                     {(msg, msgIndex) => {
                       const filteredParts = createMemo(() =>
                         msg.parts.filter((x, index) => {
-                          if (x.type === "step-start" && index > 0) return false
-                          if (x.type === "snapshot") return false
-                          if (x.type === "patch") return false
-                          if (x.type === "step-finish") return false
-                          if (x.type === "text" && x.synthetic === true) return false
-                          if (x.type === "text" && !x.text) return false
-                          if (x.type === "tool" && (x.state.status === "pending" || x.state.status === "running"))
-                            return false
-                          return true
+                          if (x.type === "step-start" && index > 0) return false;
+                          if (x.type === "snapshot") return false;
+                          if (x.type === "patch") return false;
+                          if (x.type === "step-finish") return false;
+                          if (x.type === "text" && x.synthetic === true) return false;
+                          if (x.type === "text" && !x.text) return false;
+                          if (
+                            x.type === "tool" &&
+                            (x.state.status === "pending" || x.state.status === "running")
+                          )
+                            return false;
+                          return true;
                         }),
-                      )
+                      );
 
                       return (
                         <Suspense>
                           <For each={filteredParts()}>
                             {(part, partIndex) => {
                               const last = () =>
-                                data().messages.length === msgIndex() + 1 && filteredParts().length === partIndex() + 1
+                                data().messages.length === msgIndex() + 1 &&
+                                filteredParts().length === partIndex() + 1;
 
                               onMount(() => {
-                                const hash = window.location.hash.slice(1)
+                                const hash = window.location.hash.slice(1);
                                 // Wait till all parts are loaded
                                 if (hash !== "" && !hasScrolledToAnchor && last()) {
-                                  hasScrolledToAnchor = true
-                                  scrollToAnchor(hash)
+                                  hasScrolledToAnchor = true;
+                                  scrollToAnchor(hash);
                                 }
-                              })
+                              });
 
-                              return <Part last={last()} part={part} index={partIndex()} message={msg} />
+                              return (
+                                <Part last={last()} part={part} index={partIndex()} message={msg} />
+                              );
                             }}
                           </For>
                         </Suspense>
-                      )
+                      );
                     }}
                   </For>
                 </SuspenseList>
@@ -420,7 +440,9 @@ export default function Share(props: {
                       <li>
                         <span data-element-label>{props.messages.reasoning_tokens}</span>
                         {data().tokens.reasoning ? (
-                          <span>{formatNumber(data().tokens.reasoning, props.messages.locale)}</span>
+                          <span>
+                            {formatNumber(data().tokens.reasoning, props.messages.locale)}
+                          </span>
                         ) : (
                           <span data-placeholder>&mdash;</span>
                         )}
@@ -441,7 +463,10 @@ export default function Share(props: {
                   "overflow-y": "auto",
                 }}
               >
-                <Show when={data().messages.length > 0} fallback={<p>{props.messages.waiting_for_messages}</p>}>
+                <Show
+                  when={data().messages.length > 0}
+                  fallback={<p>{props.messages.waiting_for_messages}</p>}
+                >
                   <ul style={{ "list-style-type": "none", padding: 0 }}>
                     <For each={data().messages}>
                       {(msg) => (
@@ -471,19 +496,19 @@ export default function Share(props: {
               class={styles["scroll-button"]}
               onClick={() => document.body.scrollIntoView({ behavior: "smooth", block: "end" })}
               onMouseEnter={() => {
-                setIsButtonHovered(true)
+                setIsButtonHovered(true);
                 if (scrollTimeout) {
-                  clearTimeout(scrollTimeout)
+                  clearTimeout(scrollTimeout);
                 }
               }}
               onMouseLeave={() => {
-                setIsButtonHovered(false)
+                setIsButtonHovered(false);
                 if (showScrollButton()) {
                   scrollTimeout = window.setTimeout(() => {
                     if (!isButtonHovered()) {
-                      setShowScrollButton(false)
+                      setShowScrollButton(false);
                     }
-                  }, 3000)
+                  }, 3000);
                 }
               }}
               title={props.messages.scroll_to_bottom}
@@ -495,7 +520,7 @@ export default function Share(props: {
         </main>
       </ShareI18nProvider>
     </Show>
-  )
+  );
 }
 
 export function fromV1(v1: Message.Info): MessageWithParts {
@@ -531,7 +556,7 @@ export function fromV1(v1: Message.Info): MessageWithParts {
           id: index.toString(),
           messageID: v1.id,
           sessionID: v1.metadata.sessionID,
-        }
+        };
         if (part.type === "text") {
           return [
             {
@@ -539,7 +564,7 @@ export function fromV1(v1: Message.Info): MessageWithParts {
               type: "text",
               text: part.text,
             },
-          ]
+          ];
         }
         if (part.type === "step-start") {
           return [
@@ -547,7 +572,7 @@ export function fromV1(v1: Message.Info): MessageWithParts {
               ...base,
               type: "step-start",
             },
-          ]
+          ];
         }
         if (part.type === "tool-invocation") {
           return [
@@ -562,10 +587,11 @@ export function fromV1(v1: Message.Info): MessageWithParts {
                     status: "pending",
                     input: {},
                     raw: "",
-                  }
+                  };
                 }
 
-                const { title, time, ...metadata } = v1.metadata.tool[part.toolInvocation.toolCallId]
+                const { title, time, ...metadata } =
+                  v1.metadata.tool[part.toolInvocation.toolCallId];
                 if (part.toolInvocation.state === "call") {
                   return {
                     status: "running",
@@ -573,7 +599,7 @@ export function fromV1(v1: Message.Info): MessageWithParts {
                     time: {
                       start: time.start,
                     },
-                  }
+                  };
                 }
 
                 if (part.toolInvocation.state === "result") {
@@ -584,16 +610,16 @@ export function fromV1(v1: Message.Info): MessageWithParts {
                     title,
                     time,
                     metadata,
-                  }
+                  };
                 }
-                throw new Error("unknown tool invocation state")
+                throw new Error("unknown tool invocation state");
               })(),
             },
-          ]
+          ];
         }
-        return []
+        return [];
       }),
-    }
+    };
   }
 
   if (v1.role === "user") {
@@ -614,7 +640,7 @@ export function fromV1(v1: Message.Info): MessageWithParts {
           id: index.toString(),
           messageID: v1.id,
           sessionID: v1.metadata.sessionID,
-        }
+        };
         if (part.type === "text") {
           return [
             {
@@ -622,7 +648,7 @@ export function fromV1(v1: Message.Info): MessageWithParts {
               type: "text",
               text: part.text,
             },
-          ]
+          ];
         }
         if (part.type === "file") {
           return [
@@ -633,12 +659,12 @@ export function fromV1(v1: Message.Info): MessageWithParts {
               filename: part.filename,
               url: part.url,
             },
-          ]
+          ];
         }
-        return []
+        return [];
       }),
-    }
+    };
   }
 
-  throw new Error("unknown message type")
+  throw new Error("unknown message type");
 }

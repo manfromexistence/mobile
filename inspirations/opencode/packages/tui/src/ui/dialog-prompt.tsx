@@ -1,33 +1,33 @@
-import { TextareaRenderable, TextAttributes } from "@opentui/core"
-import { useTheme } from "../context/theme"
-import { useDialog, type DialogContext } from "./dialog"
-import { Show, createEffect, createSignal, onMount, type JSX } from "solid-js"
-import { Spinner } from "../component/spinner"
-import { useTuiConfig } from "../config"
-import { useBindings, useCommandShortcut } from "../keymap"
+import { TextareaRenderable, TextAttributes } from "@opentui/core";
+import { useTheme } from "../context/theme";
+import { useDialog, type DialogContext } from "./dialog";
+import { Show, createEffect, createSignal, onMount, type JSX } from "solid-js";
+import { Spinner } from "../component/spinner";
+import { useTuiConfig } from "../config";
+import { useBindings, useCommandShortcut } from "../keymap";
 
 export type DialogPromptProps = {
-  title: string
-  description?: () => JSX.Element
-  placeholder?: string
-  value?: string
-  busy?: boolean
-  busyText?: string
-  onConfirm?: (value: string) => void
-  onCancel?: () => void
-}
+  title: string;
+  description?: () => JSX.Element;
+  placeholder?: string;
+  value?: string;
+  busy?: boolean;
+  busyText?: string;
+  onConfirm?: (value: string) => void;
+  onCancel?: () => void;
+};
 
 export function DialogPrompt(props: DialogPromptProps) {
-  const dialog = useDialog()
-  const { theme } = useTheme()
-  const tuiConfig = useTuiConfig()
-  const submitShortcut = useCommandShortcut("dialog.prompt.submit")
-  const [textareaTarget, setTextareaTarget] = createSignal<TextareaRenderable>()
-  let textarea: TextareaRenderable
+  const dialog = useDialog();
+  const { theme } = useTheme();
+  const tuiConfig = useTuiConfig();
+  const submitShortcut = useCommandShortcut("dialog.prompt.submit");
+  const [textareaTarget, setTextareaTarget] = createSignal<TextareaRenderable>();
+  let textarea: TextareaRenderable;
 
   function confirm() {
-    if (props.busy) return
-    props.onConfirm?.(textarea.plainText)
+    if (props.busy) return;
+    props.onConfirm?.(textarea.plainText);
   }
 
   useBindings(() => ({
@@ -44,33 +44,33 @@ export function DialogPrompt(props: DialogPromptProps) {
       },
     ],
     bindings: tuiConfig.keybinds.gather("dialog.prompt", ["dialog.prompt.submit"]),
-  }))
+  }));
 
   onMount(() => {
-    dialog.setSize("medium")
+    dialog.setSize("medium");
     setTimeout(() => {
-      if (!textarea || textarea.isDestroyed) return
-      if (props.busy) return
-      textarea.focus()
-    }, 1)
-    textarea.gotoLineEnd()
-  })
+      if (!textarea || textarea.isDestroyed) return;
+      if (props.busy) return;
+      textarea.focus();
+    }, 1);
+    textarea.gotoLineEnd();
+  });
 
   createEffect(() => {
-    if (!textarea || textarea.isDestroyed) return
+    if (!textarea || textarea.isDestroyed) return;
     const traits = props.busy
       ? {
           suspend: true,
           status: "BUSY",
         }
-      : {}
-    textarea.traits = traits
+      : {};
+    textarea.traits = traits;
     if (props.busy) {
-      textarea.blur()
-      return
+      textarea.blur();
+      return;
     }
-    textarea.focus()
-  })
+    textarea.focus();
+  });
 
   return (
     <box paddingLeft={2} paddingRight={2} gap={1}>
@@ -87,8 +87,8 @@ export function DialogPrompt(props: DialogPromptProps) {
         <textarea
           height={3}
           ref={(val: TextareaRenderable) => {
-            textarea = val
-            setTextareaTarget(val)
+            textarea = val;
+            setTextareaTarget(val);
           }}
           initialValue={props.value}
           placeholder={props.placeholder ?? "Enter text"}
@@ -111,16 +111,25 @@ export function DialogPrompt(props: DialogPromptProps) {
         </Show>
       </box>
     </box>
-  )
+  );
 }
 
-DialogPrompt.show = (dialog: DialogContext, title: string, options?: Omit<DialogPromptProps, "title">) => {
+DialogPrompt.show = (
+  dialog: DialogContext,
+  title: string,
+  options?: Omit<DialogPromptProps, "title">,
+) => {
   return new Promise<string | null>((resolve) => {
     dialog.replace(
       () => (
-        <DialogPrompt title={title} {...options} onConfirm={(value) => resolve(value)} onCancel={() => resolve(null)} />
+        <DialogPrompt
+          title={title}
+          {...options}
+          onConfirm={(value) => resolve(value)}
+          onCancel={() => resolve(null)}
+        />
       ),
       () => resolve(null),
-    )
-  })
-}
+    );
+  });
+};

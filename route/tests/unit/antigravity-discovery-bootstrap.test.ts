@@ -53,7 +53,7 @@ describe("ensureAntigravityProjectAssigned", () => {
     assert.equal(
       getAntigravityProjectFromCache("fake-token-1"),
       "proj-from-bootstrap",
-      "project id must be memoized after first call"
+      "project id must be memoized after first call",
     );
   });
 
@@ -141,7 +141,7 @@ describe("ensureAntigravityProjectAssigned", () => {
 
     assert.match(
       capturedHeaders?.get("User-Agent") || "",
-      /^antigravity\/4\.2\.0 [^ ]+\/[^ ]+ google-api-nodejs-client\/10\.3\.0$/
+      /^antigravity\/4\.2\.0 [^ ]+\/[^ ]+ google-api-nodejs-client\/10\.3\.0$/,
     );
     assert.equal(capturedHeaders?.get("X-Goog-Api-Client"), "gl-node/22.21.1");
     assert.equal(capturedHeaders?.get("Client-Metadata"), null);
@@ -173,7 +173,7 @@ describe("ensureAntigravityProjectAssigned", () => {
     assert.equal(
       getAntigravityProjectFromCache("fallback-token"),
       "proj-fallback",
-      "should cache the project from the successful URL"
+      "should cache the project from the successful URL",
     );
   });
 
@@ -212,7 +212,7 @@ describe("ordering guarantee: loadCodeAssist before :models", () => {
           JSON.stringify({
             models: [{ id: "gemini-3-pro-antigravity", displayName: "Gemini 3 Pro" }],
           }),
-          { status: 200, headers: { "Content-Type": "application/json" } }
+          { status: 200, headers: { "Content-Type": "application/json" } },
         );
       }
       return new Response("not found", { status: 404 });

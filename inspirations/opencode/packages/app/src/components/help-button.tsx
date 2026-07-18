@@ -1,13 +1,15 @@
-import { Icon } from "@opencode-ai/ui/v2/icon"
-import { Popover } from "@opencode-ai/ui/popover"
-import { createSignal, Show } from "solid-js"
-import { createStore } from "solid-js/store"
+import { Icon } from "@opencode-ai/ui/v2/icon";
+import { Popover } from "@opencode-ai/ui/popover";
+import { createSignal, Show } from "solid-js";
+import { createStore } from "solid-js/store";
 
 export function HelpButton() {
-  if (import.meta.env.VITE_OPENCODE_CHANNEL !== "dev") return null
+  if (import.meta.env.VITE_OPENCODE_CHANNEL !== "dev") return null;
 
-  const [state, setState] = /* persisted(Persist.global("help-button"), */ createStore({ dismissed: false }) /* ) */
-  const [shown, setShown] = createSignal(false)
+  const [state, setState] = /* persisted(Persist.global("help-button"), */ createStore({
+    dismissed: false,
+  }); /* ) */
+  const [shown, setShown] = createSignal(false);
 
   return (
     <Show when={!state.dismissed}>
@@ -34,21 +36,22 @@ export function HelpButton() {
                 aria-label="Close"
                 class="absolute top-3.5 right-3.5 size-6 rounded-md flex items-center justify-center text-text-base hover:text-text-strong hover:bg-surface-raised-base-hover transition-colors"
                 onClick={() => {
-                  setShown(false)
-                  setState("dismissed", true)
+                  setShown(false);
+                  setState("dismissed", true);
                 }}
               >
                 <Icon name="xmark-small" />
               </button>
               <span class="text-14-regular text-text-strong">Lorem ipsum dolor sit amet</span>
               <p class="text-12-regular text-text-weak">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                exercitation.
               </p>
             </div>
           </Show>
         </Popover>
       </div>
     </Show>
-  )
+  );
 }

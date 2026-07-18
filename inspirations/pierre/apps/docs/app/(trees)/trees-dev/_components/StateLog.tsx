@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 export function useStateLog() {
   const [log, setLog] = useState<string[]>([]);
@@ -28,7 +28,7 @@ export function StateLog({
     const indices = new Set<number>();
     const seen = new Set<string>();
     for (let i = entries.length - 1; i >= 0; i--) {
-      const prefix = entries[i].split(':')[0];
+      const prefix = entries[i].split(":")[0];
       if (!seen.has(prefix)) {
         seen.add(prefix);
         indices.add(i);
@@ -40,11 +40,8 @@ export function StateLog({
   return (
     <div
       ref={ref}
-      className={
-        className ??
-        'mt-2 h-24 overflow-y-auto rounded border p-2 font-mono text-xs'
-      }
-      style={{ borderColor: 'var(--color-border)' }}
+      className={className ?? "mt-2 h-24 overflow-y-auto rounded border p-2 font-mono text-xs"}
+      style={{ borderColor: "var(--color-border)" }}
     >
       {entries.length === 0 ? (
         <span className="text-muted-foreground italic">
@@ -52,7 +49,7 @@ export function StateLog({
         </span>
       ) : (
         entries.map((entry, i) => (
-          <div key={i} className={boldIndices.has(i) ? 'font-bold' : ''}>
+          <div key={i} className={boldIndices.has(i) ? "font-bold" : ""}>
             {entry}
           </div>
         ))

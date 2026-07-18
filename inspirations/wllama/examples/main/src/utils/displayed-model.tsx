@@ -1,14 +1,14 @@
-import { Model } from '@wllama/wllama';
-import { ModelState } from './types';
-import { WllamaStorage } from './utils';
-import { LIST_MODELS } from '../config';
+import { Model } from "@wllama/wllama";
+import { ModelState } from "./types";
+import { WllamaStorage } from "./utils";
+import { LIST_MODELS } from "../config";
 
 export class DisplayedModel {
   url: string;
   mmprojUrl?: string;
   size: number;
   isUserAdded: boolean;
-  modalities?: ('image' | 'audio')[];
+  modalities?: ("image" | "audio")[];
   cachedModel?: Model;
 
   state: ModelState = ModelState.NOT_DOWNLOADED;
@@ -20,7 +20,7 @@ export class DisplayedModel {
     isUserAdded: boolean,
     cachedModel?: Model,
     mmprojUrl?: string,
-    modalities?: ('image' | 'audio')[]
+    modalities?: ("image" | "audio")[],
   ) {
     this.url = url;
     this.mmprojUrl = mmprojUrl;
@@ -32,17 +32,13 @@ export class DisplayedModel {
   }
 
   get hfModel() {
-    const parts = this.url
-      .replace(/https:\/\/(huggingface.co|hf.co)\/+/, '')
-      .split('/');
+    const parts = this.url.replace(/https:\/\/(huggingface.co|hf.co)\/+/, "").split("/");
     return `${parts[0]}/${parts[1]}`;
   }
 
   get hfPath() {
-    const parts = this.url
-      .replace(/https:\/\/(huggingface.co|hf.co)\/+/, '')
-      .split('/');
-    return parts.slice(4).join('/');
+    const parts = this.url.replace(/https:\/\/(huggingface.co|hf.co)\/+/, "").split("/");
+    return parts.slice(4).join("/");
   }
 
   clone(overwrite: Partial<DisplayedModel>): DisplayedModel {
@@ -52,7 +48,7 @@ export class DisplayedModel {
       this.isUserAdded,
       this.cachedModel,
       this.mmprojUrl,
-      this.modalities
+      this.modalities,
     );
     obj.state = overwrite.state ?? this.state;
     obj.downloadPercent = overwrite.downloadPercent ?? this.downloadPercent;
@@ -67,10 +63,7 @@ interface UserAddedModel {
 }
 
 export function getUserAddedModels(cachedModels: Model[]): DisplayedModel[] {
-  const userAddedModels: UserAddedModel[] = WllamaStorage.load(
-    'custom_models',
-    []
-  );
+  const userAddedModels: UserAddedModel[] = WllamaStorage.load("custom_models", []);
   return userAddedModels.map((m: any) => {
     const cachedModel = cachedModels.find((cm) => cm.url === m.url);
     return new DisplayedModel(m.url, m.size, true, cachedModel, m.mmprojUrl);
@@ -81,26 +74,16 @@ export function updateUserAddedModels(models: DisplayedModel[]) {
   const userAddedModels: UserAddedModel[] = models
     .filter((m) => m.isUserAdded)
     .map((m) => ({ url: m.url, size: m.size, mmprojUrl: m.mmprojUrl }));
-  WllamaStorage.save('custom_models', userAddedModels);
+  WllamaStorage.save("custom_models", userAddedModels);
 }
 
 export function getPresetModels(cachedModels: Model[]): DisplayedModel[] {
   return LIST_MODELS.map((m) => {
     const cachedModel = cachedModels.find((cm) => cm.url === m.url);
-    return new DisplayedModel(
-      m.url,
-      m.size,
-      false,
-      cachedModel,
-      m.mmprojUrl,
-      m.modalities
-    );
+    return new DisplayedModel(m.url, m.size, false, cachedModel, m.mmprojUrl, m.modalities);
   });
 }
 
 export function getDisplayedModels(cachedModels: Model[]): DisplayedModel[] {
-  return [
-    ...getUserAddedModels(cachedModels),
-    ...getPresetModels(cachedModels),
-  ];
+  return [...getUserAddedModels(cachedModels), ...getPresetModels(cachedModels)];
 }

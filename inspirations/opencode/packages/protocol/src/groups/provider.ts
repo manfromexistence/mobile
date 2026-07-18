@@ -1,9 +1,9 @@
-import { Provider } from "@opencode-ai/schema/provider"
-import { Location } from "@opencode-ai/schema/location"
-import { Schema } from "effect"
-import { HttpApiEndpoint, HttpApiGroup, OpenApi } from "effect/unstable/httpapi"
-import { ProviderNotFoundError, ServiceUnavailableError } from "../errors"
-import { LocationQuery, locationQueryOpenApi } from "./location"
+import { Provider } from "@opencode-ai/schema/provider";
+import { Location } from "@opencode-ai/schema/location";
+import { Schema } from "effect";
+import { HttpApiEndpoint, HttpApiGroup, OpenApi } from "effect/unstable/httpapi";
+import { ProviderNotFoundError, ServiceUnavailableError } from "../errors";
+import { LocationQuery, locationQueryOpenApi } from "./location";
 
 export const ProviderGroup = HttpApiGroup.make("server.provider")
   .add(
@@ -17,7 +17,8 @@ export const ProviderGroup = HttpApiGroup.make("server.provider")
         OpenApi.annotations({
           identifier: "v2.provider.list",
           summary: "List providers",
-          description: "Retrieve active AI providers so clients can show provider availability and configuration.",
+          description:
+            "Retrieve active AI providers so clients can show provider availability and configuration.",
         }),
       ),
   )
@@ -33,7 +34,8 @@ export const ProviderGroup = HttpApiGroup.make("server.provider")
         OpenApi.annotations({
           identifier: "v2.provider.get",
           summary: "Get provider",
-          description: "Retrieve a single AI provider so clients can inspect its availability and endpoint settings.",
+          description:
+            "Retrieve a single AI provider so clients can inspect its availability and endpoint settings.",
         }),
       ),
   )
@@ -42,4 +44,4 @@ export const ProviderGroup = HttpApiGroup.make("server.provider")
       title: "providers",
       description: "Experimental provider routes.",
     }),
-  )
+  );

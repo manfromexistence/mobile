@@ -79,7 +79,7 @@ const rtkFilterPackSchema = z
     match: rtkFilterMatchSchema,
     rules: rtkFilterRulesSchema.default({} as unknown as z.infer<typeof rtkFilterRulesSchema>),
     preserve: rtkFilterPreserveSchema.default(
-      {} as unknown as z.infer<typeof rtkFilterPreserveSchema>
+      {} as unknown as z.infer<typeof rtkFilterPreserveSchema>,
     ),
     tests: z.array(rtkInlineTestSchema).default([]),
   })

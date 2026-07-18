@@ -15,7 +15,10 @@
   height: 100%;
 }
 
-[data-component="footer"] [data-slot="cell"] [data-component="language-picker"] [data-slot="trigger"] {
+[data-component="footer"]
+  [data-slot="cell"]
+  [data-component="language-picker"]
+  [data-slot="trigger"] {
   width: 100%;
   padding: 2rem 0;
   border-radius: 0;
@@ -25,13 +28,20 @@
   font: inherit;
 }
 
-[data-component="footer"] [data-slot="cell"] [data-component="language-picker"] [data-slot="trigger"] span {
+[data-component="footer"]
+  [data-slot="cell"]
+  [data-component="language-picker"]
+  [data-slot="trigger"]
+  span {
   flex: 0 0 auto;
   text-align: center;
   font-weight: inherit;
 }
 
-[data-component="footer"] [data-slot="cell"] [data-component="language-picker"] [data-slot="trigger"]:hover {
+[data-component="footer"]
+  [data-slot="cell"]
+  [data-component="language-picker"]
+  [data-slot="trigger"]:hover {
   background: var(--color-background-weak);
   text-decoration: underline;
   text-underline-offset: var(--space-1);

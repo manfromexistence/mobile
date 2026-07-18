@@ -1,20 +1,18 @@
-'use client';
+"use client";
 
-import { useMemo } from 'react';
+import { useMemo } from "react";
 
-import { DIFFS_TAG_NAME } from '../constants';
-import type { FileContents } from '../types';
-import { parseDiffFromFile } from '../utils/parseDiffFromFile';
-import type { DiffBasePropsReact } from './types';
-import { renderDiffChildren } from './utils/renderDiffChildren';
-import { templateRender } from './utils/templateRender';
-import { useFileDiffInstance } from './utils/useFileDiffInstance';
+import { DIFFS_TAG_NAME } from "../constants";
+import type { FileContents } from "../types";
+import { parseDiffFromFile } from "../utils/parseDiffFromFile";
+import type { DiffBasePropsReact } from "./types";
+import { renderDiffChildren } from "./utils/renderDiffChildren";
+import { templateRender } from "./utils/templateRender";
+import { useFileDiffInstance } from "./utils/useFileDiffInstance";
 
 export type { FileContents };
 
-export interface MultiFileDiffProps<
-  LAnnotation,
-> extends DiffBasePropsReact<LAnnotation> {
+export interface MultiFileDiffProps<LAnnotation> extends DiffBasePropsReact<LAnnotation> {
   oldFile: FileContents;
   newFile: FileContents;
   disableWorkerPool?: boolean;

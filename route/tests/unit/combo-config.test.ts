@@ -8,8 +8,9 @@ const {
   DEFAULT_COMBO_TARGET_TIMEOUT_MS,
   resolveComboQueueDepth,
 } = await import("../../open-sse/services/comboConfig.ts");
-const { createComboSchema, updateComboDefaultsSchema } =
-  await import("../../src/shared/validation/schemas.ts");
+const { createComboSchema, updateComboDefaultsSchema } = await import(
+  "../../src/shared/validation/schemas.ts"
+);
 const { MAX_TIMER_TIMEOUT_MS } = await import("../../src/shared/utils/runtimeTimeouts.ts");
 
 test("getDefaultComboConfig returns a fresh copy of the defaults", () => {
@@ -65,7 +66,7 @@ test("resolveComboConfig applies the full cascade from defaults to combo overrid
         },
       },
     },
-    "openai"
+    "openai",
   );
 
   assert.equal(result.strategy, "round-robin");
@@ -90,7 +91,7 @@ test("resolveComboConfig cascades reasoning token buffer feature flag", () => {
         },
       },
     },
-    "openai"
+    "openai",
   );
 
   const comboEnabled = resolveComboConfig(
@@ -103,7 +104,7 @@ test("resolveComboConfig cascades reasoning token buffer feature flag", () => {
       comboDefaults: {
         reasoningTokenBufferEnabled: false,
       },
-    }
+    },
   );
 
   assert.equal(providerDisabled.reasoningTokenBufferEnabled, false);
@@ -123,7 +124,7 @@ test("resolveComboConfig preserves nested routing defaults for partial overrides
         shadowRouting: { sampleRate: 0.5 },
         evalRouting: { maxAgeHours: 168 },
       },
-    }
+    },
   );
 
   assert.equal(result.shadowRouting.enabled, true);
@@ -157,7 +158,7 @@ test("resolveComboConfig ignores null, undefined, and legacy resilience override
         },
       },
     },
-    "openai"
+    "openai",
   );
 
   assert.ok(!("timeoutMs" in result));
@@ -295,7 +296,7 @@ test("resolveComboTargetTimeoutMs inherits the upstream timeout and only shorten
   assert.equal(resolveComboTargetTimeoutMs({}, 0), 0);
   assert.equal(
     resolveComboTargetTimeoutMs({ targetTimeoutMs: 999999999999 }, 0),
-    MAX_TIMER_TIMEOUT_MS
+    MAX_TIMER_TIMEOUT_MS,
   );
   assert.equal(resolveComboTargetTimeoutMs({}, 999999999999), MAX_TIMER_TIMEOUT_MS);
 });
@@ -341,7 +342,7 @@ test("resolveComboConfig preserves explicit empty handoffProviders overrides", (
       comboDefaults: {
         handoffProviders: ["codex"],
       },
-    }
+    },
   );
 
   assert.deepEqual(result.handoffProviders, []);
@@ -355,7 +356,7 @@ test("resolveComboConfig skips provider overrides when provider is absent", () =
       providerOverrides: {
         openai: { strategy: "weighted" },
       },
-    }
+    },
   );
 
   assert.equal(result.strategy, "random");
@@ -548,7 +549,7 @@ test("updateComboDefaultsSchema rejects composite tiers in global defaults and p
         path: "providerOverrides.codex.compositeTiers",
         message: "compositeTiers is only supported on concrete combos",
       },
-    ]
+    ],
   );
 });
 
@@ -683,7 +684,7 @@ test("createComboSchema rejects setRetryDelayMs out of range", () => {
 test("resolveComboConfig cascades nestedComboMode", () => {
   const result = resolveComboConfig(
     { config: { nestedComboMode: "execute" } },
-    { comboDefaults: { nestedComboMode: "flatten" } }
+    { comboDefaults: { nestedComboMode: "flatten" } },
   );
   assert.equal(result.nestedComboMode, "execute");
 
@@ -706,7 +707,7 @@ test("resolveComboConfig cascades failoverBeforeRetry, maxSetRetries and setRetr
         maxSetRetries: 0,
         setRetryDelayMs: 2000,
       },
-    }
+    },
   );
 
   assert.equal(result.failoverBeforeRetry, true);
@@ -744,7 +745,7 @@ test("resolveComboConfig cascades queueDepth from defaults through provider and 
         },
       },
     },
-    "openai"
+    "openai",
   );
 
   // Most specific (combo.config) wins over provider override and global default.

@@ -223,7 +223,7 @@ export function checkAuggieCliVersion(timeoutMs = 5000): Promise<AuggieCliVersio
 
 function cliNotFoundMessage(bin: string): string {
   return sanitizeErrorMessage(
-    `Auggie CLI not found: ${bin}. Install it and run "auggie login", or set AUGGIE_BIN to an absolute path.`
+    `Auggie CLI not found: ${bin}. Install it and run "auggie login", or set AUGGIE_BIN to an absolute path.`,
   );
 }
 
@@ -248,7 +248,7 @@ export class AuggieExecutor extends BaseExecutor {
 
   /** No-op — auggie has no OmniRoute-managed credentials to refresh. */
   async refreshCredentials(
-    _credentials: ProviderCredentials
+    _credentials: ProviderCredentials,
   ): Promise<Partial<ProviderCredentials> | null> {
     return null;
   }
@@ -277,7 +277,7 @@ export class AuggieExecutor extends BaseExecutor {
 
     log?.info?.(
       "AUGGIE",
-      `auggie --print → model=${safeModel}, bin=${auggieBin}, stream=${wantsStream}`
+      `auggie --print → model=${safeModel}, bin=${auggieBin}, stream=${wantsStream}`,
     );
 
     const response = wantsStream
@@ -300,7 +300,7 @@ export class AuggieExecutor extends BaseExecutor {
     const child = spawn(
       auggieBin,
       buildAuggieArgs(model),
-      buildAuggieSpawnOptions(["pipe", "pipe", "pipe"])
+      buildAuggieSpawnOptions(["pipe", "pipe", "pipe"]),
     );
     // EPIPE from a fast-exiting CLI arrives ASYNCHRONOUSLY as an 'error' event on
     // stdin (not a sync throw), so the try/catch below cannot swallow it — without
@@ -321,7 +321,7 @@ export class AuggieExecutor extends BaseExecutor {
     model: string,
     promptText: string,
     signal: AbortSignal | null | undefined,
-    log: ExecuteInput["log"]
+    log: ExecuteInput["log"],
   ): Response {
     const responseId = `chatcmpl-auggie-${Date.now()}`;
     const created = Math.floor(Date.now() / 1000);
@@ -359,7 +359,7 @@ export class AuggieExecutor extends BaseExecutor {
                 choices: [
                   { index: 0, delta: { role: "assistant", content: "" }, finish_reason: null },
                 ],
-              })}\n\n`
+              })}\n\n`,
             );
             roleEmitted = true;
           }
@@ -370,7 +370,7 @@ export class AuggieExecutor extends BaseExecutor {
               created,
               model,
               choices: [{ index: 0, delta: { content: delta }, finish_reason: null }],
-            })}\n\n`
+            })}\n\n`,
           );
         };
 
@@ -388,7 +388,7 @@ export class AuggieExecutor extends BaseExecutor {
               created,
               model,
               choices: [{ index: 0, delta: {}, finish_reason: "stop" }],
-            })}\n\n`
+            })}\n\n`,
           );
           emit("data: [DONE]\n\n");
           finish();
@@ -402,12 +402,12 @@ export class AuggieExecutor extends BaseExecutor {
           child = spawn(
             auggieBin,
             buildAuggieArgs(model),
-            buildAuggieSpawnOptions(["pipe", "pipe", "pipe"])
+            buildAuggieSpawnOptions(["pipe", "pipe", "pipe"]),
           );
         } catch (err) {
           const message = err instanceof Error ? err.message : String(err);
           emitError(
-            isEnoentLike(message) ? cliNotFoundMessage(auggieBin) : sanitizeErrorMessage(message)
+            isEnoentLike(message) ? cliNotFoundMessage(auggieBin) : sanitizeErrorMessage(message),
           );
           return;
         }
@@ -432,7 +432,7 @@ export class AuggieExecutor extends BaseExecutor {
         child.on("error", (err: NodeJS.ErrnoException) => {
           const message = err?.message || String(err);
           emitError(
-            isEnoentLike(message) ? cliNotFoundMessage(auggieBin) : sanitizeErrorMessage(message)
+            isEnoentLike(message) ? cliNotFoundMessage(auggieBin) : sanitizeErrorMessage(message),
           );
         });
 
@@ -451,8 +451,8 @@ export class AuggieExecutor extends BaseExecutor {
           if (code !== 0) {
             emitError(
               sanitizeErrorMessage(
-                `Auggie CLI exited with code ${code}${stderrTail ? `: ${stderrTail}` : ""}`
-              )
+                `Auggie CLI exited with code ${code}${stderrTail ? `: ${stderrTail}` : ""}`,
+              ),
             );
             return;
           }
@@ -480,7 +480,7 @@ export class AuggieExecutor extends BaseExecutor {
     model: string,
     promptText: string,
     signal: AbortSignal | null | undefined,
-    log: ExecuteInput["log"]
+    log: ExecuteInput["log"],
   ): Promise<Response> {
     return new Promise((resolve) => {
       let child: ReturnType<typeof spawn>;
@@ -490,8 +490,8 @@ export class AuggieExecutor extends BaseExecutor {
         const message = err instanceof Error ? err.message : String(err);
         resolve(
           buildAuggieErrorResponse(
-            isEnoentLike(message) ? cliNotFoundMessage(auggieBin) : sanitizeErrorMessage(message)
-          )
+            isEnoentLike(message) ? cliNotFoundMessage(auggieBin) : sanitizeErrorMessage(message),
+          ),
         );
         return;
       }
@@ -525,8 +525,8 @@ export class AuggieExecutor extends BaseExecutor {
         const message = err?.message || String(err);
         settle(
           buildAuggieErrorResponse(
-            isEnoentLike(message) ? cliNotFoundMessage(auggieBin) : sanitizeErrorMessage(message)
-          )
+            isEnoentLike(message) ? cliNotFoundMessage(auggieBin) : sanitizeErrorMessage(message),
+          ),
         );
       });
 
@@ -535,9 +535,9 @@ export class AuggieExecutor extends BaseExecutor {
           settle(
             buildAuggieErrorResponse(
               sanitizeErrorMessage(
-                `Auggie CLI exited with code ${code}${stderrTail ? `: ${stderrTail}` : ""}`
-              )
-            )
+                `Auggie CLI exited with code ${code}${stderrTail ? `: ${stderrTail}` : ""}`,
+              ),
+            ),
           );
           return;
         }

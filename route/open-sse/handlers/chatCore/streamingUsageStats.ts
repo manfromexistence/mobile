@@ -62,7 +62,7 @@ function recordStreamingBillableTokens(usage: object, ctx: RecordStreamingUsageS
         ctx.apiKeyInfo.id,
         ctx.provider || "unknown",
         ctx.model || "unknown",
-        billable
+        billable,
       );
   } catch {
     // never block the stream on counter recording
@@ -71,7 +71,7 @@ function recordStreamingBillableTokens(usage: object, ctx: RecordStreamingUsageS
 
 export function recordStreamingUsageStats(
   usage: unknown,
-  ctx: RecordStreamingUsageStatsContext
+  ctx: RecordStreamingUsageStatsContext,
 ): void {
   if (!usage || typeof usage !== "object") return;
   persistStreamingUsageRow(usage, ctx);

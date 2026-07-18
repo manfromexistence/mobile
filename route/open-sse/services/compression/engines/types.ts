@@ -68,7 +68,7 @@ export interface CompressionEngine {
    */
   applyAsync?(
     body: Record<string, unknown>,
-    options?: CompressionEngineApplyOptions
+    options?: CompressionEngineApplyOptions,
   ): Promise<CompressionResult>;
   compress(body: Record<string, unknown>, config?: Record<string, unknown>): CompressionResult;
   getConfigSchema(): EngineConfigField[];

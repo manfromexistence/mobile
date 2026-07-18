@@ -163,7 +163,7 @@ export function registerResilience(program) {
         "balanced",
         "conservative",
         "custom",
-      ])
+      ]),
     )
     .action(async (name, opts, cmd) => {
       const res = await apiFetch("/api/mcp/tools/call", {

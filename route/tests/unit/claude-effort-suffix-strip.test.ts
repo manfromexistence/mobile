@@ -76,7 +76,7 @@ describe("splitClaudeEffortSuffix", () => {
   it("orders 'xhigh' before 'high' in the suffix list", () => {
     assert.ok(
       CLAUDE_EFFORT_SUFFIXES.indexOf("xhigh") < CLAUDE_EFFORT_SUFFIXES.indexOf("high"),
-      "xhigh must be tested before high so it wins the longest-match"
+      "xhigh must be tested before high so it wins the longest-match",
     );
   });
 });

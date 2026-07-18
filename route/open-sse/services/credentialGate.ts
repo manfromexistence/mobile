@@ -40,7 +40,7 @@ export interface CredentialGateResult {
 export function checkCredentialGate(
   connectionId: string,
   provider: string,
-  modelStr: string
+  modelStr: string,
 ): CredentialGateResult {
   // 1. Check cache (sub-millisecond)
   const healthy = isCredentialHealthy(connectionId);

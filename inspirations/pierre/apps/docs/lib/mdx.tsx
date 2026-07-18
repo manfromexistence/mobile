@@ -1,49 +1,46 @@
-import { MultiFileDiff } from '@pierre/diffs/react';
-import { preloadFile, type PreloadFileOptions } from '@pierre/diffs/ssr';
+import { MultiFileDiff } from "@pierre/diffs/react";
+import { preloadFile, type PreloadFileOptions } from "@pierre/diffs/ssr";
 import {
   IconArrowRight,
   IconBulbFill,
   IconCiWarningFill,
   IconFlagFill,
   IconInfoFill,
-} from '@pierre/icons';
-import { compileMDX } from 'next-mdx-remote/rsc';
-import Link from 'next/link';
-import { readFile } from 'node:fs/promises';
-import { join } from 'node:path';
-import type { ComponentPropsWithoutRef } from 'react';
-import remarkGfm from 'remark-gfm';
+} from "@pierre/icons";
+import { compileMDX } from "next-mdx-remote/rsc";
+import Link from "next/link";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
+import type { ComponentPropsWithoutRef } from "react";
+import remarkGfm from "remark-gfm";
 
-import { CustomHunkSeparators } from '../app/(diffs)/_examples/CustomHunkSeparators/CustomHunkSeparators';
-import { CodeViewExampleTabs } from '../app/(diffs)/docs/CodeView/ExampleTabs';
-import { PackageManagerTabs } from '../app/(diffs)/docs/Installation/PackageManagerTabs';
-import { CodeToggle } from '../app/(diffs)/docs/Overview/CodeToggle';
-import {
-  ComponentTabs,
-  SharedPropTabs,
-} from '../app/(diffs)/docs/ReactAPI/ComponentTabs';
-import { TokenHookTabs } from '../app/(diffs)/docs/TokenHooks/ComponentTabs';
-import { AcceptRejectTabs } from '../app/(diffs)/docs/Utilities/AcceptRejectTabs';
+import { CustomHunkSeparators } from "../app/(diffs)/_examples/CustomHunkSeparators/CustomHunkSeparators";
+import { CodeViewExampleTabs } from "../app/(diffs)/docs/CodeView/ExampleTabs";
+import { PackageManagerTabs } from "../app/(diffs)/docs/Installation/PackageManagerTabs";
+import { CodeToggle } from "../app/(diffs)/docs/Overview/CodeToggle";
+import { ComponentTabs, SharedPropTabs } from "../app/(diffs)/docs/ReactAPI/ComponentTabs";
+import { TokenHookTabs } from "../app/(diffs)/docs/TokenHooks/ComponentTabs";
+import { AcceptRejectTabs } from "../app/(diffs)/docs/Utilities/AcceptRejectTabs";
 import {
   DiffHunksTabs,
   VanillaComponentTabs,
   VanillaPropTabs,
-} from '../app/(diffs)/docs/VanillaAPI/ComponentTabs';
-import { OverviewFileTree } from '../app/(trees)/docs/Overview/OverviewFileTree';
-import { DocsCodeExample } from '../components/docs/DocsCodeExample';
-import rehypeHierarchicalSlug from './rehype-hierarchical-slug';
-import remarkTocIgnore from './remark-toc-ignore';
-import { Button } from '@/components/ui/button';
-import { Notice } from '@/components/ui/notice';
+} from "../app/(diffs)/docs/VanillaAPI/ComponentTabs";
+import { OverviewFileTree } from "../app/(trees)/docs/Overview/OverviewFileTree";
+import { DocsCodeExample } from "../components/docs/DocsCodeExample";
+import rehypeHierarchicalSlug from "./rehype-hierarchical-slug";
+import remarkTocIgnore from "./remark-toc-ignore";
+import { Button } from "@/components/ui/button";
+import { Notice } from "@/components/ui/notice";
 
-function MdxLink(props: ComponentPropsWithoutRef<'a'>) {
+function MdxLink(props: ComponentPropsWithoutRef<"a">) {
   const href = props.href;
 
-  if (href?.startsWith('/') === true) {
+  if (href?.startsWith("/") === true) {
     return <Link {...props} href={href} />;
   }
 
-  if (href?.startsWith('#') === true) {
+  if (href?.startsWith("#") === true) {
     return <a {...props} />;
   }
 
@@ -90,8 +87,8 @@ interface RenderMDXOptions {
  * Works in React Server Components with Turbopack.
  */
 export async function renderMDX({ filePath, scope = {} }: RenderMDXOptions) {
-  const fullPath = join(process.cwd(), 'app', filePath);
-  const source = await readFile(fullPath, 'utf-8');
+  const fullPath = join(process.cwd(), "app", filePath);
+  const source = await readFile(fullPath, "utf-8");
 
   const { content } = await compileMDX({
     source,
@@ -116,12 +113,10 @@ export async function renderMDX({ filePath, scope = {} }: RenderMDXOptions) {
 // of the exported `PreloadFileOptions` constant in a sibling `constants.ts`.
 export async function renderMDXWithPreloadedFiles(
   filePath: string,
-  files: Readonly<Record<string, PreloadFileOptions<unknown>>>
+  files: Readonly<Record<string, PreloadFileOptions<unknown>>>,
 ) {
   const entries = Object.entries(files);
-  const results = await Promise.all(
-    entries.map(([, opts]) => preloadFile(opts))
-  );
+  const results = await Promise.all(entries.map(([, opts]) => preloadFile(opts)));
   const scope: Record<string, unknown> = {};
   for (let i = 0; i < entries.length; i++) {
     scope[entries[i][0]] = results[i];

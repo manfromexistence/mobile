@@ -1,6 +1,6 @@
-import { dict as en } from "./en"
+import { dict as en } from "./en";
 
-type Keys = keyof typeof en
+type Keys = keyof typeof en;
 
 export const dict = {
   "command.category.suggested": "建议",
@@ -158,21 +158,25 @@ export const dict = {
   "provider.connect.apiKey.label": "{{provider}} API 密钥",
   "provider.connect.apiKey.placeholder": "API 密钥",
   "provider.connect.apiKey.required": "API 密钥为必填项",
-  "provider.connect.opencodeZen.line1": "OpenCode Zen 为你提供一组精选的可靠优化模型，用于代码智能体。",
-  "provider.connect.opencodeZen.line2": "只需一个 API 密钥，你就能使用 Claude、GPT、Gemini、GLM 等模型。",
+  "provider.connect.opencodeZen.line1":
+    "OpenCode Zen 为你提供一组精选的可靠优化模型，用于代码智能体。",
+  "provider.connect.opencodeZen.line2":
+    "只需一个 API 密钥，你就能使用 Claude、GPT、Gemini、GLM 等模型。",
   "provider.connect.opencodeZen.visit.prefix": "访问 ",
   "provider.connect.opencodeZen.visit.link": "opencode.ai/zen",
   "provider.connect.opencodeZen.visit.suffix": " 获取你的 API 密钥。",
   "provider.connect.oauth.code.visit.prefix": "访问 ",
   "provider.connect.oauth.code.visit.link": "此链接",
-  "provider.connect.oauth.code.visit.suffix": " 获取授权码，以连接你的帐户并在 OpenCode 中使用 {{provider}} 模型。",
+  "provider.connect.oauth.code.visit.suffix":
+    " 获取授权码，以连接你的帐户并在 OpenCode 中使用 {{provider}} 模型。",
   "provider.connect.oauth.code.label": "{{method}} 授权码",
   "provider.connect.oauth.code.placeholder": "授权码",
   "provider.connect.oauth.code.required": "授权码为必填项",
   "provider.connect.oauth.code.invalid": "授权码无效",
   "provider.connect.oauth.auto.visit.prefix": "访问 ",
   "provider.connect.oauth.auto.visit.link": "此链接",
-  "provider.connect.oauth.auto.visit.suffix": " 并输入以下代码，以连接你的帐户并在 OpenCode 中使用 {{provider}} 模型。",
+  "provider.connect.oauth.auto.visit.suffix":
+    " 并输入以下代码，以连接你的帐户并在 OpenCode 中使用 {{provider}} 模型。",
   "provider.connect.oauth.auto.confirmationCode": "确认码",
   "provider.connect.toast.connected.title": "{{provider}} 已连接",
   "provider.connect.toast.connected.description": "现在可以使用 {{provider}} 模型了。",
@@ -466,7 +470,8 @@ export const dict = {
   "error.page.report.prefix": "请将此错误报告给 OpenCode 团队",
   "error.page.report.discord": "在 Discord 上",
   "error.page.version": "版本：{{version}}",
-  "error.dev.rootNotFound": "未找到根元素。你是不是忘了把它添加到 index.html？或者 id 属性拼写错了？",
+  "error.dev.rootNotFound":
+    "未找到根元素。你是不是忘了把它添加到 index.html？或者 id 属性拼写错了？",
   "error.serverSync.connectFailed": "无法连接到服务器。是否有服务器正在 `{{url}}` 运行？",
 
   "directory.error.invalidUrl": "URL 中的目录无效。",
@@ -575,7 +580,8 @@ export const dict = {
 
   "session.share.popover.title": "发布到网页",
   "session.share.popover.description.shared": "此会话已在网页上公开。任何拥有链接的人都可以访问。",
-  "session.share.popover.description.unshared": "在网页上公开分享此会话。任何拥有链接的人都可以访问。",
+  "session.share.popover.description.unshared":
+    "在网页上公开分享此会话。任何拥有链接的人都可以访问。",
   "session.share.action.share": "分享",
   "session.share.action.publish": "发布",
   "session.share.action.publishing": "正在发布...",
@@ -665,10 +671,12 @@ export const dict = {
   "settings.general.row.shellToolPartsExpanded.title": "展开 shell 工具部分",
   "settings.general.row.shellToolPartsExpanded.description": "默认在时间线中展开 shell 工具部分",
   "settings.general.row.editToolPartsExpanded.title": "展开编辑工具部分",
-  "settings.general.row.editToolPartsExpanded.description": "默认在时间线中展开 edit、write 和 patch 工具部分",
+  "settings.general.row.editToolPartsExpanded.description":
+    "默认在时间线中展开 edit、write 和 patch 工具部分",
   "settings.general.row.wayland.title": "使用原生 Wayland",
   "settings.general.row.wayland.description": "在 Wayland 上禁用 X11 回退。需要重启。",
-  "settings.general.row.wayland.tooltip": "在混合刷新率显示器的 Linux 系统上，原生 Wayland 可能更稳定。",
+  "settings.general.row.wayland.tooltip":
+    "在混合刷新率显示器的 Linux 系统上，原生 Wayland 可能更稳定。",
   "settings.general.row.releaseNotes.title": "发行说明",
   "settings.general.row.releaseNotes.description": "更新后显示“新功能”弹窗",
 
@@ -933,4 +941,4 @@ export const dict = {
   "error.childStore.persistedProjectIconCreateFailed": "创建持久化项目图标失败",
   "error.childStore.storeCreateFailed": "创建存储失败",
   "terminal.connectionLost.abnormalClose": "WebSocket 异常关闭：{{code}}",
-} satisfies Partial<Record<Keys, string>>
+} satisfies Partial<Record<Keys, string>>;

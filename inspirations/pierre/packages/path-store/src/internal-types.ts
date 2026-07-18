@@ -2,7 +2,7 @@ import type {
   PathStoreDirectoryLoadState,
   PathStorePathComparator,
   PathStorePreparedInput,
-} from './public-types';
+} from "./public-types";
 
 export type NodeId = number;
 export type SegmentId = number;
@@ -19,9 +19,7 @@ export const PATH_STORE_NODE_FLAG_ROOT: number = 1 << 1;
 export const PATH_STORE_NODE_FLAG_REMOVED: number = 1 << 2;
 
 const PATH_STORE_NODE_FLAGS_MASK =
-  PATH_STORE_NODE_FLAG_EXPLICIT |
-  PATH_STORE_NODE_FLAG_ROOT |
-  PATH_STORE_NODE_FLAG_REMOVED;
+  PATH_STORE_NODE_FLAG_EXPLICIT | PATH_STORE_NODE_FLAG_ROOT | PATH_STORE_NODE_FLAG_REMOVED;
 const PATH_STORE_NODE_KIND_SHIFT = 3;
 const PATH_STORE_NODE_KIND_MASK = 1 << PATH_STORE_NODE_KIND_SHIFT;
 const PATH_STORE_NODE_DEPTH_SHIFT = 4;
@@ -53,13 +51,9 @@ export interface PathStoreNode {
 export function createNodeDepthAndFlags(
   depth: number,
   flags: number,
-  kind: PathStoreNodeKind = PATH_STORE_NODE_KIND_FILE
+  kind: PathStoreNodeKind = PATH_STORE_NODE_KIND_FILE,
 ): number {
-  return (
-    (depth << PATH_STORE_NODE_DEPTH_SHIFT) |
-    (kind << PATH_STORE_NODE_KIND_SHIFT) |
-    flags
-  );
+  return (depth << PATH_STORE_NODE_DEPTH_SHIFT) | (kind << PATH_STORE_NODE_KIND_SHIFT) | flags;
 }
 
 export function getNodeDepth(node: PathStoreNode): number {
@@ -88,11 +82,7 @@ export function addNodeFlag(node: PathStoreNode, flag: number): void {
 }
 
 export function setNodeDepth(node: PathStoreNode, depth: number): void {
-  node.depthAndFlags = createNodeDepthAndFlags(
-    depth,
-    getNodeFlags(node),
-    getNodeKind(node)
-  );
+  node.depthAndFlags = createNodeDepthAndFlags(depth, getNodeFlags(node), getNodeKind(node));
 }
 
 export interface DirectoryLoadInfo {
@@ -113,7 +103,7 @@ export interface DirectoryChildIndex {
 
 export interface ResolvedPathStoreOptions {
   flattenEmptyDirectories: boolean;
-  sort: 'default' | PathStorePathComparator;
+  sort: "default" | PathStorePathComparator;
 }
 
 export interface PreparedPath {

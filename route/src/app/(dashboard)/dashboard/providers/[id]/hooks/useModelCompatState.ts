@@ -50,42 +50,42 @@ export interface ModelCompatState {
  */
 export function useModelCompatState(
   customModels: CompatModelRow[],
-  modelCompatOverrides: Array<CompatModelRow & { id: string }>
+  modelCompatOverrides: Array<CompatModelRow & { id: string }>,
 ): ModelCompatState {
   const customMap = useMemo(() => buildCompatMap(customModels), [customModels]);
   const overrideMap = useMemo(() => buildCompatMap(modelCompatOverrides), [modelCompatOverrides]);
 
   const isModelHidden = useCallback(
     (modelId: string) => isModelHiddenFn(modelId, customMap, overrideMap),
-    [customMap, overrideMap]
+    [customMap, overrideMap],
   );
 
   const effectiveModelNormalize = useCallback(
     (modelId: string, protocol = MODEL_COMPAT_PROTOCOL_KEYS[0]) =>
       effectiveNormalizeForProtocol(modelId, protocol, customMap, overrideMap),
-    [customMap, overrideMap]
+    [customMap, overrideMap],
   );
 
   const effectiveModelPreserveDeveloper = useCallback(
     (modelId: string, protocol = MODEL_COMPAT_PROTOCOL_KEYS[0]) =>
       effectivePreserveForProtocol(modelId, protocol, customMap, overrideMap),
-    [customMap, overrideMap]
+    [customMap, overrideMap],
   );
 
   const getUpstreamHeadersRecord = useCallback(
     (modelId: string, protocol: string) =>
       effectiveUpstreamHeadersForProtocol(modelId, protocol, customMap, overrideMap),
-    [customMap, overrideMap]
+    [customMap, overrideMap],
   );
 
   const anyNormalizeCompatBadgeFn = useCallback(
     (modelId: string) => anyNormalizeCompatBadge(modelId, customMap, overrideMap),
-    [customMap, overrideMap]
+    [customMap, overrideMap],
   );
 
   const anyNoPreserveCompatBadgeFn = useCallback(
     (modelId: string) => anyNoPreserveCompatBadge(modelId, customMap, overrideMap),
-    [customMap, overrideMap]
+    [customMap, overrideMap],
   );
 
   return {

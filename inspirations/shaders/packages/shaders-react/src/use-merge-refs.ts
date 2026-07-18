@@ -1,10 +1,12 @@
-import * as React from 'react';
+import * as React from "react";
 
 /**
  * Merges an array of refs into a single memoized callback ref or `null`.
  * @see https://floating-ui.com/docs/react-utils#usemergerefs
  */
-export function useMergeRefs<Instance>(refs: Array<React.Ref<Instance> | undefined>): null | React.Ref<Instance> {
+export function useMergeRefs<Instance>(
+  refs: Array<React.Ref<Instance> | undefined>,
+): null | React.Ref<Instance> {
   const cleanupRef = React.useRef<void | (() => void)>(undefined);
 
   const refEffect = React.useCallback((instance: Instance | null) => {
@@ -13,10 +15,10 @@ export function useMergeRefs<Instance>(refs: Array<React.Ref<Instance> | undefin
         return;
       }
 
-      if (typeof ref === 'function') {
+      if (typeof ref === "function") {
         const refCallback = ref;
         const refCleanup: void | (() => void) = refCallback(instance);
-        return typeof refCleanup === 'function'
+        return typeof refCleanup === "function"
           ? refCleanup
           : () => {
               refCallback(null);

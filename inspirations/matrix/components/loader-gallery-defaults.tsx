@@ -6,7 +6,7 @@ const HERO_SHADCN_INSTALL_COMMAND = "npx shadcn@latest add @dotmatrix/dotm-squar
 const DEFAULT_HERO_NAV_LINKS: readonly HeroNavLink[] = [
   { label: "Introduction", href: "/getting-started/introduction" },
   { label: "Usage", href: "/getting-started/usage" },
-  { label: "Manual setup", href: "/getting-started/manual" }
+  { label: "Manual setup", href: "/getting-started/manual" },
 ];
 
 const DEFAULT_HERO_TITLE = (
@@ -40,5 +40,5 @@ export const LOADER_GALLERY_DEFAULT_HERO_CONTENT: LoaderGalleryHeroContent = {
   title: DEFAULT_HERO_TITLE,
   description: DEFAULT_HERO_DESCRIPTION,
   navLinks: DEFAULT_HERO_NAV_LINKS,
-  installCommand: HERO_SHADCN_INSTALL_COMMAND
+  installCommand: HERO_SHADCN_INSTALL_COMMAND,
 };

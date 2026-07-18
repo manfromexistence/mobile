@@ -122,7 +122,7 @@ function makeErrorResult(status: number, message: string, body: unknown) {
           code: `HTTP_${status}`,
         },
       }),
-      { status, headers: { "Content-Type": "application/json" } }
+      { status, headers: { "Content-Type": "application/json" } },
     ),
     url: INNER_AI_CHAT_URL,
     headers: {} as Record<string, string>,
@@ -152,7 +152,7 @@ function buildHeaders(token: string, email: string, deviceId: string): Record<st
 async function resolveCredentials(
   token: string,
   credEmail: string,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): Promise<CredentialCache> {
   const key = tokenCacheKey(token);
   const cached = lruTouch(credentialCache, key);
@@ -161,7 +161,7 @@ async function resolveCredentials(
   // Decode device_id from JWT payload (accept multiple field names)
   const payload = decodeJwtPayload(token);
   const deviceId = String(
-    payload?.device_id ?? payload?.deviceId ?? payload?.["device-id"] ?? payload?.did ?? ""
+    payload?.device_id ?? payload?.deviceId ?? payload?.["device-id"] ?? payload?.did ?? "",
   ).trim();
 
   // Build profile request headers — include cookie auth + custom headers
@@ -190,7 +190,7 @@ async function resolveCredentials(
           (b?.user as Record<string, unknown>)?.email ??
           (b?.profile as Record<string, unknown>)?.email ??
           b?.email ??
-          ""
+          "",
       ).trim();
     }
   } catch {
@@ -215,7 +215,7 @@ async function resolveCredentials(
 class InnerAiModelsError extends Error {
   constructor(
     public readonly status: number,
-    public readonly responsePreview: string
+    public readonly responsePreview: string,
   ) {
     super(`Inner.ai /ai-models returned HTTP ${status}`);
     this.name = "InnerAiModelsError";
@@ -226,7 +226,7 @@ async function resolveModels(
   token: string,
   deviceId: string,
   email: string,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): Promise<InnerAiModel[]> {
   const key = tokenCacheKey(token);
   const cached = lruTouch(modelsCache, key);
@@ -270,7 +270,7 @@ async function resolveModels(
     decodeJwtPayload(token)?.plan ??
       decodeJwtPayload(token)?.tier ??
       decodeJwtPayload(token)?.subscription ??
-      ""
+      "",
   ).toLowerCase();
   const isUltra = planRaw.includes("ultra") || planRaw.includes("enterprise");
   const isPro = isUltra || planRaw.includes("pro") || planRaw.includes("plus");
@@ -443,8 +443,8 @@ function transformInnerAiSSE(upstream: ReadableStream, model: string): ReadableS
                 encoder.encode(
                   `data: ${JSON.stringify({
                     error: { message: errorMsg, type: "rate_limit_error", code: type },
-                  })}\n\n`
-                )
+                  })}\n\n`,
+                ),
               );
               controller.enqueue(encoder.encode("data: [DONE]\n\n"));
               controller.close();
@@ -459,8 +459,8 @@ function transformInnerAiSSE(upstream: ReadableStream, model: string): ReadableS
           encoder.encode(
             `data: ${JSON.stringify({
               error: { message: sanitizeErrorMessage(message), type: "upstream_error" },
-            })}\n\n`
-          )
+            })}\n\n`,
+          ),
         );
       }
 
@@ -479,7 +479,7 @@ class InnerAiStreamError extends Error {
   constructor(
     public readonly status: number,
     public readonly code: string,
-    message: string
+    message: string,
   ) {
     super(message);
     this.name = "InnerAiStreamError";
@@ -558,7 +558,7 @@ export class InnerAiExecutor extends BaseExecutor {
       return makeErrorResult(
         401,
         "Missing Inner.ai token — paste your token cookie from DevTools → Application → Cookies → .innerai.com",
-        body
+        body,
       );
     }
     const { token, credEmail } = parseCredential(rawToken);
@@ -587,7 +587,7 @@ export class InnerAiExecutor extends BaseExecutor {
         return makeErrorResult(
           err.status,
           "Inner.ai /ai-models authentication failed — re-paste your token cookie",
-          body
+          body,
         );
       }
       // Non-auth failures (5xx, network): proceed with empty list and let the
@@ -596,7 +596,7 @@ export class InnerAiExecutor extends BaseExecutor {
       console.warn(
         `[InnerAI] /ai-models fetch failed (status=${
           err instanceof InnerAiModelsError ? err.status : "n/a"
-        }) — falling back to synthetic model entry`
+        }) — falling back to synthetic model entry`,
       );
     }
 
@@ -609,7 +609,7 @@ export class InnerAiExecutor extends BaseExecutor {
     const rawMessages = Array.isArray(bodyObj.messages) ? bodyObj.messages : [];
     const { hasTools, requestedTools, effectiveMessages } = prepareToolMessages(
       bodyObj,
-      rawMessages
+      rawMessages,
     );
     const messages = effectiveMessages as Array<Record<string, unknown>>;
     const messageContent = buildMessageContent(messages);
@@ -648,7 +648,7 @@ export class InnerAiExecutor extends BaseExecutor {
       return makeErrorResult(
         502,
         `Inner.ai request failed: ${sanitizeErrorMessage(message)}`,
-        body
+        body,
       );
     }
 
@@ -657,7 +657,7 @@ export class InnerAiExecutor extends BaseExecutor {
       return makeErrorResult(
         upstream.status,
         "Inner.ai authentication failed — re-paste your token cookie",
-        body
+        body,
       );
     }
 
@@ -666,7 +666,7 @@ export class InnerAiExecutor extends BaseExecutor {
       return makeErrorResult(
         upstream.status,
         `Inner.ai returned HTTP ${upstream.status}: ${sanitizeErrorMessage(errText)}`,
-        body
+        body,
       );
     }
 
@@ -728,7 +728,7 @@ export class InnerAiExecutor extends BaseExecutor {
                 },
               ],
             }),
-            { status: 200, headers: { "Content-Type": "application/json" } }
+            { status: 200, headers: { "Content-Type": "application/json" } },
           ),
           url: INNER_AI_CHAT_URL,
           headers: reqHeaders,
@@ -754,7 +754,7 @@ export class InnerAiExecutor extends BaseExecutor {
           ],
           usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
         }),
-        { headers: { "Content-Type": "application/json" } }
+        { headers: { "Content-Type": "application/json" } },
       ),
       url: INNER_AI_CHAT_URL,
       headers: reqHeaders,

@@ -1,32 +1,32 @@
-import { preloadFileTree } from '@pierre/trees/ssr';
+import { preloadFileTree } from "@pierre/trees/ssr";
 
-import { sampleFileList } from '../_lib/demo-data';
-import { TREE_NEW_VIEWPORT_HEIGHTS } from '../_lib/dimensions';
-import { DemoStylingClient } from './DemoStylingClient';
+import { sampleFileList } from "../_lib/demo-data";
+import { TREE_NEW_VIEWPORT_HEIGHTS } from "../_lib/dimensions";
+import { DemoStylingClient } from "./DemoStylingClient";
 
 const selectedPaths = {
-  dark: 'package.json',
-  light: 'package.json',
-  synthwave: 'package.json',
+  dark: "package.json",
+  light: "package.json",
+  synthwave: "package.json",
 } as const;
 
 const lightPreloadedData = preloadFileTree({
   flattenEmptyDirectories: true,
-  id: 'trees-styling-demo-light',
+  id: "trees-styling-demo-light",
   initialSelectedPaths: [selectedPaths.light],
   paths: sampleFileList,
   initialVisibleRowCount: TREE_NEW_VIEWPORT_HEIGHTS.styling / 30,
 });
 const darkPreloadedData = preloadFileTree({
   flattenEmptyDirectories: true,
-  id: 'trees-styling-demo-dark',
+  id: "trees-styling-demo-dark",
   initialSelectedPaths: [selectedPaths.dark],
   paths: sampleFileList,
   initialVisibleRowCount: TREE_NEW_VIEWPORT_HEIGHTS.styling / 30,
 });
 const synthwavePreloadedData = preloadFileTree({
   flattenEmptyDirectories: true,
-  id: 'trees-styling-demo-synthwave',
+  id: "trees-styling-demo-synthwave",
   initialSelectedPaths: [selectedPaths.synthwave],
   paths: sampleFileList,
   initialVisibleRowCount: TREE_NEW_VIEWPORT_HEIGHTS.styling / 30,

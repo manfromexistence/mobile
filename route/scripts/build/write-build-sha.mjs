@@ -50,7 +50,7 @@ const distDir = path.join(ROOT, "dist");
 if (!fs.existsSync(standaloneDir)) {
   console.error(
     `[write-build-sha] FATAL: standalone dir not found: ${standaloneDir}\n` +
-      `  Run \`npm run build\` before \`npm run build:release\`.`
+      `  Run \`npm run build\` before \`npm run build:release\`.`,
   );
   process.exit(1);
 }

@@ -4,9 +4,7 @@
   "title": "Typography",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "Custom prose styles for headings, links, inline code, and emphasis.",
-  "devDependencies": [
-    "@tailwindcss/typography"
-  ],
+  "devDependencies": ["@tailwindcss/typography"],
   "files": [],
   "css": {
     "@plugin @tailwindcss/typography": {},
@@ -29,8 +27,6 @@
       "@apply prose-blockquote:border-l prose-blockquote:font-normal prose-blockquote:text-muted-foreground prose-blockquote:not-italic prose-blockquote:[&_p:first-of-type]:before:content-none prose-blockquote:[&_p:last-of-type]:after:content-none": {}
     }
   },
-  "categories": [
-    "typography"
-  ],
+  "categories": ["typography"],
   "type": "registry:component"
 }

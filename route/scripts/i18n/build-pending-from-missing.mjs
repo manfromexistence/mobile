@@ -55,7 +55,7 @@ function valueForKey(file, key) {
         if (v && /[A-Za-z]/.test(v) && v !== key) return v;
       }
       const attrMatch = line.match(
-        /\b(?:title|placeholder|aria-label|alt|label)\s*=\s*["']([^"']+)["']/
+        /\b(?:title|placeholder|aria-label|alt|label)\s*=\s*["']([^"']+)["']/,
       );
       if (attrMatch) {
         const v = attrMatch[1].trim();

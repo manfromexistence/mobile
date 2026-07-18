@@ -1,4 +1,4 @@
-import { TextShimmerV2 } from "./text-shimmer-v2"
+import { TextShimmerV2 } from "./text-shimmer-v2";
 
 const docs = `### Overview
 Animated shimmer effect for loading text placeholders.
@@ -16,7 +16,7 @@ Animated shimmer effect for loading text placeholders.
 
 ### Theming
 - Uses \`data-component="text-shimmer-v2"\` and CSS custom properties for timing and colors.
-`
+`;
 
 export default {
   title: "UI V2/TextShimmer",
@@ -32,23 +32,35 @@ export default {
       },
     },
   },
-}
+};
 
 export const Active = {
   render: () => (
-    <span style={{ "font-size": "13px", "font-weight": "440", "font-family": "Inter, system-ui, sans-serif" }}>
+    <span
+      style={{
+        "font-size": "13px",
+        "font-weight": "440",
+        "font-family": "Inter, system-ui, sans-serif",
+      }}
+    >
       <TextShimmerV2 text="Loading..." active={true} />
     </span>
   ),
-}
+};
 
 export const Inactive = {
   render: () => (
-    <span style={{ "font-size": "13px", "font-weight": "440", "font-family": "Inter, system-ui, sans-serif" }}>
+    <span
+      style={{
+        "font-size": "13px",
+        "font-weight": "440",
+        "font-family": "Inter, system-ui, sans-serif",
+      }}
+    >
       <TextShimmerV2 text="Static text" active={false} />
     </span>
   ),
-}
+};
 
 export const WithOffset = {
   render: () => (
@@ -67,4 +79,4 @@ export const WithOffset = {
       <TextShimmerV2 text="Third line" active={true} offset={10} />
     </div>
   ),
-}
+};

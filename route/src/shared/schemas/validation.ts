@@ -119,7 +119,7 @@ export const chatCompletionSchema = z.object({
       z.object({
         role: z.enum(["system", "user", "assistant", "tool"]),
         content: z.union([z.string(), z.array(z.any())]),
-      })
+      }),
     )
     .min(1, "At least one message is required"),
   stream: z.boolean().optional(),

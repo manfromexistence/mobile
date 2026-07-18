@@ -50,7 +50,7 @@ function isCodexGpt5x(provider?: string | null, model?: string | null): boolean 
  */
 function isHighReasoningEffort(
   model: string | null | undefined,
-  body: StreamReadinessBody
+  body: StreamReadinessBody,
 ): boolean {
   const normalizedModel = (model || "").toLowerCase();
   if (/-high\b/.test(normalizedModel) || normalizedModel.endsWith("-high")) return true;
@@ -69,7 +69,7 @@ function isHighReasoningEffort(
 }
 
 export function resolveStreamReadinessTimeout(
-  input: StreamReadinessPolicyInput
+  input: StreamReadinessPolicyInput,
 ): StreamReadinessPolicyResult {
   const baseTimeoutMs = Math.max(0, Math.floor(input.baseTimeoutMs || 0));
   if (baseTimeoutMs <= 0) {

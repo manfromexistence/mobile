@@ -31,7 +31,7 @@ const CIRCULAR_RING_PATH: readonly number[] = [
   rowMajorIndex(4, 1),
   rowMajorIndex(3, 0),
   rowMajorIndex(2, 0),
-  rowMajorIndex(1, 0)
+  rowMajorIndex(1, 0),
 ];
 const LOOP_LEN = CIRCULAR_RING_PATH.length;
 
@@ -42,17 +42,21 @@ export function DotmCircular3({
   ...rest
 }: DotmCircular3Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
   const headStep = useSteppedCycle({
     active: !reducedMotion && matrixPhase !== "idle",
     cycleMsBase: 1650,
     steps: STEP_COUNT,
     speed,
-    idleStep: 6
+    idleStep: 6,
   });
 
   const resolver = useMemo<DotAnimationResolver>(() => {

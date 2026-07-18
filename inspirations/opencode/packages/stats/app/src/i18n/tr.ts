@@ -146,7 +146,8 @@ export const dict = {
   "lab.usageTitle": "{{lab}} token kullanımı",
   "lab.usageDescription": "Son iki ayda günlük OpenCode token hacmi.",
   "lab.noUsageTitle": "Henüz kullanım yok",
-  "lab.noUsageDescription": "Bu laboratuvarda etkinlik olduğunda son token kullanımı burada görünür.",
+  "lab.noUsageDescription":
+    "Bu laboratuvarda etkinlik olduğunda son token kullanımı burada görünür.",
   "lab.dailyTokenChart": "{{lab}} günlük token kullanım grafiği",
   "lab.dailyTokens": "Günlük tokenlar",
   "lab.tokens": "token",
@@ -201,7 +202,8 @@ export const dict = {
   "model.noUsersTitle": "Kullanıcı verisi yok",
   "model.noUsersDescription": "Geçerli pencereye kullanıcı içeren satır gelmedi.",
   "model.dailyUserChart": "Günlük benzersiz kullanıcı grafiği",
-  "model.efficiencyDescription": "Maliyet, önbellek davranışı ve ortalama OpenCode Go oturum yapısı.",
+  "model.efficiencyDescription":
+    "Maliyet, önbellek davranışı ve ortalama OpenCode Go oturum yapısı.",
   "model.noEfficiencyTitle": "Verimlilik verisi yok",
   "model.noEfficiencyDescription": "Verimlilik verileri kullanım geldikten sonra görünür.",
   "model.cost": "Maliyet",
@@ -228,4 +230,4 @@ export const dict = {
   "model.pdf": "PDF",
   "format.users": "kullanıcı",
   "format.tokens": "token",
-} as const
+} as const;

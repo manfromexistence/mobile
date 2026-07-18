@@ -1,3 +1,3 @@
-export * from './WorkerPoolManager';
-export * from './getOrCreateWorkerPoolSingleton';
-export * from './types';
+export * from "./WorkerPoolManager";
+export * from "./getOrCreateWorkerPoolSingleton";
+export * from "./types";

@@ -25,7 +25,7 @@ test("isTransientAntigravityError: 500 + 'Agent execution terminated due to erro
   const ex = new AntigravityExecutor();
   assert.equal(
     ex.isTransientAntigravityError(500, "Agent execution terminated due to error"),
-    true
+    true,
   );
 });
 

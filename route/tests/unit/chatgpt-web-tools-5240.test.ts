@@ -68,7 +68,10 @@ function installMockFetch(convEvents: unknown[]) {
       body: null,
     });
 
-    if ((u === "https://chatgpt.com/" || u === "https://chatgpt.com") && (opts.method || "GET") === "GET") {
+    if (
+      (u === "https://chatgpt.com/" || u === "https://chatgpt.com") &&
+      (opts.method || "GET") === "GET"
+    ) {
       return {
         status: 200,
         headers: makeHeaders({ "Content-Type": "text/html" }),
@@ -147,7 +150,7 @@ test("Tools request-side: <tool> contract is serialized into the upstream system
           tools: [WEATHER_TOOL],
         },
         stream: false,
-      }) as any
+      }) as any,
     );
 
     const convIdx = m.calls.urls.findIndex((u) => u.endsWith("/backend-api/f/conversation"));
@@ -175,7 +178,7 @@ test("Tools non-stream: <tool>{...}</tool> text becomes OpenAI tool_calls + fini
           tools: [WEATHER_TOOL],
         },
         stream: false,
-      }) as any
+      }) as any,
     );
 
     assert.equal(result.response.status, 200);
@@ -206,7 +209,7 @@ test("Tools stream: terminal chunk carries delta.tool_calls + finish_reason tool
           stream: true,
         },
         stream: true,
-      }) as any
+      }) as any,
     );
 
     assert.equal(result.response.status, 200);
@@ -241,7 +244,7 @@ test("Tools regression: no-tools request still streams plain content with finish
       baseOpts({
         body: { messages: [{ role: "user", content: "hi" }], stream: true },
         stream: true,
-      }) as any
+      }) as any,
     );
 
     const text = await result.response.text();
@@ -252,13 +255,13 @@ test("Tools regression: no-tools request still streams plain content with finish
 
     assert.ok(
       chunks.some(
-        (c) => c.choices[0].delta && c.choices[0].delta.content === "Just plain text, no tools."
+        (c) => c.choices[0].delta && c.choices[0].delta.content === "Just plain text, no tools.",
       ),
-      "plain content is streamed"
+      "plain content is streamed",
     );
     assert.ok(
       chunks.every((c) => !(c.choices[0].delta && c.choices[0].delta.tool_calls)),
-      "no tool_calls emitted without a tools array"
+      "no tool_calls emitted without a tools array",
     );
     const finishChunk = chunks.find((c) => c.choices[0].finish_reason);
     assert.equal(finishChunk.choices[0].finish_reason, "stop");

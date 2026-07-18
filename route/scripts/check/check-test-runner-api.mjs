@@ -28,7 +28,8 @@ function walk(dir, root, out = []) {
 function isVitestOnly(relFile) {
   const norm = relFile.replace(/\\/g, "/");
   return VITEST_ONLY_DIRS.some(
-    (d) => norm.startsWith(d + "/") && (norm.includes("/__tests__/") || d.startsWith("tests/unit/"))
+    (d) =>
+      norm.startsWith(d + "/") && (norm.includes("/__tests__/") || d.startsWith("tests/unit/")),
   );
 }
 

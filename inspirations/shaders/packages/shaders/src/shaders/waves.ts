@@ -1,5 +1,5 @@
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { declarePI } from '../shader-utils.js';
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { declarePI } from "../shader-utils.js";
 
 /**
  * Static line pattern configurable into textures ranging from sharp zigzags to smooth flowing waves.
@@ -49,7 +49,7 @@ in vec2 v_patternUV;
 
 out vec4 fragColor;
 
-${ declarePI }
+${declarePI}
 
 void main() {
   vec2 shape_uv = v_patternUV;

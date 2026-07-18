@@ -7,13 +7,8 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
-const {
-  frameConnectMessage,
-  decodeConnectFrame,
-  extractDelta,
-  isEndOfStream,
-  foldMessages,
-} = await import("../../open-sse/executors/kimi-web.ts");
+const { frameConnectMessage, decodeConnectFrame, extractDelta, isEndOfStream, foldMessages } =
+  await import("../../open-sse/executors/kimi-web.ts");
 
 describe("frameConnectMessage + decodeConnectMessage round-trip", () => {
   it("round-trips a JSON payload through frame and decode", () => {
@@ -146,11 +141,11 @@ describe("extractDelta", () => {
   it("returns null when content is empty (no useful delta)", () => {
     assert.equal(
       extractDelta({ op: "set", mask: "block.text", block: { text: { content: "" } } }),
-      null
+      null,
     );
     assert.equal(
       extractDelta({ op: "append", mask: "block.text.content", block: { text: {} } }),
-      null
+      null,
     );
   });
 });
@@ -163,7 +158,7 @@ describe("isEndOfStream", () => {
         mask: "message",
         message: { role: "assistant", status: "MESSAGE_STATUS_COMPLETED" },
       }),
-      true
+      true,
     );
   });
 
@@ -174,7 +169,7 @@ describe("isEndOfStream", () => {
         mask: "message",
         message: { role: "user", status: "MESSAGE_STATUS_COMPLETED" },
       }),
-      false
+      false,
     );
   });
 
@@ -185,7 +180,7 @@ describe("isEndOfStream", () => {
         mask: "message",
         message: { role: "assistant", status: "MESSAGE_STATUS_GENERATING" },
       }),
-      false
+      false,
     );
   });
 

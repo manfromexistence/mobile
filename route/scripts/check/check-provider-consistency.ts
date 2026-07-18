@@ -20,7 +20,7 @@ export const KNOWN_REGISTRY_ONLY: Record<string, string> = {};
 export function findOrphanRegistryIds(
   registryIds: string[],
   isKnownProvider: (id: string) => boolean,
-  allowlist: Record<string, string>
+  allowlist: Record<string, string>,
 ): string[] {
   return registryIds.filter((id) => !isKnownProvider(id) && !(id in allowlist));
 }
@@ -38,13 +38,13 @@ function main(): void {
     console.error(
       `[provider-consistency] ${orphans.length} entrada(s) no REGISTRY sem provider canônico em providers.ts:\n` +
         orphans.map((id) => `  ✗ ${id}`).join("\n") +
-        `\n  → registre o provider em src/shared/constants/providers.ts ou adicione a KNOWN_REGISTRY_ONLY (scripts/check/check-provider-consistency.ts) com justificativa.`
+        `\n  → registre o provider em src/shared/constants/providers.ts ou adicione a KNOWN_REGISTRY_ONLY (scripts/check/check-provider-consistency.ts) com justificativa.`,
     );
     process.exitCode = 1;
   }
   if (!process.exitCode) {
     console.log(
-      `[provider-consistency] OK — ${Object.keys(REGISTRY).length} entradas REGISTRY, ${canonical.size} providers canônicos, ${Object.keys(KNOWN_REGISTRY_ONLY).length} exceção(ões) conhecida(s)`
+      `[provider-consistency] OK — ${Object.keys(REGISTRY).length} entradas REGISTRY, ${canonical.size} providers canônicos, ${Object.keys(KNOWN_REGISTRY_ONLY).length} exceção(ões) conhecida(s)`,
     );
   }
 }

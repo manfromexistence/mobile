@@ -13,8 +13,6 @@
     }
   ],
   "docs": "https://chanhdai.com/components/testimonial-2",
-  "categories": [
-    "marketing"
-  ],
+  "categories": ["marketing"],
   "type": "registry:component"
 }

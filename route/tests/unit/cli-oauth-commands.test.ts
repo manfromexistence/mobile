@@ -84,7 +84,7 @@ test("runOAuthStatus filtra por provider", async () => {
   globalThis.fetch = ((url: string) => {
     capturedUrl = url;
     return Promise.resolve(
-      makeResp({ providers: CONNECTIONS.filter((c) => c.provider === "gemini") })
+      makeResp({ providers: CONNECTIONS.filter((c) => c.provider === "gemini") }),
     );
   }) as any;
 
@@ -130,7 +130,7 @@ test("runOAuthRevoke com connectionId usa DELETE no provider", async () => {
     const { runOAuthRevoke } = await import("../../bin/cli/commands/oauth.mjs");
     await runOAuthRevoke(
       { provider: "gemini", connectionId: "conn1", yes: true },
-      makeCmd() as any
+      makeCmd() as any,
     );
   });
 
@@ -181,7 +181,7 @@ test("runOAuthStart flow=import com --import-from-system usa auto-import", async
 
 test("providers lista provedores OAuth conhecidos", async () => {
   const { PROVIDERS_WITH_OAUTH_TEST } = await import("../../bin/cli/commands/oauth.mjs").catch(
-    () => ({ PROVIDERS_WITH_OAUTH_TEST: null })
+    () => ({ PROVIDERS_WITH_OAUTH_TEST: null }),
   );
   // validate via runOAuthStart unknown provider exits
   const origExit = process.exit;

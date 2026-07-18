@@ -15,8 +15,8 @@ function sanitizeComboRuntimeConfig(config?: Record<string, any> | null) {
   return Object.fromEntries(
     Object.entries(config).filter(
       ([key, value]) =>
-        value !== undefined && value !== null && !LEGACY_COMBO_RESILIENCE_KEYS.has(key)
-    )
+        value !== undefined && value !== null && !LEGACY_COMBO_RESILIENCE_KEYS.has(key),
+    ),
   );
 }
 
@@ -26,7 +26,7 @@ function sanitizeProviderOverrides(overrides?: Record<string, any> | null) {
     Object.entries(overrides).map(([providerId, config]) => [
       providerId,
       sanitizeComboRuntimeConfig(config),
-    ])
+    ]),
   );
 }
 
@@ -85,7 +85,7 @@ export async function PATCH(request: Request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 

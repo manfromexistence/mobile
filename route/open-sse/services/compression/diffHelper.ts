@@ -45,7 +45,7 @@ function tokenize(text: string): string[] {
 function getDiffSkipWarning(
   original: string,
   compressed: string,
-  options: CompressionPreviewDiffOptions = {}
+  options: CompressionPreviewDiffOptions = {},
 ): string | null {
   const maxTokenProduct = options.maxTokenProduct ?? DEFAULT_MAX_PREVIEW_DIFF_TOKEN_PRODUCT;
   if (maxTokenProduct <= 0) return null;
@@ -59,7 +59,7 @@ function getDiffSkipWarning(
 
 export function buildCompressionDiff(
   original: string,
-  compressed: string
+  compressed: string,
 ): CompressionDiffSegment[] {
   const a = tokenize(original);
   const b = tokenize(compressed);
@@ -145,7 +145,7 @@ function removedRangesFromSegments(segments: CompressionDiffSegment[]): Array<[n
 function buildHeatmap(
   mode: HeatmapMode,
   original: string,
-  segments: CompressionDiffSegment[]
+  segments: CompressionDiffSegment[],
 ): CompressionHeatmap {
   const rawTokens = tokenize(original);
 
@@ -176,7 +176,7 @@ export function buildCompressionPreviewDiff(
   compressed: string,
   stats: CompressionStats | null | undefined,
   options: CompressionPreviewDiffOptions = {},
-  heatmapMode?: HeatmapMode
+  heatmapMode?: HeatmapMode,
 ): CompressionPreviewDiff {
   const validation = validateCompression(original, compressed);
   const preserved = extractPreservedBlocks(original).blocks.map((block) => ({
@@ -190,9 +190,10 @@ export function buildCompressionPreviewDiff(
 
   let fallbackReason: string | undefined;
   if (validation.fallbackApplied) {
-    fallbackReason = validation.errors.length > 0
-      ? `validation-failed: ${validation.errors[0]}`
-      : "validation-failed";
+    fallbackReason =
+      validation.errors.length > 0
+        ? `validation-failed: ${validation.errors[0]}`
+        : "validation-failed";
   } else if (stats?.fallbackApplied) {
     fallbackReason = "compression-fallback";
   }

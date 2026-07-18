@@ -1,21 +1,25 @@
-import { type LanguageModelV3CallOptions, type SharedV3Warning, UnsupportedFunctionalityError } from "@ai-sdk/provider"
-import { codeInterpreterArgsSchema } from "./tool/code-interpreter"
-import { fileSearchArgsSchema } from "./tool/file-search"
-import { webSearchArgsSchema } from "./tool/web-search"
-import { webSearchPreviewArgsSchema } from "./tool/web-search-preview"
-import { imageGenerationArgsSchema } from "./tool/image-generation"
-import type { OpenAIResponsesTool } from "./openai-responses-api-types"
+import {
+  type LanguageModelV3CallOptions,
+  type SharedV3Warning,
+  UnsupportedFunctionalityError,
+} from "@ai-sdk/provider";
+import { codeInterpreterArgsSchema } from "./tool/code-interpreter";
+import { fileSearchArgsSchema } from "./tool/file-search";
+import { webSearchArgsSchema } from "./tool/web-search";
+import { webSearchPreviewArgsSchema } from "./tool/web-search-preview";
+import { imageGenerationArgsSchema } from "./tool/image-generation";
+import type { OpenAIResponsesTool } from "./openai-responses-api-types";
 
 export function prepareResponsesTools({
   tools,
   toolChoice,
   strictJsonSchema,
 }: {
-  tools: LanguageModelV3CallOptions["tools"]
-  toolChoice?: LanguageModelV3CallOptions["toolChoice"]
-  strictJsonSchema: boolean
+  tools: LanguageModelV3CallOptions["tools"];
+  toolChoice?: LanguageModelV3CallOptions["toolChoice"];
+  strictJsonSchema: boolean;
 }): {
-  tools?: Array<OpenAIResponsesTool>
+  tools?: Array<OpenAIResponsesTool>;
   toolChoice?:
     | "auto"
     | "none"
@@ -25,19 +29,19 @@ export function prepareResponsesTools({
     | { type: "web_search" }
     | { type: "function"; name: string }
     | { type: "code_interpreter" }
-    | { type: "image_generation" }
-  toolWarnings: SharedV3Warning[]
+    | { type: "image_generation" };
+  toolWarnings: SharedV3Warning[];
 } {
   // when the tools array is empty, change it to undefined to prevent errors:
-  tools = tools?.length ? tools : undefined
+  tools = tools?.length ? tools : undefined;
 
-  const toolWarnings: SharedV3Warning[] = []
+  const toolWarnings: SharedV3Warning[] = [];
 
   if (tools == null) {
-    return { tools: undefined, toolChoice: undefined, toolWarnings }
+    return { tools: undefined, toolChoice: undefined, toolWarnings };
   }
 
-  const openaiTools: Array<OpenAIResponsesTool> = []
+  const openaiTools: Array<OpenAIResponsesTool> = [];
 
   for (const tool of tools) {
     switch (tool.type) {
@@ -48,12 +52,12 @@ export function prepareResponsesTools({
           description: tool.description,
           parameters: tool.inputSchema,
           strict: strictJsonSchema,
-        })
-        break
+        });
+        break;
       case "provider": {
         switch (tool.id) {
           case "openai.file_search": {
-            const args = fileSearchArgsSchema.parse(tool.args)
+            const args = fileSearchArgsSchema.parse(tool.args);
 
             openaiTools.push({
               type: "file_search",
@@ -66,37 +70,38 @@ export function prepareResponsesTools({
                   }
                 : undefined,
               filters: args.filters,
-            })
+            });
 
-            break
+            break;
           }
           case "openai.local_shell": {
             openaiTools.push({
               type: "local_shell",
-            })
-            break
+            });
+            break;
           }
           case "openai.web_search_preview": {
-            const args = webSearchPreviewArgsSchema.parse(tool.args)
+            const args = webSearchPreviewArgsSchema.parse(tool.args);
             openaiTools.push({
               type: "web_search_preview",
               search_context_size: args.searchContextSize,
               user_location: args.userLocation,
-            })
-            break
+            });
+            break;
           }
           case "openai.web_search": {
-            const args = webSearchArgsSchema.parse(tool.args)
+            const args = webSearchArgsSchema.parse(tool.args);
             openaiTools.push({
               type: "web_search",
-              filters: args.filters != null ? { allowed_domains: args.filters.allowedDomains } : undefined,
+              filters:
+                args.filters != null ? { allowed_domains: args.filters.allowedDomains } : undefined,
               search_context_size: args.searchContextSize,
               user_location: args.userLocation,
-            })
-            break
+            });
+            break;
           }
           case "openai.code_interpreter": {
-            const args = codeInterpreterArgsSchema.parse(tool.args)
+            const args = codeInterpreterArgsSchema.parse(tool.args);
             openaiTools.push({
               type: "code_interpreter",
               container:
@@ -105,11 +110,11 @@ export function prepareResponsesTools({
                   : typeof args.container === "string"
                     ? args.container
                     : { type: "auto", file_ids: args.container.fileIds },
-            })
-            break
+            });
+            break;
           }
           case "openai.image_generation": {
-            const args = imageGenerationArgsSchema.parse(tool.args)
+            const args = imageGenerationArgsSchema.parse(tool.args);
             openaiTools.push({
               type: "image_generation",
               background: args.background,
@@ -127,29 +132,29 @@ export function prepareResponsesTools({
               output_compression: args.outputCompression,
               output_format: args.outputFormat,
               size: args.size,
-            })
-            break
+            });
+            break;
           }
         }
-        break
+        break;
       }
       default:
-        toolWarnings.push({ type: "unsupported", feature: "tool type" })
-        break
+        toolWarnings.push({ type: "unsupported", feature: "tool type" });
+        break;
     }
   }
 
   if (toolChoice == null) {
-    return { tools: openaiTools, toolChoice: undefined, toolWarnings }
+    return { tools: openaiTools, toolChoice: undefined, toolWarnings };
   }
 
-  const type = toolChoice.type
+  const type = toolChoice.type;
 
   switch (type) {
     case "auto":
     case "none":
     case "required":
-      return { tools: openaiTools, toolChoice: type, toolWarnings }
+      return { tools: openaiTools, toolChoice: type, toolWarnings };
     case "tool":
       return {
         tools: openaiTools,
@@ -162,12 +167,12 @@ export function prepareResponsesTools({
             ? { type: toolChoice.toolName }
             : { type: "function", name: toolChoice.toolName },
         toolWarnings,
-      }
+      };
     default: {
-      const _exhaustiveCheck: never = type
+      const _exhaustiveCheck: never = type;
       throw new UnsupportedFunctionalityError({
         functionality: `tool choice type: ${_exhaustiveCheck}`,
-      })
+      });
     }
   }
 }

@@ -11,7 +11,7 @@ test("Grok Build OAuth Provider - config", () => {
   assert.equal(
     grokCli.config.clientId,
     resolvePublicCred("grok_id", "GROK_OAUTH_CLIENT_ID"),
-    "clientId must resolve from the embedded grok_id default"
+    "clientId must resolve from the embedded grok_id default",
   );
   assert.equal(grokCli.config.tokenUrl, "https://auth.x.ai/oauth2/token");
 });
@@ -81,7 +81,7 @@ test("Grok Build OAuth Provider - mapTokens from route-wrapped auth.json", () =>
 
   assert.ok(
     result.accessToken.startsWith("eyJ"),
-    "accessToken should be JWT from wrapped auth.json"
+    "accessToken should be JWT from wrapped auth.json",
   );
   assert.equal(result.refreshToken, "test-refresh-token-wrapped");
   assert.equal(result.email, "test@example.com");
@@ -89,7 +89,7 @@ test("Grok Build OAuth Provider - mapTokens from route-wrapped auth.json", () =>
   assert.deepEqual(
     result.providerSpecificData?.rawAuthJson,
     authJson,
-    "rawAuthJson should equal the original auth.json"
+    "rawAuthJson should equal the original auth.json",
   );
 });
 

@@ -130,7 +130,7 @@ test("builder: synthetic message text STARTS WITH <block>no</block>", async () =
   const text = payload.content.find((b) => b.type === "text")?.text ?? "";
   assert.ok(
     text.startsWith("<block>no</block>"),
-    `expected synthetic text to start with <block>no</block>, got: ${text}`
+    `expected synthetic text to start with <block>no</block>, got: ${text}`,
   );
   assert.ok(!text.includes("<block>yes"), "must not signal BLOCK");
 });
@@ -170,7 +170,7 @@ test("handler: claudeClassifierCompat=auto short-circuits WITHOUT calling upstre
     const text = payload.content.find((b) => b.type === "text")?.text ?? "";
     assert.ok(
       text.startsWith("<block>no</block>"),
-      `expected classifier response to start with <block>no</block>, got: ${text}`
+      `expected classifier response to start with <block>no</block>, got: ${text}`,
     );
   } finally {
     globalThis.fetch = originalFetch;

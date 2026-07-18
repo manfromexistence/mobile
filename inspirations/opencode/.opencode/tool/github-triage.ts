@@ -1,5 +1,5 @@
 /// <reference path="../env.d.ts" />
-import { tool } from "@opencode-ai/plugin"
+import { tool } from "@opencode-ai/plugin";
 
 const TEAM = {
   tui: ["kommander", "simonklee"],
@@ -7,16 +7,16 @@ const TEAM = {
   core: ["jlongster", "rekram1-node", "nexxeln", "kitlangton", "starptech"],
   inference: ["fwang", "MrMushrooooom", "starptech"],
   windows: ["Hona"],
-} as const
+} as const;
 
 function pick<T>(items: readonly T[]) {
-  return items[Math.floor(Math.random() * items.length)]!
+  return items[Math.floor(Math.random() * items.length)]!;
 }
 
 function getIssueNumber(): number {
-  const issue = parseInt(process.env.ISSUE_NUMBER ?? "", 10)
-  if (!issue) throw new Error("ISSUE_NUMBER env var not set")
-  return issue
+  const issue = parseInt(process.env.ISSUE_NUMBER ?? "", 10);
+  if (!issue) throw new Error("ISSUE_NUMBER env var not set");
+  return issue;
 }
 
 async function githubFetch(endpoint: string, options: RequestInit = {}) {
@@ -26,13 +26,15 @@ async function githubFetch(endpoint: string, options: RequestInit = {}) {
       Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
       Accept: "application/vnd.github+json",
       "Content-Type": "application/json",
-      ...(options.headers instanceof Headers ? Object.fromEntries(options.headers.entries()) : options.headers),
+      ...(options.headers instanceof Headers
+        ? Object.fromEntries(options.headers.entries())
+        : options.headers),
     },
-  })
+  });
   if (!response.ok) {
-    throw new Error(`GitHub API error: ${response.status} ${response.statusText}`)
+    throw new Error(`GitHub API error: ${response.status} ${response.statusText}`);
   }
-  return response.json()
+  return response.json();
 }
 
 export default tool({
@@ -45,16 +47,16 @@ Provide the team that should own the issue. This tool picks a random assignee fr
       .describe("The owning team"),
   },
   async execute(args) {
-    const issue = getIssueNumber()
-    const owner = "anomalyco"
-    const repo = "opencode"
-    const assignee = pick(TEAM[args.team])
+    const issue = getIssueNumber();
+    const owner = "anomalyco";
+    const repo = "opencode";
+    const assignee = pick(TEAM[args.team]);
 
     await githubFetch(`/repos/${owner}/${repo}/issues/${issue}/assignees`, {
       method: "POST",
       body: JSON.stringify({ assignees: [assignee] }),
-    })
+    });
 
-    return `Assigned @${assignee} from ${args.team} to issue #${issue}`
+    return `Assigned @${assignee} from ${args.team} to issue #${issue}`;
   },
-})
+});

@@ -1,6 +1,6 @@
-import type { VisualRegionDefinition } from "./regions"
+import type { VisualRegionDefinition } from "./regions";
 
-type RegionSet<RegionName extends string> = readonly RegionName[] | "all"
+type RegionSet<RegionName extends string> = readonly RegionName[] | "all";
 
 export type VisualInvariant<RegionName extends string = string> =
   | { type: "required"; regions: readonly RegionName[] }
@@ -10,52 +10,56 @@ export type VisualInvariant<RegionName extends string = string> =
   | { type: "fixed"; regions: readonly RegionName[]; tolerance?: number }
   | { type: "opacity"; regions: RegionSet<RegionName>; floor?: number }
   | {
-      type: "motion"
-      regions: RegionSet<RegionName>
-      tolerance?: number
-      maxReversals?: number
-      maxPositionReversals?: number
+      type: "motion";
+      regions: RegionSet<RegionName>;
+      tolerance?: number;
+      maxReversals?: number;
+      maxPositionReversals?: number;
     }
   | { type: "continuity"; regions: RegionSet<RegionName> }
   | { type: "label-stability"; regions: RegionSet<RegionName> }
   | { type: "flow"; regions: readonly RegionName[]; overlapTolerance?: number }
   | { type: "preserve-bottom-anchor" }
-  | { type: "acquire-bottom-anchor" }
+  | { type: "acquire-bottom-anchor" };
 
 export type VisualPlan<RegionName extends string = string> = {
-  regionNames?: readonly RegionName[]
-  invariants: readonly VisualInvariant<RegionName>[]
-  markerRequired?: readonly RegionName[]
-  perMarker?: boolean
-  aggregateMotion?: boolean
-}
+  regionNames?: readonly RegionName[];
+  invariants: readonly VisualInvariant<RegionName>[];
+  markerRequired?: readonly RegionName[];
+  perMarker?: boolean;
+  aggregateMotion?: boolean;
+};
 
 export type LegacyVisualStabilityOptions<RegionName extends string = string> = {
-  flow?: RegionName[]
-  motionTolerance?: number
-  opacityFloor?: number
-  overlapTolerance?: number
-  maxReversals?: number
-  maxPositionReversals?: number
-  stable?: RegionName[]
-  fixed?: RegionName[]
-  motion?: RegionName[]
-  unique?: RegionName[]
-  preserveBottomAnchor?: boolean
-  acquireBottomAnchor?: boolean
-  perMarker?: boolean
-  continuousAny?: RegionName[][]
-  required?: RegionName[]
-  aggregateMotion?: boolean
-  inferRequired?: boolean
-}
+  flow?: RegionName[];
+  motionTolerance?: number;
+  opacityFloor?: number;
+  overlapTolerance?: number;
+  maxReversals?: number;
+  maxPositionReversals?: number;
+  stable?: RegionName[];
+  fixed?: RegionName[];
+  motion?: RegionName[];
+  unique?: RegionName[];
+  preserveBottomAnchor?: boolean;
+  acquireBottomAnchor?: boolean;
+  perMarker?: boolean;
+  continuousAny?: RegionName[][];
+  required?: RegionName[];
+  aggregateMotion?: boolean;
+  inferRequired?: boolean;
+};
 
 export function visualPlan<const Regions extends Record<string, VisualRegionDefinition>>(
   regions: Regions,
   invariants: readonly VisualInvariant<Extract<keyof Regions, string>>[],
   options: Omit<VisualPlan<Extract<keyof Regions, string>>, "regionNames" | "invariants"> = {},
 ): VisualPlan<Extract<keyof Regions, string>> {
-  return { ...options, regionNames: Object.keys(regions) as Extract<keyof Regions, string>[], invariants }
+  return {
+    ...options,
+    regionNames: Object.keys(regions) as Extract<keyof Regions, string>[],
+    invariants,
+  };
 }
 
 export function legacyVisualPlan<RegionName extends string>(
@@ -70,7 +74,7 @@ export function legacyVisualPlan<RegionName extends string>(
           ...(options.unique ?? []),
           ...(options.motion ?? []),
           ...(options.flow ?? []),
-        ]
+        ];
   return {
     perMarker: options.perMarker,
     aggregateMotion: options.aggregateMotion,
@@ -105,8 +109,14 @@ export function legacyVisualPlan<RegionName extends string>(
       ...(options.preserveBottomAnchor ? [{ type: "preserve-bottom-anchor" as const }] : []),
       ...(options.acquireBottomAnchor ? [{ type: "acquire-bottom-anchor" as const }] : []),
       ...(options.flow
-        ? [{ type: "flow" as const, regions: options.flow, overlapTolerance: options.overlapTolerance }]
+        ? [
+            {
+              type: "flow" as const,
+              regions: options.flow,
+              overlapTolerance: options.overlapTolerance,
+            },
+          ]
         : []),
     ],
-  }
+  };
 }

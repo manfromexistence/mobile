@@ -18,7 +18,7 @@ const DEFAULT_TIMEOUT_MS = 15000;
  * tests can inject a fake resolver without touching real DNS.
  */
 export type RemoteImageLookup = (
-  hostname: string
+  hostname: string,
 ) => Promise<Array<{ address: string; family: number }>>;
 
 export interface RemoteImageFetchOptions {
@@ -45,8 +45,7 @@ function validateRemoteImageUrl(input: string | URL, guard: OutboundUrlGuardMode
   return guard === "public-only" ? parseAndValidatePublicUrl(input) : parseOutboundUrl(input);
 }
 
-const defaultLookup: RemoteImageLookup = (hostname) =>
-  dns.promises.lookup(hostname, { all: true });
+const defaultLookup: RemoteImageLookup = (hostname) => dns.promises.lookup(hostname, { all: true });
 
 /**
  * Defence against DNS-rebinding SSRF (GHSA-cmhj-wh2f-9cgx). The
@@ -63,7 +62,7 @@ const defaultLookup: RemoteImageLookup = (hostname) =>
 async function assertHostnameResolvesPublic(
   url: URL,
   guard: OutboundUrlGuardMode,
-  lookup: RemoteImageLookup
+  lookup: RemoteImageLookup,
 ): Promise<void> {
   if (guard !== "public-only") return; // private-allowing modes skip this guard
   const hostname = url.hostname;
@@ -135,7 +134,7 @@ async function readResponseBuffer(response: Response, maxBytes: number) {
 
 export async function fetchRemoteImage(
   input: string | URL,
-  options: RemoteImageFetchOptions = {}
+  options: RemoteImageFetchOptions = {},
 ): Promise<RemoteImageFetchResult> {
   const fetchImpl = options.fetchImpl ?? fetch;
   const guard = options.guard ?? getProviderOutboundGuard();

@@ -27,7 +27,7 @@ test("hidePaidModels ON drops the paid-only backend, keeps the free one", () => 
   assert.deepEqual(
     result,
     [FREE],
-    "openai/gpt-4o (paid) must be excluded; agentrouter/claude-opus-4-6 (free) kept"
+    "openai/gpt-4o (paid) must be excluded; agentrouter/claude-opus-4-6 (free) kept",
   );
 });
 
@@ -37,7 +37,12 @@ test("hidePaidModels ON with an all-paid pool degrades to an empty pool", () => 
 });
 
 test("hidePaidModels ON preserves extra candidate fields on kept entries", () => {
-  const enriched = { provider: "agentrouter", model: "claude-opus-4-6", connectionId: "abc", extra: 1 };
+  const enriched = {
+    provider: "agentrouter",
+    model: "claude-opus-4-6",
+    connectionId: "abc",
+    extra: 1,
+  };
   const result = filterPaidOnlyCandidates([enriched, PAID], true);
   assert.deepEqual(result, [enriched], "generic <T> filter must not strip candidate fields");
 });

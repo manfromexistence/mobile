@@ -3,7 +3,7 @@ import {
   FULL_INDEXES,
   OUTLINE_INDEXES,
   distanceFromCenter,
-  rowMajorIndex
+  rowMajorIndex,
 } from "../core/patterns";
 
 describe("pattern maps", () => {

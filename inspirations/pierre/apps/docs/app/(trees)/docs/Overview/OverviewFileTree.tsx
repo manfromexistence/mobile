@@ -1,12 +1,8 @@
-'use client';
+"use client";
 
-import {
-  FileTree,
-  type FileTreePreloadedData,
-  useFileTree,
-} from '@pierre/trees/react';
+import { FileTree, type FileTreePreloadedData, useFileTree } from "@pierre/trees/react";
 
-import type { OverviewFileTreeOptions } from './constants';
+import type { OverviewFileTreeOptions } from "./constants";
 
 interface OverviewFileTreeProps {
   initialExpandedPaths: readonly string[];

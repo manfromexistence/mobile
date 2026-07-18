@@ -80,7 +80,7 @@ function jwtExpMs(jwt: string): number {
 function makeErrorResponse(status: number, message: string): Response {
   return new Response(
     JSON.stringify({ error: { message, type: "upstream_error", code: `HTTP_${status}` } }),
-    { status, headers: { "Content-Type": "application/json" } }
+    { status, headers: { "Content-Type": "application/json" } },
   );
 }
 
@@ -90,7 +90,7 @@ function makeErrorResponse(status: number, message: string): Response {
 async function getSessionId(
   clientJwt: string,
   signal?: AbortSignal | null,
-  log?: ExecuteInput["log"]
+  log?: ExecuteInput["log"],
 ): Promise<string> {
   const resp = await fetch(`${ADAPTA_CLERK_URL}/v1/client`, {
     headers: {
@@ -110,7 +110,7 @@ async function getSessionId(
   const active = sessions.find((s) => s.status === "active");
   if (!active?.id) {
     throw new Error(
-      "No active Clerk session found — your __client cookie may be expired or invalid"
+      "No active Clerk session found — your __client cookie may be expired or invalid",
     );
   }
 
@@ -123,7 +123,7 @@ async function refreshSessionJwt(
   clientJwt: string,
   sessionId: string,
   signal?: AbortSignal | null,
-  log?: ExecuteInput["log"]
+  log?: ExecuteInput["log"],
 ): Promise<string> {
   const resp = await fetch(`${ADAPTA_CLERK_URL}/v1/client/sessions/${sessionId}/tokens`, {
     method: "POST",
@@ -154,7 +154,7 @@ async function refreshSessionJwt(
 async function getSessionJwt(
   clientJwt: string,
   signal?: AbortSignal | null,
-  log?: ExecuteInput["log"]
+  log?: ExecuteInput["log"],
 ): Promise<string> {
   const cached = cachedJwt(clientJwt);
   if (cached) {
@@ -338,7 +338,7 @@ export class AdaptaWebExecutor extends BaseExecutor {
 
   async testConnection(
     credentials: Record<string, unknown>,
-    signal?: AbortSignal
+    signal?: AbortSignal,
   ): Promise<boolean> {
     try {
       const rawKey = String((credentials as Record<string, unknown>)?.apiKey ?? "");
@@ -362,7 +362,7 @@ export class AdaptaWebExecutor extends BaseExecutor {
       return {
         response: makeErrorResponse(
           401,
-          "Missing Adapta credentials — paste your __client cookie from .clerk.agent.adapta.one"
+          "Missing Adapta credentials — paste your __client cookie from .clerk.agent.adapta.one",
         ),
         url: ADAPTA_STREAM_URL,
         headers: {},
@@ -415,7 +415,7 @@ export class AdaptaWebExecutor extends BaseExecutor {
 
     log?.info?.(
       "ADAPTA-WEB",
-      `POST ${ADAPTA_STREAM_URL} | model=${model} aiModelId=${aiModelId} msgs=${adaptaMessages.length}`
+      `POST ${ADAPTA_STREAM_URL} | model=${model} aiModelId=${aiModelId} msgs=${adaptaMessages.length}`,
     );
 
     // 3. Fire request
@@ -495,7 +495,7 @@ export class AdaptaWebExecutor extends BaseExecutor {
       const { content, toolCalls, finishReason } = buildToolAwareResult(
         fullText,
         requestedTools,
-        "adp"
+        "adp",
       );
       if (toolCalls) {
         return {
@@ -513,7 +513,7 @@ export class AdaptaWebExecutor extends BaseExecutor {
                 },
               ],
             }),
-            { status: 200, headers: { "Content-Type": "application/json" } }
+            { status: 200, headers: { "Content-Type": "application/json" } },
           ),
           url: ADAPTA_STREAM_URL,
           headers,
@@ -530,7 +530,7 @@ export class AdaptaWebExecutor extends BaseExecutor {
             choices: [{ index: 0, message: { role: "assistant", content }, finish_reason: "stop" }],
             usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
           }),
-          { status: 200, headers: { "Content-Type": "application/json" } }
+          { status: 200, headers: { "Content-Type": "application/json" } },
         ),
         url: ADAPTA_STREAM_URL,
         headers,
@@ -554,7 +554,7 @@ export class AdaptaWebExecutor extends BaseExecutor {
           ],
           usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       ),
       url: ADAPTA_STREAM_URL,
       headers,

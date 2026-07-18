@@ -53,7 +53,7 @@ test("Command Code omits max_tokens when the client sends max_tokens: -1 (#5166)
   const call = await captureParams({ max_tokens: -1 });
   assert.ok(
     !("max_tokens" in call.body.params),
-    `max_tokens:-1 must be omitted, got params.max_tokens=${call.body.params.max_tokens}`
+    `max_tokens:-1 must be omitted, got params.max_tokens=${call.body.params.max_tokens}`,
   );
 });
 
@@ -61,7 +61,7 @@ test("Command Code omits max_tokens when the client sends max_completion_tokens:
   const call = await captureParams({ max_completion_tokens: -1 });
   assert.ok(
     !("max_tokens" in call.body.params),
-    `max_completion_tokens:-1 must be omitted, got params.max_tokens=${call.body.params.max_tokens}`
+    `max_completion_tokens:-1 must be omitted, got params.max_tokens=${call.body.params.max_tokens}`,
   );
 });
 

@@ -56,7 +56,7 @@ function parseTextualToolCall(text: unknown): { name: string; args: unknown } | 
   // response is still surfaced as a structured OpenAI tool call.
   const normalized = text.replace(/[\u200B-\u200D\uFEFF]/g, "");
   const match = normalized.match(
-    /^[\s\S]*?\[Tool call:\s*([^\]\n]+)\]\s*\nArguments:\s*([\s\S]+?)\s*$/
+    /^[\s\S]*?\[Tool call:\s*([^\]\n]+)\]\s*\nArguments:\s*([\s\S]+?)\s*$/,
   );
   if (!match) return null;
   const name = match[1]?.trim();
@@ -132,7 +132,7 @@ export function translateNonStreamingResponse(
   responseBody: unknown,
   targetFormat: string,
   sourceFormat: string,
-  toolNameMap?: Map<string, string> | null
+  toolNameMap?: Map<string, string> | null,
 ): unknown {
   // If already in source format, return as-is
   if (targetFormat === sourceFormat) {
@@ -221,7 +221,7 @@ export function translateNonStreamingResponse(
 
     if (process.env.DEBUG_RESPONSES_SSE_TO_JSON === "true") {
       console.log(
-        `[ResponsesSSE] ${output.length} output items, ${messageSelection.messageItems.length} message items`
+        `[ResponsesSSE] ${output.length} output items, ${messageSelection.messageItems.length} message items`,
       );
       messageSelection.messageItems.forEach((item, idx) => {
         const textLen = extractMessageOutputText(item).length;
@@ -259,17 +259,17 @@ export function translateNonStreamingResponse(
       const cachedInputTokens = firstPositiveNumber(
         inputTokensDetails.cached_tokens,
         promptTokensDetails.cached_tokens,
-        usage.cache_read_input_tokens
+        usage.cache_read_input_tokens,
       );
       const cacheCreationInputTokens = firstPositiveNumber(
         inputTokensDetails.cache_creation_tokens,
         promptTokensDetails.cache_creation_tokens,
-        usage.cache_creation_input_tokens
+        usage.cache_creation_input_tokens,
       );
       const reasoningTokens = firstPositiveNumber(
         outputTokensDetails.reasoning_tokens,
         completionTokensDetails.reasoning_tokens,
-        usage.reasoning_tokens
+        usage.reasoning_tokens,
       );
 
       result.usage = {
@@ -334,7 +334,7 @@ export function translateNonStreamingResponse(
                   // Capture thoughtSignature from thinking parts (Gemini thinking models)
                   // so it can be stored alongside any subsequent functionCall part.
                   const partThoughtSig = toString(
-                    partObj.thoughtSignature ?? partObj.thought_signature
+                    partObj.thoughtSignature ?? partObj.thought_signature,
                   );
                   if (partThoughtSig) {
                     pendingThoughtSignature = partThoughtSig;
@@ -362,7 +362,7 @@ export function translateNonStreamingResponse(
                   if (typeof inlineData.data === "string" && inlineData.data.length > 0) {
                     const mimeType = toString(
                       inlineData.mimeType ?? inlineData.mime_type,
-                      "image/png"
+                      "image/png",
                     );
                     contentParts.push({
                       type: "image_url",
@@ -421,7 +421,7 @@ export function translateNonStreamingResponse(
               }
 
               let finishReason = normalizeOpenAICompatibleFinishReasonString(
-                toString(candidate.finishReason, "stop")
+                toString(candidate.finishReason, "stop"),
               );
               if (finishReason === "stop" && toolCalls.length > 0) {
                 finishReason = "tool_calls";

@@ -24,30 +24,36 @@
 //   `data.questions`. The footer shows whichever is first. When a reply
 //   event arrives, the queue entry is removed and the footer falls back
 //   to the next pending request or to the prompt view.
-import type { Event, Part, PermissionRequest, QuestionRequest, ToolPart } from "@opencode-ai/sdk/v2"
-import * as Locale from "@/util/locale"
-import { toolView } from "./tool"
-import type { FooterOutput, FooterPatch, FooterView, StreamCommit } from "./types"
+import type {
+  Event,
+  Part,
+  PermissionRequest,
+  QuestionRequest,
+  ToolPart,
+} from "@opencode-ai/sdk/v2";
+import * as Locale from "@/util/locale";
+import { toolView } from "./tool";
+import type { FooterOutput, FooterPatch, FooterView, StreamCommit } from "./types";
 
 const money = new Intl.NumberFormat("en-US", {
   style: "currency",
   currency: "USD",
-})
+});
 
 type Tokens = {
-  input?: number
-  output?: number
-  reasoning?: number
+  input?: number;
+  output?: number;
+  reasoning?: number;
   cache?: {
-    read?: number
-    write?: number
-  }
-}
+    read?: number;
+    write?: number;
+  };
+};
 
-type PartKind = "assistant" | "reasoning" | "user"
-type MessageRole = "assistant" | "user"
-type Dict = Record<string, unknown>
-type SessionCommit = StreamCommit
+type PartKind = "assistant" | "reasoning" | "user";
+type MessageRole = "assistant" | "user";
+type Dict = Record<string, unknown>;
+type SessionCommit = StreamCommit;
 
 // Mutable accumulator for the reducer. Each field tracks a different aspect
 // of the stream so we can produce correct incremental output:
@@ -65,46 +71,46 @@ type SessionCommit = StreamCommit
 // - shell:  shell call ID → chosen transcript source for direct shell calls
 // - echo:   message ID → bash outputs to strip from the next assistant chunk
 type ShellCall = {
-  source: "shell" | "tool"
-  command?: string
-}
+  source: "shell" | "tool";
+  command?: string;
+};
 
 export type SessionData = {
-  includeUserText: boolean
-  announced: boolean
-  ids: Set<string>
-  tools: Set<string>
-  call: Map<string, Dict>
-  shell: Map<string, ShellCall>
-  permissions: PermissionRequest[]
-  questions: QuestionRequest[]
-  role: Map<string, MessageRole>
-  msg: Map<string, string>
-  part: Map<string, PartKind>
-  text: Map<string, string>
-  sent: Map<string, number>
-  visible: Map<string, string>
-  end: Set<string>
-  echo: Map<string, Set<string>>
-}
+  includeUserText: boolean;
+  announced: boolean;
+  ids: Set<string>;
+  tools: Set<string>;
+  call: Map<string, Dict>;
+  shell: Map<string, ShellCall>;
+  permissions: PermissionRequest[];
+  questions: QuestionRequest[];
+  role: Map<string, MessageRole>;
+  msg: Map<string, string>;
+  part: Map<string, PartKind>;
+  text: Map<string, string>;
+  sent: Map<string, number>;
+  visible: Map<string, string>;
+  end: Set<string>;
+  echo: Map<string, Set<string>>;
+};
 
 export type SessionDataInput = {
-  data: SessionData
-  event: Event
-  sessionID: string
-  thinking: boolean
-  limits: Record<string, number>
-}
+  data: SessionData;
+  event: Event;
+  sessionID: string;
+  thinking: boolean;
+  limits: Record<string, number>;
+};
 
 export type SessionDataOutput = {
-  data: SessionData
-  commits: SessionCommit[]
-  footer?: FooterOutput
-}
+  data: SessionData;
+  commits: SessionCommit[];
+  footer?: FooterOutput;
+};
 
 export function createSessionData(
   input: {
-    includeUserText?: boolean
+    includeUserText?: boolean;
   } = {},
 ): SessionData {
   return {
@@ -124,11 +130,11 @@ export function createSessionData(
     visible: new Map(),
     end: new Set(),
     echo: new Map(),
-  }
+  };
 }
 
 function modelKey(provider: string, model: string): string {
-  return `${provider}/${model}`
+  return `${provider}/${model}`;
 }
 
 function formatUsage(
@@ -141,189 +147,198 @@ function formatUsage(
     (tokens?.output ?? 0) +
     (tokens?.reasoning ?? 0) +
     (tokens?.cache?.read ?? 0) +
-    (tokens?.cache?.write ?? 0)
+    (tokens?.cache?.write ?? 0);
 
   if (total <= 0) {
     if (typeof cost === "number" && cost > 0) {
-      return money.format(cost)
+      return money.format(cost);
     }
-    return undefined
+    return undefined;
   }
 
   const text =
-    limit && limit > 0 ? `${Locale.number(total)} (${Math.round((total / limit) * 100)}%)` : Locale.number(total)
+    limit && limit > 0
+      ? `${Locale.number(total)} (${Math.round((total / limit) * 100)}%)`
+      : Locale.number(total);
 
   if (typeof cost === "number" && cost > 0) {
-    return `${text} · ${money.format(cost)}`
+    return `${text} · ${money.format(cost)}`;
   }
 
-  return text
+  return text;
 }
 
 export function formatError(error: {
-  name?: string
-  message?: string
+  name?: string;
+  message?: string;
   data?: {
-    message?: string
-  }
+    message?: string;
+  };
 }): string {
   if (error.data?.message) {
-    return error.data.message
+    return error.data.message;
   }
 
   if (error.message) {
-    return error.message
+    return error.message;
   }
 
   if (error.name) {
-    return error.name
+    return error.name;
   }
 
-  return "unknown error"
+  return "unknown error";
 }
 
 function isAbort(error: { name?: string } | undefined): boolean {
-  return error?.name === "MessageAbortedError"
+  return error?.name === "MessageAbortedError";
 }
 
 function msgErr(id: string): string {
-  return `msg:${id}:error`
+  return `msg:${id}:error`;
 }
 
 function patch(patch?: FooterPatch, view?: FooterView): FooterOutput | undefined {
   if (!patch && !view) {
-    return undefined
+    return undefined;
   }
 
   return {
     patch,
     view,
-  }
+  };
 }
 
-function out(data: SessionData, commits: SessionCommit[], footer?: FooterOutput): SessionDataOutput {
+function out(
+  data: SessionData,
+  commits: SessionCommit[],
+  footer?: FooterOutput,
+): SessionDataOutput {
   if (!footer) {
     return {
       data,
       commits,
-    }
+    };
   }
 
   return {
     data,
     commits,
     footer,
-  }
+  };
 }
 
-export function pickBlockerView(input: { permission?: PermissionRequest; question?: QuestionRequest }): FooterView {
+export function pickBlockerView(input: {
+  permission?: PermissionRequest;
+  question?: QuestionRequest;
+}): FooterView {
   if (input.permission) {
-    return { type: "permission", request: input.permission }
+    return { type: "permission", request: input.permission };
   }
 
   if (input.question) {
-    return { type: "question", request: input.question }
+    return { type: "question", request: input.question };
   }
 
-  return { type: "prompt" }
+  return { type: "prompt" };
 }
 
 export function blockerStatus(view: FooterView) {
   if (view.type === "permission") {
-    return "awaiting permission"
+    return "awaiting permission";
   }
 
   if (view.type === "question") {
-    return "awaiting answer"
+    return "awaiting answer";
   }
 
-  return ""
+  return "";
 }
 
 function pickSessionView(data: SessionData): FooterView {
   return pickBlockerView({
     permission: data.permissions[0],
     question: data.questions[0],
-  })
+  });
 }
 
 function queueFooter(data: SessionData): FooterOutput {
-  const view = pickSessionView(data)
+  const view = pickSessionView(data);
 
   return {
     view,
     patch: { status: blockerStatus(view) },
-  }
+  };
 }
 
 function queueOut(data: SessionData, commits: SessionCommit[]): SessionDataOutput {
-  return out(data, commits, queueFooter(data))
+  return out(data, commits, queueFooter(data));
 }
 
 function upsert<T extends { id: string }>(list: T[], item: T) {
-  const idx = list.findIndex((entry) => entry.id === item.id)
+  const idx = list.findIndex((entry) => entry.id === item.id);
   if (idx === -1) {
-    list.push(item)
-    return
+    list.push(item);
+    return;
   }
 
-  list[idx] = item
+  list[idx] = item;
 }
 
 function remove(list: Array<{ id: string }>, id: string): boolean {
-  const idx = list.findIndex((entry) => entry.id === id)
+  const idx = list.findIndex((entry) => entry.id === id);
   if (idx === -1) {
-    return false
+    return false;
   }
 
-  list.splice(idx, 1)
-  return true
+  list.splice(idx, 1);
+  return true;
 }
 
 export function bootstrapSessionData(input: {
-  data: SessionData
+  data: SessionData;
   messages: Array<{
-    parts: Part[]
-  }>
-  permissions: PermissionRequest[]
-  questions: QuestionRequest[]
+    parts: Part[];
+  }>;
+  permissions: PermissionRequest[];
+  questions: QuestionRequest[];
 }) {
   for (const message of input.messages) {
     for (const part of message.parts) {
       if (part.type !== "tool") {
-        continue
+        continue;
       }
 
-      input.data.call.set(key(part.messageID, part.callID), part.state.input)
+      input.data.call.set(key(part.messageID, part.callID), part.state.input);
     }
   }
 
   for (const request of input.permissions.slice().sort((a, b) => a.id.localeCompare(b.id))) {
-    upsert(input.data.permissions, enrichPermission(input.data, request))
+    upsert(input.data.permissions, enrichPermission(input.data, request));
   }
 
   for (const request of input.questions.slice().sort((a, b) => a.id.localeCompare(b.id))) {
-    upsert(input.data.questions, request)
+    upsert(input.data.questions, request);
   }
 }
 
 function key(msg: string, call: string): string {
-  return `${msg}:${call}`
+  return `${msg}:${call}`;
 }
 
 function enrichPermission(data: SessionData, request: PermissionRequest): PermissionRequest {
   if (!request.tool) {
-    return request
+    return request;
   }
 
-  const input = data.call.get(key(request.tool.messageID, request.tool.callID))
+  const input = data.call.get(key(request.tool.messageID, request.tool.callID));
   if (!input) {
-    return request
+    return request;
   }
 
-  const meta = request.metadata ?? {}
+  const meta = request.metadata ?? {};
   if (meta.input === input) {
-    return request
+    return request;
   }
 
   return {
@@ -332,7 +347,7 @@ function enrichPermission(data: SessionData, request: PermissionRequest): Permis
       ...meta,
       input,
     },
-  }
+  };
 }
 
 // Updates the active permission request when the matching tool part gets
@@ -340,35 +355,39 @@ function enrichPermission(data: SessionData, request: PermissionRequest): Permis
 // tool's evolving state. Only triggers a footer update if the currently
 // displayed permission was the one that changed.
 function syncPermission(data: SessionData, part: ToolPart): FooterOutput | undefined {
-  data.call.set(key(part.messageID, part.callID), part.state.input)
+  data.call.set(key(part.messageID, part.callID), part.state.input);
   if (data.permissions.length === 0) {
-    return undefined
+    return undefined;
   }
 
-  let changed = false
-  let active = false
+  let changed = false;
+  let active = false;
   data.permissions = data.permissions.map((request, index) => {
-    if (!request.tool || request.tool.messageID !== part.messageID || request.tool.callID !== part.callID) {
-      return request
+    if (
+      !request.tool ||
+      request.tool.messageID !== part.messageID ||
+      request.tool.callID !== part.callID
+    ) {
+      return request;
     }
 
-    const next = enrichPermission(data, request)
+    const next = enrichPermission(data, request);
     if (next === request) {
-      return request
+      return request;
     }
 
-    changed = true
-    active ||= index === 0
-    return next
-  })
+    changed = true;
+    active ||= index === 0;
+    return next;
+  });
 
   if (!changed || !active) {
-    return undefined
+    return undefined;
   }
 
   return {
     view: pickSessionView(data),
-  }
+  };
 }
 
 // Question tool replies can complete without a matching question.replied event.
@@ -376,46 +395,46 @@ function syncPermission(data: SessionData, part: ToolPart): FooterOutput | undef
 // the footer can return to the next blocker or to the prompt.
 function syncQuestion(data: SessionData, part: ToolPart): FooterOutput | undefined {
   if (part.tool !== "question") {
-    return undefined
+    return undefined;
   }
 
   if (part.state.status !== "completed" && part.state.status !== "error") {
-    return undefined
+    return undefined;
   }
 
   const next = data.questions.filter(
     (request) => request.tool?.messageID !== part.messageID || request.tool?.callID !== part.callID,
-  )
+  );
   if (next.length === data.questions.length) {
-    return undefined
+    return undefined;
   }
 
-  data.questions = next
-  return queueFooter(data)
+  data.questions = next;
+  return queueFooter(data);
 }
 
 function toolStatus(part: ToolPart): string {
   if (part.tool !== "task") {
-    return `running ${part.tool}`
+    return `running ${part.tool}`;
   }
 
   const state = part.state as {
     input?: {
-      description?: unknown
-      subagent_type?: unknown
-    }
-  }
-  const desc = state.input?.description
+      description?: unknown;
+      subagent_type?: unknown;
+    };
+  };
+  const desc = state.input?.description;
   if (typeof desc === "string" && desc.trim()) {
-    return `running ${desc.trim()}`
+    return `running ${desc.trim()}`;
   }
 
-  const type = state.input?.subagent_type
+  const type = state.input?.subagent_type;
   if (typeof type === "string" && type.trim()) {
-    return `running ${type.trim()}`
+    return `running ${type.trim()}`;
   }
 
-  return "running task"
+  return "running task";
 }
 
 // Returns true if we can flush this part's text to scrollback.
@@ -425,35 +444,35 @@ function toolStatus(part: ToolPart): string {
 // echo. If we haven't received the message.updated event yet, we return
 // false and the text stays buffered until replay() flushes it.
 function ready(data: SessionData, partID: string): boolean {
-  const msg = data.msg.get(partID)
+  const msg = data.msg.get(partID);
   if (!msg) {
-    return true
+    return true;
   }
 
-  const role = data.role.get(msg)
+  const role = data.role.get(msg);
   if (!role) {
-    return false
+    return false;
   }
 
   if (role === "assistant") {
-    return true
+    return true;
   }
 
-  return data.includeUserText && role === "user"
+  return data.includeUserText && role === "user";
 }
 
 function syncText(data: SessionData, partID: string, next: string) {
-  const prev = data.text.get(partID) ?? ""
+  const prev = data.text.get(partID) ?? "";
   if (!next) {
-    return prev
+    return prev;
   }
 
   if (!prev || next.length >= prev.length) {
-    data.text.set(partID, next)
-    return next
+    data.text.set(partID, next);
+    return next;
   }
 
-  return prev
+  return prev;
 }
 
 // Records bash tool output for echo stripping. Some models echo bash output
@@ -461,87 +480,92 @@ function syncText(data: SessionData, partID: string, next: string) {
 // trimmed forms so stripEcho() can match either.
 function stashEcho(data: SessionData, part: ToolPart) {
   if (part.tool !== "bash") {
-    return
+    return;
   }
 
   if (typeof part.messageID !== "string" || !part.messageID) {
-    return
+    return;
   }
 
-  const output = "output" in part.state ? part.state.output : undefined
+  const output = "output" in part.state ? part.state.output : undefined;
   if (typeof output !== "string") {
-    return
+    return;
   }
 
-  const text = output.replace(/^\n+/, "")
+  const text = output.replace(/^\n+/, "");
   if (!text.trim()) {
-    return
+    return;
   }
 
-  const set = data.echo.get(part.messageID) ?? new Set<string>()
-  set.add(text)
-  const trim = text.replace(/\n+$/, "")
+  const set = data.echo.get(part.messageID) ?? new Set<string>();
+  set.add(text);
+  const trim = text.replace(/\n+$/, "");
   if (trim && trim !== text) {
-    set.add(trim)
+    set.add(trim);
   }
-  data.echo.set(part.messageID, set)
+  data.echo.set(part.messageID, set);
 }
 
 function stripEcho(data: SessionData, msg: string | undefined, chunk: string): string {
   if (!msg) {
-    return chunk
+    return chunk;
   }
 
-  const set = data.echo.get(msg)
+  const set = data.echo.get(msg);
   if (!set || set.size === 0) {
-    return chunk
+    return chunk;
   }
 
-  data.echo.delete(msg)
-  const list = [...set].sort((a, b) => b.length - a.length)
+  data.echo.delete(msg);
+  const list = [...set].sort((a, b) => b.length - a.length);
   for (const item of list) {
     if (!item || !chunk.startsWith(item)) {
-      continue
+      continue;
     }
 
-    return chunk.slice(item.length).replace(/^\n+/, "")
+    return chunk.slice(item.length).replace(/^\n+/, "");
   }
 
-  return chunk
+  return chunk;
 }
 
-function flushPart(data: SessionData, commits: SessionCommit[], partID: string, interrupted = false) {
-  const kind = data.part.get(partID)
+function flushPart(
+  data: SessionData,
+  commits: SessionCommit[],
+  partID: string,
+  interrupted = false,
+) {
+  const kind = data.part.get(partID);
   if (!kind) {
-    return
+    return;
   }
 
-  const text = data.text.get(partID) ?? ""
-  const sent = data.sent.get(partID) ?? 0
-  let chunk = text.slice(sent)
-  const msg = data.msg.get(partID)
+  const text = data.text.get(partID) ?? "";
+  const sent = data.sent.get(partID) ?? 0;
+  let chunk = text.slice(sent);
+  const msg = data.msg.get(partID);
 
   if (sent === 0) {
-    chunk = chunk.replace(/^\n+/, "")
+    chunk = chunk.replace(/^\n+/, "");
     // Some models emit a standalone whitespace token before real content.
     // Keep buffering until we have visible text so scrollback doesn't get a blank row.
     if (!chunk.trim()) {
-      return
+      return;
     }
     if (kind === "reasoning" && chunk) {
-      chunk = `Thinking: ${chunk.replace(/\[REDACTED\]/g, "")}`
+      chunk = `Thinking: ${chunk.replace(/\[REDACTED\]/g, "")}`;
     }
     if (kind === "assistant" && chunk) {
-      chunk = stripEcho(data, msg, chunk)
+      chunk = stripEcho(data, msg, chunk);
       if (!chunk.trim()) {
-        return
+        return;
       }
     }
   }
 
   if (chunk) {
-    data.sent.set(partID, text.length)
-    data.visible.set(partID, (data.visible.get(partID) ?? "") + chunk)
+    data.sent.set(partID, text.length);
+    data.visible.set(partID, (data.visible.get(partID) ?? "") + chunk);
     commits.push({
       kind,
       text: chunk,
@@ -549,11 +573,11 @@ function flushPart(data: SessionData, commits: SessionCommit[], partID: string, 
       source: kind === "user" ? "system" : kind,
       messageID: msg,
       partID,
-    })
+    });
   }
 
   if (!interrupted) {
-    return
+    return;
   }
 
   commits.push({
@@ -564,58 +588,64 @@ function flushPart(data: SessionData, commits: SessionCommit[], partID: string, 
     messageID: msg,
     partID,
     interrupted: true,
-  })
+  });
 }
 
 function drop(data: SessionData, partID: string) {
-  data.part.delete(partID)
-  data.text.delete(partID)
-  data.sent.delete(partID)
-  data.visible.delete(partID)
-  data.msg.delete(partID)
-  data.end.delete(partID)
+  data.part.delete(partID);
+  data.text.delete(partID);
+  data.sent.delete(partID);
+  data.visible.delete(partID);
+  data.msg.delete(partID);
+  data.end.delete(partID);
 }
 
 // Called when we learn a message's role (from message.updated). Flushes any
 // buffered text parts that were waiting on role confirmation. User-role
 // parts are silently dropped.
-function replay(data: SessionData, commits: SessionCommit[], messageID: string, role: MessageRole, thinking: boolean) {
+function replay(
+  data: SessionData,
+  commits: SessionCommit[],
+  messageID: string,
+  role: MessageRole,
+  thinking: boolean,
+) {
   for (const [partID, msg] of data.msg.entries()) {
     if (msg !== messageID || data.ids.has(partID)) {
-      continue
+      continue;
     }
 
     if (role === "user" && !data.includeUserText) {
-      data.ids.add(partID)
-      drop(data, partID)
-      continue
+      data.ids.add(partID);
+      drop(data, partID);
+      continue;
     }
 
-    const kind = data.part.get(partID)
+    const kind = data.part.get(partID);
     if (!kind) {
-      continue
+      continue;
     }
 
     if (role === "user" && kind === "assistant") {
-      data.part.set(partID, "user")
+      data.part.set(partID, "user");
     }
 
     if (kind === "reasoning" && !thinking) {
       if (data.end.has(partID)) {
-        data.ids.add(partID)
+        data.ids.add(partID);
       }
-      drop(data, partID)
-      continue
+      drop(data, partID);
+      continue;
     }
 
-    flushPart(data, commits, partID)
+    flushPart(data, commits, partID);
 
     if (!data.end.has(partID)) {
-      continue
+      continue;
     }
 
-    data.ids.add(partID)
-    drop(data, partID)
+    data.ids.add(partID);
+    drop(data, partID);
   }
 }
 
@@ -631,49 +661,54 @@ function toolCommit(
     tool: part.tool,
     part,
     ...next,
-  }
+  };
 }
 
 function shellPartID(callID: string): string {
-  return `shell:${callID}`
+  return `shell:${callID}`;
 }
 
-function claimShell(data: SessionData, callID: string, source: ShellCall["source"], command?: string): ShellCall {
-  const current = data.shell.get(callID)
+function claimShell(
+  data: SessionData,
+  callID: string,
+  source: ShellCall["source"],
+  command?: string,
+): ShellCall {
+  const current = data.shell.get(callID);
   if (current) {
     if (command && !current.command) {
-      current.command = command
+      current.command = command;
     }
 
-    return current
+    return current;
   }
 
   const next = {
     source,
     ...(command ? { command } : {}),
-  } satisfies ShellCall
-  data.shell.set(callID, next)
-  return next
+  } satisfies ShellCall;
+  data.shell.set(callID, next);
+  return next;
 }
 
 function bashCommand(part: ToolPart): string | undefined {
   if (part.tool !== "bash") {
-    return undefined
+    return undefined;
   }
 
-  const input = part.state.input
+  const input = part.state.input;
   if (!input || typeof input !== "object" || Array.isArray(input)) {
-    return undefined
+    return undefined;
   }
 
-  const command = Reflect.get(input, "command")
-  return typeof command === "string" ? command : undefined
+  const command = Reflect.get(input, "command");
+  return typeof command === "string" ? command : undefined;
 }
 
 function shellCommit(
   input: {
-    callID: string
-    command: string
+    callID: string;
+    command: string;
   },
   next: Pick<SessionCommit, "text" | "phase" | "toolState">,
 ): SessionCommit {
@@ -684,7 +719,7 @@ function shellCommit(
     tool: "bash",
     shell: input,
     ...next,
-  }
+  };
 }
 
 function startShell(callID: string, command: string): SessionCommit {
@@ -698,7 +733,7 @@ function startShell(callID: string, command: string): SessionCommit {
       phase: "start",
       toolState: "running",
     },
-  )
+  );
 }
 
 function doneShell(callID: string, command: string, output: string): SessionCommit {
@@ -712,7 +747,7 @@ function doneShell(callID: string, command: string, output: string): SessionComm
       phase: "progress",
       toolState: "completed",
     },
-  )
+  );
 }
 
 function startTool(part: ToolPart): SessionCommit {
@@ -720,7 +755,7 @@ function startTool(part: ToolPart): SessionCommit {
     text: toolStatus(part),
     phase: "start",
     toolState: "running",
-  })
+  });
 }
 
 function doneTool(part: ToolPart): SessionCommit {
@@ -728,7 +763,7 @@ function doneTool(part: ToolPart): SessionCommit {
     text: "",
     phase: "final",
     toolState: "completed",
-  })
+  });
 }
 
 function failTool(part: ToolPart, text: string): SessionCommit {
@@ -737,26 +772,26 @@ function failTool(part: ToolPart, text: string): SessionCommit {
     phase: "final",
     toolState: "error",
     toolError: text,
-  })
+  });
 }
 
 // Emits "interrupted" final entries for all in-flight parts. Called when a turn is aborted.
 export function flushInterrupted(data: SessionData, commits: SessionCommit[]) {
   for (const partID of data.part.keys()) {
     if (data.ids.has(partID)) {
-      continue
+      continue;
     }
 
-    const msg = data.msg.get(partID)
+    const msg = data.msg.get(partID);
     if (msg && data.role.get(msg) === "user" && !data.includeUserText) {
-      data.ids.add(partID)
-      drop(data, partID)
-      continue
+      data.ids.add(partID);
+      drop(data, partID);
+      continue;
     }
 
-    flushPart(data, commits, partID, true)
-    data.ids.add(partID)
-    drop(data, partID)
+    flushPart(data, commits, partID, true);
+    data.ids.add(partID);
+    drop(data, partID);
   }
 }
 
@@ -771,107 +806,112 @@ export function flushInterrupted(data: SessionData, commits: SessionCommit[]) {
 //   question.*           → manage the question queue, drive footer view
 //   session.error        → emit error scrollback entry
 export function reduceSessionData(input: SessionDataInput): SessionDataOutput {
-  const commits: SessionCommit[] = []
-  const data = input.data
-  const event = input.event
+  const commits: SessionCommit[] = [];
+  const data = input.data;
+  const event = input.event;
 
   if (event.type === "session.next.shell.started") {
     if (event.properties.sessionID !== input.sessionID) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
-    const shell = claimShell(data, event.properties.callID, "shell", event.properties.command)
+    const shell = claimShell(data, event.properties.callID, "shell", event.properties.command);
     if (shell.source !== "shell") {
-      return out(data, commits)
+      return out(data, commits);
     }
 
-    const partID = shellPartID(event.properties.callID)
+    const partID = shellPartID(event.properties.callID);
     if (data.ids.has(partID) || data.tools.has(partID)) {
-      return out(data, commits, patch({ status: "running shell" }))
+      return out(data, commits, patch({ status: "running shell" }));
     }
 
-    data.tools.add(partID)
-    commits.push(startShell(event.properties.callID, shell.command ?? event.properties.command))
-    return out(data, commits, patch({ status: "running shell" }))
+    data.tools.add(partID);
+    commits.push(startShell(event.properties.callID, shell.command ?? event.properties.command));
+    return out(data, commits, patch({ status: "running shell" }));
   }
 
   if (event.type === "session.next.shell.ended") {
     if (event.properties.sessionID !== input.sessionID) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
-    const shell = claimShell(data, event.properties.callID, "shell")
+    const shell = claimShell(data, event.properties.callID, "shell");
     if (shell.source !== "shell") {
-      return out(data, commits)
+      return out(data, commits);
     }
 
-    const partID = shellPartID(event.properties.callID)
-    const seen = data.tools.has(partID)
-    const command = shell.command ?? ""
-    data.tools.delete(partID)
+    const partID = shellPartID(event.properties.callID);
+    const seen = data.tools.has(partID);
+    const command = shell.command ?? "";
+    data.tools.delete(partID);
     if (data.ids.has(partID)) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
     if (!seen && command) {
-      commits.push(startShell(event.properties.callID, command))
+      commits.push(startShell(event.properties.callID, command));
     }
 
-    data.ids.add(partID)
-    commits.push(doneShell(event.properties.callID, command, event.properties.output))
-    return out(data, commits)
+    data.ids.add(partID);
+    commits.push(doneShell(event.properties.callID, command, event.properties.output));
+    return out(data, commits);
   }
 
   if (event.type === "message.updated") {
     if (event.properties.sessionID !== input.sessionID) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
-    const info = event.properties.info
+    const info = event.properties.info;
     if (typeof info.id === "string") {
-      data.role.set(info.id, info.role)
-      replay(data, commits, info.id, info.role, input.thinking)
+      data.role.set(info.id, info.role);
+      replay(data, commits, info.id, info.role, input.thinking);
     }
 
     if (info.role !== "assistant") {
-      return out(data, commits)
+      return out(data, commits);
     }
 
-    let next: FooterPatch | undefined
+    let next: FooterPatch | undefined;
     if (!data.announced) {
-      data.announced = true
-      next = { status: "assistant responding" }
+      data.announced = true;
+      next = { status: "assistant responding" };
     }
 
     const usage = formatUsage(
       info.tokens,
       input.limits[modelKey(info.providerID, info.modelID)],
       typeof info.cost === "number" ? info.cost : undefined,
-    )
+    );
     if (usage) {
       next = {
         ...next,
         usage,
-      }
+      };
     }
 
-    if (typeof info.id === "string" && info.error && !isAbort(info.error) && !data.ids.has(msgErr(info.id))) {
-      data.ids.add(msgErr(info.id))
+    if (
+      typeof info.id === "string" &&
+      info.error &&
+      !isAbort(info.error) &&
+      !data.ids.has(msgErr(info.id))
+    ) {
+      data.ids.add(msgErr(info.id));
       commits.push({
         kind: "error",
         text: formatError(info.error),
         phase: "start",
         source: "system",
         messageID: info.id,
-      })
+      });
     }
 
-    return out(data, commits, patch(next))
+    return out(data, commits, patch(next));
   }
 
   if (event.type === "message.part.delta") {
     if (event.properties.sessionID !== input.sessionID) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
     if (
@@ -879,85 +919,85 @@ export function reduceSessionData(input: SessionDataInput): SessionDataOutput {
       typeof event.properties.field !== "string" ||
       typeof event.properties.delta !== "string"
     ) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
     if (event.properties.field !== "text") {
-      return out(data, commits)
+      return out(data, commits);
     }
 
-    const partID = event.properties.partID
+    const partID = event.properties.partID;
     if (data.ids.has(partID)) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
     if (typeof event.properties.messageID === "string") {
-      data.msg.set(partID, event.properties.messageID)
+      data.msg.set(partID, event.properties.messageID);
     }
 
-    const text = data.text.get(partID) ?? ""
-    data.text.set(partID, text + event.properties.delta)
+    const text = data.text.get(partID) ?? "";
+    data.text.set(partID, text + event.properties.delta);
 
-    const kind = data.part.get(partID)
+    const kind = data.part.get(partID);
     if (!kind) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
     if (kind === "reasoning" && !input.thinking) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
     if (!ready(data, partID)) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
-    flushPart(data, commits, partID)
-    return out(data, commits)
+    flushPart(data, commits, partID);
+    return out(data, commits);
   }
 
   if (event.type === "message.part.updated") {
-    const part = event.properties.part
+    const part = event.properties.part;
     if (part.sessionID !== input.sessionID) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
     if (part.type === "tool") {
-      const view = syncPermission(data, part) ?? syncQuestion(data, part)
+      const view = syncPermission(data, part) ?? syncQuestion(data, part);
       if (part.tool === "bash" && part.callID) {
         if (claimShell(data, part.callID, "tool", bashCommand(part)).source === "shell") {
-          return out(data, commits, view)
+          return out(data, commits, view);
         }
       }
 
       if (part.state.status === "running") {
         if (data.ids.has(part.id)) {
-          return out(data, commits, view)
+          return out(data, commits, view);
         }
 
         if (!data.tools.has(part.id)) {
-          data.tools.add(part.id)
-          commits.push(startTool(part))
+          data.tools.add(part.id);
+          commits.push(startTool(part));
         }
 
-        return out(data, commits, view ?? patch({ status: toolStatus(part) }))
+        return out(data, commits, view ?? patch({ status: toolStatus(part) }));
       }
 
       if (part.state.status === "completed") {
-        const seen = data.tools.has(part.id)
-        const mode = toolView(part.tool)
-        data.tools.delete(part.id)
+        const seen = data.tools.has(part.id);
+        const mode = toolView(part.tool);
+        data.tools.delete(part.id);
         if (data.ids.has(part.id)) {
-          return out(data, commits, view)
+          return out(data, commits, view);
         }
 
         if (!seen) {
-          commits.push(startTool(part))
+          commits.push(startTool(part));
         }
 
-        data.ids.add(part.id)
-        stashEcho(data, part)
+        data.ids.add(part.id);
+        stashEcho(data, part);
 
-        const output = part.state.output
+        const output = part.state.output;
         if (mode.output && typeof output === "string" && output.trim()) {
           commits.push({
             kind: "tool",
@@ -969,135 +1009,137 @@ export function reduceSessionData(input: SessionDataInput): SessionDataOutput {
             tool: part.tool,
             part,
             toolState: "completed",
-          })
+          });
         }
 
         if (mode.final) {
-          commits.push(doneTool(part))
+          commits.push(doneTool(part));
         }
 
-        return out(data, commits, view)
+        return out(data, commits, view);
       }
 
       if (part.state.status === "error") {
-        const seen = data.tools.has(part.id)
-        data.tools.delete(part.id)
+        const seen = data.tools.has(part.id);
+        data.tools.delete(part.id);
         if (data.ids.has(part.id)) {
-          return out(data, commits, view)
+          return out(data, commits, view);
         }
 
         if (!seen) {
-          commits.push(startTool(part))
+          commits.push(startTool(part));
         }
 
-        data.ids.add(part.id)
+        data.ids.add(part.id);
         const text =
-          typeof part.state.error === "string" && part.state.error.trim() ? part.state.error : "unknown error"
-        commits.push(failTool(part, text))
-        return out(data, commits, view)
+          typeof part.state.error === "string" && part.state.error.trim()
+            ? part.state.error
+            : "unknown error";
+        commits.push(failTool(part, text));
+        return out(data, commits, view);
       }
     }
 
     if (part.type !== "text" && part.type !== "reasoning") {
-      return out(data, commits)
+      return out(data, commits);
     }
 
     if (data.ids.has(part.id)) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
-    const kind = part.type === "text" ? "assistant" : "reasoning"
+    const kind = part.type === "text" ? "assistant" : "reasoning";
     if (typeof part.messageID === "string") {
-      data.msg.set(part.id, part.messageID)
+      data.msg.set(part.id, part.messageID);
     }
 
-    const msg = part.messageID
-    const role = msg ? data.role.get(msg) : undefined
+    const msg = part.messageID;
+    const role = msg ? data.role.get(msg) : undefined;
     if (role === "user" && part.type === "text" && !data.includeUserText) {
-      data.ids.add(part.id)
-      drop(data, part.id)
-      return out(data, commits)
+      data.ids.add(part.id);
+      drop(data, part.id);
+      return out(data, commits);
     }
 
     if (kind === "reasoning" && !input.thinking) {
       if (part.time?.end) {
-        data.ids.add(part.id)
+        data.ids.add(part.id);
       }
-      drop(data, part.id)
-      return out(data, commits)
+      drop(data, part.id);
+      return out(data, commits);
     }
 
-    data.part.set(part.id, role === "user" && kind === "assistant" ? "user" : kind)
-    syncText(data, part.id, part.text)
+    data.part.set(part.id, role === "user" && kind === "assistant" ? "user" : kind);
+    syncText(data, part.id, part.text);
 
     if (part.time?.end) {
-      data.end.add(part.id)
+      data.end.add(part.id);
     }
 
     if (msg && !role) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
     if (!ready(data, part.id)) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
-    flushPart(data, commits, part.id)
+    flushPart(data, commits, part.id);
 
     if (!part.time?.end) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
-    data.ids.add(part.id)
-    drop(data, part.id)
-    return out(data, commits)
+    data.ids.add(part.id);
+    drop(data, part.id);
+    return out(data, commits);
   }
 
   if (event.type === "permission.asked") {
     if (event.properties.sessionID !== input.sessionID) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
-    upsert(data.permissions, enrichPermission(data, event.properties))
-    return queueOut(data, commits)
+    upsert(data.permissions, enrichPermission(data, event.properties));
+    return queueOut(data, commits);
   }
 
   if (event.type === "permission.replied") {
     if (event.properties.sessionID !== input.sessionID) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
     if (!remove(data.permissions, event.properties.requestID)) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
-    return queueOut(data, commits)
+    return queueOut(data, commits);
   }
 
   if (event.type === "question.asked") {
     if (event.properties.sessionID !== input.sessionID) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
-    upsert(data.questions, event.properties)
-    return queueOut(data, commits)
+    upsert(data.questions, event.properties);
+    return queueOut(data, commits);
   }
 
   if (event.type === "question.replied" || event.type === "question.rejected") {
     if (event.properties.sessionID !== input.sessionID) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
     if (!remove(data.questions, event.properties.requestID)) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
-    return queueOut(data, commits)
+    return queueOut(data, commits);
   }
 
   if (event.type === "session.error") {
     if (event.properties.sessionID !== input.sessionID || !event.properties.error) {
-      return out(data, commits)
+      return out(data, commits);
     }
 
     commits.push({
@@ -1105,9 +1147,9 @@ export function reduceSessionData(input: SessionDataInput): SessionDataOutput {
       text: formatError(event.properties.error),
       phase: "start",
       source: "system",
-    })
-    return out(data, commits)
+    });
+    return out(data, commits);
   }
 
-  return out(data, commits)
+  return out(data, commits);
 }

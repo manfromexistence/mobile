@@ -40,7 +40,7 @@ export function recordCacheStats(entry: CacheStatsEntry): void {
     entry.estimatedCacheHit ? 1 : 0,
     entry.tokensSavedCompression,
     entry.tokensSavedCaching,
-    entry.netSavings
+    entry.netSavings,
   );
 }
 
@@ -53,14 +53,14 @@ export function getCacheStatsSummary(since?: Date): CacheStatsSummary {
   const globalRow = since
     ? (db
         .prepare(
-          `SELECT COUNT(*) as totalRequests, AVG(net_savings) as avgNetSavings, SUM(estimated_cache_hit) * 1.0 / COUNT(*) as cacheHitRate FROM compression_cache_stats WHERE created_at >= ?`
+          `SELECT COUNT(*) as totalRequests, AVG(net_savings) as avgNetSavings, SUM(estimated_cache_hit) * 1.0 / COUNT(*) as cacheHitRate FROM compression_cache_stats WHERE created_at >= ?`,
         )
         .get(since.toISOString()) as
         | { totalRequests: number; avgNetSavings: number; cacheHitRate: number }
         | undefined)
     : (db
         .prepare(
-          `SELECT COUNT(*) as totalRequests, AVG(net_savings) as avgNetSavings, SUM(estimated_cache_hit) * 1.0 / COUNT(*) as cacheHitRate FROM compression_cache_stats`
+          `SELECT COUNT(*) as totalRequests, AVG(net_savings) as avgNetSavings, SUM(estimated_cache_hit) * 1.0 / COUNT(*) as cacheHitRate FROM compression_cache_stats`,
         )
         .get() as
         | { totalRequests: number; avgNetSavings: number; cacheHitRate: number }
@@ -74,7 +74,7 @@ export function getCacheStatsSummary(since?: Date): CacheStatsSummary {
   const providerRows = since
     ? (db
         .prepare(
-          `SELECT provider, COUNT(*) as count, AVG(net_savings) as avgNetSavings, SUM(estimated_cache_hit) * 1.0 / COUNT(*) as cacheHitRate FROM compression_cache_stats WHERE created_at >= ? GROUP BY provider`
+          `SELECT provider, COUNT(*) as count, AVG(net_savings) as avgNetSavings, SUM(estimated_cache_hit) * 1.0 / COUNT(*) as cacheHitRate FROM compression_cache_stats WHERE created_at >= ? GROUP BY provider`,
         )
         .all(since.toISOString()) as Array<{
         provider: string;
@@ -84,7 +84,7 @@ export function getCacheStatsSummary(since?: Date): CacheStatsSummary {
       }>)
     : (db
         .prepare(
-          `SELECT provider, COUNT(*) as count, AVG(net_savings) as avgNetSavings, SUM(estimated_cache_hit) * 1.0 / COUNT(*) as cacheHitRate FROM compression_cache_stats GROUP BY provider`
+          `SELECT provider, COUNT(*) as count, AVG(net_savings) as avgNetSavings, SUM(estimated_cache_hit) * 1.0 / COUNT(*) as cacheHitRate FROM compression_cache_stats GROUP BY provider`,
         )
         .all() as Array<{
         provider: string;

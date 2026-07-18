@@ -13,7 +13,7 @@ function parsePort(value, fallback) {
 const explicitBaseUrl = process.env.OMNIROUTE_BASE_URL || "";
 const isolatedPort = parsePort(
   process.env.DASHBOARD_PORT || process.env.PORT,
-  23000 + (process.pid % 1000)
+  23000 + (process.pid % 1000),
 );
 const isolatedDataDir =
   process.env.DATA_DIR || join(process.cwd(), ".tmp", "protocol-clients-data", String(process.pid));
@@ -80,7 +80,7 @@ async function main() {
     {
       stdio: "inherit",
       env: testEnv,
-    }
+    },
   );
 
   const exitCode = await new Promise((resolve) => {

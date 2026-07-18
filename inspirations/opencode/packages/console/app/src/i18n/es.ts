@@ -1,5 +1,5 @@
-import type { Dict } from "./en"
-import { dict as en } from "./en"
+import type { Dict } from "./en";
+import { dict as en } from "./en";
 
 export const dict = {
   ...en,
@@ -108,7 +108,8 @@ export const dict = {
   "home.banner.downloadBetaNow": "Descargar la beta de escritorio ahora",
 
   "home.hero.title": "El agente de codificación IA de código abierto",
-  "home.hero.subtitle.a": "Modelos gratuitos incluidos o conecta cualquier modelo de cualquier proveedor,",
+  "home.hero.subtitle.a":
+    "Modelos gratuitos incluidos o conecta cualquier modelo de cualquier proveedor,",
   "home.hero.subtitle.b": "incluyendo Claude, GPT, Gemini y más.",
 
   "home.install.ariaLabel": "Opciones de instalación",
@@ -125,11 +126,14 @@ export const dict = {
   "home.what.copilot.title": "GitHub Copilot",
   "home.what.copilot.body": "Inicia sesión con GitHub para usar tu cuenta de Copilot",
   "home.what.chatgptPlus.title": "ChatGPT Plus/Pro",
-  "home.what.chatgptPlus.body": "Inicia sesión con OpenAI para usar tu cuenta de ChatGPT Plus o Pro",
+  "home.what.chatgptPlus.body":
+    "Inicia sesión con OpenAI para usar tu cuenta de ChatGPT Plus o Pro",
   "home.what.anyModel.title": "Cualquier modelo",
-  "home.what.anyModel.body": "Más de 75 proveedores de LLM a través de Models.dev, incluyendo modelos locales",
+  "home.what.anyModel.body":
+    "Más de 75 proveedores de LLM a través de Models.dev, incluyendo modelos locales",
   "home.what.anyEditor.title": "Cualquier editor",
-  "home.what.anyEditor.body": "Disponible como interfaz de terminal, aplicación de escritorio y extensión de IDE",
+  "home.what.anyEditor.body":
+    "Disponible como interfaz de terminal, aplicación de escritorio y extensión de IDE",
   "home.what.readDocs": "Leer documentación",
 
   "home.growth.title": "El agente de codificación IA de código abierto",
@@ -209,8 +213,10 @@ export const dict = {
   "zen.faq.q4": "¿Cuánto cuesta Zen?",
   "zen.faq.a4.p1.beforePricing": "Zen",
   "zen.faq.a4.p1.pricingLink": "cobra por solicitud",
-  "zen.faq.a4.p1.afterPricing": "sin recargos, así que pagas exactamente lo que cobra el proveedor del modelo.",
-  "zen.faq.a4.p2.beforeAccount": "Tu costo total depende del uso, y puedes establecer límites de gasto mensuales en tu",
+  "zen.faq.a4.p1.afterPricing":
+    "sin recargos, así que pagas exactamente lo que cobra el proveedor del modelo.",
+  "zen.faq.a4.p2.beforeAccount":
+    "Tu costo total depende del uso, y puedes establecer límites de gasto mensuales en tu",
   "zen.faq.a4.p2.accountLink": "cuenta",
   "zen.faq.a4.p3":
     "Para cubrir costos, OpenCode añade solo una pequeña tarifa de procesamiento de pagos de $1.23 por cada recarga de saldo de $20.",
@@ -221,7 +227,8 @@ export const dict = {
   "zen.faq.q6": "¿Puedo establecer límites de gasto?",
   "zen.faq.a6": "Sí, puedes establecer límites de gasto mensuales en tu cuenta.",
   "zen.faq.q7": "¿Puedo cancelar?",
-  "zen.faq.a7": "Sí, puedes deshabilitar la facturación en cualquier momento y usar tu saldo restante.",
+  "zen.faq.a7":
+    "Sí, puedes deshabilitar la facturación en cualquier momento y usar tu saldo restante.",
   "zen.faq.q8": "¿Puedo usar Zen con otros agentes de codificación?",
   "zen.faq.a8":
     "Aunque Zen funciona genial con OpenCode, puedes usar Zen con cualquier agente. Sigue las instrucciones de configuración en tu agente de codificación preferido.",
@@ -229,7 +236,8 @@ export const dict = {
   "zen.cta.start": "Empieza con Zen",
   "zen.pricing.title": "Añade $20 de saldo prepago",
   "zen.pricing.fee": "(+$1.23 tarifa de procesamiento de tarjeta)",
-  "zen.pricing.body": "Úsalo con cualquier agente. Establece límites de gasto mensual. Cancela en cualquier momento.",
+  "zen.pricing.body":
+    "Úsalo con cualquier agente. Establece límites de gasto mensual. Cancela en cualquier momento.",
   "zen.problem.title": "¿Qué problema está resolviendo Zen?",
   "zen.problem.body":
     "Hay muchos modelos disponibles, pero solo unos pocos funcionan bien con agentes de codificación. La mayoría de los proveedores los configuran de manera diferente con resultados variables.",
@@ -306,7 +314,8 @@ export const dict = {
   "go.problem.item4":
     "Incluye GLM-5.2, GLM-5.1, Kimi K2.7 Code, Kimi K2.6, MiMo-V2.5-Pro, MiMo-V2.5, Qwen3.7 Max, Qwen3.7 Plus, Qwen3.6 Plus, MiniMax M2.7, MiniMax M3, DeepSeek V4 Pro y DeepSeek V4 Flash",
   "go.how.title": "Cómo funciona Go",
-  "go.how.body": "Go comienza en $5 el primer mes, luego 10 $/mes. Puedes usarlo con OpenCode o cualquier agente.",
+  "go.how.body":
+    "Go comienza en $5 el primer mes, luego 10 $/mes. Puedes usarlo con OpenCode o cualquier agente.",
   "go.how.step1.title": "Crear una cuenta",
   "go.how.step1.beforeLink": "sigue las",
   "go.how.step1.link": "instrucciones de configuración",
@@ -326,7 +335,8 @@ export const dict = {
   "go.faq.a1":
     "Go es una suscripción de bajo coste que te da acceso fiable a modelos de código abierto capaces para programación agéntica.",
   "go.faq.q2": "¿Qué modelos incluye Go?",
-  "go.faq.a2": "Go incluye los modelos que se indican abajo, con límites generosos y acceso confiable.",
+  "go.faq.a2":
+    "Go incluye los modelos que se indican abajo, con límites generosos y acceso confiable.",
   "go.faq.q3": "¿Es Go lo mismo que Zen?",
   "go.faq.a3":
     "No. Zen es pago por uso, mientras que Go comienza en $5 el primer mes, luego 10 $/mes, con límites generosos y acceso fiable a los modelos de código abierto GLM-5.2, GLM-5.1, Kimi K2.7 Code, Kimi K2.6, MiMo-V2.5-Pro, MiMo-V2.5, Qwen3.7 Max, Qwen3.7 Plus, Qwen3.6 Plus, MiniMax M2.7, MiniMax M3, DeepSeek V4 Pro y DeepSeek V4 Flash.",
@@ -355,22 +365,27 @@ export const dict = {
   "go.faq.a9":
     "Los modelos gratuitos incluyen Big Pickle más modelos promocionales disponibles en el momento, con una cuota de 200 solicitudes/día. Go incluye GLM-5.2, GLM-5.1, Kimi K2.7 Code, Kimi K2.6, MiMo-V2.5-Pro, MiMo-V2.5, Qwen3.7 Max, Qwen3.7 Plus, Qwen3.6 Plus, MiniMax M2.7, MiniMax M3, DeepSeek V4 Pro y DeepSeek V4 Flash con cuotas de solicitud más altas aplicadas a través de ventanas móviles (5 horas, semanal y mensual), aproximadamente equivalente a 12 $ por 5 horas, 30 $ por semana y 60 $ por mes (los recuentos reales de solicitudes varían según el modelo y el uso).",
 
-  "zen.api.error.rateLimitExceeded": "Límite de tasa excedido. Por favor, inténtalo de nuevo más tarde.",
+  "zen.api.error.rateLimitExceeded":
+    "Límite de tasa excedido. Por favor, inténtalo de nuevo más tarde.",
   "zen.api.error.modelNotSupported": "Modelo {{model}} no soportado",
-  "zen.api.error.modelFormatNotSupported": "Modelo {{model}} no soportado para el formato {{format}}",
+  "zen.api.error.modelFormatNotSupported":
+    "Modelo {{model}} no soportado para el formato {{format}}",
   "zen.api.error.noProviderAvailable": "Ningún proveedor disponible",
   "zen.api.error.providerNotSupported": "Proveedor {{provider}} no soportado",
   "zen.api.error.missingApiKey": "Falta la clave API.",
   "zen.api.error.invalidApiKey": "Clave API inválida.",
-  "zen.api.error.subscriptionQuotaExceeded": "Cuota de suscripción excedida. Reintenta en {{retryIn}}.",
+  "zen.api.error.subscriptionQuotaExceeded":
+    "Cuota de suscripción excedida. Reintenta en {{retryIn}}.",
   "zen.api.error.goSubscriptionRollingLimitExceeded":
     "Límite de uso de 5 horas alcanzado. Se restablece en {{retryIn}}. Para seguir usando este modelo ahora, habilita el uso desde tu saldo disponible: {{consoleGoUrl}}",
   "zen.api.error.goSubscriptionWeeklyLimitExceeded":
     "Límite de uso semanal alcanzado. Se restablece en {{retryIn}}. Para seguir usando este modelo ahora, habilita el uso desde tu saldo disponible: {{consoleGoUrl}}",
   "zen.api.error.goSubscriptionMonthlyLimitExceeded":
     "Límite de uso mensual alcanzado. Se restablece en {{retryIn}}. Para seguir usando este modelo ahora, habilita el uso desde tu saldo disponible: {{consoleGoUrl}}",
-  "zen.api.error.noPaymentMethod": "Sin método de pago. Añade un método de pago aquí: {{billingUrl}}",
-  "zen.api.error.insufficientBalance": "Saldo insuficiente. Gestiona tu facturación aquí: {{billingUrl}}",
+  "zen.api.error.noPaymentMethod":
+    "Sin método de pago. Añade un método de pago aquí: {{billingUrl}}",
+  "zen.api.error.insufficientBalance":
+    "Saldo insuficiente. Gestiona tu facturación aquí: {{billingUrl}}",
   "zen.api.error.workspaceMonthlyLimitReached":
     "Tu espacio de trabajo ha alcanzado su límite de gasto mensual de ${{amount}}. Gestiona tus límites aquí: {{billingUrl}}",
   "zen.api.error.userMonthlyLimitReached":
@@ -382,7 +397,8 @@ export const dict = {
     "La promoción gratuita de {{model}} ha finalizado. Puedes seguir usando el modelo suscribiéndote a OpenCode Go - {{link}}",
 
   "black.meta.title": "OpenCode Black | Accede a los mejores modelos de codificación del mundo",
-  "black.meta.description": "Obtén acceso a Claude, GPT, Gemini y más con los planes de suscripción de OpenCode Black.",
+  "black.meta.description":
+    "Obtén acceso a Claude, GPT, Gemini y más con los planes de suscripción de OpenCode Black.",
   "black.hero.title": "Accede a los mejores modelos de codificación del mundo",
   "black.hero.subtitle": "Incluyendo Claude, GPT, Gemini y más",
   "black.title": "OpenCode Black | Precios",
@@ -397,7 +413,8 @@ export const dict = {
   "black.terms.1": "Tu suscripción no comenzará inmediatamente",
   "black.terms.2": "Serás añadido a la lista de espera y activado pronto",
   "black.terms.3": "Tu tarjeta solo se cargará cuando tu suscripción se active",
-  "black.terms.4": "Aplican límites de uso, el uso fuertemente automatizado puede alcanzar los límites antes",
+  "black.terms.4":
+    "Aplican límites de uso, el uso fuertemente automatizado puede alcanzar los límites antes",
   "black.terms.5": "Las suscripciones son para individuos, contacta a Enterprise para equipos",
   "black.terms.6": "Los límites pueden ajustarse y los planes pueden discontinuarse en el futuro",
   "black.terms.7": "Cancela tu suscripción en cualquier momento",
@@ -436,7 +453,8 @@ export const dict = {
   "workspace.nav.billing": "Facturación",
   "workspace.nav.settings": "Configuración",
 
-  "workspace.home.banner.beforeLink": "Modelos optimizados y confiables para agentes de codificación.",
+  "workspace.home.banner.beforeLink":
+    "Modelos optimizados y confiables para agentes de codificación.",
   "workspace.lite.banner.beforeLink": "Modelos de codificación de bajo costo para todos.",
   "workspace.home.billing.loading": "Cargando...",
   "workspace.home.billing.enable": "Habilitar facturación",
@@ -462,7 +480,8 @@ export const dict = {
   "workspace.newUser.step.models.after": "para seleccionar un modelo",
 
   "workspace.models.title": "Modelos",
-  "workspace.models.subtitle.beforeLink": "Gestiona qué modelos pueden acceder los miembros del espacio de trabajo.",
+  "workspace.models.subtitle.beforeLink":
+    "Gestiona qué modelos pueden acceder los miembros del espacio de trabajo.",
   "workspace.models.table.model": "Modelo",
   "workspace.models.table.enabled": "Habilitado",
 
@@ -519,7 +538,8 @@ export const dict = {
   "workspace.members.subtitle": "Gestiona miembros del espacio de trabajo y sus permisos.",
   "workspace.members.invite": "Invitar Miembro",
   "workspace.members.inviting": "Invitando...",
-  "workspace.members.beta.beforeLink": "Los espacios de trabajo son gratuitos para equipos durante la beta.",
+  "workspace.members.beta.beforeLink":
+    "Los espacios de trabajo son gratuitos para equipos durante la beta.",
   "workspace.members.form.invitee": "Invitado",
   "workspace.members.form.emailPlaceholder": "Introduce correo",
   "workspace.members.form.role": "Rol",
@@ -583,7 +603,8 @@ export const dict = {
   "workspace.reload.title": "Auto Recarga",
   "workspace.reload.disabled.before": "La auto recarga está",
   "workspace.reload.disabled.state": "deshabilitada",
-  "workspace.reload.disabled.after": "Habilita para recargar automáticamente cuando el saldo sea bajo.",
+  "workspace.reload.disabled.after":
+    "Habilita para recargar automáticamente cuando el saldo sea bajo.",
   "workspace.reload.enabled.before": "La auto recarga está",
   "workspace.reload.enabled.state": "habilitada",
   "workspace.reload.enabled.middle": "Recargaremos",
@@ -598,7 +619,8 @@ export const dict = {
   "workspace.reload.save": "Guardar",
   "workspace.reload.failedAt": "La recarga falló en",
   "workspace.reload.reason": "Razón:",
-  "workspace.reload.updatePaymentMethod": "Por favor actualiza tu método de pago e intenta de nuevo.",
+  "workspace.reload.updatePaymentMethod":
+    "Por favor actualiza tu método de pago e intenta de nuevo.",
   "workspace.reload.retrying": "Reintentando...",
   "workspace.reload.retry": "Reintentar",
   "workspace.reload.error.paymentFailed": "El pago falló.",
@@ -627,10 +649,13 @@ export const dict = {
   "workspace.black.subscription.rollingUsage": "Uso de 5 horas",
   "workspace.black.subscription.weeklyUsage": "Uso Semanal",
   "workspace.black.subscription.resetsIn": "Se reinicia en",
-  "workspace.black.subscription.useBalance": "Usa tu saldo disponible después de alcanzar los límites de uso",
+  "workspace.black.subscription.useBalance":
+    "Usa tu saldo disponible después de alcanzar los límites de uso",
   "workspace.black.waitlist.title": "Lista de Espera",
-  "workspace.black.waitlist.joined": "Estás en la lista de espera para el plan OpenCode Black de ${{plan}} al mes.",
-  "workspace.black.waitlist.ready": "Estamos listos para inscribirte en el plan OpenCode Black de ${{plan}} al mes.",
+  "workspace.black.waitlist.joined":
+    "Estás en la lista de espera para el plan OpenCode Black de ${{plan}} al mes.",
+  "workspace.black.waitlist.ready":
+    "Estamos listos para inscribirte en el plan OpenCode Black de ${{plan}} al mes.",
   "workspace.black.waitlist.leave": "Abandonar Lista de Espera",
   "workspace.black.waitlist.leaving": "Abandonando...",
   "workspace.black.waitlist.left": "Abandonada",
@@ -654,7 +679,8 @@ export const dict = {
   "workspace.lite.subscription.weeklyUsage": "Uso Semanal",
   "workspace.lite.subscription.monthlyUsage": "Uso Mensual",
   "workspace.lite.subscription.resetsIn": "Se reinicia en",
-  "workspace.lite.subscription.useBalance": "Usa tu saldo disponible después de alcanzar los límites de uso",
+  "workspace.lite.subscription.useBalance":
+    "Usa tu saldo disponible después de alcanzar los límites de uso",
   "workspace.lite.subscription.selectProvider":
     'Selecciona "OpenCode Go" como proveedor en tu configuración de opencode para usar los modelos Go.',
   "workspace.lite.providers.title": "Proveedores",
@@ -678,13 +704,15 @@ export const dict = {
   "workspace.referral.copyLink": "Copiar enlace",
   "workspace.referral.copied": "Copiado",
   "workspace.referral.overview.title": "Invita amigos",
-  "workspace.referral.overview.subtitle": "Gana $5 cuando un amigo se suscriba. Él también recibirá $5.",
+  "workspace.referral.overview.subtitle":
+    "Gana $5 cuando un amigo se suscriba. Él también recibirá $5.",
   "workspace.referral.instructions.share": "Comparte tu enlace de referido",
   "workspace.referral.instructions.subscribe": "Tu amigo se une y se suscribe a Go",
   "workspace.referral.instructions.claim":
     "Ambos reciben un crédito de uso de $5 para aplicar a sus límites de uso de Go",
   "workspace.referral.rewards.title": "Recompensas por referidos",
-  "workspace.referral.rewards.description": "Aplica los créditos por referidos disponibles a tu uso de Go.",
+  "workspace.referral.rewards.description":
+    "Aplica los créditos por referidos disponibles a tu uso de Go.",
   "workspace.referral.rewards.subtitle": "{{applied}} / {{total}} recompensas aplicadas.",
   "workspace.referral.rewards.empty": "Aún no hay recompensas por referidos.",
   "workspace.referral.table.reward": "Recompensa",
@@ -706,7 +734,8 @@ export const dict = {
   "workspace.referral.apply.preview": "Ver recompensa",
   "workspace.referral.apply.action": "Aplicar",
   "workspace.referral.apply.confirmTitle": "Aplicar recompensa",
-  "workspace.referral.apply.confirmBody": "Aplica {{amount}} para reducir el uso actual de este workspace.",
+  "workspace.referral.apply.confirmBody":
+    "Aplica {{amount}} para reducir el uso actual de este workspace.",
   "workspace.referral.apply.confirmAction": "Aplicar",
 
   "download.title": "OpenCode | Descargar",
@@ -739,7 +768,8 @@ export const dict = {
     "Cualquier costo adicional vendrá de tu suscripción a un proveedor de modelos. Aunque OpenCode funciona con cualquier proveedor de modelos, recomendamos usar",
   "download.faq.a5.p2.afterZen": ".",
 
-  "download.faq.a6.p1": "Tus datos e información solo se almacenan cuando creas enlaces compartibles en OpenCode.",
+  "download.faq.a6.p1":
+    "Tus datos e información solo se almacenan cuando creas enlaces compartibles en OpenCode.",
   "download.faq.a6.p2.beforeShare": "Más información sobre",
   "download.faq.a6.shareLink": "páginas compartidas",
 
@@ -828,4 +858,4 @@ export const dict = {
   "bench.detail.table.duration": "Duración",
   "bench.detail.run.title": "Ejecución {{n}}",
   "bench.detail.rawJson": "JSON Crudo",
-} as const satisfies Dict
+} as const satisfies Dict;

@@ -151,7 +151,7 @@ test("A2A list-capabilities artifact content contains 42 skill IDs as table rows
   const rows = content
     .split("\n")
     .filter(
-      (line) => line.startsWith("| ") && !line.startsWith("| ID") && !line.startsWith("| ---")
+      (line) => line.startsWith("| ") && !line.startsWith("| ID") && !line.startsWith("| ---"),
     );
   // Each skill row starts with "| <id> |"
   assert.ok(rows.length >= 42, `Expected at least 42 data rows but got ${rows.length}`);

@@ -1,6 +1,6 @@
 ---
-import { Image } from 'astro:assets';
-import { getRelativeLocaleUrl } from 'astro:i18n';
+import { Image } from "astro:assets";
+import { getRelativeLocaleUrl } from "astro:i18n";
 import config from "virtual:starlight/user-config";
 
 import CopyIcon from "../assets/lander/copy.svg";
@@ -13,37 +13,37 @@ const { data } = Astro.locals.starlightRoute.entry;
 const { title = data.title, tagline, image, actions = [] } = data.hero || {};
 
 const imageAttrs = {
-    loading: 'eager' as const,
-    decoding: 'async' as const,
-    width: 400,
-    alt: image?.alt || '',
+  loading: "eager" as const,
+  decoding: "async" as const,
+  width: 400,
+  alt: image?.alt || "",
 };
 
-const github = (config.social || []).filter(s => s.icon === 'github')[0];
-const discord = (config.social || []).filter(s => s.icon === 'discord')[0];
-const locale = Astro.currentLocale || 'root';
+const github = (config.social || []).filter((s) => s.icon === "github")[0];
+const discord = (config.social || []).filter((s) => s.icon === "discord")[0];
+const locale = Astro.currentLocale || "root";
 const t = Astro.locals.t as (key: string) => string;
-const docsHref = getRelativeLocaleUrl(locale, "")
-const docsCliHref = getRelativeLocaleUrl(locale, "cli")
-const docsIdeHref = getRelativeLocaleUrl(locale, "ide")
-const docsGithubHref = getRelativeLocaleUrl(locale, "github")
+const docsHref = getRelativeLocaleUrl(locale, "");
+const docsCliHref = getRelativeLocaleUrl(locale, "cli");
+const docsIdeHref = getRelativeLocaleUrl(locale, "ide");
+const docsGithubHref = getRelativeLocaleUrl(locale, "github");
 
-const command = "curl -fsSL"
-const protocol = "https://"
-const url = "opencode.ai/install"
-const bash = "| bash"
+const command = "curl -fsSL";
+const protocol = "https://";
+const url = "opencode.ai/install";
+const bash = "| bash";
 
 let darkImage: ImageMetadata | undefined;
 let lightImage: ImageMetadata | undefined;
 let rawHtml: string | undefined;
 if (image) {
-    if ('file' in image) {
-        darkImage = image.file;
-    } else if ('dark' in image) {
-        darkImage = image.dark;
-        lightImage = image.light;
-    } else {
-        rawHtml = image.html;
+  if ("file" in image) {
+    darkImage = image.file;
+  } else if ("dark" in image) {
+    darkImage = image.dark;
+    lightImage = image.light;
+  } else {
+    rawHtml = image.html;
   }
 }
 ---

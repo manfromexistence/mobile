@@ -53,7 +53,7 @@ test("GET returns the full { proxies, total, hasMore, stats, syncErrors } shape"
   await seed("bravo.example", 40, 300);
 
   const res = await listRoute.GET(
-    await makeManagementSessionRequest("http://localhost/api/settings/free-proxies")
+    await makeManagementSessionRequest("http://localhost/api/settings/free-proxies"),
   );
   assert.equal(res.status, 200);
   const body = (await res.json()) as {
@@ -80,8 +80,8 @@ test("GET search + limit via query params is reflected in the response", async (
 
   const res = await listRoute.GET(
     await makeManagementSessionRequest(
-      "http://localhost/api/settings/free-proxies?search=alph&limit=1"
-    )
+      "http://localhost/api/settings/free-proxies?search=alph&limit=1",
+    ),
   );
   assert.equal(res.status, 200);
   const body = (await res.json()) as {

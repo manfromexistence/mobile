@@ -85,7 +85,9 @@ test("measureMutationScores accepts several reports (per-batch) and unions them"
 test("measureMutationScores unions same-file mutants across split batches (not overwrite)", () => {
   // a1 slice: 1 killed, 1 survived (would score 50 alone)
   const a1 = {
-    files: { "src/sse/services/auth.ts": { mutants: [{ status: "Killed" }, { status: "Survived" }] } },
+    files: {
+      "src/sse/services/auth.ts": { mutants: [{ status: "Killed" }, { status: "Survived" }] },
+    },
   };
   // a2 slice: 3 killed (would score 100 alone)
   const a2 = {
@@ -116,7 +118,7 @@ test("readBaselineMutationScores extracts mutationScore.<path> metric values", (
         "mutationScore.src/a.ts": { value: 70, direction: "up", dedicatedGate: true },
         "mutationScore.src/b.ts": { value: 80, direction: "up", dedicatedGate: true },
       },
-    })
+    }),
   );
   const base = readBaselineMutationScores(tmp);
   assert.deepEqual(base, { "src/a.ts": 70, "src/b.ts": 80 });

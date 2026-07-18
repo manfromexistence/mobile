@@ -12,8 +12,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { translateResponse, initState } =
-  await import("../../open-sse/translator/index.ts");
+const { translateResponse, initState } = await import("../../open-sse/translator/index.ts");
 const { FORMATS } = await import("../../open-sse/translator/formats.ts");
 
 const THOUGHT_TEXT = "The user wants me to execute a cron job named `vibe-check`";
@@ -56,22 +55,19 @@ test("mid-stream 503 error -> response.completed with status='failed'", () => {
     FORMATS.GEMINI,
     FORMATS.OPENAI_RESPONSES,
     THOUGHT_CHUNK,
-    state
+    state,
   );
 
-  assert.ok(
-    thoughtEvents?.length > 0,
-    "thought chunk should produce Responses API events"
-  );
+  assert.ok(thoughtEvents?.length > 0, "thought chunk should produce Responses API events");
 
   // Verify reasoning was started
   const reasoningItemAdded = thoughtEvents.find(
-    (e) => e?.data?.type === "response.output_item.added" && e.data.item?.type === "reasoning"
+    (e) => e?.data?.type === "response.output_item.added" && e.data.item?.type === "reasoning",
   );
   assert.ok(reasoningItemAdded, "should emit response.output_item.added for reasoning");
 
   const reasoningDelta = thoughtEvents.find(
-    (e) => e?.data?.type === "response.reasoning_summary_text.delta"
+    (e) => e?.data?.type === "response.reasoning_summary_text.delta",
   );
   assert.ok(reasoningDelta, "should emit reasoning delta");
   assert.equal(reasoningDelta.data.delta, THOUGHT_TEXT);
@@ -81,7 +77,7 @@ test("mid-stream 503 error -> response.completed with status='failed'", () => {
     FORMATS.GEMINI,
     FORMATS.OPENAI_RESPONSES,
     ERROR_CHUNK,
-    state
+    state,
   );
 
   // Error chunk itself should produce no events
@@ -92,48 +88,29 @@ test("mid-stream 503 error -> response.completed with status='failed'", () => {
   assert.equal(state.upstreamError.status, 503);
 
   // ── Step 3: Flush stream ──
-  const flushEvents = translateResponse(
-    FORMATS.GEMINI,
-    FORMATS.OPENAI_RESPONSES,
-    null,
-    state
-  );
+  const flushEvents = translateResponse(FORMATS.GEMINI, FORMATS.OPENAI_RESPONSES, null, state);
 
   assert.ok(flushEvents?.length > 0, "flush should produce events");
 
   // The reasoning item should be properly closed
-  const reasoningDone = flushEvents.find(
-    (e) => e?.data?.type === "response.output_item.done"
-  );
+  const reasoningDone = flushEvents.find((e) => e?.data?.type === "response.output_item.done");
   assert.ok(reasoningDone, "flush should emit response.output_item.done for reasoning");
-  assert.equal(
-    reasoningDone.data.item?.type,
-    "reasoning",
-    "done item should be type 'reasoning'"
-  );
+  assert.equal(reasoningDone.data.item?.type, "reasoning", "done item should be type 'reasoning'");
 
   // The response should be completed with status 'failed' and error info
-  const completedEvent = flushEvents.find(
-    (e) => e?.data?.type === "response.completed"
-  );
+  const completedEvent = flushEvents.find((e) => e?.data?.type === "response.completed");
   assert.ok(completedEvent, "flush should emit response.completed");
   assert.equal(
     completedEvent.data.response.status,
     "failed",
-    "response should have status 'failed' when upstreamError is set"
+    "response should have status 'failed' when upstreamError is set",
   );
   assert.ok(
     completedEvent.data.response.error,
-    "response.error should be present when upstreamError is set"
+    "response.error should be present when upstreamError is set",
   );
-  assert.ok(
-    completedEvent.data.response.error?.code,
-    "response.error.code should be truthy"
-  );
-  assert.match(
-    completedEvent.data.response.error?.message || "",
-    /high demand/
-  );
+  assert.ok(completedEvent.data.response.error?.code, "response.error.code should be truthy");
+  assert.match(completedEvent.data.response.error?.message || "", /high demand/);
 
   // ── Step 4: Verify the reverse — no upstreamError = status "completed" ──
   const cleanState = initState(FORMATS.OPENAI_RESPONSES);
@@ -142,25 +119,14 @@ test("mid-stream 503 error -> response.completed with status='failed'", () => {
   translateResponse(FORMATS.GEMINI, FORMATS.OPENAI_RESPONSES, THOUGHT_CHUNK, cleanState);
 
   // Flush without error
-  const cleanFlush = translateResponse(
-    FORMATS.GEMINI,
-    FORMATS.OPENAI_RESPONSES,
-    null,
-    cleanState
-  );
+  const cleanFlush = translateResponse(FORMATS.GEMINI, FORMATS.OPENAI_RESPONSES, null, cleanState);
 
-  const cleanCompleted = cleanFlush.find(
-    (e) => e?.data?.type === "response.completed"
-  );
+  const cleanCompleted = cleanFlush.find((e) => e?.data?.type === "response.completed");
   assert.ok(cleanCompleted, "clean flush should emit response.completed");
   assert.equal(
     cleanCompleted.data.response.status,
     "completed",
-    "clean response should have status 'completed'"
+    "clean response should have status 'completed'",
   );
-  assert.equal(
-    cleanCompleted.data.response.error,
-    null,
-    "clean response should have error: null"
-  );
+  assert.equal(cleanCompleted.data.response.error, null, "clean response should have error: null");
 });

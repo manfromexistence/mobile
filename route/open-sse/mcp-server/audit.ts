@@ -208,7 +208,7 @@ function toString(value: unknown): string {
 
 async function openBetterSqliteAuditDb(dbPath: string): Promise<AuditDatabase> {
   const Database = (await import("better-sqlite3")).default as unknown as new (
-    dbPath: string
+    dbPath: string,
   ) => AuditDatabase;
   return new Database(dbPath);
 }
@@ -225,12 +225,15 @@ async function openNodeSqliteAuditDb(dbPath: string): Promise<AuditDatabase> {
   return createNodeSqliteAuditAdapter(new DatabaseSync(dbPath));
 }
 
-async function openFallbackAuditDb(dbPath: string, nativeMessage: string): Promise<AuditDatabase | null> {
+async function openFallbackAuditDb(
+  dbPath: string,
+  nativeMessage: string,
+): Promise<AuditDatabase | null> {
   if (!nodeSqliteFallbackAvailable()) {
     console.error(
       `[MCP Audit] better-sqlite3 native binding unavailable and Node ${process.version} ` +
         "has no built-in sqlite. Audit logging disabled. Fix: run " +
-        "`npm rebuild better-sqlite3` in the omniroute install root."
+        "`npm rebuild better-sqlite3` in the omniroute install root.",
     );
     return null;
   }
@@ -239,7 +242,7 @@ async function openFallbackAuditDb(dbPath: string, nativeMessage: string): Promi
     const adapter = await openNodeSqliteAuditDb(dbPath);
     console.warn(
       `[MCP Audit] better-sqlite3 binding unavailable — fell back to node:sqlite ` +
-        `(${nativeMessage.split("\n")[0]})`
+        `(${nativeMessage.split("\n")[0]})`,
     );
     return adapter;
   } catch (nodeErr) {
@@ -343,7 +346,7 @@ export async function logToolCall(
   output: unknown,
   durationMs: number,
   success: boolean,
-  errorCode?: string
+  errorCode?: string,
 ): Promise<void> {
   try {
     const database = await getDb();
@@ -356,7 +359,7 @@ export async function logToolCall(
     database
       .prepare(
         `INSERT INTO mcp_tool_audit (tool_name, input_hash, output_summary, duration_ms, api_key_id, success, error_code)
-         VALUES (?, ?, ?, ?, ?, ?, ?)`
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
       )
       .run(
         toolName,
@@ -365,7 +368,7 @@ export async function logToolCall(
         durationMs,
         apiKeyId,
         success ? 1 : 0,
-        errorCode || null
+        errorCode || null,
       );
   } catch (err: unknown) {
     // Never let audit failure break tool execution
@@ -378,7 +381,7 @@ export async function logToolCall(
  * Get recent audit entries (for dashboard/monitoring).
  */
 export async function queryAuditEntries(
-  filters: McpAuditQuery = {}
+  filters: McpAuditQuery = {},
 ): Promise<{ entries: McpAuditEntry[]; total: number; limit: number; offset: number }> {
   try {
     const database = await getDb();
@@ -405,7 +408,7 @@ export async function queryAuditEntries(
          FROM mcp_tool_audit
          ${whereSql}
          ORDER BY created_at DESC
-         LIMIT ? OFFSET ?`
+         LIMIT ? OFFSET ?`,
       )
       .all(...params, limit, offset);
 
@@ -448,7 +451,7 @@ export async function getAuditStats(): Promise<{
            AVG(CASE WHEN success = 1 THEN 1.0 ELSE 0.0 END) as successRate,
            AVG(duration_ms) as avgDuration
          FROM mcp_tool_audit
-         WHERE created_at > datetime('now', '-24 hours')`
+         WHERE created_at > datetime('now', '-24 hours')`,
       )
       .get() as AuditStatsRow | undefined;
 
@@ -459,7 +462,7 @@ export async function getAuditStats(): Promise<{
          WHERE created_at > datetime('now', '-24 hours')
          GROUP BY tool_name
          ORDER BY count DESC
-         LIMIT 10`
+         LIMIT 10`,
       )
       .all() as AuditTopToolRow[];
 

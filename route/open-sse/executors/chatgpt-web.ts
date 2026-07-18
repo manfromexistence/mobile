@@ -197,11 +197,11 @@ const SESSION_TOKEN_FAMILY_RE = /^__Secure-next-auth\.session-token(?:\.\d+)?$/;
  */
 function mergeRefreshedCookie(
   originalCookie: string,
-  setCookieHeader: string | null
+  setCookieHeader: string | null,
 ): string | null {
   if (!setCookieHeader) return null;
   const matches = Array.from(
-    setCookieHeader.matchAll(/(__Secure-next-auth\.session-token(?:\.\d+)?)=([^;,\s]+)/g)
+    setCookieHeader.matchAll(/(__Secure-next-auth\.session-token(?:\.\d+)?)=([^;,\s]+)/g),
   );
   if (matches.length === 0) return null;
 
@@ -271,7 +271,7 @@ function buildSessionCookieHeader(rawInput: string): string {
 
 async function exchangeSession(
   cookie: string,
-  signal: AbortSignal | null | undefined
+  signal: AbortSignal | null | undefined,
 ): Promise<TokenEntry> {
   const cached = tokenLookup(cookie);
   if (cached) return cached;
@@ -361,7 +361,7 @@ async function runSessionWarmup(
   deviceId: string,
   cookie: string,
   signal: AbortSignal | null | undefined,
-  log: { debug?: (tag: string, msg: string) => void } | null | undefined
+  log: { debug?: (tag: string, msg: string) => void } | null | undefined,
 ): Promise<void> {
   const key = cookieKey(cookie) + ":" + accessToken.slice(-8);
   const now = Date.now();
@@ -403,7 +403,7 @@ async function runSessionWarmup(
     } catch (err) {
       log?.debug?.(
         "CGPT-WEB",
-        `warmup ${url} failed: ${err instanceof Error ? err.message : String(err)}`
+        `warmup ${url} failed: ${err instanceof Error ? err.message : String(err)}`,
       );
     }
   }
@@ -455,7 +455,7 @@ async function setUserThinkingEffort(
         warn?: (tag: string, msg: string) => void;
       }
     | null
-    | undefined
+    | undefined,
 ): Promise<void> {
   const cacheKey = `${cookieKey(cookie)}:${modelSlug}:${effort}`;
   const now = Date.now();
@@ -493,7 +493,7 @@ async function setUserThinkingEffort(
     if (r.status >= 400) {
       log?.warn?.(
         "CGPT-WEB",
-        `thinking_effort PATCH ${r.status} for ${modelSlug}=${effort} (continuing)`
+        `thinking_effort PATCH ${r.status} for ${modelSlug}=${effort} (continuing)`,
       );
       return;
     }
@@ -502,7 +502,7 @@ async function setUserThinkingEffort(
   } catch (err) {
     log?.warn?.(
       "CGPT-WEB",
-      `thinking_effort PATCH failed: ${err instanceof Error ? err.message : String(err)}`
+      `thinking_effort PATCH failed: ${err instanceof Error ? err.message : String(err)}`,
     );
   }
 }
@@ -515,7 +515,7 @@ async function prepareChatRequirements(
   cookie: string,
   dplInfo: { dpl: string; scriptSrc: string },
   signal: AbortSignal | null | undefined,
-  log?: { warn?: (tag: string, msg: string) => void } | null
+  log?: { warn?: (tag: string, msg: string) => void } | null,
 ): Promise<ChatRequirements> {
   const config = buildPrekeyConfig(CHATGPT_USER_AGENT, dplInfo.dpl, dplInfo.scriptSrc);
   const prekey = await buildPrepareToken(config, log);
@@ -613,7 +613,7 @@ const DPL_TTL_MS = 60 * 60 * 1000;
 
 async function fetchDpl(
   cookie: string,
-  signal: AbortSignal | null | undefined
+  signal: AbortSignal | null | undefined,
 ): Promise<{ dpl: string; scriptSrc: string }> {
   if (dplCache && Date.now() < dplCache.expiresAt) {
     return { dpl: dplCache.dpl, scriptSrc: dplCache.scriptSrc };
@@ -766,7 +766,7 @@ async function solvePow(opts: PowOptions): Promise<string> {
   }
   opts.log?.warn?.(
     "CGPT-WEB",
-    `PoW (${opts.label}) exhausted ${opts.maxIter} iterations against target=${opts.target || "<empty>"}; submitting unsolved token (Sentinel may reject)`
+    `PoW (${opts.label}) exhausted ${opts.maxIter} iterations against target=${opts.target || "<empty>"}; submitting unsolved token (Sentinel may reject)`,
   );
   const b64 = Buffer.from(JSON.stringify(cfg)).toString("base64");
   return `${opts.prefix}${b64}`;
@@ -774,7 +774,7 @@ async function solvePow(opts: PowOptions): Promise<string> {
 
 async function buildPrepareToken(
   config: unknown[],
-  log?: { warn?: (tag: string, msg: string) => void } | null
+  log?: { warn?: (tag: string, msg: string) => void } | null,
 ): Promise<string> {
   return solvePow({
     config,
@@ -791,7 +791,7 @@ async function solveProofOfWork(
   seed: string,
   difficulty: string,
   config: unknown[],
-  log?: { warn?: (tag: string, msg: string) => void } | null
+  log?: { warn?: (tag: string, msg: string) => void } | null,
 ): Promise<string> {
   return solvePow({
     config,
@@ -832,7 +832,7 @@ const CACHED_IMAGE_URL_RE = /\/v1\/chatgpt-web\/image\/([a-f0-9]{16,64})(?=[)\s"
 
 function stripInlinedImages(content: string): string {
   return content.replace(DATA_URI_IMAGE_RE, (_, alt) =>
-    alt ? `[${alt}: generated image]` : "[generated image]"
+    alt ? `[${alt}: generated image]` : "[generated image]",
   );
 }
 
@@ -987,7 +987,7 @@ function buildConversationBody(
     persistConversation: boolean;
     thinkingEffort: "standard" | "extended" | null;
     continuation?: ChatGptImageConversationContext | null;
-  }
+  },
 ): Record<string, unknown> {
   // Critical: do NOT send prior turns as separate `assistant` and `user`
   // messages in the `messages` array. ChatGPT's web API ("action: next")
@@ -1009,7 +1009,7 @@ function buildConversationBody(
       .map((h) => `${h.role === "assistant" ? "Assistant" : "User"}: ${h.content}`)
       .join("\n\n");
     systemParts.push(
-      `Prior conversation (for context — answer only the new user message below):\n\n${formatted}`
+      `Prior conversation (for context — answer only the new user message below):\n\n${formatted}`,
     );
   }
 
@@ -1089,7 +1089,7 @@ interface ImageAssetPart {
 
 async function* readChatGptSseEvents(
   body: ReadableStream<Uint8Array>,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): AsyncGenerator<ChatGptStreamEvent> {
   const reader = body.getReader();
   const decoder = new TextDecoder();
@@ -1216,7 +1216,7 @@ function extractImagePointers(parts: unknown[]): string[] {
 
 async function* extractContent(
   eventStream: ReadableStream<Uint8Array>,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): AsyncGenerator<ContentChunk> {
   // ChatGPT may echo prior assistant turns at the start of the stream with
   // status: "finished_successfully" and full content, before sending the new
@@ -1283,7 +1283,8 @@ async function* extractContent(
     // on a tool-role message (handled below).
     if (event.type === "server_ste_metadata") {
       const meta = (event as Record<string, unknown>).metadata as
-        Record<string, unknown> | undefined;
+        | Record<string, unknown>
+        | undefined;
       if (meta && meta.turn_use_case === "image gen") {
         imageGenAsync = true;
       }
@@ -1337,7 +1338,7 @@ async function* extractContent(
         const existing = imagePointers.get(ptr);
         imagePointers.set(
           ptr,
-          existing?.messageId ? existing : { pointer: ptr, ...(id ? { messageId: id } : {}) }
+          existing?.messageId ? existing : { pointer: ptr, ...(id ? { messageId: id } : {}) },
         );
       }
     }
@@ -1428,7 +1429,7 @@ function detailMessageText(message: ChatGptDetailMessage): string {
 }
 
 function extractFinalAssistantAnswer(
-  detail: ChatGptConversationDetail
+  detail: ChatGptConversationDetail,
 ): FinalAssistantAnswer | null {
   const nodes = Object.values(detail.mapping ?? {});
   let best: (FinalAssistantAnswer & { sort: number }) | null = null;
@@ -1493,7 +1494,7 @@ interface ConversationDetailFetchResult {
 
 async function fetchConversationDetail(
   conversationId: string,
-  ctx: ResolverContext
+  ctx: ResolverContext,
 ): Promise<ConversationDetailFetchResult> {
   const url = `${CHATGPT_BASE}/backend-api/conversation/${encodeURIComponent(conversationId)}`;
   const headers: Record<string, string> = {
@@ -1519,7 +1520,7 @@ async function fetchConversationDetail(
     if (response.status >= 400) {
       ctx.log?.warn?.(
         "CGPT-WEB",
-        `conversation poll ${response.status}: ${(response.text || "").slice(0, 300)}`
+        `conversation poll ${response.status}: ${(response.text || "").slice(0, 300)}`,
       );
       return { detail: null, terminal: [401, 403, 404].includes(response.status) };
     }
@@ -1531,7 +1532,7 @@ async function fetchConversationDetail(
   } catch (err) {
     ctx.log?.warn?.(
       "CGPT-WEB",
-      `conversation poll failed: ${err instanceof Error ? err.message : String(err)}`
+      `conversation poll failed: ${err instanceof Error ? err.message : String(err)}`,
     );
     return { detail: null, terminal: false };
   }
@@ -1539,7 +1540,7 @@ async function fetchConversationDetail(
 
 async function pollForFinalAssistantAnswer(
   conversationId: string,
-  ctx: ResolverContext
+  ctx: ResolverContext,
 ): Promise<FinalAssistantAnswer | null> {
   const started = Date.now();
   const timeoutMs = configuredProPollTimeoutMs();
@@ -1570,14 +1571,14 @@ async function pollForFinalAssistantAnswer(
       "CGPT-WEB",
       terminalPollFailure
         ? `conversation poll stopped before finished_successfully; returning latest assistant text for ${conversationId}`
-        : `conversation poll timed out before finished_successfully; returning latest assistant text for ${conversationId}`
+        : `conversation poll timed out before finished_successfully; returning latest assistant text for ${conversationId}`,
     );
   } else {
     ctx.log?.warn?.(
       "CGPT-WEB",
       terminalPollFailure
         ? `conversation poll stopped without assistant text for ${conversationId}`
-        : `conversation poll timed out without assistant text for ${conversationId}`
+        : `conversation poll timed out without assistant text for ${conversationId}`,
     );
   }
   return last;
@@ -1597,7 +1598,7 @@ function sseChunk(data: unknown): string {
 type ImageResolver = (
   assetPointer: string,
   conversationId: string | null,
-  parentMessageId?: string | null
+  parentMessageId?: string | null,
 ) => Promise<string | null>;
 
 /**
@@ -1625,7 +1626,7 @@ async function resolveImagePointers(
   conversationId: string | null,
   resolver: ImageResolver | null,
   log?: { warn?: (tag: string, msg: string) => void } | null,
-  fallbackParentMessageId?: string | null
+  fallbackParentMessageId?: string | null,
 ): Promise<string[]> {
   if (!pointers || pointers.length === 0 || !resolver) return [];
   const urls: string[] = [];
@@ -1634,13 +1635,13 @@ async function resolveImagePointers(
       const url = await resolver(
         ref.pointer,
         conversationId,
-        ref.messageId ?? fallbackParentMessageId
+        ref.messageId ?? fallbackParentMessageId,
       );
       if (url) urls.push(url);
     } catch (err) {
       log?.warn?.(
         "CGPT-WEB",
-        `Image resolve failed (${ref.pointer}): ${err instanceof Error ? err.message : String(err)}`
+        `Image resolve failed (${ref.pointer}): ${err instanceof Error ? err.message : String(err)}`,
       );
     }
   }
@@ -1661,11 +1662,12 @@ function buildStreamingResponse(
   // Native Temporary Chat handoff continuation. ChatGPT provides a short-lived
   // conduit token, which resumes the turn without saving it to chat history.
   resumeFinalAnswer:
-    ((conversationId: string, resumeToken: string) => Promise<FinalAssistantAnswer | null>) | null,
+    | ((conversationId: string, resumeToken: string) => Promise<FinalAssistantAnswer | null>)
+    | null,
   // Legacy fallback for handoffs that omit the conduit token.
   pollFinalAnswer: ((conversationId: string) => Promise<FinalAssistantAnswer | null>) | null,
   log: { warn?: (tag: string, msg: string) => void } | null,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder();
 
@@ -1684,8 +1686,8 @@ function buildStreamingResponse(
                 choices: [
                   { index: 0, delta: { role: "assistant" }, finish_reason: null, logprobs: null },
                 ],
-              })
-            )
+              }),
+            ),
           );
 
           let conversationId: string | null = null;
@@ -1716,14 +1718,14 @@ function buildStreamingResponse(
                       logprobs: null,
                     },
                   ],
-                })
-              )
+                }),
+              ),
             );
           };
 
           const emitRenderedAnswer = (
             rawText: string,
-            metadata?: Record<string, unknown>
+            metadata?: Record<string, unknown>,
           ): void => {
             const rendered = cleanChatGptText(rawText, metadata);
             if (!rendered || rendered.length <= emittedText.length) return;
@@ -1797,8 +1799,8 @@ function buildStreamingResponse(
                         logprobs: null,
                       },
                     ],
-                  })
-                )
+                  }),
+                ),
               );
               break;
             }
@@ -1875,8 +1877,8 @@ function buildStreamingResponse(
                       logprobs: null,
                     },
                   ],
-                })
-              )
+                }),
+              ),
             );
             const stopHb = startHeartbeat();
             try {
@@ -1885,7 +1887,7 @@ function buildStreamingResponse(
             } catch (err) {
               log?.warn?.(
                 "CGPT-WEB",
-                `Async image poll failed: ${err instanceof Error ? err.message : String(err)}`
+                `Async image poll failed: ${err instanceof Error ? err.message : String(err)}`,
               );
             } finally {
               stopHb();
@@ -1903,7 +1905,7 @@ function buildStreamingResponse(
               conversationId,
               resolver,
               log,
-              parentCandidateMessageId
+              parentCandidateMessageId,
             );
           } finally {
             stopHb2();
@@ -1946,8 +1948,8 @@ function buildStreamingResponse(
                         logprobs: null,
                       },
                     ],
-                  })
-                )
+                  }),
+                ),
               )
             )
               return;
@@ -1963,8 +1965,8 @@ function buildStreamingResponse(
                   model,
                   system_fingerprint: null,
                   choices: [{ index: 0, delta: {}, finish_reason: "stop", logprobs: null }],
-                })
-              )
+                }),
+              ),
             )
           )
             return;
@@ -1988,8 +1990,8 @@ function buildStreamingResponse(
                     logprobs: null,
                   },
                 ],
-              })
-            )
+              }),
+            ),
           );
           controller.enqueue(encoder.encode("data: [DONE]\n\n"));
         } finally {
@@ -1999,7 +2001,7 @@ function buildStreamingResponse(
         }
       },
     },
-    { highWaterMark: 16384 }
+    { highWaterMark: 16384 },
   );
 }
 
@@ -2012,10 +2014,11 @@ async function buildNonStreamingResponse(
   resolver: ImageResolver | null,
   pollAsyncImage: ((conversationId: string) => Promise<ImagePointerRef[]>) | null,
   resumeFinalAnswer:
-    ((conversationId: string, resumeToken: string) => Promise<FinalAssistantAnswer | null>) | null,
+    | ((conversationId: string, resumeToken: string) => Promise<FinalAssistantAnswer | null>)
+    | null,
   pollFinalAnswer: ((conversationId: string) => Promise<FinalAssistantAnswer | null>) | null,
   log: { warn?: (tag: string, msg: string) => void } | null,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): Promise<Response> {
   let fullAnswer = "";
   let conversationId: string | null = null;
@@ -2036,7 +2039,7 @@ async function buildNonStreamingResponse(
         JSON.stringify({
           error: { message: chunk.error, type: "upstream_error", code: "CHATGPT_ERROR" },
         }),
-        { status: 502, headers: { "Content-Type": "application/json" } }
+        { status: 502, headers: { "Content-Type": "application/json" } },
       );
     }
     if (chunk.done) {
@@ -2095,7 +2098,7 @@ async function buildNonStreamingResponse(
     } catch (err) {
       log?.warn?.(
         "CGPT-WEB",
-        `Async image poll failed: ${err instanceof Error ? err.message : String(err)}`
+        `Async image poll failed: ${err instanceof Error ? err.message : String(err)}`,
       );
     }
   }
@@ -2105,7 +2108,7 @@ async function buildNonStreamingResponse(
     conversationId,
     resolver,
     log,
-    parentCandidateMessageId
+    parentCandidateMessageId,
   );
   // The image genuinely exists upstream but no pointer resolved to a URL
   // (unknown asset scheme, download 403/expired, oversize). Flag it so the
@@ -2113,7 +2116,7 @@ async function buildNonStreamingResponse(
   // retrievable" error instead of the misleading "no image markdown" 502.
   const imageResolutionFailed = detectImageResolutionFailure(
     imagePointers?.length ?? 0,
-    urls.length
+    urls.length,
   );
   if (imageResolutionFailed && log?.warn) {
     const schemes = (imagePointers ?? [])
@@ -2121,7 +2124,7 @@ async function buildNonStreamingResponse(
       .join(", ");
     log.warn(
       "CGPT-WEB",
-      `Image generated upstream but no asset pointer resolved (schemes: ${schemes}) — surfacing as unretrievable`
+      `Image generated upstream but no asset pointer resolved (schemes: ${schemes}) — surfacing as unretrievable`,
     );
   }
   fullAnswer += imageMarkdown(urls);
@@ -2150,7 +2153,7 @@ async function buildNonStreamingResponse(
         total_tokens: promptTokens + completionTokens,
       },
     }),
-    { status: 200, headers: { "Content-Type": "application/json" } }
+    { status: 200, headers: { "Content-Type": "application/json" } },
   );
 }
 
@@ -2159,7 +2162,7 @@ async function buildNonStreamingResponse(
 function errorResponse(status: number, message: string, code?: string): Response {
   return new Response(
     JSON.stringify({ error: { message, type: "upstream_error", ...(code ? { code } : {}) } }),
-    { status, headers: { "Content-Type": "application/json" } }
+    { status, headers: { "Content-Type": "application/json" } },
   );
 }
 
@@ -2216,7 +2219,7 @@ function deriveHeaderBaseUrl(clientHeaders?: Record<string, string> | null): str
  */
 function derivePublicBaseUrl(
   clientHeaders?: Record<string, string> | null,
-  log?: { debug?: (tag: string, msg: string) => void }
+  log?: { debug?: (tag: string, msg: string) => void },
 ): string {
   const explicitPublicBase = normalizePublicBaseUrl(process.env.OMNIROUTE_PUBLIC_BASE_URL);
   if (explicitPublicBase) {
@@ -2231,7 +2234,7 @@ function derivePublicBaseUrl(
 
   log?.debug?.(
     "CGPT-WEB",
-    `derivePublicBaseUrl: configured=${configuredBase ?? "-"} header=${headerBase ?? "-"}`
+    `derivePublicBaseUrl: configured=${configuredBase ?? "-"} header=${headerBase ?? "-"}`,
   );
 
   if (configuredBase && (!headerBase || !isLocalBaseUrl(configuredBase))) return configuredBase;
@@ -2292,7 +2295,7 @@ async function fetchDownloadUrl(endpoint: string, ctx: ResolverContext): Promise
   if (response.status !== 200) {
     ctx.log?.warn?.(
       "CGPT-WEB",
-      `Image download URL fetch failed (${response.status}) for ${endpoint}`
+      `Image download URL fetch failed (${response.status}) for ${endpoint}`,
     );
     return null;
   }
@@ -2320,7 +2323,7 @@ const IMAGE_DOWNLOAD_MAX_BYTES = 8 * 1024 * 1024;
 async function imageUrlToCachedImageUrl(
   signedUrl: string,
   ctx: ResolverContext,
-  imageContext?: ChatGptImageConversationContext
+  imageContext?: ChatGptImageConversationContext,
 ): Promise<string | null> {
   const headers: Record<string, string> = {
     ...browserHeaders(),
@@ -2345,7 +2348,7 @@ async function imageUrlToCachedImageUrl(
   } catch (err) {
     ctx.log?.warn?.(
       "CGPT-WEB",
-      `Image fetch failed: ${err instanceof Error ? err.message : String(err)}`
+      `Image fetch failed: ${err instanceof Error ? err.message : String(err)}`,
     );
     return null;
   }
@@ -2353,7 +2356,7 @@ async function imageUrlToCachedImageUrl(
   if (response.status !== 200) {
     ctx.log?.warn?.(
       "CGPT-WEB",
-      `Image fetch returned HTTP ${response.status} (${(response.text || "").slice(0, 120)})`
+      `Image fetch returned HTTP ${response.status} (${(response.text || "").slice(0, 120)})`,
     );
     return null;
   }
@@ -2381,7 +2384,7 @@ async function imageUrlToCachedImageUrl(
     if (bytes.length > IMAGE_DOWNLOAD_MAX_BYTES) {
       ctx.log?.warn?.(
         "CGPT-WEB",
-        `Image too large to cache (${bytes.length} bytes > ${IMAGE_DOWNLOAD_MAX_BYTES}); skipping`
+        `Image too large to cache (${bytes.length} bytes > ${IMAGE_DOWNLOAD_MAX_BYTES}); skipping`,
       );
     }
     return null;
@@ -2452,7 +2455,7 @@ async function registerWebSocket(ctx: ResolverContext): Promise<string | null> {
     } catch (err) {
       ctx.log?.warn?.(
         "CGPT-WEB",
-        `register-websocket fetch failed for ${url}: ${err instanceof Error ? err.message : String(err)}`
+        `register-websocket fetch failed for ${url}: ${err instanceof Error ? err.message : String(err)}`,
       );
       continue;
     }
@@ -2474,7 +2477,7 @@ async function registerWebSocket(ctx: ResolverContext): Promise<string | null> {
     }
     ctx.log?.warn?.(
       "CGPT-WEB",
-      `register-websocket via ${url} → ${r.status}: ${(r.text || "").slice(0, 200)}`
+      `register-websocket via ${url} → ${r.status}: ${(r.text || "").slice(0, 200)}`,
     );
   }
   return null;
@@ -2495,7 +2498,7 @@ async function waitForImageViaWebSocket(
   wssUrl: string,
   conversationId: string,
   timeoutMs: number,
-  ctx: ResolverContext
+  ctx: ResolverContext,
 ): Promise<WsWaitOutcome> {
   return new Promise((resolve) => {
     const found = new Map<string, ImagePointerRef>();
@@ -2589,7 +2592,7 @@ async function waitForImageViaWebSocket(
               ptr,
               existing?.messageId
                 ? existing
-                : { pointer: ptr, ...(m?.id ? { messageId: m.id } : {}) }
+                : { pointer: ptr, ...(m?.id ? { messageId: m.id } : {}) },
             );
           }
         }
@@ -2602,7 +2605,7 @@ async function waitForImageViaWebSocket(
               ptr,
               existing?.messageId
                 ? existing
-                : { pointer: ptr, ...(m?.id ? { messageId: m.id } : {}) }
+                : { pointer: ptr, ...(m?.id ? { messageId: m.id } : {}) },
             );
           }
         }
@@ -2627,7 +2630,7 @@ function configuredAsyncImageTimeoutMs(): number {
 async function pollForAsyncImage(
   conversationId: string,
   ctx: ResolverContext,
-  opts: { timeoutMs?: number } = {}
+  opts: { timeoutMs?: number } = {},
 ): Promise<ImagePointerRef[]> {
   const totalTimeoutMs = opts.timeoutMs ?? configuredAsyncImageTimeoutMs();
   const deadline = Date.now() + totalTimeoutMs;
@@ -2645,14 +2648,14 @@ async function pollForAsyncImage(
         "CGPT-WEB",
         attempt === 0
           ? "Could not register WebSocket — async image gen not retrievable"
-          : `WebSocket re-registration failed on retry attempt ${attempt + 1}`
+          : `WebSocket re-registration failed on retry attempt ${attempt + 1}`,
       );
       if (attempt === 0) continue; // try again — registration can be flaky
       return [];
     }
     ctx.log?.debug?.(
       "CGPT-WEB",
-      `Registered WebSocket for async image (attempt ${attempt + 1}, ${remaining}ms remaining)`
+      `Registered WebSocket for async image (attempt ${attempt + 1}, ${remaining}ms remaining)`,
     );
     const outcome = await waitForImageViaWebSocket(wssUrl, conversationId, remaining, ctx);
     if (outcome.pointers.length > 0) return outcome.pointers;
@@ -2663,7 +2666,7 @@ async function pollForAsyncImage(
     if (!outcome.errored || outcome.gotAnyMessage) return [];
     ctx.log?.warn?.(
       "CGPT-WEB",
-      `WebSocket attempt ${attempt + 1} ended in transport error before any frame; retrying`
+      `WebSocket attempt ${attempt + 1} ended in transport error before any frame; retrying`,
     );
   }
   return [];
@@ -2705,12 +2708,12 @@ function makeImageResolver(ctx: ResolverContext): ImageResolver {
       // the common case, then fall through.
       signedUrl = await fetchDownloadUrl(
         `${CHATGPT_BASE}/backend-api/files/${encodeURIComponent(fileId)}/download`,
-        ctx
+        ctx,
       );
       if (!signedUrl && conversationId) {
         signedUrl = await fetchDownloadUrl(
           `${CHATGPT_BASE}/backend-api/conversation/${encodeURIComponent(conversationId)}/attachment/${encodeURIComponent(fileId)}/download`,
-          ctx
+          ctx,
         );
       }
     }
@@ -2726,7 +2729,7 @@ function makeImageResolver(ctx: ResolverContext): ImageResolver {
       finalUrl = await imageUrlToCachedImageUrl(
         signedUrl,
         ctx,
-        conversationId && parentMessageId ? { conversationId, parentMessageId } : undefined
+        conversationId && parentMessageId ? { conversationId, parentMessageId } : undefined,
       );
     }
     cache.set(assetPointer, finalUrl);
@@ -2758,7 +2761,8 @@ export class ChatGptWebExecutor extends BaseExecutor {
     clientHeaders,
   }: ExecuteInput) {
     const messages = (body as Record<string, unknown> | null)?.messages as
-      Array<Record<string, unknown>> | undefined;
+      | Array<Record<string, unknown>>
+      | undefined;
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return {
         response: errorResponse(400, "Missing or empty messages array"),
@@ -2772,14 +2776,14 @@ export class ChatGptWebExecutor extends BaseExecutor {
     // present; parsed back on the response side. Mirrors qwen-web/perplexity-web.
     const { hasTools, requestedTools, effectiveMessages } = prepareToolMessages(
       (body || {}) as Record<string, unknown>,
-      messages as Array<{ role: string; content: unknown }>
+      messages as Array<{ role: string; content: unknown }>,
     );
 
     if (!credentials.apiKey) {
       return {
         response: errorResponse(
           401,
-          "ChatGPT auth failed — paste your __Secure-next-auth.session-token cookie value."
+          "ChatGPT auth failed — paste your __Secure-next-auth.session-token cookie value.",
         ),
         url: CONV_URL,
         headers: {},
@@ -2803,7 +2807,7 @@ export class ChatGptWebExecutor extends BaseExecutor {
           response: errorResponse(
             401,
             "ChatGPT auth failed — re-paste your __Secure-next-auth.session-token cookie from chatgpt.com.",
-            "HTTP_401"
+            "HTTP_401",
           ),
           url: SESSION_URL,
           headers: {},
@@ -2812,12 +2816,12 @@ export class ChatGptWebExecutor extends BaseExecutor {
       }
       log?.error?.(
         "CGPT-WEB",
-        `Session exchange failed: ${err instanceof Error ? err.message : String(err)}`
+        `Session exchange failed: ${err instanceof Error ? err.message : String(err)}`,
       );
       return {
         response: errorResponse(
           502,
-          `ChatGPT session exchange failed: ${err instanceof Error ? err.message : String(err)}`
+          `ChatGPT session exchange failed: ${err instanceof Error ? err.message : String(err)}`,
         ),
         url: SESSION_URL,
         headers: {},
@@ -2833,7 +2837,7 @@ export class ChatGptWebExecutor extends BaseExecutor {
       } catch (err) {
         log?.warn?.(
           "CGPT-WEB",
-          `Failed to persist refreshed cookie: ${err instanceof Error ? err.message : String(err)}`
+          `Failed to persist refreshed cookie: ${err instanceof Error ? err.message : String(err)}`,
         );
       }
     }
@@ -2845,7 +2849,7 @@ export class ChatGptWebExecutor extends BaseExecutor {
     } catch (err) {
       log?.warn?.(
         "CGPT-WEB",
-        `DPL warmup failed (continuing with fallback): ${err instanceof Error ? err.message : String(err)}`
+        `DPL warmup failed (continuing with fallback): ${err instanceof Error ? err.message : String(err)}`,
       );
       dplInfo = {
         dpl: `dpl=${OAI_CLIENT_VERSION.replace(/^prod-/, "")}`,
@@ -2867,7 +2871,7 @@ export class ChatGptWebExecutor extends BaseExecutor {
       deviceId,
       cookie,
       signal,
-      log
+      log,
     );
 
     // 2a''. Resolve model + effort and apply thinking-effort preference for
@@ -2887,7 +2891,7 @@ export class ChatGptWebExecutor extends BaseExecutor {
         deviceId,
         cookie,
         signal,
-        log
+        log,
       );
     }
 
@@ -2902,7 +2906,7 @@ export class ChatGptWebExecutor extends BaseExecutor {
         cookie,
         dplInfo,
         signal,
-        log
+        log,
       );
     } catch (err) {
       if (err instanceof SentinelBlockedError) {
@@ -2911,7 +2915,7 @@ export class ChatGptWebExecutor extends BaseExecutor {
           response: errorResponse(
             403,
             "ChatGPT blocked the request (Sentinel/Turnstile required). Try again later or open chatgpt.com in a browser to refresh state.",
-            "SENTINEL_BLOCKED"
+            "SENTINEL_BLOCKED",
           ),
           url: SENTINEL_PREPARE_URL,
           headers: {},
@@ -2920,12 +2924,12 @@ export class ChatGptWebExecutor extends BaseExecutor {
       }
       log?.error?.(
         "CGPT-WEB",
-        `Sentinel failed: ${err instanceof Error ? err.message : String(err)}`
+        `Sentinel failed: ${err instanceof Error ? err.message : String(err)}`,
       );
       return {
         response: errorResponse(
           502,
-          `ChatGPT sentinel failed: ${err instanceof Error ? err.message : String(err)}`
+          `ChatGPT sentinel failed: ${err instanceof Error ? err.message : String(err)}`,
         ),
         url: SENTINEL_PREPARE_URL,
         headers: {},
@@ -2935,7 +2939,7 @@ export class ChatGptWebExecutor extends BaseExecutor {
 
     log?.debug?.(
       "CGPT-WEB",
-      `sentinel: token=${reqs.token ? "y" : "n"} pow=${reqs.proofofwork?.required ? "y" : "n"} turnstile=${reqs.turnstile?.required ? "y" : "n"}`
+      `sentinel: token=${reqs.token ? "y" : "n"} pow=${reqs.proofofwork?.required ? "y" : "n"} turnstile=${reqs.turnstile?.required ? "y" : "n"}`,
     );
 
     // Optional: if a turnstile token was supplied via providerSpecificData,
@@ -2956,7 +2960,7 @@ export class ChatGptWebExecutor extends BaseExecutor {
         reqs.proofofwork.seed,
         reqs.proofofwork.difficulty,
         powConfig,
-        log
+        log,
       );
     }
 
@@ -2983,7 +2987,7 @@ export class ChatGptWebExecutor extends BaseExecutor {
         "CGPT-WEB",
         continuation
           ? "Image edit intent detected — continuing saved image conversation"
-          : "Image-gen intent detected — disabling Temporary Chat for this turn"
+          : "Image-gen intent detected — disabling Temporary Chat for this turn",
       );
     } else if (resolvedModel.isPro) {
       log?.debug?.("CGPT-WEB", "GPT-5.5 Pro text request — keeping Temporary Chat enabled");
@@ -3035,7 +3039,7 @@ export class ChatGptWebExecutor extends BaseExecutor {
         response: errorResponse(
           502,
           `ChatGPT connection failed: ${err instanceof Error ? err.message : String(err)}`,
-          code
+          code,
         ),
         url: CONV_URL,
         headers,
@@ -3125,7 +3129,7 @@ export class ChatGptWebExecutor extends BaseExecutor {
         resumeFinalAnswer,
         pollFinalAnswer,
         log,
-        signal
+        signal,
       );
       finalResponse = new Response(sseStream, {
         status: 200,
@@ -3147,7 +3151,7 @@ export class ChatGptWebExecutor extends BaseExecutor {
         resumeFinalAnswer,
         pollFinalAnswer,
         log,
-        signal
+        signal,
       );
       if (toolMode) {
         finalResponse = await buildToolModeResponse(finalResponse, requestedTools, stream, {

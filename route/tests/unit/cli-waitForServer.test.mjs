@@ -71,7 +71,7 @@ test("waitForServer returns false when the port accepts TCP but never answers a 
     assert.equal(
       result,
       false,
-      "expected waitForServer to NOT report ready for a TCP-open-but-never-responding socket"
+      "expected waitForServer to NOT report ready for a TCP-open-but-never-responding socket",
     );
   } finally {
     await new Promise((resolve) => server.close(() => resolve()));

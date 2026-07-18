@@ -1,5 +1,5 @@
-import { Effect } from "effect"
-import type { DatabaseMigration } from "../migration"
+import { Effect } from "effect";
+import type { DatabaseMigration } from "../migration";
 
 export default {
   id: "20260605003541_add_session_context_snapshot",
@@ -15,7 +15,7 @@ export default {
           \`revision\` integer DEFAULT 0 NOT NULL,
           CONSTRAINT \`fk_session_context_epoch_session_id_session_id_fk\` FOREIGN KEY (\`session_id\`) REFERENCES \`session\`(\`id\`) ON DELETE CASCADE
         );
-      `)
-    })
+      `);
+    });
   },
-} satisfies DatabaseMigration.Migration
+} satisfies DatabaseMigration.Migration;

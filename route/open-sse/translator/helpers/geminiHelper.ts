@@ -150,7 +150,7 @@ export function convertOpenAIContentToParts(content: unknown): JsonRecord[] {
           parts.push({
             inlineData: {
               mimeType: String(
-                geminiInline.mime_type || geminiInline.mimeType || "application/pdf"
+                geminiInline.mime_type || geminiInline.mimeType || "application/pdf",
               ),
               data: String(geminiInline.data).replace(/^data:[a-zA-Z0-9/+-]+;base64,/, ""),
             },
@@ -291,7 +291,7 @@ function cloneSchemaValue(value: unknown): unknown {
   }
   if (value && typeof value === "object") {
     return Object.fromEntries(
-      Object.entries(value).map(([key, nestedValue]) => [key, cloneSchemaValue(nestedValue)])
+      Object.entries(value).map(([key, nestedValue]) => [key, cloneSchemaValue(nestedValue)]),
     );
   }
   return value;
@@ -329,7 +329,7 @@ function resolveLocalReference(root: unknown, ref: unknown): unknown | null {
 function inlineLocalSchemaRefs(
   node: unknown,
   root: unknown,
-  activeRefs: Set<string> = new Set<string>()
+  activeRefs: Set<string> = new Set<string>(),
 ): unknown {
   if (Array.isArray(node)) {
     return node.map((item) => inlineLocalSchemaRefs(item, root, activeRefs));
@@ -367,7 +367,7 @@ function inlineLocalSchemaRefs(
     Object.entries(record).map(([key, value]) => [
       key,
       inlineLocalSchemaRefs(value, root, activeRefs),
-    ])
+    ]),
   );
 }
 
@@ -625,7 +625,7 @@ export function cleanJSONSchemaForAntigravity(schema: unknown): unknown {
       const properties = toRecord(record.properties);
       const validRequired = record.required.filter(
         (field) =>
-          typeof field === "string" && Object.prototype.hasOwnProperty.call(properties, field)
+          typeof field === "string" && Object.prototype.hasOwnProperty.call(properties, field),
       );
       if (validRequired.length === 0) {
         delete record.required;

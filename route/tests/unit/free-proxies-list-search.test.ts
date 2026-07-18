@@ -70,7 +70,7 @@ test('sortBy "latency" orders by latency ascending with nulls last', async () =>
   const sorted = await freeProxiesDb.listFreeProxies({ sortBy: "latency" });
   assert.deepEqual(
     sorted.map((p) => p.host),
-    ["fast.example", "mid.example", "slow.example"]
+    ["fast.example", "mid.example", "slow.example"],
   );
 });
 
@@ -82,7 +82,7 @@ test('sortBy "quality" orders by quality descending (default)', async () => {
   const sorted = await freeProxiesDb.listFreeProxies({});
   assert.deepEqual(
     sorted.map((p) => p.host),
-    ["high.example", "low.example"]
+    ["high.example", "low.example"],
   );
 });
 

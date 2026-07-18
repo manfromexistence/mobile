@@ -119,12 +119,14 @@ test("parseFlowOperationResult: done with base64 video (documented shape)", () =
 
 test("parseFlowOperationResult: done with gcsUri/uri video", () => {
   assert.equal(
-    parseFlowOperationResult({ done: true, response: { videos: [{ gcsUri: "gs://b/v.mp4" }] } }).url,
-    "gs://b/v.mp4"
+    parseFlowOperationResult({ done: true, response: { videos: [{ gcsUri: "gs://b/v.mp4" }] } })
+      .url,
+    "gs://b/v.mp4",
   );
   assert.equal(
-    parseFlowOperationResult({ done: true, response: { videos: [{ uri: "https://x/v.mp4" }] } }).url,
-    "https://x/v.mp4"
+    parseFlowOperationResult({ done: true, response: { videos: [{ uri: "https://x/v.mp4" }] } })
+      .url,
+    "https://x/v.mp4",
   );
 });
 
@@ -208,7 +210,7 @@ test("source guard: wire endpoint stays isolated + flagged for live validation (
   assert.match(GOOGLE_FLOW_HOST, /aisandbox-pa\.googleapis\.com/);
   const src = readFileSync(
     join(__dirname, "../../open-sse/handlers/videoGeneration/googleFlow.ts"),
-    "utf8"
+    "utf8",
   );
   assert.match(src, /PENDING LIVE VALIDATION/, "wire format must be flagged for HAR validation");
 });

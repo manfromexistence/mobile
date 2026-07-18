@@ -36,14 +36,14 @@ function toNonEmptyString(value: unknown): string | null {
 
 function getProviderDataString(
   credentials: AntigravityCredentialsLike | null | undefined,
-  key: string
+  key: string,
 ): string | null {
   const data = credentials?.providerSpecificData;
   return data && typeof data === "object" ? toNonEmptyString(data[key]) : null;
 }
 
 export function getAntigravityAccountKey(
-  credentials?: AntigravityCredentialsLike | null
+  credentials?: AntigravityCredentialsLike | null,
 ): string | null {
   return (
     toNonEmptyString(credentials?.email) ||
@@ -55,7 +55,7 @@ export function getAntigravityAccountKey(
 }
 
 export function isAntigravityEnterpriseAccount(
-  credentials?: AntigravityCredentialsLike | null
+  credentials?: AntigravityCredentialsLike | null,
 ): boolean {
   const email =
     toNonEmptyString(credentials?.email) || getProviderDataString(credentials, "email") || "";
@@ -63,7 +63,7 @@ export function isAntigravityEnterpriseAccount(
 }
 
 export function getAntigravityEnvelopeUserAgent(
-  credentials?: AntigravityCredentialsLike | null
+  credentials?: AntigravityCredentialsLike | null,
 ): "antigravity" | "jetski" {
   return isAntigravityEnterpriseAccount(credentials) ? "jetski" : "antigravity";
 }
@@ -100,7 +100,7 @@ export function deriveAntigravitySessionId(accountKey?: string | null): string |
 
 export function getAntigravitySessionId(
   credentials?: AntigravityCredentialsLike | null,
-  fallback?: unknown
+  fallback?: unknown,
 ): string {
   return (
     deriveAntigravitySessionId(getAntigravityAccountKey(credentials)) ||
@@ -110,7 +110,7 @@ export function getAntigravitySessionId(
 }
 
 export function deriveAntigravityMachineId(
-  _credentials?: AntigravityCredentialsLike | null
+  _credentials?: AntigravityCredentialsLike | null,
 ): string | null {
   try {
     const systemMachineId = toNonEmptyString(systemMachineIdSync?.(true));

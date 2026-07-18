@@ -1,58 +1,53 @@
-import { describe, expect, test } from 'bun:test';
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
+import { describe, expect, test } from "bun:test";
+import { readFileSync } from "fs";
+import { resolve } from "path";
 
-import { parseMergeConflictDiffFromFile } from '../src/utils/parseMergeConflictDiffFromFile';
-import { splitFileContents } from '../src/utils/splitFileContents';
-import { hunkDigest, verifyHunkLineValues } from './testUtils';
+import { parseMergeConflictDiffFromFile } from "../src/utils/parseMergeConflictDiffFromFile";
+import { splitFileContents } from "../src/utils/splitFileContents";
+import { hunkDigest, verifyHunkLineValues } from "./testUtils";
 
 const fileConflictLarge = readFileSync(
-  resolve(__dirname, '../../../apps/demo/src/mocks/fileConflictLarge.txt'),
-  'utf-8'
+  resolve(__dirname, "../../../apps/demo/src/mocks/fileConflictLarge.txt"),
+  "utf-8",
 );
 
-describe('parseMergeConflictDiffFromFile', () => {
-  test('creates a diff between current and incoming conflict sections', () => {
+describe("parseMergeConflictDiffFromFile", () => {
+  test("creates a diff between current and incoming conflict sections", () => {
     const file = {
-      name: 'session.ts',
+      name: "session.ts",
       contents: [
-        'const start = true;',
-        '<<<<<<< HEAD',
-        'const ttl = 12;',
-        '=======',
-        'const ttl = 24;',
-        '>>>>>>> feature',
-        'const end = true;',
-        '',
-      ].join('\n'),
+        "const start = true;",
+        "<<<<<<< HEAD",
+        "const ttl = 12;",
+        "=======",
+        "const ttl = 24;",
+        ">>>>>>> feature",
+        "const end = true;",
+        "",
+      ].join("\n"),
     };
 
-    const { currentFile, incomingFile, fileDiff, actions } =
-      parseMergeConflictDiffFromFile(file);
+    const { currentFile, incomingFile, fileDiff, actions } = parseMergeConflictDiffFromFile(file);
 
-    expect(currentFile.contents).toContain('const ttl = 12;\n');
-    expect(currentFile.contents).not.toContain('<<<<<<< HEAD\n');
-    expect(currentFile.contents).not.toContain('=======\n');
-    expect(currentFile.contents).not.toContain('>>>>>>> feature\n');
-    expect(currentFile.contents).not.toContain('const ttl = 24;\n');
+    expect(currentFile.contents).toContain("const ttl = 12;\n");
+    expect(currentFile.contents).not.toContain("<<<<<<< HEAD\n");
+    expect(currentFile.contents).not.toContain("=======\n");
+    expect(currentFile.contents).not.toContain(">>>>>>> feature\n");
+    expect(currentFile.contents).not.toContain("const ttl = 24;\n");
 
-    expect(incomingFile.contents).toContain('const ttl = 24;\n');
-    expect(incomingFile.contents).not.toContain('<<<<<<< HEAD\n');
-    expect(incomingFile.contents).not.toContain('=======\n');
-    expect(incomingFile.contents).not.toContain('>>>>>>> feature\n');
-    expect(incomingFile.contents).not.toContain('const ttl = 12;\n');
+    expect(incomingFile.contents).toContain("const ttl = 24;\n");
+    expect(incomingFile.contents).not.toContain("<<<<<<< HEAD\n");
+    expect(incomingFile.contents).not.toContain("=======\n");
+    expect(incomingFile.contents).not.toContain(">>>>>>> feature\n");
+    expect(incomingFile.contents).not.toContain("const ttl = 12;\n");
 
-    expect(fileDiff.deletionLines).toEqual(
-      splitFileContents(currentFile.contents)
-    );
-    expect(fileDiff.additionLines).toEqual(
-      splitFileContents(incomingFile.contents)
-    );
+    expect(fileDiff.deletionLines).toEqual(splitFileContents(currentFile.contents));
+    expect(fileDiff.additionLines).toEqual(splitFileContents(incomingFile.contents));
 
     expect(
       fileDiff.hunks.some((hunk) =>
-        (hunk.hunkContent ?? []).some((content) => content.type === 'change')
-      )
+        (hunk.hunkContent ?? []).some((content) => content.type === "change"),
+      ),
     ).toBe(true);
     expect(actions).toEqual([
       expect.objectContaining({
@@ -63,9 +58,9 @@ describe('parseMergeConflictDiffFromFile', () => {
         incomingContentIndex: 1,
         endMarkerContentIndex: 1,
         markerLines: {
-          start: '<<<<<<< HEAD\n',
-          separator: '=======\n',
-          end: '>>>>>>> feature\n',
+          start: "<<<<<<< HEAD\n",
+          separator: "=======\n",
+          end: ">>>>>>> feature\n",
         },
         conflict: {
           conflictIndex: 0,
@@ -82,46 +77,45 @@ describe('parseMergeConflictDiffFromFile', () => {
     ]);
   });
 
-  test('preserves three-way markers and base sections as context lines', () => {
+  test("preserves three-way markers and base sections as context lines", () => {
     const file = {
-      name: 'merge.ts',
+      name: "merge.ts",
       contents: [
-        'before',
-        '<<<<<<< HEAD',
-        'ours',
-        '||||||| base',
-        'base value',
-        '=======',
-        'theirs',
-        '>>>>>>> topic',
-        'after',
-        '',
-      ].join('\n'),
+        "before",
+        "<<<<<<< HEAD",
+        "ours",
+        "||||||| base",
+        "base value",
+        "=======",
+        "theirs",
+        ">>>>>>> topic",
+        "after",
+        "",
+      ].join("\n"),
     };
 
-    const { currentFile, incomingFile, fileDiff, actions } =
-      parseMergeConflictDiffFromFile(file);
+    const { currentFile, incomingFile, fileDiff, actions } = parseMergeConflictDiffFromFile(file);
 
-    expect(currentFile.contents).toContain('ours\n');
-    expect(currentFile.contents).toContain('base value\n');
-    expect(currentFile.contents).not.toContain('<<<<<<< HEAD\n');
-    expect(currentFile.contents).not.toContain('||||||| base\n');
-    expect(currentFile.contents).not.toContain('=======\n');
-    expect(currentFile.contents).not.toContain('>>>>>>> topic\n');
-    expect(currentFile.contents).not.toContain('theirs\n');
+    expect(currentFile.contents).toContain("ours\n");
+    expect(currentFile.contents).toContain("base value\n");
+    expect(currentFile.contents).not.toContain("<<<<<<< HEAD\n");
+    expect(currentFile.contents).not.toContain("||||||| base\n");
+    expect(currentFile.contents).not.toContain("=======\n");
+    expect(currentFile.contents).not.toContain(">>>>>>> topic\n");
+    expect(currentFile.contents).not.toContain("theirs\n");
 
-    expect(incomingFile.contents).toContain('theirs\n');
-    expect(incomingFile.contents).toContain('base value\n');
-    expect(incomingFile.contents).not.toContain('<<<<<<< HEAD\n');
-    expect(incomingFile.contents).not.toContain('||||||| base\n');
-    expect(incomingFile.contents).not.toContain('=======\n');
-    expect(incomingFile.contents).not.toContain('>>>>>>> topic\n');
-    expect(incomingFile.contents).not.toContain('ours\n');
+    expect(incomingFile.contents).toContain("theirs\n");
+    expect(incomingFile.contents).toContain("base value\n");
+    expect(incomingFile.contents).not.toContain("<<<<<<< HEAD\n");
+    expect(incomingFile.contents).not.toContain("||||||| base\n");
+    expect(incomingFile.contents).not.toContain("=======\n");
+    expect(incomingFile.contents).not.toContain(">>>>>>> topic\n");
+    expect(incomingFile.contents).not.toContain("ours\n");
 
     expect(
       fileDiff.hunks.some((hunk) =>
-        (hunk.hunkContent ?? []).some((content) => content.type === 'change')
-      )
+        (hunk.hunkContent ?? []).some((content) => content.type === "change"),
+      ),
     ).toBe(true);
     expect(actions).toEqual([
       expect.objectContaining({
@@ -133,10 +127,10 @@ describe('parseMergeConflictDiffFromFile', () => {
         incomingContentIndex: 3,
         endMarkerContentIndex: 3,
         markerLines: {
-          start: '<<<<<<< HEAD\n',
-          base: '||||||| base\n',
-          separator: '=======\n',
-          end: '>>>>>>> topic\n',
+          start: "<<<<<<< HEAD\n",
+          base: "||||||| base\n",
+          separator: "=======\n",
+          end: ">>>>>>> topic\n",
         },
         conflict: {
           conflictIndex: 0,
@@ -153,27 +147,22 @@ describe('parseMergeConflictDiffFromFile', () => {
     ]);
   });
 
-  test('large conflict harness stays consistent across maxContextLines', () => {
+  test("large conflict harness stays consistent across maxContextLines", () => {
     const maxContextLinesCases = [3, 10, Infinity] as const;
     const hunkRowTotals = new Map<number, number>();
 
     for (const maxContextLines of maxContextLinesCases) {
-      const { currentFile, incomingFile, fileDiff, actions } =
-        parseMergeConflictDiffFromFile(
-          { name: 'fileConflictLarge.ts', contents: fileConflictLarge },
-          maxContextLines
-        );
+      const { currentFile, incomingFile, fileDiff, actions } = parseMergeConflictDiffFromFile(
+        { name: "fileConflictLarge.ts", contents: fileConflictLarge },
+        maxContextLines,
+      );
 
       // Hunk metadata must be internally consistent at every context width
       expect(verifyHunkLineValues(fileDiff)).toEqual([]);
 
       // The diff sides are exactly the conflict-free current/incoming texts
-      expect(fileDiff.deletionLines).toEqual(
-        splitFileContents(currentFile.contents)
-      );
-      expect(fileDiff.additionLines).toEqual(
-        splitFileContents(incomingFile.contents)
-      );
+      expect(fileDiff.deletionLines).toEqual(splitFileContents(currentFile.contents));
+      expect(fileDiff.additionLines).toEqual(splitFileContents(incomingFile.contents));
       expect(currentFile.contents).not.toMatch(/^<{7} /m);
       expect(currentFile.contents).not.toMatch(/^={7}$/m);
       expect(currentFile.contents).not.toMatch(/^>{7} /m);
@@ -186,13 +175,13 @@ describe('parseMergeConflictDiffFromFile', () => {
 
       hunkRowTotals.set(
         maxContextLines,
-        fileDiff.hunks.reduce((sum, hunk) => sum + hunk.unifiedLineCount, 0)
+        fileDiff.hunks.reduce((sum, hunk) => sum + hunk.unifiedLineCount, 0),
       );
 
       // Compact geometry lock; the full parse result is covered by the
       // invariants above
       expect(hunkDigest(fileDiff)).toMatchSnapshot(
-        `fileConflictLarge digest maxContextLines=${maxContextLines}`
+        `fileConflictLarge digest maxContextLines=${maxContextLines}`,
       );
     }
 

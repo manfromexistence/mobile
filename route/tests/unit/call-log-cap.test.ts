@@ -48,7 +48,7 @@ function insertCallLog(row) {
       @error_summary, @detail_state, @artifact_relpath, @artifact_size_bytes, @artifact_sha256,
       @has_request_body, @has_response_body, @has_pipeline_details, @request_summary
     )
-  `
+  `,
   ).run({
     requested_model: null,
     connection_id: null,
@@ -135,7 +135,7 @@ test("saveCallLog stores only summary metadata in SQLite and writes detailed art
   assert.equal((detail?.pipelinePayloads as any).clientResponse?.body?.final, true);
   assert.match(
     detail?.artifactRelPath || "",
-    /^2026-03-30\/2026-03-30T12-34-56\.789Z_req_artifact_1\.json$/
+    /^2026-03-30\/2026-03-30T12-34-56\.789Z_req_artifact_1\.json$/,
   );
 
   const db = core.getDbInstance();
@@ -152,7 +152,7 @@ test("saveCallLog stores only summary metadata in SQLite and writes detailed art
       `
       SELECT detail_state, artifact_relpath, cache_source, has_request_body, has_response_body, has_pipeline_details
       FROM call_logs WHERE id = ?
-    `
+    `,
     )
     .get(logId);
   (assert as any).equal((summaryRow as any).detail_state, "ready");
@@ -244,7 +244,7 @@ test("rotateCallLogs removes expired rows and orphaned artifacts but keeps fresh
         .prepare("SELECT COUNT(*) AS cnt FROM call_logs WHERE id = ?")
         .get("expired-log") as any
     ).cnt,
-    1
+    1,
   );
   assert.equal(fs.existsSync(oldAbsPath), true);
   assert.equal(fs.existsSync(freshAbsPath), true);
@@ -255,12 +255,12 @@ test("rotateCallLogs removes expired rows and orphaned artifacts but keeps fresh
   assert.equal(
     (db.prepare("SELECT COUNT(*) AS cnt FROM call_logs WHERE id = ?").get("expired-log") as any)
       .cnt,
-    0
+    0,
   );
   assert.equal(fs.existsSync(oldAbsPath), false);
   assert.equal(
     (db.prepare("SELECT COUNT(*) AS cnt FROM call_logs WHERE id = ?").get("fresh-log") as any).cnt,
-    1
+    1,
   );
   assert.equal(fs.existsSync(freshAbsPath), true);
 
@@ -340,31 +340,31 @@ test("getCallLogs applies provider, account, apiKey, combo, search, and status f
 
   assert.deepEqual(
     (await callLogs.getCallLogs({ provider: "openai" })).map((row) => row.id),
-    ["status-error", "status-error-by-message", "filter-hit"]
+    ["status-error", "status-error-by-message", "filter-hit"],
   );
   assert.deepEqual(
     (await callLogs.getCallLogs({ account: "primary" })).map((row) => row.id),
-    ["status-error", "status-error-by-message", "filter-hit"]
+    ["status-error", "status-error-by-message", "filter-hit"],
   );
   assert.deepEqual(
     (await callLogs.getCallLogs({ apiKey: "Primary" })).map((row) => row.id),
-    ["filter-hit"]
+    ["filter-hit"],
   );
   assert.deepEqual(
     (await callLogs.getCallLogs({ combo: true })).map((row) => row.id),
-    ["filter-hit"]
+    ["filter-hit"],
   );
   assert.deepEqual(
     (await callLogs.getCallLogs({ search: "gpt-5" })).map((row) => row.id),
-    ["filter-hit"]
+    ["filter-hit"],
   );
   assert.deepEqual(
     (await callLogs.getCallLogs({ status: "error" })).map((row) => row.id),
-    ["status-error", "status-error-by-message"]
+    ["status-error", "status-error-by-message"],
   );
   assert.deepEqual(
     (await callLogs.getCallLogs({ status: "ok" })).map((row) => row.id),
-    ["status-error-by-message", "filter-miss", "filter-hit"]
+    ["status-error-by-message", "filter-miss", "filter-hit"],
   );
 });
 
@@ -396,12 +396,12 @@ test("getCallLogById falls back to legacy inline rows and request_detail_logs", 
     `
     INSERT INTO call_logs_v1_legacy (id, request_body, response_body, error)
     VALUES (?, ?, ?, ?)
-  `
+  `,
   ).run(
     "legacy-read",
     JSON.stringify({ recovered: "request" }),
     JSON.stringify({ recovered: "response" }),
-    JSON.stringify({ message: "legacy-error" })
+    JSON.stringify({ message: "legacy-error" }),
   );
 
   detailedLogs.saveRequestDetailLog({
@@ -419,15 +419,15 @@ test("getCallLogById falls back to legacy inline rows and request_detail_logs", 
   assert.equal(detail?.pipelinePayloads?.clientRequest?.body?.from, "detail-client");
   assert.equal(
     (detail?.pipelinePayloads?.providerRequest as any).body?.from,
-    "detail-provider-request"
+    "detail-provider-request",
   );
   (assert as any).equal(
     (detail?.pipelinePayloads?.providerResponse as any).body?.from,
-    "detail-provider-response"
+    "detail-provider-response",
   );
   assert.equal(
     (detail?.pipelinePayloads?.clientResponse as any).body?.from,
-    "detail-client-response"
+    "detail-client-response",
   );
   assert.equal(detail?.hasPipelineDetails, true);
 });
@@ -482,7 +482,7 @@ test("saveCallLog keeps large payloads out of SQLite while preserving explicit d
       `
       SELECT detail_state, has_request_body, artifact_relpath, error_summary, request_summary
       FROM call_logs WHERE id = ?
-    `
+    `,
     )
     .get("artifact-only-large-payload");
   assert.equal((row as any).detail_state, "ready");
@@ -530,7 +530,7 @@ test("saveCallLog truncates oversized call log artifacts for storage", async () 
       `
       SELECT artifact_relpath, artifact_size_bytes, detail_state
       FROM call_logs WHERE id = ?
-    `
+    `,
     )
     .get("truncated-artifact");
   assert.equal((row as any).detail_state, "ready");
@@ -573,7 +573,7 @@ test("saveCallLog omits oversized non-stream pipeline payloads to enforce artifa
       `
       SELECT artifact_relpath, artifact_size_bytes, detail_state
       FROM call_logs WHERE id = ?
-    `
+    `,
     )
     .get("truncated-pipeline-artifact");
   assert.equal((row as any).detail_state, "ready");
@@ -617,7 +617,7 @@ test("saveCallLog honors CALL_LOG_PIPELINE_MAX_SIZE_KB for pipeline artifacts", 
       `
       SELECT artifact_relpath, artifact_size_bytes, detail_state
       FROM call_logs WHERE id = ?
-    `
+    `,
     )
     .get("configured-pipeline-artifact-cap");
   assert.equal((row as any).detail_state, "ready");
@@ -659,7 +659,7 @@ test("saveCallLog falls back to a compact sentinel when the configured cap is ve
       `
       SELECT artifact_relpath, artifact_size_bytes, detail_state
       FROM call_logs WHERE id = ?
-    `
+    `,
     )
     .get("tiny-pipeline-artifact-cap");
   assert.equal((row as any).detail_state, "ready");
@@ -696,7 +696,7 @@ test("CALL_LOG_PIPELINE_MAX_SIZE_KB does not cap artifacts without pipeline deta
       `
       SELECT artifact_relpath, artifact_size_bytes, detail_state
       FROM call_logs WHERE id = ?
-    `
+    `,
     )
     .get("non-pipeline-artifact-ignores-pipeline-cap");
   assert.equal((row as any).detail_state, "ready");
@@ -731,7 +731,7 @@ test("saveCallLog logs and returns when sqlite persistence throws unexpectedly",
         model: "openai/gpt-4.1",
         provider: "openai",
         duration: 1,
-      })
+      }),
     );
   } finally {
     db.prepare = originalPrepare;

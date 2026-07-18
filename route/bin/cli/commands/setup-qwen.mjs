@@ -130,7 +130,7 @@ export async function runSetupQwenCommand(opts = {}) {
     printSuccess(`Wrote ${configPath}`);
   }
   printInfo(
-    "\nProvide the key (settings reference OMNIROUTE_API_KEY):  export OMNIROUTE_API_KEY=..."
+    "\nProvide the key (settings reference OMNIROUTE_API_KEY):  export OMNIROUTE_API_KEY=...",
   );
   printInfo('Then run:  qwen        (or headless: qwen -p "reply OK")');
   return 0;
@@ -140,7 +140,7 @@ export function registerSetupQwen(program) {
   program
     .command("setup-qwen")
     .description(
-      "Configure Qwen Code for OmniRoute: write ~/.qwen/settings.json (openai modelProvider)"
+      "Configure Qwen Code for OmniRoute: write ~/.qwen/settings.json (openai modelProvider)",
     )
     .option("--port <port>", "Local OmniRoute port (ignored when --remote is set)", "20128")
     .option("--remote <url>", "Remote OmniRoute URL, e.g. http://192.168.0.15:20128")

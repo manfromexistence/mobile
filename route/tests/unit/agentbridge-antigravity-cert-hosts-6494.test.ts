@@ -25,7 +25,7 @@ test("ANTIGRAVITY_TARGET.hosts covers all 4 known antigravity/cloudcode-pa hosts
       "cloudcode-pa.googleapis.com",
       "daily-cloudcode-pa.googleapis.com",
       "daily-cloudcode-pa.sandbox.googleapis.com",
-    ].sort()
+    ].sort(),
   );
 });
 
@@ -50,9 +50,6 @@ test("generateCert() issues a cert whose SAN list covers all 4 antigravity hosts
   const san = cert.subjectAltName ?? "";
 
   for (const host of EXPECTED_HOSTS) {
-    assert.ok(
-      san.includes(host),
-      `expected generated cert SAN to include "${host}" — got: ${san}`
-    );
+    assert.ok(san.includes(host), `expected generated cert SAN to include "${host}" — got: ${san}`);
   }
 });

@@ -1,7 +1,7 @@
-import type { vec4 } from '../types.js';
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { declarePI, textureRandomizerGB } from '../shader-utils.js';
+import type { vec4 } from "../types.js";
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { declarePI, textureRandomizerGB } from "../shader-utils.js";
 
 export const voronoiMeta = {
   maxColorCount: 5,
@@ -56,7 +56,7 @@ uniform float u_scale;
 
 uniform sampler2D u_noiseTexture;
 
-uniform vec4 u_colors[${ voronoiMeta.maxColorCount }];
+uniform vec4 u_colors[${voronoiMeta.maxColorCount}];
 uniform float u_colorsCount;
 
 uniform float u_stepsPerColor;
@@ -70,8 +70,8 @@ in vec2 v_patternUV;
 
 out vec4 fragColor;
 
-${ declarePI }
-${ textureRandomizerGB }
+${declarePI}
+${textureRandomizerGB}
 
 vec4 voronoi(vec2 x, float t) {
   vec2 ip = floor(x);
@@ -130,7 +130,7 @@ void main() {
 
   vec4 gradient = u_colors[0];
   gradient.rgb *= gradient.a;
-  for (int i = 1; i < ${ voronoiMeta.maxColorCount }; i++) {
+  for (int i = 1; i < ${voronoiMeta.maxColorCount}; i++) {
     if (i >= int(u_colorsCount)) break;
     float localT = clamp(mixer - float(i - 1), 0.0, 1.0);
     localT = round(localT * steps) / steps;

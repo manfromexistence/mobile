@@ -10,9 +10,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const dnsRoute = await import(
-  "../../src/app/api/tools/agent-bridge/agents/[id]/dns/route.ts"
-);
+const dnsRoute = await import("../../src/app/api/tools/agent-bridge/agents/[id]/dns/route.ts");
 
 function makeRequest(body: unknown): Request {
   return new Request("http://127.0.0.1/api/tools/agent-bridge/agents/x/dns", {
@@ -30,7 +28,7 @@ test("POST .../[id]/dns: unknown agent id returns 404 before any DNS call", asyn
   const body = (await res.json()) as { error?: { message?: string } };
   assert.ok(
     JSON.stringify(body).includes("__nonexistent_agent__"),
-    "404 body should reference the unknown agent id"
+    "404 body should reference the unknown agent id",
   );
 });
 

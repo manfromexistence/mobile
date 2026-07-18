@@ -63,7 +63,7 @@ function toStringList(value: unknown, maxItems: number): string[] {
   if (!Array.isArray(value)) return [];
   return [...new Set(value.map((entry) => String(entry || "").trim()).filter(Boolean))].slice(
     0,
-    maxItems
+    maxItems,
   );
 }
 
@@ -79,13 +79,13 @@ function normalizeEvalRoutingConfig(rawConfig: unknown): EvalRoutingConfig {
     raw.qualityWeight,
     DEFAULT_EVAL_ROUTING_CONFIG.qualityWeight,
     0,
-    1
+    1,
   );
   const latencyWeight = clampNumber(
     raw.latencyWeight,
     DEFAULT_EVAL_ROUTING_CONFIG.latencyWeight,
     0,
-    1
+    1,
   );
   const weightTotal = qualityWeight + latencyWeight;
 
@@ -94,12 +94,12 @@ function normalizeEvalRoutingConfig(rawConfig: unknown): EvalRoutingConfig {
     suiteIds: toStringList(raw.suiteIds, 50),
     maxAgeHours: clampNumber(raw.maxAgeHours, DEFAULT_EVAL_ROUTING_CONFIG.maxAgeHours, 1, 24 * 365),
     minCases: Math.floor(
-      clampNumber(raw.minCases, DEFAULT_EVAL_ROUTING_CONFIG.minCases, 1, 100_000)
+      clampNumber(raw.minCases, DEFAULT_EVAL_ROUTING_CONFIG.minCases, 1, 100_000),
     ),
     qualityWeight: weightTotal > 0 ? qualityWeight / weightTotal : 1,
     latencyWeight: weightTotal > 0 ? latencyWeight / weightTotal : 0,
     cacheTtlMs: Math.floor(
-      clampNumber(raw.cacheTtlMs, DEFAULT_EVAL_ROUTING_CONFIG.cacheTtlMs, 1_000, 300_000)
+      clampNumber(raw.cacheTtlMs, DEFAULT_EVAL_ROUTING_CONFIG.cacheTtlMs, 1_000, 300_000),
     ),
   };
 }
@@ -152,10 +152,10 @@ function dedupeLatestRunsBySuite(runs: PersistedEvalRun[]): PersistedEvalRun[] {
 function calculateTargetScore(
   runs: PersistedEvalRun[],
   config: EvalRoutingConfig,
-  bestLatencyMs: number | null
+  bestLatencyMs: number | null,
 ): TargetScore | null {
   const validRuns = dedupeLatestRunsBySuite(runs).filter(
-    (run) => run.summary.total >= config.minCases
+    (run) => run.summary.total >= config.minCases,
   );
   if (validRuns.length === 0) return null;
 
@@ -166,7 +166,7 @@ function calculateTargetScore(
     validRuns.reduce((sum, run) => sum + run.summary.passRate * run.summary.total, 0) / totalCases;
   const latencyWeight = validRuns.reduce(
     (sum, run) => sum + Math.max(0, run.avgLatencyMs) * run.summary.total,
-    0
+    0,
   );
   const avgLatencyMs = latencyWeight / totalCases;
   const qualityScore = Math.max(0, Math.min(1, passRate / 100));
@@ -188,7 +188,7 @@ function calculateTargetScore(
 export function orderTargetsByEvalScores<T extends EvalRoutingTarget>(
   targets: T[],
   rawConfig: unknown,
-  log: EvalRoutingLogger = {}
+  log: EvalRoutingLogger = {},
 ): T[] {
   const config = normalizeEvalRoutingConfig(rawConfig);
   if (!config.enabled || targets.length <= 1) return targets;
@@ -255,7 +255,7 @@ export function orderTargetsByEvalScores<T extends EvalRoutingTarget>(
 
   log.info?.(
     "COMBO",
-    `Eval-driven routing: ranked ${scoredCount}/${targets.length} targets by eval history`
+    `Eval-driven routing: ranked ${scoredCount}/${targets.length} targets by eval history`,
   );
   log.debug?.(
     "COMBO",
@@ -263,9 +263,9 @@ export function orderTargetsByEvalScores<T extends EvalRoutingTarget>(
       .filter((entry) => entry.score)
       .map(
         (entry) =>
-          `${entry.target.modelStr}=${entry.score?.score.toFixed(3)} pass=${entry.score?.passRate.toFixed(1)} cases=${entry.score?.totalCases}`
+          `${entry.target.modelStr}=${entry.score?.score.toFixed(3)} pass=${entry.score?.passRate.toFixed(1)} cases=${entry.score?.totalCases}`,
       )
-      .join(", ")}`
+      .join(", ")}`,
   );
 
   return entries.map((entry) => entry.target);

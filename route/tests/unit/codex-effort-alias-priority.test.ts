@@ -108,6 +108,6 @@ test("#2331 codex.ts still prioritizes modelEffort first in rawEffort chain", ()
   assert.equal(
     firstToken,
     "modelEffort",
-    `rawEffort priority chain must start with modelEffort, got: ${chain}`
+    `rawEffort priority chain must start with modelEffort, got: ${chain}`,
   );
 });

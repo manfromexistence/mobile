@@ -35,7 +35,7 @@ test("DefaultExecutor(kimi) injects reasoning_content on assistant turns that la
     "kimi-k2.6",
     multiTurnBody("kimi-k2.6"),
     STREAM,
-    CREDENTIALS
+    CREDENTIALS,
   ) as Record<string, unknown>;
   const messages = out.messages as Array<Record<string, unknown>>;
   const assistant = messages.find((m) => m.role === "assistant") as Record<string, unknown>;
@@ -43,7 +43,7 @@ test("DefaultExecutor(kimi) injects reasoning_content on assistant turns that la
     typeof assistant.reasoning_content === "string" &&
       (assistant.reasoning_content as string).length > 0,
     true,
-    "kimi assistant message must carry a non-empty reasoning_content placeholder"
+    "kimi assistant message must carry a non-empty reasoning_content placeholder",
   );
 });
 
@@ -53,13 +53,13 @@ test("DefaultExecutor(openai) does NOT inject reasoning_content (scoped to kimi)
     "kimi-k2.6",
     multiTurnBody("kimi-k2.6"),
     STREAM,
-    CREDENTIALS
+    CREDENTIALS,
   ) as Record<string, unknown>;
   const messages = out.messages as Array<Record<string, unknown>>;
   const assistant = messages.find((m) => m.role === "assistant") as Record<string, unknown>;
   assert.equal(
     Object.prototype.hasOwnProperty.call(assistant, "reasoning_content"),
     false,
-    "non-kimi providers must not be given a reasoning_content placeholder"
+    "non-kimi providers must not be given a reasoning_content placeholder",
   );
 });

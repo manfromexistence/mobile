@@ -1,16 +1,16 @@
-import type { PreloadFileOptions } from '@pierre/diffs/ssr';
+import type { PreloadFileOptions } from "@pierre/diffs/ssr";
 
-import { CustomScrollbarCSS } from '@/components/CustomScrollbarCSS';
+import { CustomScrollbarCSS } from "@/components/CustomScrollbarCSS";
 
 const options = {
-  theme: { dark: 'pierre-dark', light: 'pierre-light' },
+  theme: { dark: "pierre-dark", light: "pierre-light" },
   disableFileHeader: true,
   unsafeCSS: CustomScrollbarCSS,
 } as const;
 
 export const TOKEN_HOOKS_REACT: PreloadFileOptions<undefined> = {
   file: {
-    name: 'token_interactions.tsx',
+    name: "token_interactions.tsx",
     contents: `import type { DiffTokenEventBaseProps } from '@pierre/diffs';
 import { MultiFileDiff } from '@pierre/diffs/react';
 
@@ -89,7 +89,7 @@ export function TokenHoverExample() {
 
 export const TOKEN_HOOKS_VANILLA: PreloadFileOptions<undefined> = {
   file: {
-    name: 'token_interactions.ts',
+    name: "token_interactions.ts",
     contents: `import { FileDiff, type DiffTokenEventBaseProps } from '@pierre/diffs';
 
 const instance = new FileDiff({

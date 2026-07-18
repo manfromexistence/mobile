@@ -1,7 +1,7 @@
-import { attachBenchmarkInstrumentation } from '../../src/internal/benchmarkInstrumentation.ts';
+import { attachBenchmarkInstrumentation } from "../../src/internal/benchmarkInstrumentation.ts";
 
 const now = () => {
-  if (typeof performance !== 'undefined') {
+  if (typeof performance !== "undefined") {
     return performance.now();
   }
 
@@ -15,8 +15,8 @@ const now = () => {
 function isPromiseLike(value) {
   return (
     value != null &&
-    (typeof value === 'object' || typeof value === 'function') &&
-    typeof value.then === 'function'
+    (typeof value === "object" || typeof value === "function") &&
+    typeof value.then === "function"
   );
 }
 
@@ -170,8 +170,7 @@ export function createBenchmarkInstrumentation() {
                 totalJSHeapSizeAfterBytes: heapAfter.totalJSHeapSize,
                 usedJSHeapSizeAfterBytes: heapAfter.usedJSHeapSize,
                 usedJSHeapSizeBeforeBytes: heapBefore.usedJSHeapSize,
-                usedJSHeapSizeDeltaBytes:
-                  heapAfter.usedJSHeapSize - heapBefore.usedJSHeapSize,
+                usedJSHeapSizeDeltaBytes: heapAfter.usedJSHeapSize - heapBefore.usedJSHeapSize,
               },
         phases: Object.entries(phaseTotals).map(([name, aggregate]) => ({
           count: aggregate.count,

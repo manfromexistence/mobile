@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { createSignal } from "solid-js"
-import * as mod from "./line-comment"
+import { createSignal } from "solid-js";
+import * as mod from "./line-comment";
 
 const docs = `### Overview
 Inline comment anchor and editor for code review or annotation flows.
@@ -25,7 +25,7 @@ Pair with \`Diff\` or \`Code\` to align comments to lines.
 ### Theming/tokens
 - Uses \`data-component="line-comment"\` and related slots.
 
-`
+`;
 
 export default {
   title: "UI/LineComment",
@@ -39,7 +39,7 @@ export default {
       },
     },
   },
-}
+};
 
 export const Default = {
   render: () => (
@@ -57,14 +57,19 @@ export const Default = {
     >
       <div>12 | const total = sum(values)</div>
       <div>13 | return total / values.length</div>
-      <mod.LineComment open top={18} comment="Consider guarding against empty arrays." selection="L12-L13" />
+      <mod.LineComment
+        open
+        top={18}
+        comment="Consider guarding against empty arrays."
+        selection="L12-L13"
+      />
     </div>
   ),
-}
+};
 
 export const Editor = {
   render: () => {
-    const [value, setValue] = createSignal("Add context for this change.")
+    const [value, setValue] = createSignal("Add context for this change.");
     return (
       <div
         style={{
@@ -88,9 +93,9 @@ export const Editor = {
           onSubmit={(next) => setValue(next)}
         />
       </div>
-    )
+    );
   },
-}
+};
 
 export const AnchorOnly = {
   render: () => (
@@ -112,4 +117,4 @@ export const AnchorOnly = {
       </mod.LineCommentAnchor>
     </div>
   ),
-}
+};

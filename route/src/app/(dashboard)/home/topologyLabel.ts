@@ -11,7 +11,7 @@
 export function resolveTopologyNodeLabel(
   entryName: string | undefined | null,
   configName: string | undefined | null,
-  providerId: string
+  providerId: string,
 ): string {
   return (entryName && entryName.trim()) || (configName && configName.trim()) || providerId;
 }

@@ -28,7 +28,7 @@ export function getMcpHttpAuthHeadersForInternalFetch(): Record<string, string> 
 
 export async function withMcpHttpAuthContext<T>(
   request: Request,
-  callback: () => Promise<T>
+  callback: () => Promise<T>,
 ): Promise<T> {
   return mcpHttpAuthContext.run(
     {
@@ -37,6 +37,6 @@ export async function withMcpHttpAuthContext<T>(
       xApiKey: headerValue(request, "x-api-key"),
       anthropicVersion: headerValue(request, "anthropic-version"),
     },
-    callback
+    callback,
   );
 }

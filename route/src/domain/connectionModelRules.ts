@@ -57,7 +57,7 @@ export function getConnectionExcludedModels(providerSpecificData: unknown): stri
 
 export function isModelExcludedByConnection(
   modelId: unknown,
-  providerSpecificData: unknown
+  providerSpecificData: unknown,
 ): boolean {
   if (typeof modelId !== "string" || modelId.trim().length === 0) return false;
 
@@ -66,17 +66,17 @@ export function isModelExcludedByConnection(
   if (candidates.length === 0 || excludedModels.length === 0) return false;
 
   return excludedModels.some((pattern) =>
-    candidates.some((candidate) => wildcardMatch(candidate, pattern))
+    candidates.some((candidate) => wildcardMatch(candidate, pattern)),
   );
 }
 
 export function hasEligibleConnectionForModel(
   connections: ConnectionLike[] | null | undefined,
-  modelId: unknown
+  modelId: unknown,
 ): boolean {
   if (!Array.isArray(connections) || connections.length === 0) return false;
 
   return connections.some(
-    (connection) => !isModelExcludedByConnection(modelId, connection?.providerSpecificData)
+    (connection) => !isModelExcludedByConnection(modelId, connection?.providerSpecificData),
   );
 }

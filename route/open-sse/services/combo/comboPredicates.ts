@@ -22,7 +22,7 @@ export const ALL_ACCOUNTS_RATE_LIMITED_PATTERNS = [
 export function isAllAccountsRateLimitedResponse(
   status: number,
   contentType: string | null,
-  errorText: string
+  errorText: string,
 ): boolean {
   if (status !== 503) return false;
   if (!contentType?.includes("application/json")) return false;
@@ -37,7 +37,7 @@ export function isAllAccountsRateLimitedResponse(
 // wrongly skipped while the breaker is open.
 export function isProviderCircuitOpenResult(
   result: { headers?: Headers | null; status?: number },
-  errorText: string
+  errorText: string,
 ): boolean {
   const breakerHeader = result.headers?.get?.("x-omniroute-provider-breaker");
   if (typeof breakerHeader === "string" && breakerHeader.toLowerCase() === "open") return true;
@@ -58,7 +58,7 @@ export function isProviderCircuitOpenResult(
 export function getExhaustedTargetSkipReason(
   target: ResolvedComboTarget,
   exhaustedProviders: ReadonlySet<string>,
-  exhaustedConnections: ReadonlySet<string>
+  exhaustedConnections: ReadonlySet<string>,
 ): string | null {
   const { provider, modelStr, connectionId } = target;
   // #1731v2: skip targets whose provider:connection pair had a connection-level error.
@@ -106,7 +106,7 @@ export const PREDICTIVE_TTFT_MIN_SAMPLES = 5;
  */
 export function shouldSkipForPredictedTtft(
   metric: { requests?: number; avgLatencyMs?: number } | null | undefined,
-  predictiveTtftMs: number
+  predictiveTtftMs: number,
 ): boolean {
   if (!metric || !(predictiveTtftMs > 0)) return false;
   return (

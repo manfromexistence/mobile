@@ -227,7 +227,7 @@ function transformTSSStream(upstreamStream: ReadableStream, model: string): Read
         close();
       },
     },
-    { highWaterMark: 16384 }
+    { highWaterMark: 16384 },
   );
 }
 
@@ -312,7 +312,7 @@ export class T3ChatWebExecutor extends BaseExecutor {
 
   async testConnection(
     credentials: Record<string, unknown>,
-    signal?: AbortSignal
+    signal?: AbortSignal,
   ): Promise<boolean> {
     try {
       const parsed = parseT3Credentials(credentials);
@@ -342,7 +342,7 @@ export class T3ChatWebExecutor extends BaseExecutor {
     }>;
     const { hasTools, requestedTools, effectiveMessages } = prepareToolMessages(
       bodyObj,
-      rawMessages
+      rawMessages,
     );
     // 1. Parse + validate credentials. The credential pipeline stores the single
     // pasted string as `apiKey` (fallback `accessToken`); parse out the Cookie
@@ -352,7 +352,7 @@ export class T3ChatWebExecutor extends BaseExecutor {
       return {
         response: buildErrorResponse(
           400,
-          "t3.chat credentials invalid: paste your full Cookie header (including convex-session-id) from t3.chat."
+          "t3.chat credentials invalid: paste your full Cookie header (including convex-session-id) from t3.chat.",
         ),
         url: `${SERVER_FN_PREFIX}...`,
         headers: {},
@@ -489,7 +489,7 @@ export class T3ChatWebExecutor extends BaseExecutor {
         const { content, toolCalls, finishReason } = buildToolAwareResult(
           rawContent,
           requestedTools,
-          "t3"
+          "t3",
         );
         if (toolCalls) {
           return {
@@ -507,7 +507,7 @@ export class T3ChatWebExecutor extends BaseExecutor {
                   },
                 ],
               }),
-              { status: 200, headers: { "Content-Type": "application/json" } }
+              { status: 200, headers: { "Content-Type": "application/json" } },
             ),
             url: completionUrl,
             headers,

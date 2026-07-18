@@ -45,7 +45,7 @@ test("each skill dir has SKILL.md with frontmatter", async () => {
     if (!dir.startsWith("omni-")) {
       assert.ok(
         content.includes("OMNIROUTE_") || content.includes("omniroute "),
-        `${dir}: missing usage references (OMNIROUTE_* env vars or omniroute CLI commands)`
+        `${dir}: missing usage references (OMNIROUTE_* env vars or omniroute CLI commands)`,
       );
     }
   }

@@ -56,7 +56,7 @@ test("settings root redirects to section pages instead of rendering a tab shell"
 
 test("provider limit status chips use English fallback labels", () => {
   const source = readSource(
-    "src/app/(dashboard)/dashboard/usage/components/ProviderLimits/index.tsx"
+    "src/app/(dashboard)/dashboard/usage/components/ProviderLimits/index.tsx",
   );
 
   assert.ok(source.includes('critical: tr("statCritical", "Critical")'));
@@ -67,7 +67,7 @@ test("provider limit status chips use English fallback labels", () => {
 
 test("provider limits collapsed rows show quota resets and progress bars inline", () => {
   const source = readSource(
-    "src/app/(dashboard)/dashboard/usage/components/ProviderLimits/index.tsx"
+    "src/app/(dashboard)/dashboard/usage/components/ProviderLimits/index.tsx",
   );
 
   assert.ok(source.includes("const renderInlineQuotaSummary = (quotas: any[]) =>"));

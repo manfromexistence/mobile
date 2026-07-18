@@ -14,7 +14,7 @@ import type { ChatTurn, ModelCallResult, ModelClient } from "./types.ts";
 export function createExecutorModelClient(
   provider: string,
   credentials: ProviderCredentials,
-  costPerKTokenOut?: number
+  costPerKTokenOut?: number,
 ): ModelClient {
   const executor = getExecutor(provider);
   return {

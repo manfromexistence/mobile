@@ -31,7 +31,7 @@ function withTimeout(signal?: AbortSignal): { signal: AbortSignal; cleanup: () =
   const abort = () => controller.abort(signal?.reason || new Error("Request aborted"));
   const timeout = setTimeout(
     () => controller.abort(new Error("VeoAIFree request timed out")),
-    FETCH_TIMEOUT_MS
+    FETCH_TIMEOUT_MS,
   );
 
   if (signal?.aborted) {
@@ -52,7 +52,7 @@ function withTimeout(signal?: AbortSignal): { signal: AbortSignal; cleanup: () =
 async function fetchWithTimeout(
   url: string,
   init: RequestInit = {},
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): Promise<Response> {
   throwIfAborted(signal);
   const timeout = withTimeout(signal);
@@ -89,7 +89,7 @@ async function fetchNonce(signal?: AbortSignal): Promise<string> {
 async function postAjax(
   nonce: string,
   params: Record<string, string>,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): Promise<string> {
   const body = new URLSearchParams({ action: "veo_video_generator", nonce, ...params });
   const res = await fetchWithTimeout(
@@ -104,7 +104,7 @@ async function postAjax(
       },
       body: body.toString(),
     },
-    signal
+    signal,
   );
   return res.text();
 }
@@ -144,7 +144,7 @@ async function handleVideo(
   nonce: string,
   prompt: string,
   aspectRatio: string,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): Promise<Response> {
   // Generate
   const genResult = await postAjax(
@@ -155,7 +155,7 @@ async function handleVideo(
       aspectRatio,
       actionType: "full-video-generate",
     },
-    signal
+    signal,
   );
   const sceneData = genResult.trim();
   if (!sceneData || sceneData === "0" || sceneData.toLowerCase().includes("error")) {
@@ -173,7 +173,7 @@ async function handleVideo(
           sceneData,
           actionType: "final-video-results",
         },
-        signal
+        signal,
       );
       const trimmed = pollResult.trim();
       if (trimmed && trimmed !== "0" && !trimmed.toLowerCase().includes("error")) {
@@ -200,7 +200,7 @@ async function handleImage(
   nonce: string,
   prompt: string,
   aspectRatio: string,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): Promise<Response> {
   const result = await postAjax(
     nonce,
@@ -210,7 +210,7 @@ async function handleImage(
       aspectRatioIMG: aspectRatio,
       actionType: "banan-image-generator",
     },
-    signal
+    signal,
   );
   const trimmed = result.trim();
   if (!trimmed || trimmed === "0" || trimmed.toLowerCase().includes("error")) {
@@ -222,7 +222,7 @@ async function handleImage(
     .map((s) => s.trim())
     .filter(Boolean);
   const images = parts.map((p) =>
-    p.startsWith("http") ? { url: p, type: "image" } : { b64_json: p, type: "image" }
+    p.startsWith("http") ? { url: p, type: "image" } : { b64_json: p, type: "image" },
   );
   return jsonResp({ object: "image.generation", data: images, status: "completed" });
 }
@@ -231,7 +231,7 @@ async function handleTTS(
   prompt: string,
   voice?: string,
   lang?: string,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): Promise<Response> {
   // Parse prompt for text and optional voice instructions
   const text = prompt;
@@ -256,7 +256,7 @@ async function handleTTS(
         speed: "1.0",
       }),
     },
-    signal
+    signal,
   );
 
   if (!res.ok) {
@@ -297,7 +297,7 @@ async function handleTTS(
 async function handleEnhance(
   nonce: string,
   prompt: string,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): Promise<Response> {
   const result = await postAjax(
     nonce,
@@ -305,7 +305,7 @@ async function handleEnhance(
       prompt,
       actionType: "main-prompt-generation",
     },
-    signal
+    signal,
   );
   const trimmed = result.trim();
   if (!trimmed || trimmed === "0") {
@@ -382,7 +382,7 @@ export class VeoAIFreeWebExecutor extends BaseExecutor {
           nonce,
           prompt,
           aspectRatio.replace("VIDEO_", "IMAGE_"),
-          input.signal
+          input.signal,
         );
         break;
       case "enhance":

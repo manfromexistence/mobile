@@ -448,13 +448,13 @@ export function collectHiddenQuotaModelIds(provider: string, payload: unknown): 
 export function filterHiddenModelQuotas(
   provider: string,
   quotas: any[] | undefined,
-  hiddenModelIds: string[] | undefined
+  hiddenModelIds: string[] | undefined,
 ): any[] {
   if (!Array.isArray(quotas)) return [];
   if (!hiddenModelIds || hiddenModelIds.length === 0) return quotas;
 
   const hidden = new Set(
-    hiddenModelIds.map((id) => id.trim().toLowerCase()).filter((id) => id.length > 0)
+    hiddenModelIds.map((id) => id.trim().toLowerCase()).filter((id) => id.length > 0),
   );
   if (hidden.size === 0) return quotas;
 
@@ -488,7 +488,7 @@ export function filterHiddenModelQuotas(
  */
 export function matchesProviderFilter(
   connection: { provider?: unknown } | null | undefined,
-  providerFilter: string
+  providerFilter: string,
 ): boolean {
   if (!providerFilter || providerFilter === "all") return true;
   if (!connection || typeof connection.provider !== "string") return false;
@@ -503,7 +503,7 @@ export function matchesProviderFilter(
  */
 export function buildProviderOptions(
   connections: ReadonlyArray<{ provider?: unknown }>,
-  compare: (a: string, b: string) => number = (a, b) => a.localeCompare(b)
+  compare: (a: string, b: string) => number = (a, b) => a.localeCompare(b),
 ): string[] {
   const seen = new Set<string>();
   for (const conn of connections) {

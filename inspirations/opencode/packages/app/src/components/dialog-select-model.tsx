@@ -1,66 +1,73 @@
-import { Popover as Kobalte } from "@kobalte/core/popover"
-import { Component, ComponentProps, createMemo, For, JSX, Show, ValidComponent } from "solid-js"
-import { createStore } from "solid-js/store"
-import { useLocal } from "@/context/local"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { popularProviders } from "@/hooks/use-providers"
-import { Button } from "@opencode-ai/ui/button"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { ScrollView } from "@opencode-ai/ui/scroll-view"
-import { Tag } from "@opencode-ai/ui/tag"
-import { Dialog } from "@opencode-ai/ui/dialog"
-import { List } from "@opencode-ai/ui/list"
-import { Tooltip } from "@opencode-ai/ui/tooltip"
-import { Icon } from "@opencode-ai/ui/v2/icon"
-import { Tag as TagV2 } from "@opencode-ai/ui/v2/badge-v2"
-import { MenuV2 } from "@opencode-ai/ui/v2/menu-v2"
-import { ModelTooltip } from "./model-tooltip"
-import { useLanguage } from "@/context/language"
-import { decode64 } from "@/utils/base64"
-import { matchesModelSearch } from "./dialog-select-model-search"
+import { Popover as Kobalte } from "@kobalte/core/popover";
+import { Component, ComponentProps, createMemo, For, JSX, Show, ValidComponent } from "solid-js";
+import { createStore } from "solid-js/store";
+import { useLocal } from "@/context/local";
+import { useDialog } from "@opencode-ai/ui/context/dialog";
+import { popularProviders } from "@/hooks/use-providers";
+import { Button } from "@opencode-ai/ui/button";
+import { IconButton } from "@opencode-ai/ui/icon-button";
+import { ScrollView } from "@opencode-ai/ui/scroll-view";
+import { Tag } from "@opencode-ai/ui/tag";
+import { Dialog } from "@opencode-ai/ui/dialog";
+import { List } from "@opencode-ai/ui/list";
+import { Tooltip } from "@opencode-ai/ui/tooltip";
+import { Icon } from "@opencode-ai/ui/v2/icon";
+import { Tag as TagV2 } from "@opencode-ai/ui/v2/badge-v2";
+import { MenuV2 } from "@opencode-ai/ui/v2/menu-v2";
+import { ModelTooltip } from "./model-tooltip";
+import { useLanguage } from "@/context/language";
+import { decode64 } from "@/utils/base64";
+import { matchesModelSearch } from "./dialog-select-model-search";
 
 const isFree = (provider: string, cost: { input: number } | undefined) =>
-  provider === "opencode" && (!cost || cost.input === 0)
+  provider === "opencode" && (!cost || cost.input === 0);
 
-type ModelState = ReturnType<typeof useLocal>["model"]
-type ModelItem = ReturnType<ModelState["list"]>[number]
+type ModelState = ReturnType<typeof useLocal>["model"];
+type ModelItem = ReturnType<ModelState["list"]>[number];
 
-const modelKey = (model: ModelItem) => `${model.provider.id}:${model.id}`
-const manageKey = "action:manage"
+const modelKey = (model: ModelItem) => `${model.provider.id}:${model.id}`;
+const manageKey = "action:manage";
 
-const sortModelGroups = (a: { category: string; items: ModelItem[] }, b: { category: string; items: ModelItem[] }) => {
-  const aIndex = popularProviders.indexOf(a.category)
-  const bIndex = popularProviders.indexOf(b.category)
-  const aPopular = aIndex >= 0
-  const bPopular = bIndex >= 0
+const sortModelGroups = (
+  a: { category: string; items: ModelItem[] },
+  b: { category: string; items: ModelItem[] },
+) => {
+  const aIndex = popularProviders.indexOf(a.category);
+  const bIndex = popularProviders.indexOf(b.category);
+  const aPopular = aIndex >= 0;
+  const bPopular = bIndex >= 0;
 
-  if (aPopular && !bPopular) return -1
-  if (!aPopular && bPopular) return 1
-  if (aPopular && bPopular) return aIndex - bIndex
-  return a.items[0].provider.name.localeCompare(b.items[0].provider.name)
-}
+  if (aPopular && !bPopular) return -1;
+  if (!aPopular && bPopular) return 1;
+  if (aPopular && bPopular) return aIndex - bIndex;
+  return a.items[0].provider.name.localeCompare(b.items[0].provider.name);
+};
 
 const ModelList: Component<{
-  provider?: string
-  class?: string
-  onSelect: () => void
-  action?: JSX.Element
-  model?: ModelState
+  provider?: string;
+  class?: string;
+  onSelect: () => void;
+  action?: JSX.Element;
+  model?: ModelState;
 }> = (props) => {
-  const model = props.model ?? useLocal().model
-  const language = useLanguage()
+  const model = props.model ?? useLocal().model;
+  const language = useLanguage();
 
   const models = createMemo(() =>
     model
       .list()
       .filter((m) => model.visible({ modelID: m.id, providerID: m.provider.id }))
       .filter((m) => (props.provider ? m.provider.id === props.provider : true)),
-  )
+  );
 
   return (
     <List
       class={`flex-1 px-3 min-h-0 [&_[data-slot=list-scroll]]:flex-1 [&_[data-slot=list-scroll]]:min-h-0 ${props.class ?? ""}`}
-      search={{ placeholder: language.t("dialog.model.search.placeholder"), autofocus: true, action: props.action }}
+      search={{
+        placeholder: language.t("dialog.model.search.placeholder"),
+        autofocus: true,
+        action: props.action,
+      }}
       emptyMessage={language.t("dialog.model.empty")}
       key={(x) => `${x.provider.id}:${x.id}`}
       items={models}
@@ -69,18 +76,25 @@ const ModelList: Component<{
       sortBy={(a, b) => a.name.localeCompare(b.name)}
       groupBy={(x) => x.provider.name}
       sortGroupsBy={(a, b) => {
-        const aProvider = a.items[0].provider.id
-        const bProvider = b.items[0].provider.id
-        if (popularProviders.includes(aProvider) && !popularProviders.includes(bProvider)) return -1
-        if (!popularProviders.includes(aProvider) && popularProviders.includes(bProvider)) return 1
-        return popularProviders.indexOf(aProvider) - popularProviders.indexOf(bProvider)
+        const aProvider = a.items[0].provider.id;
+        const bProvider = b.items[0].provider.id;
+        if (popularProviders.includes(aProvider) && !popularProviders.includes(bProvider))
+          return -1;
+        if (!popularProviders.includes(aProvider) && popularProviders.includes(bProvider)) return 1;
+        return popularProviders.indexOf(aProvider) - popularProviders.indexOf(bProvider);
       }}
       itemWrapper={(item, node) => (
         <Tooltip
           class="w-full"
           placement="right-start"
           gutter={12}
-          value={<ModelTooltip model={item} latest={item.latest} free={isFree(item.provider.id, item.cost)} />}
+          value={
+            <ModelTooltip
+              model={item}
+              latest={item.latest}
+              free={isFree(item.provider.id, item.cost)}
+            />
+          }
         >
           {node}
         </Tooltip>
@@ -88,8 +102,8 @@ const ModelList: Component<{
       onSelect={(x) => {
         model.set(x ? { modelID: x.id, providerID: x.provider.id } : undefined, {
           recent: true,
-        })
-        props.onSelect()
+        });
+        props.onSelect();
       }}
     >
       {(i) => (
@@ -104,57 +118,57 @@ const ModelList: Component<{
         </div>
       )}
     </List>
-  )
-}
+  );
+};
 
-type ModelSelectorTriggerProps = Omit<ComponentProps<typeof Kobalte.Trigger>, "as" | "ref">
-type Dismiss = "escape" | "outside" | "select" | "manage" | "provider"
+type ModelSelectorTriggerProps = Omit<ComponentProps<typeof Kobalte.Trigger>, "as" | "ref">;
+type Dismiss = "escape" | "outside" | "select" | "manage" | "provider";
 
 export function ModelSelectorPopover(props: {
-  provider?: string
-  model?: ModelState
-  children?: JSX.Element
-  triggerAs?: ValidComponent
-  triggerProps?: ModelSelectorTriggerProps
-  onClose?: (cause: "escape" | "select") => void
+  provider?: string;
+  model?: ModelState;
+  children?: JSX.Element;
+  triggerAs?: ValidComponent;
+  triggerProps?: ModelSelectorTriggerProps;
+  onClose?: (cause: "escape" | "select") => void;
 }) {
   const [store, setStore] = createStore<{
-    open: boolean
-    dismiss: Dismiss | null
+    open: boolean;
+    dismiss: Dismiss | null;
   }>({
     open: false,
     dismiss: null,
-  })
-  const dialog = useDialog()
-  const local = useLocal()
-  const directory = () => decode64(local.slug())
+  });
+  const dialog = useDialog();
+  const local = useLocal();
+  const directory = () => decode64(local.slug());
 
   const close = (dismiss: Dismiss) => {
-    setStore("dismiss", dismiss)
-    setStore("open", false)
-  }
+    setStore("dismiss", dismiss);
+    setStore("open", false);
+  };
 
   const handleManage = () => {
-    close("manage")
+    close("manage");
     void import("./dialog-manage-models").then((x) => {
-      dialog.show(() => <x.DialogManageModels />)
-    })
-  }
+      dialog.show(() => <x.DialogManageModels />);
+    });
+  };
 
   const handleConnectProvider = () => {
-    close("provider")
+    close("provider");
     void import("./dialog-select-provider").then((x) => {
-      dialog.show(() => <x.DialogSelectProvider directory={directory} />)
-    })
-  }
-  const language = useLanguage()
+      dialog.show(() => <x.DialogSelectProvider directory={directory} />);
+    });
+  };
+  const language = useLanguage();
 
   return (
     <Kobalte
       open={store.open}
       onOpenChange={(next) => {
-        if (next) setStore("dismiss", null)
-        setStore("open", next)
+        if (next) setStore("dismiss", null);
+        setStore("open", next);
       }}
       modal={false}
       placement="top-start"
@@ -167,20 +181,20 @@ export function ModelSelectorPopover(props: {
         <Kobalte.Content
           class="w-72 h-80 flex flex-col p-2 rounded-md border border-border-base bg-surface-raised-stronger-non-alpha shadow-md z-50 outline-none overflow-hidden"
           onEscapeKeyDown={(event) => {
-            close("escape")
-            event.preventDefault()
-            event.stopPropagation()
+            close("escape");
+            event.preventDefault();
+            event.stopPropagation();
           }}
           onPointerDownOutside={() => close("outside")}
           onFocusOutside={() => close("outside")}
           onCloseAutoFocus={(event) => {
-            const dismiss = store.dismiss
-            if (dismiss === "outside") event.preventDefault()
+            const dismiss = store.dismiss;
+            if (dismiss === "outside") event.preventDefault();
             if (dismiss === "escape" || dismiss === "select") {
-              event.preventDefault()
-              props.onClose?.(dismiss)
+              event.preventDefault();
+              props.onClose?.(dismiss);
             }
-            setStore("dismiss", null)
+            setStore("dismiss", null);
           }}
         >
           <Kobalte.Title class="sr-only">{language.t("dialog.model.select.title")}</Kobalte.Title>
@@ -217,124 +231,130 @@ export function ModelSelectorPopover(props: {
         </Kobalte.Content>
       </Kobalte.Portal>
     </Kobalte>
-  )
+  );
 }
 
 export function ModelSelectorPopoverV2(props: {
-  provider?: string
-  model?: ModelState
-  children?: JSX.Element
-  triggerAs?: ValidComponent
-  triggerProps?: ModelSelectorTriggerProps
-  onClose?: () => void
+  provider?: string;
+  model?: ModelState;
+  children?: JSX.Element;
+  triggerAs?: ValidComponent;
+  triggerProps?: ModelSelectorTriggerProps;
+  onClose?: () => void;
 }) {
-  const model = props.model ?? useLocal().model
-  const language = useLanguage()
-  const dialog = useDialog()
-  const [store, setStore] = createStore({ open: false, search: "", active: "" })
-  let searchRef: HTMLInputElement | undefined
-  let contentRef: HTMLDivElement | undefined
-  let restoreTrigger = true
+  const model = props.model ?? useLocal().model;
+  const language = useLanguage();
+  const dialog = useDialog();
+  const [store, setStore] = createStore({ open: false, search: "", active: "" });
+  let searchRef: HTMLInputElement | undefined;
+  let contentRef: HTMLDivElement | undefined;
+  let restoreTrigger = true;
 
   const allModels = createMemo(() =>
     model
       .list()
       .filter((item) => model.visible({ modelID: item.id, providerID: item.provider.id }))
       .filter((item) => (props.provider ? item.provider.id === props.provider : true)),
-  )
+  );
   const models = createMemo(() => {
-    const search = store.search.trim()
+    const search = store.search.trim();
     const filtered = search
-      ? allModels().filter((item) => matchesModelSearch(search, [item.name, item.id, item.provider.name]))
-      : allModels()
+      ? allModels().filter((item) =>
+          matchesModelSearch(search, [item.name, item.id, item.provider.name]),
+        )
+      : allModels();
 
-    return [...filtered].sort((a, b) => a.name.localeCompare(b.name))
-  })
+    return [...filtered].sort((a, b) => a.name.localeCompare(b.name));
+  });
   const groups = createMemo(() => {
-    const byProvider = new Map<string, ModelItem[]>()
+    const byProvider = new Map<string, ModelItem[]>();
     for (const item of models()) {
-      byProvider.set(item.provider.id, [...(byProvider.get(item.provider.id) ?? []), item])
+      byProvider.set(item.provider.id, [...(byProvider.get(item.provider.id) ?? []), item]);
     }
-    return Array.from(byProvider, ([category, items]) => ({ category, items })).sort(sortModelGroups)
-  })
-  const keys = () => [...models().map(modelKey), manageKey]
+    return Array.from(byProvider, ([category, items]) => ({ category, items })).sort(
+      sortModelGroups,
+    );
+  });
+  const keys = () => [...models().map(modelKey), manageKey];
   const current = () => {
-    const value = model.current()
-    return value ? `${value.provider.id}:${value.id}` : undefined
-  }
+    const value = model.current();
+    return value ? `${value.provider.id}:${value.id}` : undefined;
+  };
   const initialActive = () => {
-    const selected = current()
-    const options = keys()
-    if (selected && options.includes(selected)) return selected
-    return options[0] ?? ""
-  }
+    const selected = current();
+    const options = keys();
+    if (selected && options.includes(selected)) return selected;
+    return options[0] ?? "";
+  };
   const activeItem = () =>
-    store.active ? contentRef?.querySelector<HTMLElement>(`[data-option-key="${CSS.escape(store.active)}"]`) : undefined
+    store.active
+      ? contentRef?.querySelector<HTMLElement>(`[data-option-key="${CSS.escape(store.active)}"]`)
+      : undefined;
   const afterClose = (callback: () => void) => {
     const complete = () => {
       if (contentRef?.isConnected) {
-        requestAnimationFrame(complete)
-        return
+        requestAnimationFrame(complete);
+        return;
       }
-      requestAnimationFrame(() => requestAnimationFrame(callback))
-    }
-    requestAnimationFrame(complete)
-  }
+      requestAnimationFrame(() => requestAnimationFrame(callback));
+    };
+    requestAnimationFrame(complete);
+  };
   const setOpen = (open: boolean) => {
     if (open) {
-      restoreTrigger = true
-      setStore({ open: true, active: initialActive() })
+      restoreTrigger = true;
+      setStore({ open: true, active: initialActive() });
       setTimeout(() =>
         requestAnimationFrame(() => {
-          searchRef?.focus()
-          activeItem()?.scrollIntoView({ block: "nearest" })
+          searchRef?.focus();
+          activeItem()?.scrollIntoView({ block: "nearest" });
         }),
-      )
-      return
+      );
+      return;
     }
-    setStore({ open: false, search: "", active: "" })
-  }
+    setStore({ open: false, search: "", active: "" });
+  };
   const select = (item: ModelItem) => {
-    model.set({ modelID: item.id, providerID: item.provider.id }, { recent: true })
-    props.onClose?.()
-  }
+    model.set({ modelID: item.id, providerID: item.provider.id }, { recent: true });
+    props.onClose?.();
+  };
   const selectModel = (item: ModelItem) => {
-    restoreTrigger = false
-    setOpen(false)
-    afterClose(() => select(item))
-  }
+    restoreTrigger = false;
+    setOpen(false);
+    afterClose(() => select(item));
+  };
   const manage = () => {
-    restoreTrigger = false
-    setOpen(false)
+    restoreTrigger = false;
+    setOpen(false);
     afterClose(() => {
       void import("./dialog-manage-models").then((x) => {
-        dialog.show(() => <x.DialogManageModelsV2 />)
-      })
-    })
-  }
+        dialog.show(() => <x.DialogManageModelsV2 />);
+      });
+    });
+  };
   const selectActive = () => {
-    const item = models().find((item) => modelKey(item) === store.active)
+    const item = models().find((item) => modelKey(item) === store.active);
     if (item) {
-      selectModel(item)
-      return
+      selectModel(item);
+      return;
     }
-    if (store.active === manageKey) manage()
-  }
+    if (store.active === manageKey) manage();
+  };
   const moveActive = (delta: number) => {
-    const options = keys()
-    if (options.length === 0) return
-    const index = options.indexOf(store.active)
-    const start = index === -1 ? 0 : index
-    setStore("active", options[(start + delta + options.length) % options.length])
-    queueMicrotask(() => activeItem()?.scrollIntoView({ block: "nearest" }))
-  }
+    const options = keys();
+    if (options.length === 0) return;
+    const index = options.indexOf(store.active);
+    const start = index === -1 ? 0 : index;
+    setStore("active", options[(start + delta + options.length) % options.length]);
+    queueMicrotask(() => activeItem()?.scrollIntoView({ block: "nearest" }));
+  };
   const setSearch = (value: string) => {
-    const search = value.trim()
+    const search = value.trim();
     const first = [...allModels()]
       .sort((a, b) => a.name.localeCompare(b.name))
-      .find((item) => matchesModelSearch(search, [item.name, item.id, item.provider.name]))
-    setStore({ search: value, active: first ? modelKey(first) : manageKey })
-  }
+      .find((item) => matchesModelSearch(search, [item.name, item.id, item.provider.name]));
+    setStore({ search: value, active: first ? modelKey(first) : manageKey });
+  };
 
   return (
     <MenuV2 open={store.open} modal={false} placement="top-start" gutter={6} onOpenChange={setOpen}>
@@ -348,7 +368,7 @@ export function ModelSelectorPopoverV2(props: {
           onPointerDownOutside={() => (restoreTrigger = false)}
           onFocusOutside={() => (restoreTrigger = false)}
           onCloseAutoFocus={(event) => {
-            if (!restoreTrigger) event.preventDefault()
+            if (!restoreTrigger) event.preventDefault();
           }}
         >
           <div class="flex flex-col p-0.5">
@@ -365,29 +385,29 @@ export function ModelSelectorPopoverV2(props: {
                 autocapitalize="off"
                 onInput={(event) => setSearch(event.currentTarget.value)}
                 onKeyDown={(event) => {
-                  if (event.key === "Tab") return
-                  event.stopPropagation()
+                  if (event.key === "Tab") return;
+                  event.stopPropagation();
                   if (event.key === "Escape") {
-                    event.preventDefault()
-                    restoreTrigger = false
-                    setOpen(false)
-                    afterClose(() => props.onClose?.())
-                    return
+                    event.preventDefault();
+                    restoreTrigger = false;
+                    setOpen(false);
+                    afterClose(() => props.onClose?.());
+                    return;
                   }
-                  if (event.altKey || event.metaKey) return
+                  if (event.altKey || event.metaKey) return;
                   if (event.key === "ArrowDown") {
-                    event.preventDefault()
-                    moveActive(1)
-                    return
+                    event.preventDefault();
+                    moveActive(1);
+                    return;
                   }
                   if (event.key === "ArrowUp") {
-                    event.preventDefault()
-                    moveActive(-1)
-                    return
+                    event.preventDefault();
+                    moveActive(-1);
+                    return;
                   }
                   if (event.key === "Enter" && !event.isComposing) {
-                    event.preventDefault()
-                    selectActive()
+                    event.preventDefault();
+                    selectActive();
                   }
                 }}
               />
@@ -429,10 +449,13 @@ export function ModelSelectorPopoverV2(props: {
                               data-option-key={modelKey(item)}
                               data-selected-model={current() === modelKey(item) ? true : undefined}
                               class="scroll-my-6"
-                              classList={{ "!bg-v2-overlay-simple-overlay-hover": store.active === modelKey(item) }}
+                              classList={{
+                                "!bg-v2-overlay-simple-overlay-hover":
+                                  store.active === modelKey(item),
+                              }}
                               onMouseEnter={() => {
-                                setStore("active", modelKey(item))
-                                setTimeout(() => searchRef?.focus())
+                                setStore("active", modelKey(item));
+                                setTimeout(() => searchRef?.focus());
                               }}
                               onSelect={() => selectModel(item)}
                             >
@@ -459,38 +482,40 @@ export function ModelSelectorPopoverV2(props: {
               data-option-key={manageKey}
               classList={{ "!bg-v2-overlay-simple-overlay-hover": store.active === manageKey }}
               onMouseEnter={() => {
-                setStore("active", manageKey)
-                setTimeout(() => searchRef?.focus())
+                setStore("active", manageKey);
+                setTimeout(() => searchRef?.focus());
               }}
               onSelect={manage}
             >
               <Icon name="outline-sliders" size="small" />
-              <span class="min-w-0 flex-1 truncate leading-5">{language.t("dialog.model.manage")}</span>
+              <span class="min-w-0 flex-1 truncate leading-5">
+                {language.t("dialog.model.manage")}
+              </span>
             </MenuV2.Item>
           </div>
         </MenuV2.Content>
       </MenuV2.Portal>
     </MenuV2>
-  )
+  );
 }
 
 export const DialogSelectModel: Component<{ provider?: string; model?: ModelState }> = (props) => {
-  const dialog = useDialog()
-  const language = useLanguage()
-  const local = useLocal()
-  const directory = () => decode64(local.slug())
+  const dialog = useDialog();
+  const language = useLanguage();
+  const local = useLocal();
+  const directory = () => decode64(local.slug());
 
   const provider = () => {
     void import("./dialog-select-provider").then((x) => {
-      dialog.show(() => <x.DialogSelectProvider directory={directory} />)
-    })
-  }
+      dialog.show(() => <x.DialogSelectProvider directory={directory} />);
+    });
+  };
 
   const manage = () => {
     void import("./dialog-manage-models").then((x) => {
-      dialog.show(() => <x.DialogManageModels />)
-    })
-  }
+      dialog.show(() => <x.DialogManageModels />);
+    });
+  };
 
   return (
     <Dialog
@@ -506,5 +531,5 @@ export const DialogSelectModel: Component<{ provider?: string; model?: ModelStat
         {language.t("dialog.model.manage")}
       </Button>
     </Dialog>
-  )
-}
+  );
+};

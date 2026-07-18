@@ -1,30 +1,35 @@
-import { Button } from "@opencode-ai/ui/button"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { Dialog } from "@opencode-ai/ui/dialog"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { ProviderIcon } from "@opencode-ai/ui/provider-icon"
-import { useMutation } from "@tanstack/solid-query"
-import { TextField } from "@opencode-ai/ui/text-field"
-import { showToast } from "@/utils/toast"
-import { type Accessor, batch, For } from "solid-js"
-import { createStore, produce } from "solid-js/store"
-import { Link } from "@/components/link"
-import { useServerSDK } from "@/context/server-sdk"
-import { useServerSync } from "@/context/server-sync"
-import { useLanguage } from "@/context/language"
-import { type FormState, headerRow, modelRow, validateCustomProvider } from "./dialog-custom-provider-form"
-import { DialogSelectProvider } from "./dialog-select-provider"
+import { Button } from "@opencode-ai/ui/button";
+import { useDialog } from "@opencode-ai/ui/context/dialog";
+import { Dialog } from "@opencode-ai/ui/dialog";
+import { IconButton } from "@opencode-ai/ui/icon-button";
+import { ProviderIcon } from "@opencode-ai/ui/provider-icon";
+import { useMutation } from "@tanstack/solid-query";
+import { TextField } from "@opencode-ai/ui/text-field";
+import { showToast } from "@/utils/toast";
+import { type Accessor, batch, For } from "solid-js";
+import { createStore, produce } from "solid-js/store";
+import { Link } from "@/components/link";
+import { useServerSDK } from "@/context/server-sdk";
+import { useServerSync } from "@/context/server-sync";
+import { useLanguage } from "@/context/language";
+import {
+  type FormState,
+  headerRow,
+  modelRow,
+  validateCustomProvider,
+} from "./dialog-custom-provider-form";
+import { DialogSelectProvider } from "./dialog-select-provider";
 
 type Props = {
-  back?: "providers" | "close"
-  directory?: Accessor<string | undefined>
-}
+  back?: "providers" | "close";
+  directory?: Accessor<string | undefined>;
+};
 
 export function DialogCustomProvider(props: Props) {
-  const dialog = useDialog()
-  const serverSync = useServerSync()
-  const serverSDK = useServerSDK()
-  const language = useLanguage()
+  const dialog = useDialog();
+  const serverSync = useServerSync();
+  const serverSDK = useServerSDK();
+  const language = useLanguage();
 
   const [form, setForm] = createStore<FormState>({
     providerID: "",
@@ -34,73 +39,73 @@ export function DialogCustomProvider(props: Props) {
     models: [modelRow()],
     headers: [headerRow()],
     err: {},
-  })
+  });
 
   const goBack = () => {
     if (props.back === "close") {
-      dialog.close()
-      return
+      dialog.close();
+      return;
     }
-    dialog.show(() => <DialogSelectProvider directory={props.directory} />)
-  }
+    dialog.show(() => <DialogSelectProvider directory={props.directory} />);
+  };
 
   const addModel = () => {
     setForm(
       "models",
       produce((rows) => {
-        rows.push(modelRow())
+        rows.push(modelRow());
       }),
-    )
-  }
+    );
+  };
 
   const removeModel = (index: number) => {
-    if (form.models.length <= 1) return
+    if (form.models.length <= 1) return;
     setForm(
       "models",
       produce((rows) => {
-        rows.splice(index, 1)
+        rows.splice(index, 1);
       }),
-    )
-  }
+    );
+  };
 
   const addHeader = () => {
     setForm(
       "headers",
       produce((rows) => {
-        rows.push(headerRow())
+        rows.push(headerRow());
       }),
-    )
-  }
+    );
+  };
 
   const removeHeader = (index: number) => {
-    if (form.headers.length <= 1) return
+    if (form.headers.length <= 1) return;
     setForm(
       "headers",
       produce((rows) => {
-        rows.splice(index, 1)
+        rows.splice(index, 1);
       }),
-    )
-  }
+    );
+  };
 
   const setField = (key: "providerID" | "name" | "baseURL" | "apiKey", value: string) => {
-    setForm(key, value)
-    if (key === "apiKey") return
-    setForm("err", key, undefined)
-  }
+    setForm(key, value);
+    if (key === "apiKey") return;
+    setForm("err", key, undefined);
+  };
 
   const setModel = (index: number, key: "id" | "name", value: string) => {
     batch(() => {
-      setForm("models", index, key, value)
-      setForm("models", index, "err", key, undefined)
-    })
-  }
+      setForm("models", index, key, value);
+      setForm("models", index, "err", key, undefined);
+    });
+  };
 
   const setHeader = (index: number, key: "key" | "value", value: string) => {
     batch(() => {
-      setForm("headers", index, key, value)
-      setForm("headers", index, "err", key, undefined)
-    })
-  }
+      setForm("headers", index, key, value);
+      setForm("headers", index, "err", key, undefined);
+    });
+  };
 
   const validate = () => {
     const output = validateCustomProvider({
@@ -108,19 +113,19 @@ export function DialogCustomProvider(props: Props) {
       t: language.t,
       disabledProviders: serverSync().data.config.disabled_providers ?? [],
       existingProviderIDs: new Set(serverSync().data.provider.all.keys()),
-    })
+    });
     batch(() => {
-      setForm("err", output.err)
-      output.models.forEach((err, index) => setForm("models", index, "err", err))
-      output.headers.forEach((err, index) => setForm("headers", index, "err", err))
-    })
-    return output.result
-  }
+      setForm("err", output.err);
+      output.models.forEach((err, index) => setForm("models", index, "err", err));
+      output.headers.forEach((err, index) => setForm("headers", index, "err", err));
+    });
+    return output.result;
+  };
 
   const saveMutation = useMutation(() => ({
     mutationFn: async (result: NonNullable<ReturnType<typeof validate>>) => {
-      const disabledProviders = serverSync().data.config.disabled_providers ?? []
-      const nextDisabled = disabledProviders.filter((id) => id !== result.providerID)
+      const disabledProviders = serverSync().data.config.disabled_providers ?? [];
+      const nextDisabled = disabledProviders.filter((id) => id !== result.providerID);
 
       if (result.key) {
         await serverSDK().client.auth.set({
@@ -129,38 +134,40 @@ export function DialogCustomProvider(props: Props) {
             type: "api",
             key: result.key,
           },
-        })
+        });
       }
 
       await serverSync().updateConfig({
         provider: { [result.providerID]: result.config },
         disabled_providers: nextDisabled,
-      })
-      return result
+      });
+      return result;
     },
     onSuccess: (result) => {
-      dialog.close()
+      dialog.close();
       showToast({
         variant: "success",
         icon: "circle-check",
         title: language.t("provider.connect.toast.connected.title", { provider: result.name }),
-        description: language.t("provider.connect.toast.connected.description", { provider: result.name }),
-      })
+        description: language.t("provider.connect.toast.connected.description", {
+          provider: result.name,
+        }),
+      });
     },
     onError: (err) => {
-      const message = err instanceof Error ? err.message : String(err)
-      showToast({ title: language.t("common.requestFailed"), description: message })
+      const message = err instanceof Error ? err.message : String(err);
+      showToast({ title: language.t("common.requestFailed"), description: message });
     },
-  }))
+  }));
 
   const save = (e: SubmitEvent) => {
-    e.preventDefault()
-    if (saveMutation.isPending) return
+    e.preventDefault();
+    if (saveMutation.isPending) return;
 
-    const result = validate()
-    if (!result) return
-    saveMutation.mutate(result)
-  }
+    const result = validate();
+    if (!result) return;
+    saveMutation.mutate(result);
+  };
 
   return (
     <Dialog
@@ -227,7 +234,9 @@ export function DialogCustomProvider(props: Props) {
           </div>
 
           <div class="flex flex-col gap-3">
-            <label class="text-12-medium text-text-weak">{language.t("provider.custom.models.label")}</label>
+            <label class="text-12-medium text-text-weak">
+              {language.t("provider.custom.models.label")}
+            </label>
             <For each={form.models}>
               {(m, i) => (
                 <div class="flex gap-2 items-start" data-row={m.row}>
@@ -265,13 +274,22 @@ export function DialogCustomProvider(props: Props) {
                 </div>
               )}
             </For>
-            <Button type="button" size="small" variant="ghost" icon="plus-small" onClick={addModel} class="self-start">
+            <Button
+              type="button"
+              size="small"
+              variant="ghost"
+              icon="plus-small"
+              onClick={addModel}
+              class="self-start"
+            >
               {language.t("provider.custom.models.add")}
             </Button>
           </div>
 
           <div class="flex flex-col gap-3">
-            <label class="text-12-medium text-text-weak">{language.t("provider.custom.headers.label")}</label>
+            <label class="text-12-medium text-text-weak">
+              {language.t("provider.custom.headers.label")}
+            </label>
             <For each={form.headers}>
               {(h, i) => (
                 <div class="flex gap-2 items-start" data-row={h.row}>
@@ -309,7 +327,14 @@ export function DialogCustomProvider(props: Props) {
                 </div>
               )}
             </For>
-            <Button type="button" size="small" variant="ghost" icon="plus-small" onClick={addHeader} class="self-start">
+            <Button
+              type="button"
+              size="small"
+              variant="ghost"
+              icon="plus-small"
+              onClick={addHeader}
+              class="self-start"
+            >
               {language.t("provider.custom.headers.add")}
             </Button>
           </div>
@@ -326,5 +351,5 @@ export function DialogCustomProvider(props: Props) {
         </form>
       </div>
     </Dialog>
-  )
+  );
 }

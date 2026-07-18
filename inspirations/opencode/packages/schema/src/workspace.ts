@@ -1,9 +1,9 @@
-export * as Workspace from "./workspace"
+export * as Workspace from "./workspace";
 
-import { WorkspaceEvent } from "./workspace-event"
-import { WorkspaceID } from "./workspace-id"
+import { WorkspaceEvent } from "./workspace-event";
+import { WorkspaceID } from "./workspace-id";
 
-export const ID = WorkspaceID
-export type ID = WorkspaceID
+export const ID = WorkspaceID;
+export type ID = WorkspaceID;
 
-export const Event = WorkspaceEvent
+export const Event = WorkspaceEvent;

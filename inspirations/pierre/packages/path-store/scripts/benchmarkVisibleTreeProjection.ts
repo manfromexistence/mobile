@@ -1,10 +1,10 @@
-import { performance } from 'node:perf_hooks';
+import { performance } from "node:perf_hooks";
 
 import {
   createVisibleTreeProjectionScenarios,
   createVisibleTreeProjectionWorkload,
   summarizeDurations,
-} from './visibleTreeProjectionShared';
+} from "./visibleTreeProjectionShared";
 
 interface BenchmarkConfig {
   json: boolean;
@@ -32,26 +32,26 @@ function parseArgs(argv: readonly string[]): BenchmarkConfig {
     json: false,
     runs: 20,
     warmupRuns: 5,
-    workloads: ['linux-1x'],
+    workloads: ["linux-1x"],
   };
 
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
     switch (arg) {
-      case '--json':
+      case "--json":
         config.json = true;
         break;
-      case '--runs':
+      case "--runs":
         config.runs = Number(argv[index + 1] ?? config.runs);
         index += 1;
         break;
-      case '--warmup-runs':
+      case "--warmup-runs":
         config.warmupRuns = Number(argv[index + 1] ?? config.warmupRuns);
         index += 1;
         break;
-      case '--workloads':
-        config.workloads = (argv[index + 1] ?? '')
-          .split(',')
+      case "--workloads":
+        config.workloads = (argv[index + 1] ?? "")
+          .split(",")
           .map((workload) => workload.trim())
           .filter((workload) => workload.length > 0);
         index += 1;
@@ -73,11 +73,7 @@ function main(): void {
     const scenarios = createVisibleTreeProjectionScenarios(workload);
 
     for (const scenario of scenarios) {
-      for (
-        let warmupIndex = 0;
-        warmupIndex < config.warmupRuns;
-        warmupIndex += 1
-      ) {
+      for (let warmupIndex = 0; warmupIndex < config.warmupRuns; warmupIndex += 1) {
         scenario.measure();
       }
 
@@ -110,13 +106,13 @@ function main(): void {
     console.log(
       JSON.stringify(
         {
-          benchmark: 'visible-tree-projection',
+          benchmark: "visible-tree-projection",
           config,
           results,
         },
         null,
-        2
-      )
+        2,
+      ),
     );
     return;
   }
@@ -131,7 +127,7 @@ function main(): void {
         `p95=${result.metrics.p95Ms.toFixed(3)}ms`,
         `min=${result.metrics.minMs.toFixed(3)}ms`,
         `max=${result.metrics.maxMs.toFixed(3)}ms`,
-      ].join('  ')
+      ].join("  "),
     );
   }
 }

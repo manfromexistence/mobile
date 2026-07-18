@@ -25,7 +25,7 @@ export function harmonicPhase(row: number, col: number, a: number, b: number): n
 export function lissajousOffset(
   row: number,
   col: number,
-  amplitude = 2.25
+  amplitude = 2.25,
 ): { x: number; y: number; phase: number } {
   const x = Math.sin((row + 1) * 1.15 + (col + 1) * 2.2) * amplitude;
   const y = Math.cos((row + 1) * 2.45 + (col + 1) * 0.95) * amplitude;
@@ -36,7 +36,7 @@ export function lissajousOffset(
 export function spiralOffset(
   angle: number,
   radiusNormalizedValue: number,
-  amplitude = 2.8
+  amplitude = 2.8,
 ): { x: number; y: number; phase: number } {
   const spin = angle + radiusNormalizedValue * Math.PI * 2.1;
   const radius = radiusNormalizedValue * amplitude;

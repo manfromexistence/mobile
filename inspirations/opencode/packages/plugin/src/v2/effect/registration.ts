@@ -1,15 +1,15 @@
-import type { Effect, Scope } from "effect"
+import type { Effect, Scope } from "effect";
 
 export interface Registration {
-  readonly dispose: Effect.Effect<void>
+  readonly dispose: Effect.Effect<void>;
 }
 
 export interface Reload {
-  readonly reload: () => Effect.Effect<void>
+  readonly reload: () => Effect.Effect<void>;
 }
 
 export type Hooks<Spec> = {
   readonly [Name in keyof Spec]: (
     callback: (input: Spec[Name]) => Effect.Effect<void> | void,
-  ) => Effect.Effect<Registration, never, Scope.Scope>
-}
+  ) => Effect.Effect<Registration, never, Scope.Scope>;
+};

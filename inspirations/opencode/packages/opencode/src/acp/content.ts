@@ -1,30 +1,30 @@
-import type { ContentBlock, ContentChunk, ResourceLink, Role } from "@agentclientprotocol/sdk"
-import path from "node:path"
-import { fileURLToPath, pathToFileURL } from "node:url"
-import { SessionV1 } from "@opencode-ai/core/v1/session"
+import type { ContentBlock, ContentChunk, ResourceLink, Role } from "@agentclientprotocol/sdk";
+import path from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { SessionV1 } from "@opencode-ai/core/v1/session";
 
-export type PromptPart = SessionV1.TextPartInput | SessionV1.FilePartInput
+export type PromptPart = SessionV1.TextPartInput | SessionV1.FilePartInput;
 
 export type ReplayPart =
   | {
-      type: "text"
-      text: string
-      synthetic?: boolean
-      ignored?: boolean
+      type: "text";
+      text: string;
+      synthetic?: boolean;
+      ignored?: boolean;
     }
   | {
-      type: "file"
-      url: string
-      mime: string
-      filename?: string
+      type: "file";
+      url: string;
+      mime: string;
+      filename?: string;
     }
   | {
-      type: "reasoning"
-      text: string
-    }
+      type: "reasoning";
+      text: string;
+    };
 
 export function promptContentToParts(content: readonly ContentBlock[]): PromptPart[] {
-  return content.flatMap(contentBlockToParts)
+  return content.flatMap(contentBlockToParts);
 }
 
 export function contentBlockToParts(block: ContentBlock): PromptPart[] {
@@ -36,7 +36,7 @@ export function contentBlockToParts(block: ContentBlock): PromptPart[] {
           text: block.text,
           ...audienceFlags(block.annotations?.audience ?? undefined),
         },
-      ]
+      ];
 
     case "image":
       if (block.data) {
@@ -47,7 +47,7 @@ export function contentBlockToParts(block: ContentBlock): PromptPart[] {
             filename: filenameFromUri(block.uri ?? undefined) ?? "image",
             mime: block.mimeType,
           },
-        ]
+        ];
       }
       if (block.uri?.startsWith("data:")) {
         return [
@@ -57,7 +57,7 @@ export function contentBlockToParts(block: ContentBlock): PromptPart[] {
             filename: filenameFromUri(block.uri) ?? "image",
             mime: block.mimeType,
           },
-        ]
+        ];
       }
       if (block.uri?.startsWith("http://") || block.uri?.startsWith("https://")) {
         return [
@@ -67,35 +67,35 @@ export function contentBlockToParts(block: ContentBlock): PromptPart[] {
             filename: filenameFromUri(block.uri) ?? "image",
             mime: block.mimeType,
           },
-        ]
+        ];
       }
-      return []
+      return [];
 
     case "resource_link":
-      return [resourceLinkToPart(block)]
+      return [resourceLinkToPart(block)];
 
     case "resource":
       if ("text" in block.resource) {
         try {
-          const parsed = new URL(block.resource.uri)
+          const parsed = new URL(block.resource.uri);
           if (parsed.protocol === "file:") {
-            const line = parsed.hash.match(/^#L(\d+)/)?.[1]
-            let filepath: string
+            const line = parsed.hash.match(/^#L(\d+)/)?.[1];
+            let filepath: string;
             try {
-              filepath = fileURLToPath(parsed)
+              filepath = fileURLToPath(parsed);
             } catch {
-              filepath = decodeURIComponent(parsed.pathname)
+              filepath = decodeURIComponent(parsed.pathname);
             }
-            if (path.sep === "\\") filepath = filepath.replace(/\\/g, "/")
+            if (path.sep === "\\") filepath = filepath.replace(/\\/g, "/");
             return [
               {
                 type: "text",
                 text: `[${filepath}${line ? `:${line}` : ""}]\n${block.resource.text}`,
               },
-            ]
+            ];
           }
         } catch {}
-        return [{ type: "text", text: `[${block.resource.uri}]\n${block.resource.text}` }]
+        return [{ type: "text", text: `[${block.resource.uri}]\n${block.resource.text}` }];
       }
       if (block.resource.mimeType) {
         return [
@@ -107,23 +107,23 @@ export function contentBlockToParts(block: ContentBlock): PromptPart[] {
             filename: filenameFromUri(block.resource.uri) ?? "file",
             mime: block.resource.mimeType,
           },
-        ]
+        ];
       }
-      return []
+      return [];
 
     default:
-      return []
+      return [];
   }
 }
 
 export function partsToContentChunks(parts: readonly ReplayPart[]): ContentChunk[] {
-  return parts.flatMap(partToContentChunks)
+  return parts.flatMap(partToContentChunks);
 }
 
 export function partToContentChunks(part: ReplayPart): ContentChunk[] {
   switch (part.type) {
     case "text":
-      if (!part.text) return []
+      if (!part.text) return [];
       return [
         {
           content: {
@@ -132,13 +132,13 @@ export function partToContentChunks(part: ReplayPart): ContentChunk[] {
             ...partAudience(part),
           },
         },
-      ]
+      ];
 
     case "file":
-      return filePartToContentChunks(part)
+      return filePartToContentChunks(part);
 
     case "reasoning":
-      if (!part.text) return []
+      if (!part.text) return [];
       return [
         {
           content: {
@@ -146,14 +146,14 @@ export function partToContentChunks(part: ReplayPart): ContentChunk[] {
             text: part.text,
           },
         },
-      ]
+      ];
   }
 }
 
 function resourceLinkToPart(link: ResourceLink): PromptPart {
-  const parsed = uriToFilePart(link.uri, link.mimeType ?? "text/plain", link.name)
-  if (parsed.type === "file") return parsed
-  return { type: "text", text: parsed.text }
+  const parsed = uriToFilePart(link.uri, link.mimeType ?? "text/plain", link.name);
+  if (parsed.type === "file") return parsed;
+  return { type: "text", text: parsed.text };
 }
 
 function uriToFilePart(
@@ -168,22 +168,22 @@ function uriToFilePart(
         url: uri,
         filename: filename ?? filenameFromUri(uri) ?? "file",
         mime,
-      }
+      };
     }
     if (uri.startsWith("zed://")) {
-      const pathname = new URL(uri).searchParams.get("path")
+      const pathname = new URL(uri).searchParams.get("path");
       if (pathname) {
         return {
           type: "file",
           url: pathToFileURL(pathname).href,
           filename: filename ?? (path.basename(pathname) || "file"),
           mime,
-        }
+        };
       }
     }
-    return { type: "text", text: uri }
+    return { type: "text", text: uri };
   } catch {
-    return { type: "text", text: uri }
+    return { type: "text", text: uri };
   }
 }
 
@@ -198,12 +198,12 @@ function filePartToContentChunks(part: Extract<ReplayPart, { type: "file" }>): C
           mimeType: part.mime,
         },
       },
-    ]
+    ];
   }
-  if (!part.url.startsWith("data:")) return []
+  if (!part.url.startsWith("data:")) return [];
 
-  const data = decodeDataUrl(part.url)
-  if (!data) return []
+  const data = decodeDataUrl(part.url);
+  if (!data) return [];
   if (data.mime.startsWith("image/")) {
     return [
       {
@@ -214,7 +214,7 @@ function filePartToContentChunks(part: Extract<ReplayPart, { type: "file" }>): C
           uri: pathToFileURL(part.filename ?? "image").href,
         },
       },
-    ]
+    ];
   }
 
   return [
@@ -235,35 +235,39 @@ function filePartToContentChunks(part: Extract<ReplayPart, { type: "file" }>): C
               },
       },
     },
-  ]
+  ];
 }
 
 function decodeDataUrl(url: string) {
-  const match = /^data:([^;]+);base64,(.*)$/.exec(url)
-  if (!match) return
-  return { mime: match[1], base64: match[2] }
+  const match = /^data:([^;]+);base64,(.*)$/.exec(url);
+  if (!match) return;
+  return { mime: match[1], base64: match[2] };
 }
 
 function audienceFlags(audience: readonly Role[] | null | undefined) {
-  if (audience?.length === 1 && audience[0] === "assistant") return { synthetic: true }
-  if (audience?.length === 1 && audience[0] === "user") return { ignored: true }
-  return {}
+  if (audience?.length === 1 && audience[0] === "assistant") return { synthetic: true };
+  if (audience?.length === 1 && audience[0] === "user") return { ignored: true };
+  return {};
 }
 
 function partAudience(part: Extract<ReplayPart, { type: "text" }>) {
-  const audience: Role[] | undefined = part.synthetic ? ["assistant"] : part.ignored ? ["user"] : undefined
-  if (!audience) return {}
-  return { annotations: { audience } }
+  const audience: Role[] | undefined = part.synthetic
+    ? ["assistant"]
+    : part.ignored
+      ? ["user"]
+      : undefined;
+  if (!audience) return {};
+  return { annotations: { audience } };
 }
 
 function filenameFromUri(uri: string | undefined) {
-  if (!uri) return
-  if (uri.startsWith("data:")) return
+  if (!uri) return;
+  if (uri.startsWith("data:")) return;
   try {
-    const parsed = new URL(uri)
-    const name = path.basename(parsed.pathname)
-    return name || undefined
+    const parsed = new URL(uri);
+    const name = path.basename(parsed.pathname);
+    return name || undefined;
   } catch {
-    return path.basename(uri) || undefined
+    return path.basename(uri) || undefined;
   }
 }

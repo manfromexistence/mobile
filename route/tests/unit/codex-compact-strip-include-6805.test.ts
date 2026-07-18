@@ -20,7 +20,7 @@ test("CodexExecutor.transformRequest strips include from compact requests (#6805
     {
       requestEndpointPath: "/responses/compact",
       providerSpecificData: { requestDefaults: { serviceTier: "priority" } },
-    }
+    },
   );
   assert.equal(result.include, undefined);
   assert.equal(result._nativeCodexPassthrough, undefined);

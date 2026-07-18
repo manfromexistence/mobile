@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
   } catch {
     return NextResponse.json(
       { error: "Invalid JSON body" },
-      { status: 400, headers: CORS_HEADERS }
+      { status: 400, headers: CORS_HEADERS },
     );
   }
 
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Invalid request", details: parsed.error.issues },
-      { status: 400, headers: CORS_HEADERS }
+      { status: 400, headers: CORS_HEADERS },
     );
   }
 
@@ -43,6 +43,6 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json(
     { success: true, serverUrl: result.serverUrl },
-    { headers: CORS_HEADERS }
+    { headers: CORS_HEADERS },
   );
 }

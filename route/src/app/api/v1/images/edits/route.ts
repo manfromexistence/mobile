@@ -145,7 +145,7 @@ async function postHandler(request: Request, context) {
   if (!input) {
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
-      "Invalid request body. Send multipart/form-data or JSON with a data-URL image."
+      "Invalid request body. Send multipart/form-data or JSON with a data-URL image.",
     );
   }
 
@@ -179,12 +179,12 @@ async function postHandler(request: Request, context) {
       parsed.provider,
       null,
       allowedConnections,
-      resolvedModel
+      resolvedModel,
     );
     if (!credentials) {
       return errorResponse(
         HTTP_STATUS.UNAUTHORIZED,
-        `No credentials for provider: ${parsed.provider}`
+        `No credentials for provider: ${parsed.provider}`,
       );
     }
     if (credentials.allRateLimited) {
@@ -192,7 +192,7 @@ async function postHandler(request: Request, context) {
         HTTP_STATUS.RATE_LIMITED,
         `[${parsed.provider}] All accounts rate limited`,
         credentials.retryAfter,
-        credentials.retryAfterHuman
+        credentials.retryAfterHuman,
       );
     }
 
@@ -219,7 +219,7 @@ async function postHandler(request: Request, context) {
     }
     return jsonResponse(
       toJsonErrorPayload((result as any).error, "Image edit provider error"),
-      (result as any).status
+      (result as any).status,
     );
   }
 
@@ -228,7 +228,7 @@ async function postHandler(request: Request, context) {
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
       `Image edit is not supported for built-in provider "${parsed.provider}". ` +
-        `Use chatgpt-web or a custom OpenAI-compatible image provider.`
+        `Use chatgpt-web or a custom OpenAI-compatible image provider.`,
     );
   }
 
@@ -240,7 +240,7 @@ async function postHandler(request: Request, context) {
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
       `Unknown image provider for model "${fullModel}". Use provider/model, a custom ` +
-        `provider prefix, or a combo/alias name.`
+        `provider prefix, or a combo/alias name.`,
     );
   }
 
@@ -248,12 +248,12 @@ async function postHandler(request: Request, context) {
     customProviderId,
     null,
     allowedConnections,
-    resolvedModel
+    resolvedModel,
   );
   if (!credentials) {
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
-      `No credentials for custom image provider: ${customProviderId}`
+      `No credentials for custom image provider: ${customProviderId}`,
     );
   }
   if (credentials.allRateLimited) {
@@ -261,7 +261,7 @@ async function postHandler(request: Request, context) {
       HTTP_STATUS.RATE_LIMITED,
       `[${customProviderId}] All accounts rate limited`,
       credentials.retryAfter,
-      credentials.retryAfterHuman
+      credentials.retryAfterHuman,
     );
   }
 
@@ -284,7 +284,7 @@ async function postHandler(request: Request, context) {
   }
   return jsonResponse(
     toJsonErrorPayload((result as any).error, "Image edit provider error"),
-    (result as any).status
+    (result as any).status,
   );
 }
 

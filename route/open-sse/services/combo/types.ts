@@ -54,12 +54,12 @@ export type SingleModelTarget =
 export type HandleSingleModel = (
   body: Record<string, unknown>,
   modelStr: string,
-  target?: SingleModelTarget
+  target?: SingleModelTarget,
 ) => Promise<Response>;
 
 export type IsModelAvailable = (
   modelStr: string,
-  target?: ResolvedComboTarget & { allowRateLimitedConnection?: boolean }
+  target?: ResolvedComboTarget & { allowRateLimitedConnection?: boolean },
 ) => Promise<boolean> | boolean;
 
 export type ComboRelayOptions = {

@@ -1,12 +1,12 @@
-import { EventV2Bridge } from "@/event-v2-bridge"
-import { TuiEvent } from "@/server/tui-event"
-import { Session } from "@/session/session"
-import { Effect } from "effect"
-import { HttpApiBuilder, HttpApiError } from "effect/unstable/httpapi"
-import { nextTuiRequest, submitTuiResponse } from "@/server/shared/tui-control"
-import { InstanceHttpApi } from "../api"
-import { CommandPayload, TuiPublishPayload } from "../groups/tui"
-import * as SessionError from "./session-errors"
+import { EventV2Bridge } from "@/event-v2-bridge";
+import { TuiEvent } from "@/server/tui-event";
+import { Session } from "@/session/session";
+import { Effect } from "effect";
+import { HttpApiBuilder, HttpApiError } from "effect/unstable/httpapi";
+import { nextTuiRequest, submitTuiResponse } from "@/server/shared/tui-control";
+import { InstanceHttpApi } from "../api";
+import { CommandPayload, TuiPublishPayload } from "../groups/tui";
+import * as SessionError from "./session-errors";
 
 const commandAliases = {
   session_new: "session.new",
@@ -22,96 +22,104 @@ const commandAliases = {
   messages_first: "session.first",
   messages_last: "session.last",
   agent_cycle: "agent.cycle",
-} as const
+} as const;
 
 export const tuiHandlers = HttpApiBuilder.group(InstanceHttpApi, "tui", (handlers) =>
   Effect.gen(function* () {
-    const events = yield* EventV2Bridge.Service
-    const session = yield* Session.Service
-    const publishCommand = (command: typeof TuiEvent.CommandExecute.data.Type.command | undefined) =>
-      events.publish(TuiEvent.CommandExecute, { command } as typeof TuiEvent.CommandExecute.data.Type)
+    const events = yield* EventV2Bridge.Service;
+    const session = yield* Session.Service;
+    const publishCommand = (
+      command: typeof TuiEvent.CommandExecute.data.Type.command | undefined,
+    ) =>
+      events.publish(TuiEvent.CommandExecute, {
+        command,
+      } as typeof TuiEvent.CommandExecute.data.Type);
 
     const appendPrompt = Effect.fn("TuiHttpApi.appendPrompt")(function* (ctx: {
-      payload: typeof TuiEvent.PromptAppend.data.Type
+      payload: typeof TuiEvent.PromptAppend.data.Type;
     }) {
-      yield* events.publish(TuiEvent.PromptAppend, ctx.payload)
-      return true
-    })
+      yield* events.publish(TuiEvent.PromptAppend, ctx.payload);
+      return true;
+    });
 
     const openHelp = Effect.fn("TuiHttpApi.openHelp")(function* () {
-      yield* publishCommand("help.show")
-      return true
-    })
+      yield* publishCommand("help.show");
+      return true;
+    });
 
     const openSessions = Effect.fn("TuiHttpApi.openSessions")(function* () {
-      yield* publishCommand("session.list")
-      return true
-    })
+      yield* publishCommand("session.list");
+      return true;
+    });
 
     const openThemes = Effect.fn("TuiHttpApi.openThemes")(function* () {
-      yield* publishCommand("session.list")
-      return true
-    })
+      yield* publishCommand("session.list");
+      return true;
+    });
 
     const openModels = Effect.fn("TuiHttpApi.openModels")(function* () {
-      yield* publishCommand("model.list")
-      return true
-    })
+      yield* publishCommand("model.list");
+      return true;
+    });
 
     const submitPrompt = Effect.fn("TuiHttpApi.submitPrompt")(function* () {
-      yield* publishCommand("prompt.submit")
-      return true
-    })
+      yield* publishCommand("prompt.submit");
+      return true;
+    });
 
     const clearPrompt = Effect.fn("TuiHttpApi.clearPrompt")(function* () {
-      yield* publishCommand("prompt.clear")
-      return true
-    })
+      yield* publishCommand("prompt.clear");
+      return true;
+    });
 
     const executeCommand = Effect.fn("TuiHttpApi.executeCommand")(function* (ctx: {
-      payload: typeof CommandPayload.Type
+      payload: typeof CommandPayload.Type;
     }) {
       // Legacy only publishes known aliases; unknown commands become undefined.
-      yield* publishCommand(commandAliases[ctx.payload.command as keyof typeof commandAliases])
-      return true
-    })
+      yield* publishCommand(commandAliases[ctx.payload.command as keyof typeof commandAliases]);
+      return true;
+    });
 
     const showToast = Effect.fn("TuiHttpApi.showToast")(function* (ctx: {
-      payload: typeof TuiEvent.ToastShow.data.Type
+      payload: typeof TuiEvent.ToastShow.data.Type;
     }) {
-      yield* events.publish(TuiEvent.ToastShow, ctx.payload)
-      return true
-    })
+      yield* events.publish(TuiEvent.ToastShow, ctx.payload);
+      return true;
+    });
 
-    const publish = Effect.fn("TuiHttpApi.publish")(function* (ctx: { payload: typeof TuiPublishPayload.Type }) {
+    const publish = Effect.fn("TuiHttpApi.publish")(function* (ctx: {
+      payload: typeof TuiPublishPayload.Type;
+    }) {
       if (ctx.payload.type === TuiEvent.PromptAppend.type)
-        yield* events.publish(TuiEvent.PromptAppend, ctx.payload.properties)
+        yield* events.publish(TuiEvent.PromptAppend, ctx.payload.properties);
       if (ctx.payload.type === TuiEvent.CommandExecute.type)
-        yield* events.publish(TuiEvent.CommandExecute, ctx.payload.properties)
+        yield* events.publish(TuiEvent.CommandExecute, ctx.payload.properties);
       if (ctx.payload.type === TuiEvent.ToastShow.type)
-        yield* events.publish(TuiEvent.ToastShow, ctx.payload.properties)
+        yield* events.publish(TuiEvent.ToastShow, ctx.payload.properties);
       if (ctx.payload.type === TuiEvent.SessionSelect.type)
-        yield* events.publish(TuiEvent.SessionSelect, ctx.payload.properties)
-      return true
-    })
+        yield* events.publish(TuiEvent.SessionSelect, ctx.payload.properties);
+      return true;
+    });
 
     const selectSession = Effect.fn("TuiHttpApi.selectSession")(function* (ctx: {
-      payload: typeof TuiEvent.SessionSelect.data.Type
+      payload: typeof TuiEvent.SessionSelect.data.Type;
     }) {
-      if (!ctx.payload.sessionID.startsWith("ses")) return yield* new HttpApiError.BadRequest({})
-      yield* SessionError.mapStorageNotFound(session.get(ctx.payload.sessionID))
-      yield* events.publish(TuiEvent.SessionSelect, ctx.payload)
-      return true
-    })
+      if (!ctx.payload.sessionID.startsWith("ses")) return yield* new HttpApiError.BadRequest({});
+      yield* SessionError.mapStorageNotFound(session.get(ctx.payload.sessionID));
+      yield* events.publish(TuiEvent.SessionSelect, ctx.payload);
+      return true;
+    });
 
     const controlNext = Effect.fn("TuiHttpApi.controlNext")(function* () {
-      return yield* Effect.promise(() => nextTuiRequest())
-    })
+      return yield* Effect.promise(() => nextTuiRequest());
+    });
 
-    const controlResponse = Effect.fn("TuiHttpApi.controlResponse")(function* (ctx: { payload: unknown }) {
-      submitTuiResponse(ctx.payload)
-      return true
-    })
+    const controlResponse = Effect.fn("TuiHttpApi.controlResponse")(function* (ctx: {
+      payload: unknown;
+    }) {
+      submitTuiResponse(ctx.payload);
+      return true;
+    });
 
     return handlers
       .handle("appendPrompt", appendPrompt)
@@ -126,6 +134,6 @@ export const tuiHandlers = HttpApiBuilder.group(InstanceHttpApi, "tui", (handler
       .handle("publish", publish)
       .handle("selectSession", selectSession)
       .handle("controlNext", controlNext)
-      .handle("controlResponse", controlResponse)
+      .handle("controlResponse", controlResponse);
   }),
-)
+);

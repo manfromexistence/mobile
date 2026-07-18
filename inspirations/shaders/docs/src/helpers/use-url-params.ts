@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { deserializeParams } from './url-serializer';
-import { setParamsSafe } from './use-reset-leva-params';
-import type { ShaderDef } from '../shader-defs/shader-def-types';
+import { useEffect } from "react";
+import { deserializeParams } from "./url-serializer";
+import { setParamsSafe } from "./use-reset-leva-params";
+import type { ShaderDef } from "../shader-defs/shader-def-types";
 
 export const useUrlParams = (
   params: any,
   setParams: any,
   shaderDef: ShaderDef,
-  setColors?: (colors: string[]) => void
+  setColors?: (colors: string[]) => void,
 ) => {
   useEffect(() => {
     const hashContent = window.location.hash.slice(1); // Remove #
@@ -22,7 +22,7 @@ export const useUrlParams = (
     try {
       urlParams = deserializeParams(hashContent, shaderDef.params);
     } catch (error) {
-      console.warn('Failed to parse URL parameters:', error);
+      console.warn("Failed to parse URL parameters:", error);
     }
 
     if (!urlParams || Object.keys(urlParams).length === 0) {
@@ -30,7 +30,9 @@ export const useUrlParams = (
     }
 
     if (setColors) {
-      const colorArrayParam = shaderDef.params.find((param) => param.type === 'string[]' && param.isColor);
+      const colorArrayParam = shaderDef.params.find(
+        (param) => param.type === "string[]" && param.isColor,
+      );
       if (colorArrayParam && urlParams[colorArrayParam.name]) {
         const colorsValue = urlParams[colorArrayParam.name];
         const colorsArray = Array.isArray(colorsValue) ? colorsValue : [colorsValue];
@@ -42,7 +44,7 @@ export const useUrlParams = (
 
     // Clear hash from URL
     const url = new URL(window.location.href);
-    url.hash = '';
-    window.history.replaceState({}, '', url.toString());
+    url.hash = "";
+    window.history.replaceState({}, "", url.toString());
   }, [params, setParams, setColors, shaderDef]);
 };

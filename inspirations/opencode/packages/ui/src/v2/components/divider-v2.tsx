@@ -1,10 +1,10 @@
-import { type ComponentProps, splitProps } from "solid-js"
-import "./divider-v2.css"
+import { type ComponentProps, splitProps } from "solid-js";
+import "./divider-v2.css";
 
 export interface DividerV2Props extends ComponentProps<"div"> {}
 
 export function DividerV2(props: DividerV2Props) {
-  const [local, rest] = splitProps(props, ["class", "classList"])
+  const [local, rest] = splitProps(props, ["class", "classList"]);
   return (
     <div
       {...rest}
@@ -16,5 +16,5 @@ export function DividerV2(props: DividerV2Props) {
         [local.class ?? ""]: !!local.class,
       }}
     />
-  )
+  );
 }

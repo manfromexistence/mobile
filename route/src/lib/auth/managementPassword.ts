@@ -55,7 +55,7 @@ export async function verifyManagementPassword(password: string, hash: string) {
 }
 
 export async function ensurePersistentManagementPasswordHash(
-  options: EnsureManagementPasswordOptions = {}
+  options: EnsureManagementPasswordOptions = {},
 ): Promise<EnsuredManagementPassword> {
   const settings = options.settings ?? ((await getSettings()) as JsonRecord);
   const storedPassword = getStoredManagementPassword(settings);
@@ -78,7 +78,7 @@ export async function ensurePersistentManagementPasswordHash(
     warn(
       '[AUTH][SECURITY] Management password is set to the well-known default "CHANGEME" ' +
         "(INITIAL_PASSWORD in .env.example). Anyone can sign in to the dashboard with it — " +
-        "change it immediately via the dashboard or a strong INITIAL_PASSWORD."
+        "change it immediately via the dashboard or a strong INITIAL_PASSWORD.",
     );
   }
 

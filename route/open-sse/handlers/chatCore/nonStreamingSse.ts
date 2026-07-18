@@ -9,7 +9,7 @@ import { getHeaderValueCaseInsensitive } from "./headers.ts";
 export function parseNonStreamingSSEPayload(
   rawBody: string,
   preferredFormat: string,
-  fallbackModel: string
+  fallbackModel: string,
 ): { body: Record<string, unknown>; format: string } | null {
   const formatsToTry: string[] = [];
   const seen = new Set<string>();
@@ -65,7 +65,7 @@ export function isTruthyStreamBody(body: unknown): boolean {
 }
 
 export function isEventStreamAccepted(
-  headers: Record<string, unknown> | Headers | null | undefined
+  headers: Record<string, unknown> | Headers | null | undefined,
 ) {
   return (getHeaderValueCaseInsensitive(headers, "accept") || "")
     .toLowerCase()
@@ -75,7 +75,7 @@ export function isEventStreamAccepted(
 export function shouldTreatBufferedEventResponseAsExpected(
   upstreamStream: boolean,
   providerHeaders: Record<string, unknown> | Headers | null | undefined,
-  finalBody: unknown
+  finalBody: unknown,
 ): boolean {
   return upstreamStream || isEventStreamAccepted(providerHeaders) || isTruthyStreamBody(finalBody);
 }
@@ -109,7 +109,7 @@ function hasClaudeTerminalMessageDelta(parsed: unknown, eventType: string): bool
 
 function processNonStreamingSseTerminalLine(
   state: NonStreamingSseTerminalState,
-  rawLine: string
+  rawLine: string,
 ): boolean {
   const trimmed = rawLine.trim();
   if (!trimmed || trimmed.startsWith(":")) {
@@ -158,7 +158,7 @@ function processNonStreamingSseTerminalLine(
 
 export function appendNonStreamingSseTerminalSignal(
   state: NonStreamingSseTerminalState,
-  chunk: string
+  chunk: string,
 ): boolean {
   const lines = `${state.pendingLine}${chunk}`.split(/\r?\n/);
   state.pendingLine = lines.pop() ?? "";

@@ -92,9 +92,7 @@
     line-height: 1;
     padding: var(--radio-group-padding);
     position: relative;
-    transition:
-      color 200ms ease-out,
-      opacity 200ms ease-out;
+    transition: color 200ms ease-out, opacity 200ms ease-out;
     user-select: none;
   }
 

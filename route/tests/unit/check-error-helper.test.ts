@@ -197,7 +197,7 @@ test("cli-tools backups route has been removed from the shipped missing-helper a
 
 test("cli-tools guide-settings route has been removed from the shipped missing-helper allowlist", async () => {
   await assertRouteRemovedFromMissingHelperAllowlist(
-    "src/app/api/cli-tools/guide-settings/[toolId]/route.ts"
+    "src/app/api/cli-tools/guide-settings/[toolId]/route.ts",
   );
 });
 

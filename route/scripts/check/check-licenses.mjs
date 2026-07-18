@@ -40,7 +40,7 @@ const PRINT_JSON = process.argv.includes("--json");
 export function loadAllowlist() {
   if (!fs.existsSync(ALLOWLIST_PATH)) {
     throw new Error(
-      `Allowlist not found: ${ALLOWLIST_PATH}. Create .license-allowlist.json first.`
+      `Allowlist not found: ${ALLOWLIST_PATH}. Create .license-allowlist.json first.`,
     );
   }
   const raw = fs.readFileSync(ALLOWLIST_PATH, "utf-8");
@@ -125,7 +125,7 @@ function runLicenseChecker() {
   if (!fs.existsSync(CHECKER_BIN)) {
     throw new Error(
       `license-checker-rseidelsohn not found at ${CHECKER_BIN}.\n` +
-        `Install it: npm install --save-dev license-checker-rseidelsohn`
+        `Install it: npm install --save-dev license-checker-rseidelsohn`,
     );
   }
 
@@ -201,7 +201,7 @@ function main() {
   // Print exceptions (informational)
   if (exceptions.length > 0) {
     console.log(
-      "\n[check-licenses] Exceções registradas (não bloqueantes, revisar periodicamente):"
+      "\n[check-licenses] Exceções registradas (não bloqueantes, revisar periodicamente):",
     );
     for (const { pkgKey, license } of exceptions) {
       const baseName = stripVersion(pkgKey);
@@ -225,7 +225,7 @@ function main() {
   // Print violations and fail
   if (violations.length > 0) {
     console.error(
-      "\n[check-licenses] ❌ VIOLAÇÕES DE POLÍTICA — deps de produção com licença não permitida:"
+      "\n[check-licenses] ❌ VIOLAÇÕES DE POLÍTICA — deps de produção com licença não permitida:",
     );
     for (const { pkgKey, license, reason } of violations) {
       console.error(`  ✗ ${pkgKey}: ${license}`);
@@ -234,14 +234,14 @@ function main() {
     console.error(
       "\nAdicione a licença à allowlist 'allowed' em .license-allowlist.json (se SPDX-permissiva)\n" +
         "ou registre uma exceção por-pacote em 'exceptions' com justificativa e 'reviewAt'.\n" +
-        "NÃO mascare copyleft forte sem registrar a justificativa. Ver PLANO-QUALITY-GATES-FASE7.md § Task 20."
+        "NÃO mascare copyleft forte sem registrar a justificativa. Ver PLANO-QUALITY-GATES-FASE7.md § Task 20.",
     );
     process.exitCode = 1;
     return;
   }
 
   console.log(
-    "\n[check-licenses] ✅ Todos os pacotes de produção estão em conformidade com a política de licenças."
+    "\n[check-licenses] ✅ Todos os pacotes de produção estão em conformidade com a política de licenças.",
   );
 }
 

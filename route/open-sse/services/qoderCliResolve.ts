@@ -47,7 +47,7 @@ export async function resolveQoderCliInvocation(
   deps: {
     getStatus?: typeof getCliRuntimeStatus;
     shouldUseShell?: typeof shouldUseShellForCommand;
-  } = {}
+  } = {},
 ): Promise<QoderCliInvocation> {
   const explicit = String(explicitCommand || "").trim();
   const getStatus = deps.getStatus || getCliRuntimeStatus;

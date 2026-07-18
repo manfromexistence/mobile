@@ -1,13 +1,13 @@
-import type { Element as HASTElement } from 'hast';
+import type { Element as HASTElement } from "hast";
 
-import { createHastElement } from './hast_utils';
+import { createHastElement } from "./hast_utils";
 
 export function createEmptyRowBuffer(size: number): HASTElement {
   return createHastElement({
-    tagName: 'div',
+    tagName: "div",
     properties: {
-      'data-content-buffer': '',
-      'data-buffer-size': size,
+      "data-content-buffer": "",
+      "data-buffer-size": size,
       style: `grid-row: span ${size};min-height:calc(${size} * 1lh)`,
     },
   });

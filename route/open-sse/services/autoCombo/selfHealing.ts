@@ -42,7 +42,7 @@ export class SelfHealingManager {
   evaluate(
     provider: string,
     score: number,
-    circuitBreakerState: string
+    circuitBreakerState: string,
   ): {
     excluded: boolean;
     reason?: string;

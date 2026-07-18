@@ -49,7 +49,7 @@ export function useTranslateDeepLink(): UseTranslateDeepLinkReturn {
       else next.delete("advanced");
       router.replace(`?${next.toString()}`, { scroll: false });
     },
-    [params, router, state]
+    [params, router, state],
   );
 
   return {

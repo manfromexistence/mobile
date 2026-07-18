@@ -10,7 +10,7 @@ import assert from "node:assert/strict";
 // We test the logic inline since the method is private — replicate the priority logic
 function getPromptCacheSessionId(
   credentials: { providerSpecificData?: { workspaceId?: string } } | null,
-  body: Record<string, unknown> | null
+  body: Record<string, unknown> | null,
 ): string | null {
   const sessionId = body?.session_id ?? body?.conversation_id;
   if (typeof sessionId === "string" && sessionId.length > 0) {

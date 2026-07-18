@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import type { FileDiffMetadata } from '@pierre/diffs';
-import { FileDiff } from '@pierre/diffs/react';
-import { FileTree, useFileTree } from '@pierre/trees/react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useRef, useState } from 'react';
+import type { FileDiffMetadata } from "@pierre/diffs";
+import { FileDiff } from "@pierre/diffs/react";
+import { FileTree, useFileTree } from "@pierre/trees/react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useRef, useState } from "react";
 
-import type { ThemeGridItem, ViewMode } from './constants';
+import type { ThemeGridItem, ViewMode } from "./constants";
 import {
   GIT_STATUSES,
   GRID_CLASSES,
@@ -15,11 +15,11 @@ import {
   MODES,
   PREVIEW_FILES,
   TREE_OPTIONS,
-} from './constants';
-import { Swatches } from './Swatches';
-import { useTreeStatePreview } from './useTreeStatePreview';
-import { Button } from '@/components/ui/button';
-import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group';
+} from "./constants";
+import { Swatches } from "./Swatches";
+import { useTreeStatePreview } from "./useTreeStatePreview";
+import { Button } from "@/components/ui/button";
+import { ButtonGroup, ButtonGroupItem } from "@/components/ui/button-group";
 
 function ModeToggle({
   mode,
@@ -29,11 +29,7 @@ function ModeToggle({
   onChange: (m: ViewMode) => void;
 }) {
   return (
-    <ButtonGroup
-      size="sm"
-      value={mode}
-      onValueChange={(value) => onChange(value as ViewMode)}
-    >
+    <ButtonGroup size="sm" value={mode} onValueChange={(value) => onChange(value as ViewMode)}>
       {MODES.map(({ value, label }) => (
         <ButtonGroupItem key={value} value={value}>
           {label}
@@ -72,10 +68,10 @@ function TreePanel({
   return (
     <div ref={panelRef}>
       <FileTree
-        className={className ?? 'rounded-sm border p-3'}
+        className={className ?? "rounded-sm border p-3"}
         model={model}
         style={{
-          colorScheme: theme.type as 'light' | 'dark',
+          colorScheme: theme.type as "light" | "dark",
           ...theme.styles,
         }}
       />
@@ -111,12 +107,12 @@ function DiffCard({
       <FileDiff
         fileDiff={fileDiff}
         className="overflow-hidden rounded-sm border"
-        style={{ colorScheme: theme.type as 'light' | 'dark' }}
+        style={{ colorScheme: theme.type as "light" | "dark" }}
         options={{
           theme: { dark: theme.name, light: theme.name },
-          themeType: theme.type as 'light' | 'dark',
-          diffStyle: 'unified',
-          overflow: 'wrap',
+          themeType: theme.type as "light" | "dark",
+          diffStyle: "unified",
+          overflow: "wrap",
           disableFileHeader: true,
         }}
       />
@@ -140,7 +136,7 @@ function CombinedCard({
       <div
         className="grid grid-cols-[minmax(0,1.2fr)_minmax(0,3fr)] overflow-hidden rounded-md border lg:grid-cols-[minmax(0,1fr)_minmax(0,3fr)] 2xl:grid-cols-[minmax(0,1.2fr)_minmax(0,3fr)]"
         style={{
-          colorScheme: theme.type as 'light' | 'dark',
+          colorScheme: theme.type as "light" | "dark",
           backgroundColor: theme.styles.backgroundColor,
         }}
       >
@@ -155,9 +151,9 @@ function CombinedCard({
             className="h-full overflow-hidden"
             options={{
               theme: { dark: theme.name, light: theme.name },
-              themeType: theme.type as 'light' | 'dark',
-              diffStyle: 'unified',
-              overflow: 'wrap',
+              themeType: theme.type as "light" | "dark",
+              diffStyle: "unified",
+              overflow: "wrap",
               disableFileHeader: true,
             }}
           />
@@ -179,27 +175,27 @@ export function ThemesGridClient({
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const viewParam = searchParams.get('view');
-  const mode: ViewMode = isViewMode(viewParam) ? viewParam : 'trees';
+  const viewParam = searchParams.get("view");
+  const mode: ViewMode = isViewMode(viewParam) ? viewParam : "trees";
 
   const setMode = useCallback(
     (next: ViewMode) => {
       const params = new URLSearchParams(searchParams);
-      if (next === 'trees') {
-        params.delete('view');
+      if (next === "trees") {
+        params.delete("view");
       } else {
-        params.set('view', next);
+        params.set("view", next);
       }
       const qs = params.toString();
       router.replace(qs.length > 0 ? `?${qs}` : window.location.pathname, {
         scroll: false,
       });
     },
-    [searchParams, router]
+    [searchParams, router],
   );
 
   const [showStates, setShowStates] = useState(true);
-  const hasTrees = mode !== 'diffs';
+  const hasTrees = mode !== "diffs";
 
   return (
     <div>
@@ -210,7 +206,7 @@ export function ThemesGridClient({
             onClick={() => setShowStates((s) => !s)}
             aria-pressed={showStates}
             size="sm"
-            variant={showStates ? 'outline' : 'ghost'}
+            variant={showStates ? "outline" : "ghost"}
           >
             Show states
           </Button>
@@ -219,19 +215,11 @@ export function ThemesGridClient({
       <div className={`grid gap-3 p-4 ${GRID_CLASSES[mode]}`}>
         {themes.map((theme) => {
           switch (mode) {
-            case 'trees':
-              return (
-                <TreeCard
-                  key={theme.name}
-                  theme={theme}
-                  showStates={showStates}
-                />
-              );
-            case 'diffs':
-              return (
-                <DiffCard key={theme.name} theme={theme} fileDiff={fileDiff} />
-              );
-            case 'both':
+            case "trees":
+              return <TreeCard key={theme.name} theme={theme} showStates={showStates} />;
+            case "diffs":
+              return <DiffCard key={theme.name} theme={theme} fileDiff={fileDiff} />;
+            case "both":
               return (
                 <CombinedCard
                   key={theme.name}

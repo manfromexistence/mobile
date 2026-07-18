@@ -42,7 +42,7 @@ test("verify route enforces auth before reading the body and sanitizes errors", 
   const here = dirname(fileURLToPath(import.meta.url));
   const src = readFileSync(
     join(here, "../../../src/app/api/compression/compare/verify/route.ts"),
-    "utf8"
+    "utf8",
   );
   const authIdx = src.indexOf("requireManagementAuth(req)");
   const bodyIdx = src.indexOf("req.json()");
@@ -54,13 +54,13 @@ test("verify route uses the priced judge client so the USD cap is not inert", ()
   const here = dirname(fileURLToPath(import.meta.url));
   const src = readFileSync(
     join(here, "../../../src/app/api/compression/compare/verify/route.ts"),
-    "utf8"
+    "utf8",
   );
   // must build the cost-aware client (computes usdCost via pricing lookup)
   assert.match(src, /createPricedJudgeClient/);
   // must NOT use the bare cost-blind createExecutorModelClient (that reintroduces the inert cap)
   assert.ok(
     !/createExecutorModelClient\s*\(/.test(src),
-    "route must not use the cost-blind createExecutorModelClient"
+    "route must not use the cost-blind createExecutorModelClient",
   );
 });

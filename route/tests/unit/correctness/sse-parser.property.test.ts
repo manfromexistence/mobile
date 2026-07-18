@@ -37,7 +37,7 @@ test("SSE text reconstruction is invariant to chunk boundaries (line-level)", ()
       const full = seq.chunks.join("");
       const reconstructed = extractTextFromLines(full);
       assert.equal(reconstructed, seq.expectedText);
-    })
+    }),
   );
 });
 

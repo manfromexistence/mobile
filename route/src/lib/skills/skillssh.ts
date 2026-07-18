@@ -31,7 +31,7 @@ const REQUEST_TIMEOUT_MS = 15_000;
  */
 export async function searchSkillsSh(
   query: string,
-  limit: number = DEFAULT_SEARCH_LIMIT
+  limit: number = DEFAULT_SEARCH_LIMIT,
 ): Promise<SkillsShSearchResponse> {
   const url = `${SKILLSSH_BASE_URL}/search?q=${encodeURIComponent(query)}&limit=${limit}`;
   const controller = new AbortController();

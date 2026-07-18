@@ -31,6 +31,6 @@ test("#5065 factory gateway entry is present in the dashboard catalog", () => {
   assert.equal(gw.passthroughModels, true);
   assert.ok(
     typeof gw.website === "string" && (gw.website as string).includes("factory.ai"),
-    "factory gateway must point at factory.ai"
+    "factory gateway must point at factory.ai",
   );
 });

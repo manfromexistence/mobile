@@ -1,22 +1,22 @@
-'use client';
+"use client";
 
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
 
-import type { FileDiffOptions } from '../components/FileDiff';
-import type { UnresolvedFile as UnresolvedFileClass } from '../components/UnresolvedFile';
-import { DIFFS_TAG_NAME } from '../constants';
-import type { UnresolvedFileHunksRendererOptions } from '../renderers/UnresolvedFileHunksRenderer';
+import type { FileDiffOptions } from "../components/FileDiff";
+import type { UnresolvedFile as UnresolvedFileClass } from "../components/UnresolvedFile";
+import { DIFFS_TAG_NAME } from "../constants";
+import type { UnresolvedFileHunksRendererOptions } from "../renderers/UnresolvedFileHunksRenderer";
 import type {
   FileContents,
   HunkSeparators,
   MergeConflictResolution,
   PostRenderPhase,
-} from '../types';
-import { type MergeConflictDiffAction } from '../utils/parseMergeConflictDiffFromFile';
-import type { FileDiffProps } from './FileDiff';
-import { renderDiffChildren } from './utils/renderDiffChildren';
-import { templateRender } from './utils/templateRender';
-import { useUnresolvedFileInstance } from './utils/useUnresolvedFileInstance';
+} from "../types";
+import { type MergeConflictDiffAction } from "../utils/parseMergeConflictDiffFromFile";
+import type { FileDiffProps } from "./FileDiff";
+import { renderDiffChildren } from "./utils/renderDiffChildren";
+import { templateRender } from "./utils/templateRender";
+import { useUnresolvedFileInstance } from "./utils/useUnresolvedFileInstance";
 
 export interface RenderMergeConflictActionContext {
   resolveConflict(resolution: MergeConflictResolution): void;
@@ -24,39 +24,33 @@ export interface RenderMergeConflictActionContext {
 
 export type RenderMergeConflictActions = (
   action: MergeConflictDiffAction,
-  context: RenderMergeConflictActionContext
+  context: RenderMergeConflictActionContext,
 ) => ReactNode;
 
-export type MergeConflictActionsTypeOption =
-  | 'none'
-  | 'default'
-  | RenderMergeConflictActions;
+export type MergeConflictActionsTypeOption = "none" | "default" | RenderMergeConflictActions;
 
 export interface UnresolvedFileReactOptions<LAnnotation>
-  extends
-    Omit<
+  extends Omit<
       FileDiffOptions<LAnnotation>,
-      'hunkSeparators' | 'diffStyle' | 'onMergeConflictAction' | 'onPostRender'
+      "hunkSeparators" | "diffStyle" | "onMergeConflictAction" | "onPostRender"
     >,
     UnresolvedFileHunksRendererOptions {
   hunkSeparators?: HunkSeparators;
   onPostRender?(
     node: HTMLElement,
     instance: UnresolvedFileClass<LAnnotation>,
-    phase: PostRenderPhase
+    phase: PostRenderPhase,
   ): unknown;
   maxContextLines?: number;
 }
 
-export interface UnresolvedFileProps<LAnnotation> extends Omit<
-  FileDiffProps<LAnnotation>,
-  'fileDiff' | 'options'
-> {
+export interface UnresolvedFileProps<LAnnotation>
+  extends Omit<FileDiffProps<LAnnotation>, "fileDiff" | "options"> {
   file: FileContents;
   options?: UnresolvedFileReactOptions<LAnnotation>;
   renderMergeConflictUtility?(
     action: MergeConflictDiffAction,
-    getInstance: () => UnresolvedFileClass<LAnnotation> | undefined
+    getInstance: () => UnresolvedFileClass<LAnnotation> | undefined,
   ): ReactNode;
   disableWorkerPool?: boolean;
 }
@@ -77,18 +71,17 @@ export function UnresolvedFile<LAnnotation = undefined>({
   renderMergeConflictUtility,
   disableWorkerPool = false,
 }: UnresolvedFileProps<LAnnotation>): React.JSX.Element {
-  const { ref, getHoveredLine, fileDiff, actions, getInstance } =
-    useUnresolvedFileInstance({
-      file,
-      options,
-      lineAnnotations,
-      selectedLines,
-      prerenderedHTML,
-      hasConflictUtility: renderMergeConflictUtility != null,
-      hasGutterRenderUtility: renderGutterUtility != null,
-      hasCustomHeader: renderCustomHeader != null,
-      disableWorkerPool,
-    });
+  const { ref, getHoveredLine, fileDiff, actions, getInstance } = useUnresolvedFileInstance({
+    file,
+    options,
+    lineAnnotations,
+    selectedLines,
+    prerenderedHTML,
+    hasConflictUtility: renderMergeConflictUtility != null,
+    hasGutterRenderUtility: renderGutterUtility != null,
+    hasCustomHeader: renderCustomHeader != null,
+    disableWorkerPool,
+  });
   const children = renderDiffChildren({
     fileDiff,
     renderCustomHeader,

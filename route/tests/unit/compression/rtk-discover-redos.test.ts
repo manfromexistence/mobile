@@ -14,7 +14,7 @@ describe("RTK discover — ReDoS safety (CLAUDE.md regex rule)", () => {
     assert.ok(typeof out === "string");
     assert.ok(
       elapsedMs < 1000,
-      `discoverNormalizeLine took ${elapsedMs.toFixed(0)}ms (ReDoS regression — must be < 1000ms)`
+      `discoverNormalizeLine took ${elapsedMs.toFixed(0)}ms (ReDoS regression — must be < 1000ms)`,
     );
   });
 
@@ -22,7 +22,7 @@ describe("RTK discover — ReDoS safety (CLAUDE.md regex rule)", () => {
     assert.equal(discoverNormalizeLine("left-pad@1.2.3"), "<PKG>@<N>");
     assert.equal(
       discoverNormalizeLine("npm WARN deprecated foo@2.0.0: msg"),
-      "npm WARN deprecated <PKG>@<N>: msg"
+      "npm WARN deprecated <PKG>@<N>: msg",
     );
   });
 });

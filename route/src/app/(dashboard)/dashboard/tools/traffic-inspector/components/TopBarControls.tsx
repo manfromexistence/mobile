@@ -41,7 +41,6 @@ interface TopBarControlsProps {
   onSessionDelete: (id: string) => void;
 }
 
-
 export function TopBarControls({
   filters,
   onProfileChange,
@@ -94,9 +93,7 @@ export function TopBarControls({
             onClick={() => onProfileChange(id)}
             className={cn(
               "px-2 py-0.5 text-xs rounded focus-ring",
-              profile === id
-                ? "bg-blue-600 text-white"
-                : "text-text-muted hover:text-text-main"
+              profile === id ? "bg-blue-600 text-white" : "text-text-muted hover:text-text-main",
             )}
           >
             {profileLabels[id]}
@@ -116,9 +113,7 @@ export function TopBarControls({
       {/* Status filter */}
       <select
         value={filters.status ?? ""}
-        onChange={(e) =>
-          onStatusChange((e.target.value as ListFilters["status"]) || undefined)
-        }
+        onChange={(e) => onStatusChange((e.target.value as ListFilters["status"]) || undefined)}
         className="rounded border border-border bg-bg-subtle px-2 py-1 text-xs text-text-main focus:outline-none focus:ring-1 focus:ring-blue-500"
       >
         <option value="">{t("anyStatus")}</option>
@@ -139,7 +134,7 @@ export function TopBarControls({
           "inline-flex items-center gap-1 rounded border px-2 py-1 text-xs focus-ring",
           liveOnly
             ? "border-green-500/50 bg-green-500/15 text-green-500"
-            : "border-border text-text-muted hover:text-text-main"
+            : "border-border text-text-muted hover:text-text-main",
         )}
       >
         <span className="material-symbols-outlined text-[14px]" aria-hidden="true">
@@ -206,7 +201,7 @@ export function TopBarControls({
           <span
             className={cn(
               "inline-block h-2 w-2 rounded-full",
-              connected ? "bg-green-400 animate-pulse" : "bg-gray-500"
+              connected ? "bg-green-400 animate-pulse" : "bg-gray-500",
             )}
           />
           {connected ? t("liveBadge") : t("offlineBadge")}

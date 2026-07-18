@@ -8,47 +8,47 @@
 // and tracks per-turn wall-clock duration for the footer status line.
 //
 // Resolves when the footer closes and all in-flight work finishes.
-import * as Locale from "@/util/locale"
-import { MessageID, PartID } from "@/session/schema"
-import { isExitCommand, isNewCommand } from "./prompt.shared"
-import type { FooterApi, FooterEvent, FooterQueuedPrompt, RunPrompt } from "./types"
+import * as Locale from "@/util/locale";
+import { MessageID, PartID } from "@/session/schema";
+import { isExitCommand, isNewCommand } from "./prompt.shared";
+import type { FooterApi, FooterEvent, FooterQueuedPrompt, RunPrompt } from "./types";
 
 type Trace = {
-  write(type: string, data?: unknown): void
-}
+  write(type: string, data?: unknown): void;
+};
 
 type Deferred<T = void> = {
-  promise: Promise<T>
-  resolve: (value: T | PromiseLike<T>) => void
-  reject: (error?: unknown) => void
-}
+  promise: Promise<T>;
+  resolve: (value: T | PromiseLike<T>) => void;
+  reject: (error?: unknown) => void;
+};
 
 export type QueueInput = {
-  footer: FooterApi
-  initialInput?: string
-  trace?: Trace
-  onSend?: (prompt: RunPrompt) => void
-  onNewSession?: () => void | Promise<void>
-  run: (prompt: RunPrompt, signal: AbortSignal) => Promise<void>
-}
+  footer: FooterApi;
+  initialInput?: string;
+  trace?: Trace;
+  onSend?: (prompt: RunPrompt) => void;
+  onNewSession?: () => void | Promise<void>;
+  run: (prompt: RunPrompt, signal: AbortSignal) => Promise<void>;
+};
 
 type State = {
-  queue: RunPrompt[]
-  queued: FooterQueuedPrompt[]
-  active?: RunPrompt
-  ctrl?: AbortController
-  closed: boolean
-}
+  queue: RunPrompt[];
+  queued: FooterQueuedPrompt[];
+  active?: RunPrompt;
+  ctrl?: AbortController;
+  closed: boolean;
+};
 
 function defer<T = void>(): Deferred<T> {
-  let resolve!: (value: T | PromiseLike<T>) => void
-  let reject!: (error?: unknown) => void
+  let resolve!: (value: T | PromiseLike<T>) => void;
+  let reject!: (error?: unknown) => void;
   const promise = new Promise<T>((next, fail) => {
-    resolve = next
-    reject = fail
-  })
+    resolve = next;
+    reject = fail;
+  });
 
-  return { promise, resolve, reject }
+  return { promise, resolve, reject };
 }
 
 // Runs the prompt queue until the footer closes.
@@ -57,77 +57,77 @@ function defer<T = void>(): Deferred<T> {
 // Ordinary prompts submitted during an ordinary active turn remain local and
 // are exposed by the footer for edit/removal until their turn begins.
 export async function runPromptQueue(input: QueueInput): Promise<void> {
-  const stop = defer<{ type: "closed" }>()
-  const done = defer()
+  const stop = defer<{ type: "closed" }>();
+  const done = defer();
   const state: State = {
     queue: [],
     queued: [],
     closed: input.footer.isClosed,
-  }
-  let draining: Promise<void> | undefined
+  };
+  let draining: Promise<void> | undefined;
 
   const emit = (next: FooterEvent, row: Record<string, unknown>) => {
-    input.trace?.write("ui.patch", row)
-    input.footer.event(next)
-  }
+    input.trace?.write("ui.patch", row);
+    input.footer.event(next);
+  };
 
   const syncQueue = () => {
-    const queue = state.queue.length
-    emit({ type: "queue", queue }, { queue })
+    const queue = state.queue.length;
+    emit({ type: "queue", queue }, { queue });
     emit(
       {
         type: "queued.prompts",
         prompts: [...state.queued],
       },
       { queued: state.queued.length },
-    )
-  }
+    );
+  };
 
   const removeLocalQueued = (queued: FooterQueuedPrompt) => {
-    if (!state.queued.includes(queued)) return
-    state.queued = state.queued.filter((item) => item !== queued)
-    syncQueue()
-  }
+    if (!state.queued.includes(queued)) return;
+    state.queued = state.queued.filter((item) => item !== queued);
+    syncQueue();
+  };
 
   const finish = () => {
     if (!state.closed || draining) {
-      return
+      return;
     }
 
-    done.resolve()
-  }
+    done.resolve();
+  };
 
   const close = () => {
     if (state.closed) {
-      return
+      return;
     }
 
-    state.closed = true
-    state.queue.length = 0
-    state.queued.length = 0
-    state.ctrl?.abort()
-    stop.resolve({ type: "closed" })
-    finish()
-  }
+    state.closed = true;
+    state.queue.length = 0;
+    state.queued.length = 0;
+    state.ctrl?.abort();
+    stop.resolve({ type: "closed" });
+    finish();
+  };
 
   const drain = () => {
     if (draining || state.closed || state.queue.length === 0) {
-      return
+      return;
     }
 
     draining = (async () => {
       try {
         while (!state.closed && state.queue.length > 0) {
-          const prompt = state.queue.shift()
+          const prompt = state.queue.shift();
           if (!prompt) {
-            continue
+            continue;
           }
 
-          const queued = state.queued.find((item) => item.prompt === prompt)
-          if (queued) removeLocalQueued(queued)
+          const queued = state.queued.find((item) => item.prompt === prompt);
+          if (queued) removeLocalQueued(queued);
 
           if (prompt.mode !== "shell" && isNewCommand(prompt.text)) {
-            syncQueue()
+            syncQueue();
             if (!input.onNewSession) {
               emit(
                 {
@@ -139,8 +139,8 @@ export async function runPromptQueue(input: QueueInput): Promise<void> {
                 {
                   status: "new sessions unavailable",
                 },
-              )
-              continue
+              );
+              continue;
             }
 
             emit(
@@ -157,9 +157,9 @@ export async function runPromptQueue(input: QueueInput): Promise<void> {
                 status: "starting new session",
                 queue: state.queue.length,
               },
-            )
-            await input.onNewSession()
-            continue
+            );
+            await input.onNewSession();
+            continue;
           }
 
           const sent =
@@ -168,8 +168,8 @@ export async function runPromptQueue(input: QueueInput): Promise<void> {
               : {
                   ...prompt,
                   messageID: prompt.messageID ?? queued?.messageID ?? MessageID.ascending(),
-                }
-          state.active = sent
+                };
+          state.active = sent;
 
           emit(
             {
@@ -181,15 +181,15 @@ export async function runPromptQueue(input: QueueInput): Promise<void> {
               status: "sending prompt",
               queue: state.queue.length,
             },
-          )
-          const start = Date.now()
-          const ctrl = new AbortController()
-          state.ctrl = ctrl
+          );
+          const start = Date.now();
+          const ctrl = new AbortController();
+          state.ctrl = ctrl;
 
           try {
-            await input.footer.idle()
+            await input.footer.idle();
             if (state.closed) {
-              break
+              break;
             }
 
             if (sent.mode !== "shell") {
@@ -199,37 +199,37 @@ export async function runPromptQueue(input: QueueInput): Promise<void> {
                 phase: "start",
                 source: "system",
                 messageID: sent.messageID,
-              } as const
-              input.trace?.write("ui.commit", commit)
-              input.footer.append(commit)
+              } as const;
+              input.trace?.write("ui.commit", commit);
+              input.footer.append(commit);
             }
-            input.onSend?.(sent)
+            input.onSend?.(sent);
 
             if (state.closed) {
-              break
+              break;
             }
 
             const task = input.run(sent, ctrl.signal).then(
               () => ({ type: "done" as const }),
               (error) => ({ type: "error" as const, error }),
-            )
+            );
 
-            const next = await Promise.race([task, stop.promise])
+            const next = await Promise.race([task, stop.promise]);
             if (next.type === "closed") {
-              ctrl.abort()
-              break
+              ctrl.abort();
+              break;
             }
 
             if (next.type === "error") {
-              throw next.error
+              throw next.error;
             }
           } finally {
             if (state.ctrl === ctrl) {
-              state.ctrl = undefined
+              state.ctrl = undefined;
             }
 
             if (sent.mode !== "shell") {
-              const duration = Locale.duration(Math.max(0, Date.now() - start))
+              const duration = Locale.duration(Math.max(0, Date.now() - start));
               emit(
                 {
                   type: "turn.duration",
@@ -238,16 +238,16 @@ export async function runPromptQueue(input: QueueInput): Promise<void> {
                 {
                   duration,
                 },
-              )
+              );
             }
-            state.active = undefined
+            state.active = undefined;
           }
         }
       } catch (error) {
-        done.reject(error)
-        return
+        done.reject(error);
+        return;
       } finally {
-        draining = undefined
+        draining = undefined;
         emit(
           {
             type: "turn.idle",
@@ -258,24 +258,24 @@ export async function runPromptQueue(input: QueueInput): Promise<void> {
             status: "",
             queue: state.queue.length,
           },
-        )
+        );
       }
 
-      finish()
-    })()
-  }
+      finish();
+    })();
+  };
 
   const submit = (prompt: RunPrompt) => {
     if (!prompt.text.trim() || state.closed) {
-      return
+      return;
     }
 
     if (prompt.mode !== "shell" && isExitCommand(prompt.text)) {
-      input.footer.close()
-      return
+      input.footer.close();
+      return;
     }
 
-    const active = state.active
+    const active = state.active;
     if (
       active &&
       active.mode !== "shell" &&
@@ -288,18 +288,18 @@ export async function runPromptQueue(input: QueueInput): Promise<void> {
         messageID: MessageID.ascending(),
         partID: PartID.ascending(),
         prompt,
-      }
-      state.queued = [...state.queued, queued]
-      state.queue.push(prompt)
-      syncQueue()
-      return
+      };
+      state.queued = [...state.queued, queued];
+      state.queue.push(prompt);
+      syncQueue();
+      return;
     }
 
-    state.queue.push(prompt)
-    syncQueue()
+    state.queue.push(prompt);
+    syncQueue();
     if (prompt.mode !== "shell" && isNewCommand(prompt.text)) {
-      drain()
-      return
+      drain();
+      return;
     }
 
     emit(
@@ -310,40 +310,40 @@ export async function runPromptQueue(input: QueueInput): Promise<void> {
       {
         first: false,
       },
-    )
-    drain()
-  }
+    );
+    drain();
+  };
 
   const offPrompt = input.footer.onPrompt((prompt) => {
-    submit(prompt)
-  })
+    submit(prompt);
+  });
   const offClose = input.footer.onClose(() => {
-    close()
-  })
+    close();
+  });
   const offRemoveQueued = input.footer.onQueuedRemove((messageID) => {
-    const queued = state.queued.find((item) => item.messageID === messageID)
-    if (!queued) return false
-    state.queue = state.queue.filter((prompt) => prompt !== queued.prompt)
-    removeLocalQueued(queued)
-    return true
-  })
+    const queued = state.queued.find((item) => item.messageID === messageID);
+    if (!queued) return false;
+    state.queue = state.queue.filter((prompt) => prompt !== queued.prompt);
+    removeLocalQueued(queued);
+    return true;
+  });
 
   try {
     if (state.closed) {
-      return
+      return;
     }
 
     submit({
       text: input.initialInput ?? "",
       parts: [],
-    })
-    finish()
-    await done.promise
+    });
+    finish();
+    await done.promise;
   } finally {
-    offPrompt()
-    offClose()
-    offRemoveQueued()
-    close()
-    await draining?.catch(() => {})
+    offPrompt();
+    offClose();
+    offRemoveQueued();
+    close();
+    await draining?.catch(() => {});
   }
 }

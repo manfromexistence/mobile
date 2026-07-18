@@ -185,14 +185,14 @@ function main() {
         `\n  → embuta via resolvePublicCred()/resolvePublicCredMulti() ` +
         `(open-sse/utils/publicCreds.ts). Ver docs/security/PUBLIC_CREDS.md.\n` +
         `  → se for um literal pré-existente já auditado, congele em KNOWN_LITERAL_CREDS ` +
-        `com justificativa (e abra tracking de migração).`
+        `com justificativa (e abra tracking de migração).`,
     );
     process.exit(1);
   }
   if (process.exitCode === 1) return; // stale entries already logged
   console.log(
     `[check-public-creds] OK (${scannedFiles.length} arquivo(s) em ${SCAN_ROOTS.length} raiz(es), ` +
-      `${KNOWN_LITERAL_CREDS.size} literal(is) congelado(s))`
+      `${KNOWN_LITERAL_CREDS.size} literal(is) congelado(s))`,
   );
 }
 

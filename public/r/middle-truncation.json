@@ -13,8 +13,6 @@
     }
   ],
   "docs": "https://chanhdai.com/components/middle-truncation",
-  "categories": [
-    "typography"
-  ],
+  "categories": ["typography"],
   "type": "registry:component"
 }

@@ -1,4 +1,4 @@
-import { loadWorktreeEnv } from '../../scripts/load-worktree-env.mjs';
+import { loadWorktreeEnv } from "../../scripts/load-worktree-env.mjs";
 
 // `next dev` runs under Node, which (like Bun) only auto-loads the standard
 // `.env*` names. Our worktree helper writes `PIERRE_WORKTREE_SLUG` /
@@ -11,10 +11,7 @@ loadWorktreeEnv();
 // `NEXT_PUBLIC_WORKTREE_SLUG` so the value survives into the client bundle.
 // Bridge it from the non-prefixed worktree slug so `.env.worktree` stays the
 // single source of truth.
-if (
-  process.env.PIERRE_WORKTREE_SLUG &&
-  !process.env.NEXT_PUBLIC_WORKTREE_SLUG
-) {
+if (process.env.PIERRE_WORKTREE_SLUG && !process.env.NEXT_PUBLIC_WORKTREE_SLUG) {
   process.env.NEXT_PUBLIC_WORKTREE_SLUG = process.env.PIERRE_WORKTREE_SLUG;
 }
 
@@ -27,11 +24,11 @@ const nextConfig = {
   reactCompiler: true,
   devIndicators: false,
   experimental: {
-    cssChunking: 'strict',
+    cssChunking: "strict",
   },
   // Resolve and transpile workspace packages so subpath exports (e.g. @pierre/trees/react)
   // resolve correctly when Next follows client-component imports from the server.
-  transpilePackages: ['@pierre/trees', '@pierre/diffs'],
+  transpilePackages: ["@pierre/trees", "@pierre/diffs"],
 };
 
 export default nextConfig;

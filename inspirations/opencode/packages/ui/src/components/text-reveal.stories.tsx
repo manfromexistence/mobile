@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { onCleanup } from "solid-js"
-import { createStore } from "solid-js/store"
-import { TextReveal } from "./text-reveal"
+import { onCleanup } from "solid-js";
+import { createStore } from "solid-js/store";
+import { TextReveal } from "./text-reveal";
 
 export default {
   title: "UI/TextReveal",
@@ -19,7 +19,7 @@ Playground for the TextReveal text transition component.
       },
     },
   },
-}
+};
 
 const TEXTS = [
   "Refactor ToolStatusTitle DOM measurement",
@@ -32,7 +32,7 @@ const TEXTS = [
   "Planning key generation details",
   "Analyzing error handling",
   "Considering edge cases",
-]
+];
 
 const btn = (accent?: boolean) =>
   ({
@@ -43,14 +43,14 @@ const btn = (accent?: boolean) =>
     color: "var(--color-text, #eee)",
     cursor: "pointer",
     "font-size": "12px",
-  }) as const
+  }) as const;
 
 const sliderLabel = {
   width: "90px",
   "font-size": "12px",
   color: "var(--color-text-secondary, #a3a3a3)",
   "flex-shrink": "0",
-} as const
+} as const;
 
 const cardStyle = {
   padding: "20px 24px",
@@ -59,13 +59,13 @@ const cardStyle = {
   background: "var(--color-fill-element, #1a1a1a)",
   display: "grid",
   gap: "12px",
-} as const
+} as const;
 
 const cardLabel = {
   "font-size": "11px",
   "font-family": "monospace",
   color: "var(--color-text-weak, #666)",
-} as const
+} as const;
 
 const previewRow = {
   display: "flex",
@@ -77,14 +77,14 @@ const previewRow = {
   color: "var(--text-weak, #aaa)",
   "min-height": "20px",
   overflow: "visible",
-} as const
+} as const;
 
 const headingSlot = {
   "min-width": "0",
   overflow: "visible",
   color: "var(--text-weaker, #888)",
   "font-weight": "400",
-} as const
+} as const;
 
 export const Playground = {
   render: () => {
@@ -99,44 +99,44 @@ export const Playground = {
       hybridEdge: 17,
       edge: 17,
       revealTravel: 0,
-    })
-    const index = () => state.index
-    const cycling = () => state.cycling
-    const growOnly = () => state.growOnly
-    const duration = () => state.duration
-    const bounce = () => state.bounce
-    const bounceSoft = () => state.bounceSoft
-    const hybridTravel = () => state.hybridTravel
-    const hybridEdge = () => state.hybridEdge
-    const edge = () => state.edge
-    const revealTravel = () => state.revealTravel
+    });
+    const index = () => state.index;
+    const cycling = () => state.cycling;
+    const growOnly = () => state.growOnly;
+    const duration = () => state.duration;
+    const bounce = () => state.bounce;
+    const bounceSoft = () => state.bounceSoft;
+    const hybridTravel = () => state.hybridTravel;
+    const hybridEdge = () => state.hybridEdge;
+    const edge = () => state.edge;
+    const revealTravel = () => state.revealTravel;
 
-    let timer: number | undefined
-    const text = () => TEXTS[index()]
-    const next = () => setState("index", (value) => (value + 1) % TEXTS.length)
-    const prev = () => setState("index", (value) => (value - 1 + TEXTS.length) % TEXTS.length)
+    let timer: number | undefined;
+    const text = () => TEXTS[index()];
+    const next = () => setState("index", (value) => (value + 1) % TEXTS.length);
+    const prev = () => setState("index", (value) => (value - 1 + TEXTS.length) % TEXTS.length);
 
     const toggleCycle = () => {
       if (cycling()) {
-        if (timer) clearTimeout(timer)
-        timer = undefined
-        setState("cycling", false)
-        return
+        if (timer) clearTimeout(timer);
+        timer = undefined;
+        setState("cycling", false);
+        return;
       }
-      setState("cycling", true)
+      setState("cycling", true);
       const tick = () => {
-        next()
-        timer = window.setTimeout(tick, 700 + Math.floor(Math.random() * 600))
-      }
-      timer = window.setTimeout(tick, 700 + Math.floor(Math.random() * 600))
-    }
+        next();
+        timer = window.setTimeout(tick, 700 + Math.floor(Math.random() * 600));
+      };
+      timer = window.setTimeout(tick, 700 + Math.floor(Math.random() * 600));
+    };
 
     onCleanup(() => {
-      if (timer) clearTimeout(timer)
-    })
+      if (timer) clearTimeout(timer);
+    });
 
-    const spring = () => `cubic-bezier(0.34, ${bounce()}, 0.64, 1)`
-    const springSoft = () => `cubic-bezier(0.34, ${bounceSoft()}, 0.64, 1)`
+    const spring = () => `cubic-bezier(0.34, ${bounce()}, 0.64, 1)`;
+    const springSoft = () => `cubic-bezier(0.34, ${bounceSoft()}, 0.64, 1)`;
 
     return (
       <div style={{ display: "grid", gap: "24px", padding: "20px", "max-width": "700px" }}>
@@ -204,7 +204,9 @@ export const Playground = {
         </div>
 
         <div style={{ display: "grid", gap: "8px", "max-width": "480px" }}>
-          <div style={{ "font-size": "11px", color: "var(--color-text-weak, #666)" }}>Hybrid (wipe + slide)</div>
+          <div style={{ "font-size": "11px", color: "var(--color-text-weak, #666)" }}>
+            Hybrid (wipe + slide)
+          </div>
 
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
             <span style={sliderLabel}>edge</span>
@@ -217,7 +219,9 @@ export const Playground = {
               onInput={(e) => setState("hybridEdge", e.currentTarget.valueAsNumber)}
               style={{ flex: 1 }}
             />
-            <span style={{ width: "60px", "text-align": "right", "font-size": "12px" }}>{hybridEdge()}%</span>
+            <span style={{ width: "60px", "text-align": "right", "font-size": "12px" }}>
+              {hybridEdge()}%
+            </span>
           </label>
 
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
@@ -231,10 +235,20 @@ export const Playground = {
               onInput={(e) => setState("hybridTravel", e.currentTarget.valueAsNumber)}
               style={{ flex: 1 }}
             />
-            <span style={{ width: "60px", "text-align": "right", "font-size": "12px" }}>{hybridTravel()}px</span>
+            <span style={{ width: "60px", "text-align": "right", "font-size": "12px" }}>
+              {hybridTravel()}px
+            </span>
           </label>
 
-          <div style={{ "font-size": "11px", color: "var(--color-text-weak, #666)", "margin-top": "8px" }}>Shared</div>
+          <div
+            style={{
+              "font-size": "11px",
+              color: "var(--color-text-weak, #666)",
+              "margin-top": "8px",
+            }}
+          >
+            Shared
+          </div>
 
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
             <span style={sliderLabel}>duration</span>
@@ -247,7 +261,9 @@ export const Playground = {
               onInput={(e) => setState("duration", e.currentTarget.valueAsNumber)}
               style={{ flex: 1 }}
             />
-            <span style={{ width: "60px", "text-align": "right", "font-size": "12px" }}>{duration()}ms</span>
+            <span style={{ width: "60px", "text-align": "right", "font-size": "12px" }}>
+              {duration()}ms
+            </span>
           </label>
 
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
@@ -261,7 +277,9 @@ export const Playground = {
               onInput={(e) => setState("bounce", e.currentTarget.valueAsNumber)}
               style={{ flex: 1 }}
             />
-            <span style={{ width: "60px", "text-align": "right", "font-size": "12px" }}>{bounce().toFixed(2)}</span>
+            <span style={{ width: "60px", "text-align": "right", "font-size": "12px" }}>
+              {bounce().toFixed(2)}
+            </span>
           </label>
 
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
@@ -275,10 +293,18 @@ export const Playground = {
               onInput={(e) => setState("bounceSoft", e.currentTarget.valueAsNumber)}
               style={{ flex: 1 }}
             />
-            <span style={{ width: "60px", "text-align": "right", "font-size": "12px" }}>{bounceSoft().toFixed(2)}</span>
+            <span style={{ width: "60px", "text-align": "right", "font-size": "12px" }}>
+              {bounceSoft().toFixed(2)}
+            </span>
           </label>
 
-          <div style={{ "font-size": "11px", color: "var(--color-text-weak, #666)", "margin-top": "8px" }}>
+          <div
+            style={{
+              "font-size": "11px",
+              color: "var(--color-text-weak, #666)",
+              "margin-top": "8px",
+            }}
+          >
             Wipe only
           </div>
 
@@ -293,7 +319,9 @@ export const Playground = {
               onInput={(e) => setState("edge", e.currentTarget.valueAsNumber)}
               style={{ flex: 1 }}
             />
-            <span style={{ width: "60px", "text-align": "right", "font-size": "12px" }}>{edge()}%</span>
+            <span style={{ width: "60px", "text-align": "right", "font-size": "12px" }}>
+              {edge()}%
+            </span>
           </label>
 
           <label style={{ display: "flex", "align-items": "center", gap: "12px" }}>
@@ -307,14 +335,22 @@ export const Playground = {
               onInput={(e) => setState("revealTravel", e.currentTarget.valueAsNumber)}
               style={{ flex: 1 }}
             />
-            <span style={{ width: "60px", "text-align": "right", "font-size": "12px" }}>{revealTravel()}px</span>
+            <span style={{ width: "60px", "text-align": "right", "font-size": "12px" }}>
+              {revealTravel()}px
+            </span>
           </label>
         </div>
 
-        <div style={{ "font-size": "11px", color: "var(--color-text-weak, #888)", "font-family": "monospace" }}>
+        <div
+          style={{
+            "font-size": "11px",
+            color: "var(--color-text-weak, #888)",
+            "font-family": "monospace",
+          }}
+        >
           text: {text() ?? "(none)"} · growOnly: {growOnly() ? "on" : "off"}
         </div>
       </div>
-    )
+    );
   },
-}
+};

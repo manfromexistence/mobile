@@ -90,7 +90,7 @@ function buildClaudeAuthPayload(connection: ClaudeConnectionLike): ClaudeAuthFil
     throw new ClaudeAuthFileError(
       "Claude connection is missing access_token. Refresh or re-authenticate this account first.",
       409,
-      "access_token_missing"
+      "access_token_missing",
     );
   }
 
@@ -98,7 +98,7 @@ function buildClaudeAuthPayload(connection: ClaudeConnectionLike): ClaudeAuthFil
     throw new ClaudeAuthFileError(
       "Claude connection is missing refresh_token. Re-authenticate this account before exporting.",
       409,
-      "reauth_required"
+      "reauth_required",
     );
   }
 
@@ -202,7 +202,7 @@ test("buildClaudeAuthPayload throws access_token_missing when accessToken absent
       assert.equal(err.code, "access_token_missing");
       assert.equal(err.status, 409);
       return true;
-    }
+    },
   );
 });
 
@@ -214,7 +214,7 @@ test("buildClaudeAuthPayload throws reauth_required when refreshToken absent", (
       assert.equal(err.code, "reauth_required");
       assert.equal(err.status, 409);
       return true;
-    }
+    },
   );
 });
 
@@ -236,7 +236,7 @@ test("shouldRefreshClaudeConnection returns true when accessToken absent", () =>
       accessToken: null,
       expiresAt: new Date(Date.now() + 3600 * 1000).toISOString(),
     }),
-    true
+    true,
   );
 });
 

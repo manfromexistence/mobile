@@ -1,34 +1,28 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from "bun:test";
 
-import { CodeView } from '../src/components/CodeView';
-import { DEFAULT_THEMES } from '../src/constants';
-import type { CodeViewItem } from '../src/types';
-import {
-  createRoot,
-  installDom,
-  makeFile,
-  renderItems,
-  wait,
-} from './domHarness';
+import { CodeView } from "../src/components/CodeView";
+import { DEFAULT_THEMES } from "../src/constants";
+import type { CodeViewItem } from "../src/types";
+import { createRoot, installDom, makeFile, renderItems, wait } from "./domHarness";
 
 // Differs from the shared makeFileItem: these tests use 8-line .txt fixtures
 // rather than the harness default of 20-line .ts files.
 function makeFileItem(id: string, lineCount = 8): CodeViewItem<undefined> {
   return {
     id,
-    type: 'file',
+    type: "file",
     file: makeFile(`${id}.txt`, lineCount),
   };
 }
 
-async function renderFileItem(viewer: CodeView, item = makeFileItem('file')) {
+async function renderFileItem(viewer: CodeView, item = makeFileItem("file")) {
   await renderItems(viewer, [item]);
 }
 
 function getRenderedPre(viewer: CodeView): HTMLPreElement {
   const [renderedItem] = viewer.getRenderedItems();
   expect(renderedItem).toBeDefined();
-  const pre = renderedItem?.element.shadowRoot?.querySelector('pre');
+  const pre = renderedItem?.element.shadowRoot?.querySelector("pre");
   expect(pre).toBeInstanceOf(HTMLPreElement);
   return pre as HTMLPreElement;
 }
@@ -39,17 +33,14 @@ function getLineElement(pre: HTMLPreElement, lineNumber: number): HTMLElement {
   return line as HTMLElement;
 }
 
-function getNumberElement(
-  pre: HTMLPreElement,
-  lineNumber: number
-): HTMLElement {
+function getNumberElement(pre: HTMLPreElement, lineNumber: number): HTMLElement {
   const number = pre.querySelector(`[data-column-number="${lineNumber}"]`);
   expect(number).toBeInstanceOf(HTMLElement);
   return number as HTMLElement;
 }
 
-describe('CodeView interaction option updates', () => {
-  test('enables line clicks for an already-rendered file item', async () => {
+describe("CodeView interaction option updates", () => {
+  test("enables line clicks for an already-rendered file item", async () => {
     const { cleanup } = installDom();
     const clickedLines: number[] = [];
     const viewer = new CodeView({
@@ -62,7 +53,7 @@ describe('CodeView interaction option updates', () => {
       await renderFileItem(viewer);
 
       let pre = getRenderedPre(viewer);
-      expect(pre.hasAttribute('data-interactive-lines')).toBe(false);
+      expect(pre.hasAttribute("data-interactive-lines")).toBe(false);
 
       viewer.setOptions({
         disableFileHeader: true,
@@ -74,13 +65,13 @@ describe('CodeView interaction option updates', () => {
       await wait(0);
 
       pre = getRenderedPre(viewer);
-      expect(pre.hasAttribute('data-interactive-lines')).toBe(true);
+      expect(pre.hasAttribute("data-interactive-lines")).toBe(true);
       getLineElement(pre, 1).dispatchEvent(
-        new window.MouseEvent('click', {
+        new window.MouseEvent("click", {
           bubbles: true,
           cancelable: true,
           composed: true,
-        })
+        }),
       );
 
       expect(clickedLines).toEqual([1]);
@@ -91,7 +82,7 @@ describe('CodeView interaction option updates', () => {
     }
   });
 
-  test('enables line selection attributes for an already-rendered file item', async () => {
+  test("enables line selection attributes for an already-rendered file item", async () => {
     const { cleanup } = installDom();
     const viewer = new CodeView({
       disableFileHeader: true,
@@ -103,7 +94,7 @@ describe('CodeView interaction option updates', () => {
       await renderFileItem(viewer);
 
       let pre = getRenderedPre(viewer);
-      expect(pre.hasAttribute('data-interactive-line-numbers')).toBe(false);
+      expect(pre.hasAttribute("data-interactive-line-numbers")).toBe(false);
 
       viewer.setOptions({
         disableFileHeader: true,
@@ -113,7 +104,7 @@ describe('CodeView interaction option updates', () => {
       await wait(0);
 
       pre = getRenderedPre(viewer);
-      expect(pre.hasAttribute('data-interactive-line-numbers')).toBe(true);
+      expect(pre.hasAttribute("data-interactive-line-numbers")).toBe(true);
     } finally {
       viewer.cleanUp();
       await wait(0);
@@ -121,7 +112,7 @@ describe('CodeView interaction option updates', () => {
     }
   });
 
-  test('enables hover highlighting for an already-rendered file item', async () => {
+  test("enables hover highlighting for an already-rendered file item", async () => {
     const { cleanup } = installDom();
     const viewer = new CodeView({
       disableFileHeader: true,
@@ -134,7 +125,7 @@ describe('CodeView interaction option updates', () => {
 
       viewer.setOptions({
         disableFileHeader: true,
-        lineHoverHighlight: 'both',
+        lineHoverHighlight: "both",
         theme: DEFAULT_THEMES,
       });
       await wait(0);
@@ -143,15 +134,15 @@ describe('CodeView interaction option updates', () => {
       const line = getLineElement(pre, 1);
       const number = getNumberElement(pre, 1);
       line.dispatchEvent(
-        new window.PointerEvent('pointermove', {
+        new window.PointerEvent("pointermove", {
           bubbles: true,
           composed: true,
-          pointerType: 'mouse',
-        })
+          pointerType: "mouse",
+        }),
       );
 
-      expect(line.hasAttribute('data-hovered')).toBe(true);
-      expect(number.hasAttribute('data-hovered')).toBe(true);
+      expect(line.hasAttribute("data-hovered")).toBe(true);
+      expect(number.hasAttribute("data-hovered")).toBe(true);
     } finally {
       viewer.cleanUp();
       await wait(0);
@@ -159,7 +150,7 @@ describe('CodeView interaction option updates', () => {
     }
   });
 
-  test('enables custom gutter utility setup for an already-rendered file item', async () => {
+  test("enables custom gutter utility setup for an already-rendered file item", async () => {
     const { cleanup } = installDom();
     const viewer = new CodeView({
       disableFileHeader: true,
@@ -173,7 +164,7 @@ describe('CodeView interaction option updates', () => {
       viewer.setOptions({
         disableFileHeader: true,
         enableGutterUtility: true,
-        renderGutterUtility: () => document.createElement('button'),
+        renderGutterUtility: () => document.createElement("button"),
         theme: DEFAULT_THEMES,
       });
       await wait(0);
@@ -181,18 +172,16 @@ describe('CodeView interaction option updates', () => {
       const pre = getRenderedPre(viewer);
       const number = getNumberElement(pre, 1);
       number.dispatchEvent(
-        new window.PointerEvent('pointermove', {
+        new window.PointerEvent("pointermove", {
           bubbles: true,
           composed: true,
-          pointerType: 'mouse',
-        })
+          pointerType: "mouse",
+        }),
       );
 
-      expect(number.querySelector('[data-gutter-utility-slot]')).not.toBeNull();
+      expect(number.querySelector("[data-gutter-utility-slot]")).not.toBeNull();
       expect(
-        viewer
-          .getRenderedItems()[0]
-          .element.querySelector('[slot="gutter-utility-slot"]')
+        viewer.getRenderedItems()[0].element.querySelector('[slot="gutter-utility-slot"]'),
       ).not.toBeNull();
     } finally {
       viewer.cleanUp();

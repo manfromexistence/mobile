@@ -1,19 +1,19 @@
-import { A, createAsync, useNavigate } from "@solidjs/router"
-import "./workspace.css"
-import { Title } from "@solidjs/meta"
-import { github } from "~/lib/github"
-import { createEffect, createMemo, For, onMount } from "solid-js"
-import { config } from "~/config"
-import { createList } from "solid-list"
-import { useLanguage } from "~/context/language"
-import { LanguagePicker } from "~/component/language-picker"
-import { useI18n } from "~/context/i18n"
+import { A, createAsync, useNavigate } from "@solidjs/router";
+import "./workspace.css";
+import { Title } from "@solidjs/meta";
+import { github } from "~/lib/github";
+import { createEffect, createMemo, For, onMount } from "solid-js";
+import { config } from "~/config";
+import { createList } from "solid-list";
+import { useLanguage } from "~/context/language";
+import { LanguagePicker } from "~/component/language-picker";
+import { useI18n } from "~/context/i18n";
 
 export default function BlackWorkspace() {
-  const navigate = useNavigate()
-  const language = useLanguage()
-  const i18n = useI18n()
-  const githubData = createAsync(() => github())
+  const navigate = useNavigate();
+  const language = useLanguage();
+  const i18n = useI18n();
+  const githubData = createAsync(() => github());
   const starCount = createMemo(() =>
     githubData()?.stars
       ? new Intl.NumberFormat(language.tag(language.locale()), {
@@ -21,7 +21,7 @@ export default function BlackWorkspace() {
           compactDisplay: "short",
         }).format(githubData()!.stars!)
       : config.github.starsFormatted.compact,
-  )
+  );
 
   // TODO: Frank, replace with real workspaces
   const workspaces = [
@@ -36,26 +36,26 @@ export default function BlackWorkspace() {
   ].map((workspace) => ({
     ...workspace,
     name: i18n.t("black.workspace.name", { n: workspace.n }),
-  }))
+  }));
 
-  let listRef: HTMLUListElement | undefined
+  let listRef: HTMLUListElement | undefined;
 
   const { active, setActive, onKeyDown } = createList({
     items: () => workspaces.map((w) => w.id),
     initialActive: workspaces[0]?.id ?? null,
     handleTab: true,
-  })
+  });
 
   onMount(() => {
-    listRef?.focus()
-  })
+    listRef?.focus();
+  });
 
   createEffect(() => {
-    const id = active()
-    if (!id || !listRef) return
-    const el = listRef.querySelector(`[data-id="${id}"]`)
-    el?.scrollIntoView({ block: "nearest" })
-  })
+    const id = active();
+    if (!id || !listRef) return;
+    const el = listRef.querySelector(`[data-id="${id}"]`);
+    el?.scrollIntoView({ block: "nearest" });
+  });
 
   return (
     <div data-page="black">
@@ -63,7 +63,13 @@ export default function BlackWorkspace() {
       <div data-component="header-gradient" />
       <header data-component="header">
         <div data-component="header-logo">
-          <svg xmlns="http://www.w3.org/2000/svg" width="179" height="32" viewBox="0 0 179 32" fill="none">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="179"
+            height="32"
+            viewBox="0 0 179 32"
+            fill="none"
+          >
             <g clip-path="url(#clip0_3654_210259)">
               <mask
                 id="mask0_3654_210259"
@@ -129,7 +135,13 @@ export default function BlackWorkspace() {
       </header>
       <main data-component="content">
         <div data-slot="hero-black">
-          <svg width="900" height="136" viewBox="0 0 900 136" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            width="900"
+            height="136"
+            viewBox="0 0 900 136"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <mask
               id="path-1-outside-1_3654_210047"
               maskUnits="userSpaceOnUse"
@@ -186,12 +198,12 @@ export default function BlackWorkspace() {
             tabIndex={0}
             onKeyDown={(e) => {
               if (e.key === "Enter" && active()) {
-                navigate(`/black/workspace/${active()}`)
+                navigate(`/black/workspace/${active()}`);
               } else if (e.key === "Tab") {
-                e.preventDefault()
-                onKeyDown(e)
+                e.preventDefault();
+                onKeyDown(e);
               } else {
-                onKeyDown(e)
+                onKeyDown(e);
               }
             }}
           >
@@ -234,5 +246,5 @@ export default function BlackWorkspace() {
         </span>
       </footer>
     </div>
-  )
+  );
 }

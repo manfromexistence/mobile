@@ -423,9 +423,7 @@
 
       &:active {
         transform: scale(0.98);
-        box-shadow:
-          0 0 0 1px rgba(19, 16, 16, 0.08),
-          0 6px 8px -8px rgba(19, 16, 16, 0.5);
+        box-shadow: 0 0 0 1px rgba(19, 16, 16, 0.08), 0 6px 8px -8px rgba(19, 16, 16, 0.5);
       }
     }
 

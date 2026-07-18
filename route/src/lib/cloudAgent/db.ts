@@ -64,7 +64,7 @@ export function insertCloudAgentTask(task: CloudAgentTaskRow): void {
       @id, @provider_id, @external_id, @status, @prompt, @source,
       @options, @result, @activities, @error, @created_at, @updated_at, @completed_at
     )
-  `
+  `,
   ).run(task);
 }
 
@@ -82,7 +82,7 @@ const ALLOWED_UPDATE_COLUMNS = new Set([
 
 export function updateCloudAgentTask(
   id: string,
-  updates: Partial<Omit<CloudAgentTaskRow, "id">>
+  updates: Partial<Omit<CloudAgentTaskRow, "id">>,
 ): void {
   const db = getDbInstance();
 
@@ -105,7 +105,7 @@ export function updateCloudAgentTask(
     UPDATE cloud_agent_tasks
     SET ${fields}, updated_at = datetime('now')
     WHERE id = @id
-  `
+  `,
   ).run({ id, ...validUpdates });
 }
 
@@ -120,7 +120,7 @@ export function getCloudAgentTasksByProvider(providerId: string, limit = 50): Cl
   const db = getDbInstance();
   return db
     .prepare(
-      "SELECT * FROM cloud_agent_tasks WHERE provider_id = ? ORDER BY created_at DESC LIMIT ?"
+      "SELECT * FROM cloud_agent_tasks WHERE provider_id = ? ORDER BY created_at DESC LIMIT ?",
     )
     .all(providerId, limit) as CloudAgentTaskRow[];
 }

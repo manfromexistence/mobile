@@ -69,7 +69,7 @@ export function computeHeadroom(sat: HeadroomSaturation | undefined): number {
 export function rankByHeadroom<T>(
   candidates: T[],
   satByKey: Map<string, HeadroomSaturation>,
-  keyOf: (candidate: T) => string
+  keyOf: (candidate: T) => string,
 ): T[] {
   if (candidates.length <= 1) return candidates;
 

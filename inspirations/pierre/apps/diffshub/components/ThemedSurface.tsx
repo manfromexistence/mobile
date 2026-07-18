@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import type { CSSProperties, ElementType, ReactNode } from 'react';
+import type { CSSProperties, ElementType, ReactNode } from "react";
 
-import { useChromeThemeProps } from './useChromeThemeProps';
-import type { ChromeMapping } from '@/lib/theme/chromeThemeProps';
-import { diffshubChromeMapping } from '@/lib/theme/diffshubChromeMapping';
-import type { ThemeInput } from '@/lib/theme/ThemeSource';
+import { useChromeThemeProps } from "./useChromeThemeProps";
+import type { ChromeMapping } from "@/lib/theme/chromeThemeProps";
+import { diffshubChromeMapping } from "@/lib/theme/diffshubChromeMapping";
+import type { ThemeInput } from "@/lib/theme/ThemeSource";
 
 interface ThemedSurfaceProps {
   as?: ElementType;
@@ -27,7 +27,7 @@ export function ThemedSurface({
   style,
   theme,
 }: ThemedSurfaceProps) {
-  const Component = as ?? 'div';
+  const Component = as ?? "div";
   const themeProps = useChromeThemeProps(mapping, theme);
   return (
     <Component className={className} style={{ ...themeProps.style, ...style }}>

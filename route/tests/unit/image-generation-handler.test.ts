@@ -20,7 +20,7 @@ process.env.DATA_DIR = mkdtempSync(join(tmpdir(), "omniroute-images-"));
 const originalDnsLookup = dns.promises.lookup;
 (dns.promises as { lookup: unknown }).lookup = (async (
   _hostname: string,
-  options?: { all?: boolean }
+  options?: { all?: boolean },
 ) => {
   const record = { address: "203.0.113.1", family: 4 };
   return options && options.all ? [record] : record;
@@ -29,8 +29,9 @@ process.on("exit", () => {
   (dns.promises as { lookup: unknown }).lookup = originalDnsLookup;
 });
 
-const { IMAGE_PROVIDERS, parseImageModel, getAllImageModels } =
-  await import("../../open-sse/config/imageRegistry.ts");
+const { IMAGE_PROVIDERS, parseImageModel, getAllImageModels } = await import(
+  "../../open-sse/config/imageRegistry.ts"
+);
 const { handleImageGeneration } = await import("../../open-sse/handlers/imageGeneration.ts");
 
 function immediateTimeout(callback, _ms, ...args) {
@@ -70,7 +71,7 @@ test("handleImageGeneration routes OpenAI-compatible providers and forwards imag
         created: 123,
         data: [{ url: "https://cdn.example.com/image.png" }],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -181,7 +182,7 @@ test("handleImageGeneration polls KIE image tasks and returns URLs on success", 
         {
           status: 200,
           headers: { "content-type": "application/json" },
-        }
+        },
       );
     }
 
@@ -221,7 +222,7 @@ test("handleImageGeneration maps Hyperbolic size parameters and normalizes base6
       JSON.stringify({
         images: [{ image: "aW1hZ2UtMQ==" }],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -261,7 +262,7 @@ test("handleImageGeneration maps SD WebUI payload shape and batch size", async (
       JSON.stringify({
         images: ["YmFzZTY0LWltYWdl"],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -379,7 +380,7 @@ test("handleImageGeneration calls Fal AI with Key auth and normalizes URL result
         JSON.stringify({
           images: [{ url: "https://cdn.example.com/fal-ultra.png" }],
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
 
@@ -570,7 +571,7 @@ test("handleImageGeneration polls Black Forest Labs results and sends base64 inp
           status: "Ready",
           result: { sample: "https://cdn.example.com/bfl-result.png" },
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
 
@@ -625,7 +626,7 @@ test("handleImageGeneration calls native Recraft endpoint with model in body", a
       JSON.stringify({
         data: [{ url: "https://cdn.example.com/recraft.png" }],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -742,7 +743,7 @@ test("handleImageGeneration sends Antigravity image requests with native image_g
           modelVersion: "gemini-3.1-flash-image",
         },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -761,7 +762,7 @@ test("handleImageGeneration sends Antigravity image requests with native image_g
     assert.equal(result.success, true);
     assert.equal(
       captured.url,
-      "https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent"
+      "https://daily-cloudcode-pa.googleapis.com/v1internal:generateContent",
     );
     assert.equal(captured.headers.Authorization, "Bearer ag-token");
     assert.equal(captured.headers["x-client-name"], "antigravity");
@@ -841,7 +842,7 @@ test("handleImageGeneration sends Antigravity image requests without billing pro
           modelVersion: "gemini-3.1-flash-image",
         },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -881,7 +882,7 @@ test("handleImageGeneration sanitizes Antigravity upstream error payloads", asyn
           status: "INTERNAL",
         },
       }),
-      { status: 500, headers: { "content-type": "application/json" } }
+      { status: 500, headers: { "content-type": "application/json" } },
     );
 
   try {
@@ -923,7 +924,7 @@ test("handleImageGeneration retries Nebius against the fallback URL after retrya
         created: 321,
         data: [{ url: "https://cdn.example.com/fallback.png" }],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -1012,7 +1013,7 @@ test("handleImageGeneration uses the NanoBanana pro endpoint and keeps sync data
       JSON.stringify({
         data: [{ url: "https://cdn.example.com/pro-image.png", revised_prompt: "banana pro" }],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -1068,7 +1069,7 @@ test("handleImageGeneration polls NanoBanana task results and converts URLs to b
             response: { resultImageUrl: "https://cdn.example.com/result.png" },
           },
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
 
@@ -1157,7 +1158,7 @@ test("handleImageGeneration executes ComfyUI workflows and normalizes image outp
             },
           },
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
 
@@ -1242,7 +1243,7 @@ test("handleImageGeneration supports dynamically registered Imagen3 providers", 
         created: 42,
         images: [{ image: "aW1hZ2VuLTM=" }],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -1297,7 +1298,7 @@ test("handleImageGeneration preserves Imagen3 data arrays when providers already
       JSON.stringify({
         data: [{ url: "https://cdn.example.com/already-normalized.png" }],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   try {
@@ -1389,7 +1390,7 @@ test("handleImageGeneration uses the default synthetic base URL for resolved cus
     assert.equal(result.success, true);
     assert.equal(
       capturedUrl,
-      "https://generativelanguage.googleapis.com/v1beta/openai/images/generations"
+      "https://generativelanguage.googleapis.com/v1beta/openai/images/generations",
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -1458,7 +1459,7 @@ test("handleImageGeneration logs Nebius fallback attempts before succeeding", as
       JSON.stringify({
         data: [{ url: "https://cdn.example.com/fallback-logged.png" }],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -1475,7 +1476,7 @@ test("handleImageGeneration logs Nebius fallback attempts before succeeding", as
     assert.equal(result.success, true);
     assert.equal(
       log.entries.some((entry) => entry.level === "info" && /trying fallback/.test(entry.message)),
-      true
+      true,
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -1575,7 +1576,7 @@ test("handleImageGeneration handles NanoBanana missing statusUrl, failed tasks a
       JSON.stringify({
         data: { successFlag: 2, errorMessage: "NanoBanana generation failed" },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -1610,7 +1611,7 @@ test("handleImageGeneration handles NanoBanana missing statusUrl, failed tasks a
       JSON.stringify({
         data: { successFlag: 1, response: {} },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -1629,9 +1630,9 @@ test("handleImageGeneration handles NanoBanana missing statusUrl, failed tasks a
     assert.deepEqual(completedWithoutPayload.data.data, []);
     assert.equal(
       log.entries.some(
-        (entry) => entry.level === "warn" && /completed without image payload/.test(entry.message)
+        (entry) => entry.level === "warn" && /completed without image payload/.test(entry.message),
       ),
-      true
+      true,
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -1908,7 +1909,7 @@ test("handleImageGeneration (codex) fans out n>1 requests in parallel", async ()
     assert.equal(calls.length, 2);
     assert.deepEqual(
       calls.map((call) => call.input[0].content[0].text),
-      ["kitten", "kitten"]
+      ["kitten", "kitten"],
     );
 
     releaseFirst();
@@ -1917,7 +1918,7 @@ test("handleImageGeneration (codex) fans out n>1 requests in parallel", async ()
     assert.equal(result.success, true);
     assert.deepEqual(
       result.data.data.map((item) => item.b64_json),
-      ["Zmlyc3Q=", "c2Vjb25k"]
+      ["Zmlyc3Q=", "c2Vjb25k"],
     );
   } finally {
     if (releaseFirst) releaseFirst();

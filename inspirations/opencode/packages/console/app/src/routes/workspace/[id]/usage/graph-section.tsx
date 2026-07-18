@@ -1,15 +1,26 @@
-import { and, Database, eq, gte, inArray, isNull, lt, or, sql, sum } from "@opencode-ai/console-core/drizzle/index.js"
-import { UsageTable } from "@opencode-ai/console-core/schema/billing.sql.js"
-import { KeyTable } from "@opencode-ai/console-core/schema/key.sql.js"
-import { UserTable } from "@opencode-ai/console-core/schema/user.sql.js"
-import { AuthTable } from "@opencode-ai/console-core/schema/auth.sql.js"
-import { useParams } from "@solidjs/router"
-import { createEffect, createMemo, onCleanup, Show, For } from "solid-js"
-import { createStore } from "solid-js/store"
-import { withActor } from "~/context/auth.withActor"
-import { Dropdown } from "~/component/dropdown"
-import { IconChevronLeft, IconChevronRight } from "~/component/icon"
-import styles from "./graph-section.module.css"
+import {
+  and,
+  Database,
+  eq,
+  gte,
+  inArray,
+  isNull,
+  lt,
+  or,
+  sql,
+  sum,
+} from "@opencode-ai/console-core/drizzle/index.js";
+import { UsageTable } from "@opencode-ai/console-core/schema/billing.sql.js";
+import { KeyTable } from "@opencode-ai/console-core/schema/key.sql.js";
+import { UserTable } from "@opencode-ai/console-core/schema/user.sql.js";
+import { AuthTable } from "@opencode-ai/console-core/schema/auth.sql.js";
+import { useParams } from "@solidjs/router";
+import { createEffect, createMemo, onCleanup, Show, For } from "solid-js";
+import { createStore } from "solid-js/store";
+import { withActor } from "~/context/auth.withActor";
+import { Dropdown } from "~/component/dropdown";
+import { IconChevronLeft, IconChevronRight } from "~/component/icon";
+import styles from "./graph-section.module.css";
 import {
   Chart,
   BarController,
@@ -19,24 +30,24 @@ import {
   Tooltip,
   Legend,
   type ChartConfiguration,
-} from "chart.js"
-import { useI18n } from "~/context/i18n"
+} from "chart.js";
+import { useI18n } from "~/context/i18n";
 
-Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend)
+Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
 async function getCosts(workspaceID: string, year: number, month: number, tzOffset: string) {
-  "use server"
+  "use server";
   return withActor(async () => {
     const timezoneOffset = (() => {
-      const m = /^([+-])(\d{2}):(\d{2})$/.exec(tzOffset)
-      if (!m) return 0
-      const sign = m[1] === "-" ? -1 : 1
-      return sign * (Number(m[2]) * 60 + Number(m[3])) * 60_000
-    })()
+      const m = /^([+-])(\d{2}):(\d{2})$/.exec(tzOffset);
+      if (!m) return 0;
+      const sign = m[1] === "-" ? -1 : 1;
+      return sign * (Number(m[2]) * 60 + Number(m[3])) * 60_000;
+    })();
 
-    const monthStartUTC = new Date(Date.UTC(year, month, 1, 0, 0, 0) - timezoneOffset)
-    const monthEndUTC = new Date(Date.UTC(year, month + 1, 1, 0, 0, 0) - timezoneOffset)
-    const dateExpr = sql<string>`DATE(CONVERT_TZ(${UsageTable.timeCreated}, '+00:00', ${tzOffset}))`
+    const monthStartUTC = new Date(Date.UTC(year, month, 1, 0, 0, 0) - timezoneOffset);
+    const monthEndUTC = new Date(Date.UTC(year, month + 1, 1, 0, 0, 0) - timezoneOffset);
+    const dateExpr = sql<string>`DATE(CONVERT_TZ(${UsageTable.timeCreated}, '+00:00', ${tzOffset}))`;
     const usageData = await Database.use((tx) =>
       tx
         .select({
@@ -54,7 +65,12 @@ async function getCosts(workspaceID: string, year: number, month: number, tzOffs
             lt(UsageTable.timeCreated, monthEndUTC),
           ),
         )
-        .groupBy(dateExpr, UsageTable.model, UsageTable.keyID, sql`JSON_EXTRACT(${UsageTable.enrichment}, '$.plan')`)
+        .groupBy(
+          dateExpr,
+          UsageTable.model,
+          UsageTable.keyID,
+          sql`JSON_EXTRACT(${UsageTable.enrichment}, '$.plan')`,
+        )
         .then((x) =>
           x.map((r) => ({
             ...r,
@@ -62,10 +78,10 @@ async function getCosts(workspaceID: string, year: number, month: number, tzOffs
             plan: r.plan as "sub" | "lite" | "byok" | null,
           })),
         ),
-    )
+    );
 
     // Get unique key IDs from usage
-    const usageKeyIds = new Set(usageData.map((r) => r.keyId).filter((id) => id !== null))
+    const usageKeyIds = new Set(usageData.map((r) => r.keyId).filter((id) => id !== null));
 
     // Second query: get all existing keys plus any keys from usage
     const keysData = await Database.use((tx) =>
@@ -77,8 +93,14 @@ async function getCosts(workspaceID: string, year: number, month: number, tzOffs
           timeDeleted: KeyTable.timeDeleted,
         })
         .from(KeyTable)
-        .innerJoin(UserTable, and(eq(KeyTable.userID, UserTable.id), eq(KeyTable.workspaceID, UserTable.workspaceID)))
-        .innerJoin(AuthTable, and(eq(UserTable.accountID, AuthTable.accountID), eq(AuthTable.provider, "email")))
+        .innerJoin(
+          UserTable,
+          and(eq(KeyTable.userID, UserTable.id), eq(KeyTable.workspaceID, UserTable.workspaceID)),
+        )
+        .innerJoin(
+          AuthTable,
+          and(eq(UserTable.accountID, AuthTable.accountID), eq(AuthTable.provider, "email")),
+        )
         .where(
           and(
             eq(KeyTable.workspaceID, workspaceID),
@@ -88,7 +110,7 @@ async function getCosts(workspaceID: string, year: number, month: number, tzOffs
           ),
         )
         .orderBy(AuthTable.subject, KeyTable.name),
-    )
+    );
 
     return {
       usage: usageData,
@@ -97,8 +119,8 @@ async function getCosts(workspaceID: string, year: number, month: number, tzOffs
         displayName: `${key.userEmail} - ${key.keyName}`,
         deleted: key.timeDeleted !== null,
       })),
-    }
-  }, workspaceID)
+    };
+  }, workspaceID);
 }
 
 const MODEL_COLORS: Record<string, string> = {
@@ -117,20 +139,20 @@ const MODEL_COLORS: Record<string, string> = {
   "kimi-k2": "#F59E0B",
   "qwen3-coder": "#EC4899",
   "glm-4.6": "#14B8A6",
-}
+};
 
 function getModelColor(model: string): string {
-  if (MODEL_COLORS[model]) return MODEL_COLORS[model]
+  if (MODEL_COLORS[model]) return MODEL_COLORS[model];
 
-  const hash = model.split("").reduce((acc, char) => char.charCodeAt(0) + ((acc << 5) - acc), 0)
-  const hue = Math.abs(hash) % 360
-  return `hsl(${hue}, 50%, 65%)`
+  const hash = model.split("").reduce((acc, char) => char.charCodeAt(0) + ((acc << 5) - acc), 0);
+  const hue = Math.abs(hash) % 360;
+  return `hsl(${hue}, 50%, 65%)`;
 }
 
 function formatDateLabel(dateStr: string): string {
-  const [, m, d] = dateStr.split("-").map(Number)
-  const month = new Date(2000, m - 1, 1).toLocaleDateString(undefined, { month: "short" })
-  return `${month} ${d.toString().padStart(2, "0")}`
+  const [, m, d] = dateStr.split("-").map(Number);
+  const month = new Date(2000, m - 1, 1).toLocaleDateString(undefined, { month: "short" });
+  return `${month} ${d.toString().padStart(2, "0")}`;
 }
 
 // Compute the UTC offset (in MySQL CONVERT_TZ format like "+05:30") for the
@@ -148,9 +170,9 @@ function getTimezoneOffset(timezone: string, at: Date): string {
   })
     .formatToParts(at)
     .reduce<Record<string, string>>((acc, p) => {
-      if (p.type !== "literal") acc[p.type] = p.value
-      return acc
-    }, {})
+      if (p.type !== "literal") acc[p.type] = p.value;
+      return acc;
+    }, {});
   const asUTC = Date.UTC(
     Number(parts.year),
     Number(parts.month) - 1,
@@ -158,35 +180,35 @@ function getTimezoneOffset(timezone: string, at: Date): string {
     Number(parts.hour),
     Number(parts.minute),
     Number(parts.second),
-  )
-  const diffMinutes = Math.round((asUTC - at.getTime()) / 60_000)
-  const sign = diffMinutes < 0 ? "-" : "+"
-  const abs = Math.abs(diffMinutes)
+  );
+  const diffMinutes = Math.round((asUTC - at.getTime()) / 60_000);
+  const sign = diffMinutes < 0 ? "-" : "+";
+  const abs = Math.abs(diffMinutes);
   const hh = Math.floor(abs / 60)
     .toString()
-    .padStart(2, "0")
-  const mm = (abs % 60).toString().padStart(2, "0")
-  return `${sign}${hh}:${mm}`
+    .padStart(2, "0");
+  const mm = (abs % 60).toString().padStart(2, "0");
+  return `${sign}${hh}:${mm}`;
 }
 
 function addOpacityToColor(color: string, opacity: number): string {
   if (color.startsWith("#")) {
-    const r = parseInt(color.slice(1, 3), 16)
-    const g = parseInt(color.slice(3, 5), 16)
-    const b = parseInt(color.slice(5, 7), 16)
-    return `rgba(${r}, ${g}, ${b}, ${opacity})`
+    const r = parseInt(color.slice(1, 3), 16);
+    const g = parseInt(color.slice(3, 5), 16);
+    const b = parseInt(color.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
   }
-  if (color.startsWith("hsl")) return color.replace(")", `, ${opacity})`).replace("hsl", "hsla")
-  return color
+  if (color.startsWith("hsl")) return color.replace(")", `, ${opacity})`).replace("hsl", "hsla");
+  return color;
 }
 
 export function GraphSection() {
-  let canvasRef: HTMLCanvasElement | undefined
-  let chartInstance: Chart | undefined
-  const params = useParams()
-  const i18n = useI18n()
-  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone
-  const now = new Date()
+  let canvasRef: HTMLCanvasElement | undefined;
+  let chartInstance: Chart | undefined;
+  const params = useParams();
+  const i18n = useI18n();
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const now = new Date();
   const [store, setStore] = createStore({
     data: null as Awaited<ReturnType<typeof getCosts>> | null,
     year: now.getFullYear(),
@@ -196,93 +218,103 @@ export function GraphSection() {
     modelDropdownOpen: false,
     keyDropdownOpen: false,
     colorScheme: "light" as "light" | "dark",
-  })
+  });
   const onPreviousMonth = async () => {
-    const month = store.month === 0 ? 11 : store.month - 1
-    const year = store.month === 0 ? store.year - 1 : store.year
-    setStore({ month, year })
-  }
+    const month = store.month === 0 ? 11 : store.month - 1;
+    const year = store.month === 0 ? store.year - 1 : store.year;
+    setStore({ month, year });
+  };
 
   const onNextMonth = async () => {
-    const month = store.month === 11 ? 0 : store.month + 1
-    const year = store.month === 11 ? store.year + 1 : store.year
-    setStore({ month, year })
-  }
+    const month = store.month === 11 ? 0 : store.month + 1;
+    const year = store.month === 11 ? store.year + 1 : store.year;
+    setStore({ month, year });
+  };
 
-  const onSelectModel = (model: string | null) => setStore({ model, modelDropdownOpen: false })
+  const onSelectModel = (model: string | null) => setStore({ model, modelDropdownOpen: false });
 
-  const onSelectKey = (keyID: string | null) => setStore({ key: keyID, keyDropdownOpen: false })
+  const onSelectKey = (keyID: string | null) => setStore({ key: keyID, keyDropdownOpen: false });
 
   const getModels = createMemo(() => {
-    if (!store.data?.usage) return []
-    return Array.from(new Set(store.data.usage.map((row) => row.model))).sort()
-  })
+    if (!store.data?.usage) return [];
+    return Array.from(new Set(store.data.usage.map((row) => row.model))).sort();
+  });
 
   const getDates = createMemo(() => {
     // Number of days in the month is independent of timezone.
-    const daysInMonth = new Date(Date.UTC(store.year, store.month + 1, 0)).getUTCDate()
-    const yyyy = store.year.toString().padStart(4, "0")
-    const mm = (store.month + 1).toString().padStart(2, "0")
+    const daysInMonth = new Date(Date.UTC(store.year, store.month + 1, 0)).getUTCDate();
+    const yyyy = store.year.toString().padStart(4, "0");
+    const mm = (store.month + 1).toString().padStart(2, "0");
     return Array.from({ length: daysInMonth }, (_, i) => {
-      const dd = (i + 1).toString().padStart(2, "0")
-      return `${yyyy}-${mm}-${dd}`
-    })
-  })
+      const dd = (i + 1).toString().padStart(2, "0");
+      return `${yyyy}-${mm}-${dd}`;
+    });
+  });
 
   const getKeyName = (keyID: string | null): string => {
-    if (!keyID || !store.data?.keys) return i18n.t("workspace.cost.allKeys")
-    const found = store.data.keys.find((k) => k.id === keyID)
-    if (!found) return i18n.t("workspace.cost.allKeys")
-    return found.deleted ? `${found.displayName} ${i18n.t("workspace.cost.deletedSuffix")}` : found.displayName
-  }
+    if (!keyID || !store.data?.keys) return i18n.t("workspace.cost.allKeys");
+    const found = store.data.keys.find((k) => k.id === keyID);
+    if (!found) return i18n.t("workspace.cost.allKeys");
+    return found.deleted
+      ? `${found.displayName} ${i18n.t("workspace.cost.deletedSuffix")}`
+      : found.displayName;
+  };
 
   const formatMonthYear = () =>
-    new Date(store.year, store.month, 1).toLocaleDateString(undefined, { month: "long", year: "numeric" })
+    new Date(store.year, store.month, 1).toLocaleDateString(undefined, {
+      month: "long",
+      year: "numeric",
+    });
 
-  const isCurrentMonth = () => store.year === now.getFullYear() && store.month === now.getMonth()
+  const isCurrentMonth = () => store.year === now.getFullYear() && store.month === now.getMonth();
 
   const chartConfig = createMemo((): ChartConfiguration | null => {
-    const data = store.data
-    const dates = getDates()
-    if (!data?.usage?.length) return null
+    const data = store.data;
+    const dates = getDates();
+    if (!data?.usage?.length) return null;
 
-    store.colorScheme
-    const styles = getComputedStyle(document.documentElement)
-    const colorTextMuted = styles.getPropertyValue("--color-text-muted").trim()
-    const colorBorderMuted = styles.getPropertyValue("--color-border-muted").trim()
-    const colorBgElevated = styles.getPropertyValue("--color-bg-elevated").trim()
-    const colorText = styles.getPropertyValue("--color-text").trim()
-    const colorTextSecondary = styles.getPropertyValue("--color-text-secondary").trim()
-    const colorBorder = styles.getPropertyValue("--color-border").trim()
-    const subSuffix = ` (${i18n.t("workspace.cost.subscriptionShort")})`
-    const liteSuffix = " (go)"
+    store.colorScheme;
+    const styles = getComputedStyle(document.documentElement);
+    const colorTextMuted = styles.getPropertyValue("--color-text-muted").trim();
+    const colorBorderMuted = styles.getPropertyValue("--color-border-muted").trim();
+    const colorBgElevated = styles.getPropertyValue("--color-bg-elevated").trim();
+    const colorText = styles.getPropertyValue("--color-text").trim();
+    const colorTextSecondary = styles.getPropertyValue("--color-text-secondary").trim();
+    const colorBorder = styles.getPropertyValue("--color-border").trim();
+    const subSuffix = ` (${i18n.t("workspace.cost.subscriptionShort")})`;
+    const liteSuffix = " (go)";
 
-    const dailyDataRegular = new Map<string, Map<string, number>>()
-    const dailyDataSub = new Map<string, Map<string, number>>()
-    const dailyDataLite = new Map<string, Map<string, number>>()
+    const dailyDataRegular = new Map<string, Map<string, number>>();
+    const dailyDataSub = new Map<string, Map<string, number>>();
+    const dailyDataLite = new Map<string, Map<string, number>>();
     for (const dateKey of dates) {
-      dailyDataRegular.set(dateKey, new Map())
-      dailyDataSub.set(dateKey, new Map())
-      dailyDataLite.set(dateKey, new Map())
+      dailyDataRegular.set(dateKey, new Map());
+      dailyDataSub.set(dateKey, new Map());
+      dailyDataLite.set(dateKey, new Map());
     }
 
     data.usage
       .filter((row) => (store.key ? row.keyId === store.key : true))
       .forEach((row) => {
-        const targetMap = row.plan === "sub" ? dailyDataSub : row.plan === "lite" ? dailyDataLite : dailyDataRegular
-        const dayMap = targetMap.get(row.date)
-        if (!dayMap) return
-        dayMap.set(row.model, (dayMap.get(row.model) ?? 0) + row.totalCost)
-      })
+        const targetMap =
+          row.plan === "sub"
+            ? dailyDataSub
+            : row.plan === "lite"
+              ? dailyDataLite
+              : dailyDataRegular;
+        const dayMap = targetMap.get(row.date);
+        if (!dayMap) return;
+        dayMap.set(row.model, (dayMap.get(row.model) ?? 0) + row.totalCost);
+      });
 
-    const filteredModels = store.model === null ? getModels() : [store.model]
+    const filteredModels = store.model === null ? getModels() : [store.model];
 
     // Create datasets: regular first, then subscription, then lite (with visual distinction via opacity)
     const datasets = [
       ...filteredModels
         .filter((model) => dates.some((date) => (dailyDataRegular.get(date)?.get(model) || 0) > 0))
         .map((model) => {
-          const color = getModelColor(model)
+          const color = getModelColor(model);
           return {
             label: model,
             data: dates.map((date) => (dailyDataRegular.get(date)?.get(model) || 0) / 100_000_000),
@@ -290,12 +322,12 @@ export function GraphSection() {
             hoverBackgroundColor: color,
             borderWidth: 0,
             stack: "usage",
-          }
+          };
         }),
       ...filteredModels
         .filter((model) => dates.some((date) => (dailyDataSub.get(date)?.get(model) || 0) > 0))
         .map((model) => {
-          const color = getModelColor(model)
+          const color = getModelColor(model);
           return {
             label: `${model}${subSuffix}`,
             data: dates.map((date) => (dailyDataSub.get(date)?.get(model) || 0) / 100_000_000),
@@ -304,12 +336,12 @@ export function GraphSection() {
             borderWidth: 1,
             borderColor: color,
             stack: "subscription",
-          }
+          };
         }),
       ...filteredModels
         .filter((model) => dates.some((date) => (dailyDataLite.get(date)?.get(model) || 0) > 0))
         .map((model) => {
-          const color = getModelColor(model)
+          const color = getModelColor(model);
           return {
             label: `${model}${liteSuffix}`,
             data: dates.map((date) => (dailyDataLite.get(date)?.get(model) || 0) / 100_000_000),
@@ -319,9 +351,9 @@ export function GraphSection() {
             borderColor: addOpacityToColor(color, 0.7),
             borderDash: [4, 2],
             stack: "lite",
-          }
+          };
         }),
-    ]
+    ];
 
     return {
       type: "bar",
@@ -361,8 +393,8 @@ export function GraphSection() {
                 size: 11,
               },
               callback: (value) => {
-                const num = Number(value)
-                return num >= 1000 ? `$${(num / 1000).toFixed(1)}k` : `$${num.toFixed(0)}`
+                const num = Number(value);
+                return num >= 1000 ? `$${(num / 1000).toFixed(1)}k` : `$${num.toFixed(0)}`;
               },
             },
           },
@@ -380,7 +412,8 @@ export function GraphSection() {
             displayColors: true,
             filter: (item) => (item.parsed.y ?? 0) > 0,
             callbacks: {
-              label: (context) => `${context.dataset.label}: $${(context.parsed.y ?? 0).toFixed(2)}`,
+              label: (context) =>
+                `${context.dataset.label}: $${(context.parsed.y ?? 0).toFixed(2)}`,
             },
           },
           legend: {
@@ -397,90 +430,93 @@ export function GraphSection() {
               usePointStyle: false,
             },
             onHover: (event, legendItem, legend) => {
-              const chart = legend.chart
+              const chart = legend.chart;
               chart.data.datasets?.forEach((dataset, i) => {
-                const meta = chart.getDatasetMeta(i)
-                const label = dataset.label || ""
-                const isSub = label.endsWith(subSuffix)
-                const isLite = label.endsWith(liteSuffix)
+                const meta = chart.getDatasetMeta(i);
+                const label = dataset.label || "";
+                const isSub = label.endsWith(subSuffix);
+                const isLite = label.endsWith(liteSuffix);
                 const model = isSub
                   ? label.slice(0, -subSuffix.length)
                   : isLite
                     ? label.slice(0, -liteSuffix.length)
-                    : label
-                const baseColor = getModelColor(model)
+                    : label;
+                const baseColor = getModelColor(model);
                 const originalColor = isSub
                   ? addOpacityToColor(baseColor, 0.5)
                   : isLite
                     ? addOpacityToColor(baseColor, 0.35)
-                    : baseColor
-                const color = i === legendItem.datasetIndex ? originalColor : addOpacityToColor(baseColor, 0.15)
+                    : baseColor;
+                const color =
+                  i === legendItem.datasetIndex
+                    ? originalColor
+                    : addOpacityToColor(baseColor, 0.15);
                 meta.data.forEach((bar: any) => {
-                  bar.options.backgroundColor = color
-                })
-              })
-              chart.update("none")
+                  bar.options.backgroundColor = color;
+                });
+              });
+              chart.update("none");
             },
             onLeave: (event, legendItem, legend) => {
-              const chart = legend.chart
+              const chart = legend.chart;
               chart.data.datasets?.forEach((dataset, i) => {
-                const meta = chart.getDatasetMeta(i)
-                const label = dataset.label || ""
-                const isSub = label.endsWith(subSuffix)
-                const isLite = label.endsWith(liteSuffix)
+                const meta = chart.getDatasetMeta(i);
+                const label = dataset.label || "";
+                const isSub = label.endsWith(subSuffix);
+                const isLite = label.endsWith(liteSuffix);
                 const model = isSub
                   ? label.slice(0, -subSuffix.length)
                   : isLite
                     ? label.slice(0, -liteSuffix.length)
-                    : label
-                const baseColor = getModelColor(model)
+                    : label;
+                const baseColor = getModelColor(model);
                 const color = isSub
                   ? addOpacityToColor(baseColor, 0.5)
                   : isLite
                     ? addOpacityToColor(baseColor, 0.35)
-                    : baseColor
+                    : baseColor;
                 meta.data.forEach((bar: any) => {
-                  bar.options.backgroundColor = color
-                })
-              })
-              chart.update("none")
+                  bar.options.backgroundColor = color;
+                });
+              });
+              chart.update("none");
             },
           },
         },
       },
-    }
-  })
+    };
+  });
 
   createEffect(async () => {
     // Compute the offset for mid-month so DST transitions don't bias to the
     // wrong side.
-    const midMonth = new Date(Date.UTC(store.year, store.month, 15, 12, 0, 0))
-    const tzOffset = getTimezoneOffset(timezone, midMonth)
-    const data = await getCosts(params.id!, store.year, store.month, tzOffset)
-    setStore({ data })
-  })
+    const midMonth = new Date(Date.UTC(store.year, store.month, 15, 12, 0, 0));
+    const tzOffset = getTimezoneOffset(timezone, midMonth);
+    const data = await getCosts(params.id!, store.year, store.month, tzOffset);
+    setStore({ data });
+  });
 
   createEffect(() => {
-    const config = chartConfig()
-    if (!config || !canvasRef) return
+    const config = chartConfig();
+    if (!config || !canvasRef) return;
 
-    if (chartInstance) chartInstance.destroy()
-    chartInstance = new Chart(canvasRef, config)
+    if (chartInstance) chartInstance.destroy();
+    chartInstance = new Chart(canvasRef, config);
 
-    onCleanup(() => chartInstance?.destroy())
-  })
+    onCleanup(() => chartInstance?.destroy());
+  });
 
   createEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
-    setStore({ colorScheme: mediaQuery.matches ? "dark" : "light" })
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    setStore({ colorScheme: mediaQuery.matches ? "dark" : "light" });
 
     const handleColorSchemeChange = (e: MediaQueryListEvent) => {
-      setStore({ colorScheme: e.matches ? "dark" : "light" })
-    }
+      setStore({ colorScheme: e.matches ? "dark" : "light" });
+    };
 
-    mediaQuery.addEventListener("change", handleColorSchemeChange)
-    onCleanup(() => mediaQuery.removeEventListener("change", handleColorSchemeChange))
-  })
+    mediaQuery.addEventListener("change", handleColorSchemeChange);
+    onCleanup(() => mediaQuery.removeEventListener("change", handleColorSchemeChange));
+  });
 
   return (
     <section class={styles.root}>
@@ -530,7 +566,9 @@ export function GraphSection() {
               {(key) => (
                 <button data-slot="model-item" onClick={() => onSelectKey(key.id)}>
                   <span>
-                    {key.deleted ? `${key.displayName} ${i18n.t("workspace.cost.deletedSuffix")}` : key.displayName}
+                    {key.deleted
+                      ? `${key.displayName} ${i18n.t("workspace.cost.deletedSuffix")}`
+                      : key.displayName}
                   </span>
                 </button>
               )}
@@ -552,5 +590,5 @@ export function GraphSection() {
         </div>
       </Show>
     </section>
-  )
+  );
 }

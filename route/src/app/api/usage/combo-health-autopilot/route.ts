@@ -38,7 +38,7 @@ export async function GET(request: Request) {
     if (!parsed.success) {
       return NextResponse.json(
         { error: parsed.error.issues[0]?.message ?? "Invalid query parameters" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -52,7 +52,7 @@ export async function GET(request: Request) {
     console.error("[API] GET /api/usage/combo-health-autopilot error:", error);
     return NextResponse.json(
       { error: "Failed to build combo health autopilot report" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

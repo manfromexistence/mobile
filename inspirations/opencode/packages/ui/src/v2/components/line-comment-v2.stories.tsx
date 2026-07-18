@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { createSignal } from "solid-js"
-import { LineCommentEditorV2, LineCommentV2, LineCommentV2OverflowIcon } from "./line-comment-v2"
+import { createSignal } from "solid-js";
+import { LineCommentEditorV2, LineCommentV2, LineCommentV2OverflowIcon } from "./line-comment-v2";
 
 const docs = `### Overview
 Line comment **display** and **editor** cards aligned with OpenCode line-comment specs (raised \`#FAFAFA\` surface, footer line context, \`ButtonV2\` neutral + contrast actions).
@@ -12,7 +12,7 @@ Line comment **display** and **editor** cards aligned with OpenCode line-comment
 ### Editor
 - \`LineCommentEditorV2\`: optional \`heading\` above the textarea (default “Comment”), footer (selection meta + Cancel / Comment).
 - \`Enter\` submits (Shift+Enter newline); \`Escape\` cancels. Controlled via \`value\` / \`onInput\`.
-`
+`;
 
 export default {
   title: "UI V2/LineComment",
@@ -26,7 +26,7 @@ export default {
       },
     },
   },
-}
+};
 
 export const Display = {
   render: () => (
@@ -42,19 +42,22 @@ export const Display = {
       />
     </div>
   ),
-}
+};
 
 export const DisplayWithoutActions = {
   render: () => (
     <div style={{ width: "400px" }}>
-      <LineCommentV2 comment="Consider guarding against empty arrays." selection="Comment on line 40" />
+      <LineCommentV2
+        comment="Consider guarding against empty arrays."
+        selection="Comment on line 40"
+      />
     </div>
   ),
-}
+};
 
 export const Editor = {
   render: () => {
-    const [value, setValue] = createSignal("")
+    const [value, setValue] = createSignal("");
     return (
       <div style={{ width: "400px" }}>
         <LineCommentEditorV2
@@ -65,13 +68,15 @@ export const Editor = {
           selection="Comment on line 40"
         />
       </div>
-    )
+    );
   },
-}
+};
 
 export const EditorFilled = {
   render: () => {
-    const [value, setValue] = createSignal("Use a sentinel or early return when the list is empty.")
+    const [value, setValue] = createSignal(
+      "Use a sentinel or early return when the list is empty.",
+    );
     return (
       <div style={{ width: "400px" }}>
         <LineCommentEditorV2
@@ -83,6 +88,6 @@ export const EditorFilled = {
           autofocus={false}
         />
       </div>
-    )
+    );
   },
-}
+};

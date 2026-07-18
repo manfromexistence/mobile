@@ -1,5 +1,5 @@
-import { expect, test } from "bun:test"
-import { shouldResetCodeTokens } from "./markdown-code-state"
+import { expect, test } from "bun:test";
+import { shouldResetCodeTokens } from "./markdown-code-state";
 
 const previous = {
   language: "ts",
@@ -7,7 +7,7 @@ const previous = {
   stableCount: 3,
   unstable: [],
   raw: "```ts\nconst x = 1\n```",
-}
+};
 
 test("resets tokens for a non-prefix replacement with the same generation and token count", () => {
   expect(
@@ -17,8 +17,8 @@ test("resets tokens for a non-prefix replacement with the same generation and to
       stableCount: 3,
       raw: "```ts\nlet y = 2\n```",
     }),
-  ).toBe(true)
-})
+  ).toBe(true);
+});
 
 test("retains tokens for an append-only streaming update", () => {
   expect(
@@ -28,5 +28,5 @@ test("retains tokens for an append-only streaming update", () => {
       stableCount: 4,
       raw: `${previous.raw}\nmore`,
     }),
-  ).toBe(false)
-})
+  ).toBe(false);
+});

@@ -205,17 +205,17 @@ test("costRules covers DB-loaded budgets, malformed entries and storage failure 
   db.prepare("INSERT INTO domain_cost_history (api_key_id, cost, timestamp) VALUES (?, ?, ?)").run(
     "malformed-costs",
     "2.25",
-    String(now)
+    String(now),
   );
   db.prepare("INSERT INTO domain_cost_history (api_key_id, cost, timestamp) VALUES (?, ?, ?)").run(
     "malformed-costs",
     "not-a-number",
-    now
+    now,
   );
   db.prepare("INSERT INTO domain_cost_history (api_key_id, cost, timestamp) VALUES (?, ?, ?)").run(
     "malformed-costs",
     4,
-    "not-a-timestamp"
+    "not-a-timestamp",
   );
 
   assert.equal(costRules.getDailyTotal("malformed-costs"), 2.25);

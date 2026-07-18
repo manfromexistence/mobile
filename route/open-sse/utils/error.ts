@@ -97,7 +97,7 @@ export function sanitizeUpstreamDetails(value: unknown, depth = 0): unknown {
 export function buildErrorBody(
   statusCode: number,
   message: string,
-  upstreamDetails?: unknown
+  upstreamDetails?: unknown,
 ): ErrorResponseBody {
   const errorInfo = getErrorInfo(statusCode);
   const safeMessage = sanitizeErrorMessage(message) || getDefaultErrorMessage(statusCode);
@@ -193,7 +193,7 @@ export function errorResponseWithComboDiagnostics(
   statusCode: number,
   message: string,
   diagnostics: ComboDiagnostics,
-  opts: { code?: string; type?: string } = {}
+  opts: { code?: string; type?: string } = {},
 ): Response {
   const safe = sanitizeComboDiagnostics(diagnostics);
   const body = buildErrorBody(statusCode, message) as ErrorResponseBody & {
@@ -206,7 +206,7 @@ export function errorResponseWithComboDiagnostics(
     safe.excluded
       .map((e) => `${e.provider}${e.model ? `/${e.model}` : ""}:${e.reason}`)
       .join(",")
-      .slice(0, 900)
+      .slice(0, 900),
   );
   return new Response(JSON.stringify(body), {
     status: statusCode,
@@ -244,7 +244,7 @@ export function errorResponse(statusCode: number, message: string): Response {
 export async function writeStreamError(
   writer: WritableStreamDefaultWriter<Uint8Array>,
   statusCode: number,
-  message: string
+  message: string,
 ): Promise<void> {
   const errorBody = buildErrorBody(statusCode, sanitizeErrorMessage(message));
   const encoder = new TextEncoder();
@@ -416,7 +416,7 @@ export function createErrorResult(
   retryAfterMs: number | null = null,
   errorCode?: string,
   errorType?: string,
-  upstreamDetails?: unknown
+  upstreamDetails?: unknown,
 ) {
   const body = buildErrorBody(statusCode, message, upstreamDetails);
   if (errorCode) {
@@ -466,7 +466,7 @@ export function unavailableResponse(
   statusCode: number,
   message: string,
   retryAfter?: string | number | Date | null,
-  retryAfterHuman?: string
+  retryAfterHuman?: string,
 ) {
   const retryAfterSec = normalizeRetryAfterSeconds(retryAfter);
   const msg = retryAfterHuman ? `${message} (${retryAfterHuman})` : message;
@@ -481,7 +481,7 @@ export function unavailableResponse(
 
 export function providerCircuitOpenResponse(
   provider: string,
-  retryAfter?: string | number | Date | null
+  retryAfter?: string | number | Date | null,
 ) {
   const retryAfterSec = normalizeRetryAfterSeconds(retryAfter);
   return new Response(
@@ -501,7 +501,7 @@ export function providerCircuitOpenResponse(
         "Retry-After": String(retryAfterSec),
         "X-OmniRoute-Provider-Breaker": "open",
       },
-    }
+    },
   );
 }
 
@@ -566,7 +566,7 @@ export function modelCooldownResponse({
         retryAfterSec,
         retryAfterAt: resolvedRetryAfterAt,
         credentialsCoolingCount,
-      })
+      }),
     ),
     {
       status: 429,
@@ -574,7 +574,7 @@ export function modelCooldownResponse({
         "Content-Type": "application/json",
         "Retry-After": String(retryAfterSec),
       },
-    }
+    },
   );
 }
 
@@ -586,7 +586,7 @@ export function makeExecutorErrorResult(
   status: number,
   message: string,
   body: unknown,
-  url: string
+  url: string,
 ) {
   return {
     response: new Response(
@@ -597,7 +597,7 @@ export function makeExecutorErrorResult(
           code: `HTTP_${status}`,
         },
       }),
-      { status, headers: { "Content-Type": "application/json" } }
+      { status, headers: { "Content-Type": "application/json" } },
     ),
     url,
     headers: {} as Record<string, string>,
@@ -624,7 +624,7 @@ export function formatProviderError(
   error: { code?: string | number; message?: string; cause?: unknown } | Error,
   provider: string,
   model: string,
-  statusCode?: string | number | null
+  statusCode?: string | number | null,
 ): string {
   const providerCode = "code" in error ? error.code : undefined;
   const code = statusCode || providerCode || "FETCH_FAILED";

@@ -162,7 +162,7 @@ function createReleaseFn(semaphoreKey: string): () => void {
 
 function createSemaphoreTimeoutError(
   semaphoreKey: string,
-  timeoutMs: number
+  timeoutMs: number,
 ): Error & { code: string } {
   const error = new Error(`Semaphore timeout after ${timeoutMs}ms for ${semaphoreKey}`) as Error & {
     code: string;
@@ -190,7 +190,7 @@ export function acquire(
     timeoutMs = DEFAULT_TIMEOUT_MS,
     signal = null,
     maxQueueSize = DEFAULT_MAX_QUEUE_SIZE,
-  }: AcquireAccountSemaphoreOptions = {}
+  }: AcquireAccountSemaphoreOptions = {},
 ): Promise<() => void> {
   if (isBypassed(maxConcurrency)) {
     return Promise.resolve(createNoopReleaseFn());

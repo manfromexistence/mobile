@@ -93,7 +93,7 @@ test("selectProvider falls back to the full candidate list when candidatePool re
         errorRate: 0.01,
       },
     ],
-    "documentation"
+    "documentation",
   );
 
   assert.equal(result.provider, "openai");
@@ -133,7 +133,7 @@ test("selectProvider excludes unhealthy providers and disables exploration in in
         errorRate: 0.01,
       },
     ],
-    "simple"
+    "simple",
   );
 
   assert.equal(result.provider, "closed-provider");
@@ -175,7 +175,7 @@ test("selectProvider degrades to the cheapest candidate when the selected option
         quotaResetIntervalSecs: 86400,
       },
     ],
-    "default"
+    "default",
   );
 
   assert.equal(result.provider, "cheap");

@@ -194,7 +194,7 @@ export async function POST(request: Request) {
           username: proxy.username || "",
           password: proxy.password || "",
         },
-        { allowSocks5: isSocks5ProxyEnabled() }
+        { allowSocks5: isSocks5ProxyEnabled() },
       );
       if (!normalizedProxyUrl) {
         return createErrorResponse({

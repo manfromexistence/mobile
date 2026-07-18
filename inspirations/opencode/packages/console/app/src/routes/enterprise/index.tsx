@@ -1,15 +1,15 @@
-import "./index.css"
-import { Title, Meta } from "@solidjs/meta"
-import { createSignal, Show } from "solid-js"
-import { Header } from "~/component/header"
-import { Footer } from "~/component/footer"
-import { Legal } from "~/component/legal"
-import { Faq } from "~/component/faq"
-import { useI18n } from "~/context/i18n"
-import { LocaleLinks } from "~/component/locale-links"
+import "./index.css";
+import { Title, Meta } from "@solidjs/meta";
+import { createSignal, Show } from "solid-js";
+import { Header } from "~/component/header";
+import { Footer } from "~/component/footer";
+import { Legal } from "~/component/legal";
+import { Faq } from "~/component/faq";
+import { useI18n } from "~/context/i18n";
+import { LocaleLinks } from "~/component/locale-links";
 
 export default function Enterprise() {
-  const i18n = useI18n()
+  const i18n = useI18n();
   const [formData, setFormData] = createSignal({
     name: "",
     role: "",
@@ -18,21 +18,21 @@ export default function Enterprise() {
     phone: "",
     alias: "",
     message: "",
-  })
-  const [isSubmitting, setIsSubmitting] = createSignal(false)
-  const [showSuccess, setShowSuccess] = createSignal(false)
-  const [error, setError] = createSignal("")
+  });
+  const [isSubmitting, setIsSubmitting] = createSignal(false);
+  const [showSuccess, setShowSuccess] = createSignal(false);
+  const [error, setError] = createSignal("");
 
   const handleInputChange = (field: string) => (e: Event) => {
-    const target = e.target as HTMLInputElement | HTMLTextAreaElement
-    setFormData((prev) => ({ ...prev, [field]: target.value }))
-  }
+    const target = e.target as HTMLInputElement | HTMLTextAreaElement;
+    setFormData((prev) => ({ ...prev, [field]: target.value }));
+  };
 
   const handleSubmit = async (e: Event) => {
-    e.preventDefault()
-    setError("")
-    setShowSuccess(false)
-    setIsSubmitting(true)
+    e.preventDefault();
+    setError("");
+    setShowSuccess(false);
+    setIsSubmitting(true);
 
     try {
       const response = await fetch("/api/enterprise", {
@@ -41,10 +41,10 @@ export default function Enterprise() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData()),
-      })
+      });
 
       if (response.ok) {
-        setShowSuccess(true)
+        setShowSuccess(true);
         setFormData({
           name: "",
           role: "",
@@ -53,20 +53,20 @@ export default function Enterprise() {
           phone: "",
           alias: "",
           message: "",
-        })
-        setTimeout(() => setShowSuccess(false), 5000)
-        return
+        });
+        setTimeout(() => setShowSuccess(false), 5000);
+        return;
       }
 
-      const data = (await response.json().catch(() => null)) as { error?: string } | null
-      setError(data?.error ?? i18n.t("enterprise.form.error.internalServer"))
+      const data = (await response.json().catch(() => null)) as { error?: string } | null;
+      setError(data?.error ?? i18n.t("enterprise.form.error.internalServer"));
     } catch (error) {
-      console.error("Failed to submit form:", error)
-      setError(i18n.t("enterprise.form.error.internalServer"))
+      console.error("Failed to submit form:", error);
+      setError(i18n.t("enterprise.form.error.internalServer"));
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <main data-page="enterprise">
@@ -87,17 +87,29 @@ export default function Enterprise() {
                 <Show when={false}>
                   <div data-component="testimonial">
                     <div data-component="quotation">
-                      <svg width="20" height="17" viewBox="0 0 20 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <svg
+                        width="20"
+                        height="17"
+                        viewBox="0 0 20 17"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
                         <path
                           d="M19.4118 0L16.5882 9.20833H20V17H12.2353V10.0938L16 0H19.4118ZM7.17647 0L4.35294 9.20833H7.76471V17H0V10.0938L3.76471 0H7.17647Z"
                           fill="currentColor"
                         />
                       </svg>
                     </div>
-                    Thanks to OpenCode, we found a way to create software to track all our assets — even the imaginary
-                    ones.
+                    Thanks to OpenCode, we found a way to create software to track all our assets —
+                    even the imaginary ones.
                     <div data-component="testimonial-logo">
-                      <svg width="80" height="79" viewBox="0 0 80 79" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <svg
+                        width="80"
+                        height="79"
+                        viewBox="0 0 80 79"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
                         <path
                           fill-rule="evenodd"
                           clip-rule="evenodd"
@@ -245,11 +257,15 @@ export default function Enterprise() {
                     </div>
 
                     <button type="submit" disabled={isSubmitting()} data-component="submit-button">
-                      {isSubmitting() ? i18n.t("enterprise.form.sending") : i18n.t("enterprise.form.send")}
+                      {isSubmitting()
+                        ? i18n.t("enterprise.form.sending")
+                        : i18n.t("enterprise.form.send")}
                     </button>
                   </form>
 
-                  {showSuccess() && <div data-component="success-message">{i18n.t("enterprise.form.success")}</div>}
+                  {showSuccess() && (
+                    <div data-component="success-message">{i18n.t("enterprise.form.success")}</div>
+                  )}
                   {error() && <div data-component="error-message">{error()}</div>}
                 </div>
               </div>
@@ -280,5 +296,5 @@ export default function Enterprise() {
       </div>
       <Legal />
     </main>
-  )
+  );
 }

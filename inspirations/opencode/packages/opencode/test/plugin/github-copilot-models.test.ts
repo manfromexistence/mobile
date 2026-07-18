@@ -1,12 +1,12 @@
-import { afterEach, expect, mock, test } from "bun:test"
-import { CopilotModels } from "@/plugin/github-copilot/models"
-import { CopilotAuthPlugin } from "@/plugin/github-copilot/copilot"
+import { afterEach, expect, mock, test } from "bun:test";
+import { CopilotModels } from "@/plugin/github-copilot/models";
+import { CopilotAuthPlugin } from "@/plugin/github-copilot/copilot";
 
-const originalFetch = globalThis.fetch
+const originalFetch = globalThis.fetch;
 
 afterEach(() => {
-  globalThis.fetch = originalFetch
-})
+  globalThis.fetch = originalFetch;
+});
 
 test("preserves temperature support from existing provider models", async () => {
   globalThis.fetch = mock(() =>
@@ -55,7 +55,7 @@ test("preserves temperature support from existing provider models", async () => 
         { status: 200 },
       ),
     ),
-  ) as unknown as typeof fetch
+  ) as unknown as typeof fetch;
 
   const result = await CopilotModels.get(
     "https://api.githubcopilot.com",
@@ -111,12 +111,12 @@ test("preserves temperature support from existing provider models", async () => 
         status: "active",
       },
     },
-  )
-  const models = result.models
+  );
+  const models = result.models;
 
-  expect(models["gpt-4o"].capabilities.temperature).toBe(true)
-  expect(models["brand-new"].capabilities.temperature).toBe(true)
-})
+  expect(models["gpt-4o"].capabilities.temperature).toBe(true);
+  expect(models["brand-new"].capabilities.temperature).toBe(true);
+});
 
 test("converts Copilot AIC token prices to USD per million tokens", async () => {
   globalThis.fetch = mock(() =>
@@ -171,9 +171,9 @@ test("converts Copilot AIC token prices to USD per million tokens", async () => 
         { status: 200 },
       ),
     ),
-  ) as unknown as typeof fetch
+  ) as unknown as typeof fetch;
 
-  const models = (await CopilotModels.get("https://api.githubcopilot.com")).models
+  const models = (await CopilotModels.get("https://api.githubcopilot.com")).models;
 
   expect(models["gpt-5"].cost).toEqual({
     input: 10,
@@ -182,10 +182,10 @@ test("converts Copilot AIC token prices to USD per million tokens", async () => 
       read: 1,
       write: 0,
     },
-  })
-  expect(models["incomplete-internal-model"]).toBeUndefined()
-  expect(models["ignored-non-chat-record"]).toBeUndefined()
-})
+  });
+  expect(models["incomplete-internal-model"]).toBeUndefined();
+  expect(models["ignored-non-chat-record"]).toBeUndefined();
+});
 
 test("records Copilot advertised responses endpoint for non-GPT model IDs", async () => {
   globalThis.fetch = mock(() =>
@@ -218,12 +218,14 @@ test("records Copilot advertised responses endpoint for non-GPT model IDs", asyn
         { status: 200 },
       ),
     ),
-  ) as unknown as typeof fetch
+  ) as unknown as typeof fetch;
 
-  const model = (await CopilotModels.get("https://api.githubcopilot.com")).models["mai-code-1-flash-picker"]
+  const model = (await CopilotModels.get("https://api.githubcopilot.com")).models[
+    "mai-code-1-flash-picker"
+  ];
 
-  expect("endpoint" in model.api ? model.api.endpoint : undefined).toBe("responses")
-})
+  expect("endpoint" in model.api ? model.api.endpoint : undefined).toBe("responses");
+});
 
 test("clears existing variants so refreshed models calculate provider-specific variants", async () => {
   globalThis.fetch = mock(() =>
@@ -256,7 +258,7 @@ test("clears existing variants so refreshed models calculate provider-specific v
         { status: 200 },
       ),
     ),
-  ) as unknown as typeof fetch
+  ) as unknown as typeof fetch;
 
   const result = await CopilotModels.get(
     "https://api.githubcopilot.com",
@@ -317,15 +319,15 @@ test("clears existing variants so refreshed models calculate provider-specific v
         status: "active",
       },
     },
-  )
-  const models = result.models
+  );
+  const models = result.models;
 
-  expect(models["claude-opus-4.7"].api.npm).toBe("@ai-sdk/anthropic")
-  expect(models["claude-opus-4.7"].variants).toBeUndefined()
-})
+  expect(models["claude-opus-4.7"].api.npm).toBe("@ai-sdk/anthropic");
+  expect(models["claude-opus-4.7"].variants).toBeUndefined();
+});
 
 test("remaps fallback oauth model urls to the enterprise host", async () => {
-  globalThis.fetch = mock(() => Promise.reject(new Error("timeout"))) as unknown as typeof fetch
+  globalThis.fetch = mock(() => Promise.reject(new Error("timeout"))) as unknown as typeof fetch;
 
   const hooks = await CopilotAuthPlugin({
     client: {} as never,
@@ -337,7 +339,7 @@ test("remaps fallback oauth model urls to the enterprise host", async () => {
     },
     serverUrl: new URL("https://example.com"),
     $: {} as never,
-  })
+  });
 
   const models = await hooks.provider!.models!(
     {
@@ -363,8 +365,8 @@ test("remaps fallback oauth model urls to the enterprise host", async () => {
         enterpriseUrl: "ghe.example.com",
       } as never,
     },
-  )
+  );
 
-  expect(models.claude.api.url).toBe("https://copilot-api.ghe.example.com")
-  expect(models.claude.api.npm).toBe("@ai-sdk/github-copilot")
-})
+  expect(models.claude.api.url).toBe("https://copilot-api.ghe.example.com");
+  expect(models.claude.api.npm).toBe("@ai-sdk/github-copilot");
+});

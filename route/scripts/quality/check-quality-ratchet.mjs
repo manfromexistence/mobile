@@ -13,10 +13,10 @@ function getArg(name, fallback) {
   return i >= 0 && process.argv[i + 1] ? process.argv[i + 1] : fallback;
 }
 const BASELINE = path.resolve(
-  getArg("--baseline", path.join(cwd, "config/quality/quality-baseline.json"))
+  getArg("--baseline", path.join(cwd, "config/quality/quality-baseline.json")),
 );
 const METRICS = path.resolve(
-  getArg("--metrics", path.join(cwd, "config/quality/quality-metrics.json"))
+  getArg("--metrics", path.join(cwd, "config/quality/quality-metrics.json")),
 );
 const SUMMARY = getArg("--summary", null);
 const UPDATE = process.argv.includes("--update");
@@ -78,7 +78,7 @@ for (const [key, spec] of Object.entries(baseline.metrics)) {
       status = "↑ melhorou";
       if (REQUIRE_TIGHTEN && base - current > tightenSlack) {
         tightenFailures.push(
-          `${key}: melhorou de ${base} para ${current} (delta ${(base - current).toFixed(4)} > slack ${tightenSlack}) — rode 'npm run quality:ratchet -- --update' e commite o baseline apertado neste PR`
+          `${key}: melhorou de ${base} para ${current} (delta ${(base - current).toFixed(4)} > slack ${tightenSlack}) — rode 'npm run quality:ratchet -- --update' e commite o baseline apertado neste PR`,
         );
       }
     }
@@ -91,7 +91,7 @@ for (const [key, spec] of Object.entries(baseline.metrics)) {
       status = "↑ melhorou";
       if (REQUIRE_TIGHTEN && current - base > tightenSlack) {
         tightenFailures.push(
-          `${key}: melhorou de ${base} para ${current} (delta ${(current - base).toFixed(4)} > slack ${tightenSlack}) — rode 'npm run quality:ratchet -- --update' e commite o baseline apertado neste PR`
+          `${key}: melhorou de ${base} para ${current} (delta ${(current - base).toFixed(4)} > slack ${tightenSlack}) — rode 'npm run quality:ratchet -- --update' e commite o baseline apertado neste PR`,
         );
       }
     }
@@ -104,10 +104,10 @@ const baselineKeys = new Set(Object.keys(baseline.metrics));
 const orphans = Object.keys(metrics).filter((k) => !baselineKeys.has(k));
 if (orphans.length > 0) {
   console.warn(
-    `[quality-ratchet] WARN: ${orphans.length} métrica(s) órfã(s) — presente(s) em ${path.basename(METRICS)} mas sem entrada no baseline: ${orphans.join(", ")}`
+    `[quality-ratchet] WARN: ${orphans.length} métrica(s) órfã(s) — presente(s) em ${path.basename(METRICS)} mas sem entrada no baseline: ${orphans.join(", ")}`,
   );
   console.warn(
-    `[quality-ratchet] WARN: adicione ${orphans.length === 1 ? "essa métrica" : "essas métricas"} ao baseline (com value/direction) para que sejam catraceadas.`
+    `[quality-ratchet] WARN: adicione ${orphans.length === 1 ? "essa métrica" : "essas métricas"} ao baseline (com value/direction) para que sejam catraceadas.`,
   );
 }
 
@@ -145,7 +145,7 @@ if (failures.length) {
 if (REQUIRE_TIGHTEN && !UPDATE && tightenFailures.length > 0) {
   console.error(
     "[quality-ratchet] FALHOU (--require-tighten): métrica(s) melhoraram mas o baseline não foi apertado:\n" +
-      tightenFailures.map((f) => "  ✗ " + f).join("\n")
+      tightenFailures.map((f) => "  ✗ " + f).join("\n"),
   );
   process.exit(1);
 }

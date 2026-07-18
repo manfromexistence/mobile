@@ -1,11 +1,11 @@
-import { type ComponentProps, splitProps } from "solid-js"
+import { type ComponentProps, splitProps } from "solid-js";
 
 export interface DockTrayProps extends ComponentProps<"div"> {
-  attach?: "none" | "top"
+  attach?: "none" | "top";
 }
 
 export function DockShell(props: ComponentProps<"div">) {
-  const [split, rest] = splitProps(props, ["children", "class", "classList"])
+  const [split, rest] = splitProps(props, ["children", "class", "classList"]);
   return (
     <div
       {...rest}
@@ -17,11 +17,11 @@ export function DockShell(props: ComponentProps<"div">) {
     >
       {split.children}
     </div>
-  )
+  );
 }
 
 export function DockShellForm(props: ComponentProps<"form">) {
-  const [split, rest] = splitProps(props, ["children", "class", "classList"])
+  const [split, rest] = splitProps(props, ["children", "class", "classList"]);
   return (
     <form
       {...rest}
@@ -33,11 +33,11 @@ export function DockShellForm(props: ComponentProps<"form">) {
     >
       {split.children}
     </form>
-  )
+  );
 }
 
 export function DockTray(props: DockTrayProps) {
-  const [split, rest] = splitProps(props, ["attach", "children", "class", "classList"])
+  const [split, rest] = splitProps(props, ["attach", "children", "class", "classList"]);
   return (
     <div
       {...rest}
@@ -50,5 +50,5 @@ export function DockTray(props: DockTrayProps) {
     >
       {split.children}
     </div>
-  )
+  );
 }

@@ -94,7 +94,7 @@ export async function prewarmLlmlinguaUltra(opts?: UltraSlmOptions): Promise<boo
     // is exercised; a no-op/throw from the worker is fine here (best-effort).
     await runLlmlinguaUltra(
       "The quick brown fox jumps over the lazy dog while the sun sets behind the hills.",
-      { model: opts?.model ?? DEFAULT_LLMLINGUA_MODEL, compressionRate: opts?.compressionRate }
+      { model: opts?.model ?? DEFAULT_LLMLINGUA_MODEL, compressionRate: opts?.compressionRate },
     );
   } catch {
     // swallow — pre-warm is best-effort (a no-op/throw from the worker is fine).

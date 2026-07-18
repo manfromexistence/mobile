@@ -137,7 +137,7 @@ function extractQueryValue(raw: string, name: string): string {
 export function resolveDolaFingerprint(
   cookieHeader: string,
   providerSpecificData?: unknown,
-  rawCredential = ""
+  rawCredential = "",
 ): string {
   const data = asRecord(providerSpecificData);
   return (
@@ -152,7 +152,7 @@ export function resolveDolaFingerprint(
 
 export function buildDolaCookieHeader(
   rawCredential: string,
-  providerSpecificData?: unknown
+  providerSpecificData?: unknown,
 ): string {
   const providerData = asRecord(providerSpecificData);
   const raw = normalizeCookie(rawCredential.trim());
@@ -192,7 +192,7 @@ export function buildDolaCookieHeader(
 export function buildDolaQueryParams(
   cookieHeader: string,
   providerSpecificData?: unknown,
-  rawCredential = ""
+  rawCredential = "",
 ): URLSearchParams {
   const data = asRecord(providerSpecificData);
   const generatedId = randomNumericId();
@@ -234,7 +234,7 @@ export function buildDolaPayload(
   modelId = DEFAULT_MODEL,
   cookieHeader = "",
   providerSpecificData?: unknown,
-  rawCredential = ""
+  rawCredential = "",
 ): JsonRecord {
   const data = asRecord(providerSpecificData);
   const localConversationId =
@@ -515,7 +515,7 @@ export class DoubaoWebExecutor extends BaseExecutor {
               }
               for (const text of extractDolaTextDeltas(event.data, state)) {
                 controller.enqueue(
-                  encoder.encode(`data: ${JSON.stringify(openAiChunk(modelId, text))}\n\n`)
+                  encoder.encode(`data: ${JSON.stringify(openAiChunk(modelId, text))}\n\n`),
                 );
               }
               if (event.event === "SSE_REPLY_END") {
@@ -534,7 +534,7 @@ export class DoubaoWebExecutor extends BaseExecutor {
           if (errored) return;
           for (const text of flushDolaTextExtractionState(state)) {
             controller.enqueue(
-              encoder.encode(`data: ${JSON.stringify(openAiChunk(modelId, text))}\n\n`)
+              encoder.encode(`data: ${JSON.stringify(openAiChunk(modelId, text))}\n\n`),
             );
           }
           if (!sentDone) controller.enqueue(encoder.encode("data: [DONE]\n\n"));
@@ -559,7 +559,7 @@ export class DoubaoWebExecutor extends BaseExecutor {
       modelId,
       cookieHeader,
       providerSpecificData,
-      rawCredential
+      rawCredential,
     );
     const query = buildDolaQueryParams(cookieHeader, providerSpecificData, rawCredential);
     const url = `${CHAT_URL}?${query.toString()}`;
@@ -571,7 +571,7 @@ export class DoubaoWebExecutor extends BaseExecutor {
           401,
           "Dola Web requires a www.dola.com Cookie header containing at least sessionid, ttwid, and s_v_web_id.",
           body,
-          url
+          url,
         ),
         headers: reqHeaders,
         transformedBody,
@@ -583,7 +583,7 @@ export class DoubaoWebExecutor extends BaseExecutor {
           401,
           "Dola Web requires the browser fingerprint value from www.dola.com. Add s_v_web_id=... from Cookies or fp=verify_... from a Network chat/completion request URL.",
           body,
-          url
+          url,
         ),
         headers: reqHeaders,
         transformedBody,
@@ -604,7 +604,7 @@ export class DoubaoWebExecutor extends BaseExecutor {
           502,
           `Dola fetch failed: ${err instanceof Error ? err.message : "unknown"}`,
           body,
-          url
+          url,
         ),
         headers: reqHeaders,
         transformedBody,

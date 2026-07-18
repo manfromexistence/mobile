@@ -51,7 +51,7 @@ function installMock(completionOutcomes = []) {
     if (u.includes("/users/current")) {
       return new Response(
         JSON.stringify({ code: 0, data: { biz_data: { token: "access-token-xyz" } } }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
     if (u.includes("/chat_session/create")) {
@@ -61,7 +61,7 @@ function installMock(completionOutcomes = []) {
           code: 0,
           data: { biz_data: { chat_session: { id: `session-${calls.create}` } } },
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
     if (u.includes("/chat_session/delete")) {
@@ -72,10 +72,13 @@ function installMock(completionOutcomes = []) {
       });
     }
     if (u.includes("/create_pow_challenge")) {
-      return new Response(JSON.stringify({ code: 0, data: { biz_data: { challenge: POW_CHALLENGE } } }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(
+        JSON.stringify({ code: 0, data: { biz_data: { challenge: POW_CHALLENGE } } }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        },
+      );
     }
     if (u.includes("/chat/completion")) {
       calls.completion += 1;

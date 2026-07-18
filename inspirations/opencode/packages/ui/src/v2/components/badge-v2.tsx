@@ -1,10 +1,10 @@
-import { type ComponentProps, splitProps } from "solid-js"
-import "./badge-v2.css"
+import { type ComponentProps, splitProps } from "solid-js";
+import "./badge-v2.css";
 
 export interface TagProps extends ComponentProps<"span"> {}
 
 export function Tag(props: TagProps) {
-  const [split, rest] = splitProps(props, ["class", "classList", "children"])
+  const [split, rest] = splitProps(props, ["class", "classList", "children"]);
   return (
     <span
       {...rest}
@@ -16,5 +16,5 @@ export function Tag(props: TagProps) {
     >
       {split.children}
     </span>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import type { AppConfig, ChatOptions } from "./config"
+import type { AppConfig, ChatOptions } from "./config";
 import type {
   ChatCompletion,
   ChatCompletionChunk,
@@ -9,8 +9,8 @@ import type {
   CompletionCreateParamsStreaming,
   CreateEmbeddingResponse,
   EmbeddingCreateParams,
-} from "./openai_api_protocols/index"
-import type { InitProgressReport, LogLevel } from "./types"
+} from "./openai_api_protocols/index";
+import type { InitProgressReport, LogLevel } from "./types";
 
 /**
  * Message kind used by worker
@@ -34,29 +34,29 @@ type RequestKind =
   | "customRequest"
   | "keepAlive"
   | "setLogLevel"
-  | "setAppConfig"
+  | "setAppConfig";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-type ResponseKind = "return" | "throw" | "initProgressCallback"
+type ResponseKind = "return" | "throw" | "initProgressCallback";
 
 export interface ReloadParams {
-  modelId: string[]
-  chatOpts?: ChatOptions[]
+  modelId: string[];
+  chatOpts?: ChatOptions[];
 }
 export interface ResetChatParams {
-  keepStats: boolean
-  modelId?: string
+  keepStats: boolean;
+  modelId?: string;
 }
 export interface GetMessageParams {
-  modelId?: string
+  modelId?: string;
 }
 export interface RuntimeStatsTextParams {
-  modelId?: string
+  modelId?: string;
 }
 export interface ForwardTokensAndSampleParams {
-  inputIds: Array<number>
-  isPrefill: boolean
-  modelId?: string
+  inputIds: Array<number>;
+  isPrefill: boolean;
+  modelId?: string;
 }
 
 // Notes on the following Params with modelId and chatOpts:
@@ -71,39 +71,39 @@ export interface ForwardTokensAndSampleParams {
 // to instantiate / use, since an engine can load multiple models, thus the handler
 // needs to maintain multiple generators.
 export interface ChatCompletionNonStreamingParams {
-  request: ChatCompletionRequestNonStreaming
-  modelId: string[]
-  chatOpts?: ChatOptions[]
+  request: ChatCompletionRequestNonStreaming;
+  modelId: string[];
+  chatOpts?: ChatOptions[];
 }
 export interface ChatCompletionStreamInitParams {
-  request: ChatCompletionRequestStreaming
-  selectedModelId: string
-  modelId: string[]
-  chatOpts?: ChatOptions[]
+  request: ChatCompletionRequestStreaming;
+  selectedModelId: string;
+  modelId: string[];
+  chatOpts?: ChatOptions[];
 }
 export interface CompletionNonStreamingParams {
-  request: CompletionCreateParamsNonStreaming
-  modelId: string[]
-  chatOpts?: ChatOptions[]
+  request: CompletionCreateParamsNonStreaming;
+  modelId: string[];
+  chatOpts?: ChatOptions[];
 }
 export interface CompletionStreamInitParams {
-  request: CompletionCreateParamsStreaming
-  selectedModelId: string
-  modelId: string[]
-  chatOpts?: ChatOptions[]
+  request: CompletionCreateParamsStreaming;
+  selectedModelId: string;
+  modelId: string[];
+  chatOpts?: ChatOptions[];
 }
 export interface EmbeddingParams {
-  request: EmbeddingCreateParams
-  modelId: string[]
-  chatOpts?: ChatOptions[]
+  request: EmbeddingCreateParams;
+  modelId: string[];
+  chatOpts?: ChatOptions[];
 }
 export interface CompletionStreamNextChunkParams {
-  selectedModelId: string
+  selectedModelId: string;
 }
 
 export interface CustomRequestParams {
-  requestName: string
-  requestMessage: string
+  requestName: string;
+  requestMessage: string;
 }
 export type MessageContent =
   | ReloadParams
@@ -128,36 +128,36 @@ export type MessageContent =
   | CreateEmbeddingResponse
   | Completion
   | AppConfig
-  | void
+  | void;
 /**
  * The message used in exchange between worker
  * and the main thread.
  */
 
 export type WorkerRequest = {
-  kind: RequestKind
-  uuid: string
-  content: MessageContent
-}
+  kind: RequestKind;
+  uuid: string;
+  content: MessageContent;
+};
 
 type HeartbeatWorkerResponse = {
-  kind: "heartbeat"
-  uuid: string
-}
+  kind: "heartbeat";
+  uuid: string;
+};
 
 type OneTimeWorkerResponse = {
-  kind: "return" | "throw"
-  uuid: string
-  content: MessageContent
-}
+  kind: "return" | "throw";
+  uuid: string;
+  content: MessageContent;
+};
 
 type InitProgressWorkerResponse = {
-  kind: "initProgressCallback"
-  uuid: string
-  content: InitProgressReport
-}
+  kind: "initProgressCallback";
+  uuid: string;
+  content: InitProgressReport;
+};
 
 export type WorkerResponse =
   | OneTimeWorkerResponse
   | InitProgressWorkerResponse
-  | HeartbeatWorkerResponse
+  | HeartbeatWorkerResponse;

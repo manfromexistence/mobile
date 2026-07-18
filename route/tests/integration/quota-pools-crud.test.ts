@@ -91,7 +91,7 @@ test("POST /api/quota/pools with auth + valid body → 201 + pool returned", asy
   });
   const res = await poolsRoute.POST(req);
   assert.equal(res.status, 201);
-  const body = await res.json() as { pool: { id: string; name: string; connectionId: string } };
+  const body = (await res.json()) as { pool: { id: string; name: string; connectionId: string } };
   assert.ok(body.pool.id, "Pool should have an id");
   assert.equal(body.pool.name, "Test Pool Alpha");
   assert.equal(body.pool.connectionId, "conn-test-1");
@@ -109,7 +109,10 @@ test("POST /api/quota/pools → audit event logged", async () => {
   const events = Array.isArray(logs) ? logs : [];
   assert.ok(events.length >= 1, "Should have at least one quota.pool.created audit event");
   const evt = events.find(
-    (e) => typeof e === "object" && e !== null && (e as Record<string, unknown>).action === "quota.pool.created"
+    (e) =>
+      typeof e === "object" &&
+      e !== null &&
+      (e as Record<string, unknown>).action === "quota.pool.created",
   );
   assert.ok(evt, "quota.pool.created audit event must be present");
 });
@@ -165,7 +168,7 @@ test("GET /api/quota/pools/[id] → 200 with pool detail", async () => {
 
 test("GET /api/quota/pools/[id] with nonexistent id → 404", async () => {
   const getReq = await makeManagementSessionRequest(
-    "http://localhost/api/quota/pools/does-not-exist"
+    "http://localhost/api/quota/pools/does-not-exist",
   );
   const getRes = await poolIdRoute.GET(getReq, {
     params: Promise.resolve({ id: "does-not-exist" }),
@@ -197,7 +200,7 @@ test("PATCH /api/quota/pools/[id] → 200 updated + audit event", async () => {
     {
       method: "PATCH",
       body: { name: "Updated Name" },
-    }
+    },
   );
   const patchRes = await poolIdRoute.PATCH(patchReq, {
     params: Promise.resolve({ id: poolId }),
@@ -214,7 +217,7 @@ test("PATCH /api/quota/pools/[id] → 200 updated + audit event", async () => {
       typeof e === "object" &&
       e !== null &&
       (e as Record<string, unknown>).action === "quota.pool.updated" &&
-      (e as Record<string, unknown>).target === poolId
+      (e as Record<string, unknown>).target === poolId,
   );
   assert.ok(evt, "quota.pool.updated audit event must be present with correct target");
 });
@@ -222,7 +225,7 @@ test("PATCH /api/quota/pools/[id] → 200 updated + audit event", async () => {
 test("PATCH /api/quota/pools/[id] with nonexistent id → 404", async () => {
   const patchReq = await makeManagementSessionRequest(
     "http://localhost/api/quota/pools/does-not-exist",
-    { method: "PATCH", body: { name: "New Name" } }
+    { method: "PATCH", body: { name: "New Name" } },
   );
   const patchRes = await poolIdRoute.PATCH(patchReq, {
     params: Promise.resolve({ id: "does-not-exist" }),
@@ -247,7 +250,7 @@ test("DELETE /api/quota/pools/[id] → 204 + audit event; subsequent GET → 404
   // Delete
   const deleteReq = await makeManagementSessionRequest(
     `http://localhost/api/quota/pools/${poolId}`,
-    { method: "DELETE" }
+    { method: "DELETE" },
   );
   const deleteRes = await poolIdRoute.DELETE(deleteReq, {
     params: Promise.resolve({ id: poolId }),
@@ -262,14 +265,12 @@ test("DELETE /api/quota/pools/[id] → 204 + audit event; subsequent GET → 404
       typeof e === "object" &&
       e !== null &&
       (e as Record<string, unknown>).action === "quota.pool.deleted" &&
-      (e as Record<string, unknown>).target === poolId
+      (e as Record<string, unknown>).target === poolId,
   );
   assert.ok(evt, "quota.pool.deleted audit event must be present");
 
   // Subsequent GET → 404
-  const getReq = await makeManagementSessionRequest(
-    `http://localhost/api/quota/pools/${poolId}`
-  );
+  const getReq = await makeManagementSessionRequest(`http://localhost/api/quota/pools/${poolId}`);
   const getRes = await poolIdRoute.GET(getReq, { params: Promise.resolve({ id: poolId }) });
   assert.equal(getRes.status, 404);
 });
@@ -277,7 +278,7 @@ test("DELETE /api/quota/pools/[id] → 204 + audit event; subsequent GET → 404
 test("DELETE /api/quota/pools/[id] with nonexistent id → 404", async () => {
   const deleteReq = await makeManagementSessionRequest(
     "http://localhost/api/quota/pools/never-existed",
-    { method: "DELETE" }
+    { method: "DELETE" },
   );
   const deleteRes = await poolIdRoute.DELETE(deleteReq, {
     params: Promise.resolve({ id: "never-existed" }),

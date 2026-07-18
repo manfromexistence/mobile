@@ -104,7 +104,7 @@ export function sha256Base64(value: string): string {
 
 export async function solveDuckDuckGoChallenge(
   challenge: string,
-  userAgent: string
+  userAgent: string,
 ): Promise<string> {
   // SECURITY NOTE: This function executes base64-decoded JavaScript from duck.ai via vm.runInContext.
   // The challenge code is upstream-supplied (supply-chain surface). It is sandboxed with a 5s timeout
@@ -112,7 +112,7 @@ export async function solveDuckDuckGoChallenge(
   const js = Buffer.from(challenge, "base64").toString("utf8");
   const stubs = CHALLENGE_STUBS.replace("__DDG_REAL_UA__", JSON.stringify(userAgent)).replace(
     "__DDG_HTML_LOOKUP__",
-    JSON.stringify(buildHtmlLookup(js))
+    JSON.stringify(buildHtmlLookup(js)),
   );
   const context = vm.createContext({});
   vm.runInContext(stubs, context, { timeout: 5000 });

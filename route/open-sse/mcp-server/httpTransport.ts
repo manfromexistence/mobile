@@ -145,7 +145,7 @@ function errorResponse(message: string, code: number, status = 400): Response {
     {
       status,
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 
@@ -182,7 +182,7 @@ async function handleStreamableRequest(request: Request): Promise<Response> {
         const newSession = createStreamableSession();
         try {
           const response = await withMcpHttpAuthContext(request, () =>
-            newSession.transport.handleRequest(request)
+            newSession.transport.handleRequest(request),
           );
           return withSessionHeader(response, newSession.sessionId);
         } catch (err) {
@@ -200,7 +200,7 @@ async function handleStreamableRequest(request: Request): Promise<Response> {
     try {
       session.lastActivityAt = Date.now();
       const response = await withMcpHttpAuthContext(request, () =>
-        session.transport.handleRequest(request)
+        session.transport.handleRequest(request),
       );
       if (request.method === "DELETE") {
         closeStreamableSession(sessionId);
@@ -226,7 +226,7 @@ async function handleStreamableRequest(request: Request): Promise<Response> {
 
   try {
     const response = await withMcpHttpAuthContext(request, () =>
-      session.transport.handleRequest(request)
+      session.transport.handleRequest(request),
     );
     return withSessionHeader(response, session.sessionId);
   } catch (err) {
@@ -290,7 +290,7 @@ export function getMcpHttpStatus(): {
 
 export function isMcpHttpTransportReady(
   enabled: boolean,
-  transport: string | null | undefined
+  transport: string | null | undefined,
 ): boolean {
   return enabled && (transport === "sse" || transport === "streamable-http");
 }

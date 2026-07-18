@@ -143,7 +143,7 @@ export interface PplxStreamEvent {
 
 export async function* readPplxSseEvents(
   body: ReadableStream<Uint8Array>,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): AsyncGenerator<PplxStreamEvent> {
   const reader = body.getReader();
   const decoder = new TextDecoder();
@@ -251,7 +251,7 @@ export function buildPplxRequestBody(
   mode: string,
   modelPref: string,
   followUpUuid: string | null,
-  requestId: string
+  requestId: string,
 ): Record<string, unknown> {
   const tz = typeof Intl !== "undefined" ? Intl.DateTimeFormat().resolvedOptions().timeZone : "UTC";
 
@@ -376,7 +376,7 @@ export function applyMarkdownDiff(acc: MarkdownAccumulator, patches: PplxDiffPat
 
 export async function* extractContent(
   eventStream: ReadableStream<Uint8Array>,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): AsyncGenerator<ContentChunk> {
   let fullAnswer = "";
   let backendUuid: string | null = null;

@@ -1,12 +1,12 @@
-import "./index.css"
-import { Title } from "@solidjs/meta"
-import { onCleanup, onMount } from "solid-js"
-import logoLight from "../asset/logo-ornate-light.svg"
-import logoDark from "../asset/logo-ornate-dark.svg"
-import IMG_SPLASH from "../asset/lander/screenshot-splash.png"
-import { IconCopy, IconCheck } from "../component/icon"
-import { useI18n } from "~/context/i18n"
-import { useLanguage } from "~/context/language"
+import "./index.css";
+import { Title } from "@solidjs/meta";
+import { onCleanup, onMount } from "solid-js";
+import logoLight from "../asset/logo-ornate-light.svg";
+import logoDark from "../asset/logo-ornate-dark.svg";
+import IMG_SPLASH from "../asset/lander/screenshot-splash.png";
+import { IconCopy, IconCheck } from "../component/icon";
+import { useI18n } from "~/context/i18n";
+import { useLanguage } from "~/context/language";
 
 function CopyStatus() {
   return (
@@ -14,32 +14,32 @@ function CopyStatus() {
       <IconCopy data-slot="copy" />
       <IconCheck data-slot="check" />
     </div>
-  )
+  );
 }
 
 export default function Home() {
-  const i18n = useI18n()
-  const language = useLanguage()
+  const i18n = useI18n();
+  const language = useLanguage();
 
   onMount(() => {
-    const commands = document.querySelectorAll("[data-copy]")
+    const commands = document.querySelectorAll("[data-copy]");
     for (const button of commands) {
       const callback = () => {
-        const text = button.textContent
+        const text = button.textContent;
         if (text) {
-          void navigator.clipboard.writeText(text)
-          button.setAttribute("data-copied", "")
+          void navigator.clipboard.writeText(text);
+          button.setAttribute("data-copied", "");
           setTimeout(() => {
-            button.removeAttribute("data-copied")
-          }, 1500)
+            button.removeAttribute("data-copied");
+          }, 1500);
         }
-      }
-      button.addEventListener("click", callback)
+      };
+      button.addEventListener("click", callback);
       onCleanup(() => {
-        button.removeEventListener("click", callback)
-      })
+        button.removeEventListener("click", callback);
+      });
     }
-  })
+  });
 
   return (
     <main data-page="home">
@@ -78,7 +78,8 @@ export default function Home() {
         <section data-component="features">
           <ul data-slot="list">
             <li>
-              <strong>{i18n.t("temp.feature.native.title")}</strong> {i18n.t("temp.feature.native.body")}
+              <strong>{i18n.t("temp.feature.native.title")}</strong>{" "}
+              {i18n.t("temp.feature.native.body")}
             </li>
             <li>
               <strong>{i18n.t("home.what.lsp.title")}</strong> {i18n.t("home.what.lsp.body")}
@@ -89,20 +90,24 @@ export default function Home() {
               {i18n.t("temp.feature.zen.afterLink")} <label>{i18n.t("home.banner.badge")}</label>
             </li>
             <li>
-              <strong>{i18n.t("home.what.multiSession.title")}</strong> {i18n.t("home.what.multiSession.body")}
+              <strong>{i18n.t("home.what.multiSession.title")}</strong>{" "}
+              {i18n.t("home.what.multiSession.body")}
             </li>
             <li>
-              <strong>{i18n.t("home.what.shareLinks.title")}</strong> {i18n.t("home.what.shareLinks.body")}
+              <strong>{i18n.t("home.what.shareLinks.title")}</strong>{" "}
+              {i18n.t("home.what.shareLinks.body")}
             </li>
             <li>
-              <strong>{i18n.t("home.what.copilot.title")}</strong> {i18n.t("home.what.copilot.body")}
+              <strong>{i18n.t("home.what.copilot.title")}</strong>{" "}
+              {i18n.t("home.what.copilot.body")}
             </li>
             <li>
-              <strong>{i18n.t("home.what.chatgptPlus.title")}</strong> {i18n.t("home.what.chatgptPlus.body")}
+              <strong>{i18n.t("home.what.chatgptPlus.title")}</strong>{" "}
+              {i18n.t("home.what.chatgptPlus.body")}
             </li>
             <li>
-              <strong>{i18n.t("home.what.anyModel.title")}</strong> {i18n.t("temp.feature.models.beforeLink")}{" "}
-              <a href="https://models.dev">Models.dev</a>
+              <strong>{i18n.t("home.what.anyModel.title")}</strong>{" "}
+              {i18n.t("temp.feature.models.beforeLink")} <a href="https://models.dev">Models.dev</a>
               {i18n.t("temp.feature.models.afterLink")}
             </li>
           </ul>
@@ -175,5 +180,5 @@ export default function Home() {
         </span>
       </div>
     </main>
-  )
+  );
 }

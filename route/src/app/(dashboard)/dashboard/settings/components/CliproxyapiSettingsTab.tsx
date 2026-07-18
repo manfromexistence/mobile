@@ -49,7 +49,7 @@ export default function CliproxyapiSettingsTab() {
       const data = await res.json();
       if (res.ok) {
         setImportResult(
-          `Imported ${data.imported ?? 0} account(s) (scanned ${data.scanned ?? 0}, skipped ${data.skipped ?? 0}).`
+          `Imported ${data.imported ?? 0} account(s) (scanned ${data.scanned ?? 0}, skipped ${data.skipped ?? 0}).`,
         );
       } else {
         setImportResult(data.error || "Import failed.");

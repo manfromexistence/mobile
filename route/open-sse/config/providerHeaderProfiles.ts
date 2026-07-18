@@ -30,7 +30,7 @@ export const CURSOR_REGISTRY_VERSION = "3.9";
 
 export function getGitHubCopilotChatHeaders(
   accept = "application/json",
-  initiator = GITHUB_COPILOT_DEFAULT_INITIATOR
+  initiator = GITHUB_COPILOT_DEFAULT_INITIATOR,
 ): Record<string, string> {
   return {
     "copilot-integration-id": GITHUB_COPILOT_INTEGRATION_ID,
@@ -161,7 +161,7 @@ export function getAntigravityProviderHeaders(): Record<string, string> {
 }
 
 export function getKiroServiceHeaders(
-  accept = "application/vnd.amazon.eventstream"
+  accept = "application/vnd.amazon.eventstream",
 ): Record<string, string> {
   return {
     "Content-Type": "application/json",
@@ -177,7 +177,7 @@ export function getCursorUserAgent(version: string): string {
 }
 
 export function getCursorRegistryHeaders(
-  version = CURSOR_REGISTRY_VERSION
+  version = CURSOR_REGISTRY_VERSION,
 ): Record<string, string> {
   return {
     "connect-accept-encoding": "gzip",

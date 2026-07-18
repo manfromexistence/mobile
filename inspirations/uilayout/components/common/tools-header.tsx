@@ -67,8 +67,7 @@ function ToolsHeader({ className }: { className?: string }) {
                   href="/svg-line-draw"
                   className={cn(
                     "inline-block rounded-lg p-2 px-3",
-                    pathname === "/svg-line-draw" &&
-                      "bg-primary text-primary-foreground",
+                    pathname === "/svg-line-draw" && "bg-primary text-primary-foreground",
                   )}
                 >
                   SVG Line Draw
@@ -77,8 +76,7 @@ function ToolsHeader({ className }: { className?: string }) {
                   href="/shadows"
                   className={cn(
                     "inline-block rounded-lg p-2 px-3",
-                    pathname === "/shadows" &&
-                      "bg-primary text-primary-foreground",
+                    pathname === "/shadows" && "bg-primary text-primary-foreground",
                   )}
                 >
                   Shadows
@@ -87,8 +85,7 @@ function ToolsHeader({ className }: { className?: string }) {
                   href="/clip-paths"
                   className={cn(
                     "inline-block rounded-lg p-2 px-3",
-                    pathname === "/clip-paths" &&
-                      "bg-primary text-primary-foreground",
+                    pathname === "/clip-paths" && "bg-primary text-primary-foreground",
                   )}
                 >
                   Clip-Path
@@ -97,8 +94,7 @@ function ToolsHeader({ className }: { className?: string }) {
                   href="/mesh-gradients"
                   className={cn(
                     "inline-block rounded-lg p-2 px-3",
-                    pathname === "/mesh-gradients" &&
-                      "bg-primary text-primary-foreground",
+                    pathname === "/mesh-gradients" && "bg-primary text-primary-foreground",
                   )}
                 >
                   Mesh-Gradient
@@ -107,8 +103,7 @@ function ToolsHeader({ className }: { className?: string }) {
                   href="/background-snippets"
                   className={cn(
                     "inline-block rounded-lg p-2 px-3",
-                    pathname === "/background-snippets" &&
-                      "bg-primary text-primary-foreground",
+                    pathname === "/background-snippets" && "bg-primary text-primary-foreground",
                   )}
                 >
                   Background Snippets
@@ -117,8 +112,7 @@ function ToolsHeader({ className }: { className?: string }) {
                   href="/color-lab"
                   className={cn(
                     "inline-block rounded-lg p-2 px-3",
-                    pathname === "/color-lab" &&
-                      "bg-primary text-primary-foreground",
+                    pathname === "/color-lab" && "bg-primary text-primary-foreground",
                   )}
                 >
                   Color Lab

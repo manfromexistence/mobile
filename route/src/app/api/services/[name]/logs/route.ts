@@ -67,7 +67,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
   const tail = Math.min(
     tailRaw ? Math.max(0, parseInt(tailRaw, 10) || DEFAULT_TAIL) : DEFAULT_TAIL,
-    MAX_TAIL
+    MAX_TAIL,
   );
 
   if (filterRaw !== null && filterRaw.length > MAX_FILTER_LEN) {

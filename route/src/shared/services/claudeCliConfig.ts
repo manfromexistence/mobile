@@ -5,7 +5,7 @@ export function normalizeClaudeBaseUrl(value: string): string {
 }
 
 export function getStoredClaudeAuthValue(
-  env: Record<string, unknown> | null | undefined
+  env: Record<string, unknown> | null | undefined,
 ): string | null {
   if (!env || typeof env !== "object") return null;
 

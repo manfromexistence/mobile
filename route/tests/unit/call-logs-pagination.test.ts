@@ -34,7 +34,7 @@ function insertCallLog(row: Record<string, unknown>) {
       @error_summary, @detail_state, @artifact_relpath, @artifact_size_bytes, @artifact_sha256,
       @has_request_body, @has_response_body, @has_pipeline_details, @request_summary
     )
-  `
+  `,
   ).run({
     method: "POST",
     path: "/v1/chat/completions",

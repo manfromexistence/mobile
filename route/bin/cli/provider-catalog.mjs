@@ -43,7 +43,7 @@ function getPropertyName(ts, name) {
 function getObjectProperty(ts, objectLiteral, propertyName) {
   return objectLiteral.properties.find(
     (property) =>
-      ts.isPropertyAssignment(property) && getPropertyName(ts, property.name) === propertyName
+      ts.isPropertyAssignment(property) && getPropertyName(ts, property.name) === propertyName,
   );
 }
 

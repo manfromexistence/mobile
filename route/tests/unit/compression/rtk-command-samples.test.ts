@@ -92,7 +92,7 @@ describe("listRtkCommandSamples", () => {
     // Real captures use a 24-hex-char id (safeId().slice(0,24)).
     fs.writeFileSync(
       path.join(dir, "1700000000000-git_status-abc123def456abc123def456.log"),
-      "nothing to commit\n"
+      "nothing to commit\n",
     );
     const samples = listRtkCommandSamples();
     assert.equal(samples.length, 1);

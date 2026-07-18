@@ -1,6 +1,6 @@
-import { dict as en } from "./en"
+import { dict as en } from "./en";
 
-type Keys = keyof typeof en
+type Keys = keyof typeof en;
 
 export const dict = {
   "command.category.suggested": "Önerilen",
@@ -78,7 +78,8 @@ export const dict = {
   "command.permissions.autoaccept.enable": "Düzenlemeleri otomatik kabul et",
   "command.permissions.autoaccept.disable": "Otomatik kabulü durdur",
   "command.workspace.toggle": "Çalışma alanlarını aç/kapat",
-  "command.workspace.toggle.description": "Kenar çubuğunda birden fazla çalışma alanını göster veya gizle",
+  "command.workspace.toggle.description":
+    "Kenar çubuğunda birden fazla çalışma alanını göster veya gizle",
   "command.session.undo": "Geri al",
   "command.session.undo.description": "Son mesajı geri al",
   "command.session.redo": "Yinele",
@@ -106,7 +107,8 @@ export const dict = {
   "dialog.provider.opencode.tagline": "Güvenilir optimize edilmiş modeller",
   "dialog.provider.opencodeGo.tagline": "Herkes için düşük maliyetli abonelik",
   "dialog.provider.anthropic.note": "Pro ve Max dahil Claude modellerine doğrudan erişim",
-  "dialog.provider.copilot.note": "GitHub Copilot üzerinden kodlama yardımı için yapay zekâ modelleri",
+  "dialog.provider.copilot.note":
+    "GitHub Copilot üzerinden kodlama yardımı için yapay zekâ modelleri",
   "dialog.provider.openai.note": "Hızlı ve yetenekli genel yapay zekâ görevleri için GPT modelleri",
   "dialog.provider.google.note": "Hızlı ve yapılandırılmış yanıtlar için Gemini modelleri",
   "dialog.provider.openrouter.note": "Tek bir sağlayıcıdan tüm desteklenen modellere eriş",
@@ -198,7 +200,8 @@ export const dict = {
   "provider.custom.error.duplicate": "Tekrar",
 
   "provider.disconnect.toast.disconnected.title": "{{provider}} bağlantısı kesildi",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} modelleri artık kullanılabilir değil.",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} modelleri artık kullanılabilir değil.",
 
   "model.tag.free": "Ücretsiz",
   "model.tag.latest": "En yeni",
@@ -284,7 +287,8 @@ export const dict = {
   "prompt.action.stop": "Durdur",
 
   "prompt.toast.pasteUnsupported.title": "Desteklenmeyen ek",
-  "prompt.toast.pasteUnsupported.description": "Buraya yalnızca resimler, PDF'ler veya metin dosyaları eklenebilir.",
+  "prompt.toast.pasteUnsupported.description":
+    "Buraya yalnızca resimler, PDF'ler veya metin dosyaları eklenebilir.",
   "prompt.toast.modelAgentRequired.title": "Bir ajan ve model seçin",
   "prompt.toast.modelAgentRequired.description": "Komut göndermeden önce bir ajan ve model seçin.",
   "prompt.toast.worktreeCreateFailed.title": "Çalışma ağacı oluşturulamadı",
@@ -356,11 +360,13 @@ export const dict = {
   "dialog.project.edit.color": "Renk",
   "dialog.project.edit.color.select": "{{color}} rengini seç",
   "dialog.project.edit.worktree.startup": "Çalışma alanı başlatma betiği",
-  "dialog.project.edit.worktree.startup.description": "Yeni bir çalışma alanı (worktree) oluşturduktan sonra çalışır.",
+  "dialog.project.edit.worktree.startup.description":
+    "Yeni bir çalışma alanı (worktree) oluşturduktan sonra çalışır.",
   "dialog.project.edit.worktree.startup.placeholder": "örneğin bun install",
 
   "context.breakdown.title": "Bağlam Dökümü",
-  "context.breakdown.note": 'Girdi tokenlerinin yaklaşık dökümü. "Diğer" araç tanımları ve ek yükleri içerir.',
+  "context.breakdown.note":
+    'Girdi tokenlerinin yaklaşık dökümü. "Diğer" araç tanımları ve ek yükleri içerir.',
   "context.breakdown.system": "Sistem",
   "context.breakdown.user": "Kullanıcı",
   "context.breakdown.assistant": "Asistan",
@@ -423,7 +429,8 @@ export const dict = {
   "toast.workspace.disabled.description": "Kenar çubuğunda yalnızca ana çalışma ağacı gösterilecek",
 
   "toast.permissions.autoaccept.on.title": "Düzenlemeler otomatik kabul ediliyor",
-  "toast.permissions.autoaccept.on.description": "Düzenleme ve yazma izinleri otomatik olarak onaylanacak",
+  "toast.permissions.autoaccept.on.description":
+    "Düzenleme ve yazma izinleri otomatik olarak onaylanacak",
   "toast.permissions.autoaccept.off.title": "Otomatik kabul durduruldu",
   "toast.permissions.autoaccept.off.description": "Düzenleme ve yazma izinleri onay gerektirecek",
 
@@ -470,7 +477,8 @@ export const dict = {
   "error.dev.rootNotFound":
     "Kök eleman bulunamadı. index.html dosyanıza eklemeyi unuttunuz mu? Ya da id özelliği yanlış mı yazıldı?",
 
-  "error.serverSync.connectFailed": "Sunucuya bağlanılamadı. `{{url}}` adresinde çalışan bir sunucu var mı?",
+  "error.serverSync.connectFailed":
+    "Sunucuya bağlanılamadı. `{{url}}` adresinde çalışan bir sunucu var mı?",
   "directory.error.invalidUrl": "URL'de geçersiz dizin.",
 
   "error.chain.unknown": "Bilinmeyen hata",
@@ -481,23 +489,28 @@ export const dict = {
   "error.chain.responseBody": "Yanıt gövdesi:\n{{body}}",
   "error.chain.didYouMean": "Bunu mu demek istediniz: {{suggestions}}",
   "error.chain.modelNotFound": "Model bulunamadı: {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Yapılandırma dosyanızı (opencode.json) sağlayıcı/model adlarını kontrol edin",
+  "error.chain.checkConfig":
+    "Yapılandırma dosyanızı (opencode.json) sağlayıcı/model adlarını kontrol edin",
   "error.chain.mcpFailed":
     'MCP sunucusu "{{name}}" başarısız oldu. Not: OpenCode henüz MCP kimlik doğrulamasını desteklemiyor.',
-  "error.chain.providerAuthFailed": "Sağlayıcı kimlik doğrulaması başarısız ({{provider}}): {{message}}",
+  "error.chain.providerAuthFailed":
+    "Sağlayıcı kimlik doğrulaması başarısız ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     '"{{provider}}" sağlayıcısı başlatılamadı. Kimlik bilgilerini ve yapılandırmayı kontrol edin.',
-  "error.chain.configJsonInvalid": "{{path}} adresindeki yapılandırma dosyası geçerli JSON(C) değil",
+  "error.chain.configJsonInvalid":
+    "{{path}} adresindeki yapılandırma dosyası geçerli JSON(C) değil",
   "error.chain.configJsonInvalidWithMessage":
     "{{path}} adresindeki yapılandırma dosyası geçerli JSON(C) değil: {{message}}",
   "error.chain.configDirectoryTypo":
     '"{{dir}}" dizini {{path}} içinde geçerli değil. Dizini "{{suggestion}}" olarak yeniden adlandırın veya kaldırın. Bu yaygın bir yazım hatasıdır.',
   "error.chain.configFrontmatterError": "{{path}} içindeki ön bilgi ayrıştırılamadı:\n{{message}}",
   "error.chain.configInvalid": "{{path}} adresindeki yapılandırma dosyası geçersiz",
-  "error.chain.configInvalidWithMessage": "{{path}} adresindeki yapılandırma dosyası geçersiz: {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "{{path}} adresindeki yapılandırma dosyası geçersiz: {{message}}",
 
   "notification.permission.title": "İzin gerekli",
-  "notification.permission.description": "{{projectName}} içindeki {{sessionTitle}} izin gerektiriyor",
+  "notification.permission.description":
+    "{{projectName}} içindeki {{sessionTitle}} izin gerektiriyor",
   "notification.question.title": "Soru",
   "notification.question.description": "{{projectName}} içindeki {{sessionTitle}} bir soru soruyor",
   "notification.action.goToSession": "Oturuma git",
@@ -574,7 +587,8 @@ export const dict = {
   "status.popover.action.manageServers": "Sunucuları yönet",
 
   "session.share.popover.title": "Web'de yayınla",
-  "session.share.popover.description.shared": "Bu oturum web'de herkese açıktır. Bağlantıya sahip herkes erişebilir.",
+  "session.share.popover.description.shared":
+    "Bu oturum web'de herkese açıktır. Bağlantıya sahip herkes erişebilir.",
   "session.share.popover.description.unshared":
     "Oturumu web'de herkese açık olarak paylaşın. Bağlantıya sahip herkes erişebilecek.",
   "session.share.action.share": "Paylaş",
@@ -619,8 +633,10 @@ export const dict = {
   "sidebar.workspaces.enable": "Çalışma alanlarını etkinleştir",
   "sidebar.workspaces.disable": "Çalışma alanlarını devre dışı bırak",
   "sidebar.gettingStarted.title": "Başlarken",
-  "sidebar.gettingStarted.line1": "OpenCode ücretsiz modeller içerir, böylece hemen başlayabilirsiniz.",
-  "sidebar.gettingStarted.line2": "Claude, GPT, Gemini vb. modelleri kullanmak için herhangi bir sağlayıcı bağlayın.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode ücretsiz modeller içerir, böylece hemen başlayabilirsiniz.",
+  "sidebar.gettingStarted.line2":
+    "Claude, GPT, Gemini vb. modelleri kullanmak için herhangi bir sağlayıcı bağlayın.",
   "sidebar.project.recentSessions": "Son oturumlar",
   "sidebar.project.viewAllSessions": "Tüm oturumları görüntüle",
   "sidebar.project.clearNotifications": "Bildirimleri temizle",
@@ -645,7 +661,8 @@ export const dict = {
   "settings.general.row.language.title": "Dil",
   "settings.general.row.language.description": "OpenCode'un görünüm dilini değiştirin",
   "settings.general.row.appearance.title": "Görünüm",
-  "settings.general.row.appearance.description": "OpenCode'un cihazınızdaki görünümünü özelleştirin",
+  "settings.general.row.appearance.description":
+    "OpenCode'un cihazınızdaki görünümünü özelleştirin",
   "settings.general.row.colorScheme.title": "Renk şeması",
   "settings.general.row.colorScheme.description":
     "OpenCode'un sistem, açık veya koyu temayı takip etip etmeyeceğini seçin",
@@ -663,7 +680,8 @@ export const dict = {
   "settings.general.row.followup.option.queue": "Sıra",
   "settings.general.row.followup.option.steer": "Yönlendir",
   "settings.general.row.reasoningSummaries.title": "Akıl yürütme özetlerini göster",
-  "settings.general.row.reasoningSummaries.description": "Zaman çizelgesinde model akıl yürütme özetlerini görüntüle",
+  "settings.general.row.reasoningSummaries.description":
+    "Zaman çizelgesinde model akıl yürütme özetlerini görüntüle",
   "settings.general.row.shellToolPartsExpanded.title": "Kabuk araç bileşenlerini genişlet",
   "settings.general.row.shellToolPartsExpanded.description":
     "Zaman çizelgesinde kabuk araç bileşenlerini varsayılan olarak genişletilmiş göster",
@@ -678,10 +696,12 @@ export const dict = {
     "Karışık yenileme hızlı monitörlere sahip Linux'ta yerel Wayland daha kararlı olabilir.",
 
   "settings.general.row.releaseNotes.title": "Sürüm notları",
-  "settings.general.row.releaseNotes.description": "Güncellemelerden sonra Yenilikler bildirimlerini göster",
+  "settings.general.row.releaseNotes.description":
+    "Güncellemelerden sonra Yenilikler bildirimlerini göster",
 
   "settings.updates.row.startup.title": "Başlangıçta güncellemeleri kontrol et",
-  "settings.updates.row.startup.description": "OpenCode başladığında otomatik güncelleme kontrolü yap",
+  "settings.updates.row.startup.description":
+    "OpenCode başladığında otomatik güncelleme kontrolü yap",
   "settings.updates.row.check.title": "Güncellemeleri kontrol et",
   "settings.updates.row.check.description": "Elle güncelleme kontrolü yap ve varsa yükle",
   "settings.updates.action.checkNow": "Şimdi kontrol et",
@@ -740,12 +760,14 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Ajan tamamlandığında veya dikkat gerektirdiğinde sistem bildirimi göster",
   "settings.general.notifications.permissions.title": "İzinler",
-  "settings.general.notifications.permissions.description": "İzin gerektiğinde sistem bildirimi göster",
+  "settings.general.notifications.permissions.description":
+    "İzin gerektiğinde sistem bildirimi göster",
   "settings.general.notifications.errors.title": "Hatalar",
   "settings.general.notifications.errors.description": "Hata oluştuğunda sistem bildirimi göster",
 
   "settings.general.sounds.agent.title": "Ajan",
-  "settings.general.sounds.agent.description": "Ajan tamamlandığında veya dikkat gerektirdiğinde ses çal",
+  "settings.general.sounds.agent.description":
+    "Ajan tamamlandığında veya dikkat gerektirdiğinde ses çal",
   "settings.general.sounds.permissions.title": "İzinler",
   "settings.general.sounds.permissions.description": "İzin gerektiğinde ses çal",
   "settings.general.sounds.errors.title": "Hatalar",
@@ -788,7 +810,8 @@ export const dict = {
   "settings.mcp.description": "MCP ayarları burada yapılandırılabilecek.",
 
   "settings.permissions.title": "İzinler",
-  "settings.permissions.description": "Sunucunun varsayılan olarak hangi araçları kullanabileceğini kontrol edin.",
+  "settings.permissions.description":
+    "Sunucunun varsayılan olarak hangi araçları kullanabileceğini kontrol edin.",
   "settings.permissions.section.tools": "Araçlar",
   "settings.permissions.toast.updateFailed.title": "İzinler güncellenemedi",
 
@@ -799,7 +822,8 @@ export const dict = {
   "settings.permissions.tool.read.title": "Oku",
   "settings.permissions.tool.read.description": "Bir dosyayı okuma (dosya yoluyla eşleşir)",
   "settings.permissions.tool.edit.title": "Düzenle",
-  "settings.permissions.tool.edit.description": "Düzenleme, yazma, yama ve çoklu düzenleme dahil dosyaları değiştir",
+  "settings.permissions.tool.edit.description":
+    "Düzenleme, yazma, yama ve çoklu düzenleme dahil dosyaları değiştir",
   "settings.permissions.tool.glob.title": "Glob",
   "settings.permissions.tool.glob.description": "Glob kalıpları kullanarak dosyaları eşle",
   "settings.permissions.tool.grep.title": "Grep",
@@ -821,9 +845,11 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "Web Ara",
   "settings.permissions.tool.websearch.description": "Web'de ara",
   "settings.permissions.tool.external_directory.title": "Harici Dizin",
-  "settings.permissions.tool.external_directory.description": "Proje dizini dışındaki dosyalara eriş",
+  "settings.permissions.tool.external_directory.description":
+    "Proje dizini dışındaki dosyalara eriş",
   "settings.permissions.tool.doom_loop.title": "Sonsuz Döngü",
-  "settings.permissions.tool.doom_loop.description": "Aynı girdiyle tekrarlanan araç çağrılarını algıla",
+  "settings.permissions.tool.doom_loop.description":
+    "Aynı girdiyle tekrarlanan araç çağrılarını algıla",
 
   "session.delete.failed.title": "Oturum silinemedi",
   "session.delete.title": "Oturumu sil",
@@ -854,7 +880,8 @@ export const dict = {
   "workspace.reset.archived.none": "Arşivlenecek aktif oturum yok.",
   "workspace.reset.archived.one": "1 oturum arşivlenecek.",
   "workspace.reset.archived.many": "{{count}} oturum arşivlenecek.",
-  "workspace.reset.note": "Bu işlem çalışma alanını varsayılan dalla eşleşecek şekilde sıfırlayacak.",
+  "workspace.reset.note":
+    "Bu işlem çalışma alanını varsayılan dalla eşleşecek şekilde sıfırlayacak.",
   "common.open": "Aç",
   "dialog.releaseNotes.action.getStarted": "Başla",
   "dialog.releaseNotes.action.next": "İleri",
@@ -868,7 +895,8 @@ export const dict = {
   "common.time.hoursAgo.short": "{{count}}sa önce",
   "common.time.daysAgo.short": "{{count}}g önce",
   "settings.providers.connected.environmentDescription": "Ortam değişkenlerinizden bağlandı",
-  "settings.providers.custom.description": "Temel URL üzerinden OpenAI uyumlu bir sağlayıcı ekleyin.",
+  "settings.providers.custom.description":
+    "Temel URL üzerinden OpenAI uyumlu bir sağlayıcı ekleyin.",
 
   "app.server.unreachable": "{{server}} sunucusuna ulaşılamadı",
   "app.server.retrying": "Otomatik olarak tekrar deneniyor...",
@@ -877,7 +905,8 @@ export const dict = {
   "dialog.server.add.passwordPlaceholder": "parola",
   "server.row.noUsername": "kullanıcı adı yok",
   "session.review.noVcs.createGit.title": "Git deposu oluştur",
-  "session.review.noVcs.createGit.description": "Bu projedeki değişiklikleri takip et, incele ve geri al",
+  "session.review.noVcs.createGit.description":
+    "Bu projedeki değişiklikleri takip et, incele ve geri al",
   "session.review.noVcs.createGit.actionLoading": "Git deposu oluşturuluyor...",
   "session.review.noVcs.createGit.action": "Git deposu oluştur",
   "session.todo.progress": "{{total}} görevin {{done}} tanesi tamamlandı",
@@ -910,11 +939,13 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "Son 5 saniyede 32ms üzerindeki kareler.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "Son 5 saniyedeki engellenen süre ve uzun görev sayısı. Maksimum görev: {{max}}.",
+  "debugBar.long.tip":
+    "Son 5 saniyedeki engellenen süre ve uzun görev sayısı. Maksimum görev: {{max}}.",
   "debugBar.delay.label": "DELAY",
   "debugBar.delay.tip": "Son 5 saniyede gözlemlenen en kötü giriş gecikmesi.",
   "debugBar.inp.label": "INP",
-  "debugBar.inp.tip": "Son 5 saniyedeki yaklaşık etkileşim süresi. Bu INP benzeridir, resmi Web Vitals INP değildir.",
+  "debugBar.inp.tip":
+    "Son 5 saniyedeki yaklaşık etkileşim süresi. Bu INP benzeridir, resmi Web Vitals INP değildir.",
   "debugBar.cls.label": "CLS",
   "debugBar.cls.tip": "Mevcut uygulama ömrü için kümülatif düzen kayması.",
   "debugBar.mem.label": "MEM",
@@ -939,8 +970,9 @@ export const dict = {
   "error.serverSDK.noServerAvailable": "Sunucu yok",
   "error.serverSDK.serverNotAvailable": "Sunucu mevcut değil",
   "error.childStore.persistedCacheCreateFailed": "Kalıcı önbellek oluşturulamadı",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Kalıcı proje meta verileri oluşturulamadı",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Kalıcı proje meta verileri oluşturulamadı",
   "error.childStore.persistedProjectIconCreateFailed": "Kalıcı proje simgesi oluşturulamadı",
   "error.childStore.storeCreateFailed": "Depo oluşturulamadı",
   "terminal.connectionLost.abnormalClose": "WebSocket anormal şekilde kapandı: {{code}}",
-} satisfies Partial<Record<Keys, string>>
+} satisfies Partial<Record<Keys, string>>;

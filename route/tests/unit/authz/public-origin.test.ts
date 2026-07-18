@@ -61,9 +61,9 @@ describe("public origin resolution", () => {
         new Request(request.url, {
           method: "POST",
           headers: { origin: "https://gateway.example.test" },
-        })
+        }),
       ).ok,
-      true
+      true,
     );
   });
 
@@ -93,7 +93,7 @@ describe("public origin resolution", () => {
       [
         { origin: "https://assets.example.test", source: "configured" },
         { origin: "https://gateway.example.test", source: "configured" },
-      ]
+      ],
     );
     assert.equal(validateBrowserMutationOrigin(request).ok, true);
   });
@@ -163,9 +163,9 @@ describe("public origin resolution", () => {
 
     assert.equal(
       getPublicOriginCandidates(request).some(
-        (candidate) => candidate.origin === "https://evil.example.test"
+        (candidate) => candidate.origin === "https://evil.example.test",
       ),
-      false
+      false,
     );
     assert.equal(validateBrowserMutationOrigin(request).ok, false);
   });
@@ -183,9 +183,9 @@ describe("public origin resolution", () => {
 
     assert.equal(
       getPublicOriginCandidates(request).some(
-        (candidate) => candidate.source === "trusted-forwarded"
+        (candidate) => candidate.source === "trusted-forwarded",
       ),
-      false
+      false,
     );
     assert.equal(validateBrowserMutationOrigin(request).ok, false);
   });
@@ -235,9 +235,9 @@ describe("direct LAN/loopback host origin (#5340)", () => {
 
     assert.equal(
       getPublicOriginCandidates(request).some(
-        (candidate) => candidate.origin === "http://192.168.0.15:20128"
+        (candidate) => candidate.origin === "http://192.168.0.15:20128",
       ),
-      true
+      true,
     );
     assert.equal(validateBrowserMutationOrigin(request).ok, true);
   });
@@ -270,9 +270,9 @@ describe("direct LAN/loopback host origin (#5340)", () => {
 
     assert.equal(
       getPublicOriginCandidates(request).some(
-        (candidate) => candidate.origin === "http://evil.example:20128"
+        (candidate) => candidate.origin === "http://evil.example:20128",
       ),
-      false
+      false,
     );
     assert.equal(validateBrowserMutationOrigin(request).ok, false);
   });

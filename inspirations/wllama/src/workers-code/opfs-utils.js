@@ -3,7 +3,7 @@ let abortController = new AbortController();
 
 async function openFile(filename) {
   const opfsRoot = await navigator.storage.getDirectory();
-  const cacheDir = await opfsRoot.getDirectoryHandle('cache', { create: true });
+  const cacheDir = await opfsRoot.getDirectoryHandle("cache", { create: true });
   const fileHandler = await cacheDir.getFileHandle(filename, { create: true });
   accessHandle = await fileHandler.createSyncAccessHandle();
   accessHandle.truncate(0); // clear file content
@@ -37,14 +37,13 @@ const throttled = (func, delay) => {
 
 const assertNonNull = (val) => {
   if (val === null || val === undefined) {
-    throw new Error('OPFS Worker: Assertion failed');
+    throw new Error("OPFS Worker: Assertion failed");
   }
 };
 
 // respond to main thread
 const resOK = () => postMessage({ ok: true });
-const resProgress = (loaded, total) =>
-  postMessage({ progress: { loaded, total } });
+const resProgress = (loaded, total) => postMessage({ progress: { loaded, total } });
 const resErr = (err) => postMessage({ err });
 
 onmessage = async (e) => {
@@ -66,35 +65,27 @@ onmessage = async (e) => {
      * - { action: 'download', url: 'string', filename: 'string', options: Object, metadataFileName: 'string' }
      * - { action: 'download-abort' }
      */
-    const {
-      action,
-      filename,
-      buf,
-      url,
-      options,
-      metadataFileName,
-      metadataAdditional,
-    } = e.data;
+    const { action, filename, buf, url, options, metadataFileName, metadataAdditional } = e.data;
 
-    if (action === 'open') {
+    if (action === "open") {
       assertNonNull(filename);
       await openFile(filename);
       return resOK();
-    } else if (action === 'write') {
+    } else if (action === "write") {
       assertNonNull(buf);
       await writeFile(buf);
       return resOK();
-    } else if (action === 'close') {
+    } else if (action === "close") {
       await closeFile();
       return resOK();
-    } else if (action === 'write-simple') {
+    } else if (action === "write-simple") {
       assertNonNull(filename);
       assertNonNull(buf);
       await openFile(filename);
       await writeFile(buf);
       await closeFile();
       return resOK();
-    } else if (action === 'download') {
+    } else if (action === "download") {
       assertNonNull(url);
       assertNonNull(filename);
       assertNonNull(metadataFileName);
@@ -106,11 +97,8 @@ onmessage = async (e) => {
         ...options,
         signal: abortController.signal,
       });
-      const contentLength = response.headers.get('content-length');
-      const etag = (response.headers.get('etag') || '').replace(
-        /[^A-Za-z0-9]/g,
-        ''
-      );
+      const contentLength = response.headers.get("content-length");
+      const etag = (response.headers.get("etag") || "").replace(/[^A-Za-z0-9]/g, "");
       const total = parseInt(contentLength, 10);
       const reader = response.body.getReader();
       await openFile(filename);
@@ -133,17 +121,17 @@ onmessage = async (e) => {
           originalSize: total,
           etag,
           ...metadataAdditional,
-        })
+        }),
       );
       return resOK();
-    } else if (action === 'download-abort') {
+    } else if (action === "download-abort") {
       if (abortController) {
         abortController.abort();
       }
       return;
     }
 
-    throw new Error('OPFS Worker: Invalid action', e.data);
+    throw new Error("OPFS Worker: Invalid action", e.data);
   } catch (err) {
     return resErr(err);
   }

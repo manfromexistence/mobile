@@ -35,7 +35,7 @@ test("No console.anthropic.com remains in OAuth constants or registry", () => {
     assert.notEqual(
       new URL(url).hostname,
       "console.anthropic.com",
-      `Found console.anthropic.com host in ${url}`
+      `Found console.anthropic.com host in ${url}`,
     );
   }
 });

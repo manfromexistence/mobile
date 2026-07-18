@@ -53,13 +53,13 @@ test("codex: quota-sync must NOT proactively rotate the refresh_token (Auth0 fam
     assert.equal(
       refreshCalls,
       0,
-      "the rotating refresh_token must NOT be exercised from the quota-sync path"
+      "the rotating refresh_token must NOT be exercised from the quota-sync path",
     );
     assert.equal(result.refreshed, false, "no proactive refresh happened");
     assert.equal(
       result.connection.accessToken,
       "existing-access-token",
-      "the current access_token is reused for the quota fetch"
+      "the current access_token is reused for the quota fetch",
     );
   } finally {
     exec.needsRefresh = origNeeds;
@@ -92,13 +92,9 @@ test("non-rotating OAuth provider is still refreshed proactively from quota-sync
         tokenExpiresAt: new Date(2000).toISOString(),
         providerSpecificData: {},
       }),
-      "a non-rotating provider with a failed refresh should surface the 401"
+      "a non-rotating provider with a failed refresh should surface the 401",
     );
-    assert.equal(
-      refreshCalls,
-      1,
-      "non-rotating provider must still attempt the proactive refresh"
-    );
+    assert.equal(refreshCalls, 1, "non-rotating provider must still attempt the proactive refresh");
   } finally {
     exec.needsRefresh = origNeeds;
     exec.refreshCredentials = origRefresh;

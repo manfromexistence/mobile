@@ -1,18 +1,18 @@
-import { query, useParams, action, createAsync, redirect, useSubmission } from "@solidjs/router"
-import { For, createEffect, createSignal } from "solid-js"
-import { withActor } from "~/context/auth.withActor"
-import { Actor } from "@opencode-ai/console-core/actor.js"
-import { and, Database, eq, isNull } from "@opencode-ai/console-core/drizzle/index.js"
-import { WorkspaceTable } from "@opencode-ai/console-core/schema/workspace.sql.js"
-import { UserTable } from "@opencode-ai/console-core/schema/user.sql.js"
-import { Workspace } from "@opencode-ai/console-core/workspace.js"
-import { Dropdown, DropdownItem } from "~/component/dropdown"
-import { Modal } from "~/component/modal"
-import { useI18n } from "~/context/i18n"
-import "./workspace-picker.css"
+import { query, useParams, action, createAsync, redirect, useSubmission } from "@solidjs/router";
+import { For, createEffect, createSignal } from "solid-js";
+import { withActor } from "~/context/auth.withActor";
+import { Actor } from "@opencode-ai/console-core/actor.js";
+import { and, Database, eq, isNull } from "@opencode-ai/console-core/drizzle/index.js";
+import { WorkspaceTable } from "@opencode-ai/console-core/schema/workspace.sql.js";
+import { UserTable } from "@opencode-ai/console-core/schema/user.sql.js";
+import { Workspace } from "@opencode-ai/console-core/workspace.js";
+import { Dropdown, DropdownItem } from "~/component/dropdown";
+import { Modal } from "~/component/modal";
+import { useI18n } from "~/context/i18n";
+import "./workspace-picker.css";
 
 const getWorkspaces = query(async () => {
-  "use server"
+  "use server";
   return withActor(async () => {
     return Database.use((tx) =>
       tx
@@ -30,57 +30,60 @@ const getWorkspaces = query(async () => {
             isNull(UserTable.timeDeleted),
           ),
         ),
-    )
-  })
-}, "workspaces")
+    );
+  });
+}, "workspaces");
 
 const createWorkspace = action(async (form: FormData) => {
-  "use server"
-  const name = form.get("workspaceName") as string
+  "use server";
+  const name = form.get("workspaceName") as string;
   if (name?.trim()) {
     return withActor(async () => {
-      const workspaceID = await Workspace.create({ name: name.trim() })
-      return redirect(`/workspace/${workspaceID}`)
-    })
+      const workspaceID = await Workspace.create({ name: name.trim() });
+      return redirect(`/workspace/${workspaceID}`);
+    });
   }
-}, "createWorkspace")
+}, "createWorkspace");
 
 export function WorkspacePicker() {
-  const params = useParams()
-  const i18n = useI18n()
-  const workspaces = createAsync(() => getWorkspaces())
-  const submission = useSubmission(createWorkspace)
-  const [showForm, setShowForm] = createSignal(false)
-  let inputRef: HTMLInputElement | undefined
+  const params = useParams();
+  const i18n = useI18n();
+  const workspaces = createAsync(() => getWorkspaces());
+  const submission = useSubmission(createWorkspace);
+  const [showForm, setShowForm] = createSignal(false);
+  let inputRef: HTMLInputElement | undefined;
 
   const currentWorkspace = () => {
-    const ws = workspaces()?.find((w) => w.id === params.id)
-    return ws ? ws.name : i18n.t("workspace.select")
-  }
+    const ws = workspaces()?.find((w) => w.id === params.id);
+    return ws ? ws.name : i18n.t("workspace.select");
+  };
 
   createEffect(() => {
     if (showForm() && inputRef) {
-      setTimeout(() => inputRef?.focus(), 0)
+      setTimeout(() => inputRef?.focus(), 0);
     }
-  })
+  });
 
   const handleSelectWorkspace = (workspaceID: string) => {
-    if (workspaceID === params.id) return
-    window.location.href = `/workspace/${workspaceID}`
-  }
+    if (workspaceID === params.id) return;
+    window.location.href = `/workspace/${workspaceID}`;
+  };
 
   // Reset signals when workspace ID changes
   createEffect(() => {
-    params.id
-    setShowForm(false)
-  })
+    params.id;
+    setShowForm(false);
+  });
 
   return (
     <div data-component="workspace-picker">
       <Dropdown trigger={currentWorkspace()} align="left">
         <For each={workspaces()}>
           {(workspace) => (
-            <DropdownItem selected={workspace.id === params.id} onClick={() => handleSelectWorkspace(workspace.id)}>
+            <DropdownItem
+              selected={workspace.id === params.id}
+              onClick={() => handleSelectWorkspace(workspace.id)}
+            >
               {workspace.name || workspace.slug}
             </DropdownItem>
           )}
@@ -90,7 +93,11 @@ export function WorkspacePicker() {
         </button>
       </Dropdown>
 
-      <Modal open={showForm()} onClose={() => setShowForm(false)} title={i18n.t("workspace.modal.title")}>
+      <Modal
+        open={showForm()}
+        onClose={() => setShowForm(false)}
+        title={i18n.t("workspace.modal.title")}
+      >
         <div data-component="workspace-create-modal">
           <form data-slot="create-form" action={createWorkspace} method="post">
             <div data-slot="create-input-group">
@@ -115,5 +122,5 @@ export function WorkspacePicker() {
         </div>
       </Modal>
     </div>
-  )
+  );
 }

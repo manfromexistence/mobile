@@ -35,7 +35,7 @@ export async function GET(request: Request) {
         const connectionsByProvider = new Map<string, typeof active>();
         const registerConnectionKey = (
           key: string | null | undefined,
-          connection: (typeof active)[number]
+          connection: (typeof active)[number],
         ) => {
           if (!key) return;
           const existing = connectionsByProvider.get(key) || [];
@@ -65,11 +65,11 @@ export async function GET(request: Request) {
             const providerKeys = [model.provider, PROVIDER_ID_TO_ALIAS[model.provider]];
             return hasEligibleConnectionForModel(
               getConnectionsForProvider(...providerKeys),
-              model.model
+              model.model,
             )
               ? providerKeys.filter(Boolean)
               : [];
-          })
+          }),
         );
       } catch {
         // If DB unavailable, show all models
@@ -98,7 +98,8 @@ export async function GET(request: Request) {
     } catch {}
     const filtered = hidePaid
       ? models.filter(
-          (m: { provider: string; model: string }) => providerHasFreeModels(m.provider) && isFreeModel(m.provider, { id: m.model })
+          (m: { provider: string; model: string }) =>
+            providerHasFreeModels(m.provider) && isFreeModel(m.provider, { id: m.model }),
         )
       : models;
 
@@ -122,7 +123,7 @@ export async function PUT(request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -137,7 +138,7 @@ export async function PUT(request) {
 
     // Check if alias already exists for different model
     const existingModel = Object.entries(modelAliases).find(
-      ([key, val]) => val === alias && key !== model
+      ([key, val]) => val === alias && key !== model,
     );
 
     if (existingModel) {

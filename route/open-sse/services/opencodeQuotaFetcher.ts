@@ -142,7 +142,7 @@ function parseWindowResetAt(window: Record<string, unknown>): string | null {
   }
   const resetAfterSeconds = toNumber(
     window["reset_after_seconds"] ?? window["resetAfterSeconds"],
-    0
+    0,
   );
   if (resetAfterSeconds > 0) {
     return new Date(Date.now() + resetAfterSeconds * 1000).toISOString();
@@ -165,13 +165,13 @@ function parseOpencodeQuotaResponse(data: unknown): OpencodeTripleWindowQuota | 
 
   // Look for windows under various possible keys
   const w5h = toRecord(
-    quotaObj[OPENCODE_WINDOW_5H] ?? quotaObj["5h"] ?? quotaObj["hourly"] ?? quotaObj["short"]
+    quotaObj[OPENCODE_WINDOW_5H] ?? quotaObj["5h"] ?? quotaObj["hourly"] ?? quotaObj["short"],
   );
   const wWeekly = toRecord(
-    quotaObj[OPENCODE_WINDOW_WEEKLY] ?? quotaObj["weekly"] ?? quotaObj["week"] ?? quotaObj["wk"]
+    quotaObj[OPENCODE_WINDOW_WEEKLY] ?? quotaObj["weekly"] ?? quotaObj["week"] ?? quotaObj["wk"],
   );
   const wMonthly = toRecord(
-    quotaObj[OPENCODE_WINDOW_MONTHLY] ?? quotaObj["monthly"] ?? quotaObj["month"] ?? quotaObj["mo"]
+    quotaObj[OPENCODE_WINDOW_MONTHLY] ?? quotaObj["monthly"] ?? quotaObj["month"] ?? quotaObj["mo"],
   );
 
   const has5h = Object.keys(w5h).length > 0;
@@ -240,7 +240,7 @@ function parseOpencodeQuotaResponse(data: unknown): OpencodeTripleWindowQuota | 
  */
 export async function fetchOpencodeQuota(
   connectionId: string,
-  connection?: Record<string, unknown>
+  connection?: Record<string, unknown>,
 ): Promise<OpencodeTripleWindowQuota | null> {
   // Check cache first
   const cached = quotaCache.get(connectionId);
@@ -288,7 +288,7 @@ export async function fetchOpencodeQuota(
           console.warn(
             `[opencodeQuotaFetcher] ${OPENCODE_QUOTA_URL} returned 404 — opencode-go usage API is not yet public. ` +
               `Set OMNIROUTE_OPENCODE_QUOTA_URL to a working endpoint, or follow ` +
-              `https://github.com/anomalyco/opencode/issues/16017 for upstream status.`
+              `https://github.com/anomalyco/opencode/issues/16017 for upstream status.`,
           );
         }
         quotaCache.set(connectionId, {

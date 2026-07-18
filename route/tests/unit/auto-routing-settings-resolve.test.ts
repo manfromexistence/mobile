@@ -34,6 +34,6 @@ test("#2346 chat.ts does not call bare getSettings() without importing it", () =
   const importsGetSettings = /import\s*\{[^}]*\bgetSettings\b[^}]*\}/.test(stripped);
   assert.ok(
     importsGetSettings,
-    "chat.ts calls getSettings() but never imports it — this is the regression that caused #2346"
+    "chat.ts calls getSettings() but never imports it — this is the regression that caused #2346",
   );
 });

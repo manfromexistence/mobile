@@ -60,7 +60,7 @@ test("live request returns streamChunks", { skip }, async () => {
     "OMNIROUTE_URL=",
     process.env.OMNIROUTE_URL,
     "API_KEY set=",
-    !!API_KEY
+    !!API_KEY,
   );
 
   const messages = [
@@ -85,7 +85,7 @@ test("live request returns streamChunks", { skip }, async () => {
     assert.equal(
       completionsResponse.status,
       200,
-      `expected 200 from chat/completions, got ${completionsResponse.status}`
+      `expected 200 from chat/completions, got ${completionsResponse.status}`,
     );
 
     const requestId = completionsResponse.headers.get("x-omniroute-request-id");
@@ -109,7 +109,7 @@ test("live request returns streamChunks", { skip }, async () => {
           {
             headers: { Authorization: `Bearer ${API_KEY}` },
             cache: "no-store",
-          }
+          },
         );
         if (activeRequestResponse.ok) {
           let activeRequest = await activeRequestResponse.json();
@@ -142,7 +142,7 @@ test("live request returns streamChunks", { skip }, async () => {
       {
         headers: { Authorization: `Bearer ${API_KEY}` },
         cache: "no-store",
-      }
+      },
     );
     assert.ok(logDetailResponse.ok, `failed to fetch log detail: ${logDetailResponse.status}`);
     let finishedRequest = await logDetailResponse.json();
@@ -151,7 +151,7 @@ test("live request returns streamChunks", { skip }, async () => {
     assert.equal(
       finishedRequest.active,
       false,
-      "request should be marked as inactive after completion"
+      "request should be marked as inactive after completion",
     );
 
     assert.ok(Array.isArray(finishedRequest.pipelinePayloads.streamChunks.provider));

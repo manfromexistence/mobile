@@ -55,7 +55,7 @@ export class FileTreeManagedSlotHost {
   }
 
   public setSlotHtml(slotName: string, html: string | null): void {
-    const normalizedHtml = html?.trim() ?? '';
+    const normalizedHtml = html?.trim() ?? "";
     if (normalizedHtml.length === 0) {
       this.setSlotContent(slotName, null);
       return;
@@ -68,7 +68,7 @@ export class FileTreeManagedSlotHost {
       return;
     }
 
-    const nextContent = document.createElement('div');
+    const nextContent = document.createElement("div");
     nextContent.innerHTML = normalizedHtml;
     this.setSlotContent(slotName, nextContent);
   }

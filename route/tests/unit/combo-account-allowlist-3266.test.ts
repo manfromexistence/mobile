@@ -142,7 +142,7 @@ test("handleComboChat propagates a step allowlist onto target.allowedConnectionI
     handleSingleModel: async (
       _body: unknown,
       modelStr: string,
-      target: { allowedConnectionIds?: unknown }
+      target: { allowedConnectionIds?: unknown },
     ) => {
       captured = Array.isArray(target?.allowedConnectionIds) ? target.allowedConnectionIds : null;
       return okResponse(modelStr);
@@ -178,7 +178,7 @@ test("buildAutoCandidates expands dynamic auto steps only within allowedConnecti
         label: null,
       },
     ],
-    "auto-allowlist"
+    "auto-allowlist",
   );
 
   const connectionIds = candidates.map((candidate) => candidate.connectionId).filter(Boolean);
@@ -205,7 +205,7 @@ test("getProviderCredentials never selects a connection outside the step allowli
     assert.ok(cred && cred.connectionId, "a credential within the allowlist must be returned");
     assert.ok(
       allowed.includes(cred!.connectionId!),
-      `selected ${cred!.connectionId} which is outside the allowlist`
+      `selected ${cred!.connectionId} which is outside the allowlist`,
     );
     assert.ok(!forbidden.has(cred!.connectionId!), "must never select foo3/foo4");
     seen.add(cred!.connectionId!);
@@ -244,7 +244,7 @@ test("a step allowlist intersects with tag routing — most-restrictive wins (#3
     handleSingleModel: async (
       _body: unknown,
       modelStr: string,
-      target: { allowedConnectionIds?: unknown }
+      target: { allowedConnectionIds?: unknown },
     ) => {
       captured = Array.isArray(target?.allowedConnectionIds) ? target.allowedConnectionIds : null;
       return okResponse(modelStr);

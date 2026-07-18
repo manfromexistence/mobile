@@ -1,5 +1,5 @@
-import type { Dict } from "./en"
-import { dict as en } from "./en"
+import type { Dict } from "./en";
+import { dict as en } from "./en";
 
 export const dict = {
   ...en,
@@ -108,7 +108,8 @@ export const dict = {
   "home.banner.downloadBetaNow": "Скачать бету для десктопа",
 
   "home.hero.title": "AI-агент с открытым кодом для программирования",
-  "home.hero.subtitle.a": "Бесплатные модели включены, или подключите любую модель от любого провайдера,",
+  "home.hero.subtitle.a":
+    "Бесплатные модели включены, или подключите любую модель от любого провайдера,",
   "home.hero.subtitle.b": "включая Claude, GPT, Gemini и другие.",
 
   "home.install.ariaLabel": "Варианты установки",
@@ -125,11 +126,13 @@ export const dict = {
   "home.what.copilot.title": "GitHub Copilot",
   "home.what.copilot.body": "Войдите через GitHub, чтобы использовать ваш аккаунт Copilot",
   "home.what.chatgptPlus.title": "ChatGPT Plus/Pro",
-  "home.what.chatgptPlus.body": "Войдите через OpenAI, чтобы использовать ваш аккаунт ChatGPT Plus или Pro",
+  "home.what.chatgptPlus.body":
+    "Войдите через OpenAI, чтобы использовать ваш аккаунт ChatGPT Plus или Pro",
   "home.what.anyModel.title": "Любая модель",
   "home.what.anyModel.body": "75+ провайдеров LLM через Models.dev, включая локальные модели",
   "home.what.anyEditor.title": "Любой редактор",
-  "home.what.anyEditor.body": "Доступно как терминальный интерфейс, десктопное приложение и расширение для IDE",
+  "home.what.anyEditor.body":
+    "Доступно как терминальный интерфейс, десктопное приложение и расширение для IDE",
   "home.what.readDocs": "Читать документацию",
 
   "home.growth.title": "AI-агент с открытым кодом для программирования",
@@ -230,7 +233,8 @@ export const dict = {
   "zen.cta.start": "Начать работу с Zen",
   "zen.pricing.title": "Пополнить баланс на $20 (Pay as you go)",
   "zen.pricing.fee": "(+$1.23 комиссия за обработку карты)",
-  "zen.pricing.body": "Используйте с любым агентом. Установите ежемесячные лимиты. Отмените в любое время.",
+  "zen.pricing.body":
+    "Используйте с любым агентом. Установите ежемесячные лимиты. Отмените в любое время.",
   "zen.problem.title": "Какую проблему решает Zen?",
   "zen.problem.body":
     "Доступно множество моделей, но лишь немногие хорошо работают с кодинг-агентами. Большинство провайдеров настраивают их по-разному с разными результатами.",
@@ -239,7 +243,8 @@ export const dict = {
   "zen.problem.item2": "Работа с провайдерами для обеспечения правильной доставки",
   "zen.problem.item3": "Бенчмаркинг всех рекомендуемых нами комбинаций модель-провайдер",
   "zen.how.title": "Как работает Zen",
-  "zen.how.body": "Хотя мы предлагаем использовать Zen с OpenCode, вы можете использовать его с любым агентом.",
+  "zen.how.body":
+    "Хотя мы предлагаем использовать Zen с OpenCode, вы можете использовать его с любым агентом.",
   "zen.how.step1.title": "Зарегистрируйтесь и пополните баланс на $20",
   "zen.how.step1.beforeLink": "следуйте",
   "zen.how.step1.link": "инструкциям по настройке",
@@ -359,20 +364,24 @@ export const dict = {
 
   "zen.api.error.rateLimitExceeded": "Превышен лимит запросов. Пожалуйста, попробуйте позже.",
   "zen.api.error.modelNotSupported": "Модель {{model}} не поддерживается",
-  "zen.api.error.modelFormatNotSupported": "Модель {{model}} не поддерживается для формата {{format}}",
+  "zen.api.error.modelFormatNotSupported":
+    "Модель {{model}} не поддерживается для формата {{format}}",
   "zen.api.error.noProviderAvailable": "Нет доступных провайдеров",
   "zen.api.error.providerNotSupported": "Провайдер {{provider}} не поддерживается",
   "zen.api.error.missingApiKey": "Отсутствует API ключ.",
   "zen.api.error.invalidApiKey": "Неверный API ключ.",
-  "zen.api.error.subscriptionQuotaExceeded": "Квота подписки превышена. Повторите попытку через {{retryIn}}.",
+  "zen.api.error.subscriptionQuotaExceeded":
+    "Квота подписки превышена. Повторите попытку через {{retryIn}}.",
   "zen.api.error.goSubscriptionRollingLimitExceeded":
     "Достигнут лимит использования за 5 часов. Сбросится через {{retryIn}}. Чтобы продолжить использовать эту модель сейчас, включите оплату с доступного баланса: {{consoleGoUrl}}",
   "zen.api.error.goSubscriptionWeeklyLimitExceeded":
     "Достигнут недельный лимит использования. Сбросится через {{retryIn}}. Чтобы продолжить использовать эту модель сейчас, включите оплату с доступного баланса: {{consoleGoUrl}}",
   "zen.api.error.goSubscriptionMonthlyLimitExceeded":
     "Достигнут месячный лимит использования. Сбросится через {{retryIn}}. Чтобы продолжить использовать эту модель сейчас, включите оплату с доступного баланса: {{consoleGoUrl}}",
-  "zen.api.error.noPaymentMethod": "Нет способа оплаты. Добавьте способ оплаты здесь: {{billingUrl}}",
-  "zen.api.error.insufficientBalance": "Недостаточно средств. Управляйте оплатой здесь: {{billingUrl}}",
+  "zen.api.error.noPaymentMethod":
+    "Нет способа оплаты. Добавьте способ оплаты здесь: {{billingUrl}}",
+  "zen.api.error.insufficientBalance":
+    "Недостаточно средств. Управляйте оплатой здесь: {{billingUrl}}",
   "zen.api.error.workspaceMonthlyLimitReached":
     "Ваше рабочее пространство достигло ежемесячного лимита расходов в ${{amount}}. Управляйте лимитами здесь: {{billingUrl}}",
   "zen.api.error.userMonthlyLimitReached":
@@ -384,7 +393,8 @@ export const dict = {
     "Бесплатная акция для {{model}} завершена. Вы можете продолжить использование модели, подписавшись на OpenCode Go - {{link}}",
 
   "black.meta.title": "OpenCode Black | Доступ к лучшим моделям для кодинга в мире",
-  "black.meta.description": "Получите доступ к Claude, GPT, Gemini и другим моделям с подпиской OpenCode Black.",
+  "black.meta.description":
+    "Получите доступ к Claude, GPT, Gemini и другим моделям с подпиской OpenCode Black.",
   "black.hero.title": "Доступ к лучшим моделям для кодинга в мире",
   "black.hero.subtitle": "Включая Claude, GPT, Gemini и другие",
   "black.title": "OpenCode Black | Цены",
@@ -429,7 +439,8 @@ export const dict = {
   "black.subscribe.success.amountValue": "${{plan}} в месяц",
   "black.subscribe.success.paymentMethod": "Способ оплаты",
   "black.subscribe.success.dateJoined": "Дата присоединения",
-  "black.subscribe.success.chargeNotice": "С вашей карты будет списана оплата при активации подписки",
+  "black.subscribe.success.chargeNotice":
+    "С вашей карты будет списана оплата при активации подписки",
 
   "workspace.nav.zen": "Zen",
   "workspace.nav.go": "Go",
@@ -631,10 +642,13 @@ export const dict = {
   "workspace.black.subscription.rollingUsage": "5-часовое использование",
   "workspace.black.subscription.weeklyUsage": "Недельное использование",
   "workspace.black.subscription.resetsIn": "Сброс через",
-  "workspace.black.subscription.useBalance": "Использовать доступный баланс после достижения лимитов",
+  "workspace.black.subscription.useBalance":
+    "Использовать доступный баланс после достижения лимитов",
   "workspace.black.waitlist.title": "Список ожидания",
-  "workspace.black.waitlist.joined": "Вы в списке ожидания плана OpenCode Black за ${{plan}} в месяц.",
-  "workspace.black.waitlist.ready": "Мы готовы подключить вас к плану OpenCode Black за ${{plan}} в месяц.",
+  "workspace.black.waitlist.joined":
+    "Вы в списке ожидания плана OpenCode Black за ${{plan}} в месяц.",
+  "workspace.black.waitlist.ready":
+    "Мы готовы подключить вас к плану OpenCode Black за ${{plan}} в месяц.",
   "workspace.black.waitlist.leave": "Покинуть список ожидания",
   "workspace.black.waitlist.leaving": "Выход...",
   "workspace.black.waitlist.left": "Вы покинули",
@@ -658,11 +672,13 @@ export const dict = {
   "workspace.lite.subscription.weeklyUsage": "Недельное использование",
   "workspace.lite.subscription.monthlyUsage": "Ежемесячное использование",
   "workspace.lite.subscription.resetsIn": "Сброс через",
-  "workspace.lite.subscription.useBalance": "Использовать доступный баланс после достижения лимитов",
+  "workspace.lite.subscription.useBalance":
+    "Использовать доступный баланс после достижения лимитов",
   "workspace.lite.subscription.selectProvider":
     'Выберите "OpenCode Go" в качестве провайдера в настройках opencode для использования моделей Go.',
   "workspace.lite.providers.title": "Провайдеры",
-  "workspace.lite.providers.description": "Управляйте провайдерами, используемыми для маршрутизации.",
+  "workspace.lite.providers.description":
+    "Управляйте провайдерами, используемыми для маршрутизации.",
   "workspace.lite.providers.useChina": "Включить модели, размещенные в Китае",
   "workspace.lite.black.message":
     "Вы подписаны на OpenCode Black или находитесь в списке ожидания. Пожалуйста, сначала отмените подписку, если хотите перейти на Go.",
@@ -682,13 +698,15 @@ export const dict = {
   "workspace.referral.copyLink": "Копировать ссылку",
   "workspace.referral.copied": "Скопировано",
   "workspace.referral.overview.title": "Пригласите друзей",
-  "workspace.referral.overview.subtitle": "Получите $5, когда друг оформит подписку. Он тоже получит $5.",
+  "workspace.referral.overview.subtitle":
+    "Получите $5, когда друг оформит подписку. Он тоже получит $5.",
   "workspace.referral.instructions.share": "Поделитесь своей реферальной ссылкой",
   "workspace.referral.instructions.subscribe": "Ваш друг присоединяется и оформляет подписку на Go",
   "workspace.referral.instructions.claim":
     "Вы оба получаете кредит на использование $5, который можно применить к лимитам использования Go",
   "workspace.referral.rewards.title": "Реферальные награды",
-  "workspace.referral.rewards.description": "Используйте доступные реферальные кредиты для оплаты использования Go.",
+  "workspace.referral.rewards.description":
+    "Используйте доступные реферальные кредиты для оплаты использования Go.",
   "workspace.referral.rewards.subtitle": "Использовано {{applied}} / {{total}} наград.",
   "workspace.referral.rewards.empty": "Реферальных наград пока нет.",
   "workspace.referral.table.reward": "Награда",
@@ -744,7 +762,8 @@ export const dict = {
     "Любые дополнительные расходы будут связаны с вашей подпиской у провайдера моделей. Хотя OpenCode работает с любым провайдером моделей, мы рекомендуем использовать",
   "download.faq.a5.p2.afterZen": ".",
 
-  "download.faq.a6.p1": "Ваши данные и информация сохраняются только при создании ссылок для шеринга в OpenCode.",
+  "download.faq.a6.p1":
+    "Ваши данные и информация сохраняются только при создании ссылок для шеринга в OpenCode.",
   "download.faq.a6.p2.beforeShare": "Подробнее о",
   "download.faq.a6.shareLink": "страницах шеринга",
 
@@ -833,4 +852,4 @@ export const dict = {
   "bench.detail.table.duration": "Длительность",
   "bench.detail.run.title": "Запуск {{n}}",
   "bench.detail.rawJson": "Raw JSON",
-} satisfies Dict
+} satisfies Dict;

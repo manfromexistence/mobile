@@ -7,11 +7,11 @@ export type RemappedIcon =
       viewBox?: string;
     };
 
-export type FileTreeBuiltInIconSet = 'minimal' | 'standard' | 'complete';
+export type FileTreeBuiltInIconSet = "minimal" | "standard" | "complete";
 
 export interface FileTreeIconConfig {
   /** Use one of the built-in icon sets, or `none` for custom-only icon rules. */
-  set?: FileTreeBuiltInIconSet | 'none';
+  set?: FileTreeBuiltInIconSet | "none";
   /** Enable semantic per-file-type colors for built-in icon sets. */
   colored?: boolean;
   /** An SVG string with <symbol> definitions injected into the shadow DOM. */
@@ -29,7 +29,7 @@ export interface FileTreeIconConfig {
 export type FileTreeIcons = FileTreeBuiltInIconSet | FileTreeIconConfig;
 
 export interface NormalizedFileTreeIconConfig extends FileTreeIconConfig {
-  set: FileTreeBuiltInIconSet | 'none';
+  set: FileTreeBuiltInIconSet | "none";
   colored: boolean;
 }
 
@@ -43,17 +43,15 @@ function hasCustomIconOverrides(icons: FileTreeIconConfig): boolean {
   );
 }
 
-export function normalizeFileTreeIcons(
-  icons?: FileTreeIcons
-): NormalizedFileTreeIconConfig {
+export function normalizeFileTreeIcons(icons?: FileTreeIcons): NormalizedFileTreeIconConfig {
   if (icons == null) {
     return {
-      set: 'complete',
+      set: "complete",
       colored: true,
     };
   }
 
-  if (typeof icons === 'string') {
+  if (typeof icons === "string") {
     return {
       set: icons,
       colored: true,
@@ -62,7 +60,7 @@ export function normalizeFileTreeIcons(
 
   return {
     ...icons,
-    set: icons.set ?? (hasCustomIconOverrides(icons) ? 'none' : 'complete'),
+    set: icons.set ?? (hasCustomIconOverrides(icons) ? "none" : "complete"),
     colored: icons.colored ?? true,
   };
 }

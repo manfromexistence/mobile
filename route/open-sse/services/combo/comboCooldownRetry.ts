@@ -117,7 +117,7 @@ function isRetryableComboCooldownReason(reason: unknown): boolean {
  *   - budgetLeftMs >= waitMs
  */
 export function shouldWaitForComboCooldown(
-  input: ShouldWaitForComboCooldownInput
+  input: ShouldWaitForComboCooldownInput,
 ): ShouldWaitForComboCooldownResult {
   const { reason, attempt, budgetLeftMs, settings } = input;
   const waitMs = toFiniteWaitMs(input.waitMs);
@@ -179,7 +179,7 @@ export const COMBO_COOLDOWN_WAIT_MARGIN_MS = 50;
  * `lookupLock`/`computeWaitMs` — no I/O, no clock — so it is unit-testable.
  */
 export function resolveComboCooldownWaitDecision(
-  input: ResolveComboCooldownDecisionInput
+  input: ResolveComboCooldownDecisionInput,
 ): ResolveComboCooldownDecisionResult {
   const {
     targets,

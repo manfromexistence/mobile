@@ -38,7 +38,7 @@ describe("llmlingua model registry (constants)", () => {
     assert.equal(DEFAULT_LLMLINGUA_MODEL, "tinybert");
     assert.ok(
       Object.prototype.hasOwnProperty.call(LLMLINGUA_MODELS, DEFAULT_LLMLINGUA_MODEL),
-      "default must be a key of the registry"
+      "default must be a key of the registry",
     );
   });
 
@@ -102,7 +102,7 @@ describe("getLlmlinguaModelCacheDir", () => {
     const dir = getLlmlinguaModelCacheDir();
     assert.ok(
       dir.endsWith(path.join("models", "llmlingua")),
-      `cache dir should end with models/llmlingua, got: ${dir}`
+      `cache dir should end with models/llmlingua, got: ${dir}`,
     );
     assert.ok(dir.startsWith(tmpDir), `cache dir should be under DATA_DIR, got: ${dir}`);
     assert.equal(dir, path.join(tmpDir, "models", "llmlingua"));

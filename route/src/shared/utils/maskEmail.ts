@@ -48,7 +48,7 @@ export function maskEmailLikeValue(value: string | null | undefined, visibleChar
  */
 export function pickMaskedDisplayValue(
   values: Array<string | null | undefined>,
-  fallback = ""
+  fallback = "",
 ): string {
   for (const value of values) {
     const masked = maskEmailLikeValue(value);
@@ -65,7 +65,7 @@ export function pickMaskedDisplayValue(
 export function pickDisplayValue(
   values: Array<string | null | undefined>,
   showFull: boolean,
-  fallback = ""
+  fallback = "",
 ): string {
   if (showFull) {
     for (const value of values) {

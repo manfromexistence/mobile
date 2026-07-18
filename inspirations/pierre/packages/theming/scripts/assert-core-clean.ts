@@ -8,8 +8,8 @@
 // naturally excluding the /themes and /react entry trees which
 // index.js does not import.
 
-import { readFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 
 // Forbidden external module specifiers stored WITHOUT trailing slashes.
 // A specifier is forbidden when it exactly matches an entry OR when it starts
@@ -17,24 +17,16 @@ import { dirname, resolve } from 'node:path';
 // `@shikijs/core` (matched by the `@shikijs` entry) while avoiding false
 // matches — e.g. `react` does not match `react-dom` because `react-dom` does
 // not equal `react` and does not start with `react/`.
-const FORBIDDEN_MODULES = [
-  'shiki',
-  '@shikijs',
-  '@pierre/theme',
-  'react',
-  'react-dom',
-  'preact',
-];
+const FORBIDDEN_MODULES = ["shiki", "@shikijs", "@pierre/theme", "react", "react-dom", "preact"];
 
 // Forbidden bare identifiers that must not appear in core runtime code.
 // DOM globals `document` and `window` indicate unintentional DOM coupling.
 // `tokenColors` indicates Shiki/VS Code theme data leaked into the core.
-const FORBIDDEN_IDENTIFIERS = ['document', 'window', 'tokenColors'];
+const FORBIDDEN_IDENTIFIERS = ["document", "window", "tokenColors"];
 
 // Matches quoted static import specifiers: from "x", import("x"), import "x".
 // Group 1 holds the specifier string (without quotes).
-const QUOTED_IMPORT_RE =
-  /(?:from\s+|import\s*\(|import\s+)\s*["']([^"']+)["']/g;
+const QUOTED_IMPORT_RE = /(?:from\s+|import\s*\(|import\s+)\s*["']([^"']+)["']/g;
 
 // Matches template-literal dynamic imports: import(`<prefix>${...}`) or
 // import(`<static-only>`). Group 1 holds the static text before the first
@@ -73,11 +65,9 @@ export function extractImportSpecifiers(src: string): string[] {
 // specifiers that appear only inside comment text (e.g. JSDoc @example blocks).
 function stripComments(src: string): string {
   // Replace block comments with spaces to preserve line/column positions.
-  let result = src.replace(/\/\*[\s\S]*?\*\//g, (m) =>
-    m.replace(/[^\n]/g, ' ')
-  );
+  let result = src.replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, " "));
   // Replace line comments.
-  result = result.replace(/\/\/[^\n]*/g, (m) => ' '.repeat(m.length));
+  result = result.replace(/\/\/[^\n]*/g, (m) => " ".repeat(m.length));
   return result;
 }
 
@@ -109,7 +99,7 @@ function collectCoreFiles(entryFile: string): {
 
     let src: string;
     try {
-      src = readFileSync(file, 'utf8');
+      src = readFileSync(file, "utf8");
     } catch {
       unreadable.add(file);
       continue;
@@ -119,7 +109,7 @@ function collectCoreFiles(entryFile: string): {
 
     const dir = dirname(file);
     for (const specifier of extractImportSpecifiers(src)) {
-      if (specifier.startsWith('./') || specifier.startsWith('../')) {
+      if (specifier.startsWith("./") || specifier.startsWith("../")) {
         // Resolve the relative path. The built JS uses explicit .js extensions.
         const candidate = resolve(dir, specifier);
         if (!sources.has(candidate) && !unreadable.has(candidate)) {
@@ -147,7 +137,7 @@ function findEntryViolations(entryFile: string): string[] {
 
   for (const [file, rawSrc] of sources) {
     // Never scan source maps.
-    if (file.endsWith('.map')) continue;
+    if (file.endsWith(".map")) continue;
 
     // Strip comments once and reuse the result for both checks so that import
     // specifiers inside JSDoc @example blocks or inline comments do not produce
@@ -160,9 +150,9 @@ function findEntryViolations(entryFile: string): string[] {
     // template-literal dynamic imports (returning the static prefix).
     for (const specifier of extractImportSpecifiers(src)) {
       // Only check non-relative (external) specifiers.
-      if (specifier.startsWith('./') || specifier.startsWith('../')) continue;
+      if (specifier.startsWith("./") || specifier.startsWith("../")) continue;
       for (const forbidden of FORBIDDEN_MODULES) {
-        if (specifier === forbidden || specifier.startsWith(forbidden + '/')) {
+        if (specifier === forbidden || specifier.startsWith(forbidden + "/")) {
           violations.push(`${file}: imports forbidden module "${specifier}"`);
         }
       }
@@ -183,7 +173,7 @@ function findEntryViolations(entryFile: string): string[] {
 // Scan the core entry (`<distDir>/index.js`) and its transitive relative
 // imports. Exported for use by the dist-guard tests.
 export function findCoreViolations(distDir: string): string[] {
-  return findEntryViolations(resolve(distDir, 'index.js'));
+  return findEntryViolations(resolve(distDir, "index.js"));
 }
 
 // Run a single named guard, printing a clear PASS/FAIL line that identifies
@@ -191,12 +181,12 @@ export function findCoreViolations(distDir: string): string[] {
 function reportEntry(label: string, violations: string[]): boolean {
   if (violations.length > 0) {
     console.error(
-      `\n[assert-core-clean] FAIL (${label}) — ${violations.length} violation(s) found:\n`
+      `\n[assert-core-clean] FAIL (${label}) — ${violations.length} violation(s) found:\n`,
     );
     for (const v of violations) {
       console.error(`  ✗ ${v}`);
     }
-    console.error('');
+    console.error("");
     return false;
   }
   console.log(`[assert-core-clean] PASS (${label}) — dist is clean.`);
@@ -204,11 +194,11 @@ function reportEntry(label: string, violations: string[]): boolean {
 }
 
 if (import.meta.main) {
-  const distDir = resolve(import.meta.dir, '../dist');
+  const distDir = resolve(import.meta.dir, "../dist");
 
   // The root entry owns the dependency-free controller/resolver primitives.
   // Source-specific integrations live behind /themes.
-  const coreOk = reportEntry('core', findCoreViolations(distDir));
+  const coreOk = reportEntry("core", findCoreViolations(distDir));
 
   process.exit(coreOk ? 0 : 1);
 }

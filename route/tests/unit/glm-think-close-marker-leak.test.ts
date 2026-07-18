@@ -20,8 +20,9 @@ import assert from "node:assert/strict";
 // We test the stream output directly: feed a Claude-format SSE stream through
 // `translateSseResponse` and check whether `</think>` appears in the output.
 
-const { resolveSuppressThinkClose, THINKING_MARKER_HEADER } =
-  await import("../../open-sse/utils/thinkCloseMarker.ts");
+const { resolveSuppressThinkClose, THINKING_MARKER_HEADER } = await import(
+  "../../open-sse/utils/thinkCloseMarker.ts"
+);
 
 // Build a minimal Claude SSE stream: thinking block → text block → finish.
 function buildClaudeSseStream(): string {
@@ -32,7 +33,7 @@ function buildClaudeSseStream(): string {
     `event: message_start\ndata: ${JSON.stringify({
       type: "message_start",
       message: { id: "msg_test", model: "glm-5.2" },
-    })}`
+    })}`,
   );
 
   // thinking block
@@ -41,20 +42,20 @@ function buildClaudeSseStream(): string {
       type: "content_block_start",
       index: 0,
       content_block: { type: "thinking" },
-    })}`
+    })}`,
   );
   events.push(
     `event: content_block_delta\ndata: ${JSON.stringify({
       type: "content_block_delta",
       index: 0,
       delta: { type: "thinking_delta", thinking: "reasoning here" },
-    })}`
+    })}`,
   );
   events.push(
     `event: content_block_stop\ndata: ${JSON.stringify({
       type: "content_block_stop",
       index: 0,
-    })}`
+    })}`,
   );
 
   // text block
@@ -63,20 +64,20 @@ function buildClaudeSseStream(): string {
       type: "content_block_start",
       index: 1,
       content_block: { type: "text" },
-    })}`
+    })}`,
   );
   events.push(
     `event: content_block_delta\ndata: ${JSON.stringify({
       type: "content_block_delta",
       index: 1,
       delta: { type: "text_delta", text: "final answer" },
-    })}`
+    })}`,
   );
   events.push(
     `event: content_block_stop\ndata: ${JSON.stringify({
       type: "content_block_stop",
       index: 1,
-    })}`
+    })}`,
   );
 
   // message_delta with stop_reason
@@ -85,7 +86,7 @@ function buildClaudeSseStream(): string {
       type: "message_delta",
       delta: { stop_reason: "end_turn" },
       usage: { input_tokens: 10, output_tokens: 20 },
-    })}`
+    })}`,
   );
 
   // message_stop
@@ -98,7 +99,7 @@ async function collectStreamOutput(response: Response): Promise<string> {
   const reader = response.body!.getReader();
   const decoder = new TextDecoder();
   let output = "";
-   
+
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
@@ -135,12 +136,12 @@ test("GLM translateSseResponse: suppressThinkClose=true suppresses </think> mark
 
   assert.ok(
     !output.includes("</think>"),
-    "marker must be suppressed when suppressThinkClose is true"
+    "marker must be suppressed when suppressThinkClose is true",
   );
   assert.ok(output.includes("final answer"), "real text content must still be present");
   assert.ok(
     output.includes("reasoning_content"),
-    "reasoning_content must still be emitted for thinking blocks"
+    "reasoning_content must still be emitted for thinking blocks",
   );
 });
 
@@ -158,7 +159,7 @@ test("GLM translateSseResponse: default (no flag) emits </think> marker for back
 
   assert.ok(
     output.includes("</think>"),
-    "marker must be emitted by default (backward compat with #4633)"
+    "marker must be emitted by default (backward compat with #4633)",
   );
 });
 
@@ -168,12 +169,12 @@ test("resolveSuppressThinkClose: OpenCode UA triggers suppression for GLM path",
   assert.equal(
     resolveSuppressThinkClose({ userAgent: "opencode/1.17.11" }),
     true,
-    "OpenCode UA must resolve to suppress"
+    "OpenCode UA must resolve to suppress",
   );
   assert.equal(
     resolveSuppressThinkClose({ userAgent: "claude-code/1.0" }),
     false,
-    "Claude Code UA must resolve to keep"
+    "Claude Code UA must resolve to keep",
   );
   assert.equal(
     resolveSuppressThinkClose({
@@ -181,11 +182,11 @@ test("resolveSuppressThinkClose: OpenCode UA triggers suppression for GLM path",
       thinkingMarkerHeader: "off",
     }),
     true,
-    "Header off must override UA"
+    "Header off must override UA",
   );
   assert.equal(
     THINKING_MARKER_HEADER,
     "x-omniroute-thinking-marker",
-    "Header constant must match wire name"
+    "Header constant must match wire name",
   );
 });

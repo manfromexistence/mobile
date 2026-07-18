@@ -48,7 +48,7 @@ export function splitInlineThinking(
   state: KiroThinkingState,
   raw: string | null | undefined,
   onContent: (s: string) => void,
-  onReasoning: (s: string) => void
+  onReasoning: (s: string) => void,
 ): void {
   let text = (state.pendingTag || "") + (raw || "");
   state.pendingTag = "";
@@ -106,7 +106,7 @@ export function splitInlineThinking(
 export function flushPendingThinking(
   state: KiroThinkingState,
   onContent: (s: string) => void,
-  onReasoning: (s: string) => void
+  onReasoning: (s: string) => void,
 ): void {
   if (!state.pendingTag) return;
   const leftover = state.pendingTag;

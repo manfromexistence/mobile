@@ -1,29 +1,29 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from "bun:test";
 
-import { parseDiffFromFile } from '../src';
-import { DEFAULT_COLLAPSED_CONTEXT_THRESHOLD } from '../src/constants';
-import type { ChangeContent, FileDiffMetadata, Hunk } from '../src/types';
+import { parseDiffFromFile } from "../src";
+import { DEFAULT_COLLAPSED_CONTEXT_THRESHOLD } from "../src/constants";
+import type { ChangeContent, FileDiffMetadata, Hunk } from "../src/types";
 import {
   type DiffLineCallbackProps,
   type DiffLineMetadata,
   iterateOverDiff,
-} from '../src/utils/iterateOverDiff';
-import { fileNew, fileOld } from './mocks';
-import { assertDefined, countDeclaredRows } from './testUtils';
+} from "../src/utils/iterateOverDiff";
+import { fileNew, fileOld } from "./mocks";
+import { assertDefined, countDeclaredRows } from "./testUtils";
 
 // NOTE(amadeus): These tests were written by an AI and they are probably
 // pretty sloppy, but keeping them for now until we can have better tests
-describe('iterateOverDiff', () => {
+describe("iterateOverDiff", () => {
   // Fixture geometry the big-fixture tests rely on: this diff parses to 14
   // hunks; hunk 0 has collapsedBefore 3, and three other hunks have
   // single-line collapsed gaps that fall at DEFAULT_COLLAPSED_CONTEXT_THRESHOLD
   // and are therefore emitted as auto-expanded context rows.
   const diff = parseDiffFromFile(
-    { name: 'test.txt', contents: fileOld },
-    { name: 'test.txt', contents: fileNew }
+    { name: "test.txt", contents: fileOld },
+    { name: "test.txt", contents: fileNew },
   );
 
-  test('unified iteration produces expected sequence', () => {
+  test("unified iteration produces expected sequence", () => {
     const results: Array<{
       type: string;
       hunkIndex: number;
@@ -33,15 +33,13 @@ describe('iterateOverDiff', () => {
 
     iterateOverDiff({
       diff,
-      diffStyle: 'unified',
+      diffStyle: "unified",
       callback: (props) => {
         results.push({
           type: props.type,
           hunkIndex: props.hunkIndex,
           unifiedLineIndex:
-            props.additionLine?.unifiedLineIndex ??
-            props.deletionLine?.unifiedLineIndex ??
-            0,
+            props.additionLine?.unifiedLineIndex ?? props.deletionLine?.unifiedLineIndex ?? 0,
           collapsedBefore: props.collapsedBefore,
         });
       },
@@ -51,25 +49,23 @@ describe('iterateOverDiff', () => {
     // every collapsed gap at or under DEFAULT_COLLAPSED_CONTEXT_THRESHOLD,
     // which is emitted as auto-expanded context rows. For this fixture that is
     // 514 declared unified rows + 3 single-line gaps = 517.
-    expect(results.length).toBe(countDeclaredRows(diff, 'unified'));
+    expect(results.length).toBe(countDeclaredRows(diff, "unified"));
 
     // Hunk 0's collapsedBefore (3) exceeds the threshold, so its gap stays
     // collapsed: the first emitted row is hunk 0's first declared context row,
     // positioned at unifiedLineStart (not a sequential counter) and carrying
     // the collapsed separator size.
     const firstHunk = diff.hunks[0];
-    expect(firstHunk.collapsedBefore).toBeGreaterThan(
-      DEFAULT_COLLAPSED_CONTEXT_THRESHOLD
-    );
+    expect(firstHunk.collapsedBefore).toBeGreaterThan(DEFAULT_COLLAPSED_CONTEXT_THRESHOLD);
     expect(results[0]).toEqual({
-      type: 'context',
+      type: "context",
       hunkIndex: 0,
       unifiedLineIndex: firstHunk.unifiedLineStart,
       collapsedBefore: firstHunk.collapsedBefore,
     });
   });
 
-  test('split iteration produces expected sequence', () => {
+  test("split iteration produces expected sequence", () => {
     const results: Array<{
       type: string;
       deletionSplitLineIndex: number | undefined;
@@ -78,7 +74,7 @@ describe('iterateOverDiff', () => {
 
     iterateOverDiff({
       diff,
-      diffStyle: 'split',
+      diffStyle: "split",
       callback: (props) => {
         results.push({
           type: props.type,
@@ -90,7 +86,7 @@ describe('iterateOverDiff', () => {
 
     // Same row contract as unified mode, in split coordinates: 487 declared
     // split rows across the 14 hunks + 3 auto-expanded single-line gaps = 490.
-    expect(results.length).toBe(countDeclaredRows(diff, 'split'));
+    expect(results.length).toBe(countDeclaredRows(diff, "split"));
 
     // Split-specific pairing: a change block emits max(deletions, additions)
     // rows, the deletion and addition sides of one row share a splitLineIndex,
@@ -98,34 +94,29 @@ describe('iterateOverDiff', () => {
     // a pure addition, so locate the first change block that pairs both sides
     // and derive its emitted-row position from hunk metadata.
     const pairedHunkIndex = diff.hunks.findIndex((hunk) =>
-      hunk.hunkContent.some(isPairedChangeBlock)
+      hunk.hunkContent.some(isPairedChangeBlock),
     );
     const pairedHunk = diff.hunks[pairedHunkIndex];
-    assertDefined(pairedHunk, 'fixture must contain a paired change block');
+    assertDefined(pairedHunk, "fixture must contain a paired change block");
 
     let blockRowOffset = 0;
     let pairedBlock: ChangeContent | undefined;
     for (const content of pairedHunk.hunkContent) {
-      if (content.type === 'change' && isPairedChangeBlock(content)) {
+      if (content.type === "change" && isPairedChangeBlock(content)) {
         pairedBlock = content;
         break;
       }
       blockRowOffset +=
-        content.type === 'context'
-          ? content.lines
-          : Math.max(content.deletions, content.additions);
+        content.type === "context" ? content.lines : Math.max(content.deletions, content.additions);
     }
-    assertDefined(pairedBlock, 'paired change block must exist in this hunk');
+    assertDefined(pairedBlock, "paired change block must exist in this hunk");
     const { deletions, additions } = pairedBlock;
 
     // Rows emitted before the block: every earlier hunk's declared split rows
     // and auto-expanded gaps, this hunk's own gap if it auto-expands, then the
     // hunk-content rows preceding the block.
     const blockRowStart =
-      countDeclaredRows(
-        { ...diff, hunks: diff.hunks.slice(0, pairedHunkIndex) },
-        'split'
-      ) +
+      countDeclaredRows({ ...diff, hunks: diff.hunks.slice(0, pairedHunkIndex) }, "split") +
       (pairedHunk.collapsedBefore <= DEFAULT_COLLAPSED_CONTEXT_THRESHOLD
         ? pairedHunk.collapsedBefore
         : 0) +
@@ -135,32 +126,28 @@ describe('iterateOverDiff', () => {
 
     expect(results.slice(blockRowStart, blockRowStart + blockRowCount)).toEqual(
       Array.from({ length: blockRowCount }, (_, index) => ({
-        type: 'change',
-        deletionSplitLineIndex:
-          index < deletions ? blockSplitStart + index : undefined,
-        additionSplitLineIndex:
-          index < additions ? blockSplitStart + index : undefined,
-      }))
+        type: "change",
+        deletionSplitLineIndex: index < deletions ? blockSplitStart + index : undefined,
+        additionSplitLineIndex: index < additions ? blockSplitStart + index : undefined,
+      })),
     );
   });
 
-  test('windowing skips lines correctly', () => {
+  test("windowing skips lines correctly", () => {
     const results: number[] = [];
 
     iterateOverDiff({
       diff,
-      diffStyle: 'unified',
+      diffStyle: "unified",
       startingLine: 10,
       totalLines: 5,
       callback: (props) => {
         results.push(
           (() => {
             return (
-              props.additionLine?.unifiedLineIndex ??
-              props.deletionLine?.unifiedLineIndex ??
-              0
+              props.additionLine?.unifiedLineIndex ?? props.deletionLine?.unifiedLineIndex ?? 0
             );
-          })()
+          })(),
         );
       },
     });
@@ -173,18 +160,18 @@ describe('iterateOverDiff', () => {
     }
   });
 
-  test('windowed iteration matches full iteration slices for unified and split styles', () => {
+  test("windowed iteration matches full iteration slices for unified and split styles", () => {
     const cases: Array<{
-      diffStyle: 'unified' | 'split';
+      diffStyle: "unified" | "split";
       startingLine: number;
       totalLines: number;
     }> = [
-      { diffStyle: 'unified', startingLine: 0, totalLines: 8 },
-      { diffStyle: 'unified', startingLine: 10, totalLines: 5 },
-      { diffStyle: 'unified', startingLine: 150, totalLines: 13 },
-      { diffStyle: 'split', startingLine: 0, totalLines: 8 },
-      { diffStyle: 'split', startingLine: 10, totalLines: 5 },
-      { diffStyle: 'split', startingLine: 120, totalLines: 17 },
+      { diffStyle: "unified", startingLine: 0, totalLines: 8 },
+      { diffStyle: "unified", startingLine: 10, totalLines: 5 },
+      { diffStyle: "unified", startingLine: 150, totalLines: 13 },
+      { diffStyle: "split", startingLine: 0, totalLines: 8 },
+      { diffStyle: "split", startingLine: 10, totalLines: 5 },
+      { diffStyle: "split", startingLine: 120, totalLines: 17 },
     ];
 
     for (const testCase of cases) {
@@ -198,25 +185,22 @@ describe('iterateOverDiff', () => {
 
       expect({ name: testCase, rows: windowedRows }).toEqual({
         name: testCase,
-        rows: fullRows.slice(
-          testCase.startingLine,
-          testCase.startingLine + testCase.totalLines
-        ),
+        rows: fullRows.slice(testCase.startingLine, testCase.startingLine + testCase.totalLines),
       });
     }
   });
 
-  test('both style includes rows visible in either split or unified coordinates for uneven changes', () => {
+  test("both style includes rows visible in either split or unified coordinates for uneven changes", () => {
     const unevenDiff = createSingleHunkDiff({
       hunkContent: [
         {
-          type: 'context',
+          type: "context",
           lines: 2,
           deletionLineIndex: 0,
           additionLineIndex: 0,
         },
         {
-          type: 'change',
+          type: "change",
           deletions: 4,
           deletionLineIndex: 2,
           additions: 1,
@@ -227,14 +211,14 @@ describe('iterateOverDiff', () => {
 
     const rows = collectRows({
       diff: unevenDiff,
-      diffStyle: 'both',
+      diffStyle: "both",
       startingLine: 6,
       totalLines: 1,
     });
 
     expect(rows).toEqual([
       {
-        type: 'change',
+        type: "change",
         hunkIndex: 0,
         collapsedBefore: 0,
         collapsedAfter: 0,
@@ -256,18 +240,18 @@ describe('iterateOverDiff', () => {
     ]);
   });
 
-  test('both style skips gap rows between disjoint split and unified equal-row windows', () => {
+  test("both style skips gap rows between disjoint split and unified equal-row windows", () => {
     const gapDiff = createSingleHunkDiff({
       hunkContent: [
         {
-          type: 'change',
+          type: "change",
           deletions: 5,
           deletionLineIndex: 0,
           additions: 5,
           additionLineIndex: 0,
         },
         {
-          type: 'context',
+          type: "context",
           lines: 10,
           deletionLineIndex: 5,
           additionLineIndex: 5,
@@ -277,7 +261,7 @@ describe('iterateOverDiff', () => {
 
     const rows = collectRows({
       diff: gapDiff,
-      diffStyle: 'both',
+      diffStyle: "both",
       startingLine: 12,
       totalLines: 1,
     });
@@ -288,16 +272,16 @@ describe('iterateOverDiff', () => {
         unifiedLineIndex: row.deletionLine?.unifiedLineIndex,
         splitLineIndex: row.deletionLine?.splitLineIndex,
         lineIndex: row.deletionLine?.lineIndex,
-      }))
+      })),
     ).toEqual([
       {
-        type: 'context',
+        type: "context",
         unifiedLineIndex: 12,
         splitLineIndex: 7,
         lineIndex: 7,
       },
       {
-        type: 'context',
+        type: "context",
         unifiedLineIndex: 17,
         splitLineIndex: 12,
         lineIndex: 12,
@@ -305,12 +289,12 @@ describe('iterateOverDiff', () => {
     ]);
   });
 
-  test('expanded leading context preserves fromStart and fromEnd placement', () => {
+  test("expanded leading context preserves fromStart and fromEnd placement", () => {
     const leadingDiff = createSingleHunkDiff({
       collapsedBefore: 6,
       hunkContent: [
         {
-          type: 'change',
+          type: "change",
           deletions: 1,
           deletionLineIndex: 6,
           additions: 1,
@@ -320,7 +304,7 @@ describe('iterateOverDiff', () => {
     });
     const rows = collectRows({
       diff: leadingDiff,
-      diffStyle: 'unified',
+      diffStyle: "unified",
       expandedHunks: new Map([[0, { fromStart: 2, fromEnd: 2 }]]),
     });
 
@@ -330,34 +314,34 @@ describe('iterateOverDiff', () => {
         collapsedBefore: row.collapsedBefore,
         deletionLineIndex: row.deletionLine?.lineIndex,
         additionLineIndex: row.additionLine?.lineIndex,
-      }))
+      })),
     ).toEqual([
       {
-        type: 'context-expanded',
+        type: "context-expanded",
         collapsedBefore: 0,
         deletionLineIndex: 0,
         additionLineIndex: 0,
       },
       {
-        type: 'context-expanded',
+        type: "context-expanded",
         collapsedBefore: 0,
         deletionLineIndex: 1,
         additionLineIndex: 1,
       },
       {
-        type: 'context-expanded',
+        type: "context-expanded",
         collapsedBefore: 2,
         deletionLineIndex: 4,
         additionLineIndex: 4,
       },
       {
-        type: 'context-expanded',
+        type: "context-expanded",
         collapsedBefore: 0,
         deletionLineIndex: 5,
         additionLineIndex: 5,
       },
       {
-        type: 'change',
+        type: "change",
         collapsedBefore: 0,
         deletionLineIndex: 6,
         additionLineIndex: undefined,
@@ -365,11 +349,11 @@ describe('iterateOverDiff', () => {
     ]);
   });
 
-  test('trailing context is collapsed after hunk content or emitted when expanded', () => {
+  test("trailing context is collapsed after hunk content or emitted when expanded", () => {
     const trailingDiff = createSingleHunkDiff({
       hunkContent: [
         {
-          type: 'context',
+          type: "context",
           lines: 2,
           deletionLineIndex: 0,
           additionLineIndex: 0,
@@ -380,14 +364,14 @@ describe('iterateOverDiff', () => {
 
     const collapsedRows = collectRows({
       diff: trailingDiff,
-      diffStyle: 'unified',
+      diffStyle: "unified",
     });
     expect(collapsedRows).toHaveLength(2);
     expect(collapsedRows.at(-1)?.collapsedAfter).toBe(5);
 
     const expandedRows = collectRows({
       diff: trailingDiff,
-      diffStyle: 'unified',
+      diffStyle: "unified",
       expandedHunks: new Map([[1, { fromStart: 2, fromEnd: 1 }]]),
     });
 
@@ -397,16 +381,16 @@ describe('iterateOverDiff', () => {
         collapsedAfter: row.collapsedAfter,
         deletionLineIndex: row.deletionLine?.lineIndex,
         additionLineIndex: row.additionLine?.lineIndex,
-      }))
+      })),
     ).toEqual([
       {
-        type: 'context-expanded',
+        type: "context-expanded",
         collapsedAfter: 0,
         deletionLineIndex: 2,
         additionLineIndex: 2,
       },
       {
-        type: 'context-expanded',
+        type: "context-expanded",
         collapsedAfter: 3,
         deletionLineIndex: 3,
         additionLineIndex: 3,
@@ -414,30 +398,28 @@ describe('iterateOverDiff', () => {
     ]);
   });
 
-  test('windowed iteration preserves collapsedBefore and collapsedAfter separator placement', () => {
+  test("windowed iteration preserves collapsedBefore and collapsedAfter separator placement", () => {
     const leadingRows = collectRows({
       diff: createWindowedSeparatorDiff([
         {
-          type: 'context',
+          type: "context",
           lines: 3,
           deletionLineIndex: COLLAPSED_BEFORE,
           additionLineIndex: COLLAPSED_BEFORE,
         },
       ]),
-      diffStyle: 'unified',
+      diffStyle: "unified",
       expandedHunks: new Map([[0, { fromStart: 2, fromEnd: 0 }]]),
       startingLine: 3,
       totalLines: 1,
     });
-    expect(leadingRows).toEqual([
-      expect.objectContaining({ type: 'context', collapsedBefore: 0 }),
-    ]);
+    expect(leadingRows).toEqual([expect.objectContaining({ type: "context", collapsedBefore: 0 })]);
 
     const trailingRows = collectRows({
       diff: createSingleHunkDiff({
         hunkContent: [
           {
-            type: 'context',
+            type: "context",
             lines: 3,
             deletionLineIndex: 0,
             additionLineIndex: 0,
@@ -445,34 +427,30 @@ describe('iterateOverDiff', () => {
         ],
         trailingLineCount: 4,
       }),
-      diffStyle: 'unified',
+      diffStyle: "unified",
       startingLine: 2,
       totalLines: 1,
     });
-    expect(trailingRows).toEqual([
-      expect.objectContaining({ type: 'context', collapsedAfter: 4 }),
-    ]);
+    expect(trailingRows).toEqual([expect.objectContaining({ type: "context", collapsedAfter: 4 })]);
   });
 
-  test('callback can stop iteration early', () => {
+  test("callback can stop iteration early", () => {
     const rows: RowSnapshot[] = [];
 
     iterateOverDiff({
       diff,
-      diffStyle: 'unified',
+      diffStyle: "unified",
       callback: (props) => {
         rows.push(serializeRow(props));
         return rows.length === 3;
       },
     });
 
-    expect(rows).toEqual(
-      collectRows({ diff, diffStyle: 'unified' }).slice(0, rows.length)
-    );
+    expect(rows).toEqual(collectRows({ diff, diffStyle: "unified" }).slice(0, rows.length));
     expect(rows).toHaveLength(3);
   });
 
-  test('windowed expansion does not attach skipped collapsed separators to visible rows', () => {
+  test("windowed expansion does not attach skipped collapsed separators to visible rows", () => {
     const cases: Array<{
       name: string;
       diff: FileDiffMetadata;
@@ -481,10 +459,10 @@ describe('iterateOverDiff', () => {
       expectedType: string;
     }> = [
       {
-        name: 'expanded fromEnd context',
+        name: "expanded fromEnd context",
         diff: createWindowedSeparatorDiff([
           {
-            type: 'context',
+            type: "context",
             lines: 1,
             deletionLineIndex: COLLAPSED_BEFORE,
             additionLineIndex: COLLAPSED_BEFORE,
@@ -492,13 +470,13 @@ describe('iterateOverDiff', () => {
         ]),
         expandedHunks: new Map([[0, { fromStart: 2, fromEnd: 3 }]]),
         startingLine: 3,
-        expectedType: 'context-expanded',
+        expectedType: "context-expanded",
       },
       {
-        name: 'hunk context content',
+        name: "hunk context content",
         diff: createWindowedSeparatorDiff([
           {
-            type: 'context',
+            type: "context",
             lines: 3,
             deletionLineIndex: COLLAPSED_BEFORE,
             additionLineIndex: COLLAPSED_BEFORE,
@@ -506,13 +484,13 @@ describe('iterateOverDiff', () => {
         ]),
         expandedHunks: new Map([[0, { fromStart: 2, fromEnd: 0 }]]),
         startingLine: 3,
-        expectedType: 'context',
+        expectedType: "context",
       },
       {
-        name: 'hunk change content',
+        name: "hunk change content",
         diff: createWindowedSeparatorDiff([
           {
-            type: 'change',
+            type: "change",
             deletions: 3,
             deletionLineIndex: COLLAPSED_BEFORE,
             additions: 3,
@@ -521,7 +499,7 @@ describe('iterateOverDiff', () => {
         ]),
         expandedHunks: new Map([[0, { fromStart: 2, fromEnd: 0 }]]),
         startingLine: 3,
-        expectedType: 'change',
+        expectedType: "change",
       },
     ];
 
@@ -530,7 +508,7 @@ describe('iterateOverDiff', () => {
 
       iterateOverDiff({
         diff: testCase.diff,
-        diffStyle: 'unified',
+        diffStyle: "unified",
         expandedHunks: testCase.expandedHunks,
         startingLine: testCase.startingLine,
         totalLines: 1,
@@ -552,7 +530,7 @@ describe('iterateOverDiff', () => {
 
 const COLLAPSED_BEFORE = 10;
 
-type IterateOptions = Omit<Parameters<typeof iterateOverDiff>[0], 'callback'>;
+type IterateOptions = Omit<Parameters<typeof iterateOverDiff>[0], "callback">;
 
 interface LineSnapshot {
   unifiedLineIndex: number;
@@ -563,7 +541,7 @@ interface LineSnapshot {
 }
 
 interface RowSnapshot {
-  type: DiffLineCallbackProps['type'];
+  type: DiffLineCallbackProps["type"];
   hunkIndex: number;
   collapsedBefore: number;
   collapsedAfter: number;
@@ -595,9 +573,7 @@ function serializeRow(props: DiffLineCallbackProps): RowSnapshot {
   };
 }
 
-function serializeLine(
-  line: DiffLineMetadata | undefined
-): LineSnapshot | undefined {
+function serializeLine(line: DiffLineMetadata | undefined): LineSnapshot | undefined {
   if (line == null) {
     return undefined;
   }
@@ -612,10 +588,8 @@ function serializeLine(
 
 // A change block that pairs at least one deletion row with an addition row,
 // which is what exercises split-mode row pairing (shared splitLineIndex).
-function isPairedChangeBlock(content: Hunk['hunkContent'][number]): boolean {
-  return (
-    content.type === 'change' && content.deletions > 0 && content.additions > 0
-  );
+function isPairedChangeBlock(content: Hunk["hunkContent"][number]): boolean {
+  return content.type === "change" && content.deletions > 0 && content.additions > 0;
 }
 
 function createSingleHunkDiff({
@@ -624,7 +598,7 @@ function createSingleHunkDiff({
   trailingLineCount = 0,
 }: {
   collapsedBefore?: number;
-  hunkContent: Hunk['hunkContent'];
+  hunkContent: Hunk["hunkContent"];
   trailingLineCount?: number;
 }): FileDiffMetadata {
   const counts = getHunkContentCounts(hunkContent);
@@ -650,27 +624,20 @@ function createSingleHunkDiff({
   };
 
   return {
-    name: 'single-hunk.ts',
-    type: 'change',
+    name: "single-hunk.ts",
+    type: "change",
     hunks: [hunk],
     splitLineCount: collapsedBefore + counts.splitLineCount + trailingLineCount,
-    unifiedLineCount:
-      collapsedBefore + counts.unifiedLineCount + trailingLineCount,
+    unifiedLineCount: collapsedBefore + counts.unifiedLineCount + trailingLineCount,
     isPartial: false,
-    deletionLines: createLines(
-      collapsedBefore + counts.deletionCount + trailingLineCount
-    ),
-    additionLines: createLines(
-      collapsedBefore + counts.additionCount + trailingLineCount
-    ),
+    deletionLines: createLines(collapsedBefore + counts.deletionCount + trailingLineCount),
+    additionLines: createLines(collapsedBefore + counts.additionCount + trailingLineCount),
   };
 }
 
 // Build a minimal full-file diff where a collapsed leading gap can be partially
 // expanded, letting windowed iteration start after the separator boundary.
-function createWindowedSeparatorDiff(
-  hunkContent: Hunk['hunkContent']
-): FileDiffMetadata {
+function createWindowedSeparatorDiff(hunkContent: Hunk["hunkContent"]): FileDiffMetadata {
   const counts = getHunkContentCounts(hunkContent);
 
   const hunk: Hunk = {
@@ -694,8 +661,8 @@ function createWindowedSeparatorDiff(
   };
 
   return {
-    name: 'windowed-separator.ts',
-    type: 'change',
+    name: "windowed-separator.ts",
+    type: "change",
     hunks: [hunk],
     splitLineCount: COLLAPSED_BEFORE + counts.splitLineCount,
     unifiedLineCount: COLLAPSED_BEFORE + counts.unifiedLineCount,
@@ -705,7 +672,7 @@ function createWindowedSeparatorDiff(
   };
 }
 
-function getHunkContentCounts(hunkContent: Hunk['hunkContent']): {
+function getHunkContentCounts(hunkContent: Hunk["hunkContent"]): {
   additionCount: number;
   deletionCount: number;
   additionLines: number;
@@ -721,7 +688,7 @@ function getHunkContentCounts(hunkContent: Hunk['hunkContent']): {
   let unifiedLineCount = 0;
 
   for (const content of hunkContent) {
-    if (content.type === 'context') {
+    if (content.type === "context") {
       additionCount += content.lines;
       deletionCount += content.lines;
       splitLineCount += content.lines;

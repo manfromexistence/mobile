@@ -14,7 +14,7 @@ export interface CooldownAwareRetrySettings {
 function normalizeInteger(
   value: unknown,
   fallback: number,
-  options: { min?: number; max: number }
+  options: { min?: number; max: number },
 ): number {
   const min = options.min ?? 0;
 
@@ -33,7 +33,7 @@ function normalizeInteger(
 }
 
 export function resolveCooldownAwareRetrySettings(
-  settings: Record<string, unknown> | null | undefined
+  settings: Record<string, unknown> | null | undefined,
 ): CooldownAwareRetrySettings {
   const waitForCooldown = resolveResilienceSettings(settings).waitForCooldown;
   const maxRetries = normalizeInteger(waitForCooldown.maxRetries, waitForCooldown.maxRetries, {
@@ -46,7 +46,7 @@ export function resolveCooldownAwareRetrySettings(
     {
       min: 0,
       max: MAX_RETRY_INTERVAL_SEC,
-    }
+    },
   );
   const enabled = Boolean(waitForCooldown.enabled) && maxRetries > 0 && maxRetryWaitSec > 0;
 
@@ -129,7 +129,7 @@ export function getCooldownAwareRetryDecision({
 
 export async function waitForCooldownAwareRetry(
   waitMs: number,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): Promise<boolean> {
   if (signal?.aborted) return false;
   if (!Number.isFinite(waitMs) || waitMs <= 0) return signal?.aborted !== true;

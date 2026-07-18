@@ -1,1 +1,1 @@
-export { POST } from "../../api/newsletter"
+export { POST } from "../../api/newsletter";

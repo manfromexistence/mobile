@@ -1,12 +1,9 @@
-import type { DiffsThemeNames, ThemeRegistrationResolved } from '../../types';
-import {
-  prepareThemeResolution,
-  validateResolvedThemeName,
-} from './themeResolution';
-import { themeResolver } from './themeResolver';
+import type { DiffsThemeNames, ThemeRegistrationResolved } from "../../types";
+import { prepareThemeResolution, validateResolvedThemeName } from "./themeResolution";
+import { themeResolver } from "./themeResolver";
 
 export async function resolveThemes(
-  themes: DiffsThemeNames[]
+  themes: DiffsThemeNames[],
 ): Promise<ThemeRegistrationResolved[]> {
   for (const themeName of themes) {
     prepareThemeResolution(themeName);

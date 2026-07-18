@@ -18,7 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url,
       lastModified: new Date(),
       changeFrequency: "weekly",
-      priority: 1
-    }
+      priority: 1,
+    },
   ];
 }

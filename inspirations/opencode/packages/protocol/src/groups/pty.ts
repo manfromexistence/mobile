@@ -1,21 +1,21 @@
-import { Pty } from "@opencode-ai/schema/pty"
-import { PtyTicket } from "@opencode-ai/schema/pty-ticket"
-import { Location } from "@opencode-ai/schema/location"
-import { Schema } from "effect"
-import { HttpApiEndpoint, HttpApiGroup, HttpApiSchema, OpenApi } from "effect/unstable/httpapi"
-import { ForbiddenError, PtyNotFoundError } from "../errors"
-import { LocationQuery, locationQueryOpenApi } from "./location"
+import { Pty } from "@opencode-ai/schema/pty";
+import { PtyTicket } from "@opencode-ai/schema/pty-ticket";
+import { Location } from "@opencode-ai/schema/location";
+import { Schema } from "effect";
+import { HttpApiEndpoint, HttpApiGroup, HttpApiSchema, OpenApi } from "effect/unstable/httpapi";
+import { ForbiddenError, PtyNotFoundError } from "../errors";
+import { LocationQuery, locationQueryOpenApi } from "./location";
 
-export const PTY_CONNECT_TICKET_QUERY = "ticket"
-export const PTY_CONNECT_TOKEN_HEADER = "x-opencode-ticket"
-export const PTY_CONNECT_TOKEN_HEADER_VALUE = "1"
+export const PTY_CONNECT_TICKET_QUERY = "ticket";
+export const PTY_CONNECT_TOKEN_HEADER = "x-opencode-ticket";
+export const PTY_CONNECT_TOKEN_HEADER_VALUE = "1";
 
-const PTY_CONNECT_PATH = /^\/api\/pty\/[^/]+\/connect$/
+const PTY_CONNECT_PATH = /^\/api\/pty\/[^/]+\/connect$/;
 
 // Authorization middleware skips credential checks when this matches; the PTY connect handler
 // is then responsible for consuming and validating the ticket.
 export function hasPtyConnectTicketURL(url: URL) {
-  return PTY_CONNECT_PATH.test(url.pathname) && !!url.searchParams.get(PTY_CONNECT_TICKET_QUERY)
+  return PTY_CONNECT_PATH.test(url.pathname) && !!url.searchParams.get(PTY_CONNECT_TICKET_QUERY);
 }
 
 export const PtyGroup = HttpApiGroup.make("server.pty")
@@ -29,7 +29,8 @@ export const PtyGroup = HttpApiGroup.make("server.pty")
         OpenApi.annotations({
           identifier: "v2.pty.list",
           summary: "List PTY sessions",
-          description: "List PTY sessions for a location, including exited sessions retained until removal.",
+          description:
+            "List PTY sessions for a location, including exited sessions retained until removal.",
         }),
       ),
   )
@@ -109,7 +110,8 @@ export const PtyGroup = HttpApiGroup.make("server.pty")
         OpenApi.annotations({
           identifier: "v2.pty.connectToken",
           summary: "Create PTY WebSocket token",
-          description: "Create a short-lived single-use ticket for opening a PTY WebSocket connection.",
+          description:
+            "Create a short-lived single-use ticket for opening a PTY WebSocket connection.",
         }),
       ),
   )
@@ -124,12 +126,18 @@ export const PtyGroup = HttpApiGroup.make("server.pty")
       OpenApi.annotations({
         identifier: "v2.pty.connect",
         summary: "Connect to PTY session",
-        description: "Establish a WebSocket connection streaming PTY output and accepting terminal input.",
+        description:
+          "Establish a WebSocket connection streaming PTY output and accepting terminal input.",
         transform: (operation) => ({
           ...operation,
           parameters: [
             ...(operation.parameters ?? []),
-            ...["location[directory]", "location[workspace]", "cursor", PTY_CONNECT_TICKET_QUERY].map((name) => ({
+            ...[
+              "location[directory]",
+              "location[workspace]",
+              "cursor",
+              PTY_CONNECT_TICKET_QUERY,
+            ].map((name) => ({
               in: "query",
               name,
               schema: { type: "string" },
@@ -139,4 +147,6 @@ export const PtyGroup = HttpApiGroup.make("server.pty")
       }),
     ),
   )
-  .annotateMerge(OpenApi.annotations({ title: "pty", description: "Experimental location-scoped PTY routes." }))
+  .annotateMerge(
+    OpenApi.annotations({ title: "pty", description: "Experimental location-scoped PTY routes." }),
+  );

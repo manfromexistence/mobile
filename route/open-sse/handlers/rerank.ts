@@ -43,7 +43,7 @@ function buildAuthHeader(providerConfig, token) {
     return {
       queries: [body.query],
       documents: (body.documents || []).map((doc) =>
-        typeof doc === "string" ? doc : doc.text || ""
+        typeof doc === "string" ? doc : doc.text || "",
       ),
     };
   }
@@ -132,7 +132,7 @@ export async function handleRerank({
     const availableProviders = Object.keys(RERANK_PROVIDERS).join(", ");
     return errorResponse(
       400,
-      `No rerank provider found for model "${model}". Available: ${availableProviders}`
+      `No rerank provider found for model "${model}". Available: ${availableProviders}`,
     );
   }
 
@@ -170,7 +170,7 @@ export async function handleRerank({
       const errData = await res.json().catch(() => ({}));
       return errorResponse(
         res.status,
-        errData.message || errData.error?.message || `Provider returned HTTP ${res.status}`
+        errData.message || errData.error?.message || `Provider returned HTTP ${res.status}`,
       );
     }
 

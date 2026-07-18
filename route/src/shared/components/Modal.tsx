@@ -133,7 +133,7 @@ export default function Modal({
           "rounded-card shadow-2xl",
           "animate-in fade-in zoom-in-95 duration-200",
           sizes[size],
-          className
+          className,
         )}
       >
         {/* Header */}
@@ -141,33 +141,33 @@ export default function Modal({
           <div
             className={cn(
               "flex items-center justify-between border-b border-black/5 dark:border-white/5",
-              compactHeader ? "px-4 py-2.5" : "p-6"
+              compactHeader ? "px-4 py-2.5" : "p-6",
             )}
           >
             <div className="flex items-center min-w-0">
               <div
                 className={cn(
                   "flex items-center gap-1.5 mr-3 shrink-0",
-                  compactHeader ? "" : "gap-2 mr-4"
+                  compactHeader ? "" : "gap-2 mr-4",
                 )}
                 aria-hidden="true"
               >
                 <div
                   className={cn(
                     "rounded-full bg-[#FF5F56]",
-                    compactHeader ? "w-2.5 h-2.5" : "w-3 h-3"
+                    compactHeader ? "w-2.5 h-2.5" : "w-3 h-3",
                   )}
                 />
                 <div
                   className={cn(
                     "rounded-full bg-[#FFBD2E]",
-                    compactHeader ? "w-2.5 h-2.5" : "w-3 h-3"
+                    compactHeader ? "w-2.5 h-2.5" : "w-3 h-3",
                   )}
                 />
                 <div
                   className={cn(
                     "rounded-full bg-[#27C93F]",
-                    compactHeader ? "w-2.5 h-2.5" : "w-3 h-3"
+                    compactHeader ? "w-2.5 h-2.5" : "w-3 h-3",
                   )}
                 />
               </div>
@@ -176,7 +176,7 @@ export default function Modal({
                   id={titleId}
                   className={cn(
                     "font-semibold text-text-main truncate min-w-0",
-                    compactHeader ? "text-sm" : "text-lg"
+                    compactHeader ? "text-sm" : "text-lg",
                   )}
                 >
                   {title}

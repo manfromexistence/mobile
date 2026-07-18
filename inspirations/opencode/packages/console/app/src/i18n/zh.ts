@@ -1,5 +1,5 @@
-import type { Dict } from "./en"
-import { dict as en } from "./en"
+import type { Dict } from "./en";
+import { dict as en } from "./en";
 
 export const dict = {
   ...en,
@@ -140,12 +140,14 @@ export const dict = {
   "home.growth.monthlyDevs": "月活开发者",
 
   "home.privacy.title": "隐私优先的设计",
-  "home.privacy.body": "OpenCode 不存储您的任何代码或上下文数据，确保可以在对隐私敏感的环境中运行。",
+  "home.privacy.body":
+    "OpenCode 不存储您的任何代码或上下文数据，确保可以在对隐私敏感的环境中运行。",
   "home.privacy.learnMore": "了解更多关于",
   "home.privacy.link": "隐私",
 
   "home.faq.q1": "什么是 OpenCode？",
-  "home.faq.a1": "OpenCode 是一个开源代理，帮助您使用任意 AI 模型编写和运行代码。它提供终端界面、桌面应用及 IDE 扩展。",
+  "home.faq.a1":
+    "OpenCode 是一个开源代理，帮助您使用任意 AI 模型编写和运行代码。它提供终端界面、桌面应用及 IDE 扩展。",
   "home.faq.q2": "如何使用 OpenCode？",
   "home.faq.a2.before": "最简单的入门方式是阅读",
   "home.faq.a2.link": "介绍",
@@ -153,7 +155,8 @@ export const dict = {
   "home.faq.a3.p1": "不一定。OpenCode 自带一组免费模型，无需创建账户即可使用。",
   "home.faq.a3.p2.beforeZen": "此外，您可以通过创建",
   "home.faq.a3.p2.afterZen": "账户来使用流行的编程模型。",
-  "home.faq.a3.p3": "虽然我们鼓励使用 Zen，但 OpenCode 也支持所有主流提供商，如 OpenAI, Anthropic, xAI 等。",
+  "home.faq.a3.p3":
+    "虽然我们鼓励使用 Zen，但 OpenCode 也支持所有主流提供商，如 OpenAI, Anthropic, xAI 等。",
   "home.faq.a3.p4.beforeLocal": "您甚至可以连接您的",
   "home.faq.a3.p4.localLink": "本地模型",
   "home.faq.q4": "我可以使用现有的 AI 订阅吗？",
@@ -165,7 +168,8 @@ export const dict = {
   "home.faq.a5.and": "和",
   "home.faq.a5.web": "网页端",
   "home.faq.q6": "OpenCode 多少钱？",
-  "home.faq.a6": "OpenCode 是 100% 免费使用的。它还自带一组免费模型。如果您连接其他提供商，可能会产生额外费用。",
+  "home.faq.a6":
+    "OpenCode 是 100% 免费使用的。它还自带一组免费模型。如果您连接其他提供商，可能会产生额外费用。",
   "home.faq.q7": "数据和隐私如何？",
   "home.faq.a7.p1": "只有当您使用我们的免费模型或创建分享链接时，您的数据和信息才会被存储。",
   "home.faq.a7.p2.beforeModels": "了解更多关于",
@@ -190,7 +194,8 @@ export const dict = {
     "Zen 为您提供一组精选的 AI 模型，这些模型经过 OpenCode 专门针对编程代理的测试和基准测试。无需担心不稳定的性能和质量，直接使用行之有效的验证模型。",
 
   "zen.faq.q1": "什么是 OpenCode Zen？",
-  "zen.faq.a1": "Zen 是一组由 OpenCode 团队创建的，专门针对编程代理进行测试和基准测试的 AI 模型精选集。",
+  "zen.faq.a1":
+    "Zen 是一组由 OpenCode 团队创建的，专门针对编程代理进行测试和基准测试的 AI 模型精选集。",
   "zen.faq.q2": "为什么 Zen 更准确？",
   "zen.faq.a2":
     "Zen 仅提供经过专门针对编程代理测试和基准测试的模型。正如你不会用黄油刀切牛排一样，也不要用糟糕的模型来写代码。",
@@ -205,7 +210,8 @@ export const dict = {
   "zen.faq.a4.p2.accountLink": "账户中设置每月支出限额",
   "zen.faq.a4.p3": "为覆盖成本，OpenCode 仅收取少量支付处理费，每充值 $20 收取 $1.23。",
   "zen.faq.q5": "数据和隐私如何？",
-  "zen.faq.a5.beforeExceptions": "所有 Zen 模型均托管在美国。提供商遵循零留存政策，不使用您的数据进行模型训练，",
+  "zen.faq.a5.beforeExceptions":
+    "所有 Zen 模型均托管在美国。提供商遵循零留存政策，不使用您的数据进行模型训练，",
   "zen.faq.a5.exceptionsLink": "以下例外情况除外",
   "zen.faq.q6": "我可以设置支出限额吗？",
   "zen.faq.a6": "可以，您可以在账户中设置每月支出限额。",
@@ -220,7 +226,8 @@ export const dict = {
   "zen.pricing.fee": "(+ $1.23 银行卡手续费)",
   "zen.pricing.body": "可配合任何代理使用。支持设置月度消费限额。随时取消。",
   "zen.problem.title": "Zen 解决了什么问题？",
-  "zen.problem.body": "市面上有太多模型，但只有少数能与编程代理良好配合。大多数提供商配置不同，导致结果参差不齐。",
+  "zen.problem.body":
+    "市面上有太多模型，但只有少数能与编程代理良好配合。大多数提供商配置不同，导致结果参差不齐。",
   "zen.problem.subtitle": "我们要为所有人解决这个问题，不仅仅是 OpenCode 用户。",
   "zen.problem.item1": "测试精选模型并咨询其团队",
   "zen.problem.item2": "与提供商合作确保正确交付",
@@ -236,7 +243,8 @@ export const dict = {
   "zen.how.step3.title": "自动充值",
   "zen.how.step3.body": "当您的余额低于 $5 时，我们将自动充值 $20",
   "zen.privacy.title": "您的隐私对我们很重要",
-  "zen.privacy.beforeExceptions": "所有 Zen 模型均托管在美国。提供商遵循零留存政策，不使用您的数据进行模型训练，",
+  "zen.privacy.beforeExceptions":
+    "所有 Zen 模型均托管在美国。提供商遵循零留存政策，不使用您的数据进行模型训练，",
   "zen.privacy.exceptionsLink": "以下例外情况除外",
 
   "go.title": "OpenCode Go | 人人可用的低成本编程模型",
@@ -301,9 +309,11 @@ export const dict = {
   "go.how.step3.title": "开始编程",
   "go.how.step3.body": "可靠访问开源模型",
   "go.privacy.title": "您的隐私对我们很重要",
-  "go.privacy.body": "该计划主要面向国际用户设计，模型部署在美国、欧盟和新加坡，以确保稳定的全球访问。",
+  "go.privacy.body":
+    "该计划主要面向国际用户设计，模型部署在美国、欧盟和新加坡，以确保稳定的全球访问。",
   "go.privacy.contactAfter": "如果您有任何问题。",
-  "go.privacy.beforeExceptions": "Go 模型托管在美国。提供商遵循零留存政策，不使用您的数据进行模型训练，",
+  "go.privacy.beforeExceptions":
+    "Go 模型托管在美国。提供商遵循零留存政策，不使用您的数据进行模型训练，",
   "go.privacy.exceptionsLink": "以下例外情况除外",
   "go.faq.q1": "什么是 OpenCode Go？",
   "go.faq.a1": "Go 是一项低成本订阅服务，为您提供对强大的开源模型的可靠访问，用于代理编程。",
@@ -322,7 +332,8 @@ export const dict = {
   "go.faq.q5": "数据和隐私如何？",
   "go.faq.a5.body":
     "该计划主要面向国际用户设计，模型部署在美国、欧盟和新加坡，以确保稳定的全球访问。我们的提供商遵循零留存政策，不使用您的数据进行模型训练。",
-  "go.faq.a5.beforeExceptions": "Go 模型托管在美国。提供商遵循零留存政策，不使用您的数据进行模型训练，",
+  "go.faq.a5.beforeExceptions":
+    "Go 模型托管在美国。提供商遵循零留存政策，不使用您的数据进行模型训练，",
   "go.faq.a5.exceptionsLink": "以下例外情况除外",
   "go.faq.q6": "我可以充值余额吗？",
   "go.faq.a6": "如果您需要更多用量，可以在账户中充值余额。",
@@ -353,10 +364,13 @@ export const dict = {
   "zen.api.error.insufficientBalance": "余额不足。请在此处管理您的计费：{{billingUrl}}",
   "zen.api.error.workspaceMonthlyLimitReached":
     "您的工作区已达到每月支出限额 ${{amount}}。请在此处管理您的限额：{{billingUrl}}",
-  "zen.api.error.userMonthlyLimitReached": "您已达到每月支出限额 ${{amount}}。请在此处管理您的限额：{{membersUrl}}",
+  "zen.api.error.userMonthlyLimitReached":
+    "您已达到每月支出限额 ${{amount}}。请在此处管理您的限额：{{membersUrl}}",
   "zen.api.error.modelDisabled": "模型已禁用",
-  "zen.api.error.regionNotAllowed": "该模型部署在中国。如果你想使用该模型，请在设置中启用它：{{consoleGoUrl}}",
-  "zen.api.error.trialEnded": "{{model}} 的限免活动已结束。您可以订阅 OpenCode Go 继续使用该模型 - {{link}}",
+  "zen.api.error.regionNotAllowed":
+    "该模型部署在中国。如果你想使用该模型，请在设置中启用它：{{consoleGoUrl}}",
+  "zen.api.error.trialEnded":
+    "{{model}} 的限免活动已结束。您可以订阅 OpenCode Go 继续使用该模型 - {{link}}",
 
   "black.meta.title": "OpenCode Black | 访问全球顶尖编程模型",
   "black.meta.description": "通过 OpenCode Black 订阅计划使用 Claude, GPT, Gemini 等模型。",
@@ -420,9 +434,11 @@ export const dict = {
   "workspace.home.billing.currentBalance": "当前余额",
 
   "workspace.newUser.feature.tested.title": "经过测试与验证的模型",
-  "workspace.newUser.feature.tested.body": "我们专门针对编程代理对模型进行了基准测试和测试，以确保最佳性能。",
+  "workspace.newUser.feature.tested.body":
+    "我们专门针对编程代理对模型进行了基准测试和测试，以确保最佳性能。",
   "workspace.newUser.feature.quality.title": "最高质量",
-  "workspace.newUser.feature.quality.body": "访问配置为最佳性能的模型 - 无需降级或路由到更便宜的提供商。",
+  "workspace.newUser.feature.quality.body":
+    "访问配置为最佳性能的模型 - 无需降级或路由到更便宜的提供商。",
   "workspace.newUser.feature.lockin.title": "无锁定",
   "workspace.newUser.feature.lockin.body":
     "将 Zen 与任何编程代理结合使用，并在需要时继续在 OpenCode 中使用其他提供商。",
@@ -634,8 +650,10 @@ export const dict = {
   "workspace.lite.providers.title": "提供商",
   "workspace.lite.providers.description": "控制用于路由的提供商。",
   "workspace.lite.providers.useChina": "启用部署在中国的模型",
-  "workspace.lite.black.message": "您当前已订阅 OpenCode Black 或在候补名单中。如需切换到 Go，请先取消订阅。",
-  "workspace.lite.other.message": "此工作区中的另一位成员已经订阅了 OpenCode Go。每个工作区只有一名成员可以订阅。",
+  "workspace.lite.black.message":
+    "您当前已订阅 OpenCode Black 或在候补名单中。如需切换到 Go，请先取消订阅。",
+  "workspace.lite.other.message":
+    "此工作区中的另一位成员已经订阅了 OpenCode Go。每个工作区只有一名成员可以订阅。",
   "workspace.lite.promo.description":
     "OpenCode Go 起价为 {{price}}，之后 $10/月，并提供对流行开放编码模型的可靠访问，同时享有充裕的使用限额。",
   "workspace.lite.promo.price": "首月 $5",
@@ -798,4 +816,4 @@ export const dict = {
   "bench.detail.table.duration": "耗时",
   "bench.detail.run.title": "运行 {{n}}",
   "bench.detail.rawJson": "原始 JSON",
-} satisfies Dict
+} satisfies Dict;

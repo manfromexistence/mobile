@@ -27,11 +27,11 @@ test("api-manager splits keys into normal + quota sections", () => {
   assert.ok(src.includes("const isQuotaKey"), "must classify quota keys by allowedQuotas");
   assert.ok(
     src.includes("allowedQuotas") && /allowedQuotas\.length\s*>\s*0/.test(src),
-    "quota key = allowedQuotas non-empty"
+    "quota key = allowedQuotas non-empty",
   );
   assert.ok(
     src.includes("const quotaKeys") && src.includes("const normalKeys"),
-    "must split the two arrays"
+    "must split the two arrays",
   );
   assert.ok(src.includes("normalKeys.map(renderKeyRow)"), "normal section renders rows");
   assert.ok(src.includes("quotaKeys.map(renderKeyRow)"), "quota section renders rows");
@@ -42,11 +42,11 @@ test("api-manager differentiates quota keys (pill + groups + mode)", () => {
   assert.ok(src.includes('t("quotaModeOnly")'), "quota rows must show the qtSd-only mode chip");
   assert.ok(
     src.includes("quotaGroupsForKey") && src.includes("quotaPoolGroup"),
-    "must map a quota key's pools to group names for the chips"
+    "must map a quota key's pools to group names for the chips",
   );
   assert.ok(
     src.includes("/api/quota/pools") && src.includes("/api/quota/groups"),
-    "must fetch pools + groups to resolve group names"
+    "must fetch pools + groups to resolve group names",
   );
 });
 

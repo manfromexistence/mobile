@@ -107,11 +107,11 @@ describe("RTK grouping strategy (R5)", () => {
 
     assert.ok(
       result.techniquesUsed.includes("rtk-grouping"),
-      `techniquesUsed must include 'rtk-grouping', got: ${result.techniquesUsed.join(", ")}`
+      `techniquesUsed must include 'rtk-grouping', got: ${result.techniquesUsed.join(", ")}`,
     );
     assert.ok(
       result.rulesApplied.some((r) => r.startsWith("rtk:group")),
-      `rulesApplied must include rtk:group* rule, got: ${result.rulesApplied.join(", ")}`
+      `rulesApplied must include rtk:group* rule, got: ${result.rulesApplied.join(", ")}`,
     );
   });
 
@@ -123,7 +123,7 @@ describe("RTK grouping strategy (R5)", () => {
 
     assert.ok(
       !result.techniquesUsed.includes("rtk-grouping"),
-      "grouping must be OFF by default to preserve existing behaviour"
+      "grouping must be OFF by default to preserve existing behaviour",
     );
   });
 
@@ -136,7 +136,7 @@ describe("RTK grouping strategy (R5)", () => {
 
     assert.ok(
       result.text.length < input.length,
-      "grouped output must be shorter than the original"
+      "grouped output must be shorter than the original",
     );
   });
 });

@@ -51,7 +51,7 @@ function modelRejectsAdaptiveAndEffort(modelId: string | null | undefined): bool
  */
 export function normalizeClaudeHaikuConstraints<T extends Record<string, unknown>>(
   body: T,
-  model: string | null | undefined
+  model: string | null | undefined,
 ): T {
   if (!modelRejectsAdaptiveAndEffort(model)) return body;
   const record = asRecord(body);

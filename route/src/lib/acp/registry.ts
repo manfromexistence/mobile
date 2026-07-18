@@ -261,7 +261,7 @@ function normalizeCommandToken(command: string): string {
 export function resolveVersionProbe(
   binary: string,
   versionCommand: string,
-  requireBinaryMatch = false
+  requireBinaryMatch = false,
 ): { command: string; args: string[] } | null {
   const tokens = tokenizeVersionCommand(versionCommand);
   if (!tokens) {
@@ -289,7 +289,7 @@ export function resolveVersionProbe(
 
 export function shouldUseShellForVersionProbe(
   command: string,
-  platform = process.platform
+  platform = process.platform,
 ): boolean {
   if (platform !== "win32") return false;
 
@@ -306,7 +306,7 @@ export function shouldUseShellForVersionProbe(
  */
 function detectAgent(
   def: Omit<CliAgentInfo, "version" | "installed">,
-  isCustom = false
+  isCustom = false,
 ): CliAgentInfo {
   let version: string | null = null;
   let installed = false;

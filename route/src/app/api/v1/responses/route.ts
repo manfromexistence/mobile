@@ -38,7 +38,7 @@ export async function OPTIONS() {
  */
 export async function withCodexPreferredModel(
   request: Request,
-  preParsedBody: any = null
+  preParsedBody: any = null,
 ): Promise<{ request: Request; body: any }> {
   try {
     const body =
@@ -53,7 +53,7 @@ export async function withCodexPreferredModel(
     const { model, changed } = await resolveResponsesApiModel(
       body.model,
       getModelInfo,
-      async (name) => !!(await getComboByName(name))
+      async (name) => !!(await getComboByName(name)),
     );
     if (!changed) return { request, body };
 
@@ -86,7 +86,7 @@ async function postHandler(request: any, context: any, preParsedBody: any = null
   // Non-streaming callers (JSON) keep the original verbatim path untouched.
   const { request: resolved, body: resolvedBody } = await withCodexPreferredModel(
     request,
-    preParsedBody
+    preParsedBody,
   );
   const accept = String(request.headers?.get?.("accept") || "").toLowerCase();
   if (accept.includes("text/event-stream")) {

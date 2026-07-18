@@ -18,22 +18,26 @@ const fallbackHomepage = "https://dotmatrix.zzzzshawn.cloud";
 const registryName = "@dotmatrix";
 const allRegistryItemName = "all";
 
-const sharedSourceFiles: Array<{ absolutePath: string; targetPath: string; type: RegistryFile["type"] }> = [
+const sharedSourceFiles: Array<{
+  absolutePath: string;
+  targetPath: string;
+  type: RegistryFile["type"];
+}> = [
   {
     absolutePath: path.join(manualRoot, "dotmatrix-core.tsx"),
     targetPath: "components/ui/dotmatrix-core.tsx",
-    type: "registry:lib"
+    type: "registry:lib",
   },
   {
     absolutePath: path.join(manualRoot, "dotmatrix-hooks.ts"),
     targetPath: "components/ui/dotmatrix-hooks.ts",
-    type: "registry:lib"
+    type: "registry:lib",
   },
   {
     absolutePath: path.join(loadersRoot, "styles.css"),
     targetPath: "components/dotmatrix-loader.css",
-    type: "registry:style"
-  }
+    type: "registry:style",
+  },
 ];
 
 async function readSource(relativePath: string): Promise<string> {
@@ -65,7 +69,7 @@ const importRewrites: ReadonlyArray<{ from: string; to: string }> = [
   { from: "../hooks/use-cycle-phase", to: "@/components/ui/dotmatrix-hooks" },
   { from: "../hooks/use-stepped-cycle", to: "@/components/ui/dotmatrix-hooks" },
   { from: "../hooks/use-prefers-reduced-motion", to: "@/components/ui/dotmatrix-hooks" },
-  { from: "../core/phases", to: "@/components/ui/dotmatrix-hooks" }
+  { from: "../core/phases", to: "@/components/ui/dotmatrix-hooks" },
 ];
 
 /** shadcn installs all files under components/ui/; use the default ui alias so paths resolve in consumer apps. */
@@ -90,10 +94,10 @@ function formatDefaultLiteral(value: unknown): string | null {
 
 function applyParamDefaults(
   source: string,
-  defaults: Partial<Record<"size" | "dotSize" | "pattern" | "animated" | "speed", unknown>>
+  defaults: Partial<Record<"size" | "dotSize" | "pattern" | "animated" | "speed", unknown>>,
 ): string {
   const fnMatch = source.match(
-    /export function \w+\(\{\n([\s\S]*?)\n\}: [\w<>{}\[\]\s|&?,.]+?\) \{/
+    /export function \w+\(\{\n([\s\S]*?)\n\}: [\w<>{}\[\]\s|&?,.]+?\) \{/,
   );
   if (!fnMatch?.[1]) {
     return source;
@@ -131,7 +135,7 @@ function applyParamDefaults(
 
 function applyDotMatrixBaseRestDefaults(
   source: string,
-  defaults: Partial<Record<"size" | "dotSize", unknown>>
+  defaults: Partial<Record<"size" | "dotSize", unknown>>,
 ): string {
   const hasRest = /\.\.\.rest/.test(source);
   const hasDotMatrixBase = /<DotMatrixBase/.test(source);
@@ -146,14 +150,14 @@ function applyDotMatrixBaseRestDefaults(
   if (sizeLiteral != null && !/size=\{rest\.size \?\?/.test(injected)) {
     injected = injected.replace(
       /<DotMatrixBase\s*\n\s*\{\.\.\.rest\}/,
-      (match) => `${match}\n      size={rest.size ?? ${sizeLiteral}}`
+      (match) => `${match}\n      size={rest.size ?? ${sizeLiteral}}`,
     );
   }
 
   if (dotSizeLiteral != null && !/dotSize=\{rest\.dotSize \?\?/.test(injected)) {
     injected = injected.replace(
       /<DotMatrixBase\s*\n\s*\{\.\.\.rest\}(?:\n\s*size=\{rest\.size \?\? [^\n]+\})?/,
-      (match) => `${match}\n      dotSize={rest.dotSize ?? ${dotSizeLiteral}}`
+      (match) => `${match}\n      dotSize={rest.dotSize ?? ${dotSizeLiteral}}`,
     );
   }
 
@@ -171,12 +175,12 @@ function applyInstallDefaults(source: string, slug: string): string {
     dotSize: defaults.dotSize,
     pattern: defaults.pattern,
     animated: defaults.animated,
-    speed: defaults.speed
+    speed: defaults.speed,
   });
 
   return applyDotMatrixBaseRestDefaults(withParamDefaults, {
     size: defaults.size,
-    dotSize: defaults.dotSize
+    dotSize: defaults.dotSize,
   });
 }
 
@@ -191,7 +195,7 @@ async function build() {
         content = rewriteRegistrySharedCrossImports(content);
       }
       return { ...sharedFile, content };
-    })
+    }),
   );
 
   const loaderRegistryItems = await Promise.all(
@@ -202,16 +206,16 @@ async function build() {
         rewriteRegistrySharedCrossImports(
           importRewrites.reduce(
             (current, { from, to }) => current.replaceAll(`"${from}"`, `"${to}"`),
-            await readSource(path.join("loaders", loader.fileName))
-          )
+            await readSource(path.join("loaders", loader.fileName)),
+          ),
         ),
-        loader.slug
+        loader.slug,
       );
       const componentPath = `components/ui/${loader.fileName}`;
       files.push({
         path: componentPath,
         type: "registry:ui",
-        content: componentSource
+        content: componentSource,
       });
       await writeRegistrySource(componentPath, componentSource);
 
@@ -220,7 +224,7 @@ async function build() {
         files.push({
           path: sharedFile.targetPath,
           type: sharedFile.type,
-          content: sharedFile.content
+          content: sharedFile.content,
         });
       }
 
@@ -233,15 +237,15 @@ async function build() {
         dependencies: loader.dependencies,
         registryDependencies: [],
         meta: {
-          animation: loader.motionOptional ? "css + optional motion" : "css-only"
+          animation: loader.motionOptional ? "css + optional motion" : "css-only",
         },
-        files
+        files,
       };
 
       await writeFile(
         path.join(publicRegistryDir, `${loader.slug}.json`),
         JSON.stringify(item, null, 2) + "\n",
-        "utf-8"
+        "utf-8",
       );
 
       await writeFile(path.join(publicRegistryDir, `${loader.slug}.tsx`), componentSource, "utf-8");
@@ -254,9 +258,9 @@ async function build() {
         description: loader.description,
         dependencies: loader.dependencies,
         registryDependencies: [],
-        url: `/r/${loader.slug}.json`
+        url: `/r/${loader.slug}.json`,
       };
-    })
+    }),
   );
 
   const allFilesByPath = new Map<string, RegistryFile>();
@@ -278,15 +282,15 @@ async function build() {
     dependencies: [],
     registryDependencies: [],
     meta: {
-      animation: "css-only + optional motion"
+      animation: "css-only + optional motion",
     },
-    files: allRegistryFiles
+    files: allRegistryFiles,
   };
 
   await writeFile(
     path.join(publicRegistryDir, `${allRegistryItemName}.json`),
     JSON.stringify(allItem, null, 2) + "\n",
-    "utf-8"
+    "utf-8",
   );
 
   const registryItems = [
@@ -297,7 +301,7 @@ async function build() {
       description: item.description,
       dependencies: item.dependencies,
       registryDependencies: item.registryDependencies,
-      url: item.url
+      url: item.url,
     })),
     {
       name: allRegistryItemName,
@@ -306,33 +310,33 @@ async function build() {
       description: allItem.description,
       dependencies: allItem.dependencies,
       registryDependencies: allItem.registryDependencies,
-      url: `/r/${allRegistryItemName}.json`
-    }
+      url: `/r/${allRegistryItemName}.json`,
+    },
   ];
 
   const registry = {
     $schema: "https://ui.shadcn.com/schema/registry.json",
     name: registryName,
     homepage: process.env.REGISTRY_HOMEPAGE ?? fallbackHomepage,
-    items: registryItems
+    items: registryItems,
   };
 
   await writeFile(
     path.join(docsRoot, "registry.json"),
     JSON.stringify(registry, null, 2) + "\n",
-    "utf-8"
+    "utf-8",
   );
 
   await writeFile(
     path.join(publicRegistryDir, "index.json"),
     JSON.stringify(registryItems, null, 2) + "\n",
-    "utf-8"
+    "utf-8",
   );
 
   await writeFile(
     path.join(publicRegistryDir, "registry.json"),
     JSON.stringify(registry, null, 2) + "\n",
-    "utf-8"
+    "utf-8",
   );
 }
 

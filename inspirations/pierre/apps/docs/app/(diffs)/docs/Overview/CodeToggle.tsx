@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import type { PreloadedFileResult } from '@pierre/diffs/ssr';
-import { useState } from 'react';
+import type { PreloadedFileResult } from "@pierre/diffs/ssr";
+import { useState } from "react";
 
-import { DocsCodeExample } from '@/components/docs/DocsCodeExample';
-import type { DocsExampleTypes } from '@/components/docs/types';
-import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group';
+import { DocsCodeExample } from "@/components/docs/DocsCodeExample";
+import type { DocsExampleTypes } from "@/components/docs/types";
+import { ButtonGroup, ButtonGroupItem } from "@/components/ui/button-group";
 
 interface CodeToggleProps {
   reactSingleFile: PreloadedFileResult<undefined>;
@@ -20,20 +20,18 @@ export function CodeToggle({
   vanillaSingleFile,
   vanillaPatchFile,
 }: CodeToggleProps) {
-  const [type, setType] = useState<DocsExampleTypes>('vanilla');
-  const [example, setExample] = useState<'single-file' | 'patch-file'>(
-    'single-file'
-  );
+  const [type, setType] = useState<DocsExampleTypes>("vanilla");
+  const [example, setExample] = useState<"single-file" | "patch-file">("single-file");
 
   const file = (() => {
-    if (type === 'react') {
-      if (example === 'single-file') {
+    if (type === "react") {
+      if (example === "single-file") {
         return reactSingleFile;
       } else {
         return reactPatchFile;
       }
     }
-    if (example === 'single-file') {
+    if (example === "single-file") {
       return vanillaSingleFile;
     } else {
       return vanillaPatchFile;
@@ -53,9 +51,7 @@ export function CodeToggle({
         </ButtonGroup>
         <ButtonGroup
           value={example}
-          onValueChange={(value) =>
-            setExample(value as 'single-file' | 'patch-file')
-          }
+          onValueChange={(value) => setExample(value as "single-file" | "patch-file")}
         >
           <ButtonGroupItem value="single-file">Single file</ButtonGroupItem>
           <ButtonGroupItem value="patch-file">Patch file</ButtonGroupItem>

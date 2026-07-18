@@ -6,7 +6,7 @@ import { startHttpProxyServer } from "../../src/mitm/inspector/httpProxyServer.t
 import { globalTrafficBuffer } from "../../src/mitm/inspector/buffer.ts";
 
 async function withUpstream(
-  handler: (req: http.IncomingMessage, res: http.ServerResponse) => void
+  handler: (req: http.IncomingMessage, res: http.ServerResponse) => void,
 ): Promise<{ port: number; close: () => Promise<void> }> {
   const server = http.createServer(handler);
   await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", () => resolve()));
@@ -36,7 +36,7 @@ async function withTcpServer(): Promise<{ port: number; close: () => Promise<voi
 function sendThroughProxy(
   proxyPort: number,
   upstreamPort: number,
-  method = "GET"
+  method = "GET",
 ): Promise<{ status: number; body: string }> {
   return new Promise((resolve, reject) => {
     const req = http.request(
@@ -51,9 +51,9 @@ function sendThroughProxy(
         const chunks: Buffer[] = [];
         res.on("data", (c) => chunks.push(c));
         res.on("end", () =>
-          resolve({ status: res.statusCode ?? 0, body: Buffer.concat(chunks).toString("utf8") })
+          resolve({ status: res.statusCode ?? 0, body: Buffer.concat(chunks).toString("utf8") }),
         );
-      }
+      },
     );
     req.once("error", reject);
     req.end();
@@ -134,7 +134,7 @@ test("EADDRINUSE rejects with code", async () => {
         assert.ok(err);
         assert.equal(err.code, "EADDRINUSE");
         return true;
-      }
+      },
     );
   } finally {
     await first.stop();

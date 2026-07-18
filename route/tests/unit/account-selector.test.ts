@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { selectAccountP2C, selectAccount } =
-  await import("../../open-sse/services/accountSelector.ts");
+const { selectAccountP2C, selectAccount } = await import(
+  "../../open-sse/services/accountSelector.ts"
+);
 
 // ─── selectAccountP2C ───────────────────────────────────────────────────────
 
@@ -91,7 +92,7 @@ test("selectAccount: round-robin with excludeConnectionId skips excluded", () =>
   const { account: acc2 } = selectAccount(
     accounts.filter((a) => a.id !== "a"),
     "round-robin",
-    state
+    state,
   );
 
   // Should pick 'b' or 'c', not 'a'

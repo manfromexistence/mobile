@@ -1,17 +1,22 @@
-import { describe, expect, test } from "bun:test"
-import { LLMEvent, ToolFailure } from "@opencode-ai/llm"
-import { LLMClient, RequestExecutor, WebSocketExecutor, type LLMClientShape } from "@opencode-ai/llm/route"
-import { jsonSchema, tool, type ModelMessage, type Tool } from "ai"
-import { Effect, Fiber, Layer, Stream } from "effect"
-import { FetchHttpClient } from "effect/unstable/http"
-import { LLMNative } from "@/session/llm/native-request"
-import { LLMNativeRuntime } from "@/session/llm/native-runtime"
-import type { Provider } from "@/provider/provider"
+import { describe, expect, test } from "bun:test";
+import { LLMEvent, ToolFailure } from "@opencode-ai/llm";
+import {
+  LLMClient,
+  RequestExecutor,
+  WebSocketExecutor,
+  type LLMClientShape,
+} from "@opencode-ai/llm/route";
+import { jsonSchema, tool, type ModelMessage, type Tool } from "ai";
+import { Effect, Fiber, Layer, Stream } from "effect";
+import { FetchHttpClient } from "effect/unstable/http";
+import { LLMNative } from "@/session/llm/native-request";
+import { LLMNativeRuntime } from "@/session/llm/native-runtime";
+import type { Provider } from "@/provider/provider";
 
-import { OAUTH_DUMMY_KEY } from "@/auth"
-import { testEffect } from "../lib/effect"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { ModelV2 } from "@opencode-ai/core/model"
+import { OAUTH_DUMMY_KEY } from "@/auth";
+import { testEffect } from "../lib/effect";
+import { ProviderV2 } from "@opencode-ai/core/provider";
+import { ModelV2 } from "@opencode-ai/core/model";
 
 const baseModel: Provider.Model = {
   id: ModelV2.ID.make("gpt-5-mini"),
@@ -62,7 +67,7 @@ const baseModel: Provider.Model = {
     "x-model": "model-header",
   },
   release_date: "2026-01-01",
-}
+};
 
 const providerInfo: Provider.Info = {
   id: ProviderV2.ID.make("openai"),
@@ -71,51 +76,59 @@ const providerInfo: Provider.Info = {
   env: ["OPENAI_API_KEY"],
   options: { apiKey: "test-openai-key" },
   models: {},
-}
+};
 
 const it = testEffect(
   LLMClient.layer.pipe(
     Layer.provide(
-      Layer.mergeAll(RequestExecutor.layer.pipe(Layer.provide(FetchHttpClient.layer)), WebSocketExecutor.layer),
+      Layer.mergeAll(
+        RequestExecutor.layer.pipe(Layer.provide(FetchHttpClient.layer)),
+        WebSocketExecutor.layer,
+      ),
     ),
   ),
-)
+);
 
 function responsesStream(chunks: unknown[]) {
-  return new Response(chunks.map((chunk) => `data: ${JSON.stringify(chunk)}`).join("\n\n") + "\n\n", {
-    status: 200,
-    headers: { "Content-Type": "text/event-stream" },
-  })
+  return new Response(
+    chunks.map((chunk) => `data: ${JSON.stringify(chunk)}`).join("\n\n") + "\n\n",
+    {
+      status: 200,
+      headers: { "Content-Type": "text/event-stream" },
+    },
+  );
 }
 
-type NativeRequestInput = Parameters<typeof LLMNative.request>[0]
+type NativeRequestInput = Parameters<typeof LLMNative.request>[0];
 
-const sessionText = (text: string) => ({ type: "text" as const, text })
+const sessionText = (text: string) => ({ type: "text" as const, text });
 
 const sessionOpenAIReasoning = (
   text: string,
   options: {
-    readonly storedAs: "providerMetadata" | "providerOptions"
-    readonly itemId: string
-    readonly encryptedContent: string | null
+    readonly storedAs: "providerMetadata" | "providerOptions";
+    readonly itemId: string;
+    readonly encryptedContent: string | null;
   },
 ) => {
   const metadata = {
     openai: { itemId: options.itemId, reasoningEncryptedContent: options.encryptedContent },
-  }
+  };
   if (options.storedAs === "providerMetadata")
-    return Object.assign({ type: "reasoning" as const, text }, { providerMetadata: metadata })
-  return Object.assign({ type: "reasoning" as const, text }, { providerOptions: metadata })
-}
+    return Object.assign({ type: "reasoning" as const, text }, { providerMetadata: metadata });
+  return Object.assign({ type: "reasoning" as const, text }, { providerOptions: metadata });
+};
 
-type SessionAssistantPart = ReturnType<typeof sessionText> | ReturnType<typeof sessionOpenAIReasoning>
+type SessionAssistantPart =
+  | ReturnType<typeof sessionText>
+  | ReturnType<typeof sessionOpenAIReasoning>;
 
 const storedSession = {
   user: (content: string): ModelMessage => ({ role: "user", content }),
   assistant: (content: SessionAssistantPart[]): ModelMessage => ({ role: "assistant", content }),
   text: sessionText,
   openaiReasoning: sessionOpenAIReasoning,
-}
+};
 
 const openAIResponses = {
   user: (text: string) => ({ role: "user", content: [{ type: "input_text", text }] }),
@@ -125,16 +138,17 @@ const openAIResponses = {
     encrypted_content: encryptedContent,
     summary: [{ type: "summary_text", text }],
   }),
-}
+};
 
-const prepareNativeRequest = (input: NativeRequestInput) => LLMClient.prepare(LLMNative.request(input))
+const prepareNativeRequest = (input: NativeRequestInput) =>
+  LLMClient.prepare(LLMNative.request(input));
 
 const expectOpenAIResponsesRequest = (input: {
-  readonly history: NativeRequestInput["messages"]
-  readonly providerOptions?: NativeRequestInput["providerOptions"]
-  readonly maxOutputTokens?: NativeRequestInput["maxOutputTokens"]
-  readonly headers?: NativeRequestInput["headers"]
-  readonly expectedBody: unknown
+  readonly history: NativeRequestInput["messages"];
+  readonly providerOptions?: NativeRequestInput["providerOptions"];
+  readonly maxOutputTokens?: NativeRequestInput["maxOutputTokens"];
+  readonly headers?: NativeRequestInput["headers"];
+  readonly expectedBody: unknown;
 }) =>
   Effect.gen(function* () {
     expect(
@@ -150,8 +164,8 @@ const expectOpenAIResponsesRequest = (input: {
       route: "openai-responses",
       protocol: "openai-responses",
       body: input.expectedBody,
-    })
-  })
+    });
+  });
 
 describe("session.llm-native.request", () => {
   test("maps normalized stream inputs to a native LLM request", () => {
@@ -163,14 +177,27 @@ describe("session.llm-native.request", () => {
       {
         role: "user",
         content: [
-          { type: "text", text: "hello", providerOptions: { openai: { cacheControl: { type: "ephemeral" } } } },
-          { type: "file", mediaType: "image/png", filename: "img.png", data: "data:image/png;base64,Zm9v" },
+          {
+            type: "text",
+            text: "hello",
+            providerOptions: { openai: { cacheControl: { type: "ephemeral" } } },
+          },
+          {
+            type: "file",
+            mediaType: "image/png",
+            filename: "img.png",
+            data: "data:image/png;base64,Zm9v",
+          },
         ],
       },
       {
         role: "assistant",
         content: [
-          { type: "reasoning", text: "thinking", providerOptions: { openai: { encryptedContent: "secret" } } },
+          {
+            type: "reasoning",
+            text: "thinking",
+            providerOptions: { openai: { encryptedContent: "secret" } },
+          },
           { type: "text", text: "I'll run it" },
           {
             type: "tool-call",
@@ -193,7 +220,7 @@ describe("session.llm-native.request", () => {
           },
         ],
       },
-    ]
+    ];
 
     const request = LLMNative.request({
       model: baseModel,
@@ -218,34 +245,34 @@ describe("session.llm-native.request", () => {
       maxOutputTokens: 1024,
       providerOptions: { openai: { store: false } },
       headers: { "x-request": "request-header" },
-    })
+    });
 
     expect(request.model).toMatchObject({
       id: "gpt-5-mini",
       provider: "openai",
       route: { id: "openai-responses" },
-    })
-    expect(request.model.route.endpoint.baseURL).toBe("https://api.openai.com/v1")
+    });
+    expect(request.model.route.endpoint.baseURL).toBe("https://api.openai.com/v1");
     expect(request.model.route.defaults.headers).toEqual({
       "x-model": "model-header",
       "x-request": "request-header",
-    })
+    });
     expect(request.model.route.defaults.limits).toMatchObject({
       context: 128_000,
       output: 32_000,
-    })
+    });
     expect(request.system).toEqual([
       { type: "text", text: "agent system" },
       { type: "text", text: "system from messages" },
-    ])
+    ]);
     expect(request.generation).toMatchObject({
       temperature: 0.2,
       topP: 0.9,
       topK: 40,
       maxTokens: 1024,
-    })
-    expect(request.providerOptions).toEqual({ openai: { store: false } })
-    expect(request.toolChoice).toMatchObject({ type: "required" })
+    });
+    expect(request.providerOptions).toEqual({ openai: { store: false } });
+    expect(request.toolChoice).toMatchObject({ type: "required" });
     expect(request.tools).toMatchObject([
       {
         name: "bash",
@@ -258,19 +285,32 @@ describe("session.llm-native.request", () => {
           required: ["command"],
         },
       },
-    ])
+    ]);
     expect(request.messages).toMatchObject([
       {
         role: "user",
         content: [
-          { type: "text", text: "hello", providerMetadata: { openai: { cacheControl: { type: "ephemeral" } } } },
-          { type: "media", mediaType: "image/png", filename: "img.png", data: "data:image/png;base64,Zm9v" },
+          {
+            type: "text",
+            text: "hello",
+            providerMetadata: { openai: { cacheControl: { type: "ephemeral" } } },
+          },
+          {
+            type: "media",
+            mediaType: "image/png",
+            filename: "img.png",
+            data: "data:image/png;base64,Zm9v",
+          },
         ],
       },
       {
         role: "assistant",
         content: [
-          { type: "reasoning", text: "thinking", providerMetadata: { openai: { encryptedContent: "secret" } } },
+          {
+            type: "reasoning",
+            text: "thinking",
+            providerMetadata: { openai: { encryptedContent: "secret" } },
+          },
           { type: "text", text: "I'll run it" },
           {
             type: "tool-call",
@@ -293,8 +333,8 @@ describe("session.llm-native.request", () => {
           },
         ],
       },
-    ])
-  })
+    ]);
+  });
 
   test("maps stored provider metadata to native content metadata", () => {
     const reasoning = Object.assign(
@@ -307,7 +347,7 @@ describe("session.llm-native.request", () => {
           },
         },
       },
-    )
+    );
     const request = LLMNative.request({
       model: baseModel,
       messages: [
@@ -316,7 +356,7 @@ describe("session.llm-native.request", () => {
           content: [reasoning],
         },
       ],
-    })
+    });
 
     expect(request.messages).toMatchObject([
       {
@@ -325,58 +365,67 @@ describe("session.llm-native.request", () => {
           {
             type: "reasoning",
             text: "thinking",
-            providerMetadata: { openai: { itemId: "rs_1", reasoningEncryptedContent: "encrypted-state" } },
+            providerMetadata: {
+              openai: { itemId: "rs_1", reasoningEncryptedContent: "encrypted-state" },
+            },
           },
         ],
       },
-    ])
-  })
+    ]);
+  });
 
   test("selects native request routes for provider packages", () => {
     const openai = LLMNative.model({
       model: { ...baseModel, api: { ...baseModel.api, url: "", npm: "@ai-sdk/openai" } },
       apiKey: "test-key",
       messages: [],
-    })
-    expect(openai.route.id).toBe("openai-responses")
-    expect(openai.route.endpoint.baseURL).toBe("https://api.openai.com/v1")
+    });
+    expect(openai.route.id).toBe("openai-responses");
+    expect(openai.route.endpoint.baseURL).toBe("https://api.openai.com/v1");
 
     const anthropic = LLMNative.model({
       model: { ...baseModel, api: { ...baseModel.api, url: "", npm: "@ai-sdk/anthropic" } },
       apiKey: "test-key",
       messages: [],
-    })
-    expect(anthropic.route.id).toBe("anthropic-messages")
-    expect(anthropic.route.endpoint.baseURL).toBe("https://api.anthropic.com/v1")
+    });
+    expect(anthropic.route.id).toBe("anthropic-messages");
+    expect(anthropic.route.endpoint.baseURL).toBe("https://api.anthropic.com/v1");
 
     const google = LLMNative.model({
       model: { ...baseModel, api: { ...baseModel.api, url: "", npm: "@ai-sdk/google" } },
       apiKey: "test-key",
       messages: [],
-    })
-    expect(google.route.id).toBe("gemini")
-    expect(google.route.endpoint.baseURL).toBe("https://generativelanguage.googleapis.com/v1beta")
+    });
+    expect(google.route.id).toBe("gemini");
+    expect(google.route.endpoint.baseURL).toBe("https://generativelanguage.googleapis.com/v1beta");
 
     const compatible = LLMNative.model({
       model: {
         ...baseModel,
         providerID: ProviderV2.ID.make("opencode"),
-        api: { ...baseModel.api, url: "https://ai.example.test/v1", npm: "@ai-sdk/openai-compatible" },
+        api: {
+          ...baseModel.api,
+          url: "https://ai.example.test/v1",
+          npm: "@ai-sdk/openai-compatible",
+        },
       },
       apiKey: "test-key",
       messages: [],
-    })
-    expect(compatible.route.id).toBe("openai-compatible-chat")
-    expect(compatible.route.endpoint.baseURL).toBe("https://ai.example.test/v1")
+    });
+    expect(compatible.route.id).toBe("openai-compatible-chat");
+    expect(compatible.route.endpoint.baseURL).toBe("https://ai.example.test/v1");
 
     const openrouter = LLMNative.model({
-      model: { ...baseModel, api: { ...baseModel.api, url: "", npm: "@openrouter/ai-sdk-provider" } },
+      model: {
+        ...baseModel,
+        api: { ...baseModel.api, url: "", npm: "@openrouter/ai-sdk-provider" },
+      },
       apiKey: "test-key",
       messages: [],
-    })
-    expect(openrouter.route.id).toBe("openrouter")
-    expect(openrouter.route.endpoint.baseURL).toBe("https://openrouter.ai/api/v1")
-  })
+    });
+    expect(openrouter.route.id).toBe("openrouter");
+    expect(openrouter.route.endpoint.baseURL).toBe("https://openrouter.ai/api/v1");
+  });
 
   test("fails fast for unsupported provider packages", () => {
     expect(() =>
@@ -384,14 +433,16 @@ describe("session.llm-native.request", () => {
         model: { ...baseModel, api: { ...baseModel.api, npm: "unknown-provider" } },
         messages: [],
       }),
-    ).toThrow("Native LLM request adapter does not support provider package unknown-provider")
-  })
+    ).toThrow("Native LLM request adapter does not support provider package unknown-provider");
+  });
 
   test("only enables native runtime for supported OpenAI API-key models", () => {
-    expect(LLMNativeRuntime.status({ model: baseModel, provider: providerInfo, auth: undefined })).toMatchObject({
+    expect(
+      LLMNativeRuntime.status({ model: baseModel, provider: providerInfo, auth: undefined }),
+    ).toMatchObject({
       type: "supported",
       apiKey: "test-openai-key",
-    })
+    });
     expect(
       LLMNativeRuntime.status({
         model: { ...baseModel, providerID: ProviderV2.ID.make("opencode") },
@@ -401,7 +452,7 @@ describe("session.llm-native.request", () => {
     ).toMatchObject({
       type: "supported",
       apiKey: "test-openai-key",
-    })
+    });
     expect(
       LLMNativeRuntime.status({
         model: {
@@ -415,28 +466,31 @@ describe("session.llm-native.request", () => {
     ).toMatchObject({
       type: "supported",
       apiKey: "test-openai-key",
-    })
+    });
     expect(
       LLMNativeRuntime.status({
         model: { ...baseModel, providerID: ProviderV2.ID.make("google") },
         provider: { ...providerInfo, id: ProviderV2.ID.make("google") },
         auth: undefined,
       }),
-    ).toEqual({ type: "unsupported", reason: "provider is not openai, opencode, or anthropic" })
+    ).toEqual({ type: "unsupported", reason: "provider is not openai, opencode, or anthropic" });
     expect(
       LLMNativeRuntime.status({
         model: baseModel,
         provider: providerInfo,
         auth: { type: "oauth", refresh: "refresh", access: "access", expires: 1 },
       }),
-    ).toEqual({ type: "unsupported", reason: "OAuth auth requires a provider fetch override" })
+    ).toEqual({ type: "unsupported", reason: "OAuth auth requires a provider fetch override" });
     expect(
       LLMNativeRuntime.status({
         model: baseModel,
-        provider: { ...providerInfo, options: { apiKey: OAUTH_DUMMY_KEY, fetch: async () => new Response() } },
+        provider: {
+          ...providerInfo,
+          options: { apiKey: OAUTH_DUMMY_KEY, fetch: async () => new Response() },
+        },
         auth: { type: "oauth", refresh: "refresh", access: "access", expires: 1 },
       }),
-    ).toMatchObject({ type: "supported", apiKey: OAUTH_DUMMY_KEY })
+    ).toMatchObject({ type: "supported", apiKey: OAUTH_DUMMY_KEY });
 
     expect(
       LLMNativeRuntime.status({
@@ -444,7 +498,10 @@ describe("session.llm-native.request", () => {
         provider: providerInfo,
         auth: undefined,
       }),
-    ).toEqual({ type: "unsupported", reason: "provider package is not OpenAI, OpenAI-compatible, or Anthropic" })
+    ).toEqual({
+      type: "unsupported",
+      reason: "provider package is not OpenAI, OpenAI-compatible, or Anthropic",
+    });
 
     expect(
       LLMNativeRuntime.status({
@@ -452,8 +509,8 @@ describe("session.llm-native.request", () => {
         provider: { ...providerInfo, options: {} },
         auth: undefined,
       }),
-    ).toEqual({ type: "unsupported", reason: "API key is not configured" })
-  })
+    ).toEqual({ type: "unsupported", reason: "API key is not configured" });
+  });
 
   test("enables native runtime for Anthropic API-key models", () => {
     expect(
@@ -472,8 +529,8 @@ describe("session.llm-native.request", () => {
         },
         auth: undefined,
       }),
-    ).toMatchObject({ type: "supported", apiKey: "test-anthropic-key" })
-  })
+    ).toMatchObject({ type: "supported", apiKey: "test-anthropic-key" });
+  });
 
   test("prefers console provider api key over stored opencode auth", () => {
     expect(
@@ -490,7 +547,7 @@ describe("session.llm-native.request", () => {
     ).toMatchObject({
       type: "supported",
       apiKey: "console-token",
-    })
+    });
     expect(
       LLMNativeRuntime.status({
         model: baseModel,
@@ -500,8 +557,8 @@ describe("session.llm-native.request", () => {
     ).toMatchObject({
       type: "supported",
       apiKey: "provider-key",
-    })
-  })
+    });
+  });
 
   it.effect("native tool wrapper converts thrown errors into typed ToolFailure", () =>
     Effect.gen(function* () {
@@ -511,57 +568,68 @@ describe("session.llm-native.request", () => {
             description: "always throws",
             inputSchema: jsonSchema({ type: "object" }),
             execute: async () => {
-              throw new Error("boom")
+              throw new Error("boom");
             },
           } satisfies Tool,
         },
         { messages: [] as ModelMessage[], abort: new AbortController().signal },
-      )
+      );
 
-      const failure = yield* Effect.flip(wrapped.explode.execute({}, { id: "call-1", name: "explode" }))
-      expect(failure).toBeInstanceOf(ToolFailure)
-      expect(failure.message).toBe("boom")
+      const failure = yield* Effect.flip(
+        wrapped.explode.execute({}, { id: "call-1", name: "explode" }),
+      );
+      expect(failure).toBeInstanceOf(ToolFailure);
+      expect(failure.message).toBe("boom");
     }),
-  )
+  );
 
-  it.effect("native tool wrapper raises ToolFailure when the source tool has no execute handler", () =>
-    Effect.gen(function* () {
-      // The AI SDK Tool shape allows execute to be omitted (e.g., client-side / MCP tools).
-      // The native runtime owns execution, so encountering such a tool here means upstream
-      // wiring is wrong; we want a typed failure, not a silent skip or unhandled exception.
-      const wrapped = LLMNativeRuntime.nativeTools(
-        { incomplete: { description: "no execute", inputSchema: jsonSchema({ type: "object" }) } satisfies Tool },
-        { messages: [] as ModelMessage[], abort: new AbortController().signal },
-      )
+  it.effect(
+    "native tool wrapper raises ToolFailure when the source tool has no execute handler",
+    () =>
+      Effect.gen(function* () {
+        // The AI SDK Tool shape allows execute to be omitted (e.g., client-side / MCP tools).
+        // The native runtime owns execution, so encountering such a tool here means upstream
+        // wiring is wrong; we want a typed failure, not a silent skip or unhandled exception.
+        const wrapped = LLMNativeRuntime.nativeTools(
+          {
+            incomplete: {
+              description: "no execute",
+              inputSchema: jsonSchema({ type: "object" }),
+            } satisfies Tool,
+          },
+          { messages: [] as ModelMessage[], abort: new AbortController().signal },
+        );
 
-      const failure = yield* Effect.flip(wrapped.incomplete.execute({}, { id: "call-1", name: "incomplete" }))
-      expect(failure).toBeInstanceOf(ToolFailure)
-      expect(failure.message).toContain("incomplete")
-    }),
-  )
+        const failure = yield* Effect.flip(
+          wrapped.incomplete.execute({}, { id: "call-1", name: "incomplete" }),
+        );
+        expect(failure).toBeInstanceOf(ToolFailure);
+        expect(failure.message).toContain("incomplete");
+      }),
+  );
 
   it.effect("emits native tool calls before overlapping local settlements complete", () =>
     Effect.gen(function* () {
-      const observed: string[] = []
-      const started: string[] = []
-      let release: (() => void) | undefined
-      let notifyStarted: (() => void) | undefined
+      const observed: string[] = [];
+      const started: string[] = [];
+      let release: (() => void) | undefined;
+      let notifyStarted: (() => void) | undefined;
       const gate = new Promise<void>((resolve) => {
-        release = resolve
-      })
+        release = resolve;
+      });
       const bothStarted = new Promise<void>((resolve) => {
-        notifyStarted = resolve
-      })
+        notifyStarted = resolve;
+      });
       const lookup = {
         description: "Lookup data",
         inputSchema: jsonSchema({ type: "object" }),
         execute: async (_args: unknown, options: { toolCallId: string }) => {
-          started.push(options.toolCallId)
-          if (started.length === 2) notifyStarted?.()
-          await gate
-          return { output: options.toolCallId }
+          started.push(options.toolCallId);
+          if (started.length === 2) notifyStarted?.();
+          await gate;
+          return { output: options.toolCallId };
         },
-      } satisfies Tool
+      } satisfies Tool;
       const llmClient = {
         prepare: () => Effect.die("unused"),
         stream: () =>
@@ -571,7 +639,7 @@ describe("session.llm-native.request", () => {
             LLMEvent.finish({ reason: "tool-calls" }),
           ]),
         generate: () => Effect.die("unused"),
-      } as LLMClientShape
+      } as LLMClientShape;
       const native = LLMNativeRuntime.stream({
         model: baseModel,
         provider: providerInfo,
@@ -581,24 +649,24 @@ describe("session.llm-native.request", () => {
         tools: { lookup },
         headers: {},
         abort: new AbortController().signal,
-      })
-      expect(native.type).toBe("supported")
-      if (native.type === "unsupported") throw new Error(native.reason)
+      });
+      expect(native.type).toBe("supported");
+      if (native.type === "unsupported") throw new Error(native.reason);
 
       const fiber = yield* native.stream.pipe(
         Stream.runForEach((event) => Effect.sync(() => observed.push(event.type))),
         Effect.forkScoped,
-      )
-      yield* Effect.promise(() => bothStarted)
+      );
+      yield* Effect.promise(() => bothStarted);
 
-      expect(started).toEqual(["call-1", "call-2"])
-      expect(observed).toEqual(["tool-call", "tool-call", "finish"])
+      expect(started).toEqual(["call-1", "call-2"]);
+      expect(observed).toEqual(["tool-call", "tool-call", "finish"]);
 
-      release?.()
-      yield* Fiber.join(fiber)
-      expect(observed).toEqual(["tool-call", "tool-call", "finish", "tool-result", "tool-result"])
+      release?.();
+      yield* Fiber.join(fiber);
+      expect(observed).toEqual(["tool-call", "tool-call", "finish", "tool-result", "tool-result"]);
     }),
-  )
+  );
 
   it.effect("compiles through the native OpenAI Responses route", () =>
     expectOpenAIResponsesRequest({
@@ -615,7 +683,7 @@ describe("session.llm-native.request", () => {
         stream: true,
       },
     }),
-  )
+  );
 
   it.effect("omits non-persisted OpenAI reasoning ids without encrypted state", () =>
     expectOpenAIResponsesRequest({
@@ -641,7 +709,7 @@ describe("session.llm-native.request", () => {
         store: false,
       },
     }),
-  )
+  );
 
   it.effect("preserves encrypted OpenAI reasoning state through native request lowering", () =>
     expectOpenAIResponsesRequest({
@@ -669,7 +737,7 @@ describe("session.llm-native.request", () => {
         store: false,
       },
     }),
-  )
+  );
 
   it.effect("preserves empty encrypted OpenAI reasoning items before tool output", () =>
     expectOpenAIResponsesRequest({
@@ -689,7 +757,7 @@ describe("session.llm-native.request", () => {
         store: false,
       },
     }),
-  )
+  );
 
   it.effect("references stored OpenAI reasoning items by id", () =>
     expectOpenAIResponsesRequest({
@@ -708,24 +776,27 @@ describe("session.llm-native.request", () => {
         store: true,
       },
     }),
-  )
+  );
 
   it.effect("uses provider fetch override for native OpenAI OAuth requests", () =>
     Effect.gen(function* () {
-      const captures: Array<{ url: string; body: unknown }> = []
+      const captures: Array<{ url: string; body: unknown }> = [];
       const customFetch = Object.assign(
         async (input: Parameters<typeof fetch>[0], init: Parameters<typeof fetch>[1]) => {
-          const request = input instanceof Request ? input : new Request(input, init)
-          captures.push({ url: request.url, body: await request.clone().json() })
+          const request = input instanceof Request ? input : new Request(input, init);
+          captures.push({ url: request.url, body: await request.clone().json() });
           return responsesStream([
             { type: "response.output_text.delta", item_id: "msg_1", delta: "Hello" },
-            { type: "response.completed", response: { usage: { input_tokens: 1, output_tokens: 1 } } },
-          ])
+            {
+              type: "response.completed",
+              response: { usage: { input_tokens: 1, output_tokens: 1 } },
+            },
+          ]);
         },
         { preconnect: () => undefined },
-      ) satisfies typeof fetch
+      ) satisfies typeof fetch;
 
-      const llmClient = yield* LLMClient.Service
+      const llmClient = yield* LLMClient.Service;
       const native = LLMNativeRuntime.stream({
         model: baseModel,
         provider: { ...providerInfo, options: { apiKey: OAUTH_DUMMY_KEY, fetch: customFetch } },
@@ -736,12 +807,12 @@ describe("session.llm-native.request", () => {
         providerOptions: { instructions: "You are concise." },
         headers: {},
         abort: new AbortController().signal,
-      })
-      expect(native.type).toBe("supported")
-      if (native.type === "unsupported") throw new Error(native.reason)
-      const events = Array.from(yield* native.stream.pipe(Stream.runCollect))
+      });
+      expect(native.type).toBe("supported");
+      if (native.type === "unsupported") throw new Error(native.reason);
+      const events = Array.from(yield* native.stream.pipe(Stream.runCollect));
 
-      expect(captures).toHaveLength(1)
+      expect(captures).toHaveLength(1);
       expect(captures[0]).toMatchObject({
         url: "https://api.openai.com/v1/responses",
         body: {
@@ -749,13 +820,13 @@ describe("session.llm-native.request", () => {
           instructions: "You are concise.",
           input: [{ role: "user", content: [{ type: "input_text", text: "hello" }] }],
         },
-      })
+      });
       expect(events).toEqual(
         expect.arrayContaining([
           expect.objectContaining({ type: "text-delta", text: "Hello" }),
           expect.objectContaining({ type: "finish" }),
         ]),
-      )
+      );
     }),
-  )
-})
+  );
+});

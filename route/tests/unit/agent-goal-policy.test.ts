@@ -21,7 +21,7 @@ test("detects Claude /goal slash command in nested message content", () => {
         },
       ],
     }),
-    true
+    true,
   );
 });
 
@@ -37,7 +37,7 @@ test("header can force goal policy and env can tune or disable recovery", () => 
     {
       OMNIROUTE_AGENT_GOAL_READINESS_MAX_TIMEOUT_MS: "900000",
       OMNIROUTE_AGENT_GOAL_STREAM_RECOVERY: "false",
-    }
+    },
   );
 
   assert.equal(forced.detected, true);
@@ -67,14 +67,14 @@ test("OMNIROUTE_AGENT_GOAL_POLICY_ENABLED=false disables the heuristic entirely 
     {
       OMNIROUTE_AGENT_GOAL_POLICY_ENABLED: "false",
       OMNIROUTE_AGENT_GOAL_READINESS_MAX_TIMEOUT_MS: "900000",
-    }
+    },
   );
 
   assert.equal(policy.detected, false, "detection must be a no-op even when header forces it");
   assert.equal(
     policy.readinessMaxTimeoutMs,
     DEFAULT_AGENT_GOAL_READINESS_MAX_TIMEOUT_MS,
-    "readiness timeout must never be elevated when the policy is disabled"
+    "readiness timeout must never be elevated when the policy is disabled",
   );
   assert.equal(policy.streamRecoveryEnabled, false);
 });

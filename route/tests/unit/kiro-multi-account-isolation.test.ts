@@ -71,7 +71,7 @@ test("validateImportToken registers a client and returns clientId + clientSecret
     assert.equal(
       result.clientSecretExpiresAt,
       reg.clientSecretExpiresAt,
-      "clientSecretExpiresAt should be returned"
+      "clientSecretExpiresAt should be returned",
     );
     assert.equal(result.authMethod, "imported");
     assert.equal(result.accessToken, "at-mock");
@@ -101,7 +101,7 @@ test("validateImportToken succeeds without clientId when registerClient fails", 
       assert.equal(
         result.accessToken,
         "at-degraded",
-        "import should succeed with a degraded token"
+        "import should succeed with a degraded token",
       );
       assert.equal(result.authMethod, "imported");
       // clientId must not be set — the connection degrades to shared social-auth path
@@ -109,9 +109,9 @@ test("validateImportToken succeeds without clientId when registerClient fails", 
       assert.equal(
         result.clientSecret,
         undefined,
-        "clientSecret should be absent on degraded import"
+        "clientSecret should be absent on degraded import",
       );
-    }
+    },
   );
 
   assert.ok(callCount >= 1, "fetch should have been called at least once");
@@ -121,7 +121,7 @@ test("validateImportToken throws when token format is invalid", async () => {
   const service = new KiroService();
   await assert.rejects(
     () => service.validateImportToken("invalid-token-does-not-start-correctly"),
-    /Invalid token format/
+    /Invalid token format/,
   );
 });
 
@@ -148,7 +148,7 @@ test("two validateImportToken calls return different clientIds when registerClie
     assert.notEqual(
       result1.clientId,
       result2.clientId,
-      "each import call should receive a distinct clientId for session isolation"
+      "each import call should receive a distinct clientId for session isolation",
     );
     assert.equal(result1.clientId, "client-alpha");
     assert.equal(result2.clientId, "client-beta");
@@ -166,11 +166,11 @@ test("registerClient uses the provided region in the OIDC endpoint URL", async (
     },
     async () => {
       await service.registerClient("ap-southeast-1");
-    }
+    },
   );
 
   assert.ok(
     calls.some((url) => url.includes("ap-southeast-1")),
-    "registerClient should call the OIDC endpoint for the specified region"
+    "registerClient should call the OIDC endpoint for the specified region",
   );
 });

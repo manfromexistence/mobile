@@ -1,5 +1,5 @@
 // @ts-nocheck
-import * as mod from "./favicon"
+import * as mod from "./favicon";
 
 const docs = `### Overview
 Injects favicon and app icon meta tags for the document head.
@@ -21,7 +21,7 @@ Render once near the app root (head management).
 ### Theming/tokens
 - Not applicable.
 
-`
+`;
 
 export default {
   title: "UI/Favicon",
@@ -35,7 +35,7 @@ export default {
       },
     },
   },
-}
+};
 
 export const Basic = {
   render: () => (
@@ -46,4 +46,4 @@ export const Basic = {
       </div>
     </div>
   ),
-}
+};

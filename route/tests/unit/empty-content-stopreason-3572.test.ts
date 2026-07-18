@@ -18,7 +18,7 @@ test("#3572 Claude: empty content + stop_reason=max_tokens is NOT empty-failure"
       stop_reason: "max_tokens",
       usage: { output_tokens: 1 },
     }),
-    false
+    false,
   );
 });
 
@@ -40,7 +40,7 @@ test("#3572 OpenAI: empty content + finish_reason=length is NOT empty-failure", 
     isEmptyContentResponse({
       choices: [{ index: 0, message: { content: "" }, finish_reason: "length" }],
     }),
-    false
+    false,
   );
 });
 
@@ -49,7 +49,7 @@ test("#3572 OpenAI: empty delta + finish_reason=length (stream chunk) is NOT emp
     isEmptyContentResponse({
       choices: [{ index: 0, delta: { content: "" }, finish_reason: "length" }],
     }),
-    false
+    false,
   );
 });
 
@@ -58,7 +58,7 @@ test("#3572 OpenAI: empty content + finish_reason=stop stays flagged (fake-succe
     isEmptyContentResponse({
       choices: [{ index: 0, message: { content: "" }, finish_reason: "stop" }],
     }),
-    true
+    true,
   );
 });
 
@@ -66,6 +66,6 @@ test("#3572 regression: non-empty content is never flagged", () => {
   assert.equal(isEmptyContentResponse({ content: [{ type: "text", text: "hi" }] }), false);
   assert.equal(
     isEmptyContentResponse({ choices: [{ message: { content: "hi" }, finish_reason: "length" }] }),
-    false
+    false,
   );
 });

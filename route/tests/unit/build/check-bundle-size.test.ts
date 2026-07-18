@@ -15,7 +15,7 @@ import {
 type RatchetVerdict = { regressed: boolean; improved: boolean };
 const evaluateSize = evaluateBundleSizeRatchet as (
   current: number,
-  baseline: number
+  baseline: number,
 ) => RatchetVerdict;
 const readSizeBaseline = readBaselineBundleSizeValue as (p?: string) => number | null;
 
@@ -42,7 +42,7 @@ test("parseSizeLimitResults: ignora entradas sem campo size", () => {
 test("parseSizeLimitResults: lança TypeError para argumento não-array", () => {
   assert.throws(
     () => parseSizeLimitResults({ name: "x", size: 100 } as unknown as never[]),
-    TypeError
+    TypeError,
   );
 });
 
@@ -134,7 +134,7 @@ test("measureViaFileStat: soma múltiplos arquivos existentes", () => {
 test("measureViaFileStat: config ausente retorna allMissing=true e total=0", () => {
   const { total, entries, allMissing } = measureViaFileStat(
     "/tmp/nonexistent/.size-limit.json",
-    "/tmp"
+    "/tmp",
   );
   assert.equal(total, 0);
   assert.equal(allMissing, true);
@@ -152,7 +152,7 @@ test("runSizeLimit: lança com code SL_NO_BIN quando binário não existe", () =
       assert.ok(err instanceof Error);
       assert.equal((err as NodeJS.ErrnoException & { code?: string }).code, "SL_NO_BIN");
       return true;
-    }
+    },
   );
 });
 

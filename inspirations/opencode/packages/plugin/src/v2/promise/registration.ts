@@ -1,11 +1,13 @@
 export interface Registration {
-  readonly dispose: () => Promise<void>
+  readonly dispose: () => Promise<void>;
 }
 
 export interface Reload {
-  readonly reload: () => Promise<void>
+  readonly reload: () => Promise<void>;
 }
 
 export type Hooks<Spec> = {
-  readonly [Name in keyof Spec]: (callback: (input: Spec[Name]) => Promise<void> | void) => Promise<Registration>
-}
+  readonly [Name in keyof Spec]: (
+    callback: (input: Spec[Name]) => Promise<void> | void,
+  ) => Promise<Registration>;
+};

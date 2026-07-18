@@ -1,28 +1,21 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-} from 'react';
+import { useCallback, useContext, useEffect, useLayoutEffect, useRef } from "react";
 
-import { File, type FileOptions } from '../../components/File';
-import { VirtualizedFile } from '../../components/VirtualizedFile';
-import type { GetHoveredLineResult } from '../../managers/InteractionManager';
+import { File, type FileOptions } from "../../components/File";
+import { VirtualizedFile } from "../../components/VirtualizedFile";
+import type { GetHoveredLineResult } from "../../managers/InteractionManager";
 import type {
   FileContents,
   LineAnnotation,
   SelectedLineRange,
   VirtualFileMetrics,
-} from '../../types';
-import { areOptionsEqual } from '../../utils/areOptionsEqual';
-import { noopRender } from '../constants';
-import { useVirtualizer } from '../Virtualizer';
-import { WorkerPoolContext } from '../WorkerPoolContext';
-import { useStableCallback } from './useStableCallback';
+} from "../../types";
+import { areOptionsEqual } from "../../utils/areOptionsEqual";
+import { noopRender } from "../constants";
+import { useVirtualizer } from "../Virtualizer";
+import { WorkerPoolContext } from "../WorkerPoolContext";
+import { useStableCallback } from "./useStableCallback";
 
-const useIsometricEffect =
-  typeof window === 'undefined' ? useEffect : useLayoutEffect;
+const useIsometricEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 interface UseFileInstanceProps<LAnnotation> {
   file: FileContents;
@@ -38,7 +31,7 @@ interface UseFileInstanceProps<LAnnotation> {
 
 interface UseFileInstanceReturn {
   ref(node: HTMLElement | null): void;
-  getHoveredLine(): GetHoveredLineResult<'file'> | undefined;
+  getHoveredLine(): GetHoveredLineResult<"file"> | undefined;
 }
 
 export function useFileInstance<LAnnotation>({
@@ -55,15 +48,11 @@ export function useFileInstance<LAnnotation>({
   const simpleVirtualizer = useVirtualizer();
   const controlledSelection = selectedLines !== undefined;
   const poolManager = useContext(WorkerPoolContext);
-  const instanceRef = useRef<
-    File<LAnnotation> | VirtualizedFile<LAnnotation> | null
-  >(null);
+  const instanceRef = useRef<File<LAnnotation> | VirtualizedFile<LAnnotation> | null>(null);
   const ref = useStableCallback((node: HTMLElement | null) => {
     if (node != null) {
       if (instanceRef.current != null) {
-        throw new Error(
-          'File: An instance should not already exist when a node is created'
-        );
+        throw new Error("File: An instance should not already exist when a node is created");
       }
       if (simpleVirtualizer != null) {
         instanceRef.current = new VirtualizedFile(
@@ -76,7 +65,7 @@ export function useFileInstance<LAnnotation>({
           simpleVirtualizer,
           metrics,
           !disableWorkerPool ? poolManager : undefined,
-          true
+          true,
         );
       } else {
         instanceRef.current = new File(
@@ -87,7 +76,7 @@ export function useFileInstance<LAnnotation>({
             options,
           }),
           !disableWorkerPool ? poolManager : undefined,
-          true
+          true,
         );
       }
       void instanceRef.current.hydrate({
@@ -98,7 +87,7 @@ export function useFileInstance<LAnnotation>({
       });
     } else {
       if (instanceRef.current == null) {
-        throw new Error('File: A File instance should exist when unmounting');
+        throw new Error("File: A File instance should exist when unmounting");
       }
       instanceRef.current.cleanUp();
       instanceRef.current = null;
@@ -113,10 +102,7 @@ export function useFileInstance<LAnnotation>({
       hasGutterRenderUtility,
       options,
     });
-    const forceRender = !areOptionsEqual(
-      instanceRef.current.options,
-      newOptions
-    );
+    const forceRender = !areOptionsEqual(instanceRef.current.options, newOptions);
     instanceRef.current.setOptions(newOptions);
     void instanceRef.current.render({ file, lineAnnotations, forceRender });
     if (selectedLines !== undefined) {
@@ -124,9 +110,7 @@ export function useFileInstance<LAnnotation>({
     }
   });
 
-  const getHoveredLine = useCallback(():
-    | GetHoveredLineResult<'file'>
-    | undefined => {
+  const getHoveredLine = useCallback((): GetHoveredLineResult<"file"> | undefined => {
     return instanceRef.current?.getHoveredLine();
   }, []);
   return { ref, getHoveredLine };
@@ -151,11 +135,7 @@ function mergeFileOptions<LAnnotation>({
   return {
     ...options,
     controlledSelection,
-    renderCustomHeader: hasCustomHeader
-      ? noopRender
-      : options?.renderCustomHeader,
-    renderGutterUtility: hasGutterRenderUtility
-      ? noopRender
-      : options?.renderGutterUtility,
+    renderCustomHeader: hasCustomHeader ? noopRender : options?.renderCustomHeader,
+    renderGutterUtility: hasGutterRenderUtility ? noopRender : options?.renderGutterUtility,
   };
 }

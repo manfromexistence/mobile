@@ -1,15 +1,15 @@
-import { useRef, useState } from 'react';
-import { useMessages } from '../utils/messages.context';
-import { useWllama } from '../utils/wllama.context';
-import { MediaData, Message, Screen } from '../utils/types';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStop } from '@fortawesome/free-solid-svg-icons';
-import ScreenWrapper from './ScreenWrapper';
-import { useIntervalWhen } from '../utils/use-interval-when';
-import { MarkdownMessage } from './MarkdownMessage';
+import { useRef, useState } from "react";
+import { useMessages } from "../utils/messages.context";
+import { useWllama } from "../utils/wllama.context";
+import { MediaData, Message, Screen } from "../utils/types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faStop } from "@fortawesome/free-solid-svg-icons";
+import ScreenWrapper from "./ScreenWrapper";
+import { useIntervalWhen } from "../utils/use-interval-when";
+import { MarkdownMessage } from "./MarkdownMessage";
 
 export default function ChatScreen() {
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [pendingMedia, setPendingMedia] = useState<MediaData | null>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const audioInputRef = useRef<HTMLInputElement>(null);
@@ -32,24 +32,22 @@ export default function ChatScreen() {
   useIntervalWhen(chatScrollToBottom, 500, isGenerating, true);
 
   const currConv = getConversationById(currentConvId);
-  const supportsMedia =
-    currRuntimeInfo?.supportsImage || currRuntimeInfo?.supportsAudio;
+  const supportsMedia = currRuntimeInfo?.supportsImage || currRuntimeInfo?.supportsAudio;
 
-  const onPickFile =
-    (type: 'image' | 'audio') => (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        setPendingMedia({
-          type,
-          data: ev.target!.result as ArrayBuffer,
-          dataUrl: URL.createObjectURL(file),
-        });
-      };
-      reader.readAsArrayBuffer(file);
-      e.target.value = '';
+  const onPickFile = (type: "image" | "audio") => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setPendingMedia({
+        type,
+        data: ev.target!.result as ArrayBuffer,
+        dataUrl: URL.createObjectURL(file),
+      });
     };
+    reader.readAsArrayBuffer(file);
+    e.target.value = "";
+  };
 
   const onSubmit = async () => {
     if (isGenerating) return;
@@ -57,18 +55,18 @@ export default function ChatScreen() {
     const currHistory = currConv?.messages ?? [];
     const userInput = input;
     const media = pendingMedia;
-    setInput('');
+    setInput("");
     setPendingMedia(null);
     const userMsg: Message = {
       id: Date.now(),
       content: userInput,
-      role: 'user',
+      role: "user",
       mediaData: media ?? undefined,
     };
     const assistantMsg: Message = {
       id: Date.now() + 1,
-      content: '',
-      role: 'assistant',
+      content: "",
+      role: "assistant",
     };
 
     let convId = currConv?.id;
@@ -95,25 +93,16 @@ export default function ChatScreen() {
         {currConv ? (
           <>
             {currConv.messages.map((msg) =>
-              msg.role === 'user' ? (
+              msg.role === "user" ? (
                 <div className="chat chat-end" key={msg.id}>
                   <div className="chat-bubble">
-                    {msg.mediaData?.type === 'image' && (
-                      <img
-                        src={msg.mediaData.dataUrl}
-                        className="max-w-48 rounded mb-1"
-                      />
+                    {msg.mediaData?.type === "image" && (
+                      <img src={msg.mediaData.dataUrl} className="max-w-48 rounded mb-1" />
                     )}
-                    {msg.mediaData?.type === 'audio' && (
-                      <audio
-                        controls
-                        src={msg.mediaData.dataUrl}
-                        className="mb-1"
-                      />
+                    {msg.mediaData?.type === "audio" && (
+                      <audio controls src={msg.mediaData.dataUrl} className="mb-1" />
                     )}
-                    {msg.content.length > 0 && (
-                      <MarkdownMessage content={msg.content} />
-                    )}
+                    {msg.content.length > 0 && <MarkdownMessage content={msg.content} />}
                   </div>
                 </div>
               ) : (
@@ -122,12 +111,10 @@ export default function ChatScreen() {
                     {msg.content.length === 0 && isGenerating && (
                       <span className="loading loading-dots"></span>
                     )}
-                    {msg.content.length > 0 && (
-                      <MarkdownMessage content={msg.content} />
-                    )}
+                    {msg.content.length > 0 && <MarkdownMessage content={msg.content} />}
                   </div>
                 </div>
-              )
+              ),
             )}
           </>
         ) : (
@@ -137,10 +124,7 @@ export default function ChatScreen() {
       <div className="flex flex-col input-message py-4">
         {isGenerating && (
           <div className="text-center">
-            <button
-              className="btn btn-outline btn-sm mb-4"
-              onClick={stopCompletion}
-            >
+            <button className="btn btn-outline btn-sm mb-4" onClick={stopCompletion}>
               <FontAwesomeIcon icon={faStop} />
               Stop generation
             </button>
@@ -151,11 +135,8 @@ export default function ChatScreen() {
           <>
             {pendingMedia && (
               <div className="flex items-center gap-2 mb-2">
-                {pendingMedia.type === 'image' ? (
-                  <img
-                    src={pendingMedia.dataUrl}
-                    className="h-16 w-16 object-cover rounded"
-                  />
+                {pendingMedia.type === "image" ? (
+                  <img src={pendingMedia.dataUrl} className="h-16 w-16 object-cover rounded" />
                 ) : (
                   <audio controls src={pendingMedia.dataUrl} />
                 )}
@@ -175,14 +156,14 @@ export default function ChatScreen() {
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    onChange={onPickFile('image')}
+                    onChange={onPickFile("image")}
                   />
                   <input
                     ref={audioInputRef}
                     type="file"
                     accept="audio/*"
                     className="hidden"
-                    onChange={onPickFile('audio')}
+                    onChange={onPickFile("audio")}
                   />
                   <div className="dropdown dropdown-top">
                     <button
@@ -268,10 +249,7 @@ function WarnNoModel() {
       </svg>
       <span>Model is not loaded</span>
       <div>
-        <button
-          className="btn btn-sm btn-primary"
-          onClick={() => navigateTo(Screen.MODEL)}
-        >
+        <button className="btn btn-sm btn-primary" onClick={() => navigateTo(Screen.MODEL)}>
           Select model
         </button>
       </div>
@@ -280,9 +258,9 @@ function WarnNoModel() {
 }
 
 const chatScrollToBottom = () => {
-  const elem = document.getElementById('chat-history');
+  const elem = document.getElementById("chat-history");
   elem?.scrollTo({
     top: elem.scrollHeight,
-    behavior: 'smooth',
+    behavior: "smooth",
   });
 };

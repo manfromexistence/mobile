@@ -1,31 +1,25 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from "bun:test";
 
-import {
-  computeFileTreeLayout,
-  type FileTreeLayoutRow,
-} from '../src/model/layout';
+import { computeFileTreeLayout, type FileTreeLayoutRow } from "../src/model/layout";
 
 function directoryRow(
   path: string,
   ancestorPaths: readonly string[],
-  isExpanded: boolean = true
+  isExpanded: boolean = true,
 ): FileTreeLayoutRow {
   return {
     ancestorPaths,
     isExpanded,
-    kind: 'directory',
+    kind: "directory",
     path,
   };
 }
 
-function fileRow(
-  path: string,
-  ancestorPaths: readonly string[]
-): FileTreeLayoutRow {
+function fileRow(path: string, ancestorPaths: readonly string[]): FileTreeLayoutRow {
   return {
     ancestorPaths,
     isExpanded: false,
-    kind: 'file',
+    kind: "file",
     path,
   };
 }
@@ -35,7 +29,7 @@ function summarizeLayout(
   scrollTop: number,
   viewportHeight: number,
   itemHeight: number,
-  overscan: number
+  overscan: number,
 ) {
   const snapshot = computeFileTreeLayout(rows, {
     itemHeight,
@@ -59,76 +53,50 @@ function summarizeLayout(
 }
 
 const EXHAUSTIVE_CHAIN_ROWS = [
-  directoryRow('a/', []),
-  directoryRow('a/b/', ['a/']),
-  directoryRow('a/b/c/', ['a/', 'a/b/']),
-  fileRow('a/b/c/d.js', ['a/', 'a/b/', 'a/b/c/']),
-  fileRow('z.ts', []),
+  directoryRow("a/", []),
+  directoryRow("a/b/", ["a/"]),
+  directoryRow("a/b/c/", ["a/", "a/b/"]),
+  fileRow("a/b/c/d.js", ["a/", "a/b/", "a/b/c/"]),
+  fileRow("z.ts", []),
 ] as const;
 
 const DEEP_CHAIN_ROWS = [
-  directoryRow('a/', []),
-  directoryRow('a/b/', ['a/']),
-  directoryRow('a/b/c/', ['a/', 'a/b/']),
-  directoryRow('a/b/c/d/', ['a/', 'a/b/', 'a/b/c/']),
-  directoryRow('a/b/c/d/e/', ['a/', 'a/b/', 'a/b/c/', 'a/b/c/d/']),
-  fileRow('a/b/c/d/e/file.ts', [
-    'a/',
-    'a/b/',
-    'a/b/c/',
-    'a/b/c/d/',
-    'a/b/c/d/e/',
-  ]),
-  fileRow('z.ts', []),
+  directoryRow("a/", []),
+  directoryRow("a/b/", ["a/"]),
+  directoryRow("a/b/c/", ["a/", "a/b/"]),
+  directoryRow("a/b/c/d/", ["a/", "a/b/", "a/b/c/"]),
+  directoryRow("a/b/c/d/e/", ["a/", "a/b/", "a/b/c/", "a/b/c/d/"]),
+  fileRow("a/b/c/d/e/file.ts", ["a/", "a/b/", "a/b/c/", "a/b/c/d/", "a/b/c/d/e/"]),
+  fileRow("z.ts", []),
 ] as const;
 
 const SUBTREE_HANDOFF_ROWS = [
-  directoryRow('arch/', []),
-  directoryRow('arch/alpha/', ['arch/']),
-  directoryRow('arch/alpha/boot/', ['arch/', 'arch/alpha/']),
-  directoryRow('arch/alpha/boot/tools/', [
-    'arch/',
-    'arch/alpha/',
-    'arch/alpha/boot/',
+  directoryRow("arch/", []),
+  directoryRow("arch/alpha/", ["arch/"]),
+  directoryRow("arch/alpha/boot/", ["arch/", "arch/alpha/"]),
+  directoryRow("arch/alpha/boot/tools/", ["arch/", "arch/alpha/", "arch/alpha/boot/"]),
+  fileRow("arch/alpha/boot/tools/mkbb.c", [
+    "arch/",
+    "arch/alpha/",
+    "arch/alpha/boot/",
+    "arch/alpha/boot/tools/",
   ]),
-  fileRow('arch/alpha/boot/tools/mkbb.c', [
-    'arch/',
-    'arch/alpha/',
-    'arch/alpha/boot/',
-    'arch/alpha/boot/tools/',
+  fileRow("arch/alpha/boot/tools/objstrip.c", [
+    "arch/",
+    "arch/alpha/",
+    "arch/alpha/boot/",
+    "arch/alpha/boot/tools/",
   ]),
-  fileRow('arch/alpha/boot/tools/objstrip.c', [
-    'arch/',
-    'arch/alpha/',
-    'arch/alpha/boot/',
-    'arch/alpha/boot/tools/',
-  ]),
-  fileRow('arch/alpha/boot/bootloader.lds', [
-    'arch/',
-    'arch/alpha/',
-    'arch/alpha/boot/',
-  ]),
-  fileRow('arch/alpha/boot/bootp.c', [
-    'arch/',
-    'arch/alpha/',
-    'arch/alpha/boot/',
-  ]),
-  fileRow('arch/alpha/boot/head.S', [
-    'arch/',
-    'arch/alpha/',
-    'arch/alpha/boot/',
-  ]),
-  fileRow('arch/alpha/boot/main.c', [
-    'arch/',
-    'arch/alpha/',
-    'arch/alpha/boot/',
-  ]),
+  fileRow("arch/alpha/boot/bootloader.lds", ["arch/", "arch/alpha/", "arch/alpha/boot/"]),
+  fileRow("arch/alpha/boot/bootp.c", ["arch/", "arch/alpha/", "arch/alpha/boot/"]),
+  fileRow("arch/alpha/boot/head.S", ["arch/", "arch/alpha/", "arch/alpha/boot/"]),
+  fileRow("arch/alpha/boot/main.c", ["arch/", "arch/alpha/", "arch/alpha/boot/"]),
 ] as const;
 
-describe('file-tree layout engine', () => {
-  test('matches the full layout snapshot at every scroll pixel for a tiny chain fixture', () => {
+describe("file-tree layout engine", () => {
+  test("matches the full layout snapshot at every scroll pixel for a tiny chain fixture", () => {
     const summaries = Array.from({ length: 7 }, (_unused, scrollTop) =>
-      summarizeLayout(EXHAUSTIVE_CHAIN_ROWS, scrollTop, 4, 2, 1)
+      summarizeLayout(EXHAUSTIVE_CHAIN_ROWS, scrollTop, 4, 2, 1),
     );
 
     expect(summaries).toEqual([
@@ -170,9 +138,9 @@ describe('file-tree layout engine', () => {
         },
         scrollTop: 1,
         sticky: [
-          { path: 'a/', top: 0 },
-          { path: 'a/b/', top: 2 },
-          { path: 'a/b/c/', top: 4 },
+          { path: "a/", top: 0 },
+          { path: "a/b/", top: 2 },
+          { path: "a/b/c/", top: 4 },
         ],
         stickyHeight: 6,
         visible: {
@@ -199,9 +167,9 @@ describe('file-tree layout engine', () => {
         },
         scrollTop: 2,
         sticky: [
-          { path: 'a/', top: 0 },
-          { path: 'a/b/', top: 2 },
-          { path: 'a/b/c/', top: 4 },
+          { path: "a/", top: 0 },
+          { path: "a/b/", top: 2 },
+          { path: "a/b/c/", top: 4 },
         ],
         stickyHeight: 6,
         visible: {
@@ -228,9 +196,9 @@ describe('file-tree layout engine', () => {
         },
         scrollTop: 3,
         sticky: [
-          { path: 'a/', top: 0 },
-          { path: 'a/b/', top: 2 },
-          { path: 'a/b/c/', top: 3 },
+          { path: "a/", top: 0 },
+          { path: "a/b/", top: 2 },
+          { path: "a/b/c/", top: 3 },
         ],
         stickyHeight: 5,
         visible: {
@@ -257,9 +225,9 @@ describe('file-tree layout engine', () => {
         },
         scrollTop: 4,
         sticky: [
-          { path: 'a/', top: 0 },
-          { path: 'a/b/', top: 2 },
-          { path: 'a/b/c/', top: 2 },
+          { path: "a/", top: 0 },
+          { path: "a/b/", top: 2 },
+          { path: "a/b/c/", top: 2 },
         ],
         stickyHeight: 4,
         visible: {
@@ -286,9 +254,9 @@ describe('file-tree layout engine', () => {
         },
         scrollTop: 5,
         sticky: [
-          { path: 'a/', top: 0 },
-          { path: 'a/b/', top: 1 },
-          { path: 'a/b/c/', top: 1 },
+          { path: "a/", top: 0 },
+          { path: "a/b/", top: 1 },
+          { path: "a/b/c/", top: 1 },
         ],
         stickyHeight: 3,
         visible: {
@@ -315,9 +283,9 @@ describe('file-tree layout engine', () => {
         },
         scrollTop: 6,
         sticky: [
-          { path: 'a/', top: 0 },
-          { path: 'a/b/', top: 0 },
-          { path: 'a/b/c/', top: 0 },
+          { path: "a/", top: 0 },
+          { path: "a/b/", top: 0 },
+          { path: "a/b/c/", top: 0 },
         ],
         stickyHeight: 2,
         visible: {
@@ -334,7 +302,7 @@ describe('file-tree layout engine', () => {
     ]);
   });
 
-  test('allows a deep leading folder chain to fill more than the physical viewport', () => {
+  test("allows a deep leading folder chain to fill more than the physical viewport", () => {
     const snapshot = computeFileTreeLayout(DEEP_CHAIN_ROWS, {
       itemHeight: 30,
       overscan: 2,
@@ -343,11 +311,11 @@ describe('file-tree layout engine', () => {
     });
 
     expect(snapshot.sticky.rows.map((entry) => entry.row.path)).toEqual([
-      'a/',
-      'a/b/',
-      'a/b/c/',
-      'a/b/c/d/',
-      'a/b/c/d/e/',
+      "a/",
+      "a/b/",
+      "a/b/c/",
+      "a/b/c/d/",
+      "a/b/c/d/e/",
     ]);
     expect(snapshot.sticky.height).toBe(150);
     expect(snapshot.projected.paneHeight).toBe(0);
@@ -360,7 +328,7 @@ describe('file-tree layout engine', () => {
     });
   });
 
-  test('pushes a deep sticky folder upward while the next row outside its subtree reaches the slot', () => {
+  test("pushes a deep sticky folder upward while the next row outside its subtree reaches the slot", () => {
     const beforeHandoff = computeFileTreeLayout(SUBTREE_HANDOFF_ROWS, {
       itemHeight: 30,
       overscan: 2,
@@ -436,11 +404,11 @@ describe('file-tree layout engine', () => {
     expect(afterHandoff.visible).toEqual({ endIndex: 8, startIndex: 6 });
   });
 
-  test('never sticks a collapsed directory and keeps physical metrics separate from the projected pane', () => {
+  test("never sticks a collapsed directory and keeps physical metrics separate from the projected pane", () => {
     const rows = [
-      directoryRow('src/', [], false),
-      fileRow('src/lib/util.ts', ['src/']),
-      fileRow('z.ts', []),
+      directoryRow("src/", [], false),
+      fileRow("src/lib/util.ts", ["src/"]),
+      fileRow("z.ts", []),
     ] as const;
 
     const collapsedSnapshot = computeFileTreeLayout(rows, {
@@ -452,10 +420,10 @@ describe('file-tree layout engine', () => {
     expect(collapsedSnapshot.sticky.rows).toEqual([]);
 
     const expandedRows = [
-      directoryRow('src/', []),
-      directoryRow('src/lib/', ['src/']),
-      fileRow('src/lib/util.ts', ['src/', 'src/lib/']),
-      fileRow('z.ts', []),
+      directoryRow("src/", []),
+      directoryRow("src/lib/", ["src/"]),
+      fileRow("src/lib/util.ts", ["src/", "src/lib/"]),
+      fileRow("z.ts", []),
     ] as const;
     const expandedSnapshot = computeFileTreeLayout(expandedRows, {
       itemHeight: 30,
@@ -473,7 +441,7 @@ describe('file-tree layout engine', () => {
     ]);
   });
 
-  test('never includes sticky rows in the mounted list window at any tested scroll pixel', () => {
+  test("never includes sticky rows in the mounted list window at any tested scroll pixel", () => {
     const totalHeight = SUBTREE_HANDOFF_ROWS.length * 30;
     const maxScrollTop = totalHeight - 180;
 
@@ -484,21 +452,13 @@ describe('file-tree layout engine', () => {
         scrollTop,
         viewportHeight: 180,
       });
-      const stickyPathSet = new Set(
-        snapshot.sticky.rows.map((entry) => entry.row.path)
-      );
+      const stickyPathSet = new Set(snapshot.sticky.rows.map((entry) => entry.row.path));
       const mountedRows =
-        snapshot.window.startIndex < 0 ||
-        snapshot.window.endIndex < snapshot.window.startIndex
+        snapshot.window.startIndex < 0 || snapshot.window.endIndex < snapshot.window.startIndex
           ? []
-          : SUBTREE_HANDOFF_ROWS.slice(
-              snapshot.window.startIndex,
-              snapshot.window.endIndex + 1
-            );
+          : SUBTREE_HANDOFF_ROWS.slice(snapshot.window.startIndex, snapshot.window.endIndex + 1);
 
-      expect(
-        mountedRows.every((row) => !stickyPathSet.has(row.path))
-      ).toBeTrue();
+      expect(mountedRows.every((row) => !stickyPathSet.has(row.path))).toBeTrue();
     }
   });
 });

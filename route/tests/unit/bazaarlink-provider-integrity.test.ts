@@ -41,21 +41,22 @@ describe("bazaarlink provider entry in APIKEY_PROVIDERS", () => {
     assert.ok(entry.modelsUrl, "registry entry must have a modelsUrl");
     assert.ok(
       entry.models && entry.models.length > 0,
-      "registry entry must list at least one model"
+      "registry entry must list at least one model",
     );
     assert.ok(
       entry.models.some((m: { id: string }) => m.id === "auto:free"),
-      "registry must include auto:free model"
+      "registry must include auto:free model",
     );
     assert.ok(
       entry.models.some((m: { id: string }) => m.id === "mimo-v2.5-pro"),
-      "registry must include mimo-v2.5-pro"
+      "registry must include mimo-v2.5-pro",
     );
   });
 
   it("is resolvable through the static catalog for managed connections", async () => {
-    const { resolveStaticProviderCatalogEntry } =
-      await import("../../src/lib/providers/catalog.ts");
+    const { resolveStaticProviderCatalogEntry } = await import(
+      "../../src/lib/providers/catalog.ts"
+    );
     const entry = resolveStaticProviderCatalogEntry("bazaarlink");
     assert.ok(entry, "bazaarlink must resolve through the static provider catalog");
     assert.ok(entry.id, "bazaarlink", "resolved entry id must match");

@@ -23,12 +23,12 @@
 //   have no `.env.worktree`; they are visible to `wt list`/`wt ps` but they
 //   don't claim offsets and are skipped by `wt clean --all`.
 
-import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { homedir, userInfo } from 'node:os';
-import { join, resolve } from 'node:path';
+import { spawnSync } from "node:child_process";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { homedir, userInfo } from "node:os";
+import { join, resolve } from "node:path";
 
-const WORKTREES_HOME = join(homedir(), 'pierre', 'pierre-worktrees');
+const WORKTREES_HOME = join(homedir(), "pierre", "pierre-worktrees");
 
 // Port bases. The offset is added to these to get a worktree's actual ports.
 const PORT_BASES = {
@@ -84,8 +84,8 @@ const commands: Record<string, (rest: string[]) => Promise<number> | number> = {
   ps: cmdPs,
   list: cmdList,
   help: cmdHelp,
-  '--help': cmdHelp,
-  '-h': cmdHelp,
+  "--help": cmdHelp,
+  "-h": cmdHelp,
 };
 
 if (import.meta.main) {
@@ -102,7 +102,7 @@ if (import.meta.main) {
     (err) => {
       console.error(err instanceof Error ? err.message : String(err));
       process.exit(1);
-    }
+    },
   );
 }
 
@@ -142,7 +142,7 @@ Subcommands:
 async function cmdNew(rest: string[]): Promise<number> {
   const { slug, branch: branchOverride, base } = parseNewArgs(rest);
   if (!slug) {
-    console.error('wt new: missing <slug>');
+    console.error("wt new: missing <slug>");
     return 1;
   }
 
@@ -159,9 +159,7 @@ async function cmdNew(rest: string[]): Promise<number> {
   const worktrees = enumerateWorktrees();
   for (const wt of worktrees) {
     if (wt.branch === `refs/heads/${branch}` || wt.branch === branch) {
-      console.error(
-        `wt new: branch ${branch} is already checked out at ${wt.path}`
-      );
+      console.error(`wt new: branch ${branch} is already checked out at ${wt.path}`);
       return 1;
     }
   }
@@ -174,10 +172,10 @@ async function cmdNew(rest: string[]): Promise<number> {
   //   - Otherwise create a new branch rooted at <base> (default: main):
   //     `git worktree add -b <branch> <path> <base>`.
   const gitArgs = branchOverride
-    ? ['worktree', 'add', worktreePath, branch]
-    : ['worktree', 'add', '-b', branch, worktreePath, base ?? 'main'];
+    ? ["worktree", "add", worktreePath, branch]
+    : ["worktree", "add", "-b", branch, worktreePath, base ?? "main"];
 
-  const gitResult = spawnSync('git', gitArgs, { stdio: 'inherit' });
+  const gitResult = spawnSync("git", gitArgs, { stdio: "inherit" });
   if (gitResult.status !== 0) {
     return gitResult.status ?? 1;
   }
@@ -196,11 +194,11 @@ function parseNewArgs(rest: string[]): {
   let base: string | undefined;
   for (let i = 0; i < rest.length; i++) {
     const a = rest[i];
-    if (a === '--branch') {
+    if (a === "--branch") {
       branch = rest[++i];
-    } else if (a === '--base') {
+    } else if (a === "--base") {
       base = rest[++i];
-    } else if (!slug && !a.startsWith('--')) {
+    } else if (!slug && !a.startsWith("--")) {
       slug = a;
     }
   }
@@ -212,7 +210,7 @@ function parseNewArgs(rest: string[]): {
 // -----------------------------------------------------------------------------
 
 async function cmdSetup(rest: string[]): Promise<number> {
-  const slug = rest.find((a) => !a.startsWith('--'));
+  const slug = rest.find((a) => !a.startsWith("--"));
   const path = slug ? join(WORKTREES_HOME, slugify(slug)) : process.cwd();
   await setupWorktree({ path, slug });
   return 0;
@@ -222,7 +220,7 @@ async function cmdSetup(rest: string[]): Promise<number> {
 // worktree. The path-first shape lets other scripts call this after they have
 // already changed into the worktree they created.
 export async function setupWorktree(
-  options: SetupWorktreeOptions = {}
+  options: SetupWorktreeOptions = {},
 ): Promise<SetupWorktreeResult> {
   const inputPath = resolve(options.path ?? process.cwd());
   const worktreeRoot = resolveGitWorktreeRoot(inputPath);
@@ -230,41 +228,36 @@ export async function setupWorktree(
   const worktree = findWorktreeByPath(worktrees, worktreeRoot);
 
   if (!worktree) {
-    throw new Error(
-      `wt setup: ${worktreeRoot} is not listed as a git worktree`
-    );
+    throw new Error(`wt setup: ${worktreeRoot} is not listed as a git worktree`);
   }
   if (worktree.isMain) {
-    throw new Error('wt setup: refusing to initialize the main clone');
+    throw new Error("wt setup: refusing to initialize the main clone");
   }
 
-  const envPath = join(worktreeRoot, '.env.worktree');
+  const envPath = join(worktreeRoot, ".env.worktree");
   const existingEnv = existsSync(envPath) ? parseEnvFile(envPath) : {};
-  const slug =
-    options.slug ?? existingEnv.PIERRE_WORKTREE_SLUG ?? basename(worktreeRoot);
+  const slug = options.slug ?? existingEnv.PIERRE_WORKTREE_SLUG ?? basename(worktreeRoot);
   const existingOffset = parseOffset(existingEnv.PIERRE_PORT_OFFSET);
   const offset =
     existingOffset ??
     allocateOffset(
       slug,
-      worktrees.map((w) => w.offset).filter((o): o is number => o !== null)
+      worktrees.map((w) => w.offset).filter((o): o is number => o !== null),
     );
 
   const envText = `PIERRE_WORKTREE_SLUG=${slug}\nPIERRE_PORT_OFFSET=${offset}\n`;
-  if (!existsSync(envPath) || readFileSync(envPath, 'utf8') !== envText) {
-    writeFileSync(envPath, envText, 'utf8');
+  if (!existsSync(envPath) || readFileSync(envPath, "utf8") !== envText) {
+    writeFileSync(envPath, envText, "utf8");
   }
 
   if (options.install ?? true) {
     console.log(`\nInstalling dependencies in ${worktreeRoot}...`);
-    const pnpmInstall = spawnSync('pnpm', ['install'], {
+    const pnpmInstall = spawnSync("pnpm", ["install"], {
       cwd: worktreeRoot,
-      stdio: 'inherit',
+      stdio: "inherit",
     });
     if (pnpmInstall.status !== 0) {
-      throw new Error(
-        'wt setup: pnpm install failed; the worktree may be incomplete'
-      );
+      throw new Error("wt setup: pnpm install failed; the worktree may be incomplete");
     }
   }
 
@@ -280,11 +273,11 @@ export async function setupWorktree(
 // -----------------------------------------------------------------------------
 
 function cmdRm(rest: string[]): number {
-  const keepBranch = rest.includes('--keep-branch');
-  const force = rest.includes('--force');
-  const slug = rest.find((a) => !a.startsWith('--'));
+  const keepBranch = rest.includes("--keep-branch");
+  const force = rest.includes("--force");
+  const slug = rest.find((a) => !a.startsWith("--"));
   if (!slug) {
-    console.error('wt rm: missing <slug>');
+    console.error("wt rm: missing <slug>");
     return 1;
   }
 
@@ -296,27 +289,25 @@ function cmdRm(rest: string[]): number {
 
   killWorktreePorts(wt);
 
-  const removeArgs = ['worktree', 'remove'];
-  if (force) removeArgs.push('--force');
+  const removeArgs = ["worktree", "remove"];
+  if (force) removeArgs.push("--force");
   removeArgs.push(wt.path);
-  const removeResult = spawnSync('git', removeArgs, { stdio: 'inherit' });
+  const removeResult = spawnSync("git", removeArgs, { stdio: "inherit" });
   if (removeResult.status !== 0) {
     return removeResult.status ?? 1;
   }
 
   if (!keepBranch && wt.branch) {
-    const branchName = wt.branch.replace(/^refs\/heads\//, '');
+    const branchName = wt.branch.replace(/^refs\/heads\//, "");
     // `git branch -d` is safe: it refuses to delete unmerged branches.
-    const del = spawnSync('git', ['branch', '-d', branchName], {
-      stdio: 'pipe',
-      encoding: 'utf8',
+    const del = spawnSync("git", ["branch", "-d", branchName], {
+      stdio: "pipe",
+      encoding: "utf8",
     });
     if (del.status === 0) {
       console.log(`Deleted branch ${branchName} (was merged).`);
     } else {
-      console.log(
-        `Left branch ${branchName} in place (${del.stderr.trim() || 'unmerged'}).`
-      );
+      console.log(`Left branch ${branchName} in place (${del.stderr.trim() || "unmerged"}).`);
     }
   }
 
@@ -328,16 +319,16 @@ function cmdRm(rest: string[]): number {
 // -----------------------------------------------------------------------------
 
 function cmdClean(rest: string[]): number {
-  const all = rest.length === 0 || rest.includes('--all');
+  const all = rest.length === 0 || rest.includes("--all");
   const targets: Worktree[] = [];
   if (all) {
     for (const wt of enumerateWorktrees()) {
       if (wt.offset !== null || wt.isMain) targets.push(wt);
     }
   } else {
-    const slug = rest.find((a) => !a.startsWith('--'));
+    const slug = rest.find((a) => !a.startsWith("--"));
     if (!slug) {
-      console.error('wt clean: missing <slug> (or pass --all)');
+      console.error("wt clean: missing <slug> (or pass --all)");
       return 1;
     }
     const wt = findWorktreeBySlug(slug);
@@ -361,37 +352,34 @@ function cmdClean(rest: string[]): number {
 function cmdPs(): number {
   const worktrees = enumerateWorktrees();
   const services: Array<[keyof typeof PORT_BASES, string]> = [
-    ['docsDiffs', 'diffs'],
-    ['docsTrees', 'trees'],
-    ['docsDiffshub', 'diffshub'],
-    ['docsE2E', 'docsE2E'],
-    ['treesE2E', 'treesE2E'],
-    ['pathStoreE2E', 'psE2E'],
-    ['chrome', 'chrome'],
+    ["docsDiffs", "diffs"],
+    ["docsTrees", "trees"],
+    ["docsDiffshub", "diffshub"],
+    ["docsE2E", "docsE2E"],
+    ["treesE2E", "treesE2E"],
+    ["pathStoreE2E", "psE2E"],
+    ["chrome", "chrome"],
   ];
 
   const header = [
-    padRight('worktree', 28),
-    padRight('offset', 8),
+    padRight("worktree", 28),
+    padRight("offset", 8),
     ...services.map(([, label]) => padRight(label, 14)),
-  ].join(' ');
+  ].join(" ");
   console.log(header);
-  console.log('-'.repeat(header.length));
+  console.log("-".repeat(header.length));
 
   for (const wt of worktrees) {
-    const label =
-      wt.slug ?? (wt.isMain ? '(main)' : `(unmanaged:${basename(wt.path)})`);
-    const offsetCell = wt.offset === null ? '—' : String(wt.offset);
+    const label = wt.slug ?? (wt.isMain ? "(main)" : `(unmanaged:${basename(wt.path)})`);
+    const offsetCell = wt.offset === null ? "—" : String(wt.offset);
     const portMap = wt.offset === null ? null : resolvePortMap(wt.offset);
     const cells = services.map(([key]) => {
-      if (!portMap) return padRight('—', 14);
+      if (!portMap) return padRight("—", 14);
       const port = portMap[key];
       const pid = pidOnPort(port);
       return padRight(pid ? `${port}:${pid}` : `${port}`, 14);
     });
-    console.log(
-      [padRight(label, 28), padRight(offsetCell, 8), ...cells].join(' ')
-    );
+    console.log([padRight(label, 28), padRight(offsetCell, 8), ...cells].join(" "));
   }
   return 0;
 }
@@ -402,13 +390,11 @@ function cmdPs(): number {
 
 function cmdList(): number {
   for (const wt of enumerateWorktrees()) {
-    const offset = wt.offset === null ? '—' : String(wt.offset);
-    const slug = wt.slug ?? (wt.isMain ? '(main)' : '(unmanaged)');
-    const branch = wt.branch
-      ? wt.branch.replace(/^refs\/heads\//, '')
-      : '(detached)';
+    const offset = wt.offset === null ? "—" : String(wt.offset);
+    const slug = wt.slug ?? (wt.isMain ? "(main)" : "(unmanaged)");
+    const branch = wt.branch ? wt.branch.replace(/^refs\/heads\//, "") : "(detached)";
     console.log(
-      `${padRight(slug, 28)} offset=${padRight(offset, 4)} ${padRight(branch, 40)} ${wt.path}`
+      `${padRight(slug, 28)} offset=${padRight(offset, 4)} ${padRight(branch, 40)} ${wt.path}`,
     );
   }
   return 0;
@@ -422,13 +408,9 @@ function cmdList(): number {
 // line. Fields we care about: `worktree <path>`, `HEAD <sha>`, `branch
 // refs/heads/<name>` (or `detached`).
 function enumerateWorktrees(cwd = process.cwd()): Worktree[] {
-  const result = spawnSync(
-    'git',
-    ['-C', cwd, 'worktree', 'list', '--porcelain'],
-    {
-      encoding: 'utf8',
-    }
-  );
+  const result = spawnSync("git", ["-C", cwd, "worktree", "list", "--porcelain"], {
+    encoding: "utf8",
+  });
   if (result.status !== 0) {
     throw new Error(`git worktree list failed:\n${result.stderr}`);
   }
@@ -441,7 +423,7 @@ function enumerateWorktrees(cwd = process.cwd()): Worktree[] {
     const path = current.path;
     const isMain = !primarySeen;
     primarySeen = true;
-    const envPath = join(path, '.env.worktree');
+    const envPath = join(path, ".env.worktree");
     let offset: number | null = null;
     let slug: string | null = null;
     if (existsSync(envPath)) {
@@ -469,18 +451,18 @@ function enumerateWorktrees(cwd = process.cwd()): Worktree[] {
     current = {};
   };
 
-  for (const rawLine of result.stdout.split('\n')) {
+  for (const rawLine of result.stdout.split("\n")) {
     const line = rawLine.trim();
-    if (line === '') {
+    if (line === "") {
       flush();
       continue;
     }
-    if (line.startsWith('worktree ')) {
-      current.path = line.slice('worktree '.length);
-    } else if (line.startsWith('HEAD ')) {
-      current.head = line.slice('HEAD '.length);
-    } else if (line.startsWith('branch ')) {
-      current.branch = line.slice('branch '.length);
+    if (line.startsWith("worktree ")) {
+      current.path = line.slice("worktree ".length);
+    } else if (line.startsWith("HEAD ")) {
+      current.head = line.slice("HEAD ".length);
+    } else if (line.startsWith("branch ")) {
+      current.branch = line.slice("branch ".length);
     }
   }
   flush();
@@ -491,22 +473,15 @@ function findWorktreeBySlug(slug: string): Worktree | undefined {
   return enumerateWorktrees().find((w) => w.slug === slug);
 }
 
-function findWorktreeByPath(
-  worktrees: Worktree[],
-  path: string
-): Worktree | undefined {
+function findWorktreeByPath(worktrees: Worktree[], path: string): Worktree | undefined {
   const targetPath = resolve(path);
   return worktrees.find((w) => resolve(w.path) === targetPath);
 }
 
 function resolveGitWorktreeRoot(path: string): string {
-  const result = spawnSync(
-    'git',
-    ['-C', path, 'rev-parse', '--show-toplevel'],
-    {
-      encoding: 'utf8',
-    }
-  );
+  const result = spawnSync("git", ["-C", path, "rev-parse", "--show-toplevel"], {
+    encoding: "utf8",
+  });
   if (result.status !== 0) {
     throw new Error(`wt setup: ${path} is not inside a git worktree`);
   }
@@ -534,7 +509,7 @@ function allocateOffset(slug: string, inUse: number[]): number {
     if (!taken.has(offset)) return offset;
     offset += 10;
   }
-  throw new Error('wt new: could not allocate a free port offset');
+  throw new Error("wt new: could not allocate a free port offset");
 }
 
 function resolvePortMap(offset: number): PortMap {
@@ -550,18 +525,18 @@ function killPorts(ports: number[]): void {
   for (const port of ports) {
     const pids = pidsOnPort(port);
     if (pids.length === 0) continue;
-    console.log(`[wt clean] port ${port}: killing ${pids.join(', ')}`);
-    spawnSync('kill', ['-TERM', ...pids.map(String)], { stdio: 'ignore' });
+    console.log(`[wt clean] port ${port}: killing ${pids.join(", ")}`);
+    spawnSync("kill", ["-TERM", ...pids.map(String)], { stdio: "ignore" });
   }
   // Single shared pause, then kill survivors.
   if (ports.some((p) => pidsOnPort(p).length > 0)) {
-    spawnSync('sleep', ['0.3']);
+    spawnSync("sleep", ["0.3"]);
   }
   for (const port of ports) {
     const survivors = pidsOnPort(port);
     if (survivors.length === 0) continue;
-    console.log(`[wt clean] port ${port}: SIGKILL ${survivors.join(', ')}`);
-    spawnSync('kill', ['-KILL', ...survivors.map(String)], { stdio: 'ignore' });
+    console.log(`[wt clean] port ${port}: SIGKILL ${survivors.join(", ")}`);
+    spawnSync("kill", ["-KILL", ...survivors.map(String)], { stdio: "ignore" });
   }
 }
 
@@ -575,12 +550,12 @@ function killWorktreePorts(wt: Worktree): void {
 }
 
 function pidsOnPort(port: number): number[] {
-  const r = spawnSync('lsof', ['-ti', `:${port}`, '-sTCP:LISTEN'], {
-    encoding: 'utf8',
+  const r = spawnSync("lsof", ["-ti", `:${port}`, "-sTCP:LISTEN"], {
+    encoding: "utf8",
   });
   if (r.status !== 0) return [];
   return r.stdout
-    .split('\n')
+    .split("\n")
     .map((l) => l.trim())
     .filter(Boolean)
     .map((s) => Number(s))
@@ -593,12 +568,12 @@ function pidOnPort(port: number): number | null {
 }
 
 function parseEnvFile(path: string): Record<string, string> {
-  const text = readFileSync(path, 'utf8');
+  const text = readFileSync(path, "utf8");
   const out: Record<string, string> = {};
-  for (const rawLine of text.split('\n')) {
+  for (const rawLine of text.split("\n")) {
     const line = rawLine.trim();
-    if (!line || line.startsWith('#')) continue;
-    const eq = line.indexOf('=');
+    if (!line || line.startsWith("#")) continue;
+    const eq = line.indexOf("=");
     if (eq === -1) continue;
     const key = line.slice(0, eq).trim();
     let value = line.slice(eq + 1).trim();
@@ -615,15 +590,15 @@ function parseEnvFile(path: string): Record<string, string> {
 }
 
 function slugify(input: string): string {
-  return input.replace(/[/\\]+/g, '-').replace(/^-+|-+$/g, '');
+  return input.replace(/[/\\]+/g, "-").replace(/^-+|-+$/g, "");
 }
 
 function padRight(s: string, n: number): string {
-  return s.length >= n ? s : s + ' '.repeat(n - s.length);
+  return s.length >= n ? s : s + " ".repeat(n - s.length);
 }
 
 function basename(p: string): string {
-  return p.split('/').filter(Boolean).pop() ?? p;
+  return p.split("/").filter(Boolean).pop() ?? p;
 }
 
 function printPortMap(slug: string, offset: number, path: string): void {

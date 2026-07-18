@@ -171,7 +171,7 @@ function updateAllLimiterSettings() {
 
 function reconcileEnabledConnections(
   connectionsRaw: unknown[],
-  requestQueueSettings: RequestQueueSettings
+  requestQueueSettings: RequestQueueSettings,
 ) {
   const nextEnabledConnections = new Set<string>();
   let explicitCount = 0;
@@ -234,7 +234,7 @@ function watchdogTick() {
         lastDispatchAt.delete(key);
         limiterLastUsed.delete(key);
         logRateLimit(
-          `🧹 [RATE-LIMIT] Evicting idle limiter: ${key} (inactive for ${Math.round((now - lastUsed) / 1000)}s)`
+          `🧹 [RATE-LIMIT] Evicting idle limiter: ${key} (inactive for ${Math.round((now - lastUsed) / 1000)}s)`,
         );
         trackAsyncOperation(limiter.disconnect());
       }
@@ -255,7 +255,7 @@ function watchdogTick() {
     if (stalledMs < WEDGE_THRESHOLD_MS) continue;
 
     warnRateLimit(
-      `🚨 [RATE-LIMIT] WEDGED: ${key} queued=${counts.QUEUED} running=0 executing=0 stalled=${stalledMs}ms — force-resetting`
+      `🚨 [RATE-LIMIT] WEDGED: ${key} queued=${counts.QUEUED} running=0 executing=0 stalled=${stalledMs}ms — force-resetting`,
     );
     limiters.delete(key);
     lastDispatchAt.delete(key);
@@ -326,7 +326,7 @@ function trackAsyncOperation<T>(promise: Promise<T>): Promise<T> {
     },
     () => {
       pendingAsyncOperations.delete(promise);
-    }
+    },
   );
   return promise;
 }
@@ -346,7 +346,7 @@ export async function initializeRateLimits() {
     currentRequestQueueSettings = { ...resilience.requestQueue };
     const { explicitCount, autoCount } = reconcileEnabledConnections(
       connections as unknown[],
-      currentRequestQueueSettings
+      currentRequestQueueSettings,
     );
     updateAllLimiterSettings();
 
@@ -361,7 +361,7 @@ export async function initializeRateLimits() {
 
     if (explicitCount > 0 || autoCount > 0) {
       logRateLimit(
-        `🛡️ [RATE-LIMIT] Loaded ${explicitCount} explicit + ${autoCount} auto-enabled protection(s)`
+        `🛡️ [RATE-LIMIT] Loaded ${explicitCount} explicit + ${autoCount} auto-enabled protection(s)`,
       );
     }
 
@@ -540,7 +540,7 @@ export async function withRateLimit(provider, connectionId, model, fn, signal = 
     provider,
     connectionId,
     signal,
-    currentRequestQueueSettings.maxWaitMs
+    currentRequestQueueSettings.maxWaitMs,
   );
 
   const limiter = getLimiter(provider, connectionId, model);
@@ -588,14 +588,14 @@ export async function withRateLimit(provider, connectionId, model, fn, signal = 
     if (err?.message?.includes("This job timed out")) {
       const key = getLimiterKey(provider, connectionId, model);
       logRateLimit(
-        `⏰ [RATE-LIMIT] ${key} — job expired after ${Math.ceil((maxWaitMs || 0) / 1000)}s in queue, dropping`
+        `⏰ [RATE-LIMIT] ${key} — job expired after ${Math.ceil((maxWaitMs || 0) / 1000)}s in queue, dropping`,
       );
       const queueErr = new Error(
         `Request dropped after exceeding the local rate-limit queue budget maxWaitMs (${maxWaitMs}ms) for ` +
           `${model ? `${provider}/${model}` : provider} — this is OmniRoute's request queue ` +
           `(resilienceSettings.requestQueue.maxWaitMs), not an upstream timeout. Raise it in ` +
           `Settings → Resilience if this is queue saturation rather than a slow provider.`,
-        { cause: err }
+        { cause: err },
       ) as Error & { code?: string };
       queueErr.code = "RATE_LIMIT_QUEUE_TIMEOUT";
       throw queueErr;
@@ -640,7 +640,7 @@ export function updateFromHeaders(provider, connectionId, headers, status, model
     const counts = limiter.counts();
     const limiterKey = getLimiterKey(provider, connectionId, model);
     logRateLimit(
-      `🚫 [RATE-LIMIT] ${provider}:${connectionId.slice(0, 8)} — 429 received, pausing for ${Math.ceil(retryAfterMs / 1000)}s, dropping ${counts.QUEUED} queued request(s)`
+      `🚫 [RATE-LIMIT] ${provider}:${connectionId.slice(0, 8)} — 429 received, pausing for ${Math.ceil(retryAfterMs / 1000)}s, dropping ${counts.QUEUED} queued request(s)`,
     );
 
     // Evict from the cache so follow-up learning from the same error body
@@ -663,7 +663,7 @@ export function updateFromHeaders(provider, connectionId, headers, status, model
   // Handle "over limit" soft warning (Fireworks)
   if (overLimit === "yes") {
     logRateLimit(
-      `⚠️ [RATE-LIMIT] ${provider}:${connectionId.slice(0, 8)} — near capacity, slowing down`
+      `⚠️ [RATE-LIMIT] ${provider}:${connectionId.slice(0, 8)} — near capacity, slowing down`,
     );
     limiter.updateSettings({
       minTime: 200, // Add 200ms between requests
@@ -687,7 +687,7 @@ export function updateFromHeaders(provider, connectionId, headers, status, model
         updates.reservoirRefreshAmount = limit;
         updates.reservoirRefreshInterval = resetMs;
         logRateLimit(
-          `⚠️ [RATE-LIMIT] ${provider}:${connectionId.slice(0, 8)} — ${remaining}/${limit} remaining, throttling`
+          `⚠️ [RATE-LIMIT] ${provider}:${connectionId.slice(0, 8)} — ${remaining}/${limit} remaining, throttling`,
         );
       } else if (remaining > limit * 0.5) {
         // Plenty of headroom — relax the limiter
@@ -705,7 +705,7 @@ export function updateFromHeaders(provider, connectionId, headers, status, model
       provider,
       connectionId,
       { limit, remaining, minTime: updates.minTime },
-      model
+      model,
     );
   }
 }
@@ -767,7 +767,7 @@ async function persistLearnedLimitsNow() {
     const { updateSettings } = await import("@/lib/db/settings");
     await updateSettings({ learnedRateLimits: JSON.stringify(learnedLimits) });
     logRateLimit(
-      `💾 [RATE-LIMIT] Persisted learned limits for ${Object.keys(learnedLimits).length} provider(s)`
+      `💾 [RATE-LIMIT] Persisted learned limits for ${Object.keys(learnedLimits).length} provider(s)`,
     );
   } catch (err) {
     errorRateLimit("[RATE-LIMIT] Failed to persist learned limits:", err.message);
@@ -781,7 +781,7 @@ function recordLearnedLimit(
   provider: string,
   connectionId: string,
   limits: Partial<Omit<LearnedLimitEntry, "provider" | "connectionId" | "lastUpdated">>,
-  model: string | null = null
+  model: string | null = null,
 ) {
   const key = getLimiterKey(provider, connectionId, model);
   learnedLimits[key] = {
@@ -933,7 +933,7 @@ export function updateFromResponseBody(provider, connectionId, responseBody, sta
   if (retryAfterMs && retryAfterMs > 0) {
     const limiter = getLimiter(provider, connectionId, model);
     logRateLimit(
-      `🚫 [RATE-LIMIT] ${provider}:${connectionId.slice(0, 8)} — body-parsed retry: ${Math.ceil(retryAfterMs / 1000)}s (${reason})`
+      `🚫 [RATE-LIMIT] ${provider}:${connectionId.slice(0, 8)} — body-parsed retry: ${Math.ceil(retryAfterMs / 1000)}s (${reason})`,
     );
 
     limiter.updateSettings({

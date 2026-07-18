@@ -74,7 +74,7 @@ export default function FileDetailModal({
   const [copied, setCopied] = useState(false);
 
   const relatedBatches = (batches ?? []).filter(
-    (b) => b.inputFileId === file.id || b.outputFileId === file.id || b.errorFileId === file.id
+    (b) => b.inputFileId === file.id || b.outputFileId === file.id || b.errorFileId === file.id,
   );
 
   useEffect(() => {

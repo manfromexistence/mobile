@@ -1,10 +1,10 @@
-import { ProjectCopy } from "@opencode-ai/schema/project-copy"
-import { Project } from "@opencode-ai/schema/project"
-import { Schema, Struct } from "effect"
-import { HttpApiEndpoint, HttpApiGroup, HttpApiSchema, OpenApi } from "effect/unstable/httpapi"
-import { LocationQuery, locationQueryOpenApi } from "./location"
+import { ProjectCopy } from "@opencode-ai/schema/project-copy";
+import { Project } from "@opencode-ai/schema/project";
+import { Schema, Struct } from "effect";
+import { HttpApiEndpoint, HttpApiGroup, HttpApiSchema, OpenApi } from "effect/unstable/httpapi";
+import { LocationQuery, locationQueryOpenApi } from "./location";
 
-const root = "/experimental/project/:projectID/copy"
+const root = "/experimental/project/:projectID/copy";
 
 export class ProjectCopyError extends Schema.ErrorClass<ProjectCopyError>("ProjectCopyError")(
   {
@@ -17,8 +17,10 @@ export class ProjectCopyError extends Schema.ErrorClass<ProjectCopyError>("Proje
   { httpApiStatus: 400 },
 ) {}
 
-const CreatePayload = Schema.Struct(Struct.omit(ProjectCopy.CreateInput.fields, ["projectID", "sourceDirectory"]))
-const RemovePayload = Schema.Struct(Struct.omit(ProjectCopy.RemoveInput.fields, ["projectID"]))
+const CreatePayload = Schema.Struct(
+  Struct.omit(ProjectCopy.CreateInput.fields, ["projectID", "sourceDirectory"]),
+);
+const RemovePayload = Schema.Struct(Struct.omit(ProjectCopy.RemoveInput.fields, ["projectID"]));
 
 export const ProjectCopyGroup = HttpApiGroup.make("server.projectCopy")
   .add(
@@ -53,4 +55,6 @@ export const ProjectCopyGroup = HttpApiGroup.make("server.projectCopy")
       .annotateMerge(locationQueryOpenApi)
       .annotateMerge(OpenApi.annotations({ identifier: "v2.projectCopy.refresh" })),
   )
-  .annotateMerge(OpenApi.annotations({ title: "projectCopy", description: "Project copy management routes." }))
+  .annotateMerge(
+    OpenApi.annotations({ title: "projectCopy", description: "Project copy management routes." }),
+  );

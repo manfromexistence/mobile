@@ -267,7 +267,7 @@ export function sanitizeRequest(body, logger = console) {
 
     if (logger[logLevel]) {
       logger[logLevel](
-        `[SANITIZER] Prompt injection detected: ${injections.map((d) => d.pattern).join(", ")}`
+        `[SANITIZER] Prompt injection detected: ${injections.map((d) => d.pattern).join(", ")}`,
       );
     }
 
@@ -284,7 +284,7 @@ export function sanitizeRequest(body, logger = console) {
 
     if (piiResult.detections.length > 0) {
       logger.warn?.(
-        `[SANITIZER] PII detected: ${piiResult.detections.map((d) => `${d.type}(${d.count})`).join(", ")}`
+        `[SANITIZER] PII detected: ${piiResult.detections.map((d) => `${d.type}(${d.count})`).join(", ")}`,
       );
 
       if (config.mode === "redact") {

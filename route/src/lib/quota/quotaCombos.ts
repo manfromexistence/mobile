@@ -103,7 +103,7 @@ function getProviderModelIds(provider: string): string[] {
     .map((m) =>
       typeof m === "object" && m !== null && typeof (m as { id?: unknown }).id === "string"
         ? (m as { id: string }).id
-        : null
+        : null,
     )
     .filter((id): id is string => id !== null && id.length > 0);
 }
@@ -253,7 +253,7 @@ export async function syncQuotaCombos(poolId: string): Promise<void> {
       } catch (err) {
         log.warn(
           { err: (err as Error)?.message, comboName: name, poolId },
-          "quota-combo prune failed"
+          "quota-combo prune failed",
         );
       }
     }
@@ -276,7 +276,7 @@ export async function syncQuotaCombos(poolId: string): Promise<void> {
  */
 export function filterModelsToQuotaPools<T extends { id: string }>(
   models: T[],
-  poolSlugs: string[]
+  poolSlugs: string[],
 ): T[] {
   if (poolSlugs.length === 0) return [];
   const slugSet = new Set(poolSlugs);
@@ -306,7 +306,7 @@ export async function buildQuotaExclusiveModels<TCombo extends { name?: unknown 
   allowedQuotas: string[],
   combos: TCombo[],
   timestamp: number,
-  metadataFor: (combo: TCombo) => Record<string, unknown>
+  metadataFor: (combo: TCombo) => Record<string, unknown>,
 ): Promise<Array<Record<string, unknown>>> {
   const { resolveQuotaKeyScope } = await import("./quotaKey");
   const scope = await resolveQuotaKeyScope(allowedQuotas);
@@ -385,7 +385,7 @@ export async function removeQuotaCombosForPool(poolId: string): Promise<void> {
   } catch (err) {
     log.warn(
       { err: (err as Error)?.message, poolId },
-      "removeQuotaCombosForPool: getCombos failed"
+      "removeQuotaCombosForPool: getCombos failed",
     );
     return;
   }
@@ -407,7 +407,7 @@ export async function removeQuotaCombosForPool(poolId: string): Promise<void> {
     } catch (err) {
       log.warn(
         { err: (err as Error)?.message, comboName: name, poolId },
-        "quota-combo remove failed"
+        "quota-combo remove failed",
       );
     }
   }

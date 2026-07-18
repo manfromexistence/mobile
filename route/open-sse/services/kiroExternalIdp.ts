@@ -94,7 +94,7 @@ export function validateExternalIdpTokenEndpoint(rawEndpoint: unknown): string {
   }
   const host = parsed.hostname.toLowerCase();
   const allowed = ALLOWED_IDP_HOST_SUFFIXES.some((suffix) =>
-    suffix.startsWith(".") ? host.endsWith(suffix) : host === suffix
+    suffix.startsWith(".") ? host.endsWith(suffix) : host === suffix,
   );
   if (!allowed) {
     throw new Error(`tokenEndpoint host is not an allowed identity provider: ${host}`);
@@ -151,12 +151,12 @@ export interface ExternalIdpRefreshRequest {
  */
 export function buildExternalIdpRefreshParams(
   refreshToken: string,
-  providerSpecificData: Record<string, unknown> | null | undefined
+  providerSpecificData: Record<string, unknown> | null | undefined,
 ): ExternalIdpRefreshRequest {
   const psd = providerSpecificData || {};
   const clientId = normalizeString(psd.clientId ?? (psd as Record<string, unknown>).client_id);
   const tokenEndpoint = validateExternalIdpTokenEndpoint(
-    psd.tokenEndpoint ?? (psd as Record<string, unknown>).token_endpoint
+    psd.tokenEndpoint ?? (psd as Record<string, unknown>).token_endpoint,
   );
   const scope = normalizeScope(psd.scope ?? psd.scopes);
 

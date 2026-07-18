@@ -100,7 +100,7 @@ test("#3811 round-robin streaming response returns an unlocked, replayable body"
   assert.equal(
     result.body!.locked,
     false,
-    "round-robin streaming body must not be locked (must return quality.clonedResponse)"
+    "round-robin streaming body must not be locked (must return quality.clonedResponse)",
   );
 
   // Draining the body must succeed (a locked body throws here) and replay the content.

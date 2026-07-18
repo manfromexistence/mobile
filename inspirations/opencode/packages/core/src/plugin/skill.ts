@@ -1,14 +1,14 @@
 /// <reference path="../markdown.d.ts" />
 
-export * as SkillPlugin from "./skill"
+export * as SkillPlugin from "./skill";
 
-import { define } from "./internal"
-import { Effect } from "effect"
-import { AbsolutePath } from "../schema"
-import { SkillV2 } from "../skill"
-import customizeOpencodeContent from "./skill/customize-opencode.md" with { type: "text" }
+import { define } from "./internal";
+import { Effect } from "effect";
+import { AbsolutePath } from "../schema";
+import { SkillV2 } from "../skill";
+import customizeOpencodeContent from "./skill/customize-opencode.md" with { type: "text" };
 
-export const CustomizeOpencodeContent = customizeOpencodeContent
+export const CustomizeOpencodeContent = customizeOpencodeContent;
 
 export const Plugin = define({
   id: "skill",
@@ -25,7 +25,7 @@ export const Plugin = define({
             content: CustomizeOpencodeContent,
           }),
         }),
-      )
-    })
+      );
+    });
   }),
-})
+});

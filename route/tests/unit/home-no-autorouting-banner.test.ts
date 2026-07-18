@@ -13,7 +13,7 @@ test("home page does not render the removed AutoRoutingBanner (#6164)", () => {
   const homePage = fs.readFileSync(path.join(ROOT, "src/app/(dashboard)/home/page.tsx"), "utf8");
   assert.ok(
     !homePage.includes("AutoRoutingBanner"),
-    "AutoRoutingBanner was removed in #6164 and must not be re-imported into home/page.tsx"
+    "AutoRoutingBanner was removed in #6164 and must not be re-imported into home/page.tsx",
   );
 });
 
@@ -21,6 +21,6 @@ test("AutoRoutingBanner component stays deleted (#6164)", () => {
   assert.equal(
     fs.existsSync(path.join(ROOT, "src/shared/components/AutoRoutingBanner.tsx")),
     false,
-    "the component was deleted in #6164; a revival needs its own test file"
+    "the component was deleted in #6164; a revival needs its own test file",
   );
 });

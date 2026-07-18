@@ -1,23 +1,27 @@
-import { Config, Context, Effect, Layer } from "effect"
+import { Config, Context, Effect, Layer } from "effect";
 
-type ConfigMap = Record<string, Config.Config<unknown>>
+type ConfigMap = Record<string, Config.Config<unknown>>;
 
 /**
  * The service shape inferred from an object of Effect `Config` definitions.
  */
 export type Shape<Fields extends ConfigMap> = {
-  readonly [Key in keyof Fields]: Config.Success<Fields[Key]>
-}
+  readonly [Key in keyof Fields]: Config.Success<Fields[Key]>;
+};
 
 /**
  * A Context service class with generated layers for config-backed services.
  */
-export type ServiceClass<Self, Id extends string, Service> = Context.ServiceClass<Self, Id, Service> & {
+export type ServiceClass<Self, Id extends string, Service> = Context.ServiceClass<
+  Self,
+  Id,
+  Service
+> & {
   /** Provide already-parsed config, useful in tests. */
-  readonly configLayer: (input: Service) => Layer.Layer<Self>
+  readonly configLayer: (input: Service) => Layer.Layer<Self>;
   /** Parse config once from the active Effect ConfigProvider and provide the service. */
-  readonly layer: Layer.Layer<Self, Config.ConfigError>
-}
+  readonly layer: Layer.Layer<Self, Config.ConfigError>;
+};
 
 /**
  * Create a Context service whose implementation is derived from Effect `Config`.
@@ -44,24 +48,24 @@ export const Service =
   <const Id extends string, const Fields extends ConfigMap>(id: Id, fields: Fields) => {
     class ConfigTag extends Context.Service<Self, Shape<Fields>>()(id) {
       static configLayer(input: Shape<Fields>) {
-        return Layer.succeed(this, this.of(input))
+        return Layer.succeed(this, this.of(input));
       }
 
       static get layer() {
-        const tag = this
+        const tag = this;
         return Layer.effect(
           tag,
           Effect.gen(function* () {
-            const config = yield* Config.all(fields)
+            const config = yield* Config.all(fields);
             // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- Config.all preserves the field shape, but its conditional return type also supports iterable inputs.
-            return tag.of(config as Shape<Fields>)
+            return tag.of(config as Shape<Fields>);
           }),
-        )
+        );
       }
     }
 
     // oxlint-disable-next-line typescript-eslint/no-unsafe-type-assertion -- The generated class carries typed static helpers.
-    return ConfigTag as ServiceClass<Self, Id, Shape<Fields>>
-  }
+    return ConfigTag as ServiceClass<Self, Id, Shape<Fields>>;
+  };
 
-export * as ConfigService from "./config-service"
+export * as ConfigService from "./config-service";

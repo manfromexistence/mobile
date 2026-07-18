@@ -1,4 +1,4 @@
-import { THEME_CSS_ATTRIBUTE } from '../constants';
+import { THEME_CSS_ATTRIBUTE } from "../constants";
 
 interface UpsertHostThemeStyleProps {
   shadowRoot: ShadowRoot;
@@ -13,7 +13,7 @@ export function upsertHostThemeStyle({
   currentNode,
   themeCSS,
 }: UpsertHostThemeStyleProps): HTMLStyleElement | undefined {
-  if (themeCSS.trim() === '') {
+  if (themeCSS.trim() === "") {
     currentNode?.remove();
     return undefined;
   }
@@ -27,7 +27,7 @@ export function upsertHostThemeStyle({
 }
 
 export function createHostThemeStyleNode(): HTMLStyleElement {
-  const node = document.createElement('style');
-  node.setAttribute(THEME_CSS_ATTRIBUTE, '');
+  const node = document.createElement("style");
+  node.setAttribute(THEME_CSS_ATTRIBUTE, "");
   return node;
 }

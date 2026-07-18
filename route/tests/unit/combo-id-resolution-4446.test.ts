@@ -51,7 +51,7 @@ test("#4446 getComboForModel resolves a combo by a case-insensitive name (lowerc
   assert.equal((resolved as { name: string }).name, "MASTER-LIGHT");
   assert.ok(
     Array.isArray((resolved as { models: unknown[] }).models) &&
-      (resolved as { models: unknown[] }).models.length === 2
+      (resolved as { models: unknown[] }).models.length === 2,
   );
 });
 

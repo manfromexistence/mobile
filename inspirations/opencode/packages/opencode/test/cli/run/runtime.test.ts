@@ -1,9 +1,11 @@
-import { afterEach, describe, expect, mock, spyOn, test } from "bun:test"
-import { OpencodeClient } from "@opencode-ai/sdk/v2"
-import { runInteractiveMode } from "@/cli/cmd/run/runtime"
-import type { FooterApi, RunProvider } from "@/cli/cmd/run/types"
+import { afterEach, describe, expect, mock, spyOn, test } from "bun:test";
+import { OpencodeClient } from "@opencode-ai/sdk/v2";
+import { runInteractiveMode } from "@/cli/cmd/run/runtime";
+import type { FooterApi, RunProvider } from "@/cli/cmd/run/types";
 
-type SessionMessage = NonNullable<Awaited<ReturnType<OpencodeClient["session"]["messages"]>>["data"]>[number]
+type SessionMessage = NonNullable<
+  Awaited<ReturnType<OpencodeClient["session"]["messages"]>>["data"]
+>[number];
 
 const provider: RunProvider = {
   id: "openai",
@@ -60,16 +62,16 @@ const provider: RunProvider = {
       release_date: "2026-01-01",
     },
   },
-}
+};
 
-const transportProviders: RunProvider[][] = []
+const transportProviders: RunProvider[][] = [];
 
 function defer<T>() {
-  let resolve!: (value: T | PromiseLike<T>) => void
+  let resolve!: (value: T | PromiseLike<T>) => void;
   const promise = new Promise<T>((done) => {
-    resolve = done
-  })
-  return { promise, resolve }
+    resolve = done;
+  });
+  return { promise, resolve };
 }
 
 function ok<T>(data: T) {
@@ -78,74 +80,74 @@ function ok<T>(data: T) {
     error: undefined,
     request: new Request("https://opencode.test"),
     response: new Response(),
-  })
+  });
 }
 
 function footer(): FooterApi {
-  let closed = false
-  const closes = new Set<() => void>()
+  let closed = false;
+  const closes = new Set<() => void>();
 
   const notify = () => {
-    for (const fn of closes) fn()
-  }
+    for (const fn of closes) fn();
+  };
 
   return {
     get isClosed() {
-      return closed
+      return closed;
     },
     onPrompt: () => () => {},
     onQueuedRemove: () => () => {},
     onClose(fn) {
       if (closed) {
-        fn()
-        return () => {}
+        fn();
+        return () => {};
       }
 
-      closes.add(fn)
+      closes.add(fn);
       return () => {
-        closes.delete(fn)
-      }
+        closes.delete(fn);
+      };
     },
     event() {},
     append() {},
     idle() {
-      return Promise.resolve()
+      return Promise.resolve();
     },
     close() {
       if (closed) {
-        return
+        return;
       }
 
-      closed = true
-      notify()
+      closed = true;
+      notify();
     },
     destroy() {
       if (closed) {
-        return
+        return;
       }
 
-      closed = true
-      notify()
+      closed = true;
+      notify();
     },
-  }
+  };
 }
 
 afterEach(() => {
-  mock.restore()
-  transportProviders.length = 0
-})
+  mock.restore();
+  transportProviders.length = 0;
+});
 
 describe("run interactive runtime", () => {
   test("waits for provider metadata before eager replay transport bootstrap", async () => {
-    const providersStarted = defer<void>()
-    const providers = defer<void>()
+    const providersStarted = defer<void>();
+    const providers = defer<void>();
 
-    const sdk = new OpencodeClient()
+    const sdk = new OpencodeClient();
     spyOn(sdk.config, "providers").mockImplementation(async () => {
-      providersStarted.resolve()
-      await providers.promise
-      return ok({ providers: [provider], default: {} })
-    })
+      providersStarted.resolve();
+      await providers.promise;
+      return ok({ providers: [provider], default: {} });
+    });
     spyOn(sdk.session, "messages").mockImplementation(() =>
       ok([
         {
@@ -174,11 +176,11 @@ describe("run interactive runtime", () => {
           ],
         } satisfies SessionMessage,
       ]),
-    )
-    spyOn(sdk.session, "get").mockRejectedValue(new Error("not needed"))
-    spyOn(sdk.app, "agents").mockImplementation(() => ok([]))
-    spyOn(sdk.experimental.resource, "list").mockImplementation(() => ok({}))
-    spyOn(sdk.command, "list").mockImplementation(() => ok([]))
+    );
+    spyOn(sdk.session, "get").mockRejectedValue(new Error("not needed"));
+    spyOn(sdk.app, "agents").mockImplementation(() => ok([]));
+    spyOn(sdk.experimental.resource, "list").mockImplementation(() => ok({}));
+    spyOn(sdk.command, "list").mockImplementation(() => ok([]));
 
     const task = runInteractiveMode(
       {
@@ -208,31 +210,35 @@ describe("run interactive runtime", () => {
           close: () => Promise.resolve(),
         }),
         streamTransport: Promise.resolve({
-          createSessionTransport: async (input: { providers?: () => RunProvider[]; footer: FooterApi }) => {
-            transportProviders.push(input.providers?.() ?? [])
+          createSessionTransport: async (input: {
+            providers?: () => RunProvider[];
+            footer: FooterApi;
+          }) => {
+            transportProviders.push(input.providers?.() ?? []);
             setTimeout(() => {
-              input.footer.close()
-            }, 0)
+              input.footer.close();
+            }, 0);
             return {
               runPromptTurn: async () => {},
               selectSubagent: () => {},
               replayOnResize: async () => false,
               close: async () => {},
-            }
+            };
           },
-          formatUnknownError: (error: unknown) => (error instanceof Error ? error.message : String(error)),
+          formatUnknownError: (error: unknown) =>
+            error instanceof Error ? error.message : String(error),
         }),
       },
-    )
+    );
 
-    await providersStarted.promise
+    await providersStarted.promise;
 
-    expect(transportProviders).toEqual([])
+    expect(transportProviders).toEqual([]);
 
-    providers.resolve()
+    providers.resolve();
 
-    await task
+    await task;
 
-    expect(transportProviders).toEqual([[provider]])
-  })
-})
+    expect(transportProviders).toEqual([[provider]]);
+  });
+});

@@ -129,7 +129,7 @@ async function resolveAccountName(connectionId: string | null | undefined) {
       account = pickDisplayValue(
         [toStringOrNull(conn.name), toStringOrNull(conn.email)],
         true,
-        account
+        account,
       );
     }
   } catch {
@@ -163,7 +163,7 @@ function isCompatibleProviderId(providerId: string | null): boolean {
 function applyNodePrefix(
   requestedModel: string | null,
   provider: string | null,
-  nodePrefix: string | null
+  nodePrefix: string | null,
 ): string | null {
   if (!requestedModel || !provider || !nodePrefix) return requestedModel;
   if (requestedModel.startsWith(provider + "/")) {
@@ -202,7 +202,7 @@ function buildArtifact(
   requestBody: unknown,
   responseBody: unknown,
   error: unknown,
-  pipelinePayloads: RequestPipelinePayloads | null
+  pipelinePayloads: RequestPipelinePayloads | null,
 ): CallLogArtifact {
   return {
     schemaVersion: 5,
@@ -261,7 +261,7 @@ function extractAssistantMessage(responseBody: unknown): unknown {
 // a CHARACTER count, never a token count — it must not touch cost math.
 function resolveReasoningObservation(
   usageReasoning: number | null,
-  responseBody: unknown
+  responseBody: unknown,
 ): { source: string | null; chars: number | null } {
   if (usageReasoning != null && usageReasoning > 0) {
     return { source: "usage", chars: null };
@@ -276,7 +276,7 @@ function resolveReasoningObservation(
 function hasTable(tableName: string): boolean {
   const db = getDbInstance();
   return Boolean(
-    db.prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?").get(tableName)
+    db.prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?").get(tableName),
   );
 }
 
@@ -293,14 +293,14 @@ function readLegacyLogFromDisk(entry: {
 
     const dateFolder = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
       2,
-      "0"
+      "0",
     )}-${String(date.getDate()).padStart(2, "0")}`;
     const dir = path.join(CALL_LOGS_DIR, dateFolder);
     if (!fs.existsSync(dir)) return null;
 
     const time = `${String(date.getHours()).padStart(2, "0")}${String(date.getMinutes()).padStart(
       2,
-      "0"
+      "0",
     )}${String(date.getSeconds()).padStart(2, "0")}`;
     const safeModel = (entry.model || "unknown").replace(/[/:]/g, "-");
     const expectedName = `${time}_${safeModel}_${entry.status}.json`;
@@ -333,7 +333,7 @@ function clearArtifactReference(relativePath: string, nextState: CallLogDetailSt
           artifact_size_bytes = NULL,
           artifact_sha256 = NULL
       WHERE artifact_relpath = ?
-    `
+    `,
   ).run(nextState, relativePath);
 }
 
@@ -420,7 +420,7 @@ export function cleanupOverflowCallLogFiles(baseDir = CALL_LOGS_DIR, maxEntries?
   } catch (error) {
     console.error(
       "[callLogs] Failed to prune overflow request artifacts:",
-      (error as Error).message
+      (error as Error).message,
     );
     return 0;
   }
@@ -627,7 +627,7 @@ export async function saveCallLog(entry: any) {
         protectedRequestBody,
         protectedResponseBody,
         protectedError,
-        protectedPipelinePayloads
+        protectedPipelinePayloads,
       );
       const artifactResult = writeCallArtifact(artifact);
       if (artifactResult) {
@@ -665,7 +665,7 @@ export async function saveCallLog(entry: any) {
         @hasRequestBody, @hasResponseBody, @hasPipelineDetails, @requestSummary,
         @correlationId, @modelPinned
       )
-    `
+    `,
     ).run({
       ...logEntry,
       errorSummary: toStoredErrorSummary(protectedError),
@@ -833,7 +833,7 @@ export async function getCallLogById(id: string) {
        FROM call_logs cl
        LEFT JOIN provider_nodes pn ON pn.id = cl.provider
        LEFT JOIN provider_connections pc ON pc.id = cl.connection_id
-       WHERE cl.id = ?`
+       WHERE cl.id = ?`,
     )
     .get(id) as CallLogSummaryRow | undefined;
   if (!row) return null;

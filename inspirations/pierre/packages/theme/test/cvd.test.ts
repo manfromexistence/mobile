@@ -32,22 +32,18 @@
  *       badge) and extended syntax (bold/italic + position carry it). Reported
  *       via test diagnostics so regressions stay visible without blocking the build.
  */
-import { describe, test } from 'bun:test';
-import assert from 'node:assert/strict';
+import { describe, test } from "bun:test";
+import assert from "node:assert/strict";
 
-import { contrastRatio, cvdSelfChecks, type CVDType } from '../src/color';
+import { contrastRatio, cvdSelfChecks, type CVDType } from "../src/color";
 import {
   protanDeutanDark,
   protanDeutanLight,
   type Roles,
   tritanopiaDark,
   tritanopiaLight,
-} from '../src/roles';
-import {
-  referenceCrossChecks,
-  simulatedContrast,
-  worstDeltaE,
-} from './helpers/cvd';
+} from "../src/roles";
+import { referenceCrossChecks, simulatedContrast, worstDeltaE } from "./helpers/cvd";
 
 // Thresholds (standards-derived, tuned empirically during build-out)
 const TIER1_DELTA_E = 11; // co-occurring opposite-meaning signals
@@ -91,11 +87,7 @@ const selectors = {
 // Expand a group whose members must each be distinguishable from every other into
 // one RolePair per unordered combination — e.g. [danger, warn, info] becomes
 // danger·warn, danger·info, warn·info.
-function allPairsWithin(
-  group: string,
-  tier: 1 | 2 | 3,
-  members: [string, Selector][]
-): RolePair[] {
+function allPairsWithin(group: string, tier: 1 | 2 | 3, members: [string, Selector][]): RolePair[] {
   const out: RolePair[] = [];
   for (let i = 0; i < members.length; i++) {
     for (let j = i + 1; j < members.length; j++) {
@@ -118,32 +110,32 @@ const DISTINGUISHABILITY_PAIRS: RolePair[] = [
   // Diff gutter / overview ruler: added vs deleted backgrounds (no glyph).
   {
     tier: 1,
-    group: 'diff bg',
-    label: 'success(added) vs danger(deleted)',
+    group: "diff bg",
+    label: "success(added) vs danger(deleted)",
     a: selectors.success,
     b: selectors.danger,
   },
   // Diff TEXT tokens: inserted vs deleted, the semantic core of a review.
   {
     tier: 1,
-    group: 'diff text',
-    label: 'string(inserted) vs tag(deleted)',
+    group: "diff text",
+    label: "string(inserted) vs tag(deleted)",
     a: selectors.string,
     b: selectors.tag,
   },
   // Merge conflict view: current(merge) vs incoming(info) tinted backgrounds.
   {
     tier: 1,
-    group: 'merge conflict',
-    label: 'merge vs info',
+    group: "merge conflict",
+    label: "merge vs info",
     a: selectors.merge,
     b: selectors.info,
   },
   // Terminal pass/fail.
   {
     tier: 1,
-    group: 'terminal',
-    label: 'ansi.red vs ansi.green',
+    group: "terminal",
+    label: "ansi.red vs ansi.green",
     a: selectors.ansiRed,
     b: selectors.ansiGreen,
   },
@@ -151,57 +143,57 @@ const DISTINGUISHABILITY_PAIRS: RolePair[] = [
   // ── Tier 2 — color + a non-color cue (ΔE ≥ 8) ─────────────────────────────
   // Diagnostics & notifications: error/warn/info — backed by distinct icon
   // shapes (✕ / △ / ⓘ), so color is the secondary channel.
-  ...allPairsWithin('diagnostics', 2, [
-    ['danger', selectors.danger],
-    ['warn', selectors.warn],
-    ['info', selectors.info],
+  ...allPairsWithin("diagnostics", 2, [
+    ["danger", selectors.danger],
+    ["warn", selectors.warn],
+    ["info", selectors.info],
   ]),
   // Comment must never be mistaken for live code, so pair it against each token
   // kind it sits next to (we only care about comment-vs-X, not X-vs-Y here).
   {
     tier: 2,
-    group: 'comment vs code',
-    label: 'comment vs string',
+    group: "comment vs code",
+    label: "comment vs string",
     a: selectors.comment,
     b: selectors.string,
   },
   {
     tier: 2,
-    group: 'comment vs code',
-    label: 'comment vs keyword',
+    group: "comment vs code",
+    label: "comment vs keyword",
     a: selectors.comment,
     b: selectors.keyword,
   },
   {
     tier: 2,
-    group: 'comment vs code',
-    label: 'comment vs variable',
+    group: "comment vs code",
+    label: "comment vs variable",
     a: selectors.comment,
     b: selectors.variable,
   },
   // The three highest-frequency code tokens.
-  ...allPairsWithin('core syntax', 2, [
-    ['keyword', selectors.keyword],
-    ['string', selectors.string],
-    ['variable', selectors.variable],
+  ...allPairsWithin("core syntax", 2, [
+    ["keyword", selectors.keyword],
+    ["string", selectors.string],
+    ["variable", selectors.variable],
   ]),
 
   // ── Tier 3 (advisory) ─────────────────────────────────────────────────────
   // Git tree: added/modified/deleted/conflict — every entry has an M/A/D/U/C
   // letter badge, so identical-looking colors are still unambiguous. Reported.
-  ...allPairsWithin('git tree', 3, [
-    ['success', selectors.success],
-    ['danger', selectors.danger],
-    ['merge', selectors.merge],
-    ['accent.primary', selectors.accent],
+  ...allPairsWithin("git tree", 3, [
+    ["success", selectors.success],
+    ["danger", selectors.danger],
+    ["merge", selectors.merge],
+    ["accent.primary", selectors.accent],
   ]),
-  ...allPairsWithin('extended syntax', 3, [
-    ['func', selectors.func],
-    ['type', selectors.type],
-    ['number', selectors.number],
-    ['keyword', selectors.keyword],
-    ['string', selectors.string],
-    ['variable', selectors.variable],
+  ...allPairsWithin("extended syntax", 3, [
+    ["func", selectors.func],
+    ["type", selectors.type],
+    ["number", selectors.number],
+    ["keyword", selectors.keyword],
+    ["string", selectors.string],
+    ["variable", selectors.variable],
   ]),
 ];
 
@@ -211,30 +203,30 @@ const DISTINGUISHABILITY_PAIRS: RolePair[] = [
 type CvdThemeDef = { name: string; roles: Roles; cvds: CVDType[] };
 const THEMES: CvdThemeDef[] = [
   {
-    name: 'Pierre Light Protanopia & Deuteranopia',
+    name: "Pierre Light Protanopia & Deuteranopia",
     roles: protanDeutanLight,
-    cvds: ['protan', 'deutan'],
+    cvds: ["protan", "deutan"],
   },
   {
-    name: 'Pierre Dark Protanopia & Deuteranopia',
+    name: "Pierre Dark Protanopia & Deuteranopia",
     roles: protanDeutanDark,
-    cvds: ['protan', 'deutan'],
+    cvds: ["protan", "deutan"],
   },
-  { name: 'Pierre Light Tritanopia', roles: tritanopiaLight, cvds: ['tritan'] },
-  { name: 'Pierre Dark Tritanopia', roles: tritanopiaDark, cvds: ['tritan'] },
+  { name: "Pierre Light Tritanopia", roles: tritanopiaLight, cvds: ["tritan"] },
+  { name: "Pierre Dark Tritanopia", roles: tritanopiaDark, cvds: ["tritan"] },
 ];
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
 // Color-science self-checks (prove the simulation/contrast/ΔE math itself).
-describe('color-science self-checks (Machado 2009 / WCAG / CIEDE2000)', () => {
+describe("color-science self-checks (Machado 2009 / WCAG / CIEDE2000)", () => {
   for (const c of cvdSelfChecks()) {
     test(c.name, () => assert.ok(c.ok, c.detail));
   }
 });
 
 // Reference cross-validation vs culori (a dev-only oracle; ships nothing).
-describe('reference cross-validation vs culori', () => {
+describe("reference cross-validation vs culori", () => {
   for (const r of referenceCrossChecks()) {
     test(r.name, () => assert.ok(r.ok, `${r.name}: ${r.detail}`));
   }
@@ -250,30 +242,28 @@ describe('reference cross-validation vs culori', () => {
 //   • Report-only (printed, never fails): intrinsically-bright / brand colors that
 //     base Pierre itself keeps bright — their *distinguishability* (ΔE) is gated,
 //     not their raw contrast.
-describe('CVD theme gate', () => {
+describe("CVD theme gate", () => {
   for (const { name, roles, cvds } of THEMES) {
-    describe(`${name} [simulated as: ${cvds.join(', ')}]`, () => {
+    describe(`${name} [simulated as: ${cvds.join(", ")}]`, () => {
       const bgEditor = roles.bg.editor;
       const bgWindow = roles.bg.window;
 
       // Contrast (normal + simulated). The simulated check takes the worst case
       // across both gamma conventions; backgrounds are near-neutral so they barely
       // move, but we simulate them under each convention for correctness.
-      describe('contrast', () => {
+      describe("contrast", () => {
         // Syntax tokens are text-on-editor at the 3:1 bar; `invalid` is a
         // background tint, not a foreground, so it's excluded (all others gated).
-        const syntaxForegrounds = Object.entries(roles.syntax).filter(
-          ([k]) => k !== 'invalid'
-        );
+        const syntaxForegrounds = Object.entries(roles.syntax).filter(([k]) => k !== "invalid");
         // Signal colors gated at 3:1 (carry meaning): states except the bright
         // `warn`, plus the terminal pass/fail pair.
         const signalForegrounds: [string, string][] = [
-          ['states.success', roles.states.success],
-          ['states.danger', roles.states.danger],
-          ['states.info', roles.states.info],
-          ['states.merge', roles.states.merge],
-          ['ansi.red', roles.ansi.red],
-          ['ansi.green', roles.ansi.green],
+          ["states.success", roles.states.success],
+          ["states.danger", roles.states.danger],
+          ["states.info", roles.states.info],
+          ["states.merge", roles.states.merge],
+          ["ansi.red", roles.ansi.red],
+          ["ansi.green", roles.ansi.green],
         ];
 
         for (const cvd of cvds) {
@@ -283,7 +273,7 @@ describe('CVD theme gate', () => {
             const sim = simulatedContrast(roles.fg.base, bgEditor, cvd);
             assert.ok(
               normal >= TEXT_CONTRAST && sim >= TEXT_CONTRAST,
-              `fg.base on editor — normal ${normal.toFixed(2)}, ${cvd} ${sim.toFixed(2)} (< ${TEXT_CONTRAST})`
+              `fg.base on editor — normal ${normal.toFixed(2)}, ${cvd} ${sim.toFixed(2)} (< ${TEXT_CONTRAST})`,
             );
           });
 
@@ -293,7 +283,7 @@ describe('CVD theme gate', () => {
               const sim = simulatedContrast(hex, bgEditor, cvd);
               assert.ok(
                 normal >= UI_CONTRAST && sim >= UI_CONTRAST,
-                `syntax.${key} on editor — normal ${normal.toFixed(2)}, ${cvd} ${sim.toFixed(2)} (< ${UI_CONTRAST})`
+                `syntax.${key} on editor — normal ${normal.toFixed(2)}, ${cvd} ${sim.toFixed(2)} (< ${UI_CONTRAST})`,
               );
             });
           }
@@ -304,7 +294,7 @@ describe('CVD theme gate', () => {
               const sim = simulatedContrast(hex, bgWindow, cvd);
               assert.ok(
                 normal >= UI_CONTRAST && sim >= UI_CONTRAST,
-                `${key} on window — normal ${normal.toFixed(2)}, ${cvd} ${sim.toFixed(2)} (< ${UI_CONTRAST})`
+                `${key} on window — normal ${normal.toFixed(2)}, ${cvd} ${sim.toFixed(2)} (< ${UI_CONTRAST})`,
               );
             });
           }
@@ -312,21 +302,21 @@ describe('CVD theme gate', () => {
 
         // Report-only: worst contrast seen for the intrinsically-bright / brand
         // colors, surfaced as a diagnostic (never fails the build).
-        test('report-only contrast (intrinsically-bright / brand colors)', () => {
+        test("report-only contrast (intrinsically-bright / brand colors)", () => {
           const reportOnlyForegrounds: [string, string][] = [
-            ['accent.primary', roles.accent.primary],
-            ['states.warn', roles.states.warn],
-            ['ansi.yellow', roles.ansi.yellow],
-            ['ansi.blue', roles.ansi.blue],
-            ['ansi.cyan', roles.ansi.cyan],
-            ['ansi.magenta', roles.ansi.magenta],
+            ["accent.primary", roles.accent.primary],
+            ["states.warn", roles.states.warn],
+            ["ansi.yellow", roles.ansi.yellow],
+            ["ansi.blue", roles.ansi.blue],
+            ["ansi.cyan", roles.ansi.cyan],
+            ["ansi.magenta", roles.ansi.magenta],
           ];
           const reportOnlyMin: Record<string, number> = {};
           for (const cvd of cvds) {
             for (const [key, hex] of reportOnlyForegrounds) {
               const c = Math.min(
                 contrastRatio(hex, bgWindow),
-                simulatedContrast(hex, bgWindow, cvd)
+                simulatedContrast(hex, bgWindow, cvd),
               );
               reportOnlyMin[key] = Math.min(reportOnlyMin[key] ?? Infinity, c);
             }
@@ -334,28 +324,26 @@ describe('CVD theme gate', () => {
           console.log(
             Object.entries(reportOnlyMin)
               .map(([k, v]) => `${k} ${v.toFixed(2)}`)
-              .join(', ')
+              .join(", "),
           );
         });
       });
 
       // Distinguishability under simulation.
-      describe('distinguishability under simulation', () => {
+      describe("distinguishability under simulation", () => {
         for (const tier of [1, 2] as const) {
           const threshold = tier === 1 ? TIER1_DELTA_E : TIER2_DELTA_E;
           describe(`Tier ${tier} (ΔE ≥ ${threshold})`, () => {
-            for (const p of DISTINGUISHABILITY_PAIRS.filter(
-              (p) => p.tier === tier
-            )) {
+            for (const p of DISTINGUISHABILITY_PAIRS.filter((p) => p.tier === tier)) {
               test(`[${p.group}] ${p.label}`, () => {
                 const { worst, worstCvd, worstConvention } = worstDeltaE(
                   p.a(roles),
                   p.b(roles),
-                  cvds
+                  cvds,
                 );
                 assert.ok(
                   worst >= threshold,
-                  `${p.label} = ΔE ${worst.toFixed(1)} under ${worstCvd}/${worstConvention} (need ≥ ${threshold})`
+                  `${p.label} = ΔE ${worst.toFixed(1)} under ${worstCvd}/${worstConvention} (need ≥ ${threshold})`,
                 );
               });
             }
@@ -364,17 +352,11 @@ describe('CVD theme gate', () => {
 
         // Tier 3 is advisory: reported via diagnostics so regressions stay visible
         // without blocking the build.
-        test('Tier 3 (advisory — reported, never fails)', () => {
-          for (const p of DISTINGUISHABILITY_PAIRS.filter(
-            (p) => p.tier === 3
-          )) {
-            const { worst, worstCvd, worstConvention } = worstDeltaE(
-              p.a(roles),
-              p.b(roles),
-              cvds
-            );
+        test("Tier 3 (advisory — reported, never fails)", () => {
+          for (const p of DISTINGUISHABILITY_PAIRS.filter((p) => p.tier === 3)) {
+            const { worst, worstCvd, worstConvention } = worstDeltaE(p.a(roles), p.b(roles), cvds);
             console.log(
-              `[${p.group}] ${p.label} - DeltaE ${worst.toFixed(1)} (${worstCvd}, ${worstConvention})`
+              `[${p.group}] ${p.label} - DeltaE ${worst.toFixed(1)} (${worstCvd}, ${worstConvention})`,
             );
           }
         });

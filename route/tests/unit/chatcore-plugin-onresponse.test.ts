@@ -29,7 +29,7 @@ test("no registered hooks → resolves without throwing (no-op)", async () => {
       model: "gpt-x",
       provider: "openai",
       apiKeyInfo: null,
-    })
+    }),
   );
 });
 
@@ -67,7 +67,7 @@ test("a throwing hook never rejects the caller (fail-open)", async () => {
       model: "m",
       provider: "p",
       apiKeyInfo: null,
-    })
+    }),
   );
   await new Promise((r) => setTimeout(r, 30));
 });

@@ -108,7 +108,7 @@ test("evaluateDeletedFiles: deletion with verified replacement (allowlisted, rep
   const flags = evaluateDeletedFiles(
     ["tests/unit/foo.test.ts"],
     allow,
-    (p) => p === "tests/unit/bar.test.ts"
+    (p) => p === "tests/unit/bar.test.ts",
   );
   assert.deepEqual(flags, []);
 });
@@ -493,7 +493,7 @@ test("evaluateMasking: allowlist exempts ONLY reduction — tautology/skip still
         headExtTaut: 0,
       },
     ],
-    new Set(["legit.test.ts"])
+    new Set(["legit.test.ts"]),
   );
   assert.equal(r.length, 2, "tautology + skip still flagged despite allowlist");
   assert.ok(r.some((f) => /tautolog/i.test(f)));
@@ -563,11 +563,7 @@ test("MASKED: test re-implements `status >= 500` without importing the owner →
     "  assert.equal(localCheck(503), true);",
     "});",
   ].join("\n");
-  const flags = findReimplementedConditions(
-    [PROD_SERVER_ERROR],
-    testSrc,
-    extractImports(testSrc)
-  );
+  const flags = findReimplementedConditions([PROD_SERVER_ERROR], testSrc, extractImports(testSrc));
   assert.equal(flags.length, 1);
   assert.equal(flags[0].condition, "status >= 500");
   assert.equal(flags[0].owner, "isServerError");
@@ -583,11 +579,7 @@ test("CLEAN: test imports and calls the real function → not flagged", () => {
     "  assert.equal(isServerError(200), false);",
     "});",
   ].join("\n");
-  const flags = findReimplementedConditions(
-    [PROD_SERVER_ERROR],
-    testSrc,
-    extractImports(testSrc)
-  );
+  const flags = findReimplementedConditions([PROD_SERVER_ERROR], testSrc, extractImports(testSrc));
   assert.deepEqual(flags, []);
 });
 
@@ -599,11 +591,7 @@ test("CLEAN: importing the owner exempts even a textual copy of its condition", 
     "// documents that isServerError fires when status >= 500",
     'test("t", () => { isServerError(503); });',
   ].join("\n");
-  const flags = findReimplementedConditions(
-    [PROD_SERVER_ERROR],
-    testSrc,
-    extractImports(testSrc)
-  );
+  const flags = findReimplementedConditions([PROD_SERVER_ERROR], testSrc, extractImports(testSrc));
   assert.deepEqual(flags, []);
 });
 

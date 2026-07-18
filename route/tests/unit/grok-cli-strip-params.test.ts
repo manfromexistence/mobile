@@ -44,7 +44,7 @@ test("#5273 grok-cli transformRequest leaves a clean body unchanged (no false st
     "grok-composer-2.5-fast",
     { messages: [{ role: "user", content: "ok" }], temperature: 1 },
     true,
-    {} as never
+    {} as never,
   ) as Record<string, unknown>;
 
   assert.equal(out.temperature, 1);

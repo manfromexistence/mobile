@@ -71,7 +71,7 @@ function scopeMatches(grantedScope: string, requiredScope: string): boolean {
 
 export function resolveCallerScopeContext(
   extra: McpToolExtraLike | undefined,
-  fallbackScopes: readonly string[] = []
+  fallbackScopes: readonly string[] = [],
 ): CallerScopeContext {
   const callerId =
     (typeof extra?.authInfo?.clientId === "string" && extra.authInfo.clientId.trim()) ||
@@ -100,7 +100,7 @@ export function evaluateToolScopes(
   toolName: string,
   callerScopes: readonly string[],
   enforceScopes: boolean,
-  inlineScopes?: readonly string[]
+  inlineScopes?: readonly string[],
 ): ScopeCheckResult {
   const provided = normalizeScopeList(callerScopes);
 
@@ -122,7 +122,7 @@ export function evaluateToolScopes(
   }
 
   const missing = required.filter(
-    (requiredScope) => !provided.some((grantedScope) => scopeMatches(grantedScope, requiredScope))
+    (requiredScope) => !provided.some((grantedScope) => scopeMatches(grantedScope, requiredScope)),
   );
 
   return {

@@ -59,7 +59,7 @@ export function assembleStreamingPipeline(
     echoModel: string | null | undefined;
     responseHeaders: Record<string, string>;
   },
-  deps: StreamingPipelineDeps = DEFAULT_DEPS
+  deps: StreamingPipelineDeps = DEFAULT_DEPS,
 ) {
   // ── Phase 9.3: Progress tracking (opt-in) ──
   const progressEnabled = deps.wantsProgress(args.clientRawRequestHeaders);
@@ -68,7 +68,7 @@ export function assembleStreamingPipeline(
   let piiStream = deps.pipeWithDisconnect(
     args.providerResponse,
     args.transformStream,
-    args.streamController
+    args.streamController,
   );
   if (typeof args.createPiiTransform === "function") {
     piiStream = piiStream.pipeThrough((args.createPiiTransform as () => TransformStream)());
@@ -77,7 +77,9 @@ export function assembleStreamingPipeline(
   }
 
   if (progressEnabled) {
-    const progressTransform = deps.createProgressTransform({ signal: args.streamController.signal });
+    const progressTransform = deps.createProgressTransform({
+      signal: args.streamController.signal,
+    });
     // Chain: provider → transform → progress → client
     finalStream = piiStream.pipeThrough(progressTransform);
     args.responseHeaders[OMNIROUTE_RESPONSE_HEADERS.progress] = "enabled";
@@ -89,7 +91,7 @@ export function assembleStreamingPipeline(
       signal: args.streamController.signal,
       intervalMs: SSE_HEARTBEAT_INTERVAL_MS,
       shape: deps.shapeForClientFormat(args.clientResponseFormat),
-    })
+    }),
   );
   // #1311: echo the requested alias/combo name in each streamed SSE chunk's model field.
   if (args.echoModel) {

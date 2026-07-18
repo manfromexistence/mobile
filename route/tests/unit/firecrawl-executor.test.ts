@@ -21,7 +21,7 @@ test("firecrawlFetch calls api.firecrawl.dev/v1/scrape with Bearer auth", async 
     };
     return new Response(
       JSON.stringify({ data: { markdown: "# Result", links: [], metadata: { title: "Test" } } }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -128,7 +128,7 @@ test("firecrawlFetch returns correct response shape", async () => {
           metadata: { title: "Page Title", description: "A test page" },
         },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -199,7 +199,7 @@ test("firecrawlFetch with includeMetadata=true does not send includeTags (4692)"
       JSON.stringify({
         data: { markdown: "# Result", metadata: { title: "Test", description: "Desc" } },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -215,7 +215,7 @@ test("firecrawlFetch with includeMetadata=true does not send includeTags (4692)"
     assert.equal(result.success, true);
     assert.ok(
       !("includeTags" in capturedBody),
-      "includeMetadata must not inject includeTags (Firecrawl 500)"
+      "includeMetadata must not inject includeTags (Firecrawl 500)",
     );
   } finally {
     globalThis.fetch = originalFetch;

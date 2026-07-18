@@ -18,7 +18,7 @@ test("#4976 400 with rate-limit text (MiMoCode) → fallback with RATE_LIMIT_EXC
     "Detected high-frequency non-compliant requests from you.",
     0,
     null,
-    "mimocode"
+    "mimocode",
   );
   assert.equal(res.shouldFallback, true);
   assert.equal(res.reason, RateLimitReason.RATE_LIMIT_EXCEEDED);

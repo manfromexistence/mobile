@@ -58,7 +58,7 @@ export class KiroService {
     clientId: string,
     clientSecret: string,
     startUrl: string,
-    region: string = "us-east-1"
+    region: string = "us-east-1",
   ) {
     assertValidAwsRegion(region);
     const endpoint = `https://oidc.${region}.amazonaws.com/device_authorization`;
@@ -98,7 +98,7 @@ export class KiroService {
     clientId: string,
     clientSecret: string,
     deviceCode: string,
-    region: string = "us-east-1"
+    region: string = "us-east-1",
   ) {
     assertValidAwsRegion(region);
     const endpoint = `https://oidc.${region}.amazonaws.com/token`;
@@ -397,7 +397,7 @@ export class KiroService {
    * the OIDC client registration step of the device code flow.
    */
   private async readCachedClientCredentials(
-    region?: string
+    region?: string,
   ): Promise<{ clientId: string; clientSecret: string } | null> {
     try {
       const { readdir, readFile } = await import("fs/promises");

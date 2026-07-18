@@ -40,7 +40,7 @@ test("Claude native passthrough normalization keeps original tool names", () => 
     false,
     null,
     null,
-    null
+    null,
   );
 
   // The translated body should have function wrappers with the original name
@@ -49,7 +49,7 @@ test("Claude native passthrough normalization keeps original tool names", () => 
   assert.ok(tool.function, "tool should have a function wrapper");
   assert.ok(
     tool.function.name === "TodoWrite" || tool.function.name === "proxy_TodoWrite",
-    `tool name should be preserved or prefixed, got: ${tool.function.name}`
+    `tool name should be preserved or prefixed, got: ${tool.function.name}`,
   );
 });
 
@@ -89,7 +89,7 @@ test("Claude-to-Claude passthrough should not alter tool names", () => {
     false,
     null,
     null,
-    null
+    null,
   );
 
   // Claude-to-Claude should preserve tool names
@@ -97,6 +97,6 @@ test("Claude-to-Claude passthrough should not alter tool names", () => {
   assert.equal(
     result.tools[0].name,
     "TodoWrite",
-    "tool name should stay unchanged for Claude-to-Claude"
+    "tool name should stay unchanged for Claude-to-Claude",
   );
 });

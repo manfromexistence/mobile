@@ -159,7 +159,7 @@ export default function CompareTab({ configState }: CompareTabProps) {
           prev.map((c) => {
             const extra = snapshot[c.id];
             return extra != null ? { ...c, response: c.response + extra } : c;
-          })
+          }),
         );
       });
     }

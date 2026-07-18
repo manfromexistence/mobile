@@ -62,7 +62,7 @@ describe("evalRunner/builtinSuites split-guard", () => {
         ["safety-guardrails", 6],
         ["instruction-following", 5],
         ["codex-comparison", 8],
-      ]
+      ],
     );
   });
 
@@ -87,7 +87,7 @@ describe("evalRunner/builtinSuites split-guard", () => {
     for (const c of safetySuite.cases) {
       assert.ok(
         Array.isArray(c.tags) && c.tags.includes("safety"),
-        `case ${c.id} needs safety tag`
+        `case ${c.id} needs safety tag`,
       );
     }
   });

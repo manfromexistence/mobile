@@ -76,11 +76,11 @@ test("getCombos returns parsed combos in persisted sort order", async () => {
 
   assert.deepEqual(
     combos.map((combo) => combo.name),
-    ["Zulu", "Alpha"]
+    ["Zulu", "Alpha"],
   );
   assert.deepEqual(
     combos.map((combo) => combo.sortOrder),
-    [1, 2]
+    [1, 2],
   );
 });
 
@@ -124,11 +124,11 @@ test("reorderCombos persists manual combo ordering in sqlite", async () => {
 
   assert.deepEqual(
     reordered.map((combo) => combo.name),
-    ["Charlie", "Alpha", "Bravo"]
+    ["Charlie", "Alpha", "Bravo"],
   );
   assert.deepEqual(
     reordered.map((combo) => combo.sortOrder),
-    [1, 2, 3]
+    [1, 2, 3],
   );
   assert.equal((await combosDb.getComboById((charlie as any).id))?.sortOrder, 1);
   assert.equal((await combosDb.getComboById((alpha as any).id))?.sortOrder, 2);
@@ -151,7 +151,7 @@ test("getCombos upgrades legacy persisted entries to version 2 and resolves comb
   const now = new Date().toISOString();
 
   db.prepare(
-    "INSERT INTO combos (id, name, data, sort_order, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)"
+    "INSERT INTO combos (id, name, data, sort_order, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
   ).run(
     "combo-child",
     "child",
@@ -165,11 +165,11 @@ test("getCombos upgrades legacy persisted entries to version 2 and resolves comb
     }),
     1,
     now,
-    now
+    now,
   );
 
   db.prepare(
-    "INSERT INTO combos (id, name, data, sort_order, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)"
+    "INSERT INTO combos (id, name, data, sort_order, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
   ).run(
     "combo-parent",
     "parent",
@@ -183,7 +183,7 @@ test("getCombos upgrades legacy persisted entries to version 2 and resolves comb
     }),
     2,
     now,
-    now
+    now,
   );
 
   const combos = await combosDb.getCombos();

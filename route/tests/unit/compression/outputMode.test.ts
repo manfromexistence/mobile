@@ -10,7 +10,7 @@ describe("Caveman output mode", () => {
   it("injects a system instruction without post-processing output", () => {
     const result = applyCavemanOutputMode(
       { messages: [{ role: "user", content: "Summarize this API response." }] },
-      { enabled: true, intensity: "full", autoClarity: true }
+      { enabled: true, intensity: "full", autoClarity: true },
     );
     assert.equal(result.applied, true);
     assert.equal(result.body.messages?.[0]?.role, "system");
@@ -25,7 +25,7 @@ describe("Caveman output mode", () => {
           { role: "user", content: "Summarize logs." },
         ],
       },
-      { enabled: true, intensity: "lite", autoClarity: true }
+      { enabled: true, intensity: "lite", autoClarity: true },
     );
     assert.equal(result.applied, true);
     assert.match(String(result.body.messages?.[0]?.content), /Follow tenant policy/);
@@ -53,7 +53,7 @@ describe("Caveman output mode", () => {
     assert.equal(twice.applied, false);
     assert.equal(twice.skippedReason, "already_applied");
     const markerCount = String(twice.body.messages?.[0]?.content).match(
-      /OmniRoute Caveman Output Mode/g
+      /OmniRoute Caveman Output Mode/g,
     )?.length;
     assert.equal(markerCount, 1);
   });
@@ -71,7 +71,7 @@ describe("Caveman output mode", () => {
   it("uses Responses instructions when input has no messages", () => {
     const result = applyCavemanOutputMode(
       { input: [{ type: "message", role: "user", content: "Summarize logs." }] },
-      { enabled: true, intensity: "full", autoClarity: true }
+      { enabled: true, intensity: "full", autoClarity: true },
     );
 
     assert.equal(result.applied, true);
@@ -94,7 +94,7 @@ describe("Caveman output mode", () => {
   it("skips injection when disabled", () => {
     const result = applyCavemanOutputMode(
       { messages: [{ role: "user", content: "Tell me a joke." }] },
-      { enabled: false, intensity: "full", autoClarity: true }
+      { enabled: false, intensity: "full", autoClarity: true },
     );
     assert.equal(result.applied, false);
     assert.equal(result.skippedReason, "disabled");
@@ -105,7 +105,7 @@ describe("Caveman output mode", () => {
   it("builds intensity-specific instructions", () => {
     assert.match(
       buildCavemanOutputInstruction({ enabled: true, intensity: "ultra", autoClarity: true }),
-      /ultra terse/i
+      /ultra terse/i,
     );
   });
 });

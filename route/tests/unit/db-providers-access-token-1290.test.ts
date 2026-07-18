@@ -66,7 +66,7 @@ test("createProviderConnection: authType access_token never dedups — same emai
   assert.equal(rows.length, 2);
   assert.deepEqual(
     rows.map((r) => r.accessToken).sort(),
-    ["eyJfirst.token.sig", "eyJsecond.token.sig"].sort()
+    ["eyJfirst.token.sig", "eyJsecond.token.sig"].sort(),
   );
 });
 

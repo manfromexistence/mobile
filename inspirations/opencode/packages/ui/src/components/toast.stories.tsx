@@ -1,6 +1,6 @@
 // @ts-nocheck
-import * as mod from "./toast"
-import { Button } from "./button"
+import * as mod from "./toast";
+import { Button } from "./button";
 
 const docs = `### Overview
 Toast notifications with optional icons, actions, and progress.
@@ -25,7 +25,7 @@ Use brief titles/descriptions; limit actions to 1-2.
 ### Theming/tokens
 - Uses \`data-component="toast"\` and slot data attributes.
 
-`
+`;
 
 export default {
   title: "UI/Toast",
@@ -39,7 +39,7 @@ export default {
       },
     },
   },
-}
+};
 
 export const Basic = {
   render: () => (
@@ -72,7 +72,7 @@ export const Basic = {
       </Button>
     </div>
   ),
-}
+};
 
 export const Actions = {
   render: () => (
@@ -95,7 +95,7 @@ export const Actions = {
       </Button>
     </div>
   ),
-}
+};
 
 export const Promise = {
   render: () => (
@@ -104,18 +104,21 @@ export const Promise = {
       <Button
         variant="secondary"
         onClick={() =>
-          mod.showPromiseToast(() => new Promise((resolve) => setTimeout(() => resolve(true), 800)), {
-            loading: "Saving...",
-            success: () => "Saved",
-            error: () => "Failed",
-          })
+          mod.showPromiseToast(
+            () => new Promise((resolve) => setTimeout(() => resolve(true), 800)),
+            {
+              loading: "Saving...",
+              success: () => "Saved",
+              error: () => "Failed",
+            },
+          )
         }
       >
         Show promise toast
       </Button>
     </div>
   ),
-}
+};
 
 export const Loading = {
   render: () => (
@@ -135,4 +138,4 @@ export const Loading = {
       </Button>
     </div>
   ),
-}
+};

@@ -33,7 +33,7 @@ export async function GET(request: Request) {
     return NextResponse.json(enriched);
   } catch (error) {
     const message = sanitizeErrorMessage(
-      error instanceof Error ? error.message : "Failed to get status"
+      error instanceof Error ? error.message : "Failed to get status",
     );
     console.error("[version-manager] status error:", message);
     return NextResponse.json({ error: message }, { status: 500 });

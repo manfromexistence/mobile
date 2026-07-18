@@ -219,7 +219,7 @@ function main() {
   if (!fs.existsSync(ALLOWLIST_PATH)) {
     console.error(
       `[check-deps] FAIL — ${path.basename(ALLOWLIST_PATH)} ausente. Gere com:\n` +
-        `  node -e "require('./scripts/check/check-deps.mjs')" (ou veja o passo de bootstrap no PLANO)`
+        `  node -e "require('./scripts/check/check-deps.mjs')" (ou veja o passo de bootstrap no PLANO)`,
     );
     process.exit(1);
   }
@@ -246,7 +246,7 @@ function main() {
       `[check-deps] ${unapproved.length} dependência(s) FORA da allowlist:\n` +
         unapproved.map((d) => "  ✗ " + d).join("\n") +
         `\n  → confirme que o pacote é legítimo (existe no registry, publisher conhecido, não é typosquat)\n` +
-        `    e adicione o nome a dependency-allowlist.json ("allowed"). Esse é o ponto de revisão humana.`
+        `    e adicione o nome a dependency-allowlist.json ("allowed"). Esse é o ponto de revisão humana.`,
     );
 
     // Registry audit (Task 7.8) — runs only when there are new deps.
@@ -258,21 +258,21 @@ function main() {
     if (offline.length) {
       console.warn(
         `[check-deps] WARN — registry npm inacessível (offline?); ` +
-          `não foi possível verificar: ${offline.join(", ")}`
+          `não foi possível verificar: ${offline.join(", ")}`,
       );
     }
     if (notFound.length) {
       console.error(
         `[check-deps] BLOQUEIO EXTRA — ${notFound.length} dep(s) NÃO encontrada(s) no registry npm ` +
           `(provável nome alucinado — NÃO adicionar à allowlist!):\n` +
-          notFound.map((d) => `  ✗✗ ${d} (não existe no registry)`).join("\n")
+          notFound.map((d) => `  ✗✗ ${d} (não existe no registry)`).join("\n"),
       );
     }
     if (tooNew.length) {
       console.error(
         `[check-deps] BLOQUEIO EXTRA — ${tooNew.length} dep(s) publicada(s) há <72h ` +
           `(age-cooldown anti-slopsquatting — aguarde 72h após publicação):\n` +
-          tooNew.map((d) => `  ✗✗ ${d.name} (publicada há ~${d.ageHours}h)`).join("\n")
+          tooNew.map((d) => `  ✗✗ ${d.name} (publicada há ~${d.ageHours}h)`).join("\n"),
       );
     }
 
@@ -282,7 +282,7 @@ function main() {
   const manifests = discoverManifests(ROOT);
   console.log(
     `[check-deps] OK — ${allowlist.size} dependências na allowlist, ` +
-      `${manifests.length} manifests escaneados, nenhuma nova dep`
+      `${manifests.length} manifests escaneados, nenhuma nova dep`,
   );
 }
 

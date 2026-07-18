@@ -1,18 +1,11 @@
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import {
   UnresolvedFile,
   UnresolvedFile as UnresolvedFileClass,
   type UnresolvedFileOptions,
-} from '../../components/UnresolvedFile';
-import type { GetHoveredLineResult } from '../../managers/InteractionManager';
+} from "../../components/UnresolvedFile";
+import type { GetHoveredLineResult } from "../../managers/InteractionManager";
 import type {
   DiffLineAnnotation,
   FileContents,
@@ -20,19 +13,18 @@ import type {
   MergeConflictActionPayload,
   MergeConflictMarkerRow,
   SelectedLineRange,
-} from '../../types';
-import { areOptionsEqual } from '../../utils/areOptionsEqual';
+} from "../../types";
+import { areOptionsEqual } from "../../utils/areOptionsEqual";
 import {
   type MergeConflictDiffAction,
   parseMergeConflictDiffFromFile,
-} from '../../utils/parseMergeConflictDiffFromFile';
-import { noopRender } from '../constants';
-import type { UnresolvedFileReactOptions } from '../UnresolvedFile';
-import { WorkerPoolContext } from '../WorkerPoolContext';
-import { useStableCallback } from './useStableCallback';
+} from "../../utils/parseMergeConflictDiffFromFile";
+import { noopRender } from "../constants";
+import type { UnresolvedFileReactOptions } from "../UnresolvedFile";
+import { WorkerPoolContext } from "../WorkerPoolContext";
+import { useStableCallback } from "./useStableCallback";
 
-const useIsometricEffect =
-  typeof window === 'undefined' ? useEffect : useLayoutEffect;
+const useIsometricEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 interface UseUnresolvedFileInstanceProps<LAnnotation> {
   file: FileContents;
@@ -51,7 +43,7 @@ interface UseUnresolvedFileInstanceReturn<LAnnotation> {
   actions: (MergeConflictDiffAction | undefined)[];
   markerRows: MergeConflictMarkerRow[];
   ref(node: HTMLElement | null): void;
-  getHoveredLine(): GetHoveredLineResult<'diff'> | undefined;
+  getHoveredLine(): GetHoveredLineResult<"diff"> | undefined;
   getInstance(): UnresolvedFile<LAnnotation> | undefined;
 }
 
@@ -69,7 +61,7 @@ export function useUnresolvedFileInstance<LAnnotation>({
   const [{ fileDiff, actions, markerRows }, setState] = useState(() => {
     const { fileDiff, actions, markerRows } = parseMergeConflictDiffFromFile(
       file,
-      options?.maxContextLines
+      options?.maxContextLines,
     );
     return { fileDiff, actions, markerRows };
   });
@@ -77,16 +69,13 @@ export function useUnresolvedFileInstance<LAnnotation>({
   // source-of-truth file so sequential conflict actions apply to the latest
   // resolved contents rather than the initial prop value.
   const onMergeConflictAction = useStableCallback(
-    (
-      payload: MergeConflictActionPayload,
-      instance: UnresolvedFile<LAnnotation>
-    ) => {
+    (payload: MergeConflictActionPayload, instance: UnresolvedFile<LAnnotation>) => {
       setState((prevState) => {
         const { fileDiff, actions, markerRows } =
           instance.resolveConflict(
             payload.conflict.conflictIndex,
             payload.resolution,
-            prevState.fileDiff
+            prevState.fileDiff,
           ) ?? {};
         if (fileDiff == null || actions == null || markerRows == null) {
           return prevState;
@@ -94,7 +83,7 @@ export function useUnresolvedFileInstance<LAnnotation>({
           return { fileDiff, actions, markerRows };
         }
       });
-    }
+    },
   );
   const controlledSelection = selectedLines !== undefined;
   const poolManager = useContext(WorkerPoolContext);
@@ -103,7 +92,7 @@ export function useUnresolvedFileInstance<LAnnotation>({
     if (fileContainer != null) {
       if (instanceRef.current != null) {
         throw new Error(
-          'useUnresolvedFileInstance: An instance should not already exist when a node is created'
+          "useUnresolvedFileInstance: An instance should not already exist when a node is created",
         );
       }
       instanceRef.current = new UnresolvedFileClass(
@@ -116,7 +105,7 @@ export function useUnresolvedFileInstance<LAnnotation>({
           options,
         }),
         !disableWorkerPool ? poolManager : undefined,
-        true
+        true,
       );
       void instanceRef.current.hydrate({
         fileDiff,
@@ -129,7 +118,7 @@ export function useUnresolvedFileInstance<LAnnotation>({
     } else {
       if (instanceRef.current == null) {
         throw new Error(
-          'useUnresolvedFileInstance: A UnresolvedFile instance should exist when unmounting'
+          "useUnresolvedFileInstance: A UnresolvedFile instance should exist when unmounting",
         );
       }
       instanceRef.current.cleanUp();
@@ -162,9 +151,7 @@ export function useUnresolvedFileInstance<LAnnotation>({
     }
   });
 
-  const getHoveredLine = useCallback(():
-    | GetHoveredLineResult<'diff'>
-    | undefined => {
+  const getHoveredLine = useCallback((): GetHoveredLineResult<"diff"> | undefined => {
     return instanceRef.current?.getHoveredLine();
   }, []);
 
@@ -178,7 +165,7 @@ export function useUnresolvedFileInstance<LAnnotation>({
 interface MergeUnresolvedOptionsProps<LAnnotation> {
   options: UnresolvedFileReactOptions<LAnnotation> | undefined;
   controlledSelection: boolean;
-  onMergeConflictAction: UnresolvedFileOptions<LAnnotation>['onMergeConflictAction'];
+  onMergeConflictAction: UnresolvedFileOptions<LAnnotation>["onMergeConflictAction"];
   hasConflictUtility: boolean;
   hasGutterRenderUtility: boolean;
   hasCustomHeader: boolean;
@@ -196,13 +183,10 @@ function mergeUnresolvedOptions<LAnnotation>({
     ...options,
     controlledSelection,
     onMergeConflictAction,
-    hunkSeparators:
-      options?.hunkSeparators === 'custom'
-        ? noopRender
-        : options?.hunkSeparators,
+    hunkSeparators: options?.hunkSeparators === "custom" ? noopRender : options?.hunkSeparators,
     // Add a placeholder type for the custom render
     mergeConflictActionsType:
-      hasConflictUtility || options?.mergeConflictActionsType === 'custom'
+      hasConflictUtility || options?.mergeConflictActionsType === "custom"
         ? noopRender
         : options?.mergeConflictActionsType,
     renderCustomHeader: hasCustomHeader ? noopRender : undefined,

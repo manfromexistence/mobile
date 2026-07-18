@@ -1,4 +1,4 @@
-import { Schema } from "effect"
+import { Schema } from "effect";
 import {
   AbsolutePath,
   DateTimeUtcFromMillis,
@@ -7,9 +7,17 @@ import {
   PositiveInt,
   RelativePath,
   statics,
-} from "@opencode-ai/schema/schema"
+} from "@opencode-ai/schema/schema";
 
-export { AbsolutePath, DateTimeUtcFromMillis, NonNegativeInt, optional, PositiveInt, RelativePath, statics }
+export {
+  AbsolutePath,
+  DateTimeUtcFromMillis,
+  NonNegativeInt,
+  optional,
+  PositiveInt,
+  RelativePath,
+  statics,
+};
 
 /**
  * Strip `readonly` from a nested type. Stand-in for `effect`'s `Types.DeepMutable`
@@ -37,7 +45,7 @@ export type DeepMutable<T> = T extends string | number | boolean | bigint | symb
       ? DeepMutable<U>[]
       : T extends object
         ? { -readonly [K in keyof T]: DeepMutable<T[K]> }
-        : T
+        : T;
 
 /**
  * Nominal wrapper for scalar types. The class itself is a valid schema —
@@ -61,19 +69,21 @@ export type DeepMutable<T> = T extends string | number | boolean | bigint | symb
 export function Newtype<Self>() {
   return <const Tag extends string, S extends Schema.Top>(tag: Tag, schema: S) => {
     abstract class Base {
-      declare readonly _newtype: Tag
+      declare readonly _newtype: Tag;
 
       static make(value: Schema.Schema.Type<S>): Self {
-        return value as unknown as Self
+        return value as unknown as Self;
       }
     }
 
-    Object.setPrototypeOf(Base, schema)
+    Object.setPrototypeOf(Base, schema);
 
-    return Base as unknown as (abstract new (_: never) => { readonly _newtype: Tag }) & {
-      readonly make: (value: Schema.Schema.Type<S>) => Self
+    return Base as unknown as (abstract new (
+      _: never,
+    ) => { readonly _newtype: Tag }) & {
+      readonly make: (value: Schema.Schema.Type<S>) => Self;
     } & Omit<Schema.Opaque<Self, S, {}>, "make" | "~type.make"> & {
-        readonly "~type.make": Self
-      }
-  }
+        readonly "~type.make": Self;
+      };
+  };
 }

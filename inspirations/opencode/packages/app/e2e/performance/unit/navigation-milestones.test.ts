@@ -1,5 +1,5 @@
-import { expect, test } from "bun:test"
-import { summarizeNavigationMilestones } from "../timeline/navigation-milestones"
+import { expect, test } from "bun:test";
+import { summarizeNavigationMilestones } from "../timeline/navigation-milestones";
 
 test("reports first and stable paint for each navigation milestone", () => {
   expect(
@@ -17,8 +17,8 @@ test("reports first and stable paint for each navigation milestone", () => {
       tab: { firstObservedMs: 48, stableObservedMs: 80 },
     },
     all: { firstObservedMs: 48, stableObservedMs: 80 },
-  })
-})
+  });
+});
 
 test("reports missing stability when a milestone appears in the final samples", () => {
   expect(
@@ -30,5 +30,5 @@ test("reports missing stability when a milestone appears in the final samples", 
     samples: 2,
     milestones: { content: { firstObservedMs: 32, stableObservedMs: null } },
     all: { firstObservedMs: 32, stableObservedMs: null },
-  })
-})
+  });
+});

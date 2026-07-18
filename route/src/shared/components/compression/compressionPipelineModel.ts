@@ -14,10 +14,7 @@ export type EngineIntensities = Record<string, readonly string[]>;
 const FALLBACK_INTENSITIES: readonly string[] = ["standard"];
 
 /** Intensities a given engine allows (falls back to `["standard"]` for unknown engines). */
-export function allowedIntensities(
-  engine: string,
-  table: EngineIntensities
-): readonly string[] {
+export function allowedIntensities(engine: string, table: EngineIntensities): readonly string[] {
   const list = table[engine];
   return list && list.length > 0 ? list : FALLBACK_INTENSITIES;
 }
@@ -48,17 +45,13 @@ export function moveLayer(steps: PipelineStep[], from: number, to: number): Pipe
 export function addLayer(
   steps: PipelineStep[],
   step: PipelineStep,
-  table: EngineIntensities
+  table: EngineIntensities,
 ): PipelineStep[] {
   return [...steps, normalizeStep(step, table)];
 }
 
 /** Remove the layer at `index`, never dropping below `minLength` (default 1). */
-export function removeLayer(
-  steps: PipelineStep[],
-  index: number,
-  minLength = 1
-): PipelineStep[] {
+export function removeLayer(steps: PipelineStep[], index: number, minLength = 1): PipelineStep[] {
   if (steps.length <= minLength) return steps.slice();
   if (index < 0 || index >= steps.length) return steps.slice();
   return steps.filter((_, i) => i !== index);
@@ -69,10 +62,8 @@ export function updateLayer(
   steps: PipelineStep[],
   index: number,
   patch: Partial<PipelineStep>,
-  table: EngineIntensities
+  table: EngineIntensities,
 ): PipelineStep[] {
   if (index < 0 || index >= steps.length) return steps.slice();
-  return steps.map((step, i) =>
-    i === index ? normalizeStep({ ...step, ...patch }, table) : step
-  );
+  return steps.map((step, i) => (i === index ? normalizeStep({ ...step, ...patch }, table) : step));
 }

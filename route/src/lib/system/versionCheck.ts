@@ -77,7 +77,7 @@ export async function getLatestVersionFromNpmCli(): Promise<string | null> {
     const { stdout } = await execFileAsync(
       "npm",
       ["info", "omniroute", "version", "--json"],
-      buildNpmExecOptions(process.platform, { timeoutMs: LOOKUP_TIMEOUT_MS })
+      buildNpmExecOptions(process.platform, { timeoutMs: LOOKUP_TIMEOUT_MS }),
     );
     const parsed = JSON.parse(String(stdout).trim());
     return typeof parsed === "string" && parsed ? parsed : null;
@@ -91,7 +91,7 @@ export async function getLatestVersionFromNpmCli(): Promise<string | null> {
  * `npm` binary — so it works in Docker / desktop / locked-down installs.
  */
 export async function getLatestVersionFromRegistry(
-  fetchImpl: typeof fetch = fetch
+  fetchImpl: typeof fetch = fetch,
 ): Promise<string | null> {
   try {
     const res = await fetchImpl(NPM_REGISTRY_LATEST_URL, {
@@ -113,7 +113,7 @@ export async function getLatestVersionFromRegistry(
  * the `v` prefix downstream.
  */
 export async function getLatestVersionFromGitHub(
-  fetchImpl: typeof fetch = fetch
+  fetchImpl: typeof fetch = fetch,
 ): Promise<string | null> {
   try {
     const res = await fetchImpl(GITHUB_RELEASES_LATEST_URL, {
@@ -157,7 +157,7 @@ export async function resolveLatestVersion(opts?: {
   if (viaGitHub) return viaGitHub;
 
   log.warn(
-    "Latest-version lookup failed via npm CLI, registry HTTP, and GitHub releases — the update banner will not show even if a newer release exists"
+    "Latest-version lookup failed via npm CLI, registry HTTP, and GitHub releases — the update banner will not show even if a newer release exists",
   );
   return null;
 }

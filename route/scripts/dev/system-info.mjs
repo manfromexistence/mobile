@@ -112,7 +112,7 @@ lines.push(`Docker:     ${run("docker --version", "not installed")}`);
 
 const dockerContainers = run(
   "docker ps --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}' 2>/dev/null",
-  "N/A"
+  "N/A",
 );
 lines.push(`Containers:\n${dockerContainers}`);
 
@@ -166,5 +166,5 @@ writeFileSync(outPath, report);
 console.log(report);
 console.log(`\n✅ Report saved to: ${outPath}`);
 console.log(
-  `📎 Attach this file when reporting issues at: https://github.com/diegosouzapw/OmniRoute/issues`
+  `📎 Attach this file when reporting issues at: https://github.com/diegosouzapw/OmniRoute/issues`,
 );

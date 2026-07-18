@@ -54,7 +54,7 @@ function hasCacheControlMarker(part: unknown): boolean {
  */
 function resolveToolMeta(
   toolId: string | null,
-  lookup: Map<string, ToolMeta>
+  lookup: Map<string, ToolMeta>,
 ): { command: string | null; skipFilters: boolean } {
   const meta = toolId ? lookup.get(toolId) : null;
   if (!meta) return { command: null, skipFilters: false };
@@ -147,7 +147,7 @@ function hasCodeFence(content: Message["content"]): boolean {
   if (typeof content === "string") return /```/.test(content);
   if (!Array.isArray(content)) return false;
   return content.some(
-    (part) => isTextBlock(part) && typeof part.text === "string" && /```/.test(part.text)
+    (part) => isTextBlock(part) && typeof part.text === "string" && /```/.test(part.text),
   );
 }
 
@@ -157,7 +157,7 @@ function codeOnlyConfig(config: RtkConfig): boolean {
 
 function processRtkCodeBlocksOnly(
   content: Message["content"],
-  config: RtkConfig
+  config: RtkConfig,
 ): {
   content: Message["content"];
   compressed: boolean;
@@ -214,7 +214,7 @@ function processRtkCodeBlocksOnly(
 
 export function processRtkText(
   text: string,
-  options: { command?: string | null; config?: Partial<RtkConfig>; skipFilters?: boolean } = {}
+  options: { command?: string | null; config?: Partial<RtkConfig>; skipFilters?: boolean } = {},
 ): RtkProcessResult {
   const config = mergeRtkConfig(options.config);
   const originalTokens = estimateCompressionTokens(text);
@@ -233,7 +233,7 @@ export function processRtkText(
   // detect as a known command type (or carry a command / error markers), so RTK's
   // value on those is preserved.
   const hasGenericErrorMarkers = /Error:|Exception:|Traceback \(most recent call last\):/.test(
-    text
+    text,
   );
   const isDocumentLikeRead =
     detection.type === "unknown" && !detection.command && !hasGenericErrorMarkers;
@@ -247,7 +247,10 @@ export function processRtkText(
       if (config.enabledFilters.length === 0 || config.enabledFilters.includes(filter.id)) {
         const filtered = applyLineFilter(result, {
           ...filter,
-          maxLines: effectiveMaxLines(filter.maxLines || config.maxLinesPerResult, config.intensity),
+          maxLines: effectiveMaxLines(
+            filter.maxLines || config.maxLinesPerResult,
+            config.intensity,
+          ),
         });
         result = filtered.text;
         if (filtered.appliedRules.length > 0) {
@@ -288,7 +291,7 @@ export function processRtkText(
         strippedCodeBlocks++;
         const fenceLanguage = languageHint?.trim() || stripped.language;
         return `\`\`\`${fenceLanguage}\n${stripped.text}\n\`\`\``;
-      }
+      },
     );
     if (strippedCodeBlocks > 0) {
       techniquesUsed.push("rtk-code-strip");
@@ -372,7 +375,7 @@ export function processRtkText(
 function processToolResultBlocks(
   content: Message["content"],
   config: RtkConfig,
-  toolCallLookup: Map<string, ToolMeta>
+  toolCallLookup: Map<string, ToolMeta>,
 ): {
   content: Message["content"];
   compressed: boolean;
@@ -443,7 +446,7 @@ function processToolResultBlocks(
 function processRtkContent(
   content: Message["content"],
   config: RtkConfig,
-  options?: { command?: string | null; skipFilters?: boolean }
+  options?: { command?: string | null; skipFilters?: boolean },
 ): {
   content: Message["content"];
   compressed: boolean;
@@ -524,7 +527,7 @@ export function effectiveMaxLines(base: number, intensity: string | undefined): 
 
 export function applyRtkCompression(
   body: Record<string, unknown>,
-  options: { config?: Partial<RtkConfig>; stepConfig?: Record<string, unknown> } = {}
+  options: { config?: Partial<RtkConfig>; stepConfig?: Record<string, unknown> } = {},
 ): CompressionResult {
   const start = performance.now();
   const stepConfig =
@@ -642,7 +645,7 @@ export function applyRtkCompression(
     "rtk",
     [...new Set(allTechniques)],
     allRules.length > 0 ? [...new Set(allRules)] : undefined,
-    Math.round((performance.now() - start) * 100) / 100
+    Math.round((performance.now() - start) * 100) / 100,
   );
   stats.engine = "rtk";
   if (rawOutputPointers.length > 0) {

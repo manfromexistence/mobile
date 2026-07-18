@@ -91,7 +91,7 @@ test("pipeline: 2 steps — step 1 gets the original input, step 2 gets step 1's
   const step2Msgs = seenBodies[1].messages as Array<{ role: string; content: string }>;
   assert.ok(
     step2Msgs.some((m) => m.role === "system" && m.content === "SUMMARIZE"),
-    "step 2 should carry its own prompt as a system instruction"
+    "step 2 should carry its own prompt as a system instruction",
   );
   // Final step keeps the client's original stream flag + tools.
   assert.equal(seenBodies[1].stream, true);

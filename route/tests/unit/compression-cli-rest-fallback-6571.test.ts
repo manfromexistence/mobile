@@ -57,11 +57,12 @@ test("restCompressionStatus (via runCompressionStatus REST fallback) should surf
   }) as typeof fetch;
 
   try {
-    const { runCompressionStatus } = await import(
-      "../../bin/cli/commands/compression.mjs"
-    );
+    const { runCompressionStatus } = await import("../../bin/cli/commands/compression.mjs");
     const out = await captureStdout(() =>
-      runCompressionStatus({}, makeCmd("json") as unknown as Parameters<typeof runCompressionStatus>[1])
+      runCompressionStatus(
+        {},
+        makeCmd("json") as unknown as Parameters<typeof runCompressionStatus>[1],
+      ),
     );
     const parsed = JSON.parse(out);
 
@@ -73,7 +74,7 @@ test("restCompressionStatus (via runCompressionStatus REST fallback) should surf
     assert.equal(
       parsed.strategy,
       "stacked",
-      `expected REST fallback to expose settings.defaultMode as "strategy" (got: ${JSON.stringify(parsed)})`
+      `expected REST fallback to expose settings.defaultMode as "strategy" (got: ${JSON.stringify(parsed)})`,
     );
   } finally {
     globalThis.fetch = origFetch;
@@ -95,13 +96,11 @@ test("restSetEngine (via runCompressionEngineSet REST fallback) should PUT `defa
   }) as typeof fetch;
 
   try {
-    const { runCompressionEngineSet } = await import(
-      "../../bin/cli/commands/compression.mjs"
-    );
+    const { runCompressionEngineSet } = await import("../../bin/cli/commands/compression.mjs");
     await runCompressionEngineSet(
       "caveman",
       {},
-      makeCmd("json") as unknown as Parameters<typeof runCompressionEngineSet>[2]
+      makeCmd("json") as unknown as Parameters<typeof runCompressionEngineSet>[2],
     );
 
     assert.equal(putBodies.length, 1, "expected exactly one PUT to /api/settings/compression");
@@ -117,9 +116,13 @@ test("restSetEngine (via runCompressionEngineSet REST fallback) should PUT `defa
     assert.equal(
       body.defaultMode,
       "standard",
-      `expected PUT body to contain defaultMode:"standard" (caveman translated), got: ${JSON.stringify(body)}`
+      `expected PUT body to contain defaultMode:"standard" (caveman translated), got: ${JSON.stringify(body)}`,
     );
-    assert.equal(body.engine, undefined, `PUT body must not contain a nonexistent "engine" key, got: ${JSON.stringify(body)}`);
+    assert.equal(
+      body.engine,
+      undefined,
+      `PUT body must not contain a nonexistent "engine" key, got: ${JSON.stringify(body)}`,
+    );
   } finally {
     globalThis.fetch = origFetch;
   }
@@ -147,6 +150,6 @@ test("output.mjs emit() table renderer must not print [object Object] for nested
   const rendered = chunks.join("");
   assert.ok(
     !rendered.includes("[object Object]"),
-    `table rendering must JSON-stringify nested object cells instead of printing "[object Object]"; got:\n${rendered}`
+    `table rendering must JSON-stringify nested object cells instead of printing "[object Object]"; got:\n${rendered}`,
   );
 });

@@ -1,5 +1,5 @@
 /** @jsxImportSource preact */
-import type { JSX } from 'preact';
+import type { JSX } from "preact";
 
 export interface RenameInputProps {
   ariaLabel: string;
@@ -22,7 +22,7 @@ export function RenameInput({
     <input
       ref={ref}
       data-item-rename-input
-      {...(isFlattened ? { 'data-item-flattened-rename-input': true } : {})}
+      {...(isFlattened ? { "data-item-flattened-rename-input": true } : {})}
       aria-label={ariaLabel}
       value={value}
       onBlur={onBlur}

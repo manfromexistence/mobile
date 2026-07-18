@@ -58,7 +58,7 @@ function streamTokensSaved(streamUsage: Record<string, unknown> | null | undefin
 
 function writeStreamingCacheEntry(
   args: StreamingCacheArgs,
-  deps: StreamingSemanticCacheStoreDeps
+  deps: StreamingSemanticCacheStoreDeps,
 ): void {
   try {
     const cleanBody = { ...(args.streamResponseBody as Record<string, unknown>) };
@@ -69,11 +69,14 @@ function writeStreamingCacheEntry(
       args.body.messages ?? args.body.input,
       args.body.temperature,
       args.body.top_p,
-      args.apiKeyId ?? undefined
+      args.apiKeyId ?? undefined,
     );
     const tokensSaved = streamTokensSaved(args.streamUsage);
     deps.setCachedResponse(sig, args.model, cleanBody, tokensSaved);
-    args.log?.debug?.("CACHE", `Stored streaming response for ${args.model} (${tokensSaved} tokens)`);
+    args.log?.debug?.(
+      "CACHE",
+      `Stored streaming response for ${args.model} (${tokensSaved} tokens)`,
+    );
   } catch {
     // Cache write failed — non-critical
   }
@@ -81,7 +84,7 @@ function writeStreamingCacheEntry(
 
 export function storeStreamingSemanticCacheResponse(
   args: StreamingCacheArgs,
-  deps: StreamingSemanticCacheStoreDeps = DEFAULT_DEPS
+  deps: StreamingSemanticCacheStoreDeps = DEFAULT_DEPS,
 ): void {
   if (
     !args.enabled ||

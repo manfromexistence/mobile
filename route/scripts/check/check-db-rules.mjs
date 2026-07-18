@@ -244,7 +244,7 @@ function main() {
       `[#2 re-export] ${missing.length} módulo(s) db/ não re-exportado(s) por src/lib/localDb.ts:\n` +
         missing.map((m) => `  ✗ src/lib/db/${m}.ts`).join("\n") +
         `\n  → re-exporte de src/lib/localDb.ts (apenas a lista de re-export, nada de lógica)` +
-        ` ou adicione a INTENTIONALLY_INTERNAL com justificativa (import direto de "@/lib/db/${missing[0]}").`
+        ` ou adicione a INTENTIONALLY_INTERNAL com justificativa (import direto de "@/lib/db/${missing[0]}").`,
     );
   }
 
@@ -252,7 +252,7 @@ function main() {
   if (hasLogic(localDbSource)) {
     failures.push(
       `[#2 sem-lógica] src/lib/localDb.ts contém lógica (function/class/arrow). É camada de` +
-        ` re-export apenas — mova a lógica para um módulo src/lib/db/.`
+        ` re-export apenas — mova a lógica para um módulo src/lib/db/.`,
     );
   }
 
@@ -268,7 +268,7 @@ function main() {
       `[#5 sql-cru] ${rawSql.length} arquivo(s) com SQL cru fora de src/lib/db/:\n` +
         rawSql.map((f) => `  ✗ ${f}`).join("\n") +
         `\n  → mova o SQL para um módulo src/lib/db/ (nunca SQL cru em rota/handler)` +
-        ` ou congele em KNOWN_RAW_SQL com justificativa.`
+        ` ou congele em KNOWN_RAW_SQL com justificativa.`,
     );
   }
 
@@ -279,7 +279,7 @@ function main() {
   if (!process.exitCode) {
     console.log(
       `[check-db-rules] OK (${dbModules.length} módulos db/, ${reexported.size} re-exportados, ` +
-        `${INTENTIONALLY_INTERNAL.size} intencionalmente-internos (Rule #2); ${EXTERNAL_DB_ALLOWED.size} leituras de DB externo permitidas (#3500))`
+        `${INTENTIONALLY_INTERNAL.size} intencionalmente-internos (Rule #2); ${EXTERNAL_DB_ALLOWED.size} leituras de DB externo permitidas (#3500))`,
     );
   }
 }

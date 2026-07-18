@@ -50,7 +50,7 @@ function toGeminiParametersSchema(raw: unknown): Record<string, unknown> {
 
 function normalizeGeminiToolName(
   name: string,
-  options: GeminiToolSanitizationOptions = {}
+  options: GeminiToolSanitizationOptions = {},
 ): string {
   const trimmed = name.trim();
   const namespaceStripped = !options.stripNamespace
@@ -69,7 +69,7 @@ function normalizeGeminiToolName(
 function buildHashedGeminiToolName(
   baseName: string,
   originalName: string,
-  hashLength: number
+  hashLength: number,
 ): string {
   const effectiveBase = baseName || "tool";
   const hash = createHash("sha256").update(originalName).digest("hex").slice(0, hashLength);
@@ -79,7 +79,7 @@ function buildHashedGeminiToolName(
 
 function findSanitizedNameForOriginal(
   toolNameMap: Map<string, string> | null | undefined,
-  originalName: string
+  originalName: string,
 ): string | null {
   if (!(toolNameMap instanceof Map)) return null;
   for (const [sanitizedName, rawName] of toolNameMap.entries()) {
@@ -93,7 +93,7 @@ function findSanitizedNameForOriginal(
 function isSanitizedNameTaken(
   toolNameMap: Map<string, string> | null | undefined,
   sanitizedName: string,
-  originalName: string
+  originalName: string,
 ): boolean {
   if (!(toolNameMap instanceof Map)) return false;
   const mappedOriginalName = toolNameMap.get(sanitizedName);
@@ -102,7 +102,7 @@ function isSanitizedNameTaken(
 
 export function sanitizeGeminiToolName(
   name: string,
-  options: GeminiToolSanitizationOptions = {}
+  options: GeminiToolSanitizationOptions = {},
 ): string {
   const normalizedName = normalizeGeminiToolName(name, options) || "tool";
   const toolNameMap = options.toolNameMap instanceof Map ? options.toolNameMap : null;
@@ -130,7 +130,7 @@ export function sanitizeGeminiToolName(
     }
 
     console.warn(
-      `[GeminiTools] Tool name collision after sanitization: "${name}" conflicts with "${conflictingOriginalName}". Using "${sanitizedName}".`
+      `[GeminiTools] Tool name collision after sanitization: "${name}" conflicts with "${conflictingOriginalName}". Using "${sanitizedName}".`,
     );
   }
 
@@ -168,7 +168,7 @@ function toGeminiGoogleSearchTool(tool: Record<string, unknown>): GeminiTool | n
 
 export function buildGeminiTools(
   tools: unknown,
-  options: GeminiToolSanitizationOptions = {}
+  options: GeminiToolSanitizationOptions = {},
 ): GeminiTool[] | undefined {
   if (!Array.isArray(tools) || tools.length === 0) {
     return undefined;

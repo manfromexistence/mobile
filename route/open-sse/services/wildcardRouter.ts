@@ -66,7 +66,7 @@ export function getSpecificity(pattern) {
  */
 export function resolveWildcardAlias(
   model: string,
-  aliases: WildcardAliasEntry[]
+  aliases: WildcardAliasEntry[],
 ): ResolvedWildcardAlias | null {
   if (!model || !aliases || !Array.isArray(aliases)) return null;
 

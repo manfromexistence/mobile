@@ -1,6 +1,6 @@
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { rotation2, declarePI, fiberNoise, textureRandomizerR } from '../shader-utils.js';
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { rotation2, declarePI, fiberNoise, textureRandomizerR } from "../shader-utils.js";
 
 /**
  * A static texture built from multiple noise layers, usable for realistic paper and cardboard surfaces.
@@ -88,9 +88,9 @@ float getUvFrame(vec2 uv) {
   return left * right * bottom * top;
 }
 
-${ declarePI }
-${ rotation2 }
-${ textureRandomizerR }
+${declarePI}
+${rotation2}
+${textureRandomizerR}
 float valueNoise(vec2 st) {
   vec2 i = floor(st);
   vec2 f = fract(st);
@@ -133,7 +133,7 @@ float roughness(vec2 p) {
   return o / 3.;
 }
 
-${ fiberNoise }
+${fiberNoise}
 
 vec2 randomGB(vec2 p) {
   vec2 uv = floor(p) / 50. + .5;

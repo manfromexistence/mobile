@@ -1,5 +1,5 @@
-import { Resource } from "sst/resource"
-import { defineConfig } from "drizzle-kit"
+import { Resource } from "sst/resource";
+import { defineConfig } from "drizzle-kit";
 
 export default defineConfig({
   dialect: "mysql",
@@ -18,4 +18,4 @@ export default defineConfig({
       rejectUnauthorized: false,
     },
   },
-})
+});

@@ -9,12 +9,12 @@ test("#2987 PollinationsExecutor.buildUrl uses the gen.pollinations.ai gateway (
   // is the current OpenAI-compatible endpoint and must be the primary.
   assert.equal(
     executor.buildUrl("openai", true),
-    "https://gen.pollinations.ai/v1/chat/completions"
+    "https://gen.pollinations.ai/v1/chat/completions",
   );
   // No legacy text.pollinations.ai endpoint should remain in the rotation.
   assert.equal(
     executor.buildUrl("openai", true, 1),
-    "https://gen.pollinations.ai/v1/chat/completions"
+    "https://gen.pollinations.ai/v1/chat/completions",
   );
 });
 
@@ -47,7 +47,9 @@ test("PollinationsExecutor enhances 401 errors for premium models with actionabl
   // Mock super.execute (BaseExecutor.prototype.execute) to throw a 401
   const origBaseExec = Object.getPrototypeOf(Object.getPrototypeOf(executor)).execute;
   Object.getPrototypeOf(Object.getPrototypeOf(executor)).execute = async function () {
-    const err = new Error("Authentication required. Please provide an API key via Authorization header (Bearer token) or ?key= query parameter.");
+    const err = new Error(
+      "Authentication required. Please provide an API key via Authorization header (Bearer token) or ?key= query parameter.",
+    );
     (err as any).status = 401;
     throw err;
   };

@@ -1,23 +1,31 @@
-import { sqliteTable, text, integer, index, primaryKey, real, uniqueIndex } from "drizzle-orm/sqlite-core"
-import * as DatabasePath from "../database/path"
-import { ProjectTable } from "../project/sql"
-import type { SessionMessage } from "./message"
-import type { Prompt } from "./prompt"
-import type { SessionInput } from "./input"
-import type { Snapshot } from "../snapshot"
-import { PermissionV1 } from "../v1/permission"
-import { ProjectV2 } from "../project"
-import type { SessionSchema } from "./schema"
-import type { MessageID, PartID, SessionV1 } from "../v1/session"
-import { WorkspaceV2 } from "../workspace"
-import { Timestamps } from "../database/schema.sql"
-import type { SystemContext } from "../system-context/index"
-import { AgentV2 } from "../agent"
-import type { Revert } from "@opencode-ai/schema/revert"
+import {
+  sqliteTable,
+  text,
+  integer,
+  index,
+  primaryKey,
+  real,
+  uniqueIndex,
+} from "drizzle-orm/sqlite-core";
+import * as DatabasePath from "../database/path";
+import { ProjectTable } from "../project/sql";
+import type { SessionMessage } from "./message";
+import type { Prompt } from "./prompt";
+import type { SessionInput } from "./input";
+import type { Snapshot } from "../snapshot";
+import { PermissionV1 } from "../v1/permission";
+import { ProjectV2 } from "../project";
+import type { SessionSchema } from "./schema";
+import type { MessageID, PartID, SessionV1 } from "../v1/session";
+import { WorkspaceV2 } from "../workspace";
+import { Timestamps } from "../database/schema.sql";
+import type { SystemContext } from "../system-context/index";
+import { AgentV2 } from "../agent";
+import type { Revert } from "@opencode-ai/schema/revert";
 
-type SessionMessageData = Omit<(typeof SessionMessage.Message)["Encoded"], "type" | "id">
-type V1MessageData = Omit<SessionV1.Info, "id" | "sessionID">
-type V1PartData = Omit<SessionV1.Part, "id" | "sessionID" | "messageID">
+type SessionMessageData = Omit<(typeof SessionMessage.Message)["Encoded"], "type" | "id">;
+type V1MessageData = Omit<SessionV1.Info, "id" | "sessionID">;
+type V1PartData = Omit<SessionV1.Part, "id" | "sessionID" | "messageID">;
 
 export const SessionTable = sqliteTable(
   "session",
@@ -50,9 +58,9 @@ export const SessionTable = sqliteTable(
     permission: text({ mode: "json" }).$type<PermissionV1.Ruleset>(),
     agent: text(),
     model: text({ mode: "json" }).$type<{
-      id: string
-      providerID: string
-      variant?: string
+      id: string;
+      providerID: string;
+      variant?: string;
     }>(),
     ...Timestamps,
     time_compacting: integer(),
@@ -63,7 +71,7 @@ export const SessionTable = sqliteTable(
     index("session_workspace_idx").on(table.workspace_id),
     index("session_parent_idx").on(table.parent_id),
   ],
-)
+);
 
 export const MessageTable = sqliteTable(
   "message",
@@ -76,8 +84,10 @@ export const MessageTable = sqliteTable(
     ...Timestamps,
     data: text({ mode: "json" }).notNull().$type<V1MessageData>(),
   },
-  (table) => [index("message_session_time_created_id_idx").on(table.session_id, table.time_created, table.id)],
-)
+  (table) => [
+    index("message_session_time_created_id_idx").on(table.session_id, table.time_created, table.id),
+  ],
+);
 
 export const PartTable = sqliteTable(
   "part",
@@ -95,7 +105,7 @@ export const PartTable = sqliteTable(
     index("part_message_id_id_idx").on(table.message_id, table.id),
     index("part_session_idx").on(table.session_id),
   ],
-)
+);
 
 export const TodoTable = sqliteTable(
   "todo",
@@ -114,7 +124,7 @@ export const TodoTable = sqliteTable(
     primaryKey({ columns: [table.session_id, table.position] }),
     index("todo_session_idx").on(table.session_id),
   ],
-)
+);
 
 export const SessionMessageTable = sqliteTable(
   "session_message",
@@ -132,10 +142,14 @@ export const SessionMessageTable = sqliteTable(
   (table) => [
     uniqueIndex("session_message_session_seq_idx").on(table.session_id, table.seq),
     index("session_message_session_type_seq_idx").on(table.session_id, table.type, table.seq),
-    index("session_message_session_time_created_id_idx").on(table.session_id, table.time_created, table.id),
+    index("session_message_session_time_created_id_idx").on(
+      table.session_id,
+      table.time_created,
+      table.id,
+    ),
     index("session_message_time_created_idx").on(table.time_created),
   ],
-)
+);
 
 export const SessionInputTable = sqliteTable(
   "session_input",
@@ -163,7 +177,7 @@ export const SessionInputTable = sqliteTable(
     uniqueIndex("session_input_session_admitted_seq_idx").on(table.session_id, table.admitted_seq),
     uniqueIndex("session_input_session_promoted_seq_idx").on(table.session_id, table.promoted_seq),
   ],
-)
+);
 
 export const SessionContextEpochTable = sqliteTable("session_context_epoch", {
   session_id: text()
@@ -173,4 +187,4 @@ export const SessionContextEpochTable = sqliteTable("session_context_epoch", {
   baseline: text().notNull(),
   snapshot: text({ mode: "json" }).notNull().$type<SystemContext.Snapshot>(),
   baseline_seq: integer().notNull(),
-})
+});

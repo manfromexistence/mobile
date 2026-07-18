@@ -13,10 +13,10 @@
 // All state logic lives in question.shared.ts as a pure state machine.
 // This component just renders it and dispatches keyboard events.
 /** @jsxImportSource @opentui/solid */
-import type { TextareaRenderable } from "@opentui/core"
-import { useKeyboard, useTerminalDimensions } from "@opentui/solid"
-import { For, Show, createEffect, createMemo, createSignal } from "solid-js"
-import type { QuestionRequest } from "@opencode-ai/sdk/v2"
+import type { TextareaRenderable } from "@opentui/core";
+import { useKeyboard, useTerminalDimensions } from "@opentui/solid";
+import { For, Show, createEffect, createMemo, createSignal } from "solid-js";
+import type { QuestionRequest } from "@opencode-ai/sdk/v2";
 import {
   createQuestionBodyState,
   questionConfirm,
@@ -39,233 +39,233 @@ import {
   questionSync,
   questionTabs,
   questionTotal,
-} from "./question.shared"
-import { footerWidthPolicy } from "./footer.width"
-import type { RunFooterTheme } from "./theme"
-import type { QuestionReject, QuestionReply } from "./types"
+} from "./question.shared";
+import { footerWidthPolicy } from "./footer.width";
+import type { RunFooterTheme } from "./theme";
+import type { QuestionReject, QuestionReply } from "./types";
 
 export function RunQuestionBody(props: {
-  request: QuestionRequest
-  theme: RunFooterTheme
-  onReply: (input: QuestionReply) => void | Promise<void>
-  onReject: (input: QuestionReject) => void | Promise<void>
+  request: QuestionRequest;
+  theme: RunFooterTheme;
+  onReply: (input: QuestionReply) => void | Promise<void>;
+  onReject: (input: QuestionReject) => void | Promise<void>;
 }) {
-  const dims = useTerminalDimensions()
-  const [state, setState] = createSignal(createQuestionBodyState(props.request.id))
-  const single = createMemo(() => questionSingle(props.request))
-  const confirm = createMemo(() => questionConfirm(props.request, state()))
-  const info = createMemo(() => questionInfo(props.request, state()))
-  const input = createMemo(() => questionInput(state()))
-  const other = createMemo(() => questionOther(props.request, state()))
-  const picked = createMemo(() => questionPicked(state()))
-  const disabled = createMemo(() => state().submitting)
-  const narrow = createMemo(() => footerWidthPolicy(dims().width).dialog.narrow)
+  const dims = useTerminalDimensions();
+  const [state, setState] = createSignal(createQuestionBodyState(props.request.id));
+  const single = createMemo(() => questionSingle(props.request));
+  const confirm = createMemo(() => questionConfirm(props.request, state()));
+  const info = createMemo(() => questionInfo(props.request, state()));
+  const input = createMemo(() => questionInput(state()));
+  const other = createMemo(() => questionOther(props.request, state()));
+  const picked = createMemo(() => questionPicked(state()));
+  const disabled = createMemo(() => state().submitting);
+  const narrow = createMemo(() => footerWidthPolicy(dims().width).dialog.narrow);
   const verb = createMemo(() => {
     if (confirm()) {
-      return "submit"
+      return "submit";
     }
 
     if (info()?.multiple) {
-      return "toggle"
+      return "toggle";
     }
 
     if (single()) {
-      return "submit"
+      return "submit";
     }
 
-    return "confirm"
-  })
-  let area: TextareaRenderable | undefined
+    return "confirm";
+  });
+  let area: TextareaRenderable | undefined;
 
   createEffect(() => {
-    setState((prev) => questionSync(prev, props.request.id))
-  })
+    setState((prev) => questionSync(prev, props.request.id));
+  });
 
   const setTab = (tab: number) => {
-    setState((prev) => questionSetTab(prev, tab))
-  }
+    setState((prev) => questionSetTab(prev, tab));
+  };
 
   const move = (dir: -1 | 1) => {
-    setState((prev) => questionMove(prev, props.request, dir))
-  }
+    setState((prev) => questionMove(prev, props.request, dir));
+  };
 
   const beginReply = async (input: QuestionReply) => {
-    setState((prev) => questionSetSubmitting(prev, true))
+    setState((prev) => questionSetSubmitting(prev, true));
 
     try {
-      await props.onReply(input)
+      await props.onReply(input);
     } catch {
-      setState((prev) => questionSetSubmitting(prev, false))
+      setState((prev) => questionSetSubmitting(prev, false));
     }
-  }
+  };
 
   const beginReject = async (input: QuestionReject) => {
-    setState((prev) => questionSetSubmitting(prev, true))
+    setState((prev) => questionSetSubmitting(prev, true));
 
     try {
-      await props.onReject(input)
+      await props.onReject(input);
     } catch {
-      setState((prev) => questionSetSubmitting(prev, false))
+      setState((prev) => questionSetSubmitting(prev, false));
     }
-  }
+  };
 
   const saveCustom = () => {
-    const cur = state()
-    const next = questionSave(cur, props.request)
+    const cur = state();
+    const next = questionSave(cur, props.request);
     if (next.state !== cur) {
-      setState(next.state)
+      setState(next.state);
     }
 
     if (!next.reply) {
-      return
+      return;
     }
 
-    void beginReply(next.reply)
-  }
+    void beginReply(next.reply);
+  };
 
   const choose = (selected: number) => {
-    const base = state()
-    const cur = questionSetSelected(base, selected)
-    const next = questionSelect(cur, props.request)
+    const base = state();
+    const cur = questionSetSelected(base, selected);
+    const next = questionSelect(cur, props.request);
     if (next.state !== base) {
-      setState(next.state)
+      setState(next.state);
     }
 
     if (!next.reply) {
-      return
+      return;
     }
 
-    void beginReply(next.reply)
-  }
+    void beginReply(next.reply);
+  };
 
   const mark = (selected: number) => {
-    setState((prev) => questionSetSelected(prev, selected))
-  }
+    setState((prev) => questionSetSelected(prev, selected));
+  };
 
   const select = () => {
-    const cur = state()
-    const next = questionSelect(cur, props.request)
+    const cur = state();
+    const next = questionSelect(cur, props.request);
     if (next.state !== cur) {
-      setState(next.state)
+      setState(next.state);
     }
 
     if (!next.reply) {
-      return
+      return;
     }
 
-    void beginReply(next.reply)
-  }
+    void beginReply(next.reply);
+  };
 
   const submit = () => {
-    void beginReply(questionSubmit(props.request, state()))
-  }
+    void beginReply(questionSubmit(props.request, state()));
+  };
 
   const reject = () => {
-    void beginReject(questionReject(props.request))
-  }
+    void beginReject(questionReject(props.request));
+  };
 
   useKeyboard((event) => {
-    const cur = state()
+    const cur = state();
     if (cur.submitting) {
-      event.preventDefault()
-      return
+      event.preventDefault();
+      return;
     }
 
     if (cur.editing) {
       if (event.name === "escape") {
-        setState((prev) => questionSetEditing(prev, false))
-        event.preventDefault()
-        return
+        setState((prev) => questionSetEditing(prev, false));
+        event.preventDefault();
+        return;
       }
 
-      return
+      return;
     }
 
     if (!single() && (event.name === "left" || event.name === "h")) {
-      setTab((cur.tab - 1 + questionTabs(props.request)) % questionTabs(props.request))
-      event.preventDefault()
-      return
+      setTab((cur.tab - 1 + questionTabs(props.request)) % questionTabs(props.request));
+      event.preventDefault();
+      return;
     }
 
     if (!single() && (event.name === "right" || event.name === "l")) {
-      setTab((cur.tab + 1) % questionTabs(props.request))
-      event.preventDefault()
-      return
+      setTab((cur.tab + 1) % questionTabs(props.request));
+      event.preventDefault();
+      return;
     }
 
     if (!single() && event.name === "tab") {
-      const dir = event.shift ? -1 : 1
-      setTab((cur.tab + dir + questionTabs(props.request)) % questionTabs(props.request))
-      event.preventDefault()
-      return
+      const dir = event.shift ? -1 : 1;
+      setTab((cur.tab + dir + questionTabs(props.request)) % questionTabs(props.request));
+      event.preventDefault();
+      return;
     }
 
     if (questionConfirm(props.request, cur)) {
       if (event.name === "return") {
-        submit()
-        event.preventDefault()
-        return
+        submit();
+        event.preventDefault();
+        return;
       }
 
       if (event.name === "escape") {
-        reject()
-        event.preventDefault()
+        reject();
+        event.preventDefault();
       }
-      return
+      return;
     }
 
-    const total = questionTotal(props.request, cur)
-    const max = Math.min(total, 9)
-    const digit = Number(event.name)
+    const total = questionTotal(props.request, cur);
+    const max = Math.min(total, 9);
+    const digit = Number(event.name);
     if (!Number.isNaN(digit) && digit >= 1 && digit <= max) {
-      choose(digit - 1)
-      event.preventDefault()
-      return
+      choose(digit - 1);
+      event.preventDefault();
+      return;
     }
 
     if (event.name === "up" || event.name === "k") {
-      move(-1)
-      event.preventDefault()
-      return
+      move(-1);
+      event.preventDefault();
+      return;
     }
 
     if (event.name === "down" || event.name === "j") {
-      move(1)
-      event.preventDefault()
-      return
+      move(1);
+      event.preventDefault();
+      return;
     }
 
     if (event.name === "return") {
-      select()
-      event.preventDefault()
-      return
+      select();
+      event.preventDefault();
+      return;
     }
 
     if (event.name === "escape") {
-      reject()
-      event.preventDefault()
+      reject();
+      event.preventDefault();
     }
-  })
+  });
 
   createEffect(() => {
     if (!state().editing || !area || area.isDestroyed) {
-      return
+      return;
     }
 
     if (area.plainText !== input()) {
-      area.setText(input())
-      area.cursorOffset = input().length
+      area.setText(input());
+      area.cursorOffset = input().length;
     }
 
     queueMicrotask(() => {
       if (!area || area.isDestroyed || !state().editing) {
-        return
+        return;
       }
 
-      area.focus()
-      area.cursorOffset = area.plainText.length
-    })
-  })
+      area.focus();
+      area.cursorOffset = area.plainText.length;
+    });
+  });
 
   return (
     <box width="100%" height="100%" flexDirection="column">
@@ -283,22 +283,30 @@ export function RunQuestionBody(props: {
           <box flexDirection="row" gap={1} paddingLeft={1} flexShrink={0}>
             <For each={props.request.questions}>
               {(item, index) => {
-                const active = () => state().tab === index()
-                const answered = () => (state().answers[index()]?.length ?? 0) > 0
+                const active = () => state().tab === index();
+                const answered = () => (state().answers[index()]?.length ?? 0) > 0;
                 return (
                   <box
                     paddingLeft={1}
                     paddingRight={1}
                     backgroundColor={active() ? props.theme.highlight : props.theme.surface}
                     onMouseUp={() => {
-                      if (!disabled()) setTab(index())
+                      if (!disabled()) setTab(index());
                     }}
                   >
-                    <text fg={active() ? props.theme.surface : answered() ? props.theme.text : props.theme.muted}>
+                    <text
+                      fg={
+                        active()
+                          ? props.theme.surface
+                          : answered()
+                            ? props.theme.text
+                            : props.theme.muted
+                      }
+                    >
                       {item.header}
                     </text>
                   </box>
-                )
+                );
               }}
             </For>
             <box
@@ -306,7 +314,7 @@ export function RunQuestionBody(props: {
               paddingRight={1}
               backgroundColor={confirm() ? props.theme.highlight : props.theme.surface}
               onMouseUp={() => {
-                if (!disabled()) setTab(props.request.questions.length)
+                if (!disabled()) setTab(props.request.questions.length);
               }}
             >
               <text fg={confirm() ? props.theme.surface : props.theme.muted}>Confirm</text>
@@ -334,8 +342,8 @@ export function RunQuestionBody(props: {
                   </box>
                   <For each={props.request.questions}>
                     {(item, index) => {
-                      const value = () => state().answers[index()]?.join(", ") ?? ""
-                      const answered = () => Boolean(value())
+                      const value = () => state().answers[index()]?.join(", ") ?? "";
+                      const answered = () => Boolean(value());
                       return (
                         <box paddingLeft={1}>
                           <text wrapMode="word">
@@ -345,7 +353,7 @@ export function RunQuestionBody(props: {
                             </span>
                           </text>
                         </box>
-                      )
+                      );
                     }}
                   </For>
                 </box>
@@ -375,37 +383,50 @@ export function RunQuestionBody(props: {
                 <box width="100%" flexDirection="column">
                   <For each={info()?.options ?? []}>
                     {(item, index) => {
-                      const active = () => state().selected === index()
-                      const hit = () => state().answers[state().tab]?.includes(item.label) ?? false
+                      const active = () => state().selected === index();
+                      const hit = () => state().answers[state().tab]?.includes(item.label) ?? false;
                       return (
                         <box
                           flexDirection="column"
                           gap={0}
                           onMouseOver={() => {
                             if (!disabled()) {
-                              mark(index())
+                              mark(index());
                             }
                           }}
                           onMouseDown={() => {
                             if (!disabled()) {
-                              mark(index())
+                              mark(index());
                             }
                           }}
                           onMouseUp={() => {
                             if (!disabled()) {
-                              choose(index())
+                              choose(index());
                             }
                           }}
                         >
                           <box flexDirection="row">
-                            <box backgroundColor={active() ? props.theme.line : undefined} paddingRight={1}>
-                              <text fg={active() ? props.theme.highlight : props.theme.muted}>{`${index() + 1}.`}</text>
+                            <box
+                              backgroundColor={active() ? props.theme.line : undefined}
+                              paddingRight={1}
+                            >
+                              <text
+                                fg={active() ? props.theme.highlight : props.theme.muted}
+                              >{`${index() + 1}.`}</text>
                             </box>
                             <box backgroundColor={active() ? props.theme.line : undefined}>
                               <text
-                                fg={active() ? props.theme.highlight : hit() ? props.theme.success : props.theme.text}
+                                fg={
+                                  active()
+                                    ? props.theme.highlight
+                                    : hit()
+                                      ? props.theme.success
+                                      : props.theme.text
+                                }
                               >
-                                {info()?.multiple ? `[${hit() ? "✓" : " "}] ${item.label}` : item.label}
+                                {info()?.multiple
+                                  ? `[${hit() ? "✓" : " "}] ${item.label}`
+                                  : item.label}
                               </text>
                             </box>
                             <Show when={!info()?.multiple}>
@@ -418,7 +439,7 @@ export function RunQuestionBody(props: {
                             </text>
                           </box>
                         </box>
-                      )
+                      );
                     }}
                   </For>
 
@@ -428,29 +449,38 @@ export function RunQuestionBody(props: {
                       gap={0}
                       onMouseOver={() => {
                         if (!disabled()) {
-                          mark(info()?.options.length ?? 0)
+                          mark(info()?.options.length ?? 0);
                         }
                       }}
                       onMouseDown={() => {
                         if (!disabled()) {
-                          mark(info()?.options.length ?? 0)
+                          mark(info()?.options.length ?? 0);
                         }
                       }}
                       onMouseUp={() => {
                         if (!disabled()) {
-                          choose(info()?.options.length ?? 0)
+                          choose(info()?.options.length ?? 0);
                         }
                       }}
                     >
                       <box flexDirection="row">
-                        <box backgroundColor={other() ? props.theme.line : undefined} paddingRight={1}>
+                        <box
+                          backgroundColor={other() ? props.theme.line : undefined}
+                          paddingRight={1}
+                        >
                           <text
                             fg={other() ? props.theme.highlight : props.theme.muted}
                           >{`${(info()?.options.length ?? 0) + 1}.`}</text>
                         </box>
                         <box backgroundColor={other() ? props.theme.line : undefined}>
                           <text
-                            fg={other() ? props.theme.highlight : picked() ? props.theme.success : props.theme.text}
+                            fg={
+                              other()
+                                ? props.theme.highlight
+                                : picked()
+                                  ? props.theme.success
+                                  : props.theme.text
+                            }
                           >
                             {info()?.multiple
                               ? `[${picked() ? "✓" : " "}] Type your own answer`
@@ -490,14 +520,14 @@ export function RunQuestionBody(props: {
                             onSubmit={saveCustom}
                             onContentChange={() => {
                               if (!area || area.isDestroyed || disabled()) {
-                                return
+                                return;
                               }
 
-                              const text = area.plainText
-                              setState((prev) => questionStoreCustom(prev, prev.tab, text))
+                              const text = area.plainText;
+                              setState((prev) => questionStoreCustom(prev, prev.tab, text));
                             }}
                             ref={(item) => {
-                              area = item
+                              area = item;
                             }}
                           />
                         </box>
@@ -569,5 +599,5 @@ export function RunQuestionBody(props: {
         </Show>
       </box>
     </box>
-  )
+  );
 }

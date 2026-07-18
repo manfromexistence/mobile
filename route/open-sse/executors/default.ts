@@ -130,7 +130,7 @@ export class DefaultExecutor extends BaseExecutor {
       if (isClaudeCodeCompatible(this.provider)) {
         return joinClaudeCodeCompatibleUrl(
           baseUrl,
-          customPath || CLAUDE_CODE_COMPATIBLE_DEFAULT_CHAT_PATH
+          customPath || CLAUDE_CODE_COMPATIBLE_DEFAULT_CHAT_PATH,
         );
       }
       const normalized = baseUrl.replace(/\/$/, "");
@@ -381,13 +381,13 @@ export class DefaultExecutor extends BaseExecutor {
       default:
         if (isClaudeCodeCompatible(this.provider)) {
           const ccRequestDefaults = getClaudeCodeCompatibleRequestDefaults(
-            credentials?.providerSpecificData
+            credentials?.providerSpecificData,
           );
           const ccHeaders = buildClaudeCodeCompatibleHeaders(
             effectiveKey || credentials.accessToken || "",
             stream,
             credentials?.providerSpecificData?.ccSessionId,
-            { redactThinking: ccRequestDefaults.redactThinking === true }
+            { redactThinking: ccRequestDefaults.redactThinking === true },
           );
           // CC nodes are also anthropic-compatible-*, so honor operator custom
           // headers here (the early return skips the shared block below).
@@ -419,7 +419,7 @@ export class DefaultExecutor extends BaseExecutor {
           // pre-set "Anthropic-Version" (e.g. from this.config.headers or a
           // custom header) is not clobbered with a duplicate lowercase entry.
           const hasAnthropicVersion = Object.keys(headers).some(
-            (key) => key.toLowerCase() === "anthropic-version"
+            (key) => key.toLowerCase() === "anthropic-version",
           );
           if (!hasAnthropicVersion) {
             headers["anthropic-version"] = "2023-06-01";
@@ -498,7 +498,8 @@ export class DefaultExecutor extends BaseExecutor {
 
     const record = body as Record<string, unknown>;
     const rf = record.response_format as
-      { type?: string; json_schema?: { schema?: unknown } } | undefined;
+      | { type?: string; json_schema?: { schema?: unknown } }
+      | undefined;
     if (rf?.type !== "json_schema" || !rf.json_schema?.schema) return body;
 
     const schemaJson = JSON.stringify(rf.json_schema.schema, null, 2);
@@ -562,9 +563,7 @@ export class DefaultExecutor extends BaseExecutor {
       withDefaults &&
       typeof withDefaults === "object" &&
       !Array.isArray(withDefaults) &&
-      (this.provider === "cerebras" ||
-        this.provider === "mistral" ||
-        this.provider === "nvidia") &&
+      (this.provider === "cerebras" || this.provider === "mistral" || this.provider === "nvidia") &&
       Object.prototype.hasOwnProperty.call(withDefaults, "client_metadata")
     ) {
       const withoutClientMetadata = { ...(withDefaults as Record<string, unknown>) };
@@ -698,7 +697,7 @@ export class DefaultExecutor extends BaseExecutor {
     if (this.provider === "qwen" && typeof withDefaults === "object" && withDefaults !== null) {
       return sanitizeQwenThinkingToolChoice(
         withDefaults as Record<string, unknown>,
-        "QwenExecutor"
+        "QwenExecutor",
       );
     }
 
@@ -723,7 +722,7 @@ export class DefaultExecutor extends BaseExecutor {
           // other accepted fully-qualified prefix (e.g. Fireworks router IDs). #3133.
           const acceptedPrefixes = [entry.modelIdPrefix, ...(entry.acceptedModelIdPrefixes ?? [])];
           const alreadyQualified = acceptedPrefixes.some((prefix) =>
-            (body.model as string).startsWith(prefix)
+            (body.model as string).startsWith(prefix),
           );
           if (!alreadyQualified) {
             body.model = `${entry.modelIdPrefix}${body.model}`;

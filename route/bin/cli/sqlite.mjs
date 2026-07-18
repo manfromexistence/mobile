@@ -18,7 +18,7 @@ export function createSqliteNativeError(error) {
       "better-sqlite3 native binding is incompatible with this Node.js runtime. " +
         "Run `npm rebuild better-sqlite3` in the OmniRoute project and try again. " +
         "Or run: omniroute runtime repair  " +
-        "(rebuilds into a user-writable runtime; works without a C++ toolchain)."
+        "(rebuilds into a user-writable runtime; works without a C++ toolchain).",
     );
   }
   return error;
@@ -100,14 +100,14 @@ export async function readEncryptedCredentialSamples(dbPath) {
             OR access_token LIKE 'enc:v1:%'
             OR refresh_token LIKE 'enc:v1:%'
             OR id_token LIKE 'enc:v1:%'
-         LIMIT 20`
+         LIMIT 20`,
       )
       .all();
 
     const encryptedValues = rows.flatMap((row) =>
       ["api_key", "access_token", "refresh_token", "id_token"]
         .filter((key) => typeof row[key] === "string" && row[key].startsWith("enc:v1:"))
-        .map((key) => row[key])
+        .map((key) => row[key]),
     );
 
     return { hasProviderTable: true, encryptedValues };
@@ -144,7 +144,7 @@ export async function readManagementPasswordState(dbPath = resolveStoragePath(re
 
 export async function resetManagementPassword(
   password,
-  dbPath = resolveStoragePath(resolveDataDir())
+  dbPath = resolveStoragePath(resolveDataDir()),
 ) {
   const db = await openSqliteDatabase(dbPath);
   try {

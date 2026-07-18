@@ -68,7 +68,7 @@ export function parseResetTime(resetValue: unknown): string | null {
 export function createQuotaFromUsage(
   usedValue: unknown,
   totalValue: unknown,
-  resetValue: unknown
+  resetValue: unknown,
 ): UsageQuota {
   const total = Math.max(0, toNumber(totalValue, 0));
   const used = total > 0 ? Math.min(Math.max(0, toNumber(usedValue, 0)), total) : 0;

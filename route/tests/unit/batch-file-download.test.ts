@@ -47,7 +47,7 @@ function createTestFile(
     filename?: string;
     content?: Buffer | null;
     mimeType?: string;
-  } = {}
+  } = {},
 ) {
   const { filename = "test.jsonl", content = makeFileContent("line1\nline2"), mimeType } = opts;
   return localDb.createFile({
@@ -69,7 +69,7 @@ test("GET /api/files/{id}/content — auth not required (default) → file conte
 
   const res = await fileContentRoute.GET(
     new Request(`http://localhost/api/files/${file.id}/content`),
-    { params: Promise.resolve({ id: file.id }) }
+    { params: Promise.resolve({ id: file.id }) },
   );
 
   assert.equal(res.status, 200);
@@ -83,7 +83,7 @@ test("GET /api/files/{id}/content — with management session → 200 and file c
 
   const res = await fileContentRoute.GET(
     await makeManagementSessionRequest(`http://localhost/api/files/${file.id}/content`),
-    { params: Promise.resolve({ id: file.id }) }
+    { params: Promise.resolve({ id: file.id }) },
   );
 
   assert.equal(res.status, 200);
@@ -97,13 +97,13 @@ test("GET /api/files/{id}/content — with management session → content-type h
 
   const res = await fileContentRoute.GET(
     await makeManagementSessionRequest(`http://localhost/api/files/${file.id}/content`),
-    { params: Promise.resolve({ id: file.id }) }
+    { params: Promise.resolve({ id: file.id }) },
   );
 
   assert.equal(res.status, 200);
   assert.ok(
     res.headers.get("content-type")?.includes("application/jsonl"),
-    "content-type should be application/jsonl"
+    "content-type should be application/jsonl",
   );
 });
 
@@ -113,18 +113,18 @@ test("GET /api/files/{id}/content — content-disposition includes filename", as
 
   const res = await fileContentRoute.GET(
     await makeManagementSessionRequest(`http://localhost/api/files/${file.id}/content`),
-    { params: Promise.resolve({ id: file.id }) }
+    { params: Promise.resolve({ id: file.id }) },
   );
 
   assert.equal(res.status, 200);
   const disposition = res.headers.get("content-disposition") ?? "";
   assert.ok(
     disposition.includes("my_batch_output.jsonl"),
-    `content-disposition should include filename, got: ${disposition}`
+    `content-disposition should include filename, got: ${disposition}`,
   );
   assert.ok(
     disposition.includes("attachment"),
-    `content-disposition should be attachment, got: ${disposition}`
+    `content-disposition should be attachment, got: ${disposition}`,
   );
 });
 
@@ -134,13 +134,13 @@ test("GET /api/files/{id}/content — fallbacks to octet-stream when no mimeType
 
   const res = await fileContentRoute.GET(
     await makeManagementSessionRequest(`http://localhost/api/files/${file.id}/content`),
-    { params: Promise.resolve({ id: file.id }) }
+    { params: Promise.resolve({ id: file.id }) },
   );
 
   assert.equal(res.status, 200);
   assert.ok(
     res.headers.get("content-type")?.includes("application/octet-stream"),
-    "Should fall back to octet-stream"
+    "Should fall back to octet-stream",
   );
 });
 
@@ -149,7 +149,7 @@ test("GET /api/files/{id}/content — fallbacks to octet-stream when no mimeType
 test("GET /api/files/{id}/content — unknown file ID returns 404", async () => {
   const res = await fileContentRoute.GET(
     await makeManagementSessionRequest("http://localhost/api/files/file-does-not-exist/content"),
-    { params: Promise.resolve({ id: "file-does-not-exist" }) }
+    { params: Promise.resolve({ id: "file-does-not-exist" }) },
   );
 
   assert.equal(res.status, 404);
@@ -167,7 +167,7 @@ test("GET /api/files/{id}/content — deleted file returns 404", async () => {
 
   const res = await fileContentRoute.GET(
     await makeManagementSessionRequest(`http://localhost/api/files/${file.id}/content`),
-    { params: Promise.resolve({ id: file.id }) }
+    { params: Promise.resolve({ id: file.id }) },
   );
 
   assert.equal(res.status, 404);
@@ -186,7 +186,7 @@ test("GET /api/files/{id}/content — file with null content returns 404", async
 
   const res = await fileContentRoute.GET(
     await makeManagementSessionRequest(`http://localhost/api/files/${file.id}/content`),
-    { params: Promise.resolve({ id: file.id }) }
+    { params: Promise.resolve({ id: file.id }) },
   );
 
   assert.equal(res.status, 404);
@@ -206,7 +206,7 @@ test("GET /api/files/{id}/content — unauthenticated request is rejected when a
   try {
     const res = await fileContentRoute.GET(
       new Request(`http://localhost/api/files/${file.id}/content`),
-      { params: Promise.resolve({ id: file.id }) }
+      { params: Promise.resolve({ id: file.id }) },
     );
     assert.notEqual(res.status, 200, "Unauthenticated request should not return 200");
     assert.ok(res.status === 401 || res.status === 403, `Expected 401/403, got ${res.status}`);
@@ -224,7 +224,7 @@ test("GET /api/files/{id}/content — management session works when auth is requ
   try {
     const res = await fileContentRoute.GET(
       await makeManagementSessionRequest(`http://localhost/api/files/${file.id}/content`),
-      { params: Promise.resolve({ id: file.id }) }
+      { params: Promise.resolve({ id: file.id }) },
     );
     assert.equal(res.status, 200);
     const buf = Buffer.from(await res.arrayBuffer());

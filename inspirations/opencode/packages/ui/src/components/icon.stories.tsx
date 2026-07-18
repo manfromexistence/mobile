@@ -1,6 +1,6 @@
 // @ts-nocheck
-import * as mod from "./icon"
-import { create } from "../storybook/scaffold"
+import * as mod from "./icon";
+import { create } from "../storybook/scaffold";
 
 const docs = `### Overview
 Inline icon renderer using the built-in OpenCode icon set.
@@ -24,7 +24,7 @@ Use with \`Button\`, \`IconButton\`, and menu items.
 ### Theming/tokens
 - Uses \`data-component="icon"\` with size data attributes.
 
-`
+`;
 
 const names = [
   "align-right",
@@ -109,9 +109,9 @@ const names = [
   "link",
   "providers",
   "models",
-]
+];
 
-const story = create({ title: "UI/Icon", mod, args: { name: "check" } })
+const story = create({ title: "UI/Icon", mod, args: { name: "check" } });
 
 export default {
   title: "UI/Icon",
@@ -135,9 +135,9 @@ export default {
       options: ["small", "normal", "medium", "large"],
     },
   },
-}
+};
 
-export const Basic = story.Basic
+export const Basic = story.Basic;
 
 export const Sizes = {
   render: () => (
@@ -148,7 +148,7 @@ export const Sizes = {
       <mod.Icon name="check" size="large" />
     </div>
   ),
-}
+};
 
 export const Gallery = {
   render: () => (
@@ -162,9 +162,11 @@ export const Gallery = {
       {names.map((name) => (
         <div style={{ display: "grid", gap: "6px", "justify-items": "center" }}>
           <mod.Icon name={name} />
-          <div style={{ "font-size": "10px", color: "var(--text-weak)", "text-align": "center" }}>{name}</div>
+          <div style={{ "font-size": "10px", color: "var(--text-weak)", "text-align": "center" }}>
+            {name}
+          </div>
         </div>
       ))}
     </div>
   ),
-}
+};

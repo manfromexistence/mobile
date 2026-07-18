@@ -131,7 +131,7 @@ function normalizeInterval(raw: unknown): number {
  */
 export async function requestUserCode(
   clientId: string = DEFAULT_CLIENT_ID,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): Promise<CodexUserCode> {
   let res: Response;
   try {
@@ -150,7 +150,7 @@ export async function requestUserCode(
     throw new CodexDeviceFlowError(
       "device_disabled",
       "Device code login is not enabled for this account. Enable it in ChatGPT security settings (or ask your workspace admin), or use the localhost 'Adicionar' flow.",
-      404
+      404,
     );
   }
 
@@ -159,7 +159,7 @@ export async function requestUserCode(
     throw new CodexDeviceFlowError(
       "usercode_failed",
       `Failed to request device code (${res.status}): ${text}`,
-      res.status
+      res.status,
     );
   }
 
@@ -168,7 +168,7 @@ export async function requestUserCode(
   if (!data.device_auth_id || !userCode) {
     throw new CodexDeviceFlowError(
       "usercode_failed",
-      "Device code response missing device_auth_id or user_code"
+      "Device code response missing device_auth_id or user_code",
     );
   }
 
@@ -188,7 +188,7 @@ export async function pollForAuthorization(
   deviceAuthId: string,
   userCode: string,
   intervalSec: number,
-  opts: { signal?: AbortSignal; timeoutMs?: number } = {}
+  opts: { signal?: AbortSignal; timeoutMs?: number } = {},
 ): Promise<{ authorizationCode: string; codeVerifier: string }> {
   const { signal, timeoutMs = DEFAULT_TIMEOUT_MS } = opts;
   const deadline = startMonotonic() + timeoutMs;
@@ -221,7 +221,7 @@ export async function pollForAuthorization(
       if (!data.authorization_code || !data.code_verifier) {
         throw new CodexDeviceFlowError(
           "usercode_failed",
-          "Authorization response missing authorization_code or code_verifier"
+          "Authorization response missing authorization_code or code_verifier",
         );
       }
       return { authorizationCode: data.authorization_code, codeVerifier: data.code_verifier };
@@ -234,7 +234,7 @@ export async function pollForAuthorization(
     throw new CodexDeviceFlowError(
       "usercode_failed",
       `Polling failed (${res.status}): ${text}`,
-      res.status
+      res.status,
     );
   }
 }
@@ -244,7 +244,7 @@ export async function exchangeCodeForTokens(
   authorizationCode: string,
   codeVerifier: string,
   clientId: string = DEFAULT_CLIENT_ID,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): Promise<CodexDeviceTokens> {
   let res: Response;
   try {
@@ -270,7 +270,7 @@ export async function exchangeCodeForTokens(
     throw new CodexDeviceFlowError(
       "exchange_failed",
       `Token exchange failed (${res.status}): ${text}`,
-      res.status
+      res.status,
     );
   }
 
@@ -302,7 +302,7 @@ export async function runCodexDeviceFlow(opts: RunOptions = {}): Promise<CodexDe
     userCode.deviceAuthId,
     userCode.userCode,
     userCode.intervalSec,
-    { signal: opts.signal, timeoutMs: opts.timeoutMs }
+    { signal: opts.signal, timeoutMs: opts.timeoutMs },
   );
 
   return exchangeCodeForTokens(authorizationCode, codeVerifier, clientId, opts.signal);

@@ -34,7 +34,7 @@ test("Claude auto-sync is OFF by default (flag unset) — returns disabled, neve
     delete process.env.OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES;
     const result = await autoSyncClaudeProfilesFromLiveCatalog(
       mockSyncRequest(),
-      "test:default-off"
+      "test:default-off",
     );
     assert.equal(result.ok, false);
     assert.equal(result.reason, "disabled");
@@ -49,7 +49,7 @@ test("explicit OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES=false stays disabled", async 
     process.env.OMNIROUTE_AUTO_SYNC_CLAUDE_PROFILES = "false";
     const result = await autoSyncClaudeProfilesFromLiveCatalog(
       mockSyncRequest(),
-      "test:explicit-false"
+      "test:explicit-false",
     );
     assert.equal(result.ok, false);
     assert.equal(result.reason, "disabled");
@@ -79,7 +79,7 @@ test("enabled flag but CLI_ALLOW_CONFIG_WRITES=false is blocked by the write-gua
     process.env.CLI_ALLOW_CONFIG_WRITES = "false";
     const result = await autoSyncClaudeProfilesFromLiveCatalog(
       mockSyncRequest(),
-      "test:write-guard"
+      "test:write-guard",
     );
     assert.equal(result.ok, false);
     assert.match(result.reason, /CLI config writes are disabled/);

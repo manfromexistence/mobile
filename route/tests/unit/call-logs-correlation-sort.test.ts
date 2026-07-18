@@ -66,7 +66,7 @@ test("buildCallLogListRows: within the same priority, newest timestamp sorts fir
 
   assert.deepEqual(
     rows.map((r: any) => r.id),
-    ["new", "old"]
+    ["new", "old"],
   );
 });
 

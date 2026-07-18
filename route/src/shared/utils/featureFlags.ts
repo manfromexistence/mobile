@@ -62,7 +62,7 @@ export function isRequireApiKeyEnabled(): boolean {
   } catch (error) {
     console.error(
       "[featureFlags] Failed to resolve REQUIRE_API_KEY, defaulting to required:",
-      error instanceof Error ? error.message : error
+      error instanceof Error ? error.message : error,
     );
     return true;
   }
@@ -78,7 +78,7 @@ export function isApiKeyRevealEnabledFlag(): boolean {
   } catch (error) {
     console.error(
       "[featureFlags] Failed to resolve ALLOW_API_KEY_REVEAL, defaulting to disabled:",
-      error instanceof Error ? error.message : error
+      error instanceof Error ? error.message : error,
     );
     return false;
   }
@@ -106,7 +106,7 @@ export function isControlPlaneProxyDirectFallbackEnabled(): boolean {
   } catch (error) {
     console.error(
       "[featureFlags] Failed to resolve OMNIROUTE_CONTROL_PLANE_PROXY_DIRECT_FALLBACK, defaulting to disabled:",
-      error instanceof Error ? error.message : error
+      error instanceof Error ? error.message : error,
     );
     return false;
   }

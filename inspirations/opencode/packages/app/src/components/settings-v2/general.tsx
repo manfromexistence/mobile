@@ -1,17 +1,17 @@
-import { Component, Show, createMemo, createResource, onMount } from "solid-js"
-import { createMediaQuery } from "@solid-primitives/media"
-import { ButtonV2 } from "@opencode-ai/ui/v2/button-v2"
-import { SelectV2 } from "@opencode-ai/ui/v2/select-v2"
-import { Switch } from "@opencode-ai/ui/v2/switch-v2"
-import { TextInputV2 } from "@opencode-ai/ui/v2/text-input-v2"
-import { useTheme, type ColorScheme } from "@opencode-ai/ui/theme/context"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { useLanguage } from "@/context/language"
-import { usePermission } from "@/context/permission"
-import { usePlatform } from "@/context/platform"
-import { useServerSync } from "@/context/server-sync"
-import { useServerSDK } from "@/context/server-sdk"
-import { useUpdaterAction } from "../updater-action"
+import { Component, Show, createMemo, createResource, onMount } from "solid-js";
+import { createMediaQuery } from "@solid-primitives/media";
+import { ButtonV2 } from "@opencode-ai/ui/v2/button-v2";
+import { SelectV2 } from "@opencode-ai/ui/v2/select-v2";
+import { Switch } from "@opencode-ai/ui/v2/switch-v2";
+import { TextInputV2 } from "@opencode-ai/ui/v2/text-input-v2";
+import { useTheme, type ColorScheme } from "@opencode-ai/ui/theme/context";
+import { useDialog } from "@opencode-ai/ui/context/dialog";
+import { useLanguage } from "@/context/language";
+import { usePermission } from "@/context/permission";
+import { usePlatform } from "@/context/platform";
+import { useServerSync } from "@/context/server-sync";
+import { useServerSDK } from "@/context/server-sdk";
+import { useUpdaterAction } from "../updater-action";
 import {
   monoDefault,
   monoFontFamily,
@@ -23,102 +23,104 @@ import {
   terminalFontFamily,
   terminalInput,
   useSettings,
-} from "@/context/settings"
-import { playSoundById, SOUND_OPTIONS } from "@/utils/sound"
-import { Link } from "../link"
-import { SettingsListV2 } from "./parts/list"
-import { SettingsRowV2 } from "./parts/row"
-import "./settings-v2.css"
+} from "@/context/settings";
+import { playSoundById, SOUND_OPTIONS } from "@/utils/sound";
+import { Link } from "../link";
+import { SettingsListV2 } from "./parts/list";
+import { SettingsRowV2 } from "./parts/row";
+import "./settings-v2.css";
 
 let demoSoundState = {
   cleanup: undefined as (() => void) | undefined,
   timeout: undefined as NodeJS.Timeout | undefined,
   run: 0,
-}
+};
 
 type ThemeOption = {
-  id: string
-  name: string
-}
+  id: string;
+  name: string;
+};
 
 type ShellOption = {
-  path: string
-  name: string
-  acceptable: boolean
-}
+  path: string;
+  name: string;
+  acceptable: boolean;
+};
 
 type ShellSelectOption = {
-  id: string
-  value: string
-  label: string
-}
+  id: string;
+  value: string;
+  label: string;
+};
 
 // To prevent audio from overlapping/playing very quickly when navigating the settings menus,
 // delay the playback by 100ms during quick selection changes and pause existing sounds.
 const stopDemoSound = () => {
-  demoSoundState.run += 1
+  demoSoundState.run += 1;
   if (demoSoundState.cleanup) {
-    demoSoundState.cleanup()
+    demoSoundState.cleanup();
   }
-  clearTimeout(demoSoundState.timeout)
-  demoSoundState.cleanup = undefined
-}
+  clearTimeout(demoSoundState.timeout);
+  demoSoundState.cleanup = undefined;
+};
 
 const playDemoSound = (id: string | undefined) => {
-  stopDemoSound()
-  if (!id) return
+  stopDemoSound();
+  if (!id) return;
 
-  const run = ++demoSoundState.run
+  const run = ++demoSoundState.run;
   demoSoundState.timeout = setTimeout(() => {
     void playSoundById(id).then((cleanup) => {
       if (demoSoundState.run !== run) {
-        cleanup?.()
-        return
+        cleanup?.();
+        return;
       }
-      demoSoundState.cleanup = cleanup
-    })
-  }, 100)
-}
+      demoSoundState.cleanup = cleanup;
+    });
+  }, 100);
+};
 
 export const SettingsGeneralV2: Component<{
-  sessionID?: string
+  sessionID?: string;
 }> = (props) => {
-  const theme = useTheme()
-  const language = useLanguage()
-  const permission = usePermission()
-  const platform = usePlatform()
-  const dialog = useDialog()
-  const settings = useSettings()
-  const serverSync = useServerSync()
-  const serverSdk = useServerSDK()
-  const mobile = createMediaQuery("(max-width: 767px)")
+  const theme = useTheme();
+  const language = useLanguage();
+  const permission = usePermission();
+  const platform = usePlatform();
+  const dialog = useDialog();
+  const settings = useSettings();
+  const serverSync = useServerSync();
+  const serverSdk = useServerSDK();
+  const mobile = createMediaQuery("(max-width: 767px)");
 
-  const updater = useUpdaterAction()
+  const updater = useUpdaterAction();
 
   const dir = createMemo(() => {
-    if (!props.sessionID) return undefined
-    return serverSync().session.lineage.peek(props.sessionID)?.session.directory
-  })
+    if (!props.sessionID) return undefined;
+    return serverSync().session.lineage.peek(props.sessionID)?.session.directory;
+  });
   const accepting = createMemo(() => {
-    const value = dir()
-    if (!value || !props.sessionID) return false
-    return permission.isAutoAccepting(props.sessionID, value)
-  })
+    const value = dir();
+    if (!value || !props.sessionID) return false;
+    return permission.isAutoAccepting(props.sessionID, value);
+  });
 
   const toggleAccept = (checked: boolean) => {
-    const value = dir()
-    if (!value || !props.sessionID) return
+    const value = dir();
+    if (!value || !props.sessionID) return;
 
     if (checked) {
-      permission.enableAutoAccept(props.sessionID, value)
-      return
+      permission.enableAutoAccept(props.sessionID, value);
+      return;
     }
 
-    permission.disableAutoAccept(props.sessionID, value)
-  }
-  const desktop = createMemo(() => platform.platform === "desktop")
+    permission.disableAutoAccept(props.sessionID, value);
+  };
+  const desktop = createMemo(() => platform.platform === "desktop");
 
-  const themeOptions = createMemo<ThemeOption[]>(() => theme.ids().map((id) => ({ id, name: theme.name(id) })))
+  const themeOptions = createMemo<ThemeOption[]>(() =>
+    theme.ids().map((id) => ({ id, name: theme.name(id) })),
+  );
 
   const [shells] = createResource(
     () =>
@@ -127,77 +129,83 @@ export const SettingsGeneralV2: Component<{
         .then((res) => res.data ?? [])
         .catch(() => [] as ShellOption[]),
     { initialValue: [] as ShellOption[] },
-  )
+  );
 
   const [pinchZoom, { mutate: setPinchZoom }] = createResource(
     () => (desktop() && platform.getPinchZoomEnabled ? true : false),
     () => Promise.resolve(platform.getPinchZoomEnabled?.() ?? false).catch(() => false),
     { initialValue: false },
-  )
+  );
 
   onMount(() => {
-    void theme.loadThemes()
-  })
+    void theme.loadThemes();
+  });
 
-  const autoOption = { id: "auto", value: "", label: language.t("settings.general.row.shell.autoDefault") }
-  const currentShell = createMemo(() => serverSync().data.config.shell ?? "")
+  const autoOption = {
+    id: "auto",
+    value: "",
+    label: language.t("settings.general.row.shell.autoDefault"),
+  };
+  const currentShell = createMemo(() => serverSync().data.config.shell ?? "");
 
   const shellOptions = createMemo<ShellSelectOption[]>(() => {
-    const list = shells.latest
-    const current = serverSync().data.config.shell
+    const list = shells.latest;
+    const current = serverSync().data.config.shell;
 
-    const nameCounts = new Map<string, number>()
+    const nameCounts = new Map<string, number>();
     for (const s of list) {
-      nameCounts.set(s.name, (nameCounts.get(s.name) || 0) + 1)
+      nameCounts.set(s.name, (nameCounts.get(s.name) || 0) + 1);
     }
 
     const options = [
       autoOption,
       ...list.map((s) => {
-        const ambiguousName = (nameCounts.get(s.name) || 0) > 1
-        const text = ambiguousName ? s.path : s.name
-        const label = s.acceptable ? text : `${text} (${language.t("settings.general.row.shell.terminalOnly")})`
+        const ambiguousName = (nameCounts.get(s.name) || 0) > 1;
+        const text = ambiguousName ? s.path : s.name;
+        const label = s.acceptable
+          ? text
+          : `${text} (${language.t("settings.general.row.shell.terminalOnly")})`;
         return {
           id: s.path,
           // Prefer name over path - "bash" is much cleaner than the explicit full route even when it may change due to PATH.
           value: ambiguousName ? s.path : s.name,
           label,
-        }
+        };
       }),
-    ]
+    ];
 
     if (current && !options.some((o) => o.value === current)) {
-      options.push({ id: current, value: current, label: current })
+      options.push({ id: current, value: current, label: current });
     }
 
-    return options
-  })
+    return options;
+  });
 
   const onPinchZoomChange = (checked: boolean) => {
-    setPinchZoom(checked)
-    const update = platform.setPinchZoomEnabled?.(checked)
-    if (!update) return
-    void update.catch(() => setPinchZoom(!checked))
-  }
+    setPinchZoom(checked);
+    const update = platform.setPinchZoomEnabled?.(checked);
+    if (!update) return;
+    void update.catch(() => setPinchZoom(!checked));
+  };
 
   const colorSchemeOptions = createMemo((): { value: ColorScheme; label: string }[] => [
     { value: "system", label: language.t("theme.scheme.system") },
     { value: "light", label: language.t("theme.scheme.light") },
     { value: "dark", label: language.t("theme.scheme.dark") },
-  ])
+  ]);
 
   const languageOptions = createMemo(() =>
     language.locales.map((locale) => ({
       value: locale,
       label: language.label(locale),
     })),
-  )
+  );
 
-  const noneSound = { id: "none", label: "sound.option.none" } as const
-  const soundOptions = [noneSound, ...SOUND_OPTIONS]
-  const mono = () => monoInput(settings.appearance.font())
-  const sans = () => sansInput(settings.appearance.uiFont())
-  const terminal = () => terminalInput(settings.appearance.terminalFont())
+  const noneSound = { id: "none", label: "sound.option.none" } as const;
+  const soundOptions = [noneSound, ...SOUND_OPTIONS];
+  const mono = () => monoInput(settings.appearance.font());
+  const sans = () => sansInput(settings.appearance.uiFont());
+  const terminal = () => terminalInput(settings.appearance.terminalFont());
 
   const soundSelectProps = (
     enabled: () => boolean,
@@ -210,21 +218,21 @@ export const SettingsGeneralV2: Component<{
     value: (o: (typeof soundOptions)[number]) => o.id,
     label: (o: (typeof soundOptions)[number]) => language.t(o.label),
     onHighlight: (option: (typeof soundOptions)[number] | undefined) => {
-      if (!option) return
-      playDemoSound(option.id === "none" ? undefined : option.id)
+      if (!option) return;
+      playDemoSound(option.id === "none" ? undefined : option.id);
     },
     onSelect: (option: (typeof soundOptions)[number] | null) => {
-      if (!option) return
+      if (!option) return;
       if (option.id === "none") {
-        setEnabled(false)
-        stopDemoSound()
-        return
+        setEnabled(false);
+        stopDemoSound();
+        return;
       }
-      setEnabled(true)
-      set(option.id)
-      playDemoSound(option.id)
+      setEnabled(true);
+      set(option.id);
+      playDemoSound(option.id);
     },
-  })
+  });
 
   const GeneralSection = () => (
     <div class="settings-v2-section">
@@ -269,9 +277,9 @@ export const SettingsGeneralV2: Component<{
             value={(o) => o.id}
             label={(o) => o.label}
             onSelect={(option) => {
-              if (!option) return
-              if (option.value === currentShell()) return
-              serverSync().updateConfig({ shell: option.value })
+              if (!option) return;
+              if (option.value === currentShell()) return;
+              serverSync().updateConfig({ shell: option.value });
             }}
           />
         </SettingsRowV2>
@@ -320,11 +328,11 @@ export const SettingsGeneralV2: Component<{
             <Switch
               checked={settings.general.newLayoutDesigns()}
               onChange={(checked) => {
-                settings.general.setNewLayoutDesigns(checked)
-                if (checked) return
+                settings.general.setNewLayoutDesigns(checked);
+                if (checked) return;
                 void import("@/components/dialog-settings").then((module) => {
-                  dialog.show(() => <module.DialogSettings />)
-                })
+                  dialog.show(() => <module.DialogSettings />);
+                });
               }}
             />
           </div>
@@ -338,14 +346,16 @@ export const SettingsGeneralV2: Component<{
             <div data-action="settings-mobile-titlebar-bottom">
               <Switch
                 checked={settings.general.mobileTitlebarPosition() === "bottom"}
-                onChange={(checked) => settings.general.setMobileTitlebarPosition(checked ? "bottom" : "top")}
+                onChange={(checked) =>
+                  settings.general.setMobileTitlebarPosition(checked ? "bottom" : "top")
+                }
               />
             </div>
           </SettingsRowV2>
         </Show>
       </SettingsListV2>
     </div>
-  )
+  );
 
   const AdvancedSection = () => (
     <div class="settings-v2-section">
@@ -401,7 +411,7 @@ export const SettingsGeneralV2: Component<{
         </SettingsRowV2>
       </SettingsListV2>
     </div>
-  )
+  );
 
   const AppearanceSection = () => (
     <div class="settings-v2-section">
@@ -423,9 +433,9 @@ export const SettingsGeneralV2: Component<{
             label={(o) => o.label}
             onSelect={(option) => option && theme.setColorScheme(option.value)}
             onHighlight={(option) => {
-              if (!option) return
-              theme.previewColorScheme(option.value)
-              return () => theme.cancelPreview()
+              if (!option) return;
+              theme.previewColorScheme(option.value);
+              return () => theme.cancelPreview();
             }}
           />
         </SettingsRowV2>
@@ -451,13 +461,13 @@ export const SettingsGeneralV2: Component<{
             value={(o) => o.id}
             label={(o) => o.name}
             onSelect={(option) => {
-              if (!option) return
-              theme.setTheme(option.id)
+              if (!option) return;
+              theme.setTheme(option.id);
             }}
             onHighlight={(option) => {
-              if (!option) return
-              theme.previewTheme(option.id)
-              return () => theme.cancelPreview()
+              if (!option) return;
+              theme.previewTheme(option.id);
+              return () => theme.cancelPreview();
             }}
           />
         </SettingsRowV2>
@@ -529,11 +539,13 @@ export const SettingsGeneralV2: Component<{
         </SettingsRowV2>
       </SettingsListV2>
     </div>
-  )
+  );
 
   const NotificationsSection = () => (
     <div class="settings-v2-section">
-      <h3 class="settings-v2-section-title">{language.t("settings.general.section.notifications")}</h3>
+      <h3 class="settings-v2-section-title">
+        {language.t("settings.general.section.notifications")}
+      </h3>
 
       <SettingsListV2>
         <SettingsRowV2
@@ -573,7 +585,7 @@ export const SettingsGeneralV2: Component<{
         </SettingsRowV2>
       </SettingsListV2>
     </div>
-  )
+  );
 
   const SoundsSection = () => (
     <div class="settings-v2-section">
@@ -635,7 +647,7 @@ export const SettingsGeneralV2: Component<{
         </SettingsRowV2>
       </SettingsListV2>
     </div>
-  )
+  );
 
   const UpdatesSection = () => (
     <div class="settings-v2-section">
@@ -658,13 +670,18 @@ export const SettingsGeneralV2: Component<{
           title={language.t("settings.updates.row.check.title")}
           description={language.t("settings.updates.row.check.description")}
         >
-          <ButtonV2 size="normal" variant="neutral" disabled={!updater.action().run} onClick={updater.run}>
+          <ButtonV2
+            size="normal"
+            variant="neutral"
+            disabled={!updater.action().run}
+            onClick={updater.run}
+          >
             {language.t(updater.action().label)}
           </ButtonV2>
         </SettingsRowV2>
       </SettingsListV2>
     </div>
-  )
+  );
 
   // We can probably remove this, right?
   const DisplaySection = () => (
@@ -684,7 +701,7 @@ export const SettingsGeneralV2: Component<{
         </SettingsListV2>
       </div>
     </Show>
-  )
+  );
 
   return (
     <>
@@ -710,5 +727,5 @@ export const SettingsGeneralV2: Component<{
         <AdvancedSection />
       </div>
     </>
-  )
-}
+  );
+};

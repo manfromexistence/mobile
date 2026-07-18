@@ -138,7 +138,7 @@ describe("feature-triage integration", () => {
       await main(
         ["--owner", "x", "--repo", "y", "--ideia-dir", tmp, "--output", outPath],
         {},
-        deps
+        deps,
       ).catch((e) => {
         if (e.message !== "__EXIT__") throw e;
       });

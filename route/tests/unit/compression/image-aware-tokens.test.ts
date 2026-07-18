@@ -12,7 +12,7 @@ const DENSE =
   "\n" +
   Array.from(
     { length: 400 },
-    (_, i) => `const row_${i} = compute(${i * 17}, "${"v".repeat(80)}");`
+    (_, i) => `const row_${i} = compute(${i * 17}, "${"v".repeat(80)}");`,
   ).join("\n");
 
 const DENSE_CLAUDE_BODY = {
@@ -27,12 +27,12 @@ test("estimateCompressionTokens é image-aware: encolhe de verdade numa página 
   const result = await transformAnthropicMessages({ body: encoded, model: "claude-fable-5" });
   assert.ok(
     result.applied,
-    `omniglyph deveria ter convertido o corpo denso (reason=${result.reason})`
+    `omniglyph deveria ter convertido o corpo denso (reason=${result.reason})`,
   );
   const outBody = JSON.parse(new TextDecoder().decode(result.body)) as Record<string, unknown>;
   assert.ok(
     JSON.stringify(outBody).includes('"type":"image"'),
-    "saída deveria conter bloco de imagem"
+    "saída deveria conter bloco de imagem",
   );
 
   const naiveCharEstimate = Math.ceil(JSON.stringify(outBody).length / CHARS_PER_TOKEN);
@@ -40,20 +40,20 @@ test("estimateCompressionTokens é image-aware: encolhe de verdade numa página 
   const originalTextEstimate = estimateCompressionTokens(DENSE_CLAUDE_BODY);
 
   console.log(
-    `naive-char=${naiveCharEstimate} image-aware=${imageAwareEstimate} original-text=${originalTextEstimate}`
+    `naive-char=${naiveCharEstimate} image-aware=${imageAwareEstimate} original-text=${originalTextEstimate}`,
   );
 
   // O estimador ciente de imagem deve ser MUITO menor que o char-count ingênuo do
   // próprio base64 (prova que o base64 não é contado por char).
   assert.ok(
     imageAwareEstimate < naiveCharEstimate,
-    `esperado image-aware (${imageAwareEstimate}) < naive-char (${naiveCharEstimate})`
+    `esperado image-aware (${imageAwareEstimate}) < naive-char (${naiveCharEstimate})`,
   );
   // E deve representar encolhimento real frente ao texto original (não só frente ao
   // próprio char-count do PNG).
   assert.ok(
     imageAwareEstimate < originalTextEstimate,
-    `esperado image-aware (${imageAwareEstimate}) < original-text (${originalTextEstimate})`
+    `esperado image-aware (${imageAwareEstimate}) < original-text (${originalTextEstimate})`,
   );
 });
 

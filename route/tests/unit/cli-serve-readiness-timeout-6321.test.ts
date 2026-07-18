@@ -18,7 +18,7 @@ test("reportReadinessTimeout prints a diagnostic instead of staying silent (#632
     assert.equal(
       typeof reportReadinessTimeout,
       "function",
-      "serve.mjs must export a readiness-timeout diagnostic handler"
+      "serve.mjs must export a readiness-timeout diagnostic handler",
     );
 
     const fakeSupervisor = {
@@ -30,11 +30,11 @@ test("reportReadinessTimeout prints a diagnostic instead of staying silent (#632
     assert.notEqual(combined.trim(), "", "must not silently produce zero output on a timeout");
     assert.ok(
       combined.includes("did not respond") || combined.toLowerCase().includes("60s"),
-      `expected a clear readiness-timeout message, got:\n${combined}`
+      `expected a clear readiness-timeout message, got:\n${combined}`,
     );
     assert.ok(
       combined.includes("booting") && combined.includes("migrations"),
-      "must surface the buffered server output instead of discarding it"
+      "must surface the buffered server output instead of discarding it",
     );
   } finally {
     console.error = origErr;
@@ -53,7 +53,7 @@ test("ServerSupervisor.getRecentLog() exposes buffered output for readiness diag
   assert.equal(
     typeof supervisor.getRecentLog,
     "function",
-    "ServerSupervisor must expose getRecentLog() so callers can surface buffered output"
+    "ServerSupervisor must expose getRecentLog() so callers can surface buffered output",
   );
 
   // Simulate lines that arrived on the child's stdout/stderr before a readiness

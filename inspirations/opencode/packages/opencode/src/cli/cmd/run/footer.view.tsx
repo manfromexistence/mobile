@@ -8,10 +8,19 @@
 // All state comes from the parent RunFooter through SolidJS signals.
 // The view itself is stateless except for derived memos.
 /** @jsxImportSource @opentui/solid */
-import { useTerminalDimensions } from "@opentui/solid"
-import { For, Match, Show, Switch, createEffect, createMemo, createSignal, onCleanup } from "solid-js"
-import "opentui-spinner/solid"
-import { createColors, createFrames } from "@opencode-ai/tui/ui/spinner"
+import { useTerminalDimensions } from "@opentui/solid";
+import {
+  For,
+  Match,
+  Show,
+  Switch,
+  createEffect,
+  createMemo,
+  createSignal,
+  onCleanup,
+} from "solid-js";
+import "opentui-spinner/solid";
+import { createColors, createFrames } from "@opencode-ai/tui/ui/spinner";
 import {
   RUN_SUBAGENT_PANEL_ROWS,
   RunCommandMenuBody,
@@ -20,13 +29,13 @@ import {
   RunSkillSelectBody,
   RunSubagentSelectBody,
   RunVariantSelectBody,
-} from "./footer.command"
-import { FOOTER_MENU_ROWS, RunFooterMenu } from "./footer.menu"
-import { RunFooterSubagentBody } from "./footer.subagent"
-import { RunPromptBody, createPromptState } from "./footer.prompt"
-import { RunPermissionBody } from "./footer.permission"
-import { RunQuestionBody } from "./footer.question"
-import { footerWidthPolicy } from "./footer.width"
+} from "./footer.command";
+import { FOOTER_MENU_ROWS, RunFooterMenu } from "./footer.menu";
+import { RunFooterSubagentBody } from "./footer.subagent";
+import { RunPromptBody, createPromptState } from "./footer.prompt";
+import { RunPermissionBody } from "./footer.permission";
+import { RunQuestionBody } from "./footer.question";
+import { footerWidthPolicy } from "./footer.width";
 import {
   OPENCODE_BASE_MODE,
   formatKeyBindings,
@@ -34,7 +43,7 @@ import {
   useBindings,
   useKeymapSelector,
   type OpenTuiKeymap,
-} from "@opencode-ai/tui/keymap"
+} from "@opencode-ai/tui/keymap";
 import type {
   FooterPromptRoute,
   FooterQueuedPrompt,
@@ -52,9 +61,9 @@ import type {
   RunProvider,
   RunResource,
   RunTuiConfig,
-} from "./types"
-import type { RunTheme } from "./theme"
-import { modelInfo } from "./variant.shared"
+} from "./types";
+import type { RunTheme } from "./theme";
+import { modelInfo } from "./variant.shared";
 
 const EMPTY_BORDER = {
   topLeft: "",
@@ -68,56 +77,60 @@ const EMPTY_BORDER = {
   cross: "",
   leftT: "",
   rightT: "",
-}
+};
 
 type RunFooterViewProps = {
-  directory: string
-  findFiles: (query: string) => Promise<string[]>
-  agents: () => RunAgent[]
-  resources: () => RunResource[]
-  commands: () => RunCommand[] | undefined
-  providers: () => RunProvider[] | undefined
-  currentModel: () => RunInput["model"]
-  variants: () => string[]
-  currentVariant: () => string | undefined
-  state: () => FooterState
-  view?: () => FooterView
-  subagent?: () => FooterSubagentState
-  queuedPrompts?: () => FooterQueuedPrompt[]
-  theme: () => RunTheme
-  diffStyle?: RunDiffStyle
-  tuiConfig: RunTuiConfig
-  backgroundSubagents: boolean
-  history?: RunPrompt[]
-  agent: string
-  onSubmit: (input: RunPrompt) => boolean
-  onPermissionReply: (input: PermissionReply) => void | Promise<void>
-  onQuestionReply: (input: QuestionReply) => void | Promise<void>
-  onQuestionReject: (input: QuestionReject) => void | Promise<void>
-  onCycle: () => void
-  onInterrupt: () => boolean
-  onBackground?: () => void
-  onEditorOpen: (input: { value: string }) => Promise<string | undefined>
-  onInputClear: () => void
-  onExitRequest?: () => boolean
-  onRequestExit?: (fn: (() => boolean) | undefined) => void
-  onExit: () => void
-  onModelSelect: (model: NonNullable<RunInput["model"]>) => void
-  onVariantSelect: (variant: string | undefined) => void
-  onRows: (rows: number) => void
-  onLayout: (input: { route: FooterPromptRoute; autocomplete: boolean; subagentRows: number }) => void
-  onStatus: (text: string) => void
-  onSubagentSelect?: (sessionID: string | undefined) => void
-  onQueuedRemove: (messageID: string) => Promise<boolean>
-}
+  directory: string;
+  findFiles: (query: string) => Promise<string[]>;
+  agents: () => RunAgent[];
+  resources: () => RunResource[];
+  commands: () => RunCommand[] | undefined;
+  providers: () => RunProvider[] | undefined;
+  currentModel: () => RunInput["model"];
+  variants: () => string[];
+  currentVariant: () => string | undefined;
+  state: () => FooterState;
+  view?: () => FooterView;
+  subagent?: () => FooterSubagentState;
+  queuedPrompts?: () => FooterQueuedPrompt[];
+  theme: () => RunTheme;
+  diffStyle?: RunDiffStyle;
+  tuiConfig: RunTuiConfig;
+  backgroundSubagents: boolean;
+  history?: RunPrompt[];
+  agent: string;
+  onSubmit: (input: RunPrompt) => boolean;
+  onPermissionReply: (input: PermissionReply) => void | Promise<void>;
+  onQuestionReply: (input: QuestionReply) => void | Promise<void>;
+  onQuestionReject: (input: QuestionReject) => void | Promise<void>;
+  onCycle: () => void;
+  onInterrupt: () => boolean;
+  onBackground?: () => void;
+  onEditorOpen: (input: { value: string }) => Promise<string | undefined>;
+  onInputClear: () => void;
+  onExitRequest?: () => boolean;
+  onRequestExit?: (fn: (() => boolean) | undefined) => void;
+  onExit: () => void;
+  onModelSelect: (model: NonNullable<RunInput["model"]>) => void;
+  onVariantSelect: (variant: string | undefined) => void;
+  onRows: (rows: number) => void;
+  onLayout: (input: {
+    route: FooterPromptRoute;
+    autocomplete: boolean;
+    subagentRows: number;
+  }) => void;
+  onStatus: (text: string) => void;
+  onSubagentSelect?: (sessionID: string | undefined) => void;
+  onQueuedRemove: (messageID: string) => Promise<boolean>;
+};
 
-export { TEXTAREA_MIN_ROWS, TEXTAREA_MAX_ROWS } from "./footer.prompt"
+export { TEXTAREA_MIN_ROWS, TEXTAREA_MAX_ROWS } from "./footer.prompt";
 
 export function RunFooterView(props: RunFooterViewProps) {
-  const term = useTerminalDimensions()
-  const width = createMemo(() => term().width)
-  const responsive = createMemo(() => footerWidthPolicy(width()))
-  const active = createMemo<FooterView>(() => props.view?.() ?? { type: "prompt" })
+  const term = useTerminalDimensions();
+  const width = createMemo(() => term().width);
+  const responsive = createMemo(() => footerWidthPolicy(width()));
+  const active = createMemo<FooterView>(() => props.view?.() ?? { type: "prompt" });
   const subagent = createMemo<FooterSubagentState>(() => {
     return (
       props.subagent?.() ?? {
@@ -126,20 +139,26 @@ export function RunFooterView(props: RunFooterViewProps) {
         permissions: [],
         questions: [],
       }
-    )
-  })
-  const [route, setRoute] = createSignal<FooterPromptRoute>({ type: "composer" })
-  const [subagentMenuRows, setSubagentMenuRows] = createSignal(RUN_SUBAGENT_PANEL_ROWS)
-  const queuedPrompts = createMemo(() => props.queuedPrompts?.() ?? [])
-  const skills = createMemo(() => (props.commands() ?? []).filter((item) => item.source === "skill"))
-  const prompt = createMemo(() => active().type === "prompt" && route().type === "composer")
-  const selectingSubagent = createMemo(() => active().type === "prompt" && route().type === "subagent-menu")
-  const selectingQueued = createMemo(() => active().type === "prompt" && route().type === "queued-menu")
-  const inspecting = createMemo(() => active().type === "prompt" && route().type === "subagent")
-  const commanding = createMemo(() => active().type === "prompt" && route().type === "command")
-  const skilling = createMemo(() => active().type === "prompt" && route().type === "skill")
-  const modeling = createMemo(() => active().type === "prompt" && route().type === "model")
-  const varianting = createMemo(() => active().type === "prompt" && route().type === "variant")
+    );
+  });
+  const [route, setRoute] = createSignal<FooterPromptRoute>({ type: "composer" });
+  const [subagentMenuRows, setSubagentMenuRows] = createSignal(RUN_SUBAGENT_PANEL_ROWS);
+  const queuedPrompts = createMemo(() => props.queuedPrompts?.() ?? []);
+  const skills = createMemo(() =>
+    (props.commands() ?? []).filter((item) => item.source === "skill"),
+  );
+  const prompt = createMemo(() => active().type === "prompt" && route().type === "composer");
+  const selectingSubagent = createMemo(
+    () => active().type === "prompt" && route().type === "subagent-menu",
+  );
+  const selectingQueued = createMemo(
+    () => active().type === "prompt" && route().type === "queued-menu",
+  );
+  const inspecting = createMemo(() => active().type === "prompt" && route().type === "subagent");
+  const commanding = createMemo(() => active().type === "prompt" && route().type === "command");
+  const skilling = createMemo(() => active().type === "prompt" && route().type === "skill");
+  const modeling = createMemo(() => active().type === "prompt" && route().type === "model");
+  const varianting = createMemo(() => active().type === "prompt" && route().type === "variant");
   const panel = createMemo(
     () =>
       active().type === "permission" ||
@@ -150,33 +169,35 @@ export function RunFooterView(props: RunFooterViewProps) {
       skilling() ||
       modeling() ||
       varianting(),
-  )
+  );
   const selected = createMemo(() => {
-    const current = route()
-    return current.type === "subagent" ? current.sessionID : undefined
-  })
-  const tabs = createMemo(() => subagent().tabs)
-  const activeTabs = createMemo(() => tabs().filter((item) => item.status === "running"))
-  const selectedTab = createMemo(() => tabs().find((item) => item.sessionID === selected()))
+    const current = route();
+    return current.type === "subagent" ? current.sessionID : undefined;
+  });
+  const tabs = createMemo(() => subagent().tabs);
+  const activeTabs = createMemo(() => tabs().filter((item) => item.status === "running"));
+  const selectedTab = createMemo(() => tabs().find((item) => item.sessionID === selected()));
   const selectedIndex = createMemo(() => {
-    const sessionID = selected()
+    const sessionID = selected();
     if (!sessionID) {
-      return 0
+      return 0;
     }
 
-    return tabs().findIndex((item) => item.sessionID === sessionID) + 1
-  })
+    return tabs().findIndex((item) => item.sessionID === sessionID) + 1;
+  });
   const foregroundSubagents = createMemo(
     () => props.backgroundSubagents && activeTabs().some((item) => !item.background),
-  )
+  );
   const model = createMemo(() => {
-    const current = props.currentModel()
-    return current ? modelInfo(props.providers(), current) : { model: props.state().model, provider: undefined }
-  })
+    const current = props.currentModel();
+    return current
+      ? modelInfo(props.providers(), current)
+      : { model: props.state().model, provider: undefined };
+  });
   const detail = createMemo(() => {
-    const current = route()
-    return current.type === "subagent" ? subagent().details[current.sessionID] : undefined
-  })
+    const current = route();
+    return current.type === "subagent" ? subagent().details[current.sessionID] : undefined;
+  });
   const command = useKeymapSelector(
     (keymap: OpenTuiKeymap) =>
       formatKeySequence(
@@ -185,7 +206,7 @@ export function RunFooterView(props: RunFooterViewProps) {
           .get("command.palette.show")?.[0]?.sequence,
         props.tuiConfig,
       ) ?? "",
-  )
+  );
   const subagentShortcut = useKeymapSelector(
     (keymap: OpenTuiKeymap) =>
       formatKeySequence(
@@ -194,7 +215,7 @@ export function RunFooterView(props: RunFooterViewProps) {
           .get("session.child.first")?.[0]?.sequence,
         props.tuiConfig,
       ) ?? "",
-  )
+  );
   const queuedShortcut = useKeymapSelector(
     (keymap: OpenTuiKeymap) =>
       formatKeySequence(
@@ -203,7 +224,7 @@ export function RunFooterView(props: RunFooterViewProps) {
           .get("session.queued_prompts")?.[0]?.sequence,
         props.tuiConfig,
       ) ?? "",
-  )
+  );
   const backgroundShortcut = useKeymapSelector(
     (keymap: OpenTuiKeymap) =>
       formatKeySequence(
@@ -212,7 +233,7 @@ export function RunFooterView(props: RunFooterViewProps) {
           .get("session.background")?.[0]?.sequence,
         props.tuiConfig,
       ) ?? "",
-  )
+  );
   const interrupt = useKeymapSelector(
     (keymap: OpenTuiKeymap) =>
       formatKeySequence(
@@ -221,37 +242,40 @@ export function RunFooterView(props: RunFooterViewProps) {
           .get("session.interrupt")?.[0]?.sequence,
         props.tuiConfig,
       ) ?? "",
-  )
+  );
   const variantCycle = useKeymapSelector(
     (keymap: OpenTuiKeymap) =>
       formatKeyBindings(
-        keymap.getCommandBindings({ visibility: "registered", commands: ["variant.cycle"] }).get("variant.cycle"),
+        keymap
+          .getCommandBindings({ visibility: "registered", commands: ["variant.cycle"] })
+          .get("variant.cycle"),
         props.tuiConfig,
       ) ?? "",
-  )
+  );
   const clearShortcut = useKeymapSelector(
     (keymap: OpenTuiKeymap) =>
       formatKeySequence(
-        keymap.getCommandBindings({ visibility: "registered", commands: ["prompt.clear"] }).get("prompt.clear")?.[0]
-          ?.sequence,
+        keymap
+          .getCommandBindings({ visibility: "registered", commands: ["prompt.clear"] })
+          .get("prompt.clear")?.[0]?.sequence,
         props.tuiConfig,
       ) ?? "",
-  )
-  const busy = createMemo(() => props.state().phase === "running")
-  const armed = createMemo(() => props.state().interrupt > 0)
-  const exiting = createMemo(() => props.state().exit > 0)
-  const queue = createMemo(() => props.state().queue)
-  const usage = createMemo(() => props.state().usage)
+  );
+  const busy = createMemo(() => props.state().phase === "running");
+  const armed = createMemo(() => props.state().interrupt > 0);
+  const exiting = createMemo(() => props.state().exit > 0);
+  const queue = createMemo(() => props.state().queue);
+  const usage = createMemo(() => props.state().usage);
   const interruptLabel = createMemo(() => {
     if (!interrupt()) {
-      return
+      return;
     }
 
-    return interrupt() === "escape" ? "esc" : interrupt()
-  })
-  const runTheme = createMemo(() => props.theme())
-  const theme = createMemo(() => runTheme().footer)
-  const block = createMemo(() => runTheme().block)
+    return interrupt() === "escape" ? "esc" : interrupt();
+  });
+  const runTheme = createMemo(() => props.theme());
+  const theme = createMemo(() => runTheme().footer);
+  const block = createMemo(() => runTheme().block);
   const spin = createMemo(() => {
     return {
       frames: createFrames({
@@ -266,94 +290,96 @@ export function RunFooterView(props: RunFooterViewProps) {
         inactiveFactor: 0.6,
         minAlpha: 0.3,
       }),
-    }
-  })
+    };
+  });
   const permission = createMemo<Extract<FooterView, { type: "permission" }> | undefined>(() => {
-    const view = active()
-    return view.type === "permission" ? view : undefined
-  })
+    const view = active();
+    return view.type === "permission" ? view : undefined;
+  });
   const question = createMemo<Extract<FooterView, { type: "question" }> | undefined>(() => {
-    const view = active()
-    return view.type === "question" ? view : undefined
-  })
+    const view = active();
+    return view.type === "question" ? view : undefined;
+  });
   const promptView = createMemo(() => {
     if (active().type !== "prompt") {
-      return active().type
+      return active().type;
     }
 
-    const current = route()
-    return current.type === "composer" ? "prompt" : current.type
-  })
+    const current = route();
+    return current.type === "composer" ? "prompt" : current.type;
+  });
 
   const openCommand = () => {
-    setRoute({ type: "command" })
-    props.onSubagentSelect?.(undefined)
-  }
+    setRoute({ type: "command" });
+    props.onSubagentSelect?.(undefined);
+  };
 
   const openModel = () => {
-    setRoute({ type: "model" })
-    props.onSubagentSelect?.(undefined)
-  }
+    setRoute({ type: "model" });
+    props.onSubagentSelect?.(undefined);
+  };
 
   const openSkillMenu = () => {
     if (props.commands() && skills().length === 0) {
-      return
+      return;
     }
 
-    setRoute({ type: "skill" })
-    props.onSubagentSelect?.(undefined)
-  }
+    setRoute({ type: "skill" });
+    props.onSubagentSelect?.(undefined);
+  };
 
   const openVariant = () => {
-    setRoute({ type: "variant" })
-    props.onSubagentSelect?.(undefined)
-  }
+    setRoute({ type: "variant" });
+    props.onSubagentSelect?.(undefined);
+  };
 
   const openSubagentMenu = () => {
     if (tabs().length === 0) {
-      return
+      return;
     }
 
-    setRoute({ type: "subagent-menu" })
-    props.onSubagentSelect?.(undefined)
-  }
+    setRoute({ type: "subagent-menu" });
+    props.onSubagentSelect?.(undefined);
+  };
 
   const openQueuedMenu = () => {
-    if (queuedPrompts().length === 0) return
-    setRoute({ type: "queued-menu" })
-    props.onSubagentSelect?.(undefined)
-  }
+    if (queuedPrompts().length === 0) return;
+    setRoute({ type: "queued-menu" });
+    props.onSubagentSelect?.(undefined);
+  };
 
   const closePanel = () => {
-    setRoute({ type: "composer" })
-  }
+    setRoute({ type: "composer" });
+  };
 
   const openTab = (sessionID: string) => {
-    setRoute({ type: "subagent", sessionID })
-    props.onSubagentSelect?.(sessionID)
-  }
+    setRoute({ type: "subagent", sessionID });
+    props.onSubagentSelect?.(sessionID);
+  };
 
   const closeTab = () => {
-    setRoute({ type: "composer" })
-    props.onSubagentSelect?.(undefined)
-  }
+    setRoute({ type: "composer" });
+    props.onSubagentSelect?.(undefined);
+  };
 
   const cycleTab = (dir: -1 | 1) => {
     if (tabs().length === 0) {
-      return
+      return;
     }
 
-    const routeState = route()
+    const routeState = route();
     const current =
-      routeState.type === "subagent" ? tabs().findIndex((item) => item.sessionID === routeState.sessionID) : -1
-    const index = current === -1 ? 0 : (current + dir + tabs().length) % tabs().length
-    const next = tabs()[index]
+      routeState.type === "subagent"
+        ? tabs().findIndex((item) => item.sessionID === routeState.sessionID)
+        : -1;
+    const index = current === -1 ? 0 : (current + dir + tabs().length) % tabs().length;
+    const next = tabs()[index];
     if (!next) {
-      return
+      return;
     }
 
-    openTab(next.sessionID)
-  }
+    openTab(next.sessionID);
+  };
   const composer = createPromptState({
     directory: props.directory,
     findFiles: props.findFiles,
@@ -377,54 +403,54 @@ export function RunFooterView(props: RunFooterViewProps) {
     onSkillMenu: openSkillMenu,
     onRows: props.onRows,
     onStatus: props.onStatus,
-  })
-  const shell = createMemo(() => prompt() && composer.shell())
-  const menu = createMemo(() => prompt() && composer.visible())
-  const stateStatus = createMemo(() => props.state().status.trim())
+  });
+  const shell = createMemo(() => prompt() && composer.shell());
+  const menu = createMemo(() => prompt() && composer.visible());
+  const stateStatus = createMemo(() => props.state().status.trim());
   const modeLabel = createMemo(() => {
     if (exiting()) {
-      return "EXIT"
+      return "EXIT";
     }
 
-    return shell() ? "SHELL" : "BUILD"
-  })
+    return shell() ? "SHELL" : "BUILD";
+  });
   const modeColor = createMemo(() => {
     if (exiting()) {
-      return theme().error
+      return theme().error;
     }
 
     if (shell()) {
-      return theme().warning
+      return theme().warning;
     }
 
-    return theme().highlight
-  })
+    return theme().highlight;
+  });
   const statusText = createMemo(() => {
     if (exiting()) {
-      return `Press ${clearShortcut() || "ctrl+c"} again to exit`
+      return `Press ${clearShortcut() || "ctrl+c"} again to exit`;
     }
 
     if (busy()) {
-      return armed() ? "again to interrupt" : "interrupt"
+      return armed() ? "again to interrupt" : "interrupt";
     }
 
     if (stateStatus().length > 0) {
-      return stateStatus()
+      return stateStatus();
     }
 
-    return shell() ? "Shell mode" : ""
-  })
+    return shell() ? "Shell mode" : "";
+  });
   const activityMeta = createMemo(() => {
     if (!responsive().statusline.showActivityMeta || usage().length === 0) {
-      return ""
+      return "";
     }
 
-    return usage()
-  })
+    return usage();
+  });
   const modelStatus = createMemo(() => {
-    const current = props.currentModel()
+    const current = props.currentModel();
     if (!prompt() || shell() || !current) {
-      return
+      return;
     }
 
     return {
@@ -432,68 +458,70 @@ export function RunFooterView(props: RunFooterViewProps) {
       variant: props.currentVariant(),
       provider: undefined,
       // Prefer without provider, but keep it on the shared width policy if we add it back.
-    }
-  })
+    };
+  });
   const statusColor = createMemo(() => {
     if (exiting()) {
-      return theme().error
+      return theme().error;
     }
 
     if (armed()) {
-      return theme().highlight
+      return theme().highlight;
     }
 
     if (busy() || stateStatus().length > 0) {
-      return theme().text
+      return theme().text;
     }
 
-    return theme().muted
-  })
-  const statuslineBackground = createMemo(() => theme().status)
-  const hasActivityMeta = createMemo(() => activityMeta().length > 0)
-  const hasModelStatus = createMemo(() => responsive().statusline.showModel && Boolean(modelStatus()))
+    return theme().muted;
+  });
+  const statuslineBackground = createMemo(() => theme().status);
+  const hasActivityMeta = createMemo(() => activityMeta().length > 0);
+  const hasModelStatus = createMemo(
+    () => responsive().statusline.showModel && Boolean(modelStatus()),
+  );
   const contextHints = createMemo(() => {
     if (!prompt() || shell() || !responsive().statusline.showContextHints) {
-      return []
+      return [];
     }
 
-    const items: Array<{ kind: string; key: string; label: string }> = []
+    const items: Array<{ kind: string; key: string; label: string }> = [];
     if (foregroundSubagents() && backgroundShortcut()) {
-      items.push({ kind: "background", key: backgroundShortcut(), label: "background" })
+      items.push({ kind: "background", key: backgroundShortcut(), label: "background" });
     }
     if (queuedPrompts().length > 0 && queuedShortcut()) {
-      items.push({ kind: "queued", key: queuedShortcut(), label: `${queue()} queued` })
+      items.push({ kind: "queued", key: queuedShortcut(), label: `${queue()} queued` });
     }
     if (activeTabs().length > 0 && subagentShortcut()) {
-      items.push({ kind: "subagents", key: subagentShortcut(), label: "subagents" })
+      items.push({ kind: "subagents", key: subagentShortcut(), label: "subagents" });
     }
 
-    const limit = responsive().statusline.contextHintLimit
-    return limit === undefined ? items : items.slice(0, limit)
-  })
-  const hasContextHints = createMemo(() => contextHints().length > 0)
+    const limit = responsive().statusline.contextHintLimit;
+    return limit === undefined ? items : items.slice(0, limit);
+  });
+  const hasContextHints = createMemo(() => contextHints().length > 0);
   const commandHint = createMemo(() => {
     if (!prompt() || !responsive().statusline.showCommandHint) {
-      return
+      return;
     }
 
     if (shell()) {
-      return { key: "esc", label: "normal" }
+      return { key: "esc", label: "normal" };
     }
 
     if (command()) {
-      return { key: command(), label: "cmd" }
+      return { key: command(), label: "cmd" };
     }
-  })
-  const sectionSeparator = () => <span style={{ fg: theme().muted }}>· </span>
+  });
+  const sectionSeparator = () => <span style={{ fg: theme().muted }}>· </span>;
 
   createEffect(() => {
-    props.onRequestExit?.(composer.requestExit)
-  })
+    props.onRequestExit?.(composer.requestExit);
+  });
 
   onCleanup(() => {
-    props.onRequestExit?.(undefined)
-  })
+    props.onRequestExit?.(undefined);
+  });
 
   useBindings(() => ({
     mode: OPENCODE_BASE_MODE,
@@ -516,7 +544,7 @@ export function RunFooterView(props: RunFooterViewProps) {
       ...props.tuiConfig.keybinds.get("command.palette.show"),
       ...props.tuiConfig.keybinds.get("variant.cycle"),
     ],
-  }))
+  }));
 
   useBindings(() => ({
     mode: OPENCODE_BASE_MODE,
@@ -531,7 +559,7 @@ export function RunFooterView(props: RunFooterViewProps) {
       },
     ],
     bindings: props.tuiConfig.keybinds.get("session.background"),
-  }))
+  }));
 
   useBindings(() => ({
     mode: OPENCODE_BASE_MODE,
@@ -545,11 +573,12 @@ export function RunFooterView(props: RunFooterViewProps) {
       },
     ],
     bindings: props.tuiConfig.keybinds.get("session.child.first"),
-  }))
+  }));
 
   useBindings(() => ({
     mode: OPENCODE_BASE_MODE,
-    enabled: active().type === "prompt" && route().type === "composer" && queuedPrompts().length > 0,
+    enabled:
+      active().type === "prompt" && route().type === "composer" && queuedPrompts().length > 0,
     commands: [
       {
         name: "session.queued_prompts",
@@ -559,44 +588,44 @@ export function RunFooterView(props: RunFooterViewProps) {
       },
     ],
     bindings: props.tuiConfig.keybinds.get("session.queued_prompts"),
-  }))
+  }));
 
   createEffect(() => {
-    const current = route()
+    const current = route();
     if (current.type !== "subagent") {
-      return
+      return;
     }
 
     if (tabs().some((item) => item.sessionID === current.sessionID)) {
-      return
+      return;
     }
 
-    closeTab()
-  })
+    closeTab();
+  });
 
   createEffect(() => {
     if (route().type !== "subagent-menu") {
-      return
+      return;
     }
 
     if (tabs().length > 0) {
-      return
+      return;
     }
 
-    closePanel()
-  })
+    closePanel();
+  });
 
   createEffect(() => {
-    if (route().type !== "queued-menu" || queuedPrompts().length > 0) return
-    closePanel()
-  })
+    if (route().type !== "queued-menu" || queuedPrompts().length > 0) return;
+    closePanel();
+  });
 
   createEffect(() => {
     if (active().type === "prompt") {
-      return
+      return;
     }
 
-    const current = route()
+    const current = route();
     if (
       current.type !== "command" &&
       current.type !== "skill" &&
@@ -605,19 +634,19 @@ export function RunFooterView(props: RunFooterViewProps) {
       current.type !== "queued-menu" &&
       current.type !== "subagent-menu"
     ) {
-      return
+      return;
     }
 
-    closePanel()
-  })
+    closePanel();
+  });
 
   createEffect(() => {
     props.onLayout({
       route: route(),
       autocomplete: menu(),
       subagentRows: subagentMenuRows(),
-    })
-  })
+    });
+  });
 
   return (
     <box
@@ -693,9 +722,9 @@ export function RunFooterView(props: RunFooterViewProps) {
                             onClose={closePanel}
                             onDelete={(item) => void props.onQueuedRemove(item.messageID)}
                             onEdit={async (item) => {
-                              if (!(await props.onQueuedRemove(item.messageID))) return
-                              closePanel()
-                              queueMicrotask(() => composer.replacePrompt(item.prompt))
+                              if (!(await props.onQueuedRemove(item.messageID))) return;
+                              closePanel();
+                              queueMicrotask(() => composer.replacePrompt(item.prompt));
                             }}
                             onRows={setSubagentMenuRows}
                           />
@@ -711,24 +740,24 @@ export function RunFooterView(props: RunFooterViewProps) {
                             onClose={closePanel}
                             onModel={openModel}
                             onEditor={() => {
-                              closePanel()
-                              void composer.openEditor()
+                              closePanel();
+                              void composer.openEditor();
                             }}
                             onSkill={openSkillMenu}
                             onSubagent={openSubagentMenu}
                             onQueued={openQueuedMenu}
                             onVariant={openVariant}
                             onVariantCycle={() => {
-                              props.onCycle()
-                              closePanel()
+                              props.onCycle();
+                              closePanel();
                             }}
                             onCommand={(name) => {
-                              composer.submitText(`/${name}`)
-                              closePanel()
+                              composer.submitText(`/${name}`);
+                              closePanel();
                             }}
                             onNew={() => {
-                              composer.submitText("/new")
-                              closePanel()
+                              composer.submitText("/new");
+                              closePanel();
                             }}
                             onExit={props.onExit}
                           />
@@ -746,8 +775,8 @@ export function RunFooterView(props: RunFooterViewProps) {
                                   name,
                                   arguments: "",
                                 },
-                              })
-                              closePanel()
+                              });
+                              closePanel();
                             }}
                           />
                         </Match>
@@ -758,8 +787,8 @@ export function RunFooterView(props: RunFooterViewProps) {
                             current={props.currentModel}
                             onClose={closePanel}
                             onSelect={(model) => {
-                              props.onModelSelect(model)
-                              closePanel()
+                              props.onModelSelect(model);
+                              closePanel();
                             }}
                           />
                         </Match>
@@ -770,8 +799,8 @@ export function RunFooterView(props: RunFooterViewProps) {
                             current={props.currentVariant}
                             onClose={closePanel}
                             onSelect={(variant) => {
-                              props.onVariantSelect(variant)
-                              closePanel()
+                              props.onVariantSelect(variant);
+                              closePanel();
                             }}
                           />
                         </Match>
@@ -821,7 +850,12 @@ export function RunFooterView(props: RunFooterViewProps) {
                 flexShrink={0}
                 backgroundColor={statuslineBackground()}
               >
-                <box paddingLeft={1} paddingRight={1} backgroundColor={theme().statusAccent} flexShrink={0}>
+                <box
+                  paddingLeft={1}
+                  paddingRight={1}
+                  backgroundColor={theme().statusAccent}
+                  flexShrink={0}
+                >
                   <text wrapMode="none" truncate>
                     <span style={{ fg: modeColor(), bold: true }}>{modeLabel()}</span>
                   </text>
@@ -846,7 +880,11 @@ export function RunFooterView(props: RunFooterViewProps) {
                   <text fg={statusColor()} wrapMode="none" truncate flexGrow={1} flexShrink={1}>
                     <Show when={busy() && !exiting()} fallback={statusText()}>
                       <Show when={interruptLabel()}>
-                        {(label) => <span style={{ fg: armed() ? statusColor() : theme().muted }}>{label()} </span>}
+                        {(label) => (
+                          <span style={{ fg: armed() ? statusColor() : theme().muted }}>
+                            {label()}{" "}
+                          </span>
+                        )}
                       </Show>
                       {statusText()}
                     </Show>
@@ -883,9 +921,19 @@ export function RunFooterView(props: RunFooterViewProps) {
 
                 <For each={contextHints()}>
                   {(hint, index) => (
-                    <box paddingRight={1} backgroundColor="transparent" flexShrink={0} maxWidth={24}>
+                    <box
+                      paddingRight={1}
+                      backgroundColor="transparent"
+                      flexShrink={0}
+                      maxWidth={24}
+                    >
                       <text fg={theme().text} wrapMode="none" truncate>
-                        <Show when={index() > 0 || ((hasActivityMeta() || hasModelStatus()) && index() === 0)}>
+                        <Show
+                          when={
+                            index() > 0 ||
+                            ((hasActivityMeta() || hasModelStatus()) && index() === 0)
+                          }
+                        >
                           {sectionSeparator()}
                         </Show>
                         <span style={{ fg: theme().text }}>{hint.key}</span>{" "}
@@ -897,7 +945,12 @@ export function RunFooterView(props: RunFooterViewProps) {
 
                 <Show when={commandHint()}>
                   {(hint) => (
-                    <box paddingRight={1} backgroundColor="transparent" flexShrink={0} maxWidth={18}>
+                    <box
+                      paddingRight={1}
+                      backgroundColor="transparent"
+                      flexShrink={0}
+                      maxWidth={18}
+                    >
                       <text fg={theme().text} wrapMode="none" truncate>
                         <Show when={hasActivityMeta() || hasModelStatus() || hasContextHints()}>
                           {sectionSeparator()}
@@ -939,5 +992,5 @@ export function RunFooterView(props: RunFooterViewProps) {
         </box>
       </Show>
     </box>
-  )
+  );
 }

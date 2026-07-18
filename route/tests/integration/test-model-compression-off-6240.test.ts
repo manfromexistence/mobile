@@ -71,7 +71,7 @@ async function runChatCore(opts: {
         choices: [{ message: { role: "assistant", content: "ok" } }],
         usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -144,14 +144,14 @@ test("chatCore: x-omniroute-compression: off suppresses Output Styles injection 
   const testModelFirstMessage = testModelBody?.messages?.[0];
   assert.ok(
     !testModelFirstMessage || testModelFirstMessage.role !== "system",
-    "Test-model request (compression:off) must not receive an injected Output Styles system message"
+    "Test-model request (compression:off) must not receive an injected Output Styles system message",
   );
   const anyMessageHasMarker = (testModelBody?.messages ?? []).some((m) =>
-    (m?.content ?? "").includes("OmniRoute Output Styles")
+    (m?.content ?? "").includes("OmniRoute Output Styles"),
   );
   assert.equal(
     anyMessageHasMarker,
     false,
-    "No message in the compression:off request should carry the Output Styles marker"
+    "No message in the compression:off request should carry the Output Styles marker",
   );
 });

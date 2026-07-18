@@ -46,22 +46,19 @@ test.describe("Group B — Quota Share Pools", () => {
   });
 
   test("quota-share page exists and returns 200", async ({ page }) => {
-    const response = await page.goto(
-      "http://localhost:20128/dashboard/costs/quota-share",
-      { waitUntil: "domcontentloaded" }
-    );
+    const response = await page.goto("http://localhost:20128/dashboard/costs/quota-share", {
+      waitUntil: "domcontentloaded",
+    });
     expect(response?.status()).not.toBe(404);
     expect(response?.status()).not.toBe(500);
   });
 
-  test("quota-share page renders QuotaConceptCard or pool list", async ({
-    page,
-  }) => {
+  test("quota-share page renders QuotaConceptCard or pool list", async ({ page }) => {
     await gotoDashboardRoute(page, "/dashboard/costs/quota-share");
 
     // Either the concept card (empty state) or a pool list should be visible
     const conceptCard = page.locator(
-      "[data-testid='quota-concept-card'], [class*='QuotaConceptCard'], h2, h3"
+      "[data-testid='quota-concept-card'], [class*='QuotaConceptCard'], h2, h3",
     );
     await expect(conceptCard.first()).toBeVisible({ timeout: 15000 });
   });

@@ -135,7 +135,7 @@ export function registerBatches(program) {
         const val = v.slice(eq + 1);
         return { ...prev, [k]: val };
       },
-      {}
+      {},
     )
     .action(async (opts, cmd) => {
       const body = {

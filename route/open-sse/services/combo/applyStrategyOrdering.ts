@@ -38,7 +38,7 @@ export interface ApplyStrategyOrderingDeps {
 export async function applyStrategyOrdering(
   strategy: string,
   initialOrderedTargets: ResolvedComboTarget[],
-  deps: ApplyStrategyOrderingDeps
+  deps: ApplyStrategyOrderingDeps,
 ): Promise<ResolvedComboTarget[]> {
   const { combo, config, body, log, apiKeyAllowedConnections } = deps;
   let orderedTargets = initialOrderedTargets;
@@ -56,7 +56,7 @@ export async function applyStrategyOrdering(
         let lkgpIndex = -1;
         if (connId) {
           lkgpIndex = orderedTargets.findIndex(
-            (target) => target.provider === providerName && target.connectionId === connId
+            (target) => target.provider === providerName && target.connectionId === connId,
           );
         }
         if (lkgpIndex < 0) {
@@ -72,7 +72,7 @@ export async function applyStrategyOrdering(
               // unchanged for the common case; this only avoids the
               // crash when the field is unexpectedly non-string.
               (typeof target.modelStr === "string" &&
-                target.modelStr.startsWith(`${providerName}/`))
+                target.modelStr.startsWith(`${providerName}/`)),
           );
         }
 
@@ -81,12 +81,12 @@ export async function applyStrategyOrdering(
           orderedTargets.unshift(lkgpTarget);
           log.info(
             "COMBO",
-            `[LKGP] Prioritizing last known good provider ${providerName}${connId ? ` (account ${connId})` : ""} for combo "${combo.name}"`
+            `[LKGP] Prioritizing last known good provider ${providerName}${connId ? ` (account ${connId})` : ""} for combo "${combo.name}"`,
           );
         } else if (lkgpIndex === 0) {
           log.debug?.(
             "COMBO",
-            `[LKGP] Last known good provider ${providerName}${connId ? ` (account ${connId})` : ""} already first for combo "${combo.name}"`
+            `[LKGP] Last known good provider ${providerName}${connId ? ` (account ${connId})` : ""} already first for combo "${combo.name}"`,
           );
         }
       }
@@ -96,7 +96,7 @@ export async function applyStrategyOrdering(
   } else if (strategy === "strict-random") {
     const selectedExecutionKey = await getNextFromDeck(
       `combo:${combo.name}`,
-      orderedTargets.map((target) => target.executionKey)
+      orderedTargets.map((target) => target.executionKey),
     );
     const selectedTarget =
       orderedTargets.find((target) => target.executionKey === selectedExecutionKey) || null;
@@ -105,14 +105,14 @@ export async function applyStrategyOrdering(
     // to the same top-priority model — a persistently-failing model was retried
     // on essentially every request and fallback load never spread across peers.
     const rest = fisherYatesShuffle(
-      orderedTargets.filter((target) => target.executionKey !== selectedExecutionKey)
+      orderedTargets.filter((target) => target.executionKey !== selectedExecutionKey),
     );
     orderedTargets = [selectedTarget, ...rest].filter(
-      (target): target is ResolvedComboTarget => target !== null
+      (target): target is ResolvedComboTarget => target !== null,
     );
     log.info(
       "COMBO",
-      `Strict-random deck: ${selectedExecutionKey} selected (${orderedTargets.length} targets)`
+      `Strict-random deck: ${selectedExecutionKey} selected (${orderedTargets.length} targets)`,
     );
   } else if (strategy === "random") {
     orderedTargets = fisherYatesShuffle([...orderedTargets]);
@@ -120,7 +120,7 @@ export async function applyStrategyOrdering(
   } else if (strategy === "fill-first") {
     log.info(
       "COMBO",
-      `Fill-first ordering: preserving priority order (${orderedTargets.length} targets)`
+      `Fill-first ordering: preserving priority order (${orderedTargets.length} targets)`,
     );
   } else if (strategy === "p2c") {
     orderedTargets = orderTargetsByPowerOfTwoChoices(orderedTargets, combo.name);
@@ -144,15 +144,15 @@ export async function applyStrategyOrdering(
                 }>)
               : undefined,
             model: typeof body?.model === "string" ? body.model : undefined,
-          }
+          },
         );
         if (manifestHint.strategyModifier === "require-premium") {
           const eligible = orderedTargets.filter(
             (t) =>
               t.kind !== "model" ||
               manifestHint.eligibleTargets.some(
-                (e) => e.provider === t.provider && e.modelStr === t.modelStr
-              )
+                (e) => e.provider === t.provider && e.modelStr === t.modelStr,
+              ),
           );
           if (eligible.length > 0) orderedTargets = eligible;
         }
@@ -162,7 +162,7 @@ export async function applyStrategyOrdering(
             specificityLevel: manifestHint.specificityLevel,
             score: manifestHint.specificity.score,
           },
-          "manifest routing applied"
+          "manifest routing applied",
         );
       } catch (err) {
         log.warn({ err }, "manifest routing failed, falling back to standard strategy");
@@ -175,11 +175,11 @@ export async function applyStrategyOrdering(
       combo.name,
       config,
       log,
-      apiKeyAllowedConnections
+      apiKeyAllowedConnections,
     );
     log.info(
       "COMBO",
-      `Reset-aware ordering: ${orderedTargets[0]?.modelStr}${orderedTargets[0]?.connectionId ? ` (${orderedTargets[0].connectionId})` : ""} first`
+      `Reset-aware ordering: ${orderedTargets[0]?.modelStr}${orderedTargets[0]?.connectionId ? ` (${orderedTargets[0].connectionId})` : ""} first`,
     );
   } else if (strategy === "reset-window") {
     orderedTargets = await orderTargetsByResetWindow(
@@ -187,11 +187,11 @@ export async function applyStrategyOrdering(
       combo.name,
       config,
       log,
-      apiKeyAllowedConnections
+      apiKeyAllowedConnections,
     );
     log.info(
       "COMBO",
-      `Reset-window ordering: ${orderedTargets[0]?.modelStr}${orderedTargets[0]?.connectionId ? ` (${orderedTargets[0].connectionId})` : ""} first`
+      `Reset-window ordering: ${orderedTargets[0]?.modelStr}${orderedTargets[0]?.connectionId ? ` (${orderedTargets[0].connectionId})` : ""} first`,
     );
   } else if (strategy === "context-optimized") {
     orderedTargets = sortTargetsByContextSize(orderedTargets);
@@ -201,11 +201,11 @@ export async function applyStrategyOrdering(
       orderedTargets,
       combo.name,
       log,
-      apiKeyAllowedConnections
+      apiKeyAllowedConnections,
     );
     log.info(
       "COMBO",
-      `Headroom ordering: ${orderedTargets[0]?.modelStr}${orderedTargets[0]?.connectionId ? ` (${orderedTargets[0].connectionId})` : ""} has most free capacity`
+      `Headroom ordering: ${orderedTargets[0]?.modelStr}${orderedTargets[0]?.connectionId ? ` (${orderedTargets[0].connectionId})` : ""} has most free capacity`,
     );
   } else if (strategy === "quota-share") {
     // Internal quota-share combos (qtSd/): delegate to the dedicated module (DRR +
@@ -218,7 +218,7 @@ export async function applyStrategyOrdering(
     }).orderedTargets;
     log.info(
       "COMBO",
-      `Quota-share ordering: ${orderedTargets[0]?.modelStr}${orderedTargets[0]?.connectionId ? ` (${orderedTargets[0].connectionId})` : ""} selected (DRR+P2C)`
+      `Quota-share ordering: ${orderedTargets[0]?.modelStr}${orderedTargets[0]?.connectionId ? ` (${orderedTargets[0].connectionId})` : ""} selected (DRR+P2C)`,
     );
   }
 

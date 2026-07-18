@@ -97,7 +97,7 @@ test("omniroute_github_skills_install: error path never leaks a stack trace", as
     if (r.error) {
       assert.ok(
         !r.error.match(/\bat \/|\bat file:\/\//),
-        `Error message must not contain a stack trace: "${r.error}"`
+        `Error message must not contain a stack trace: "${r.error}"`,
       );
     }
   }

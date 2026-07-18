@@ -106,7 +106,7 @@ export function useCommandCodeAuth({
         return false;
       }
     },
-    [fetchConnections, handleCloseAddApiKeyModal, notify]
+    [fetchConnections, handleCloseAddApiKeyModal, notify],
   );
 
   const handleStartCommandCodeAuth = useCallback(async () => {
@@ -195,7 +195,7 @@ export function useCommandCodeAuth({
         try {
           const statusRes = await fetch(
             `/api/providers/command-code/auth/status?state=${encodeURIComponent(data.state)}`,
-            { method: "GET", cache: "no-store" }
+            { method: "GET", cache: "no-store" },
           );
           const statusData = await statusRes.json().catch(() => ({}));
           const status = String(statusData.status || statusData.state || statusData.phase || "")
@@ -241,7 +241,7 @@ export function useCommandCodeAuth({
               data.state,
               statusData.connectionId,
               statusData.name,
-              statusData.setDefault
+              statusData.setDefault,
             );
             return;
           }

@@ -1,27 +1,30 @@
 // @ts-nocheck
-import { createStore } from "solid-js/store"
-import type { Todo } from "@opencode-ai/sdk/v2"
-import { createPromptState } from "@/context/prompt"
-import { SessionComposerRegion, createSessionComposerRegionController } from "@/pages/session/composer"
-import { createPromptInputHistory, PromptInput } from "./prompt-input"
+import { createStore } from "solid-js/store";
+import type { Todo } from "@opencode-ai/sdk/v2";
+import { createPromptState } from "@/context/prompt";
+import {
+  SessionComposerRegion,
+  createSessionComposerRegionController,
+} from "@/pages/session/composer";
+import { createPromptInputHistory, PromptInput } from "./prompt-input";
 
 function createPromptInputStoryRuntime() {
-  const state = createPromptState()
+  const state = createPromptState();
   return {
     state,
     history: createPromptInputHistory(),
     submission: {
       abort() {},
       handleSubmit(event: Event) {
-        event.preventDefault()
-        state.reset()
+        event.preventDefault();
+        state.reset();
       },
     },
-  }
+  };
 }
 
 function PromptInputExample() {
-  const input = createPromptInputStoryRuntime()
+  const input = createPromptInputStoryRuntime();
   const [controls, setControls] = createStore({
     agent: "build",
     variant: undefined as string | undefined,
@@ -29,21 +32,25 @@ function PromptInputExample() {
     tabs: [] as string[],
     activeTab: undefined as string | undefined,
     reviewOpen: false,
-  })
+  });
   const model = {
-    current: () => ({ id: "claude-3-7-sonnet", name: "Claude 3.7 Sonnet", provider: { id: "anthropic" } }),
+    current: () => ({
+      id: "claude-3-7-sonnet",
+      name: "Claude 3.7 Sonnet",
+      provider: { id: "anthropic" },
+    }),
     variant: {
       list: () => ["fast", "thinking"],
       current: () => controls.variant,
       set: (variant?: string) => setControls("variant", variant),
     },
-  }
+  };
   const inputControls = {
     agents: {
       available: [{ name: "review", hidden: false, mode: "subagent" }],
       options: ["build", "review", "plan"],
       get current() {
-        return controls.agent
+        return controls.agent;
       },
       loading: false,
       visible: true,
@@ -59,7 +66,8 @@ function PromptInputExample() {
       tabs: {
         active: () => controls.activeTab,
         all: () => controls.tabs,
-        open: (tab: string) => setControls("tabs", (tabs) => (tabs.includes(tab) ? tabs : [...tabs, tab])),
+        open: (tab: string) =>
+          setControls("tabs", (tabs) => (tabs.includes(tab) ? tabs : [...tabs, tab])),
         setActive: (tab: string) => setControls("activeTab", tab),
       },
       reviewPanel: {
@@ -68,10 +76,10 @@ function PromptInputExample() {
       },
     },
     newLayoutDesigns: true,
-  }
+  };
   const addReviewComment = () => {
-    const comment = controls.comments + 1
-    setControls("comments", comment)
+    const comment = controls.comments + 1;
+    setControls("comments", comment);
     input.state.context.add({
       type: "file",
       path: "src/components/prompt-input.tsx",
@@ -85,8 +93,8 @@ function PromptInputExample() {
       commentID: `review-comment-${comment}`,
       commentOrigin: "review",
       preview: "export const PromptInput = ...",
-    })
-  }
+    });
+  };
 
   return (
     <div class="flex flex-col gap-3">
@@ -101,28 +109,28 @@ function PromptInputExample() {
         </button>
       </div>
     </div>
-  )
+  );
 }
 
 const todos: Todo[] = [
   { id: "todo-1", content: "Inspect the session composer animation", status: "completed" },
   { id: "todo-2", content: "Keep the dock settled on initial render", status: "in_progress" },
   { id: "todo-3", content: "Verify session navigation behavior", status: "pending" },
-]
+];
 
 function PromptInputWithOpenDock() {
-  const input = createPromptInputStoryRuntime()
+  const input = createPromptInputStoryRuntime();
   const [controls, setControls] = createStore({
     agent: "build",
     activeTab: undefined as string | undefined,
     todoCollapsed: false,
-  })
+  });
   const inputControls = {
     agents: {
       available: [],
       options: ["build"],
       get current() {
-        return controls.agent
+        return controls.agent;
       },
       loading: false,
       visible: true,
@@ -130,7 +138,11 @@ function PromptInputWithOpenDock() {
     },
     model: {
       selection: {
-        current: () => ({ id: "claude-3-7-sonnet", name: "Claude 3.7 Sonnet", provider: { id: "anthropic" } }),
+        current: () => ({
+          id: "claude-3-7-sonnet",
+          name: "Claude 3.7 Sonnet",
+          provider: { id: "anthropic" },
+        }),
         variant: { list: () => [], current: () => undefined, set: () => {} },
       },
       paid: true,
@@ -147,7 +159,7 @@ function PromptInputWithOpenDock() {
       reviewPanel: { opened: () => false, open: () => {} },
     },
     newLayoutDesigns: true,
-  }
+  };
   const state = {
     blocked: () => false,
     questionRequest: () => undefined,
@@ -158,7 +170,7 @@ function PromptInputWithOpenDock() {
     dock: () => true,
     closing: () => false,
     opening: () => false,
-  }
+  };
   return (
     <SessionComposerRegion
       controller={createSessionComposerRegionController({
@@ -189,14 +201,14 @@ function PromptInputWithOpenDock() {
         />
       }
     />
-  )
+  );
 }
 
 export default {
   title: "App/PromptInput",
   id: "app-prompt-input",
   component: PromptInput,
-}
+};
 
 export const Basic = {
   render: () => (
@@ -205,7 +217,7 @@ export const Basic = {
       <PromptInputExample />
     </div>
   ),
-}
+};
 
 export const DockAlreadyOpen = {
   render: () => (
@@ -214,4 +226,4 @@ export const DockAlreadyOpen = {
       <PromptInputWithOpenDock />
     </div>
   ),
-}
+};

@@ -122,7 +122,7 @@ async function prepareWithHeal() {
       error instanceof Error ? `${error.message}\n${error.stack ?? ""}` : String(error);
     if (!useTurbopack || !isTurbopackCacheCorruption(detail)) throw error;
     console.warn(
-      "[Next] Turbopack dev cache looks corrupted (Windows mmap / os error 1455 — known upstream bug). Purging and retrying once…"
+      "[Next] Turbopack dev cache looks corrupted (Windows mmap / os error 1455 — known upstream bug). Purging and retrying once…",
     );
     const removed = purgeAllTurbopackCaches();
     for (const dir of removed) console.warn(`[Next] purged Turbopack cache: ${dir}`);
@@ -152,7 +152,7 @@ async function start() {
       // middleware can decide LOCAL_ONLY locality without trusting the Host header.
       stampPeerIp(req);
       return requestHandler(req, res);
-    })
+    }),
   );
   // Node's http.Server default keepAliveTimeout (5_000ms) races pooled
   // keep-alive HTTP clients that idle longer than that between requests (e.g.
@@ -200,7 +200,7 @@ async function start() {
   server.listen(dashboardPort, hostname, () => {
     const bundler = dev ? (useTurbopack ? "turbopack" : "webpack") : "production";
     console.log(
-      `[Next] ${mode} server listening on http://${hostname}:${dashboardPort} (${bundler})`
+      `[Next] ${mode} server listening on http://${hostname}:${dashboardPort} (${bundler})`,
     );
   });
 }

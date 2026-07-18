@@ -1,7 +1,7 @@
 export function areObjectsEqual<T extends object>(
   objA: T | undefined,
   objB: T | undefined,
-  omitKeys?: (keyof T)[]
+  omitKeys?: (keyof T)[],
 ): boolean {
   // Lets get out of here early if they are the same or either is undefined
   if (objA === objB || objA == null || objB == null) {

@@ -1,16 +1,16 @@
-import { describe, expect, test } from "bun:test"
-import { Effect, Schema } from "effect"
-import { HttpClientRequest } from "effect/unstable/http"
-import { LLM, mergeProviderOptions } from "../src"
-import { AnthropicMessages, OpenAIChat } from "../src/protocols"
-import { Auth, LLMClient } from "../src/route"
-import { it } from "./lib/effect"
-import { dynamicResponse } from "./lib/http"
-import { deltaChunk } from "./lib/openai-chunks"
-import { sseEvents } from "./lib/sse"
+import { describe, expect, test } from "bun:test";
+import { Effect, Schema } from "effect";
+import { HttpClientRequest } from "effect/unstable/http";
+import { LLM, mergeProviderOptions } from "../src";
+import { AnthropicMessages, OpenAIChat } from "../src/protocols";
+import { Auth, LLMClient } from "../src/route";
+import { it } from "./lib/effect";
+import { dynamicResponse } from "./lib/http";
+import { deltaChunk } from "./lib/openai-chunks";
+import { sseEvents } from "./lib/sse";
 
-const TargetJson = Schema.fromJsonString(Schema.Unknown)
-const decodeJson = Schema.decodeUnknownSync(TargetJson)
+const TargetJson = Schema.fromJsonString(Schema.Unknown);
+const decodeJson = Schema.decodeUnknownSync(TargetJson);
 
 describe("request option precedence", () => {
   test("deep-merges provider option records and replaces arrays, primitives, and null", () => {
@@ -32,7 +32,7 @@ describe("request option precedence", () => {
         },
       },
       { openai: { metadata: { request: true }, primitive: false } },
-    )
+    );
 
     expect(merged).toEqual({
       openai: {
@@ -41,8 +41,8 @@ describe("request option precedence", () => {
         nullable: null,
         primitive: false,
       },
-    })
-  })
+    });
+  });
 
   it.effect("prepares bodies with route defaults, model defaults, and call options in order", () =>
     Effect.gen(function* () {
@@ -51,14 +51,14 @@ describe("request option precedence", () => {
         auth: Auth.bearer("test"),
         generation: { maxTokens: 10, temperature: 1, stop: ["route"] },
         providerOptions: { openai: { store: false, reasoningEffort: "low" } },
-      })
+      });
       const model = route.model({
         id: "gpt-4o-mini",
         defaults: {
           generation: { maxTokens: 20, temperature: 0.5, frequencyPenalty: 0.25, stop: ["model"] },
           providerOptions: { openai: { reasoningEffort: "medium" } },
         },
-      })
+      });
       const prepared = yield* LLMClient.prepare<OpenAIChat.OpenAIChatBody>(
         LLM.request({
           model,
@@ -66,7 +66,7 @@ describe("request option precedence", () => {
           generation: { maxTokens: 30, topP: 0.9, stop: ["request"] },
           providerOptions: { openai: { store: true } },
         }),
-      )
+      );
 
       expect(prepared.body).toMatchObject({
         model: "gpt-4o-mini",
@@ -77,10 +77,10 @@ describe("request option precedence", () => {
         frequency_penalty: 0.25,
         store: true,
         reasoning_effort: "medium",
-      })
-      expect(prepared.body.stop).toEqual(["request"])
+      });
+      expect(prepared.body.stop).toEqual(["request"]);
     }),
-  )
+  );
 
   it.effect("applies model HTTP defaults before request HTTP overlays", () =>
     LLMClient.generate(
@@ -116,45 +116,47 @@ describe("request option precedence", () => {
       Effect.provide(
         dynamicResponse((input) =>
           Effect.gen(function* () {
-            const web = yield* HttpClientRequest.toWeb(input.request).pipe(Effect.orDie)
-            expect(web.url).toBe("https://api.openai.test/v1/chat/completions?route=1&shared=model&model=1&request=1")
-            expect(web.headers.get("authorization")).toBe("Bearer fresh-key")
-            expect(web.headers.get("x-route")).toBe("route")
-            expect(web.headers.get("x-model")).toBe("model")
-            expect(web.headers.get("x-request")).toBe("request")
-            expect(web.headers.get("x-shared")).toBe("model")
+            const web = yield* HttpClientRequest.toWeb(input.request).pipe(Effect.orDie);
+            expect(web.url).toBe(
+              "https://api.openai.test/v1/chat/completions?route=1&shared=model&model=1&request=1",
+            );
+            expect(web.headers.get("authorization")).toBe("Bearer fresh-key");
+            expect(web.headers.get("x-route")).toBe("route");
+            expect(web.headers.get("x-model")).toBe("model");
+            expect(web.headers.get("x-request")).toBe("request");
+            expect(web.headers.get("x-shared")).toBe("model");
             expect(decodeJson(input.text)).toMatchObject({
               metadata: { route: true, model: true, request: true, shared: "model" },
               value: null,
-            })
+            });
             return input.respond(sseEvents(deltaChunk({}, "stop")), {
               headers: { "content-type": "text/event-stream" },
-            })
+            });
           }),
         ),
       ),
     ),
-  )
+  );
 
   it.effect("rejects raw body overlays for protocol-owned roots", () =>
     Effect.gen(function* () {
       const model = OpenAIChat.route
         .with({ endpoint: { baseURL: "https://api.openai.test/v1/" }, auth: Auth.bearer("test") })
-        .model({ id: "gpt-4o-mini" })
+        .model({ id: "gpt-4o-mini" });
       const error = yield* LLMClient.prepare(
         LLM.request({
           model,
           prompt: "Say hello.",
           http: { body: { model: "gpt-5", messages: [], tools: [] } },
         }),
-      ).pipe(Effect.flip)
+      ).pipe(Effect.flip);
 
       expect(error.reason).toMatchObject({
         _tag: "InvalidRequest",
         message: "http.body cannot overlay protocol-owned field(s): model, messages, tools",
-      })
+      });
     }),
-  )
+  );
 
   it.effect("uses model output limits after route limits and before call maxTokens", () =>
     Effect.gen(function* () {
@@ -162,17 +164,17 @@ describe("request option precedence", () => {
         endpoint: { baseURL: "https://api.anthropic.test/v1/" },
         auth: Auth.header("x-api-key", "test"),
         limits: { output: 128 },
-      })
-      const model = route.model({ id: "claude-sonnet-4-5", defaults: { limits: { output: 64 } } })
+      });
+      const model = route.model({ id: "claude-sonnet-4-5", defaults: { limits: { output: 64 } } });
       const withoutMaxTokens = yield* LLMClient.prepare<AnthropicMessages.AnthropicMessagesBody>(
         LLM.request({ model, prompt: "Say hello.", cache: "none" }),
-      )
+      );
       const withMaxTokens = yield* LLMClient.prepare<AnthropicMessages.AnthropicMessagesBody>(
         LLM.request({ model, prompt: "Say hello.", cache: "none", generation: { maxTokens: 32 } }),
-      )
+      );
 
-      expect(withoutMaxTokens.body.max_tokens).toBe(64)
-      expect(withMaxTokens.body.max_tokens).toBe(32)
+      expect(withoutMaxTokens.body.max_tokens).toBe(64);
+      expect(withMaxTokens.body.max_tokens).toBe(32);
     }),
-  )
-})
+  );
+});

@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { cleanUpLevaParams } from '@/helpers/clean-up-leva-params';
-import { usePresetHighlight } from '@/helpers/use-preset-highlight';
-import { setParamsSafe, useResetLevaParams } from '@/helpers/use-reset-leva-params';
-import { Voronoi, voronoiPresets } from '@paper-design/shaders-react';
-import { voronoiMeta } from '@paper-design/shaders';
-import { useControls, button, folder } from 'leva';
-import { useColors } from '@/helpers/use-colors';
-import { toHsla } from '@/helpers/color-utils';
-import { ShaderDetails } from '@/components/shader-details';
-import { voronoiDef } from '@/shader-defs/voronoi-def';
-import { ShaderContainer } from '@/components/shader-container';
-import { useUrlParams } from '@/helpers/use-url-params';
+import { cleanUpLevaParams } from "@/helpers/clean-up-leva-params";
+import { usePresetHighlight } from "@/helpers/use-preset-highlight";
+import { setParamsSafe, useResetLevaParams } from "@/helpers/use-reset-leva-params";
+import { Voronoi, voronoiPresets } from "@paper-design/shaders-react";
+import { voronoiMeta } from "@paper-design/shaders";
+import { useControls, button, folder } from "leva";
+import { useColors } from "@/helpers/use-colors";
+import { toHsla } from "@/helpers/color-utils";
+import { ShaderDetails } from "@/components/shader-details";
+import { voronoiDef } from "@/shader-defs/voronoi-def";
+import { ShaderContainer } from "@/components/shader-container";
+import { useUrlParams } from "@/helpers/use-url-params";
 
 const { worldWidth, worldHeight, ...defaults } = voronoiPresets[0].params;
 
@@ -44,7 +44,7 @@ const VoronoiWithControls = () => {
           setColors(colors);
           setParamsSafe(params, setParams, presetParams);
         }),
-      ])
+      ]),
     );
     return {
       Presets: folder(presets, { order: -1 }),
@@ -68,11 +68,11 @@ const VoronoiWithControls = () => {
         currentParams={{ colors, ...params }}
         notes={
           <>
-            Thanks to{' '}
+            Thanks to{" "}
             <a href="https://x.com/iquilezles" target="_blank" rel="noopener">
               Inigo Quilez
-            </a>{' '}
-            for the amazing{' '}
+            </a>{" "}
+            for the amazing{" "}
             <a href="https://iquilezles.org/articles/voronoilines/" target="_blank" rel="noopener">
               solution on Voronoi cell boundaries
             </a>

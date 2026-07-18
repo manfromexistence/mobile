@@ -21,15 +21,19 @@ export function DotmCircular7({
   ...rest
 }: DotmCircular7Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
   const phase = useCyclePhase({
     active: !reducedMotion && matrixPhase !== "idle",
     cycleMsBase: 1600,
-    speed
+    speed,
   });
 
   const resolver = useMemo<DotAnimationResolver>(() => {
@@ -40,7 +44,7 @@ export function DotmCircular7({
 
       const x = col - 2;
       const y = row - 2;
-      const t = reducedMotion || p === "idle" ? 0 : (phase) * Math.PI * 2;
+      const t = reducedMotion || p === "idle" ? 0 : phase * Math.PI * 2;
       const ring = Math.sqrt(x * x + y * y);
       const angle = Math.atan2(y, x);
 

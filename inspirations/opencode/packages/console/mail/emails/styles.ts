@@ -1,20 +1,20 @@
 // @ts-nocheck
-export const unit = 12
-export const PRIMARY_COLOR = "#211E1E"
-export const TEXT_COLOR = "#656363"
-export const LINK_COLOR = "#007AFF"
-export const LINK_BACKGROUND_COLOR = "#F9F8F8"
-export const BACKGROUND_COLOR = "#F0F0F1"
-export const SURFACE_DIVIDER_COLOR = "#D5D5D9"
+export const unit = 12;
+export const PRIMARY_COLOR = "#211E1E";
+export const TEXT_COLOR = "#656363";
+export const LINK_COLOR = "#007AFF";
+export const LINK_BACKGROUND_COLOR = "#F9F8F8";
+export const BACKGROUND_COLOR = "#F0F0F1";
+export const SURFACE_DIVIDER_COLOR = "#D5D5D9";
 
 export const body = {
   background: BACKGROUND_COLOR,
-}
+};
 
 export const container = {
   minWidth: "600px",
   padding: "64px 0px",
-}
+};
 
 export const frame = {
   padding: `${unit * 2}px`,
@@ -24,11 +24,11 @@ export const frame = {
   boxShadow: `0 1px 2px rgba(0,0,0,0.03),
               0 2px 4px rgba(0,0,0,0.03),
               0 2px 6px rgba(0,0,0,0.03)`,
-}
+};
 
 export const baseText = {
   fontFamily: "JetBrains Mono, monospace",
-}
+};
 
 export const headingText = {
   color: PRIMARY_COLOR,
@@ -36,7 +36,7 @@ export const headingText = {
   fontStyle: "normal",
   fontWeight: 500,
   lineHeight: "normal",
-}
+};
 
 export const contentText = {
   color: TEXT_COLOR,
@@ -44,7 +44,7 @@ export const contentText = {
   fontStyle: "normal",
   fontWeight: 400,
   lineHeight: "180%",
-}
+};
 
 export const buttonText = {
   color: "#FDFCFC",
@@ -55,7 +55,7 @@ export const buttonText = {
   display: "inline-flex",
   alignItems: "center",
   gap: "12px",
-}
+};
 
 export const linkText = {
   color: LINK_COLOR,
@@ -73,11 +73,11 @@ export const linkText = {
   background: LINK_BACKGROUND_COLOR,
   padding: "8px 12px",
   textAlign: "center" as const,
-}
+};
 
 export const contentHighlightText = {
   color: PRIMARY_COLOR,
-}
+};
 
 export const button = {
   display: "inline-grid",
@@ -88,4 +88,4 @@ export const button = {
   flexShrink: "0",
   borderRadius: "4px",
   backgroundColor: PRIMARY_COLOR,
-}
+};

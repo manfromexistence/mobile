@@ -1,43 +1,43 @@
 #!/usr/bin/env bun
 
-import { $ } from "bun"
-import fs from "fs"
-import path from "path"
-import { fileURLToPath } from "url"
-import { createSolidTransformPlugin } from "@opentui/solid/bun-plugin"
+import { $ } from "bun";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import { createSolidTransformPlugin } from "@opentui/solid/bun-plugin";
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-const dir = path.resolve(__dirname, "..")
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const dir = path.resolve(__dirname, "..");
 
-process.chdir(dir)
+process.chdir(dir);
 
-const generated = await import("./generate.ts")
+const generated = await import("./generate.ts");
 
-import { Script } from "@opencode-ai/script"
-import pkg from "../package.json"
+import { Script } from "@opencode-ai/script";
+import pkg from "../package.json";
 
-const singleFlag = process.argv.includes("--single")
-const baselineFlag = process.argv.includes("--baseline")
-const skipInstall = process.argv.includes("--skip-install")
-const sourcemapsFlag = process.argv.includes("--sourcemaps")
-const plugin = createSolidTransformPlugin()
-const skipEmbedWebUi = process.argv.includes("--skip-embed-web-ui")
+const singleFlag = process.argv.includes("--single");
+const baselineFlag = process.argv.includes("--baseline");
+const skipInstall = process.argv.includes("--skip-install");
+const sourcemapsFlag = process.argv.includes("--sourcemaps");
+const plugin = createSolidTransformPlugin();
+const skipEmbedWebUi = process.argv.includes("--skip-embed-web-ui");
 
 const createEmbeddedWebUIBundle = async () => {
-  console.log(`Building Web UI to embed in the binary`)
-  const appDir = path.join(import.meta.dirname, "../../app")
-  const dist = path.join(appDir, "dist")
-  await $`OPENCODE_CHANNEL=${Script.channel} bun run --cwd ${appDir} build`
+  console.log(`Building Web UI to embed in the binary`);
+  const appDir = path.join(import.meta.dirname, "../../app");
+  const dist = path.join(appDir, "dist");
+  await $`OPENCODE_CHANNEL=${Script.channel} bun run --cwd ${appDir} build`;
   const files = (await Array.fromAsync(new Bun.Glob("**/*").scan({ cwd: dist })))
     .map((file) => file.replaceAll("\\", "/"))
     .filter((file) => !file.endsWith(".map"))
-    .sort()
+    .sort();
   const imports = files.map((file, i) => {
-    const spec = path.relative(dir, path.join(dist, file)).replaceAll("\\", "/")
-    return `import file_${i} from ${JSON.stringify(spec.startsWith(".") ? spec : `./${spec}`)} with { type: "file" };`
-  })
-  const entries = files.map((file, i) => `  ${JSON.stringify(file)}: file_${i},`)
+    const spec = path.relative(dir, path.join(dist, file)).replaceAll("\\", "/");
+    return `import file_${i} from ${JSON.stringify(spec.startsWith(".") ? spec : `./${spec}`)} with { type: "file" };`;
+  });
+  const entries = files.map((file, i) => `  ${JSON.stringify(file)}: file_${i},`);
   return [
     `// Import all files as file_$i with type: "file"`,
     ...imports,
@@ -45,16 +45,16 @@ const createEmbeddedWebUIBundle = async () => {
     `export default {`,
     ...entries,
     `}`,
-  ].join("\n")
-}
+  ].join("\n");
+};
 
-const embeddedFileMap = skipEmbedWebUi ? null : await createEmbeddedWebUIBundle()
+const embeddedFileMap = skipEmbedWebUi ? null : await createEmbeddedWebUIBundle();
 
 const allTargets: {
-  os: string
-  arch: "arm64" | "x64"
-  abi?: "musl"
-  avx2?: false
+  os: string;
+  arch: "arm64" | "x64";
+  abi?: "musl";
+  avx2?: false;
 }[] = [
   {
     os: "linux",
@@ -111,36 +111,36 @@ const allTargets: {
     arch: "x64",
     avx2: false,
   },
-]
+];
 
 const targets = singleFlag
   ? allTargets.filter((item) => {
       if (item.os !== process.platform || item.arch !== process.arch) {
-        return false
+        return false;
       }
 
       // When building for the current platform, prefer a single native binary by default.
       // Baseline binaries require additional Bun artifacts and can be flaky to download.
       if (item.avx2 === false) {
-        return baselineFlag
+        return baselineFlag;
       }
 
       // also skip abi-specific builds for the same reason
       if (item.abi !== undefined) {
-        return false
+        return false;
       }
 
-      return true
+      return true;
     })
-  : allTargets
+  : allTargets;
 
-await $`rm -rf dist`
+await $`rm -rf dist`;
 
-const binaries: Record<string, string> = {}
+const binaries: Record<string, string> = {};
 if (!skipInstall) {
-  await $`bun install --os="*" --cpu="*" @opentui/core@${pkg.dependencies["@opentui/core"]}`
-  await $`bun install --os="*" --cpu="*" @parcel/watcher@${pkg.dependencies["@parcel/watcher"]}`
-  await $`bun install --os="*" --cpu="*" @ff-labs/fff-bun@${pkg.dependencies["@ff-labs/fff-bun"]}`
+  await $`bun install --os="*" --cpu="*" @opentui/core@${pkg.dependencies["@opentui/core"]}`;
+  await $`bun install --os="*" --cpu="*" @parcel/watcher@${pkg.dependencies["@parcel/watcher"]}`;
+  await $`bun install --os="*" --cpu="*" @ff-labs/fff-bun@${pkg.dependencies["@ff-labs/fff-bun"]}`;
 }
 for (const item of targets) {
   const name = [
@@ -152,18 +152,18 @@ for (const item of targets) {
     item.abi === undefined ? undefined : item.abi,
   ]
     .filter(Boolean)
-    .join("-")
-  console.log(`building ${name}`)
-  await $`mkdir -p dist/${name}/bin`
+    .join("-");
+  console.log(`building ${name}`);
+  await $`mkdir -p dist/${name}/bin`;
 
-  const localPath = path.resolve(dir, "node_modules/@opentui/core/parser.worker.js")
-  const rootPath = path.resolve(dir, "../../node_modules/@opentui/core/parser.worker.js")
-  const parserWorker = fs.realpathSync(fs.existsSync(localPath) ? localPath : rootPath)
-  const workerPath = "./src/cli/tui/worker.ts"
+  const localPath = path.resolve(dir, "node_modules/@opentui/core/parser.worker.js");
+  const rootPath = path.resolve(dir, "../../node_modules/@opentui/core/parser.worker.js");
+  const parserWorker = fs.realpathSync(fs.existsSync(localPath) ? localPath : rootPath);
+  const workerPath = "./src/cli/tui/worker.ts";
 
   // Use platform-specific bunfs root path based on target OS
-  const bunfsRoot = item.os === "win32" ? "B:/~BUN/root/" : "/$bunfs/root/"
-  const workerRelativePath = path.relative(dir, parserWorker).replaceAll("\\", "/")
+  const bunfsRoot = item.os === "win32" ? "B:/~BUN/root/" : "/$bunfs/root/";
+  const workerRelativePath = path.relative(dir, parserWorker).replaceAll("\\", "/");
 
   await Bun.build({
     conditions: ["bun", "node"],
@@ -185,7 +185,12 @@ for (const item of targets) {
       windows: {},
     },
     files: embeddedFileMap ? { "opencode-web-ui.gen.ts": embeddedFileMap } : {},
-    entrypoints: ["./src/index.ts", parserWorker, workerPath, ...(embeddedFileMap ? ["opencode-web-ui.gen.ts"] : [])],
+    entrypoints: [
+      "./src/index.ts",
+      parserWorker,
+      workerPath,
+      ...(embeddedFileMap ? ["opencode-web-ui.gen.ts"] : []),
+    ],
     define: {
       FFF_LIBC: JSON.stringify(item.abi === "musl" ? "musl" : "gnu"),
       OPENCODE_VERSION: `'${Script.version}'`,
@@ -194,24 +199,26 @@ for (const item of targets) {
       OPENCODE_WORKER_PATH: workerPath,
       OPENCODE_CHANNEL: `'${Script.channel}'`,
       OPENCODE_LIBC: item.os === "linux" ? `'${item.abi ?? "glibc"}'` : "",
-      ...(item.os === "linux" ? { "process.env.OPENTUI_LIBC": JSON.stringify(item.abi ?? "glibc") } : {}),
+      ...(item.os === "linux"
+        ? { "process.env.OPENTUI_LIBC": JSON.stringify(item.abi ?? "glibc") }
+        : {}),
     },
-  })
+  });
 
   // Smoke test: only run if binary is for current platform
   if (item.os === process.platform && item.arch === process.arch && !item.abi) {
-    const binaryPath = `dist/${name}/bin/opencode`
-    console.log(`Running smoke test: ${binaryPath} --version`)
+    const binaryPath = `dist/${name}/bin/opencode`;
+    console.log(`Running smoke test: ${binaryPath} --version`);
     try {
-      const versionOutput = await $`${binaryPath} --version`.text()
-      console.log(`Smoke test passed: ${versionOutput.trim()}`)
+      const versionOutput = await $`${binaryPath} --version`.text();
+      console.log(`Smoke test passed: ${versionOutput.trim()}`);
     } catch (e) {
-      console.error(`Smoke test failed for ${name}:`, e)
-      process.exit(1)
+      console.error(`Smoke test failed for ${name}:`, e);
+      process.exit(1);
     }
   }
 
-  await $`rm -rf ./dist/${name}/bin/tui`
+  await $`rm -rf ./dist/${name}/bin/tui`;
   await Bun.file(`dist/${name}/package.json`).write(
     JSON.stringify(
       {
@@ -225,19 +232,19 @@ for (const item of targets) {
       null,
       2,
     ),
-  )
-  binaries[name] = Script.version
+  );
+  binaries[name] = Script.version;
 }
 
 if (Script.release) {
   for (const key of Object.keys(binaries)) {
     if (key.includes("linux")) {
-      await $`tar -czf ../../${key}.tar.gz *`.cwd(`dist/${key}/bin`)
+      await $`tar -czf ../../${key}.tar.gz *`.cwd(`dist/${key}/bin`);
     } else {
-      await $`zip -r ../../${key}.zip *`.cwd(`dist/${key}/bin`)
+      await $`zip -r ../../${key}.zip *`.cwd(`dist/${key}/bin`);
     }
   }
-  await $`gh release upload v${Script.version} ./dist/*.zip ./dist/*.tar.gz --clobber --repo ${process.env.GH_REPO}`
+  await $`gh release upload v${Script.version} ./dist/*.zip ./dist/*.tar.gz --clobber --repo ${process.env.GH_REPO}`;
 }
 
-export { binaries }
+export { binaries };

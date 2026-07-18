@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import type { DiffIndicators } from '@pierre/diffs';
-import { MultiFileDiff } from '@pierre/diffs/react';
-import type { PreloadMultiFileDiffResult } from '@pierre/diffs/ssr';
+import type { DiffIndicators } from "@pierre/diffs";
+import { MultiFileDiff } from "@pierre/diffs/react";
+import type { PreloadMultiFileDiffResult } from "@pierre/diffs/ssr";
 import {
   IconCheck,
   IconChevronSm,
@@ -13,40 +13,40 @@ import {
   IconParagraph,
   IconSymbolDiffstat,
   IconWordWrap,
-} from '@pierre/icons';
-import { useState } from 'react';
+} from "@pierre/icons";
+import { useState } from "react";
 
-import { FeatureHeader } from '@/components/FeatureHeader';
-import { Button } from '@/components/ui/button';
-import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group';
+import { FeatureHeader } from "@/components/FeatureHeader";
+import { Button } from "@/components/ui/button";
+import { ButtonGroup, ButtonGroupItem } from "@/components/ui/button-group";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Switch } from '@/components/ui/switch';
+} from "@/components/ui/dropdown-menu";
+import { Switch } from "@/components/ui/switch";
 
 const diffStyleOptions = [
   {
-    value: 'word-alt',
-    label: 'Word-Alt',
-    description: 'Highlight entire words with enhanced algorithm',
+    value: "word-alt",
+    label: "Word-Alt",
+    description: "Highlight entire words with enhanced algorithm",
   },
   {
-    value: 'word',
-    label: 'Word',
-    description: 'Highlight changed words within lines',
+    value: "word",
+    label: "Word",
+    description: "Highlight changed words within lines",
   },
   {
-    value: 'char',
-    label: 'Character',
-    description: 'Highlight individual character changes',
+    value: "char",
+    label: "Character",
+    description: "Highlight individual character changes",
   },
   {
-    value: 'none',
-    label: 'None',
-    description: 'Show line-level changes only',
+    value: "none",
+    label: "None",
+    description: "Show line-level changes only",
   },
 ] as const;
 
@@ -54,19 +54,15 @@ interface DiffStylesProps {
   prerenderedDiff: PreloadMultiFileDiffResult<undefined>;
 }
 
-export function DiffStyles({
-  prerenderedDiff: { options, ...props },
-}: DiffStylesProps) {
-  const [diffIndicators, setDiffStyle] = useState<DiffIndicators>('bars');
-  const [lineDiffType, setLineDiffType] = useState<
-    'word-alt' | 'word' | 'char' | 'none'
-  >('word-alt');
-  const [disableBackground, setDisableBackground] = useState(false);
-  const [overflow, setOverflow] = useState<'wrap' | 'scroll'>(
-    options?.overflow ?? 'wrap'
+export function DiffStyles({ prerenderedDiff: { options, ...props } }: DiffStylesProps) {
+  const [diffIndicators, setDiffStyle] = useState<DiffIndicators>("bars");
+  const [lineDiffType, setLineDiffType] = useState<"word-alt" | "word" | "char" | "none">(
+    "word-alt",
   );
+  const [disableBackground, setDisableBackground] = useState(false);
+  const [overflow, setOverflow] = useState<"wrap" | "scroll">(options?.overflow ?? "wrap");
   const [disableLineNumbers, setDisableLineNumbers] = useState<boolean>(
-    options?.disableLineNumbers === true
+    options?.disableLineNumbers === true,
   );
 
   return (
@@ -83,15 +79,11 @@ export function DiffStyles({
             onValueChange={(value) => setDiffStyle(value as DiffIndicators)}
             className="col-span-full"
           >
-            {['bars', 'classic', 'none'].map((value) => (
-              <ButtonGroupItem
-                key={value}
-                value={value}
-                className="flex-1 capitalize"
-              >
-                {value === 'bars' ? (
+            {["bars", "classic", "none"].map((value) => (
+              <ButtonGroupItem key={value} value={value} className="flex-1 capitalize">
+                {value === "bars" ? (
                   <IconCodeStyleBars />
-                ) : value === 'classic' ? (
+                ) : value === "classic" ? (
                   <IconSymbolDiffstat />
                 ) : (
                   <IconParagraph />
@@ -103,22 +95,14 @@ export function DiffStyles({
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                className="w-full justify-start md:w-auto"
-              >
+              <Button variant="outline" className="w-full justify-start md:w-auto">
                 <IconCodeStyleInline />
                 {}
-                {diffStyleOptions.find((opt) => opt.value === lineDiffType)
-                  ?.label ?? lineDiffType}
+                {diffStyleOptions.find((opt) => opt.value === lineDiffType)?.label ?? lineDiffType}
                 <IconChevronSm className="text-muted-foreground ml-auto" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="start"
-              className="w-82"
-              scrollSelectedIntoView
-            >
+            <DropdownMenuContent align="start" className="w-82" scrollSelectedIntoView>
               {diffStyleOptions.map((option) => (
                 <DropdownMenuItem
                   key={option.value}
@@ -133,9 +117,7 @@ export function DiffStyles({
                   )}
                   <div className="flex w-full flex-col items-start">
                     <span className="font-medium">{option.label}</span>
-                    <span className="text-muted-foreground text-xs">
-                      {option.description}
-                    </span>
+                    <span className="text-muted-foreground text-xs">{option.description}</span>
                   </div>
                 </DropdownMenuItem>
               ))}
@@ -155,9 +137,7 @@ export function DiffStyles({
             </Button>
             <Switch
               checked={!disableBackground}
-              onCheckedChange={(checked: boolean) =>
-                setDisableBackground(!checked)
-              }
+              onCheckedChange={(checked: boolean) => setDisableBackground(!checked)}
               onClick={(e) => e.stopPropagation()}
               className="pointer-events-none mr-3 place-self-center justify-self-end"
             />
@@ -167,9 +147,7 @@ export function DiffStyles({
             <Button
               variant="outline"
               className="w-full justify-between gap-3 pr-11 pl-3 md:w-auto"
-              onClick={() =>
-                setOverflow(overflow === 'wrap' ? 'scroll' : 'wrap')
-              }
+              onClick={() => setOverflow(overflow === "wrap" ? "scroll" : "wrap")}
             >
               <div className="flex items-center gap-2">
                 <IconWordWrap />
@@ -177,10 +155,8 @@ export function DiffStyles({
               </div>
             </Button>
             <Switch
-              checked={overflow === 'wrap'}
-              onCheckedChange={(checked: boolean) =>
-                setOverflow(checked ? 'wrap' : 'scroll')
-              }
+              checked={overflow === "wrap"}
+              onCheckedChange={(checked: boolean) => setOverflow(checked ? "wrap" : "scroll")}
               onClick={(e) => e.stopPropagation()}
               className="pointer-events-none mr-3 place-self-center justify-self-end"
             />
@@ -198,9 +174,7 @@ export function DiffStyles({
             </Button>
             <Switch
               checked={!disableLineNumbers}
-              onCheckedChange={(checked: boolean) =>
-                setDisableLineNumbers(!checked)
-              }
+              onCheckedChange={(checked: boolean) => setDisableLineNumbers(!checked)}
               onClick={(e) => e.stopPropagation()}
               className="pointer-events-none mr-3 place-self-center justify-self-end"
             />

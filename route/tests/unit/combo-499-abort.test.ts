@@ -85,7 +85,7 @@ test("combo loop with 3 models: 499 on model-1 prevents trying model-2 and model
   assert.equal(modelsCalled.length, 1);
   assert.ok(
     modelsCalled[0].includes("fast"),
-    `Expected first model to contain 'fast', got '${modelsCalled[0]}'`
+    `Expected first model to contain 'fast', got '${modelsCalled[0]}'`,
   );
   assert.equal(result.status, 499);
 });

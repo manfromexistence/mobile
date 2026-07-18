@@ -73,7 +73,7 @@ export async function runCacheClearCommand(opts = {}) {
     const readline = await import("node:readline");
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
     const answer = await new Promise((resolve) =>
-      rl.question("Clear all cached responses? [y/N] ", resolve)
+      rl.question("Clear all cached responses? [y/N] ", resolve),
     );
     rl.close();
     if (!/^y(es)?$/i.test(answer)) {

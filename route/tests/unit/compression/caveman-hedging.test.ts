@@ -16,7 +16,7 @@ describe("hedging and context condensation rules", () => {
     assert.ok(rules.length > 0);
     const { text } = applyRulesToText(
       "The function appears to be handling the data processing",
-      rules
+      rules,
     );
     assert.ok(text.includes("Function:"));
   });

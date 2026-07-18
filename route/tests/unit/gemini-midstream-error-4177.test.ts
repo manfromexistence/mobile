@@ -11,8 +11,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { geminiToOpenAIResponse } =
-  await import("../../open-sse/translator/response/gemini-to-openai.ts");
+const { geminiToOpenAIResponse } = await import(
+  "../../open-sse/translator/response/gemini-to-openai.ts"
+);
 
 type StreamState = {
   toolCalls: Map<string, unknown>;
@@ -38,7 +39,7 @@ test("#4177 Gemini mid-stream 503 UNAVAILABLE is surfaced as upstreamError, not 
         status: "UNAVAILABLE",
       },
     },
-    state
+    state,
   );
 
   // The error chunk produces no delta output...
@@ -61,7 +62,7 @@ test("#4177 Gemini RESOURCE_EXHAUSTED maps to a 429 rate-limit upstreamError", (
         status: "RESOURCE_EXHAUSTED",
       },
     },
-    state
+    state,
   );
 
   assert.equal(result, null);
@@ -79,7 +80,7 @@ test("#4177 Antigravity/Cloud Code error wrapped in a `response` envelope is det
         error: { code: 503, message: "overloaded", status: "UNAVAILABLE" },
       },
     },
-    state
+    state,
   );
 
   assert.equal(result, null);
@@ -101,7 +102,7 @@ test("#4177 a valid candidate chunk does NOT set upstreamError (no false positiv
       ],
       usageMetadata: { promptTokenCount: 1, totalTokenCount: 2 },
     },
-    state
+    state,
   );
 
   assert.ok(result, "expected normal chunk to translate to OpenAI deltas");

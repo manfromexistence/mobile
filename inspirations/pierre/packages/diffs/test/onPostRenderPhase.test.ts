@@ -1,59 +1,39 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from "bun:test";
 
-import { CodeView } from '../src/components/CodeView';
-import { File } from '../src/components/File';
-import { FileDiff } from '../src/components/FileDiff';
-import { UnresolvedFile } from '../src/components/UnresolvedFile';
-import { DEFAULT_THEMES } from '../src/constants';
-import type {
-  CodeViewItem,
-  FileContents,
-  FileDiffMetadata,
-  PostRenderPhase,
-} from '../src/types';
-import {
-  createRoot,
-  dispatchScroll,
-  installDom,
-  renderItems,
-  wait,
-} from './domHarness';
+import { CodeView } from "../src/components/CodeView";
+import { File } from "../src/components/File";
+import { FileDiff } from "../src/components/FileDiff";
+import { UnresolvedFile } from "../src/components/UnresolvedFile";
+import { DEFAULT_THEMES } from "../src/constants";
+import type { CodeViewItem, FileContents, FileDiffMetadata, PostRenderPhase } from "../src/types";
+import { createRoot, dispatchScroll, installDom, renderItems, wait } from "./domHarness";
 
 function createHydrationContainer(): HTMLElement {
-  const container = document.createElement('div');
-  container.attachShadow({ mode: 'open' });
+  const container = document.createElement("div");
+  container.attachShadow({ mode: "open" });
   return container;
 }
 
-function makeFile(
-  name: string,
-  label: string,
-  lineCount: number
-): FileContents {
+function makeFile(name: string, label: string, lineCount: number): FileContents {
   return {
     name,
-    contents: Array.from(
-      { length: lineCount },
-      (_, index) => `${label} line ${index + 1}`
-    ).join('\n'),
+    contents: Array.from({ length: lineCount }, (_, index) => `${label} line ${index + 1}`).join(
+      "\n",
+    ),
   };
 }
 
-function makeFileItem(
-  id: string,
-  label: string,
-  lineCount: number
-): CodeViewItem<undefined> {
+function makeFileItem(id: string, label: string, lineCount: number): CodeViewItem<undefined> {
   return {
     id,
-    type: 'file',
+    type: "file",
     file: makeFile(`${id}.ts`, label, lineCount),
   };
 }
 
 async function waitForPhases(
   phases: readonly { id: string; phase: PostRenderPhase }[],
-  expected: readonly { id: string; phase: PostRenderPhase }[]
+  expected: readonly { id: string; phase: PostRenderPhase }[],
 ): Promise<void> {
   for (let attempt = 0; attempt < 50; attempt++) {
     try {
@@ -67,12 +47,12 @@ async function waitForPhases(
 }
 
 const file: FileContents = {
-  name: 'file.ts',
-  contents: 'const value = 1;\n',
+  name: "file.ts",
+  contents: "const value = 1;\n",
 };
 
 const unresolvedFile: FileContents = {
-  name: 'file.ts',
+  name: "file.ts",
   contents: `const value = 1;
 <<<<<<< HEAD
 const conflict = 'current';
@@ -83,8 +63,8 @@ const conflict = 'incoming';
 };
 
 const fileDiff: FileDiffMetadata = {
-  name: 'file.ts',
-  type: 'change',
+  name: "file.ts",
+  type: "change",
   hunks: [],
   splitLineCount: 0,
   unifiedLineCount: 0,
@@ -93,8 +73,8 @@ const fileDiff: FileDiffMetadata = {
   additionLines: [],
 };
 
-describe('onPostRender phases', () => {
-  test('File emits mount, update, and unmount around cleanup', () => {
+describe("onPostRender phases", () => {
+  test("File emits mount, update, and unmount around cleanup", () => {
     const { cleanup } = installDom();
     const phases: PostRenderPhase[] = [];
     const instance = new File({
@@ -112,13 +92,13 @@ describe('onPostRender phases', () => {
       instance.cleanUp();
       instance.cleanUp();
 
-      expect(phases).toEqual(['mount', 'update', 'unmount']);
+      expect(phases).toEqual(["mount", "update", "unmount"]);
     } finally {
       cleanup();
     }
   });
 
-  test('FileDiff emits mount, update, and unmount around cleanup', () => {
+  test("FileDiff emits mount, update, and unmount around cleanup", () => {
     const { cleanup } = installDom();
     const phases: PostRenderPhase[] = [];
     const instance = new FileDiff({
@@ -136,24 +116,23 @@ describe('onPostRender phases', () => {
       instance.cleanUp();
       instance.cleanUp();
 
-      expect(phases).toEqual(['mount', 'update', 'unmount']);
+      expect(phases).toEqual(["mount", "update", "unmount"]);
     } finally {
       cleanup();
     }
   });
 
-  test('FileDiff emits unmount for the previous container when render swaps containers', () => {
+  test("FileDiff emits unmount for the previous container when render swaps containers", () => {
     const { cleanup } = installDom();
     const firstContainer = createHydrationContainer();
     const secondContainer = createHydrationContainer();
-    const phases: { container: 'first' | 'second'; phase: PostRenderPhase }[] =
-      [];
+    const phases: { container: "first" | "second"; phase: PostRenderPhase }[] = [];
     const instance = new FileDiff({
       collapsed: true,
       disableFileHeader: true,
       onPostRender(node, _instance, phase) {
         phases.push({
-          container: node === firstContainer ? 'first' : 'second',
+          container: node === firstContainer ? "first" : "second",
           phase,
         });
       },
@@ -164,9 +143,9 @@ describe('onPostRender phases', () => {
       instance.render({ fileDiff, fileContainer: secondContainer });
 
       expect(phases).toEqual([
-        { container: 'first', phase: 'mount' },
-        { container: 'first', phase: 'unmount' },
-        { container: 'second', phase: 'mount' },
+        { container: "first", phase: "mount" },
+        { container: "first", phase: "unmount" },
+        { container: "second", phase: "mount" },
       ]);
     } finally {
       instance.cleanUp();
@@ -174,7 +153,7 @@ describe('onPostRender phases', () => {
     }
   });
 
-  test('UnresolvedFile emits mount, update, and unmount around cleanup', () => {
+  test("UnresolvedFile emits mount, update, and unmount around cleanup", () => {
     const { cleanup } = installDom();
     const phases: PostRenderPhase[] = [];
     const instance = new UnresolvedFile({
@@ -192,13 +171,13 @@ describe('onPostRender phases', () => {
       instance.cleanUp();
       instance.cleanUp();
 
-      expect(phases).toEqual(['mount', 'update', 'unmount']);
+      expect(phases).toEqual(["mount", "update", "unmount"]);
     } finally {
       cleanup();
     }
   });
 
-  test('File placeholder rendering unmounts once and allows remount', () => {
+  test("File placeholder rendering unmounts once and allows remount", () => {
     const { cleanup } = installDom();
     const phases: PostRenderPhase[] = [];
     const instance = new File({
@@ -216,14 +195,14 @@ describe('onPostRender phases', () => {
       instance.renderPlaceholder(48);
       instance.hydrate({ file, fileContainer });
 
-      expect(phases).toEqual(['mount', 'unmount', 'mount']);
+      expect(phases).toEqual(["mount", "unmount", "mount"]);
     } finally {
       instance.cleanUp();
       cleanup();
     }
   });
 
-  test('FileDiff placeholder rendering unmounts once and allows remount', () => {
+  test("FileDiff placeholder rendering unmounts once and allows remount", () => {
     const { cleanup } = installDom();
     const phases: PostRenderPhase[] = [];
     const instance = new FileDiff({
@@ -241,21 +220,21 @@ describe('onPostRender phases', () => {
       instance.renderPlaceholder(48);
       instance.hydrate({ fileDiff, fileContainer });
 
-      expect(phases).toEqual(['mount', 'unmount', 'mount']);
+      expect(phases).toEqual(["mount", "unmount", "mount"]);
     } finally {
       instance.cleanUp();
       cleanup();
     }
   });
 
-  test('cleanup propagates File unmount callback errors', () => {
+  test("cleanup propagates File unmount callback errors", () => {
     const { cleanup } = installDom();
     const instance = new File({
       collapsed: true,
       disableFileHeader: true,
       onPostRender(_node, _instance, phase) {
-        if (phase === 'unmount') {
-          throw new Error('unmount failed');
+        if (phase === "unmount") {
+          throw new Error("unmount failed");
         }
       },
     });
@@ -264,14 +243,14 @@ describe('onPostRender phases', () => {
     try {
       instance.hydrate({ file, fileContainer });
 
-      expect(() => instance.cleanUp()).toThrow('unmount failed');
+      expect(() => instance.cleanUp()).toThrow("unmount failed");
       instance.cleanUp();
     } finally {
       cleanup();
     }
   });
 
-  test('CodeView forwards unmount when a rendered item scrolls out', async () => {
+  test("CodeView forwards unmount when a rendered item scrolls out", async () => {
     const { cleanup } = installDom();
     const phases: { id: string; phase: PostRenderPhase }[] = [];
     const viewer = new CodeView({
@@ -283,15 +262,15 @@ describe('onPostRender phases', () => {
     });
     const root = createRoot({ height: 120 });
     const items = [
-      makeFileItem('file:first', 'first content', 100),
-      makeFileItem('file:second', 'second content', 100),
+      makeFileItem("file:first", "first content", 100),
+      makeFileItem("file:second", "second content", 100),
     ];
 
     try {
       viewer.setup(root);
       await renderItems(viewer, items);
 
-      await waitForPhases(phases, [{ id: 'file:first', phase: 'mount' }]);
+      await waitForPhases(phases, [{ id: "file:first", phase: "mount" }]);
 
       root.scrollTop = 2_400;
       dispatchScroll(root);
@@ -299,9 +278,9 @@ describe('onPostRender phases', () => {
       await wait(0);
 
       await waitForPhases(phases, [
-        { id: 'file:first', phase: 'mount' },
-        { id: 'file:first', phase: 'unmount' },
-        { id: 'file:second', phase: 'mount' },
+        { id: "file:first", phase: "mount" },
+        { id: "file:first", phase: "unmount" },
+        { id: "file:second", phase: "mount" },
       ]);
     } finally {
       viewer.cleanUp();

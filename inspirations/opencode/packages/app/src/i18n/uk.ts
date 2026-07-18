@@ -77,7 +77,8 @@ export const dict = {
   "command.permissions.autoaccept.enable": "Автоматично приймати дозволи",
   "command.permissions.autoaccept.disable": "Зупинити автоматичне прийняття дозволів",
   "command.workspace.toggle": "Перемкнути робочі області",
-  "command.workspace.toggle.description": "Увімкнути або вимкнути декілька робочих областей на бічній панелі",
+  "command.workspace.toggle.description":
+    "Увімкнути або вимкнути декілька робочих областей на бічній панелі",
   "command.session.undo": "Скасувати",
   "command.session.undo.description": "Скасувати останнє повідомлення",
   "command.session.redo": "Повторити",
@@ -109,7 +110,8 @@ export const dict = {
   "dialog.provider.openai.note": "Моделі GPT для швидких і універсальних завдань AI",
   "dialog.provider.google.note": "Моделі Gemini для швидких структурованих відповідей",
   "dialog.provider.openrouter.note": "Доступ до всіх підтримуваних моделей від одного провайдера",
-  "dialog.provider.vercel.note": "Уніфікований доступ до моделей AI з інтелектуальною маршрутизацією",
+  "dialog.provider.vercel.note":
+    "Уніфікований доступ до моделей AI з інтелектуальною маршрутизацією",
 
   "dialog.model.select.title": "Вибрати модель",
   "dialog.model.search.placeholder": "Пошук моделей",
@@ -156,7 +158,8 @@ export const dict = {
     " і введіть код нижче, щоб підключити обліковий запис і використовувати моделі {{provider}} у OpenCode.",
   "provider.connect.oauth.auto.confirmationCode": "Код підтвердження",
   "provider.connect.toast.connected.title": "{{provider}} підключено",
-  "provider.connect.toast.connected.description": "Моделі {{provider}} тепер доступні для використання.",
+  "provider.connect.toast.connected.description":
+    "Моделі {{provider}} тепер доступні для використання.",
 
   "provider.custom.title": "Користувацький провайдер",
   "provider.custom.description.prefix": "Налаштуйте провайдера, сумісного з OpenAI. Перегляньте ",
@@ -188,7 +191,8 @@ export const dict = {
   "provider.custom.headers.remove": "Видалити заголовок",
   "provider.custom.headers.add": "Додати заголовок",
   "provider.custom.error.providerID.required": "ID провайдера обов'язкове",
-  "provider.custom.error.providerID.format": "Використовуйте малі літери, цифри, дефіси або підкреслення",
+  "provider.custom.error.providerID.format":
+    "Використовуйте малі літери, цифри, дефіси або підкреслення",
   "provider.custom.error.providerID.exists": "ID провайдера вже існує",
   "provider.custom.error.name.required": "Відображувана назва обов'язкова",
   "provider.custom.error.baseURL.required": "Базовий URL обов'язковий",
@@ -286,9 +290,11 @@ export const dict = {
   "prompt.action.stop": "Зупинити",
 
   "prompt.toast.pasteUnsupported.title": "Непідтримуване вкладення",
-  "prompt.toast.pasteUnsupported.description": "Сюди можна прикріплювати лише зображення, PDF або текстові файли.",
+  "prompt.toast.pasteUnsupported.description":
+    "Сюди можна прикріплювати лише зображення, PDF або текстові файли.",
   "prompt.toast.modelAgentRequired.title": "Виберіть агента та модель",
-  "prompt.toast.modelAgentRequired.description": "Виберіть агента та модель перед надсиланням запиту.",
+  "prompt.toast.modelAgentRequired.description":
+    "Виберіть агента та модель перед надсиланням запиту.",
   "prompt.toast.worktreeCreateFailed.title": "Не вдалося створити робоче дерево",
   "prompt.toast.sessionCreateFailed.title": "Не вдалося створити сесію",
   "prompt.toast.shellSendFailed.title": "Не вдалося надіслати команду термінала",
@@ -365,7 +371,8 @@ export const dict = {
   "dialog.project.edit.color": "Колір",
   "dialog.project.edit.color.select": "Вибрати колір {{color}}",
   "dialog.project.edit.worktree.startup": "Скрипт запуску робочої області",
-  "dialog.project.edit.worktree.startup.description": "Виконується після створення нової робочої області (worktree).",
+  "dialog.project.edit.worktree.startup.description":
+    "Виконується після створення нової робочої області (worktree).",
   "dialog.project.edit.worktree.startup.placeholder": "напр. bun install",
 
   "dialog.releaseNotes.action.getStarted": "Розпочати",
@@ -434,9 +441,11 @@ export const dict = {
   "toast.scheme.title": "Кольорова схема",
 
   "toast.workspace.enabled.title": "Робочі області увімкнено",
-  "toast.workspace.enabled.description": "Кілька робочих дерев тепер відображаються на бічній панелі",
+  "toast.workspace.enabled.description":
+    "Кілька робочих дерев тепер відображаються на бічній панелі",
   "toast.workspace.disabled.title": "Робочі області вимкнено",
-  "toast.workspace.disabled.description": "Тільки головне робоче дерево відображається на бічній панелі",
+  "toast.workspace.disabled.description":
+    "Тільки головне робоче дерево відображається на бічній панелі",
 
   "toast.permissions.autoaccept.on.title": "Автоматичне прийняття дозволів",
   "toast.permissions.autoaccept.on.description": "Запити дозволів будуть автоматично схвалюватися",
@@ -488,12 +497,15 @@ export const dict = {
   "error.dev.rootNotFound":
     "Кореневий елемент не знайдено. Ви забули додати його до index.html? Або, можливо, атрибут id було написано з помилкою?",
 
-  "error.serverSync.connectFailed": "Не вдалося підключитися до сервера. Чи працює сервер за адресою `{{url}}`?",
+  "error.serverSync.connectFailed":
+    "Не вдалося підключитися до сервера. Чи працює сервер за адресою `{{url}}`?",
   "error.serverSDK.noServerAvailable": "Сервер недоступний",
   "error.serverSDK.serverNotAvailable": "Сервер недоступний",
   "error.childStore.persistedCacheCreateFailed": "Не вдалося створити постійний кеш",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Не вдалося створити постійні метадані проєкту",
-  "error.childStore.persistedProjectIconCreateFailed": "Не вдалося створити постійну іконку проєкту",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Не вдалося створити постійні метадані проєкту",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Не вдалося створити постійну іконку проєкту",
   "error.childStore.storeCreateFailed": "Не вдалося створити сховище",
   "directory.error.invalidUrl": "Недійсний каталог у URL.",
 
@@ -509,11 +521,13 @@ export const dict = {
   "error.chain.checkConfig": "Перевірте назви провайдерів/моделей у конфігурації (opencode.json)",
   "error.chain.mcpFailed":
     'Сервер MCP "{{name}}" не працює. Зверніть увагу, OpenCode ще не підтримує автентифікацію MCP.',
-  "error.chain.providerAuthFailed": "Автентифікація провайдера не вдалася ({{provider}}): {{message}}",
+  "error.chain.providerAuthFailed":
+    "Автентифікація провайдера не вдалася ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'Не вдалося ініціалізувати провайдера "{{provider}}". Перевірте облікові дані та конфігурацію.',
   "error.chain.configJsonInvalid": "Файл конфігурації {{path}} не є дійсним JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "Файл конфігурації {{path}} не є дійсним JSON(C): {{message}}",
+  "error.chain.configJsonInvalidWithMessage":
+    "Файл конфігурації {{path}} не є дійсним JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'Каталог "{{dir}}" у {{path}} недійсний. Перейменуйте каталог на "{{suggestion}}" або видаліть його. Це поширена помилка.',
   "error.chain.configFrontmatterError": "Не вдалося розібрати frontmatter у {{path}}:\n{{message}}",
@@ -545,10 +559,12 @@ export const dict = {
   "session.review.empty": "У цій сесії ще немає змін",
   "session.review.noVcs": "Систему контролю версій Git не виявлено, зміни не відображаються",
   "session.review.noVcs.createGit.title": "Створити Git-репозиторій",
-  "session.review.noVcs.createGit.description": "Відстежуйте, переглядайте та скасовуйте зміни в цьому проєкті",
+  "session.review.noVcs.createGit.description":
+    "Відстежуйте, переглядайте та скасовуйте зміни в цьому проєкті",
   "session.review.noVcs.createGit.actionLoading": "Створення Git-репозиторію...",
   "session.review.noVcs.createGit.action": "Створити Git-репозиторій",
-  "session.review.noSnapshot": "Відстеження знімків вимкнено в конфігурації, тому зміни сесії недоступні",
+  "session.review.noSnapshot":
+    "Відстеження знімків вимкнено в конфігурації, тому зміни сесії недоступні",
   "session.review.noChanges": "Немає змін",
   "session.review.noUncommittedChanges": "Ще немає незафіксованих змін",
   "session.review.noBranchChanges": "Ще немає змін у гілці",
@@ -689,7 +705,8 @@ export const dict = {
   "sidebar.workspaces.enable": "Увімкнути робочі області",
   "sidebar.workspaces.disable": "Вимкнути робочі області",
   "sidebar.gettingStarted.title": "Початок роботи",
-  "sidebar.gettingStarted.line1": "OpenCode містить безкоштовні моделі, тому ви можете почати негайно.",
+  "sidebar.gettingStarted.line1":
+    "OpenCode містить безкоштовні моделі, тому ви можете почати негайно.",
   "sidebar.gettingStarted.line2":
     "Підключіть будь-якого провайдера, щоб використовувати моделі, включаючи Claude, GPT, Gemini тощо.",
   "sidebar.project.recentSessions": "Нещодавні сесії",
@@ -710,7 +727,8 @@ export const dict = {
   "debugBar.jank.label": "JANK",
   "debugBar.jank.tip": "Кадри понад 32 мс за останні 5 секунд.",
   "debugBar.long.label": "LONG",
-  "debugBar.long.tip": "Заблокований час і кількість довгих завдань за останні 5 секунд. Макс. завдання: {{max}}.",
+  "debugBar.long.tip":
+    "Заблокований час і кількість довгих завдань за останні 5 секунд. Макс. завдання: {{max}}.",
   "debugBar.delay.label": "DELAY",
   "debugBar.delay.tip": "Найгірша спостережувана затримка введення за останні 5 секунд.",
   "debugBar.inp.label": "INP",
@@ -750,31 +768,38 @@ export const dict = {
   "settings.general.row.appearance.title": "Зовнішній вигляд",
   "settings.general.row.appearance.description": "Налаштуйте вигляд OpenCode на вашому пристрої",
   "settings.general.row.colorScheme.title": "Кольорова схема",
-  "settings.general.row.colorScheme.description": "Виберіть, чи OpenCode використовує системну, світлу або темну тему",
+  "settings.general.row.colorScheme.description":
+    "Виберіть, чи OpenCode використовує системну, світлу або темну тему",
   "settings.general.row.theme.title": "Тема",
   "settings.general.row.theme.description": "Налаштуйте тему OpenCode.",
   "settings.general.row.font.title": "Шрифт коду",
   "settings.general.row.font.description": "Налаштуйте шрифт, який використовується в блоках коду",
   "settings.general.row.terminalFont.title": "Шрифт термінала",
-  "settings.general.row.terminalFont.description": "Налаштуйте шрифт, який використовується в терміналі",
+  "settings.general.row.terminalFont.description":
+    "Налаштуйте шрифт, який використовується в терміналі",
   "settings.general.row.uiFont.title": "Шрифт інтерфейсу",
   "settings.general.row.uiFont.description": "Налаштуйте шрифт, який використовується в інтерфейсі",
   "settings.general.row.followup.title": "Поведінка продовження",
-  "settings.general.row.followup.description": "Виберіть, чи продовження виконується негайно, чи чекає в черзі",
+  "settings.general.row.followup.description":
+    "Виберіть, чи продовження виконується негайно, чи чекає в черзі",
   "settings.general.row.followup.option.queue": "Черга",
   "settings.general.row.followup.option.steer": "Керування",
   "settings.general.row.showFileTree.title": "Дерево файлів",
   "settings.general.row.showFileTree.description": "Показувати панель дерева файлів у сесіях",
   "settings.general.row.showNavigation.title": "Елементи навігації",
-  "settings.general.row.showNavigation.description": "Показувати кнопки назад і вперед у заголовку робочого столу",
+  "settings.general.row.showNavigation.description":
+    "Показувати кнопки назад і вперед у заголовку робочого столу",
   "settings.general.row.showSearch.title": "Палітра команд",
-  "settings.general.row.showSearch.description": "Показувати кнопку пошуку та палітри команд у заголовку",
+  "settings.general.row.showSearch.description":
+    "Показувати кнопку пошуку та палітри команд у заголовку",
   "settings.general.row.showTerminal.title": "Термінал",
-  "settings.general.row.showTerminal.description": "Показувати кнопку термінала в заголовку робочого столу",
+  "settings.general.row.showTerminal.description":
+    "Показувати кнопку термінала в заголовку робочого столу",
   "settings.general.row.showStatus.title": "Статус сервера",
   "settings.general.row.showStatus.description": "Показувати кнопку статусу сервера в заголовку",
   "settings.general.row.reasoningSummaries.title": "Показувати підсумки мислення",
-  "settings.general.row.reasoningSummaries.description": "Відображати підсумки мислення моделі на часовій шкалі",
+  "settings.general.row.reasoningSummaries.description":
+    "Відображати підсумки мислення моделі на часовій шкалі",
   "settings.general.row.shellToolPartsExpanded.title": "Розгортати частини інструменту оболонки",
   "settings.general.row.shellToolPartsExpanded.description":
     "Показувати частини інструменту оболонки розгорнутими за замовчуванням на часовій шкалі",
@@ -783,17 +808,21 @@ export const dict = {
     "Показувати частини інструментів редагування, запису та патчів розгорнутими за замовчуванням на часовій шкалі",
 
   "settings.general.row.wayland.title": "Використовувати нативний Wayland",
-  "settings.general.row.wayland.description": "Вимкнути резервний X11 на Wayland. Потребує перезапуску.",
+  "settings.general.row.wayland.description":
+    "Вимкнути резервний X11 на Wayland. Потребує перезапуску.",
   "settings.general.row.wayland.tooltip":
     "На Linux з моніторами з різною частотою оновлення нативний Wayland може бути більш стабільним.",
 
   "settings.general.row.releaseNotes.title": "Нотатки до релізу",
-  "settings.general.row.releaseNotes.description": 'Показувати спливаючі вікна "Що нового" після оновлень',
+  "settings.general.row.releaseNotes.description":
+    'Показувати спливаючі вікна "Що нового" після оновлень',
 
   "settings.updates.row.startup.title": "Перевіряти оновлення під час запуску",
-  "settings.updates.row.startup.description": "Автоматично перевіряти наявність оновлень під час запуску OpenCode",
+  "settings.updates.row.startup.description":
+    "Автоматично перевіряти наявність оновлень під час запуску OpenCode",
   "settings.updates.row.check.title": "Перевірити оновлення",
-  "settings.updates.row.check.description": "Вручну перевірити наявність оновлень і встановити, якщо доступні",
+  "settings.updates.row.check.description":
+    "Вручну перевірити наявність оновлень і встановити, якщо доступні",
   "settings.updates.action.checkNow": "Перевірити зараз",
   "settings.updates.action.checking": "Перевірка...",
   "settings.updates.toast.latest.title": "У вас актуальна версія",
@@ -849,12 +878,15 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Показувати системне сповіщення, коли агент завершує роботу або потребує уваги",
   "settings.general.notifications.permissions.title": "Дозволи",
-  "settings.general.notifications.permissions.description": "Показувати системне сповіщення, коли потрібен дозвіл",
+  "settings.general.notifications.permissions.description":
+    "Показувати системне сповіщення, коли потрібен дозвіл",
   "settings.general.notifications.errors.title": "Помилки",
-  "settings.general.notifications.errors.description": "Показувати системне сповіщення, коли виникає помилка",
+  "settings.general.notifications.errors.description":
+    "Показувати системне сповіщення, коли виникає помилка",
 
   "settings.general.sounds.agent.title": "Агент",
-  "settings.general.sounds.agent.description": "Відтворювати звук, коли агент завершує роботу або потребує уваги",
+  "settings.general.sounds.agent.description":
+    "Відтворювати звук, коли агент завершує роботу або потребує уваги",
   "settings.general.sounds.permissions.title": "Дозволи",
   "settings.general.sounds.permissions.description": "Відтворювати звук, коли потрібен дозвіл",
   "settings.general.sounds.errors.title": "Помилки",
@@ -884,7 +916,8 @@ export const dict = {
   "settings.providers.connected.empty": "Немає підключених провайдерів",
   "settings.providers.connected.environmentDescription": "Підключено зі змінних середовища",
   "settings.providers.section.popular": "Популярні провайдери",
-  "settings.providers.custom.description": "Додайте провайдера, сумісного з OpenAI, за базовим URL.",
+  "settings.providers.custom.description":
+    "Додайте провайдера, сумісного з OpenAI, за базовим URL.",
   "settings.providers.tag.environment": "Середовище",
   "settings.providers.tag.config": "Конфігурація",
   "settings.providers.tag.custom": "Користувацький",
@@ -899,7 +932,8 @@ export const dict = {
   "settings.mcp.description": "Налаштування MCP будуть доступні тут.",
 
   "settings.permissions.title": "Дозволи",
-  "settings.permissions.description": "Керуйте тим, які інструменти сервер може використовувати за замовчуванням.",
+  "settings.permissions.description":
+    "Керуйте тим, які інструменти сервер може використовувати за замовчуванням.",
   "settings.permissions.section.tools": "Інструменти",
   "settings.permissions.toast.updateFailed.title": "Не вдалося оновити дозволи",
 
@@ -910,11 +944,13 @@ export const dict = {
   "settings.permissions.tool.read.title": "Читання",
   "settings.permissions.tool.read.description": "Читання файлу (відповідає шляху файлу)",
   "settings.permissions.tool.edit.title": "Редагування",
-  "settings.permissions.tool.edit.description": "Зміна файлів, включаючи редагування, запис і патчі",
+  "settings.permissions.tool.edit.description":
+    "Зміна файлів, включаючи редагування, запис і патчі",
   "settings.permissions.tool.glob.title": "Glob",
   "settings.permissions.tool.glob.description": "Зіставлення файлів за допомогою glob-шаблонів",
   "settings.permissions.tool.grep.title": "Grep",
-  "settings.permissions.tool.grep.description": "Пошук вмісту файлів за допомогою регулярних виразів",
+  "settings.permissions.tool.grep.description":
+    "Пошук вмісту файлів за допомогою регулярних виразів",
   "settings.permissions.tool.list.title": "Список",
   "settings.permissions.tool.list.description": "Список файлів у каталозі",
   "settings.permissions.tool.bash.title": "Bash",
@@ -932,7 +968,8 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "Web Search",
   "settings.permissions.tool.websearch.description": "Пошук в інтернеті",
   "settings.permissions.tool.external_directory.title": "Зовнішній каталог",
-  "settings.permissions.tool.external_directory.description": "Доступ до файлів за межами каталогу проєкту",
+  "settings.permissions.tool.external_directory.description":
+    "Доступ до файлів за межами каталогу проєкту",
   "settings.permissions.tool.doom_loop.title": "Цикл приреченості",
   "settings.permissions.tool.doom_loop.description":
     "Виявлення повторюваних викликів інструментів з однаковими вхідними даними",
@@ -967,4 +1004,4 @@ export const dict = {
   "workspace.reset.archived.one": "1 сесію буде заархівовано.",
   "workspace.reset.archived.many": "{{count}} сесій буде заархівовано.",
   "workspace.reset.note": "Це скине робочу область, щоб вона відповідала гілці за замовчуванням.",
-}
+};

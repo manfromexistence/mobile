@@ -319,7 +319,7 @@ function isEnabledMac() {
     execFileSync("launchctl", ["list", APP_LABEL], {
       stdio: ["ignore", "ignore", "ignore"],
       timeout: 3000,
-    })
+    }),
   );
 }
 
@@ -330,7 +330,7 @@ function enableWin() {
   try {
     execSync(
       `reg add HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run /v ${WIN_REG_VALUE} /t REG_SZ /d "${value}" /f`,
-      { stdio: "ignore", windowsHide: true }
+      { stdio: "ignore", windowsHide: true },
     );
     return true;
   } catch {
@@ -342,7 +342,7 @@ function disableWin() {
   try {
     execSync(
       `reg delete HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run /v ${WIN_REG_VALUE} /f`,
-      { stdio: "ignore", windowsHide: true }
+      { stdio: "ignore", windowsHide: true },
     );
     return true;
   } catch {
@@ -354,7 +354,7 @@ function isEnabledWin() {
   try {
     const out = execSync(
       `reg query HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Run /v ${WIN_REG_VALUE}`,
-      { stdio: "pipe", windowsHide: true, encoding: "utf8" }
+      { stdio: "pipe", windowsHide: true, encoding: "utf8" },
     );
     return out.includes(WIN_REG_VALUE);
   } catch {

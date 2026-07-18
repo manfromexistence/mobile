@@ -50,7 +50,7 @@ export interface QuotaInfo {
 
 export type QuotaFetcher = (
   connectionId: string,
-  connection?: Record<string, unknown>
+  connection?: Record<string, unknown>,
 ) => Promise<QuotaInfo | null>;
 
 /**
@@ -121,7 +121,7 @@ export interface PreflightQuotaThresholds {
 function resolveOrDefault(
   resolver: ((window: string | null) => number) | undefined,
   window: string | null,
-  fallbackPercent: number
+  fallbackPercent: number,
 ): number {
   if (!resolver) return fallbackPercent;
   const raw = resolver(window);
@@ -137,7 +137,7 @@ function remainingPercentFrom(percentUsed: number): number {
 
 function isRemainingAtOrBelowThreshold(
   remainingPercent: number,
-  thresholdPercent: number
+  thresholdPercent: number,
 ): boolean {
   return remainingPercent <= thresholdPercent + REMAINING_PERCENT_EPSILON;
 }
@@ -154,13 +154,13 @@ function exhaustedResult(quotaPercent: number, resetAt: string | null): Prefligh
 function limitReachedResult(quota: QuotaInfo): PreflightQuotaResult {
   return exhaustedResult(
     Number.isFinite(quota.percentUsed) ? quota.percentUsed : 1,
-    quota.resetAt ?? null
+    quota.resetAt ?? null,
   );
 }
 
 function quotaWindowCutoffResult(
   windows: NonNullable<QuotaInfo["windows"]>,
-  thresholds?: PreflightQuotaThresholds
+  thresholds?: PreflightQuotaThresholds,
 ): PreflightQuotaResult | null {
   let worstUsedPercent = 0;
   let worstWindow: string | null = null;
@@ -171,12 +171,12 @@ function quotaWindowCutoffResult(
     const minRemainingPercent = resolveOrDefault(
       thresholds?.resolveMinRemainingPercent,
       windowName,
-      DEFAULT_MIN_REMAINING_PERCENT
+      DEFAULT_MIN_REMAINING_PERCENT,
     );
     if (
       !isRemainingAtOrBelowThreshold(
         remainingPercentFrom(windowInfo.percentUsed),
-        minRemainingPercent
+        minRemainingPercent,
       )
     ) {
       continue;
@@ -192,14 +192,14 @@ function quotaWindowCutoffResult(
 
 function quotaPercentCutoffResult(
   quota: QuotaInfo,
-  thresholds?: PreflightQuotaThresholds
+  thresholds?: PreflightQuotaThresholds,
 ): PreflightQuotaResult {
   if (!Number.isFinite(quota.percentUsed)) return { proceed: true };
 
   const minRemainingPercent = resolveOrDefault(
     thresholds?.resolveMinRemainingPercent,
     null,
-    DEFAULT_MIN_REMAINING_PERCENT
+    DEFAULT_MIN_REMAINING_PERCENT,
   );
   const remainingPercent = remainingPercentFrom(quota.percentUsed);
   return isRemainingAtOrBelowThreshold(remainingPercent, minRemainingPercent)
@@ -213,7 +213,7 @@ function quotaPercentCutoffResult(
  */
 export function evaluateQuotaCutoff(
   quota: QuotaInfo | null | undefined,
-  thresholds?: PreflightQuotaThresholds
+  thresholds?: PreflightQuotaThresholds,
 ): PreflightQuotaResult {
   if (!quota) return { proceed: true };
   if (quota.limitReached === true) return limitReachedResult(quota);
@@ -235,7 +235,7 @@ export async function preflightQuota(
   provider: string,
   connectionId: string,
   connection: Record<string, unknown>,
-  thresholds?: PreflightQuotaThresholds
+  thresholds?: PreflightQuotaThresholds,
 ): Promise<PreflightQuotaResult> {
   // No legacy enable-flag gate here — the caller decides when to invoke us
   // (see file-level docstring). When there's no fetcher we proceed silently.
@@ -270,12 +270,12 @@ export async function preflightQuota(
       const minRemainingPercent = resolveOrDefault(
         thresholds?.resolveMinRemainingPercent,
         windowName,
-        DEFAULT_MIN_REMAINING_PERCENT
+        DEFAULT_MIN_REMAINING_PERCENT,
       );
       const warnRemainingPercent = resolveOrDefault(
         thresholds?.resolveWarnRemainingPercent,
         windowName,
-        DEFAULT_WARN_REMAINING_PERCENT
+        DEFAULT_WARN_REMAINING_PERCENT,
       );
       const remainingPercent = remainingPercentFrom(windowInfo.percentUsed);
 
@@ -291,7 +291,7 @@ export async function preflightQuota(
         }
       } else if (isRemainingAtOrBelowThreshold(remainingPercent, warnRemainingPercent)) {
         console.warn(
-          `[QuotaPreflight] ${provider}/${connectionId} ${windowName}: ${remainingPercent.toFixed(1)}% remaining — approaching cutoff`
+          `[QuotaPreflight] ${provider}/${connectionId} ${windowName}: ${remainingPercent.toFixed(1)}% remaining — approaching cutoff`,
         );
       }
     }
@@ -299,7 +299,7 @@ export async function preflightQuota(
     if (worstWindow !== null) {
       const worstRemaining = remainingPercentFrom(worstUsedPercent);
       console.info(
-        `[QuotaPreflight] ${provider}/${connectionId} ${worstWindow}: ${worstRemaining.toFixed(1)}% remaining — switching`
+        `[QuotaPreflight] ${provider}/${connectionId} ${worstWindow}: ${worstRemaining.toFixed(1)}% remaining — switching`,
       );
       return {
         proceed: false,
@@ -316,12 +316,12 @@ export async function preflightQuota(
   const minRemainingPercent = resolveOrDefault(
     thresholds?.resolveMinRemainingPercent,
     null,
-    DEFAULT_MIN_REMAINING_PERCENT
+    DEFAULT_MIN_REMAINING_PERCENT,
   );
   const warnRemainingPercent = resolveOrDefault(
     thresholds?.resolveWarnRemainingPercent,
     null,
-    DEFAULT_WARN_REMAINING_PERCENT
+    DEFAULT_WARN_REMAINING_PERCENT,
   );
 
   const { percentUsed } = quota;
@@ -329,7 +329,7 @@ export async function preflightQuota(
 
   if (isRemainingAtOrBelowThreshold(remainingPercent, minRemainingPercent)) {
     console.info(
-      `[QuotaPreflight] ${provider}/${connectionId}: ${remainingPercent.toFixed(1)}% remaining — switching (cutoff ${minRemainingPercent}%)`
+      `[QuotaPreflight] ${provider}/${connectionId}: ${remainingPercent.toFixed(1)}% remaining — switching (cutoff ${minRemainingPercent}%)`,
     );
     return {
       proceed: false,
@@ -341,7 +341,7 @@ export async function preflightQuota(
 
   if (isRemainingAtOrBelowThreshold(remainingPercent, warnRemainingPercent)) {
     console.warn(
-      `[QuotaPreflight] ${provider}/${connectionId}: ${remainingPercent.toFixed(1)}% remaining — approaching cutoff`
+      `[QuotaPreflight] ${provider}/${connectionId}: ${remainingPercent.toFixed(1)}% remaining — approaching cutoff`,
     );
   }
 

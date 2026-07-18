@@ -42,7 +42,7 @@ export async function POST(request: Request) {
   if (!requiresWebSessionCredential(provider)) {
     return NextResponse.json(
       { error: `Provider '${provider}' does not require web-session credentials` },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
   if (!requirement || requirement.kind === "none") {
     return NextResponse.json(
       { error: `Provider '${provider}' has no credential requirement` },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
 
       if (!hasUsableWebSessionCredential(provider, providerSpecificData)) {
         throw new Error(
-          `Credential does not match expected format for ${requirement.credentialName}`
+          `Credential does not match expected format for ${requirement.credentialName}`,
         );
       }
 
@@ -89,7 +89,7 @@ export async function POST(request: Request) {
       delete safe.apiKey;
       if (safe.providerSpecificData) {
         safe.providerSpecificData = sanitizeProviderSpecificDataForResponse(
-          safe.providerSpecificData as Record<string, unknown>
+          safe.providerSpecificData as Record<string, unknown>,
         );
       }
       created.push(safe);
@@ -145,13 +145,13 @@ export async function POST(request: Request) {
       created,
       errors,
     },
-    { status: 200 }
+    { status: 200 },
   );
 }
 
 function buildProviderSpecificData(
   requirement: ReturnType<typeof getWebSessionCredentialRequirement>,
-  credential: string
+  credential: string,
 ): Record<string, unknown> {
   if (!requirement || requirement.kind === "none") {
     return {};

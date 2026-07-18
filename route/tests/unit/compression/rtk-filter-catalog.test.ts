@@ -16,7 +16,7 @@ const FILTER_DIR = path.join(
   "compression",
   "engines",
   "rtk",
-  "filters"
+  "filters",
 );
 
 const PLANNED_FILTERS = [

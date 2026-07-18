@@ -10,9 +10,9 @@ describe("agy Project ID UI support", () => {
   it("declares a single Antigravity-family provider gate", () => {
     assert.ok(
       source.includes(
-        'const isAntigravityFamily = provider === "antigravity" || provider === "agy";'
+        'const isAntigravityFamily = provider === "antigravity" || provider === "agy";',
       ),
-      "isAntigravityFamily must include antigravity and agy without a separate Google Project ID gate"
+      "isAntigravityFamily must include antigravity and agy without a separate Google Project ID gate",
     );
   });
 
@@ -23,7 +23,7 @@ describe("agy Project ID UI support", () => {
   it("uses antigravityProjectIdLabel for Antigravity-family providers", () => {
     assert.ok(
       source.includes('label={t("antigravityProjectIdLabel")}'),
-      "projectId label must use Antigravity-family copy"
+      "projectId label must use Antigravity-family copy",
     );
   });
 
@@ -31,14 +31,14 @@ describe("agy Project ID UI support", () => {
     assert.ok(
       source.includes("{isAntigravityFamily && (\n          <div") &&
         source.includes('label={t("antigravityClientProfileLabel")}'),
-      "client profile Select must render for isAntigravityFamily"
+      "client profile Select must render for isAntigravityFamily",
     );
   });
 
   it("uses isAntigravityFamily for client profile save", () => {
     assert.ok(
       source.includes("if (isAntigravityFamily) {"),
-      "client profile save must use isAntigravityFamily"
+      "client profile save must use isAntigravityFamily",
     );
   });
 });

@@ -49,7 +49,7 @@ interface ApplyResult {
  */
 export function applyNoThinkingAlias(
   body: Record<string, unknown> | null | undefined,
-  opts: { claudeFormat?: boolean } = {}
+  opts: { claudeFormat?: boolean } = {},
 ): ApplyResult {
   if (!body || typeof body !== "object") return { applied: false };
   const model = body.model;
@@ -113,7 +113,7 @@ export function shouldExposeNoThinkingAlias(model: CatalogModelEntry): boolean {
  */
 function normalizeProviderPrefix(
   qualifiedId: string,
-  aliasToCanonical: Record<string, string>
+  aliasToCanonical: Record<string, string>,
 ): string {
   const slash = qualifiedId.indexOf("/");
   if (slash < 0) return qualifiedId;
@@ -134,7 +134,7 @@ function normalizeProviderPrefix(
  */
 export function appendNoThinkingVariants<T extends CatalogModelEntry>(
   models: T[],
-  aliasToCanonical?: Record<string, string>
+  aliasToCanonical?: Record<string, string>,
 ): T[] {
   if (!Array.isArray(models)) return models;
   const variants: T[] = [];

@@ -131,7 +131,7 @@ test("quota-share: short 429 cooldown → waits and re-dispatches (2nd pass 200)
   assert.equal(calls, 2, "expected exactly one wait+redispatch (2 upstream calls)");
   assert.ok(
     elapsed >= BASE_COOLDOWN_MS,
-    `expected to have waited out the cooldown, only ${elapsed}ms elapsed`
+    `expected to have waited out the cooldown, only ${elapsed}ms elapsed`,
   );
 });
 

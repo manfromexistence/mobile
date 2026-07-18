@@ -109,7 +109,7 @@ function randomHex(bytes: number): string {
 
 async function* readGrokNdjsonEvents(
   body: ReadableStream<Uint8Array>,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): AsyncGenerator<GrokStreamEvent> {
   const reader = body.getReader();
   const decoder = new TextDecoder();
@@ -170,7 +170,7 @@ async function* extractContent(
   isThinkingModel: boolean,
   toolRegistry: GrokToolRegistry,
   signal?: AbortSignal | null,
-  suppressThinkingAfterVisibleContent = false
+  suppressThinkingAfterVisibleContent = false,
 ): AsyncGenerator<ContentChunk> {
   let fingerprint = "";
   let responseId = "";
@@ -296,7 +296,7 @@ function enqueueStreamingToolCalls(
     model: string;
     fingerprint: string;
     toolCalls: OpenAIToolCall[];
-  }
+  },
 ): void {
   for (let i = 0; i < params.toolCalls.length; i++) {
     controller.enqueue(
@@ -315,8 +315,8 @@ function enqueueStreamingToolCalls(
               logprobs: null,
             },
           ],
-        })
-      )
+        }),
+      ),
     );
   }
   controller.enqueue(
@@ -328,8 +328,8 @@ function enqueueStreamingToolCalls(
         model: params.model,
         system_fingerprint: params.fingerprint || null,
         choices: [{ index: 0, delta: {}, finish_reason: "tool_calls", logprobs: null }],
-      })
-    )
+      }),
+    ),
   );
   controller.enqueue(encoder.encode("data: [DONE]\n\n"));
 }
@@ -341,7 +341,7 @@ function buildStreamingResponse(
   created: number,
   isThinkingModel: boolean,
   toolRegistry: GrokToolRegistry,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder();
 
@@ -361,8 +361,8 @@ function buildStreamingResponse(
                 choices: [
                   { index: 0, delta: { role: "assistant" }, finish_reason: null, logprobs: null },
                 ],
-              })
-            )
+              }),
+            ),
           );
 
           let fp = "";
@@ -373,7 +373,7 @@ function buildStreamingResponse(
             isThinkingModel,
             toolRegistry,
             signal,
-            true
+            true,
           )) {
             if (chunk.fingerprint) fp = chunk.fingerprint;
 
@@ -394,8 +394,8 @@ function buildStreamingResponse(
                         logprobs: null,
                       },
                     ],
-                  })
-                )
+                  }),
+                ),
               );
               break;
             }
@@ -417,8 +417,8 @@ function buildStreamingResponse(
                         logprobs: null,
                       },
                     ],
-                  })
-                )
+                  }),
+                ),
               );
               continue;
             }
@@ -480,8 +480,8 @@ function buildStreamingResponse(
                         logprobs: null,
                       },
                     ],
-                  })
-                )
+                  }),
+                ),
               );
             }
           }
@@ -496,8 +496,8 @@ function buildStreamingResponse(
                 model,
                 system_fingerprint: fp || null,
                 choices: [{ index: 0, delta: {}, finish_reason: "stop", logprobs: null }],
-              })
-            )
+              }),
+            ),
           );
           controller.enqueue(encoder.encode("data: [DONE]\n\n"));
         } catch (err) {
@@ -514,15 +514,15 @@ function buildStreamingResponse(
                     index: 0,
                     delta: {
                       content: sanitizeErrorMessage(
-                        `[Stream error: ${err instanceof Error ? err.message : String(err)}]`
+                        `[Stream error: ${err instanceof Error ? err.message : String(err)}]`,
                       ),
                     },
                     finish_reason: "stop",
                     logprobs: null,
                   },
                 ],
-              })
-            )
+              }),
+            ),
           );
           controller.enqueue(encoder.encode("data: [DONE]\n\n"));
         } finally {
@@ -532,7 +532,7 @@ function buildStreamingResponse(
         }
       },
     },
-    { highWaterMark: 16384 }
+    { highWaterMark: 16384 },
   );
 }
 
@@ -543,7 +543,7 @@ async function buildNonStreamingResponse(
   created: number,
   isThinkingModel: boolean,
   toolRegistry: GrokToolRegistry,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): Promise<Response> {
   let fullContent = "";
   let fingerprint = "";
@@ -557,7 +557,7 @@ async function buildNonStreamingResponse(
         JSON.stringify({
           error: { message: chunk.error, type: "upstream_error", code: "GROK_ERROR" },
         }),
-        { status: 502, headers: { "Content-Type": "application/json" } }
+        { status: 502, headers: { "Content-Type": "application/json" } },
       );
     }
     if (chunk.thinking) {
@@ -582,7 +582,7 @@ async function buildNonStreamingResponse(
           ],
           usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
     if (chunk.done) break;
@@ -612,7 +612,7 @@ async function buildNonStreamingResponse(
         ],
         usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   }
 
@@ -645,7 +645,7 @@ async function buildNonStreamingResponse(
         total_tokens: promptTokens + completionTokens,
       },
     }),
-    { status: 200, headers: { "Content-Type": "application/json" } }
+    { status: 200, headers: { "Content-Type": "application/json" } },
   );
 }
 
@@ -666,13 +666,14 @@ export class GrokWebExecutor extends BaseExecutor {
     upstreamExtraHeaders,
   }: ExecuteInput) {
     const messages = (body as Record<string, unknown>).messages as
-      Array<Record<string, unknown>> | undefined;
+      | Array<Record<string, unknown>>
+      | undefined;
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       const errResp = new Response(
         JSON.stringify({
           error: { message: "Missing or empty messages array", type: "invalid_request" },
         }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
       return { response: errResp, url: GROK_CHAT_API, headers: {}, transformedBody: body };
     }
@@ -689,14 +690,14 @@ export class GrokWebExecutor extends BaseExecutor {
     const message = buildGrokMessage(
       messages,
       toolRegistry,
-      (body as Record<string, unknown>).tool_choice
+      (body as Record<string, unknown>).tool_choice,
     );
     if (!message.trim()) {
       const errResp = new Response(
         JSON.stringify({
           error: { message: "Empty query after processing", type: "invalid_request" },
         }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
       return { response: errResp, url: GROK_CHAT_API, headers: {}, transformedBody: body };
     }
@@ -804,7 +805,7 @@ export class GrokWebExecutor extends BaseExecutor {
               code: "TLS_CLIENT_UNAVAILABLE",
             },
           }),
-          { status: 502, headers: { "Content-Type": "application/json" } }
+          { status: 502, headers: { "Content-Type": "application/json" } },
         );
         return { response: errResp, url: GROK_CHAT_API, headers, transformedBody: grokPayload };
       }
@@ -813,12 +814,12 @@ export class GrokWebExecutor extends BaseExecutor {
         JSON.stringify({
           error: {
             message: sanitizeErrorMessage(
-              `Grok connection failed: ${err instanceof Error ? err.message : String(err)}`
+              `Grok connection failed: ${err instanceof Error ? err.message : String(err)}`,
             ),
             type: "upstream_error",
           },
         }),
-        { status: 502, headers: { "Content-Type": "application/json" } }
+        { status: 502, headers: { "Content-Type": "application/json" } },
       );
       return { response: errResp, url: GROK_CHAT_API, headers, transformedBody: grokPayload };
     }
@@ -838,7 +839,7 @@ export class GrokWebExecutor extends BaseExecutor {
         JSON.stringify({
           error: { message: errMsg, type: "upstream_error", code: `HTTP_${status}` },
         }),
-        { status, headers: { "Content-Type": "application/json" } }
+        { status, headers: { "Content-Type": "application/json" } },
       );
       return { response: errResp, url: GROK_CHAT_API, headers, transformedBody: grokPayload };
     }
@@ -856,7 +857,7 @@ export class GrokWebExecutor extends BaseExecutor {
         created,
         isThinking,
         toolRegistry,
-        signal
+        signal,
       );
       finalResponse = new Response(sseStream, {
         status: 200,
@@ -874,7 +875,7 @@ export class GrokWebExecutor extends BaseExecutor {
         created,
         isThinking,
         toolRegistry,
-        signal
+        signal,
       );
     }
 

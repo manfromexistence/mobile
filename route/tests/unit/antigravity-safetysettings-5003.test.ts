@@ -28,12 +28,12 @@ test("transformRequest defaults safetySettings to all-OFF when none supplied (#5
   if (result instanceof Response) throw new Error("Unexpected Response from transformRequest");
   const innerRequest = result.request as Record<string, unknown>;
   const antigravitySafetySettings = DEFAULT_SAFETY_SETTINGS.filter(
-    (setting) => setting.category !== "HARM_CATEGORY_CIVIC_INTEGRITY"
+    (setting) => setting.category !== "HARM_CATEGORY_CIVIC_INTEGRITY",
   );
   assert.deepEqual(
     innerRequest.safetySettings,
     antigravitySafetySettings,
-    "safetySettings must default to all-OFF entries accepted by Cloud Code"
+    "safetySettings must default to all-OFF entries accepted by Cloud Code",
   );
 });
 
@@ -60,7 +60,7 @@ test("transformRequest honors caller-supplied safetySettings accepted by Cloud C
   assert.deepEqual(
     innerRequest.safetySettings,
     [{ category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_MEDIUM_AND_ABOVE" }],
-    "caller-supplied safetySettings should preserve accepted entries and drop rejected ones"
+    "caller-supplied safetySettings should preserve accepted entries and drop rejected ones",
   );
 });
 
@@ -77,7 +77,7 @@ test("OpenAI Antigravity translation preserves caller-supplied safetySettings (#
       safetySettings: callerSafety,
     },
     true,
-    { projectId: "project-1" }
+    { projectId: "project-1" },
   );
 
   const result = await executor.transformRequest("antigravity/gemini-2.5-flash", translated, true, {

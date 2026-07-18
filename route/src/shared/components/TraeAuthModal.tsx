@@ -196,7 +196,7 @@ export default function TraeAuthModal({
       const data = await res.json();
       if (!res.ok) {
         throw new Error(
-          typeof data.error === "string" ? data.error : data.error?.message || "Import failed"
+          typeof data.error === "string" ? data.error : data.error?.message || "Import failed",
         );
       }
       onSuccess?.();

@@ -26,7 +26,7 @@ function useHfSuggestedImageModels(providerId: string): SuggestedHfModel[] {
   // for the "not huggingface" early-return case; switching providers simply
   // stops matching the tag instead of requiring an explicit reset call.
   const [fetched, setFetched] = useState<{ providerId: string; models: SuggestedHfModel[] } | null>(
-    null
+    null,
   );
 
   useEffect(() => {
@@ -187,9 +187,7 @@ export function ImageExampleCard({ providerId }: Props) {
       {/* Suggested models from HuggingFace Hub (image kind only) */}
       {suggestedOnly.length > 0 && (
         <div>
-          <label className="block text-xs text-text-muted mb-1">
-            {tMedia("suggestedModels")}
-          </label>
+          <label className="block text-xs text-text-muted mb-1">{tMedia("suggestedModels")}</label>
           <div className="flex flex-wrap gap-1.5">
             {suggestedOnly.map((m) => (
               <button

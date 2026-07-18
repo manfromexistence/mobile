@@ -19,7 +19,12 @@ interface FetchTimeoutOptions extends RequestInit {
 }
 
 export async function fetchWithTimeout(url: string | URL, options: FetchTimeoutOptions = {}) {
-  const { timeoutMs = FETCH_TIMEOUT_MS, signal: externalSignal, fetchFn, ...fetchOptions } = options;
+  const {
+    timeoutMs = FETCH_TIMEOUT_MS,
+    signal: externalSignal,
+    fetchFn,
+    ...fetchOptions
+  } = options;
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
@@ -45,7 +50,7 @@ export async function fetchWithTimeout(url: string | URL, options: FetchTimeoutO
       throw new FetchTimeoutError(
         `Request to ${url} timed out after ${timeoutMs}ms`,
         timeoutMs,
-        String(url)
+        String(url),
       );
     }
     throw error;

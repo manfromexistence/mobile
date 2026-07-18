@@ -106,10 +106,10 @@ export async function runLaunchCommand(opts = {}, claudeArgs = []) {
     if (!res.ok) throw new Error(`status ${res.status}`);
   } catch {
     console.error(
-      (t("launch.notRunning") || "OmniRoute is not reachable at {port}. Start it with 'omniroute serve'.").replace(
-        "{port}",
-        baseUrl
-      )
+      (
+        t("launch.notRunning") ||
+        "OmniRoute is not reachable at {port}. Start it with 'omniroute serve'."
+      ).replace("{port}", baseUrl),
     );
     return 1;
   }
@@ -138,11 +138,14 @@ export function registerLaunch(program) {
   program
     .command("launch")
     .description(
-      t("launch.description") || "Launch Claude Code pointed at OmniRoute (local or remote)"
+      t("launch.description") || "Launch Claude Code pointed at OmniRoute (local or remote)",
     )
     .option("--port <port>", t("serve.port") || "Proxy port", "20128")
     .option("--remote <url>", "Remote OmniRoute base URL (overrides --port and the active context)")
-    .option("--profile <name>", "Claude Code profile to use (CLAUDE_CONFIG_DIR ~/.claude/profiles/<name>)")
+    .option(
+      "--profile <name>",
+      "Claude Code profile to use (CLAUDE_CONFIG_DIR ~/.claude/profiles/<name>)",
+    )
     .option("--token <token>", t("launch.token") || "Token Claude sends (ANTHROPIC_AUTH_TOKEN)")
     .option("--api-key <key>", "Alias for --token (OmniRoute access token / API key)")
     .allowUnknownOption(true)

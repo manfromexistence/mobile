@@ -16,7 +16,9 @@ if (!process.env.API_KEY_SECRET) {
 
 const { getDbInstance, resetDbInstance } = await import("../../../src/lib/db/core.ts");
 const gami = await import("../../../src/lib/db/gamification.ts");
-const { seedBuiltinBadges, BUILTIN_BADGES } = await import("../../../src/lib/gamification/badges.ts");
+const { seedBuiltinBadges, BUILTIN_BADGES } = await import(
+  "../../../src/lib/gamification/badges.ts"
+);
 
 test.after(() => {
   try {
@@ -51,7 +53,7 @@ test("#3484 getAggregateXp sums XP across keys and takes the highest level", () 
   const db = getDbInstance();
   const upsert = db.prepare(
     `INSERT OR REPLACE INTO user_levels (api_key_id, total_xp, current_level, updated_at)
-     VALUES (?, ?, ?, datetime('now'))`
+     VALUES (?, ?, ?, datetime('now'))`,
   );
   upsert.run("key-a", 100, 2);
   upsert.run("key-b", 250, 5);
@@ -66,7 +68,7 @@ test("#3484 getAllEarnedBadges returns distinct badges earned by any key", () =>
   const [b0, b1] = BUILTIN_BADGES;
   const award = db.prepare(
     `INSERT OR IGNORE INTO user_badges (api_key_id, badge_id, unlocked_at)
-     VALUES (?, ?, datetime('now'))`
+     VALUES (?, ?, datetime('now'))`,
   );
   award.run("key-a", b0.id); // earned by A
   award.run("key-b", b0.id); // same badge earned by B → must dedupe to one

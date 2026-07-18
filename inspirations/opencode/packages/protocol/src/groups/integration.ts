@@ -1,11 +1,11 @@
-import { Integration } from "@opencode-ai/schema/integration"
-import { Location } from "@opencode-ai/schema/location"
-import { Schema } from "effect"
-import { HttpApiEndpoint, HttpApiGroup, HttpApiSchema, OpenApi } from "effect/unstable/httpapi"
-import { InvalidRequestError } from "../errors"
-import { LocationQuery, locationQueryOpenApi } from "./location"
+import { Integration } from "@opencode-ai/schema/integration";
+import { Location } from "@opencode-ai/schema/location";
+import { Schema } from "effect";
+import { HttpApiEndpoint, HttpApiGroup, HttpApiSchema, OpenApi } from "effect/unstable/httpapi";
+import { InvalidRequestError } from "../errors";
+import { LocationQuery, locationQueryOpenApi } from "./location";
 
-const Inputs = Schema.Record(Schema.String, Schema.String)
+const Inputs = Schema.Record(Schema.String, Schema.String);
 
 export const IntegrationGroup = HttpApiGroup.make("server.integration")
   .add(
@@ -58,17 +58,21 @@ export const IntegrationGroup = HttpApiGroup.make("server.integration")
       ),
   )
   .add(
-    HttpApiEndpoint.post("integration.connect.oauth", "/api/integration/:integrationID/connect/oauth", {
-      params: { integrationID: Integration.ID },
-      query: LocationQuery,
-      payload: Schema.Struct({
-        methodID: Integration.MethodID,
-        inputs: Inputs,
-        label: Schema.optional(Schema.String),
-      }),
-      success: Location.response(Integration.Attempt),
-      error: InvalidRequestError,
-    })
+    HttpApiEndpoint.post(
+      "integration.connect.oauth",
+      "/api/integration/:integrationID/connect/oauth",
+      {
+        params: { integrationID: Integration.ID },
+        query: LocationQuery,
+        payload: Schema.Struct({
+          methodID: Integration.MethodID,
+          inputs: Inputs,
+          label: Schema.optional(Schema.String),
+        }),
+        success: Location.response(Integration.Attempt),
+        error: InvalidRequestError,
+      },
+    )
       .annotateMerge(locationQueryOpenApi)
       .annotateMerge(
         OpenApi.annotations({
@@ -94,13 +98,17 @@ export const IntegrationGroup = HttpApiGroup.make("server.integration")
       ),
   )
   .add(
-    HttpApiEndpoint.post("integration.attempt.complete", "/api/integration/attempt/:attemptID/complete", {
-      params: { attemptID: Integration.AttemptID },
-      query: LocationQuery,
-      payload: Schema.Struct({ code: Schema.optional(Schema.String) }),
-      success: HttpApiSchema.NoContent,
-      error: InvalidRequestError,
-    })
+    HttpApiEndpoint.post(
+      "integration.attempt.complete",
+      "/api/integration/attempt/:attemptID/complete",
+      {
+        params: { attemptID: Integration.AttemptID },
+        query: LocationQuery,
+        payload: Schema.Struct({ code: Schema.optional(Schema.String) }),
+        success: HttpApiSchema.NoContent,
+        error: InvalidRequestError,
+      },
+    )
       .annotateMerge(locationQueryOpenApi)
       .annotateMerge(
         OpenApi.annotations({
@@ -126,5 +134,8 @@ export const IntegrationGroup = HttpApiGroup.make("server.integration")
       ),
   )
   .annotateMerge(
-    OpenApi.annotations({ title: "integrations", description: "Integration discovery and authentication routes." }),
-  )
+    OpenApi.annotations({
+      title: "integrations",
+      description: "Integration discovery and authentication routes.",
+    }),
+  );

@@ -1,8 +1,8 @@
 // @ts-nocheck
-import { onMount } from "solid-js"
-import * as mod from "./dialog"
-import { Button } from "./button"
-import { useDialog } from "../context/dialog"
+import { onMount } from "solid-js";
+import * as mod from "./dialog";
+import { Button } from "./button";
+import { useDialog } from "../context/dialog";
 
 const docs = `### Overview
 Dialog content wrapper used with the DialogProvider for modal flows.
@@ -26,7 +26,7 @@ Provide concise title/description and keep body focused.
 ### Theming/tokens
 - Uses \`data-component="dialog"\` and slot attributes.
 
-`
+`;
 
 export default {
   title: "UI/Dialog",
@@ -40,31 +40,31 @@ export default {
       },
     },
   },
-}
+};
 
 export const Basic = {
   render: () => {
-    const dialog = useDialog()
+    const dialog = useDialog();
     const open = () =>
       dialog.show(() => (
         <mod.Dialog title="Dialog" description="Description">
           Dialog body content.
         </mod.Dialog>
-      ))
+      ));
 
-    onMount(open)
+    onMount(open);
 
     return (
       <Button variant="secondary" onClick={open}>
         Open dialog
       </Button>
-    )
+    );
   },
-}
+};
 
 export const Sizes = {
   render: () => {
-    const dialog = useDialog()
+    const dialog = useDialog();
     return (
       <div style={{ display: "flex", gap: "12px" }}>
         <Button
@@ -104,13 +104,13 @@ export const Sizes = {
           X-Large
         </Button>
       </div>
-    )
+    );
   },
-}
+};
 
 export const Transition = {
   render: () => {
-    const dialog = useDialog()
+    const dialog = useDialog();
     return (
       <Button
         variant="secondary"
@@ -124,13 +124,13 @@ export const Transition = {
       >
         Open transition dialog
       </Button>
-    )
+    );
   },
-}
+};
 
 export const CustomAction = {
   render: () => {
-    const dialog = useDialog()
+    const dialog = useDialog();
     return (
       <Button
         variant="secondary"
@@ -148,13 +148,13 @@ export const CustomAction = {
       >
         Open action dialog
       </Button>
-    )
+    );
   },
-}
+};
 
 export const Fit = {
   render: () => {
-    const dialog = useDialog()
+    const dialog = useDialog();
     return (
       <Button
         variant="secondary"
@@ -168,6 +168,6 @@ export const Fit = {
       >
         Open fit dialog
       </Button>
-    )
+    );
   },
-}
+};

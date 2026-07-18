@@ -21,7 +21,7 @@ function rowsFor(provider: string): Array<Record<string, unknown>> {
   return coreDb
     .getDbInstance()
     .prepare(
-      "SELECT provider, compression_mode AS mode, tokens_saved_compression AS saved FROM compression_cache_stats WHERE provider = ?"
+      "SELECT provider, compression_mode AS mode, tokens_saved_compression AS saved FROM compression_cache_stats WHERE provider = ?",
     )
     .all(provider) as Array<Record<string, unknown>>;
 }
@@ -57,7 +57,7 @@ test("returns synchronously without throwing (fire-and-forget)", () => {
       effectiveModel: "gpt-x",
       mode: "balanced",
       stats: { originalTokens: 100, compressedTokens: 60 },
-    })
+    }),
   );
 });
 

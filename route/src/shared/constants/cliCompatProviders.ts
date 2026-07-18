@@ -56,7 +56,7 @@ export const CLI_COMPAT_OMITTED_PROVIDER_IDS = [
  * - keep legacy-compatible display IDs such as `copilot` while persisting normalized provider IDs
  */
 export const CLI_COMPAT_PROVIDER_IDS = Array.from(
-  new Set([...IMPLEMENTED_CLI_FINGERPRINT_PROVIDER_IDS])
+  new Set([...IMPLEMENTED_CLI_FINGERPRINT_PROVIDER_IDS]),
 );
 
 export const CLI_COMPAT_TOGGLE_IDS = Array.from(new Set(CLI_COMPAT_DISPLAY_PROVIDER_IDS));

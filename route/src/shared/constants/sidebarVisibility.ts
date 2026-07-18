@@ -109,7 +109,7 @@ function getDeterministicIconAccent(id: string): string {
       Math.round((channel + match) * 255)
         .toString(16)
         .padStart(2, "0")
-        .toUpperCase()
+        .toUpperCase(),
     )
     .join("")
     .replace(/^/, "#");
@@ -124,10 +124,10 @@ export function getSidebarIconAccent(id: string): string {
 }
 
 export function getSectionItems(
-  section: SidebarSectionDefinition | { children: readonly SidebarSectionChild[] }
+  section: SidebarSectionDefinition | { children: readonly SidebarSectionChild[] },
 ): readonly SidebarItemDefinition[] {
   return section.children.flatMap((child) =>
-    "type" in child && child.type === "group" ? child.items : [child as SidebarItemDefinition]
+    "type" in child && child.type === "group" ? child.items : [child as SidebarItemDefinition],
   );
 }
 
@@ -239,7 +239,7 @@ export const SIDEBAR_PRESETS: readonly SidebarPresetDefinition[] = [
 
 export function applySectionOrder(
   sections: readonly SidebarSectionDefinition[],
-  order: SidebarSectionId[]
+  order: SidebarSectionId[],
 ): SidebarSectionDefinition[] {
   if (order.length === 0) return [...sections];
   const knownIds = new Set(sections.map((s) => s.id));
@@ -254,7 +254,7 @@ export function applySectionOrder(
 
 export function applyItemOrder(
   children: readonly SidebarSectionChild[],
-  order: string[]
+  order: string[],
 ): SidebarSectionChild[] {
   if (order.length === 0) return [...children];
   const getChildId = (c: SidebarSectionChild): string =>

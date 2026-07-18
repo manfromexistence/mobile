@@ -35,7 +35,7 @@ export type CodexModelsFetch = (
   init: {
     method: "GET";
     headers: Record<string, string>;
-  }
+  },
 ) => Promise<Response>;
 
 type CodexGithubCatalogCache = {
@@ -175,7 +175,7 @@ function buildCodexDiscoveryModel(record: JsonRecord): CodexDiscoveryModel | nul
     topProvider.context_length,
     limits.input_tokens,
     limits.inputTokenLimit,
-    limits.max_input_tokens
+    limits.max_input_tokens,
   );
   const outputTokenLimit = firstPositiveNumber(
     record.outputTokenLimit,
@@ -184,7 +184,7 @@ function buildCodexDiscoveryModel(record: JsonRecord): CodexDiscoveryModel | nul
     topProvider.max_completion_tokens,
     limits.output_tokens,
     limits.outputTokenLimit,
-    limits.max_output_tokens
+    limits.max_output_tokens,
   );
   const description = toNonEmptyString(record.description);
 
@@ -218,7 +218,7 @@ export function clearCodexGithubCatalogCacheForTests(): void {
 
 function getFreshCodexGithubCatalogCache(
   now: number,
-  cacheTtlMs: number
+  cacheTtlMs: number,
 ): CodexDiscoveryModel[] | null {
   const cache = codexGithubCatalogCache;
   if (cacheTtlMs > 0 && cache && cache.expiresAt > now) {
@@ -241,7 +241,7 @@ function buildCodexGithubCatalogHeaders(): Record<string, string> {
 function getNotModifiedCodexGithubCatalog(
   response: Response,
   now: number,
-  cacheTtlMs: number
+  cacheTtlMs: number,
 ): CodexDiscoveryModel[] | null {
   if (response.status !== 304 || !codexGithubCatalogCache) return null;
 
@@ -256,7 +256,7 @@ function storeCodexGithubCatalogCache(
   models: CodexDiscoveryModel[],
   response: Response,
   now: number,
-  cacheTtlMs: number
+  cacheTtlMs: number,
 ): void {
   const etag = toNonEmptyString(response.headers.get("etag"));
   codexGithubCatalogCache = {
@@ -277,7 +277,7 @@ type CodexLocalCatalogModel = {
 };
 
 function localCatalogModelToCodexDiscoveryModel(
-  model: CodexLocalCatalogModel
+  model: CodexLocalCatalogModel,
 ): CodexDiscoveryModel {
   const inputTokenLimit = firstPositiveNumber(model.maxInputTokens, model.contextLength);
   const outputTokenLimit = firstPositiveNumber(model.maxOutputTokens);
@@ -299,7 +299,7 @@ function localCatalogModelToCodexDiscoveryModel(
  */
 export function mergeCodexLiveModelsWithLocalCatalog(
   liveModels: CodexDiscoveryModel[],
-  localCatalogModels: CodexLocalCatalogModel[]
+  localCatalogModels: CodexLocalCatalogModel[],
 ): CodexDiscoveryModel[] {
   const merged = new Map<string, CodexDiscoveryModel>();
 
@@ -327,7 +327,7 @@ export type CodexDiscoveryModelFilter = (model: CodexDiscoveryModel) => boolean;
  */
 export function applyCodexDiscoveryFilters(
   models: CodexDiscoveryModel[],
-  extraFilters: readonly CodexDiscoveryModelFilter[] = []
+  extraFilters: readonly CodexDiscoveryModelFilter[] = [],
 ): CodexDiscoveryModel[] {
   return models.filter((model) => {
     if (isCodexDiscoveryModelExcluded(model)) return false;
@@ -339,11 +339,11 @@ export function applyCodexDiscoveryFilters(
 export function buildCodexDiscoveryCatalog(
   remoteModels: CodexDiscoveryModel[],
   localCatalogModels: CodexLocalCatalogModel[],
-  extraFilters: readonly CodexDiscoveryModelFilter[] = []
+  extraFilters: readonly CodexDiscoveryModelFilter[] = [],
 ): CodexDiscoveryModel[] {
   return applyCodexDiscoveryFilters(
     mergeCodexLiveModelsWithLocalCatalog(remoteModels, localCatalogModels),
-    extraFilters
+    extraFilters,
   );
 }
 
@@ -358,7 +358,7 @@ export type CuratedCodexCatalogResult = {
  */
 export function reconcileCuratedCodexCatalog(
   remoteModels: CodexDiscoveryModel[],
-  curatedModels: CodexLocalCatalogModel[]
+  curatedModels: CodexLocalCatalogModel[],
 ): CuratedCodexCatalogResult {
   const remoteById = new Map(remoteModels.map((model) => [model.id, model]));
   const curatedIds = new Set<string>();
@@ -378,7 +378,7 @@ export function reconcileCuratedCodexCatalog(
 
 export function enrichCodexModelsFromGithubCatalog(
   models: CodexDiscoveryModel[],
-  githubCatalogModels: CodexDiscoveryModel[]
+  githubCatalogModels: CodexDiscoveryModel[],
 ): CodexDiscoveryModel[] {
   const byId = new Map(githubCatalogModels.map((model) => [model.id, model]));
   return models.map((model) => {

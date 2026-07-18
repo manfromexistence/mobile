@@ -4,10 +4,7 @@
   "title": "Hero 01",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "A hero section with a golden spiral background.",
-  "registryDependencies": [
-    "button",
-    "https://chanhdai.com/r/style.json"
-  ],
+  "registryDependencies": ["button", "https://chanhdai.com/r/style.json"],
   "files": [
     {
       "path": "src/registry/blocks/hero-01/hero-01.tsx",
@@ -25,8 +22,6 @@
   "meta": {
     "createdAt": "2026-03-12"
   },
-  "categories": [
-    "marketing"
-  ],
+  "categories": ["marketing"],
   "type": "registry:block"
 }

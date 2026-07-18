@@ -176,7 +176,7 @@ export function cacheReasoning(
   toolCallId: string,
   provider: string,
   model: string,
-  reasoning: string
+  reasoning: string,
 ): void {
   cacheReasoningByKey(toolCallId, provider, model, reasoning);
 }
@@ -185,7 +185,7 @@ export function cacheReasoningByKey(
   key: string,
   provider: string,
   model: string,
-  reasoning: string
+  reasoning: string,
 ): void {
   if (!key || !reasoning) return;
 
@@ -225,7 +225,7 @@ export function cacheReasoningBatch(
   toolCallIds: string[],
   provider: string,
   model: string,
-  reasoning: string
+  reasoning: string,
 ): void {
   for (const id of toolCallIds) {
     if (id) cacheReasoning(id, provider, model, reasoning);
@@ -240,7 +240,7 @@ export function cacheReasoningFromAssistantMessage(
   message: AssistantMessageLike | null | undefined,
   provider: string,
   model: string,
-  context?: AssistantMessageCacheContext
+  context?: AssistantMessageCacheContext,
 ): number {
   if (!message || message.role !== "assistant") {
     return 0;
@@ -270,7 +270,7 @@ export function cacheReasoningFromAssistantMessage(
       buildAssistantMessageCacheKey(requestId, messageIndex),
       provider,
       model,
-      reasoning
+      reasoning,
     );
     return 1;
   }
@@ -400,7 +400,7 @@ export function getReasoningCacheServiceEntries(
     offset?: number;
     provider?: string;
     model?: string;
-  } = {}
+  } = {},
 ): unknown[] {
   try {
     return getReasoningCacheEntries(opts);

@@ -20,7 +20,7 @@ test("#3980 streaming tool call → terminal finish_reason is 'tool_calls'", () 
       _eventType: "toolUseEvent",
       toolUseEvent: { toolUseId: "call_1", name: "ping", input: { text: "hi" } },
     },
-    state
+    state,
   ) as { choices: { delta: Record<string, unknown>; finish_reason: unknown }[] };
 
   assert.ok(toolChunk?.choices?.[0]?.delta?.tool_calls, "tool_calls delta should be emitted");
@@ -34,12 +34,12 @@ test("#3980 streaming tool call → terminal finish_reason is 'tool_calls'", () 
   assert.equal(
     stopChunk.choices[0].finish_reason,
     "tool_calls",
-    "terminal finish_reason must be 'tool_calls' when the stream produced tool calls"
+    "terminal finish_reason must be 'tool_calls' when the stream produced tool calls",
   );
   assert.equal(
     state.finishReason,
     "tool_calls",
-    "state.finishReason (used for usage injection) must also be 'tool_calls'"
+    "state.finishReason (used for usage injection) must also be 'tool_calls'",
   );
 });
 
@@ -48,7 +48,7 @@ test("#3980 plain text stream → terminal finish_reason stays 'stop'", () => {
 
   convertKiroToOpenAI(
     { _eventType: "assistantResponseEvent", assistantResponseEvent: { content: "hello" } },
-    state
+    state,
   );
 
   const stopChunk = convertKiroToOpenAI({ _eventType: "messageStopEvent" }, state) as {
@@ -58,7 +58,7 @@ test("#3980 plain text stream → terminal finish_reason stays 'stop'", () => {
   assert.equal(
     stopChunk.choices[0].finish_reason,
     "stop",
-    "no tool calls → terminal finish_reason remains 'stop'"
+    "no tool calls → terminal finish_reason remains 'stop'",
   );
   assert.equal(state.finishReason, "stop");
 });

@@ -29,8 +29,9 @@ test("host imports the tool-bridge + native-tools + text-cleanup helpers", () =>
 });
 
 test("text-cleanup strips Grok markup", async () => {
-  const { cleanGrokContentText } =
-    await import("../../open-sse/executors/grok-web/text-cleanup.ts");
+  const { cleanGrokContentText } = await import(
+    "../../open-sse/executors/grok-web/text-cleanup.ts"
+  );
   assert.equal(typeof cleanGrokContentText, "function");
   assert.equal(typeof cleanGrokContentText("plain text"), "string");
 });

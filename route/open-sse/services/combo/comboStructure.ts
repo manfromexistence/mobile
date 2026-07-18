@@ -69,7 +69,7 @@ function normalizeRuntimeStep(
   comboName: string,
   index: number,
   allCombos: ComboCollectionLike,
-  path: string[] = []
+  path: string[] = [],
 ): ComboRuntimeStep | null {
   const step = normalizeComboStep(entry, {
     comboName,
@@ -118,14 +118,14 @@ function normalizeRuntimeStep(
 
 function getDirectComboTargets(combo: ComboLike): ResolvedComboTarget[] {
   return getOrderedTopLevelRuntimeSteps(combo, null).filter(
-    (entry): entry is ResolvedComboTarget => entry?.kind === "model"
+    (entry): entry is ResolvedComboTarget => entry?.kind === "model",
   );
 }
 
 function getTopLevelRuntimeSteps(
   combo: ComboLike,
   allCombos: ComboCollectionLike,
-  path: string[] = []
+  path: string[] = [],
 ): ComboRuntimeStep[] {
   return (combo.models || [])
     .map((entry, index) => normalizeRuntimeStep(entry, combo.name, index, allCombos, path))
@@ -157,7 +157,7 @@ function getCompositeTierStepOrder(combo: ComboLike): string[] {
         if (!normalizedTierName || !stepId) return null;
         return [normalizedTierName, { stepId, fallbackTier }] as const;
       })
-      .filter((entry): entry is CompositeTierEntry => entry !== null)
+      .filter((entry): entry is CompositeTierEntry => entry !== null),
   );
 
   let currentTier: string | null = defaultTier;
@@ -188,7 +188,7 @@ function hasCompositeTierRuntimeOrder(combo: ComboLike): boolean {
 
 function orderRuntimeStepsByCompositeTiers(
   steps: ComboRuntimeStep[],
-  combo: ComboLike
+  combo: ComboLike,
 ): ComboRuntimeStep[] {
   const orderedStepIds = getCompositeTierStepOrder(combo);
   if (orderedStepIds.length === 0) return steps;
@@ -216,7 +216,7 @@ function orderRuntimeStepsByCompositeTiers(
 function getOrderedTopLevelRuntimeSteps(
   combo: ComboLike,
   allCombos: ComboCollectionLike,
-  path: string[] = []
+  path: string[] = [],
 ): ComboRuntimeStep[] {
   return orderRuntimeStepsByCompositeTiers(getTopLevelRuntimeSteps(combo, allCombos, path), combo);
 }
@@ -227,7 +227,7 @@ function expandRuntimeStep(
   visited = new Set<string>(),
   depth = 0,
   path: string[] = [],
-  maxDepth: number = MAX_COMBO_DEPTH
+  maxDepth: number = MAX_COMBO_DEPTH,
 ): ResolvedComboTarget[] {
   if (step.kind === "model") return [step];
   if (depth > maxDepth) return [];
@@ -242,7 +242,7 @@ function expandRuntimeStep(
     new Set(visited),
     depth + 1,
     [...path, step.stepId],
-    maxDepth
+    maxDepth,
   );
 }
 
@@ -252,7 +252,7 @@ export function resolveNestedComboTargets(
   visited = new Set<string>(),
   depth = 0,
   path: string[] = [],
-  maxDepth: number = MAX_COMBO_DEPTH
+  maxDepth: number = MAX_COMBO_DEPTH,
 ): ResolvedComboTarget[] {
   const directTargets = (combo.models || [])
     .map((entry, index) => normalizeRuntimeStep(entry, combo.name, index, null, path))
@@ -284,7 +284,7 @@ export function resolveNestedComboTargets(
  */
 export function getComboFromData(
   modelStr: string,
-  combosData: ComboCollectionLike
+  combosData: ComboCollectionLike,
 ): ComboLike | null {
   const combos = getCombosArray(combosData);
   const combo = combos.find((c) => c.name === modelStr);
@@ -299,7 +299,7 @@ export function getComboFromData(
  */
 export function getComboModelsFromData(
   modelStr: string,
-  combosData: ComboCollectionLike
+  combosData: ComboCollectionLike,
 ): string[] | null {
   const combo = getComboFromData(modelStr, combosData);
   if (!combo) return null;
@@ -319,7 +319,7 @@ export function validateComboDAG(
   allCombos: ComboCollectionLike,
   visited = new Set<string>(),
   depth = 0,
-  maxDepth: number = MAX_COMBO_DEPTH
+  maxDepth: number = MAX_COMBO_DEPTH,
 ): void {
   if (depth > maxDepth) {
     throw new Error(`Max combo nesting depth (${maxDepth}) exceeded at "${comboName}"`);
@@ -357,7 +357,7 @@ export function resolveNestedComboModels(
   allCombos: ComboCollectionLike,
   visited = new Set<string>(),
   depth = 0,
-  maxDepth: number = MAX_COMBO_DEPTH
+  maxDepth: number = MAX_COMBO_DEPTH,
 ): string[] {
   if (depth > maxDepth) return combo.models.map((m) => normalizeModelEntry(m).model);
   if (visited.has(combo.name)) return []; // cycle safety
@@ -377,7 +377,7 @@ export function resolveNestedComboModels(
         combos,
         new Set(visited),
         depth + 1,
-        maxDepth
+        maxDepth,
       );
       resolved.push(...nested);
     } else {
@@ -461,12 +461,12 @@ function valueContainsImagePart(value: unknown, depth = 0): boolean {
 }
 
 function deriveRequestCompatibilityRequirements(
-  body: Record<string, unknown>
+  body: Record<string, unknown>,
 ): RequestCompatibilityRequirements {
   const estimatedInputTokens = estimateRequestInputTokens(body);
   const requestedOutputTokens = Math.max(
     getPositiveTokenCount(body.max_tokens),
-    getPositiveTokenCount(body.max_completion_tokens)
+    getPositiveTokenCount(body.max_completion_tokens),
   );
   return {
     requiresTools: requestRequiresTools(body),
@@ -480,7 +480,7 @@ function deriveRequestCompatibilityRequirements(
 
 function exceedsKnownOutputLimit(
   requestedOutputTokens: number,
-  maxOutputTokens: number | null
+  maxOutputTokens: number | null,
 ): boolean {
   if (requestedOutputTokens <= 0 || maxOutputTokens === null) return false;
   return maxOutputTokens < requestedOutputTokens;
@@ -495,7 +495,7 @@ function getKnownContextLimit(capabilities: {
 
 function hasKnownCompatibleContextLimit(
   target: ResolvedComboTarget,
-  requiredContextTokens: number
+  requiredContextTokens: number,
 ): boolean {
   if (requiredContextTokens <= 0) return false;
   const capabilities = getResolvedModelCapabilities(target.modelStr);
@@ -509,7 +509,7 @@ function hasOnlyContextWindowFailures(reasons: string[]): boolean {
 
 function getTargetCompatibilityFailures(
   target: ResolvedComboTarget,
-  requirements: RequestCompatibilityRequirements
+  requirements: RequestCompatibilityRequirements,
 ): string[] {
   const capabilities = getResolvedModelCapabilities(target.modelStr);
   const failures: string[] = [];
@@ -555,7 +555,7 @@ export function filterTargetsByRequestCompatibility(
   targets: ResolvedComboTarget[],
   body: Record<string, unknown>,
   log: ComboLogger,
-  label = "Context-aware fallback"
+  label = "Context-aware fallback",
 ): ResolvedComboTarget[] {
   if (targets.length === 0) return targets;
   const requirements = deriveRequestCompatibilityRequirements(body);
@@ -580,11 +580,11 @@ export function filterTargetsByRequestCompatibility(
   // context target remains, fall back to the strategy order for context-only
   // candidates instead of letting unknown metadata be the only survivors.
   const rejectedForContextWindow = rejected.some((entry) =>
-    entry.reasons.includes("context_window")
+    entry.reasons.includes("context_window"),
   );
   if (requirements.requiredContextTokens > 0 && rejectedForContextWindow) {
     const knownContextCompatible = compatible.filter((target) =>
-      hasKnownCompatibleContextLimit(target, requirements.requiredContextTokens)
+      hasKnownCompatibleContextLimit(target, requirements.requiredContextTokens),
     );
 
     if (knownContextCompatible.length > 0 && knownContextCompatible.length < compatible.length) {
@@ -597,13 +597,13 @@ export function filterTargetsByRequestCompatibility(
 
       log.info(
         "COMBO",
-        `${label}: kept ${knownContextCompatible.length}/${targets.length} targets for request requirements`
+        `${label}: kept ${knownContextCompatible.length}/${targets.length} targets for request requirements`,
       );
       log.debug?.(
         "COMBO",
         `${label}: rejected targets ${rejected
           .map((entry) => `${entry.target.modelStr}(${entry.reasons.join("+")})`)
-          .join(", ")}`
+          .join(", ")}`,
       );
       return knownContextCompatible;
     }
@@ -618,13 +618,13 @@ export function filterTargetsByRequestCompatibility(
       if (contextOnlyFallback.length > compatible.length) {
         log.warn(
           "COMBO",
-          `${label}: no known-compatible context target remains; preserving strategy order for context-only candidates`
+          `${label}: no known-compatible context target remains; preserving strategy order for context-only candidates`,
         );
         log.debug?.(
           "COMBO",
           `${label}: rejected targets ${rejected
             .map((entry) => `${entry.target.modelStr}(${entry.reasons.join("+")})`)
-            .join(", ")}`
+            .join(", ")}`,
         );
         return contextOnlyFallback;
       }
@@ -635,33 +635,33 @@ export function filterTargetsByRequestCompatibility(
   if (compatible.length === 0) {
     log.warn(
       "COMBO",
-      `${label}: all ${targets.length} targets were filtered by request requirements; preserving strategy order`
+      `${label}: all ${targets.length} targets were filtered by request requirements; preserving strategy order`,
     );
     log.debug?.(
       "COMBO",
       `${label}: rejected targets ${rejected
         .map((entry) => `${entry.target.modelStr}(${entry.reasons.join("+")})`)
-        .join(", ")}`
+        .join(", ")}`,
     );
     return targets;
   }
 
   log.info(
     "COMBO",
-    `${label}: kept ${compatible.length}/${targets.length} targets for request requirements`
+    `${label}: kept ${compatible.length}/${targets.length} targets for request requirements`,
   );
   log.debug?.(
     "COMBO",
     `${label}: rejected targets ${rejected
       .map((entry) => `${entry.target.modelStr}(${entry.reasons.join("+")})`)
-      .join(", ")}`
+      .join(", ")}`,
   );
   return compatible;
 }
 
 export function sortTargetsByContextSize(targets: ResolvedComboTarget[]) {
   const hasKnownContext = targets.some(
-    (target) => getModelContextLimitForModelString(target.modelStr) != null
+    (target) => getModelContextLimitForModelString(target.modelStr) != null,
   );
   if (!hasKnownContext) return targets;
 
@@ -683,7 +683,7 @@ export function sortTargetsByContextSize(targets: ResolvedComboTarget[]) {
 export function resolveComboTargets(
   combo: ComboLike,
   allCombos: ComboCollectionLike,
-  maxDepth: number = MAX_COMBO_DEPTH
+  maxDepth: number = MAX_COMBO_DEPTH,
 ): ResolvedComboTarget[] {
   return allCombos
     ? resolveNestedComboTargets(combo, allCombos, new Set<string>(), 0, [], maxDepth)
@@ -694,7 +694,7 @@ export function resolveComboRuntimeUnits(
   combo: ComboLike,
   allCombos: ComboCollectionLike,
   mode: NestedComboMode,
-  maxDepth: number = MAX_COMBO_DEPTH
+  maxDepth: number = MAX_COMBO_DEPTH,
 ): ResolvedComboUnit[] {
   if (mode === "flatten" || !allCombos) return resolveComboTargets(combo, allCombos, maxDepth);
   validateComboDAG(combo.name, allCombos, new Set<string>(), 0, maxDepth);
@@ -703,7 +703,7 @@ export function resolveComboRuntimeUnits(
 
 export function resolveWeightedStepGroups(
   combo: ComboLike,
-  allCombos: ComboCollectionLike
+  allCombos: ComboCollectionLike,
 ): Array<{ step: ComboRuntimeStep; targets: ResolvedComboTarget[] }> {
   return getOrderedTopLevelRuntimeSteps(combo, allCombos)
     .map((step) => ({
@@ -722,14 +722,14 @@ export function resolveWeightedTargets(
   allCombos: ComboCollectionLike,
   preferredExecutionKey: string | null = null,
   eligibleExecutionKeys: ReadonlySet<string> | null = null,
-  stepGroups?: Array<{ step: ComboRuntimeStep; targets: ResolvedComboTarget[] }>
+  stepGroups?: Array<{ step: ComboRuntimeStep; targets: ResolvedComboTarget[] }>,
 ): {
   orderedTargets: ResolvedComboTarget[];
   selectedStep: ComboRuntimeStep | null;
   orderedSteps: ComboRuntimeStep[];
 } {
   const topLevelSteps = getOrderedTopLevelRuntimeSteps(combo, allCombos).filter((step) =>
-    eligibleExecutionKeys ? eligibleExecutionKeys.has(step.executionKey) : true
+    eligibleExecutionKeys ? eligibleExecutionKeys.has(step.executionKey) : true,
   );
   if (topLevelSteps.length === 0) {
     return { orderedTargets: [], selectedStep: null, orderedSteps: [] };
@@ -746,16 +746,16 @@ export function resolveWeightedTargets(
   const orderedSteps = orderTargetsForWeightedFallback(
     topLevelSteps,
     selectedStep.executionKey,
-    hasCompositeTierRuntimeOrder(combo)
+    hasCompositeTierRuntimeOrder(combo),
   );
   const targetsByStep = new Map(
     (stepGroups || resolveWeightedStepGroups(combo, allCombos)).map((group) => [
       group.step.executionKey,
       group.targets,
-    ])
+    ]),
   );
   const expandedTargets = orderedSteps.flatMap(
-    (step) => targetsByStep.get(step.executionKey) || []
+    (step) => targetsByStep.get(step.executionKey) || [],
   );
 
   return {

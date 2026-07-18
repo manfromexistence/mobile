@@ -45,7 +45,7 @@ async function callApi(
   fn: () => Promise<Response>,
   t: Translate,
   failKey: string,
-  setFeedback: (f: Feedback) => void
+  setFeedback: (f: Feedback) => void,
 ): Promise<boolean> {
   setFeedback(null);
   try {
@@ -90,7 +90,7 @@ function useDiscoveryResults(t: Translate) {
 function useDiscoveryActions(
   t: Translate,
   load: () => Promise<void>,
-  setFeedback: (f: Feedback) => void
+  setFeedback: (f: Feedback) => void,
 ) {
   const [scanTarget, setScanTarget] = useState("");
   const [scanning, setScanning] = useState(false);
@@ -110,7 +110,7 @@ function useDiscoveryActions(
         }),
       t,
       "scanFailed",
-      setFeedback
+      setFeedback,
     );
     setScanning(false);
     if (ok) {
@@ -127,12 +127,12 @@ function useDiscoveryActions(
         () => fetch(`/api/discovery/verify/${row.id}`, { method: "POST" }),
         t,
         "verifyFailed",
-        setFeedback
+        setFeedback,
       );
       setBusyId(null);
       if (ok) await load();
     },
-    [t, load, setFeedback]
+    [t, load, setFeedback],
   );
 
   const remove = useCallback(async () => {
@@ -142,7 +142,7 @@ function useDiscoveryActions(
       () => fetch(`/api/discovery/results/${deleteTarget.id}`, { method: "DELETE" }),
       t,
       "deleteFailed",
-      setFeedback
+      setFeedback,
     );
     setBusyId(null);
     if (ok) {

@@ -133,20 +133,14 @@ export default function RootLayout({
               gtag('config', 'G-5G7F4C09QB');
         `}
       </Script>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: schema() }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: schema() }} />
       <body suppressHydrationWarning className={`${poppins.className}`}>
         <NuqsAdapter>
           <ThemeProvider attribute="class">
             <TooltipProvider delayDuration={0}>
               <Toaster position="bottom-right" richColors />
               <div className="absolute top-0 w-full left-0 z-50 bg-background/20 backdrop-blur-md">
-                <Banner
-                  variant="rainbow"
-                  className="h-11 md:text-base sm:text-sm text-xs"
-                >
+                <Banner variant="rainbow" className="h-11 md:text-base sm:text-sm text-xs">
                   <p className="group-hover:underline underline-offset-4 flex flex-wrap gap-1 items-center">
                     <picture>
                       <source
@@ -161,8 +155,7 @@ export default function RootLayout({
                         height="32"
                       />
                     </picture>
-                    Ship faster with{" "}
-                    <span className="font-semibold">UI-Layouts Pro</span>
+                    Ship faster with <span className="font-semibold">UI-Layouts Pro</span>
                     <span className="md:inline-block hidden">
                       – 100+ production-ready blocks & Templates waiting for you
                     </span>

@@ -113,7 +113,7 @@ function parseArgs(argv) {
           "  --translate-markers     Call the translation backend to translate every",
           "                          __MISSING__:<en> placeholder",
           "  --concurrency=<n>       Parallel translation requests (default: env or 4)",
-        ].join("\n")
+        ].join("\n"),
       );
       process.exit(0);
     }
@@ -207,7 +207,7 @@ function requireEnv(name) {
   const v = process.env[name];
   if (!v || !v.trim()) {
     throw new Error(
-      `Missing required env var: ${name}. Set it in .env (see docs/guides/I18N.md → "Translation pipeline").`
+      `Missing required env var: ${name}. Set it in .env (see docs/guides/I18N.md → "Translation pipeline").`,
     );
   }
   return v.trim();
@@ -369,8 +369,8 @@ async function translatePlaceholders(merged, localeEntry, backend, concurrency) 
           failed++;
           logWarn(`translation failed for ${localeEntry.code}: ${err.message}`);
         }
-      })
-    )
+      }),
+    ),
   );
   return { translated, failed };
 }
@@ -442,7 +442,7 @@ async function main() {
   // Locales = every code in config except `en`, intersected with locales that
   // already exist on disk (so we never silently create unknown locale files).
   const onDisk = new Set(
-    (await fs.readdir(MESSAGES_DIR)).filter((f) => f.endsWith(".json")).map((f) => f.slice(0, -5))
+    (await fs.readdir(MESSAGES_DIR)).filter((f) => f.endsWith(".json")).map((f) => f.slice(0, -5)),
   );
 
   let targetLocales = config.locales
@@ -460,7 +460,7 @@ async function main() {
   logInfo(`source: ${path.relative(ROOT, sourcePath)}`);
   logInfo(`locales: ${targetLocales.length} (${targetLocales.join(", ")})`);
   logInfo(
-    `dry-run: ${opts.dryRun ? "yes" : "no"}, translate-markers: ${opts.translateMarkers ? "yes" : "no"}`
+    `dry-run: ${opts.dryRun ? "yes" : "no"}, translate-markers: ${opts.translateMarkers ? "yes" : "no"}`,
   );
 
   let backend = null;
@@ -469,7 +469,7 @@ async function main() {
     backend.concurrency =
       opts.concurrency ?? Number(process.env.OMNIROUTE_TRANSLATION_CONCURRENCY || 4);
     logInfo(
-      `backend: ${backend.apiUrl} (model=${backend.model}, concurrency=${backend.concurrency}, timeout=${backend.timeoutMs}ms)`
+      `backend: ${backend.apiUrl} (model=${backend.model}, concurrency=${backend.concurrency}, timeout=${backend.timeoutMs}ms)`,
     );
   }
 
@@ -483,7 +483,7 @@ async function main() {
   }
   const elapsedSec = ((Date.now() - startMs) / 1000).toFixed(1);
   logInfo(
-    `summary: locales=${targetLocales.length}, added=${totalAdded}, translated=${totalTranslated}, elapsed=${elapsedSec}s`
+    `summary: locales=${targetLocales.length}, added=${totalAdded}, translated=${totalTranslated}, elapsed=${elapsedSec}s`,
   );
 }
 

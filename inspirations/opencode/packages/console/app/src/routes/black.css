@@ -211,8 +211,12 @@
         max-width: 590px;
         height: auto;
         overflow: visible;
-        filter: drop-shadow(0 0 20px rgba(255, 255, 255, calc(0.1 + var(--hero-black-glow-intensity, 0) * 0.15)))
-          drop-shadow(0 -5px 30px rgba(255, 255, 255, calc(var(--hero-black-glow-intensity, 0) * 0.2)));
+        filter: drop-shadow(
+            0 0 20px rgba(255, 255, 255, calc(0.1 + var(--hero-black-glow-intensity, 0) * 0.15))
+          )
+          drop-shadow(
+            0 -5px 30px rgba(255, 255, 255, calc(var(--hero-black-glow-intensity, 0) * 0.2))
+          );
         mask-image: linear-gradient(to bottom, black, transparent);
         stroke-width: 1.5;
 

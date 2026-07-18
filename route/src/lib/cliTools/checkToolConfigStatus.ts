@@ -17,7 +17,7 @@ const { apiPort } = getRuntimePorts();
  */
 export async function checkToolConfigStatus(
   toolId: string,
-  _configPathOverride?: string
+  _configPathOverride?: string,
 ): Promise<"configured" | "not_configured" | "not_installed" | "unknown" | "other"> {
   try {
     const configPath = _configPathOverride ?? getCliPrimaryConfigPath(toolId);
@@ -96,8 +96,8 @@ export async function checkToolConfigStatus(
         // (user may configure an external domain instead of localhost)
         if (
           toolId === "cline" &&
-          ((config.actModeApiProvider === "openai" || config.planModeApiProvider === "openai") &&
-            ((config.openAiBaseUrl as string) || "").trim().length > 0)
+          (config.actModeApiProvider === "openai" || config.planModeApiProvider === "openai") &&
+          ((config.openAiBaseUrl as string) || "").trim().length > 0
         ) {
           return "configured";
         }

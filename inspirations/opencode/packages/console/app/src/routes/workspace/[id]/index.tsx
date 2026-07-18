@@ -1,33 +1,38 @@
-import { Show, createMemo } from "solid-js"
-import { createStore } from "solid-js/store"
-import { createAsync, useParams, useAction, useSubmission } from "@solidjs/router"
-import { NewUserSection } from "./new-user-section"
-import { ModelSection } from "./model-section"
-import { ProviderSection } from "./provider-section"
-import { IconZen } from "~/component/icon"
-import { querySessionInfo, queryBillingInfo, createCheckoutUrl, formatBalance } from "../common"
-import { useI18n } from "~/context/i18n"
-import { useLanguage } from "~/context/language"
+import { Show, createMemo } from "solid-js";
+import { createStore } from "solid-js/store";
+import { createAsync, useParams, useAction, useSubmission } from "@solidjs/router";
+import { NewUserSection } from "./new-user-section";
+import { ModelSection } from "./model-section";
+import { ProviderSection } from "./provider-section";
+import { IconZen } from "~/component/icon";
+import { querySessionInfo, queryBillingInfo, createCheckoutUrl, formatBalance } from "../common";
+import { useI18n } from "~/context/i18n";
+import { useLanguage } from "~/context/language";
 
 export default function () {
-  const params = useParams()
-  const i18n = useI18n()
-  const language = useLanguage()
-  const userInfo = createAsync(() => querySessionInfo(params.id!))
-  const billingInfo = createAsync(() => queryBillingInfo(params.id!))
-  const checkoutAction = useAction(createCheckoutUrl)
-  const checkoutSubmission = useSubmission(createCheckoutUrl)
+  const params = useParams();
+  const i18n = useI18n();
+  const language = useLanguage();
+  const userInfo = createAsync(() => querySessionInfo(params.id!));
+  const billingInfo = createAsync(() => queryBillingInfo(params.id!));
+  const checkoutAction = useAction(createCheckoutUrl);
+  const checkoutSubmission = useSubmission(createCheckoutUrl);
   const [store, setStore] = createStore({
     checkoutRedirecting: false,
-  })
-  const balance = createMemo(() => formatBalance(billingInfo()?.balance ?? 0))
+  });
+  const balance = createMemo(() => formatBalance(billingInfo()?.balance ?? 0));
 
   async function onClickCheckout() {
-    const baseUrl = window.location.href
-    const checkout = await checkoutAction(params.id!, billingInfo()!.reloadAmount, baseUrl, baseUrl)
+    const baseUrl = window.location.href;
+    const checkout = await checkoutAction(
+      params.id!,
+      billingInfo()!.reloadAmount,
+      baseUrl,
+      baseUrl,
+    );
     if (checkout && checkout.data) {
-      setStore("checkoutRedirecting", true)
-      window.location.href = checkout.data
+      setStore("checkoutRedirecting", true);
+      window.location.href = checkout.data;
     }
   }
 
@@ -77,5 +82,5 @@ export default function () {
         </Show>
       </div>
     </div>
-  )
+  );
 }

@@ -9,11 +9,11 @@ import {
   primaryKey,
   uniqueIndex,
   varchar,
-} from "drizzle-orm/mysql-core"
-import { timestamps, ulid, utc, workspaceColumns } from "../drizzle/types"
-import { workspaceIndexes } from "./workspace.sql"
+} from "drizzle-orm/mysql-core";
+import { timestamps, ulid, utc, workspaceColumns } from "../drizzle/types";
+import { workspaceIndexes } from "./workspace.sql";
 
-export const BlackPlans = ["20", "100", "200"] as const
+export const BlackPlans = ["20", "100", "200"] as const;
 export const BillingTable = mysqlTable(
   "billing",
   {
@@ -34,11 +34,11 @@ export const BillingTable = mysqlTable(
     timeReloadError: utc("time_reload_error"),
     timeReloadLockedTill: utc("time_reload_locked_till"),
     subscription: json("subscription").$type<{
-      status: "subscribed"
-      seats: number
-      plan: (typeof BlackPlans)[number]
-      useBalance?: boolean
-      coupon?: string
+      status: "subscribed";
+      seats: number;
+      plan: (typeof BlackPlans)[number];
+      useBalance?: boolean;
+      coupon?: string;
     }>(),
     subscriptionID: varchar("subscription_id", { length: 28 }),
     subscriptionPlan: mysqlEnum("subscription_plan", BlackPlans),
@@ -46,7 +46,7 @@ export const BillingTable = mysqlTable(
     timeSubscriptionSelected: utc("time_subscription_selected"),
     liteSubscriptionID: varchar("lite_subscription_id", { length: 28 }),
     lite: json("lite").$type<{
-      useBalance?: boolean
+      useBalance?: boolean;
     }>(),
   },
   (table) => [
@@ -54,7 +54,7 @@ export const BillingTable = mysqlTable(
     uniqueIndex("global_customer_id").on(table.customerID),
     uniqueIndex("global_subscription_id").on(table.subscriptionID),
   ],
-)
+);
 
 export const SubscriptionTable = mysqlTable(
   "subscription",
@@ -67,8 +67,11 @@ export const SubscriptionTable = mysqlTable(
     timeRollingUpdated: utc("time_rolling_updated"),
     timeFixedUpdated: utc("time_fixed_updated"),
   },
-  (table) => [...workspaceIndexes(table), uniqueIndex("workspace_user_id").on(table.workspaceID, table.userID)],
-)
+  (table) => [
+    ...workspaceIndexes(table),
+    uniqueIndex("workspace_user_id").on(table.workspaceID, table.userID),
+  ],
+);
 
 export const LiteTable = mysqlTable(
   "lite",
@@ -83,8 +86,11 @@ export const LiteTable = mysqlTable(
     timeWeeklyUpdated: utc("time_weekly_updated"),
     timeMonthlyUpdated: utc("time_monthly_updated"),
   },
-  (table) => [...workspaceIndexes(table), uniqueIndex("workspace_user_id").on(table.workspaceID, table.userID)],
-)
+  (table) => [
+    ...workspaceIndexes(table),
+    uniqueIndex("workspace_user_id").on(table.workspaceID, table.userID),
+  ],
+);
 
 export const PaymentTable = mysqlTable(
   "payment",
@@ -98,17 +104,17 @@ export const PaymentTable = mysqlTable(
     timeRefunded: utc("time_refunded"),
     enrichment: json("enrichment").$type<
       | {
-          type: "subscription" | "lite"
-          currency?: "inr"
-          couponID?: string
+          type: "subscription" | "lite";
+          currency?: "inr";
+          couponID?: string;
         }
       | {
-          type: "credit"
+          type: "credit";
         }
     >(),
   },
   (table) => [...workspaceIndexes(table)],
-)
+);
 
 export const UsageTable = mysqlTable(
   "usage",
@@ -127,11 +133,14 @@ export const UsageTable = mysqlTable(
     keyID: ulid("key_id"),
     sessionID: varchar("session_id", { length: 30 }),
     enrichment: json("enrichment").$type<{
-      plan: "sub" | "byok" | "lite"
+      plan: "sub" | "byok" | "lite";
     }>(),
   },
-  (table) => [...workspaceIndexes(table), index("usage_time_created").on(table.workspaceID, table.timeCreated)],
-)
+  (table) => [
+    ...workspaceIndexes(table),
+    index("usage_time_created").on(table.workspaceID, table.timeCreated),
+  ],
+);
 
 export const CouponType = [
   "BUILDATHON",
@@ -140,7 +149,7 @@ export const CouponType = [
   "GO3MONTHS100",
   "GO6MONTHS100",
   "GO12MONTHS100",
-] as const
+] as const;
 export const CouponTable = mysqlTable(
   "coupon",
   {
@@ -149,4 +158,4 @@ export const CouponTable = mysqlTable(
     timeRedeemed: utc("time_redeemed"),
   },
   (table) => [primaryKey({ columns: [table.email, table.type] })],
-)
+);

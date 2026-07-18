@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { openaiResponsesToOpenAIResponse } =
-  await import("../../open-sse/translator/response/openai-responses.ts");
+const { openaiResponsesToOpenAIResponse } = await import(
+  "../../open-sse/translator/response/openai-responses.ts"
+);
 const { FORMATS } = await import("../../open-sse/translator/formats.ts");
 const { createSSETransformStreamWithLogger } = await import("../../open-sse/utils/stream.ts");
 
@@ -33,7 +34,7 @@ test("Responses->Chat: output_item.done emits arguments when no delta chunks wer
   assert.ok(result);
   assert.equal(
     result.choices[0].delta.tool_calls[0].function.arguments,
-    '{"query":"select:TaskCreate,TaskUpdate","max_results":10}'
+    '{"query":"select:TaskCreate,TaskUpdate","max_results":10}',
   );
   assert.equal(state.toolCallIndex, 1);
 });
@@ -82,7 +83,7 @@ test("Responses->Chat: empty-name tool call is deferred until done provides a va
       type: "response.output_item.added",
       item: { type: "function_call", call_id: "call_deferred", name: "   " },
     },
-    state
+    state,
   );
   assert.equal(added, null);
 
@@ -91,7 +92,7 @@ test("Responses->Chat: empty-name tool call is deferred until done provides a va
       type: "response.function_call_arguments.delta",
       delta: '{"query":"deferred"}',
     },
-    state
+    state,
   );
   assert.equal(delta, null);
 
@@ -105,7 +106,7 @@ test("Responses->Chat: empty-name tool call is deferred until done provides a va
         arguments: '{"query":"deferred"}',
       },
     },
-    state
+    state,
   );
 
   assert.ok(done);
@@ -129,7 +130,7 @@ test("Responses->Chat: empty-name tool call is dropped when done still has no va
       type: "response.output_item.added",
       item: { type: "function_call", call_id: "call_empty", name: "" },
     },
-    state
+    state,
   );
 
   const done = openaiResponsesToOpenAIResponse(
@@ -142,7 +143,7 @@ test("Responses->Chat: empty-name tool call is dropped when done still has no va
         arguments: '{"ignored":true}',
       },
     },
-    state
+    state,
   );
 
   assert.equal(done, null);
@@ -167,30 +168,30 @@ test("Claude->Responses: {event,data} items bypass sanitization in translate mod
     "conn-test",
     { messages: [{ role: "user", content: "hi" }] },
     null,
-    null
+    null,
   );
 
   const writer = stream.writable.getWriter();
   // Simulate Claude-format SSE from GLM
   await writer.write(
     encoder.encode(
-      'event: message_start\ndata: {"type":"message_start","message":{"id":"msg_test","type":"message","role":"assistant","model":"glm-5.1","content":[],"stop_reason":null,"usage":{"input_tokens":10,"output_tokens":0}}}\n\n'
-    )
+      'event: message_start\ndata: {"type":"message_start","message":{"id":"msg_test","type":"message","role":"assistant","model":"glm-5.1","content":[],"stop_reason":null,"usage":{"input_tokens":10,"output_tokens":0}}}\n\n',
+    ),
   );
   await writer.write(
     encoder.encode(
-      'event: content_block_start\ndata: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}\n\n'
-    )
+      'event: content_block_start\ndata: {"type":"content_block_start","index":0,"content_block":{"type":"text","text":""}}\n\n',
+    ),
   );
   await writer.write(
     encoder.encode(
-      'event: content_block_delta\ndata: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"hello"}}\n\n'
-    )
+      'event: content_block_delta\ndata: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"hello"}}\n\n',
+    ),
   );
   await writer.write(
     encoder.encode(
-      'event: message_delta\ndata: {"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"output_tokens":5}}\n\n'
-    )
+      'event: message_delta\ndata: {"type":"message_delta","delta":{"stop_reason":"end_turn"},"usage":{"output_tokens":5}}\n\n',
+    ),
   );
   await writer.write(encoder.encode('event: message_stop\ndata: {"type":"message_stop"}\n\n'));
   await writer.close();
@@ -228,17 +229,17 @@ test("Responses->Claude: translated Claude SSE is not sanitized into empty OpenA
     "conn-test",
     { messages: [{ role: "user", content: "hi" }] },
     null,
-    null
+    null,
   );
 
   const writer = stream.writable.getWriter();
   await writer.write(
-    encoder.encode('data: {"type":"response.output_text.delta","delta":"hello"}\n\n')
+    encoder.encode('data: {"type":"response.output_text.delta","delta":"hello"}\n\n'),
   );
   await writer.write(
     encoder.encode(
-      'data: {"type":"response.completed","response":{"usage":{"input_tokens":12,"output_tokens":3}}}\n\n'
-    )
+      'data: {"type":"response.completed","response":{"usage":{"input_tokens":12,"output_tokens":3}}}\n\n',
+    ),
   );
   await writer.close();
 

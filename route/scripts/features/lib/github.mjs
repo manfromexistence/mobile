@@ -11,7 +11,7 @@ function runJson(cmd, args) {
     return JSON.parse(out);
   } catch (e) {
     throw new Error(
-      `Failed to parse JSON from ${cmd}: ${e.message}\nOutput (first 200 chars): ${out.slice(0, 200)}`
+      `Failed to parse JSON from ${cmd}: ${e.message}\nOutput (first 200 chars): ${out.slice(0, 200)}`,
     );
   }
 }

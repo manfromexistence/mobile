@@ -8,8 +8,9 @@ const TEST_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-command-c
 process.env.DATA_DIR = TEST_DATA_DIR;
 
 const { REGISTRY, getRegistryEntry } = await import("../../open-sse/config/providerRegistry.ts");
-const { CommandCodeExecutor, COMMAND_CODE_VERSION } =
-  await import("../../open-sse/executors/commandCode.ts");
+const { CommandCodeExecutor, COMMAND_CODE_VERSION } = await import(
+  "../../open-sse/executors/commandCode.ts"
+);
 const { getExecutor, hasSpecializedExecutor } = await import("../../open-sse/executors/index.ts");
 const core = await import("../../src/lib/db/core.ts");
 
@@ -79,7 +80,7 @@ test("Command Code provider catalog has pinned models and alias lookup", () => {
   assert.equal(entry.chatPath, "/alpha/generate");
   assert.deepEqual(
     entry.models.map((model) => model.id),
-    PINNED_COMMAND_CODE_MODELS
+    PINNED_COMMAND_CODE_MODELS,
   );
   assert.equal(getRegistryEntry("cmd"), entry);
 });
@@ -251,7 +252,7 @@ test("Command Code data: SSE lines aggregate into non-stream ChatCompletion JSON
           },
         },
       ],
-      { sse: true }
+      { sse: true },
     );
 
   const { response } = await getExecutor("command-code").execute({
@@ -373,7 +374,7 @@ test("Command Code non-stream aggregation throws when the final error event lack
         type: "error",
         error: { message: "boom" },
       })}`,
-      { status: 200, headers: { "Content-Type": "application/x-ndjson" } }
+      { status: 200, headers: { "Content-Type": "application/x-ndjson" } },
     );
 
   await assert.rejects(async () => {

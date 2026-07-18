@@ -102,21 +102,21 @@ test("addDNSEntry with agentId resolves agent-specific hosts from ALL_TARGETS", 
   // We call with [] to skip actual exec — just verifying the function signature accepts agentId.
   await assert.doesNotReject(
     addDNSEntry("fake-sudo", "cursor"),
-    "addDNSEntry must accept optional agentId parameter"
+    "addDNSEntry must accept optional agentId parameter",
   );
 });
 
 test("addDNSEntry without agentId falls back to Antigravity hosts (backward compat)", async () => {
   await assert.doesNotReject(
     addDNSEntry("fake-sudo"),
-    "addDNSEntry without agentId must still work for backward compat"
+    "addDNSEntry without agentId must still work for backward compat",
   );
 });
 
 test("addDNSEntry with unknown agentId falls back to Antigravity hosts", async () => {
   await assert.doesNotReject(
     addDNSEntry("fake-sudo", "__nonexistent_agent__"),
-    "addDNSEntry with unknown agentId must fall back to Antigravity hosts"
+    "addDNSEntry with unknown agentId must fall back to Antigravity hosts",
   );
 });
 
@@ -127,7 +127,7 @@ test("removeDNSEntry (legacy) is a function that delegates for Antigravity hosts
 test("removeDNSEntry with agentId resolves agent-specific hosts from ALL_TARGETS", async () => {
   await assert.doesNotReject(
     removeDNSEntry("fake-sudo", "copilot"),
-    "removeDNSEntry must accept optional agentId parameter"
+    "removeDNSEntry must accept optional agentId parameter",
   );
 });
 
@@ -137,7 +137,7 @@ test("resolveHostsForAgent returns Antigravity hosts when agentId is undefined",
   assert.ok(cursorTarget, "cursor target must exist in ALL_TARGETS");
   assert.ok(
     cursorTarget.hosts.includes("api2.cursor.sh"),
-    "cursor target must include api2.cursor.sh"
+    "cursor target must include api2.cursor.sh",
   );
   // Codex target
   const codexTarget = ALL_TARGETS.find((t) => t.id === "codex");
@@ -170,7 +170,7 @@ test("addDNSEntries: skips hosts already in /etc/hosts (idempotency)", async () 
   await assert.doesNotReject(
     // "localhost" is already in /etc/hosts; trying to add it again should be a no-op.
     addDNSEntries(["localhost"], "fake-sudo-password"),
-    "addDNSEntries must not throw when entries already exist"
+    "addDNSEntries must not throw when entries already exist",
   );
 });
 
@@ -179,7 +179,7 @@ test("removeDNSEntries: skips hosts NOT in /etc/hosts (idempotency)", async () =
   const fakeHost = `omniroute-test-nonexistent-${Date.now()}.invalid`;
   await assert.doesNotReject(
     removeDNSEntries([fakeHost], "fake-sudo-password"),
-    "removeDNSEntries must not throw when host is not present"
+    "removeDNSEntries must not throw when host is not present",
   );
 });
 
@@ -193,14 +193,14 @@ test("addDNSEntries: calls exec with array-form args (Hard Rule #13 pattern)", a
   // a string argument, never template-interpolated into a shell string.
   assert.ok(
     src.includes('"-S", "tee", "-a", HOSTS_FILE'),
-    "addDNSEntries must pass HOSTS_FILE as an argv element, not interpolated"
+    "addDNSEntries must pass HOSTS_FILE as an argv element, not interpolated",
   );
 
   // The remove invocation must pass HOSTS_FILE and hostname as process.argv,
   // not string-interpolated.
   assert.ok(
     src.includes("REMOVE_HOSTS_ENTRY_SCRIPT, HOSTS_FILE, hostname"),
-    "removeDNSEntries must pass HOSTS_FILE and hostname as argv, not interpolated"
+    "removeDNSEntries must pass HOSTS_FILE and hostname as argv, not interpolated",
   );
 });
 
@@ -214,11 +214,13 @@ test("addDNSEntries: entry passed as stdin data, not shell-interpolated", () => 
   // not interpolated into the argv array.
   assert.ok(
     src.includes('missingEntries.map((e) => `${e}\\n`).join("")'),
-    "entry content must be built from missingEntries for stdin, not interpolated in args"
+    "entry content must be built from missingEntries for stdin, not interpolated in args",
   );
   assert.ok(
-    src.includes('execFileWithPassword("sudo", ["-S", "tee", "-a", HOSTS_FILE], sudoPassword, data)'),
-    "entry data must be passed as stdin to tee, not interpolated in args"
+    src.includes(
+      'execFileWithPassword("sudo", ["-S", "tee", "-a", HOSTS_FILE], sudoPassword, data)',
+    ),
+    "entry data must be passed as stdin to tee, not interpolated in args",
   );
 });
 

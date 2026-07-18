@@ -40,24 +40,27 @@ describe("compressionHeaderEcho (#6422)", () => {
   it("echoes the request header value onto the response when missing", () => {
     const inner = new Response("body", { status: 200 });
     const wrapped = withCompressionHeaderEcho(inner, "engine:rtk");
-    assert.equal(wrapped.headers.get("X-OmniRoute-Compression"), "engine:rtk; source=request-header");
+    assert.equal(
+      wrapped.headers.get("X-OmniRoute-Compression"),
+      "engine:rtk; source=request-header",
+    );
     assert.equal(wrapped.status, 200);
   });
 
   it("normalizes off / default / engine:* to lowercase", () => {
     assert.equal(
       withCompressionHeaderEcho(new Response(""), "OFF").headers.get("X-OmniRoute-Compression"),
-      "off; source=request-header"
+      "off; source=request-header",
     );
     assert.equal(
       withCompressionHeaderEcho(new Response(""), "Default").headers.get("X-OmniRoute-Compression"),
-      "default; source=request-header"
+      "default; source=request-header",
     );
     assert.equal(
       withCompressionHeaderEcho(new Response(""), "Engine:Rtk").headers.get(
-        "X-OmniRoute-Compression"
+        "X-OmniRoute-Compression",
       ),
-      "engine:rtk; source=request-header"
+      "engine:rtk; source=request-header",
     );
   });
 
@@ -75,7 +78,7 @@ describe("compressionHeaderEcho (#6422)", () => {
     const wrapped = withCompressionHeaderEcho(inner, "engine:rtk");
     assert.equal(
       wrapped.headers.get("X-OmniRoute-Compression"),
-      "stacked; source=routing; tokens=100->42; rules: rtk-nl x2"
+      "stacked; source=routing; tokens=100->42; rules: rtk-nl x2",
     );
   });
 

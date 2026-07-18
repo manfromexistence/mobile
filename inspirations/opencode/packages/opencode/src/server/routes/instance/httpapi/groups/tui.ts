@@ -1,37 +1,43 @@
-import { TuiEvent } from "@/server/tui-event"
-import { TuiRequest as TuiRequestPayload } from "@/server/shared/tui-control"
-import { Schema } from "effect"
-import { HttpApi, HttpApiEndpoint, HttpApiError, HttpApiGroup, OpenApi } from "effect/unstable/httpapi"
-import { Authorization } from "../middleware/authorization"
-import { InstanceContextMiddleware } from "../middleware/instance-context"
-import { WorkspaceRoutingMiddleware, WorkspaceRoutingQuery } from "../middleware/workspace-routing"
-import { ApiNotFoundError } from "../errors"
-import { described } from "./metadata"
+import { TuiEvent } from "@/server/tui-event";
+import { TuiRequest as TuiRequestPayload } from "@/server/shared/tui-control";
+import { Schema } from "effect";
+import {
+  HttpApi,
+  HttpApiEndpoint,
+  HttpApiError,
+  HttpApiGroup,
+  OpenApi,
+} from "effect/unstable/httpapi";
+import { Authorization } from "../middleware/authorization";
+import { InstanceContextMiddleware } from "../middleware/instance-context";
+import { WorkspaceRoutingMiddleware, WorkspaceRoutingQuery } from "../middleware/workspace-routing";
+import { ApiNotFoundError } from "../errors";
+import { described } from "./metadata";
 
-const root = "/tui"
-export const CommandPayload = Schema.Struct({ command: Schema.String })
+const root = "/tui";
+export const CommandPayload = Schema.Struct({ command: Schema.String });
 const EventTuiPromptAppend = Schema.Struct({
   type: Schema.Literal(TuiEvent.PromptAppend.type),
   properties: TuiEvent.PromptAppend.data,
-}).annotate({ identifier: "EventTuiPromptAppend" })
+}).annotate({ identifier: "EventTuiPromptAppend" });
 const EventTuiCommandExecute = Schema.Struct({
   type: Schema.Literal(TuiEvent.CommandExecute.type),
   properties: TuiEvent.CommandExecute.data,
-}).annotate({ identifier: "EventTuiCommandExecute" })
+}).annotate({ identifier: "EventTuiCommandExecute" });
 const EventTuiToastShow = Schema.Struct({
   type: Schema.Literal(TuiEvent.ToastShow.type),
   properties: TuiEvent.ToastShow.data,
-}).annotate({ identifier: "EventTuiToastShow" })
+}).annotate({ identifier: "EventTuiToastShow" });
 const EventTuiSessionSelect = Schema.Struct({
   type: Schema.Literal(TuiEvent.SessionSelect.type),
   properties: TuiEvent.SessionSelect.data,
-}).annotate({ identifier: "EventTuiSessionSelect" })
+}).annotate({ identifier: "EventTuiSessionSelect" });
 export const TuiPublishPayload = Schema.Union([
   EventTuiPromptAppend,
   EventTuiCommandExecute,
   EventTuiToastShow,
   EventTuiSessionSelect,
-])
+]);
 
 export const TuiPaths = {
   appendPrompt: `${root}/append-prompt`,
@@ -47,7 +53,7 @@ export const TuiPaths = {
   selectSession: `${root}/select-session`,
   controlNext: `${root}/control/next`,
   controlResponse: `${root}/control/response`,
-} as const
+} as const;
 
 export const TuiApi = HttpApi.make("tui")
   .add(
@@ -190,11 +196,14 @@ export const TuiApi = HttpApi.make("tui")
           OpenApi.annotations({
             identifier: "tui.control.response",
             summary: "Submit TUI response",
-            description: "Submit a response to the TUI request queue to complete a pending request.",
+            description:
+              "Submit a response to the TUI request queue to complete a pending request.",
           }),
         ),
       )
-      .annotateMerge(OpenApi.annotations({ title: "tui", description: "Experimental HttpApi TUI routes." }))
+      .annotateMerge(
+        OpenApi.annotations({ title: "tui", description: "Experimental HttpApi TUI routes." }),
+      )
       .middleware(InstanceContextMiddleware)
       .middleware(WorkspaceRoutingMiddleware)
       .middleware(Authorization),
@@ -205,4 +214,4 @@ export const TuiApi = HttpApi.make("tui")
       version: "0.0.1",
       description: "Experimental HttpApi surface for selected instance routes.",
     }),
-  )
+  );

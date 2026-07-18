@@ -136,7 +136,7 @@ export function computeCoverage(): SkillCoverage {
       entries
         .filter((e) => e.isDirectory())
         .filter((e) => fs.existsSync(path.join(skillsDir, e.name, "SKILL.md")))
-        .map((e) => e.name)
+        .map((e) => e.name),
     );
   } catch {
     // Directory doesn't exist yet — zero coverage

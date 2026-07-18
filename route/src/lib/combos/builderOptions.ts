@@ -185,7 +185,7 @@ function getCompatibleProviderVisual(providerNodeType: string | null): ProviderV
 
 function getProviderVisual(
   providerId: string,
-  providerNode: ProviderNodeLike | null
+  providerNode: ProviderNodeLike | null,
 ): ProviderVisual & { alias: string; providerType: string } {
   const providerEntry = AI_PROVIDERS[providerId];
   if (providerEntry) {
@@ -229,13 +229,13 @@ function deriveConnectionStatus(connection: ProviderConnectionLike): BuilderConn
  * Rows without fingerprints are converted 1:1 via buildConnectionOption as before.
  */
 export function expandConnectionOptions(
-  connections: ProviderConnectionLike[]
+  connections: ProviderConnectionLike[],
 ): ComboBuilderConnectionOption[] {
   const result: ComboBuilderConnectionOption[] = [];
   for (const connection of connections) {
     const fingerprints = Array.isArray(connection.providerSpecificData?.fingerprints)
       ? (connection.providerSpecificData.fingerprints as unknown[]).filter(
-          (fp): fp is string => typeof fp === "string" && fp.length > 0
+          (fp): fp is string => typeof fp === "string" && fp.length > 0,
         )
       : [];
     if (fingerprints.length > 0) {
@@ -264,7 +264,7 @@ export function expandConnectionOptions(
 }
 
 function buildConnectionOption(
-  connection: ProviderConnectionLike
+  connection: ProviderConnectionLike,
 ): ComboBuilderConnectionOption | null {
   const id = toStringOrNull(connection.id);
   if (!id) return null;
@@ -295,7 +295,7 @@ function addModelOption(
     contextLength?: number | null;
     outputTokenLimit?: number | null;
     supportsThinking?: boolean;
-  }
+  },
 ) {
   const modelId = toStringOrNull(input.id);
   if (!modelId) return;
@@ -350,7 +350,7 @@ function addModelOption(
     existing.supportsThinking = input.supportsThinking;
   }
   existing.sources = Array.from(mergedSources).sort(
-    (left, right) => getSourcePriority(left) - getSourcePriority(right)
+    (left, right) => getSourcePriority(left) - getSourcePriority(right),
   );
 }
 
@@ -358,7 +358,7 @@ function buildModelOptions(
   providerId: string,
   builtInModels: RegistryModel[],
   syncedModels: SyncedModelLike[],
-  customModels: CustomModelLike[]
+  customModels: CustomModelLike[],
 ): Map<string, ComboBuilderModelOption> {
   const modelMap = new Map<string, ComboBuilderModelOption>();
   const fallbackModels = getCompatibleFallbackModels(providerId, builtInModels);
@@ -400,7 +400,7 @@ function buildModelOptions(
   for (const model of customModels) {
     if (model.isHidden === true) continue;
     const source = ["api-sync", "auto-sync", "imported"].includes(
-      toStringOrNull(model.source)?.toLowerCase() || ""
+      toStringOrNull(model.source)?.toLowerCase() || "",
     )
       ? "imported"
       : ("custom" as BuilderModelSource);
@@ -475,7 +475,7 @@ function disambiguateCollidingModelNames(modelMap: Map<string, ComboBuilderModel
 
 function compareConnections(
   left: ComboBuilderConnectionOption,
-  right: ComboBuilderConnectionOption
+  right: ComboBuilderConnectionOption,
 ): number {
   if (left.isActive !== right.isActive) return left.isActive ? -1 : 1;
   if (left.priority !== right.priority) return left.priority - right.priority;
@@ -492,7 +492,7 @@ function compareModels(left: ComboBuilderModelOption, right: ComboBuilderModelOp
 
 function compareProviders(
   left: ComboBuilderProviderOption,
-  right: ComboBuilderProviderOption
+  right: ComboBuilderProviderOption,
 ): number {
   if (left.activeConnectionCount !== right.activeConnectionCount) {
     return right.activeConnectionCount - left.activeConnectionCount;
@@ -504,7 +504,7 @@ function normalizeCustomModels(raw: unknown): CustomModelLike[] {
   return Array.isArray(raw)
     ? raw.filter(
         (model): model is CustomModelLike =>
-          Boolean(model) && typeof model === "object" && !Array.isArray(model)
+          Boolean(model) && typeof model === "object" && !Array.isArray(model),
       )
     : [];
 }
@@ -513,7 +513,7 @@ function normalizeSyncedModels(raw: unknown): SyncedModelLike[] {
   return Array.isArray(raw)
     ? raw.filter(
         (model): model is SyncedModelLike =>
-          Boolean(model) && typeof model === "object" && !Array.isArray(model)
+          Boolean(model) && typeof model === "object" && !Array.isArray(model),
       )
     : [];
 }
@@ -532,7 +532,7 @@ export async function getComboBuilderOptions(): Promise<ComboBuilderOptionsPaylo
   const blockedProviders = new Set(
     Array.isArray((settings as Record<string, unknown>).blockedProviders)
       ? ((settings as Record<string, unknown>).blockedProviders as string[])
-      : []
+      : [],
   );
 
   const providerNodeMap = new Map<string, ProviderNodeLike>();
@@ -558,10 +558,10 @@ export async function getComboBuilderOptions(): Promise<ComboBuilderOptionsPaylo
     const providerVisual = getProviderVisual(providerId, providerNode);
     const builtInModels = getModelsByProviderId(providerId);
     const syncedModels = normalizeSyncedModels(
-      (syncedModelsMap as Record<string, unknown>)[providerId]
+      (syncedModelsMap as Record<string, unknown>)[providerId],
     );
     const customModels = normalizeCustomModels(
-      (customModelsMap as Record<string, unknown>)[providerId]
+      (customModelsMap as Record<string, unknown>)[providerId],
     );
     const acceptsArbitraryModel =
       Boolean((AI_PROVIDERS[providerId] as JsonRecord | undefined)?.passthroughModels) ||
@@ -572,15 +572,14 @@ export async function getComboBuilderOptions(): Promise<ComboBuilderOptionsPaylo
       providerId,
       builtInModels as RegistryModel[],
       syncedModels,
-      customModels
+      customModels,
     );
 
-    const normalizedConnections = expandConnectionOptions(providerConnections).sort(
-      compareConnections
-    );
+    const normalizedConnections =
+      expandConnectionOptions(providerConnections).sort(compareConnections);
 
     const activeConnectionCount = normalizedConnections.filter(
-      (connection) => connection.isActive
+      (connection) => connection.isActive,
     ).length;
     const displayName = (providerEntryName(providerId) ||
       getProviderDisplayName(providerId, providerNode) ||
@@ -619,10 +618,10 @@ export async function getComboBuilderOptions(): Promise<ComboBuilderOptionsPaylo
     const providerVisual = getProviderVisual(providerId, null);
     const builtInModels = getModelsByProviderId(providerId);
     const syncedModels = normalizeSyncedModels(
-      (syncedModelsMap as Record<string, unknown>)[providerId]
+      (syncedModelsMap as Record<string, unknown>)[providerId],
     );
     const customModels = normalizeCustomModels(
-      (customModelsMap as Record<string, unknown>)[providerId]
+      (customModelsMap as Record<string, unknown>)[providerId],
     );
     const acceptsArbitraryModel =
       Boolean((AI_PROVIDERS[providerId] as JsonRecord | undefined)?.passthroughModels) ||
@@ -633,7 +632,7 @@ export async function getComboBuilderOptions(): Promise<ComboBuilderOptionsPaylo
       providerId,
       builtInModels as RegistryModel[],
       syncedModels,
-      customModels
+      customModels,
     );
 
     // #2901: no-auth providers must route under their alias (e.g. "oc"), not

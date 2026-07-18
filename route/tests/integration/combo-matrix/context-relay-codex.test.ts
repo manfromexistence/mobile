@@ -71,8 +71,7 @@ const CODEX_RESPONSES_HOST = "chatgpt.com/backend-api/codex/responses";
 
 // Summary JSON that parseHandoffJSON will successfully parse.
 const CODEX_SUMMARY_JSON = JSON.stringify({
-  summary:
-    "User is implementing a TypeScript context-relay codex quota-handoff test using TDD.",
+  summary: "User is implementing a TypeScript context-relay codex quota-handoff test using TDD.",
   keyDecisions: ["codex provider selected", "quota threshold at 90%"],
   taskProgress: "writing deterministic integration test for codex handoff",
   activeEntities: ["combo.ts", "codexQuotaFetcher.ts", "contextHandoff.ts"],
@@ -118,7 +117,7 @@ function buildCodexResponsesSse(text = "codex assistant reply") {
     {
       status: 200,
       headers: { "Content-Type": "text/event-stream" },
-    }
+    },
   );
 }
 
@@ -130,7 +129,7 @@ function buildCodexResponsesSse(text = "codex assistant reply") {
 
 function buildCodexUsageBody(
   sessionResetAtUnix: number,
-  weeklyResetAtUnix: number
+  weeklyResetAtUnix: number,
 ): Record<string, unknown> {
   return {
     rate_limit: {
@@ -165,7 +164,7 @@ function codexRequest(withSessionId = true) {
 function installCodexHandoffFetch(
   sessionResetAtUnix: number,
   weeklyResetAtUnix: number,
-  seenUrls: string[]
+  seenUrls: string[],
 ) {
   let codexResponsesCallCount = 0;
 
@@ -183,7 +182,7 @@ function installCodexHandoffFetch(
       // Codex quota endpoint — return structured usage JSON.
       return new Response(
         JSON.stringify(buildCodexUsageBody(sessionResetAtUnix, weeklyResetAtUnix)),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
 
@@ -259,9 +258,7 @@ test("context-relay codex quota handoff: fires and expiresAt matches session-win
     name: CODEX_COMBO_NAME,
     strategy: "context-relay",
     config: { maxRetries: 0, retryDelayMs: 0, stickyRoundRobinLimit: 1 },
-    models: [
-      { id: "rc-codex-1", kind: "model", providerId: "codex", model: "gpt-5.3-codex" },
-    ],
+    models: [{ id: "rc-codex-1", kind: "model", providerId: "codex", model: "gpt-5.3-codex" }],
   });
 
   // 4. Compute quota reset times (future timestamps).
@@ -285,7 +282,7 @@ test("context-relay codex quota handoff: fires and expiresAt matches session-win
   // ── Primary assertion: handoff record exists ──────────────────────────────
   assert.ok(
     handoff !== null,
-    "codex quota handoff record must be written to DB when quota ≥ threshold"
+    "codex quota handoff record must be written to DB when quota ≥ threshold",
   );
 
   // ── CODEX-SPECIFIC proof: expiresAt == session-window reset from quota ────
@@ -295,19 +292,19 @@ test("context-relay codex quota handoff: fires and expiresAt matches session-win
     handoff!.expiresAt,
     expectedExpiresAt,
     `handoff.expiresAt must equal the session-window reset from codex quota (${expectedExpiresAt}); ` +
-      `got ${handoff!.expiresAt}`
+      `got ${handoff!.expiresAt}`,
   );
 
   // ── Secondary assertion: codex usage URL was fetched ─────────────────────
   assert.ok(
     seenUrls.includes(CODEX_USAGE_URL),
-    `codex usage URL must have been fetched to produce the expiresAt; seen URLs: ${JSON.stringify(seenUrls)}`
+    `codex usage URL must have been fetched to produce the expiresAt; seen URLs: ${JSON.stringify(seenUrls)}`,
   );
 
   // ── Secondary assertion: summary was generated (non-empty) ───────────────
   assert.ok(
     typeof handoff!.summary === "string" && handoff!.summary.length > 0,
-    `handoff.summary must be non-empty; got ${JSON.stringify(handoff!.summary)}`
+    `handoff.summary must be non-empty; got ${JSON.stringify(handoff!.summary)}`,
   );
 
   // ── Cleanup ───────────────────────────────────────────────────────────────
@@ -331,9 +328,7 @@ test("context-relay codex quota handoff: does NOT fire when provider is openai (
     name: CODEX_COMBO_NAME,
     strategy: "context-relay",
     config: { maxRetries: 0, retryDelayMs: 0, stickyRoundRobinLimit: 1 },
-    models: [
-      { id: "rc-openai-ctrl", kind: "model", providerId: "openai", model: "gpt-4o-mini" },
-    ],
+    models: [{ id: "rc-openai-ctrl", kind: "model", providerId: "openai", model: "gpt-4o-mini" }],
   });
 
   const seenUrls: string[] = [];
@@ -352,7 +347,7 @@ test("context-relay codex quota handoff: does NOT fire when provider is openai (
   // The codex usage URL must NOT have been fetched.
   assert.ok(
     !seenUrls.includes(CODEX_USAGE_URL),
-    `codex usage URL must NOT be fetched for openai provider; seen: ${JSON.stringify(seenUrls)}`
+    `codex usage URL must NOT be fetched for openai provider; seen: ${JSON.stringify(seenUrls)}`,
   );
 
   // No codex quota handoff record in DB.
@@ -362,6 +357,6 @@ test("context-relay codex quota handoff: does NOT fire when provider is openai (
   assert.equal(
     handoff,
     null,
-    "no handoff record must exist when provider is openai (codex block never entered)"
+    "no handoff record must exist when provider is openai (codex block never entered)",
   );
 });

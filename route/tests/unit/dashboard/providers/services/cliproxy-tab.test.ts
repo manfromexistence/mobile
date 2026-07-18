@@ -11,8 +11,9 @@ import assert from "node:assert/strict";
 
 describe("CliproxyServiceTab — module shape", () => {
   it("exports CliproxyServiceTab function", async () => {
-    const mod =
-      await import("../../../../../src/app/(dashboard)/dashboard/providers/services/tabs/CliproxyServiceTab.tsx");
+    const mod = await import(
+      "../../../../../src/app/(dashboard)/dashboard/providers/services/tabs/CliproxyServiceTab.tsx"
+    );
     assert.equal(typeof mod.CliproxyServiceTab, "function");
   });
 });

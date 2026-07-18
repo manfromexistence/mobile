@@ -30,7 +30,7 @@ for (const file of CLI_HELPER_FILES) {
     const content = readFileSync(abs, "utf8");
     assert.ok(
       !/@\/shared/.test(content),
-      `${file} must not import via "@/shared/..." alias — the published CLI runtime (tsx + ESM import) cannot resolve tsconfig path aliases. Use relative paths instead. See #6162.`
+      `${file} must not import via "@/shared/..." alias — the published CLI runtime (tsx + ESM import) cannot resolve tsconfig path aliases. Use relative paths instead. See #6162.`,
     );
   });
 }

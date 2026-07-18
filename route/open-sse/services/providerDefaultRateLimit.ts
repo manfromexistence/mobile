@@ -23,7 +23,7 @@ const limiter = new SlidingWindowLimiter();
 
 /** Test hook: override the provider-default map and clear accumulated history. */
 export function __setProviderDefaultRateLimitsForTests(
-  map: Record<string, RateLimitWindow> | null
+  map: Record<string, RateLimitWindow> | null,
 ): void {
   providerDefaultOverrides = map;
   limiter.reset();
@@ -79,7 +79,7 @@ export async function awaitProviderDefaultSlot(
   provider: string,
   connectionId: string | null,
   signal: AbortSignal | null,
-  maxWaitMs?: number
+  maxWaitMs?: number,
 ): Promise<void> {
   const cfg = getProviderDefaultRateLimit(provider);
   if (!cfg) return;

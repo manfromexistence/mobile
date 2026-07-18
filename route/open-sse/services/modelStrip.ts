@@ -18,7 +18,7 @@ function shouldStripPart(part: JsonRecord, stripTypes: Set<string>): boolean {
 
 export function stripIncompatibleMessageContent(
   messages: unknown,
-  stripTypes: readonly string[]
+  stripTypes: readonly string[],
 ): { messages: unknown; removedParts: number } {
   if (!Array.isArray(messages) || stripTypes.length === 0) {
     return { messages, removedParts: 0 };

@@ -1,4 +1,9 @@
-import type { ComboLogger, HandleSingleModel, IsModelAvailable, ResolvedComboTarget } from "./types";
+import type {
+  ComboLogger,
+  HandleSingleModel,
+  IsModelAvailable,
+  ResolvedComboTarget,
+} from "./types";
 
 /**
  * Last-resort fallback tier for combo routing (#6238).
@@ -36,7 +41,7 @@ export interface CompatFallbackContext {
 export async function attemptCompatRejectedFallback(
   rejectedTargets: ResolvedComboTarget[],
   body: Record<string, unknown>,
-  ctx: CompatFallbackContext
+  ctx: CompatFallbackContext,
 ): Promise<Response | null> {
   if (rejectedTargets.length === 0) return null;
 
@@ -46,7 +51,7 @@ export async function attemptCompatRejectedFallback(
       if (!available) {
         ctx.log.debug(
           "COMBO",
-          `Last-resort compat fallback: ${target.modelStr} still unavailable — skipping`
+          `Last-resort compat fallback: ${target.modelStr} still unavailable — skipping`,
         );
         continue;
       }
@@ -55,14 +60,14 @@ export async function attemptCompatRejectedFallback(
     if (ctx.isProviderInCooldown?.(target)) {
       ctx.log.debug(
         "COMBO",
-        `Last-resort compat fallback: ${target.modelStr} provider in cooldown — skipping`
+        `Last-resort compat fallback: ${target.modelStr} provider in cooldown — skipping`,
       );
       continue;
     }
 
     ctx.log.info(
       "COMBO",
-      `Last-resort compat fallback → ${target.modelStr} (all compat-kept targets were unavailable)`
+      `Last-resort compat fallback → ${target.modelStr} (all compat-kept targets were unavailable)`,
     );
     const result = await ctx.handleSingleModel(body, target.modelStr, {
       ...target,
@@ -74,7 +79,7 @@ export async function attemptCompatRejectedFallback(
     }
     ctx.log.debug(
       "COMBO",
-      `Last-resort compat fallback: ${target.modelStr} failed (${result.status}) — trying next`
+      `Last-resort compat fallback: ${target.modelStr} failed (${result.status}) — trying next`,
     );
   }
 

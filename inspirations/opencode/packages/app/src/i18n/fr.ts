@@ -68,7 +68,8 @@ export const dict = {
   "command.permissions.autoaccept.enable": "Accepter automatiquement les permissions",
   "command.permissions.autoaccept.disable": "Arrêter d'accepter automatiquement les permissions",
   "command.workspace.toggle": "Basculer les espaces de travail",
-  "command.workspace.toggle.description": "Activer ou désactiver plusieurs espaces de travail dans la barre latérale",
+  "command.workspace.toggle.description":
+    "Activer ou désactiver plusieurs espaces de travail dans la barre latérale",
   "command.session.undo": "Annuler",
   "command.session.undo.description": "Annuler le dernier message",
   "command.session.redo": "Rétablir",
@@ -78,7 +79,8 @@ export const dict = {
   "command.session.fork": "Bifurquer à partir du message",
   "command.session.fork.description": "Créer une nouvelle session à partir d'un message précédent",
   "command.session.share": "Partager la session",
-  "command.session.share.description": "Partager cette session et copier l'URL dans le presse-papiers",
+  "command.session.share.description":
+    "Partager cette session et copier l'URL dans le presse-papiers",
   "command.session.unshare": "Ne plus partager la session",
   "command.session.unshare.description": "Arrêter de partager cette session",
   "palette.search.placeholder": "Rechercher des fichiers, des commandes et des sessions",
@@ -97,13 +99,15 @@ export const dict = {
   "dialog.provider.copilot.note": "Connectez-vous avec Copilot ou une clé API",
   "dialog.provider.openai.note": "Connectez-vous avec ChatGPT Pro/Plus ou une clé API",
   "dialog.provider.google.note": "Modèles Gemini pour des réponses rapides et structurées",
-  "dialog.provider.openrouter.note": "Accédez à tous les modèles pris en charge depuis un seul fournisseur",
+  "dialog.provider.openrouter.note":
+    "Accédez à tous les modèles pris en charge depuis un seul fournisseur",
   "dialog.provider.vercel.note": "Accès unifié aux modèles d'IA avec routage intelligent",
   "dialog.model.select.title": "Sélectionner un modèle",
   "dialog.model.search.placeholder": "Rechercher des modèles",
   "dialog.model.empty": "Aucun résultat de modèle",
   "dialog.model.manage": "Gérer les modèles",
-  "dialog.model.manage.description": "Personnalisez les modèles qui apparaissent dans le sélecteur.",
+  "dialog.model.manage.description":
+    "Personnalisez les modèles qui apparaissent dans le sélecteur.",
   "dialog.model.manage.provider.toggle": "Basculer tous les modèles {{provider}}",
   "dialog.model.unpaid.freeModels.title": "Modèles gratuits fournis par OpenCode",
   "dialog.model.unpaid.addMore.title": "Ajouter plus de modèles de fournisseurs populaires",
@@ -141,21 +145,24 @@ export const dict = {
     " et entrez le code ci-dessous pour connecter votre compte et utiliser les modèles {{provider}} dans OpenCode.",
   "provider.connect.oauth.auto.confirmationCode": "Code de confirmation",
   "provider.connect.toast.connected.title": "{{provider}} connecté",
-  "provider.connect.toast.connected.description": "Les modèles {{provider}} sont maintenant disponibles.",
+  "provider.connect.toast.connected.description":
+    "Les modèles {{provider}} sont maintenant disponibles.",
   "provider.custom.title": "Fournisseur personnalisé",
   "provider.custom.description.prefix": "Configurer un fournisseur compatible OpenAI. Voir la ",
   "provider.custom.description.link": "doc de config fournisseur",
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "ID du fournisseur",
   "provider.custom.field.providerID.placeholder": "monfournisseur",
-  "provider.custom.field.providerID.description": "Lettres minuscules, chiffres, traits d'union ou tirets bas",
+  "provider.custom.field.providerID.description":
+    "Lettres minuscules, chiffres, traits d'union ou tirets bas",
   "provider.custom.field.name.label": "Nom d'affichage",
   "provider.custom.field.name.placeholder": "Mon fournisseur IA",
   "provider.custom.field.baseURL.label": "URL de base",
   "provider.custom.field.baseURL.placeholder": "https://api.monfournisseur.com/v1",
   "provider.custom.field.apiKey.label": "Clé API",
   "provider.custom.field.apiKey.placeholder": "Clé API",
-  "provider.custom.field.apiKey.description": "Optionnel. Laisser vide si vous gérez l'auth via les en-têtes.",
+  "provider.custom.field.apiKey.description":
+    "Optionnel. Laisser vide si vous gérez l'auth via les en-têtes.",
   "provider.custom.models.label": "Modèles",
   "provider.custom.models.id.label": "ID",
   "provider.custom.models.id.placeholder": "id-modele",
@@ -171,7 +178,8 @@ export const dict = {
   "provider.custom.headers.remove": "Supprimer l'en-tête",
   "provider.custom.headers.add": "Ajouter un en-tête",
   "provider.custom.error.providerID.required": "L'ID du fournisseur est requis",
-  "provider.custom.error.providerID.format": "Utilisez des lettres minuscules, chiffres, traits d'union ou tirets bas",
+  "provider.custom.error.providerID.format":
+    "Utilisez des lettres minuscules, chiffres, traits d'union ou tirets bas",
   "provider.custom.error.providerID.exists": "Cet ID de fournisseur existe déjà",
   "provider.custom.error.name.required": "Le nom d'affichage est requis",
   "provider.custom.error.baseURL.required": "L'URL de base est requise",
@@ -179,7 +187,8 @@ export const dict = {
   "provider.custom.error.required": "Requis",
   "provider.custom.error.duplicate": "Doublon",
   "provider.disconnect.toast.disconnected.title": "{{provider}} déconnecté",
-  "provider.disconnect.toast.disconnected.description": "Les modèles {{provider}} ne sont plus disponibles.",
+  "provider.disconnect.toast.disconnected.description":
+    "Les modèles {{provider}} ne sont plus disponibles.",
   "model.tag.free": "Gratuit",
   "model.tag.latest": "Dernier",
   "model.provider.anthropic": "Anthropic",
@@ -262,7 +271,8 @@ export const dict = {
   "prompt.toast.pasteUnsupported.description":
     "Seules les images, les PDF ou les fichiers texte peuvent être joints ici.",
   "prompt.toast.modelAgentRequired.title": "Sélectionnez un agent et un modèle",
-  "prompt.toast.modelAgentRequired.description": "Choisissez un agent et un modèle avant d'envoyer un message.",
+  "prompt.toast.modelAgentRequired.description":
+    "Choisissez un agent et un modèle avant d'envoyer un message.",
   "prompt.toast.worktreeCreateFailed.title": "Échec de la création de l'arbre de travail",
   "prompt.toast.sessionCreateFailed.title": "Échec de la création de la session",
   "prompt.toast.shellSendFailed.title": "Échec de l'envoi de la commande shell",
@@ -380,28 +390,35 @@ export const dict = {
   "toast.theme.title": "Thème changé",
   "toast.scheme.title": "Schéma de couleurs",
   "toast.workspace.enabled.title": "Espaces de travail activés",
-  "toast.workspace.enabled.description": "Plusieurs worktrees sont désormais affichés dans la barre latérale",
+  "toast.workspace.enabled.description":
+    "Plusieurs worktrees sont désormais affichés dans la barre latérale",
   "toast.workspace.disabled.title": "Espaces de travail désactivés",
-  "toast.workspace.disabled.description": "Seul le worktree principal est affiché dans la barre latérale",
+  "toast.workspace.disabled.description":
+    "Seul le worktree principal est affiché dans la barre latérale",
   "toast.permissions.autoaccept.on.title": "Acceptation automatique des permissions",
-  "toast.permissions.autoaccept.on.description": "Les demandes de permission seront approuvées automatiquement",
+  "toast.permissions.autoaccept.on.description":
+    "Les demandes de permission seront approuvées automatiquement",
   "toast.permissions.autoaccept.off.title": "Acceptation automatique des permissions arrêtée",
-  "toast.permissions.autoaccept.off.description": "Les demandes de permission nécessiteront une approbation",
+  "toast.permissions.autoaccept.off.description":
+    "Les demandes de permission nécessiteront une approbation",
   "toast.model.none.title": "Aucun modèle sélectionné",
   "toast.model.none.description": "Connectez un fournisseur pour résumer cette session",
   "toast.file.loadFailed.title": "Échec du chargement du fichier",
   "toast.file.listFailed.title": "Échec de la liste des fichiers",
   "toast.context.noLineSelection.title": "Aucune sélection de lignes",
-  "toast.context.noLineSelection.description": "Sélectionnez d'abord une plage de lignes dans un onglet de fichier.",
+  "toast.context.noLineSelection.description":
+    "Sélectionnez d'abord une plage de lignes dans un onglet de fichier.",
   "toast.session.share.copyFailed.title": "Échec de la copie de l'URL dans le presse-papiers",
   "toast.session.share.success.title": "Session partagée",
   "toast.session.share.success.description": "URL de partage copiée dans le presse-papiers !",
   "toast.session.share.failed.title": "Échec du partage de la session",
-  "toast.session.share.failed.description": "Une erreur s'est produite lors du partage de la session",
+  "toast.session.share.failed.description":
+    "Une erreur s'est produite lors du partage de la session",
   "toast.session.unshare.success.title": "Session non partagée",
   "toast.session.unshare.success.description": "Session non partagée avec succès !",
   "toast.session.unshare.failed.title": "Échec de l'annulation du partage",
-  "toast.session.unshare.failed.description": "Une erreur s'est produite lors de l'annulation du partage de la session",
+  "toast.session.unshare.failed.description":
+    "Une erreur s'est produite lors de l'annulation du partage de la session",
   "toast.session.listFailed.title": "Échec du chargement des sessions pour {{project}}",
   "toast.update.title": "Mise à jour disponible",
   "toast.update.description":
@@ -433,22 +450,28 @@ export const dict = {
   "error.chain.responseBody": "Corps de la réponse :\n{{body}}",
   "error.chain.didYouMean": "Vouliez-vous dire : {{suggestions}}",
   "error.chain.modelNotFound": "Modèle introuvable : {{provider}}/{{model}}",
-  "error.chain.checkConfig": "Vérifiez votre configuration (opencode.json) pour les noms de fournisseur/modèle",
+  "error.chain.checkConfig":
+    "Vérifiez votre configuration (opencode.json) pour les noms de fournisseur/modèle",
   "error.chain.mcpFailed":
     "Le serveur MCP \"{{name}}\" a échoué. Notez qu'OpenCode ne supporte pas encore l'authentification MCP.",
-  "error.chain.providerAuthFailed": "Échec de l'authentification du fournisseur ({{provider}}) : {{message}}",
+  "error.chain.providerAuthFailed":
+    "Échec de l'authentification du fournisseur ({{provider}}) : {{message}}",
   "error.chain.providerInitFailed":
     'Échec de l\'initialisation du fournisseur "{{provider}}". Vérifiez les identifiants et la configuration.',
-  "error.chain.configJsonInvalid": "Le fichier de configuration à {{path}} n'est pas un JSON(C) valide",
+  "error.chain.configJsonInvalid":
+    "Le fichier de configuration à {{path}} n'est pas un JSON(C) valide",
   "error.chain.configJsonInvalidWithMessage":
     "Le fichier de configuration à {{path}} n'est pas un JSON(C) valide : {{message}}",
   "error.chain.configDirectoryTypo":
     'Le répertoire "{{dir}}" dans {{path}} n\'est pas valide. Renommez le répertoire en "{{suggestion}}" ou supprimez-le. C\'est une faute de frappe courante.',
-  "error.chain.configFrontmatterError": "Échec de l'analyse du frontmatter dans {{path}} :\n{{message}}",
+  "error.chain.configFrontmatterError":
+    "Échec de l'analyse du frontmatter dans {{path}} :\n{{message}}",
   "error.chain.configInvalid": "Le fichier de configuration à {{path}} est invalide",
-  "error.chain.configInvalidWithMessage": "Le fichier de configuration à {{path}} est invalide : {{message}}",
+  "error.chain.configInvalidWithMessage":
+    "Le fichier de configuration à {{path}} est invalide : {{message}}",
   "notification.permission.title": "Permission requise",
-  "notification.permission.description": "{{sessionTitle}} dans {{projectName}} a besoin d'une permission",
+  "notification.permission.description":
+    "{{sessionTitle}} dans {{projectName}} a besoin d'une permission",
   "notification.question.title": "Question",
   "notification.question.description": "{{sessionTitle}} dans {{projectName}} a une question",
   "notification.action.goToSession": "Aller à la session",
@@ -468,7 +491,8 @@ export const dict = {
   "session.review.loadingChanges": "Chargement des modifications...",
   "session.review.empty": "Aucune modification dans cette session pour l'instant",
   "session.review.noChanges": "Aucune modification",
-  "session.review.noVcs": "Aucun système de contrôle de version Git détecté, modifications non affichées",
+  "session.review.noVcs":
+    "Aucun système de contrôle de version Git détecté, modifications non affichées",
   "session.review.noSnapshot":
     "Le suivi des instantanés est désactivé dans la configuration, les modifications de session sont donc indisponibles",
   "session.files.selectToOpen": "Sélectionnez un fichier à ouvrir",
@@ -581,17 +605,21 @@ export const dict = {
   "settings.general.row.language.title": "Langue",
   "settings.general.row.language.description": "Changer la langue d'affichage pour OpenCode",
   "settings.general.row.appearance.title": "Apparence",
-  "settings.general.row.appearance.description": "Personnaliser l'apparence d'OpenCode sur votre appareil",
+  "settings.general.row.appearance.description":
+    "Personnaliser l'apparence d'OpenCode sur votre appareil",
   "settings.general.row.colorScheme.title": "Schéma de couleurs",
-  "settings.general.row.colorScheme.description": "Choisissez si OpenCode suit le thème système, clair ou sombre",
+  "settings.general.row.colorScheme.description":
+    "Choisissez si OpenCode suit le thème système, clair ou sombre",
   "settings.general.row.theme.title": "Thème",
   "settings.general.row.theme.description": "Personnaliser le thème d'OpenCode.",
   "settings.general.row.font.title": "Police de code",
-  "settings.general.row.font.description": "Personnaliser la police utilisée dans les blocs de code",
+  "settings.general.row.font.description":
+    "Personnaliser la police utilisée dans les blocs de code",
   "settings.general.row.terminalFont.title": "Terminal Font",
   "settings.general.row.terminalFont.description": "Customise the font used in the terminal",
   "settings.general.row.uiFont.title": "Police de l'interface",
-  "settings.general.row.uiFont.description": "Personnaliser la police utilisée dans toute l'interface",
+  "settings.general.row.uiFont.description":
+    "Personnaliser la police utilisée dans toute l'interface",
   "settings.general.row.followup.title": "Comportement de suivi",
   "settings.general.row.followup.description":
     "Choisissez si les messages de suivi dirigent immédiatement ou attendent dans une file d'attente",
@@ -607,15 +635,19 @@ export const dict = {
   "settings.general.row.editToolPartsExpanded.description":
     "Afficher les parties des outils edit, write et patch développées par défaut dans la chronologie",
   "settings.general.row.wayland.title": "Utiliser Wayland natif",
-  "settings.general.row.wayland.description": "Désactiver le repli X11 sur Wayland. Nécessite un redémarrage.",
+  "settings.general.row.wayland.description":
+    "Désactiver le repli X11 sur Wayland. Nécessite un redémarrage.",
   "settings.general.row.wayland.tooltip":
     "Sur Linux avec des moniteurs à taux de rafraîchissement mixte, Wayland natif peut être plus stable.",
   "settings.general.row.releaseNotes.title": "Notes de version",
-  "settings.general.row.releaseNotes.description": 'Afficher des pop-ups "Quoi de neuf" après les mises à jour',
+  "settings.general.row.releaseNotes.description":
+    'Afficher des pop-ups "Quoi de neuf" après les mises à jour',
   "settings.updates.row.startup.title": "Vérifier les mises à jour au démarrage",
-  "settings.updates.row.startup.description": "Vérifier automatiquement les mises à jour au lancement d'OpenCode",
+  "settings.updates.row.startup.description":
+    "Vérifier automatiquement les mises à jour au lancement d'OpenCode",
   "settings.updates.row.check.title": "Vérifier les mises à jour",
-  "settings.updates.row.check.description": "Vérifier manuellement les mises à jour et installer si disponible",
+  "settings.updates.row.check.description":
+    "Vérifier manuellement les mises à jour et installer si disponible",
   "settings.updates.action.checkNow": "Vérifier maintenant",
   "settings.updates.action.checking": "Vérification...",
   "settings.updates.toast.latest.title": "Vous êtes à jour",
@@ -673,17 +705,21 @@ export const dict = {
   "settings.general.notifications.permissions.description":
     "Afficher une notification système lorsqu'une permission est requise",
   "settings.general.notifications.errors.title": "Erreurs",
-  "settings.general.notifications.errors.description": "Afficher une notification système lorsqu'une erreur se produit",
+  "settings.general.notifications.errors.description":
+    "Afficher une notification système lorsqu'une erreur se produit",
   "settings.general.sounds.agent.title": "Agent",
-  "settings.general.sounds.agent.description": "Jouer un son lorsque l'agent a terminé ou nécessite une attention",
+  "settings.general.sounds.agent.description":
+    "Jouer un son lorsque l'agent a terminé ou nécessite une attention",
   "settings.general.sounds.permissions.title": "Permissions",
-  "settings.general.sounds.permissions.description": "Jouer un son lorsqu'une permission est requise",
+  "settings.general.sounds.permissions.description":
+    "Jouer un son lorsqu'une permission est requise",
   "settings.general.sounds.errors.title": "Erreurs",
   "settings.general.sounds.errors.description": "Jouer un son lorsqu'une erreur se produit",
   "settings.shortcuts.title": "Raccourcis clavier",
   "settings.shortcuts.reset.button": "Rétablir les défauts",
   "settings.shortcuts.reset.toast.title": "Raccourcis réinitialisés",
-  "settings.shortcuts.reset.toast.description": "Les raccourcis clavier ont été réinitialisés aux valeurs par défaut.",
+  "settings.shortcuts.reset.toast.description":
+    "Les raccourcis clavier ont été réinitialisés aux valeurs par défaut.",
   "settings.shortcuts.conflict.title": "Raccourci déjà utilisé",
   "settings.shortcuts.conflict.description": "{{keybind}} est déjà assigné à {{titles}}.",
   "settings.shortcuts.unassigned": "Non assigné",
@@ -714,19 +750,22 @@ export const dict = {
   "settings.mcp.title": "MCP",
   "settings.mcp.description": "Les paramètres MCP seront configurables ici.",
   "settings.permissions.title": "Permissions",
-  "settings.permissions.description": "Contrôlez les outils que le serveur peut utiliser par défaut.",
+  "settings.permissions.description":
+    "Contrôlez les outils que le serveur peut utiliser par défaut.",
   "settings.permissions.section.tools": "Outils",
   "settings.permissions.toast.updateFailed.title": "Échec de la mise à jour des permissions",
   "settings.permissions.action.allow": "Autoriser",
   "settings.permissions.action.ask": "Demander",
   "settings.permissions.action.deny": "Refuser",
   "settings.permissions.tool.read.title": "Lire",
-  "settings.permissions.tool.read.description": "Lecture d'un fichier (correspond au chemin du fichier)",
+  "settings.permissions.tool.read.description":
+    "Lecture d'un fichier (correspond au chemin du fichier)",
   "settings.permissions.tool.edit.title": "Modifier",
   "settings.permissions.tool.edit.description":
     "Modifier des fichiers, y compris les modifications, écritures, patchs et multi-modifications",
   "settings.permissions.tool.glob.title": "Glob",
-  "settings.permissions.tool.glob.description": "Correspondre aux fichiers utilisant des modèles glob",
+  "settings.permissions.tool.glob.description":
+    "Correspondre aux fichiers utilisant des modèles glob",
   "settings.permissions.tool.grep.title": "Grep",
   "settings.permissions.tool.grep.description":
     "Rechercher dans le contenu des fichiers à l'aide d'expressions régulières",
@@ -747,9 +786,11 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "Recherche Web",
   "settings.permissions.tool.websearch.description": "Rechercher sur le web",
   "settings.permissions.tool.external_directory.title": "Répertoire externe",
-  "settings.permissions.tool.external_directory.description": "Accéder aux fichiers en dehors du répertoire du projet",
+  "settings.permissions.tool.external_directory.description":
+    "Accéder aux fichiers en dehors du répertoire du projet",
   "settings.permissions.tool.doom_loop.title": "Boucle infernale",
-  "settings.permissions.tool.doom_loop.description": "Détecter les appels d'outils répétés avec une entrée identique",
+  "settings.permissions.tool.doom_loop.description":
+    "Détecter les appels d'outils répétés avec une entrée identique",
   "session.delete.failed.title": "Échec de la suppression de la session",
   "session.delete.title": "Supprimer la session",
   "session.delete.confirm": 'Supprimer la session "{{name}}" ?',
@@ -763,7 +804,8 @@ export const dict = {
   "workspace.resetting.description": "Cela peut prendre une minute.",
   "workspace.reset.failed.title": "Échec de la réinitialisation de l'espace de travail",
   "workspace.reset.success.title": "Espace de travail réinitialisé",
-  "workspace.reset.success.description": "L'espace de travail correspond maintenant à la branche par défaut.",
+  "workspace.reset.success.description":
+    "L'espace de travail correspond maintenant à la branche par défaut.",
   "workspace.error.stillPreparing": "L'espace de travail est encore en cours de préparation",
   "workspace.status.checking": "Vérification des modifications non fusionnées...",
   "workspace.status.error": "Impossible de vérifier le statut git.",
@@ -778,7 +820,8 @@ export const dict = {
   "workspace.reset.archived.none": "Aucune session active ne sera archivée.",
   "workspace.reset.archived.one": "1 session sera archivée.",
   "workspace.reset.archived.many": "{{count}} sessions seront archivées.",
-  "workspace.reset.note": "Cela réinitialisera l'espace de travail pour correspondre à la branche par défaut.",
+  "workspace.reset.note":
+    "Cela réinitialisera l'espace de travail pour correspondre à la branche par défaut.",
   "common.open": "Ouvrir",
   "dialog.releaseNotes.action.getStarted": "Commencer",
   "dialog.releaseNotes.action.next": "Suivant",
@@ -791,8 +834,10 @@ export const dict = {
   "common.time.minutesAgo.short": "il y a {{count}}m",
   "common.time.hoursAgo.short": "il y a {{count}}h",
   "common.time.daysAgo.short": "il y a {{count}}j",
-  "settings.providers.connected.environmentDescription": "Connecté à partir de vos variables d'environnement",
-  "settings.providers.custom.description": "Ajouter un fournisseur compatible avec OpenAI via l'URL de base.",
+  "settings.providers.connected.environmentDescription":
+    "Connecté à partir de vos variables d'environnement",
+  "settings.providers.custom.description":
+    "Ajouter un fournisseur compatible avec OpenAI via l'URL de base.",
 
   "app.server.unreachable": "Impossible de joindre {{server}}",
   "app.server.retrying": "Nouvelle tentative automatique...",
@@ -801,7 +846,8 @@ export const dict = {
   "dialog.server.add.passwordPlaceholder": "mot de passe",
   "server.row.noUsername": "aucun nom d'utilisateur",
   "session.review.noVcs.createGit.title": "Créer un dépôt Git",
-  "session.review.noVcs.createGit.description": "Suivre, examiner et annuler les modifications dans ce projet",
+  "session.review.noVcs.createGit.description":
+    "Suivre, examiner et annuler les modifications dans ce projet",
   "session.review.noVcs.createGit.actionLoading": "Création du dépôt Git...",
   "session.review.noVcs.createGit.action": "Créer un dépôt Git",
   "session.todo.progress": "{{done}} tâches sur {{total}} terminées",
@@ -842,7 +888,8 @@ export const dict = {
   "debugBar.inp.tip":
     "Durée approximative d'interaction au cours des 5 dernières secondes. Ceci est similaire à INP, pas le INP officiel des Web Vitals.",
   "debugBar.cls.label": "CLS",
-  "debugBar.cls.tip": "Décalage cumulatif de la mise en page pour la durée de vie actuelle de l'application.",
+  "debugBar.cls.tip":
+    "Décalage cumulatif de la mise en page pour la durée de vie actuelle de l'application.",
   "debugBar.mem.label": "MEM",
   "debugBar.mem.tipUnavailable": "Tas JS utilisé vs limite de tas. Chromium uniquement.",
   "debugBar.mem.tip": "Tas JS utilisé vs limite de tas. {{used}} sur {{limit}}.",
@@ -867,7 +914,8 @@ export const dict = {
   "error.childStore.persistedCacheCreateFailed": "Échec de la création du cache persistant",
   "error.childStore.persistedProjectMetadataCreateFailed":
     "Échec de la création des métadonnées de projet persistantes",
-  "error.childStore.persistedProjectIconCreateFailed": "Échec de la création de l'icône de projet persistante",
+  "error.childStore.persistedProjectIconCreateFailed":
+    "Échec de la création de l'icône de projet persistante",
   "error.childStore.storeCreateFailed": "Échec de la création du stockage",
   "terminal.connectionLost.abnormalClose": "WebSocket fermé anormalement : {{code}}",
-}
+};

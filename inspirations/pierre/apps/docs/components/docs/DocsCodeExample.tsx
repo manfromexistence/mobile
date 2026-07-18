@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   File,
@@ -6,33 +6,31 @@ import {
   type FileOptions,
   type FileProps,
   type LineAnnotation,
-} from '@pierre/diffs/react';
-import { IconBrandGithub } from '@pierre/icons';
+} from "@pierre/diffs/react";
+import { IconBrandGithub } from "@pierre/icons";
 
-import { CopyCodeButton } from './CopyCodeButton';
-import { cn } from '@/lib/utils';
+import { CopyCodeButton } from "./CopyCodeButton";
+import { cn } from "@/lib/utils";
 
 interface DocsCodeExampleProps<LAnnotation> {
   file: FileContents;
   options?: FileOptions<LAnnotation>;
   annotations?: LineAnnotation<LAnnotation>[];
   prerenderedHTML?: string;
-  style?: FileProps<LAnnotation>['style'];
+  style?: FileProps<LAnnotation>["style"];
   className?: string | undefined;
   /** Optional link to the source file on GitHub */
   href?: string;
 }
 
-export function DocsCodeExample<LAnnotation = undefined>(
-  props: DocsCodeExampleProps<LAnnotation>
-) {
+export function DocsCodeExample<LAnnotation = undefined>(props: DocsCodeExampleProps<LAnnotation>) {
   const { href, ...rest } = props;
   return (
     <File
       {...rest}
       className={cn(
-        'overflow-hidden rounded-md border-1 contain-layout contain-paint',
-        props.className
+        "overflow-hidden rounded-md border-1 contain-layout contain-paint",
+        props.className,
       )}
       renderHeaderMetadata={(file) => (
         <div className="flex items-center">

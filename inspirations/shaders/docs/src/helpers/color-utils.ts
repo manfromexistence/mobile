@@ -1,4 +1,4 @@
-import { getShaderColorFromString } from '@paper-design/shaders';
+import { getShaderColorFromString } from "@paper-design/shaders";
 import {
   convertRgbToHsl,
   convertHslToRgb,
@@ -8,7 +8,7 @@ import {
   serializeHex,
   serializeHex8,
   Hsl,
-} from 'culori/fn';
+} from "culori/fn";
 
 const formatHsla = (hslColor: Hsl): string => {
   const h = Math.round(hslColor.h ?? 0);
@@ -19,12 +19,12 @@ const formatHsla = (hslColor: Hsl): string => {
 };
 
 export const toHsla = (value: string): string => {
-  if (value.startsWith('hsla')) {
+  if (value.startsWith("hsla")) {
     return value;
   }
 
   const [r, g, b, alpha] = getShaderColorFromString(value);
-  const rgbColor = { mode: 'rgb' as const, r, g, b, alpha };
+  const rgbColor = { mode: "rgb" as const, r, g, b, alpha };
   const hslColor = convertRgbToHsl(rgbColor);
 
   if (!hslColor) {

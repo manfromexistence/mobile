@@ -64,7 +64,7 @@ test("combo test route validates request payloads and combo existence", async ()
       method: "POST",
       headers: { "content-type": "application/json" },
       body: "{",
-    })
+    }),
   );
 
   assert.equal(invalidJsonResponse.status, 400);
@@ -80,7 +80,7 @@ test("combo test route validates request payloads and combo existence", async ()
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ comboName: "" }),
-    })
+    }),
   );
   const invalidBody = (await invalidBodyResponse.json()) as any;
   assert.equal(invalidBodyResponse.status, 400);
@@ -114,7 +114,7 @@ test("combo test route marks a model healthy only when it returns assistant text
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -140,7 +140,7 @@ test("combo test route marks a model healthy only when it returns assistant text
   assert.equal(forwardedBody.model, "openrouter/openai/gpt-5.4");
   assert.equal(
     forwardedBody.messages[0].content,
-    "Calculate 52122+34093, and reply with the result only."
+    "Calculate 52122+34093, and reply with the result only.",
   );
   assert.equal(forwardedBody.max_tokens, 2048);
   assert.equal("temperature" in forwardedBody, false);
@@ -167,7 +167,7 @@ test("combo test route treats empty successful responses as failures", async () 
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
 
   const response = await route.POST(makeRequest());
@@ -207,7 +207,7 @@ test("combo test route accepts reasoning-only completions as healthy smoke-test 
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
 
   const response = await route.POST(makeRequest());
@@ -232,7 +232,7 @@ test("combo test route surfaces provider errors instead of downgrading them to r
       {
         status: 422,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
 
   const response = await route.POST(makeRequest());
@@ -263,7 +263,7 @@ test("combo test route launches model probes concurrently while preserving combo
   assert.equal(fetchCalls.length, 3);
   assert.deepEqual(
     fetchCalls.map(({ init }) => JSON.parse(init.body).model),
-    ["provider/first", "provider/second", "provider/third"]
+    ["provider/first", "provider/second", "provider/third"],
   );
 
   resolvers[2](
@@ -271,24 +271,24 @@ test("combo test route launches model probes concurrently while preserving combo
       JSON.stringify({
         choices: [{ message: { role: "assistant", content: "THIRD" } }],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
-    )
+      { status: 200, headers: { "content-type": "application/json" } },
+    ),
   );
   resolvers[1](
     new Response(
       JSON.stringify({
         choices: [{ message: { role: "assistant", content: "SECOND" } }],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
-    )
+      { status: 200, headers: { "content-type": "application/json" } },
+    ),
   );
   resolvers[0](
     new Response(
       JSON.stringify({
         choices: [{ message: { role: "assistant", content: "FIRST" } }],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
-    )
+      { status: 200, headers: { "content-type": "application/json" } },
+    ),
   );
 
   const response = await responsePromise;
@@ -306,7 +306,7 @@ test("combo test route launches model probes concurrently while preserving combo
       { model: "provider/first", status: "ok", responseText: "FIRST" },
       { model: "provider/second", status: "ok", responseText: "SECOND" },
       { model: "provider/third", status: "ok", responseText: "THIRD" },
-    ]
+    ],
   );
 });
 
@@ -346,7 +346,7 @@ test("combo test route preserves structured step metadata for repeated model/acc
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -357,7 +357,7 @@ test("combo test route preserves structured step metadata for repeated model/acc
   assert.equal(fetchCalls.length, 2);
   assert.deepEqual(
     fetchCalls.map(({ init }) => JSON.parse(init.body).model),
-    ["openai/gpt-4o-mini", "openai/gpt-4o-mini"]
+    ["openai/gpt-4o-mini", "openai/gpt-4o-mini"],
   );
   assert.equal(fetchCalls[0].init.headers["X-OmniRoute-Connection"], "conn-openai-a");
   assert.equal(fetchCalls[1].init.headers["X-OmniRoute-Connection"], "conn-openai-b");
@@ -392,7 +392,7 @@ test("combo test route rejects empty combos and ignores forwarded origins for in
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -405,7 +405,7 @@ test("combo test route rejects empty combos and ignores forwarded origins for in
         "x-forwarded-proto": "https",
       },
       body: JSON.stringify({ comboName: "strict-live-test" }),
-    })
+    }),
   );
 
   assert.equal(forwardedResponse.status, 200);
@@ -458,6 +458,6 @@ test("combo test route handles upstream timeouts and non-JSON error bodies", asy
         error: "Bad Gateway",
         statusCode: 502,
       },
-    ]
+    ],
   );
 });

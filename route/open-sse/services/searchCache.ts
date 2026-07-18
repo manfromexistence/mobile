@@ -40,7 +40,7 @@ export function computeCacheKey(
   maxResults: number,
   country?: string,
   language?: string,
-  filters?: unknown
+  filters?: unknown,
 ): string {
   const normalized = normalizeQuery(query);
   const payload = JSON.stringify({
@@ -92,7 +92,7 @@ function evictIfNeeded(): void {
 export async function getOrCoalesce<T>(
   key: string,
   ttlMs: number,
-  fetchFn: () => Promise<T>
+  fetchFn: () => Promise<T>,
 ): Promise<{ data: T; cached: boolean }> {
   // When ttlMs === 0 the caller explicitly wants to bypass the cache.
   // Skip both the cache lookup AND the inflight-coalescing step so every

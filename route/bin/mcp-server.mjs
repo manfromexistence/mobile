@@ -38,7 +38,7 @@ export async function startMcpCli(rootDir = ROOT) {
   const mcpEntry = resolveMcpEntry(rootDir);
   if (!mcpEntry) {
     throw new Error(
-      "MCP server entrypoint not found. Expected dist/open-sse/mcp-server/server.js or open-sse/mcp-server/server.ts."
+      "MCP server entrypoint not found. Expected dist/open-sse/mcp-server/server.js or open-sse/mcp-server/server.ts.",
     );
   }
 

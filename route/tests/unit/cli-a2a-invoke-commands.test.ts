@@ -53,7 +53,7 @@ test("a2a skills retorna lista de skills da agent card", async () => {
           { id: "smart-routing", name: "Smart Routing" },
           { id: "cost-analysis", name: "Cost Analysis" },
         ],
-      })
+      }),
     );
   }) as any;
 

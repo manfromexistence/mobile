@@ -1,16 +1,16 @@
-import type { CSSProperties } from 'react';
+import type { CSSProperties } from "react";
 
 export const GutterUtilitySlotStyles: CSSProperties = {
-  position: 'absolute',
+  position: "absolute",
   top: 0,
   bottom: 0,
-  textAlign: 'center',
-  whiteSpace: 'normal',
-  touchAction: 'none',
+  textAlign: "center",
+  whiteSpace: "normal",
+  touchAction: "none",
 };
 
 export const MergeConflictSlotStyles: CSSProperties = {
-  display: 'contents',
+  display: "contents",
 };
 
 export function noopRender() {

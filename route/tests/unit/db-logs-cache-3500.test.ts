@@ -35,15 +35,17 @@ function ensureUsageLogsTable() {
       model TEXT NOT NULL,
       provider TEXT NOT NULL,
       timestamp TEXT NOT NULL
-    )`
+    )`,
   ).run();
 }
 
 function insertUsageLog(row: { model: string; provider: string }) {
   const db = core.getDbInstance();
-  db.prepare(
-    `INSERT INTO usage_logs (model, provider, timestamp) VALUES (?, ?, ?)`
-  ).run(row.model, row.provider, new Date().toISOString());
+  db.prepare(`INSERT INTO usage_logs (model, provider, timestamp) VALUES (?, ?, ?)`).run(
+    row.model,
+    row.provider,
+    new Date().toISOString(),
+  );
 }
 
 // ---------------------------------------------------------------------------
@@ -62,7 +64,7 @@ function insertSemanticCache(row: {
     `INSERT INTO semantic_cache
       (id, signature, model, prompt_hash, response, tokens_saved, hit_count, created_at, expires_at)
      VALUES
-      (?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now', '+1 hour'))`
+      (?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now', '+1 hour'))`,
   ).run(
     row.id,
     row.signature,
@@ -81,7 +83,7 @@ function insertSemanticCache(row: {
 function insertProxyLog(row: { id: string; timestamp: string; provider?: string }) {
   const db = core.getDbInstance();
   db.prepare(
-    `INSERT INTO proxy_logs (id, timestamp, provider, status, proxy_type) VALUES (?, ?, ?, ?, ?)`
+    `INSERT INTO proxy_logs (id, timestamp, provider, status, proxy_type) VALUES (?, ?, ?, ?, ?)`,
   ).run(row.id, row.timestamp, row.provider ?? "openai", "ok", "http");
 }
 
@@ -179,7 +181,7 @@ test("#3500 listSemanticCacheEntries — returns entries with pagination", () =>
   if (result.entries.length >= 2) {
     assert.ok(
       result.entries[0].hit_count >= result.entries[1].hit_count,
-      "sorted desc by hit_count"
+      "sorted desc by hit_count",
     );
   }
 });
@@ -197,7 +199,7 @@ test("#3500 listSemanticCacheEntries — search filter narrows results", () => {
   assert.ok(result.total >= 1, "should find at least 1 matching entry");
   assert.ok(
     result.entries.some((e) => e.signature === "sig-alpha"),
-    "sig-alpha in results"
+    "sig-alpha in results",
   );
 });
 
@@ -239,7 +241,7 @@ test("#3500 listSemanticCacheEntries — pagination offset works", () => {
     assert.notEqual(
       p1.entries[0].id,
       p2.entries[0].id,
-      "page 1 and page 2 must not have the same first entry"
+      "page 1 and page 2 must not have the same first entry",
     );
   }
 });
@@ -316,8 +318,16 @@ test("#3500 exportProxyLogsSince — returns rows with timestamp >= since", () =
   const base = new Date("2025-01-15T10:00:00.000Z");
   const old = new Date("2025-01-14T10:00:00.000Z");
 
-  insertProxyLog({ id: "pl-new-1", timestamp: new Date("2025-01-15T11:00:00.000Z").toISOString(), provider: "openai" });
-  insertProxyLog({ id: "pl-new-2", timestamp: new Date("2025-01-15T12:00:00.000Z").toISOString(), provider: "anthropic" });
+  insertProxyLog({
+    id: "pl-new-1",
+    timestamp: new Date("2025-01-15T11:00:00.000Z").toISOString(),
+    provider: "openai",
+  });
+  insertProxyLog({
+    id: "pl-new-2",
+    timestamp: new Date("2025-01-15T12:00:00.000Z").toISOString(),
+    provider: "anthropic",
+  });
   insertProxyLog({ id: "pl-old-1", timestamp: old.toISOString(), provider: "openai" }); // outside window
 
   const rows = proxyLogs.exportProxyLogsSince(base.toISOString());

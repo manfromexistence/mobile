@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { createSignal } from "solid-js"
-import * as mod from "./popover"
-import { create } from "../storybook/scaffold"
+import { createSignal } from "solid-js";
+import * as mod from "./popover";
+import { create } from "../storybook/scaffold";
 
 const docs = `### Overview
 Composable popover with optional title, description, and close button.
@@ -24,7 +24,7 @@ Use for small contextual details; avoid long forms.
 ### Theming/tokens
 - Uses \`data-component="popover-content"\` and related slots.
 
-`
+`;
 
 const story = create({
   title: "UI/Popover",
@@ -36,7 +36,7 @@ const story = create({
     defaultOpen: true,
     children: "Popover content",
   },
-})
+});
 
 export default {
   title: "UI/Popover",
@@ -50,9 +50,9 @@ export default {
       },
     },
   },
-}
+};
 
-export const Basic = story.Basic
+export const Basic = story.Basic;
 
 export const NoHeader = {
   args: {
@@ -60,18 +60,18 @@ export const NoHeader = {
     description: undefined,
     children: "Popover body only",
   },
-}
+};
 
 export const Inline = {
   args: {
     portal: false,
     defaultOpen: true,
   },
-}
+};
 
 export const Controlled = {
   render: () => {
-    const [open, setOpen] = createSignal(true)
+    const [open, setOpen] = createSignal(true);
     return (
       <mod.Popover
         open={open()}
@@ -82,6 +82,6 @@ export const Controlled = {
       >
         Controlled content
       </mod.Popover>
-    )
+    );
   },
-}
+};

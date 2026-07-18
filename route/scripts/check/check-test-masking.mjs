@@ -106,9 +106,8 @@ function normalizeWhitespace(s) {
  */
 export function countSignificantTokens(cond) {
   const tokens =
-    (cond || "").match(
-      /===|!==|==|!=|>=|<=|&&|\|\||[<>+\-*/%!]|[A-Za-z_$][\w$]*|\d+(?:\.\d+)?/g
-    ) || [];
+    (cond || "").match(/===|!==|==|!=|>=|<=|&&|\|\||[<>+\-*/%!]|[A-Za-z_$][\w$]*|\d+(?:\.\d+)?/g) ||
+    [];
   let count = 0;
   for (const tk of tokens) {
     if (/^[A-Za-z_$]/.test(tk)) {
@@ -178,8 +177,7 @@ export function extractProdConditions(src) {
   }
 
   // Comparison-bearing ternaries: `<lhs> <cmp> <rhs> ? … : …` (best-effort, low-noise).
-  const ternRe =
-    /([A-Za-z_$][\w$).\]]*\s*(?:===|!==|==|!=|>=|<=|>|<)\s*[^?;{}\n]+?)\s*\?/g;
+  const ternRe = /([A-Za-z_$][\w$).\]]*\s*(?:===|!==|==|!=|>=|<=|>|<)\s*[^?;{}\n]+?)\s*\?/g;
   let t;
   while ((t = ternRe.exec(src))) {
     pushCond(t[1], ownerAt(t.index));
@@ -199,7 +197,10 @@ export function extractImports(src) {
   if (!src) return names;
   const addModule = (mod) => {
     names.add(mod);
-    const base = mod.split("/").pop().replace(/\.\w+$/, "");
+    const base = mod
+      .split("/")
+      .pop()
+      .replace(/\.\w+$/, "");
     if (base) names.add(base);
   };
   let m;
@@ -227,8 +228,7 @@ export function extractImports(src) {
 export function findReimplementedConditions(prodSources, testSource, testImports) {
   const flags = [];
   if (!testSource) return flags;
-  const imports =
-    testImports instanceof Set ? testImports : new Set(testImports || []);
+  const imports = testImports instanceof Set ? testImports : new Set(testImports || []);
   const squash = (s) => (s || "").replace(/\s+/g, "");
   const testSq = squash(testSource);
   const seen = new Set();
@@ -259,7 +259,7 @@ export function findReimplementedConditions(prodSources, testSource, testImports
 export function evaluateDeletedFiles(
   deletedPaths,
   deletionAllowlist = {},
-  fileExists = fs.existsSync
+  fileExists = fs.existsSync,
 ) {
   const flags = [];
   for (const f of deletedPaths) {
@@ -268,12 +268,12 @@ export function evaluateDeletedFiles(
     if (entry && typeof entry.replacement === "string") {
       if (TEST_RE.test(entry.replacement) && fileExists(entry.replacement)) continue;
       flags.push(
-        `${f}: deleção allowlistada mas o substituto declarado (${entry.replacement}) não existe ou não é arquivo de teste`
+        `${f}: deleção allowlistada mas o substituto declarado (${entry.replacement}) não existe ou não é arquivo de teste`,
       );
       continue;
     }
     flags.push(
-      `${f}: arquivo de teste deletado — revisão humana obrigatória (mascaramento alto-sinal)`
+      `${f}: arquivo de teste deletado — revisão humana obrigatória (mascaramento alto-sinal)`,
     );
   }
   return flags;
@@ -353,17 +353,17 @@ export function evaluateMasking(perFile, assertReductionAllowlist = new Set()) {
     // The tautology / skip / deletion signals below are NEVER allowlisted.
     if (f.headAsserts < f.baseAsserts && !assertReductionAllowlist.has(f.file))
       flags.push(
-        `${f.file}: asserts ${f.baseAsserts} → ${f.headAsserts} (REMOÇÃO de ${f.baseAsserts - f.headAsserts} — enfraquecimento?)`
+        `${f.file}: asserts ${f.baseAsserts} → ${f.headAsserts} (REMOÇÃO de ${f.baseAsserts - f.headAsserts} — enfraquecimento?)`,
       );
     if (!isSelfTestFixture && f.headTaut > f.baseTaut)
       flags.push(`${f.file}: nova(s) ${f.headTaut - f.baseTaut} tautologia(s) assert.ok(true)`);
     if (headSkips > baseSkips)
       flags.push(
-        `${f.file}: ${headSkips - baseSkips} novo(s) .skip/.todo/.only (asserts silenciados sem remoção)`
+        `${f.file}: ${headSkips - baseSkips} novo(s) .skip/.todo/.only (asserts silenciados sem remoção)`,
       );
     if (!isSelfTestFixture && headExtTaut > baseExtTaut)
       flags.push(
-        `${f.file}: nova(s) ${headExtTaut - baseExtTaut} tautologia(s) estendida(s) (expect(true).toBe(true) / assert.equal(1,1))`
+        `${f.file}: nova(s) ${headExtTaut - baseExtTaut} tautologia(s) estendida(s) (expect(true).toBe(true) / assert.equal(1,1))`,
       );
   }
   return flags;
@@ -406,7 +406,7 @@ export function scanBareTautologies(testFiles, readFile) {
     if (count > 0) {
       flags.push(
         `${file}: ${count} tautologia(s) pura(s) (expect(true).toBe(true) / assert.equal(1,1)) — ` +
-          "substitua por um assert real do comportamento observável"
+          "substitua por um assert real do comportamento observável",
       );
     }
   }
@@ -455,7 +455,7 @@ function main() {
       `[test-masking] ${absoluteTautFlags.length} tautologia(s) pura(s) encontradas ` +
         `(scan absoluto — roda com ou sem contexto de PR):\n` +
         absoluteTautFlags.map((f) => "  ✗ " + f).join("\n") +
-        `\n  → substitua por um assert real do comportamento observável.`
+        `\n  → substitua por um assert real do comportamento observável.`,
     );
     process.exit(1);
   }
@@ -463,7 +463,7 @@ function main() {
   const base = resolveBase();
   if (!base) {
     console.log(
-      "[test-masking] sem base ref (não é PR) — pulando checks de diff (scan absoluto de tautologias OK)."
+      "[test-masking] sem base ref (não é PR) — pulando checks de diff (scan absoluto de tautologias OK).",
     );
     return;
   }
@@ -473,7 +473,7 @@ function main() {
   // redução de asserts abaixo (gutting-via-rename ainda flaga); só deleções reais
   // e renames test→não-teste contam como remoção de teste.
   const { deletedTests, renames } = partitionDeletedRenamed(
-    git(["diff", "--name-status", "-M", "--diff-filter=DR", `${base}...HEAD`])
+    git(["diff", "--name-status", "-M", "--diff-filter=DR", `${base}...HEAD`]),
   );
 
   const relocatedOutOfTest = [];
@@ -566,7 +566,7 @@ function main() {
         reimplementedFlags.push(
           `${tf}: re-implementa a condição \`${hit.condition}\`` +
             (hit.owner ? ` (dona: ${hit.owner})` : "") +
-            " — asserte através do import real em vez de copiar a condição"
+            " — asserte através do import real em vez de copiar a condição",
         );
       }
     }
@@ -577,13 +577,13 @@ function main() {
         `condição de produção em vez de importar o símbolo dono (classe #6216):\n` +
         reimplementedFlags.map((f) => "  ⚠ " + f).join("\n") +
         `\n  → importe o símbolo/função dono e asserte através dele (evita contrato duplicado ` +
-        `que diverge silenciosamente). Report-only por enquanto — não falha o gate.`
+        `que diverge silenciosamente). Report-only por enquanto — não falha o gate.`,
     );
   }
 
   const deletedFlags = evaluateDeletedFiles(
     [...deletedTests, ...relocatedOutOfTest],
-    deletionAllowlist
+    deletionAllowlist,
   );
   const maskingFlags = evaluateMasking(perFile, assertReductionAllowlist);
   const allFlags = [...deletedFlags, ...maskingFlags];
@@ -592,13 +592,13 @@ function main() {
     console.error(
       `[test-masking] ${allFlags.length} sinal(is) de enfraquecimento de teste:\n` +
         allFlags.map((f) => "  ✗ " + f).join("\n") +
-        `\n  → se a redução é legítima (refator/consolidação), explique no PR; senão, restaure os asserts.`
+        `\n  → se a redução é legítima (refator/consolidação), explique no PR; senão, restaure os asserts.`,
     );
     process.exit(1);
   }
   console.log(
     `[test-masking] OK — ${changed.length} modificado(s), ${renames.length} renomeado(s) (relocação), ` +
-      `${deletedTests.length} deletado(s) — sem enfraquecimento`
+      `${deletedTests.length} deletado(s) — sem enfraquecimento`,
   );
 }
 

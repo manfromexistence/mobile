@@ -23,7 +23,7 @@ function insertCallLog(id: string, timestamp: string, artifact: string | null = 
   const db = core.getDbInstance();
   db.prepare(
     `INSERT INTO call_logs (id, timestamp, method, path, status, model, provider, detail_state, artifact_relpath)
-     VALUES (@id, @timestamp, 'POST', '/v1/chat/completions', 200, 'openai/gpt-4.1', 'openai', 'none', @artifact)`
+     VALUES (@id, @timestamp, 'POST', '/v1/chat/completions', 200, 'openai/gpt-4.1', 'openai', 'none', @artifact)`,
   ).run({ id, timestamp, artifact });
 }
 
@@ -35,7 +35,7 @@ function seed(total: number, withArtifact: boolean) {
       insertCallLog(
         `r-${String(i).padStart(6, "0")}`,
         new Date(base + i * 1000).toISOString(),
-        withArtifact ? `2026-01/${i}.json` : null
+        withArtifact ? `2026-01/${i}.json` : null,
       );
     }
   })();
@@ -58,9 +58,7 @@ function captureSql(run: () => void): string[] {
 }
 
 const unboundedSelectsOnCallLogs = (sqls: string[]) =>
-  sqls.filter(
-    (s) => /SELECT/i.test(s) && /\bFROM\s+call_logs\b/i.test(s) && !/LIMIT/i.test(s)
-  );
+  sqls.filter((s) => /SELECT/i.test(s) && /\bFROM\s+call_logs\b/i.test(s) && !/LIMIT/i.test(s));
 
 test.beforeEach(() => {
   core.resetDbInstance();
@@ -86,7 +84,7 @@ test("#5618 collectReferencedArtifacts pages with LIMIT and collects across page
   assert.deepEqual(
     unboundedSelectsOnCallLogs(sqls),
     [],
-    `unbounded SELECT on call_logs (OOM risk): ${unboundedSelectsOnCallLogs(sqls).join("; ")}`
+    `unbounded SELECT on call_logs (OOM risk): ${unboundedSelectsOnCallLogs(sqls).join("; ")}`,
   );
 });
 
@@ -101,11 +99,11 @@ test("#5618 deleteCallLogsBefore selects ids with LIMIT (bounded) instead of all
 
   assert.equal(result!.deletedRows, total, "all rows before the cutoff are deleted (across pages)");
   const unboundedIdSelects = sqls.filter(
-    (s) => /SELECT\s+id\s+FROM\s+call_logs/i.test(s) && !/LIMIT/i.test(s)
+    (s) => /SELECT\s+id\s+FROM\s+call_logs/i.test(s) && !/LIMIT/i.test(s),
   );
   assert.deepEqual(
     unboundedIdSelects,
     [],
-    `unbounded id SELECT on call_logs (OOM risk): ${unboundedIdSelects.join("; ")}`
+    `unbounded id SELECT on call_logs (OOM risk): ${unboundedIdSelects.join("; ")}`,
   );
 });

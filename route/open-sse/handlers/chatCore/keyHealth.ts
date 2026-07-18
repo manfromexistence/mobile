@@ -31,7 +31,7 @@ type KeyHealthLog = {
 export function recordKeyHealthStatus(
   status: number,
   creds: Record<string, unknown> | null | undefined,
-  log?: KeyHealthLog
+  log?: KeyHealthLog,
 ): void {
   const connId = creds?.connectionId as string | undefined;
   if (!connId) return;
@@ -47,7 +47,7 @@ export function recordKeyHealthStatus(
     const updatedHealth = recordKeyFailure(connId, currentKeyId);
     log?.warn?.(
       "AUTH",
-      `401 on connection ${connId.slice(0, 8)} - key marked as failed (failure #${updatedHealth.failures})`
+      `401 on connection ${connId.slice(0, 8)} - key marked as failed (failure #${updatedHealth.failures})`,
     );
 
     // Persist health status to DB on every failure (not just invalid transitions)
@@ -63,7 +63,7 @@ export function recordKeyHealthStatus(
       }).catch((err: unknown) => {
         log?.error?.(
           "DB",
-          `Failed to persist apiKeyHealth: ${err instanceof Error ? err.message : String(err)}`
+          `Failed to persist apiKeyHealth: ${err instanceof Error ? err.message : String(err)}`,
         );
       });
     }
@@ -76,7 +76,7 @@ export function recordKeyHealthStatus(
     const updatedHealth = recordKeyTerminal(connId, currentKeyId);
     log?.error?.(
       "AUTH",
-      `402 on connection ${connId.slice(0, 8)} - key ${currentKeyId} marked invalid (insufficient balance)`
+      `402 on connection ${connId.slice(0, 8)} - key ${currentKeyId} marked invalid (insufficient balance)`,
     );
 
     const prevStatus = health?.[currentKeyId]?.status;
@@ -89,7 +89,7 @@ export function recordKeyHealthStatus(
       }).catch((err: unknown) => {
         log?.error?.(
           "DB",
-          `Failed to persist apiKeyHealth: ${err instanceof Error ? err.message : String(err)}`
+          `Failed to persist apiKeyHealth: ${err instanceof Error ? err.message : String(err)}`,
         );
       });
     }
@@ -105,7 +105,7 @@ export function recordKeyHealthStatus(
       }).catch((err: unknown) => {
         log?.error?.(
           "DB",
-          `Failed to persist apiKeyHealth: ${err instanceof Error ? err.message : String(err)}`
+          `Failed to persist apiKeyHealth: ${err instanceof Error ? err.message : String(err)}`,
         );
       });
     }

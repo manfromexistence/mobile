@@ -14,7 +14,6 @@ import {
 } from "@/shared/constants/upstreamHeaders";
 import { MAX_TIMER_TIMEOUT_MS } from "@/shared/utils/runtimeTimeouts";
 
-
 export const pricingFieldsSchema = z
   .object({
     input: z.number().min(0).optional(),
@@ -27,7 +26,7 @@ export const pricingFieldsSchema = z
 
 export const updatePricingSchema = z.record(
   z.string().trim().min(1),
-  z.record(z.string().trim().min(1), pricingFieldsSchema)
+  z.record(z.string().trim().min(1), pricingFieldsSchema),
 );
 
 export const pricingSyncSourceSchema = z.enum(["litellm"]);

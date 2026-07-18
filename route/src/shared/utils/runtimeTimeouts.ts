@@ -66,7 +66,7 @@ function readTimeoutMs(
   env: EnvSource,
   name: string,
   defaultValue: number,
-  options: ReadTimeoutOptions = {}
+  options: ReadTimeoutOptions = {},
 ): number {
   const raw = env[name];
   if (raw == null || raw.trim() === "") return defaultValue;
@@ -83,7 +83,7 @@ function readTimeoutMs(
 
 export function getUpstreamTimeoutConfig(
   env: EnvSource = process.env,
-  logger?: TimeoutLogger
+  logger?: TimeoutLogger,
 ): UpstreamTimeoutConfig {
   const sharedRequestTimeoutMs = hasEnvValue(env, "REQUEST_TIMEOUT_MS")
     ? readTimeoutMs(env, "REQUEST_TIMEOUT_MS", DEFAULT_FETCH_TIMEOUT_MS, {
@@ -98,7 +98,7 @@ export function getUpstreamTimeoutConfig(
     {
       allowZero: true,
       logger,
-    }
+    },
   );
   const streamIdleTimeoutMs = readTimeoutMs(
     env,
@@ -107,7 +107,7 @@ export function getUpstreamTimeoutConfig(
     {
       allowZero: true,
       logger,
-    }
+    },
   );
   const streamReadinessTimeoutMs = readTimeoutMs(
     env,
@@ -116,7 +116,7 @@ export function getUpstreamTimeoutConfig(
     {
       allowZero: true,
       logger,
-    }
+    },
   );
   const streamReadinessMaxTimeoutMs = readTimeoutMs(
     env,
@@ -125,7 +125,7 @@ export function getUpstreamTimeoutConfig(
     {
       allowZero: true,
       logger,
-    }
+    },
   );
   const sseHeartbeatIntervalMs = readTimeoutMs(
     env,
@@ -134,7 +134,7 @@ export function getUpstreamTimeoutConfig(
     {
       allowZero: true,
       logger,
-    }
+    },
   );
 
   return {
@@ -158,7 +158,7 @@ export function getUpstreamTimeoutConfig(
       {
         allowZero: true,
         logger,
-      }
+      },
     ),
     fetchKeepAliveTimeoutMs: readTimeoutMs(
       env,
@@ -166,14 +166,14 @@ export function getUpstreamTimeoutConfig(
       DEFAULT_FETCH_KEEPALIVE_TIMEOUT_MS,
       {
         logger,
-      }
+      },
     ),
   };
 }
 
 export function getStainlessTimeoutSeconds(
   env: EnvSource = process.env,
-  logger?: TimeoutLogger
+  logger?: TimeoutLogger,
 ): number {
   const { fetchTimeoutMs } = getUpstreamTimeoutConfig(env, logger);
   return Math.max(1, Math.ceil(fetchTimeoutMs / 1_000));
@@ -181,7 +181,7 @@ export function getStainlessTimeoutSeconds(
 
 export function getTlsClientTimeoutConfig(
   env: EnvSource = process.env,
-  logger?: TimeoutLogger
+  logger?: TimeoutLogger,
 ): TlsClientTimeoutConfig {
   const upstream = getUpstreamTimeoutConfig(env, logger);
 
@@ -195,7 +195,7 @@ export function getTlsClientTimeoutConfig(
 
 export function getApiBridgeTimeoutConfig(
   env: EnvSource = process.env,
-  logger?: TimeoutLogger
+  logger?: TimeoutLogger,
 ): ApiBridgeTimeoutConfig {
   const sharedRequestTimeoutMs = hasEnvValue(env, "REQUEST_TIMEOUT_MS")
     ? readTimeoutMs(env, "REQUEST_TIMEOUT_MS", DEFAULT_FETCH_TIMEOUT_MS, {
@@ -210,7 +210,7 @@ export function getApiBridgeTimeoutConfig(
     {
       allowZero: true,
       logger,
-    }
+    },
   );
   const derivedRequestTimeoutMs =
     proxyTimeoutMs > 0
@@ -229,7 +229,7 @@ export function getApiBridgeTimeoutConfig(
     {
       allowZero: true,
       logger,
-    }
+    },
   );
   const serverHeadersTimeoutMs = readTimeoutMs(
     env,
@@ -238,7 +238,7 @@ export function getApiBridgeTimeoutConfig(
     {
       allowZero: true,
       logger,
-    }
+    },
   );
 
   return {
@@ -250,7 +250,7 @@ export function getApiBridgeTimeoutConfig(
       {
         allowZero: true,
         logger,
-      }
+      },
     ),
     serverHeadersTimeoutMs:
       serverHeadersTimeoutMs > 0 && serverKeepAliveTimeoutMs > 0
@@ -264,14 +264,14 @@ export function getApiBridgeTimeoutConfig(
       {
         allowZero: true,
         logger,
-      }
+      },
     ),
   };
 }
 
 export function getMainServerTimeoutConfig(
   env: EnvSource = process.env,
-  logger?: TimeoutLogger
+  logger?: TimeoutLogger,
 ): MainServerTimeoutConfig {
   const keepAliveTimeoutMs = readTimeoutMs(
     env,
@@ -280,7 +280,7 @@ export function getMainServerTimeoutConfig(
     {
       allowZero: true,
       logger,
-    }
+    },
   );
   const headersTimeoutMs = readTimeoutMs(
     env,
@@ -289,7 +289,7 @@ export function getMainServerTimeoutConfig(
     {
       allowZero: true,
       logger,
-    }
+    },
   );
 
   return {

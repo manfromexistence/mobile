@@ -1,11 +1,11 @@
-import { DEFAULT_THEMES } from '@pierre/diffs';
-import type { PreloadMultiFileDiffOptions } from '@pierre/diffs/ssr';
+import { DEFAULT_THEMES } from "@pierre/diffs";
+import type { PreloadMultiFileDiffOptions } from "@pierre/diffs/ssr";
 
-import { CustomScrollbarCSS } from '@/components/CustomScrollbarCSS';
+import { CustomScrollbarCSS } from "@/components/CustomScrollbarCSS";
 
 export const LINE_SELECTION_EXAMPLE: PreloadMultiFileDiffOptions<undefined> = {
   oldFile: {
-    name: 'vector.cpp',
+    name: "vector.cpp",
     contents: `#include <iostream>
 #include <vector>
 #include <algorithm>
@@ -60,7 +60,7 @@ public:
 `,
   },
   newFile: {
-    name: 'vector.cpp',
+    name: "vector.cpp",
     contents: `#include <iostream>
 #include <vector>
 #include <algorithm>
@@ -120,8 +120,8 @@ public:
   },
   options: {
     theme: DEFAULT_THEMES,
-    themeType: 'dark',
-    diffStyle: 'split',
+    themeType: "dark",
+    diffStyle: "split",
     disableBackground: false,
     unsafeCSS: CustomScrollbarCSS,
     enableLineSelection: true,

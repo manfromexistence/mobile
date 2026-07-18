@@ -228,7 +228,7 @@ const T: Transition[] = [
 export function createWorkflow(
   id: string,
   description: string,
-  opts?: { maxRetries?: number; metadata?: Record<string, unknown> }
+  opts?: { maxRetries?: number; metadata?: Record<string, unknown> },
 ): WorkflowContext {
   const risk = classifyRisk(description);
   return {
@@ -264,7 +264,7 @@ export function advance(
     provider?: string;
     model?: string;
     notes?: string;
-  }
+  },
 ): Phase | null {
   if (result?.verdict != null) ctx.lastVerdict = result.verdict;
   if (result?.testsPass != null) ctx.testsPass = result.testsPass;

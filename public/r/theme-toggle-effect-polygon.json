@@ -46,8 +46,6 @@
     }
   },
   "docs": "https://chanhdai.com/components/theme-toggle-effect",
-  "categories": [
-    "effects"
-  ],
+  "categories": ["effects"],
   "type": "registry:style"
 }

@@ -1,5 +1,5 @@
-import { Effect } from "effect"
-import type { DatabaseMigration } from "../migration"
+import { Effect } from "effect";
+import type { DatabaseMigration } from "../migration";
 
 export default {
   id: "20260225215848_workspace",
@@ -13,7 +13,7 @@ export default {
           \`config\` text NOT NULL,
           CONSTRAINT \`fk_workspace_project_id_project_id_fk\` FOREIGN KEY (\`project_id\`) REFERENCES \`project\`(\`id\`) ON DELETE CASCADE
         );
-      `)
-    })
+      `);
+    });
   },
-} satisfies DatabaseMigration.Migration
+} satisfies DatabaseMigration.Migration;

@@ -1,29 +1,29 @@
-import { createSignal, createEffect, onMount, onCleanup, Accessor } from "solid-js"
-import "./spotlight.css"
+import { createSignal, createEffect, onMount, onCleanup, Accessor } from "solid-js";
+import "./spotlight.css";
 
 export interface ParticlesConfig {
-  enabled: boolean
-  amount: number
-  size: [number, number]
-  speed: number
-  opacity: number
-  drift: number
+  enabled: boolean;
+  amount: number;
+  size: [number, number];
+  speed: number;
+  opacity: number;
+  drift: number;
 }
 
 export interface SpotlightConfig {
-  placement: [number, number]
-  color: string
-  speed: number
-  spread: number
-  length: number
-  width: number
-  pulsating: false | [number, number]
-  distance: number
-  saturation: number
-  noiseAmount: number
-  distortion: number
-  opacity: number
-  particles: ParticlesConfig
+  placement: [number, number];
+  color: string;
+  speed: number;
+  spread: number;
+  length: number;
+  width: number;
+  pulsating: false | [number, number];
+  distance: number;
+  saturation: number;
+  noiseAmount: number;
+  distortion: number;
+  opacity: number;
+  particles: ParticlesConfig;
 }
 
 export const defaultConfig: SpotlightConfig = {
@@ -47,94 +47,96 @@ export const defaultConfig: SpotlightConfig = {
     opacity: 0.9,
     drift: 1.5,
   },
-}
+};
 
 export interface SpotlightAnimationState {
-  time: number
-  intensity: number
-  pulseValue: number
+  time: number;
+  intensity: number;
+  pulseValue: number;
 }
 
 interface SpotlightProps {
-  config: Accessor<SpotlightConfig>
-  class?: string
-  onAnimationFrame?: (state: SpotlightAnimationState) => void
+  config: Accessor<SpotlightConfig>;
+  class?: string;
+  onAnimationFrame?: (state: SpotlightAnimationState) => void;
 }
 
 const hexToRgb = (hex: string): [number, number, number] => {
-  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
-  return m ? [parseInt(m[1], 16) / 255, parseInt(m[2], 16) / 255, parseInt(m[3], 16) / 255] : [1, 1, 1]
-}
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return m
+    ? [parseInt(m[1], 16) / 255, parseInt(m[2], 16) / 255, parseInt(m[3], 16) / 255]
+    : [1, 1, 1];
+};
 
 const getAnchorAndDir = (
   placement: [number, number],
   w: number,
   h: number,
 ): { anchor: [number, number]; dir: [number, number] } => {
-  const [px, py] = placement
-  const outside = 0.2
+  const [px, py] = placement;
+  const outside = 0.2;
 
-  let anchorX = px * w
-  let anchorY = py * h
-  let dirX = 0
-  let dirY = 0
+  let anchorX = px * w;
+  let anchorY = py * h;
+  let dirX = 0;
+  let dirY = 0;
 
-  const centerX = 0.5
-  const centerY = 0.5
+  const centerX = 0.5;
+  const centerY = 0.5;
 
   if (py <= 0.25) {
-    anchorY = -outside * h + py * h
-    dirY = 1
-    dirX = (centerX - px) * 0.5
+    anchorY = -outside * h + py * h;
+    dirY = 1;
+    dirX = (centerX - px) * 0.5;
   } else if (py >= 0.75) {
-    anchorY = (1 + outside) * h - (1 - py) * h
-    dirY = -1
-    dirX = (centerX - px) * 0.5
+    anchorY = (1 + outside) * h - (1 - py) * h;
+    dirY = -1;
+    dirX = (centerX - px) * 0.5;
   } else if (px <= 0.25) {
-    anchorX = -outside * w + px * w
-    dirX = 1
-    dirY = (centerY - py) * 0.5
+    anchorX = -outside * w + px * w;
+    dirX = 1;
+    dirY = (centerY - py) * 0.5;
   } else if (px >= 0.75) {
-    anchorX = (1 + outside) * w - (1 - px) * w
-    dirX = -1
-    dirY = (centerY - py) * 0.5
+    anchorX = (1 + outside) * w - (1 - px) * w;
+    dirX = -1;
+    dirY = (centerY - py) * 0.5;
   } else {
-    dirY = 1
+    dirY = 1;
   }
 
-  const len = Math.sqrt(dirX * dirX + dirY * dirY)
+  const len = Math.sqrt(dirX * dirX + dirY * dirY);
   if (len > 0) {
-    dirX /= len
-    dirY /= len
+    dirX /= len;
+    dirY /= len;
   }
 
-  return { anchor: [anchorX, anchorY], dir: [dirX, dirY] }
-}
+  return { anchor: [anchorX, anchorY], dir: [dirX, dirY] };
+};
 
 interface UniformData {
-  iTime: number
-  iResolution: [number, number]
-  lightPos: [number, number]
-  lightDir: [number, number]
-  color: [number, number, number]
-  speed: number
-  lightSpread: number
-  lightLength: number
-  sourceWidth: number
-  pulsating: number
-  pulsatingMin: number
-  pulsatingMax: number
-  fadeDistance: number
-  saturation: number
-  noiseAmount: number
-  distortion: number
-  particlesEnabled: number
-  particleAmount: number
-  particleSizeMin: number
-  particleSizeMax: number
-  particleSpeed: number
-  particleOpacity: number
-  particleDrift: number
+  iTime: number;
+  iResolution: [number, number];
+  lightPos: [number, number];
+  lightDir: [number, number];
+  color: [number, number, number];
+  speed: number;
+  lightSpread: number;
+  lightLength: number;
+  sourceWidth: number;
+  pulsating: number;
+  pulsatingMin: number;
+  pulsatingMax: number;
+  fadeDistance: number;
+  saturation: number;
+  noiseAmount: number;
+  distortion: number;
+  particlesEnabled: number;
+  particleAmount: number;
+  particleSizeMin: number;
+  particleSizeMax: number;
+  particleSpeed: number;
+  particleOpacity: number;
+  particleDrift: number;
 }
 
 const WGSL_SHADER = `
@@ -409,152 +411,152 @@ const WGSL_SHADER = `
     
     return fragColor;
   }
-`
+`;
 
-const UNIFORM_BUFFER_SIZE = 144
+const UNIFORM_BUFFER_SIZE = 144;
 
 function updateUniformBuffer(buffer: Float32Array, data: UniformData): void {
-  buffer[0] = data.iTime
-  buffer[2] = data.iResolution[0]
-  buffer[3] = data.iResolution[1]
-  buffer[4] = data.lightPos[0]
-  buffer[5] = data.lightPos[1]
-  buffer[6] = data.lightDir[0]
-  buffer[7] = data.lightDir[1]
-  buffer[8] = data.color[0]
-  buffer[9] = data.color[1]
-  buffer[10] = data.color[2]
-  buffer[11] = data.speed
-  buffer[12] = data.lightSpread
-  buffer[13] = data.lightLength
-  buffer[14] = data.sourceWidth
-  buffer[15] = data.pulsating
-  buffer[16] = data.pulsatingMin
-  buffer[17] = data.pulsatingMax
-  buffer[18] = data.fadeDistance
-  buffer[19] = data.saturation
-  buffer[20] = data.noiseAmount
-  buffer[21] = data.distortion
-  buffer[22] = data.particlesEnabled
-  buffer[23] = data.particleAmount
-  buffer[24] = data.particleSizeMin
-  buffer[25] = data.particleSizeMax
-  buffer[26] = data.particleSpeed
-  buffer[27] = data.particleOpacity
-  buffer[28] = data.particleDrift
+  buffer[0] = data.iTime;
+  buffer[2] = data.iResolution[0];
+  buffer[3] = data.iResolution[1];
+  buffer[4] = data.lightPos[0];
+  buffer[5] = data.lightPos[1];
+  buffer[6] = data.lightDir[0];
+  buffer[7] = data.lightDir[1];
+  buffer[8] = data.color[0];
+  buffer[9] = data.color[1];
+  buffer[10] = data.color[2];
+  buffer[11] = data.speed;
+  buffer[12] = data.lightSpread;
+  buffer[13] = data.lightLength;
+  buffer[14] = data.sourceWidth;
+  buffer[15] = data.pulsating;
+  buffer[16] = data.pulsatingMin;
+  buffer[17] = data.pulsatingMax;
+  buffer[18] = data.fadeDistance;
+  buffer[19] = data.saturation;
+  buffer[20] = data.noiseAmount;
+  buffer[21] = data.distortion;
+  buffer[22] = data.particlesEnabled;
+  buffer[23] = data.particleAmount;
+  buffer[24] = data.particleSizeMin;
+  buffer[25] = data.particleSizeMax;
+  buffer[26] = data.particleSpeed;
+  buffer[27] = data.particleOpacity;
+  buffer[28] = data.particleDrift;
 }
 
 export default function Spotlight(props: SpotlightProps) {
-  let containerRef: HTMLDivElement | undefined
-  let canvasRef: HTMLCanvasElement | null = null
-  let deviceRef: GPUDevice | null = null
-  let contextRef: GPUCanvasContext | null = null
-  let pipelineRef: GPURenderPipeline | null = null
-  let uniformBufferRef: GPUBuffer | null = null
-  let bindGroupRef: GPUBindGroup | null = null
-  let animationIdRef: number | null = null
-  let cleanupFunctionRef: (() => void) | null = null
-  let uniformDataRef: UniformData | null = null
-  let uniformArrayRef: Float32Array | null = null
-  let configRef: SpotlightConfig = props.config()
-  let frameCount = 0
+  let containerRef: HTMLDivElement | undefined;
+  let canvasRef: HTMLCanvasElement | null = null;
+  let deviceRef: GPUDevice | null = null;
+  let contextRef: GPUCanvasContext | null = null;
+  let pipelineRef: GPURenderPipeline | null = null;
+  let uniformBufferRef: GPUBuffer | null = null;
+  let bindGroupRef: GPUBindGroup | null = null;
+  let animationIdRef: number | null = null;
+  let cleanupFunctionRef: (() => void) | null = null;
+  let uniformDataRef: UniformData | null = null;
+  let uniformArrayRef: Float32Array | null = null;
+  let configRef: SpotlightConfig = props.config();
+  let frameCount = 0;
 
-  const [isVisible, setIsVisible] = createSignal(false)
+  const [isVisible, setIsVisible] = createSignal(false);
 
   createEffect(() => {
-    configRef = props.config()
-  })
+    configRef = props.config();
+  });
 
   onMount(() => {
-    if (!containerRef) return
+    if (!containerRef) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
-        const entry = entries[0]
-        setIsVisible(entry.isIntersecting)
+        const entry = entries[0];
+        setIsVisible(entry.isIntersecting);
       },
       { threshold: 0.1 },
-    )
+    );
 
-    observer.observe(containerRef)
+    observer.observe(containerRef);
 
     onCleanup(() => {
-      observer.disconnect()
-    })
-  })
+      observer.disconnect();
+    });
+  });
 
   createEffect(() => {
-    const visible = isVisible()
-    const config = props.config()
+    const visible = isVisible();
+    const config = props.config();
     if (!visible || !containerRef) {
-      return
+      return;
     }
 
     if (cleanupFunctionRef) {
-      cleanupFunctionRef()
-      cleanupFunctionRef = null
+      cleanupFunctionRef();
+      cleanupFunctionRef = null;
     }
 
     const initializeWebGPU = async () => {
       if (!containerRef) {
-        return
+        return;
       }
 
-      await new Promise((resolve) => setTimeout(resolve, 10))
+      await new Promise((resolve) => setTimeout(resolve, 10));
 
       if (!containerRef) {
-        return
+        return;
       }
 
       if (!navigator.gpu) {
-        console.warn("WebGPU is not supported in this browser")
-        return
+        console.warn("WebGPU is not supported in this browser");
+        return;
       }
 
       const adapter = await navigator.gpu.requestAdapter({
         powerPreference: "high-performance",
-      })
+      });
       if (!adapter) {
-        console.warn("Failed to get WebGPU adapter")
-        return
+        console.warn("Failed to get WebGPU adapter");
+        return;
       }
 
-      const device = await adapter.requestDevice()
-      deviceRef = device
+      const device = await adapter.requestDevice();
+      deviceRef = device;
 
-      const canvas = document.createElement("canvas")
-      canvas.style.width = "100%"
-      canvas.style.height = "100%"
-      canvasRef = canvas
+      const canvas = document.createElement("canvas");
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
+      canvasRef = canvas;
 
       while (containerRef.firstChild) {
-        containerRef.removeChild(containerRef.firstChild)
+        containerRef.removeChild(containerRef.firstChild);
       }
-      containerRef.appendChild(canvas)
+      containerRef.appendChild(canvas);
 
-      const context = canvas.getContext("webgpu")
+      const context = canvas.getContext("webgpu");
       if (!context) {
-        console.warn("Failed to get WebGPU context")
-        return
+        console.warn("Failed to get WebGPU context");
+        return;
       }
-      contextRef = context
+      contextRef = context;
 
-      const presentationFormat = navigator.gpu.getPreferredCanvasFormat()
+      const presentationFormat = navigator.gpu.getPreferredCanvasFormat();
       context.configure({
         device,
         format: presentationFormat,
         alphaMode: "premultiplied",
-      })
+      });
 
       const shaderModule = device.createShaderModule({
         code: WGSL_SHADER,
-      })
+      });
 
       const uniformBuffer = device.createBuffer({
         size: UNIFORM_BUFFER_SIZE,
         usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-      })
-      uniformBufferRef = uniformBuffer
+      });
+      uniformBufferRef = uniformBuffer;
 
       const bindGroupLayout = device.createBindGroupLayout({
         entries: [
@@ -564,7 +566,7 @@ export default function Spotlight(props: SpotlightProps) {
             buffer: { type: "uniform" },
           },
         ],
-      })
+      });
 
       const bindGroup = device.createBindGroup({
         layout: bindGroupLayout,
@@ -574,12 +576,12 @@ export default function Spotlight(props: SpotlightProps) {
             resource: { buffer: uniformBuffer },
           },
         ],
-      })
-      bindGroupRef = bindGroup
+      });
+      bindGroupRef = bindGroup;
 
       const pipelineLayout = device.createPipelineLayout({
         bindGroupLayouts: [bindGroupLayout],
-      })
+      });
 
       const pipeline = device.createRenderPipeline({
         layout: pipelineLayout,
@@ -611,14 +613,14 @@ export default function Spotlight(props: SpotlightProps) {
         primitive: {
           topology: "triangle-list",
         },
-      })
-      pipelineRef = pipeline
+      });
+      pipelineRef = pipeline;
 
-      const { clientWidth: wCSS, clientHeight: hCSS } = containerRef
-      const dpr = Math.min(window.devicePixelRatio, 2)
-      const w = wCSS * dpr
-      const h = hCSS * dpr
-      const { anchor, dir } = getAnchorAndDir(config.placement, w, h)
+      const { clientWidth: wCSS, clientHeight: hCSS } = containerRef;
+      const dpr = Math.min(window.devicePixelRatio, 2);
+      const w = wCSS * dpr;
+      const h = hCSS * dpr;
+      const { anchor, dir } = getAnchorAndDir(config.placement, w, h);
 
       uniformDataRef = {
         iTime: 0,
@@ -644,68 +646,75 @@ export default function Spotlight(props: SpotlightProps) {
         particleSpeed: config.particles.speed,
         particleOpacity: config.particles.opacity,
         particleDrift: config.particles.drift,
-      }
+      };
 
       const updatePlacement = () => {
         if (!containerRef || !canvasRef || !uniformDataRef) {
-          return
+          return;
         }
 
-        const dpr = Math.min(window.devicePixelRatio, 2)
-        const { clientWidth: wCSS, clientHeight: hCSS } = containerRef
-        const w = Math.floor(wCSS * dpr)
-        const h = Math.floor(hCSS * dpr)
+        const dpr = Math.min(window.devicePixelRatio, 2);
+        const { clientWidth: wCSS, clientHeight: hCSS } = containerRef;
+        const w = Math.floor(wCSS * dpr);
+        const h = Math.floor(hCSS * dpr);
 
-        canvasRef.width = w
-        canvasRef.height = h
+        canvasRef.width = w;
+        canvasRef.height = h;
 
-        uniformDataRef.iResolution = [w, h]
+        uniformDataRef.iResolution = [w, h];
 
-        const { anchor, dir } = getAnchorAndDir(configRef.placement, w, h)
-        uniformDataRef.lightPos = anchor
-        uniformDataRef.lightDir = dir
-      }
+        const { anchor, dir } = getAnchorAndDir(configRef.placement, w, h);
+        uniformDataRef.lightPos = anchor;
+        uniformDataRef.lightDir = dir;
+      };
 
       const loop = (t: number) => {
-        if (!deviceRef || !contextRef || !pipelineRef || !uniformBufferRef || !bindGroupRef || !uniformDataRef) {
-          return
+        if (
+          !deviceRef ||
+          !contextRef ||
+          !pipelineRef ||
+          !uniformBufferRef ||
+          !bindGroupRef ||
+          !uniformDataRef
+        ) {
+          return;
         }
 
-        const timeSeconds = t * 0.001
-        uniformDataRef.iTime = timeSeconds
-        frameCount++
+        const timeSeconds = t * 0.001;
+        uniformDataRef.iTime = timeSeconds;
+        frameCount++;
 
         if (props.onAnimationFrame && frameCount % 2 === 0) {
-          const pulsatingMin = configRef.pulsating !== false ? configRef.pulsating[0] : 1.0
-          const pulsatingMax = configRef.pulsating !== false ? configRef.pulsating[1] : 1.0
-          const pulseCenter = (pulsatingMin + pulsatingMax) * 0.5
-          const pulseAmplitude = (pulsatingMax - pulsatingMin) * 0.5
+          const pulsatingMin = configRef.pulsating !== false ? configRef.pulsating[0] : 1.0;
+          const pulsatingMax = configRef.pulsating !== false ? configRef.pulsating[1] : 1.0;
+          const pulseCenter = (pulsatingMin + pulsatingMax) * 0.5;
+          const pulseAmplitude = (pulsatingMax - pulsatingMin) * 0.5;
           const pulseValue =
             configRef.pulsating !== false
               ? pulseCenter + pulseAmplitude * Math.sin(timeSeconds * configRef.speed * 3.0)
-              : 1.0
+              : 1.0;
 
-          const baseIntensity1 = 0.45 + 0.15 * Math.sin(timeSeconds * configRef.speed * 1.5)
-          const baseIntensity2 = 0.3 + 0.2 * Math.cos(timeSeconds * configRef.speed * 1.1)
-          const intensity = Math.max((baseIntensity1 + baseIntensity2) * pulseValue, 0.55)
+          const baseIntensity1 = 0.45 + 0.15 * Math.sin(timeSeconds * configRef.speed * 1.5);
+          const baseIntensity2 = 0.3 + 0.2 * Math.cos(timeSeconds * configRef.speed * 1.1);
+          const intensity = Math.max((baseIntensity1 + baseIntensity2) * pulseValue, 0.55);
 
           props.onAnimationFrame({
             time: timeSeconds,
             intensity,
             pulseValue: Math.max(pulseValue, 0.9),
-          })
+          });
         }
 
         try {
           if (!uniformArrayRef) {
-            uniformArrayRef = new Float32Array(36)
+            uniformArrayRef = new Float32Array(36);
           }
-          updateUniformBuffer(uniformArrayRef, uniformDataRef)
-          deviceRef.queue.writeBuffer(uniformBufferRef, 0, uniformArrayRef.buffer)
+          updateUniformBuffer(uniformArrayRef, uniformDataRef);
+          deviceRef.queue.writeBuffer(uniformBufferRef, 0, uniformArrayRef.buffer);
 
-          const commandEncoder = deviceRef.createCommandEncoder()
+          const commandEncoder = deviceRef.createCommandEncoder();
 
-          const textureView = contextRef.getCurrentTexture().createView()
+          const textureView = contextRef.getCurrentTexture().createView();
 
           const renderPass = commandEncoder.beginRenderPass({
             colorAttachments: [
@@ -716,99 +725,99 @@ export default function Spotlight(props: SpotlightProps) {
                 storeOp: "store",
               },
             ],
-          })
+          });
 
-          renderPass.setPipeline(pipelineRef)
-          renderPass.setBindGroup(0, bindGroupRef)
-          renderPass.draw(3)
-          renderPass.end()
+          renderPass.setPipeline(pipelineRef);
+          renderPass.setBindGroup(0, bindGroupRef);
+          renderPass.draw(3);
+          renderPass.end();
 
-          deviceRef.queue.submit([commandEncoder.finish()])
+          deviceRef.queue.submit([commandEncoder.finish()]);
 
-          animationIdRef = requestAnimationFrame(loop)
+          animationIdRef = requestAnimationFrame(loop);
         } catch (error) {
-          console.warn("WebGPU rendering error:", error)
-          return
+          console.warn("WebGPU rendering error:", error);
+          return;
         }
-      }
+      };
 
-      window.addEventListener("resize", updatePlacement)
-      updatePlacement()
-      animationIdRef = requestAnimationFrame(loop)
+      window.addEventListener("resize", updatePlacement);
+      updatePlacement();
+      animationIdRef = requestAnimationFrame(loop);
 
       cleanupFunctionRef = () => {
         if (animationIdRef) {
-          cancelAnimationFrame(animationIdRef)
-          animationIdRef = null
+          cancelAnimationFrame(animationIdRef);
+          animationIdRef = null;
         }
 
-        window.removeEventListener("resize", updatePlacement)
+        window.removeEventListener("resize", updatePlacement);
 
         if (uniformBufferRef) {
-          uniformBufferRef.destroy()
-          uniformBufferRef = null
+          uniformBufferRef.destroy();
+          uniformBufferRef = null;
         }
 
         if (deviceRef) {
-          deviceRef.destroy()
-          deviceRef = null
+          deviceRef.destroy();
+          deviceRef = null;
         }
 
         if (canvasRef && canvasRef.parentNode) {
-          canvasRef.parentNode.removeChild(canvasRef)
+          canvasRef.parentNode.removeChild(canvasRef);
         }
 
-        canvasRef = null
-        contextRef = null
-        pipelineRef = null
-        bindGroupRef = null
-        uniformDataRef = null
-      }
-    }
+        canvasRef = null;
+        contextRef = null;
+        pipelineRef = null;
+        bindGroupRef = null;
+        uniformDataRef = null;
+      };
+    };
 
-    void initializeWebGPU()
+    void initializeWebGPU();
 
     onCleanup(() => {
       if (cleanupFunctionRef) {
-        cleanupFunctionRef()
-        cleanupFunctionRef = null
+        cleanupFunctionRef();
+        cleanupFunctionRef = null;
       }
-    })
-  })
+    });
+  });
 
   createEffect(() => {
     if (!uniformDataRef || !containerRef) {
-      return
+      return;
     }
 
-    const config = props.config()
+    const config = props.config();
 
-    uniformDataRef.color = hexToRgb(config.color)
-    uniformDataRef.speed = config.speed
-    uniformDataRef.lightSpread = config.spread
-    uniformDataRef.lightLength = config.length
-    uniformDataRef.sourceWidth = config.width
-    uniformDataRef.pulsating = config.pulsating !== false ? 1.0 : 0.0
-    uniformDataRef.pulsatingMin = config.pulsating !== false ? config.pulsating[0] : 1.0
-    uniformDataRef.pulsatingMax = config.pulsating !== false ? config.pulsating[1] : 1.0
-    uniformDataRef.fadeDistance = config.distance
-    uniformDataRef.saturation = config.saturation
-    uniformDataRef.noiseAmount = config.noiseAmount
-    uniformDataRef.distortion = config.distortion
-    uniformDataRef.particlesEnabled = config.particles.enabled ? 1.0 : 0.0
-    uniformDataRef.particleAmount = config.particles.amount
-    uniformDataRef.particleSizeMin = config.particles.size[0]
-    uniformDataRef.particleSizeMax = config.particles.size[1]
-    uniformDataRef.particleSpeed = config.particles.speed
-    uniformDataRef.particleOpacity = config.particles.opacity
-    uniformDataRef.particleDrift = config.particles.drift
+    uniformDataRef.color = hexToRgb(config.color);
+    uniformDataRef.speed = config.speed;
+    uniformDataRef.lightSpread = config.spread;
+    uniformDataRef.lightLength = config.length;
+    uniformDataRef.sourceWidth = config.width;
+    uniformDataRef.pulsating = config.pulsating !== false ? 1.0 : 0.0;
+    uniformDataRef.pulsatingMin = config.pulsating !== false ? config.pulsating[0] : 1.0;
+    uniformDataRef.pulsatingMax = config.pulsating !== false ? config.pulsating[1] : 1.0;
+    uniformDataRef.fadeDistance = config.distance;
+    uniformDataRef.saturation = config.saturation;
+    uniformDataRef.noiseAmount = config.noiseAmount;
+    uniformDataRef.distortion = config.distortion;
+    uniformDataRef.particlesEnabled = config.particles.enabled ? 1.0 : 0.0;
+    uniformDataRef.particleAmount = config.particles.amount;
+    uniformDataRef.particleSizeMin = config.particles.size[0];
+    uniformDataRef.particleSizeMax = config.particles.size[1];
+    uniformDataRef.particleSpeed = config.particles.speed;
+    uniformDataRef.particleOpacity = config.particles.opacity;
+    uniformDataRef.particleDrift = config.particles.drift;
 
-    const dpr = Math.min(window.devicePixelRatio, 2)
-    const { clientWidth: wCSS, clientHeight: hCSS } = containerRef
-    const { anchor, dir } = getAnchorAndDir(config.placement, wCSS * dpr, hCSS * dpr)
-    uniformDataRef.lightPos = anchor
-    uniformDataRef.lightDir = dir
-  })
+    const dpr = Math.min(window.devicePixelRatio, 2);
+    const { clientWidth: wCSS, clientHeight: hCSS } = containerRef;
+    const { anchor, dir } = getAnchorAndDir(config.placement, wCSS * dpr, hCSS * dpr);
+    uniformDataRef.lightPos = anchor;
+    uniformDataRef.lightDir = dir;
+  });
 
   return (
     <div
@@ -816,5 +825,5 @@ export default function Spotlight(props: SpotlightProps) {
       class={`spotlight-container ${props.class ?? ""}`.trim()}
       style={{ opacity: props.config().opacity }}
     />
-  )
+  );
 }

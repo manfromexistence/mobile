@@ -174,7 +174,7 @@ function shouldAttemptRule(ruleName: string, lowerText: string): boolean {
 
 export function applyRulesToText(
   text: string,
-  rules: CavemanRule[]
+  rules: CavemanRule[],
 ): { text: string; appliedRules: string[] } {
   let result = text;
   const lowerResult = text.toLowerCase();
@@ -397,7 +397,7 @@ function createCavemanStats(
   compressedTokens: number,
   techniquesUsed: string[],
   rulesApplied: string[] | undefined,
-  durationMs: number
+  durationMs: number,
 ): CompressionStats {
   const savingsPercent =
     originalTokens > 0
@@ -444,7 +444,7 @@ function hasProtectedStructure(text: string): boolean {
 
 export function cavemanCompress(
   body: ChatRequestBody,
-  options?: Partial<CavemanConfig>
+  options?: Partial<CavemanConfig>,
 ): CompressionResult {
   const startMs = performance.now();
   const config: CavemanConfig = { ...DEFAULT_CAVEMAN_CONFIG, ...options };
@@ -456,7 +456,7 @@ export function cavemanCompress(
       body as unknown as Record<string, unknown>,
       body as unknown as Record<string, unknown>,
       "standard" as CompressionMode,
-      []
+      [],
     ),
   });
 
@@ -490,7 +490,7 @@ export function cavemanCompress(
             .map((part) =>
               part && typeof part === "object" && "text" in part && typeof part.text === "string"
                 ? part.text
-                : ""
+                : "",
             )
             .filter(Boolean)
             .join("\n");
@@ -534,7 +534,7 @@ export function cavemanCompress(
             ? "en"
             : detectedLanguage;
       const rules = getRulesForContext(msg.role, config.intensity, language).filter(
-        (rule) => !config.skipRules.includes(rule.name)
+        (rule) => !config.skipRules.includes(rule.name),
       );
       const { text: rulesApplied, appliedRules } = applyRulesToText(extractedText, rules);
       allAppliedRules.push(...appliedRules);
@@ -566,7 +566,7 @@ export function cavemanCompress(
               .map((part) =>
                 part && typeof part === "object" && "text" in part && typeof part.text === "string"
                   ? part.text
-                  : ""
+                  : "",
               )
               .filter(Boolean)
               .join("\n")
@@ -583,7 +583,7 @@ export function cavemanCompress(
     totalCompressedTokens,
     uniqueRules.length > 0 ? ["caveman-rules"] : [],
     uniqueRules.length > 0 ? uniqueRules : undefined,
-    Math.round(durationMs * 100) / 100
+    Math.round(durationMs * 100) / 100,
   );
   if (validationWarnings.length > 0) stats.validationWarnings = [...new Set(validationWarnings)];
   if (validationErrors.length > 0) stats.validationErrors = [...new Set(validationErrors)];

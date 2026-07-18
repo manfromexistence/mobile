@@ -207,7 +207,7 @@ export function resolvePublicCred(key: EmbeddedDefaultKey, envName?: string): st
  */
 export function resolvePublicCredMulti(
   key: EmbeddedDefaultKey,
-  envNames: readonly string[]
+  envNames: readonly string[],
 ): string {
   for (const name of envNames) {
     const v = process.env[name];

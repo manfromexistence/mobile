@@ -17,7 +17,7 @@ import { classifyHostLocality } from "./routeGuard";
  */
 export function resolveStampedPeer(
   headerValue: string | null,
-  token: string | undefined
+  token: string | undefined,
 ): string | null {
   if (!headerValue || !token) return null;
   const sep = headerValue.indexOf("|");
@@ -55,7 +55,7 @@ export function resolveStampedPeer(
  */
 export function resolveStampedViaProxy(
   headerValue: string | null,
-  token: string | undefined
+  token: string | undefined,
 ): boolean {
   if (!headerValue || !token) return false;
   const sep = headerValue.indexOf("|");
@@ -89,7 +89,7 @@ export function resolveStampedViaProxy(
 export function classifyStampedPeerLocality(
   peerHeader: string | null,
   viaProxyHeader: string | null,
-  token: string | undefined
+  token: string | undefined,
 ): "loopback" | "lan" | "remote" {
   const ip = resolveStampedPeer(peerHeader, token);
   const viaProxy = resolveStampedViaProxy(viaProxyHeader, token);

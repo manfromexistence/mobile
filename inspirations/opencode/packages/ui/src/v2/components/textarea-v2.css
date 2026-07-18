@@ -10,21 +10,23 @@
   border-radius: 6px;
   outline: 1px solid transparent;
   outline-offset: 0;
-  background:
-    linear-gradient(180deg, var(--v2-alpha-light-2) 0%, var(--v2-alpha-light-0) 100%), var(--v2-background-bg-base);
+  background: linear-gradient(180deg, var(--v2-alpha-light-2) 0%, var(--v2-alpha-light-0) 100%),
+    var(--v2-background-bg-base);
   box-shadow: var(--v2-elevation-button-neutral);
   flex: none;
   align-self: stretch;
-  transition:
-    background 85ms ease-out,
-    outline-color 85ms ease-out,
-    box-shadow 85ms ease-out;
+  transition: background 85ms ease-out, outline-color 85ms ease-out, box-shadow 85ms ease-out;
 }
 
-[data-component="textarea-v2"]:where(:hover):not([data-disabled], [data-invalid]):not(:focus-within) {
-  background:
-    linear-gradient(0deg, var(--v2-overlay-simple-overlay-hover), var(--v2-overlay-simple-overlay-hover)),
-    linear-gradient(180deg, var(--v2-alpha-light-2) 0%, var(--v2-alpha-light-0) 100%), var(--v2-background-bg-base);
+[data-component="textarea-v2"]:where(:hover):not([data-disabled], [data-invalid]):not(
+    :focus-within
+  ) {
+  background: linear-gradient(
+      0deg,
+      var(--v2-overlay-simple-overlay-hover),
+      var(--v2-overlay-simple-overlay-hover)
+    ), linear-gradient(180deg, var(--v2-alpha-light-2) 0%, var(--v2-alpha-light-0) 100%),
+    var(--v2-background-bg-base);
 }
 
 [data-component="textarea-v2"]:where(:focus-within):not([data-disabled], [data-invalid]) {
@@ -67,12 +69,14 @@
   color: var(--v2-text-text-faint);
 }
 
-[data-component="textarea-v2"][data-invalid]:not([data-disabled]) [data-slot="textarea-v2-textarea"] {
+[data-component="textarea-v2"][data-invalid]:not([data-disabled])
+  [data-slot="textarea-v2-textarea"] {
   color: var(--v2-state-fg-danger);
   caret-color: var(--v2-state-fg-danger);
 }
 
-[data-component="textarea-v2"][data-invalid]:not([data-disabled]) [data-slot="textarea-v2-textarea"]::placeholder {
+[data-component="textarea-v2"][data-invalid]:not([data-disabled])
+  [data-slot="textarea-v2-textarea"]::placeholder {
   color: var(--v2-state-fg-danger);
   opacity: 1;
 }

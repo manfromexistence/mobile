@@ -1,22 +1,19 @@
-'use client';
+"use client";
 
-import { createThemeResolver } from '@pierre/theming';
-import type { TreeThemeStyles } from '@pierre/trees';
-import { useMemo } from 'react';
+import { createThemeResolver } from "@pierre/theming";
+import type { TreeThemeStyles } from "@pierre/trees";
+import { useMemo } from "react";
 
-import { useThemeResolver, useThemeSource } from './useThemeSource';
-import { fixedSource, type ThemeInput } from '@/lib/theme/ThemeSource';
-import {
-  treeThemeProps,
-  type TreeThemePropsOptions,
-} from '@/lib/theme/treeThemeProps';
+import { useThemeResolver, useThemeSource } from "./useThemeSource";
+import { fixedSource, type ThemeInput } from "@/lib/theme/ThemeSource";
+import { treeThemeProps, type TreeThemePropsOptions } from "@/lib/theme/treeThemeProps";
 
 // Returns the spreadable FileTree style props for the active theme (provider, or
 // the per-component `theme` override). Pass reconcileForegroundFromChrome to
 // preserve diffshub's contrast-based foreground upgrade.
 export function useTreeThemeProps(
   theme?: ThemeInput,
-  options?: TreeThemePropsOptions
+  options?: TreeThemePropsOptions,
 ): { style: TreeThemeStyles } {
   const providerSource = useThemeSource();
   const contextResolver = useThemeResolver();
@@ -34,8 +31,7 @@ export function useTreeThemeProps(
   const { activeTheme } = useThemeSource(override);
   const reconcile = options?.reconcileForegroundFromChrome ?? false;
   return useMemo(
-    () =>
-      treeThemeProps(activeTheme, { reconcileForegroundFromChrome: reconcile }),
-    [activeTheme, reconcile]
+    () => treeThemeProps(activeTheme, { reconcileForegroundFromChrome: reconcile }),
+    [activeTheme, reconcile],
   );
 }

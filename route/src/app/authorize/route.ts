@@ -59,7 +59,7 @@ function htmlClose(message: Record<string, unknown>): NextResponse {
         setTimeout(function () { window.close(); }, ${message.success ? 800 : 4000});
       </script>
     </body></html>`,
-    { status: 200, headers: { "Content-Type": "text/html; charset=utf-8" } }
+    { status: 200, headers: { "Content-Type": "text/html; charset=utf-8" } },
   );
 }
 

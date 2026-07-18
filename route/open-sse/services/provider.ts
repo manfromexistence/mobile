@@ -40,7 +40,7 @@ export function isClaudeCodeCompatible(provider) {
 
 export function getOpenAICompatibleType(
   provider,
-  providerSpecificData: Record<string, unknown> | null = null
+  providerSpecificData: Record<string, unknown> | null = null,
 ) {
   if (!isOpenAICompatible(provider)) return "chat";
   const configuredType =
@@ -191,17 +191,17 @@ export function detectFormat(body) {
         }
         // Check if image format is Claude (source.type) vs OpenAI (image_url.url)
         const hasClaudeImage = firstMsg.content.some(
-          (c) => c.type === "image" && c.source?.type === "base64"
+          (c) => c.type === "image" && c.source?.type === "base64",
         );
         const hasOpenAIImage = firstMsg.content.some(
-          (c) => c.type === "image_url" && c.image_url?.url
+          (c) => c.type === "image_url" && c.image_url?.url,
         );
         if (hasClaudeImage) return "claude";
         if (hasOpenAIImage) return "openai";
 
         // If still unclear, check for tool format
         const hasClaudeTool = firstMsg.content.some(
-          (c) => c.type === "tool_use" || c.type === "tool_result"
+          (c) => c.type === "tool_use" || c.type === "tool_result",
         );
         if (hasClaudeTool) return "claude";
       }
@@ -260,7 +260,7 @@ export function buildProviderUrl(
     baseUrl?: string;
     baseUrlIndex?: number;
     providerSpecificData?: Record<string, unknown> | null;
-  } = {}
+  } = {},
 ) {
   // Built-in CC-wire-image providers (e.g. agentrouter): keep the registry's
   // OWN baseUrl (NOT the CC family's anthropic default) but adopt the CC chat
@@ -331,13 +331,13 @@ export function buildProviderHeaders(provider, credentials, stream = true, body 
   if (isClaudeCodeCompatible(provider)) {
     const token = credentials.apiKey || credentials.accessToken || "";
     const ccRequestDefaults = getClaudeCodeCompatibleRequestDefaults(
-      credentials?.providerSpecificData
+      credentials?.providerSpecificData,
     );
     const ccHeaders = buildClaudeCodeCompatibleHeaders(
       token,
       stream,
       credentials?.providerSpecificData?.ccSessionId,
-      { redactThinking: ccRequestDefaults.redactThinking === true }
+      { redactThinking: ccRequestDefaults.redactThinking === true },
     );
     // Built-in CC-wire-image providers (e.g. agentrouter): adopt the CC wire
     // image headers but keep the registry's OWN auth scheme (e.g. x-api-key)

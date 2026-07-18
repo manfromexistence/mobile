@@ -41,7 +41,7 @@ export const AG_DECOY_TOOLS = AG_DECOY_TOOL_NAMES.map((name) =>
       properties: {},
       required: [],
     },
-  })
+  }),
 );
 
 function asRecord(value: unknown): JsonRecord | null {
@@ -97,7 +97,7 @@ export function getCloakedAntigravityToolName(toolName: string): string {
 }
 
 export function cloakAntigravityToolPayload<T extends JsonRecord>(
-  body: T
+  body: T,
 ): {
   body: T;
   toolNameMap: Map<string, string> | null;
@@ -167,7 +167,7 @@ export function cloakAntigravityToolPayload<T extends JsonRecord>(
       const declaredNames = new Set(
         cloakedDeclarations
           .map((declaration) => toToolName(declaration.name))
-          .filter((name) => name.length > 0)
+          .filter((name) => name.length > 0),
       );
       const decoys = AG_DECOY_TOOLS.filter((declaration) => !declaredNames.has(declaration.name));
       nextRequest.tools = [

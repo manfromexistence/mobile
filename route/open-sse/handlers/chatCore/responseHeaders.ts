@@ -58,7 +58,7 @@ export function stripNextMiddlewareControlHeaders(headers: Headers): void {
 
 export function buildStreamingResponseHeaders(
   providerHeaders: Headers,
-  meta: Parameters<typeof buildOmniRouteResponseMetaHeaders>[0]
+  meta: Parameters<typeof buildOmniRouteResponseMetaHeaders>[0],
 ): Record<string, string> {
   const forwardedHeaders: [string, string][] = [];
   providerHeaders.forEach((value, key) => {
@@ -83,7 +83,7 @@ export function buildStreamingResponseHeaders(
 }
 
 export function materializeDeduplicatedExecutionResult<T extends Record<string, unknown>>(
-  result: T
+  result: T,
 ): T {
   const snapshot =
     result && typeof result === "object"

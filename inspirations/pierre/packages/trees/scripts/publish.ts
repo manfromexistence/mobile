@@ -1,4 +1,4 @@
-import { spawnSync } from 'node:child_process';
+import { spawnSync } from "node:child_process";
 import {
   closeSync,
   mkdirSync,
@@ -7,9 +7,9 @@ import {
   readdirSync,
   readFileSync,
   writeFileSync,
-} from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join, relative, resolve } from 'node:path';
+} from "node:fs";
+import { tmpdir } from "node:os";
+import { join, relative, resolve } from "node:path";
 
 // End-to-end release pipeline for `@pierre/trees`. The load-bearing step is
 // repacking the generated tarball after deleting the internal `@pierre/path-store`
@@ -32,7 +32,7 @@ export interface CliFlags {
 export function parseArgs(argv: readonly string[]): CliFlags {
   const flags: CliFlags = {
     dryRun: false,
-    tag: 'beta',
+    tag: "beta",
     promoteLatest: false,
     tagRelease: false,
     releaseBranch: null,
@@ -40,32 +40,32 @@ export function parseArgs(argv: readonly string[]): CliFlags {
     otp: null,
   };
   for (let index = 0; index < argv.length; index += 1) {
-    const arg = argv[index] ?? '';
-    if (arg === '--dry-run') {
+    const arg = argv[index] ?? "";
+    if (arg === "--dry-run") {
       flags.dryRun = true;
-    } else if (arg === '--promote-latest') {
+    } else if (arg === "--promote-latest") {
       flags.promoteLatest = true;
-    } else if (arg === '--tag-release') {
+    } else if (arg === "--tag-release") {
       flags.tagRelease = true;
-    } else if (arg === '--dirty') {
+    } else if (arg === "--dirty") {
       flags.allowDirty = true;
-    } else if (arg.startsWith('--tag=')) {
-      flags.tag = arg.slice('--tag='.length);
-    } else if (arg === '--otp') {
+    } else if (arg.startsWith("--tag=")) {
+      flags.tag = arg.slice("--tag=".length);
+    } else if (arg === "--otp") {
       const otp = argv[index + 1];
-      if (otp === undefined || otp.length === 0 || otp.startsWith('--')) {
-        throw new Error('--otp requires a one-time password');
+      if (otp === undefined || otp.length === 0 || otp.startsWith("--")) {
+        throw new Error("--otp requires a one-time password");
       }
       flags.otp = otp;
       index += 1;
-    } else if (arg.startsWith('--otp=')) {
-      const otp = arg.slice('--otp='.length);
+    } else if (arg.startsWith("--otp=")) {
+      const otp = arg.slice("--otp=".length);
       if (otp.length === 0) {
-        throw new Error('--otp requires a one-time password');
+        throw new Error("--otp requires a one-time password");
       }
       flags.otp = otp;
-    } else if (arg.startsWith('--release-branch=')) {
-      flags.releaseBranch = arg.slice('--release-branch='.length);
+    } else if (arg.startsWith("--release-branch=")) {
+      flags.releaseBranch = arg.slice("--release-branch=".length);
     } else {
       throw new Error(`Unknown argument: ${arg}`);
     }
@@ -79,36 +79,19 @@ function withOtp(args: string[], otp: string | null): string[] {
   if (otp === null) {
     return args;
   }
-  return [...args, '--otp', otp];
+  return [...args, "--otp", otp];
 }
 
-export function publishArgs(
-  tarballPath: string,
-  tag: string,
-  otp: string | null
-): string[] {
-  return withOtp(
-    ['publish', tarballPath, '--tag', tag, '--no-git-checks'],
-    otp
-  );
+export function publishArgs(tarballPath: string, tag: string, otp: string | null): string[] {
+  return withOtp(["publish", tarballPath, "--tag", tag, "--no-git-checks"], otp);
 }
 
-export function dryRunPublishArgs(
-  tarballPath: string,
-  tag: string,
-  otp: string | null
-): string[] {
-  return withOtp(
-    ['publish', tarballPath, '--dry-run', '--tag', tag, '--no-git-checks'],
-    otp
-  );
+export function dryRunPublishArgs(tarballPath: string, tag: string, otp: string | null): string[] {
+  return withOtp(["publish", tarballPath, "--dry-run", "--tag", tag, "--no-git-checks"], otp);
 }
 
 export function distTagAddArgs(version: string, otp: string | null): string[] {
-  return withOtp(
-    ['dist-tag', 'add', `@pierre/trees@${version}`, 'latest'],
-    otp
-  );
+  return withOtp(["dist-tag", "add", `@pierre/trees@${version}`, "latest"], otp);
 }
 
 export function redactOtp(args: readonly string[]): string[] {
@@ -117,19 +100,19 @@ export function redactOtp(args: readonly string[]): string[] {
 
   for (const arg of args) {
     if (redactNext) {
-      redacted.push('<redacted>');
+      redacted.push("<redacted>");
       redactNext = false;
       continue;
     }
 
-    if (arg === '--otp') {
+    if (arg === "--otp") {
       redacted.push(arg);
       redactNext = true;
       continue;
     }
 
-    if (arg.startsWith('--otp=')) {
-      redacted.push('--otp=<redacted>');
+    if (arg.startsWith("--otp=")) {
+      redacted.push("--otp=<redacted>");
       continue;
     }
 
@@ -139,7 +122,7 @@ export function redactOtp(args: readonly string[]): string[] {
   return redacted;
 }
 
-type StdioOption = 'inherit' | [number, number, number];
+type StdioOption = "inherit" | [number, number, number];
 
 // moon captures task stdio, so child processes do not always see a TTY even
 // when a maintainer ran `moonx` from an interactive terminal. Publish-time npm
@@ -150,9 +133,9 @@ function openTerminalStdio(): [number, number, number] | null {
   let error: number | null = null;
 
   try {
-    input = openSync('/dev/tty', 'r');
-    output = openSync('/dev/tty', 'w');
-    error = openSync('/dev/tty', 'w');
+    input = openSync("/dev/tty", "r");
+    output = openSync("/dev/tty", "w");
+    error = openSync("/dev/tty", "w");
     return [input, output, error];
   } catch {
     for (const fd of [input, output, error]) {
@@ -164,12 +147,10 @@ function openTerminalStdio(): [number, number, number] | null {
   }
 }
 
-function closeTerminalStdio(
-  stdio: StdioOption | ['ignore', 'pipe', 'pipe']
-): void {
+function closeTerminalStdio(stdio: StdioOption | ["ignore", "pipe", "pipe"]): void {
   if (Array.isArray(stdio)) {
     for (const fd of stdio) {
-      if (typeof fd === 'number') {
+      if (typeof fd === "number") {
         closeSync(fd);
       }
     }
@@ -179,7 +160,7 @@ function closeTerminalStdio(
 function resolveStdio(options: {
   inherit?: boolean;
   preferTerminal?: boolean;
-}): StdioOption | ['ignore', 'pipe', 'pipe'] {
+}): StdioOption | ["ignore", "pipe", "pipe"] {
   if (options.preferTerminal === true) {
     const terminalStdio = openTerminalStdio();
     if (terminalStdio !== null) {
@@ -187,68 +168,64 @@ function resolveStdio(options: {
     }
   }
 
-  return options.inherit === true ? 'inherit' : ['ignore', 'pipe', 'pipe'];
+  return options.inherit === true ? "inherit" : ["ignore", "pipe", "pipe"];
 }
 
 function run(
   cmd: string,
   args: readonly string[],
-  options: { cwd?: string; inherit?: boolean; preferTerminal?: boolean } = {}
+  options: { cwd?: string; inherit?: boolean; preferTerminal?: boolean } = {},
 ): string {
   const stdio = resolveStdio(options);
   const result = spawnSync(cmd, args, {
     cwd: options.cwd ?? process.cwd(),
     stdio,
-    encoding: 'utf8',
+    encoding: "utf8",
   });
   closeTerminalStdio(stdio);
   if (result.status !== 0) {
-    const stdout = result.stdout?.toString() ?? '';
-    const stderr = result.stderr?.toString() ?? '';
+    const stdout = result.stdout?.toString() ?? "";
+    const stderr = result.stderr?.toString() ?? "";
     throw new Error(
-      `${cmd} ${redactOtp(args).join(' ')} exited with ${result.status}\n${stdout}\n${stderr}`
+      `${cmd} ${redactOtp(args).join(" ")} exited with ${result.status}\n${stdout}\n${stderr}`,
     );
   }
-  return result.stdout?.toString() ?? '';
+  return result.stdout?.toString() ?? "";
 }
 
 // Confirms the working tree is clean before running a publish so release
 // artifacts can be reproduced from the committed source.
 function preflight(flags: CliFlags): void {
   if (!flags.allowDirty) {
-    const status = run('git', ['status', '--porcelain']);
+    const status = run("git", ["status", "--porcelain"]);
     if (status.trim().length > 0) {
-      throw new Error(
-        `Working tree is dirty. Commit/stash changes or pass --dirty.\n${status}`
-      );
+      throw new Error(`Working tree is dirty. Commit/stash changes or pass --dirty.\n${status}`);
     }
   }
 
-  const whoami = run('pnpm', ['whoami']).trim();
+  const whoami = run("pnpm", ["whoami"]).trim();
   if (whoami.length === 0) {
-    throw new Error('pnpm whoami returned empty — run pnpm login first.');
+    throw new Error("pnpm whoami returned empty — run pnpm login first.");
   }
   console.log(`npm user: ${whoami}`);
 
   if (flags.releaseBranch != null) {
-    const branch = run('git', ['rev-parse', '--abbrev-ref', 'HEAD']).trim();
+    const branch = run("git", ["rev-parse", "--abbrev-ref", "HEAD"]).trim();
     if (branch !== flags.releaseBranch) {
-      throw new Error(
-        `Expected to be on branch "${flags.releaseBranch}" but HEAD is "${branch}".`
-      );
+      throw new Error(`Expected to be on branch "${flags.releaseBranch}" but HEAD is "${branch}".`);
     }
   }
 }
 
 function packageRoot(): string {
-  return resolve(import.meta.dir, '..');
+  return resolve(import.meta.dir, "..");
 }
 
 // Builds trees' dist (the V3 gate runs inside the build task itself) so the
 // tarball we pack next contains up-to-date output with no path-store leaks.
 function buildTrees(): void {
-  console.log('[publish] building @pierre/trees');
-  run('moon', ['run', 'trees:build'], { cwd: packageRoot(), inherit: true });
+  console.log("[publish] building @pierre/trees");
+  run("moon", ["run", "trees:build"], { cwd: packageRoot(), inherit: true });
 }
 
 // Asks pnpm to produce the same tarball it would upload to npm. pnpm pack
@@ -256,23 +233,19 @@ function buildTrees(): void {
 function packTarball(destination: string, cwd = packageRoot()): string {
   console.log(`[publish] packing tarball into ${destination}`);
   mkdirSync(destination, { recursive: true });
-  run('pnpm', ['pack', '--pack-destination', destination], {
+  run("pnpm", ["pack", "--pack-destination", destination], {
     cwd,
     inherit: true,
   });
-  const entries = readdirSync(destination).filter((name) =>
-    name.endsWith('.tgz')
-  );
+  const entries = readdirSync(destination).filter((name) => name.endsWith(".tgz"));
   if (entries.length !== 1) {
-    throw new Error(
-      `expected exactly one .tgz in ${destination}, found ${entries.length}`
-    );
+    throw new Error(`expected exactly one .tgz in ${destination}, found ${entries.length}`);
   }
-  return join(destination, entries[0] ?? '');
+  return join(destination, entries[0] ?? "");
 }
 
 function untar(tarballPath: string, into: string): void {
-  run('tar', ['-xzf', tarballPath, '-C', into]);
+  run("tar", ["-xzf", tarballPath, "-C", into]);
 }
 
 function stripPublishOnlyScripts(pkg: {
@@ -281,8 +254,8 @@ function stripPublishOnlyScripts(pkg: {
   if (pkg.scripts == null) {
     return;
   }
-  delete pkg.scripts['assert:safe-publish'];
-  delete pkg.scripts['publish-package'];
+  delete pkg.scripts["assert:safe-publish"];
+  delete pkg.scripts["publish-package"];
   delete pkg.scripts.prepublishOnly;
   if (Object.keys(pkg.scripts).length === 0) {
     delete pkg.scripts;
@@ -296,17 +269,17 @@ function mutatePackageJson(packageDir: string): {
   before: string;
   after: string;
 } {
-  const pkgPath = join(packageDir, 'package.json');
-  const before = readFileSync(pkgPath, 'utf8');
+  const pkgPath = join(packageDir, "package.json");
+  const before = readFileSync(pkgPath, "utf8");
   const pkg = JSON.parse(before);
   if (pkg.dependencies != null) {
-    delete pkg.dependencies['@pierre/path-store'];
+    delete pkg.dependencies["@pierre/path-store"];
   }
   stripPublishOnlyScripts(pkg);
   const serialized = `${JSON.stringify(pkg, null, 2)}\n`;
-  if (serialized.includes('@pierre/path-store')) {
+  if (serialized.includes("@pierre/path-store")) {
     throw new Error(
-      'package.json still references @pierre/path-store after mutation — another field is leaking.'
+      "package.json still references @pierre/path-store after mutation — another field is leaking.",
     );
   }
   writeFileSync(pkgPath, serialized);
@@ -329,11 +302,11 @@ function collectFiles(dir: string): string[] {
 
 function assertNoBuildInfoFiles(packageDir: string): void {
   const offenders = collectFiles(packageDir)
-    .filter((file) => file.endsWith('.tsbuildinfo'))
+    .filter((file) => file.endsWith(".tsbuildinfo"))
     .map((file) => relative(process.cwd(), file));
   if (offenders.length > 0) {
     throw new Error(
-      `TypeScript build-info files leaked into the publish payload:\n${offenders.join('\n')}`
+      `TypeScript build-info files leaked into the publish payload:\n${offenders.join("\n")}`,
     );
   }
 }
@@ -341,51 +314,47 @@ function assertNoBuildInfoFiles(packageDir: string): void {
 // Belt-and-suspenders: run the V3 gate against the final publish payload and
 // scan all shipped text files, excluding sourcemaps, for package references.
 function assertPublishPayload(packageDir: string): void {
-  run('bun', [
-    join(packageRoot(), 'scripts', 'assert-no-path-store.ts'),
-    '--dir',
+  run("bun", [
+    join(packageRoot(), "scripts", "assert-no-path-store.ts"),
+    "--dir",
     packageDir,
-    '--all-text-files',
+    "--all-text-files",
   ]);
   assertNoBuildInfoFiles(packageDir);
 }
 
 function describeDiff(before: string, after: string): string {
-  const beforeLines = before.split('\n');
-  const afterLines = after.split('\n');
+  const beforeLines = before.split("\n");
+  const afterLines = after.split("\n");
   const removed = beforeLines.filter((line) => !afterLines.includes(line));
   const added = afterLines.filter((line) => !beforeLines.includes(line));
-  const removedText = removed.map((line) => `- ${line}`).join('\n');
-  const addedText = added.map((line) => `+ ${line}`).join('\n');
+  const removedText = removed.map((line) => `- ${line}`).join("\n");
+  const addedText = added.map((line) => `+ ${line}`).join("\n");
   return `${removedText}\n${addedText}`.trim();
 }
 
 function verifyTarball(tarballPath: string, workDir: string): void {
-  const verifyRoot = join(workDir, 'verify');
+  const verifyRoot = join(workDir, "verify");
   mkdirSync(verifyRoot, { recursive: true });
   untar(tarballPath, verifyRoot);
-  assertPublishPayload(join(verifyRoot, 'package'));
+  assertPublishPayload(join(verifyRoot, "package"));
 }
 
 // Publish the final tarball, not the source package directory. The final tarball
 // has repo-only lifecycle scripts removed before it reaches pnpm publish.
 function publish(tarballPath: string, tag: string, otp: string | null): void {
   const args = publishArgs(tarballPath, tag, otp);
-  console.log(`[publish] pnpm ${redactOtp(args).join(' ')}`);
-  run('pnpm', args, {
+  console.log(`[publish] pnpm ${redactOtp(args).join(" ")}`);
+  run("pnpm", args, {
     inherit: true,
     preferTerminal: true,
   });
 }
 
-function dryRunPublish(
-  tarballPath: string,
-  tag: string,
-  otp: string | null
-): void {
+function dryRunPublish(tarballPath: string, tag: string, otp: string | null): void {
   const args = dryRunPublishArgs(tarballPath, tag, otp);
-  console.log(`[publish] pnpm ${redactOtp(args).join(' ')}`);
-  run('pnpm', args, {
+  console.log(`[publish] pnpm ${redactOtp(args).join(" ")}`);
+  run("pnpm", args, {
     inherit: true,
   });
 }
@@ -393,8 +362,8 @@ function dryRunPublish(
 function promoteLatest(version: string, otp: string | null): void {
   console.log(`[publish] promoting @pierre/trees@${version} to latest`);
   const args = distTagAddArgs(version, otp);
-  console.log(`[publish] pnpm ${redactOtp(args).join(' ')}`);
-  run('pnpm', args, {
+  console.log(`[publish] pnpm ${redactOtp(args).join(" ")}`);
+  run("pnpm", args, {
     inherit: true,
     preferTerminal: true,
   });
@@ -403,8 +372,8 @@ function promoteLatest(version: string, otp: string | null): void {
 function tagRelease(version: string): void {
   const tagName = `@pierre/trees@${version}`;
   console.log(`[publish] git tag ${tagName}`);
-  run('git', ['tag', '-a', tagName, '-m', tagName], { inherit: true });
-  run('git', ['push', 'origin', tagName], { inherit: true });
+  run("git", ["tag", "-a", tagName, "-m", tagName], { inherit: true });
+  run("git", ["push", "origin", tagName], { inherit: true });
 }
 
 function main(): void {
@@ -413,32 +382,32 @@ function main(): void {
   preflight(flags);
   buildTrees();
 
-  const workDir = mkdtempSync(join(tmpdir(), 'pierre-trees-publish-'));
+  const workDir = mkdtempSync(join(tmpdir(), "pierre-trees-publish-"));
   console.log(`[publish] workdir: ${workDir}`);
 
-  const sourceTarballPath = packTarball(join(workDir, 'source'));
+  const sourceTarballPath = packTarball(join(workDir, "source"));
 
-  const unpackedRoot = join(workDir, 'unpacked');
+  const unpackedRoot = join(workDir, "unpacked");
   mkdirSync(unpackedRoot, { recursive: true });
   untar(sourceTarballPath, unpackedRoot);
-  const packageDir = join(unpackedRoot, 'package');
+  const packageDir = join(unpackedRoot, "package");
 
   const { before, after } = mutatePackageJson(packageDir);
   assertPublishPayload(packageDir);
 
-  const finalTarballPath = packTarball(join(workDir, 'final'), packageDir);
+  const finalTarballPath = packTarball(join(workDir, "final"), packageDir);
   verifyTarball(finalTarballPath, workDir);
 
   const version = JSON.parse(after).version;
 
   if (flags.dryRun) {
     dryRunPublish(finalTarballPath, flags.tag, flags.otp);
-    console.log('\n--- package.json diff ---');
+    console.log("\n--- package.json diff ---");
     console.log(describeDiff(before, after));
-    console.log('\n--- final tarball listing ---');
-    run('tar', ['-tzf', finalTarballPath], { inherit: true });
+    console.log("\n--- final tarball listing ---");
+    run("tar", ["-tzf", finalTarballPath], { inherit: true });
     console.log(
-      `\nDry-run complete. Final tarball: ${finalTarballPath}. Would publish to tag "${flags.tag}".`
+      `\nDry-run complete. Final tarball: ${finalTarballPath}. Would publish to tag "${flags.tag}".`,
     );
     return;
   }
@@ -453,9 +422,7 @@ function main(): void {
     tagRelease(version);
   }
 
-  console.log(
-    `\n[publish] done — published @pierre/trees@${version} to ${flags.tag}`
-  );
+  console.log(`\n[publish] done — published @pierre/trees@${version} to ${flags.tag}`);
 }
 
 if (import.meta.main) {

@@ -1,14 +1,20 @@
-import { Progress as Kobalte } from "@kobalte/core/progress"
-import { Show, splitProps } from "solid-js"
-import type { ComponentProps, ParentProps } from "solid-js"
+import { Progress as Kobalte } from "@kobalte/core/progress";
+import { Show, splitProps } from "solid-js";
+import type { ComponentProps, ParentProps } from "solid-js";
 
 export interface ProgressProps extends ParentProps<ComponentProps<typeof Kobalte>> {
-  hideLabel?: boolean
-  showValueLabel?: boolean
+  hideLabel?: boolean;
+  showValueLabel?: boolean;
 }
 
 export function Progress(props: ProgressProps) {
-  const [local, others] = splitProps(props, ["children", "class", "classList", "hideLabel", "showValueLabel"])
+  const [local, others] = splitProps(props, [
+    "children",
+    "class",
+    "classList",
+    "hideLabel",
+    "showValueLabel",
+  ]);
 
   return (
     <Kobalte
@@ -35,5 +41,5 @@ export function Progress(props: ProgressProps) {
         <Kobalte.Fill data-slot="progress-fill" />
       </Kobalte.Track>
     </Kobalte>
-  )
+  );
 }

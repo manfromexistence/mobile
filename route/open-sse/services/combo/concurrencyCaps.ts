@@ -40,7 +40,7 @@ export async function lookupPositiveCap(connectionId: string): Promise<number | 
  * connectionId, so this adds at most one lookup per distinct connection.
  */
 export async function resolveMaxConcurrentByConnection(
-  targets: ResolvedComboTarget[]
+  targets: ResolvedComboTarget[],
 ): Promise<Map<string, number | null>> {
   const caps = new Map<string, number | null>();
   const distinctIds = new Set<string>();
@@ -61,7 +61,7 @@ export async function resolveMaxConcurrentByConnection(
  * (one combo dispatch) so a repeated connection costs a single DB read.
  */
 export function makeConnectionConcurrencyResolver(
-  fallbackConcurrency: number
+  fallbackConcurrency: number,
 ): (connectionId: string | null) => Promise<number> {
   const cache = new Map<string, number | null>();
   return async (connectionId: string | null): Promise<number> => {

@@ -1,22 +1,30 @@
-import { action, useParams, useAction, useSubmission, json, query, createAsync } from "@solidjs/router"
-import { createStore } from "solid-js/store"
-import { Show } from "solid-js"
-import { Billing } from "@opencode-ai/console-core/billing.js"
-import { Database, eq, and, isNull, sql } from "@opencode-ai/console-core/drizzle/index.js"
-import { BillingTable, SubscriptionTable } from "@opencode-ai/console-core/schema/billing.sql.js"
-import { Actor } from "@opencode-ai/console-core/actor.js"
-import { Subscription } from "@opencode-ai/console-core/subscription.js"
-import { BlackData } from "@opencode-ai/console-core/black.js"
-import { withActor } from "~/context/auth.withActor"
-import { queryBillingInfo } from "../../common"
-import styles from "./black-section.module.css"
-import waitlistStyles from "./black-waitlist-section.module.css"
-import { useI18n } from "~/context/i18n"
-import { formError } from "~/lib/form-error"
-import { blackResetTimeKeys, formatResetTime } from "~/lib/format-reset-time"
+import {
+  action,
+  useParams,
+  useAction,
+  useSubmission,
+  json,
+  query,
+  createAsync,
+} from "@solidjs/router";
+import { createStore } from "solid-js/store";
+import { Show } from "solid-js";
+import { Billing } from "@opencode-ai/console-core/billing.js";
+import { Database, eq, and, isNull, sql } from "@opencode-ai/console-core/drizzle/index.js";
+import { BillingTable, SubscriptionTable } from "@opencode-ai/console-core/schema/billing.sql.js";
+import { Actor } from "@opencode-ai/console-core/actor.js";
+import { Subscription } from "@opencode-ai/console-core/subscription.js";
+import { BlackData } from "@opencode-ai/console-core/black.js";
+import { withActor } from "~/context/auth.withActor";
+import { queryBillingInfo } from "../../common";
+import styles from "./black-section.module.css";
+import waitlistStyles from "./black-waitlist-section.module.css";
+import { useI18n } from "~/context/i18n";
+import { formError } from "~/lib/form-error";
+import { blackResetTimeKeys, formatResetTime } from "~/lib/format-reset-time";
 
 const querySubscription = query(async (workspaceID: string) => {
-  "use server"
+  "use server";
   return withActor(async () => {
     const row = await Database.use((tx) =>
       tx
@@ -29,11 +37,16 @@ const querySubscription = query(async (workspaceID: string) => {
         })
         .from(BillingTable)
         .innerJoin(SubscriptionTable, eq(SubscriptionTable.workspaceID, BillingTable.workspaceID))
-        .where(and(eq(SubscriptionTable.workspaceID, Actor.workspace()), isNull(SubscriptionTable.timeDeleted)))
+        .where(
+          and(
+            eq(SubscriptionTable.workspaceID, Actor.workspace()),
+            isNull(SubscriptionTable.timeDeleted),
+          ),
+        )
         .then((r) => r[0]),
-    )
-    if (!row?.subscription) return null
-    const blackData = BlackData.getLimits({ plan: row.subscription.plan })
+    );
+    if (!row?.subscription) return null;
+    const blackData = BlackData.getLimits({ plan: row.subscription.plan });
 
     return {
       plan: row.subscription.plan,
@@ -49,12 +62,12 @@ const querySubscription = query(async (workspaceID: string) => {
         usage: row.fixedUsage ?? 0,
         timeUpdated: row.timeFixedUpdated ?? new Date(),
       }),
-    }
-  }, workspaceID)
-}, "subscription.get")
+    };
+  }, workspaceID);
+}, "subscription.get");
 
 const cancelWaitlist = action(async (workspaceID: string) => {
-  "use server"
+  "use server";
   return json(
     await withActor(async () => {
       await Database.use((tx) =>
@@ -66,26 +79,26 @@ const cancelWaitlist = action(async (workspaceID: string) => {
             timeSubscriptionSelected: null,
           })
           .where(eq(BillingTable.workspaceID, workspaceID)),
-      )
-      return { error: undefined }
+      );
+      return { error: undefined };
     }, workspaceID).catch((e) => ({ error: e.message as string })),
     { revalidate: [queryBillingInfo.key, querySubscription.key] },
-  )
-}, "cancelWaitlist")
+  );
+}, "cancelWaitlist");
 
 const enroll = action(async (workspaceID: string) => {
-  "use server"
+  "use server";
   return json(
     await withActor(async () => {
-      await Billing.subscribeBlack({ seats: 1 })
-      return { error: undefined }
+      await Billing.subscribeBlack({ seats: 1 });
+      return { error: undefined };
     }, workspaceID).catch((e) => ({ error: e.message as string })),
     { revalidate: [queryBillingInfo.key, querySubscription.key] },
-  )
-}, "enroll")
+  );
+}, "enroll");
 
 const createSessionUrl = action(async (workspaceID: string, returnUrl: string) => {
-  "use server"
+  "use server";
   return json(
     await withActor(
       () =>
@@ -98,14 +111,14 @@ const createSessionUrl = action(async (workspaceID: string, returnUrl: string) =
       workspaceID,
     ),
     { revalidate: [queryBillingInfo.key, querySubscription.key] },
-  )
-}, "sessionUrl")
+  );
+}, "sessionUrl");
 
 const setUseBalance = action(async (form: FormData) => {
-  "use server"
-  const workspaceID = form.get("workspaceID") as string | null
-  if (!workspaceID) return { error: formError.workspaceRequired }
-  const useBalance = (form.get("useBalance") as string | null) === "true"
+  "use server";
+  const workspaceID = form.get("workspaceID") as string | null;
+  if (!workspaceID) return { error: formError.workspaceRequired };
+  const useBalance = (form.get("useBalance") as string | null) === "true";
 
   return json(
     await withActor(async () => {
@@ -118,50 +131,50 @@ const setUseBalance = action(async (form: FormData) => {
               : sql`JSON_REMOVE(subscription, '$.useBalance')`,
           })
           .where(eq(BillingTable.workspaceID, workspaceID)),
-      )
-      return { error: undefined }
+      );
+      return { error: undefined };
     }, workspaceID).catch((e) => ({ error: e.message as string })),
     { revalidate: [queryBillingInfo.key, querySubscription.key] },
-  )
-}, "setUseBalance")
+  );
+}, "setUseBalance");
 
 export function BlackSection() {
-  const params = useParams()
-  const i18n = useI18n()
-  const billing = createAsync(() => queryBillingInfo(params.id!))
-  const subscription = createAsync(() => querySubscription(params.id!))
-  const sessionAction = useAction(createSessionUrl)
-  const sessionSubmission = useSubmission(createSessionUrl)
-  const cancelAction = useAction(cancelWaitlist)
-  const cancelSubmission = useSubmission(cancelWaitlist)
-  const enrollAction = useAction(enroll)
-  const enrollSubmission = useSubmission(enroll)
-  const useBalanceSubmission = useSubmission(setUseBalance)
+  const params = useParams();
+  const i18n = useI18n();
+  const billing = createAsync(() => queryBillingInfo(params.id!));
+  const subscription = createAsync(() => querySubscription(params.id!));
+  const sessionAction = useAction(createSessionUrl);
+  const sessionSubmission = useSubmission(createSessionUrl);
+  const cancelAction = useAction(cancelWaitlist);
+  const cancelSubmission = useSubmission(cancelWaitlist);
+  const enrollAction = useAction(enroll);
+  const enrollSubmission = useSubmission(enroll);
+  const useBalanceSubmission = useSubmission(setUseBalance);
   const [store, setStore] = createStore({
     sessionRedirecting: false,
     cancelled: false,
     enrolled: false,
-  })
+  });
 
   async function onClickSession() {
-    const result = await sessionAction(params.id!, window.location.href)
+    const result = await sessionAction(params.id!, window.location.href);
     if (result.data) {
-      setStore("sessionRedirecting", true)
-      window.location.href = result.data
+      setStore("sessionRedirecting", true);
+      window.location.href = result.data;
     }
   }
 
   async function onClickCancel() {
-    const result = await cancelAction(params.id!)
+    const result = await cancelAction(params.id!);
     if (!result.error) {
-      setStore("cancelled", true)
+      setStore("cancelled", true);
     }
   }
 
   async function onClickEnroll() {
-    const result = await enrollAction(params.id!)
+    const result = await enrollAction(params.id!);
     if (!result.error) {
-      setStore("enrolled", true)
+      setStore("enrolled", true);
     }
   }
 
@@ -188,11 +201,16 @@ export function BlackSection() {
             <div data-slot="usage">
               <div data-slot="usage-item">
                 <div data-slot="usage-header">
-                  <span data-slot="usage-label">{i18n.t("workspace.black.subscription.rollingUsage")}</span>
+                  <span data-slot="usage-label">
+                    {i18n.t("workspace.black.subscription.rollingUsage")}
+                  </span>
                   <span data-slot="usage-value">{sub().rollingUsage.usagePercent}%</span>
                 </div>
                 <div data-slot="progress">
-                  <div data-slot="progress-bar" style={{ width: `${sub().rollingUsage.usagePercent}%` }} />
+                  <div
+                    data-slot="progress-bar"
+                    style={{ width: `${sub().rollingUsage.usagePercent}%` }}
+                  />
                 </div>
                 <span data-slot="reset-time">
                   {i18n.t("workspace.black.subscription.resetsIn")}{" "}
@@ -201,11 +219,16 @@ export function BlackSection() {
               </div>
               <div data-slot="usage-item">
                 <div data-slot="usage-header">
-                  <span data-slot="usage-label">{i18n.t("workspace.black.subscription.weeklyUsage")}</span>
+                  <span data-slot="usage-label">
+                    {i18n.t("workspace.black.subscription.weeklyUsage")}
+                  </span>
                   <span data-slot="usage-value">{sub().weeklyUsage.usagePercent}%</span>
                 </div>
                 <div data-slot="progress">
-                  <div data-slot="progress-bar" style={{ width: `${sub().weeklyUsage.usagePercent}%` }} />
+                  <div
+                    data-slot="progress-bar"
+                    style={{ width: `${sub().weeklyUsage.usagePercent}%` }}
+                  />
                 </div>
                 <span data-slot="reset-time">
                   {i18n.t("workspace.black.subscription.resetsIn")}{" "}
@@ -237,8 +260,12 @@ export function BlackSection() {
             <div data-slot="title-row">
               <p>
                 {billing()?.timeSubscriptionSelected
-                  ? i18n.t("workspace.black.waitlist.ready", { plan: billing()?.subscriptionPlan ?? "" })
-                  : i18n.t("workspace.black.waitlist.joined", { plan: billing()?.subscriptionPlan ?? "" })}
+                  ? i18n.t("workspace.black.waitlist.ready", {
+                      plan: billing()?.subscriptionPlan ?? "",
+                    })
+                  : i18n.t("workspace.black.waitlist.joined", {
+                      plan: billing()?.subscriptionPlan ?? "",
+                    })}
               </p>
               <button
                 data-color="danger"
@@ -273,5 +300,5 @@ export function BlackSection() {
         </section>
       </Show>
     </>
-  )
+  );
 }

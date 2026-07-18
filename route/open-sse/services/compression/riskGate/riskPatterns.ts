@@ -35,7 +35,7 @@ export const RISK_PATTERNS: RiskPattern[] = [
     category: "private_key",
     regex: new RegExp(
       `-----BEGIN [A-Z0-9 ]{0,40}PRIVATE KEY-----[\\s\\S]{1,${MAX_PEM_LEN}}?-----END [A-Z0-9 ]{0,40}PRIVATE KEY-----`,
-      "g"
+      "g",
     ),
   },
   {

@@ -69,7 +69,7 @@ function setBounded<K, V>(m: Map<K, V>, key: K, value: V, max: number): void {
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export function passthroughUpstreamSessionId(
-  clientHeaders: Record<string, string | undefined> | null | undefined
+  clientHeaders: Record<string, string | undefined> | null | undefined,
 ): string | null {
   if (!clientHeaders) return null;
   const raw =
@@ -113,7 +113,7 @@ const HEX64_RE = /^[a-f0-9]{64}$/i;
  */
 export function resolveCliUserID(
   providerSpecificData: Record<string, unknown> | undefined,
-  seed: string
+  seed: string,
 ): string {
   const cli = providerSpecificData?.cliUserID;
   if (typeof cli === "string" && HEX64_RE.test(cli)) return cli;
@@ -187,7 +187,7 @@ async function backgroundFetchAccountUUID(accessToken: string, seed: string): Pr
       accountUuidCache,
       seed,
       { uuid: bootstrap?.account_uuid ?? null, fetchedAt: Date.now() },
-      IDENTITY_CACHE_LIMIT
+      IDENTITY_CACHE_LIMIT,
     );
   } finally {
     inflightFetches.delete(seed);
@@ -216,7 +216,7 @@ export function uuidV4FromHash(hex64: string): string {
 export function resolveAccountUUID(
   providerSpecificData: Record<string, unknown> | undefined,
   seed: string,
-  accessToken?: string
+  accessToken?: string,
 ): string {
   const camel = providerSpecificData?.accountUUID;
   if (typeof camel === "string" && camel.length >= 32) return camel;
@@ -235,7 +235,7 @@ export function resolveAccountUUID(
   return uuidV4FromHash(
     createHash("sha256")
       .update("account:" + seed)
-      .digest("hex") // nosemgrep: insufficient-password-hash
+      .digest("hex"), // nosemgrep: insufficient-password-hash
   );
 }
 
@@ -255,7 +255,7 @@ export function buildUserIdJson(opts: {
 }
 
 export function parseUpstreamMetadataUserId(
-  body: Record<string, unknown> | null | undefined
+  body: Record<string, unknown> | null | undefined,
 ): { device_id: string; account_uuid: string; session_id: string } | null {
   if (!body) return null;
   const md = body.metadata as Record<string, unknown> | undefined;
@@ -328,7 +328,7 @@ export function selectBetaFlags(
   // requested produced malformed opus tool_use streams (#3415). When this is a
   // non-empty string we respect it and do NOT force those betas. For opaque clients
   // (no header — the OAuth identity cloak) the full set is retained unchanged.
-  clientBeta?: string | null
+  clientBeta?: string | null,
 ): string {
   const b = body || {};
   const clientBetaSet =
@@ -337,7 +337,7 @@ export function selectBetaFlags(
           clientBeta
             .split(",")
             .map((f) => f.trim())
-            .filter(Boolean)
+            .filter(Boolean),
         )
       : null;
   // When the client negotiated its own anthropic-beta, only emit the thinking / heavy
@@ -375,7 +375,7 @@ export function selectBetaFlags(
     flags.push(
       "interleaved-thinking-2025-05-14",
       "redact-thinking-2026-02-12",
-      "thinking-token-count-2026-05-13"
+      "thinking-token-count-2026-05-13",
     );
   }
   flags.push("context-management-2025-06-27", "prompt-caching-scope-2026-01-05");

@@ -129,7 +129,7 @@ const OPENAI_FORMAT_CACHE_CONTROL_PROVIDERS = new Set([
  * passthrough so generic / implicit-cache OpenAI providers keep getting cleaned.
  */
 export function providerHonorsOpenAIFormatCacheControl(
-  provider: string | null | undefined
+  provider: string | null | undefined,
 ): boolean {
   if (!provider) return false;
   return OPENAI_FORMAT_CACHE_CONTROL_PROVIDERS.has(provider.toLowerCase());
@@ -159,7 +159,7 @@ export function isClaudeCodeClient(userAgent: string | null | undefined): boolea
  */
 export function providerSupportsCaching(
   provider: string | null | undefined,
-  targetFormat?: string | null
+  targetFormat?: string | null,
 ): boolean {
   if (!provider) return false;
   if (CACHING_PROVIDERS.has(provider.toLowerCase())) return true;
@@ -172,7 +172,7 @@ export function providerSupportsCaching(
  * Check if a routing strategy is deterministic
  */
 export function isDeterministicStrategy(
-  strategy: RoutingStrategyValue | null | undefined
+  strategy: RoutingStrategyValue | null | undefined,
 ): boolean {
   if (!strategy) return false;
   return DETERMINISTIC_STRATEGIES.has(strategy);

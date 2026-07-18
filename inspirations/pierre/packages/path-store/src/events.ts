@@ -1,4 +1,4 @@
-import { withBenchmarkPhase } from './internal/benchmarkInstrumentation';
+import { withBenchmarkPhase } from "./internal/benchmarkInstrumentation";
 import type {
   PathStoreAddEvent,
   PathStoreApplyChildPatchEvent,
@@ -17,9 +17,9 @@ import type {
   PathStoreMoveEvent,
   PathStoreRemoveEvent,
   PathStoreSemanticEvent,
-} from './public-types';
-import { createTransactionFrame } from './state';
-import type { PathStoreState, TransactionFrame } from './state';
+} from "./public-types";
+import { createTransactionFrame } from "./state";
+import type { PathStoreState, TransactionFrame } from "./state";
 
 type EventInvalidationArgs = {
   affectedAncestorIds?: readonly number[];
@@ -27,10 +27,10 @@ type EventInvalidationArgs = {
   projectionChanged: boolean;
 };
 
-export function subscribe<TType extends PathStoreEventType | '*'>(
+export function subscribe<TType extends PathStoreEventType | "*">(
   state: PathStoreState,
   type: TType,
-  handler: (event: PathStoreEventForType<TType>) => void
+  handler: (event: PathStoreEventForType<TType>) => void,
 ): () => void {
   const rawHandler = handler as (event: PathStoreEvent) => void;
   const existingListeners = state.listeners.get(type);
@@ -53,14 +53,12 @@ export function subscribe<TType extends PathStoreEventType | '*'>(
   };
 }
 
-export function createAddEvent(
-  args: EventInvalidationArgs & { path: string }
-): PathStoreAddEvent {
+export function createAddEvent(args: EventInvalidationArgs & { path: string }): PathStoreAddEvent {
   return {
     affectedAncestorIds: args.affectedAncestorIds ?? [],
     affectedNodeIds: args.affectedNodeIds ?? [],
     canonicalChanged: true,
-    operation: 'add',
+    operation: "add",
     path: args.path,
     projectionChanged: args.projectionChanged,
     visibleCountDelta: null,
@@ -68,13 +66,13 @@ export function createAddEvent(
 }
 
 export function createRemoveEvent(
-  args: EventInvalidationArgs & { path: string; recursive: boolean }
+  args: EventInvalidationArgs & { path: string; recursive: boolean },
 ): PathStoreRemoveEvent {
   return {
     affectedAncestorIds: args.affectedAncestorIds ?? [],
     affectedNodeIds: args.affectedNodeIds ?? [],
     canonicalChanged: true,
-    operation: 'remove',
+    operation: "remove",
     path: args.path,
     projectionChanged: args.projectionChanged,
     recursive: args.recursive,
@@ -83,14 +81,14 @@ export function createRemoveEvent(
 }
 
 export function createMoveEvent(
-  args: EventInvalidationArgs & { from: string; to: string }
+  args: EventInvalidationArgs & { from: string; to: string },
 ): PathStoreMoveEvent {
   return {
     affectedAncestorIds: args.affectedAncestorIds ?? [],
     affectedNodeIds: args.affectedNodeIds ?? [],
     canonicalChanged: true,
     from: args.from,
-    operation: 'move',
+    operation: "move",
     projectionChanged: args.projectionChanged,
     to: args.to,
     visibleCountDelta: null,
@@ -98,13 +96,13 @@ export function createMoveEvent(
 }
 
 export function createExpandEvent(
-  args: EventInvalidationArgs & { path: string }
+  args: EventInvalidationArgs & { path: string },
 ): PathStoreExpandEvent {
   return {
     affectedAncestorIds: args.affectedAncestorIds ?? [],
     affectedNodeIds: args.affectedNodeIds ?? [],
     canonicalChanged: false,
-    operation: 'expand',
+    operation: "expand",
     path: args.path,
     projectionChanged: true,
     visibleCountDelta: null,
@@ -112,13 +110,13 @@ export function createExpandEvent(
 }
 
 export function createCollapseEvent(
-  args: EventInvalidationArgs & { path: string }
+  args: EventInvalidationArgs & { path: string },
 ): PathStoreCollapseEvent {
   return {
     affectedAncestorIds: args.affectedAncestorIds ?? [],
     affectedNodeIds: args.affectedNodeIds ?? [],
     canonicalChanged: false,
-    operation: 'collapse',
+    operation: "collapse",
     path: args.path,
     projectionChanged: true,
     visibleCountDelta: null,
@@ -126,13 +124,13 @@ export function createCollapseEvent(
 }
 
 export function createMarkDirectoryUnloadedEvent(
-  args: EventInvalidationArgs & { path: string }
+  args: EventInvalidationArgs & { path: string },
 ): PathStoreMarkDirectoryUnloadedEvent {
   return {
     affectedAncestorIds: args.affectedAncestorIds ?? [],
     affectedNodeIds: args.affectedNodeIds ?? [],
     canonicalChanged: false,
-    operation: 'mark-directory-unloaded',
+    operation: "mark-directory-unloaded",
     path: args.path,
     projectionChanged: args.projectionChanged,
     visibleCountDelta: null,
@@ -144,14 +142,14 @@ export function createBeginChildLoadEvent(
     attemptId: number;
     path: string;
     reused: boolean;
-  }
+  },
 ): PathStoreBeginChildLoadEvent {
   return {
     affectedAncestorIds: args.affectedAncestorIds ?? [],
     affectedNodeIds: args.affectedNodeIds ?? [],
     attemptId: args.attemptId,
     canonicalChanged: false,
-    operation: 'begin-child-load',
+    operation: "begin-child-load",
     path: args.path,
     projectionChanged: args.projectionChanged,
     reused: args.reused,
@@ -164,7 +162,7 @@ export function createApplyChildPatchEvent(
     attemptId: number;
     childEvents: readonly PathStoreSemanticEvent[];
     path: string;
-  }
+  },
 ): PathStoreApplyChildPatchEvent {
   return {
     affectedAncestorIds: args.affectedAncestorIds ?? [],
@@ -172,7 +170,7 @@ export function createApplyChildPatchEvent(
     attemptId: args.attemptId,
     canonicalChanged: args.childEvents.some((event) => event.canonicalChanged),
     childEvents: args.childEvents,
-    operation: 'apply-child-patch',
+    operation: "apply-child-patch",
     path: args.path,
     projectionChanged: args.projectionChanged,
     visibleCountDelta: null,
@@ -184,14 +182,14 @@ export function createCompleteChildLoadEvent(
     attemptId: number;
     path: string;
     stale: boolean;
-  }
+  },
 ): PathStoreCompleteChildLoadEvent {
   return {
     affectedAncestorIds: args.affectedAncestorIds ?? [],
     affectedNodeIds: args.affectedNodeIds ?? [],
     attemptId: args.attemptId,
     canonicalChanged: false,
-    operation: 'complete-child-load',
+    operation: "complete-child-load",
     path: args.path,
     projectionChanged: args.projectionChanged,
     stale: args.stale,
@@ -205,7 +203,7 @@ export function createFailChildLoadEvent(
     errorMessage: string | undefined;
     path: string;
     stale: boolean;
-  }
+  },
 ): PathStoreFailChildLoadEvent {
   return {
     affectedAncestorIds: args.affectedAncestorIds ?? [],
@@ -213,7 +211,7 @@ export function createFailChildLoadEvent(
     attemptId: args.attemptId,
     canonicalChanged: false,
     errorMessage: args.errorMessage,
-    operation: 'fail-child-load',
+    operation: "fail-child-load",
     path: args.path,
     projectionChanged: args.projectionChanged,
     stale: args.stale,
@@ -222,7 +220,7 @@ export function createFailChildLoadEvent(
 }
 
 export function createCleanupEvent(
-  args: EventInvalidationArgs & PathStoreCleanupResult
+  args: EventInvalidationArgs & PathStoreCleanupResult,
 ): PathStoreCleanupEvent {
   return {
     activeNodeCountAfter: args.activeNodeCountAfter,
@@ -236,7 +234,7 @@ export function createCleanupEvent(
     loadInfoEntryCountAfter: args.loadInfoEntryCountAfter,
     loadInfoEntryCountBefore: args.loadInfoEntryCountBefore,
     mode: args.mode,
-    operation: 'cleanup',
+    operation: "cleanup",
     projectionChanged: args.projectionChanged,
     reclaimedCachedPathEntryCount: args.reclaimedCachedPathEntryCount,
     reclaimedLoadInfoEntryCount: args.reclaimedLoadInfoEntryCount,
@@ -253,7 +251,7 @@ export function createCleanupEvent(
 export function finalizeEvent(
   state: PathStoreState,
   previousVisibleCount: number,
-  event: PathStoreSemanticEvent
+  event: PathStoreSemanticEvent,
 ): PathStoreSemanticEvent {
   return {
     ...event,
@@ -273,35 +271,21 @@ export function batchEvents(state: PathStoreState, run: () => void): void {
     throw error;
   }
 
-  finishTransaction(
-    state,
-    frame,
-    true,
-    getCurrentVisibleCount(state) - previousVisibleCount
-  );
+  finishTransaction(state, frame, true, getCurrentVisibleCount(state) - previousVisibleCount);
 }
 
-export function recordEvent(
-  state: PathStoreState,
-  event: PathStoreSemanticEvent
-): void {
+export function recordEvent(state: PathStoreState, event: PathStoreSemanticEvent): void {
   const instrumentation = state.instrumentation;
   if (instrumentation == null) {
     recordEventNow(state, event);
     return;
   }
 
-  withBenchmarkPhase(instrumentation, 'store.events.record', () =>
-    recordEventNow(state, event)
-  );
+  withBenchmarkPhase(instrumentation, "store.events.record", () => recordEventNow(state, event));
 }
 
-function recordEventNow(
-  state: PathStoreState,
-  event: PathStoreSemanticEvent
-): void {
-  const currentFrame =
-    state.transactionStack[state.transactionStack.length - 1] ?? null;
+function recordEventNow(state: PathStoreState, event: PathStoreSemanticEvent): void {
+  const currentFrame = state.transactionStack[state.transactionStack.length - 1] ?? null;
   if (currentFrame == null) {
     emitEvent(state, event);
     return;
@@ -315,26 +299,25 @@ function finishTransaction(
   state: PathStoreState,
   frame: TransactionFrame,
   emit: boolean,
-  visibleCountDelta: number | null = null
+  visibleCountDelta: number | null = null,
 ): void {
   const poppedFrame = state.transactionStack.pop();
   if (poppedFrame !== frame) {
-    throw new Error('Transaction stack underflow');
+    throw new Error("Transaction stack underflow");
   }
 
   if (!emit) {
     return;
   }
 
-  const parentFrame =
-    state.transactionStack[state.transactionStack.length - 1] ?? null;
+  const parentFrame = state.transactionStack[state.transactionStack.length - 1] ?? null;
   if (parentFrame != null) {
     const instrumentation = state.instrumentation;
     if (instrumentation == null) {
       mergeBatchFrameIntoParent(parentFrame, frame);
     } else {
-      withBenchmarkPhase(instrumentation, 'store.events.batch.merge', () =>
-        mergeBatchFrameIntoParent(parentFrame, frame)
+      withBenchmarkPhase(instrumentation, "store.events.batch.merge", () =>
+        mergeBatchFrameIntoParent(parentFrame, frame),
       );
     }
     return;
@@ -348,30 +331,27 @@ function finishTransaction(
     return;
   }
 
-  withBenchmarkPhase(instrumentation, 'store.events.batch.commit', () =>
-    emitEvent(state, batchEvent)
+  withBenchmarkPhase(instrumentation, "store.events.batch.commit", () =>
+    emitEvent(state, batchEvent),
   );
 }
 
 function createBatchEvent(
   frame: TransactionFrame,
-  visibleCountDelta: number | null
+  visibleCountDelta: number | null,
 ): PathStoreBatchEvent {
   return {
     affectedAncestorIds: [...frame.affectedAncestorIds],
     affectedNodeIds: [...frame.affectedNodeIds],
     canonicalChanged: frame.events.some((event) => event.canonicalChanged),
     events: [...frame.events],
-    operation: 'batch',
+    operation: "batch",
     projectionChanged: frame.events.some((event) => event.projectionChanged),
     visibleCountDelta,
   };
 }
 
-function mergeFrameMetadata(
-  target: TransactionFrame,
-  source: TransactionFrame
-): void {
+function mergeFrameMetadata(target: TransactionFrame, source: TransactionFrame): void {
   for (const nodeId of source.affectedAncestorIds) {
     target.affectedAncestorIds.add(nodeId);
   }
@@ -381,20 +361,14 @@ function mergeFrameMetadata(
   }
 }
 
-function mergeBatchFrameIntoParent(
-  parentFrame: TransactionFrame,
-  frame: TransactionFrame
-): void {
+function mergeBatchFrameIntoParent(parentFrame: TransactionFrame, frame: TransactionFrame): void {
   for (const event of frame.events) {
     parentFrame.events.push(event);
   }
   mergeFrameMetadata(parentFrame, frame);
 }
 
-function mergeEventMetadataIntoFrame(
-  frame: TransactionFrame,
-  event: PathStoreSemanticEvent
-): void {
+function mergeEventMetadataIntoFrame(frame: TransactionFrame, event: PathStoreSemanticEvent): void {
   for (const nodeId of event.affectedNodeIds) {
     frame.affectedNodeIds.add(nodeId);
   }
@@ -411,15 +385,13 @@ function emitEvent(state: PathStoreState, event: PathStoreEvent): void {
     return;
   }
 
-  withBenchmarkPhase(instrumentation, 'store.events.emit', () =>
-    emitEventNow(state, event)
-  );
+  withBenchmarkPhase(instrumentation, "store.events.emit", () => emitEventNow(state, event));
 }
 
 function emitEventNow(state: PathStoreState, event: PathStoreEvent): void {
   const specificListeners = state.listeners.get(event.operation);
   specificListeners?.forEach((handler) => handler(event));
-  const wildcardListeners = state.listeners.get('*');
+  const wildcardListeners = state.listeners.get("*");
   wildcardListeners?.forEach((handler) => handler(event));
 }
 

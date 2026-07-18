@@ -42,7 +42,7 @@ function withFamilyDefault(value: ProxyValue): ProxyValue {
 
 async function resolveOneNoAuthProviderProxy(
   providerId: string,
-  legacyProviders: LegacyProviderProxyMap
+  legacyProviders: LegacyProviderProxyMap,
 ): Promise<NoAuthProxyResolutionResult | null> {
   const registryProvider = await resolveProxyForScopeFromRegistry("provider", providerId);
   if (registryProvider?.proxy) return registryProvider as NoAuthProxyResolutionResult;
@@ -55,7 +55,7 @@ async function resolveOneNoAuthProviderProxy(
 }
 
 export async function resolveNoAuthSharedProviderProxy(
-  legacyProviders: LegacyProviderProxyMap
+  legacyProviders: LegacyProviderProxyMap,
 ): Promise<NoAuthProxyResolutionResult | null> {
   for (const providerId of Object.keys(NOAUTH_PROVIDERS)) {
     const resolved = await resolveOneNoAuthProviderProxy(providerId, legacyProviders);

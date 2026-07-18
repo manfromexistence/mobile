@@ -25,7 +25,7 @@ export async function POST(request: Request) {
             type: "invalid_request_error",
           },
         },
-        { status: 400, headers: CORS_HEADERS }
+        { status: 400, headers: CORS_HEADERS },
       );
     }
     const validated = validation.data;
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     if (!inputFile || (inputFile.apiKeyId !== null && inputFile.apiKeyId !== apiKeyId)) {
       return NextResponse.json(
         { error: { message: "Input file not found", type: "invalid_request_error" } },
-        { status: 400, headers: CORS_HEADERS }
+        { status: 400, headers: CORS_HEADERS },
       );
     }
 
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
           type: "invalid_request_error",
         },
       },
-      { status: 400, headers: CORS_HEADERS }
+      { status: 400, headers: CORS_HEADERS },
     );
   }
 }
@@ -89,6 +89,6 @@ export async function GET(request: Request) {
       has_more: hasMore,
       total_count: totalCount,
     },
-    { headers: CORS_HEADERS }
+    { headers: CORS_HEADERS },
   );
 }

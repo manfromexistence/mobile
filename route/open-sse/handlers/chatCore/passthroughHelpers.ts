@@ -47,7 +47,7 @@ export function shouldUseNativeCodexPassthrough({
  */
 export function redactPassthroughThinkingSignatures(
   messages: unknown,
-  _signature: string
+  _signature: string,
 ): unknown {
   return messages;
 }

@@ -1,10 +1,10 @@
-import type { InteractionManagerBaseOptions } from '../managers/InteractionManager';
+import type { InteractionManagerBaseOptions } from "../managers/InteractionManager";
 
 // Token metadata is only needed when token-level interactions are enabled.
-export function shouldUseTokenTransformer<TMode extends 'file' | 'diff'>(
+export function shouldUseTokenTransformer<TMode extends "file" | "diff">(
   options: InteractionManagerBaseOptions<TMode> & {
     useTokenTransformer?: boolean;
-  }
+  },
 ): boolean {
   return (
     options.useTokenTransformer === true ||

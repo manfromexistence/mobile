@@ -17,7 +17,7 @@ test("schema rejects an invalid level", () => {
   assert.throws(() =>
     compressionSettingsUpdateSchema.parse({
       outputStyles: [{ id: "terse-prose", level: "extreme" }],
-    })
+    }),
   );
 });
 

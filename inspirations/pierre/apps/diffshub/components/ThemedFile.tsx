@@ -1,15 +1,13 @@
-'use client';
+"use client";
 
-import { File, type FileProps } from '@pierre/diffs/react';
-import { useMemo } from 'react';
+import { File, type FileProps } from "@pierre/diffs/react";
+import { useMemo } from "react";
 
-import { useDiffThemeProps } from './useDiffThemeProps';
-import { useWorkerDiffTheme } from './useWorkerDiffTheme';
-import type { DiffThemeInput } from '@/lib/theme/diffThemeProps';
+import { useDiffThemeProps } from "./useDiffThemeProps";
+import { useWorkerDiffTheme } from "./useWorkerDiffTheme";
+import type { DiffThemeInput } from "@/lib/theme/diffThemeProps";
 
-interface ThemedFileProps<
-  LAnnotation = undefined,
-> extends FileProps<LAnnotation> {
+interface ThemedFileProps<LAnnotation = undefined> extends FileProps<LAnnotation> {
   // Names-now override (omitted => follow the provider/source).
   theme?: DiffThemeInput;
 }
@@ -30,13 +28,9 @@ export function ThemedFile<LAnnotation = undefined>({
       theme: diffTheme.theme,
       themeType: options?.themeType ?? diffTheme.themeType,
     }),
-    [diffTheme, options]
+    [diffTheme, options],
   );
   return (
-    <File<LAnnotation>
-      {...props}
-      disableWorkerPool={disableWorkerPool}
-      options={themedOptions}
-    />
+    <File<LAnnotation> {...props} disableWorkerPool={disableWorkerPool} options={themedOptions} />
   );
 }

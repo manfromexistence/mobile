@@ -470,7 +470,7 @@ export function buildDynamicAudioProvider(node: ProviderNodeRow, audioPath: stri
 function parseAudioModel(
   modelStr: string | null,
   registry: Record<string, AudioProvider>,
-  dynamicProviders?: AudioProvider[]
+  dynamicProviders?: AudioProvider[],
 ): { provider: string | null; model: string | null } {
   if (!modelStr) return { provider: null, model: null };
 
@@ -502,7 +502,7 @@ function parseAudioModel(
 
 export function parseTranscriptionModel(
   modelStr: string | null,
-  dynamicProviders?: AudioProvider[]
+  dynamicProviders?: AudioProvider[],
 ) {
   return parseAudioModel(modelStr, AUDIO_TRANSCRIPTION_PROVIDERS, dynamicProviders);
 }

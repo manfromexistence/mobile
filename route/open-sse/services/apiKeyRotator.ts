@@ -31,7 +31,10 @@ const MAX_CONNECTION_EXTRA_KEYS = 500;
  */
 export function trackConnectionExtraKeys(connectionId: string, extraKeys: string[]): void {
   const validExtras = extraKeys.filter((k) => typeof k === "string" && k.trim().length > 0);
-  if (!_connectionExtraKeys.has(connectionId) && _connectionExtraKeys.size >= MAX_CONNECTION_EXTRA_KEYS) {
+  if (
+    !_connectionExtraKeys.has(connectionId) &&
+    _connectionExtraKeys.size >= MAX_CONNECTION_EXTRA_KEYS
+  ) {
     const oldest = _connectionExtraKeys.keys().next().value;
     if (oldest !== undefined) _connectionExtraKeys.delete(oldest);
   }
@@ -101,7 +104,7 @@ export function getValidApiKey(
   connectionId: string,
   primaryKey: string,
   extraKeys: string[] = [],
-  health?: Record<string, KeyHealth>
+  health?: Record<string, KeyHealth>,
 ): { key: string; keyId: string } | null {
   const validExtras = extraKeys.filter((k) => typeof k === "string" && k.trim().length > 0);
 
@@ -115,7 +118,7 @@ export function getValidApiKey(
       allKeys.push({ key: primaryKey, keyId: "primary" });
     } else {
       console.warn(
-        `[KeyRotator] Skipping invalid primary key for connection ${connectionId.slice(0, 8)}`
+        `[KeyRotator] Skipping invalid primary key for connection ${connectionId.slice(0, 8)}`,
       );
     }
   }
@@ -149,7 +152,7 @@ export function getValidApiKey(
 export function getRotatingApiKey(
   connectionId: string,
   primaryKey: string,
-  extraKeys: string[] = []
+  extraKeys: string[] = [],
 ): string {
   const validExtras = extraKeys.filter((k) => typeof k === "string" && k.trim().length > 0);
 
@@ -245,7 +248,7 @@ export function getKeyHealthStats(
   connectionId: string,
   primaryKey: string,
   extraKeys: string[] = [],
-  health?: Record<string, KeyHealth>
+  health?: Record<string, KeyHealth>,
 ): {
   total: number;
   active: number;
@@ -343,7 +346,7 @@ export function resolveKeyForRequest(
   connectionId: string,
   primaryKey: string,
   extraKeys: string[],
-  selectedKeyId: string | null
+  selectedKeyId: string | null,
 ): { key: string; keyId: string } | null {
   if (selectedKeyId) {
     const health = getOrCreateHealth(connectionId, selectedKeyId);

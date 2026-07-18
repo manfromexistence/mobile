@@ -81,7 +81,7 @@ test("live repo: no NEW unexported db modules beyond the frozen allowlist", asyn
   assert.deepEqual(
     missing,
     [],
-    `Unexported db module(s) not in KNOWN_UNEXPORTED: ${missing.join(", ")}`
+    `Unexported db module(s) not in KNOWN_UNEXPORTED: ${missing.join(", ")}`,
   );
 });
 
@@ -143,8 +143,8 @@ test("findRawSql: flags a NEW route with raw SQL in a string literal", () => {
   const tmp = path.join(REPO_ROOT, ".tmp-check-db-rules-raw-sql.route.ts");
   fs.writeFileSync(
     tmp,
-    'const rows = db.prepare(`SELECT id FROM users WHERE x = ?`).all();\n',
-    "utf8"
+    "const rows = db.prepare(`SELECT id FROM users WHERE x = ?`).all();\n",
+    "utf8",
   );
   try {
     const offenders = findRawSql([tmp], new Set<string>()) as string[];
@@ -156,7 +156,11 @@ test("findRawSql: flags a NEW route with raw SQL in a string literal", () => {
 
 test("findRawSql: does NOT flag SQL that only appears in a comment", () => {
   const tmp = path.join(REPO_ROOT, ".tmp-check-db-rules-comment.route.ts");
-  fs.writeFileSync(tmp, "// SELECT id FROM users -- documentation only\nexport const x = 1;\n", "utf8");
+  fs.writeFileSync(
+    tmp,
+    "// SELECT id FROM users -- documentation only\nexport const x = 1;\n",
+    "utf8",
+  );
   try {
     const offenders = findRawSql([tmp], new Set<string>()) as string[];
     assert.deepEqual(offenders, []);
@@ -175,7 +179,7 @@ test("findRawSql: does NOT flag JS .set()/import-from/new Set() false positives"
       "headers.set(key, value);",
       "delete obj.field;",
     ].join("\n"),
-    "utf8"
+    "utf8",
   );
   try {
     const offenders = findRawSql([tmp], new Set<string>()) as string[];
@@ -208,7 +212,7 @@ test("stale-enforcement: INTENTIONALLY_INTERNAL entry no longer unexported is re
   const stale = (reportStaleEntries as (a: Set<string>, l: string[], g: string) => string[])(
     new Set(["oldModule"]),
     liveUnexported,
-    "check-db-rules:unexported"
+    "check-db-rules:unexported",
   );
   assert.deepEqual(stale, ["oldModule"]);
 });
@@ -219,7 +223,7 @@ test("stale-enforcement: EXTERNAL_DB_ALLOWED entry no longer has raw SQL is repo
   const stale = (reportStaleEntries as (a: Set<string>, l: string[], g: string) => string[])(
     new Set(["src/app/api/oauth/cursor/auto-import/route.ts"]),
     liveRawSql,
-    "check-db-rules:raw-sql"
+    "check-db-rules:raw-sql",
   );
   assert.deepEqual(stale, ["src/app/api/oauth/cursor/auto-import/route.ts"]);
 });
@@ -229,13 +233,16 @@ test("stale-enforcement: live repo INTENTIONALLY_INTERNAL entries are all still 
   // If it was re-exported (moved to localDb.ts), it must be removed from the allowlist.
   const dbModules = collectDbModules() as string[];
   const reexported = extractReexportedModules(
-    fs.readFileSync(path.resolve(fileURLToPath(import.meta.url), "../../../src/lib/localDb.ts"), "utf8")
+    fs.readFileSync(
+      path.resolve(fileURLToPath(import.meta.url), "../../../src/lib/localDb.ts"),
+      "utf8",
+    ),
   ) as Set<string>;
   const liveUnexported = dbModules.filter((mod) => !reexported.has(mod));
   const stale = (reportStaleEntries as (a: Set<string>, l: string[], g: string) => string[])(
     INTENTIONALLY_INTERNAL as Set<string>,
     liveUnexported,
-    "check-db-rules:unexported"
+    "check-db-rules:unexported",
   );
   assert.deepEqual(stale, [], `INTENTIONALLY_INTERNAL has stale entries: ${stale.join(", ")}`);
 });

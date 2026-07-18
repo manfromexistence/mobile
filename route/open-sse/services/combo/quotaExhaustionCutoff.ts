@@ -52,7 +52,7 @@ function quotaWindowLookupNames(provider: string, windowName: string): string[] 
 export function buildAutoQuotaThresholds(
   provider: string,
   connection: Record<string, unknown> | undefined,
-  resilienceSettings: ResilienceSettings | null | undefined
+  resilienceSettings: ResilienceSettings | null | undefined,
 ): PreflightQuotaThresholds {
   const quotaPreflight = (resilienceSettings ?? resolveResilienceSettings(null))?.quotaPreflight;
   const defaultThresholdPercent = quotaPreflight?.defaultThresholdPercent ?? 2;
@@ -97,7 +97,7 @@ export async function resolveQuotaExhaustionCutoffForTarget(
   resilienceSettings: ResilienceSettings | null | undefined,
   resetWindowConfig: ResetWindowConfig,
   comboName: string,
-  log: { debug?: (...args: unknown[]) => void; warn?: (...args: unknown[]) => void }
+  log: { debug?: (...args: unknown[]) => void; warn?: (...args: unknown[]) => void },
 ): Promise<{ blocked: boolean; reason?: string }> {
   const quotaCutoffEnabled =
     (resilienceSettings ?? resolveResilienceSettings(null))?.quotaPreflight?.enabled === true;
@@ -127,7 +127,7 @@ export async function resolveQuotaExhaustionCutoffForTarget(
     });
     const cutoffDecision = evaluateQuotaCutoff(
       quota as QuotaInfo | null,
-      buildAutoQuotaThresholds(provider, connection, resilienceSettings)
+      buildAutoQuotaThresholds(provider, connection, resilienceSettings),
     );
     if (!cutoffDecision.proceed) {
       return { blocked: true, reason: cutoffDecision.reason || "quota_exhausted" };

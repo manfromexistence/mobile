@@ -54,7 +54,7 @@ export async function POST(request: Request): Promise<NextResponse<DiscoverRespo
           zedInstalled: false,
           zedDockerEnvironment: true,
         },
-        { status: 422 }
+        { status: 422 },
       );
     }
 
@@ -67,7 +67,7 @@ export async function POST(request: Request): Promise<NextResponse<DiscoverRespo
           zedInstalled: false,
           zedDockerEnvironment: false,
         },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -102,7 +102,7 @@ export async function POST(request: Request): Promise<NextResponse<DiscoverRespo
           success: false,
           error: "Keychain access denied. Please grant permission when prompted by your OS.",
         },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -111,7 +111,7 @@ export async function POST(request: Request): Promise<NextResponse<DiscoverRespo
         success: false,
         error: "Failed to discover Zed credentials",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

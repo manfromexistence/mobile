@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
   if (!(await isAuthenticated(req))) {
     return NextResponse.json(
       { error: { message: "Authentication required", type: "invalid_request_error" } },
-      { status: 401 }
+      { status: 401 },
     );
   }
 

@@ -131,12 +131,12 @@ test("DRR fairness: 2 equal-weight connections alternate across 6 requests throu
   assert.ok(
     openaiCount >= 2,
     `DRR fairness: openai must be selected at least 2 times out of 6; got ${openaiCount}. ` +
-      `Full sequence: [${seen.join(", ")}]. If openai was never selected, DRR was bypassed.`
+      `Full sequence: [${seen.join(", ")}]. If openai was never selected, DRR was bypassed.`,
   );
   assert.ok(
     geminiCount >= 2,
     `DRR fairness: gemini must be selected at least 2 times out of 6; got ${geminiCount}. ` +
-      `Full sequence: [${seen.join(", ")}]. If gemini was never selected, DRR was bypassed.`
+      `Full sequence: [${seen.join(", ")}]. If gemini was never selected, DRR was bypassed.`,
   );
 });
 
@@ -197,6 +197,6 @@ test("saturation deprioritization: saturated connection demoted — clean second
     "gemini",
     `saturation deprioritization: openai 5h bucket is at 100 % (saturated), so ` +
       `filterEligibleBySaturation must demote it and dispatch gemini first despite it ` +
-      `being second in the combo definition. Got: ${first}`
+      `being second in the combo definition. Got: ${first}`,
   );
 });

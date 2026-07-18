@@ -3,7 +3,7 @@ export interface BenchmarkInstrumentation {
   setCounter: (name: string, value: number) => void;
 }
 
-const BENCHMARK_INSTRUMENTATION = Symbol('benchmarkInstrumentation');
+const BENCHMARK_INSTRUMENTATION = Symbol("benchmarkInstrumentation");
 
 type BenchmarkInstrumentationCarrier = {
   [BENCHMARK_INSTRUMENTATION]?: BenchmarkInstrumentation;
@@ -12,7 +12,7 @@ type BenchmarkInstrumentationCarrier = {
 /** Attaches instrumentation without changing the public option shape. */
 export function attachBenchmarkInstrumentation<TValue extends object>(
   value: TValue,
-  instrumentation: BenchmarkInstrumentation | null | undefined
+  instrumentation: BenchmarkInstrumentation | null | undefined,
 ): TValue {
   if (instrumentation == null) {
     return value;
@@ -28,23 +28,20 @@ export function attachBenchmarkInstrumentation<TValue extends object>(
 }
 
 export function getBenchmarkInstrumentation(
-  value: object | null | undefined
+  value: object | null | undefined,
 ): BenchmarkInstrumentation | null {
   if (value == null) {
     return null;
   }
 
-  return (
-    (value as BenchmarkInstrumentationCarrier)[BENCHMARK_INSTRUMENTATION] ??
-    null
-  );
+  return (value as BenchmarkInstrumentationCarrier)[BENCHMARK_INSTRUMENTATION] ?? null;
 }
 
 /** Executes phase timing only when a benchmark fixture injects instrumentation. */
 export function withBenchmarkPhase<TValue>(
   instrumentation: BenchmarkInstrumentation | null | undefined,
   name: string,
-  fn: () => TValue
+  fn: () => TValue,
 ): TValue {
   if (instrumentation == null) {
     return fn();
@@ -56,7 +53,7 @@ export function withBenchmarkPhase<TValue>(
 export function setBenchmarkCounter(
   instrumentation: BenchmarkInstrumentation | null | undefined,
   name: string,
-  value: number
+  value: number,
 ): void {
   if (!Number.isFinite(value) || instrumentation == null) {
     return;

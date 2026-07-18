@@ -56,17 +56,17 @@ export async function GET(request: Request) {
   if (!parsed.success) {
     return NextResponse.json(
       buildErrorBody(400, parsed.error.issues[0]?.message ?? "Invalid query parameters"),
-      { status: 400, headers: CORS_HEADERS }
+      { status: 400, headers: CORS_HEADERS },
     );
   }
 
   const { type, sortBy, limit } = parsed.data;
   const pipelineTag = resolveHfPipelineTag(type);
   if (!pipelineTag) {
-    return NextResponse.json(
-      buildErrorBody(400, `Unsupported suggested-models type: ${type}`),
-      { status: 400, headers: CORS_HEADERS }
-    );
+    return NextResponse.json(buildErrorBody(400, `Unsupported suggested-models type: ${type}`), {
+      status: 400,
+      headers: CORS_HEADERS,
+    });
   }
 
   try {
@@ -89,7 +89,7 @@ export async function GET(request: Request) {
     if (!upstream.ok) {
       return NextResponse.json(
         buildErrorBody(502, `HuggingFace Hub API responded with status ${upstream.status}`),
-        { status: 502, headers: CORS_HEADERS }
+        { status: 502, headers: CORS_HEADERS },
       );
     }
 
@@ -97,7 +97,7 @@ export async function GET(request: Request) {
     const models: HfModelSummary[] = Array.isArray(raw)
       ? raw.filter(
           (m): m is HfModelSummary =>
-            !!m && typeof m === "object" && typeof (m as { id?: unknown }).id === "string"
+            !!m && typeof m === "object" && typeof (m as { id?: unknown }).id === "string",
         )
       : [];
 
@@ -114,12 +114,12 @@ export async function GET(request: Request) {
           downloads: typeof m.downloads === "number" ? m.downloads : 0,
         })),
       },
-      { headers: CORS_HEADERS }
+      { headers: CORS_HEADERS },
     );
   } catch (err) {
     return NextResponse.json(
       buildErrorBody(502, err instanceof Error ? err.message : String(err)),
-      { status: 502, headers: CORS_HEADERS }
+      { status: 502, headers: CORS_HEADERS },
     );
   }
 }

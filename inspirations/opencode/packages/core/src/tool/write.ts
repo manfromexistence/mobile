@@ -4,19 +4,19 @@
  * absolute external paths retain mutation capability through a separate
  * external_directory approval before edit approval.
  */
-export * as WriteTool from "./write"
+export * as WriteTool from "./write";
 
-import { ToolFailure } from "@opencode-ai/llm"
-import { Effect, Layer, Schema } from "effect"
-import { makeLocationNode } from "../effect/app-node"
-import { FileMutation } from "../file-mutation"
-import { LocationMutation } from "../location-mutation"
-import { PermissionV2 } from "../permission"
-import { ToolRegistry } from "./registry"
-import { Tool } from "./tool"
-import { Tools } from "./tools"
+import { ToolFailure } from "@opencode-ai/llm";
+import { Effect, Layer, Schema } from "effect";
+import { makeLocationNode } from "../effect/app-node";
+import { FileMutation } from "../file-mutation";
+import { LocationMutation } from "../location-mutation";
+import { PermissionV2 } from "../permission";
+import { ToolRegistry } from "./registry";
+import { Tool } from "./tool";
+import { Tools } from "./tools";
 
-export const name = "write"
+export const name = "write";
 
 // TODO: Revisit whether model-facing mutation schemas should prefer absolute `filePath` naming for trained-in compatibility after evaluating model behavior.
 export const Input = Schema.Struct({
@@ -25,18 +25,18 @@ export const Input = Schema.Struct({
       "File path to write. Relative paths resolve within the active Location. Absolute paths inside that Location are accepted; external absolute paths require external_directory approval.",
   }),
   content: Schema.String.annotate({ description: "Content to write to the file" }),
-})
+});
 
 export const Output = Schema.Struct({
   operation: Schema.Literal("write"),
   target: Schema.String,
   resource: Schema.String,
   existed: Schema.Boolean,
-})
-export type Output = typeof Output.Type
+});
+export type Output = typeof Output.Type;
 
 export const toModelOutput = (output: Output) =>
-  `${output.existed ? "Wrote" : "Created"} file successfully: ${output.resource}`
+  `${output.existed ? "Wrote" : "Created"} file successfully: ${output.resource}`;
 
 /** Deferred V2 write UX integrations remain visible at the model-facing seam. */
 // TODO: Add formatter integration after V2 formatter runtime exists.
@@ -46,10 +46,10 @@ export const toModelOutput = (output: Output) =>
 
 const layer = Layer.effectDiscard(
   Effect.gen(function* () {
-    const tools = yield* Tools.Service
-    const mutation = yield* LocationMutation.Service
-    const files = yield* FileMutation.Service
-    const permission = yield* PermissionV2.Service
+    const tools = yield* Tools.Service;
+    const mutation = yield* LocationMutation.Service;
+    const files = yield* FileMutation.Service;
+    const permission = yield* PermissionV2.Service;
 
     yield* tools
       .register({
@@ -66,16 +66,16 @@ const layer = Layer.effectDiscard(
                   type: "tool" as const,
                   messageID: context.assistantMessageID,
                   callID: context.toolCallID,
-                }
-                const target = yield* mutation.resolve({ path: input.path, kind: "file" })
-                const external = target.externalDirectory
+                };
+                const target = yield* mutation.resolve({ path: input.path, kind: "file" });
+                const external = target.externalDirectory;
                 if (external)
                   yield* permission.assert({
                     ...LocationMutation.externalDirectoryPermission(external),
                     sessionID: context.sessionID,
                     agent: context.agent,
                     source,
-                  })
+                  });
                 yield* permission.assert({
                   action: "edit",
                   resources: [target.resource],
@@ -83,19 +83,23 @@ const layer = Layer.effectDiscard(
                   sessionID: context.sessionID,
                   agent: context.agent,
                   source,
-                })
-                return yield* files.writeTextPreservingBom({ target, content: input.content })
-              }).pipe(Effect.mapError(() => new ToolFailure({ message: `Unable to write ${input.path}` }))),
+                });
+                return yield* files.writeTextPreservingBom({ target, content: input.content });
+              }).pipe(
+                Effect.mapError(
+                  () => new ToolFailure({ message: `Unable to write ${input.path}` }),
+                ),
+              ),
           }),
           "edit",
         ),
       })
-      .pipe(Effect.orDie)
+      .pipe(Effect.orDie);
   }),
-)
+);
 
 export const node = makeLocationNode({
   name: "tool/write",
   layer,
   deps: [ToolRegistry.node, LocationMutation.node, FileMutation.node, PermissionV2.node],
-})
+});

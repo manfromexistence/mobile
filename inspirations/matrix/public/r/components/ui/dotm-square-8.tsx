@@ -45,10 +45,14 @@ export function DotmSquare8({
   ...rest
 }: DotmSquare8Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
   const step = useSteppedCycle({
     active: !reducedMotion && matrixPhase !== "idle" && SEQUENCE_LEN > 0,
@@ -93,7 +97,7 @@ export function DotmSquare8({
 
       const isCap = row === topLitRow && height > 0 && height < ROWS;
       return {
-        style: { opacity: isCap ? CAP_OPACITY : SETTLED_OPACITY }
+        style: { opacity: isCap ? CAP_OPACITY : SETTLED_OPACITY },
       };
     };
   }, [reducedMotion, step]);

@@ -10,9 +10,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { cleanChatGptText } = await import(
-  "../../open-sse/executors/chatgpt-web/citations.ts"
-);
+const { cleanChatGptText } = await import("../../open-sse/executors/chatgpt-web/citations.ts");
 
 const S = ""; // marker start
 const SEP = ""; // marker separator

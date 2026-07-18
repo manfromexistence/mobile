@@ -1,5 +1,5 @@
-import { memo } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '../shader-mount.js';
+import { memo } from "react";
+import { ShaderMount, type ShaderComponentProps } from "../shader-mount.js";
 import {
   defaultObjectSizing,
   getShaderColorFromString,
@@ -8,21 +8,21 @@ import {
   type ShaderPreset,
   type SwirlParams,
   type SwirlUniforms,
-} from '@paper-design/shaders';
-import { colorPropsAreEqual } from '../color-props-are-equal.js';
+} from "@paper-design/shaders";
+import { colorPropsAreEqual } from "../color-props-are-equal.js";
 
 export interface SwirlProps extends ShaderComponentProps, SwirlParams {}
 
 type SwirlPreset = ShaderPreset<SwirlParams>;
 
 export const defaultPreset: SwirlPreset = {
-  name: 'Default',
+  name: "Default",
   params: {
     ...defaultObjectSizing,
     speed: 0.32,
     frame: 0,
-    colorBack: '#330000',
-    colors: ['#ffd1d1', '#ff8a8a', '#660000'],
+    colorBack: "#330000",
+    colors: ["#ffd1d1", "#ff8a8a", "#660000"],
     bandCount: 4,
     twist: 0.1,
     center: 0.2,
@@ -34,15 +34,15 @@ export const defaultPreset: SwirlPreset = {
 };
 
 export const openingPreset: SwirlPreset = {
-  name: 'Opening',
+  name: "Opening",
   params: {
     ...defaultObjectSizing,
     offsetX: -0.4,
     offsetY: 1,
     speed: 0.5,
     frame: 0,
-    colorBack: '#ff8b61',
-    colors: ['#fefff0', '#ffd8bd', '#ff8b61'],
+    colorBack: "#ff8b61",
+    colors: ["#fefff0", "#ffd8bd", "#ff8b61"],
     bandCount: 2,
     twist: 0.3,
     center: 0.2,
@@ -55,13 +55,13 @@ export const openingPreset: SwirlPreset = {
 } as const;
 
 export const jamesBondPreset: SwirlPreset = {
-  name: '007',
+  name: "007",
   params: {
     ...defaultObjectSizing,
     speed: 1,
     frame: 0,
-    colorBack: '#E9E7DA',
-    colors: ['#000000'],
+    colorBack: "#E9E7DA",
+    colors: ["#000000"],
     bandCount: 5,
     twist: 0.3,
     center: 0,
@@ -73,13 +73,13 @@ export const jamesBondPreset: SwirlPreset = {
 } as const;
 
 export const candyPreset: SwirlPreset = {
-  name: 'Candy',
+  name: "Candy",
   params: {
     ...defaultObjectSizing,
     speed: 1,
     frame: 0,
-    colorBack: '#ffcd66',
-    colors: ['#6bbceb', '#d7b3ff', '#ff9fff'],
+    colorBack: "#ffcd66",
+    colors: ["#6bbceb", "#d7b3ff", "#ff9fff"],
     bandCount: 2,
     twist: 0.15,
     center: 0.2,
@@ -90,7 +90,12 @@ export const candyPreset: SwirlPreset = {
   },
 } as const;
 
-export const swirlPresets: SwirlPreset[] = [defaultPreset, jamesBondPreset, openingPreset, candyPreset];
+export const swirlPresets: SwirlPreset[] = [
+  defaultPreset,
+  jamesBondPreset,
+  openingPreset,
+  candyPreset,
+];
 
 export const Swirl: React.FC<SwirlProps> = memo(function SwirlImpl({
   // Own props
@@ -144,6 +149,12 @@ export const Swirl: React.FC<SwirlProps> = memo(function SwirlImpl({
   } satisfies SwirlUniforms;
 
   return (
-    <ShaderMount {...props} speed={speed} frame={frame} fragmentShader={swirlFragmentShader} uniforms={uniforms} />
+    <ShaderMount
+      {...props}
+      speed={speed}
+      frame={frame}
+      fragmentShader={swirlFragmentShader}
+      uniforms={uniforms}
+    />
   );
 }, colorPropsAreEqual);

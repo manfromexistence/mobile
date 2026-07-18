@@ -91,7 +91,7 @@ export async function processPendingBatches(): Promise<void> {
     if (batch.status === "validating") {
       if (activeCount >= BATCH_MAX_CONCURRENT) {
         console.log(
-          `[BATCH] Concurrency limit ${BATCH_MAX_CONCURRENT} reached, deferring batch ${batch.id}`
+          `[BATCH] Concurrency limit ${BATCH_MAX_CONCURRENT} reached, deferring batch ${batch.id}`,
         );
         continue;
       }
@@ -116,11 +116,11 @@ function recoverStaleBatch(batch: BatchRecord): void {
 
   if (checkpointCount === 0 && hasPotentialExternalEffects) {
     console.warn(
-      `[BATCH] Stale batch ${batch.id} has no item checkpoints; failing instead of replaying provider calls`
+      `[BATCH] Stale batch ${batch.id} has no item checkpoints; failing instead of replaying provider calls`,
     );
     failBatch(
       batch.id,
-      "Cannot safely recover stale batch because item checkpoints are unavailable; create a new batch to retry intentionally."
+      "Cannot safely recover stale batch because item checkpoints are unavailable; create a new batch to retry intentionally.",
     );
     return;
   }
@@ -190,7 +190,7 @@ function resolveBatchApiKeyValue(batch: Pick<BatchRecord, "apiKeyId">, apiKeyRow
 
 export function parseBatchItems(
   content: Buffer,
-  batchEndpoint: SupportedBatchEndpoint
+  batchEndpoint: SupportedBatchEndpoint,
 ): { items: BatchRequestItem[]; error: null } | { items: null; error: string } {
   const lines = content
     .toString()
@@ -352,7 +352,7 @@ const HEADERS_CACHE_TTL_MS = 60_000;
 async function processBatchItems(batch: BatchRecord, items: BatchRequestItem[]): Promise<void> {
   const state = createBatchState(batch);
   const checkpoints = new Map<number, BatchItemCheckpoint>(
-    listBatchItemCheckpoints(batch.id).map((checkpoint) => [checkpoint.lineNumber, checkpoint])
+    listBatchItemCheckpoints(batch.id).map((checkpoint) => [checkpoint.lineNumber, checkpoint]),
   );
 
   const apiKey = await resolveApiKey(batch);
@@ -423,14 +423,14 @@ function applyRecoveredCheckpoint(
   batchId: string,
   item: BatchRequestItem,
   checkpoint: BatchItemCheckpoint,
-  state: ReturnType<typeof createBatchState>
+  state: ReturnType<typeof createBatchState>,
 ): boolean {
   if (checkpoint.status === "completed" && checkpoint.result) {
     state.results.push(checkpoint.result);
     applyItemResult(
       state,
       checkpoint.result.response?.status_code ?? 500,
-      checkpoint.result.response?.body
+      checkpoint.result.response?.body,
     );
     return true;
   }
@@ -493,7 +493,7 @@ async function processSingleItemWithRetry(item: BatchRequestItem, apiKey: string
       // Bail if we've been retrying for longer than the allowed window
       if (Date.now() - retryStartedAt >= MAX_RETRY_DURATION_MS) {
         console.warn(
-          `[BATCH] Item ${item.customId ?? "(no id)"} exceeded 24h retry window after ${attempt} attempts — giving up`
+          `[BATCH] Item ${item.customId ?? "(no id)"} exceeded 24h retry window after ${attempt} attempts — giving up`,
         );
         return response;
       }
@@ -596,7 +596,7 @@ export function maybeThrottle(headers: Headers): number | null {
   } else {
     const tokenTotal = remainingTokens != null && cost != null ? remainingTokens + cost : null;
     console.log(
-      `[BATCH] Throttle check - Request pressure: ${remainingReq ?? "n/a"}/${limitReq ?? "n/a"}, Token pressure: ${remainingTokens ?? "n/a"}/${tokenTotal ?? "n/a"}`
+      `[BATCH] Throttle check - Request pressure: ${remainingReq ?? "n/a"}/${limitReq ?? "n/a"}, Token pressure: ${remainingTokens ?? "n/a"}/${tokenTotal ?? "n/a"}`,
     );
   }
 
@@ -605,7 +605,7 @@ export function maybeThrottle(headers: Headers): number | null {
   const delay = throttleDelay(pressureRemaining);
   if (delay !== null) {
     console.log(
-      `[BATCH] Throttling next request with delay of ${Math.round(delay)}ms (pressure remaining: ${(pressureRemaining * 100).toFixed(2)}%)`
+      `[BATCH] Throttling next request with delay of ${Math.round(delay)}ms (pressure remaining: ${(pressureRemaining * 100).toFixed(2)}%)`,
     );
   }
   return delay;
@@ -698,7 +698,7 @@ function maybePersistProgress(batchId: string, state: any): void {
 async function finalizeBatch(
   batchId: string,
   results: any[],
-  itemsWithErrors: any[]
+  itemsWithErrors: any[],
 ): Promise<void> {
   const current = getBatch(batchId);
 
@@ -712,12 +712,12 @@ async function finalizeBatch(
     (r) =>
       typeof r.response?.status_code === "number" &&
       r.response.status_code < 400 &&
-      !r.response.body?.error
+      !r.response.body?.error,
   );
   const failuresFromResults = results.filter(
     (r) =>
       (typeof r.response?.status_code === "number" && r.response.status_code >= 400) ||
-      r.response?.body?.error
+      r.response?.body?.error,
   );
   const processingErrors = itemsWithErrors || [];
 
@@ -802,7 +802,7 @@ function markFinalizing(batchId: string): void {
 function completeBatch(
   batchId: string,
   outputFileId: string | null,
-  errorFileId: string | null
+  errorFileId: string | null,
 ): void {
   updateBatch(batchId, {
     status: "completed",
@@ -843,7 +843,7 @@ function createErrorFile(
   batchId: string,
   current: any,
   results: any[],
-  itemsWithErrors: any[]
+  itemsWithErrors: any[],
 ): string | null {
   const failures = results.filter((r) => r.response.status_code >= 400 || r.response.body?.error);
 

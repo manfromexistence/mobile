@@ -160,7 +160,7 @@ async function collectProviderModelIds(providerId: string): Promise<string[]> {
  */
 async function expandWildcardSpec(
   spec: ProviderWildcardSpec,
-  comboName: string
+  comboName: string,
 ): Promise<unknown[] | null> {
   const modelIds = await collectProviderModelIds(spec.providerId);
   if (modelIds.length === 0) return null;
@@ -247,7 +247,7 @@ export async function expandProviderWildcardsInCombo(combo: ComboLike): Promise<
  * wildcard entries in referenced sub-combos are also materialized.
  */
 export async function expandProviderWildcardsInCollection(
-  combos: ComboLike[]
+  combos: ComboLike[],
 ): Promise<ComboLike[]> {
   return Promise.all(combos.map((c) => expandProviderWildcardsInCombo(c)));
 }

@@ -56,8 +56,9 @@ test("autostart.isAutostartEnabled retorna boolean", async () => {
 
 test("autostart.enable registers Linux autostart (systemd and/or desktop)", async () => {
   if (process.platform !== "linux") return;
-  const { enable, isAutostartEnabled, disable, getAutostartStatus } =
-    await import("../../bin/cli/tray/autostart.mjs");
+  const { enable, isAutostartEnabled, disable, getAutostartStatus } = await import(
+    "../../bin/cli/tray/autostart.mjs"
+  );
   const ok = enable();
   assert.equal(typeof ok, "boolean");
   if (ok) {
@@ -65,7 +66,7 @@ test("autostart.enable registers Linux autostart (systemd and/or desktop)", asyn
     const status = getAutostartStatus();
     assert.ok(
       status.mechanism === "systemd-user" || status.mechanism === "xdg-desktop",
-      "expected systemd-user or xdg-desktop mechanism"
+      "expected systemd-user or xdg-desktop mechanism",
     );
   }
   disable();

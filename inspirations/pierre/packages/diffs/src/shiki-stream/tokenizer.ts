@@ -1,9 +1,6 @@
-import type { GrammarState, ThemedToken } from 'shiki/core';
+import type { GrammarState, ThemedToken } from "shiki/core";
 
-import type {
-  ShikiStreamTokenizerEnqueueResult,
-  ShikiStreamTokenizerOptions,
-} from './types';
+import type { ShikiStreamTokenizerEnqueueResult, ShikiStreamTokenizerOptions } from "./types";
 
 export class ShikiStreamTokenizer {
   public readonly options: ShikiStreamTokenizerOptions;
@@ -11,7 +8,7 @@ export class ShikiStreamTokenizer {
   public tokensStable: ThemedToken[] = [];
   public tokensUnstable: ThemedToken[] = [];
 
-  public lastUnstableCodeChunk: string = '';
+  public lastUnstableCodeChunk: string = "";
   public lastStableGrammarState: GrammarState | undefined;
 
   constructor(options: ShikiStreamTokenizerOptions) {
@@ -23,7 +20,7 @@ export class ShikiStreamTokenizer {
    */
   // oxlint-disable-next-line typescript/require-await
   async enqueue(chunk: string): Promise<ShikiStreamTokenizerEnqueueResult> {
-    const chunkLines = (this.lastUnstableCodeChunk + chunk).split('\n');
+    const chunkLines = (this.lastUnstableCodeChunk + chunk).split("\n");
 
     const stable: ThemedToken[] = [];
     let unstable: ThemedToken[] = [];
@@ -37,7 +34,7 @@ export class ShikiStreamTokenizer {
         grammarState: this.lastStableGrammarState,
       });
       const tokens = result.tokens[0]; // only one line
-      if (!isLastLine) tokens.push({ content: '\n', offset: 0 });
+      if (!isLastLine) tokens.push({ content: "\n", offset: 0 });
 
       if (!isLastLine) {
         this.lastStableGrammarState = result.grammarState;
@@ -61,7 +58,7 @@ export class ShikiStreamTokenizer {
   close(): { stable: ThemedToken[] } {
     const stable = this.tokensUnstable;
     this.tokensUnstable = [];
-    this.lastUnstableCodeChunk = '';
+    this.lastUnstableCodeChunk = "";
     this.lastStableGrammarState = undefined;
     return {
       stable,
@@ -71,7 +68,7 @@ export class ShikiStreamTokenizer {
   clear(): void {
     this.tokensStable = [];
     this.tokensUnstable = [];
-    this.lastUnstableCodeChunk = '';
+    this.lastUnstableCodeChunk = "";
     this.lastStableGrammarState = undefined;
   }
 

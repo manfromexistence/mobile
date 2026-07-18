@@ -42,7 +42,7 @@ function betaTokens(headers: Record<string, string>): string[] {
 test("#3974 mergeClientAnthropicBeta appends an allowlisted client beta once, preserving base order", () => {
   const out = mergeClientAnthropicBeta(
     "claude-code-20250219,oauth-2025-04-20",
-    `oauth-2025-04-20,${TOOL_SEARCH}`
+    `oauth-2025-04-20,${TOOL_SEARCH}`,
   );
   const tokens = out.split(",");
   assert.deepEqual(tokens.slice(0, 2), ["claude-code-20250219", "oauth-2025-04-20"]);
@@ -61,7 +61,7 @@ test("#3974 selectBetaFlags + merge preserves the client tool-search beta", () =
   const clientBeta = `claude-code-20250219,oauth-2025-04-20,${TOOL_SEARCH}`;
   const out = mergeClientAnthropicBeta(
     selectBetaFlags(fullAgentBody("claude-opus-4-8"), null, clientBeta),
-    clientBeta
+    clientBeta,
   );
   assert.ok(out.split(",").includes(TOOL_SEARCH));
 });
@@ -70,12 +70,12 @@ test("#3974 merge does not force interleaved-thinking the client omitted (guards
   const clientBeta = `oauth-2025-04-20,${TOOL_SEARCH}`;
   const out = mergeClientAnthropicBeta(
     selectBetaFlags(fullAgentBody("claude-opus-4-8"), null, clientBeta),
-    clientBeta
+    clientBeta,
   );
   assert.ok(out.split(",").includes(TOOL_SEARCH));
   assert.ok(
     !out.split(",").includes("interleaved-thinking-2025-05-14"),
-    "must NOT force interleaved-thinking when the client did not request it"
+    "must NOT force interleaved-thinking when the client did not request it",
   );
 });
 

@@ -80,7 +80,7 @@ test("POST /model-combo-mappings returns 400 for empty pattern", async () => {
     makeRequest("http://localhost/api/model-combo-mappings", {
       method: "POST",
       body: { pattern: "", comboId: "combo-1" },
-    })
+    }),
   );
   assert.equal(res.status, 400);
   const body = (await res.json()) as any;
@@ -93,7 +93,7 @@ test("POST /model-combo-mappings returns 400 for missing comboId", async () => {
     makeRequest("http://localhost/api/model-combo-mappings", {
       method: "POST",
       body: { pattern: "gpt-*" },
-    })
+    }),
   );
   assert.equal(res.status, 400);
 });
@@ -104,7 +104,7 @@ test("POST /model-combo-mappings creates a mapping and response has no error fie
     makeRequest("http://localhost/api/model-combo-mappings", {
       method: "POST",
       body: { pattern: "gpt-*", comboId: combo.id },
-    })
+    }),
   );
   assert.equal(res.status, 201);
   const body = (await res.json()) as any;
@@ -117,7 +117,7 @@ test("POST /model-combo-mappings creates a mapping and response has no error fie
 test("GET /model-combo-mappings/[id] returns 404 for non-existent id", async () => {
   const res = await mappingsIdRoute.GET(
     makeRequest("http://localhost/api/model-combo-mappings/nonexistent"),
-    { params: Promise.resolve({ id: "nonexistent" }) }
+    { params: Promise.resolve({ id: "nonexistent" }) },
   );
   assert.equal(res.status, 404);
   const body = (await res.json()) as any;
@@ -128,7 +128,7 @@ test("GET /model-combo-mappings/[id] returns 404 for non-existent id", async () 
 test("GET /model-combo-mappings/[id] error response never leaks internal details", async () => {
   const res = await mappingsIdRoute.GET(
     makeRequest("http://localhost/api/model-combo-mappings/some-id"),
-    { params: Promise.resolve({ id: "some-id" }) }
+    { params: Promise.resolve({ id: "some-id" }) },
   );
   const body = (await res.json()) as any;
   if (res.status >= 500) {
@@ -141,7 +141,7 @@ test("GET /model-combo-mappings/[id] error response never leaks internal details
 test("DELETE /model-combo-mappings/[id] returns 404 for non-existent mapping", async () => {
   const res = await mappingsIdRoute.DELETE(
     makeRequest("http://localhost/api/model-combo-mappings/nonexistent", { method: "DELETE" }),
-    { params: Promise.resolve({ id: "nonexistent" }) }
+    { params: Promise.resolve({ id: "nonexistent" }) },
   );
   assert.equal(res.status, 404);
   const body = (await res.json()) as any;
@@ -155,7 +155,7 @@ test("PUT /model-combo-mappings/[id] returns 404 for non-existent mapping", asyn
       method: "PUT",
       body: { pattern: "new-*" },
     }),
-    { params: Promise.resolve({ id: "nonexistent" }) }
+    { params: Promise.resolve({ id: "nonexistent" }) },
   );
   assert.equal(res.status, 404);
   const body = (await res.json()) as any;
@@ -176,7 +176,7 @@ test("hashSyncToken is deterministic — same input always produces same output"
   assert.equal(
     syncTokens.hashSyncToken(token),
     syncTokens.hashSyncToken(token),
-    "hashing the same token twice must yield the same result"
+    "hashing the same token twice must yield the same result",
   );
 });
 
@@ -186,7 +186,7 @@ test("hashSyncToken produces different hashes for different tokens", () => {
   assert.notEqual(
     syncTokens.hashSyncToken(a),
     syncTokens.hashSyncToken(b),
-    "different tokens must produce different hashes"
+    "different tokens must produce different hashes",
   );
 });
 
@@ -194,7 +194,7 @@ test("generatePlaintextSyncToken starts with osync_ prefix", () => {
   const token = syncTokens.generatePlaintextSyncToken();
   assert.ok(
     token.startsWith("osync_"),
-    `token must start with 'osync_', got: ${token.slice(0, 10)}`
+    `token must start with 'osync_', got: ${token.slice(0, 10)}`,
   );
 });
 
@@ -237,7 +237,7 @@ test("buildErrorBody never exposes stack traces in its message", async () => {
   const { buildErrorBody } = await import("../../open-sse/utils/error.ts");
   const body = buildErrorBody(
     500,
-    "Internal error\n    at /opt/app/src/server.ts:99:7\n    at next (internal)"
+    "Internal error\n    at /opt/app/src/server.ts:99:7\n    at next (internal)",
   );
   assert.equal(body.error.message, "Internal error");
   assert.ok(!body.error.message.includes("at /opt"));
@@ -266,7 +266,7 @@ test("sanitizeUpstreamDetails — sanitizes string values (absolute path)", asyn
   const out = sanitizeUpstreamDetails(input) as any;
   assert.ok(
     !out.error.message.includes("/srv/app/src/lib/db.ts"),
-    "absolute path must be stripped"
+    "absolute path must be stripped",
   );
   assert.ok(out.error.message.includes("<path>"), "path placeholder must be present");
 });
@@ -316,7 +316,7 @@ test("buildErrorBody — upstream details with stack key are stripped", async ()
   assert.ok("upstream_details" in body, "upstream_details must be present");
   assert.ok(
     !("stack" in (body.upstream_details as any)),
-    "stack must be stripped from upstream_details"
+    "stack must be stripped from upstream_details",
   );
   assert.equal((body.upstream_details as any).code, "internal");
 });
@@ -331,7 +331,7 @@ test("createErrorResult — response body includes upstream_details when provide
     null,
     "context_length_exceeded",
     "invalid_request_error",
-    { error: { message: "context_length_exceeded" } }
+    { error: { message: "context_length_exceeded" } },
   );
   const body = (await result.response.clone().json()) as any;
   assert.ok("upstream_details" in body, "upstream_details must be in response body");
@@ -375,7 +375,7 @@ test("regression: upstream_details never contains stack trace text", async () =>
   const serialized = JSON.stringify(body);
   assert.ok(
     !serialized.includes("at /abs/path.ts"),
-    "stack trace path must not appear in response body"
+    "stack trace path must not appear in response body",
   );
   assert.ok(!("stack" in (body.upstream_details || {})), "stack key must not be present");
 });

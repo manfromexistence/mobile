@@ -1,9 +1,9 @@
-import { and, asc, eq, inArray } from "drizzle-orm"
-import { Effect, Layer } from "effect"
-import * as Context from "effect/Context"
-import { DatabaseError, DrizzleClient } from "../database"
-import { providerStat } from "../database/schema"
-import { RETIRED_STAT_PROVIDERS } from "./model-normalization"
+import { and, asc, eq, inArray } from "drizzle-orm";
+import { Effect, Layer } from "effect";
+import * as Context from "effect/Context";
+import { DatabaseError, DrizzleClient } from "../database";
+import { providerStat } from "../database/schema";
+import { RETIRED_STAT_PROVIDERS } from "./model-normalization";
 import {
   chunks,
   collapseRows,
@@ -16,31 +16,33 @@ import {
   toStatBaseRow,
   UPSERT_CHUNK_SIZE,
   type StatBaseAggregate,
-} from "./stat"
+} from "./stat";
 
-export type ProviderStatRow = typeof providerStat.$inferInsert
-export type ProviderStatAggregate = StatBaseAggregate & { provider: string }
+export type ProviderStatRow = typeof providerStat.$inferInsert;
+export type ProviderStatAggregate = StatBaseAggregate & { provider: string };
 export type ProviderStatMetric = {
-  periodKey: string
-  updatedAt: Date
-  tier: string
-  provider: string
-  totalTokens: number
-}
+  periodKey: string;
+  updatedAt: Date;
+  tier: string;
+  provider: string;
+  totalTokens: number;
+};
 
 export declare namespace ProviderStatRepo {
   export interface Service {
-    readonly listDaily: () => Effect.Effect<ProviderStatMetric[], DatabaseError>
+    readonly listDaily: () => Effect.Effect<ProviderStatMetric[], DatabaseError>;
     readonly listByPeriod: (opts: {
-      readonly grain: string
-      readonly periodKey: string
-      readonly dataset?: string
-      readonly tier?: string
-      readonly client?: string
-      readonly source?: string
-    }) => Effect.Effect<ProviderStatRow[], DatabaseError>
-    readonly upsert: (rows: ProviderStatRow[]) => Effect.Effect<void, DatabaseError>
-    readonly deleteRetiredDimensions: (rows: ProviderStatRow[]) => Effect.Effect<void, DatabaseError>
+      readonly grain: string;
+      readonly periodKey: string;
+      readonly dataset?: string;
+      readonly tier?: string;
+      readonly client?: string;
+      readonly source?: string;
+    }) => Effect.Effect<ProviderStatRow[], DatabaseError>;
+    readonly upsert: (rows: ProviderStatRow[]) => Effect.Effect<void, DatabaseError>;
+    readonly deleteRetiredDimensions: (
+      rows: ProviderStatRow[],
+    ) => Effect.Effect<void, DatabaseError>;
   }
 }
 
@@ -50,7 +52,7 @@ export class ProviderStatRepo extends Context.Service<ProviderStatRepo, Provider
   static readonly layer: Layer.Layer<ProviderStatRepo, never, DrizzleClient> = Layer.effect(
     ProviderStatRepo,
     Effect.gen(function* () {
-      const db = yield* DrizzleClient
+      const db = yield* DrizzleClient;
 
       const listDaily = Effect.fn("ProviderStatRepo.listDaily")(function* () {
         return yield* Effect.tryPromise({
@@ -74,16 +76,16 @@ export class ProviderStatRepo extends Context.Service<ProviderStatRepo, Provider
               )
               .orderBy(asc(providerStat.period_key)),
           catch: (cause) => DatabaseError.make({ cause }),
-        })
-      })
+        });
+      });
 
       const listByPeriod = Effect.fn("ProviderStatRepo.listByPeriod")(function* (opts: {
-        readonly grain: string
-        readonly periodKey: string
-        readonly dataset?: string
-        readonly tier?: string
-        readonly client?: string
-        readonly source?: string
+        readonly grain: string;
+        readonly periodKey: string;
+        readonly dataset?: string;
+        readonly tier?: string;
+        readonly client?: string;
+        readonly source?: string;
       }) {
         return yield* Effect.tryPromise({
           try: () =>
@@ -101,8 +103,8 @@ export class ProviderStatRepo extends Context.Service<ProviderStatRepo, Provider
                 ),
               ),
           catch: (cause) => DatabaseError.make({ cause }),
-        })
-      })
+        });
+      });
 
       const upsert = Effect.fn("ProviderStatRepo.upsert")(function* (rows: ProviderStatRow[]) {
         yield* Effect.forEach(
@@ -111,17 +113,17 @@ export class ProviderStatRepo extends Context.Service<ProviderStatRepo, Provider
             Effect.tryPromise({
               try: async () => {
                 try {
-                  return await upsertProviderChunk(chunk, true)
+                  return await upsertProviderChunk(chunk, true);
                 } catch (cause) {
-                  if (!isMissingUniqueUsersColumn(cause)) throw cause
-                  return upsertProviderChunk(chunk, false)
+                  if (!isMissingUniqueUsersColumn(cause)) throw cause;
+                  return upsertProviderChunk(chunk, false);
                 }
               },
               catch: (cause) => DatabaseError.make({ cause }),
             }),
           { discard: true },
-        )
-      })
+        );
+      });
 
       function upsertProviderChunk(chunk: ProviderStatRow[], includeUniqueUsers: boolean) {
         return db
@@ -158,36 +160,36 @@ export class ProviderStatRepo extends Context.Service<ProviderStatRepo, Provider
               rank_by_sessions: inserted("rank_by_sessions"),
               rank_by_cost: inserted("rank_by_cost"),
             },
-          })
+          });
       }
 
-      const deleteRetiredDimensions = Effect.fn("ProviderStatRepo.deleteRetiredDimensions")(function* (
-        rows: ProviderStatRow[],
-      ) {
-        const scope = statRowScope(rows)
-        if (!scope) return
+      const deleteRetiredDimensions = Effect.fn("ProviderStatRepo.deleteRetiredDimensions")(
+        function* (rows: ProviderStatRow[]) {
+          const scope = statRowScope(rows);
+          if (!scope) return;
 
-        yield* Effect.tryPromise({
-          try: () =>
-            db
-              .delete(providerStat)
-              .where(
-                and(
-                  inArray(providerStat.grain, scope.grains),
-                  inArray(providerStat.period_key, scope.periodKeys),
-                  inArray(providerStat.dataset, scope.datasets),
-                  inArray(providerStat.client, scope.clients),
-                  inArray(providerStat.source, scope.sources),
-                  inArray(providerStat.provider, RETIRED_STAT_PROVIDERS),
+          yield* Effect.tryPromise({
+            try: () =>
+              db
+                .delete(providerStat)
+                .where(
+                  and(
+                    inArray(providerStat.grain, scope.grains),
+                    inArray(providerStat.period_key, scope.periodKeys),
+                    inArray(providerStat.dataset, scope.datasets),
+                    inArray(providerStat.client, scope.clients),
+                    inArray(providerStat.source, scope.sources),
+                    inArray(providerStat.provider, RETIRED_STAT_PROVIDERS),
+                  ),
                 ),
-              ),
-          catch: (cause) => DatabaseError.make({ cause }),
-        })
-      })
+            catch: (cause) => DatabaseError.make({ cause }),
+          });
+        },
+      );
 
-      return ProviderStatRepo.of({ listDaily, listByPeriod, upsert, deleteRetiredDimensions })
+      return ProviderStatRepo.of({ listDaily, listByPeriod, upsert, deleteRetiredDimensions });
     }),
-  )
+  );
 }
 
 export function rowsFromAggregates(aggregates: ProviderStatAggregate[]) {
@@ -200,16 +202,16 @@ export function rowsFromAggregates(aggregates: ProviderStatAggregate[]) {
       collapseRows(aggregates.filter((item) => item.grain === "day").map(toRow), dimensionKey),
       dimensionKey,
     ),
-  ])
+  ]);
 }
 
 function toRow(data: ProviderStatAggregate): ProviderStatRow {
   return {
     ...toStatBaseRow(data),
     provider: data.provider,
-  }
+  };
 }
 
 function dimensionKey(row: ProviderStatRow) {
-  return row.provider
+  return row.provider;
 }

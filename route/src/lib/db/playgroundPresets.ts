@@ -69,9 +69,9 @@ export function listPlaygroundPresets(): PlaygroundPresetListItem[] {
  */
 export function getPlaygroundPreset(id: string): PlaygroundPresetListItem | null {
   const db = getDbInstance();
-  const row = db
-    .prepare("SELECT * FROM playground_presets WHERE id = ? LIMIT 1")
-    .get(id) as PlaygroundPresetRow | undefined;
+  const row = db.prepare("SELECT * FROM playground_presets WHERE id = ? LIMIT 1").get(id) as
+    | PlaygroundPresetRow
+    | undefined;
   if (!row) return null;
   return rowToItem(row);
 }
@@ -93,7 +93,7 @@ export function createPlaygroundPreset(input: {
   const system = input.system ?? null;
 
   db.prepare(
-    "INSERT INTO playground_presets (id, name, endpoint, model, system, params_json) VALUES (?, ?, ?, ?, ?, ?)"
+    "INSERT INTO playground_presets (id, name, endpoint, model, system, params_json) VALUES (?, ?, ?, ?, ?, ?)",
   ).run(id, input.name, input.endpoint, input.model, system, params_json);
 
   const created = getPlaygroundPreset(id);
@@ -113,7 +113,7 @@ export function updatePlaygroundPreset(
     model: string;
     system: string | null;
     params: Record<string, unknown>;
-  }>
+  }>,
 ): PlaygroundPresetListItem | null {
   const db = getDbInstance();
 

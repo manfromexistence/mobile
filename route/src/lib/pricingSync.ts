@@ -262,7 +262,7 @@ export function saveSyncedPricing(data: PricingByProvider): void {
   const db = getDbInstance();
   const del = db.prepare("DELETE FROM key_value WHERE namespace = 'pricing_synced'");
   const insert = db.prepare(
-    "INSERT INTO key_value (namespace, key, value) VALUES ('pricing_synced', ?, ?)"
+    "INSERT INTO key_value (namespace, key, value) VALUES ('pricing_synced', ?, ?)",
   );
   const tx = db.transaction(() => {
     del.run();
@@ -322,11 +322,11 @@ function writePersistedSyncStatus(lastSync: string, modelCount: number): void {
   const db = getDbInstance();
   db.prepare(
     "INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?) " +
-      "ON CONFLICT(namespace, key) DO UPDATE SET value = excluded.value"
+      "ON CONFLICT(namespace, key) DO UPDATE SET value = excluded.value",
   ).run(
     SYNC_STATUS_NAMESPACE,
     SYNC_STATUS_KEY,
-    JSON.stringify({ lastSyncTime: lastSync, lastSyncModelCount: modelCount })
+    JSON.stringify({ lastSyncTime: lastSync, lastSyncModelCount: modelCount }),
   );
 }
 
@@ -344,10 +344,10 @@ export async function syncPricingFromSources(opts?: {
 
   // Validate sources
   const validSources = requestedSources.filter((s): s is SupportedSource =>
-    SUPPORTED_SOURCES.includes(s as SupportedSource)
+    SUPPORTED_SOURCES.includes(s as SupportedSource),
   );
   const invalidSources = requestedSources.filter(
-    (s) => !SUPPORTED_SOURCES.includes(s as SupportedSource)
+    (s) => !SUPPORTED_SOURCES.includes(s as SupportedSource),
   );
 
   if (validSources.length === 0) {
@@ -378,7 +378,7 @@ export async function syncPricingFromSources(opts?: {
 
     const modelCount = Object.values(aggregated).reduce(
       (sum, models) => sum + Object.keys(models).length,
-      0
+      0,
     );
     const providerCount = Object.keys(aggregated).length;
 
@@ -431,7 +431,7 @@ export function startPeriodicSync(intervalMs?: number): void {
     .then((result) => {
       if (result.success) {
         console.log(
-          `[PRICING_SYNC] Initial sync complete: ${result.modelCount} models from ${result.providerCount} providers`
+          `[PRICING_SYNC] Initial sync complete: ${result.modelCount} models from ${result.providerCount} providers`,
         );
       }
     })
@@ -449,7 +449,7 @@ export function startPeriodicSync(intervalMs?: number): void {
       .catch((err) => {
         console.warn(
           "[PRICING_SYNC] Periodic sync error:",
-          err instanceof Error ? err.message : err
+          err instanceof Error ? err.message : err,
         );
       });
   }, interval);

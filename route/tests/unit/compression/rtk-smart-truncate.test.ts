@@ -12,7 +12,7 @@ describe("RTK smart truncate", () => {
 
   it("preserves head, tail and priority lines", () => {
     const text = Array.from({ length: 20 }, (_, index) =>
-      index === 10 ? "ERROR important failure" : `line ${index}`
+      index === 10 ? "ERROR important failure" : `line ${index}`,
     ).join("\n");
     const result = smartTruncate(text, {
       maxLines: 8,

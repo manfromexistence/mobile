@@ -148,7 +148,11 @@ function makeHitArgs(overrides: Record<string, unknown> = {}) {
   const debugCalls: unknown[][] = [];
   const args = {
     semanticCacheEnabled: true,
-    body: { model: "gpt-4o", messages: [{ role: "user", content: "cached query" }], temperature: 0 },
+    body: {
+      model: "gpt-4o",
+      messages: [{ role: "user", content: "cached query" }],
+      temperature: 0,
+    },
     clientRawRequest: { headers: {} },
     model: "gpt-4o",
     provider: "openai",
@@ -182,7 +186,7 @@ function seedHit(args: ReturnType<typeof makeHitArgs>["args"], response: unknown
     args.body.messages ?? (args.body as Record<string, unknown>).input,
     args.body.temperature,
     (args.body as Record<string, unknown>).top_p,
-    args.apiKeyId ?? undefined
+    args.apiKeyId ?? undefined,
   );
   setCachedResponse(signature, args.model, response);
   return signature;
@@ -198,7 +202,11 @@ test("checkSemanticCache returns a non-streaming JSON HIT with cache headers + l
     usage: { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 },
   };
   const { args, persistCalls, convertedCalls, debugCalls } = makeHitArgs({
-    body: { model: "gpt-4o", messages: [{ role: "user", content: "hit query one" }], temperature: 0 },
+    body: {
+      model: "gpt-4o",
+      messages: [{ role: "user", content: "hit query one" }],
+      temperature: 0,
+    },
     stream: false,
   });
   seedHit(args, cached);
@@ -212,12 +220,12 @@ test("checkSemanticCache returns a non-streaming JSON HIT with cache headers + l
   assert.equal(
     res.headers.get(OMNIROUTE_RESPONSE_HEADERS.cacheHit),
     "true",
-    "cacheHit meta header is true"
+    "cacheHit meta header is true",
   );
   assert.equal(
     res.headers.get("Content-Type"),
     "application/json",
-    "non-streaming HIT -> application/json"
+    "non-streaming HIT -> application/json",
   );
   const bodyText = await res.text();
   assert.equal(bodyText, JSON.stringify(cached), "non-streaming HIT body is the cached JSON");
@@ -251,7 +259,11 @@ test("checkSemanticCache returns a streaming SSE HIT (text/event-stream) when st
     usage: { prompt_tokens: 3, completion_tokens: 4, total_tokens: 7 },
   };
   const { args, persistCalls } = makeHitArgs({
-    body: { model: "gpt-4o", messages: [{ role: "user", content: "hit query stream" }], temperature: 0 },
+    body: {
+      model: "gpt-4o",
+      messages: [{ role: "user", content: "hit query stream" }],
+      temperature: 0,
+    },
     stream: true,
   });
   seedHit(args, cached);
@@ -264,7 +276,7 @@ test("checkSemanticCache returns a streaming SSE HIT (text/event-stream) when st
   assert.equal(
     res.headers.get("Content-Type"),
     "text/event-stream",
-    "streaming HIT -> text/event-stream"
+    "streaming HIT -> text/event-stream",
   );
   assert.equal(res.headers.get(OMNIROUTE_RESPONSE_HEADERS.cache), "HIT");
   const bodyText = await res.text();
@@ -279,7 +291,11 @@ test("checkSemanticCache HITs even when the cached body has no usage (cost falls
   const cached = {
     id: "chatcmpl-cached-no-usage",
     choices: [
-      { index: 0, message: { role: "assistant", content: "no-usage answer" }, finish_reason: "stop" },
+      {
+        index: 0,
+        message: { role: "assistant", content: "no-usage answer" },
+        finish_reason: "stop",
+      },
     ],
   };
   const { args, persistCalls } = makeHitArgs({
@@ -302,7 +318,7 @@ test("checkSemanticCache HITs even when the cached body has no usage (cost falls
   assert.equal(
     res.headers.get(OMNIROUTE_RESPONSE_HEADERS.responseCost),
     "0.0000000000",
-    "no usage -> zero responseCost header"
+    "no usage -> zero responseCost header",
   );
   assert.equal(persistCalls.length, 1);
   assert.equal(persistCalls[0].tokens, undefined, "no usage -> persisted tokens is undefined");
@@ -336,12 +352,12 @@ test("checkSemanticCache HIT bills 0 incremental cost and reports the original c
   // The original (would-have-been) cost — computed with the SAME calculator the handler
   // uses, against the same fresh DATA_DIR, so the values match deterministically.
   const expectedSaved = formatOmniRouteCost(
-    await calculateCost(args.provider, args.model, usage as Record<string, number>)
+    await calculateCost(args.provider, args.model, usage as Record<string, number>),
   );
   assert.notEqual(
     expectedSaved,
     "0.0000000000",
-    "sanity: gpt-4o must be priced for this regression to be meaningful"
+    "sanity: gpt-4o must be priced for this regression to be meaningful",
   );
 
   const result = await checkSemanticCache(args as Parameters<typeof checkSemanticCache>[0]);
@@ -353,13 +369,13 @@ test("checkSemanticCache HIT bills 0 incremental cost and reports the original c
   assert.equal(
     res.headers.get(OMNIROUTE_RESPONSE_HEADERS.responseCost),
     "0.0000000000",
-    "cache HIT must bill 0 incremental cost"
+    "cache HIT must bill 0 incremental cost",
   );
   // The avoided cost is surfaced for cache analytics.
   assert.equal(
     res.headers.get(OMNIROUTE_RESPONSE_HEADERS.costSaved),
     expectedSaved,
-    "X-OmniRoute-Cost-Saved reflects the original cost the cache avoided"
+    "X-OmniRoute-Cost-Saved reflects the original cost the cache avoided",
   );
 });
 

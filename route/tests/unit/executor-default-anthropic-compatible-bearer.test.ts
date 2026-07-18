@@ -29,29 +29,23 @@ const BASE_CREDS_OFFICIAL = {
 
 test("anthropic-compatible (third-party gateway): sends x-api-key AND Authorization: Bearer", () => {
   const executor = new DefaultExecutor("anthropic-compatible-thirdparty");
-  const headers = executor.buildHeaders(BASE_CREDS_THIRD_PARTY, true) as Record<
-    string,
-    string
-  >;
+  const headers = executor.buildHeaders(BASE_CREDS_THIRD_PARTY, true) as Record<string, string>;
   assert.equal(headers["x-api-key"], "k-third-party");
   assert.equal(
     headers["Authorization"],
     "Bearer k-third-party",
-    "third-party anthropic-compatible upstreams need the Bearer fallback too"
+    "third-party anthropic-compatible upstreams need the Bearer fallback too",
   );
 });
 
 test("anthropic-compatible (official api.anthropic.com): only x-api-key, no Bearer", () => {
   const executor = new DefaultExecutor("anthropic-compatible-official");
-  const headers = executor.buildHeaders(BASE_CREDS_OFFICIAL, true) as Record<
-    string,
-    string
-  >;
+  const headers = executor.buildHeaders(BASE_CREDS_OFFICIAL, true) as Record<string, string>;
   assert.equal(headers["x-api-key"], "k-official");
   assert.equal(
     headers["Authorization"],
     undefined,
-    "official anthropic upstream must NOT receive a Bearer header alongside x-api-key"
+    "official anthropic upstream must NOT receive a Bearer header alongside x-api-key",
   );
 });
 
@@ -61,7 +55,7 @@ test("anthropic-compatible (no baseUrl): treated as official, no Bearer", () => 
   const executor = new DefaultExecutor("anthropic-compatible-empty");
   const headers = executor.buildHeaders(
     { apiKey: "k-empty", providerSpecificData: {} } as Record<string, unknown>,
-    true
+    true,
   ) as Record<string, string>;
   assert.equal(headers["x-api-key"], "k-empty");
   assert.equal(headers["Authorization"], undefined);

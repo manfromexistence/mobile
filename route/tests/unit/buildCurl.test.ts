@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { buildCurl, escSq } =
-  await import("../../src/app/(dashboard)/dashboard/providers/utils/buildCurl.ts");
+const { buildCurl, escSq } = await import(
+  "../../src/app/(dashboard)/dashboard/providers/utils/buildCurl.ts"
+);
 
 test("buildCurl — generates correct cURL for chat completion", () => {
   const result = buildCurl({
@@ -25,7 +26,7 @@ test("buildCurl — generates correct cURL for chat completion", () => {
   assert.ok(result.includes("gpt-4o"), "should include model in body");
   assert.ok(
     result.includes("http://localhost:20128/api/v1/chat/completions"),
-    "should include endpoint"
+    "should include endpoint",
   );
 });
 

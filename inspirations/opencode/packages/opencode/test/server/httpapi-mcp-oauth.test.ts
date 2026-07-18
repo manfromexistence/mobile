@@ -1,20 +1,20 @@
-import { NodeHttpServer } from "@effect/platform-node"
-import { Session } from "@/session/session"
-import { describe, expect } from "bun:test"
-import { Effect, Layer } from "effect"
-import { HttpClient, HttpClientRequest, HttpRouter } from "effect/unstable/http"
-import { HttpApi, HttpApiBuilder } from "effect/unstable/httpapi"
-import { McpApi, McpPaths } from "../../src/server/routes/instance/httpapi/groups/mcp"
-import { Authorization } from "../../src/server/routes/instance/httpapi/middleware/authorization"
-import { InstanceContextMiddleware } from "../../src/server/routes/instance/httpapi/middleware/instance-context"
+import { NodeHttpServer } from "@effect/platform-node";
+import { Session } from "@/session/session";
+import { describe, expect } from "bun:test";
+import { Effect, Layer } from "effect";
+import { HttpClient, HttpClientRequest, HttpRouter } from "effect/unstable/http";
+import { HttpApi, HttpApiBuilder } from "effect/unstable/httpapi";
+import { McpApi, McpPaths } from "../../src/server/routes/instance/httpapi/groups/mcp";
+import { Authorization } from "../../src/server/routes/instance/httpapi/middleware/authorization";
+import { InstanceContextMiddleware } from "../../src/server/routes/instance/httpapi/middleware/instance-context";
 import {
   WorkspaceRouteContext,
   WorkspaceRoutingMiddleware,
-} from "../../src/server/routes/instance/httpapi/middleware/workspace-routing"
-import { testEffect } from "../lib/effect"
+} from "../../src/server/routes/instance/httpapi/middleware/workspace-routing";
+import { testEffect } from "../lib/effect";
 
-const TestHttpApi = HttpApi.make("opencode-instance").addHttpApi(McpApi)
-const fakeSession = Layer.mock(Session.Service)({})
+const TestHttpApi = HttpApi.make("opencode-instance").addHttpApi(McpApi);
+const fakeSession = Layer.mock(Session.Service)({});
 const testMcpHandlers = HttpApiBuilder.group(TestHttpApi, "mcp", (handlers) =>
   Effect.succeed(
     handlers
@@ -29,45 +29,57 @@ const testMcpHandlers = HttpApiBuilder.group(TestHttpApi, "mcp", (handlers) =>
       .handle("connect", () => Effect.die("unexpected MCP connect"))
       .handle("disconnect", () => Effect.die("unexpected MCP disconnect")),
   ),
-)
+);
 
 const passthroughAuthorization = Layer.succeed(
   Authorization,
   Authorization.of((effect) => effect),
-)
+);
 
 const passthroughInstanceContext = Layer.succeed(
   InstanceContextMiddleware,
   InstanceContextMiddleware.of((effect) => effect),
-)
+);
 
 const testWorkspaceRouting = Layer.succeed(
   WorkspaceRoutingMiddleware,
   WorkspaceRoutingMiddleware.of((effect) =>
-    effect.pipe(Effect.provideService(WorkspaceRouteContext, WorkspaceRouteContext.of({ directory: process.cwd() }))),
+    effect.pipe(
+      Effect.provideService(
+        WorkspaceRouteContext,
+        WorkspaceRouteContext.of({ directory: process.cwd() }),
+      ),
+    ),
   ),
-)
+);
 
 const it = testEffect(
   HttpRouter.serve(
     HttpApiBuilder.layer(TestHttpApi).pipe(
       Layer.provide(testMcpHandlers),
-      Layer.provide([passthroughAuthorization, passthroughInstanceContext, testWorkspaceRouting, fakeSession]),
+      Layer.provide([
+        passthroughAuthorization,
+        passthroughInstanceContext,
+        testWorkspaceRouting,
+        fakeSession,
+      ]),
     ),
     { disableListenLog: true, disableLogger: true },
   ).pipe(Layer.provideMerge(NodeHttpServer.layerTest)),
-)
+);
 
 describe("mcp HttpApi OAuth", () => {
   it.live("preserves oauth state when starting OAuth", () =>
     Effect.gen(function* () {
-      const response = yield* HttpClientRequest.post(McpPaths.auth.replace(":name", "demo")).pipe(HttpClient.execute)
+      const response = yield* HttpClientRequest.post(McpPaths.auth.replace(":name", "demo")).pipe(
+        HttpClient.execute,
+      );
 
-      expect(response.status).toBe(200)
+      expect(response.status).toBe(200);
       expect(yield* response.json).toEqual({
         authorizationUrl: "https://auth.example/start",
         oauthState: "state-123",
-      })
+      });
     }),
-  )
-})
+  );
+});

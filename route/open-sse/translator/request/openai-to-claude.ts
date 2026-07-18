@@ -26,7 +26,7 @@ function wantsCopilotSummarizedThinking(body: Record<string, unknown> | null | u
 
 function applyCopilotSummarizedThinkingDisplay(
   thinking: Record<string, unknown> | undefined,
-  body: Record<string, unknown> | null | undefined
+  body: Record<string, unknown> | null | undefined,
 ): Record<string, unknown> | undefined {
   if (!thinking || !wantsCopilotSummarizedThinking(body) || thinking.type === "disabled") {
     return thinking;
@@ -267,14 +267,14 @@ export function openaiToClaudeRequest(model, body, stream) {
     for (const msg of body.messages) {
       if (msg.role === "system" || msg.role === "developer") {
         systemParts.push(
-          typeof msg.content === "string" ? msg.content : normalizeContentToString(msg.content)
+          typeof msg.content === "string" ? msg.content : normalizeContentToString(msg.content),
         );
       }
     }
 
     // Filter out system/developer messages for separate processing
     const nonSystemMessages = body.messages.filter(
-      (m) => m.role !== "system" && m.role !== "developer"
+      (m) => m.role !== "system" && m.role !== "developer",
     );
 
     // Process messages with merging logic
@@ -295,7 +295,7 @@ export function openaiToClaudeRequest(model, body, stream) {
         msg,
         toolNameMap,
         disableToolPrefix,
-        thinkingEnabledForRequest
+        thinkingEnabledForRequest,
       );
       const hasToolUse = blocks.some((b) => b.type === "tool_use");
       const hasToolResult = blocks.some((b) => b.type === "tool_result");
@@ -430,11 +430,11 @@ export function openaiToClaudeRequest(model, body, stream) {
     if (fmt.type === "json_schema" && fmt.json_schema?.schema) {
       const schemaJson = JSON.stringify(fmt.json_schema.schema, null, 2);
       systemParts.push(
-        `You must respond with valid JSON that strictly follows this JSON schema:\n\`\`\`json\n${schemaJson}\n\`\`\`\nRespond ONLY with the JSON object, no other text.`
+        `You must respond with valid JSON that strictly follows this JSON schema:\n\`\`\`json\n${schemaJson}\n\`\`\`\nRespond ONLY with the JSON object, no other text.`,
       );
     } else if (fmt.type === "json_object") {
       systemParts.push(
-        "You must respond with valid JSON. Respond ONLY with a JSON object, no other text."
+        "You must respond with valid JSON. Respond ONLY with a JSON object, no other text.",
       );
     }
   }
@@ -489,7 +489,7 @@ function getContentBlocksFromMessage(
   msg,
   toolNameMap = new Map(),
   disableToolPrefix = false,
-  thinkingEnabledForRequest = false
+  thinkingEnabledForRequest = false,
 ) {
   const blocks = [];
 
@@ -674,7 +674,7 @@ function getContentBlocksFromMessage(
     // Drop reasoning_content silently when it is not required by the schema, mirroring
     // how other echo-only fields are dropped (see OPENAI_INCOMPATIBLE_ECHO_FIELDS).
     const hasThinkingBlock = blocks.some(
-      (b) => b.type === "thinking" || b.type === "redacted_thinking"
+      (b) => b.type === "thinking" || b.type === "redacted_thinking",
     );
     const hasToolUseBlock = blocks.some((b) => b.type === "tool_use");
     if (

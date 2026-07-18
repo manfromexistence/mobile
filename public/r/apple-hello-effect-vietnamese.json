@@ -4,9 +4,7 @@
   "title": "Apple Hello Effect - Vietnamese",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "SVG writing animation inspired by Apple’s Hello screen.",
-  "dependencies": [
-    "motion"
-  ],
+  "dependencies": ["motion"],
   "files": [
     {
       "path": "src/registry/components/apple-hello-effect/apple-hello-effect-vietnamese.tsx",
@@ -16,8 +14,6 @@
     }
   ],
   "docs": "https://chanhdai.com/components/apple-hello-effect",
-  "categories": [
-    "text-effects"
-  ],
+  "categories": ["text-effects"],
   "type": "registry:component"
 }

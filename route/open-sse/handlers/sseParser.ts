@@ -250,7 +250,7 @@ export function parseSSEToOpenAIResponse(rawSSE, fallbackModel) {
           existing.function = existing.function || {};
           existing.function.arguments = appendToolCallArgumentDelta(
             existing.function.arguments,
-            deltaArgs
+            deltaArgs,
           );
           accumulatedToolCalls.set(key, existing);
         }
@@ -708,7 +708,7 @@ export function parseSSEToResponsesOutput(rawSSE, fallbackModel) {
       const reasoningItem = ensureResponsesReasoningItem(
         outputItems,
         outputIndex,
-        toIdString(evt.item_id)
+        toIdString(evt.item_id),
       );
       const summary = Array.isArray(reasoningItem.summary) ? reasoningItem.summary : [];
       const firstPart =
@@ -723,7 +723,7 @@ export function parseSSEToResponsesOutput(rawSSE, fallbackModel) {
       const reasoningItem = ensureResponsesReasoningItem(
         outputItems,
         outputIndex,
-        toIdString(evt.item_id)
+        toIdString(evt.item_id),
       );
       const summary = Array.isArray(reasoningItem.summary) ? reasoningItem.summary : [];
       const firstPart =
@@ -740,7 +740,7 @@ export function parseSSEToResponsesOutput(rawSSE, fallbackModel) {
         outputIndex,
         toIdString(evt.item_id),
         "",
-        ""
+        "",
       );
       functionCallItem.arguments = `${toString(functionCallItem.arguments)}${toString(evt.delta)}`;
     }
@@ -751,7 +751,7 @@ export function parseSSEToResponsesOutput(rawSSE, fallbackModel) {
         outputIndex,
         toIdString(evt.item_id),
         "",
-        ""
+        "",
       );
       functionCallItem.arguments = toString(evt.arguments, toString(functionCallItem.arguments));
     }

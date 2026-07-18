@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Playground",
-  description: "Tune Dot Matrix loader props with live DialKit controls."
+  description: "Tune Dot Matrix loader props with live DialKit controls.",
 };
 
 interface PlaygroundPageProps {
@@ -19,13 +19,8 @@ export default async function PlaygroundPage({ searchParams }: PlaygroundPagePro
   const loaderOptions = loaderRegistry.map((loader) => ({
     slug: loader.slug,
     title: loader.title,
-    componentName: loader.componentName
+    componentName: loader.componentName,
   }));
 
-  return (
-    <PlaygroundClient
-      initialSlug={initialSlug}
-      loaders={loaderOptions}
-    />
-  );
+  return <PlaygroundClient initialSlug={initialSlug} loaders={loaderOptions} />;
 }

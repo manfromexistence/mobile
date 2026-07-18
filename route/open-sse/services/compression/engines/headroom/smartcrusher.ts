@@ -138,7 +138,7 @@ export type MessageLike = {
  */
 export function collectCompactableArrays(
   messages: MessageLike[],
-  minRows: number = DEFAULT_MIN_ROWS
+  minRows: number = DEFAULT_MIN_ROWS,
 ): Record<string, unknown>[][] {
   const out: Record<string, unknown>[][] = [];
   const pushIfCompactable = (jsonStr: string) => {
@@ -213,7 +213,7 @@ export function crushText(text: string, minRows: number = DEFAULT_MIN_ROWS): str
  */
 export function crushMessages(
   messages: MessageLike[],
-  minRows: number = DEFAULT_MIN_ROWS
+  minRows: number = DEFAULT_MIN_ROWS,
 ): { messages: MessageLike[]; changed: boolean } {
   let changed = false;
 

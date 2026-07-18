@@ -146,7 +146,7 @@ function loadI18nLocales() {
   const cfgPath = path.join(
     path.dirname(path.dirname(path.dirname(path.dirname(fileURLToPath(import.meta.url))))),
     "config",
-    "i18n.json"
+    "i18n.json",
   );
   try {
     return JSON.parse(fs.readFileSync(cfgPath, "utf8")).locales || [];
@@ -226,8 +226,8 @@ export async function runConfigLangListCommand(opts = {}) {
       JSON.stringify(
         locales.map((l) => ({ ...l, active: l.code === current })),
         null,
-        2
-      )
+        2,
+      ),
     );
     return 0;
   }
@@ -235,7 +235,7 @@ export async function runConfigLangListCommand(opts = {}) {
   for (const loc of locales) {
     const active = loc.code === current ? " \x1b[32m◀ active\x1b[0m" : "";
     console.log(
-      `  ${loc.flag}  ${loc.code.padEnd(8)} ${loc.english.padEnd(28)} ${loc.native}${active}`
+      `  ${loc.flag}  ${loc.code.padEnd(8)} ${loc.english.padEnd(28)} ${loc.native}${active}`,
     );
   }
   console.log("");

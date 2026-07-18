@@ -94,12 +94,12 @@ test("doctor fails when encrypted credentials exist without storage key", async 
         access_token TEXT,
         refresh_token TEXT,
         id_token TEXT
-      )`
+      )`,
     ).run();
     db.prepare("INSERT INTO provider_connections (id, provider, api_key) VALUES (?, ?, ?)").run(
       "conn-1",
       "openai",
-      "enc:v1:00112233445566778899aabbccddeeff:00:00112233445566778899aabbccddeeff"
+      "enc:v1:00112233445566778899aabbccddeeff:00:00112233445566778899aabbccddeeff",
     );
     db.close();
 

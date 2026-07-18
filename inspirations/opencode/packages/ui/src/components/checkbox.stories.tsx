@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { Icon } from "./icon"
-import * as mod from "./checkbox"
-import { create } from "../storybook/scaffold"
+import { Icon } from "./icon";
+import * as mod from "./checkbox";
+import { create } from "../storybook/scaffold";
 
 const docs = `### Overview
 Checkbox control for multi-select or agreement inputs.
@@ -25,9 +25,13 @@ Use in forms and multi-select lists.
 ### Theming/tokens
 - Uses \`data-component="checkbox"\` and related slots.
 
-`
+`;
 
-const story = create({ title: "UI/Checkbox", mod, args: { children: "Checkbox", defaultChecked: true } })
+const story = create({
+  title: "UI/Checkbox",
+  mod,
+  args: { children: "Checkbox", defaultChecked: true },
+});
 export default {
   title: "UI/Checkbox",
   id: "components-checkbox",
@@ -40,9 +44,9 @@ export default {
       },
     },
   },
-}
+};
 
-export const Basic = story.Basic
+export const Basic = story.Basic;
 
 export const States = {
   render: () => (
@@ -53,7 +57,7 @@ export const States = {
       <mod.Checkbox description="Helper text">With description</mod.Checkbox>
     </div>
   ),
-}
+};
 
 export const CustomIcon = {
   render: () => (
@@ -61,11 +65,11 @@ export const CustomIcon = {
       Custom icon
     </mod.Checkbox>
   ),
-}
+};
 
 export const HiddenLabel = {
   args: {
     children: "Hidden label",
     hideLabel: true,
   },
-}
+};

@@ -1,7 +1,7 @@
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core"
-import { ProjectTable } from "../project/sql"
-import { ProjectV2 } from "../project"
-import { WorkspaceV2 } from "../workspace"
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { ProjectTable } from "../project/sql";
+import { ProjectV2 } from "../project";
+import { WorkspaceV2 } from "../workspace";
 
 export const WorkspaceTable = sqliteTable("workspace", {
   id: text().$type<WorkspaceV2.ID>().primaryKey(),
@@ -17,4 +17,4 @@ export const WorkspaceTable = sqliteTable("workspace", {
   time_used: integer()
     .notNull()
     .$default(() => Date.now()),
-})
+});

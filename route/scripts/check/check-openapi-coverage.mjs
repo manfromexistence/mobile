@@ -52,7 +52,7 @@ const coverage = (covered / total) * 100;
 
 if (coverage >= THRESHOLD) {
   console.log(
-    `[openapi-coverage] PASS — ${coverage.toFixed(1)}% (${covered}/${total} routes documented)`
+    `[openapi-coverage] PASS — ${coverage.toFixed(1)}% (${covered}/${total} routes documented)`,
   );
   process.exit(0);
 } else {

@@ -83,7 +83,7 @@ export function getCodexResetTime(quota: CodexQuotaSnapshot): number | null {
  */
 export function getCodexDualWindowCooldownMs(
   quota: CodexQuotaSnapshot,
-  threshold = 0.95
+  threshold = 0.95,
 ): { cooldownMs: number; window: "7d" | "5h" | "none" } {
   const now = Date.now();
 

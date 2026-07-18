@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   type Context,
@@ -8,15 +8,13 @@ import {
   useCallback,
   useContext,
   useState,
-} from 'react';
+} from "react";
 
-import {
-  Virtualizer as VirtualizerClass,
-  type VirtualizerConfig,
-} from '../components/Virtualizer';
+import { Virtualizer as VirtualizerClass, type VirtualizerConfig } from "../components/Virtualizer";
 
-export const VirtualizerContext: Context<VirtualizerClass | undefined> =
-  createContext<VirtualizerClass | undefined>(undefined);
+export const VirtualizerContext: Context<VirtualizerClass | undefined> = createContext<
+  VirtualizerClass | undefined
+>(undefined);
 
 interface VirtualizerProps {
   children: ReactNode;
@@ -36,9 +34,7 @@ export function Virtualizer({
   contentStyle,
 }: VirtualizerProps): React.JSX.Element {
   const [instance] = useState(() => {
-    return typeof window !== 'undefined'
-      ? new VirtualizerClass(config)
-      : undefined;
+    return typeof window !== "undefined" ? new VirtualizerClass(config) : undefined;
   });
   const ref = useCallback(
     (node: HTMLElement | null) => {
@@ -48,7 +44,7 @@ export function Virtualizer({
         instance?.cleanUp();
       }
     },
-    [instance]
+    [instance],
   );
   return (
     <VirtualizerContext.Provider value={instance}>

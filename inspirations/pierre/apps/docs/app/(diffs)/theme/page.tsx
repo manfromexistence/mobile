@@ -1,14 +1,14 @@
-import '@/app/prose.css';
-import { preloadFile } from '@pierre/diffs/ssr';
+import "@/app/prose.css";
+import { preloadFile } from "@pierre/diffs/ssr";
 import {
   IconArrowUpRight,
   IconBrandCursor,
   IconBrandVsCode,
   IconBrandZed,
   IconThemes,
-} from '@pierre/icons';
-import type { Metadata } from 'next';
-import Link from 'next/link';
+} from "@pierre/icons";
+import type { Metadata } from "next";
+import Link from "next/link";
 
 import {
   THEMING_PACKAGE_JSON_EXAMPLE,
@@ -19,20 +19,19 @@ import {
   THEMING_REGISTER_THEME,
   THEMING_TOKEN_COLORS_EXAMPLE,
   THEMING_USE_IN_COMPONENT,
-} from '../docs/Theming/constants';
-import { ThemeDemo } from './ThemeDemo';
-import { ThemeLayout } from './ThemeLayout';
-import { HeadingAnchors } from '@/components/docs/HeadingAnchors';
-import { ProseWrapper } from '@/components/docs/ProseWrapper';
-import Footer from '@/components/Footer';
-import { PierreCompanySection } from '@/components/PierreCompanySection';
-import { Button } from '@/components/ui/button';
-import { renderMDX } from '@/lib/mdx';
+} from "../docs/Theming/constants";
+import { ThemeDemo } from "./ThemeDemo";
+import { ThemeLayout } from "./ThemeLayout";
+import { HeadingAnchors } from "@/components/docs/HeadingAnchors";
+import { ProseWrapper } from "@/components/docs/ProseWrapper";
+import Footer from "@/components/Footer";
+import { PierreCompanySection } from "@/components/PierreCompanySection";
+import { Button } from "@/components/ui/button";
+import { renderMDX } from "@/lib/mdx";
 
-const themeTitle =
-  'Pierre Themes — Themes for Visual Studio Code, Cursor, Zed, and Shiki.';
+const themeTitle = "Pierre Themes — Themes for Visual Studio Code, Cursor, Zed, and Shiki.";
 const themeDescription =
-  'Beautiful light and dark themes, generated from a shared color palette, for Visual Studio Code, Cursor, Zed, and Shiki.';
+  "Beautiful light and dark themes, generated from a shared color palette, for Visual Studio Code, Cursor, Zed, and Shiki.";
 
 export const metadata: Metadata = {
   title: themeTitle,
@@ -40,13 +39,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: themeTitle,
     description: themeDescription,
-    images: ['/theme/opengraph-image.png'],
+    images: ["/theme/opengraph-image.png"],
   },
   twitter: {
-    card: 'summary_large_image',
+    card: "summary_large_image",
     title: themeTitle,
     description: themeDescription,
-    images: ['/theme/opengraph-image.png'],
+    images: ["/theme/opengraph-image.png"],
   },
 };
 
@@ -94,7 +93,7 @@ export default async function ThemePage() {
   const useInComponent = { ...useInComponentPreload };
 
   const content = await renderMDX({
-    filePath: '(diffs)/docs/Theming/content.mdx',
+    filePath: "(diffs)/docs/Theming/content.mdx",
     scope: {
       projectStructure,
       paletteColors,
@@ -115,9 +114,8 @@ export default async function ThemePage() {
           Pierre themes
         </h1>
         <p className="text-md text-muted-foreground mb-2 max-w-[740px] text-pretty md:text-lg lg:text-xl">
-          Beautiful light and dark themes, generated from a shared color
-          palette, for Visual Studio Code, Cursor, Zed, and Shiki. Built first
-          for{' '}
+          Beautiful light and dark themes, generated from a shared color palette, for Visual Studio
+          Code, Cursor, Zed, and Shiki. Built first for{" "}
           <Link
             href="https://diffs.com"
             target="_blank"
@@ -125,7 +123,7 @@ export default async function ThemePage() {
           >
             <code>@pierre/diffs</code>
           </Link>
-          , and shared with the community by{' '}
+          , and shared with the community by{" "}
           <Link
             target="_blank"
             href="https://pierre.computer"

@@ -20,7 +20,7 @@ test("claude registry strips temperature/top_p/top_k for Opus 4.7+/Fable 5", () 
     for (const param of SAMPLING) {
       assert.ok(
         unsupported.includes(param),
-        `${model} must list ${param} as unsupported (400 on Anthropic otherwise)`
+        `${model} must list ${param} as unsupported (400 on Anthropic otherwise)`,
       );
     }
   }
@@ -45,7 +45,7 @@ test("pre-4.7 Claude models still accept sampling params (regression guard)", ()
     for (const param of SAMPLING) {
       assert.ok(
         !unsupported.includes(param),
-        `${provider}/${model} must NOT strip ${param} — it still accepts sampling`
+        `${provider}/${model} must NOT strip ${param} — it still accepts sampling`,
       );
     }
   }

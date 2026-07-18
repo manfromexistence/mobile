@@ -72,7 +72,7 @@ export function prependSystemInstruction(body: Body, prompt: string | null | und
 export function buildTransformBody(
   body: Body,
   prompt: string | null | undefined,
-  input: string
+  input: string,
 ): Body {
   const next: Body = { ...body };
   const sys = typeof prompt === "string" && prompt.trim() ? prompt.trim() : null;
@@ -131,7 +131,7 @@ export async function handlePipelineChat({
   }
   log.info(
     "PIPELINE",
-    `Combo "${comboName ?? ""}" | steps=${chain.length} [${chain.map((s) => s.model).join(" -> ")}]`
+    `Combo "${comboName ?? ""}" | steps=${chain.length} [${chain.map((s) => s.model).join(" -> ")}]`,
   );
 
   // Single-step pipeline: nothing to chain — run it directly (streams to client).
@@ -172,7 +172,10 @@ export async function handlePipelineChat({
       prevOutput = extractPanelText(json);
     } catch {
       log.warn("PIPELINE", `Step ${i + 1} (${step.model}) returned an unparseable body`);
-      return errorResponse(502, `Pipeline step ${i + 1} (${step.model}) returned an unparseable body`);
+      return errorResponse(
+        502,
+        `Pipeline step ${i + 1} (${step.model}) returned an unparseable body`,
+      );
     }
     if (!prevOutput.trim()) {
       log.warn("PIPELINE", `Step ${i + 1} (${step.model}) returned empty output`);
@@ -180,7 +183,7 @@ export async function handlePipelineChat({
     }
     log.info(
       "PIPELINE",
-      `Step ${i + 1} ${step.model} ok (${prevOutput.length} chars, ${Date.now() - t0}ms)`
+      `Step ${i + 1} ${step.model} ok (${prevOutput.length} chars, ${Date.now() - t0}ms)`,
     );
   }
 

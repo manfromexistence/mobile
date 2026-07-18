@@ -19,7 +19,7 @@ test("dev script raises the Node heap limit (matches the test suite's 8192)", ()
   assert.match(
     dev,
     /node\s+--max-old-space-size=8192\b/,
-    `dev script must launch node with --max-old-space-size=8192; got: ${dev}`
+    `dev script must launch node with --max-old-space-size=8192; got: ${dev}`,
   );
   // Guard ordering: the flag must precede the script path so node (not the script)
   // receives it.
@@ -28,6 +28,6 @@ test("dev script raises the Node heap limit (matches the test suite's 8192)", ()
   assert.ok(scriptIdx !== -1, "dev script must still launch run-next.mjs");
   assert.ok(
     flagIdx !== -1 && flagIdx < scriptIdx,
-    "the heap flag must come before run-next.mjs so node receives it"
+    "the heap flag must come before run-next.mjs so node receives it",
   );
 });

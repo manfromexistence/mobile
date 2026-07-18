@@ -96,7 +96,7 @@ export function getProviderMetrics(): ProviderMetricRow[] {
           ) as lastErrorStatus
         FROM call_logs c
         WHERE c.provider IS NOT NULL AND c.provider != '-'
-        GROUP BY c.provider`
+        GROUP BY c.provider`,
     )
     .all() as ProviderMetricRow[];
 }
@@ -118,7 +118,7 @@ export function getSearchProviderStats(): SearchProviderStatRow[] {
         FROM call_logs
         WHERE request_type = 'search'
         GROUP BY provider
-      `
+      `,
     )
     .all() as SearchProviderStatRow[];
 }
@@ -136,7 +136,7 @@ export function getRecentSearchLogs(): SearchRecentRow[] {
         WHERE request_type = 'search'
         ORDER BY timestamp DESC
         LIMIT 10
-      `
+      `,
     )
     .all() as SearchRecentRow[];
 }
@@ -160,7 +160,7 @@ export function getSearchAggregateStats(todayIso: string): SearchAggregateStats 
           AVG(CASE WHEN duration > 0 THEN duration END) as avg_duration,
           COALESCE(SUM(CASE WHEN duration > 0 AND duration < 5 THEN 1 ELSE 0 END), 0) as cached
          FROM call_logs
-         WHERE request_type = 'search'`
+         WHERE request_type = 'search'`,
     )
     .get(todayIso) as SearchAggregateStats | undefined;
   return row ?? { total: 0, today: 0, errors: 0, avg_duration: null, cached: 0 };
@@ -175,7 +175,7 @@ export function getSearchProviderCounts(): SearchProviderCountRow[] {
     .prepare(
       `SELECT provider, COUNT(*) as cnt
          FROM call_logs WHERE request_type = 'search'
-         GROUP BY provider ORDER BY cnt DESC`
+         GROUP BY provider ORDER BY cnt DESC`,
     )
     .all() as SearchProviderCountRow[];
 }
@@ -200,7 +200,7 @@ export interface FallbackStatsRow {
  */
 export function getFallbackStats(
   whereClause: string,
-  params: Record<string, string>
+  params: Record<string, string>,
 ): FallbackStatsRow {
   const db = getDbInstance();
   const row = db
@@ -228,7 +228,7 @@ export function getFallbackStats(
         ) as fallbacks
       FROM call_logs
       ${whereClause}
-    `
+    `,
     )
     .get(params) as FallbackStatsRow | undefined;
   return row ?? { total: 0, with_requested: 0, fallback_eligible: 0, fallbacks: 0 };

@@ -1,14 +1,14 @@
-import { hasNodeFlag, isDirectoryNode } from './internal-types';
-import type { NodeId } from './internal-types';
-import { PATH_STORE_NODE_FLAG_ROOT } from './internal-types';
-import type { PathStoreState } from './state';
+import { hasNodeFlag, isDirectoryNode } from "./internal-types";
+import type { NodeId } from "./internal-types";
+import { PATH_STORE_NODE_FLAG_ROOT } from "./internal-types";
+import type { PathStoreState } from "./state";
 
 // Fully known trees flatten single-child directory chains even before callers
 // explicitly expand the intermediate folders. That keeps rows like
 // `config/project/` visible on first render instead of requiring a priming click.
 export function getFlattenedChildDirectoryId(
   state: PathStoreState,
-  directoryNodeId: NodeId
+  directoryNodeId: NodeId,
 ): NodeId | null {
   if (state.snapshot.options.flattenEmptyDirectories !== true) {
     return null;
@@ -43,15 +43,12 @@ export function getFlattenedChildDirectoryId(
 
 export function getFlattenedTerminalDirectoryId(
   state: PathStoreState,
-  directoryNodeId: NodeId
+  directoryNodeId: NodeId,
 ): NodeId {
   let currentDirectoryId = directoryNodeId;
 
   while (true) {
-    const nextDirectoryId = getFlattenedChildDirectoryId(
-      state,
-      currentDirectoryId
-    );
+    const nextDirectoryId = getFlattenedChildDirectoryId(state, currentDirectoryId);
     if (nextDirectoryId == null) {
       return currentDirectoryId;
     }
@@ -62,16 +59,13 @@ export function getFlattenedTerminalDirectoryId(
 
 export function collectFlattenedDirectoryChainIds(
   state: PathStoreState,
-  directoryNodeId: NodeId
+  directoryNodeId: NodeId,
 ): NodeId[] {
   const chainIds = [directoryNodeId];
   let currentDirectoryId = directoryNodeId;
 
   while (true) {
-    const nextDirectoryId = getFlattenedChildDirectoryId(
-      state,
-      currentDirectoryId
-    );
+    const nextDirectoryId = getFlattenedChildDirectoryId(state, currentDirectoryId);
     if (nextDirectoryId == null) {
       return chainIds;
     }

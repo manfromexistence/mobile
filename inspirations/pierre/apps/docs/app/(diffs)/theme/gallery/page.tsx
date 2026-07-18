@@ -1,175 +1,174 @@
-import { parseDiffFromFile, resolveTheme } from '@pierre/diffs';
-import { themeToTreeStyles } from '@pierre/trees';
-import type { Metadata } from 'next';
-import { Suspense } from 'react';
+import { parseDiffFromFile, resolveTheme } from "@pierre/diffs";
+import { themeToTreeStyles } from "@pierre/trees";
+import type { Metadata } from "next";
+import { Suspense } from "react";
 
-import { ThemesGridClient } from './ThemesGridClient';
+import { ThemesGridClient } from "./ThemesGridClient";
 
 const SAMPLE_OLD_FILE = {
-  name: 'config.ts',
+  name: "config.ts",
   contents: [
     "import { readFile } from 'fs/promises';",
-    '',
-    'interface Config {',
-    '  port: number;',
-    '  host: string;',
-    '}',
-    '',
-    'export async function loadConfig(path: string) {',
+    "",
+    "interface Config {",
+    "  port: number;",
+    "  host: string;",
+    "}",
+    "",
+    "export async function loadConfig(path: string) {",
     "  const raw = await readFile(path, 'utf-8');",
-    '  return JSON.parse(raw) as Config;',
-    '}',
-    '',
-    'export function getDefaultConfig(): Config {',
+    "  return JSON.parse(raw) as Config;",
+    "}",
+    "",
+    "export function getDefaultConfig(): Config {",
     "  return { port: 3000, host: 'localhost' };",
-    '}',
-    '',
-  ].join('\n'),
+    "}",
+    "",
+  ].join("\n"),
 };
 
 const SAMPLE_NEW_FILE = {
-  name: 'config.ts',
+  name: "config.ts",
   contents: [
     "import { readFile, stat } from 'fs/promises';",
-    '',
-    'interface Config {',
-    '  port: number;',
-    '  host: string;',
-    '  debug?: boolean;',
+    "",
+    "interface Config {",
+    "  port: number;",
+    "  host: string;",
+    "  debug?: boolean;",
     "  logLevel: 'info' | 'warn' | 'error';",
-    '}',
-    '',
-    'export async function loadConfig(path: string): Promise<Config> {',
-    '  await stat(path);',
+    "}",
+    "",
+    "export async function loadConfig(path: string): Promise<Config> {",
+    "  await stat(path);",
     "  const raw = await readFile(path, 'utf-8');",
-    '  const config = JSON.parse(raw) as Partial<Config>;',
-    '  return { ...getDefaultConfig(), ...config };',
-    '}',
-    '',
-    'export function getDefaultConfig(): Config {',
-    '  return {',
-    '    port: 3000,',
+    "  const config = JSON.parse(raw) as Partial<Config>;",
+    "  return { ...getDefaultConfig(), ...config };",
+    "}",
+    "",
+    "export function getDefaultConfig(): Config {",
+    "  return {",
+    "    port: 3000,",
     "    host: 'localhost',",
-    '    debug: false,',
+    "    debug: false,",
     "    logLevel: 'info',",
-    '  };',
-    '}',
-    '',
-    'export function validateConfig(config: Config): boolean {',
-    '  return config.port > 0 && config.port < 65536;',
-    '}',
-    '',
-  ].join('\n'),
+    "  };",
+    "}",
+    "",
+    "export function validateConfig(config: Config): boolean {",
+    "  return config.port > 0 && config.port < 65536;",
+    "}",
+    "",
+  ].join("\n"),
 };
 
 const THEMES = [
   // Pierre
-  'pierre-light',
-  'pierre-light-soft',
-  'pierre-dark',
-  'pierre-dark-soft',
+  "pierre-light",
+  "pierre-light-soft",
+  "pierre-dark",
+  "pierre-dark-soft",
 
   // GitHub
-  'github-light',
-  'github-dark',
-  'github-dark-dimmed',
+  "github-light",
+  "github-dark",
+  "github-dark-dimmed",
 
   // Atom / One
-  'one-light',
-  'one-dark-pro',
+  "one-light",
+  "one-dark-pro",
 
   // Dracula
-  'dracula',
-  'dracula-soft',
+  "dracula",
+  "dracula-soft",
 
   // Material
-  'material-theme-lighter',
-  'material-theme',
-  'material-theme-darker',
-  'material-theme-ocean',
-  'material-theme-palenight',
+  "material-theme-lighter",
+  "material-theme",
+  "material-theme-darker",
+  "material-theme-ocean",
+  "material-theme-palenight",
 
   // Monokai
-  'monokai',
+  "monokai",
 
   // Night Owl
-  'night-owl',
+  "night-owl",
 
   // Tokyo Night
-  'tokyo-night',
+  "tokyo-night",
 
   // Synthwave
-  'synthwave-84',
+  "synthwave-84",
 
   // Catppuccin
-  'catppuccin-latte',
-  'catppuccin-frappe',
-  'catppuccin-macchiato',
-  'catppuccin-mocha',
+  "catppuccin-latte",
+  "catppuccin-frappe",
+  "catppuccin-macchiato",
+  "catppuccin-mocha",
 
   // Gruvbox
-  'gruvbox-light-medium',
-  'gruvbox-dark-medium',
+  "gruvbox-light-medium",
+  "gruvbox-dark-medium",
 
   // Houston
-  'houston',
+  "houston",
 
   // Rosé Pine
-  'rose-pine-dawn',
-  'rose-pine',
-  'rose-pine-moon',
+  "rose-pine-dawn",
+  "rose-pine",
+  "rose-pine-moon",
 
   // Solarized
-  'solarized-light',
-  'solarized-dark',
+  "solarized-light",
+  "solarized-dark",
 
   // Vesper
-  'vesper',
+  "vesper",
 
   // --- Additional picks ---
 
   // Everforest
-  'everforest-light',
-  'everforest-dark',
+  "everforest-light",
+  "everforest-dark",
 
   // Poimandres
-  'poimandres',
+  "poimandres",
 
   // Kanagawa
-  'kanagawa-lotus',
-  'kanagawa-wave',
-  'kanagawa-dragon',
+  "kanagawa-lotus",
+  "kanagawa-wave",
+  "kanagawa-dragon",
 
   // Vitesse
-  'vitesse-light',
-  'vitesse-dark',
-  'vitesse-black',
+  "vitesse-light",
+  "vitesse-dark",
+  "vitesse-black",
 
   // Nord
-  'nord',
+  "nord",
 
   // Laserwave
-  'laserwave',
+  "laserwave",
 
   // Aurora
-  'aurora-x',
+  "aurora-x",
 
   // Ayu
-  'ayu-dark',
+  "ayu-dark",
 
   // Snazzy / Slack
-  'snazzy-light',
-  'slack-dark',
+  "snazzy-light",
+  "slack-dark",
 
   // Min
-  'min-light',
-  'min-dark',
+  "min-light",
+  "min-dark",
 ] as const;
 
-const themeTitle =
-  'Pierre Themes — Themes for Visual Studio Code, Cursor, Zed, and Shiki.';
+const themeTitle = "Pierre Themes — Themes for Visual Studio Code, Cursor, Zed, and Shiki.";
 const themeDescription =
-  'Beautiful light and dark themes, generated from a shared color palette, for Visual Studio Code, Cursor, Zed, and Shiki.';
+  "Beautiful light and dark themes, generated from a shared color palette, for Visual Studio Code, Cursor, Zed, and Shiki.";
 
 export const metadata: Metadata = {
   title: themeTitle,
@@ -177,13 +176,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: themeTitle,
     description: themeDescription,
-    images: ['/theme/opengraph-image.png'],
+    images: ["/theme/opengraph-image.png"],
   },
   twitter: {
-    card: 'summary_large_image',
+    card: "summary_large_image",
     title: themeTitle,
     description: themeDescription,
-    images: ['/theme/opengraph-image.png'],
+    images: ["/theme/opengraph-image.png"],
   },
 };
 
@@ -191,9 +190,7 @@ export default async function ThemeGalleryPage() {
   const resolvedThemes = await Promise.all(
     THEMES.map(async (themeName) => {
       try {
-        const theme = await resolveTheme(
-          themeName as Parameters<typeof resolveTheme>[0]
-        );
+        const theme = await resolveTheme(themeName as Parameters<typeof resolveTheme>[0]);
         return {
           name: themeName,
           type: theme.type,
@@ -202,12 +199,10 @@ export default async function ThemeGalleryPage() {
       } catch {
         return null;
       }
-    })
+    }),
   );
 
-  const themes = resolvedThemes.filter(
-    (t): t is NonNullable<typeof t> => t != null
-  );
+  const themes = resolvedThemes.filter((t): t is NonNullable<typeof t> => t != null);
 
   const fileDiff = parseDiffFromFile(SAMPLE_OLD_FILE, SAMPLE_NEW_FILE);
 

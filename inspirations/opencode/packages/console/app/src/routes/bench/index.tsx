@@ -1,25 +1,25 @@
-import { Title } from "@solidjs/meta"
-import { A, createAsync, query } from "@solidjs/router"
-import { createMemo, For, Show } from "solid-js"
-import { Database, desc } from "@opencode-ai/console-core/drizzle/index.js"
-import { BenchmarkTable } from "@opencode-ai/console-core/schema/benchmark.sql.js"
-import { useI18n } from "~/context/i18n"
+import { Title } from "@solidjs/meta";
+import { A, createAsync, query } from "@solidjs/router";
+import { createMemo, For, Show } from "solid-js";
+import { Database, desc } from "@opencode-ai/console-core/drizzle/index.js";
+import { BenchmarkTable } from "@opencode-ai/console-core/schema/benchmark.sql.js";
+import { useI18n } from "~/context/i18n";
 
 interface BenchmarkResult {
-  averageScore: number
-  tasks: { averageScore: number; task: { id: string } }[]
+  averageScore: number;
+  tasks: { averageScore: number; task: { id: string } }[];
 }
 
 async function getBenchmarks() {
-  "use server"
+  "use server";
   const rows = await Database.use((tx) =>
     tx.select().from(BenchmarkTable).orderBy(desc(BenchmarkTable.timeCreated)).limit(100),
-  )
+  );
   return rows.map((row) => {
-    const parsed = JSON.parse(row.result) as BenchmarkResult
-    const taskScores: Record<string, number> = {}
+    const parsed = JSON.parse(row.result) as BenchmarkResult;
+    const taskScores: Record<string, number> = {};
     for (const t of parsed.tasks) {
-      taskScores[t.task.id] = t.averageScore
+      taskScores[t.task.id] = t.averageScore;
     }
     return {
       id: row.id,
@@ -27,25 +27,25 @@ async function getBenchmarks() {
       model: row.model,
       averageScore: parsed.averageScore,
       taskScores,
-    }
-  })
+    };
+  });
 }
 
-const queryBenchmarks = query(getBenchmarks, "benchmarks.list")
+const queryBenchmarks = query(getBenchmarks, "benchmarks.list");
 
 export default function Bench() {
-  const i18n = useI18n()
-  const benchmarks = createAsync(() => queryBenchmarks())
+  const i18n = useI18n();
+  const benchmarks = createAsync(() => queryBenchmarks());
 
   const taskIds = createMemo(() => {
-    const ids = new Set<string>()
+    const ids = new Set<string>();
     for (const row of benchmarks() ?? []) {
       for (const id of Object.keys(row.taskScores)) {
-        ids.add(id)
+        ids.add(id);
       }
     }
-    return [...ids].sort()
-  })
+    return [...ids].sort();
+  });
 
   return (
     <main data-page="bench" style={{ padding: "2rem" }}>
@@ -54,10 +54,18 @@ export default function Bench() {
       <table style={{ "border-collapse": "collapse", width: "100%" }}>
         <thead>
           <tr>
-            <th style={{ "text-align": "left", padding: "0.75rem" }}>{i18n.t("bench.list.table.agent")}</th>
-            <th style={{ "text-align": "left", padding: "0.75rem" }}>{i18n.t("bench.list.table.model")}</th>
-            <th style={{ "text-align": "left", padding: "0.75rem" }}>{i18n.t("bench.list.table.score")}</th>
-            <For each={taskIds()}>{(id) => <th style={{ "text-align": "left", padding: "0.75rem" }}>{id}</th>}</For>
+            <th style={{ "text-align": "left", padding: "0.75rem" }}>
+              {i18n.t("bench.list.table.agent")}
+            </th>
+            <th style={{ "text-align": "left", padding: "0.75rem" }}>
+              {i18n.t("bench.list.table.model")}
+            </th>
+            <th style={{ "text-align": "left", padding: "0.75rem" }}>
+              {i18n.t("bench.list.table.score")}
+            </th>
+            <For each={taskIds()}>
+              {(id) => <th style={{ "text-align": "left", padding: "0.75rem" }}>{id}</th>}
+            </For>
           </tr>
         </thead>
         <tbody>
@@ -84,5 +92,5 @@ export default function Bench() {
         </tbody>
       </table>
     </main>
-  )
+  );
 }

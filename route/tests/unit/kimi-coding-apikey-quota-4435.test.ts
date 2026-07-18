@@ -29,8 +29,7 @@ before(() => {
     return {
       ok: true,
       status: 200,
-      text: async () =>
-        JSON.stringify({ usage: { limit: "100", used: "10", remaining: "90" } }),
+      text: async () => JSON.stringify({ usage: { limit: "100", used: "10", remaining: "90" } }),
     } as unknown as Response;
   }) as typeof fetch;
 });
@@ -71,10 +70,10 @@ test("kimi-coding (OAuth) keeps Bearer + device headers (not x-api-key)", async 
 test("kimi-coding-apikey is wired into both usage source-of-truth lists", () => {
   assert.ok(
     USAGE_SUPPORTED_PROVIDERS.includes("kimi-coding-apikey"),
-    "must be in USAGE_SUPPORTED_PROVIDERS (else the dashboard gate returns 400)"
+    "must be in USAGE_SUPPORTED_PROVIDERS (else the dashboard gate returns 400)",
   );
   assert.ok(
     (USAGE_FETCHER_PROVIDERS as readonly string[]).includes("kimi-coding-apikey"),
-    "must be in USAGE_FETCHER_PROVIDERS (else auto-routing preflight never registers a fetcher)"
+    "must be in USAGE_FETCHER_PROVIDERS (else auto-routing preflight never registers a fetcher)",
   );
 });

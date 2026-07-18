@@ -60,11 +60,7 @@ export class SessionPool {
   private startTime: number = Date.now();
   private lastLog = 0;
 
-  constructor(
-    provider: string,
-    config?: Partial<PoolConfig>,
-    factory?: SessionFactory,
-  ) {
+  constructor(provider: string, config?: Partial<PoolConfig>, factory?: SessionFactory) {
     this.provider = provider;
     this.poolId = `pool-${provider}-${Date.now().toString(36)}`;
     this.createdAt = Date.now();
@@ -232,13 +228,10 @@ export class SessionPool {
       totalRequests: s.totalRequests,
       successfulRequests: s.successfulRequests,
       successRate:
-        s.totalRequests > 0
-          ? ((s.successfulRequests / s.totalRequests) * 100).toFixed(1)
-          : "100.0",
+        s.totalRequests > 0 ? ((s.successfulRequests / s.totalRequests) * 100).toFixed(1) : "100.0",
       inflight: s.inflight,
-      cooldownRemaining: s.cooldownRemaining > 0
-        ? `${(s.cooldownRemaining / 1000).toFixed(1)}s`
-        : "0s",
+      cooldownRemaining:
+        s.cooldownRemaining > 0 ? `${(s.cooldownRemaining / 1000).toFixed(1)}s` : "0s",
       age: `${(s.age / 1000).toFixed(0)}s`,
     }));
   }

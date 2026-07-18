@@ -1,6 +1,6 @@
 // @ts-nocheck
-import * as mod from "./file-icon"
-import { create } from "../storybook/scaffold"
+import * as mod from "./file-icon";
+import { create } from "../storybook/scaffold";
 
 const docs = `### Overview
 File and folder icon renderer based on file name and extension.
@@ -23,7 +23,7 @@ Use in file trees and lists.
 ### Theming/tokens
 - Uses \`data-component="file-icon"\` and sprite-based styling.
 
-`
+`;
 
 const story = create({
   title: "UI/FileIcon",
@@ -32,7 +32,7 @@ const story = create({
     node: { path: "package.json", type: "file" },
     mono: true,
   },
-})
+});
 
 export default {
   title: "UI/FileIcon",
@@ -46,9 +46,9 @@ export default {
       },
     },
   },
-}
+};
 
-export const Basic = story.Basic
+export const Basic = story.Basic;
 
 export const Folder = {
   args: {
@@ -56,7 +56,7 @@ export const Folder = {
     expanded: true,
     mono: false,
   },
-}
+};
 
 export const Samples = {
   render: () => {
@@ -72,7 +72,7 @@ export const Samples = {
       { path: ".env", type: "file" },
       { path: "src", type: "directory" },
       { path: "public", type: "directory" },
-    ] as const
+    ] as const;
 
     return (
       <div
@@ -89,6 +89,6 @@ export const Samples = {
           </div>
         ))}
       </div>
-    )
+    );
   },
-}
+};

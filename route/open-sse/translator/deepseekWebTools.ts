@@ -61,7 +61,7 @@ export function serializeDeepSeekToolPrompt(tools: unknown): string {
       params = "";
     }
     lines.push(
-      `- ${fn.name}${desc ? `: ${desc}` : ""}${params ? `\n  parameters: ${params}` : ""}`
+      `- ${fn.name}${desc ? `: ${desc}` : ""}${params ? `\n  parameters: ${params}` : ""}`,
     );
   }
   if (lines.length === 0) return "";
@@ -113,7 +113,7 @@ function extractText(content: unknown): string {
  */
 export function buildToolConversationPrompt(
   messages: ChatMessage[],
-  toolSystemPrompt: string
+  toolSystemPrompt: string,
 ): string {
   const systemParts: string[] = [];
   if (toolSystemPrompt) systemParts.push(toolSystemPrompt);
@@ -159,7 +159,7 @@ export function buildToolConversationPrompt(
     // Anchor the model to the work already done so it advances instead of repeating it.
     parts.push(
       "Continue the task using the tool results above. Do NOT repeat tool calls that already " +
-        "succeeded; perform the next step or give the final answer."
+        "succeeded; perform the next step or give the final answer.",
     );
   }
 
@@ -325,7 +325,7 @@ function extractCall(
   tagName: string,
   innerRaw: string,
   requested: RequestedToolName[],
-  schemaMap?: Map<string, Set<string>>
+  schemaMap?: Map<string, Set<string>>,
 ): ExtractedCall | null {
   const inner = innerRaw.trim();
 
@@ -427,7 +427,7 @@ function extractCall(
 export function parseDeepSeekToolCalls(
   text: string,
   idSeed = "call",
-  requestedTools?: unknown
+  requestedTools?: unknown,
 ): { content: string; toolCalls: OpenAIToolCall[] | null } {
   if (typeof text !== "string" || text.length === 0) {
     return { content: text ?? "", toolCalls: null };

@@ -4,7 +4,9 @@ import { applyQuantumLock } from "./quantumLockStep.ts";
 import type { QuantumLockConfig, QuantumLockStats } from "./quantumPatterns.ts";
 
 /** The QuantumLock config to apply, or undefined when absent/disabled. */
-export function resolveQuantumLock(options?: { config?: CompressionConfig }): QuantumLockConfig | undefined {
+export function resolveQuantumLock(options?: { config?: CompressionConfig }):
+  | QuantumLockConfig
+  | undefined {
   const ql = options?.config?.quantumLock;
   return ql?.enabled ? ql : undefined;
 }
@@ -16,7 +18,7 @@ export function resolveQuantumLock(options?: { config?: CompressionConfig }): Qu
  */
 export function quantumCachingContext(
   body: Record<string, unknown>,
-  options?: { model?: string; cachingContext?: CachingDetectionContext }
+  options?: { model?: string; cachingContext?: CachingDetectionContext },
 ): { isCachingProvider: boolean } {
   const ctx = detectCachingContext(body, options?.cachingContext ?? { model: options?.model });
   return { isCachingProvider: ctx.isCachingProvider };
@@ -25,7 +27,7 @@ export function quantumCachingContext(
 /** Attach QuantumLock stats to a result, creating a minimal stats carrier when needed. */
 function attachQuantumLockStats(
   result: CompressionResult,
-  qlStats: QuantumLockStats
+  qlStats: QuantumLockStats,
 ): CompressionResult {
   if (result.stats) {
     result.stats.quantumLock = qlStats;
@@ -49,7 +51,7 @@ export function withQuantumLock(
   body: Record<string, unknown>,
   ql: QuantumLockConfig | undefined,
   ctx: { isCachingProvider: boolean },
-  run: (b: Record<string, unknown>) => CompressionResult
+  run: (b: Record<string, unknown>) => CompressionResult,
 ): CompressionResult {
   if (!ql || !ctx.isCachingProvider) return run(body);
   const { body: locked, stats } = applyQuantumLock(body, ql, ctx);
@@ -62,7 +64,7 @@ export async function withQuantumLockAsync(
   body: Record<string, unknown>,
   ql: QuantumLockConfig | undefined,
   ctx: { isCachingProvider: boolean },
-  run: (b: Record<string, unknown>) => Promise<CompressionResult>
+  run: (b: Record<string, unknown>) => Promise<CompressionResult>,
 ): Promise<CompressionResult> {
   if (!ql || !ctx.isCachingProvider) return run(body);
   const { body: locked, stats } = applyQuantumLock(body, ql, ctx);

@@ -194,7 +194,7 @@ function expandKiroModels(data: unknown): KiroModel[] {
  */
 export function resolveKiroRegion(providerSpecificData: unknown): string {
   return resolveKiroRuntimeRegion(
-    asRecord(providerSpecificData) as { region?: unknown; profileArn?: unknown }
+    asRecord(providerSpecificData) as { region?: unknown; profileArn?: unknown },
   );
 }
 
@@ -224,7 +224,7 @@ export type FetchKiroModelsOptions = {
 };
 
 function toFallbackResult(
-  fallbackModels: Array<{ id: string; name?: string }> | undefined
+  fallbackModels: Array<{ id: string; name?: string }> | undefined,
 ): KiroModelsResult {
   const models = (fallbackModels || [])
     .map((model) => {
@@ -280,7 +280,7 @@ async function tryFetchModels(
   fetchImpl: typeof fetch,
   url: string,
   accessToken: string,
-  providerSpecificData: unknown
+  providerSpecificData: unknown,
 ): Promise<KiroModel[] | null> {
   try {
     const response = await fetchImpl(url, {
@@ -310,7 +310,7 @@ async function tryFetchModels(
  *      profileArn is present (desktop-style accounts that require it).
  */
 export async function fetchKiroAvailableModels(
-  options: FetchKiroModelsOptions
+  options: FetchKiroModelsOptions,
 ): Promise<KiroModelsResult> {
   const { accessToken, providerSpecificData, fetchImpl = fetch, fallbackModels } = options;
 
@@ -335,7 +335,7 @@ export async function fetchKiroAvailableModels(
       fetchImpl,
       `${base}?origin=AI_EDITOR`,
       token,
-      providerSpecificData
+      providerSpecificData,
     );
     if (models) {
       catalogCache.set(key, { expiresAt: Date.now() + CACHE_TTL_MS, models });

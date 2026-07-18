@@ -55,14 +55,14 @@ test("RTK raw-output route requires management auth before reading retained outp
 
   const response = await route.GET(
     new Request(`http://localhost/api/context/rtk/raw-output/${pointer.id}`),
-    { params: Promise.resolve({ id: pointer.id }) }
+    { params: Promise.resolve({ id: pointer.id }) },
   );
   const body = (await response.json()) as ErrorResponseBody;
 
   assert.equal(response.status, 401);
   assert.equal(
     typeof body.error === "object" ? body.error.message : null,
-    "Authentication required"
+    "Authentication required",
   );
 });
 
@@ -71,20 +71,20 @@ test("RTK raw-output route rejects bearer tokens without a dashboard session", a
     new Request("http://localhost/api/context/rtk/raw-output/0123456789abcdef01234567", {
       headers: { authorization: "Bearer invalid-management-token" },
     }),
-    { params: Promise.resolve({ id: "0123456789abcdef01234567" }) }
+    { params: Promise.resolve({ id: "0123456789abcdef01234567" }) },
   );
   const body = (await response.json()) as ErrorResponseBody;
 
   assert.equal(response.status, 403);
   assert.equal(
     typeof body.error === "object" ? body.error.message : null,
-    "Invalid management token"
+    "Invalid management token",
   );
 });
 
 test("RTK raw-output route validates pointer ids for authenticated callers", async () => {
   const request = await makeManagementSessionRequest(
-    "http://localhost/api/context/rtk/raw-output/not-a-pointer"
+    "http://localhost/api/context/rtk/raw-output/not-a-pointer",
   );
 
   const response = await route.GET(request, {
@@ -98,7 +98,7 @@ test("RTK raw-output route validates pointer ids for authenticated callers", asy
 
 test("RTK raw-output route returns 404 for missing authenticated pointers", async () => {
   const request = await makeManagementSessionRequest(
-    "http://localhost/api/context/rtk/raw-output/0123456789abcdef01234567"
+    "http://localhost/api/context/rtk/raw-output/0123456789abcdef01234567",
   );
 
   const response = await route.GET(request, {
@@ -116,12 +116,12 @@ test("RTK raw-output route returns retained redacted output for authenticated ca
     {
       retention: "always",
       command: "pytest",
-    }
+    },
   );
   assert.ok(pointer);
 
   const request = await makeManagementSessionRequest(
-    `http://localhost/api/context/rtk/raw-output/${pointer.id}`
+    `http://localhost/api/context/rtk/raw-output/${pointer.id}`,
   );
   const response = await route.GET(request, {
     params: Promise.resolve({ id: pointer.id }),

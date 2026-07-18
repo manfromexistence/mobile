@@ -1,15 +1,12 @@
-import type { ThemedToken } from 'shiki/core';
+import type { ThemedToken } from "shiki/core";
 
-import { ShikiStreamTokenizer } from './tokenizer';
-import type { CodeToTokenTransformStreamOptions, RecallToken } from './types';
+import { ShikiStreamTokenizer } from "./tokenizer";
+import type { CodeToTokenTransformStreamOptions, RecallToken } from "./types";
 
 /**
  * Create a transform stream that takes code chunks and emits themed tokens.
  */
-export class CodeToTokenTransformStream extends TransformStream<
-  string,
-  ThemedToken | RecallToken
-> {
+export class CodeToTokenTransformStream extends TransformStream<string, ThemedToken | RecallToken> {
   readonly tokenizer: ShikiStreamTokenizer;
   readonly options: CodeToTokenTransformStreamOptions;
 
@@ -19,11 +16,7 @@ export class CodeToTokenTransformStream extends TransformStream<
 
     super({
       async transform(chunk, controller) {
-        const {
-          stable,
-          unstable: buffer,
-          recall,
-        } = await tokenizer.enqueue(chunk);
+        const { stable, unstable: buffer, recall } = await tokenizer.enqueue(chunk);
         if (allowRecalls && recall > 0) {
           // oxlint-disable-next-line typescript/no-explicit-any
           controller.enqueue({ recall } as any);

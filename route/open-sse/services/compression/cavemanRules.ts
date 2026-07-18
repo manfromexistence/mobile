@@ -394,7 +394,7 @@ const INTENSITY_RANK = { lite: 0, full: 1, ultra: 2 } as const;
 export function getRulesForContext(
   context: string,
   intensity: "lite" | "full" | "ultra" = "full",
-  language = "en"
+  language = "en",
 ): CavemanRule[] {
   const rank = INTENSITY_RANK[intensity] ?? INTENSITY_RANK.full;
   const fileRules = language ? loadAllRulesForLanguage(language) : [];
@@ -423,7 +423,7 @@ export function getCavemanRuleMetadata() {
     category: rule.category ?? "terse",
     minIntensity: rule.minIntensity ?? "lite",
     intensities: intensities.filter(
-      (intensity) => INTENSITY_RANK[intensity] >= INTENSITY_RANK[rule.minIntensity ?? "lite"]
+      (intensity) => INTENSITY_RANK[intensity] >= INTENSITY_RANK[rule.minIntensity ?? "lite"],
     ),
     description: rule.description ?? rule.name.replace(/_/g, " "),
   }));

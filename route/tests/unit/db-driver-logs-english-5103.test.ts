@@ -17,10 +17,7 @@ import { fileURLToPath } from "node:url";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(here, "../..");
 
-const DB_DRIVER_FILES = [
-  "src/lib/db/core.ts",
-  "src/lib/db/adapters/driverFactory.ts",
-];
+const DB_DRIVER_FILES = ["src/lib/db/core.ts", "src/lib/db/adapters/driverFactory.ts"];
 
 // Latin-1 Supplement accented letters used by pt-BR/es/etc. (á à â ã é ê í ó ô õ ú ç …).
 const ACCENTED = /[À-ÿ]/;
@@ -49,6 +46,6 @@ test("#5103 DB driver-fallback log strings contain no non-English (accented) tex
   assert.deepEqual(
     offenders,
     [],
-    `Non-English (accented) console log strings found in the DB driver path:\n${offenders.join("\n")}`
+    `Non-English (accented) console log strings found in the DB driver path:\n${offenders.join("\n")}`,
   );
 });

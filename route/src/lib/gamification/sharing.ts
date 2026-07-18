@@ -15,7 +15,7 @@ export async function transferTokens(
   toApiKeyId: string,
   amount: number,
   reason?: string,
-  idempotencyKey?: string
+  idempotencyKey?: string,
 ): Promise<{ success: boolean; idempotencyKey: string; error?: string }> {
   if (fromApiKeyId === toApiKeyId) {
     return { success: false, idempotencyKey: "", error: "Cannot transfer to yourself" };

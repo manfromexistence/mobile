@@ -1,16 +1,16 @@
-import style from "./content-bash.module.css"
-import { createResource, createSignal } from "solid-js"
-import { createOverflow, useShareMessages } from "./common"
-import { codeToHtml } from "shiki"
+import style from "./content-bash.module.css";
+import { createResource, createSignal } from "solid-js";
+import { createOverflow, useShareMessages } from "./common";
+import { codeToHtml } from "shiki";
 
 interface Props {
-  command: string
-  output: string
-  expand?: boolean
+  command: string;
+  output: string;
+  expand?: boolean;
 }
 
 export function ContentBash(props: Props) {
-  const messages = useShareMessages()
+  const messages = useShareMessages();
   const [commandHtml] = createResource(
     () => props.command,
     async (command) => {
@@ -20,9 +20,9 @@ export function ContentBash(props: Props) {
           light: "github-light",
           dark: "github-dark",
         },
-      })
+      });
     },
-  )
+  );
 
   const [outputHtml] = createResource(
     () => props.output,
@@ -33,12 +33,12 @@ export function ContentBash(props: Props) {
           light: "github-light",
           dark: "github-dark",
         },
-      })
+      });
     },
-  )
+  );
 
-  const [expanded, setExpanded] = createSignal(false)
-  const overflow = createOverflow()
+  const [expanded, setExpanded] = createSignal(false);
+  const overflow = createOverflow();
 
   return (
     <div class={style.root} data-expanded={expanded() || props.expand === true ? true : undefined}>
@@ -63,5 +63,5 @@ export function ContentBash(props: Props) {
         </button>
       )}
     </div>
-  )
+  );
 }

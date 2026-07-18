@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import type { ColorMode } from '@pierre/theming';
+import type { ColorMode } from "@pierre/theming";
 import {
   createContext,
   type ReactNode,
@@ -10,14 +10,14 @@ import {
   useMemo,
   useState,
   useSyncExternalStore,
-} from 'react';
+} from "react";
 
-import { themeController } from './themeController';
+import { themeController } from "./themeController";
 
-type ResolvedTheme = 'light' | 'dark';
+type ResolvedTheme = "light" | "dark";
 
 interface ThemeProviderProps {
-  attribute?: 'class' | `data-${string}` | Array<'class' | `data-${string}`>;
+  attribute?: "class" | `data-${string}` | Array<"class" | `data-${string}`>;
   children: ReactNode;
   enableColorScheme?: boolean;
   value?: Partial<Record<ResolvedTheme, string>>;
@@ -31,8 +31,8 @@ interface ThemeContextValue {
   themes: ColorMode[];
 }
 
-const RESOLVED_THEMES: ResolvedTheme[] = ['light', 'dark'];
-const AVAILABLE_MODES: ColorMode[] = ['light', 'dark', 'system'];
+const RESOLVED_THEMES: ResolvedTheme[] = ["light", "dark"];
+const AVAILABLE_MODES: ColorMode[] = ["light", "dark", "system"];
 
 // Navbar tint (iOS Safari's <meta name="theme-color">) for each resolved
 // color mode. These match the global body `--background` (oklch(1)/oklch(0.145))
@@ -40,8 +40,8 @@ const AVAILABLE_MODES: ColorMode[] = ['light', 'dark', 'system'];
 // instead of contrasting it. Kept in sync with the same literals hardcoded in
 // the layout's pre-paint bootstrap script (which can't import this module).
 const MODE_THEME_COLOR: Record<ResolvedTheme, string> = {
-  light: '#ffffff',
-  dark: '#0a0a0a',
+  light: "#ffffff",
+  dark: "#0a0a0a",
 };
 
 // Points the document's theme-color meta at `color` (the iOS Safari navbar
@@ -52,11 +52,11 @@ const MODE_THEME_COLOR: Record<ResolvedTheme, string> = {
 function setThemeColorMeta(color: string) {
   let meta = document.querySelector('meta[name="theme-color"]');
   if (meta == null) {
-    meta = document.createElement('meta');
-    meta.setAttribute('name', 'theme-color');
+    meta = document.createElement("meta");
+    meta.setAttribute("name", "theme-color");
     document.head.appendChild(meta);
   }
-  meta.setAttribute('content', color);
+  meta.setAttribute("content", color);
 }
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
@@ -71,7 +71,7 @@ function applyTheme({
   resolvedTheme,
   value,
 }: {
-  attribute: ThemeProviderProps['attribute'];
+  attribute: ThemeProviderProps["attribute"];
   enableColorScheme: boolean;
   resolvedTheme: ResolvedTheme;
   value: Partial<Record<ResolvedTheme, string>> | undefined;
@@ -82,7 +82,7 @@ function applyTheme({
   const classValues = RESOLVED_THEMES.map((theme) => value?.[theme] ?? theme);
 
   for (const currentAttribute of attributes) {
-    if (currentAttribute === 'class') {
+    if (currentAttribute === "class") {
       root.classList.remove(...classValues);
       root.classList.add(resolvedValue);
       continue;
@@ -106,7 +106,7 @@ function applyTheme({
 // useTheme() API the app already depends on. Selection and persistence live in
 // the controller — this component holds no theming state of its own.
 export function ThemeProvider({
-  attribute = 'data-theme',
+  attribute = "data-theme",
   children,
   enableColorScheme = true,
   value,
@@ -114,7 +114,7 @@ export function ThemeProvider({
   const state = useSyncExternalStore(
     themeController.subscribe,
     themeController.getState,
-    themeController.getState
+    themeController.getState,
   );
 
   // The controller reads persisted state synchronously on module load, so on
@@ -152,14 +152,10 @@ export function ThemeProvider({
       theme,
       themes: AVAILABLE_MODES,
     }),
-    [resolvedTheme, setTheme, theme]
+    [resolvedTheme, setTheme, theme],
   );
 
-  return (
-    <ThemeContext.Provider value={contextValue}>
-      {children}
-    </ThemeContext.Provider>
-  );
+  return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
 }
 
 export function useTheme(): ThemeContextValue {

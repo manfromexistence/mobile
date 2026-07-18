@@ -51,7 +51,7 @@ test("github/claude-haiku-4.5: still strips reasoning_effort (#791)", () => {
   assert.equal(
     (result as any).reasoning_effort,
     undefined,
-    "Haiku 4.5 rejects reasoning_effort upstream — must strip"
+    "Haiku 4.5 rejects reasoning_effort upstream — must strip",
   );
 });
 
@@ -65,7 +65,7 @@ test("github/claude-opus-4.7: still strips reasoning_effort (#791)", () => {
   assert.equal(
     (result as any).reasoning_effort,
     undefined,
-    "Opus 4.7 rejects reasoning_effort upstream — must strip"
+    "Opus 4.7 rejects reasoning_effort upstream — must strip",
   );
 });
 

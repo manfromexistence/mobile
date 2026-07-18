@@ -1,5 +1,5 @@
-import { useFilteredList } from "@opencode-ai/ui/hooks"
-import { useSpring } from "@opencode-ai/ui/motion-spring"
+import { useFilteredList } from "@opencode-ai/ui/hooks";
+import { useSpring } from "@opencode-ai/ui/motion-spring";
 import {
   createEffect,
   on,
@@ -12,10 +12,10 @@ import {
   Switch,
   Match,
   type JSX,
-} from "solid-js"
-import { createStore, type SetStoreFunction, type Store } from "solid-js/store"
-import type { useLocal } from "@/context/local"
-import { selectionFromLines, type SelectedLineRange, useFile } from "@/context/file"
+} from "solid-js";
+import { createStore, type SetStoreFunction, type Store } from "solid-js/store";
+import type { useLocal } from "@/context/local";
+import { selectionFromLines, type SelectedLineRange, useFile } from "@/context/file";
 import {
   ContentPart,
   DEFAULT_PROMPT,
@@ -25,33 +25,38 @@ import {
   ImageAttachmentPart,
   AgentPart,
   FileAttachmentPart,
-} from "@/context/prompt"
-import { useLayout } from "@/context/layout"
-import { useSDK } from "@/context/sdk"
-import { useSync } from "@/context/sync"
-import { useComments } from "@/context/comments"
-import { Button } from "@opencode-ai/ui/button"
-import { DockShellForm, DockTray } from "@opencode-ai/ui/dock-surface"
-import { Icon } from "@opencode-ai/ui/icon"
-import { ProviderIcon } from "@opencode-ai/ui/provider-icon"
-import { Tooltip, TooltipKeybind } from "@opencode-ai/ui/tooltip"
-import { ButtonV2 } from "@opencode-ai/ui/v2/button-v2"
-import { KeybindV2 } from "@opencode-ai/ui/v2/keybind-v2"
-import { MenuV2 } from "@opencode-ai/ui/v2/menu-v2"
-import { TooltipV2 } from "@opencode-ai/ui/v2/tooltip-v2"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { Select } from "@opencode-ai/ui/select"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { ModelSelectorPopover, ModelSelectorPopoverV2 } from "@/components/dialog-select-model"
-import { useCommand } from "@/context/command"
-import { Persist, persisted } from "@/utils/persist"
-import { usePermission } from "@/context/permission"
-import { useLanguage } from "@/context/language"
-import { usePlatform } from "@/context/platform"
-import { createSessionTabs } from "@/pages/session/helpers"
-import { createTextFragment, getCursorPosition, setCursorPosition, setRangeEdge } from "./prompt-input/editor-dom"
-import { createPromptAttachments } from "./prompt-input/attachments"
-import { ACCEPTED_FILE_TYPES, pickAttachmentFiles } from "./prompt-input/files"
+} from "@/context/prompt";
+import { useLayout } from "@/context/layout";
+import { useSDK } from "@/context/sdk";
+import { useSync } from "@/context/sync";
+import { useComments } from "@/context/comments";
+import { Button } from "@opencode-ai/ui/button";
+import { DockShellForm, DockTray } from "@opencode-ai/ui/dock-surface";
+import { Icon } from "@opencode-ai/ui/icon";
+import { ProviderIcon } from "@opencode-ai/ui/provider-icon";
+import { Tooltip, TooltipKeybind } from "@opencode-ai/ui/tooltip";
+import { ButtonV2 } from "@opencode-ai/ui/v2/button-v2";
+import { KeybindV2 } from "@opencode-ai/ui/v2/keybind-v2";
+import { MenuV2 } from "@opencode-ai/ui/v2/menu-v2";
+import { TooltipV2 } from "@opencode-ai/ui/v2/tooltip-v2";
+import { IconButton } from "@opencode-ai/ui/icon-button";
+import { Select } from "@opencode-ai/ui/select";
+import { useDialog } from "@opencode-ai/ui/context/dialog";
+import { ModelSelectorPopover, ModelSelectorPopoverV2 } from "@/components/dialog-select-model";
+import { useCommand } from "@/context/command";
+import { Persist, persisted } from "@/utils/persist";
+import { usePermission } from "@/context/permission";
+import { useLanguage } from "@/context/language";
+import { usePlatform } from "@/context/platform";
+import { createSessionTabs } from "@/pages/session/helpers";
+import {
+  createTextFragment,
+  getCursorPosition,
+  setCursorPosition,
+  setRangeEdge,
+} from "./prompt-input/editor-dom";
+import { createPromptAttachments } from "./prompt-input/attachments";
+import { ACCEPTED_FILE_TYPES, pickAttachmentFiles } from "./prompt-input/files";
 import {
   canNavigateHistoryAtCursor,
   navigatePromptHistory,
@@ -60,67 +65,67 @@ import {
   type PromptHistoryEntry,
   type PromptHistoryStoredEntry,
   promptLength,
-} from "./prompt-input/history"
-import { createPromptSubmit, type FollowupDraft } from "./prompt-input/submit"
-import { PromptPopover, type AtOption, type SlashCommand } from "./prompt-input/slash-popover"
-import { PromptContextItems } from "./prompt-input/context-items"
-import { PromptImageAttachments } from "./prompt-input/image-attachments"
-import { PromptDragOverlay } from "./prompt-input/drag-overlay"
-import { promptPlaceholder } from "./prompt-input/placeholder"
-import { createPromptInputTransientState } from "./prompt-input/transient-state"
-import { showToast } from "@/utils/toast"
-import { ImagePreview } from "@opencode-ai/ui/image-preview"
-import type { ReferenceInfo } from "@opencode-ai/sdk/v2/client"
+} from "./prompt-input/history";
+import { createPromptSubmit, type FollowupDraft } from "./prompt-input/submit";
+import { PromptPopover, type AtOption, type SlashCommand } from "./prompt-input/slash-popover";
+import { PromptContextItems } from "./prompt-input/context-items";
+import { PromptImageAttachments } from "./prompt-input/image-attachments";
+import { PromptDragOverlay } from "./prompt-input/drag-overlay";
+import { promptPlaceholder } from "./prompt-input/placeholder";
+import { createPromptInputTransientState } from "./prompt-input/transient-state";
+import { showToast } from "@/utils/toast";
+import { ImagePreview } from "@opencode-ai/ui/image-preview";
+import type { ReferenceInfo } from "@opencode-ai/sdk/v2/client";
 
-export type PromptInputState = ReturnType<typeof usePrompt>
+export type PromptInputState = ReturnType<typeof usePrompt>;
 
 export type PromptInputHistory = {
-  entries: (mode: "normal" | "shell") => PromptHistoryStoredEntry[]
-  add: (prompt: Prompt, mode: "normal" | "shell", comments: PromptHistoryComment[]) => void
-}
+  entries: (mode: "normal" | "shell") => PromptHistoryStoredEntry[];
+  add: (prompt: Prompt, mode: "normal" | "shell", comments: PromptHistoryComment[]) => void;
+};
 
 export type PromptInputSubmission = {
-  abort: () => Promise<void> | void
-  handleSubmit: (event: Event) => Promise<void> | void
-}
+  abort: () => Promise<void> | void;
+  handleSubmit: (event: Event) => Promise<void> | void;
+};
 
 export type PromptInputControls = {
   agents: {
-    available: { name: string; hidden?: boolean; mode: string }[]
-    options: string[]
-    current: string
-    loading: boolean
-    visible: boolean
-    select: (name: string | undefined) => void
-  }
+    available: { name: string; hidden?: boolean; mode: string }[];
+    options: string[];
+    current: string;
+    loading: boolean;
+    visible: boolean;
+    select: (name: string | undefined) => void;
+  };
   model: {
-    selection: ReturnType<typeof useLocal>["model"]
-    paid: boolean
-    loading: boolean
-  }
+    selection: ReturnType<typeof useLocal>["model"];
+    paid: boolean;
+    loading: boolean;
+  };
   session: {
-    id?: string
+    id?: string;
     tabs: {
-      active: () => string | undefined
-      all: () => string[]
-      open: (tab: string) => void | Promise<void>
-      setActive: (tab: string) => void
-    }
+      active: () => string | undefined;
+      all: () => string[];
+      open: (tab: string) => void | Promise<void>;
+      setActive: (tab: string) => void;
+    };
     reviewPanel: {
-      opened: () => boolean
-      open: () => void
-    }
-  }
-  newLayoutDesigns: boolean
-}
+      opened: () => boolean;
+      open: () => void;
+    };
+  };
+  newLayoutDesigns: boolean;
+};
 
 export function createPromptInputHistory(): PromptInputHistory {
-  const [normal, setNormal] = createStore<PromptHistoryState>({ entries: [] })
-  const [shell, setShell] = createStore<PromptHistoryState>({ entries: [] })
-  return createPromptInputHistoryStore(normal, setNormal, shell, setShell)
+  const [normal, setNormal] = createStore<PromptHistoryState>({ entries: [] });
+  const [shell, setShell] = createStore<PromptHistoryState>({ entries: [] });
+  return createPromptInputHistoryStore(normal, setNormal, shell, setShell);
 }
 
-type PromptHistoryState = { entries: PromptHistoryStoredEntry[] }
+type PromptHistoryState = { entries: PromptHistoryStoredEntry[] };
 
 function createPromptInputHistoryStore(
   normal: Store<PromptHistoryState>,
@@ -131,44 +136,44 @@ function createPromptInputHistoryStore(
   return {
     entries: (mode) => (mode === "shell" ? shell.entries : normal.entries),
     add(prompt, mode, comments) {
-      const current = mode === "shell" ? shell : normal
-      const setCurrent = mode === "shell" ? setShell : setNormal
-      const next = prependHistoryEntry(current.entries, prompt, comments)
-      if (next === current.entries) return
-      setCurrent("entries", next)
+      const current = mode === "shell" ? shell : normal;
+      const setCurrent = mode === "shell" ? setShell : setNormal;
+      const next = prependHistoryEntry(current.entries, prompt, comments);
+      if (next === current.entries) return;
+      setCurrent("entries", next);
     },
-  }
+  };
 }
 
 function createPersistedPromptInputHistory() {
   const [normal, setNormal] = persisted(
     Persist.global("prompt-history", ["prompt-history.v1"]),
     createStore<PromptHistoryState>({ entries: [] }),
-  )
+  );
   const [shell, setShell] = persisted(
     Persist.global("prompt-history-shell", ["prompt-history-shell.v1"]),
     createStore<PromptHistoryState>({ entries: [] }),
-  )
-  return createPromptInputHistoryStore(normal, setNormal, shell, setShell)
+  );
+  return createPromptInputHistoryStore(normal, setNormal, shell, setShell);
 }
 
 export interface PromptInputProps {
-  class?: string
-  variant?: "dock" | "new-session"
-  state?: PromptInputState
-  history?: PromptInputHistory
-  submission?: PromptInputSubmission
-  controls: PromptInputControls
-  ref?: (el: HTMLDivElement) => void
-  newSessionWorktree?: string
-  onNewSessionWorktreeReset?: () => void
-  edit?: { id: string; prompt: Prompt; context: FollowupDraft["context"] }
-  onEditLoaded?: () => void
-  shouldQueue?: () => boolean
-  onQueue?: (draft: FollowupDraft) => void
-  onAbort?: () => void
-  onSubmit?: () => void
-  toolbar?: JSX.Element
+  class?: string;
+  variant?: "dock" | "new-session";
+  state?: PromptInputState;
+  history?: PromptInputHistory;
+  submission?: PromptInputSubmission;
+  controls: PromptInputControls;
+  ref?: (el: HTMLDivElement) => void;
+  newSessionWorktree?: string;
+  onNewSessionWorktreeReset?: () => void;
+  edit?: { id: string; prompt: Prompt; context: FollowupDraft["context"] };
+  onEditLoaded?: () => void;
+  shouldQueue?: () => boolean;
+  onQueue?: (draft: FollowupDraft) => void;
+  onAbort?: () => void;
+  onSubmit?: () => void;
+  toolbar?: JSX.Element;
 }
 
 const EXAMPLES = [
@@ -197,186 +202,199 @@ const EXAMPLES = [
   "prompt.example.23",
   "prompt.example.24",
   "prompt.example.25",
-] as const
+] as const;
 
 export const PromptInput: Component<PromptInputProps> = (props) => {
-  const sdk = useSDK()
+  const sdk = useSDK();
 
-  const sync = useSync()
-  const files = useFile()
-  const prompt = props.state ?? usePrompt()
-  const layout = useLayout()
-  const comments = useComments()
-  const dialog = useDialog()
-  const command = useCommand()
-  const permission = usePermission()
-  const language = useLanguage()
-  const platform = usePlatform()
-  const tabs = () => props.controls.session.tabs
-  let editorRef!: HTMLDivElement
-  let fileInputRef: HTMLInputElement | undefined
-  let scrollRef!: HTMLDivElement
-  let slashPopoverRef!: HTMLDivElement
-  let restoreEndOnFocus = true
-  let savedCursor: number | null = null
+  const sync = useSync();
+  const files = useFile();
+  const prompt = props.state ?? usePrompt();
+  const layout = useLayout();
+  const comments = useComments();
+  const dialog = useDialog();
+  const command = useCommand();
+  const permission = usePermission();
+  const language = useLanguage();
+  const platform = usePlatform();
+  const tabs = () => props.controls.session.tabs;
+  let editorRef!: HTMLDivElement;
+  let fileInputRef: HTMLInputElement | undefined;
+  let scrollRef!: HTMLDivElement;
+  let slashPopoverRef!: HTMLDivElement;
+  let restoreEndOnFocus = true;
+  let savedCursor: number | null = null;
 
-  const mirror = { input: false }
-  const inset = 56
-  const space = `${inset}px`
+  const mirror = { input: false };
+  const inset = 56;
+  const space = `${inset}px`;
 
   const scrollCursorIntoView = () => {
-    const container = scrollRef
-    const selection = window.getSelection()
-    if (!container || !selection || selection.rangeCount === 0) return
+    const container = scrollRef;
+    const selection = window.getSelection();
+    if (!container || !selection || selection.rangeCount === 0) return;
 
-    const range = selection.getRangeAt(0)
-    if (!editorRef.contains(range.startContainer)) return
+    const range = selection.getRangeAt(0);
+    if (!editorRef.contains(range.startContainer)) return;
 
-    const cursor = getCursorPosition(editorRef)
-    const length = promptLength(prompt.current().filter((part) => part.type !== "image"))
+    const cursor = getCursorPosition(editorRef);
+    const length = promptLength(prompt.current().filter((part) => part.type !== "image"));
     if (cursor >= length) {
-      container.scrollTop = container.scrollHeight
-      return
+      container.scrollTop = container.scrollHeight;
+      return;
     }
 
-    const rect = range.getClientRects().item(0) ?? range.getBoundingClientRect()
-    if (!rect.height) return
+    const rect = range.getClientRects().item(0) ?? range.getBoundingClientRect();
+    if (!rect.height) return;
 
-    const containerRect = container.getBoundingClientRect()
-    const top = rect.top - containerRect.top + container.scrollTop
-    const bottom = rect.bottom - containerRect.top + container.scrollTop
-    const padding = 12
+    const containerRect = container.getBoundingClientRect();
+    const top = rect.top - containerRect.top + container.scrollTop;
+    const bottom = rect.bottom - containerRect.top + container.scrollTop;
+    const padding = 12;
 
     if (top < container.scrollTop + padding) {
-      container.scrollTop = Math.max(0, top - padding)
-      return
+      container.scrollTop = Math.max(0, top - padding);
+      return;
     }
 
     if (bottom > container.scrollTop + container.clientHeight - inset) {
-      container.scrollTop = bottom - container.clientHeight + inset
+      container.scrollTop = bottom - container.clientHeight + inset;
     }
-  }
+  };
 
   const queueScroll = (count = 2) => {
     requestAnimationFrame(() => {
-      scrollCursorIntoView()
-      if (count > 1) queueScroll(count - 1)
-    })
-  }
+      scrollCursorIntoView();
+      if (count > 1) queueScroll(count - 1);
+    });
+  };
 
   const activeFileTab = createSessionTabs({
     tabs,
     pathFromTab: files.pathFromTab,
     normalizeTab: (tab) => (tab.startsWith("file://") ? files.tab(tab) : tab),
-  }).activeFileTab
+  }).activeFileTab;
 
   const commentInReview = (path: string) => {
-    const sessionID = props.controls.session.id
-    if (!sessionID) return false
+    const sessionID = props.controls.session.id;
+    if (!sessionID) return false;
 
-    const diffs = sync().data.session_diff[sessionID]
-    if (!diffs) return false
-    return diffs.some((diff) => diff.file === path)
-  }
+    const diffs = sync().data.session_diff[sessionID];
+    if (!diffs) return false;
+    return diffs.some((diff) => diff.file === path);
+  };
 
-  const openComment = (item: { path: string; commentID?: string; commentOrigin?: "review" | "file" }) => {
-    if (!item.commentID) return
+  const openComment = (item: {
+    path: string;
+    commentID?: string;
+    commentOrigin?: "review" | "file";
+  }) => {
+    if (!item.commentID) return;
 
-    const focus = { file: item.path, id: item.commentID }
-    comments.setActive(focus)
+    const focus = { file: item.path, id: item.commentID };
+    comments.setActive(focus);
 
     const queueCommentFocus = (attempts = 6) => {
       const schedule = (left: number) => {
         requestAnimationFrame(() => {
-          comments.setFocus({ ...focus })
-          if (left <= 0) return
+          comments.setFocus({ ...focus });
+          if (left <= 0) return;
           requestAnimationFrame(() => {
-            const current = comments.focus()
-            if (!current) return
-            if (current.file !== focus.file || current.id !== focus.id) return
-            schedule(left - 1)
-          })
-        })
-      }
+            const current = comments.focus();
+            if (!current) return;
+            if (current.file !== focus.file || current.id !== focus.id) return;
+            schedule(left - 1);
+          });
+        });
+      };
 
-      schedule(attempts)
-    }
+      schedule(attempts);
+    };
 
-    const wantsReview = item.commentOrigin === "review" || (item.commentOrigin !== "file" && commentInReview(item.path))
+    const wantsReview =
+      item.commentOrigin === "review" ||
+      (item.commentOrigin !== "file" && commentInReview(item.path));
     if (wantsReview) {
-      if (!props.controls.session.reviewPanel.opened()) props.controls.session.reviewPanel.open()
-      layout.fileTree.setTab("changes")
-      tabs().setActive("review")
-      queueCommentFocus()
-      return
+      if (!props.controls.session.reviewPanel.opened()) props.controls.session.reviewPanel.open();
+      layout.fileTree.setTab("changes");
+      tabs().setActive("review");
+      queueCommentFocus();
+      return;
     }
 
-    if (!props.controls.session.reviewPanel.opened()) props.controls.session.reviewPanel.open()
-    layout.fileTree.setTab("all")
-    const tab = files.tab(item.path)
-    void tabs().open(tab)
-    tabs().setActive(tab)
-    void Promise.resolve(files.load(item.path)).finally(() => queueCommentFocus())
-  }
+    if (!props.controls.session.reviewPanel.opened()) props.controls.session.reviewPanel.open();
+    layout.fileTree.setTab("all");
+    const tab = files.tab(item.path);
+    void tabs().open(tab);
+    tabs().setActive(tab);
+    void Promise.resolve(files.load(item.path)).finally(() => queueCommentFocus());
+  };
 
   const recent = createMemo(() => {
-    const all = tabs().all()
-    const active = activeFileTab()
-    const order = active ? [active, ...all.filter((x) => x !== active)] : all
-    const seen = new Set<string>()
-    const paths: string[] = []
+    const all = tabs().all();
+    const active = activeFileTab();
+    const order = active ? [active, ...all.filter((x) => x !== active)] : all;
+    const seen = new Set<string>();
+    const paths: string[] = [];
 
     for (const tab of order) {
-      const path = files.pathFromTab(tab)
-      if (!path) continue
-      if (seen.has(path)) continue
-      seen.add(path)
-      paths.push(path)
+      const path = files.pathFromTab(tab);
+      if (!path) continue;
+      if (seen.has(path)) continue;
+      seen.add(path);
+      paths.push(path);
     }
 
-    return paths
-  })
-  const info = createMemo(() => (props.controls.session.id ? sync().session.get(props.controls.session.id) : undefined))
-  const working = createMemo(() => sync().data.session_working(props.controls.session.id ?? ""))
+    return paths;
+  });
+  const info = createMemo(() =>
+    props.controls.session.id ? sync().session.get(props.controls.session.id) : undefined,
+  );
+  const working = createMemo(() => sync().data.session_working(props.controls.session.id ?? ""));
   const imageAttachments = createMemo(() =>
     prompt.current().filter((part): part is ImageAttachmentPart => part.type === "image"),
-  )
+  );
 
   const [store, setStore] = createPromptInputTransientState(
     () => prompt.capture(),
     Math.floor(Math.random() * EXAMPLES.length),
-  )
-  const buttonsSpring = useSpring(() => (store.mode === "normal" ? 1 : 0), { visualDuration: 0.2, bounce: 0 })
+  );
+  const buttonsSpring = useSpring(() => (store.mode === "normal" ? 1 : 0), {
+    visualDuration: 0.2,
+    bounce: 0,
+  });
   const motion = (value: number) => ({
     opacity: value,
     transform: `scale(${0.98 + value * 0.02})`,
     filter: `blur(${(1 - value) * 2}px)`,
     "pointer-events": value > 0.5 ? ("auto" as const) : ("none" as const),
-  })
-  const buttons = createMemo(() => motion(buttonsSpring()))
-  const shell = createMemo(() => motion(1 - buttonsSpring()))
-  const control = createMemo(() => ({ height: "28px", ...buttons() }))
+  });
+  const buttons = createMemo(() => motion(buttonsSpring()));
+  const shell = createMemo(() => motion(1 - buttonsSpring()));
+  const control = createMemo(() => ({ height: "28px", ...buttons() }));
 
   const commentCount = createMemo(() => {
-    if (store.mode === "shell") return 0
-    return prompt.context.items().filter((item) => !!item.comment?.trim()).length
-  })
+    if (store.mode === "shell") return 0;
+    return prompt.context.items().filter((item) => !!item.comment?.trim()).length;
+  });
   const blank = createMemo(() => {
     const text = prompt
       .current()
       .map((part) => ("content" in part ? part.content : ""))
-      .join("")
-    return text.trim().length === 0 && imageAttachments().length === 0 && commentCount() === 0
-  })
-  const stopping = createMemo(() => working() && blank())
+      .join("");
+    return text.trim().length === 0 && imageAttachments().length === 0 && commentCount() === 0;
+  });
+  const stopping = createMemo(() => working() && blank());
   const tip = () => {
     if (stopping()) {
       return (
         <div class="flex items-center gap-2">
           <span>{language.t("prompt.action.stop")}</span>
-          <span class="text-icon-base text-12-medium text-[10px]!">{language.t("common.key.esc")}</span>
+          <span class="text-icon-base text-12-medium text-[10px]!">
+            {language.t("common.key.esc")}
+          </span>
         </div>
-      )
+      );
     }
 
     return (
@@ -384,45 +402,51 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
         <span>{language.t("prompt.action.send")}</span>
         <Icon name="enter" size="small" class="text-icon-base" />
       </div>
-    )
-  }
+    );
+  };
 
   const contextItems = createMemo(() => {
-    const items = prompt.context.items()
-    if (store.mode !== "shell") return items
-    return items.filter((item) => !item.comment?.trim())
-  })
+    const items = prompt.context.items();
+    if (store.mode !== "shell") return items;
+    return items.filter((item) => !item.comment?.trim());
+  });
 
   const hasUserPrompt = createMemo(() => {
-    const sessionID = props.controls.session.id
-    if (!sessionID) return false
-    const messages = sync().data.message[sessionID]
-    if (!messages) return false
-    return messages.some((m) => m.role === "user")
-  })
+    const sessionID = props.controls.session.id;
+    if (!sessionID) return false;
+    const messages = sync().data.message[sessionID];
+    if (!messages) return false;
+    return messages.some((m) => m.role === "user");
+  });
 
-  const history = props.history ?? createPersistedPromptInputHistory()
+  const history = props.history ?? createPersistedPromptInputHistory();
 
-  const suggest = createMemo(() => !hasUserPrompt())
+  const suggest = createMemo(() => !hasUserPrompt());
 
   const placeholder = createMemo(() =>
     promptPlaceholder({
       mode: store.mode,
       commentCount: commentCount(),
-      example: suggest() ? (store.mode === "shell" ? "git status" : language.t(EXAMPLES[store.placeholder])) : "",
+      example: suggest()
+        ? store.mode === "shell"
+          ? "git status"
+          : language.t(EXAMPLES[store.placeholder])
+        : "",
       suggest: suggest(),
       t: (key, params) => language.t(key as Parameters<typeof language.t>[0], params as never),
     }),
-  )
+  );
 
   const historyComments = () => {
-    const byID = new Map(comments.all().map((item) => [`${item.file}\n${item.id}`, item] as const))
+    const byID = new Map(comments.all().map((item) => [`${item.file}\n${item.id}`, item] as const));
     return prompt.context.items().flatMap((item) => {
-      if (item.type !== "file") return []
-      const comment = item.comment?.trim()
-      if (!comment) return []
+      if (item.type !== "file") return [];
+      const comment = item.comment?.trim();
+      if (!comment) return [];
 
-      const selection = item.commentID ? byID.get(`${item.path}\n${item.commentID}`)?.selection : undefined
+      const selection = item.commentID
+        ? byID.get(`${item.path}\n${item.commentID}`)?.selection
+        : undefined;
       const nextSelection =
         selection ??
         (item.selection
@@ -430,8 +454,8 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
               start: item.selection.startLine,
               end: item.selection.endLine,
             } satisfies SelectedLineRange)
-          : undefined)
-      if (!nextSelection) return []
+          : undefined);
+      if (!nextSelection) return [];
 
       return [
         {
@@ -439,13 +463,15 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
           path: item.path,
           selection: { ...nextSelection },
           comment,
-          time: item.commentID ? (byID.get(`${item.path}\n${item.commentID}`)?.time ?? Date.now()) : Date.now(),
+          time: item.commentID
+            ? (byID.get(`${item.path}\n${item.commentID}`)?.time ?? Date.now())
+            : Date.now(),
           origin: item.commentOrigin,
           preview: item.preview,
         } satisfies PromptHistoryComment,
-      ]
-    })
-  }
+      ];
+    });
+  };
 
   const applyHistoryComments = (items: PromptHistoryComment[]) => {
     comments.replace(
@@ -456,7 +482,7 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
         comment: item.comment,
         time: item.time,
       })),
-    )
+    );
     prompt.context.replaceComments(
       items.map((item) => ({
         type: "file" as const,
@@ -467,41 +493,41 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
         commentOrigin: item.origin,
         preview: item.preview,
       })),
-    )
-  }
+    );
+  };
 
   const applyHistoryPrompt = (entry: PromptHistoryEntry, position: "start" | "end") => {
-    const p = entry.prompt
-    const length = position === "start" ? 0 : promptLength(p)
-    setStore("applyingHistory", true)
-    applyHistoryComments(entry.comments)
-    prompt.set(p, length)
+    const p = entry.prompt;
+    const length = position === "start" ? 0 : promptLength(p);
+    setStore("applyingHistory", true);
+    applyHistoryComments(entry.comments);
+    prompt.set(p, length);
     requestAnimationFrame(() => {
-      editorRef.focus()
-      setCursorPosition(editorRef, length)
-      setStore("applyingHistory", false)
-      queueScroll()
-    })
-  }
+      editorRef.focus();
+      setCursorPosition(editorRef, length);
+      setStore("applyingHistory", false);
+      queueScroll();
+    });
+  };
 
   const getCaretState = () => {
-    const selection = window.getSelection()
-    const textLength = promptLength(prompt.current())
+    const selection = window.getSelection();
+    const textLength = promptLength(prompt.current());
     if (!selection || selection.rangeCount === 0) {
-      return { collapsed: false, cursorPosition: 0, textLength }
+      return { collapsed: false, cursorPosition: 0, textLength };
     }
-    const anchorNode = selection.anchorNode
+    const anchorNode = selection.anchorNode;
     if (!anchorNode || !editorRef.contains(anchorNode)) {
-      return { collapsed: false, cursorPosition: 0, textLength }
+      return { collapsed: false, cursorPosition: 0, textLength };
     }
     return {
       collapsed: selection.isCollapsed,
       cursorPosition: getCursorPosition(editorRef),
       textLength,
-    }
-  }
+    };
+  };
 
-  const escBlur = () => platform.platform === "desktop" && platform.os === "macos"
+  const escBlur = () => platform.platform === "desktop" && platform.os === "macos";
 
   const pick = () => {
     pickAttachmentFiles({
@@ -515,17 +541,17 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
           title: language.t("common.requestFailed"),
           description: error instanceof Error ? error.message : String(error),
         }),
-    })
-  }
+    });
+  };
 
   const setMode = (mode: "normal" | "shell") => {
-    setStore("mode", mode)
-    setStore("popover", null)
-    requestAnimationFrame(() => editorRef?.focus())
-  }
+    setStore("mode", mode);
+    setStore("popover", null);
+    requestAnimationFrame(() => editorRef?.focus());
+  };
 
-  const shellModeKey = "mod+shift+x"
-  const normalModeKey = "mod+shift+e"
+  const shellModeKey = "mod+shift+x";
+  const normalModeKey = "mod+shift+e";
 
   command.register("prompt-input", () => [
     {
@@ -552,101 +578,103 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
       disabled: store.mode === "normal",
       onSelect: () => setMode("normal"),
     },
-  ])
+  ]);
 
-  const closePopover = () => setStore("popover", null)
+  const closePopover = () => setStore("popover", null);
 
   const resetHistoryNavigation = (force = false) => {
-    if (!force && (store.historyIndex < 0 || store.applyingHistory)) return
-    setStore("historyIndex", -1)
-    setStore("savedPrompt", null)
-  }
+    if (!force && (store.historyIndex < 0 || store.applyingHistory)) return;
+    setStore("historyIndex", -1);
+    setStore("savedPrompt", null);
+  };
 
   const clearEditor = () => {
-    editorRef.innerHTML = ""
-  }
+    editorRef.innerHTML = "";
+  };
 
   const setEditorText = (text: string) => {
-    clearEditor()
-    editorRef.textContent = text
-  }
+    clearEditor();
+    editorRef.textContent = text;
+  };
 
   const focusEditorEnd = () => {
     requestAnimationFrame(() => {
-      editorRef.focus()
-      const range = document.createRange()
-      const selection = window.getSelection()
-      range.selectNodeContents(editorRef)
-      range.collapse(false)
-      selection?.removeAllRanges()
-      selection?.addRange(range)
-    })
-  }
+      editorRef.focus();
+      const range = document.createRange();
+      const selection = window.getSelection();
+      range.selectNodeContents(editorRef);
+      range.collapse(false);
+      selection?.removeAllRanges();
+      selection?.addRange(range);
+    });
+  };
 
   const currentCursor = () => {
-    const selection = window.getSelection()
-    if (!selection || selection.rangeCount === 0 || !editorRef.contains(selection.anchorNode)) return null
-    return getCursorPosition(editorRef)
-  }
+    const selection = window.getSelection();
+    if (!selection || selection.rangeCount === 0 || !editorRef.contains(selection.anchorNode))
+      return null;
+    return getCursorPosition(editorRef);
+  };
 
   const restoreFocus = () => {
     requestAnimationFrame(() => {
-      const cursor = savedCursor ?? prompt.cursor() ?? promptLength(prompt.current())
-      editorRef.focus()
-      setCursorPosition(editorRef, cursor)
-      queueScroll()
-    })
-  }
+      const cursor = savedCursor ?? prompt.cursor() ?? promptLength(prompt.current());
+      editorRef.focus();
+      setCursorPosition(editorRef, cursor);
+      queueScroll();
+    });
+  };
 
   const handleFocus = () => {
-    if (!restoreEndOnFocus) return
-    restoreEndOnFocus = false
+    if (!restoreEndOnFocus) return;
+    restoreEndOnFocus = false;
     requestAnimationFrame(() => {
-      if (document.activeElement !== editorRef) return
-      setCursorPosition(editorRef, prompt.cursor() ?? promptLength(prompt.current()))
-      queueScroll()
-    })
-  }
+      if (document.activeElement !== editorRef) return;
+      setCursorPosition(editorRef, prompt.cursor() ?? promptLength(prompt.current()));
+      queueScroll();
+    });
+  };
 
   const renderEditorWithCursor = (parts: Prompt) => {
-    const cursor = currentCursor()
-    renderEditor(parts)
-    if (cursor !== null) setCursorPosition(editorRef, cursor)
-  }
+    const cursor = currentCursor();
+    renderEditor(parts);
+    if (cursor !== null) setCursorPosition(editorRef, cursor);
+  };
 
   createEffect(() => {
-    props.controls.session.id
-    if (props.controls.session.id) return
-    if (!suggest()) return
+    props.controls.session.id;
+    if (props.controls.session.id) return;
+    if (!suggest()) return;
     const interval = setInterval(() => {
-      setStore("placeholder", (prev) => (prev + 1) % EXAMPLES.length)
-    }, 6500)
-    onCleanup(() => clearInterval(interval))
-  })
+      setStore("placeholder", (prev) => (prev + 1) % EXAMPLES.length);
+    }, 6500);
+    onCleanup(() => clearInterval(interval));
+  });
 
-  const [composing, setComposing] = createSignal(false)
-  const isImeComposing = (event: KeyboardEvent) => event.isComposing || composing() || event.keyCode === 229
+  const [composing, setComposing] = createSignal(false);
+  const isImeComposing = (event: KeyboardEvent) =>
+    event.isComposing || composing() || event.keyCode === 229;
 
   const handleBlur = () => {
-    savedCursor = currentCursor()
-    closePopover()
-    setComposing(false)
-  }
+    savedCursor = currentCursor();
+    closePopover();
+    setComposing(false);
+  };
 
   const handleCompositionStart = () => {
-    setComposing(true)
-  }
+    setComposing(true);
+  };
 
   const handleCompositionEnd = () => {
-    setComposing(false)
+    setComposing(false);
     requestAnimationFrame(() => {
-      if (composing()) return
-      reconcile(prompt.current().filter((part) => part.type !== "image"))
-    })
-  }
+      if (composing()) return;
+      reconcile(prompt.current().filter((part) => part.type !== "image"));
+    });
+  };
 
   const referenceDescription = (reference: ReferenceInfo) =>
-    reference.source.type === "git" ? reference.source.repository : reference.source.path
+    reference.source.type === "git" ? reference.source.repository : reference.source.path;
 
   const referenceList = createMemo(() =>
     sync()
@@ -660,13 +688,13 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
           description: reference.description ?? referenceDescription(reference),
         }),
       ),
-  )
+  );
 
   const agentList = createMemo(() =>
     props.controls.agents.available
       .filter((agent) => !agent.hidden && agent.mode !== "primary")
       .map((agent): AtOption => ({ type: "agent", name: agent.name, display: agent.name })),
-  )
+  );
 
   const mcpResourceList = createMemo(() =>
     Object.values(sync().data.mcp_resource).map(
@@ -680,13 +708,13 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
         mime: resource.mimeType,
       }),
     ),
-  )
+  );
 
   const handleAtSelect = (option: AtOption | undefined) => {
-    if (!option) return
+    if (!option) return;
     if (option.type === "agent") {
-      addPart({ type: "agent", name: option.name, content: "@" + option.name, start: 0, end: 0 })
-      return
+      addPart({ type: "agent", name: option.name, content: "@" + option.name, start: 0, end: 0 });
+      return;
     }
     if (option.type === "reference") {
       addPart({
@@ -697,8 +725,8 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
         end: 0,
         mime: "application/x-directory",
         filename: option.name,
-      })
-      return
+      });
+      return;
     }
     if (option.type === "resource") {
       addPart({
@@ -716,19 +744,19 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
           clientName: option.client,
           uri: option.uri,
         },
-      })
-      return
+      });
+      return;
     }
-    addPart({ type: "file", path: option.path, content: "@" + option.path, start: 0, end: 0 })
-  }
+    addPart({ type: "file", path: option.path, content: "@" + option.path, start: 0, end: 0 });
+  };
 
   const atKey = (x: AtOption | undefined) => {
-    if (!x) return ""
-    if (x.type === "agent") return `agent:${x.name}`
-    if (x.type === "reference") return `reference:${x.name}`
-    if (x.type === "resource") return `resource:${x.client}:${x.uri}`
-    return `file:${x.path}`
-  }
+    if (!x) return "";
+    if (x.type === "agent") return `agent:${x.name}`;
+    if (x.type === "reference") return `reference:${x.name}`;
+    if (x.type === "resource") return `resource:${x.client}:${x.uri}`;
+    return `file:${x.path}`;
+  };
 
   const {
     flat: atFlat,
@@ -738,41 +766,46 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
     onKeyDown: atOnKeyDown,
   } = useFilteredList<AtOption>({
     items: async (query) => {
-      const references = referenceList()
-      const agents = agentList()
-      const mcpResources = mcpResourceList()
-      const open = recent()
-      const seen = new Set(open)
-      const pinned: AtOption[] = open.map((path) => ({ type: "file", path, display: path, recent: true }))
-      if (!query.trim()) return [...references, ...agents, ...mcpResources, ...pinned]
-      const paths = await files.searchFilesAndDirectories(query)
+      const references = referenceList();
+      const agents = agentList();
+      const mcpResources = mcpResourceList();
+      const open = recent();
+      const seen = new Set(open);
+      const pinned: AtOption[] = open.map((path) => ({
+        type: "file",
+        path,
+        display: path,
+        recent: true,
+      }));
+      if (!query.trim()) return [...references, ...agents, ...mcpResources, ...pinned];
+      const paths = await files.searchFilesAndDirectories(query);
       const fileOptions: AtOption[] = paths
         .filter((path) => !seen.has(path))
-        .map((path) => ({ type: "file", path, display: path }))
-      return [...references, ...agents, ...mcpResources, ...pinned, ...fileOptions]
+        .map((path) => ({ type: "file", path, display: path }));
+      return [...references, ...agents, ...mcpResources, ...pinned, ...fileOptions];
     },
     key: atKey,
     filterKeys: ["display"],
     skipFilter: (item) => item.type === "file" && !item.recent,
     groupBy: (item) => {
-      if (item.type === "reference") return "reference"
-      if (item.type === "agent") return "agent"
-      if (item.type === "resource") return "resource"
-      if (item.recent) return "recent"
-      return "file"
+      if (item.type === "reference") return "reference";
+      if (item.type === "agent") return "agent";
+      if (item.type === "resource") return "resource";
+      if (item.recent) return "recent";
+      return "file";
     },
     sortGroupsBy: (a, b) => {
       const rank = (category: string) => {
-        if (category === "reference") return 0
-        if (category === "agent") return 1
-        if (category === "resource") return 2
-        if (category === "recent") return 3
-        return 4
-      }
-      return rank(a.category) - rank(b.category)
+        if (category === "reference") return 0;
+        if (category === "agent") return 1;
+        if (category === "resource") return 2;
+        if (category === "recent") return 3;
+        return 4;
+      };
+      return rank(a.category) - rank(b.category);
     },
     onSelect: handleAtSelect,
-  })
+  });
 
   const slashCommands = createMemo<SlashCommand[]>(() => {
     const builtin = command.options
@@ -784,7 +817,7 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
         description: opt.description,
         keybind: opt.keybind,
         type: "builtin" as const,
-      }))
+      }));
 
     const custom = sync().data.command.map((cmd) => ({
       id: `custom.${cmd.name}`,
@@ -793,28 +826,31 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
       description: cmd.description,
       type: "custom" as const,
       source: cmd.source,
-    }))
+    }));
 
-    return [...custom, ...builtin]
-  })
+    return [...custom, ...builtin];
+  });
 
   const handleSlashSelect = (cmd: SlashCommand | undefined) => {
-    if (!cmd) return
-    closePopover()
-    const images = imageAttachments()
+    if (!cmd) return;
+    closePopover();
+    const images = imageAttachments();
 
     if (cmd.type === "custom") {
-      const text = `/${cmd.trigger} `
-      setEditorText(text)
-      prompt.set([{ type: "text", content: text, start: 0, end: text.length }, ...images], text.length)
-      focusEditorEnd()
-      return
+      const text = `/${cmd.trigger} `;
+      setEditorText(text);
+      prompt.set(
+        [{ type: "text", content: text, start: 0, end: text.length }, ...images],
+        text.length,
+      );
+      focusEditorEnd();
+      return;
     }
 
-    clearEditor()
-    prompt.set([...DEFAULT_PROMPT, ...images], 0)
-    command.trigger(cmd.id, "slash")
-  }
+    clearEditor();
+    prompt.set([...DEFAULT_PROMPT, ...images], 0);
+    command.trigger(cmd.id, "slash");
+  };
 
   const {
     flat: slashFlat,
@@ -827,139 +863,142 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
     key: (x) => x?.id,
     filterKeys: ["trigger", "title"],
     onSelect: handleSlashSelect,
-  })
+  });
 
   const createPill = (part: FileAttachmentPart | AgentPart) => {
-    const pill = document.createElement("span")
-    pill.textContent = part.content
-    pill.setAttribute("data-type", part.type)
+    const pill = document.createElement("span");
+    pill.textContent = part.content;
+    pill.setAttribute("data-type", part.type);
     if (part.type === "file") {
-      pill.setAttribute("data-path", part.path)
-      if (part.mime) pill.setAttribute("data-mime", part.mime)
-      if (part.filename) pill.setAttribute("data-filename", part.filename)
-      if (part.url) pill.setAttribute("data-url", part.url)
+      pill.setAttribute("data-path", part.path);
+      if (part.mime) pill.setAttribute("data-mime", part.mime);
+      if (part.filename) pill.setAttribute("data-filename", part.filename);
+      if (part.url) pill.setAttribute("data-url", part.url);
       if (part.source?.type === "resource") {
-        pill.setAttribute("data-source-type", part.source.type)
-        pill.setAttribute("data-source-client-name", part.source.clientName)
-        pill.setAttribute("data-source-uri", part.source.uri)
+        pill.setAttribute("data-source-type", part.source.type);
+        pill.setAttribute("data-source-client-name", part.source.clientName);
+        pill.setAttribute("data-source-uri", part.source.uri);
       }
     }
-    if (part.type === "agent") pill.setAttribute("data-name", part.name)
-    pill.setAttribute("contenteditable", "false")
-    pill.style.userSelect = "text"
-    pill.style.cursor = "default"
-    return pill
-  }
+    if (part.type === "agent") pill.setAttribute("data-name", part.name);
+    pill.setAttribute("contenteditable", "false");
+    pill.style.userSelect = "text";
+    pill.style.cursor = "default";
+    return pill;
+  };
 
   const isNormalizedEditor = () =>
     Array.from(editorRef.childNodes).every((node) => {
       if (node.nodeType === Node.TEXT_NODE) {
-        const text = node.textContent ?? ""
-        if (!text.includes("\u200B")) return true
-        if (text !== "\u200B") return false
+        const text = node.textContent ?? "";
+        if (!text.includes("\u200B")) return true;
+        if (text !== "\u200B") return false;
 
-        const prev = node.previousSibling
-        const next = node.nextSibling
-        const prevIsBr = prev?.nodeType === Node.ELEMENT_NODE && (prev as HTMLElement).tagName === "BR"
-        return !!prevIsBr && !next
+        const prev = node.previousSibling;
+        const next = node.nextSibling;
+        const prevIsBr =
+          prev?.nodeType === Node.ELEMENT_NODE && (prev as HTMLElement).tagName === "BR";
+        return !!prevIsBr && !next;
       }
-      if (node.nodeType !== Node.ELEMENT_NODE) return false
-      const el = node as HTMLElement
-      if (el.dataset.type === "file") return true
-      if (el.dataset.type === "agent") return true
-      return el.tagName === "BR"
-    })
+      if (node.nodeType !== Node.ELEMENT_NODE) return false;
+      const el = node as HTMLElement;
+      if (el.dataset.type === "file") return true;
+      if (el.dataset.type === "agent") return true;
+      return el.tagName === "BR";
+    });
 
   const renderEditor = (parts: Prompt) => {
-    clearEditor()
+    clearEditor();
     for (const part of parts) {
       if (part.type === "text") {
-        editorRef.appendChild(createTextFragment(part.content))
-        continue
+        editorRef.appendChild(createTextFragment(part.content));
+        continue;
       }
       if (part.type === "file" || part.type === "agent") {
-        editorRef.appendChild(createPill(part))
+        editorRef.appendChild(createPill(part));
       }
     }
 
-    const last = editorRef.lastChild
+    const last = editorRef.lastChild;
     if (last?.nodeType === Node.ELEMENT_NODE && (last as HTMLElement).tagName === "BR") {
-      editorRef.appendChild(document.createTextNode("\u200B"))
+      editorRef.appendChild(document.createTextNode("\u200B"));
     }
-  }
+  };
 
   const scrollSlashActiveIntoView = () => {
-    const activeId = slashActive()
-    if (!activeId || !slashPopoverRef) return
+    const activeId = slashActive();
+    if (!activeId || !slashPopoverRef) return;
 
     requestAnimationFrame(() => {
-      const element = slashPopoverRef.querySelector(`[data-slash-id="${activeId}"]`)
-      element?.scrollIntoView({ block: "nearest", behavior: "smooth" })
-    })
-  }
+      const element = slashPopoverRef.querySelector(`[data-slash-id="${activeId}"]`);
+      element?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    });
+  };
   const selectPopoverActive = () => {
     if (store.popover === "at") {
-      const items = atFlat()
-      if (items.length === 0) return
-      const active = atActive()
-      const item = items.find((entry) => atKey(entry) === active) ?? items[0]
-      handleAtSelect(item)
-      return
+      const items = atFlat();
+      if (items.length === 0) return;
+      const active = atActive();
+      const item = items.find((entry) => atKey(entry) === active) ?? items[0];
+      handleAtSelect(item);
+      return;
     }
 
     if (store.popover === "slash") {
-      const items = slashFlat()
-      if (items.length === 0) return
-      const active = slashActive()
-      const item = items.find((entry) => entry.id === active) ?? items[0]
-      handleSlashSelect(item)
+      const items = slashFlat();
+      if (items.length === 0) return;
+      const active = slashActive();
+      const item = items.find((entry) => entry.id === active) ?? items[0];
+      handleSlashSelect(item);
     }
-  }
+  };
 
   const reconcile = (input: Prompt) => {
     if (mirror.input) {
-      mirror.input = false
-      if (isNormalizedEditor()) return
+      mirror.input = false;
+      if (isNormalizedEditor()) return;
 
-      renderEditorWithCursor(input)
-      return
+      renderEditorWithCursor(input);
+      return;
     }
 
-    const dom = parseFromDOM()
-    if (isNormalizedEditor() && isPromptEqual(input, dom)) return
+    const dom = parseFromDOM();
+    if (isNormalizedEditor() && isPromptEqual(input, dom)) return;
 
-    renderEditorWithCursor(input)
-  }
+    renderEditorWithCursor(input);
+  };
 
   createEffect(
     on(
       () => prompt.current(),
       (parts) => {
-        if (composing()) return
-        reconcile(parts.filter((part) => part.type !== "image"))
+        if (composing()) return;
+        reconcile(parts.filter((part) => part.type !== "image"));
       },
     ),
-  )
+  );
 
   const parseFromDOM = (): Prompt => {
-    const parts: Prompt = []
-    let position = 0
-    let buffer = ""
+    const parts: Prompt = [];
+    let position = 0;
+    let buffer = "";
 
     const flushText = () => {
-      let content = buffer
-      if (content.includes("\r")) content = content.replace(/\r\n?/g, "\n")
-      if (content.includes("\u200B")) content = content.replace(/\u200B/g, "")
-      buffer = ""
-      if (!content) return
-      parts.push({ type: "text", content, start: position, end: position + content.length })
-      position += content.length
-    }
+      let content = buffer;
+      if (content.includes("\r")) content = content.replace(/\r\n?/g, "\n");
+      if (content.includes("\u200B")) content = content.replace(/\u200B/g, "");
+      buffer = "";
+      if (!content) return;
+      parts.push({ type: "text", content, start: position, end: position + content.length });
+      position += content.length;
+    };
 
     const pushFile = (file: HTMLElement) => {
-      const content = file.textContent ?? ""
+      const content = file.textContent ?? "";
       const source =
-        file.dataset.sourceType === "resource" && file.dataset.sourceClientName && file.dataset.sourceUri
+        file.dataset.sourceType === "resource" &&
+        file.dataset.sourceClientName &&
+        file.dataset.sourceUri
           ? {
               type: "resource" as const,
               text: {
@@ -970,7 +1009,7 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
               clientName: file.dataset.sourceClientName,
               uri: file.dataset.sourceUri,
             }
-          : undefined
+          : undefined;
       parts.push({
         type: "file",
         path: file.dataset.path!,
@@ -981,209 +1020,215 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
         ...(file.dataset.filename ? { filename: file.dataset.filename } : {}),
         ...(file.dataset.url ? { url: file.dataset.url } : {}),
         ...(source ? { source } : {}),
-      })
-      position += content.length
-    }
+      });
+      position += content.length;
+    };
 
     const pushAgent = (agent: HTMLElement) => {
-      const content = agent.textContent ?? ""
+      const content = agent.textContent ?? "";
       parts.push({
         type: "agent",
         name: agent.dataset.name!,
         content,
         start: position,
         end: position + content.length,
-      })
-      position += content.length
-    }
+      });
+      position += content.length;
+    };
 
     const visit = (node: Node) => {
       if (node.nodeType === Node.TEXT_NODE) {
-        buffer += node.textContent ?? ""
-        return
+        buffer += node.textContent ?? "";
+        return;
       }
-      if (node.nodeType !== Node.ELEMENT_NODE) return
+      if (node.nodeType !== Node.ELEMENT_NODE) return;
 
-      const el = node as HTMLElement
+      const el = node as HTMLElement;
       if (el.dataset.type === "file") {
-        flushText()
-        pushFile(el)
-        return
+        flushText();
+        pushFile(el);
+        return;
       }
       if (el.dataset.type === "agent") {
-        flushText()
-        pushAgent(el)
-        return
+        flushText();
+        pushAgent(el);
+        return;
       }
       if (el.tagName === "BR") {
-        buffer += "\n"
-        return
+        buffer += "\n";
+        return;
       }
 
       for (const child of Array.from(el.childNodes)) {
-        visit(child)
+        visit(child);
       }
-    }
+    };
 
-    const children = Array.from(editorRef.childNodes)
+    const children = Array.from(editorRef.childNodes);
     children.forEach((child, index) => {
-      const isBlock = child.nodeType === Node.ELEMENT_NODE && ["DIV", "P"].includes((child as HTMLElement).tagName)
-      visit(child)
+      const isBlock =
+        child.nodeType === Node.ELEMENT_NODE &&
+        ["DIV", "P"].includes((child as HTMLElement).tagName);
+      visit(child);
       if (isBlock && index < children.length - 1) {
-        buffer += "\n"
+        buffer += "\n";
       }
-    })
+    });
 
-    flushText()
+    flushText();
 
-    if (parts.length === 0) parts.push(...DEFAULT_PROMPT)
-    return parts
-  }
+    if (parts.length === 0) parts.push(...DEFAULT_PROMPT);
+    return parts;
+  };
 
   const handleInput = () => {
-    const rawParts = parseFromDOM()
-    const images = imageAttachments()
-    const cursorPosition = getCursorPosition(editorRef)
+    const rawParts = parseFromDOM();
+    const images = imageAttachments();
+    const cursorPosition = getCursorPosition(editorRef);
     const rawText =
       rawParts.length === 1 && rawParts[0]?.type === "text"
         ? rawParts[0].content
-        : rawParts.map((p) => ("content" in p ? p.content : "")).join("")
-    const hasNonText = rawParts.some((part) => part.type !== "text")
-    const textContent = (editorRef.textContent ?? "").replace(/\u200B/g, "")
+        : rawParts.map((p) => ("content" in p ? p.content : "")).join("");
+    const hasNonText = rawParts.some((part) => part.type !== "text");
+    const textContent = (editorRef.textContent ?? "").replace(/\u200B/g, "");
     const shouldReset =
-      textContent.length === 0 && rawText.replace(/\n/g, "").length === 0 && !hasNonText && images.length === 0
+      textContent.length === 0 &&
+      rawText.replace(/\n/g, "").length === 0 &&
+      !hasNonText &&
+      images.length === 0;
 
     if (shouldReset) {
-      closePopover()
-      resetHistoryNavigation()
+      closePopover();
+      resetHistoryNavigation();
       if (prompt.dirty()) {
-        mirror.input = true
-        prompt.set(DEFAULT_PROMPT, 0)
+        mirror.input = true;
+        prompt.set(DEFAULT_PROMPT, 0);
       }
-      queueScroll()
-      return
+      queueScroll();
+      return;
     }
 
-    const shellMode = store.mode === "shell"
+    const shellMode = store.mode === "shell";
 
     if (!shellMode) {
-      const atMatch = rawText.substring(0, cursorPosition).match(/@(\S*)$/)
-      const slashMatch = rawText.match(/^\/(\S*)$/)
+      const atMatch = rawText.substring(0, cursorPosition).match(/@(\S*)$/);
+      const slashMatch = rawText.match(/^\/(\S*)$/);
 
       if (atMatch) {
-        atOnInput(atMatch[1])
-        setStore("popover", "at")
+        atOnInput(atMatch[1]);
+        setStore("popover", "at");
       } else if (slashMatch) {
-        slashOnInput(slashMatch[1])
-        setStore("popover", "slash")
+        slashOnInput(slashMatch[1]);
+        setStore("popover", "slash");
       } else {
-        closePopover()
+        closePopover();
       }
     } else {
-      closePopover()
+      closePopover();
     }
 
-    resetHistoryNavigation()
+    resetHistoryNavigation();
 
-    mirror.input = true
-    prompt.set([...rawParts, ...images], cursorPosition)
-    queueScroll()
-  }
+    mirror.input = true;
+    prompt.set([...rawParts, ...images], cursorPosition);
+    queueScroll();
+  };
 
   const addPart = (part: ContentPart) => {
-    if (part.type === "image") return false
+    if (part.type === "image") return false;
 
-    const selection = window.getSelection()
-    if (!selection) return false
+    const selection = window.getSelection();
+    if (!selection) return false;
 
     if (selection.rangeCount === 0 || !editorRef.contains(selection.anchorNode)) {
-      editorRef.focus()
-      const cursor = prompt.cursor() ?? promptLength(prompt.current())
-      setCursorPosition(editorRef, cursor)
+      editorRef.focus();
+      const cursor = prompt.cursor() ?? promptLength(prompt.current());
+      setCursorPosition(editorRef, cursor);
     }
 
-    if (selection.rangeCount === 0) return false
-    const range = selection.getRangeAt(0)
-    if (!editorRef.contains(range.startContainer)) return false
+    if (selection.rangeCount === 0) return false;
+    const range = selection.getRangeAt(0);
+    if (!editorRef.contains(range.startContainer)) return false;
 
     if (part.type === "file" || part.type === "agent") {
-      const cursorPosition = getCursorPosition(editorRef)
+      const cursorPosition = getCursorPosition(editorRef);
       const rawText = prompt
         .current()
         .map((p) => ("content" in p ? p.content : ""))
-        .join("")
-      const textBeforeCursor = rawText.substring(0, cursorPosition)
-      const atMatch = textBeforeCursor.match(/@(\S*)$/)
-      const pill = createPill(part)
-      const gap = document.createTextNode(" ")
+        .join("");
+      const textBeforeCursor = rawText.substring(0, cursorPosition);
+      const atMatch = textBeforeCursor.match(/@(\S*)$/);
+      const pill = createPill(part);
+      const gap = document.createTextNode(" ");
 
       if (atMatch) {
-        const start = atMatch.index ?? cursorPosition - atMatch[0].length
-        setRangeEdge(editorRef, range, "start", start)
-        setRangeEdge(editorRef, range, "end", cursorPosition)
+        const start = atMatch.index ?? cursorPosition - atMatch[0].length;
+        setRangeEdge(editorRef, range, "start", start);
+        setRangeEdge(editorRef, range, "end", cursorPosition);
       }
 
-      range.deleteContents()
-      range.insertNode(gap)
-      range.insertNode(pill)
-      range.setStartAfter(gap)
-      range.collapse(true)
-      selection.removeAllRanges()
-      selection.addRange(range)
+      range.deleteContents();
+      range.insertNode(gap);
+      range.insertNode(pill);
+      range.setStartAfter(gap);
+      range.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(range);
     }
 
     if (part.type === "text") {
-      const fragment = createTextFragment(part.content)
-      const last = fragment.lastChild
-      range.deleteContents()
-      range.insertNode(fragment)
+      const fragment = createTextFragment(part.content);
+      const last = fragment.lastChild;
+      range.deleteContents();
+      range.insertNode(fragment);
       if (last) {
         if (last.nodeType === Node.TEXT_NODE) {
-          const text = last.textContent ?? ""
+          const text = last.textContent ?? "";
           if (text === "\u200B") {
-            range.setStart(last, 0)
+            range.setStart(last, 0);
           }
           if (text !== "\u200B") {
-            range.setStart(last, text.length)
+            range.setStart(last, text.length);
           }
         }
         if (last.nodeType !== Node.TEXT_NODE) {
-          const isBreak = last.nodeType === Node.ELEMENT_NODE && (last as HTMLElement).tagName === "BR"
-          const next = last.nextSibling
-          const emptyText = next?.nodeType === Node.TEXT_NODE && (next.textContent ?? "") === ""
+          const isBreak =
+            last.nodeType === Node.ELEMENT_NODE && (last as HTMLElement).tagName === "BR";
+          const next = last.nextSibling;
+          const emptyText = next?.nodeType === Node.TEXT_NODE && (next.textContent ?? "") === "";
           if (isBreak && (!next || emptyText)) {
-            const placeholder = next && emptyText ? next : document.createTextNode("\u200B")
-            if (!next) last.parentNode?.insertBefore(placeholder, null)
-            placeholder.textContent = "\u200B"
-            range.setStart(placeholder, 0)
+            const placeholder = next && emptyText ? next : document.createTextNode("\u200B");
+            if (!next) last.parentNode?.insertBefore(placeholder, null);
+            placeholder.textContent = "\u200B";
+            range.setStart(placeholder, 0);
           } else {
-            range.setStartAfter(last)
+            range.setStartAfter(last);
           }
         }
       }
-      range.collapse(true)
-      selection.removeAllRanges()
-      selection.addRange(range)
+      range.collapse(true);
+      selection.removeAllRanges();
+      selection.addRange(range);
     }
 
-    handleInput()
-    closePopover()
-    return true
-  }
+    handleInput();
+    closePopover();
+    return true;
+  };
 
   const addToHistory = (prompt: Prompt, mode: "normal" | "shell") => {
-    history.add(prompt, mode, mode === "shell" ? [] : historyComments())
-  }
+    history.add(prompt, mode, mode === "shell" ? [] : historyComments());
+  };
 
   createEffect(
     on(
       () => props.edit?.id,
       (id) => {
-        const edit = props.edit
-        if (!id || !edit) return
+        const edit = props.edit;
+        if (!id || !edit) return;
 
         for (const item of prompt.context.items()) {
-          prompt.context.remove(item.key)
+          prompt.context.remove(item.key);
         }
 
         for (const item of edit.context) {
@@ -1195,24 +1240,24 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
             commentID: item.commentID,
             commentOrigin: item.commentOrigin,
             preview: item.preview,
-          })
+          });
         }
 
-        setStore("mode", "normal")
-        setStore("popover", null)
-        setStore("historyIndex", -1)
-        setStore("savedPrompt", null)
-        prompt.set(edit.prompt, promptLength(edit.prompt))
+        setStore("mode", "normal");
+        setStore("popover", null);
+        setStore("historyIndex", -1);
+        setStore("savedPrompt", null);
+        prompt.set(edit.prompt, promptLength(edit.prompt));
         requestAnimationFrame(() => {
-          editorRef.focus()
-          setCursorPosition(editorRef, promptLength(edit.prompt))
-          queueScroll()
-        })
-        props.onEditLoaded?.()
+          editorRef.focus();
+          setCursorPosition(editorRef, promptLength(edit.prompt));
+          queueScroll();
+        });
+        props.onEditLoaded?.();
       },
       { defer: true },
     ),
-  )
+  );
 
   const navigateHistory = (direction: "up" | "down") => {
     const result = navigatePromptHistory({
@@ -1222,13 +1267,13 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
       currentPrompt: prompt.current(),
       currentComments: historyComments(),
       savedPrompt: store.savedPrompt,
-    })
-    if (!result.handled) return false
-    setStore("historyIndex", result.historyIndex)
-    setStore("savedPrompt", result.savedPrompt)
-    applyHistoryPrompt(result.entry, result.cursor)
-    return true
-  }
+    });
+    if (!result.handled) return false;
+    setStore("historyIndex", result.historyIndex);
+    setStore("savedPrompt", result.savedPrompt);
+    applyHistoryPrompt(result.entry, result.cursor);
+    return true;
+  };
 
   const { addAttachment, addAttachments, removeAttachment, handlePaste } = createPromptAttachments({
     prompt,
@@ -1236,13 +1281,13 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
     isDialogActive: () => !!dialog.active,
     setDraggingType: (type) => setStore("draggingType", type),
     focusEditor: () => {
-      editorRef.focus()
-      setCursorPosition(editorRef, promptLength(prompt.current()))
+      editorRef.focus();
+      setCursorPosition(editorRef, promptLength(prompt.current()));
     },
     addPart,
     readClipboardImage: platform.readClipboardImage,
     getPathForFile: platform.getPathForFile,
-  })
+  });
 
   const fileAttachmentInput = () => (
     <input
@@ -1252,21 +1297,23 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
       accept={ACCEPTED_FILE_TYPES.join(",")}
       class="hidden"
       onChange={(e) => {
-        const list = e.currentTarget.files
-        if (list) void addAttachments(Array.from(list))
-        e.currentTarget.value = ""
+        const list = e.currentTarget.files;
+        if (list) void addAttachments(Array.from(list));
+        e.currentTarget.value = "";
       }}
     />
-  )
+  );
 
-  const variants = createMemo(() => ["default", ...props.controls.model.selection.variant.list()])
+  const variants = createMemo(() => ["default", ...props.controls.model.selection.variant.list()]);
   // Check provider variants directly: `variants` also includes the UI-only default option.
-  const showVariantControl = createMemo(() => props.controls.model.selection.variant.list().length > 0)
+  const showVariantControl = createMemo(
+    () => props.controls.model.selection.variant.list().length > 0,
+  );
   const accepting = createMemo(() => {
-    const id = props.controls.session.id
-    if (!id) return permission.isAutoAcceptingDirectory(sdk().directory)
-    return permission.isAutoAccepting(id, sdk().directory)
-  })
+    const id = props.controls.session.id;
+    if (!id) return permission.isAutoAcceptingDirectory(sdk().directory);
+    return permission.isAutoAccepting(id, sdk().directory);
+  });
 
   const { abort, handleSubmit } =
     props.submission ??
@@ -1283,7 +1330,7 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
       promptLength,
       addToHistory,
       resetHistoryNavigation: () => {
-        resetHistoryNavigation(true)
+        resetHistoryNavigation(true);
       },
       setMode: (mode) => setStore("mode", mode),
       setPopover: (popover) => setStore("popover", popover),
@@ -1293,157 +1340,165 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
       onQueue: props.onQueue,
       onAbort: props.onAbort,
       onSubmit: props.onSubmit,
-    })
+    });
 
   const handleKeyDown = (event: KeyboardEvent) => {
-    if ((event.metaKey || event.ctrlKey) && !event.altKey && !event.shiftKey && event.key.toLowerCase() === "u") {
-      event.preventDefault()
-      if (store.mode !== "normal") return
-      pick()
-      return
+    if (
+      (event.metaKey || event.ctrlKey) &&
+      !event.altKey &&
+      !event.shiftKey &&
+      event.key.toLowerCase() === "u"
+    ) {
+      event.preventDefault();
+      if (store.mode !== "normal") return;
+      pick();
+      return;
     }
 
     if (event.key === "Backspace") {
-      const selection = window.getSelection()
+      const selection = window.getSelection();
       if (selection && selection.isCollapsed) {
-        const node = selection.anchorNode
-        const offset = selection.anchorOffset
+        const node = selection.anchorNode;
+        const offset = selection.anchorOffset;
         if (node && node.nodeType === Node.TEXT_NODE) {
-          const text = node.textContent ?? ""
+          const text = node.textContent ?? "";
           if (/^\u200B+$/.test(text) && offset > 0) {
-            const range = document.createRange()
-            range.setStart(node, 0)
-            range.collapse(true)
-            selection.removeAllRanges()
-            selection.addRange(range)
+            const range = document.createRange();
+            range.setStart(node, 0);
+            range.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(range);
           }
         }
       }
     }
 
     if (event.key === "!" && store.mode === "normal") {
-      const cursorPosition = getCursorPosition(editorRef)
+      const cursorPosition = getCursorPosition(editorRef);
       if (cursorPosition === 0) {
-        setStore("mode", "shell")
-        setStore("popover", null)
-        event.preventDefault()
-        return
+        setStore("mode", "shell");
+        setStore("popover", null);
+        event.preventDefault();
+        return;
       }
     }
 
     if (event.key === "Escape") {
       if (store.popover) {
-        closePopover()
-        event.preventDefault()
-        event.stopPropagation()
-        return
+        closePopover();
+        event.preventDefault();
+        event.stopPropagation();
+        return;
       }
 
       if (store.mode === "shell") {
-        setStore("mode", "normal")
-        event.preventDefault()
-        event.stopPropagation()
-        return
+        setStore("mode", "normal");
+        event.preventDefault();
+        event.stopPropagation();
+        return;
       }
 
       if (working()) {
-        void abort()
-        event.preventDefault()
-        event.stopPropagation()
-        return
+        void abort();
+        event.preventDefault();
+        event.stopPropagation();
+        return;
       }
 
       if (escBlur()) {
-        editorRef.blur()
-        event.preventDefault()
-        event.stopPropagation()
-        return
+        editorRef.blur();
+        event.preventDefault();
+        event.stopPropagation();
+        return;
       }
     }
 
     if (store.mode === "shell") {
-      const { collapsed, cursorPosition, textLength } = getCaretState()
+      const { collapsed, cursorPosition, textLength } = getCaretState();
       if (event.key === "Backspace" && collapsed && cursorPosition === 0 && textLength === 0) {
-        setStore("mode", "normal")
-        event.preventDefault()
-        return
+        setStore("mode", "normal");
+        event.preventDefault();
+        return;
       }
     }
 
     // Handle Shift+Enter BEFORE IME check - Shift+Enter is never used for IME input
     // and should always insert a newline regardless of composition state
     if (event.key === "Enter" && event.shiftKey) {
-      addPart({ type: "text", content: "\n", start: 0, end: 0 })
-      event.preventDefault()
-      return
+      addPart({ type: "text", content: "\n", start: 0, end: 0 });
+      event.preventDefault();
+      return;
     }
 
     if (event.key === "Enter" && isImeComposing(event)) {
-      return
+      return;
     }
 
-    const ctrl = event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey
+    const ctrl = event.ctrlKey && !event.metaKey && !event.altKey && !event.shiftKey;
 
     if (store.popover) {
       if (event.key === "Tab") {
-        selectPopoverActive()
-        event.preventDefault()
-        return
+        selectPopoverActive();
+        event.preventDefault();
+        return;
       }
-      const nav = event.key === "ArrowUp" || event.key === "ArrowDown" || event.key === "Enter"
-      const ctrlNav = ctrl && (event.key === "n" || event.key === "p")
+      const nav = event.key === "ArrowUp" || event.key === "ArrowDown" || event.key === "Enter";
+      const ctrlNav = ctrl && (event.key === "n" || event.key === "p");
       if (nav || ctrlNav) {
         if (store.popover === "at") {
-          atOnKeyDown(event)
-          event.preventDefault()
-          return
+          atOnKeyDown(event);
+          event.preventDefault();
+          return;
         }
         if (store.popover === "slash") {
-          slashOnKeyDown(event)
+          slashOnKeyDown(event);
           if (event.key === "ArrowUp" || event.key === "ArrowDown" || ctrlNav) {
-            scrollSlashActiveIntoView()
+            scrollSlashActiveIntoView();
           }
         }
-        event.preventDefault()
-        return
+        event.preventDefault();
+        return;
       }
     }
 
     if (ctrl && event.code === "KeyG") {
       if (store.popover) {
-        closePopover()
-        event.preventDefault()
-        return
+        closePopover();
+        event.preventDefault();
+        return;
       }
       if (working()) {
-        void abort()
-        event.preventDefault()
+        void abort();
+        event.preventDefault();
       }
-      return
+      return;
     }
 
     if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-      if (event.altKey || event.ctrlKey || event.metaKey) return
-      const { collapsed } = getCaretState()
-      if (!collapsed) return
+      if (event.altKey || event.ctrlKey || event.metaKey) return;
+      const { collapsed } = getCaretState();
+      if (!collapsed) return;
 
-      const cursorPosition = getCursorPosition(editorRef)
+      const cursorPosition = getCursorPosition(editorRef);
       const textContent = prompt
         .current()
         .map((part) => ("content" in part ? part.content : ""))
-        .join("")
-      const direction = event.key === "ArrowUp" ? "up" : "down"
-      if (!canNavigateHistoryAtCursor(direction, textContent, cursorPosition, store.historyIndex >= 0)) return
+        .join("");
+      const direction = event.key === "ArrowUp" ? "up" : "down";
+      if (
+        !canNavigateHistoryAtCursor(direction, textContent, cursorPosition, store.historyIndex >= 0)
+      )
+        return;
       if (navigateHistory(direction)) {
-        event.preventDefault()
+        event.preventDefault();
       }
-      return
+      return;
     }
 
     // Note: Shift+Enter is handled earlier, before IME check
     if (event.key === "Enter" && !event.shiftKey) {
-      event.preventDefault()
-      if (event.repeat) return
+      event.preventDefault();
+      if (event.repeat) return;
       if (
         working() &&
         prompt
@@ -1454,26 +1509,26 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
         imageAttachments().length === 0 &&
         commentCount() === 0
       ) {
-        return
+        return;
       }
-      void handleSubmit(event)
+      void handleSubmit(event);
     }
-  }
+  };
 
-  const agentsLoading = () => props.controls.agents.loading
-  const agentsShouldFadeIn = createMemo<boolean>((prev) => prev ?? agentsLoading())
-  const providersLoading = () => props.controls.model.loading
-  const providersShouldFadeIn = createMemo<boolean>((prev) => prev ?? providersLoading())
+  const agentsLoading = () => props.controls.agents.loading;
+  const agentsShouldFadeIn = createMemo<boolean>((prev) => prev ?? agentsLoading());
+  const providersLoading = () => props.controls.model.loading;
+  const providersShouldFadeIn = createMemo<boolean>((prev) => prev ?? providersLoading());
 
   const [promptReady] = createResource(
     () => prompt.ready.promise,
     (p) => p,
-  )
+  );
 
   const designPlaceholder = () => {
-    if (store.mode === "shell") return placeholder()
-    return "Ask anything, / for commands, @ for context..."
-  }
+    if (store.mode === "shell") return placeholder();
+    return "Ask anything, / for commands, @ for context...";
+  };
 
   const modelControlState = createMemo<ComposerModelControlState>(() => ({
     loading: providersLoading(),
@@ -1483,24 +1538,27 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
     keybind: command.keybindParts("model.choose"),
     model: props.controls.model.selection,
     providerID: props.controls.model.selection.current()?.provider?.id,
-    modelName: props.controls.model.selection.current()?.name ?? language.t("dialog.model.select.title"),
+    modelName:
+      props.controls.model.selection.current()?.name ?? language.t("dialog.model.select.title"),
     newLayoutDesigns: props.controls.newLayoutDesigns,
     style: control(),
     onClose: restoreFocus,
     onUnpaidClick: () => {
       void import("@/components/dialog-select-model-unpaid").then((x) => {
-        dialog.show(() => <x.DialogSelectModelUnpaid model={props.controls.model.selection} />)
-      })
+        dialog.show(() => <x.DialogSelectModelUnpaid model={props.controls.model.selection} />);
+      });
     },
-  }))
+  }));
 
-  const newSession = () => props.variant === "new-session"
+  const newSession = () => props.variant === "new-session";
   const bindEditorRef = (el: HTMLDivElement) => {
-    editorRef = el
-    restoreEndOnFocus = true
-    props.ref?.(el)
-  }
-  const showAgentControl = createMemo(() => props.controls.agents.visible && props.controls.agents.options.length > 0)
+    editorRef = el;
+    restoreEndOnFocus = true;
+    props.ref?.(el);
+  };
+  const showAgentControl = createMemo(
+    () => props.controls.agents.visible && props.controls.agents.options.length > 0,
+  );
   const agentControlState = createMemo<ComposerAgentControlState>(() => ({
     title: language.t("command.agent.cycle"),
     keybind: command.keybindParts("agent.cycle"),
@@ -1508,10 +1566,10 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
     current: props.controls.agents.current,
     style: control(),
     onSelect: (value) => {
-      props.controls.agents.select(value)
-      restoreFocus()
+      props.controls.agents.select(value);
+      restoreFocus();
     },
-  }))
+  }));
   return (
     <div class="relative size-full flex flex-col gap-0">
       {(promptReady(), null)}
@@ -1547,26 +1605,32 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
               <PromptDragOverlay
                 type={store.draggingType}
                 label={language.t(
-                  store.draggingType === "@mention" ? "prompt.dropzone.file.label" : "prompt.dropzone.label",
+                  store.draggingType === "@mention"
+                    ? "prompt.dropzone.file.label"
+                    : "prompt.dropzone.label",
                 )}
               />
               <PromptContextItems
                 items={contextItems()}
                 active={(item) => {
-                  const active = comments.active()
-                  return !!item.commentID && item.commentID === active?.id && item.path === active?.file
+                  const active = comments.active();
+                  return (
+                    !!item.commentID && item.commentID === active?.id && item.path === active?.file
+                  );
                 }}
                 openComment={openComment}
                 remove={(item) => {
-                  if (item.commentID) comments.remove(item.path, item.commentID)
-                  prompt.context.remove(item.key)
+                  if (item.commentID) comments.remove(item.path, item.commentID);
+                  prompt.context.remove(item.key);
                 }}
                 t={(key) => language.t(key as Parameters<typeof language.t>[0])}
               />
               <PromptImageAttachments
                 attachments={imageAttachments()}
                 onOpen={(attachment) =>
-                  dialog.show(() => <ImagePreview src={attachment.dataUrl} alt={attachment.filename} />)
+                  dialog.show(() => (
+                    <ImagePreview src={attachment.dataUrl} alt={attachment.filename} />
+                  ))
                 }
                 onRemove={removeAttachment}
                 removeLabel={language.t("prompt.attachment.remove")}
@@ -1574,13 +1638,16 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
               <div
                 class="relative min-h-[52px]"
                 onMouseDown={(e) => {
-                  const target = e.target
-                  if (!(target instanceof HTMLElement)) return
-                  if (target.closest('[data-action^="prompt-"]')) return
-                  editorRef?.focus()
+                  const target = e.target;
+                  if (!(target instanceof HTMLElement)) return;
+                  if (target.closest('[data-action^="prompt-"]')) return;
+                  editorRef?.focus();
                 }}
               >
-                <div class="relative max-h-[180px] overflow-y-auto no-scrollbar" ref={(el) => (scrollRef = el)}>
+                <div
+                  class="relative max-h-[180px] overflow-y-auto no-scrollbar"
+                  ref={(el) => (scrollRef = el)}
+                >
                   <div
                     data-component="prompt-input"
                     ref={bindEditorRef}
@@ -1610,7 +1677,9 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                     }}
                   />
                   <div
-                    data-component={newSession() ? "session-new-design-text" : "session-composer-text"}
+                    data-component={
+                      newSession() ? "session-new-design-text" : "session-composer-text"
+                    }
                     class="absolute top-0 inset-x-0 px-4 pt-4 pointer-events-none whitespace-nowrap truncate leading-5 text-[13px] font-[440] text-v2-text-text-faint [font-family:Inter,var(--font-family-sans)]"
                     classList={{ "font-mono!": store.mode === "shell", hidden: prompt.dirty() }}
                   >
@@ -1648,7 +1717,9 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                   </Show>
                   {props.toolbar}
                   <ComposerModelControl state={modelControlState()} />
-                  <Show when={!providersLoading() && store.mode !== "shell" && showVariantControl()}>
+                  <Show
+                    when={!providersLoading() && store.mode !== "shell" && showVariantControl()}
+                  >
                     <div
                       data-component="prompt-variant-control"
                       class="[&_[data-action=prompt-model-variant]]:![font-weight:440]"
@@ -1664,7 +1735,10 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                         value={
                           <>
                             {language.t("command.model.variant.cycle")}
-                            <KeybindV2 keys={command.keybindParts("model.variant.cycle")} variant="neutral" />
+                            <KeybindV2
+                              keys={command.keybindParts("model.variant.cycle")}
+                              variant="neutral"
+                            />
                           </>
                         }
                       >
@@ -1683,7 +1757,8 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                             style={control()}
                           >
                             <span class="truncate">
-                              {props.controls.model.selection.variant.current() ?? language.t("common.default")}
+                              {props.controls.model.selection.variant.current() ??
+                                language.t("common.default")}
                             </span>
                             <span class="-ml-0.5 -mr-1 flex shrink-0">
                               <Icon name="chevron-down" size="small" />
@@ -1692,10 +1767,14 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                           <MenuV2.Portal>
                             <MenuV2.Content>
                               <MenuV2.RadioGroup
-                                value={props.controls.model.selection.variant.current() ?? "default"}
+                                value={
+                                  props.controls.model.selection.variant.current() ?? "default"
+                                }
                                 onChange={(value) => {
-                                  props.controls.model.selection.variant.set(value === "default" ? undefined : value)
-                                  restoreFocus()
+                                  props.controls.model.selection.variant.set(
+                                    value === "default" ? undefined : value,
+                                  );
+                                  restoreFocus();
                                 }}
                               >
                                 {variants().map((value) => (
@@ -1717,14 +1796,20 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                     type="submit"
                     disabled={!working() && blank()}
                     tabIndex={store.mode === "normal" ? undefined : -1}
-                    icon={stopping() ? "stop" : store.mode === "shell" ? "arrow-undo-down" : "arrow-up"}
+                    icon={
+                      stopping() ? "stop" : store.mode === "shell" ? "arrow-undo-down" : "arrow-up"
+                    }
                     variant="primary"
                     class="size-7 rounded-md p-[6px] text-v2-icon-icon-muted shadow-[var(--v2-elevation-button-contrast)] disabled:opacity-50"
                     style={{
                       "background-image":
                         "linear-gradient(180deg,var(--v2-alpha-light-20) 0%,var(--v2-alpha-light-0) 100%),linear-gradient(90deg,var(--v2-background-bg-contrast) 0%,var(--v2-background-bg-contrast) 100%)",
                     }}
-                    aria-label={stopping() ? language.t("prompt.action.stop") : language.t("prompt.action.send")}
+                    aria-label={
+                      stopping()
+                        ? language.t("prompt.action.stop")
+                        : language.t("prompt.action.send")
+                    }
                   />
                 </TooltipV2>
               </div>
@@ -1744,26 +1829,32 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
             <PromptDragOverlay
               type={store.draggingType}
               label={language.t(
-                store.draggingType === "@mention" ? "prompt.dropzone.file.label" : "prompt.dropzone.label",
+                store.draggingType === "@mention"
+                  ? "prompt.dropzone.file.label"
+                  : "prompt.dropzone.label",
               )}
             />
             <PromptContextItems
               items={contextItems()}
               active={(item) => {
-                const active = comments.active()
-                return !!item.commentID && item.commentID === active?.id && item.path === active?.file
+                const active = comments.active();
+                return (
+                  !!item.commentID && item.commentID === active?.id && item.path === active?.file
+                );
               }}
               openComment={openComment}
               remove={(item) => {
-                if (item.commentID) comments.remove(item.path, item.commentID)
-                prompt.context.remove(item.key)
+                if (item.commentID) comments.remove(item.path, item.commentID);
+                prompt.context.remove(item.key);
               }}
               t={(key) => language.t(key as Parameters<typeof language.t>[0])}
             />
             <PromptImageAttachments
               attachments={imageAttachments()}
               onOpen={(attachment) =>
-                dialog.show(() => <ImagePreview src={attachment.dataUrl} alt={attachment.filename} />)
+                dialog.show(() => (
+                  <ImagePreview src={attachment.dataUrl} alt={attachment.filename} />
+                ))
               }
               onRemove={removeAttachment}
               removeLabel={language.t("prompt.attachment.remove")}
@@ -1771,12 +1862,14 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
             <div
               class="relative"
               onMouseDown={(e) => {
-                const target = e.target
-                if (!(target instanceof HTMLElement)) return
-                if (target.closest('[data-action="prompt-attach"], [data-action="prompt-submit"]')) {
-                  return
+                const target = e.target;
+                if (!(target instanceof HTMLElement)) return;
+                if (
+                  target.closest('[data-action="prompt-attach"], [data-action="prompt-submit"]')
+                ) {
+                  return;
                 }
-                editorRef?.focus()
+                editorRef?.focus();
               }}
             >
               <div
@@ -1840,9 +1933,9 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                   accept={ACCEPTED_FILE_TYPES.join(",")}
                   class="hidden"
                   onChange={(e) => {
-                    const list = e.currentTarget.files
-                    if (list) void addAttachments(Array.from(list))
-                    e.currentTarget.value = ""
+                    const list = e.currentTarget.files;
+                    if (list) void addAttachments(Array.from(list));
+                    e.currentTarget.value = "";
                   }}
                 />
 
@@ -1853,10 +1946,20 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                       type="submit"
                       disabled={!working() && blank()}
                       tabIndex={store.mode === "normal" ? undefined : -1}
-                      icon={stopping() ? "stop" : store.mode === "shell" ? "arrow-undo-down" : "arrow-up"}
+                      icon={
+                        stopping()
+                          ? "stop"
+                          : store.mode === "shell"
+                            ? "arrow-undo-down"
+                            : "arrow-up"
+                      }
                       variant="primary"
                       class="size-8"
-                      aria-label={stopping() ? language.t("prompt.action.stop") : language.t("prompt.action.send")}
+                      aria-label={
+                        stopping()
+                          ? language.t("prompt.action.stop")
+                          : language.t("prompt.action.send")
+                      }
                     />
                   </Tooltip>
                 </div>
@@ -1905,13 +2008,15 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                     }}
                   >
                     <Icon name="console" />
-                    <span class="truncate text-13-medium text-text-base">{language.t("prompt.mode.shell")}</span>
+                    <span class="truncate text-13-medium text-text-base">
+                      {language.t("prompt.mode.shell")}
+                    </span>
                     <div class="flex-1" />
                     <Button
                       variant="ghost"
                       class="text-text-base"
                       onClick={() => {
-                        setStore("mode", "normal")
+                        setStore("mode", "normal");
                       }}
                     >
                       {language.t("common.cancel")}
@@ -1934,8 +2039,8 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                             options={props.controls.agents.options}
                             current={props.controls.agents.current}
                             onSelect={(value) => {
-                              props.controls.agents.select(value)
-                              restoreFocus()
+                              props.controls.agents.select(value);
+                              restoreFocus();
                             }}
                             class="capitalize max-w-[160px] text-text-base"
                             valueClass="truncate text-13-regular text-text-base"
@@ -1969,18 +2074,29 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                                   class="min-w-0 max-w-[320px] text-13-regular text-text-base group"
                                   style={control()}
                                   onClick={() => {
-                                    void import("@/components/dialog-select-model-unpaid").then((x) => {
-                                      dialog.show(() => (
-                                        <x.DialogSelectModelUnpaid model={props.controls.model.selection} />
-                                      ))
-                                    })
+                                    void import("@/components/dialog-select-model-unpaid").then(
+                                      (x) => {
+                                        dialog.show(() => (
+                                          <x.DialogSelectModelUnpaid
+                                            model={props.controls.model.selection}
+                                          />
+                                        ));
+                                      },
+                                    );
                                   }}
                                 >
-                                  <Show when={props.controls.model.selection.current()?.provider?.id}>
+                                  <Show
+                                    when={props.controls.model.selection.current()?.provider?.id}
+                                  >
                                     <ProviderIcon
-                                      id={props.controls.model.selection.current()?.provider?.id ?? ""}
+                                      id={
+                                        props.controls.model.selection.current()?.provider?.id ?? ""
+                                      }
                                       class="size-4 shrink-0 opacity-40 group-hover:opacity-100 transition-opacity duration-150"
-                                      style={{ "will-change": "opacity", transform: "translateZ(0)" }}
+                                      style={{
+                                        "will-change": "opacity",
+                                        transform: "translateZ(0)",
+                                      }}
                                     />
                                   </Show>
                                   <span class="truncate">
@@ -2005,14 +2121,17 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                                   variant: "ghost",
                                   size: "normal",
                                   style: control(),
-                                  class: "min-w-0 max-w-[320px] text-13-regular text-text-base group",
+                                  class:
+                                    "min-w-0 max-w-[320px] text-13-regular text-text-base group",
                                   "data-action": "prompt-model",
                                 }}
                                 onClose={restoreFocus}
                               >
                                 <Show when={props.controls.model.selection.current()?.provider?.id}>
                                   <ProviderIcon
-                                    id={props.controls.model.selection.current()?.provider?.id ?? ""}
+                                    id={
+                                      props.controls.model.selection.current()?.provider?.id ?? ""
+                                    }
                                     class="size-4 shrink-0 opacity-40 group-hover:opacity-100 transition-opacity duration-150"
                                     style={{ "will-change": "opacity", transform: "translateZ(0)" }}
                                   />
@@ -2029,7 +2148,9 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                         <Show when={showVariantControl()}>
                           <div
                             data-component="prompt-variant-control"
-                            classList={{ "animate-in fade-in duration-300": providersShouldFadeIn() }}
+                            classList={{
+                              "animate-in fade-in duration-300": providersShouldFadeIn(),
+                            }}
                           >
                             <TooltipKeybind
                               placement="top"
@@ -2040,11 +2161,15 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
                               <Select
                                 size="normal"
                                 options={variants()}
-                                current={props.controls.model.selection.variant.current() ?? "default"}
+                                current={
+                                  props.controls.model.selection.variant.current() ?? "default"
+                                }
                                 label={(x) => (x === "default" ? language.t("common.default") : x)}
                                 onSelect={(value) => {
-                                  props.controls.model.selection.variant.set(value === "default" ? undefined : value)
-                                  restoreFocus()
+                                  props.controls.model.selection.variant.set(
+                                    value === "default" ? undefined : value,
+                                  );
+                                  restoreFocus();
                                 }}
                                 class="capitalize max-w-[160px] text-text-base"
                                 valueClass="truncate text-13-regular text-text-base"
@@ -2065,32 +2190,32 @@ export const PromptInput: Component<PromptInputProps> = (props) => {
         </Match>
       </Switch>
     </div>
-  )
-}
+  );
+};
 
 type ComposerAgentControlState = {
-  title: string
-  keybind: string[]
-  options: string[]
-  current: string
-  style: JSX.CSSProperties | undefined
-  onSelect: (value: string | undefined) => void
-}
+  title: string;
+  keybind: string[];
+  options: string[];
+  current: string;
+  style: JSX.CSSProperties | undefined;
+  onSelect: (value: string | undefined) => void;
+};
 
 type ComposerModelControlState = {
-  loading: boolean
-  shouldAnimate: boolean
-  paid: boolean
-  title: string
-  keybind: string[]
-  model: ReturnType<typeof useLocal>["model"]
-  providerID?: string
-  modelName: string
-  newLayoutDesigns: boolean
-  style: JSX.CSSProperties | undefined
-  onClose: () => void
-  onUnpaidClick: () => void
-}
+  loading: boolean;
+  shouldAnimate: boolean;
+  paid: boolean;
+  title: string;
+  keybind: string[];
+  model: ReturnType<typeof useLocal>["model"];
+  providerID?: string;
+  modelName: string;
+  newLayoutDesigns: boolean;
+  style: JSX.CSSProperties | undefined;
+  onClose: () => void;
+  onUnpaidClick: () => void;
+};
 
 function ComposerAgentControl(props: { state: ComposerAgentControlState }) {
   return (
@@ -2121,7 +2246,7 @@ function ComposerAgentControl(props: { state: ComposerAgentControlState }) {
         />
       </TooltipV2>
     </div>
-  )
+  );
 }
 
 function ComposerModelControl(props: { state: ComposerModelControlState }) {
@@ -2217,7 +2342,7 @@ function ComposerModelControl(props: { state: ComposerModelControlState }) {
         </TooltipV2>
       </Show>
     </Show>
-  )
+  );
 }
 
 function ModelControlContent(props: { state: ComposerModelControlState; v2?: boolean }) {
@@ -2237,5 +2362,5 @@ function ModelControlContent(props: { state: ComposerModelControlState; v2?: boo
         <Icon name="chevron-down" size="small" class="text-v2-icon-icon-muted" />
       </span>
     </>
-  )
+  );
 }

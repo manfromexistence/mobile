@@ -79,7 +79,7 @@ export default function ProviderQuotaWidget({ autoRefreshInterval = 0 }: Provide
   const t = useTranslations("usage");
   const tr = useCallback(
     (key: string, fallback: string) => translateUsageOrFallback(t, key, fallback),
-    [t]
+    [t],
   );
 
   const [connections, setConnections] = useState<Connection[]>([]);
@@ -122,7 +122,7 @@ export default function ProviderQuotaWidget({ autoRefreshInterval = 0 }: Provide
     const relevant = conns.filter(
       (c) =>
         USAGE_SUPPORTED_PROVIDERS.includes(c.provider) &&
-        (c.authType === "oauth" || c.authType === "apikey")
+        (c.authType === "oauth" || c.authType === "apikey"),
     );
 
     setConnections(relevant);
@@ -244,7 +244,7 @@ export default function ProviderQuotaWidget({ autoRefreshInterval = 0 }: Provide
             <div className="mt-1 text-xs">
               {tr(
                 "connectProvidersForQuota",
-                "Connect to providers with OAuth to track your API quota limits and usage."
+                "Connect to providers with OAuth to track your API quota limits and usage.",
               )}
             </div>
           </div>

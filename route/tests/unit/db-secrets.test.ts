@@ -62,7 +62,7 @@ test("malformed persisted rows are treated as missing secrets", () => {
   db.prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "secrets",
     "broken",
-    "not-json"
+    "not-json",
   );
 
   assert.equal(secretsDb.getPersistedSecret("broken"), null);

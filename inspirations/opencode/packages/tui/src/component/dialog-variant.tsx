@@ -1,11 +1,11 @@
-import { createMemo } from "solid-js"
-import { useLocal } from "../context/local"
-import { DialogSelect } from "../ui/dialog-select"
-import { useDialog } from "../ui/dialog"
+import { createMemo } from "solid-js";
+import { useLocal } from "../context/local";
+import { DialogSelect } from "../ui/dialog-select";
+import { useDialog } from "../ui/dialog";
 
 export function DialogVariant() {
-  const local = useLocal()
-  const dialog = useDialog()
+  const local = useLocal();
+  const dialog = useDialog();
 
   const options = createMemo(() => {
     return [
@@ -13,20 +13,20 @@ export function DialogVariant() {
         value: "default",
         title: "Default",
         onSelect: () => {
-          dialog.clear()
-          local.model.variant.set(undefined)
+          dialog.clear();
+          local.model.variant.set(undefined);
         },
       },
       ...local.model.variant.list().map((variant) => ({
         value: variant,
         title: variant,
         onSelect: () => {
-          dialog.clear()
-          local.model.variant.set(variant)
+          dialog.clear();
+          local.model.variant.set(variant);
         },
       })),
-    ]
-  })
+    ];
+  });
 
   return (
     <DialogSelect<string>
@@ -35,5 +35,5 @@ export function DialogVariant() {
       current={local.model.variant.selected()}
       flat={true}
     />
-  )
+  );
 }

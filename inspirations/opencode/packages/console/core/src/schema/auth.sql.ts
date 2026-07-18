@@ -1,7 +1,14 @@
-import { index, mysqlEnum, mysqlTable, primaryKey, uniqueIndex, varchar } from "drizzle-orm/mysql-core"
-import { id, timestamps, ulid } from "../drizzle/types"
+import {
+  index,
+  mysqlEnum,
+  mysqlTable,
+  primaryKey,
+  uniqueIndex,
+  varchar,
+} from "drizzle-orm/mysql-core";
+import { id, timestamps, ulid } from "../drizzle/types";
 
-export const AuthProvider = ["email", "github", "google"] as const
+export const AuthProvider = ["email", "github", "google"] as const;
 
 export const AuthTable = mysqlTable(
   "auth",
@@ -17,4 +24,4 @@ export const AuthTable = mysqlTable(
     uniqueIndex("provider").on(table.provider, table.subject),
     index("account_id").on(table.accountID),
   ],
-)
+);

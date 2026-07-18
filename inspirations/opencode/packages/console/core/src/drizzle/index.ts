@@ -1,12 +1,15 @@
-import { drizzle } from "drizzle-orm/planetscale-serverless"
-import { Resource } from "@opencode-ai/console-resource"
-export * from "drizzle-orm"
-import { Client } from "@planetscale/database"
+import { drizzle } from "drizzle-orm/planetscale-serverless";
+import { Resource } from "@opencode-ai/console-resource";
+export * from "drizzle-orm";
+import { Client } from "@planetscale/database";
 
-import { MySqlTransaction, type MySqlTransactionConfig } from "drizzle-orm/mysql-core"
-import type { PlanetScalePreparedQueryHKT, PlanetscaleQueryResultHKT } from "drizzle-orm/planetscale-serverless"
-import { Context } from "../context"
-import { memo } from "../util/memo"
+import { MySqlTransaction, type MySqlTransactionConfig } from "drizzle-orm/mysql-core";
+import type {
+  PlanetScalePreparedQueryHKT,
+  PlanetscaleQueryResultHKT,
+} from "drizzle-orm/planetscale-serverless";
+import { Context } from "../context";
+import { memo } from "../util/memo";
 
 export namespace Database {
   export type Transaction = MySqlTransaction<
@@ -14,72 +17,75 @@ export namespace Database {
     PlanetScalePreparedQueryHKT,
     Record<string, never>,
     any
-  >
+  >;
 
   const client = memo(() => {
     const result = new Client({
       host: Resource.Database.host,
       username: Resource.Database.username,
       password: Resource.Database.password,
-    })
-    const db = drizzle({ client: result })
-    return db
-  })
+    });
+    const db = drizzle({ client: result });
+    return db;
+  });
 
-  export type TxOrDb = Transaction | ReturnType<typeof client>
+  export type TxOrDb = Transaction | ReturnType<typeof client>;
 
   const TransactionContext = Context.create<{
-    tx: TxOrDb
-    effects: (() => void | Promise<void>)[]
-  }>()
+    tx: TxOrDb;
+    effects: (() => void | Promise<void>)[];
+  }>();
 
   export async function use<T>(callback: (trx: TxOrDb) => Promise<T>) {
     try {
-      const { tx } = TransactionContext.use()
-      return tx.transaction(callback)
+      const { tx } = TransactionContext.use();
+      return tx.transaction(callback);
     } catch (err) {
       if (err instanceof Context.NotFound) {
-        const effects: (() => void | Promise<void>)[] = []
+        const effects: (() => void | Promise<void>)[] = [];
         const result = await TransactionContext.provide(
           {
             effects,
             tx: client(),
           },
           () => callback(client()),
-        )
-        await Promise.all(effects.map((x) => x()))
-        return result
+        );
+        await Promise.all(effects.map((x) => x()));
+        return result;
       }
-      throw err
+      throw err;
     }
   }
   export async function fn<Input, T>(callback: (input: Input, trx: TxOrDb) => Promise<T>) {
-    return (input: Input) => use(async (tx) => callback(input, tx))
+    return (input: Input) => use(async (tx) => callback(input, tx));
   }
 
   export async function effect(effect: () => any | Promise<any>) {
     try {
-      const { effects } = TransactionContext.use()
-      effects.push(effect)
+      const { effects } = TransactionContext.use();
+      effects.push(effect);
     } catch {
-      await effect()
+      await effect();
     }
   }
 
-  export async function transaction<T>(callback: (tx: TxOrDb) => Promise<T>, config?: MySqlTransactionConfig) {
+  export async function transaction<T>(
+    callback: (tx: TxOrDb) => Promise<T>,
+    config?: MySqlTransactionConfig,
+  ) {
     try {
-      const { tx } = TransactionContext.use()
-      return callback(tx)
+      const { tx } = TransactionContext.use();
+      return callback(tx);
     } catch (err) {
       if (err instanceof Context.NotFound) {
-        const effects: (() => void | Promise<void>)[] = []
+        const effects: (() => void | Promise<void>)[] = [];
         const result = await client().transaction(async (tx) => {
-          return TransactionContext.provide({ tx, effects }, () => callback(tx))
-        }, config)
-        await Promise.all(effects.map((x) => x()))
-        return result
+          return TransactionContext.provide({ tx, effects }, () => callback(tx));
+        }, config);
+        await Promise.all(effects.map((x) => x()));
+        return result;
       }
-      throw err
+      throw err;
     }
   }
 }

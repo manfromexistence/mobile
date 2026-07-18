@@ -262,7 +262,7 @@ if (RUN_INTERNAL) {
     if (rewriteInternal(f)) internalChanged++;
   }
   console.log(
-    `[internal] scanned=${internalScanned} changed=${internalChanged}${DRY ? " (dry-run)" : ""}`
+    `[internal] scanned=${internalScanned} changed=${internalChanged}${DRY ? " (dry-run)" : ""}`,
   );
 }
 
@@ -273,6 +273,6 @@ if (RUN_EXTERNAL) {
     if (rewriteExternal(f)) externalChanged++;
   }
   console.log(
-    `[external] scanned=${externalScanned} changed=${externalChanged}${DRY ? " (dry-run)" : ""}`
+    `[external] scanned=${externalScanned} changed=${externalChanged}${DRY ? " (dry-run)" : ""}`,
   );
 }

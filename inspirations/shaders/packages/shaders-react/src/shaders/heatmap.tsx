@@ -1,5 +1,5 @@
-import React, { memo, useLayoutEffect, useMemo, useState } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '../shader-mount.js';
+import React, { memo, useLayoutEffect, useMemo, useState } from "react";
+import { ShaderMount, type ShaderComponentProps } from "../shader-mount.js";
 import {
   getShaderColorFromString,
   heatmapFragmentShader,
@@ -9,11 +9,11 @@ import {
   defaultObjectSizing,
   toProcessedHeatmap,
   type ImageShaderPreset,
-} from '@paper-design/shaders';
+} from "@paper-design/shaders";
 
-import { transparentPixel } from '../transparent-pixel.js';
-import { suspend } from '../suspend.js';
-import { colorPropsAreEqual } from '../color-props-are-equal.js';
+import { transparentPixel } from "../transparent-pixel.js";
+import { suspend } from "../suspend.js";
+import { colorPropsAreEqual } from "../color-props-are-equal.js";
 
 export interface HeatmapProps extends ShaderComponentProps, HeatmapParams {
   /**
@@ -25,7 +25,7 @@ export interface HeatmapProps extends ShaderComponentProps, HeatmapParams {
 export type HeatmapPreset = ImageShaderPreset<HeatmapParams>;
 
 export const defaultPreset: HeatmapPreset = {
-  name: 'Default',
+  name: "Default",
   params: {
     ...defaultObjectSizing,
     scale: 0.75,
@@ -36,13 +36,13 @@ export const defaultPreset: HeatmapPreset = {
     noise: 0,
     innerGlow: 0.5,
     outerGlow: 0.5,
-    colorBack: '#000000',
-    colors: ['#11206a', '#1f3ba2', '#2f63e7', '#6bd7ff', '#ffe679', '#ff991e', '#ff4c00'],
+    colorBack: "#000000",
+    colors: ["#11206a", "#1f3ba2", "#2f63e7", "#6bd7ff", "#ffe679", "#ff991e", "#ff4c00"],
   },
 } as const satisfies HeatmapPreset;
 
 export const sepiaPreset: HeatmapPreset = {
-  name: 'Sepia',
+  name: "Sepia",
   params: {
     ...defaultObjectSizing,
     scale: 0.75,
@@ -53,8 +53,8 @@ export const sepiaPreset: HeatmapPreset = {
     noise: 0.75,
     innerGlow: 0.5,
     outerGlow: 0.5,
-    colorBack: '#000000',
-    colors: ['#997F45', '#ffffff'],
+    colorBack: "#000000",
+    colors: ["#997F45", "#ffffff"],
   },
 } as const satisfies HeatmapPreset;
 
@@ -64,7 +64,7 @@ export const Heatmap: React.FC<HeatmapProps> = memo(function HeatmapImpl({
   // Own props
   speed = defaultPreset.params.speed,
   frame = defaultPreset.params.frame,
-  image = '',
+  image = "",
   contour = defaultPreset.params.contour,
   angle = defaultPreset.params.angle,
   noise = defaultPreset.params.noise,
@@ -86,16 +86,17 @@ export const Heatmap: React.FC<HeatmapProps> = memo(function HeatmapImpl({
   worldWidth = defaultPreset.params.worldWidth,
   ...props
 }: HeatmapProps) {
-  const imageUrl = typeof image === 'string' ? image : image.src;
+  const imageUrl = typeof image === "string" ? image : image.src;
   const [processedStateImage, setProcessedStateImage] = useState<string>(transparentPixel);
 
   let processedImage: string;
 
   // toProcessedHeatmap expects the document object to exist. This prevents SSR issues during builds.
-  if (suspendWhenProcessingImage && typeof window !== 'undefined') {
+  if (suspendWhenProcessingImage && typeof window !== "undefined") {
     processedImage = suspend(
-      (): Promise<string> => toProcessedHeatmap(imageUrl).then((result) => URL.createObjectURL(result.blob)),
-      [imageUrl, 'heatmap']
+      (): Promise<string> =>
+        toProcessedHeatmap(imageUrl).then((result) => URL.createObjectURL(result.blob)),
+      [imageUrl, "heatmap"],
     );
   } else {
     processedImage = processedStateImage;
@@ -171,7 +172,7 @@ export const Heatmap: React.FC<HeatmapProps> = memo(function HeatmapImpl({
       scale,
       worldHeight,
       worldWidth,
-    ]
+    ],
   ) satisfies HeatmapUniforms;
 
   return (
@@ -180,7 +181,7 @@ export const Heatmap: React.FC<HeatmapProps> = memo(function HeatmapImpl({
       speed={speed}
       frame={frame}
       fragmentShader={heatmapFragmentShader}
-      mipmaps={['u_image']}
+      mipmaps={["u_image"]}
       uniforms={uniforms}
     />
   );

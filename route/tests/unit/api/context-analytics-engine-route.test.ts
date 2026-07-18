@@ -23,8 +23,9 @@ process.env.DATA_DIR = TEST_DATA_DIR;
 
 const core = await import("../../../src/lib/db/core.ts");
 const settingsDb = await import("../../../src/lib/db/settings.ts");
-const { insertCompressionAnalyticsRow } =
-  await import("../../../src/lib/db/compressionAnalytics.ts");
+const { insertCompressionAnalyticsRow } = await import(
+  "../../../src/lib/db/compressionAnalytics.ts"
+);
 const engineRoute = await import("../../../src/app/api/context/analytics/engine/route.ts");
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
@@ -96,7 +97,7 @@ test("GET /api/context/analytics/engine returns 200 with correct aggregation for
   });
 
   const req = await makeManagementSessionRequest(
-    "http://localhost/api/context/analytics/engine?engineId=headroom"
+    "http://localhost/api/context/analytics/engine?engineId=headroom",
   );
   const res = await engineRoute.GET(req);
   assert.equal(res.status, 200, `Expected 200, got ${res.status}`);
@@ -118,7 +119,7 @@ test("GET /api/context/analytics/engine returns 200 with correct aggregation for
 
 test("GET /api/context/analytics/engine respects ?days= parameter", async () => {
   const req = await makeManagementSessionRequest(
-    "http://localhost/api/context/analytics/engine?engineId=headroom&days=30"
+    "http://localhost/api/context/analytics/engine?engineId=headroom&days=30",
   );
   const res = await engineRoute.GET(req);
   assert.equal(res.status, 200, `Expected 200, got ${res.status}`);
@@ -128,7 +129,7 @@ test("GET /api/context/analytics/engine respects ?days= parameter", async () => 
 
 test("GET /api/context/analytics/engine returns 200 with zero metrics for unknown engine", async () => {
   const req = await makeManagementSessionRequest(
-    "http://localhost/api/context/analytics/engine?engineId=nonexistent"
+    "http://localhost/api/context/analytics/engine?engineId=nonexistent",
   );
   const res = await engineRoute.GET(req);
   assert.equal(res.status, 200, `Expected 200, got ${res.status}`);

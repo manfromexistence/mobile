@@ -1,8 +1,8 @@
-import { cmd } from "./cmd"
-import { UI } from "@/cli/ui"
-import { errorMessage } from "@opencode-ai/tui/util/error"
-import { validateSession } from "../tui/validate-session"
-import { ServerAuth } from "@/server/auth"
+import { cmd } from "./cmd";
+import { UI } from "@/cli/ui";
+import { errorMessage } from "@opencode-ai/tui/util/error";
+import { validateSession } from "../tui/validate-session";
+import { ServerAuth } from "@/server/auth";
 
 export const AttachCommand = cmd({
   command: "attach <url>",
@@ -61,25 +61,25 @@ export const AttachCommand = cmd({
       }),
   handler: async (args) => {
     if (args.replay === true) {
-      UI.error("--replay is not supported; replay is enabled by default")
-      process.exitCode = 1
-      return
+      UI.error("--replay is not supported; replay is enabled by default");
+      process.exitCode = 1;
+      return;
     }
-    const noReplay = args.replay === false || args.noReplay === true
+    const noReplay = args.replay === false || args.noReplay === true;
 
     const directory = (() => {
-      if (!args.dir) return undefined
+      if (!args.dir) return undefined;
       try {
-        process.chdir(args.dir)
-        return process.cwd()
+        process.chdir(args.dir);
+        return process.cwd();
       } catch {
         // If the directory doesn't exist locally (remote attach), pass it through.
-        return args.dir
+        return args.dir;
       }
-    })()
+    })();
 
     if (args.mini) {
-      const { runMini } = await import("./run")
+      const { runMini } = await import("./run");
       await runMini({
         attach: args.url,
         directory,
@@ -90,29 +90,29 @@ export const AttachCommand = cmd({
         fork: args.fork,
         replay: noReplay ? false : undefined,
         replayLimit: args.replayLimit,
-      })
-      return
+      });
+      return;
     }
 
     const unsupported = [
       ["--no-replay", noReplay],
       ["--replay-limit", args.replayLimit !== undefined],
-    ].find((entry) => entry[1])?.[0]
+    ].find((entry) => entry[1])?.[0];
     if (unsupported) {
-      UI.error(`${unsupported} requires --mini`)
-      process.exitCode = 1
-      return
+      UI.error(`${unsupported} requires --mini`);
+      process.exitCode = 1;
+      return;
     }
 
-    const { TuiConfig } = await import("@/config/tui")
+    const { TuiConfig } = await import("@/config/tui");
     if (args.fork && !args.continue && !args.session) {
-      UI.error("--fork requires --continue or --session")
-      process.exitCode = 1
-      return
+      UI.error("--fork requires --continue or --session");
+      process.exitCode = 1;
+      return;
     }
 
-    const headers = ServerAuth.headers({ password: args.password, username: args.username })
-    const config = await TuiConfig.get()
+    const headers = ServerAuth.headers({ password: args.password, username: args.username });
+    const config = await TuiConfig.get();
 
     try {
       await validateSession({
@@ -120,16 +120,16 @@ export const AttachCommand = cmd({
         sessionID: args.session,
         directory,
         headers,
-      })
+      });
     } catch (error) {
-      UI.error(errorMessage(error))
-      process.exitCode = 1
-      return
+      UI.error(errorMessage(error));
+      process.exitCode = 1;
+      return;
     }
 
-    const { Effect } = await import("effect")
-    const { run } = await import("../tui/layer")
-    const { createLegacyTuiPluginHost } = await import("@/plugin/tui/runtime")
+    const { Effect } = await import("effect");
+    const { run } = await import("../tui/layer");
+    const { createLegacyTuiPluginHost } = await import("@/plugin/tui/runtime");
     await Effect.runPromise(
       run({
         url: args.url,
@@ -143,6 +143,6 @@ export const AttachCommand = cmd({
         directory,
         headers,
       }),
-    )
+    );
   },
-})
+});

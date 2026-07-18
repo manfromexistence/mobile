@@ -9,12 +9,9 @@ import {
   DIFFS_TAG_NAME,
   THEME_CSS_ATTRIBUTE,
   UNSAFE_CSS_ATTRIBUTE,
-} from '../constants';
-import type { SelectionWriteOptions } from '../managers/InteractionManager';
-import {
-  dequeueRender,
-  queueRender,
-} from '../managers/UniversalRenderingManager';
+} from "../constants";
+import type { SelectionWriteOptions } from "../managers/InteractionManager";
+import { dequeueRender, queueRender } from "../managers/UniversalRenderingManager";
 import type {
   CodeViewDiffItem,
   CodeViewFileItem,
@@ -33,21 +30,21 @@ import type {
   SmoothScrollSettings,
   VirtualFileMetrics,
   VirtualWindowSpecs,
-} from '../types';
-import { areObjectsEqual } from '../utils/areObjectsEqual';
-import { areOptionsEqual } from '../utils/areOptionsEqual';
-import { areSelectionsEqual } from '../utils/areSelectionsEqual';
-import { areThemesEqual } from '../utils/areThemesEqual';
-import { createWindowFromScrollPosition } from '../utils/createWindowFromScrollPosition';
-import { isStyleNode } from '../utils/isStyleNode';
-import { prefersReducedMotion } from '../utils/prefersReducedMotion';
-import { roundToDevicePixel } from '../utils/roundToDevicePixel';
-import type { WorkerPoolManager } from '../worker';
-import type { FileOptions } from './File';
-import type { FileDiffOptions } from './FileDiff';
-import { VirtualizedFile } from './VirtualizedFile';
-import { VirtualizedFileDiff } from './VirtualizedFileDiff';
-import type { VirtualizerConfig } from './Virtualizer';
+} from "../types";
+import { areObjectsEqual } from "../utils/areObjectsEqual";
+import { areOptionsEqual } from "../utils/areOptionsEqual";
+import { areSelectionsEqual } from "../utils/areSelectionsEqual";
+import { areThemesEqual } from "../utils/areThemesEqual";
+import { createWindowFromScrollPosition } from "../utils/createWindowFromScrollPosition";
+import { isStyleNode } from "../utils/isStyleNode";
+import { prefersReducedMotion } from "../utils/prefersReducedMotion";
+import { roundToDevicePixel } from "../utils/roundToDevicePixel";
+import type { WorkerPoolManager } from "../worker";
+import type { FileOptions } from "./File";
+import type { FileDiffOptions } from "./FileDiff";
+import { VirtualizedFile } from "./VirtualizedFile";
+import { VirtualizedFileDiff } from "./VirtualizedFileDiff";
+import type { VirtualizerConfig } from "./Virtualizer";
 
 // When re-rendering content of the virtualizer, it's important that we
 // maintain a visual anchor, usually this is the first fully visible element,
@@ -56,13 +53,13 @@ import type { VirtualizerConfig } from './Virtualizer';
 // the new position back to the viewportOffset, relative to where that element
 // currently is
 interface ItemAnchor {
-  type: 'item';
+  type: "item";
   id: string;
   viewportOffset: number;
 }
 
 interface LineAnchor {
-  type: 'line';
+  type: "line";
   id: string;
   lineNumber: number;
   side: SelectionSide | undefined;
@@ -102,20 +99,16 @@ interface AdvancedVirtualizedBaseItem {
   renderedOptionsRevision: number;
 }
 
-interface CodeViewDiffItemContext<
-  LAnnotation,
-> extends AdvancedVirtualizedBaseItem {
-  type: 'diff';
+interface CodeViewDiffItemContext<LAnnotation> extends AdvancedVirtualizedBaseItem {
+  type: "diff";
   /** Latest item snapshot for this record. Controlled updates can replace it. */
   item: CodeViewDiffItem<LAnnotation>;
   /** Virtualized diff instance responsible for rendering this item. */
   instance: VirtualizedFileDiff<LAnnotation>;
 }
 
-interface CodeViewFileItemContext<
-  LAnnotation,
-> extends AdvancedVirtualizedBaseItem {
-  type: 'file';
+interface CodeViewFileItemContext<LAnnotation> extends AdvancedVirtualizedBaseItem {
+  type: "file";
   /** Latest item snapshot for this record. Controlled updates can replace it. */
   item: CodeViewFileItem<LAnnotation>;
   /** Virtualized file instance responsible for rendering this item. */
@@ -128,7 +121,7 @@ type CodeViewContextItem<LAnnotation> =
 
 export interface CodeViewRenderedDiffItem<LAnnotation> {
   id: string;
-  type: 'diff';
+  type: "diff";
   item: CodeViewDiffItem<LAnnotation>;
   version: number | undefined;
   element: HTMLElement;
@@ -137,7 +130,7 @@ export interface CodeViewRenderedDiffItem<LAnnotation> {
 
 export interface CodeViewRenderedFileItem<LAnnotation> {
   id: string;
-  type: 'file';
+  type: "file";
   item: CodeViewFileItem<LAnnotation>;
   version: number | undefined;
   element: HTMLElement;
@@ -157,25 +150,19 @@ export interface CodeViewCoordinator<LAnnotation> {
   hasHeaderRenderers: boolean;
   hasAnnotationRenderer: boolean;
   hasGutterRenderer: boolean;
-  onSnapshotChange(
-    snapshot: CodeViewRenderedItem<LAnnotation>[] | undefined
-  ): void;
+  onSnapshotChange(snapshot: CodeViewRenderedItem<LAnnotation>[] | undefined): void;
 }
 
 export type CodeViewScrollListener<LAnnotation> = (
   scrollTop: number,
-  viewer: CodeView<LAnnotation>
+  viewer: CodeView<LAnnotation>,
 ) => void;
 
-type OverloadCallbackArgs<TCallback> = TCallback extends (
-  ...args: infer TArgs
-) => unknown
+type OverloadCallbackArgs<TCallback> = TCallback extends (...args: infer TArgs) => unknown
   ? TArgs
   : never;
 
-type CallbackReturn<TCallback> = TCallback extends (
-  ...args: never[]
-) => infer TReturn
+type CallbackReturn<TCallback> = TCallback extends (...args: never[]) => infer TReturn
   ? TReturn
   : never;
 
@@ -189,20 +176,14 @@ type OverloadDiffCallbackArgs<
   TKey extends keyof FileDiffOptions<LAnnotation>,
 > = OverloadCallbackArgs<NonNullable<FileDiffOptions<LAnnotation>[TKey]>>;
 
-type CodeViewFileOptionCallback<
-  LAnnotation,
-  TKey extends keyof FileOptions<LAnnotation>,
-> = (
+type CodeViewFileOptionCallback<LAnnotation, TKey extends keyof FileOptions<LAnnotation>> = (
   ...args: [
     ...OverloadFileCallbackArgs<LAnnotation, TKey>,
     context: CodeViewFileItemContext<LAnnotation>,
   ]
 ) => CallbackReturn<NonNullable<FileOptions<LAnnotation>[TKey]>>;
 
-type CodeViewDiffOptionCallback<
-  LAnnotation,
-  TKey extends keyof FileDiffOptions<LAnnotation>,
-> = (
+type CodeViewDiffOptionCallback<LAnnotation, TKey extends keyof FileDiffOptions<LAnnotation>> = (
   ...args: [
     ...OverloadDiffCallbackArgs<LAnnotation, TKey>,
     context: CodeViewDiffItemContext<LAnnotation>,
@@ -211,8 +192,7 @@ type CodeViewDiffOptionCallback<
 
 type CodeViewOptionCallback<
   LAnnotation,
-  TKey extends keyof FileOptions<LAnnotation> &
-    keyof FileDiffOptions<LAnnotation>,
+  TKey extends keyof FileOptions<LAnnotation> & keyof FileDiffOptions<LAnnotation>,
 > = {
   (
     ...args: [
@@ -229,57 +209,57 @@ type CodeViewOptionCallback<
 };
 
 const CODE_VIEW_DIFF_OPTION_KEYS = [
-  'theme',
-  'disableLineNumbers',
-  'overflow',
-  'themeType',
-  'disableFileHeader',
-  'disableVirtualizationBuffers',
-  'preferredHighlighter',
-  'useCSSClasses',
-  'useTokenTransformer',
-  'tokenizeMaxLineLength',
-  'tokenizeMaxLength',
-  'unsafeCSS',
-  'diffStyle',
-  'diffIndicators',
-  'disableBackground',
-  'expandUnchanged',
-  'collapsedContextThreshold',
-  'lineDiffType',
-  'maxLineDiffLength',
-  'expansionLineCount',
-  'lineHoverHighlight',
-  'enableTokenInteractionsOnWhitespace',
-  'enableGutterUtility',
-  '__debugPointerEvents',
-  'enableLineSelection',
-  'controlledSelection',
-  'disableErrorHandling',
+  "theme",
+  "disableLineNumbers",
+  "overflow",
+  "themeType",
+  "disableFileHeader",
+  "disableVirtualizationBuffers",
+  "preferredHighlighter",
+  "useCSSClasses",
+  "useTokenTransformer",
+  "tokenizeMaxLineLength",
+  "tokenizeMaxLength",
+  "unsafeCSS",
+  "diffStyle",
+  "diffIndicators",
+  "disableBackground",
+  "expandUnchanged",
+  "collapsedContextThreshold",
+  "lineDiffType",
+  "maxLineDiffLength",
+  "expansionLineCount",
+  "lineHoverHighlight",
+  "enableTokenInteractionsOnWhitespace",
+  "enableGutterUtility",
+  "__debugPointerEvents",
+  "enableLineSelection",
+  "controlledSelection",
+  "disableErrorHandling",
 ] as const;
 
 type CodeViewDiffOptionKeys = (typeof CODE_VIEW_DIFF_OPTION_KEYS)[number];
 
 const CODE_VIEW_FILE_OPTION_KEYS = [
-  'theme',
-  'disableLineNumbers',
-  'overflow',
-  'themeType',
-  'disableFileHeader',
-  'disableVirtualizationBuffers',
-  'preferredHighlighter',
-  'useCSSClasses',
-  'useTokenTransformer',
-  'tokenizeMaxLineLength',
-  'tokenizeMaxLength',
-  'unsafeCSS',
-  'lineHoverHighlight',
-  'enableTokenInteractionsOnWhitespace',
-  'enableGutterUtility',
-  '__debugPointerEvents',
-  'enableLineSelection',
-  'controlledSelection',
-  'disableErrorHandling',
+  "theme",
+  "disableLineNumbers",
+  "overflow",
+  "themeType",
+  "disableFileHeader",
+  "disableVirtualizationBuffers",
+  "preferredHighlighter",
+  "useCSSClasses",
+  "useTokenTransformer",
+  "tokenizeMaxLineLength",
+  "tokenizeMaxLength",
+  "unsafeCSS",
+  "lineHoverHighlight",
+  "enableTokenInteractionsOnWhitespace",
+  "enableGutterUtility",
+  "__debugPointerEvents",
+  "enableLineSelection",
+  "controlledSelection",
+  "disableErrorHandling",
 ] as const;
 
 type CodeViewFileOptionKeys = (typeof CODE_VIEW_FILE_OPTION_KEYS)[number];
@@ -289,12 +269,9 @@ type CodeViewPassThroughOptions<LAnnotation> = Pick<
   CodeViewDiffOptionKeys
 >;
 
-type CodeViewMode = 'file' | 'diff';
+type CodeViewMode = "file" | "diff";
 
-type CodeViewModeItemContext<
-  LAnnotation,
-  TMode extends CodeViewMode,
-> = TMode extends 'file'
+type CodeViewModeItemContext<LAnnotation, TMode extends CodeViewMode> = TMode extends "file"
   ? CodeViewFileItemContext<LAnnotation>
   : CodeViewDiffItemContext<LAnnotation>;
 
@@ -302,7 +279,7 @@ type CodeViewModeOptionCallback<
   LAnnotation,
   TMode extends CodeViewMode,
   TKey extends CodeViewSharedCallbackKeys | CodeViewSelectionCallbackKeys,
-> = TMode extends 'file'
+> = TMode extends "file"
   ? CodeViewFileOptionCallback<LAnnotation, TKey>
   : CodeViewDiffOptionCallback<LAnnotation, TKey>;
 
@@ -312,51 +289,44 @@ type CodeViewModeInternalOptionCallback<
   TKey extends CodeViewSharedCallbackKeys | CodeViewSelectionCallbackKeys,
 > = (
   ...args: [
-    ...OverloadCallbackArgs<
-      NonNullable<CodeViewModeOptions<LAnnotation, TMode>[TKey]>
-    >,
+    ...OverloadCallbackArgs<NonNullable<CodeViewModeOptions<LAnnotation, TMode>[TKey]>>,
     CodeViewModeItemContext<LAnnotation, TMode>,
   ]
 ) => CallbackReturn<NonNullable<CodeViewModeOptions<LAnnotation, TMode>[TKey]>>;
 
-type CodeViewModeOptions<
-  LAnnotation,
-  TMode extends CodeViewMode,
-> = TMode extends 'file'
+type CodeViewModeOptions<LAnnotation, TMode extends CodeViewMode> = TMode extends "file"
   ? FileOptions<LAnnotation>
   : FileDiffOptions<LAnnotation>;
 
 const CODE_VIEW_SHARED_CALLBACK_KEYS = [
-  'renderCustomHeader',
-  'renderHeaderPrefix',
-  'renderHeaderMetadata',
-  'renderAnnotation',
-  'renderGutterUtility',
-  'onPostRender',
-  'onGutterUtilityClick',
-  'onLineClick',
-  'onLineNumberClick',
-  'onLineEnter',
-  'onLineLeave',
-  'onTokenClick',
-  'onTokenEnter',
-  'onTokenLeave',
+  "renderCustomHeader",
+  "renderHeaderPrefix",
+  "renderHeaderMetadata",
+  "renderAnnotation",
+  "renderGutterUtility",
+  "onPostRender",
+  "onGutterUtilityClick",
+  "onLineClick",
+  "onLineNumberClick",
+  "onLineEnter",
+  "onLineLeave",
+  "onTokenClick",
+  "onTokenEnter",
+  "onTokenLeave",
 ] as const;
 
 const CODE_VIEW_SELECTION_CALLBACK_KEYS = [
-  'onLineSelected',
-  'onLineSelectionStart',
-  'onLineSelectionChange',
-  'onLineSelectionEnd',
+  "onLineSelected",
+  "onLineSelectionStart",
+  "onLineSelectionChange",
+  "onLineSelectionEnd",
 ] as const;
 
-type CodeViewSharedCallbackKeys =
-  (typeof CODE_VIEW_SHARED_CALLBACK_KEYS)[number];
+type CodeViewSharedCallbackKeys = (typeof CODE_VIEW_SHARED_CALLBACK_KEYS)[number];
 
-type CodeViewSelectionCallbackKeys =
-  (typeof CODE_VIEW_SELECTION_CALLBACK_KEYS)[number];
+type CodeViewSelectionCallbackKeys = (typeof CODE_VIEW_SELECTION_CALLBACK_KEYS)[number];
 
-const CODE_VIEW_ITEM_OPTIONS_STATE = Symbol('CodeView.itemOptionsState');
+const CODE_VIEW_ITEM_OPTIONS_STATE = Symbol("CodeView.itemOptionsState");
 
 type CodeViewItemCallbackCache = Partial<
   Record<CodeViewSharedCallbackKeys | CodeViewSelectionCallbackKeys, unknown>
@@ -376,16 +346,16 @@ interface CodeViewItemOptionsState {
   callbackCache?: CodeViewItemCallbackCache;
 }
 
-type CodeViewItemOptions<
+type CodeViewItemOptions<LAnnotation, TMode extends CodeViewMode> = CodeViewModeOptions<
   LAnnotation,
-  TMode extends CodeViewMode,
-> = CodeViewModeOptions<LAnnotation, TMode> & {
+  TMode
+> & {
   [CODE_VIEW_ITEM_OPTIONS_STATE]: CodeViewItemOptionsState;
 };
 
 function defineOptionsState<LAnnotation, TMode extends CodeViewMode>(
   options: CodeViewModeOptions<LAnnotation, TMode>,
-  state: CodeViewItemOptionsState
+  state: CodeViewItemOptionsState,
 ): void {
   // Keep the state hidden from option enumeration. Renderer option builders
   // should copy known keys explicitly and must not depend on object spread.
@@ -397,31 +367,23 @@ function defineOptionsState<LAnnotation, TMode extends CodeViewMode>(
 }
 
 function getItemOptionsState<LAnnotation, TMode extends CodeViewMode>(
-  options: CodeViewModeOptions<LAnnotation, TMode>
+  options: CodeViewModeOptions<LAnnotation, TMode>,
 ): CodeViewItemOptionsState {
-  return (options as CodeViewItemOptions<LAnnotation, TMode>)[
-    CODE_VIEW_ITEM_OPTIONS_STATE
-  ];
+  return (options as CodeViewItemOptions<LAnnotation, TMode>)[CODE_VIEW_ITEM_OPTIONS_STATE];
 }
 
 type CodeViewSharedCallbackOptions<LAnnotation> = {
-  [TKey in CodeViewSharedCallbackKeys]?: CodeViewOptionCallback<
-    LAnnotation,
-    TKey
-  >;
+  [TKey in CodeViewSharedCallbackKeys]?: CodeViewOptionCallback<LAnnotation, TKey>;
 };
 
 type CodeViewSelectionCallbackOptions<LAnnotation> = {
-  [TKey in CodeViewSelectionCallbackKeys]?: CodeViewOptionCallback<
-    LAnnotation,
-    TKey
-  >;
+  [TKey in CodeViewSelectionCallbackKeys]?: CodeViewOptionCallback<LAnnotation, TKey>;
 };
 
 function defineItemOption<TOptions extends object, TKey extends keyof TOptions>(
   target: TOptions,
   key: TKey,
-  get: (receiver: TOptions) => TOptions[TKey]
+  get: (receiver: TOptions) => TOptions[TKey],
 ): void {
   // These accessors usually live on the shared prototype. Passing `this` to the
   // getter lets one shared accessor resolve per-item state from the receiving
@@ -436,11 +398,10 @@ function defineItemOption<TOptions extends object, TKey extends keyof TOptions>(
 }
 
 export interface CodeViewOptions<LAnnotation>
-  extends
-    CodeViewPassThroughOptions<LAnnotation>,
+  extends CodeViewPassThroughOptions<LAnnotation>,
     CodeViewSharedCallbackOptions<LAnnotation>,
     CodeViewSelectionCallbackOptions<LAnnotation> {
-  hunkSeparators?: Exclude<HunkSeparators, 'custom'>;
+  hunkSeparators?: Exclude<HunkSeparators, "custom">;
   itemMetrics?: Partial<VirtualFileMetrics>;
   pointerEventsOnScroll?: boolean;
   smoothScrollSettings?: SmoothScrollSettings;
@@ -456,14 +417,12 @@ export interface CodeViewOptions<LAnnotation>
 }
 
 const DEFAULT_SCROLL_INTERACTION_RESTORE_DELAY_MS = 120;
-const SCROLLING_CODE_OVERFLOW_FIX_VARIABLE = '--diffs-overflow-override';
+const SCROLLING_CODE_OVERFLOW_FIX_VARIABLE = "--diffs-overflow-override";
 const SCROLL_REBASE_CONTAINER_HEIGHT = 12_000_000;
 const SCROLL_REBASE_TRIGGER_TOP = 1_000_000;
 const SCROLL_REBASE_TARGET_TOP = 2_000_000;
-const SCROLL_REBASE_TARGET_BOTTOM =
-  SCROLL_REBASE_CONTAINER_HEIGHT - SCROLL_REBASE_TARGET_TOP;
-const SCROLL_REBASE_THRESHOLD =
-  SCROLL_REBASE_CONTAINER_HEIGHT - SCROLL_REBASE_TRIGGER_TOP;
+const SCROLL_REBASE_TARGET_BOTTOM = SCROLL_REBASE_CONTAINER_HEIGHT - SCROLL_REBASE_TARGET_TOP;
+const SCROLL_REBASE_THRESHOLD = SCROLL_REBASE_CONTAINER_HEIGHT - SCROLL_REBASE_TRIGGER_TOP;
 interface ScrollToAnimation {
   position: number;
   velocity: number;
@@ -481,8 +440,7 @@ const MOBILE_SAFARI = (() => {
 
   const userAgent = navigator.userAgent;
   const isIOS = /iP(?:hone|ad|od)/.test(userAgent);
-  const isIPadOS =
-    navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
+  const isIPadOS = navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1;
 
   return (
     (isIOS || isIPadOS) &&
@@ -492,17 +450,17 @@ const MOBILE_SAFARI = (() => {
   );
 })();
 
-type PendingAlignTypes = Exclude<CodeViewLineScrollTarget['align'], 'nearest'>;
+type PendingAlignTypes = Exclude<CodeViewLineScrollTarget["align"], "nearest">;
 
-interface PendingLineTarget extends Omit<CodeViewLineScrollTarget, 'align'> {
+interface PendingLineTarget extends Omit<CodeViewLineScrollTarget, "align"> {
   align?: PendingAlignTypes;
 }
 
-interface PendingRangeTarget extends Omit<CodeViewRangeScrollTarget, 'align'> {
+interface PendingRangeTarget extends Omit<CodeViewRangeScrollTarget, "align"> {
   align?: PendingAlignTypes;
 }
 
-interface PendingItemTarget extends Omit<CodeViewItemScrollTarget, 'align'> {
+interface PendingItemTarget extends Omit<CodeViewItemScrollTarget, "align"> {
   align?: PendingAlignTypes;
 }
 
@@ -516,7 +474,7 @@ export class CodeView<LAnnotation = undefined> {
   static __STOP = false;
   static __lastScrollPosition = 0;
 
-  public type = 'advanced' as const;
+  public type = "advanced" as const;
   public readonly config: VirtualizerConfig = {
     overscrollSize: 200,
     intersectionObserverMargin: 0,
@@ -586,9 +544,9 @@ export class CodeView<LAnnotation = undefined> {
   private root: HTMLElement | undefined;
   private resizeObserver: ResizeObserver | undefined;
 
-  private container: HTMLDivElement | undefined = document.createElement('div');
-  private stickyContainer = document.createElement('div');
-  private stickyOffset = document.createElement('div');
+  private container: HTMLDivElement | undefined = document.createElement("div");
+  private stickyContainer = document.createElement("div");
+  private stickyOffset = document.createElement("div");
   private elementPool: HTMLElement[] = [];
   private elementPoolVersion = 0;
   private elementPoolTracker = new WeakMap<HTMLElement, number>();
@@ -604,7 +562,7 @@ export class CodeView<LAnnotation = undefined> {
   constructor(
     options: CodeViewOptions<LAnnotation> = { theme: DEFAULT_THEMES },
     workerManager?: WorkerPoolManager | undefined,
-    isContainerManaged = false
+    isContainerManaged = false,
   ) {
     this.options = options;
     this.computeMetricsCache(options.itemMetrics);
@@ -613,13 +571,13 @@ export class CodeView<LAnnotation = undefined> {
     this.workerManager = workerManager;
     this.isContainerManaged = isContainerManaged;
 
-    this.stickyOffset.style.contain = 'layout size';
-    this.stickyContainer.style.position = 'sticky';
-    this.stickyContainer.style.width = '100%';
-    this.stickyContainer.style.contain = 'layout style inline-size';
-    this.stickyContainer.style.isolation = 'isolate';
-    this.stickyContainer.style.display = 'flex';
-    this.stickyContainer.style.flexDirection = 'column';
+    this.stickyOffset.style.contain = "layout size";
+    this.stickyContainer.style.position = "sticky";
+    this.stickyContainer.style.width = "100%";
+    this.stickyContainer.style.contain = "layout style inline-size";
+    this.stickyContainer.style.isolation = "isolate";
+    this.stickyContainer.style.display = "flex";
+    this.stickyContainer.style.flexDirection = "column";
   }
 
   private getLayout(): CodeViewLayout {
@@ -627,17 +585,13 @@ export class CodeView<LAnnotation = undefined> {
   }
 
   private computeMetricsCache(
-    itemMetrics: Partial<VirtualFileMetrics> | undefined
+    itemMetrics: Partial<VirtualFileMetrics> | undefined,
   ): VirtualFileMetrics {
     this.itemMetricsCache = {
-      hunkLineCount:
-        itemMetrics?.hunkLineCount ??
-        DEFAULT_CODE_VIEW_FILE_METRICS.hunkLineCount,
-      lineHeight:
-        itemMetrics?.lineHeight ?? DEFAULT_CODE_VIEW_FILE_METRICS.lineHeight,
+      hunkLineCount: itemMetrics?.hunkLineCount ?? DEFAULT_CODE_VIEW_FILE_METRICS.hunkLineCount,
+      lineHeight: itemMetrics?.lineHeight ?? DEFAULT_CODE_VIEW_FILE_METRICS.lineHeight,
       diffHeaderHeight:
-        itemMetrics?.diffHeaderHeight ??
-        DEFAULT_CODE_VIEW_FILE_METRICS.diffHeaderHeight,
+        itemMetrics?.diffHeaderHeight ?? DEFAULT_CODE_VIEW_FILE_METRICS.diffHeaderHeight,
       hunkSeparatorHeight: itemMetrics?.hunkSeparatorHeight,
       spacing: itemMetrics?.spacing ?? DEFAULT_CODE_VIEW_FILE_METRICS.spacing,
       paddingTop: itemMetrics?.paddingTop,
@@ -655,15 +609,10 @@ export class CodeView<LAnnotation = undefined> {
   }
 
   private shouldValidateItemHeights(): boolean {
-    return (
-      DIFFS_DEVELOPMENT_BUILD &&
-      this.options.__devOnlyValidateItemHeights === true
-    );
+    return DIFFS_DEVELOPMENT_BUILD && this.options.__devOnlyValidateItemHeights === true;
   }
 
-  private validateRenderedItemHeight(
-    item: CodeViewContextItem<LAnnotation>
-  ): void {
+  private validateRenderedItemHeight(item: CodeViewContextItem<LAnnotation>): void {
     if (!this.shouldValidateItemHeights() || item.element == null) {
       return;
     }
@@ -680,25 +629,22 @@ export class CodeView<LAnnotation = undefined> {
       return;
     }
 
-    console.error(
-      'CodeView: reconciled item height does not match DOM height',
-      {
-        id: item.item.id,
-        type: item.type,
-        index: item.index,
-        version: item.version,
-        expectedHeight,
-        actualHeight,
-        delta: actualHeight - expectedHeight,
-        stickyTopOffset: stickySpecs.topOffset,
-        virtualizedHeight: item.instance.getVirtualizedHeight(),
-        top: item.top,
-        scrollTop: this.getScrollTop(),
-        windowSpecs: { ...this.windowSpecs },
-        element: item.element,
-        instance: item.instance,
-      }
-    );
+    console.error("CodeView: reconciled item height does not match DOM height", {
+      id: item.item.id,
+      type: item.type,
+      index: item.index,
+      version: item.version,
+      expectedHeight,
+      actualHeight,
+      delta: actualHeight - expectedHeight,
+      stickyTopOffset: stickySpecs.topOffset,
+      virtualizedHeight: item.instance.getVirtualizedHeight(),
+      top: item.top,
+      scrollTop: this.getScrollTop(),
+      windowSpecs: { ...this.windowSpecs },
+      element: item.element,
+      instance: item.instance,
+    });
   }
 
   // Dev-only invariant check: the sticky container only holds the currently
@@ -713,8 +659,7 @@ export class CodeView<LAnnotation = undefined> {
       return;
     }
 
-    const { firstIndex, lastIndex, stickyHeight, stickyTop, stickyBottom } =
-      this.renderState;
+    const { firstIndex, lastIndex, stickyHeight, stickyTop, stickyBottom } = this.renderState;
     if (firstIndex === -1 || lastIndex === -1) {
       return;
     }
@@ -726,26 +671,21 @@ export class CodeView<LAnnotation = undefined> {
       return;
     }
 
-    console.error(
-      'CodeView: sticky container height does not match computed layout',
-      {
-        computedStickyHeight: stickyHeight,
-        actualStickyHeight: actualHeight,
-        delta: actualHeight - stickyHeight,
-        stickyTop,
-        stickyBottom,
-        firstIndex,
-        lastIndex,
-        firstStickySpecs:
-          this.items[firstIndex]?.instance.getAdvancedStickySpecs(),
-        lastStickySpecs:
-          this.items[lastIndex]?.instance.getAdvancedStickySpecs(),
-        scrollTop: this.getScrollTop(),
-        scrollPageOffset: this.scrollPageOffset,
-        windowSpecs: { ...this.windowSpecs },
-        stickyContainer: this.stickyContainer,
-      }
-    );
+    console.error("CodeView: sticky container height does not match computed layout", {
+      computedStickyHeight: stickyHeight,
+      actualStickyHeight: actualHeight,
+      delta: actualHeight - stickyHeight,
+      stickyTop,
+      stickyBottom,
+      firstIndex,
+      lastIndex,
+      firstStickySpecs: this.items[firstIndex]?.instance.getAdvancedStickySpecs(),
+      lastStickySpecs: this.items[lastIndex]?.instance.getAdvancedStickySpecs(),
+      scrollTop: this.getScrollTop(),
+      scrollPageOffset: this.scrollPageOffset,
+      windowSpecs: { ...this.windowSpecs },
+      stickyContainer: this.stickyContainer,
+    });
   }
 
   private clearScrollInteractionTimer(): void {
@@ -759,7 +699,7 @@ export class CodeView<LAnnotation = undefined> {
     this.clearScrollInteractionTimer();
 
     if (this.shouldDisablePointerEvents() && !this.pointerEventsDisabled) {
-      this.stickyContainer.style.pointerEvents = 'none';
+      this.stickyContainer.style.pointerEvents = "none";
       this.pointerEventsDisabled = true;
     }
 
@@ -770,16 +710,13 @@ export class CodeView<LAnnotation = undefined> {
     // don't want to apply this fix to good browsers since in those cases it
     // can fuck with layout in ways that aren't appropriate
     if (MOBILE_SAFARI && !this.codeOverflowFix) {
-      this.stickyContainer.style.setProperty(
-        SCROLLING_CODE_OVERFLOW_FIX_VARIABLE,
-        'hidden'
-      );
+      this.stickyContainer.style.setProperty(SCROLLING_CODE_OVERFLOW_FIX_VARIABLE, "hidden");
       this.codeOverflowFix = true;
     }
 
     this.scrollInteractionFixTimer = setTimeout(
       this.restoreScrollInteractions,
-      DEFAULT_SCROLL_INTERACTION_RESTORE_DELAY_MS
+      DEFAULT_SCROLL_INTERACTION_RESTORE_DELAY_MS,
     );
   }
 
@@ -787,15 +724,12 @@ export class CodeView<LAnnotation = undefined> {
     this.clearScrollInteractionTimer();
 
     if (this.pointerEventsDisabled) {
-      this.stickyContainer.style.removeProperty('pointer-events');
+      this.stickyContainer.style.removeProperty("pointer-events");
       this.pointerEventsDisabled = false;
     }
 
     if (this.codeOverflowFix) {
-      this.stickyContainer.style.setProperty(
-        SCROLLING_CODE_OVERFLOW_FIX_VARIABLE,
-        'auto'
-      );
+      this.stickyContainer.style.setProperty(SCROLLING_CODE_OVERFLOW_FIX_VARIABLE, "auto");
       this.codeOverflowFix = false;
     }
   };
@@ -803,24 +737,24 @@ export class CodeView<LAnnotation = undefined> {
   private syncLayout(): void {
     const { gap, paddingBottom, paddingTop } = this.getLayout();
     this.stickyContainer.style.gap = `${gap}px`;
-    this.container?.style.setProperty('margin-top', `${paddingTop}px`);
-    this.container?.style.setProperty('margin-bottom', `${paddingBottom}px`);
+    this.container?.style.setProperty("margin-top", `${paddingTop}px`);
+    this.container?.style.setProperty("margin-bottom", `${paddingBottom}px`);
   }
 
   public setup(root: HTMLElement): void {
     if (this.root != null) {
-      throw new Error('CodeView.setup: already setup');
+      throw new Error("CodeView.setup: already setup");
     }
     this.workerManager?.subscribeToThemeChanges(this);
     this.root = root;
-    this.root.style.overflowAnchor = 'none';
-    if (!this.root.hasAttribute('tabindex')) {
+    this.root.style.overflowAnchor = "none";
+    if (!this.root.hasAttribute("tabindex")) {
       this.root.tabIndex = -1;
     }
-    this.container ??= document.createElement('div');
+    this.container ??= document.createElement("div");
     // NOTE(amadeus): We can't put `size` in here or it breaks
     // Firefox's sticky headers
-    this.container.style.contain = 'layout style';
+    this.container.style.contain = "layout style";
     this.syncLayout();
     this.container.appendChild(this.stickyOffset);
     this.container.appendChild(this.stickyContainer);
@@ -829,23 +763,23 @@ export class CodeView<LAnnotation = undefined> {
     this.heightDirty = true;
     this.resizeObserver = new ResizeObserver(this.handleResize);
     this.resizeObserver.observe(this.stickyContainer);
-    this.root.addEventListener('scroll', this.handleScroll, {
+    this.root.addEventListener("scroll", this.handleScroll, {
       passive: true,
     });
     // Any user-driven scroll intent cancels an in-flight programmatic scroll.
     // pointerdown catches scrollbar drag (the scrollbar belongs to root);
     // wheel / touchstart cover trackpad + touch scroll; keydown covers arrow
     // keys, PgUp/PgDn, Home/End on a focused scroll container.
-    this.root.addEventListener('wheel', this.clearPendingScroll, {
+    this.root.addEventListener("wheel", this.clearPendingScroll, {
       passive: true,
     });
-    this.root.addEventListener('touchstart', this.clearPendingScroll, {
+    this.root.addEventListener("touchstart", this.clearPendingScroll, {
       passive: true,
     });
-    this.root.addEventListener('pointerdown', this.clearPendingScroll, {
+    this.root.addEventListener("pointerdown", this.clearPendingScroll, {
       passive: true,
     });
-    this.root.addEventListener('keydown', this.clearPendingScroll, {
+    this.root.addEventListener("keydown", this.clearPendingScroll, {
       passive: true,
     });
     this.resizeObserver.observe(this.root);
@@ -868,9 +802,9 @@ export class CodeView<LAnnotation = undefined> {
       if (CodeView.__STOP) {
         CodeView.__STOP = false;
         this.scrollTo({
-          type: 'position',
+          type: "position",
           position: CodeView.__lastScrollPosition,
-          behavior: 'instant',
+          behavior: "instant",
         });
       } else {
         CodeView.__lastScrollPosition = this.getScrollTop();
@@ -888,9 +822,9 @@ export class CodeView<LAnnotation = undefined> {
     this.instanceToItem.clear();
     this.layoutDirtyIndex = undefined;
     this.pendingLayoutReset = undefined;
-    this.stickyContainer.textContent = '';
-    this.stickyOffset.style.height = '';
-    this.container?.style.removeProperty('height');
+    this.stickyContainer.textContent = "";
+    this.stickyOffset.style.height = "";
+    this.container?.style.removeProperty("height");
     this.containerHeight = -1;
     this.windowSpecs = { top: 0, bottom: 0 };
     this.pendingLayoutAnchor = undefined;
@@ -917,16 +851,16 @@ export class CodeView<LAnnotation = undefined> {
     this.workerManager?.unsubscribeToThemeChanges(this);
     this.resizeObserver?.disconnect();
     this.resizeObserver = undefined;
-    this.root?.removeEventListener('scroll', this.handleScroll);
-    this.root?.removeEventListener('wheel', this.clearPendingScroll);
-    this.root?.removeEventListener('touchstart', this.clearPendingScroll);
-    this.root?.removeEventListener('pointerdown', this.clearPendingScroll);
-    this.root?.removeEventListener('keydown', this.clearPendingScroll);
-    this.root?.style.removeProperty('overflow-anchor');
+    this.root?.removeEventListener("scroll", this.handleScroll);
+    this.root?.removeEventListener("wheel", this.clearPendingScroll);
+    this.root?.removeEventListener("touchstart", this.clearPendingScroll);
+    this.root?.removeEventListener("pointerdown", this.clearPendingScroll);
+    this.root?.removeEventListener("keydown", this.clearPendingScroll);
+    this.root?.style.removeProperty("overflow-anchor");
     this.container?.remove();
     this.stickyOffset.remove();
     this.stickyContainer.remove();
-    this.stickyContainer.textContent = '';
+    this.stickyContainer.textContent = "";
     this.root = undefined;
     this.container = undefined;
   }
@@ -935,23 +869,17 @@ export class CodeView<LAnnotation = undefined> {
     if (this.renderState.firstIndex === -1) {
       return;
     }
-    for (
-      let index = this.renderState.firstIndex;
-      index <= this.renderState.lastIndex;
-      index++
-    ) {
+    for (let index = this.renderState.firstIndex; index <= this.renderState.lastIndex; index++) {
       const item = this.items[index];
       if (item == null) {
-        throw new Error(
-          `CodeView.cleanAllRenderedItems: Item does not exist at index: ${index}`
-        );
+        throw new Error(`CodeView.cleanAllRenderedItems: Item does not exist at index: ${index}`);
       }
       this.releaseRenderedItem(item);
     }
   }
 
   private primeScrollTarget(target: PendingScrollTarget): void {
-    if (target.type === 'position') return;
+    if (target.type === "position") return;
 
     const item = this.idToItem.get(target.id);
     if (item == null) return;
@@ -967,10 +895,8 @@ export class CodeView<LAnnotation = undefined> {
     // because we have to wait an additional render tick to actually re-use the
     // elements
     return (
-      Math.max(
-        8,
-        Math.ceil(viewportSize / Math.max(diffHeaderHeight, 10)) + 1
-      ) * (this.isContainerManaged ? 2 : 1)
+      Math.max(8, Math.ceil(viewportSize / Math.max(diffHeaderHeight, 10)) + 1) *
+      (this.isContainerManaged ? 2 : 1)
     );
   }
 
@@ -1038,10 +964,7 @@ export class CodeView<LAnnotation = undefined> {
 
   private queueElementForPool(element: HTMLElement): void {
     const poolLimit = this.getElementPoolLimit();
-    if (
-      !this.isElementPoolGenerationCurrent(element) ||
-      this.getElementPoolSize() >= poolLimit
-    ) {
+    if (!this.isElementPoolGenerationCurrent(element) || this.getElementPoolSize() >= poolLimit) {
       return;
     }
 
@@ -1104,19 +1027,19 @@ export class CodeView<LAnnotation = undefined> {
 
   private resolveEffectiveScrollBehavior(
     target: CodeViewScrollTarget,
-    destination: number
-  ): Exclude<CodeViewScrollBehavior, 'smooth-auto'> {
+    destination: number,
+  ): Exclude<CodeViewScrollBehavior, "smooth-auto"> {
     if (prefersReducedMotion()) {
-      return 'instant';
+      return "instant";
     }
 
-    if (target.behavior !== 'smooth-auto') {
-      return target.behavior ?? 'instant';
+    if (target.behavior !== "smooth-auto") {
+      return target.behavior ?? "instant";
     }
 
     return Math.abs(destination - this.getScrollTop()) <= this.getHeight() * 10
-      ? 'smooth'
-      : 'instant';
+      ? "smooth"
+      : "instant";
   }
 
   public scrollTo(target: CodeViewScrollTarget): void {
@@ -1136,11 +1059,8 @@ export class CodeView<LAnnotation = undefined> {
 
     this.primeScrollTarget(pendingTarget);
 
-    const behavior = this.resolveEffectiveScrollBehavior(
-      pendingTarget,
-      destination
-    );
-    if (behavior === 'smooth') {
+    const behavior = this.resolveEffectiveScrollBehavior(pendingTarget, destination);
+    if (behavior === "smooth") {
       // Use ??= so if we have an animation in progress it will be smoothly
       // transitioned into the new target and not reset
       this.scrollAnimation ??= {
@@ -1164,7 +1084,7 @@ export class CodeView<LAnnotation = undefined> {
 
   public setSelectedLines(
     selection: CodeViewLineSelection | null,
-    options?: SelectionWriteOptions
+    options?: SelectionWriteOptions,
   ): void {
     this.applySelectedLines(selection, options);
   }
@@ -1257,10 +1177,7 @@ export class CodeView<LAnnotation = undefined> {
    * fast path, so it measures new items immediately and only triggers render
    * once at the end.
    */
-  private appendItemsInternal(
-    inputs: readonly CodeViewItem<LAnnotation>[],
-    render = true
-  ): void {
+  private appendItemsInternal(inputs: readonly CodeViewItem<LAnnotation>[], render = true): void {
     if (inputs.length === 0) {
       return;
     }
@@ -1271,7 +1188,7 @@ export class CodeView<LAnnotation = undefined> {
     for (let index = 0; index < inputs.length; index++) {
       const input = inputs[index];
       if (input == null) {
-        throw new Error('CodeView.appendItemsInternal: missing input item');
+        throw new Error("CodeView.appendItemsInternal: missing input item");
       }
       if (this.idToItem.has(input.id)) {
         throw new Error(`CodeView.addItem: duplicate id "${input.id}"`);
@@ -1327,10 +1244,7 @@ export class CodeView<LAnnotation = undefined> {
 
     this.options = options;
     const nextItemMetrics = this.computeMetricsCache(options.itemMetrics);
-    const itemMetricsChanged = !areObjectsEqual(
-      previousItemMetrics,
-      nextItemMetrics
-    );
+    const itemMetricsChanged = !areObjectsEqual(previousItemMetrics, nextItemMetrics);
     const layoutChanged = !areObjectsEqual(previousLayout, this.getLayout());
     if (layoutChanged) {
       this.syncLayout();
@@ -1366,11 +1280,7 @@ export class CodeView<LAnnotation = undefined> {
   }
 
   private capturePendingLayoutAnchor(): void {
-    if (
-      this.root == null ||
-      this.items.length === 0 ||
-      this.pendingScrollTarget != null
-    ) {
+    if (this.root == null || this.items.length === 0 || this.pendingScrollTarget != null) {
       return;
     }
 
@@ -1391,7 +1301,7 @@ export class CodeView<LAnnotation = undefined> {
 
   public instanceChanged(
     instance: VirtualizedFile<LAnnotation> | VirtualizedFileDiff<LAnnotation>,
-    layoutDirty: boolean
+    layoutDirty: boolean,
   ): void {
     // NOTE(amadeus): This is technically broken at the moment. What we
     // probably SHOULD do to fix is, it push the instance to some sort of
@@ -1399,9 +1309,7 @@ export class CodeView<LAnnotation = undefined> {
     // everything to get new tops?
     const item = this.instanceToItem.get(instance);
     if (item == null) {
-      throw new Error(
-        'CodeView.instanceChanged: An instance has changed that is not registered'
-      );
+      throw new Error("CodeView.instanceChanged: An instance has changed that is not registered");
     }
     if (layoutDirty) {
       this.markItemLayoutDirty(item);
@@ -1431,10 +1339,10 @@ export class CodeView<LAnnotation = undefined> {
         continue;
       }
 
-      if (item.type === 'diff') {
+      if (item.type === "diff") {
         renderedItems.push({
           id: item.item.id,
-          type: 'diff',
+          type: "diff",
           item: item.item,
           version: item.version,
           element: item.element,
@@ -1443,7 +1351,7 @@ export class CodeView<LAnnotation = undefined> {
       } else {
         renderedItems.push({
           id: item.item.id,
-          type: 'file',
+          type: "file",
           item: item.item,
           version: item.version,
           element: item.element,
@@ -1455,9 +1363,7 @@ export class CodeView<LAnnotation = undefined> {
     return renderedItems;
   }
 
-  public setSlotCoordinator(
-    coordinator?: CodeViewCoordinator<LAnnotation>
-  ): boolean {
+  public setSlotCoordinator(coordinator?: CodeViewCoordinator<LAnnotation>): boolean {
     if (coordinator === this.slotCoordinator) {
       return false;
     }
@@ -1467,14 +1373,12 @@ export class CodeView<LAnnotation = undefined> {
   }
 
   public getSlotSnapshot(
-    coordinator: CodeViewCoordinator<LAnnotation>
+    coordinator: CodeViewCoordinator<LAnnotation>,
   ): CodeViewRenderedItem<LAnnotation>[] | undefined {
     return getSlotSnapshot(this.getRenderedItems(), coordinator);
   }
 
-  public subscribeToScroll(
-    listener: CodeViewScrollListener<LAnnotation>
-  ): () => void {
+  public subscribeToScroll(listener: CodeViewScrollListener<LAnnotation>): () => void {
     this.scrollListeners.add(listener);
     return () => {
       this.scrollListeners.delete(listener);
@@ -1482,13 +1386,11 @@ export class CodeView<LAnnotation = undefined> {
   }
 
   public getLocalTopForInstance(
-    instance: VirtualizedFile<LAnnotation> | VirtualizedFileDiff<LAnnotation>
+    instance: VirtualizedFile<LAnnotation> | VirtualizedFileDiff<LAnnotation>,
   ): number {
     const item = this.instanceToItem.get(instance);
     if (item == null) {
-      throw new Error(
-        'CodeView.getLocalTopForInstance: unknown virtualized instance'
-      );
+      throw new Error("CodeView.getLocalTopForInstance: unknown virtualized instance");
     }
     return item.top;
   }
@@ -1504,19 +1406,19 @@ export class CodeView<LAnnotation = undefined> {
   private createItem(
     input: CodeViewItem<LAnnotation>,
     index: number,
-    top: number
+    top: number,
   ): CodeViewContextItem<LAnnotation> {
     const { itemMetricsCache: itemMetrics } = this;
-    if (input.type === 'diff') {
+    if (input.type === "diff") {
       const instance = new VirtualizedFileDiff<LAnnotation>(
         this.createDiffOptions(input.id),
         this,
         itemMetrics,
         this.workerManager,
-        this.isContainerManaged
+        this.isContainerManaged,
       );
       return {
-        type: 'diff',
+        type: "diff",
         item: input,
         version: input.version,
         index,
@@ -1533,10 +1435,10 @@ export class CodeView<LAnnotation = undefined> {
       this,
       itemMetrics,
       this.workerManager,
-      this.isContainerManaged
+      this.isContainerManaged,
     );
     return {
-      type: 'file',
+      type: "file",
       item: input,
       version: input.version,
       index,
@@ -1550,7 +1452,7 @@ export class CodeView<LAnnotation = undefined> {
 
   private applySelectedLines(
     selection: CodeViewLineSelection | null,
-    options?: SelectionWriteOptions
+    options?: SelectionWriteOptions,
   ): void {
     const { selectedLines: prevSelection } = this;
     if (
@@ -1566,14 +1468,12 @@ export class CodeView<LAnnotation = undefined> {
     // the current selection, otherwise if it's a selection on the same item
     // the next selection will take care of that for us
     if (prevSelection != null && prevSelection.id !== selection?.id) {
-      this.idToItem
-        .get(prevSelection.id)
-        ?.instance.setSelectedLines(null, { notify: false });
+      this.idToItem.get(prevSelection.id)?.instance.setSelectedLines(null, { notify: false });
     }
 
     this.selectedLines = selection;
     this.idToItem
-      .get(selection?.id ?? '')
+      .get(selection?.id ?? "")
       ?.instance.setSelectedLines(selection?.range ?? null, options);
   }
 
@@ -1595,7 +1495,7 @@ export class CodeView<LAnnotation = undefined> {
     const { pendingScrollTarget } = this;
     if (
       pendingScrollTarget == null ||
-      pendingScrollTarget.type === 'position' ||
+      pendingScrollTarget.type === "position" ||
       pendingScrollTarget.id !== oldId
     ) {
       return;
@@ -1621,28 +1521,23 @@ export class CodeView<LAnnotation = undefined> {
       defineItemOption<FileOptions<LAnnotation>, CodeViewFileOptionKeys>(
         prototype,
         key,
-        () => this.options[key]
+        () => this.options[key],
       );
     }
 
+    defineItemOption(prototype, "stickyHeader", () => this.options.stickyHeaders);
     defineItemOption(
       prototype,
-      'stickyHeader',
-      () => this.options.stickyHeaders
-    );
-    defineItemOption(
-      prototype,
-      'collapsed',
+      "collapsed",
       (receiver) =>
-        this.getItemOptions(getItemOptionsState(receiver), 'file')?.item
-          .collapsed === true
+        this.getItemOptions(getItemOptionsState(receiver), "file")?.item.collapsed === true,
     );
 
     for (const key of CODE_VIEW_SHARED_CALLBACK_KEYS) {
-      this.defineItemSharedCallback(prototype, 'file', key);
+      this.defineItemSharedCallback(prototype, "file", key);
     }
     for (const key of CODE_VIEW_SELECTION_CALLBACK_KEYS) {
-      this.defineItemSelectionCallback(prototype, 'file', key);
+      this.defineItemSelectionCallback(prototype, "file", key);
     }
 
     return prototype;
@@ -1655,33 +1550,24 @@ export class CodeView<LAnnotation = undefined> {
       defineItemOption<FileDiffOptions<LAnnotation>, CodeViewDiffOptionKeys>(
         prototype,
         key,
-        () => this.options[key]
+        () => this.options[key],
       );
     }
 
+    defineItemOption(prototype, "stickyHeader", () => this.options.stickyHeaders);
+    defineItemOption(prototype, "hunkSeparators", () => this.options.hunkSeparators);
     defineItemOption(
       prototype,
-      'stickyHeader',
-      () => this.options.stickyHeaders
-    );
-    defineItemOption(
-      prototype,
-      'hunkSeparators',
-      () => this.options.hunkSeparators
-    );
-    defineItemOption(
-      prototype,
-      'collapsed',
+      "collapsed",
       (receiver) =>
-        this.getItemOptions(getItemOptionsState(receiver), 'diff')?.item
-          .collapsed === true
+        this.getItemOptions(getItemOptionsState(receiver), "diff")?.item.collapsed === true,
     );
 
     for (const key of CODE_VIEW_SHARED_CALLBACK_KEYS) {
-      this.defineItemSharedCallback(prototype, 'diff', key);
+      this.defineItemSharedCallback(prototype, "diff", key);
     }
     for (const key of CODE_VIEW_SELECTION_CALLBACK_KEYS) {
-      this.defineItemSelectionCallback(prototype, 'diff', key);
+      this.defineItemSelectionCallback(prototype, "diff", key);
     }
 
     return prototype;
@@ -1690,9 +1576,7 @@ export class CodeView<LAnnotation = undefined> {
   private createFileOptions(id: string): FileOptions<LAnnotation> {
     // The per-item options object intentionally owns only hidden state. All
     // public option reads fall through to the shared prototype above.
-    const options = Object.create(
-      this.fileOptionsPrototype
-    ) as FileOptions<LAnnotation>;
+    const options = Object.create(this.fileOptionsPrototype) as FileOptions<LAnnotation>;
     const state: CodeViewItemOptionsState = {
       id,
     };
@@ -1703,9 +1587,7 @@ export class CodeView<LAnnotation = undefined> {
   private createDiffOptions(id: string): FileDiffOptions<LAnnotation> {
     // The per-item options object intentionally owns only hidden state. All
     // public option reads fall through to the shared prototype above.
-    const options = Object.create(
-      this.diffOptionsPrototype
-    ) as FileDiffOptions<LAnnotation>;
+    const options = Object.create(this.diffOptionsPrototype) as FileDiffOptions<LAnnotation>;
     const state: CodeViewItemOptionsState = {
       id,
     };
@@ -1715,14 +1597,14 @@ export class CodeView<LAnnotation = undefined> {
 
   private updateItemOptionsId(
     options: FileOptions<LAnnotation> | FileDiffOptions<LAnnotation>,
-    id: string
+    id: string,
   ): void {
     getItemOptionsState(options).id = id;
   }
 
   private getItemOptions<TMode extends CodeViewMode>(
     state: CodeViewItemOptionsState,
-    mode: TMode
+    mode: TMode,
   ): CodeViewModeItemContext<LAnnotation, TMode> | undefined {
     const item = this.idToItem.get(state.id);
     if (item == null || item.type !== mode) {
@@ -1734,16 +1616,9 @@ export class CodeView<LAnnotation = undefined> {
   private defineItemSharedCallback<
     TMode extends CodeViewMode,
     TKey extends CodeViewSharedCallbackKeys,
-  >(
-    options: CodeViewModeOptions<LAnnotation, TMode>,
-    mode: TMode,
-    key: TKey
-  ): void {
+  >(options: CodeViewModeOptions<LAnnotation, TMode>, mode: TMode, key: TKey): void {
     defineItemOption(
-      options as Record<
-        TKey,
-        CodeViewModeOptions<LAnnotation, TMode>[TKey] | undefined
-      >,
+      options as Record<TKey, CodeViewModeOptions<LAnnotation, TMode>[TKey] | undefined>,
       key,
       (receiver) => {
         const current = this.options[key] as
@@ -1753,9 +1628,7 @@ export class CodeView<LAnnotation = undefined> {
           return undefined;
         }
 
-        const state = getItemOptionsState(
-          receiver as CodeViewModeOptions<LAnnotation, TMode>
-        );
+        const state = getItemOptionsState(receiver as CodeViewModeOptions<LAnnotation, TMode>);
         // Allocate wrapper storage only once a callback option is actually
         // observed. Most large CodeViews never read these callback properties.
         const callbackCache = (state.callbackCache ??= {});
@@ -1771,41 +1644,33 @@ export class CodeView<LAnnotation = undefined> {
             const callback = this.options[key] as
               | CodeViewModeInternalOptionCallback<LAnnotation, TMode, TKey>
               | undefined;
-            return (
-              callback as ((...callbackArgs: unknown[]) => unknown) | undefined
-            )?.(...args, latest);
+            return (callback as ((...callbackArgs: unknown[]) => unknown) | undefined)?.(
+              ...args,
+              latest,
+            );
           }) as CodeViewModeOptions<LAnnotation, TMode>[TKey];
 
           callbackCache[key] = wrapped;
         }
 
         return wrapped;
-      }
+      },
     );
   }
 
   private defineItemSelectionCallback<
     TMode extends CodeViewMode,
     TKey extends CodeViewSelectionCallbackKeys,
-  >(
-    options: CodeViewModeOptions<LAnnotation, TMode>,
-    mode: TMode,
-    key: TKey
-  ): void {
+  >(options: CodeViewModeOptions<LAnnotation, TMode>, mode: TMode, key: TKey): void {
     defineItemOption(
-      options as Record<
-        TKey,
-        CodeViewModeOptions<LAnnotation, TMode>[TKey] | undefined
-      >,
+      options as Record<TKey, CodeViewModeOptions<LAnnotation, TMode>[TKey] | undefined>,
       key,
       (receiver) => {
         if (this.options.enableLineSelection !== true) {
           return undefined;
         }
 
-        const state = getItemOptionsState(
-          receiver as CodeViewModeOptions<LAnnotation, TMode>
-        );
+        const state = getItemOptionsState(receiver as CodeViewModeOptions<LAnnotation, TMode>);
         // Selection callbacks also use the per-item lazy cache. The wrapper
         // owns CodeView selection synchronization and then delegates to the
         // latest user callback, if one exists.
@@ -1820,8 +1685,7 @@ export class CodeView<LAnnotation = undefined> {
               return undefined;
             }
 
-            const selection =
-              range == null ? null : { id: latest.item.id, range };
+            const selection = range == null ? null : { id: latest.item.id, range };
             if (this.options.controlledSelection !== true) {
               if (range != null || this.selectedLines?.id === latest.item.id) {
                 this.applySelectedLines(selection, { notify: false });
@@ -1833,7 +1697,7 @@ export class CodeView<LAnnotation = undefined> {
             const callback = this.options[key] as
               | ((
                   nextRange: SelectedLineRange | null,
-                  context: CodeViewModeItemContext<LAnnotation, TMode>
+                  context: CodeViewModeItemContext<LAnnotation, TMode>,
                 ) => unknown)
               | undefined;
             return callback?.(range, latest);
@@ -1843,7 +1707,7 @@ export class CodeView<LAnnotation = undefined> {
         }
 
         return wrapped;
-      }
+      },
     );
   }
 
@@ -1863,9 +1727,7 @@ export class CodeView<LAnnotation = undefined> {
    */
   private markItemLayoutDirty(item: CodeViewContextItem<LAnnotation>): void {
     if (this.items[item.index] !== item) {
-      throw new Error(
-        `CodeView.markItemLayoutDirty: unknown item id "${item.item.id}"`
-      );
+      throw new Error(`CodeView.markItemLayoutDirty: unknown item id "${item.item.id}"`);
     }
 
     this.markLayoutDirtyFromIndex(item.index);
@@ -1885,7 +1747,7 @@ export class CodeView<LAnnotation = undefined> {
     for (let index = 0; index < this.items.length; index++) {
       const existingItem = this.items[index];
       if (existingItem == null) {
-        throw new Error('CodeView.tryAppendItems: missing existing item');
+        throw new Error("CodeView.tryAppendItems: missing existing item");
       }
       const nextItem = items[index];
       if (
@@ -1900,13 +1762,11 @@ export class CodeView<LAnnotation = undefined> {
     for (let index = 0; index < this.items.length; index++) {
       const existingItem = this.items[index];
       if (existingItem == null) {
-        throw new Error('CodeView.tryAppendItems: missing existing item');
+        throw new Error("CodeView.tryAppendItems: missing existing item");
       }
       const nextItem = items[index];
       if (nextItem == null) {
-        throw new Error(
-          'CodeView.tryAppendItems: append candidate missing prefix item'
-        );
+        throw new Error("CodeView.tryAppendItems: append candidate missing prefix item");
       }
       if (this.syncItemRecord(existingItem, nextItem)) {
         this.markLayoutDirtyFromIndex(index);
@@ -1929,10 +1789,7 @@ export class CodeView<LAnnotation = undefined> {
     const { items: previousItems, idToItem: previousById } = this;
     const removedItems = new Set(previousItems);
     const nextItems: CodeViewContextItem<LAnnotation>[] = [];
-    const nextIdToItem: Map<
-      string,
-      CodeViewContextItem<LAnnotation>
-    > = new Map();
+    const nextIdToItem: Map<string, CodeViewContextItem<LAnnotation>> = new Map();
     const nextInstanceToItem: Map<
       VirtualizedFileDiff<LAnnotation> | VirtualizedFile<LAnnotation>,
       CodeViewContextItem<LAnnotation>
@@ -1942,7 +1799,7 @@ export class CodeView<LAnnotation = undefined> {
     for (let index = 0; index < items.length; index++) {
       const input = items[index];
       if (input == null) {
-        throw new Error('CodeView.reconcileItems: missing input item');
+        throw new Error("CodeView.reconcileItems: missing input item");
       }
       if (nextIdToItem.has(input.id)) {
         throw new Error(`CodeView.setItems: duplicate id "${input.id}"`);
@@ -2011,12 +1868,10 @@ export class CodeView<LAnnotation = undefined> {
    */
   private syncItemRecord(
     item: CodeViewContextItem<LAnnotation>,
-    nextItem: CodeViewItem<LAnnotation>
+    nextItem: CodeViewItem<LAnnotation>,
   ): boolean {
     if (item.type !== nextItem.type) {
-      throw new Error(
-        `CodeView.syncItemRecord: type mismatch for id "${nextItem.id}"`
-      );
+      throw new Error(`CodeView.syncItemRecord: type mismatch for id "${nextItem.id}"`);
     }
 
     if (item.version === nextItem.version) {
@@ -2031,10 +1886,7 @@ export class CodeView<LAnnotation = undefined> {
 
   private getMaxScrollTopForHeight(scrollHeight: number): number {
     const { paddingBottom, paddingTop } = this.getLayout();
-    return Math.max(
-      paddingTop + scrollHeight + paddingBottom - this.getHeight(),
-      0
-    );
+    return Math.max(paddingTop + scrollHeight + paddingBottom - this.getHeight(), 0);
   }
 
   private getMaxScrollTop(): number {
@@ -2080,18 +1932,12 @@ export class CodeView<LAnnotation = undefined> {
 
   private resolveScrollPageWindow(
     scrollTop: number,
-    preferredPagedScrollTop: number
+    preferredPagedScrollTop: number,
   ): { pagedScrollTop: number; scrollPageOffset: number } {
-    let pagedScrollTop = roundToDevicePixel(
-      this.clampPagedScrollTop(preferredPagedScrollTop)
-    );
-    let scrollPageOffset = this.clampScrollPageOffset(
-      scrollTop - pagedScrollTop
-    );
+    let pagedScrollTop = roundToDevicePixel(this.clampPagedScrollTop(preferredPagedScrollTop));
+    let scrollPageOffset = this.clampScrollPageOffset(scrollTop - pagedScrollTop);
 
-    pagedScrollTop = roundToDevicePixel(
-      this.clampPagedScrollTop(scrollTop - scrollPageOffset)
-    );
+    pagedScrollTop = roundToDevicePixel(this.clampPagedScrollTop(scrollTop - scrollPageOffset));
     scrollPageOffset = this.clampScrollPageOffset(scrollTop - pagedScrollTop);
     return { pagedScrollTop, scrollPageOffset };
   }
@@ -2100,9 +1946,7 @@ export class CodeView<LAnnotation = undefined> {
    * Resolve how a logical scrollTop maps onto the reusable paged scroll window
    * without mutating the current page offset.
    */
-  private resolvePagedScrollPosition(
-    logicalScrollTop: number
-  ): PagedScrollPosition {
+  private resolvePagedScrollPosition(logicalScrollTop: number): PagedScrollPosition {
     if (!this.shouldRebaseScroll()) {
       return {
         pagedScrollTop: this.clampPagedScrollTop(logicalScrollTop),
@@ -2116,10 +1960,8 @@ export class CodeView<LAnnotation = undefined> {
     const pagedMaxScrollTop = this.getMaxPagedScrollTop();
     const maxRebaseOffset = this.getMaxScrollPageOffset();
     const shouldMoveDown =
-      pagedScrollTop > SCROLL_REBASE_THRESHOLD &&
-      currentPageOffset < maxRebaseOffset;
-    const shouldMoveUp =
-      pagedScrollTop < SCROLL_REBASE_TRIGGER_TOP && currentPageOffset > 0;
+      pagedScrollTop > SCROLL_REBASE_THRESHOLD && currentPageOffset < maxRebaseOffset;
+    const shouldMoveUp = pagedScrollTop < SCROLL_REBASE_TRIGGER_TOP && currentPageOffset > 0;
 
     if (
       pagedScrollTop < 0 ||
@@ -2131,25 +1973,20 @@ export class CodeView<LAnnotation = undefined> {
         logicalScrollTop,
         shouldMoveUp
           ? Math.min(SCROLL_REBASE_TARGET_BOTTOM, pagedMaxScrollTop)
-          : SCROLL_REBASE_TARGET_TOP
+          : SCROLL_REBASE_TARGET_TOP,
       );
       return nextWindow;
     }
 
     return {
-      pagedScrollTop: roundToDevicePixel(
-        this.clampPagedScrollTop(pagedScrollTop)
-      ),
+      pagedScrollTop: roundToDevicePixel(this.clampPagedScrollTop(pagedScrollTop)),
       scrollPageOffset: currentPageOffset,
     };
   }
 
   private needsScrollPageUpdate(logicalScrollTop: number): boolean {
-    const roundedScrollTop = roundToDevicePixel(
-      this.clampScrollTop(logicalScrollTop)
-    );
-    const { scrollPageOffset } =
-      this.resolvePagedScrollPosition(roundedScrollTop);
+    const roundedScrollTop = roundToDevicePixel(this.clampScrollTop(logicalScrollTop));
+    const { scrollPageOffset } = this.resolvePagedScrollPosition(roundedScrollTop);
     return scrollPageOffset !== this.scrollPageOffset;
   }
 
@@ -2161,17 +1998,13 @@ export class CodeView<LAnnotation = undefined> {
   }
 
   private getStickyHeaderOffset(): number {
-    return this.options.stickyHeaders === true &&
-      this.options.disableFileHeader !== true
+    return this.options.stickyHeaders === true && this.options.disableFileHeader !== true
       ? this.itemMetricsCache.diffHeaderHeight
       : 0;
   }
 
   private getScrollTargetRect(
-    target:
-      | CodeViewItemScrollTarget
-      | CodeViewLineScrollTarget
-      | CodeViewRangeScrollTarget
+    target: CodeViewItemScrollTarget | CodeViewLineScrollTarget | CodeViewRangeScrollTarget,
   ): { top: number; height: number } | undefined {
     const item = this.idToItem.get(target.id);
     if (item == null) {
@@ -2179,15 +2012,15 @@ export class CodeView<LAnnotation = undefined> {
       return undefined;
     }
 
-    if (target.type === 'item') {
+    if (target.type === "item") {
       return { top: item.top, height: item.height };
     }
 
-    if (target.type === 'range') {
+    if (target.type === "range") {
       const rangePosition = this.getRangeScrollPosition(item, target);
       if (rangePosition == null) {
         console.warn(
-          `CodeView.scrollTo: unable to resolve range ${formatSelectedLineRange(target.range)} for item "${target.id}"`
+          `CodeView.scrollTo: unable to resolve range ${formatSelectedLineRange(target.range)} for item "${target.id}"`,
         );
         return undefined;
       }
@@ -2201,7 +2034,7 @@ export class CodeView<LAnnotation = undefined> {
     const linePosition = this.getLineScrollPosition(item, target);
     if (linePosition == null) {
       console.warn(
-        `CodeView.scrollTo: unable to resolve line ${target.lineNumber} for item "${target.id}"`
+        `CodeView.scrollTo: unable to resolve line ${target.lineNumber} for item "${target.id}"`,
       );
       return undefined;
     }
@@ -2212,10 +2045,8 @@ export class CodeView<LAnnotation = undefined> {
     };
   }
 
-  private normalizeScrollTarget(
-    target: CodeViewScrollTarget
-  ): PendingScrollTarget | undefined {
-    if (target.type === 'position' || target.align !== 'nearest') {
+  private normalizeScrollTarget(target: CodeViewScrollTarget): PendingScrollTarget | undefined {
+    if (target.type === "position" || target.align !== "nearest") {
       return target as PendingScrollTarget;
     }
 
@@ -2232,28 +2063,23 @@ export class CodeView<LAnnotation = undefined> {
     const currentTop = this.getScrollTop();
     const visibleTop =
       currentTop +
-      (target.type === 'line' || target.type === 'range'
-        ? this.getStickyHeaderOffset()
-        : 0);
+      (target.type === "line" || target.type === "range" ? this.getStickyHeaderOffset() : 0);
     const visibleBottom = currentTop + this.getHeight();
 
     // If the item is spanning beyond the full viewport,
     // do nothing as it's already in view
-    if (
-      targetTop - offset <= visibleTop &&
-      targetBottom + offset >= visibleBottom
-    ) {
+    if (targetTop - offset <= visibleTop && targetBottom + offset >= visibleBottom) {
       return undefined;
     }
 
     // Let's use the top as the target
     if (targetTop - offset < visibleTop) {
-      return { ...target, align: 'start' };
+      return { ...target, align: "start" };
     }
 
     // Let's use the top as the target
     if (targetBottom + offset > visibleBottom) {
-      return { ...target, align: 'end' };
+      return { ...target, align: "end" };
     }
 
     // The element is already in view, nothing to do.
@@ -2265,10 +2091,8 @@ export class CodeView<LAnnotation = undefined> {
 
    * Returns `undefined` when we can't resolve a target for whatever reason
    */
-  private resolveScrollTargetTop(
-    target: PendingScrollTarget
-  ): number | undefined {
-    if (target.type === 'position') {
+  private resolveScrollTargetTop(target: PendingScrollTarget): number | undefined {
+    if (target.type === "position") {
       const clampedPosition = this.clampScrollTop(target.position);
       return clampedPosition !== target.position
         ? // If our position was clamped, we we shouldn't apply the sticky offset
@@ -2282,22 +2106,17 @@ export class CodeView<LAnnotation = undefined> {
       return undefined;
     }
 
-    if (target.type === 'item') {
+    if (target.type === "item") {
       return this.clampScrollTop(
-        this.resolveAlignedScrollPosition(
-          item.top,
-          item.height,
-          target.align,
-          target.offset
-        )
+        this.resolveAlignedScrollPosition(item.top, item.height, target.align, target.offset),
       );
     }
 
-    if (target.type === 'range') {
+    if (target.type === "range") {
       const rangePosition = this.getRangeScrollPosition(item, target);
       if (rangePosition == null) {
         console.warn(
-          `CodeView.scrollTo: unable to resolve range ${formatSelectedLineRange(target.range)} for item "${target.id}"`
+          `CodeView.scrollTo: unable to resolve range ${formatSelectedLineRange(target.range)} for item "${target.id}"`,
         );
         return undefined;
       }
@@ -2308,15 +2127,15 @@ export class CodeView<LAnnotation = undefined> {
           rangePosition.height,
           target.align,
           target.offset,
-          this.getStickyHeaderOffset()
-        )
+          this.getStickyHeaderOffset(),
+        ),
       );
     }
 
     const linePosition = this.getLineScrollPosition(item, target);
     if (linePosition == null) {
       console.warn(
-        `CodeView.scrollTo: unable to resolve line ${target.lineNumber} for item "${target.id}"`
+        `CodeView.scrollTo: unable to resolve line ${target.lineNumber} for item "${target.id}"`,
       );
       return undefined;
     }
@@ -2327,8 +2146,8 @@ export class CodeView<LAnnotation = undefined> {
         linePosition.height,
         target.align,
         target.offset,
-        this.getStickyHeaderOffset()
-      )
+        this.getStickyHeaderOffset(),
+      ),
     );
   }
 
@@ -2344,16 +2163,16 @@ export class CodeView<LAnnotation = undefined> {
     targetHeight: number,
     align: PendingAlignTypes,
     offset = 0,
-    stickyOffset = 0
+    stickyOffset = 0,
   ): number {
     targetTop += this.getLayout().paddingTop;
     const viewportHeight = this.getHeight();
     // If the item + offset is bigger than the viewport, we'll fall back to
     // 'start'
-    if (align === 'center' && targetHeight + offset < viewportHeight) {
+    if (align === "center" && targetHeight + offset < viewportHeight) {
       return targetTop - (viewportHeight - targetHeight) / 2 + offset;
     }
-    if (align === 'end') {
+    if (align === "end") {
       return targetTop - (viewportHeight - targetHeight) + offset;
     }
     // 'start', the default
@@ -2362,9 +2181,9 @@ export class CodeView<LAnnotation = undefined> {
 
   private getLineScrollPosition(
     item: CodeViewContextItem<LAnnotation>,
-    target: CodeViewLineScrollTarget
+    target: CodeViewLineScrollTarget,
   ): LineScrollPosition | undefined {
-    if (item.type === 'diff') {
+    if (item.type === "diff") {
       return item.instance.getLinePosition(target.lineNumber, target.side);
     }
 
@@ -2373,17 +2192,17 @@ export class CodeView<LAnnotation = undefined> {
 
   private getRangeScrollPosition(
     item: CodeViewContextItem<LAnnotation>,
-    target: CodeViewRangeScrollTarget
+    target: CodeViewRangeScrollTarget,
   ): LineScrollPosition | undefined {
     const { range } = target;
     const startPosition = this.getLineScrollPosition(item, {
-      type: 'line',
+      type: "line",
       id: target.id,
       lineNumber: range.start,
       side: range.side,
     });
     const endPosition = this.getLineScrollPosition(item, {
-      type: 'line',
+      type: "line",
       id: target.id,
       lineNumber: range.end,
       side: range.endSide ?? range.side,
@@ -2411,10 +2230,7 @@ export class CodeView<LAnnotation = undefined> {
    * smooth scroll animation or not. If not just return the destination, or
    * compute next position given the smooth scroll spring physics
    */
-  private computeTargetScrollTopForFrame(
-    scrollTop: number,
-    frameTimestamp: number
-  ): number {
+  private computeTargetScrollTopForFrame(scrollTop: number, frameTimestamp: number): number {
     if (this.pendingScrollTarget == null) {
       return scrollTop;
     }
@@ -2426,8 +2242,7 @@ export class CodeView<LAnnotation = undefined> {
     if (scrollAnimation == null) {
       return destination;
     }
-    return this.computeSpringStep(scrollAnimation, destination, frameTimestamp)
-      .position;
+    return this.computeSpringStep(scrollAnimation, destination, frameTimestamp).position;
   }
 
   /**
@@ -2440,7 +2255,7 @@ export class CodeView<LAnnotation = undefined> {
   private computeSpringStep(
     animation: ScrollToAnimation,
     destination: number,
-    frameTimestamp: number
+    frameTimestamp: number,
   ): SpringStepResult {
     const dt = Math.max(0, frameTimestamp - animation.lastTimestamp);
     const { omega } = this.getSmoothScrollSettings();
@@ -2448,8 +2263,7 @@ export class CodeView<LAnnotation = undefined> {
     const displacement = animation.position - destination;
     const springCoeff = animation.velocity + omega * displacement;
     const position = destination + (displacement + springCoeff * dt) * decay;
-    const velocity =
-      (springCoeff * (1 - omega * dt) - omega * displacement) * decay;
+    const velocity = (springCoeff * (1 - omega * dt) - omega * displacement) * decay;
     return { position, velocity };
   }
 
@@ -2460,10 +2274,7 @@ export class CodeView<LAnnotation = undefined> {
    * Resolves the animation based on frame time and adopts any necessary scroll
    * anchoring corrections if necessary
    */
-  private advanceScrollAnimation(
-    frameTimestamp: number,
-    anchorDelta: number
-  ): number | undefined {
+  private advanceScrollAnimation(frameTimestamp: number, anchorDelta: number): number | undefined {
     if (this.pendingScrollTarget == null) {
       return undefined;
     }
@@ -2480,11 +2291,7 @@ export class CodeView<LAnnotation = undefined> {
 
     animation.position += anchorDelta;
 
-    const { position, velocity } = this.computeSpringStep(
-      animation,
-      destination,
-      frameTimestamp
-    );
+    const { position, velocity } = this.computeSpringStep(animation, destination, frameTimestamp);
     animation.lastTimestamp = frameTimestamp;
     animation.position = position;
     animation.velocity = velocity;
@@ -2503,9 +2310,7 @@ export class CodeView<LAnnotation = undefined> {
     return animation.position;
   }
 
-  private computeRenderRangeAndEmit = (
-    timestamp: number = performance.now()
-  ): void => {
+  private computeRenderRangeAndEmit = (timestamp: number = performance.now()): void => {
     if (CodeView.__STOP || this.container == null) {
       return;
     }
@@ -2538,11 +2343,9 @@ export class CodeView<LAnnotation = undefined> {
     // If layout shifted, resolve the logical scrollTop that keeps the captured
     // anchor in the same viewport position.
     if (computeScrollCorrection && scrollAnchor != null) {
-      const anchoredScrollTopAfterLayout =
-        this.resolveAnchoredScrollTop(scrollAnchor);
+      const anchoredScrollTopAfterLayout = this.resolveAnchoredScrollTop(scrollAnchor);
       if (anchoredScrollTopAfterLayout != null) {
-        const layoutAnchorDelta =
-          anchoredScrollTopAfterLayout - scrollTopAfterLayout;
+        const layoutAnchorDelta = anchoredScrollTopAfterLayout - scrollTopAfterLayout;
         scrollTopAfterLayout = anchoredScrollTopAfterLayout;
         if (this.scrollAnimation != null) {
           // If we have a delta measurement adjustment, we have to pass that
@@ -2562,10 +2365,7 @@ export class CodeView<LAnnotation = undefined> {
 
     // Resolve the logical scrollTop this render frame should target. The paged
     // root scrollTop is derived later only if the scaffold needs to move.
-    const targetScrollTop = this.computeTargetScrollTopForFrame(
-      scrollTopAfterLayout,
-      timestamp
-    );
+    const targetScrollTop = this.computeTargetScrollTopForFrame(scrollTopAfterLayout, timestamp);
 
     // When performing very large scroll jumps, we should attempt to render the
     // bare minimum to ensure we can paint quickly. We'll queue up another
@@ -2597,8 +2397,7 @@ export class CodeView<LAnnotation = undefined> {
     });
     let syncedScrollTop = initialScrollTop;
     if (
-      (this.pendingScrollTarget != null &&
-        targetScrollTop !== syncedScrollTop) ||
+      (this.pendingScrollTarget != null && targetScrollTop !== syncedScrollTop) ||
       this.needsScrollPageUpdate(targetScrollTop)
     ) {
       // Apply programmatic scrolls and user-driven page rebases before DOM
@@ -2616,9 +2415,7 @@ export class CodeView<LAnnotation = undefined> {
       for (let index = firstIndex; index <= lastIndex; index++) {
         const item = this.items[index];
         if (item == null) {
-          throw new Error(
-            `CodeView.computeRenderRangeAndEmit: No item at index: ${index}`
-          );
+          throw new Error(`CodeView.computeRenderRangeAndEmit: No item at index: ${index}`);
         }
         const isVisible = item.top > top - item.height && item.top <= bottom;
         // If not visible, we should unmount it and clean it up
@@ -2633,11 +2430,7 @@ export class CodeView<LAnnotation = undefined> {
     const startingIndex = this.findFirstVisibleIndex(top);
     const lastRenderedIndex = this.findLastVisibleIndex(bottom);
 
-    for (
-      let itemIndex = startingIndex;
-      itemIndex <= lastRenderedIndex;
-      itemIndex++
-    ) {
+    for (let itemIndex = startingIndex; itemIndex <= lastRenderedIndex; itemIndex++) {
       const item = this.items[itemIndex];
       if (item == null) {
         throw new Error(`CodeView.computeRenderRangeAndEmit: missing item`);
@@ -2658,8 +2451,7 @@ export class CodeView<LAnnotation = undefined> {
       // Otherwise kick off a render as necessary
       else {
         syncRenderedItemOrder(this.stickyContainer, item.element, prevElement);
-        const forceRender =
-          item.renderedOptionsRevision !== this.renderOptionsRevision;
+        const forceRender = item.renderedOptionsRevision !== this.renderOptionsRevision;
         if (renderItem(item, undefined, forceRender)) {
           item.renderedOptionsRevision = this.renderOptionsRevision;
           updatedItems.add(item);
@@ -2668,8 +2460,7 @@ export class CodeView<LAnnotation = undefined> {
       }
     }
 
-    this.renderState.firstIndex =
-      startingIndex <= lastRenderedIndex ? startingIndex : -1;
+    this.renderState.firstIndex = startingIndex <= lastRenderedIndex ? startingIndex : -1;
     this.renderState.lastIndex = lastRenderedIndex;
 
     this.flushSlotCoordinator();
@@ -2690,9 +2481,7 @@ export class CodeView<LAnnotation = undefined> {
     // - Smooth pending scrollTo target → Apply necessary scrollFix if
     //   necessary and rebase/update the outstanding spring animation values.
     const anchoredScrollTopAfterRender =
-      scrollAnchor != null
-        ? this.resolveAnchoredScrollTop(scrollAnchor)
-        : undefined;
+      scrollAnchor != null ? this.resolveAnchoredScrollTop(scrollAnchor) : undefined;
     if (scrollAnchor === this.pendingLayoutAnchor) {
       this.pendingLayoutAnchor = undefined;
     }
@@ -2705,10 +2494,7 @@ export class CodeView<LAnnotation = undefined> {
     let postRenderScrollTop = targetScrollTop;
     let shouldCheckPendingTargetSettled = false;
     if (this.pendingScrollTarget != null) {
-      const pendingTargetScrollTop = this.advanceScrollAnimation(
-        timestamp,
-        postRenderAnchorDelta
-      );
+      const pendingTargetScrollTop = this.advanceScrollAnimation(timestamp, postRenderAnchorDelta);
       if (pendingTargetScrollTop != null) {
         postRenderScrollTop = pendingTargetScrollTop;
         shouldCheckPendingTargetSettled = true;
@@ -2725,11 +2511,7 @@ export class CodeView<LAnnotation = undefined> {
     // If the new intended scroll position has changed, we should apply that
     // now to bring everything in line
     if (postRenderScrollTop !== syncedScrollTop) {
-      this.applyScrollFix(
-        postRenderScrollTop,
-        syncedScrollTop,
-        this.windowSpecs
-      );
+      this.applyScrollFix(postRenderScrollTop, syncedScrollTop, this.windowSpecs);
       syncedScrollTop = postRenderScrollTop;
     }
     if (
@@ -2755,9 +2537,7 @@ export class CodeView<LAnnotation = undefined> {
     }
   };
 
-  private flushManagers(
-    updatedItems: Set<CodeViewContextItem<LAnnotation>>
-  ): void {
+  private flushManagers(updatedItems: Set<CodeViewContextItem<LAnnotation>>): void {
     for (const item of updatedItems) {
       item.instance.flushManagers();
     }
@@ -2773,9 +2553,7 @@ export class CodeView<LAnnotation = undefined> {
     this.containerHeight = pagedScrollHeight;
   }
 
-  private getStickyBounds(
-    windowSpecs?: VirtualWindowSpecs
-  ): StickyBounds | undefined {
+  private getStickyBounds(windowSpecs?: VirtualWindowSpecs): StickyBounds | undefined {
     const { firstIndex, lastIndex } =
       windowSpecs != null
         ? {
@@ -2787,29 +2565,20 @@ export class CodeView<LAnnotation = undefined> {
     if (firstIndex === -1 || lastIndex === -1 || firstIndex > lastIndex) {
       return undefined;
     }
-    const firstStickySpecs =
-      this.items[firstIndex]?.instance.getAdvancedStickySpecs(windowSpecs);
-    const lastStickySpecs =
-      this.items[lastIndex]?.instance.getAdvancedStickySpecs(windowSpecs);
+    const firstStickySpecs = this.items[firstIndex]?.instance.getAdvancedStickySpecs(windowSpecs);
+    const lastStickySpecs = this.items[lastIndex]?.instance.getAdvancedStickySpecs(windowSpecs);
 
     if (firstStickySpecs == null || lastStickySpecs == null) {
       return undefined;
     }
 
     return {
-      stickyTop: this.getPagedLayoutTop(
-        Math.max(firstStickySpecs.topOffset, 0)
-      ),
-      stickyBottom: this.getPagedLayoutTop(
-        lastStickySpecs.topOffset + lastStickySpecs.height
-      ),
+      stickyTop: this.getPagedLayoutTop(Math.max(firstStickySpecs.topOffset, 0)),
+      stickyBottom: this.getPagedLayoutTop(lastStickySpecs.topOffset + lastStickySpecs.height),
     };
   }
 
-  private applyStickyPositioning({
-    stickyTop,
-    stickyBottom,
-  }: StickyBounds): void {
+  private applyStickyPositioning({ stickyTop, stickyBottom }: StickyBounds): void {
     const height = this.getHeight();
     const { itemMetricsCache: itemMetrics } = this;
     const stickyContainerHeight = stickyBottom - stickyTop;
@@ -2823,8 +2592,7 @@ export class CodeView<LAnnotation = undefined> {
     // down quickly, this prevents the laggy scroll view from lining up with
     // the numbers exactly
     const randomOffset = ((Math.random() * itemMetrics.lineHeight) >> 0) * -1;
-    const stickyJitter =
-      -Math.max(stickyContainerHeight + randomOffset, 0) + height;
+    const stickyJitter = -Math.max(stickyContainerHeight + randomOffset, 0) + height;
     this.stickyContainer.style.top = `${stickyJitter}px`;
     this.stickyContainer.style.bottom = `${stickyJitter + itemMetrics.diffHeaderHeight}px`;
   }
@@ -2838,9 +2606,7 @@ export class CodeView<LAnnotation = undefined> {
     this.applyStickyPositioning(stickyBounds);
   }
 
-  private reconcileRenderedItems(
-    updatedItems?: Set<CodeViewContextItem<LAnnotation>>
-  ): void {
+  private reconcileRenderedItems(updatedItems?: Set<CodeViewContextItem<LAnnotation>>): void {
     const { firstIndex, lastIndex } = this.renderState;
     if (firstIndex === -1) {
       return;
@@ -2858,7 +2624,7 @@ export class CodeView<LAnnotation = undefined> {
       }
       const item = this.items[index];
       if (item == null) {
-        throw new Error('CodeView.reconcileRenderedItems: Invalid item');
+        throw new Error("CodeView.reconcileRenderedItems: Invalid item");
       }
       if (currentTop === -1) {
         currentTop = item.top;
@@ -2947,11 +2713,7 @@ export class CodeView<LAnnotation = undefined> {
             anchor != null ? this.resolveAnchoredScrollTop(anchor) : undefined;
           if (anchoredScrollTop != null) {
             const resizeAnchorDelta = anchoredScrollTop - currentScrollTop;
-            this.applyScrollFix(
-              anchoredScrollTop,
-              currentScrollTop,
-              this.windowSpecs
-            );
+            this.applyScrollFix(anchoredScrollTop, currentScrollTop, this.windowSpecs);
             if (this.scrollAnimation != null) {
               // if we had to apply a scroll fix then we should make sure to
               // match the scroll fix delta to the scrollAnimation position to
@@ -2982,13 +2744,8 @@ export class CodeView<LAnnotation = undefined> {
    * Figure out scrollTop accounting for sticky header if enabled and
    * necessary
    */
-  private getScrollAnchorViewportTop(
-    absoluteItemTop: number,
-    scrollTop: number
-  ): number {
-    return absoluteItemTop < scrollTop
-      ? scrollTop + this.getStickyHeaderOffset()
-      : scrollTop;
+  private getScrollAnchorViewportTop(absoluteItemTop: number, scrollTop: number): number {
+    return absoluteItemTop < scrollTop ? scrollTop + this.getStickyHeaderOffset() : scrollTop;
   }
 
   /**
@@ -3034,23 +2791,20 @@ export class CodeView<LAnnotation = undefined> {
 
       if (absoluteItemTop >= scrollTop) {
         return {
-          type: 'item',
+          type: "item",
           id: item.item.id,
           viewportOffset: absoluteItemTop - scrollTop,
         };
       }
 
       // First attempt to grab a the first fully visible line
-      const anchorViewportTop = this.getScrollAnchorViewportTop(
-        absoluteItemTop,
-        scrollTop
-      );
+      const anchorViewportTop = this.getScrollAnchorViewportTop(absoluteItemTop, scrollTop);
       const localViewportTop = anchorViewportTop - absoluteItemTop;
       const lineAnchor = item.instance.getNumericScrollAnchor(localViewportTop);
       if (lineAnchor != null) {
         const absoluteLineTop = absoluteItemTop + lineAnchor.top;
         return {
-          type: 'line',
+          type: "line",
           id: item.item.id,
           lineNumber: lineAnchor.lineNumber,
           side: lineAnchor.side,
@@ -3077,13 +2831,13 @@ export class CodeView<LAnnotation = undefined> {
     }
 
     const { paddingTop } = this.getLayout();
-    if (anchor.type === 'item') {
+    if (anchor.type === "item") {
       const absoluteItemTop = paddingTop + item.top;
       return this.clampScrollTop(absoluteItemTop - anchor.viewportOffset);
     }
 
     const linePosition =
-      item.type === 'diff'
+      item.type === "diff"
         ? item.instance.getLinePosition(anchor.lineNumber, anchor.side)
         : item.instance.getLinePosition(anchor.lineNumber);
     if (linePosition == null) {
@@ -3100,19 +2854,17 @@ export class CodeView<LAnnotation = undefined> {
   private applyScrollFix(
     targetScrollTop: number,
     syncedScrollTop: number,
-    windowSpecs: VirtualWindowSpecs
+    windowSpecs: VirtualWindowSpecs,
   ): void {
     if (this.root == null) {
       return;
     }
-    const roundedTargetScrollTop = roundToDevicePixel(
-      this.clampScrollTop(targetScrollTop)
-    );
+    const roundedTargetScrollTop = roundToDevicePixel(this.clampScrollTop(targetScrollTop));
     const roundedSyncedScrollTop = roundToDevicePixel(syncedScrollTop);
 
     const { scrollPageOffset: previousPageOffset } = this;
     const syncedPagedScrollTop = roundToDevicePixel(
-      this.clampPagedScrollTop(roundedSyncedScrollTop - previousPageOffset)
+      this.clampPagedScrollTop(roundedSyncedScrollTop - previousPageOffset),
     );
     const { pagedScrollTop, scrollPageOffset } =
       this.resolvePagedScrollPosition(roundedTargetScrollTop);
@@ -3133,7 +2885,7 @@ export class CodeView<LAnnotation = undefined> {
       this.syncPagedScrollScaffolding(windowSpecs);
     }
     if (targetPagedScrollTop !== syncedPagedScrollTop) {
-      this.root.scrollTo({ top: targetPagedScrollTop, behavior: 'instant' });
+      this.root.scrollTo({ top: targetPagedScrollTop, behavior: "instant" });
     }
     // Keep cached scroll state in sync with writes we performed ourselves, so
     // later reads do not need to touch layout just to discover the same value.
@@ -3183,10 +2935,7 @@ export class CodeView<LAnnotation = undefined> {
     }
     const { onSnapshotChange } = this.slotCoordinator;
 
-    const slotSnapshot = getSlotSnapshot(
-      this.getRenderedItems(),
-      this.slotCoordinator
-    );
+    const slotSnapshot = getSlotSnapshot(this.getRenderedItems(), this.slotCoordinator);
 
     if (areSlotSnapshotsEqual(this.slotSnapshot, slotSnapshot)) {
       return;
@@ -3221,7 +2970,7 @@ export class CodeView<LAnnotation = undefined> {
       const mid = (low + high) >> 1;
       const item = this.items[mid];
       if (item == null) {
-        throw new Error('CodeView.findFirstVisibleIndex: invalid item index');
+        throw new Error("CodeView.findFirstVisibleIndex: invalid item index");
       }
 
       if (item.top + item.height > top) {
@@ -3249,7 +2998,7 @@ export class CodeView<LAnnotation = undefined> {
       const mid = (low + high) >> 1;
       const item = this.items[mid];
       if (item == null) {
-        throw new Error('CodeView.findLastVisibleIndex: invalid item index');
+        throw new Error("CodeView.findLastVisibleIndex: invalid item index");
       }
 
       if (item.top <= bottom) {
@@ -3269,10 +3018,7 @@ export class CodeView<LAnnotation = undefined> {
    * onward is remeasured so downstream positions and total scroll height stay
    * consistent after inserts, removals, or versioned item updates.
    */
-  private recomputeLayout(
-    startIndex = 0,
-    reset: PendingCodeViewLayoutReset | undefined
-  ): void {
+  private recomputeLayout(startIndex = 0, reset: PendingCodeViewLayoutReset | undefined): void {
     if (this.items.length === 0) {
       this.scrollHeight = 0;
       return;
@@ -3283,7 +3029,7 @@ export class CodeView<LAnnotation = undefined> {
     if (startIndex > 0) {
       const previousItem = this.items[startIndex - 1];
       if (previousItem == null) {
-        throw new Error('CodeView.recomputeLayout: invalid dirty index');
+        throw new Error("CodeView.recomputeLayout: invalid dirty index");
       }
       runningTop = previousItem.top + previousItem.height + layout.gap;
     }
@@ -3291,22 +3037,22 @@ export class CodeView<LAnnotation = undefined> {
     for (let index = startIndex; index < this.items.length; index++) {
       const item = this.items[index];
       if (item == null) {
-        throw new Error('CodeView.recomputeLayout: invalid item index');
+        throw new Error("CodeView.recomputeLayout: invalid item index");
       }
       item.top = runningTop;
-      if (item.type === 'diff') {
+      if (item.type === "diff") {
         item.height = item.instance.prepareCodeViewItem(
           item.item.fileDiff,
           runningTop,
           reset,
-          item.item.annotations ?? []
+          item.item.annotations ?? [],
         );
       } else {
         item.height = item.instance.prepareCodeViewItem(
           item.item.file,
           runningTop,
           reset,
-          item.item.annotations ?? []
+          item.item.annotations ?? [],
         );
       }
       runningTop += item.height;
@@ -3340,84 +3086,66 @@ export class CodeView<LAnnotation = undefined> {
   }
 }
 
-function prepareItemInstance<LAnnotation>(
-  item: CodeViewContextItem<LAnnotation>
-): number {
+function prepareItemInstance<LAnnotation>(item: CodeViewContextItem<LAnnotation>): number {
   item.instance.cleanUp(true);
-  if (item.type === 'diff') {
+  if (item.type === "diff") {
     return item.instance.prepareCodeViewItem(
       item.item.fileDiff,
       item.top,
       undefined,
-      item.item.annotations ?? []
+      item.item.annotations ?? [],
     );
   } else {
     return item.instance.prepareCodeViewItem(
       item.item.file,
       item.top,
       undefined,
-      item.item.annotations ?? []
+      item.item.annotations ?? [],
     );
   }
 }
 
 function shouldClearPool<LAnnotation>(
   previousOptions: CodeViewOptions<LAnnotation>,
-  nextOptions: CodeViewOptions<LAnnotation>
+  nextOptions: CodeViewOptions<LAnnotation>,
 ): boolean {
   return (
-    !areThemesEqual(
-      previousOptions.theme ?? DEFAULT_THEMES,
-      nextOptions.theme ?? DEFAULT_THEMES
-    ) ||
-    (previousOptions.themeType ?? 'system') !==
-      (nextOptions.themeType ?? 'system') ||
+    !areThemesEqual(previousOptions.theme ?? DEFAULT_THEMES, nextOptions.theme ?? DEFAULT_THEMES) ||
+    (previousOptions.themeType ?? "system") !== (nextOptions.themeType ?? "system") ||
     previousOptions.unsafeCSS !== nextOptions.unsafeCSS
   );
 }
 
 function hasItemLayoutOptionChanged<LAnnotation>(
   previousOptions: CodeViewOptions<LAnnotation>,
-  nextOptions: CodeViewOptions<LAnnotation>
+  nextOptions: CodeViewOptions<LAnnotation>,
 ): boolean {
   return (
-    (previousOptions.overflow ?? 'scroll') !==
-      (nextOptions.overflow ?? 'scroll') ||
-    (previousOptions.disableLineNumbers ?? false) !==
-      (nextOptions.disableLineNumbers ?? false) ||
-    (previousOptions.disableFileHeader ?? false) !==
-      (nextOptions.disableFileHeader ?? false) ||
+    (previousOptions.overflow ?? "scroll") !== (nextOptions.overflow ?? "scroll") ||
+    (previousOptions.disableLineNumbers ?? false) !== (nextOptions.disableLineNumbers ?? false) ||
+    (previousOptions.disableFileHeader ?? false) !== (nextOptions.disableFileHeader ?? false) ||
     previousOptions.unsafeCSS !== nextOptions.unsafeCSS ||
-    (previousOptions.diffStyle ?? 'split') !==
-      (nextOptions.diffStyle ?? 'split') ||
-    (previousOptions.diffIndicators ?? 'bars') !==
-      (nextOptions.diffIndicators ?? 'bars') ||
-    (previousOptions.hunkSeparators ?? 'line-info') !==
-      (nextOptions.hunkSeparators ?? 'line-info') ||
-    (previousOptions.expandUnchanged ?? false) !==
-      (nextOptions.expandUnchanged ?? false) ||
-    (previousOptions.collapsedContextThreshold ??
-      DEFAULT_COLLAPSED_CONTEXT_THRESHOLD) !==
-      (nextOptions.collapsedContextThreshold ??
-        DEFAULT_COLLAPSED_CONTEXT_THRESHOLD)
+    (previousOptions.diffStyle ?? "split") !== (nextOptions.diffStyle ?? "split") ||
+    (previousOptions.diffIndicators ?? "bars") !== (nextOptions.diffIndicators ?? "bars") ||
+    (previousOptions.hunkSeparators ?? "line-info") !==
+      (nextOptions.hunkSeparators ?? "line-info") ||
+    (previousOptions.expandUnchanged ?? false) !== (nextOptions.expandUnchanged ?? false) ||
+    (previousOptions.collapsedContextThreshold ?? DEFAULT_COLLAPSED_CONTEXT_THRESHOLD) !==
+      (nextOptions.collapsedContextThreshold ?? DEFAULT_COLLAPSED_CONTEXT_THRESHOLD)
   );
 }
 
 function hasCodeViewDiffEstimateOptionChanged<LAnnotation>(
   previousOptions: CodeViewOptions<LAnnotation>,
-  nextOptions: CodeViewOptions<LAnnotation>
+  nextOptions: CodeViewOptions<LAnnotation>,
 ): boolean {
   return (
-    (previousOptions.disableFileHeader ?? false) !==
-      (nextOptions.disableFileHeader ?? false) ||
-    (previousOptions.hunkSeparators ?? 'line-info') !==
-      (nextOptions.hunkSeparators ?? 'line-info') ||
-    (previousOptions.expandUnchanged ?? false) !==
-      (nextOptions.expandUnchanged ?? false) ||
-    (previousOptions.collapsedContextThreshold ??
-      DEFAULT_COLLAPSED_CONTEXT_THRESHOLD) !==
-      (nextOptions.collapsedContextThreshold ??
-        DEFAULT_COLLAPSED_CONTEXT_THRESHOLD)
+    (previousOptions.disableFileHeader ?? false) !== (nextOptions.disableFileHeader ?? false) ||
+    (previousOptions.hunkSeparators ?? "line-info") !==
+      (nextOptions.hunkSeparators ?? "line-info") ||
+    (previousOptions.expandUnchanged ?? false) !== (nextOptions.expandUnchanged ?? false) ||
+    (previousOptions.collapsedContextThreshold ?? DEFAULT_COLLAPSED_CONTEXT_THRESHOLD) !==
+      (nextOptions.collapsedContextThreshold ?? DEFAULT_COLLAPSED_CONTEXT_THRESHOLD)
   );
 }
 
@@ -3439,23 +3167,20 @@ function formatSelectedLineRange(range: SelectedLineRange): string {
   return start === end ? start : `${start}-${end}`;
 }
 
-function formatSelectedLinePoint(
-  lineNumber: number,
-  side: SelectionSide | undefined
-): string {
+function formatSelectedLinePoint(lineNumber: number, side: SelectionSide | undefined): string {
   if (side == null) {
     return `${lineNumber}`;
   }
 
-  return `${side === 'deletions' ? 'D' : 'A'}${lineNumber}`;
+  return `${side === "deletions" ? "D" : "A"}${lineNumber}`;
 }
 
 function renderItem<LAnnotation>(
   item: CodeViewContextItem<LAnnotation>,
   fileContainer?: HTMLElement,
-  forceRender = false
+  forceRender = false,
 ): boolean {
-  if (item.type === 'diff') {
+  if (item.type === "diff") {
     return item.instance.render({
       deferManagers: true,
       fileContainer,
@@ -3483,7 +3208,7 @@ function renderItem<LAnnotation>(
 function syncRenderedItemOrder(
   container: HTMLElement,
   element: HTMLElement,
-  prevElement: HTMLElement | undefined
+  prevElement: HTMLElement | undefined,
 ): void {
   if (prevElement == null) {
     if (container.firstChild !== element) {
@@ -3507,7 +3232,7 @@ function getSlotSnapshot<LAnnotation>(
     hasHeaderRenderers,
     hasAnnotationRenderer,
     hasGutterRenderer,
-  }: CodeViewCoordinator<LAnnotation>
+  }: CodeViewCoordinator<LAnnotation>,
 ): CodeViewRenderedItem<LAnnotation>[] | undefined {
   if (renderedItems.length === 0) {
     return undefined;
@@ -3534,7 +3259,7 @@ function getSlotSnapshot<LAnnotation>(
 
 function areSlotSnapshotsEqual<LAnnotation>(
   previous: CodeViewRenderedItem<LAnnotation>[] | undefined,
-  next: CodeViewRenderedItem<LAnnotation>[] | undefined
+  next: CodeViewRenderedItem<LAnnotation>[] | undefined,
 ): boolean {
   if (previous == null || next == null) {
     return previous === next;

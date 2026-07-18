@@ -140,7 +140,7 @@ function getVisionCapableModels(): VisionModelCandidate[] {
  */
 function selectBestModel(
   candidates: VisionModelCandidate[],
-  config: VisionBridgeRouterConfig
+  config: VisionBridgeRouterConfig,
 ): VisionModelCandidate | null {
   const filtered = candidates.filter((c) => {
     // Exclude explicitly excluded models
@@ -172,9 +172,7 @@ function selectBestModel(
  * Get the best vision model for image description.
  * Respects fixed model override if configured.
  */
-export function getBestVisionModel(
-  config: Partial<VisionBridgeRouterConfig> = {}
-): string {
+export function getBestVisionModel(config: Partial<VisionBridgeRouterConfig> = {}): string {
   const fullConfig = { ...DEFAULT_ROUTER_CONFIG, ...config };
 
   // If fixed model is configured, use it
@@ -184,9 +182,10 @@ export function getBestVisionModel(
 
   // Check selection cache — key includes excluded models to prevent cache pollution
   // across different configurations
-  const cacheKey = fullConfig.excludedModels.length > 0
-    ? `excl:${[...fullConfig.excludedModels].sort().join(",")}`
-    : "default";
+  const cacheKey =
+    fullConfig.excludedModels.length > 0
+      ? `excl:${[...fullConfig.excludedModels].sort().join(",")}`
+      : "default";
   const cached = selectionCache.get(cacheKey);
   if (cached && cached.expiresAt > Date.now()) {
     return cached.modelId;
@@ -217,7 +216,7 @@ export function getBestVisionModel(
  */
 export function getFallbackModels(
   excludeModel: string,
-  config: Partial<VisionBridgeRouterConfig> = {}
+  config: Partial<VisionBridgeRouterConfig> = {},
 ): string[] {
   const fullConfig = { ...DEFAULT_ROUTER_CONFIG, ...config };
   const candidates = getVisionCapableModels();
@@ -226,7 +225,7 @@ export function getFallbackModels(
     (c) =>
       c.fullName !== excludeModel &&
       !fullConfig.excludedModels.includes(c.fullName) &&
-      c.successRate >= 0.5
+      c.successRate >= 0.5,
   );
 
   // Sort by score
@@ -250,7 +249,10 @@ export function clearSelectionCache(): void {
 /**
  * Get latency statistics for debugging.
  */
-export function getLatencyStats(): Record<string, { avg: number; samples: number; successRate: number }> {
+export function getLatencyStats(): Record<
+  string,
+  { avg: number; samples: number; successRate: number }
+> {
   const stats: Record<string, { avg: number; samples: number; successRate: number }> = {};
 
   for (const [modelId, records] of latencyStore.entries()) {

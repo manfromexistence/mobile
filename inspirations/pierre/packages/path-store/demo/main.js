@@ -1,38 +1,38 @@
-import { getVirtualizationWorkload } from '@pierre/tree-test-data';
+import { getVirtualizationWorkload } from "@pierre/tree-test-data";
 
-import { createPathStoreScheduler, PathStore } from '../src/index.ts';
+import { createPathStoreScheduler, PathStore } from "../src/index.ts";
 import {
   findMoveVisibleFolderToParentCandidate,
   findMoveVisibleLeafToParentCandidate,
   getMovePathToParentPlan,
   getMoveVisibleFolderToParentPlan,
   splitPath,
-} from './helpers.js';
+} from "./helpers.js";
 
-const DEFAULT_WORKLOAD_NAME = 'linux-5x';
+const DEFAULT_WORKLOAD_NAME = "linux-5x";
 const MAX_VISIBLE_WINDOW_SIZE = 500;
 const DEFAULT_VISIBLE_WINDOW_SIZE = 30;
-const ASYNC_DEMO_DIRECTORY_PATH = 'aaa-async-demo/';
-const ASYNC_DEMO_PATCH_FILE_PATH = 'aaa-async-demo/inner/file.ts';
+const ASYNC_DEMO_DIRECTORY_PATH = "aaa-async-demo/";
+const ASYNC_DEMO_PATCH_FILE_PATH = "aaa-async-demo/inner/file.ts";
 const COOPERATIVE_ASYNC_DEMO_DIRECTORY_PATHS = [
-  'aaa-cooperative-demo-a/',
-  'aaa-cooperative-demo-b/',
-  'aaa-cooperative-demo-c/',
+  "aaa-cooperative-demo-a/",
+  "aaa-cooperative-demo-b/",
+  "aaa-cooperative-demo-c/",
 ];
 const COOPERATIVE_ASYNC_DEMO_PATCH_FILE_PATHS = [
-  'aaa-cooperative-demo-a/file-a.ts',
-  'aaa-cooperative-demo-b/file-b.ts',
-  'aaa-cooperative-demo-c/file-c.ts',
+  "aaa-cooperative-demo-a/file-a.ts",
+  "aaa-cooperative-demo-b/file-b.ts",
+  "aaa-cooperative-demo-c/file-c.ts",
 ];
-const PROFILE_END_LABEL = 'path-store-demo-profile-end';
-const PROFILE_END_MARK_NAME = 'path-store-demo-profile-end';
-const PROFILE_START_LABEL = 'path-store-demo-profile-start';
-const PROFILE_START_MARK_NAME = 'path-store-demo-profile-start';
+const PROFILE_END_LABEL = "path-store-demo-profile-end";
+const PROFILE_END_MARK_NAME = "path-store-demo-profile-end";
+const PROFILE_START_LABEL = "path-store-demo-profile-start";
+const PROFILE_START_MARK_NAME = "path-store-demo-profile-start";
 const VISIBLE_PATH_SEARCH_CHUNK_SIZE = 512;
 const searchParams = new URLSearchParams(window.location.search);
-const instrumentationEnabled = searchParams.get('instrumentation') === '1';
+const instrumentationEnabled = searchParams.get("instrumentation") === "1";
 const benchmarkModulePromise = instrumentationEnabled
-  ? import('./profile/benchmarkInstrumentation.js')
+  ? import("./profile/benchmarkInstrumentation.js")
   : null;
 
 /**
@@ -130,16 +130,16 @@ const benchmarkModulePromise = instrumentationEnabled
  * }} DemoBenchmarkCollector
  */
 
-const actionButtons = document.querySelectorAll('button[data-action-id]');
-const flattenInput = document.querySelector('#flatten-directories');
-const sortInput = document.querySelector('#sort-input');
-const visibleCountInput = document.querySelector('#visible-count');
-const offsetInput = document.querySelector('#offset');
-const offsetValueElement = document.querySelector('#offset-value');
-const lastEventElement = document.querySelector('#last-event');
-const renderButton = document.querySelector('#render-button');
-const rowsElement = document.querySelector('#rows');
-const workloadInput = document.querySelector('#workload');
+const actionButtons = document.querySelectorAll("button[data-action-id]");
+const flattenInput = document.querySelector("#flatten-directories");
+const sortInput = document.querySelector("#sort-input");
+const visibleCountInput = document.querySelector("#visible-count");
+const offsetInput = document.querySelector("#offset");
+const offsetValueElement = document.querySelector("#offset-value");
+const lastEventElement = document.querySelector("#last-event");
+const renderButton = document.querySelector("#render-button");
+const rowsElement = document.querySelector("#rows");
+const workloadInput = document.querySelector("#workload");
 
 if (
   flattenInput == null ||
@@ -152,7 +152,7 @@ if (
   rowsElement == null ||
   workloadInput == null
 ) {
-  throw new Error('Missing demo root elements.');
+  throw new Error("Missing demo root elements.");
 }
 
 let buildTimeMs = 0;
@@ -175,8 +175,8 @@ let schedulerUpdateCount = 0;
 const longTaskEntries = [];
 let presortedWarmupGeneration = 0;
 const longTaskObserver =
-  typeof PerformanceObserver !== 'undefined' &&
-  PerformanceObserver.supportedEntryTypes?.includes('longtask')
+  typeof PerformanceObserver !== "undefined" &&
+  PerformanceObserver.supportedEntryTypes?.includes("longtask")
     ? new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
           longTaskEntries.push({
@@ -187,7 +187,7 @@ const longTaskObserver =
       })
     : null;
 
-longTaskObserver?.observe({ type: 'longtask', buffered: true });
+longTaskObserver?.observe({ type: "longtask", buffered: true });
 
 async function createBenchmarkCollector() {
   if (benchmarkModulePromise == null) {
@@ -203,9 +203,7 @@ function getSelectedWorkloadName() {
     return DEFAULT_WORKLOAD_NAME;
   }
 
-  return workloadInput.value === ''
-    ? DEFAULT_WORKLOAD_NAME
-    : workloadInput.value;
+  return workloadInput.value === "" ? DEFAULT_WORKLOAD_NAME : workloadInput.value;
 }
 
 function getSelectedWorkload() {
@@ -213,9 +211,7 @@ function getSelectedWorkload() {
 }
 
 function getFlattenEmptyDirectoriesEnabled() {
-  return (
-    flattenInput instanceof HTMLInputElement && flattenInput.checked === true
-  );
+  return flattenInput instanceof HTMLInputElement && flattenInput.checked === true;
 }
 
 function getSortInputEnabled() {
@@ -263,8 +259,7 @@ function renderLastEvent() {
     return;
   }
 
-  lastEventElement.textContent =
-    lastEvent == null ? '' : JSON.stringify(lastEvent, null, 2);
+  lastEventElement.textContent = lastEvent == null ? "" : JSON.stringify(lastEvent, null, 2);
 }
 
 function clearLastEvent() {
@@ -287,7 +282,7 @@ function clearSchedulerState(dispose = true) {
 
 function subscribeToStoreEvents(store) {
   currentStoreEventUnsubscribe?.();
-  currentStoreEventUnsubscribe = store.on('*', (event) => {
+  currentStoreEventUnsubscribe = store.on("*", (event) => {
     lastEvent = event;
     renderLastEvent();
   });
@@ -326,10 +321,7 @@ function getParsedInputNumber(input, fallbackValue) {
 }
 
 function getRequestedVisibleCount() {
-  const parsed = getParsedInputNumber(
-    visibleCountInput,
-    DEFAULT_VISIBLE_WINDOW_SIZE
-  );
+  const parsed = getParsedInputNumber(visibleCountInput, DEFAULT_VISIBLE_WINDOW_SIZE);
   const clamped = Math.max(1, Math.min(MAX_VISIBLE_WINDOW_SIZE, parsed));
 
   visibleCountInput.value = String(clamped);
@@ -366,7 +358,7 @@ function getViewContext(store, preferredOffset = undefined) {
   const maxOffset = Math.max(0, visibleCount - requestedVisibleCount);
   const offset = Math.max(
     0,
-    Math.min(maxOffset, preferredOffset ?? getParsedInputNumber(offsetInput, 0))
+    Math.min(maxOffset, preferredOffset ?? getParsedInputNumber(offsetInput, 0)),
   );
   const bounds =
     visibleCount === 0
@@ -375,8 +367,7 @@ function getViewContext(store, preferredOffset = undefined) {
           end: Math.min(visibleCount - 1, offset + requestedVisibleCount - 1),
           start: offset,
         };
-  const rows =
-    visibleCount === 0 ? [] : store.getVisibleSlice(bounds.start, bounds.end);
+  const rows = visibleCount === 0 ? [] : store.getVisibleSlice(bounds.start, bounds.end);
 
   return {
     bounds,
@@ -398,9 +389,9 @@ function getViewContext(store, preferredOffset = undefined) {
  */
 function renderCurrentWindow(preferredOffset = undefined, benchmark = null) {
   if (currentStore == null) {
-    rowsElement.textContent = '';
+    rowsElement.textContent = "";
     offsetInput.disabled = true;
-    offsetInput.max = '0';
+    offsetInput.max = "0";
     setOffsetValue(0);
     return null;
   }
@@ -408,9 +399,8 @@ function renderCurrentWindow(preferredOffset = undefined, benchmark = null) {
   const view =
     benchmark == null
       ? getViewContext(currentStore, preferredOffset)
-      : benchmark.instrumentation.measurePhase(
-          'page.renderWindow.getViewContext',
-          () => getViewContext(currentStore, preferredOffset)
+      : benchmark.instrumentation.measurePhase("page.renderWindow.getViewContext", () =>
+          getViewContext(currentStore, preferredOffset),
         );
   const maxOffset = Math.max(0, view.visibleCount - view.requestedVisibleCount);
 
@@ -425,43 +415,32 @@ function renderCurrentWindow(preferredOffset = undefined, benchmark = null) {
             /**
              * @param {PathStoreVisibleRow} row
              */
-            (row) => formatVisibleRowText(row)
+            (row) => formatVisibleRowText(row),
           )
-          .join('\n')
-      : benchmark.instrumentation.measurePhase(
-          'page.renderWindow.joinRowsText',
-          () =>
-            view.rows
-              .map(
-                /**
-                 * @param {PathStoreVisibleRow} row
-                 */
-                (row) => formatVisibleRowText(row)
-              )
-              .join('\n')
+          .join("\n")
+      : benchmark.instrumentation.measurePhase("page.renderWindow.joinRowsText", () =>
+          view.rows
+            .map(
+              /**
+               * @param {PathStoreVisibleRow} row
+               */
+              (row) => formatVisibleRowText(row),
+            )
+            .join("\n"),
         );
   if (benchmark != null) {
-    benchmark.instrumentation.setCounter(
-      'workload.renderedRows',
-      view.rows.length
-    );
-    benchmark.instrumentation.setCounter(
-      'workload.totalVisibleRows',
-      view.visibleCount
-    );
+    benchmark.instrumentation.setCounter("workload.renderedRows", view.rows.length);
+    benchmark.instrumentation.setCounter("workload.totalVisibleRows", view.visibleCount);
   }
   if (benchmark == null) {
     rowsElement.textContent = rowsText;
   } else {
-    benchmark.instrumentation.measurePhase(
-      'page.renderWindow.setTextContent',
-      () => {
-        rowsElement.textContent = rowsText;
-      }
-    );
+    benchmark.instrumentation.measurePhase("page.renderWindow.setTextContent", () => {
+      rowsElement.textContent = rowsText;
+    });
   }
   logDemoMessage(
-    `Showing ${view.rows.length} visible paths starting at ${view.offset} out of ${view.visibleCount.toLocaleString()}.`
+    `Showing ${view.rows.length} visible paths starting at ${view.offset} out of ${view.visibleCount.toLocaleString()}.`,
   );
 
   return view;
@@ -493,8 +472,8 @@ function formatVisibleRowText(row) {
  * @returns {string}
  */
 function getActionLabel(actionId) {
-  if (actionId === 'render') {
-    return 'Render';
+  if (actionId === "render") {
+    return "Render";
   }
 
   const button = document.querySelector(`button[data-action-id="${actionId}"]`);
@@ -503,7 +482,7 @@ function getActionLabel(actionId) {
   }
 
   const label = button.textContent?.trim();
-  return label == null || label === '' ? actionId : label;
+  return label == null || label === "" ? actionId : label;
 }
 
 /**
@@ -547,14 +526,14 @@ function createPageProfileSummary({
     /**
      * @param {PathStoreVisibleRow} row
      */
-    (row) => row.path
+    (row) => row.path,
   );
   const beforeRows =
     beforeView?.rows.map(
       /**
        * @param {PathStoreVisibleRow} row
        */
-      (row) => row.path
+      (row) => row.path,
     ) ?? null;
 
   return {
@@ -593,7 +572,7 @@ function renamePathWithSuffix(path, suffix) {
     return `${parentPath}${name}-${suffix}/`;
   }
 
-  const extensionIndex = name.lastIndexOf('.');
+  const extensionIndex = name.lastIndexOf(".");
   if (extensionIndex > 0) {
     return `${parentPath}${name.slice(0, extensionIndex)}-${suffix}${name.slice(extensionIndex)}`;
   }
@@ -619,15 +598,8 @@ function findVisibleRow(store, view, predicate) {
 
   const visibleCount = store.getVisibleCount();
 
-  for (
-    let start = 0;
-    start < visibleCount;
-    start += VISIBLE_PATH_SEARCH_CHUNK_SIZE
-  ) {
-    const end = Math.min(
-      visibleCount - 1,
-      start + VISIBLE_PATH_SEARCH_CHUNK_SIZE - 1
-    );
+  for (let start = 0; start < visibleCount; start += VISIBLE_PATH_SEARCH_CHUNK_SIZE) {
+    const end = Math.min(visibleCount - 1, start + VISIBLE_PATH_SEARCH_CHUNK_SIZE - 1);
     const rows = store.getVisibleSlice(start, end);
     const match = rows.find(predicate);
     if (match != null) {
@@ -644,7 +616,7 @@ function findVisibleRow(store, view, predicate) {
  * @returns {PathStoreVisibleRow}
  */
 function requireVisibleFolder(store, view, actionId) {
-  const folder = findVisibleRow(store, view, (row) => row.kind === 'directory');
+  const folder = findVisibleRow(store, view, (row) => row.kind === "directory");
   if (folder == null) {
     throw new Error(`No visible folder found for ${actionId}.`);
   }
@@ -662,10 +634,7 @@ function requireCollapsibleVisibleFolder(store, view, actionId) {
   const folder = findVisibleRow(
     store,
     view,
-    (row) =>
-      row.kind === 'directory' &&
-      row.hasChildren === true &&
-      row.isExpanded === true
+    (row) => row.kind === "directory" && row.hasChildren === true && row.isExpanded === true,
   );
   if (folder == null) {
     throw new Error(`No expanded visible folder found for ${actionId}.`);
@@ -684,10 +653,7 @@ function requireExpandableVisibleFolder(store, view, actionId) {
   const folder = findVisibleRow(
     store,
     view,
-    (row) =>
-      row.kind === 'directory' &&
-      row.hasChildren === true &&
-      row.isExpanded === false
+    (row) => row.kind === "directory" && row.hasChildren === true && row.isExpanded === false,
   );
   if (folder == null) {
     throw new Error(`No collapsed visible folder found for ${actionId}.`);
@@ -703,7 +669,7 @@ function requireExpandableVisibleFolder(store, view, actionId) {
  * @returns {PathStoreVisibleRow}
  */
 function requireVisibleLeaf(store, view, actionId) {
-  const leaf = findVisibleRow(store, view, (row) => row.kind === 'file');
+  const leaf = findVisibleRow(store, view, (row) => row.kind === "file");
   if (leaf == null) {
     throw new Error(`No visible leaf file found for ${actionId}.`);
   }
@@ -725,11 +691,7 @@ function findVisibleRowBeforeIndex(store, beforeIndex, predicate) {
     return null;
   }
 
-  for (
-    let end = beforeIndex - 1;
-    end >= 0;
-    end -= VISIBLE_PATH_SEARCH_CHUNK_SIZE
-  ) {
+  for (let end = beforeIndex - 1; end >= 0; end -= VISIBLE_PATH_SEARCH_CHUNK_SIZE) {
     const start = Math.max(0, end - VISIBLE_PATH_SEARCH_CHUNK_SIZE + 1);
     const rows = store.getVisibleSlice(start, end);
 
@@ -754,10 +716,7 @@ function requireCollapsibleFolderAboveViewport(store, view, actionId) {
   const folder = findVisibleRowBeforeIndex(
     store,
     view.offset,
-    (row) =>
-      row.kind === 'directory' &&
-      row.hasChildren === true &&
-      row.isExpanded === true
+    (row) => row.kind === "directory" && row.hasChildren === true && row.isExpanded === true,
   );
   if (folder == null) {
     throw new Error(`No expanded folder above the viewport for ${actionId}.`);
@@ -783,15 +742,8 @@ function requireVisibleFolderWithGrandparent(store, view, actionId) {
 
   const visibleCount = store.getVisibleCount();
 
-  for (
-    let start = 0;
-    start < visibleCount;
-    start += VISIBLE_PATH_SEARCH_CHUNK_SIZE
-  ) {
-    const end = Math.min(
-      visibleCount - 1,
-      start + VISIBLE_PATH_SEARCH_CHUNK_SIZE - 1
-    );
+  for (let start = 0; start < visibleCount; start += VISIBLE_PATH_SEARCH_CHUNK_SIZE) {
+    const end = Math.min(visibleCount - 1, start + VISIBLE_PATH_SEARCH_CHUNK_SIZE - 1);
     const rows = store.getVisibleSlice(start, end);
     const match = findMoveVisibleFolderToParentCandidate(store, rows);
     if (match != null) {
@@ -799,9 +751,7 @@ function requireVisibleFolderWithGrandparent(store, view, actionId) {
     }
   }
 
-  throw new Error(
-    `No visible folder with a moveable parent found for ${actionId}.`
-  );
+  throw new Error(`No visible folder with a moveable parent found for ${actionId}.`);
 }
 
 /**
@@ -821,15 +771,8 @@ function requireVisibleLeafWithGrandparent(store, view, actionId) {
 
   const visibleCount = store.getVisibleCount();
 
-  for (
-    let start = 0;
-    start < visibleCount;
-    start += VISIBLE_PATH_SEARCH_CHUNK_SIZE
-  ) {
-    const end = Math.min(
-      visibleCount - 1,
-      start + VISIBLE_PATH_SEARCH_CHUNK_SIZE - 1
-    );
+  for (let start = 0; start < visibleCount; start += VISIBLE_PATH_SEARCH_CHUNK_SIZE) {
+    const end = Math.min(visibleCount - 1, start + VISIBLE_PATH_SEARCH_CHUNK_SIZE - 1);
     const rows = store.getVisibleSlice(start, end);
     const match = findMoveVisibleLeafToParentCandidate(store, rows);
     if (match != null) {
@@ -837,9 +780,7 @@ function requireVisibleLeafWithGrandparent(store, view, actionId) {
     }
   }
 
-  throw new Error(
-    `No visible leaf with a moveable parent found for ${actionId}.`
-  );
+  throw new Error(`No visible leaf with a moveable parent found for ${actionId}.`);
 }
 
 /**
@@ -850,15 +791,8 @@ function requireVisibleLeafWithGrandparent(store, view, actionId) {
 function findVisibleIndexByPath(store, targetPath) {
   const visibleCount = store.getVisibleCount();
 
-  for (
-    let start = 0;
-    start < visibleCount;
-    start += VISIBLE_PATH_SEARCH_CHUNK_SIZE
-  ) {
-    const end = Math.min(
-      visibleCount - 1,
-      start + VISIBLE_PATH_SEARCH_CHUNK_SIZE - 1
-    );
+  for (let start = 0; start < visibleCount; start += VISIBLE_PATH_SEARCH_CHUNK_SIZE) {
+    const end = Math.min(visibleCount - 1, start + VISIBLE_PATH_SEARCH_CHUNK_SIZE - 1);
     const rows = store.getVisibleSlice(start, end);
 
     for (let index = 0; index < rows.length; index++) {
@@ -923,9 +857,7 @@ function ensureAsyncDemoDirectories(store, directoryPaths) {
   const canonicalPaths = store.list();
   for (const directoryPath of directoryPaths) {
     const hasDirectory = canonicalPaths.includes(directoryPath);
-    const hasKnownChildren = canonicalPaths.some((path) =>
-      path.startsWith(directoryPath)
-    );
+    const hasKnownChildren = canonicalPaths.some((path) => path.startsWith(directoryPath));
 
     if (hasKnownChildren) {
       store.remove(directoryPath, { recursive: true });
@@ -951,7 +883,7 @@ function ensureAsyncDemoDirectories(store, directoryPaths) {
  */
 function createDemoScheduler(benchmark = null, overrides = {}) {
   if (currentStore == null) {
-    throw new Error('Render the store before creating a scheduler.');
+    throw new Error("Render the store before creating a scheduler.");
   }
 
   const schedulerOptions =
@@ -984,18 +916,12 @@ function createDemoScheduler(benchmark = null, overrides = {}) {
  *   yieldDelayMs?: number;
  * }} [overrides]
  */
-async function runCooperativeDemoTasks(
-  tasks,
-  benchmark = null,
-  overrides = {}
-) {
+async function runCooperativeDemoTasks(tasks, benchmark = null, overrides = {}) {
   const scheduler = createDemoScheduler(benchmark, overrides);
   const handles = tasks.map((task) => {
     const enqueueResult = scheduler.enqueue(task);
-    if (enqueueResult.status === 'rejected') {
-      throw new Error(
-        `Scheduler rejected ${task.path}: ${enqueueResult.reason}`
-      );
+    if (enqueueResult.status === "rejected") {
+      throw new Error(`Scheduler rejected ${task.path}: ${enqueueResult.reason}`);
     }
     return enqueueResult.handle;
   });
@@ -1018,7 +944,7 @@ function requireAsyncLoadAttempt(actionId) {
 /** @type {readonly DemoAction[]} */
 const demoActions = [
   {
-    id: 'collapse-visible-folder',
+    id: "collapse-visible-folder",
     prepare(store, view) {
       const folder = requireCollapsibleVisibleFolder(store, view, this.id);
       return { path: folder.path };
@@ -1033,7 +959,7 @@ const demoActions = [
     },
   },
   {
-    id: 'expand-visible-folder',
+    id: "expand-visible-folder",
     prepare(store, view) {
       const folder = requireExpandableVisibleFolder(store, view, this.id);
       return { path: folder.path };
@@ -1048,12 +974,12 @@ const demoActions = [
     },
   },
   {
-    id: 'rename-visible-folder',
+    id: "rename-visible-folder",
     prepare(store, view) {
       const folder = requireVisibleFolder(store, view, this.id);
       return {
         from: folder.path,
-        to: renamePathWithSuffix(folder.path, 'demo-renamed'),
+        to: renamePathWithSuffix(folder.path, "demo-renamed"),
       };
     },
     run(store, prepared) {
@@ -1067,7 +993,7 @@ const demoActions = [
     },
   },
   {
-    id: 'delete-visible-folder',
+    id: "delete-visible-folder",
     prepare(store, view) {
       const folder = requireVisibleFolder(store, view, this.id);
       return { path: folder.path };
@@ -1081,12 +1007,12 @@ const demoActions = [
     },
   },
   {
-    id: 'rename-visible-leaf',
+    id: "rename-visible-leaf",
     prepare(store, view) {
       const leaf = requireVisibleLeaf(store, view, this.id);
       return {
         from: leaf.path,
-        to: renamePathWithSuffix(leaf.path, 'demo-renamed'),
+        to: renamePathWithSuffix(leaf.path, "demo-renamed"),
       };
     },
     run(store, prepared) {
@@ -1100,7 +1026,7 @@ const demoActions = [
     },
   },
   {
-    id: 'delete-visible-leaf',
+    id: "delete-visible-leaf",
     prepare(store, view) {
       const leaf = requireVisibleLeaf(store, view, this.id);
       return { path: leaf.path };
@@ -1114,7 +1040,7 @@ const demoActions = [
     },
   },
   {
-    id: 'move-visible-folder-to-parent',
+    id: "move-visible-folder-to-parent",
     prepare(store, view) {
       const source = requireVisibleFolderWithGrandparent(store, view, this.id);
       const movePlan = getMoveVisibleFolderToParentPlan(store, source.path);
@@ -1140,7 +1066,7 @@ const demoActions = [
     },
   },
   {
-    id: 'move-visible-leaf-to-parent',
+    id: "move-visible-leaf-to-parent",
     prepare(store, view) {
       const source = requireVisibleLeafWithGrandparent(store, view, this.id);
       const movePlan = getMovePathToParentPlan(store, source.path);
@@ -1166,13 +1092,9 @@ const demoActions = [
     },
   },
   {
-    id: 'collapse-folder-above-viewport',
+    id: "collapse-folder-above-viewport",
     prepare(store, view) {
-      const folder = requireCollapsibleFolderAboveViewport(
-        store,
-        view,
-        this.id
-      );
+      const folder = requireCollapsibleFolderAboveViewport(store, view, this.id);
       return { path: folder.path };
     },
     run(store, prepared) {
@@ -1184,7 +1106,7 @@ const demoActions = [
     },
   },
   {
-    id: 'begin-async-load',
+    id: "begin-async-load",
     prepare() {
       return {};
     },
@@ -1199,14 +1121,14 @@ const demoActions = [
     },
   },
   {
-    id: 'apply-async-patch',
+    id: "apply-async-patch",
     prepare() {
       return {};
     },
     run(store) {
       const attempt = requireAsyncLoadAttempt(this.id);
       const applied = store.applyChildPatch(attempt, {
-        operations: [{ path: ASYNC_DEMO_PATCH_FILE_PATH, type: 'add' }],
+        operations: [{ path: ASYNC_DEMO_PATCH_FILE_PATH, type: "add" }],
       });
       if (!applied) {
         throw new Error(`Async child patch was stale for ${this.id}.`);
@@ -1219,7 +1141,7 @@ const demoActions = [
     },
   },
   {
-    id: 'complete-async-load',
+    id: "complete-async-load",
     prepare() {
       return {};
     },
@@ -1238,13 +1160,13 @@ const demoActions = [
     },
   },
   {
-    id: 'fail-async-load',
+    id: "fail-async-load",
     prepare() {
       return {};
     },
     run(store) {
       const attempt = requireAsyncLoadAttempt(this.id);
-      const failed = store.failChildLoad(attempt, 'demo failure');
+      const failed = store.failChildLoad(attempt, "demo failure");
       currentAsyncLoadAttempt = null;
       if (!failed) {
         throw new Error(`Async load failure was stale for ${this.id}.`);
@@ -1257,7 +1179,7 @@ const demoActions = [
     },
   },
   {
-    id: 'cooperative-apply-async-patch',
+    id: "cooperative-apply-async-patch",
     prepare() {
       return {};
     },
@@ -1270,19 +1192,19 @@ const demoActions = [
             completeOnSuccess: false,
             createPatch() {
               return {
-                operations: [{ path: ASYNC_DEMO_PATCH_FILE_PATH, type: 'add' }],
+                operations: [{ path: ASYNC_DEMO_PATCH_FILE_PATH, type: "add" }],
               };
             },
             path: ASYNC_DEMO_DIRECTORY_PATH,
             priority: 100,
           },
         ],
-        benchmark
+        benchmark,
       );
       const completion = completions[0];
-      if (completion == null || completion.status !== 'completed') {
+      if (completion == null || completion.status !== "completed") {
         throw new Error(
-          `Cooperative async patch did not complete successfully for ${ASYNC_DEMO_DIRECTORY_PATH}.`
+          `Cooperative async patch did not complete successfully for ${ASYNC_DEMO_DIRECTORY_PATH}.`,
         );
       }
 
@@ -1293,7 +1215,7 @@ const demoActions = [
     },
   },
   {
-    id: 'cooperative-apply-async-patch-yieldy',
+    id: "cooperative-apply-async-patch-yieldy",
     prepare() {
       return {};
     },
@@ -1305,14 +1227,14 @@ const demoActions = [
         COOPERATIVE_ASYNC_DEMO_DIRECTORY_PATHS.map((directoryPath, index) => {
           const patchFilePath = COOPERATIVE_ASYNC_DEMO_PATCH_FILE_PATHS[index];
           if (patchFilePath == null) {
-            throw new Error('Missing cooperative demo patch path.');
+            throw new Error("Missing cooperative demo patch path.");
           }
 
           return {
             completeOnSuccess: false,
             createPatch() {
               return {
-                operations: [{ path: patchFilePath, type: 'add' }],
+                operations: [{ path: patchFilePath, type: "add" }],
               };
             },
             path: directoryPath,
@@ -1324,20 +1246,16 @@ const demoActions = [
           chunkBudgetMs: 0,
           maxTasksPerSlice: 1,
           yieldDelayMs: 16,
-        }
+        },
       );
 
-      const failedCompletion = completions.find(
-        (completion) => completion.status !== 'completed'
-      );
+      const failedCompletion = completions.find((completion) => completion.status !== "completed");
       if (failedCompletion != null) {
-        throw new Error(
-          `Cooperative yieldy async patch failed for ${failedCompletion.path}.`
-        );
+        throw new Error(`Cooperative yieldy async patch failed for ${failedCompletion.path}.`);
       }
       if (metrics.yieldCount <= 1) {
         throw new Error(
-          `Expected cooperative yieldy async patch to yield more than once, received ${metrics.yieldCount}.`
+          `Expected cooperative yieldy async patch to yield more than once, received ${metrics.yieldCount}.`,
         );
       }
 
@@ -1349,9 +1267,7 @@ const demoActions = [
   },
 ];
 
-const demoActionById = new Map(
-  demoActions.map((action) => [action.id, action])
-);
+const demoActionById = new Map(demoActions.map((action) => [action.id, action]));
 
 /**
  * @param {DemoBenchmarkCollector | null | undefined} [benchmark]
@@ -1371,9 +1287,8 @@ function createStore(benchmark = null) {
     preparedInput =
       benchmark == null
         ? PathStore.preparePresortedInput(presortedFiles)
-        : benchmark.instrumentation.measurePhase(
-            'page.preparePresortedInput',
-            () => PathStore.preparePresortedInput(presortedFiles)
+        : benchmark.instrumentation.measurePhase("page.preparePresortedInput", () =>
+            PathStore.preparePresortedInput(presortedFiles),
           );
   }
   const storeOptions =
@@ -1381,43 +1296,40 @@ function createStore(benchmark = null) {
       ? preparedInput == null
         ? {
             flattenEmptyDirectories,
-            initialExpansion: 'open',
+            initialExpansion: "open",
             paths: workload.files,
           }
         : {
             flattenEmptyDirectories,
-            initialExpansion: 'open',
+            initialExpansion: "open",
             preparedInput,
           }
       : benchmark.attach(
           preparedInput == null
             ? {
                 flattenEmptyDirectories,
-                initialExpansion: 'open',
+                initialExpansion: "open",
                 paths: workload.files,
               }
             : {
                 flattenEmptyDirectories,
-                initialExpansion: 'open',
+                initialExpansion: "open",
                 preparedInput,
-              }
+              },
         );
   if (benchmark != null) {
+    benchmark.instrumentation.setCounter("workload.inputFiles", workload.files.length);
     benchmark.instrumentation.setCounter(
-      'workload.inputFiles',
-      workload.files.length
-    );
-    benchmark.instrumentation.setCounter(
-      'workload.expandedFolders',
-      workload.expandedFolders.length
+      "workload.expandedFolders",
+      workload.expandedFolders.length,
     );
   }
   currentStore =
     benchmark == null
       ? new PathStore(storeOptions)
       : benchmark.instrumentation.measurePhase(
-          'page.createStore',
-          () => new PathStore(storeOptions)
+          "page.createStore",
+          () => new PathStore(storeOptions),
         );
   buildTimeMs = performance.now() - buildStartedAt;
   currentAsyncLoadAttempt = null;
@@ -1428,7 +1340,7 @@ function createStore(benchmark = null) {
   logDemoMessage(
     visibleRowCount == null
       ? `Loaded ${workload.label} in ${buildTimeMs.toFixed(1)}ms.`
-      : `Loaded ${workload.label} in ${buildTimeMs.toFixed(1)}ms with ${visibleRowCount} visible rows${presortedCacheFillTimeMs >= 1 ? ` (${presortedCacheFillTimeMs.toFixed(1)}ms presort cache fill)` : ''}.`
+      : `Loaded ${workload.label} in ${buildTimeMs.toFixed(1)}ms with ${visibleRowCount} visible rows${presortedCacheFillTimeMs >= 1 ? ` (${presortedCacheFillTimeMs.toFixed(1)}ms presort cache fill)` : ""}.`,
   );
 
   window.pathStoreDemo = {
@@ -1460,11 +1372,11 @@ async function profileRenderStore() {
     const afterView =
       benchmark == null
         ? renderCurrentWindow(0)
-        : benchmark.instrumentation.measurePhase('page.renderWindow', () =>
-            renderCurrentWindow(0, benchmark)
+        : benchmark.instrumentation.measurePhase("page.renderWindow", () =>
+            renderCurrentWindow(0, benchmark),
           );
     if (afterView == null) {
-      throw new Error('Failed to render the store.');
+      throw new Error("Failed to render the store.");
     }
 
     const visibleRowsReadyAt = performance.now();
@@ -1474,7 +1386,7 @@ async function profileRenderStore() {
     console.timeStamp(PROFILE_END_LABEL);
 
     const profile = createPageProfileSummary({
-      actionId: 'render',
+      actionId: "render",
       afterView,
       detail: `Rendered ${getSelectedWorkloadSummary().label}`,
       instrumentation: benchmark?.summarize(heapBefore, heapAfter) ?? null,
@@ -1506,9 +1418,7 @@ async function boot() {
     setOffsetValue(0);
     renderCurrentWindow(0);
   } catch (error) {
-    logDemoMessage(
-      error instanceof Error ? error.message : 'Failed to render demo.'
-    );
+    logDemoMessage(error instanceof Error ? error.message : "Failed to render demo.");
     throw error;
   } finally {
     renderButton.disabled = false;
@@ -1522,7 +1432,7 @@ async function boot() {
  */
 function prepareAction(actionId) {
   if (currentStore == null) {
-    throw new Error('Render the store before running demo actions.');
+    throw new Error("Render the store before running demo actions.");
   }
 
   const action = demoActionById.get(actionId);
@@ -1552,55 +1462,46 @@ function prepareProfileAction(actionId) {
  */
 function applyProfileActionSetup(actionId) {
   if (currentStore == null) {
-    throw new Error('Render the store before preparing profile actions.');
+    throw new Error("Render the store before preparing profile actions.");
   }
 
-  if (actionId === 'expand-visible-folder') {
+  if (actionId === "expand-visible-folder") {
     const view = getViewContext(currentStore);
     try {
       requireExpandableVisibleFolder(currentStore, view, actionId);
       return;
     } catch {
-      const folder = requireCollapsibleVisibleFolder(
-        currentStore,
-        view,
-        actionId
-      );
+      const folder = requireCollapsibleVisibleFolder(currentStore, view, actionId);
       currentStore.collapse(folder.path);
       renderCurrentWindow(view.offset);
       return;
     }
   }
 
-  if (actionId === 'collapse-folder-above-viewport') {
+  if (actionId === "collapse-folder-above-viewport") {
     const currentView = getViewContext(currentStore);
     const visibleCount = currentStore.getVisibleCount();
     const targetOffset =
       currentView.offset > 0
         ? currentView.offset
-        : Math.min(
-            Math.max(1, currentView.requestedVisibleCount),
-            Math.max(1, visibleCount - 1)
-          );
+        : Math.min(Math.max(1, currentView.requestedVisibleCount), Math.max(1, visibleCount - 1));
     renderCurrentWindow(targetOffset);
     return;
   }
 
   if (
-    actionId === 'apply-async-patch' ||
-    actionId === 'complete-async-load' ||
-    actionId === 'fail-async-load'
+    actionId === "apply-async-patch" ||
+    actionId === "complete-async-load" ||
+    actionId === "fail-async-load"
   ) {
     ensureAsyncDemoDirectory(currentStore);
     currentStore.markDirectoryUnloaded(ASYNC_DEMO_DIRECTORY_PATH);
-    currentAsyncLoadAttempt = currentStore.beginChildLoad(
-      ASYNC_DEMO_DIRECTORY_PATH
-    );
+    currentAsyncLoadAttempt = currentStore.beginChildLoad(ASYNC_DEMO_DIRECTORY_PATH);
     renderCurrentWindow(0);
     return;
   }
 
-  if (actionId === 'cooperative-apply-async-patch') {
+  if (actionId === "cooperative-apply-async-patch") {
     ensureAsyncDemoDirectory(currentStore);
     markDirectoriesUnloaded(currentStore, [ASYNC_DEMO_DIRECTORY_PATH]);
     clearSchedulerState();
@@ -1608,15 +1509,9 @@ function applyProfileActionSetup(actionId) {
     return;
   }
 
-  if (actionId === 'cooperative-apply-async-patch-yieldy') {
-    ensureAsyncDemoDirectories(
-      currentStore,
-      COOPERATIVE_ASYNC_DEMO_DIRECTORY_PATHS
-    );
-    markDirectoriesUnloaded(
-      currentStore,
-      COOPERATIVE_ASYNC_DEMO_DIRECTORY_PATHS
-    );
+  if (actionId === "cooperative-apply-async-patch-yieldy") {
+    ensureAsyncDemoDirectories(currentStore, COOPERATIVE_ASYNC_DEMO_DIRECTORY_PATHS);
+    markDirectoriesUnloaded(currentStore, COOPERATIVE_ASYNC_DEMO_DIRECTORY_PATHS);
     clearSchedulerState();
     renderCurrentWindow(0);
   }
@@ -1627,8 +1522,7 @@ function applyProfileActionSetup(actionId) {
  * @returns {Promise<DemoActionResult>}
  */
 async function runPreparedAction(preparedAction) {
-  return (await runPreparedActionWithBenchmark(preparedAction, null))
-    .actionResult;
+  return (await runPreparedActionWithBenchmark(preparedAction, null)).actionResult;
 }
 
 /**
@@ -1639,28 +1533,17 @@ async function runPreparedAction(preparedAction) {
  * @param {DemoBenchmarkCollector | null | undefined} [benchmark]
  * @returns {Promise<{ actionResult: DemoActionResult; afterView: DemoViewContext | null }>}
  */
-async function runPreparedActionWithBenchmark(
-  preparedAction,
-  benchmark = null
-) {
+async function runPreparedActionWithBenchmark(preparedAction, benchmark = null) {
   if (currentStore == null) {
-    throw new Error('Render the store before running demo actions.');
+    throw new Error("Render the store before running demo actions.");
   }
 
   const startedAt = performance.now();
   const actionResult =
     benchmark == null
-      ? await preparedAction.action.run(
-          currentStore,
-          preparedAction.prepared,
-          null
-        )
-      : await benchmark.instrumentation.measurePhase('page.action.run', () =>
-          preparedAction.action.run(
-            currentStore,
-            preparedAction.prepared,
-            benchmark
-          )
+      ? await preparedAction.action.run(currentStore, preparedAction.prepared, null)
+      : await benchmark.instrumentation.measurePhase("page.action.run", () =>
+          preparedAction.action.run(currentStore, preparedAction.prepared, benchmark),
         );
   const preferredOffset =
     actionResult.revealPath == null
@@ -1669,17 +1552,15 @@ async function runPreparedActionWithBenchmark(
           currentStore,
           actionResult.revealPath,
           preparedAction.view.offset,
-          preparedAction.view.requestedVisibleCount
+          preparedAction.view.requestedVisibleCount,
         );
 
-  logDemoMessage(
-    `${actionResult.detail} in ${(performance.now() - startedAt).toFixed(1)}ms.`
-  );
+  logDemoMessage(`${actionResult.detail} in ${(performance.now() - startedAt).toFixed(1)}ms.`);
   const afterView =
     benchmark == null
       ? renderCurrentWindow(preferredOffset)
-      : benchmark.instrumentation.measurePhase('page.action.renderWindow', () =>
-          renderCurrentWindow(preferredOffset, benchmark)
+      : benchmark.instrumentation.measurePhase("page.action.renderWindow", () =>
+          renderCurrentWindow(preferredOffset, benchmark),
         );
 
   return {
@@ -1709,7 +1590,7 @@ async function profilePreparedAction(actionId, prepared) {
   applyProfileActionSetup(actionId);
 
   if (currentStore == null) {
-    throw new Error('Render the store before running demo actions.');
+    throw new Error("Render the store before running demo actions.");
   }
 
   const beforeView = getViewContext(currentStore);
@@ -1728,10 +1609,10 @@ async function profilePreparedAction(actionId, prepared) {
 
   const { actionResult, afterView } = await runPreparedActionWithBenchmark(
     preparedAction,
-    benchmark
+    benchmark,
   );
   if (afterView == null) {
-    throw new Error('Failed to rerender the window after the action.');
+    throw new Error("Failed to rerender the window after the action.");
   }
   const visibleRowsReadyAt = performance.now();
   await waitForPaint();
@@ -1760,21 +1641,21 @@ function configureDemo({
   visibleCount,
   workloadName,
 }) {
-  if (typeof workloadName === 'string' && workloadName !== '') {
+  if (typeof workloadName === "string" && workloadName !== "") {
     workloadInput.value = workloadName;
   }
 
-  if (typeof flattenEmptyDirectories === 'boolean') {
+  if (typeof flattenEmptyDirectories === "boolean") {
     flattenInput.checked = flattenEmptyDirectories;
   }
 
-  if (typeof sortInputEnabled === 'boolean') {
+  if (typeof sortInputEnabled === "boolean") {
     sortInput.checked = sortInputEnabled;
   }
 
   if (Number.isFinite(visibleCount)) {
     visibleCountInput.value = String(
-      Math.max(1, Math.min(MAX_VISIBLE_WINDOW_SIZE, Math.trunc(visibleCount)))
+      Math.max(1, Math.min(MAX_VISIBLE_WINDOW_SIZE, Math.trunc(visibleCount))),
     );
   }
 
@@ -1805,15 +1686,15 @@ function getDemoState() {
   };
 }
 
-renderButton.addEventListener('click', () => {
+renderButton.addEventListener("click", () => {
   void boot();
 });
 
-visibleCountInput.addEventListener('input', () => {
+visibleCountInput.addEventListener("input", () => {
   renderCurrentWindow();
 });
 
-flattenInput.addEventListener('input', () => {
+flattenInput.addEventListener("input", () => {
   if (currentStore == null) {
     return;
   }
@@ -1823,7 +1704,7 @@ flattenInput.addEventListener('input', () => {
   renderCurrentWindow(currentOffset);
 });
 
-sortInput.addEventListener('input', () => {
+sortInput.addEventListener("input", () => {
   presortedWarmupGeneration += 1;
   if (currentStore == null) {
     schedulePresortedWarmup();
@@ -1835,11 +1716,11 @@ sortInput.addEventListener('input', () => {
   renderCurrentWindow(currentOffset);
 });
 
-workloadInput.addEventListener('input', () => {
+workloadInput.addEventListener("input", () => {
   schedulePresortedWarmup();
 });
 
-offsetInput.addEventListener('input', () => {
+offsetInput.addEventListener("input", () => {
   setOffsetValue(getParsedInputNumber(offsetInput, 0));
   renderCurrentWindow();
 });
@@ -1850,9 +1731,9 @@ for (let index = 0; index < actionButtons.length; index++) {
     continue;
   }
 
-  button.addEventListener('click', () => {
+  button.addEventListener("click", () => {
     void (async () => {
-      if (button.dataset.actionId === 'reset') {
+      if (button.dataset.actionId === "reset") {
         await boot();
         return;
       }
@@ -1861,13 +1742,11 @@ for (let index = 0; index < actionButtons.length; index++) {
       setActionButtonsDisabled(true);
 
       try {
-        const preparedAction = prepareAction(button.dataset.actionId ?? '');
+        const preparedAction = prepareAction(button.dataset.actionId ?? "");
         await runPreparedAction(preparedAction);
       } catch (error) {
         logDemoMessage(
-          error instanceof Error
-            ? `Last action failed: ${error.message}`
-            : 'Last action failed.'
+          error instanceof Error ? `Last action failed: ${error.message}` : "Last action failed.",
         );
         renderCurrentWindow();
         throw error;

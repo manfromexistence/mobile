@@ -54,7 +54,7 @@ export function stripGpt5SamplingWhenReasoning<T extends Record<string, unknown>
   body: T,
   provider: string | null | undefined,
   model: string | null | undefined,
-  log?: { warn?: (tag: string, message: string) => void } | null
+  log?: { warn?: (tag: string, message: string) => void } | null,
 ): T {
   if (provider !== "openai") return body;
   if (typeof model !== "string" || !/^gpt-5/i.test(model)) return body;
@@ -75,7 +75,7 @@ export function stripGpt5SamplingWhenReasoning<T extends Record<string, unknown>
   log?.warn?.(
     "PARAMS",
     `Stripped ${stripped.join(", ")} for reasoning-active ${model} ` +
-      `(GPT-5 rejects sampling params unless reasoning_effort=none)`
+      `(GPT-5 rejects sampling params unless reasoning_effort=none)`,
   );
   return next as T;
 }

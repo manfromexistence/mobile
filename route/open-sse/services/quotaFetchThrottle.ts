@@ -83,7 +83,7 @@ export class MinIntervalThrottle {
  * sane range. Garbage / negative → default; above the ceiling → clamped.
  */
 export function resolveQuotaFetchMinIntervalMs(
-  env: Record<string, string | undefined> = process.env
+  env: Record<string, string | undefined> = process.env,
 ): number {
   const raw = env.OMNIROUTE_QUOTA_FETCH_MIN_INTERVAL_MS;
   if (raw === undefined || raw === null || raw.trim() === "") return DEFAULT_MIN_INTERVAL_MS;

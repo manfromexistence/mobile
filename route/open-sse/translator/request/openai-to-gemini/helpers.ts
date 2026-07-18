@@ -35,10 +35,10 @@ type OpenAIToolCallLike = {
 };
 
 export function buildChangedToolNameMap(
-  toolNameMap: Map<string, string>
+  toolNameMap: Map<string, string>,
 ): Map<string, string> | null {
   const changedEntries = [...toolNameMap.entries()].filter(
-    ([sanitizedName, originalName]) => sanitizedName !== originalName
+    ([sanitizedName, originalName]) => sanitizedName !== originalName,
   );
   return changedEntries.length > 0 ? new Map(changedEntries) : null;
 }

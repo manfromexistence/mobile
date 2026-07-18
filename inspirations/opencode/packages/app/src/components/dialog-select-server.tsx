@@ -1,42 +1,42 @@
-import { Button } from "@opencode-ai/ui/button"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { Dialog } from "@opencode-ai/ui/dialog"
-import { DropdownMenu } from "@opencode-ai/ui/dropdown-menu"
-import { Icon } from "@opencode-ai/ui/icon"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { List } from "@opencode-ai/ui/list"
-import { TextField } from "@opencode-ai/ui/text-field"
-import { useMutation } from "@tanstack/solid-query"
-import { showToast } from "@/utils/toast"
-import { useNavigate } from "@solidjs/router"
-import { createEffect, createMemo, createResource, Show } from "solid-js"
-import { createStore } from "solid-js/store"
-import { ServerHealthIndicator, ServerRow } from "@/components/server/server-row"
-import { useGlobal } from "@/context/global"
-import { useLanguage } from "@/context/language"
-import { usePlatform } from "@/context/platform"
-import { normalizeServerUrl, ServerConnection, useServer } from "@/context/server"
-import { type ServerHealth, useCheckServerHealth } from "@/utils/server-health"
-import { useSettings } from "@/context/settings"
-import { useTabs } from "@/context/tabs"
+import { Button } from "@opencode-ai/ui/button";
+import { useDialog } from "@opencode-ai/ui/context/dialog";
+import { Dialog } from "@opencode-ai/ui/dialog";
+import { DropdownMenu } from "@opencode-ai/ui/dropdown-menu";
+import { Icon } from "@opencode-ai/ui/icon";
+import { IconButton } from "@opencode-ai/ui/icon-button";
+import { List } from "@opencode-ai/ui/list";
+import { TextField } from "@opencode-ai/ui/text-field";
+import { useMutation } from "@tanstack/solid-query";
+import { showToast } from "@/utils/toast";
+import { useNavigate } from "@solidjs/router";
+import { createEffect, createMemo, createResource, Show } from "solid-js";
+import { createStore } from "solid-js/store";
+import { ServerHealthIndicator, ServerRow } from "@/components/server/server-row";
+import { useGlobal } from "@/context/global";
+import { useLanguage } from "@/context/language";
+import { usePlatform } from "@/context/platform";
+import { normalizeServerUrl, ServerConnection, useServer } from "@/context/server";
+import { type ServerHealth, useCheckServerHealth } from "@/utils/server-health";
+import { useSettings } from "@/context/settings";
+import { useTabs } from "@/context/tabs";
 
-const DEFAULT_USERNAME = "opencode"
+const DEFAULT_USERNAME = "opencode";
 
 interface ServerFormProps {
-  value: string
-  name: string
-  username: string
-  password: string
-  placeholder: string
-  busy: boolean
-  error: string
-  status: boolean | undefined
-  onChange: (value: string) => void
-  onNameChange: (value: string) => void
-  onUsernameChange: (value: string) => void
-  onPasswordChange: (value: string) => void
-  onSubmit: () => void
-  onBack: () => void
+  value: string;
+  name: string;
+  username: string;
+  password: string;
+  placeholder: string;
+  busy: boolean;
+  error: string;
+  status: boolean | undefined;
+  onChange: (value: string) => void;
+  onNameChange: (value: string) => void;
+  onUsernameChange: (value: string) => void;
+  onPasswordChange: (value: string) => void;
+  onSubmit: () => void;
+  onBack: () => void;
 }
 
 function showRequestError(language: ReturnType<typeof useLanguage>, err: unknown) {
@@ -44,50 +44,50 @@ function showRequestError(language: ReturnType<typeof useLanguage>, err: unknown
     variant: "error",
     title: language.t("common.requestFailed"),
     description: err instanceof Error ? err.message : String(err),
-  })
+  });
 }
 
 function useDefaultServer() {
-  const language = useLanguage()
-  const platform = usePlatform()
+  const language = useLanguage();
+  const platform = usePlatform();
   const [defaultKey, defaultUrlActions] = createResource(
     async () => {
       try {
-        const key = await platform.getDefaultServer?.()
-        if (!key) return null
-        return key
+        const key = await platform.getDefaultServer?.();
+        if (!key) return null;
+        return key;
       } catch (err) {
-        showRequestError(language, err)
-        return null
+        showRequestError(language, err);
+        return null;
       }
     },
     { initialValue: null },
-  )
+  );
 
-  const canDefault = createMemo(() => !!platform.getDefaultServer && !!platform.setDefaultServer)
+  const canDefault = createMemo(() => !!platform.getDefaultServer && !!platform.setDefaultServer);
   const setDefault = async (key: ServerConnection.Key | null) => {
     try {
-      await platform.setDefaultServer?.(key)
-      defaultUrlActions.mutate(key)
+      await platform.setDefaultServer?.(key);
+      defaultUrlActions.mutate(key);
     } catch (err) {
-      showRequestError(language, err)
+      showRequestError(language, err);
     }
-  }
+  };
 
-  return { defaultKey: () => defaultKey.latest, canDefault, setDefault }
+  return { defaultKey: () => defaultKey.latest, canDefault, setDefault };
 }
 
 function useServerPreview() {
-  const checkServerHealth = useCheckServerHealth()
+  const checkServerHealth = useCheckServerHealth();
 
   const looksComplete = (value: string) => {
-    const normalized = normalizeServerUrl(value)
-    if (!normalized) return false
-    const host = normalized.replace(/^https?:\/\//, "").split("/")[0]
-    if (!host) return false
-    if (host.includes("localhost") || host.startsWith("127.0.0.1")) return true
-    return host.includes(".") || host.includes(":")
-  }
+    const normalized = normalizeServerUrl(value);
+    if (!normalized) return false;
+    const host = normalized.replace(/^https?:\/\//, "").split("/")[0];
+    if (!host) return false;
+    if (host.includes("localhost") || host.startsWith("127.0.0.1")) return true;
+    return host.includes(".") || host.includes(":");
+  };
 
   const previewStatus = async (
     value: string,
@@ -95,33 +95,33 @@ function useServerPreview() {
     password: string,
     setStatus: (value: boolean | undefined) => void,
   ) => {
-    setStatus(undefined)
-    if (!looksComplete(value)) return
-    const normalized = normalizeServerUrl(value)
-    if (!normalized) return
-    const http: ServerConnection.HttpBase = { url: normalized }
-    if (username) http.username = username
-    if (password) http.password = password
-    const result = await checkServerHealth(http)
-    setStatus(result.healthy)
-  }
+    setStatus(undefined);
+    if (!looksComplete(value)) return;
+    const normalized = normalizeServerUrl(value);
+    if (!normalized) return;
+    const http: ServerConnection.HttpBase = { url: normalized };
+    if (username) http.username = username;
+    if (password) http.password = password;
+    const result = await checkServerHealth(http);
+    setStatus(result.healthy);
+  };
 
-  return { previewStatus }
+  return { previewStatus };
 }
 
 function ServerForm(props: ServerFormProps) {
-  const language = useLanguage()
+  const language = useLanguage();
   const keyDown = (event: KeyboardEvent) => {
-    event.stopPropagation()
+    event.stopPropagation();
     if (event.key === "Escape") {
-      event.preventDefault()
-      props.onBack()
-      return
+      event.preventDefault();
+      props.onBack();
+      return;
     }
-    if (event.key !== "Enter" || event.isComposing) return
-    event.preventDefault()
-    props.onSubmit()
-  }
+    if (event.key !== "Enter" || event.isComposing) return;
+    event.preventDefault();
+    props.onSubmit();
+  };
 
   return (
     <div>
@@ -171,34 +171,39 @@ function ServerForm(props: ServerFormProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export function DialogSelectServer() {
-  const dialog = useDialog()
-  const controller = useServerManagementController({ onSelect: dialog.close })
+  const dialog = useDialog();
+  const controller = useServerManagementController({ onSelect: dialog.close });
 
   return (
     <Dialog title={controller.formTitle()}>
       <div class="flex flex-1 min-h-0 flex-col px-5">
-        <Show when={controller.isFormMode()} fallback={<ServerConnectionList controller={controller} />}>
+        <Show
+          when={controller.isFormMode()}
+          fallback={<ServerConnectionList controller={controller} />}
+        >
           <ServerConnectionForm controller={controller} />
         </Show>
       </div>
     </Dialog>
-  )
+  );
 }
 
-export function useServerManagementController(options: { onSelect?: () => void; navigateOnAdd?: boolean } = {}) {
-  const navigate = useNavigate()
-  const server = useServer()
-  const tabs = useTabs()
-  const global = useGlobal()
-  const platform = usePlatform()
-  const language = useLanguage()
-  const { defaultKey, canDefault, setDefault } = useDefaultServer()
-  const { previewStatus } = useServerPreview()
-  const checkServerHealth = useCheckServerHealth()
+export function useServerManagementController(
+  options: { onSelect?: () => void; navigateOnAdd?: boolean } = {},
+) {
+  const navigate = useNavigate();
+  const server = useServer();
+  const tabs = useTabs();
+  const global = useGlobal();
+  const platform = usePlatform();
+  const language = useLanguage();
+  const { defaultKey, canDefault, setDefault } = useDefaultServer();
+  const { previewStatus } = useServerPreview();
+  const checkServerHealth = useCheckServerHealth();
   const [store, setStore] = createStore({
     addServer: {
       url: "",
@@ -218,7 +223,7 @@ export function useServerManagementController(options: { onSelect?: () => void; 
       error: "",
       status: undefined as boolean | undefined,
     },
-  })
+  });
 
   const resetAdd = () => {
     setStore("addServer", {
@@ -229,8 +234,8 @@ export function useServerManagementController(options: { onSelect?: () => void; 
       error: "",
       showForm: false,
       status: undefined,
-    })
-  }
+    });
+  };
   const resetEdit = () => {
     setStore("editServer", {
       id: undefined,
@@ -240,217 +245,219 @@ export function useServerManagementController(options: { onSelect?: () => void; 
       password: "",
       error: "",
       status: undefined,
-    })
-  }
+    });
+  };
 
   const addMutation = useMutation(() => ({
     mutationFn: async (value: string) => {
-      const normalized = normalizeServerUrl(value)
+      const normalized = normalizeServerUrl(value);
       if (!normalized) {
-        resetAdd()
-        return
+        resetAdd();
+        return;
       }
 
       const conn: ServerConnection.Http = {
         type: "http",
         http: { url: normalized },
-      }
-      if (store.addServer.name.trim()) conn.displayName = store.addServer.name.trim()
-      if (store.addServer.password) conn.http.password = store.addServer.password
-      if (store.addServer.password && store.addServer.username) conn.http.username = store.addServer.username
-      const result = await checkServerHealth(conn.http)
+      };
+      if (store.addServer.name.trim()) conn.displayName = store.addServer.name.trim();
+      if (store.addServer.password) conn.http.password = store.addServer.password;
+      if (store.addServer.password && store.addServer.username)
+        conn.http.username = store.addServer.username;
+      const result = await checkServerHealth(conn.http);
       if (!result.healthy) {
-        setStore("addServer", { error: language.t("dialog.server.add.error") })
-        return
+        setStore("addServer", { error: language.t("dialog.server.add.error") });
+        return;
       }
 
-      resetAdd()
+      resetAdd();
       if (options.navigateOnAdd === false) {
-        server.add(conn)
-        options.onSelect?.()
-        return
+        server.add(conn);
+        options.onSelect?.();
+        return;
       }
-      await select(conn, true)
+      await select(conn, true);
     },
-  }))
+  }));
 
   const editMutation = useMutation(() => ({
     mutationFn: async (input: { original: ServerConnection.Any; value: string }) => {
-      if (input.original.type !== "http") return
-      const normalized = normalizeServerUrl(input.value)
+      if (input.original.type !== "http") return;
+      const normalized = normalizeServerUrl(input.value);
       if (!normalized) {
-        resetEdit()
-        return
+        resetEdit();
+        return;
       }
 
-      const name = store.editServer.name.trim() || undefined
-      const username = store.editServer.username || undefined
-      const password = store.editServer.password || undefined
-      const existingName = input.original.displayName
+      const name = store.editServer.name.trim() || undefined;
+      const username = store.editServer.username || undefined;
+      const password = store.editServer.password || undefined;
+      const existingName = input.original.displayName;
       if (
         normalized === input.original.http.url &&
         name === existingName &&
         username === input.original.http.username &&
         password === input.original.http.password
       ) {
-        resetEdit()
-        return
+        resetEdit();
+        return;
       }
 
       const conn: ServerConnection.Http = {
         type: "http",
         displayName: name,
         http: { url: normalized, username, password },
-      }
-      const result = await checkServerHealth(conn.http)
+      };
+      const result = await checkServerHealth(conn.http);
       if (!result.healthy) {
-        setStore("editServer", { error: language.t("dialog.server.add.error") })
-        return
+        setStore("editServer", { error: language.t("dialog.server.add.error") });
+        return;
       }
       if (normalized === input.original.http.url) {
-        server.add(conn)
+        server.add(conn);
       } else {
-        replaceServer(input.original, conn)
+        replaceServer(input.original, conn);
       }
 
-      resetEdit()
+      resetEdit();
     },
-  }))
+  }));
 
   const replaceServer = (original: ServerConnection.Http, next: ServerConnection.Http) => {
-    const originalKey = ServerConnection.key(original)
-    const active = server.key
-    tabs.removeServer(originalKey)
-    const newConn = server.add(next)
-    if (!newConn) return
-    const nextActive = active === originalKey ? ServerConnection.key(newConn) : active
-    if (nextActive) server.setActive(nextActive)
-    server.remove(originalKey)
-  }
+    const originalKey = ServerConnection.key(original);
+    const active = server.key;
+    tabs.removeServer(originalKey);
+    const newConn = server.add(next);
+    if (!newConn) return;
+    const nextActive = active === originalKey ? ServerConnection.key(newConn) : active;
+    if (nextActive) server.setActive(nextActive);
+    server.remove(originalKey);
+  };
 
   const items = createMemo(() => {
-    const current = server.current
-    const list = server.list
-    if (!current) return list
-    if (!list.includes(current)) return [current, ...list]
-    return [current, ...list.filter((x) => x !== current)]
-  })
+    const current = server.current;
+    const list = server.list;
+    if (!current) return list;
+    if (!list.includes(current)) return [current, ...list];
+    return [current, ...list.filter((x) => x !== current)];
+  });
 
-  const settings = useSettings()
+  const settings = useSettings();
   const current = createMemo<ServerConnection.Any | undefined>(() =>
     settings.general.newLayoutDesigns()
       ? undefined
       : (items().find((x) => ServerConnection.key(x) === server.key) ?? items()[0]),
-  )
+  );
 
   const sortedItems = createMemo(() => {
-    const list = items()
-    if (!list.length) return list
-    const active = current()
-    const order = new Map(list.map((url, index) => [url, index] as const))
+    const list = items();
+    if (!list.length) return list;
+    const active = current();
+    const order = new Map(list.map((url, index) => [url, index] as const));
     const rank = (value?: ServerHealth) => {
-      if (value?.healthy === true) return 0
-      if (value?.healthy === false) return 2
-      return 1
-    }
+      if (value?.healthy === true) return 0;
+      if (value?.healthy === false) return 2;
+      return 1;
+    };
     return list.slice().sort((a, b) => {
-      if (a === active) return -1
-      if (b === active) return 1
+      if (a === active) return -1;
+      if (b === active) return 1;
       const diff =
-        rank(global.servers.health[ServerConnection.key(a)]) - rank(global.servers.health[ServerConnection.key(b)])
-      if (diff !== 0) return diff
-      return (order.get(a) ?? 0) - (order.get(b) ?? 0)
-    })
-  })
+        rank(global.servers.health[ServerConnection.key(a)]) -
+        rank(global.servers.health[ServerConnection.key(b)]);
+      if (diff !== 0) return diff;
+      return (order.get(a) ?? 0) - (order.get(b) ?? 0);
+    });
+  });
 
   async function select(conn: ServerConnection.Any, persist?: boolean) {
-    if (!persist && global.servers.health[ServerConnection.key(conn)]?.healthy === false) return
-    options.onSelect?.()
+    if (!persist && global.servers.health[ServerConnection.key(conn)]?.healthy === false) return;
+    options.onSelect?.();
     if (persist && conn.type === "http") {
-      server.add(conn)
-      navigate("/")
-      return
+      server.add(conn);
+      navigate("/");
+      return;
     }
-    navigate("/")
-    queueMicrotask(() => server.setActive(ServerConnection.key(conn)))
+    navigate("/");
+    queueMicrotask(() => server.setActive(ServerConnection.key(conn)));
   }
 
   const handleAddChange = (value: string) => {
-    if (addMutation.isPending) return
-    setStore("addServer", { url: value, error: "" })
+    if (addMutation.isPending) return;
+    setStore("addServer", { url: value, error: "" });
     void previewStatus(value, store.addServer.username, store.addServer.password, (next) =>
       setStore("addServer", { status: next }),
-    )
-  }
+    );
+  };
 
   const handleAddNameChange = (value: string) => {
-    if (addMutation.isPending) return
-    setStore("addServer", { name: value, error: "" })
-  }
+    if (addMutation.isPending) return;
+    setStore("addServer", { name: value, error: "" });
+  };
 
   const handleAddUsernameChange = (value: string) => {
-    if (addMutation.isPending) return
-    setStore("addServer", { username: value, error: "" })
+    if (addMutation.isPending) return;
+    setStore("addServer", { username: value, error: "" });
     void previewStatus(store.addServer.url, value, store.addServer.password, (next) =>
       setStore("addServer", { status: next }),
-    )
-  }
+    );
+  };
 
   const handleAddPasswordChange = (value: string) => {
-    if (addMutation.isPending) return
-    setStore("addServer", { password: value, error: "" })
+    if (addMutation.isPending) return;
+    setStore("addServer", { password: value, error: "" });
     void previewStatus(store.addServer.url, store.addServer.username, value, (next) =>
       setStore("addServer", { status: next }),
-    )
-  }
+    );
+  };
 
   const handleEditChange = (value: string) => {
-    if (editMutation.isPending) return
-    setStore("editServer", { value, error: "" })
+    if (editMutation.isPending) return;
+    setStore("editServer", { value, error: "" });
     void previewStatus(value, store.editServer.username, store.editServer.password, (next) =>
       setStore("editServer", { status: next }),
-    )
-  }
+    );
+  };
 
   const handleEditNameChange = (value: string) => {
-    if (editMutation.isPending) return
-    setStore("editServer", { name: value, error: "" })
-  }
+    if (editMutation.isPending) return;
+    setStore("editServer", { name: value, error: "" });
+  };
 
   const handleEditUsernameChange = (value: string) => {
-    if (editMutation.isPending) return
-    setStore("editServer", { username: value, error: "" })
+    if (editMutation.isPending) return;
+    setStore("editServer", { username: value, error: "" });
     void previewStatus(store.editServer.value, value, store.editServer.password, (next) =>
       setStore("editServer", { status: next }),
-    )
-  }
+    );
+  };
 
   const handleEditPasswordChange = (value: string) => {
-    if (editMutation.isPending) return
-    setStore("editServer", { password: value, error: "" })
+    if (editMutation.isPending) return;
+    setStore("editServer", { password: value, error: "" });
     void previewStatus(store.editServer.value, store.editServer.username, value, (next) =>
       setStore("editServer", { status: next }),
-    )
-  }
+    );
+  };
 
   const mode = createMemo<"list" | "add" | "edit">(() => {
-    if (store.editServer.id) return "edit"
-    if (store.addServer.showForm) return "add"
-    return "list"
-  })
+    if (store.editServer.id) return "edit";
+    if (store.addServer.showForm) return "add";
+    return "list";
+  });
 
   const editing = createMemo(() => {
-    if (!store.editServer.id) return
-    return items().find((x) => x.type === "http" && x.http.url === store.editServer.id)
-  })
+    if (!store.editServer.id) return;
+    return items().find((x) => x.type === "http" && x.http.url === store.editServer.id);
+  });
 
   const resetForm = () => {
-    resetAdd()
-    resetEdit()
-  }
+    resetAdd();
+    resetEdit();
+  };
 
   const startAdd = () => {
-    resetEdit()
+    resetEdit();
     setStore("addServer", {
       showForm: true,
       url: "",
@@ -459,11 +466,11 @@ export function useServerManagementController(options: { onSelect?: () => void; 
       password: "",
       error: "",
       status: undefined,
-    })
-  }
+    });
+  };
 
   const startEdit = (conn: ServerConnection.Http) => {
-    resetAdd()
+    resetAdd();
     setStore("editServer", {
       id: conn.http.url,
       value: conn.http.url,
@@ -472,53 +479,62 @@ export function useServerManagementController(options: { onSelect?: () => void; 
       password: conn.http.password ?? "",
       error: "",
       status: global.servers.health[ServerConnection.key(conn)]?.healthy,
-    })
-  }
+    });
+  };
 
   const submitForm = () => {
     if (mode() === "add") {
-      if (addMutation.isPending) return
-      setStore("addServer", { error: "" })
-      addMutation.mutate(store.addServer.url)
-      return
+      if (addMutation.isPending) return;
+      setStore("addServer", { error: "" });
+      addMutation.mutate(store.addServer.url);
+      return;
     }
-    const original = editing()
-    if (!original) return
-    if (editMutation.isPending) return
-    setStore("editServer", { error: "" })
-    editMutation.mutate({ original, value: store.editServer.value })
-  }
+    const original = editing();
+    if (!original) return;
+    if (editMutation.isPending) return;
+    setStore("editServer", { error: "" });
+    editMutation.mutate({ original, value: store.editServer.value });
+  };
 
-  const isFormMode = createMemo(() => mode() !== "list")
-  const isAddMode = createMemo(() => mode() === "add")
-  const formBusy = createMemo(() => (isAddMode() ? addMutation.isPending : editMutation.isPending))
+  const isFormMode = createMemo(() => mode() !== "list");
+  const isAddMode = createMemo(() => mode() === "add");
+  const formBusy = createMemo(() => (isAddMode() ? addMutation.isPending : editMutation.isPending));
 
   const formTitle = createMemo(() => {
-    if (!isFormMode()) return language.t("dialog.server.title")
+    if (!isFormMode()) return language.t("dialog.server.title");
     return (
       <div class="flex items-center gap-2 -ml-2">
-        <IconButton icon="arrow-left" variant="ghost" onClick={resetForm} aria-label={language.t("common.goBack")} />
-        <span>{isAddMode() ? language.t("dialog.server.add.title") : language.t("dialog.server.edit.title")}</span>
+        <IconButton
+          icon="arrow-left"
+          variant="ghost"
+          onClick={resetForm}
+          aria-label={language.t("common.goBack")}
+        />
+        <span>
+          {isAddMode()
+            ? language.t("dialog.server.add.title")
+            : language.t("dialog.server.edit.title")}
+        </span>
       </div>
-    )
-  })
+    );
+  });
 
   createEffect(() => {
-    if (!store.editServer.id) return
-    if (editing()) return
-    resetEdit()
-  })
+    if (!store.editServer.id) return;
+    if (editing()) return;
+    resetEdit();
+  });
 
   async function handleRemove(key: ServerConnection.Key) {
     try {
-      if (key.startsWith("wsl:")) await platform.wslServers?.removeServer(key)
-      tabs.removeServer(key)
-      server.remove(key)
+      if (key.startsWith("wsl:")) await platform.wslServers?.removeServer(key);
+      tabs.removeServer(key);
+      server.remove(key);
       if ((await platform.getDefaultServer?.()) === key) {
-        await setDefault(null)
+        await setDefault(null);
       }
     } catch (err) {
-      showRequestError(language, err)
+      showRequestError(language, err);
     }
   }
 
@@ -547,14 +563,18 @@ export function useServerManagementController(options: { onSelect?: () => void; 
     handleRemove,
     handleFormChange: () => (isAddMode() ? handleAddChange : handleEditChange),
     handleFormNameChange: () => (isAddMode() ? handleAddNameChange : handleEditNameChange),
-    handleFormUsernameChange: () => (isAddMode() ? handleAddUsernameChange : handleEditUsernameChange),
-    handleFormPasswordChange: () => (isAddMode() ? handleAddPasswordChange : handleEditPasswordChange),
-  }
+    handleFormUsernameChange: () =>
+      isAddMode() ? handleAddUsernameChange : handleEditUsernameChange,
+    handleFormPasswordChange: () =>
+      isAddMode() ? handleAddPasswordChange : handleEditPasswordChange,
+  };
 }
 
-export function ServerConnectionList(props: { controller: ReturnType<typeof useServerManagementController> }) {
-  const language = useLanguage()
-  const settings = useSettings()
+export function ServerConnectionList(props: {
+  controller: ReturnType<typeof useServerManagementController>;
+}) {
+  const language = useLanguage();
+  const settings = useSettings();
 
   return (
     <div class="flex flex-1 min-h-0 flex-col gap-4">
@@ -569,12 +589,12 @@ export function ServerConnectionList(props: { controller: ReturnType<typeof useS
         items={props.controller.sortedItems}
         key={(x) => x.http.url}
         onSelect={(x) => {
-          if (x && !settings.general.newLayoutDesigns()) void props.controller.select(x)
+          if (x && !settings.general.newLayoutDesigns()) void props.controller.select(x);
         }}
         divider={true}
       >
         {(i) => {
-          const key = ServerConnection.key(i)
+          const key = ServerConnection.key(i);
           return (
             <div class="flex items-center gap-3 min-w-0 flex-1 w-full group/item">
               <div class="flex flex-col h-full items-center w-5">
@@ -595,7 +615,12 @@ export function ServerConnectionList(props: { controller: ReturnType<typeof useS
                 showCredentials
               />
               <div class="flex items-center justify-center gap-4 pl-4">
-                <Show when={props.controller.current() && ServerConnection.key(props.controller.current()!) === key}>
+                <Show
+                  when={
+                    props.controller.current() &&
+                    ServerConnection.key(props.controller.current()!) === key
+                  }
+                >
                   <Icon name="check" class="h-6" />
                 </Show>
 
@@ -613,18 +638,30 @@ export function ServerConnectionList(props: { controller: ReturnType<typeof useS
                       <DropdownMenu.Content class="mt-1">
                         <DropdownMenu.Item
                           onSelect={() => {
-                            if (i.type !== "http") return
-                            props.controller.startEdit(i)
+                            if (i.type !== "http") return;
+                            props.controller.startEdit(i);
                           }}
                         >
-                          <DropdownMenu.ItemLabel>{language.t("dialog.server.menu.edit")}</DropdownMenu.ItemLabel>
+                          <DropdownMenu.ItemLabel>
+                            {language.t("dialog.server.menu.edit")}
+                          </DropdownMenu.ItemLabel>
                         </DropdownMenu.Item>
-                        <Show when={props.controller.canDefault() && props.controller.defaultKey() !== key}>
+                        <Show
+                          when={
+                            props.controller.canDefault() && props.controller.defaultKey() !== key
+                          }
+                        >
                           <DropdownMenu.Item onSelect={() => props.controller.setDefault(key)}>
-                            <DropdownMenu.ItemLabel>{language.t("dialog.server.menu.default")}</DropdownMenu.ItemLabel>
+                            <DropdownMenu.ItemLabel>
+                              {language.t("dialog.server.menu.default")}
+                            </DropdownMenu.ItemLabel>
                           </DropdownMenu.Item>
                         </Show>
-                        <Show when={props.controller.canDefault() && props.controller.defaultKey() === key}>
+                        <Show
+                          when={
+                            props.controller.canDefault() && props.controller.defaultKey() === key
+                          }
+                        >
                           <DropdownMenu.Item onSelect={() => props.controller.setDefault(null)}>
                             <DropdownMenu.ItemLabel>
                               {language.t("dialog.server.menu.defaultRemove")}
@@ -636,7 +673,9 @@ export function ServerConnectionList(props: { controller: ReturnType<typeof useS
                           onSelect={() => props.controller.handleRemove(ServerConnection.key(i))}
                           class="text-text-on-critical-base hover:bg-surface-critical-weak"
                         >
-                          <DropdownMenu.ItemLabel>{language.t("dialog.server.menu.delete")}</DropdownMenu.ItemLabel>
+                          <DropdownMenu.ItemLabel>
+                            {language.t("dialog.server.menu.delete")}
+                          </DropdownMenu.ItemLabel>
                         </DropdownMenu.Item>
                       </DropdownMenu.Content>
                     </DropdownMenu.Portal>
@@ -644,7 +683,7 @@ export function ServerConnectionList(props: { controller: ReturnType<typeof useS
                 </Show>
               </div>
             </div>
-          )
+          );
         }}
       </List>
 
@@ -660,11 +699,13 @@ export function ServerConnectionList(props: { controller: ReturnType<typeof useS
         </Button>
       </div>
     </div>
-  )
+  );
 }
 
-export function ServerConnectionForm(props: { controller: ReturnType<typeof useServerManagementController> }) {
-  const language = useLanguage()
+export function ServerConnectionForm(props: {
+  controller: ReturnType<typeof useServerManagementController>;
+}) {
+  const language = useLanguage();
 
   return (
     <div class="flex flex-1 min-h-0 flex-col gap-4">
@@ -700,5 +741,5 @@ export function ServerConnectionForm(props: { controller: ReturnType<typeof useS
         </Button>
       </div>
     </div>
-  )
+  );
 }

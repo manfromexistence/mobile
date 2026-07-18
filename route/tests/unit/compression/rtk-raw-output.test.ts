@@ -65,7 +65,7 @@ describe("RTK raw output retention", () => {
 
     assert.equal(
       maybePersistRtkRawOutput("ordinary successful output", { retention: "failures" }),
-      null
+      null,
     );
 
     const pointer = maybePersistRtkRawOutput("error: " + "x".repeat(5000), {
@@ -121,7 +121,7 @@ describe("RTK raw output retention", () => {
           },
           stackedPipeline: [{ engine: "rtk", intensity: "standard" }],
         },
-      }
+      },
     );
 
     const pointer = result.stats?.rtkRawOutputPointers?.[0];

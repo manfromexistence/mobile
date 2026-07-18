@@ -37,6 +37,6 @@ test("Kenari registry entry uses OpenAI format with bearer API-key auth and pass
   assert.deepEqual(
     entry.models,
     [],
-    "Kenari ships no speculative seeded models — live catalog via passthrough only"
+    "Kenari ships no speculative seeded models — live catalog via passthrough only",
   );
 });

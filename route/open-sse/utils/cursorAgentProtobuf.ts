@@ -403,7 +403,7 @@ export function encodeSelectedImageBody(img: EncodedImage): Buffer {
       encodeMessage(SI_DIMENSION, [
         encodeUInt32Field(DIM_WIDTH, Math.floor(img.width)),
         encodeUInt32Field(DIM_HEIGHT, Math.floor(img.height)),
-      ])
+      ]),
     );
   }
   if (img.mimeType) {
@@ -484,7 +484,7 @@ export function encodeAgentRunRequest(input: AgentRunInput): Buffer {
       encodeMessage(RM_PARAMETERS, [
         encodeString(RMP_ID, param.id),
         encodeString(RMP_VALUE, param.value),
-      ])
+      ]),
     );
   }
   const requestedModel = encodeMessage(ARR_REQUESTED_MODEL, rmParts);
@@ -507,7 +507,9 @@ export function encodeAgentRunRequest(input: AgentRunInput): Buffer {
   const mcpToolDefs = input.tools ? openAIToolsToMcpDefs(input.tools) : [];
   const mcpToolsBlock = encodeMessage(
     ARR_MCP_TOOLS,
-    mcpToolDefs.map((def) => encodeMessage(ARR_MCP_TOOLS_INNER, [encodeMcpToolDefinitionBody(def)]))
+    mcpToolDefs.map((def) =>
+      encodeMessage(ARR_MCP_TOOLS_INNER, [encodeMcpToolDefinitionBody(def)]),
+    ),
   );
 
   // AgentRunRequest. Field order mirrors cursor-agent's wire format; empty
@@ -892,7 +894,7 @@ export function decodeExecServerEvent(payload: Buffer): ExecServerEvent | null {
 export function encodeRequestContextResponse(
   id: number,
   execId: string,
-  tools?: McpToolDefinition[]
+  tools?: McpToolDefinition[],
 ): Buffer {
   const rcParts: Buffer[] = [];
   if (tools && tools.length > 0) {
@@ -933,7 +935,7 @@ function wrapExecClientMessage(
   execMsgId: number,
   execId: string,
   resultFieldNumber: number,
-  resultPayload: Buffer
+  resultPayload: Buffer,
 ): Buffer {
   const ecm = encodeMessage(ACM_EXEC_CLIENT_MESSAGE, [
     encodeUInt32Field(ECM_ID, execMsgId),
@@ -965,7 +967,7 @@ export function encodeExecReadRejected(
   execMsgId: number,
   execId: string,
   path: string,
-  reason: string
+  reason: string,
 ): Buffer {
   const rejected = encodeMessage(RES_REJECTED, [encodePathRejection(path, reason)]);
   return wrapExecClientMessage(execMsgId, execId, ECM_READ_RESULT, rejected);
@@ -975,7 +977,7 @@ export function encodeExecWriteRejected(
   execMsgId: number,
   execId: string,
   path: string,
-  reason: string
+  reason: string,
 ): Buffer {
   const rejected = encodeMessage(RES_REJECTED, [encodePathRejection(path, reason)]);
   return wrapExecClientMessage(execMsgId, execId, ECM_WRITE_RESULT, rejected);
@@ -985,7 +987,7 @@ export function encodeExecDeleteRejected(
   execMsgId: number,
   execId: string,
   path: string,
-  reason: string
+  reason: string,
 ): Buffer {
   const rejected = encodeMessage(RES_REJECTED, [encodePathRejection(path, reason)]);
   return wrapExecClientMessage(execMsgId, execId, ECM_DELETE_RESULT, rejected);
@@ -995,7 +997,7 @@ export function encodeExecLsRejected(
   execMsgId: number,
   execId: string,
   path: string,
-  reason: string
+  reason: string,
 ): Buffer {
   const rejected = encodeMessage(RES_REJECTED, [encodePathRejection(path, reason)]);
   return wrapExecClientMessage(execMsgId, execId, ECM_LS_RESULT, rejected);
@@ -1006,7 +1008,7 @@ export function encodeExecShellRejected(
   execId: string,
   command: string,
   workingDir: string,
-  reason: string
+  reason: string,
 ): Buffer {
   const rejected = encodeMessage(RES_REJECTED, [encodeShellRejection(command, workingDir, reason)]);
   return wrapExecClientMessage(execMsgId, execId, ECM_SHELL_RESULT, rejected);
@@ -1017,7 +1019,7 @@ export function encodeExecBackgroundShellSpawnRejected(
   execId: string,
   command: string,
   workingDir: string,
-  reason: string
+  reason: string,
 ): Buffer {
   const rejected = encodeMessage(RES_REJECTED, [encodeShellRejection(command, workingDir, reason)]);
   return wrapExecClientMessage(execMsgId, execId, ECM_BACKGROUND_SHELL_SPAWN_RES, rejected);
@@ -1033,7 +1035,7 @@ export function encodeExecFetchError(
   execMsgId: number,
   execId: string,
   url: string,
-  errMsg: string
+  errMsg: string,
 ): Buffer {
   const fetchError = Buffer.concat([encodeString(FERR_URL, url), encodeString(FERR_ERROR, errMsg)]);
   const errorVariant = encodeMessage(RES_REJECTED, [fetchError]);
@@ -1043,7 +1045,7 @@ export function encodeExecFetchError(
 export function encodeExecWriteShellStdinError(
   execMsgId: number,
   execId: string,
-  errMsg: string
+  errMsg: string,
 ): Buffer {
   const stdinError = encodeString(ERR_MESSAGE, errMsg);
   const errorVariant = encodeMessage(RES_REJECTED, [stdinError]);
@@ -1062,7 +1064,7 @@ export function encodeExecMcpResult(
   execMsgId: number,
   execId: string,
   content: string,
-  isError: boolean
+  isError: boolean,
 ): Buffer {
   // McpTextContent { text } → McpToolResultContentItem.text
   const textContent = encodeMessage(MCC_TEXT, [encodeString(MTC_TEXT, content)]);
@@ -1089,7 +1091,7 @@ export function encodeExecMcpError(execMsgId: number, execId: string, errMsg: st
 export function encodeKvGetBlobResult(
   kvId: number,
   blobData: Buffer,
-  requestMetadata: Buffer | null = null
+  requestMetadata: Buffer | null = null,
 ): Buffer {
   const getBlobResult = encodeBytes(GBR_BLOB_DATA, blobData);
   const parts: Buffer[] = [];
@@ -1384,7 +1386,7 @@ export function flattenMessages(messages: ChatMessage[]): string {
           const args = tc.function?.arguments ?? "";
           lines.push(
             `Assistant called tool ${tc.function?.name ?? "(unknown)"} ` +
-              `(${tc.id}) with arguments: ${args}`
+              `(${tc.id}) with arguments: ${args}`,
           );
         }
       }

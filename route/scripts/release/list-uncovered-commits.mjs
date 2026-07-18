@@ -154,7 +154,7 @@ function main(argv) {
   if (jsonOut) {
     process.stdout.write(
       JSON.stringify({ version, lastTag, total: commits.length, covered, uncovered }, null, 2) +
-        "\n"
+        "\n",
     );
     return;
   }
@@ -162,18 +162,18 @@ function main(argv) {
   const rollupCandidates = uncovered.filter((c) => c.rollup);
   process.stdout.write(`# Uncovered-commit reconciliation — v${version} (${lastTag}..HEAD)\n\n`);
   process.stdout.write(
-    `Commits: ${commits.length} · covered: ${covered} · uncovered: ${uncovered.length}\n\n`
+    `Commits: ${commits.length} · covered: ${covered} · uncovered: ${uncovered.length}\n\n`,
   );
   process.stdout.write(
-    `## Needs a bullet (feat/fix/other — user-facing) — ${bulletsWorthy.length}\n`
+    `## Needs a bullet (feat/fix/other — user-facing) — ${bulletsWorthy.length}\n`,
   );
   for (const c of bulletsWorthy) process.stdout.write(`- ${c.hash} ${c.subject}\n`);
   process.stdout.write(
-    `\n## Rollup candidates (chore/ci/test/refactor/docs) — ${rollupCandidates.length}\n`
+    `\n## Rollup candidates (chore/ci/test/refactor/docs) — ${rollupCandidates.length}\n`,
   );
   for (const c of rollupCandidates) process.stdout.write(`- ${c.hash} ${c.subject}\n`);
   process.stdout.write(
-    `\n> Advisory. Add a bullet for each user-facing item; consolidate rollup candidates into a few Maintenance bullets (list their PR numbers).\n`
+    `\n> Advisory. Add a bullet for each user-facing item; consolidate rollup candidates into a few Maintenance bullets (list their PR numbers).\n`,
   );
 }
 

@@ -30,7 +30,7 @@ for (const id of NEW_IDS) {
     assert.ok(entry, `Entry '${id}' not found`);
     assert.ok(
       typeof entry.description === "string" && entry.description.length > 0,
-      `Entry '${id}' has empty description`
+      `Entry '${id}' has empty description`,
     );
   });
 
@@ -41,7 +41,7 @@ for (const id of NEW_IDS) {
     assert.equal(
       result.success,
       true,
-      result.success ? "" : `Entry '${id}' schema error: ${JSON.stringify(result.error.issues)}`
+      result.success ? "" : `Entry '${id}' schema error: ${JSON.stringify(result.error.issues)}`,
     );
   });
 
@@ -51,7 +51,7 @@ for (const id of NEW_IDS) {
     assert.match(
       entry.color,
       /^#[0-9A-Fa-f]{6}$/,
-      `Entry '${id}' color '${entry.color}' is not #RRGGBB`
+      `Entry '${id}' color '${entry.color}' is not #RRGGBB`,
     );
   });
 
@@ -60,7 +60,7 @@ for (const id of NEW_IDS) {
     assert.ok(entry, `Entry '${id}' not found`);
     assert.ok(
       typeof entry.vendor === "string" && entry.vendor.length > 0,
-      `Entry '${id}' has empty vendor`
+      `Entry '${id}' has empty vendor`,
     );
   });
 }

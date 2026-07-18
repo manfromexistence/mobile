@@ -1,6 +1,6 @@
-import { createThemeResolver, type ThemeResolver } from '@pierre/theming';
+import { createThemeResolver, type ThemeResolver } from "@pierre/theming";
 
-import type { ThemeRegistrationResolved } from '../../types';
+import type { ThemeRegistrationResolved } from "../../types";
 
 // The single diffs-owned theme resolver. It replaces the former hand-rolled
 // ResolvedThemes (sync cache) + ResolvingThemes (in-flight dedupe) +

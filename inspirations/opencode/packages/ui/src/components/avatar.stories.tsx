@@ -1,6 +1,6 @@
 // @ts-nocheck
-import * as mod from "./avatar"
-import { create } from "../storybook/scaffold"
+import * as mod from "./avatar";
+import { create } from "../storybook/scaffold";
 
 const docs = `### Overview
 User avatar with image fallback to initials.
@@ -24,9 +24,9 @@ Use in user lists and headers.
 ### Theming/tokens
 - Uses \`data-component="avatar"\` with size and image state attributes.
 
-`
+`;
 
-const story = create({ title: "UI/Avatar", mod, args: { fallback: "A" } })
+const story = create({ title: "UI/Avatar", mod, args: { fallback: "A" } });
 
 export default {
   title: "UI/Avatar",
@@ -46,16 +46,16 @@ export default {
       options: ["small", "normal", "large"],
     },
   },
-}
+};
 
-export const Basic = story.Basic
+export const Basic = story.Basic;
 
 export const WithImage = {
   args: {
     src: "https://placehold.co/80x80/png",
     fallback: "J",
   },
-}
+};
 
 export const Sizes = {
   render: () => (
@@ -65,7 +65,7 @@ export const Sizes = {
       <mod.Avatar size="large" fallback="L" />
     </div>
   ),
-}
+};
 
 export const CustomColors = {
   args: {
@@ -73,4 +73,4 @@ export const CustomColors = {
     background: "#1f2a44",
     foreground: "#f2f5ff",
   },
-}
+};

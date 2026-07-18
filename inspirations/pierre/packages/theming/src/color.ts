@@ -16,9 +16,9 @@ import {
   pickReadableForeground,
   relativeLuminance,
   surfacesMatch,
-} from './modules/color';
+} from "./modules/color";
 
-export { normalizeThemeColors } from './modules/normalizeThemeColors';
+export { normalizeThemeColors } from "./modules/normalizeThemeColors";
 
 type ColorUtils = {
   readonly compositeOverBg: typeof compositeOverBg;

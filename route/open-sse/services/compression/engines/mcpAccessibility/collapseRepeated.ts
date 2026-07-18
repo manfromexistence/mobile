@@ -12,7 +12,7 @@ export function extractRefs(text: string): string[] {
   // Fresh regex per call: the shared pattern carries the global flag (stateful lastIndex).
   const pattern = new RegExp(
     MCP_ACCESSIBILITY_DEFAULTS.preserveRefPattern.source,
-    MCP_ACCESSIBILITY_DEFAULTS.preserveRefPattern.flags
+    MCP_ACCESSIBILITY_DEFAULTS.preserveRefPattern.flags,
   );
   for (const m of text.matchAll(pattern)) {
     if (!seen.has(m[0])) {
@@ -28,7 +28,7 @@ export function findNthSiblingEnd(
   start: number,
   indent: string,
   role: string,
-  n: number
+  n: number,
 ): number {
   let count = 0;
   for (let k = start; k < lines.length; k++) {
@@ -46,7 +46,7 @@ export function findLastNSiblingStart(
   end: number,
   indent: string,
   role: string,
-  n: number
+  n: number,
 ): number {
   const positions: number[] = [];
   for (let k = 0; k < end; k++) {
@@ -60,7 +60,7 @@ export function collapseRepeated(
   text: string,
   threshold: number,
   keepHead: number,
-  keepTail: number
+  keepTail: number,
 ): string {
   const lines = text.split("\n");
   const out: string[] = [];
@@ -100,7 +100,7 @@ export function collapseRepeated(
       const tailStart = findLastNSiblingStart(lines.slice(0, j), j, indent, role, keepTail);
       for (let k = i; k < headEnd; k++) out.push(lines[k]);
       out.push(
-        `${indent}... [${groupLen - keepHead - keepTail} similar "${role}" items omitted by OmniRoute MCP filter]`
+        `${indent}... [${groupLen - keepHead - keepTail} similar "${role}" items omitted by OmniRoute MCP filter]`,
       );
       // BUG A invariant: the omitted middle siblings carry [ref=eNN] anchors the agent needs to
       // click. Extract every ref from the dropped lines and keep them alongside the notice so
@@ -108,7 +108,7 @@ export function collapseRepeated(
       const omittedRefs = extractRefs(lines.slice(headEnd, tailStart).join("\n"));
       if (omittedRefs.length > 0) {
         out.push(
-          `${indent}  [refs of omitted "${role}" items (clickable): ${omittedRefs.join(" ")}]`
+          `${indent}  [refs of omitted "${role}" items (clickable): ${omittedRefs.join(" ")}]`,
         );
       }
       for (let k = tailStart; k < j; k++) out.push(lines[k]);

@@ -105,7 +105,7 @@ const RequestLoggerV2 = forwardRef<RequestLoggerV2Handle, { initialSelectedId?: 
         { key: "ok", label: t("statusFilters.success"), icon: "check_circle" },
         { key: "combo", label: t("statusFilters.combo"), icon: "hub" },
       ],
-      [t]
+      [t],
     );
 
     // Get translated columns
@@ -125,7 +125,7 @@ const RequestLoggerV2 = forwardRef<RequestLoggerV2Handle, { initialSelectedId?: 
         { key: "duration", label: t("columns.duration") },
         { key: "time", label: t("columns.time") },
       ],
-      [t]
+      [t],
     );
 
     const [logs, setLogs] = useState([]);
@@ -169,7 +169,7 @@ const RequestLoggerV2 = forwardRef<RequestLoggerV2Handle, { initialSelectedId?: 
         if (sortBy === mapping.asc) return " ↑";
         return "";
       },
-      [sortBy]
+      [sortBy],
     );
     const [detailData, setDetailData] = useState(null);
     const [detailLoggingEnabled, setDetailLoggingEnabled] = useState(false);
@@ -229,7 +229,7 @@ const RequestLoggerV2 = forwardRef<RequestLoggerV2Handle, { initialSelectedId?: 
         writeSavedRefreshIntervalSec(next);
         setRefreshIntervalSec(next);
       },
-      []
+      [],
     );
 
     const fetchLogs = useCallback(
@@ -277,7 +277,7 @@ const RequestLoggerV2 = forwardRef<RequestLoggerV2Handle, { initialSelectedId?: 
         selectedApiKey,
         correlationIdFilter,
         limit,
-      ]
+      ],
     );
 
     useEffect(() => {
@@ -413,7 +413,7 @@ const RequestLoggerV2 = forwardRef<RequestLoggerV2Handle, { initialSelectedId?: 
             loadMore();
           }
         },
-        { root, rootMargin: "200px" }
+        { root, rootMargin: "200px" },
       );
       observer.observe(sentinel);
       return () => observer.disconnect();
@@ -630,7 +630,7 @@ const RequestLoggerV2 = forwardRef<RequestLoggerV2Handle, { initialSelectedId?: 
         openDetail,
         getSortedLogs: () => sortedLogsForNav,
       }),
-      [openDetail, sortedLogsForNav]
+      [openDetail, sortedLogsForNav],
     );
 
     // If the page provided an initialSelectedId (via ?id=), open it on mount.
@@ -794,30 +794,30 @@ const RequestLoggerV2 = forwardRef<RequestLoggerV2Handle, { initialSelectedId?: 
       () => [
         ...new Set(sourceLogsForDropdowns.map((l) => l.account).filter((a) => a && a !== "-")),
       ],
-      [sourceLogsForDropdowns]
+      [sourceLogsForDropdowns],
     );
     const uniqueModels = useMemo(
       () =>
         [
           ...new Set(
-            sourceLogsForDropdowns.flatMap((l) => [l.model, l.requestedModel]).filter(Boolean)
+            sourceLogsForDropdowns.flatMap((l) => [l.model, l.requestedModel]).filter(Boolean),
           ),
         ].sort(),
-      [sourceLogsForDropdowns]
+      [sourceLogsForDropdowns],
     );
     const uniqueProviders = useMemo(
       () =>
         [
           ...new Set(sourceLogsForDropdowns.map((l) => l.provider).filter((p) => p && p !== "-")),
         ].sort(),
-      [sourceLogsForDropdowns]
+      [sourceLogsForDropdowns],
     );
     const uniqueApiKeys = useMemo(
       () =>
         [
           ...new Set(sourceLogsForDropdowns.map((l) => l.apiKeyId || l.apiKeyName).filter(Boolean)),
         ].sort(),
-      [sourceLogsForDropdowns]
+      [sourceLogsForDropdowns],
     );
 
     // Stats (memoized to avoid re-computation on every render)
@@ -830,7 +830,7 @@ const RequestLoggerV2 = forwardRef<RequestLoggerV2Handle, { initialSelectedId?: 
         apiKeyCount: uniqueApiKeys.length,
         runningCount: filteredLogs.filter((l) => l.active === true).length,
       }),
-      [filteredLogs, logs, uniqueApiKeys]
+      [filteredLogs, logs, uniqueApiKeys],
     );
 
     return (
@@ -1327,7 +1327,7 @@ const RequestLoggerV2 = forwardRef<RequestLoggerV2Handle, { initialSelectedId?: 
                                     onClick={(e) => {
                                       e.stopPropagation();
                                       const parent = groupedLogs.find(
-                                        (g) => g.correlationId === log.correlationId && !g.isRetry
+                                        (g) => g.correlationId === log.correlationId && !g.isRetry,
                                       );
                                       if (parent) openDetail(parent);
                                     }}
@@ -1620,7 +1620,7 @@ const RequestLoggerV2 = forwardRef<RequestLoggerV2Handle, { initialSelectedId?: 
         )}
       </div>
     );
-  }
+  },
 );
 
 RequestLoggerV2.displayName = "RequestLoggerV2";

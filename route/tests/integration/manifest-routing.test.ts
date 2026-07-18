@@ -57,7 +57,7 @@ test("full manifest routing flow overhead is minimal", async () => {
   const avgMs = elapsed / 100;
   assert.ok(
     avgMs < 1,
-    `Average manifest routing overhead should be < 1ms, got ${avgMs.toFixed(2)}ms`
+    `Average manifest routing overhead should be < 1ms, got ${avgMs.toFixed(2)}ms`,
   );
 });
 

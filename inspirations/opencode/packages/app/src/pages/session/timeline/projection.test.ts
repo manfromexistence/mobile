@@ -1,7 +1,7 @@
-import { describe, expect, test } from "bun:test"
-import type { PartGroup } from "@opencode-ai/session-ui/message-part"
-import { reuseTimelineRows } from "./row-reconciliation"
-import { TimelineRow } from "./timeline-row"
+import { describe, expect, test } from "bun:test";
+import type { PartGroup } from "@opencode-ai/session-ui/message-part";
+import { reuseTimelineRows } from "./row-reconciliation";
+import { TimelineRow } from "./timeline-row";
 
 const context = (key: string, partIDs: string[], userMessageID = "user-1") =>
   new TimelineRow.AssistantPart({
@@ -12,10 +12,11 @@ const context = (key: string, partIDs: string[], userMessageID = "user-1") =>
       refs: partIDs.map((partID) => ({ messageID: "assistant-1", partID })),
     } satisfies PartGroup,
     previousAssistantPart: false,
-  })
+  });
 
-const user = (userMessageID = "user-1") => new TimelineRow.UserMessage({ userMessageID, anchor: true })
-const keys = (rows: TimelineRow.TimelineRow[]) => rows.map(TimelineRow.key)
+const user = (userMessageID = "user-1") =>
+  new TimelineRow.UserMessage({ userMessageID, anchor: true });
+const keys = (rows: TimelineRow.TimelineRow[]) => rows.map(TimelineRow.key);
 
 describe("reuseTimelineRows", () => {
   test.each([
@@ -87,10 +88,12 @@ describe("reuseTimelineRows", () => {
       reused: [],
     },
   ])("$name", ({ previous, rows, expected, reused }) => {
-    const result = reuseTimelineRows([...previous], [...rows])
+    const result = reuseTimelineRows([...previous], [...rows]);
 
-    expect(keys(result)).toEqual([...expected])
-    expect(new Set(keys(result)).size).toBe(result.length)
-    reused.forEach(([resultIndex, previousIndex]) => expect(result[resultIndex]).toBe(previous[previousIndex]))
-  })
-})
+    expect(keys(result)).toEqual([...expected]);
+    expect(new Set(keys(result)).size).toBe(result.length);
+    reused.forEach(([resultIndex, previousIndex]) =>
+      expect(result[resultIndex]).toBe(previous[previousIndex]),
+    );
+  });
+});

@@ -27,7 +27,7 @@ export function toPositiveInteger(value: unknown): number | null {
 export function resolveReasoningBufferedMaxTokens(
   modelStr: string,
   currentMaxTokens: unknown,
-  options: { enabled?: boolean } = {}
+  options: { enabled?: boolean } = {},
 ): number | null {
   if (options.enabled === false) return null;
 

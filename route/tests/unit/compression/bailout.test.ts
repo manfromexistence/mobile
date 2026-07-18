@@ -73,7 +73,7 @@ function makeLowGainEngine(id = LOW_GAIN_ENGINE_ID): CompressionEngine {
       const messages = (body.messages as Array<{ role: string; content: string }>) ?? [];
       // Tag the user message; drop any padding (non-user) content so the body shrinks.
       const next = messages.map((m) =>
-        m.role === "user" ? { ...m, content: m.content + "|low" } : { ...m, content: "" }
+        m.role === "user" ? { ...m, content: m.content + "|low" } : { ...m, content: "" },
       );
       return {
         body: { ...body, messages: next },
@@ -100,7 +100,7 @@ const highGainEngine: CompressionEngine = {
     const messages = (body.messages as Array<{ role: string; content: string }>) ?? [];
     // Tag the user message; drop any padding (non-user) content so the body shrinks.
     const next = messages.map((m) =>
-      m.role === "user" ? { ...m, content: m.content + "|high" } : { ...m, content: "" }
+      m.role === "user" ? { ...m, content: m.content + "|high" } : { ...m, content: "" },
     );
     return {
       body: { ...body, messages: next },
@@ -199,7 +199,7 @@ describe("TV1 — stacked pipeline bail-out discipline (OPT-IN)", () => {
       assert.equal(result.stats?.fallbackApplied, true, "throw must set fallbackApplied");
       assert.ok(
         result.stats?.validationErrors?.some((e) => e.includes(THROW_ENGINE_ID)),
-        "throwing engine must be recorded in validationErrors"
+        "throwing engine must be recorded in validationErrors",
       );
     });
 
@@ -210,7 +210,7 @@ describe("TV1 — stacked pipeline bail-out discipline (OPT-IN)", () => {
       const result = applyStackedCompression(
         body,
         pipeline(THROW_ENGINE_ID, HIGH_GAIN_ENGINE_ID),
-        BAILOUT_ON
+        BAILOUT_ON,
       );
 
       // high-gain engine appends "|high"
@@ -244,7 +244,7 @@ describe("TV1 — stacked pipeline bail-out discipline (OPT-IN)", () => {
       const result = applyStackedCompression(
         body,
         pipeline(LOW_GAIN_ENGINE_ID, HIGH_GAIN_ENGINE_ID),
-        BAILOUT_ON
+        BAILOUT_ON,
       );
 
       // "|low" should be absent; "|high" should be present
@@ -290,7 +290,7 @@ describe("TV1 — stacked pipeline bail-out discipline (OPT-IN)", () => {
       const result = await applyStackedCompressionAsync(
         body,
         pipeline(LOW_GAIN_ASYNC_ID),
-        BAILOUT_ON
+        BAILOUT_ON,
       );
 
       assert.equal(userContent(result), "hello");
@@ -303,7 +303,7 @@ describe("TV1 — stacked pipeline bail-out discipline (OPT-IN)", () => {
       const result = await applyStackedCompressionAsync(
         body,
         pipeline(LOW_GAIN_ASYNC_ID),
-        BAILOUT_OFF
+        BAILOUT_OFF,
       );
 
       assert.equal(userContent(result), "hello|low");

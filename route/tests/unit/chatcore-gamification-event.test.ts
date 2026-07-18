@@ -49,13 +49,13 @@ after(() => {
 
 test("missing apiKeyId is a no-op and never throws", async () => {
   await assert.doesNotReject(
-    emitRequestGamificationEvent({ apiKeyId: null, model: "m", provider: "p" })
+    emitRequestGamificationEvent({ apiKeyId: null, model: "m", provider: "p" }),
   );
   await assert.doesNotReject(
-    emitRequestGamificationEvent({ apiKeyId: undefined, model: "m", provider: "p" })
+    emitRequestGamificationEvent({ apiKeyId: undefined, model: "m", provider: "p" }),
   );
   await assert.doesNotReject(
-    emitRequestGamificationEvent({ apiKeyId: "", model: "m", provider: "p" })
+    emitRequestGamificationEvent({ apiKeyId: "", model: "m", provider: "p" }),
   );
 });
 
@@ -69,6 +69,6 @@ test("valid apiKeyId awards a 'request' XP audit row (fire-and-forget)", async (
 
 test("never throws even when the emit path runs fully", async () => {
   await assert.doesNotReject(
-    emitRequestGamificationEvent({ apiKeyId: "gamify-key-2", model: null, provider: null })
+    emitRequestGamificationEvent({ apiKeyId: "gamify-key-2", model: null, provider: null }),
   );
 });

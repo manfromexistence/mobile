@@ -1,33 +1,30 @@
-import type { ThemeLoader, ThemeResolver } from './createThemeResolver';
-import type { ThemeLike } from './types';
+import type { ThemeLoader, ThemeResolver } from "./createThemeResolver";
+import type { ThemeLike } from "./types";
 
 export interface ThemeDescriptor<TTheme extends ThemeLike = ThemeLike> {
   name: string;
   load: ThemeLoader<TTheme>;
-  colorScheme?: 'light' | 'dark';
+  colorScheme?: "light" | "dark";
   collection?: string;
   displayName?: string;
 }
 
 export interface ThemeCollectionFilter {
   collection?: string;
-  colorScheme?: 'light' | 'dark';
+  colorScheme?: "light" | "dark";
 }
 
 export type ThemeCollectionComparator<TTheme extends ThemeLike = ThemeLike> = (
   a: ThemeDescriptor<TTheme>,
-  b: ThemeDescriptor<TTheme>
+  b: ThemeDescriptor<TTheme>,
 ) => number;
 
 export interface ThemeCollectionSource<TTheme extends ThemeLike = ThemeLike> {
-  getThemes(
-    options?: ThemeCollectionFilter
-  ): readonly ThemeDescriptor<TTheme>[];
+  getThemes(options?: ThemeCollectionFilter): readonly ThemeDescriptor<TTheme>[];
 }
 
-export interface ThemeCollection<
-  TTheme extends ThemeLike = ThemeLike,
-> extends ThemeCollectionSource<TTheme> {
+export interface ThemeCollection<TTheme extends ThemeLike = ThemeLike>
+  extends ThemeCollectionSource<TTheme> {
   getTheme(name: string): ThemeDescriptor<TTheme> | undefined;
   getThemeNames(options?: ThemeCollectionFilter): readonly string[];
   hasTheme(name: string): boolean;
@@ -54,9 +51,7 @@ export function createThemeCollection<TTheme extends ThemeLike>(options: {
     const themes = isThemeCollectionSource(entry) ? entry.getThemes() : [entry];
     for (const descriptor of themes) {
       if (seen.has(descriptor.name)) {
-        throw new Error(
-          `Theme collection already contains theme "${descriptor.name}"`
-        );
+        throw new Error(`Theme collection already contains theme "${descriptor.name}"`);
       }
       seen.add(descriptor.name);
       descriptors.push(descriptor);
@@ -67,32 +62,24 @@ export function createThemeCollection<TTheme extends ThemeLike>(options: {
   // orderBy() return new collections instead of mutating this list.
   const allThemes = Object.freeze([...descriptors]);
   const lightThemes = Object.freeze(
-    allThemes.filter((descriptor) => descriptor.colorScheme === 'light')
+    allThemes.filter((descriptor) => descriptor.colorScheme === "light"),
   );
   const darkThemes = Object.freeze(
-    allThemes.filter((descriptor) => descriptor.colorScheme === 'dark')
+    allThemes.filter((descriptor) => descriptor.colorScheme === "dark"),
   );
-  const themesByName = new Map(
-    allThemes.map((descriptor) => [descriptor.name, descriptor])
-  );
-  const allNames = Object.freeze(
-    allThemes.map((descriptor) => descriptor.name)
-  );
-  const lightNames = Object.freeze(
-    lightThemes.map((descriptor) => descriptor.name)
-  );
-  const darkNames = Object.freeze(
-    darkThemes.map((descriptor) => descriptor.name)
-  );
+  const themesByName = new Map(allThemes.map((descriptor) => [descriptor.name, descriptor]));
+  const allNames = Object.freeze(allThemes.map((descriptor) => descriptor.name));
+  const lightNames = Object.freeze(lightThemes.map((descriptor) => descriptor.name));
+  const darkNames = Object.freeze(darkThemes.map((descriptor) => descriptor.name));
 
   function filteredThemes(
-    filterOptions?: ThemeCollectionFilter
+    filterOptions?: ThemeCollectionFilter,
   ): readonly ThemeDescriptor<TTheme>[] {
     if (filterOptions == null) return allThemes;
     const { colorScheme, collection } = filterOptions;
     if (collection == null) {
-      if (colorScheme === 'light') return lightThemes;
-      if (colorScheme === 'dark') return darkThemes;
+      if (colorScheme === "light") return lightThemes;
+      if (colorScheme === "dark") return darkThemes;
       return allThemes;
     }
     return allThemes.filter((descriptor) => {
@@ -110,8 +97,8 @@ export function createThemeCollection<TTheme extends ThemeLike>(options: {
     },
     getThemeNames(namesOptions) {
       if (namesOptions?.collection == null) {
-        if (namesOptions?.colorScheme === 'light') return lightNames;
-        if (namesOptions?.colorScheme === 'dark') return darkNames;
+        if (namesOptions?.colorScheme === "light") return lightNames;
+        if (namesOptions?.colorScheme === "dark") return darkNames;
         return allNames;
       }
       return filteredThemes(namesOptions).map((descriptor) => descriptor.name);
@@ -135,9 +122,7 @@ export function createThemeCollection<TTheme extends ThemeLike>(options: {
       const pickedNames = new Set<string>();
       for (const name of names) {
         if (pickedNames.has(name)) {
-          throw new Error(
-            `Theme collection pick already includes theme "${name}"`
-          );
+          throw new Error(`Theme collection pick already includes theme "${name}"`);
         }
         pickedNames.add(name);
 
@@ -158,31 +143,29 @@ export function createThemeCollection<TTheme extends ThemeLike>(options: {
 }
 
 function getCollectionEntries<TTheme extends ThemeLike>(
-  input: ThemeCollectionInput<TTheme>
+  input: ThemeCollectionInput<TTheme>,
 ): Iterable<ThemeCollectionEntry<TTheme>> {
   if (isThemeCollectionEntry(input)) return [input];
   return input;
 }
 
 function isThemeCollectionEntry<TTheme extends ThemeLike>(
-  input: ThemeCollectionInput<TTheme>
+  input: ThemeCollectionInput<TTheme>,
 ): input is ThemeCollectionEntry<TTheme> {
   return isThemeCollectionSource(input) || isThemeDescriptor(input);
 }
 
 function isThemeDescriptor<TTheme extends ThemeLike>(
-  input: ThemeCollectionInput<TTheme>
+  input: ThemeCollectionInput<TTheme>,
 ): input is ThemeDescriptor<TTheme> {
   return (
-    typeof (input as ThemeDescriptor<TTheme>).name === 'string' &&
-    typeof (input as ThemeDescriptor<TTheme>).load === 'function'
+    typeof (input as ThemeDescriptor<TTheme>).name === "string" &&
+    typeof (input as ThemeDescriptor<TTheme>).load === "function"
   );
 }
 
 function isThemeCollectionSource<TTheme extends ThemeLike>(
-  entry: ThemeCollectionInput<TTheme>
+  entry: ThemeCollectionInput<TTheme>,
 ): entry is ThemeCollectionSource<TTheme> {
-  return (
-    typeof (entry as ThemeCollectionSource<TTheme>).getThemes === 'function'
-  );
+  return typeof (entry as ThemeCollectionSource<TTheme>).getThemes === "function";
 }

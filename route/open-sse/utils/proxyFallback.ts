@@ -42,7 +42,7 @@ type ProxyFallbackTestHooks = {
   testSingleProxy?: (
     proxyUrl: string,
     targetUrl: string,
-    timeoutMs?: number
+    timeoutMs?: number,
   ) => Promise<{ ok: boolean; latencyMs: number | null }>;
 };
 
@@ -68,10 +68,9 @@ export function __setProxyFallbackTestHooks(hooks: ProxyFallbackTestHooks | null
  * Build a full proxy URL string from a proxy record's fields.
  */
 function proxyRecordToUrl(proxy: ProxyShape): string {
-  const auth =
-    proxy.username
-      ? `${encodeURIComponent(proxy.username)}:${encodeURIComponent(proxy.password || "")}@`
-      : "";
+  const auth = proxy.username
+    ? `${encodeURIComponent(proxy.username)}:${encodeURIComponent(proxy.password || "")}@`
+    : "";
   return `${proxy.type}://${auth}${proxy.host}:${proxy.port}`;
 }
 
@@ -113,7 +112,7 @@ function resolveEnvProxyUrl(targetUrl: string): string | null {
               .split("*")
               .map((s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
               .join(".*") +
-            "$"
+            "$",
         );
         return re.test(hostname!);
       }
@@ -228,7 +227,7 @@ export async function getProxyCandidates(targetUrl?: string): Promise<string[]> 
 export async function testSingleProxy(
   proxyUrl: string,
   targetUrl: string,
-  timeoutMs = 3000
+  timeoutMs = 3000,
 ): Promise<{ ok: boolean; latencyMs: number | null }> {
   const start = Date.now();
 
@@ -266,7 +265,7 @@ export async function testSingleProxy(
  */
 export async function testProxiesAgainstTarget(
   targetUrl: string,
-  proxyUrls: string[]
+  proxyUrls: string[],
 ): Promise<Array<{ proxyUrl: string; ok: boolean; latencyMs: number | null }>> {
   if (proxyUrls.length === 0) return [];
 
@@ -274,13 +273,11 @@ export async function testProxiesAgainstTarget(
     proxyUrls.map(async (proxyUrl) => {
       const result = await testSingleProxy(proxyUrl, targetUrl);
       return { proxyUrl, ...result };
-    })
+    }),
   );
 
   return results.map((r) =>
-    r.status === "fulfilled"
-      ? r.value
-      : { proxyUrl: "unknown", ok: false, latencyMs: null }
+    r.status === "fulfilled" ? r.value : { proxyUrl: "unknown", ok: false, latencyMs: null },
   );
 }
 
@@ -302,7 +299,7 @@ export async function testProxiesAgainstTarget(
  */
 export async function findWorkingProxy(
   targetHostname: string,
-  targetUrl: string
+  targetUrl: string,
 ): Promise<string | null> {
   if (!targetHostname) return null;
   const cacheKey = cacheKeyForTarget(targetHostname, targetUrl);
@@ -320,7 +317,7 @@ export async function findWorkingProxy(
 
   // Collect candidates
   const candidates = await (proxyFallbackTestHooks?.getProxyCandidates ?? getProxyCandidates)(
-    targetUrl
+    targetUrl,
   );
   if (candidates.length === 0) {
     return null;
@@ -331,15 +328,13 @@ export async function findWorkingProxy(
     candidates.map(async (proxyUrl) => {
       const { ok } = await (proxyFallbackTestHooks?.testSingleProxy ?? testSingleProxy)(
         proxyUrl,
-        targetUrl
+        targetUrl,
       );
       return { proxyUrl, ok };
-    })
+    }),
   );
 
-  const working = results.find(
-    (r) => r.status === "fulfilled" && r.value.ok
-  );
+  const working = results.find((r) => r.status === "fulfilled" && r.value.ok);
 
   if (working && working.status === "fulfilled") {
     const proxyUrl = working.value.proxyUrl;
@@ -373,9 +368,7 @@ export async function findWorkingProxy(
  * @param _connectionId  Optional connection ID (reserved for future use).
  * @returns A proxy resolution result with level "autoSelect", or null.
  */
-export async function selectWorkingProxyFallback(
-  _connectionId?: string
-): Promise<{
+export async function selectWorkingProxyFallback(_connectionId?: string): Promise<{
   proxy: { type: string; host: string; port: number; username: string; password: string } | null;
   level: string;
   levelId: string | null;

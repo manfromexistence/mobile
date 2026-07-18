@@ -100,7 +100,7 @@ function hasEncryptedCredentials(dataDir) {
                OR refresh_token LIKE 'enc:v1:%'
                OR api_key LIKE 'enc:v1:%'
                OR id_token LIKE 'enc:v1:%'
-            LIMIT 1`
+            LIMIT 1`,
         )
         .get();
       return !!row;
@@ -291,7 +291,7 @@ export function syncEnv({ rootDir, quiet = false, scope = "full" } = {}) {
           log(
             `⚠️  ${key} NOT generated — encrypted credentials exist in DB. ` +
               `Restore your previous key via ~/.omniroute/server.env, ~/.omniroute/.env, ` +
-              `or the STORAGE_ENCRYPTION_KEY environment variable.`
+              `or the STORAGE_ENCRYPTION_KEY environment variable.`,
           );
           continue;
         }
@@ -305,7 +305,7 @@ export function syncEnv({ rootDir, quiet = false, scope = "full" } = {}) {
 
       writeFileSync(envPath, content, "utf8");
       log(
-        `✨ Created .env from .env.example (${exampleEntries.size} keys, ${generated} secrets generated)`
+        `✨ Created .env from .env.example (${exampleEntries.size} keys, ${generated} secrets generated)`,
       );
       return { created: true, added: exampleEntries.size };
     }
@@ -338,13 +338,13 @@ export function syncEnv({ rootDir, quiet = false, scope = "full" } = {}) {
       log(
         `⚠️  ${entry.key} NOT generated — encrypted credentials exist in DB. ` +
           `Restore your previous key via ~/.omniroute/server.env, ~/.omniroute/.env, ` +
-          `or the STORAGE_ENCRYPTION_KEY environment variable.`
+          `or the STORAGE_ENCRYPTION_KEY environment variable.`,
       );
       continue;
     }
     appendLines.push(`${entry.key}=${entry.value}`);
     log(
-      `${entry.generated ? "✨" : "📦"} ${entry.key}${entry.generated ? " (auto-generated)" : ""}`
+      `${entry.generated ? "✨" : "📦"} ${entry.key}${entry.generated ? " (auto-generated)" : ""}`,
     );
   }
 

@@ -1,17 +1,17 @@
-import { Config, ConfigProvider, Context, Effect, Layer, Option } from "effect"
-import { ConfigService } from "@/effect/config-service"
+import { Config, ConfigProvider, Context, Effect, Layer, Option } from "effect";
+import { ConfigService } from "@/effect/config-service";
 
-const bool = (name: string) => Config.boolean(name).pipe(Config.withDefault(false))
+const bool = (name: string) => Config.boolean(name).pipe(Config.withDefault(false));
 const positiveInteger = (name: string) =>
   Config.number(name).pipe(
     Config.map((value) => (Number.isInteger(value) && value > 0 ? value : undefined)),
     Config.orElse(() => Config.succeed(undefined)),
-  )
-const experimental = bool("OPENCODE_EXPERIMENTAL")
+  );
+const experimental = bool("OPENCODE_EXPERIMENTAL");
 const enabledByExperimental = (name: string) =>
   Config.all({ experimental, enabled: Config.boolean(name).pipe(Config.option) }).pipe(
     Config.map((flags) => Option.getOrElse(flags.enabled, () => flags.experimental)),
-  )
+  );
 
 export class Service extends ConfigService.Service<Service>()("@opencode/RuntimeFlags", {
   autoShare: bool("OPENCODE_AUTO_SHARE"),
@@ -40,7 +40,9 @@ export class Service extends ConfigService.Service<Service>()("@opencode/Runtime
   enableExperimentalModels: bool("OPENCODE_ENABLE_EXPERIMENTAL_MODELS"),
   enableQuestionTool: bool("OPENCODE_ENABLE_QUESTION_TOOL"),
   experimentalReferences: enabledByExperimental("OPENCODE_EXPERIMENTAL_REFERENCES"),
-  experimentalBackgroundSubagents: enabledByExperimental("OPENCODE_EXPERIMENTAL_BACKGROUND_SUBAGENTS"),
+  experimentalBackgroundSubagents: enabledByExperimental(
+    "OPENCODE_EXPERIMENTAL_BACKGROUND_SUBAGENTS",
+  ),
   experimentalLspTy: bool("OPENCODE_EXPERIMENTAL_LSP_TY"),
   experimentalLspTool: enabledByExperimental("OPENCODE_EXPERIMENTAL_LSP_TOOL"),
   experimentalOxfmt: enabledByExperimental("OPENCODE_EXPERIMENTAL_OXFMT"),
@@ -55,23 +57,27 @@ export class Service extends ConfigService.Service<Service>()("@opencode/Runtime
   client: Config.string("OPENCODE_CLIENT").pipe(Config.withDefault("cli")),
 }) {}
 
-export type Info = Context.Service.Shape<typeof Service>
+export type Info = Context.Service.Shape<typeof Service>;
 
 const emptyConfigLayer = Service.layer.pipe(
   Layer.provide(ConfigProvider.layer(ConfigProvider.fromUnknown({}))),
   Layer.orDie,
-)
+);
 
 export const layer = (overrides: Partial<Info> = {}) =>
   Layer.effect(
     Service,
     Effect.gen(function* () {
-      const flags = yield* Service
-      return Service.of({ ...flags, ...overrides })
+      const flags = yield* Service;
+      return Service.of({ ...flags, ...overrides });
     }),
-  ).pipe(Layer.provide(emptyConfigLayer))
+  ).pipe(Layer.provide(emptyConfigLayer));
 
-export const node = LayerNode.make({ service: Service, layer: Service.layer.pipe(Layer.orDie), deps: [] })
+export const node = LayerNode.make({
+  service: Service,
+  layer: Service.layer.pipe(Layer.orDie),
+  deps: [],
+});
 
-export * as RuntimeFlags from "./runtime-flags"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
+export * as RuntimeFlags from "./runtime-flags";
+import { LayerNode } from "@opencode-ai/core/effect/layer-node";

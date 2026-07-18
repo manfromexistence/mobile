@@ -1,4 +1,4 @@
-import { FLATTENED_PREFIX } from '../constants';
+import { FLATTENED_PREFIX } from "../constants";
 
 /**
  * Sort comparator for file tree children.
@@ -8,7 +8,7 @@ import { FLATTENED_PREFIX } from '../constants';
 export type ChildrenComparator = (
   a: string,
   b: string,
-  isFolder: (path: string) => boolean
+  isFolder: (path: string) => boolean,
 ) => number;
 
 export type ChildrenSortOption = ChildrenComparator | false;
@@ -34,14 +34,11 @@ function stripFlattenedPrefix(path: string): string {
  */
 function getNameFromPath(path: string): string {
   const actualPath = stripFlattenedPrefix(path);
-  const lastSlash = actualPath.lastIndexOf('/');
+  const lastSlash = actualPath.lastIndexOf("/");
   return lastSlash >= 0 ? actualPath.slice(lastSlash + 1) : actualPath;
 }
 
-function isFolderPath(
-  path: string,
-  isFolder: (path: string) => boolean
-): boolean {
+function isFolderPath(path: string, isFolder: (path: string) => boolean): boolean {
   if (isFlattenedPath(path)) {
     return true; // Flattened nodes are always folders
   }
@@ -64,11 +61,7 @@ export const alphabeticalChildrenComparator: ChildrenComparator = (a, b) => {
  * 2. Dot-prefixed (hidden) items before others within each group
  * 3. Case-insensitive alphabetical within each subgroup
  */
-export const defaultChildrenComparator: ChildrenComparator = (
-  a,
-  b,
-  isFolder
-) => {
+export const defaultChildrenComparator: ChildrenComparator = (a, b, isFolder) => {
   const aIsFolder = isFolderPath(a, isFolder);
   const bIsFolder = isFolderPath(b, isFolder);
 
@@ -107,7 +100,7 @@ export function sortChildren(
   children: string[],
   isFolder: (path: string) => boolean,
   comparator: ChildrenSortOption = defaultChildrenComparator,
-  parentPathLength?: number
+  parentPathLength?: number,
 ): string[] {
   if (children.length <= 1) {
     return children.slice();

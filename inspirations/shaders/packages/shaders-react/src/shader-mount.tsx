@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, forwardRef, useState } from 'react';
+import { useEffect, useRef, forwardRef, useState } from "react";
 import {
   ShaderMount as ShaderMountVanilla,
   emptyPixel,
   type PaperShaderElement,
   type ShaderMotionParams,
   type ShaderMountUniforms,
-} from '@paper-design/shaders';
-import { useMergeRefs } from './use-merge-refs.js';
-import { setMinImageSize } from './set-min-image-size.js';
+} from "@paper-design/shaders";
+import { useMergeRefs } from "./use-merge-refs.js";
+import { setMinImageSize } from "./set-min-image-size.js";
 
 /**
  * React Shader Mount can also accept strings as uniform values, which will assumed to be URLs and loaded as images
@@ -21,7 +21,9 @@ interface ShaderMountUniformsReact {
   [key: string]: string | boolean | number | number[] | number[][] | HTMLImageElement | undefined;
 }
 
-export interface ShaderMountProps extends Omit<React.ComponentProps<'div'>, 'color' | 'ref'>, ShaderMotionParams {
+export interface ShaderMountProps
+  extends Omit<React.ComponentProps<"div">, "color" | "ref">,
+    ShaderMotionParams {
   ref?: React.Ref<PaperShaderElement>;
   fragmentShader: string;
   uniforms: ShaderMountUniformsReact;
@@ -36,7 +38,7 @@ export interface ShaderMountProps extends Omit<React.ComponentProps<'div'>, 'col
   height?: string | number;
 }
 
-export interface ShaderComponentProps extends Omit<React.ComponentProps<'div'>, 'color' | 'ref'> {
+export interface ShaderComponentProps extends Omit<React.ComponentProps<"div">, "color" | "ref"> {
   ref?: React.Ref<PaperShaderElement>;
   minPixelRatio?: number;
   maxPixelCount?: number;
@@ -49,14 +51,16 @@ export interface ShaderComponentProps extends Omit<React.ComponentProps<'div'>, 
 }
 
 /** Parse the provided uniforms, turning URL strings into loaded images */
-async function processUniforms(uniformsProp: ShaderMountUniformsReact): Promise<ShaderMountUniforms> {
+async function processUniforms(
+  uniformsProp: ShaderMountUniformsReact,
+): Promise<ShaderMountUniforms> {
   const processedUniforms = {} as ShaderMountUniforms;
   const imageLoadPromises: Promise<void>[] = [];
 
   const isValidUrl = (url: string): boolean => {
     try {
       // Handle absolute paths
-      if (url.startsWith('/')) return true;
+      if (url.startsWith("/")) return true;
       // Check if it's a valid URL
       new URL(url);
       return true;
@@ -67,7 +71,7 @@ async function processUniforms(uniformsProp: ShaderMountUniformsReact): Promise<
 
   const isExternalUrl = (url: string): boolean => {
     try {
-      if (url.startsWith('/')) return false;
+      if (url.startsWith("/")) return false;
       const urlObject = new URL(url, window.location.origin);
       return urlObject.origin !== window.location.origin;
     } catch {
@@ -76,7 +80,7 @@ async function processUniforms(uniformsProp: ShaderMountUniformsReact): Promise<
   };
 
   Object.entries(uniformsProp).forEach(([key, value]) => {
-    if (typeof value === 'string') {
+    if (typeof value === "string") {
       // Use a transparent pixel for empty strings
       const url = value || emptyPixel;
 
@@ -89,7 +93,7 @@ async function processUniforms(uniformsProp: ShaderMountUniformsReact): Promise<
       const imagePromise = new Promise<void>((resolve, reject) => {
         const img = new Image();
         if (isExternalUrl(url)) {
-          img.crossOrigin = 'anonymous';
+          img.crossOrigin = "anonymous";
         }
         img.onload = () => {
           setMinImageSize(img);
@@ -120,117 +124,122 @@ async function processUniforms(uniformsProp: ShaderMountUniformsReact): Promise<
  * A React component that mounts a shader and updates its uniforms as the component's props change
  * If you pass a string as a uniform value, it will be assumed to be a URL and attempted to be loaded as an image
  */
-export const ShaderMount: React.FC<ShaderMountProps> = forwardRef<PaperShaderElement, ShaderMountProps>(
-  function ShaderMountImpl(
-    {
-      fragmentShader,
-      uniforms: uniformsProp,
-      webGlContextAttributes,
-      speed = 0,
-      frame = 0,
-      width,
-      height,
-      minPixelRatio,
-      maxPixelCount,
-      mipmaps,
-      style,
-      ...divProps
-    },
-    forwardedRef
-  ) {
-    const [isInitialized, setIsInitialized] = useState(false);
-    const divRef = useRef<PaperShaderElement>(null);
-    const shaderMountRef: React.RefObject<ShaderMountVanilla | null> = useRef<ShaderMountVanilla>(null);
-    const webGlContextAttributesRef = useRef(webGlContextAttributes);
+export const ShaderMount: React.FC<ShaderMountProps> = forwardRef<
+  PaperShaderElement,
+  ShaderMountProps
+>(function ShaderMountImpl(
+  {
+    fragmentShader,
+    uniforms: uniformsProp,
+    webGlContextAttributes,
+    speed = 0,
+    frame = 0,
+    width,
+    height,
+    minPixelRatio,
+    maxPixelCount,
+    mipmaps,
+    style,
+    ...divProps
+  },
+  forwardedRef,
+) {
+  const [isInitialized, setIsInitialized] = useState(false);
+  const divRef = useRef<PaperShaderElement>(null);
+  const shaderMountRef: React.RefObject<ShaderMountVanilla | null> =
+    useRef<ShaderMountVanilla>(null);
+  const webGlContextAttributesRef = useRef(webGlContextAttributes);
 
-    // Initialize the ShaderMountVanilla
-    useEffect(() => {
-      const initShader = async () => {
-        const uniforms = await processUniforms(uniformsProp);
+  // Initialize the ShaderMountVanilla
+  useEffect(() => {
+    const initShader = async () => {
+      const uniforms = await processUniforms(uniformsProp);
 
-        if (divRef.current && !shaderMountRef.current) {
-          shaderMountRef.current = new ShaderMountVanilla(
-            divRef.current,
-            fragmentShader,
-            uniforms,
-            webGlContextAttributesRef.current,
-            speed,
-            frame,
-            minPixelRatio,
-            maxPixelCount,
-            mipmaps
-          );
+      if (divRef.current && !shaderMountRef.current) {
+        shaderMountRef.current = new ShaderMountVanilla(
+          divRef.current,
+          fragmentShader,
+          uniforms,
+          webGlContextAttributesRef.current,
+          speed,
+          frame,
+          minPixelRatio,
+          maxPixelCount,
+          mipmaps,
+        );
 
-          setIsInitialized(true);
-        }
-      };
+        setIsInitialized(true);
+      }
+    };
 
-      initShader();
+    initShader();
 
-      return () => {
-        shaderMountRef.current?.dispose();
-        shaderMountRef.current = null;
-      };
-    }, [fragmentShader]);
+    return () => {
+      shaderMountRef.current?.dispose();
+      shaderMountRef.current = null;
+    };
+  }, [fragmentShader]);
 
-    // Uniforms
-    useEffect(() => {
-      let isStale = false;
+  // Uniforms
+  useEffect(() => {
+    let isStale = false;
 
-      const updateUniforms = async () => {
-        const uniforms = await processUniforms(uniformsProp);
+    const updateUniforms = async () => {
+      const uniforms = await processUniforms(uniformsProp);
 
-        if (!isStale) {
-          // We only use the freshest uniforms otherwise we can get into race conditions
-          // if some uniforms (images!) take longer to load in subsequent effect runs.
-          shaderMountRef.current?.setUniforms(uniforms);
-        }
-      };
+      if (!isStale) {
+        // We only use the freshest uniforms otherwise we can get into race conditions
+        // if some uniforms (images!) take longer to load in subsequent effect runs.
+        shaderMountRef.current?.setUniforms(uniforms);
+      }
+    };
 
-      updateUniforms();
+    updateUniforms();
 
-      return () => {
-        isStale = true;
-      };
-    }, [uniformsProp, isInitialized]);
+    return () => {
+      isStale = true;
+    };
+  }, [uniformsProp, isInitialized]);
 
-    // Speed
-    useEffect(() => {
-      shaderMountRef.current?.setSpeed(speed);
-    }, [speed, isInitialized]);
+  // Speed
+  useEffect(() => {
+    shaderMountRef.current?.setSpeed(speed);
+  }, [speed, isInitialized]);
 
-    // Max Pixel Count
-    useEffect(() => {
-      shaderMountRef.current?.setMaxPixelCount(maxPixelCount);
-    }, [maxPixelCount, isInitialized]);
+  // Max Pixel Count
+  useEffect(() => {
+    shaderMountRef.current?.setMaxPixelCount(maxPixelCount);
+  }, [maxPixelCount, isInitialized]);
 
-    // Min Pixel Ratio
-    useEffect(() => {
-      shaderMountRef.current?.setMinPixelRatio(minPixelRatio);
-    }, [minPixelRatio, isInitialized]);
+  // Min Pixel Ratio
+  useEffect(() => {
+    shaderMountRef.current?.setMinPixelRatio(minPixelRatio);
+  }, [minPixelRatio, isInitialized]);
 
-    // Frame
-    useEffect(() => {
-      shaderMountRef.current?.setFrame(frame);
-    }, [frame, isInitialized]);
+  // Frame
+  useEffect(() => {
+    shaderMountRef.current?.setFrame(frame);
+  }, [frame, isInitialized]);
 
-    const mergedRef = useMergeRefs([divRef, forwardedRef]) as unknown as React.RefObject<HTMLDivElement>;
-    return (
-      <div
-        ref={mergedRef}
-        style={
-          width !== undefined || height !== undefined
-            ? {
-                width: typeof width === 'string' && isNaN(+width) === false ? +width : width,
-                height: typeof height === 'string' && isNaN(+height) === false ? +height : height,
-                ...style,
-              }
-            : style
-        }
-        {...divProps}
-      />
-    );
-  }
-);
+  const mergedRef = useMergeRefs([
+    divRef,
+    forwardedRef,
+  ]) as unknown as React.RefObject<HTMLDivElement>;
+  return (
+    <div
+      ref={mergedRef}
+      style={
+        width !== undefined || height !== undefined
+          ? {
+              width: typeof width === "string" && isNaN(+width) === false ? +width : width,
+              height: typeof height === "string" && isNaN(+height) === false ? +height : height,
+              ...style,
+            }
+          : style
+      }
+      {...divProps}
+    />
+  );
+});
 
-ShaderMount.displayName = 'ShaderMount';
+ShaderMount.displayName = "ShaderMount";

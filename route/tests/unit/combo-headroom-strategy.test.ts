@@ -50,11 +50,11 @@ test("orderTargetsByHeadroom: prefers the connection with the most free capacity
   const ordered = await orderTargetsByHeadroom(
     [target("conn-busy"), target("conn-free")],
     "combo-x",
-    silentLog
+    silentLog,
   );
   assert.deepEqual(
     ordered.map((t) => t.connectionId),
-    ["conn-free", "conn-busy"]
+    ["conn-free", "conn-busy"],
   );
 });
 
@@ -72,11 +72,11 @@ test("orderTargetsByHeadroom: weekly window can bind even when 5h is low", async
   const ordered = await orderTargetsByHeadroom(
     [target("conn-a"), target("conn-b")],
     "combo-x",
-    silentLog
+    silentLog,
   );
   assert.deepEqual(
     ordered.map((t) => t.connectionId),
-    ["conn-a", "conn-b"]
+    ["conn-a", "conn-b"],
   );
 });
 
@@ -85,11 +85,11 @@ test("orderTargetsByHeadroom: equal saturation preserves priority order (stable)
   const ordered = await orderTargetsByHeadroom(
     [target("c1"), target("c2"), target("c3")],
     "combo-x",
-    silentLog
+    silentLog,
   );
   assert.deepEqual(
     ordered.map((t) => t.connectionId),
-    ["c1", "c2", "c3"]
+    ["c1", "c2", "c3"],
   );
 });
 
@@ -97,15 +97,11 @@ test("orderTargetsByHeadroom: saturation fetcher throwing fails open (keeps orde
   __setHeadroomSaturationFetcherForTests(async () => {
     throw new Error("boom");
   });
-  const ordered = await orderTargetsByHeadroom(
-    [target("c1"), target("c2")],
-    "combo-x",
-    silentLog
-  );
+  const ordered = await orderTargetsByHeadroom([target("c1"), target("c2")], "combo-x", silentLog);
   // Fail-open: the orderer catches and returns the original target order.
   assert.deepEqual(
     ordered.map((t) => t.connectionId),
-    ["c1", "c2"]
+    ["c1", "c2"],
   );
 });
 
@@ -120,7 +116,7 @@ test("orderTargetsByHeadroom: single / empty target is a no-op without calling t
   const orderedOne = await orderTargetsByHeadroom(one, "combo-x", silentLog);
   assert.deepEqual(
     orderedOne.map((t) => t.connectionId),
-    ["solo"]
+    ["solo"],
   );
   assert.equal(called, 0, "fetcher must not be called for <=1 target");
 });
@@ -135,11 +131,11 @@ test("orderTargetsByHeadroom: fetches each unique connection's saturation once (
   const ordered = await orderTargetsByHeadroom(
     [target("hot"), target("cool")],
     "combo-x",
-    silentLog
+    silentLog,
   );
   assert.deepEqual(
     ordered.map((t) => t.connectionId),
-    ["cool", "hot"]
+    ["cool", "hot"],
   );
   // Exactly one 5h + one weekly probe per unique connection (2 conns → 4 calls).
   calls.sort();

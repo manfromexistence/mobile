@@ -31,22 +31,22 @@ const EXAMPLE_BODIES: Record<string, string> = {
       stream: true,
     },
     null,
-    2
+    2,
   ),
   "/api/v1/embeddings": JSON.stringify(
     { model: "openai/text-embedding-3-small", input: "Hello world" },
     null,
-    2
+    2,
   ),
   "/api/v1/images/generations": JSON.stringify(
     { model: "openai/gpt-image-2", prompt: "A sunset over mountains", n: 1 },
     null,
-    2
+    2,
   ),
   "/api/v1/responses": JSON.stringify(
     { model: "openai/gpt-4o-mini", input: "What is OmniRoute?" },
     null,
-    2
+    2,
   ),
   "/api/v1/messages": JSON.stringify(
     {
@@ -55,7 +55,7 @@ const EXAMPLE_BODIES: Record<string, string> = {
       messages: [{ role: "user", content: "Hi" }],
     },
     null,
-    2
+    2,
   ),
   "/api/v1/messages/count_tokens": JSON.stringify(
     {
@@ -63,12 +63,12 @@ const EXAMPLE_BODIES: Record<string, string> = {
       messages: [{ role: "user", content: "Hi" }],
     },
     null,
-    2
+    2,
   ),
   "/api/v1/moderations": JSON.stringify(
     { model: "openai/omni-moderation-latest", input: "Sample text" },
     null,
-    2
+    2,
   ),
   "/api/v1/rerank": JSON.stringify(
     {
@@ -77,13 +77,13 @@ const EXAMPLE_BODIES: Record<string, string> = {
       documents: ["Document 1", "Document 2"],
     },
     null,
-    2
+    2,
   ),
   "/api/v1/audio/transcriptions": "",
   "/api/v1/audio/speech": JSON.stringify(
     { model: "openai/tts-1", input: "Hello world", voice: "alloy" },
     null,
-    2
+    2,
   ),
 };
 
@@ -98,7 +98,7 @@ export function ApiExplorerClient() {
 
   const filteredEndpoints = useMemo(
     () => (filterTag ? OPENAPI_ENDPOINTS.filter((e) => e.tag === filterTag) : OPENAPI_ENDPOINTS),
-    [filterTag]
+    [filterTag],
   );
 
   const handleSelect = useCallback((endpoint: OpenApiEndpoint) => {

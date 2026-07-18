@@ -86,7 +86,7 @@ function sha256(value: string): string {
 
 function projectFiltersTrusted(
   filtersPath: string,
-  trustProjectFilters = false
+  trustProjectFilters = false,
 ): boolean | "changed" {
   if (trustProjectFilters) return true;
   if (process.env.OMNIROUTE_RTK_TRUST_PROJECT_FILTERS === "1") return true;
@@ -224,7 +224,7 @@ export function getRtkFilterCatalog(): Array<
 export function matchRtkFilter(
   text: string,
   command?: string | null,
-  options: RtkFilterLoadOptions = {}
+  options: RtkFilterLoadOptions = {},
 ): RtkFilterDefinition | null {
   const detection = detectCommandType(text, command);
   const detectedCommand = detection.command ?? command ?? "";
@@ -234,10 +234,10 @@ export function matchRtkFilter(
     filters.find(
       (filter) =>
         detectedCommand &&
-        filter.commandPatterns.some((pattern) => cachedMatchPattern(pattern, detectedCommand))
+        filter.commandPatterns.some((pattern) => cachedMatchPattern(pattern, detectedCommand)),
     ) ??
     filters.find((filter) =>
-      filter.matchPatterns.some((pattern) => cachedMatchPattern(pattern, text))
+      filter.matchPatterns.some((pattern) => cachedMatchPattern(pattern, text)),
     ) ??
     filters.find((filter) => filter.commandTypes.includes("generic-output")) ??
     null

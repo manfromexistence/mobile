@@ -1,11 +1,11 @@
 export function prefix(tokens: string[]) {
   for (let len = tokens.length; len > 0; len--) {
-    const prefix = tokens.slice(0, len).join(" ")
-    const arity = ARITY[prefix]
-    if (arity !== undefined) return tokens.slice(0, arity)
+    const prefix = tokens.slice(0, len).join(" ");
+    const arity = ARITY[prefix];
+    if (arity !== undefined) return tokens.slice(0, arity);
   }
-  if (tokens.length === 0) return []
-  return tokens.slice(0, 1)
+  if (tokens.length === 0) return [];
+  return tokens.slice(0, 1);
 }
 
 /* Generated with following prompt:
@@ -158,6 +158,6 @@ const ARITY: Record<string, number> = {
   yarn: 2, // yarn add react
   "yarn dlx": 3, // yarn dlx create-react-app
   "yarn run": 3, // yarn run dev
-}
+};
 
-export * as BashArity from "./arity"
+export * as BashArity from "./arity";

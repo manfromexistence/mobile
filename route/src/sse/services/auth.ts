@@ -208,7 +208,7 @@ function readHeaderValue(
     | Record<string, string | string[] | undefined>
     | null
     | undefined,
-  name: string
+  name: string,
 ): string | null {
   if (!headers) return null;
 
@@ -282,13 +282,13 @@ function getFirstInputText(body: unknown): string | null {
 
 export function extractSessionAffinityKey(
   body: unknown,
-  headers?: Headers | { get?: (name: string) => string | null } | null
+  headers?: Headers | { get?: (name: string) => string | null } | null,
 ): string | null {
   const headerKey = normalizeSessionKey(
     readHeaderValue(headers, "x-codex-session-id") ??
       readHeaderValue(headers, "x-session-id") ??
       readHeaderValue(headers, "x-omniroute-session"),
-    "header"
+    "header",
   );
   if (headerKey) return headerKey;
 
@@ -336,7 +336,7 @@ interface QuotaCacheView {
 
 function normalizeQuotaThreshold(
   value: unknown,
-  fallback = DEFAULT_QUOTA_THRESHOLD_PERCENT
+  fallback = DEFAULT_QUOTA_THRESHOLD_PERCENT,
 ): number {
   const parsed = toNumber(value, fallback);
   return Math.min(MAX_QUOTA_THRESHOLD_PERCENT, Math.max(MIN_QUOTA_THRESHOLD_PERCENT, parsed));
@@ -384,7 +384,7 @@ function applyCodexWindowPolicy(rawWindows: string[], providerSpecificData: Json
 
 function getCodexScopeRateLimitedUntil(
   providerSpecificData: JsonRecord,
-  model: string | null
+  model: string | null,
 ): string | null {
   if (!model) return null;
   const scope = getCodexModelScope(model);
@@ -395,7 +395,7 @@ function getCodexScopeRateLimitedUntil(
 
 function isCodexScopeUnavailable(
   connection: ProviderConnectionView,
-  model: string | null
+  model: string | null,
 ): boolean {
   const until = getCodexScopeRateLimitedUntil(connection.providerSpecificData, model);
   if (!until) return false;
@@ -404,7 +404,7 @@ function isCodexScopeUnavailable(
 
 function getEarliestCodexScopeRateLimitedUntil(
   connections: ProviderConnectionView[],
-  model: string | null
+  model: string | null,
 ): string | null {
   let earliest: string | null = null;
   let earliestMs = Infinity;
@@ -435,7 +435,7 @@ function isTerminalConnectionStatus(connection: ProviderConnectionView): boolean
 function resolveTerminalConnectionStatus(
   status: number,
   result: { permanent?: boolean; creditsExhausted?: boolean },
-  providerErrorType: string | null = null
+  providerErrorType: string | null = null,
 ): string | null {
   if (result.creditsExhausted || status === 402) return "credits_exhausted";
   if (
@@ -459,7 +459,7 @@ function resolveTerminalConnectionStatus(
 
 export function resolveQuotaLimitPolicy(
   provider: string,
-  providerSpecificData: JsonRecord
+  providerSpecificData: JsonRecord,
 ): QuotaLimitPolicy {
   const rawPolicy = asRecord(providerSpecificData.limitPolicy);
   const rawWindows = Array.isArray(rawPolicy.windows) ? rawPolicy.windows : [];
@@ -486,7 +486,7 @@ export function resolveQuotaLimitPolicy(
 export function evaluateQuotaLimitPolicy(
   provider: string,
   connection: ProviderConnectionView,
-  requestedModel: string | null = null
+  requestedModel: string | null = null,
 ): { blocked: boolean; reasons: string[]; resetAt: string | null } {
   const policy = resolveQuotaLimitPolicy(provider, connection.providerSpecificData);
   if (!policy.enabled || policy.windows.length === 0) {
@@ -502,7 +502,7 @@ export function evaluateQuotaLimitPolicy(
     const status = getQuotaWindowStatus(
       connection.id,
       effectiveWindowName,
-      policy.thresholdPercent
+      policy.thresholdPercent,
     );
     if (!status?.reachedThreshold) continue;
     reasons.push(`${effectiveWindowName} usage ${Math.round(status.usedPercentage)}%`);
@@ -559,7 +559,7 @@ function collectPolicyQuotaHeadroomPercentages(
   provider: string,
   connection: ProviderConnectionView,
   policy: QuotaLimitPolicy,
-  requestedModel: string | null
+  requestedModel: string | null,
 ): number[] {
   const percentages: number[] = [];
   const seenWindows = new Set<string>();
@@ -581,7 +581,7 @@ function collectPolicyQuotaHeadroomPercentages(
 function collectCachedQuotaHeadroomPercentages(
   provider: string,
   connection: ProviderConnectionView,
-  requestedModel: string | null
+  requestedModel: string | null,
 ): number[] {
   const quotaEntry = getQuotaCache(connection.id) as QuotaCacheView | null;
   const rawQuotas = quotaEntry?.quotas || {};
@@ -601,14 +601,14 @@ function collectCachedQuotaHeadroomPercentages(
 function getConnectionQuotaHeadroomPercent(
   provider: string,
   connection: ProviderConnectionView,
-  requestedModel: string | null = null
+  requestedModel: string | null = null,
 ): number | null {
   const policy = resolveQuotaLimitPolicy(provider, connection.providerSpecificData);
   const policyPercentages = collectPolicyQuotaHeadroomPercentages(
     provider,
     connection,
     policy,
-    requestedModel
+    requestedModel,
   );
   const percentages =
     policyPercentages.length > 0
@@ -655,14 +655,14 @@ function getConnectionRecencyPenalty(connection: ProviderConnectionView): number
 function getP2CConnectionScore(
   provider: string,
   connection: ProviderConnectionView,
-  requestedModel: string | null = null
+  requestedModel: string | null = null,
 ): { score: number; quotaHeadroomPercent: number | null } {
   const quotaBlocked = evaluateQuotaLimitPolicy(provider, connection, requestedModel).blocked;
   const quotaExhausted = isQuotaExhaustedForRequest(connection.id, provider, requestedModel);
   const quotaHeadroomPercent = getConnectionQuotaHeadroomPercent(
     provider,
     connection,
-    requestedModel
+    requestedModel,
   );
 
   let quotaPenalty = 0;
@@ -691,7 +691,7 @@ function compareP2CConnections(
   provider: string,
   a: ProviderConnectionView,
   b: ProviderConnectionView,
-  requestedModel: string | null = null
+  requestedModel: string | null = null,
 ): number {
   const aScore = getP2CConnectionScore(provider, a, requestedModel);
   const bScore = getP2CConnectionScore(provider, b, requestedModel);
@@ -777,7 +777,7 @@ async function loadNoAuthProviderSpecificData(providerId: string): Promise<JsonR
   try {
     const connectionsRaw = await getProviderConnections({ provider: providerId });
     const connections = (Array.isArray(connectionsRaw) ? connectionsRaw : []).map(
-      toProviderConnection
+      toProviderConnection,
     );
     const hydrated: JsonRecord = {};
     for (const conn of connections) {
@@ -801,7 +801,8 @@ async function loadNoAuthProviderSpecificData(providerId: string): Promise<JsonR
 
 function providerCanUseSyntheticNoAuthFallback(providerId: string): boolean {
   const providerDef = getProviderById(providerId) as
-    AnonymousFallbackProviderDefinition | undefined;
+    | AnonymousFallbackProviderDefinition
+    | undefined;
   const noAuthProviderDef = (
     NOAUTH_PROVIDERS as Record<string, AnonymousFallbackProviderDefinition | undefined>
   )[providerId];
@@ -817,7 +818,7 @@ function providerCanUseSyntheticNoAuthFallback(providerId: string): boolean {
 
 async function maybeSyntheticNoAuthFallback(
   providerId: string,
-  excludedConnectionIds: Set<string>
+  excludedConnectionIds: Set<string>,
 ) {
   if (!providerCanUseSyntheticNoAuthFallback(providerId)) return null;
   if (excludedConnectionIds.has(SYNTHETIC_NOAUTH_CONNECTION_ID)) return null;
@@ -829,7 +830,7 @@ async function maybeSyntheticNoAuthFallback(
 
 function normalizeExcludedConnectionIds(
   excludeConnectionId: string | null,
-  extraExcludedConnectionIds: string[] | null | undefined
+  extraExcludedConnectionIds: string[] | null | undefined,
 ): Set<string> {
   const normalized = new Set<string>();
 
@@ -862,7 +863,7 @@ function buildQuotaPreflightRateLimitedResult(
     id: string;
     quotaPercent?: number;
     resetAt?: string | null;
-  }>
+  }>,
 ) {
   const retryAfter =
     getEarliestFutureDate(blockedByPreflight.map((entry) => entry.resetAt ?? null)) ||
@@ -896,7 +897,7 @@ async function markQuotaPreflightAccountUnavailable(
   provider: string,
   connectionId: string,
   preflight: { quotaPercent?: number; resetAt?: string | null },
-  requestedModel: string | null
+  requestedModel: string | null,
 ): Promise<string> {
   const unavailableUntil = quotaPreflightUnavailableUntil(preflight.resetAt ?? null);
   const percentLabel = Number.isFinite(preflight.quotaPercent)
@@ -1016,7 +1017,7 @@ export async function getProviderCredentials(
   excludeConnectionId: string | null = null,
   allowedConnections: string[] | null = null,
   requestedModel: string | null = null,
-  options: CredentialSelectionOptions = {}
+  options: CredentialSelectionOptions = {},
 ) {
   const selectionLock = createSelectionLock(getSelectionMutexKey(provider, options));
 
@@ -1040,7 +1041,7 @@ export async function getProviderCredentials(
       // Returning null here lets the handler stop after a single attempt.
       const excludedForNoAuth = normalizeExcludedConnectionIds(
         excludeConnectionId,
-        options.excludeConnectionIds
+        options.excludeConnectionIds,
       );
       return await maybeSyntheticNoAuthFallback(resolvedId, excludedForNoAuth);
     }
@@ -1055,7 +1056,7 @@ export async function getProviderCredentials(
         : null;
     const excludedConnectionIds = normalizeExcludedConnectionIds(
       excludeConnectionId,
-      options.excludeConnectionIds
+      options.excludeConnectionIds,
     );
 
     // Fetched early so the session-affinity-pin override (#5903) can consult
@@ -1066,7 +1067,7 @@ export async function getProviderCredentials(
     // Fix #922: Check for aliases (nvidia/nvidia_nim) to ensure credentials are found
     const providersToSearch = await getProviderSearchPool(provider);
     const connectionResults = await Promise.all(
-      providersToSearch.map((p) => getProviderConnections({ provider: p, isActive: true }))
+      providersToSearch.map((p) => getProviderConnections({ provider: p, isActive: true })),
     );
     const connectionsRaw = connectionResults.filter(Array.isArray).flat();
 
@@ -1111,7 +1112,7 @@ export async function getProviderCredentials(
 
     log.debug(
       "AUTH",
-      `${provider} | active=${activeConnectionsCount}, excluded=${excludedConnectionIds.size} (${formatConnectionPrefixesForLog(excludedConnectionIds)}), forcedId=${forcedIdForLog}, blocked_forced=${blockedByForcedConnection}, blocked_allowed=${blockedByAllowedConnections}`
+      `${provider} | active=${activeConnectionsCount}, excluded=${excludedConnectionIds.size} (${formatConnectionPrefixesForLog(excludedConnectionIds)}), forcedId=${forcedIdForLog}, blocked_forced=${blockedByForcedConnection}, blocked_allowed=${blockedByAllowedConnections}`,
     );
     if (provider === "antigravity" && (forcedConnectionId || allowedConnections?.length)) {
       const reasons: string[] = [];
@@ -1126,7 +1127,7 @@ export async function getProviderCredentials(
       // Check all connections (including inactive) to see if rate limited
       // Fix #922: Also search aliases here
       const allConnectionsResults = await Promise.all(
-        providersToSearch.map((p) => getProviderConnections({ provider: p }))
+        providersToSearch.map((p) => getProviderConnections({ provider: p })),
       );
       let allConnections = (allConnectionsResults.filter(Array.isArray).flat() as unknown[])
         .map(toProviderConnection)
@@ -1143,7 +1144,7 @@ export async function getProviderCredentials(
         if (earliest) {
           log.warn(
             "AUTH",
-            `${provider} | all ${allConnections.length} accounts rate limited (${formatRetryAfter(earliest)})`
+            `${provider} | all ${allConnections.length} accounts rate limited (${formatRetryAfter(earliest)})`,
           );
           return {
             allRateLimited: true,
@@ -1155,7 +1156,7 @@ export async function getProviderCredentials(
         allConnections.forEach((c) => {
           log.debug(
             "AUTH",
-            `  → ${c.id?.slice(0, 8)} | isActive=${c.isActive} | rateLimitedUntil=${c.rateLimitedUntil || "none"} | testStatus=${c.testStatus}`
+            `  → ${c.id?.slice(0, 8)} | isActive=${c.isActive} | rateLimitedUntil=${c.rateLimitedUntil || "none"} | testStatus=${c.testStatus}`,
           );
         });
 
@@ -1169,7 +1170,7 @@ export async function getProviderCredentials(
         if (terminalConnections.length === allConnections.length) {
           const syntheticFallback = await maybeSyntheticNoAuthFallback(
             resolvedId,
-            excludedConnectionIds
+            excludedConnectionIds,
           );
           if (syntheticFallback) return syntheticFallback;
 
@@ -1189,7 +1190,7 @@ export async function getProviderCredentials(
       }
       const syntheticFallback = await maybeSyntheticNoAuthFallback(
         resolvedId,
-        excludedConnectionIds
+        excludedConnectionIds,
       );
       if (syntheticFallback) return syntheticFallback;
       log.warn("AUTH", `No credentials for ${provider}`);
@@ -1249,12 +1250,12 @@ export async function getProviderCredentials(
 
     log.debug(
       "AUTH",
-      `${provider} | available: ${availableConnections.length}/${connections.length}`
+      `${provider} | available: ${availableConnections.length}/${connections.length}`,
     );
     if (provider === "antigravity") {
       log.info(
         "AUTH",
-        `${provider} selection candidates model=${requestedModel || "none"}: active=${activeConnectionsCount}, excluded=${excludedConnectionIds.size}, modelLocked=${modelLockedCount}, familyLocked=${familyLockedCount}, eligible=${availableConnections.length}`
+        `${provider} selection candidates model=${requestedModel || "none"}: active=${activeConnectionsCount}, excluded=${excludedConnectionIds.size}, modelLocked=${modelLockedCount}, familyLocked=${familyLockedCount}, eligible=${availableConnections.length}`,
       );
     }
     connections.forEach((c) => {
@@ -1270,19 +1271,19 @@ export async function getProviderCredentials(
       if (excluded || rateLimited) {
         log.debug(
           "AUTH",
-          `  → ${c.id?.slice(0, 8)} | ${excluded ? "excluded" : ""} ${rateLimited ? `rateLimited until ${c.rateLimitedUntil}` : ""}${allowSuppressedConnections && rateLimited ? " (retained for combo live test)" : ""}`
+          `  → ${c.id?.slice(0, 8)} | ${excluded ? "excluded" : ""} ${rateLimited ? `rateLimited until ${c.rateLimitedUntil}` : ""}${allowSuppressedConnections && rateLimited ? " (retained for combo live test)" : ""}`,
         );
       } else if (modelExcluded) {
         log.debug(
           "AUTH",
-          `  → ${c.id?.slice(0, 8)} | excluded by per-account model rule for ${requestedModel}`
+          `  → ${c.id?.slice(0, 8)} | excluded by per-account model rule for ${requestedModel}`,
         );
       } else if (terminalStatus) {
         log.debug(
           "AUTH",
           allowSuppressedConnections
             ? `  → ${c.id?.slice(0, 8)} | retained terminal status=${c.testStatus} for combo live test`
-            : `  → ${c.id?.slice(0, 8)} | skipped terminal status=${c.testStatus}`
+            : `  → ${c.id?.slice(0, 8)} | skipped terminal status=${c.testStatus}`,
         );
       } else if (codexScopeLimited) {
         const scopeUntil = getCodexScopeRateLimitedUntil(c.providerSpecificData, requestedModel);
@@ -1290,7 +1291,7 @@ export async function getProviderCredentials(
           "AUTH",
           allowSuppressedConnections
             ? `  → ${c.id?.slice(0, 8)} | retained codex scope-limited account until ${scopeUntil} for combo live test`
-            : `  → ${c.id?.slice(0, 8)} | codex scope-limited until ${scopeUntil}`
+            : `  → ${c.id?.slice(0, 8)} | codex scope-limited until ${scopeUntil}`,
         );
       } else if (modelLocked) {
         const lockout = getModelLockoutInfo(provider, c.id, requestedModel);
@@ -1298,7 +1299,7 @@ export async function getProviderCredentials(
           "AUTH",
           allowSuppressedConnections
             ? `  → ${c.id?.slice(0, 8)} | retained model lockout for ${requestedModel} (${lockout?.remainingMs || 0}ms remaining) for combo live test`
-            : `  → ${c.id?.slice(0, 8)} | model-locked for ${requestedModel} (${lockout?.remainingMs || 0}ms remaining)`
+            : `  → ${c.id?.slice(0, 8)} | model-locked for ${requestedModel} (${lockout?.remainingMs || 0}ms remaining)`,
         );
       }
     });
@@ -1309,7 +1310,7 @@ export async function getProviderCredentials(
         const codexScopeCooldownMs =
           provider === "codex"
             ? parseFutureDateMs(
-                getCodexScopeRateLimitedUntil(connection.providerSpecificData, requestedModel)
+                getCodexScopeRateLimitedUntil(connection.providerSpecificData, requestedModel),
               )
             : null;
         const modelLockout = requestedModel
@@ -1367,7 +1368,7 @@ export async function getProviderCredentials(
           "AUTH",
           allBlockedByModelCooldown
             ? `${provider} | all ${connections.length} active accounts cooling down for model ${requestedModel} (${formatRetryAfter(earliest)}) | lastErrorCode=${earliestConn?.errorCode}, lastError=${earliestConn?.lastError?.slice(0, 50)}`
-            : `${provider} | all ${connections.length} active accounts rate limited (${formatRetryAfter(earliest)}) | lastErrorCode=${earliestConn?.errorCode}, lastError=${earliestConn?.lastError?.slice(0, 50)}`
+            : `${provider} | all ${connections.length} active accounts rate limited (${formatRetryAfter(earliest)}) | lastErrorCode=${earliestConn?.errorCode}, lastError=${earliestConn?.lastError?.slice(0, 50)}`,
         );
         return {
           allRateLimited: true,
@@ -1382,7 +1383,7 @@ export async function getProviderCredentials(
       }
       const syntheticFallback = await maybeSyntheticNoAuthFallback(
         resolvedId,
-        excludedConnectionIds
+        excludedConnectionIds,
       );
       if (syntheticFallback) return syntheticFallback;
       log.warn("AUTH", `${provider} | all ${connections.length} accounts unavailable`);
@@ -1417,7 +1418,7 @@ export async function getProviderCredentials(
         "AUTH",
         `${provider} | quota policy filtered ${blockedByPolicy.length} account(s): ${blockedByPolicy
           .map((entry) => `${entry.id.slice(0, 8)}(${entry.reasons.join(", ")})`)
-          .join("; ")}`
+          .join("; ")}`,
       );
     }
 
@@ -1440,16 +1441,16 @@ export async function getProviderCredentials(
 
     // Quota-aware: filter out accounts with exhausted quota for the requested scope.
     const withQuota = policyEligibleConnections.filter(
-      (c) => !isQuotaExhaustedForRequest(c.id, provider, requestedModel)
+      (c) => !isQuotaExhaustedForRequest(c.id, provider, requestedModel),
     );
     const exhaustedQuota = policyEligibleConnections.filter((c) =>
-      isQuotaExhaustedForRequest(c.id, provider, requestedModel)
+      isQuotaExhaustedForRequest(c.id, provider, requestedModel),
     );
 
     if (exhaustedQuota.length > 0) {
       log.info(
         "AUTH",
-        `${provider} | quota-aware: ${withQuota.length} with quota, skipping ${exhaustedQuota.length} exhausted`
+        `${provider} | quota-aware: ${withQuota.length} with quota, skipping ${exhaustedQuota.length} exhausted`,
       );
     }
 
@@ -1459,7 +1460,7 @@ export async function getProviderCredentials(
         exhaustedQuota.map((c) => {
           const entry = getQuotaCache(c.id);
           return entry?.nextResetAt || null;
-        })
+        }),
       );
       const earliestResetMs = parseFutureDateMs(earliestResetAt);
       const retryAfter = earliestResetMs
@@ -1482,22 +1483,21 @@ export async function getProviderCredentials(
       { fallbackStrategy?: string; stickyRoundRobinLimit?: number }
     >;
     const providerOverride = providerStrategyOverrides[resolvedId] || {};
-    const strategy =
-      providerOverride.fallbackStrategy || settings.fallbackStrategy || "fill-first";
+    const strategy = providerOverride.fallbackStrategy || settings.fallbackStrategy || "fill-first";
 
     let connection;
     const affinityConnection = await selectSessionAffinityConnection(
       provider,
       options.sessionKey,
       orderedConnections,
-      sessionAffinityTtlMs
+      sessionAffinityTtlMs,
     );
     if (affinityConnection) {
       connection = affinityConnection;
     } else if (options.sessionKey) {
       log.info(
         "AUTH",
-        `session_key=${formatSessionKeyForLog(options.sessionKey)} has no available affinity target`
+        `session_key=${formatSessionKeyForLog(options.sessionKey)} has no available affinity target`,
       );
     }
 
@@ -1507,7 +1507,7 @@ export async function getProviderCredentials(
       const stickyLimit = toNumber(
         providerOverride.stickyRoundRobinLimit ??
           (settings as Record<string, unknown>).stickyRoundRobinLimit,
-        3
+        3,
       );
 
       // If excluding account(s) (fallback scenario), skip sticky logic and go straight to LRU.
@@ -1531,7 +1531,7 @@ export async function getProviderCredentials(
           connection = current;
           log.debug(
             "AUTH",
-            `${provider} round-robin: staying with ${current.id?.slice(0, 8)}... (count=${currentCount}/${stickyLimit})`
+            `${provider} round-robin: staying with ${current.id?.slice(0, 8)}... (count=${currentCount}/${stickyLimit})`,
           );
           // Update lastUsedAt and increment count (await to ensure persistence)
           await updateProviderConnection(connection.id, {
@@ -1556,7 +1556,7 @@ export async function getProviderCredentials(
           connection = sortedByOldest[0];
           log.debug(
             "AUTH",
-            `${provider} round-robin: switching to LRU ${connection.id?.slice(0, 8)}... (current count=${currentCount} >= limit=${stickyLimit} or no lastUsedAt)`
+            `${provider} round-robin: switching to LRU ${connection.id?.slice(0, 8)}... (current count=${currentCount} >= limit=${stickyLimit} or no lastUsedAt)`,
           );
 
           // Update lastUsedAt and reset count to 1 (await to ensure persistence)
@@ -1582,7 +1582,7 @@ export async function getProviderCredentials(
         connection = sortedByOldest[0];
         log.info(
           "AUTH",
-          `${provider} round-robin: FALLBACK MODE - excluded_count=${excludedConnectionIds.size} excluded=${formatConnectionPrefixesForLog(excludedConnectionIds)} picked_lru=${connection.id?.slice(0, 8)}...`
+          `${provider} round-robin: FALLBACK MODE - excluded_count=${excludedConnectionIds.size} excluded=${formatConnectionPrefixesForLog(excludedConnectionIds)} picked_lru=${connection.id?.slice(0, 8)}...`,
         );
 
         // Update lastUsedAt and reset count to 1 (await to ensure persistence)
@@ -1597,7 +1597,7 @@ export async function getProviderCredentials(
       // health instead of defaulting to random-first selection.
       if (candidatePool.length <= 2) {
         connection = [...candidatePool].sort((a, b) =>
-          compareP2CConnections(provider, a, b, requestedModel)
+          compareP2CConnections(provider, a, b, requestedModel),
         )[0];
       } else {
         const i =
@@ -1627,7 +1627,7 @@ export async function getProviderCredentials(
       // Cost Optimized: sort by priority ascending (lower = cheaper/preferred)
       // Future: can be enhanced with actual cost data per provider
       const sorted = [...orderedConnections].sort(
-        (a, b) => (a.priority || 999) - (b.priority || 999)
+        (a, b) => (a.priority || 999) - (b.priority || 999),
       );
       connection = sorted[0];
     } else if (strategy === "strict-random") {
@@ -1643,12 +1643,13 @@ export async function getProviderCredentials(
     if (provider === "antigravity" && connection) {
       log.info(
         "AUTH",
-        `${provider} selected account=${connection.id?.slice(0, 8)}... eligible=${orderedConnections.length} excluded=${excludedConnectionIds.size}`
+        `${provider} selected account=${connection.id?.slice(0, 8)}... eligible=${orderedConnections.length} excluded=${excludedConnectionIds.size}`,
       );
     }
 
     const apiKeyHealth = connection.providerSpecificData?.apiKeyHealth as
-      Record<string, KeyHealth> | undefined;
+      | Record<string, KeyHealth>
+      | undefined;
     if (apiKeyHealth) {
       syncHealthFromDB(connection.id, apiKeyHealth);
     }
@@ -1699,7 +1700,7 @@ export async function getProviderCredentialsWithQuotaPreflight(
   excludeConnectionId: string | null = null,
   allowedConnections: string[] | null = null,
   requestedModel: string | null = null,
-  options: CredentialSelectionOptions = {}
+  options: CredentialSelectionOptions = {},
 ) {
   if (options.bypassQuotaPolicy === true) {
     return getProviderCredentials(
@@ -1707,7 +1708,7 @@ export async function getProviderCredentialsWithQuotaPreflight(
       excludeConnectionId,
       allowedConnections,
       requestedModel,
-      options
+      options,
     );
   }
 
@@ -1718,7 +1719,7 @@ export async function getProviderCredentialsWithQuotaPreflight(
   }> = [];
   const excludedConnectionIds = normalizeExcludedConnectionIds(
     excludeConnectionId,
-    options.excludeConnectionIds
+    options.excludeConnectionIds,
   );
 
   const resilience = resolveResilienceSettings(await getCachedSettings());
@@ -1743,7 +1744,7 @@ export async function getProviderCredentialsWithQuotaPreflight(
       {
         ...options,
         excludeConnectionIds: Array.from(excludedConnectionIds),
-      }
+      },
     );
 
     if (!credentials) {
@@ -1821,7 +1822,7 @@ export async function getProviderCredentialsWithQuotaPreflight(
         const lookupWindowNames =
           provider === "codex"
             ? uniqueWindows(
-                [windowName, toCodexBaseQuotaWindowName(windowName)].filter(Boolean) as string[]
+                [windowName, toCodexBaseQuotaWindowName(windowName)].filter(Boolean) as string[],
               )
             : [windowName];
         for (const lookupWindowName of lookupWindowNames) {
@@ -1847,7 +1848,7 @@ export async function getProviderCredentialsWithQuotaPreflight(
       provider,
       connectionId,
       preflight,
-      requestedModel
+      requestedModel,
     );
     blockedByPreflight.push({
       id: connectionId,
@@ -1862,7 +1863,7 @@ export async function getProviderCredentialsWithQuotaPreflight(
         Number.isFinite(preflight.quotaPercent)
           ? ` at ${Math.round((preflight.quotaPercent as number) * 100)}%`
           : ""
-      } until ${unavailableUntil}`
+      } until ${unavailableUntil}`,
     );
   }
 }
@@ -1887,7 +1888,7 @@ export async function markAccountUnavailable(
     persistUnavailableState?: boolean;
     /** Caller is the combo engine — it records its own model-level lockouts. */
     isCombo?: boolean;
-  } = {}
+  } = {},
 ) {
   const currentMutex = markMutexes.get(connectionId) || Promise.resolve();
   let resolveMutex: (() => void) | undefined;
@@ -1895,7 +1896,7 @@ export async function markAccountUnavailable(
     connectionId,
     new Promise((resolve) => {
       resolveMutex = resolve;
-    })
+    }),
   );
 
   try {
@@ -1913,7 +1914,7 @@ export async function markAccountUnavailable(
     if (conn && isTerminalConnectionStatus(conn)) {
       log.info(
         "AUTH",
-        `${connectionId.slice(0, 8)} terminal status=${conn.testStatus}, skipping cooldown overwrite`
+        `${connectionId.slice(0, 8)} terminal status=${conn.testStatus}, skipping cooldown overwrite`,
       );
       return { shouldFallback: true, cooldownMs: 0 };
     }
@@ -1931,7 +1932,7 @@ export async function markAccountUnavailable(
     if (Number.isFinite(existingCooldownMs) && existingCooldownMs > Date.now()) {
       log.info(
         "AUTH",
-        `${connectionId.slice(0, 8)} already marked unavailable (until ${conn?.rateLimitedUntil}), skipping duplicate mark`
+        `${connectionId.slice(0, 8)} already marked unavailable (until ${conn?.rateLimitedUntil}), skipping duplicate mark`,
       );
       return {
         shouldFallback: true,
@@ -1943,12 +1944,12 @@ export async function markAccountUnavailable(
     if (provider === "codex" && model) {
       const scopeRateLimitedUntil = getCodexScopeRateLimitedUntil(
         conn?.providerSpecificData || {},
-        model
+        model,
       );
       if (scopeRateLimitedUntil && new Date(scopeRateLimitedUntil).getTime() > Date.now()) {
         log.info(
           "AUTH",
-          `${connectionId.slice(0, 8)} already scope-limited for ${getCodexModelScope(model)} (until ${scopeRateLimitedUntil}), skipping duplicate mark`
+          `${connectionId.slice(0, 8)} already scope-limited for ${getCodexModelScope(model)} (until ${scopeRateLimitedUntil}), skipping duplicate mark`,
         );
         return {
           shouldFallback: true,
@@ -1971,13 +1972,14 @@ export async function markAccountUnavailable(
       model,
       provider,
       null,
-      effectiveProviderProfile
+      effectiveProviderProfile,
     );
 
     // Read passthroughModels from connection config (user-configured per-model quota)
     const connProviderSpecificData = (conn?.providerSpecificData as Record<string, unknown>) || {};
     const connectionPassthroughModels = connProviderSpecificData.passthroughModels as
-      boolean | undefined;
+      | boolean
+      | undefined;
     // #2997: per-connection opt-out of the TRANSIENT connection cooldown. When set,
     // a recoverable failure records lastError/backoff but does NOT cool the
     // connection, so getProviderCredentials keeps selecting it. Terminal states
@@ -2020,7 +2022,7 @@ export async function markAccountUnavailable(
         }).catch(() => {});
         log.info(
           "AUTH",
-          `Server error for ${provider}:${model} — ${status} ${reason} (no model lockout, connection stays active for sibling models)`
+          `Server error for ${provider}:${model} — ${status} ${reason} (no model lockout, connection stays active for sibling models)`,
         );
         return { shouldFallback: true, cooldownMs: 0 };
       }
@@ -2050,7 +2052,7 @@ export async function markAccountUnavailable(
               ? fallbackResult.cooldownMs
               : (fallbackResult.quotaResetHintMs ?? null),
           maxCooldownMs: mlSettings.maxCooldownMs,
-        }
+        },
       );
       // Update last error for observability (without changing terminal status)
       updateProviderConnection(connectionId, {
@@ -2061,7 +2063,7 @@ export async function markAccountUnavailable(
       }).catch(() => {});
       log.info(
         "AUTH",
-        `Model-only lockout for ${provider}:${model} — ${status} ${reason} ${Math.ceil(lockout.cooldownMs / 1000)}s (failureCount=${lockout.failureCount}, connection stays active)`
+        `Model-only lockout for ${provider}:${model} — ${status} ${reason} ${Math.ceil(lockout.cooldownMs / 1000)}s (failureCount=${lockout.failureCount}, connection stays active)`,
       );
       return { shouldFallback: true, cooldownMs: lockout.cooldownMs };
     }
@@ -2079,7 +2081,7 @@ export async function markAccountUnavailable(
         status,
         effectiveProviderProfile?.baseCooldownMs ?? COOLDOWN_MS.serviceUnavailable,
         effectiveProviderProfile,
-        { maxCooldownMs: mlSettings.maxCooldownMs }
+        { maxCooldownMs: mlSettings.maxCooldownMs },
       );
       updateProviderConnection(connectionId, {
         lastErrorType: "forbidden",
@@ -2089,7 +2091,7 @@ export async function markAccountUnavailable(
       }).catch(() => {});
       log.info(
         "AUTH",
-        `Mode-only lockout for ${provider}:${model} — 403 forbidden ${Math.ceil(lockout.cooldownMs / 1000)}s (connection stays active)`
+        `Mode-only lockout for ${provider}:${model} — 403 forbidden ${Math.ceil(lockout.cooldownMs / 1000)}s (connection stays active)`,
       );
       return { shouldFallback: true, cooldownMs: lockout.cooldownMs };
     }
@@ -2097,7 +2099,7 @@ export async function markAccountUnavailable(
     const terminalStatus = resolveTerminalConnectionStatus(
       status,
       result as { permanent?: boolean; creditsExhausted?: boolean },
-      providerErrorType
+      providerErrorType,
     );
     const cooldownMs = terminalStatus ? 0 : rawCooldownMs;
 
@@ -2118,7 +2120,7 @@ export async function markAccountUnavailable(
           exactCooldownMs:
             fallbackResult.usedUpstreamRetryHint === true ? fallbackResult.cooldownMs : null,
           maxCooldownMs: mlSettings.maxCooldownMs,
-        }
+        },
       );
       updateProviderConnection(connectionId, {
         lastErrorType: "forbidden",
@@ -2128,7 +2130,7 @@ export async function markAccountUnavailable(
       }).catch(() => {});
       log.info(
         "AUTH",
-        `Model-only lockout for ${provider}:${model} — 403 forbidden ${Math.ceil(lockout.cooldownMs / 1000)}s (per-model quota provider, connection stays active)`
+        `Model-only lockout for ${provider}:${model} — 403 forbidden ${Math.ceil(lockout.cooldownMs / 1000)}s (per-model quota provider, connection stays active)`,
       );
       return { shouldFallback: true, cooldownMs: lockout.cooldownMs };
     }
@@ -2138,7 +2140,8 @@ export async function markAccountUnavailable(
     // doesn't exist or isn't available for this account — it should NOT lock
     // out the entire connection.
     const connBaseUrl = (conn?.providerSpecificData as Record<string, unknown>)?.baseUrl as
-      string | undefined;
+      | string
+      | undefined;
 
     if (isLocalProvider(connBaseUrl) && status === 404 && provider && model) {
       const lockout = recordModelLockoutFailure(
@@ -2151,7 +2154,7 @@ export async function markAccountUnavailable(
           ? (effectiveProviderProfile?.baseCooldownMs ?? COOLDOWN_MS.notFoundLocal)
           : COOLDOWN_MS.notFoundLocal,
         effectiveProviderProfile,
-        { maxCooldownMs: mlSettings.maxCooldownMs }
+        { maxCooldownMs: mlSettings.maxCooldownMs },
       );
       updateProviderConnection(connectionId, {
         lastErrorType: "not_found",
@@ -2161,7 +2164,7 @@ export async function markAccountUnavailable(
       }).catch(() => {});
       log.info(
         "AUTH",
-        `Model-only lockout for ${provider}:${model} — 404 not_found ${Math.ceil(lockout.cooldownMs / 1000)}s (failureCount=${lockout.failureCount}, connection stays active)`
+        `Model-only lockout for ${provider}:${model} — 404 not_found ${Math.ceil(lockout.cooldownMs / 1000)}s (failureCount=${lockout.failureCount}, connection stays active)`,
       );
       return { shouldFallback: true, cooldownMs: lockout.cooldownMs };
     }
@@ -2250,7 +2253,7 @@ export async function markAccountUnavailable(
           await updateProviderConnection(connectionId, { isActive: false });
           log.info(
             "AUTH",
-            `Auto-disabled ${connectionId.slice(0, 8)} — permanent ban detected (autoDisableBannedAccounts=true)`
+            `Auto-disabled ${connectionId.slice(0, 8)} — permanent ban detected (autoDisableBannedAccounts=true)`,
           );
         }
       } catch (e) {
@@ -2276,7 +2279,7 @@ export async function markAccountUnavailable(
  */
 export async function clearAccountError(
   connectionId: string,
-  currentConnection: Partial<RecoverableConnectionState>
+  currentConnection: Partial<RecoverableConnectionState>,
 ) {
   // Only update if currently has error status
   const hasError =
@@ -2317,7 +2320,7 @@ export interface RecoveredStateExpectation {
 
 export async function clearRecoveredProviderState(
   credentials: Partial<RecoverableConnectionState> | null,
-  expectedState?: RecoveredStateExpectation
+  expectedState?: RecoveredStateExpectation,
 ): Promise<{ applied: boolean }> {
   if (!credentials?.connectionId) return { applied: false };
   if (expectedState) {
@@ -2325,7 +2328,7 @@ export async function clearRecoveredProviderState(
     if (!applied) {
       log.info(
         "AUTH",
-        `Skipped recovery clear for ${credentials.connectionId.slice(0, 8)} — state changed concurrently (CAS miss)`
+        `Skipped recovery clear for ${credentials.connectionId.slice(0, 8)} — state changed concurrently (CAS miss)`,
       );
       return { applied: false };
     }

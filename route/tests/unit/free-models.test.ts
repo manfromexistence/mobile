@@ -34,7 +34,7 @@ test("isFreeModel: model id ending in :free is free", () => {
 test("isFreeModel: zero prompt+completion price is free", () => {
   assert.equal(
     isFreeModel("openrouter", { id: "x/y", pricing: { prompt: "0", completion: "0" } }),
-    true
+    true,
   );
 });
 
@@ -44,7 +44,7 @@ test("isFreeModel: a priced model is NOT free", () => {
       id: "openai/gpt-4o",
       pricing: { prompt: "0.0000025", completion: "0.00001" },
     }),
-    false
+    false,
   );
 });
 
@@ -58,10 +58,7 @@ test("isFreeModel: a model id listed in the free catalog for that provider is fr
 });
 
 test("selectModelsForImport: passthrough when importFreeOnly is false", () => {
-  const models = [
-    { id: "a:free" },
-    { id: "b", pricing: { prompt: "0.01", completion: "0.02" } },
-  ];
+  const models = [{ id: "a:free" }, { id: "b", pricing: { prompt: "0.01", completion: "0.02" } }];
   const result = selectModelsForImport("openrouter", models, false);
   assert.equal(result.models.length, 2);
   assert.equal(result.freeFilterEmpty, false);
@@ -76,7 +73,7 @@ test("selectModelsForImport: keeps only free models when importFreeOnly is true"
   const result = selectModelsForImport("openrouter", models, true);
   assert.deepEqual(
     result.models.map((m) => m.id),
-    ["free-one:free", "free-two"]
+    ["free-one:free", "free-two"],
   );
   assert.equal(result.freeFilterEmpty, false);
 });
@@ -104,7 +101,7 @@ test("sortModelsFreeFirst: free models come before paid ones", () => {
   const sorted = sortModelsFreeFirst(items, { isFree: (m) => m.isFree, key: (m) => m.id });
   assert.deepEqual(
     sorted.map((m) => m.id),
-    ["a-free", "b-free", "m-paid", "z-paid"]
+    ["a-free", "b-free", "m-paid", "z-paid"],
   );
 });
 
@@ -115,7 +112,7 @@ test("sortModelsFreeFirst: deterministic (alphabetical) within each group, regar
       { id: "a", isFree: true },
       { id: "b", isFree: true },
     ],
-    { isFree: (m) => m.isFree, key: (m) => m.id }
+    { isFree: (m) => m.isFree, key: (m) => m.id },
   );
   // Re-sorting a shuffled copy yields the same order — stable across refetch/re-render.
   const b = sortModelsFreeFirst(
@@ -124,10 +121,16 @@ test("sortModelsFreeFirst: deterministic (alphabetical) within each group, regar
       { id: "c", isFree: true },
       { id: "a", isFree: true },
     ],
-    { isFree: (m) => m.isFree, key: (m) => m.id }
+    { isFree: (m) => m.isFree, key: (m) => m.id },
   );
-  assert.deepEqual(a.map((m) => m.id), ["a", "b", "c"]);
-  assert.deepEqual(b.map((m) => m.id), ["a", "b", "c"]);
+  assert.deepEqual(
+    a.map((m) => m.id),
+    ["a", "b", "c"],
+  );
+  assert.deepEqual(
+    b.map((m) => m.id),
+    ["a", "b", "c"],
+  );
 });
 
 test("sortModelsFreeFirst: does not mutate the input array", () => {
@@ -137,5 +140,8 @@ test("sortModelsFreeFirst: does not mutate the input array", () => {
   ];
   const before = items.map((m) => m.id);
   sortModelsFreeFirst(items, { isFree: (m) => m.isFree, key: (m) => m.id });
-  assert.deepEqual(items.map((m) => m.id), before);
+  assert.deepEqual(
+    items.map((m) => m.id),
+    before,
+  );
 });

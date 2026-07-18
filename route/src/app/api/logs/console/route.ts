@@ -142,7 +142,7 @@ export async function GET(req: NextRequest) {
   } catch (err: any) {
     return NextResponse.json(
       { error: sanitizeErrorMessage(err?.message) || "Failed to read logs" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

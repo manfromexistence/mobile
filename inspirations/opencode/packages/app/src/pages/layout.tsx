@@ -10,85 +10,97 @@ import {
   Show,
   untrack,
   type Accessor,
-} from "solid-js"
-import { makeEventListener } from "@solid-primitives/event-listener"
-import { useNavigate, useParams } from "@solidjs/router"
-import { useLayout, LocalProject } from "@/context/layout"
-import { useServerSync } from "@/context/server-sync"
-import { Persist, persisted } from "@/utils/persist"
-import { base64Encode } from "@opencode-ai/core/util/encode"
-import { decode64 } from "@/utils/base64"
-import { ResizeHandle } from "@opencode-ai/ui/resize-handle"
-import { Button } from "@opencode-ai/ui/button"
-import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { Tooltip } from "@opencode-ai/ui/tooltip"
-import { DropdownMenu } from "@opencode-ai/ui/dropdown-menu"
-import { Dialog } from "@opencode-ai/ui/dialog"
-import { getFilename } from "@opencode-ai/core/util/path"
-import { Session } from "@opencode-ai/sdk/v2/client"
-import { usePlatform } from "@/context/platform"
-import { useSettings } from "@/context/settings"
-import { createStore, produce, reconcile } from "solid-js/store"
-import { DragDropProvider, DragDropSensors, DragOverlay, SortableProvider, closestCenter } from "@thisbeyond/solid-dnd"
-import type { DragEvent } from "@thisbeyond/solid-dnd"
-import { useProviders } from "@/hooks/use-providers"
-import { toaster } from "@opencode-ai/ui/toast"
-import { setV2Toast, showToast, ToastRegion } from "@/utils/toast"
-import { useServerSDK } from "@/context/server-sdk"
-import { clearWorkspaceTerminals } from "@/context/terminal"
-import { pickSessionCacheEvictions } from "@/context/global-sync/session-cache"
-import { useNotification } from "@/context/notification"
-import { usePermission } from "@/context/permission"
-import { Binary } from "@opencode-ai/core/util/binary"
-import { retry } from "@opencode-ai/core/util/retry"
-import { playSoundById } from "@/utils/sound"
-import { createAim } from "@/utils/aim"
-import { setNavigate } from "@/utils/notification-click"
-import { Worktree as WorktreeState } from "@/utils/worktree"
-import { setSessionHandoff } from "@/pages/session/handoff"
-import { SessionRouteKey, SessionStateKey } from "@/utils/server-scope"
+} from "solid-js";
+import { makeEventListener } from "@solid-primitives/event-listener";
+import { useNavigate, useParams } from "@solidjs/router";
+import { useLayout, LocalProject } from "@/context/layout";
+import { useServerSync } from "@/context/server-sync";
+import { Persist, persisted } from "@/utils/persist";
+import { base64Encode } from "@opencode-ai/core/util/encode";
+import { decode64 } from "@/utils/base64";
+import { ResizeHandle } from "@opencode-ai/ui/resize-handle";
+import { Button } from "@opencode-ai/ui/button";
+import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon";
+import { IconButton } from "@opencode-ai/ui/icon-button";
+import { Tooltip } from "@opencode-ai/ui/tooltip";
+import { DropdownMenu } from "@opencode-ai/ui/dropdown-menu";
+import { Dialog } from "@opencode-ai/ui/dialog";
+import { getFilename } from "@opencode-ai/core/util/path";
+import { Session } from "@opencode-ai/sdk/v2/client";
+import { usePlatform } from "@/context/platform";
+import { useSettings } from "@/context/settings";
+import { createStore, produce, reconcile } from "solid-js/store";
+import {
+  DragDropProvider,
+  DragDropSensors,
+  DragOverlay,
+  SortableProvider,
+  closestCenter,
+} from "@thisbeyond/solid-dnd";
+import type { DragEvent } from "@thisbeyond/solid-dnd";
+import { useProviders } from "@/hooks/use-providers";
+import { toaster } from "@opencode-ai/ui/toast";
+import { setV2Toast, showToast, ToastRegion } from "@/utils/toast";
+import { useServerSDK } from "@/context/server-sdk";
+import { clearWorkspaceTerminals } from "@/context/terminal";
+import { pickSessionCacheEvictions } from "@/context/global-sync/session-cache";
+import { useNotification } from "@/context/notification";
+import { usePermission } from "@/context/permission";
+import { Binary } from "@opencode-ai/core/util/binary";
+import { retry } from "@opencode-ai/core/util/retry";
+import { playSoundById } from "@/utils/sound";
+import { createAim } from "@/utils/aim";
+import { setNavigate } from "@/utils/notification-click";
+import { Worktree as WorktreeState } from "@/utils/worktree";
+import { setSessionHandoff } from "@/pages/session/handoff";
+import { SessionRouteKey, SessionStateKey } from "@/utils/server-scope";
 
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { useTheme, type ColorScheme } from "@opencode-ai/ui/theme/context"
-import { useCommand, type CommandOption } from "@/context/command"
-import { ConstrainDragXAxis, getDraggableId } from "@/utils/solid-dnd"
-import { DebugBar } from "@/components/debug-bar"
-import { HelpButton } from "@/components/help-button"
-import { Titlebar, type TitlebarUpdate } from "@/components/titlebar"
-import { useDirectoryPicker } from "@/components/directory-picker"
-import { ServerConnection, useServer } from "@/context/server"
-import { useLanguage, type Locale } from "@/context/language"
-import { pathKey } from "@/utils/path-key"
+import { useDialog } from "@opencode-ai/ui/context/dialog";
+import { useTheme, type ColorScheme } from "@opencode-ai/ui/theme/context";
+import { useCommand, type CommandOption } from "@/context/command";
+import { ConstrainDragXAxis, getDraggableId } from "@/utils/solid-dnd";
+import { DebugBar } from "@/components/debug-bar";
+import { HelpButton } from "@/components/help-button";
+import { Titlebar, type TitlebarUpdate } from "@/components/titlebar";
+import { useDirectoryPicker } from "@/components/directory-picker";
+import { ServerConnection, useServer } from "@/context/server";
+import { useLanguage, type Locale } from "@/context/language";
+import { pathKey } from "@/utils/path-key";
 import {
   displayName,
   effectiveWorkspaceOrder,
   errorMessage,
   latestRootSession,
   sortedRootSessions,
-} from "./layout/helpers"
+} from "./layout/helpers";
 import {
   collectNewSessionDeepLinks,
   collectOpenProjectDeepLinks,
   deepLinkEvent,
   drainPendingDeepLinks,
-} from "./layout/deep-links"
-import { createInlineEditorController } from "./layout/inline-editor"
+} from "./layout/deep-links";
+import { createInlineEditorController } from "./layout/inline-editor";
 import {
   LocalWorkspace,
   SortableWorkspace,
   WorkspaceDragOverlay,
   type WorkspaceSidebarContext,
-} from "./layout/sidebar-workspace"
-import { ProjectDragOverlay, SortableProject, type ProjectSidebarContext } from "./layout/sidebar-project"
-import { SidebarContent } from "./layout/sidebar-shell"
+} from "./layout/sidebar-workspace";
+import {
+  ProjectDragOverlay,
+  SortableProject,
+  type ProjectSidebarContext,
+} from "./layout/sidebar-project";
+import { SidebarContent } from "./layout/sidebar-shell";
 
 export default function LegacyLayout(props: ParentProps) {
-  const serverSDK = useServerSDK()
+  const serverSDK = useServerSDK();
   const [store, setStore, , ready] = persisted(
     Persist.serverGlobal(serverSDK().scope, "layout.page", ["layout.page.v1"]),
     createStore({
-      lastProjectSession: {} as { [directory: string]: { directory: string; id: string; at: number } },
+      lastProjectSession: {} as {
+        [directory: string]: { directory: string; id: string; at: number };
+      },
       activeProject: undefined as string | undefined,
       activeWorkspace: undefined as string | undefined,
       workspaceOrder: {} as Record<string, string[]>,
@@ -97,54 +109,59 @@ export default function LegacyLayout(props: ParentProps) {
       workspaceExpanded: {} as Record<string, boolean>,
       gettingStartedDismissed: false,
     }),
-  )
+  );
 
-  const pageReady = createMemo(() => ready())
+  const pageReady = createMemo(() => ready());
 
-  let scrollContainerRef: HTMLDivElement | undefined
-  let dialogRun = 0
-  let dialogDead = false
+  let scrollContainerRef: HTMLDivElement | undefined;
+  let dialogRun = 0;
+  let dialogDead = false;
 
-  const params = useParams()
-  const serverSync = useServerSync()
-  const layout = useLayout()
-  const layoutReady = createMemo(() => layout.ready())
-  const platform = usePlatform()
-  const pickDirectory = useDirectoryPicker()
-  const settings = useSettings()
-  const server = useServer()
-  const notification = useNotification()
-  const permission = usePermission()
-  const navigate = useNavigate()
-  setNavigate(navigate)
-  const providers = useProviders()
-  const dialog = useDialog()
-  const command = useCommand()
-  const theme = useTheme()
-  const language = useLanguage()
-  createEffect(() => setV2Toast(false))
-  const initialDirectory = decode64(params.dir)
+  const params = useParams();
+  const serverSync = useServerSync();
+  const layout = useLayout();
+  const layoutReady = createMemo(() => layout.ready());
+  const platform = usePlatform();
+  const pickDirectory = useDirectoryPicker();
+  const settings = useSettings();
+  const server = useServer();
+  const notification = useNotification();
+  const permission = usePermission();
+  const navigate = useNavigate();
+  setNavigate(navigate);
+  const providers = useProviders();
+  const dialog = useDialog();
+  const command = useCommand();
+  const theme = useTheme();
+  const language = useLanguage();
+  createEffect(() => setV2Toast(false));
+  const initialDirectory = decode64(params.dir);
   const route = createMemo(() => {
-    const slug = params.dir
-    if (!slug) return { slug, dir: "" }
-    const dir = decode64(slug)
-    if (!dir) return { slug, dir: "" }
-    const store = serverSync().peek(dir, { bootstrap: false })
+    const slug = params.dir;
+    if (!slug) return { slug, dir: "" };
+    const dir = decode64(slug);
+    if (!dir) return { slug, dir: "" };
+    const store = serverSync().peek(dir, { bootstrap: false });
     return {
       slug,
       store,
       dir: store[0].path.directory || dir,
-    }
-  })
-  const availableThemeEntries = createMemo(() => theme.ids().map((id) => [id, theme.themes()[id]] as const))
-  const colorSchemeOrder: ColorScheme[] = ["system", "light", "dark"]
-  const colorSchemeKey: Record<ColorScheme, "theme.scheme.system" | "theme.scheme.light" | "theme.scheme.dark"> = {
+    };
+  });
+  const availableThemeEntries = createMemo(() =>
+    theme.ids().map((id) => [id, theme.themes()[id]] as const),
+  );
+  const colorSchemeOrder: ColorScheme[] = ["system", "light", "dark"];
+  const colorSchemeKey: Record<
+    ColorScheme,
+    "theme.scheme.system" | "theme.scheme.light" | "theme.scheme.dark"
+  > = {
     system: "theme.scheme.system",
     light: "theme.scheme.light",
     dark: "theme.scheme.dark",
-  }
-  const colorSchemeLabel = (scheme: ColorScheme) => language.t(colorSchemeKey[scheme])
-  const currentDir = createMemo(() => route().dir)
+  };
+  const colorSchemeLabel = (scheme: ColorScheme) => language.t(colorSchemeKey[scheme]);
+  const currentDir = createMemo(() => route().dir);
 
   const [state, setState] = createStore({
     autoselect: !initialDirectory,
@@ -156,251 +173,257 @@ export default function LegacyLayout(props: ParentProps) {
     sizing: false,
     peek: undefined as string | undefined,
     peeked: false,
-  })
+  });
 
   const updateVersion = () => {
-    const state = platform.updater?.state()
-    if (state?.status !== "ready") return
-    return state.version
-  }
-  const installUpdate = () => void platform.updater?.install()
+    const state = platform.updater?.state();
+    if (state?.status !== "ready") return;
+    return state.version;
+  };
+  const installUpdate = () => void platform.updater?.install();
   const titlebarUpdate: TitlebarUpdate = {
     version: updateVersion,
     installing: () => platform.updater?.state().status === "installing",
     install: installUpdate,
-  }
+  };
 
-  const editor = createInlineEditorController()
+  const editor = createInlineEditorController();
   const setBusy = (directory: string, value: boolean) => {
-    const key = pathKey(directory)
+    const key = pathKey(directory);
     if (value) {
-      setState("busyWorkspaces", key, true)
-      return
+      setState("busyWorkspaces", key, true);
+      return;
     }
     setState(
       "busyWorkspaces",
       produce((draft) => {
-        delete draft[key]
+        delete draft[key];
       }),
-    )
-  }
-  const isBusy = (directory: string) => !!state.busyWorkspaces[pathKey(directory)]
-  const navLeave = { current: undefined as number | undefined }
-  const sortNow = () => state.sortNow
-  let sizet: number | undefined
-  let sortNowInterval: ReturnType<typeof setInterval> | undefined
+    );
+  };
+  const isBusy = (directory: string) => !!state.busyWorkspaces[pathKey(directory)];
+  const navLeave = { current: undefined as number | undefined };
+  const sortNow = () => state.sortNow;
+  let sizet: number | undefined;
+  let sortNowInterval: ReturnType<typeof setInterval> | undefined;
   const sortNowTimeout = setTimeout(
     () => {
-      setState("sortNow", Date.now())
-      sortNowInterval = setInterval(() => setState("sortNow", Date.now()), 60_000)
+      setState("sortNow", Date.now());
+      sortNowInterval = setInterval(() => setState("sortNow", Date.now()), 60_000);
     },
     60_000 - (Date.now() % 60_000),
-  )
+  );
 
   const aim = createAim({
     enabled: () => !layout.sidebar.opened(),
     active: () => state.hoverProject,
     el: () => state.nav?.querySelector<HTMLElement>("[data-component='sidebar-rail']") ?? state.nav,
     onActivate: (directory) => {
-      serverSync().child(directory)
-      setState("hoverProject", directory)
+      serverSync().child(directory);
+      setState("hoverProject", directory);
     },
-  })
+  });
 
   onCleanup(() => {
-    dialogDead = true
-    dialogRun += 1
-    if (navLeave.current !== undefined) clearTimeout(navLeave.current)
-    clearTimeout(sortNowTimeout)
-    if (sortNowInterval) clearInterval(sortNowInterval)
-    if (sizet !== undefined) clearTimeout(sizet)
-    if (peekt !== undefined) clearTimeout(peekt)
-    aim.reset()
-  })
+    dialogDead = true;
+    dialogRun += 1;
+    if (navLeave.current !== undefined) clearTimeout(navLeave.current);
+    clearTimeout(sortNowTimeout);
+    if (sortNowInterval) clearInterval(sortNowInterval);
+    if (sizet !== undefined) clearTimeout(sizet);
+    if (peekt !== undefined) clearTimeout(peekt);
+    aim.reset();
+  });
 
   onMount(() => {
-    const stop = () => setState("sizing", false)
-    const blur = () => reset()
+    const stop = () => setState("sizing", false);
+    const blur = () => reset();
     const hide = () => {
-      if (document.visibilityState !== "hidden") return
-      reset()
-    }
-    makeEventListener(window, "pointerup", stop)
-    makeEventListener(window, "pointercancel", stop)
-    makeEventListener(window, "blur", stop)
-    makeEventListener(window, "blur", blur)
-    makeEventListener(document, "visibilitychange", hide)
-  })
+      if (document.visibilityState !== "hidden") return;
+      reset();
+    };
+    makeEventListener(window, "pointerup", stop);
+    makeEventListener(window, "pointercancel", stop);
+    makeEventListener(window, "blur", stop);
+    makeEventListener(window, "blur", blur);
+    makeEventListener(document, "visibilitychange", hide);
+  });
 
-  const sidebarHovering = createMemo(() => !layout.sidebar.opened() && state.hoverProject !== undefined)
-  const sidebarExpanded = createMemo(() => layout.sidebar.opened() || sidebarHovering())
+  const sidebarHovering = createMemo(
+    () => !layout.sidebar.opened() && state.hoverProject !== undefined,
+  );
+  const sidebarExpanded = createMemo(() => layout.sidebar.opened() || sidebarHovering());
   const setHoverProject = (value: string | undefined) => {
-    setState("hoverProject", value)
-    if (value !== undefined) return
-    aim.reset()
-  }
-  const clearHoverProjectSoon = () => queueMicrotask(() => setHoverProject(undefined))
+    setState("hoverProject", value);
+    if (value !== undefined) return;
+    aim.reset();
+  };
+  const clearHoverProjectSoon = () => queueMicrotask(() => setHoverProject(undefined));
 
   const disarm = () => {
-    if (navLeave.current === undefined) return
-    clearTimeout(navLeave.current)
-    navLeave.current = undefined
-  }
+    if (navLeave.current === undefined) return;
+    clearTimeout(navLeave.current);
+    navLeave.current = undefined;
+  };
 
   const reset = () => {
-    disarm()
-    setHoverProject(undefined)
-  }
+    disarm();
+    setHoverProject(undefined);
+  };
 
   const arm = () => {
-    if (layout.sidebar.opened()) return
-    if (state.hoverProject === undefined) return
-    disarm()
+    if (layout.sidebar.opened()) return;
+    if (state.hoverProject === undefined) return;
+    disarm();
     navLeave.current = window.setTimeout(() => {
-      navLeave.current = undefined
-      setHoverProject(undefined)
-    }, 300)
-  }
+      navLeave.current = undefined;
+      setHoverProject(undefined);
+    }, 300);
+  };
 
-  let peekt: number | undefined
+  let peekt: number | undefined;
 
   const hoverProjectData = createMemo(() => {
-    const id = state.hoverProject
-    if (!id) return
-    return layout.projects.list().find((project) => project.worktree === id)
-  })
+    const id = state.hoverProject;
+    if (!id) return;
+    return layout.projects.list().find((project) => project.worktree === id);
+  });
 
   const peekProject = createMemo(() => {
-    const id = state.peek
-    if (!id) return
-    return layout.projects.list().find((project) => project.worktree === id)
-  })
+    const id = state.peek;
+    if (!id) return;
+    return layout.projects.list().find((project) => project.worktree === id);
+  });
 
   createEffect(() => {
-    const p = hoverProjectData()
+    const p = hoverProjectData();
     if (p) {
       if (peekt !== undefined) {
-        clearTimeout(peekt)
-        peekt = undefined
+        clearTimeout(peekt);
+        peekt = undefined;
       }
-      setState("peek", p.worktree)
-      setState("peeked", true)
-      return
+      setState("peek", p.worktree);
+      setState("peeked", true);
+      return;
     }
 
-    setState("peeked", false)
-    if (state.peek === undefined) return
-    if (peekt !== undefined) clearTimeout(peekt)
+    setState("peeked", false);
+    if (state.peek === undefined) return;
+    if (peekt !== undefined) clearTimeout(peekt);
     peekt = window.setTimeout(() => {
-      peekt = undefined
-      setState("peek", undefined)
-    }, 180)
-  })
+      peekt = undefined;
+      setState("peek", undefined);
+    }, 180);
+  });
 
   createEffect(() => {
-    if (!layout.sidebar.opened()) return
-    setHoverProject(undefined)
-  })
+    if (!layout.sidebar.opened()) return;
+    setHoverProject(undefined);
+  });
 
   createEffect(() => {
-    if (!state.autoselect) return
-    const dir = params.dir
-    if (!dir) return
-    const directory = decode64(dir)
-    if (!directory) return
-    setState("autoselect", false)
-  })
+    if (!state.autoselect) return;
+    const dir = params.dir;
+    if (!dir) return;
+    const directory = decode64(dir);
+    if (!directory) return;
+    setState("autoselect", false);
+  });
 
-  const editorOpen = editor.editorOpen
-  const openEditor = editor.openEditor
-  const closeEditor = editor.closeEditor
-  const setEditor = editor.setEditor
-  const InlineEditor = editor.InlineEditor
+  const editorOpen = editor.editorOpen;
+  const openEditor = editor.openEditor;
+  const closeEditor = editor.closeEditor;
+  const setEditor = editor.setEditor;
+  const InlineEditor = editor.InlineEditor;
 
   const clearSidebarHoverState = () => {
-    if (layout.sidebar.opened()) return
-    reset()
-  }
+    if (layout.sidebar.opened()) return;
+    reset();
+  };
 
   const navigateWithSidebarReset = (href: string) => {
-    clearSidebarHoverState()
-    navigate(href)
-    layout.mobileSidebar.hide()
-  }
+    clearSidebarHoverState();
+    navigate(href);
+    layout.mobileSidebar.hide();
+  };
 
   function cycleTheme(direction = 1) {
-    const ids = availableThemeEntries().map(([id]) => id)
-    if (ids.length === 0) return
-    const currentIndex = ids.indexOf(theme.themeId())
-    const nextIndex = currentIndex === -1 ? 0 : (currentIndex + direction + ids.length) % ids.length
-    const nextThemeId = ids[nextIndex]
-    theme.setTheme(nextThemeId)
+    const ids = availableThemeEntries().map(([id]) => id);
+    if (ids.length === 0) return;
+    const currentIndex = ids.indexOf(theme.themeId());
+    const nextIndex =
+      currentIndex === -1 ? 0 : (currentIndex + direction + ids.length) % ids.length;
+    const nextThemeId = ids[nextIndex];
+    theme.setTheme(nextThemeId);
     showToast({
       title: language.t("toast.theme.title"),
       description: theme.name(nextThemeId),
-    })
+    });
   }
 
   function cycleColorScheme(direction = 1) {
-    const current = theme.colorScheme()
-    const currentIndex = colorSchemeOrder.indexOf(current)
+    const current = theme.colorScheme();
+    const currentIndex = colorSchemeOrder.indexOf(current);
     const nextIndex =
-      currentIndex === -1 ? 0 : (currentIndex + direction + colorSchemeOrder.length) % colorSchemeOrder.length
-    const next = colorSchemeOrder[nextIndex]
-    theme.setColorScheme(next)
+      currentIndex === -1
+        ? 0
+        : (currentIndex + direction + colorSchemeOrder.length) % colorSchemeOrder.length;
+    const next = colorSchemeOrder[nextIndex];
+    theme.setColorScheme(next);
     showToast({
       title: language.t("toast.scheme.title"),
       description: colorSchemeLabel(next),
-    })
+    });
   }
 
   function setLocale(next: Locale) {
-    if (next === language.locale()) return
-    language.setLocale(next)
+    if (next === language.locale()) return;
+    language.setLocale(next);
     showToast({
       title: language.t("toast.language.title"),
       description: language.t("toast.language.description", { language: language.label(next) }),
-    })
+    });
   }
 
   function cycleLanguage(direction = 1) {
-    const locales = language.locales
-    const currentIndex = locales.indexOf(language.locale())
-    const nextIndex = currentIndex === -1 ? 0 : (currentIndex + direction + locales.length) % locales.length
-    const next = locales[nextIndex]
-    if (!next) return
-    setLocale(next)
+    const locales = language.locales;
+    const currentIndex = locales.indexOf(language.locale());
+    const nextIndex =
+      currentIndex === -1 ? 0 : (currentIndex + direction + locales.length) % locales.length;
+    const next = locales[nextIndex];
+    if (!next) return;
+    setLocale(next);
   }
 
   const useSDKNotificationToasts = () =>
     onMount(() => {
-      const toastBySession = new Map<string, number>()
-      const alertedAtBySession = new Map<string, number>()
-      const cooldownMs = 5000
+      const toastBySession = new Map<string, number>();
+      const alertedAtBySession = new Map<string, number>();
+      const cooldownMs = 5000;
 
       const dismissSessionAlert = (sessionKey: string) => {
-        const toastId = toastBySession.get(sessionKey)
-        if (toastId === undefined) return
-        toaster.dismiss(toastId)
-        toastBySession.delete(sessionKey)
-        alertedAtBySession.delete(sessionKey)
-      }
+        const toastId = toastBySession.get(sessionKey);
+        if (toastId === undefined) return;
+        toaster.dismiss(toastId);
+        toastBySession.delete(sessionKey);
+        alertedAtBySession.delete(sessionKey);
+      };
 
       const unsub = serverSDK().event.listen((e) => {
         if (e.details?.type === "worktree.ready") {
-          setBusy(e.name, false)
-          WorktreeState.ready(serverSDK().scope, e.name)
-          return
+          setBusy(e.name, false);
+          WorktreeState.ready(serverSDK().scope, e.name);
+          return;
         }
 
         if (e.details?.type === "worktree.failed") {
-          setBusy(e.name, false)
+          setBusy(e.name, false);
           WorktreeState.failed(
             serverSDK().scope,
             e.name,
             e.details.properties?.message ?? language.t("common.requestFailed"),
-          )
-          return
+          );
+          return;
         }
 
         if (
@@ -408,59 +431,66 @@ export default function LegacyLayout(props: ParentProps) {
           e.details?.type === "question.rejected" ||
           e.details?.type === "permission.replied"
         ) {
-          const props = e.details.properties as { sessionID: string }
-          const sessionKey = `${e.name}:${props.sessionID}`
-          dismissSessionAlert(sessionKey)
-          return
+          const props = e.details.properties as { sessionID: string };
+          const sessionKey = `${e.name}:${props.sessionID}`;
+          dismissSessionAlert(sessionKey);
+          return;
         }
 
-        if (e.details?.type !== "permission.asked" && e.details?.type !== "question.asked") return
+        if (e.details?.type !== "permission.asked" && e.details?.type !== "question.asked") return;
         const title =
           e.details.type === "permission.asked"
             ? language.t("notification.permission.title")
-            : language.t("notification.question.title")
-        const icon = e.details.type === "permission.asked" ? ("checklist" as const) : ("bubble-5" as const)
-        const directory = e.name
-        const props = e.details.properties
-        if (e.details.type === "permission.asked" && permission.autoResponds(e.details.properties, directory)) return
+            : language.t("notification.question.title");
+        const icon =
+          e.details.type === "permission.asked" ? ("checklist" as const) : ("bubble-5" as const);
+        const directory = e.name;
+        const props = e.details.properties;
+        if (
+          e.details.type === "permission.asked" &&
+          permission.autoResponds(e.details.properties, directory)
+        )
+          return;
 
-        const [store] = serverSync().child(directory, { bootstrap: false })
-        const session = store.session.find((s) => s.id === props.sessionID)
-        const sessionKey = `${directory}:${props.sessionID}`
+        const [store] = serverSync().child(directory, { bootstrap: false });
+        const session = store.session.find((s) => s.id === props.sessionID);
+        const sessionKey = `${directory}:${props.sessionID}`;
 
-        const sessionTitle = session?.title ?? language.t("command.session.new")
-        const projectName = getFilename(directory)
+        const sessionTitle = session?.title ?? language.t("command.session.new");
+        const projectName = getFilename(directory);
         const description =
           e.details.type === "permission.asked"
             ? language.t("notification.permission.description", { sessionTitle, projectName })
-            : language.t("notification.question.description", { sessionTitle, projectName })
-        const href = `/${base64Encode(directory)}/session/${props.sessionID}`
+            : language.t("notification.question.description", { sessionTitle, projectName });
+        const href = `/${base64Encode(directory)}/session/${props.sessionID}`;
 
-        const now = Date.now()
-        const lastAlerted = alertedAtBySession.get(sessionKey) ?? 0
-        if (now - lastAlerted < cooldownMs) return
-        alertedAtBySession.set(sessionKey, now)
+        const now = Date.now();
+        const lastAlerted = alertedAtBySession.get(sessionKey) ?? 0;
+        if (now - lastAlerted < cooldownMs) return;
+        alertedAtBySession.set(sessionKey, now);
 
         if (e.details.type === "permission.asked") {
           if (settings.sounds.permissionsEnabled()) {
-            void playSoundById(settings.sounds.permissions())
+            void playSoundById(settings.sounds.permissions());
           }
           if (settings.notifications.permissions()) {
-            void platform.notify(title, description, href)
+            void platform.notify(title, description, href);
           }
         }
 
         if (e.details.type === "question.asked") {
           if (settings.notifications.agent()) {
-            void platform.notify(title, description, href)
+            void platform.notify(title, description, href);
           }
         }
 
-        const currentSession = params.id
-        if (pathKey(directory) === pathKey(currentDir()) && props.sessionID === currentSession) return
-        if (pathKey(directory) === pathKey(currentDir()) && session?.parentID === currentSession) return
+        const currentSession = params.id;
+        if (pathKey(directory) === pathKey(currentDir()) && props.sessionID === currentSession)
+          return;
+        if (pathKey(directory) === pathKey(currentDir()) && session?.parentID === currentSession)
+          return;
 
-        dismissSessionAlert(sessionKey)
+        dismissSessionAlert(sessionKey);
 
         const toastId = showToast({
           persistent: true,
@@ -477,419 +507,429 @@ export default function LegacyLayout(props: ParentProps) {
               onClick: "dismiss",
             },
           ],
-        })
-        toastBySession.set(sessionKey, toastId)
-      })
-      onCleanup(unsub)
+        });
+        toastBySession.set(sessionKey, toastId);
+      });
+      onCleanup(unsub);
 
       createEffect(() => {
-        const currentSession = params.id
-        if (!currentDir() || !currentSession) return
-        const sessionKey = `${currentDir()}:${currentSession}`
-        dismissSessionAlert(sessionKey)
-        const [store] = serverSync().child(currentDir(), { bootstrap: false })
-        const childSessions = store.session.filter((s) => s.parentID === currentSession)
+        const currentSession = params.id;
+        if (!currentDir() || !currentSession) return;
+        const sessionKey = `${currentDir()}:${currentSession}`;
+        dismissSessionAlert(sessionKey);
+        const [store] = serverSync().child(currentDir(), { bootstrap: false });
+        const childSessions = store.session.filter((s) => s.parentID === currentSession);
         for (const child of childSessions) {
-          dismissSessionAlert(`${currentDir()}:${child.id}`)
+          dismissSessionAlert(`${currentDir()}:${child.id}`);
         }
-      })
-    })
+      });
+    });
 
-  useSDKNotificationToasts()
+  useSDKNotificationToasts();
 
   function scrollToSession(sessionId: string, sessionKey: string) {
-    if (!scrollContainerRef) return
-    if (state.scrollSessionKey === sessionKey) return
-    const element = scrollContainerRef.querySelector(`[data-session-id="${sessionId}"]`)
-    if (!element) return
-    const containerRect = scrollContainerRef.getBoundingClientRect()
-    const elementRect = element.getBoundingClientRect()
+    if (!scrollContainerRef) return;
+    if (state.scrollSessionKey === sessionKey) return;
+    const element = scrollContainerRef.querySelector(`[data-session-id="${sessionId}"]`);
+    if (!element) return;
+    const containerRect = scrollContainerRef.getBoundingClientRect();
+    const elementRect = element.getBoundingClientRect();
     if (elementRect.top >= containerRect.top && elementRect.bottom <= containerRect.bottom) {
-      setState("scrollSessionKey", sessionKey)
-      return
+      setState("scrollSessionKey", sessionKey);
+      return;
     }
-    setState("scrollSessionKey", sessionKey)
-    element.scrollIntoView({ block: "nearest", behavior: "smooth" })
+    setState("scrollSessionKey", sessionKey);
+    element.scrollIntoView({ block: "nearest", behavior: "smooth" });
   }
 
   const currentProject = createMemo(() => {
-    const directory = currentDir()
-    if (!directory) return
-    const key = pathKey(directory)
+    const directory = currentDir();
+    if (!directory) return;
+    const key = pathKey(directory);
 
-    const projects = layout.projects.list()
+    const projects = layout.projects.list();
 
-    const sandbox = projects.find((p) => p.sandboxes?.some((item) => pathKey(item) === key))
-    if (sandbox) return sandbox
+    const sandbox = projects.find((p) => p.sandboxes?.some((item) => pathKey(item) === key));
+    if (sandbox) return sandbox;
 
-    const direct = projects.find((p) => pathKey(p.worktree) === key)
-    if (direct) return direct
+    const direct = projects.find((p) => pathKey(p.worktree) === key);
+    if (direct) return direct;
 
-    const [child] = serverSync().child(directory, { bootstrap: false })
-    const id = child.project
-    if (!id) return
+    const [child] = serverSync().child(directory, { bootstrap: false });
+    const id = child.project;
+    if (!id) return;
 
-    const meta = serverSync().data.project.find((p) => p.id === id)
-    const root = meta?.worktree
-    if (!root) return
+    const meta = serverSync().data.project.find((p) => p.id === id);
+    const root = meta?.worktree;
+    if (!root) return;
 
-    return projects.find((p) => p.worktree === root)
-  })
+    return projects.find((p) => p.worktree === root);
+  });
 
   const [autoselecting] = createResource(async () => {
-    await ready.promise
-    await layout.ready.promise
-    if (!untrack(() => state.autoselect)) return
+    await ready.promise;
+    await layout.ready.promise;
+    if (!untrack(() => state.autoselect)) return;
 
-    const list = layout.projects.list()
-    const last = server.projects.last()
+    const list = layout.projects.list();
+    const last = server.projects.last();
 
     if (list.length === 0) {
-      if (!last) return
-      await openProject(last, true)
+      if (!last) return;
+      await openProject(last, true);
     } else {
-      const next = list.find((project) => project.worktree === last) ?? list[0]
-      if (!next) return
-      await openProject(next.worktree, true)
+      const next = list.find((project) => project.worktree === last) ?? list[0];
+      if (!next) return;
+      await openProject(next.worktree, true);
     }
-  })
+  });
 
   const workspaceName = (directory: string, projectId?: string, branch?: string) => {
-    const key = pathKey(directory)
-    const direct = store.workspaceName[key] ?? store.workspaceName[directory]
-    if (direct) return direct
-    if (!projectId) return
-    if (!branch) return
-    return store.workspaceBranchName[projectId]?.[branch]
-  }
+    const key = pathKey(directory);
+    const direct = store.workspaceName[key] ?? store.workspaceName[directory];
+    if (direct) return direct;
+    if (!projectId) return;
+    if (!branch) return;
+    return store.workspaceBranchName[projectId]?.[branch];
+  };
 
-  const setWorkspaceName = (directory: string, next: string, projectId?: string, branch?: string) => {
-    const key = pathKey(directory)
-    setStore("workspaceName", key, next)
-    if (!projectId) return
-    if (!branch) return
+  const setWorkspaceName = (
+    directory: string,
+    next: string,
+    projectId?: string,
+    branch?: string,
+  ) => {
+    const key = pathKey(directory);
+    setStore("workspaceName", key, next);
+    if (!projectId) return;
+    if (!branch) return;
     if (!store.workspaceBranchName[projectId]) {
-      setStore("workspaceBranchName", projectId, {})
+      setStore("workspaceBranchName", projectId, {});
     }
-    setStore("workspaceBranchName", projectId, branch, next)
-  }
+    setStore("workspaceBranchName", projectId, branch, next);
+  };
 
   const workspaceLabel = (directory: string, branch?: string, projectId?: string) =>
-    workspaceName(directory, projectId, branch) ?? branch ?? getFilename(directory)
+    workspaceName(directory, projectId, branch) ?? branch ?? getFilename(directory);
 
   const workspaceSetting = createMemo(() => {
-    const project = currentProject()
-    if (!project) return false
-    if (project.vcs !== "git") return false
-    return layout.sidebar.workspaces(project.worktree)()
-  })
+    const project = currentProject();
+    if (!project) return false;
+    if (project.vcs !== "git") return false;
+    return layout.sidebar.workspaces(project.worktree)();
+  });
 
   const visibleSessionDirs = createMemo(() => {
-    const project = currentProject()
-    if (!project) return [] as string[]
-    if (!workspaceSetting()) return [project.worktree]
+    const project = currentProject();
+    if (!project) return [] as string[];
+    if (!workspaceSetting()) return [project.worktree];
 
-    const activeDir = currentDir()
+    const activeDir = currentDir();
     return workspaceIds(project).filter((directory) => {
-      const expanded = store.workspaceExpanded[directory] ?? directory === project.worktree
-      const active = pathKey(directory) === pathKey(activeDir)
-      return expanded || active
-    })
-  })
+      const expanded = store.workspaceExpanded[directory] ?? directory === project.worktree;
+      const active = pathKey(directory) === pathKey(activeDir);
+      return expanded || active;
+    });
+  });
 
   createEffect(() => {
-    if (!pageReady()) return
-    if (!layoutReady()) return
-    const projects = layout.projects.list()
+    if (!pageReady()) return;
+    if (!layoutReady()) return;
+    const projects = layout.projects.list();
     for (const [directory, expanded] of Object.entries(store.workspaceExpanded)) {
-      if (!expanded) continue
-      const key = pathKey(directory)
+      if (!expanded) continue;
+      const key = pathKey(directory);
       const project = projects.find(
-        (item) => pathKey(item.worktree) === key || item.sandboxes?.some((sandbox) => pathKey(sandbox) === key),
-      )
-      if (!project) continue
-      if (project.vcs === "git" && layout.sidebar.workspaces(project.worktree)()) continue
-      setStore("workspaceExpanded", directory, false)
+        (item) =>
+          pathKey(item.worktree) === key ||
+          item.sandboxes?.some((sandbox) => pathKey(sandbox) === key),
+      );
+      if (!project) continue;
+      if (project.vcs === "git" && layout.sidebar.workspaces(project.worktree)()) continue;
+      setStore("workspaceExpanded", directory, false);
     }
-  })
+  });
 
   const currentSessions = createMemo(() => {
-    const now = Date.now()
-    const dirs = visibleSessionDirs()
-    if (dirs.length === 0) return [] as Session[]
+    const now = Date.now();
+    const dirs = visibleSessionDirs();
+    if (dirs.length === 0) return [] as Session[];
 
-    const result: Session[] = []
+    const result: Session[] = [];
     for (const dir of dirs) {
-      const [dirStore] = serverSync().child(dir, { bootstrap: true })
-      const dirSessions = sortedRootSessions(dirStore, now)
-      result.push(...dirSessions)
+      const [dirStore] = serverSync().child(dir, { bootstrap: true });
+      const dirSessions = sortedRootSessions(dirStore, now);
+      result.push(...dirSessions);
     }
-    return result
-  })
+    return result;
+  });
 
   type PrefetchQueue = {
-    inflight: Set<string>
-    pending: string[]
-    pendingSet: Set<string>
-    running: number
-  }
+    inflight: Set<string>;
+    pending: string[];
+    pendingSet: Set<string>;
+    running: number;
+  };
 
-  const prefetchChunk = 200
-  const prefetchConcurrency = 2
-  const prefetchPendingLimit = 10
-  const span = 4
-  const prefetchToken = { value: 0 }
-  const prefetchQueues = new Map<string, PrefetchQueue>()
+  const prefetchChunk = 200;
+  const prefetchConcurrency = 2;
+  const prefetchPendingLimit = 10;
+  const span = 4;
+  const prefetchToken = { value: 0 };
+  const prefetchQueues = new Map<string, PrefetchQueue>();
 
-  const PREFETCH_MAX_SESSIONS_PER_DIR = 10
-  const prefetchedByDir = new Map<string, Set<string>>()
+  const PREFETCH_MAX_SESSIONS_PER_DIR = 10;
+  const prefetchedByDir = new Map<string, Set<string>>();
 
   const lruFor = (directory: string) => {
-    const existing = prefetchedByDir.get(directory)
-    if (existing) return existing
-    const created = new Set<string>()
-    prefetchedByDir.set(directory, created)
-    return created
-  }
+    const existing = prefetchedByDir.get(directory);
+    if (existing) return existing;
+    const created = new Set<string>();
+    prefetchedByDir.set(directory, created);
+    return created;
+  };
 
   const markPrefetched = (directory: string, sessionID: string) => {
-    const lru = lruFor(directory)
+    const lru = lruFor(directory);
     return pickSessionCacheEvictions({
       seen: lru,
       keep: sessionID,
       limit: PREFETCH_MAX_SESSIONS_PER_DIR,
       preserve: params.id && pathKey(directory) === pathKey(currentDir()) ? [params.id] : undefined,
-    })
-  }
+    });
+  };
 
   createEffect(() => {
-    const active = new Set(visibleSessionDirs())
+    const active = new Set(visibleSessionDirs());
     for (const directory of prefetchedByDir.keys()) {
-      if (active.has(directory)) continue
-      prefetchedByDir.delete(directory)
+      if (active.has(directory)) continue;
+      prefetchedByDir.delete(directory);
     }
-  })
+  });
 
   createEffect(() => {
-    route()
-    serverSDK().url
+    route();
+    serverSDK().url;
 
-    prefetchToken.value += 1
-    prefetchQueues.clear()
-  })
+    prefetchToken.value += 1;
+    prefetchQueues.clear();
+  });
 
   createEffect(() => {
-    const visible = new Set(visibleSessionDirs())
+    const visible = new Set(visibleSessionDirs());
     for (const [directory, q] of prefetchQueues) {
-      if (visible.has(directory)) continue
-      q.pending.length = 0
-      q.pendingSet.clear()
-      if (q.running === 0) prefetchQueues.delete(directory)
+      if (visible.has(directory)) continue;
+      q.pending.length = 0;
+      q.pendingSet.clear();
+      if (q.running === 0) prefetchQueues.delete(directory);
     }
-  })
+  });
 
   const queueFor = (directory: string) => {
-    const existing = prefetchQueues.get(directory)
-    if (existing) return existing
+    const existing = prefetchQueues.get(directory);
+    if (existing) return existing;
 
     const created: PrefetchQueue = {
       inflight: new Set(),
       pending: [],
       pendingSet: new Set(),
       running: 0,
-    }
-    prefetchQueues.set(directory, created)
-    return created
-  }
+    };
+    prefetchQueues.set(directory, created);
+    return created;
+  };
 
   async function prefetchMessages(directory: string, sessionID: string, token: number) {
     await serverSync()
       .session.prefetch(sessionID, prefetchChunk)
-      .catch(() => {})
-    if (prefetchToken.value !== token) return
-    for (const stale of markPrefetched(directory, sessionID)) serverSync().session.evict(stale)
+      .catch(() => {});
+    if (prefetchToken.value !== token) return;
+    for (const stale of markPrefetched(directory, sessionID)) serverSync().session.evict(stale);
   }
 
   const pumpPrefetch = (directory: string) => {
-    const q = queueFor(directory)
-    if (q.running >= prefetchConcurrency) return
+    const q = queueFor(directory);
+    if (q.running >= prefetchConcurrency) return;
 
-    const sessionID = q.pending.shift()
-    if (!sessionID) return
+    const sessionID = q.pending.shift();
+    if (!sessionID) return;
 
-    q.pendingSet.delete(sessionID)
-    q.inflight.add(sessionID)
-    q.running += 1
+    q.pendingSet.delete(sessionID);
+    q.inflight.add(sessionID);
+    q.running += 1;
 
-    const token = prefetchToken.value
+    const token = prefetchToken.value;
 
     void prefetchMessages(directory, sessionID, token).finally(() => {
-      q.running -= 1
-      q.inflight.delete(sessionID)
-      pumpPrefetch(directory)
-    })
-  }
+      q.running -= 1;
+      q.inflight.delete(sessionID);
+      pumpPrefetch(directory);
+    });
+  };
 
   const prefetchSession = (session: Session, priority: "high" | "low" = "low") => {
-    const directory = session.directory
-    if (!directory) return
+    const directory = session.directory;
+    if (!directory) return;
 
-    const cached = untrack(() => !serverSync().session.shouldPrefetch(session.id, prefetchChunk))
-    if (cached) return
+    const cached = untrack(() => !serverSync().session.shouldPrefetch(session.id, prefetchChunk));
+    if (cached) return;
 
-    const q = queueFor(directory)
-    if (q.inflight.has(session.id)) return
+    const q = queueFor(directory);
+    if (q.inflight.has(session.id)) return;
     if (q.pendingSet.has(session.id)) {
-      if (priority !== "high") return
-      const index = q.pending.indexOf(session.id)
+      if (priority !== "high") return;
+      const index = q.pending.indexOf(session.id);
       if (index > 0) {
-        q.pending.splice(index, 1)
-        q.pending.unshift(session.id)
+        q.pending.splice(index, 1);
+        q.pending.unshift(session.id);
       }
-      return
+      return;
     }
 
-    const lru = lruFor(directory)
-    const known = lru.has(session.id)
-    if (!known && lru.size >= PREFETCH_MAX_SESSIONS_PER_DIR && priority !== "high") return
+    const lru = lruFor(directory);
+    const known = lru.has(session.id);
+    if (!known && lru.size >= PREFETCH_MAX_SESSIONS_PER_DIR && priority !== "high") return;
 
-    if (priority === "high") q.pending.unshift(session.id)
-    if (priority !== "high") q.pending.push(session.id)
-    q.pendingSet.add(session.id)
+    if (priority === "high") q.pending.unshift(session.id);
+    if (priority !== "high") q.pending.push(session.id);
+    q.pendingSet.add(session.id);
 
     while (q.pending.length > prefetchPendingLimit) {
-      const dropped = q.pending.pop()
-      if (!dropped) continue
-      q.pendingSet.delete(dropped)
+      const dropped = q.pending.pop();
+      if (!dropped) continue;
+      q.pendingSet.delete(dropped);
     }
 
-    pumpPrefetch(directory)
-  }
+    pumpPrefetch(directory);
+  };
 
   const warm = (sessions: Session[], index: number) => {
     for (let offset = 1; offset <= span; offset++) {
-      const next = sessions[index + offset]
-      if (next) prefetchSession(next, offset === 1 ? "high" : "low")
+      const next = sessions[index + offset];
+      if (next) prefetchSession(next, offset === 1 ? "high" : "low");
 
-      const prev = sessions[index - offset]
-      if (prev) prefetchSession(prev, offset === 1 ? "high" : "low")
+      const prev = sessions[index - offset];
+      if (prev) prefetchSession(prev, offset === 1 ? "high" : "low");
     }
-  }
+  };
 
   createEffect(() => {
-    const sessions = currentSessions()
-    if (sessions.length === 0) return
+    const sessions = currentSessions();
+    if (sessions.length === 0) return;
 
-    const index = params.id ? sessions.findIndex((s) => s.id === params.id) : 0
-    if (index === -1) return
+    const index = params.id ? sessions.findIndex((s) => s.id === params.id) : 0;
+    if (index === -1) return;
 
     if (!params.id) {
-      const first = sessions[index]
-      if (first) prefetchSession(first, "high")
+      const first = sessions[index];
+      if (first) prefetchSession(first, "high");
     }
 
-    warm(sessions, index)
-  })
+    warm(sessions, index);
+  });
 
   function navigateSessionByOffset(offset: number) {
-    const sessions = currentSessions()
-    if (sessions.length === 0) return
+    const sessions = currentSessions();
+    if (sessions.length === 0) return;
 
-    const sessionIndex = params.id ? sessions.findIndex((s) => s.id === params.id) : -1
+    const sessionIndex = params.id ? sessions.findIndex((s) => s.id === params.id) : -1;
 
-    let targetIndex: number
+    let targetIndex: number;
     if (sessionIndex === -1) {
-      targetIndex = offset > 0 ? 0 : sessions.length - 1
+      targetIndex = offset > 0 ? 0 : sessions.length - 1;
     } else {
-      targetIndex = (sessionIndex + offset + sessions.length) % sessions.length
+      targetIndex = (sessionIndex + offset + sessions.length) % sessions.length;
     }
 
-    const session = sessions[targetIndex]
-    if (!session) return
+    const session = sessions[targetIndex];
+    if (!session) return;
 
-    prefetchSession(session, "high")
-    warm(sessions, targetIndex)
+    prefetchSession(session, "high");
+    warm(sessions, targetIndex);
 
-    navigateToSession(session)
+    navigateToSession(session);
   }
 
   function navigateProjectByOffset(offset: number) {
-    const projects = layout.projects.list()
-    if (projects.length === 0) return
+    const projects = layout.projects.list();
+    if (projects.length === 0) return;
 
-    const current = currentProject()?.worktree
-    const fallback = currentDir() ? projectRoot(currentDir()) : undefined
-    const active = current ?? fallback
-    const index = active ? projects.findIndex((project) => project.worktree === active) : -1
+    const current = currentProject()?.worktree;
+    const fallback = currentDir() ? projectRoot(currentDir()) : undefined;
+    const active = current ?? fallback;
+    const index = active ? projects.findIndex((project) => project.worktree === active) : -1;
 
     const target =
       index === -1
         ? offset > 0
           ? projects[0]
           : projects[projects.length - 1]
-        : projects[(index + offset + projects.length) % projects.length]
-    if (!target) return
+        : projects[(index + offset + projects.length) % projects.length];
+    if (!target) return;
 
     // warm up child store to prevent flicker
-    serverSync().child(target.worktree)
-    void openProject(target.worktree)
+    serverSync().child(target.worktree);
+    void openProject(target.worktree);
   }
 
   function navigateToProjectIndex(index: number) {
-    const projects = layout.projects.list()
-    const target = projects[index]
-    if (!target) return
+    const projects = layout.projects.list();
+    const target = projects[index];
+    if (!target) return;
 
-    serverSync().child(target.worktree)
-    void openProject(target.worktree)
+    serverSync().child(target.worktree);
+    void openProject(target.worktree);
   }
 
   function navigateSessionByUnseen(offset: number) {
-    const sessions = currentSessions()
-    if (sessions.length === 0) return
+    const sessions = currentSessions();
+    if (sessions.length === 0) return;
 
-    const hasUnseen = sessions.some((session) => notification.session.unseenCount(session.id) > 0)
-    if (!hasUnseen) return
+    const hasUnseen = sessions.some((session) => notification.session.unseenCount(session.id) > 0);
+    if (!hasUnseen) return;
 
-    const activeIndex = params.id ? sessions.findIndex((s) => s.id === params.id) : -1
-    const start = activeIndex === -1 ? (offset > 0 ? -1 : 0) : activeIndex
+    const activeIndex = params.id ? sessions.findIndex((s) => s.id === params.id) : -1;
+    const start = activeIndex === -1 ? (offset > 0 ? -1 : 0) : activeIndex;
 
     for (let i = 1; i <= sessions.length; i++) {
-      const index = offset > 0 ? (start + i) % sessions.length : (start - i + sessions.length) % sessions.length
-      const session = sessions[index]
-      if (!session) continue
-      if (notification.session.unseenCount(session.id) === 0) continue
+      const index =
+        offset > 0
+          ? (start + i) % sessions.length
+          : (start - i + sessions.length) % sessions.length;
+      const session = sessions[index];
+      if (!session) continue;
+      if (notification.session.unseenCount(session.id) === 0) continue;
 
-      prefetchSession(session, "high")
-      warm(sessions, index)
+      prefetchSession(session, "high");
+      warm(sessions, index);
 
-      navigateToSession(session)
-      return
+      navigateToSession(session);
+      return;
     }
   }
 
   async function archiveSession(session: Session) {
-    const [store, setStore] = serverSync().child(session.directory)
-    const sessions = store.session ?? []
-    const index = sessions.findIndex((s) => s.id === session.id)
-    const nextSession = sessions[index + 1] ?? sessions[index - 1]
+    const [store, setStore] = serverSync().child(session.directory);
+    const sessions = store.session ?? [];
+    const index = sessions.findIndex((s) => s.id === session.id);
+    const nextSession = sessions[index + 1] ?? sessions[index - 1];
 
     await serverSDK().client.session.update({
       directory: session.directory,
       sessionID: session.id,
       time: { archived: Date.now() },
-    })
+    });
     setStore(
       produce((draft) => {
-        const match = Binary.search(draft.session, session.id, (s) => s.id)
-        if (match.found) draft.session.splice(match.index, 1)
+        const match = Binary.search(draft.session, session.id, (s) => s.id);
+        if (match.found) draft.session.splice(match.index, 1);
       }),
-    )
+    );
     if (session.id === params.id) {
       if (nextSession) {
-        navigate(`/${params.dir}/session/${nextSession.id}`)
+        navigate(`/${params.dir}/session/${nextSession.id}`);
       } else {
-        navigate(`/${params.dir}/session`)
+        navigate(`/${params.dir}/session`);
       }
     }
   }
@@ -978,8 +1018,8 @@ export default function LegacyLayout(props: ParentProps) {
         keybind: "mod+shift+backspace",
         disabled: !params.dir || !params.id,
         onSelect: () => {
-          const session = currentSessions().find((s) => s.id === params.id)
-          if (session) void archiveSession(session)
+          const session = currentSessions().find((s) => s.id === params.id);
+          if (session) void archiveSession(session);
         },
       },
       {
@@ -989,9 +1029,9 @@ export default function LegacyLayout(props: ParentProps) {
         keybind: "mod+shift+w",
         disabled: !workspaceSetting(),
         onSelect: () => {
-          const project = currentProject()
-          if (!project) return
-          return createWorkspace(project)
+          const project = currentProject();
+          if (!project) return;
+          return createWorkspace(project);
         },
       },
       {
@@ -1002,11 +1042,11 @@ export default function LegacyLayout(props: ParentProps) {
         slash: "workspace",
         disabled: !currentProject() || currentProject()?.vcs !== "git",
         onSelect: () => {
-          const project = currentProject()
-          if (!project) return
-          if (project.vcs !== "git") return
-          const wasEnabled = layout.sidebar.workspaces(project.worktree)()
-          layout.sidebar.toggleWorkspaces(project.worktree)
+          const project = currentProject();
+          if (!project) return;
+          if (project.vcs !== "git") return;
+          const wasEnabled = layout.sidebar.workspaces(project.worktree)();
+          layout.sidebar.toggleWorkspaces(project.worktree);
           showToast({
             title: wasEnabled
               ? language.t("toast.workspace.disabled.title")
@@ -1014,7 +1054,7 @@ export default function LegacyLayout(props: ParentProps) {
             description: wasEnabled
               ? language.t("toast.workspace.disabled.description")
               : language.t("toast.workspace.enabled.description"),
-          })
+          });
         },
       },
       {
@@ -1024,11 +1064,11 @@ export default function LegacyLayout(props: ParentProps) {
         keybind: "mod+shift+t",
         onSelect: () => cycleTheme(1),
       },
-    ]
+    ];
 
     Array.from({ length: 9 }, (_, i) => {
-      const index = i
-      const number = index + 1
+      const index = i;
+      const number = index + 1;
       commands.push({
         id: `project.${number}`,
         category: language.t("command.category.project"),
@@ -1037,8 +1077,8 @@ export default function LegacyLayout(props: ParentProps) {
         disabled: layout.projects.list().length <= index,
         hidden: true,
         onSelect: () => navigateToProjectIndex(index),
-      })
-    })
+      });
+    });
 
     for (const [id] of availableThemeEntries()) {
       commands.push({
@@ -1047,10 +1087,10 @@ export default function LegacyLayout(props: ParentProps) {
         category: language.t("command.category.theme"),
         onSelect: () => theme.commitPreview(),
         onHighlight: () => {
-          theme.previewTheme(id)
-          return () => theme.cancelPreview()
+          theme.previewTheme(id);
+          return () => theme.cancelPreview();
         },
-      })
+      });
     }
 
     commands.push({
@@ -1059,7 +1099,7 @@ export default function LegacyLayout(props: ParentProps) {
       category: language.t("command.category.theme"),
       keybind: "mod+shift+s",
       onSelect: () => cycleColorScheme(1),
-    })
+    });
 
     for (const scheme of colorSchemeOrder) {
       commands.push({
@@ -1068,10 +1108,10 @@ export default function LegacyLayout(props: ParentProps) {
         category: language.t("command.category.theme"),
         onSelect: () => theme.commitPreview(),
         onHighlight: () => {
-          theme.previewColorScheme(scheme)
-          return () => theme.cancelPreview()
+          theme.previewColorScheme(scheme);
+          return () => theme.cancelPreview();
         },
-      })
+      });
     }
 
     commands.push({
@@ -1079,7 +1119,7 @@ export default function LegacyLayout(props: ParentProps) {
       title: language.t("command.language.cycle"),
       category: language.t("command.category.language"),
       onSelect: () => cycleLanguage(1),
-    })
+    });
 
     for (const locale of language.locales) {
       commands.push({
@@ -1087,143 +1127,163 @@ export default function LegacyLayout(props: ParentProps) {
         title: language.t("command.language.set", { language: language.label(locale) }),
         category: language.t("command.category.language"),
         onSelect: () => setLocale(locale),
-      })
+      });
     }
 
-    return commands
-  })
+    return commands;
+  });
 
   function connectProvider() {
-    const run = ++dialogRun
+    const run = ++dialogRun;
     void import("@/components/dialog-select-provider").then((x) => {
-      if (dialogDead || dialogRun !== run) return
-      dialog.show(() => <x.DialogSelectProvider />)
-    })
+      if (dialogDead || dialogRun !== run) return;
+      dialog.show(() => <x.DialogSelectProvider />);
+    });
   }
 
   function openServer() {
-    const run = ++dialogRun
+    const run = ++dialogRun;
     void import("@/components/dialog-select-server").then((x) => {
-      if (dialogDead || dialogRun !== run) return
-      dialog.show(() => <x.DialogSelectServer />)
-    })
+      if (dialogDead || dialogRun !== run) return;
+      dialog.show(() => <x.DialogSelectServer />);
+    });
   }
 
   function openSettings() {
-    const run = ++dialogRun
+    const run = ++dialogRun;
     const module = settings.general.newLayoutDesigns()
       ? import("@/components/settings-v2")
-      : import("@/components/dialog-settings")
+      : import("@/components/dialog-settings");
     void module.then((x) => {
-      if (dialogDead || dialogRun !== run) return
-      dialog.show(() => <x.DialogSettings />)
-    })
+      if (dialogDead || dialogRun !== run) return;
+      dialog.show(() => <x.DialogSettings />);
+    });
   }
 
   function projectRoot(directory: string) {
-    const key = pathKey(directory)
+    const key = pathKey(directory);
     const project = layout.projects
       .list()
-      .find((item) => pathKey(item.worktree) === key || item.sandboxes?.some((sandbox) => pathKey(sandbox) === key))
-    if (project) return project.worktree
+      .find(
+        (item) =>
+          pathKey(item.worktree) === key ||
+          item.sandboxes?.some((sandbox) => pathKey(sandbox) === key),
+      );
+    if (project) return project.worktree;
 
     const known = Object.entries(store.workspaceOrder).find(
       ([root, dirs]) => pathKey(root) === key || dirs.some((item) => pathKey(item) === key),
-    )
-    if (known) return known[0]
+    );
+    if (known) return known[0];
 
-    const [child] = serverSync().child(directory, { bootstrap: false })
-    const id = child.project
-    if (!id) return directory
+    const [child] = serverSync().child(directory, { bootstrap: false });
+    const id = child.project;
+    if (!id) return directory;
 
-    const meta = serverSync().data.project.find((item) => item.id === id)
-    return meta?.worktree ?? directory
+    const meta = serverSync().data.project.find((item) => item.id === id);
+    return meta?.worktree ?? directory;
   }
 
   function activeProjectRoot(directory: string) {
-    return currentProject()?.worktree ?? projectRoot(directory)
+    return currentProject()?.worktree ?? projectRoot(directory);
   }
 
-  function rememberSessionRoute(directory: string, id: string, root = activeProjectRoot(directory)) {
-    setStore("lastProjectSession", root, { directory, id, at: Date.now() })
-    return root
+  function rememberSessionRoute(
+    directory: string,
+    id: string,
+    root = activeProjectRoot(directory),
+  ) {
+    setStore("lastProjectSession", root, { directory, id, at: Date.now() });
+    return root;
   }
 
   function clearLastProjectSession(root: string) {
-    if (!store.lastProjectSession[root]) return
+    if (!store.lastProjectSession[root]) return;
     setStore(
       "lastProjectSession",
       produce((draft) => {
-        delete draft[root]
+        delete draft[root];
       }),
-    )
+    );
   }
 
   function syncSessionRoute(directory: string, id: string, root = activeProjectRoot(directory)) {
-    rememberSessionRoute(directory, id, root)
-    notification.session.markViewed(id)
-    const expanded = untrack(() => store.workspaceExpanded[directory])
+    rememberSessionRoute(directory, id, root);
+    notification.session.markViewed(id);
+    const expanded = untrack(() => store.workspaceExpanded[directory]);
     if (expanded === false) {
-      setStore("workspaceExpanded", directory, true)
+      setStore("workspaceExpanded", directory, true);
     }
-    requestAnimationFrame(() => scrollToSession(id, `${directory}:${id}`))
-    return root
+    requestAnimationFrame(() => scrollToSession(id, `${directory}:${id}`));
+    return root;
   }
 
   async function navigateToProject(directory: string | undefined) {
-    if (!directory) return
-    const root = projectRoot(directory)
-    server.projects.touch(root)
-    const project = layout.projects.list().find((item) => item.worktree === root)
+    if (!directory) return;
+    const root = projectRoot(directory);
+    server.projects.touch(root);
+    const project = layout.projects.list().find((item) => item.worktree === root);
     let dirs = project
-      ? effectiveWorkspaceOrder(root, [root, ...(project.sandboxes ?? [])], store.workspaceOrder[root])
-      : [root]
+      ? effectiveWorkspaceOrder(
+          root,
+          [root, ...(project.sandboxes ?? [])],
+          store.workspaceOrder[root],
+        )
+      : [root];
     const canOpen = (value: string | undefined) => {
-      if (!value) return false
-      return dirs.some((item) => pathKey(item) === pathKey(value))
-    }
+      if (!value) return false;
+      return dirs.some((item) => pathKey(item) === pathKey(value));
+    };
     const refreshDirs = async (target?: string) => {
-      if (!target || target === root || canOpen(target)) return canOpen(target)
+      if (!target || target === root || canOpen(target)) return canOpen(target);
       const listed = await serverSDK()
         .client.worktree.list({ directory: root })
         .then((x) => x.data ?? [])
-        .catch(() => [] as string[])
-      dirs = effectiveWorkspaceOrder(root, [root, ...listed], store.workspaceOrder[root])
-      return canOpen(target)
-    }
+        .catch(() => [] as string[]);
+      dirs = effectiveWorkspaceOrder(root, [root, ...listed], store.workspaceOrder[root]);
+      return canOpen(target);
+    };
     const openSession = async (target: { directory: string; id: string }) => {
-      if (!canOpen(target.directory)) return false
-      const sync = serverSync().ensureDirSyncContext(target.directory)
+      if (!canOpen(target.directory)) return false;
+      const sync = serverSync().ensureDirSyncContext(target.directory);
       if (sync.session.get(target.id)) {
-        setStore("lastProjectSession", root, { directory: target.directory, id: target.id, at: Date.now() })
-        navigateWithSidebarReset(`/${base64Encode(target.directory)}/session/${target.id}`)
-        return true
+        setStore("lastProjectSession", root, {
+          directory: target.directory,
+          id: target.id,
+          at: Date.now(),
+        });
+        navigateWithSidebarReset(`/${base64Encode(target.directory)}/session/${target.id}`);
+        return true;
       }
       const resolved = await sync.session
         .sync(target.id)
         .then(() => sync.session.get(target.id))
-        .catch(() => undefined)
-      if (!resolved?.directory) return false
-      if (!canOpen(resolved.directory)) return false
-      setStore("lastProjectSession", root, { directory: resolved.directory, id: resolved.id, at: Date.now() })
-      navigateWithSidebarReset(`/${base64Encode(resolved.directory)}/session/${resolved.id}`)
-      return true
-    }
+        .catch(() => undefined);
+      if (!resolved?.directory) return false;
+      if (!canOpen(resolved.directory)) return false;
+      setStore("lastProjectSession", root, {
+        directory: resolved.directory,
+        id: resolved.id,
+        at: Date.now(),
+      });
+      navigateWithSidebarReset(`/${base64Encode(resolved.directory)}/session/${resolved.id}`);
+      return true;
+    };
 
-    const projectSession = store.lastProjectSession[root]
+    const projectSession = store.lastProjectSession[root];
     if (projectSession?.id) {
-      await refreshDirs(projectSession.directory)
-      const opened = await openSession(projectSession)
-      if (opened) return
-      clearLastProjectSession(root)
+      await refreshDirs(projectSession.directory);
+      const opened = await openSession(projectSession);
+      if (opened) return;
+      clearLastProjectSession(root);
     }
 
     const latest = latestRootSession(
       dirs.map((item) => serverSync().child(item, { bootstrap: false })[0]),
       Date.now(),
-    )
+    );
     if (latest && (await openSession(latest))) {
-      return
+      return;
     }
 
     const fetched = latestRootSession(
@@ -1237,131 +1297,142 @@ export default function LegacyLayout(props: ParentProps) {
         })),
       ),
       Date.now(),
-    )
+    );
     if (fetched && (await openSession(fetched))) {
-      return
+      return;
     }
 
-    navigateWithSidebarReset(`/${base64Encode(root)}/session`)
+    navigateWithSidebarReset(`/${base64Encode(root)}/session`);
   }
 
   function navigateToSession(session: Session | undefined) {
-    if (!session) return
-    navigateWithSidebarReset(`/${base64Encode(session.directory)}/session/${session.id}`)
+    if (!session) return;
+    navigateWithSidebarReset(`/${base64Encode(session.directory)}/session/${session.id}`);
   }
 
   function openProject(directory: string, navigate = true) {
-    layout.projects.open(directory)
-    if (navigate) return navigateToProject(directory)
+    layout.projects.open(directory);
+    if (navigate) return navigateToProject(directory);
   }
 
   const handleDeepLinks = (urls: string[]) => {
-    if (!server.isLocal()) return
+    if (!server.isLocal()) return;
 
     for (const directory of collectOpenProjectDeepLinks(urls)) {
-      void openProject(directory)
+      void openProject(directory);
     }
 
     for (const link of collectNewSessionDeepLinks(urls)) {
-      void openProject(link.directory, false)
-      const slug = base64Encode(link.directory)
+      void openProject(link.directory, false);
+      const slug = base64Encode(link.directory);
       if (link.prompt) {
         setSessionHandoff(SessionStateKey.from(server.scope(), SessionRouteKey.fromLegacy(slug)), {
           prompt: link.prompt,
-        })
+        });
       }
-      const href = link.prompt ? `/${slug}/session?prompt=${encodeURIComponent(link.prompt)}` : `/${slug}/session`
-      navigateWithSidebarReset(href)
+      const href = link.prompt
+        ? `/${slug}/session?prompt=${encodeURIComponent(link.prompt)}`
+        : `/${slug}/session`;
+      navigateWithSidebarReset(href);
     }
-  }
+  };
 
   onMount(() => {
     const handler = (event: Event) => {
-      const detail = (event as CustomEvent<{ urls: string[] }>).detail
-      const urls = detail?.urls ?? []
-      if (urls.length === 0) return
-      handleDeepLinks(urls)
-    }
+      const detail = (event as CustomEvent<{ urls: string[] }>).detail;
+      const urls = detail?.urls ?? [];
+      if (urls.length === 0) return;
+      handleDeepLinks(urls);
+    };
 
-    handleDeepLinks(drainPendingDeepLinks(window))
-    makeEventListener(window, deepLinkEvent, handler as EventListener)
-  })
+    handleDeepLinks(drainPendingDeepLinks(window));
+    makeEventListener(window, deepLinkEvent, handler as EventListener);
+  });
 
   async function renameProject(project: LocalProject, next: string) {
-    const current = displayName(project)
-    if (next === current) return
-    const name = next === getFilename(project.worktree) ? "" : next
+    const current = displayName(project);
+    if (next === current) return;
+    const name = next === getFilename(project.worktree) ? "" : next;
 
     if (project.id && project.id !== "global") {
-      await serverSDK().client.project.update({ projectID: project.id, directory: project.worktree, name })
-      return
+      await serverSDK().client.project.update({
+        projectID: project.id,
+        directory: project.worktree,
+        name,
+      });
+      return;
     }
 
-    serverSync().project.meta(project.worktree, { name })
+    serverSync().project.meta(project.worktree, { name });
   }
 
-  const renameWorkspace = (directory: string, next: string, projectId?: string, branch?: string) => {
-    const current = workspaceName(directory, projectId, branch) ?? branch ?? getFilename(directory)
-    if (current === next) return
-    setWorkspaceName(directory, next, projectId, branch)
-  }
+  const renameWorkspace = (
+    directory: string,
+    next: string,
+    projectId?: string,
+    branch?: string,
+  ) => {
+    const current = workspaceName(directory, projectId, branch) ?? branch ?? getFilename(directory);
+    if (current === next) return;
+    setWorkspaceName(directory, next, projectId, branch);
+  };
 
   function closeProject(directory: string) {
-    const list = layout.projects.list()
-    const key = pathKey(directory)
-    const index = list.findIndex((x) => pathKey(x.worktree) === key)
-    const active = pathKey(currentProject()?.worktree ?? "") === key
-    if (index === -1) return
+    const list = layout.projects.list();
+    const key = pathKey(directory);
+    const index = list.findIndex((x) => pathKey(x.worktree) === key);
+    const active = pathKey(currentProject()?.worktree ?? "") === key;
+    if (index === -1) return;
 
     if (!active) {
-      layout.projects.close(directory)
-      return
+      layout.projects.close(directory);
+      return;
     }
 
     if (list.length === 1) {
-      layout.projects.close(directory)
-      navigate("/")
-      return
+      layout.projects.close(directory);
+      navigate("/");
+      return;
     }
 
-    const next = list[index + 1] ?? list[index - 1]
+    const next = list[index + 1] ?? list[index - 1];
 
-    navigateWithSidebarReset(`/${base64Encode(next.worktree)}/session`)
-    layout.projects.close(directory)
+    navigateWithSidebarReset(`/${base64Encode(next.worktree)}/session`);
+    layout.projects.close(directory);
     queueMicrotask(() => {
-      void navigateToProject(next.worktree)
-    })
+      void navigateToProject(next.worktree);
+    });
   }
 
   function toggleProjectWorkspaces(project: LocalProject) {
-    const enabled = layout.sidebar.workspaces(project.worktree)()
+    const enabled = layout.sidebar.workspaces(project.worktree)();
     if (enabled) {
-      layout.sidebar.toggleWorkspaces(project.worktree)
-      return
+      layout.sidebar.toggleWorkspaces(project.worktree);
+      return;
     }
-    if (project.vcs !== "git") return
-    layout.sidebar.toggleWorkspaces(project.worktree)
+    if (project.vcs !== "git") return;
+    layout.sidebar.toggleWorkspaces(project.worktree);
   }
 
   const showEditProjectDialog = (conn: ServerConnection.Any, project: LocalProject) => {
-    const run = ++dialogRun
+    const run = ++dialogRun;
     void import("@/components/dialog-edit-project").then((x) => {
-      if (dialogDead || dialogRun !== run) return
-      dialog.show(() => <x.DialogEditProject server={conn} project={project} />)
-    })
-  }
+      if (dialogDead || dialogRun !== run) return;
+      dialog.show(() => <x.DialogEditProject server={conn} project={project} />);
+    });
+  };
 
   function chooseProject() {
-    const conn = server.current
-    if (!conn) return
+    const conn = server.current;
+    if (!conn) return;
     function resolve(result: string | string[] | null) {
       if (Array.isArray(result)) {
         for (const directory of result) {
-          void openProject(directory, false)
+          void openProject(directory, false);
         }
-        void navigateToProject(result[0])
+        void navigateToProject(result[0]);
       } else if (result) {
-        void openProject(result)
+        void openProject(result);
       }
     }
 
@@ -1370,21 +1441,25 @@ export default function LegacyLayout(props: ParentProps) {
       title: language.t("command.project.open"),
       multiple: true,
       onSelect: resolve,
-    })
+    });
   }
 
-  const deleteWorkspace = async (root: string, directory: string, leaveDeletedWorkspace = false) => {
-    if (directory === root) return
+  const deleteWorkspace = async (
+    root: string,
+    directory: string,
+    leaveDeletedWorkspace = false,
+  ) => {
+    if (directory === root) return;
 
-    const current = currentDir()
-    const currentKey = pathKey(current)
-    const deletedKey = pathKey(directory)
-    const shouldLeave = leaveDeletedWorkspace || (!!params.dir && currentKey === deletedKey)
+    const current = currentDir();
+    const currentKey = pathKey(current);
+    const deletedKey = pathKey(directory);
+    const shouldLeave = leaveDeletedWorkspace || (!!params.dir && currentKey === deletedKey);
     if (!leaveDeletedWorkspace && shouldLeave) {
-      navigateWithSidebarReset(`/${base64Encode(root)}/session`)
+      navigateWithSidebarReset(`/${base64Encode(root)}/session`);
     }
 
-    setBusy(directory, true)
+    setBusy(directory, true);
 
     const result = await serverSDK()
       .client.worktree.remove({ directory: root, worktreeRemoveInput: { directory } })
@@ -1393,71 +1468,77 @@ export default function LegacyLayout(props: ParentProps) {
         showToast({
           title: language.t("workspace.delete.failed.title"),
           description: errorMessage(err, language.t("common.requestFailed")),
-        })
-        return false
-      })
+        });
+        return false;
+      });
 
-    setBusy(directory, false)
+    setBusy(directory, false);
 
-    if (!result) return
+    if (!result) return;
 
     if (pathKey(store.lastProjectSession[root]?.directory ?? "") === pathKey(directory)) {
-      clearLastProjectSession(root)
+      clearLastProjectSession(root);
     }
 
     serverSync().set(
       "project",
       produce((draft) => {
-        const project = draft.find((item) => item.worktree === root)
-        if (!project) return
-        project.sandboxes = (project.sandboxes ?? []).filter((sandbox) => sandbox !== directory)
+        const project = draft.find((item) => item.worktree === root);
+        if (!project) return;
+        project.sandboxes = (project.sandboxes ?? []).filter((sandbox) => sandbox !== directory);
       }),
-    )
-    setStore("workspaceOrder", root, (order) => (order ?? []).filter((workspace) => workspace !== directory))
+    );
+    setStore("workspaceOrder", root, (order) =>
+      (order ?? []).filter((workspace) => workspace !== directory),
+    );
 
-    layout.projects.close(directory)
-    layout.projects.open(root)
+    layout.projects.close(directory);
+    layout.projects.open(root);
 
-    if (shouldLeave) return
+    if (shouldLeave) return;
 
-    const nextCurrent = currentDir()
-    const nextKey = pathKey(nextCurrent)
-    const project = layout.projects.list().find((item) => item.worktree === root)
+    const nextCurrent = currentDir();
+    const nextKey = pathKey(nextCurrent);
+    const project = layout.projects.list().find((item) => item.worktree === root);
     const dirs = project
-      ? effectiveWorkspaceOrder(root, [root, ...(project.sandboxes ?? [])], store.workspaceOrder[root])
-      : [root]
-    const valid = dirs.some((item) => pathKey(item) === nextKey)
+      ? effectiveWorkspaceOrder(
+          root,
+          [root, ...(project.sandboxes ?? [])],
+          store.workspaceOrder[root],
+        )
+      : [root];
+    const valid = dirs.some((item) => pathKey(item) === nextKey);
 
     if (params.dir && projectRoot(nextCurrent) === root && !valid) {
-      navigateWithSidebarReset(`/${base64Encode(root)}/session`)
+      navigateWithSidebarReset(`/${base64Encode(root)}/session`);
     }
-  }
+  };
 
   const resetWorkspace = async (root: string, directory: string) => {
-    if (directory === root) return
-    setBusy(directory, true)
+    if (directory === root) return;
+    setBusy(directory, true);
 
     const progress = showToast({
       persistent: true,
       title: language.t("workspace.resetting.title"),
       description: language.t("workspace.resetting.description"),
-    })
-    const dismiss = () => toaster.dismiss(progress)
+    });
+    const dismiss = () => toaster.dismiss(progress);
 
     const sessions: Session[] = await serverSDK()
       .client.session.list({ directory })
       .then((x) => x.data ?? [])
-      .catch(() => [])
+      .catch(() => []);
 
     clearWorkspaceTerminals(
       directory,
       sessions.map((s) => s.id),
       platform,
       serverSDK().scope,
-    )
+    );
     await serverSDK()
       .client.instance.dispose({ directory })
-      .catch(() => undefined)
+      .catch(() => undefined);
 
     const result = await serverSDK()
       .client.worktree.reset({ directory: root, worktreeResetInput: { directory } })
@@ -1466,17 +1547,17 @@ export default function LegacyLayout(props: ParentProps) {
         showToast({
           title: language.t("workspace.reset.failed.title"),
           description: errorMessage(err, language.t("common.requestFailed")),
-        })
-        return false
-      })
+        });
+        return false;
+      });
 
     if (!result) {
-      setBusy(directory, false)
-      dismiss()
-      return
+      setBusy(directory, false);
+      dismiss();
+      return;
     }
 
-    const archivedAt = Date.now()
+    const archivedAt = Date.now();
     await Promise.all(
       sessions
         .filter((session) => session.time.archived === undefined)
@@ -1489,10 +1570,10 @@ export default function LegacyLayout(props: ParentProps) {
             })
             .catch(() => undefined),
         ),
-    )
+    );
 
-    setBusy(directory, false)
-    dismiss()
+    setBusy(directory, false);
+    dismiss();
 
     showToast({
       title: language.t("workspace.reset.success.title"),
@@ -1501,9 +1582,9 @@ export default function LegacyLayout(props: ParentProps) {
         {
           label: language.t("command.session.new"),
           onClick: () => {
-            const href = `/${base64Encode(directory)}/session`
-            navigate(href)
-            layout.mobileSidebar.hide()
+            const href = `/${base64Encode(directory)}/session`;
+            navigate(href);
+            layout.mobileSidebar.hide();
           },
         },
         {
@@ -1511,44 +1592,45 @@ export default function LegacyLayout(props: ParentProps) {
           onClick: "dismiss",
         },
       ],
-    })
-  }
+    });
+  };
 
   function DialogDeleteWorkspace(props: { root: string; directory: string }) {
-    const name = createMemo(() => getFilename(props.directory))
+    const name = createMemo(() => getFilename(props.directory));
     const [data, setData] = createStore({
       status: "loading" as "loading" | "ready" | "error",
       dirty: false,
-    })
+    });
 
     onMount(() => {
       serverSDK()
         .client.vcs.status({ directory: props.directory })
         .then((x) => {
-          const files = x.data ?? []
-          const dirty = files.length > 0
-          setData({ status: "ready", dirty })
+          const files = x.data ?? [];
+          const dirty = files.length > 0;
+          setData({ status: "ready", dirty });
         })
         .catch(() => {
-          setData({ status: "error", dirty: false })
-        })
-    })
+          setData({ status: "error", dirty: false });
+        });
+    });
 
     const handleDelete = () => {
-      const leaveDeletedWorkspace = !!params.dir && pathKey(currentDir()) === pathKey(props.directory)
+      const leaveDeletedWorkspace =
+        !!params.dir && pathKey(currentDir()) === pathKey(props.directory);
       if (leaveDeletedWorkspace) {
-        navigateWithSidebarReset(`/${base64Encode(props.root)}/session`)
+        navigateWithSidebarReset(`/${base64Encode(props.root)}/session`);
       }
-      dialog.close()
-      void deleteWorkspace(props.root, props.directory, leaveDeletedWorkspace)
-    }
+      dialog.close();
+      void deleteWorkspace(props.root, props.directory, leaveDeletedWorkspace);
+    };
 
     const description = () => {
-      if (data.status === "loading") return language.t("workspace.status.checking")
-      if (data.status === "error") return language.t("workspace.status.error")
-      if (!data.dirty) return language.t("workspace.status.clean")
-      return language.t("workspace.status.dirty")
-    }
+      if (data.status === "loading") return language.t("workspace.status.checking");
+      if (data.status === "error") return language.t("workspace.status.error");
+      if (!data.dirty) return language.t("workspace.status.clean");
+      return language.t("workspace.status.dirty");
+    };
 
     return (
       <Dialog title={language.t("workspace.delete.title")} fit>
@@ -1563,66 +1645,71 @@ export default function LegacyLayout(props: ParentProps) {
             <Button variant="ghost" size="large" onClick={() => dialog.close()}>
               {language.t("common.cancel")}
             </Button>
-            <Button variant="primary" size="large" disabled={data.status === "loading"} onClick={handleDelete}>
+            <Button
+              variant="primary"
+              size="large"
+              disabled={data.status === "loading"}
+              onClick={handleDelete}
+            >
               {language.t("workspace.delete.button")}
             </Button>
           </div>
         </div>
       </Dialog>
-    )
+    );
   }
 
   function DialogResetWorkspace(props: { root: string; directory: string }) {
-    const name = createMemo(() => getFilename(props.directory))
+    const name = createMemo(() => getFilename(props.directory));
     const [state, setState] = createStore({
       status: "loading" as "loading" | "ready" | "error",
       dirty: false,
       sessions: [] as Session[],
-    })
+    });
 
     const refresh = async () => {
       const sessions = await serverSDK()
         .client.session.list({ directory: props.directory })
         .then((x) => x.data ?? [])
-        .catch(() => [])
-      const active = sessions.filter((session) => session.time.archived === undefined)
-      setState({ sessions: active })
-    }
+        .catch(() => []);
+      const active = sessions.filter((session) => session.time.archived === undefined);
+      setState({ sessions: active });
+    };
 
     onMount(() => {
       serverSDK()
         .client.vcs.status({ directory: props.directory })
         .then((x) => {
-          const files = x.data ?? []
-          const dirty = files.length > 0
-          setState({ status: "ready", dirty })
-          void refresh()
+          const files = x.data ?? [];
+          const dirty = files.length > 0;
+          setState({ status: "ready", dirty });
+          void refresh();
         })
         .catch(() => {
-          setState({ status: "error", dirty: false })
-        })
-    })
+          setState({ status: "error", dirty: false });
+        });
+    });
 
     const handleReset = () => {
-      dialog.close()
-      void resetWorkspace(props.root, props.directory)
-    }
+      dialog.close();
+      void resetWorkspace(props.root, props.directory);
+    };
 
-    const archivedCount = () => state.sessions.length
+    const archivedCount = () => state.sessions.length;
 
     const description = () => {
-      if (state.status === "loading") return language.t("workspace.status.checking")
-      if (state.status === "error") return language.t("workspace.status.error")
-      if (!state.dirty) return language.t("workspace.status.clean")
-      return language.t("workspace.status.dirty")
-    }
+      if (state.status === "loading") return language.t("workspace.status.checking");
+      if (state.status === "error") return language.t("workspace.status.error");
+      if (!state.dirty) return language.t("workspace.status.clean");
+      return language.t("workspace.status.dirty");
+    };
 
     const archivedLabel = () => {
-      const count = archivedCount()
-      if (count === 0) return language.t("workspace.reset.archived.none")
-      if (count === 1) return language.t("workspace.reset.archived.one")
-      return language.t("workspace.reset.archived.many", { count })
-    }
+      const count = archivedCount();
+      if (count === 0) return language.t("workspace.reset.archived.none");
+      if (count === 1) return language.t("workspace.reset.archived.one");
+      return language.t("workspace.reset.archived.many", { count });
+    };
 
     return (
       <Dialog title={language.t("workspace.reset.title")} fit>
@@ -1639,188 +1726,204 @@ export default function LegacyLayout(props: ParentProps) {
             <Button variant="ghost" size="large" onClick={() => dialog.close()}>
               {language.t("common.cancel")}
             </Button>
-            <Button variant="primary" size="large" disabled={state.status === "loading"} onClick={handleReset}>
+            <Button
+              variant="primary"
+              size="large"
+              disabled={state.status === "loading"}
+              onClick={handleReset}
+            >
               {language.t("workspace.reset.button")}
             </Button>
           </div>
         </div>
       </Dialog>
-    )
+    );
   }
 
   const activeRoute = {
     session: "",
     sessionProject: "",
     directory: "",
-  }
+  };
 
   createEffect(
     on(
       () => {
-        return [pageReady(), route().slug, params.id, currentProject()?.worktree, currentDir()] as const
+        return [
+          pageReady(),
+          route().slug,
+          params.id,
+          currentProject()?.worktree,
+          currentDir(),
+        ] as const;
       },
       ([ready, slug, id, root, dir]) => {
         if (!ready || !slug || !dir) {
-          activeRoute.session = ""
-          activeRoute.sessionProject = ""
-          activeRoute.directory = ""
-          return
+          activeRoute.session = "";
+          activeRoute.sessionProject = "";
+          activeRoute.directory = "";
+          return;
         }
 
         if (!id) {
-          activeRoute.session = ""
-          activeRoute.sessionProject = ""
-          activeRoute.directory = ""
-          return
+          activeRoute.session = "";
+          activeRoute.sessionProject = "";
+          activeRoute.directory = "";
+          return;
         }
 
-        const session = `${slug}/${id}`
+        const session = `${slug}/${id}`;
 
         if (!root) {
-          activeRoute.session = session
-          activeRoute.directory = dir
-          activeRoute.sessionProject = ""
-          return
+          activeRoute.session = session;
+          activeRoute.directory = dir;
+          activeRoute.sessionProject = "";
+          return;
         }
 
-        if (server.projects.last() !== root) server.projects.touch(root)
+        if (server.projects.last() !== root) server.projects.touch(root);
 
-        const changed = session !== activeRoute.session || dir !== activeRoute.directory
+        const changed = session !== activeRoute.session || dir !== activeRoute.directory;
         if (changed) {
-          activeRoute.session = session
-          activeRoute.directory = dir
-          activeRoute.sessionProject = syncSessionRoute(dir, id, root)
-          return
+          activeRoute.session = session;
+          activeRoute.directory = dir;
+          activeRoute.sessionProject = syncSessionRoute(dir, id, root);
+          return;
         }
 
-        if (root === activeRoute.sessionProject) return
-        activeRoute.directory = dir
-        activeRoute.sessionProject = rememberSessionRoute(dir, id, root)
+        if (root === activeRoute.sessionProject) return;
+        activeRoute.directory = dir;
+        activeRoute.sessionProject = rememberSessionRoute(dir, id, root);
       },
     ),
-  )
+  );
 
   createEffect(() => {
     document.documentElement.style.setProperty(
       "--dialog-left-margin",
       `${layout.sidebar.opened() ? layout.sidebar.width() : 48}px`,
-    )
-  })
+    );
+  });
 
-  const side = createMemo(() => Math.max(layout.sidebar.width(), 244))
-  const panel = createMemo(() => Math.max(side() - 64, 0))
+  const side = createMemo(() => Math.max(layout.sidebar.width(), 244));
+  const panel = createMemo(() => Math.max(side() - 64, 0));
 
-  const loadedSessionDirs = new Set<string>()
+  const loadedSessionDirs = new Set<string>();
 
   createEffect(
     on(
       visibleSessionDirs,
       (dirs) => {
         if (dirs.length === 0) {
-          loadedSessionDirs.clear()
-          return
+          loadedSessionDirs.clear();
+          return;
         }
 
-        const next = new Set(dirs)
+        const next = new Set(dirs);
         for (const directory of next) {
-          if (loadedSessionDirs.has(directory)) continue
-          void serverSync().project.loadSessions(directory)
+          if (loadedSessionDirs.has(directory)) continue;
+          void serverSync().project.loadSessions(directory);
         }
 
-        loadedSessionDirs.clear()
+        loadedSessionDirs.clear();
         for (const directory of next) {
-          loadedSessionDirs.add(directory)
+          loadedSessionDirs.add(directory);
         }
       },
       { defer: true },
     ),
-  )
+  );
 
   function handleDragStart(event: unknown) {
-    const id = getDraggableId(event)
-    if (!id) return
-    setHoverProject(undefined)
-    setStore("activeProject", id)
+    const id = getDraggableId(event);
+    if (!id) return;
+    setHoverProject(undefined);
+    setStore("activeProject", id);
   }
 
   function handleDragOver(event: DragEvent) {
-    const { draggable, droppable } = event
+    const { draggable, droppable } = event;
     if (draggable && droppable) {
-      const projects = layout.projects.list()
-      const fromIndex = projects.findIndex((p) => p.worktree === draggable.id.toString())
-      const toIndex = projects.findIndex((p) => p.worktree === droppable.id.toString())
+      const projects = layout.projects.list();
+      const fromIndex = projects.findIndex((p) => p.worktree === draggable.id.toString());
+      const toIndex = projects.findIndex((p) => p.worktree === droppable.id.toString());
       if (fromIndex !== toIndex && toIndex !== -1) {
-        layout.projects.move(draggable.id.toString(), toIndex)
+        layout.projects.move(draggable.id.toString(), toIndex);
       }
     }
   }
 
   function handleDragEnd() {
-    setStore("activeProject", undefined)
+    setStore("activeProject", undefined);
   }
 
   function workspaceIds(project: LocalProject | undefined) {
-    if (!project) return []
-    const local = project.worktree
-    const dirs = [local, ...(project.sandboxes ?? [])]
-    const active = currentProject()
-    const directory = pathKey(active?.worktree ?? "") === pathKey(project.worktree) ? currentDir() : undefined
+    if (!project) return [];
+    const local = project.worktree;
+    const dirs = [local, ...(project.sandboxes ?? [])];
+    const active = currentProject();
+    const directory =
+      pathKey(active?.worktree ?? "") === pathKey(project.worktree) ? currentDir() : undefined;
     const extra =
-      directory && pathKey(directory) !== pathKey(local) && !dirs.some((item) => pathKey(item) === pathKey(directory))
+      directory &&
+      pathKey(directory) !== pathKey(local) &&
+      !dirs.some((item) => pathKey(item) === pathKey(directory))
         ? directory
-        : undefined
-    const pending = extra ? WorktreeState.get(serverSDK().scope, extra)?.status === "pending" : false
+        : undefined;
+    const pending = extra
+      ? WorktreeState.get(serverSDK().scope, extra)?.status === "pending"
+      : false;
 
-    const ordered = effectiveWorkspaceOrder(local, dirs, store.workspaceOrder[project.worktree])
-    if (pending && extra) return [local, extra, ...ordered.filter((item) => item !== local)]
-    if (!extra) return ordered
-    if (pending) return ordered
-    return [...ordered, extra]
+    const ordered = effectiveWorkspaceOrder(local, dirs, store.workspaceOrder[project.worktree]);
+    if (pending && extra) return [local, extra, ...ordered.filter((item) => item !== local)];
+    if (!extra) return ordered;
+    if (pending) return ordered;
+    return [...ordered, extra];
   }
 
   const sidebarProject = createMemo(() => {
-    if (layout.sidebar.opened()) return currentProject()
-    const hovered = hoverProjectData()
-    if (hovered) return hovered
-    return currentProject()
-  })
+    if (layout.sidebar.opened()) return currentProject();
+    const hovered = hoverProjectData();
+    if (hovered) return hovered;
+    return currentProject();
+  });
 
   function handleWorkspaceDragStart(event: unknown) {
-    const id = getDraggableId(event)
-    if (!id) return
-    setStore("activeWorkspace", id)
+    const id = getDraggableId(event);
+    if (!id) return;
+    setStore("activeWorkspace", id);
   }
 
   function handleWorkspaceDragOver(event: DragEvent) {
-    const { draggable, droppable } = event
-    if (!draggable || !droppable) return
+    const { draggable, droppable } = event;
+    if (!draggable || !droppable) return;
 
-    const project = sidebarProject()
-    if (!project) return
+    const project = sidebarProject();
+    if (!project) return;
 
-    const ids = workspaceIds(project)
-    const fromIndex = ids.findIndex((dir) => dir === draggable.id.toString())
-    const toIndex = ids.findIndex((dir) => dir === droppable.id.toString())
-    if (fromIndex === -1 || toIndex === -1) return
-    if (fromIndex === toIndex) return
+    const ids = workspaceIds(project);
+    const fromIndex = ids.findIndex((dir) => dir === draggable.id.toString());
+    const toIndex = ids.findIndex((dir) => dir === droppable.id.toString());
+    if (fromIndex === -1 || toIndex === -1) return;
+    if (fromIndex === toIndex) return;
 
-    const result = ids.slice()
-    const [item] = result.splice(fromIndex, 1)
-    if (!item) return
-    result.splice(toIndex, 0, item)
+    const result = ids.slice();
+    const [item] = result.splice(fromIndex, 1);
+    if (!item) return;
+    result.splice(toIndex, 0, item);
     setStore(
       "workspaceOrder",
       project.worktree,
       result.filter((directory) => pathKey(directory) !== pathKey(project.worktree)),
-    )
+    );
   }
 
   function handleWorkspaceDragEnd() {
-    setStore("activeWorkspace", undefined)
+    setStore("activeWorkspace", undefined);
   }
 
   const createWorkspace = async (project: LocalProject) => {
-    clearSidebarHoverState()
+    clearSidebarHoverState();
     const created = await serverSDK()
       .client.worktree.create({ directory: project.worktree })
       .then((x) => x.data)
@@ -1828,36 +1931,41 @@ export default function LegacyLayout(props: ParentProps) {
         showToast({
           title: language.t("workspace.create.failed.title"),
           description: errorMessage(err, language.t("common.requestFailed")),
-        })
-        return undefined
-      })
+        });
+        return undefined;
+      });
 
-    if (!created?.directory) return
+    if (!created?.directory) return;
 
-    setWorkspaceName(created.directory, created.branch ?? getFilename(created.directory), project.id, created.branch)
+    setWorkspaceName(
+      created.directory,
+      created.branch ?? getFilename(created.directory),
+      project.id,
+      created.branch,
+    );
 
-    const local = project.worktree
-    const key = pathKey(created.directory)
-    const root = pathKey(local)
+    const local = project.worktree;
+    const key = pathKey(created.directory);
+    const root = pathKey(local);
 
-    setBusy(created.directory, true)
-    WorktreeState.pending(serverSDK().scope, created.directory)
-    setStore("workspaceExpanded", key, true)
+    setBusy(created.directory, true);
+    WorktreeState.pending(serverSDK().scope, created.directory);
+    setStore("workspaceExpanded", key, true);
     if (key !== created.directory) {
-      setStore("workspaceExpanded", created.directory, true)
+      setStore("workspaceExpanded", created.directory, true);
     }
     setStore("workspaceOrder", project.worktree, (prev) => {
-      const existing = prev ?? []
+      const existing = prev ?? [];
       const next = existing.filter((item) => {
-        const id = pathKey(item)
-        return id !== root && id !== key
-      })
-      return [created.directory, ...next]
-    })
+        const id = pathKey(item);
+        return id !== root && id !== key;
+      });
+      return [created.directory, ...next];
+    });
 
-    serverSync().child(created.directory)
-    navigateWithSidebarReset(`/${base64Encode(created.directory)}/session`)
-  }
+    serverSync().child(created.directory);
+    navigateWithSidebarReset(`/${base64Encode(created.directory)}/session`);
+  };
 
   const workspaceSidebarCtx: WorkspaceSidebarContext = {
     currentDir,
@@ -1882,9 +1990,9 @@ export default function LegacyLayout(props: ParentProps) {
     showDeleteWorkspaceDialog: (root, directory) =>
       dialog.show(() => <DialogDeleteWorkspace root={root} directory={directory} />),
     setScrollContainerRef: (el, mobile) => {
-      if (!mobile) scrollContainerRef = el
+      if (!mobile) scrollContainerRef = el;
     },
-  }
+  };
 
   const projectSidebarCtx: ProjectSidebarContext = {
     currentDir,
@@ -1896,15 +2004,16 @@ export default function LegacyLayout(props: ParentProps) {
     onProjectMouseLeave: (worktree) => aim.leave(worktree),
     onProjectFocus: (worktree) => aim.activate(worktree),
     onHoverOpenChanged: (worktree, hoverOpen) => {
-      if (!hoverOpen && state.hoverProject && state.hoverProject !== worktree) return
-      setState("hoverProject", hoverOpen ? worktree : undefined)
+      if (!hoverOpen && state.hoverProject && state.hoverProject !== worktree) return;
+      setState("hoverProject", hoverOpen ? worktree : undefined);
     },
     navigateToProject,
     openSidebar: () => layout.sidebar.open(),
     closeProject,
     showEditProjectDialog: (proj) => showEditProjectDialog(server.current!, proj),
     toggleProjectWorkspaces,
-    workspacesEnabled: (project) => project.vcs === "git" && layout.sidebar.workspaces(project.worktree)(),
+    workspacesEnabled: (project) =>
+      project.vcs === "git" && layout.sidebar.workspaces(project.worktree)(),
     workspaceIds,
     workspaceLabel,
     sessionProps: {
@@ -1914,53 +2023,60 @@ export default function LegacyLayout(props: ParentProps) {
       prefetchSession,
       archiveSession,
     },
-  }
+  };
 
   const SidebarPanel = (panelProps: {
-    project: Accessor<LocalProject | undefined>
-    mobile?: boolean
-    merged?: boolean
+    project: Accessor<LocalProject | undefined>;
+    mobile?: boolean;
+    merged?: boolean;
   }) => {
-    const project = panelProps.project
-    const merged = createMemo(() => panelProps.mobile || (panelProps.merged ?? layout.sidebar.opened()))
-    const hover = createMemo(() => !panelProps.mobile && panelProps.merged === false && !layout.sidebar.opened())
-    const empty = createMemo(() => !params.dir && layout.projects.list().length === 0)
+    const project = panelProps.project;
+    const merged = createMemo(
+      () => panelProps.mobile || (panelProps.merged ?? layout.sidebar.opened()),
+    );
+    const hover = createMemo(
+      () => !panelProps.mobile && panelProps.merged === false && !layout.sidebar.opened(),
+    );
+    const empty = createMemo(() => !params.dir && layout.projects.list().length === 0);
     const projectName = createMemo(() => {
-      const item = project()
-      if (!item) return ""
-      return item.name || getFilename(item.worktree)
-    })
-    const projectId = createMemo(() => project()?.id ?? "")
-    const worktree = createMemo(() => project()?.worktree ?? "")
+      const item = project();
+      if (!item) return "";
+      return item.name || getFilename(item.worktree);
+    });
+    const projectId = createMemo(() => project()?.id ?? "");
+    const worktree = createMemo(() => project()?.worktree ?? "");
     const slug = createMemo(() => {
-      const dir = worktree()
-      if (!dir) return ""
-      return base64Encode(dir)
-    })
+      const dir = worktree();
+      if (!dir) return "";
+      return base64Encode(dir);
+    });
     const workspaces = createMemo(() => {
-      const item = project()
-      if (!item) return [] as string[]
-      return workspaceIds(item)
-    })
+      const item = project();
+      if (!item) return [] as string[];
+      return workspaceIds(item);
+    });
     const unseenCount = createMemo(() =>
-      workspaces().reduce((total, directory) => total + notification.project.unseenCount(directory), 0),
-    )
+      workspaces().reduce(
+        (total, directory) => total + notification.project.unseenCount(directory),
+        0,
+      ),
+    );
     const clearNotifications = () =>
       workspaces()
         .filter((directory) => notification.project.unseenCount(directory) > 0)
-        .forEach((directory) => notification.project.markViewed(directory))
+        .forEach((directory) => notification.project.markViewed(directory));
     const workspacesEnabled = createMemo(() => {
-      const item = project()
-      if (!item) return false
-      if (item.vcs !== "git") return false
-      return layout.sidebar.workspaces(item.worktree)()
-    })
+      const item = project();
+      if (!item) return false;
+      if (item.vcs !== "git") return false;
+      return layout.sidebar.workspaces(item.worktree)();
+    });
     const canToggle = createMemo(() => {
-      const item = project()
-      if (!item) return false
-      return item.vcs === "git" || layout.sidebar.workspaces(item.worktree)()
-    })
-    const homedir = createMemo(() => serverSync().data.path.home)
+      const item = project();
+      if (!item) return false;
+      return item.vcs === "git" || layout.sidebar.workspaces(item.worktree)();
+    });
+    const homedir = createMemo(() => serverSync().data.path.home);
 
     return (
       <div
@@ -1984,8 +2100,13 @@ export default function LegacyLayout(props: ParentProps) {
               <div class="flex-1 min-h-0 -mt-4 flex items-center justify-center px-6 pb-64 text-center">
                 <div class="mt-8 flex max-w-60 flex-col items-center gap-6 text-center">
                   <div class="flex flex-col gap-3">
-                    <div class="text-14-medium text-text-strong">{language.t("sidebar.empty.title")}</div>
-                    <div class="text-14-regular text-text-base" style={{ "line-height": "var(--line-height-normal)" }}>
+                    <div class="text-14-medium text-text-strong">
+                      {language.t("sidebar.empty.title")}
+                    </div>
+                    <div
+                      class="text-14-regular text-text-base"
+                      style={{ "line-height": "var(--line-height-normal)" }}
+                    >
                       {language.t("sidebar.empty.description")}
                     </div>
                   </div>
@@ -2007,7 +2128,7 @@ export default function LegacyLayout(props: ParentProps) {
                       id={`project:${projectId()}`}
                       value={projectName}
                       onSave={(next) => {
-                        void renameProject(project, next)
+                        void renameProject(project, next);
                       }}
                       class="text-14-medium text-text-strong truncate"
                       displayClass="text-14-medium text-text-strong truncate"
@@ -2049,17 +2170,19 @@ export default function LegacyLayout(props: ParentProps) {
                       <DropdownMenu.Content class="mt-1">
                         <DropdownMenu.Item
                           onSelect={() => {
-                            showEditProjectDialog(server.current!, project)
+                            showEditProjectDialog(server.current!, project);
                           }}
                         >
-                          <DropdownMenu.ItemLabel>{language.t("common.edit")}</DropdownMenu.ItemLabel>
+                          <DropdownMenu.ItemLabel>
+                            {language.t("common.edit")}
+                          </DropdownMenu.ItemLabel>
                         </DropdownMenu.Item>
                         <DropdownMenu.Item
                           data-action="project-workspaces-toggle"
                           data-project={slug()}
                           disabled={!canToggle()}
                           onSelect={() => {
-                            toggleProjectWorkspaces(project)
+                            toggleProjectWorkspaces(project);
                           }}
                         >
                           <DropdownMenu.ItemLabel>
@@ -2083,12 +2206,14 @@ export default function LegacyLayout(props: ParentProps) {
                           data-action="project-close-menu"
                           data-project={slug()}
                           onSelect={() => {
-                            const dir = worktree()
-                            if (!dir) return
-                            closeProject(dir)
+                            const dir = worktree();
+                            if (!dir) return;
+                            closeProject(dir);
                           }}
                         >
-                          <DropdownMenu.ItemLabel>{language.t("common.close")}</DropdownMenu.ItemLabel>
+                          <DropdownMenu.ItemLabel>
+                            {language.t("common.close")}
+                          </DropdownMenu.ItemLabel>
                         </DropdownMenu.Item>
                       </DropdownMenu.Content>
                     </DropdownMenu.Portal>
@@ -2106,9 +2231,9 @@ export default function LegacyLayout(props: ParentProps) {
                           size="large"
                           class="w-full"
                           onClick={() => {
-                            const dir = worktree()
-                            if (!dir) return
-                            navigateWithSidebarReset(`/${base64Encode(dir)}/session`)
+                            const dir = worktree();
+                            if (!dir) return;
+                            navigateWithSidebarReset(`/${base64Encode(dir)}/session`);
                           }}
                         >
                           <IconV2 name="edit" size="small" />
@@ -2133,7 +2258,7 @@ export default function LegacyLayout(props: ParentProps) {
                         icon="plus-small"
                         class="w-full"
                         onClick={() => {
-                          void createWorkspace(project)
+                          void createWorkspace(project);
                         }}
                       >
                         {language.t("workspace.new")}
@@ -2150,7 +2275,7 @@ export default function LegacyLayout(props: ParentProps) {
                         <ConstrainDragXAxis />
                         <div
                           ref={(el) => {
-                            if (!panelProps.mobile) scrollContainerRef = el
+                            if (!panelProps.mobile) scrollContainerRef = el;
                           }}
                           class="size-full flex flex-col py-2 gap-4 overflow-y-auto no-scrollbar [overflow-anchor:none]"
                         >
@@ -2187,17 +2312,30 @@ export default function LegacyLayout(props: ParentProps) {
         <div
           class="shrink-0 px-3 py-3"
           classList={{
-            hidden: store.gettingStartedDismissed || !(providers.all().size > 0 && providers.paid().length === 0),
+            hidden:
+              store.gettingStartedDismissed ||
+              !(providers.all().size > 0 && providers.paid().length === 0),
           }}
         >
-          <div class="rounded-xl bg-background-base shadow-xs-border-base" data-component="getting-started">
+          <div
+            class="rounded-xl bg-background-base shadow-xs-border-base"
+            data-component="getting-started"
+          >
             <div class="p-3 flex flex-col gap-6">
               <div class="flex flex-col gap-2">
-                <div class="text-14-medium text-text-strong">{language.t("sidebar.gettingStarted.title")}</div>
-                <div class="text-14-regular text-text-base" style={{ "line-height": "var(--line-height-normal)" }}>
+                <div class="text-14-medium text-text-strong">
+                  {language.t("sidebar.gettingStarted.title")}
+                </div>
+                <div
+                  class="text-14-regular text-text-base"
+                  style={{ "line-height": "var(--line-height-normal)" }}
+                >
                   {language.t("sidebar.gettingStarted.line1")}
                 </div>
-                <div class="text-14-regular text-text-base" style={{ "line-height": "var(--line-height-normal)" }}>
+                <div
+                  class="text-14-regular text-text-base"
+                  style={{ "line-height": "var(--line-height-normal)" }}
+                >
                   {language.t("sidebar.gettingStarted.line2")}
                 </div>
               </div>
@@ -2205,7 +2343,11 @@ export default function LegacyLayout(props: ParentProps) {
                 <Button size="large" icon="plus-small" onClick={connectProvider}>
                   {language.t("command.provider.connect")}
                 </Button>
-                <Button size="large" variant="ghost" onClick={() => setStore("gettingStartedDismissed", true)}>
+                <Button
+                  size="large"
+                  variant="ghost"
+                  onClick={() => setStore("gettingStartedDismissed", true)}
+                >
                   {language.t("toast.update.action.notYet")}
                 </Button>
               </div>
@@ -2213,11 +2355,13 @@ export default function LegacyLayout(props: ParentProps) {
           </div>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
-  const projects = () => layout.projects.list()
-  const projectOverlay = () => <ProjectDragOverlay projects={projects} activeProject={() => store.activeProject} />
+  const projects = () => layout.projects.list();
+  const projectOverlay = () => (
+    <ProjectDragOverlay projects={projects} activeProject={() => store.activeProject} />
+  );
   const sidebarContent = (mobile?: boolean) => (
     <SidebarContent
       mobile={mobile}
@@ -2225,7 +2369,12 @@ export default function LegacyLayout(props: ParentProps) {
       aimMove={aim.move}
       projects={projects}
       renderProject={(project) => (
-        <SortableProject ctx={projectSidebarCtx} project={project} sortNow={sortNow} mobile={mobile} />
+        <SortableProject
+          ctx={projectSidebarCtx}
+          project={project}
+          sortNow={sortNow}
+          mobile={mobile}
+        />
       )}
       handleDragStart={handleDragStart}
       handleDragEnd={handleDragEnd}
@@ -2240,17 +2389,25 @@ export default function LegacyLayout(props: ParentProps) {
       helpLabel={() => language.t("sidebar.help")}
       onOpenHelp={() => platform.openLink("https://opencode.ai/desktop-feedback")}
       renderPanel={() =>
-        mobile ? <SidebarPanel project={currentProject} mobile /> : <SidebarPanel project={currentProject} merged />
+        mobile ? (
+          <SidebarPanel project={currentProject} mobile />
+        ) : (
+          <SidebarPanel project={currentProject} merged />
+        )
       }
     />
-  )
+  );
 
   return (
     <div class="relative bg-background-base flex-1 min-h-0 min-w-0 flex flex-col select-none [&_input]:select-text [&_textarea]:select-text [&_[contenteditable]]:select-text">
       {autoselecting() ?? ""}
       <Titlebar update={titlebarUpdate} />
       <Show when={updateVersion() !== undefined}>
-        <UpdateAvailableToast version={updateVersion() ?? ""} install={installUpdate} language={language} />
+        <UpdateAvailableToast
+          version={updateVersion() ?? ""}
+          install={installUpdate}
+          language={language}
+        />
       </Show>
       <div class="flex-1 min-h-0 min-w-0 flex">
         <div class="flex-1 min-h-0 relative">
@@ -2265,16 +2422,16 @@ export default function LegacyLayout(props: ParentProps) {
               }}
               style={{ width: `${side()}px` }}
               ref={(el) => {
-                setState("nav", el)
+                setState("nav", el);
               }}
               onMouseEnter={() => {
-                disarm()
+                disarm();
               }}
               onMouseLeave={() => {
-                aim.reset()
-                if (!sidebarHovering()) return
+                aim.reset();
+                if (!sidebarHovering()) return;
 
-                arm()
+                arm();
               }}
             >
               <div class="@container w-full h-full contain-strict">{sidebarContent()}</div>
@@ -2292,10 +2449,10 @@ export default function LegacyLayout(props: ParentProps) {
                   min={244}
                   max={typeof window === "undefined" ? 1000 : window.innerWidth * 0.3 + 64}
                   onResize={(w) => {
-                    setState("sizing", true)
-                    if (sizet !== undefined) clearTimeout(sizet)
-                    sizet = window.setTimeout(() => setState("sizing", false), 120)
-                    layout.sidebar.resize(w)
+                    setState("sizing", true);
+                    if (sizet !== undefined) clearTimeout(sizet);
+                    sizet = window.setTimeout(() => setState("sizing", false), 120);
+                    layout.sidebar.resize(w);
                   }}
                 />
               </div>
@@ -2314,7 +2471,7 @@ export default function LegacyLayout(props: ParentProps) {
                   "opacity-0 pointer-events-none": !layout.mobileSidebar.opened(),
                 }}
                 onClick={(e) => {
-                  if (e.target === e.currentTarget) layout.mobileSidebar.hide()
+                  if (e.target === e.currentTarget) layout.mobileSidebar.hide();
                 }}
               />
               <nav
@@ -2357,20 +2514,22 @@ export default function LegacyLayout(props: ParentProps) {
             <div
               classList={{
                 "hidden xl:flex absolute inset-y-0 left-16 z-30": true,
-                "opacity-100 translate-x-0 pointer-events-auto": state.peeked && !layout.sidebar.opened(),
-                "opacity-0 -translate-x-2 pointer-events-none": !state.peeked || layout.sidebar.opened(),
+                "opacity-100 translate-x-0 pointer-events-auto":
+                  state.peeked && !layout.sidebar.opened(),
+                "opacity-0 -translate-x-2 pointer-events-none":
+                  !state.peeked || layout.sidebar.opened(),
                 "transition-[opacity,transform] motion-reduce:transition-none": true,
                 "duration-180 ease-out": state.peeked && !layout.sidebar.opened(),
                 "duration-120 ease-in": !state.peeked || layout.sidebar.opened(),
               }}
               onMouseMove={disarm}
               onMouseEnter={() => {
-                disarm()
-                aim.reset()
+                disarm();
+                aim.reset();
               }}
               onPointerDown={disarm}
               onMouseLeave={() => {
-                arm()
+                arm();
               }}
             >
               <Show when={peekProject()}>
@@ -2398,15 +2557,15 @@ export default function LegacyLayout(props: ParentProps) {
       <HelpButton />
       <ToastRegion v2={false} />
     </div>
-  )
+  );
 }
 
 function UpdateAvailableToast(props: {
-  version: string
-  install: () => void
-  language: ReturnType<typeof useLanguage>
+  version: string;
+  install: () => void;
+  language: ReturnType<typeof useLanguage>;
 }) {
-  let toastId: number | undefined
+  let toastId: number | undefined;
 
   onMount(() => {
     toastId = showToast({
@@ -2424,13 +2583,13 @@ function UpdateAvailableToast(props: {
           onClick: "dismiss",
         },
       ],
-    })
-  })
+    });
+  });
 
   onCleanup(() => {
-    if (toastId === undefined) return
-    toaster.dismiss(toastId)
-  })
+    if (toastId === undefined) return;
+    toaster.dismiss(toastId);
+  });
 
-  return null
+  return null;
 }

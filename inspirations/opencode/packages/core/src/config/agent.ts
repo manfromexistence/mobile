@@ -1,14 +1,14 @@
-export * as ConfigAgent from "./agent"
+export * as ConfigAgent from "./agent";
 
-import { Schema } from "effect"
-import { Permission } from "@opencode-ai/schema/permission"
-import { ConfigProvider } from "./provider"
-import { PositiveInt } from "../schema"
+import { Schema } from "effect";
+import { Permission } from "@opencode-ai/schema/permission";
+import { ConfigProvider } from "./provider";
+import { PositiveInt } from "../schema";
 
 export const Color = Schema.Union([
   Schema.String.check(Schema.isPattern(/^#[0-9a-fA-F]{6}$/)),
   Schema.Literals(["primary", "secondary", "accent", "success", "warning", "error", "info"]),
-])
+]);
 
 export class Info extends Schema.Class<Info>("ConfigV2.Agent")({
   model: Schema.String.pipe(Schema.optional),

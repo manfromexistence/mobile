@@ -32,7 +32,7 @@ function makeBreaking(
     level?: number;
     operation?: string;
     path?: string;
-  } = {}
+  } = {},
 ) {
   return {
     id: overrides.id ?? "api-path-removed-without-deprecation",
@@ -169,6 +169,6 @@ test("gate: SKIP graceful (exit 0) quando oasdiff ausente do PATH", () => {
   assert.match(
     res.stdout,
     /openapiBreaking=SKIP reason=binary-absent/,
-    `expected binary-absent SKIP, got stdout: ${res.stdout}`
+    `expected binary-absent SKIP, got stdout: ${res.stdout}`,
   );
 });

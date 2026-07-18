@@ -9,18 +9,18 @@
  * brands and tooling on top.
  */
 
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 // ---------------------------------------------------------------------------
 // Resolve the @pierre/vscode-icons package location
 // ---------------------------------------------------------------------------
 
-const pkgJsonUrl = import.meta.resolve('@pierre/vscode-icons/package.json');
+const pkgJsonUrl = import.meta.resolve("@pierre/vscode-icons/package.json");
 const pkgDir = dirname(fileURLToPath(pkgJsonUrl));
-const svgsDir = join(pkgDir, 'svgs');
-const themesDir = join(pkgDir, 'scripts', 'themes');
+const svgsDir = join(pkgDir, "svgs");
+const themesDir = join(pkgDir, "scripts", "themes");
 
 // ---------------------------------------------------------------------------
 // Token definitions — maps our internal token name to the vscode-icons theme
@@ -30,66 +30,66 @@ const themesDir = join(pkgDir, 'scripts', 'themes');
 
 interface TokenDef {
   icon: string;
-  tier: 'standard' | 'complete';
+  tier: "standard" | "complete";
 }
 
 const TOKEN_DEFS: Record<string, TokenDef> = {
   // -- standard tier: languages, common file types -------------------------
-  database: { icon: 'server-duo', tier: 'standard' },
-  default: { icon: 'file-duo', tier: 'standard' },
-  bash: { icon: 'bash-duo', tier: 'standard' },
-  c: { icon: 'lang-c', tier: 'standard' },
-  cpp: { icon: 'lang-c', tier: 'standard' },
-  css: { icon: 'lang-css-duo', tier: 'standard' },
-  font: { icon: 'font', tier: 'standard' },
-  git: { icon: 'git', tier: 'standard' },
-  go: { icon: 'lang-go', tier: 'standard' },
-  html: { icon: 'lang-html-duo', tier: 'standard' },
-  image: { icon: 'image-duo', tier: 'standard' },
-  javascript: { icon: 'lang-javascript-duo', tier: 'standard' },
-  json: { icon: 'braces', tier: 'standard' },
-  markdown: { icon: 'lang-markdown', tier: 'standard' },
-  mcp: { icon: 'mcp', tier: 'standard' },
-  python: { icon: 'lang-python', tier: 'standard' },
-  ruby: { icon: 'lang-ruby', tier: 'standard' },
-  rust: { icon: 'lang-rust', tier: 'standard' },
-  swift: { icon: 'lang-swift', tier: 'standard' },
-  table: { icon: 'file-table-duo', tier: 'standard' },
-  text: { icon: 'file-text-duo', tier: 'standard' },
-  typescript: { icon: 'lang-typescript-duo', tier: 'standard' },
-  zip: { icon: 'folder-zip-duo', tier: 'standard' },
+  database: { icon: "server-duo", tier: "standard" },
+  default: { icon: "file-duo", tier: "standard" },
+  bash: { icon: "bash-duo", tier: "standard" },
+  c: { icon: "lang-c", tier: "standard" },
+  cpp: { icon: "lang-c", tier: "standard" },
+  css: { icon: "lang-css-duo", tier: "standard" },
+  font: { icon: "font", tier: "standard" },
+  git: { icon: "git", tier: "standard" },
+  go: { icon: "lang-go", tier: "standard" },
+  html: { icon: "lang-html-duo", tier: "standard" },
+  image: { icon: "image-duo", tier: "standard" },
+  javascript: { icon: "lang-javascript-duo", tier: "standard" },
+  json: { icon: "braces", tier: "standard" },
+  markdown: { icon: "lang-markdown", tier: "standard" },
+  mcp: { icon: "mcp", tier: "standard" },
+  python: { icon: "lang-python", tier: "standard" },
+  ruby: { icon: "lang-ruby", tier: "standard" },
+  rust: { icon: "lang-rust", tier: "standard" },
+  swift: { icon: "lang-swift", tier: "standard" },
+  table: { icon: "file-table-duo", tier: "standard" },
+  text: { icon: "file-text-duo", tier: "standard" },
+  typescript: { icon: "lang-typescript-duo", tier: "standard" },
+  zip: { icon: "folder-zip-duo", tier: "standard" },
 
   // -- complete tier: frameworks, brands, tooling -------------------------
-  astro: { icon: 'astro', tier: 'complete' },
-  babel: { icon: 'babel', tier: 'complete' },
-  biome: { icon: 'biome', tier: 'complete' },
-  bootstrap: { icon: 'bootstrap-duo', tier: 'complete' },
-  browserslist: { icon: 'browserslist-duo', tier: 'complete' },
-  bun: { icon: 'bun', tier: 'complete' },
-  claude: { icon: 'claude', tier: 'complete' },
-  docker: { icon: 'docker', tier: 'complete' },
-  eslint: { icon: 'eslint', tier: 'complete' },
-  graphql: { icon: 'graphql', tier: 'complete' },
-  nextjs: { icon: 'nextjs', tier: 'complete' },
-  npm: { icon: 'npm-duo', tier: 'complete' },
-  oxc: { icon: 'oxc', tier: 'complete' },
-  postcss: { icon: 'postcss', tier: 'complete' },
-  prettier: { icon: 'prettier', tier: 'complete' },
-  react: { icon: 'react', tier: 'complete' },
-  sass: { icon: 'sass', tier: 'complete' },
-  stylelint: { icon: 'stylelint', tier: 'complete' },
-  svg: { icon: 'svg-2', tier: 'complete' },
-  svelte: { icon: 'svelte', tier: 'complete' },
-  svgo: { icon: 'svgo', tier: 'complete' },
-  tailwind: { icon: 'tailwind', tier: 'complete' },
-  terraform: { icon: 'terraform', tier: 'complete' },
-  vite: { icon: 'vite', tier: 'complete' },
-  vscode: { icon: 'vscode', tier: 'complete' },
-  vue: { icon: 'vue', tier: 'complete' },
-  wasm: { icon: 'wasm-duo', tier: 'complete' },
-  webpack: { icon: 'webpack', tier: 'complete' },
-  yml: { icon: 'yml', tier: 'complete' },
-  zig: { icon: 'zig', tier: 'complete' },
+  astro: { icon: "astro", tier: "complete" },
+  babel: { icon: "babel", tier: "complete" },
+  biome: { icon: "biome", tier: "complete" },
+  bootstrap: { icon: "bootstrap-duo", tier: "complete" },
+  browserslist: { icon: "browserslist-duo", tier: "complete" },
+  bun: { icon: "bun", tier: "complete" },
+  claude: { icon: "claude", tier: "complete" },
+  docker: { icon: "docker", tier: "complete" },
+  eslint: { icon: "eslint", tier: "complete" },
+  graphql: { icon: "graphql", tier: "complete" },
+  nextjs: { icon: "nextjs", tier: "complete" },
+  npm: { icon: "npm-duo", tier: "complete" },
+  oxc: { icon: "oxc", tier: "complete" },
+  postcss: { icon: "postcss", tier: "complete" },
+  prettier: { icon: "prettier", tier: "complete" },
+  react: { icon: "react", tier: "complete" },
+  sass: { icon: "sass", tier: "complete" },
+  stylelint: { icon: "stylelint", tier: "complete" },
+  svg: { icon: "svg-2", tier: "complete" },
+  svelte: { icon: "svelte", tier: "complete" },
+  svgo: { icon: "svgo", tier: "complete" },
+  tailwind: { icon: "tailwind", tier: "complete" },
+  terraform: { icon: "terraform", tier: "complete" },
+  vite: { icon: "vite", tier: "complete" },
+  vscode: { icon: "vscode", tier: "complete" },
+  vue: { icon: "vue", tier: "complete" },
+  wasm: { icon: "wasm-duo", tier: "complete" },
+  webpack: { icon: "webpack", tier: "complete" },
+  yml: { icon: "yml", tier: "complete" },
+  zig: { icon: "zig", tier: "complete" },
 };
 
 const SORTED_TOKENS = Object.keys(TOKEN_DEFS).sort();
@@ -100,32 +100,32 @@ for (const [token, def] of Object.entries(TOKEN_DEFS)) {
   ICON_TO_TOKEN[def.icon] = token;
 }
 // Theme uses file-zip-duo for extensions, but we render with folder-zip-duo
-ICON_TO_TOKEN['file-zip-duo'] = 'zip';
+ICON_TO_TOKEN["file-zip-duo"] = "zip";
 // Theme uses bun-duo for filenames, but we render with the plain bun icon
-ICON_TO_TOKEN['bun-duo'] = 'bun';
+ICON_TO_TOKEN["bun-duo"] = "bun";
 // lang-c is shared between the c and cpp tokens; keep c as the primary so
 // that theme data entries for this icon (plain .c, .h files) resolve to c.
 // C++ extensions are assigned to cpp via MANUAL_EXTENSION_TOKENS below.
-ICON_TO_TOKEN['lang-c'] = 'c';
+ICON_TO_TOKEN["lang-c"] = "c";
 
 // Manual additions not covered by the theme data
 const MANUAL_EXTENSION_TOKENS: Record<string, string> = {
-  cc: 'cpp',
-  cpp: 'cpp',
-  cxx: 'cpp',
-  hh: 'cpp',
-  hpp: 'cpp',
-  hxx: 'cpp',
-  inl: 'cpp',
-  log: 'text',
-  mcp: 'mcp',
-  'mdx.tsx': 'markdown',
-  mm: 'cpp',
-  txt: 'text',
+  cc: "cpp",
+  cpp: "cpp",
+  cxx: "cpp",
+  hh: "cpp",
+  hpp: "cpp",
+  hxx: "cpp",
+  inl: "cpp",
+  log: "text",
+  mcp: "mcp",
+  "mdx.tsx": "markdown",
+  mm: "cpp",
+  txt: "text",
 };
 
 const MANUAL_FILENAME_TOKENS: Record<string, string> = {
-  'readme.md': 'markdown',
+  "readme.md": "markdown",
 };
 
 // ---------------------------------------------------------------------------
@@ -137,33 +137,29 @@ function readSvg(filename: string): string {
   if (!existsSync(path)) {
     throw new Error(`SVG not found: ${path}`);
   }
-  return readFileSync(path, 'utf8');
+  return readFileSync(path, "utf8");
 }
 
 function extractSvgInner(svg: string): string {
   const openMatch = svg.match(/<svg[^>]*>/);
-  if (openMatch == null) throw new Error('No <svg> open tag found');
+  if (openMatch == null) throw new Error("No <svg> open tag found");
   const openEnd = (openMatch.index ?? 0) + openMatch[0].length;
-  const closeIdx = svg.lastIndexOf('</svg>');
-  if (closeIdx < 0) throw new Error('No </svg> close tag found');
+  const closeIdx = svg.lastIndexOf("</svg>");
+  if (closeIdx < 0) throw new Error("No </svg> close tag found");
   return svg.slice(openEnd, closeIdx).trim();
 }
 
-function svgToSymbol(
-  filename: string,
-  symbolId: string,
-  viewBox = '0 0 16 16'
-): string {
+function svgToSymbol(filename: string, symbolId: string, viewBox = "0 0 16 16"): string {
   const inner = extractSvgInner(readSvg(filename));
 
   const indented = inner
-    .split('\n')
+    .split("\n")
     .map((line) => {
       const trimmed = line.trim();
-      return trimmed.length > 0 ? `  ${trimmed}` : '';
+      return trimmed.length > 0 ? `  ${trimmed}` : "";
     })
     .filter((line) => line.length > 0)
-    .join('\n');
+    .join("\n");
 
   return `<symbol id="${symbolId}" viewBox="${viewBox}">\n${indented}\n</symbol>`;
 }
@@ -196,21 +192,21 @@ async function buildTokenMaps(): Promise<{
   fileNameTokens: Record<string, string>;
   completeExtOverrides: Record<string, string>;
 }> {
-  const minimal = await loadThemeTier('minimal.mjs');
-  const standards = await loadThemeTier('default.mjs');
-  const complete = await loadThemeTier('complete.mjs');
+  const minimal = await loadThemeTier("minimal.mjs");
+  const standards = await loadThemeTier("default.mjs");
+  const complete = await loadThemeTier("complete.mjs");
 
   const extensionTokens: Record<string, string> = {};
   const fileNameTokens: Record<string, string> = {};
   const completeExtOverrides: Record<string, string> = {};
 
-  function processEntry(entry: ThemeEntry, target: 'base' | 'complete') {
+  function processEntry(entry: ThemeEntry, target: "base" | "complete") {
     const token = ICON_TO_TOKEN[entry.name];
     if (token == null) return;
 
     if (entry.fileExtensions != null) {
       for (const ext of entry.fileExtensions) {
-        if (target === 'complete') {
+        if (target === "complete") {
           const existing = extensionTokens[ext];
           if (existing != null && existing !== token) {
             completeExtOverrides[ext] = token;
@@ -230,10 +226,10 @@ async function buildTokenMaps(): Promise<{
   }
 
   for (const entry of [...minimal, ...standards]) {
-    processEntry(entry, 'base');
+    processEntry(entry, "base");
   }
   for (const entry of complete) {
-    processEntry(entry, 'complete');
+    processEntry(entry, "complete");
   }
 
   for (const [ext, token] of Object.entries(MANUAL_EXTENSION_TOKENS)) {
@@ -262,14 +258,14 @@ function generateSymbolConstants(): {
   for (const token of SORTED_TOKENS) {
     const def = TOKEN_DEFS[token];
     const symbolId = `file-tree-builtin-${token}`;
-    const varName = `sym_${token.replace(/-/g, '_')}`;
+    const varName = `sym_${token.replace(/-/g, "_")}`;
     const svgFile = `${def.icon}.svg`;
 
     const symbol = svgToSymbol(svgFile, symbolId);
     lines.push(`const ${varName} = \`${symbol}\`;`);
-    lines.push('');
+    lines.push("");
 
-    if (def.tier === 'standard') {
+    if (def.tier === "standard") {
       standardSymbols.push(varName);
     } else {
       completeOnlySymbols.push(varName);
@@ -279,26 +275,22 @@ function generateSymbolConstants(): {
   return {
     standardSymbols,
     completeOnlySymbols,
-    declarations: lines.join('\n'),
+    declarations: lines.join("\n"),
   };
 }
 
 function formatRecord(entries: Record<string, string>, indent: string): string {
   const sorted = Object.entries(entries).sort(([a], [b]) => a.localeCompare(b));
-  return sorted.map(([k, v]) => `${indent}'${k}': '${v}',`).join('\n');
+  return sorted.map(([k, v]) => `${indent}'${k}': '${v}',`).join("\n");
 }
 
 async function generate(): Promise<string> {
-  const { extensionTokens, fileNameTokens, completeExtOverrides } =
-    await buildTokenMaps();
-  const { standardSymbols, completeOnlySymbols, declarations } =
-    generateSymbolConstants();
+  const { extensionTokens, fileNameTokens, completeExtOverrides } = await buildTokenMaps();
+  const { standardSymbols, completeOnlySymbols, declarations } = generateSymbolConstants();
 
-  const tokenType = SORTED_TOKENS.map((t) => `  | '${t}'`).join('\n');
+  const tokenType = SORTED_TOKENS.map((t) => `  | '${t}'`).join("\n");
 
-  const standardTokensList = SORTED_TOKENS.filter(
-    (t) => TOKEN_DEFS[t].tier === 'standard'
-  );
+  const standardTokensList = SORTED_TOKENS.filter((t) => TOKEN_DEFS[t].tier === "standard");
 
   return `// @generated by scripts/generate-built-in-icons.ts — do not edit manually
 import type { FileTreeBuiltInIconSet } from './iconConfig';
@@ -327,11 +319,11 @@ const MINIMAL_SVG_SPRITE_SHEET = \`<svg data-icon-sprite aria-hidden="true" widt
 
 ${declarations}
 const standardTierSymbols = [
-${standardSymbols.map((v) => `  ${v},`).join('\n')}
+${standardSymbols.map((v) => `  ${v},`).join("\n")}
 ];
 
 const completeOnlySymbols = [
-${completeOnlySymbols.map((v) => `  ${v},`).join('\n')}
+${completeOnlySymbols.map((v) => `  ${v},`).join("\n")}
 ];
 
 function appendSymbols(spriteSheet: string, symbols: string[]): string {
@@ -352,13 +344,13 @@ const BUILT_IN_SVG_SPRITE_SHEETS: Record<FileTreeBuiltInIconSet, string> = {
 
 const BUILT_IN_FILE_NAME_TOKENS: Partial<Record<string, BuiltInFileIconToken>> =
   {
-${formatRecord(fileNameTokens, '    ')}
+${formatRecord(fileNameTokens, "    ")}
   };
 
 const BUILT_IN_FILE_EXTENSION_TOKENS: Partial<
   Record<string, BuiltInFileIconToken>
 > = {
-${formatRecord(extensionTokens, '  ')}
+${formatRecord(extensionTokens, "  ")}
 };
 ${
   Object.keys(completeExtOverrides).length > 0
@@ -366,7 +358,7 @@ ${
 const COMPLETE_EXTENSION_OVERRIDES: Partial<
   Record<string, BuiltInFileIconToken>
 > = {
-${formatRecord(completeExtOverrides, '  ')}
+${formatRecord(completeExtOverrides, "  ")}
 };
 `
     : `
@@ -376,7 +368,7 @@ const COMPLETE_EXTENSION_OVERRIDES: Partial<
 `
 }
 const STANDARD_TIER_TOKENS = new Set<BuiltInFileIconToken>([
-${standardTokensList.map((t) => `  '${t}',`).join('\n')}
+${standardTokensList.map((t) => `  '${t}',`).join("\n")}
 ]);
 
 const COLORED_SETS = new Set<FileTreeBuiltInIconSet>(['complete']);
@@ -443,12 +435,7 @@ export function resolveBuiltInFileIconToken(
 // Main
 // ---------------------------------------------------------------------------
 
-const outputPath = join(
-  dirname(fileURLToPath(import.meta.url)),
-  '..',
-  'src',
-  'builtInIcons.ts'
-);
+const outputPath = join(dirname(fileURLToPath(import.meta.url)), "..", "src", "builtInIcons.ts");
 
 const content = await generate();
 writeFileSync(outputPath, content);

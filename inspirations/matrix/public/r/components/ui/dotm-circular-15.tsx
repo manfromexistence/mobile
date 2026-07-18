@@ -22,7 +22,7 @@ const BRAILLE_PHASES: ReadonlyArray<ReadonlySet<string>> = [
   new Set(["1,1", "1,2", "1,3", "2,1", "2,3", "3,1", "3,2", "3,3"]), // top+bottom bars
   new Set(["1,1", "3,1", "2,2", "1,3", "3,3"]), // X-cross
   new Set(["2,1", "1,2", "3,2", "2,3"]), // plus motif
-  new Set(["1,1", "2,1", "2,2", "2,3", "3,3"]) // diagonal sweep
+  new Set(["1,1", "2,1", "2,2", "2,3", "3,3"]), // diagonal sweep
 ];
 
 export function DotmCircular15({
@@ -32,15 +32,19 @@ export function DotmCircular15({
   ...rest
 }: DotmCircular15Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
   const animPhase = useCyclePhase({
     active: !reducedMotion && matrixPhase !== "idle",
     cycleMsBase: 1680,
-    speed
+    speed,
   });
 
   const resolver = useMemo<DotAnimationResolver>(() => {

@@ -322,12 +322,12 @@ export function useLiveDashboard({
     /** Filter events by channel */
     getEventsByChannel: useCallback(
       (channel: DashboardChannel) => events.filter((e) => e.channel === channel),
-      [events]
+      [events],
     ),
     /** Filter events by name */
     getEventsByName: useCallback(
       (eventName: string) => events.filter((e) => e.event === eventName),
-      [events]
+      [events],
     ),
     /** Clear event history */
     clearEvents: useCallback(() => setEvents([]), []),
@@ -520,13 +520,13 @@ export function useLiveComboStatus(options?: UseLiveDashboardOptions) {
   /** Get events for a specific combo */
   const getComboHistory = useCallback(
     (comboName: string) => comboEvents.filter((e) => e.comboName === comboName),
-    [comboEvents]
+    [comboEvents],
   );
 
   /** Get the last event for a specific combo */
   const getLastComboEvent = useCallback(
     (comboName: string) => comboEvents.find((e) => e.comboName === comboName),
-    [comboEvents]
+    [comboEvents],
   );
 
   return {

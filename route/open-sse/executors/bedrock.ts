@@ -207,7 +207,7 @@ function sanitizeBedrockToolPairs(messages) {
     const nextResultIds = new Set(
       nextMessage?.role === "user" && Array.isArray(nextMessage.content)
         ? nextMessage.content.map(getToolResultIdFromBlock).filter(Boolean)
-        : []
+        : [],
     );
 
     const toolUseIds = message.content.map(getToolUseIdFromBlock).filter(Boolean);
@@ -270,7 +270,7 @@ function messagesFromOpenAI(messages) {
 
     const toolCalls = Array.isArray(message.tool_calls) ? message.tool_calls : [];
     const toolCallIds = new Set(
-      toolCalls.map((call) => normalizeToolUseId(call?.id)).filter(Boolean)
+      toolCalls.map((call) => normalizeToolUseId(call?.id)).filter(Boolean),
     );
     const content = textBlocksFromContent(message.content, {
       skipToolUseIds: toolCallIds,
@@ -526,7 +526,7 @@ function createOpenAIStreamFromBedrock(stream, model) {
                   code: exception.name || "bedrock_stream_error",
                   status,
                 },
-              })
+              }),
             );
             break;
           }
@@ -546,8 +546,8 @@ function createOpenAIStreamFromBedrock(stream, model) {
                       function: { name: tool.name, arguments: "" },
                     },
                   ],
-                })
-              )
+                }),
+              ),
             );
             continue;
           }
@@ -559,7 +559,7 @@ function createOpenAIStreamFromBedrock(stream, model) {
             }
             if (typeof delta.reasoningContent?.text === "string" && delta.reasoningContent.text) {
               controller.enqueue(
-                sse(openAIChunk(model, { reasoning_content: delta.reasoningContent.text }))
+                sse(openAIChunk(model, { reasoning_content: delta.reasoningContent.text })),
               );
             }
             if (typeof delta.toolUse?.input === "string") {
@@ -568,8 +568,8 @@ function createOpenAIStreamFromBedrock(stream, model) {
                 sse(
                   openAIChunk(model, {
                     tool_calls: [{ index, function: { arguments: delta.toolUse.input } }],
-                  })
-                )
+                  }),
+                ),
               );
             }
             continue;
@@ -608,7 +608,7 @@ export class BedrockExecutor extends BaseExecutor {
     return buildBedrockNativeConverseUrl(
       resolveBedrockRegion(credentials?.providerSpecificData),
       model,
-      stream
+      stream,
     );
   }
 
@@ -644,12 +644,12 @@ export class BedrockExecutor extends BaseExecutor {
               name: "MissingCredentials",
               message: "Missing Bedrock API key",
               $metadata: { httpStatusCode: 401 },
-            })
+            }),
           ),
           {
             status: 401,
             headers: { "Content-Type": "application/json" },
-          }
+          },
         ),
         url,
         headers,
@@ -667,7 +667,7 @@ export class BedrockExecutor extends BaseExecutor {
         headers,
         transformedBody,
         JSON.stringify(transformedBody),
-        log
+        log,
       );
       if (stream) {
         const output = await client.send(new ConverseStreamCommand(transformedBody), {

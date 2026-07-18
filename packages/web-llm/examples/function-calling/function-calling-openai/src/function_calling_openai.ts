@@ -1,22 +1,21 @@
-import * as webllm from "@mlc-ai/web-llm"
+import * as webllm from "@mlc-ai/web-llm";
 
 function setLabel(id: string, text: string) {
-  const label = document.getElementById(id)
+  const label = document.getElementById(id);
   if (label == null) {
-    throw Error("Cannot find label " + id)
+    throw Error("Cannot find label " + id);
   }
-  label.innerText = text
+  label.innerText = text;
 }
 
 async function main() {
   const initProgressCallback = (report: webllm.InitProgressReport) => {
-    setLabel("init-label", report.text)
-  }
-  const selectedModel = "Hermes-2-Pro-Llama-3-8B-q4f16_1-MLC"
-  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(
-    selectedModel,
-    { initProgressCallback: initProgressCallback }
-  )
+    setLabel("init-label", report.text);
+  };
+  const selectedModel = "Hermes-2-Pro-Llama-3-8B-q4f16_1-MLC";
+  const engine: webllm.MLCEngineInterface = await webllm.CreateMLCEngine(selectedModel, {
+    initProgressCallback: initProgressCallback,
+  });
 
   const tools: Array<webllm.ChatCompletionTool> = [
     {
@@ -37,7 +36,7 @@ async function main() {
         },
       },
     },
-  ]
+  ];
 
   const request: webllm.ChatCompletionRequest = {
     stream: true, // works with stream as well, where the last chunk returns tool_calls
@@ -45,36 +44,35 @@ async function main() {
     messages: [
       {
         role: "user",
-        content:
-          "What is the current weather in celsius in Pittsburgh and Tokyo?",
+        content: "What is the current weather in celsius in Pittsburgh and Tokyo?",
       },
     ],
     tool_choice: "auto",
     tools: tools,
-  }
+  };
 
   if (!request.stream) {
-    const reply0 = await engine.chat.completions.create(request)
-    console.log(reply0.choices[0])
-    console.log(reply0.usage)
+    const reply0 = await engine.chat.completions.create(request);
+    console.log(reply0.choices[0]);
+    console.log(reply0.usage);
   } else {
     // If streaming, the last chunk returns tool calls
-    const asyncChunkGenerator = await engine.chat.completions.create(request)
-    let message = ""
-    let lastChunk: webllm.ChatCompletionChunk | undefined
-    let usageChunk: webllm.ChatCompletionChunk | undefined
+    const asyncChunkGenerator = await engine.chat.completions.create(request);
+    let message = "";
+    let lastChunk: webllm.ChatCompletionChunk | undefined;
+    let usageChunk: webllm.ChatCompletionChunk | undefined;
     for await (const chunk of asyncChunkGenerator) {
-      console.log(chunk)
-      message += chunk.choices[0]?.delta?.content || ""
-      setLabel("generate-label", message)
+      console.log(chunk);
+      message += chunk.choices[0]?.delta?.content || "";
+      setLabel("generate-label", message);
       if (!chunk.usage) {
-        lastChunk = chunk
+        lastChunk = chunk;
       }
-      usageChunk = chunk
+      usageChunk = chunk;
     }
-    console.log(lastChunk!.choices[0].delta)
-    console.log(usageChunk!.usage)
+    console.log(lastChunk!.choices[0].delta);
+    console.log(usageChunk!.usage);
   }
 }
 
-main()
+main();

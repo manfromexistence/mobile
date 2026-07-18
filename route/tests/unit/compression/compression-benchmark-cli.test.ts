@@ -28,7 +28,7 @@ describe("compression benchmark CLI core", () => {
     assert.ok(DEFAULT_BENCHMARK_ENGINES.length > 0, "has a default engine set");
     assert.ok(
       !DEFAULT_BENCHMARK_ENGINES.includes("llmlingua"),
-      "excludes llmlingua (needs the ONNX model at runtime)"
+      "excludes llmlingua (needs the ONNX model at runtime)",
     );
 
     const reports = await benchmarkEngines(BENCHMARK_CORPUS, DEFAULT_BENCHMARK_ENGINES);
@@ -37,7 +37,7 @@ describe("compression benchmark CLI core", () => {
     for (const id of DEFAULT_BENCHMARK_ENGINES) {
       assert.ok(
         rows.some((r) => r.engine === id),
-        `${id} present in the comparison table`
+        `${id} present in the comparison table`,
       );
     }
     // The formatted table is non-empty and lists every engine.

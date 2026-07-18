@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useState } from "react";
 
-import { SidebarWrapper } from '@/components/docs/SidebarWrapper';
-import { Header } from '@/components/Header';
+import { SidebarWrapper } from "@/components/docs/SidebarWrapper";
+import { Header } from "@/components/Header";
 
 export interface ThemeLayoutProps {
   /** Content rendered full-width above the sidebar grid (hero, demo, etc.) */
@@ -29,10 +29,7 @@ export function ThemeLayout({ header, children }: ThemeLayoutProps) {
 
   return (
     <>
-      <Header
-        onMobileMenuToggle={handleMobileMenuToggle}
-        className="-mb-[1px]"
-      />
+      <Header onMobileMenuToggle={handleMobileMenuToggle} className="-mb-[1px]" />
 
       {header}
 

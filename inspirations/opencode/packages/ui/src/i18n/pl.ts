@@ -15,7 +15,8 @@ export const dict = {
   "ui.sessionReview.image.loading": "Ładowanie...",
   "ui.sessionReview.image.placeholder": "Obraz",
   "ui.sessionReview.largeDiff.title": "Diff jest zbyt duży, aby go wyrenderować",
-  "ui.sessionReview.largeDiff.meta": "Limit: {{limit}} zmienionych linii. Obecnie: {{current}} zmienionych linii.",
+  "ui.sessionReview.largeDiff.meta":
+    "Limit: {{limit}} zmienionych linii. Obecnie: {{current}} zmienionych linii.",
   "ui.sessionReview.largeDiff.renderAnyway": "Renderuj mimo to",
   "ui.fileMedia.kind.image": "obraz",
   "ui.fileMedia.kind.audio": "dźwięk",
@@ -24,8 +25,10 @@ export const dict = {
   "ui.fileMedia.state.error": "Błąd wczytywania: {{kind}}",
   "ui.fileMedia.state.unavailable": "{{kind}} niedostępny",
   "ui.fileMedia.binary.title": "Plik binarny",
-  "ui.fileMedia.binary.description.path": "Nie można wyświetlić pliku {{path}}, ponieważ jest to plik binarny.",
-  "ui.fileMedia.binary.description.default": "Nie można wyświetlić tego pliku, ponieważ jest to plik binarny.",
+  "ui.fileMedia.binary.description.path":
+    "Nie można wyświetlić pliku {{path}}, ponieważ jest to plik binarny.",
+  "ui.fileMedia.binary.description.default":
+    "Nie można wyświetlić tego pliku, ponieważ jest to plik binarny.",
   "ui.lineComment.label.prefix": "Komentarz do ",
   "ui.lineComment.label.suffix": "",
   "ui.lineComment.editorLabel.prefix": "Komentowanie: ",
@@ -164,4 +167,4 @@ export const dict = {
   "ui.toolErrorCard.copyError": "Kopiuj błąd",
   "ui.message.duration.seconds": "{{count}}s",
   "ui.message.duration.minutesSeconds": "{{minutes}}m {{seconds}}s",
-}
+};

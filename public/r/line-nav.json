@@ -4,9 +4,7 @@
   "title": "Line Nav",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "Vertical navigation with a line marker that expands on hover and active state.",
-  "dependencies": [
-    "motion"
-  ],
+  "dependencies": ["motion"],
   "files": [
     {
       "path": "src/registry/components/line-nav/line-nav.tsx",
@@ -16,8 +14,6 @@
     }
   ],
   "docs": "https://chanhdai.com/components/line-nav",
-  "categories": [
-    "navigation"
-  ],
+  "categories": ["navigation"],
   "type": "registry:component"
 }

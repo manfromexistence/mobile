@@ -25,10 +25,10 @@ export function buildCacheUsageLogMeta(usage: Record<string, unknown> | null | u
     (!!promptTokenDetails &&
       ("cached_tokens" in promptTokenDetails || "cache_creation_tokens" in promptTokenDetails));
   const cacheReadTokens = toPositiveNumber(
-    usage.cache_read_input_tokens ?? usage.cached_tokens ?? promptTokenDetails?.cached_tokens
+    usage.cache_read_input_tokens ?? usage.cached_tokens ?? promptTokenDetails?.cached_tokens,
   );
   const cacheCreationTokens = toPositiveNumber(
-    usage.cache_creation_input_tokens ?? promptTokenDetails?.cache_creation_tokens
+    usage.cache_creation_input_tokens ?? promptTokenDetails?.cache_creation_tokens,
   );
   if (!hasCacheFields) return null;
   return {
@@ -39,11 +39,11 @@ export function buildCacheUsageLogMeta(usage: Record<string, unknown> | null | u
 
 export function attachLogMeta(
   payload: Record<string, unknown> | null | undefined,
-  meta: Record<string, unknown> | null | undefined
+  meta: Record<string, unknown> | null | undefined,
 ) {
   if (!meta || typeof meta !== "object") return payload;
   const compactMeta = Object.fromEntries(
-    Object.entries(meta).filter(([, value]) => value !== null && value !== undefined)
+    Object.entries(meta).filter(([, value]) => value !== null && value !== undefined),
   );
   if (Object.keys(compactMeta).length === 0) return payload;
   if (!payload || typeof payload !== "object" || Array.isArray(payload)) {

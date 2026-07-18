@@ -23,14 +23,14 @@ test("DashboardLayout desktop sidebar uses the explicit visibility class, not th
   assert.match(
     source,
     /className="dashboard-sidebar-desktop"/,
-    "Desktop sidebar wrapper must use the dashboard-sidebar-desktop class"
+    "Desktop sidebar wrapper must use the dashboard-sidebar-desktop class",
   );
 
   // The fragile Tailwind cascade must be gone.
   assert.doesNotMatch(
     source,
     /className="hidden[^"]*lg:flex"/,
-    "Desktop sidebar wrapper must not rely on the hidden/lg:flex Tailwind cascade"
+    "Desktop sidebar wrapper must not rely on the hidden/lg:flex Tailwind cascade",
   );
 });
 
@@ -41,7 +41,7 @@ test("globals.css defines dashboard-sidebar-desktop hidden by default and flex a
   assert.match(
     css,
     /\.dashboard-sidebar-desktop\s*\{/,
-    "globals.css must define .dashboard-sidebar-desktop"
+    "globals.css must define .dashboard-sidebar-desktop",
   );
 
   // Hidden by default (mobile-first), then shown via a 1024px desktop media query.
@@ -51,7 +51,7 @@ test("globals.css defines dashboard-sidebar-desktop hidden by default and flex a
   assert.match(
     css.slice(classIndex - 200),
     desktopRule,
-    "globals.css must show .dashboard-sidebar-desktop with display:flex at min-width:1024px"
+    "globals.css must show .dashboard-sidebar-desktop with display:flex at min-width:1024px",
   );
 
   // Default state hides it (display:none) so mobile is unaffected.
@@ -59,6 +59,6 @@ test("globals.css defines dashboard-sidebar-desktop hidden by default and flex a
   assert.match(
     css,
     baseRule,
-    "globals.css must hide .dashboard-sidebar-desktop by default (display:none)"
+    "globals.css must hide .dashboard-sidebar-desktop by default (display:none)",
   );
 });

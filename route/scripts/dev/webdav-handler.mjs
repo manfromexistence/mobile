@@ -398,7 +398,7 @@ export function loadWebdavConfig() {
 
   try {
     const query = db.prepare(
-      "SELECT key, value FROM key_value WHERE namespace = 'obsidian' AND key IN ('webdav_enabled', 'webdav_username', 'webdav_password', 'vault_path')"
+      "SELECT key, value FROM key_value WHERE namespace = 'obsidian' AND key IN ('webdav_enabled', 'webdav_username', 'webdav_password', 'vault_path')",
     );
     const rows = query.all();
 
@@ -494,8 +494,7 @@ function buildEntryHref(baseHref, relativePath, isDir) {
 function handleOptions(req, res) {
   res.writeHead(200, {
     DAV: "1, 2",
-    Allow:
-      "OPTIONS, GET, HEAD, PUT, DELETE, MKCOL, MOVE, COPY, PROPFIND, LOCK, UNLOCK",
+    Allow: "OPTIONS, GET, HEAD, PUT, DELETE, MKCOL, MOVE, COPY, PROPFIND, LOCK, UNLOCK",
     "MS-Author-Via": "DAV",
     "Content-Length": "0",
   });

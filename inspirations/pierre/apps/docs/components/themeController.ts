@@ -1,8 +1,8 @@
-import { createThemeController, type ThemePersistence } from '@pierre/theming';
+import { createThemeController, type ThemePersistence } from "@pierre/theming";
 
-import { docsThemeCatalog } from './themeCatalog';
+import { docsThemeCatalog } from "./themeCatalog";
 
-export { docsThemeCatalog } from './themeCatalog';
+export { docsThemeCatalog } from "./themeCatalog";
 
 // The single owner of the docs app's theming state. Color mode (light/dark/
 // system), the diffshub light/dark theme-name picks, and their persistence all
@@ -21,9 +21,9 @@ export { docsThemeCatalog } from './themeCatalog';
 // TODO(theming): When docs can migrate away from these legacy keys, remove the
 // custom adapter below and use createThemeController's built-in `storageKey`
 // persistence shape instead.
-const MODE_KEY = 'theme';
-const LIGHT_THEME_KEY = 'diffshub-light-theme';
-const DARK_THEME_KEY = 'diffshub-dark-theme';
+const MODE_KEY = "theme";
+const LIGHT_THEME_KEY = "diffshub-light-theme";
+const DARK_THEME_KEY = "diffshub-dark-theme";
 
 function readKey(key: string): string | null {
   try {
@@ -50,10 +50,7 @@ const docsPersistence: ThemePersistence = {
     const light = readKey(LIGHT_THEME_KEY);
     const dark = readKey(DARK_THEME_KEY);
     if (mode == null && light == null && dark == null) return null;
-    const validMode =
-      mode === 'light' || mode === 'dark' || mode === 'system'
-        ? mode
-        : 'system';
+    const validMode = mode === "light" || mode === "dark" || mode === "system" ? mode : "system";
     return {
       mode: validMode,
       lightThemeName: light ?? docsThemeCatalog.defaultLightThemeName,
@@ -70,7 +67,7 @@ const docsPersistence: ThemePersistence = {
 export const themeController = createThemeController({
   catalog: docsThemeCatalog,
   persistence: docsPersistence,
-  defaultMode: 'system',
+  defaultMode: "system",
 });
 
 export const docsThemeResolver = themeController.resolver;

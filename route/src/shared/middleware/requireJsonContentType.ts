@@ -42,6 +42,6 @@ export function requireJsonContentType(request: Request): Response | null {
     {
       status: 415,
       headers: { ...CORS_HEADERS, "Content-Type": "application/json" },
-    }
+    },
   );
 }

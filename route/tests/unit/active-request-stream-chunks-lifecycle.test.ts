@@ -91,7 +91,7 @@ function buildApiResponseFromCompleted(id: string): Record<string, unknown> | nu
 // ─── Helper: Simulates frontend streamChunksText IIFE ──────────────────────
 function computeStreamChunksText(
   debugEnabled: boolean,
-  pipelinePayloads: Record<string, unknown> | null | undefined
+  pipelinePayloads: Record<string, unknown> | null | undefined,
 ): string | null {
   if (!debugEnabled || !pipelinePayloads?.streamChunks) return null;
   let chunks: unknown = pipelinePayloads.streamChunks;
@@ -123,7 +123,7 @@ function computeStreamChunksText(
 // ─── Helper: Simulates frontend openDetail state merge ─────────────────────
 function mergeDetailData(
   prev: Record<string, unknown> | null,
-  data: Record<string, unknown>
+  data: Record<string, unknown>,
 ): Record<string, unknown> {
   const dataHasPipeline =
     data?.pipelinePayloads && Object.keys(data.pipelinePayloads || {}).length > 0;
@@ -153,7 +153,7 @@ test("streamChunks survive the full lifecycle: in-flight → completed → persi
   assert.ok(requestId, "trackPendingRequest should return a request ID");
   assert.ok(
     usageHistory.getPendingById().has(requestId),
-    "request ID should be in pendingById immediately"
+    "request ID should be in pendingById immediately",
   );
 
   // ── Phase 2: Simulate streaming — chunks arrive gradually ──
@@ -170,13 +170,13 @@ test("streamChunks survive the full lifecycle: in-flight → completed → persi
   assert.ok(apiResponse1!.pipelinePayloads, "should have pipelinePayloads");
   assert.ok(
     (apiResponse1!.pipelinePayloads as Record<string, unknown>).streamChunks,
-    "streamChunks should be present in API response"
+    "streamChunks should be present in API response",
   );
 
   // Simulate frontend streamChunksText
   const text1 = computeStreamChunksText(
     true,
-    apiResponse1!.pipelinePayloads as Record<string, unknown>
+    apiResponse1!.pipelinePayloads as Record<string, unknown>,
   );
   assert.ok(text1, "streamChunksText should be non-null with debugEnabled");
   assert.ok(text1!.includes("message_start"), "streamChunksText should contain the chunk content");
@@ -185,11 +185,11 @@ test("streamChunks survive the full lifecycle: in-flight → completed → persi
   const initialDetail = mergeDetailData(null, apiResponse1 as unknown as Record<string, unknown>);
   assert.ok(
     (initialDetail.pipelinePayloads as Record<string, unknown>).streamChunks,
-    "streamChunks should survive the openDetail state merge"
+    "streamChunks should survive the openDetail state merge",
   );
   const text1after = computeStreamChunksText(
     true,
-    initialDetail.pipelinePayloads as Record<string, unknown>
+    initialDetail.pipelinePayloads as Record<string, unknown>,
   );
   assert.ok(text1after, "streamChunksText should work after state merge");
   assert.ok(text1after!.includes("message_start"), "content preserved after state merge");
@@ -219,7 +219,7 @@ test("streamChunks survive the full lifecycle: in-flight → completed → persi
   // Verify frontend text includes all 3 stages
   const text2 = computeStreamChunksText(
     true,
-    apiResponse2!.pipelinePayloads as Record<string, unknown>
+    apiResponse2!.pipelinePayloads as Record<string, unknown>,
   );
   assert.ok(text2!.includes("--- provider ---"), "should include provider stage");
   assert.ok(text2!.includes("--- openai ---"), "should include openai stage");
@@ -228,7 +228,7 @@ test("streamChunks survive the full lifecycle: in-flight → completed → persi
   // Verify debugEnabled=false hides the stream
   const textHidden = computeStreamChunksText(
     false,
-    apiResponse2!.pipelinePayloads as Record<string, unknown>
+    apiResponse2!.pipelinePayloads as Record<string, unknown>,
   );
   assert.equal(textHidden, null, "streamChunksText should be null when debugEnabled=false");
 
@@ -250,20 +250,20 @@ test("streamChunks survive the full lifecycle: in-flight → completed → persi
   // The request should be in completedDetails now
   assert.ok(
     !usageHistory.getPendingById().has(requestId),
-    "request should be removed from pendingById after finalization"
+    "request should be removed from pendingById after finalization",
   );
 
   const completedResponse = buildApiResponseFromCompleted(requestId);
   assert.ok(completedResponse, "API should find request in completedDetails");
   assert.ok(
     (completedResponse!.pipelinePayloads as Record<string, unknown>).streamChunks,
-    "streamChunks should be in completedDetails"
+    "streamChunks should be in completedDetails",
   );
 
   // Verify frontend can render from completed response
   const completedText = computeStreamChunksText(
     true,
-    completedResponse!.pipelinePayloads as Record<string, unknown>
+    completedResponse!.pipelinePayloads as Record<string, unknown>,
   );
   assert.ok(completedText, "streamChunksText should work from completed data");
   assert.ok(completedText!.includes("Hello"), "content preserved after completion");
@@ -307,7 +307,7 @@ test("streamChunks survive the full lifecycle: in-flight → completed → persi
   assert.equal(
     (dbEntry as Record<string, unknown>).id,
     requestId,
-    "DB entry ID should match the original request ID"
+    "DB entry ID should match the original request ID",
   );
 });
 
@@ -337,7 +337,7 @@ test("streamChunksText renders progressive updates correctly", () => {
   // The joined text should be the concatenation
   assert.ok(
     text2!.includes('data: {"content":"A"}\n\ndata: {"content":"B"}'),
-    "poll 2 joined text should contain both chunks"
+    "poll 2 joined text should contain both chunks",
   );
 });
 
@@ -359,7 +359,7 @@ test("pooling effect state merge preserves streamChunks across updates", () => {
   detailData = mergeDetailData(null, initialFetch);
   assert.ok(
     (detailData!.pipelinePayloads as Record<string, unknown>).streamChunks,
-    "initial merge should preserve streamChunks"
+    "initial merge should preserve streamChunks",
   );
 
   // Poll response adds more chunks
@@ -390,7 +390,7 @@ test("pooling effect state merge preserves streamChunks across updates", () => {
   const afterNullPayload = mergeDetailData(detailData, nullPayloadResponse);
   assert.ok(
     (afterNullPayload.pipelinePayloads as Record<string, unknown>).streamChunks,
-    "streamChunks should survive null pipelinePayloads update"
+    "streamChunks should survive null pipelinePayloads update",
   );
 
   // Simulate: polling response has pipelinePayloads but NO streamChunks
@@ -411,7 +411,7 @@ test("pooling effect state merge preserves streamChunks across updates", () => {
   assert.equal(
     payloadAfter.streamChunks,
     undefined,
-    "streamChunks is lost when new pipelinePayloads lacks it and is truthy"
+    "streamChunks is lost when new pipelinePayloads lacks it and is truthy",
   );
   // This demonstrates the || semantics: data.pipelinePayloads is truthy ({providerResponse: {...}})
   // so it replaces prev.pipelinePayloads even though it lacks streamChunks.
@@ -450,12 +450,12 @@ test("pendingById references are live: push mutates the shared arrays visible to
   assert.equal(
     detailReRead!.streamChunks!.provider.length,
     1,
-    "mutation should be visible through pendingById"
+    "mutation should be visible through pendingById",
   );
   assert.equal(
     detailReRead!.streamChunks!.provider[0],
     'data: {"chunk":"live"}',
-    "mutated content should be visible through pendingById"
+    "mutated content should be visible through pendingById",
   );
 
   // Verify via simulated API response
@@ -495,13 +495,13 @@ test("no connectionId in request logger does not break anything", async () => {
       usageHistory.clearPendingRequests();
       const id = usageHistory.trackPendingRequest("gpt-4", "openai", "conn-noop-2", true);
       return id!;
-    })()
+    })(),
   );
   // This request had no streaming, so streamChunks is null
   if (apiResp) {
     const noChunks = computeStreamChunksText(
       true,
-      apiResp.pipelinePayloads as Record<string, unknown>
+      apiResp.pipelinePayloads as Record<string, unknown>,
     );
     assert.equal(noChunks, null, "no streamChunks means no event stream");
   }
@@ -604,7 +604,7 @@ test("completedDetails cache evicts oldest entries when bounded", () => {
 
   assert.ok(
     usageHistory.getCompletedDetails().size <= 256,
-    "completedDetails should remain bounded"
+    "completedDetails should remain bounded",
   );
   assert.equal(usageHistory.getCompletedDetails().has(ids[0]), false);
   assert.equal(usageHistory.getCompletedDetails().has(ids[ids.length - 1]), true);
@@ -637,14 +637,14 @@ test("streamChunks in completedDetails survives beyond the logs polling window",
   // Should be in completedDetails
   assert.ok(
     usageHistory.getCompletedDetails().has(requestId),
-    "should be in completedDetails after finalization"
+    "should be in completedDetails after finalization",
   );
 
   const completedResp = buildApiResponseFromCompleted(requestId);
   assert.ok(completedResp, "API response should be available from completedDetails");
   assert.ok(
     (completedResp!.pipelinePayloads as Record<string, unknown>).streamChunks,
-    "streamChunks should be in completedDetails"
+    "streamChunks should be in completedDetails",
   );
 
   // Save to DB as the normal durable path, but keep the completedDetails cache
@@ -687,7 +687,7 @@ test("streamChunks in completedDetails survives beyond the logs polling window",
 
   assert.ok(
     usageHistory.getCompletedDetails().has(requestId),
-    "completedDetails should still be available after a 5-second polling gap"
+    "completedDetails should still be available after a 5-second polling gap",
   );
 
   const dbEntry2 = await callLogs.getCallLogById(requestId);
@@ -695,6 +695,6 @@ test("streamChunks in completedDetails survives beyond the logs polling window",
   assert.equal(
     (dbEntry2 as Record<string, unknown>).id,
     requestId,
-    "DB entry ID should match the original request ID"
+    "DB entry ID should match the original request ID",
   );
 });

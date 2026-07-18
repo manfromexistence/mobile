@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   IconArrowUpRight,
@@ -6,20 +6,20 @@ import {
   IconBrandGithub,
   IconChevronFlat,
   IconParagraph,
-} from '@pierre/icons';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+} from "@pierre/icons";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
-import { HeaderMobileMenu } from './HeaderMobileMenu';
-import { Button } from './ui/button';
+import { HeaderMobileMenu } from "./HeaderMobileMenu";
+import { Button } from "./ui/button";
 import {
   getExternalUrl,
   getProductFromPathname,
   type ProductId,
   PRODUCTS,
-} from '@/lib/product-config';
-import { cn } from '@/lib/utils';
+} from "@/lib/product-config";
+import { cn } from "@/lib/utils";
 
 export interface HeaderProps {
   onMobileMenuToggle?: () => void;
@@ -34,12 +34,11 @@ interface NavLinkProps {
 
 function NavLink({ href, basePath, children }: NavLinkProps) {
   const pathname = usePathname();
-  const fullHref =
-    href === '/' ? (basePath !== '' ? basePath : '/') : `${basePath}${href}`;
+  const fullHref = href === "/" ? (basePath !== "" ? basePath : "/") : `${basePath}${href}`;
 
   const isActive = () => {
-    if (href === '/') {
-      return pathname === (basePath !== '' ? basePath : '/');
+    if (href === "/") {
+      return pathname === (basePath !== "" ? basePath : "/");
     }
     return pathname.startsWith(fullHref);
   };
@@ -50,8 +49,8 @@ function NavLink({ href, basePath, children }: NavLinkProps) {
       size="sm"
       asChild
       className={cn(
-        'text-muted-foreground font-normal px-2 gap-0.5',
-        isActive() && 'text-foreground pointer-events-none font-medium'
+        "text-muted-foreground font-normal px-2 gap-0.5",
+        isActive() && "text-foreground pointer-events-none font-medium",
       )}
     >
       <Link href={fullHref}>{children}</Link>
@@ -60,7 +59,7 @@ function NavLink({ href, basePath, children }: NavLinkProps) {
 }
 
 // Order in which we render cross-site links in the desktop nav.
-const OTHER_PRODUCT_IDS: ProductId[] = ['diffs', 'trees'];
+const OTHER_PRODUCT_IDS: ProductId[] = ["diffs", "trees"];
 
 interface IconLinkProps {
   href: string;
@@ -71,12 +70,7 @@ interface IconLinkProps {
 function IconLink({ href, label, children }: IconLinkProps) {
   return (
     <Button variant="ghost" size="icon" asChild>
-      <Link
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={label}
-      >
+      <Link href={href} target="_blank" rel="noopener noreferrer" aria-label={label}>
         {children}
       </Link>
     </Button>
@@ -103,11 +97,11 @@ export function Header({ onMobileMenuToggle, className }: HeaderProps) {
     handleScroll();
 
     // Update on scroll
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const homeHref = product.basePath !== '' ? product.basePath : '/';
+  const homeHref = product.basePath !== "" ? product.basePath : "/";
   // When no parent-managed handler is provided, the Header owns its own
   // mobile popover (used on home, playground, ssr). Docs/theme pages pass a
   // handler so the existing DocsSidebar popover can be opened instead.
@@ -120,9 +114,9 @@ export function Header({ onMobileMenuToggle, className }: HeaderProps) {
     <header
       data-slot="header"
       className={cn(
-        'bg-background bg-clip-padding sticky top-0 z-40 flex items-center justify-between gap-4 py-3 transition-[border-color,box-shadow] duration-200 px-5 -mx-5 md:mx-0 md:px-0',
-        isStuck ? 'is-stuck' : 'border-b border-transparent',
-        className
+        "bg-background bg-clip-padding sticky top-0 z-40 flex items-center justify-between gap-4 py-3 transition-[border-color,box-shadow] duration-200 px-5 -mx-5 md:mx-0 md:px-0",
+        isStuck ? "is-stuck" : "border-b border-transparent",
+        className,
       )}
     >
       <div className="flex items-baseline gap-1.5">
@@ -133,7 +127,7 @@ export function Header({ onMobileMenuToggle, className }: HeaderProps) {
           {product.name}
         </Link>
         <span className="text-muted-foreground hidden text-sm leading-[20px] md:inline">
-          by{' '}
+          by{" "}
           <Link
             href="https://pierre.computer"
             target="_blank"
@@ -176,11 +170,7 @@ export function Header({ onMobileMenuToggle, className }: HeaderProps) {
               asChild
               className="text-muted-foreground gap-0.5 px-2 font-normal"
             >
-              <Link
-                href={getExternalUrl(id)}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <Link href={getExternalUrl(id)} target="_blank" rel="noopener noreferrer">
                 {PRODUCTS[id].name}
                 <IconArrowUpRight />
               </Link>
@@ -194,11 +184,7 @@ export function Header({ onMobileMenuToggle, className }: HeaderProps) {
             asChild
             className="text-muted-foreground gap-0.5 px-2 font-normal"
           >
-            <Link
-              href="https://diffshub.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <Link href="https://diffshub.com" target="_blank" rel="noopener noreferrer">
               DiffsHub
               <IconArrowUpRight />
             </Link>

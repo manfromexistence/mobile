@@ -1,48 +1,48 @@
-'use client';
+"use client";
 
-import { Heatmap, heatmapMeta, heatmapPresets } from '@paper-design/shaders-react';
-import { useControls, button, folder } from 'leva';
-import { Suspense, useState, useEffect, useCallback } from 'react';
-import { setParamsSafe, useResetLevaParams } from '@/helpers/use-reset-leva-params';
-import { usePresetHighlight } from '@/helpers/use-preset-highlight';
-import { cleanUpLevaParams } from '@/helpers/clean-up-leva-params';
-import { toHsla } from '@/helpers/color-utils';
-import { ShaderDetails } from '@/components/shader-details';
-import { ShaderContainer } from '@/components/shader-container';
-import { useUrlParams } from '@/helpers/use-url-params';
-import { heatmapDef } from '@/shader-defs/heatmap-def';
-import { useColors } from '@/helpers/use-colors';
-import { levaImageButton } from '@/helpers/leva-image-button';
+import { Heatmap, heatmapMeta, heatmapPresets } from "@paper-design/shaders-react";
+import { useControls, button, folder } from "leva";
+import { Suspense, useState, useEffect, useCallback } from "react";
+import { setParamsSafe, useResetLevaParams } from "@/helpers/use-reset-leva-params";
+import { usePresetHighlight } from "@/helpers/use-preset-highlight";
+import { cleanUpLevaParams } from "@/helpers/clean-up-leva-params";
+import { toHsla } from "@/helpers/color-utils";
+import { ShaderDetails } from "@/components/shader-details";
+import { ShaderContainer } from "@/components/shader-container";
+import { useUrlParams } from "@/helpers/use-url-params";
+import { heatmapDef } from "@/shader-defs/heatmap-def";
+import { useColors } from "@/helpers/use-colors";
+import { levaImageButton } from "@/helpers/leva-image-button";
 
 const { worldWidth, worldHeight, ...defaults } = heatmapPresets[0].params;
 
 const imageFiles = [
-  'contra.svg',
-  'apple.svg',
-  'paradigm.svg',
-  'paper-logo-only.svg',
-  'brave.svg',
-  'capy.svg',
-  'infinite.svg',
-  'linear.svg',
-  'mercury.svg',
-  'mymind.svg',
-  'resend.svg',
-  'shopify.svg',
-  'wealth-simple.svg',
-  'chanel.svg',
-  'cibc.svg',
-  'cloudflare.svg',
-  'discord.svg',
-  'nasa.svg',
-  'nike.svg',
-  'volkswagen.svg',
-  'diamond.svg',
+  "contra.svg",
+  "apple.svg",
+  "paradigm.svg",
+  "paper-logo-only.svg",
+  "brave.svg",
+  "capy.svg",
+  "infinite.svg",
+  "linear.svg",
+  "mercury.svg",
+  "mymind.svg",
+  "resend.svg",
+  "shopify.svg",
+  "wealth-simple.svg",
+  "chanel.svg",
+  "cibc.svg",
+  "cloudflare.svg",
+  "discord.svg",
+  "nasa.svg",
+  "nike.svg",
+  "volkswagen.svg",
+  "diamond.svg",
 ] as const;
 
 const HeatmapWithControls = () => {
   const [imageIdx, setImageIdx] = useState(-1);
-  const [image, setImage] = useState<HTMLImageElement | string>('/images/logos/diamond.svg');
+  const [image, setImage] = useState<HTMLImageElement | string>("/images/logos/diamond.svg");
 
   useEffect(() => {
     if (imageIdx >= 0) {
@@ -78,9 +78,9 @@ const HeatmapWithControls = () => {
       offsetY: { value: defaults.offsetY, min: -1, max: 1, order: 304 },
       Image: folder(
         {
-          'Upload image': levaImageButton((img?: HTMLImageElement) => setImage(img ?? '')),
+          "Upload image": levaImageButton((img?: HTMLImageElement) => setImage(img ?? "")),
         },
-        { order: -1 }
+        { order: -1 },
       ),
     };
   }, [colors.length]);
@@ -94,7 +94,7 @@ const HeatmapWithControls = () => {
           setColors(colors);
           setParamsSafe(params, setParams, presetParams);
         }),
-      ])
+      ]),
     );
     return {
       Presets: folder(presets, { order: -2 }),
@@ -112,7 +112,13 @@ const HeatmapWithControls = () => {
     <>
       <ShaderContainer shaderDef={heatmapDef} currentParams={{ colors, ...params }}>
         <Suspense fallback={null}>
-          <Heatmap onClick={handleClick} {...params} colors={colors} image={image} suspendWhenProcessingImage />
+          <Heatmap
+            onClick={handleClick}
+            {...params}
+            colors={colors}
+            image={image}
+            suspendWhenProcessingImage
+          />
         </Suspense>
       </ShaderContainer>
       <ShaderDetails

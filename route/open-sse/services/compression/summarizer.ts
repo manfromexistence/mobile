@@ -101,7 +101,7 @@ function extractIntents(messages: Array<{ role: string; content?: string | unkno
 }
 
 function extractFilePaths(
-  messages: Array<{ role: string; content?: string | unknown[] }>
+  messages: Array<{ role: string; content?: string | unknown[] }>,
 ): string[] {
   const paths = new Set<string>();
   for (const msg of messages) {
@@ -126,7 +126,7 @@ function extractErrors(messages: Array<{ role: string; content?: string | unknow
 }
 
 function extractLastDecision(
-  messages: Array<{ role: string; content?: string | unknown[] }>
+  messages: Array<{ role: string; content?: string | unknown[] }>,
 ): string {
   for (let i = messages.length - 1; i >= 0; i--) {
     if (messages[i].role === "assistant") {
@@ -186,7 +186,7 @@ function extractText(content?: string | unknown[]): string {
     return content
       .filter(
         (p): p is { type: string; text?: string } =>
-          typeof p === "object" && p !== null && "text" in p
+          typeof p === "object" && p !== null && "text" in p,
       )
       .map((p) => p.text ?? "")
       .join("\n");

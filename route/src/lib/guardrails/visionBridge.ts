@@ -88,7 +88,7 @@ export interface VisionBridgeDependencies {
   callVisionModel?: (
     imageDataUri: string,
     config: import("./visionBridgeHelpers").VisionModelConfig,
-    apiKey?: string
+    apiKey?: string,
   ) => Promise<string>;
   /** Override combo-target vision check — return true to force processing, false to skip. */
   checkModelHasComboMapping?: (model: string) => Promise<boolean>;
@@ -238,7 +238,7 @@ export class VisionBridgeGuardrail extends BaseGuardrail {
       limitedParts.map(async (imagePart, i) => {
         const description = await callVision(imagePart.imageUrl, config);
         return `[Image ${i + 1}]: ${description}`;
-      })
+      }),
     );
 
     // Collect descriptions maintaining original order. A failed describe yields
@@ -258,7 +258,7 @@ export class VisionBridgeGuardrail extends BaseGuardrail {
     // 13. Replace image parts with text descriptions (null → keep original image)
     const modifiedBody = replaceImageParts(
       body as Parameters<typeof replaceImageParts>[0],
-      descriptions
+      descriptions,
     );
     const processingTime = Date.now() - startTime;
 

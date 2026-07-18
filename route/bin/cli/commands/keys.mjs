@@ -194,7 +194,7 @@ export async function runKeysAddCommand(provider, apiKey, opts = {}) {
   const { db } = await openOmniRouteDb();
   try {
     const existing = listProviderConnections(db).find(
-      (c) => c.provider === providerLower && c.authType === "apikey"
+      (c) => c.provider === providerLower && c.authType === "apikey",
     );
     upsertApiKeyProviderConnection(db, {
       provider: providerLower,
@@ -228,7 +228,7 @@ export async function runKeysListCommand(opts = {}) {
   try {
     ensureProviderSchema(db);
     const connections = listProviderConnections(db).filter(
-      (c) => c.authType === "apikey" && c.apiKey
+      (c) => c.authType === "apikey" && c.apiKey,
     );
     return _printKeysList(connections, opts);
   } finally {
@@ -284,7 +284,7 @@ export async function runKeysRemoveCommand(provider, opts = {}) {
     const readline = await import("node:readline");
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
     const answer = await new Promise((resolve) =>
-      rl.question(t("keys.confirmRemove", { id: providerLower }) + " [y/N] ", resolve)
+      rl.question(t("keys.confirmRemove", { id: providerLower }) + " [y/N] ", resolve),
     );
     rl.close();
     if (!/^y(es)?$/i.test(answer)) {
@@ -336,7 +336,7 @@ export async function runKeysRegenerateCommand(id, opts = {}) {
     const readline = await import("node:readline");
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
     const answer = await new Promise((r) =>
-      rl.question(t("keys.confirmRegenerate", { id }) + " [y/N] ", r)
+      rl.question(t("keys.confirmRegenerate", { id }) + " [y/N] ", r),
     );
     rl.close();
     if (!/^y(es)?$/i.test(answer)) {
@@ -371,7 +371,7 @@ export async function runKeysRevokeCommand(id, opts = {}) {
     const readline = await import("node:readline");
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
     const answer = await new Promise((r) =>
-      rl.question(t("keys.confirmRevoke", { id }) + " [y/N] ", r)
+      rl.question(t("keys.confirmRevoke", { id }) + " [y/N] ", r),
     );
     rl.close();
     if (!/^y(es)?$/i.test(answer)) {
@@ -432,7 +432,7 @@ export async function runKeysUsageCommand(id, opts = {}) {
   try {
     const res = await apiFetch(
       `/api/v1/registered-keys/${encodeURIComponent(id)}/usage?limit=${limit}`,
-      { retry: false }
+      { retry: false },
     );
     if (!res.ok) {
       console.error(t("common.error", { message: `HTTP ${res.status}` }));
@@ -480,7 +480,7 @@ export async function runKeysPolicyShowCommand(id, opts = {}) {
     console.log(`  rate_limit:      ${data.rateLimit ?? data.rate_limit ?? "(unset)"}`);
     console.log(`  max_cost:        ${data.maxCost ?? data.max_cost ?? "(unset)"}`);
     console.log(
-      `  allowed_models:  ${(data.allowedModels ?? data.allowed_models ?? []).join(", ") || "(all)"}`
+      `  allowed_models:  ${(data.allowedModels ?? data.allowed_models ?? []).join(", ") || "(all)"}`,
     );
     return 0;
   } catch (err) {
@@ -564,7 +564,7 @@ export async function runKeysRotateCommand(id, opts = {}) {
     const readline = await import("node:readline");
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
     const answer = await new Promise((r) =>
-      rl.question(t("keys.confirmRotate", { id }) + " [y/N] ", r)
+      rl.question(t("keys.confirmRotate", { id }) + " [y/N] ", r),
     );
     rl.close();
     if (!/^y(es)?$/i.test(answer)) {

@@ -164,14 +164,16 @@ export const dict = {
   "provider.custom.description.suffix": ".",
   "provider.custom.field.providerID.label": "Provider ID",
   "provider.custom.field.providerID.placeholder": "myprovider",
-  "provider.custom.field.providerID.description": "Lowercase letters, numbers, hyphens, or underscores",
+  "provider.custom.field.providerID.description":
+    "Lowercase letters, numbers, hyphens, or underscores",
   "provider.custom.field.name.label": "Display name",
   "provider.custom.field.name.placeholder": "My AI Provider",
   "provider.custom.field.baseURL.label": "Base URL",
   "provider.custom.field.baseURL.placeholder": "https://api.myprovider.com/v1",
   "provider.custom.field.apiKey.label": "API key",
   "provider.custom.field.apiKey.placeholder": "API key",
-  "provider.custom.field.apiKey.description": "Optional. Leave empty if you manage auth via headers.",
+  "provider.custom.field.apiKey.description":
+    "Optional. Leave empty if you manage auth via headers.",
   "provider.custom.models.label": "Models",
   "provider.custom.models.id.label": "ID",
   "provider.custom.models.id.placeholder": "model-id",
@@ -187,7 +189,8 @@ export const dict = {
   "provider.custom.headers.remove": "Remove header",
   "provider.custom.headers.add": "Add header",
   "provider.custom.error.providerID.required": "Provider ID is required",
-  "provider.custom.error.providerID.format": "Use lowercase letters, numbers, hyphens, or underscores",
+  "provider.custom.error.providerID.format":
+    "Use lowercase letters, numbers, hyphens, or underscores",
   "provider.custom.error.providerID.exists": "That provider ID already exists",
   "provider.custom.error.name.required": "Display name is required",
   "provider.custom.error.baseURL.required": "Base URL is required",
@@ -196,7 +199,8 @@ export const dict = {
   "provider.custom.error.duplicate": "Duplicate",
 
   "provider.disconnect.toast.disconnected.title": "{{provider}} disconnected",
-  "provider.disconnect.toast.disconnected.description": "{{provider}} models are no longer available.",
+  "provider.disconnect.toast.disconnected.description":
+    "{{provider}} models are no longer available.",
 
   "model.tag.free": "Free",
   "model.tag.latest": "Latest",
@@ -286,9 +290,11 @@ export const dict = {
   "prompt.action.stop": "Stop",
 
   "prompt.toast.pasteUnsupported.title": "Unsupported attachment",
-  "prompt.toast.pasteUnsupported.description": "Only images, PDFs, or text files can be attached here.",
+  "prompt.toast.pasteUnsupported.description":
+    "Only images, PDFs, or text files can be attached here.",
   "prompt.toast.modelAgentRequired.title": "Select an agent and model",
-  "prompt.toast.modelAgentRequired.description": "Choose an agent and model before sending a prompt.",
+  "prompt.toast.modelAgentRequired.description":
+    "Choose an agent and model before sending a prompt.",
   "prompt.toast.worktreeCreateFailed.title": "Failed to create worktree",
   "prompt.toast.sessionCreateFailed.title": "Failed to create session",
   "prompt.toast.shellSendFailed.title": "Failed to send shell command",
@@ -403,7 +409,8 @@ export const dict = {
   "wsl.onboarding.wslUnavailable.title": "WSL unavailable",
   "wsl.onboarding.wslUnavailable.description": "OpenCode could not verify WSL on this machine.",
   "wsl.onboarding.installWsl": "Install WSL",
-  "wsl.onboarding.windowsRestartRequired": "Restart Windows to finish installing WSL, then reopen OpenCode.",
+  "wsl.onboarding.windowsRestartRequired":
+    "Restart Windows to finish installing WSL, then reopen OpenCode.",
   "wsl.onboarding.next": "Next",
   "wsl.onboarding.refresh": "Refresh",
   "wsl.onboarding.allDistrosAdded": "All installed distros are already added.",
@@ -433,7 +440,8 @@ export const dict = {
   "dialog.project.edit.color": "Color",
   "dialog.project.edit.color.select": "Select {{color}} color",
   "dialog.project.edit.worktree.startup": "Workspace startup script",
-  "dialog.project.edit.worktree.startup.description": "Runs after creating a new workspace (worktree).",
+  "dialog.project.edit.worktree.startup.description":
+    "Runs after creating a new workspace (worktree).",
   "dialog.project.edit.worktree.startup.placeholder": "e.g. bun install",
 
   "dialog.releaseNotes.action.getStarted": "Get started",
@@ -442,7 +450,8 @@ export const dict = {
   "dialog.releaseNotes.media.alt": "Release preview",
 
   "context.breakdown.title": "Context Breakdown",
-  "context.breakdown.note": 'Approximate breakdown of input tokens. "Other" includes tool definitions and overhead.',
+  "context.breakdown.note":
+    'Approximate breakdown of input tokens. "Other" includes tool definitions and overhead.',
   "context.breakdown.system": "System",
   "context.breakdown.user": "User",
   "context.breakdown.assistant": "Assistant",
@@ -506,7 +515,8 @@ export const dict = {
   "toast.workspace.disabled.description": "Only the main worktree is shown in the sidebar",
 
   "toast.permissions.autoaccept.on.title": "Auto-accepting permissions",
-  "toast.permissions.autoaccept.on.description": "Permission requests will be automatically approved",
+  "toast.permissions.autoaccept.on.description":
+    "Permission requests will be automatically approved",
   "toast.permissions.autoaccept.off.title": "Stopped auto-accepting permissions",
   "toast.permissions.autoaccept.off.description": "Permission requests will require approval",
 
@@ -534,7 +544,8 @@ export const dict = {
   "toast.project.reloadFailed.title": "Failed to reload {{project}}",
 
   "toast.update.title": "Update available",
-  "toast.update.description": "A new version of OpenCode ({{version}}) is now available to install.",
+  "toast.update.description":
+    "A new version of OpenCode ({{version}}) is now available to install.",
   "toast.update.action.installRestart": "Install and restart",
   "toast.update.action.notYet": "Not yet",
 
@@ -557,11 +568,13 @@ export const dict = {
   "error.dev.rootNotFound":
     "Root element not found. Did you forget to add it to your index.html? Or maybe the id attribute got misspelled?",
 
-  "error.serverSync.connectFailed": "Could not connect to server. Is there a server running at `{{url}}`?",
+  "error.serverSync.connectFailed":
+    "Could not connect to server. Is there a server running at `{{url}}`?",
   "error.serverSDK.noServerAvailable": "No server available",
   "error.serverSDK.serverNotAvailable": "Server not available",
   "error.childStore.persistedCacheCreateFailed": "Failed to create persisted cache",
-  "error.childStore.persistedProjectMetadataCreateFailed": "Failed to create persisted project metadata",
+  "error.childStore.persistedProjectMetadataCreateFailed":
+    "Failed to create persisted project metadata",
   "error.childStore.persistedProjectIconCreateFailed": "Failed to create persisted project icon",
   "error.childStore.storeCreateFailed": "Failed to create store",
   "directory.error.invalidUrl": "Invalid directory in URL.",
@@ -576,12 +589,14 @@ export const dict = {
   "error.chain.didYouMean": "Did you mean: {{suggestions}}",
   "error.chain.modelNotFound": "Model not found: {{provider}}/{{model}}",
   "error.chain.checkConfig": "Check your config (opencode.json) provider/model names",
-  "error.chain.mcpFailed": 'MCP server "{{name}}" failed. Note, OpenCode does not support MCP authentication yet.',
+  "error.chain.mcpFailed":
+    'MCP server "{{name}}" failed. Note, OpenCode does not support MCP authentication yet.',
   "error.chain.providerAuthFailed": "Provider authentication failed ({{provider}}): {{message}}",
   "error.chain.providerInitFailed":
     'Failed to initialize provider "{{provider}}". Check credentials and configuration.',
   "error.chain.configJsonInvalid": "Config file at {{path}} is not valid JSON(C)",
-  "error.chain.configJsonInvalidWithMessage": "Config file at {{path}} is not valid JSON(C): {{message}}",
+  "error.chain.configJsonInvalidWithMessage":
+    "Config file at {{path}} is not valid JSON(C): {{message}}",
   "error.chain.configDirectoryTypo":
     'Directory "{{dir}}" in {{path}} is not valid. Rename the directory to "{{suggestion}}" or remove it. This is a common typo.',
   "error.chain.configFrontmatterError": "Failed to parse frontmatter in {{path}}:\n{{message}}",
@@ -623,7 +638,8 @@ export const dict = {
   "session.tab.unknown": "Unknown Session",
   "session.panel.reviewAndFiles": "Review and files",
   "session.error.notFound": "This session cannot be found",
-  "session.error.notFound.description": "This tab points to a session that no longer exists on this server.",
+  "session.error.notFound.description":
+    "This tab points to a session that no longer exists on this server.",
   "session.error.notFound.closeTab": "Close Tab",
   "session.error.serverConnection": "Can't connect to this server",
   "session.review.filesChanged": "{{count}} Files Changed",
@@ -636,7 +652,8 @@ export const dict = {
   "session.review.noVcs.createGit.description": "Track, review, and undo changes in this project",
   "session.review.noVcs.createGit.actionLoading": "Creating Git repository...",
   "session.review.noVcs.createGit.action": "Create Git repository",
-  "session.review.noSnapshot": "Snapshot tracking is disabled in config, so session changes are unavailable",
+  "session.review.noSnapshot":
+    "Snapshot tracking is disabled in config, so session changes are unavailable",
   "session.review.noChanges": "No changes",
   "session.review.noUncommittedChanges": "No uncommitted changes yet",
   "session.review.noBranchChanges": "No branch changes yet",
@@ -789,7 +806,8 @@ export const dict = {
   "sidebar.workspaces.disable": "Disable workspaces",
   "sidebar.gettingStarted.title": "Getting started",
   "sidebar.gettingStarted.line1": "OpenCode includes free models so you can start immediately.",
-  "sidebar.gettingStarted.line2": "Connect any provider to use models, inc. Claude, GPT, Gemini etc.",
+  "sidebar.gettingStarted.line2":
+    "Connect any provider to use models, inc. Claude, GPT, Gemini etc.",
   "sidebar.project.recentSessions": "Recent sessions",
   "sidebar.project.viewAllSessions": "View all sessions",
   "sidebar.project.clearNotifications": "Clear notifications",
@@ -848,7 +866,8 @@ export const dict = {
   "settings.general.row.appearance.title": "Appearance",
   "settings.general.row.appearance.description": "Customise how OpenCode looks on your device",
   "settings.general.row.colorScheme.title": "Color scheme",
-  "settings.general.row.colorScheme.description": "Choose whether OpenCode follows the system, light, or dark theme",
+  "settings.general.row.colorScheme.description":
+    "Choose whether OpenCode follows the system, light, or dark theme",
   "settings.general.row.theme.title": "Theme",
   "settings.general.row.theme.description": "Customise how OpenCode is themed.",
   "settings.general.row.font.title": "Code Font",
@@ -858,17 +877,21 @@ export const dict = {
   "settings.general.row.uiFont.title": "UI Font",
   "settings.general.row.uiFont.description": "Customise the font used throughout the interface",
   "settings.general.row.followup.title": "Follow-up behavior",
-  "settings.general.row.followup.description": "Choose whether follow-up prompts steer immediately or wait in a queue",
+  "settings.general.row.followup.description":
+    "Choose whether follow-up prompts steer immediately or wait in a queue",
   "settings.general.row.followup.option.queue": "Queue",
   "settings.general.row.followup.option.steer": "Steer",
   "settings.general.row.showFileTree.title": "File tree",
   "settings.general.row.showFileTree.description": "Show the file tree panel in sessions",
   "settings.general.row.showNavigation.title": "Navigation controls",
-  "settings.general.row.showNavigation.description": "Show the back and forward buttons in the desktop title bar",
+  "settings.general.row.showNavigation.description":
+    "Show the back and forward buttons in the desktop title bar",
   "settings.general.row.showSearch.title": "Command palette",
-  "settings.general.row.showSearch.description": "Show the search and command palette button in the title bar",
+  "settings.general.row.showSearch.description":
+    "Show the search and command palette button in the title bar",
   "settings.general.row.showTerminal.title": "Terminal",
-  "settings.general.row.showTerminal.description": "Show the terminal button in the desktop title bar",
+  "settings.general.row.showTerminal.description":
+    "Show the terminal button in the desktop title bar",
   "settings.general.row.showStatus.title": "Server status",
   "settings.general.row.showStatus.description": "Show the server status button in the title bar",
   "settings.general.row.mobileTitlebarBottom.title": "Bottom navigation",
@@ -877,7 +900,8 @@ export const dict = {
   "settings.general.row.showCustomAgents.title": "Custom agents",
   "settings.general.row.showCustomAgents.description": "Show the agent picker in the composer",
   "settings.general.row.reasoningSummaries.title": "Show reasoning summaries",
-  "settings.general.row.reasoningSummaries.description": "Display model reasoning summaries in the timeline",
+  "settings.general.row.reasoningSummaries.description":
+    "Display model reasoning summaries in the timeline",
   "settings.general.row.shellToolPartsExpanded.title": "Expand shell tool parts",
   "settings.general.row.shellToolPartsExpanded.description":
     "Show shell tool parts expanded by default in the timeline",
@@ -885,9 +909,11 @@ export const dict = {
   "settings.general.row.editToolPartsExpanded.description":
     "Show edit, write, and patch tool parts expanded by default in the timeline",
   "settings.general.row.newLayoutDesigns.title": "New layout and designs",
-  "settings.general.row.newLayoutDesigns.description": "Enable the redesigned layout, home, composer, and session UI",
+  "settings.general.row.newLayoutDesigns.description":
+    "Enable the redesigned layout, home, composer, and session UI",
   "settings.general.row.pinchZoom.title": "Pinch to zoom",
-  "settings.general.row.pinchZoom.description": "Allow trackpad pinch and Ctrl-scroll gestures to zoom",
+  "settings.general.row.pinchZoom.description":
+    "Allow trackpad pinch and Ctrl-scroll gestures to zoom",
 
   "settings.general.row.wayland.title": "Use native Wayland",
   "settings.general.row.wayland.description": "Disable X11 fallback on Wayland. Requires restart.",
@@ -898,7 +924,8 @@ export const dict = {
   "settings.general.row.releaseNotes.description": "Show What's New popups after updates",
 
   "settings.updates.row.startup.title": "Check for updates on startup",
-  "settings.updates.row.startup.description": "Automatically check for updates when OpenCode launches",
+  "settings.updates.row.startup.description":
+    "Automatically check for updates when OpenCode launches",
   "settings.updates.row.check.title": "Check for updates",
   "settings.updates.row.check.description": "Manually check for updates and install if available",
   "settings.updates.action.checkNow": "Check now",
@@ -958,12 +985,15 @@ export const dict = {
   "settings.general.notifications.agent.description":
     "Show system notification when the agent is complete or needs attention",
   "settings.general.notifications.permissions.title": "Permissions",
-  "settings.general.notifications.permissions.description": "Show system notification when a permission is required",
+  "settings.general.notifications.permissions.description":
+    "Show system notification when a permission is required",
   "settings.general.notifications.errors.title": "Errors",
-  "settings.general.notifications.errors.description": "Show system notification when an error occurs",
+  "settings.general.notifications.errors.description":
+    "Show system notification when an error occurs",
 
   "settings.general.sounds.agent.title": "Agent",
-  "settings.general.sounds.agent.description": "Play sound when the agent is complete or needs attention",
+  "settings.general.sounds.agent.description":
+    "Play sound when the agent is complete or needs attention",
   "settings.general.sounds.permissions.title": "Permissions",
   "settings.general.sounds.permissions.description": "Play sound when a permission is required",
   "settings.general.sounds.errors.title": "Errors",
@@ -991,7 +1021,8 @@ export const dict = {
   "settings.providers.description": "Provider settings will be configurable here.",
   "settings.providers.section.connected": "Connected providers",
   "settings.providers.connected.empty": "No connected providers",
-  "settings.providers.connected.environmentDescription": "Connected from your environment variables",
+  "settings.providers.connected.environmentDescription":
+    "Connected from your environment variables",
   "settings.providers.section.popular": "Popular providers",
   "settings.providers.custom.description": "Add an OpenAI-compatible provider by base URL.",
   "settings.providers.tag.environment": "Environment",
@@ -1019,7 +1050,8 @@ export const dict = {
   "settings.permissions.tool.read.title": "Read",
   "settings.permissions.tool.read.description": "Reading a file (matches the file path)",
   "settings.permissions.tool.edit.title": "Edit",
-  "settings.permissions.tool.edit.description": "Modify files, including edits, writes, and patches",
+  "settings.permissions.tool.edit.description":
+    "Modify files, including edits, writes, and patches",
   "settings.permissions.tool.glob.title": "Glob",
   "settings.permissions.tool.glob.description": "Match files using glob patterns",
   "settings.permissions.tool.grep.title": "Grep",
@@ -1041,9 +1073,11 @@ export const dict = {
   "settings.permissions.tool.websearch.title": "Web Search",
   "settings.permissions.tool.websearch.description": "Search the web",
   "settings.permissions.tool.external_directory.title": "External Directory",
-  "settings.permissions.tool.external_directory.description": "Access files outside the project directory",
+  "settings.permissions.tool.external_directory.description":
+    "Access files outside the project directory",
   "settings.permissions.tool.doom_loop.title": "Doom Loop",
-  "settings.permissions.tool.doom_loop.description": "Detect repeated tool calls with identical input",
+  "settings.permissions.tool.doom_loop.description":
+    "Detect repeated tool calls with identical input",
 
   "session.delete.failed.title": "Failed to delete session",
   "session.delete.title": "Delete session",
@@ -1075,4 +1109,4 @@ export const dict = {
   "workspace.reset.archived.one": "1 session will be archived.",
   "workspace.reset.archived.many": "{{count}} sessions will be archived.",
   "workspace.reset.note": "This will reset the workspace to match the default branch.",
-}
+};

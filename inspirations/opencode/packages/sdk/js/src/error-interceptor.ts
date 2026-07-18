@@ -16,36 +16,36 @@ export function wrapClientError(
   request: Request | undefined,
   opts: { throwOnError?: boolean } | undefined,
 ): unknown {
-  if (!opts?.throwOnError) return error
-  if (error instanceof Error) return error
+  if (!opts?.throwOnError) return error;
+  if (error instanceof Error) return error;
 
   // NamedError-shaped responses (the common case for opencode 4xx) come
   // through as POJOs — extract a useful message first, then wrap.
   if (typeof error === "object" && error !== null && Object.keys(error).length > 0) {
-    const obj = error as { data?: { message?: unknown }; message?: unknown; name?: unknown }
+    const obj = error as { data?: { message?: unknown }; message?: unknown; name?: unknown };
     const message =
       (typeof obj.data?.message === "string" && obj.data.message) ||
       (typeof obj.message === "string" && obj.message) ||
       (typeof obj.name === "string" && obj.name) ||
-      describe(request, response)
-    return new Error(message, { cause: { body: error, status: response?.status } })
+      describe(request, response);
+    return new Error(message, { cause: { body: error, status: response?.status } });
   }
 
   if (typeof error === "string" && error.length > 0) {
-    return new Error(error, { cause: { body: error, status: response?.status } })
+    return new Error(error, { cause: { body: error, status: response?.status } });
   }
 
   // Empty body / network failure / undefined / null / empty object.
-  const reason = response ? "(empty response body)" : "network error (no response)"
+  const reason = response ? "(empty response body)" : "network error (no response)";
   return new Error(`opencode server ${describe(request, response)}: ${reason}`, {
     cause: { body: error, status: response?.status },
-  })
+  });
 }
 
 function describe(request: Request | undefined, response: Response | undefined) {
-  const method = request?.method ?? "?"
-  const url = request?.url ?? "?"
-  const status = response?.status
-  const statusText = response?.statusText
-  return `${method} ${url}${status ? " → " + status : ""}${statusText ? " " + statusText : ""}`
+  const method = request?.method ?? "?";
+  const url = request?.url ?? "?";
+  const status = response?.status;
+  const statusText = response?.statusText;
+  return `${method} ${url}${status ? " → " + status : ""}${statusText ? " " + statusText : ""}`;
 }

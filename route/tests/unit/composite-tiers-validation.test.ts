@@ -60,7 +60,7 @@ test("validateCompositeTiersConfig rejects tiers that point to missing step ids"
           },
         },
       },
-    })
+    }),
   );
 
   assert.equal(result.success, false);
@@ -88,7 +88,7 @@ test("validateCompositeTiersConfig rejects duplicate step ownership across tiers
           },
         },
       },
-    })
+    }),
   );
 
   assert.equal(result.success, false);
@@ -118,7 +118,7 @@ test("validateCompositeTiersConfig rejects fallback cycles", () => {
           },
         },
       },
-    })
+    }),
   );
 
   assert.equal(result.success, false);

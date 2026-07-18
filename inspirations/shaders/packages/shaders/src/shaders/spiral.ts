@@ -1,6 +1,6 @@
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { simplexNoise, declarePI, colorBandingFix } from '../shader-utils.js';
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { simplexNoise, declarePI, colorBandingFix } from "../shader-utils.js";
 
 /**
  * A single-colored animated spiral that morphs across a wide range of shapes -
@@ -58,8 +58,8 @@ in vec2 v_patternUV;
 
 out vec4 fragColor;
 
-${ declarePI }
-${ simplexNoise }
+${declarePI}
+${simplexNoise}
 
 void main() {
   vec2 uv = 2. * v_patternUV;
@@ -103,7 +103,7 @@ void main() {
   color += bgColor * (1. - opacity);
   opacity += bgOpacity * (1. - opacity);
 
-  ${ colorBandingFix }
+  ${colorBandingFix}
 
   fragColor = vec4(color, opacity);
 }

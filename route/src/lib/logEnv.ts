@@ -123,7 +123,7 @@ export function getCallLogPipelineMaxSizeBytes(): number {
   return (
     parsePositiveInt(
       process.env.CALL_LOG_PIPELINE_MAX_SIZE_KB,
-      DEFAULT_CALL_LOG_PIPELINE_MAX_SIZE_KB
+      DEFAULT_CALL_LOG_PIPELINE_MAX_SIZE_KB,
     ) * 1024
   );
 }

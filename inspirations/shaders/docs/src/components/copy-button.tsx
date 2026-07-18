@@ -1,7 +1,7 @@
-import clsx from 'clsx';
-import { useRef, useState } from 'react';
+import clsx from "clsx";
+import { useRef, useState } from "react";
 
-interface CopyButtonProps extends React.ComponentProps<'button'> {
+interface CopyButtonProps extends React.ComponentProps<"button"> {
   getText: () => string;
 }
 
@@ -22,14 +22,14 @@ export function CopyButton({ getText, className, children, ...props }: CopyButto
 
         if (copyIcon && checkIcon) {
           Object.assign(copyIcon.style, {
-            filter: 'blur(3px)',
+            filter: "blur(3px)",
             scale: 0.5,
             opacity: 0,
           });
 
           setTimeout(() => {
             Object.assign(checkIcon.style, {
-              filter: 'none',
+              filter: "none",
               scale: 1,
               opacity: 1,
             });
@@ -49,28 +49,28 @@ export function CopyButton({ getText, className, children, ...props }: CopyButto
 
         if (copyIcon && checkIcon) {
           Object.assign(checkIcon.style, {
-            filter: 'blur(3px)',
+            filter: "blur(3px)",
             scale: 0.5,
             opacity: 0,
           });
 
           Object.assign(copyIcon.style, {
-            filter: 'none',
+            filter: "none",
             scale: 1,
             opacity: 1,
           });
         }
       }, 2000);
     } catch (err) {
-      console.error('Failed to copy text:', err);
+      console.error("Failed to copy text:", err);
     }
   };
 
   return (
     <button
-      aria-label={copied ? 'Copied!' : 'Copy to clipboard'}
+      aria-label={copied ? "Copied!" : "Copy to clipboard"}
       type="button"
-      className={clsx('group flex cursor-pointer items-center justify-center', className)}
+      className={clsx("group flex cursor-pointer items-center justify-center", className)}
       onClick={handleCopy}
       {...props}
     >
@@ -93,7 +93,7 @@ export function CopyButton({ getText, className, children, ...props }: CopyButto
           fill="none"
           className="absolute transition-[opacity,filter,scale] duration-150 ease-out-smooth"
           ref={checkIconRef}
-          style={{ opacity: 0, filter: 'blur(3px)', scale: 0.5 }}
+          style={{ opacity: 0, filter: "blur(3px)", scale: 0.5 }}
         >
           <path
             d="M2.05957 8.16504L6.55957 12.9952L13.6784 3.16504"

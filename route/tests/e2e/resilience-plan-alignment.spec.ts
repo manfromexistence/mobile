@@ -309,7 +309,7 @@ test.describe("Resilience Plan Alignment", () => {
     await gotoDashboardRoute(page, "/dashboard/settings?tab=resilience");
     const resiliencePanel = page.getByRole("tabpanel", { name: "Resilience" });
     await expect(
-      resiliencePanel.getByRole("heading", { name: "Connection Cooldown", exact: true })
+      resiliencePanel.getByRole("heading", { name: "Connection Cooldown", exact: true }),
     ).toBeVisible({ timeout: 15000 });
     await expect(resiliencePanel.getByText(/Base cooldown\s*60000ms/)).toBeVisible();
     await expect(resiliencePanel.getByText(/Use upstream retry hints\s*No/)).toBeVisible();
@@ -329,7 +329,7 @@ test.describe("Resilience Plan Alignment", () => {
     await expect(providerHealthRegion.getByText("Gemini")).toBeVisible();
     await expect(providerHealthRegion.getByText("Groq")).toBeVisible();
     await expect(
-      providerHealthRegion.getByText("Recovering", { exact: true }).first()
+      providerHealthRegion.getByText("Recovering", { exact: true }).first(),
     ).toBeVisible();
     await expect(providerHealthRegion.getByText("Down", { exact: true }).first()).toBeVisible();
   });

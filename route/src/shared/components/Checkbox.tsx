@@ -20,7 +20,7 @@ export default function Checkbox({ label, className, id, ...props }: CheckboxPro
         "h-4 w-4 shrink-0 cursor-pointer rounded-[4px] accent-[var(--color-accent)]",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30",
         "disabled:cursor-not-allowed disabled:opacity-50",
-        className
+        className,
       )}
       {...props}
     />

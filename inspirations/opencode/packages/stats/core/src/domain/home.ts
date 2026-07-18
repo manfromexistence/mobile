@@ -1,146 +1,187 @@
-import { Client } from "@planetscale/database"
-import { Effect } from "effect"
-import { Resource } from "sst/resource"
-import type { GeoStatMetric } from "./geo"
-import type { ModelStatMetric } from "./model"
-import type { ProviderStatMetric } from "./provider"
+import { Client } from "@planetscale/database";
+import { Effect } from "effect";
+import { Resource } from "sst/resource";
+import type { GeoStatMetric } from "./geo";
+import type { ModelStatMetric } from "./model";
+import type { ProviderStatMetric } from "./provider";
 
-export type UsageProduct = "All Users" | "Zen" | "Go" | "Enterprise"
-export type TokenProduct = "Zen" | "Go" | "Enterprise"
-export type UsageRange = "1D" | "1W" | "2W" | "1M" | "2M" | "3M" | "YTD" | "ALL"
-export type UsagePoint = { date: string; segments: { model: string; value: number }[] }
-export type MarketDay = { date: string; total: number; authors: { author: string; share: number; tokens: number }[] }
+export type UsageProduct = "All Users" | "Zen" | "Go" | "Enterprise";
+export type TokenProduct = "Zen" | "Go" | "Enterprise";
+export type UsageRange = "1D" | "1W" | "2W" | "1M" | "2M" | "3M" | "YTD" | "ALL";
+export type UsagePoint = { date: string; segments: { model: string; value: number }[] };
+export type MarketDay = {
+  date: string;
+  total: number;
+  authors: { author: string; share: number; tokens: number }[];
+};
 export type LeaderboardEntry = {
-  model: string
-  provider: string
-  author: string
-  tokens: number
-  change: number | null
-  rank: number
-}
-export type TokenCostEntry = { model: string; total: number; input: number; output: number; cached: number }
-export type CacheRatioEntry = { model: string; ratio: number; cached: number; uncached: number; total: number }
-export type SessionCostEntry = { model: string; cost: number; tokens: number }
-export type CountryEntry = { country: string; continent: string; tokens: number; share: number; rank: number }
-export type ModelUsagePoint = { date: string; tokens: number; users: number; sessions: number; cost: number }
-export type ModelMixEntry = { label: string; tokens: number; share: number }
+  model: string;
+  provider: string;
+  author: string;
+  tokens: number;
+  change: number | null;
+  rank: number;
+};
+export type TokenCostEntry = {
+  model: string;
+  total: number;
+  input: number;
+  output: number;
+  cached: number;
+};
+export type CacheRatioEntry = {
+  model: string;
+  ratio: number;
+  cached: number;
+  uncached: number;
+  total: number;
+};
+export type SessionCostEntry = { model: string; cost: number; tokens: number };
+export type CountryEntry = {
+  country: string;
+  continent: string;
+  tokens: number;
+  share: number;
+  rank: number;
+};
+export type ModelUsagePoint = {
+  date: string;
+  tokens: number;
+  users: number;
+  sessions: number;
+  cost: number;
+};
+export type ModelMixEntry = { label: string; tokens: number; share: number };
 export type ModelPeerEntry = {
-  model: string
-  provider: string
-  author: string
-  rank: number
-  tokens: number
-  share: number
-  slug: string
-}
+  model: string;
+  provider: string;
+  author: string;
+  rank: number;
+  tokens: number;
+  share: number;
+  slug: string;
+};
 export type LabUsageModelEntry = {
-  model: string
-  provider: string
-  author: string
-  tokens: number
-  share: number
-  slug: string
-}
+  model: string;
+  provider: string;
+  author: string;
+  tokens: number;
+  share: number;
+  slug: string;
+};
 export type StatsModelData = {
-  updatedAt: string | null
-  model: string
-  slug: string
-  provider: string
-  author: string
-  rank: number | null
-  previousRank: number | null
-  totalModels: number
-  tokenShare: number
-  tokenChange: number
+  updatedAt: string | null;
+  model: string;
+  slug: string;
+  provider: string;
+  author: string;
+  rank: number | null;
+  previousRank: number | null;
+  totalModels: number;
+  tokenShare: number;
+  tokenChange: number;
   totals: {
-    sessions: number
-    uniqueUsers: number
-    tokens: number
-    cost: number
-    tokensPerSession: number
-    costPerSession: number
-    costPerMillion: number
-    cacheRatio: number
-  }
-  usage: ModelUsagePoint[]
-  tokenMix: ModelMixEntry[]
-  country: Record<UsageRange, CountryEntry[]>
-  peers: ModelPeerEntry[]
-}
+    sessions: number;
+    uniqueUsers: number;
+    tokens: number;
+    cost: number;
+    tokensPerSession: number;
+    costPerSession: number;
+    costPerMillion: number;
+    cacheRatio: number;
+  };
+  usage: ModelUsagePoint[];
+  tokenMix: ModelMixEntry[];
+  country: Record<UsageRange, CountryEntry[]>;
+  peers: ModelPeerEntry[];
+};
 export type StatsLabData = {
-  updatedAt: string | null
-  provider: string
-  author: string
-  tokenShare: number
-  tokenChange: number
+  updatedAt: string | null;
+  provider: string;
+  author: string;
+  tokenShare: number;
+  tokenChange: number;
   totals: {
-    sessions: number
-    tokens: number
-    models: number
-  }
-  usage: ModelUsagePoint[]
-  models: LabUsageModelEntry[]
-}
+    sessions: number;
+    tokens: number;
+    models: number;
+  };
+  usage: ModelUsagePoint[];
+  models: LabUsageModelEntry[];
+};
 export type StatsHomeData = {
-  updatedAt: string | null
-  usage: Record<UsageProduct, Record<UsageRange, UsagePoint[]>>
-  users: Record<UsageProduct, Record<UsageRange, UsagePoint[]>>
-  leaderboard: Record<UsageProduct, Record<UsageRange, LeaderboardEntry[]>>
-  market: Record<UsageRange, MarketDay[]>
-  tokenCost: Record<TokenProduct, TokenCostEntry[]>
-  cacheRatio: Record<TokenProduct, CacheRatioEntry[]>
-  sessionCost: Record<TokenProduct, SessionCostEntry[]>
-  country: Record<UsageRange, CountryEntry[]>
-}
+  updatedAt: string | null;
+  usage: Record<UsageProduct, Record<UsageRange, UsagePoint[]>>;
+  users: Record<UsageProduct, Record<UsageRange, UsagePoint[]>>;
+  leaderboard: Record<UsageProduct, Record<UsageRange, LeaderboardEntry[]>>;
+  market: Record<UsageRange, MarketDay[]>;
+  tokenCost: Record<TokenProduct, TokenCostEntry[]>;
+  cacheRatio: Record<TokenProduct, CacheRatioEntry[]>;
+  sessionCost: Record<TokenProduct, SessionCostEntry[]>;
+  country: Record<UsageRange, CountryEntry[]>;
+};
 
 export class StatsDataError extends Error {
-  override name = "StatsDataError"
+  override name = "StatsDataError";
 
   constructor(readonly cause: unknown) {
-    super("Failed to load stats data")
+    super("Failed to load stats data");
   }
 }
 
-const DAY_MS = 86_400_000
-const TOKEN_SCALE = 1_000_000
-const DOLLARS_PER_MICROCENT = 1 / 100_000_000
-const METRIC_MODEL_LIMIT = 10
-const TOP_MODEL_SEGMENT_LIMIT = 9
-const SITE_PRODUCT = "Go"
-const LEADERBOARD_CHANGE_MIN_MULTIPLE = 10
-const months = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"] as const
+const DAY_MS = 86_400_000;
+const TOKEN_SCALE = 1_000_000;
+const DOLLARS_PER_MICROCENT = 1 / 100_000_000;
+const METRIC_MODEL_LIMIT = 10;
+const TOP_MODEL_SEGMENT_LIMIT = 9;
+const SITE_PRODUCT = "Go";
+const LEADERBOARD_CHANGE_MIN_MULTIPLE = 10;
+const months = [
+  "JAN",
+  "FEB",
+  "MAR",
+  "APR",
+  "MAY",
+  "JUN",
+  "JUL",
+  "AUG",
+  "SEP",
+  "OCT",
+  "NOV",
+  "DEC",
+] as const;
 
 type StatMetricRow = Omit<ModelStatMetric, "updatedAt"> & {
-  periodStart: number
-  updatedAt: number
-}
+  periodStart: number;
+  updatedAt: number;
+};
 type ProviderMetricRow = Omit<ProviderStatMetric, "updatedAt"> & {
-  periodStart: number
-  updatedAt: number
-}
+  periodStart: number;
+  updatedAt: number;
+};
 type GeoMetricRow = Omit<GeoStatMetric, "updatedAt"> & {
-  periodStart: number
-  updatedAt: number
-}
+  periodStart: number;
+  updatedAt: number;
+};
 
-type DateWindow = { start: number; end: number; previousStart: number; previousEnd: number }
-type Bucket = { start: number; end: number; label: string }
+type DateWindow = { start: number; end: number; previousStart: number; previousEnd: number };
+type Bucket = { start: number; end: number; label: string };
 type ModelAggregate = {
-  model: string
-  provider: string
-  sessions: number
-  uniqueUsers: number
-  inputTokens: number
-  outputTokens: number
-  reasoningTokens: number
-  cacheReadTokens: number
-  totalTokens: number
-  inputCostMicrocents: number
-  outputCostMicrocents: number
-  totalCostMicrocents: number
-}
+  model: string;
+  provider: string;
+  sessions: number;
+  uniqueUsers: number;
+  inputTokens: number;
+  outputTokens: number;
+  reasoningTokens: number;
+  cacheReadTokens: number;
+  totalTokens: number;
+  inputCostMicrocents: number;
+  outputCostMicrocents: number;
+  totalCostMicrocents: number;
+};
 
-type RawRow = Record<string, unknown>
+type RawRow = Record<string, unknown>;
 
 export function getStatsHomeData(): Effect.Effect<StatsHomeData, StatsDataError> {
   return Effect.tryPromise({
@@ -149,11 +190,11 @@ export function getStatsHomeData(): Effect.Effect<StatsHomeData, StatsDataError>
         listModelDaily(),
         listProviderDaily(),
         listGeoDaily(),
-      ])
-      return buildStatsHomeData(modelRows, providerRows, geoRows)
+      ]);
+      return buildStatsHomeData(modelRows, providerRows, geoRows);
     },
     catch: (cause) => new StatsDataError(cause),
-  })
+  });
 }
 
 export function getStatsModelData(
@@ -162,10 +203,10 @@ export function getStatsModelData(
 ): Effect.Effect<StatsModelData | null, StatsDataError> {
   return Effect.tryPromise({
     try: async () => {
-      const modelRows = await listModelDaily()
-      const normalized = modelRows.flatMap(normalizeStatRow)
-      const resolvedModel = resolveModelName(model, normalized, provider)
-      if (!resolvedModel) return null
+      const modelRows = await listModelDaily();
+      const normalized = modelRows.flatMap(normalizeStatRow);
+      const resolvedModel = resolveModelName(model, normalized, provider);
+      if (!resolvedModel) return null;
       return buildStatsModelData(
         resolvedModel,
         modelRows,
@@ -174,17 +215,19 @@ export function getStatsModelData(
           provider: resolveModelProvider(resolvedModel, normalized, provider),
         }),
         provider,
-      )
+      );
     },
     catch: (cause) => new StatsDataError(cause),
-  })
+  });
 }
 
-export function getStatsLabData(provider: string): Effect.Effect<StatsLabData | null, StatsDataError> {
+export function getStatsLabData(
+  provider: string,
+): Effect.Effect<StatsLabData | null, StatsDataError> {
   return Effect.tryPromise({
     try: async () => buildStatsLabData(provider, await listModelDaily()),
     catch: (cause) => new StatsDataError(cause),
-  })
+  });
 }
 
 async function listModelDaily(): Promise<ModelStatMetric[]> {
@@ -209,7 +252,7 @@ async function listModelDaily(): Promise<ModelStatMetric[]> {
     inputCostMicrocents: numberValue(row.input_cost_microcents),
     outputCostMicrocents: numberValue(row.output_cost_microcents),
     totalCostMicrocents: numberValue(row.total_cost_microcents),
-  }))
+  }));
 }
 
 async function listProviderDaily(): Promise<ProviderStatMetric[]> {
@@ -222,17 +265,20 @@ async function listProviderDaily(): Promise<ProviderStatMetric[]> {
     tier: stringValue(row.tier),
     provider: stringValue(row.provider),
     totalTokens: numberValue(row.total_tokens),
-  }))
+  }));
 }
 
-async function listGeoDaily(opts?: { provider?: string; model?: string }): Promise<GeoStatMetric[]> {
+async function listGeoDaily(opts?: { provider?: string; model?: string }): Promise<
+  GeoStatMetric[]
+> {
   const scope =
     opts?.model && opts.provider
       ? "and provider = ? and model = ?"
       : opts?.model
         ? "and model = ?"
-        : "and provider = 'all' and model = 'all'"
-  const params = opts?.model && opts.provider ? [opts.provider, opts.model] : opts?.model ? [opts.model] : []
+        : "and provider = 'all' and model = 'all'";
+  const params =
+    opts?.model && opts.provider ? [opts.provider, opts.model] : opts?.model ? [opts.model] : [];
   return (
     await queryRows(
       `select period_key, updated_at, tier, provider, model, country, continent, total_tokens from geo_stat
@@ -248,27 +294,27 @@ async function listGeoDaily(opts?: { provider?: string; model?: string }): Promi
     country: stringValue(row.country),
     continent: stringValue(row.continent),
     totalTokens: numberValue(row.total_tokens),
-  }))
+  }));
 }
 
 async function queryRows(query: string, params: string[] = []) {
-  return (await new Client({ url: databaseUrl() }).execute(query, params)).rows as RawRow[]
+  return (await new Client({ url: databaseUrl() }).execute(query, params)).rows as RawRow[];
 }
 
 function databaseUrl() {
-  return process.env.DATABASE_URL ?? Resource.StatsDatabase.url
+  return process.env.DATABASE_URL ?? Resource.StatsDatabase.url;
 }
 
 function stringValue(value: unknown) {
-  return value == null ? "" : String(value)
+  return value == null ? "" : String(value);
 }
 
 function numberValue(value: unknown) {
-  return Number(value ?? 0)
+  return Number(value ?? 0);
 }
 
 function dateValue(value: unknown) {
-  return value instanceof Date ? value : new Date(stringValue(value))
+  return value instanceof Date ? value : new Date(stringValue(value));
 }
 
 function buildStatsHomeData(
@@ -276,15 +322,15 @@ function buildStatsHomeData(
   providerRows: ProviderStatMetric[],
   geoRows: GeoStatMetric[],
 ): StatsHomeData {
-  const normalized = modelRows.flatMap(normalizeStatRow)
-  const providers = providerRows.flatMap(normalizeProviderRow)
-  const geo = geoRows.flatMap(normalizeGeoRow)
-  const periods = [...normalized, ...providers, ...geo]
-  if (periods.length === 0) return emptyStatsHomeData()
+  const normalized = modelRows.flatMap(normalizeStatRow);
+  const providers = providerRows.flatMap(normalizeProviderRow);
+  const geo = geoRows.flatMap(normalizeGeoRow);
+  const periods = [...normalized, ...providers, ...geo];
+  if (periods.length === 0) return emptyStatsHomeData();
 
-  const earliest = Math.min(...periods.map((row) => row.periodStart))
-  const latest = Math.max(...periods.map((row) => row.periodStart))
-  const latestUpdate = Math.max(...periods.map((row) => row.updatedAt))
+  const earliest = Math.min(...periods.map((row) => row.periodStart));
+  const latest = Math.max(...periods.map((row) => row.periodStart));
+  const latestUpdate = Math.max(...periods.map((row) => row.updatedAt));
 
   return {
     updatedAt: new Date(latestUpdate).toISOString(),
@@ -312,9 +358,13 @@ function buildStatsHomeData(
       ),
     ),
     leaderboard: createUsageProductRecord((product) =>
-      createRangeRecord((range) => buildLeaderboard(normalized, product, getWindow("1W", earliest, latest))),
+      createRangeRecord((range) =>
+        buildLeaderboard(normalized, product, getWindow("1W", earliest, latest)),
+      ),
     ),
-    market: createRangeRecord((range) => buildMarketShare(providers, "Go", range, getWindow(range, earliest, latest))),
+    market: createRangeRecord((range) =>
+      buildMarketShare(providers, "Go", range, getWindow(range, earliest, latest)),
+    ),
     tokenCost: createTokenProductRecord((product) =>
       buildTokenCost(normalized, product, getWindow("1W", earliest, latest)),
     ),
@@ -324,8 +374,10 @@ function buildStatsHomeData(
     sessionCost: createTokenProductRecord((product) =>
       buildSessionCost(normalized, product, getWindow("1W", earliest, latest)),
     ),
-    country: createRangeRecord((range) => buildCountryStats(geo, getWindow(range, earliest, latest))),
-  }
+    country: createRangeRecord((range) =>
+      buildCountryStats(geo, getWindow(range, earliest, latest)),
+    ),
+  };
 }
 
 function buildStatsModelData(
@@ -334,40 +386,49 @@ function buildStatsModelData(
   geoRows: GeoStatMetric[],
   providerParam?: string,
 ): StatsModelData | null {
-  const normalized = modelRows.flatMap(normalizeStatRow)
-  const geo = geoRows.flatMap(normalizeGeoRow)
-  if (normalized.length === 0) return null
+  const normalized = modelRows.flatMap(normalizeStatRow);
+  const geo = geoRows.flatMap(normalizeGeoRow);
+  if (normalized.length === 0) return null;
 
-  const model = resolveModelName(modelParam, normalized, providerParam)
-  if (!model) return null
+  const model = resolveModelName(modelParam, normalized, providerParam);
+  if (!model) return null;
 
-  const modelScopedRows = normalized.filter((row) => row.model === model)
-  const earliest = Math.min(...normalized.map((row) => row.periodStart))
-  const latest = Math.max(...normalized.map((row) => row.periodStart))
-  const latestUpdate = Math.max(...modelScopedRows.map((row) => row.updatedAt))
-  const window = getWindow("2M", earliest, latest)
-  const rankWindow = getWindow("1W", earliest, latest)
-  const currentRows = rowsForProduct(modelScopedRows, SITE_PRODUCT, window.start, window.end)
-  const previousRows = rowsForProduct(modelScopedRows, SITE_PRODUCT, window.previousStart, window.previousEnd)
-  const current = combineRowsForModel(model, currentRows)
-  const previous = combineRowsForModel(model, previousRows)
-  const rankPeers = aggregateByModelName(rowsForProduct(normalized, SITE_PRODUCT, rankWindow.start, rankWindow.end))
+  const modelScopedRows = normalized.filter((row) => row.model === model);
+  const earliest = Math.min(...normalized.map((row) => row.periodStart));
+  const latest = Math.max(...normalized.map((row) => row.periodStart));
+  const latestUpdate = Math.max(...modelScopedRows.map((row) => row.updatedAt));
+  const window = getWindow("2M", earliest, latest);
+  const rankWindow = getWindow("1W", earliest, latest);
+  const currentRows = rowsForProduct(modelScopedRows, SITE_PRODUCT, window.start, window.end);
+  const previousRows = rowsForProduct(
+    modelScopedRows,
+    SITE_PRODUCT,
+    window.previousStart,
+    window.previousEnd,
+  );
+  const current = combineRowsForModel(model, currentRows);
+  const previous = combineRowsForModel(model, previousRows);
+  const rankPeers = aggregateByModelName(
+    rowsForProduct(normalized, SITE_PRODUCT, rankWindow.start, rankWindow.end),
+  )
     .filter((item) => item.totalTokens > 0)
-    .toSorted((a, b) => b.totalTokens - a.totalTokens || a.model.localeCompare(b.model))
+    .toSorted((a, b) => b.totalTokens - a.totalTokens || a.model.localeCompare(b.model));
   const previousRankPeers = aggregateByModelName(
     rowsForProduct(normalized, SITE_PRODUCT, rankWindow.previousStart, rankWindow.previousEnd),
   )
     .filter((item) => item.totalTokens > 0)
-    .toSorted((a, b) => b.totalTokens - a.totalTokens || a.model.localeCompare(b.model))
-  const windowPeers = aggregateByModelName(rowsForProduct(normalized, SITE_PRODUCT, window.start, window.end))
+    .toSorted((a, b) => b.totalTokens - a.totalTokens || a.model.localeCompare(b.model));
+  const windowPeers = aggregateByModelName(
+    rowsForProduct(normalized, SITE_PRODUCT, window.start, window.end),
+  )
     .filter((item) => item.totalTokens > 0)
-    .toSorted((a, b) => b.totalTokens - a.totalTokens || a.model.localeCompare(b.model))
-  const rankIndex = rankPeers.findIndex((item) => item.model === model)
-  const rank = rankIndex >= 0 ? rankIndex + 1 : null
-  const previousRankIndex = previousRankPeers.findIndex((item) => item.model === model)
-  const peerRank = rankIndex >= 0 ? rankIndex + 1 : 1
-  const totalTokens = windowPeers.reduce((sum, item) => sum + item.totalTokens, 0)
-  const peerTokens = rankPeers.reduce((sum, item) => sum + item.totalTokens, 0)
+    .toSorted((a, b) => b.totalTokens - a.totalTokens || a.model.localeCompare(b.model));
+  const rankIndex = rankPeers.findIndex((item) => item.model === model);
+  const rank = rankIndex >= 0 ? rankIndex + 1 : null;
+  const previousRankIndex = previousRankPeers.findIndex((item) => item.model === model);
+  const peerRank = rankIndex >= 0 ? rankIndex + 1 : 1;
+  const totalTokens = windowPeers.reduce((sum, item) => sum + item.totalTokens, 0);
+  const peerTokens = rankPeers.reduce((sum, item) => sum + item.totalTokens, 0);
 
   return {
     updatedAt: Number.isFinite(latestUpdate) ? new Date(latestUpdate).toISOString() : null,
@@ -385,45 +446,63 @@ function buildStatsModelData(
       uniqueUsers: current.uniqueUsers,
       tokens: current.totalTokens,
       cost: round(microcentsToDollars(current.totalCostMicrocents), 2),
-      tokensPerSession: current.sessions > 0 ? Math.round(current.totalTokens / current.sessions) : 0,
+      tokensPerSession:
+        current.sessions > 0 ? Math.round(current.totalTokens / current.sessions) : 0,
       costPerSession:
-        current.sessions > 0 ? round(microcentsToDollars(current.totalCostMicrocents) / current.sessions, 4) : 0,
+        current.sessions > 0
+          ? round(microcentsToDollars(current.totalCostMicrocents) / current.sessions, 4)
+          : 0,
       costPerMillion: costPerMillion(current.totalCostMicrocents, current.totalTokens),
       cacheRatio:
         current.inputTokens + current.cacheReadTokens > 0
-          ? round((current.cacheReadTokens / (current.inputTokens + current.cacheReadTokens)) * 100, 1)
+          ? round(
+              (current.cacheReadTokens / (current.inputTokens + current.cacheReadTokens)) * 100,
+              1,
+            )
           : 0,
     },
     usage: buildModelUsage(currentRows, window, "2M"),
     tokenMix: buildModelTokenMix(current),
-    country: createRangeRecord((range) => buildCountryStats(geo, getWindow(range, earliest, latest))),
+    country: createRangeRecord((range) =>
+      buildCountryStats(geo, getWindow(range, earliest, latest)),
+    ),
     peers: buildModelPeers(rankPeers, peerRank, peerTokens),
-  }
+  };
 }
 
-function buildStatsLabData(providerParam: string, modelRows: ModelStatMetric[]): StatsLabData | null {
-  const normalized = modelRows.flatMap(normalizeStatRow)
-  if (normalized.length === 0) return null
+function buildStatsLabData(
+  providerParam: string,
+  modelRows: ModelStatMetric[],
+): StatsLabData | null {
+  const normalized = modelRows.flatMap(normalizeStatRow);
+  if (normalized.length === 0) return null;
 
-  const provider = resolveProviderName(providerParam, normalized)
-  if (!provider) return null
+  const provider = resolveProviderName(providerParam, normalized);
+  if (!provider) return null;
 
-  const providerRows = normalized.filter((row) => providerMatches(row.provider, provider))
-  if (providerRows.length === 0) return null
+  const providerRows = normalized.filter((row) => providerMatches(row.provider, provider));
+  if (providerRows.length === 0) return null;
 
-  const earliest = Math.min(...normalized.map((row) => row.periodStart))
-  const latest = Math.max(...normalized.map((row) => row.periodStart))
-  const latestUpdate = Math.max(...providerRows.map((row) => row.updatedAt))
-  const window = getWindow("2M", earliest, latest)
-  const currentRows = rowsForProduct(providerRows, SITE_PRODUCT, window.start, window.end)
-  const previousRows = rowsForProduct(providerRows, SITE_PRODUCT, window.previousStart, window.previousEnd)
-  const current = combineRowsForModel("", currentRows)
-  const previous = combineRowsForModel("", previousRows)
-  const allCurrent = aggregateByModel(rowsForProduct(normalized, SITE_PRODUCT, window.start, window.end))
-  const totalTokens = allCurrent.reduce((sum, item) => sum + item.totalTokens, 0)
+  const earliest = Math.min(...normalized.map((row) => row.periodStart));
+  const latest = Math.max(...normalized.map((row) => row.periodStart));
+  const latestUpdate = Math.max(...providerRows.map((row) => row.updatedAt));
+  const window = getWindow("2M", earliest, latest);
+  const currentRows = rowsForProduct(providerRows, SITE_PRODUCT, window.start, window.end);
+  const previousRows = rowsForProduct(
+    providerRows,
+    SITE_PRODUCT,
+    window.previousStart,
+    window.previousEnd,
+  );
+  const current = combineRowsForModel("", currentRows);
+  const previous = combineRowsForModel("", previousRows);
+  const allCurrent = aggregateByModel(
+    rowsForProduct(normalized, SITE_PRODUCT, window.start, window.end),
+  );
+  const totalTokens = allCurrent.reduce((sum, item) => sum + item.totalTokens, 0);
   const models = aggregateByModel(currentRows)
     .filter((item) => item.totalTokens > 0)
-    .toSorted((a, b) => b.totalTokens - a.totalTokens || a.model.localeCompare(b.model))
+    .toSorted((a, b) => b.totalTokens - a.totalTokens || a.model.localeCompare(b.model));
 
   return {
     updatedAt: Number.isFinite(latestUpdate) ? new Date(latestUpdate).toISOString() : null,
@@ -445,7 +524,7 @@ function buildStatsLabData(providerParam: string, modelRows: ModelStatMetric[]):
       share: current.totalTokens > 0 ? round((item.totalTokens / current.totalTokens) * 100, 2) : 0,
       slug: modelSlug(item.model),
     })),
-  }
+  };
 }
 
 function emptyStatsHomeData(): StatsHomeData {
@@ -459,7 +538,7 @@ function emptyStatsHomeData(): StatsHomeData {
     cacheRatio: createTokenProductRecord(() => []),
     sessionCost: createTokenProductRecord(() => []),
     country: createRangeRecord(() => []),
-  }
+  };
 }
 
 function buildUsagePoints(
@@ -470,43 +549,50 @@ function buildUsagePoints(
   rankWindow: DateWindow,
   metric: "tokens" | "users" = "tokens",
 ) {
-  const modelOrder = aggregateByModelName(rowsForProduct(rows, product, rankWindow.start, rankWindow.end))
+  const modelOrder = aggregateByModelName(
+    rowsForProduct(rows, product, rankWindow.start, rankWindow.end),
+  )
     .toSorted((a, b) => modelUsageValue(b, metric) - modelUsageValue(a, metric))
     .slice(0, TOP_MODEL_SEGMENT_LIMIT)
-    .map((item) => item.model)
+    .map((item) => item.model);
 
   return createBuckets(window, range).map((bucket) => {
-    const bucketRows = aggregateByModelName(rowsForProduct(rows, product, bucket.start, bucket.end))
-    const byModel = new Map(bucketRows.map((item) => [item.model, modelUsageValue(item, metric)]))
-    const segments = modelOrder.map((model) => ({ model, value: byModel.get(model) ?? 0 }))
-    const knownValue = segments.reduce((sum, item) => sum + item.value, 0)
-    const totalValue = bucketRows.reduce((sum, item) => sum + modelUsageValue(item, metric), 0)
+    const bucketRows = aggregateByModelName(
+      rowsForProduct(rows, product, bucket.start, bucket.end),
+    );
+    const byModel = new Map(bucketRows.map((item) => [item.model, modelUsageValue(item, metric)]));
+    const segments = modelOrder.map((model) => ({ model, value: byModel.get(model) ?? 0 }));
+    const knownValue = segments.reduce((sum, item) => sum + item.value, 0);
+    const totalValue = bucketRows.reduce((sum, item) => sum + modelUsageValue(item, metric), 0);
     return {
       date: bucket.label,
       segments: [
-        ...segments.map((item) => ({ model: item.model, value: usagePointValue(item.value, metric) })),
+        ...segments.map((item) => ({
+          model: item.model,
+          value: usagePointValue(item.value, metric),
+        })),
         { model: "Other", value: usagePointValue(Math.max(totalValue - knownValue, 0), metric) },
       ],
-    }
-  })
+    };
+  });
 }
 
 function modelUsageValue(item: ModelAggregate, metric: "tokens" | "users") {
-  if (metric === "users") return item.uniqueUsers
-  return item.totalTokens
+  if (metric === "users") return item.uniqueUsers;
+  return item.totalTokens;
 }
 
 function usagePointValue(value: number, metric: "tokens" | "users") {
-  if (metric === "users") return value
-  return round(value / 1_000_000_000_000, 4)
+  if (metric === "users") return value;
+  return round(value / 1_000_000_000_000, 4);
 }
 
 function buildLeaderboard(rows: StatMetricRow[], product: UsageProduct, rankWindow: DateWindow) {
   const previous = new Map(
-    aggregateByModelName(rowsForProduct(rows, product, rankWindow.previousStart, rankWindow.previousEnd)).map(
-      (item) => [item.model, item.totalTokens],
-    ),
-  )
+    aggregateByModelName(
+      rowsForProduct(rows, product, rankWindow.previousStart, rankWindow.previousEnd),
+    ).map((item) => [item.model, item.totalTokens]),
+  );
 
   return aggregateByModelName(rowsForProduct(rows, product, rankWindow.start, rankWindow.end))
     .toSorted((a, b) => b.totalTokens - a.totalTokens || a.model.localeCompare(b.model))
@@ -518,22 +604,28 @@ function buildLeaderboard(rows: StatMetricRow[], product: UsageProduct, rankWind
       tokens: Math.round(item.totalTokens / 1_000_000_000),
       change: leaderboardChange(item.totalTokens, previous.get(item.model) ?? 0),
       rank: index + 1,
-    }))
+    }));
 }
 
-function buildMarketShare(rows: ProviderMetricRow[], product: UsageProduct, range: UsageRange, window: DateWindow) {
+function buildMarketShare(
+  rows: ProviderMetricRow[],
+  product: UsageProduct,
+  range: UsageRange,
+  window: DateWindow,
+) {
   return createBuckets(window, range).flatMap((bucket) => {
-    const total = aggregateByProvider(rowsForProduct(rows, product, bucket.start, bucket.end)).toSorted(
-      (a, b) => b.tokens - a.tokens,
-    )
-    const totalTokens = total.reduce((sum, item) => sum + item.tokens, 0)
-    if (totalTokens === 0) return []
+    const total = aggregateByProvider(
+      rowsForProduct(rows, product, bucket.start, bucket.end),
+    ).toSorted((a, b) => b.tokens - a.tokens);
+    const totalTokens = total.reduce((sum, item) => sum + item.tokens, 0);
+    if (totalTokens === 0) return [];
 
-    const authors = total.slice(0, 8)
-    const knownTokens = authors.reduce((sum, item) => sum + item.tokens, 0)
-    const withOther = [...authors, { provider: "Other", tokens: Math.max(totalTokens - knownTokens, 0) }].filter(
-      (item) => item.tokens > 0,
-    )
+    const authors = total.slice(0, 8);
+    const knownTokens = authors.reduce((sum, item) => sum + item.tokens, 0);
+    const withOther = [
+      ...authors,
+      { provider: "Other", tokens: Math.max(totalTokens - knownTokens, 0) },
+    ].filter((item) => item.tokens > 0);
 
     return [
       {
@@ -545,16 +637,16 @@ function buildMarketShare(rows: ProviderMetricRow[], product: UsageProduct, rang
           tokens: round(item.tokens / 1_000_000_000_000, 6),
         })),
       },
-    ]
-  })
+    ];
+  });
 }
 
 function buildCountryStats(rows: GeoMetricRow[], window: DateWindow) {
   const countries = aggregateByCountry(rowsForProduct(rows, SITE_PRODUCT, window.start, window.end))
     .filter((item) => item.tokens > 0 && item.country !== "AQ")
-    .toSorted((a, b) => b.tokens - a.tokens)
-  const totalTokens = countries.reduce((sum, item) => sum + item.tokens, 0)
-  if (totalTokens === 0) return []
+    .toSorted((a, b) => b.tokens - a.tokens);
+  const totalTokens = countries.reduce((sum, item) => sum + item.tokens, 0);
+  if (totalTokens === 0) return [];
 
   return countries.map((item, index) => ({
     country: item.country,
@@ -562,31 +654,34 @@ function buildCountryStats(rows: GeoMetricRow[], window: DateWindow) {
     tokens: round(item.tokens / 1_000_000_000_000, 4),
     share: round((item.tokens / totalTokens) * 100, 1),
     rank: index + 1,
-  }))
+  }));
 }
 
 function buildTokenCost(rows: StatMetricRow[], product: TokenProduct, window: DateWindow) {
   return topModelsByUsage(rows, product, window)
     .flatMap((item) => {
-      const total = costPerMillion(item.totalCostMicrocents, item.totalTokens)
+      const total = costPerMillion(item.totalCostMicrocents, item.totalTokens);
       return [
         {
           model: item.model,
           total,
           input: costPerMillion(item.inputCostMicrocents, item.inputTokens),
-          output: costPerMillion(item.outputCostMicrocents, item.outputTokens + item.reasoningTokens),
+          output: costPerMillion(
+            item.outputCostMicrocents,
+            item.outputTokens + item.reasoningTokens,
+          ),
           cached: costPerMillion(item.inputCostMicrocents, item.inputTokens + item.cacheReadTokens),
         },
-      ]
+      ];
     })
-    .toSorted((a, b) => a.total - b.total)
+    .toSorted((a, b) => a.total - b.total);
 }
 
 function buildCacheRatio(rows: StatMetricRow[], product: TokenProduct, window: DateWindow) {
   return topModelsByUsage(rows, product, window)
     .flatMap((item) => {
-      const total = item.inputTokens + item.cacheReadTokens
-      if (total === 0) return []
+      const total = item.inputTokens + item.cacheReadTokens;
+      if (total === 0) return [];
       return [
         {
           model: item.model,
@@ -595,26 +690,26 @@ function buildCacheRatio(rows: StatMetricRow[], product: TokenProduct, window: D
           uncached: round(item.inputTokens / 1_000_000_000, 1),
           total: round(total / 1_000_000_000, 1),
         },
-      ]
+      ];
     })
-    .toSorted((a, b) => b.ratio - a.ratio || b.cached - a.cached)
+    .toSorted((a, b) => b.ratio - a.ratio || b.cached - a.cached);
 }
 
 function buildSessionCost(rows: StatMetricRow[], product: TokenProduct, window: DateWindow) {
   return topModelsByUsage(rows, product, window)
     .flatMap((item) => {
-      if (item.sessions === 0) return []
-      const cost = round(microcentsToDollars(item.totalCostMicrocents) / item.sessions, 4)
-      if (cost === 0) return []
-      return [{ model: item.model, cost, tokens: Math.round(item.totalTokens / item.sessions) }]
+      if (item.sessions === 0) return [];
+      const cost = round(microcentsToDollars(item.totalCostMicrocents) / item.sessions, 4);
+      if (cost === 0) return [];
+      return [{ model: item.model, cost, tokens: Math.round(item.totalTokens / item.sessions) }];
     })
-    .toSorted((a, b) => a.cost - b.cost)
+    .toSorted((a, b) => a.cost - b.cost);
 }
 
 function topModelsByUsage(rows: StatMetricRow[], product: TokenProduct, window: DateWindow) {
   return aggregateByModel(rowsForProduct(rows, product, window.start, window.end))
     .toSorted((a, b) => b.totalTokens - a.totalTokens)
-    .slice(0, METRIC_MODEL_LIMIT)
+    .slice(0, METRIC_MODEL_LIMIT);
 }
 
 function buildModelUsage(rows: StatMetricRow[], window: DateWindow, range: UsageRange) {
@@ -622,15 +717,15 @@ function buildModelUsage(rows: StatMetricRow[], window: DateWindow, range: Usage
     const aggregate = combineRowsForModel(
       "",
       rows.filter((row) => row.periodStart >= bucket.start && row.periodStart < bucket.end),
-    )
+    );
     return {
       date: bucket.label,
       tokens: aggregate.totalTokens,
       users: aggregate.uniqueUsers,
       sessions: aggregate.sessions,
       cost: round(microcentsToDollars(aggregate.totalCostMicrocents), 2),
-    }
-  })
+    };
+  });
 }
 
 function buildModelTokenMix(aggregate: ModelAggregate): ModelMixEntry[] {
@@ -639,14 +734,18 @@ function buildModelTokenMix(aggregate: ModelAggregate): ModelMixEntry[] {
     { label: "Output", tokens: aggregate.outputTokens },
     { label: "Reasoning", tokens: aggregate.reasoningTokens },
     { label: "Cached", tokens: aggregate.cacheReadTokens },
-  ].filter((item) => item.tokens > 0)
-  const total = items.reduce((sum, item) => sum + item.tokens, 0)
-  if (total === 0) return []
-  return items.map((item) => ({ ...item, share: round((item.tokens / total) * 100, 1) }))
+  ].filter((item) => item.tokens > 0);
+  const total = items.reduce((sum, item) => sum + item.tokens, 0);
+  if (total === 0) return [];
+  return items.map((item) => ({ ...item, share: round((item.tokens / total) * 100, 1) }));
 }
 
-function buildModelPeers(peers: ModelAggregate[], rank: number, totalTokens: number): ModelPeerEntry[] {
-  const start = Math.max(0, Math.min(rank - 4, Math.max(peers.length - 7, 0)))
+function buildModelPeers(
+  peers: ModelAggregate[],
+  rank: number,
+  totalTokens: number,
+): ModelPeerEntry[] {
+  const start = Math.max(0, Math.min(rank - 4, Math.max(peers.length - 7, 0)));
   return peers.slice(start, start + 7).map((item, index) => ({
     model: item.model,
     provider: item.provider,
@@ -655,7 +754,7 @@ function buildModelPeers(peers: ModelAggregate[], rank: number, totalTokens: num
     tokens: item.totalTokens,
     share: totalTokens > 0 ? round((item.totalTokens / totalTokens) * 100, 2) : 0,
     slug: modelSlug(item.model),
-  }))
+  }));
 }
 
 function rowsForProduct<T extends { periodStart: number; tier: string }>(
@@ -664,31 +763,31 @@ function rowsForProduct<T extends { periodStart: number; tier: string }>(
   start: number,
   end: number,
 ) {
-  const windowRows = rows.filter((row) => row.periodStart >= start && row.periodStart < end)
-  if (product !== "All Users") return windowRows.filter((row) => row.tier === product)
+  const windowRows = rows.filter((row) => row.periodStart >= start && row.periodStart < end);
+  if (product !== "All Users") return windowRows.filter((row) => row.tier === product);
 
-  const allRows = windowRows.filter((row) => row.tier === "all")
-  if (allRows.length > 0) return allRows
-  return windowRows.filter((row) => row.tier !== "all")
+  const allRows = windowRows.filter((row) => row.tier === "all");
+  if (allRows.length > 0) return allRows;
+  return windowRows.filter((row) => row.tier !== "all");
 }
 
 function aggregateByModel(rows: StatMetricRow[]) {
   return Object.values(
     rows.reduce<Record<string, ModelAggregate>>((result, row) => {
-      const key = modelKey(row.provider, row.model)
-      result[key] = combineModelAggregate(result[key], row)
-      return result
+      const key = modelKey(row.provider, row.model);
+      result[key] = combineModelAggregate(result[key], row);
+      return result;
     }, {}),
-  )
+  );
 }
 
 function aggregateByModelName(rows: StatMetricRow[]) {
   return Object.values(
     rows.reduce<Record<string, ModelAggregate>>((result, row) => {
-      result[row.model] = combineModelAggregate(result[row.model], row)
-      return result
+      result[row.model] = combineModelAggregate(result[row.model], row);
+      return result;
     }, {}),
-  )
+  );
 }
 
 function aggregateByProvider(rows: ProviderMetricRow[]) {
@@ -697,31 +796,34 @@ function aggregateByProvider(rows: ProviderMetricRow[]) {
       result[row.provider] = {
         provider: row.provider,
         tokens: (result[row.provider]?.tokens ?? 0) + row.totalTokens,
-      }
-      return result
+      };
+      return result;
     }, {}),
-  )
+  );
 }
 
 function aggregateByCountry(rows: GeoMetricRow[]) {
   return Object.values(
-    rows.reduce<Record<string, { country: string; continent: string; tokens: number }>>((result, row) => {
-      result[row.country] = {
-        country: row.country,
-        continent: result[row.country]?.continent || row.continent,
-        tokens: (result[row.country]?.tokens ?? 0) + row.totalTokens,
-      }
-      return result
-    }, {}),
-  )
+    rows.reduce<Record<string, { country: string; continent: string; tokens: number }>>(
+      (result, row) => {
+        result[row.country] = {
+          country: row.country,
+          continent: result[row.country]?.continent || row.continent,
+          tokens: (result[row.country]?.tokens ?? 0) + row.totalTokens,
+        };
+        return result;
+      },
+      {},
+    ),
+  );
 }
 
 function combineRowsForModel(model: string, rows: StatMetricRow[]): ModelAggregate {
   const aggregate = rows.reduce<ModelAggregate | undefined>(
     (result, row) => combineModelAggregate(result, row),
     undefined,
-  )
-  if (aggregate) return { ...aggregate, model: model || aggregate.model }
+  );
+  if (aggregate) return { ...aggregate, model: model || aggregate.model };
   return {
     model,
     provider: "unknown",
@@ -735,10 +837,13 @@ function combineRowsForModel(model: string, rows: StatMetricRow[]): ModelAggrega
     inputCostMicrocents: 0,
     outputCostMicrocents: 0,
     totalCostMicrocents: 0,
-  }
+  };
 }
 
-function combineModelAggregate(current: ModelAggregate | undefined, row: StatMetricRow): ModelAggregate {
+function combineModelAggregate(
+  current: ModelAggregate | undefined,
+  row: StatMetricRow,
+): ModelAggregate {
   return {
     model: row.model,
     provider: row.provider,
@@ -752,11 +857,11 @@ function combineModelAggregate(current: ModelAggregate | undefined, row: StatMet
     inputCostMicrocents: (current?.inputCostMicrocents ?? 0) + row.inputCostMicrocents,
     outputCostMicrocents: (current?.outputCostMicrocents ?? 0) + row.outputCostMicrocents,
     totalCostMicrocents: (current?.totalCostMicrocents ?? 0) + row.totalCostMicrocents,
-  }
+  };
 }
 
 function getWindow(range: UsageRange, earliest: number, latest: number): DateWindow {
-  const end = latest + DAY_MS
+  const end = latest + DAY_MS;
   const start = Math.max(
     earliest,
     range === "1D"
@@ -774,25 +879,25 @@ function getWindow(range: UsageRange, earliest: number, latest: number): DateWin
                 : range === "YTD"
                   ? Date.UTC(new Date(latest).getUTCFullYear(), 0, 1)
                   : earliest,
-  )
-  const duration = end - start
-  return { start, end, previousStart: start - duration, previousEnd: start }
+  );
+  const duration = end - start;
+  return { start, end, previousStart: start - duration, previousEnd: start };
 }
 
 function createBuckets(window: DateWindow, range: UsageRange): Bucket[] {
-  const span = Math.max(window.end - window.start, DAY_MS)
+  const span = Math.max(window.end - window.start, DAY_MS);
   const count =
     range === "1D"
       ? 1
       : range === "1W" || range === "2W" || range === "1M" || range === "2M" || range === "3M"
         ? Math.ceil(span / DAY_MS)
-        : Math.max(1, Math.min(7, Math.ceil(span / DAY_MS)))
-  const size = span / count
+        : Math.max(1, Math.min(7, Math.ceil(span / DAY_MS)));
+  const size = span / count;
   return Array.from({ length: count }, (_, index) => {
-    const start = window.start + index * size
-    const end = index === count - 1 ? window.end : window.start + (index + 1) * size
-    return { start, end, label: formatBucketLabel(start, end, range) }
-  })
+    const start = window.start + index * size;
+    const end = index === count - 1 ? window.end : window.start + (index + 1) * size;
+    return { start, end, label: formatBucketLabel(start, end, range) };
+  });
 }
 
 function createUsageProductRecord<T>(value: (product: UsageProduct) => T): Record<UsageProduct, T> {
@@ -801,7 +906,7 @@ function createUsageProductRecord<T>(value: (product: UsageProduct) => T): Recor
     Zen: value("Zen"),
     Go: value("Go"),
     Enterprise: value("Enterprise"),
-  }
+  };
 }
 
 function createTokenProductRecord<T>(value: (product: TokenProduct) => T): Record<TokenProduct, T> {
@@ -809,7 +914,7 @@ function createTokenProductRecord<T>(value: (product: TokenProduct) => T): Recor
     Zen: value("Zen"),
     Go: value("Go"),
     Enterprise: value("Enterprise"),
-  }
+  };
 }
 
 function createRangeRecord<T>(value: (range: UsageRange) => T): Record<UsageRange, T> {
@@ -822,13 +927,13 @@ function createRangeRecord<T>(value: (range: UsageRange) => T): Record<UsageRang
     "3M": value("3M"),
     YTD: value("YTD"),
     ALL: value("ALL"),
-  }
+  };
 }
 
 function normalizeStatRow(row: ModelStatMetric): StatMetricRow[] {
-  const periodStart = periodKeyTime(row.periodKey)
-  const updatedAt = dateTime(row.updatedAt)
-  if (!Number.isFinite(periodStart) || !Number.isFinite(updatedAt)) return []
+  const periodStart = periodKeyTime(row.periodKey);
+  const updatedAt = dateTime(row.updatedAt);
+  if (!Number.isFinite(periodStart) || !Number.isFinite(updatedAt)) return [];
   return [
     {
       ...row,
@@ -838,13 +943,13 @@ function normalizeStatRow(row: ModelStatMetric): StatMetricRow[] {
       provider: row.provider || "unknown",
       model: row.model || "unknown",
     },
-  ]
+  ];
 }
 
 function normalizeProviderRow(row: ProviderStatMetric): ProviderMetricRow[] {
-  const periodStart = periodKeyTime(row.periodKey)
-  const updatedAt = dateTime(row.updatedAt)
-  if (!Number.isFinite(periodStart) || !Number.isFinite(updatedAt)) return []
+  const periodStart = periodKeyTime(row.periodKey);
+  const updatedAt = dateTime(row.updatedAt);
+  if (!Number.isFinite(periodStart) || !Number.isFinite(updatedAt)) return [];
   return [
     {
       ...row,
@@ -853,13 +958,13 @@ function normalizeProviderRow(row: ProviderStatMetric): ProviderMetricRow[] {
       tier: normalizeTier(row.tier),
       provider: row.provider || "unknown",
     },
-  ]
+  ];
 }
 
 function normalizeGeoRow(row: GeoStatMetric): GeoMetricRow[] {
-  const periodStart = periodKeyTime(row.periodKey)
-  const updatedAt = dateTime(row.updatedAt)
-  if (!Number.isFinite(periodStart) || !Number.isFinite(updatedAt)) return []
+  const periodStart = periodKeyTime(row.periodKey);
+  const updatedAt = dateTime(row.updatedAt);
+  if (!Number.isFinite(periodStart) || !Number.isFinite(updatedAt)) return [];
   return [
     {
       ...row,
@@ -871,41 +976,41 @@ function normalizeGeoRow(row: GeoStatMetric): GeoMetricRow[] {
       country: row.country || "ZZ",
       continent: row.continent || "",
     },
-  ]
+  ];
 }
 
 function normalizeTier(value: string) {
-  const normalized = value.toLowerCase()
-  if (normalized === "paid" || normalized === "zen") return "Zen"
-  if (normalized === "go") return "Go"
-  if (normalized === "enterprise") return "Enterprise"
-  if (normalized === "all") return "all"
-  return value
+  const normalized = value.toLowerCase();
+  if (normalized === "paid" || normalized === "zen") return "Zen";
+  if (normalized === "go") return "Go";
+  if (normalized === "enterprise") return "Enterprise";
+  if (normalized === "all") return "all";
+  return value;
 }
 
 function dateTime(value: Date | string) {
-  return (value instanceof Date ? value : new Date(value)).getTime()
+  return (value instanceof Date ? value : new Date(value)).getTime();
 }
 
 function periodKeyTime(value: string) {
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value)
-  if (!match) return Number.NaN
-  return Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]))
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return Number.NaN;
+  return Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
 }
 
 function formatBucketLabel(start: number, _end: number, range: UsageRange) {
-  const date = new Date(start)
-  if (range === "YTD") return months[date.getUTCMonth()]
+  const date = new Date(start);
+  if (range === "YTD") return months[date.getUTCMonth()];
   if (range === "ALL")
     return date.getUTCFullYear() === new Date().getUTCFullYear()
       ? months[date.getUTCMonth()]
-      : String(date.getUTCFullYear())
-  return formatDay(start)
+      : String(date.getUTCFullYear());
+  return formatDay(start);
 }
 
 function formatDay(value: number) {
-  const date = new Date(value)
-  return `${months[date.getUTCMonth()]} ${date.getUTCDate()}`
+  const date = new Date(value);
+  return `${months[date.getUTCMonth()]} ${date.getUTCDate()}`;
 }
 
 function formatProvider(provider: string) {
@@ -925,40 +1030,50 @@ function formatProvider(provider: string) {
     xiaomi: "Xiaomi",
     zhipu: "Zhipu",
     zhipuai: "Zhipu",
-  }
-  const normalized = provider.toLowerCase().replace(/[^a-z0-9]/g, "")
-  return known[normalized] ?? provider.replace(/[-_]/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase())
+  };
+  const normalized = provider.toLowerCase().replace(/[^a-z0-9]/g, "");
+  return (
+    known[normalized] ??
+    provider.replace(/[-_]/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase())
+  );
 }
 
 function resolveModelName(modelParam: string, rows: StatMetricRow[], providerParam?: string) {
-  const input = modelParam.trim()
-  if (!input) return undefined
-  const normalizedInput = input.toLowerCase()
-  const inputSlug = modelSlug(input)
+  const input = modelParam.trim();
+  if (!input) return undefined;
+  const normalizedInput = input.toLowerCase();
+  const inputSlug = modelSlug(input);
   const candidates = providerParam
     ? aggregateByModel(rows).filter((item) => providerMatches(item.provider, providerParam))
-    : aggregateByModelName(rows)
+    : aggregateByModelName(rows);
   return candidates
-    .filter((item) => item.model.toLowerCase() === normalizedInput || modelSlug(item.model) === inputSlug)
-    .toSorted((a, b) => b.totalTokens - a.totalTokens || a.model.localeCompare(b.model))[0]?.model
+    .filter(
+      (item) => item.model.toLowerCase() === normalizedInput || modelSlug(item.model) === inputSlug,
+    )
+    .toSorted((a, b) => b.totalTokens - a.totalTokens || a.model.localeCompare(b.model))[0]?.model;
 }
 
 function resolveModelProvider(model: string, rows: StatMetricRow[], providerParam?: string) {
   return aggregateByModel(rows)
-    .filter((item) => item.model === model && (!providerParam || providerMatches(item.provider, providerParam)))
-    .toSorted((a, b) => b.totalTokens - a.totalTokens || a.provider.localeCompare(b.provider))[0]?.provider
+    .filter(
+      (item) =>
+        item.model === model && (!providerParam || providerMatches(item.provider, providerParam)),
+    )
+    .toSorted((a, b) => b.totalTokens - a.totalTokens || a.provider.localeCompare(b.provider))[0]
+    ?.provider;
 }
 
 function providerMatches(provider: string, providerParam: string) {
-  return providerSlug(provider) === providerSlug(providerParam)
+  return providerSlug(provider) === providerSlug(providerParam);
 }
 
 function resolveProviderName(providerParam: string, rows: StatMetricRow[]) {
-  const input = providerParam.trim()
-  if (!input) return undefined
+  const input = providerParam.trim();
+  if (!input) return undefined;
   return aggregateByModel(rows)
     .filter((item) => providerMatches(item.provider, input))
-    .toSorted((a, b) => b.totalTokens - a.totalTokens || a.provider.localeCompare(b.provider))[0]?.provider
+    .toSorted((a, b) => b.totalTokens - a.totalTokens || a.provider.localeCompare(b.provider))[0]
+    ?.provider;
 }
 
 export function modelSlug(value: string) {
@@ -967,44 +1082,44 @@ export function modelSlug(value: string) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
-    .replace(/-{2,}/g, "-")
+    .replace(/-{2,}/g, "-");
 }
 
 function modelKey(provider: string, model: string) {
-  return `${provider}\u0000${model}`
+  return `${provider}\u0000${model}`;
 }
 
 function providerSlug(value: string) {
-  const slug = modelSlug(value)
+  const slug = modelSlug(value);
   const aliases: Record<string, string> = {
     alibaba: "qwen",
     moonshotai: "moonshot",
     qwen: "qwen",
     zhipuai: "zhipu",
-  }
-  return aliases[slug] ?? slug
+  };
+  return aliases[slug] ?? slug;
 }
 
 function costPerMillion(costMicrocents: number, tokens: number) {
-  if (tokens <= 0 || costMicrocents <= 0) return 0
-  return round((microcentsToDollars(costMicrocents) / tokens) * TOKEN_SCALE, 2)
+  if (tokens <= 0 || costMicrocents <= 0) return 0;
+  return round((microcentsToDollars(costMicrocents) / tokens) * TOKEN_SCALE, 2);
 }
 
 function microcentsToDollars(value: number) {
-  return value * DOLLARS_PER_MICROCENT
+  return value * DOLLARS_PER_MICROCENT;
 }
 
 function percentChange(current: number, previous: number) {
-  if (previous <= 0) return current > 0 ? 100 : 0
-  return Math.round(((current - previous) / previous) * 100)
+  if (previous <= 0) return current > 0 ? 100 : 0;
+  return Math.round(((current - previous) / previous) * 100);
 }
 
 function leaderboardChange(current: number, previous: number) {
-  if (current <= 0) return 0
-  if (previous <= 0 || current >= previous * LEADERBOARD_CHANGE_MIN_MULTIPLE) return null
-  return percentChange(current, previous)
+  if (current <= 0) return 0;
+  if (previous <= 0 || current >= previous * LEADERBOARD_CHANGE_MIN_MULTIPLE) return null;
+  return percentChange(current, previous);
 }
 
 function round(value: number, digits: number) {
-  return Number(value.toFixed(digits))
+  return Number(value.toFixed(digits));
 }

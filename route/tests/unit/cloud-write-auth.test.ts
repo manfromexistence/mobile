@@ -143,7 +143,7 @@ test("PUT /api/cloud/credentials/update rejects valid API key without manage/adm
   const key = await createKey();
 
   const { value: response, logs } = await captureConsoleLog(() =>
-    credentialsRoute.PUT(cloudCredentialsRequest(key.key))
+    credentialsRoute.PUT(cloudCredentialsRequest(key.key)),
   );
   const body = await assertResponseDoesNotLeakSecrets(response, [
     "new-access-secret",
@@ -164,7 +164,7 @@ test("PUT /api/cloud/models/alias rejects valid API key without manage/admin sco
   const key = await createKey();
 
   const { value: response, logs } = await captureConsoleLog(() =>
-    aliasRoute.PUT(cloudAliasRequest(key.key))
+    aliasRoute.PUT(cloudAliasRequest(key.key)),
   );
   const body = await assertResponseDoesNotLeakSecrets(response, ["openai/gpt-4o-mini"]);
   assertTextDoesNotLeakSecrets(logs, "logs", ["openai/gpt-4o-mini"]);
@@ -206,10 +206,10 @@ test("cloud write routes keep 401 for missing or invalid Bearer credentials", as
   await createActiveConnection();
 
   const { value: missing, logs: missingLogs } = await captureConsoleLog(() =>
-    credentialsRoute.PUT(cloudCredentialsRequest(null))
+    credentialsRoute.PUT(cloudCredentialsRequest(null)),
   );
   const { value: invalid, logs: invalidLogs } = await captureConsoleLog(() =>
-    aliasRoute.PUT(cloudAliasRequest("sk-invalid"))
+    aliasRoute.PUT(cloudAliasRequest("sk-invalid")),
   );
   await assertResponseDoesNotLeakSecrets(missing, ["new-access-secret", "new-refresh-secret"]);
   await assertResponseDoesNotLeakSecrets(invalid, ["openai/gpt-4o-mini"]);

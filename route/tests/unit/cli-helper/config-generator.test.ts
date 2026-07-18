@@ -46,9 +46,7 @@ describe("config-generator", () => {
         "../../../src/lib/cli-helper/config-generator/opencode.ts"
       );
       assert.throws(() => assertSafeCatalogUrl("http://169.254.169.254/v1/models"));
-      assert.throws(() =>
-        assertSafeCatalogUrl("http://metadata.google.internal/v1/models")
-      );
+      assert.throws(() => assertSafeCatalogUrl("http://metadata.google.internal/v1/models"));
     });
 
     it("blocks non-http(s) protocols and embedded credentials", async () => {
@@ -125,8 +123,9 @@ describe("config-generator", () => {
 
   describe("hermes-agent (rich multi-role)", () => {
     it("exports HERMES_AGENT_ROLES with expected roles", async () => {
-      const hermesAgent =
-        await import("../../../src/lib/cli-helper/config-generator/hermes-agent.ts");
+      const hermesAgent = await import(
+        "../../../src/lib/cli-helper/config-generator/hermes-agent.ts"
+      );
       assert.ok(Array.isArray(hermesAgent.HERMES_AGENT_ROLES));
       const ids = hermesAgent.HERMES_AGENT_ROLES.map((r: any) => r.id);
       assert.ok(ids.includes("default"));
@@ -136,15 +135,17 @@ describe("config-generator", () => {
     });
 
     it("getCurrentHermesAgentRoles returns an object", async () => {
-      const hermesAgent =
-        await import("../../../src/lib/cli-helper/config-generator/hermes-agent.ts");
+      const hermesAgent = await import(
+        "../../../src/lib/cli-helper/config-generator/hermes-agent.ts"
+      );
       const roles = await hermesAgent.getCurrentHermesAgentRoles();
       assert.ok(typeof roles === "object" && roles !== null);
     });
 
     it("generateHermesAgentConfig returns yaml string for valid payload", async () => {
-      const hermesAgent =
-        await import("../../../src/lib/cli-helper/config-generator/hermes-agent.ts");
+      const hermesAgent = await import(
+        "../../../src/lib/cli-helper/config-generator/hermes-agent.ts"
+      );
       const result = await hermesAgent.generateHermesAgentConfig({
         baseUrl: "http://localhost:20128",
         apiKey: "sk-test-omniroute",
@@ -162,8 +163,9 @@ describe("config-generator", () => {
     });
 
     it("generateHermesAgentConfig includes auxiliary section for non-default roles", async () => {
-      const hermesAgent =
-        await import("../../../src/lib/cli-helper/config-generator/hermes-agent.ts");
+      const hermesAgent = await import(
+        "../../../src/lib/cli-helper/config-generator/hermes-agent.ts"
+      );
       const result = await hermesAgent.generateHermesAgentConfig({
         baseUrl: "http://localhost:20128",
         apiKey: "sk-test",
@@ -178,8 +180,9 @@ describe("config-generator", () => {
     });
 
     it("generateHermesAgentConfig returns error when baseUrl is missing", async () => {
-      const hermesAgent =
-        await import("../../../src/lib/cli-helper/config-generator/hermes-agent.ts");
+      const hermesAgent = await import(
+        "../../../src/lib/cli-helper/config-generator/hermes-agent.ts"
+      );
       const result = await hermesAgent.generateHermesAgentConfig({
         baseUrl: "",
         selections: [{ role: "default", model: "x" }],
@@ -190,8 +193,9 @@ describe("config-generator", () => {
     });
 
     it("generateHermesAgentConfig correctly structures delegation and auxiliary roles", async () => {
-      const hermesAgent =
-        await import("../../../src/lib/cli-helper/config-generator/hermes-agent.ts");
+      const hermesAgent = await import(
+        "../../../src/lib/cli-helper/config-generator/hermes-agent.ts"
+      );
       const result = await hermesAgent.generateHermesAgentConfig({
         baseUrl: "http://localhost:20128",
         apiKey: "sk-test",
@@ -212,8 +216,9 @@ describe("config-generator", () => {
 
     it("generateHermesAgentConfig performs non-destructive merge (preserves other keys)", async () => {
       // This test mainly verifies the function doesn't blow away unrelated config
-      const hermesAgent =
-        await import("../../../src/lib/cli-helper/config-generator/hermes-agent.ts");
+      const hermesAgent = await import(
+        "../../../src/lib/cli-helper/config-generator/hermes-agent.ts"
+      );
       const result = await hermesAgent.generateHermesAgentConfig({
         baseUrl: "http://localhost:20128",
         apiKey: "sk-test",
@@ -236,10 +241,20 @@ describe("config-generator", () => {
     }
 
     const SAMPLE_CATALOG: unknown[] = [
-      { id: "ds/deepseek-v4-flash", owned_by: "deepseek", context_length: 1_000_000, max_input_tokens: 1_000_000 },
+      {
+        id: "ds/deepseek-v4-flash",
+        owned_by: "deepseek",
+        context_length: 1_000_000,
+        max_input_tokens: 1_000_000,
+      },
       { id: "llama3", owned_by: "llama", max_context_window_tokens: 8192 },
       { id: "MASTER", owned_by: "combo", context_length: 131072, max_input_tokens: 131072 },
-      { id: "Opencode FREE Omni", owned_by: "combo", context_length: 200000, max_input_tokens: 160000 },
+      {
+        id: "Opencode FREE Omni",
+        owned_by: "combo",
+        context_length: 200000,
+        max_input_tokens: 160000,
+      },
       // Combo whose targets have no known context — generator must NOT
       // fabricate a default. The model is emitted without limit.context.
       { id: "NO_CTX_COMBO", owned_by: "combo" },
@@ -305,7 +320,7 @@ describe("config-generator", () => {
         assert.strictEqual(
           noCtx.limit?.context,
           undefined,
-          `NO_CTX_COMBO should not have a fabricated limit.context (got ${noCtx.limit?.context})`
+          `NO_CTX_COMBO should not have a fabricated limit.context (got ${noCtx.limit?.context})`,
         );
       } finally {
         stub.restore();
@@ -353,7 +368,7 @@ describe("config-generator", () => {
           threw = true;
           assert.ok(
             /catalog|fetch|ECONNREFUSED/i.test(String(e?.message ?? e)),
-            `Expected fetch error, got: ${String(e?.message ?? e)}`
+            `Expected fetch error, got: ${String(e?.message ?? e)}`,
           );
         }
         assert.ok(threw, "generator must throw when catalog fetch fails");
@@ -397,7 +412,7 @@ describe("config-generator", () => {
         assert.strictEqual(
           cfg.provider.omniroute.models["Opencode FREE Omni"].limit.context,
           200000,
-          "Opencode FREE Omni must have context=200000 from the catalog, not 128000"
+          "Opencode FREE Omni must have context=200000 from the catalog, not 128000",
         );
       } finally {
         stub.restore();

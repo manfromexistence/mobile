@@ -61,14 +61,14 @@ test("#6686: previously-plain-selector routes must call the quota-preflight-awar
       bareCalls.length,
       0,
       `${relPath} must not call the plain getProviderCredentials() — use ` +
-        `getProviderCredentialsWithQuotaPreflight() instead (issue #6686)`
+        `getProviderCredentialsWithQuotaPreflight() instead (issue #6686)`,
     );
 
     assert.match(
       source,
       /getProviderCredentialsWithQuotaPreflight/,
       `${relPath} is expected to select credentials via ` +
-        `getProviderCredentialsWithQuotaPreflight (issue #6686)`
+        `getProviderCredentialsWithQuotaPreflight (issue #6686)`,
     );
   }
 });
@@ -121,7 +121,7 @@ test("#6686: getProviderCredentialsWithQuotaPreflight (now used by every credent
       provider,
       null,
       null,
-      null
+      null,
     );
     const preflightResult = preflightSelection as {
       allRateLimited?: boolean;
@@ -130,7 +130,7 @@ test("#6686: getProviderCredentialsWithQuotaPreflight (now used by every credent
 
     assert.ok(
       preflightResult?.allRateLimited === true || preflightResult?.connectionId !== account.id,
-      "getProviderCredentialsWithQuotaPreflight should correctly block the exhausted account"
+      "getProviderCredentialsWithQuotaPreflight should correctly block the exhausted account",
     );
   } finally {
     core.resetDbInstance();

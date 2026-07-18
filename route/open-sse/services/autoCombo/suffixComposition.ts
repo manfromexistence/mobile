@@ -103,7 +103,7 @@ interface PoolCandidate {
  */
 export function buildAutoCandidateFilter(
   category?: AutoCategory,
-  tier?: AutoTier
+  tier?: AutoTier,
 ): ((candidate: PoolCandidate) => boolean) | null {
   const checks: Array<(c: PoolCandidate) => boolean> = [];
 

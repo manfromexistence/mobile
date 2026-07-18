@@ -1,6 +1,6 @@
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { declarePI, colorBandingFix, proceduralHash11, proceduralHash21 } from '../shader-utils.js';
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { declarePI, colorBandingFix, proceduralHash11, proceduralHash21 } from "../shader-utils.js";
 
 /**
  * Classic animated 3D Perlin noise with exposed controls.
@@ -52,9 +52,9 @@ in vec2 v_patternUV;
 
 out vec4 fragColor;
 
-${ declarePI }
-${ proceduralHash11 }
-${ proceduralHash21 }
+${declarePI}
+${proceduralHash11}
+${proceduralHash21}
 
 float hash31(vec3 p) {
   p = fract(p * 0.3183099) + 0.1;
@@ -192,7 +192,7 @@ void main() {
   color += bgColor * (1. - opacity);
   opacity += bgOpacity * (1. - opacity);
 
-  ${ colorBandingFix }
+  ${colorBandingFix}
 
   fragColor = vec4(color, opacity);
 }

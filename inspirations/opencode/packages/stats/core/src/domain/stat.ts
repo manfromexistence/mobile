@@ -1,67 +1,67 @@
-import { sql } from "drizzle-orm"
+import { sql } from "drizzle-orm";
 
-export const UPSERT_CHUNK_SIZE = 500
-const DAY_MS = 86_400_000
+export const UPSERT_CHUNK_SIZE = 500;
+const DAY_MS = 86_400_000;
 
-export type StatGrain = "day" | "week"
+export type StatGrain = "day" | "week";
 
 export type StatBaseAggregate = {
-  grain: StatGrain
-  period_key: string
-  dataset: string
-  tier: string
-  sessions: number
-  requests: number
-  unique_users: number
-  input_tokens: number
-  output_tokens: number
-  reasoning_tokens: number
-  cache_read_tokens: number
-  total_tokens: number
-  input_cost_microcents: number
-  output_cost_microcents: number
-  total_cost_microcents: number
-  avg_duration_ms: number | null
-  p50_duration_ms: number | null
-  p95_duration_ms: number | null
-  avg_ttfb_ms: number | null
-  p50_ttfb_ms: number | null
-  p95_ttfb_ms: number | null
-  avg_output_tps: number | null
-  success_count: number
-  error_count: number
-  sample_count: number
-}
+  grain: StatGrain;
+  period_key: string;
+  dataset: string;
+  tier: string;
+  sessions: number;
+  requests: number;
+  unique_users: number;
+  input_tokens: number;
+  output_tokens: number;
+  reasoning_tokens: number;
+  cache_read_tokens: number;
+  total_tokens: number;
+  input_cost_microcents: number;
+  output_cost_microcents: number;
+  total_cost_microcents: number;
+  avg_duration_ms: number | null;
+  p50_duration_ms: number | null;
+  p95_duration_ms: number | null;
+  avg_ttfb_ms: number | null;
+  p50_ttfb_ms: number | null;
+  p95_ttfb_ms: number | null;
+  avg_output_tps: number | null;
+  success_count: number;
+  error_count: number;
+  sample_count: number;
+};
 
 export type StatBaseRow = {
-  grain: string
-  period_key: string
-  dataset?: string
-  tier?: string
-  client?: string
-  source?: string
-  sessions?: number
-  requests?: number
-  unique_users?: number
-  input_tokens?: number
-  output_tokens?: number
-  reasoning_tokens?: number
-  cache_read_tokens?: number
-  total_tokens?: number
-  input_cost_microcents?: number
-  output_cost_microcents?: number
-  total_cost_microcents?: number
-  avg_duration_ms?: number | null
-  p50_duration_ms?: number | null
-  p95_duration_ms?: number | null
-  avg_ttfb_ms?: number | null
-  p50_ttfb_ms?: number | null
-  p95_ttfb_ms?: number | null
-  avg_output_tps?: number | null
-  success_count?: number
-  error_count?: number
-  sample_count?: number
-}
+  grain: string;
+  period_key: string;
+  dataset?: string;
+  tier?: string;
+  client?: string;
+  source?: string;
+  sessions?: number;
+  requests?: number;
+  unique_users?: number;
+  input_tokens?: number;
+  output_tokens?: number;
+  reasoning_tokens?: number;
+  cache_read_tokens?: number;
+  total_tokens?: number;
+  input_cost_microcents?: number;
+  output_cost_microcents?: number;
+  total_cost_microcents?: number;
+  avg_duration_ms?: number | null;
+  p50_duration_ms?: number | null;
+  p95_duration_ms?: number | null;
+  avg_ttfb_ms?: number | null;
+  p50_ttfb_ms?: number | null;
+  p95_ttfb_ms?: number | null;
+  avg_output_tps?: number | null;
+  success_count?: number;
+  error_count?: number;
+  sample_count?: number;
+};
 
 export function toStatBaseRow(data: StatBaseAggregate) {
   return {
@@ -92,32 +92,48 @@ export function toStatBaseRow(data: StatBaseAggregate) {
     success_count: data.success_count,
     error_count: data.error_count,
     sample_count: data.sample_count,
-  }
+  };
 }
 
-export function synthesizeAllTierRows<T extends StatBaseRow>(rows: T[], dimensionKey: (row: T) => string) {
+export function synthesizeAllTierRows<T extends StatBaseRow>(
+  rows: T[],
+  dimensionKey: (row: T) => string,
+) {
   return [
     ...rows,
     ...Object.values(
       rows.reduce<Record<string, T>>((result, row) => {
-        const key = [row.grain, row.period_key, row.dataset, row.client, row.source, dimensionKey(row)].join("\u0000")
-        result[key] = result[key] ? combineRows(result[key], row) : { ...row, tier: "all" }
-        return result
+        const key = [
+          row.grain,
+          row.period_key,
+          row.dataset,
+          row.client,
+          row.source,
+          dimensionKey(row),
+        ].join("\u0000");
+        result[key] = result[key] ? combineRows(result[key], row) : { ...row, tier: "all" };
+        return result;
       }, {}),
     ),
-  ]
+  ];
 }
 
 export function collapseRows<T extends StatBaseRow>(rows: T[], dimensionKey: (row: T) => string) {
   return Object.values(
     rows.reduce<Record<string, T>>((result, row) => {
-      const key = [row.grain, row.period_key, row.dataset, row.tier, row.client, row.source, dimensionKey(row)].join(
-        "\u0000",
-      )
-      result[key] = result[key] ? combineRows(result[key], row) : row
-      return result
+      const key = [
+        row.grain,
+        row.period_key,
+        row.dataset,
+        row.tier,
+        row.client,
+        row.source,
+        dimensionKey(row),
+      ].join("\u0000");
+      result[key] = result[key] ? combineRows(result[key], row) : row;
+      return result;
     }, {}),
-  )
+  );
 }
 
 export function combineRows<T extends StatBaseRow>(left: T, right: T): T {
@@ -132,76 +148,102 @@ export function combineRows<T extends StatBaseRow>(left: T, right: T): T {
     cache_read_tokens: (left.cache_read_tokens ?? 0) + (right.cache_read_tokens ?? 0),
     total_tokens: (left.total_tokens ?? 0) + (right.total_tokens ?? 0),
     input_cost_microcents: (left.input_cost_microcents ?? 0) + (right.input_cost_microcents ?? 0),
-    output_cost_microcents: (left.output_cost_microcents ?? 0) + (right.output_cost_microcents ?? 0),
+    output_cost_microcents:
+      (left.output_cost_microcents ?? 0) + (right.output_cost_microcents ?? 0),
     total_cost_microcents: (left.total_cost_microcents ?? 0) + (right.total_cost_microcents ?? 0),
-    avg_duration_ms: weightedAverage(left.avg_duration_ms, left.requests, right.avg_duration_ms, right.requests),
+    avg_duration_ms: weightedAverage(
+      left.avg_duration_ms,
+      left.requests,
+      right.avg_duration_ms,
+      right.requests,
+    ),
     p50_duration_ms: null,
     p95_duration_ms: null,
-    avg_ttfb_ms: weightedAverage(left.avg_ttfb_ms, left.requests, right.avg_ttfb_ms, right.requests),
+    avg_ttfb_ms: weightedAverage(
+      left.avg_ttfb_ms,
+      left.requests,
+      right.avg_ttfb_ms,
+      right.requests,
+    ),
     p50_ttfb_ms: null,
     p95_ttfb_ms: null,
-    avg_output_tps: weightedAverage(left.avg_output_tps, left.requests, right.avg_output_tps, right.requests),
+    avg_output_tps: weightedAverage(
+      left.avg_output_tps,
+      left.requests,
+      right.avg_output_tps,
+      right.requests,
+    ),
     success_count: (left.success_count ?? 0) + (right.success_count ?? 0),
     error_count: (left.error_count ?? 0) + (right.error_count ?? 0),
     sample_count: (left.sample_count ?? 0) + (right.sample_count ?? 0),
-  }
+  };
 }
 
 export function isMissingUniqueUsersColumn(cause: unknown): boolean {
-  return errorText(cause).includes("Unknown column 'unique_users'")
+  return errorText(cause).includes("Unknown column 'unique_users'");
 }
 
 export function omitUniqueUsers<T extends { unique_users?: number }>(rows: T[]) {
   return rows.map((row) => {
-    const result = { ...row }
-    delete result.unique_users
-    return result
-  })
+    const result = { ...row };
+    delete result.unique_users;
+    return result;
+  });
 }
 
 export function statPeriodKey(row: StatBaseRow) {
-  return [row.grain, row.period_key, row.dataset, row.tier, row.client, row.source].join("\u0000")
+  return [row.grain, row.period_key, row.dataset, row.tier, row.client, row.source].join("\u0000");
 }
 
 export function statRowScope(rows: StatBaseRow[]) {
-  if (rows.length === 0) return
+  if (rows.length === 0) return;
   return {
     grains: unique(rows.map((row) => row.grain)),
     periodKeys: unique(rows.map((row) => row.period_key)),
     datasets: unique(rows.map((row) => row.dataset ?? "all")),
     clients: unique(rows.map((row) => row.client ?? "all")),
     sources: unique(rows.map((row) => row.source ?? "all")),
-  }
+  };
 }
 
 export function periodKeyFor(grain: StatGrain, periodStart: Date) {
-  if (grain === "week") return isoWeekId(periodStart)
-  return utcDateId(periodStart)
+  if (grain === "week") return isoWeekId(periodStart);
+  return utcDateId(periodStart);
 }
 
 export function startOfUtcDay(value: Date) {
-  return new Date(Date.UTC(value.getUTCFullYear(), value.getUTCMonth(), value.getUTCDate()))
+  return new Date(Date.UTC(value.getUTCFullYear(), value.getUTCMonth(), value.getUTCDate()));
 }
 
 export function startOfIsoWeek(value: Date) {
   return new Date(
-    Date.UTC(value.getUTCFullYear(), value.getUTCMonth(), value.getUTCDate() - (value.getUTCDay() || 7) + 1),
-  )
+    Date.UTC(
+      value.getUTCFullYear(),
+      value.getUTCMonth(),
+      value.getUTCDate() - (value.getUTCDay() || 7) + 1,
+    ),
+  );
 }
 
 export function isoWeekId(value: Date) {
   const thursday = new Date(
-    Date.UTC(value.getUTCFullYear(), value.getUTCMonth(), value.getUTCDate() + 4 - (value.getUTCDay() || 7)),
-  )
-  return `${thursday.getUTCFullYear()}-W${String(Math.ceil(((thursday.getTime() - Date.UTC(thursday.getUTCFullYear(), 0, 1)) / DAY_MS + 1) / 7)).padStart(2, "0")}`
+    Date.UTC(
+      value.getUTCFullYear(),
+      value.getUTCMonth(),
+      value.getUTCDate() + 4 - (value.getUTCDay() || 7),
+    ),
+  );
+  return `${thursday.getUTCFullYear()}-W${String(Math.ceil(((thursday.getTime() - Date.UTC(thursday.getUTCFullYear(), 0, 1)) / DAY_MS + 1) / 7)).padStart(2, "0")}`;
 }
 
 function utcDateId(value: Date) {
-  return `${value.getUTCFullYear()}-${String(value.getUTCMonth() + 1).padStart(2, "0")}-${String(value.getUTCDate()).padStart(2, "0")}`
+  return `${value.getUTCFullYear()}-${String(value.getUTCMonth() + 1).padStart(2, "0")}-${String(value.getUTCDate()).padStart(2, "0")}`;
 }
 
 export function rankBy<T extends StatBaseRow>(rows: T[], value: (row: T) => number) {
-  return new Map(rows.toSorted((a, b) => value(b) - value(a)).map((row, index) => [row, index + 1]))
+  return new Map(
+    rows.toSorted((a, b) => value(b) - value(a)).map((row, index) => [row, index + 1]),
+  );
 }
 
 export function rankRowsWithMarketShare<T extends StatBaseRow>(
@@ -210,18 +252,18 @@ export function rankRowsWithMarketShare<T extends StatBaseRow>(
 ) {
   return Object.values(
     rows.reduce<Record<string, T[]>>((result, row) => {
-      const key = groupKey(row)
-      result[key] = [...(result[key] ?? []), row]
-      return result
+      const key = groupKey(row);
+      result[key] = [...(result[key] ?? []), row];
+      return result;
     }, {}),
   ).flatMap((group) => {
-    const tokens = group.reduce((sum, row) => sum + (row.total_tokens ?? 0), 0)
-    const requests = group.reduce((sum, row) => sum + (row.requests ?? 0), 0)
-    const sessions = group.reduce((sum, row) => sum + (row.sessions ?? 0), 0)
-    const tokenRanks = rankBy(group, (row) => row.total_tokens ?? 0)
-    const requestRanks = rankBy(group, (row) => row.requests ?? 0)
-    const sessionRanks = rankBy(group, (row) => row.sessions ?? 0)
-    const costRanks = rankBy(group, (row) => row.total_cost_microcents ?? 0)
+    const tokens = group.reduce((sum, row) => sum + (row.total_tokens ?? 0), 0);
+    const requests = group.reduce((sum, row) => sum + (row.requests ?? 0), 0);
+    const sessions = group.reduce((sum, row) => sum + (row.sessions ?? 0), 0);
+    const tokenRanks = rankBy(group, (row) => row.total_tokens ?? 0);
+    const requestRanks = rankBy(group, (row) => row.requests ?? 0);
+    const sessionRanks = rankBy(group, (row) => row.sessions ?? 0);
+    const costRanks = rankBy(group, (row) => row.total_cost_microcents ?? 0);
     return group.map((row) => ({
       ...row,
       market_share_tokens: share(row.total_tokens, tokens),
@@ -231,36 +273,37 @@ export function rankRowsWithMarketShare<T extends StatBaseRow>(
       rank_by_requests: requestRanks.get(row) ?? null,
       rank_by_sessions: sessionRanks.get(row) ?? null,
       rank_by_cost: costRanks.get(row) ?? null,
-    }))
-  })
+    }));
+  });
 }
 
 export function share(value: number | null | undefined, total: number) {
-  if (total <= 0) return null
-  return Number(((value ?? 0) / total).toFixed(6))
+  if (total <= 0) return null;
+  return Number(((value ?? 0) / total).toFixed(6));
 }
 
 export function chunks<T>(items: T[], size: number) {
   return Array.from({ length: Math.ceil(items.length / size) }, (_, index) =>
     items.slice(index * size, (index + 1) * size),
-  )
+  );
 }
 
 function unique(values: string[]) {
-  return [...new Set(values)]
+  return [...new Set(values)];
 }
 
 export function inserted(column: string) {
-  return sql.raw(`values(\`${column}\`)`)
+  return sql.raw(`values(\`${column}\`)`);
 }
 
 function errorText(cause: unknown): string {
-  if (cause instanceof Error) return `${cause.message} ${errorText((cause as { cause?: unknown }).cause)}`
+  if (cause instanceof Error)
+    return `${cause.message} ${errorText((cause as { cause?: unknown }).cause)}`;
   if (typeof cause === "object" && cause)
     return Object.values(cause as Record<string, unknown>)
       .map(errorText)
-      .join(" ")
-  return String(cause)
+      .join(" ");
+  return String(cause);
 }
 
 export function weightedAverage(
@@ -270,17 +313,18 @@ export function weightedAverage(
   rightWeight = 0,
 ) {
   const totalWeight =
-    (left === null || left === undefined ? 0 : leftWeight) + (right === null || right === undefined ? 0 : rightWeight)
-  if (totalWeight === 0) return null
-  return Number((((left ?? 0) * leftWeight + (right ?? 0) * rightWeight) / totalWeight).toFixed(2))
+    (left === null || left === undefined ? 0 : leftWeight) +
+    (right === null || right === undefined ? 0 : rightWeight);
+  if (totalWeight === 0) return null;
+  return Number((((left ?? 0) * leftWeight + (right ?? 0) * rightWeight) / totalWeight).toFixed(2));
 }
 
 export function normalizeTier(value: string) {
-  if (value === "Paid") return "Zen"
-  return value
+  if (value === "Paid") return "Zen";
+  return value;
 }
 
 export function normalizeCountry(value: string | undefined) {
-  if (!value || value.length !== 2) return "ZZ"
-  return value.toUpperCase()
+  if (!value || value.length !== 2) return "ZZ";
+  return value.toUpperCase();
 }

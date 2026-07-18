@@ -55,7 +55,7 @@ describe("isKeyActive", () => {
   it("returns false when banned even if isActive true and not expired", () => {
     assert.equal(
       isKeyActive(makeKey({ isBanned: true, isActive: true, expiresAt: futureDate })),
-      false
+      false,
     );
   });
 });
@@ -104,7 +104,7 @@ describe("isRestricted", () => {
   it("returns true when both have entries", () => {
     assert.equal(
       isRestricted(makeKey({ allowedModels: ["gpt-4"], allowedConnections: ["conn-1"] })),
-      true
+      true,
     );
   });
 });
@@ -158,7 +158,7 @@ describe("classifyKeyType", () => {
   it("returns 'manage' even if also restricted (manage takes priority)", () => {
     assert.equal(
       classifyKeyType(makeKey({ scopes: ["manage"], allowedModels: ["gpt-4"] })),
-      "manage"
+      "manage",
     );
   });
 
@@ -226,7 +226,7 @@ function applyFilters(
     statusFilter?: string | null;
     typeFilter?: string | null;
     searchQuery?: string;
-  }
+  },
 ): ApiKeyShape[] {
   let list = keys;
   if (opts.activeOnly) list = list.filter(isKeyActive);
@@ -244,7 +244,7 @@ function applyFilters(
     list = list.filter(
       (k) =>
         ((k as Record<string, unknown>)["name"] as string | undefined)?.toLowerCase().includes(q) ||
-        ((k as Record<string, unknown>)["key"] as string | undefined)?.toLowerCase().includes(q)
+        ((k as Record<string, unknown>)["key"] as string | undefined)?.toLowerCase().includes(q),
     );
   }
   return list;

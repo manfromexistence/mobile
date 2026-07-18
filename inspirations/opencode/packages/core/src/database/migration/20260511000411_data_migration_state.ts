@@ -1,5 +1,5 @@
-import { Effect } from "effect"
-import type { DatabaseMigration } from "../migration"
+import { Effect } from "effect";
+import type { DatabaseMigration } from "../migration";
 
 export default {
   id: "20260511000411_data_migration_state",
@@ -10,7 +10,7 @@ export default {
           \`name\` text PRIMARY KEY,
           \`time_completed\` integer NOT NULL
         );
-      `)
-    })
+      `);
+    });
   },
-} satisfies DatabaseMigration.Migration
+} satisfies DatabaseMigration.Migration;

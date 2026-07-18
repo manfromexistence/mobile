@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   type ContextMenuItem,
@@ -6,9 +6,9 @@ import {
   FileTree,
   type FileTreeDropResult,
   type FileTreeMutationEvent,
-} from '@pierre/trees';
-import type { FileTreePathOptions } from '@trees/_lib/fileTreePathOptions';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+} from "@pierre/trees";
+import type { FileTreePathOptions } from "@trees/_lib/fileTreePathOptions";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   memo,
   type ReactNode,
@@ -18,22 +18,22 @@ import {
   useRef,
   useState,
   useTransition,
-} from 'react';
-import { createRoot, type Root as ReactDomRoot } from 'react-dom/client';
+} from "react";
+import { createRoot, type Root as ReactDomRoot } from "react-dom/client";
 
-import { StateLog, useStateLog } from '../_components/StateLog';
-import { createPresortedPreparedInput } from '../_lib/createPresortedPreparedInput';
-import { DEMO_FILE_TREE_ICONS } from '../_lib/demoIcons';
+import { StateLog, useStateLog } from "../_components/StateLog";
+import { createPresortedPreparedInput } from "../_lib/createPresortedPreparedInput";
+import { DEMO_FILE_TREE_ICONS } from "../_lib/demoIcons";
 import {
   getContextMenuSideOffset,
   getFloatingContextMenuTriggerStyle,
-} from '../_lib/getFloatingContextMenuTriggerStyle';
+} from "../_lib/getFloatingContextMenuTriggerStyle";
 import {
   FILE_TREE_PROOF_VIEWPORT_HEIGHT,
   type TreesWorkloadDataPayload,
   type TreesWorkloadName,
   type TreesWorkloadOption,
-} from '../_lib/workloadMeta';
+} from "../_lib/workloadMeta";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,7 +41,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 import {
   Select,
   SelectContent,
@@ -50,20 +50,20 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 
 interface MainDemoClientProps {
   children: ReactNode;
   defaultWorkloadName: TreesWorkloadName;
-  expansionMode: 'all' | 'collapsed' | 'workload';
+  expansionMode: "all" | "collapsed" | "workload";
   treeMountId: string;
   workloadData: TreesWorkloadDataPayload;
   workloadOptions: readonly TreesWorkloadOption[];
 }
 
 type DemoMutationOperation =
-  | { path: string; type: 'add' }
-  | { from: string; to: string; type: 'move' };
+  | { path: string; type: "add" }
+  | { from: string; to: string; type: "move" };
 
 interface DemoMutationTargets {
   batchOperations: readonly DemoMutationOperation[];
@@ -72,34 +72,30 @@ interface DemoMutationTargets {
 }
 
 function getParentPath(path: string): string {
-  if (path.endsWith('/')) {
+  if (path.endsWith("/")) {
     const trimmedPath = path.slice(0, -1);
-    const lastSlashIndex = trimmedPath.lastIndexOf('/');
-    return lastSlashIndex < 0
-      ? ''
-      : `${trimmedPath.slice(0, lastSlashIndex + 1)}`;
+    const lastSlashIndex = trimmedPath.lastIndexOf("/");
+    return lastSlashIndex < 0 ? "" : `${trimmedPath.slice(0, lastSlashIndex + 1)}`;
   }
 
-  const lastSlashIndex = path.lastIndexOf('/');
-  return lastSlashIndex < 0 ? '' : path.slice(0, lastSlashIndex + 1);
+  const lastSlashIndex = path.lastIndexOf("/");
+  return lastSlashIndex < 0 ? "" : path.slice(0, lastSlashIndex + 1);
 }
 
 function getPathBasename(path: string): string {
-  const trimmedPath = path.endsWith('/') ? path.slice(0, -1) : path;
-  const lastSlashIndex = trimmedPath.lastIndexOf('/');
-  return lastSlashIndex < 0
-    ? trimmedPath
-    : trimmedPath.slice(lastSlashIndex + 1);
+  const trimmedPath = path.endsWith("/") ? path.slice(0, -1) : path;
+  const lastSlashIndex = trimmedPath.lastIndexOf("/");
+  return lastSlashIndex < 0 ? trimmedPath : trimmedPath.slice(lastSlashIndex + 1);
 }
 
 // Creates a stable suffixed path so repeated demo-target derivation can avoid collisions.
 function getSuffixedPath(path: string, suffix: number): string {
-  if (path.endsWith('/')) {
+  if (path.endsWith("/")) {
     return `${path.slice(0, -1)}-${String(suffix)}/`;
   }
 
-  const lastSlashIndex = path.lastIndexOf('/');
-  const lastDotIndex = path.lastIndexOf('.');
+  const lastSlashIndex = path.lastIndexOf("/");
+  const lastDotIndex = path.lastIndexOf(".");
   if (lastDotIndex > lastSlashIndex) {
     return `${path.slice(0, lastDotIndex)}-${String(suffix)}${path.slice(lastDotIndex)}`;
   }
@@ -108,10 +104,7 @@ function getSuffixedPath(path: string, suffix: number): string {
 }
 
 // Picks a unique demo path under the existing tree so mutation buttons can be re-used after reset.
-function getUniquePath(
-  path: string,
-  existingPaths: ReadonlySet<string>
-): string {
+function getUniquePath(path: string, existingPaths: ReadonlySet<string>): string {
   let candidatePath = path;
   let suffix = 1;
   while (existingPaths.has(candidatePath)) {
@@ -124,7 +117,7 @@ function getUniquePath(
 function renamePathSameParent(path: string, nextBasename: string): string {
   const parentPath = getParentPath(path);
   const trimmedBasename = nextBasename.trim();
-  return path.endsWith('/')
+  return path.endsWith("/")
     ? `${parentPath}${trimmedBasename}/`
     : `${parentPath}${trimmedBasename}`;
 }
@@ -132,7 +125,7 @@ function renamePathSameParent(path: string, nextBasename: string): string {
 // Derives deterministic proof paths from the current workload instead of hardcoding one repo shape.
 function createMutationDemoTargets(
   paths: readonly string[],
-  initialExpandedPaths: readonly string[] | undefined
+  initialExpandedPaths: readonly string[] | undefined,
 ): DemoMutationTargets {
   const existingPaths = new Set(paths);
   const directoryPaths = new Set<string>();
@@ -142,15 +135,14 @@ function createMutationDemoTargets(
       directoryPaths.add(currentParentPath);
       currentParentPath = getParentPath(currentParentPath);
     }
-    if (path.endsWith('/')) {
+    if (path.endsWith("/")) {
       directoryPaths.add(path);
     }
   }
 
   const sortedDirectoryPaths = [...directoryPaths].sort();
-  const firstDirectoryPath =
-    initialExpandedPaths?.toSorted()[0] ?? sortedDirectoryPaths[0] ?? '';
-  const filePaths = paths.filter((path) => !path.endsWith('/'));
+  const firstDirectoryPath = initialExpandedPaths?.toSorted()[0] ?? sortedDirectoryPaths[0] ?? "";
+  const filePaths = paths.filter((path) => !path.endsWith("/"));
   let moveFromPath: string | null = null;
   let moveToPath: string | null = null;
   for (const sourcePath of filePaths) {
@@ -158,7 +150,7 @@ function createMutationDemoTargets(
     const sourceBasename = getPathBasename(sourcePath);
     const siblingRenameTarget = getUniquePath(
       renamePathSameParent(sourcePath, `moved-${sourceBasename}`),
-      existingPaths
+      existingPaths,
     );
 
     const alternateDirectoryTarget = sortedDirectoryPaths
@@ -173,15 +165,15 @@ function createMutationDemoTargets(
 
   const batchFolderPath = getUniquePath(
     `${firstDirectoryPath}phase-6-batch-folder/`,
-    existingPaths
+    existingPaths,
   );
   const batchFilePath = `${batchFolderPath}batch-note.md`;
   const batchOperations: DemoMutationOperation[] = [
-    { path: batchFolderPath, type: 'add' },
-    { path: batchFilePath, type: 'add' },
+    { path: batchFolderPath, type: "add" },
+    { path: batchFilePath, type: "add" },
   ];
   if (moveFromPath != null && moveToPath != null) {
-    batchOperations.push({ from: moveFromPath, to: moveToPath, type: 'move' });
+    batchOperations.push({ from: moveFromPath, to: moveToPath, type: "move" });
   }
 
   return {
@@ -195,9 +187,9 @@ function getFirstVisibleDirectoryPath(tree: FileTree): string {
   const firstVisiblePath =
     tree
       .getFileTreeContainer()
-      ?.shadowRoot?.querySelector<HTMLButtonElement>('button[data-type="item"]')
-      ?.dataset.itemPath ?? '';
-  if (firstVisiblePath.endsWith('/')) {
+      ?.shadowRoot?.querySelector<HTMLButtonElement>('button[data-type="item"]')?.dataset
+      .itemPath ?? "";
+  if (firstVisiblePath.endsWith("/")) {
     return firstVisiblePath;
   }
 
@@ -208,12 +200,10 @@ function getFirstVisibleFileParentPath(tree: FileTree): string {
   const visibleButtons =
     tree
       .getFileTreeContainer()
-      ?.shadowRoot?.querySelectorAll<HTMLButtonElement>(
-        'button[data-type="item"]'
-      ) ?? [];
+      ?.shadowRoot?.querySelectorAll<HTMLButtonElement>('button[data-type="item"]') ?? [];
   for (const button of visibleButtons) {
     const itemPath = button.dataset.itemPath;
-    if (itemPath != null && itemPath.endsWith('/') === false) {
+    if (itemPath != null && itemPath.endsWith("/") === false) {
       return getParentPath(itemPath);
     }
   }
@@ -241,49 +231,38 @@ interface UpgradePayload {
 // shipping 130 MB of uncompressed JSON through the Vercel serverless function
 // — the client downloads ~11 MB from the edge instead, and the expansion list
 // is precomputed so we don't walk 1.6 M paths after decompression.
-async function fetchUpgradePayload(
-  url: string,
-  signal: AbortSignal
-): Promise<UpgradePayload> {
+async function fetchUpgradePayload(url: string, signal: AbortSignal): Promise<UpgradePayload> {
   const response = await fetch(url, { signal });
   if (!response.ok || response.body == null) {
-    throw new Error(
-      `Failed to fetch upgrade path list (${String(response.status)})`
-    );
+    throw new Error(`Failed to fetch upgrade path list (${String(response.status)})`);
   }
 
-  const decompressedStream = response.body.pipeThrough(
-    new DecompressionStream('gzip')
-  );
+  const decompressedStream = response.body.pipeThrough(new DecompressionStream("gzip"));
   const decompressedText = await new Response(decompressedStream).text();
   return JSON.parse(decompressedText) as UpgradePayload;
 }
 
 function formatMutationEvent(event: FileTreeMutationEvent): string {
   switch (event.operation) {
-    case 'add':
+    case "add":
       return `mutation:add ${event.path}`;
-    case 'remove':
-      return `mutation:remove ${event.path}${event.recursive === true ? ' (recursive)' : ''}`;
-    case 'move':
+    case "remove":
+      return `mutation:remove ${event.path}${event.recursive === true ? " (recursive)" : ""}`;
+    case "move":
       return `mutation:move ${event.from} -> ${event.to}`;
-    case 'batch':
-      return `mutation:batch [${event.events.map((entry) => entry.operation).join(', ')}]`;
-    case 'reset':
+    case "batch":
+      return `mutation:batch [${event.events.map((entry) => entry.operation).join(", ")}]`;
+    case "reset":
       return `mutation:reset ${String(event.pathCountBefore)} -> ${String(event.pathCountAfter)} paths`;
   }
 }
 
 function formatDropResult(event: FileTreeDropResult): string {
   const targetLabel =
-    event.target.kind === 'root'
-      ? 'root'
-      : (event.target.directoryPath ?? 'unknown');
+    event.target.kind === "root" ? "root" : (event.target.directoryPath ?? "unknown");
   const flattenedSegmentLabel =
-    event.target.flattenedSegmentPath == null
-      ? ''
-      : ` via ${event.target.flattenedSegmentPath}`;
-  return `drop:${event.operation} [${event.draggedPaths.join(', ')}] -> ${targetLabel}${flattenedSegmentLabel}`;
+    event.target.flattenedSegmentPath == null ? "" : ` via ${event.target.flattenedSegmentPath}`;
+  return `drop:${event.operation} [${event.draggedPaths.join(", ")}] -> ${targetLabel}${flattenedSegmentLabel}`;
 }
 
 function DemoMutationContextMenu({
@@ -293,21 +272,14 @@ function DemoMutationContextMenu({
   onRename,
 }: {
   item: ContextMenuItem;
-  context: Pick<
-    ContextMenuOpenContext,
-    'anchorRect' | 'close' | 'restoreFocus'
-  >;
+  context: Pick<ContextMenuOpenContext, "anchorRect" | "close" | "restoreFocus">;
   onDelete: () => void;
   onRename: () => void;
 }) {
-  const itemType = item.kind === 'directory' ? 'Folder' : 'File';
+  const itemType = item.kind === "directory" ? "Folder" : "File";
 
   return (
-    <DropdownMenu
-      open
-      modal={false}
-      onOpenChange={(open) => !open && context.close()}
-    >
+    <DropdownMenu open modal={false} onOpenChange={(open) => !open && context.close()}>
       <DropdownMenuTrigger asChild>
         <button
           type="button"
@@ -371,20 +343,17 @@ function renderMutationContextMenuSlot({
   onDelete: () => void;
   onRename: () => void;
   slotElement: HTMLDivElement;
-  context: Pick<
-    ContextMenuOpenContext,
-    'anchorRect' | 'close' | 'restoreFocus'
-  >;
+  context: Pick<ContextMenuOpenContext, "anchorRect" | "close" | "restoreFocus">;
 }): void {
   menuRootRef.current ??= createRoot(slotElement);
-  slotElement.style.display = 'block';
+  slotElement.style.display = "block";
   menuRootRef.current.render(
     <DemoMutationContextMenu
       item={item}
       context={context}
       onDelete={onDelete}
       onRename={onRename}
-    />
+    />,
   );
 }
 
@@ -402,7 +371,7 @@ function clearMutationContextMenuSlot({
     return;
   }
 
-  slotElement.style.display = 'none';
+  slotElement.style.display = "none";
   if (unmount) {
     menuRootRef.current = null;
     // Route transitions can unmount this helper while React is still rendering
@@ -423,7 +392,7 @@ const HydratedMainDemoController = memo(function HydratedMainDemoController({
   treeMountId,
 }: {
   onTreeReady: (fileTree: FileTree | null) => void;
-  options: Omit<FileTreePathOptions, 'icons'>;
+  options: Omit<FileTreePathOptions, "icons">;
   treeMountId: string;
 }) {
   useEffect(() => {
@@ -434,11 +403,11 @@ const HydratedMainDemoController = memo(function HydratedMainDemoController({
 
     const fileTree = new FileTree(options);
     onTreeReady(fileTree);
-    const fileTreeContainer = node.querySelector('file-tree-container');
+    const fileTreeContainer = node.querySelector("file-tree-container");
     if (fileTreeContainer instanceof HTMLElement) {
       fileTree.hydrate({ fileTreeContainer });
     } else {
-      node.innerHTML = '';
+      node.innerHTML = "";
       fileTree.render({ containerWrapper: node });
     }
 
@@ -470,11 +439,11 @@ export function MainDemoClient({
   const mutationUnsubscribeRef = useRef<(() => void) | null>(null);
   const upgradeAbortRef = useRef<AbortController | null>(null);
   const hasUpgradedRef = useRef(false);
-  const [iconMode, setIconMode] = useState<
-    'complete' | 'custom' | 'minimal' | 'standard'
-  >('complete');
+  const [iconMode, setIconMode] = useState<"complete" | "custom" | "minimal" | "standard">(
+    "complete",
+  );
   const [pendingWorkloadName, setPendingWorkloadName] = useState(
-    workloadData.selectedWorkload.name
+    workloadData.selectedWorkload.name,
   );
 
   useEffect(() => {
@@ -483,40 +452,32 @@ export function MainDemoClient({
 
   const preparedInput = useMemo(
     () =>
-      workloadData.pathsArePresorted
-        ? createPresortedPreparedInput(workloadData.paths)
-        : undefined,
-    [workloadData]
+      workloadData.pathsArePresorted ? createPresortedPreparedInput(workloadData.paths) : undefined,
+    [workloadData],
   );
-  const sharedOptions = useMemo<
-    Omit<FileTreePathOptions, 'id' | 'preparedInput'>
-  >(
+  const sharedOptions = useMemo<Omit<FileTreePathOptions, "id" | "preparedInput">>(
     () => ({
       composition: {
         contextMenu: {
           enabled: true,
-          triggerMode: 'both',
+          triggerMode: "both",
         },
       },
       dragAndDrop: true,
       flattenEmptyDirectories: true,
-      fileTreeSearchMode: 'hide-non-matches',
+      fileTreeSearchMode: "hide-non-matches",
       initialExpandedPaths: workloadData.initialExpandedPaths,
       paths: workloadData.paths,
       search: true,
       stickyFolders: true,
       initialVisibleRowCount: FILE_TREE_PROOF_VIEWPORT_HEIGHT / 30,
     }),
-    [workloadData]
+    [workloadData],
   );
   const currentPaths = sharedOptions.paths ?? workloadData.paths;
   const demoTargets = useMemo(
-    () =>
-      createMutationDemoTargets(
-        currentPaths,
-        sharedOptions.initialExpandedPaths
-      ),
-    [currentPaths, sharedOptions]
+    () => createMutationDemoTargets(currentPaths, sharedOptions.initialExpandedPaths),
+    [currentPaths, sharedOptions],
   );
   const activeWorkloadSummary = workloadData.selectedWorkload;
 
@@ -525,44 +486,36 @@ export function MainDemoClient({
       const nextSearchParams = new URLSearchParams(searchParams.toString());
       setPendingWorkloadName(nextWorkloadName as TreesWorkloadName);
       if (nextWorkloadName === defaultWorkloadName) {
-        nextSearchParams.delete('workload');
+        nextSearchParams.delete("workload");
       } else {
-        nextSearchParams.set('workload', nextWorkloadName);
+        nextSearchParams.set("workload", nextWorkloadName);
       }
 
       const nextUrl =
-        nextSearchParams.size > 0
-          ? `${pathname}?${nextSearchParams.toString()}`
-          : pathname;
+        nextSearchParams.size > 0 ? `${pathname}?${nextSearchParams.toString()}` : pathname;
       startDemoStateTransition(() => {
         router.replace(nextUrl, { scroll: false });
       });
     },
-    [
-      defaultWorkloadName,
-      pathname,
-      router,
-      searchParams,
-      startDemoStateTransition,
-    ]
+    [defaultWorkloadName, pathname, router, searchParams, startDemoStateTransition],
   );
 
   const handleExpansionChange = useCallback(
-    (nextExpansionMode: 'all' | 'collapsed') => {
+    (nextExpansionMode: "all" | "collapsed") => {
       const nextSearchParams = new URLSearchParams(searchParams.toString());
-      nextSearchParams.set('expansion', nextExpansionMode);
+      nextSearchParams.set("expansion", nextExpansionMode);
       const nextUrl = `${pathname}?${nextSearchParams.toString()}`;
       startDemoStateTransition(() => {
         router.replace(nextUrl, { scroll: false });
       });
     },
-    [pathname, router, searchParams, startDemoStateTransition]
+    [pathname, router, searchParams, startDemoStateTransition],
   );
   const handleSelectionChange = useCallback(
     (selectedPaths: readonly string[]) => {
-      addLog(`selected: [${selectedPaths.join(', ')}]`);
+      addLog(`selected: [${selectedPaths.join(", ")}]`);
     },
-    [addLog]
+    [addLog],
   );
   const runSearchAction = useCallback(
     (label: string, action: (tree: FileTree) => void): void => {
@@ -574,7 +527,7 @@ export function MainDemoClient({
 
       action(tree);
     },
-    [addLog]
+    [addLog],
   );
 
   useEffect(() => {
@@ -609,10 +562,10 @@ export function MainDemoClient({
         addLog(`error:${label} ${(error as Error).message ?? String(error)}`);
       }
     },
-    [addLog]
+    [addLog],
   );
 
-  const options = useMemo<Omit<FileTreePathOptions, 'icons'>>(() => {
+  const options = useMemo<Omit<FileTreePathOptions, "icons">>(() => {
     return {
       ...sharedOptions,
       composition: {
@@ -626,13 +579,13 @@ export function MainDemoClient({
                 slotElement: contextMenuSlotRef.current,
               });
             }
-            addLog('context menu: closed');
+            addLog("context menu: closed");
           },
           onOpen: (item) => {
             addLog(`context menu: opened for ${item.path}`);
           },
           render: (item: ContextMenuItem, context: ContextMenuOpenContext) => {
-            contextMenuSlotRef.current ??= document.createElement('div');
+            contextMenuSlotRef.current ??= document.createElement("div");
             renderMutationContextMenuSlot({
               context,
               item,
@@ -641,7 +594,7 @@ export function MainDemoClient({
                 runMutation(`delete ${item.path}`, (tree) => {
                   tree.remove(
                     item.path,
-                    item.kind === 'directory' ? { recursive: true } : undefined
+                    item.kind === "directory" ? { recursive: true } : undefined,
                   );
                 });
               },
@@ -656,7 +609,7 @@ export function MainDemoClient({
                 addLog(
                   started
                     ? `rename: started for ${item.path}`
-                    : `rename: unavailable for ${item.path}`
+                    : `rename: unavailable for ${item.path}`,
                 );
               },
               slotElement: contextMenuSlotRef.current,
@@ -667,21 +620,21 @@ export function MainDemoClient({
         header: {
           ...sharedOptions.composition?.header,
           render: () => {
-            const header = document.createElement('div');
-            header.style.alignItems = 'center';
-            header.style.display = 'flex';
-            header.style.gap = '12px';
-            header.style.padding = '8px 12px';
+            const header = document.createElement("div");
+            header.style.alignItems = "center";
+            header.style.display = "flex";
+            header.style.gap = "12px";
+            header.style.padding = "8px 12px";
 
-            const label = document.createElement('strong');
-            label.textContent = 'Trees demo header';
+            const label = document.createElement("strong");
+            label.textContent = "Trees demo header";
             header.append(label);
 
-            const button = document.createElement('button');
-            button.type = 'button';
-            button.textContent = 'Log header action';
-            button.addEventListener('click', () => {
-              addLog('header action: clicked');
+            const button = document.createElement("button");
+            button.type = "button";
+            button.textContent = "Log header action";
+            button.addEventListener("click", () => {
+              addLog("header action: clicked");
             });
             header.append(button);
 
@@ -695,16 +648,14 @@ export function MainDemoClient({
         },
         onDropError: (error, event) => {
           const targetLabel =
-            event.target.kind === 'root'
-              ? 'root'
-              : (event.target.directoryPath ?? 'unknown');
+            event.target.kind === "root" ? "root" : (event.target.directoryPath ?? "unknown");
           addLog(`drop:error ${error} -> ${targetLabel}`);
         },
         openOnDropDelay: 800,
       },
       id: `trees-dev-main-${workloadData.selectedWorkload.name}`,
       onSearchChange: (value) => {
-        addLog(`search: ${value ?? '<closed>'}`);
+        addLog(`search: ${value ?? "<closed>"}`);
       },
       onSelectionChange: handleSelectionChange,
       preparedInput,
@@ -713,15 +664,11 @@ export function MainDemoClient({
           addLog(`rename:error ${error}`);
         },
         onRename: (event) => {
-          addLog(
-            `rename:commit ${event.sourcePath} -> ${event.destinationPath}`
-          );
+          addLog(`rename:commit ${event.sourcePath} -> ${event.destinationPath}`);
         },
       },
       renderRowDecoration: ({ item }) =>
-        item.path.endsWith('.ts') === true
-          ? { text: 'TS', title: 'TypeScript file' }
-          : null,
+        item.path.endsWith(".ts") === true ? { text: "TS", title: "TypeScript file" } : null,
     };
   }, [
     addLog,
@@ -731,7 +678,7 @@ export function MainDemoClient({
     sharedOptions,
     workloadData.selectedWorkload.name,
   ]);
-  const activeIcons = iconMode === 'custom' ? DEMO_FILE_TREE_ICONS : iconMode;
+  const activeIcons = iconMode === "custom" ? DEMO_FILE_TREE_ICONS : iconMode;
   const upgradeDataUrl = workloadData.upgradeDataUrl;
 
   // Runs the gzip → decompress → resetPaths pipeline for a given tree. Used on
@@ -758,16 +705,15 @@ export function MainDemoClient({
 
           const fetchedAt = performance.now();
           addLog(
-            `upgrade: fetched ${fullPaths.length.toLocaleString()} paths + ${allExpandedPaths.length.toLocaleString()} expandable folders in ${Math.round(fetchedAt - fetchStartedAt).toString()}ms`
+            `upgrade: fetched ${fullPaths.length.toLocaleString()} paths + ${allExpandedPaths.length.toLocaleString()} expandable folders in ${Math.round(fetchedAt - fetchStartedAt).toString()}ms`,
           );
           fileTree.resetPaths(fullPaths, {
-            initialExpandedPaths:
-              expansionMode === 'all' ? allExpandedPaths : [],
+            initialExpandedPaths: expansionMode === "all" ? allExpandedPaths : [],
             preparedInput: createPresortedPreparedInput(fullPaths),
           });
           hasUpgradedRef.current = true;
           addLog(
-            `upgrade: reset tree in ${Math.round(performance.now() - fetchedAt).toString()}ms`
+            `upgrade: reset tree in ${Math.round(performance.now() - fetchedAt).toString()}ms`,
           );
         })
         .catch((error: unknown) => {
@@ -775,13 +721,11 @@ export function MainDemoClient({
             return;
           }
 
-          addLog(
-            `upgrade:error ${error instanceof Error ? error.message : String(error)}`
-          );
+          addLog(`upgrade:error ${error instanceof Error ? error.message : String(error)}`);
         });
       return abortController;
     },
-    [addLog, expansionMode, upgradeDataUrl]
+    [addLog, expansionMode, upgradeDataUrl],
   );
 
   const handleTreeReady = useCallback(
@@ -796,13 +740,13 @@ export function MainDemoClient({
         return;
       }
 
-      mutationUnsubscribeRef.current = fileTree.onMutation('*', (event) => {
+      mutationUnsubscribeRef.current = fileTree.onMutation("*", (event) => {
         addLog(formatMutationEvent(event));
       });
 
       runUpgrade(fileTree);
     },
-    [addLog, runUpgrade]
+    [addLog, runUpgrade],
   );
 
   useEffect(() => {
@@ -810,22 +754,22 @@ export function MainDemoClient({
   }, [activeIcons]);
 
   const handleAddFile = useCallback(() => {
-    runMutation('add demo file', (tree) => {
+    runMutation("add demo file", (tree) => {
       const firstVisibleDirectoryPath = getFirstVisibleFileParentPath(tree);
       const nextPath = getAvailableMutationPath(
         tree,
-        `${firstVisibleDirectoryPath}000-phase-6-demo-file.ts`
+        `${firstVisibleDirectoryPath}000-phase-6-demo-file.ts`,
       );
       tree.add(nextPath);
     });
   }, [runMutation]);
 
   const handleAddFolder = useCallback(() => {
-    runMutation('add demo folder', (tree) => {
+    runMutation("add demo folder", (tree) => {
       const firstVisibleDirectoryPath = getFirstVisibleDirectoryPath(tree);
       const nextPath = getAvailableMutationPath(
         tree,
-        `${firstVisibleDirectoryPath}000-phase-6-demo-folder/`
+        `${firstVisibleDirectoryPath}000-phase-6-demo-folder/`,
       );
       tree.add(nextPath);
     });
@@ -834,7 +778,7 @@ export function MainDemoClient({
   const handleMove = useCallback(() => {
     const { moveFromPath, moveToPath } = demoTargets;
     if (moveFromPath == null || moveToPath == null) {
-      addLog('move: no demo move target available');
+      addLog("move: no demo move target available");
       return;
     }
 
@@ -852,25 +796,18 @@ export function MainDemoClient({
   }, [addLog, demoTargets, runMutation]);
 
   const handleBatch = useCallback(() => {
-    runMutation('batch demo', (tree) => {
-      const nextBatchIsBlocked = demoTargets.batchOperations.some(
-        (operation) => {
-          if (operation.type === 'add') {
-            return tree.getItem(operation.path) != null;
-          }
-          if (operation.type === 'move') {
-            return (
-              tree.getItem(operation.from) == null ||
-              tree.getItem(operation.to) != null
-            );
-          }
-          return false;
+    runMutation("batch demo", (tree) => {
+      const nextBatchIsBlocked = demoTargets.batchOperations.some((operation) => {
+        if (operation.type === "add") {
+          return tree.getItem(operation.path) != null;
         }
-      );
+        if (operation.type === "move") {
+          return tree.getItem(operation.from) == null || tree.getItem(operation.to) != null;
+        }
+        return false;
+      });
       if (nextBatchIsBlocked) {
-        addLog(
-          'batch: current tree state no longer matches the demo assumptions; reset to retry'
-        );
+        addLog("batch: current tree state no longer matches the demo assumptions; reset to retry");
         return;
       }
 
@@ -886,7 +823,7 @@ export function MainDemoClient({
     if (upgradeDataUrl != null) {
       const tree = treeRef.current;
       if (tree == null) {
-        addLog('error: tree not ready for reset demo tree');
+        addLog("error: tree not ready for reset demo tree");
         return;
       }
 
@@ -894,29 +831,22 @@ export function MainDemoClient({
       return;
     }
 
-    runMutation('reset demo tree', (tree) => {
+    runMutation("reset demo tree", (tree) => {
       tree.resetPaths(currentPaths, { preparedInput });
     });
-  }, [
-    addLog,
-    currentPaths,
-    preparedInput,
-    runMutation,
-    runUpgrade,
-    upgradeDataUrl,
-  ]);
+  }, [addLog, currentPaths, preparedInput, runMutation, runUpgrade, upgradeDataUrl]);
   const handleSearchDocumentation = useCallback(() => {
-    runSearchAction('search documentation', (tree) => {
-      tree.setSearch('documentation');
+    runSearchAction("search documentation", (tree) => {
+      tree.setSearch("documentation");
     });
   }, [runSearchAction]);
   const handleSearchBootp = useCallback(() => {
-    runSearchAction('search bootp', (tree) => {
-      tree.setSearch('bootp');
+    runSearchAction("search bootp", (tree) => {
+      tree.setSearch("bootp");
     });
   }, [runSearchAction]);
   const handleCloseSearch = useCallback(() => {
-    runSearchAction('close search', (tree) => {
+    runSearchAction("close search", (tree) => {
       tree.closeSearch();
     });
   }, [runSearchAction]);
@@ -926,32 +856,27 @@ export function MainDemoClient({
       <header className="space-y-2">
         <h1 className="text-2xl font-bold">Main Demo</h1>
         <p className="text-muted-foreground max-w-3xl text-sm leading-6">
-          One hydrated tree exercises mutation APIs, built-in search, inline
-          rename, drag and drop, and icon switching across the current workload.
-          Change the workload, rerun the same proof actions, and keep the log
-          visible while virtualization stays in place.
+          One hydrated tree exercises mutation APIs, built-in search, inline rename, drag and drop,
+          and icon switching across the current workload. Change the workload, rerun the same proof
+          actions, and keep the log visible while virtualization stays in place.
         </p>
         <div className="bg-muted/30 flex flex-col gap-3 rounded-lg border p-4">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
             <div className="space-y-1">
               <p className="text-sm font-medium">Current workload</p>
               <p className="text-muted-foreground text-sm leading-6">
-                {activeWorkloadSummary.label} ·{' '}
-                {activeWorkloadSummary.fileCountLabel} ·{' '}
+                {activeWorkloadSummary.label} · {activeWorkloadSummary.fileCountLabel} ·{" "}
                 {activeWorkloadSummary.rootCount.toLocaleString()} root
-                {activeWorkloadSummary.rootCount === 1 ? '' : 's'} ·{' '}
-                {expansionMode === 'all'
-                  ? 'fully expanded'
-                  : expansionMode === 'collapsed'
-                    ? 'fully collapsed'
-                    : 'workload defaults'}
+                {activeWorkloadSummary.rootCount === 1 ? "" : "s"} ·{" "}
+                {expansionMode === "all"
+                  ? "fully expanded"
+                  : expansionMode === "collapsed"
+                    ? "fully collapsed"
+                    : "workload defaults"}
               </p>
             </div>
             <div className="flex items-center gap-2">
-              <Select
-                value={pendingWorkloadName}
-                onValueChange={handleWorkloadChange}
-              >
+              <Select value={pendingWorkloadName} onValueChange={handleWorkloadChange}>
                 <SelectTrigger
                   className="w-full min-w-[240px] sm:w-[320px]"
                   size="sm"
@@ -980,11 +905,11 @@ export function MainDemoClient({
             <button
               type="button"
               className="rounded-md border px-3 py-1.5 text-sm font-medium"
-              aria-pressed={expansionMode === 'all'}
-              disabled={isNavigatingDemoState || expansionMode === 'all'}
+              aria-pressed={expansionMode === "all"}
+              disabled={isNavigatingDemoState || expansionMode === "all"}
               data-tree-demo-expansion-action="expand-all"
               onClick={() => {
-                handleExpansionChange('all');
+                handleExpansionChange("all");
               }}
             >
               Expand all
@@ -992,11 +917,11 @@ export function MainDemoClient({
             <button
               type="button"
               className="rounded-md border px-3 py-1.5 text-sm font-medium"
-              aria-pressed={expansionMode === 'collapsed'}
-              disabled={isNavigatingDemoState || expansionMode === 'collapsed'}
+              aria-pressed={expansionMode === "collapsed"}
+              disabled={isNavigatingDemoState || expansionMode === "collapsed"}
               data-tree-demo-expansion-action="collapse-all"
               onClick={() => {
-                handleExpansionChange('collapsed');
+                handleExpansionChange("collapsed");
               }}
             >
               Collapse all
@@ -1075,10 +1000,10 @@ export function MainDemoClient({
           <button
             type="button"
             className="rounded-md border px-3 py-1.5 text-sm font-medium"
-            aria-pressed={iconMode === 'complete'}
+            aria-pressed={iconMode === "complete"}
             onClick={() => {
-              setIconMode('complete');
-              addLog('icons: complete');
+              setIconMode("complete");
+              addLog("icons: complete");
             }}
           >
             Show Complete icons
@@ -1086,10 +1011,10 @@ export function MainDemoClient({
           <button
             type="button"
             className="rounded-md border px-3 py-1.5 text-sm font-medium"
-            aria-pressed={iconMode === 'standard'}
+            aria-pressed={iconMode === "standard"}
             onClick={() => {
-              setIconMode('standard');
-              addLog('icons: standard');
+              setIconMode("standard");
+              addLog("icons: standard");
             }}
           >
             Show Standard icons
@@ -1097,10 +1022,10 @@ export function MainDemoClient({
           <button
             type="button"
             className="rounded-md border px-3 py-1.5 text-sm font-medium"
-            aria-pressed={iconMode === 'minimal'}
+            aria-pressed={iconMode === "minimal"}
             onClick={() => {
-              setIconMode('minimal');
-              addLog('icons: minimal');
+              setIconMode("minimal");
+              addLog("icons: minimal");
             }}
           >
             Show Minimal icons

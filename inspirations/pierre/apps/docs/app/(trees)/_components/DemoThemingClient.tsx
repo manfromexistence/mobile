@@ -1,42 +1,38 @@
-'use client';
+"use client";
 
-import { resolveTheme } from '@pierre/diffs';
+import { resolveTheme } from "@pierre/diffs";
 import {
   IconCheck,
   IconChevronSm,
   IconColorAuto,
   IconColorDark,
   IconColorLight,
-} from '@pierre/icons';
-import { themeToTreeStyles, type TreeThemeStyles } from '@pierre/trees';
-import {
-  FileTree,
-  type FileTreePreloadedData,
-  useFileTree,
-} from '@pierre/trees/react';
-import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+} from "@pierre/icons";
+import { themeToTreeStyles, type TreeThemeStyles } from "@pierre/trees";
+import { FileTree, type FileTreePreloadedData, useFileTree } from "@pierre/trees/react";
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
 
-import { sampleFileList } from '../_lib/demo-data';
-import { TREE_NEW_VIEWPORT_HEIGHTS } from '../_lib/dimensions';
+import { sampleFileList } from "../_lib/demo-data";
+import { TREE_NEW_VIEWPORT_HEIGHTS } from "../_lib/dimensions";
 import {
   TREE_NEW_GIT_STATUS_EXPANDED_PATHS,
   TREE_NEW_GIT_STATUSES,
-} from '../_lib/gitStatusDemoData';
-import { getDefaultFileTreePanelClass } from './tree-examples/demo-data';
-import { TreeExampleSection } from './tree-examples/TreeExampleSection';
-import { FeatureHeader } from '@/components/FeatureHeader';
-import { PierreThemeFootnote } from '@/components/footnotes/PierreThemeFootnote';
-import { docsThemeCatalog } from '@/components/themeCatalog';
-import { Button } from '@/components/ui/button';
-import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group';
+} from "../_lib/gitStatusDemoData";
+import { getDefaultFileTreePanelClass } from "./tree-examples/demo-data";
+import { TreeExampleSection } from "./tree-examples/TreeExampleSection";
+import { FeatureHeader } from "@/components/FeatureHeader";
+import { PierreThemeFootnote } from "@/components/footnotes/PierreThemeFootnote";
+import { docsThemeCatalog } from "@/components/themeCatalog";
+import { Button } from "@/components/ui/button";
+import { ButtonGroup, ButtonGroupItem } from "@/components/ui/button-group";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { PRODUCTS } from '@/lib/product-config';
+} from "@/components/ui/dropdown-menu";
+import { PRODUCTS } from "@/lib/product-config";
 
 type LightThemeName = string;
 type DarkThemeName = string;
@@ -46,45 +42,36 @@ interface DemoThemingClientProps {
   preloadedData: FileTreePreloadedData;
 }
 
-export function DemoThemingClient({
-  initialThemeStyles,
-  preloadedData,
-}: DemoThemingClientProps) {
+export function DemoThemingClient({ initialThemeStyles, preloadedData }: DemoThemingClientProps) {
   const { model } = useFileTree({
     flattenEmptyDirectories: true,
     gitStatus: TREE_NEW_GIT_STATUSES,
-    id: 'trees-shiki-themes-tree',
+    id: "trees-shiki-themes-tree",
     initialExpandedPaths: TREE_NEW_GIT_STATUS_EXPANDED_PATHS,
-    initialSelectedPaths: ['package.json'],
+    initialSelectedPaths: ["package.json"],
     paths: sampleFileList,
     initialVisibleRowCount: TREE_NEW_VIEWPORT_HEIGHTS.theming / 30,
   });
-  const [selectedLightTheme, setSelectedLightTheme] =
-    useState<LightThemeName>('pierre-light');
-  const [selectedDarkTheme, setSelectedDarkTheme] =
-    useState<DarkThemeName>('pierre-dark');
-  const [colorMode, setColorMode] = useState<'system' | 'light' | 'dark'>(
-    'system'
-  );
-  const [themeStyles, setThemeStyles] = useState<TreeThemeStyles | null>(
-    initialThemeStyles
-  );
+  const [selectedLightTheme, setSelectedLightTheme] = useState<LightThemeName>("pierre-light");
+  const [selectedDarkTheme, setSelectedDarkTheme] = useState<DarkThemeName>("pierre-dark");
+  const [colorMode, setColorMode] = useState<"system" | "light" | "dark">("system");
+  const [themeStyles, setThemeStyles] = useState<TreeThemeStyles | null>(initialThemeStyles);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [prefersDark, setPrefersDark] = useState(false);
 
   useEffect(() => {
-    const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)');
+    const mediaQueryList = window.matchMedia("(prefers-color-scheme: dark)");
     setPrefersDark(mediaQueryList.matches);
     const listener = () => setPrefersDark(mediaQueryList.matches);
-    mediaQueryList.addEventListener('change', listener);
-    return () => mediaQueryList.removeEventListener('change', listener);
+    mediaQueryList.addEventListener("change", listener);
+    return () => mediaQueryList.removeEventListener("change", listener);
   }, []);
 
   const effectiveTheme =
-    colorMode === 'dark'
+    colorMode === "dark"
       ? selectedDarkTheme
-      : colorMode === 'light'
+      : colorMode === "light"
         ? selectedLightTheme
         : prefersDark
           ? selectedDarkTheme
@@ -94,14 +81,10 @@ export function DemoThemingClient({
     setError(null);
     setLoading(true);
     try {
-      const theme = await resolveTheme(
-        themeName as Parameters<typeof resolveTheme>[0]
-      );
+      const theme = await resolveTheme(themeName as Parameters<typeof resolveTheme>[0]);
       setThemeStyles(themeToTreeStyles(theme));
     } catch (themeError) {
-      setError(
-        themeError instanceof Error ? themeError.message : String(themeError)
-      );
+      setError(themeError instanceof Error ? themeError.message : String(themeError));
     } finally {
       setLoading(false);
     }
@@ -118,19 +101,16 @@ export function DemoThemingClient({
         title="Use Shiki themes"
         description={
           <>
-            The same Shiki themes used by{' '}
+            The same Shiki themes used by{" "}
             <Link href="../" className="inline-link">
               <code>@pierre/diffs</code>
-            </Link>{' '}
-            can style the <code>FileTree</code>. Sidebar and Git decoration
-            colors come from your choice of themes. Pick a theme and switch
-            light/dark to see the tree update live. See the{' '}
-            <Link
-              href={`${PRODUCTS.trees.docsPath}#styling-and-theming`}
-              className="inline-link"
-            >
+            </Link>{" "}
+            can style the <code>FileTree</code>. Sidebar and Git decoration colors come from your
+            choice of themes. Pick a theme and switch light/dark to see the tree update live. See
+            the{" "}
+            <Link href={`${PRODUCTS.trees.docsPath}#styling-and-theming`} className="inline-link">
               styling and theming reference
-            </Link>{' '}
+            </Link>{" "}
             for more.
           </>
         }
@@ -146,23 +126,19 @@ export function DemoThemingClient({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" scrollSelectedIntoView>
-              {docsThemeCatalog
-                .getThemeNames({ colorScheme: 'light' })
-                .map((theme) => (
-                  <DropdownMenuItem
-                    key={theme}
-                    onClick={() => {
-                      setSelectedLightTheme(theme);
-                      setColorMode('light');
-                    }}
-                    selected={selectedLightTheme === theme}
-                  >
-                    {theme}
-                    {selectedLightTheme === theme ? (
-                      <IconCheck className="ml-auto" />
-                    ) : null}
-                  </DropdownMenuItem>
-                ))}
+              {docsThemeCatalog.getThemeNames({ colorScheme: "light" }).map((theme) => (
+                <DropdownMenuItem
+                  key={theme}
+                  onClick={() => {
+                    setSelectedLightTheme(theme);
+                    setColorMode("light");
+                  }}
+                  selected={selectedLightTheme === theme}
+                >
+                  {theme}
+                  {selectedLightTheme === theme ? <IconCheck className="ml-auto" /> : null}
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
 
@@ -179,25 +155,23 @@ export function DemoThemingClient({
               className="max-h-[550px] overflow-auto"
               scrollSelectedIntoView
             >
-              {docsThemeCatalog
-                .getThemeNames({ colorScheme: 'dark' })
-                .map((theme) => (
-                  <DropdownMenuItem
-                    key={theme}
-                    onClick={() => {
-                      setSelectedDarkTheme(theme);
-                      setColorMode('dark');
-                    }}
-                    selected={selectedDarkTheme === theme}
-                  >
-                    {theme}
-                    {selectedDarkTheme === theme ? (
-                      <IconCheck className="ml-auto" />
-                    ) : (
-                      <div className="ml-2 h-4 w-4" />
-                    )}
-                  </DropdownMenuItem>
-                ))}
+              {docsThemeCatalog.getThemeNames({ colorScheme: "dark" }).map((theme) => (
+                <DropdownMenuItem
+                  key={theme}
+                  onClick={() => {
+                    setSelectedDarkTheme(theme);
+                    setColorMode("dark");
+                  }}
+                  selected={selectedDarkTheme === theme}
+                >
+                  {theme}
+                  {selectedDarkTheme === theme ? (
+                    <IconCheck className="ml-auto" />
+                  ) : (
+                    <div className="ml-2 h-4 w-4" />
+                  )}
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -205,9 +179,7 @@ export function DemoThemingClient({
         <ButtonGroup
           className="min-[500px]:ml-auto md:ml-0"
           value={colorMode}
-          onValueChange={(value) =>
-            setColorMode(value as 'system' | 'light' | 'dark')
-          }
+          onValueChange={(value) => setColorMode(value as "system" | "light" | "dark")}
         >
           <ButtonGroupItem value="system" className="flex-1">
             <IconColorAuto />
@@ -228,9 +200,7 @@ export function DemoThemingClient({
         {loading && themeStyles == null ? (
           <p className="text-muted-foreground py-4 text-sm">Loading theme…</p>
         ) : null}
-        {error != null ? (
-          <p className="text-destructive py-4 text-sm">{error}</p>
-        ) : null}
+        {error != null ? <p className="text-destructive py-4 text-sm">{error}</p> : null}
         {themeStyles != null ? (
           <FileTree
             className={`${getDefaultFileTreePanelClass()} min-h-[320px]`}

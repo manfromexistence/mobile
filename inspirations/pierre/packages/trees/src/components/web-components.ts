@@ -1,17 +1,16 @@
-import { FILE_TREE_STYLE_ATTRIBUTE, FILE_TREE_TAG_NAME } from '../constants';
-import rawStyles from '../style.css?inline';
-import { wrapCoreCSS } from '../utils/cssWrappers';
-import { ensureMeasuredScrollbarGutter } from '../utils/scrollbarGutter';
+import { FILE_TREE_STYLE_ATTRIBUTE, FILE_TREE_TAG_NAME } from "../constants";
+import rawStyles from "../style.css?inline";
+import { wrapCoreCSS } from "../utils/cssWrappers";
+import { ensureMeasuredScrollbarGutter } from "../utils/scrollbarGutter";
 
 let sheet: CSSStyleSheet | undefined;
 
 export function ensureFileTreeStyles(shadowRoot: ShadowRoot): void {
   const hasReplaceSync =
-    typeof CSSStyleSheet !== 'undefined' &&
-    typeof (CSSStyleSheet.prototype as { replaceSync?: unknown })
-      .replaceSync === 'function';
+    typeof CSSStyleSheet !== "undefined" &&
+    typeof (CSSStyleSheet.prototype as { replaceSync?: unknown }).replaceSync === "function";
 
-  const canAdopt = hasReplaceSync && 'adoptedStyleSheets' in shadowRoot;
+  const canAdopt = hasReplaceSync && "adoptedStyleSheets" in shadowRoot;
 
   if (canAdopt) {
     if (sheet == null) {
@@ -38,8 +37,8 @@ export function ensureFileTreeStyles(shadowRoot: ShadowRoot): void {
   // Fallback path for environments without adoptedStyleSheets.
   // Ensure an inline style exists in the shadow root.
   if (shadowRoot.querySelector(`style[${FILE_TREE_STYLE_ATTRIBUTE}]`) == null) {
-    const styleEl = document.createElement('style');
-    styleEl.setAttribute(FILE_TREE_STYLE_ATTRIBUTE, '');
+    const styleEl = document.createElement("style");
+    styleEl.setAttribute(FILE_TREE_STYLE_ATTRIBUTE, "");
     styleEl.textContent = wrapCoreCSS(rawStyles);
     shadowRoot.prepend(styleEl);
   }
@@ -47,26 +46,20 @@ export function ensureFileTreeStyles(shadowRoot: ShadowRoot): void {
 
 // Keeps every tree host on the same setup path so runtime mounting, hydration,
 // and autonomous custom-element upgrades share one shadow-root preparation step.
-export function prepareFileTreeShadowRoot(
-  host: HTMLElement,
-  shadowRoot: ShadowRoot
-): void {
+export function prepareFileTreeShadowRoot(host: HTMLElement, shadowRoot: ShadowRoot): void {
   adoptDeclarativeShadowDom(host, shadowRoot);
   ensureFileTreeStyles(shadowRoot);
   ensureMeasuredScrollbarGutter(host, shadowRoot);
 }
 
-export function adoptDeclarativeShadowDom(
-  host: HTMLElement,
-  shadowRoot: ShadowRoot
-): void {
+export function adoptDeclarativeShadowDom(host: HTMLElement, shadowRoot: ShadowRoot): void {
   // Some runtimes (and client-side navigations) may create the template element
   // via DOM APIs rather than the HTML parser, which means the browser won't
   // automatically parse declarative Shadow DOM.
   //
   // If we detect a declarative template in light DOM, manually adopt it.
   const template = host.querySelector(
-    'template[shadowrootmode="open"], template[data-file-tree-shadowrootmode="open"]'
+    'template[shadowrootmode="open"], template[data-file-tree-shadowrootmode="open"]',
   );
   if (!(template instanceof HTMLTemplateElement)) return;
   if (shadowRoot.childNodes.length > 0) return;
@@ -77,22 +70,19 @@ export function adoptDeclarativeShadowDom(
 
   // For the actual declarative-shadow-dom template attribute (typically
   // created via DOM APIs during client navigations), clean up to save memory.
-  if (template.hasAttribute('shadowrootmode')) {
+  if (template.hasAttribute("shadowrootmode")) {
     template.remove();
   }
 }
 
-if (
-  typeof HTMLElement !== 'undefined' &&
-  customElements.get(FILE_TREE_TAG_NAME) == null
-) {
+if (typeof HTMLElement !== "undefined" && customElements.get(FILE_TREE_TAG_NAME) == null) {
   class FileTreeContainer extends HTMLElement {
     constructor() {
       super();
     }
 
     connectedCallback() {
-      const shadowRoot = this.shadowRoot ?? this.attachShadow({ mode: 'open' });
+      const shadowRoot = this.shadowRoot ?? this.attachShadow({ mode: "open" });
       prepareFileTreeShadowRoot(this, shadowRoot);
     }
   }
@@ -104,12 +94,10 @@ if (
   // browsers (or DOM-inserted templates during dev refresh workflows).
   //
   // This is a best-effort pass; connectedCallback still handles future nodes.
-  if (typeof document !== 'undefined') {
-    for (const el of Array.from(
-      document.querySelectorAll(FILE_TREE_TAG_NAME)
-    )) {
+  if (typeof document !== "undefined") {
+    for (const el of Array.from(document.querySelectorAll(FILE_TREE_TAG_NAME))) {
       if (!(el instanceof HTMLElement)) continue;
-      const shadowRoot = el.shadowRoot ?? el.attachShadow({ mode: 'open' });
+      const shadowRoot = el.shadowRoot ?? el.attachShadow({ mode: "open" });
       prepareFileTreeShadowRoot(el, shadowRoot);
     }
   }

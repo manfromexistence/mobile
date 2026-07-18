@@ -88,7 +88,7 @@ const COMBO_CLAUDE_TIER: OmniRouteRawCombo = {
 // ────────────────────────────────────────────────────────────────────────────
 
 function stubModelsFetcher(
-  payload: OmniRouteRawModelEntry[]
+  payload: OmniRouteRawModelEntry[],
 ): OmniRouteModelsFetcher & { callCount: () => number } {
   let n = 0;
   const f: OmniRouteModelsFetcher = async () => {
@@ -99,7 +99,7 @@ function stubModelsFetcher(
 }
 
 function stubCombosFetcher(
-  payload: OmniRouteRawCombo[]
+  payload: OmniRouteRawCombo[],
 ): OmniRouteCombosFetcher & { callCount: () => number; callsBy: () => Array<[string, string]> } {
   let n = 0;
   const calls: Array<[string, string]> = [];
@@ -115,7 +115,7 @@ function stubCombosFetcher(
 }
 
 function failingCombosFetcher(
-  err = new Error("boom")
+  err = new Error("boom"),
 ): OmniRouteCombosFetcher & { callCount: () => number } {
   let n = 0;
   const f: OmniRouteCombosFetcher = async () => {
@@ -131,7 +131,7 @@ const apiAuth = (key: string): unknown => ({ type: "api", key });
 // restore the original. Needed because the collision + soft-fail paths
 // emit warnings we want to assert on.
 async function withWarnCapture<T>(
-  fn: (warnings: Array<{ args: unknown[] }>) => Promise<T>
+  fn: (warnings: Array<{ args: unknown[] }>) => Promise<T>,
 ): Promise<{ result: T; warnings: Array<{ args: unknown[] }> }> {
   const original = console.warn;
   const warnings: Array<{ args: unknown[] }> = [];
@@ -162,7 +162,7 @@ test("defaultOmniRouteCombosFetcher: parses {combos:[…]} envelope", async () =
           { id: "c2", name: "Combo Two", strategy: "weighted", models: [] },
         ],
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   }) as typeof fetch;
   try {
@@ -226,7 +226,7 @@ test("defaultOmniRouteCombosFetcher: throws on non-2xx with status code in messa
         assert.match(msg, /403/, "status code must appear in message");
         assert.match(msg, /\/api\/combos/, "url must appear in message");
         return true;
-      }
+      },
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -236,14 +236,14 @@ test("defaultOmniRouteCombosFetcher: throws on non-2xx with status code in messa
 test("defaultOmniRouteCombosFetcher: throws when apiKey missing", async () => {
   await assert.rejects(
     async () => defaultOmniRouteCombosFetcher("https://or.example.com", ""),
-    /apiKey required/
+    /apiKey required/,
   );
 });
 
 test("defaultOmniRouteCombosFetcher: throws when baseURL missing", async () => {
   await assert.rejects(
     async () => defaultOmniRouteCombosFetcher("", "sk-test"),
-    /baseURL required/
+    /baseURL required/,
   );
 });
 
@@ -256,7 +256,7 @@ test("mapComboToModelV2: empty members → capabilities all false (defensive)", 
     { id: "combo-empty", name: "Empty Combo" },
     [],
     "omniroute",
-    "https://or.example.com/v1"
+    "https://or.example.com/v1",
   );
   assert.equal(m.id, "combo-empty");
   assert.equal(m.name, "Empty Combo");
@@ -284,7 +284,7 @@ test("mapComboToModelV2: all members reasoning=true → combo reasoning=true", (
       },
     ],
     "omniroute",
-    "https://or.example.com/v1"
+    "https://or.example.com/v1",
   );
   assert.equal(m.capabilities.reasoning, true);
 });
@@ -294,7 +294,7 @@ test("mapComboToModelV2: any member reasoning=false → combo reasoning=false", 
     { id: "c", models: [] },
     [MODEL_PRIMARY, MODEL_NO_TOOLS], // gemini-3-flash has reasoning:false, thinking:false
     "omniroute",
-    "https://or.example.com/v1"
+    "https://or.example.com/v1",
   );
   assert.equal(m.capabilities.reasoning, false);
 });
@@ -304,7 +304,7 @@ test("mapComboToModelV2: limit.context is min of members'", () => {
     { id: "c", models: [] },
     [MODEL_PRIMARY, MODEL_SECONDARY, MODEL_NO_TOOLS],
     "omniroute",
-    "https://or.example.com/v1"
+    "https://or.example.com/v1",
   );
   // min(200_000, 100_000, 1_000_000) = 100_000
   assert.equal(m.limit.context, 100_000);
@@ -317,7 +317,7 @@ test("mapComboToModelV2: limit.input only emitted when EVERY member declares one
     { id: "c", models: [] },
     [MODEL_PRIMARY, MODEL_SECONDARY],
     "omniroute",
-    "https://or.example.com/v1"
+    "https://or.example.com/v1",
   );
   // Both declare max_input_tokens → limit.input = min(180000, 96000)
   assert.equal(m1.limit.input, 96_000);
@@ -326,7 +326,7 @@ test("mapComboToModelV2: limit.input only emitted when EVERY member declares one
     { id: "c", models: [] },
     [MODEL_PRIMARY, MODEL_NO_TOOLS], // gemini-3-flash doesn't declare max_input_tokens
     "omniroute",
-    "https://or.example.com/v1"
+    "https://or.example.com/v1",
   );
   assert.equal(m2.limit.input, undefined);
 });
@@ -336,7 +336,7 @@ test("mapComboToModelV2: nice name preferred from combo.name", () => {
     { id: "combo-x", name: "Pretty Name" },
     [MODEL_PRIMARY],
     "omniroute",
-    "https://or.example.com/v1"
+    "https://or.example.com/v1",
   );
   assert.equal(m1.name, "Pretty Name");
 
@@ -345,7 +345,7 @@ test("mapComboToModelV2: nice name preferred from combo.name", () => {
     { id: "combo-y" },
     [MODEL_PRIMARY],
     "omniroute",
-    "https://or.example.com/v1"
+    "https://or.example.com/v1",
   );
   assert.equal(m2.name, "combo-y");
 
@@ -353,7 +353,7 @@ test("mapComboToModelV2: nice name preferred from combo.name", () => {
     { id: "combo-z", name: "   " },
     [MODEL_PRIMARY],
     "omniroute",
-    "https://or.example.com/v1"
+    "https://or.example.com/v1",
   );
   assert.equal(m3.name, "combo-z");
 });
@@ -364,7 +364,7 @@ test("mapComboToModelV2: attachment AND vision flag both honored across members"
     { id: "c1", models: [] },
     [MODEL_PRIMARY, MODEL_SECONDARY],
     "omniroute",
-    "https://or.example.com/v1"
+    "https://or.example.com/v1",
   );
   assert.equal(yes.capabilities.attachment, true);
 
@@ -373,7 +373,7 @@ test("mapComboToModelV2: attachment AND vision flag both honored across members"
     { id: "c2", models: [] },
     [MODEL_PRIMARY, MODEL_NO_TOOLS],
     "omniroute",
-    "https://or.example.com/v1"
+    "https://or.example.com/v1",
   );
   assert.equal(no.capabilities.attachment, false);
 });
@@ -383,7 +383,7 @@ test("mapComboToModelV2: modalities AND'd across members", () => {
     { id: "c", models: [] },
     [MODEL_PRIMARY, MODEL_SECONDARY], // both have text+image
     "omniroute",
-    "https://or.example.com/v1"
+    "https://or.example.com/v1",
   );
   assert.equal(m.capabilities.input.text, true);
   assert.equal(m.capabilities.input.image, true);
@@ -394,7 +394,7 @@ test("mapComboToModelV2: modalities AND'd across members", () => {
     { id: "c", models: [] },
     [MODEL_PRIMARY, MODEL_NO_TOOLS],
     "omniroute",
-    "https://or.example.com/v1"
+    "https://or.example.com/v1",
   );
   assert.equal(m2.capabilities.input.text, true);
   assert.equal(m2.capabilities.input.image, false);
@@ -405,7 +405,7 @@ test("mapComboToModelV2: api block matches providerId + baseURL", () => {
     { id: "c" },
     [MODEL_PRIMARY],
     "omniroute-preprod",
-    "https://or-preprod.example.com/v1"
+    "https://or-preprod.example.com/v1",
   );
   assert.equal(m.providerID, "omniroute-preprod");
   assert.equal(m.api.id, "openai-compatible");
@@ -427,7 +427,7 @@ test("mapComboToModelV2: explicit member temperature=false drops combo temperatu
     { id: "c" },
     [MODEL_PRIMARY, tempFalse],
     "omniroute",
-    "https://or.example.com/v1"
+    "https://or.example.com/v1",
   );
   assert.equal(m.capabilities.temperature, false);
 });
@@ -441,7 +441,7 @@ test("models() returns combo entries merged into the map", async () => {
   const combosFetcher = stubCombosFetcher([COMBO_CLAUDE_TIER]);
   const hook = createOmniRouteProviderHook(
     { baseURL: "https://or.example.com/v1" },
-    { fetcher: modelsFetcher, combosFetcher }
+    { fetcher: modelsFetcher, combosFetcher },
   );
   const out = await hook.models!({} as never, { auth: apiAuth("sk-z") as never });
 
@@ -475,7 +475,7 @@ test("models(): combo with unknown member ids degrades to all-false LCD posture"
   ]);
   const hook = createOmniRouteProviderHook(
     { baseURL: "https://or.example.com/v1" },
-    { fetcher: modelsFetcher, combosFetcher }
+    { fetcher: modelsFetcher, combosFetcher },
   );
   const out = await hook.models!({} as never, { auth: apiAuth("sk-z") as never });
   assert.ok(out["omniroute/phantom-combo"]);
@@ -502,7 +502,7 @@ test("models(): hidden combos are excluded from the map", async () => {
   ]);
   const hook = createOmniRouteProviderHook(
     { baseURL: "https://or.example.com/v1" },
-    { fetcher: modelsFetcher, combosFetcher }
+    { fetcher: modelsFetcher, combosFetcher },
   );
   const out = await hook.models!({} as never, { auth: apiAuth("sk-z") as never });
   assert.ok(out["omniroute/visible"]);
@@ -522,7 +522,7 @@ test("models(): combo name exactly matches raw model id → raw deleted, raw del
   const combosFetcher = stubCombosFetcher([colliderCombo]);
   const hook = createOmniRouteProviderHook(
     { baseURL: "https://or.example.com/v1" },
-    { fetcher: modelsFetcher, combosFetcher }
+    { fetcher: modelsFetcher, combosFetcher },
   );
 
   const { result: out, warnings } = await withWarnCapture(async (_w) => {
@@ -560,7 +560,7 @@ test("models(): two combos with same slug → second gets disambiguator suffix",
     {
       fetcher: stubModelsFetcher([MODEL_PRIMARY, MODEL_SECONDARY]),
       combosFetcher: stubCombosFetcher(combos),
-    }
+    },
   );
 
   const out = await hook.models!({} as never, { auth: apiAuth("sk-z") as never });
@@ -574,7 +574,7 @@ test("models(): combos fetch fails → falls back to models-only, warn emitted, 
   const combosFetcher = failingCombosFetcher(new Error("ECONNRESET"));
   const hook = createOmniRouteProviderHook(
     { baseURL: "https://or.example.com/v1" },
-    { fetcher: modelsFetcher, combosFetcher }
+    { fetcher: modelsFetcher, combosFetcher },
   );
 
   const { result: out, warnings } = await withWarnCapture(async () => {
@@ -601,7 +601,7 @@ test("models(): combos cached + reused within TTL (one combo fetch per TTL windo
   let nowMs = 1_000_000;
   const hook = createOmniRouteProviderHook(
     { baseURL: "https://or.example.com/v1", modelCacheTtl: 60_000 },
-    { fetcher: modelsFetcher, combosFetcher, now: () => nowMs }
+    { fetcher: modelsFetcher, combosFetcher, now: () => nowMs },
   );
 
   await hook.models!({} as never, { auth: apiAuth("sk-z") as never });
@@ -618,7 +618,7 @@ test("models(): combos refetched after TTL expiry (same key as models)", async (
   let nowMs = 1_000_000;
   const hook = createOmniRouteProviderHook(
     { baseURL: "https://or.example.com/v1", modelCacheTtl: 60_000 },
-    { fetcher: modelsFetcher, combosFetcher, now: () => nowMs }
+    { fetcher: modelsFetcher, combosFetcher, now: () => nowMs },
   );
 
   await hook.models!({} as never, { auth: apiAuth("sk-z") as never });
@@ -633,7 +633,7 @@ test("models(): combos fetcher receives the resolved baseURL + apiKey", async ()
   const combosFetcher = stubCombosFetcher([COMBO_CLAUDE_TIER]);
   const hook = createOmniRouteProviderHook(
     { baseURL: "https://or.example.com/v1" },
-    { fetcher: modelsFetcher, combosFetcher }
+    { fetcher: modelsFetcher, combosFetcher },
   );
   await hook.models!({} as never, { auth: apiAuth("sk-spy") as never });
   assert.deepEqual(combosFetcher.callsBy()[0], ["https://or.example.com/v1", "sk-spy"]);
@@ -698,7 +698,7 @@ test("models(): nested combo-ref context is the min of nested + raw members", as
   ]);
   const hook = createOmniRouteProviderHook(
     { baseURL: "https://or.example.com/v1" },
-    { fetcher: modelsFetcher, combosFetcher }
+    { fetcher: modelsFetcher, combosFetcher },
   );
   const out = await hook.models!({} as never, { auth: apiAuth("sk-z") as never });
   const masterLight = out["omniroute/master-light"];
@@ -706,6 +706,6 @@ test("models(): nested combo-ref context is the min of nested + raw members", as
   assert.equal(
     masterLight.limit.context,
     8_000,
-    `expected 8_000 (OldLLM bottleneck), got ${masterLight.limit.context}`
+    `expected 8_000 (OldLLM bottleneck), got ${masterLight.limit.context}`,
   );
 });

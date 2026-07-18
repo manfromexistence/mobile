@@ -269,8 +269,8 @@ async function syncNativeAssetsToDir(projectRoot, outDir, fsImpl, log) {
     log.log(
       `[assembleStandalone] Copied native standalone asset: ${path.relative(
         projectRoot,
-        destinationPath
-      )}`
+        destinationPath,
+      )}`,
     );
     changed = true;
   }
@@ -414,7 +414,7 @@ function patchStandalonePackageJson(resolvedOutDir) {
     delete pkg.type;
     fsSync.writeFileSync(outDirPkgJson, JSON.stringify(pkg, null, 2) + "\n");
     console.log(
-      "[assembleStandalone] Removed 'type':'module' from standalone package.json (server.js is CJS)"
+      "[assembleStandalone] Removed 'type':'module' from standalone package.json (server.js is CJS)",
     );
   } catch (err) {
     console.warn(`[assembleStandalone] Could not patch standalone package.json: ${err.message}`);
@@ -557,7 +557,7 @@ export function materializeBundledSymlinks(nodeModulesDir) {
 
     // Nothing to resolve to — drop the dangling link so it cannot shadow resolution.
     console.warn(
-      `[assembleStandalone] Dropping dangling module symlink (target missing): ${entryPath}`
+      `[assembleStandalone] Dropping dangling module symlink (target missing): ${entryPath}`,
     );
     fsSync.rmSync(entryPath, { recursive: true, force: true });
     summary.removed += 1;
@@ -645,7 +645,7 @@ export function assembleStandalone({
   const resolvedOutDir = path.resolve(outDir);
   if (!fsSync.existsSync(standaloneDir)) {
     throw new Error(
-      `[assembleStandalone] standalone dir not found: ${standaloneDir}. Run \`next build\` first.`
+      `[assembleStandalone] standalone dir not found: ${standaloneDir}. Run \`next build\` first.`,
     );
   }
 
@@ -678,7 +678,7 @@ export function assembleStandalone({
     const { patchedFiles, patchedMatches } = patchTurbopackChunks(resolvedOutDir, relDistDir);
     if (patchedMatches > 0) {
       console.log(
-        `[assembleStandalone] Hash-strip: patched ${patchedMatches} hashed require() in ${patchedFiles} server chunk file(s)`
+        `[assembleStandalone] Hash-strip: patched ${patchedMatches} hashed require() in ${patchedFiles} server chunk file(s)`,
       );
     }
   }
@@ -701,7 +701,7 @@ export function assembleStandalone({
       if (s.materialized || s.relinked || s.removed) {
         console.log(
           `[assembleStandalone] Materialized module symlinks in ${path.relative(resolvedOutDir, nmDir) || "."}: ` +
-            `${s.materialized} dereferenced, ${s.relinked} relinked, ${s.removed} dropped`
+            `${s.materialized} dereferenced, ${s.relinked} relinked, ${s.removed} dropped`,
         );
       }
     }

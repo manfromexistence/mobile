@@ -266,7 +266,7 @@ async function evaluatePageHealth(page, locale) {
         clippedSamples: samples,
       };
     },
-    { locale, expectRtl: RTL_LOCALES.has(locale) }
+    { locale, expectRtl: RTL_LOCALES.has(locale) },
   );
 }
 
@@ -366,7 +366,7 @@ async function run() {
           `[qa] ${viewportSpec.name} ${locale} ${route} -> ${result.status}` +
             `${result.redirectedToLogin ? " (redirected-login)" : ""}` +
             `${result.rtlMismatch ? " (rtl-mismatch)" : ""}` +
-            `${result.clippedCount ? ` (clipped=${result.clippedCount})` : ""}`
+            `${result.clippedCount ? ` (clipped=${result.clippedCount})` : ""}`,
         );
       }
     }
@@ -439,7 +439,7 @@ async function run() {
     "|---|---:|---:|---:|---:|---:|---:|",
     ...Array.from(aggregate.values()).map(
       (row) =>
-        `| \`${row.route}\` | ${row.ok} | ${row.review} | ${row.adjust} | ${row.clipped} | ${row.loginRedirects} | ${row.rtlMismatch} |`
+        `| \`${row.route}\` | ${row.ok} | ${row.review} | ${row.adjust} | ${row.clipped} | ${row.loginRedirects} | ${row.rtlMismatch} |`,
     ),
     "",
     "## Resumo por locale",
@@ -450,7 +450,7 @@ async function run() {
       .sort((a, b) => a.locale.localeCompare(b.locale))
       .map(
         (row) =>
-          `| \`${row.locale}\` | ${row.ok} | ${row.review} | ${row.adjust} | ${row.clipped} | ${row.loginRedirects} | ${row.rtlMismatch} |`
+          `| \`${row.locale}\` | ${row.ok} | ${row.review} | ${row.adjust} | ${row.clipped} | ${row.loginRedirects} | ${row.rtlMismatch} |`,
       ),
     "",
     "## Artefatos",

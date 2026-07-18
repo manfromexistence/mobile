@@ -24,7 +24,7 @@ export interface ClinepassEnvelopeResult {
  */
 export function unwrapClinepassEnvelope(
   body: unknown,
-  provider: string | null | undefined
+  provider: string | null | undefined,
 ): ClinepassEnvelopeResult {
   if (provider !== "clinepass") return { body, error: null };
   if (!body || typeof body !== "object" || Array.isArray(body)) return { body, error: null };

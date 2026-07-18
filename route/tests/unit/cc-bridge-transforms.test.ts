@@ -49,7 +49,7 @@ test.beforeEach(() => {
 test("DEFAULT_CC_BRIDGE_PIPELINE places billing header at [0] and identity at [1] in output", () => {
   const result = runPipeline(
     bodyWithSystem([{ type: "text", text: "body" }], "user prompt"),
-    DEFAULT_CC_BRIDGE_PIPELINE
+    DEFAULT_CC_BRIDGE_PIPELINE,
   );
   const blocks = result.body.system as any[];
   assert.ok(blocks[0].text.startsWith("x-anthropic-billing-header:"));
@@ -225,7 +225,7 @@ test("inject_billing_header builds ex-machina sdk-cli header at [0]", () => {
   assert.equal(blocks[0].type, "text");
   assert.match(
     blocks[0].text,
-    /^x-anthropic-billing-header: cc_version=\d+\.\d+\.\d+\.[0-9a-f]{3}; cc_entrypoint=sdk-cli; cch=[0-9a-f]{5};$/
+    /^x-anthropic-billing-header: cc_version=\d+\.\d+\.\d+\.[0-9a-f]{3}; cc_entrypoint=sdk-cli; cch=[0-9a-f]{5};$/,
   );
 });
 
@@ -241,7 +241,7 @@ test("inject_billing_header is idempotent — replaces existing header in place"
   const second = runPipeline(first.body, [op]);
   const blocks = second.body.system as any[];
   const headerCount = blocks.filter(
-    (b: any) => typeof b.text === "string" && b.text.startsWith("x-anthropic-billing-header:")
+    (b: any) => typeof b.text === "string" && b.text.startsWith("x-anthropic-billing-header:"),
   ).length;
   assert.equal(headerCount, 1);
 });
@@ -259,7 +259,7 @@ test("inject_billing_header skips when no user message present", () => {
           cchAlgo: "sha256-first-user",
         },
       ],
-    }
+    },
   );
   const blocks = result.body.system as any[];
   assert.equal(blocks[0].text, "body");
@@ -288,7 +288,7 @@ test("extractFirstUserMessageText handles string and block content", () => {
       { role: "system", content: "ignore" } as any,
       { role: "user", content: [{ type: "text", text: "world" }] as any },
     ]),
-    "world"
+    "world",
   );
   assert.equal(extractFirstUserMessageText([] as any), "");
 });
@@ -301,7 +301,7 @@ test("computeCchSha256FirstUser yields 5-hex digest", () => {
 test("computeExMachinaVersionSuffix yields 3-hex digest", () => {
   const hex = computeExMachinaVersionSuffix(
     "the quick brown fox jumps",
-    DEFAULT_CLAUDE_CODE_VERSION
+    DEFAULT_CLAUDE_CODE_VERSION,
   );
   assert.match(hex, /^[0-9a-f]{3}$/);
 });
@@ -309,7 +309,7 @@ test("computeExMachinaVersionSuffix yields 3-hex digest", () => {
 test("computeDaystampVersionSuffix yields 3-hex digest", () => {
   const hex = computeDaystampVersionSuffix(
     DEFAULT_CLAUDE_CODE_VERSION,
-    new Date("2026-05-15T00:00:00Z")
+    new Date("2026-05-15T00:00:00Z"),
   );
   assert.match(hex, /^[0-9a-f]{3}$/);
 });
@@ -322,7 +322,7 @@ test("buildBillingHeaderValue produces the expected ex-machina format", () => {
   });
   assert.match(
     value,
-    /^x-anthropic-billing-header: cc_version=\d+\.\d+\.\d+\.[0-9a-f]{3}; cc_entrypoint=sdk-cli; cch=[0-9a-f]{5};$/
+    /^x-anthropic-billing-header: cc_version=\d+\.\d+\.\d+\.[0-9a-f]{3}; cc_entrypoint=sdk-cli; cch=[0-9a-f]{5};$/,
   );
 });
 
@@ -398,16 +398,16 @@ test("DEFAULT_CC_BRIDGE_PIPELINE produces T4-200 fixture shape on verbatim OpenC
   assert.ok(!sanitized.includes("You are OpenCode"), "identity paragraph should be dropped");
   assert.ok(
     !sanitized.includes("github.com/anomalyco/opencode"),
-    "anchor paragraph should be dropped"
+    "anchor paragraph should be dropped",
   );
   assert.ok(!sanitized.includes(fingerprintPhrase), "v1.7.5 phrase should be replaced");
   assert.ok(
     sanitized.includes("Environment context you are running in:"),
-    "replacement phrase should be present"
+    "replacement phrase should be present",
   );
   assert.ok(
     sanitized.includes("Working directory: /home/dev"),
-    "non-fingerprint content preserved"
+    "non-fingerprint content preserved",
   );
 
   assert.equal(blocks[3].text, "Memory protocol block.");

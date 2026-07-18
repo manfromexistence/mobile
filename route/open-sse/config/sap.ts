@@ -40,7 +40,7 @@ export function buildSapModelsUrl(value: string | null | undefined): string {
 
 export function getSapResourceGroup(
   providerSpecificData: Record<string, unknown> | null | undefined,
-  fallback = "default"
+  fallback = "default",
 ): string {
   const candidates = [
     providerSpecificData?.resourceGroup,

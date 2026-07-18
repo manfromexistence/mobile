@@ -26,7 +26,7 @@ function isSafeEntryName(name: string): boolean {
 
 export function extractJsonZip(
   zipBuffer: Buffer,
-  options: ExtractZipOptions = {}
+  options: ExtractZipOptions = {},
 ): ExtractedZipFile[] {
   const maxFiles = options.maxFiles ?? DEFAULT_MAX_FILES;
   const maxFileSize = options.maxFileSizeBytes ?? DEFAULT_MAX_FILE_SIZE;
@@ -48,7 +48,7 @@ export function extractJsonZip(
 
   if (jsonEntries.length > maxFiles) {
     throw new Error(
-      `ZIP archive contains ${jsonEntries.length} .json files — max allowed is ${maxFiles}`
+      `ZIP archive contains ${jsonEntries.length} .json files — max allowed is ${maxFiles}`,
     );
   }
 
@@ -60,19 +60,19 @@ export function extractJsonZip(
 
     if (!isSafeEntryName(baseName)) {
       throw new Error(
-        `ZIP entry "${baseName}" has an unsafe filename (must be a .json file without path traversal)`
+        `ZIP entry "${baseName}" has an unsafe filename (must be a .json file without path traversal)`,
       );
     }
 
     if (!isSafeEntryName(entryName)) {
       throw new Error(
-        `ZIP entry path "${entryName}" is unsafe (no "..", absolute paths, or control characters allowed)`
+        `ZIP entry path "${entryName}" is unsafe (no "..", absolute paths, or control characters allowed)`,
       );
     }
 
     if (data.byteLength > maxFileSize) {
       throw new Error(
-        `ZIP entry "${baseName}" is ${data.byteLength} bytes — exceeds ${maxFileSize} byte limit per file`
+        `ZIP entry "${baseName}" is ${data.byteLength} bytes — exceeds ${maxFileSize} byte limit per file`,
       );
     }
 

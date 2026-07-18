@@ -179,7 +179,7 @@ function extractInitialParentMessageId(value: unknown): string | null {
 async function fetchInitialParentMessageId(
   conversationId: string,
   headers: Record<string, string>,
-  signal: AbortSignal
+  signal: AbortSignal,
 ): Promise<string | null> {
   const res = await fetch(`${API_CONVERSATIONS_URL}/${conversationId}`, {
     method: "GET",
@@ -257,7 +257,8 @@ export class HuggingChatExecutor extends BaseExecutor {
   }> {
     const { model, body, stream, credentials, signal, log, upstreamExtraHeaders } = input;
     const messages = (body as Record<string, unknown>).messages as
-      Array<Record<string, unknown>> | undefined;
+      | Array<Record<string, unknown>>
+      | undefined;
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return {
@@ -265,7 +266,7 @@ export class HuggingChatExecutor extends BaseExecutor {
           JSON.stringify({
             error: { message: "Missing or empty messages array", type: "invalid_request" },
           }),
-          { status: 400, headers: { "Content-Type": "application/json" } }
+          { status: 400, headers: { "Content-Type": "application/json" } },
         ),
         url: CONVERSATION_URL,
         headers: {},
@@ -284,7 +285,7 @@ export class HuggingChatExecutor extends BaseExecutor {
               type: "auth_error",
             },
           }),
-          { status: 401, headers: { "Content-Type": "application/json" } }
+          { status: 401, headers: { "Content-Type": "application/json" } },
         ),
         url: CONVERSATION_URL,
         headers: {},
@@ -304,7 +305,7 @@ export class HuggingChatExecutor extends BaseExecutor {
               type: "auth_error",
             },
           }),
-          { status: 401, headers: { "Content-Type": "application/json" } }
+          { status: 401, headers: { "Content-Type": "application/json" } },
         ),
         url: CONVERSATION_URL,
         headers: {},
@@ -321,7 +322,7 @@ export class HuggingChatExecutor extends BaseExecutor {
           JSON.stringify({
             error: { message: "Empty prompt after processing messages", type: "invalid_request" },
           }),
-          { status: 400, headers: { "Content-Type": "application/json" } }
+          { status: 400, headers: { "Content-Type": "application/json" } },
         ),
         url: CONVERSATION_URL,
         headers: {},
@@ -369,7 +370,7 @@ export class HuggingChatExecutor extends BaseExecutor {
         return {
           response: new Response(
             JSON.stringify(buildErrorBody(status, message, upstreamError.details)),
-            { status, headers: { "Content-Type": "application/json" } }
+            { status, headers: { "Content-Type": "application/json" } },
           ),
           url: CONVERSATION_URL,
           headers: baseHeaders,
@@ -392,7 +393,7 @@ export class HuggingChatExecutor extends BaseExecutor {
                 type: "upstream_error",
               },
             }),
-            { status: 502, headers: { "Content-Type": "application/json" } }
+            { status: 502, headers: { "Content-Type": "application/json" } },
           ),
           url: CONVERSATION_URL,
           headers: baseHeaders,
@@ -407,7 +408,7 @@ export class HuggingChatExecutor extends BaseExecutor {
           JSON.stringify({
             error: { message: `HuggingChat connection failed: ${message}`, type: "upstream_error" },
           }),
-          { status: 502, headers: { "Content-Type": "application/json" } }
+          { status: 502, headers: { "Content-Type": "application/json" } },
         ),
         url: CONVERSATION_URL,
         headers: baseHeaders,
@@ -419,7 +420,7 @@ export class HuggingChatExecutor extends BaseExecutor {
     const parentMessageId = await fetchInitialParentMessageId(
       conversationId,
       baseHeaders,
-      combinedSignal
+      combinedSignal,
     );
     if (!parentMessageId) {
       return {
@@ -430,7 +431,7 @@ export class HuggingChatExecutor extends BaseExecutor {
               type: "upstream_error",
             },
           }),
-          { status: 502, headers: { "Content-Type": "application/json" } }
+          { status: 502, headers: { "Content-Type": "application/json" } },
         ),
         url: `${API_CONVERSATIONS_URL}/${conversationId}`,
         headers: baseHeaders,
@@ -470,7 +471,7 @@ export class HuggingChatExecutor extends BaseExecutor {
           JSON.stringify({
             error: { message: `HuggingChat connection failed: ${message}`, type: "upstream_error" },
           }),
-          { status: 502, headers: { "Content-Type": "application/json" } }
+          { status: 502, headers: { "Content-Type": "application/json" } },
         ),
         url: messageUrl,
         headers: baseHeaders,
@@ -495,7 +496,7 @@ export class HuggingChatExecutor extends BaseExecutor {
       return {
         response: new Response(
           JSON.stringify(buildErrorBody(status, message, upstreamError.details)),
-          { status, headers: { "Content-Type": "application/json" } }
+          { status, headers: { "Content-Type": "application/json" } },
         ),
         url: messageUrl,
         headers: baseHeaders,
@@ -509,7 +510,7 @@ export class HuggingChatExecutor extends BaseExecutor {
           JSON.stringify({
             error: { message: "HuggingChat returned empty response body", type: "upstream_error" },
           }),
-          { status: 502, headers: { "Content-Type": "application/json" } }
+          { status: 502, headers: { "Content-Type": "application/json" } },
         ),
         url: messageUrl,
         headers: baseHeaders,
@@ -528,7 +529,7 @@ export class HuggingChatExecutor extends BaseExecutor {
         resolvedModel,
         id,
         created,
-        signal
+        signal,
       );
 
       const sseStream = new ReadableStream({
@@ -583,7 +584,7 @@ export class HuggingChatExecutor extends BaseExecutor {
             total_tokens: estimateTokens(inputs) + completionTokens,
           },
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       ),
       url: messageUrl,
       headers: baseHeaders,

@@ -1,39 +1,41 @@
-export * as ConfigV1 from "./config"
+export * as ConfigV1 from "./config";
 
-import { Schema } from "effect"
-import { NonNegativeInt, PositiveInt, type DeepMutable } from "../../schema"
-import { ConfigExperimental } from "../../config/experimental"
-import { ConfigReference } from "../../config/reference"
-import { ConfigAgentV1 } from "./agent"
-import { ConfigAttachmentV1 } from "./attachment"
-import { ConfigCommandV1 } from "./command"
-import { ConfigFormatterV1 } from "./formatter"
-import { ConfigLayoutV1 } from "./layout"
-import { ConfigLSPV1 } from "./lsp"
-import { ConfigMCPV1 } from "./mcp"
-import { ConfigPermissionV1 } from "./permission"
-import { ConfigPluginV1 } from "./plugin"
-import { ConfigProviderV1 } from "./provider"
-import { ConfigServerV1 } from "./server"
-import { ConfigSkillsV1 } from "./skills"
+import { Schema } from "effect";
+import { NonNegativeInt, PositiveInt, type DeepMutable } from "../../schema";
+import { ConfigExperimental } from "../../config/experimental";
+import { ConfigReference } from "../../config/reference";
+import { ConfigAgentV1 } from "./agent";
+import { ConfigAttachmentV1 } from "./attachment";
+import { ConfigCommandV1 } from "./command";
+import { ConfigFormatterV1 } from "./formatter";
+import { ConfigLayoutV1 } from "./layout";
+import { ConfigLSPV1 } from "./lsp";
+import { ConfigMCPV1 } from "./mcp";
+import { ConfigPermissionV1 } from "./permission";
+import { ConfigPluginV1 } from "./plugin";
+import { ConfigProviderV1 } from "./provider";
+import { ConfigServerV1 } from "./server";
+import { ConfigSkillsV1 } from "./skills";
 
-export type Layout = ConfigLayoutV1.Layout
+export type Layout = ConfigLayoutV1.Layout;
 
 export const WellKnown = Schema.Struct({
   config: Schema.optional(Schema.Json),
   remote_config: Schema.optional(Schema.Json),
-})
+});
 
 const LogLevelRef = Schema.Literals(["DEBUG", "INFO", "WARN", "ERROR"]).annotate({
   identifier: "LogLevel",
   description: "Log level",
-})
+});
 
 export const Info = Schema.Struct({
   $schema: Schema.optional(Schema.String).annotate({
     description: "JSON schema reference for configuration validation",
   }),
-  shell: Schema.optional(Schema.String).annotate({ description: "Default shell to use for terminal and bash tool" }),
+  shell: Schema.optional(Schema.String).annotate({
+    description: "Default shell to use for terminal and bash tool",
+  }),
   logLevel: Schema.optional(LogLevelRef).annotate({ description: "Log level" }),
   server: Schema.optional(ConfigServerV1.Server).annotate({
     description: "Server configuration for opencode serve and web commands",
@@ -41,14 +43,19 @@ export const Info = Schema.Struct({
   command: Schema.optional(Schema.Record(Schema.String, ConfigCommandV1.Info)).annotate({
     description: "Command configuration, see https://opencode.ai/docs/commands",
   }),
-  skills: Schema.optional(ConfigSkillsV1.Info).annotate({ description: "Additional skill folder paths" }),
+  skills: Schema.optional(ConfigSkillsV1.Info).annotate({
+    description: "Additional skill folder paths",
+  }),
   references: Schema.optional(ConfigReference.Info).annotate({
     description: "Named git or local directory references",
   }),
   reference: Schema.optional(ConfigReference.Info).annotate({
-    description: "@deprecated Use 'references' field instead. Named git or local directory references",
+    description:
+      "@deprecated Use 'references' field instead. Named git or local directory references",
   }),
-  watcher: Schema.optional(Schema.Struct({ ignore: Schema.optional(Schema.mutable(Schema.Array(Schema.String))) })),
+  watcher: Schema.optional(
+    Schema.Struct({ ignore: Schema.optional(Schema.mutable(Schema.Array(Schema.String))) }),
+  ),
   snapshot: Schema.optional(Schema.Boolean).annotate({
     description:
       "Enable or disable snapshot tracking. When false, filesystem snapshots are not recorded and undoing or reverting will not undo/redo file changes. Defaults to true.",
@@ -59,7 +66,8 @@ export const Info = Schema.Struct({
       "Control sharing behavior:'manual' allows manual sharing via commands, 'auto' enables automatic sharing, 'disabled' disables all sharing",
   }),
   autoshare: Schema.optional(Schema.Boolean).annotate({
-    description: "@deprecated Use 'share' field instead. Share newly created sessions automatically",
+    description:
+      "@deprecated Use 'share' field instead. Share newly created sessions automatically",
   }),
   autoupdate: Schema.optional(Schema.Union([Schema.Boolean, Schema.Literal("notify")])).annotate({
     description:
@@ -69,13 +77,15 @@ export const Info = Schema.Struct({
     description: "Disable providers that are loaded automatically",
   }),
   enabled_providers: Schema.optional(Schema.mutable(Schema.Array(Schema.String))).annotate({
-    description: "When set, ONLY these providers will be enabled. All other providers will be ignored",
+    description:
+      "When set, ONLY these providers will be enabled. All other providers will be ignored",
   }),
   model: Schema.optional(Schema.String).annotate({
     description: "Model to use in the format of provider/model, eg anthropic/claude-2",
   }),
   small_model: Schema.optional(Schema.String).annotate({
-    description: "Small model to use for tasks like title generation in the format of provider/model",
+    description:
+      "Small model to use for tasks like title generation in the format of provider/model",
   }),
   default_agent: Schema.optional(Schema.String).annotate({
     description:
@@ -86,7 +96,10 @@ export const Info = Schema.Struct({
   }),
   mode: Schema.optional(
     Schema.StructWithRest(
-      Schema.Struct({ build: Schema.optional(ConfigAgentV1.Info), plan: Schema.optional(ConfigAgentV1.Info) }),
+      Schema.Struct({
+        build: Schema.optional(ConfigAgentV1.Info),
+        plan: Schema.optional(ConfigAgentV1.Info),
+      }),
       [Schema.Record(Schema.String, ConfigAgentV1.Info)],
     ),
   ).annotate({ description: "@deprecated Use `agent` field instead." }),
@@ -108,7 +121,10 @@ export const Info = Schema.Struct({
     description: "Custom provider configurations and model overrides",
   }),
   mcp: Schema.optional(
-    Schema.Record(Schema.String, Schema.Union([ConfigMCPV1.Info, Schema.Struct({ enabled: Schema.Boolean })])),
+    Schema.Record(
+      Schema.String,
+      Schema.Union([ConfigMCPV1.Info, Schema.Struct({ enabled: Schema.Boolean })]),
+    ),
   ).annotate({ description: "MCP (Model Context Protocol) server configurations" }),
   formatter: Schema.optional(ConfigFormatterV1.Info).annotate({
     description:
@@ -121,22 +137,29 @@ export const Info = Schema.Struct({
   instructions: Schema.optional(Schema.mutable(Schema.Array(Schema.String))).annotate({
     description: "Additional instruction files or patterns to include",
   }),
-  layout: Schema.optional(ConfigLayoutV1.Layout).annotate({ description: "@deprecated Always uses stretch layout." }),
+  layout: Schema.optional(ConfigLayoutV1.Layout).annotate({
+    description: "@deprecated Always uses stretch layout.",
+  }),
   permission: Schema.optional(ConfigPermissionV1.Info),
   tools: Schema.optional(Schema.Record(Schema.String, Schema.Boolean)),
   attachment: Schema.optional(ConfigAttachmentV1.Info).annotate({
-    description: "Attachment processing configuration, including image size limits and resizing behavior",
+    description:
+      "Attachment processing configuration, including image size limits and resizing behavior",
   }),
   enterprise: Schema.optional(
-    Schema.Struct({ url: Schema.optional(Schema.String).annotate({ description: "Enterprise URL" }) }),
+    Schema.Struct({
+      url: Schema.optional(Schema.String).annotate({ description: "Enterprise URL" }),
+    }),
   ),
   tool_output: Schema.optional(
     Schema.Struct({
       max_lines: Schema.optional(PositiveInt).annotate({
-        description: "Maximum lines of tool output before it is truncated and saved to disk (default: 2000)",
+        description:
+          "Maximum lines of tool output before it is truncated and saved to disk (default: 2000)",
       }),
       max_bytes: Schema.optional(PositiveInt).annotate({
-        description: "Maximum bytes of tool output before it is truncated and saved to disk (default: 51200)",
+        description:
+          "Maximum bytes of tool output before it is truncated and saved to disk (default: 51200)",
       }),
     }),
   ).annotate({
@@ -156,19 +179,24 @@ export const Info = Schema.Struct({
           "Number of recent user turns, including their following assistant/tool responses, to keep verbatim during compaction (default: 2)",
       }),
       preserve_recent_tokens: Schema.optional(NonNegativeInt).annotate({
-        description: "Maximum number of tokens from recent turns to preserve verbatim after compaction",
+        description:
+          "Maximum number of tokens from recent turns to preserve verbatim after compaction",
       }),
       reserved: Schema.optional(NonNegativeInt).annotate({
-        description: "Token buffer for compaction. Leaves enough window to avoid overflow during compaction.",
+        description:
+          "Token buffer for compaction. Leaves enough window to avoid overflow during compaction.",
       }),
     }),
   ),
   experimental: Schema.optional(
     Schema.Struct({
       disable_paste_summary: Schema.optional(Schema.Boolean),
-      batch_tool: Schema.optional(Schema.Boolean).annotate({ description: "Enable the batch tool" }),
+      batch_tool: Schema.optional(Schema.Boolean).annotate({
+        description: "Enable the batch tool",
+      }),
       openTelemetry: Schema.optional(Schema.Boolean).annotate({
-        description: "Enable OpenTelemetry spans for AI SDK calls (using the 'experimental_telemetry' flag)",
+        description:
+          "Enable OpenTelemetry spans for AI SDK calls (using the 'experimental_telemetry' flag)",
       }),
       primary_tools: Schema.optional(Schema.mutable(Schema.Array(Schema.String))).annotate({
         description: "Tools that should only be available to primary agents.",
@@ -184,6 +212,6 @@ export const Info = Schema.Struct({
       }),
     }),
   ),
-}).annotate({ identifier: "Config" })
+}).annotate({ identifier: "Config" });
 
-export type Info = DeepMutable<Schema.Schema.Type<typeof Info>>
+export type Info = DeepMutable<Schema.Schema.Type<typeof Info>>;

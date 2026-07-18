@@ -143,7 +143,7 @@ test("disableNonPublicModels=true + auto/<group> request → not rejected by pub
     const body = (await result.rejection.clone().json()) as { error: { message: string } };
     assert.ok(
       !body.error.message.includes("not allowed for this API key"),
-      `auto/ model must not be blocked by published-model gate; got: ${body.error.message}`
+      `auto/ model must not be blocked by published-model gate; got: ${body.error.message}`,
     );
   }
 });
@@ -156,13 +156,13 @@ test("disableNonPublicModels=true + qtSd/ virtual model → not rejected by publ
   const policy = await loadPolicy("dnp-qtsd");
   const result = await policy.enforceApiKeyPolicy(
     makeRequest(created.key),
-    "qtSd/mygroup/codex/gpt-5.5"
+    "qtSd/mygroup/codex/gpt-5.5",
   );
   if (result.rejection) {
     const body = (await result.rejection.clone().json()) as { error: { message: string } };
     assert.ok(
       !body.error.message.includes("not allowed for this API key"),
-      `qtSd/ model must not be blocked by published-model gate; got: ${body.error.message}`
+      `qtSd/ model must not be blocked by published-model gate; got: ${body.error.message}`,
     );
   }
 });
@@ -171,7 +171,7 @@ test("disableNonPublicModels=true + cc wildcard allows unprefixed Claude Code mo
   await settingsDb.updateSettings({ preferClaudeCodeForUnprefixedClaudeModels: true });
   const created = await apiKeysDb.createApiKey(
     "DNP Claude Code Wildcard",
-    "machine-dnp-cc-wildcard"
+    "machine-dnp-cc-wildcard",
   );
   await apiKeysDb.updateApiKeyPermissions(created.id, {
     allowedModels: ["cc/*"],
@@ -186,7 +186,7 @@ test("disableNonPublicModels=true + cc wildcard allows unprefixed Claude Code mo
     assert.equal(
       result.rejection,
       null,
-      `cc/* should act as Claude Code default for dynamically routed unprefixed Claude model ${modelId}`
+      `cc/* should act as Claude Code default for dynamically routed unprefixed Claude model ${modelId}`,
     );
   }
 });
@@ -195,7 +195,7 @@ test("cc wildcard can deny the Fable family while allowing other Claude Code def
   await settingsDb.updateSettings({ preferClaudeCodeForUnprefixedClaudeModels: true });
   const created = await apiKeysDb.createApiKey(
     "Claude Code Default No Fable",
-    "machine-cc-no-fable"
+    "machine-cc-no-fable",
   );
   await apiKeysDb.updateApiKeyPermissions(created.id, {
     allowedModels: ["cc/*"],
@@ -227,11 +227,11 @@ test("disableNonPublicModels=true + hidden model → REJECTED 403 (not in discov
   // "openai/gpt-totally-undiscovered-xyz" is never synced → not discovered → rejected.
   const result = await policy.enforceApiKeyPolicy(
     makeRequest(created.key),
-    "openai/gpt-totally-undiscovered-xyz"
+    "openai/gpt-totally-undiscovered-xyz",
   );
   assert.ok(
     result.rejection,
-    "non-discovered model should be rejected for disableNonPublicModels key"
+    "non-discovered model should be rejected for disableNonPublicModels key",
   );
   assert.equal(result.rejection.status, 403);
   const body = (await result.rejection.json()) as { error: { message: string } };
@@ -270,7 +270,7 @@ test("disableNonPublicModels=true + existing combo name → not rejected by publ
       const body = (await result2.rejection.clone().json()) as { error: { message: string } };
       assert.ok(
         !body.error.message.includes("not allowed for this API key"),
-        `existing combo must not be blocked by published-model gate; got: ${body.error.message}`
+        `existing combo must not be blocked by published-model gate; got: ${body.error.message}`,
       );
     }
   } else {

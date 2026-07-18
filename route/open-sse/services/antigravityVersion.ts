@@ -40,7 +40,7 @@ function pickNewestVersion(...versions: Array<string | null | undefined>): strin
     .filter((version): version is string => !!version)
     .reduce(
       (best, version) => (compareSemver(version, best) > 0 ? version : best),
-      ANTIGRAVITY_FALLBACK_VERSION
+      ANTIGRAVITY_FALLBACK_VERSION,
     );
 }
 

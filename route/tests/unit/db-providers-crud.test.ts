@@ -71,11 +71,11 @@ test("createProviderConnection assigns provider-scoped priorities and supports f
     [
       { name: "Primary", priority: 1 },
       { name: "Secondary", priority: 2 },
-    ]
+    ],
   );
   assert.deepEqual(
     activeConnections.map((connection) => connection.id),
-    [first.id]
+    [first.id],
   );
   assert.deepEqual(await providersDb.getDistinctGroups(), ["team-a", "team-b"]);
   assert.equal(second.isActive, false);
@@ -101,11 +101,11 @@ test("getProviderConnections filters by authType", async () => {
 
   assert.deepEqual(
     oauthOnly.map((connection) => connection.id),
-    [oauthConnection.id]
+    [oauthConnection.id],
   );
   assert.deepEqual(
     apiKeyOnly.map((connection) => connection.id),
-    [apiKeyConnection.id]
+    [apiKeyConnection.id],
   );
 });
 
@@ -240,7 +240,7 @@ test("updateProviderConnection reorders priorities and returns decrypted payload
       { id: third.id, priority: 1 },
       { id: first.id, priority: 2 },
       { id: second.id, priority: 3 },
-    ]
+    ],
   );
 });
 
@@ -277,7 +277,7 @@ test("deleteProviderConnection reorders remaining rows and bulk delete reports c
     [
       { id: first.id, priority: 1 },
       { id: third.id, priority: 2 },
-    ]
+    ],
   );
   assert.equal(deletedCount, 2);
   assert.deepEqual(await providersDb.getProviderConnections({ provider: "anthropic" }), []);
@@ -340,7 +340,7 @@ test("provider node CRUD supports filter, update and delete", async () => {
 
   assert.deepEqual(
     filtered.map((node) => node.id),
-    [customNode.id]
+    [customNode.id],
   );
   assert.equal(updated.name, "Custom Gateway v2");
   assert.equal(updated.chatPath, "/v1/chat/completions");
@@ -365,7 +365,7 @@ test("rate-limit helpers persist cooldown state in the database", async () => {
     providersDb
       .getRateLimitedConnections("openai")
       .map((entry) => ({ ...entry, rateLimitedUntil: Number(entry.rateLimitedUntil) })),
-    [{ id: connection.id, rateLimitedUntil: future }]
+    [{ id: connection.id, rateLimitedUntil: future }],
   );
 
   providersDb.setConnectionRateLimitUntil((connection as any).id, null);

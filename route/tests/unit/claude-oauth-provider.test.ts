@@ -28,7 +28,7 @@ test("Claude OAuth provider always uses the configured redirectUri when building
     CLAUDE_CONFIG,
     runtimeRedirectUri,
     "state-123",
-    "challenge-456"
+    "challenge-456",
   );
   const parsed = new URL(authUrl);
 
@@ -60,7 +60,7 @@ test("Claude OAuth provider always uses the configured redirectUri during token 
     "auth-code#state-from-fragment",
     runtimeRedirectUri,
     "verifier-123",
-    "state-from-request"
+    "state-from-request",
   );
 
   assert.equal(captured.url, CLAUDE_CONFIG.tokenUrl);
@@ -89,7 +89,7 @@ test("Claude OAuth token mapper persists the first non-empty token plan field", 
 test("Claude OAuth token mapper reads plan fields from userinfo extras after token fields", () => {
   const mapped = claude.mapTokens(
     { access_token: "token-1" },
-    { userInfo: { account_tier: "", subscription_type: "Max" } }
+    { userInfo: { account_tier: "", subscription_type: "Max" } },
   );
 
   assert.equal(mapped.providerSpecificData.plan, "Max");

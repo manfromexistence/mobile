@@ -148,7 +148,7 @@ describe("web-session credential helpers", () => {
       hasUsableWebSessionCredential("chatgpt-web", {
         cookie: "__Secure-next-auth.session-token=abc",
       }),
-      true
+      true,
     );
     assert.equal(hasUsableWebSessionCredential("chatgpt-web", { cookie: "" }), false);
     assert.equal(hasUsableWebSessionCredential("chatgpt-web", {}), false);
@@ -172,7 +172,7 @@ describe("resolveWebSessionImportApiKey (token-kind imports must populate apiKey
     const req = getWebSessionCredentialRequirement("deepseek-web");
     assert.equal(
       resolveWebSessionImportApiKey(req, "j9CVFGvd8Y/deadbeeftoken"),
-      "j9CVFGvd8Y/deadbeeftoken"
+      "j9CVFGvd8Y/deadbeeftoken",
     );
   });
 
@@ -186,16 +186,16 @@ describe("resolveWebSessionImportApiKey (token-kind imports must populate apiKey
     assert.equal(
       resolveWebSessionImportApiKey(
         getWebSessionCredentialRequirement("claude-web"),
-        "sessionKey=abc"
+        "sessionKey=abc",
       ),
-      null
+      null,
     );
     assert.equal(
       resolveWebSessionImportApiKey(
         getWebSessionCredentialRequirement("chatgpt-web"),
-        "__Secure-next-auth.session-token=abc"
+        "__Secure-next-auth.session-token=abc",
       ),
-      null
+      null,
     );
   });
 

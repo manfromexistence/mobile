@@ -1,33 +1,32 @@
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
-const inputPath = './cpp/glue.hpp';
-const outputPath = './src/glue/messages.ts';
+const inputPath = "./cpp/glue.hpp";
+const outputPath = "./src/glue/messages.ts";
 
-const snakeToCamel = (str) =>
-  str.replace(/([-_]\w)/g, (g) => g[1].toUpperCase());
+const snakeToCamel = (str) => str.replace(/([-_]\w)/g, (g) => g[1].toUpperCase());
 const snakeToPascal = (str) => {
   let camelCase = snakeToCamel(str);
   let pascalCase = camelCase[0].toUpperCase() + camelCase.substr(1);
   return pascalCase;
 };
 
-const cppContent = fs.readFileSync(inputPath, 'utf8');
-const lines = cppContent.split('\n');
+const cppContent = fs.readFileSync(inputPath, "utf8");
+const lines = cppContent.split("\n");
 const protos = [];
 
 let insideStruct = false;
-let currentProto = { name: '', className: '', structName: '', fields: [] };
+let currentProto = { name: "", className: "", structName: "", fields: [] };
 let version = 0;
 for (const line of lines) {
-  if (line.startsWith('#define GLUE_VERSION')) {
-    version = parseInt(line.split(' ').at(-1));
+  if (line.startsWith("#define GLUE_VERSION")) {
+    version = parseInt(line.split(" ").at(-1));
   }
-  if (line.startsWith('struct glue_msg_')) {
+  if (line.startsWith("struct glue_msg_")) {
     insideStruct = true;
-    const structName = line.split(' ')[1];
+    const structName = line.split(" ")[1];
     currentProto = {
-      name: '',
+      name: "",
       structName,
       className: snakeToPascal(structName),
       fields: [],
@@ -35,27 +34,24 @@ for (const line of lines) {
   }
   const lineTrimed = line.trim();
   if (insideStruct) {
-    if (lineTrimed.startsWith('GLUE_HANDLER')) {
-      const name = lineTrimed.split('(')[1].split(')')[0];
+    if (lineTrimed.startsWith("GLUE_HANDLER")) {
+      const name = lineTrimed.split("(")[1].split(")")[0];
       currentProto.name = JSON.parse(name);
       if (currentProto.name.length !== 8) {
-        console.error(
-          'Invalid name (must be 8 characters):',
-          currentProto.name
-        );
+        console.error("Invalid name (must be 8 characters):", currentProto.name);
         process.exit(1);
       }
     }
-    if (lineTrimed.startsWith('GLUE_FIELD')) {
-      const isNullable = lineTrimed.startsWith('GLUE_FIELD_NULLABLE');
-      const fieldParts = lineTrimed.split('(')[1].split(')')[0].split(',');
+    if (lineTrimed.startsWith("GLUE_FIELD")) {
+      const isNullable = lineTrimed.startsWith("GLUE_FIELD_NULLABLE");
+      const fieldParts = lineTrimed.split("(")[1].split(")")[0].split(",");
       currentProto.fields.push({
         type: fieldParts[0].trim(),
         name: fieldParts[1].trim(),
         isNullable,
       });
     }
-    if (line.startsWith('};')) {
+    if (line.startsWith("};")) {
       insideStruct = false;
       protos.push(currentProto);
     }
@@ -65,16 +61,16 @@ for (const line of lines) {
 //console.log(JSON.stringify(protos, null, 2));
 
 const typeMapping = {
-  bool: 'boolean',
-  int: 'number',
-  float: 'number',
-  str: 'string',
-  raw: 'Uint8Array',
-  arr_bool: 'bool[]',
-  arr_int: 'number[]',
-  arr_float: 'number[]',
-  arr_str: 'string[]',
-  arr_raw: 'Uint8Array[]',
+  bool: "boolean",
+  int: "number",
+  float: "number",
+  str: "string",
+  raw: "Uint8Array",
+  arr_bool: "bool[]",
+  arr_int: "number[]",
+  arr_float: "number[]",
+  arr_str: "string[]",
+  arr_raw: "Uint8Array[]",
 };
 
 const protoMap = {};
@@ -99,17 +95,17 @@ ${protos
     for (const field of proto.fields) {
       const mappedType = typeMapping[field.type];
       if (!mappedType) {
-        console.error('Unknown type:', field.type);
+        console.error("Unknown type:", field.type);
         process.exit(1);
       }
-      interfaceCode += `  ${field.name}${field.isNullable ? '?' : ''}: ${mappedType}${field.isNullable ? ' | undefined' : ''};\n`;
+      interfaceCode += `  ${field.name}${field.isNullable ? "?" : ""}: ${mappedType}${field.isNullable ? " | undefined" : ""};\n`;
     }
-    interfaceCode += '}\n';
+    interfaceCode += "}\n";
     return interfaceCode;
   })
-  .join('\n')}
+  .join("\n")}
 
-export type GlueMsg = ${protos.map((proto) => proto.className).join(' | ')};
+export type GlueMsg = ${protos.map((proto) => proto.className).join(" | ")};
 `;
 
 fs.writeFileSync(outputPath, outputContent);

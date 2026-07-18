@@ -50,7 +50,7 @@ test("per-model subscription 403 locks only the paid model, connection stays act
     403,
     SUBSCRIPTION_403,
     "ollama-cloud",
-    "deepseek-v4-pro"
+    "deepseek-v4-pro",
   );
 
   assert.equal(result.shouldFallback, true);
@@ -64,7 +64,7 @@ test("per-model subscription 403 locks only the paid model, connection stays act
   const paidLockout = accountFallback.getModelLockoutInfo(
     "ollama-cloud",
     (conn as any).id,
-    "deepseek-v4-pro"
+    "deepseek-v4-pro",
   );
   assert.equal(paidLockout?.reason, "forbidden");
 
@@ -72,7 +72,7 @@ test("per-model subscription 403 locks only the paid model, connection stays act
   const freeLockout = accountFallback.getModelLockoutInfo(
     "ollama-cloud",
     (conn as any).id,
-    "gemma4:31b"
+    "gemma4:31b",
   );
   assert.equal(freeLockout, null);
 });
@@ -86,7 +86,7 @@ test("genuine whole-key 403 (account deactivated) still terminates the connectio
     403,
     "this account is deactivated",
     "ollama-cloud",
-    "deepseek-v4-pro"
+    "deepseek-v4-pro",
   );
   assert.equal(result.shouldFallback, true);
 
@@ -98,7 +98,7 @@ test("genuine whole-key 403 (account deactivated) still terminates the connectio
   const lockout = accountFallback.getModelLockoutInfo(
     "ollama-cloud",
     (conn as any).id,
-    "deepseek-v4-pro"
+    "deepseek-v4-pro",
   );
   assert.equal(lockout, null);
 });
@@ -112,14 +112,14 @@ test("repeated subscription 403s do not escalate a connection-wide backoff", asy
     403,
     SUBSCRIPTION_403,
     "ollama-cloud",
-    "deepseek-v4-pro"
+    "deepseek-v4-pro",
   );
   await auth.markAccountUnavailable(
     (conn as any).id,
     403,
     SUBSCRIPTION_403,
     "ollama-cloud",
-    "deepseek-v4-pro"
+    "deepseek-v4-pro",
   );
 
   const after = await providersDb.getProviderConnectionById((conn as any).id);
@@ -131,7 +131,7 @@ test("repeated subscription 403s do not escalate a connection-wide backoff", asy
   const paidLockout = accountFallback.getModelLockoutInfo(
     "ollama-cloud",
     (conn as any).id,
-    "deepseek-v4-pro"
+    "deepseek-v4-pro",
   );
   assert.equal(paidLockout?.reason, "forbidden");
 });

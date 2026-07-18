@@ -1,8 +1,8 @@
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
 
-import { readSettingsCookies } from './_components/readSettingsCookies';
-import { TreesDevSettingsProvider } from './_components/TreesDevSettingsProvider';
-import { TreesDevShell } from './_components/TreesDevShell';
+import { readSettingsCookies } from "./_components/readSettingsCookies";
+import { TreesDevSettingsProvider } from "./_components/TreesDevSettingsProvider";
+import { TreesDevShell } from "./_components/TreesDevShell";
 
 export default async function TreesDevLayout({
   children,
@@ -12,9 +12,7 @@ export default async function TreesDevLayout({
   const { flattenEmptyDirectories } = await readSettingsCookies();
 
   return (
-    <TreesDevSettingsProvider
-      initialFlattenEmptyDirectories={flattenEmptyDirectories}
-    >
+    <TreesDevSettingsProvider initialFlattenEmptyDirectories={flattenEmptyDirectories}>
       <TreesDevShell>{children}</TreesDevShell>
     </TreesDevSettingsProvider>
   );

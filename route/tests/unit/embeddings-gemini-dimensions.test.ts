@@ -24,7 +24,7 @@ function captureFetch(captured: { body?: Record<string, unknown> }) {
         data: [{ object: "embedding", embedding: new Array(1536).fill(0.1), index: 0 }],
         usage: { prompt_tokens: 4, total_tokens: 4 },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 }
@@ -99,7 +99,7 @@ test("handleEmbedding does not inject outputDimensionality when dimensions is om
     assert.equal(
       "outputDimensionality" in (captured.body || {}),
       false,
-      "outputDimensionality must not be injected when the client did not request a specific size"
+      "outputDimensionality must not be injected when the client did not request a specific size",
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -128,7 +128,7 @@ test("handleEmbedding does not inject outputDimensionality for non-Gemini provid
     assert.equal(
       "outputDimensionality" in (captured.body || {}),
       false,
-      "outputDimensionality is Gemini-specific and must not leak into other providers"
+      "outputDimensionality is Gemini-specific and must not leak into other providers",
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -155,7 +155,7 @@ test("handleEmbedding ignores non-finite/non-positive dimensions for Gemini", as
     assert.equal(
       "outputDimensionality" in (captured.body || {}),
       false,
-      "0/NaN/negative dimensions must not map to outputDimensionality"
+      "0/NaN/negative dimensions must not map to outputDimensionality",
     );
   } finally {
     globalThis.fetch = originalFetch;

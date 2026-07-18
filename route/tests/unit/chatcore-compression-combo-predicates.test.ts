@@ -8,16 +8,13 @@ const { isBuiltinStackedPipeline, isStackedCompressionCombo } = await import(
 );
 
 test("isBuiltinStackedPipeline true only for the rtk(standard)→caveman(full) shape", () => {
-  assert.equal(
-    isBuiltinStackedPipeline([{ engine: "rtk" }, { engine: "caveman" }] as never),
-    true
-  );
+  assert.equal(isBuiltinStackedPipeline([{ engine: "rtk" }, { engine: "caveman" }] as never), true);
   assert.equal(
     isBuiltinStackedPipeline([
       { engine: "rtk", intensity: "standard" },
       { engine: "caveman", intensity: "full" },
     ] as never),
-    true
+    true,
   );
 });
 
@@ -27,29 +24,32 @@ test("isBuiltinStackedPipeline false for wrong length / engines / intensities / 
   assert.equal(isBuiltinStackedPipeline([{ engine: "rtk" }] as never), false);
   assert.equal(
     isBuiltinStackedPipeline([{ engine: "caveman" }, { engine: "rtk" }] as never),
-    false
+    false,
   );
   assert.equal(
     isBuiltinStackedPipeline([
       { engine: "rtk", intensity: "aggressive" },
       { engine: "caveman", intensity: "full" },
     ] as never),
-    false
+    false,
   );
   assert.equal(
-    isBuiltinStackedPipeline([
-      { engine: "rtk", config: { x: 1 } },
-      { engine: "caveman" },
-    ] as never),
-    false
+    isBuiltinStackedPipeline([{ engine: "rtk", config: { x: 1 } }, { engine: "caveman" }] as never),
+    false,
   );
 });
 
 test("isStackedCompressionCombo true when the combo has >= 1 pipeline layer", () => {
   assert.equal(isStackedCompressionCombo(null), false);
   assert.equal(
-    isStackedCompressionCombo({ id: "c", pipeline: [], languagePacks: [], outputMode: false, outputModeIntensity: "full" } as never),
-    false
+    isStackedCompressionCombo({
+      id: "c",
+      pipeline: [],
+      languagePacks: [],
+      outputMode: false,
+      outputModeIntensity: "full",
+    } as never),
+    false,
   );
   assert.equal(
     isStackedCompressionCombo({
@@ -59,6 +59,6 @@ test("isStackedCompressionCombo true when the combo has >= 1 pipeline layer", ()
       outputMode: false,
       outputModeIntensity: "full",
     } as never),
-    true
+    true,
   );
 });

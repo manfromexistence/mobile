@@ -41,13 +41,13 @@ function buildQoderCliSseStream(model: string, text: string): ReadableStream<Uin
   return new ReadableStream<Uint8Array>({
     start(controller) {
       controller.enqueue(
-        send(buildQoderChunk({ id, model, created, delta: { role: "assistant", content: "" } }))
+        send(buildQoderChunk({ id, model, created, delta: { role: "assistant", content: "" } })),
       );
       if (text) {
         controller.enqueue(send(buildQoderChunk({ id, model, created, delta: { content: text } })));
       }
       controller.enqueue(
-        send(buildQoderChunk({ id, model, created, delta: {}, finishReason: "stop" }))
+        send(buildQoderChunk({ id, model, created, delta: {}, finishReason: "stop" })),
       );
       controller.enqueue(encoder.encode("data: [DONE]\n\n"));
       controller.close();
@@ -76,7 +76,7 @@ async function unwrapQoderEnvelope(response: Response): Promise<Response> {
     reader.cancel();
     return new Response(
       JSON.stringify({ error: { message: "[qoder] empty response", type: "provider_error" } }),
-      { status: 502, headers: { "Content-Type": "application/json" } }
+      { status: 502, headers: { "Content-Type": "application/json" } },
     );
   }
 
@@ -115,7 +115,7 @@ async function unwrapQoderEnvelope(response: Response): Promise<Response> {
           type: errType,
         },
       }),
-      { status: errorStatus, headers: { "Content-Type": "application/json" } }
+      { status: errorStatus, headers: { "Content-Type": "application/json" } },
     );
   }
 
@@ -171,7 +171,7 @@ export class QoderExecutor extends BaseExecutor {
     credentials: ProviderCredentials,
     stream = true,
     clientHeaders?: Record<string, string> | null,
-    model?: string
+    model?: string,
   ): Record<string, string> {
     const headers = super.buildHeaders(credentials, stream, clientHeaders, model);
     setUserAgentHeader(headers, QODER_DEFAULT_USER_AGENT);
@@ -200,7 +200,7 @@ export class QoderExecutor extends BaseExecutor {
               code: "token_required",
             },
           }),
-          { status: 401, headers: { "Content-Type": "application/json" } }
+          { status: 401, headers: { "Content-Type": "application/json" } },
         ),
         url: "https://dashscope.aliyuncs.com",
         headers: { "Content-Type": "application/json" },
@@ -271,7 +271,7 @@ export class QoderExecutor extends BaseExecutor {
                 type: response.status === 401 ? "authentication_error" : "provider_error",
               },
             }),
-            { status: response.status, headers: { "Content-Type": "application/json" } }
+            { status: response.status, headers: { "Content-Type": "application/json" } },
           ),
           url: endpointUrl,
           headers,
@@ -302,7 +302,7 @@ export class QoderExecutor extends BaseExecutor {
               type: "provider_error",
             },
           }),
-          { status: 502, headers: { "Content-Type": "application/json" } }
+          { status: 502, headers: { "Content-Type": "application/json" } },
         ),
         url: endpointUrl,
         headers,

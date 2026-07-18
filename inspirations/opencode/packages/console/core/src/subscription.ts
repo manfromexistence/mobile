@@ -1,8 +1,8 @@
-import { z } from "zod"
-import { fn } from "./util/fn"
-import { centsToMicroCents } from "./util/price"
-import { getWeekBounds, getMonthlyBounds } from "./util/date"
-import { Resource } from "@opencode-ai/console-resource"
+import { z } from "zod";
+import { fn } from "./util/fn";
+import { centsToMicroCents } from "./util/price";
+import { getWeekBounds, getMonthlyBounds } from "./util/date";
+import { Resource } from "@opencode-ai/console-resource";
 
 export namespace Subscription {
   const LimitsSchema = z.object({
@@ -35,20 +35,20 @@ export namespace Subscription {
         rollingWindow: z.number().int(),
       }),
     }),
-  })
+  });
 
   export const validate = fn(LimitsSchema, (input) => {
-    return input
-  })
+    return input;
+  });
 
   export const getLimits = fn(z.void(), () => {
-    const json = JSON.parse(Resource.ZEN_LIMITS.value)
-    return LimitsSchema.parse(json)
-  })
+    const json = JSON.parse(Resource.ZEN_LIMITS.value);
+    return LimitsSchema.parse(json);
+  });
 
   export const getFreeLimits = fn(z.void(), () => {
-    return getLimits()["free"]
-  })
+    return getLimits()["free"];
+  });
 
   export const analyzeRollingUsage = fn(
     z.object({
@@ -58,33 +58,33 @@ export namespace Subscription {
       timeUpdated: z.date(),
     }),
     ({ limit, window, usage, timeUpdated }) => {
-      const now = new Date()
-      const rollingWindowMs = window * 3600 * 1000
-      const rollingLimitInMicroCents = centsToMicroCents(limit * 100)
-      const windowStart = new Date(now.getTime() - rollingWindowMs)
+      const now = new Date();
+      const rollingWindowMs = window * 3600 * 1000;
+      const rollingLimitInMicroCents = centsToMicroCents(limit * 100);
+      const windowStart = new Date(now.getTime() - rollingWindowMs);
       if (timeUpdated < windowStart) {
         return {
           status: "ok" as const,
           resetInSec: window * 3600,
           usagePercent: 0,
-        }
+        };
       }
 
-      const windowEnd = new Date(timeUpdated.getTime() + rollingWindowMs)
+      const windowEnd = new Date(timeUpdated.getTime() + rollingWindowMs);
       if (usage < rollingLimitInMicroCents) {
         return {
           status: "ok" as const,
           resetInSec: Math.ceil((windowEnd.getTime() - now.getTime()) / 1000),
           usagePercent: Math.floor(Math.min(100, (usage / rollingLimitInMicroCents) * 100)),
-        }
+        };
       }
       return {
         status: "rate-limited" as const,
         resetInSec: Math.ceil((windowEnd.getTime() - now.getTime()) / 1000),
         usagePercent: 100,
-      }
+      };
     },
-  )
+  );
 
   export const analyzeWeeklyUsage = fn(
     z.object({
@@ -93,31 +93,31 @@ export namespace Subscription {
       timeUpdated: z.date(),
     }),
     ({ limit, usage, timeUpdated }) => {
-      const now = new Date()
-      const week = getWeekBounds(now)
-      const fixedLimitInMicroCents = centsToMicroCents(limit * 100)
+      const now = new Date();
+      const week = getWeekBounds(now);
+      const fixedLimitInMicroCents = centsToMicroCents(limit * 100);
       if (timeUpdated < week.start) {
         return {
           status: "ok" as const,
           resetInSec: Math.ceil((week.end.getTime() - now.getTime()) / 1000),
           usagePercent: 0,
-        }
+        };
       }
       if (usage < fixedLimitInMicroCents) {
         return {
           status: "ok" as const,
           resetInSec: Math.ceil((week.end.getTime() - now.getTime()) / 1000),
           usagePercent: Math.floor(Math.min(100, (usage / fixedLimitInMicroCents) * 100)),
-        }
+        };
       }
 
       return {
         status: "rate-limited" as const,
         resetInSec: Math.ceil((week.end.getTime() - now.getTime()) / 1000),
         usagePercent: 100,
-      }
+      };
     },
-  )
+  );
 
   export const analyzeMonthlyUsage = fn(
     z.object({
@@ -127,29 +127,29 @@ export namespace Subscription {
       timeSubscribed: z.date(),
     }),
     ({ limit, usage, timeUpdated, timeSubscribed }) => {
-      const now = new Date()
-      const month = getMonthlyBounds(now, timeSubscribed)
-      const fixedLimitInMicroCents = centsToMicroCents(limit * 100)
+      const now = new Date();
+      const month = getMonthlyBounds(now, timeSubscribed);
+      const fixedLimitInMicroCents = centsToMicroCents(limit * 100);
       if (timeUpdated < month.start) {
         return {
           status: "ok" as const,
           resetInSec: Math.ceil((month.end.getTime() - now.getTime()) / 1000),
           usagePercent: 0,
-        }
+        };
       }
       if (usage < fixedLimitInMicroCents) {
         return {
           status: "ok" as const,
           resetInSec: Math.ceil((month.end.getTime() - now.getTime()) / 1000),
           usagePercent: Math.floor(Math.min(100, (usage / fixedLimitInMicroCents) * 100)),
-        }
+        };
       }
 
       return {
         status: "rate-limited" as const,
         resetInSec: Math.ceil((month.end.getTime() - now.getTime()) / 1000),
         usagePercent: 100,
-      }
+      };
     },
-  )
+  );
 }

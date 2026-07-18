@@ -1,7 +1,7 @@
-import ReactMarkdown from 'react-markdown';
-import remarkBreaks from 'remark-breaks';
-import remarkGfm from 'remark-gfm';
-import type { Components } from 'react-markdown';
+import ReactMarkdown from "react-markdown";
+import remarkBreaks from "remark-breaks";
+import remarkGfm from "remark-gfm";
+import type { Components } from "react-markdown";
 
 interface MarkdownMessageProps {
   content: string;
@@ -28,13 +28,7 @@ const markdownComponents: Components = {
   },
   a({ href, children, ...props }) {
     return (
-      <a
-        href={href}
-        className="link"
-        target="_blank"
-        rel="noreferrer"
-        {...props}
-      >
+      <a href={href} className="link" target="_blank" rel="noreferrer" {...props}>
         {children}
       </a>
     );

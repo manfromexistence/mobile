@@ -87,7 +87,7 @@ function upsertTool(db, data) {
       config_overrides = excluded.config_overrides,
       error_message = excluded.error_message,
       updated_at = datetime('now')
-  `
+  `,
   ).run(
     data.tool,
     data.currentVersion ?? null,
@@ -107,7 +107,7 @@ function upsertTool(db, data) {
         ? JSON.stringify(data.configOverrides)
         : null
       : null,
-    data.errorMessage ?? null
+    data.errorMessage ?? null,
   );
   return db.prepare("SELECT * FROM version_manager WHERE tool = ?").get(data.tool);
 }
@@ -157,7 +157,7 @@ describe("db/versionManager (logic)", () => {
           installedVersion: "6.9.7",
           binaryPath: "/tmp/bin/cliproxyapi",
           status: "installed",
-        })
+        }),
       );
       assert.equal(tool.tool, "cliproxyapi");
       assert.equal(tool.installedVersion, "6.9.7");
@@ -173,7 +173,7 @@ describe("db/versionManager (logic)", () => {
     it("should update on conflict (upsert)", () => {
       upsertTool(testDb, { tool: "test-tool", status: "installed" });
       const tool = toTool(
-        upsertTool(testDb, { tool: "test-tool", installedVersion: "7.0.0", status: "running" })
+        upsertTool(testDb, { tool: "test-tool", installedVersion: "7.0.0", status: "running" }),
       );
       assert.equal(tool.installedVersion, "7.0.0");
       assert.equal(tool.status, "running");
@@ -181,7 +181,7 @@ describe("db/versionManager (logic)", () => {
 
     it("should store boolean fields as 0/1", () => {
       const tool = toTool(
-        upsertTool(testDb, { tool: "bool-test", autoUpdate: false, autoStart: true })
+        upsertTool(testDb, { tool: "bool-test", autoUpdate: false, autoStart: true }),
       );
       assert.equal(tool.autoUpdate, false);
       assert.equal(tool.autoStart, true);
@@ -199,7 +199,7 @@ describe("db/versionManager (logic)", () => {
 
     it("should handle pid and error message", () => {
       const tool = toTool(
-        upsertTool(testDb, { tool: "pid-test", pid: 12345, errorMessage: "err" })
+        upsertTool(testDb, { tool: "pid-test", pid: 12345, errorMessage: "err" }),
       );
       assert.equal(tool.pid, 12345);
       assert.equal(tool.errorMessage, "err");
@@ -210,14 +210,14 @@ describe("db/versionManager (logic)", () => {
     it("should return null for non-existent tool", () => {
       assert.equal(
         toTool(testDb.prepare("SELECT * FROM version_manager WHERE tool = ?").get("ghost")),
-        null
+        null,
       );
     });
 
     it("should return tool by name", () => {
       upsertTool(testDb, { tool: "findme", installedVersion: "1.0.0" });
       const tool = toTool(
-        testDb.prepare("SELECT * FROM version_manager WHERE tool = ?").get("findme")
+        testDb.prepare("SELECT * FROM version_manager WHERE tool = ?").get("findme"),
       );
       assert.equal(tool.installedVersion, "1.0.0");
     });
@@ -240,11 +240,11 @@ describe("db/versionManager (logic)", () => {
       upsertTool(testDb, { tool: "upd", status: "installed" });
       testDb
         .prepare(
-          "UPDATE version_manager SET pinned_version = ?, auto_update = ?, updated_at = datetime('now') WHERE tool = ?"
+          "UPDATE version_manager SET pinned_version = ?, auto_update = ?, updated_at = datetime('now') WHERE tool = ?",
         )
         .run("6.8.0", 0, "upd");
       const tool = toTool(
-        testDb.prepare("SELECT * FROM version_manager WHERE tool = ?").get("upd")
+        testDb.prepare("SELECT * FROM version_manager WHERE tool = ?").get("upd"),
       );
       assert.equal(tool.pinnedVersion, "6.8.0");
       assert.equal(tool.autoUpdate, false);
@@ -257,7 +257,7 @@ describe("db/versionManager (logic)", () => {
         .prepare("UPDATE version_manager SET installed_version = NULL, pid = NULL WHERE tool = ?")
         .run("nulls");
       const tool = toTool(
-        testDb.prepare("SELECT * FROM version_manager WHERE tool = ?").get("nulls")
+        testDb.prepare("SELECT * FROM version_manager WHERE tool = ?").get("nulls"),
       );
       assert.equal(tool.installedVersion, null);
       assert.equal(tool.pid, null);
@@ -269,18 +269,18 @@ describe("db/versionManager (logic)", () => {
       upsertTool(testDb, { tool: "del" });
       assert.equal(
         testDb.prepare("DELETE FROM version_manager WHERE tool = ?").run("del").changes,
-        1
+        1,
       );
       assert.equal(
         testDb.prepare("SELECT * FROM version_manager WHERE tool = ?").get("del"),
-        undefined
+        undefined,
       );
     });
 
     it("should return 0 changes for non-existent", () => {
       assert.equal(
         testDb.prepare("DELETE FROM version_manager WHERE tool = ?").run("ghost").changes,
-        0
+        0,
       );
     });
   });
@@ -290,7 +290,7 @@ describe("db/versionManager (logic)", () => {
       upsertTool(testDb, { tool: "h" });
       const r = testDb
         .prepare(
-          "UPDATE version_manager SET health_status = ?, last_health_check = datetime('now') WHERE tool = ?"
+          "UPDATE version_manager SET health_status = ?, last_health_check = datetime('now') WHERE tool = ?",
         )
         .run("healthy", "h");
       assert.equal(r.changes, 1);
@@ -304,7 +304,7 @@ describe("db/versionManager (logic)", () => {
         testDb
           .prepare("UPDATE version_manager SET health_status = ? WHERE tool = ?")
           .run("healthy", "ghost").changes,
-        0
+        0,
       );
     });
   });
@@ -317,7 +317,7 @@ describe("db/versionManager (logic)", () => {
         .run("7.0.0", "v1");
       assert.equal(
         testDb.prepare("SELECT * FROM version_manager WHERE tool = ?").get("v1").current_version,
-        "7.0.0"
+        "7.0.0",
       );
     });
 
@@ -328,7 +328,7 @@ describe("db/versionManager (logic)", () => {
         .run("7.0.0", "v2");
       assert.equal(
         testDb.prepare("SELECT * FROM version_manager WHERE tool = ?").get("v2").installed_version,
-        "7.0.0"
+        "7.0.0",
       );
     });
   });
@@ -359,7 +359,7 @@ describe("db/versionManager (logic)", () => {
         testDb
           .prepare("UPDATE version_manager SET status = ? WHERE tool = ?")
           .run("running", "ghost").changes,
-        0
+        0,
       );
     });
   });
@@ -427,7 +427,7 @@ describe("db/versionManager (module coverage)", () => {
       INSERT INTO version_manager
       (tool, status, config_overrides, created_at, updated_at)
       VALUES (?, ?, ?, datetime('now'), datetime('now'))
-    `
+    `,
     ).run("broken-tool", "installed", "{not-json");
 
     const loaded = await versionManagerDb.getVersionManagerTool("broken-tool");
@@ -435,7 +435,7 @@ describe("db/versionManager (module coverage)", () => {
     assert.equal(loaded.configOverrides, null);
     assert.equal(
       await versionManagerDb.updateVersionManagerTool("ghost", { status: "running" }),
-      null
+      null,
     );
   });
 
@@ -448,11 +448,11 @@ describe("db/versionManager (module coverage)", () => {
     assert.equal(await versionManagerDb.updateToolHealth("managed-tool", "healthy"), true);
     assert.equal(
       await versionManagerDb.updateToolVersion("managed-tool", "current_version", "1.2.3"),
-      true
+      true,
     );
     assert.equal(
       await versionManagerDb.updateToolVersion("managed-tool", "installed_version", "1.2.0"),
-      true
+      true,
     );
     assert.equal(await versionManagerDb.setToolStatus("managed-tool", "running", 4321, "ok"), true);
     assert.equal(await versionManagerDb.setToolStatus("managed-tool", "error"), true);

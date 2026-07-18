@@ -95,7 +95,7 @@ function stripZeroWidthValue(value: unknown): unknown {
   const record = toRecord(value);
   if (record) {
     return Object.fromEntries(
-      Object.entries(record).map(([key, item]) => [key, stripZeroWidthValue(item)])
+      Object.entries(record).map(([key, item]) => [key, stripZeroWidthValue(item)]),
     );
   }
   return value;
@@ -244,7 +244,7 @@ export interface SanitizeOpenAIResponseOptions {
 
 export function sanitizeOpenAIResponse(
   body: unknown,
-  options: SanitizeOpenAIResponseOptions = {}
+  options: SanitizeOpenAIResponseOptions = {},
 ): unknown {
   const bodyRecord = toRecord(body);
   if (!bodyRecord) return body;
@@ -359,7 +359,7 @@ export function sanitizeResponsesApiResponse(body: unknown): unknown {
 function sanitizeChoice(
   choice: unknown,
   defaultIndex: number,
-  options: ParseOptions = {}
+  options: ParseOptions = {},
 ): JsonRecord {
   const choiceRecord = toRecord(choice);
   const sanitized: JsonRecord = {
@@ -872,7 +872,7 @@ function sanitizeResponsesMessageContent(content: unknown): JsonRecord[] {
           ...partRecord,
           type: "output_text",
           text: collapseExcessiveNewlines(
-            stripInternalToolEnvelopeText(toString(partRecord.text) || "")
+            stripInternalToolEnvelopeText(toString(partRecord.text) || ""),
           ),
           annotations: Array.isArray(partRecord.annotations) ? partRecord.annotations : [],
         };
@@ -1006,7 +1006,7 @@ export function sanitizeStreamingChunk(parsed: unknown): unknown {
   // Keep only standard fields — normalize id to string to avoid AI_InvalidResponseDataError
   if (parsedRecord.id !== undefined && parsedRecord.id !== null) {
     sanitized.id = normalizeResponseId(
-      typeof parsedRecord.id === "string" ? parsedRecord.id : String(parsedRecord.id)
+      typeof parsedRecord.id === "string" ? parsedRecord.id : String(parsedRecord.id),
     );
   }
   sanitized.object = toString(parsedRecord.object) || "chat.completion.chunk";

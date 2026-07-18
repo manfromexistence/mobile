@@ -40,7 +40,7 @@ describe("effectiveMaxConcurrency", () => {
     assert.equal(
       effectiveMaxConcurrency(2.9, 3),
       2,
-      "fractional caps floor to whole concurrency slots"
+      "fractional caps floor to whole concurrency slots",
     );
   });
 });

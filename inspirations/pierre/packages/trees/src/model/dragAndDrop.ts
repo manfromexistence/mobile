@@ -4,7 +4,7 @@ import type {
   FileTreeDropResult,
   FileTreeDropTarget,
   FileTreePublicId,
-} from './publicTypes';
+} from "./publicTypes";
 
 export interface FileTreeDragSession {
   draggedPaths: readonly FileTreePublicId[];
@@ -13,21 +13,20 @@ export interface FileTreeDragSession {
 }
 
 function isCanonicalDirectoryPath(path: string): boolean {
-  return path.endsWith('/');
+  return path.endsWith("/");
 }
 
 function getPathBasename(path: string): string {
-  const trimmedPath = path.endsWith('/') ? path.slice(0, -1) : path;
-  const lastSlashIndex = trimmedPath.lastIndexOf('/');
-  const basename =
-    lastSlashIndex < 0 ? trimmedPath : trimmedPath.slice(lastSlashIndex + 1);
-  return path.endsWith('/') ? `${basename}/` : basename;
+  const trimmedPath = path.endsWith("/") ? path.slice(0, -1) : path;
+  const lastSlashIndex = trimmedPath.lastIndexOf("/");
+  const basename = lastSlashIndex < 0 ? trimmedPath : trimmedPath.slice(lastSlashIndex + 1);
+  return path.endsWith("/") ? `${basename}/` : basename;
 }
 
 // Multi-select drags should move each subtree once, even when callers selected
 // both a folder and descendants inside that same folder.
 export function normalizeDraggedPaths(
-  paths: readonly FileTreePublicId[]
+  paths: readonly FileTreePublicId[],
 ): readonly FileTreePublicId[] {
   const uniquePaths: FileTreePublicId[] = [];
   const seenPaths = new Set<FileTreePublicId>();
@@ -47,11 +46,11 @@ export function normalizeDraggedPaths(
 
     return left.localeCompare(right);
   })) {
-    const trimmedPath = path.endsWith('/') ? path.slice(0, -1) : path;
-    const segments = trimmedPath.split('/');
+    const trimmedPath = path.endsWith("/") ? path.slice(0, -1) : path;
+    const segments = trimmedPath.split("/");
     let hasSelectedAncestor = false;
     for (let index = 0; index < segments.length - 1; index += 1) {
-      const ancestorPath = `${segments.slice(0, index + 1).join('/')}/`;
+      const ancestorPath = `${segments.slice(0, index + 1).join("/")}/`;
       if (!keptPaths.has(ancestorPath)) {
         continue;
       }
@@ -72,16 +71,14 @@ export function normalizeDraggedPaths(
 
 export function resolveDraggedPathsForStart(
   path: FileTreePublicId,
-  selectedPaths: readonly FileTreePublicId[]
+  selectedPaths: readonly FileTreePublicId[],
 ): readonly FileTreePublicId[] {
-  return selectedPaths.includes(path)
-    ? normalizeDraggedPaths(selectedPaths)
-    : [path];
+  return selectedPaths.includes(path) ? normalizeDraggedPaths(selectedPaths) : [path];
 }
 
 export function dropTargetsEqual(
   left: FileTreeDropTarget | null,
-  right: FileTreeDropTarget | null
+  right: FileTreeDropTarget | null,
 ): boolean {
   if (left === right) {
     return true;
@@ -101,7 +98,7 @@ export function dropTargetsEqual(
 
 export function createDropContext(
   draggedPaths: readonly FileTreePublicId[],
-  target: FileTreeDropTarget
+  target: FileTreeDropTarget,
 ): FileTreeDropContext {
   return {
     draggedPaths,
@@ -111,9 +108,9 @@ export function createDropContext(
 
 export function isSelfOrDescendantDrop(
   draggedPaths: readonly FileTreePublicId[],
-  target: FileTreeDropTarget
+  target: FileTreeDropTarget,
 ): boolean {
-  if (target.kind !== 'directory' || target.directoryPath == null) {
+  if (target.kind !== "directory" || target.directoryPath == null) {
     return false;
   }
 
@@ -122,10 +119,7 @@ export function isSelfOrDescendantDrop(
       continue;
     }
 
-    if (
-      target.directoryPath === draggedPath ||
-      target.directoryPath.startsWith(draggedPath)
-    ) {
+    if (target.directoryPath === draggedPath || target.directoryPath.startsWith(draggedPath)) {
       return true;
     }
   }
@@ -135,9 +129,9 @@ export function isSelfOrDescendantDrop(
 
 function resolveMoveDestinationPath(
   sourcePath: FileTreePublicId,
-  target: FileTreeDropTarget
+  target: FileTreeDropTarget,
 ): FileTreePublicId {
-  if (target.kind === 'root' || target.directoryPath == null) {
+  if (target.kind === "root" || target.directoryPath == null) {
     return getPathBasename(sourcePath);
   }
 
@@ -146,7 +140,7 @@ function resolveMoveDestinationPath(
 
 export function buildDropOperations(
   draggedPaths: readonly FileTreePublicId[],
-  target: FileTreeDropTarget
+  target: FileTreeDropTarget,
 ): {
   operations: readonly FileTreeBatchOperation[];
   result: FileTreeDropResult;
@@ -165,16 +159,12 @@ export function buildDropOperations(
       return {
         from: draggedPath,
         to: destinationPath,
-        type: 'move',
+        type: "move",
       } satisfies FileTreeBatchOperation;
     })
-    .filter(
-      (
-        operation
-      ): operation is Extract<FileTreeBatchOperation, { type: 'move' }> => {
-        return operation != null;
-      }
-    );
+    .filter((operation): operation is Extract<FileTreeBatchOperation, { type: "move" }> => {
+      return operation != null;
+    });
 
   if (operations.length === 0) {
     return null;
@@ -184,7 +174,7 @@ export function buildDropOperations(
     operations,
     result: {
       draggedPaths,
-      operation: operations.length === 1 ? 'move' : 'batch',
+      operation: operations.length === 1 ? "move" : "batch",
       target,
     },
   };

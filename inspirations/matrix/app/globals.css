@@ -141,9 +141,24 @@
 }
 
 :root {
-  --loader-mask-a: linear-gradient(45deg, rgba(0, 0, 0, 0) 35%, var(--loader-mask-diagonal) 50%, rgba(0, 0, 0, 0) 65%);
-  --loader-mask-b: linear-gradient(135deg, rgba(0, 0, 0, 0) 35%, var(--loader-mask-diagonal) 50%, rgba(0, 0, 0, 0) 65%);
-  --loader-mask-c: linear-gradient(to bottom, rgba(0, 0, 0, 0) 10%, var(--loader-mask-diagonal) 50%, rgba(0, 0, 0, 0) 90%);
+  --loader-mask-a: linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0) 35%,
+    var(--loader-mask-diagonal) 50%,
+    rgba(0, 0, 0, 0) 65%
+  );
+  --loader-mask-b: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0) 35%,
+    var(--loader-mask-diagonal) 50%,
+    rgba(0, 0, 0, 0) 65%
+  );
+  --loader-mask-c: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 10%,
+    var(--loader-mask-diagonal) 50%,
+    rgba(0, 0, 0, 0) 90%
+  );
 }
 
 :root[data-theme="dark"] {
@@ -251,13 +266,7 @@ main {
 
 code,
 pre {
-  font-family:
-    var(--font-geist-mono),
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Monaco,
-    Consolas,
+  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     monospace;
 }
 
@@ -322,7 +331,6 @@ body[data-playground-route="true"]
   padding-bottom: 12px !important;
 }
 
-
 .dialkit-root,
 .dialkit-root[data-theme="system"] {
   color: var(--foreground);
@@ -378,7 +386,9 @@ body[data-playground-route="true"]
   padding: 0;
 }
 
-.dialkit-panel-inner:not([data-collapsed="true"]) .dialkit-folder:not(.dialkit-folder-root) > .dialkit-folder-header {
+.dialkit-panel-inner:not([data-collapsed="true"])
+  .dialkit-folder:not(.dialkit-folder-root)
+  > .dialkit-folder-header {
   padding-left: 0.45rem;
   padding-right: 0.5rem;
 }
@@ -456,9 +466,7 @@ body[data-playground-route="true"]
   color: var(--foreground) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
-  transition:
-    opacity 150ms ease-out,
-    color 150ms ease-out;
+  transition: opacity 150ms ease-out, color 150ms ease-out;
 }
 
 .dialkit-panel-inner[data-collapsed="true"]:hover {

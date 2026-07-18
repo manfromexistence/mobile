@@ -33,7 +33,7 @@ test("#5083 connect-src permits the bare ws: scheme for non-loopback dashboards"
   assert.match(
     connectSrc,
     /(^|\s)ws:(\s|$)/,
-    `connect-src must allow the bare ws: scheme; got: ${connectSrc}`
+    `connect-src must allow the bare ws: scheme; got: ${connectSrc}`,
   );
 });
 
@@ -47,7 +47,7 @@ test("#5083 connect-src still scopes 'self' and explicit loopback origins", () =
   assert.ok(connectSrc.includes("'self'"), "connect-src must still include 'self'");
   assert.ok(
     connectSrc.includes("ws://localhost:*") && connectSrc.includes("ws://127.0.0.1:*"),
-    "explicit loopback ws origins must remain listed"
+    "explicit loopback ws origins must remain listed",
   );
 });
 
@@ -59,7 +59,11 @@ test("#5083 fix does NOT introduce a global Next.js middleware", () => {
   } catch {
     exists = false;
   }
-  assert.equal(exists, false, "src/middleware.ts must not exist (no global middleware — see CLAUDE.md)");
+  assert.equal(
+    exists,
+    false,
+    "src/middleware.ts must not exist (no global middleware — see CLAUDE.md)",
+  );
 });
 
 test("#5083 baseline security directives remain intact in the CSP", () => {

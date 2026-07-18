@@ -79,7 +79,7 @@ export async function POST(request: Request) {
         body_part: "index.js",
         compatibility_date: "2026-03-20",
         observability: { enabled: true },
-      }
+      },
     );
 
     const uploadRes = await fetch(workerScriptUrl, {
@@ -132,7 +132,7 @@ export async function POST(request: Request) {
           Authorization: `Bearer ${apiToken}`,
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     let deployUrl = "";

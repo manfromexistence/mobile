@@ -45,7 +45,7 @@ export function selectWeightedTarget<T extends { weight?: number }>(targets: T[]
 export function orderTargetsForWeightedFallback<T extends { executionKey: string; weight: number }>(
   targets: T[],
   selectedExecutionKey: string,
-  preserveExistingOrder = false
+  preserveExistingOrder = false,
 ): T[] {
   const selected = targets.find((target) => target.executionKey === selectedExecutionKey);
   const rest = targets.filter((target) => target.executionKey !== selectedExecutionKey);
@@ -78,7 +78,7 @@ export async function sortModelsByCost(models: string[]): Promise<string[]> {
         } catch {
           return { modelStr, cost: Infinity };
         }
-      })
+      }),
     );
     withCost.sort((a, b) => a.cost - b.cost);
     return withCost.map((e) => e.modelStr);
@@ -125,7 +125,7 @@ export function sortModelsByUsage(models: string[], comboName: string): string[]
 export function sortTargetsByUsage(targets: ResolvedComboTarget[], comboName: string) {
   const orderedModels = sortModelsByUsage(
     targets.map((target) => target.modelStr),
-    comboName
+    comboName,
   );
   const byModel = new Map<string, ResolvedComboTarget[]>();
   for (const target of targets) {
@@ -143,7 +143,7 @@ export function sortTargetsByUsage(targets: ResolvedComboTarget[], comboName: st
 
 function getP2CTargetScore(
   target: ResolvedComboTarget,
-  metrics: ReturnType<typeof getComboMetrics>
+  metrics: ReturnType<typeof getComboMetrics>,
 ): number {
   const breakerState = getCircuitBreaker(target.provider)?.getStatus?.()?.state;
   if (breakerState === "OPEN") return -Infinity;

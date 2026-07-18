@@ -1,26 +1,15 @@
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  describe,
-  expect,
-  test,
-} from 'bun:test';
+import { afterAll, afterEach, beforeAll, describe, expect, test } from "bun:test";
 
-import { disposeHighlighter } from '../src/highlighter/shared_highlighter';
-import type {
-  InitializeWorkerRequest,
-  WorkerRequest,
-  WorkerResponse,
-} from '../src/worker/types';
-import { WorkerPoolManager } from '../src/worker/WorkerPoolManager';
+import { disposeHighlighter } from "../src/highlighter/shared_highlighter";
+import type { InitializeWorkerRequest, WorkerRequest, WorkerResponse } from "../src/worker/types";
+import { WorkerPoolManager } from "../src/worker/WorkerPoolManager";
 
 const originalRequestAnimationFrame =
-  typeof globalThis.requestAnimationFrame === 'function'
+  typeof globalThis.requestAnimationFrame === "function"
     ? globalThis.requestAnimationFrame
     : undefined;
 const originalCancelAnimationFrame =
-  typeof globalThis.cancelAnimationFrame === 'function'
+  typeof globalThis.cancelAnimationFrame === "function"
     ? globalThis.cancelAnimationFrame
     : undefined;
 let nextFrameId = 0;
@@ -55,12 +44,12 @@ afterAll(() => {
   if (originalRequestAnimationFrame != null) {
     globalThis.requestAnimationFrame = originalRequestAnimationFrame;
   } else {
-    Reflect.deleteProperty(globalThis, 'requestAnimationFrame');
+    Reflect.deleteProperty(globalThis, "requestAnimationFrame");
   }
   if (originalCancelAnimationFrame != null) {
     globalThis.cancelAnimationFrame = originalCancelAnimationFrame;
   } else {
-    Reflect.deleteProperty(globalThis, 'cancelAnimationFrame');
+    Reflect.deleteProperty(globalThis, "cancelAnimationFrame");
   }
 });
 
@@ -68,14 +57,14 @@ afterEach(async () => {
   await disposeHighlighter();
 });
 
-describe('WorkerPoolManager lifecycle', () => {
-  test('ignores stale initialization after terminate', async () => {
+describe("WorkerPoolManager lifecycle", () => {
+  test("ignores stale initialization after terminate", async () => {
     const { initialization, manager, worker } = createInitializingManager();
     const request = await worker.waitForInitializeRequest();
 
     worker.respond({
-      type: 'success',
-      requestType: 'initialize',
+      type: "success",
+      requestType: "initialize",
       id: request.id,
       sentAt: Date.now(),
     });
@@ -83,7 +72,7 @@ describe('WorkerPoolManager lifecycle', () => {
 
     await withTimeout(initialization);
     expect(manager.getStats()).toMatchObject({
-      managerState: 'waiting',
+      managerState: "waiting",
       activeTasks: 0,
       totalWorkers: 0,
       workersFailed: false,
@@ -91,7 +80,7 @@ describe('WorkerPoolManager lifecycle', () => {
     expect(worker.terminated).toBe(true);
   });
 
-  test('settles initialization when terminate cancels active worker setup', async () => {
+  test("settles initialization when terminate cancels active worker setup", async () => {
     const { initialization, manager, worker } = createInitializingManager();
     await worker.waitForInitializeRequest();
 
@@ -99,7 +88,7 @@ describe('WorkerPoolManager lifecycle', () => {
 
     await withTimeout(initialization);
     expect(manager.getStats()).toMatchObject({
-      managerState: 'waiting',
+      managerState: "waiting",
       activeTasks: 0,
       totalWorkers: 0,
       workersFailed: false,
@@ -121,9 +110,9 @@ function createInitializingManager(): {
     },
     {
       langs: [],
-      preferredHighlighter: 'shiki-js',
-      theme: 'github-dark',
-    }
+      preferredHighlighter: "shiki-js",
+      theme: "github-dark",
+    },
   );
   return {
     initialization: manager.initialize(),
@@ -135,28 +124,20 @@ function createInitializingManager(): {
 class TestWorker {
   terminated = false;
   private initializeRequest: InitializeWorkerRequest | undefined;
-  private initializeRequestResolve:
-    | ((request: InitializeWorkerRequest) => void)
-    | undefined;
-  private readonly initializeRequestPromise =
-    new Promise<InitializeWorkerRequest>((resolve) => {
-      this.initializeRequestResolve = resolve;
-    });
-  private readonly messageListeners = new Set<
-    (event: MessageEvent<WorkerResponse>) => void
-  >();
+  private initializeRequestResolve: ((request: InitializeWorkerRequest) => void) | undefined;
+  private readonly initializeRequestPromise = new Promise<InitializeWorkerRequest>((resolve) => {
+    this.initializeRequestResolve = resolve;
+  });
+  private readonly messageListeners = new Set<(event: MessageEvent<WorkerResponse>) => void>();
 
-  addEventListener(
-    type: string,
-    listener: (event: MessageEvent<WorkerResponse>) => void
-  ): void {
-    if (type === 'message') {
+  addEventListener(type: string, listener: (event: MessageEvent<WorkerResponse>) => void): void {
+    if (type === "message") {
       this.messageListeners.add(listener);
     }
   }
 
   postMessage(request: WorkerRequest): void {
-    if (request.type !== 'initialize') {
+    if (request.type !== "initialize") {
       return;
     }
     this.initializeRequest = request;
@@ -181,7 +162,7 @@ class TestWorker {
 function withTimeout<T>(promise: Promise<T>): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     const timeout = setTimeout(() => {
-      reject(new Error('Timed out waiting for promise to settle'));
+      reject(new Error("Timed out waiting for promise to settle"));
     }, 5_000);
 
     promise.then(resolve, reject).finally(() => {

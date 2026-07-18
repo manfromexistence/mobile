@@ -1,21 +1,25 @@
-import { expect, type Page } from "@playwright/test"
-import { classifySessionSwitch, isStableDestination, type SessionSwitchSample } from "./session-tab-switch-metrics"
+import { expect, type Page } from "@playwright/test";
+import {
+  classifySessionSwitch,
+  isStableDestination,
+  type SessionSwitchSample,
+} from "./session-tab-switch-metrics";
 
 type SessionSwitchProbe = {
-  samples: SessionSwitchSample[]
-  stop: () => void
-}
+  samples: SessionSwitchSample[];
+  stop: () => void;
+};
 
 async function installSessionSwitchProbe(
   page: Page,
   input: { destinationIDs: string[]; sourceIDs: string[]; lastID: string; href: string },
 ) {
   await page.evaluate(({ destinationIDs, sourceIDs, lastID, href }) => {
-    const destination = new Set(destinationIDs)
-    const source = new Set(sourceIDs)
-    const samples: SessionSwitchSample[] = []
-    let started: number | undefined
-    let running = true
+    const destination = new Set(destinationIDs);
+    const source = new Set(sourceIDs);
+    const samples: SessionSwitchSample[] = [];
+    let started: number | undefined;
+    let running = true;
     const reviewLevels: Record<string, string> = {
       panel: "#review-panel",
       tabs: '#review-panel [data-component="tabs"]',
@@ -24,49 +28,54 @@ async function installSessionSwitchProbe(
       preview: '#review-panel [data-slot="session-review-v2-preview"]',
       scroll: '#review-panel [data-slot="session-review-v2-diff-scroll"]',
       file: '#review-panel [data-component="file"][data-mode="diff"]',
-    }
-    const initialReviewNodes: Record<string, Element | null> = {}
+    };
+    const initialReviewNodes: Record<string, Element | null> = {};
     const sample = () => {
-      if (!running || started === undefined) return
+      if (!running || started === undefined) return;
       setTimeout(() => {
-        if (!running || started === undefined) return
-        const observedAtMs = performance.now() - started
-        const reviewPanel = document.querySelector<HTMLElement>("#review-panel")
-        const reviewFile = reviewPanel?.querySelector('[data-component="file"][data-mode="diff"]')
-        const initialReviewFile = initialReviewNodes.file
+        if (!running || started === undefined) return;
+        const observedAtMs = performance.now() - started;
+        const reviewPanel = document.querySelector<HTMLElement>("#review-panel");
+        const reviewFile = reviewPanel?.querySelector('[data-component="file"][data-mode="diff"]');
+        const initialReviewFile = initialReviewNodes.file;
         const replacedLevels = Object.entries(reviewLevels).flatMap(([name, selector]) => {
-          const initial = initialReviewNodes[name]
-          if (!initial) return []
-          const current = document.querySelector(selector)
-          return current && current !== initial ? [name] : []
-        })
+          const initial = initialReviewNodes[name];
+          if (!initial) return [];
+          const current = document.querySelector(selector);
+          return current && current !== initial ? [name] : [];
+        });
         const review = reviewPanel
           ? {
               fileHost: !!reviewFile,
-              fileHostReplaced: !!initialReviewFile && !!reviewFile && reviewFile !== initialReviewFile,
+              fileHostReplaced:
+                !!initialReviewFile && !!reviewFile && reviewFile !== initialReviewFile,
               header:
                 reviewPanel
                   .querySelector<HTMLElement>('[data-slot="session-review-v2-file-header"]')
                   ?.textContent?.trim() ?? "",
               replacedLevels,
             }
-          : undefined
-        const root = [...document.querySelectorAll<HTMLElement>(".scroll-view__viewport")].find((element) =>
-          element.querySelector("[data-timeline-row]"),
-        )
+          : undefined;
+        const root = [...document.querySelectorAll<HTMLElement>(".scroll-view__viewport")].find(
+          (element) => element.querySelector("[data-timeline-row]"),
+        );
         if (root) {
-          const view = root.getBoundingClientRect()
+          const view = root.getBoundingClientRect();
           const visible = [...root.querySelectorAll<HTMLElement>("[data-message-id]")]
             .filter((element) => {
-              const rect = element.getBoundingClientRect()
-              return rect.bottom > view.top && rect.top < view.bottom
+              const rect = element.getBoundingClientRect();
+              return rect.bottom > view.top && rect.top < view.bottom;
             })
-            .map((element) => element.dataset.messageId!)
-          const hasVisibleRows = [...root.querySelectorAll<HTMLElement>("[data-timeline-key]")].some((element) => {
-            const rect = element.getBoundingClientRect()
-            return rect.bottom > view.top && rect.top < view.bottom
-          })
-          const spacer = root.querySelector<HTMLElement>('[data-timeline-row="bottom-spacer"]')?.getBoundingClientRect()
+            .map((element) => element.dataset.messageId!);
+          const hasVisibleRows = [
+            ...root.querySelectorAll<HTMLElement>("[data-timeline-key]"),
+          ].some((element) => {
+            const rect = element.getBoundingClientRect();
+            return rect.bottom > view.top && rect.top < view.bottom;
+          });
+          const spacer = root
+            .querySelector<HTMLElement>('[data-timeline-row="bottom-spacer"]')
+            ?.getBoundingClientRect();
           samples.push({
             observedAtMs,
             destination: visible.filter((id) => destination.has(id)),
@@ -75,41 +84,49 @@ async function installSessionSwitchProbe(
             last: visible.includes(lastID),
             bottomErrorPx: spacer ? spacer.bottom - view.bottom : undefined,
             review,
-          })
+          });
         } else {
-          samples.push({ observedAtMs, destination: [], source: [], hasVisibleRows: false, last: false, review })
+          samples.push({
+            observedAtMs,
+            destination: [],
+            source: [],
+            hasVisibleRows: false,
+            last: false,
+            review,
+          });
         }
-        requestAnimationFrame(sample)
-      }, 0)
-    }
+        requestAnimationFrame(sample);
+      }, 0);
+    };
     document.addEventListener(
       "click",
       (event) => {
-        const link = event.target instanceof Element ? event.target.closest("a") : undefined
-        if (link?.getAttribute("href") !== href) return
-        started = performance.now()
+        const link = event.target instanceof Element ? event.target.closest("a") : undefined;
+        if (link?.getAttribute("href") !== href) return;
+        started = performance.now();
         for (const [name, selector] of Object.entries(reviewLevels)) {
-          initialReviewNodes[name] = document.querySelector(selector)
+          initialReviewNodes[name] = document.querySelector(selector);
         }
-        requestAnimationFrame(sample)
+        requestAnimationFrame(sample);
       },
       { capture: true, once: true },
-    )
-    ;(window as Window & { __sessionSwitchProbe?: SessionSwitchProbe }).__sessionSwitchProbe = {
+    );
+    (window as Window & { __sessionSwitchProbe?: SessionSwitchProbe }).__sessionSwitchProbe = {
       samples,
       stop: () => {
-        running = false
+        running = false;
       },
-    }
-  }, input)
+    };
+  }, input);
 }
 
 async function waitForStableSessionSwitch(page: Page) {
   await page.waitForFunction(() => {
-    const samples = (window as Window & { __sessionSwitchProbe?: SessionSwitchProbe }).__sessionSwitchProbe?.samples
-    if (!samples) return false
+    const samples = (window as Window & { __sessionSwitchProbe?: SessionSwitchProbe })
+      .__sessionSwitchProbe?.samples;
+    if (!samples) return false;
     return samples.some((_, index) => {
-      const stable = samples.slice(index, index + 3)
+      const stable = samples.slice(index, index + 3);
       return (
         stable.length === 3 &&
         stable.every(
@@ -119,33 +136,40 @@ async function waitForStableSessionSwitch(page: Page) {
             sample.last &&
             Math.abs(sample.bottomErrorPx ?? Infinity) <= 1,
         )
-      )
-    })
-  })
+      );
+    });
+  });
 }
 
 async function collectSessionSwitchResult(page: Page) {
   const samples = await page.evaluate(() => {
-    const probe = (window as Window & { __sessionSwitchProbe?: SessionSwitchProbe }).__sessionSwitchProbe!
-    probe.stop()
-    return probe.samples
-  })
-  return classifySessionSwitch(samples)
+    const probe = (window as Window & { __sessionSwitchProbe?: SessionSwitchProbe })
+      .__sessionSwitchProbe!;
+    probe.stop();
+    return probe.samples;
+  });
+  return classifySessionSwitch(samples);
 }
 
 export async function measureSessionSwitch(
   page: Page,
-  input: { destinationIDs: string[]; sourceIDs: string[]; lastID: string; href: string; switch: () => Promise<void> },
+  input: {
+    destinationIDs: string[];
+    sourceIDs: string[];
+    lastID: string;
+    href: string;
+    switch: () => Promise<void>;
+  },
 ) {
-  const { switch: run, ...probe } = input
-  await installSessionSwitchProbe(page, probe)
-  await run()
-  await waitForStableSessionSwitch(page)
-  return collectSessionSwitchResult(page)
+  const { switch: run, ...probe } = input;
+  await installSessionSwitchProbe(page, probe);
+  await run();
+  await waitForStableSessionSwitch(page);
+  return collectSessionSwitchResult(page);
 }
 
 export async function waitForStableTimeline(page: Page, lastID: string) {
-  const samples: Pick<SessionSwitchSample, "last" | "bottomErrorPx">[] = []
+  const samples: Pick<SessionSwitchSample, "last" | "bottomErrorPx">[] = [];
   await expect
     .poll(
       async () => {
@@ -155,32 +179,37 @@ export async function waitForStableTimeline(page: Page, lastID: string) {
               new Promise<Pick<SessionSwitchSample, "last" | "bottomErrorPx">>((resolve) => {
                 requestAnimationFrame(() =>
                   setTimeout(() => {
-                    const root = [...document.querySelectorAll<HTMLElement>(".scroll-view__viewport")].find((element) =>
-                      element.querySelector("[data-timeline-row]"),
-                    )
+                    const root = [
+                      ...document.querySelectorAll<HTMLElement>(".scroll-view__viewport"),
+                    ].find((element) => element.querySelector("[data-timeline-row]"));
                     if (!root) {
-                      resolve({ last: false })
-                      return
+                      resolve({ last: false });
+                      return;
                     }
-                    const view = root.getBoundingClientRect()
-                    const last = [...root.querySelectorAll<HTMLElement>("[data-message-id]")].some((element) => {
-                      if (element.dataset.messageId !== lastID) return false
-                      const rect = element.getBoundingClientRect()
-                      return rect.bottom > view.top && rect.top < view.bottom
-                    })
+                    const view = root.getBoundingClientRect();
+                    const last = [...root.querySelectorAll<HTMLElement>("[data-message-id]")].some(
+                      (element) => {
+                        if (element.dataset.messageId !== lastID) return false;
+                        const rect = element.getBoundingClientRect();
+                        return rect.bottom > view.top && rect.top < view.bottom;
+                      },
+                    );
                     const spacer = root
                       .querySelector<HTMLElement>('[data-timeline-row="bottom-spacer"]')
-                      ?.getBoundingClientRect()
-                    resolve({ last, bottomErrorPx: spacer ? spacer.bottom - view.bottom : undefined })
+                      ?.getBoundingClientRect();
+                    resolve({
+                      last,
+                      bottomErrorPx: spacer ? spacer.bottom - view.bottom : undefined,
+                    });
                   }, 0),
-                )
+                );
               }),
             lastID,
           ),
-        )
-        return isStableDestination(samples.slice(-3))
+        );
+        return isStableDestination(samples.slice(-3));
       },
       { timeout: 30_000, intervals: [0] },
     )
-    .toBe(true)
+    .toBe(true);
 }

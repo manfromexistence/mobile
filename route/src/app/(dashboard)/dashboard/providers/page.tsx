@@ -92,7 +92,7 @@ function providerText(
   t: ProviderMessageTranslator,
   key: string,
   fallback: string,
-  values?: Record<string, unknown>
+  values?: Record<string, unknown>,
 ): string {
   if (typeof t.has === "function" && t.has(key)) {
     return t(key, values);
@@ -100,7 +100,7 @@ function providerText(
   if (values) {
     return Object.entries(values).reduce(
       (acc, [name, value]) => acc.replaceAll(`{${name}}`, String(value)),
-      fallback
+      fallback,
     );
   }
   return fallback;
@@ -215,7 +215,7 @@ export default function ProvidersPage() {
   const webCookieProvidersDesc = providerText(
     t,
     "webCookieProvidersDesc",
-    "These providers use browser web sessions, cookies, or web tokens instead of API keys. Open a provider to add the required session credential."
+    "These providers use browser web sessions, cookies, or web tokens instead of API keys. Open a provider to add the required session credential.",
   );
   const ccCompatibleLabel = t("ccCompatibleLabel");
   const addCcCompatibleLabel = t("addCcCompatible");
@@ -307,7 +307,7 @@ export default function ProvidersPage() {
         throw new Error(data.error || t("repairEnvFailed"));
       }
       notify.success(
-        data.backupPath ? `${t("repairEnvSuccess")} (${data.backupPath})` : t("repairEnvSuccess")
+        data.backupPath ? `${t("repairEnvSuccess")} (${data.backupPath})` : t("repairEnvSuccess"),
       );
       await fetchOauthEnvRepairStatus();
     } catch (error) {
@@ -319,7 +319,7 @@ export default function ProvidersPage() {
 
   const getProviderStats = (providerId, authType) => {
     const providerConnections = connections.filter((c) =>
-      connectionMatchesProviderCard(c, providerId, authType)
+      connectionMatchesProviderCard(c, providerId, authType),
     );
 
     // Helper: check if connection is effectively active (cooldown expired)
@@ -348,7 +348,7 @@ export default function ProvidersPage() {
     // Get latest error info
     const latestError = errorConns.sort(
       (a: any, b: any) =>
-        (new Date(b.lastErrorAt || 0) as any) - (new Date(a.lastErrorAt || 0) as any)
+        (new Date(b.lastErrorAt || 0) as any) - (new Date(a.lastErrorAt || 0) as any),
     )[0];
     const errorCode = latestError ? getConnectionErrorTag(latestError) : null;
     const errorTime = latestError?.lastErrorAt ? getRelativeTime(latestError.lastErrorAt) : null;
@@ -366,9 +366,9 @@ export default function ProvidersPage() {
       ...new Set(
         providerConnections
           .map((connection) =>
-            getCodexEffectiveServiceTier(connection.providerSpecificData, "none")
+            getCodexEffectiveServiceTier(connection.providerSpecificData, "none"),
           )
-          .filter((tier) => tier !== "default")
+          .filter((tier) => tier !== "default"),
       ),
     ];
     const codexServiceTier =
@@ -383,7 +383,8 @@ export default function ProvidersPage() {
     // Count API keys in "warning" state across all connections
     const warning = providerConnections.reduce((warnCount, conn) => {
       const health = (conn as any).providerSpecificData?.apiKeyHealth as
-        Record<string, { status: string }> | undefined;
+        | Record<string, { status: string }>
+        | undefined;
       if (!health) return warnCount;
       return warnCount + Object.values(health).filter((h) => h.status === "warning").length;
     }, 0);
@@ -410,7 +411,7 @@ export default function ProvidersPage() {
     const providerConns = connections.filter(matchesToggle);
     // Optimistically update UI
     setConnections((prev) =>
-      prev.map((c) => (matchesToggle(c) ? { ...c, isActive: newActive } : c))
+      prev.map((c) => (matchesToggle(c) ? { ...c, isActive: newActive } : c)),
     );
     // Fire API calls in parallel
     await Promise.allSettled(
@@ -419,8 +420,8 @@ export default function ProvidersPage() {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ isActive: newActive }),
-        })
-      )
+        }),
+      ),
     );
   };
 
@@ -476,7 +477,7 @@ export default function ProvidersPage() {
         anthropicCompatibleName: t("anthropicCompatibleName"),
         claudeCodeCompatibleName: ccCompatibleLabel,
       }),
-    [ccCompatibleLabel, providerNodes, t]
+    [ccCompatibleLabel, providerNodes, t],
   );
   const compatibleProviders = compatibleProviderGroups.openai;
   const anthropicCompatibleProviders = compatibleProviderGroups.anthropic;
@@ -486,7 +487,7 @@ export default function ProvidersPage() {
     providerDisplayMode === "configured" && connections.length === 0 ? "all" : providerDisplayMode;
   const effectiveShowConfiguredOnly = shouldFilterProviderEntriesForDisplayMode(
     effectiveProviderDisplayMode,
-    connections.length
+    connections.length,
   );
   const isCompactProviderDisplay = effectiveProviderDisplayMode === "compact";
 
@@ -497,7 +498,7 @@ export default function ProvidersPage() {
     searchQuery,
     showFreeOnly,
     modelSearchQuery,
-    activeServiceKind
+    activeServiceKind,
   );
 
   const rawNoAuthEntriesAll = buildStaticProviderEntries("no-auth", getProviderStats);
@@ -514,7 +515,7 @@ export default function ProvidersPage() {
     searchQuery,
     showFreeOnly,
     modelSearchQuery,
-    activeServiceKind
+    activeServiceKind,
   );
 
   const apiKeyProviderEntriesAll = buildStaticProviderEntries("apikey", getProviderStats);
@@ -524,7 +525,7 @@ export default function ProvidersPage() {
       !AGGREGATOR_PROVIDER_IDS.has(entry.providerId) &&
       !ENTERPRISE_CLOUD_PROVIDER_IDS.has(entry.providerId) &&
       !VIDEO_PROVIDER_IDS.has(entry.providerId) &&
-      !EMBEDDING_RERANK_PROVIDER_IDS.has(entry.providerId)
+      !EMBEDDING_RERANK_PROVIDER_IDS.has(entry.providerId),
   );
   const llmProviderEntries = filterConfiguredProviderEntries(
     llmProviderEntriesAll,
@@ -532,10 +533,10 @@ export default function ProvidersPage() {
     searchQuery,
     showFreeOnly,
     modelSearchQuery,
-    activeServiceKind
+    activeServiceKind,
   );
   const aggregatorProviderEntriesAll = apiKeyProviderEntriesAll.filter((entry) =>
-    AGGREGATOR_PROVIDER_IDS.has(entry.providerId)
+    AGGREGATOR_PROVIDER_IDS.has(entry.providerId),
   );
   const aggregatorProviderEntries = filterConfiguredProviderEntries(
     aggregatorProviderEntriesAll,
@@ -543,10 +544,10 @@ export default function ProvidersPage() {
     searchQuery,
     showFreeOnly,
     modelSearchQuery,
-    activeServiceKind
+    activeServiceKind,
   );
   const imageProviderEntriesAll = apiKeyProviderEntriesAll.filter((entry) =>
-    IMAGE_ONLY_PROVIDER_IDS.has(entry.providerId)
+    IMAGE_ONLY_PROVIDER_IDS.has(entry.providerId),
   );
   const imageProviderEntries = filterConfiguredProviderEntries(
     imageProviderEntriesAll,
@@ -554,10 +555,10 @@ export default function ProvidersPage() {
     searchQuery,
     showFreeOnly,
     modelSearchQuery,
-    activeServiceKind
+    activeServiceKind,
   );
   const enterpriseProviderEntriesAll = apiKeyProviderEntriesAll.filter((entry) =>
-    ENTERPRISE_CLOUD_PROVIDER_IDS.has(entry.providerId)
+    ENTERPRISE_CLOUD_PROVIDER_IDS.has(entry.providerId),
   );
   const enterpriseProviderEntries = filterConfiguredProviderEntries(
     enterpriseProviderEntriesAll,
@@ -565,10 +566,10 @@ export default function ProvidersPage() {
     searchQuery,
     showFreeOnly,
     modelSearchQuery,
-    activeServiceKind
+    activeServiceKind,
   );
   const videoProviderEntriesAll = apiKeyProviderEntriesAll.filter((entry) =>
-    VIDEO_PROVIDER_IDS.has(entry.providerId)
+    VIDEO_PROVIDER_IDS.has(entry.providerId),
   );
   const videoProviderEntries = filterConfiguredProviderEntries(
     videoProviderEntriesAll,
@@ -576,10 +577,10 @@ export default function ProvidersPage() {
     searchQuery,
     showFreeOnly,
     modelSearchQuery,
-    activeServiceKind
+    activeServiceKind,
   );
   const embeddingRerankProviderEntriesAll = apiKeyProviderEntriesAll.filter((entry) =>
-    EMBEDDING_RERANK_PROVIDER_IDS.has(entry.providerId)
+    EMBEDDING_RERANK_PROVIDER_IDS.has(entry.providerId),
   );
   const embeddingRerankProviderEntries = filterConfiguredProviderEntries(
     embeddingRerankProviderEntriesAll,
@@ -587,7 +588,7 @@ export default function ProvidersPage() {
     searchQuery,
     showFreeOnly,
     modelSearchQuery,
-    activeServiceKind
+    activeServiceKind,
   );
 
   const webCookieProviderEntriesAll = buildStaticProviderEntries("web-cookie", getProviderStats);
@@ -597,7 +598,7 @@ export default function ProvidersPage() {
     searchQuery,
     showFreeOnly,
     modelSearchQuery,
-    activeServiceKind
+    activeServiceKind,
   );
 
   const localProviderEntriesAll = buildStaticProviderEntries("local", getProviderStats);
@@ -607,7 +608,7 @@ export default function ProvidersPage() {
     searchQuery,
     showFreeOnly,
     modelSearchQuery,
-    activeServiceKind
+    activeServiceKind,
   );
 
   const searchProviderEntriesAll = buildStaticProviderEntries("search", getProviderStats);
@@ -617,7 +618,7 @@ export default function ProvidersPage() {
     searchQuery,
     showFreeOnly,
     modelSearchQuery,
-    activeServiceKind
+    activeServiceKind,
   );
 
   const audioProviderEntriesAll = buildStaticProviderEntries("audio", getProviderStats);
@@ -627,7 +628,7 @@ export default function ProvidersPage() {
     searchQuery,
     showFreeOnly,
     modelSearchQuery,
-    activeServiceKind
+    activeServiceKind,
   );
 
   const cloudAgentProviderEntriesAll = buildStaticProviderEntries("cloud-agent", getProviderStats);
@@ -637,7 +638,7 @@ export default function ProvidersPage() {
     searchQuery,
     showFreeOnly,
     modelSearchQuery,
-    activeServiceKind
+    activeServiceKind,
   );
 
   const upstreamProxyEntriesAll = buildStaticProviderEntries("upstream-proxy", getProviderStats);
@@ -647,7 +648,7 @@ export default function ProvidersPage() {
     searchQuery,
     showFreeOnly,
     modelSearchQuery,
-    activeServiceKind
+    activeServiceKind,
   );
 
   const compatibleProviderEntriesAll = [
@@ -679,7 +680,7 @@ export default function ProvidersPage() {
     searchQuery,
     showFreeOnly,
     modelSearchQuery,
-    activeServiceKind
+    activeServiceKind,
   );
 
   const staticProviderEntriesAll = dedupeProviderEntries([
@@ -704,14 +705,14 @@ export default function ProvidersPage() {
     searchQuery,
     undefined,
     modelSearchQuery,
-    activeServiceKind
+    activeServiceKind,
   );
 
   // IDE providers: subset of oauth/apikey providers that are editors/IDEs with
   // built-in AI subscription. Rendered in a dedicated "IDE Providers" section
   // and excluded from the regular OAuth/API Key sections to avoid duplication.
   const ideProviderEntriesAll = [...oauthProviderEntriesAll, ...apiKeyProviderEntriesAll].filter(
-    (e) => IDE_PROVIDER_IDS.has(e.providerId)
+    (e) => IDE_PROVIDER_IDS.has(e.providerId),
   );
   const ideProviderEntries = filterConfiguredProviderEntries(
     ideProviderEntriesAll,
@@ -719,7 +720,7 @@ export default function ProvidersPage() {
     searchQuery,
     showFreeOnly,
     modelSearchQuery,
-    activeServiceKind
+    activeServiceKind,
   );
 
   const oauthOnlyEntriesAll = oauthProviderEntriesAll
@@ -731,7 +732,7 @@ export default function ProvidersPage() {
     [...staticProviderEntriesAll, ...compatibleProviderEntriesAll].filter((e) => {
       const p = e.provider as DashboardProviderInfo & { serviceKinds?: string[] };
       return p.serviceKinds?.includes("webFetch") === true;
-    }) as DashboardProviderEntry[]
+    }) as DashboardProviderEntry[],
   );
   const webFetchEntries = filterConfiguredProviderEntries(
     webFetchEntriesAll,
@@ -739,7 +740,7 @@ export default function ProvidersPage() {
     searchQuery,
     showFreeOnly,
     modelSearchQuery,
-    activeServiceKind
+    activeServiceKind,
   );
 
   const compactProviderEntries = buildCompactProviderEntriesForPage({
@@ -989,7 +990,7 @@ export default function ProvidersPage() {
                           handleToggleProvider(providerId, toggleAuthType, active)
                         }
                       />
-                    )
+                    ),
                   )}
                 </div>
               )}
@@ -1005,7 +1006,7 @@ export default function ProvidersPage() {
                   <span className="size-2.5 rounded-full bg-blue-500" title={t("oauthLabel")} />
                   <ProviderCountBadge
                     {...countConfigured(
-                      oauthProviderEntriesAll.filter((e) => !IDE_PROVIDER_IDS.has(e.providerId))
+                      oauthProviderEntriesAll.filter((e) => !IDE_PROVIDER_IDS.has(e.providerId)),
                     )}
                   />
                 </h2>
@@ -1121,7 +1122,7 @@ export default function ProvidersPage() {
                           handleToggleProvider(providerId, toggleAuthType, active)
                         }
                       />
-                    )
+                    ),
                   )}
                 </div>
               )}
@@ -1217,7 +1218,7 @@ export default function ProvidersPage() {
                         handleToggleProvider(providerId, toggleAuthType, active)
                       }
                     />
-                  )
+                  ),
                 )}
               </div>
             </div>
@@ -1270,7 +1271,7 @@ export default function ProvidersPage() {
                             handleToggleProvider(providerId, toggleAuthType, active)
                           }
                         />
-                      )
+                      ),
                     )}
                   </div>
                 </div>
@@ -1368,7 +1369,7 @@ export default function ProvidersPage() {
                         handleToggleProvider(providerId, toggleAuthType, active)
                       }
                     />
-                  )
+                  ),
                 )}
               </div>
             </div>
@@ -1401,7 +1402,7 @@ export default function ProvidersPage() {
                         handleToggleProvider(providerId, toggleAuthType, active)
                       }
                     />
-                  )
+                  ),
                 )}
               </div>
             </div>
@@ -1434,7 +1435,7 @@ export default function ProvidersPage() {
                         handleToggleProvider(providerId, toggleAuthType, active)
                       }
                     />
-                  )
+                  ),
                 )}
               </div>
             </div>
@@ -1484,7 +1485,7 @@ export default function ProvidersPage() {
                         handleToggleProvider(providerId, toggleAuthType, active)
                       }
                     />
-                  )
+                  ),
                 )}
               </div>
             </div>
@@ -1609,7 +1610,7 @@ export default function ProvidersPage() {
                         handleToggleProvider(providerId, toggleAuthType, active)
                       }
                     />
-                  )
+                  ),
                 )}
               </div>
             </div>
@@ -1642,7 +1643,7 @@ export default function ProvidersPage() {
                         handleToggleProvider(providerId, toggleAuthType, active)
                       }
                     />
-                  )
+                  ),
                 )}
               </div>
             </div>
@@ -1721,7 +1722,7 @@ export default function ProvidersPage() {
                         handleToggleProvider(providerId, toggleAuthType, active)
                       }
                     />
-                  )
+                  ),
                 )}
               </div>
             </div>

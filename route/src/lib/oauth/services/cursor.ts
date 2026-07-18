@@ -141,7 +141,7 @@ export class CursorService {
           payload += "=";
         }
         const decoded = JSON.parse(
-          Buffer.from(payload.replace(/-/g, "+").replace(/_/g, "/"), "base64").toString()
+          Buffer.from(payload.replace(/-/g, "+").replace(/_/g, "/"), "base64").toString(),
         );
         const email =
           typeof decoded.email === "string" && decoded.email.includes("@") ? decoded.email : null;
@@ -164,7 +164,7 @@ export class CursorService {
    */
   async fetchUserInfo(
     accessToken: string,
-    userId: string
+    userId: string,
   ): Promise<{ email: string | null; name: string | null; sub: string | null } | null> {
     if (!accessToken || !userId) return null;
     try {

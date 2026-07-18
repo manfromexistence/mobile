@@ -6,7 +6,5 @@ export interface DefaultExport<T> {
 // leaving bare theme objects untouched. ThemeLike values do not use a top-level
 // `default` key, so this heuristic is safe for theming loaders.
 export function unwrapDefault<T>(value: T | DefaultExport<T>): T {
-  return value !== null && typeof value === 'object' && 'default' in value
-    ? value.default
-    : value;
+  return value !== null && typeof value === "object" && "default" in value ? value.default : value;
 }

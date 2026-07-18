@@ -21,7 +21,7 @@ type ComboCreatePayload = {
 async function dispatchHtml5DragAndDrop(
   page: import("@playwright/test").Page,
   source: import("@playwright/test").Locator,
-  target: import("@playwright/test").Locator
+  target: import("@playwright/test").Locator,
 ) {
   const dataTransfer = await page.evaluateHandle(() => new DataTransfer());
   await source.dispatchEvent("dragstart", { dataTransfer });
@@ -205,7 +205,7 @@ test.describe("Combos flow", () => {
       waitUntil: "domcontentloaded",
     });
     await expect(
-      page.getByRole("button", { name: /create combo|criar combo/i }).first()
+      page.getByRole("button", { name: /create combo|criar combo/i }).first(),
     ).toBeVisible();
 
     await page
@@ -444,7 +444,7 @@ test.describe("Combos flow", () => {
     await expect(modelCatalogDialog).toBeVisible();
     await modelCatalogDialog.getByRole("button", { name: /close/i }).click();
     await expect(comboDialog.getByText(/recommended setup|how to use this strategy/i)).toHaveCount(
-      0
+      0,
     );
 
     await comboDialog.locator('[data-testid="combo-name-input"]').fill("expert-stack");
@@ -600,20 +600,20 @@ test.describe("Combos flow", () => {
     const comboCards = page.locator('[data-testid^="combo-card-"]');
     await expect
       .poll(async () =>
-        comboCards.evaluateAll((nodes) => nodes.map((node) => node.getAttribute("data-testid")))
+        comboCards.evaluateAll((nodes) => nodes.map((node) => node.getAttribute("data-testid"))),
       )
       .toEqual(["combo-card-combo-1", "combo-card-combo-2", "combo-card-combo-3"]);
 
     await dispatchHtml5DragAndDrop(
       page,
       page.getByTestId("combo-drag-handle-combo-3"),
-      page.getByTestId("combo-card-combo-1")
+      page.getByTestId("combo-card-combo-1"),
     );
 
     await expect.poll(() => state.reorderRequests).toBe(1);
     await expect
       .poll(async () =>
-        comboCards.evaluateAll((nodes) => nodes.map((node) => node.getAttribute("data-testid")))
+        comboCards.evaluateAll((nodes) => nodes.map((node) => node.getAttribute("data-testid"))),
       )
       .toEqual(["combo-card-combo-3", "combo-card-combo-1", "combo-card-combo-2"]);
 
@@ -622,7 +622,7 @@ test.describe("Combos flow", () => {
 
     await expect
       .poll(async () =>
-        comboCards.evaluateAll((nodes) => nodes.map((node) => node.getAttribute("data-testid")))
+        comboCards.evaluateAll((nodes) => nodes.map((node) => node.getAttribute("data-testid"))),
       )
       .toEqual(["combo-card-combo-3", "combo-card-combo-1", "combo-card-combo-2"]);
   });

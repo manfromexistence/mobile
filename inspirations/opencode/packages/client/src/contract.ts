@@ -1,6 +1,6 @@
-import { makeDefaultApi } from "@opencode-ai/protocol/api"
-import { InvalidRequestError, SessionNotFoundError } from "@opencode-ai/protocol/errors"
-import { HttpApiMiddleware } from "effect/unstable/httpapi"
+import { makeDefaultApi } from "@opencode-ai/protocol/api";
+import { InvalidRequestError, SessionNotFoundError } from "@opencode-ai/protocol/errors";
+import { HttpApiMiddleware } from "effect/unstable/httpapi";
 
 class LocationMiddleware extends HttpApiMiddleware.Service<LocationMiddleware>()(
   "@opencode-ai/client/LocationMiddleware",
@@ -14,7 +14,7 @@ class SessionLocationMiddleware extends HttpApiMiddleware.Service<SessionLocatio
 export const ClientApi = makeDefaultApi({
   locationMiddleware: LocationMiddleware,
   sessionLocationMiddleware: SessionLocationMiddleware,
-})
+});
 
 export const groupNames = {
   "server.health": "health",
@@ -35,7 +35,7 @@ export const groupNames = {
   "server.question": "questions",
   "server.reference": "references",
   "server.projectCopy": "projectCopies",
-} as const
+} as const;
 
 export const endpointNames = {
   "session.messages": "list",
@@ -48,6 +48,6 @@ export const endpointNames = {
   "permission.saved.list": "listSaved",
   "permission.saved.remove": "removeSaved",
   "question.request.list": "listRequests",
-} as const
+} as const;
 
-export const omitEndpoints = new Set(["fs.read", "pty.connect", "pty.connectToken"])
+export const omitEndpoints = new Set(["fs.read", "pty.connect", "pty.connectToken"]);

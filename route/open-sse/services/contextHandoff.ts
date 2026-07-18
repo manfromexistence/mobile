@@ -81,7 +81,7 @@ export const SKIP_UNIVERSAL_HANDOFF_FLAG = "_omnirouteSkipUniversalHandoff";
 
 export function resolveUniversalHandoffConfig(
   comboConfig: Record<string, unknown> | null | undefined,
-  globalConfig: Record<string, unknown> | null | undefined
+  globalConfig: Record<string, unknown> | null | undefined,
 ): UniversalHandoffConfig {
   const rawCombo = comboConfig ?? {};
   const rawGlobal = globalConfig ?? {};
@@ -108,7 +108,7 @@ export function resolveUniversalHandoffConfig(
     key: keyof UniversalHandoffConfig,
     fallback: number,
     min?: number,
-    max?: number
+    max?: number,
   ): number => {
     let candidate: number | undefined;
     const raw = rawCombo[key] ?? rawGlobal[key];
@@ -141,19 +141,19 @@ export function resolveUniversalHandoffConfig(
     trigger,
     providerAllowlist: getStringArray(
       "providerAllowlist",
-      DEFAULT_UNIVERSAL_HANDOFF_CONFIG.providerAllowlist
+      DEFAULT_UNIVERSAL_HANDOFF_CONFIG.providerAllowlist,
     ),
     maxMessagesForSummary: getNumber(
       "maxMessagesForSummary",
       DEFAULT_UNIVERSAL_HANDOFF_CONFIG.maxMessagesForSummary,
       5,
-      100
+      100,
     ),
     handoffModel: getString("handoffModel", DEFAULT_UNIVERSAL_HANDOFF_CONFIG.handoffModel),
     ttlMinutes: getNumber("ttlMinutes", DEFAULT_UNIVERSAL_HANDOFF_CONFIG.ttlMinutes, 1, 10080),
     preserveSystemPrompt: getBool(
       "preserveSystemPrompt",
-      DEFAULT_UNIVERSAL_HANDOFF_CONFIG.preserveSystemPrompt
+      DEFAULT_UNIVERSAL_HANDOFF_CONFIG.preserveSystemPrompt,
     ),
   };
 }
@@ -165,7 +165,7 @@ export interface ParsedHandoffContent {
 }
 
 export function resolveContextRelayConfig(
-  config?: Record<string, unknown> | null
+  config?: Record<string, unknown> | null,
 ): Required<ContextRelayConfig> {
   const rawThreshold = Number(config?.handoffThreshold);
   const rawMaxMessages = Number(config?.maxMessagesForSummary);
@@ -230,13 +230,16 @@ function formatMessagesForPrompt(messages: MessageLike[]): string {
     .join("\n\n");
 }
 
-export function selectMessagesForSummary(messages: MessageLike[], maxMessages: number): MessageLike[] {
+export function selectMessagesForSummary(
+  messages: MessageLike[],
+  maxMessages: number,
+): MessageLike[] {
   const validMessages = messages.filter((m) => m && typeof m === "object");
   const system = validMessages.filter(
-    (m) => typeof m.role === "string" && (m.role === "system" || m.role === "developer")
+    (m) => typeof m.role === "string" && (m.role === "system" || m.role === "developer"),
   );
   const nonSystem = validMessages.filter(
-    (m) => typeof m.role !== "string" || (m.role !== "system" && m.role !== "developer")
+    (m) => typeof m.role !== "string" || (m.role !== "system" && m.role !== "developer"),
   );
 
   const recentMessages = [...system, ...nonSystem.slice(-maxMessages)];
@@ -383,7 +386,7 @@ async function generateHandoffAsync(options: {
   const summaryModel = relayConfig.handoffModel || options.model;
   const selectedMessages = selectMessagesForSummary(
     Array.isArray(options.messages) ? options.messages : [],
-    relayConfig.maxMessagesForSummary
+    relayConfig.maxMessagesForSummary,
   );
   const historyText = formatMessagesForPrompt(selectedMessages);
   if (!historyText) return;
@@ -496,7 +499,7 @@ The context above contains a concise summary of the prior work. Continue seamles
 
 export function injectHandoffIntoBody(
   body: Record<string, unknown>,
-  payload: HandoffPayload
+  payload: HandoffPayload,
 ): Record<string, unknown> {
   const handoffContent = buildHandoffSystemMessage(payload);
   const isResponsesRequest =
@@ -539,7 +542,7 @@ export function buildUniversalHandoffSystemMessage(
   prevModel: string,
   currModel: string,
   reason: string,
-  payload?: HandoffPayload | null
+  payload?: HandoffPayload | null,
 ): string {
   const escapedPrev = escapeXml(prevModel);
   const escapedCurr = escapeXml(currModel);
@@ -619,7 +622,7 @@ async function generateUniversalHandoffAsync(options: {
 }): Promise<void> {
   const selectedMessages = selectMessagesForSummary(
     Array.isArray(options.messages) ? options.messages : [],
-    options.maxMessages
+    options.maxMessages,
   );
   const historyText = formatMessagesForPrompt(selectedMessages);
   if (!historyText) return;
@@ -726,13 +729,13 @@ export function injectUniversalHandoffBody(
   prevModel: string,
   currModel: string,
   reason: string,
-  existingPayload?: HandoffPayload | null
+  existingPayload?: HandoffPayload | null,
 ): Record<string, unknown> {
   const handoffContent = buildUniversalHandoffSystemMessage(
     prevModel,
     currModel,
     reason,
-    existingPayload
+    existingPayload,
   );
 
   const isResponsesRequest =

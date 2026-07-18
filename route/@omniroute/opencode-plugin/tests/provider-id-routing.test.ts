@@ -54,14 +54,14 @@ test("#6859: server-facing model id/providerID must resolve to the unprefixed pr
   assert.equal(
     resolved.omnirouteProviderId,
     "omniroute",
-    "resolveOmniRoutePluginOptions() must expose an unprefixed omnirouteProviderId"
+    "resolveOmniRoutePluginOptions() must expose an unprefixed omnirouteProviderId",
   );
 
   // A bare raw /v1/models entry (no existing "/" in its id — the common
   // case for OmniRoute's catalog) mapped with the server-facing id.
   const model = mapRawModelToModelV2(
     { id: "claude-opus-4-7" },
-    { providerId: resolved.omnirouteProviderId, baseURL: "http://localhost:20128" }
+    { providerId: resolved.omnirouteProviderId, baseURL: "http://localhost:20128" },
   );
 
   assert.equal(model.providerID, "omniroute");
@@ -76,7 +76,7 @@ test("#6859: server-facing model id/providerID must resolve to the unprefixed pr
     parsedProvider,
     "omniroute",
     `server-side provider split resolved '${parsedProvider}', expected 'omniroute' — ` +
-      `credentials lookup would fail for an OC-gate-prefixed provider id`
+      `credentials lookup would fail for an OC-gate-prefixed provider id`,
   );
 });
 
@@ -86,7 +86,7 @@ test("#6859: createOmniRouteProviderHook end-to-end — catalog keys/providerID 
     {
       fetcher: async () => [{ id: "claude-opus-4-7" }],
       combosFetcher: async () => [],
-    }
+    },
   );
   const out = await hook.models!({} as never, { auth: apiAuth("sk-test") as never });
   const model = out["omniroute/claude-opus-4-7"];
@@ -94,6 +94,6 @@ test("#6859: createOmniRouteProviderHook end-to-end — catalog keys/providerID 
   assert.equal(model.providerID, "omniroute");
   assert.ok(
     !model.providerID.startsWith("opencode-"),
-    "the OC-gate prefix must never leak into ModelV2.providerID"
+    "the OC-gate prefix must never leak into ModelV2.providerID",
   );
 });

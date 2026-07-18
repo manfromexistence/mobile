@@ -42,12 +42,12 @@ test("resolveImageBaseUrl appends /images/edits for the edits endpoint", () => {
   const creds = { providerSpecificData: { baseUrl: "https://img.example.com/v1" } };
   assert.equal(
     resolveImageBaseUrl(creds, "https://fallback/x", "edits"),
-    "https://img.example.com/v1/images/edits"
+    "https://img.example.com/v1/images/edits",
   );
   // generations stays the default and unchanged
   assert.equal(
     resolveImageBaseUrl(creds, "https://fallback/x"),
-    "https://img.example.com/v1/images/generations"
+    "https://img.example.com/v1/images/generations",
   );
 });
 
@@ -57,14 +57,14 @@ test("resolveImageBaseUrl rewrites a base URL that points at the other image end
   };
   assert.equal(
     resolveImageBaseUrl(creds, "https://fallback/x", "edits"),
-    "https://img.example.com/v1/images/edits"
+    "https://img.example.com/v1/images/edits",
   );
 });
 
 test("resolveImageBaseUrl falls back when no node base URL is configured", () => {
   assert.equal(
     resolveImageBaseUrl(null, "https://fallback/v1/images/edits", "edits"),
-    "https://fallback/v1/images/edits"
+    "https://fallback/v1/images/edits",
   );
 });
 

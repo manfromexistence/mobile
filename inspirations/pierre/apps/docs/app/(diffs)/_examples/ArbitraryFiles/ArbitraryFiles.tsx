@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { MultiFileDiff } from '@pierre/diffs/react';
-import type { PreloadMultiFileDiffResult } from '@pierre/diffs/ssr';
-import { useState } from 'react';
+import { MultiFileDiff } from "@pierre/diffs/react";
+import type { PreloadMultiFileDiffResult } from "@pierre/diffs/ssr";
+import { useState } from "react";
 
-import { FeatureHeader } from '@/components/FeatureHeader';
+import { FeatureHeader } from "@/components/FeatureHeader";
 
 interface ArbitraryFilesProps {
   prerenderedDiff: PreloadMultiFileDiffResult<undefined>;
@@ -21,11 +21,10 @@ export function ArbitraryFiles({ prerenderedDiff }: ArbitraryFilesProps) {
         title="Diff arbitrary files"
         description={
           <>
-            In addition to rendering standard Git diffs and patches, you can
-            pass any two files in <code>@pierre/diffs</code> and get a diff
-            between them. This is especially useful when comparing across
-            generative snapshots where linear history isn't always available.
-            Edit the css below to see the diff.
+            In addition to rendering standard Git diffs and patches, you can pass any two files in{" "}
+            <code>@pierre/diffs</code> and get a diff between them. This is especially useful when
+            comparing across generative snapshots where linear history isn't always available. Edit
+            the css below to see the diff.
           </>
         }
       />
@@ -79,7 +78,7 @@ interface FileTextareaProps {
   className?: string;
 }
 
-function FileTextarea({ value, onChange, className = '' }: FileTextareaProps) {
+function FileTextarea({ value, onChange, className = "" }: FileTextareaProps) {
   return (
     <textarea
       value={value}

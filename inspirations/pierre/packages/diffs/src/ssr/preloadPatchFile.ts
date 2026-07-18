@@ -1,6 +1,6 @@
-import type { FileDiffOptions } from '../components/FileDiff';
-import { parsePatchFiles } from '../utils/parsePatchFiles';
-import { preloadFileDiff, type PreloadFileDiffResult } from './preloadDiffs';
+import type { FileDiffOptions } from "../components/FileDiff";
+import { parsePatchFiles } from "../utils/parsePatchFiles";
+import { preloadFileDiff, type PreloadFileDiffResult } from "./preloadDiffs";
 
 export type PreloadPatchFileOptions<LAnnotation> = {
   patch: string;
@@ -13,9 +13,7 @@ export type PreloadPatchFileOptions<LAnnotation> = {
 export async function preloadPatchFile<LAnnotation = undefined>({
   patch,
   options,
-}: PreloadPatchFileOptions<LAnnotation>): Promise<
-  PreloadFileDiffResult<LAnnotation>[]
-> {
+}: PreloadPatchFileOptions<LAnnotation>): Promise<PreloadFileDiffResult<LAnnotation>[]> {
   const diffs: Promise<PreloadFileDiffResult<LAnnotation>>[] = [];
   const patches = parsePatchFiles(patch);
   for (const patch of patches) {

@@ -311,7 +311,7 @@ export function getEmbeddingProvider(providerId: string): EmbeddingProvider | nu
  */
 export function parseEmbeddingModel(
   modelStr: string | null,
-  dynamicProviders?: EmbeddingProvider[]
+  dynamicProviders?: EmbeddingProvider[],
 ): { provider: string | null; model: string | null } {
   if (!modelStr) return { provider: null, model: null };
 
@@ -404,7 +404,7 @@ export function detectEmbeddingDimensionConflict(modelStrs: string[]): {
  */
 export function getEmbeddingModelDefaultParams(
   providerConfig: EmbeddingProvider | null,
-  modelId: string | null
+  modelId: string | null,
 ): Record<string, unknown> | undefined {
   if (!providerConfig || !modelId) return undefined;
   return providerConfig.models.find((m) => m.id === modelId)?.defaultParams;

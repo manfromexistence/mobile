@@ -51,7 +51,7 @@ test("v1 models exposes CC-compatible fallback models under the provider node pr
   });
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models", { method: "GET" })
+    new Request("http://localhost/api/v1/models", { method: "GET" }),
   );
 
   assert.equal(response.status, 200);
@@ -63,6 +63,6 @@ test("v1 models exposes CC-compatible fallback models under the provider node pr
   assert.ok(ids.has("cm/claude-sonnet-4-6"));
   assert.equal(
     [...ids].some((id) => (id as any).startsWith("anthropic-compatible-cc-cm/")),
-    false
+    false,
   );
 });

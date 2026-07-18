@@ -82,7 +82,7 @@ test("firecrawlFetch allows missing apiKey when FIRECRAWL_BASE_URL is custom", a
       assert.equal(
         capturedHeaders["Authorization"],
         undefined,
-        "no Authorization header should be sent without an apiKey"
+        "no Authorization header should be sent without an apiKey",
       );
     } finally {
       globalThis.fetch = originalFetch;
@@ -121,9 +121,9 @@ test("firecrawlFetch honors FIRECRAWL_TIMEOUT_MS override", async () => {
                 new Response(JSON.stringify({ data: { markdown: "late" } }), {
                   status: 200,
                   headers: { "content-type": "application/json" },
-                })
+                }),
               ),
-            50
+            50,
           );
           signal?.addEventListener("abort", () => {
             clearTimeout(timer);
@@ -146,6 +146,6 @@ test("firecrawlFetch honors FIRECRAWL_TIMEOUT_MS override", async () => {
       } finally {
         globalThis.fetch = originalFetch;
       }
-    }
+    },
   );
 });

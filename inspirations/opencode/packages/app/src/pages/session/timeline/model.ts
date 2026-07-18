@@ -1,68 +1,70 @@
-import type { Message, UserMessage } from "@opencode-ai/sdk/v2"
-import { createMemo, createResource, onCleanup, untrack, type Accessor } from "solid-js"
-import { useServerSync } from "@/context/server-sync"
-import { useSync } from "@/context/sync"
-import { same } from "@/utils/same"
+import type { Message, UserMessage } from "@opencode-ai/sdk/v2";
+import { createMemo, createResource, onCleanup, untrack, type Accessor } from "solid-js";
+import { useServerSync } from "@/context/server-sync";
+import { useSync } from "@/context/sync";
+import { same } from "@/utils/same";
 
-const emptyUserMessages: UserMessage[] = []
-const sessionFreshness = 15_000
+const emptyUserMessages: UserMessage[] = [];
+const sessionFreshness = 15_000;
 
 export function createTimelineModel(input: {
-  sessionID: Accessor<string | undefined>
-  revertMessageID: Accessor<string | undefined>
+  sessionID: Accessor<string | undefined>;
+  revertMessageID: Accessor<string | undefined>;
 }) {
-  const serverSync = useServerSync()
-  const sync = useSync()
-  let refreshFrame: number | undefined
-  let refreshTimer: number | undefined
+  const serverSync = useServerSync();
+  const sync = useSync();
+  let refreshFrame: number | undefined;
+  let refreshTimer: number | undefined;
 
   const [resource] = createResource(
     () => input.sessionID(),
     (id) => {
-      clearRefresh()
-      if (!id) return
+      clearRefresh();
+      if (!id) return;
 
-      const cached = untrack(() => sync().data.message[id] !== undefined)
-      const stale = cached && !serverSync().session.fresh(id, sessionFreshness)
+      const cached = untrack(() => sync().data.message[id] !== undefined);
+      const stale = cached && !serverSync().session.fresh(id, sessionFreshness);
 
       refreshFrame = requestAnimationFrame(() => {
-        refreshFrame = undefined
+        refreshFrame = undefined;
         refreshTimer = window.setTimeout(() => {
-          refreshTimer = undefined
-          if (input.sessionID() !== id) return
+          refreshTimer = undefined;
+          if (input.sessionID() !== id) return;
           untrack(() => {
-            if (stale) void sync().session.sync(id, { force: true })
-          })
-        }, 0)
-      })
+            if (stale) void sync().session.sync(id, { force: true });
+          });
+        }, 0);
+      });
 
-      return sync().session.sync(id)
+      return sync().session.sync(id);
     },
-  )
+  );
   const messages = createMemo(() => {
-    const id = input.sessionID()
-    return id ? (sync().data.message[id] ?? []) : []
-  })
+    const id = input.sessionID();
+    return id ? (sync().data.message[id] ?? []) : [];
+  });
   const ready = createMemo(() => {
-    const id = input.sessionID()
-    return !id || sync().data.message[id] !== undefined
-  })
-  const userMessages = createMemo(() => selectUserMessages(messages()), emptyUserMessages, { equals: same })
+    const id = input.sessionID();
+    return !id || sync().data.message[id] !== undefined;
+  });
+  const userMessages = createMemo(() => selectUserMessages(messages()), emptyUserMessages, {
+    equals: same,
+  });
   const visibleUserMessages = createMemo(
     () => {
-      return selectVisibleUserMessages(userMessages(), input.revertMessageID())
+      return selectVisibleUserMessages(userMessages(), input.revertMessageID());
     },
     emptyUserMessages,
     { equals: same },
-  )
+  );
   const more = createMemo(() => {
-    const id = input.sessionID()
-    return id ? sync().session.history.more(id) : false
-  })
+    const id = input.sessionID();
+    return id ? sync().session.history.more(id) : false;
+  });
   const loading = createMemo(() => {
-    const id = input.sessionID()
-    return id ? sync().session.history.loading(id) : false
-  })
+    const id = input.sessionID();
+    return id ? sync().session.history.loading(id) : false;
+  });
   const loadOlder = async (options?: { before?: () => void; after?: (done: boolean) => void }) => {
     return loadOlderTimeline({
       sessionID: input.sessionID,
@@ -71,10 +73,10 @@ export function createTimelineModel(input: {
       loadMore: (sessionID) => sync().session.history.loadMore(sessionID),
       before: options?.before,
       after: options?.after,
-    })
-  }
+    });
+  };
 
-  onCleanup(clearRefresh)
+  onCleanup(clearRefresh);
 
   return {
     history: { loadOlder, loading, more },
@@ -84,41 +86,41 @@ export function createTimelineModel(input: {
     resource,
     userMessages,
     visibleUserMessages,
-  }
+  };
 
   function clearRefresh() {
-    if (refreshFrame !== undefined) cancelAnimationFrame(refreshFrame)
-    if (refreshTimer !== undefined) window.clearTimeout(refreshTimer)
-    refreshFrame = undefined
-    refreshTimer = undefined
+    if (refreshFrame !== undefined) cancelAnimationFrame(refreshFrame);
+    if (refreshTimer !== undefined) window.clearTimeout(refreshTimer);
+    refreshFrame = undefined;
+    refreshTimer = undefined;
   }
 }
 
 export function selectUserMessages(messages: Message[]) {
-  return messages.filter((message): message is UserMessage => message.role === "user")
+  return messages.filter((message): message is UserMessage => message.role === "user");
 }
 
 export function selectVisibleUserMessages(messages: UserMessage[], revertMessageID?: string) {
-  if (!revertMessageID) return messages
-  return messages.filter((message) => message.id < revertMessageID)
+  if (!revertMessageID) return messages;
+  return messages.filter((message) => message.id < revertMessageID);
 }
 
 export async function loadOlderTimeline(input: {
-  sessionID: Accessor<string | undefined>
-  more: Accessor<boolean>
-  loading: Accessor<boolean>
-  loadMore: (sessionID: string) => Promise<void>
-  before?: () => void
-  after?: (done: boolean) => void
+  sessionID: Accessor<string | undefined>;
+  more: Accessor<boolean>;
+  loading: Accessor<boolean>;
+  loadMore: (sessionID: string) => Promise<void>;
+  before?: () => void;
+  after?: (done: boolean) => void;
 }) {
-  const id = input.sessionID()
-  if (!id || !input.more() || input.loading()) return
+  const id = input.sessionID();
+  if (!id || !input.more() || input.loading()) return;
 
-  input.before?.()
+  input.before?.();
   await input.loadMore(id).catch((error) => {
-    if (input.sessionID() === id) input.after?.(true)
-    throw error
-  })
-  if (input.sessionID() !== id) return
-  input.after?.(true)
+    if (input.sessionID() === id) input.after?.(true);
+    throw error;
+  });
+  if (input.sessionID() !== id) return;
+  input.after?.(true);
 }

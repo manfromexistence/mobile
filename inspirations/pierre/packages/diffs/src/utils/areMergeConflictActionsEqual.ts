@@ -1,9 +1,9 @@
-import type { MergeConflictRegion } from '../types';
-import type { MergeConflictDiffAction } from './parseMergeConflictDiffFromFile';
+import type { MergeConflictRegion } from "../types";
+import type { MergeConflictDiffAction } from "./parseMergeConflictDiffFromFile";
 
 export function areMergeConflictActionsEqual(
   a: MergeConflictDiffAction,
-  b: MergeConflictDiffAction
+  b: MergeConflictDiffAction,
 ): boolean {
   return (
     a.hunkIndex === b.hunkIndex &&

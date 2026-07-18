@@ -69,8 +69,7 @@ const SANDBOX_NAME = (sandboxId: string) => `omniroute-${sandboxId}`;
  * test mocks on `spawn` (but not `spawnSync`) are not disturbed.
  */
 function probeCommand(binary: string): boolean {
-  const args =
-    process.platform === "win32" ? ["where", binary] : ["which", binary];
+  const args = process.platform === "win32" ? ["where", binary] : ["which", binary];
   const r = childProcess.spawnSync(args[0], args.slice(1), {
     encoding: "utf8",
     stdio: "ignore",
@@ -413,13 +412,10 @@ async function runDetection(): Promise<void> {
   );
 }
 
-function normaliseRuntimeOverride(
-  raw: string | undefined,
-): SandboxRuntimeId | null {
+function normaliseRuntimeOverride(raw: string | undefined): SandboxRuntimeId | null {
   if (!raw || raw === "auto") return null;
   const lowered = raw.toLowerCase().trim();
-  if (PROVIDER_BY_ID.has(lowered as SandboxRuntimeId))
-    return lowered as SandboxRuntimeId;
+  if (PROVIDER_BY_ID.has(lowered as SandboxRuntimeId)) return lowered as SandboxRuntimeId;
   return null;
 }
 
@@ -440,9 +436,7 @@ export async function resolveProvider(): Promise<ContainerProvider> {
   }
   await detectionInFlight;
 
-  const override = normaliseRuntimeOverride(
-    process.env.SKILLS_SANDBOX_RUNTIME,
-  );
+  const override = normaliseRuntimeOverride(process.env.SKILLS_SANDBOX_RUNTIME);
   if (override) {
     const provider = PROVIDER_BY_ID.get(override)!;
     if (detectionCache.get(provider.id)) return provider;

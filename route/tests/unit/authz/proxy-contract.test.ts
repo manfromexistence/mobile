@@ -30,7 +30,7 @@ test("Next.js 16 proxy file exists at src/proxy.ts (not src/middleware.ts)", () 
   assert.ok(fs.existsSync("src/proxy.ts"), "src/proxy.ts must exist (Next.js 16 file convention)");
   assert.ok(
     !fs.existsSync("src/middleware.ts"),
-    "src/middleware.ts must NOT exist — Next.js 16 deprecated middleware.ts, the active file is src/proxy.ts"
+    "src/middleware.ts must NOT exist — Next.js 16 deprecated middleware.ts, the active file is src/proxy.ts",
   );
 });
 
@@ -39,7 +39,7 @@ test("proxy.ts exports a function named 'proxy' (Next.js 16 requires this exact 
   assert.match(
     content,
     /export\s+async\s+function\s+proxy\s*\(/,
-    "must export `async function proxy(...)` — Next.js 16 only invokes this exact name"
+    "must export `async function proxy(...)` — Next.js 16 only invokes this exact name",
   );
 });
 
@@ -48,7 +48,7 @@ test("proxy.ts delegates to runAuthzPipeline with enforce: true", () => {
   assert.match(
     content,
     /runAuthzPipeline\([^)]*\{\s*enforce:\s*true\s*\}\s*\)/,
-    "must call runAuthzPipeline with { enforce: true } — otherwise the pipeline runs in observe-only mode and never blocks"
+    "must call runAuthzPipeline with { enforce: true } — otherwise the pipeline runs in observe-only mode and never blocks",
   );
 });
 
@@ -68,7 +68,7 @@ test("proxy.ts config.matcher covers every /api/* route plus dashboard and v1 al
   for (const matcher of requiredMatchers) {
     assert.ok(
       content.includes(matcher),
-      `proxy.ts config.matcher must include ${matcher} — otherwise routes under that prefix bypass the authz pipeline`
+      `proxy.ts config.matcher must include ${matcher} — otherwise routes under that prefix bypass the authz pipeline`,
     );
   }
 });
@@ -77,6 +77,6 @@ test("proxy.ts does not declare runtime: 'edge' (Next.js 16 proxy is Node-only)"
   const content = fs.readFileSync("src/proxy.ts", "utf8");
   assert.ok(
     !/runtime:\s*['"]edge['"]/.test(content),
-    "proxy.ts MUST NOT set runtime: 'edge' — Next.js 16 only supports nodejs in proxy.ts. The pipeline depends on Node-only modules (jose, better-sqlite3) and would crash at request time on the edge runtime."
+    "proxy.ts MUST NOT set runtime: 'edge' — Next.js 16 only supports nodejs in proxy.ts. The pipeline depends on Node-only modules (jose, better-sqlite3) and would crash at request time on the edge runtime.",
   );
 });

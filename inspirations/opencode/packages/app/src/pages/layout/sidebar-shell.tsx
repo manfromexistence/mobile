@@ -1,4 +1,4 @@
-import { createEffect, createMemo, For, Show, type Accessor, type JSX } from "solid-js"
+import { createEffect, createMemo, For, Show, type Accessor, type JSX } from "solid-js";
 import {
   DragDropProvider,
   DragDropSensors,
@@ -6,45 +6,45 @@ import {
   SortableProvider,
   closestCenter,
   type DragEvent,
-} from "@thisbeyond/solid-dnd"
-import { ConstrainDragXAxis } from "@/utils/solid-dnd"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { Tooltip, TooltipKeybind } from "@opencode-ai/ui/tooltip"
-import { type LocalProject } from "@/context/layout"
+} from "@thisbeyond/solid-dnd";
+import { ConstrainDragXAxis } from "@/utils/solid-dnd";
+import { IconButton } from "@opencode-ai/ui/icon-button";
+import { Tooltip, TooltipKeybind } from "@opencode-ai/ui/tooltip";
+import { type LocalProject } from "@/context/layout";
 
 export const SidebarContent = (props: {
-  mobile?: boolean
-  opened: Accessor<boolean>
-  aimMove: (event: MouseEvent) => void
-  projects: Accessor<LocalProject[]>
-  renderProject: (project: LocalProject) => JSX.Element
-  handleDragStart: (event: unknown) => void
-  handleDragEnd: () => void
-  handleDragOver: (event: DragEvent) => void
-  openProjectLabel: JSX.Element
-  openProjectKeybind: Accessor<string | undefined>
-  onOpenProject: () => void
-  renderProjectOverlay: () => JSX.Element
-  settingsLabel: Accessor<string>
-  settingsKeybind: Accessor<string | undefined>
-  onOpenSettings: () => void
-  helpLabel: Accessor<string>
-  onOpenHelp: () => void
-  renderPanel: () => JSX.Element
+  mobile?: boolean;
+  opened: Accessor<boolean>;
+  aimMove: (event: MouseEvent) => void;
+  projects: Accessor<LocalProject[]>;
+  renderProject: (project: LocalProject) => JSX.Element;
+  handleDragStart: (event: unknown) => void;
+  handleDragEnd: () => void;
+  handleDragOver: (event: DragEvent) => void;
+  openProjectLabel: JSX.Element;
+  openProjectKeybind: Accessor<string | undefined>;
+  onOpenProject: () => void;
+  renderProjectOverlay: () => JSX.Element;
+  settingsLabel: Accessor<string>;
+  settingsKeybind: Accessor<string | undefined>;
+  onOpenSettings: () => void;
+  helpLabel: Accessor<string>;
+  onOpenHelp: () => void;
+  renderPanel: () => JSX.Element;
 }): JSX.Element => {
-  const expanded = createMemo(() => !!props.mobile || props.opened())
-  const placement = () => (props.mobile ? "bottom" : "right")
-  let panel: HTMLDivElement | undefined
+  const expanded = createMemo(() => !!props.mobile || props.opened());
+  const placement = () => (props.mobile ? "bottom" : "right");
+  let panel: HTMLDivElement | undefined;
 
   createEffect(() => {
-    const el = panel
-    if (!el) return
+    const el = panel;
+    if (!el) return;
     if (expanded()) {
-      el.removeAttribute("inert")
-      return
+      el.removeAttribute("inert");
+      return;
     }
-    el.setAttribute("inert", "")
-  })
+    el.setAttribute("inert", "");
+  });
 
   return (
     <div class="flex h-full w-full min-w-0 overflow-hidden">
@@ -72,7 +72,9 @@ export const SidebarContent = (props: {
                   <div class="flex items-center gap-2">
                     <span>{props.openProjectLabel}</span>
                     <Show when={!props.mobile && !!props.openProjectKeybind()}>
-                      <span class="text-icon-base text-12-medium">{props.openProjectKeybind()}</span>
+                      <span class="text-icon-base text-12-medium">
+                        {props.openProjectKeybind()}
+                      </span>
                     </Show>
                   </div>
                 }
@@ -82,7 +84,9 @@ export const SidebarContent = (props: {
                   variant="ghost"
                   size="large"
                   onClick={props.onOpenProject}
-                  aria-label={typeof props.openProjectLabel === "string" ? props.openProjectLabel : undefined}
+                  aria-label={
+                    typeof props.openProjectLabel === "string" ? props.openProjectLabel : undefined
+                  }
                 />
               </Tooltip>
             </div>
@@ -90,7 +94,11 @@ export const SidebarContent = (props: {
           </DragDropProvider>
         </div>
         <div class="shrink-0 w-full pt-3 pb-6 flex flex-col items-center gap-2">
-          <TooltipKeybind placement={placement()} title={props.settingsLabel()} keybind={props.settingsKeybind() ?? ""}>
+          <TooltipKeybind
+            placement={placement()}
+            title={props.settingsLabel()}
+            keybind={props.settingsKeybind() ?? ""}
+          >
             <IconButton
               icon="settings-gear"
               variant="ghost"
@@ -113,13 +121,16 @@ export const SidebarContent = (props: {
 
       <div
         ref={(el) => {
-          panel = el
+          panel = el;
         }}
-        classList={{ "flex-1 flex h-full min-h-0 min-w-0 overflow-hidden": true, "pointer-events-none": !expanded() }}
+        classList={{
+          "flex-1 flex h-full min-h-0 min-w-0 overflow-hidden": true,
+          "pointer-events-none": !expanded(),
+        }}
         aria-hidden={!expanded()}
       >
         {props.renderPanel()}
       </div>
     </div>
-  )
-}
+  );
+};

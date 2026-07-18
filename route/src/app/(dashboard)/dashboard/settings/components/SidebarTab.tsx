@@ -100,7 +100,7 @@ function SortableSection({
       style={style}
       className={cn(
         "rounded-lg border border-border bg-surface/40 transition-shadow",
-        isDragging && "shadow-lg opacity-80"
+        isDragging && "shadow-lg opacity-80",
       )}
     >
       {/* Section header */}
@@ -124,7 +124,7 @@ function SortableSection({
           <span
             className={cn(
               "material-symbols-outlined text-[14px] text-text-muted/40 transition-transform ml-auto",
-              expanded && "rotate-180"
+              expanded && "rotate-180",
             )}
           >
             expand_more
@@ -278,7 +278,7 @@ function GroupRow({
           <span
             className={cn(
               "material-symbols-outlined text-[12px] text-text-muted/40 transition-transform",
-              open && "rotate-90"
+              open && "rotate-90",
             )}
           >
             chevron_right
@@ -333,12 +333,12 @@ export default function SidebarTab() {
   const getLabel = useCallback(
     (key: string, fallback: string) =>
       typeof tSidebar.has === "function" && tSidebar.has(key) ? tSidebar(key) : fallback,
-    [tSidebar]
+    [tSidebar],
   );
   const getSettingsLabel = useCallback(
     (key: string, fallback: string) =>
       typeof t.has === "function" && t.has(key) ? t(key) : fallback,
-    [t]
+    [t],
   );
 
   const [loading, setLoading] = useState(true);
@@ -357,18 +357,18 @@ export default function SidebarTab() {
       .then((r) => r.json())
       .then((data) => {
         setHiddenSidebarItems(
-          normalizeHiddenSidebarItems(data?.[HIDDEN_SIDEBAR_ITEMS_SETTING_KEY])
+          normalizeHiddenSidebarItems(data?.[HIDDEN_SIDEBAR_ITEMS_SETTING_KEY]),
         );
         setHiddenSidebarGroupLabels(
-          normalizeHiddenSidebarGroupLabels(data?.[HIDDEN_SIDEBAR_GROUP_LABELS_SETTING_KEY])
+          normalizeHiddenSidebarGroupLabels(data?.[HIDDEN_SIDEBAR_GROUP_LABELS_SETTING_KEY]),
         );
         setSectionOrder(
-          Array.isArray(data?.[SIDEBAR_SECTION_ORDER_KEY]) ? data[SIDEBAR_SECTION_ORDER_KEY] : []
+          Array.isArray(data?.[SIDEBAR_SECTION_ORDER_KEY]) ? data[SIDEBAR_SECTION_ORDER_KEY] : [],
         );
         setItemOrder(
           data?.[SIDEBAR_ITEM_ORDER_KEY] && typeof data[SIDEBAR_ITEM_ORDER_KEY] === "object"
             ? data[SIDEBAR_ITEM_ORDER_KEY]
-            : {}
+            : {},
         );
         setActivePreset(data?.[SIDEBAR_PRESET_KEY] ?? null);
         setShowDebug(data?.debugMode === true);
@@ -419,7 +419,7 @@ export default function SidebarTab() {
   };
 
   const visibleSections = SIDEBAR_SECTIONS.filter((s) => s.visibility !== "debug" || showDebug).map(
-    (s) => ({ ...s, title: getLabel(s.titleKey, s.titleFallback) })
+    (s) => ({ ...s, title: getLabel(s.titleKey, s.titleFallback) }),
   );
 
   const orderedSections = applySectionOrder(visibleSections, sectionOrder);
@@ -498,7 +498,7 @@ export default function SidebarTab() {
           <p className="text-sm text-text-muted">
             {getSettingsLabel(
               "settingsSidebarDesc",
-              "Control which items appear in the sidebar and their order"
+              "Control which items appear in the sidebar and their order",
             )}
           </p>
         </div>
@@ -512,7 +512,7 @@ export default function SidebarTab() {
             <p className="text-sm text-text-muted">
               {getSettingsLabel(
                 "sidebarPresetsDesc",
-                "Start from a role-based layout. Any change after applying a preset switches to Custom."
+                "Start from a role-based layout. Any change after applying a preset switches to Custom.",
               )}
             </p>
           </div>
@@ -527,7 +527,7 @@ export default function SidebarTab() {
                 "px-2 py-0.5 rounded-full text-xs font-medium",
                 activePreset
                   ? "bg-primary/10 text-primary"
-                  : "bg-surface border border-border text-text-muted"
+                  : "bg-surface border border-border text-text-muted",
               )}
             >
               {activePreset
@@ -560,7 +560,7 @@ export default function SidebarTab() {
                     "flex flex-col items-center gap-1.5 p-3 rounded-lg border transition-colors disabled:opacity-60",
                     isActive
                       ? "border-primary bg-primary/10 text-primary"
-                      : "border-border hover:border-primary/40 bg-surface/40 text-text-main"
+                      : "border-border hover:border-primary/40 bg-surface/40 text-text-main",
                   )}
                 >
                   <span
@@ -574,7 +574,7 @@ export default function SidebarTab() {
                   <span
                     className={cn(
                       "text-[10px] text-center",
-                      isActive ? "text-primary/70" : "text-text-muted"
+                      isActive ? "text-primary/70" : "text-text-muted",
                     )}
                   >
                     {presetDescriptions[preset.id]}
@@ -593,7 +593,7 @@ export default function SidebarTab() {
               <p className="text-sm flex-1">
                 {getSettingsLabel(
                   "presetConfirmWarning",
-                  `Applying "${presetLabels[confirmPreset]}" will replace your current visibility and order settings.`
+                  `Applying "${presetLabels[confirmPreset]}" will replace your current visibility and order settings.`,
                 )}
               </p>
               <div className="flex gap-2 shrink-0">
@@ -624,7 +624,7 @@ export default function SidebarTab() {
               <p className="text-sm text-text-muted">
                 {getSettingsLabel(
                   "sidebarOrderDesc",
-                  "Toggle items on/off and drag to reorder sections and their entries."
+                  "Toggle items on/off and drag to reorder sections and their entries.",
                 )}
               </p>
             </div>
@@ -664,7 +664,7 @@ export default function SidebarTab() {
           <p className="mt-3 text-xs text-text-muted">
             {getSettingsLabel(
               "sidebarVisibilityHint",
-              "A sidebar section hides automatically when all of its entries are hidden"
+              "A sidebar section hides automatically when all of its entries are hidden",
             )}
           </p>
         </div>

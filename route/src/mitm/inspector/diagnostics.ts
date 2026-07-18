@@ -40,27 +40,27 @@ export function summarizeDiagnostics(input: DiagnosticInput): DiagnosticReport {
     check(
       "server-running",
       input.serverRunning,
-      "The MITM server is not running. Start it from the AgentBridge tab."
+      "The MITM server is not running. Start it from the AgentBridge tab.",
     ),
     check(
       "server-reachable",
       input.serverReachable,
-      "The MITM server is not accepting connections on its port. Check that the port is free and that you have privileges to bind it."
+      "The MITM server is not accepting connections on its port. Check that the port is free and that you have privileges to bind it.",
     ),
     check(
       "cert-exists",
       input.certExists,
-      "No MITM certificate has been generated yet. Generate one from the AgentBridge tab."
+      "No MITM certificate has been generated yet. Generate one from the AgentBridge tab.",
     ),
     check(
       "cert-trusted",
       input.certTrusted,
-      "The MITM root CA is not trusted by the OS store, so TLS interception will fail. Trust the certificate from the AgentBridge tab."
+      "The MITM root CA is not trusted by the OS store, so TLS interception will fail. Trust the certificate from the AgentBridge tab.",
     ),
     check(
       "dns-configured",
       input.dnsConfigured,
-      "Target hostnames are not spoofed in /etc/hosts, so traffic never reaches the proxy. Enable DNS for the agent(s) you want to capture."
+      "Target hostnames are not spoofed in /etc/hosts, so traffic never reaches the proxy. Enable DNS for the agent(s) you want to capture.",
     ),
   ];
   return { healthy: checks.every((c) => c.ok), checks };

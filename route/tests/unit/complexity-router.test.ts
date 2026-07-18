@@ -58,7 +58,10 @@ test("classifyRequestComplexity — a hard, multi-step coding+reasoning prompt s
       },
     ],
   });
-  assert.ok(hard.score > trivial.score, `hard (${hard.score}) must exceed trivial (${trivial.score})`);
+  assert.ok(
+    hard.score > trivial.score,
+    `hard (${hard.score}) must exceed trivial (${trivial.score})`,
+  );
 });
 
 test("classifyRequestComplexity — tool schemas escalate the tier above free", () => {
@@ -83,16 +86,18 @@ test("buildComplexityRoutingHint — a tool-using request floors the hint tier a
     modelTargets(),
     {
       messages: [{ role: "user", content: "weather?" }],
-      tools: [{ function: { name: "get_weather", description: "Get the weather", parameters: {} } }],
+      tools: [
+        { function: { name: "get_weather", description: "Get the weather", parameters: {} } },
+      ],
     },
-    NOOP_LOG
+    NOOP_LOG,
   );
   assert.ok(hint, "expected a non-null hint when complexity routing builds successfully");
   if (!hint) return;
   assert.notEqual(
     hint.recommendedMinTier,
     "free",
-    "tool-use must floor the recommended tier at cheap (escalation applied)"
+    "tool-use must floor the recommended tier at cheap (escalation applied)",
   );
 });
 
@@ -102,6 +107,6 @@ test("buildComplexityRoutingHint — a null body is safe and still builds a tier
   if (!hint) return;
   assert.ok(
     ["free", "cheap", "premium"].includes(hint.recommendedMinTier),
-    `unexpected tier ${hint.recommendedMinTier}`
+    `unexpected tier ${hint.recommendedMinTier}`,
   );
 });

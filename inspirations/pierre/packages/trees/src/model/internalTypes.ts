@@ -1,5 +1,5 @@
-import type { FileTreeIcons } from '../iconConfig';
-import type { GitStatus } from '../publicTypes';
+import type { FileTreeIcons } from "../iconConfig";
+import type { GitStatus } from "../publicTypes";
 import type {
   FileTreeCompositionOptions,
   FileTreePublicId,
@@ -8,7 +8,7 @@ import type {
   FileTreeScrollOffset,
   FileTreeSearchBlurBehavior,
   FileTreeVisibleRow,
-} from './publicTypes';
+} from "./publicTypes";
 
 export type FileTreeControllerListener = () => void;
 
@@ -47,12 +47,9 @@ export interface FileTreeSlotHost {
   setSlotContent(slotName: string, content: HTMLElement | null): void;
 }
 
-export interface FileTreeViewProps extends Omit<
-  FileTreeRenderOptions,
-  'initialVisibleRowCount'
-> {
+export interface FileTreeViewProps extends Omit<FileTreeRenderOptions, "initialVisibleRowCount"> {
   composition?: FileTreeCompositionOptions;
-  controller: import('./FileTreeController').FileTreeController;
+  controller: import("./FileTreeController").FileTreeController;
   directoriesWithGitChanges?: ReadonlySet<FileTreePublicId>;
   gitStatusByPath?: ReadonlyMap<FileTreePublicId, GitStatus>;
   ignoredGitDirectories?: ReadonlySet<FileTreePublicId>;

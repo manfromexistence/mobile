@@ -87,13 +87,13 @@ export async function runChatCommand(promptArg, opts, cmd) {
     emit(data, globalOpts);
   } else if (globalOpts.output === "markdown") {
     console.log(
-      `# Response\n\n${text}\n\n## Metadata\n- Model: ${data.model}\n- Latency: ${latencyMs}ms\n- Usage: ${JSON.stringify(data.usage)}\n`
+      `# Response\n\n${text}\n\n## Metadata\n- Model: ${data.model}\n- Latency: ${latencyMs}ms\n- Usage: ${JSON.stringify(data.usage)}\n`,
     );
   } else {
     console.log(text);
     if (!globalOpts.quiet) {
       process.stderr.write(
-        `\n[${data.model} · ${latencyMs}ms · ${data.usage?.total_tokens ?? "?"} tok]\n`
+        `\n[${data.model} · ${latencyMs}ms · ${data.usage?.total_tokens ?? "?"} tok]\n`,
       );
     }
   }
@@ -154,7 +154,7 @@ function appendHistory(entry) {
   try {
     appendFileSync(
       resolveHistoryPath(),
-      JSON.stringify({ ts: new Date().toISOString(), ...entry }) + "\n"
+      JSON.stringify({ ts: new Date().toISOString(), ...entry }) + "\n",
     );
   } catch {
     // history write failures are non-fatal

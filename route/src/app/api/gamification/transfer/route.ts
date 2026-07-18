@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
   if (!apiKeyId) {
     return NextResponse.json(
       { error: "apiKeyId required" },
-      { status: 400, headers: CORS_HEADERS }
+      { status: 400, headers: CORS_HEADERS },
     );
   }
 
@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
   } catch {
     return NextResponse.json(
       { error: "Invalid JSON body" },
-      { status: 400, headers: CORS_HEADERS }
+      { status: 400, headers: CORS_HEADERS },
     );
   }
 
@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Invalid request", details: parsed.error.issues },
-      { status: 400, headers: CORS_HEADERS }
+      { status: 400, headers: CORS_HEADERS },
     );
   }
 
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
     parsed.data.fromApiKeyId,
     parsed.data.toApiKeyId,
     parsed.data.amount,
-    parsed.data.reason
+    parsed.data.reason,
   );
 
   if (!result.success) {
@@ -69,6 +69,6 @@ export async function POST(request: NextRequest) {
 
   return NextResponse.json(
     { success: true, idempotencyKey: result.idempotencyKey },
-    { headers: CORS_HEADERS }
+    { headers: CORS_HEADERS },
   );
 }

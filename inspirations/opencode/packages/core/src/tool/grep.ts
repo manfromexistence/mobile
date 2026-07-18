@@ -1,20 +1,20 @@
-export * as GrepTool from "./grep"
+export * as GrepTool from "./grep";
 
-import { ToolFailure } from "@opencode-ai/llm"
-import { Effect, Layer, Schema } from "effect"
-import path from "path"
-import { makeLocationNode } from "../effect/app-node"
-import { FileSystem } from "../filesystem"
-import { FSUtil } from "../fs-util"
-import { Location } from "../location"
-import { PermissionV2 } from "../permission"
-import { Ripgrep } from "../ripgrep"
-import { RelativePath } from "../schema"
-import { ToolRegistry } from "./registry"
-import { Tool } from "./tool"
-import { Tools } from "./tools"
+import { ToolFailure } from "@opencode-ai/llm";
+import { Effect, Layer, Schema } from "effect";
+import path from "path";
+import { makeLocationNode } from "../effect/app-node";
+import { FileSystem } from "../filesystem";
+import { FSUtil } from "../fs-util";
+import { Location } from "../location";
+import { PermissionV2 } from "../permission";
+import { Ripgrep } from "../ripgrep";
+import { RelativePath } from "../schema";
+import { ToolRegistry } from "./registry";
+import { Tool } from "./tool";
+import { Tools } from "./tools";
 
-export const name = "grep"
+export const name = "grep";
 
 export const Input = Schema.Struct({
   pattern: FileSystem.GrepInput.fields.pattern.annotate({
@@ -29,34 +29,34 @@ export const Input = Schema.Struct({
   limit: FileSystem.GrepInput.fields.limit.annotate({
     description: "Maximum matches to return",
   }),
-})
+});
 
-export const Output = Schema.Array(FileSystem.Match)
-type ModelOutput = typeof Output.Encoded
+export const Output = Schema.Array(FileSystem.Match);
+type ModelOutput = typeof Output.Encoded;
 
 /** Format raw search matches into the familiar concise model output. */
 export const toModelOutput = (output: ModelOutput) => {
-  const lines = output.length === 0 ? ["No files found"] : [`Found ${output.length} matches`]
-  let current = ""
+  const lines = output.length === 0 ? ["No files found"] : [`Found ${output.length} matches`];
+  let current = "";
   for (const match of output) {
     if (current !== match.entry.path) {
-      if (current) lines.push("")
-      current = match.entry.path
-      lines.push(`${match.entry.path}:`)
+      if (current) lines.push("");
+      current = match.entry.path;
+      lines.push(`${match.entry.path}:`);
     }
-    lines.push(`  Line ${match.line}: ${match.text}`)
+    lines.push(`  Line ${match.line}: ${match.text}`);
   }
-  return lines.join("\n")
-}
+  return lines.join("\n");
+};
 
 /** Grep leaf that defaults its filesystem root to the active Location. */
 const layer = Layer.effectDiscard(
   Effect.gen(function* () {
-    const tools = yield* Tools.Service
-    const fs = yield* FSUtil.Service
-    const ripgrep = yield* Ripgrep.Service
-    const location = yield* Location.Service
-    const permission = yield* PermissionV2.Service
+    const tools = yield* Tools.Service;
+    const fs = yield* FSUtil.Service;
+    const ripgrep = yield* Ripgrep.Service;
+    const location = yield* Location.Service;
+    const permission = yield* PermissionV2.Service;
 
     yield* tools
       .register({
@@ -71,7 +71,10 @@ const layer = Layer.effectDiscard(
               text: toModelOutput(
                 output.map((match) => ({
                   ...match,
-                  entry: { ...match.entry, path: path.resolve(location.directory, match.entry.path) },
+                  entry: {
+                    ...match.entry,
+                    path: path.resolve(location.directory, match.entry.path),
+                  },
                 })),
               ),
             },
@@ -90,10 +93,16 @@ const layer = Layer.effectDiscard(
                 },
                 sessionID: context.sessionID,
                 agent: context.agent,
-                source: { type: "tool", messageID: context.assistantMessageID, callID: context.toolCallID },
-              })
-              const target = path.resolve(location.directory, input.path ?? ".")
-              const info = yield* fs.stat(target).pipe(Effect.catch(() => Effect.succeed(undefined)))
+                source: {
+                  type: "tool",
+                  messageID: context.assistantMessageID,
+                  callID: context.toolCallID,
+                },
+              });
+              const target = path.resolve(location.directory, input.path ?? ".");
+              const info = yield* fs
+                .stat(target)
+                .pipe(Effect.catch(() => Effect.succeed(undefined)));
               return yield* ripgrep
                 .grep({
                   cwd: info?.type === "Directory" ? target : path.dirname(target),
@@ -122,16 +131,20 @@ const layer = Layer.effectDiscard(
                       }),
                     ),
                   ),
-                )
-            }).pipe(Effect.mapError(() => new ToolFailure({ message: `Unable to grep for ${input.pattern}` }))),
+                );
+            }).pipe(
+              Effect.mapError(
+                () => new ToolFailure({ message: `Unable to grep for ${input.pattern}` }),
+              ),
+            ),
         }),
       })
-      .pipe(Effect.orDie)
+      .pipe(Effect.orDie);
   }),
-)
+);
 
 export const node = makeLocationNode({
   name: "tool/grep",
   layer,
   deps: [ToolRegistry.node, FSUtil.node, Ripgrep.node, Location.node, PermissionV2.node],
-})
+});

@@ -41,7 +41,7 @@ test("suffix parsing also applies to the explicit -reasoning variant without dou
     "grok-4.20-0309-reasoning-high",
     body,
     false,
-    credentials
+    credentials,
   ) as Record<string, unknown>;
 
   assert.equal(out.model, "grok-4.20-0309-reasoning");
@@ -71,7 +71,7 @@ test("strips reasoning_effort for the explicit -non-reasoning variant (already e
     "grok-4.20-0309-non-reasoning",
     body,
     false,
-    credentials
+    credentials,
   ) as Record<string, unknown>;
 
   assert.equal(out.model, "grok-4.20-0309-non-reasoning");
@@ -85,7 +85,7 @@ test("leaves a plain, unlisted model id and body unchanged (no suffix, not allow
     "grok-4.20-multi-agent-0309",
     body,
     false,
-    credentials
+    credentials,
   ) as Record<string, unknown>;
 
   assert.equal(out.model, "grok-4.20-multi-agent-0309");

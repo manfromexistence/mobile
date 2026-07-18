@@ -24,7 +24,7 @@ test("handleEmbedding routes prefixed models and forwards optional fields", asyn
         data: [{ object: "embedding", embedding: [0.1, 0.2], index: 0 }],
         usage: { prompt_tokens: 3, total_tokens: 3 },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -78,7 +78,7 @@ test("handleEmbedding supports resolved local providers without auth and preserv
         ],
         usage: { total_tokens: 10 },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -129,7 +129,7 @@ test("handleEmbedding routes Upstage embedding models through the embedding endp
         data: [{ object: "embedding", embedding: [0.1, 0.2], index: 0 }],
         usage: { prompt_tokens: 2, total_tokens: 2 },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -234,7 +234,7 @@ test("handleEmbedding strips content-encoding header on success path", async () 
           "transfer-encoding": "chunked",
           "x-request-id": "abc123",
         },
-      }
+      },
     );
 
   try {

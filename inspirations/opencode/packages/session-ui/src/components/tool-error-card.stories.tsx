@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { ToolErrorCard } from "./tool-error-card"
+import { ToolErrorCard } from "./tool-error-card";
 
 const docs = `### Overview
 Tool call failure summary styled like a tool trigger.
@@ -10,7 +10,7 @@ Tool call failure summary styled like a tool trigger.
 
 ### Behavior
 - Collapsible; click header to expand/collapse.
-`
+`;
 
 const samples = [
   {
@@ -47,7 +47,7 @@ const samples = [
     tool: "question",
     error: "question Dismissed: user dismissed this question",
   },
-]
+];
 
 export default {
   title: "UI/ToolErrorCard",
@@ -75,9 +75,9 @@ export default {
     },
   },
   render: (props: { tool: string; error: string }) => {
-    return <ToolErrorCard tool={props.tool} error={props.error} />
+    return <ToolErrorCard tool={props.tool} error={props.error} />;
   },
-}
+};
 
 export const All = {
   render: () => {
@@ -87,6 +87,6 @@ export const All = {
           <ToolErrorCard tool={item.tool} error={item.error} />
         ))}
       </div>
-    )
+    );
   },
-}
+};

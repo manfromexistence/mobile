@@ -46,8 +46,8 @@ function printProviderTable(connections) {
     const color = statusColor(status);
     console.log(
       `${shortId.padEnd(10)} ${connection.provider.padEnd(14)} ${String(connection.name).padEnd(
-        24
-      )} ${color}${status}\x1b[0m`
+        24,
+      )} ${color}${status}\x1b[0m`,
     );
   }
 }
@@ -113,8 +113,8 @@ function printAvailableProviderTable(providers, categories) {
   for (const provider of providers) {
     console.log(
       `${provider.id.padEnd(24)} ${provider.category.padEnd(14)} ${String(provider.name).padEnd(
-        28
-      )} ${availableProviderNotes(provider)}`
+        28,
+      )} ${availableProviderNotes(provider)}`,
     );
   }
 }
@@ -269,7 +269,7 @@ export async function runTestAllCommand(opts = {}) {
             ? "\x1b[33mSKIP\x1b[0m"
             : "\x1b[31mFAIL\x1b[0m";
         console.log(
-          `${label} ${result.connection.name}: ${result.valid ? "provider test passed" : result.error}`
+          `${label} ${result.connection.name}: ${result.valid ? "provider test passed" : result.error}`,
         );
       }
     }
@@ -347,7 +347,7 @@ export async function runProvidersRotateCommand(selector, opts = {}) {
       rl.question(`New API key for ${connection.name}: `, (a) => {
         rl.close();
         resolve(a.trim());
-      })
+      }),
     );
     if (!newKey) {
       console.error("No key provided.");
@@ -358,7 +358,7 @@ export async function runProvidersRotateCommand(selector, opts = {}) {
   // --- Dry-run ---
   if (opts.dryRun) {
     console.log(
-      t("providers.rotate.dryRunResult", { name: connection.name, id: connection.id.slice(0, 8) })
+      t("providers.rotate.dryRunResult", { name: connection.name, id: connection.id.slice(0, 8) }),
     );
     return 0;
   }
@@ -373,8 +373,8 @@ export async function runProvidersRotateCommand(selector, opts = {}) {
           name: connection.name,
           id: connection.id.slice(0, 8),
         }),
-        resolve
-      )
+        resolve,
+      ),
     );
     rl.close();
     if (!/^y(es|s)?$/i.test(answer)) {
@@ -422,7 +422,7 @@ export async function runProvidersRotateCommand(selector, opts = {}) {
   }
 
   console.log(
-    t("providers.rotate.success", { name: connection.name, id: connection.id.slice(0, 8) })
+    t("providers.rotate.success", { name: connection.name, id: connection.id.slice(0, 8) }),
   );
 
   // --- Post-rotation test ---
@@ -488,7 +488,7 @@ export async function runProvidersStatusCommand(opts = {}) {
     console.log(
       `${shortId.padEnd(10)} ${String(item.provider || "").padEnd(14)} ${String(item.name || "").padEnd(24)} ` +
         `${expiry.padEnd(12)} ${expiryColor}${expiryStatus.padEnd(8)}\x1b[0m ` +
-        `${testColor}${testStatus.padEnd(12)}\x1b[0m ${cooldown}`
+        `${testColor}${testStatus.padEnd(12)}\x1b[0m ${cooldown}`,
     );
   }
 

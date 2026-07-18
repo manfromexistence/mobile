@@ -97,7 +97,7 @@ function refTokenFromStructuredRef(ref: Record<string, unknown>): string | null 
 function mapStructuredRefs(
   refs: unknown,
   sourceNumber: number,
-  refTokenToSourceNumber: Map<string, number>
+  refTokenToSourceNumber: Map<string, number>,
 ): void {
   for (const refValue of asArray(refs)) {
     const ref = asRecord(refValue);
@@ -134,7 +134,7 @@ function citationMarkerCandidates(markerText?: string): string[] {
   const tokens = markerText.match(CHATGPT_REF_TOKEN_RE) ?? [];
   if (tokens.length > 0 && markerText.includes("cite")) {
     candidates.push(
-      `${CHATGPT_MARKER_START}cite${tokens.map((token) => CHATGPT_MARKER_SEP + token).join("")}${CHATGPT_MARKER_END}`
+      `${CHATGPT_MARKER_START}cite${tokens.map((token) => CHATGPT_MARKER_SEP + token).join("")}${CHATGPT_MARKER_END}`,
     );
   }
   return [...new Set(candidates)];
@@ -143,7 +143,7 @@ function citationMarkerCandidates(markerText?: string): string[] {
 type AddCitationSourceFn = (
   titleValue: unknown,
   urlValue: unknown,
-  attributionValue?: unknown
+  attributionValue?: unknown,
 ) => number;
 type AddCitationMentionFn = (ref: Record<string, unknown>, replacement: string) => void;
 
@@ -151,7 +151,7 @@ type AddCitationMentionFn = (ref: Record<string, unknown>, replacement: string) 
 function collectSupportingWebsiteNumbers(
   item: Record<string, unknown>,
   addSource: AddCitationSourceFn,
-  refTokenToSourceNumber: Map<string, number>
+  refTokenToSourceNumber: Map<string, number>,
 ): number[] {
   const numbers: number[] = [];
   for (const supportingValue of asArray(item.supporting_websites)) {
@@ -171,7 +171,7 @@ function collectSupportingWebsiteNumbers(
 function collectGroupedWebpageItemNumbers(
   itemValue: unknown,
   addSource: AddCitationSourceFn,
-  refTokenToSourceNumber: Map<string, number>
+  refTokenToSourceNumber: Map<string, number>,
 ): number[] {
   const item = asRecord(itemValue);
   if (!item) return [];
@@ -189,7 +189,7 @@ function collectGroupedWebpageItemNumbers(
  * the ref's own URLs directly. */
 function collectGroupedWebpagesFallbackNumbers(
   ref: Record<string, unknown>,
-  addSource: AddCitationSourceFn
+  addSource: AddCitationSourceFn,
 ): number[] {
   const numbers: number[] = [];
   for (const url of referenceUrls(ref)) {
@@ -207,7 +207,7 @@ function collectGroupedWebpagesRef(
   sources: ChatGptCitationSource[],
   addSource: AddCitationSourceFn,
   addMention: AddCitationMentionFn,
-  refTokenToSourceNumber: Map<string, number>
+  refTokenToSourceNumber: Map<string, number>,
 ): void {
   let numbers: number[] = [];
   for (const itemValue of asArray(ref.items)) {
@@ -225,7 +225,7 @@ function collectGroupedWebpagesRef(
  * no inline mention to replace (the footnote itself carries no marker text). */
 function collectSourcesFootnoteRef(
   ref: Record<string, unknown>,
-  addSource: AddCitationSourceFn
+  addSource: AddCitationSourceFn,
 ): void {
   for (const sourceValue of asArray(ref.sources)) {
     const source = asRecord(sourceValue);
@@ -241,7 +241,7 @@ function collectDefaultRef(
   sources: ChatGptCitationSource[],
   addSource: AddCitationSourceFn,
   addMention: AddCitationMentionFn,
-  refTokenToSourceNumber: Map<string, number>
+  refTokenToSourceNumber: Map<string, number>,
 ): void {
   const urls = referenceUrls(ref);
   const label = urlMarkerLabel(asString(ref.matched_text));
@@ -332,7 +332,7 @@ function replacePrivateCitationMarkers(text: string, citationData: ChatGptCitati
       /\bcite((?:turn\d+(?:search|product|news|image|webpage)\d+)+)\b/g,
       (_all, body: string) => {
         return replaceTokens(body.match(CHATGPT_REF_TOKEN_RE) ?? []);
-      }
+      },
     );
 }
 
@@ -342,13 +342,13 @@ function stripDanglingChatGptMarkers(text: string, citationData: ChatGptCitation
       /\uE200url\uE202([^\uE201\uE202]+)\uE202(https?:\/\/[^\uE201]+)\uE201/gu,
       (_all, label: string, url: string) => {
         return `[${markdownLinkText(label)}](${markdownUrl(url)})`;
-      }
+      },
     )
     .replace(
       /\uE200url\uE202([^\uE201\uE202]+)\uE202(?:[^\uE201]*\uE201)?/gu,
       (_all, label: string) => {
         return label.trim();
-      }
+      },
     )
     .replace(/\uE200cite(?:\uE202[^\uE201\uE202]*)*$/gu, "")
     .replace(/\uE200[a-z_]+(?:\uE202[^\uE201\uE202]*)*\uE201/giu, "")
@@ -362,7 +362,7 @@ function applyChatGptCitations(text: string, metadata?: Record<string, unknown>)
   let rendered = text;
 
   for (const mention of [...citationData.mentions].sort(
-    (a, b) => (b.start ?? -1) - (a.start ?? -1)
+    (a, b) => (b.start ?? -1) - (a.start ?? -1),
   )) {
     let replaced = false;
     for (const markerText of citationMarkerCandidates(mention.markerText)) {

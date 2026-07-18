@@ -15,7 +15,7 @@ test("buildCodexEnv strips stale OpenAI/Codex creds from the child env (defense-
       CODEX_API_KEY: "leak2",
       PATH: "/bin",
     },
-    "oma_live_x"
+    "oma_live_x",
   );
   assert.equal(env.OPENAI_API_KEY, undefined);
   assert.equal(env.OPENAI_BASE_URL, undefined);

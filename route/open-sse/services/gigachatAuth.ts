@@ -47,7 +47,7 @@ function normalizeExpiry(rawExpiry: unknown) {
 }
 
 export async function getGigachatAccessToken(
-  options: GigachatTokenOptions = {}
+  options: GigachatTokenOptions = {},
 ): Promise<GigachatTokenResult> {
   const credentials = (options.credentials || "").trim();
   if (!credentials) {

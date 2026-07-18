@@ -12,145 +12,151 @@ import {
   type TreeSitterClient,
   type CliRenderer,
   type ScrollbackSurface,
-} from "@opentui/core"
-import { entryBody, entryCanStream, entryDone, entryFlags } from "./entry.body"
-import { entryColor, entryLook, entrySyntax } from "./scrollback.shared"
-import { turnSummaryCommit } from "./turn-summary"
-import { entryWriter, sameEntryGroup, separatorRows, spacerWriter, turnSummaryWriter } from "./scrollback.writer"
-import { type RunTheme } from "./theme"
-import type { RunDiffStyle, RunEntryBody, StreamCommit } from "./types"
+} from "@opentui/core";
+import { entryBody, entryCanStream, entryDone, entryFlags } from "./entry.body";
+import { entryColor, entryLook, entrySyntax } from "./scrollback.shared";
+import { turnSummaryCommit } from "./turn-summary";
+import {
+  entryWriter,
+  sameEntryGroup,
+  separatorRows,
+  spacerWriter,
+  turnSummaryWriter,
+} from "./scrollback.writer";
+import { type RunTheme } from "./theme";
+import type { RunDiffStyle, RunEntryBody, StreamCommit } from "./types";
 
-type ActiveBody = Exclude<RunEntryBody, { type: "none" | "structured" }>
+type ActiveBody = Exclude<RunEntryBody, { type: "none" | "structured" }>;
 
 type ActiveEntry = {
-  body: ActiveBody
-  commit: StreamCommit
-  surface: ScrollbackSurface
-  renderable: TextRenderable | CodeRenderable | MarkdownRenderable
-  content: string
-  committedRows: number
-  committedBlocks: number
-  pendingSpacerRows: number
-  rendered: boolean
-}
+  body: ActiveBody;
+  commit: StreamCommit;
+  surface: ScrollbackSurface;
+  renderable: TextRenderable | CodeRenderable | MarkdownRenderable;
+  content: string;
+  committedRows: number;
+  committedBlocks: number;
+  pendingSpacerRows: number;
+  rendered: boolean;
+};
 
 function commitMarkdownBlocks(input: {
-  surface: ScrollbackSurface
-  renderable: MarkdownRenderable
-  startBlock: number
-  endBlockExclusive: number
-  trailingNewline: boolean
-  beforeCommit?: () => void
+  surface: ScrollbackSurface;
+  renderable: MarkdownRenderable;
+  startBlock: number;
+  endBlockExclusive: number;
+  trailingNewline: boolean;
+  beforeCommit?: () => void;
 }) {
   if (input.endBlockExclusive <= input.startBlock) {
-    return false
+    return false;
   }
 
-  const first = input.renderable._blockStates[input.startBlock]
-  const last = input.renderable._blockStates[input.endBlockExclusive - 1]
+  const first = input.renderable._blockStates[input.startBlock];
+  const last = input.renderable._blockStates[input.endBlockExclusive - 1];
   if (!first || !last) {
-    return false
+    return false;
   }
 
-  const next = input.renderable._blockStates[input.endBlockExclusive]
-  const start = first.renderable.y
-  const end = next ? next.renderable.y : last.renderable.y + last.renderable.height
+  const next = input.renderable._blockStates[input.endBlockExclusive];
+  const start = first.renderable.y;
+  const end = next ? next.renderable.y : last.renderable.y + last.renderable.height;
 
-  input.beforeCommit?.()
+  input.beforeCommit?.();
   input.surface.commitRows(start, end, {
     trailingNewline: input.trailingNewline,
-  })
-  return true
+  });
+  return true;
 }
 
 function staticBody(commit: StreamCommit, body: RunEntryBody, spaced: number): RunEntryBody {
   if (spaced === 0 || body.type !== "text") {
-    return body
+    return body;
   }
 
   if (commit.kind !== "tool" || commit.phase !== "progress" || commit.toolState !== "completed") {
-    return body
+    return body;
   }
 
   if (!body.content.startsWith("\n")) {
-    return body
+    return body;
   }
 
   return {
     ...body,
     content: body.content.replace(/^\n/, ""),
-  }
+  };
 }
 
 export class RunScrollbackStream {
-  private tail: StreamCommit | undefined
-  private rendered: StreamCommit | undefined
-  private active: ActiveEntry | undefined
-  private diffStyle: RunDiffStyle | undefined
-  private sessionID?: () => string | undefined
-  private treeSitterClient: TreeSitterClient | undefined
-  private wrote: boolean
-  private pendingThemes: RunTheme[] = []
+  private tail: StreamCommit | undefined;
+  private rendered: StreamCommit | undefined;
+  private active: ActiveEntry | undefined;
+  private diffStyle: RunDiffStyle | undefined;
+  private sessionID?: () => string | undefined;
+  private treeSitterClient: TreeSitterClient | undefined;
+  private wrote: boolean;
+  private pendingThemes: RunTheme[] = [];
 
   constructor(
     private renderer: CliRenderer,
     private theme: RunTheme,
     options: {
-      wrote?: boolean
-      diffStyle?: RunDiffStyle
-      sessionID?: () => string | undefined
-      treeSitterClient?: TreeSitterClient
-      onThemeRelease?: (theme: RunTheme) => void
+      wrote?: boolean;
+      diffStyle?: RunDiffStyle;
+      sessionID?: () => string | undefined;
+      treeSitterClient?: TreeSitterClient;
+      onThemeRelease?: (theme: RunTheme) => void;
     } = {},
   ) {
-    this.diffStyle = options.diffStyle
-    this.sessionID = options.sessionID
-    this.treeSitterClient = options.treeSitterClient ?? getTreeSitterClient()
-    this.wrote = options.wrote ?? false
-    this.onThemeRelease = options.onThemeRelease
+    this.diffStyle = options.diffStyle;
+    this.sessionID = options.sessionID;
+    this.treeSitterClient = options.treeSitterClient ?? getTreeSitterClient();
+    this.wrote = options.wrote ?? false;
+    this.onThemeRelease = options.onThemeRelease;
   }
 
-  private onThemeRelease: ((theme: RunTheme) => void) | undefined
+  private onThemeRelease: ((theme: RunTheme) => void) | undefined;
 
   private releasePendingThemes(): void {
     if (this.pendingThemes.length === 0) {
-      return
+      return;
     }
 
-    for (const theme of this.pendingThemes.splice(0)) this.onThemeRelease?.(theme)
+    for (const theme of this.pendingThemes.splice(0)) this.onThemeRelease?.(theme);
   }
 
   public setTheme(theme: RunTheme): void {
     if (this.theme === theme) {
-      return
+      return;
     }
 
-    const previous = this.theme
-    this.theme = theme
-    const active = this.active
+    const previous = this.theme;
+    this.theme = theme;
+    const active = this.active;
     if (!active) {
-      this.onThemeRelease?.(previous)
-      return
+      this.onThemeRelease?.(previous);
+      return;
     }
 
-    this.pendingThemes.push(previous)
+    this.pendingThemes.push(previous);
 
-    const style = entryLook(active.commit, theme.entry)
+    const style = entryLook(active.commit, theme.entry);
     if (active.renderable instanceof TextRenderable) {
-      active.renderable.fg = style.fg
-      active.renderable.attributes = style.attrs ?? 0
-      return
+      active.renderable.fg = style.fg;
+      active.renderable.attributes = style.attrs ?? 0;
+      return;
     }
 
-    active.renderable.fg = entryColor(active.commit, theme)
-    active.renderable.syntaxStyle = entrySyntax(active.commit, theme)
+    active.renderable.fg = entryColor(active.commit, theme);
+    active.renderable.syntaxStyle = entrySyntax(active.commit, theme);
   }
 
   private createEntry(commit: StreamCommit, body: ActiveBody): ActiveEntry {
     const surface = this.renderer.createScrollbackSurface({
       startOnNewLine: entryFlags(commit).startOnNewLine,
-    })
-    const style = entryLook(commit, this.theme.entry)
+    });
+    const style = entryLook(commit, this.theme.entry);
     const renderable =
       body.type === "text"
         ? new TextRenderable(surface.renderContext, {
@@ -181,11 +187,11 @@ export class RunScrollbackStream {
               tableOptions: { widthMode: "content" },
               fg: entryColor(commit, this.theme),
               treeSitterClient: this.treeSitterClient,
-            })
+            });
 
-    surface.root.add(renderable)
+    surface.root.add(renderable);
 
-    const rows = separatorRows(this.rendered, commit, body)
+    const rows = separatorRows(this.rendered, commit, body);
 
     return {
       body,
@@ -197,96 +203,100 @@ export class RunScrollbackStream {
       committedBlocks: 0,
       pendingSpacerRows: rows || (!this.rendered && this.wrote ? 1 : 0),
       rendered: false,
-    }
+    };
   }
 
   private markRendered(commit: StreamCommit | undefined): void {
     if (!commit) {
-      return
+      return;
     }
 
-    this.rendered = commit
+    this.rendered = commit;
   }
 
   private writeSpacer(rows: number): void {
     if (rows === 0) {
-      return
+      return;
     }
 
-    this.renderer.writeToScrollback(spacerWriter())
-    this.wrote = false
+    this.renderer.writeToScrollback(spacerWriter());
+    this.wrote = false;
   }
 
   private flushPendingSpacer(active: ActiveEntry): void {
-    this.writeSpacer(active.pendingSpacerRows)
-    active.pendingSpacerRows = 0
+    this.writeSpacer(active.pendingSpacerRows);
+    active.pendingSpacerRows = 0;
   }
 
   private async flushActive(done: boolean, trailingNewline: boolean): Promise<boolean> {
-    const active = this.active
+    const active = this.active;
     if (!active) {
-      return false
+      return false;
     }
 
     if (active.body.type === "text") {
       if (!(active.renderable instanceof TextRenderable)) {
-        return false
+        return false;
       }
 
-      const renderable = active.renderable
-      renderable.content = active.content
-      active.surface.render()
-      this.releasePendingThemes()
-      const targetRows = done ? active.surface.height : Math.max(active.committedRows, active.surface.height - 1)
+      const renderable = active.renderable;
+      renderable.content = active.content;
+      active.surface.render();
+      this.releasePendingThemes();
+      const targetRows = done
+        ? active.surface.height
+        : Math.max(active.committedRows, active.surface.height - 1);
       if (targetRows <= active.committedRows) {
-        return false
+        return false;
       }
 
-      this.flushPendingSpacer(active)
+      this.flushPendingSpacer(active);
       active.surface.commitRows(active.committedRows, targetRows, {
         trailingNewline: done && targetRows === active.surface.height ? trailingNewline : false,
-      })
-      active.committedRows = targetRows
-      active.rendered = true
-      return true
+      });
+      active.committedRows = targetRows;
+      active.rendered = true;
+      return true;
     }
 
     if (active.body.type === "code") {
       if (!(active.renderable instanceof CodeRenderable)) {
-        return false
+        return false;
       }
 
-      const renderable = active.renderable
-      renderable.content = active.content
-      renderable.streaming = !done
-      await active.surface.settle()
-      this.releasePendingThemes()
-      const targetRows = done ? active.surface.height : Math.max(active.committedRows, active.surface.height - 1)
+      const renderable = active.renderable;
+      renderable.content = active.content;
+      renderable.streaming = !done;
+      await active.surface.settle();
+      this.releasePendingThemes();
+      const targetRows = done
+        ? active.surface.height
+        : Math.max(active.committedRows, active.surface.height - 1);
       if (targetRows <= active.committedRows) {
-        return false
+        return false;
       }
 
-      this.flushPendingSpacer(active)
+      this.flushPendingSpacer(active);
       active.surface.commitRows(active.committedRows, targetRows, {
         trailingNewline: done && targetRows === active.surface.height ? trailingNewline : false,
-      })
-      active.committedRows = targetRows
-      active.rendered = true
-      return true
+      });
+      active.committedRows = targetRows;
+      active.rendered = true;
+      return true;
     }
 
     if (!(active.renderable instanceof MarkdownRenderable)) {
-      return false
+      return false;
     }
 
-    const renderable = active.renderable
-    renderable.content = active.content
-    renderable.streaming = !done
-    await active.surface.settle()
-    this.releasePendingThemes()
-    const targetBlockCount = done ? renderable._blockStates.length : renderable._stableBlockCount
+    const renderable = active.renderable;
+    renderable.content = active.content;
+    renderable.streaming = !done;
+    await active.surface.settle();
+    this.releasePendingThemes();
+    const targetBlockCount = done ? renderable._blockStates.length : renderable._stableBlockCount;
     if (targetBlockCount <= active.committedBlocks) {
-      return false
+      return false;
     }
 
     if (
@@ -295,99 +305,105 @@ export class RunScrollbackStream {
         renderable,
         startBlock: active.committedBlocks,
         endBlockExclusive: targetBlockCount,
-        trailingNewline: done && targetBlockCount === renderable._blockStates.length ? trailingNewline : false,
+        trailingNewline:
+          done && targetBlockCount === renderable._blockStates.length ? trailingNewline : false,
         beforeCommit: () => this.flushPendingSpacer(active),
       })
     ) {
-      active.committedBlocks = targetBlockCount
-      active.rendered = true
-      return true
+      active.committedBlocks = targetBlockCount;
+      active.rendered = true;
+      return true;
     }
 
-    return false
+    return false;
   }
 
   private async finishActive(trailingNewline: boolean): Promise<StreamCommit | undefined> {
     if (!this.active) {
-      return undefined
+      return undefined;
     }
 
-    const active = this.active
+    const active = this.active;
 
     try {
-      await this.flushActive(true, trailingNewline)
+      await this.flushActive(true, trailingNewline);
     } finally {
       if (this.active === active) {
-        this.active = undefined
+        this.active = undefined;
       }
 
       if (!active.surface.isDestroyed) {
-        active.surface.destroy()
+        active.surface.destroy();
       }
-      this.releasePendingThemes()
+      this.releasePendingThemes();
     }
 
-    return active.rendered ? active.commit : undefined
+    return active.rendered ? active.commit : undefined;
   }
 
   private async writeStreaming(commit: StreamCommit, body: ActiveBody): Promise<void> {
-    if (!this.active || !sameEntryGroup(this.active.commit, commit) || this.active.body.type !== body.type) {
-      this.markRendered(await this.finishActive(false))
-      this.active = this.createEntry(commit, body)
+    if (
+      !this.active ||
+      !sameEntryGroup(this.active.commit, commit) ||
+      this.active.body.type !== body.type
+    ) {
+      this.markRendered(await this.finishActive(false));
+      this.active = this.createEntry(commit, body);
     }
 
-    this.active.body = body
-    this.active.commit = commit
-    this.active.content += body.content
-    await this.flushActive(false, false)
+    this.active.body = body;
+    this.active.commit = commit;
+    this.active.content += body.content;
+    await this.flushActive(false, false);
     if (this.active.rendered) {
-      this.markRendered(this.active.commit)
+      this.markRendered(this.active.commit);
     }
   }
 
   public async append(commit: StreamCommit): Promise<void> {
-    const same = sameEntryGroup(this.tail, commit)
+    const same = sameEntryGroup(this.tail, commit);
     if (!same) {
-      this.markRendered(await this.finishActive(false))
+      this.markRendered(await this.finishActive(false));
     }
 
     if (commit.summary) {
-      this.writeSpacer(1)
-      this.renderer.writeToScrollback(turnSummaryWriter({ ...commit.summary, theme: this.theme }))
-      this.markRendered(commit)
-      this.tail = commit
-      return
+      this.writeSpacer(1);
+      this.renderer.writeToScrollback(turnSummaryWriter({ ...commit.summary, theme: this.theme }));
+      this.markRendered(commit);
+      this.tail = commit;
+      return;
     }
 
-    const body = entryBody(commit)
+    const body = entryBody(commit);
     if (body.type === "none") {
       if (entryDone(commit)) {
-        this.markRendered(await this.finishActive(false))
+        this.markRendered(await this.finishActive(false));
       }
 
-      this.tail = commit
-      return
+      this.tail = commit;
+      return;
     }
 
     if (
       body.type !== "structured" &&
-      (entryCanStream(commit, body) || (commit.kind === "tool" && commit.phase === "final" && body.type === "markdown"))
+      (entryCanStream(commit, body) ||
+        (commit.kind === "tool" && commit.phase === "final" && body.type === "markdown"))
     ) {
-      await this.writeStreaming(commit, body)
+      await this.writeStreaming(commit, body);
       if (entryDone(commit)) {
-        this.markRendered(await this.finishActive(false))
+        this.markRendered(await this.finishActive(false));
       }
-      this.tail = commit
-      return
+      this.tail = commit;
+      return;
     }
 
     if (same) {
-      this.markRendered(await this.finishActive(false))
+      this.markRendered(await this.finishActive(false));
     }
 
-    const rows = separatorRows(this.rendered, commit, body)
-    const spaced = rows || (!this.rendered && this.wrote ? 1 : 0)
-    this.writeSpacer(spaced)
+    const rows = separatorRows(this.rendered, commit, body);
+    const spaced = rows || (!this.rendered && this.wrote ? 1 : 0);
+    this.writeSpacer(spaced);
 
     this.renderer.writeToScrollback(
       entryWriter({
@@ -398,34 +414,38 @@ export class RunScrollbackStream {
           diffStyle: this.diffStyle,
         },
       }),
-    )
-    this.markRendered(commit)
-    this.tail = commit
+    );
+    this.markRendered(commit);
+    this.tail = commit;
   }
 
   private resetActive(): void {
     if (!this.active) {
-      return
+      return;
     }
 
     if (!this.active.surface.isDestroyed) {
-      this.active.surface.destroy()
+      this.active.surface.destroy();
     }
 
-    this.active = undefined
-    this.releasePendingThemes()
+    this.active = undefined;
+    this.releasePendingThemes();
   }
 
   public async complete(trailingNewline = false): Promise<void> {
-    this.markRendered(await this.finishActive(trailingNewline))
+    this.markRendered(await this.finishActive(trailingNewline));
   }
 
-  public async writeTurnSummary(input: { agent: string; model: string; duration: string }): Promise<void> {
-    await this.append(turnSummaryCommit(input))
+  public async writeTurnSummary(input: {
+    agent: string;
+    model: string;
+    duration: string;
+  }): Promise<void> {
+    await this.append(turnSummaryCommit(input));
   }
 
   public destroy(): void {
-    this.resetActive()
-    this.releasePendingThemes()
+    this.resetActive();
+    this.releasePendingThemes();
   }
 }

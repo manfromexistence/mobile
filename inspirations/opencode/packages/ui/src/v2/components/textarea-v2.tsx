@@ -1,13 +1,19 @@
-import { type ComponentProps, splitProps } from "solid-js"
-import "./textarea-v2.css"
+import { type ComponentProps, splitProps } from "solid-js";
+import "./textarea-v2.css";
 
 export interface TextareaV2Props extends ComponentProps<"textarea"> {
   /** Error styling for the field and value text. */
-  invalid?: boolean
+  invalid?: boolean;
 }
 
 export function TextareaV2(props: TextareaV2Props) {
-  const [local, textareaProps] = splitProps(props, ["class", "classList", "invalid", "disabled", "rows"])
+  const [local, textareaProps] = splitProps(props, [
+    "class",
+    "classList",
+    "invalid",
+    "disabled",
+    "rows",
+  ]);
 
   return (
     <div
@@ -27,5 +33,5 @@ export function TextareaV2(props: TextareaV2Props) {
         data-slot="textarea-v2-textarea"
       />
     </div>
-  )
+  );
 }

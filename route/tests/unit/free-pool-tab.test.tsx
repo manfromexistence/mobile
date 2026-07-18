@@ -31,8 +31,9 @@ Object.defineProperty(globalThis, "localStorage", {
 
 // ── Import component after mocks ─────────────────────────────────────────────
 
-const { default: FreePoolTab } =
-  await import("../../src/app/(dashboard)/dashboard/settings/components/proxy/FreePoolTab");
+const { default: FreePoolTab } = await import(
+  "../../src/app/(dashboard)/dashboard/settings/components/proxy/FreePoolTab"
+);
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -164,7 +165,7 @@ describe("FreePoolTab source toggles", () => {
     const el = renderTab();
     await waitForCondition(() => el.querySelector("[role='group']") !== null);
     const texts = Array.from(el.querySelector("[role='group']")!.querySelectorAll("button")).map(
-      (b) => b.textContent?.trim()
+      (b) => b.textContent?.trim(),
     );
     expect(texts).toContain("1proxy");
     expect(texts).toContain("Proxifly");
@@ -184,7 +185,7 @@ describe("FreePoolTab data loading", () => {
     const mockFetch = setupFetch();
     renderTab();
     await waitForCondition(() =>
-      mockFetch.mock.calls.some(([url]) => String(url).includes("/free-proxies"))
+      mockFetch.mock.calls.some(([url]) => String(url).includes("/free-proxies")),
     );
     expect(mockFetch.mock.calls.some(([url]) => String(url).includes("/free-proxies"))).toBe(true);
   });
@@ -193,7 +194,7 @@ describe("FreePoolTab data loading", () => {
     const mockFetch = setupFetch();
     renderTab();
     await waitForCondition(() =>
-      mockFetch.mock.calls.some(([url]) => String(url).includes("/stats"))
+      mockFetch.mock.calls.some(([url]) => String(url).includes("/stats")),
     );
     expect(mockFetch.mock.calls.some(([url]) => String(url).includes("/stats"))).toBe(true);
   });
@@ -208,7 +209,7 @@ describe("FreePoolTab data loading", () => {
     const el = renderTab();
     // Wait for initial load
     await waitForCondition(() =>
-      mockFetch.mock.calls.some(([url]) => String(url).includes("/free-proxies"))
+      mockFetch.mock.calls.some(([url]) => String(url).includes("/free-proxies")),
     );
 
     const initialCallCount = mockFetch.mock.calls.length;
@@ -262,7 +263,7 @@ describe("FreePoolTab sync error surfacing (#5595)", () => {
     await waitForCondition(() => el.querySelector("[role='group']") !== null);
 
     const syncBtn = Array.from(el.querySelectorAll("button")).find((b) =>
-      b.textContent?.includes("proxyFreePoolSyncAll")
+      b.textContent?.includes("proxyFreePoolSyncAll"),
     )!;
     expect(syncBtn).toBeTruthy();
     act(() => {
@@ -271,7 +272,7 @@ describe("FreePoolTab sync error surfacing (#5595)", () => {
 
     // RED before the fix: handleSync discarded the response, so no error box appears.
     await waitForCondition(
-      () => el.querySelector("[data-testid='free-pool-sync-errors']") !== null
+      () => el.querySelector("[data-testid='free-pool-sync-errors']") !== null,
     );
     const errBox = el.querySelector("[data-testid='free-pool-sync-errors']")!;
     expect(errBox.textContent).toContain("TLS handshake failed");

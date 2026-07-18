@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test"
+import { describe, expect, test } from "bun:test";
 import {
   addableProbePlan,
   addServerProbePlan,
@@ -8,10 +8,10 @@ import {
   runAddableProbePlan,
   wslOpencodeAction,
   wslRuntimeRetryable,
-} from "./settings-model"
-import type { WslServersState } from "./types"
+} from "./settings-model";
+import type { WslServersState } from "./types";
 
-const readyWslState = readyState()
+const readyWslState = readyState();
 
 function readyState(input: Partial<WslServersState> = {}): WslServersState {
   return {
@@ -24,21 +24,26 @@ function readyState(input: Partial<WslServersState> = {}): WslServersState {
     servers: [],
     job: null,
     ...input,
-  }
+  };
 }
 
 describe("WSL server settings presentation", () => {
   test("retries only settled unsuccessful runtimes", () => {
-    expect(wslRuntimeRetryable({ kind: "starting" })).toBe(false)
-    expect(wslRuntimeRetryable({ kind: "ready", url: "http://127.0.0.1:4096", username: null, password: null })).toBe(
-      false,
-    )
-    expect(wslRuntimeRetryable({ kind: "failed", message: "boom" })).toBe(true)
-    expect(wslRuntimeRetryable({ kind: "stopped" })).toBe(true)
-  })
+    expect(wslRuntimeRetryable({ kind: "starting" })).toBe(false);
+    expect(
+      wslRuntimeRetryable({
+        kind: "ready",
+        url: "http://127.0.0.1:4096",
+        username: null,
+        password: null,
+      }),
+    ).toBe(false);
+    expect(wslRuntimeRetryable({ kind: "failed", message: "boom" })).toBe(true);
+    expect(wslRuntimeRetryable({ kind: "stopped" })).toBe(true);
+  });
 
   test("offers install and update only when OpenCode needs attention", () => {
-    expect(wslOpencodeAction(undefined)).toBeUndefined()
+    expect(wslOpencodeAction(undefined)).toBeUndefined();
     expect(
       wslOpencodeAction({
         distro: "Debian",
@@ -48,7 +53,7 @@ describe("WSL server settings presentation", () => {
         matchesDesktop: null,
         error: null,
       }),
-    ).toBe("Install OpenCode")
+    ).toBe("Install OpenCode");
     expect(
       wslOpencodeAction({
         distro: "Debian",
@@ -58,7 +63,7 @@ describe("WSL server settings presentation", () => {
         matchesDesktop: false,
         error: null,
       }),
-    ).toBe("Update OpenCode")
+    ).toBe("Update OpenCode");
     expect(
       wslOpencodeAction({
         distro: "Debian",
@@ -68,8 +73,8 @@ describe("WSL server settings presentation", () => {
         matchesDesktop: true,
         error: null,
       }),
-    ).toBeUndefined()
-  })
+    ).toBeUndefined();
+  });
 
   test("plans addable distro probes with the selected distro first", () => {
     const plan = addableProbePlan({
@@ -81,23 +86,23 @@ describe("WSL server settings presentation", () => {
         { name: "Debian", version: 2, isDefault: true },
         { name: "Ubuntu", version: 2, isDefault: false },
       ],
-    })
+    });
 
-    expect(plan?.key).toBe("distro:Ubuntu|distro:Debian")
-    expect(plan?.distros).toEqual(["Ubuntu", "Debian"])
-  })
+    expect(plan?.key).toBe("distro:Ubuntu|distro:Debian");
+    expect(plan?.distros).toEqual(["Ubuntu", "Debian"]);
+  });
 
   test("plans bootstrap probes for missing runtime and initial distro lists", () => {
-    expect(autoProbePlan({ state: undefined, busy: false })).toBeUndefined()
+    expect(autoProbePlan({ state: undefined, busy: false })).toBeUndefined();
     expect(autoProbePlan({ state: { ...readyWslState, runtime: null }, busy: false })).toEqual({
       key: "runtime",
       action: "probeRuntime",
-    })
+    });
     expect(autoProbePlan({ state: readyWslState, busy: false })).toEqual({
       key: "distros",
       action: "refreshDistros",
-    })
-  })
+    });
+  });
 
   test("uses one command plan for bootstrap before addable distro probing", () => {
     expect(
@@ -109,7 +114,11 @@ describe("WSL server settings presentation", () => {
         selectedDistro: null,
         addableInstalledDistros: [{ name: "Debian", version: 2, isDefault: true }],
       }),
-    ).toEqual({ kind: "auto", key: "auto:runtime", plan: { key: "runtime", action: "probeRuntime" } })
+    ).toEqual({
+      kind: "auto",
+      key: "auto:runtime",
+      plan: { key: "runtime", action: "probeRuntime" },
+    });
 
     expect(
       addServerProbePlan({
@@ -124,19 +133,23 @@ describe("WSL server settings presentation", () => {
         selectedDistro: "Debian",
         addableInstalledDistros: [{ name: "Debian", version: 2, isDefault: true }],
       }),
-    ).toEqual({ kind: "addable", key: "addable:distro:Debian", plan: { key: "distro:Debian", distros: ["Debian"] } })
-  })
+    ).toEqual({
+      kind: "addable",
+      key: "addable:distro:Debian",
+      plan: { key: "distro:Debian", distros: ["Debian"] },
+    });
+  });
 
   test("does not accept the same failed probe command until reset", () => {
-    const gate = createProbeFailureGate()
+    const gate = createProbeFailureGate();
 
-    expect(gate.accepts("addable:distro:Debian")).toBe(true)
-    gate.settle("addable:distro:Debian", new Error("wsl failed"))
-    expect(gate.accepts("addable:distro:Debian")).toBe(false)
-    expect(gate.accepts("addable:distro:Ubuntu")).toBe(true)
-    gate.reset()
-    expect(gate.accepts("addable:distro:Debian")).toBe(true)
-  })
+    expect(gate.accepts("addable:distro:Debian")).toBe(true);
+    gate.settle("addable:distro:Debian", new Error("wsl failed"));
+    expect(gate.accepts("addable:distro:Debian")).toBe(false);
+    expect(gate.accepts("addable:distro:Ubuntu")).toBe(true);
+    gate.reset();
+    expect(gate.accepts("addable:distro:Debian")).toBe(true);
+  });
 
   test("keeps default distro selection stable while probes resolve", () => {
     const model = addServerViewModel({
@@ -157,10 +170,10 @@ describe("WSL server settings presentation", () => {
       catalogTarget: null,
       adding: false,
       probingAddable: false,
-    })
+    });
 
-    expect(model.selectedDistro).toBe("Debian")
-  })
+    expect(model.selectedDistro).toBe("Debian");
+  });
 
   test("keeps the dialog busy across serial addable probe job gaps", () => {
     const model = addServerViewModel({
@@ -174,10 +187,10 @@ describe("WSL server settings presentation", () => {
       catalogTarget: null,
       adding: false,
       probingAddable: true,
-    })
+    });
 
-    expect(model.busy).toBe(true)
-  })
+    expect(model.busy).toBe(true);
+  });
 
   test("does not report ready when OpenCode is present but cannot run", () => {
     const model = addServerViewModel({
@@ -205,27 +218,27 @@ describe("WSL server settings presentation", () => {
       catalogTarget: null,
       adding: false,
       probingAddable: false,
-    })
+    });
 
     expect(model.distroStatuses.Debian).toEqual({
       label: { key: "wsl.onboarding.installOpencode" },
       tone: "warning",
-    })
-    expect(model.primaryButton.action).toBe("install-opencode")
-  })
+    });
+    expect(model.primaryButton.action).toBe("install-opencode");
+  });
 
   test("delegates addable probe plans to one batch command", async () => {
-    const calls: string[][] = []
+    const calls: string[][] = [];
 
     await runAddableProbePlan({
       plan: { key: "distro:Debian|distro:Ubuntu", distros: ["Debian", "Ubuntu"] },
       api: {
         probeAddable: async (distros) => {
-          calls.push(distros)
+          calls.push(distros);
         },
       },
-    })
+    });
 
-    expect(calls).toEqual([["Debian", "Ubuntu"]])
-  })
-})
+    expect(calls).toEqual([["Debian", "Ubuntu"]]);
+  });
+});

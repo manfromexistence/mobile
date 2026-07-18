@@ -1,8 +1,4 @@
-import {
-  GLUE_MESSAGE_PROTOTYPES,
-  GLUE_VERSION,
-  type GlueMsg,
-} from './messages';
+import { GLUE_MESSAGE_PROTOTYPES, GLUE_VERSION, type GlueMsg } from "./messages";
 
 /**
  * Glue is a simple binary protocol for serializing and deserializing messages.
@@ -12,17 +8,17 @@ import {
  */
 
 type GlueType =
-  | 'str'
-  | 'int'
-  | 'float'
-  | 'bool'
-  | 'raw'
-  | 'arr_str'
-  | 'arr_int'
-  | 'arr_float'
-  | 'arr_bool'
-  | 'arr_raw'
-  | 'null';
+  | "str"
+  | "int"
+  | "float"
+  | "bool"
+  | "raw"
+  | "arr_str"
+  | "arr_int"
+  | "arr_float"
+  | "arr_bool"
+  | "arr_raw"
+  | "null";
 
 const GLUE_MAGIC = new Uint8Array([71, 76, 85, 69]);
 
@@ -110,27 +106,27 @@ export function glueDeserialize(buf: Uint8Array): GlueMsg {
 
   const readField = (field: GlueField) => {
     switch (field.type) {
-      case 'str':
+      case "str":
         return readString();
-      case 'int':
+      case "int":
         return readInt32();
-      case 'float':
+      case "float":
         return readFloat();
-      case 'bool':
+      case "bool":
         return readBool();
-      case 'raw':
+      case "raw":
         return readRaw();
-      case 'arr_str':
+      case "arr_str":
         return readArray(readString);
-      case 'arr_int':
+      case "arr_int":
         return readArray(readInt32);
-      case 'arr_float':
+      case "arr_float":
         return readArray(readFloat);
-      case 'arr_bool':
+      case "arr_bool":
         return readArray(readBool);
-      case 'arr_raw':
+      case "arr_raw":
         return readArray(readRaw);
-      case 'null':
+      case "null":
         return readNull();
     }
   };
@@ -142,12 +138,12 @@ export function glueDeserialize(buf: Uint8Array): GlueMsg {
     buf[3] === GLUE_MAGIC[3];
   offset += 4;
   if (!magicValid) {
-    throw new Error('Invalid magic number');
+    throw new Error("Invalid magic number");
   }
 
   const version = readUint32();
   if (version !== GLUE_VERSION) {
-    throw new Error('Invalid version number');
+    throw new Error("Invalid version number");
   }
 
   const name = readString(8);
@@ -161,17 +157,13 @@ export function glueDeserialize(buf: Uint8Array): GlueMsg {
     const readType = readUint32();
     if (readType === GLUE_DTYPE_NULL) {
       if (!field.isNullable) {
-        throw new Error(
-          `${name}: Expect field ${field.name} to be non-nullable`
-        );
+        throw new Error(`${name}: Expect field ${field.name} to be non-nullable`);
       }
       output[field.name] = null;
       continue;
     }
     if (readType !== TYPE_MAP[field.type]) {
-      throw new Error(
-        `${name}: Expect field ${field.name} to have type ${field.type}`
-      );
+      throw new Error(`${name}: Expect field ${field.name} to have type ${field.type}`);
     }
     output[field.name] = readField(field);
   }
@@ -234,9 +226,7 @@ export function glueSerialize(msg: GlueMsg): Uint8Array {
   for (const field of msgProto.fields) {
     const val = (msg as any)[field.name];
     if (!field.isNullable && (val === null || val === undefined)) {
-      throw new Error(
-        `${msg._name}: Expect field ${field.name} to be non-nullable`
-      );
+      throw new Error(`${msg._name}: Expect field ${field.name} to be non-nullable`);
     }
     if (val === null || val === undefined) {
       writeUint32(GLUE_DTYPE_NULL);
@@ -244,37 +234,37 @@ export function glueSerialize(msg: GlueMsg): Uint8Array {
     }
     writeUint32(TYPE_MAP[field.type]);
     switch (field.type) {
-      case 'str':
+      case "str":
         writeString(val);
         break;
-      case 'int':
+      case "int":
         writeInt32(val);
         break;
-      case 'float':
+      case "float":
         writeFloat(val);
         break;
-      case 'bool':
+      case "bool":
         writeBool(val);
         break;
-      case 'raw':
+      case "raw":
         writeRaw(val);
         break;
-      case 'arr_str':
+      case "arr_str":
         writeArray(val, writeString);
         break;
-      case 'arr_int':
+      case "arr_int":
         writeArray(val, writeInt32);
         break;
-      case 'arr_float':
+      case "arr_float":
         writeArray(val, writeFloat);
         break;
-      case 'arr_bool':
+      case "arr_bool":
         writeArray(val, writeBool);
         break;
-      case 'arr_raw':
+      case "arr_raw":
         writeArray(val, writeRaw);
         break;
-      case 'null':
+      case "null":
         writeNull();
         break;
     }

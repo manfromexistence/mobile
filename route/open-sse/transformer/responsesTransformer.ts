@@ -127,7 +127,7 @@ export function createResponsesApiTransformStream(logger = null, keepaliveInterv
   // can later sort by the actual output_index rather than rebuilding from state dicts.
   const recordCompletedItem = (
     outputIndex: number | string,
-    item: Record<string, unknown>
+    item: Record<string, unknown>,
   ): number => {
     const normalized = normalizeOutputIndex(outputIndex);
     state.completedOutputItems.push({ output_index: normalized, item, seq: state.seq });
@@ -421,7 +421,7 @@ export function createResponsesApiTransformStream(logger = null, keepaliveInterv
           if (state.parseTextualReasoningTags !== true && typeof parsed.model === "string") {
             state.parseTextualReasoningTags = shouldParseTextualReasoningTags(
               undefined,
-              parsed.model
+              parsed.model,
             );
           }
           const parseTextualReasoningTags = state.parseTextualReasoningTags === true;
@@ -682,6 +682,6 @@ export function createResponsesApiTransformStream(logger = null, keepaliveInterv
       },
     },
     { highWaterMark: 16384 },
-    { highWaterMark: 16384 }
+    { highWaterMark: 16384 },
   );
 }

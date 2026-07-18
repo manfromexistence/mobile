@@ -31,7 +31,7 @@ function logChanges(source: string, changes: RuntimeReloadChange[]) {
   console.log(
     `[HOT_RELOAD] source=${source} reloaded sections: ${changes
       .map((entry) => entry.section)
-      .join(", ")}`
+      .join(", ")}`,
   );
 }
 
@@ -51,7 +51,7 @@ function queueHotReloadCheck(source: string) {
     .catch((error) => {
       console.warn(
         `[HOT_RELOAD] Runtime config reload failed for ${source}:`,
-        error instanceof Error ? error.message : error
+        error instanceof Error ? error.message : error,
       );
     })
     .finally(() => {
@@ -68,7 +68,7 @@ export function startRuntimeConfigHotReload(options: { pollIntervalMs?: number }
 
   const pollIntervalMs = Math.max(
     options.pollIntervalMs || getPollIntervalMs(),
-    MIN_POLL_INTERVAL_MS
+    MIN_POLL_INTERVAL_MS,
   );
 
   pollTimer = setInterval(() => {
@@ -89,7 +89,7 @@ export function startRuntimeConfigHotReload(options: { pollIntervalMs?: number }
     } catch (error) {
       console.warn(
         "[HOT_RELOAD] SQLite file watch unavailable, polling only:",
-        error instanceof Error ? error.message : error
+        error instanceof Error ? error.message : error,
       );
     }
   }
@@ -97,7 +97,7 @@ export function startRuntimeConfigHotReload(options: { pollIntervalMs?: number }
   console.log(
     `[HOT_RELOAD] Runtime config hot-reload started (poll=${pollIntervalMs}ms, fsWatch=${
       sqliteWatcher ? "on" : "off"
-    })`
+    })`,
   );
 
   queueHotReloadCheck("hot-reload:start");

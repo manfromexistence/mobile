@@ -98,7 +98,7 @@ export default function OpenClawToolCard({
           const fileKeyPrefix = provider.apiKey.slice(0, 8);
           const fileKeySuffix = provider.apiKey.slice(-4);
           const matchedKey = apiKeys?.find(
-            (k) => k.key && k.key.startsWith(fileKeyPrefix) && k.key.endsWith(fileKeySuffix)
+            (k) => k.key && k.key.startsWith(fileKeyPrefix) && k.key.endsWith(fileKeySuffix),
           );
           if (matchedKey) setSelectedApiKeyId(matchedKey.id);
         }
@@ -345,11 +345,7 @@ export default function OpenClawToolCard({
                 deployments where the CLI lives on the user's machine,
                 not on the server. Upstream report: #579.
               */}
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowManualConfigModal(true)}
-              >
+              <Button variant="ghost" size="sm" onClick={() => setShowManualConfigModal(true)}>
                 <span className="material-symbols-outlined text-[14px] mr-1">content_copy</span>
                 {t("manualConfig")}
               </Button>

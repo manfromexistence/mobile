@@ -10,10 +10,7 @@
 
 import test from "node:test";
 import assert from "node:assert/strict";
-import {
-  buildAntigravityAuthRequest,
-  runAntigravityLogin,
-} from "../../bin/cli/commands/login.mjs";
+import { buildAntigravityAuthRequest, runAntigravityLogin } from "../../bin/cli/commands/login.mjs";
 import { decodeCredentialBlob } from "../../src/lib/oauth/credentialBlob.ts";
 
 test("buildAntigravityAuthRequest: loopback redirect on 127.0.0.1 + no PKCE", async () => {
@@ -50,7 +47,7 @@ test("runAntigravityLogin: validates state, exchanges code, prints a decodable b
       },
       print: () => {},
       log: () => {},
-    }
+    },
   );
 
   assert.equal(exchangedCode, "the-code");
@@ -78,9 +75,9 @@ test("runAntigravityLogin: rejects a state mismatch (CSRF guard)", async () => {
           exchange: async () => ({ access_token: "x" }),
           print: () => {},
           log: () => {},
-        }
+        },
       ),
-    /state mismatch|csrf/i
+    /state mismatch|csrf/i,
   );
 });
 
@@ -100,8 +97,8 @@ test("runAntigravityLogin: surfaces an OAuth error param", async () => {
           exchange: async () => ({ access_token: "x" }),
           print: () => {},
           log: () => {},
-        }
+        },
       ),
-    /access_denied|authorization failed/i
+    /access_denied|authorization failed/i,
   );
 });

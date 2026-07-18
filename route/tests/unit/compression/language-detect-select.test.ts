@@ -17,7 +17,7 @@ import { cavemanCompress } from "@omniroute/open-sse/services/compression/cavema
 test("detector ignores single English-ambiguous keywords (configuration/error)", () => {
   assert.equal(
     detectCompressionLanguage("Please update the configuration and fix the error in the file"),
-    "en"
+    "en",
   );
 });
 
@@ -30,21 +30,21 @@ test("auto-detect uses the detected pt-BR pack, not the mangling English pack (B
   // pt-BR prose with an article the English `articles` rule would delete ("a configuração").
   const text =
     "Por favor, você poderia revisar a configuração do arquivo? Obrigado pela ajuda com isso.";
-  const res = cavemanCompress({ messages: [{ role: "user", content: text }] } as Record<
-    string,
-    unknown
-  >, {
-    enabled: true,
-    autoDetectLanguage: true,
-    enabledLanguagePacks: ["en"], // the production-default that used to force the English pack
-    intensity: "full",
-    compressRoles: ["user"],
-    minMessageLength: 0,
-  } as Record<string, unknown>);
+  const res = cavemanCompress(
+    { messages: [{ role: "user", content: text }] } as Record<string, unknown>,
+    {
+      enabled: true,
+      autoDetectLanguage: true,
+      enabledLanguagePacks: ["en"], // the production-default that used to force the English pack
+      intensity: "full",
+      compressRoles: ["user"],
+      minMessageLength: 0,
+    } as Record<string, unknown>,
+  );
   const rules = res.stats?.rulesApplied ?? [];
   // A pt-BR rule must have run (proves the pt-BR pack was selected, not English).
   assert.ok(
     rules.some((r) => r.startsWith("pt_")),
-    `expected a pt_* rule to apply, got: ${JSON.stringify(rules)}`
+    `expected a pt_* rule to apply, got: ${JSON.stringify(rules)}`,
   );
 });

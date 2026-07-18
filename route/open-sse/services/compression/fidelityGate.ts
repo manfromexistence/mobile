@@ -58,14 +58,14 @@ function uniq(values: Iterable<string>): string[] {
 export function checkFidelity(
   inputText: string,
   outputText: string,
-  cfg: FidelityGateConfig
+  cfg: FidelityGateConfig,
 ): FidelityResult {
   try {
     const tokens = uniq(
       extractPreservedBlocks(inputText)
         .blocks.filter((b) => CRITICAL_KINDS.has(b.kind))
         .map((b) => b.content.trim())
-        .filter((c) => c.length > 0)
+        .filter((c) => c.length > 0),
     );
     const minTok = (cfg.minTokenSurvivalPercent ?? 95) / 100;
     const tokRatio = survivalRatio(tokens, outputText);
@@ -106,7 +106,7 @@ export function checkFidelity(
       const minKey = (cfg.minJsonKeyPercent ?? 90) / 100;
       const keyRatio = survivalRatio(
         keys.map((k) => `"${k}"`),
-        outputText
+        outputText,
       );
       if (keyRatio < minKey) {
         return {

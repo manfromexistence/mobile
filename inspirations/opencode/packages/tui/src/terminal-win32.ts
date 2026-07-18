@@ -1,8 +1,8 @@
-import { dlopen, ptr } from "bun:ffi"
-import type { ReadStream } from "node:tty"
+import { dlopen, ptr } from "bun:ffi";
+import type { ReadStream } from "node:tty";
 
-const STD_INPUT_HANDLE = -10
-const ENABLE_PROCESSED_INPUT = 0x0001
+const STD_INPUT_HANDLE = -10;
+const ENABLE_PROCESSED_INPUT = 0x0001;
 
 const kernel = () =>
   dlopen("kernel32.dll", {
@@ -10,17 +10,17 @@ const kernel = () =>
     GetConsoleMode: { args: ["ptr", "ptr"], returns: "i32" },
     SetConsoleMode: { args: ["ptr", "u32"], returns: "i32" },
     FlushConsoleInputBuffer: { args: ["ptr"], returns: "i32" },
-  })
+  });
 
-let k32: ReturnType<typeof kernel> | undefined
+let k32: ReturnType<typeof kernel> | undefined;
 
 function load() {
-  if (process.platform !== "win32") return false
+  if (process.platform !== "win32") return false;
   try {
-    k32 ??= kernel()
-    return true
+    k32 ??= kernel();
+    return true;
   } catch {
-    return false
+    return false;
   }
 }
 
@@ -28,32 +28,32 @@ function load() {
  * Clear ENABLE_PROCESSED_INPUT on the console stdin handle.
  */
 export function win32DisableProcessedInput() {
-  if (process.platform !== "win32") return
-  if (!process.stdin.isTTY) return
-  if (!load()) return
+  if (process.platform !== "win32") return;
+  if (!process.stdin.isTTY) return;
+  if (!load()) return;
 
-  const handle = k32!.symbols.GetStdHandle(STD_INPUT_HANDLE)
-  const buf = new Uint32Array(1)
-  if (k32!.symbols.GetConsoleMode(handle, ptr(buf)) === 0) return
+  const handle = k32!.symbols.GetStdHandle(STD_INPUT_HANDLE);
+  const buf = new Uint32Array(1);
+  if (k32!.symbols.GetConsoleMode(handle, ptr(buf)) === 0) return;
 
-  const mode = buf[0]!
-  if ((mode & ENABLE_PROCESSED_INPUT) === 0) return
-  k32!.symbols.SetConsoleMode(handle, mode & ~ENABLE_PROCESSED_INPUT)
+  const mode = buf[0]!;
+  if ((mode & ENABLE_PROCESSED_INPUT) === 0) return;
+  k32!.symbols.SetConsoleMode(handle, mode & ~ENABLE_PROCESSED_INPUT);
 }
 
 /**
  * Discard any queued console input (mouse events, key presses, etc.).
  */
 export function win32FlushInputBuffer() {
-  if (process.platform !== "win32") return
-  if (!process.stdin.isTTY) return
-  if (!load()) return
+  if (process.platform !== "win32") return;
+  if (!process.stdin.isTTY) return;
+  if (!load()) return;
 
-  const handle = k32!.symbols.GetStdHandle(STD_INPUT_HANDLE)
-  k32!.symbols.FlushConsoleInputBuffer(handle)
+  const handle = k32!.symbols.GetStdHandle(STD_INPUT_HANDLE);
+  k32!.symbols.FlushConsoleInputBuffer(handle);
 }
 
-let unhook: (() => void) | undefined
+let unhook: (() => void) | undefined;
 
 /**
  * Keep ENABLE_PROCESSED_INPUT disabled.
@@ -67,64 +67,64 @@ let unhook: (() => void) | undefined
  * - A low-frequency poll as a backstop for native/external mode changes.
  */
 export function win32InstallCtrlCGuard() {
-  if (process.platform !== "win32") return
-  if (!process.stdin.isTTY) return
-  if (!load()) return
-  if (unhook) return unhook
+  if (process.platform !== "win32") return;
+  if (!process.stdin.isTTY) return;
+  if (!load()) return;
+  if (unhook) return unhook;
 
-  const stdin = process.stdin as ReadStream
-  const original = stdin.setRawMode
+  const stdin = process.stdin as ReadStream;
+  const original = stdin.setRawMode;
 
-  const handle = k32!.symbols.GetStdHandle(STD_INPUT_HANDLE)
-  const buf = new Uint32Array(1)
+  const handle = k32!.symbols.GetStdHandle(STD_INPUT_HANDLE);
+  const buf = new Uint32Array(1);
 
-  if (k32!.symbols.GetConsoleMode(handle, ptr(buf)) === 0) return
-  const initial = buf[0]!
+  if (k32!.symbols.GetConsoleMode(handle, ptr(buf)) === 0) return;
+  const initial = buf[0]!;
 
   const enforce = () => {
-    if (k32!.symbols.GetConsoleMode(handle, ptr(buf)) === 0) return
-    const mode = buf[0]!
-    if ((mode & ENABLE_PROCESSED_INPUT) === 0) return
-    k32!.symbols.SetConsoleMode(handle, mode & ~ENABLE_PROCESSED_INPUT)
-  }
+    if (k32!.symbols.GetConsoleMode(handle, ptr(buf)) === 0) return;
+    const mode = buf[0]!;
+    if ((mode & ENABLE_PROCESSED_INPUT) === 0) return;
+    k32!.symbols.SetConsoleMode(handle, mode & ~ENABLE_PROCESSED_INPUT);
+  };
 
   // Some runtimes can re-apply console modes on the next tick; enforce twice.
   const later = () => {
-    enforce()
-    setImmediate(enforce)
-  }
+    enforce();
+    setImmediate(enforce);
+  };
 
-  let wrapped: ReadStream["setRawMode"] | undefined
+  let wrapped: ReadStream["setRawMode"] | undefined;
 
   if (typeof original === "function") {
     wrapped = (mode: boolean) => {
-      const result = original.call(stdin, mode)
-      later()
-      return result
-    }
+      const result = original.call(stdin, mode);
+      later();
+      return result;
+    };
 
-    stdin.setRawMode = wrapped
+    stdin.setRawMode = wrapped;
   }
 
   // Ensure it's cleared immediately too (covers any earlier mode changes).
-  later()
+  later();
 
-  const interval = setInterval(enforce, 100)
-  interval.unref()
+  const interval = setInterval(enforce, 100);
+  interval.unref();
 
-  let done = false
+  let done = false;
   unhook = () => {
-    if (done) return
-    done = true
+    if (done) return;
+    done = true;
 
-    clearInterval(interval)
+    clearInterval(interval);
     if (wrapped && stdin.setRawMode === wrapped) {
-      stdin.setRawMode = original
+      stdin.setRawMode = original;
     }
 
-    k32!.symbols.SetConsoleMode(handle, initial)
-    unhook = undefined
-  }
+    k32!.symbols.SetConsoleMode(handle, initial);
+    unhook = undefined;
+  };
 
-  return unhook
+  return unhook;
 }

@@ -52,7 +52,7 @@ export interface BatchTestResultEntry {
 }
 
 function toBatchEntry(
-  result: Awaited<ReturnType<typeof runSingleModelTest>>
+  result: Awaited<ReturnType<typeof runSingleModelTest>>,
 ): BatchTestResultEntry {
   const entry: BatchTestResultEntry = {
     status: result.status === "ok" ? "ok" : "error",
@@ -81,7 +81,7 @@ export async function POST(request: Request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -110,7 +110,7 @@ export async function POST(request: Request) {
       hasConnection: Boolean(connectionId),
       respectRateLimit,
       autoHideFailed,
-    }
+    },
   );
 
   const results: Record<string, BatchTestResultEntry> = {};
@@ -212,7 +212,7 @@ export async function POST(request: Request) {
         rateLimited: entry.rateLimited,
         isTimeout: entry.isTimeout,
         hidden: entry.hidden,
-      }
+      },
     );
 
     if (consecutiveRateLimits >= CONSECUTIVE_RATE_LIMIT_STOP_THRESHOLD) {
@@ -225,7 +225,7 @@ export async function POST(request: Request) {
           providerId,
           testedCount: Object.keys(results).length,
           totalCount: modelIds.length,
-        }
+        },
       );
       break;
     }
@@ -240,7 +240,7 @@ export async function POST(request: Request) {
           providerId,
           testedCount: Object.keys(results).length,
           totalCount: modelIds.length,
-        }
+        },
       );
       break;
     }
@@ -254,7 +254,7 @@ export async function POST(request: Request) {
       tested: Object.keys(results).length,
       total: modelIds.length,
       stoppedEarly,
-    }
+    },
   );
 
   return NextResponse.json({

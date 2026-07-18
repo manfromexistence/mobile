@@ -1,14 +1,11 @@
-'use client';
+"use client";
 
-import { useCallback, useRef, useSyncExternalStore } from 'react';
+import { useCallback, useRef, useSyncExternalStore } from "react";
 
-import type { FileTree } from '../render/FileTree';
+import type { FileTree } from "../render/FileTree";
 
 export type FileTreeSelector<TSelected> = (model: FileTree) => TSelected;
-export type FileTreeSelectorEquality<TSelected> = (
-  previous: TSelected,
-  next: TSelected
-) => boolean;
+export type FileTreeSelectorEquality<TSelected> = (previous: TSelected, next: TSelected) => boolean;
 
 interface SelectorCache<TSelected> {
   hasValue: boolean;
@@ -19,7 +16,7 @@ interface SelectorCache<TSelected> {
 
 export function areArraysEqual<TValue>(
   previous: readonly TValue[],
-  next: readonly TValue[]
+  next: readonly TValue[],
 ): boolean {
   if (previous === next) {
     return true;
@@ -41,7 +38,7 @@ export function areArraysEqual<TValue>(
 function areSelectedValuesEqual<TSelected>(
   previous: TSelected,
   next: TSelected,
-  isEqual?: FileTreeSelectorEquality<TSelected>
+  isEqual?: FileTreeSelectorEquality<TSelected>,
 ): boolean {
   return Object.is(previous, next) || isEqual?.(previous, next) === true;
 }
@@ -53,7 +50,7 @@ function areSelectedValuesEqual<TSelected>(
 export function useFileTreeSelector<TSelected>(
   model: FileTree,
   selector: FileTreeSelector<TSelected>,
-  isEqual?: FileTreeSelectorEquality<TSelected>
+  isEqual?: FileTreeSelectorEquality<TSelected>,
 ): TSelected {
   const cacheRef = useRef<SelectorCache<TSelected>>({
     hasValue: false,
@@ -62,16 +59,12 @@ export function useFileTreeSelector<TSelected>(
     value: undefined,
   });
 
-  const subscribe = useCallback(
-    (listener: () => void) => model.subscribe(listener),
-    [model]
-  );
+  const subscribe = useCallback((listener: () => void) => model.subscribe(listener), [model]);
 
   const getSnapshot = useCallback((): TSelected => {
     const cache = cacheRef.current;
     const nextValue = selector(model);
-    const selectorChanged =
-      cache.model !== model || cache.selector !== selector;
+    const selectorChanged = cache.model !== model || cache.selector !== selector;
 
     if (selectorChanged || !cache.hasValue) {
       cache.hasValue = true;

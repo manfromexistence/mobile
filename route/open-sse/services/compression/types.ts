@@ -25,7 +25,14 @@ import type { QuantumLockConfig, QuantumLockStats } from "./quantumLock/quantumP
 export { ENGINE_IDS };
 
 export type CompressionMode =
-  "off" | "lite" | "standard" | "aggressive" | "ultra" | "rtk" | "omniglyph" | "stacked";
+  | "off"
+  | "lite"
+  | "standard"
+  | "aggressive"
+  | "ultra"
+  | "rtk"
+  | "omniglyph"
+  | "stacked";
 export type CavemanIntensity = "lite" | "full" | "ultra";
 export type RtkIntensity = "minimal" | "standard" | "aggressive";
 export type RtkRawOutputRetention = "never" | "failures" | "always";

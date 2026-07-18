@@ -43,10 +43,7 @@ export function DetailsPanel({ request, allRequests }: DetailsPanelProps) {
     return (
       <div className="h-full flex items-center justify-center text-text-muted">
         <div className="text-center space-y-2">
-          <span
-            className="material-symbols-outlined text-[36px] block"
-            aria-hidden="true"
-          >
+          <span className="material-symbols-outlined text-[36px] block" aria-hidden="true">
             info
           </span>
           <p className="text-sm">Select a request to inspect it.</p>
@@ -82,7 +79,7 @@ export function DetailsPanel({ request, allRequests }: DetailsPanelProps) {
                 "inline-flex items-center gap-1 h-8 px-2 text-xs rounded-t border-b-2 transition-colors focus-ring",
                 selected
                   ? "border-blue-500 text-blue-400 bg-surface"
-                  : "border-transparent text-text-muted hover:text-text-main hover:bg-surface/50"
+                  : "border-transparent text-text-muted hover:text-text-main hover:bg-surface/50",
               )}
             >
               <span className="material-symbols-outlined text-[13px]" aria-hidden="true">

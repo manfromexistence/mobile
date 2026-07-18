@@ -230,17 +230,13 @@
       }
 
       th {
-        &:nth-child(3)
-
-        /* Date */ {
+        &:nth-child(3) /* Date */ {
           display: none;
         }
       }
 
       td {
-        &:nth-child(3)
-
-        /* Date */ {
+        &:nth-child(3) /* Date */ {
           display: none;
         }
       }

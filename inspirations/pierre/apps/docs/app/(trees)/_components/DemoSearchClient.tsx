@@ -1,32 +1,28 @@
-'use client';
+"use client";
 
-import { IconCollapsedRow, IconEyeSlash, IconFolderOpen } from '@pierre/icons';
-import type { FileTreeSearchMode } from '@pierre/trees';
-import {
-  FileTree,
-  type FileTreePreloadedData,
-  useFileTree,
-} from '@pierre/trees/react';
-import Link from 'next/link';
-import { type CSSProperties, type ReactNode, useState } from 'react';
+import { IconCollapsedRow, IconEyeSlash, IconFolderOpen } from "@pierre/icons";
+import type { FileTreeSearchMode } from "@pierre/trees";
+import { FileTree, type FileTreePreloadedData, useFileTree } from "@pierre/trees/react";
+import Link from "next/link";
+import { type CSSProperties, type ReactNode, useState } from "react";
 
-import { sampleFileList } from '../_lib/demo-data';
-import { TREE_NEW_VIEWPORT_HEIGHTS } from '../_lib/dimensions';
-import { getDefaultFileTreePanelClass } from './tree-examples/demo-data';
-import { TreeExampleSection } from './tree-examples/TreeExampleSection';
-import { TreeExampleHeading } from './TreeExampleHeading';
-import { FeatureHeader } from '@/components/FeatureHeader';
-import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group';
-import { PRODUCTS } from '@/lib/product-config';
+import { sampleFileList } from "../_lib/demo-data";
+import { TREE_NEW_VIEWPORT_HEIGHTS } from "../_lib/dimensions";
+import { getDefaultFileTreePanelClass } from "./tree-examples/demo-data";
+import { TreeExampleSection } from "./tree-examples/TreeExampleSection";
+import { TreeExampleHeading } from "./TreeExampleHeading";
+import { FeatureHeader } from "@/components/FeatureHeader";
+import { ButtonGroup, ButtonGroupItem } from "@/components/ui/button-group";
+import { PRODUCTS } from "@/lib/product-config";
 
-const PREPOPULATED_SEARCH = 'tsx';
+const PREPOPULATED_SEARCH = "tsx";
 // Pre-expand a couple of folders that contain no `.tsx` matches so the
 // difference between `collapse-non-matches` (snaps them shut) and
 // `expand-matches` (preserves prior expansion) is visible at a glance.
-const PREPOPULATED_EXPANDED_PATHS = ['public/', 'node_modules/react/'];
+const PREPOPULATED_EXPANDED_PATHS = ["public/", "node_modules/react/"];
 const searchModeStyle = {
-  colorScheme: 'dark',
-  '--trees-search-bg-override': 'light-dark(#fff, oklch(14.5% 0 0))',
+  colorScheme: "dark",
+  "--trees-search-bg-override": "light-dark(#fff, oklch(14.5% 0 0))",
 } as CSSProperties;
 
 interface SearchModeDemo {
@@ -41,30 +37,30 @@ interface SearchModeDemo {
 
 const SEARCH_MODE_DEMOS: readonly SearchModeDemo[] = [
   {
-    description: 'Hides files and folders without any matches',
-    id: 'file-tree-search-demo-hide-non-matches',
+    description: "Hides files and folders without any matches",
+    id: "file-tree-search-demo-hide-non-matches",
     icon: <IconEyeSlash />,
-    mode: 'hide-non-matches',
-    shortLabel: 'Hide',
-    title: 'hide-non-matches',
+    mode: "hide-non-matches",
+    shortLabel: "Hide",
+    title: "hide-non-matches",
     viewportHeight: TREE_NEW_VIEWPORT_HEIGHTS.searchHideNonMatches,
   },
   {
-    description: 'Collapses folders without any matches',
-    id: 'file-tree-search-demo-collapse-non-matches',
+    description: "Collapses folders without any matches",
+    id: "file-tree-search-demo-collapse-non-matches",
     icon: <IconCollapsedRow />,
-    mode: 'collapse-non-matches',
-    shortLabel: 'Collapse',
-    title: 'collapse-non-matches',
+    mode: "collapse-non-matches",
+    shortLabel: "Collapse",
+    title: "collapse-non-matches",
     viewportHeight: TREE_NEW_VIEWPORT_HEIGHTS.searchCollapseNonMatches,
   },
   {
-    description: 'Keeps all items visible and expand folders with matches',
-    id: 'file-tree-search-demo-expand-matches',
+    description: "Keeps all items visible and expand folders with matches",
+    id: "file-tree-search-demo-expand-matches",
     icon: <IconFolderOpen />,
-    mode: 'expand-matches',
-    shortLabel: 'Expand',
-    title: 'expand-matches',
+    mode: "expand-matches",
+    shortLabel: "Expand",
+    title: "expand-matches",
     viewportHeight: TREE_NEW_VIEWPORT_HEIGHTS.searchExpandMatches,
   },
 ] as const;
@@ -90,17 +86,14 @@ function SearchModeTree({
     // cascade (each tree's input briefly receives focus and then blurs as the
     // next sibling initializes). A real user blur-close still works once they
     // interact: the fake focus ring is dismissed on first pointer/focus/input.
-    searchBlurBehavior: 'retain',
+    searchBlurBehavior: "retain",
     searchFakeFocus: true,
     initialVisibleRowCount: modeDemo.viewportHeight / 30,
   });
 
   return (
-    <div className={isMobileActive ? undefined : 'hidden sm:block'}>
-      <TreeExampleHeading
-        icon={modeDemo.icon}
-        description={modeDemo.description}
-      >
+    <div className={isMobileActive ? undefined : "hidden sm:block"}>
+      <TreeExampleHeading icon={modeDemo.icon} description={modeDemo.description}>
         <code>{modeDemo.title}</code>
       </TreeExampleHeading>
       <FileTree
@@ -130,25 +123,21 @@ export function DemoSearchClient({ preloadedDataById }: DemoSearchClientProps) {
         title="Search and filter by name"
         description={
           <>
-            Filter the tree by typing in the search field. Search across file
-            paths and names. Trees includes three{' '}
+            Filter the tree by typing in the search field. Search across file paths and names. Trees
+            includes three{" "}
             <Link
               href={`${PRODUCTS.trees.docsPath}#shared-concepts-search-mode-semantics`}
               className="inline-link"
             >
               <code>fileTreeSearchMode</code>
-            </Link>{' '}
-            options to control how non-matching items are shown. All three demos
-            below start with search prepopulated to show the different modes.
+            </Link>{" "}
+            options to control how non-matching items are shown. All three demos below start with
+            search prepopulated to show the different modes.
           </>
         }
       />
       <div className="space-y-4">
-        <ButtonGroup
-          className="sm:hidden"
-          value={mobileView}
-          onValueChange={setMobileView}
-        >
+        <ButtonGroup className="sm:hidden" value={mobileView} onValueChange={setMobileView}>
           {SEARCH_MODE_DEMOS.map((modeDemo) => (
             <ButtonGroupItem
               key={modeDemo.id}

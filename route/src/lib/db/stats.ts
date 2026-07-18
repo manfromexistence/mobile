@@ -34,7 +34,7 @@ export function getDatabaseStats(): DatabaseStats {
 
   const tables = db
     .prepare(
-      `SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name`
+      `SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name`,
     )
     .all() as Array<{ name: string }>;
 
@@ -56,7 +56,7 @@ export function getDatabaseStats(): DatabaseStats {
 
   const indexes = db
     .prepare(
-      `SELECT name, tbl_name as tableName FROM sqlite_master WHERE type='index' AND name NOT LIKE 'sqlite_%' ORDER BY name`
+      `SELECT name, tbl_name as tableName FROM sqlite_master WHERE type='index' AND name NOT LIKE 'sqlite_%' ORDER BY name`,
     )
     .all() as Array<{ name: string; tableName: string }>;
 

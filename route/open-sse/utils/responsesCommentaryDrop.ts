@@ -38,7 +38,7 @@ function isCommentaryStart(
   eventItemId: string | null,
   eventOutputIndex: number | null,
   commentaryItemIds: Set<string>,
-  commentaryIndexes: Set<number>
+  commentaryIndexes: Set<number>,
 ): boolean {
   const isAddedEvent = eventType === "response.output_item.added";
   if (!isAddedEvent || !isResponsesCommentaryMessageItem(parsed.item)) return false;
@@ -55,7 +55,7 @@ function isCommentaryContinuation(
   eventItemId: string | null,
   eventOutputIndex: number | null,
   commentaryItemIds: Set<string>,
-  commentaryIndexes: Set<number>
+  commentaryIndexes: Set<number>,
 ): boolean {
   const belongsToCommentary =
     (eventItemId !== null && commentaryItemIds.has(eventItemId)) ||
@@ -72,7 +72,7 @@ function isCommentaryContinuation(
 export function shouldDropResponsesCommentaryEvent(
   parsed: JsonRecord,
   commentaryItemIds: Set<string>,
-  commentaryIndexes: Set<number>
+  commentaryIndexes: Set<number>,
 ): boolean {
   const eventType = parsed.type as string;
   const eventItem = extractEventItem(parsed);
@@ -86,14 +86,14 @@ export function shouldDropResponsesCommentaryEvent(
       eventItemId,
       eventOutputIndex,
       commentaryItemIds,
-      commentaryIndexes
+      commentaryIndexes,
     ) ||
     isCommentaryContinuation(
       eventType,
       eventItemId,
       eventOutputIndex,
       commentaryItemIds,
-      commentaryIndexes
+      commentaryIndexes,
     )
   );
 }

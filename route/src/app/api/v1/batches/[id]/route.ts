@@ -10,7 +10,7 @@ export async function OPTIONS() {
 
 function scopeCheck(
   scope: { isSessionAuth: boolean; apiKeyId: string | null },
-  recordApiKeyId: string | null | undefined
+  recordApiKeyId: string | null | undefined,
 ): boolean {
   if (scope.isSessionAuth) return true;
   if (recordApiKeyId === null || recordApiKeyId === undefined) return true;
@@ -27,7 +27,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   if (!batch || !scopeCheck(scope, batch.apiKeyId)) {
     return NextResponse.json(
       { error: { message: "Batch not found", type: "invalid_request_error" } },
-      { status: 404, headers: CORS_HEADERS }
+      { status: 404, headers: CORS_HEADERS },
     );
   }
 
@@ -44,7 +44,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
   if (!batch || !scopeCheck(scope, batch.apiKeyId)) {
     return NextResponse.json(
       { error: { message: "Batch not found", type: "invalid_request_error" } },
-      { status: 404, headers: CORS_HEADERS }
+      { status: 404, headers: CORS_HEADERS },
     );
   }
 
@@ -53,7 +53,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
   if (!terminal.includes(batch.status)) {
     return NextResponse.json(
       { error: { message: "Only terminal batches can be deleted", type: "invalid_request_error" } },
-      { status: 409, headers: CORS_HEADERS }
+      { status: 409, headers: CORS_HEADERS },
     );
   }
 

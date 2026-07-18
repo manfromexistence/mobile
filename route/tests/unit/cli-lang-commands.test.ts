@@ -81,7 +81,7 @@ test("runConfigLangGetCommand retorna 0 e imprime o locale ativo", async () => {
     assert.equal(code, 0);
     assert.ok(
       output.some((l) => l.includes("en")),
-      `Esperava 'en' no output: ${output.join("|")}`
+      `Esperava 'en' no output: ${output.join("|")}`,
     );
   } finally {
     console.log = origLog;

@@ -1,13 +1,13 @@
-import { Show } from "solid-js"
-import * as mod from "./tabs-v2"
-import type { TabsV2Props } from "./tabs-v2"
+import { Show } from "solid-js";
+import * as mod from "./tabs-v2";
+import type { TabsV2Props } from "./tabs-v2";
 
 const docs = `
 Tabbed navigation for switching between related panels. Compose \`TabsV2.List\` + \`TabsV2.Trigger\` + \`TabsV2.Content\`.
 
 > Haven't used tokens since this is an independent repo, but that's an easy change.
 
-`
+`;
 
 export default {
   title: "UI V2/Tabs",
@@ -33,7 +33,7 @@ export default {
       options: ["horizontal", "vertical"],
     },
   },
-}
+};
 
 export const Settings = {
   args: {
@@ -45,7 +45,13 @@ export const Settings = {
     <mod.TabsV2 {...props}>
       <mod.TabsV2.List>
         <mod.TabsV2.Trigger value="general">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               fill-rule="evenodd"
               clip-rule="evenodd"
@@ -62,7 +68,13 @@ export const Settings = {
           General
         </mod.TabsV2.Trigger>
         <mod.TabsV2.Trigger value="appearance">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               fill-rule="evenodd"
               clip-rule="evenodd"
@@ -87,7 +99,7 @@ export const Settings = {
       </mod.TabsV2.Content>
     </mod.TabsV2>
   ),
-}
+};
 
 export const Normal = {
   args: {
@@ -109,7 +121,7 @@ export const Normal = {
       </mod.TabsV2.Content>
     </mod.TabsV2>
   ),
-}
+};
 
 export const Pill = {
   args: {
@@ -138,7 +150,7 @@ export const Pill = {
       </mod.TabsV2.Content>
     </mod.TabsV2>
   ),
-}
+};
 
 export const Closable = {
   args: {
@@ -165,4 +177,4 @@ export const Closable = {
       </mod.TabsV2.Content>
     </mod.TabsV2>
   ),
-}
+};

@@ -3,7 +3,7 @@ import { MATRIX_SIZE } from "./patterns";
 export function getMatrix5Layout(
   size: number,
   dotSize: number,
-  cellPadding?: number
+  cellPadding?: number,
 ): { gap: number; matrixSpan: number } {
   const n = MATRIX_SIZE;
   if (cellPadding != null) {
@@ -16,7 +16,7 @@ export function getMatrix5Layout(
 }
 
 export function resolveDmxBoxOuterDim(
-  options: { boxSize?: number; minSize?: number } | null | undefined
+  options: { boxSize?: number; minSize?: number } | null | undefined,
 ): { outerDim: number; useWrapper: boolean } {
   const b = options?.boxSize;
   const hasBox = b != null && b > 0 && Number.isFinite(b);

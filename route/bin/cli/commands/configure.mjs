@@ -130,7 +130,9 @@ export async function runConfigureCommand(cli, opts = {}, cmd) {
       }
       const inProvider = ids.filter((id) => providerList.includes(providerOf(byId(models, id))));
       const candidates = inProvider.length ? inProvider : ids;
-      printInfo(`Models: ${candidates.slice(0, 40).join(", ")}${candidates.length > 40 ? " …" : ""}`);
+      printInfo(
+        `Models: ${candidates.slice(0, 40).join(", ")}${candidates.length > 40 ? " …" : ""}`,
+      );
       chosenId = await prompt.ask("Model id");
     } finally {
       prompt.close();
@@ -167,7 +169,7 @@ export function registerConfigure(program) {
     .command("configure <cli>")
     .description(
       t("configure.description") ||
-        "Pick a provider+model from the active server and write a local CLI config (v1: codex)"
+        "Pick a provider+model from the active server and write a local CLI config (v1: codex)",
     )
     .option("--provider <id>", "Provider id (skips the interactive provider prompt)")
     .option("--model <id>", "Model id (skips the interactive model prompt)")

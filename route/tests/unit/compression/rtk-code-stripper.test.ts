@@ -19,7 +19,7 @@ describe("RTK code stripper", () => {
   it("preserves comments and string literals safely", () => {
     const js = stripCode(
       "// comment\nconst url = 'https://example.com/a//b';\n/* block */\nconsole.log(url);",
-      "javascript"
+      "javascript",
     );
 
     assert.ok(js.text.includes("// comment"));

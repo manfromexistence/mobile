@@ -23,7 +23,7 @@ export type PassthroughAliasModel = {
  */
 export function buildPassthroughAliasModels(
   modelAliases: Record<string, string>,
-  providerId: string
+  providerId: string,
 ): PassthroughAliasModel[] {
   const prefix = `${providerId}/`;
   return Object.entries(modelAliases || {})
@@ -61,7 +61,7 @@ export type NodeAliasModel = {
 export function buildNodeAliasModels(
   modelAliases: Record<string, string>,
   providerId: string,
-  nodePrefix: string
+  nodePrefix: string,
 ): NodeAliasModel[] {
   const prefix = `${providerId}/`;
   return Object.entries(modelAliases || {})

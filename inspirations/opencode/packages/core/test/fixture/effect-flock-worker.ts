@@ -1,24 +1,24 @@
-import fs from "fs/promises"
-import os from "os"
-import { Effect } from "effect"
-import { AppNodeBuilder } from "@opencode-ai/core/effect/app-node-builder"
-import { EffectFlock } from "@opencode-ai/core/util/effect-flock"
-import { Global } from "@opencode-ai/core/global"
+import fs from "fs/promises";
+import os from "os";
+import { Effect } from "effect";
+import { AppNodeBuilder } from "@opencode-ai/core/effect/app-node-builder";
+import { EffectFlock } from "@opencode-ai/core/util/effect-flock";
+import { Global } from "@opencode-ai/core/global";
 
 type Msg = {
-  key: string
-  dir: string
-  holdMs?: number
-  ready?: string
-  active?: string
-  done?: string
-}
+  key: string;
+  dir: string;
+  holdMs?: number;
+  ready?: string;
+  active?: string;
+  done?: string;
+};
 
 function sleep(ms: number) {
-  return new Promise<void>((resolve) => setTimeout(resolve, ms))
+  return new Promise<void>((resolve) => setTimeout(resolve, ms));
 }
 
-const msg: Msg = JSON.parse(process.argv[2])
+const msg: Msg = JSON.parse(process.argv[2]);
 
 const testGlobal = Global.layerWith({
   home: os.homedir(),
@@ -28,33 +28,33 @@ const testGlobal = Global.layerWith({
   state: os.tmpdir(),
   bin: os.tmpdir(),
   log: os.tmpdir(),
-})
+});
 
-const testLayer = AppNodeBuilder.build(EffectFlock.node, [[Global.node, testGlobal]])
+const testLayer = AppNodeBuilder.build(EffectFlock.node, [[Global.node, testGlobal]]);
 
 async function job() {
-  if (msg.ready) await fs.writeFile(msg.ready, String(process.pid))
-  if (msg.active) await fs.writeFile(msg.active, String(process.pid), { flag: "wx" })
+  if (msg.ready) await fs.writeFile(msg.ready, String(process.pid));
+  if (msg.active) await fs.writeFile(msg.active, String(process.pid), { flag: "wx" });
 
   try {
-    if (msg.holdMs && msg.holdMs > 0) await sleep(msg.holdMs)
-    if (msg.done) await fs.appendFile(msg.done, "1\n")
+    if (msg.holdMs && msg.holdMs > 0) await sleep(msg.holdMs);
+    if (msg.done) await fs.appendFile(msg.done, "1\n");
   } finally {
-    if (msg.active) await fs.rm(msg.active, { force: true })
+    if (msg.active) await fs.rm(msg.active, { force: true });
   }
 }
 
 await Effect.runPromise(
   Effect.gen(function* () {
-    const flock = yield* EffectFlock.Service
+    const flock = yield* EffectFlock.Service;
     yield* flock.withLock(
       Effect.promise(() => job()),
       msg.key,
       msg.dir,
-    )
+    );
   }).pipe(Effect.provide(testLayer)),
 ).catch((err) => {
-  const text = err instanceof Error ? (err.stack ?? err.message) : String(err)
-  process.stderr.write(text)
-  process.exit(1)
-})
+  const text = err instanceof Error ? (err.stack ?? err.message) : String(err);
+  process.stderr.write(text);
+  process.exit(1);
+});

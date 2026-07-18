@@ -1,26 +1,29 @@
-import { Select as Kobalte } from "@kobalte/core/select"
-import { createMemo, onCleanup, splitProps, type ComponentProps, type JSX } from "solid-js"
-import { pipe, groupBy, entries, map } from "remeda"
-import { Button, ButtonProps } from "./button"
-import { Icon } from "./icon"
+import { Select as Kobalte } from "@kobalte/core/select";
+import { createMemo, onCleanup, splitProps, type ComponentProps, type JSX } from "solid-js";
+import { pipe, groupBy, entries, map } from "remeda";
+import { Button, ButtonProps } from "./button";
+import { Icon } from "./icon";
 
-export type SelectProps<T> = Omit<ComponentProps<typeof Kobalte<T>>, "value" | "onSelect" | "children"> & {
-  placeholder?: string
-  options: T[]
-  current?: T
-  value?: (x: T) => string
-  label?: (x: T) => string
-  groupBy?: (x: T) => string
-  valueClass?: ComponentProps<"div">["class"]
-  onSelect?: (value: T | undefined) => void
-  onHighlight?: (value: T | undefined) => (() => void) | void
-  class?: ComponentProps<"div">["class"]
-  classList?: ComponentProps<"div">["classList"]
-  children?: (item: T | undefined) => JSX.Element
-  triggerStyle?: JSX.CSSProperties
-  triggerVariant?: "settings"
-  triggerProps?: Record<string, string | number | boolean | undefined>
-}
+export type SelectProps<T> = Omit<
+  ComponentProps<typeof Kobalte<T>>,
+  "value" | "onSelect" | "children"
+> & {
+  placeholder?: string;
+  options: T[];
+  current?: T;
+  value?: (x: T) => string;
+  label?: (x: T) => string;
+  groupBy?: (x: T) => string;
+  valueClass?: ComponentProps<"div">["class"];
+  onSelect?: (value: T | undefined) => void;
+  onHighlight?: (value: T | undefined) => (() => void) | void;
+  class?: ComponentProps<"div">["class"];
+  classList?: ComponentProps<"div">["classList"];
+  children?: (item: T | undefined) => JSX.Element;
+  triggerStyle?: JSX.CSSProperties;
+  triggerVariant?: "settings";
+  triggerProps?: Record<string, string | number | boolean | undefined>;
+};
 
 export function Select<T>(props: SelectProps<T> & Omit<ButtonProps, "children">) {
   const [local, others] = splitProps(props, [
@@ -40,36 +43,36 @@ export function Select<T>(props: SelectProps<T> & Omit<ButtonProps, "children">)
     "triggerStyle",
     "triggerVariant",
     "triggerProps",
-  ])
+  ]);
 
   const state = {
     key: undefined as string | undefined,
     cleanup: undefined as (() => void) | void,
-  }
+  };
 
   const stop = () => {
-    state.cleanup?.()
-    state.cleanup = undefined
-    state.key = undefined
-  }
+    state.cleanup?.();
+    state.cleanup = undefined;
+    state.key = undefined;
+  };
 
-  const keyFor = (item: T) => (local.value ? local.value(item) : (item as string))
+  const keyFor = (item: T) => (local.value ? local.value(item) : (item as string));
 
   const move = (item: T | undefined) => {
-    if (!local.onHighlight) return
+    if (!local.onHighlight) return;
     if (!item) {
-      stop()
-      return
+      stop();
+      return;
     }
 
-    const key = keyFor(item)
-    if (state.key === key) return
-    state.cleanup?.()
-    state.cleanup = local.onHighlight(item)
-    state.key = key
-  }
+    const key = keyFor(item);
+    if (state.key === key) return;
+    state.cleanup?.();
+    state.cleanup = local.onHighlight(item);
+    state.key = key;
+  };
 
-  onCleanup(stop)
+  onCleanup(stop);
 
   const grouped = createMemo(() => {
     const result = pipe(
@@ -78,9 +81,9 @@ export function Select<T>(props: SelectProps<T> & Omit<ButtonProps, "children">)
       // mapValues((x) => x.sort((a, b) => a.title.localeCompare(b.title))),
       entries(),
       map(([k, v]) => ({ category: k, options: v })),
-    )
-    return result
-  })
+    );
+    return result;
+  });
 
   return (
     // @ts-ignore
@@ -97,7 +100,9 @@ export function Select<T>(props: SelectProps<T> & Omit<ButtonProps, "children">)
       optionGroupChildren="options"
       placeholder={local.placeholder}
       sectionComponent={(local) => (
-        <Kobalte.Section data-slot="select-section">{local.section.rawValue.category}</Kobalte.Section>
+        <Kobalte.Section data-slot="select-section">
+          {local.section.rawValue.category}
+        </Kobalte.Section>
       )}
       itemComponent={(itemProps) => (
         <Kobalte.Item
@@ -124,12 +129,12 @@ export function Select<T>(props: SelectProps<T> & Omit<ButtonProps, "children">)
         </Kobalte.Item>
       )}
       onChange={(v) => {
-        local.onSelect?.(v ?? undefined)
-        stop()
+        local.onSelect?.(v ?? undefined);
+        stop();
       }}
       onOpenChange={(open) => {
-        local.onOpenChange?.(open)
-        if (!open) stop()
+        local.onOpenChange?.(open);
+        if (!open) stop();
       }}
     >
       <Kobalte.Trigger
@@ -147,14 +152,17 @@ export function Select<T>(props: SelectProps<T> & Omit<ButtonProps, "children">)
       >
         <Kobalte.Value<T> data-slot="select-select-trigger-value" class={local.valueClass}>
           {(state) => {
-            const selected = state.selectedOption() ?? local.current
-            if (!selected) return local.placeholder || ""
-            if (local.label) return local.label(selected)
-            return selected as string
+            const selected = state.selectedOption() ?? local.current;
+            if (!selected) return local.placeholder || "";
+            if (local.label) return local.label(selected);
+            return selected as string;
           }}
         </Kobalte.Value>
         <Kobalte.Icon data-slot="select-select-trigger-icon">
-          <Icon name={local.triggerVariant === "settings" ? "selector" : "chevron-down"} size="small" />
+          <Icon
+            name={local.triggerVariant === "settings" ? "selector" : "chevron-down"}
+            size="small"
+          />
         </Kobalte.Icon>
       </Kobalte.Trigger>
       <Kobalte.Portal>
@@ -170,5 +178,5 @@ export function Select<T>(props: SelectProps<T> & Omit<ButtonProps, "children">)
         </Kobalte.Content>
       </Kobalte.Portal>
     </Kobalte>
-  )
+  );
 }

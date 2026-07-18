@@ -1,6 +1,6 @@
-import { createContext, useContext, useMemo, useState } from 'react';
-import { Conversation, Message } from './types';
-import { WllamaStorage } from './utils';
+import { createContext, useContext, useMemo, useState } from "react";
+import { Conversation, Message } from "./types";
+import { WllamaStorage } from "./utils";
 
 interface MessagesContextValue {
   conversations: Conversation[];
@@ -8,11 +8,7 @@ interface MessagesContextValue {
   deleteConversation: (id: number) => void;
   addMessageToConversation: (id: number, message: Message) => void;
   getConversationById: (id: number) => Conversation | undefined;
-  editMessageInConversation: (
-    conversationId: number,
-    messageId: number,
-    content: string
-  ) => void;
+  editMessageInConversation: (conversationId: number, messageId: number, content: string) => void;
 }
 
 const MessagesContext = createContext<MessagesContextValue>({} as any);
@@ -21,7 +17,7 @@ type ConvMap = { [id: number]: Conversation };
 
 export const MessagesProvider = ({ children }: any) => {
   const [conversations, _setConversations] = useState<ConvMap>(
-    WllamaStorage.load('conversations', {})
+    WllamaStorage.load("conversations", {}),
   );
   const sortedConversations = useMemo(() => {
     return Object.values(conversations).sort((a, b) => {
@@ -35,7 +31,7 @@ export const MessagesProvider = ({ children }: any) => {
   const setConversations = (fn: (prev: ConvMap) => ConvMap) => {
     _setConversations((prev) => {
       const next = fn(prev);
-      WllamaStorage.save('conversations', next);
+      WllamaStorage.save("conversations", next);
       return next;
     });
   };
@@ -60,10 +56,7 @@ export const MessagesProvider = ({ children }: any) => {
     });
   };
 
-  const addMessageToConversation = (
-    conversationId: number,
-    message: Message
-  ) => {
+  const addMessageToConversation = (conversationId: number, message: Message) => {
     setConversations((prevConversations) => {
       if (prevConversations[conversationId]) {
         const newConversations = { ...prevConversations };
@@ -79,7 +72,7 @@ export const MessagesProvider = ({ children }: any) => {
   const editMessageInConversation = (
     conversationId: number,
     messageId: number,
-    content: string
+    content: string,
   ) => {
     setConversations((prevConversations) => {
       if (prevConversations[conversationId]) {

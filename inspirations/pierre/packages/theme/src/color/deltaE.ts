@@ -5,14 +5,10 @@
 // versions of two roles to prove a dichromat can still tell them apart.
 // Pipeline: sRGB → linear → XYZ (D65) → Lab → CIEDE2000.
 
-import { hexToRgb01, srgbToLinear } from './srgb';
+import { hexToRgb01, srgbToLinear } from "./srgb";
 
 function hexToLab(hex: string): [number, number, number] {
-  const [r, g, b] = hexToRgb01(hex).map(srgbToLinear) as [
-    number,
-    number,
-    number,
-  ];
+  const [r, g, b] = hexToRgb01(hex).map(srgbToLinear) as [number, number, number];
   // linear sRGB → CIE XYZ (D65, Y of white = 1).
   const x = 0.4124564 * r + 0.3575761 * g + 0.1804375 * b;
   const y = 0.2126729 * r + 0.7151522 * g + 0.072175 * b;
@@ -41,9 +37,7 @@ export function deltaE2000(hexA: string, hexB: string): number {
   const C2 = Math.hypot(a2, b2);
   const avgC = (C1 + C2) / 2;
 
-  const G =
-    0.5 *
-    (1 - Math.sqrt(Math.pow(avgC, 7) / (Math.pow(avgC, 7) + Math.pow(25, 7))));
+  const G = 0.5 * (1 - Math.sqrt(Math.pow(avgC, 7) / (Math.pow(avgC, 7) + Math.pow(25, 7))));
   const a1p = a1 * (1 + G);
   const a2p = a2 * (1 + G);
   const C1p = Math.hypot(a1p, b1);
@@ -83,11 +77,8 @@ export function deltaE2000(hexA: string, hexB: string): number {
     0.2 * Math.cos(deg2rad(4 * avgHp - 63));
 
   const dTheta = 30 * Math.exp(-Math.pow((avgHp - 275) / 25, 2));
-  const Rc =
-    2 * Math.sqrt(Math.pow(avgCp, 7) / (Math.pow(avgCp, 7) + Math.pow(25, 7)));
-  const Sl =
-    1 +
-    (0.015 * Math.pow(avgL - 50, 2)) / Math.sqrt(20 + Math.pow(avgL - 50, 2));
+  const Rc = 2 * Math.sqrt(Math.pow(avgCp, 7) / (Math.pow(avgCp, 7) + Math.pow(25, 7)));
+  const Sl = 1 + (0.015 * Math.pow(avgL - 50, 2)) / Math.sqrt(20 + Math.pow(avgL - 50, 2));
   const Sc = 1 + 0.045 * avgCp;
   const Sh = 1 + 0.015 * avgCp * T;
   const Rt = -Math.sin(deg2rad(2 * dTheta)) * Rc;
@@ -96,6 +87,6 @@ export function deltaE2000(hexA: string, hexB: string): number {
     Math.pow(dLp / Sl, 2) +
       Math.pow(dCp / Sc, 2) +
       Math.pow(dHp / Sh, 2) +
-      Rt * (dCp / Sc) * (dHp / Sh)
+      Rt * (dCp / Sc) * (dHp / Sh),
   );
 }

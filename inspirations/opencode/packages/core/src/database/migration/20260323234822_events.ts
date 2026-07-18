@@ -1,5 +1,5 @@
-import { Effect } from "effect"
-import type { DatabaseMigration } from "../migration"
+import { Effect } from "effect";
+import type { DatabaseMigration } from "../migration";
 
 export default {
   id: "20260323234822_events",
@@ -10,7 +10,7 @@ export default {
           \`aggregate_id\` text PRIMARY KEY,
           \`seq\` integer NOT NULL
         );
-      `)
+      `);
       yield* tx.run(`
         CREATE TABLE \`event\` (
           \`id\` text PRIMARY KEY,
@@ -20,7 +20,7 @@ export default {
           \`data\` text NOT NULL,
           CONSTRAINT \`fk_event_aggregate_id_event_sequence_aggregate_id_fk\` FOREIGN KEY (\`aggregate_id\`) REFERENCES \`event_sequence\`(\`aggregate_id\`) ON DELETE CASCADE
         );
-      `)
-    })
+      `);
+    });
   },
-} satisfies DatabaseMigration.Migration
+} satisfies DatabaseMigration.Migration;

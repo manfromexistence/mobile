@@ -26,8 +26,9 @@ test("host imports the formatters back from the leaf", () => {
 });
 
 test("formatStreamContent + model classifiers behave", async () => {
-  const { isThinkingModel, isSearchModel, formatStreamContent } =
-    await import("../../open-sse/executors/deepseek-web/stream-format.ts");
+  const { isThinkingModel, isSearchModel, formatStreamContent } = await import(
+    "../../open-sse/executors/deepseek-web/stream-format.ts"
+  );
   assert.equal(typeof isThinkingModel("deepseek-reasoner"), "boolean");
   assert.equal(typeof isSearchModel("deepseek-search"), "boolean");
   assert.equal(typeof formatStreamContent("hi", "deepseek-chat"), "string");

@@ -57,7 +57,7 @@ describe("ccr security: cross-tenant IDOR isolation", () => {
     assert.equal(
       resultB,
       null,
-      "[HIGH IDOR] principal B must NOT be able to retrieve principal A's block"
+      "[HIGH IDOR] principal B must NOT be able to retrieve principal A's block",
     );
   });
 
@@ -68,7 +68,7 @@ describe("ccr security: cross-tenant IDOR isolation", () => {
     assert.equal(
       resultAnon,
       null,
-      "[HIGH IDOR] anonymous principal must NOT retrieve a named principal's block"
+      "[HIGH IDOR] anonymous principal must NOT retrieve a named principal's block",
     );
   });
 
@@ -94,14 +94,14 @@ describe("ccr security: cross-tenant IDOR isolation", () => {
     assert.equal(
       retrieveBlock(hashA, "principalB"),
       null,
-      "[HIGH IDOR] B (never stored) cannot retrieve A's block by reusing A's hash"
+      "[HIGH IDOR] B (never stored) cannot retrieve A's block by reusing A's hash",
     );
 
     // anonymous similarly cannot
     assert.equal(
       retrieveBlock(hashA, undefined),
       null,
-      "[HIGH IDOR] anonymous cannot retrieve A's block"
+      "[HIGH IDOR] anonymous cannot retrieve A's block",
     );
   });
 });
@@ -123,7 +123,7 @@ describe("ccr security: handleCcrRetrieve end-to-end isolation", () => {
     const result = handleCcrRetrieve({ hash }, "callerB");
     assert.ok(
       "error" in result,
-      "[HIGH IDOR] cross-tenant retrieve via handleCcrRetrieve must return error, not content"
+      "[HIGH IDOR] cross-tenant retrieve via handleCcrRetrieve must return error, not content",
     );
     assert.ok(!("content" in result), "[HIGH IDOR] cross-tenant retrieve must NOT return content");
   });
@@ -165,14 +165,14 @@ describe("ccr security: [MEDIUM] scoped retrieval feedback (shouldSkipCompressio
     assert.equal(
       shouldSkipCompression(hash, "principalA"),
       true,
-      "A's compression should be skipped after threshold retrievals"
+      "A's compression should be skipped after threshold retrievals",
     );
 
     // B's compression must NOT be affected
     assert.equal(
       shouldSkipCompression(hash, "principalB"),
       false,
-      "[MEDIUM] A's retrievals must NOT flip B's shouldSkipCompression"
+      "[MEDIUM] A's retrievals must NOT flip B's shouldSkipCompression",
     );
   });
 
@@ -209,7 +209,7 @@ describe("ccr security: [MEDIUM] bounded memory (FIFO eviction)", () => {
     assert.equal(
       retrieveBlock(firstHash, principal),
       firstText,
-      "first block must be present at exactly-cap state"
+      "first block must be present at exactly-cap state",
     );
 
     // Insert one more unique block — should evict the first (oldest) entry
@@ -219,7 +219,7 @@ describe("ccr security: [MEDIUM] bounded memory (FIFO eviction)", () => {
     assert.equal(
       retrieveBlock(firstHash, principal),
       null,
-      "[MEDIUM] FIFO eviction: oldest block must be evicted when cap is reached"
+      "[MEDIUM] FIFO eviction: oldest block must be evicted when cap is reached",
     );
   });
 
@@ -238,7 +238,7 @@ describe("ccr security: [MEDIUM] bounded memory (FIFO eviction)", () => {
     assert.equal(
       retrieveBlock(firstHash, firstPrincipal),
       null,
-      "[MEDIUM] unbounded-growth prevented: first inserted entry must be evicted after MAX+5 inserts"
+      "[MEDIUM] unbounded-growth prevented: first inserted entry must be evicted after MAX+5 inserts",
     );
   });
 });
@@ -262,7 +262,7 @@ describe("ccr security: [HIGH] ccrEngine.apply scopes the stored block to the pr
     assert.equal(
       retrieveBlock(hash, "principalB"),
       null,
-      "[HIGH IDOR] principal B must NOT retrieve principal A's apply()-stored block"
+      "[HIGH IDOR] principal B must NOT retrieve principal A's apply()-stored block",
     );
   });
 });

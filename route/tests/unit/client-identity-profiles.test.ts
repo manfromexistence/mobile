@@ -17,8 +17,9 @@ const {
   getClientIdentityProfileHeaders,
   isClientIdentityProfileId,
 } = await import("../../src/shared/constants/clientIdentityProfiles.ts");
-const { isForbiddenCustomHeaderName } =
-  await import("../../src/shared/constants/upstreamHeaders.ts");
+const { isForbiddenCustomHeaderName } = await import(
+  "../../src/shared/constants/upstreamHeaders.ts"
+);
 const { DefaultExecutor } = await import("../../open-sse/executors/default.ts");
 const core = await import("../../src/lib/db/core.ts");
 
@@ -55,7 +56,7 @@ test("getClientIdentityProfileHeaders: returns a fresh mutable copy (catalog sta
   headers["User-Agent"] = "tampered";
   assert.equal(
     CLIENT_IDENTITY_PROFILES["claude-cli"].headers["User-Agent"],
-    "claude-cli/2.1.207 (external, cli)"
+    "claude-cli/2.1.207 (external, cli)",
   );
 });
 
@@ -97,7 +98,7 @@ test("profile headers merged into customHeaders survive applyCustomHeaders sanit
         customHeaders: profileHeaders,
       },
     },
-    true
+    true,
   ) as Record<string, string>;
 
   assert.equal(headers["User-Agent"], "claude-cli/2.1.207 (external, cli)");
@@ -130,7 +131,7 @@ test("a malicious profile-shaped header set has its auth/cookie entries dropped 
         customHeaders: maliciousProfileHeaders,
       },
     },
-    true
+    true,
   ) as Record<string, string>;
 
   assert.equal(headers["User-Agent"], "totally-legit-cli/1.0");

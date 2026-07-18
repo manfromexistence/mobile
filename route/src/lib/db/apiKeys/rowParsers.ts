@@ -73,7 +73,7 @@ export function parseAccessSchedule(value: unknown): AccessSchedule | null {
       return null;
     }
     const days = (obj["days"] as unknown[]).filter(
-      (d): d is number => typeof d === "number" && Number.isInteger(d) && d >= 0 && d <= 6
+      (d): d is number => typeof d === "number" && Number.isInteger(d) && d >= 0 && d <= 6,
     );
     return {
       enabled: obj["enabled"],
@@ -97,7 +97,7 @@ export function parseRateLimits(value: unknown): RateLimitRule[] | null {
         typeof rule === "object" &&
         rule !== null &&
         typeof rule.limit === "number" &&
-        typeof rule.window === "number"
+        typeof rule.window === "number",
     ) as RateLimitRule[];
   } catch {
     return null;

@@ -1,7 +1,19 @@
 // @ts-nocheck
-import React from "react"
-import { Img, Row, Html, Link, Body, Head, Button, Column, Preview, Section, Container } from "@jsx-email/all"
-import { Text, Fonts, Title, A, Span } from "../components"
+import React from "react";
+import {
+  Img,
+  Row,
+  Html,
+  Link,
+  Body,
+  Head,
+  Button,
+  Column,
+  Preview,
+  Section,
+  Container,
+} from "@jsx-email/all";
+import { Text, Fonts, Title, A, Span } from "../components";
 import {
   unit,
   body,
@@ -13,15 +25,15 @@ import {
   contentHighlightText,
   linkText,
   buttonText,
-} from "../styles"
+} from "../styles";
 
-const CONSOLE_URL = "https://opencode.ai/"
+const CONSOLE_URL = "https://opencode.ai/";
 
 interface InviteEmailProps {
-  inviter: string
-  workspaceID: string
-  workspaceName: string
-  assetsUrl: string
+  inviter: string;
+  workspaceID: string;
+  workspaceName: string;
+  assetsUrl: string;
 }
 export const InviteEmail = ({
   inviter = "test@anoma.ly",
@@ -29,8 +41,8 @@ export const InviteEmail = ({
   workspaceName = "anomaly",
   assetsUrl = `${CONSOLE_URL}email`,
 }: InviteEmailProps) => {
-  const messagePlain = `${inviter} invited you to join the ${workspaceName} workspace.`
-  const url = `${CONSOLE_URL}workspace/${workspaceID}`
+  const messagePlain = `${inviter} invited you to join the ${workspaceName} workspace.`;
+  const url = `${CONSOLE_URL}workspace/${workspaceID}`;
   return (
     <Html lang="en">
       <Head>
@@ -52,8 +64,8 @@ export const InviteEmail = ({
             <Section style={{ padding: `${unit * 2}px 0 0 0` }}>
               <Text style={headingText}>Join your team's OpenCode workspace</Text>
               <Text style={contentText}>
-                You have been invited by <Span style={contentHighlightText}>{inviter}</Span> to join the{" "}
-                <Span style={contentHighlightText}>{workspaceName}</Span> workspace on OpenCode.
+                You have been invited by <Span style={contentHighlightText}>{inviter}</Span> to join
+                the <Span style={contentHighlightText}>{workspaceName}</Span> workspace on OpenCode.
               </Text>
             </Section>
 
@@ -61,7 +73,12 @@ export const InviteEmail = ({
               <Button style={button} href={url}>
                 <Text style={buttonText}>
                   Join workspace
-                  <Img width="24" height="24" src={`${assetsUrl}/right-arrow.png`} alt="Arrow right" />
+                  <Img
+                    width="24"
+                    height="24"
+                    src={`${assetsUrl}/right-arrow.png`}
+                    alt="Arrow right"
+                  />
                 </Text>
               </Button>
             </Section>
@@ -76,7 +93,7 @@ export const InviteEmail = ({
         </Container>
       </Body>
     </Html>
-  )
-}
+  );
+};
 
-export default InviteEmail
+export default InviteEmail;

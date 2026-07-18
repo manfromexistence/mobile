@@ -1,35 +1,52 @@
-import { TextAttributes } from "@opentui/core"
-import { createStore } from "solid-js/store"
-import { For } from "solid-js"
-import { useTheme } from "../context/theme"
-import { useDialog } from "../ui/dialog"
-import { useBindings } from "../keymap"
+import { TextAttributes } from "@opentui/core";
+import { createStore } from "solid-js/store";
+import { For } from "solid-js";
+import { useTheme } from "../context/theme";
+import { useDialog } from "../ui/dialog";
+import { useBindings } from "../keymap";
 
-export function DialogWorkspaceUnavailable(props: { onRestore?: () => boolean | void | Promise<boolean | void> }) {
-  const dialog = useDialog()
-  const { theme } = useTheme()
+export function DialogWorkspaceUnavailable(props: {
+  onRestore?: () => boolean | void | Promise<boolean | void>;
+}) {
+  const dialog = useDialog();
+  const { theme } = useTheme();
   const [store, setStore] = createStore({
     active: "restore" as "cancel" | "restore",
-  })
+  });
 
-  const options = ["cancel", "restore"] as const
+  const options = ["cancel", "restore"] as const;
 
   async function confirm() {
     if (store.active === "cancel") {
-      dialog.clear()
-      return
+      dialog.clear();
+      return;
     }
-    const result = await props.onRestore?.()
-    if (result === false) return
+    const result = await props.onRestore?.();
+    if (result === false) return;
   }
 
   useBindings(() => ({
     bindings: [
-      { key: "return", desc: "Confirm workspace option", group: "Dialog", cmd: () => void confirm() },
-      { key: "left", desc: "Cancel workspace restore", group: "Dialog", cmd: () => setStore("active", "cancel") },
-      { key: "right", desc: "Restore workspace", group: "Dialog", cmd: () => setStore("active", "restore") },
+      {
+        key: "return",
+        desc: "Confirm workspace option",
+        group: "Dialog",
+        cmd: () => void confirm(),
+      },
+      {
+        key: "left",
+        desc: "Cancel workspace restore",
+        group: "Dialog",
+        cmd: () => setStore("active", "cancel"),
+      },
+      {
+        key: "right",
+        desc: "Restore workspace",
+        group: "Dialog",
+        cmd: () => setStore("active", "restore"),
+      },
     ],
-  }))
+  }));
 
   return (
     <box paddingLeft={2} paddingRight={2} gap={1}>
@@ -55,15 +72,17 @@ export function DialogWorkspaceUnavailable(props: { onRestore?: () => boolean | 
               paddingRight={2}
               backgroundColor={item === store.active ? theme.primary : undefined}
               onMouseUp={() => {
-                setStore("active", item)
-                void confirm()
+                setStore("active", item);
+                void confirm();
               }}
             >
-              <text fg={item === store.active ? theme.selectedListItemText : theme.textMuted}>{item}</text>
+              <text fg={item === store.active ? theme.selectedListItemText : theme.textMuted}>
+                {item}
+              </text>
             </box>
           )}
         </For>
       </box>
     </box>
-  )
+  );
 }

@@ -46,7 +46,7 @@ function ensureProviderColumns(db) {
     db
       .prepare("PRAGMA table_info(provider_connections)")
       .all()
-      .map((column) => column.name)
+      .map((column) => column.name),
   );
 
   const missingColumns = REQUIRED_PROVIDER_COLUMNS.filter(([name]) => {
@@ -105,13 +105,13 @@ export function ensureProviderSchema(db) {
       max_concurrent INTEGER,
       created_at TEXT NOT NULL,
       updated_at TEXT NOT NULL
-    )`
+    )`,
   ).run();
   ensureProviderColumns(db);
   db.prepare("CREATE INDEX IF NOT EXISTS idx_pc_provider ON provider_connections(provider)").run();
   db.prepare("CREATE INDEX IF NOT EXISTS idx_pc_active ON provider_connections(is_active)").run();
   db.prepare(
-    "CREATE INDEX IF NOT EXISTS idx_pc_priority ON provider_connections(provider, priority)"
+    "CREATE INDEX IF NOT EXISTS idx_pc_priority ON provider_connections(provider, priority)",
   ).run();
 }
 
@@ -160,7 +160,7 @@ export function listProviderConnections(db) {
   return db
     .prepare(
       `SELECT * FROM provider_connections
-       ORDER BY provider ASC, priority ASC, updated_at DESC`
+       ORDER BY provider ASC, priority ASC, updated_at DESC`,
     )
     .all()
     .map(rowToConnection);
@@ -200,7 +200,7 @@ export function upsertApiKeyProviderConnection(db, input) {
   const now = new Date().toISOString();
   const existing = db
     .prepare(
-      "SELECT id, priority FROM provider_connections WHERE provider = ? AND auth_type = 'apikey' AND name = ?"
+      "SELECT id, priority FROM provider_connections WHERE provider = ? AND auth_type = 'apikey' AND name = ?",
     )
     .get(provider, name);
 
@@ -235,7 +235,7 @@ export function upsertApiKeyProviderConnection(db, input) {
       test_status = excluded.test_status,
       default_model = excluded.default_model,
       is_active = excluded.is_active,
-      updated_at = excluded.updated_at`
+      updated_at = excluded.updated_at`,
   ).run(connection);
 
   return connection;
@@ -245,7 +245,7 @@ export function removeProviderConnectionByProvider(db, provider) {
   ensureProviderSchema(db);
   const result = db
     .prepare(
-      "DELETE FROM provider_connections WHERE provider = ? AND (auth_type = 'apikey' OR (api_key IS NOT NULL AND api_key != ''))"
+      "DELETE FROM provider_connections WHERE provider = ? AND (auth_type = 'apikey' OR (api_key IS NOT NULL AND api_key != ''))",
     )
     .run(provider);
   return result.changes;
@@ -271,7 +271,7 @@ export function updateProviderApiKey(db, connectionId, encryptedKey) {
              rate_limited_until = NULL,
              backoff_level = 0,
              updated_at = @updatedAt
-       WHERE id = @id`
+       WHERE id = @id`,
     )
     .run({ id: connectionId, apiKey: encryptedKey, updatedAt: now });
   return result.changes;
@@ -292,7 +292,7 @@ export function updateProviderTestResult(db, connectionId, result) {
       error_code = @errorCode,
       last_tested = @lastTested,
       updated_at = @updatedAt
-    WHERE id = @id`
+    WHERE id = @id`,
   ).run({
     id: connectionId,
     testStatus: valid ? "active" : "error",

@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { IconArrow } from '@pierre/icons';
-import { memo } from 'react';
+import { IconArrow } from "@pierre/icons";
+import { memo } from "react";
 
-import { Button } from '@/components/Button';
-import { DiffUrlForm } from '@/components/DiffUrlForm';
+import { Button } from "@/components/Button";
+import { DiffUrlForm } from "@/components/DiffUrlForm";
 
 // Submitting the home form should move to the shareable viewer URL first. The
 // viewer route owns fetching and renders its own loading state there.
@@ -21,7 +21,7 @@ export const HomeFetchForm = memo(function HomeFetchForm() {
             variant="ghost"
             size="icon-md"
             disabled={isPending || url.length === 0}
-            aria-label={isPending ? 'Fetching…' : 'Fetch'}
+            aria-label={isPending ? "Fetching…" : "Fetch"}
             className="hover:text-muted-foreground -mr-2 hover:bg-transparent"
           >
             <IconArrow className="size-4 rotate-180" />

@@ -1,11 +1,11 @@
 #!/usr/bin/env bun
 
-import { rm } from "fs/promises"
-import path from "path"
-import { parseArgs } from "util"
+import { rm } from "fs/promises";
+import path from "path";
+import { parseArgs } from "util";
 
-const root = path.resolve(import.meta.dir, "..")
-const file = path.join(root, "UPCOMING_CHANGELOG.md")
+const root = path.resolve(import.meta.dir, "..");
+const file = path.join(root, "UPCOMING_CHANGELOG.md");
 const { values, positionals } = parseArgs({
   args: Bun.argv.slice(2),
   options: {
@@ -17,11 +17,11 @@ const { values, positionals } = parseArgs({
     help: { type: "boolean", short: "h", default: false },
   },
   allowPositionals: true,
-})
-const args = [...positionals]
+});
+const args = [...positionals];
 
-if (values.from) args.push("--from", values.from)
-if (values.to) args.push("--to", values.to)
+if (values.from) args.push("--from", values.from);
+if (values.to) args.push("--to", values.to);
 
 if (values.help) {
   console.log(`
@@ -41,36 +41,36 @@ Examples:
   bun script/changelog.ts
   bun script/changelog.ts --from 1.0.200
   bun script/changelog.ts -f 1.0.200 -t 1.0.205
-`)
-  process.exit(0)
+`);
+  process.exit(0);
 }
 
-await rm(file, { force: true })
+await rm(file, { force: true });
 
-const quiet = values.quiet
-const cmd = ["opencode", "run"]
-cmd.push("--variant", values.variant)
-cmd.push("--command", "changelog", "--", ...args)
+const quiet = values.quiet;
+const cmd = ["opencode", "run"];
+cmd.push("--variant", values.variant);
+cmd.push("--command", "changelog", "--", ...args);
 
 const proc = Bun.spawn(cmd, {
   cwd: root,
   stdin: "inherit",
   stdout: quiet ? "pipe" : "inherit",
   stderr: quiet ? "pipe" : "inherit",
-})
+});
 
 const [out, err] = quiet
   ? await Promise.all([new Response(proc.stdout).text(), new Response(proc.stderr).text()])
-  : ["", ""]
-const code = await proc.exited
+  : ["", ""];
+const code = await proc.exited;
 if (code === 0) {
-  if (values.print) process.stdout.write(await Bun.file(file).text())
-  process.exit(0)
+  if (values.print) process.stdout.write(await Bun.file(file).text());
+  process.exit(0);
 }
 
 if (quiet) {
-  if (out) process.stdout.write(out)
-  if (err) process.stderr.write(err)
+  if (out) process.stdout.write(out);
+  if (err) process.stderr.write(err);
 }
 
-process.exit(code)
+process.exit(code);

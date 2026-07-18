@@ -67,7 +67,7 @@ export async function GET(request: Request) {
         headers: {
           ...diagnosticHeaders,
         },
-      }
+      },
     );
   } catch (error) {
     return Response.json(
@@ -83,7 +83,7 @@ export async function GET(request: Request) {
         headers: {
           ...diagnosticHeaders,
         },
-      }
+      },
     );
   }
 }

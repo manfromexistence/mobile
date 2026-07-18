@@ -6,7 +6,7 @@ const webServerReadyUrl = `${dashboardBaseUrl}/api/monitoring/health`;
 const playwrightServerMode = process.env.OMNIROUTE_PLAYWRIGHT_SERVER_MODE || "start";
 const playwrightWebServerTimeout = Number.parseInt(
   process.env.OMNIROUTE_PLAYWRIGHT_WEB_SERVER_TIMEOUT || "900000",
-  10
+  10,
 );
 
 export default defineConfig({

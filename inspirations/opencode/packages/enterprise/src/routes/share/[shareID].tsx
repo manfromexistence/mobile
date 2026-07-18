@@ -1,28 +1,36 @@
-import { Message, Model, Part, Session, SessionStatus, SnapshotFileDiff, UserMessage } from "@opencode-ai/sdk/v2"
-import { SessionTurn } from "@opencode-ai/session-ui/session-turn"
-import { SessionReview } from "@opencode-ai/session-ui/session-review"
-import { DataProvider } from "@opencode-ai/session-ui/context"
-import { FileComponentProvider } from "@opencode-ai/ui/context/file"
-import { WorkerPoolProvider } from "@opencode-ai/ui/context/worker-pool"
-import { createAsync, query, useParams } from "@solidjs/router"
-import { createMemo, createSignal, ErrorBoundary, For, Match, Show, Switch } from "solid-js"
-import { Share } from "~/core/share"
-import { Logo, Mark } from "@opencode-ai/ui/logo"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { ProviderIcon } from "@opencode-ai/ui/provider-icon"
-import { iife } from "@opencode-ai/core/util/iife"
-import { Binary } from "@opencode-ai/core/util/binary"
-import { NamedError } from "@opencode-ai/core/util/error"
-import { DateTime } from "luxon"
-import { createStore } from "solid-js/store"
-import NotFound from "../[...404]"
-import { Tabs } from "@opencode-ai/ui/tabs"
-import { MessageNav } from "@opencode-ai/session-ui/message-nav"
-import { FileSSR } from "@opencode-ai/session-ui/file-ssr"
-import { clientOnly } from "@solidjs/start"
-import { Meta, Title } from "@solidjs/meta"
-import { Base64 } from "js-base64"
-import { getRequestEvent } from "solid-js/web"
+import {
+  Message,
+  Model,
+  Part,
+  Session,
+  SessionStatus,
+  SnapshotFileDiff,
+  UserMessage,
+} from "@opencode-ai/sdk/v2";
+import { SessionTurn } from "@opencode-ai/session-ui/session-turn";
+import { SessionReview } from "@opencode-ai/session-ui/session-review";
+import { DataProvider } from "@opencode-ai/session-ui/context";
+import { FileComponentProvider } from "@opencode-ai/ui/context/file";
+import { WorkerPoolProvider } from "@opencode-ai/ui/context/worker-pool";
+import { createAsync, query, useParams } from "@solidjs/router";
+import { createMemo, createSignal, ErrorBoundary, For, Match, Show, Switch } from "solid-js";
+import { Share } from "~/core/share";
+import { Logo, Mark } from "@opencode-ai/ui/logo";
+import { IconButton } from "@opencode-ai/ui/icon-button";
+import { ProviderIcon } from "@opencode-ai/ui/provider-icon";
+import { iife } from "@opencode-ai/core/util/iife";
+import { Binary } from "@opencode-ai/core/util/binary";
+import { NamedError } from "@opencode-ai/core/util/error";
+import { DateTime } from "luxon";
+import { createStore } from "solid-js/store";
+import NotFound from "../[...404]";
+import { Tabs } from "@opencode-ai/ui/tabs";
+import { MessageNav } from "@opencode-ai/session-ui/message-nav";
+import { FileSSR } from "@opencode-ai/session-ui/file-ssr";
+import { clientOnly } from "@solidjs/start";
+import { Meta, Title } from "@solidjs/meta";
+import { Base64 } from "js-base64";
+import { getRequestEvent } from "solid-js/web";
 
 const ClientOnlyWorkerPoolProvider = clientOnly(() =>
   import("@opencode-ai/session-ui/pierre/worker").then((m) => ({
@@ -30,55 +38,55 @@ const ClientOnlyWorkerPoolProvider = clientOnly(() =>
       <WorkerPoolProvider pools={m.getWorkerPools()}>{props.children}</WorkerPoolProvider>
     ),
   })),
-)
+);
 
 class SessionDataMissingError extends NamedError {
-  public override readonly name = "SessionDataMissingError"
+  public override readonly name = "SessionDataMissingError";
 
   constructor(
     public readonly data: { sessionID: string; message?: string },
     options?: ErrorOptions,
   ) {
-    super("SessionDataMissingError", options)
+    super("SessionDataMissingError", options);
   }
 
   static isInstance(input: unknown): input is SessionDataMissingError {
-    return NamedError.hasName(input, "SessionDataMissingError")
+    return NamedError.hasName(input, "SessionDataMissingError");
   }
 
   schema(): never {
-    throw new Error("SessionDataMissingError does not expose a schema")
+    throw new Error("SessionDataMissingError does not expose a schema");
   }
 
   toObject() {
-    return { name: this.name, data: this.data }
+    return { name: this.name, data: this.data };
   }
 }
 
 const getData = query(async (shareID) => {
-  "use server"
-  const share = await Share.get(shareID)
-  if (!share) throw new SessionDataMissingError({ sessionID: shareID })
-  const data = await Share.data(shareID)
+  "use server";
+  const share = await Share.get(shareID);
+  if (!share) throw new SessionDataMissingError({ sessionID: shareID });
+  const data = await Share.data(shareID);
   const result: {
-    sessionID: string
-    shareID: string
-    session: Session[]
+    sessionID: string;
+    shareID: string;
+    session: Session[];
     session_diff: {
-      [sessionID: string]: SnapshotFileDiff[]
-    }
+      [sessionID: string]: SnapshotFileDiff[];
+    };
     session_status: {
-      [sessionID: string]: SessionStatus
-    }
+      [sessionID: string]: SessionStatus;
+    };
     message: {
-      [sessionID: string]: Message[]
-    }
+      [sessionID: string]: Message[];
+    };
     part: {
-      [messageID: string]: Part[]
-    }
+      [messageID: string]: Part[];
+    };
     model: {
-      [sessionID: string]: Model[]
-    }
+      [sessionID: string]: Model[];
+    };
   } = {
     sessionID: share.sessionID,
     shareID,
@@ -94,53 +102,53 @@ const getData = query(async (shareID) => {
     message: {},
     part: {},
     model: {},
-  }
+  };
   for (const item of data) {
     switch (item.type) {
       case "session":
-        result.session.push(item.data)
-        break
+        result.session.push(item.data);
+        break;
       case "session_diff":
-        result.session_diff[share.sessionID] = item.data
-        break
+        result.session_diff[share.sessionID] = item.data;
+        break;
       case "message":
-        result.message[item.data.sessionID] = result.message[item.data.sessionID] ?? []
-        result.message[item.data.sessionID].push(item.data)
-        break
+        result.message[item.data.sessionID] = result.message[item.data.sessionID] ?? [];
+        result.message[item.data.sessionID].push(item.data);
+        break;
       case "part":
-        result.part[item.data.messageID] = result.part[item.data.messageID] ?? []
-        result.part[item.data.messageID].push(item.data)
-        break
+        result.part[item.data.messageID] = result.part[item.data.messageID] ?? [];
+        result.part[item.data.messageID].push(item.data);
+        break;
       case "model":
-        result.model[share.sessionID] = item.data
-        break
+        result.model[share.sessionID] = item.data;
+        break;
     }
   }
-  const match = Binary.search(result.session, share.sessionID, (s) => s.id)
-  if (!match.found) throw new SessionDataMissingError({ sessionID: share.sessionID })
-  return result
-}, "getShareData")
+  const match = Binary.search(result.session, share.sessionID, (s) => s.id);
+  if (!match.found) throw new SessionDataMissingError({ sessionID: share.sessionID });
+  return result;
+}, "getShareData");
 
 export default function () {
   getRequestEvent()?.response.headers.set(
     "Cache-Control",
     "public, max-age=30, s-maxage=300, stale-while-revalidate=86400",
-  )
+  );
 
-  const params = useParams()
+  const params = useParams();
   const data = createAsync(async () => {
-    if (!params.shareID) throw new Error("Missing shareID")
-    return getData(params.shareID)
-  })
+    if (!params.shareID) throw new Error("Missing shareID");
+    return getData(params.shareID);
+  });
 
   return (
     <ErrorBoundary
       fallback={(error) => {
         if (SessionDataMissingError.isInstance(error)) {
-          return <NotFound />
+          return <NotFound />;
         }
-        console.error(error)
-        const details = error instanceof Error ? (error.stack ?? error.message) : String(error)
+        console.error(error);
+        const details = error instanceof Error ? (error.stack ?? error.message) : String(error);
         return (
           <div class="min-h-screen w-full bg-background-base text-text-base flex flex-col items-center justify-center gap-4 p-6 text-center">
             <p class="text-16-medium">Unable to render this share.</p>
@@ -149,45 +157,52 @@ export default function () {
               {details}
             </pre>
           </div>
-        )
+        );
       }}
     >
       <Meta name="robots" content="noindex, nofollow" />
       <Show when={data()}>
         {(data) => {
-          const match = createMemo(() => Binary.search(data().session, data().sessionID, (s) => s.id))
-          if (!match().found) throw new Error(`Session ${data().sessionID} not found`)
-          const info = createMemo(() => data().session[match().index])
+          const match = createMemo(() =>
+            Binary.search(data().session, data().sessionID, (s) => s.id),
+          );
+          if (!match().found) throw new Error(`Session ${data().sessionID} not found`);
+          const info = createMemo(() => data().session[match().index]);
           const ogImage = createMemo(() => {
-            const models = new Set<string>()
-            const messages = data().message[data().sessionID] ?? []
+            const models = new Set<string>();
+            const messages = data().message[data().sessionID] ?? [];
             for (const msg of messages) {
               if (msg.role === "assistant" && msg.modelID) {
-                models.add(msg.modelID)
+                models.add(msg.modelID);
               }
             }
-            const modelIDs = Array.from(models)
-            const encodedTitle = encodeURIComponent(Base64.encode(encodeURIComponent(info().title.substring(0, 700))))
-            let modelParam: string
+            const modelIDs = Array.from(models);
+            const encodedTitle = encodeURIComponent(
+              Base64.encode(encodeURIComponent(info().title.substring(0, 700))),
+            );
+            let modelParam: string;
             if (modelIDs.length === 1) {
-              modelParam = modelIDs[0]
+              modelParam = modelIDs[0];
             } else if (modelIDs.length === 2) {
-              modelParam = encodeURIComponent(`${modelIDs[0]} & ${modelIDs[1]}`)
+              modelParam = encodeURIComponent(`${modelIDs[0]} & ${modelIDs[1]}`);
             } else if (modelIDs.length > 2) {
-              modelParam = encodeURIComponent(`${modelIDs[0]} & ${modelIDs.length - 1} others`)
+              modelParam = encodeURIComponent(`${modelIDs[0]} & ${modelIDs.length - 1} others`);
             } else {
-              modelParam = "unknown"
+              modelParam = "unknown";
             }
-            const version = `v${info().version}`
-            return `https://social-cards.sst.dev/opencode-share/${encodedTitle}.png?model=${modelParam}&version=${version}&id=${data().shareID}`
-          })
+            const version = `v${info().version}`;
+            return `https://social-cards.sst.dev/opencode-share/${encodedTitle}.png?model=${modelParam}&version=${version}&id=${data().shareID}`;
+          });
 
           return (
             <>
               <Show when={info().title}>
                 <Title>{info().title} | OpenCode</Title>
               </Show>
-              <Meta name="description" content="opencode - The AI coding agent built for the terminal." />
+              <Meta
+                name="description"
+                content="opencode - The AI coding agent built for the terminal."
+              />
               <Meta property="og:image" content={ogImage()} />
               <Meta name="twitter:image" content={ogImage()} />
               <ClientOnlyWorkerPoolProvider>
@@ -196,30 +211,36 @@ export default function () {
                     {iife(() => {
                       const [store, setStore] = createStore({
                         messageId: undefined as string | undefined,
-                      })
+                      });
                       const messages = createMemo(() =>
                         data().sessionID
-                          ? (data().message[data().sessionID]?.filter((m) => m.role === "user") ?? []).sort(
-                              (a, b) => a.time.created - b.time.created,
-                            )
+                          ? (
+                              data().message[data().sessionID]?.filter((m) => m.role === "user") ??
+                              []
+                            ).sort((a, b) => a.time.created - b.time.created)
                           : [],
-                      )
-                      const firstUserMessage = createMemo(() => messages().at(0))
+                      );
+                      const firstUserMessage = createMemo(() => messages().at(0));
                       const activeMessage = createMemo(
-                        () => messages().find((m) => m.id === store.messageId) ?? firstUserMessage(),
-                      )
+                        () =>
+                          messages().find((m) => m.id === store.messageId) ?? firstUserMessage(),
+                      );
                       function setActiveMessage(message: UserMessage | undefined) {
                         if (message) {
-                          setStore("messageId", message.id)
+                          setStore("messageId", message.id);
                         } else {
-                          setStore("messageId", undefined)
+                          setStore("messageId", undefined);
                         }
                       }
-                      const provider = createMemo(() => activeMessage()?.model?.providerID)
-                      const modelID = createMemo(() => activeMessage()?.model?.modelID)
-                      const model = createMemo(() => data().model[data().sessionID]?.find((m) => m.id === modelID()))
-                      const diffs = createMemo(() => data().session_diff[data().sessionID] ?? [])
-                      const [diffStyle, setDiffStyle] = createSignal<"unified" | "split">("unified")
+                      const provider = createMemo(() => activeMessage()?.model?.providerID);
+                      const modelID = createMemo(() => activeMessage()?.model?.modelID);
+                      const model = createMemo(() =>
+                        data().model[data().sessionID]?.find((m) => m.id === modelID()),
+                      );
+                      const diffs = createMemo(() => data().session_diff[data().sessionID] ?? []);
+                      const [diffStyle, setDiffStyle] = createSignal<"unified" | "split">(
+                        "unified",
+                      );
 
                       const title = () => (
                         <div class="flex flex-col gap-4">
@@ -231,18 +252,27 @@ export default function () {
                             <div class="flex gap-4 items-center">
                               <div class="flex gap-2 items-center">
                                 <Show when={provider()}>
-                                  <ProviderIcon id={provider()!} class="size-3.5 shrink-0 text-icon-strong-base" />
+                                  <ProviderIcon
+                                    id={provider()!}
+                                    class="size-3.5 shrink-0 text-icon-strong-base"
+                                  />
                                 </Show>
-                                <div class="text-12-regular text-text-base">{model()?.name ?? modelID()}</div>
+                                <div class="text-12-regular text-text-base">
+                                  {model()?.name ?? modelID()}
+                                </div>
                               </div>
                               <div class="text-12-regular text-text-weaker">
-                                {DateTime.fromMillis(info().time.created).toFormat("dd MMM yyyy, HH:mm")}
+                                {DateTime.fromMillis(info().time.created).toFormat(
+                                  "dd MMM yyyy, HH:mm",
+                                )}
                               </div>
                             </div>
                           </div>
-                          <div class="text-left text-16-medium text-text-strong">{info().title}</div>
+                          <div class="text-left text-16-medium text-text-strong">
+                            {info().title}
+                          </div>
                         </div>
-                      )
+                      );
 
                       const turns = () => (
                         <div class="relative mt-2 pb-8 min-w-0 w-full h-full overflow-y-auto no-scrollbar">
@@ -266,9 +296,9 @@ export default function () {
                             <Logo class="w-58.5 opacity-12" />
                           </div>
                         </div>
-                      )
+                      );
 
-                      const wide = createMemo(() => diffs().length === 0)
+                      const wide = createMemo(() => diffs().length === 0);
 
                       return (
                         <div class="relative bg-background-stronger w-screen h-screen overflow-hidden flex flex-col">
@@ -340,7 +370,11 @@ export default function () {
                                       container: "w-full pb-20 px-6",
                                     }}
                                   >
-                                    <div classList={{ "w-full flex items-center justify-center pb-8 shrink-0": true }}>
+                                    <div
+                                      classList={{
+                                        "w-full flex items-center justify-center pb-8 shrink-0": true,
+                                      }}
+                                    >
                                       <Logo class="w-58.5 opacity-12" />
                                     </div>
                                   </SessionTurn>
@@ -365,7 +399,11 @@ export default function () {
                               <Match when={diffs().length > 0}>
                                 <Tabs classList={{ "md:hidden": wide(), "lg:hidden": !wide() }}>
                                   <Tabs.List>
-                                    <Tabs.Trigger value="session" class="w-1/2" classes={{ button: "w-full" }}>
+                                    <Tabs.Trigger
+                                      value="session"
+                                      class="w-1/2"
+                                      classes={{ button: "w-full" }}
+                                    >
                                       Session
                                     </Tabs.Trigger>
                                     <Tabs.Trigger
@@ -379,7 +417,10 @@ export default function () {
                                   <Tabs.Content value="session" class="!overflow-hidden">
                                     {turns()}
                                   </Tabs.Content>
-                                  <Tabs.Content value="review" class="!overflow-hidden hidden data-[selected]:block">
+                                  <Tabs.Content
+                                    value="review"
+                                    class="!overflow-hidden hidden data-[selected]:block"
+                                  >
                                     <div class="relative h-full pt-8 overflow-y-auto no-scrollbar">
                                       <SessionReview
                                         diffs={diffs()}
@@ -395,7 +436,11 @@ export default function () {
                               </Match>
                               <Match when={true}>
                                 <div
-                                  classList={{ "!overflow-hidden": true, "md:hidden": wide(), "lg:hidden": !wide() }}
+                                  classList={{
+                                    "!overflow-hidden": true,
+                                    "md:hidden": wide(),
+                                    "lg:hidden": !wide(),
+                                  }}
                                 >
                                   {turns()}
                                 </div>
@@ -403,15 +448,15 @@ export default function () {
                             </Switch>
                           </div>
                         </div>
-                      )
+                      );
                     })}
                   </DataProvider>
                 </FileComponentProvider>
               </ClientOnlyWorkerPoolProvider>
             </>
-          )
+          );
         }}
       </Show>
     </ErrorBoundary>
-  )
+  );
 }

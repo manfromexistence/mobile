@@ -1,16 +1,16 @@
-import type { PreloadFileOptions } from '@pierre/diffs/ssr';
+import type { PreloadFileOptions } from "@pierre/diffs/ssr";
 
-import { CustomScrollbarCSS } from '@/components/CustomScrollbarCSS';
+import { CustomScrollbarCSS } from "@/components/CustomScrollbarCSS";
 
-const options: PreloadFileOptions<undefined>['options'] = {
-  theme: { dark: 'pierre-dark', light: 'pierre-light' },
+const options: PreloadFileOptions<undefined>["options"] = {
+  theme: { dark: "pierre-dark", light: "pierre-light" },
   disableFileHeader: true,
   unsafeCSS: CustomScrollbarCSS,
 };
 
 export const FILE_CONTENTS_TYPE: PreloadFileOptions<undefined> = {
   file: {
-    name: 'FileContents.ts',
+    name: "FileContents.ts",
     contents: `import type { FileContents } from '@pierre/diffs';
 
 // FileContents represents a single file
@@ -54,7 +54,7 @@ const jsonFile: FileContents = {
 
 export const FILE_DIFF_METADATA_TYPE: PreloadFileOptions<undefined> = {
   file: {
-    name: 'FileDiffMetadata.ts',
+    name: "FileDiffMetadata.ts",
     contents: `import type { FileDiffMetadata, Hunk } from '@pierre/diffs';
 
 // FileDiffMetadata represents the differences between two files
@@ -140,7 +140,7 @@ interface ChangeContent {
 
 export const PARSE_DIFF_FROM_FILE_EXAMPLE: PreloadFileOptions<undefined> = {
   file: {
-    name: 'parseDiffFromFile.ts',
+    name: "parseDiffFromFile.ts",
     contents: `import {
   parseDiffFromFile,
   type FileContents,
@@ -173,7 +173,7 @@ const diff: FileDiffMetadata = parseDiffFromFile(oldFile, newFile);
 
 export const PARSE_PATCH_FILES_EXAMPLE: PreloadFileOptions<undefined> = {
   file: {
-    name: 'parsePatchFiles.ts',
+    name: "parsePatchFiles.ts",
     contents: `import {
   parsePatchFiles,
   type ParsedPatch,

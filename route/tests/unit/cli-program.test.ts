@@ -78,7 +78,7 @@ test("serve command is the default command", () => {
   assert.equal(
     (program as any)._defaultCommandName,
     "serve",
-    "program._defaultCommandName is 'serve'"
+    "program._defaultCommandName is 'serve'",
   );
 });
 

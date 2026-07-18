@@ -52,7 +52,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       id,
       validation.data.modelPattern,
       validation.data.accessType,
-      validation.data.provider
+      validation.data.provider,
     );
     return NextResponse.json({ permission }, { status: 201 });
   } catch (error) {

@@ -13,7 +13,7 @@ export class CodexCloudAgent extends CloudAgentBase {
 
   async createTask(
     params: CreateTaskParams,
-    credentials: AgentCredentials
+    credentials: AgentCredentials,
   ): Promise<CloudAgentTask> {
     const taskId = this.generateTaskId();
 
@@ -116,7 +116,7 @@ export class CodexCloudAgent extends CloudAgentBase {
   async sendMessage(
     externalId: string,
     message: string,
-    credentials: AgentCredentials
+    credentials: AgentCredentials,
   ): Promise<CloudAgentActivity> {
     const response = await fetch(`${this.baseUrl}/codex/cloud/tasks/${externalId}/followup`, {
       method: "POST",
@@ -141,7 +141,7 @@ export class CodexCloudAgent extends CloudAgentBase {
   }
 
   async listSources(
-    _credentials: AgentCredentials
+    _credentials: AgentCredentials,
   ): Promise<{ name: string; url: string; branch?: string }[]> {
     return [];
   }

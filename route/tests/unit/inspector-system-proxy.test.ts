@@ -104,24 +104,20 @@ test("Linux apply uses gsettings with array args", async (t) => {
   const result = await apply(9090);
   assert.equal(result.platform, "linux");
   const setMode = calls.find(
-    (c) => c.args[0] === "set" && c.args[1] === "org.gnome.system.proxy" && c.args[2] === "mode"
+    (c) => c.args[0] === "set" && c.args[1] === "org.gnome.system.proxy" && c.args[2] === "mode",
   );
   assert.ok(setMode);
   assert.deepEqual(setMode.args, ["set", "org.gnome.system.proxy", "mode", "manual"]);
   const setHost = calls.find(
     (c) =>
-      c.args[0] === "set" &&
-      c.args[1] === "org.gnome.system.proxy.http" &&
-      c.args[2] === "host"
+      c.args[0] === "set" && c.args[1] === "org.gnome.system.proxy.http" && c.args[2] === "host",
   );
   assert.ok(setHost);
   assert.deepEqual(setHost.args, ["set", "org.gnome.system.proxy.http", "host", "127.0.0.1"]);
   // port string is passed as own arg (no shell interpolation)
   const setPort = calls.find(
     (c) =>
-      c.args[0] === "set" &&
-      c.args[1] === "org.gnome.system.proxy.http" &&
-      c.args[2] === "port"
+      c.args[0] === "set" && c.args[1] === "org.gnome.system.proxy.http" && c.args[2] === "port",
   );
   assert.ok(setPort);
   assert.equal(setPort.args[3], "9090");
@@ -147,7 +143,7 @@ test("Linux revert restores recorded gnomeMode", async (t) => {
     httpsPort: "",
   });
   const restoreMode = calls.find(
-    (c) => c.args[0] === "set" && c.args[1] === "org.gnome.system.proxy" && c.args[2] === "mode"
+    (c) => c.args[0] === "set" && c.args[1] === "org.gnome.system.proxy" && c.args[2] === "mode",
   );
   assert.ok(restoreMode);
   assert.equal(restoreMode.args[3], "'auto'");
@@ -205,12 +201,15 @@ test("apply throws sanitized error when exec fails", async (t) => {
   const restore = __setExec(exec);
   t.after(restore);
 
-  await assert.rejects(() => apply(8080), (err: Error) => {
-    // sanitizeErrorMessage strips paths; assert we still get an Error
-    assert.ok(err instanceof Error);
-    assert.ok(err.message.length > 0);
-    return true;
-  });
+  await assert.rejects(
+    () => apply(8080),
+    (err: Error) => {
+      // sanitizeErrorMessage strips paths; assert we still get an Error
+      assert.ok(err instanceof Error);
+      assert.ok(err.message.length > 0);
+      return true;
+    },
+  );
 });
 
 test("revert no-ops for unknown platform payload", async (t) => {

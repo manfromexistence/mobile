@@ -1,4 +1,4 @@
-import path from "node:path"
+import path from "node:path";
 
 export const LANGUAGE_EXTENSIONS: Record<string, string> = {
   ".abap": "abap",
@@ -120,11 +120,11 @@ export const LANGUAGE_EXTENSIONS: Record<string, string> = {
   ".nix": "nix",
   ".typ": "typst",
   ".typc": "typst",
-}
+};
 
 export function filetype(input?: string) {
-  if (!input) return "none"
-  const language = LANGUAGE_EXTENSIONS[path.extname(input)]
-  if (["typescriptreact", "javascriptreact", "javascript"].includes(language)) return "typescript"
-  return language
+  if (!input) return "none";
+  const language = LANGUAGE_EXTENSIONS[path.extname(input)];
+  if (["typescriptreact", "javascriptreact", "javascript"].includes(language)) return "typescript";
+  return language;
 }

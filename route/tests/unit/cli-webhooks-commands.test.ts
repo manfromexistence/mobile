@@ -100,8 +100,8 @@ test("runWebhooksAdd envia url, events e secret", async () => {
         header: [],
         enabled: true,
       },
-      makeCmd() as any
-    )
+      makeCmd() as any,
+    ),
   );
 
   globalThis.fetch = origFetch;
@@ -127,8 +127,8 @@ test("runWebhooksAdd não expõe secret na saída (mascarado)", async () => {
         header: [],
         enabled: true,
       },
-      makeCmd("table") as any
-    )
+      makeCmd("table") as any,
+    ),
   );
 
   globalThis.fetch = origFetch;
@@ -188,7 +188,7 @@ test("runWebhooksTest envia event no body", async () => {
 
   const { runWebhooksTest } = await import("../../bin/cli/commands/webhooks.mjs");
   await captureStdout(() =>
-    runWebhooksTest("wh-001", { event: "budget.exceeded" }, makeCmd() as any)
+    runWebhooksTest("wh-001", { event: "budget.exceeded" }, makeCmd() as any),
   );
 
   globalThis.fetch = origFetch;
@@ -218,7 +218,7 @@ test("webhooks events lista todos tipos de evento conhecidos", async () => {
     const { emit } = await import("../../bin/cli/output.mjs");
     emit(
       EVENT_TYPES.map((e) => ({ event: e })),
-      cmd.optsWithGlobals()
+      cmd.optsWithGlobals(),
     );
   });
 

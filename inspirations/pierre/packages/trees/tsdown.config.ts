@@ -1,28 +1,28 @@
-import autoprefixer from 'autoprefixer';
-import postcss from 'postcss';
-import { defineConfig, type UserConfig } from 'tsdown';
+import autoprefixer from "autoprefixer";
+import postcss from "postcss";
+import { defineConfig, type UserConfig } from "tsdown";
 
 const config: UserConfig[] = defineConfig([
   {
-    entry: ['src/**/*.ts', 'src/**/*.tsx'],
+    entry: ["src/**/*.ts", "src/**/*.tsx"],
     loader: {
-      '.css': 'text',
+      ".css": "text",
     },
-    attw: process.env.ATTW === 'true',
-    tsconfig: './tsconfig.json',
+    attw: process.env.ATTW === "true",
+    tsconfig: "./tsconfig.json",
     clean: true,
     dts: {
       sourcemap: true,
       tsgo: true,
     },
     unbundle: true,
-    platform: 'neutral',
-    noExternal: ['@pierre/path-store', '@pierre/theming'],
+    platform: "neutral",
+    noExternal: ["@pierre/path-store", "@pierre/theming"],
     plugins: [
       {
-        name: 'postcss-autoprefixer',
+        name: "postcss-autoprefixer",
         async transform(code, id) {
-          if (!id.endsWith('.css')) return;
+          if (!id.endsWith(".css")) return;
 
           const result = await postcss([autoprefixer]).process(code, {
             from: id,

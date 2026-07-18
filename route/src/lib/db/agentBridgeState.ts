@@ -44,7 +44,7 @@ export function getAgentBridgeState(agentId: string): AgentBridgeStateRow | null
 }
 
 export function upsertAgentBridgeState(
-  row: Partial<AgentBridgeStateRow> & { agent_id: string }
+  row: Partial<AgentBridgeStateRow> & { agent_id: string },
 ): void {
   const db = getDbInstance();
   const existing = getAgentBridgeState(row.agent_id);
@@ -53,14 +53,14 @@ export function upsertAgentBridgeState(
     db.prepare(
       `INSERT INTO agent_bridge_state
          (agent_id, dns_enabled, cert_trusted, setup_completed, last_started_at, last_error)
-       VALUES (?, ?, ?, ?, ?, ?)`
+       VALUES (?, ?, ?, ?, ?, ?)`,
     ).run(
       row.agent_id,
       row.dns_enabled !== undefined ? (row.dns_enabled ? 1 : 0) : 0,
       row.cert_trusted !== undefined ? (row.cert_trusted ? 1 : 0) : 0,
       row.setup_completed !== undefined ? (row.setup_completed ? 1 : 0) : 0,
       row.last_started_at ?? null,
-      row.last_error ?? null
+      row.last_error ?? null,
     );
   } else {
     const fields: string[] = [];
@@ -91,7 +91,7 @@ export function upsertAgentBridgeState(
 
     values.push(row.agent_id);
     db.prepare(`UPDATE agent_bridge_state SET ${fields.join(", ")} WHERE agent_id = ?`).run(
-      ...values
+      ...values,
     );
   }
 }
@@ -101,7 +101,7 @@ export function setLastStarted(agentId: string, ts: string): void {
   db.prepare(
     `INSERT INTO agent_bridge_state (agent_id, last_started_at)
      VALUES (?, ?)
-     ON CONFLICT(agent_id) DO UPDATE SET last_started_at = excluded.last_started_at`
+     ON CONFLICT(agent_id) DO UPDATE SET last_started_at = excluded.last_started_at`,
   ).run(agentId, ts);
 }
 
@@ -110,6 +110,6 @@ export function setLastError(agentId: string, err: string | null): void {
   db.prepare(
     `INSERT INTO agent_bridge_state (agent_id, last_error)
      VALUES (?, ?)
-     ON CONFLICT(agent_id) DO UPDATE SET last_error = excluded.last_error`
+     ON CONFLICT(agent_id) DO UPDATE SET last_error = excluded.last_error`,
   ).run(agentId, err);
 }

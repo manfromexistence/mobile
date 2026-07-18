@@ -30,7 +30,7 @@ export async function POST(request: Request): Promise<Response> {
   if (!parsed.success) {
     return new Response(
       JSON.stringify(buildErrorBody(400, parsed.error.issues[0]?.message ?? "Validation error")),
-      { status: 400, headers: { "content-type": "application/json" } }
+      { status: 400, headers: { "content-type": "application/json" } },
     );
   }
 

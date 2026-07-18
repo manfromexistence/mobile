@@ -50,7 +50,7 @@ test("synthOpenAIErrorChunk references provider in message", () => {
   const payload = JSON.parse(line.slice("data: ".length).trimEnd());
   assert.ok(
     payload.error.message.includes("mymysteriosprovider"),
-    `message should reference provider, got: ${payload.error.message}`
+    `message should reference provider, got: ${payload.error.message}`,
   );
 });
 
@@ -70,7 +70,7 @@ test("synthResponsesFailure includes a reason in the data payload", () => {
   const parsed = JSON.parse(dataLine.slice("data: ".length));
   assert.ok(
     parsed?.response?.error?.message?.length > 0,
-    `response.error.message should be non-empty, got: ${JSON.stringify(parsed?.response?.error)}`
+    `response.error.message should be non-empty, got: ${JSON.stringify(parsed?.response?.error)}`,
   );
 });
 
@@ -122,7 +122,12 @@ test("detectMalformedNonStream returns null for OpenAI choices whose content is 
 
 test("detectMalformedNonStream returns 'empty_choices' for an OpenAI choice with an empty text-block array (#5559 guard)", () => {
   const body = {
-    choices: [{ message: { role: "assistant", content: [{ type: "text", text: "" }] }, finish_reason: "stop" }],
+    choices: [
+      {
+        message: { role: "assistant", content: [{ type: "text", text: "" }] },
+        finish_reason: "stop",
+      },
+    ],
   };
   assert.equal(detectMalformedNonStream(body), "empty_choices");
 });
@@ -301,7 +306,7 @@ test("synthOpenAIErrorChunk message does NOT contain stack trace path", () => {
   const msg = payload.error.message as string;
   assert.ok(
     !msg.includes("at /"),
-    `error.message must not contain stack trace patterns, got: ${msg}`
+    `error.message must not contain stack trace patterns, got: ${msg}`,
   );
 });
 
@@ -320,6 +325,6 @@ test("reportMalformed200 runs without throwing", () => {
       events: { "response.completed": 1 },
       ttftMs: 100,
       elapsedMs: 200,
-    })
+    }),
   );
 });

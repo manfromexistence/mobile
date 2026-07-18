@@ -47,7 +47,7 @@ function buildAnalyticsRow(
   opts: WriteOpts,
   tokensSaved: number,
   rtkPointers: RtkPointer[],
-  estimatedUsdSaved: number
+  estimatedUsdSaved: number,
 ) {
   const { stats } = opts;
   return {
@@ -112,7 +112,7 @@ export function writeCompressionSkip(opts: WriteOpts, skipReason: string): Promi
       opts.log?.debug?.(
         "COMPRESSION",
         "Compression skip-analytics write skipped: " +
-          (err instanceof Error ? err.message : String(err))
+          (err instanceof Error ? err.message : String(err)),
       );
     }
   })();
@@ -132,9 +132,11 @@ export function writeCompressionAnalytics(opts: WriteOpts): Promise<void> {
         opts.provider ?? "",
         opts.effectiveModel ?? "",
         { input: tokensSaved },
-        { serviceTier: opts.effectiveServiceTier }
+        { serviceTier: opts.effectiveServiceTier },
       );
-      insertCompressionAnalyticsRow(buildAnalyticsRow(opts, tokensSaved, rtkPointers, estimatedUsdSaved));
+      insertCompressionAnalyticsRow(
+        buildAnalyticsRow(opts, tokensSaved, rtkPointers, estimatedUsdSaved),
+      );
       const breakdownRows = buildEngineBreakdownRows(stats, opts.skillRequestId);
       if (breakdownRows.length > 0) {
         insertCompressionEngineBreakdown(breakdownRows);
@@ -142,7 +144,8 @@ export function writeCompressionAnalytics(opts: WriteOpts): Promise<void> {
     } catch (err) {
       opts.log?.debug?.(
         "COMPRESSION",
-        "Compression analytics write skipped: " + (err instanceof Error ? err.message : String(err))
+        "Compression analytics write skipped: " +
+          (err instanceof Error ? err.message : String(err)),
       );
     }
   })();

@@ -76,7 +76,9 @@ export default function ClaudeClassifierCompatToggle() {
     <div className="rounded-lg border border-border bg-surface/40 p-3">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <h4 className="text-xs font-semibold text-text-main">Auto-permission classifier compat</h4>
+          <h4 className="text-xs font-semibold text-text-main">
+            Auto-permission classifier compat
+          </h4>
           <p className="text-xs text-text-muted">
             Short-circuit Claude Code&apos;s <code>--permission-mode auto</code> security classifier
             with a synthetic allow, so fallback routes don&apos;t fail closed. Off by default.

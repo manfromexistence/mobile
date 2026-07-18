@@ -16,7 +16,7 @@ function assertValidEngine(engine: CompressionEngine): void {
 
 export function registerEngine(
   engine: CompressionEngine,
-  defaultConfig: Record<string, unknown> = {}
+  defaultConfig: Record<string, unknown> = {},
 ): void {
   assertValidEngine(engine);
   const validation = engine.validateConfig(defaultConfig);
@@ -71,7 +71,7 @@ export function setEngineEnabled(id: string, enabled: boolean): boolean {
 
 export function updateEngineConfig(
   id: string,
-  config: Record<string, unknown>
+  config: Record<string, unknown>,
 ): EngineValidationResult {
   const entry = ENGINES.get(id);
   if (!entry) return { valid: false, errors: [`Unknown compression engine: ${id}`] };

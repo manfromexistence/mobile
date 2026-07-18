@@ -1,27 +1,27 @@
-import { TextAttributes } from "@opentui/core"
-import { useTheme } from "../context/theme"
-import { useDialog, type DialogContext } from "./dialog"
-import { createStore } from "solid-js/store"
-import { For } from "solid-js"
-import { Locale } from "../util/locale"
-import { useBindings } from "../keymap"
+import { TextAttributes } from "@opentui/core";
+import { useTheme } from "../context/theme";
+import { useDialog, type DialogContext } from "./dialog";
+import { createStore } from "solid-js/store";
+import { For } from "solid-js";
+import { Locale } from "../util/locale";
+import { useBindings } from "../keymap";
 
 export type DialogConfirmProps = {
-  title: string
-  message: string
-  onConfirm?: () => void
-  onCancel?: () => void
-  label?: string
-}
+  title: string;
+  message: string;
+  onConfirm?: () => void;
+  onCancel?: () => void;
+  label?: string;
+};
 
-export type DialogConfirmResult = boolean | undefined
+export type DialogConfirmResult = boolean | undefined;
 
 export function DialogConfirm(props: DialogConfirmProps) {
-  const dialog = useDialog()
-  const { theme } = useTheme()
+  const dialog = useDialog();
+  const { theme } = useTheme();
   const [store, setStore] = createStore({
     active: "confirm" as "confirm" | "cancel",
-  })
+  });
 
   useBindings(() => ({
     bindings: [
@@ -30,9 +30,9 @@ export function DialogConfirm(props: DialogConfirmProps) {
         desc: "Confirm dialog selection",
         group: "Dialog",
         cmd: () => {
-          if (store.active === "confirm") props.onConfirm?.()
-          if (store.active === "cancel") props.onCancel?.()
-          dialog.clear()
+          if (store.active === "confirm") props.onConfirm?.();
+          if (store.active === "cancel") props.onCancel?.();
+          dialog.clear();
         },
       },
       {
@@ -40,7 +40,7 @@ export function DialogConfirm(props: DialogConfirmProps) {
         desc: "Previous dialog option",
         group: "Dialog",
         cmd: () => {
-          setStore("active", store.active === "confirm" ? "cancel" : "confirm")
+          setStore("active", store.active === "confirm" ? "cancel" : "confirm");
         },
       },
       {
@@ -48,11 +48,11 @@ export function DialogConfirm(props: DialogConfirmProps) {
         desc: "Next dialog option",
         group: "Dialog",
         cmd: () => {
-          setStore("active", store.active === "confirm" ? "cancel" : "confirm")
+          setStore("active", store.active === "confirm" ? "cancel" : "confirm");
         },
       },
     ],
-  }))
+  }));
   return (
     <box paddingLeft={2} paddingRight={2} gap={1}>
       <box flexDirection="row" justifyContent="space-between">
@@ -74,9 +74,9 @@ export function DialogConfirm(props: DialogConfirmProps) {
               paddingRight={1}
               backgroundColor={key === store.active ? theme.primary : undefined}
               onMouseUp={() => {
-                if (key === "confirm") props.onConfirm?.()
-                if (key === "cancel") props.onCancel?.()
-                dialog.clear()
+                if (key === "confirm") props.onConfirm?.();
+                if (key === "cancel") props.onCancel?.();
+                dialog.clear();
               }}
             >
               <text fg={key === store.active ? theme.selectedListItemText : theme.textMuted}>
@@ -87,7 +87,7 @@ export function DialogConfirm(props: DialogConfirmProps) {
         </For>
       </box>
     </box>
-  )
+  );
 }
 
 DialogConfirm.show = (dialog: DialogContext, title: string, message: string, label?: string) => {
@@ -103,6 +103,6 @@ DialogConfirm.show = (dialog: DialogContext, title: string, message: string, lab
         />
       ),
       () => resolve(undefined),
-    )
-  })
-}
+    );
+  });
+};

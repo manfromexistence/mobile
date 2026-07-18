@@ -275,9 +275,7 @@ export function geminiRequestToXaiResponses(
     if (fnItems.length) {
       for (const it of fnItems) input.push(it);
       // Filter remaining text/image parts
-      const remaining = (c.parts ?? []).filter(
-        (p) => !p?.functionCall && !p?.functionResponse,
-      );
+      const remaining = (c.parts ?? []).filter((p) => !p?.functionCall && !p?.functionResponse);
       if (remaining.length) input.push({ role, content: partsToXaiBlocks(remaining) });
     } else {
       input.push({ role, content: partsToXaiBlocks(c.parts ?? []) });
@@ -363,8 +361,7 @@ export function xaiCompletedToGeminiJson(
     out.usageMetadata = {
       promptTokenCount: u.input_tokens ?? u.prompt_tokens ?? 0,
       candidatesTokenCount: u.output_tokens ?? u.completion_tokens ?? 0,
-      totalTokenCount:
-        u.total_tokens ?? ((u.input_tokens ?? 0) + (u.output_tokens ?? 0)),
+      totalTokenCount: u.total_tokens ?? (u.input_tokens ?? 0) + (u.output_tokens ?? 0),
     };
   }
   return out;

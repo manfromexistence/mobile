@@ -11,7 +11,7 @@ export async function isNoAuthProviderBlockedBySettings(providerId: string): Pro
       "AUTH",
       `Could not read blocked provider settings for ${providerId}: ${
         error instanceof Error ? error.message : String(error)
-      }`
+      }`,
     );
     return false;
   }

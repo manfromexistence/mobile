@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
 import type {
   AnnotationSide,
   DiffIndicators,
   DiffLineAnnotation,
   SelectedLineRange,
-} from '@pierre/diffs';
-import { FileDiff } from '@pierre/diffs/react';
-import type { PreloadFileDiffResult } from '@pierre/diffs/ssr';
+} from "@pierre/diffs";
+import { FileDiff } from "@pierre/diffs/react";
+import type { PreloadFileDiffResult } from "@pierre/diffs/ssr";
 import {
   IconCheck,
   IconChevronSm,
@@ -28,74 +28,74 @@ import {
   IconSymbolDiffstat,
   IconWordWrap,
   IconXSquircle,
-} from '@pierre/icons';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { toast } from 'sonner';
+} from "@pierre/icons";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
-import type { PlaygroundAnnotationMetadata } from './constants';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group';
+import type { PlaygroundAnnotationMetadata } from "./constants";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { ButtonGroup, ButtonGroupItem } from "@/components/ui/button-group";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Switch } from '@/components/ui/switch';
+} from "@/components/ui/dropdown-menu";
+import { Switch } from "@/components/ui/switch";
 
 const LIGHT_THEMES = [
-  'pierre-light',
-  'pierre-light-soft',
-  'catppuccin-latte',
-  'github-light',
-  'one-light',
-  'solarized-light',
+  "pierre-light",
+  "pierre-light-soft",
+  "catppuccin-latte",
+  "github-light",
+  "one-light",
+  "solarized-light",
 ] as const;
 
 const DARK_THEMES = [
-  'pierre-dark',
-  'pierre-dark-soft',
-  'catppuccin-mocha',
-  'dracula',
-  'github-dark',
-  'one-dark-pro',
-  'tokyo-night',
-  'vitesse-dark',
+  "pierre-dark",
+  "pierre-dark-soft",
+  "catppuccin-mocha",
+  "dracula",
+  "github-dark",
+  "one-dark-pro",
+  "tokyo-night",
+  "vitesse-dark",
 ] as const;
 
 const LINE_DIFF_OPTIONS = [
-  { value: 'word-alt', label: 'Word-Alt' },
-  { value: 'word', label: 'Word' },
-  { value: 'char', label: 'Character' },
-  { value: 'none', label: 'None' },
+  { value: "word-alt", label: "Word-Alt" },
+  { value: "word", label: "Word" },
+  { value: "char", label: "Character" },
+  { value: "none", label: "None" },
 ] as const;
 
 const HUNK_SEPARATOR_OPTIONS = [
-  { value: 'line-info', label: 'Line-Info' },
-  { value: 'line-info-basic', label: 'Line-Info-Basic' },
-  { value: 'simple', label: 'Simple' },
-  { value: 'metadata', label: 'Metadata' },
+  { value: "line-info", label: "Line-Info" },
+  { value: "line-info-basic", label: "Line-Info-Basic" },
+  { value: "simple", label: "Simple" },
+  { value: "metadata", label: "Metadata" },
 ] as const;
 
-type HunkSeparatorValue = (typeof HUNK_SEPARATOR_OPTIONS)[number]['value'];
+type HunkSeparatorValue = (typeof HUNK_SEPARATOR_OPTIONS)[number]["value"];
 
 // Default values for URL param comparison
 const DEFAULTS = {
-  diffStyle: 'split',
-  themeType: 'system',
-  lightTheme: 'pierre-light',
-  darkTheme: 'pierre-dark',
-  diffIndicators: 'bars',
-  lineDiffType: 'word-alt',
-  hunkSeparators: 'line-info' as HunkSeparatorValue,
+  diffStyle: "split",
+  themeType: "system",
+  lightTheme: "pierre-light",
+  darkTheme: "pierre-dark",
+  diffIndicators: "bars",
+  lineDiffType: "word-alt",
+  hunkSeparators: "line-info" as HunkSeparatorValue,
   background: true,
   lineNumbers: true,
   wrap: true,
   lineSelection: true,
   gutterButton: true,
-  interactionMode: 'comment' as const,
+  interactionMode: "comment" as const,
   annotations: true,
 } as const;
 
@@ -104,26 +104,26 @@ interface PlaygroundClientProps {
 }
 
 interface PlaygroundControlsContentProps {
-  diffStyle: 'split' | 'unified';
-  setDiffStyle: (v: 'split' | 'unified') => void;
-  themeType: 'system' | 'light' | 'dark';
-  setThemeType: (v: 'system' | 'light' | 'dark') => void;
+  diffStyle: "split" | "unified";
+  setDiffStyle: (v: "split" | "unified") => void;
+  themeType: "system" | "light" | "dark";
+  setThemeType: (v: "system" | "light" | "dark") => void;
   selectedLightTheme: (typeof LIGHT_THEMES)[number];
   setSelectedLightTheme: (v: (typeof LIGHT_THEMES)[number]) => void;
   selectedDarkTheme: (typeof DARK_THEMES)[number];
   setSelectedDarkTheme: (v: (typeof DARK_THEMES)[number]) => void;
   diffIndicators: DiffIndicators;
   setDiffIndicators: (v: DiffIndicators) => void;
-  lineDiffType: 'word-alt' | 'word' | 'char' | 'none';
-  setLineDiffType: (v: 'word-alt' | 'word' | 'char' | 'none') => void;
+  lineDiffType: "word-alt" | "word" | "char" | "none";
+  setLineDiffType: (v: "word-alt" | "word" | "char" | "none") => void;
   hunkSeparators: HunkSeparatorValue;
   setHunkSeparators: (v: HunkSeparatorValue) => void;
   disableBackground: boolean;
   setDisableBackground: (v: boolean) => void;
   disableLineNumbers: boolean;
   setDisableLineNumbers: (v: boolean) => void;
-  overflow: 'wrap' | 'scroll';
-  setOverflow: (v: 'wrap' | 'scroll') => void;
+  overflow: "wrap" | "scroll";
+  setOverflow: (v: "wrap" | "scroll") => void;
   enableLineSelection: boolean;
   setEnableLineSelection: (v: boolean) => void;
   enableGutterUtility: boolean;
@@ -168,24 +168,24 @@ function PlaygroundControlsContent({
   handleCopyLink,
   hideShare = false,
 }: PlaygroundControlsContentProps) {
-  const interactionMode: 'select' | 'comment' | 'none' = enableGutterUtility
-    ? 'comment'
+  const interactionMode: "select" | "comment" | "none" = enableGutterUtility
+    ? "comment"
     : enableLineSelection
-      ? 'select'
-      : 'none';
+      ? "select"
+      : "none";
   const interactionModeOptions = [
-    { value: 'select', label: 'Select lines' },
-    { value: 'comment', label: 'Add comment' },
-    { value: 'none', label: 'No line interactions' },
+    { value: "select", label: "Select lines" },
+    { value: "comment", label: "Add comment" },
+    { value: "none", label: "No line interactions" },
   ] as const;
 
-  const setInteractionMode = (mode: 'select' | 'comment' | 'none') => {
-    if (mode === 'comment') {
+  const setInteractionMode = (mode: "select" | "comment" | "none") => {
+    if (mode === "comment") {
       setEnableGutterUtility(true);
       setEnableLineSelection(false);
       return;
     }
-    if (mode === 'select') {
+    if (mode === "select") {
       setEnableLineSelection(true);
       setEnableGutterUtility(false);
       return;
@@ -199,7 +199,7 @@ function PlaygroundControlsContent({
       <div className="flex flex-wrap items-center gap-3">
         <ButtonGroup
           value={diffStyle}
-          onValueChange={(value) => setDiffStyle(value as 'split' | 'unified')}
+          onValueChange={(value) => setDiffStyle(value as "split" | "unified")}
         >
           <ButtonGroupItem value="split">
             <IconDiffSplit />
@@ -225,14 +225,12 @@ function PlaygroundControlsContent({
                 key={theme}
                 onClick={() => {
                   setSelectedLightTheme(theme);
-                  setThemeType('light');
+                  setThemeType("light");
                 }}
                 selected={selectedLightTheme === theme}
               >
                 {theme}
-                {selectedLightTheme === theme && (
-                  <IconCheck className="ml-auto" />
-                )}
+                {selectedLightTheme === theme && <IconCheck className="ml-auto" />}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
@@ -252,14 +250,12 @@ function PlaygroundControlsContent({
                 key={theme}
                 onClick={() => {
                   setSelectedDarkTheme(theme);
-                  setThemeType('dark');
+                  setThemeType("dark");
                 }}
                 selected={selectedDarkTheme === theme}
               >
                 {theme}
-                {selectedDarkTheme === theme && (
-                  <IconCheck className="ml-auto" />
-                )}
+                {selectedDarkTheme === theme && <IconCheck className="ml-auto" />}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
@@ -267,9 +263,7 @@ function PlaygroundControlsContent({
 
         <ButtonGroup
           value={themeType}
-          onValueChange={(value) =>
-            setThemeType(value as 'system' | 'light' | 'dark')
-          }
+          onValueChange={(value) => setThemeType(value as "system" | "light" | "dark")}
         >
           <ButtonGroupItem value="system">
             <IconColorAuto />
@@ -305,8 +299,7 @@ function PlaygroundControlsContent({
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="justify-start px-3">
               <IconCodeStyleInline />
-              {LINE_DIFF_OPTIONS.find((opt) => opt.value === lineDiffType)
-                ?.label ?? lineDiffType}
+              {LINE_DIFF_OPTIONS.find((opt) => opt.value === lineDiffType)?.label ?? lineDiffType}
               <IconChevronSm className="text-muted-foreground ml-auto" />
             </Button>
           </DropdownMenuTrigger>
@@ -318,9 +311,7 @@ function PlaygroundControlsContent({
                 selected={lineDiffType === option.value}
               >
                 {option.label}
-                {lineDiffType === option.value && (
-                  <IconCheck className="ml-auto" />
-                )}
+                {lineDiffType === option.value && <IconCheck className="ml-auto" />}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
@@ -329,11 +320,7 @@ function PlaygroundControlsContent({
         {!hideShare && (
           <>
             <div className="bg-border h-6 w-px xl:hidden" />
-            <Button
-              variant="outline"
-              onClick={handleCopyLink}
-              className="xl:ms-auto"
-            >
+            <Button variant="outline" onClick={handleCopyLink} className="xl:ms-auto">
               <IconLink />
               Copy link
             </Button>
@@ -357,10 +344,8 @@ function PlaygroundControlsContent({
         <ToggleButton
           icon={<IconWordWrap />}
           label="Wrap"
-          checked={overflow === 'wrap'}
-          onCheckedChange={(checked) =>
-            setOverflow(checked ? 'wrap' : 'scroll')
-          }
+          checked={overflow === "wrap"}
+          onCheckedChange={(checked) => setOverflow(checked ? "wrap" : "scroll")}
         />
 
         <ToggleButton
@@ -374,9 +359,8 @@ function PlaygroundControlsContent({
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="justify-start px-3">
               <IconHunkDivider />
-              {HUNK_SEPARATOR_OPTIONS.find(
-                (opt) => opt.value === hunkSeparators
-              )?.label ?? hunkSeparators}
+              {HUNK_SEPARATOR_OPTIONS.find((opt) => opt.value === hunkSeparators)?.label ??
+                hunkSeparators}
               <IconChevronSm className="text-muted-foreground ml-auto" />
             </Button>
           </DropdownMenuTrigger>
@@ -388,9 +372,7 @@ function PlaygroundControlsContent({
                 selected={hunkSeparators === option.value}
               >
                 {option.label}
-                {hunkSeparators === option.value && (
-                  <IconCheck className="ml-auto" />
-                )}
+                {hunkSeparators === option.value && <IconCheck className="ml-auto" />}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
@@ -402,9 +384,8 @@ function PlaygroundControlsContent({
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="justify-start px-3">
               <IconCursor />
-              {interactionModeOptions.find(
-                (opt) => opt.value === interactionMode
-              )?.label ?? interactionMode}
+              {interactionModeOptions.find((opt) => opt.value === interactionMode)?.label ??
+                interactionMode}
               <IconChevronSm className="text-muted-foreground ml-auto" />
             </Button>
           </DropdownMenuTrigger>
@@ -416,15 +397,13 @@ function PlaygroundControlsContent({
                 selected={interactionMode === option.value}
               >
                 {option.label}
-                {interactionMode === option.value && (
-                  <IconCheck className="ml-auto" />
-                )}
+                {interactionMode === option.value && <IconCheck className="ml-auto" />}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {interactionMode === 'select' && (
+        {interactionMode === "select" && (
           <>
             <div className="bg-border h-6 w-px" />
 
@@ -471,86 +450,80 @@ export function PlaygroundClient({ prerenderedDiff }: PlaygroundClientProps) {
   const getBoolParam = (key: string, defaultValue: boolean): boolean => {
     const value = searchParams.get(key);
     if (value === null) return defaultValue;
-    return value === '1' || value === 'true';
+    return value === "1" || value === "true";
   };
 
-  const getLineModeParam = (): 'select' | 'comment' | 'none' | null => {
-    const value = searchParams.get('lineMode');
-    if (value === 'select' || value === 'comment' || value === 'none') {
+  const getLineModeParam = (): "select" | "comment" | "none" | null => {
+    const value = searchParams.get("lineMode");
+    if (value === "select" || value === "comment" || value === "none") {
       return value;
     }
     return null;
   };
 
-  const [diffStyle, setDiffStyle] = useState<'split' | 'unified'>(
-    getParam('layout', DEFAULTS.diffStyle) as 'split' | 'unified'
+  const [diffStyle, setDiffStyle] = useState<"split" | "unified">(
+    getParam("layout", DEFAULTS.diffStyle) as "split" | "unified",
   );
 
-  const [themeType, setThemeType] = useState<'system' | 'light' | 'dark'>(
-    getParam('mode', DEFAULTS.themeType) as 'system' | 'light' | 'dark'
+  const [themeType, setThemeType] = useState<"system" | "light" | "dark">(
+    getParam("mode", DEFAULTS.themeType) as "system" | "light" | "dark",
   );
-  const [selectedLightTheme, setSelectedLightTheme] = useState<
-    (typeof LIGHT_THEMES)[number]
-  >(getParam('light', DEFAULTS.lightTheme) as (typeof LIGHT_THEMES)[number]);
-  const [selectedDarkTheme, setSelectedDarkTheme] = useState<
-    (typeof DARK_THEMES)[number]
-  >(getParam('dark', DEFAULTS.darkTheme) as (typeof DARK_THEMES)[number]);
+  const [selectedLightTheme, setSelectedLightTheme] = useState<(typeof LIGHT_THEMES)[number]>(
+    getParam("light", DEFAULTS.lightTheme) as (typeof LIGHT_THEMES)[number],
+  );
+  const [selectedDarkTheme, setSelectedDarkTheme] = useState<(typeof DARK_THEMES)[number]>(
+    getParam("dark", DEFAULTS.darkTheme) as (typeof DARK_THEMES)[number],
+  );
 
   const [diffIndicators, setDiffIndicators] = useState<DiffIndicators>(
-    getParam('indicators', DEFAULTS.diffIndicators) as DiffIndicators
+    getParam("indicators", DEFAULTS.diffIndicators) as DiffIndicators,
   );
 
-  const [lineDiffType, setLineDiffType] = useState<
-    'word-alt' | 'word' | 'char' | 'none'
-  >(
-    getParam('inline', DEFAULTS.lineDiffType) as
-      | 'word-alt'
-      | 'word'
-      | 'char'
-      | 'none'
+  const [lineDiffType, setLineDiffType] = useState<"word-alt" | "word" | "char" | "none">(
+    getParam("inline", DEFAULTS.lineDiffType) as "word-alt" | "word" | "char" | "none",
   );
 
   const [hunkSeparators, setHunkSeparators] = useState<HunkSeparatorValue>(
-    getParam('hunks', DEFAULTS.hunkSeparators)
+    getParam("hunks", DEFAULTS.hunkSeparators),
   );
 
   const [disableBackground, setDisableBackground] = useState(
-    !getBoolParam('bg', DEFAULTS.background)
+    !getBoolParam("bg", DEFAULTS.background),
   );
   const [disableLineNumbers, setDisableLineNumbers] = useState(
-    !getBoolParam('ln', DEFAULTS.lineNumbers)
+    !getBoolParam("ln", DEFAULTS.lineNumbers),
   );
-  const [overflow, setOverflow] = useState<'wrap' | 'scroll'>(
-    getBoolParam('wrap', DEFAULTS.wrap) ? 'wrap' : 'scroll'
+  const [overflow, setOverflow] = useState<"wrap" | "scroll">(
+    getBoolParam("wrap", DEFAULTS.wrap) ? "wrap" : "scroll",
   );
 
   const initialLineMode = getLineModeParam();
   const [enableLineSelection, setEnableLineSelection] = useState(
-    initialLineMode === 'select'
+    initialLineMode === "select"
       ? true
-      : initialLineMode === 'comment'
+      : initialLineMode === "comment"
         ? false
-        : initialLineMode === 'none'
+        : initialLineMode === "none"
           ? false
-          : getBoolParam('select', DEFAULTS.lineSelection)
+          : getBoolParam("select", DEFAULTS.lineSelection),
   );
   const [enableGutterUtility, setEnableGutterUtility] = useState(
-    initialLineMode === 'comment'
+    initialLineMode === "comment"
       ? true
-      : initialLineMode === 'select'
+      : initialLineMode === "select"
         ? false
-        : initialLineMode === 'none'
+        : initialLineMode === "none"
           ? false
-          : getBoolParam('gutter', DEFAULTS.gutterButton)
+          : getBoolParam("gutter", DEFAULTS.gutterButton),
   );
   const [showAnnotations, setShowAnnotations] = useState(
-    getBoolParam('annot', DEFAULTS.annotations)
+    getBoolParam("annot", DEFAULTS.annotations),
   );
 
   // Parse selected line range from URL
   // Format: L15a (line 15 additions), L28-35a (lines 28-35 additions), L10d (line 10 deletions)
   const parseLineSelection = (): SelectedLineRange | null => {
-    const lineParam = searchParams.get('line');
+    const lineParam = searchParams.get("line");
     if (lineParam == null) return null;
 
     const match = lineParam.match(/^(\d+)(?:-(\d+))?([ad])$/);
@@ -558,70 +531,57 @@ export function PlaygroundClient({ prerenderedDiff }: PlaygroundClientProps) {
 
     const start = parseInt(match[1], 10);
     const end = match[2] != null ? parseInt(match[2], 10) : start;
-    const side: 'additions' | 'deletions' =
-      match[3] === 'd' ? 'deletions' : 'additions';
+    const side: "additions" | "deletions" = match[3] === "d" ? "deletions" : "additions";
 
     return { start, end, side };
   };
 
-  const [selectedRange, setSelectedRange] = useState<SelectedLineRange | null>(
-    parseLineSelection
-  );
+  const [selectedRange, setSelectedRange] = useState<SelectedLineRange | null>(parseLineSelection);
   const [annotations, setAnnotations] = useState<
     DiffLineAnnotation<PlaygroundAnnotationMetadata>[]
   >(prerenderedDiff.annotations ?? []);
 
-  const interactionMode: 'select' | 'comment' | 'none' = enableGutterUtility
-    ? 'comment'
+  const interactionMode: "select" | "comment" | "none" = enableGutterUtility
+    ? "comment"
     : enableLineSelection
-      ? 'select'
-      : 'none';
+      ? "select"
+      : "none";
 
   // Build URL with current config
   const buildUrl = useCallback(() => {
     const params = new URLSearchParams();
 
     // Only add non-default values to keep URL clean
-    if (diffStyle !== DEFAULTS.diffStyle) params.set('layout', diffStyle);
-    if (themeType !== DEFAULTS.themeType) params.set('mode', themeType);
-    if (selectedLightTheme !== DEFAULTS.lightTheme)
-      params.set('light', selectedLightTheme);
-    if (selectedDarkTheme !== DEFAULTS.darkTheme)
-      params.set('dark', selectedDarkTheme);
-    if (diffIndicators !== DEFAULTS.diffIndicators)
-      params.set('indicators', diffIndicators);
-    if (lineDiffType !== DEFAULTS.lineDiffType)
-      params.set('inline', lineDiffType);
-    if (hunkSeparators !== DEFAULTS.hunkSeparators)
-      params.set('hunks', hunkSeparators);
-    if (disableBackground !== !DEFAULTS.background)
-      params.set('bg', disableBackground ? '0' : '1');
+    if (diffStyle !== DEFAULTS.diffStyle) params.set("layout", diffStyle);
+    if (themeType !== DEFAULTS.themeType) params.set("mode", themeType);
+    if (selectedLightTheme !== DEFAULTS.lightTheme) params.set("light", selectedLightTheme);
+    if (selectedDarkTheme !== DEFAULTS.darkTheme) params.set("dark", selectedDarkTheme);
+    if (diffIndicators !== DEFAULTS.diffIndicators) params.set("indicators", diffIndicators);
+    if (lineDiffType !== DEFAULTS.lineDiffType) params.set("inline", lineDiffType);
+    if (hunkSeparators !== DEFAULTS.hunkSeparators) params.set("hunks", hunkSeparators);
+    if (disableBackground !== !DEFAULTS.background) params.set("bg", disableBackground ? "0" : "1");
     if (disableLineNumbers !== !DEFAULTS.lineNumbers)
-      params.set('ln', disableLineNumbers ? '0' : '1');
-    if ((overflow === 'wrap') !== DEFAULTS.wrap)
-      params.set('wrap', overflow === 'wrap' ? '1' : '0');
-    if (interactionMode !== DEFAULTS.interactionMode)
-      params.set('lineMode', interactionMode);
+      params.set("ln", disableLineNumbers ? "0" : "1");
+    if ((overflow === "wrap") !== DEFAULTS.wrap)
+      params.set("wrap", overflow === "wrap" ? "1" : "0");
+    if (interactionMode !== DEFAULTS.interactionMode) params.set("lineMode", interactionMode);
     if (enableLineSelection !== DEFAULTS.lineSelection)
-      params.set('select', enableLineSelection ? '1' : '0');
+      params.set("select", enableLineSelection ? "1" : "0");
     if (enableGutterUtility !== DEFAULTS.gutterButton)
-      params.set('gutter', enableGutterUtility ? '1' : '0');
-    if (showAnnotations !== DEFAULTS.annotations)
-      params.set('annot', showAnnotations ? '1' : '0');
+      params.set("gutter", enableGutterUtility ? "1" : "0");
+    if (showAnnotations !== DEFAULTS.annotations) params.set("annot", showAnnotations ? "1" : "0");
 
     if (selectedRange != null) {
-      const sideChar = selectedRange.side === 'deletions' ? 'd' : 'a';
+      const sideChar = selectedRange.side === "deletions" ? "d" : "a";
       const lineValue =
         selectedRange.start === selectedRange.end
           ? `${selectedRange.start}${sideChar}`
           : `${selectedRange.start}-${selectedRange.end}${sideChar}`;
-      params.set('line', lineValue);
+      params.set("line", lineValue);
     }
 
     const queryString = params.toString();
-    return queryString.length > 0
-      ? `/playground?${queryString}`
-      : '/playground';
+    return queryString.length > 0 ? `/playground?${queryString}` : "/playground";
   }, [
     diffStyle,
     themeType,
@@ -648,73 +608,57 @@ export function PlaygroundClient({ prerenderedDiff }: PlaygroundClientProps) {
   const handleCopyLink = useCallback(() => {
     const url = window.location.origin + buildUrl();
     void navigator.clipboard.writeText(url).then(() => {
-      toast.success('Link copied to clipboard');
+      toast.success("Link copied to clipboard");
     });
   }, [buildUrl]);
 
-  const handleLineSelectionEnd = useCallback(
-    (range: SelectedLineRange | null) => {
-      setSelectedRange(range);
-    },
-    []
-  );
+  const handleLineSelectionEnd = useCallback((range: SelectedLineRange | null) => {
+    setSelectedRange(range);
+  }, []);
 
-  const addCommentAtLine = useCallback(
-    (side: AnnotationSide, lineNumber: number) => {
-      setAnnotations((prev) => {
-        const hasAnnotation = prev.some(
-          (ann) => ann.side === side && ann.lineNumber === lineNumber
-        );
-        if (hasAnnotation) return prev;
+  const addCommentAtLine = useCallback((side: AnnotationSide, lineNumber: number) => {
+    setAnnotations((prev) => {
+      const hasAnnotation = prev.some((ann) => ann.side === side && ann.lineNumber === lineNumber);
+      if (hasAnnotation) return prev;
 
-        return [
-          ...prev,
-          {
-            side,
-            lineNumber,
-            metadata: {
-              key: `${side}-${lineNumber}`,
-              isThread: false,
-            },
+      return [
+        ...prev,
+        {
+          side,
+          lineNumber,
+          metadata: {
+            key: `${side}-${lineNumber}`,
+            isThread: false,
           },
-        ];
-      });
-    },
-    []
-  );
+        },
+      ];
+    });
+  }, []);
 
-  const handleCancelComment = useCallback(
-    (side: AnnotationSide, lineNumber: number) => {
-      setAnnotations((prev) =>
-        prev.filter(
-          (ann) => !(ann.side === side && ann.lineNumber === lineNumber)
-        )
-      );
-      setSelectedRange(null);
-    },
-    []
-  );
+  const handleCancelComment = useCallback((side: AnnotationSide, lineNumber: number) => {
+    setAnnotations((prev) =>
+      prev.filter((ann) => !(ann.side === side && ann.lineNumber === lineNumber)),
+    );
+    setSelectedRange(null);
+  }, []);
 
-  const hasOpenCommentForm = annotations.some(
-    (ann) => ann.metadata.isThread !== true
-  );
+  const hasOpenCommentForm = annotations.some((ann) => ann.metadata.isThread !== true);
 
   // Gutter comments and line selection conflict on click targets.
   // Give gutter comments precedence when both toggles are on.
   const canUseGutterComments = enableGutterUtility && !hasOpenCommentForm;
-  const canSelectLines =
-    enableLineSelection && !enableGutterUtility && !hasOpenCommentForm;
+  const canSelectLines = enableLineSelection && !enableGutterUtility && !hasOpenCommentForm;
 
   const [isControlsOpen, setIsControlsOpen] = useState(false);
   const closeControls = useCallback(() => setIsControlsOpen(false), []);
 
   useEffect(() => {
     if (isControlsOpen) {
-      document.body.classList.add('overflow-hidden');
+      document.body.classList.add("overflow-hidden");
     } else {
-      document.body.classList.remove('overflow-hidden');
+      document.body.classList.remove("overflow-hidden");
     }
-    return () => document.body.classList.remove('overflow-hidden');
+    return () => document.body.classList.remove("overflow-hidden");
   }, [isControlsOpen]);
 
   const controlsContentProps = {
@@ -762,11 +706,7 @@ export function PlaygroundClient({ prerenderedDiff }: PlaygroundClientProps) {
             <IconParagraph />
             Options
           </Button>
-          <Button
-            variant="outline"
-            onClick={handleCopyLink}
-            className="ms-auto"
-          >
+          <Button variant="outline" onClick={handleCopyLink} className="ms-auto">
             <IconLink />
             Copy link
           </Button>
@@ -787,7 +727,7 @@ export function PlaygroundClient({ prerenderedDiff }: PlaygroundClientProps) {
             />
           )}
           <div
-            className={`mobile-popover ${isControlsOpen ? 'is-open' : ''}`}
+            className={`mobile-popover ${isControlsOpen ? "is-open" : ""}`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="mb-4 flex items-center justify-between">
@@ -904,19 +844,19 @@ function CommentForm({
   return (
     <div
       style={{
-        overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'row',
+        overflow: "hidden",
+        display: "flex",
+        flexDirection: "row",
         gap: 1,
       }}
     >
-      <div style={{ width: '100%' }}>
+      <div style={{ width: "100%" }}>
         <div
           className="max-w-[95%] sm:max-w-[70%]"
           style={{
-            whiteSpace: 'normal',
+            whiteSpace: "normal",
             margin: 10,
-            fontFamily: 'Geist',
+            fontFamily: "Geist",
           }}
         >
           <div className="bg-card rounded-lg border p-3 shadow-[0_2px_4px_rgba(0,0,0,0.05)]">
@@ -938,7 +878,7 @@ function CommentForm({
                     size="sm"
                     className="cursor-pointer"
                     onClick={() => {
-                      console.log('Comment submitted at', side, lineNumber);
+                      console.log("Comment submitted at", side, lineNumber);
                       handleCancel();
                     }}
                   >
@@ -949,8 +889,8 @@ function CommentForm({
                     onClick={handleCancel}
                     variant="outline"
                     style={{
-                      boxShadow: 'none',
-                      color: 'var(--color-foreground)',
+                      boxShadow: "none",
+                      color: "var(--color-foreground)",
                     }}
                   >
                     Cancel
@@ -970,9 +910,9 @@ function ExampleThread() {
     <div
       className="max-w-[95%] sm:max-w-[70%]"
       style={{
-        whiteSpace: 'normal',
+        whiteSpace: "normal",
         margin: 10,
-        fontFamily: 'Geist',
+        fontFamily: "Geist",
       }}
     >
       <div className="bg-card rounded-lg border p-3 shadow-[0_2px_4px_rgba(0,0,0,0.05)]">
@@ -989,8 +929,7 @@ function ExampleThread() {
               <span className="text-muted-foreground text-sm">2h ago</span>
             </div>
             <p className="text-foreground leading-relaxed">
-              Should we add rate limiting to this endpoint? We might want to
-              prevent abuse.
+              Should we add rate limiting to this endpoint? We might want to prevent abuse.
             </p>
           </div>
         </div>

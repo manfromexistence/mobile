@@ -63,7 +63,7 @@ test("validation schemas must not VALUE-import from server-side roots (client/CL
     "Client-reachable validation schemas VALUE-import server-side modules, which drags the " +
       "server runtime (→ ioredis) into the browser/CLI bundle and breaks the Next build with " +
       `"Can't resolve 'dns'/'net'". Move the needed value to a server-free @/shared/constants ` +
-      `leaf (see src/shared/constants/spawnCapablePrefixes.ts). Offenders:\n  ${offenders.join("\n  ")}`
+      `leaf (see src/shared/constants/spawnCapablePrefixes.ts). Offenders:\n  ${offenders.join("\n  ")}`,
   );
 });
 
@@ -83,7 +83,7 @@ test("SPAWN_CAPABLE_PREFIXES is defined in the server-free constants leaf with t
   ]) {
     assert.ok(
       SPAWN_CAPABLE_PREFIXES.includes(prefix),
-      `SPAWN_CAPABLE_PREFIXES lost the spawn-capable prefix "${prefix}" during extraction`
+      `SPAWN_CAPABLE_PREFIXES lost the spawn-capable prefix "${prefix}" during extraction`,
     );
   }
   assert.equal(SPAWN_CAPABLE_PREFIXES.length, 9);

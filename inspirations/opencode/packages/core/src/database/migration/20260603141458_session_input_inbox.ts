@@ -1,5 +1,5 @@
-import { Effect } from "effect"
-import type { DatabaseMigration } from "../migration"
+import { Effect } from "effect";
+import type { DatabaseMigration } from "../migration";
 
 export default {
   id: "20260603141458_session_input_inbox",
@@ -16,10 +16,10 @@ export default {
           \`time_created\` integer NOT NULL,
           CONSTRAINT \`fk_session_input_session_id_session_id_fk\` FOREIGN KEY (\`session_id\`) REFERENCES \`session\`(\`id\`) ON DELETE CASCADE
         );
-      `)
+      `);
       yield* tx.run(
         `CREATE INDEX \`session_input_session_pending_seq_idx\` ON \`session_input\` (\`session_id\`,\`promoted_seq\`,\`seq\`);`,
-      )
-    })
+      );
+    });
   },
-} satisfies DatabaseMigration.Migration
+} satisfies DatabaseMigration.Migration;

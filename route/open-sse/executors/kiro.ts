@@ -68,7 +68,7 @@ type KiroStreamState = {
 export function flushBufferedToolArgs(
   state: Pick<KiroStreamState, "toolArgsBuffered" | "toolArgsEmitted">,
   controller: { enqueue: (chunk: Uint8Array) => void },
-  ctx: { responseId: string; created: number; model: string }
+  ctx: { responseId: string; created: number; model: string },
 ): void {
   if (!state.toolArgsBuffered || state.toolArgsBuffered.size === 0) return;
   const { responseId, created, model } = ctx;
@@ -107,7 +107,7 @@ function buildKiroFinishChunk(
   responseId: string,
   created: number,
   model: string,
-  includeUsage: boolean
+  includeUsage: boolean,
 ): JsonRecord {
   const finishChunk: JsonRecord = {
     id: responseId,
@@ -165,10 +165,10 @@ function ensureKiroUsage(state: KiroStreamState) {
  * token region is used only for oidc.{region} token mint/refresh, elsewhere.
  */
 export function resolveKiroRegion(
-  credentials: { providerSpecificData?: unknown } | null | undefined
+  credentials: { providerSpecificData?: unknown } | null | undefined,
 ): string {
   return resolveKiroRuntimeRegion(
-    (credentials?.providerSpecificData || {}) as { region?: unknown; profileArn?: unknown }
+    (credentials?.providerSpecificData || {}) as { region?: unknown; profileArn?: unknown },
   );
 }
 
@@ -327,7 +327,7 @@ export class KiroExecutor extends BaseExecutor {
   transformEventStreamToSSE(
     response: Response,
     model: string,
-    opts: { thinkingExpected?: boolean } = {}
+    opts: { thinkingExpected?: boolean } = {},
   ) {
     const thinkingExpected = !!opts.thinkingExpected;
     const buffer = new ByteQueue();
@@ -520,7 +520,7 @@ export class KiroExecutor extends BaseExecutor {
                     chunkIndex++;
                     state.reasoningChunkCount = (state.reasoningChunkCount ?? 0) + 1;
                     controller.enqueue(TEXT_ENCODER.encode(`data: ${JSON.stringify(chunk)}\n\n`));
-                  }
+                  },
                 );
               } else {
                 const chunk: JsonRecord = {
@@ -606,7 +606,7 @@ export class KiroExecutor extends BaseExecutor {
                   };
                   chunkIndex++;
                   controller.enqueue(
-                    TEXT_ENCODER.encode(`data: ${JSON.stringify(startChunk)}\n\n`)
+                    TEXT_ENCODER.encode(`data: ${JSON.stringify(startChunk)}\n\n`),
                   );
                 } else {
                   toolIndex = state.seenToolIds.get(toolCallId);
@@ -618,7 +618,7 @@ export class KiroExecutor extends BaseExecutor {
                     // emit immediately and track what we've sent.
                     state.toolArgsEmitted.set(
                       toolCallId,
-                      (state.toolArgsEmitted.get(toolCallId) || "") + toolInput
+                      (state.toolArgsEmitted.get(toolCallId) || "") + toolInput,
                     );
 
                     const argsChunk = {
@@ -645,7 +645,7 @@ export class KiroExecutor extends BaseExecutor {
                     };
                     chunkIndex++;
                     controller.enqueue(
-                      TEXT_ENCODER.encode(`data: ${JSON.stringify(argsChunk)}\n\n`)
+                      TEXT_ENCODER.encode(`data: ${JSON.stringify(argsChunk)}\n\n`),
                     );
                   } else if (typeof toolInput === "object" && toolInput !== null) {
                     // Object-form payloads are PARTIAL OBJECTS that grow over time. Buffer
@@ -765,7 +765,7 @@ export class KiroExecutor extends BaseExecutor {
                 };
                 chunkIndex++;
                 controller.enqueue(TEXT_ENCODER.encode(`data: ${JSON.stringify(chunk)}\n\n`));
-              }
+              },
             );
           }
 
@@ -782,7 +782,7 @@ export class KiroExecutor extends BaseExecutor {
         },
       },
       { highWaterMark: 16384 },
-      { highWaterMark: 16384 }
+      { highWaterMark: 16384 },
     );
 
     // Pipe response body through transform stream
@@ -808,7 +808,7 @@ export class KiroExecutor extends BaseExecutor {
       const result = await refreshKiroToken(
         credentials.refreshToken,
         credentials.providerSpecificData,
-        log
+        log,
       );
 
       if (!result || result.error) return result;

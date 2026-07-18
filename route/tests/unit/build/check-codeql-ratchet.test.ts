@@ -30,7 +30,7 @@ function makeAlert(
     severity?: string;
     securitySeverity?: string;
     dismissedReason?: string | null;
-  } = {}
+  } = {},
 ) {
   return {
     number: overrides.number ?? 1,
@@ -238,7 +238,7 @@ test("parseCodeQLAlerts: alerta sem security_severity_level usa rule.severity", 
   assert.equal(result.alertCount, 1);
   assert.ok(
     "warning" in result.bySeverity || "unknown" in result.bySeverity,
-    "severity should be captured"
+    "severity should be captured",
   );
 });
 

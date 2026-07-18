@@ -34,7 +34,7 @@ const ROOT = process.cwd();
 const BASELINE_PATH = path.resolve(
   process.argv.includes("--baseline")
     ? process.argv[process.argv.indexOf("--baseline") + 1]
-    : path.join(ROOT, "config/quality/test-discovery-baseline.json")
+    : path.join(ROOT, "config/quality/test-discovery-baseline.json"),
 );
 const UPDATE = process.argv.includes("--update");
 
@@ -202,7 +202,7 @@ export function findCollectorDrift(collectors, contents) {
       const body = contents[source];
       if (body === undefined || !body.includes(anchor)) {
         drift.push(
-          `glob "${c.glob}" (anchor "${anchor}") não encontrado em ${source} — o runner mudou? Sincronize COLLECTORS em check-test-discovery.mjs`
+          `glob "${c.glob}" (anchor "${anchor}") não encontrado em ${source} — o runner mudou? Sincronize COLLECTORS em check-test-discovery.mjs`,
         );
       }
     }
@@ -248,12 +248,12 @@ function main() {
   const files = collectTestFiles();
   const orphans = findOrphans(
     files,
-    COLLECTORS.map((c) => c.glob)
+    COLLECTORS.map((c) => c.glob),
   );
   if (!fs.existsSync(BASELINE_PATH) && !UPDATE) {
     console.error(
       `[test-discovery] FAIL — ${path.basename(BASELINE_PATH)} ausente. Bootstrap:\n` +
-        `  node scripts/check/check-test-discovery.mjs --update  (gera o baseline com os órfãos atuais)`
+        `  node scripts/check/check-test-discovery.mjs --update  (gera o baseline com os órfãos atuais)`,
     );
     process.exit(2);
   }
@@ -270,7 +270,7 @@ function main() {
     baseline.orphans = orphans;
     fs.writeFileSync(BASELINE_PATH, JSON.stringify(baseline, null, 2) + "\n");
     console.log(
-      `[test-discovery] baseline regravado: ${orphans.length} órfão(s) (${stale.length} removido(s), ${newOrphans.length} adicionado(s) — adições devem ser corrigidas, não congeladas)`
+      `[test-discovery] baseline regravado: ${orphans.length} órfão(s) (${stale.length} removido(s), ${newOrphans.length} adicionado(s) — adições devem ser corrigidas, não congeladas)`,
     );
     return;
   }
@@ -279,12 +279,12 @@ function main() {
   for (const d of drift) problems.push(`  ✗ [drift] ${d}`);
   for (const o of newOrphans) {
     problems.push(
-      `  ✗ [órfão NOVO] ${o} — nenhum runner coleta este arquivo (ele NUNCA roda). Mova-o para um path coletado ou ajuste o runner.`
+      `  ✗ [órfão NOVO] ${o} — nenhum runner coleta este arquivo (ele NUNCA roda). Mova-o para um path coletado ou ajuste o runner.`,
     );
   }
   for (const s of stale) {
     problems.push(
-      `  ✗ [stale] ${s} — não é mais órfão (religado/removido). Remova do baseline: node scripts/check/check-test-discovery.mjs --update`
+      `  ✗ [stale] ${s} — não é mais órfão (religado/removido). Remova do baseline: node scripts/check/check-test-discovery.mjs --update`,
     );
   }
 
@@ -293,7 +293,7 @@ function main() {
     process.exit(1);
   }
   console.log(
-    `[test-discovery] OK — ${files.length} arquivos de teste, ${COLLECTORS.length} collectors, ${(baseline.orphans || []).length} órfão(s) congelado(s) (dívida rastreada, só decresce)`
+    `[test-discovery] OK — ${files.length} arquivos de teste, ${COLLECTORS.length} collectors, ${(baseline.orphans || []).length} órfão(s) congelado(s) (dívida rastreada, só decresce)`,
   );
 }
 

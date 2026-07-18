@@ -2,12 +2,12 @@ type RequestTranslator = (
   model: string,
   body: Record<string, unknown>,
   stream?: boolean,
-  credentials?: Record<string, unknown> | null
+  credentials?: Record<string, unknown> | null,
 ) => unknown;
 
 type ResponseTranslator = (
   chunk: Record<string, unknown>,
-  state: Record<string, unknown>
+  state: Record<string, unknown>,
 ) => unknown;
 
 const requestRegistry = new Map<string, RequestTranslator>();
@@ -21,7 +21,7 @@ export function register(
   from: string,
   to: string,
   requestFn?: RequestTranslator,
-  responseFn?: ResponseTranslator
+  responseFn?: ResponseTranslator,
 ) {
   const key = makeKey(from, to);
   if (requestFn) {

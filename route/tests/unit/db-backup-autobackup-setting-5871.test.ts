@@ -55,11 +55,11 @@ test("no persisted value at all → auto backups are NOT disabled (backups allow
   const db = core.getDbInstance();
   db.prepare("DELETE FROM key_value WHERE key IN (?, ?)").run(
     "autoBackupEnabled",
-    "backup.autoBackupEnabled"
+    "backup.autoBackupEnabled",
   );
   db.prepare("DELETE FROM key_value WHERE namespace='settings' AND key IN (?, ?)").run(
     "backup",
-    "databaseSettings"
+    "databaseSettings",
   );
   assert.equal(backup.isAutoBackupDisabledBySetting(), false);
 });

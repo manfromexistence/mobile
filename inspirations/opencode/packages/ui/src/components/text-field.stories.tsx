@@ -1,6 +1,6 @@
 // @ts-nocheck
-import * as mod from "./text-field"
-import { create } from "../storybook/scaffold"
+import * as mod from "./text-field";
+import { create } from "../storybook/scaffold";
 
 const docs = `### Overview
 Text input with label, description, and optional copy-to-clipboard action.
@@ -24,7 +24,7 @@ Pair with \`Tooltip\` and \`IconButton\` for copy affordance (built in).
 ### Theming/tokens
 - Uses \`data-component="input"\` with slot attributes for styling.
 
-`
+`;
 
 const story = create({
   title: "UI/TextField",
@@ -34,7 +34,7 @@ const story = create({
     placeholder: "Type here...",
     defaultValue: "Hello",
   },
-})
+});
 
 export default {
   title: "UI/TextField",
@@ -48,18 +48,23 @@ export default {
       },
     },
   },
-}
+};
 
-export const Basic = story.Basic
+export const Basic = story.Basic;
 
 export const Variants = {
   render: () => (
     <div style={{ display: "grid", gap: "12px", width: "320px" }}>
       <mod.TextField label="Normal" placeholder="Type here..." defaultValue="Value" />
-      <mod.TextField label="Ghost" variant="ghost" placeholder="Type here..." defaultValue="Value" />
+      <mod.TextField
+        label="Ghost"
+        variant="ghost"
+        placeholder="Type here..."
+        defaultValue="Value"
+      />
     </div>
   ),
-}
+};
 
 export const Multiline = {
   args: {
@@ -67,7 +72,7 @@ export const Multiline = {
     multiline: true,
     defaultValue: "Line one\nLine two",
   },
-}
+};
 
 export const Copyable = {
   args: {
@@ -76,7 +81,7 @@ export const Copyable = {
     copyable: true,
     copyKind: "link",
   },
-}
+};
 
 export const Error = {
   args: {
@@ -84,7 +89,7 @@ export const Error = {
     defaultValue: "invalid@",
     error: "Enter a valid email address",
   },
-}
+};
 
 export const Disabled = {
   args: {
@@ -92,7 +97,7 @@ export const Disabled = {
     defaultValue: "Readonly",
     disabled: true,
   },
-}
+};
 
 export const ReadOnly = {
   args: {
@@ -100,7 +105,7 @@ export const ReadOnly = {
     defaultValue: "Read only value",
     readOnly: true,
   },
-}
+};
 
 export const HiddenLabel = {
   args: {
@@ -108,4 +113,4 @@ export const HiddenLabel = {
     hideLabel: true,
     placeholder: "Hidden label",
   },
-}
+};

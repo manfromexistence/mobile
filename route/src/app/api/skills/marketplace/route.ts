@@ -35,7 +35,7 @@ export async function GET(request: Request) {
     if (!apiKey) {
       return NextResponse.json(
         { error: "SkillsMP API key not configured. Add it in Settings → AI." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -48,7 +48,7 @@ export async function GET(request: Request) {
       const body = await res.text();
       return NextResponse.json(
         { error: `SkillsMP error: ${res.status} ${body}` },
-        { status: res.status }
+        { status: res.status },
       );
     }
 

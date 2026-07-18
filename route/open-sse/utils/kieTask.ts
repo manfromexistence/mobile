@@ -69,7 +69,7 @@ export function normalizeKieTaskState(recordData: unknown): KieTaskState {
   const record = isJsonObject(recordData) ? recordData : {};
   const data = isJsonObject(record.data) ? record.data : {};
   const state = String(
-    data.status ?? data.state ?? data.successFlag ?? record.msg ?? "PENDING"
+    data.status ?? data.state ?? data.successFlag ?? record.msg ?? "PENDING",
   ).toUpperCase();
 
   if (

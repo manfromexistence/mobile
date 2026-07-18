@@ -1,4 +1,4 @@
-import { MemberSection } from "./member-section"
+import { MemberSection } from "./member-section";
 
 export default function () {
   return (
@@ -7,5 +7,5 @@ export default function () {
         <MemberSection />
       </div>
     </div>
-  )
+  );
 }

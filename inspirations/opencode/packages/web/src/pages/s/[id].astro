@@ -1,23 +1,23 @@
 ---
-import { Base64 } from "js-base64"
-import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro"
-import type { Session } from "opencode/session/index"
-import config from "../../../config.mjs"
-import Share from "../../components/Share.tsx"
+import { Base64 } from "js-base64";
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import type { Session } from "opencode/session/index";
+import config from "../../../config.mjs";
+import Share from "../../components/Share.tsx";
 
-const apiUrl = import.meta.env.VITE_API_URL || ""
+const apiUrl = import.meta.env.VITE_API_URL || "";
 const ta = Astro.locals.t as ((key: string) => string) & {
-  all?: () => Record<string, string>
-}
-const all = typeof ta.all === "function" ? ta.all() : {}
-const locale = Astro.currentLocale || Astro.locals.starlightRoute.locale || "root"
-const formatLocale = locale === "root" ? "en" : locale
-const t = ta
+  all?: () => Record<string, string>;
+};
+const all = typeof ta.all === "function" ? ta.all() : {};
+const locale = Astro.currentLocale || Astro.locals.starlightRoute.locale || "root";
+const formatLocale = locale === "root" ? "en" : locale;
+const t = ta;
 
 function tx(key: string) {
-  const value = all[key]
-  if (typeof value === "string") return value
-  return t(key)
+  const value = all[key];
+  if (typeof value === "string") return value;
+  return t(key);
 }
 
 const messages = {
@@ -67,46 +67,44 @@ const messages = {
   result_one: tx("share.result_one"),
   result_other: tx("share.result_other"),
   debug_key: tx("share.debug_key"),
-}
+};
 
-const id = Astro.params.id || ""
-const res = await fetch(`${apiUrl}/share_data?id=${id}`)
+const id = Astro.params.id || "";
+const res = await fetch(`${apiUrl}/share_data?id=${id}`);
 const data = (await res.json()) as {
-  info?: Session.Info
-  messages: Record<string, { role?: string; modelID?: string }>
-}
+  info?: Session.Info;
+  messages: Record<string, { role?: string; modelID?: string }>;
+};
 
 if (!data.info) {
   return new Response(null, {
     status: 404,
     statusText: tx("share.not_found"),
-  })
+  });
 }
 
-const models: Set<string> = new Set()
-const version = data.info.version ? `v${data.info.version}` : "v0.0.1"
+const models: Set<string> = new Set();
+const version = data.info.version ? `v${data.info.version}` : "v0.0.1";
 
 for (const d of Object.values(data.messages)) {
   if (d.role === "assistant" && d.modelID) {
-    models.add(d.modelID)
+    models.add(d.modelID);
   }
 }
 
 const encodedTitle = encodeURIComponent(
-  Base64.encode(
-    encodeURIComponent(data.info.title.substring(0, 700)),
-  ),
-)
+  Base64.encode(encodeURIComponent(data.info.title.substring(0, 700))),
+);
 
-const modelsArray = Array.from(models)
+const modelsArray = Array.from(models);
 const modelParam =
   modelsArray.length === 1
     ? modelsArray[0]
     : modelsArray.length === 2
       ? encodeURIComponent(`${modelsArray[0]} & ${modelsArray[1]}`)
-      : encodeURIComponent(`${modelsArray[0]} & ${modelsArray.length - 1} others`)
+      : encodeURIComponent(`${modelsArray[0]} & ${modelsArray.length - 1} others`);
 
-const ogImage = `${config.socialCard}/opencode-share/${encodedTitle}.png?model=${modelParam}&version=${version}&id=${id}`
+const ogImage = `${config.socialCard}/opencode-share/${encodedTitle}.png?model=${modelParam}&version=${version}&id=${id}`;
 ---
 <StarlightPage
   hasSidebar={false}

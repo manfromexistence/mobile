@@ -21,15 +21,7 @@ type ColorKey =
 
 export type Colors = Record<ColorKey, string>;
 
-const svgOrder = [
-  "svg1",
-  "svg2",
-  "svg3",
-  "svg4",
-  "svg3",
-  "svg2",
-  "svg1",
-] as const;
+const svgOrder = ["svg1", "svg2", "svg3", "svg4", "svg3", "svg2", "svg1"] as const;
 
 type SvgKey = (typeof svgOrder)[number];
 
@@ -67,15 +59,10 @@ type GradientSvgProps = {
   colors: Colors;
 };
 
-const GradientSvg: React.FC<GradientSvgProps> = ({
-  className,
-  isHovered,
-  colors,
-}) => {
+const GradientSvg: React.FC<GradientSvgProps> = ({ className, isHovered, colors }) => {
   const svgStates: SvgStates = {
     svg1: {
-      gradientTransform:
-        "translate(287.5 280) rotate(-29.0546) scale(689.807 1000)",
+      gradientTransform: "translate(287.5 280) rotate(-29.0546) scale(689.807 1000)",
       stops: [
         { offset: 0, stopColor: colors.color1 },
         { offset: 0.188423, stopColor: colors.color2 },
@@ -94,8 +81,7 @@ const GradientSvg: React.FC<GradientSvgProps> = ({
       ],
     },
     svg2: {
-      gradientTransform:
-        "translate(126.5 418.5) rotate(-64.756) scale(533.444 773.324)",
+      gradientTransform: "translate(126.5 418.5) rotate(-64.756) scale(533.444 773.324)",
       stops: [
         { offset: 0, stopColor: colors.color1 },
         { offset: 0.104167, stopColor: colors.color12 },
@@ -114,8 +100,7 @@ const GradientSvg: React.FC<GradientSvgProps> = ({
       ],
     },
     svg3: {
-      gradientTransform:
-        "translate(264.5 339.5) rotate(-42.3022) scale(946.451 1372.05)",
+      gradientTransform: "translate(264.5 339.5) rotate(-42.3022) scale(946.451 1372.05)",
       stops: [
         { offset: 0, stopColor: colors.color1 },
         { offset: 0.188423, stopColor: colors.color2 },
@@ -133,8 +118,7 @@ const GradientSvg: React.FC<GradientSvgProps> = ({
       ],
     },
     svg4: {
-      gradientTransform:
-        "translate(860.5 420) rotate(-153.984) scale(957.528 1388.11)",
+      gradientTransform: "translate(860.5 420) rotate(-153.984) scale(957.528 1388.11)",
       stops: [
         { offset: 0.109375, stopColor: colors.color11 },
         { offset: 0.171875, stopColor: colors.color2 },
@@ -153,13 +137,9 @@ const GradientSvg: React.FC<GradientSvgProps> = ({
     },
   };
 
-  const maxStops = Math.max(
-    ...Object.values(svgStates).map((svg) => svg.stops.length),
-  );
+  const maxStops = Math.max(...Object.values(svgStates).map((svg) => svg.stops.length));
   const stopsAnimationArray = createStopsArray(svgStates, svgOrder, maxStops);
-  const gradientTransform = svgOrder.map(
-    (svgKey) => svgStates[svgKey].gradientTransform,
-  );
+  const gradientTransform = svgOrder.map((svgKey) => svgStates[svgKey].gradientTransform);
 
   const variants = {
     hovered: {
@@ -191,12 +171,7 @@ const GradientSvg: React.FC<GradientSvgProps> = ({
       aria-hidden="true"
       focusable="false"
     >
-      <rect
-        width="1030"
-        height="280"
-        rx="140"
-        fill="url(#paint0_radial_905_231)"
-      />
+      <rect width="1030" height="280" rx="140" fill="url(#paint0_radial_905_231)" />
       <defs>
         <motion.radialGradient
           id="paint0_radial_905_231"
@@ -243,9 +218,7 @@ export const Liquid: React.FC<LiquidProps> = ({ isHovered, colors }) => {
       {Array.from({ length: 7 }).map((_, index) => (
         <div
           key={index}
-          className={`absolute ${
-            index < 3 ? "h-[121px] w-[443px]" : "h-[207px] w-[756px]"
-          } ${
+          className={`absolute ${index < 3 ? "h-[121px] w-[443px]" : "h-[207px] w-[756px]"} ${
             index === 0
               ? "-translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 mix-blend-difference"
               : index === 1
@@ -261,11 +234,7 @@ export const Liquid: React.FC<LiquidProps> = ({ isHovered, colors }) => {
                         : "-translate-x-[67%] -translate-y-[29%] top-1/2 left-1/2 rotate-180 mix-blend-hard-light"
           }`}
         >
-          <GradientSvg
-            className="h-full w-full"
-            isHovered={isHovered}
-            colors={colors}
-          />
+          <GradientSvg className="h-full w-full" isHovered={isHovered} colors={colors} />
         </div>
       ))}
     </>

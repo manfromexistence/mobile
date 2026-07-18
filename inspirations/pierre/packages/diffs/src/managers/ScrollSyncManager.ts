@@ -10,25 +10,15 @@ export class ScrollSyncManager {
     if (!this.enabled) {
       return;
     }
-    this.codeDeletions?.removeEventListener(
-      'scroll',
-      this.handleDeletionsScroll
-    );
-    this.codeAdditions?.removeEventListener(
-      'scroll',
-      this.handleAdditionsScroll
-    );
+    this.codeDeletions?.removeEventListener("scroll", this.handleDeletionsScroll);
+    this.codeAdditions?.removeEventListener("scroll", this.handleAdditionsScroll);
     clearTimeout(this.timeoutId);
     this.codeDeletions = undefined;
     this.codeAdditions = undefined;
     this.enabled = false;
   }
 
-  setup(
-    pre: HTMLPreElement,
-    codeDeletions?: HTMLElement,
-    codeAdditions?: HTMLElement
-  ): void {
+  setup(pre: HTMLPreElement, codeDeletions?: HTMLElement, codeAdditions?: HTMLElement): void {
     // If no code elements were provided, lets try to find them in
     // the pre element
     if (codeDeletions == null || codeAdditions == null) {
@@ -36,9 +26,9 @@ export class ScrollSyncManager {
         if (!(element instanceof HTMLElement)) {
           continue;
         }
-        if ('deletions' in element.dataset) {
+        if ("deletions" in element.dataset) {
           codeDeletions = element;
-        } else if ('additions' in element.dataset) {
+        } else if ("additions" in element.dataset) {
           codeAdditions = element;
         }
       }
@@ -49,22 +39,16 @@ export class ScrollSyncManager {
     }
 
     if (this.codeDeletions !== codeDeletions) {
-      this.codeDeletions?.removeEventListener(
-        'scroll',
-        this.handleDeletionsScroll
-      );
+      this.codeDeletions?.removeEventListener("scroll", this.handleDeletionsScroll);
       this.codeDeletions = codeDeletions;
-      codeDeletions.addEventListener('scroll', this.handleDeletionsScroll, {
+      codeDeletions.addEventListener("scroll", this.handleDeletionsScroll, {
         passive: true,
       });
     }
     if (this.codeAdditions !== codeAdditions) {
-      this.codeAdditions?.removeEventListener(
-        'scroll',
-        this.handleAdditionsScroll
-      );
+      this.codeAdditions?.removeEventListener("scroll", this.handleAdditionsScroll);
       this.codeAdditions = codeAdditions;
-      codeAdditions.addEventListener('scroll', this.handleAdditionsScroll, {
+      codeAdditions.addEventListener("scroll", this.handleAdditionsScroll, {
         passive: true,
       });
     }

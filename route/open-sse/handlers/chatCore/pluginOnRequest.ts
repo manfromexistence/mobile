@@ -47,7 +47,7 @@ export async function runPluginOnRequestHook(args: {
             JSON.stringify({
               error: { message: "Request blocked by plugin", type: "plugin_block" },
             }),
-            JSON_HEADERS
+            JSON_HEADERS,
           );
       return { blocked: true, response };
     }
@@ -58,7 +58,7 @@ export async function runPluginOnRequestHook(args: {
   } catch (pluginErr) {
     args.log?.debug?.(
       "PLUGIN",
-      `onRequest hook error (non-fatal): ${pluginErr instanceof Error ? pluginErr.message : String(pluginErr)}`
+      `onRequest hook error (non-fatal): ${pluginErr instanceof Error ? pluginErr.message : String(pluginErr)}`,
     );
     return { blocked: false };
   }

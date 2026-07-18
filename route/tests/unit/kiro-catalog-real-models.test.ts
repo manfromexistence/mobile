@@ -45,7 +45,7 @@ test("kiro registry exposes exactly the real Kiro model ids", () => {
 
 test("kiro free-model catalog carries no fabricated ids", () => {
   const kiroCatalogIds = new Set(
-    FREE_MODEL_BUDGETS.filter((e) => e.provider === "kiro").map((e) => e.modelId)
+    FREE_MODEL_BUDGETS.filter((e) => e.provider === "kiro").map((e) => e.modelId),
   );
   for (const bad of FABRICATED_KIRO_IDS) {
     assert.ok(!kiroCatalogIds.has(bad), `free catalog must not list fabricated kiro id "${bad}"`);

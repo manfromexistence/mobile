@@ -336,7 +336,7 @@ function isCompatibleProvider(provider: string | null | undefined): boolean {
 
 function buildProviderProfile(
   category: "oauth" | "apikey",
-  settings?: Record<string, unknown> | null
+  settings?: Record<string, unknown> | null,
 ) {
   const resilience = settings ? resolveResilienceSettings(settings) : DEFAULT_RESILIENCE_SETTINGS;
   const connectionCooldown = resilience.connectionCooldown[category];
@@ -436,7 +436,7 @@ function cleanupModelLockKey(key: string, now = Date.now()) {
 function getModelLockBaseCooldown(
   status: number,
   fallbackCooldownMs: number,
-  profile: ProviderProfile | null = null
+  profile: ProviderProfile | null = null,
 ) {
   if (Number.isFinite(fallbackCooldownMs) && fallbackCooldownMs > 0) {
     return fallbackCooldownMs;
@@ -450,7 +450,7 @@ function getModelLockBaseCooldown(
 function getScaledCooldown(
   baseCooldownMs: number,
   failureCount: number,
-  maxBackoffLevel = BACKOFF_CONFIG.maxLevel
+  maxBackoffLevel = BACKOFF_CONFIG.maxLevel,
 ) {
   const safeBase = Number.isFinite(baseCooldownMs) && baseCooldownMs > 0 ? baseCooldownMs : 1000;
   const exponent = Math.min(Math.max(0, failureCount - 1), Math.max(0, maxBackoffLevel));
@@ -490,7 +490,7 @@ export function lockModel(
   model: string | null | undefined,
   reason: string,
   cooldownMs: number,
-  metadata: Partial<ModelLockoutEntry> = {}
+  metadata: Partial<ModelLockoutEntry> = {},
 ): void {
   if (!model) return; // No model → skip model-level locking
   ensureCleanupTimer();
@@ -534,7 +534,7 @@ export function lockModel(
  */
 export function selectLockoutCooldownMs(
   parsedCooldownMs: number,
-  settings: { baseCooldownMs: number; useExponentialBackoff: boolean }
+  settings: { baseCooldownMs: number; useExponentialBackoff: boolean },
 ): number {
   if (typeof parsedCooldownMs === "number" && parsedCooldownMs > settings.baseCooldownMs) {
     return parsedCooldownMs;
@@ -550,7 +550,7 @@ export function recordModelLockoutFailure(
   status: number,
   fallbackCooldownMs: number,
   profile: ProviderProfile | null = null,
-  options: { exactCooldownMs?: number | null; maxCooldownMs?: number } = {}
+  options: { exactCooldownMs?: number | null; maxCooldownMs?: number } = {},
 ) {
   ensureCleanupTimer();
   const key = getModelLockKey(provider, connectionId, model);
@@ -586,9 +586,9 @@ export function recordModelLockoutFailure(
           getScaledCooldown(
             baseCooldownMs,
             failureCount,
-            profile?.maxBackoffSteps ?? BACKOFF_CONFIG.maxLevel
+            profile?.maxBackoffSteps ?? BACKOFF_CONFIG.maxLevel,
           ),
-          maxCooldownMs
+          maxCooldownMs,
         );
 
   modelFailureState.set(key, {
@@ -614,7 +614,7 @@ export function recordModelLockoutFailure(
 export function clearModelLock(
   provider: string,
   connectionId: string,
-  model: string | null | undefined
+  model: string | null | undefined,
 ): boolean {
   if (!model) return false;
   const key = getModelLockKey(provider, connectionId, model);
@@ -637,7 +637,7 @@ export function clearModelLock(
 export function hasPerModelQuota(
   provider: string | null | undefined,
   _model: string | null | undefined = null,
-  connectionPassthroughModels?: boolean
+  connectionPassthroughModels?: boolean,
 ): boolean {
   // Connection-level override takes precedence (e.g., user-configured ModelScope)
   if (typeof connectionPassthroughModels === "boolean") {
@@ -661,7 +661,7 @@ export function lockModelIfPerModelQuota(
   model: string | null,
   reason: string,
   cooldownMs: number,
-  connectionPassthroughModels?: boolean
+  connectionPassthroughModels?: boolean,
 ): boolean {
   if (!hasPerModelQuota(provider, model, connectionPassthroughModels) || !model) return false;
   // Skip model-level lock if the entire provider is in circuit-breaker cooldown.
@@ -675,7 +675,7 @@ export function shouldMarkAccountExhaustedFrom429(
   provider: string | null | undefined,
   model: string | null | undefined = null,
   connectionPassthroughModels?: boolean,
-  failureKind?: FailureKind
+  failureKind?: FailureKind,
 ): boolean {
   // A plain 429 means transient rate limiting / high traffic for many OAuth providers.
   // Only connection-poison the quota cache when the upstream body explicitly says
@@ -699,7 +699,7 @@ export type DecayResult = { cleared: boolean; newFailureCount: number };
 export function decayModelFailureCount(
   provider: string,
   connectionId: string,
-  model: string
+  model: string,
 ): DecayResult {
   const key = getModelLockKey(provider, connectionId, model);
   const failure = modelFailureState.get(key);
@@ -733,7 +733,7 @@ export function clearAllModelLockouts(): void {
 export function isModelLocked(
   provider: string,
   connectionId: string,
-  model: string | null | undefined
+  model: string | null | undefined,
 ): boolean {
   if (!model) return false;
   const key = getModelLockKey(provider, connectionId, model);
@@ -748,7 +748,7 @@ export function isModelLocked(
 export function getModelLockoutInfo(
   provider: string,
   connectionId: string,
-  model: string | null | undefined
+  model: string | null | undefined,
 ) {
   if (!model) return null;
   const key = getModelLockKey(provider, connectionId, model);
@@ -817,7 +817,7 @@ function getProviderBreaker(provider: string | null | undefined) {
 
 function configureProviderBreaker(
   provider: string | null | undefined,
-  profile?: ProviderBreakerProfile | null
+  profile?: ProviderBreakerProfile | null,
 ) {
   if (!provider) return null;
 
@@ -882,7 +882,7 @@ export function recordProviderFailure(
   provider: string | null | undefined,
   log?: { warn?: (...args: unknown[]) => void },
   connectionId?: string | null,
-  profile?: ProviderBreakerProfile | null
+  profile?: ProviderBreakerProfile | null,
 ): void {
   if (!provider) return;
 
@@ -1055,7 +1055,7 @@ export function parseRetryFromErrorText(errorText: unknown): number | null {
   // Issue #2321: parse embedded absolute ISO retry timestamps.
   const isoMatch =
     /\b(?:try again at|wait until|reset(?:s)? at|available at|retry after)\s+(\d{4}-\d{2}-\d{2}[Tt ]\d{2}:\d{2}(?::\d{2})?(?:\.\d+)?(?:Z|[+-]\d{2}:?\d{2})?)/i.exec(
-      msg
+      msg,
     );
   if (isoMatch) {
     const parsedTs = Date.parse(isoMatch[1]);
@@ -1161,7 +1161,7 @@ export function classifyErrorText(errorText: unknown): RateLimitReasonValue {
 export function classifyError(
   status: number,
   errorText: unknown,
-  context?: { provider?: string | null; headers?: Record<string, string> | null; body?: unknown }
+  context?: { provider?: string | null; headers?: Record<string, string> | null; body?: unknown },
 ): RateLimitReasonValue {
   // Provider-specific rules take priority — they have the most accurate signal
   // (e.g. `x-ratelimit-remaining-requests: 0` is irrefutable account exhaustion).
@@ -1170,7 +1170,7 @@ export function classifyError(
       context.provider,
       status,
       context.headers ?? null,
-      context.body
+      context.body,
     );
     if (match) return match.reason;
   }
@@ -1274,7 +1274,7 @@ export function checkFallbackError(
   headers: Headers | Record<string, string> | null = null,
   profileOverride: ProviderProfile | null = null,
   structuredError?: { code?: string | null; type?: string | null } | null,
-  rotation?: { account?: unknown } | null
+  rotation?: { account?: unknown } | null,
 ): {
   shouldFallback: boolean;
   cooldownMs: number;
@@ -1449,7 +1449,7 @@ export function checkFallbackError(
       const subResult = buildSubscriptionQuotaFallback(
         errorStr,
         getUpstreamRetryHintMs,
-        parseRetryFromErrorText
+        parseRetryFromErrorText,
       );
       if (subResult) return subResult;
     }
@@ -1581,7 +1581,7 @@ export function checkFallbackError(
     // (which would silently exhaust every combo target). Structured detection
     // below still catches genuine model_not_found / not_found_error codes.
     const looksLikeAuthCredentialError = AUTH_CREDENTIAL_ERROR_PATTERNS.some((p) =>
-      p.test(errorStr)
+      p.test(errorStr),
     );
     const matchesModelAccessPattern =
       !looksLikeAuthCredentialError && MODEL_ACCESS_DENIED_PATTERNS.some((p) => p.test(errorStr));
@@ -1671,7 +1671,7 @@ export function getUnavailableUntil(cooldownMs: number): string {
  * Get the earliest rateLimitedUntil from a list of accounts
  */
 export function getEarliestRateLimitedUntil(
-  accounts: Array<{ rateLimitedUntil?: string | null }>
+  accounts: Array<{ rateLimitedUntil?: string | null }>,
 ): string | null {
   let earliest: number | null = null;
   const now = Date.now();
@@ -1689,7 +1689,7 @@ export function getEarliestRateLimitedUntil(
  * Format rateLimitedUntil to human-readable "reset after Xm Ys"
  */
 export function formatRetryAfter(
-  rateLimitedUntil: string | number | Date | null | undefined
+  rateLimitedUntil: string | number | Date | null | undefined,
 ): string {
   if (!rateLimitedUntil) return "";
   const diffMs = new Date(rateLimitedUntil).getTime() - Date.now();
@@ -1710,7 +1710,7 @@ export function formatRetryAfter(
  */
 export function filterAvailableAccounts<T extends AccountState>(
   accounts: T[],
-  excludeId: string | null = null
+  excludeId: string | null = null,
 ): T[] {
   const now = Date.now();
   return accounts.filter((acc) => {
@@ -1727,7 +1727,7 @@ export function filterAvailableAccounts<T extends AccountState>(
  * Reset account state when request succeeds
  */
 export function resetAccountState<T extends AccountState | null | undefined>(
-  account: T
+  account: T,
 ): T | AccountState {
   if (!account) return account;
   // Persist the cooldown clear so a successfully-retried connection is no longer
@@ -1760,7 +1760,7 @@ export function applyErrorState<T extends AccountState | null | undefined>(
   account: T,
   status: number,
   errText: string | null,
-  prov: string | null = null
+  prov: string | null = null,
 ): T | AccountState {
   if (!account) return account;
 
@@ -1829,7 +1829,7 @@ export function applyErrorState<T extends AccountState | null | undefined>(
  */
 export function getAccountHealth(
   account: AccountState | null | undefined,
-  model?: unknown
+  model?: unknown,
 ): number {
   if (!account) return 0;
   let score = 100;

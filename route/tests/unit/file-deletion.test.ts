@@ -8,8 +8,9 @@ const TEST_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-file-dele
 const ORIGINAL_DATA_DIR = process.env.DATA_DIR;
 process.env.DATA_DIR = TEST_DATA_DIR;
 
-const { createFile, deleteFile, listFiles, createBatch, getBatch, updateBatch } =
-  await import("@/lib/localDb");
+const { createFile, deleteFile, listFiles, createBatch, getBatch, updateBatch } = await import(
+  "@/lib/localDb"
+);
 const { getDbInstance, resetDbInstance } = await import("@/lib/db/core");
 
 after(() => {
@@ -94,7 +95,7 @@ describe("File Deletion API", () => {
         filename: "test-batch-input.jsonl",
         purpose: "batch",
         content: Buffer.from(
-          '{"custom_id":"1","method":"POST","url":"/v1/chat/completions","body":{"model":"gpt-4","messages":[{"role":"user","content":"hi"}]}}'
+          '{"custom_id":"1","method":"POST","url":"/v1/chat/completions","body":{"model":"gpt-4","messages":[{"role":"user","content":"hi"}]}}',
         ),
         mimeType: "application/jsonl",
       });
@@ -131,7 +132,7 @@ describe("File Deletion API", () => {
         filename: "test-batch-not-expired.jsonl",
         purpose: "batch",
         content: Buffer.from(
-          '{"custom_id":"1","method":"POST","url":"/v1/chat/completions","body":{"model":"gpt-4","messages":[{"role":"user","content":"hi"}]}}'
+          '{"custom_id":"1","method":"POST","url":"/v1/chat/completions","body":{"model":"gpt-4","messages":[{"role":"user","content":"hi"}]}}',
         ),
         mimeType: "application/jsonl",
       });

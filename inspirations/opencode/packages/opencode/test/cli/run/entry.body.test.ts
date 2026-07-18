@@ -1,13 +1,20 @@
-import { describe, expect, test } from "bun:test"
-import type { ToolPart } from "@opencode-ai/sdk/v2"
-import { entryBody, entryCanStream, entryDone } from "@/cli/cmd/run/entry.body"
-import type { StreamCommit, ToolSnapshot } from "@/cli/cmd/run/types"
+import { describe, expect, test } from "bun:test";
+import type { ToolPart } from "@opencode-ai/sdk/v2";
+import { entryBody, entryCanStream, entryDone } from "@/cli/cmd/run/entry.body";
+import type { StreamCommit, ToolSnapshot } from "@/cli/cmd/run/types";
 
-function commit(input: Partial<StreamCommit> & Pick<StreamCommit, "kind" | "text" | "phase" | "source">): StreamCommit {
-  return input
+function commit(
+  input: Partial<StreamCommit> & Pick<StreamCommit, "kind" | "text" | "phase" | "source">,
+): StreamCommit {
+  return input;
 }
 
-function toolPart(tool: string, state: ToolPart["state"], id = `${tool}-1`, messageID = `msg-${tool}`): ToolPart {
+function toolPart(
+  tool: string,
+  state: ToolPart["state"],
+  id = `${tool}-1`,
+  messageID = `msg-${tool}`,
+): ToolPart {
   return {
     id,
     sessionID: "session-1",
@@ -16,17 +23,17 @@ function toolPart(tool: string, state: ToolPart["state"], id = `${tool}-1`, mess
     callID: `call-${id}`,
     tool,
     state,
-  } as ToolPart
+  } as ToolPart;
 }
 
 function toolCommit(input: {
-  tool: string
-  state: ToolPart["state"]
-  phase?: StreamCommit["phase"]
-  toolState?: StreamCommit["toolState"]
-  text?: string
-  id?: string
-  messageID?: string
+  tool: string;
+  state: ToolPart["state"];
+  phase?: StreamCommit["phase"];
+  toolState?: StreamCommit["toolState"];
+  text?: string;
+  id?: string;
+  messageID?: string;
 }) {
   return commit({
     kind: "tool",
@@ -36,17 +43,17 @@ function toolCommit(input: {
     tool: input.tool,
     toolState: input.toolState ?? "completed",
     part: toolPart(input.tool, input.state, input.id, input.messageID),
-  })
+  });
 }
 
 function structured(next: StreamCommit) {
-  const body = entryBody(next)
-  expect(body.type).toBe("structured")
+  const body = entryBody(next);
+  expect(body.type).toBe("structured");
   if (body.type !== "structured") {
-    throw new Error("expected structured body")
+    throw new Error("expected structured body");
   }
 
-  return body.snapshot
+  return body.snapshot;
 }
 
 describe("run entry body", () => {
@@ -64,7 +71,7 @@ describe("run entry body", () => {
     ).toEqual({
       type: "markdown",
       content: "# Title\n\nHello **world**",
-    })
+    });
 
     const reasoning = entryBody(
       commit({
@@ -74,12 +81,12 @@ describe("run entry body", () => {
         source: "reasoning",
         partID: "reason-1",
       }),
-    )
+    );
     expect(reasoning).toEqual({
       type: "code",
       filetype: "markdown",
       content: "_Thinking:_ plan next steps",
-    })
+    });
     expect(
       entryCanStream(
         commit({
@@ -90,7 +97,7 @@ describe("run entry body", () => {
         }),
         reasoning,
       ),
-    ).toBe(true)
+    ).toBe(true);
 
     expect(
       entryBody(
@@ -104,8 +111,8 @@ describe("run entry body", () => {
     ).toEqual({
       type: "text",
       content: "› Inspect footer tabs",
-    })
-  })
+    });
+  });
 
   for (const item of [
     {
@@ -195,8 +202,8 @@ describe("run entry body", () => {
     },
   ] satisfies Array<{ name: string; commit: StreamCommit; snapshot: ToolSnapshot }>) {
     test(item.name, () => {
-      expect(structured(item.commit)).toEqual(item.snapshot)
-    })
+      expect(structured(item.commit)).toEqual(item.snapshot);
+    });
   }
 
   test("keeps running task tool state out of scrollback", () => {
@@ -219,8 +226,8 @@ describe("run entry body", () => {
       ),
     ).toEqual({
       type: "none",
-    })
-  })
+    });
+  });
 
   test("promotes task results to markdown and falls back to structured task summaries", () => {
     expect(
@@ -251,7 +258,7 @@ describe("run entry body", () => {
     ).toEqual({
       type: "markdown",
       content: "# Findings\n\n- Footer stays live",
-    })
+    });
 
     expect(
       structured(
@@ -264,9 +271,13 @@ describe("run entry body", () => {
               subagent_type: "explore",
             },
             title: "",
-            output: ['<task id="child-1" state="completed">', "<task_result>", "", "</task_result>", "</task>"].join(
-              "\n",
-            ),
+            output: [
+              '<task id="child-1" state="completed">',
+              "<task_result>",
+              "",
+              "</task_result>",
+              "</task>",
+            ].join("\n"),
             metadata: {
               sessionId: "child-1",
             },
@@ -279,8 +290,8 @@ describe("run entry body", () => {
       title: "# Explore Task",
       rows: ["Inspect reducer"],
       tail: "",
-    })
-  })
+    });
+  });
 
   test("streams tool progress text and treats completed progress as done", () => {
     const body = entryBody(
@@ -292,12 +303,12 @@ describe("run entry body", () => {
         tool: "bash",
         partID: "tool-2",
       }),
-    )
+    );
 
     expect(body).toEqual({
       type: "text",
       content: "partial output",
-    })
+    });
     expect(
       entryCanStream(
         commit({
@@ -309,7 +320,7 @@ describe("run entry body", () => {
         }),
         body,
       ),
-    ).toBe(true)
+    ).toBe(true);
     expect(
       entryDone(
         commit({
@@ -321,8 +332,8 @@ describe("run entry body", () => {
           toolState: "completed",
         }),
       ),
-    ).toBe(true)
-  })
+    ).toBe(true);
+  });
 
   test("formats completed bash output with a blank line after the command and no trailing blank row", () => {
     expect(
@@ -331,16 +342,26 @@ describe("run entry body", () => {
           tool: "bash",
           phase: "progress",
           toolState: "completed",
-          text: ["/tmp/demo", "git status", "On branch demo", "nothing to commit, working tree clean", ""].join("\n"),
+          text: [
+            "/tmp/demo",
+            "git status",
+            "On branch demo",
+            "nothing to commit, working tree clean",
+            "",
+          ].join("\n"),
           state: {
             status: "completed",
             input: {
               command: "git status",
               workdir: "/tmp/demo",
             },
-            output: ["/tmp/demo", "git status", "On branch demo", "nothing to commit, working tree clean", ""].join(
-              "\n",
-            ),
+            output: [
+              "/tmp/demo",
+              "git status",
+              "On branch demo",
+              "nothing to commit, working tree clean",
+              "",
+            ].join("\n"),
             title: "git status",
             metadata: {
               exitCode: 0,
@@ -352,8 +373,8 @@ describe("run entry body", () => {
     ).toEqual({
       type: "text",
       content: "\nOn branch demo\nnothing to commit, working tree clean",
-    })
-  })
+    });
+  });
 
   test("renders command-only bash starts without the shell header", () => {
     expect(
@@ -375,8 +396,8 @@ describe("run entry body", () => {
     ).toEqual({
       type: "text",
       content: "$ ls",
-    })
-  })
+    });
+  });
 
   test("renders direct shell commits without a synthetic shell header", () => {
     expect(
@@ -398,7 +419,7 @@ describe("run entry body", () => {
     ).toEqual({
       type: "text",
       content: "$ pwd",
-    })
+    });
 
     expect(
       entryBody(
@@ -419,8 +440,8 @@ describe("run entry body", () => {
     ).toEqual({
       type: "text",
       content: "\n/tmp/demo",
-    })
-  })
+    });
+  });
 
   test("falls back to patch summary when apply_patch has no visible diff items", () => {
     expect(
@@ -451,8 +472,8 @@ describe("run entry body", () => {
     ).toEqual({
       type: "text",
       content: "~ Patched src/a.ts",
-    })
-  })
+    });
+  });
 
   test("suppresses redundant patched rows when apply_patch also created a file", () => {
     expect(
@@ -488,8 +509,8 @@ describe("run entry body", () => {
     ).toEqual({
       type: "text",
       content: "+ Created README-demo.md",
-    })
-  })
+    });
+  });
 
   test("renders glob failures as the raw error under the existing header", () => {
     expect(
@@ -513,8 +534,8 @@ describe("run entry body", () => {
     ).toEqual({
       type: "text",
       content: "No such file or directory: '/tmp/demo/run'",
-    })
-  })
+    });
+  });
 
   test("renders interrupted assistant finals as text", () => {
     expect(
@@ -531,6 +552,6 @@ describe("run entry body", () => {
     ).toEqual({
       type: "text",
       content: "assistant interrupted",
-    })
-  })
-})
+    });
+  });
+});

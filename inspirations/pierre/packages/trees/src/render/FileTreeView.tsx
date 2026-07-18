@@ -1,36 +1,19 @@
 /** @jsxImportSource preact */
-import { Fragment } from 'preact';
-import type { JSX } from 'preact';
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'preact/hooks';
+import { Fragment } from "preact";
+import type { JSX } from "preact";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "preact/hooks";
 
-import { Icon } from '../components/Icon';
-import { MiddleTruncate, Truncate } from '../components/OverflowText';
-import {
-  CONTEXT_MENU_SLOT_NAME,
-  CONTEXT_MENU_TRIGGER_TYPE,
-  HEADER_SLOT_NAME,
-} from '../constants';
-import {
-  FILE_TREE_RENAME_VIEW,
-  FileTreeController,
-} from '../model/FileTreeController';
-import type {
-  FileTreeStickyRowCandidate,
-  FileTreeViewProps,
-} from '../model/internalTypes';
+import { Icon } from "../components/Icon";
+import { MiddleTruncate, Truncate } from "../components/OverflowText";
+import { CONTEXT_MENU_SLOT_NAME, CONTEXT_MENU_TRIGGER_TYPE, HEADER_SLOT_NAME } from "../constants";
+import { FILE_TREE_RENAME_VIEW, FileTreeController } from "../model/FileTreeController";
+import type { FileTreeStickyRowCandidate, FileTreeViewProps } from "../model/internalTypes";
 import {
   computeFileTreeLayout,
   computeStickyRows,
   type FileTreeLayoutSnapshot,
   type FileTreeLayoutStickyRow,
-} from '../model/layout';
+} from "../model/layout";
 import type {
   FileTreeContextMenuButtonVisibility,
   FileTreeContextMenuItem,
@@ -41,20 +24,20 @@ import type {
   FileTreeItemHandle,
   FileTreeRowDecoration,
   FileTreeVisibleRow,
-} from '../model/publicTypes';
+} from "../model/publicTypes";
 import {
   FILE_TREE_DEFAULT_ITEM_HEIGHT,
   FILE_TREE_DEFAULT_OVERSCAN,
   FILE_TREE_DEFAULT_VIEWPORT_HEIGHT,
-} from '../model/virtualization';
-import type { GitStatus } from '../publicTypes';
-import type { SVGSpriteNames } from '../sprite';
+} from "../model/virtualization";
+import type { GitStatus } from "../publicTypes";
+import type { SVGSpriteNames } from "../sprite";
 import {
   GIT_STATUS_DESCENDANT_TITLE,
   GIT_STATUS_LABEL,
   GIT_STATUS_TITLE,
-} from '../utils/gitStatusPresentation';
-import { shouldBumpControllerRevision } from './controllerSnapshotSubscription';
+} from "../utils/gitStatusPresentation";
+import { shouldBumpControllerRevision } from "./controllerSnapshotSubscription";
 import {
   focusElement,
   getActiveTreeElement,
@@ -65,22 +48,19 @@ import {
   scrollFocusedRowIntoView,
   scrollFocusedRowToOffset,
   scrollFocusedRowToViewportOffset,
-} from './focusHelpers';
-import { createFileTreeIconResolver } from './iconResolver';
-import { classifyFileTreeRenameHandoff } from './renameHandoff';
-import { RenameInput } from './RenameInput';
-import { computeFileTreeRowElementAttributes } from './rowAttributes';
-import {
-  computeFileTreeRowClickPlan,
-  type FileTreeRowClickMode,
-} from './rowClickPlan';
+} from "./focusHelpers";
+import { createFileTreeIconResolver } from "./iconResolver";
+import { classifyFileTreeRenameHandoff } from "./renameHandoff";
+import { RenameInput } from "./RenameInput";
+import { computeFileTreeRowElementAttributes } from "./rowAttributes";
+import { computeFileTreeRowClickPlan, type FileTreeRowClickMode } from "./rowClickPlan";
 
 function formatFlattenedSegments(
   row: FileTreeVisibleRow,
   renameInput: JSX.Element | null = null,
-  dragTargetFlattenedSegmentPath: string | null = null
+  dragTargetFlattenedSegmentPath: string | null = null,
 ): JSX.Element | string {
-  'use no memo';
+  "use no memo";
   const segments = row.flattenedSegments;
   if (segments == null || segments.length === 0) {
     return renameInput ?? row.name;
@@ -95,18 +75,12 @@ function formatFlattenedSegments(
             <span
               data-item-flattened-subitem={segment.path}
               data-item-flattened-subitem-drag-target={
-                dragTargetFlattenedSegmentPath === segment.path
-                  ? 'true'
-                  : undefined
+                dragTargetFlattenedSegmentPath === segment.path ? "true" : undefined
               }
             >
-              {isLast && renameInput != null ? (
-                renameInput
-              ) : (
-                <Truncate>{segment.name}</Truncate>
-              )}
+              {isLast && renameInput != null ? renameInput : <Truncate>{segment.name}</Truncate>}
             </span>
-            {index < segments.length - 1 ? ' / ' : ''}
+            {index < segments.length - 1 ? " / " : ""}
           </Fragment>
         );
       })}
@@ -116,8 +90,7 @@ function formatFlattenedSegments(
 
 function getFileTreeRowPath(row: FileTreeVisibleRow): string {
   return row.isFlattened
-    ? (row.flattenedSegments?.findLast((segment) => segment.isTerminal)?.path ??
-        row.path)
+    ? (row.flattenedSegments?.findLast((segment) => segment.isTerminal)?.path ?? row.path)
     : row.path;
 }
 
@@ -127,7 +100,7 @@ function getFileTreeRowAriaLabel(row: FileTreeVisibleRow): string {
     return row.name;
   }
 
-  return flattenedSegments.map((segment) => segment.name).join(' / ');
+  return flattenedSegments.map((segment) => segment.name).join(" / ");
 }
 
 type FileTreeViewLayoutState = {
@@ -149,7 +122,7 @@ function computeStickyRowsFromCandidates(
   candidates: readonly FileTreeStickyRowCandidate[],
   scrollTop: number,
   itemHeight: number,
-  totalRowCount: number
+  totalRowCount: number,
 ): readonly FileTreeLayoutStickyRow<FileTreeVisibleRow>[] {
   return candidates
     .map((candidate, slotDepth) => {
@@ -202,12 +175,7 @@ function computeFileTreeViewLayoutState({
   const stickyRows =
     stickyCandidates == null
       ? undefined
-      : computeStickyRowsFromCandidates(
-          stickyCandidates,
-          scrollTop,
-          itemHeight,
-          visibleCount
-        );
+      : computeStickyRowsFromCandidates(stickyCandidates, scrollTop, itemHeight, visibleCount);
   const snapshot = computeFileTreeLayout(visibleRows, {
     itemHeight,
     overscan,
@@ -223,18 +191,13 @@ function computeFileTreeViewLayoutState({
       : [];
   const overlayRows =
     previewStickyCandidates != null && scrollTop <= 0
-      ? computeStickyRowsFromCandidates(
-          previewStickyCandidates,
-          1,
-          itemHeight,
-          visibleCount
-        )
+      ? computeStickyRowsFromCandidates(previewStickyCandidates, 1, itemHeight, visibleCount)
       : stickyFolders && scrollTop <= 0 && visibleRows.length > 0
         ? computeStickyRows(visibleRows, 1, itemHeight)
         : snapshot.sticky.rows;
   const overlayHeight = overlayRows.reduce(
     (maxBottom, entry) => Math.max(maxBottom, entry.top + itemHeight),
-    0
+    0,
   );
 
   return {
@@ -253,21 +216,17 @@ const DRAG_EDGE_SCROLL_MAX_SPEED = 18;
 function getPointElement(
   rootNode: Document | ShadowRoot,
   clientX: number,
-  clientY: number
+  clientY: number,
 ): HTMLElement | null {
   const pointRoot = rootNode as Document & {
     elementFromPoint?: (x: number, y: number) => Element | null;
   };
-  const documentElementFromPoint =
-    document.elementFromPoint?.bind(document) ?? null;
+  const documentElementFromPoint = document.elementFromPoint?.bind(document) ?? null;
   const element =
     pointRoot.elementFromPoint?.(clientX, clientY) ??
     documentElementFromPoint?.(clientX, clientY) ??
     null;
-  if (
-    rootNode instanceof ShadowRoot &&
-    (element == null || !rootNode.contains(element))
-  ) {
+  if (rootNode instanceof ShadowRoot && (element == null || !rootNode.contains(element))) {
     return getShadowPointElementByGeometry(rootNode, clientX, clientY);
   }
 
@@ -277,12 +236,10 @@ function getPointElement(
 function getShadowPointElementByGeometry(
   rootNode: ShadowRoot,
   clientX: number,
-  clientY: number
+  clientY: number,
 ): HTMLElement | null {
   const candidates = Array.from(
-    rootNode.querySelectorAll<HTMLElement>(
-      '[data-type="item"], [data-item-flattened-subitem]'
-    )
+    rootNode.querySelectorAll<HTMLElement>('[data-type="item"], [data-item-flattened-subitem]'),
   );
   for (let index = candidates.length - 1; index >= 0; index--) {
     const candidate = candidates[index];
@@ -300,9 +257,7 @@ function getShadowPointElementByGeometry(
   return null;
 }
 
-function resolveDropTargetFromElement(
-  target: HTMLElement | null
-): FileTreeDropTarget | null {
+function resolveDropTargetFromElement(target: HTMLElement | null): FileTreeDropTarget | null {
   const rowButton = target?.closest?.('[data-type="item"]');
   if (!(rowButton instanceof HTMLElement)) {
     return null;
@@ -313,26 +268,26 @@ function resolveDropTargetFromElement(
     return null;
   }
 
-  const flattenedSegment = target?.closest?.('[data-item-flattened-subitem]');
+  const flattenedSegment = target?.closest?.("[data-item-flattened-subitem]");
   const flattenedSegmentPath =
     flattenedSegment instanceof HTMLElement
-      ? (flattenedSegment.getAttribute('data-item-flattened-subitem') ?? null)
+      ? (flattenedSegment.getAttribute("data-item-flattened-subitem") ?? null)
       : null;
-  if (flattenedSegmentPath != null && flattenedSegmentPath.endsWith('/')) {
+  if (flattenedSegmentPath != null && flattenedSegmentPath.endsWith("/")) {
     return {
       directoryPath: flattenedSegmentPath,
       flattenedSegmentPath,
       hoveredPath,
-      kind: 'directory',
+      kind: "directory",
     };
   }
 
-  if (rowButton.dataset.itemType === 'folder') {
+  if (rowButton.dataset.itemType === "folder") {
     return {
       directoryPath: hoveredPath,
       flattenedSegmentPath: null,
       hoveredPath,
-      kind: 'directory',
+      kind: "directory",
     };
   }
 
@@ -342,7 +297,7 @@ function resolveDropTargetFromElement(
       directoryPath: null,
       flattenedSegmentPath: null,
       hoveredPath,
-      kind: 'root',
+      kind: "root",
     };
   }
 
@@ -350,25 +305,25 @@ function resolveDropTargetFromElement(
     directoryPath: parentPath,
     flattenedSegmentPath: null,
     hoveredPath,
-    kind: 'directory',
+    kind: "directory",
   };
 }
 
 function createDragPreviewElement(sourceElement: HTMLElement): HTMLElement {
   const preview = sourceElement.cloneNode(true) as HTMLElement;
-  preview.removeAttribute('id');
-  preview.dataset.fileTreeDragPreview = 'true';
-  preview.setAttribute('aria-hidden', 'true');
+  preview.removeAttribute("id");
+  preview.dataset.fileTreeDragPreview = "true";
+  preview.setAttribute("aria-hidden", "true");
   preview.tabIndex = -1;
   Object.assign(preview.style, {
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-    left: '0px',
-    margin: '0',
-    pointerEvents: 'none',
-    position: 'fixed',
-    top: '0px',
-    willChange: 'transform',
-    zIndex: '10000',
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+    left: "0px",
+    margin: "0",
+    pointerEvents: "none",
+    position: "fixed",
+    top: "0px",
+    willChange: "transform",
+    zIndex: "10000",
   });
   return preview;
 }
@@ -376,7 +331,7 @@ function createDragPreviewElement(sourceElement: HTMLElement): HTMLElement {
 // Safari mis-renders detached custom drag images, so keep its pointer drags on
 // the native preview path that the legacy tree already used successfully.
 function shouldUseCustomPointerDragImage(): boolean {
-  return navigator.vendor !== 'Apple Computer, Inc.';
+  return navigator.vendor !== "Apple Computer, Inc.";
 }
 
 function getDragEdgeScrollDelta(clientY: number, scrollRect: DOMRect): number {
@@ -384,9 +339,8 @@ function getDragEdgeScrollDelta(clientY: number, scrollRect: DOMRect): number {
   if (topDistance < DRAG_EDGE_SCROLL_THRESHOLD) {
     const clampedDistance = Math.max(0, topDistance);
     return -Math.ceil(
-      ((DRAG_EDGE_SCROLL_THRESHOLD - clampedDistance) /
-        DRAG_EDGE_SCROLL_THRESHOLD) *
-        DRAG_EDGE_SCROLL_MAX_SPEED
+      ((DRAG_EDGE_SCROLL_THRESHOLD - clampedDistance) / DRAG_EDGE_SCROLL_THRESHOLD) *
+        DRAG_EDGE_SCROLL_MAX_SPEED,
     );
   }
 
@@ -394,9 +348,8 @@ function getDragEdgeScrollDelta(clientY: number, scrollRect: DOMRect): number {
   if (bottomDistance < DRAG_EDGE_SCROLL_THRESHOLD) {
     const clampedDistance = Math.max(0, bottomDistance);
     return Math.ceil(
-      ((DRAG_EDGE_SCROLL_THRESHOLD - clampedDistance) /
-        DRAG_EDGE_SCROLL_THRESHOLD) *
-        DRAG_EDGE_SCROLL_MAX_SPEED
+      ((DRAG_EDGE_SCROLL_THRESHOLD - clampedDistance) / DRAG_EDGE_SCROLL_THRESHOLD) *
+        DRAG_EDGE_SCROLL_MAX_SPEED,
     );
   }
 
@@ -407,7 +360,7 @@ function getDragEdgeScrollDelta(clientY: number, scrollRect: DOMRect): number {
 // decorations can coexist without borrowing git styling or precedence.
 function getBuiltInGitStatusDecoration(
   gitStatus: GitStatus | null,
-  containsGitChange: boolean
+  containsGitChange: boolean,
 ): FileTreeRowDecoration | null {
   if (gitStatus != null) {
     const label = GIT_STATUS_LABEL[gitStatus];
@@ -423,7 +376,7 @@ function getBuiltInGitStatusDecoration(
 
   if (containsGitChange) {
     return {
-      icon: { name: 'file-tree-icon-dot', width: 6, height: 6 },
+      icon: { name: "file-tree-icon-dot", width: 6, height: 6 },
       title: GIT_STATUS_DESCENDANT_TITLE,
     };
   }
@@ -434,7 +387,7 @@ function getBuiltInGitStatusDecoration(
 function getInheritedIgnoredGitStatus(
   ancestorPaths: readonly string[],
   ignoredDirectoryPaths: ReadonlySet<string> | undefined,
-  ignoredInheritanceCache: Map<string, boolean>
+  ignoredInheritanceCache: Map<string, boolean>,
 ): GitStatus | null {
   if (ignoredDirectoryPaths == null || ignoredDirectoryPaths.size === 0) {
     return null;
@@ -448,7 +401,7 @@ function getInheritedIgnoredGitStatus(
       for (const visitedAncestor of visitedAncestors) {
         ignoredInheritanceCache.set(visitedAncestor, cached);
       }
-      return cached ? 'ignored' : null;
+      return cached ? "ignored" : null;
     }
 
     if (ignoredDirectoryPaths.has(ancestorPath)) {
@@ -456,7 +409,7 @@ function getInheritedIgnoredGitStatus(
       for (const visitedAncestor of visitedAncestors) {
         ignoredInheritanceCache.set(visitedAncestor, true);
       }
-      return 'ignored';
+      return "ignored";
     }
 
     visitedAncestors.push(ancestorPath);
@@ -470,15 +423,13 @@ function getInheritedIgnoredGitStatus(
 }
 
 function isFileTreeDirectoryHandle(
-  item: FileTreeItemHandle | null
+  item: FileTreeItemHandle | null,
 ): item is FileTreeDirectoryHandle {
-  return item != null && 'toggle' in item;
+  return item != null && "toggle" in item;
 }
 
 function isSpaceSelectionKey(event: KeyboardEvent): boolean {
-  return (
-    event.code === 'Space' || event.key === ' ' || event.key === 'Spacebar'
-  );
+  return event.code === "Space" || event.key === " " || event.key === "Spacebar";
 }
 
 function isSearchOpenSeedKey(event: KeyboardEvent): boolean {
@@ -498,26 +449,21 @@ function isSearchOpenSeedKey(event: KeyboardEvent): boolean {
 
 function getFileTreeGuideStyleText(focusedParentPath: string | null): string {
   if (focusedParentPath == null) {
-    return '';
+    return "";
   }
 
-  const escapedPath = focusedParentPath
-    .replaceAll('\\', '\\\\')
-    .replaceAll('"', '\\"');
+  const escapedPath = focusedParentPath.replaceAll("\\", "\\\\").replaceAll('"', '\\"');
   return `[data-item-section="spacing-item"][data-ancestor-path="${escapedPath}"] { opacity: 1; }`;
 }
 
 function isContextMenuOpenKey(event: KeyboardEvent): boolean {
-  return (event.shiftKey && event.key === 'F10') || event.key === 'ContextMenu';
+  return (event.shiftKey && event.key === "F10") || event.key === "ContextMenu";
 }
 
 // Sticky DOM reads are only needed for keys whose behavior depends on the
 // current focused row. This keeps ordinary keydowns out of the query/measure
 // path while preserving stale-DOM-focus repair for sticky keyboard actions.
-function canKeyUseStickyKeyboardState(
-  event: KeyboardEvent,
-  contextMenuEnabled: boolean
-): boolean {
+function canKeyUseStickyKeyboardState(event: KeyboardEvent, contextMenuEnabled: boolean): boolean {
   if (contextMenuEnabled && isContextMenuOpenKey(event)) {
     return true;
   }
@@ -527,22 +473,22 @@ function canKeyUseStickyKeyboardState(
   }
 
   return (
-    event.key === 'ArrowDown' ||
-    event.key === 'ArrowLeft' ||
-    event.key === 'ArrowRight' ||
-    event.key === 'ArrowUp'
+    event.key === "ArrowDown" ||
+    event.key === "ArrowLeft" ||
+    event.key === "ArrowRight" ||
+    event.key === "ArrowUp"
   );
 }
 
 const BLOCKED_CONTEXT_MENU_NAV_KEYS = new Set([
-  'ArrowDown',
-  'ArrowLeft',
-  'ArrowRight',
-  'ArrowUp',
-  'End',
-  'Home',
-  'PageDown',
-  'PageUp',
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+  "ArrowUp",
+  "End",
+  "Home",
+  "PageDown",
+  "PageUp",
 ]);
 
 function isEventInContextMenu(event: Event): boolean {
@@ -551,18 +497,18 @@ function isEventInContextMenu(event: Event): boolean {
       continue;
     }
 
-    if (entry.dataset.fileTreeContextMenuRoot === 'true') {
+    if (entry.dataset.fileTreeContextMenuRoot === "true") {
       return true;
     }
 
     if (
-      entry.dataset.type === 'context-menu-anchor' ||
+      entry.dataset.type === "context-menu-anchor" ||
       entry.dataset.type === CONTEXT_MENU_TRIGGER_TYPE
     ) {
       return true;
     }
 
-    if (entry.getAttribute('slot') === CONTEXT_MENU_SLOT_NAME) {
+    if (entry.getAttribute("slot") === CONTEXT_MENU_SLOT_NAME) {
       return true;
     }
   }
@@ -570,9 +516,7 @@ function isEventInContextMenu(event: Event): boolean {
   return false;
 }
 
-function serializeAnchorRect(
-  rect: DOMRect
-): FileTreeContextMenuOpenContext['anchorRect'] {
+function serializeAnchorRect(rect: DOMRect): FileTreeContextMenuOpenContext["anchorRect"] {
   return {
     bottom: rect.bottom,
     height: rect.height,
@@ -587,8 +531,8 @@ function serializeAnchorRect(
 
 function createAnchorRectFromPoint(
   x: number,
-  y: number
-): FileTreeContextMenuOpenContext['anchorRect'] {
+  y: number,
+): FileTreeContextMenuOpenContext["anchorRect"] {
   return {
     bottom: y,
     height: 0,
@@ -606,7 +550,7 @@ function createAnchorRectFromPoint(
 // during the native scroll step before React processes the new layout.
 function getContextMenuAnchorTop(
   rootElement: HTMLElement | null,
-  itemElement: HTMLElement
+  itemElement: HTMLElement,
 ): number {
   if (rootElement == null) {
     return itemElement.offsetTop;
@@ -620,7 +564,7 @@ function getContextMenuAnchorTop(
 function setButtonRef(
   buttonRefs: Map<string, HTMLElement>,
   path: string,
-  element: HTMLElement | null
+  element: HTMLElement | null,
 ): void {
   if (element == null) {
     buttonRefs.delete(path);
@@ -635,7 +579,7 @@ function setButtonRef(
 function getContextMenuAnchorButton(
   path: string | null,
   stickyButtonRefs: ReadonlyMap<string, HTMLElement>,
-  rowButtonRefs: ReadonlyMap<string, HTMLElement>
+  rowButtonRefs: ReadonlyMap<string, HTMLElement>,
 ): HTMLElement | null {
   if (path == null) {
     return null;
@@ -647,7 +591,7 @@ function getContextMenuAnchorButton(
   }
 
   const rowButton = rowButtonRefs.get(path) ?? null;
-  return rowButton?.dataset.itemParked === 'true' ? null : rowButton;
+  return rowButton?.dataset.itemParked === "true" ? null : rowButton;
 }
 
 // Sticky keyboard handling runs during the browser event that follows a scroll.
@@ -659,9 +603,7 @@ function getMountedStickyRowPaths(rootElement: HTMLElement | null): string[] {
   }
 
   const paths: string[] = [];
-  for (const element of rootElement.querySelectorAll(
-    'button[data-file-tree-sticky-row="true"]'
-  )) {
+  for (const element of rootElement.querySelectorAll('button[data-file-tree-sticky-row="true"]')) {
     if (!(element instanceof HTMLElement)) {
       continue;
     }
@@ -677,14 +619,14 @@ function getMountedStickyRowPaths(rootElement: HTMLElement | null): string[] {
 
 function getFocusedParkedRowElement(
   rootElement: HTMLElement | null,
-  path: string | null
+  path: string | null,
 ): HTMLElement | null {
   if (rootElement == null || path == null) {
     return null;
   }
 
   for (const element of rootElement.querySelectorAll(
-    'button[data-item-focused="true"][data-item-parked="true"]'
+    'button[data-item-focused="true"][data-item-parked="true"]',
   )) {
     if (element instanceof HTMLElement && element.dataset.itemPath === path) {
       return element;
@@ -704,12 +646,9 @@ function getStickyKeyboardViewportOffset(
   path: string | null,
   itemHeight: number,
   stickyOverlayHeight: number,
-  viewportHeight: number
+  viewportHeight: number,
 ): number {
-  const minimumStickyKeyboardViewportOffset = Math.max(
-    0,
-    stickyOverlayHeight - itemHeight
-  );
+  const minimumStickyKeyboardViewportOffset = Math.max(0, stickyOverlayHeight - itemHeight);
   const scrollElementRect = scrollElement?.getBoundingClientRect() ?? null;
   const activeElementTopWithinViewport =
     scrollElementRect == null || activeTreeElement == null
@@ -719,26 +658,19 @@ function getStickyKeyboardViewportOffset(
   const parkedElementTopWithinViewport =
     scrollElementRect == null || focusedParkedRowElement == null
       ? null
-      : focusedParkedRowElement.getBoundingClientRect().top -
-        scrollElementRect.top;
+      : focusedParkedRowElement.getBoundingClientRect().top - scrollElementRect.top;
 
   return Math.max(
     0,
     Math.min(
       parkedElementTopWithinViewport ??
-        Math.max(
-          activeElementTopWithinViewport ?? 0,
-          minimumStickyKeyboardViewportOffset
-        ),
-      Math.max(0, viewportHeight - itemHeight)
-    )
+        Math.max(activeElementTopWithinViewport ?? 0, minimumStickyKeyboardViewportOffset),
+      Math.max(0, viewportHeight - itemHeight),
+    ),
   );
 }
 
-function createContextMenuItem(
-  row: FileTreeVisibleRow,
-  path: string
-): FileTreeContextMenuItem {
+function createContextMenuItem(row: FileTreeVisibleRow, path: string): FileTreeContextMenuItem {
   return {
     kind: row.kind,
     name: getFileTreeRowAriaLabel(row),
@@ -746,9 +678,7 @@ function createContextMenuItem(
   };
 }
 
-function getFileTreeRootDomId(
-  instanceId: string | undefined
-): string | undefined {
+function getFileTreeRootDomId(instanceId: string | undefined): string | undefined {
   return instanceId == null ? undefined : `${instanceId}__tree`;
 }
 
@@ -757,38 +687,38 @@ function getFileTreeRootDomId(
 function getFileTreeFocusedRowDomId(
   instanceId: string | undefined,
   path: string,
-  parked: boolean
+  parked: boolean,
 ): string | undefined {
   if (instanceId == null) {
     return undefined;
   }
 
-  return `${instanceId}__focused-item-${encodeURIComponent(path)}${parked ? '__parked' : ''}`;
+  return `${instanceId}__focused-item-${encodeURIComponent(path)}${parked ? "__parked" : ""}`;
 }
 
 function isBuiltInDecorationIconName(name: string): name is SVGSpriteNames {
   return (
-    name === 'file-tree-icon-chevron' ||
-    name === 'file-tree-icon-dot' ||
-    name === 'file-tree-icon-file' ||
-    name === 'file-tree-icon-lock'
+    name === "file-tree-icon-chevron" ||
+    name === "file-tree-icon-dot" ||
+    name === "file-tree-icon-file" ||
+    name === "file-tree-icon-lock"
   );
 }
 
 function renderRowDecoration(
   decoration: FileTreeRowDecoration | null,
-  resolveIcon: ReturnType<typeof createFileTreeIconResolver>['resolveIcon']
+  resolveIcon: ReturnType<typeof createFileTreeIconResolver>["resolveIcon"],
 ): JSX.Element | null {
   if (decoration == null) {
     return null;
   }
 
-  if ('text' in decoration) {
+  if ("text" in decoration) {
     return <span title={decoration.title}>{decoration.text}</span>;
   }
 
   const icon =
-    typeof decoration.icon === 'string'
+    typeof decoration.icon === "string"
       ? isBuiltInDecorationIconName(decoration.icon)
         ? resolveIcon(decoration.icon)
         : { name: decoration.icon }
@@ -813,13 +743,13 @@ function focusFirstMenuElement(menuElement: HTMLElement | null): void {
 
   const focusable = menuElement.querySelector<HTMLElement>(
     [
-      'button:not([disabled])',
-      '[href]',
-      'input:not([disabled])',
-      'select:not([disabled])',
-      'textarea:not([disabled])',
+      "button:not([disabled])",
+      "[href]",
+      "input:not([disabled])",
+      "select:not([disabled])",
+      "textarea:not([disabled])",
       '[tabindex]:not([tabindex="-1"])',
-    ].join(', ')
+    ].join(", "),
   );
 
   focusElement(focusable ?? menuElement);
@@ -827,7 +757,7 @@ function focusFirstMenuElement(menuElement: HTMLElement | null): void {
 
 function renderFileTreeRowContent(
   row: FileTreeVisibleRow,
-  resolveIcon: ReturnType<typeof createFileTreeIconResolver>['resolveIcon'],
+  resolveIcon: ReturnType<typeof createFileTreeIconResolver>["resolveIcon"],
   {
     actionLaneEnabled = false,
     customDecoration = null,
@@ -846,7 +776,7 @@ function renderFileTreeRowContent(
     gitLaneActive?: boolean;
     renameInput?: JSX.Element | null;
     showDecorativeActionAffordance?: boolean;
-  } = {}
+  } = {},
 ): JSX.Element {
   const targetPath = getFileTreeRowPath(row);
 
@@ -864,19 +794,15 @@ function renderFileTreeRowContent(
         </div>
       ) : null}
       <div data-item-section="icon">
-        {row.kind === 'directory' ? (
-          <Icon {...resolveIcon('file-tree-icon-chevron')} />
+        {row.kind === "directory" ? (
+          <Icon {...resolveIcon("file-tree-icon-chevron")} />
         ) : (
-          <Icon {...resolveIcon('file-tree-icon-file', targetPath)} />
+          <Icon {...resolveIcon("file-tree-icon-file", targetPath)} />
         )}
       </div>
       <div data-item-section="content">
         {row.isFlattened
-          ? formatFlattenedSegments(
-              row,
-              renameInput,
-              dragTargetFlattenedSegmentPath
-            )
+          ? formatFlattenedSegments(row, renameInput, dragTargetFlattenedSegmentPath)
           : (renameInput ?? (
               <MiddleTruncate minimumLength={5} split="extension">
                 {row.name}
@@ -885,21 +811,17 @@ function renderFileTreeRowContent(
       </div>
       {decorationLaneEnabled ? (
         <div data-item-section="decoration">
-          {customDecoration != null
-            ? renderRowDecoration(customDecoration, resolveIcon)
-            : null}
+          {customDecoration != null ? renderRowDecoration(customDecoration, resolveIcon) : null}
         </div>
       ) : null}
       {gitLaneActive ? (
-        <div data-item-section="git">
-          {renderRowDecoration(gitDecoration, resolveIcon)}
-        </div>
+        <div data-item-section="git">{renderRowDecoration(gitDecoration, resolveIcon)}</div>
       ) : null}
       {actionLaneEnabled ? (
         <div data-item-section="action">
           {showDecorativeActionAffordance ? (
             <span aria-hidden="true" data-item-action-affordance="decorative">
-              <Icon {...resolveIcon('file-tree-icon-ellipsis')} />
+              <Icon {...resolveIcon("file-tree-icon-ellipsis")} />
             </span>
           ) : null}
         </div>
@@ -925,17 +847,9 @@ type FileTreeRenderRowFrame = {
   dragTarget: FileTreeDropTarget | null;
   dragAndDropEnabled: boolean;
   shouldSuppressContextMenu: () => boolean;
-  handleRowDragStart: (
-    event: DragEvent,
-    row: FileTreeVisibleRow,
-    targetPath: string
-  ) => void;
+  handleRowDragStart: (event: DragEvent, row: FileTreeVisibleRow, targetPath: string) => void;
   handleRowDragEnd: () => void;
-  handleRowTouchStart: (
-    event: TouchEvent,
-    row: FileTreeVisibleRow,
-    targetPath: string
-  ) => void;
+  handleRowTouchStart: (event: TouchEvent, row: FileTreeVisibleRow, targetPath: string) => void;
   instanceId: string | undefined;
   itemHeight: number;
   gitStatusByPath: ReadonlyMap<string, GitStatus> | undefined;
@@ -950,24 +864,24 @@ type FileTreeRenderRowFrame = {
   contextMenuRightClickEnabled: boolean;
   registerRenameInput: (element: HTMLInputElement | null) => void;
   registerButton: (path: string, element: HTMLElement | null) => void;
-  resolveIcon: ReturnType<typeof createFileTreeIconResolver>['resolveIcon'];
+  resolveIcon: ReturnType<typeof createFileTreeIconResolver>["resolveIcon"];
   renderDecorationForRow: (
     row: FileTreeVisibleRow,
-    targetPath: string
+    targetPath: string,
   ) => FileTreeRowDecoration | null;
   openContextMenuForRow: (
     row: FileTreeVisibleRow,
     targetPath: string,
     options?: {
-      anchorRect?: FileTreeContextMenuOpenContext['anchorRect'];
-      source?: 'button' | 'keyboard' | 'right-click';
-    }
+      anchorRect?: FileTreeContextMenuOpenContext["anchorRect"];
+      source?: "button" | "keyboard" | "right-click";
+    },
   ) => void;
   onRowClick: (
     event: MouseEvent,
     row: FileTreeVisibleRow,
     targetPath: string,
-    mode: FileTreeRenderedRowMode
+    mode: FileTreeRenderedRowMode,
   ) => void;
   onKeyDown: (event: KeyboardEvent) => void;
 };
@@ -984,7 +898,7 @@ function renderStyledRow(
   frame: FileTreeRenderRowFrame,
   row: FileTreeVisibleRow,
   key: string | number,
-  options: FileTreeRenderRowOptions = {}
+  options: FileTreeRenderRowOptions = {},
 ): JSX.Element {
   const {
     controller,
@@ -1019,33 +933,23 @@ function renderStyledRow(
     onKeyDown,
   } = frame;
   const targetPath = getFileTreeRowPath(row);
-  const { isParked = false, mode = 'flow', style } = options;
-  const isSticky = mode === 'sticky';
+  const { isParked = false, mode = "flow", style } = options;
+  const isSticky = mode === "sticky";
   const ownGitStatus = gitStatusByPath?.get(targetPath) ?? null;
   const effectiveGitStatus =
     ownGitStatus ??
-    getInheritedIgnoredGitStatus(
-      row.ancestorPaths,
-      ignoredGitDirectories,
-      ignoredInheritanceCache
-    );
+    getInheritedIgnoredGitStatus(row.ancestorPaths, ignoredGitDirectories, ignoredInheritanceCache);
   const containsGitChange =
-    row.kind === 'directory' &&
-    (directoriesWithGitChanges?.has(targetPath) ?? false);
+    row.kind === "directory" && (directoriesWithGitChanges?.has(targetPath) ?? false);
   const customDecoration = renderDecorationForRow(row, targetPath);
-  const gitDecoration = getBuiltInGitStatusDecoration(
-    effectiveGitStatus,
-    containsGitChange
-  );
-  const actionLaneEnabled =
-    contextMenuEnabled && contextMenuButtonTriggerEnabled;
-  const decorationLaneEnabled =
-    customDecoration != null || gitLaneActive || actionLaneEnabled;
+  const gitDecoration = getBuiltInGitStatusDecoration(effectiveGitStatus, containsGitChange);
+  const actionLaneEnabled = contextMenuEnabled && contextMenuButtonTriggerEnabled;
+  const decorationLaneEnabled = customDecoration != null || gitLaneActive || actionLaneEnabled;
   const showDecorativeActionAffordance =
-    actionLaneEnabled && contextMenuButtonVisibility === 'always';
+    actionLaneEnabled && contextMenuButtonVisibility === "always";
   const renamingPath = renameView.getPath();
   const isRenamingRow = renamingPath === targetPath;
-  const renamingValue = isRenamingRow ? renameView.getValue() : '';
+  const renamingValue = isRenamingRow ? renameView.getValue() : "";
   const renameInput =
     isSticky || !isRenamingRow ? null : (
       <RenameInput
@@ -1073,19 +977,13 @@ function renderStyledRow(
   });
   const attributeProps = computeFileTreeRowElementAttributes({
     ariaLabel: getFileTreeRowAriaLabel(row),
-    domId: row.isFocused
-      ? getFileTreeFocusedRowDomId(instanceId, targetPath, isParked)
-      : undefined,
+    domId: row.isFocused ? getFileTreeFocusedRowDomId(instanceId, targetPath, isParked) : undefined,
     extraStyle: style,
     features: {
       actionLaneEnabled,
-      contextMenuButtonVisibility: actionLaneEnabled
-        ? contextMenuButtonVisibility
-        : null,
+      contextMenuButtonVisibility: actionLaneEnabled ? contextMenuButtonVisibility : null,
       contextMenuEnabled,
-      contextMenuTriggerMode: contextMenuEnabled
-        ? contextMenuTriggerMode
-        : null,
+      contextMenuTriggerMode: contextMenuEnabled ? contextMenuTriggerMode : null,
       gitLaneActive,
     },
     isParked,
@@ -1096,9 +994,7 @@ function renderStyledRow(
       containsGitChange,
       effectiveGitStatus,
       isContextHovered: contextHoverPath === targetPath,
-      isDragTarget:
-        dragTarget?.kind === 'directory' &&
-        dragTarget.directoryPath === targetPath,
+      isDragTarget: dragTarget?.kind === "directory" && dragTarget.directoryPath === targetPath,
       isDragging: draggedPathSet?.has(targetPath) === true,
       isFocusRinged: row.isFocused && visualFocusPath === targetPath,
     },
@@ -1125,11 +1021,8 @@ function renderStyledRow(
             }
             controller.focusMountedPathFromInput(targetPath);
             openContextMenuForRow(row, targetPath, {
-              anchorRect: createAnchorRectFromPoint(
-                event.clientX,
-                event.clientY
-              ),
-              source: 'right-click',
+              anchorRect: createAnchorRectFromPoint(event.clientX, event.clientY),
+              source: "right-click",
             });
           }
         : undefined,
@@ -1191,7 +1084,7 @@ function renderStyledRow(
 function renderRangeChildren(
   frame: FileTreeRenderRowFrame,
   range: { start: number; end: number },
-  hiddenRowPaths: ReadonlySet<string>
+  hiddenRowPaths: ReadonlySet<string>,
 ): JSX.Element[] {
   if (range.end < range.start) {
     return [];
@@ -1206,9 +1099,7 @@ function renderRangeChildren(
   return frame.controller
     .getVisibleRows(range.start, range.end)
     .filter((row) => !hiddenRowPaths.has(getFileTreeRowPath(row)))
-    .map((row, slotIndex) =>
-      renderStyledRow(frame, row, range.start + slotIndex)
-    );
+    .map((row, slotIndex) => renderStyledRow(frame, row, range.start + slotIndex));
 }
 
 export function FileTreeView({
@@ -1223,14 +1114,14 @@ export function FileTreeView({
   overscan = FILE_TREE_DEFAULT_OVERSCAN,
   renamingEnabled = false,
   renderRowDecoration,
-  searchBlurBehavior = 'close',
+  searchBlurBehavior = "close",
   searchEnabled = false,
   searchFakeFocus = false,
   slotHost,
   stickyFolders = false,
   initialViewportHeight = FILE_TREE_DEFAULT_VIEWPORT_HEIGHT,
 }: FileTreeViewProps): JSX.Element {
-  'use no memo';
+  "use no memo";
   const contextMenuAnchorRef = useRef<HTMLDivElement>(null);
   const contextMenuTriggerRef = useRef<HTMLButtonElement>(null);
   const isScrollingRef = useRef(false);
@@ -1245,9 +1136,7 @@ export function FileTreeView({
   const measuredViewportHeightRef = useRef<number | null>(null);
   const processedScrollRequestIdRef = useRef(0);
   const initialFocusedScrollAppliedRef = useRef(false);
-  const initialFocusedScrollControllerRef = useRef<FileTreeController | null>(
-    null
-  );
+  const initialFocusedScrollControllerRef = useRef<FileTreeController | null>(null);
   if (initialFocusedScrollControllerRef.current !== controller) {
     initialFocusedScrollAppliedRef.current = false;
     initialFocusedScrollControllerRef.current = controller;
@@ -1259,12 +1148,8 @@ export function FileTreeView({
   const restoreTreeFocusViewportOffsetRef = useRef<number | null>(null);
   const dragAutoScrollFrameRef = useRef<number | null>(null);
   const dragHoverOpenKeyRef = useRef<string | null>(null);
-  const dragHoverOpenTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null
-  );
-  const dragPointRef = useRef<{ clientX: number; clientY: number } | null>(
-    null
-  );
+  const dragHoverOpenTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const dragPointRef = useRef<{ clientX: number; clientY: number } | null>(null);
   const dragPreviewRef = useRef<HTMLElement | null>(null);
   const dragRowSnapshotRef = useRef<FileTreeVisibleRow | null>(null);
   const touchCleanupRef = useRef<(() => void) | null>(null);
@@ -1275,9 +1160,7 @@ export function FileTreeView({
     clientX: number;
     clientY: number;
   } | null>(null);
-  const touchLongPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
-    null
-  );
+  const touchLongPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const ignoredInheritanceCache = useMemo(() => new Map<string, boolean>(), []);
   const [, setControllerRevision] = useState(0);
   // Persists across re-subscribes of the controller-subscription effect so the
@@ -1288,18 +1171,16 @@ export function FileTreeView({
   const hasSeenInitialControllerSnapshotRef = useRef(false);
   const [activeItemPath, setActiveItemPath] = useState<string | null>(null);
   const [contextHoverPath, setContextHoverPath] = useState<string | null>(null);
-  const [contextMenuAnchorTop, setContextMenuAnchorTop] = useState<
-    number | null
-  >(null);
+  const [contextMenuAnchorTop, setContextMenuAnchorTop] = useState<number | null>(null);
   const [lastContextMenuInteraction, setLastContextMenuInteraction] = useState<
-    'focus' | 'pointer' | null
+    "focus" | "pointer" | null
   >(null);
   const [scrollSettledRevision, setScrollSettledRevision] = useState(0);
   const [contextMenuState, setContextMenuState] = useState<{
-    anchorRect: FileTreeContextMenuOpenContext['anchorRect'] | null;
+    anchorRect: FileTreeContextMenuOpenContext["anchorRect"] | null;
     item: FileTreeContextMenuItem;
     path: string;
-    source: 'button' | 'keyboard' | 'right-click';
+    source: "button" | "keyboard" | "right-click";
   } | null>(null);
   const contextMenuStateRef = useRef(contextMenuState);
   contextMenuStateRef.current = contextMenuState;
@@ -1325,20 +1206,13 @@ export function FileTreeView({
     pendingStickyKeyboardScrollTopRef.current = null;
   };
 
-  const preserveStickyKeyboardFocusAtScrollTop = (
-    path: string,
-    scrollTop: number | null
-  ): void => {
+  const preserveStickyKeyboardFocusAtScrollTop = (path: string, scrollTop: number | null): void => {
     pendingStickyKeyboardFocusPathRef.current = path;
     pendingStickyKeyboardViewportOffsetRef.current = null;
-    pendingStickyKeyboardScrollTopRef.current =
-      scrollTop == null ? null : { path, scrollTop };
+    pendingStickyKeyboardScrollTopRef.current = scrollTop == null ? null : { path, scrollTop };
   };
 
-  const restoreStickyKeyboardViewportOffset = (
-    path: string,
-    viewportOffset: number
-  ): void => {
+  const restoreStickyKeyboardViewportOffset = (path: string, viewportOffset: number): void => {
     pendingStickyKeyboardFocusPathRef.current = null;
     pendingStickyKeyboardViewportOffsetRef.current = { path, viewportOffset };
     pendingStickyKeyboardScrollTopRef.current = null;
@@ -1350,15 +1224,14 @@ export function FileTreeView({
   // legacy `'close'` behavior still auto-focuses so that existing keybind-driven
   // search sessions continue to work.
   const skipInitialSearchAutoFocusRef = useRef(
-    searchBlurBehavior === 'retain' && controller.isSearchOpen()
+    searchBlurBehavior === "retain" && controller.isSearchOpen(),
   );
 
   // When `searchFakeFocus` is enabled, render a synthetic focus ring on the
   // search input until the user actually interacts with it. The flag flips off
   // on the first real focus, pointer-down, or input event so normal focus
   // behavior takes over once the user engages.
-  const [fakeSearchFocusActive, setFakeSearchFocusActive] =
-    useState<boolean>(searchFakeFocus);
+  const [fakeSearchFocusActive, setFakeSearchFocusActive] = useState<boolean>(searchFakeFocus);
   useEffect(() => {
     if (!searchFakeFocus) {
       setFakeSearchFocusActive(false);
@@ -1386,7 +1259,7 @@ export function FileTreeView({
       scrollTop: 0,
       stickyFolders,
       viewportHeight: initialViewportHeight,
-    })
+    }),
   );
   const [hasStickyUiMount, setHasStickyUiMount] = useState(false);
   useEffect(() => {
@@ -1399,15 +1272,12 @@ export function FileTreeView({
     composition?.contextMenu?.onOpen != null ||
     composition?.contextMenu?.onClose != null;
   const contextMenuTriggerMode =
-    composition?.contextMenu?.triggerMode ??
-    (contextMenuEnabled ? 'right-click' : 'both');
+    composition?.contextMenu?.triggerMode ?? (contextMenuEnabled ? "right-click" : "both");
   const contextMenuButtonTriggerEnabled =
-    contextMenuTriggerMode === 'both' || contextMenuTriggerMode === 'button';
-  const contextMenuButtonVisibility =
-    composition?.contextMenu?.buttonVisibility ?? 'when-needed';
+    contextMenuTriggerMode === "both" || contextMenuTriggerMode === "button";
+  const contextMenuButtonVisibility = composition?.contextMenu?.buttonVisibility ?? "when-needed";
   const contextMenuRightClickEnabled =
-    contextMenuTriggerMode === 'both' ||
-    contextMenuTriggerMode === 'right-click';
+    contextMenuTriggerMode === "both" || contextMenuTriggerMode === "right-click";
   useLayoutEffect(() => {
     const rootElement = rootRef.current;
     if (rootElement == null) {
@@ -1422,7 +1292,7 @@ export function FileTreeView({
       const nextPath = detail?.path ?? null;
       debugContextMenuTriggerPathRef.current = nextPath;
       setContextHoverPath(nextPath);
-      setLastContextMenuInteraction(nextPath == null ? null : 'pointer');
+      setLastContextMenuInteraction(nextPath == null ? null : "pointer");
     };
 
     const handleDebugSetScrollSuppression = (event: Event): void => {
@@ -1434,63 +1304,42 @@ export function FileTreeView({
     };
 
     rootElement.addEventListener(
-      'file-tree-debug-set-context-menu-trigger',
-      handleDebugSetContextMenuTrigger as EventListener
+      "file-tree-debug-set-context-menu-trigger",
+      handleDebugSetContextMenuTrigger as EventListener,
     );
     rootElement.addEventListener(
-      'file-tree-debug-set-scroll-suppression',
-      handleDebugSetScrollSuppression as EventListener
+      "file-tree-debug-set-scroll-suppression",
+      handleDebugSetScrollSuppression as EventListener,
     );
 
     return () => {
       rootElement.removeEventListener(
-        'file-tree-debug-set-context-menu-trigger',
-        handleDebugSetContextMenuTrigger as EventListener
+        "file-tree-debug-set-context-menu-trigger",
+        handleDebugSetContextMenuTrigger as EventListener,
       );
       rootElement.removeEventListener(
-        'file-tree-debug-set-scroll-suppression',
-        handleDebugSetScrollSuppression as EventListener
+        "file-tree-debug-set-scroll-suppression",
+        handleDebugSetScrollSuppression as EventListener,
       );
     };
   }, []);
 
-  const registerRowButton = useCallback(
-    (path: string, element: HTMLElement | null): void => {
-      setButtonRef(rowButtonRefs.current, path, element);
-    },
-    []
-  );
-  const registerStickyRowButton = useCallback(
-    (path: string, element: HTMLElement | null): void => {
-      setButtonRef(stickyRowButtonRefs.current, path, element);
-    },
-    []
-  );
-  const registerRenameInput = useCallback(
-    (element: HTMLInputElement | null): void => {
-      renameInputRef.current = element;
-    },
-    []
-  );
-  const getTriggerAnchorButton = useCallback(
-    (path: string | null): HTMLElement | null => {
-      return getContextMenuAnchorButton(
-        path,
-        stickyRowButtonRefs.current,
-        rowButtonRefs.current
-      );
-    },
-    []
-  );
+  const registerRowButton = useCallback((path: string, element: HTMLElement | null): void => {
+    setButtonRef(rowButtonRefs.current, path, element);
+  }, []);
+  const registerStickyRowButton = useCallback((path: string, element: HTMLElement | null): void => {
+    setButtonRef(stickyRowButtonRefs.current, path, element);
+  }, []);
+  const registerRenameInput = useCallback((element: HTMLInputElement | null): void => {
+    renameInputRef.current = element;
+  }, []);
+  const getTriggerAnchorButton = useCallback((path: string | null): HTMLElement | null => {
+    return getContextMenuAnchorButton(path, stickyRowButtonRefs.current, rowButtonRefs.current);
+  }, []);
 
   const gitLaneActive =
-    gitStatusByPath != null ||
-    ignoredGitDirectories != null ||
-    directoriesWithGitChanges != null;
-  const { resolveIcon } = useMemo(
-    () => createFileTreeIconResolver(icons),
-    [icons]
-  );
+    gitStatusByPath != null || ignoredGitDirectories != null || directoriesWithGitChanges != null;
+  const { resolveIcon } = useMemo(() => createFileTreeIconResolver(icons), [icons]);
   const renameView = controller[FILE_TREE_RENAME_VIEW]();
   const renamingPath = renameView.getPath();
   const isRenaming = renamingPath != null;
@@ -1503,7 +1352,7 @@ export function FileTreeView({
   const dragSession = controller.getDragSession();
   const draggedPathSet = useMemo(
     () => (dragSession == null ? null : new Set(dragSession.draggedPaths)),
-    [dragSession]
+    [dragSession],
   );
   const dragTarget = dragSession?.target ?? null;
   const draggedPrimaryPath = dragSession?.primaryPath ?? null;
@@ -1520,7 +1369,7 @@ export function FileTreeView({
       end: layoutSnapshot.window.endIndex,
       start: layoutSnapshot.window.startIndex,
     }),
-    [layoutSnapshot.window.endIndex, layoutSnapshot.window.startIndex]
+    [layoutSnapshot.window.endIndex, layoutSnapshot.window.startIndex],
   );
   // The overlay DOM mirrors `overlayRows` (which includes the scrollTop=0
   // preview). The virtualized scroll content, on the other hand, must only
@@ -1532,53 +1381,40 @@ export function FileTreeView({
   const totalScrollableHeight = layoutSnapshot.physical.totalHeight;
   const stickyOverlayHeight = layoutSnapshot.sticky.height;
   const stickyRowPathSet = useMemo(
-    () =>
-      new Set(occludedStickyRows.map((entry) => getFileTreeRowPath(entry.row))),
-    [occludedStickyRows]
+    () => new Set(occludedStickyRows.map((entry) => getFileTreeRowPath(entry.row))),
+    [occludedStickyRows],
   );
 
   const focusedRowIsMounted =
-    focusedIndex >= 0 &&
-    focusedIndex >= range.start &&
-    focusedIndex <= range.end;
+    focusedIndex >= 0 && focusedIndex >= range.start && focusedIndex <= range.end;
   const renderDecorationForRow = useCallback(
-    (
-      row: FileTreeVisibleRow,
-      targetPath: string
-    ): FileTreeRowDecoration | null =>
+    (row: FileTreeVisibleRow, targetPath: string): FileTreeRowDecoration | null =>
       renderRowDecoration?.({
         item: createContextMenuItem(row, targetPath),
         row,
       }) ?? null,
-    [renderRowDecoration]
+    [renderRowDecoration],
   );
-  const restoreContextMenuFocus = useCallback(
-    (restorePath: string | null): boolean => {
-      const focusedButton =
-        restorePath == null
-          ? null
-          : (rowButtonRefs.current.get(restorePath) ?? null);
-      if (focusElement(focusedButton)) {
-        return true;
-      }
+  const restoreContextMenuFocus = useCallback((restorePath: string | null): boolean => {
+    const focusedButton =
+      restorePath == null ? null : (rowButtonRefs.current.get(restorePath) ?? null);
+    if (focusElement(focusedButton)) {
+      return true;
+    }
 
-      return focusElement(rootRef.current);
-    },
-    []
-  );
+    return focusElement(rootRef.current);
+  }, []);
   const restoreFocusToTree = useCallback(
     (path: string | null): void => {
       const nextFocusedPath = controller.focusNearestPath(path);
       restoreContextMenuFocus(nextFocusedPath);
     },
-    [controller, restoreContextMenuFocus]
+    [controller, restoreContextMenuFocus],
   );
   const restoreFocusToTreeRef = useRef(restoreFocusToTree);
   restoreFocusToTreeRef.current = restoreFocusToTree;
   const shouldRestoreContextMenuFocusRef = useRef(true);
-  const closeContextMenuRef = useRef<(restoreFocus?: boolean) => void>(
-    () => {}
-  );
+  const closeContextMenuRef = useRef<(restoreFocus?: boolean) => void>(() => {});
   const closeContextMenu = useCallback(
     (restoreFocus: boolean = true): void => {
       const currentContextMenuState = contextMenuStateRef.current;
@@ -1594,29 +1430,22 @@ export function FileTreeView({
         restoreFocusToTree(currentContextMenuState.path);
       }
     },
-    [composition?.contextMenu, restoreFocusToTree]
+    [composition?.contextMenu, restoreFocusToTree],
   );
   closeContextMenuRef.current = closeContextMenu;
-  const updateTriggerPosition = useCallback(
-    (itemButton: HTMLElement | null): void => {
-      const nextTop =
-        itemButton == null
-          ? null
-          : getContextMenuAnchorTop(rootRef.current, itemButton);
-      setContextMenuAnchorTop((previousTop) =>
-        previousTop === nextTop ? previousTop : nextTop
-      );
-    },
-    []
-  );
+  const updateTriggerPosition = useCallback((itemButton: HTMLElement | null): void => {
+    const nextTop =
+      itemButton == null ? null : getContextMenuAnchorTop(rootRef.current, itemButton);
+    setContextMenuAnchorTop((previousTop) => (previousTop === nextTop ? previousTop : nextTop));
+  }, []);
   const openContextMenuForRow = useCallback(
     (
       row: FileTreeVisibleRow,
       targetPath: string,
       options?: {
-        anchorRect?: FileTreeContextMenuOpenContext['anchorRect'];
-        source?: 'button' | 'keyboard' | 'right-click';
-      }
+        anchorRect?: FileTreeContextMenuOpenContext["anchorRect"];
+        source?: "button" | "keyboard" | "right-click";
+      },
     ): void => {
       const item = controller.getItem(targetPath);
       if (item == null) {
@@ -1624,15 +1453,12 @@ export function FileTreeView({
       }
 
       const anchorButton = getTriggerAnchorButton(targetPath);
-      if (anchorButton?.dataset.fileTreeStickyRow === 'true') {
+      if (anchorButton?.dataset.fileTreeStickyRow === "true") {
         const scrollElement = scrollRef.current;
-        preserveStickyKeyboardFocusAtScrollTop(
-          targetPath,
-          scrollElement?.scrollTop ?? null
-        );
+        preserveStickyKeyboardFocusAtScrollTop(targetPath, scrollElement?.scrollTop ?? null);
         domFocusOwnerRef.current = true;
         setActiveItemPath((previousPath) =>
-          previousPath === targetPath ? previousPath : targetPath
+          previousPath === targetPath ? previousPath : targetPath,
         );
       }
       // FileTree item focus is controller focus, not DOM focus. Sticky anchor
@@ -1645,10 +1471,10 @@ export function FileTreeView({
         anchorRect: options?.anchorRect ?? null,
         item: createContextMenuItem(row, targetPath),
         path: targetPath,
-        source: options?.source ?? 'keyboard',
+        source: options?.source ?? "keyboard",
       });
     },
-    [controller, getTriggerAnchorButton, updateTriggerPosition]
+    [controller, getTriggerAnchorButton, updateTriggerPosition],
   );
   const startRenameFromPath = useCallback(
     (path?: string): void => {
@@ -1658,10 +1484,7 @@ export function FileTreeView({
 
       if (controller.isSearchOpen()) {
         const scrollElement = scrollRef.current;
-        const viewportHeight = readMeasuredViewportHeight(
-          scrollElement,
-          resolvedViewportHeight
-        );
+        const viewportHeight = readMeasuredViewportHeight(scrollElement, resolvedViewportHeight);
         restoreTreeFocusViewportOffsetRef.current =
           focusedIndex < 0 || scrollElement == null
             ? null
@@ -1669,8 +1492,8 @@ export function FileTreeView({
                 0,
                 Math.min(
                   focusedIndex * itemHeight - scrollElement.scrollTop,
-                  Math.max(0, viewportHeight - itemHeight)
-                )
+                  Math.max(0, viewportHeight - itemHeight),
+                ),
               );
         restoreTreeFocusAfterSearchCloseRef.current = true;
       }
@@ -1679,16 +1502,10 @@ export function FileTreeView({
         return;
       }
 
-      setLastContextMenuInteraction('focus');
+      setLastContextMenuInteraction("focus");
       setControllerRevision((revision) => revision + 1);
     },
-    [
-      controller,
-      focusedIndex,
-      itemHeight,
-      renamingEnabled,
-      resolvedViewportHeight,
-    ]
+    [controller, focusedIndex, itemHeight, renamingEnabled, resolvedViewportHeight],
   );
 
   // Sticky overlay clicks should land on the canonical row so rename inputs and
@@ -1698,11 +1515,11 @@ export function FileTreeView({
       path: string,
       {
         restoreTreeFocus = true,
-        targetOffset = 'live-overlay',
+        targetOffset = "live-overlay",
       }: {
         restoreTreeFocus?: boolean;
-        targetOffset?: 'live-overlay' | 'sticky-parents';
-      } = {}
+        targetOffset?: "live-overlay" | "sticky-parents";
+      } = {},
     ): boolean => {
       const scrollElement = scrollRef.current;
       if (scrollElement == null) {
@@ -1715,19 +1532,15 @@ export function FileTreeView({
         return false;
       }
 
-      const focusedRow =
-        controller.getVisibleRows(visibleIndex, visibleIndex)[0] ?? null;
+      const focusedRow = controller.getVisibleRows(visibleIndex, visibleIndex)[0] ?? null;
       if (focusedRow == null) {
         return false;
       }
 
-      const liveViewportHeight = readMeasuredViewportHeight(
-        scrollElement,
-        resolvedViewportHeight
-      );
+      const liveViewportHeight = readMeasuredViewportHeight(scrollElement, resolvedViewportHeight);
       const liveTotalHeight = controller.getVisibleCount() * itemHeight;
       const targetViewportOffset =
-        targetOffset === 'sticky-parents'
+        targetOffset === "sticky-parents"
           ? focusedRow.ancestorPaths.length * itemHeight
           : computeFileTreeViewLayoutState({
               controller,
@@ -1748,13 +1561,13 @@ export function FileTreeView({
         itemHeight,
         liveViewportHeight,
         liveTotalHeight,
-        targetViewportOffset
+        targetViewportOffset,
       );
       updateViewportRef.current();
       pendingStickyFocusPathRef.current = restoreTreeFocus ? path : null;
       return true;
     },
-    [controller, itemHeight, overscan, resolvedViewportHeight, stickyFolders]
+    [controller, itemHeight, overscan, resolvedViewportHeight, stickyFolders],
   );
 
   const shouldSuppressContextMenu = (): boolean => {
@@ -1766,7 +1579,7 @@ export function FileTreeView({
   };
 
   const requestDragAnimationFrame = (callback: () => void): number => {
-    return typeof window.requestAnimationFrame === 'function'
+    return typeof window.requestAnimationFrame === "function"
       ? window.requestAnimationFrame(() => {
           callback();
         })
@@ -1778,7 +1591,7 @@ export function FileTreeView({
       return;
     }
 
-    if (typeof window.cancelAnimationFrame === 'function') {
+    if (typeof window.cancelAnimationFrame === "function") {
       window.cancelAnimationFrame(handle);
       return;
     }
@@ -1826,8 +1639,8 @@ export function FileTreeView({
     touchPreviewOffsetRef.current = null;
     touchStartPointRef.current = null;
     if (touchSourceElementRef.current != null) {
-      touchSourceElementRef.current.setAttribute('draggable', 'true');
-      touchSourceElementRef.current.style.removeProperty('touch-action');
+      touchSourceElementRef.current.setAttribute("draggable", "true");
+      touchSourceElementRef.current.style.removeProperty("touch-action");
       touchSourceElementRef.current = null;
     }
     clearDragPreview();
@@ -1836,10 +1649,7 @@ export function FileTreeView({
     dragRowSnapshotRef.current = null;
   };
 
-  const syncDropTargetFromPoint = (
-    clientX: number,
-    clientY: number
-  ): FileTreeDropTarget | null => {
+  const syncDropTargetFromPoint = (clientX: number, clientY: number): FileTreeDropTarget | null => {
     const rootNode = rootRef.current?.getRootNode();
     const pointRoot = rootNode instanceof ShadowRoot ? rootNode : document;
     const pointElement = getPointElement(pointRoot, clientX, clientY);
@@ -1848,13 +1658,11 @@ export function FileTreeView({
     return controller.getDragSession()?.target ?? null;
   };
 
-  const scheduleDragHoverOpen = (
-    nextTarget: FileTreeDropTarget | null
-  ): void => {
+  const scheduleDragHoverOpen = (nextTarget: FileTreeDropTarget | null): void => {
     const openDelay = controller.getDragAndDropConfig()?.openOnDropDelay ?? 800;
     if (
       nextTarget == null ||
-      nextTarget.kind !== 'directory' ||
+      nextTarget.kind !== "directory" ||
       nextTarget.directoryPath == null ||
       openDelay <= 0
     ) {
@@ -1863,15 +1671,13 @@ export function FileTreeView({
     }
 
     const targetItem = controller.getItem(nextTarget.directoryPath);
-    const directoryItem = isFileTreeDirectoryHandle(targetItem)
-      ? targetItem
-      : null;
+    const directoryItem = isFileTreeDirectoryHandle(targetItem) ? targetItem : null;
     if (directoryItem == null || directoryItem.isExpanded()) {
       clearDragHoverOpen();
       return;
     }
 
-    const nextKey = `${nextTarget.directoryPath}::${nextTarget.flattenedSegmentPath ?? ''}`;
+    const nextKey = `${nextTarget.directoryPath}::${nextTarget.flattenedSegmentPath ?? ""}`;
     if (dragHoverOpenKeyRef.current === nextKey) {
       return;
     }
@@ -1881,7 +1687,7 @@ export function FileTreeView({
     dragHoverOpenTimerRef.current = setTimeout(() => {
       const currentTarget = controller.getDragSession()?.target;
       if (
-        currentTarget?.kind !== 'directory' ||
+        currentTarget?.kind !== "directory" ||
         currentTarget.directoryPath !== nextTarget.directoryPath ||
         currentTarget.flattenedSegmentPath !== nextTarget.flattenedSegmentPath
       ) {
@@ -1896,11 +1702,7 @@ export function FileTreeView({
     dragAutoScrollFrameRef.current = null;
     const dragPoint = dragPointRef.current;
     const scrollElement = scrollRef.current;
-    if (
-      dragPoint == null ||
-      scrollElement == null ||
-      controller.getDragSession() == null
-    ) {
+    if (dragPoint == null || scrollElement == null || controller.getDragSession() == null) {
       return;
     }
 
@@ -1910,38 +1712,30 @@ export function FileTreeView({
       return;
     }
 
-    const maxScrollTop = Math.max(
-      0,
-      scrollElement.scrollHeight - scrollElement.clientHeight
-    );
+    const maxScrollTop = Math.max(0, scrollElement.scrollHeight - scrollElement.clientHeight);
     const boundedScrollTop = Math.max(
       0,
-      Math.min(maxScrollTop, scrollElement.scrollTop + scrollDelta)
+      Math.min(maxScrollTop, scrollElement.scrollTop + scrollDelta),
     );
     if (boundedScrollTop !== scrollElement.scrollTop) {
       scrollElement.scrollTop = boundedScrollTop;
       updateViewportRef.current();
     }
 
-    const nextTarget = syncDropTargetFromPoint(
-      dragPoint.clientX,
-      dragPoint.clientY
-    );
+    const nextTarget = syncDropTargetFromPoint(dragPoint.clientX, dragPoint.clientY);
     scheduleDragHoverOpen(nextTarget);
-    dragAutoScrollFrameRef.current =
-      requestDragAnimationFrame(runDragAutoScroll);
+    dragAutoScrollFrameRef.current = requestDragAnimationFrame(runDragAutoScroll);
   };
 
   const updateDragPoint = (clientX: number, clientY: number): void => {
     dragPointRef.current = { clientX, clientY };
-    dragAutoScrollFrameRef.current ??=
-      requestDragAnimationFrame(runDragAutoScroll);
+    dragAutoScrollFrameRef.current ??= requestDragAnimationFrame(runDragAutoScroll);
   };
 
   const handleRowDragStart = (
     event: DragEvent,
     row: FileTreeVisibleRow,
-    targetPath: string
+    targetPath: string,
   ): void => {
     const dragSource = event.currentTarget as HTMLElement | null;
     if (dragSource == null) {
@@ -1959,17 +1753,17 @@ export function FileTreeView({
 
     dragRowSnapshotRef.current = row;
     if (event.dataTransfer != null) {
-      event.dataTransfer.effectAllowed = 'move';
-      event.dataTransfer.dropEffect = 'move';
-      event.dataTransfer.setData('text/plain', targetPath);
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.dropEffect = "move";
+      event.dataTransfer.setData("text/plain", targetPath);
 
       if (shouldUseCustomPointerDragImage()) {
         const preview = createDragPreviewElement(dragSource);
         const rect = dragSource.getBoundingClientRect();
         Object.assign(preview.style, {
           height: `${rect.height}px`,
-          opacity: '0.85',
-          transform: 'translate3d(-9999px, 0px, 0)',
+          opacity: "0.85",
+          transform: "translate3d(-9999px, 0px, 0)",
           width: `${rect.width}px`,
         });
         mountDragPreview(preview);
@@ -1977,7 +1771,7 @@ export function FileTreeView({
         event.dataTransfer.setDragImage(
           preview,
           Math.max(0, event.clientX - rect.left),
-          Math.max(0, event.clientY - rect.top)
+          Math.max(0, event.clientY - rect.top),
         );
       }
     }
@@ -1994,7 +1788,7 @@ export function FileTreeView({
   const handleRowTouchStart = (
     event: TouchEvent,
     row: FileTreeVisibleRow,
-    targetPath: string
+    targetPath: string,
   ): void => {
     if (touchLongPressTimerRef.current != null || touchDragActiveRef.current) {
       return;
@@ -2011,25 +1805,22 @@ export function FileTreeView({
       clientY: touch.clientY,
     };
     touchSourceElementRef.current = dragSource;
-    dragSource.setAttribute('draggable', 'false');
+    dragSource.setAttribute("draggable", "false");
 
-    const clearPendingTouchStart = (
-      options: { restoreNativeDraggable?: boolean } = {}
-    ): void => {
-      const restoreNativeDraggable =
-        options.restoreNativeDraggable ?? !touchDragActiveRef.current;
+    const clearPendingTouchStart = (options: { restoreNativeDraggable?: boolean } = {}): void => {
+      const restoreNativeDraggable = options.restoreNativeDraggable ?? !touchDragActiveRef.current;
       if (touchLongPressTimerRef.current != null) {
         clearTimeout(touchLongPressTimerRef.current);
         touchLongPressTimerRef.current = null;
       }
-      document.removeEventListener('touchmove', handlePendingTouchMove);
-      document.removeEventListener('touchend', handlePendingTouchEnd);
-      document.removeEventListener('touchcancel', handlePendingTouchEnd);
+      document.removeEventListener("touchmove", handlePendingTouchMove);
+      document.removeEventListener("touchend", handlePendingTouchEnd);
+      document.removeEventListener("touchcancel", handlePendingTouchEnd);
       if (touchCleanupRef.current === clearPendingTouchStart) {
         touchCleanupRef.current = null;
       }
       if (restoreNativeDraggable) {
-        dragSource.setAttribute('draggable', 'true');
+        dragSource.setAttribute("draggable", "true");
         if (touchSourceElementRef.current === dragSource) {
           touchSourceElementRef.current = null;
         }
@@ -2060,11 +1851,11 @@ export function FileTreeView({
       clearPendingTouchStart();
     };
 
-    document.addEventListener('touchmove', handlePendingTouchMove, {
+    document.addEventListener("touchmove", handlePendingTouchMove, {
       passive: true,
     });
-    document.addEventListener('touchend', handlePendingTouchEnd);
-    document.addEventListener('touchcancel', handlePendingTouchEnd);
+    document.addEventListener("touchend", handlePendingTouchEnd);
+    document.addEventListener("touchcancel", handlePendingTouchEnd);
     touchCleanupRef.current = clearPendingTouchStart;
     touchLongPressTimerRef.current = setTimeout(() => {
       // Keep native draggable disabled while the custom touch drag activates.
@@ -2072,7 +1863,7 @@ export function FileTreeView({
       // HTML drag flow before the touch-specific listeners take over.
       clearPendingTouchStart({ restoreNativeDraggable: false });
       if (controller.startDrag(targetPath) === false) {
-        dragSource.setAttribute('draggable', 'true');
+        dragSource.setAttribute("draggable", "true");
         if (touchSourceElementRef.current === dragSource) {
           touchSourceElementRef.current = null;
         }
@@ -2082,14 +1873,14 @@ export function FileTreeView({
 
       touchDragActiveRef.current = true;
       touchSourceElementRef.current = dragSource;
-      dragSource.setAttribute('draggable', 'false');
-      dragSource.style.setProperty('touch-action', 'none');
+      dragSource.setAttribute("draggable", "false");
+      dragSource.style.setProperty("touch-action", "none");
       dragRowSnapshotRef.current = row;
       const rect = dragSource.getBoundingClientRect();
       const preview = createDragPreviewElement(dragSource);
       Object.assign(preview.style, {
         height: `${rect.height}px`,
-        opacity: '0.85',
+        opacity: "0.85",
         transform: `translate3d(${rect.left}px, ${rect.top}px, 0)`,
         width: `${rect.width}px`,
       });
@@ -2100,9 +1891,7 @@ export function FileTreeView({
         y: touch.clientY - rect.top,
       };
 
-      const handleActiveTouchMove = (
-        moveEvent: globalThis.TouchEvent
-      ): void => {
+      const handleActiveTouchMove = (moveEvent: globalThis.TouchEvent): void => {
         const moveTouch = moveEvent.touches[0];
         if (moveTouch == null) {
           return;
@@ -2114,10 +1903,7 @@ export function FileTreeView({
           dragPreviewRef.current.style.transform = `translate3d(${moveTouch.clientX - previewOffset.x}px, ${moveTouch.clientY - previewOffset.y}px, 0)`;
         }
 
-        const nextTarget = syncDropTargetFromPoint(
-          moveTouch.clientX,
-          moveTouch.clientY
-        );
+        const nextTarget = syncDropTargetFromPoint(moveTouch.clientX, moveTouch.clientY);
         scheduleDragHoverOpen(nextTarget);
         updateDragPoint(moveTouch.clientX, moveTouch.clientY);
       };
@@ -2138,21 +1924,21 @@ export function FileTreeView({
       };
 
       touchCleanupRef.current = () => {
-        document.removeEventListener('touchmove', handleActiveTouchMove);
-        document.removeEventListener('touchend', handleActiveTouchEnd);
-        document.removeEventListener('touchcancel', handleActiveTouchCancel);
+        document.removeEventListener("touchmove", handleActiveTouchMove);
+        document.removeEventListener("touchend", handleActiveTouchEnd);
+        document.removeEventListener("touchcancel", handleActiveTouchCancel);
       };
-      document.addEventListener('touchmove', handleActiveTouchMove, {
+      document.addEventListener("touchmove", handleActiveTouchMove, {
         passive: false,
       });
-      document.addEventListener('touchend', handleActiveTouchEnd);
-      document.addEventListener('touchcancel', handleActiveTouchCancel);
+      document.addEventListener("touchend", handleActiveTouchEnd);
+      document.addEventListener("touchcancel", handleActiveTouchCancel);
     }, TOUCH_LONG_PRESS_DELAY);
   };
 
   const handleTreeKeyDown = (event: KeyboardEvent): void => {
     if (contextMenuState != null) {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         closeContextMenu();
         event.preventDefault();
         event.stopPropagation();
@@ -2177,22 +1963,22 @@ export function FileTreeView({
         return;
       }
 
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         renameView.cancel();
-      } else if (event.key === 'Enter') {
+      } else if (event.key === "Enter") {
         renameView.commit();
       } else {
         return;
       }
 
-      setLastContextMenuInteraction('focus');
+      setLastContextMenuInteraction("focus");
       setControllerRevision((revision) => revision + 1);
       event.preventDefault();
       event.stopPropagation();
       return;
     }
 
-    if (renamingEnabled && event.key === 'F2') {
+    if (renamingEnabled && event.key === "F2") {
       startRenameFromPath(focusedPath ?? undefined);
       event.preventDefault();
       event.stopPropagation();
@@ -2200,20 +1986,17 @@ export function FileTreeView({
     }
 
     if (isSearchOpen) {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         restoreTreeFocusAfterSearchCloseRef.current = false;
         restoreTreeFocusViewportOffsetRef.current = null;
         controller.closeSearch();
-      } else if (event.key === 'Enter') {
+      } else if (event.key === "Enter") {
         const currentFocusedPath = controller.getFocusedPath();
         if (currentFocusedPath != null) {
           controller.selectOnlyPath(currentFocusedPath);
         }
         const scrollElement = scrollRef.current;
-        const viewportHeight = readMeasuredViewportHeight(
-          scrollElement,
-          resolvedViewportHeight
-        );
+        const viewportHeight = readMeasuredViewportHeight(scrollElement, resolvedViewportHeight);
         restoreTreeFocusViewportOffsetRef.current =
           focusedIndex < 0 || scrollElement == null
             ? null
@@ -2221,20 +2004,20 @@ export function FileTreeView({
                 0,
                 Math.min(
                   focusedIndex * itemHeight - scrollElement.scrollTop,
-                  Math.max(0, viewportHeight - itemHeight)
-                )
+                  Math.max(0, viewportHeight - itemHeight),
+                ),
               );
         restoreTreeFocusAfterSearchCloseRef.current = true;
         controller.closeSearch();
-      } else if (event.key === 'ArrowDown') {
+      } else if (event.key === "ArrowDown") {
         controller.focusNextSearchMatch();
-      } else if (event.key === 'ArrowUp') {
+      } else if (event.key === "ArrowUp") {
         controller.focusPreviousSearchMatch();
       } else {
         return;
       }
 
-      setLastContextMenuInteraction('focus');
+      setLastContextMenuInteraction("focus");
       setControllerRevision((revision) => revision + 1);
       event.preventDefault();
       event.stopPropagation();
@@ -2249,11 +2032,10 @@ export function FileTreeView({
       return;
     }
 
-    const isKeyboardContextMenuRequest =
-      contextMenuEnabled && isContextMenuOpenKey(event);
+    const isKeyboardContextMenuRequest = contextMenuEnabled && isContextMenuOpenKey(event);
     const shouldInspectStickyKeyboardState = canKeyUseStickyKeyboardState(
       event,
-      contextMenuEnabled
+      contextMenuEnabled,
     );
     const activeTreeElement =
       shouldInspectStickyKeyboardState && rootRef.current != null
@@ -2262,11 +2044,9 @@ export function FileTreeView({
     const mountedStickyRowPathSet = shouldInspectStickyKeyboardState
       ? new Set(getMountedStickyRowPaths(rootRef.current))
       : new Set<string>();
-    const activeStickyFocusPath =
-      activeTreeElement?.dataset.fileTreeStickyPath ?? null;
+    const activeStickyFocusPath = activeTreeElement?.dataset.fileTreeStickyPath ?? null;
     const activeStickyRowOwnsFocus =
-      activeTreeElement?.dataset.fileTreeStickyRow === 'true' &&
-      activeStickyFocusPath != null;
+      activeTreeElement?.dataset.fileTreeStickyRow === "true" && activeStickyFocusPath != null;
     if (
       activeStickyRowOwnsFocus &&
       activeStickyFocusPath !== focusedPath &&
@@ -2279,7 +2059,7 @@ export function FileTreeView({
       const scrollElement = scrollRef.current;
       preserveStickyKeyboardFocusAtScrollTop(
         activeStickyFocusPath,
-        scrollElement?.scrollTop ?? null
+        scrollElement?.scrollTop ?? null,
       );
       controller.focusPath(activeStickyFocusPath);
     }
@@ -2291,9 +2071,7 @@ export function FileTreeView({
       return;
     }
 
-    const focusedDirectoryItem = isFileTreeDirectoryHandle(focusedItem)
-      ? focusedItem
-      : null;
+    const focusedDirectoryItem = isFileTreeDirectoryHandle(focusedItem) ? focusedItem : null;
     const startedFromStickyRow =
       effectiveFocusedPath != null &&
       (stickyRowPathSet.has(effectiveFocusedPath) ||
@@ -2301,21 +2079,21 @@ export function FileTreeView({
           activeStickyFocusPath === effectiveFocusedPath &&
           mountedStickyRowPathSet.has(effectiveFocusedPath)));
     const shouldPreserveLocalStickyFocusMove =
-      event.key === 'ArrowDown' ||
-      event.key === 'ArrowUp' ||
-      (event.key === 'ArrowRight' &&
+      event.key === "ArrowDown" ||
+      event.key === "ArrowUp" ||
+      (event.key === "ArrowRight" &&
         focusedDirectoryItem != null &&
         focusedDirectoryItem.isExpanded());
     const shouldRestoreCollapsedStickyFocusViewport =
-      event.key === 'ArrowLeft' &&
+      event.key === "ArrowLeft" &&
       startedFromStickyRow &&
       focusedDirectoryItem != null &&
       focusedDirectoryItem.isExpanded();
     const scrollElement = scrollRef.current;
     let handled = true;
-    if (event.shiftKey && event.key === 'ArrowDown') {
+    if (event.shiftKey && event.key === "ArrowDown") {
       controller.extendSelectionFromFocused(1);
-    } else if (event.shiftKey && event.key === 'ArrowUp') {
+    } else if (event.shiftKey && event.key === "ArrowUp") {
       controller.extendSelectionFromFocused(-1);
     } else if (
       isKeyboardContextMenuRequest &&
@@ -2323,14 +2101,11 @@ export function FileTreeView({
       effectiveFocusedIndex >= 0
     ) {
       const focusedRow =
-        controller.getVisibleRows(
-          effectiveFocusedIndex,
-          effectiveFocusedIndex
-        )[0] ?? null;
+        controller.getVisibleRows(effectiveFocusedIndex, effectiveFocusedIndex)[0] ?? null;
       const focusedButton = getContextMenuAnchorButton(
         effectiveFocusedPath,
         stickyRowButtonRefs.current,
-        rowButtonRefs.current
+        rowButtonRefs.current,
       );
       if (focusedRow == null || focusedButton == null) {
         handled = false;
@@ -2339,43 +2114,34 @@ export function FileTreeView({
       }
     } else if ((event.ctrlKey || event.metaKey) && isSpaceSelectionKey(event)) {
       controller.toggleFocusedSelection();
-    } else if (
-      (event.ctrlKey || event.metaKey) &&
-      event.key.toLowerCase() === 'a'
-    ) {
+    } else if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "a") {
       controller.selectAllVisiblePaths();
     } else {
       switch (event.key) {
-        case 'ArrowDown':
+        case "ArrowDown":
           controller.focusNextItem();
           break;
-        case 'ArrowUp':
+        case "ArrowUp":
           controller.focusPreviousItem();
           break;
-        case 'ArrowRight':
-          if (
-            focusedDirectoryItem == null ||
-            focusedDirectoryItem.isExpanded()
-          ) {
+        case "ArrowRight":
+          if (focusedDirectoryItem == null || focusedDirectoryItem.isExpanded()) {
             controller.focusNextItem();
           } else {
             focusedDirectoryItem.expand();
           }
           break;
-        case 'ArrowLeft':
-          if (
-            focusedDirectoryItem != null &&
-            focusedDirectoryItem.isExpanded()
-          ) {
+        case "ArrowLeft":
+          if (focusedDirectoryItem != null && focusedDirectoryItem.isExpanded()) {
             focusedDirectoryItem.collapse();
           } else {
             controller.focusParentItem();
           }
           break;
-        case 'Home':
+        case "Home":
           controller.focusFirstItem();
           break;
-        case 'End':
+        case "End":
           controller.focusLastItem();
           break;
         default:
@@ -2387,49 +2153,37 @@ export function FileTreeView({
       return;
     }
 
-    setLastContextMenuInteraction('focus');
+    setLastContextMenuInteraction("focus");
     const nextFocusedPath = controller.getFocusedPath();
     const nextFocusedPathIsMountedSticky =
       nextFocusedPath != null &&
-      (stickyRowPathSet.has(nextFocusedPath) ||
-        mountedStickyRowPathSet.has(nextFocusedPath));
+      (stickyRowPathSet.has(nextFocusedPath) || mountedStickyRowPathSet.has(nextFocusedPath));
     const stickyKeyboardMoveLandsOnDifferentStickyRow =
-      shouldPreserveLocalStickyFocusMove &&
-      nextFocusedPath !== effectiveFocusedPath;
+      shouldPreserveLocalStickyFocusMove && nextFocusedPath !== effectiveFocusedPath;
     const stickyKeyboardMenuStaysOnStickyRow =
       isKeyboardContextMenuRequest &&
       activeStickyRowOwnsFocus &&
       activeStickyFocusPath === effectiveFocusedPath &&
       nextFocusedPath === effectiveFocusedPath;
     const shouldPreserveStickyKeyboardFocusPath =
-      (stickyKeyboardMoveLandsOnDifferentStickyRow &&
-        nextFocusedPathIsMountedSticky) ||
+      (stickyKeyboardMoveLandsOnDifferentStickyRow && nextFocusedPathIsMountedSticky) ||
       stickyKeyboardMenuStaysOnStickyRow;
     if (
       (startedFromStickyRow || stickyKeyboardMenuStaysOnStickyRow) &&
       nextFocusedPath != null &&
       shouldPreserveStickyKeyboardFocusPath
     ) {
-      preserveStickyKeyboardFocusAtScrollTop(
-        nextFocusedPath,
-        scrollElement?.scrollTop ?? null
-      );
+      preserveStickyKeyboardFocusAtScrollTop(nextFocusedPath, scrollElement?.scrollTop ?? null);
       domFocusOwnerRef.current = true;
       setActiveItemPath((previousPath) =>
-        previousPath === nextFocusedPath ? previousPath : nextFocusedPath
+        previousPath === nextFocusedPath ? previousPath : nextFocusedPath,
       );
     } else {
       const stickyArrowUpExitsStack =
-        event.key === 'ArrowUp' &&
-        startedFromStickyRow &&
-        nextFocusedPath !== effectiveFocusedPath;
+        event.key === "ArrowUp" && startedFromStickyRow && nextFocusedPath !== effectiveFocusedPath;
       const stickyCollapseStaysOnRow =
-        shouldRestoreCollapsedStickyFocusViewport &&
-        nextFocusedPath === effectiveFocusedPath;
-      if (
-        nextFocusedPath != null &&
-        (stickyArrowUpExitsStack || stickyCollapseStaysOnRow)
-      ) {
+        shouldRestoreCollapsedStickyFocusViewport && nextFocusedPath === effectiveFocusedPath;
+      if (nextFocusedPath != null && (stickyArrowUpExitsStack || stickyCollapseStaysOnRow)) {
         restoreStickyKeyboardViewportOffset(
           nextFocusedPath,
           getStickyKeyboardViewportOffset(
@@ -2439,12 +2193,12 @@ export function FileTreeView({
             effectiveFocusedPath,
             itemHeight,
             stickyOverlayHeight,
-            resolvedViewportHeight
-          )
+            resolvedViewportHeight,
+          ),
         );
         domFocusOwnerRef.current = true;
         setActiveItemPath((previousPath) =>
-          previousPath === nextFocusedPath ? previousPath : nextFocusedPath
+          previousPath === nextFocusedPath ? previousPath : nextFocusedPath,
         );
       } else {
         clearPendingStickyKeyboardState();
@@ -2486,20 +2240,20 @@ export function FileTreeView({
     });
 
     switch (action) {
-      case 'reset':
+      case "reset":
         previousRenamingPathRef.current = null;
         return;
-      case 'reveal-canonical':
+      case "reveal-canonical":
         if (renamingPath != null) {
           revealCanonicalRowAtStickyOffset(renamingPath, {
             restoreTreeFocus: false,
-            targetOffset: 'live-overlay',
+            targetOffset: "live-overlay",
           });
         }
         return;
-      case 'ignore':
+      case "ignore":
         return;
-      case 'focus-input':
+      case "focus-input":
         if (input != null) {
           pendingStickyFocusPathRef.current = null;
           previousRenamingPathRef.current = renamingPath;
@@ -2508,13 +2262,7 @@ export function FileTreeView({
         }
         return;
     }
-  }, [
-    range.end,
-    range.start,
-    renamingPath,
-    revealCanonicalRowAtStickyOffset,
-    stickyRowPathSet,
-  ]);
+  }, [range.end, range.start, renamingPath, revealCanonicalRowAtStickyOffset, stickyRowPathSet]);
 
   useLayoutEffect(() => {
     const rootElement = rootRef.current;
@@ -2536,7 +2284,7 @@ export function FileTreeView({
       const activeTreeElement = getActiveTreeElement(rootElement);
       const nextActiveItemPath = activeTreeElement?.dataset.itemPath ?? null;
       setActiveItemPath((previousPath) =>
-        previousPath === nextActiveItemPath ? previousPath : nextActiveItemPath
+        previousPath === nextActiveItemPath ? previousPath : nextActiveItemPath,
       );
     };
 
@@ -2574,20 +2322,18 @@ export function FileTreeView({
       }
 
       const nextActiveItemPath =
-        nextTarget instanceof HTMLElement
-          ? (nextTarget.dataset.itemPath ?? null)
-          : null;
+        nextTarget instanceof HTMLElement ? (nextTarget.dataset.itemPath ?? null) : null;
       setActiveItemPath((previousPath) =>
-        previousPath === nextActiveItemPath ? previousPath : nextActiveItemPath
+        previousPath === nextActiveItemPath ? previousPath : nextActiveItemPath,
       );
     };
 
-    rootElement.addEventListener('focusin', onFocusIn);
-    rootElement.addEventListener('focusout', onFocusOut);
+    rootElement.addEventListener("focusin", onFocusIn);
+    rootElement.addEventListener("focusout", onFocusOut);
     return () => {
       clearNullFocusOutTimer();
-      rootElement.removeEventListener('focusin', onFocusIn);
-      rootElement.removeEventListener('focusout', onFocusOut);
+      rootElement.removeEventListener("focusin", onFocusIn);
+      rootElement.removeEventListener("focusout", onFocusOut);
     };
   }, []);
 
@@ -2603,7 +2349,7 @@ export function FileTreeView({
       return;
     }
     if (layoutSnapshot.physical.scrollTop <= 0) {
-      rootElement.dataset.scrollAtTop = 'true';
+      rootElement.dataset.scrollAtTop = "true";
     } else {
       delete rootElement.dataset.scrollAtTop;
     }
@@ -2620,19 +2366,16 @@ export function FileTreeView({
 
     measuredViewportHeightRef.current = readMeasuredViewportHeight(
       scrollElement,
-      initialViewportHeight
+      initialViewportHeight,
     );
 
     const update = (): void => {
       const nextItemCount = controller.getVisibleCount();
       const nextViewportHeight = getCachedViewportHeight(
         measuredViewportHeightRef.current,
-        initialViewportHeight
+        initialViewportHeight,
       );
-      const maxScrollTop = Math.max(
-        0,
-        nextItemCount * itemHeight - nextViewportHeight
-      );
+      const maxScrollTop = Math.max(0, nextItemCount * itemHeight - nextViewportHeight);
       // Collapse can shrink total height under the current scroll position, so
       // clamp scrollTop before recomputing the projected layout snapshot.
       if (scrollElement.scrollTop > maxScrollTop) {
@@ -2647,7 +2390,7 @@ export function FileTreeView({
           scrollTop: Math.min(scrollElement.scrollTop, maxScrollTop),
           stickyFolders,
           viewportHeight: nextViewportHeight,
-        })
+        }),
       );
     };
 
@@ -2660,21 +2403,18 @@ export function FileTreeView({
       if (initialFocusedIndex >= 0) {
         const initialViewportHeightPx = getCachedViewportHeight(
           measuredViewportHeightRef.current,
-          initialViewportHeight
+          initialViewportHeight,
         );
         const initialFocusedRow =
-          controller.getVisibleRows(
-            initialFocusedIndex,
-            initialFocusedIndex
-          )[0] ?? null;
+          controller.getVisibleRows(initialFocusedIndex, initialFocusedIndex)[0] ?? null;
         const initialTopInset =
           stickyFolders && initialFocusedRow != null
             ? Math.max(
                 0,
                 Math.min(
                   initialFocusedRow.ancestorPaths.length * itemHeight,
-                  Math.max(0, initialViewportHeightPx - itemHeight)
-                )
+                  Math.max(0, initialViewportHeightPx - itemHeight),
+                ),
               )
             : 0;
         scrollFocusedRowIntoView(
@@ -2682,7 +2422,7 @@ export function FileTreeView({
           initialFocusedIndex,
           itemHeight,
           initialViewportHeightPx,
-          initialTopInset
+          initialTopInset,
         );
       }
     }
@@ -2704,10 +2444,10 @@ export function FileTreeView({
         return;
       }
       if (listElement != null) {
-        listElement.dataset.isScrolling ??= '';
+        listElement.dataset.isScrolling ??= "";
       }
       if (rootElement != null) {
-        rootElement.dataset.isScrolling ??= '';
+        rootElement.dataset.isScrolling ??= "";
       }
       isScrollingRef.current = true;
       if (scrollTimer != null) {
@@ -2743,10 +2483,7 @@ export function FileTreeView({
       }
     };
     const markOverlayReveal = (): void => {
-      if (
-        rootElement == null ||
-        debugDisableScrollSuppressionRef.current === true
-      ) {
+      if (rootElement == null || debugDisableScrollSuppressionRef.current === true) {
         return;
       }
       if (scrollElement.scrollTop > 0) {
@@ -2755,7 +2492,7 @@ export function FileTreeView({
         // the scroll returns to 0.
         return;
       }
-      rootElement.dataset.overlayReveal = 'true';
+      rootElement.dataset.overlayReveal = "true";
       if (overlayRevealTimer != null) {
         clearTimeout(overlayRevealTimer);
       }
@@ -2785,9 +2522,7 @@ export function FileTreeView({
         isScrollingRef.current = false;
         return;
       }
-      setContextHoverPath((previousPath) =>
-        previousPath == null ? previousPath : null
-      );
+      setContextHoverPath((previousPath) => (previousPath == null ? previousPath : null));
       markScrolling();
     };
 
@@ -2807,16 +2542,16 @@ export function FileTreeView({
     // keys all trip the 50ms suppression and, for the ContextMenu case, hide
     // the keyboard-opened menu that was the whole point of the keypress.
     const SCROLL_KEYS = new Set([
-      'ArrowUp',
-      'ArrowDown',
-      'ArrowLeft',
-      'ArrowRight',
-      'PageUp',
-      'PageDown',
-      'Home',
-      'End',
-      ' ',
-      'Spacebar',
+      "ArrowUp",
+      "ArrowDown",
+      "ArrowLeft",
+      "ArrowRight",
+      "PageUp",
+      "PageDown",
+      "Home",
+      "End",
+      " ",
+      "Spacebar",
     ]);
     const onKeyDownPreScroll = (event: KeyboardEvent): void => {
       if (!SCROLL_KEYS.has(event.key)) {
@@ -2825,17 +2560,15 @@ export function FileTreeView({
       onPreScroll();
     };
 
-    scrollElement.addEventListener('scroll', onScroll, { passive: true });
-    scrollElement.addEventListener('wheel', onPreScroll, { passive: true });
-    scrollElement.addEventListener('touchmove', onPreScroll, { passive: true });
-    scrollElement.addEventListener('keydown', onKeyDownPreScroll);
+    scrollElement.addEventListener("scroll", onScroll, { passive: true });
+    scrollElement.addEventListener("wheel", onPreScroll, { passive: true });
+    scrollElement.addEventListener("touchmove", onPreScroll, { passive: true });
+    scrollElement.addEventListener("keydown", onKeyDownPreScroll);
     const resizeObserver =
-      typeof ResizeObserver !== 'undefined'
+      typeof ResizeObserver !== "undefined"
         ? new ResizeObserver((entries) => {
             const observedViewportHeight =
-              entries[0] == null
-                ? null
-                : getResizeObserverViewportHeight(entries[0]);
+              entries[0] == null ? null : getResizeObserverViewportHeight(entries[0]);
             measuredViewportHeightRef.current =
               observedViewportHeight ??
               readMeasuredViewportHeight(scrollElement, initialViewportHeight);
@@ -2847,10 +2580,10 @@ export function FileTreeView({
     return () => {
       updateViewportRef.current = () => {};
       unsubscribe();
-      scrollElement.removeEventListener('scroll', onScroll);
-      scrollElement.removeEventListener('wheel', onPreScroll);
-      scrollElement.removeEventListener('touchmove', onPreScroll);
-      scrollElement.removeEventListener('keydown', onKeyDownPreScroll);
+      scrollElement.removeEventListener("scroll", onScroll);
+      scrollElement.removeEventListener("wheel", onPreScroll);
+      scrollElement.removeEventListener("touchmove", onPreScroll);
+      scrollElement.removeEventListener("keydown", onKeyDownPreScroll);
       if (scrollTimer != null) {
         clearTimeout(scrollTimer);
       }
@@ -2893,10 +2626,8 @@ export function FileTreeView({
   // identity actually changes.
   const activeContextMenuKey = useMemo(
     () =>
-      contextMenuState == null
-        ? null
-        : `${contextMenuState.path}::${contextMenuState.source}`,
-    [contextMenuState]
+      contextMenuState == null ? null : `${contextMenuState.path}::${contextMenuState.source}`,
+    [contextMenuState],
   );
 
   useLayoutEffect(() => {
@@ -2910,8 +2641,7 @@ export function FileTreeView({
       return;
     }
 
-    const anchorElement =
-      contextMenuTriggerRef.current ?? contextMenuAnchorRef.current;
+    const anchorElement = contextMenuTriggerRef.current ?? contextMenuAnchorRef.current;
     if (anchorElement == null) {
       return;
     }
@@ -2919,8 +2649,7 @@ export function FileTreeView({
     const context: FileTreeContextMenuOpenContext = {
       anchorElement,
       anchorRect:
-        currentState.anchorRect ??
-        serializeAnchorRect(anchorElement.getBoundingClientRect()),
+        currentState.anchorRect ?? serializeAnchorRect(anchorElement.getBoundingClientRect()),
       close: (options) => {
         closeContextMenuRef.current(options?.restoreFocus ?? true);
       },
@@ -2928,13 +2657,10 @@ export function FileTreeView({
         if (!shouldRestoreContextMenuFocusRef.current) {
           return;
         }
-        restoreFocusToTreeRef.current(
-          contextMenuStateRef.current?.path ?? null
-        );
+        restoreFocusToTreeRef.current(contextMenuStateRef.current?.path ?? null);
       },
     };
-    const menuContent =
-      composition?.contextMenu?.render?.(currentState.item, context) ?? null;
+    const menuContent = composition?.contextMenu?.render?.(currentState.item, context) ?? null;
     slotHost?.setSlotContent(CONTEXT_MENU_SLOT_NAME, menuContent);
     composition?.contextMenu?.onOpen?.(currentState.item, context);
     focusFirstMenuElement(menuContent);
@@ -2956,10 +2682,7 @@ export function FileTreeView({
   }, [activeContextMenuKey, composition?.contextMenu, slotHost]);
 
   useLayoutEffect(() => {
-    if (
-      contextMenuState != null &&
-      controller.getItem(contextMenuState.path) == null
-    ) {
+    if (contextMenuState != null && controller.getItem(contextMenuState.path) == null) {
       closeContextMenu();
     }
   }, [closeContextMenu, contextMenuState, controller]);
@@ -2970,8 +2693,7 @@ export function FileTreeView({
     }
 
     const rootNode = rootRef.current?.getRootNode();
-    const host =
-      rootNode instanceof ShadowRoot ? rootNode.host : rootRef.current;
+    const host = rootNode instanceof ShadowRoot ? rootNode.host : rootRef.current;
     const onPointerDown = (event: MouseEvent): void => {
       const target = event.target;
       if (!(target instanceof Node)) {
@@ -2993,18 +2715,18 @@ export function FileTreeView({
       closeContextMenu();
     };
     const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         event.preventDefault();
         event.stopPropagation();
         closeContextMenu();
       }
     };
 
-    document.addEventListener('mousedown', onPointerDown, true);
-    document.addEventListener('keydown', onKeyDown, true);
+    document.addEventListener("mousedown", onPointerDown, true);
+    document.addEventListener("keydown", onKeyDown, true);
     return () => {
-      document.removeEventListener('mousedown', onPointerDown, true);
-      document.removeEventListener('keydown', onKeyDown, true);
+      document.removeEventListener("mousedown", onPointerDown, true);
+      document.removeEventListener("keydown", onKeyDown, true);
     };
   }, [closeContextMenu, contextMenuState]);
 
@@ -3017,26 +2739,18 @@ export function FileTreeView({
     }
 
     const focusedButton =
-      focusedPath == null
-        ? null
-        : (rowButtonRefs.current.get(focusedPath) ?? null);
+      focusedPath == null ? null : (rowButtonRefs.current.get(focusedPath) ?? null);
     const activeTreeElement = getActiveTreeElement(rootElement);
     const activeTreeElementPath = activeTreeElement?.dataset.itemPath ?? null;
-    const renameInputOwnsFocus =
-      isRenaming && renameInputRef.current === activeTreeElement;
-    const searchInputOwnsFocus =
-      searchEnabled && searchInputRef.current === activeTreeElement;
+    const renameInputOwnsFocus = isRenaming && renameInputRef.current === activeTreeElement;
+    const searchInputOwnsFocus = searchEnabled && searchInputRef.current === activeTreeElement;
     const shouldRestoreTreeFocusAfterSearchClose =
       restoreTreeFocusAfterSearchCloseRef.current && !isSearchOpen;
-    const preservedViewportOffset =
-      restoreTreeFocusViewportOffsetRef.current ?? 0;
+    const preservedViewportOffset = restoreTreeFocusViewportOffsetRef.current ?? 0;
     const pendingStickyFocusPath = pendingStickyFocusPathRef.current;
-    const pendingStickyKeyboardFocusPath =
-      pendingStickyKeyboardFocusPathRef.current;
-    const pendingStickyKeyboardViewportOffset =
-      pendingStickyKeyboardViewportOffsetRef.current;
-    const pendingStickyKeyboardScrollTop =
-      pendingStickyKeyboardScrollTopRef.current;
+    const pendingStickyKeyboardFocusPath = pendingStickyKeyboardFocusPathRef.current;
+    const pendingStickyKeyboardViewportOffset = pendingStickyKeyboardViewportOffsetRef.current;
+    const pendingStickyKeyboardScrollTop = pendingStickyKeyboardScrollTopRef.current;
     const focusWithinTree = activeTreeElement != null;
     const shouldOwnDomFocus = domFocusOwnerRef.current || focusWithinTree;
     const focusedPathChanged = previousFocusedPathRef.current !== focusedPath;
@@ -3046,23 +2760,19 @@ export function FileTreeView({
       focusedPath != null;
     let shouldSuppressDomFocusForScrollRequest = false;
     let shouldUpdateViewportForScrollRequest = false;
-    if (
-      scrollRequest != null &&
-      scrollRequest.id !== processedScrollRequestIdRef.current
-    ) {
+    if (scrollRequest != null && scrollRequest.id !== processedScrollRequestIdRef.current) {
       processedScrollRequestIdRef.current = scrollRequest.id;
       const scrollRequestIndex = scrollRequest.visibleIndex;
       const scrollRequestRow =
-        controller.getVisibleRows(scrollRequestIndex, scrollRequestIndex)[0] ??
-        null;
+        controller.getVisibleRows(scrollRequestIndex, scrollRequestIndex)[0] ?? null;
       if (scrollRequestRow != null) {
         const scrollRequestTopInset = stickyFolders
           ? Math.max(
               0,
               Math.min(
                 scrollRequestRow.ancestorPaths.length * itemHeight,
-                Math.max(0, resolvedViewportHeight - itemHeight)
-              )
+                Math.max(0, resolvedViewportHeight - itemHeight),
+              ),
             )
           : stickyOverlayHeight;
         shouldSuppressDomFocusForScrollRequest = true;
@@ -3073,7 +2783,7 @@ export function FileTreeView({
           resolvedViewportHeight,
           totalScrollableHeight,
           scrollRequest.offset,
-          scrollRequestTopInset
+          scrollRequestTopInset,
         );
       }
       controller.clearScrollRequest(scrollRequest.id);
@@ -3088,7 +2798,7 @@ export function FileTreeView({
         itemHeight,
         resolvedViewportHeight,
         totalScrollableHeight,
-        preservedViewportOffset
+        preservedViewportOffset,
       );
     const shouldRestoreStickyFocusedRowViewportOffset =
       !shouldSuppressDomFocusForScrollRequest &&
@@ -3100,7 +2810,7 @@ export function FileTreeView({
         itemHeight,
         resolvedViewportHeight,
         totalScrollableHeight,
-        stickyOverlayHeight
+        stickyOverlayHeight,
       );
     const shouldRestoreStickyKeyboardViewportOffset =
       !shouldSuppressDomFocusForScrollRequest &&
@@ -3112,7 +2822,7 @@ export function FileTreeView({
         itemHeight,
         resolvedViewportHeight,
         totalScrollableHeight,
-        pendingStickyKeyboardViewportOffset.viewportOffset
+        pendingStickyKeyboardViewportOffset.viewportOffset,
       );
     const shouldRestoreStickyKeyboardScrollTop =
       !shouldSuppressDomFocusForScrollRequest &&
@@ -3138,7 +2848,7 @@ export function FileTreeView({
           focusedIndex,
           itemHeight,
           resolvedViewportHeight,
-          stickyOverlayHeight
+          stickyOverlayHeight,
         ))
     ) {
       updateViewportRef.current();
@@ -3172,7 +2882,7 @@ export function FileTreeView({
           itemHeight,
           resolvedViewportHeight,
           totalScrollableHeight,
-          preservedViewportOffset
+          preservedViewportOffset,
         );
         updateViewportRef.current();
       }
@@ -3239,15 +2949,14 @@ export function FileTreeView({
     focusedRowHasVisibleAnchor
       ? focusedPath
       : null;
-  const pointerTriggerPath =
-    lastContextMenuInteraction === 'pointer' ? contextHoverPath : null;
+  const pointerTriggerPath = lastContextMenuInteraction === "pointer" ? contextHoverPath : null;
   const triggerPath =
     contextMenuState?.path ??
     debugContextMenuTriggerPathRef.current ??
     pointerTriggerPath ??
     focusTriggerPath ??
     contextHoverPath;
-  const isPointerContextMenuOpen = contextMenuState?.source === 'right-click';
+  const isPointerContextMenuOpen = contextMenuState?.source === "right-click";
 
   useLayoutEffect(() => {
     if (isScrollingRef.current && contextMenuState == null) {
@@ -3281,15 +2990,11 @@ export function FileTreeView({
       return;
     }
 
-    if (
-      target.closest?.(`[data-type="${CONTEXT_MENU_TRIGGER_TYPE}"]`) != null
-    ) {
+    if (target.closest?.(`[data-type="${CONTEXT_MENU_TRIGGER_TYPE}"]`) != null) {
       return;
     }
 
-    const stickyRowButton = target.closest?.(
-      '[data-file-tree-sticky-row="true"]'
-    );
+    const stickyRowButton = target.closest?.('[data-file-tree-sticky-row="true"]');
     const rowButton = target.closest?.('[data-type="item"]');
     const nextPath =
       stickyRowButton instanceof HTMLElement
@@ -3300,12 +3005,10 @@ export function FileTreeView({
 
     if (nextPath != null) {
       setLastContextMenuInteraction((previousMode) =>
-        previousMode === 'pointer' ? previousMode : 'pointer'
+        previousMode === "pointer" ? previousMode : "pointer",
       );
     }
-    setContextHoverPath((previousPath) =>
-      previousPath === nextPath ? previousPath : nextPath
-    );
+    setContextHoverPath((previousPath) => (previousPath === nextPath ? previousPath : nextPath));
   }, []);
 
   const handleTreePointerLeave = useCallback((): void => {
@@ -3322,50 +3025,39 @@ export function FileTreeView({
       controller.cancelDrag();
     };
 
-    window.addEventListener('dragend', handleWindowDragEnd);
+    window.addEventListener("dragend", handleWindowDragEnd);
     return () => {
-      window.removeEventListener('dragend', handleWindowDragEnd);
+      window.removeEventListener("dragend", handleWindowDragEnd);
       clearTouchDragResources();
       controller.cancelDrag();
     };
   }, [controller, dragAndDropEnabled]);
 
   const handleTreeDragOver = (event: DragEvent): void => {
-    if (
-      !dragAndDropEnabled ||
-      controller.getDragSession() == null ||
-      touchDragActiveRef.current
-    ) {
+    if (!dragAndDropEnabled || controller.getDragSession() == null || touchDragActiveRef.current) {
       return;
     }
 
     const nextTarget = resolveDropTargetFromElement(
-      event.target instanceof HTMLElement ? event.target : null
+      event.target instanceof HTMLElement ? event.target : null,
     );
     controller.setDragTarget(nextTarget);
     const resolvedTarget = controller.getDragSession()?.target ?? null;
     scheduleDragHoverOpen(resolvedTarget);
     updateDragPoint(event.clientX, event.clientY);
     if (event.dataTransfer != null) {
-      event.dataTransfer.dropEffect = 'move';
+      event.dataTransfer.dropEffect = "move";
     }
     event.preventDefault();
   };
 
   const handleTreeDragLeave = (event: DragEvent): void => {
-    if (
-      !dragAndDropEnabled ||
-      controller.getDragSession() == null ||
-      touchDragActiveRef.current
-    ) {
+    if (!dragAndDropEnabled || controller.getDragSession() == null || touchDragActiveRef.current) {
       return;
     }
 
     const nextTarget = event.relatedTarget;
-    if (
-      nextTarget instanceof Node &&
-      rootRef.current?.contains(nextTarget) === true
-    ) {
+    if (nextTarget instanceof Node && rootRef.current?.contains(nextTarget) === true) {
       return;
     }
 
@@ -3375,11 +3067,7 @@ export function FileTreeView({
   };
 
   const handleTreeDrop = (event: DragEvent): void => {
-    if (
-      !dragAndDropEnabled ||
-      controller.getDragSession() == null ||
-      touchDragActiveRef.current
-    ) {
+    if (!dragAndDropEnabled || controller.getDragSession() == null || touchDragActiveRef.current) {
       return;
     }
     event.preventDefault();
@@ -3405,22 +3093,15 @@ export function FileTreeView({
   // edge keeps the synced window from being pulled upward. The top edge stays
   // tied to the viewport bottom so a lagging window still fills the view while
   // the user scrolls quickly downward.
-  const windowStickyTopInset = Math.min(
-    0,
-    resolvedViewportHeight - windowHeight
-  );
+  const windowStickyTopInset = Math.min(0, resolvedViewportHeight - windowHeight);
   const windowStickyBottomInset = Math.min(
     0,
-    resolvedViewportHeight - windowHeight - stickyOverlayHeight
+    resolvedViewportHeight - windowHeight - stickyOverlayHeight,
   );
   const shouldRenderParkedFocusedRow =
-    activeItemPath === focusedPath ||
-    restoreTreeFocusAfterSearchCloseRef.current;
+    activeItemPath === focusedPath || restoreTreeFocusAfterSearchCloseRef.current;
   const parkedFocusedRow =
-    focusedPath != null &&
-    shouldRenderParkedFocusedRow &&
-    !focusedRowIsMounted &&
-    focusedIndex >= 0
+    focusedPath != null && shouldRenderParkedFocusedRow && !focusedRowIsMounted && focusedIndex >= 0
       ? (visibleRows[focusedIndex] ??
         controller.getVisibleRows(focusedIndex, focusedIndex)[0] ??
         null)
@@ -3428,12 +3109,7 @@ export function FileTreeView({
   const parkedFocusedRowOffset =
     parkedFocusedRow == null
       ? null
-      : getParkedFocusedRowOffset(
-          focusedIndex,
-          itemHeight,
-          range,
-          windowHeight
-        );
+      : getParkedFocusedRowOffset(focusedIndex, itemHeight, range, windowHeight);
   const draggedRowSnapshot = dragRowSnapshotRef.current;
   const draggedRowIsMounted =
     draggedPrimaryPath != null &&
@@ -3452,31 +3128,19 @@ export function FileTreeView({
   const parkedDraggedRowOffset =
     parkedDraggedRow == null
       ? null
-      : getParkedFocusedRowOffset(
-          parkedDraggedRow.index,
-          itemHeight,
-          range,
-          windowHeight
-        );
+      : getParkedFocusedRowOffset(parkedDraggedRow.index, itemHeight, range, windowHeight);
   const focusedVisibleRow =
     focusedIndex >= 0
       ? (visibleRows[focusedIndex] ??
         controller.getVisibleRows(focusedIndex, focusedIndex)[0] ??
         null)
       : null;
-  const guideStyleText = getFileTreeGuideStyleText(
-    focusedVisibleRow?.ancestorPaths.at(-1) ?? null
-  );
+  const guideStyleText = getFileTreeGuideStyleText(focusedVisibleRow?.ancestorPaths.at(-1) ?? null);
   const activeDescendantId =
     isSearchOpen && focusedPath != null
-      ? getFileTreeFocusedRowDomId(
-          instanceId,
-          focusedPath,
-          !focusedRowIsMounted
-        )
+      ? getFileTreeFocusedRowDomId(instanceId, focusedPath, !focusedRowIsMounted)
       : undefined;
-  const visualFocusPath =
-    contextMenuState?.path ?? (isSearchOpen ? focusedPath : activeItemPath);
+  const visualFocusPath = contextMenuState?.path ?? (isSearchOpen ? focusedPath : activeItemPath);
   const visualContextHoverPath = contextMenuState?.path ?? contextHoverPath;
   const triggerButton = getTriggerAnchorButton(triggerPath);
   const triggerButtonVisible =
@@ -3501,8 +3165,8 @@ export function FileTreeView({
     pointerAnchorRect != null
       ? {
           left: `${pointerAnchorRect.left}px`,
-          position: 'fixed',
-          right: 'auto',
+          position: "fixed",
+          right: "auto",
           top: `${pointerAnchorRect.top}px`,
         }
       : rowAnchorTop != null
@@ -3512,7 +3176,7 @@ export function FileTreeView({
         : undefined;
   const contextMenuTriggerStyle = isPointerContextMenuOpen
     ? {
-        opacity: '0',
+        opacity: "0",
       }
     : undefined;
 
@@ -3521,7 +3185,7 @@ export function FileTreeView({
       event: MouseEvent,
       row: FileTreeVisibleRow,
       targetPath: string,
-      mode: FileTreeRenderedRowMode
+      mode: FileTreeRenderedRowMode,
     ): void => {
       const plan = computeFileTreeRowClickPlan({
         event: {
@@ -3529,13 +3193,12 @@ export function FileTreeView({
           metaKey: event.metaKey,
           shiftKey: event.shiftKey,
         },
-        isDirectory: row.kind === 'directory',
+        isDirectory: row.kind === "directory",
         isSearchOpen,
         mode,
       });
 
-      const shouldToggleDirectory =
-        plan.toggleDirectory && row.kind === 'directory';
+      const shouldToggleDirectory = plan.toggleDirectory && row.kind === "directory";
       const mountedDirectoryPath = shouldToggleDirectory
         ? controller.resolveMountedDirectoryPathFromInput(targetPath)
         : null;
@@ -3545,13 +3208,13 @@ export function FileTreeView({
       const actionTargetPath = mountedDirectoryPath ?? targetPath;
 
       switch (plan.selection.kind) {
-        case 'range':
+        case "range":
           controller.selectPathRange(actionTargetPath, plan.selection.additive);
           break;
-        case 'toggle':
+        case "toggle":
           controller.togglePathSelectionFromInput(actionTargetPath);
           break;
-        case 'single':
+        case "single":
           controller.selectOnlyMountedPathFromInput(actionTargetPath);
           break;
       }
@@ -3562,18 +3225,18 @@ export function FileTreeView({
         row.index >= layoutSnapshot.visible.startIndex &&
         row.index <= layoutSnapshot.visible.endIndex;
       const shouldExposeFocusedTrigger =
-        mode === 'flow' &&
+        mode === "flow" &&
         clickedRowIsVisible &&
         clickedElement != null &&
-        clickedElement.dataset.itemParked !== 'true';
+        clickedElement.dataset.itemParked !== "true";
 
       controller.focusMountedPathFromInput(actionTargetPath);
       if (shouldExposeFocusedTrigger) {
         domFocusOwnerRef.current = true;
         setActiveItemPath((previousPath) =>
-          previousPath === actionTargetPath ? previousPath : actionTargetPath
+          previousPath === actionTargetPath ? previousPath : actionTargetPath,
         );
-        setLastContextMenuInteraction('focus');
+        setLastContextMenuInteraction("focus");
       }
       if (shouldToggleDirectory) {
         controller.toggleMountedDirectoryFromInput(actionTargetPath);
@@ -3583,7 +3246,7 @@ export function FileTreeView({
       }
       if (plan.revealCanonical) {
         revealCanonicalRowAtStickyOffset(actionTargetPath, {
-          targetOffset: 'sticky-parents',
+          targetOffset: "sticky-parents",
         });
       }
     },
@@ -3593,7 +3256,7 @@ export function FileTreeView({
       layoutSnapshot.visible.endIndex,
       layoutSnapshot.visible.startIndex,
       revealCanonicalRowAtStickyOffset,
-    ]
+    ],
   );
 
   const openMenuFromTrigger = (): void => {
@@ -3619,12 +3282,12 @@ export function FileTreeView({
     setContextMenuState({
       anchorRect: null,
       item: {
-        kind: triggerItem.isDirectory() ? 'directory' : 'file',
-        name: triggerButton.getAttribute('aria-label') ?? triggerPath,
+        kind: triggerItem.isDirectory() ? "directory" : "file",
+        name: triggerButton.getAttribute("aria-label") ?? triggerPath,
         path: triggerItem.getPath(),
       },
       path: triggerItem.getPath(),
-      source: 'button',
+      source: "button",
     });
   };
 
@@ -3682,11 +3345,9 @@ export function FileTreeView({
         contextMenuEnabled ? contextMenuTriggerMode : undefined
       }
       data-file-tree-has-context-menu-action-lane={
-        contextMenuEnabled && contextMenuButtonTriggerEnabled
-          ? 'true'
-          : undefined
+        contextMenuEnabled && contextMenuButtonTriggerEnabled ? "true" : undefined
       }
-      data-file-tree-has-git-lane={gitLaneActive ? 'true' : undefined}
+      data-file-tree-has-git-lane={gitLaneActive ? "true" : undefined}
       data-file-tree-virtualized-root="true"
       onDragLeave={dragAndDropEnabled ? handleTreeDragLeave : undefined}
       onDragOver={dragAndDropEnabled ? handleTreeDragOver : undefined}
@@ -3697,8 +3358,8 @@ export function FileTreeView({
       role="tree"
       tabIndex={-1}
       style={{
-        outline: 'none',
-        position: 'relative',
+        outline: "none",
+        position: "relative",
       }}
     >
       <style
@@ -3707,19 +3368,14 @@ export function FileTreeView({
       />
       <slot name={HEADER_SLOT_NAME} data-type="header-slot" />
       {searchEnabled ? (
-        <div
-          data-file-tree-search-container
-          data-open={isSearchOpen ? 'true' : 'false'}
-        >
+        <div data-file-tree-search-container data-open={isSearchOpen ? "true" : "false"}>
           <input
             ref={searchInputRef}
             aria-activedescendant={activeDescendantId}
             aria-controls={treeDomId}
             placeholder="Search…"
             data-file-tree-search-input
-            data-file-tree-search-input-fake-focus={
-              fakeSearchFocusActive ? 'true' : undefined
-            }
+            data-file-tree-search-input-fake-focus={fakeSearchFocusActive ? "true" : undefined}
             value={searchValue}
             onBlur={() => {
               // With `retain`, only protect against blurs that happen before
@@ -3727,10 +3383,7 @@ export function FileTreeView({
               // focus cascade when multiple trees initialize). Once the user
               // has focused or typed, the normal close-on-blur behavior
               // resumes.
-              if (
-                searchBlurBehavior === 'retain' &&
-                !searchInputUserInteractedRef.current
-              ) {
+              if (searchBlurBehavior === "retain" && !searchInputUserInteractedRef.current) {
                 return;
               }
               controller.closeSearch();
@@ -3758,16 +3411,16 @@ export function FileTreeView({
                   entry.row,
                   `sticky:${getFileTreeRowPath(entry.row)}`,
                   {
-                    mode: 'sticky',
+                    mode: "sticky",
                     style: {
-                      left: '0',
-                      position: 'absolute',
-                      right: '0',
+                      left: "0",
+                      position: "absolute",
+                      right: "0",
                       top: `${entry.top}px`,
                       zIndex: `${stickyRows.length - index}`,
                     },
-                  }
-                )
+                  },
+                ),
               )}
             </div>
           </div>
@@ -3792,25 +3445,18 @@ export function FileTreeView({
           >
             {renderRangeChildren(flowRowFrame, range, stickyRowPathSet)}
             {parkedFocusedRow != null && parkedFocusedRowOffset != null
-              ? renderStyledRow(
-                  flowRowFrame,
-                  parkedFocusedRow,
-                  `parked:${parkedFocusedRow.path}`,
-                  {
-                    isParked: true,
-                    style: {
-                      left: '0',
-                      opacity: '0',
-                      pointerEvents:
-                        draggedPrimaryPath === parkedFocusedRow.path
-                          ? 'none'
-                          : undefined,
-                      position: 'absolute',
-                      right: '0',
-                      top: `${parkedFocusedRowOffset}px`,
-                    },
-                  }
-                )
+              ? renderStyledRow(flowRowFrame, parkedFocusedRow, `parked:${parkedFocusedRow.path}`, {
+                  isParked: true,
+                  style: {
+                    left: "0",
+                    opacity: "0",
+                    pointerEvents:
+                      draggedPrimaryPath === parkedFocusedRow.path ? "none" : undefined,
+                    position: "absolute",
+                    right: "0",
+                    top: `${parkedFocusedRowOffset}px`,
+                  },
+                })
               : null}
             {parkedDraggedRow != null && parkedDraggedRowOffset != null
               ? renderStyledRow(
@@ -3820,14 +3466,14 @@ export function FileTreeView({
                   {
                     isParked: true,
                     style: {
-                      left: '0',
-                      opacity: '0',
-                      pointerEvents: 'none',
-                      position: 'absolute',
-                      right: '0',
+                      left: "0",
+                      opacity: "0",
+                      pointerEvents: "none",
+                      position: "absolute",
+                      right: "0",
                       top: `${parkedDraggedRowOffset}px`,
                     },
-                  }
+                  },
                 )
               : null}
           </div>
@@ -3837,7 +3483,7 @@ export function FileTreeView({
         <div
           ref={contextMenuAnchorRef}
           data-type="context-menu-anchor"
-          data-visible={contextMenuAnchorVisible ? 'true' : 'false'}
+          data-visible={contextMenuAnchorVisible ? "true" : "false"}
           style={contextMenuAnchorStyle}
         >
           <button
@@ -3846,8 +3492,8 @@ export function FileTreeView({
             data-type={CONTEXT_MENU_TRIGGER_TYPE}
             aria-label="Options"
             aria-haspopup="menu"
-            aria-expanded={contextMenuState != null ? 'true' : 'false'}
-            data-visible={triggerButtonVisible ? 'true' : 'false'}
+            aria-expanded={contextMenuState != null ? "true" : "false"}
+            data-visible={triggerButtonVisible ? "true" : "false"}
             onMouseDown={(event) => {
               event.preventDefault();
             }}
@@ -3864,11 +3510,9 @@ export function FileTreeView({
             tabIndex={-1}
             style={contextMenuTriggerStyle}
           >
-            <Icon {...resolveIcon('file-tree-icon-ellipsis')} />
+            <Icon {...resolveIcon("file-tree-icon-ellipsis")} />
           </button>
-          {contextMenuState != null ? (
-            <slot name={CONTEXT_MENU_SLOT_NAME} />
-          ) : null}
+          {contextMenuState != null ? <slot name={CONTEXT_MENU_SLOT_NAME} /> : null}
         </div>
       ) : null}
 

@@ -82,7 +82,7 @@ interface FamilyPoolCandidate {
  * filters by `detectModelFamily(model) === family`.
  */
 export function buildFamilyCandidateFilter(
-  family: ModelFamily
+  family: ModelFamily,
 ): (candidate: FamilyPoolCandidate) => boolean {
   const providerOverride = FAMILY_PROVIDER_OVERRIDE[family];
   if (providerOverride) {

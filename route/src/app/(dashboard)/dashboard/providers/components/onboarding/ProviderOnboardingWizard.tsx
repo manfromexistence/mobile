@@ -84,7 +84,7 @@ function providerText(
   t: ProviderMessageTranslator,
   key: string,
   fallback: string,
-  values?: Record<string, unknown>
+  values?: Record<string, unknown>,
 ): string {
   if (typeof t.has === "function" && t.has(key)) {
     return t(key, values);
@@ -92,7 +92,7 @@ function providerText(
   if (values) {
     return Object.entries(values).reduce(
       (acc, [name, value]) => acc.replaceAll(`{${name}}`, String(value)),
-      fallback
+      fallback,
     );
   }
   return fallback;
@@ -158,7 +158,7 @@ function ProviderOptionCard({
         <div className="flex items-center gap-3">
           <div
             className={`flex size-10 items-center justify-center rounded-lg text-white ${getProviderIconClass(
-              option.id
+              option.id,
             )}`}
           >
             <span className="material-symbols-outlined text-[22px]">{option.icon}</span>
@@ -221,7 +221,7 @@ function ResultSummary({
                   ? providerText(
                       t,
                       "onboardingProviderSavedWithWarnings",
-                      "Provider saved with warnings"
+                      "Provider saved with warnings",
                     )
                   : providerText(t, "onboardingProviderFinished", "Provider onboarding finished")}
             </h2>
@@ -402,7 +402,7 @@ export default function ProviderOnboardingWizard() {
       setError(
         submitError instanceof Error
           ? submitError.message
-          : text("onboardingProviderFailed", "Provider onboarding failed")
+          : text("onboardingProviderFailed", "Provider onboarding failed"),
       );
       setStep("result");
     } finally {
@@ -419,7 +419,7 @@ export default function ProviderOnboardingWizard() {
       setStatus(text("onboardingCreatingCompatibleProvider", "Creating compatible provider…"));
       const node = await createCompatibleProviderNode(customForm);
       setStatus(
-        text("onboardingSavingCompatibleConnection", "Saving compatible provider connection…")
+        text("onboardingSavingCompatibleConnection", "Saving compatible provider connection…"),
       );
       const providerName =
         node.name || text("onboardingCustomProviderFallbackName", "Custom provider");
@@ -436,7 +436,7 @@ export default function ProviderOnboardingWizard() {
       setError(
         submitError instanceof Error
           ? submitError.message
-          : text("onboardingCustomProviderFailed", "Custom provider onboarding failed")
+          : text("onboardingCustomProviderFailed", "Custom provider onboarding failed"),
       );
       setStep("result");
     } finally {
@@ -462,7 +462,7 @@ export default function ProviderOnboardingWizard() {
       setStatus(text("onboardingLoadingOAuthConnection", "Loading OAuth connection…"));
       const connections = await fetchOnboardingConnections();
       const matchingConnections = connections.filter(
-        (connection) => connection.provider === selectedProvider.id
+        (connection) => connection.provider === selectedProvider.id,
       );
       const connection =
         matchingConnections.find((candidate) => !knownOAuthConnectionIds.has(candidate.id)) ||
@@ -472,8 +472,8 @@ export default function ProviderOnboardingWizard() {
         throw new Error(
           text(
             "onboardingOAuthNoConnectionFound",
-            "OAuth finished, but no provider connection was found."
-          )
+            "OAuth finished, but no provider connection was found.",
+          ),
         );
       }
       setCreatedConnection(connection);
@@ -483,7 +483,7 @@ export default function ProviderOnboardingWizard() {
       setError(
         oauthError instanceof Error
           ? oauthError.message
-          : text("onboardingOAuthFailed", "OAuth onboarding failed")
+          : text("onboardingOAuthFailed", "OAuth onboarding failed"),
       );
       setStep("result");
     } finally {
@@ -493,12 +493,12 @@ export default function ProviderOnboardingWizard() {
   };
 
   const customReady = Boolean(
-    customForm.name.trim() && customForm.prefix.trim() && customForm.baseUrl.trim()
+    customForm.name.trim() && customForm.prefix.trim() && customForm.baseUrl.trim(),
   );
   const apiKeyReady = Boolean(
     selectedProvider &&
-    apiKeyForm.name.trim() &&
-    (selectedProvider.apiKeyOptional || apiKeyForm.apiKey.trim())
+      apiKeyForm.name.trim() &&
+      (selectedProvider.apiKeyOptional || apiKeyForm.apiKey.trim()),
   );
 
   return (
@@ -517,7 +517,7 @@ export default function ProviderOnboardingWizard() {
           <p className="mt-2 max-w-2xl text-sm text-text-muted">
             {text(
               "onboardingWizardDescription",
-              "Connect API-key, custom compatible, and OAuth providers with validation, persistence, and an immediate connection test."
+              "Connect API-key, custom compatible, and OAuth providers with validation, persistence, and an immediate connection test.",
             )}
           </p>
         </div>
@@ -565,7 +565,7 @@ export default function ProviderOnboardingWizard() {
                 title: text("onboardingTypeApiKeyTitle", "API-key provider"),
                 text: text(
                   "onboardingTypeApiKeyText",
-                  "Use built-in providers such as OpenAI, Anthropic, Gemini, Groq, Azure, and more."
+                  "Use built-in providers such as OpenAI, Anthropic, Gemini, Groq, Azure, and more.",
                 ),
               },
               {
@@ -574,7 +574,7 @@ export default function ProviderOnboardingWizard() {
                 title: text("onboardingTypeCustomTitle", "Custom compatible provider"),
                 text: text(
                   "onboardingTypeCustomText",
-                  "Create an OpenAI-, Anthropic-, or Claude Code-compatible endpoint and add its key."
+                  "Create an OpenAI-, Anthropic-, or Claude Code-compatible endpoint and add its key.",
                 ),
               },
               {
@@ -583,7 +583,7 @@ export default function ProviderOnboardingWizard() {
                 title: text("onboardingTypeOAuthTitle", "OAuth provider"),
                 text: text(
                   "onboardingTypeOAuthText",
-                  "Reuse the existing OAuth, device-code, or local import flows for coding providers."
+                  "Reuse the existing OAuth, device-code, or local import flows for coding providers.",
                 ),
               },
             ].map((item) => (
@@ -617,7 +617,7 @@ export default function ProviderOnboardingWizard() {
                 <p className="text-sm text-text-muted">
                   {text(
                     "onboardingChooseProviderDescription",
-                    "Select a provider, then the wizard will guide you through credentials and testing."
+                    "Select a provider, then the wizard will guide you through credentials and testing.",
                   )}
                 </p>
               </div>
@@ -687,7 +687,7 @@ export default function ProviderOnboardingWizard() {
                 placeholder="https://api.example.com/v1"
                 hint={text(
                   "onboardingBaseUrlOverrideHint",
-                  "Optional. Stored as providerSpecificData.baseUrl."
+                  "Optional. Stored as providerSpecificData.baseUrl.",
                 )}
               />
               <Input
@@ -702,7 +702,7 @@ export default function ProviderOnboardingWizard() {
                 onChange={(event) => setApiKeyForm({ ...apiKeyForm, cx: event.target.value })}
                 placeholder={text(
                   "onboardingProviderSpecificIdPlaceholder",
-                  "Optional provider-specific id"
+                  "Optional provider-specific id",
                 )}
               />
               <Input
@@ -736,13 +736,13 @@ export default function ProviderOnboardingWizard() {
                 <h2 className="text-xl font-semibold text-text-main">
                   {text(
                     "onboardingCreateCustomCompatibleProvider",
-                    "Create custom compatible provider"
+                    "Create custom compatible provider",
                   )}
                 </h2>
                 <p className="text-sm text-text-muted">
                   {text(
                     "onboardingCreateCustomCompatibleDescription",
-                    "The wizard creates a provider node first, then stores and tests its API-key connection."
+                    "The wizard creates a provider node first, then stores and tests its API-key connection.",
                   )}
                 </p>
               </div>
@@ -796,7 +796,7 @@ export default function ProviderOnboardingWizard() {
                 placeholder="my-gateway"
                 hint={text(
                   "onboardingProviderPrefixHint",
-                  "Used to generate the managed provider id."
+                  "Used to generate the managed provider id.",
                 )}
               />
               <Input
@@ -864,7 +864,7 @@ export default function ProviderOnboardingWizard() {
             <div className="rounded-lg border border-border bg-bg-subtle p-4 text-sm text-text-muted">
               {text(
                 "onboardingOAuthFlowDescription",
-                "OmniRoute will open the existing OAuth flow for this provider. After login, the wizard reloads the saved connection and runs the same connection test as the provider page."
+                "OmniRoute will open the existing OAuth flow for this provider. After login, the wizard reloads the saved connection and runs the same connection test as the provider page.",
               )}
             </div>
             <div className="flex flex-wrap gap-2">

@@ -92,8 +92,8 @@ test("POST /api/acp/agents rejects unsafe version commands for authenticated ses
         spawnArgs: [],
         protocol: "stdio",
       },
-      token
-    )
+      token,
+    ),
   );
   const body = (await response.json()) as any;
 

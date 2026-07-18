@@ -1,6 +1,6 @@
-import { sentryVitePlugin } from "@sentry/vite-plugin"
-import { defineConfig } from "vite"
-import desktopPlugin from "./vite"
+import { sentryVitePlugin } from "@sentry/vite-plugin";
+import { defineConfig } from "vite";
+import desktopPlugin from "./vite";
 
 const sentry =
   process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT
@@ -17,7 +17,7 @@ const sentry =
           filesToDeleteAfterUpload: "./dist/**/*.map",
         },
       })
-    : false
+    : false;
 
 export default defineConfig({
   plugins: [desktopPlugin, sentry] as any,
@@ -30,4 +30,4 @@ export default defineConfig({
     target: "esnext",
     sourcemap: true,
   },
-})
+});

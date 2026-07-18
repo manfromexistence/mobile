@@ -37,7 +37,7 @@ function resolveMappedModel(model: string, mapping: CliproxyapiModelMapping): st
  */
 export function applyCliproxyapiModelMapping(
   input: ExecutorInput,
-  mapping: CliproxyapiModelMapping
+  mapping: CliproxyapiModelMapping,
 ): ExecutorInput {
   const mappedModel = resolveMappedModel(input.model, mapping);
   if (!mappedModel) return input;
@@ -57,7 +57,7 @@ export function applyCliproxyapiModelMapping(
  */
 export function wrapExecutorWithCliproxyapiModelMapping<T extends ExecutorLike>(
   executor: T,
-  mapping: CliproxyapiModelMapping
+  mapping: CliproxyapiModelMapping,
 ): T {
   if (!mapping || typeof mapping !== "object" || Object.keys(mapping).length === 0) {
     return executor;

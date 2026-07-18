@@ -80,8 +80,9 @@ test("detectRestrictedEnvironment detecta Gitpod via GITPOD_WORKSPACE_ID", async
 });
 
 test("getEnvBanner retorna null em ambiente desktop", async () => {
-  const { getEnvBanner, detectRestrictedEnvironment } =
-    await import("../../bin/cli/utils/environment.mjs");
+  const { getEnvBanner, detectRestrictedEnvironment } = await import(
+    "../../bin/cli/utils/environment.mjs"
+  );
   const env = detectRestrictedEnvironment();
   if (env.type !== "desktop") return; // não pode testar desktop se rodando em CI/Codespaces
   const banner = getEnvBanner();

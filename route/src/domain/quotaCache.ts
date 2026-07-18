@@ -113,7 +113,7 @@ function normalizeWindowKey(value: unknown): string {
 
 function resolveQuotaWindow(
   quotas: Record<string, QuotaInfo>,
-  windowName: string
+  windowName: string,
 ): QuotaInfo | null {
   const direct = quotas[windowName];
   if (direct) return direct;
@@ -173,7 +173,7 @@ export function quotaSnapshotChanged(
     | undefined,
   windowKey: string,
   remainingPercentage: number,
-  exhausted: boolean
+  exhausted: boolean,
 ): boolean {
   if (!prior) return true;
   const priorWindow = prior.quotas?.[windowKey];
@@ -208,7 +208,7 @@ export function __clearForTests() {
 export function isQuotaExhaustedForRequest(
   connectionId: string,
   provider: string,
-  requestedModel: string | null = null
+  requestedModel: string | null = null,
 ): boolean {
   if (!isAccountQuotaExhausted(connectionId)) return false;
   if (provider !== "codex" || !requestedModel) return true;
@@ -220,7 +220,7 @@ export function isQuotaExhaustedForRequest(
   return (
     scopedWindowNames.length > 0 &&
     scopedWindowNames.every(
-      (windowName) => getQuotaWindowStatus(connectionId, windowName, 100)?.reachedThreshold
+      (windowName) => getQuotaWindowStatus(connectionId, windowName, 100)?.reachedThreshold,
     )
   );
 }
@@ -231,7 +231,7 @@ export function isQuotaExhaustedForRequest(
 export function setQuotaCache(
   connectionId: string,
   provider: string,
-  rawQuotas: Record<string, any>
+  rawQuotas: Record<string, any>,
 ) {
   const quotas = normalizeQuotas(rawQuotas);
   const exhausted = isExhausted(quotas);
@@ -332,7 +332,7 @@ function hydrateQuotaCacheFromSnapshots(connectionId: string): QuotaCacheEntry |
     provider = provider || snapshot.provider || "";
     quotas[windowKey] = {
       remainingPercentage: clampPercent(
-        Number(camelSnapshot.remainingPercentage ?? snapshot.remaining_percentage ?? 0)
+        Number(camelSnapshot.remainingPercentage ?? snapshot.remaining_percentage ?? 0),
       ),
       resetAt: camelSnapshot.nextResetAt ?? snapshot.next_reset_at ?? null,
     };
@@ -397,7 +397,7 @@ export function isAccountQuotaExhausted(connectionId: string): boolean {
 export function getQuotaWindowStatus(
   connectionId: string,
   windowName: string,
-  thresholdPercent = DEFAULT_QUOTA_THRESHOLD_PERCENT
+  thresholdPercent = DEFAULT_QUOTA_THRESHOLD_PERCENT,
 ): QuotaWindowStatus | null {
   const entry = cache.get(connectionId) || hydrateQuotaCacheFromSnapshots(connectionId);
   if (!entry) return null;
@@ -461,7 +461,7 @@ async function refreshEntry(entry: QuotaCacheEntry) {
 
     const proxyInfo = await resolveProxyForConnection(entry.connectionId);
     const usage = await runWithProxyContext(proxyInfo?.proxy || null, () =>
-      getUsageForProvider(connection)
+      getUsageForProvider(connection),
     );
 
     if (usage?.quotas) {
@@ -470,7 +470,7 @@ async function refreshEntry(entry: QuotaCacheEntry) {
   } catch (err) {
     console.warn(
       `[QuotaCache] Refresh failed for ${entry.connectionId.slice(0, 8)}:`,
-      (err as any)?.message || err
+      (err as any)?.message || err,
     );
   } finally {
     refreshingSet.delete(entry.connectionId);

@@ -60,7 +60,7 @@ test("auth login/logout routes emit structured audit events with ip and request 
         "x-request-id": "req-auth-login",
       },
       body: JSON.stringify({ password: "admin-secret" }),
-    })
+    }),
   );
 
   assert.equal(loginResponse.status, 200);
@@ -74,7 +74,7 @@ test("auth login/logout routes emit structured audit events with ip and request 
         "x-forwarded-for": "198.51.100.10",
         "x-request-id": "req-auth-logout",
       },
-    })
+    }),
   );
 
   assert.equal(logoutResponse.status, 200);
@@ -109,7 +109,7 @@ test("auth login route records failed password attempts", async () => {
         "x-request-id": "req-auth-failed",
       },
       body: JSON.stringify({ password: "wrong-password" }),
-    })
+    }),
   );
 
   assert.equal(response.status, 401);
@@ -136,7 +136,7 @@ test("provider create/update/delete routes emit sanitized credential audit event
         name: "Primary OpenAI",
         defaultModel: "gpt-4o-mini",
       },
-    })
+    }),
   );
 
   assert.equal(createResponse.status, 201);
@@ -157,7 +157,7 @@ test("provider create/update/delete routes emit sanitized credential audit event
         isActive: false,
       },
     }),
-    { params: Promise.resolve({ id: connectionId }) }
+    { params: Promise.resolve({ id: connectionId }) },
   );
 
   assert.equal(updateResponse.status, 200);
@@ -170,7 +170,7 @@ test("provider create/update/delete routes emit sanitized credential audit event
         "x-request-id": "req-provider-delete",
       },
     }),
-    { params: Promise.resolve({ id: connectionId }) }
+    { params: Promise.resolve({ id: connectionId }) },
   );
 
   assert.equal(deleteResponse.status, 200);

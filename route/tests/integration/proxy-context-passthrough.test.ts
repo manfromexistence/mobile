@@ -10,8 +10,16 @@ import { createChatPipelineHarness } from "./_chatPipelineHarness.ts";
 //     provider-side count call (it used to run with no proxy context at all)
 
 const harness = await createChatPipelineHarness("proxy-context-passthrough");
-const { buildClaudeResponse, buildRequest, combosDb, handleChat, resetStorage, seedConnection, settingsDb, toPlainHeaders } =
-  harness;
+const {
+  buildClaudeResponse,
+  buildRequest,
+  combosDb,
+  handleChat,
+  resetStorage,
+  seedConnection,
+  settingsDb,
+  toPlainHeaders,
+} = harness;
 const proxiesDb = await import("../../src/lib/db/proxies.ts");
 const { resolveProxyForRequest } = await import("../../open-sse/utils/proxyFetch.ts");
 const countTokensRoute = await import("../../src/app/api/v1/messages/count_tokens/route.ts");
@@ -66,11 +74,11 @@ test("combo targets each execute under their own connection's proxy", async () =
 
     await proxiesDb.createProxyAndAssign(
       { name: "proxy-a", type: "http", host: "127.0.0.1", port: stubA.port },
-      { scope: "account", scopeId: openaiConn.id }
+      { scope: "account", scopeId: openaiConn.id },
     );
     await proxiesDb.createProxyAndAssign(
       { name: "proxy-b", type: "http", host: "127.0.0.1", port: stubB.port },
-      { scope: "account", scopeId: claudeConn.id }
+      { scope: "account", scopeId: claudeConn.id },
     );
 
     await combosDb.createCombo({
@@ -110,7 +118,7 @@ test("combo targets each execute under their own connection's proxy", async () =
           stream: false,
           messages: [{ role: "user", content: "proxy per target" }],
         },
-      })
+      }),
     );
 
     const body = (await response.json()) as any;
@@ -120,12 +128,12 @@ test("combo targets each execute under their own connection's proxy", async () =
     assert.ok(proxySeen.openai, "openai target must run inside a proxy context");
     assert.ok(
       proxySeen.openai!.includes(`127.0.0.1:${stubA.port}`),
-      `openai target must use proxy-a (saw ${proxySeen.openai})`
+      `openai target must use proxy-a (saw ${proxySeen.openai})`,
     );
     assert.ok(proxySeen.claude, "claude target must run inside a proxy context");
     assert.ok(
       proxySeen.claude!.includes(`127.0.0.1:${stubB.port}`),
-      `claude fallback target must use proxy-b (saw ${proxySeen.claude})`
+      `claude fallback target must use proxy-b (saw ${proxySeen.claude})`,
     );
   } finally {
     await stubA.close();
@@ -144,7 +152,7 @@ test("count_tokens provider call runs inside the connection's proxy context", as
 
     await proxiesDb.createProxyAndAssign(
       { name: "proxy-count", type: "http", host: "127.0.0.1", port: stub.port },
-      { scope: "account", scopeId: claudeConn.id }
+      { scope: "account", scopeId: claudeConn.id },
     );
 
     let providerCallProxy: string | null | undefined;
@@ -169,7 +177,7 @@ test("count_tokens provider call runs inside the connection's proxy context", as
           model: "claude/claude-3-5-sonnet-20241022",
           messages: [{ role: "user", content: "count me" }],
         }),
-      })
+      }),
     );
 
     const body = (await response.json()) as any;
@@ -179,11 +187,11 @@ test("count_tokens provider call runs inside the connection's proxy context", as
 
     assert.ok(
       providerCallProxy,
-      "count_tokens provider call must run inside the connection's proxy context"
+      "count_tokens provider call must run inside the connection's proxy context",
     );
     assert.ok(
       providerCallProxy!.includes(`127.0.0.1:${stub.port}`),
-      `count_tokens must use the account proxy (saw ${providerCallProxy})`
+      `count_tokens must use the account proxy (saw ${providerCallProxy})`,
     );
   } finally {
     await stub.close();

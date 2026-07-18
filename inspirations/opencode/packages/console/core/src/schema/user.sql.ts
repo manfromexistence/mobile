@@ -1,8 +1,16 @@
-import { mysqlTable, uniqueIndex, varchar, int, mysqlEnum, index, bigint } from "drizzle-orm/mysql-core"
-import { timestamps, ulid, utc, workspaceColumns } from "../drizzle/types"
-import { workspaceIndexes } from "./workspace.sql"
+import {
+  mysqlTable,
+  uniqueIndex,
+  varchar,
+  int,
+  mysqlEnum,
+  index,
+  bigint,
+} from "drizzle-orm/mysql-core";
+import { timestamps, ulid, utc, workspaceColumns } from "../drizzle/types";
+import { workspaceIndexes } from "./workspace.sql";
 
-export const UserRole = ["admin", "member"] as const
+export const UserRole = ["admin", "member"] as const;
 
 export const UserTable = mysqlTable(
   "user",
@@ -26,4 +34,4 @@ export const UserTable = mysqlTable(
     index("global_account_id").on(table.accountID),
     index("global_email").on(table.email),
   ],
-)
+);

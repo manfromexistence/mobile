@@ -1,12 +1,12 @@
-import type { MarkdownToken } from "./markdown-worker-protocol"
+import type { MarkdownToken } from "./markdown-worker-protocol";
 
 export type RenderedCodeState = {
-  language: string
-  generation: number
-  stableCount: number
-  unstable: MarkdownToken[]
-  raw: string
-}
+  language: string;
+  generation: number;
+  stableCount: number;
+  unstable: MarkdownToken[];
+  raw: string;
+};
 
 export function shouldResetCodeTokens(
   previous: RenderedCodeState | undefined,
@@ -18,5 +18,5 @@ export function shouldResetCodeTokens(
     previous.generation !== next.generation ||
     next.stableCount < previous.stableCount ||
     !next.raw.startsWith(previous.raw)
-  )
+  );
 }

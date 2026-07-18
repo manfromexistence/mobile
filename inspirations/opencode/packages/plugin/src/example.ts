@@ -1,5 +1,5 @@
-import { Plugin } from "./index.js"
-import { tool } from "./tool.js"
+import { Plugin } from "./index.js";
+import { tool } from "./tool.js";
 
 export const ExamplePlugin: Plugin = async (_ctx) => {
   return {
@@ -10,9 +10,9 @@ export const ExamplePlugin: Plugin = async (_ctx) => {
           foo: tool.schema.string().describe("foo"),
         },
         async execute(args) {
-          return `Hello ${args.foo}!`
+          return `Hello ${args.foo}!`;
         },
       }),
     },
-  }
-}
+  };
+};

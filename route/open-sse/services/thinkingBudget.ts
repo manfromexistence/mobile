@@ -209,7 +209,7 @@ export function ensureThinkingConfig(body: unknown) {
  */
 export function applyThinkingBudget(
   body: unknown,
-  config: Partial<ThinkingBudgetConfig> | null = null
+  config: Partial<ThinkingBudgetConfig> | null = null,
 ) {
   const cfg = config || getConfig();
   if (!body || typeof body !== "object") return body;
@@ -365,7 +365,7 @@ function applyAdaptiveBudget(body: unknown, cfg: Partial<ThinkingBudgetConfig>) 
     EFFORT_BUDGETS.medium;
   const budget = capThinkingBudget(
     getStringField(bodyRecord, "model"),
-    Math.ceil(baseBudget * multiplier)
+    Math.ceil(baseBudget * multiplier),
   );
 
   return setCustomBudget(body, budget);

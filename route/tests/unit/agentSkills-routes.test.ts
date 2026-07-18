@@ -120,7 +120,10 @@ test("GET /api/agent-skills?category=api — returns 23 api skills", async () =>
   assert.equal(res.status, 200);
   const body = (await res.json()) as { skills: Array<{ category: string }>; count: number };
   assert.equal(body.count, 23);
-  assert.ok(body.skills.every((s) => s.category === "api"), "All skills should be api category");
+  assert.ok(
+    body.skills.every((s) => s.category === "api"),
+    "All skills should be api category",
+  );
 });
 
 test("GET /api/agent-skills?category=cli — returns 21 cli skills", async () => {
@@ -130,7 +133,10 @@ test("GET /api/agent-skills?category=cli — returns 21 cli skills", async () =>
   assert.equal(res.status, 200);
   const body = (await res.json()) as { skills: Array<{ category: string }>; count: number };
   assert.equal(body.count, 21);
-  assert.ok(body.skills.every((s) => s.category === "cli"), "All skills should be cli category");
+  assert.ok(
+    body.skills.every((s) => s.category === "cli"),
+    "All skills should be cli category",
+  );
 });
 
 test("GET /api/agent-skills?area=providers — returns only providers area skills", async () => {
@@ -394,18 +400,15 @@ test("Hard Rule #12: all error responses contain sanitized messages (no 'at /' p
   // Collect error responses from various bad inputs
   const errorResponses: Response[] = [
     // Invalid category query
-    await listRoute.GET(
-      makeRequest("GET", "http://localhost/api/agent-skills?category=bad-val"),
-    ),
+    await listRoute.GET(makeRequest("GET", "http://localhost/api/agent-skills?category=bad-val")),
     // Unknown skill id
     await idRoute.GET(makeRequest("GET", "http://localhost/api/agent-skills/unknown-id"), {
       params: Promise.resolve({ id: "unknown-id" }),
     }),
     // Unknown raw skill id
-    await rawRoute.GET(
-      makeRequest("GET", "http://localhost/api/agent-skills/unknown-id/raw"),
-      { params: Promise.resolve({ id: "unknown-id" }) },
-    ),
+    await rawRoute.GET(makeRequest("GET", "http://localhost/api/agent-skills/unknown-id/raw"), {
+      params: Promise.resolve({ id: "unknown-id" }),
+    }),
     // Invalid generate body (non-boolean)
     await generateRoute.POST(
       makeRequest("POST", "http://localhost/api/agent-skills/generate", {

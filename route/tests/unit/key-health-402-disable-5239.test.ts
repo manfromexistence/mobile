@@ -22,9 +22,7 @@ const TEST_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-5239-"));
 process.env.DATA_DIR = TEST_DATA_DIR;
 
 const core = await import("../../src/lib/db/core.ts");
-const { recordKeyHealthStatus } = await import(
-  "../../open-sse/handlers/chatCore/keyHealth.ts"
-);
+const { recordKeyHealthStatus } = await import("../../open-sse/handlers/chatCore/keyHealth.ts");
 const { getValidApiKey, getAllKeyHealth, resetKeyStatus } = await import(
   "../../open-sse/services/apiKeyRotator.ts"
 );
@@ -62,7 +60,7 @@ test("#5239 402 marks the selected round-robin key invalid and the rotator skips
   assert.equal(
     allHealth[`${connId}:extra_0`]?.status,
     "invalid",
-    "402 must mark the selected key invalid in one shot"
+    "402 must mark the selected key invalid in one shot",
   );
 
   // The rotator must skip the depleted extra_0 (K1) and return extra_1 (K2).

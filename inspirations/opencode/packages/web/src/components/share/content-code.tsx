@@ -1,11 +1,11 @@
-import { codeToHtml, bundledLanguages } from "shiki"
-import { createResource, Suspense } from "solid-js"
-import style from "./content-code.module.css"
+import { codeToHtml, bundledLanguages } from "shiki";
+import { createResource, Suspense } from "solid-js";
+import style from "./content-code.module.css";
 
 interface Props {
-  code: string
-  lang?: string
-  flush?: boolean
+  code: string;
+  lang?: string;
+  flush?: boolean;
 }
 export function ContentCode(props: Props) {
   const [html] = createResource(
@@ -19,12 +19,16 @@ export function ContentCode(props: Props) {
           light: "github-light",
           dark: "github-dark",
         },
-      })) as string
+      })) as string;
     },
-  )
+  );
   return (
     <Suspense>
-      <div innerHTML={html()} class={style.root} data-flush={props.flush === true ? true : undefined} />
+      <div
+        innerHTML={html()}
+        class={style.root}
+        data-flush={props.flush === true ? true : undefined}
+      />
     </Suspense>
-  )
+  );
 }

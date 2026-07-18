@@ -37,7 +37,7 @@ export async function PUT(request: NextRequest) {
     }
 
     const settings = await updateCompressionSettings(
-      validation.data as Parameters<typeof updateCompressionSettings>[0]
+      validation.data as Parameters<typeof updateCompressionSettings>[0],
     );
     return NextResponse.json(settings);
   } catch (error) {

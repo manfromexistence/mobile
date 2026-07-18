@@ -1,11 +1,11 @@
-import { DEFAULT_THEMES } from '@pierre/diffs';
-import type { PreloadMultiFileDiffOptions } from '@pierre/diffs/ssr';
+import { DEFAULT_THEMES } from "@pierre/diffs";
+import type { PreloadMultiFileDiffOptions } from "@pierre/diffs/ssr";
 
-import { CustomScrollbarCSS } from '@/components/CustomScrollbarCSS';
+import { CustomScrollbarCSS } from "@/components/CustomScrollbarCSS";
 
 export const ARBITRARY_DIFF_EXAMPLE: PreloadMultiFileDiffOptions<undefined> = {
   oldFile: {
-    name: 'example.css',
+    name: "example.css",
     contents: `.pizza {
   display: flex;
   justify-content: center;
@@ -13,7 +13,7 @@ export const ARBITRARY_DIFF_EXAMPLE: PreloadMultiFileDiffOptions<undefined> = {
 `,
   },
   newFile: {
-    name: 'example.css',
+    name: "example.css",
     contents: `.pizza {
   display: flex;
 }
@@ -21,8 +21,8 @@ export const ARBITRARY_DIFF_EXAMPLE: PreloadMultiFileDiffOptions<undefined> = {
   },
   options: {
     theme: DEFAULT_THEMES,
-    themeType: 'dark',
-    diffStyle: 'unified',
+    themeType: "dark",
+    diffStyle: "unified",
     unsafeCSS: CustomScrollbarCSS,
   },
 };

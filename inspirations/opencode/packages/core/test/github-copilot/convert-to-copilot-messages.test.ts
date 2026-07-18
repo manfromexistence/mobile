@@ -1,5 +1,5 @@
-import { convertToOpenAICompatibleChatMessages as convertToCopilotMessages } from "@opencode-ai/core/github-copilot/chat/convert-to-openai-compatible-chat-messages"
-import { describe, test, expect } from "bun:test"
+import { convertToOpenAICompatibleChatMessages as convertToCopilotMessages } from "@opencode-ai/core/github-copilot/chat/convert-to-openai-compatible-chat-messages";
+import { describe, test, expect } from "bun:test";
 
 describe("system messages", () => {
   test("should convert system message content to string", () => {
@@ -8,16 +8,16 @@ describe("system messages", () => {
         role: "system",
         content: "You are a helpful assistant with AGENTS.md instructions.",
       },
-    ])
+    ]);
 
     expect(result).toEqual([
       {
         role: "system",
         content: "You are a helpful assistant with AGENTS.md instructions.",
       },
-    ])
-  })
-})
+    ]);
+  });
+});
 
 describe("user messages", () => {
   test("should convert messages with only a text part to a string content", () => {
@@ -26,10 +26,10 @@ describe("user messages", () => {
         role: "user",
         content: [{ type: "text", text: "Hello" }],
       },
-    ])
+    ]);
 
-    expect(result).toEqual([{ role: "user", content: "Hello" }])
-  })
+    expect(result).toEqual([{ role: "user", content: "Hello" }]);
+  });
 
   test("should convert messages with image parts", () => {
     const result = convertToCopilotMessages([
@@ -44,7 +44,7 @@ describe("user messages", () => {
           },
         ],
       },
-    ])
+    ]);
 
     expect(result).toEqual([
       {
@@ -57,8 +57,8 @@ describe("user messages", () => {
           },
         ],
       },
-    ])
-  })
+    ]);
+  });
 
   test("should convert messages with image parts from Uint8Array", () => {
     const result = convertToCopilotMessages([
@@ -73,7 +73,7 @@ describe("user messages", () => {
           },
         ],
       },
-    ])
+    ]);
 
     expect(result).toEqual([
       {
@@ -86,8 +86,8 @@ describe("user messages", () => {
           },
         ],
       },
-    ])
-  })
+    ]);
+  });
 
   test("should handle URL-based images", () => {
     const result = convertToCopilotMessages([
@@ -101,7 +101,7 @@ describe("user messages", () => {
           },
         ],
       },
-    ])
+    ]);
 
     expect(result).toEqual([
       {
@@ -113,8 +113,8 @@ describe("user messages", () => {
           },
         ],
       },
-    ])
-  })
+    ]);
+  });
 
   test("should handle multiple text parts without flattening", () => {
     const result = convertToCopilotMessages([
@@ -125,7 +125,7 @@ describe("user messages", () => {
           { type: "text", text: "Part 2" },
         ],
       },
-    ])
+    ]);
 
     expect(result).toEqual([
       {
@@ -135,9 +135,9 @@ describe("user messages", () => {
           { type: "text", text: "Part 2" },
         ],
       },
-    ])
-  })
-})
+    ]);
+  });
+});
 
 describe("assistant messages", () => {
   test("should convert assistant text messages", () => {
@@ -146,7 +146,7 @@ describe("assistant messages", () => {
         role: "assistant",
         content: [{ type: "text", text: "Hello back!" }],
       },
-    ])
+    ]);
 
     expect(result).toEqual([
       {
@@ -156,8 +156,8 @@ describe("assistant messages", () => {
         reasoning_text: undefined,
         reasoning_opaque: undefined,
       },
-    ])
-  })
+    ]);
+  });
 
   test("should handle assistant message with null content when only tool calls", () => {
     const result = convertToCopilotMessages([
@@ -172,7 +172,7 @@ describe("assistant messages", () => {
           },
         ],
       },
-    ])
+    ]);
 
     expect(result).toEqual([
       {
@@ -191,8 +191,8 @@ describe("assistant messages", () => {
         reasoning_text: undefined,
         reasoning_opaque: undefined,
       },
-    ])
-  })
+    ]);
+  });
 
   test("should concatenate multiple text parts", () => {
     const result = convertToCopilotMessages([
@@ -203,11 +203,11 @@ describe("assistant messages", () => {
           { type: "text", text: "Second part." },
         ],
       },
-    ])
+    ]);
 
-    expect(result[0].content).toBe("First part. Second part.")
-  })
-})
+    expect(result[0].content).toBe("First part. Second part.");
+  });
+});
 
 describe("tool calls", () => {
   test("should stringify arguments to tool calls", () => {
@@ -234,7 +234,7 @@ describe("tool calls", () => {
           },
         ],
       },
-    ])
+    ]);
 
     expect(result).toEqual([
       {
@@ -258,8 +258,8 @@ describe("tool calls", () => {
         tool_call_id: "quux",
         content: JSON.stringify({ oof: "321rab" }),
       },
-    ])
-  })
+    ]);
+  });
 
   test("should handle text output type in tool results", () => {
     const result = convertToCopilotMessages([
@@ -274,7 +274,7 @@ describe("tool calls", () => {
           },
         ],
       },
-    ])
+    ]);
 
     expect(result).toEqual([
       {
@@ -282,8 +282,8 @@ describe("tool calls", () => {
         tool_call_id: "call-1",
         content: "It is sunny today",
       },
-    ])
-  })
+    ]);
+  });
 
   test("should handle multiple tool results as separate messages", () => {
     const result = convertToCopilotMessages([
@@ -304,20 +304,20 @@ describe("tool calls", () => {
           },
         ],
       },
-    ])
+    ]);
 
-    expect(result).toHaveLength(2)
+    expect(result).toHaveLength(2);
     expect(result[0]).toEqual({
       role: "tool",
       tool_call_id: "call1",
       content: "Result 1",
-    })
+    });
     expect(result[1]).toEqual({
       role: "tool",
       tool_call_id: "call2",
       content: "Result 2",
-    })
-  })
+    });
+  });
 
   test("should handle text plus multiple tool calls", () => {
     const result = convertToCopilotMessages([
@@ -340,7 +340,7 @@ describe("tool calls", () => {
           },
         ],
       },
-    ])
+    ]);
 
     expect(result).toEqual([
       {
@@ -367,9 +367,9 @@ describe("tool calls", () => {
         reasoning_text: undefined,
         reasoning_opaque: undefined,
       },
-    ])
-  })
-})
+    ]);
+  });
+});
 
 describe("reasoning (copilot-specific)", () => {
   test("should omit reasoning_text without reasoning_opaque", () => {
@@ -381,7 +381,7 @@ describe("reasoning (copilot-specific)", () => {
           { type: "text", text: "The answer is 42." },
         ],
       },
-    ])
+    ]);
 
     expect(result).toEqual([
       {
@@ -391,8 +391,8 @@ describe("reasoning (copilot-specific)", () => {
         reasoning_text: undefined,
         reasoning_opaque: undefined,
       },
-    ])
-  })
+    ]);
+  });
 
   test("should include reasoning_opaque from providerOptions", () => {
     const result = convertToCopilotMessages([
@@ -409,7 +409,7 @@ describe("reasoning (copilot-specific)", () => {
           { type: "text", text: "Done!" },
         ],
       },
-    ])
+    ]);
 
     expect(result).toEqual([
       {
@@ -419,8 +419,8 @@ describe("reasoning (copilot-specific)", () => {
         reasoning_text: "Thinking...",
         reasoning_opaque: "opaque-signature-123",
       },
-    ])
-  })
+    ]);
+  });
 
   test("should include reasoning_opaque from text part providerOptions", () => {
     const result = convertToCopilotMessages([
@@ -436,7 +436,7 @@ describe("reasoning (copilot-specific)", () => {
           },
         ],
       },
-    ])
+    ]);
 
     expect(result).toEqual([
       {
@@ -446,8 +446,8 @@ describe("reasoning (copilot-specific)", () => {
         reasoning_text: undefined,
         reasoning_opaque: "opaque-text-456",
       },
-    ])
-  })
+    ]);
+  });
 
   test("should handle reasoning-only assistant message", () => {
     const result = convertToCopilotMessages([
@@ -463,7 +463,7 @@ describe("reasoning (copilot-specific)", () => {
           },
         ],
       },
-    ])
+    ]);
 
     expect(result).toEqual([
       {
@@ -473,9 +473,9 @@ describe("reasoning (copilot-specific)", () => {
         reasoning_text: "Just thinking, no response yet",
         reasoning_opaque: "sig-abc",
       },
-    ])
-  })
-})
+    ]);
+  });
+});
 
 describe("full conversation", () => {
   test("should convert a multi-turn conversation with reasoning", () => {
@@ -505,19 +505,19 @@ describe("full conversation", () => {
         role: "user",
         content: [{ type: "text", text: "What about 3+3?" }],
       },
-    ])
+    ]);
 
-    expect(result).toHaveLength(4)
+    expect(result).toHaveLength(4);
 
-    const systemMsg = result[0]
-    expect(systemMsg.role).toBe("system")
+    const systemMsg = result[0];
+    expect(systemMsg.role).toBe("system");
 
     // Assistant message should have reasoning fields
     const assistantMsg = result[2] as {
-      reasoning_text?: string
-      reasoning_opaque?: string
-    }
-    expect(assistantMsg.reasoning_text).toBe("Let me calculate 2+2...")
-    expect(assistantMsg.reasoning_opaque).toBe("sig-abc")
-  })
-})
+      reasoning_text?: string;
+      reasoning_opaque?: string;
+    };
+    expect(assistantMsg.reasoning_text).toBe("Let me calculate 2+2...");
+    expect(assistantMsg.reasoning_opaque).toBe("sig-abc");
+  });
+});

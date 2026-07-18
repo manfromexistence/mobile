@@ -77,12 +77,12 @@ function normalizeRegion(region: unknown): string {
  *   3. us-east-1 (CodeWhisperer home region) as the final fallback.
  */
 export function resolveKiroRuntimeRegion(
-  providerSpecificData: { region?: unknown; profileArn?: unknown } | null | undefined
+  providerSpecificData: { region?: unknown; profileArn?: unknown } | null | undefined,
 ): string {
   const fromArn = regionFromKiroProfileArn(
     typeof providerSpecificData?.profileArn === "string"
       ? providerSpecificData.profileArn
-      : undefined
+      : undefined,
   );
   if (fromArn) return fromArn;
 
@@ -121,7 +121,7 @@ export function buildKiroProfileDiscoveryRegions(storedRegion?: string | null): 
 async function listKiroProfileArnForRegion(
   accessToken: string,
   region: string,
-  fetchImpl: typeof fetch
+  fetchImpl: typeof fetch,
 ): Promise<string | undefined> {
   // Defensive: region comes from a hardcoded allowlist here, but validate before it is
   // interpolated into the runtime host (SSRF guard, GHSA-6mwv-4mrm-5p3m).
@@ -168,7 +168,7 @@ async function listKiroProfileArnForRegion(
 export async function discoverKiroProfileArnAcrossRegions(
   accessToken: string | null | undefined,
   storedRegion?: string | null,
-  fetchImpl?: typeof fetch
+  fetchImpl?: typeof fetch,
 ): Promise<string | undefined> {
   const token = typeof accessToken === "string" ? accessToken.trim() : "";
   if (!token) return undefined;

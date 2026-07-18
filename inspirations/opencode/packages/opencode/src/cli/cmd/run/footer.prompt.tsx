@@ -5,14 +5,28 @@
 // It produces a PromptState that RunPromptBody renders as a slim single-line
 // composer while the footer view renders any active menus below it.
 /** @jsxImportSource @opentui/solid */
-import { pathToFileURL } from "bun"
-import { StyledText, fg, type ColorInput, type KeyEvent, type TextareaRenderable } from "@opentui/core"
-import { useRenderer } from "@opentui/solid"
-import { normalizePromptContent } from "@opencode-ai/tui/editor"
-import fuzzysort from "fuzzysort"
-import path from "path"
-import { createEffect, createMemo, createResource, createSignal, onCleanup, onMount, type Accessor } from "solid-js"
-import * as Locale from "@/util/locale"
+import { pathToFileURL } from "bun";
+import {
+  StyledText,
+  fg,
+  type ColorInput,
+  type KeyEvent,
+  type TextareaRenderable,
+} from "@opentui/core";
+import { useRenderer } from "@opentui/solid";
+import { normalizePromptContent } from "@opencode-ai/tui/editor";
+import fuzzysort from "fuzzysort";
+import path from "path";
+import {
+  createEffect,
+  createMemo,
+  createResource,
+  createSignal,
+  onCleanup,
+  onMount,
+  type Accessor,
+} from "solid-js";
+import * as Locale from "@/util/locale";
 import {
   createPromptHistory,
   displayCharAt,
@@ -22,85 +36,93 @@ import {
   isNewCommand,
   movePromptHistory,
   pushPromptHistory,
-} from "./prompt.shared"
-import { OPENCODE_BASE_MODE, useBindings } from "@opencode-ai/tui/keymap"
-import { realignEditorPromptParts, resolveEditorSlashValue } from "./prompt.editor"
-import { FOOTER_MENU_ROWS, createFooterMenuState, type RunFooterMenuItem } from "./footer.menu"
-import type { RunFooterTheme } from "./theme"
-import type { FooterState, RunAgent, RunCommand, RunPrompt, RunPromptPart, RunResource, RunTuiConfig } from "./types"
+} from "./prompt.shared";
+import { OPENCODE_BASE_MODE, useBindings } from "@opencode-ai/tui/keymap";
+import { realignEditorPromptParts, resolveEditorSlashValue } from "./prompt.editor";
+import { FOOTER_MENU_ROWS, createFooterMenuState, type RunFooterMenuItem } from "./footer.menu";
+import type { RunFooterTheme } from "./theme";
+import type {
+  FooterState,
+  RunAgent,
+  RunCommand,
+  RunPrompt,
+  RunPromptPart,
+  RunResource,
+  RunTuiConfig,
+} from "./types";
 
-const AUTOCOMPLETE_ROWS = FOOTER_MENU_ROWS
-const AUTOCOMPLETE_BOTTOM_ROWS = 1
+const AUTOCOMPLETE_ROWS = FOOTER_MENU_ROWS;
+const AUTOCOMPLETE_BOTTOM_ROWS = 1;
 
-export const TEXTAREA_MIN_ROWS = 1
-export const TEXTAREA_MAX_ROWS = 6
-export const PROMPT_MAX_ROWS = TEXTAREA_MAX_ROWS + AUTOCOMPLETE_ROWS - 1 + AUTOCOMPLETE_BOTTOM_ROWS
+export const TEXTAREA_MIN_ROWS = 1;
+export const TEXTAREA_MAX_ROWS = 6;
+export const PROMPT_MAX_ROWS = TEXTAREA_MAX_ROWS + AUTOCOMPLETE_ROWS - 1 + AUTOCOMPLETE_BOTTOM_ROWS;
 
-type Mention = Extract<RunPromptPart, { type: "file" | "agent" }>
+type Mention = Extract<RunPromptPart, { type: "file" | "agent" }>;
 
 type Auto = RunFooterMenuItem & {
-  kind: "mention"
-  value: string
-  part: Mention
-  directory?: boolean
-}
+  kind: "mention";
+  value: string;
+  part: Mention;
+  directory?: boolean;
+};
 
 type SlashOption = RunFooterMenuItem & {
-  kind: "slash"
-  name: string
-  action?: "skill-menu" | "editor"
-}
+  kind: "slash";
+  name: string;
+  action?: "skill-menu" | "editor";
+};
 
-type PromptOption = Auto | SlashOption
+type PromptOption = Auto | SlashOption;
 
-type MenuMode = false | "mention" | "slash"
+type MenuMode = false | "mention" | "slash";
 
 type PromptInput = {
-  directory: string
-  findFiles: (query: string) => Promise<string[]>
-  agents: Accessor<RunAgent[]>
-  resources: Accessor<RunResource[]>
-  commands: Accessor<RunCommand[] | undefined>
-  tuiConfig: RunTuiConfig
-  state: Accessor<FooterState>
-  view: Accessor<string>
-  prompt: Accessor<boolean>
-  width: Accessor<number>
-  theme: Accessor<RunFooterTheme>
-  history?: RunPrompt[]
-  onSubmit: (input: RunPrompt) => boolean | Promise<boolean>
-  onCycle: () => void
-  onInterrupt: () => boolean
-  onEditorOpen: (input: { value: string }) => Promise<string | undefined>
-  onInputClear: () => void
-  onExitRequest?: () => boolean
-  onExit: () => void
-  onSkillMenu: () => void
-  onRows: (rows: number) => void
-  onStatus: (text: string) => void
-}
+  directory: string;
+  findFiles: (query: string) => Promise<string[]>;
+  agents: Accessor<RunAgent[]>;
+  resources: Accessor<RunResource[]>;
+  commands: Accessor<RunCommand[] | undefined>;
+  tuiConfig: RunTuiConfig;
+  state: Accessor<FooterState>;
+  view: Accessor<string>;
+  prompt: Accessor<boolean>;
+  width: Accessor<number>;
+  theme: Accessor<RunFooterTheme>;
+  history?: RunPrompt[];
+  onSubmit: (input: RunPrompt) => boolean | Promise<boolean>;
+  onCycle: () => void;
+  onInterrupt: () => boolean;
+  onEditorOpen: (input: { value: string }) => Promise<string | undefined>;
+  onInputClear: () => void;
+  onExitRequest?: () => boolean;
+  onExit: () => void;
+  onSkillMenu: () => void;
+  onRows: (rows: number) => void;
+  onStatus: (text: string) => void;
+};
 
 export type PromptState = {
-  placeholder: Accessor<StyledText | string>
-  shell: Accessor<boolean>
-  visible: Accessor<boolean>
-  options: Accessor<PromptOption[]>
-  selected: Accessor<number>
-  offset: Accessor<number>
-  rows: Accessor<number>
-  requestExit: () => boolean
-  onSubmit: () => void
-  submitText: (text: string) => void
-  openEditor: (input?: { value?: string }) => Promise<void>
-  onKeyDown: (event: KeyEvent) => void
-  onContentChange: () => void
-  replaceDraft: (text: string) => void
-  replacePrompt: (prompt: RunPrompt) => void
-  bind: (area?: TextareaRenderable) => void
-}
+  placeholder: Accessor<StyledText | string>;
+  shell: Accessor<boolean>;
+  visible: Accessor<boolean>;
+  options: Accessor<PromptOption[]>;
+  selected: Accessor<number>;
+  offset: Accessor<number>;
+  rows: Accessor<number>;
+  requestExit: () => boolean;
+  onSubmit: () => void;
+  submitText: (text: string) => void;
+  openEditor: (input?: { value?: string }) => Promise<void>;
+  onKeyDown: (event: KeyEvent) => void;
+  onContentChange: () => void;
+  replaceDraft: (text: string) => void;
+  replacePrompt: (prompt: RunPrompt) => void;
+  bind: (area?: TextareaRenderable) => void;
+};
 
 function clamp(rows: number): number {
-  return Math.max(TEXTAREA_MIN_ROWS, Math.min(TEXTAREA_MAX_ROWS, rows))
+  return Math.max(TEXTAREA_MIN_ROWS, Math.min(TEXTAREA_MAX_ROWS, rows));
 }
 
 function clonePrompt(prompt: RunPrompt): RunPrompt {
@@ -109,39 +131,39 @@ function clonePrompt(prompt: RunPrompt): RunPrompt {
     parts: structuredClone(prompt.parts),
     ...(prompt.mode ? { mode: prompt.mode } : {}),
     ...(prompt.command ? { command: prompt.command } : {}),
-  }
+  };
 }
 
 function emptyPrompt(shell: boolean): RunPrompt {
-  return shell ? { text: "", parts: [], mode: "shell" } : { text: "", parts: [] }
+  return shell ? { text: "", parts: [], mode: "shell" } : { text: "", parts: [] };
 }
 
 function removeLineRange(input: string) {
-  const hash = input.lastIndexOf("#")
-  return hash === -1 ? input : input.slice(0, hash)
+  const hash = input.lastIndexOf("#");
+  return hash === -1 ? input : input.slice(0, hash);
 }
 
 function extractLineRange(input: string) {
-  const hash = input.lastIndexOf("#")
+  const hash = input.lastIndexOf("#");
   if (hash === -1) {
-    return { base: input }
+    return { base: input };
   }
 
-  const base = input.slice(0, hash)
-  const line = input.slice(hash + 1)
-  const match = line.match(/^(\d+)(?:-(\d*))?$/)
+  const base = input.slice(0, hash);
+  const line = input.slice(hash + 1);
+  const match = line.match(/^(\d+)(?:-(\d*))?$/);
   if (!match) {
-    return { base }
+    return { base };
   }
 
-  const start = Number(match[1])
-  const end = match[2] && start < Number(match[2]) ? Number(match[2]) : undefined
-  return { base, line: { start, end } }
+  const start = Number(match[1]);
+  const end = match[2] && start < Number(match[2]) ? Number(match[2]) : undefined;
+  return { base, line: { start, end } };
 }
 
 function slashHead(text: string) {
   if (!text.startsWith("/")) {
-    return
+    return;
   }
 
   for (let i = 1; i < text.length; i++) {
@@ -149,105 +171,105 @@ function slashHead(text: string) {
       case " ":
       case "\t":
       case "\n":
-        return { name: text.slice(1, i), arguments: text.slice(i + 1), end: i }
+        return { name: text.slice(1, i), arguments: text.slice(i + 1), end: i };
     }
   }
 
-  return { name: text.slice(1), arguments: "", end: text.length }
+  return { name: text.slice(1), arguments: "", end: text.length };
 }
 
 function slashQuery(text: string, cursor: number) {
-  const head = slashHead(text.slice(0, cursor))
+  const head = slashHead(text.slice(0, cursor));
   if (!head || head.end !== cursor) {
-    return
+    return;
   }
 
-  return head.name
+  return head.name;
 }
 
 function parseSlashCommand(text: string, commands: RunCommand[] | undefined) {
-  const head = slashHead(text)
+  const head = slashHead(text);
   if (!head || head.name.length === 0) {
-    return { type: "none" as const }
+    return { type: "none" as const };
   }
 
   if (!commands) {
-    return { type: "pending" as const }
+    return { type: "pending" as const };
   }
 
   if (!commands.some((item) => item.name === head.name)) {
-    return { type: "none" as const }
+    return { type: "none" as const };
   }
 
-  return { type: "command" as const, command: { name: head.name, arguments: head.arguments } }
+  return { type: "command" as const, command: { name: head.name, arguments: head.arguments } };
 }
 
 function selectedCommand(text: string, command: RunPrompt["command"]) {
   if (!command) {
-    return
+    return;
   }
 
-  const head = slashHead(text)
+  const head = slashHead(text);
   if (!head || head.name !== command.name) {
-    return
+    return;
   }
 
   return {
     name: command.name,
     arguments: head.arguments,
-  }
+  };
 }
 
 export function RunPromptBody(props: {
-  theme: () => RunFooterTheme
-  background: () => ColorInput
-  placeholder: () => StyledText | string
-  onSubmit: () => void
-  onKeyDown: (event: KeyEvent) => void
-  onContentChange: () => void
-  bind: (area?: TextareaRenderable) => void
+  theme: () => RunFooterTheme;
+  background: () => ColorInput;
+  placeholder: () => StyledText | string;
+  onSubmit: () => void;
+  onKeyDown: (event: KeyEvent) => void;
+  onContentChange: () => void;
+  bind: (area?: TextareaRenderable) => void;
 }) {
-  const renderer = useRenderer()
-  let area: TextareaRenderable | undefined
-  let pasteTick: ReturnType<typeof setTimeout> | undefined
+  const renderer = useRenderer();
+  let area: TextareaRenderable | undefined;
+  let pasteTick: ReturnType<typeof setTimeout> | undefined;
 
   const refreshPasteLayout = () => {
     if (pasteTick) {
-      clearTimeout(pasteTick)
+      clearTimeout(pasteTick);
     }
 
     pasteTick = setTimeout(() => {
-      pasteTick = undefined
+      pasteTick = undefined;
       if (!area || area.isDestroyed) {
-        return
+        return;
       }
 
       // Paste can leave the textarea layout stale until the next edit.
-      area.getLayoutNode().markDirty()
-      renderer.requestRender()
+      area.getLayoutNode().markDirty();
+      renderer.requestRender();
       void renderer
         .idle()
         .then(() => {
           if (!area || area.isDestroyed) {
-            return
+            return;
           }
 
-          props.onContentChange()
+          props.onContentChange();
         })
-        .catch(() => {})
-    }, 0)
-  }
+        .catch(() => {});
+    }, 0);
+  };
 
   onMount(() => {
-    props.bind(area)
-  })
+    props.bind(area);
+  });
 
   onCleanup(() => {
     if (pasteTick) {
-      clearTimeout(pasteTick)
+      clearTimeout(pasteTick);
     }
-    props.bind(undefined)
-  })
+    props.bind(undefined);
+  });
 
   return (
     <box width="100%">
@@ -267,53 +289,57 @@ export function RunPromptBody(props: {
           onSubmit={props.onSubmit}
           onKeyDown={props.onKeyDown}
           onPaste={() => {
-            refreshPasteLayout()
+            refreshPasteLayout();
           }}
           onContentChange={props.onContentChange}
           ref={(next) => {
-            area = next
+            area = next;
           }}
         />
       </box>
     </box>
-  )
+  );
 }
 
 export function createPromptState(input: PromptInput): PromptState {
-  const [shell, setShell] = createSignal(false)
+  const [shell, setShell] = createSignal(false);
   const placeholder = createMemo(() => {
     if (shell()) {
-      return new StyledText([fg(input.theme().muted)('Run a command... "git status"')])
+      return new StyledText([fg(input.theme().muted)('Run a command... "git status"')]);
     }
 
     if (!input.state().first) {
-      return ""
+      return "";
     }
 
-    return new StyledText([fg(input.theme().muted)('Ask anything... "Fix a TODO in the codebase"')])
-  })
+    return new StyledText([
+      fg(input.theme().muted)('Ask anything... "Fix a TODO in the codebase"'),
+    ]);
+  });
 
-  let history = createPromptHistory(input.history)
-  let draft: RunPrompt = { text: "", parts: [] }
-  let stash: RunPrompt = { text: "", parts: [] }
-  let area: TextareaRenderable | undefined
-  let tick = false
-  let prev = input.view()
-  let type = 0
-  let parts: Mention[] = []
-  let marks = new Map<number, number>()
+  let history = createPromptHistory(input.history);
+  let draft: RunPrompt = { text: "", parts: [] };
+  let stash: RunPrompt = { text: "", parts: [] };
+  let area: TextareaRenderable | undefined;
+  let tick = false;
+  let prev = input.view();
+  let type = 0;
+  let parts: Mention[] = [];
+  let marks = new Map<number, number>();
 
-  const [mode, setMode] = createSignal<MenuMode>(false)
-  const [at, setAt] = createSignal(0)
-  const [query, setQuery] = createSignal("")
-  const visible = createMemo(() => mode() !== false)
+  const [mode, setMode] = createSignal<MenuMode>(false);
+  const [at, setAt] = createSignal(0);
+  const [query, setQuery] = createSignal("");
+  const visible = createMemo(() => mode() !== false);
 
   const setShellMode = (value: boolean) => {
-    setShell(value)
-    draft = value ? { ...draft, mode: "shell" } : { text: draft.text, parts: structuredClone(draft.parts) }
-  }
+    setShell(value);
+    draft = value
+      ? { ...draft, mode: "shell" }
+      : { text: draft.text, parts: structuredClone(draft.parts) };
+  };
 
-  const width = createMemo(() => Math.max(20, input.width() - 8))
+  const width = createMemo(() => Math.max(20, input.width() - 8));
   const agents = createMemo<Auto[]>(() => {
     return input
       .agents()
@@ -331,8 +357,8 @@ export function createPromptState(input: PromptInput): PromptState {
             value: "",
           },
         },
-      }))
-  })
+      }));
+  });
   const resources = createMemo<Auto[]>(() => {
     return input.resources().map((item) => ({
       kind: "mention",
@@ -355,25 +381,25 @@ export function createPromptState(input: PromptInput): PromptState {
           },
         },
       },
-    }))
-  })
+    }));
+  });
   const [files] = createResource(
     query,
     async (value) => {
       if (!visible() || mode() !== "mention") {
-        return []
+        return [];
       }
 
-      const next = extractLineRange(value)
-      const list = await input.findFiles(next.base)
+      const next = extractLineRange(value);
+      const list = await input.findFiles(next.base);
       return list.map((item): Auto => {
-        const url = pathToFileURL(path.resolve(input.directory, item))
-        let filename = item
+        const url = pathToFileURL(path.resolve(input.directory, item));
+        let filename = item;
         if (next.line && !item.endsWith("/")) {
-          filename = `${item}#${next.line.start}${next.line.end ? `-${next.line.end}` : ""}`
-          url.searchParams.set("start", String(next.line.start))
+          filename = `${item}#${next.line.start}${next.line.end ? `-${next.line.end}` : ""}`;
+          url.searchParams.set("start", String(next.line.start));
           if (next.line.end !== undefined) {
-            url.searchParams.set("end", String(next.line.end))
+            url.searchParams.set("end", String(next.line.end));
           }
         }
 
@@ -397,16 +423,18 @@ export function createPromptState(input: PromptInput): PromptState {
               },
             },
           },
-        }
-      })
+        };
+      });
     },
     { initialValue: [] as Auto[] },
-  )
-  const mentionOptions = createMemo(() => [...agents(), ...files(), ...resources()])
-  const skillCommands = createMemo(() => (input.commands() ?? []).filter((item) => item.source === "skill"))
+  );
+  const mentionOptions = createMemo(() => [...agents(), ...files(), ...resources()]);
+  const skillCommands = createMemo(() =>
+    (input.commands() ?? []).filter((item) => item.source === "skill"),
+  );
   const hasSkillsCommand = createMemo(() =>
     (input.commands() ?? []).some((item) => item.source !== "skill" && item.name === "skills"),
-  )
+  );
   const slashOptions = createMemo<SlashOption[]>(() => {
     const builtins = [
       {
@@ -416,13 +444,23 @@ export function createPromptState(input: PromptInput): PromptState {
         display: "/editor",
         description: "compose in your external editor",
       } satisfies SlashOption,
-      { kind: "slash", name: "new", display: "/new", description: "start a new session" } satisfies SlashOption,
-      { kind: "slash", name: "exit", display: "/exit", description: "close OpenCode" } satisfies SlashOption,
-    ]
-    const hidden = new Set(builtins.map((item) => item.name))
-    const showSkillMenu = !shell() && skillCommands().length > 0 && !hasSkillsCommand()
+      {
+        kind: "slash",
+        name: "new",
+        display: "/new",
+        description: "start a new session",
+      } satisfies SlashOption,
+      {
+        kind: "slash",
+        name: "exit",
+        display: "/exit",
+        description: "close OpenCode",
+      } satisfies SlashOption,
+    ];
+    const hidden = new Set(builtins.map((item) => item.name));
+    const showSkillMenu = !shell() && skillCommands().length > 0 && !hasSkillsCommand();
     if (showSkillMenu) {
-      hidden.add("skills")
+      hidden.add("skills");
     }
 
     return [
@@ -449,136 +487,144 @@ export function createPromptState(input: PromptInput): PromptState {
             }) satisfies SlashOption,
         ),
       ...builtins,
-    ].sort((a, b) => a.display.localeCompare(b.display))
-  })
+    ].sort((a, b) => a.display.localeCompare(b.display));
+  });
   const options = createMemo<PromptOption[]>(() => {
-    const mixed: PromptOption[] = mode() === "slash" ? slashOptions() : mentionOptions()
+    const mixed: PromptOption[] = mode() === "slash" ? slashOptions() : mentionOptions();
     if (!query()) {
-      return mixed
+      return mixed;
     }
 
-    const next = removeLineRange(query())
+    const next = removeLineRange(query());
     if (mode() === "mention") {
       return [
-        ...fuzzysort.go(next, agents(), { keys: ["value", "display", "description"] }).map((item) => item.obj),
+        ...fuzzysort
+          .go(next, agents(), { keys: ["value", "display", "description"] })
+          .map((item) => item.obj),
         ...files(),
-        ...fuzzysort.go(next, resources(), { keys: ["value", "display", "description"] }).map((item) => item.obj),
-      ]
+        ...fuzzysort
+          .go(next, resources(), { keys: ["value", "display", "description"] })
+          .map((item) => item.obj),
+      ];
     }
 
     return fuzzysort
       .go(next, mixed, {
-        keys: [(item) => (item.kind === "mention" ? item.value : item.name).trimEnd(), "display", "description"],
+        keys: [
+          (item) => (item.kind === "mention" ? item.value : item.name).trimEnd(),
+          "display",
+          "description",
+        ],
       })
-      .map((item) => item.obj)
-  })
-  const menu = createFooterMenuState({ count: () => options().length, limit: AUTOCOMPLETE_ROWS })
+      .map((item) => item.obj);
+  });
+  const menu = createFooterMenuState({ count: () => options().length, limit: AUTOCOMPLETE_ROWS });
   const popup = createMemo(() => {
-    return visible() ? menu.rows() - 1 + AUTOCOMPLETE_BOTTOM_ROWS : 0
-  })
+    return visible() ? menu.rows() - 1 + AUTOCOMPLETE_BOTTOM_ROWS : 0;
+  });
 
   const hide = () => {
-    setMode(false)
-    setQuery("")
-    menu.reset()
-  }
+    setMode(false);
+    setQuery("");
+    menu.reset();
+  };
 
   const syncRows = () => {
     if (!area || area.isDestroyed) {
-      return
+      return;
     }
 
-    input.onRows(clamp(Math.max(area.lineCount, area.virtualLineCount)) + popup())
-  }
+    input.onRows(clamp(Math.max(area.lineCount, area.virtualLineCount)) + popup());
+  };
 
   const scheduleRows = () => {
     if (tick) {
-      return
+      return;
     }
 
-    tick = true
+    tick = true;
     queueMicrotask(() => {
-      tick = false
-      syncRows()
-    })
-  }
+      tick = false;
+      syncRows();
+    });
+  };
 
   const syncParts = () => {
     if (!area || area.isDestroyed || type === 0) {
-      return
+      return;
     }
 
-    const next: Mention[] = []
-    const map = new Map<number, number>()
+    const next: Mention[] = [];
+    const map = new Map<number, number>();
     for (const item of area.extmarks.getAllForTypeId(type)) {
-      const idx = marks.get(item.id)
+      const idx = marks.get(item.id);
       if (idx === undefined) {
-        continue
+        continue;
       }
 
-      const part = parts[idx]
+      const part = parts[idx];
       if (!part) {
-        continue
+        continue;
       }
 
-      const text = area.plainText.slice(item.start, item.end)
+      const text = area.plainText.slice(item.start, item.end);
       const prev =
         part.type === "agent"
           ? (part.source?.value ?? "@" + part.name)
-          : (part.source?.text.value ?? "@" + (part.filename ?? ""))
+          : (part.source?.text.value ?? "@" + (part.filename ?? ""));
       if (text !== prev) {
-        continue
+        continue;
       }
 
-      const copy = structuredClone(part)
+      const copy = structuredClone(part);
       if (copy.type === "agent") {
         copy.source = {
           start: item.start,
           end: item.end,
           value: text,
-        }
+        };
       }
       if (copy.type === "file" && copy.source?.text) {
-        copy.source.text.start = item.start
-        copy.source.text.end = item.end
-        copy.source.text.value = text
+        copy.source.text.start = item.start;
+        copy.source.text.end = item.end;
+        copy.source.text.value = text;
       }
 
-      map.set(item.id, next.length)
-      next.push(copy)
+      map.set(item.id, next.length);
+      next.push(copy);
     }
 
-    const stale = map.size !== marks.size
-    parts = next
-    marks = map
+    const stale = map.size !== marks.size;
+    parts = next;
+    marks = map;
     if (stale) {
-      restoreParts(next)
+      restoreParts(next);
     }
-  }
+  };
 
   const clearParts = () => {
     if (area && !area.isDestroyed) {
-      area.extmarks.clear()
+      area.extmarks.clear();
     }
-    parts = []
-    marks = new Map()
-  }
+    parts = [];
+    marks = new Map();
+  };
 
   const restoreParts = (value: RunPromptPart[]) => {
-    clearParts()
+    clearParts();
     parts = value
       .filter((item): item is Mention => item.type === "file" || item.type === "agent")
-      .map((item) => structuredClone(item))
+      .map((item) => structuredClone(item));
     if (!area || area.isDestroyed || type === 0) {
-      return
+      return;
     }
 
-    const box = area
+    const box = area;
     parts.forEach((item, idx) => {
-      const start = item.type === "agent" ? item.source?.start : item.source?.text.start
-      const end = item.type === "agent" ? item.source?.end : item.source?.text.end
+      const start = item.type === "agent" ? item.source?.start : item.source?.text.start;
+      const end = item.type === "agent" ? item.source?.end : item.source?.text.end;
       if (start === undefined || end === undefined) {
-        return
+        return;
       }
 
       const id = box.extmarks.create({
@@ -586,143 +632,145 @@ export function createPromptState(input: PromptInput): PromptState {
         end,
         virtual: true,
         typeId: type,
-      })
-      marks.set(id, idx)
-    })
-  }
+      });
+      marks.set(id, idx);
+    });
+  };
 
   const restore = (value: RunPrompt, cursor = Bun.stringWidth(value.text)) => {
-    draft = clonePrompt(value)
-    setShell(value.mode === "shell")
+    draft = clonePrompt(value);
+    setShell(value.mode === "shell");
     if (!area || area.isDestroyed) {
-      return
+      return;
     }
 
-    hide()
-    area.setText(value.text)
-    restoreParts(value.parts)
-    area.cursorOffset = Math.min(cursor, Bun.stringWidth(area.plainText))
-    scheduleRows()
-    area.focus()
-  }
+    hide();
+    area.setText(value.text);
+    restoreParts(value.parts);
+    area.cursorOffset = Math.min(cursor, Bun.stringWidth(area.plainText));
+    scheduleRows();
+    area.focus();
+  };
 
   const resetDraft = () => {
     if (area && !area.isDestroyed) {
-      area.setText("")
+      area.setText("");
     }
 
-    clearParts()
-    hide()
-    draft = emptyPrompt(shell())
+    clearParts();
+    hide();
+    draft = emptyPrompt(shell());
     if (!area || area.isDestroyed) {
-      return
+      return;
     }
 
-    scheduleRows()
-    area.focus()
-  }
+    scheduleRows();
+    area.focus();
+  };
 
   const replaceDraft = (text: string) => {
-    draft = shell() ? { text, parts: [], mode: "shell" } : { text, parts: [] }
+    draft = shell() ? { text, parts: [], mode: "shell" } : { text, parts: [] };
     if (!area || area.isDestroyed) {
-      return
+      return;
     }
 
-    hide()
-    area.setText(text)
-    clearParts()
-    draft = shell() ? { text: area.plainText, parts: [], mode: "shell" } : { text: area.plainText, parts: [] }
-    area.cursorOffset = Math.min(Bun.stringWidth(text), Bun.stringWidth(area.plainText))
-    scheduleRows()
-    area.focus()
-  }
+    hide();
+    area.setText(text);
+    clearParts();
+    draft = shell()
+      ? { text: area.plainText, parts: [], mode: "shell" }
+      : { text: area.plainText, parts: [] };
+    area.cursorOffset = Math.min(Bun.stringWidth(text), Bun.stringWidth(area.plainText));
+    scheduleRows();
+    area.focus();
+  };
 
   const refresh = () => {
     if (!area || area.isDestroyed) {
-      return
+      return;
     }
 
-    const cursor = area.cursorOffset
-    const text = area.plainText
-    const slash = slashQuery(text, cursor)
+    const cursor = area.cursorOffset;
+    const text = area.plainText;
+    const slash = slashQuery(text, cursor);
     if (mode() === "slash") {
       if (slash === undefined) {
-        hide()
-        return
+        hide();
+        return;
       }
 
-      setAt(0)
-      setQuery(slash)
-      return
+      setAt(0);
+      setQuery(slash);
+      return;
     }
 
     if (slash !== undefined) {
-      setAt(0)
-      menu.reset()
-      setMode("slash")
-      setQuery(slash)
-      return
+      setAt(0);
+      menu.reset();
+      setMode("slash");
+      setQuery(slash);
+      return;
     }
 
     if (visible() && mode() === "mention") {
-      const query = displaySlice(text, at(), cursor)
+      const query = displaySlice(text, at(), cursor);
       if (cursor <= at() || /\s/.test(query)) {
-        hide()
-        return
+        hide();
+        return;
       }
 
-      setQuery(displaySlice(text, at() + 1, cursor))
-      return
+      setQuery(displaySlice(text, at() + 1, cursor));
+      return;
     }
 
     if (cursor === 0) {
-      return
+      return;
     }
 
-    const idx = mentionTriggerIndex(text, cursor)
+    const idx = mentionTriggerIndex(text, cursor);
     if (idx !== undefined) {
-      setAt(idx)
-      menu.reset()
-      setMode("mention")
-      setQuery(displaySlice(text, idx + 1, cursor))
+      setAt(idx);
+      menu.reset();
+      setMode("mention");
+      setQuery(displaySlice(text, idx + 1, cursor));
     }
-  }
+  };
 
   const bind = (next?: TextareaRenderable) => {
     if (area === next) {
-      return
+      return;
     }
 
     if (area && !area.isDestroyed) {
-      area.off("line-info-change", scheduleRows)
+      area.off("line-info-change", scheduleRows);
     }
 
-    area = next
+    area = next;
     if (!area || area.isDestroyed) {
-      return
+      return;
     }
 
     if (type === 0) {
-      type = area.extmarks.registerType("run-direct-prompt-part")
+      type = area.extmarks.registerType("run-direct-prompt-part");
     }
-    area.on("line-info-change", scheduleRows)
+    area.on("line-info-change", scheduleRows);
     queueMicrotask(() => {
       if (!area || area.isDestroyed || !input.prompt()) {
-        return
+        return;
       }
 
-      restore(draft)
-      refresh()
-    })
-  }
+      restore(draft);
+      refresh();
+    });
+  };
 
   const syncDraft = () => {
     if (!area || area.isDestroyed) {
-      return
+      return;
     }
 
-    syncParts()
-    const command = shell() ? undefined : selectedCommand(area.plainText, draft.command)
+    syncParts();
+    const command = shell() ? undefined : selectedCommand(area.plainText, draft.command);
     draft = shell()
       ? {
           text: area.plainText,
@@ -733,203 +781,206 @@ export function createPromptState(input: PromptInput): PromptState {
           text: area.plainText,
           parts: structuredClone(parts),
           ...(command ? { command } : {}),
-        }
-  }
+        };
+  };
 
   const push = (value: RunPrompt) => {
-    history = pushPromptHistory(history, value)
-  }
+    history = pushPromptHistory(history, value);
+  };
 
   const move = (dir: -1 | 1, event: KeyEvent) => {
     if (!area || area.isDestroyed) {
-      return false
+      return false;
     }
 
     if (history.index === null && dir === -1) {
-      stash = clonePrompt(draft)
+      stash = clonePrompt(draft);
     }
 
-    const next = movePromptHistory(history, dir, area.plainText, area.cursorOffset)
+    const next = movePromptHistory(history, dir, area.plainText, area.cursorOffset);
     if (!next.apply || next.text === undefined || next.cursor === undefined) {
-      return false
+      return false;
     }
 
-    history = next.state
+    history = next.state;
     const value =
-      next.state.index === null ? stash : (next.state.items[next.state.index] ?? { text: next.text, parts: [] })
-    restore(value, next.cursor)
-    event.preventDefault()
-    return true
-  }
+      next.state.index === null
+        ? stash
+        : (next.state.items[next.state.index] ?? { text: next.text, parts: [] });
+    restore(value, next.cursor);
+    event.preventDefault();
+    return true;
+  };
 
   const historyCommand = (dir: -1 | 1, event: KeyEvent) => {
-    if (move(dir, event)) return
-    if (!area || area.isDestroyed) return false
+    if (move(dir, event)) return;
+    if (!area || area.isDestroyed) return false;
 
-    const endOffset = Bun.stringWidth(area.plainText)
+    const endOffset = Bun.stringWidth(area.plainText);
     if (dir === -1 && area.visualCursor.visualRow === 0) {
-      area.cursorOffset = 0
+      area.cursorOffset = 0;
     }
 
     const end =
       typeof area.height === "number" && Number.isFinite(area.height) && area.height > 0
         ? area.height - 1
-        : Math.max(0, (area.virtualLineCount ?? 1) - 1)
+        : Math.max(0, (area.virtualLineCount ?? 1) - 1);
     if (dir === 1 && area.visualCursor.visualRow === end) {
-      area.cursorOffset = endOffset
+      area.cursorOffset = endOffset;
     }
 
-    return false
-  }
+    return false;
+  };
 
   const requestExit = () => {
-    const text = area && !area.isDestroyed ? area.plainText : draft.text
+    const text = area && !area.isDestroyed ? area.plainText : draft.text;
     if (input.prompt() && text.length > 0) {
-      input.onInputClear()
-      resetDraft()
-      return true
+      input.onInputClear();
+      resetDraft();
+      return true;
     }
 
-    return input.onExitRequest ? input.onExitRequest() : (input.onExit(), true)
-  }
+    return input.onExitRequest ? input.onExitRequest() : (input.onExit(), true);
+  };
 
   const cancelAutocomplete = () => {
     if (!area || area.isDestroyed) {
-      return
+      return;
     }
 
-    const cursor = area.cursorOffset
-    const startOffset = mode() === "slash" ? 0 : at()
-    area.cursorOffset = startOffset
-    const start = area.logicalCursor
-    area.cursorOffset = cursor
-    const end = area.logicalCursor
-    area.deleteRange(start.row, start.col, end.row, end.col)
-    area.cursorOffset = startOffset
-    hide()
-    syncDraft()
-    scheduleRows()
-    area.focus()
-  }
+    const cursor = area.cursorOffset;
+    const startOffset = mode() === "slash" ? 0 : at();
+    area.cursorOffset = startOffset;
+    const start = area.logicalCursor;
+    area.cursorOffset = cursor;
+    const end = area.logicalCursor;
+    area.deleteRange(start.row, start.col, end.row, end.col);
+    area.cursorOffset = startOffset;
+    hide();
+    syncDraft();
+    scheduleRows();
+    area.focus();
+  };
 
   const openEditor = async (inputValue?: { value?: string }) => {
-    input.onInputClear()
-    syncDraft()
-    hide()
+    input.onInputClear();
+    syncDraft();
+    hide();
 
-    const current = clonePrompt(draft)
+    const current = clonePrompt(draft);
     try {
       const content = await input.onEditorOpen({
         value: inputValue?.value ?? current.text,
-      })
+      });
       if (content === undefined) {
-        return
+        return;
       }
-      const normalized = normalizePromptContent(content)
+      const normalized = normalizePromptContent(content);
 
       restore({
         text: normalized,
         parts: realignEditorPromptParts(normalized, current.parts),
         ...(current.mode ? { mode: current.mode } : {}),
         ...(current.command ? { command: current.command } : {}),
-      })
+      });
     } catch {
-      restore(current)
-      input.onStatus("failed to open editor")
+      restore(current);
+      input.onStatus("failed to open editor");
     }
-  }
+  };
 
   const select = (item?: PromptOption) => {
-    const next = item ?? options()[menu.selected()]
+    const next = item ?? options()[menu.selected()];
     if (!next || !area || area.isDestroyed) {
-      return
+      return;
     }
 
     if (next.kind === "slash") {
       if (next.action === "editor") {
         void openEditor({
           value: resolveEditorSlashValue(area.plainText),
-        })
-        return
+        });
+        return;
       }
 
       if (next.action === "skill-menu") {
-        cancelAutocomplete()
-        input.onSkillMenu()
-        return
+        cancelAutocomplete();
+        input.onSkillMenu();
+        return;
       }
 
-      const cursor = area.cursorOffset
-      const head = slashHead(area.plainText)
-      const local = !shell() && (next.name === "new" || next.name === "exit")
-      const separator = !shell() && !local && head && /\s/.test(area.plainText[head.end] ?? "") ? "" : " "
-      const text = `/${next.name}${separator}`
+      const cursor = area.cursorOffset;
+      const head = slashHead(area.plainText);
+      const local = !shell() && (next.name === "new" || next.name === "exit");
+      const separator =
+        !shell() && !local && head && /\s/.test(area.plainText[head.end] ?? "") ? "" : " ";
+      const text = `/${next.name}${separator}`;
 
-      area.cursorOffset = 0
-      const start = area.logicalCursor
+      area.cursorOffset = 0;
+      const start = area.logicalCursor;
       area.cursorOffset =
         shell() || !head
           ? cursor
           : local
             ? Bun.stringWidth(area.plainText)
-            : Bun.stringWidth(area.plainText.slice(0, head.end))
-      const end = area.logicalCursor
+            : Bun.stringWidth(area.plainText.slice(0, head.end));
+      const end = area.logicalCursor;
 
-      area.deleteRange(start.row, start.col, end.row, end.col)
-      area.insertText(text)
-      area.cursorOffset = Bun.stringWidth(text)
-      hide()
-      syncDraft()
+      area.deleteRange(start.row, start.col, end.row, end.col);
+      area.insertText(text);
+      area.cursorOffset = Bun.stringWidth(text);
+      hide();
+      syncDraft();
       if (!shell()) {
-        submitPrompt(clonePrompt(draft))
-        return
+        submitPrompt(clonePrompt(draft));
+        return;
       }
 
-      scheduleRows()
-      area.focus()
-      return
+      scheduleRows();
+      area.focus();
+      return;
     }
 
-    const cursor = area.cursorOffset
-    const tail = displayCharAt(area.plainText, cursor)
-    const append = "@" + next.value + (tail === " " ? "" : " ")
-    area.cursorOffset = at()
-    const start = area.logicalCursor
-    area.cursorOffset = cursor
-    const end = area.logicalCursor
-    area.deleteRange(start.row, start.col, end.row, end.col)
-    area.insertText(append)
+    const cursor = area.cursorOffset;
+    const tail = displayCharAt(area.plainText, cursor);
+    const append = "@" + next.value + (tail === " " ? "" : " ");
+    area.cursorOffset = at();
+    const start = area.logicalCursor;
+    area.cursorOffset = cursor;
+    const end = area.logicalCursor;
+    area.deleteRange(start.row, start.col, end.row, end.col);
+    area.insertText(append);
 
-    const text = "@" + next.value
-    const startOffset = at()
-    const endOffset = startOffset + Bun.stringWidth(text)
-    const part = structuredClone(next.part)
+    const text = "@" + next.value;
+    const startOffset = at();
+    const endOffset = startOffset + Bun.stringWidth(text);
+    const part = structuredClone(next.part);
     if (part.type === "agent") {
       part.source = {
         start: startOffset,
         end: endOffset,
         value: text,
-      }
+      };
     }
     if (part.type === "file" && part.source?.text) {
-      part.source.text.start = startOffset
-      part.source.text.end = endOffset
-      part.source.text.value = text
+      part.source.text.start = startOffset;
+      part.source.text.end = endOffset;
+      part.source.text.value = text;
     }
 
     if (part.type === "file") {
-      const prev = parts.findIndex((item) => item.type === "file" && item.url === part.url)
+      const prev = parts.findIndex((item) => item.type === "file" && item.url === part.url);
       if (prev !== -1) {
-        const mark = [...marks.entries()].find((item) => item[1] === prev)?.[0]
+        const mark = [...marks.entries()].find((item) => item[1] === prev)?.[0];
         if (mark !== undefined) {
-          area.extmarks.delete(mark)
+          area.extmarks.delete(mark);
         }
-        parts = parts.filter((_, idx) => idx !== prev)
+        parts = parts.filter((_, idx) => idx !== prev);
         marks = new Map(
           [...marks.entries()]
             .filter((item) => item[0] !== mark)
             .map((item) => [item[0], item[1] > prev ? item[1] - 1 : item[1]]),
-        )
+        );
       }
     }
 
@@ -938,42 +989,42 @@ export function createPromptState(input: PromptInput): PromptState {
       end: endOffset,
       virtual: true,
       typeId: type,
-    })
-    marks.set(id, parts.length)
-    parts.push(part)
-    hide()
-    syncDraft()
-    scheduleRows()
-    area.focus()
-  }
+    });
+    marks.set(id, parts.length);
+    parts.push(part);
+    hide();
+    syncDraft();
+    scheduleRows();
+    area.focus();
+  };
 
   const expand = () => {
-    const next = options()[menu.selected()]
+    const next = options()[menu.selected()];
     if (!next || next.kind !== "mention" || !next.directory || !area || area.isDestroyed) {
-      return
+      return;
     }
 
-    const cursor = area.cursorOffset
-    area.cursorOffset = at()
-    const start = area.logicalCursor
-    area.cursorOffset = cursor
-    const end = area.logicalCursor
-    area.deleteRange(start.row, start.col, end.row, end.col)
-    area.insertText("@" + next.value)
-    syncDraft()
-    refresh()
-  }
+    const cursor = area.cursorOffset;
+    area.cursorOffset = at();
+    const start = area.logicalCursor;
+    area.cursorOffset = cursor;
+    const end = area.logicalCursor;
+    area.deleteRange(start.row, start.col, end.row, end.col);
+    area.insertText("@" + next.value);
+    syncDraft();
+    refresh();
+  };
 
   const baseBindingsEnabled = () => {
-    const current = input.view()
-    if (current === "command") return false
-    if (current === "skill") return false
-    if (current === "model") return false
-    if (current === "variant") return false
-    if (current === "queued-menu") return false
-    if (current === "subagent-menu") return false
-    return true
-  }
+    const current = input.view();
+    if (current === "command") return false;
+    if (current === "skill") return false;
+    if (current === "model") return false;
+    if (current === "variant") return false;
+    if (current === "queued-menu") return false;
+    if (current === "subagent-menu") return false;
+    return true;
+  };
 
   useBindings(() => ({
     mode: OPENCODE_BASE_MODE,
@@ -984,13 +1035,13 @@ export function createPromptState(input: PromptInput): PromptState {
         title: "Clear prompt or exit",
         category: "Prompt",
         run() {
-          if (requestExit()) return
-          return false
+          if (requestExit()) return;
+          return false;
         },
       },
     ],
     bindings: input.tuiConfig.keybinds.get("prompt.clear"),
-  }))
+  }));
 
   useBindings(() => ({
     mode: OPENCODE_BASE_MODE,
@@ -1001,13 +1052,13 @@ export function createPromptState(input: PromptInput): PromptState {
         title: "Interrupt session",
         category: "Session",
         run() {
-          if (input.onInterrupt()) return
-          return false
+          if (input.onInterrupt()) return;
+          return false;
         },
       },
     ],
     bindings: input.tuiConfig.keybinds.get("session.interrupt"),
-  }))
+  }));
 
   useBindings(() => ({
     mode: OPENCODE_BASE_MODE,
@@ -1018,12 +1069,12 @@ export function createPromptState(input: PromptInput): PromptState {
         title: "Open editor",
         category: "Prompt",
         run() {
-          void openEditor()
+          void openEditor();
         },
       },
     ],
     bindings: input.tuiConfig.keybinds.get("prompt.editor"),
-  }))
+  }));
 
   useBindings(() => ({
     mode: OPENCODE_BASE_MODE,
@@ -1034,7 +1085,7 @@ export function createPromptState(input: PromptInput): PromptState {
         title: "Previous prompt history",
         category: "Prompt",
         run(ctx: { event: KeyEvent }) {
-          return historyCommand(-1, ctx.event)
+          return historyCommand(-1, ctx.event);
         },
       },
       {
@@ -1042,7 +1093,7 @@ export function createPromptState(input: PromptInput): PromptState {
         title: "Next prompt history",
         category: "Prompt",
         run(ctx: { event: KeyEvent }) {
-          return historyCommand(1, ctx.event)
+          return historyCommand(1, ctx.event);
         },
       },
     ],
@@ -1050,7 +1101,7 @@ export function createPromptState(input: PromptInput): PromptState {
       ...input.tuiConfig.keybinds.get("prompt.history.previous"),
       ...input.tuiConfig.keybinds.get("prompt.history.next"),
     ],
-  }))
+  }));
 
   useBindings(() => ({
     mode: OPENCODE_BASE_MODE,
@@ -1061,14 +1112,14 @@ export function createPromptState(input: PromptInput): PromptState {
         desc: "Shell mode",
         group: "Prompt",
         cmd() {
-          if (shell()) return false
-          if (!area || area.isDestroyed) return false
-          if (area.cursorOffset !== 0) return false
-          setShellMode(true)
+          if (shell()) return false;
+          if (!area || area.isDestroyed) return false;
+          if (area.cursorOffset !== 0) return false;
+          setShellMode(true);
         },
       },
     ],
-  }))
+  }));
 
   useBindings(() => ({
     mode: OPENCODE_BASE_MODE,
@@ -1085,13 +1136,13 @@ export function createPromptState(input: PromptInput): PromptState {
         desc: "Exit shell mode",
         group: "Prompt",
         cmd() {
-          if (!area || area.isDestroyed) return false
-          if (area.cursorOffset !== 0) return false
-          setShellMode(false)
+          if (!area || area.isDestroyed) return false;
+          if (area.cursorOffset !== 0) return false;
+          setShellMode(false);
         },
       },
     ],
-  }))
+  }));
 
   useBindings(() => ({
     mode: OPENCODE_BASE_MODE,
@@ -1121,10 +1172,10 @@ export function createPromptState(input: PromptInput): PromptState {
         category: "Autocomplete",
         run() {
           if (mode() === "slash" && options().length === 0) {
-            hide()
-            return
+            hide();
+            return;
           }
-          select()
+          select();
         },
       },
       {
@@ -1133,15 +1184,15 @@ export function createPromptState(input: PromptInput): PromptState {
         category: "Autocomplete",
         run() {
           if (mode() === "slash" && options().length === 0) {
-            hide()
-            return
+            hide();
+            return;
           }
-          const item = options()[menu.selected()]
+          const item = options()[menu.selected()];
           if (item?.kind === "mention" && item.directory) {
-            expand()
-            return
+            expand();
+            return;
           }
-          select()
+          select();
         },
       },
     ],
@@ -1152,133 +1203,135 @@ export function createPromptState(input: PromptInput): PromptState {
       "prompt.autocomplete.select",
       "prompt.autocomplete.complete",
     ]),
-  }))
+  }));
 
   const onKeyDown = (event: KeyEvent) => {
     if (input.state().phase === "idle" && event.name.toLowerCase() === "escape") {
-      input.onInputClear()
+      input.onInputClear();
     }
-  }
+  };
 
   const submitPrompt = (next: RunPrompt) => {
     if (!area || area.isDestroyed) {
-      draft = clonePrompt(next)
+      draft = clonePrompt(next);
     }
 
     if (visible()) {
       if (mode() !== "slash" || options().length > 0) {
-        select()
-        return
+        select();
+        return;
       }
 
-      hide()
+      hide();
     }
 
     if (!next.text.trim()) {
-      input.onStatus(input.state().phase === "running" ? "waiting for current response" : "empty prompt ignored")
-      return
+      input.onStatus(
+        input.state().phase === "running" ? "waiting for current response" : "empty prompt ignored",
+      );
+      return;
     }
 
-    const command = next.mode === "shell" ? undefined : selectedCommand(next.text, next.command)
+    const command = next.mode === "shell" ? undefined : selectedCommand(next.text, next.command);
     if (!command && next.mode !== "shell" && isExitCommand(next.text)) {
-      input.onExit()
-      return
+      input.onExit();
+      return;
     }
 
     const parsed =
       command || next.mode === "shell" || isNewCommand(next.text)
         ? undefined
-        : parseSlashCommand(next.text, input.commands())
+        : parseSlashCommand(next.text, input.commands());
     if (parsed?.type === "pending") {
-      input.onStatus("loading commands")
-      return
+      input.onStatus("loading commands");
+      return;
     }
 
     const submit = command
       ? { ...next, command }
       : parsed?.type === "command"
         ? { ...next, command: parsed.command }
-        : next
-    const shellMode = next.mode === "shell"
+        : next;
+    const shellMode = next.mode === "shell";
 
-    resetDraft()
+    resetDraft();
     queueMicrotask(async () => {
       if (await input.onSubmit(submit)) {
-        push(next)
+        push(next);
         if (shellMode) {
-          setShellMode(false)
-          draft = emptyPrompt(false)
+          setShellMode(false);
+          draft = emptyPrompt(false);
         }
-        return
+        return;
       }
 
-      restore(next)
-    })
-  }
+      restore(next);
+    });
+  };
 
   const onSubmit = () => {
-    syncDraft()
-    submitPrompt(clonePrompt(draft))
-  }
+    syncDraft();
+    submitPrompt(clonePrompt(draft));
+  };
 
   const submitText = (text: string) => {
-    submitPrompt({ text, parts: [] })
-  }
+    submitPrompt({ text, parts: [] });
+  };
 
   onCleanup(() => {
     if (area && !area.isDestroyed) {
-      area.off("line-info-change", scheduleRows)
+      area.off("line-info-change", scheduleRows);
     }
-  })
+  });
 
   createEffect(() => {
-    input.width()
-    popup()
+    input.width();
+    popup();
     if (input.prompt()) {
-      scheduleRows()
+      scheduleRows();
     }
-  })
+  });
 
   createEffect(() => {
-    query()
-    menu.reset()
-  })
+    query();
+    menu.reset();
+  });
 
   createEffect(() => {
-    input.state().phase
+    input.state().phase;
     if (!input.prompt() || !area || area.isDestroyed || input.state().phase !== "idle") {
-      return
+      return;
     }
 
     queueMicrotask(() => {
       if (!area || area.isDestroyed) {
-        return
+        return;
       }
 
-      area.focus()
-    })
-  })
+      area.focus();
+    });
+  });
 
   createEffect(() => {
-    const kind = input.view()
+    const kind = input.view();
     if (kind === prev) {
-      return
+      return;
     }
 
     if (prev === "prompt") {
-      syncDraft()
+      syncDraft();
     }
 
-    hide()
-    prev = kind
+    hide();
+    prev = kind;
     if (kind !== "prompt") {
-      return
+      return;
     }
 
     queueMicrotask(() => {
-      restore(draft)
-    })
-  })
+      restore(draft);
+    });
+  });
 
   return {
     placeholder,
@@ -1294,13 +1347,13 @@ export function createPromptState(input: PromptInput): PromptState {
     openEditor,
     onKeyDown,
     onContentChange: () => {
-      input.onInputClear()
-      syncDraft()
-      refresh()
-      scheduleRows()
+      input.onInputClear();
+      syncDraft();
+      refresh();
+      scheduleRows();
     },
     replaceDraft,
     replacePrompt: restore,
     bind,
-  }
+  };
 }

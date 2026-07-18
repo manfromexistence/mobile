@@ -66,7 +66,7 @@ test("a hidden model lands in the provider's hidden set; a visible sibling does 
   assert.equal(
     hiddenForProvider.has(VISIBLE_MODEL),
     false,
-    "visible model must NOT be in the hidden set"
+    "visible model must NOT be in the hidden set",
   );
 });
 
@@ -76,6 +76,6 @@ test("un-hiding a model (isHidden: null) removes it from the map", () => {
   assert.equal(
     map.get(PROVIDER)?.has(HIDDEN_MODEL) ?? false,
     false,
-    "un-hidden model must drop out of the hidden set"
+    "un-hidden model must drop out of the hidden set",
   );
 });

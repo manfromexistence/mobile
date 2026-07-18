@@ -15,12 +15,12 @@ describe("browserPool optional cloakbrowser import", () => {
     assert.equal(
       /import\(\s*["']cloakbrowser["']\s*\)/.test(source),
       false,
-      "cloakbrowser must remain runtime-optional; static dynamic import triggers Turbopack resolution"
+      "cloakbrowser must remain runtime-optional; static dynamic import triggers Turbopack resolution",
     );
     assert.match(
       source,
       /Turbopack resolve it during route compilation/,
-      "the computed import rationale should stay documented near the helper"
+      "the computed import rationale should stay documented near the helper",
     );
     assert.match(source, /return \["cloak", "browser"\]\.join\(""\);/);
   });

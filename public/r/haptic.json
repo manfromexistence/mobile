@@ -13,8 +13,6 @@
     }
   ],
   "docs": "https://chanhdai.com/components/haptic-feedback",
-  "categories": [
-    "utilities"
-  ],
+  "categories": ["utilities"],
   "type": "registry:lib"
 }

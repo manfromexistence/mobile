@@ -40,7 +40,7 @@ function seedSkill(overrides: Partial<Record<string, unknown>> = {}) {
   db.prepare(
     `INSERT INTO skills
       (id, api_key_id, name, version, description, schema, handler, enabled, mode)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     overrides.id ?? id,
     overrides.api_key_id ?? "key-1",
@@ -50,7 +50,7 @@ function seedSkill(overrides: Partial<Record<string, unknown>> = {}) {
     overrides.schema ?? "{}",
     overrides.handler ?? "handler",
     overrides.enabled ?? 1,
-    overrides.mode ?? "auto"
+    overrides.mode ?? "auto",
   );
   return (overrides.id as string) ?? id;
 }
@@ -123,7 +123,7 @@ test("exportAllSummaryRows — returns key_value rows", () => {
   db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "settings",
     "test.export.key",
-    "hello-value"
+    "hello-value",
   );
 
   const { settings } = backupMod.exportAllSummaryRows();
@@ -138,14 +138,14 @@ test("exportAllSummaryRows — returns combos rows", () => {
   const now = new Date().toISOString();
   // combos schema: id, name, data, created_at, updated_at (sort_order optional)
   db.prepare(
-    `INSERT INTO combos (id, name, data, created_at, updated_at) VALUES (?, ?, ?, ?, ?)`
+    `INSERT INTO combos (id, name, data, created_at, updated_at) VALUES (?, ?, ?, ?, ?)`,
   ).run(comboId, "export-test-combo", "{}", now, now);
 
   const { combos } = backupMod.exportAllSummaryRows();
 
   assert.ok(
     (combos as Array<{ id: string }>).some((c) => c.id === comboId),
-    "combos must include seeded row"
+    "combos must include seeded row",
   );
 });
 
@@ -156,14 +156,12 @@ test("exportAllSummaryRows — returns provider_connections rows (no credentials
   db.prepare(
     `INSERT INTO provider_connections
        (id, provider, name, auth_type, is_active, email, created_at, updated_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(connId, "openai", "My Key", "api_key", 1, "test@example.com", now, now);
 
   const { providers } = backupMod.exportAllSummaryRows();
 
-  const found = (providers as Array<{ id: string; provider: string }>).find(
-    (p) => p.id === connId
-  );
+  const found = (providers as Array<{ id: string; provider: string }>).find((p) => p.id === connId);
   assert.ok(found, "providers must include seeded row");
   assert.equal(found?.provider, "openai");
   // Sensitive credential columns must NOT be exported — the query only selects
@@ -179,7 +177,7 @@ test("exportAllSummaryRows — returns api_keys rows (masked prefix only)", () =
   // api_keys schema: id, name, key, machine_id, created_at
   db.prepare(
     `INSERT INTO api_keys (id, name, key, created_at)
-     VALUES (?, ?, ?, datetime('now'))`
+     VALUES (?, ?, ?, datetime('now'))`,
   ).run(keyId, "export-test-key", fullKey);
 
   const { apiKeys } = backupMod.exportAllSummaryRows();

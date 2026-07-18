@@ -43,7 +43,7 @@ describe("compression engine registry contract", () => {
       listEnabledEngines()
         .map((entry) => entry.engine.id)
         .join(","),
-      "caveman"
+      "caveman",
     );
   });
 

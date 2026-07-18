@@ -1,7 +1,7 @@
-import { getVirtualizationWorkload } from '@pierre/tree-test-data';
+import { getVirtualizationWorkload } from "@pierre/tree-test-data";
 
-import { createVisibleTreeProjection, PathStore } from '../src/index';
-import type { PathStoreVisibleRow } from '../src/public-types';
+import { createVisibleTreeProjection, PathStore } from "../src/index";
+import type { PathStoreVisibleRow } from "../src/public-types";
 
 export interface VisibleTreeProjectionWorkload {
   collapseTargetPath: string | null;
@@ -39,7 +39,7 @@ export interface VisibleTreeProjectionDurationSummary {
 // Prepares a stable visible-row snapshot plus a reusable store for the
 // projection benchmarks so profile runs can isolate helper cost from setup.
 export function createVisibleTreeProjectionWorkload(
-  workloadName: string
+  workloadName: string,
 ): VisibleTreeProjectionWorkload {
   const workload = getVirtualizationWorkload(workloadName);
   const store = new PathStore({
@@ -48,8 +48,7 @@ export function createVisibleTreeProjectionWorkload(
     paths: workload.files,
   });
   const visibleCount = store.getVisibleCount();
-  const rows =
-    visibleCount > 0 ? store.getVisibleSlice(0, visibleCount - 1) : [];
+  const rows = visibleCount > 0 ? store.getVisibleSlice(0, visibleCount - 1) : [];
 
   return {
     collapseTargetPath: pickCollapseTargetPath(rows),
@@ -66,21 +65,19 @@ export function createVisibleTreeProjectionWorkload(
 }
 
 export function createVisibleTreeProjectionScenarios(
-  workload: VisibleTreeProjectionWorkload
+  workload: VisibleTreeProjectionWorkload,
 ): VisibleTreeProjectionScenario[] {
   const scenarios: VisibleTreeProjectionScenario[] = [
     {
-      description:
-        'Projects a precomputed visible slice into parent/setsize metadata.',
+      description: "Projects a precomputed visible slice into parent/setsize metadata.",
       measure: () => {
         const projection = createVisibleTreeProjection(workload.rows);
         return { rowCount: projection.rows.length };
       },
-      name: 'projection-only',
+      name: "projection-only",
     },
     {
-      description:
-        'Reads the full visible slice from the store, then projects it.',
+      description: "Reads the full visible slice from the store, then projects it.",
       measure: () => {
         const rows =
           workload.visibleCount > 0
@@ -89,7 +86,7 @@ export function createVisibleTreeProjectionScenarios(
         const projection = createVisibleTreeProjection(rows);
         return { rowCount: projection.rows.length };
       },
-      name: 'slice-and-projection',
+      name: "slice-and-projection",
     },
   ];
 
@@ -104,7 +101,7 @@ export function createVisibleTreeProjectionScenarios(
 
     scenarios.push({
       description:
-        'Alternates collapse and expand on a live store, then rebuilds projection metadata from the new visible slice.',
+        "Alternates collapse and expand on a live store, then rebuilds projection metadata from the new visible slice.",
       measure: () => {
         if (isCollapsed) {
           toggleStore.expand(collapseTargetPath);
@@ -114,29 +111,24 @@ export function createVisibleTreeProjectionScenarios(
         isCollapsed = !isCollapsed;
 
         const visibleCount = toggleStore.getVisibleCount();
-        const rows =
-          visibleCount > 0
-            ? toggleStore.getVisibleSlice(0, visibleCount - 1)
-            : [];
+        const rows = visibleCount > 0 ? toggleStore.getVisibleSlice(0, visibleCount - 1) : [];
         const projection = createVisibleTreeProjection(rows);
         return {
           collapseTargetPath,
           rowCount: projection.rows.length,
         };
       },
-      name: 'toggle-slice-and-projection',
+      name: "toggle-slice-and-projection",
     });
 
     // Pre-compute a presorted input so each fresh store avoids re-sorting the
     // same path set. This mirrors the intended API usage for repeated
     // construction from a known file list.
-    const collapsePreparedInput = PathStore.preparePresortedInput(
-      workload.presortedFiles
-    );
+    const collapsePreparedInput = PathStore.preparePresortedInput(workload.presortedFiles);
 
     scenarios.push({
       description:
-        'Constructs a fresh store from presorted input, collapses one representative directory, then rebuilds projection metadata from the new visible slice.',
+        "Constructs a fresh store from presorted input, collapses one representative directory, then rebuilds projection metadata from the new visible slice.",
       measure: () => {
         const freshStore = new PathStore({
           flattenEmptyDirectories: true,
@@ -145,17 +137,14 @@ export function createVisibleTreeProjectionScenarios(
         });
         freshStore.collapse(collapseTargetPath);
         const visibleCount = freshStore.getVisibleCount();
-        const rows =
-          visibleCount > 0
-            ? freshStore.getVisibleSlice(0, visibleCount - 1)
-            : [];
+        const rows = visibleCount > 0 ? freshStore.getVisibleSlice(0, visibleCount - 1) : [];
         const projection = createVisibleTreeProjection(rows);
         return {
           collapseTargetPath,
           rowCount: projection.rows.length,
         };
       },
-      name: 'collapse-slice-and-projection',
+      name: "collapse-slice-and-projection",
     });
   }
 
@@ -163,7 +152,7 @@ export function createVisibleTreeProjectionScenarios(
 }
 
 export function summarizeDurations(
-  durationsMs: readonly number[]
+  durationsMs: readonly number[],
 ): VisibleTreeProjectionDurationSummary {
   const sorted = [...durationsMs].sort((left, right) => left - right);
   const count = sorted.length;
@@ -173,10 +162,7 @@ export function summarizeDurations(
       return 0;
     }
 
-    const index = Math.min(
-      count - 1,
-      Math.max(0, Math.ceil(count * fraction) - 1)
-    );
+    const index = Math.min(count - 1, Math.max(0, Math.ceil(count * fraction) - 1));
     return sorted[index] ?? 0;
   };
 
@@ -190,17 +176,15 @@ export function summarizeDurations(
   };
 }
 
-function pickCollapseTargetPath(
-  rows: readonly PathStoreVisibleRow[]
-): string | null {
+function pickCollapseTargetPath(rows: readonly PathStoreVisibleRow[]): string | null {
   for (const row of rows) {
-    if (row.kind === 'directory' && row.hasChildren && row.depth <= 1) {
+    if (row.kind === "directory" && row.hasChildren && row.depth <= 1) {
       return row.path;
     }
   }
 
   for (const row of rows) {
-    if (row.kind === 'directory' && row.hasChildren) {
+    if (row.kind === "directory" && row.hasChildren) {
       return row.path;
     }
   }

@@ -19,16 +19,12 @@ import os from "node:os";
 import path from "node:path";
 
 // Set up a temp DATA_DIR so getDbInstance() initialises cleanly
-const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-improve-prompt-")
-);
+const TEST_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-improve-prompt-"));
 process.env.DATA_DIR = TEST_DATA_DIR;
 // Disable mandatory auth for most tests
 process.env.REQUIRE_API_KEY = "false";
 
-const { POST, OPTIONS } = await import(
-  "../../src/app/api/playground/improve-prompt/route.ts"
-);
+const { POST, OPTIONS } = await import("../../src/app/api/playground/improve-prompt/route.ts");
 
 const BASE_URL = "http://localhost:20128";
 
@@ -80,11 +76,15 @@ test("happy path: system + prompt both provided", async () => {
     globalThis.fetch = makeUpstreamOkFetch(
       "<<SYSTEM>>\nimproved system\n\n<<PROMPT>>\nimproved prompt",
       10,
-      5
+      5,
     ) as typeof fetch;
 
     const res = await POST(
-      postRequest({ system: "You are a helper.", prompt: "Tell me about AI.", model: "gpt-4o-mini" })
+      postRequest({
+        system: "You are a helper.",
+        prompt: "Tell me about AI.",
+        model: "gpt-4o-mini",
+      }),
     );
     assert.equal(res.status, 200);
 
@@ -111,7 +111,7 @@ test("happy path: only system provided", async () => {
     globalThis.fetch = makeUpstreamOkFetch("improved system content only") as typeof fetch;
 
     const res = await POST(
-      postRequest({ system: "You are a helpful assistant.", model: "gpt-4o" })
+      postRequest({ system: "You are a helpful assistant.", model: "gpt-4o" }),
     );
     assert.equal(res.status, 200);
 
@@ -137,7 +137,7 @@ test("happy path: only prompt provided", async () => {
     globalThis.fetch = makeUpstreamOkFetch("improved prompt content only") as typeof fetch;
 
     const res = await POST(
-      postRequest({ prompt: "What is machine learning?", model: "claude-3-5-sonnet-20241022" })
+      postRequest({ prompt: "What is machine learning?", model: "claude-3-5-sonnet-20241022" }),
     );
     assert.equal(res.status, 200);
 
@@ -161,15 +161,13 @@ test("happy path: usage defaults to 0 when not in upstream response", async () =
   try {
     // Return response without usage field
     globalThis.fetch = (async (_url: unknown, _opts: unknown) => {
-      return new Response(
-        JSON.stringify({ choices: [{ message: { content: "improved" } }] }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
-      );
+      return new Response(JSON.stringify({ choices: [{ message: { content: "improved" } }] }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      });
     }) as typeof fetch;
 
-    const res = await POST(
-      postRequest({ prompt: "Hello world", model: "gpt-4o-mini" })
-    );
+    const res = await POST(postRequest({ prompt: "Hello world", model: "gpt-4o-mini" }));
     assert.equal(res.status, 200);
 
     const body = (await res.json()) as { tokensIn: number; tokensOut: number };
@@ -242,12 +240,10 @@ test("upstream error returns sanitized error message — no stack trace in body"
     // Simulate upstream returning 500 with a message that looks like stack trace
     globalThis.fetch = makeUpstreamErrorFetch(
       500,
-      "Internal error\n    at /home/user/project/src/handler.ts:42:10\n    at process.nextTick"
+      "Internal error\n    at /home/user/project/src/handler.ts:42:10\n    at process.nextTick",
     ) as typeof fetch;
 
-    const res = await POST(
-      postRequest({ prompt: "Hello", model: "gpt-4o-mini" })
-    );
+    const res = await POST(postRequest({ prompt: "Hello", model: "gpt-4o-mini" }));
     // Should be an error response (not 200)
     assert.ok(res.status >= 400);
 
@@ -256,7 +252,7 @@ test("upstream error returns sanitized error message — no stack trace in body"
     // Hard Rule #12: stack trace must be stripped
     assert.ok(
       !body.error.message.match(/\sat\s\//),
-      "error message must not contain stack trace paths"
+      "error message must not contain stack trace paths",
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -270,9 +266,7 @@ test("upstream network error is sanitized", async () => {
       throw new Error("ECONNREFUSED connect ECONNREFUSED 127.0.0.1:20128");
     }) as typeof fetch;
 
-    const res = await POST(
-      postRequest({ prompt: "Hello", model: "gpt-4o-mini" })
-    );
+    const res = await POST(postRequest({ prompt: "Hello", model: "gpt-4o-mini" }));
     assert.ok(res.status >= 500);
 
     const body = (await res.json()) as { error: { message: string } };
@@ -289,9 +283,7 @@ test("401 when REQUIRE_API_KEY=true and no key provided", async () => {
   const originalRequired = process.env.REQUIRE_API_KEY;
   try {
     process.env.REQUIRE_API_KEY = "true";
-    const res = await POST(
-      postRequest({ prompt: "Test", model: "gpt-4o-mini" })
-    );
+    const res = await POST(postRequest({ prompt: "Test", model: "gpt-4o-mini" }));
     assert.equal(res.status, 401);
 
     const body = (await res.json()) as { error: { message: string } };

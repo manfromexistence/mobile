@@ -31,9 +31,7 @@ test("toolLimitDetector: setDetectedToolLimit only lowers the limit", async () =
 });
 
 test("toolLimitDetector: parseToolLimitFromError extracts numeric limits", async () => {
-  const { parseToolLimitFromError } = await import(
-    "../../open-sse/services/toolLimitDetector.ts"
-  );
+  const { parseToolLimitFromError } = await import("../../open-sse/services/toolLimitDetector.ts");
 
   assert.equal(parseToolLimitFromError("'tools': maximum number of items is 64"), 64);
   assert.equal(parseToolLimitFromError("Maximum number of tools allowed is 32"), 32);
@@ -95,13 +93,13 @@ test("codexQuotaFetcher: connectionRegistry evicts oldest when full (100)", asyn
 
   assert.doesNotThrow(
     () => unregisterCodexConnection("evict-test-0"),
-    "unregistering evicted conn-0 should be a no-op, not throw"
+    "unregistering evicted conn-0 should be a no-op, not throw",
   );
 
   registerCodexConnection("evict-test-0", { accessToken: "tok-re" });
   assert.doesNotThrow(
     () => unregisterCodexConnection("evict-test-0"),
-    "re-registered conn-0 should unregister cleanly"
+    "re-registered conn-0 should unregister cleanly",
   );
 
   for (let i = 1; i <= 100; i++) {
@@ -119,9 +117,7 @@ test("codexQuotaFetcher: invalidateCodexQuotaCache does not throw", async () => 
 });
 
 test("codexQuotaFetcher: getCodexQuotaCooldownMs returns 0 when under threshold", async () => {
-  const { getCodexQuotaCooldownMs } = await import(
-    "../../open-sse/services/codexQuotaFetcher.ts"
-  );
+  const { getCodexQuotaCooldownMs } = await import("../../open-sse/services/codexQuotaFetcher.ts");
 
   const quota = {
     used: 50,
@@ -137,9 +133,7 @@ test("codexQuotaFetcher: getCodexQuotaCooldownMs returns 0 when under threshold"
 });
 
 test("codexQuotaFetcher: getCodexQuotaCooldownMs returns cooldown when 7d exhausted", async () => {
-  const { getCodexQuotaCooldownMs } = await import(
-    "../../open-sse/services/codexQuotaFetcher.ts"
-  );
+  const { getCodexQuotaCooldownMs } = await import("../../open-sse/services/codexQuotaFetcher.ts");
 
   const futureReset = new Date(Date.now() + 60_000).toISOString();
   const quota = {
@@ -169,12 +163,16 @@ test("quotaMonitor: clearQuotaMonitors resets active count to 0", async () => {
 });
 
 test("quotaMonitor: isQuotaMonitorEnabled checks providerSpecificData flag", async () => {
-  const { isQuotaMonitorEnabled } = await import(
-    "../../open-sse/services/quotaMonitor.ts"
-  );
+  const { isQuotaMonitorEnabled } = await import("../../open-sse/services/quotaMonitor.ts");
 
-  assert.equal(isQuotaMonitorEnabled({ providerSpecificData: { quotaMonitorEnabled: true } }), true);
-  assert.equal(isQuotaMonitorEnabled({ providerSpecificData: { quotaMonitorEnabled: false } }), false);
+  assert.equal(
+    isQuotaMonitorEnabled({ providerSpecificData: { quotaMonitorEnabled: true } }),
+    true,
+  );
+  assert.equal(
+    isQuotaMonitorEnabled({ providerSpecificData: { quotaMonitorEnabled: false } }),
+    false,
+  );
   assert.equal(isQuotaMonitorEnabled({ providerSpecificData: {} }), false);
   assert.equal(isQuotaMonitorEnabled({}), false);
   assert.equal(isQuotaMonitorEnabled({ providerSpecificData: null }), false);
@@ -361,10 +359,9 @@ test("circuitBreaker: breaker transitions CLOSED -> OPEN after threshold failure
   assert.equal(breaker.state, "OPEN");
 
   // Should reject while open
-  await assert.rejects(
-    () => breaker.execute(async () => "ok"),
-    { name: "CircuitBreakerOpenError" }
-  );
+  await assert.rejects(() => breaker.execute(async () => "ok"), {
+    name: "CircuitBreakerOpenError",
+  });
 
   resetAllCircuitBreakers();
 });

@@ -66,7 +66,7 @@ function ctx(headers: Headers, method = "POST", normalizedPath = "/api/v1/chat/c
 function relativeUrlCtx(
   headers: Headers,
   method = "POST",
-  normalizedPath = "/api/v1/chat/completions"
+  normalizedPath = "/api/v1/chat/completions",
 ) {
   const pathOnly = normalizedPath.split("?")[0];
   return {
@@ -151,7 +151,7 @@ test("clientApiPolicy: REQUIRE_API_KEY DB feature flag override can disable env 
 test("clientApiPolicy: dashboard session can read the model catalog without bearer", async () => {
   const policy = await loadPolicy();
   const out = await policy.evaluate(
-    ctx(new Headers({ cookie: await dashboardCookie() }), "GET", "/api/v1/models")
+    ctx(new Headers({ cookie: await dashboardCookie() }), "GET", "/api/v1/models"),
   );
 
   assert.equal(out.allow, true);
@@ -164,7 +164,7 @@ test("clientApiPolicy: dashboard session can read the model catalog without bear
 test("clientApiPolicy: dashboard session is accepted for client API routes without bearer", async () => {
   const policy = await loadPolicy();
   const out = await policy.evaluate(
-    ctx(new Headers({ cookie: await dashboardCookie() }), "POST", "/api/v1/chat/completions")
+    ctx(new Headers({ cookie: await dashboardCookie() }), "POST", "/api/v1/chat/completions"),
   );
 
   assert.equal(out.allow, true);
@@ -214,7 +214,7 @@ test("clientApiPolicy: environment API key remains accepted for client API route
 
   const policy = await loadPolicy();
   const out = await policy.evaluate(
-    ctx(new Headers({ authorization: "Bearer sk-env-policy-test" }))
+    ctx(new Headers({ authorization: "Bearer sk-env-policy-test" })),
   );
 
   assert.equal(out.allow, true);
@@ -242,7 +242,7 @@ test("clientApiPolicy: ROUTER_API_KEY remains accepted for client API routes", a
 
   const policy = await loadPolicy();
   const out = await policy.evaluate(
-    ctx(new Headers({ authorization: "Bearer sk-router-policy-test" }))
+    ctx(new Headers({ authorization: "Bearer sk-router-policy-test" })),
   );
 
   assert.equal(out.allow, true);

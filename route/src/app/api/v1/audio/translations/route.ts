@@ -85,12 +85,12 @@ export async function POST(request) {
 
   const { provider, model: resolvedModel } = parseTranslationModel(
     model as string,
-    dynamicProviders
+    dynamicProviders,
   );
   if (!provider) {
     return errorResponse(
       HTTP_STATUS.BAD_REQUEST,
-      `Invalid translation model: ${model}. Use format: provider/model`
+      `Invalid translation model: ${model}. Use format: provider/model`,
     );
   }
 

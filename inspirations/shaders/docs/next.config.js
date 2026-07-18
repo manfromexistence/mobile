@@ -10,8 +10,8 @@ const config = {
   },
   rewrites: async () => [
     {
-      source: '/registry/:path*',
-      destination: '/r/:path*.json',
+      source: "/registry/:path*",
+      destination: "/r/:path*.json",
     },
   ],
 };

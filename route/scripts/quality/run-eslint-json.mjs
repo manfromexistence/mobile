@@ -17,7 +17,7 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const outFile = path.resolve(
   root,
-  process.env.ESLINT_RESULTS_JSON || path.join(".artifacts", "eslint-results.json")
+  process.env.ESLINT_RESULTS_JSON || path.join(".artifacts", "eslint-results.json"),
 );
 
 fs.mkdirSync(path.dirname(outFile), { recursive: true });
@@ -27,7 +27,7 @@ const eslintBin = path.join(
   root,
   "node_modules",
   ".bin",
-  process.platform === "win32" ? "eslint.cmd" : "eslint"
+  process.platform === "win32" ? "eslint.cmd" : "eslint",
 );
 const args = [
   ".",

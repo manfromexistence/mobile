@@ -1,34 +1,28 @@
-'use client';
+"use client";
 
-import type { PreloadedFileResult } from '@pierre/diffs/ssr';
-import { useState } from 'react';
+import type { PreloadedFileResult } from "@pierre/diffs/ssr";
+import { useState } from "react";
 
-import { DocsCodeExample } from '@/components/docs/DocsCodeExample';
-import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group';
+import { DocsCodeExample } from "@/components/docs/DocsCodeExample";
+import { ButtonGroup, ButtonGroupItem } from "@/components/ui/button-group";
 
-type TokenInteractionMode = 'react' | 'vanilla';
+type TokenInteractionMode = "react" | "vanilla";
 
 interface TokenHookTabsProps {
   reactExample: PreloadedFileResult<undefined>;
   vanillaExample: PreloadedFileResult<undefined>;
 }
 
-export function TokenHookTabs({
-  reactExample,
-  vanillaExample,
-}: TokenHookTabsProps) {
-  const [mode, setMode] = useState<TokenInteractionMode>('react');
+export function TokenHookTabs({ reactExample, vanillaExample }: TokenHookTabsProps) {
+  const [mode, setMode] = useState<TokenInteractionMode>("react");
 
   return (
     <>
-      <ButtonGroup
-        value={mode}
-        onValueChange={(value) => setMode(value as TokenInteractionMode)}
-      >
+      <ButtonGroup value={mode} onValueChange={(value) => setMode(value as TokenInteractionMode)}>
         <ButtonGroupItem value="react">React</ButtonGroupItem>
         <ButtonGroupItem value="vanilla">Vanilla JS</ButtonGroupItem>
       </ButtonGroup>
-      {mode === 'react' ? (
+      {mode === "react" ? (
         <DocsCodeExample {...reactExample} key={mode} />
       ) : (
         <DocsCodeExample {...vanillaExample} key={mode} />

@@ -1,17 +1,23 @@
-import { Session } from "@opencode-ai/schema/session"
-import { SessionMessage } from "@opencode-ai/schema/session-message"
-import { Schema } from "effect"
-import { HttpApiEndpoint, HttpApiGroup, OpenApi } from "effect/unstable/httpapi"
-import { InvalidCursorError, SessionNotFoundError, UnknownError } from "../errors"
+import { Session } from "@opencode-ai/schema/session";
+import { SessionMessage } from "@opencode-ai/schema/session-message";
+import { Schema } from "effect";
+import { HttpApiEndpoint, HttpApiGroup, OpenApi } from "effect/unstable/httpapi";
+import { InvalidCursorError, SessionNotFoundError, UnknownError } from "../errors";
 
 export const SessionMessagesQuery = Schema.Struct({
   limit: Schema.optional(
-    Schema.NumberFromString.check(Schema.isInt(), Schema.isGreaterThanOrEqualTo(1), Schema.isLessThanOrEqualTo(200)),
+    Schema.NumberFromString.check(
+      Schema.isInt(),
+      Schema.isGreaterThanOrEqualTo(1),
+      Schema.isLessThanOrEqualTo(200),
+    ),
   ).annotate({
-    description: "Maximum number of messages to return. When omitted, the endpoint returns its default page size.",
+    description:
+      "Maximum number of messages to return. When omitted, the endpoint returns its default page size.",
   }),
   order: Schema.optional(Schema.Union([Schema.Literal("asc"), Schema.Literal("desc")])).annotate({
-    description: "Message order for the first page. Use desc for newest first or asc for oldest first.",
+    description:
+      "Message order for the first page. Use desc for newest first or asc for oldest first.",
   }),
   cursor: Schema.optional(
     Schema.String.annotate({
@@ -19,7 +25,7 @@ export const SessionMessagesQuery = Schema.Struct({
         "Opaque pagination cursor returned as cursor.previous or cursor.next in the previous response. Do not combine with order.",
     }),
   ),
-}).annotate({ identifier: "SessionMessagesQuery" })
+}).annotate({ identifier: "SessionMessagesQuery" });
 
 export const MessageGroup = HttpApiGroup.make("server.message")
   .add(
@@ -48,4 +54,4 @@ export const MessageGroup = HttpApiGroup.make("server.message")
       title: "messages",
       description: "Experimental message routes.",
     }),
-  )
+  );

@@ -8,17 +8,22 @@
 //
 // Also wires SIGINT so Ctrl-c clears a live prompt draft first, then falls
 // back to the usual two-press exit sequence through RunFooter.requestExit().
-import path from "path"
-import { CliRenderEvents, createCliRenderer, type CliRenderer, type ScrollbackWriter } from "@opentui/core"
-import { createDefaultOpenTuiKeymap } from "@opentui/keymap/opentui"
-import { Global } from "@opencode-ai/core/global"
-import { openEditor } from "@opencode-ai/tui/editor"
-import { registerOpencodeKeymap } from "@opencode-ai/tui/keymap"
-import { Session as SessionApi } from "@/session/session"
-import * as Locale from "@/util/locale"
-import { resolveInteractiveStdin } from "./runtime.stdin"
-import { entrySplash, exitSplash, splashMeta } from "./splash"
-import { resolveRunTheme } from "./theme"
+import path from "path";
+import {
+  CliRenderEvents,
+  createCliRenderer,
+  type CliRenderer,
+  type ScrollbackWriter,
+} from "@opentui/core";
+import { createDefaultOpenTuiKeymap } from "@opentui/keymap/opentui";
+import { Global } from "@opencode-ai/core/global";
+import { openEditor } from "@opencode-ai/tui/editor";
+import { registerOpencodeKeymap } from "@opencode-ai/tui/keymap";
+import { Session as SessionApi } from "@/session/session";
+import * as Locale from "@/util/locale";
+import { resolveInteractiveStdin } from "./runtime.stdin";
+import { entrySplash, exitSplash, splashMeta } from "./splash";
+import { resolveRunTheme } from "./theme";
 import type {
   FooterApi,
   PermissionReply,
@@ -29,80 +34,93 @@ import type {
   RunPrompt,
   RunResource,
   RunTuiConfig,
-} from "./types"
-import { formatModelLabel } from "./variant.shared"
+} from "./types";
+import { formatModelLabel } from "./variant.shared";
 
-const FOOTER_HEIGHT = 4
+const FOOTER_HEIGHT = 4;
 
 type SplashState = {
-  entry: boolean
-  exit: boolean
-}
+  entry: boolean;
+  exit: boolean;
+};
 
 type CycleResult = {
-  modelLabel?: string
-  status?: string
-  variant?: string | undefined
-  variants?: string[]
-}
+  modelLabel?: string;
+  status?: string;
+  variant?: string | undefined;
+  variants?: string[];
+};
 
 type FooterLabels = {
-  agentLabel: string
-  modelLabel: string
-}
+  agentLabel: string;
+  modelLabel: string;
+};
 
 export type LifecycleInput = {
-  directory: string
-  findFiles: (query: string) => Promise<string[]>
-  agents: RunAgent[]
-  resources: RunResource[]
-  sessionID: string
-  sessionTitle?: string
-  getSessionID?: () => string | undefined
-  first: boolean
-  history: RunPrompt[]
-  agent: string | undefined
-  model: RunInput["model"]
-  variant: string | undefined
-  tuiConfig: RunTuiConfig
-  backgroundSubagents: boolean
-  onPermissionReply: (input: PermissionReply) => void | Promise<void>
-  onQuestionReply: (input: QuestionReply) => void | Promise<void>
-  onQuestionReject: (input: QuestionReject) => void | Promise<void>
-  onCycleVariant?: () => CycleResult | void
-  onModelSelect?: (model: NonNullable<RunInput["model"]>) => CycleResult | void | Promise<CycleResult | void>
-  onVariantSelect?: (variant: string | undefined) => CycleResult | void | Promise<CycleResult | void>
-  onInterrupt?: () => void
-  onBackground?: () => void
-  onSubagentSelect?: (sessionID: string | undefined) => void
-}
+  directory: string;
+  findFiles: (query: string) => Promise<string[]>;
+  agents: RunAgent[];
+  resources: RunResource[];
+  sessionID: string;
+  sessionTitle?: string;
+  getSessionID?: () => string | undefined;
+  first: boolean;
+  history: RunPrompt[];
+  agent: string | undefined;
+  model: RunInput["model"];
+  variant: string | undefined;
+  tuiConfig: RunTuiConfig;
+  backgroundSubagents: boolean;
+  onPermissionReply: (input: PermissionReply) => void | Promise<void>;
+  onQuestionReply: (input: QuestionReply) => void | Promise<void>;
+  onQuestionReject: (input: QuestionReject) => void | Promise<void>;
+  onCycleVariant?: () => CycleResult | void;
+  onModelSelect?: (
+    model: NonNullable<RunInput["model"]>,
+  ) => CycleResult | void | Promise<CycleResult | void>;
+  onVariantSelect?: (
+    variant: string | undefined,
+  ) => CycleResult | void | Promise<CycleResult | void>;
+  onInterrupt?: () => void;
+  onBackground?: () => void;
+  onSubagentSelect?: (sessionID: string | undefined) => void;
+};
 
 export type Lifecycle = {
-  footer: FooterApi
-  onResize(fn: () => void): () => void
-  refreshTheme(): void
-  resetForReplay(input: { sessionTitle?: string; sessionID?: string; history: RunPrompt[] }): Promise<void>
-  close(input: { showExit: boolean; sessionTitle?: string; sessionID?: string; history?: RunPrompt[] }): Promise<void>
-}
+  footer: FooterApi;
+  onResize(fn: () => void): () => void;
+  refreshTheme(): void;
+  resetForReplay(input: {
+    sessionTitle?: string;
+    sessionID?: string;
+    history: RunPrompt[];
+  }): Promise<void>;
+  close(input: {
+    showExit: boolean;
+    sessionTitle?: string;
+    sessionID?: string;
+    history?: RunPrompt[];
+  }): Promise<void>;
+};
 
 // Gracefully tears down the renderer. Order matters: switch external output
 // back to passthrough before leaving split-footer mode, so pending stdout
 // doesn't get captured into the now-dead scrollback pipeline.
 function shutdown(renderer: CliRenderer): void {
   if (renderer.isDestroyed) {
-    return
+    return;
   }
 
   if (renderer.externalOutputMode === "capture-stdout") {
-    renderer.externalOutputMode = "passthrough"
+    renderer.externalOutputMode = "passthrough";
   }
 
   if (renderer.screenMode === "split-footer") {
-    renderer.screenMode = "main-screen"
+    renderer.screenMode = "main-screen";
   }
 
   if (!renderer.isDestroyed) {
-    renderer.destroy()
+    renderer.destroy();
   }
 }
 
@@ -111,41 +129,41 @@ function splashInfo(title: string | undefined, history: RunPrompt[]) {
     return {
       title,
       showSession: true,
-    }
+    };
   }
 
-  const next = history.find((item) => item.text.trim().length > 0)
+  const next = history.find((item) => item.text.trim().length > 0);
   return {
     title: next?.text ?? title,
     showSession: !!next,
-  }
+  };
 }
 
 function footerLabels(input: Pick<RunInput, "agent" | "model" | "variant">): FooterLabels {
-  const agentLabel = Locale.titlecase(input.agent ?? "build")
+  const agentLabel = Locale.titlecase(input.agent ?? "build");
 
   if (!input.model) {
     return {
       agentLabel,
       modelLabel: "Model default",
-    }
+    };
   }
 
   return {
     agentLabel,
     modelLabel: formatModelLabel(input.model, input.variant),
-  }
+  };
 }
 
 function directoryLabel(directory: string) {
-  const resolved = path.resolve(directory)
+  const resolved = path.resolve(directory);
   const display =
     resolved === Global.Path.home
       ? "~"
       : resolved.startsWith(`${Global.Path.home}${path.sep}`)
         ? resolved.replace(Global.Path.home, "~")
-        : resolved
-  return display.replaceAll("\\", "/")
+        : resolved;
+  return display.replaceAll("\\", "/");
 }
 
 function queueSplash(
@@ -155,17 +173,17 @@ function queueSplash(
   write: ScrollbackWriter | undefined,
 ): boolean {
   if (state[phase]) {
-    return false
+    return false;
   }
 
   if (!write) {
-    return false
+    return false;
   }
 
-  state[phase] = true
-  renderer.writeToScrollback(write)
-  renderer.requestRender()
-  return true
+  state[phase] = true;
+  renderer.writeToScrollback(write);
+  renderer.requestRender();
+  return true;
 }
 
 // Boots the split-footer renderer and constructs the RunFooter.
@@ -174,8 +192,8 @@ function queueSplash(
 // scrollback commits and footer repaints happen in the same frame. After
 // the entry splash, RunFooter takes over the footer region.
 export async function createRuntimeLifecycle(input: LifecycleInput): Promise<Lifecycle> {
-  const source = resolveInteractiveStdin()
-  let unregisterKeymap: (() => void) | undefined
+  const source = resolveInteractiveStdin();
+  let unregisterKeymap: (() => void) | undefined;
 
   try {
     const renderer = await createCliRenderer({
@@ -192,26 +210,26 @@ export async function createRuntimeLifecycle(input: LifecycleInput): Promise<Lif
       externalOutputMode: "capture-stdout",
       consoleMode: "disabled",
       clearOnShutdown: false,
-    })
-    const theme = await resolveRunTheme(renderer)
-    renderer.setBackgroundColor(theme.background)
-    const keymap = createDefaultOpenTuiKeymap(renderer)
-    unregisterKeymap = registerOpencodeKeymap(keymap, renderer, input.tuiConfig)
+    });
+    const theme = await resolveRunTheme(renderer);
+    renderer.setBackgroundColor(theme.background);
+    const keymap = createDefaultOpenTuiKeymap(renderer);
+    unregisterKeymap = registerOpencodeKeymap(keymap, renderer, input.tuiConfig);
     const state: SplashState = {
       entry: false,
       exit: false,
-    }
-    const splash = splashInfo(input.sessionTitle, input.history)
+    };
+    const splash = splashInfo(input.sessionTitle, input.history);
     const meta = splashMeta({
       title: splash.title,
       session_id: input.sessionID,
-    })
+    });
     const labels = footerLabels({
       agent: input.agent,
       model: input.model,
       variant: input.variant,
-    })
-    const footerTask = import("./footer")
+    });
+    const footerTask = import("./footer");
     const wrote = queueSplash(
       renderer,
       state,
@@ -222,12 +240,12 @@ export async function createRuntimeLifecycle(input: LifecycleInput): Promise<Lif
         showSession: splash.showSession,
         detail: directoryLabel(input.directory),
       }),
-    )
-    await renderer.idle().catch(() => {})
+    );
+    await renderer.idle().catch(() => {});
 
-    const { RunFooter } = await footerTask
-    let closed = false
-    let sigintRegistered = false
+    const { RunFooter } = await footerTask;
+    let closed = false;
+    let sigintRegistered = false;
 
     const footer = new RunFooter(renderer, {
       directory: input.directory,
@@ -256,73 +274,76 @@ export async function createRuntimeLifecycle(input: LifecycleInput): Promise<Lif
       onBackground: input.onBackground,
       onEditorOpen: async ({ value }) => {
         if (closed || renderer.isDestroyed) {
-          return
+          return;
         }
 
-        await renderer.idle().catch(() => {})
-        const ignore = () => {}
-        detachSigint()
-        process.on("SIGINT", ignore)
+        await renderer.idle().catch(() => {});
+        const ignore = () => {};
+        detachSigint();
+        process.on("SIGINT", ignore);
         try {
           return await openEditor({
             value,
             cwd: input.directory,
             renderer,
             stdin: source.stdin,
-          })
+          });
         } finally {
-          process.off("SIGINT", ignore)
-          attachSigint()
+          process.off("SIGINT", ignore);
+          attachSigint();
         }
       },
       onSubagentSelect: input.onSubagentSelect,
-    })
+    });
 
     const sigint = () => {
-      footer.requestExit()
-    }
+      footer.requestExit();
+    };
 
     const attachSigint = () => {
       if (closed || sigintRegistered) {
-        return
+        return;
       }
 
-      process.on("SIGINT", sigint)
-      sigintRegistered = true
-    }
+      process.on("SIGINT", sigint);
+      sigintRegistered = true;
+    };
 
     const detachSigint = () => {
       if (!sigintRegistered) {
-        return
+        return;
       }
 
-      process.off("SIGINT", sigint)
-      sigintRegistered = false
-    }
+      process.off("SIGINT", sigint);
+      sigintRegistered = false;
+    };
 
-    attachSigint()
+    attachSigint();
 
     const close = async (next: {
-      showExit: boolean
-      sessionTitle?: string
-      sessionID?: string
-      history?: RunPrompt[]
+      showExit: boolean;
+      sessionTitle?: string;
+      sessionID?: string;
+      history?: RunPrompt[];
     }) => {
       if (closed) {
-        return
+        return;
       }
 
-      closed = true
-      detachSigint()
-      let wroteExit = false
+      closed = true;
+      detachSigint();
+      let wroteExit = false;
 
       try {
-        await footer.idle().catch(() => {})
+        await footer.idle().catch(() => {});
 
-        const show = renderer.isDestroyed ? false : next.showExit
+        const show = renderer.isDestroyed ? false : next.showExit;
         if (!renderer.isDestroyed && show) {
-          const sessionID = next.sessionID || input.getSessionID?.() || input.sessionID
-          const splash = splashInfo(next.sessionTitle ?? input.sessionTitle, next.history ?? input.history)
+          const sessionID = next.sessionID || input.getSessionID?.() || input.sessionID;
+          const splash = splashInfo(
+            next.sessionTitle ?? input.sessionTitle,
+            next.history ?? input.history,
+          );
           wroteExit = queueSplash(
             renderer,
             state,
@@ -334,55 +355,55 @@ export async function createRuntimeLifecycle(input: LifecycleInput): Promise<Lif
               }),
               theme: footer.currentTheme().splash,
             }),
-          )
-          await renderer.idle().catch(() => {})
+          );
+          await renderer.idle().catch(() => {});
         }
       } finally {
-        footer.close()
-        await footer.idle().catch(() => {})
-        footer.destroy()
-        unregisterKeymap?.()
-        shutdown(renderer)
+        footer.close();
+        await footer.idle().catch(() => {});
+        footer.destroy();
+        unregisterKeymap?.();
+        shutdown(renderer);
         if (!wroteExit) {
-          process.stdout.write("\n")
+          process.stdout.write("\n");
         }
-        source.cleanup?.()
+        source.cleanup?.();
       }
-    }
+    };
 
     return {
       footer,
       refreshTheme() {
-        footer.refreshTheme()
+        footer.refreshTheme();
       },
       onResize(fn) {
-        let width = renderer.terminalWidth
-        let height = renderer.terminalHeight
+        let width = renderer.terminalWidth;
+        let height = renderer.terminalHeight;
         const resize = () => {
           if (width === renderer.terminalWidth && height === renderer.terminalHeight) {
-            return
+            return;
           }
 
-          width = renderer.terminalWidth
-          height = renderer.terminalHeight
-          fn()
-        }
-        renderer.on(CliRenderEvents.RESIZE, resize)
-        return () => renderer.off(CliRenderEvents.RESIZE, resize)
+          width = renderer.terminalWidth;
+          height = renderer.terminalHeight;
+          fn();
+        };
+        renderer.on(CliRenderEvents.RESIZE, resize);
+        return () => renderer.off(CliRenderEvents.RESIZE, resize);
       },
       async resetForReplay(next) {
         if (closed || renderer.isDestroyed || footer.isClosed) {
-          throw new Error("runtime closed")
+          throw new Error("runtime closed");
         }
 
-        await footer.idle()
+        await footer.idle();
         if (closed || renderer.isDestroyed || footer.isClosed) {
-          throw new Error("runtime closed")
+          throw new Error("runtime closed");
         }
 
-        footer.resetForReplay(true)
-        renderer.resetSplitFooterForReplay({ clearSavedLines: true })
-        const splash = splashInfo(next.sessionTitle ?? input.sessionTitle, next.history)
+        footer.resetForReplay(true);
+        renderer.resetSplitFooterForReplay({ clearSavedLines: true });
+        const splash = splashInfo(next.sessionTitle ?? input.sessionTitle, next.history);
         renderer.writeToScrollback(
           entrySplash({
             ...splashMeta({
@@ -393,14 +414,14 @@ export async function createRuntimeLifecycle(input: LifecycleInput): Promise<Lif
             showSession: splash.showSession,
             detail: directoryLabel(input.directory),
           }),
-        )
-        renderer.requestRender()
+        );
+        renderer.requestRender();
       },
       close,
-    }
+    };
   } catch (error) {
-    unregisterKeymap?.()
-    source.cleanup?.()
-    throw error
+    unregisterKeymap?.();
+    source.cleanup?.();
+    throw error;
   }
 }

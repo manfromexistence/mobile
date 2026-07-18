@@ -1,7 +1,7 @@
-import { DEFAULT_THEMES, DIFFS_TAG_NAME } from '../constants';
-import { getSharedHighlighter } from '../highlighter/shared_highlighter';
-import { queueRender } from '../managers/UniversalRenderingManager';
-import { CodeToTokenTransformStream, type RecallToken } from '../shiki-stream';
+import { DEFAULT_THEMES, DIFFS_TAG_NAME } from "../constants";
+import { getSharedHighlighter } from "../highlighter/shared_highlighter";
+import { queueRender } from "../managers/UniversalRenderingManager";
+import { CodeToTokenTransformStream, type RecallToken } from "../shiki-stream";
 import type {
   AppliedThemeStyleCache,
   BaseCodeOptions,
@@ -9,16 +9,16 @@ import type {
   SupportedLanguages,
   ThemedToken,
   ThemeTypes,
-} from '../types';
-import { createSpanFromToken } from '../utils/createSpanNodeFromToken';
-import { wrapThemeCSS } from '../utils/cssWrappers';
-import { formatCSSVariablePrefix } from '../utils/formatCSSVariablePrefix';
-import { getHighlighterOptions } from '../utils/getHighlighterOptions';
-import { getHighlighterThemeStyles } from '../utils/getHighlighterThemeStyles';
-import { getOrCreateCodeNode } from '../utils/getOrCreateCodeNode';
-import { upsertHostThemeStyle } from '../utils/hostTheme';
-import { getMeasuredScrollbarGutter } from '../utils/scrollbarGutter';
-import { setPreNodeProperties } from '../utils/setWrapperNodeProps';
+} from "../types";
+import { createSpanFromToken } from "../utils/createSpanNodeFromToken";
+import { wrapThemeCSS } from "../utils/cssWrappers";
+import { formatCSSVariablePrefix } from "../utils/formatCSSVariablePrefix";
+import { getHighlighterOptions } from "../utils/getHighlighterOptions";
+import { getHighlighterThemeStyles } from "../utils/getHighlighterThemeStyles";
+import { getOrCreateCodeNode } from "../utils/getOrCreateCodeNode";
+import { upsertHostThemeStyle } from "../utils/hostTheme";
+import { getMeasuredScrollbarGutter } from "../utils/scrollbarGutter";
+import { setPreNodeProperties } from "../utils/setWrapperNodeProps";
 
 export interface FileStreamOptions extends BaseCodeOptions {
   lang?: SupportedLanguages;
@@ -60,12 +60,12 @@ export class FileStream {
   }
 
   setThemeType(themeType: ThemeTypes): void {
-    if ((this.options.themeType ?? 'system') === themeType) {
+    if ((this.options.themeType ?? "system") === themeType) {
       return;
     }
     this.options = { ...this.options, themeType };
     if (
-      typeof this.options.theme === 'string' ||
+      typeof this.options.theme === "string" ||
       this.fileContainer == null ||
       this.appliedThemeCSS == null
     ) {
@@ -75,22 +75,19 @@ export class FileStream {
       this.fileContainer,
       this.appliedThemeCSS.themeStyles,
       themeType,
-      this.appliedThemeCSS.baseThemeType
+      this.appliedThemeCSS.baseThemeType,
     );
   }
 
   private async initializeHighlighter(): Promise<DiffsHighlighter> {
     this.highlighter = await getSharedHighlighter(
-      getHighlighterOptions(this.options.lang, this.options)
+      getHighlighterOptions(this.options.lang, this.options),
     );
     return this.highlighter;
   }
 
   private queuedSetupArgs: [ReadableStream<string>, HTMLElement] | undefined;
-  async setup(
-    _source: ReadableStream<string>,
-    _wrapper: HTMLElement
-  ): Promise<void> {
+  async setup(_source: ReadableStream<string>, _wrapper: HTMLElement): Promise<void> {
     const isSettingUp = this.queuedSetupArgs != null;
     this.queuedSetupArgs = [_source, _wrapper];
     if (isSettingUp) {
@@ -111,36 +108,35 @@ export class FileStream {
   private setupStream(
     stream: ReadableStream<string>,
     wrapper: HTMLElement,
-    highlighter: DiffsHighlighter
+    highlighter: DiffsHighlighter,
   ): void {
     const {
       disableLineNumbers = false,
-      overflow = 'scroll',
+      overflow = "scroll",
       theme = DEFAULT_THEMES,
-      themeType = 'system',
+      themeType = "system",
     } = this.options;
     const fileContainer = this.getOrCreateFileContainer();
     if (fileContainer.parentElement == null) {
       wrapper.appendChild(fileContainer);
     }
-    this.pre ??= document.createElement('pre');
+    this.pre ??= document.createElement("pre");
     if (this.pre.parentElement == null) {
       fileContainer.shadowRoot?.appendChild(this.pre);
     }
-    const baseThemeType =
-      typeof theme === 'string' ? highlighter.getTheme(theme).type : undefined;
+    const baseThemeType = typeof theme === "string" ? highlighter.getTheme(theme).type : undefined;
     const themeStyles = getHighlighterThemeStyles({ theme, highlighter });
     this.applyThemeState(fileContainer, themeStyles, themeType, baseThemeType);
     const pre = setPreNodeProperties(this.pre, {
-      type: 'file',
-      diffIndicators: 'none',
+      type: "file",
+      diffIndicators: "none",
       disableBackground: true,
       disableLineNumbers,
       overflow,
       split: false,
       totalLines: 0,
     });
-    pre.textContent = '';
+    pre.textContent = "";
 
     this.pre = pre;
     this.code = getOrCreateCodeNode({ code: this.code, pre });
@@ -160,14 +156,14 @@ export class FileStream {
       // tokenizeTimeLimit: 0 — never trade silently-wrong token colors for
       // latency; see renderFileWithHighlighter for the full rationale.
       .pipeThrough(
-        typeof theme === 'string'
+        typeof theme === "string"
           ? new CodeToTokenTransformStream({
               ...this.options,
               theme,
               highlighter,
               allowRecalls: true,
               defaultColor: false,
-              cssVariablePrefix: formatCSSVariablePrefix('token'),
+              cssVariablePrefix: formatCSSVariablePrefix("token"),
               tokenizeTimeLimit: 0,
             })
           : new CodeToTokenTransformStream({
@@ -176,9 +172,9 @@ export class FileStream {
               highlighter,
               allowRecalls: true,
               defaultColor: false,
-              cssVariablePrefix: formatCSSVariablePrefix('token'),
+              cssVariablePrefix: formatCSSVariablePrefix("token"),
               tokenizeTimeLimit: 0,
-            })
+            }),
       )
       .pipeTo(
         new WritableStream({
@@ -193,12 +189,12 @@ export class FileStream {
           },
           write: this.handleWrite,
         }),
-        { signal: this.abortController.signal }
+        { signal: this.abortController.signal },
       )
       .catch((error) => {
         // Ignore AbortError - it's expected when cleaning up
-        if (error.name !== 'AbortError') {
-          console.error('FileStream pipe error:', error);
+        if (error.name !== "AbortError") {
+          console.error("FileStream pipe error:", error);
         }
       });
   }
@@ -207,7 +203,7 @@ export class FileStream {
   private handleWrite = (token: ThemedToken | RecallToken) => {
     // If we've recalled tokens we haven't rendered yet, we can just yeet them
     // and never apply them
-    if ('recall' in token && this.queuedTokens.length >= token.recall) {
+    if ("recall" in token && this.queuedTokens.length >= token.recall) {
       this.queuedTokens.length = this.queuedTokens.length - token.recall;
     } else {
       this.queuedTokens.push(token);
@@ -224,15 +220,15 @@ export class FileStream {
     const gutterFragment = document.createDocumentFragment();
     const contentFragment = document.createDocumentFragment();
     for (const token of this.queuedTokens) {
-      if ('recall' in token) {
+      if ("recall" in token) {
         if (this.currentLineElement == null) {
           throw new Error(
-            'FileStream.render: no current line element, shouldnt be possible to get here'
+            "FileStream.render: no current line element, shouldnt be possible to get here",
           );
         }
         if (token.recall > this.currentLineElement.childNodes.length) {
           throw new Error(
-            `FileStream.render: Token recall exceed the current line, there's probably a bug...`
+            `FileStream.render: Token recall exceed the current line, there's probably a bug...`,
           );
         }
         for (let i = 0; i < token.recall; i++) {
@@ -246,7 +242,7 @@ export class FileStream {
           contentFragment.appendChild(contentLine);
         }
         this.currentLineElement?.appendChild(span);
-        if (token.content === '\n') {
+        if (token.content === "\n") {
           this.currentLineIndex++;
           const { gutterLine, contentLine } = this.createLine();
           gutterFragment.appendChild(gutterLine);
@@ -269,15 +265,15 @@ export class FileStream {
     content: HTMLElement;
   } {
     if (this.code == null) {
-      throw new Error('FileStream: expected code element to exist');
+      throw new Error("FileStream: expected code element to exist");
     }
     if (this.gutterElement != null && this.contentElement != null) {
       return { gutter: this.gutterElement, content: this.contentElement };
     }
-    const gutter = document.createElement('div');
-    gutter.dataset.gutter = '';
-    const content = document.createElement('div');
-    content.dataset.content = '';
+    const gutter = document.createElement("div");
+    gutter.dataset.gutter = "";
+    const content = document.createElement("div");
+    content.dataset.content = "";
     this.code.appendChild(gutter);
     this.code.appendChild(content);
     this.gutterElement = gutter;
@@ -297,19 +293,19 @@ export class FileStream {
   private createLine(): { gutterLine: HTMLElement; contentLine: HTMLElement } {
     const lineNumber = this.currentLineIndex;
     const lineIndex = `${lineNumber - 1}`;
-    const gutterLine = document.createElement('div');
+    const gutterLine = document.createElement("div");
     gutterLine.dataset.columnNumber = `${lineNumber}`;
-    gutterLine.dataset.lineType = 'context';
+    gutterLine.dataset.lineType = "context";
     gutterLine.dataset.lineIndex = lineIndex;
 
-    const numberContent = document.createElement('span');
-    numberContent.dataset.lineNumberContent = '';
+    const numberContent = document.createElement("span");
+    numberContent.dataset.lineNumberContent = "";
     numberContent.textContent = `${lineNumber}`;
     gutterLine.appendChild(numberContent);
 
-    const contentLine = document.createElement('div');
+    const contentLine = document.createElement("div");
     contentLine.dataset.line = `${lineNumber}`;
-    contentLine.dataset.lineType = 'context';
+    contentLine.dataset.lineType = "context";
     contentLine.dataset.lineIndex = lineIndex;
 
     this.currentRowCount += 1;
@@ -333,8 +329,7 @@ export class FileStream {
       this.themeCSSStyle = undefined;
       this.appliedThemeCSS = undefined;
     }
-    this.fileContainer =
-      fileContainer ?? document.createElement(DIFFS_TAG_NAME);
+    this.fileContainer = fileContainer ?? document.createElement(DIFFS_TAG_NAME);
     return this.fileContainer;
   }
 
@@ -342,14 +337,12 @@ export class FileStream {
     container: HTMLElement,
     themeStyles: string,
     themeType: ThemeTypes,
-    baseThemeType?: 'light' | 'dark'
+    baseThemeType?: "light" | "dark",
   ): void {
-    const shadowRoot =
-      container.shadowRoot ?? container.attachShadow({ mode: 'open' });
+    const shadowRoot = container.shadowRoot ?? container.attachShadow({ mode: "open" });
     const effectiveThemeType = baseThemeType ?? themeType;
     const currentTheme = this.options.theme ?? DEFAULT_THEMES;
-    const theme =
-      typeof currentTheme === 'string' ? currentTheme : { ...currentTheme };
+    const theme = typeof currentTheme === "string" ? currentTheme : { ...currentTheme };
     const scrollbarGutter = getMeasuredScrollbarGutter(shadowRoot);
     if (
       this.themeCSSStyle?.parentNode === shadowRoot &&

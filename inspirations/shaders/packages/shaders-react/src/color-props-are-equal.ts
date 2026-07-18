@@ -3,9 +3,12 @@ interface PropsWithColors {
   [key: string]: unknown;
 }
 
-export function colorPropsAreEqual(prevProps: PropsWithColors, nextProps: PropsWithColors): boolean {
+export function colorPropsAreEqual(
+  prevProps: PropsWithColors,
+  nextProps: PropsWithColors,
+): boolean {
   for (const key in prevProps) {
-    if (key === 'colors') {
+    if (key === "colors") {
       const prevIsArray = Array.isArray(prevProps.colors);
       const nextIsArray = Array.isArray(nextProps.colors);
 

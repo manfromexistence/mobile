@@ -1,7 +1,7 @@
-import { readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 
-import { parseMergeConflictDiffFromFile } from '../src/utils/parseMergeConflictDiffFromFile';
+import { parseMergeConflictDiffFromFile } from "../src/utils/parseMergeConflictDiffFromFile";
 
 interface BenchmarkCase {
   label: string;
@@ -27,9 +27,9 @@ interface CaseSummary {
 }
 
 const BENCHMARK_CASES: BenchmarkCase[] = [
-  { label: 'maxContextLines=10', maxContextLines: 10 },
-  { label: 'maxContextLines=3', maxContextLines: 3 },
-  { label: 'maxContextLines=Infinity', maxContextLines: Infinity },
+  { label: "maxContextLines=10", maxContextLines: 10 },
+  { label: "maxContextLines=3", maxContextLines: 3 },
+  { label: "maxContextLines=Infinity", maxContextLines: Infinity },
 ];
 
 const DEFAULT_CONFIG: BenchmarkConfig = {
@@ -41,9 +41,7 @@ const DEFAULT_CONFIG: BenchmarkConfig = {
 function parsePositiveInteger(value: string, flagName: string): number {
   const parsed = Number.parseInt(value, 10);
   if (!Number.isFinite(parsed) || parsed <= 0) {
-    throw new Error(
-      `Invalid ${flagName} value "${value}". Expected a positive integer.`
-    );
+    throw new Error(`Invalid ${flagName} value "${value}". Expected a positive integer.`);
   }
   return parsed;
 }
@@ -53,37 +51,37 @@ function parseArgs(argv: string[]): BenchmarkConfig {
 
   for (let index = 0; index < argv.length; index++) {
     const rawArg = argv[index];
-    if (rawArg === '--help' || rawArg === '-h') {
+    if (rawArg === "--help" || rawArg === "-h") {
       printHelpAndExit();
     }
 
-    if (rawArg === '--json') {
+    if (rawArg === "--json") {
       config.outputJson = true;
       continue;
     }
 
-    const [flag, inlineValue] = rawArg.split('=', 2);
-    if (flag === '--runs') {
+    const [flag, inlineValue] = rawArg.split("=", 2);
+    if (flag === "--runs") {
       const value = inlineValue ?? argv[index + 1];
       if (value == null) {
-        throw new Error('Missing value for --runs');
+        throw new Error("Missing value for --runs");
       }
       if (inlineValue == null) {
         index++;
       }
-      config.runs = parsePositiveInteger(value, '--runs');
+      config.runs = parsePositiveInteger(value, "--runs");
       continue;
     }
 
-    if (flag === '--warmup-runs') {
+    if (flag === "--warmup-runs") {
       const value = inlineValue ?? argv[index + 1];
       if (value == null) {
-        throw new Error('Missing value for --warmup-runs');
+        throw new Error("Missing value for --warmup-runs");
       }
       if (inlineValue == null) {
         index++;
       }
-      config.warmupRuns = parsePositiveInteger(value, '--warmup-runs');
+      config.warmupRuns = parsePositiveInteger(value, "--warmup-runs");
       continue;
     }
 
@@ -94,17 +92,15 @@ function parseArgs(argv: string[]): BenchmarkConfig {
 }
 
 function printHelpAndExit(): never {
-  console.log('Usage: moonx diffs:benchmark-parse-merge-conflict -- [options]');
-  console.log('');
-  console.log('Options:');
+  console.log("Usage: moonx diffs:benchmark-parse-merge-conflict -- [options]");
+  console.log("");
+  console.log("Options:");
+  console.log("  --runs <number>          Measured runs per benchmark case (default: 500)");
   console.log(
-    '  --runs <number>          Measured runs per benchmark case (default: 500)'
+    "  --warmup-runs <number>   Warmup runs per benchmark case before measurement (default: 20)",
   );
-  console.log(
-    '  --warmup-runs <number>   Warmup runs per benchmark case before measurement (default: 20)'
-  );
-  console.log('  --json                   Emit machine-readable JSON output');
-  console.log('  -h, --help               Show this help output');
+  console.log("  --json                   Emit machine-readable JSON output");
+  console.log("  -h, --help               Show this help output");
   process.exit(0);
 }
 
@@ -131,8 +127,7 @@ function percentile(sortedValues: number[], percentileRank: number): number {
   const lowerIndex = Math.floor(rank);
   const upperIndex = Math.ceil(rank);
   const lower = sortedValues[lowerIndex] ?? sortedValues[0] ?? 0;
-  const upper =
-    sortedValues[upperIndex] ?? sortedValues[sortedValues.length - 1] ?? lower;
+  const upper = sortedValues[upperIndex] ?? sortedValues[sortedValues.length - 1] ?? lower;
   if (lowerIndex === upperIndex) {
     return lower;
   }
@@ -141,10 +136,7 @@ function percentile(sortedValues: number[], percentileRank: number): number {
   return lower + (upper - lower) * interpolation;
 }
 
-function summarizeCase(
-  caseConfig: BenchmarkCase,
-  samples: number[]
-): CaseSummary {
+function summarizeCase(caseConfig: BenchmarkCase, samples: number[]): CaseSummary {
   if (samples.length === 0) {
     return {
       label: caseConfig.label,
@@ -162,9 +154,7 @@ function summarizeCase(
   const sortedSamples = [...samples].sort((left, right) => left - right);
   const total = samples.reduce((sum, value) => sum + value, 0);
   const mean = total / samples.length;
-  const variance =
-    samples.reduce((sum, value) => sum + (value - mean) ** 2, 0) /
-    samples.length;
+  const variance = samples.reduce((sum, value) => sum + (value - mean) ** 2, 0) / samples.length;
 
   return {
     label: caseConfig.label,
@@ -196,39 +186,34 @@ function printSummaryTable(summaries: CaseSummary[]) {
   }));
 
   const headers: (keyof (typeof rows)[number])[] = [
-    'case',
-    'runs',
-    'meanMs',
-    'medianMs',
-    'p95Ms',
-    'minMs',
-    'maxMs',
-    'stdDevMs',
+    "case",
+    "runs",
+    "meanMs",
+    "medianMs",
+    "p95Ms",
+    "minMs",
+    "maxMs",
+    "stdDevMs",
   ];
 
   const widths = headers.map((header) => {
-    const valueWidth = rows.reduce(
-      (max, row) => Math.max(max, row[header].length),
-      header.length
-    );
+    const valueWidth = rows.reduce((max, row) => Math.max(max, row[header].length), header.length);
     return valueWidth;
   });
 
   const formatRow = (row: Record<string, string>) =>
     headers
       .map((header, index) => row[header].padEnd(widths[index]))
-      .join('  ')
+      .join("  ")
       .trimEnd();
 
-  const headerRow = Object.fromEntries(
-    headers.map((header) => [header, header])
-  );
+  const headerRow = Object.fromEntries(headers.map((header) => [header, header]));
   console.log(formatRow(headerRow));
   console.log(
     widths
-      .map((width) => '-'.repeat(width))
-      .join('  ')
-      .trimEnd()
+      .map((width) => "-".repeat(width))
+      .join("  ")
+      .trimEnd(),
   );
   for (const row of rows) {
     console.log(formatRow(row));
@@ -243,12 +228,12 @@ function main() {
   const config = parseArgs(process.argv.slice(2));
   const fixturePath = resolve(
     import.meta.dir,
-    '../../../apps/demo/src/mocks/fileConflictLarge.txt'
+    "../../../apps/demo/src/mocks/fileConflictLarge.txt",
   );
-  const fileConflictLarge = readFileSync(fixturePath, 'utf-8');
+  const fileConflictLarge = readFileSync(fixturePath, "utf-8");
   const fixtureLineCount = countLines(fileConflictLarge);
   const fixtureFile = {
-    name: 'fileConflictLarge.ts',
+    name: "fileConflictLarge.ts",
     contents: fileConflictLarge,
   };
 
@@ -257,10 +242,7 @@ function main() {
 
   const runSingleCase = (caseConfig: BenchmarkCase) => {
     const startTime = performance.now();
-    const result = parseMergeConflictDiffFromFile(
-      fixtureFile,
-      caseConfig.maxContextLines
-    );
+    const result = parseMergeConflictDiffFromFile(fixtureFile, caseConfig.maxContextLines);
     const elapsedMs = performance.now() - startTime;
     resultChecksum +=
       result.fileDiff.hunks.length +
@@ -271,11 +253,7 @@ function main() {
   };
 
   for (let runIndex = 0; runIndex < config.warmupRuns; runIndex++) {
-    for (
-      let caseOffset = 0;
-      caseOffset < BENCHMARK_CASES.length;
-      caseOffset++
-    ) {
+    for (let caseOffset = 0; caseOffset < BENCHMARK_CASES.length; caseOffset++) {
       const caseIndex = (runIndex + caseOffset) % BENCHMARK_CASES.length;
       const caseConfig = BENCHMARK_CASES[caseIndex];
       runSingleCase(caseConfig);
@@ -283,11 +261,7 @@ function main() {
   }
 
   for (let runIndex = 0; runIndex < config.runs; runIndex++) {
-    for (
-      let caseOffset = 0;
-      caseOffset < BENCHMARK_CASES.length;
-      caseOffset++
-    ) {
+    for (let caseOffset = 0; caseOffset < BENCHMARK_CASES.length; caseOffset++) {
       const caseIndex = (runIndex + caseOffset) % BENCHMARK_CASES.length;
       const caseConfig = BENCHMARK_CASES[caseIndex];
       const elapsedMs = runSingleCase(caseConfig);
@@ -296,7 +270,7 @@ function main() {
   }
 
   const summaries = BENCHMARK_CASES.map((caseConfig, index) =>
-    summarizeCase(caseConfig, samplesByCase[index])
+    summarizeCase(caseConfig, samplesByCase[index]),
   );
 
   // Pool all samples across cases and compute the overall median as a single combined score
@@ -307,7 +281,7 @@ function main() {
     console.log(
       JSON.stringify(
         {
-          benchmark: 'parseMergeConflictDiffFromFile',
+          benchmark: "parseMergeConflictDiffFromFile",
           fixturePath,
           fixtureLineCount,
           config,
@@ -316,22 +290,20 @@ function main() {
           score,
         },
         null,
-        2
-      )
+        2,
+      ),
     );
     return;
   }
 
-  console.log('parseMergeConflictDiffFromFile benchmark');
+  console.log("parseMergeConflictDiffFromFile benchmark");
   console.log(`fixture=${fixturePath}`);
   console.log(`fixtureLines=${fixtureLineCount}`);
-  console.log(
-    `runsPerCase=${config.runs} warmupRunsPerCase=${config.warmupRuns}`
-  );
+  console.log(`runsPerCase=${config.runs} warmupRunsPerCase=${config.warmupRuns}`);
   console.log(`checksum=${resultChecksum}`);
-  console.log('');
+  console.log("");
   printSummaryTable(summaries);
-  console.log('');
+  console.log("");
   console.log(`score=${formatMs(score)}ms`);
 }
 

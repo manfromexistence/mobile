@@ -1,4 +1,4 @@
-import type { HunkData } from '../types';
+import type { HunkData } from "../types";
 
 export function areHunkDataEqual(hunkA: HunkData, hunkB: HunkData): boolean {
   return (

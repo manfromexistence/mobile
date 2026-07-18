@@ -1,5 +1,5 @@
-import { addons, types } from "storybook/manager-api"
-import { ThemeTool } from "./theme-tool"
+import { addons, types } from "storybook/manager-api";
+import { ThemeTool } from "./theme-tool";
 
 addons.register("opencode/theme-toggle", () => {
   addons.add("opencode/theme-toggle/tool", {
@@ -7,5 +7,5 @@ addons.register("opencode/theme-toggle", () => {
     title: "Theme",
     match: ({ viewMode }) => viewMode === "story" || viewMode === "docs",
     render: ThemeTool,
-  })
-})
+  });
+});

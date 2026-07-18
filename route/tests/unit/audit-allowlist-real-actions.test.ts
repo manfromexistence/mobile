@@ -70,7 +70,7 @@ test("HIGH_LEVEL_ACTIONS contains exactly the same 27 real repo actions (no extr
   assert.equal(
     (HIGH_LEVEL_ACTIONS as readonly string[]).length,
     REAL_REPO_ACTIONS.length,
-    `Expected ${REAL_REPO_ACTIONS.length} actions, got ${(HIGH_LEVEL_ACTIONS as readonly string[]).length}`
+    `Expected ${REAL_REPO_ACTIONS.length} actions, got ${(HIGH_LEVEL_ACTIONS as readonly string[]).length}`,
   );
 });
 

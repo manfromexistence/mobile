@@ -22,7 +22,7 @@ function compressText(text: string): {
   const originalTokens = estimateCompressionTokens(text);
   const result = cavemanCompress(
     { messages: [{ role: "user", content: text }] },
-    { enabled: true, compressRoles: ["user"] }
+    { enabled: true, compressRoles: ["user"] },
   );
   let compressed = text;
   if (result.compressed) {
@@ -68,7 +68,7 @@ describe("golden set — token savings evaluation", () => {
     assert.ok(avgSavings >= 3, `Average savings ${avgSavings.toFixed(1)}% is below 3% threshold`);
     assert.ok(
       medianSavings >= 2,
-      `Median savings ${medianSavings.toFixed(1)}% is below 2% threshold`
+      `Median savings ${medianSavings.toFixed(1)}% is below 2% threshold`,
     );
   });
 
@@ -100,11 +100,11 @@ describe("golden set — token savings evaluation", () => {
 
     const rate = verboseSavings / verboseCount;
     console.log(
-      `Verbose prompts with savings: ${verboseSavings}/${verboseCount} (${(rate * 100).toFixed(0)}%)`
+      `Verbose prompts with savings: ${verboseSavings}/${verboseCount} (${(rate * 100).toFixed(0)}%)`,
     );
     assert.ok(
       rate >= 0.8,
-      `Only ${(rate * 100).toFixed(0)}% of verbose prompts had savings (expected 80%+)`
+      `Only ${(rate * 100).toFixed(0)}% of verbose prompts had savings (expected 80%+)`,
     );
   });
 });

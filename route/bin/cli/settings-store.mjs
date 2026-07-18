@@ -13,14 +13,14 @@ export function ensureSettingsSchema(db) {
       key TEXT NOT NULL,
       value TEXT NOT NULL,
       PRIMARY KEY (namespace, key)
-    )`
+    )`,
   ).run();
 }
 
 export function updateSettings(db, updates) {
   ensureSettingsSchema(db);
   const insert = db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', ?, ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('settings', ?, ?)",
   );
   const tx = db.transaction(() => {
     for (const [key, value] of Object.entries(updates)) {

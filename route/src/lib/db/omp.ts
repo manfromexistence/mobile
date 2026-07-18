@@ -11,7 +11,7 @@ export function getOmpCredentials(providerId: string) {
     const db = new Database(dbPath, { readonly: true });
     const row = db
       .prepare(
-        "SELECT data FROM auth_credentials WHERE provider = ? AND credential_type = 'api_key'"
+        "SELECT data FROM auth_credentials WHERE provider = ? AND credential_type = 'api_key'",
       )
       .get(providerId) as { data: string } | undefined;
     db.close();
@@ -32,13 +32,13 @@ export function saveOmpCredentials(providerId: string, apiKey: string, baseUrl: 
 
   db.prepare("DELETE FROM auth_credentials WHERE provider = ?").run(providerId);
   db.prepare(
-    "INSERT INTO auth_credentials (provider, credential_type, data, disabled_cause, identity_key, created_at, updated_at) VALUES (?, ?, ?, NULL, NULL, ?, ?)"
+    "INSERT INTO auth_credentials (provider, credential_type, data, disabled_cause, identity_key, created_at, updated_at) VALUES (?, ?, ?, NULL, NULL, ?, ?)",
   ).run(
     providerId,
     "api_key",
     JSON.stringify({ apiKey, baseUrl }),
     Math.floor(Date.now() / 1000),
-    Math.floor(Date.now() / 1000)
+    Math.floor(Date.now() / 1000),
   );
 
   db.close();

@@ -23,7 +23,7 @@ const CODEX_CONFIG = {
  */
 export async function getCodexUsage(
   accessToken?: string,
-  providerSpecificData: Record<string, unknown> = {}
+  providerSpecificData: Record<string, unknown> = {},
 ) {
   try {
     // Use persisted workspace ID from OAuth - NO FALLBACK

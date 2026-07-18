@@ -117,7 +117,7 @@ export function toConnectionPayload(parsed: ParsedCliProxyAuth): JsonRecord {
  */
 export async function scanCliProxyAuthDir(
   dir: string,
-  now: number = 0
+  now: number = 0,
 ): Promise<{ candidates: ParsedCliProxyAuth[]; skipped: number; scanned: number }> {
   let entries: string[];
   try {

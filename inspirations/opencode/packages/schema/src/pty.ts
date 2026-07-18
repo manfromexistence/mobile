@@ -1,23 +1,23 @@
-export * as Pty from "./pty"
+export * as Pty from "./pty";
 
-import { Schema } from "effect"
-import { optional } from "./schema"
-import { define, inventory } from "./event"
-import { ascending } from "./identifier"
-import { NonNegativeInt, PositiveInt, statics } from "./schema"
+import { Schema } from "effect";
+import { optional } from "./schema";
+import { define, inventory } from "./event";
+import { ascending } from "./identifier";
+import { NonNegativeInt, PositiveInt, statics } from "./schema";
 
-const IDSchema = Schema.String.check(Schema.isStartsWith("pty")).pipe(Schema.brand("PtyID"))
+const IDSchema = Schema.String.check(Schema.isStartsWith("pty")).pipe(Schema.brand("PtyID"));
 
 export const ID = IDSchema.pipe(
   statics((schema: typeof IDSchema) => {
-    const create = () => schema.make("pty_" + ascending())
+    const create = () => schema.make("pty_" + ascending());
     return {
       create,
       ascending: (id?: string) => (id === undefined ? create() : schema.make(id)),
-    }
+    };
   }),
-)
-export type ID = typeof ID.Type
+);
+export type ID = typeof ID.Type;
 
 export const Info = Schema.Struct({
   id: ID,
@@ -28,14 +28,20 @@ export const Info = Schema.Struct({
   status: Schema.Literals(["running", "exited"]),
   pid: NonNegativeInt,
   exitCode: optional(NonNegativeInt),
-}).annotate({ identifier: "Pty" })
+}).annotate({ identifier: "Pty" });
 export interface Info extends Schema.Schema.Type<typeof Info> {}
 
-const Created = define({ type: "pty.created", schema: { info: Info } })
-const Updated = define({ type: "pty.updated", schema: { info: Info } })
-const Exited = define({ type: "pty.exited", schema: { id: ID, exitCode: NonNegativeInt } })
-const Deleted = define({ type: "pty.deleted", schema: { id: ID } })
-export const Event = { Created, Updated, Exited, Deleted, Definitions: inventory(Created, Updated, Exited, Deleted) }
+const Created = define({ type: "pty.created", schema: { info: Info } });
+const Updated = define({ type: "pty.updated", schema: { info: Info } });
+const Exited = define({ type: "pty.exited", schema: { id: ID, exitCode: NonNegativeInt } });
+const Deleted = define({ type: "pty.deleted", schema: { id: ID } });
+export const Event = {
+  Created,
+  Updated,
+  Exited,
+  Deleted,
+  Definitions: inventory(Created, Updated, Exited, Deleted),
+};
 
 export const CreateInput = Schema.Struct({
   command: optional(Schema.String),
@@ -43,7 +49,7 @@ export const CreateInput = Schema.Struct({
   cwd: optional(Schema.String),
   title: optional(Schema.String),
   env: optional(Schema.Record(Schema.String, Schema.String)),
-})
+});
 export interface CreateInput extends Schema.Schema.Type<typeof CreateInput> {}
 
 export const UpdateInput = Schema.Struct({
@@ -54,5 +60,5 @@ export const UpdateInput = Schema.Struct({
       cols: PositiveInt,
     }),
   ),
-})
+});
 export interface UpdateInput extends Schema.Schema.Type<typeof UpdateInput> {}

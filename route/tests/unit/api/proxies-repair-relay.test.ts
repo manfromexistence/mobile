@@ -15,8 +15,9 @@ process.env.STORAGE_ENCRYPTION_KEY = "test-repair-encryption-key";
 
 const core = await import("../../../src/lib/db/core.ts");
 const proxiesDb = await import("../../../src/lib/db/proxies.ts");
-const repairRelayRoute =
-  await import("../../../src/app/api/settings/proxies/[id]/repair-relay/route.ts");
+const repairRelayRoute = await import(
+  "../../../src/app/api/settings/proxies/[id]/repair-relay/route.ts"
+);
 
 async function resetStorage() {
   core.resetDbInstance();
@@ -56,7 +57,7 @@ test("returns 404 when the proxy does not exist", async () => {
     await makeManagementSessionRequest("http://localhost/api/settings/proxies/nope/repair-relay", {
       method: "POST",
     }),
-    { params: Promise.resolve({ id: "nope" }) }
+    { params: Promise.resolve({ id: "nope" }) },
   );
   assert.equal(res.status, 404);
 });
@@ -67,7 +68,7 @@ test("returns 400 when the proxy is not a relay type", async () => {
     await makeManagementSessionRequest(`http://localhost/api/settings/proxies/${id}/repair-relay`, {
       method: "POST",
     }),
-    { params: Promise.resolve({ id }) }
+    { params: Promise.resolve({ id }) },
   );
   assert.equal(res.status, 400);
 });
@@ -77,7 +78,7 @@ test("returns 404 when the proxy does not exist", async () => {
     await makeManagementSessionRequest("http://localhost/api/settings/proxies/nope/repair-relay", {
       method: "POST",
     }),
-    { params: Promise.resolve({ id: "nope" }) }
+    { params: Promise.resolve({ id: "nope" }) },
   );
   assert.equal(res.status, 404);
 });
@@ -88,7 +89,7 @@ test('mode "noop" when plaintext relayAuth already present', async () => {
     await makeManagementSessionRequest(`http://localhost/api/settings/proxies/${id}/repair-relay`, {
       method: "POST",
     }),
-    { params: Promise.resolve({ id }) }
+    { params: Promise.resolve({ id }) },
   );
   assert.equal(res.status, 200);
   const body = await res.json();
@@ -102,7 +103,7 @@ test('mode "recovered" re-derives plaintext from the encrypted blob', async () =
     await makeManagementSessionRequest(`http://localhost/api/settings/proxies/${id}/repair-relay`, {
       method: "POST",
     }),
-    { params: Promise.resolve({ id }) }
+    { params: Promise.resolve({ id }) },
   );
   assert.equal(res.status, 200);
   const body = await res.json();
@@ -119,12 +120,12 @@ test('mode "redeploy" (409) when no recoverable auth exists', async () => {
     await makeManagementSessionRequest(`http://localhost/api/settings/proxies/${id}/repair-relay`, {
       method: "POST",
     }),
-    { params: Promise.resolve({ id }) }
+    { params: Promise.resolve({ id }) },
   );
   assert.equal(res.status, 409);
   const body = await res.json();
   assert.ok(
     typeof body.error?.message === "string" && /redeploy/i.test(body.error.message),
-    `409 must explain redeploy; got ${JSON.stringify(body)}`
+    `409 must explain redeploy; got ${JSON.stringify(body)}`,
   );
 });

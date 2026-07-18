@@ -518,7 +518,7 @@ export function buildCodebaseIndex(root = ROOT) {
             envVars.add(m[1]);
           // export const / const / let / var / enum NAME — JS identifiers, not env vars.
           for (const m of content.matchAll(
-            /\b(?:export\s+)?(?:const|let|var|enum)\s+([A-Z][A-Z0-9_]{2,})\b/g
+            /\b(?:export\s+)?(?:const|let|var|enum)\s+([A-Z][A-Z0-9_]{2,})\b/g,
           ))
             codeIdentifiers.add(m[1]);
           // Object-literal / enum members on their own line: `HALF_OPEN: "HALF_OPEN"`.
@@ -703,7 +703,7 @@ export function scanDocFile(absPath, index, root = ROOT) {
     //   "a `ZED_CONFIG_PATH` environment variable override is not yet implemented"
     if (
       /\b(?:do(?:es)?\s+not\s+exist|no\s+such|not\s+a\s+real|isn't\s+a\s+real|never\s+(?:read|exists?)|not\s+(?:yet\s+)?(?:implemented|supported))\b/i.test(
-        lineText
+        lineText,
       )
     )
       continue;
@@ -813,7 +813,7 @@ export function formatHumanReport(result) {
   lines.push("================================================");
   lines.push(`Scanned ${fileCount} markdown file(s)`);
   lines.push(
-    `Codebase: ${index.apiRoutes.size} api routes · ${index.envVars.size} env vars · ${index.cliCommands.size} cli commands`
+    `Codebase: ${index.apiRoutes.size} api routes · ${index.envVars.size} env vars · ${index.cliCommands.size} cli commands`,
   );
   lines.push("");
 
@@ -880,8 +880,8 @@ function main() {
           results: files,
         },
         null,
-        2
-      )
+        2,
+      ),
     );
     if (STRICT && totalFindings > 0) process.exit(1);
     process.exit(0);

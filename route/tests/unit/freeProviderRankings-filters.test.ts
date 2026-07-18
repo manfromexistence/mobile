@@ -51,7 +51,7 @@ test("isProviderUsable: terminal statuses (credits_exhausted/banned/expired) are
     assert.equal(
       isProviderUsable([conn("glm", { testStatus: status })], FIXED_NOW),
       false,
-      `expected ${status} to be unusable`
+      `expected ${status} to be unusable`,
     );
   }
   // case/whitespace-insensitive normalization
@@ -81,7 +81,7 @@ test("filter: both flags off returns the input unchanged (regression)", () => {
   const out = filterFreeProviderRankings(RANKINGS, [], {}, FIXED_NOW);
   assert.deepEqual(
     out.map((r) => r.id),
-    ["glm", "groq", "cerebras"]
+    ["glm", "groq", "cerebras"],
   );
   // identical even when connections exist but no flag is set
   const out2 = filterFreeProviderRankings(RANKINGS, [conn("glm")], {}, FIXED_NOW);
@@ -94,26 +94,21 @@ test("filter: configuredOnly keeps only providers with ≥1 connection", () => {
     RANKINGS,
     connections,
     { configuredOnly: true },
-    FIXED_NOW
+    FIXED_NOW,
   );
   // cerebras has no connection → dropped; groq stays (configured, exhaustion ignored)
   assert.deepEqual(
     out.map((r) => r.id),
-    ["glm", "groq"]
+    ["glm", "groq"],
   );
 });
 
 test("filter: availableOnly drops exhausted-only provider, keeps healthy", () => {
   const connections = [conn("glm"), conn("groq", { testStatus: "credits_exhausted" })];
-  const out = filterFreeProviderRankings(
-    RANKINGS,
-    connections,
-    { availableOnly: true },
-    FIXED_NOW
-  );
+  const out = filterFreeProviderRankings(RANKINGS, connections, { availableOnly: true }, FIXED_NOW);
   assert.deepEqual(
     out.map((r) => r.id),
-    ["glm"]
+    ["glm"],
   );
 });
 
@@ -122,22 +117,22 @@ test("filter: availableOnly drops rate-limited-only provider; recovers when in t
     RANKINGS,
     [conn("glm", { rateLimitedUntil: future() })],
     { availableOnly: true },
-    FIXED_NOW
+    FIXED_NOW,
   );
   assert.deepEqual(
     dropped.map((r) => r.id),
-    []
+    [],
   );
 
   const recovered = filterFreeProviderRankings(
     RANKINGS,
     [conn("glm", { rateLimitedUntil: past() })],
     { availableOnly: true },
-    FIXED_NOW
+    FIXED_NOW,
   );
   assert.deepEqual(
     recovered.map((r) => r.id),
-    ["glm"]
+    ["glm"],
   );
 });
 
@@ -146,15 +141,10 @@ test("filter: availableOnly keeps a provider that has at least one usable connec
     conn("glm", { testStatus: "banned" }),
     conn("glm"), // second connection is healthy
   ];
-  const out = filterFreeProviderRankings(
-    RANKINGS,
-    connections,
-    { availableOnly: true },
-    FIXED_NOW
-  );
+  const out = filterFreeProviderRankings(RANKINGS, connections, { availableOnly: true }, FIXED_NOW);
   assert.deepEqual(
     out.map((r) => r.id),
-    ["glm"]
+    ["glm"],
   );
 });
 

@@ -66,7 +66,7 @@ function parsePositiveIntegerEnv(envName: string, defaultValue: number): number 
 let ttlMs = parseTtlMs();
 let maxDevicesPerApiKey = parsePositiveIntegerEnv(
   MAX_PER_KEY_ENV_NAME,
-  DEFAULT_MAX_DEVICES_PER_API_KEY
+  DEFAULT_MAX_DEVICES_PER_API_KEY,
 );
 let maxTotalDevices = parsePositiveIntegerEnv(MAX_TOTAL_ENV_NAME, DEFAULT_MAX_TOTAL_DEVICES);
 
@@ -121,10 +121,12 @@ function deleteDevice(apiKeyId: string, fingerprint: string): boolean {
 }
 
 function findOldestDevice(
-  apiKeyId: string | null
+  apiKeyId: string | null,
 ): { apiKeyId: string; fingerprint: string; lastSeen: number } | null {
   let oldest: { apiKeyId: string; fingerprint: string; lastSeen: number } | null = null;
-  const entries = apiKeyId ? [[apiKeyId, devicesByApiKey.get(apiKeyId)] as const] : devicesByApiKey.entries();
+  const entries = apiKeyId
+    ? [[apiKeyId, devicesByApiKey.get(apiKeyId)] as const]
+    : devicesByApiKey.entries();
 
   for (const [entryApiKeyId, devices] of entries) {
     if (!devices) continue;
@@ -189,7 +191,7 @@ ensureCleanupTimer();
  * `x-forwarded-for`, first hop only). Returns "unknown" when absent.
  */
 export function extractIpFromHeaders(
-  headers: Record<string, unknown> | Headers | null | undefined
+  headers: Record<string, unknown> | Headers | null | undefined,
 ): string {
   if (!headers) return "unknown";
 
@@ -225,7 +227,7 @@ export function extractIpFromHeaders(
 export function trackDevice(
   apiKeyId: string | null | undefined,
   ip: string | null | undefined,
-  userAgent: string | null | undefined
+  userAgent: string | null | undefined,
 ): string | null {
   if (!apiKeyId || typeof apiKeyId !== "string") return null;
 
@@ -301,7 +303,7 @@ export function clearDeviceTracker(): void {
   ttlMs = parseTtlMs();
   maxDevicesPerApiKey = parsePositiveIntegerEnv(
     MAX_PER_KEY_ENV_NAME,
-    DEFAULT_MAX_DEVICES_PER_API_KEY
+    DEFAULT_MAX_DEVICES_PER_API_KEY,
   );
   maxTotalDevices = parsePositiveIntegerEnv(MAX_TOTAL_ENV_NAME, DEFAULT_MAX_TOTAL_DEVICES);
 }

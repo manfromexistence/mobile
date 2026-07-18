@@ -32,7 +32,7 @@ export function decodeGeneric(input: string): any {
 
   if (profile === "graph") {
     throw new Error(
-      "graph_profile_unsupported: this vendored build supports the generic profile only"
+      "graph_profile_unsupported: this vendored build supports the generic profile only",
     );
   }
 
@@ -109,7 +109,7 @@ function parseObjectBody(
   lines: string[],
   start: number,
   depth: number,
-  out: Record<string, any>
+  out: Record<string, any>,
 ): number {
   const ind = "  ".repeat(depth);
   let i = start;
@@ -218,7 +218,7 @@ function parseArrayFromHeader(
   lines: string[],
   headerLine: number,
   depth: number,
-  bracketPart: string
+  bracketPart: string,
 ): [any, number] {
   const bp = bracketPart.trimStart();
   if (!bp.startsWith("[")) throw new Error("invalid_count");
@@ -311,7 +311,7 @@ function safeAssign(obj: Record<string, unknown>, key: string, value: unknown): 
 function unflattenPaths(
   pathColumns: Map<string, string[]>,
   flatValues: Map<string, any>,
-  flatAbsent: Set<string>
+  flatAbsent: Set<string>,
 ): Record<string, any> {
   // Group by top-level parent.
   const groups = new Map<string, string[]>();
@@ -380,7 +380,7 @@ function parseTabularBody(
   start: number,
   depth: number,
   fields: string[],
-  expectedCount: number
+  expectedCount: number,
 ): [any[], number] {
   const ind = "  ".repeat(depth);
   const rows: any[] = [];
@@ -533,7 +533,7 @@ function parseTabularBody(
             const inlineVals = splitRespectingQuotes(data, "|");
             if (inlineVals.length !== ifs.length)
               throw new Error(
-                `inline_width_mismatch: ${attName} expected ${ifs.length}, got ${inlineVals.length}`
+                `inline_width_mismatch: ${attName} expected ${ifs.length}, got ${inlineVals.length}`,
               );
             const obj: Record<string, any> = {};
             for (let k = 0; k < ifs.length; k++) {
@@ -552,7 +552,7 @@ function parseTabularBody(
             i,
             rest,
             depth + 2,
-            sharedArraySchemas
+            sharedArraySchemas,
           );
           if (attachmentValues.has(name)) throw new Error(`duplicate_attachment: ${name}`);
           // Store shared array schema from first row.
@@ -582,7 +582,7 @@ function parseTabularBody(
         const inlineVals = splitRespectingQuotes(aContent, "|");
         if (inlineVals.length !== ifs.length)
           throw new Error(
-            `inline_width_mismatch: ${nextInlineField} expected ${ifs.length}, got ${inlineVals.length}`
+            `inline_width_mismatch: ${nextInlineField} expected ${ifs.length}, got ${inlineVals.length}`,
           );
         const obj: Record<string, any> = {};
         for (let k = 0; k < ifs.length; k++) {
@@ -680,7 +680,7 @@ function parseAttachment(
   lineIdx: number,
   rest: string,
   depth: number,
-  sharedSchemas: Map<string, string[]>
+  sharedSchemas: Map<string, string[]>,
 ): [string, any, number, string[] | null] {
   const [name, afterNameRaw] = parseAttachmentName(rest);
   const afterName = afterNameRaw.trimStart();
@@ -822,7 +822,7 @@ function parseCount(s: string): number {
 function validateSummaryCounts(
   summaryLine: string,
   deferredCount: number,
-  contentLines: string[]
+  contentLines: string[],
 ): void {
   // Parse counts from "##! summary counts=N,M,..."
   const parts = summaryLine.split(/\s+/);
@@ -838,7 +838,7 @@ function validateSummaryCounts(
   const countVals = countsStr.split(",");
   if (countVals.length !== deferredCount) {
     throw new Error(
-      `count_mismatch: summary has ${countVals.length} count entries but ${deferredCount} deferred sections`
+      `count_mismatch: summary has ${countVals.length} count entries but ${deferredCount} deferred sections`,
     );
   }
 
@@ -872,7 +872,7 @@ function validateSummaryCounts(
     if (isNaN(declared)) throw new Error(`count_mismatch: invalid count value "${countVals[i]}"`);
     if (i < actualCounts.length && declared !== actualCounts[i]) {
       throw new Error(
-        `count_mismatch: section ${i} declared ${declared} in summary, actual ${actualCounts[i]}`
+        `count_mismatch: section ${i} declared ${declared} in summary, actual ${actualCounts[i]}`,
       );
     }
   }

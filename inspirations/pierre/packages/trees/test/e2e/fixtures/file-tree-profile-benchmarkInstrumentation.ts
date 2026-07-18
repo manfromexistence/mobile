@@ -1,7 +1,7 @@
-import type { FileTreeProfileInstrumentationSummary } from '../../../scripts/lib/fileTreeProfileShared';
+import type { FileTreeProfileInstrumentationSummary } from "../../../scripts/lib/fileTreeProfileShared";
 
 const now = () => {
-  if (typeof performance !== 'undefined') {
+  if (typeof performance !== "undefined") {
     return performance.now();
   }
 
@@ -11,9 +11,9 @@ const now = () => {
 function isPromiseLike(value: unknown): value is PromiseLike<unknown> {
   return (
     value != null &&
-    (typeof value === 'object' || typeof value === 'function') &&
-    'then' in value &&
-    typeof (value as { then?: unknown }).then === 'function'
+    (typeof value === "object" || typeof value === "function") &&
+    "then" in value &&
+    typeof (value as { then?: unknown }).then === "function"
   );
 }
 
@@ -46,7 +46,7 @@ export interface FileTreeProfileBenchmarkInstrumentation {
   reset: () => void;
   summarize: (
     heapBefore: FileTreeProfileBenchmarkHeapSnapshot | null,
-    heapAfter: FileTreeProfileBenchmarkHeapSnapshot | null
+    heapAfter: FileTreeProfileBenchmarkHeapSnapshot | null,
   ) => FileTreeProfileInstrumentationSummary;
 }
 
@@ -134,9 +134,9 @@ export function createBenchmarkInstrumentation(): FileTreeProfileBenchmarkInstru
     };
   };
 
-  const summarize: FileTreeProfileBenchmarkInstrumentation['summarize'] = (
+  const summarize: FileTreeProfileBenchmarkInstrumentation["summarize"] = (
     heapBefore,
-    heapAfter
+    heapAfter,
   ) => {
     return {
       counters: { ...counters },
@@ -148,8 +148,7 @@ export function createBenchmarkInstrumentation(): FileTreeProfileBenchmarkInstru
               totalJSHeapSizeAfterBytes: heapAfter.totalJSHeapSize,
               usedJSHeapSizeAfterBytes: heapAfter.usedJSHeapSize,
               usedJSHeapSizeBeforeBytes: heapBefore.usedJSHeapSize,
-              usedJSHeapSizeDeltaBytes:
-                heapAfter.usedJSHeapSize - heapBefore.usedJSHeapSize,
+              usedJSHeapSizeDeltaBytes: heapAfter.usedJSHeapSize - heapBefore.usedJSHeapSize,
             },
       phases: Object.entries(phaseTotals).map(([name, aggregate]) => ({
         count: aggregate.count,

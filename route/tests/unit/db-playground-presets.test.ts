@@ -66,12 +66,12 @@ test("migration 076 creates both indexes", () => {
 
   const nameIdx = db
     .prepare(
-      "SELECT name FROM sqlite_master WHERE type='index' AND name='idx_playground_presets_name'"
+      "SELECT name FROM sqlite_master WHERE type='index' AND name='idx_playground_presets_name'",
     )
     .get();
   const endpointIdx = db
     .prepare(
-      "SELECT name FROM sqlite_master WHERE type='index' AND name='idx_playground_presets_endpoint'"
+      "SELECT name FROM sqlite_master WHERE type='index' AND name='idx_playground_presets_endpoint'",
     )
     .get();
 
@@ -357,7 +357,7 @@ test("corrupted params_json in DB row is recovered to empty object", () => {
   const db = core.getDbInstance();
   const id = "corrupted-params-test-id-9999";
   db.prepare(
-    "INSERT INTO playground_presets (id, name, endpoint, model, system, params_json) VALUES (?, ?, ?, ?, ?, ?)"
+    "INSERT INTO playground_presets (id, name, endpoint, model, system, params_json) VALUES (?, ?, ?, ?, ?, ?)",
   ).run(id, "Corrupted", "chat.completions", "gpt-4o", null, "INVALID_JSON{{{{");
 
   const fetched = presetsDb.getPlaygroundPreset(id);

@@ -1,5 +1,5 @@
 const stringDetachEncoder = new TextEncoder();
-const stringDetachDecoder = new TextDecoder('utf-8', { ignoreBOM: true });
+const stringDetachDecoder = new TextDecoder("utf-8", { ignoreBOM: true });
 const SURROGATE_CODE_UNIT_PATTERN = /[\uD800-\uDFFF]/;
 const STRING_DETACH_INITIAL_BUFFER_SIZE = 1024;
 let stringDetachBuffer = new Uint8Array(STRING_DETACH_INITIAL_BUFFER_SIZE);

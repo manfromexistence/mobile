@@ -109,10 +109,10 @@ export async function executeQuotaManagement(task: A2ATask): Promise<QuotaManage
         content: `**Quota Summary (${providers.length} providers):**\n- Total used: ${totalUsed.toLocaleString()} / ${totalAvailable.toLocaleString()}\n${providers
           .map(
             (p) =>
-              `- **${p.provider}:** ${p.quotaUsed.toLocaleString()} / ${p.quotaTotal?.toLocaleString() || "∞"} (${p.tokenStatus})`
+              `- **${p.provider}:** ${p.quotaUsed.toLocaleString()} / ${p.quotaTotal?.toLocaleString() || "∞"} (${p.tokenStatus})`,
           )
           .join(
-            "\n"
+            "\n",
           )}${warnings.length > 0 ? `\n\n⚠️ **Warning:** ${warnings.map((w) => w.provider).join(", ")} at or below 10% remaining` : ""}`,
       },
     ],

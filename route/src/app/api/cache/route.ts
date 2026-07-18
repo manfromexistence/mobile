@@ -65,7 +65,7 @@ export async function DELETE(req: NextRequest) {
           error:
             "Only one invalidation parameter (model, signature, or staleMs) may be provided per request.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -84,7 +84,7 @@ export async function DELETE(req: NextRequest) {
       if (Number.isNaN(maxAgeMs) || maxAgeMs <= 0) {
         return NextResponse.json(
           { error: "staleMs must be a positive integer (milliseconds)." },
-          { status: 400 }
+          { status: 400 },
         );
       }
       const removed = invalidateStale(maxAgeMs);

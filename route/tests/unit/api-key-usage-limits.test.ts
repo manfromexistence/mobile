@@ -130,7 +130,7 @@ test("getApiKeyUsageLimitStatus aligns weekly USD spend with provider resetAt wh
         fetchedAt: new Date(NOW).toISOString(),
       }),
       getAllProviderLimitsCache: () => ({}),
-    }
+    },
   );
 
   assert.equal(status.enabled, true);
@@ -207,7 +207,7 @@ test("getApiKeyUsageLimitStatus cuts weekly USD spend at observed provider quota
     "2026-06-25T23:00:00.000Z",
     null,
     null,
-    "2026-06-19T23:55:00.000Z"
+    "2026-06-19T23:55:00.000Z",
   );
   insertSnapshot.run(
     "claude",
@@ -218,7 +218,7 @@ test("getApiKeyUsageLimitStatus cuts weekly USD spend at observed provider quota
     "2026-06-25T23:00:00.000Z",
     null,
     null,
-    "2026-06-20T01:42:52.590Z"
+    "2026-06-20T01:42:52.590Z",
   );
   insertSnapshot.run(
     "claude",
@@ -229,7 +229,7 @@ test("getApiKeyUsageLimitStatus cuts weekly USD spend at observed provider quota
     "2026-06-25T23:00:00.000Z",
     null,
     null,
-    "2026-06-20T02:10:00.000Z"
+    "2026-06-20T02:10:00.000Z",
   );
   db.prepare(
     `
@@ -238,7 +238,7 @@ test("getApiKeyUsageLimitStatus cuts weekly USD spend at observed provider quota
        observed_at, previous_remaining_percentage, new_remaining_percentage,
        previous_used_percentage, new_used_percentage, raw_data)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `
+  `,
   ).run(
     "claude",
     "conn-claude",
@@ -250,7 +250,7 @@ test("getApiKeyUsageLimitStatus cuts weekly USD spend at observed provider quota
     100,
     100,
     0,
-    null
+    null,
   );
 
   const metadata = await apiKeysDb.getApiKeyMetadata(created.key);
@@ -280,7 +280,7 @@ test("getApiKeyUsageLimitStatus cuts weekly USD spend at observed provider quota
         fetchedAt: "2026-06-20T14:30:00.000Z",
       }),
       getAllProviderLimitsCache: () => ({}),
-    }
+    },
   );
 
   assert.equal(status.weeklyWindowStartIso, "2026-06-20T01:42:52.590Z");
@@ -302,7 +302,7 @@ test("buildApiKeyUsageLimitText returns API-key quota spend percentage and reset
       dailyExceeded: false,
       weeklyExceeded: false,
     },
-    Date.parse("2026-06-19T20:00:00.000Z")
+    Date.parse("2026-06-19T20:00:00.000Z"),
   );
 
   assert.equal(
@@ -323,7 +323,7 @@ test("buildApiKeyUsageLimitText returns API-key quota spend percentage and reset
       "Weekly used",
       "11%",
       "Resets in 6d 0h 0m",
-    ].join("\n")
+    ].join("\n"),
   );
 });
 
@@ -342,14 +342,14 @@ test("buildApiKeyUsageLimitPercentText returns remaining percentages only", () =
       dailyExceeded: false,
       weeklyExceeded: false,
     },
-    Date.parse("2026-06-19T20:00:00.000Z")
+    Date.parse("2026-06-19T20:00:00.000Z"),
   );
 
   assert.equal(
     text,
     ["Daily", "80% left", "⏱ reset in 7h 0m", "", "Weekly", "90% left", "⏱ reset in 6d 0h 0m"].join(
-      "\n"
-    )
+      "\n",
+    ),
   );
 });
 
@@ -371,14 +371,14 @@ test("buildApiKeyUsageLimitRejection includes over-quota percentage and reset hi
       dailyExceeded: false,
       weeklyExceeded: true,
     },
-    Date.parse("2026-06-19T20:00:00.000Z")
+    Date.parse("2026-06-19T20:00:00.000Z"),
   );
 
   assert.equal(response.status, 400);
   const body = (await response.json()) as { error: { message: string } };
   assert.equal(
     body.error.message,
-    "This API key reached its weekly USD usage quota ($1.09 of $1.00, 109%). Resets in 6d 0h 0m. Choose another allowed model after reset."
+    "This API key reached its weekly USD usage quota ($1.09 of $1.00, 109%). Resets in 6d 0h 0m. Choose another allowed model after reset.",
   );
 });
 
@@ -401,14 +401,14 @@ test("buildApiKeyUsageLimitRejection can hide USD amounts for client-facing poli
       weeklyExceeded: true,
     },
     Date.parse("2026-06-19T20:00:00.000Z"),
-    { showUsd: false }
+    { showUsd: false },
   );
 
   assert.equal(response.status, 400);
   const body = (await response.json()) as { error: { message: string } };
   assert.equal(
     body.error.message,
-    "This API key reached its weekly usage quota (109%). Resets in 6d 0h 0m. Choose another allowed model after reset."
+    "This API key reached its weekly usage quota (109%). Resets in 6d 0h 0m. Choose another allowed model after reset.",
   );
 });
 
@@ -429,7 +429,7 @@ test("buildApiKeyUsageLimitRejection uses 400 so Claude Code does not trigger lo
       weeklyResetAtIso: "2026-06-19T20:00:00.000Z",
       dailyExceeded: true,
       weeklyExceeded: false,
-    }
+    },
   );
 
   assert.equal(response.status, 400);

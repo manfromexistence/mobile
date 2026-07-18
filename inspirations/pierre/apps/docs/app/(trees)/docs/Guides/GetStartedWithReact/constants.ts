@@ -1,15 +1,15 @@
-import { docsCodeSnippet } from '@/lib/docsCodeSnippet';
+import { docsCodeSnippet } from "@/lib/docsCodeSnippet";
 
 export const REACT_QUICKSTART_INSTALL = docsCodeSnippet(
-  'install.sh',
+  "install.sh",
   `pnpm add @pierre/trees
 # npm: npm install @pierre/trees
 # bun: bun add @pierre/trees
-# yarn: yarn add @pierre/trees`
+# yarn: yarn add @pierre/trees`,
 );
 
 export const REACT_QUICKSTART_PROJECT_TREE = docsCodeSnippet(
-  'project-tree.tsx',
+  "project-tree.tsx",
   `import { FileTree, useFileTree } from '@pierre/trees/react';
 import type { FileTreePreparedInput } from '@pierre/trees';
 
@@ -31,11 +31,11 @@ export function ProjectTree({ preparedInput }: ProjectTreeProps) {
       style={{ height: '320px' }}
     />
   );
-}`
+}`,
 );
 
 export const REACT_QUICKSTART_SEARCHABLE_TREE = docsCodeSnippet(
-  'searchable-tree.tsx',
+  "searchable-tree.tsx",
   `import {
   FileTree,
   useFileTree,
@@ -63,5 +63,5 @@ export function SearchableTree({ paths }: { paths: readonly string[] }) {
       <FileTree model={model} className="rounded-lg border" />
     </div>
   );
-}`
+}`,
 );

@@ -8,7 +8,7 @@ export default function ScreenWrapper({
   return (
     <div className="overflow-y-auto h-full w-full">
       <div
-        className={`w-[40rem] max-w-full ${fitScreen ? 'h-full' : 'h-auto overflow-hidden'} px-4 flex flex-col mx-auto`}
+        className={`w-[40rem] max-w-full ${fitScreen ? "h-full" : "h-auto overflow-hidden"} px-4 flex flex-col mx-auto`}
       >
         {children}
       </div>

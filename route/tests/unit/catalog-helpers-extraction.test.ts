@@ -60,14 +60,14 @@ test("catalogHelpers: intersectStringArrays (dedup + common)", () => {
       ["a", "b", "c"],
       ["b", "c", "d"],
     ]),
-    ["b", "c"]
+    ["b", "c"],
   );
   assert.deepEqual(
     intersectStringArrays([
       ["a", "a", "b"],
       ["a", "b"],
     ]),
-    ["a", "b"]
+    ["a", "b"],
   );
   assert.deepEqual(intersectStringArrays([]), []);
   assert.deepEqual(intersectStringArrays([["a"], []]), []);
@@ -107,21 +107,21 @@ test("catalogOpenrouter: free-model detection + display name", () => {
   assert.equal(isOpenRouterFreeModel({ id: "z/model:free" }), true);
   assert.equal(
     isOpenRouterFreeModel({ id: "z/model", pricing: { prompt: "0", completion: "0" } }),
-    true
+    true,
   );
   assert.equal(
     isOpenRouterFreeModel({ id: "z/model", pricing: { prompt: "0.1", completion: "0" } }),
-    false
+    false,
   );
   assert.equal(getOpenRouterDisplayName({ id: "z/m", name: "Some Model" }), "Some Model");
   assert.equal(
     getOpenRouterDisplayName({ id: "z/m:free", name: "Free Model" }),
-    "Free Model (Grátis)"
+    "Free Model (Grátis)",
   );
   // Already labelled "grátis" is not double-tagged.
   assert.equal(
     getOpenRouterDisplayName({ id: "z/m:free", name: "Modelo Grátis" }),
-    "Modelo Grátis"
+    "Modelo Grátis",
   );
 });
 
@@ -138,7 +138,7 @@ test("catalogVision: getCustomVisionCapabilityFields honours explicit flag", () 
   // explicit true wins
   assert.equal(
     getCustomVisionCapabilityFields({ supportsVision: true }, "x")?.capabilities.vision,
-    true
+    true,
   );
   // explicit false wins even for a vision-looking id
   assert.equal(getCustomVisionCapabilityFields({ supportsVision: false }, "gpt-4o"), null);
@@ -180,11 +180,11 @@ test("host catalog.ts preserves its public API after the extraction", async () =
   assert.equal(
     typeof host.getCustomVisionCapabilityFields,
     "function",
-    "getCustomVisionCapabilityFields re-export (llm-selector-custom-vision-models.test.ts)"
+    "getCustomVisionCapabilityFields re-export (llm-selector-custom-vision-models.test.ts)",
   );
   assert.equal(
     typeof host.isVisionModelId,
     "function",
-    "isVisionModelId re-export (vision-detection-consistency.test.ts)"
+    "isVisionModelId re-export (vision-detection-consistency.test.ts)",
   );
 });

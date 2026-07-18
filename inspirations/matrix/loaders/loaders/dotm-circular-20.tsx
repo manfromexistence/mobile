@@ -22,7 +22,7 @@ const GLYPHS: ReadonlyArray<ReadonlySet<string>> = [
   new Set(["1,1", "1,2", "1,3", "3,1", "3,2", "3,3"]),
   new Set(["1,1", "2,1", "3,1", "1,3", "2,2", "3,3"]),
   new Set(["1,1", "2,2", "3,3", "1,3", "3,1"]),
-  new Set(["2,1", "1,2", "2,2", "3,2", "2,3"])
+  new Set(["2,1", "1,2", "2,2", "3,2", "2,3"]),
 ];
 
 export function DotmCircular20({
@@ -32,15 +32,19 @@ export function DotmCircular20({
   ...rest
 }: DotmCircular20Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
   const animPhase = useCyclePhase({
     active: !reducedMotion && matrixPhase !== "idle",
     cycleMsBase: 1500,
-    speed
+    speed,
   });
 
   const resolver = useMemo<DotAnimationResolver>(() => {
@@ -52,7 +56,7 @@ export function DotmCircular20({
       const t =
         reducedMotion || phase === "idle"
           ? 0
-          : Math.floor((animPhase) * GLYPHS.length) % GLYPHS.length;
+          : Math.floor(animPhase * GLYPHS.length) % GLYPHS.length;
       const active = GLYPHS[t]!;
       const previous = GLYPHS[(t + GLYPHS.length - 1) % GLYPHS.length]!;
       const key = `${row},${col}`;

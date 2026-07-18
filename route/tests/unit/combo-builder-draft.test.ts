@@ -37,7 +37,7 @@ test("buildPrecisionComboModelStep preserves provider/model/account triple", () 
       connectionId: "conn-codex-a",
       label: "Codex A",
       weight: 35,
-    }
+    },
   );
 });
 
@@ -52,7 +52,7 @@ test("buildManualComboModelStep resolves provider aliases and uses dynamic accou
       providerId: "codex",
       model: "codex/gpt-5.5",
       weight: 0,
-    }
+    },
   );
 
   assert.deepEqual(
@@ -65,19 +65,19 @@ test("buildManualComboModelStep resolves provider aliases and uses dynamic accou
       providerId: "openrouter",
       model: "openrouter/openai/gpt-5.5",
       weight: 0,
-    }
+    },
   );
 
   assert.equal(
     builderDraft.resolveComboBuilderProviderId("foo", [{ providerId: "codex", alias: "cx" }]),
-    null
+    null,
   );
   assert.equal(
     builderDraft.buildManualComboModelStep({
       value: "foo/bar",
       providers: [{ providerId: "codex", alias: "cx" }],
     }),
-    null
+    null,
   );
   assert.equal(builderDraft.buildManualComboModelStep({ value: "gpt-5.5" }), null);
 });
@@ -108,9 +108,9 @@ test("hasExactModelStepDuplicate blocks only exact provider/model/connection rep
         providerId: "codex",
         modelId: "gpt-5.3-codex",
         connectionId: "conn-a",
-      })
+      }),
     ),
-    true
+    true,
   );
   assert.equal(
     builderDraft.hasExactModelStepDuplicate(
@@ -119,9 +119,9 @@ test("hasExactModelStepDuplicate blocks only exact provider/model/connection rep
         providerId: "codex",
         modelId: "gpt-5.3-codex",
         connectionId: "conn-c",
-      })
+      }),
     ),
-    false
+    false,
   );
   assert.equal(
     builderDraft.hasExactModelStepDuplicate(
@@ -129,9 +129,9 @@ test("hasExactModelStepDuplicate blocks only exact provider/model/connection rep
       builderDraft.buildPrecisionComboModelStep({
         providerId: "codex",
         modelId: "gpt-5.3-codex",
-      })
+      }),
     ),
-    true
+    true,
   );
 });
 
@@ -155,14 +155,14 @@ test("findNextSuggestedConnectionId advances to the next unused connection for t
       { id: "conn-b" },
       { id: "conn-c" },
     ]),
-    "conn-c"
+    "conn-c",
   );
   assert.equal(
     builderDraft.findNextSuggestedConnectionId(existing, "codex", "gpt-5.3-codex", [
       { id: "conn-a" },
       { id: "conn-b" },
     ]),
-    builderDraft.COMBO_BUILDER_AUTO_CONNECTION
+    builderDraft.COMBO_BUILDER_AUTO_CONNECTION,
   );
 });
 
@@ -180,7 +180,7 @@ test("combo builder stage helpers expose completion state and linear navigation"
       steps: true,
       strategy: true,
       review: false,
-    }
+    },
   );
 
   assert.deepEqual(
@@ -196,7 +196,7 @@ test("combo builder stage helpers expose completion state and linear navigation"
       steps: false,
       strategy: false,
       review: false,
-    }
+    },
   );
 
   assert.equal(builderDraft.getNextComboBuilderStage("basics"), "steps");
@@ -220,11 +220,11 @@ test("combo builder stage helpers expose completion state and linear navigation"
   ]);
   assert.equal(
     builderDraft.getNextComboBuilderStage("strategy", { strategy: "auto" }),
-    "intelligent"
+    "intelligent",
   );
   assert.equal(
     builderDraft.getPreviousComboBuilderStage("review", { strategy: "auto" }),
-    "intelligent"
+    "intelligent",
   );
 
   const checks = builderDraft.getComboBuilderStageChecks({
@@ -241,7 +241,7 @@ test("combo builder stage helpers expose completion state and linear navigation"
   assert.equal(builderDraft.canAccessComboBuilderStage("review", checks), true);
   assert.equal(
     builderDraft.canAccessComboBuilderStage("intelligent", checks, { strategy: "auto" }),
-    false
+    false,
   );
 
   const lockedChecks = builderDraft.getComboBuilderStageChecks({
@@ -268,7 +268,7 @@ test("intelligent builder stage is accessible only after strategy checks pass", 
 
   assert.equal(
     builderDraft.canAccessComboBuilderStage("intelligent", readyChecks, { strategy: "auto" }),
-    true
+    true,
   );
   assert.equal(builderDraft.isIntelligentBuilderStrategy("auto"), true);
   assert.equal(builderDraft.isIntelligentBuilderStrategy("lkgp"), true);

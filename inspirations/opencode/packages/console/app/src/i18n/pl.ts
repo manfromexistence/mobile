@@ -1,4 +1,4 @@
-import { dict as en } from "./en"
+import { dict as en } from "./en";
 
 export const dict = {
   ...en,
@@ -107,7 +107,8 @@ export const dict = {
   "home.banner.downloadBetaNow": "Pobierz betę wersji desktopowej",
 
   "home.hero.title": "Open source'owy agent AI do kodowania",
-  "home.hero.subtitle.a": "Darmowe modele w zestawie lub podłącz dowolny model od dowolnego dostawcy,",
+  "home.hero.subtitle.a":
+    "Darmowe modele w zestawie lub podłącz dowolny model od dowolnego dostawcy,",
   "home.hero.subtitle.b": "w tym Claude, GPT, Gemini i inne.",
 
   "home.install.ariaLabel": "Opcje instalacji",
@@ -120,15 +121,18 @@ export const dict = {
   "home.what.multiSession.title": "Wielosesyjność",
   "home.what.multiSession.body": "Uruchom wiele agentów równolegle w tym samym projekcie",
   "home.what.shareLinks.title": "Udostępnianie linków",
-  "home.what.shareLinks.body": "Udostępnij link do dowolnej sesji w celach referencyjnych lub do debugowania",
+  "home.what.shareLinks.body":
+    "Udostępnij link do dowolnej sesji w celach referencyjnych lub do debugowania",
   "home.what.copilot.title": "GitHub Copilot",
   "home.what.copilot.body": "Zaloguj się przez GitHub, aby używać swojego konta Copilot",
   "home.what.chatgptPlus.title": "ChatGPT Plus/Pro",
-  "home.what.chatgptPlus.body": "Zaloguj się przez OpenAI, aby używać swojego konta ChatGPT Plus lub Pro",
+  "home.what.chatgptPlus.body":
+    "Zaloguj się przez OpenAI, aby używać swojego konta ChatGPT Plus lub Pro",
   "home.what.anyModel.title": "Dowolny model",
   "home.what.anyModel.body": "75+ dostawców LLM przez Models.dev, w tym modele lokalne",
   "home.what.anyEditor.title": "Dowolny edytor",
-  "home.what.anyEditor.body": "Dostępny jako interfejs terminalowy, aplikacja desktopowa i rozszerzenie IDE",
+  "home.what.anyEditor.body":
+    "Dostępny jako interfejs terminalowy, aplikacja desktopowa i rozszerzenie IDE",
   "home.what.readDocs": "Czytaj dokumentację",
 
   "home.growth.title": "Open source'owy agent AI do kodowania",
@@ -153,7 +157,8 @@ export const dict = {
   "home.faq.q3": "Czy potrzebuję dodatkowych subskrypcji AI, aby używać OpenCode?",
   "home.faq.a3.p1":
     "Niekoniecznie. OpenCode posiada zestaw darmowych modeli, z których możesz korzystać bez zakładania konta.",
-  "home.faq.a3.p2.beforeZen": "Poza tym możesz używać dowolnych popularnych modeli do kodowania, tworząc konto",
+  "home.faq.a3.p2.beforeZen":
+    "Poza tym możesz używać dowolnych popularnych modeli do kodowania, tworząc konto",
   "home.faq.a3.p2.afterZen": ".",
   "home.faq.a3.p3":
     "Chociaż zachęcamy do korzystania z Zen, OpenCode działa również ze wszystkimi popularnymi dostawcami, takimi jak OpenAI, Anthropic, xAI itp.",
@@ -178,18 +183,21 @@ export const dict = {
   "home.faq.a7.p2.and": "i",
   "home.faq.a7.p2.shareLink": "stronach udostępniania",
   "home.faq.q8": "Czy OpenCode jest open source?",
-  "home.faq.a8.p1": "Tak, OpenCode jest w pełni open source. Kod źródłowy jest publicznie dostępny na",
+  "home.faq.a8.p1":
+    "Tak, OpenCode jest w pełni open source. Kod źródłowy jest publicznie dostępny na",
   "home.faq.a8.p2": "na licencji",
   "home.faq.a8.mitLicense": "MIT License",
   "home.faq.a8.p3":
     ", co oznacza, że każdy może go używać, modyfikować i wspierać jego rozwój. Każdy ze społeczności może zgłaszać błędy, przesyłać pull requesty i rozszerzać funkcjonalność.",
 
-  "home.zenCta.title": "Uzyskaj dostęp do niezawodnych, zoptymalizowanych modeli dla agentów kodujących",
+  "home.zenCta.title":
+    "Uzyskaj dostęp do niezawodnych, zoptymalizowanych modeli dla agentów kodujących",
   "home.zenCta.body":
     "Zen daje dostęp do wyselekcjonowanego zestawu modeli AI, które OpenCode przetestował i sprawdził (benchmark) specjalnie dla agentów kodujących. Nie musisz martwić się o niespójną wydajność i jakość u różnych dostawców, używaj sprawdzonych modeli, które działają.",
   "home.zenCta.link": "Dowiedz się więcej o Zen",
 
-  "zen.title": "OpenCode Zen | Wyselekcjonowany zestaw niezawodnych, zoptymalizowanych modeli dla agentów kodujących",
+  "zen.title":
+    "OpenCode Zen | Wyselekcjonowany zestaw niezawodnych, zoptymalizowanych modeli dla agentów kodujących",
   "zen.hero.title": "Niezawodne, zoptymalizowane modele dla agentów kodujących",
   "zen.hero.body":
     "Zen daje dostęp do wyselekcjonowanego zestawu modeli AI, które OpenCode przetestował i sprawdził (benchmark) specjalnie dla agentów kodujących. Nie musisz martwić się o niespójną wydajność i jakość, używaj sprawdzonych modeli, które działają.",
@@ -206,7 +214,8 @@ export const dict = {
   "zen.faq.q4": "Ile kosztuje Zen?",
   "zen.faq.a4.p1.beforePricing": "Zen",
   "zen.faq.a4.p1.pricingLink": "pobiera opłaty za żądanie",
-  "zen.faq.a4.p1.afterPricing": "bez marży, więc płacisz dokładnie tyle, ile pobiera dostawca modelu.",
+  "zen.faq.a4.p1.afterPricing":
+    "bez marży, więc płacisz dokładnie tyle, ile pobiera dostawca modelu.",
   "zen.faq.a4.p2.beforeAccount":
     "Twój całkowity koszt zależy od użycia, i możesz ustawić miesięczne limity wydatków na swoim",
   "zen.faq.a4.p2.accountLink": "koncie",
@@ -219,7 +228,8 @@ export const dict = {
   "zen.faq.q6": "Czy mogę ustawić limity wydatków?",
   "zen.faq.a6": "Tak, możesz ustawić miesięczne limity wydatków na swoim koncie.",
   "zen.faq.q7": "Czy mogę anulować?",
-  "zen.faq.a7": "Tak, możesz wyłączyć rozliczenia w dowolnym momencie i wykorzystać pozostałe saldo.",
+  "zen.faq.a7":
+    "Tak, możesz wyłączyć rozliczenia w dowolnym momencie i wykorzystać pozostałe saldo.",
   "zen.faq.q8": "Czy mogę używać Zen z innymi agentami kodującymi?",
   "zen.faq.a8":
     "Chociaż Zen świetnie działa z OpenCode, możesz używać Zen z dowolnym agentem. Postępuj zgodnie z instrukcjami konfiguracji w swoim preferowanym agencie.",
@@ -227,16 +237,19 @@ export const dict = {
   "zen.cta.start": "Zacznij korzystać z Zen",
   "zen.pricing.title": "Dodaj 20$ salda Pay as you go",
   "zen.pricing.fee": "(+$1.23 opłaty za przetwarzanie karty)",
-  "zen.pricing.body": "Używaj z dowolnym agentem. Ustaw miesięczne limity wydatków. Anuluj w dowolnym momencie.",
+  "zen.pricing.body":
+    "Używaj z dowolnym agentem. Ustaw miesięczne limity wydatków. Anuluj w dowolnym momencie.",
   "zen.problem.title": "Jaki problem rozwiązuje Zen?",
   "zen.problem.body":
     "Dostępnych jest wiele modeli, ale tylko nieliczne dobrze współpracują z agentami kodującymi. Większość dostawców konfiguruje je inaczej, co daje różne wyniki.",
   "zen.problem.subtitle": "Naprawiamy to dla wszystkich, nie tylko dla użytkowników OpenCode.",
   "zen.problem.item1": "Testowanie wybranych modeli i konsultacje z ich zespołami",
   "zen.problem.item2": "Współpraca z dostawcami w celu zapewnienia ich prawidłowego dostarczania",
-  "zen.problem.item3": "Benchmark wszystkich rekomendowanych przez nas kombinacji modeli i dostawców",
+  "zen.problem.item3":
+    "Benchmark wszystkich rekomendowanych przez nas kombinacji modeli i dostawców",
   "zen.how.title": "Jak działa Zen",
-  "zen.how.body": "Chociaż sugerujemy używanie Zen z OpenCode, możesz używać Zen z dowolnym agentem.",
+  "zen.how.body":
+    "Chociaż sugerujemy używanie Zen z OpenCode, możesz używać Zen z dowolnym agentem.",
   "zen.how.step1.title": "Zarejestruj się i doładuj saldo 20$",
   "zen.how.step1.beforeLink": "postępuj zgodnie z",
   "zen.how.step1.link": "instrukcją konfiguracji",
@@ -289,7 +302,8 @@ export const dict = {
   "go.testimonials.david.name": "David Hill",
   "go.testimonials.david.title": "ex-Head of Design, Laravel",
   "go.testimonials.david.quoteBefore": "Dzięki",
-  "go.testimonials.david.quoteAfter": "wiem, że wszystkie modele są przetestowane i idealne dla agentów kodujących.",
+  "go.testimonials.david.quoteAfter":
+    "wiem, że wszystkie modele są przetestowane i idealne dla agentów kodujących.",
   "go.testimonials.frank.name": "Frank Wang",
   "go.testimonials.frank.title": "ex-Intern, Nvidia (4 times)",
   "go.testimonials.frank.quote": "Chciałbym wciąż być w Nvidia.",
@@ -355,20 +369,24 @@ export const dict = {
 
   "zen.api.error.rateLimitExceeded": "Przekroczono limit zapytań. Spróbuj ponownie później.",
   "zen.api.error.modelNotSupported": "Model {{model}} nie jest obsługiwany",
-  "zen.api.error.modelFormatNotSupported": "Model {{model}} nie jest obsługiwany dla formatu {{format}}",
+  "zen.api.error.modelFormatNotSupported":
+    "Model {{model}} nie jest obsługiwany dla formatu {{format}}",
   "zen.api.error.noProviderAvailable": "Brak dostępnego dostawcy",
   "zen.api.error.providerNotSupported": "Dostawca {{provider}} nie jest obsługiwany",
   "zen.api.error.missingApiKey": "Brak klucza API.",
   "zen.api.error.invalidApiKey": "Nieprawidłowy klucz API.",
-  "zen.api.error.subscriptionQuotaExceeded": "Przekroczono limit subskrypcji. Spróbuj ponownie za {{retryIn}}.",
+  "zen.api.error.subscriptionQuotaExceeded":
+    "Przekroczono limit subskrypcji. Spróbuj ponownie za {{retryIn}}.",
   "zen.api.error.goSubscriptionRollingLimitExceeded":
     "Osiągnięto 5-godzinny limit użycia. Resetuje się za {{retryIn}}. Aby nadal korzystać z tego modelu, włącz użycie z dostępnego salda: {{consoleGoUrl}}",
   "zen.api.error.goSubscriptionWeeklyLimitExceeded":
     "Osiągnięto tygodniowy limit użycia. Resetuje się za {{retryIn}}. Aby nadal korzystać z tego modelu, włącz użycie z dostępnego salda: {{consoleGoUrl}}",
   "zen.api.error.goSubscriptionMonthlyLimitExceeded":
     "Osiągnięto miesięczny limit użycia. Resetuje się za {{retryIn}}. Aby nadal korzystać z tego modelu, włącz użycie z dostępnego salda: {{consoleGoUrl}}",
-  "zen.api.error.noPaymentMethod": "Brak metody płatności. Dodaj metodę płatności tutaj: {{billingUrl}}",
-  "zen.api.error.insufficientBalance": "Niewystarczające saldo. Zarządzaj swoimi płatnościami tutaj: {{billingUrl}}",
+  "zen.api.error.noPaymentMethod":
+    "Brak metody płatności. Dodaj metodę płatności tutaj: {{billingUrl}}",
+  "zen.api.error.insufficientBalance":
+    "Niewystarczające saldo. Zarządzaj swoimi płatnościami tutaj: {{billingUrl}}",
   "zen.api.error.workspaceMonthlyLimitReached":
     "Twoja przestrzeń robocza osiągnęła miesięczny limit wydatków w wysokości ${{amount}}. Zarządzaj swoimi limitami tutaj: {{billingUrl}}",
   "zen.api.error.userMonthlyLimitReached":
@@ -380,7 +398,8 @@ export const dict = {
     "Bezpłatna promocja {{model}} dobiegła końca. Możesz dalej korzystać z modelu, subskrybując OpenCode Go - {{link}}",
 
   "black.meta.title": "OpenCode Black | Dostęp do najlepszych na świecie modeli kodujących",
-  "black.meta.description": "Uzyskaj dostęp do Claude, GPT, Gemini i innych dzięki planom subskrypcji OpenCode Black.",
+  "black.meta.description":
+    "Uzyskaj dostęp do Claude, GPT, Gemini i innych dzięki planom subskrypcji OpenCode Black.",
   "black.hero.title": "Dostęp do najlepszych na świecie modeli kodujących",
   "black.hero.subtitle": "W tym Claude, GPT, Gemini i inne",
   "black.title": "OpenCode Black | Cennik",
@@ -395,8 +414,10 @@ export const dict = {
   "black.terms.1": "Twoja subskrypcja nie rozpocznie się natychmiast",
   "black.terms.2": "Zostaniesz dodany do listy oczekujących i aktywowany wkrótce",
   "black.terms.3": "Twoja karta zostanie obciążona dopiero po aktywacji subskrypcji",
-  "black.terms.4": "Obowiązują limity użycia, intensywne automatyczne użycie może wyczerpać limity szybciej",
-  "black.terms.5": "Subskrypcje są dla osób indywidualnych, skontaktuj się z Enterprise dla zespołów",
+  "black.terms.4":
+    "Obowiązują limity użycia, intensywne automatyczne użycie może wyczerpać limity szybciej",
+  "black.terms.5":
+    "Subskrypcje są dla osób indywidualnych, skontaktuj się z Enterprise dla zespołów",
   "black.terms.6": "Limity mogą zostać dostosowane, a plany mogą zostać wycofane w przyszłości",
   "black.terms.7": "Anuluj subskrypcję w dowolnym momencie",
   "black.action.continue": "Kontynuuj",
@@ -460,7 +481,8 @@ export const dict = {
   "workspace.newUser.step.models.after": "aby wybrać model",
 
   "workspace.models.title": "Modele",
-  "workspace.models.subtitle.beforeLink": "Zarządzaj dostępem członków obszaru roboczego do modeli.",
+  "workspace.models.subtitle.beforeLink":
+    "Zarządzaj dostępem członków obszaru roboczego do modeli.",
   "workspace.models.table.model": "Model",
   "workspace.models.table.enabled": "Włączony",
 
@@ -627,8 +649,10 @@ export const dict = {
   "workspace.black.subscription.resetsIn": "Resetuje się za",
   "workspace.black.subscription.useBalance": "Użyj dostępnego salda po osiągnięciu limitów użycia",
   "workspace.black.waitlist.title": "Lista oczekujących",
-  "workspace.black.waitlist.joined": "Jesteś na liście oczekujących na plan OpenCode Black za ${{plan}} miesięcznie.",
-  "workspace.black.waitlist.ready": "Jesteśmy gotowi zapisać Cię do planu OpenCode Black za ${{plan}} miesięcznie.",
+  "workspace.black.waitlist.joined":
+    "Jesteś na liście oczekujących na plan OpenCode Black za ${{plan}} miesięcznie.",
+  "workspace.black.waitlist.ready":
+    "Jesteśmy gotowi zapisać Cię do planu OpenCode Black za ${{plan}} miesięcznie.",
   "workspace.black.waitlist.leave": "Opuść listę oczekujących",
   "workspace.black.waitlist.leaving": "Opuszczanie...",
   "workspace.black.waitlist.left": "Opuszczono",
@@ -676,12 +700,15 @@ export const dict = {
   "workspace.referral.copyLink": "Kopiuj link",
   "workspace.referral.copied": "Skopiowano",
   "workspace.referral.overview.title": "Zaproś znajomych",
-  "workspace.referral.overview.subtitle": "Zdobądź $5, gdy znajomy się zasubskrybuje. On też dostanie $5.",
+  "workspace.referral.overview.subtitle":
+    "Zdobądź $5, gdy znajomy się zasubskrybuje. On też dostanie $5.",
   "workspace.referral.instructions.share": "Udostępnij swój link polecający",
   "workspace.referral.instructions.subscribe": "Twój znajomy dołącza i subskrybuje Go",
-  "workspace.referral.instructions.claim": "Oboje otrzymujecie kredyt $5 do wykorzystania na limity użycia Go",
+  "workspace.referral.instructions.claim":
+    "Oboje otrzymujecie kredyt $5 do wykorzystania na limity użycia Go",
   "workspace.referral.rewards.title": "Nagrody za polecenia",
-  "workspace.referral.rewards.description": "Wykorzystaj dostępne środki za polecenia na swoje użycie Go.",
+  "workspace.referral.rewards.description":
+    "Wykorzystaj dostępne środki za polecenia na swoje użycie Go.",
   "workspace.referral.rewards.subtitle": "Wykorzystano {{applied}} / {{total}} nagród.",
   "workspace.referral.rewards.empty": "Brak nagród za polecenia.",
   "workspace.referral.table.reward": "Nagroda",
@@ -703,7 +730,8 @@ export const dict = {
   "workspace.referral.apply.preview": "Zobacz nagrodę",
   "workspace.referral.apply.action": "Wykorzystaj",
   "workspace.referral.apply.confirmTitle": "Wykorzystaj nagrodę",
-  "workspace.referral.apply.confirmBody": "Wykorzystaj {{amount}}, aby zmniejszyć aktualne użycie w tym workspace.",
+  "workspace.referral.apply.confirmBody":
+    "Wykorzystaj {{amount}}, aby zmniejszyć aktualne użycie w tym workspace.",
   "workspace.referral.apply.confirmAction": "Wykorzystaj",
 
   "download.title": "OpenCode | Pobierz",
@@ -727,7 +755,8 @@ export const dict = {
   "download.faq.a3.beforeLocal":
     "Niekoniecznie, ale prawdopodobnie. Będziesz potrzebować subskrypcji AI, jeśli chcesz połączyć OpenCode z płatnym dostawcą, chociaż możesz pracować z",
   "download.faq.a3.localLink": "modelami lokalnymi",
-  "download.faq.a3.afterLocal.beforeZen": "za darmo. Chociaż zachęcamy użytkowników do korzystania z",
+  "download.faq.a3.afterLocal.beforeZen":
+    "za darmo. Chociaż zachęcamy użytkowników do korzystania z",
   "download.faq.a3.afterZen":
     ", OpenCode współpracuje ze wszystkimi popularnymi dostawcami, takimi jak OpenAI, Anthropic, xAI itp.",
 
@@ -742,7 +771,8 @@ export const dict = {
   "download.faq.a6.shareLink": "stronach udostępniania",
 
   "enterprise.title": "OpenCode | Rozwiązania Enterprise dla Twojej organizacji",
-  "enterprise.meta.description": "Skontaktuj się z OpenCode w sprawie rozwiązań dla przedsiębiorstw",
+  "enterprise.meta.description":
+    "Skontaktuj się z OpenCode w sprawie rozwiązań dla przedsiębiorstw",
   "enterprise.hero.title": "Twój kod jest Twój",
   "enterprise.hero.body1":
     "OpenCode działa bezpiecznie wewnątrz Twojej organizacji bez przechowywania danych czy kontekstu, oraz bez ograniczeń licencyjnych czy roszczeń własnościowych. Rozpocznij okres próbny ze swoim zespołem, a następnie wdróż go w całej organizacji, integrując z SSO i wewnętrzną bramą AI.",
@@ -826,7 +856,7 @@ export const dict = {
   "bench.detail.table.duration": "Czas trwania",
   "bench.detail.run.title": "Uruchomienie {{n}}",
   "bench.detail.rawJson": "Surowy JSON",
-} as const
+} as const;
 
-export type Key = keyof typeof dict
-export type Dict = Record<Key, string>
+export type Key = keyof typeof dict;
+export type Dict = Record<Key, string>;

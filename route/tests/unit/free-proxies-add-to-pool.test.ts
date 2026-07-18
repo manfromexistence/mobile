@@ -14,10 +14,12 @@ delete process.env.OMNIROUTE_API_KEY;
 
 const core = await import("../../src/lib/db/core.ts");
 const freeProxiesDb = await import("../../src/lib/db/freeProxies.ts");
-const addToPoolRoute =
-  await import("../../src/app/api/settings/free-proxies/[id]/add-to-pool/route.ts");
-const bulkAddRoute =
-  await import("../../src/app/api/settings/free-proxies/bulk-add-to-pool/route.ts");
+const addToPoolRoute = await import(
+  "../../src/app/api/settings/free-proxies/[id]/add-to-pool/route.ts"
+);
+const bulkAddRoute = await import(
+  "../../src/app/api/settings/free-proxies/bulk-add-to-pool/route.ts"
+);
 
 async function reset() {
   core.resetDbInstance();
@@ -179,7 +181,7 @@ test("bulk-add-to-pool: not-found ids counted as failed", async () => {
   assert.equal(body.failed, 2);
   assert.equal(body.results.length, 2);
   assert.ok(
-    body.results.every((r: { success: boolean; error?: string }) => r.success === false && r.error)
+    body.results.every((r: { success: boolean; error?: string }) => r.success === false && r.error),
   );
 });
 
@@ -223,8 +225,8 @@ test("bulk-add-to-pool: response shape with mix of already-in-pool and connectiv
         latencyMs: null,
         anonymity: null,
         lastValidated: null,
-      })
-    )
+      }),
+    ),
   );
 
   const ids = [p1, p2, ...failProxies.map((r) => r.id)];

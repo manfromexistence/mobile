@@ -5,8 +5,9 @@ import type { TlsFetchOptions } from "../../open-sse/services/chatgptTlsClient.t
 
 const { ChatGptWebExecutor, __derivePublicBaseUrlForTesting, __resetChatGptWebCachesForTesting } =
   await import("../../open-sse/executors/chatgpt-web.ts");
-const { describeChatGptWebHttpError } =
-  await import("../../open-sse/executors/chatgptWebErrors.ts");
+const { describeChatGptWebHttpError } = await import(
+  "../../open-sse/executors/chatgptWebErrors.ts"
+);
 const { getExecutor, hasSpecializedExecutor } = await import("../../open-sse/executors/index.ts");
 const {
   __setTlsFetchOverrideForTesting,
@@ -426,9 +427,9 @@ test("Image URL base: OMNIROUTE_PUBLIC_BASE_URL wins and strips accidental /v1",
     async () => {
       assert.equal(
         __derivePublicBaseUrlForTesting({ host: "localhost:20128" }),
-        "http://192.168.107.55:20128"
+        "http://192.168.107.55:20128",
       );
-    }
+    },
   );
 });
 
@@ -441,9 +442,9 @@ test("Image URL base: local NEXT_PUBLIC_BASE_URL does not mask LAN Host header",
     async () => {
       assert.equal(
         __derivePublicBaseUrlForTesting({ host: "192.168.107.55:20128" }),
-        "http://192.168.107.55:20128"
+        "http://192.168.107.55:20128",
       );
-    }
+    },
   );
 });
 
@@ -455,7 +456,7 @@ test("Image URL base: forwarded headers override raw Host", async () => {
         "x-forwarded-host": "omni.example.com",
         "x-forwarded-proto": "https",
       }),
-      "https://omni.example.com"
+      "https://omni.example.com",
     );
   });
 });
@@ -891,7 +892,7 @@ test("GPT-5.5 Pro streaming: preserves interim reasoning and appends final polle
     assert.match(text, /👉 Final streamed Pro answer\./);
     assert.ok(
       text.indexOf("👉 Final streamed Pro answer.") > text.indexOf("Interim reasoning text"),
-      "final polled answer should be appended after interim reasoning"
+      "final polled answer should be appended after interim reasoning",
     );
     assert.equal(m.calls.conversationDetail, 1);
   } finally {
@@ -1083,7 +1084,7 @@ test("Cookie: chunked .0/.1 cookies are passed through verbatim (NextAuth reasse
     });
     assert.equal(
       m.calls.headers[0].Cookie,
-      "__Secure-next-auth.session-token.0=partA; __Secure-next-auth.session-token.1=partB"
+      "__Secure-next-auth.session-token.0=partA; __Secure-next-auth.session-token.1=partB",
     );
   } finally {
     m.restore();
@@ -1108,7 +1109,7 @@ test("Cookie: 'Cookie: ' DevTools prefix is stripped", async () => {
     });
     assert.equal(
       m.calls.headers[0].Cookie,
-      "__Secure-next-auth.session-token.0=A; __Secure-next-auth.session-token.1=B"
+      "__Secure-next-auth.session-token.0=A; __Secure-next-auth.session-token.1=B",
     );
   } finally {
     m.restore();
@@ -1257,13 +1258,13 @@ test("Provider registry: chatgpt-web exposes the current ChatGPT Web model catal
   ]);
   assert.equal(
     ids.some((id) => id.startsWith("gpt-5.4")),
-    false
+    false,
   );
 
   const { MODEL_MAP } = await import("../../open-sse/executors/chatgpt-web/models.ts");
   assert.equal(
     Object.keys(MODEL_MAP).some((id) => id.startsWith("gpt-5.4") || id.startsWith("gpt-5-4")),
-    false
+    false,
   );
 });
 
@@ -1339,7 +1340,7 @@ test("MODEL_MAP drift guard: every advertised catalog id reaches ChatGPT as a ba
       const body = JSON.parse(m.calls.bodies[convIdx]);
       assert.ok(
         !body.model.includes("."),
-        `${omniId} reached the backend as "${body.model}" (still dot-form)`
+        `${omniId} reached the backend as "${body.model}" (still dot-form)`,
       );
       assert.equal(body.model, expectedSlugById[omniId], `${omniId} should map to backend slug`);
     }
@@ -1372,7 +1373,7 @@ test("GPT-5.5 Pro Extended sends base slug with extended effort and Temporary Ch
     assert.equal(
       m.calls.userConfig,
       0,
-      "Pro effort is sent with the turn, not PATCHed as a thinking-model preference"
+      "Pro effort is sent with the turn, not PATCHed as a thinking-model preference",
     );
   } finally {
     m.restore();
@@ -1430,7 +1431,7 @@ test("GPT-5.5 Pro store:false keeps Temporary Chat enabled for background utilit
     assert.equal(
       m.calls.conversationDetail,
       0,
-      "no final-answer poll is needed when the stream did not hand off"
+      "no final-answer poll is needed when the stream did not hand off",
     );
   } finally {
     m.restore();
@@ -1519,11 +1520,11 @@ test("thinking_effort: bare chatgpt.com thinking slugs still PATCH", async () =>
       assert.equal(
         m.calls.userConfig,
         1,
-        `bare slug ${bareSlug} must trigger thinking_effort PATCH`
+        `bare slug ${bareSlug} must trigger thinking_effort PATCH`,
       );
       assert.ok(
         m.calls.userConfigUrls[0].includes(`model_slug=${bareSlug}`),
-        `URL should contain model_slug=${bareSlug}`
+        `URL should contain model_slug=${bareSlug}`,
       );
     } finally {
       m.restore();
@@ -1674,8 +1675,9 @@ test("thinking_effort: PATCH failure is non-fatal — conversation request still
 });
 
 test("Image registry: cgpt-web/gpt-5.5 routes to ChatGPT Web image handler", async () => {
-  const { parseImageModel, getImageProvider } =
-    await import("../../open-sse/config/imageRegistry.ts");
+  const { parseImageModel, getImageProvider } = await import(
+    "../../open-sse/config/imageRegistry.ts"
+  );
   const parsed = parseImageModel("cgpt-web/gpt-5.5");
   assert.equal(parsed.provider, "chatgpt-web");
   assert.equal(parsed.model, "gpt-5.5");
@@ -1781,7 +1783,7 @@ test("Cookie rotation: unchunked → chunked drops stale unchunked variant", asy
     assert.doesNotMatch(
       refreshed.apiKey,
       /__Secure-next-auth\.session-token=UNCHUNKED_OLD/,
-      "stale unchunked session-token must be dropped"
+      "stale unchunked session-token must be dropped",
     );
     // Non-session-token cookies preserved.
     assert.match(refreshed.apiKey, /cf_clearance=CFCLEAR/);
@@ -2141,7 +2143,7 @@ test("tls streaming: late first byte is read from streamOutputPath instead of em
             },
           },
         ]),
-        "utf8"
+        "utf8",
       );
       return {
         status: 200,
@@ -2158,7 +2160,7 @@ test("tls streaming: late first byte is read from streamOutputPath instead of em
     "[DONE]",
     null,
     1_000,
-    5
+    5,
   );
 
   assert.equal(result.status, 200);
@@ -2298,7 +2300,7 @@ test("Image gen: sediment:// pointer prefers /files/<id>/download over /attachme
     assert.match(
       content,
       /!\[image\]\([^)]*\/v1\/chatgpt-web\/image\/[a-f0-9]+\)/,
-      "image rendered"
+      "image rendered",
     );
     assert.doesNotMatch(content, /files\.oaiusercontent\.com/);
     assert.equal(m.calls.fileDownload, 1, "tried /files/ endpoint first");
@@ -2408,7 +2410,7 @@ test("Image gen: Open WebUI follow-up/title/tag tool prompts do NOT trigger imag
       assert.equal(
         body.history_and_training_disabled,
         true,
-        `tool prompt should keep Temporary Chat ON: ${prompt.slice(0, 50)}...`
+        `tool prompt should keep Temporary Chat ON: ${prompt.slice(0, 50)}...`,
       );
     } finally {
       m.restore();
@@ -2446,12 +2448,12 @@ test("Image gen: Open WebUI image-generation context suppresses duplicate chat i
       assert.equal(
         body.history_and_training_disabled,
         true,
-        "Open WebUI already handled image generation, so chat path should stay temporary"
+        "Open WebUI already handled image generation, so chat path should stay temporary",
       );
       assert.equal(body.conversation_id, null);
       assert.match(
         body.messages[body.messages.length - 1].content.parts[0],
-        /Briefly acknowledge the image result/
+        /Briefly acknowledge the image result/,
       );
       assert.doesNotMatch(body.messages[body.messages.length - 1].content.parts[0], /tennis match/);
     } finally {
@@ -2489,7 +2491,7 @@ test("Image gen: heuristic catches common phrasings", async () => {
       assert.equal(
         body.history_and_training_disabled,
         false,
-        `Phrase ${JSON.stringify(phrase)} should classify as image-gen`
+        `Phrase ${JSON.stringify(phrase)} should classify as image-gen`,
       );
     } finally {
       m.restore();
@@ -2613,7 +2615,7 @@ test("Image gen: signed URL bytes are cached and exposed via /v1/chatgpt-web/ima
         // see open-sse/services/chatgptImageCache.ts and the matching route
         // in src/app/api/v1/chatgpt-web/image/[id]/route.ts.
         const m = content.match(
-          /!\[image\]\((http:\/\/192\.168\.107\.55:20128\/v1\/chatgpt-web\/image\/([a-f0-9]+))\)/
+          /!\[image\]\((http:\/\/192\.168\.107\.55:20128\/v1\/chatgpt-web\/image\/([a-f0-9]+))\)/,
         );
         assert.ok(m, `expected URL-style markdown, got: ${content.slice(0, 200)}`);
         assert.equal(calls.signed, 1, "fetched signed URL once");
@@ -2632,7 +2634,7 @@ test("Image gen: signed URL bytes are cached and exposed via /v1/chatgpt-web/ima
       } finally {
         tls.__setTlsFetchOverrideForTesting(null);
       }
-    }
+    },
   );
 });
 
@@ -2752,7 +2754,7 @@ test("Image edit: Open WebUI image context suppresses duplicate edit continuatio
     assert.equal(body.history_and_training_disabled, true);
     assert.match(
       body.messages[body.messages.length - 1].content.parts[0],
-      /Briefly acknowledge the image result/
+      /Briefly acknowledge the image result/,
     );
     assert.doesNotMatch(body.messages[body.messages.length - 1].content.parts[0], /nighttime/);
   } finally {
@@ -2843,7 +2845,7 @@ test("Image gen: bytes-fetch failure drops markdown (no signed-URL fallback)", a
     assert.doesNotMatch(
       content,
       /files\.oaiusercontent\.com/,
-      "signed URL is never leaked to client"
+      "signed URL is never leaked to client",
     );
     assert.equal(m.calls.fileDownload, 1, "download URL was attempted");
     assert.equal(m.calls.signedDownload, 1, "signed-bytes fetch was attempted and failed");
@@ -2875,7 +2877,7 @@ test("Image cache: byte cap evicts oldest before count cap kicks in", async () =
     const bytes = cacheMod.__getChatGptImageCacheBytesForTesting();
     assert.ok(
       bytes <= 10 * 1024 * 1024,
-      `cache bytes (${bytes}) should be within the configured 10 MB cap`
+      `cache bytes (${bytes}) should be within the configured 10 MB cap`,
     );
   } finally {
     if (original == null) delete process.env.OMNIROUTE_CGPT_WEB_IMAGE_CACHE_MAX_MB;
@@ -2916,13 +2918,13 @@ test("Image edit: file_0000XXXX (chatgpt-web edit result) falls back to /convers
     assert.match(
       content,
       /!\[image\]\([^)]*\/v1\/chatgpt-web\/image\/[a-f0-9]+\)/,
-      "image rendered via fallback"
+      "image rendered via fallback",
     );
     assert.equal(m.calls.fileDownload, 1, "tried /files/ first");
     assert.equal(
       m.calls.attachmentDownload,
       1,
-      "fell back to /conversation/.../attachment/.../download"
+      "fell back to /conversation/.../attachment/.../download",
     );
     assert.equal(m.calls.signedDownload, 1, "fetched signed bytes once");
   } finally {
@@ -3024,7 +3026,7 @@ test("Image edit handler: bytes-hash match drives executor with cached conversat
     assert.equal(
       result.success,
       true,
-      `expected success, got error: ${(result as { error?: unknown }).error}`
+      `expected success, got error: ${(result as { error?: unknown }).error}`,
     );
     const convIdx = m.calls.urls.findIndex((u) => u.endsWith("/backend-api/f/conversation"));
     assert.ok(convIdx >= 0, "conversation request was sent");
@@ -3063,7 +3065,7 @@ test("Image edit handler: no cached match returns 400 (does not silently generat
     assert.equal((result as { status?: unknown }).status, 400);
     assert.match(
       String((result as { error?: unknown }).error),
-      /generated through this OmniRoute instance/
+      /generated through this OmniRoute instance/,
     );
     assert.equal(m.calls.session, 0, "no upstream calls were attempted");
     assert.equal(m.calls.conv, 0, "no chat-completion was attempted");
@@ -3111,7 +3113,7 @@ test("Image cache: deleting an entry decrements the byte counter", async () => {
   assert.equal(
     cacheMod.__getChatGptImageCacheBytesForTesting(),
     0,
-    "bytes credited back on TTL evict"
+    "bytes credited back on TTL evict",
   );
 });
 
@@ -3123,14 +3125,14 @@ test("describeChatGptWebHttpError maps 413 to a payload-too-large message with g
   assert.notEqual(
     msg,
     "ChatGPT returned HTTP 413",
-    "413 should get a tailored message, not the generic fallback"
+    "413 should get a tailored message, not the generic fallback",
   );
   assert.match(msg, /413/, "message keeps the status code");
   assert.match(msg, /too large|payload|size limit/i, "message explains it's a size/payload limit");
   assert.match(
     msg,
     /context|compress/i,
-    "message points the user at reducing context / compression"
+    "message points the user at reducing context / compression",
   );
 });
 

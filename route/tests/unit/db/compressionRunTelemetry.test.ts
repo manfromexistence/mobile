@@ -9,10 +9,9 @@ process.env.DATA_DIR = tmpDir;
 
 const core = await import("../../../src/lib/db/core.ts");
 core.resetDbInstance();
-const {
-  insertCompressionRunTelemetryRow,
-  getCompressionRunTelemetrySummary,
-} = await import("../../../src/lib/db/compressionRunTelemetry.ts");
+const { insertCompressionRunTelemetryRow, getCompressionRunTelemetrySummary } = await import(
+  "../../../src/lib/db/compressionRunTelemetry.ts"
+);
 const { getDbInstance } = core;
 
 describe("compressionRunTelemetry", () => {
@@ -62,7 +61,7 @@ describe("compressionRunTelemetry", () => {
         tokensBefore: 0,
         tokensAfter: 0,
         ratio: 0,
-      })
+      }),
     );
     assert.equal(getCompressionRunTelemetrySummary().totalRuns, 1);
   });

@@ -42,7 +42,7 @@ describe("buildComboErrorBody", () => {
 
   it("falls back to INTERNAL_001 for an unknown code", () => {
     const body = buildComboErrorBody(
-      "COMBO_999" as unknown as Parameters<typeof buildComboErrorBody>[0]
+      "COMBO_999" as unknown as Parameters<typeof buildComboErrorBody>[0],
     );
     // An unknown code falls through to INTERNAL_001 from the catalog.
     assert.equal(body.error.code, "INTERNAL_001");

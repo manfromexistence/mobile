@@ -1,24 +1,24 @@
-'use client';
+"use client";
 
 import type {
   ContextMenuItem,
   ContextMenuOpenContext,
   FileTreeOptions as DemoFileTreeOptions,
-} from '@pierre/trees';
+} from "@pierre/trees";
 import {
   FileTree,
   type FileTreePreloadedData,
   useFileTree,
   useFileTreeSearch,
   useFileTreeSelection,
-} from '@pierre/trees/react';
-import { useState } from 'react';
+} from "@pierre/trees/react";
+import { useState } from "react";
 
-import { ExampleCard } from '../_components/ExampleCard';
+import { ExampleCard } from "../_components/ExampleCard";
 import {
   getContextMenuSideOffset,
   getFloatingContextMenuTriggerStyle,
-} from '../_lib/getFloatingContextMenuTriggerStyle';
+} from "../_lib/getFloatingContextMenuTriggerStyle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,7 +26,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 
 interface ReactDemoClientProps {
   flattenEmptyDirectories: boolean;
@@ -41,20 +41,13 @@ function ClientRenderedContextMenu({
   context,
   item,
 }: {
-  context: Pick<
-    ContextMenuOpenContext,
-    'anchorRect' | 'close' | 'restoreFocus'
-  >;
+  context: Pick<ContextMenuOpenContext, "anchorRect" | "close" | "restoreFocus">;
   item: ContextMenuItem;
 }) {
-  const itemType = item.kind === 'directory' ? 'Folder' : 'File';
+  const itemType = item.kind === "directory" ? "Folder" : "File";
 
   return (
-    <DropdownMenu
-      open
-      modal={false}
-      onOpenChange={(open) => !open && context.close()}
-    >
+    <DropdownMenu open modal={false} onOpenChange={(open) => !open && context.close()}>
       <DropdownMenuTrigger asChild>
         <button
           type="button"
@@ -95,19 +88,15 @@ function ClientRenderedExample({
   flattenEmptyDirectories,
   paths,
   viewportHeight,
-}: Pick<
-  ReactDemoClientProps,
-  'flattenEmptyDirectories' | 'paths' | 'viewportHeight'
->) {
-  const firstScrollPath = 'src/';
-  const middleScrollPath = 'src/components/feature-13.ts';
-  const lastScrollPath = 'README.md';
+}: Pick<ReactDemoClientProps, "flattenEmptyDirectories" | "paths" | "viewportHeight">) {
+  const firstScrollPath = "src/";
+  const middleScrollPath = "src/components/feature-13.ts";
+  const lastScrollPath = "README.md";
   const initialActivePath = paths.at(-1) ?? null;
   const { model } = useFileTree({
     flattenEmptyDirectories,
-    initialExpansion: 'open',
-    initialSelectedPaths:
-      initialActivePath == null ? undefined : [initialActivePath],
+    initialExpansion: "open",
+    initialSelectedPaths: initialActivePath == null ? undefined : [initialActivePath],
     paths,
     search: true,
     initialVisibleRowCount: viewportHeight / 30,
@@ -123,17 +112,16 @@ function ClientRenderedExample({
     if (path == null) {
       return;
     }
-    model.scrollToPath(path, { focus: scrollToShouldFocus, offset: 'center' });
+    model.scrollToPath(path, { focus: scrollToShouldFocus, offset: "center" });
     setLastScrolledPath(path);
   };
 
   return (
     <div className="space-y-3">
       <p className="text-sm text-neutral-600">
-        Initial active path: {initialActivePath ?? '—'}. Selected paths:{' '}
-        {selectedPaths.length}. Search value:{' '}
-        {search.value.length > 0 ? search.value : '—'}. Last added:{' '}
-        {lastAddedPath ?? '—'}. Last scrollTo: {lastScrolledPath ?? '—'}.
+        Initial active path: {initialActivePath ?? "—"}. Selected paths: {selectedPaths.length}.
+        Search value: {search.value.length > 0 ? search.value : "—"}. Last added:{" "}
+        {lastAddedPath ?? "—"}. Last scrollTo: {lastScrolledPath ?? "—"}.
       </p>
       <FileTree
         model={model}
@@ -211,7 +199,7 @@ function ClientRenderedExample({
               type="button"
               className="rounded-md border px-2 py-1"
               onClick={() => {
-                search.open('button');
+                search.open("button");
               }}
             >
               Search “button”
@@ -257,7 +245,7 @@ function ServerRenderedExample({
 }: ReactDemoClientProps) {
   const { model } = useFileTree({
     flattenEmptyDirectories,
-    initialExpansion: 'open',
+    initialExpansion: "open",
     paths,
     search: true,
     initialVisibleRowCount: viewportHeight / 30,
@@ -266,16 +254,11 @@ function ServerRenderedExample({
   return (
     <div className="space-y-3">
       <p className="text-sm text-neutral-600">
-        The server preloads declarative shadow DOM, and the colocated React
-        file-tree client hydrates it from one packaged{' '}
-        <code>preloadedData</code>
+        The server preloads declarative shadow DOM, and the colocated React file-tree client
+        hydrates it from one packaged <code>preloadedData</code>
         prop.
       </p>
-      <FileTree
-        header={<SsrHydratedHeader />}
-        model={model}
-        preloadedData={preloadedData}
-      />
+      <FileTree header={<SsrHydratedHeader />} model={model} preloadedData={preloadedData} />
     </div>
   );
 }

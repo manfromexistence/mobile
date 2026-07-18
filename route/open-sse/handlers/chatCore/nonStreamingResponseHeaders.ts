@@ -24,7 +24,7 @@ export function buildNonStreamingResponseHeaders(
   deps: { attachOmniRouteMetaHeaders: typeof defaultAttachMeta; now: () => number } = {
     attachOmniRouteMetaHeaders: defaultAttachMeta,
     now: Date.now,
-  }
+  },
 ): Record<string, string> {
   const responseHeaders: Record<string, string> = {
     "Content-Type": "application/json",

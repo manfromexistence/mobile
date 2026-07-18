@@ -1,28 +1,28 @@
-import { createEffect, Suspense, type ParentProps } from "solid-js"
-import { useNavigate } from "@solidjs/router"
-import { DebugBar } from "@/components/debug-bar"
-import { HelpButton } from "@/components/help-button"
-import { Titlebar, type TitlebarUpdate } from "@/components/titlebar"
-import { usePlatform } from "@/context/platform"
-import { setNavigate } from "@/utils/notification-click"
-import { setV2Toast, ToastRegion } from "@/utils/toast"
+import { createEffect, Suspense, type ParentProps } from "solid-js";
+import { useNavigate } from "@solidjs/router";
+import { DebugBar } from "@/components/debug-bar";
+import { HelpButton } from "@/components/help-button";
+import { Titlebar, type TitlebarUpdate } from "@/components/titlebar";
+import { usePlatform } from "@/context/platform";
+import { setNavigate } from "@/utils/notification-click";
+import { setV2Toast, ToastRegion } from "@/utils/toast";
 
 export default function NewLayout(props: ParentProps) {
-  const platform = usePlatform()
-  const navigate = useNavigate()
-  setNavigate(navigate)
+  const platform = usePlatform();
+  const navigate = useNavigate();
+  setNavigate(navigate);
 
-  createEffect(() => setV2Toast(true))
+  createEffect(() => setV2Toast(true));
 
   const update: TitlebarUpdate = {
     version: () => {
-      const state = platform.updater?.state()
-      if (state?.status !== "ready") return
-      return state.version
+      const state = platform.updater?.state();
+      if (state?.status !== "ready") return;
+      return state.version;
     },
     installing: () => platform.updater?.state().status === "installing",
     install: () => void platform.updater?.install(),
-  }
+  };
 
   return (
     <div
@@ -40,5 +40,5 @@ export default function NewLayout(props: ParentProps) {
       <HelpButton />
       <ToastRegion v2 />
     </div>
-  )
+  );
 }

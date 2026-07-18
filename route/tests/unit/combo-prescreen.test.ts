@@ -227,7 +227,7 @@ test("priority combo: quota 429 on passthrough provider does not skip another mo
       if (modelStr.includes("claude-opus")) {
         return Response.json(
           { error: { message: "quota exhausted for claude-opus-4-6-thinking" } },
-          { status: 429 }
+          { status: 429 },
         );
       }
       return okResponse(modelStr);
@@ -238,6 +238,6 @@ test("priority combo: quota 429 on passthrough provider does not skip another mo
   assert.equal(calls.at(-1), "antigravity/gemini-3-flash-agent");
   assert.ok(
     calls.includes("antigravity/claude-opus-4-6-thinking"),
-    "first passthrough model should be attempted before fallback"
+    "first passthrough model should be attempted before fallback",
   );
 });

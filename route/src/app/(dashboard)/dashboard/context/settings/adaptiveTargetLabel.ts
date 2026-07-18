@@ -9,7 +9,7 @@ import type { ContextBudgetConfig } from "../../../../../../open-sse/services/co
  */
 export function formatAdaptiveTarget(
   config: ContextBudgetConfig,
-  representativeModelContextLimit: number
+  representativeModelContextLimit: number,
 ): string {
   if (config.mode === "off") return "Adaptive context budget: off (legacy auto-trigger)";
   const target = computeTarget(config.policy, representativeModelContextLimit, null, config);

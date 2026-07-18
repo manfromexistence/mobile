@@ -1,4 +1,4 @@
-import { DEFAULT_VIRTUAL_FILE_METRICS } from '../constants';
+import { DEFAULT_VIRTUAL_FILE_METRICS } from "../constants";
 import type {
   FileContents,
   LineAnnotation,
@@ -9,24 +9,24 @@ import type {
   StickySpecs,
   ThemeTypes,
   VirtualFileMetrics,
-} from '../types';
-import { areObjectsEqual } from '../utils/areObjectsEqual';
-import { areOptionsEqual } from '../utils/areOptionsEqual';
+} from "../types";
+import { areObjectsEqual } from "../utils/areObjectsEqual";
+import { areOptionsEqual } from "../utils/areOptionsEqual";
 import {
   getVirtualFileHeaderRegion,
   getVirtualFilePaddingBottom,
-} from '../utils/computeVirtualFileMetrics';
+} from "../utils/computeVirtualFileMetrics";
 import {
   FILE_ANNOTATION_DOM_KEY,
   FILE_ANNOTATION_LINE_NUMBER,
   includesFileAnnotations,
   shouldRenderFileAnnotations,
-} from '../utils/includesFileAnnotations';
-import { iterateOverFile } from '../utils/iterateOverFile';
-import type { WorkerPoolManager } from '../worker';
-import type { CodeView } from './CodeView';
-import { File, type FileOptions, type FileRenderProps } from './File';
-import type { Virtualizer } from './Virtualizer';
+} from "../utils/includesFileAnnotations";
+import { iterateOverFile } from "../utils/iterateOverFile";
+import type { WorkerPoolManager } from "../worker";
+import type { CodeView } from "./CodeView";
+import { File, type FileOptions, type FileRenderProps } from "./File";
+import type { Virtualizer } from "./Virtualizer";
 
 interface FileLayoutCheckpoint {
   lineIndex: number;
@@ -51,23 +51,18 @@ let instanceId = -1;
 
 function hasFileLayoutOptionChanged<LAnnotation>(
   previousOptions: FileOptions<LAnnotation>,
-  nextOptions: FileOptions<LAnnotation>
+  nextOptions: FileOptions<LAnnotation>,
 ): boolean {
   return (
-    (previousOptions.overflow ?? 'scroll') !==
-      (nextOptions.overflow ?? 'scroll') ||
+    (previousOptions.overflow ?? "scroll") !== (nextOptions.overflow ?? "scroll") ||
     (previousOptions.collapsed ?? false) !== (nextOptions.collapsed ?? false) ||
-    (previousOptions.disableLineNumbers ?? false) !==
-      (nextOptions.disableLineNumbers ?? false) ||
-    (previousOptions.disableFileHeader ?? false) !==
-      (nextOptions.disableFileHeader ?? false) ||
+    (previousOptions.disableLineNumbers ?? false) !== (nextOptions.disableLineNumbers ?? false) ||
+    (previousOptions.disableFileHeader ?? false) !== (nextOptions.disableFileHeader ?? false) ||
     previousOptions.unsafeCSS !== nextOptions.unsafeCSS
   );
 }
 
-export class VirtualizedFile<
-  LAnnotation = undefined,
-> extends File<LAnnotation> {
+export class VirtualizedFile<LAnnotation = undefined> extends File<LAnnotation> {
   override readonly __id: string = `virtualized-file:${++instanceId}`;
 
   public top: number | undefined;
@@ -88,7 +83,7 @@ export class VirtualizedFile<
     private virtualizer: Virtualizer | CodeView<LAnnotation>,
     private metrics: VirtualFileMetrics = DEFAULT_VIRTUAL_FILE_METRICS,
     workerManager?: WorkerPoolManager,
-    isContainerManaged = false
+    isContainerManaged = false,
   ) {
     super(options, workerManager, isContainerManaged);
   }
@@ -102,17 +97,13 @@ export class VirtualizedFile<
     this.resetLayoutCache();
   }
 
-  override setLineAnnotations(
-    lineAnnotations: LineAnnotation<LAnnotation>[]
-  ): void {
+  override setLineAnnotations(lineAnnotations: LineAnnotation<LAnnotation>[]): void {
     if (this.syncLineAnnotations(lineAnnotations)) {
       this.resetLayoutCache();
     }
   }
 
-  private syncLineAnnotations(
-    lineAnnotations: LineAnnotation<LAnnotation>[] | undefined
-  ): boolean {
+  private syncLineAnnotations(lineAnnotations: LineAnnotation<LAnnotation>[] | undefined): boolean {
     if (lineAnnotations == null || lineAnnotations === this.lineAnnotations) {
       return false;
     }
@@ -126,7 +117,7 @@ export class VirtualizedFile<
 
   private hasLineAnnotations(): boolean {
     return this.lineAnnotations.some(
-      (annotation) => annotation.lineNumber > FILE_ANNOTATION_LINE_NUMBER
+      (annotation) => annotation.lineNumber > FILE_ANNOTATION_LINE_NUMBER,
     );
   }
 
@@ -145,7 +136,7 @@ export class VirtualizedFile<
   override setOptions(options: FileOptions<LAnnotation> | undefined): void {
     if (this.isAdvancedMode()) {
       throw new Error(
-        'VirtualizedFile.setOptions cannot be used inside CodeView. Update CodeView options instead.'
+        "VirtualizedFile.setOptions cannot be used inside CodeView. Update CodeView options instead.",
       );
     }
 
@@ -172,7 +163,7 @@ export class VirtualizedFile<
   override setThemeType(themeType: ThemeTypes): void {
     if (this.isAdvancedMode()) {
       throw new Error(
-        'VirtualizedFile.setThemeType cannot be used inside CodeView. Update CodeView options instead.'
+        "VirtualizedFile.setThemeType cannot be used inside CodeView. Update CodeView options instead.",
       );
     }
 
@@ -209,13 +200,13 @@ export class VirtualizedFile<
       this.height = 0;
       return hasHeightChange;
     }
-    const { overflow = 'scroll' } = this.options;
+    const { overflow = "scroll" } = this.options;
     this.top = this.getVirtualizedTop();
 
     // If the file has no annotations and we are using the scroll variant, then
     // we can probably skip everything
     if (
-      overflow === 'scroll' &&
+      overflow === "scroll" &&
       this.lineAnnotations.length === 0 &&
       !this.isResizeDebuggingEnabled()
     ) {
@@ -261,14 +252,13 @@ export class VirtualizedFile<
       // Annotations or noNewline metadata increase the size of their attached line
       if (
         line.nextElementSibling instanceof HTMLElement &&
-        ('lineAnnotation' in line.nextElementSibling.dataset ||
-          'noNewline' in line.nextElementSibling.dataset)
+        ("lineAnnotation" in line.nextElementSibling.dataset ||
+          "noNewline" in line.nextElementSibling.dataset)
       ) {
-        if ('noNewline' in line.nextElementSibling.dataset) {
+        if ("noNewline" in line.nextElementSibling.dataset) {
           hasMetadata = true;
         }
-        measuredHeight +=
-          line.nextElementSibling.getBoundingClientRect().height;
+        measuredHeight += line.nextElementSibling.getBoundingClientRect().height;
       }
 
       const expectedHeight = this.getLineHeight(lineIndex, hasMetadata);
@@ -313,11 +303,10 @@ export class VirtualizedFile<
     file: FileContents,
     top: number,
     reset?: PendingCodeViewLayoutReset,
-    lineAnnotations?: LineAnnotation<LAnnotation>[]
+    lineAnnotations?: LineAnnotation<LAnnotation>[],
   ): number {
     const annotationsChanged = this.syncLineAnnotations(lineAnnotations);
-    let shouldResetLayoutCache =
-      reset?.resetFileLayoutCache === true || annotationsChanged;
+    let shouldResetLayoutCache = reset?.resetFileLayoutCache === true || annotationsChanged;
     if (reset?.metrics != null) {
       this.metrics = reset.metrics;
       shouldResetLayoutCache = true;
@@ -342,9 +331,7 @@ export class VirtualizedFile<
     return this.height;
   }
 
-  public getLinePosition(
-    lineNumber: number
-  ): { top: number; height: number } | undefined {
+  public getLinePosition(lineNumber: number): { top: number; height: number } | undefined {
     if (this.file == null || lineNumber < 1) {
       return undefined;
     }
@@ -358,29 +345,21 @@ export class VirtualizedFile<
       return { top, height: 0 };
     }
 
-    const clampedLineIndex = Math.min(
-      Math.max(lineNumber - 1, 0),
-      lastLineIndex
-    );
-    const { overflow = 'scroll' } = this.options;
+    const clampedLineIndex = Math.min(Math.max(lineNumber - 1, 0), lastLineIndex);
+    const { overflow = "scroll" } = this.options;
     const { lineHeight } = this.metrics;
     top += this.cache.fileAnnotationHeight;
 
-    if (overflow === 'scroll' && !this.hasLineAnnotations()) {
+    if (overflow === "scroll" && !this.hasLineAnnotations()) {
       return {
         top: top + clampedLineIndex * lineHeight,
         height: lineHeight,
       };
     }
 
-    const checkpoint =
-      this.getLayoutCheckpointBeforeLineIndex(clampedLineIndex);
+    const checkpoint = this.getLayoutCheckpointBeforeLineIndex(clampedLineIndex);
     top = checkpoint?.top ?? top;
-    for (
-      let lineIndex = checkpoint?.lineIndex ?? 0;
-      lineIndex < clampedLineIndex;
-      lineIndex++
-    ) {
+    for (let lineIndex = checkpoint?.lineIndex ?? 0; lineIndex < clampedLineIndex; lineIndex++) {
       top += this.getLineHeight(lineIndex, false);
     }
 
@@ -390,18 +369,12 @@ export class VirtualizedFile<
     };
   }
 
-  public getNumericScrollAnchor(
-    localViewportTop: number
-  ): NumericScrollLineAnchor | undefined {
+  public getNumericScrollAnchor(localViewportTop: number): NumericScrollLineAnchor | undefined {
     if (this.file == null || this.renderRange == null) {
       return undefined;
     }
 
-    const {
-      disableFileHeader = false,
-      collapsed = false,
-      overflow = 'scroll',
-    } = this.options;
+    const { disableFileHeader = false, collapsed = false, overflow = "scroll" } = this.options;
     if (collapsed || this.renderRange.totalLines <= 0) {
       return undefined;
     }
@@ -412,17 +385,11 @@ export class VirtualizedFile<
       return undefined;
     }
 
-    const headerRegion = getVirtualFileHeaderRegion(
-      this.metrics,
-      disableFileHeader
-    );
-    const firstRenderedLineIndex = Math.min(
-      this.renderRange.startingLine,
-      lastLineIndex
-    );
+    const headerRegion = getVirtualFileHeaderRegion(this.metrics, disableFileHeader);
+    const firstRenderedLineIndex = Math.min(this.renderRange.startingLine, lastLineIndex);
     const lastRenderedLineIndex = Math.min(
       firstRenderedLineIndex + this.renderRange.totalLines - 1,
-      lastLineIndex
+      lastLineIndex,
     );
     if (lastRenderedLineIndex < firstRenderedLineIndex) {
       return undefined;
@@ -431,16 +398,14 @@ export class VirtualizedFile<
 
     // If we don't allow line wrapping and have no annotations, we can just
     // multiply our way to the the correct value
-    if (overflow === 'scroll' && !this.hasLineAnnotations()) {
+    if (overflow === "scroll" && !this.hasLineAnnotations()) {
       const { lineHeight } = this.metrics;
       const firstRenderedLineTop =
         headerRegion +
-        (firstRenderedLineIndex === 0
-          ? fileAnnotationHeight
-          : this.renderRange.bufferBefore);
+        (firstRenderedLineIndex === 0 ? fileAnnotationHeight : this.renderRange.bufferBefore);
       const deltaLineCount = Math.max(
         Math.ceil((localViewportTop - firstRenderedLineTop) / lineHeight),
-        0
+        0,
       );
       const lineIndex = firstRenderedLineIndex + deltaLineCount;
       if (lineIndex > lastRenderedLineIndex) {
@@ -456,14 +421,8 @@ export class VirtualizedFile<
     // Otherwise we gotta iterate through the range
     let top =
       headerRegion +
-      (firstRenderedLineIndex === 0
-        ? fileAnnotationHeight
-        : this.renderRange.bufferBefore);
-    for (
-      let lineIndex = firstRenderedLineIndex;
-      lineIndex <= lastRenderedLineIndex;
-      lineIndex++
-    ) {
+      (firstRenderedLineIndex === 0 ? fileAnnotationHeight : this.renderRange.bufferBefore);
+    for (let lineIndex = firstRenderedLineIndex; lineIndex <= lastRenderedLineIndex; lineIndex++) {
       if (top >= localViewportTop) {
         return {
           lineNumber: lineIndex + 1,
@@ -480,9 +439,7 @@ export class VirtualizedFile<
     return this.height;
   }
 
-  public getAdvancedStickySpecs(
-    windowSpecs?: RenderWindow
-  ): StickySpecs | undefined {
+  public getAdvancedStickySpecs(windowSpecs?: RenderWindow): StickySpecs | undefined {
     if (this.top == null || this.file == null) {
       return undefined;
     }
@@ -549,17 +506,10 @@ export class VirtualizedFile<
       return;
     }
 
-    const {
-      disableFileHeader = false,
-      collapsed = false,
-      overflow = 'scroll',
-    } = this.options;
+    const { disableFileHeader = false, collapsed = false, overflow = "scroll" } = this.options;
     const { lineHeight } = this.metrics;
     const lines = this.getOrCreateLineCache(this.file);
-    const headerRegion = getVirtualFileHeaderRegion(
-      this.metrics,
-      disableFileHeader
-    );
+    const headerRegion = getVirtualFileHeaderRegion(this.metrics, disableFileHeader);
     const paddingBottom = getVirtualFilePaddingBottom(this.metrics);
 
     this.height += headerRegion;
@@ -570,7 +520,7 @@ export class VirtualizedFile<
 
     this.height += this.cache.fileAnnotationHeight;
 
-    if (overflow === 'scroll' && !this.hasLineAnnotations()) {
+    if (overflow === "scroll" && !this.hasLineAnnotations()) {
       this.height += this.getOrCreateLineCache(this.file).length * lineHeight;
     } else {
       iterateOverFile({
@@ -589,18 +539,13 @@ export class VirtualizedFile<
     if (this.fileContainer != null && shouldValidateSize && !isFirstCompute) {
       const rect = this.fileContainer.getBoundingClientRect();
       if (rect.height !== this.height) {
-        console.log(
-          'VirtualizedFile.computeApproximateSize: computed height doesnt match',
-          {
-            name: this.file.name,
-            elementHeight: rect.height,
-            computedHeight: this.height,
-          }
-        );
+        console.log("VirtualizedFile.computeApproximateSize: computed height doesnt match", {
+          name: this.file.name,
+          elementHeight: rect.height,
+          computedHeight: this.height,
+        });
       } else {
-        console.log(
-          'VirtualizedFile.computeApproximateSize: computed height IS CORRECT'
-        );
+        console.log("VirtualizedFile.computeApproximateSize: computed height IS CORRECT");
       }
     }
     this.layoutDirty = false;
@@ -647,7 +592,7 @@ export class VirtualizedFile<
 
     if (this.file == null) {
       console.error(
-        'VirtualizedFile.render: attempting to virtually render when we dont have file'
+        "VirtualizedFile.render: attempting to virtually render when we dont have file",
       );
       return false;
     }
@@ -660,15 +605,10 @@ export class VirtualizedFile<
         this.isVisible = true;
       } else {
         if (virtualizer == null) {
-          throw new Error(
-            'VirtualizedFile.render: simple virtualizer is not available'
-          );
+          throw new Error("VirtualizedFile.render: simple virtualizer is not available");
         }
         virtualizer.connect(fileContainer, this);
-        this.isVisible = virtualizer.isInstanceVisible(
-          this.top ?? 0,
-          this.height
-        );
+        this.isVisible = virtualizer.isInstanceVisible(this.top ?? 0, this.height);
       }
       this.isSetup = true;
     } else {
@@ -681,11 +621,7 @@ export class VirtualizedFile<
 
     const windowSpecs = this.virtualizer.getWindowSpecs();
     const fileTop = this.top ?? 0;
-    const renderRange = this.computeRenderRangeFromWindow(
-      this.file,
-      fileTop,
-      windowSpecs
-    );
+    const renderRange = this.computeRenderRangeFromWindow(this.file, fileTop, windowSpecs);
     return super.render({
       file: this.file,
       fileContainer,
@@ -705,11 +641,11 @@ export class VirtualizedFile<
   }
 
   private isSimpleMode(): boolean {
-    return this.virtualizer.type === 'simple';
+    return this.virtualizer.type === "simple";
   }
 
   private isAdvancedMode(): boolean {
-    return this.virtualizer.type === 'advanced';
+    return this.virtualizer.type === "advanced";
   }
 
   private addLayoutCheckpoint(lineIndex: number, top: number): void {
@@ -723,9 +659,7 @@ export class VirtualizedFile<
   // Checkpoints store measured `top` offsets every few thousand lines, so a
   // binary search lets deep line-position lookups resume from that checkpoint
   // instead of replaying layout from the start of the file.
-  private getLayoutCheckpointBeforeLineIndex(
-    lineIndex: number
-  ): FileLayoutCheckpoint | undefined {
+  private getLayoutCheckpointBeforeLineIndex(lineIndex: number): FileLayoutCheckpoint | undefined {
     if (lineIndex <= 0 || this.cache.checkpoints.length === 0) {
       return undefined;
     }
@@ -738,7 +672,7 @@ export class VirtualizedFile<
       const mid = (low + high) >> 1;
       const checkpoint = this.cache.checkpoints[mid];
       if (checkpoint == null) {
-        throw new Error('VirtualizedFile: invalid checkpoint index');
+        throw new Error("VirtualizedFile: invalid checkpoint index");
       }
       if (checkpoint.lineIndex <= lineIndex) {
         result = checkpoint;
@@ -758,7 +692,7 @@ export class VirtualizedFile<
   // still see a complete hunk.
   private getLayoutCheckpointBeforeTop(
     top: number,
-    hunkLineCount?: number
+    hunkLineCount?: number,
   ): FileLayoutCheckpoint | undefined {
     let low = 0;
     let high = this.cache.checkpoints.length - 1;
@@ -768,7 +702,7 @@ export class VirtualizedFile<
       const mid = (low + high) >> 1;
       const checkpoint = this.cache.checkpoints[mid];
       if (checkpoint == null) {
-        throw new Error('VirtualizedFile: invalid checkpoint index');
+        throw new Error("VirtualizedFile: invalid checkpoint index");
       }
       if (checkpoint.top <= top) {
         resultIndex = mid;
@@ -785,7 +719,7 @@ export class VirtualizedFile<
     for (let index = resultIndex; index >= 0; index--) {
       const checkpoint = this.cache.checkpoints[index];
       if (checkpoint == null) {
-        throw new Error('VirtualizedFile: invalid checkpoint index');
+        throw new Error("VirtualizedFile: invalid checkpoint index");
       }
       if (checkpoint.lineIndex % hunkLineCount === 0) {
         return checkpoint;
@@ -796,7 +730,7 @@ export class VirtualizedFile<
   }
 
   private getVirtualizedTop(): number {
-    if (this.virtualizer.type === 'advanced') {
+    if (this.virtualizer.type === "advanced") {
       return this.virtualizer.getLocalTopForInstance(this);
     }
     return this.fileContainer != null
@@ -805,7 +739,7 @@ export class VirtualizedFile<
   }
 
   private getSimpleVirtualizer(): Virtualizer | undefined {
-    return this.virtualizer.type === 'simple' ? this.virtualizer : undefined;
+    return this.virtualizer.type === "simple" ? this.virtualizer : undefined;
   }
 
   private isResizeDebuggingEnabled(): boolean {
@@ -815,24 +749,20 @@ export class VirtualizedFile<
   private computeRenderRangeFromWindow(
     file: FileContents,
     fileTop: number,
-    { top, bottom }: RenderWindow
+    { top, bottom }: RenderWindow,
   ): RenderRange {
-    const { disableFileHeader = false, overflow = 'scroll' } = this.options;
+    const { disableFileHeader = false, overflow = "scroll" } = this.options;
     const { hunkLineCount, lineHeight } = this.metrics;
     const lines = this.getOrCreateLineCache(file);
     const lineCount = lines.length;
     const fileHeight = this.height;
-    const headerRegion = getVirtualFileHeaderRegion(
-      this.metrics,
-      disableFileHeader
-    );
-    const paddingBottom =
-      lineCount > 0 ? getVirtualFilePaddingBottom(this.metrics) : 0;
+    const headerRegion = getVirtualFileHeaderRegion(this.metrics, disableFileHeader);
+    const paddingBottom = lineCount > 0 ? getVirtualFilePaddingBottom(this.metrics) : 0;
     const { fileAnnotationHeight } = this.cache;
     const codeRegionTop = headerRegion + fileAnnotationHeight;
     const codeRowsHeight = Math.max(
       0,
-      fileHeight - headerRegion - fileAnnotationHeight - paddingBottom
+      fileHeight - headerRegion - fileAnnotationHeight - paddingBottom,
     );
     const hasFileAnnotations = includesFileAnnotations(this.lineAnnotations);
     const fileAnnotationTop = fileTop + headerRegion;
@@ -863,20 +793,16 @@ export class VirtualizedFile<
     }
 
     // Calculate totalLines based on viewport size
-    const estimatedTargetLines = Math.ceil(
-      Math.max(bottom - top, 0) / lineHeight
-    );
+    const estimatedTargetLines = Math.ceil(Math.max(bottom - top, 0) / lineHeight);
     const totalLines =
-      Math.ceil(estimatedTargetLines / hunkLineCount) * hunkLineCount +
-      hunkLineCount * 2;
+      Math.ceil(estimatedTargetLines / hunkLineCount) * hunkLineCount + hunkLineCount * 2;
     const totalHunks = totalLines / hunkLineCount;
     const viewportCenter = (top + bottom) / 2;
     // Simple case: overflow scroll with no annotations - pure math!
-    if (overflow === 'scroll' && !this.hasLineAnnotations()) {
+    if (overflow === "scroll" && !this.hasLineAnnotations()) {
       const sourceRowsTop = fileTop + codeRegionTop;
       const sourceRowsBottom = sourceRowsTop + codeRowsHeight;
-      const sourceRowsVisible =
-        sourceRowsTop < bottom && sourceRowsBottom > top;
+      const sourceRowsVisible = sourceRowsTop < bottom && sourceRowsBottom > top;
       if (!measuredFileAnnotationVisible && !sourceRowsVisible) {
         return {
           startingLine: 0,
@@ -888,36 +814,24 @@ export class VirtualizedFile<
 
       // Find which line is at viewport center
       const centerLine = Math.floor(
-        measuredFileAnnotationVisible &&
-          viewportCenter < fileTop + codeRegionTop
+        measuredFileAnnotationVisible && viewportCenter < fileTop + codeRegionTop
           ? 0
-          : (viewportCenter - (fileTop + codeRegionTop)) / lineHeight
+          : (viewportCenter - (fileTop + codeRegionTop)) / lineHeight,
       );
       const centerHunk = Math.floor(centerLine / hunkLineCount);
 
       // Calculate ideal start centered around viewport
       const idealStartHunk = centerHunk - Math.floor(totalHunks / 2);
       const totalHunksInFile = Math.ceil(lineCount / hunkLineCount);
-      const startingLine =
-        Math.max(0, Math.min(idealStartHunk, totalHunksInFile)) * hunkLineCount;
+      const startingLine = Math.max(0, Math.min(idealStartHunk, totalHunksInFile)) * hunkLineCount;
 
       const clampedTotalLines =
-        idealStartHunk < 0
-          ? totalLines + idealStartHunk * hunkLineCount
-          : totalLines;
+        idealStartHunk < 0 ? totalLines + idealStartHunk * hunkLineCount : totalLines;
 
       const bufferBefore =
-        startingLine === 0
-          ? 0
-          : fileAnnotationHeight + startingLine * lineHeight;
-      const renderedLines = Math.min(
-        clampedTotalLines,
-        lineCount - startingLine
-      );
-      const bufferAfter = Math.max(
-        0,
-        (lineCount - startingLine - renderedLines) * lineHeight
-      );
+        startingLine === 0 ? 0 : fileAnnotationHeight + startingLine * lineHeight;
+      const renderedLines = Math.min(clampedTotalLines, lineCount - startingLine);
+      const bufferAfter = Math.max(0, (lineCount - startingLine - renderedLines) * lineHeight);
 
       return {
         startingLine,
@@ -935,7 +849,7 @@ export class VirtualizedFile<
     // render range is still computed from the visible window below.
     const checkpoint = this.getLayoutCheckpointBeforeTop(
       Math.max(0, top - fileTop - totalLines * lineHeight * 2),
-      hunkLineCount
+      hunkLineCount,
     );
 
     let absoluteLineTop = fileTop + (checkpoint?.top ?? codeRegionTop);
@@ -952,8 +866,7 @@ export class VirtualizedFile<
         const currentHunk = Math.floor(currentLine / hunkLineCount);
 
         if (isAtHunkBoundary) {
-          hunkOffsets[currentHunk] =
-            absoluteLineTop - (fileTop + codeRegionTop);
+          hunkOffsets[currentHunk] = absoluteLineTop - (fileTop + codeRegionTop);
 
           if (overflowCounter != null) {
             if (overflowCounter <= 0) {
@@ -976,11 +889,7 @@ export class VirtualizedFile<
         }
 
         // Start overflow when we are out of the viewport at a hunk boundary
-        if (
-          overflowCounter == null &&
-          absoluteLineTop >= bottom &&
-          isAtHunkBoundary
-        ) {
+        if (overflowCounter == null && absoluteLineTop >= bottom && isAtHunkBoundary) {
           overflowCounter = overflowHunks;
         }
 
@@ -1012,23 +921,17 @@ export class VirtualizedFile<
 
     // Clamp startHunk: at the beginning, reduce totalLines; at the end, shift
     // startHunk back
-    const maxStartHunk = Math.max(
-      0,
-      Math.ceil(lineCount / hunkLineCount) - totalHunks
-    );
+    const maxStartHunk = Math.max(0, Math.ceil(lineCount / hunkLineCount) - totalHunks);
     const startHunk = Math.max(0, Math.min(idealStartHunk, maxStartHunk));
     const startingLine = startHunk * hunkLineCount;
 
     // If we wanted to start before 0, reduce totalLines by the clamped amount
     const clampedTotalLines =
-      idealStartHunk < 0
-        ? totalLines + idealStartHunk * hunkLineCount
-        : totalLines;
+      idealStartHunk < 0 ? totalLines + idealStartHunk * hunkLineCount : totalLines;
 
     // Use hunkOffsets array for efficient buffer calculations
     const codeBufferBefore = hunkOffsets[startHunk] ?? 0;
-    const bufferBefore =
-      startingLine === 0 ? 0 : fileAnnotationHeight + codeBufferBefore;
+    const bufferBefore = startingLine === 0 ? 0 : fileAnnotationHeight + codeBufferBefore;
 
     // Calculate bufferAfter
     const finalHunkIndex = startHunk + clampedTotalLines / hunkLineCount;
@@ -1064,10 +967,10 @@ function getLastVisibleLineIndex(lines: string[]): number {
   const lastLine = lines.at(-1);
   if (
     lastLine == null ||
-    lastLine === '' ||
-    lastLine === '\n' ||
-    lastLine === '\r\n' ||
-    lastLine === '\r'
+    lastLine === "" ||
+    lastLine === "\n" ||
+    lastLine === "\r\n" ||
+    lastLine === "\r"
   ) {
     return lines.length - 2;
   }

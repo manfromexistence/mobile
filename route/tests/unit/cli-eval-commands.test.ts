@@ -102,7 +102,7 @@ test("runEvalRun envia suiteId e model no body", async () => {
 
   const { runEvalRun } = await import("../../bin/cli/commands/eval.mjs");
   await captureStdout(() =>
-    runEvalRun("suite-001", { model: "gpt-4o", concurrency: 4 }, makeCmd() as any)
+    runEvalRun("suite-001", { model: "gpt-4o", concurrency: 4 }, makeCmd() as any),
   );
 
   globalThis.fetch = origFetch;
@@ -122,7 +122,7 @@ test("runEvalList envia filtros na query", async () => {
 
   const { runEvalList } = await import("../../bin/cli/commands/eval.mjs");
   await captureStdout(() =>
-    runEvalList({ suite: "suite-001", status: "completed", limit: 25 }, makeCmd() as any)
+    runEvalList({ suite: "suite-001", status: "completed", limit: 25 }, makeCmd() as any),
   );
 
   globalThis.fetch = origFetch;
@@ -210,7 +210,7 @@ test("runEvalScorecard renderiza scorecard em modo table", async () => {
 
   const { runEvalScorecard } = await import("../../bin/cli/commands/eval.mjs");
   const out = await captureStdout(() =>
-    runEvalScorecard("run-001", {}, { optsWithGlobals: () => ({ output: "table" }) } as any)
+    runEvalScorecard("run-001", {}, { optsWithGlobals: () => ({ output: "table" }) } as any),
   );
 
   globalThis.fetch = origFetch;

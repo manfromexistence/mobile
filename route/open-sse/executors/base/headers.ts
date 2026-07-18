@@ -6,7 +6,7 @@ type JsonRecord = Record<string, unknown>;
 /** Apply model-level extra upstream headers (e.g. Authentication, X-Custom-Auth). */
 export function mergeUpstreamExtraHeaders(
   headers: Record<string, string>,
-  extra?: Record<string, string> | null
+  extra?: Record<string, string> | null,
 ): void {
   if (!extra) return;
   for (const [k, v] of Object.entries(extra)) {
@@ -37,7 +37,7 @@ export function setUserAgentHeader(headers: Record<string, string>, userAgent: s
 
 export function applyConfiguredUserAgent(
   headers: Record<string, string>,
-  providerSpecificData?: JsonRecord | null
+  providerSpecificData?: JsonRecord | null,
 ): void {
   const customUserAgent = getCustomUserAgent(providerSpecificData);
   if (customUserAgent) {
@@ -67,7 +67,7 @@ export function isOpenAICompatibleEndpoint(provider: string, url: string): boole
 export function stripStainlessHeadersForOpenAICompat(
   headers: Record<string, string>,
   provider: string,
-  url: string
+  url: string,
 ): string[] {
   if (!isOpenAICompatibleEndpoint(provider, url)) return [];
 

@@ -24,7 +24,7 @@ export default function InfoTooltip({ text, className }: InfoTooltipProps) {
           "whitespace-nowrap pointer-events-none",
           "border border-white/10",
           "opacity-0 group-hover:opacity-100 transition-opacity duration-150",
-          "z-50"
+          "z-50",
         )}
       >
         {text}

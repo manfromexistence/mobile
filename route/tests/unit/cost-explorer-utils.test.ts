@@ -170,11 +170,11 @@ describe("buildCostExplorerRows", () => {
 
     assert.deepEqual(
       rows.map((row) => row.sharePct),
-      [60, 40, 0]
+      [60, 40, 0],
     );
     assert.equal(
       rows.reduce((sum, row) => sum + row.sharePct, 0),
-      100
+      100,
     );
   });
 });

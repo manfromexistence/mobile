@@ -27,7 +27,7 @@ test("runOmniRouteCli: returns CLI-not-found when omniroute unavailable", async 
     const result = await tool.handler({ command: "health" });
     assert.ok(
       result.includes("omniroute CLI not found in PATH"),
-      `Expected CLI-not-found message, got: ${result}`
+      `Expected CLI-not-found message, got: ${result}`,
     );
   } finally {
     process.env.PATH = originalPath;

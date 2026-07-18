@@ -12,7 +12,7 @@ test("normalizeOpenAiBaseUrl appends /v1 only when needed", () => {
   assert.equal(normalizeOpenAiBaseUrl("http://localhost:20128"), "http://localhost:20128/v1");
   assert.equal(
     normalizeOpenAiBaseUrl("https://example.com/proxy/v1"),
-    "https://example.com/proxy/v1"
+    "https://example.com/proxy/v1",
   );
 });
 
@@ -47,7 +47,7 @@ test("custom CLI generators include default model and alias mappings", () => {
       apiKey: "sk_test_123",
       defaultModel: "omniroute/fast",
       aliasMappings: [{ alias: "review", model: "cc/claude-sonnet-4-5-20250929" }],
-    })
+    }),
   );
 
   assert.deepEqual(jsonConfig, {

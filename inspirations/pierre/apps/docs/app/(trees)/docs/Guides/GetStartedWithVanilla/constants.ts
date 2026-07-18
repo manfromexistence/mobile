@@ -1,15 +1,15 @@
-import { docsCodeSnippet } from '@/lib/docsCodeSnippet';
+import { docsCodeSnippet } from "@/lib/docsCodeSnippet";
 
 export const VANILLA_QUICKSTART_INSTALL = docsCodeSnippet(
-  'install.sh',
+  "install.sh",
   `pnpm add @pierre/trees
 # npm: npm install @pierre/trees
 # bun: bun add @pierre/trees
-# yarn: yarn add @pierre/trees`
+# yarn: yarn add @pierre/trees`,
 );
 
 export const VANILLA_QUICKSTART_MOUNT_PROJECT_TREE = docsCodeSnippet(
-  'mount-project-tree.ts',
+  "mount-project-tree.ts",
   `import { FileTree, type FileTreePreparedInput } from '@pierre/trees';
 
 export function mountProjectTree(
@@ -25,11 +25,11 @@ export function mountProjectTree(
   container.style.height = '320px';
   fileTree.render({ fileTreeContainer: container });
   return fileTree;
-}`
+}`,
 );
 
 export const VANILLA_QUICKSTART_IMPERATIVE_USAGE = docsCodeSnippet(
-  'imperative-usage.ts',
+  "imperative-usage.ts",
   `const fileTree = new FileTree({
   paths: ['README.md', 'src/index.ts', 'src/components/Button.tsx'],
   search: true,
@@ -43,5 +43,5 @@ const selectedPaths = fileTree.getSelectedPaths();
 const matchingPaths = fileTree.getSearchMatchingPaths();
 const focusedPath = fileTree.getFocusedPath();
 const buttonItem = fileTree.getItem('src/components/Button.tsx');
-buttonItem?.select();`
+buttonItem?.select();`,
 );

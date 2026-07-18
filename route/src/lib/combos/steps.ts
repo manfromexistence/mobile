@@ -121,7 +121,7 @@ function buildStepId(
   kind: ComboStep["kind"],
   comboName: string | null,
   index: number,
-  seed: string
+  seed: string,
 ) {
   const parts = [
     slugify(comboName || "combo"),
@@ -135,7 +135,7 @@ function buildStepId(
 function shouldTreatAsComboRef(
   target: string,
   providerId: string | null,
-  options: NormalizeComboStepOptions
+  options: NormalizeComboStepOptions,
 ): boolean {
   if (providerId) return false;
   const comboNames = collectComboNames(options.allCombos);
@@ -176,7 +176,7 @@ export function getComboModelProvider(value: unknown): string | null {
 
 export function getComboStepTarget(
   value: unknown,
-  options: NormalizeComboStepOptions = {}
+  options: NormalizeComboStepOptions = {},
 ): string | null {
   if (typeof value === "string") {
     const target = toTrimmedString(value);
@@ -204,7 +204,7 @@ export function getComboStepTarget(
 
 export function normalizeComboStep(
   value: unknown,
-  options: NormalizeComboStepOptions = {}
+  options: NormalizeComboStepOptions = {},
 ): ComboStep | null {
   const comboName = toTrimmedString(options.comboName);
   const index = typeof options.index === "number" ? options.index : 0;
@@ -298,7 +298,7 @@ export function normalizeComboStep(
 
 export function normalizeComboModels(
   models: unknown,
-  options: Omit<NormalizeComboStepOptions, "index"> = {}
+  options: Omit<NormalizeComboStepOptions, "index"> = {},
 ): ComboStep[] {
   const list = Array.isArray(models) ? models : [];
   return list
@@ -308,7 +308,7 @@ export function normalizeComboModels(
 
 export function normalizeComboRecord<T extends JsonRecord>(
   combo: T,
-  options: NormalizeComboRecordOptions = {}
+  options: NormalizeComboRecordOptions = {},
 ): T & { version: 2; models: ComboStep[] } {
   const comboName = toTrimmedString(combo.name);
   return {

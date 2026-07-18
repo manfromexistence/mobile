@@ -78,10 +78,10 @@ async function runBrowserFlow(def, opts) {
 
   const result = await pollStatus(
     `/api/oauth/${def.id}/status?state=${encodeURIComponent(start.state ?? "")}`,
-    opts.timeout ?? 300000
+    opts.timeout ?? 300000,
   );
   process.stdout.write(
-    `Authorized: ${result.email ?? result.userId ?? result.account ?? "connected"}\n`
+    `Authorized: ${result.email ?? result.userId ?? result.account ?? "connected"}\n`,
   );
 }
 
@@ -119,7 +119,7 @@ async function runSocialFlow(def, opts) {
   process.stderr.write("Waiting for social authorization...\n");
   const result = await pollStatus(
     `/api/oauth/${def.id}/social-exchange?state=${encodeURIComponent(start.state ?? "")}`,
-    opts.timeout ?? 300000
+    opts.timeout ?? 300000,
   );
   process.stdout.write(`Authorized: ${result.email ?? result.userId ?? "connected"}\n`);
 }
@@ -133,7 +133,7 @@ async function runDeviceFlow(def, opts) {
   }
   const start = await startRes.json();
   process.stdout.write(
-    `\nDevice code: ${start.userCode ?? start.user_code ?? ""}\nVisit: ${start.verificationUri ?? start.verification_uri}\n\n`
+    `\nDevice code: ${start.userCode ?? start.user_code ?? ""}\nVisit: ${start.verificationUri ?? start.verification_uri}\n\n`,
   );
   if (opts.browser !== false)
     await openBrowser(start.verificationUri ?? start.verification_uri ?? "");
@@ -143,7 +143,7 @@ async function runDeviceFlow(def, opts) {
   while (Date.now() < deadline) {
     await sleep(intervalMs);
     const statusRes = await apiFetch(
-      `/api/providers/${providerKey}/auth/status?state=${encodeURIComponent(start.state ?? "")}`
+      `/api/providers/${providerKey}/auth/status?state=${encodeURIComponent(start.state ?? "")}`,
     );
     if (!statusRes.ok) continue;
     const status = await statusRes.json();
@@ -168,7 +168,7 @@ export async function runOAuthStart(opts, cmd) {
   const def = PROVIDERS_WITH_OAUTH.find((p) => p.id === opts.provider);
   if (!def) {
     process.stderr.write(
-      `Unknown OAuth provider: ${opts.provider}\nRun: omniroute oauth providers\n`
+      `Unknown OAuth provider: ${opts.provider}\nRun: omniroute oauth providers\n`,
     );
     process.exit(2);
   }
@@ -195,7 +195,7 @@ export async function runOAuthStatus(opts, cmd) {
   }
   const data = await res.json();
   const connections = (data.providers ?? data.items ?? data).filter(
-    (c) => c.authType === "oauth" || c.authType === "oauth2"
+    (c) => c.authType === "oauth" || c.authType === "oauth2",
   );
   emit(connections, globalOpts, connectionSchema);
 }
@@ -203,7 +203,7 @@ export async function runOAuthStatus(opts, cmd) {
 export async function runOAuthRevoke(opts, cmd) {
   if (!opts.yes) {
     process.stdout.write(
-      `Revoke OAuth for ${opts.provider}${opts.connectionId ? ` (${opts.connectionId})` : ""}? (yes/no) `
+      `Revoke OAuth for ${opts.provider}${opts.connectionId ? ` (${opts.connectionId})` : ""}? (yes/no) `,
     );
     const answer = await new Promise((resolve) => {
       process.stdin.setEncoding("utf8");

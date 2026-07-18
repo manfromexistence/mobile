@@ -41,7 +41,7 @@ test("normalizeCodexTools strips regex lookaround from function tool parameter p
   assert.equal(
     emailSchema.pattern,
     undefined,
-    "lookaround pattern must be stripped, not forwarded upstream"
+    "lookaround pattern must be stripped, not forwarded upstream",
   );
 });
 

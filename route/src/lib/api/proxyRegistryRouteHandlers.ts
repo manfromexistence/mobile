@@ -29,7 +29,7 @@ async function readJsonBody(request: Request) {
 
 export async function resolveProxyLookupResponse(
   searchParams: URLSearchParams,
-  whereUsedParam: string
+  whereUsedParam: string,
 ): Promise<Response | null> {
   const id = searchParams.get("id");
   const whereUsed = searchParams.get(whereUsedParam) === "1";
@@ -99,7 +99,7 @@ export async function handleProxyUpdate(request: Request) {
     // undefined, which would silently overwrite DB values via the spread merge
     // in updateProxyRow. Only include keys the client explicitly provided.
     const changes = Object.fromEntries(
-      Object.entries(rawChanges).filter(([_, v]) => v !== undefined)
+      Object.entries(rawChanges).filter(([_, v]) => v !== undefined),
     );
     if (assignment) {
       const result = await updateProxyAndAssign(id, changes, assignment);

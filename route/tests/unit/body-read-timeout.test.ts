@@ -47,7 +47,7 @@ test("withBodyTimeout cleans up the timer after rejection", async () => {
   const originalError = new Error("fail");
   await assert.rejects(
     withBodyTimeout(Promise.reject(originalError), 100),
-    (error) => error === originalError
+    (error) => error === originalError,
   );
   // Wait to confirm no stray timer
   await new Promise((resolve) => setTimeout(resolve, 150));

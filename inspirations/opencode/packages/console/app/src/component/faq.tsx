@@ -1,5 +1,5 @@
-import { Collapsible } from "@kobalte/core/collapsible"
-import { ParentProps } from "solid-js"
+import { Collapsible } from "@kobalte/core/collapsible";
+import { ParentProps } from "solid-js";
 
 export function Faq(props: ParentProps & { question: string }) {
   return (
@@ -13,7 +13,10 @@ export function Faq(props: ParentProps & { question: string }) {
           fill="currentColor"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path d="M12.5 11.5H19V12.5H12.5V19H11.5V12.5H5V11.5H11.5V5H12.5V11.5Z" fill="currentColor" />
+          <path
+            d="M12.5 11.5H19V12.5H12.5V19H11.5V12.5H5V11.5H11.5V5H12.5V11.5Z"
+            fill="currentColor"
+          />
         </svg>
         <svg
           data-slot="faq-icon-minus"
@@ -29,5 +32,5 @@ export function Faq(props: ParentProps & { question: string }) {
       </Collapsible.Trigger>
       <Collapsible.Content data-slot="faq-answer">{props.children}</Collapsible.Content>
     </Collapsible>
-  )
+  );
 }

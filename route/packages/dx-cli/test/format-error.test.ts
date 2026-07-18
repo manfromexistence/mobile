@@ -15,7 +15,7 @@ describe("formatError", () => {
       "Failed to decode TOON at line 2: Tabs are not allowed in indentation in strict mode\n" +
         "\n" +
         "  2 | →b: 1\n" +
-        "      ^"
+        "      ^",
     );
   });
 
@@ -73,7 +73,7 @@ describe("formatError", () => {
       "Failed to decode TOON at line 2: Indentation must be exact multiple of 2, but found 3 spaces\n" +
         "\n" +
         "  2 |    b: 1\n" +
-        "         ^"
+        "         ^",
     );
   });
 });

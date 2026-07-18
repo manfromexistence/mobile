@@ -1,8 +1,6 @@
 "use client";
 
-import {
-  TitledCodeCopyCard
-} from "@/components/package-manager-install-toolbar";
+import { TitledCodeCopyCard } from "@/components/package-manager-install-toolbar";
 import { HIDE_CODE_SCROLLBARS } from "@/lib/hide-code-scrollbar-class";
 import { useCallback, useState } from "react";
 import type { BundledLanguage } from "shiki/bundle/web";
@@ -14,7 +12,7 @@ export function ManualCodePanel({
   title,
   code,
   lang,
-  scrollClassName
+  scrollClassName,
 }: {
   title: string;
   code: string;

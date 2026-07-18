@@ -8,7 +8,7 @@ export function normalizeWatsonxBaseUrl(value: string | null | undefined): strin
 
   const stripped = normalized.replace(
     /\/(?:chat\/completions|completions|embeddings|models)$/i,
-    ""
+    "",
   );
 
   if (stripped.endsWith("/ml/gateway/v1")) {

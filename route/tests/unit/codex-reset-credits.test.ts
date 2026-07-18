@@ -60,7 +60,7 @@ test("consumeCodexResetCredit fetches a credit id, posts it, then refreshes usag
         {
           status: 200,
           headers: { "content-type": "application/json" },
-        }
+        },
       );
     }
 
@@ -86,7 +86,7 @@ test("consumeCodexResetCredit fetches a credit id, posts it, then refreshes usag
           },
           rate_limit_reset_credits: { available_count: 1 },
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
 
@@ -101,11 +101,11 @@ test("consumeCodexResetCredit fetches a credit id, posts it, then refreshes usag
   assert.equal(refreshedQuotas.weekly?.used, 40);
   assert.equal(
     calls.some((call) => call.url.endsWith("/rate-limit-reset-credits")),
-    true
+    true,
   );
   assert.equal(
     calls.some((call) => call.url.includes("/rate-limit-reset-credits/consume")),
-    true
+    true,
   );
 });
 
@@ -126,7 +126,7 @@ test("consumeCodexResetCredit accepts alreadyRedeemed as success", async () => {
         JSON.stringify({
           rate_limit: { primary_window: { used_percent: 5 } },
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     }
     return new Response("unexpected", { status: 500 });
@@ -157,7 +157,7 @@ for (const code of ["noCredit", "nothingToReset"]) {
       (error: unknown) =>
         error instanceof resetCredits.CodexResetCreditError &&
         error.status === 409 &&
-        error.code === (code === "noCredit" ? "no_credit" : "nothing_to_reset")
+        error.code === (code === "noCredit" ? "no_credit" : "nothing_to_reset"),
     );
   });
 }
@@ -171,7 +171,7 @@ test("consumeCodexResetCredit rejects when the credits endpoint has no redeemabl
         JSON.stringify({ credits: [{ id: "used-credit", status: "redeemed" }] }),
         {
           status: 200,
-        }
+        },
       );
     }
     return new Response("unexpected", { status: 500 });
@@ -182,7 +182,7 @@ test("consumeCodexResetCredit rejects when the credits endpoint has no redeemabl
     (error: unknown) =>
       error instanceof resetCredits.CodexResetCreditError &&
       error.status === 409 &&
-      error.code === "no_credit"
+      error.code === "no_credit",
   );
 });
 
@@ -192,7 +192,7 @@ test("consumeCodexResetCredit rejects non-Codex and missing connections", async 
     (error: unknown) =>
       error instanceof resetCredits.CodexResetCreditError &&
       error.status === 404 &&
-      error.code === "connection_not_found"
+      error.code === "connection_not_found",
   );
 
   const connection = (await createCodexConnection({
@@ -205,6 +205,6 @@ test("consumeCodexResetCredit rejects non-Codex and missing connections", async 
     (error: unknown) =>
       error instanceof resetCredits.CodexResetCreditError &&
       error.status === 400 &&
-      error.code === "codex_provider_required"
+      error.code === "codex_provider_required",
   );
 });

@@ -61,7 +61,7 @@ export async function POST(request) {
         "COMBO_003",
         400,
         { reason: failure.error.message, details: failure.error.details },
-        request
+        request,
       );
     }
 
@@ -85,7 +85,7 @@ export async function POST(request) {
         [...allCombos, tempCombo],
         new Set(),
         0,
-        clampComboDepth((config as { maxComboDepth?: unknown } | undefined)?.maxComboDepth)
+        clampComboDepth((config as { maxComboDepth?: unknown } | undefined)?.maxComboDepth),
       );
     } catch (dagError) {
       return NextResponse.json({ error: dagError.message }, { status: 400 });

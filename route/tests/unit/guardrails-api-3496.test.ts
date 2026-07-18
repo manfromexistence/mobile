@@ -72,7 +72,7 @@ test("#3496 POST /api/guardrails/test runs the pre-call pipeline over a sample i
   const evaluated = body.results.map((r) => r.guardrail);
   assert.ok(
     evaluated.includes("pii-masker"),
-    `expected pii-masker to be evaluated, got [${evaluated.join(", ")}]`
+    `expected pii-masker to be evaluated, got [${evaluated.join(", ")}]`,
   );
 });
 
@@ -109,7 +109,7 @@ test("#3496 check-docs-symbols no longer freezes guardrails/shadow + API_REFEREN
   for (const frozen of [...KNOWN_STALE_DOC_REFS]) {
     assert.ok(
       !frozen.startsWith("/api/guardrails") && !frozen.startsWith("/api/shadow"),
-      `allowlist should not still freeze ${frozen}`
+      `allowlist should not still freeze ${frozen}`,
     );
   }
 
@@ -119,8 +119,6 @@ test("#3496 check-docs-symbols no longer freezes guardrails/shadow + API_REFEREN
   const src = fs.readFileSync(path.join(process.cwd(), apiRefRel), "utf8");
   const docPathsByFile = [{ file: apiRefRel, paths: extractDocApiPaths(src) }];
   const misses = findStaleDocApiRefs(docPathsByFile, routeFiles, KNOWN_STALE_DOC_REFS);
-  const ghosts = misses.filter(
-    (m) => m.includes("/api/guardrails") || m.includes("/api/shadow")
-  );
+  const ghosts = misses.filter((m) => m.includes("/api/guardrails") || m.includes("/api/shadow"));
   assert.deepEqual(ghosts, [], `stale guardrails/shadow refs remain: ${ghosts.join("; ")}`);
 });

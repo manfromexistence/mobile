@@ -1,4 +1,4 @@
-import { toHtml } from 'hast-util-to-html';
+import { toHtml } from "hast-util-to-html";
 
 import type {
   AnnotationSide,
@@ -12,10 +12,10 @@ import type {
   SelectionPoint,
   SelectionSide,
   TokenEventBase,
-} from '../types';
-import { areSelectionPointsEqual } from '../utils/areSelectionPointsEqual';
-import { areSelectionsEqual } from '../utils/areSelectionsEqual';
-import { createGutterUtilityElement } from '../utils/createGutterUtilityElement';
+} from "../types";
+import { areSelectionPointsEqual } from "../utils/areSelectionPointsEqual";
+import { areSelectionsEqual } from "../utils/areSelectionsEqual";
+import { createGutterUtilityElement } from "../utils/createGutterUtilityElement";
 
 interface TokenCache {
   tokenElement: HTMLElement;
@@ -30,9 +30,9 @@ interface ExpandCache {
   all: boolean;
 }
 
-export type LogTypes = 'click' | 'move' | 'both' | 'none';
+export type LogTypes = "click" | "move" | "both" | "none";
 
-export type InteractionManagerMode = 'file' | 'diff';
+export type InteractionManagerMode = "file" | "diff";
 
 export interface OnLineClickProps extends LineEventBaseProps {
   event: PointerEvent;
@@ -56,33 +56,35 @@ export interface SelectionWriteOptions {
 
 export type GetLineIndexUtility = (
   lineNumber: number,
-  side?: SelectionSide
+  side?: SelectionSide,
 ) => [number, number] | undefined;
 
-type EventClickProps<TMode extends InteractionManagerMode> =
-  TMode extends 'file' ? OnLineClickProps : OnDiffLineClickProps;
+type EventClickProps<TMode extends InteractionManagerMode> = TMode extends "file"
+  ? OnLineClickProps
+  : OnDiffLineClickProps;
 
-type PointerEventEnterLeaveProps<TMode extends InteractionManagerMode> =
-  TMode extends 'file' ? OnLineEnterLeaveProps : OnDiffLineEnterLeaveProps;
+type PointerEventEnterLeaveProps<TMode extends InteractionManagerMode> = TMode extends "file"
+  ? OnLineEnterLeaveProps
+  : OnDiffLineEnterLeaveProps;
 
-type EventBaseProps<TMode extends InteractionManagerMode> = TMode extends 'file'
+type EventBaseProps<TMode extends InteractionManagerMode> = TMode extends "file"
   ? LineEventBaseProps
   : DiffLineEventBaseProps;
 
-export type OnTokenEventProps<TMode extends InteractionManagerMode> =
-  TMode extends 'file' ? TokenEventBase : DiffTokenEventBaseProps;
+export type OnTokenEventProps<TMode extends InteractionManagerMode> = TMode extends "file"
+  ? TokenEventBase
+  : DiffTokenEventBaseProps;
 
 interface ExpandoEventProps {
-  type: 'line-info';
+  type: "line-info";
   hunkIndex: number;
   direction: ExpansionDirections;
   all: boolean;
 }
 
-export type GetHoveredLineResult<TMode extends InteractionManagerMode> =
-  TMode extends 'file'
-    ? { lineNumber: number }
-    : { lineNumber: number; side: AnnotationSide };
+export type GetHoveredLineResult<TMode extends InteractionManagerMode> = TMode extends "file"
+  ? { lineNumber: number }
+  : { lineNumber: number; side: AnnotationSide };
 
 interface SelectionInfo {
   lineNumber: number;
@@ -90,7 +92,7 @@ interface SelectionInfo {
   lineIndex: number;
 }
 
-type SelectionHitSource = 'event-path' | 'coordinates-first';
+type SelectionHitSource = "event-path" | "coordinates-first";
 
 interface SelectionHitOptions {
   source: SelectionHitSource;
@@ -107,24 +109,24 @@ interface SelectionEnds {
 }
 
 interface ResolvedLineTarget<TMode extends InteractionManagerMode> {
-  kind: 'line';
+  kind: "line";
   lineType: LineTypes;
   lineElement: HTMLElement;
   lineNumber: number;
   numberColumn: boolean;
   numberElement: HTMLElement;
-  side: TMode extends 'diff' ? AnnotationSide : undefined;
+  side: TMode extends "diff" ? AnnotationSide : undefined;
   splitLineIndex: number | undefined;
 }
 
 interface ResolvedTokenTarget<TMode extends InteractionManagerMode> {
-  kind: 'token';
+  kind: "token";
   lineType: LineTypes;
   lineElement: HTMLElement;
   lineNumber: number;
   numberColumn: boolean;
   numberElement: HTMLElement;
-  side: TMode extends 'diff' ? AnnotationSide : undefined;
+  side: TMode extends "diff" ? AnnotationSide : undefined;
   splitLineIndex: number | undefined;
   tokenElement: HTMLElement;
   tokenText: string;
@@ -133,7 +135,7 @@ interface ResolvedTokenTarget<TMode extends InteractionManagerMode> {
 }
 
 export interface MergeConflictActionTarget {
-  kind: 'merge-conflict-action';
+  kind: "merge-conflict-action";
   resolution: MergeConflictResolution;
   conflictIndex: number;
 }
@@ -144,34 +146,32 @@ type ResolvedPointerTarget<TMode extends InteractionManagerMode> =
   | ExpandoEventProps
   | MergeConflictActionTarget;
 
-type LinePointerTarget<TMode extends InteractionManagerMode> =
-  ResolvedLineTarget<TMode>;
+type LinePointerTarget<TMode extends InteractionManagerMode> = ResolvedLineTarget<TMode>;
 
-type TokenPointerTarget<TMode extends InteractionManagerMode> =
-  ResolvedTokenTarget<TMode>;
+type TokenPointerTarget<TMode extends InteractionManagerMode> = ResolvedTokenTarget<TMode>;
 
 type HoverableLinePointerTarget<TMode extends InteractionManagerMode> =
   | LinePointerTarget<TMode>
   | TokenPointerTarget<TMode>;
 
 interface SessionIdle {
-  mode: 'idle';
+  mode: "idle";
 }
 
 interface SessionSelecting {
-  mode: 'selecting';
+  mode: "selecting";
   pointerId: number;
 }
 
 interface SessionPendingSingleLineUnselect {
-  mode: 'pendingSingleLineUnselect';
+  mode: "pendingSingleLineUnselect";
   pointerId: number;
   anchor: SelectionPoint;
   pending: SelectionPoint;
 }
 
 interface SessionGutterSelecting {
-  mode: 'gutterSelecting';
+  mode: "gutterSelecting";
   pointerId: number;
   anchor: SelectionPoint;
   current: SelectionPoint;
@@ -183,10 +183,8 @@ type PointerSession =
   | SessionPendingSingleLineUnselect
   | SessionGutterSelecting;
 
-export interface InteractionManagerBaseOptions<
-  TMode extends InteractionManagerMode,
-> {
-  lineHoverHighlight?: 'disabled' | 'both' | 'number' | 'line';
+export interface InteractionManagerBaseOptions<TMode extends InteractionManagerMode> {
+  lineHoverHighlight?: "disabled" | "both" | "number" | "line";
   enableTokenInteractionsOnWhitespace?: boolean;
   enableGutterUtility?: boolean;
   onGutterUtilityClick?(range: SelectedLineRange): unknown;
@@ -207,20 +205,19 @@ export interface InteractionManagerBaseOptions<
   getLineIndex?: GetLineIndexUtility;
 }
 
-export interface InteractionManagerOptions<
-  TMode extends InteractionManagerMode,
-> extends InteractionManagerBaseOptions<TMode> {
+export interface InteractionManagerOptions<TMode extends InteractionManagerMode>
+  extends InteractionManagerBaseOptions<TMode> {
   usesCustomGutterUtility?: boolean;
   onHunkExpand?(
     hunkIndex: number,
     direction: ExpansionDirections,
-    expansionLineCountOverride?: number
+    expansionLineCountOverride?: number,
   ): unknown;
   onMergeConflictActionClick?(target: MergeConflictActionTarget): void;
 }
 
 interface HandlePointerEventProps {
-  eventType: 'click' | 'move';
+  eventType: "click" | "move";
   event: PointerEvent | MouseEvent;
 }
 
@@ -245,11 +242,11 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
   private renderedSelectionRange: SelectedLineRange | null | undefined;
   private selectionAnchor: SelectionPoint | undefined;
   private queuedSelectionRender: number | undefined;
-  private pointerSession: PointerSession = { mode: 'idle' };
+  private pointerSession: PointerSession = { mode: "idle" };
 
   constructor(
     private mode: TMode,
-    private options: InteractionManagerOptions<TMode>
+    private options: InteractionManagerOptions<TMode>,
   ) {}
 
   setOptions(options: InteractionManagerOptions<TMode>): void {
@@ -257,12 +254,12 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
   }
 
   cleanUp(): void {
-    this.pre?.removeEventListener('click', this.handlePointerClick);
-    this.pre?.removeEventListener('pointerdown', this.handlePointerDown);
-    this.pre?.removeEventListener('pointermove', this.handlePointerMove);
-    this.pre?.removeEventListener('pointerleave', this.handlePointerLeave);
-    this.pre?.removeAttribute('data-interactive-lines');
-    this.pre?.removeAttribute('data-interactive-line-numbers');
+    this.pre?.removeEventListener("click", this.handlePointerClick);
+    this.pre?.removeEventListener("pointerdown", this.handlePointerDown);
+    this.pre?.removeEventListener("pointermove", this.handlePointerMove);
+    this.pre?.removeEventListener("pointerleave", this.handlePointerLeave);
+    this.pre?.removeAttribute("data-interactive-lines");
+    this.pre?.removeAttribute("data-interactive-line-numbers");
     this.pre = undefined;
     this.gutterUtilityContainer?.remove();
     this.gutterUtilityLine = undefined;
@@ -284,8 +281,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
 
   setup(pre: HTMLPreElement): void {
     this.setSelectionDirty();
-    const { usesCustomGutterUtility = false, enableGutterUtility = false } =
-      this.options;
+    const { usesCustomGutterUtility = false, enableGutterUtility = false } = this.options;
 
     const newContainer = this.pre !== pre;
     if (newContainer) {
@@ -301,7 +297,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
       this.gutterUtilityContainer = undefined;
       this.gutterUtilityButton = undefined;
       this.gutterUtilitySlot = undefined;
-      if (this.pointerSession.mode === 'gutterSelecting') {
+      if (this.pointerSession.mode === "gutterSelecting") {
         this.clearPointerSession();
         this.detachDocumentPointerListeners();
       }
@@ -321,10 +317,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     return this.renderedSelectionRange === null;
   }
 
-  setSelection(
-    range: SelectedLineRange | null,
-    options?: SelectionWriteOptions
-  ): void {
+  setSelection(range: SelectedLineRange | null, options?: SelectionWriteOptions): void {
     const isRangeChange = !(
       range === this.selectedRange ||
       areSelectionsEqual(range ?? undefined, this.selectedRange ?? undefined)
@@ -348,13 +341,13 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
   getHoveredLine = (): GetHoveredLineResult<TMode> | undefined => {
     const gutterUtilityLine = this.gutterUtilityLine ?? this.hoveredLine;
     if (gutterUtilityLine != null) {
-      if (this.mode === 'diff' && gutterUtilityLine.type === 'diff-line') {
+      if (this.mode === "diff" && gutterUtilityLine.type === "diff-line") {
         return {
           lineNumber: gutterUtilityLine.lineNumber,
           side: gutterUtilityLine.annotationSide,
         } as GetHoveredLineResult<TMode>;
       }
-      if (this.mode === 'file' && gutterUtilityLine.type === 'line') {
+      if (this.mode === "file" && gutterUtilityLine.type === "line") {
         return {
           lineNumber: gutterUtilityLine.lineNumber,
         } as GetHoveredLineResult<TMode>;
@@ -380,30 +373,27 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     ) {
       return;
     }
-    if (
-      this.options.onGutterUtilityClick != null &&
-      isGutterUtilityPath(event.composedPath())
-    ) {
+    if (this.options.onGutterUtilityClick != null && isGutterUtilityPath(event.composedPath())) {
       return;
     }
     debugLogIfEnabled(
       this.options.__debugPointerEvents,
-      'click',
-      'FileDiff.DEBUG.handlePointerClick:',
-      event
+      "click",
+      "FileDiff.DEBUG.handlePointerClick:",
+      event,
     );
-    this.handlePointerEvent({ eventType: 'click', event });
+    this.handlePointerEvent({ eventType: "click", event });
   };
 
   handlePointerMove = (event: PointerEvent): void => {
     // Touch and pen moves are active drag/scroll gestures, not hover. Keeping
     // hover mouse-only prevents content scrolls from leaving stale utilities.
-    if (event.pointerType !== 'mouse') {
+    if (event.pointerType !== "mouse") {
       return;
     }
 
     const {
-      lineHoverHighlight = 'disabled',
+      lineHoverHighlight = "disabled",
       onLineEnter,
       onLineLeave,
       onTokenEnter,
@@ -411,7 +401,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
       enableGutterUtility = false,
     } = this.options;
     if (
-      lineHoverHighlight === 'disabled' &&
+      lineHoverHighlight === "disabled" &&
       !enableGutterUtility &&
       onLineEnter == null &&
       onLineLeave == null &&
@@ -422,27 +412,23 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     }
     debugLogIfEnabled(
       this.options.__debugPointerEvents,
-      'move',
-      'FileDiff.DEBUG.handlePointerMove:',
-      event
+      "move",
+      "FileDiff.DEBUG.handlePointerMove:",
+      event,
     );
     // should we perhaps throttle this a bit because move can be fast as fuk
     // boiiii
-    this.handlePointerEvent({ eventType: 'move', event });
+    this.handlePointerEvent({ eventType: "move", event });
   };
 
   handlePointerLeave = (event: PointerEvent): void => {
     const { __debugPointerEvents } = this.options;
-    debugLogIfEnabled(
-      __debugPointerEvents,
-      'move',
-      'FileDiff.DEBUG.handlePointerLeave: no event'
-    );
+    debugLogIfEnabled(__debugPointerEvents, "move", "FileDiff.DEBUG.handlePointerLeave: no event");
     if (this.hoveredLine == null && this.hoveredToken == null) {
       debugLogIfEnabled(
         __debugPointerEvents,
-        'move',
-        'FileDiff.DEBUG.handlePointerLeave: returned early, no hovered line or token'
+        "move",
+        "FileDiff.DEBUG.handlePointerLeave: returned early, no hovered line or token",
       );
       return;
     }
@@ -464,18 +450,16 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
   private handlePointerEvent({ eventType, event }: HandlePointerEventProps) {
     const { __debugPointerEvents } = this.options;
     const composedPath = event.composedPath();
-    debugLogIfEnabled(
-      __debugPointerEvents,
+    debugLogIfEnabled(__debugPointerEvents, eventType, "FileDiff.DEBUG.handlePointerEvent:", {
       eventType,
-      'FileDiff.DEBUG.handlePointerEvent:',
-      { eventType, composedPath }
-    );
+      composedPath,
+    });
     const target = this.resolvePointerTarget(composedPath);
     debugLogIfEnabled(
       __debugPointerEvents,
       eventType,
-      'FileDiff.DEBUG.handlePointerEvent: resolvePointerTarget result:',
-      target
+      "FileDiff.DEBUG.handlePointerEvent: resolvePointerTarget result:",
+      target,
     );
 
     const {
@@ -491,13 +475,12 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     } = this.options;
 
     switch (eventType) {
-      case 'move': {
+      case "move": {
         const sameLine =
           isHoverableLinePointerTarget(target) &&
           this.hoveredLine?.lineElement === target.lineElement;
         const sameToken =
-          isTokenPointerTarget(target) &&
-          this.hoveredToken?.tokenElement === target.tokenElement;
+          isTokenPointerTarget(target) && this.hoveredToken?.tokenElement === target.tokenElement;
 
         // Handle token transitions
         if (!sameToken) {
@@ -507,10 +490,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
           }
           if (isTokenPointerTarget(target)) {
             this.setHoveredToken(this.toTokenEventBaseProps(target));
-            onTokenEnter?.(
-              this.hoveredToken as OnTokenEventProps<TMode>,
-              event as PointerEvent
-            );
+            onTokenEnter?.(this.hoveredToken as OnTokenEventProps<TMode>, event as PointerEvent);
           }
         }
 
@@ -536,22 +516,19 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
         }
         break;
       }
-      case 'click': {
+      case "click": {
         if (target == null) {
           break;
         }
-        if (
-          isMergeConflictActionPointerTarget(target) &&
-          onMergeConflictActionClick != null
-        ) {
+        if (isMergeConflictActionPointerTarget(target) && onMergeConflictActionClick != null) {
           onMergeConflictActionClick(target);
           break;
         }
         if (isExpandoPointerTarget(target) && onHunkExpand != null) {
           onHunkExpand(
             target.hunkIndex,
-            target.all || event.shiftKey ? 'both' : target.direction,
-            target.all || event.shiftKey ? Number.POSITIVE_INFINITY : undefined
+            target.all || event.shiftKey ? "both" : target.direction,
+            target.all || event.shiftKey ? Number.POSITIVE_INFINITY : undefined,
           );
           break;
         }
@@ -584,7 +561,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
   private syncPointerListeners(pre: HTMLPreElement): void {
     const {
       __debugPointerEvents,
-      lineHoverHighlight = 'disabled',
+      lineHoverHighlight = "disabled",
       onLineClick,
       onLineNumberClick,
       onLineEnter,
@@ -600,7 +577,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     } = this.options;
     const enableGutterSelection = onGutterUtilityClick != null;
     const shouldAttachPointerListeners =
-      lineHoverHighlight !== 'disabled' ||
+      lineHoverHighlight !== "disabled" ||
       onLineClick != null ||
       onLineNumberClick != null ||
       onLineEnter != null ||
@@ -615,61 +592,57 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
       enableGutterSelection;
 
     if (shouldAttachPointerListeners && !this.hasPointerListeners) {
-      pre.addEventListener('click', this.handlePointerClick);
-      pre.addEventListener('pointerdown', this.handlePointerDown);
-      pre.addEventListener('pointermove', this.handlePointerMove);
-      pre.addEventListener('pointerleave', this.handlePointerLeave);
+      pre.addEventListener("click", this.handlePointerClick);
+      pre.addEventListener("pointerdown", this.handlePointerDown);
+      pre.addEventListener("pointermove", this.handlePointerMove);
+      pre.addEventListener("pointerleave", this.handlePointerLeave);
       this.hasPointerListeners = true;
 
       debugLogIfEnabled(
         __debugPointerEvents,
-        'click',
-        'FileDiff.DEBUG.attachEventListeners: Attaching click events for:',
+        "click",
+        "FileDiff.DEBUG.attachEventListeners: Attaching click events for:",
         (() => {
           const reasons: string[] = [];
-          if (
-            __debugPointerEvents === 'both' ||
-            __debugPointerEvents === 'click'
-          ) {
+          if (__debugPointerEvents === "both" || __debugPointerEvents === "click") {
             if (onLineClick != null) {
-              reasons.push('onLineClick');
+              reasons.push("onLineClick");
             }
             if (onLineNumberClick != null) {
-              reasons.push('onLineNumberClick');
+              reasons.push("onLineNumberClick");
             }
             if (onHunkExpand != null) {
-              reasons.push('expandable hunk separators');
+              reasons.push("expandable hunk separators");
             }
             if (onMergeConflictActionClick != null) {
-              reasons.push('merge conflict actions');
+              reasons.push("merge conflict actions");
             }
           }
           return reasons;
-        })()
+        })(),
       );
       debugLogIfEnabled(
         __debugPointerEvents,
-        'move',
-        'FileDiff.DEBUG.attachEventListeners: Attaching pointer move event'
+        "move",
+        "FileDiff.DEBUG.attachEventListeners: Attaching pointer move event",
       );
       debugLogIfEnabled(
         __debugPointerEvents,
-        'move',
-        'FileDiff.DEBUG.attachEventListeners: Attaching pointer leave event'
+        "move",
+        "FileDiff.DEBUG.attachEventListeners: Attaching pointer leave event",
       );
     } else if (!shouldAttachPointerListeners && this.hasPointerListeners) {
-      pre.removeEventListener('click', this.handlePointerClick);
-      pre.removeEventListener('pointerdown', this.handlePointerDown);
-      pre.removeEventListener('pointermove', this.handlePointerMove);
-      pre.removeEventListener('pointerleave', this.handlePointerLeave);
+      pre.removeEventListener("click", this.handlePointerClick);
+      pre.removeEventListener("pointerdown", this.handlePointerDown);
+      pre.removeEventListener("pointermove", this.handlePointerMove);
+      pre.removeEventListener("pointerleave", this.handlePointerLeave);
       this.hasPointerListeners = false;
     }
 
     const hasActiveLineSelectionSession =
-      this.pointerSession.mode === 'selecting' ||
-      this.pointerSession.mode === 'pendingSingleLineUnselect';
-    const hasActiveGutterSelectionSession =
-      this.pointerSession.mode === 'gutterSelecting';
+      this.pointerSession.mode === "selecting" ||
+      this.pointerSession.mode === "pendingSingleLineUnselect";
+    const hasActiveGutterSelectionSession = this.pointerSession.mode === "gutterSelecting";
     if (
       (!enableLineSelection && hasActiveLineSelectionSession) ||
       (!enableGutterSelection && hasActiveGutterSelectionSession)
@@ -686,53 +659,42 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
       return;
     }
 
-    const {
-      onLineClick,
-      onLineNumberClick,
-      enableLineSelection = false,
-    } = this.options;
+    const { onLineClick, onLineNumberClick, enableLineSelection = false } = this.options;
 
     const shouldHaveInteractiveLines = onLineClick != null;
-    const shouldHaveInteractiveLineNumbers =
-      onLineNumberClick != null || enableLineSelection;
+    const shouldHaveInteractiveLineNumbers = onLineNumberClick != null || enableLineSelection;
 
     if (shouldHaveInteractiveLines && !this.interactiveLinesAttr) {
-      this.pre.setAttribute('data-interactive-lines', '');
+      this.pre.setAttribute("data-interactive-lines", "");
       this.interactiveLinesAttr = true;
     } else if (!shouldHaveInteractiveLines && this.interactiveLinesAttr) {
-      this.pre.removeAttribute('data-interactive-lines');
+      this.pre.removeAttribute("data-interactive-lines");
       this.interactiveLinesAttr = false;
     }
 
     if (shouldHaveInteractiveLineNumbers && !this.interactiveLineNumbersAttr) {
-      this.pre.setAttribute('data-interactive-line-numbers', '');
+      this.pre.setAttribute("data-interactive-line-numbers", "");
       this.interactiveLineNumbersAttr = true;
-    } else if (
-      !shouldHaveInteractiveLineNumbers &&
-      this.interactiveLineNumbersAttr
-    ) {
-      this.pre.removeAttribute('data-interactive-line-numbers');
+    } else if (!shouldHaveInteractiveLineNumbers && this.interactiveLineNumbersAttr) {
+      this.pre.removeAttribute("data-interactive-line-numbers");
       this.interactiveLineNumbersAttr = false;
     }
   }
 
   private handlePointerDown = (event: PointerEvent): void => {
     if (
-      (event.pointerType === 'mouse' && event.button !== 0) ||
+      (event.pointerType === "mouse" && event.button !== 0) ||
       this.pre == null ||
-      this.pointerSession.mode !== 'idle'
+      this.pointerSession.mode !== "idle"
     ) {
       return;
     }
 
     const path = event.composedPath();
-    if (
-      isGutterUtilityPath(path) &&
-      this.options.onGutterUtilityClick != null
-    ) {
+    if (isGutterUtilityPath(path) && this.options.onGutterUtilityClick != null) {
       this.startGutterSelectionFromPointerDown(event);
     } else {
-      if (event.pointerType !== 'mouse') {
+      if (event.pointerType !== "mouse") {
         this.revealUtilityFromGutterPath(path);
       }
       this.startLineSelectionFromPointerDown(event);
@@ -746,7 +708,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     }
 
     const pointerInfo = this.resolveSelectionInfo(event, {
-      source: 'event-path',
+      source: "event-path",
       requireNumberColumn: true,
     });
     if (pointerInfo == null) {
@@ -768,38 +730,31 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     if (event.shiftKey && this.selectedRange != null) {
       const rowRange = this.getIndexesFromSelection(
         this.selectedRange,
-        pre.getAttribute('data-diff-type') === 'split'
+        pre.getAttribute("data-diff-type") === "split",
       );
       if (rowRange == null) {
         return;
       }
       const useStart =
-        rowRange.start <= rowRange.end
-          ? lineIndex >= rowRange.start
-          : lineIndex <= rowRange.end;
+        rowRange.start <= rowRange.end ? lineIndex >= rowRange.start : lineIndex <= rowRange.end;
       this.selectionAnchor = {
-        lineNumber: useStart
-          ? this.selectedRange.start
-          : this.selectedRange.end,
+        lineNumber: useStart ? this.selectedRange.start : this.selectedRange.end,
         side: useStart
           ? this.selectedRange.side
           : (this.selectedRange.endSide ?? this.selectedRange.side),
       };
       this.updateSelection(lineNumber, eventSide, false);
       this.notifySelectionStart(this.getCurrentSelectionRange());
-      this.pointerSession = { mode: 'selecting', pointerId: event.pointerId };
+      this.pointerSession = { mode: "selecting", pointerId: event.pointerId };
       this.attachDocumentPointerListeners();
       return;
     }
 
-    if (
-      this.selectedRange?.start === lineNumber &&
-      this.selectedRange?.end === lineNumber
-    ) {
+    if (this.selectedRange?.start === lineNumber && this.selectedRange?.end === lineNumber) {
       const point = { lineNumber, side: eventSide };
       this.selectionAnchor = point;
       this.pointerSession = {
-        mode: 'pendingSingleLineUnselect',
+        mode: "pendingSingleLineUnselect",
         pointerId: event.pointerId,
         anchor: point,
         pending: point,
@@ -817,7 +772,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     this.selectionAnchor = { lineNumber, side: eventSide };
     this.updateSelection(lineNumber, eventSide, false);
     this.notifySelectionStart(this.getCurrentSelectionRange());
-    this.pointerSession = { mode: 'selecting', pointerId: event.pointerId };
+    this.pointerSession = { mode: "selecting", pointerId: event.pointerId };
     this.attachDocumentPointerListeners();
   }
 
@@ -833,7 +788,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     const point =
       selectedEndpoints?.bottom ??
       this.resolveSelectionPoint(event, {
-        source: 'event-path',
+        source: "event-path",
         excludeUtility: false,
       });
     const anchor = selectedEndpoints?.top ?? point;
@@ -843,7 +798,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     event.preventDefault();
     event.stopPropagation();
     this.pointerSession = {
-      mode: 'gutterSelecting',
+      mode: "gutterSelecting",
       pointerId: event.pointerId,
       anchor,
       current: point,
@@ -862,15 +817,15 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
   private handleDocumentPointerMove = (event: PointerEvent): void => {
     const { enableLineSelection = false } = this.options;
     switch (this.pointerSession.mode) {
-      case 'idle':
+      case "idle":
         return;
-      case 'gutterSelecting': {
+      case "gutterSelecting": {
         if (event.pointerId !== this.pointerSession.pointerId) {
           return;
         }
         event.preventDefault();
         const point = this.resolveSelectionPoint(event, {
-          source: 'coordinates-first',
+          source: "coordinates-first",
         });
         if (point == null) {
           return;
@@ -881,13 +836,13 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
         }
         return;
       }
-      case 'selecting': {
+      case "selecting": {
         if (event.pointerId !== this.pointerSession.pointerId) {
           return;
         }
         event.preventDefault();
         const pointerInfo = this.resolveSelectionInfo(event, {
-          source: 'coordinates-first',
+          source: "coordinates-first",
           requireNumberColumn: false,
         });
         if (pointerInfo == null || this.selectionAnchor == null) {
@@ -896,13 +851,13 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
         this.updateSelection(pointerInfo.lineNumber, pointerInfo.eventSide);
         return;
       }
-      case 'pendingSingleLineUnselect': {
+      case "pendingSingleLineUnselect": {
         if (event.pointerId !== this.pointerSession.pointerId) {
           return;
         }
         event.preventDefault();
         const pointerInfo = this.resolveSelectionInfo(event, {
-          source: 'coordinates-first',
+          source: "coordinates-first",
           requireNumberColumn: false,
         });
         if (pointerInfo == null || this.selectionAnchor == null) {
@@ -915,15 +870,11 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
         if (areSelectionPointsEqual(this.pointerSession.pending, point)) {
           return;
         }
-        this.updateSelection(
-          pointerInfo.lineNumber,
-          pointerInfo.eventSide,
-          false
-        );
+        this.updateSelection(pointerInfo.lineNumber, pointerInfo.eventSide, false);
         this.notifySelectionStart(this.getCurrentSelectionRange());
         this.notifySelectionChangeDelta();
         this.pointerSession = {
-          mode: 'selecting',
+          mode: "selecting",
           pointerId: event.pointerId,
         };
         return;
@@ -934,15 +885,15 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
   private handleDocumentPointerUp = (event: PointerEvent): void => {
     const { enableLineSelection = false, onGutterUtilityClick } = this.options;
     switch (this.pointerSession.mode) {
-      case 'idle':
+      case "idle":
         return;
-      case 'gutterSelecting': {
+      case "gutterSelecting": {
         if (event.pointerId !== this.pointerSession.pointerId) {
           return;
         }
         event.preventDefault();
         const point = this.resolveSelectionPoint(event, {
-          source: 'coordinates-first',
+          source: "coordinates-first",
         });
         if (point != null) {
           this.pointerSession.current = point;
@@ -951,10 +902,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
           }
         }
         onGutterUtilityClick?.(
-          this.buildSelectedLineRange(
-            this.pointerSession.anchor,
-            this.pointerSession.current
-          )
+          this.buildSelectedLineRange(this.pointerSession.anchor, this.pointerSession.current),
         );
         this.selectionAnchor = undefined;
         if (enableLineSelection) {
@@ -966,7 +914,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
         this.detachDocumentPointerListeners();
         return;
       }
-      case 'pendingSingleLineUnselect': {
+      case "pendingSingleLineUnselect": {
         if (event.pointerId !== this.pointerSession.pointerId) {
           return;
         }
@@ -980,7 +928,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
         this.clearProposedSelection();
         return;
       }
-      case 'selecting': {
+      case "selecting": {
         if (event.pointerId !== this.pointerSession.pointerId) {
           return;
         }
@@ -997,12 +945,12 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
 
   private handleDocumentPointerCancel = (event: PointerEvent): void => {
     switch (this.pointerSession.mode) {
-      case 'idle':
+      case "idle":
         return;
-      case 'gutterSelecting':
-      case 'selecting':
-      case 'pendingSingleLineUnselect': {
-        if ('pointerId' in this.pointerSession) {
+      case "gutterSelecting":
+      case "selecting":
+      case "pendingSingleLineUnselect": {
+        if ("pointerId" in this.pointerSession) {
           if (event.pointerId !== this.pointerSession.pointerId) {
             return;
           }
@@ -1020,23 +968,23 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     if (this.hoveredLine == null) {
       return;
     }
-    this.hoveredLine.lineElement.removeAttribute('data-hovered');
-    this.hoveredLine.numberElement.removeAttribute('data-hovered');
+    this.hoveredLine.lineElement.removeAttribute("data-hovered");
+    this.hoveredLine.numberElement.removeAttribute("data-hovered");
     this.hoveredLine = undefined;
   }
 
   private setHoveredLine(hoveredLine: EventBaseProps<TMode>) {
-    const { lineHoverHighlight = 'disabled' } = this.options;
+    const { lineHoverHighlight = "disabled" } = this.options;
     if (this.hoveredLine != null) {
       this.clearHoveredLine();
     }
     this.hoveredLine = hoveredLine;
-    if (lineHoverHighlight !== 'disabled') {
-      if (lineHoverHighlight === 'both' || lineHoverHighlight === 'line') {
-        this.hoveredLine.lineElement.setAttribute('data-hovered', '');
+    if (lineHoverHighlight !== "disabled") {
+      if (lineHoverHighlight === "both" || lineHoverHighlight === "line") {
+        this.hoveredLine.lineElement.setAttribute("data-hovered", "");
       }
-      if (lineHoverHighlight === 'both' || lineHoverHighlight === 'number') {
-        this.hoveredLine.numberElement.setAttribute('data-hovered', '');
+      if (lineHoverHighlight === "both" || lineHoverHighlight === "number") {
+        this.hoveredLine.numberElement.setAttribute("data-hovered", "");
       }
     }
   }
@@ -1057,8 +1005,8 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
 
   private ensureGutterUtilityNode(useCustomGutterUtility: boolean): void {
     if (this.gutterUtilityContainer == null) {
-      this.gutterUtilityContainer = document.createElement('div');
-      this.gutterUtilityContainer.setAttribute('data-gutter-utility-slot', '');
+      this.gutterUtilityContainer = document.createElement("div");
+      this.gutterUtilityContainer.setAttribute("data-gutter-utility-slot", "");
     }
     if (useCustomGutterUtility) {
       if (this.gutterUtilityButton != null) {
@@ -1066,8 +1014,8 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
         this.gutterUtilityButton = undefined;
       }
       if (this.gutterUtilitySlot == null) {
-        this.gutterUtilitySlot = document.createElement('slot');
-        this.gutterUtilitySlot.name = 'gutter-utility-slot';
+        this.gutterUtilitySlot = document.createElement("slot");
+        this.gutterUtilitySlot.name = "gutter-utility-slot";
       }
       if (this.gutterUtilitySlot.parentNode !== this.gutterUtilityContainer) {
         this.gutterUtilityContainer.replaceChildren(this.gutterUtilitySlot);
@@ -1076,12 +1024,12 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
       this.gutterUtilitySlot?.remove();
       this.gutterUtilitySlot = undefined;
       if (this.gutterUtilityButton == null) {
-        const tempDiv = document.createElement('div');
+        const tempDiv = document.createElement("div");
         tempDiv.innerHTML = toHtml(createGutterUtilityElement());
         const utilityButton = tempDiv.firstElementChild;
         if (!(utilityButton instanceof HTMLButtonElement)) {
           throw new Error(
-            'InteractionManager.ensureGutterUtilityNode: Node element should be a button'
+            "InteractionManager.ensureGutterUtilityNode: Node element should be a button",
           );
         }
         utilityButton.remove();
@@ -1166,9 +1114,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     if (startIndex == null || endIndex == null) {
       return undefined;
     }
-    return startIndex > endIndex
-      ? { top: end, bottom: start }
-      : { top: start, bottom: end };
+    return startIndex > endIndex ? { top: end, bottom: start } : { top: start, bottom: end };
   }
 
   private selectionPointRowIndex(point: SelectionPoint): number | undefined {
@@ -1179,9 +1125,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     return this.isSplitDiff() ? indexes[1] : indexes[0];
   }
 
-  private targetForSelectionPoint(
-    point: SelectionPoint
-  ): LinePointerTarget<TMode> | undefined {
+  private targetForSelectionPoint(point: SelectionPoint): LinePointerTarget<TMode> | undefined {
     if (this.pre == null) {
       return undefined;
     }
@@ -1189,13 +1133,12 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     if (indexes == null) {
       return undefined;
     }
-    const lineIndex =
-      this.mode === 'diff' ? `${indexes[0]},${indexes[1]}` : `${indexes[0]}`;
+    const lineIndex = this.mode === "diff" ? `${indexes[0]},${indexes[1]}` : `${indexes[0]}`;
     // Rebuild the real gutter-row target from the selection point so the
     // utility can anchor to the visible row even when the point came from
     // controlled state rather than a pointer event.
     const candidates = this.pre.querySelectorAll(
-      `[data-column-number="${point.lineNumber}"][data-line-index="${lineIndex}"]`
+      `[data-column-number="${point.lineNumber}"][data-line-index="${lineIndex}"]`,
     );
     for (const element of candidates) {
       if (!(element instanceof HTMLElement)) {
@@ -1205,11 +1148,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
       if (!isLinePointerTarget(target)) {
         continue;
       }
-      if (
-        this.mode === 'diff' &&
-        point.side != null &&
-        target.side !== point.side
-      ) {
+      if (this.mode === "diff" && point.side != null && target.side !== point.side) {
         continue;
       }
       return target;
@@ -1221,12 +1160,9 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     if (this.hasDocumentPointerListeners) {
       return;
     }
-    document.addEventListener('pointermove', this.handleDocumentPointerMove);
-    document.addEventListener('pointerup', this.handleDocumentPointerUp);
-    document.addEventListener(
-      'pointercancel',
-      this.handleDocumentPointerCancel
-    );
+    document.addEventListener("pointermove", this.handleDocumentPointerMove);
+    document.addEventListener("pointerup", this.handleDocumentPointerUp);
+    document.addEventListener("pointercancel", this.handleDocumentPointerCancel);
     this.hasDocumentPointerListeners = true;
   }
 
@@ -1234,28 +1170,25 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     if (!this.hasDocumentPointerListeners) {
       return;
     }
-    document.removeEventListener('pointermove', this.handleDocumentPointerMove);
-    document.removeEventListener('pointerup', this.handleDocumentPointerUp);
-    document.removeEventListener(
-      'pointercancel',
-      this.handleDocumentPointerCancel
-    );
+    document.removeEventListener("pointermove", this.handleDocumentPointerMove);
+    document.removeEventListener("pointerup", this.handleDocumentPointerUp);
+    document.removeEventListener("pointercancel", this.handleDocumentPointerCancel);
     this.hasDocumentPointerListeners = false;
   }
 
   private clearPointerSession(): void {
-    this.pointerSession = { mode: 'idle' };
+    this.pointerSession = { mode: "idle" };
   }
 
   private clearPendingSingleLineState(): void {
-    if (this.pointerSession.mode === 'pendingSingleLineUnselect') {
-      this.pointerSession = { mode: 'idle' };
+    if (this.pointerSession.mode === "pendingSingleLineUnselect") {
+      this.pointerSession = { mode: "idle" };
     }
   }
 
   private selectionInfoFromPath(
     path: (EventTarget | undefined)[],
-    requireNumberColumn: boolean
+    requireNumberColumn: boolean,
   ): SelectionInfo | undefined {
     const target = this.resolvePointerTarget(path);
     if (!isLinePointerTarget(target)) {
@@ -1271,36 +1204,32 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     return {
       lineIndex: target.splitLineIndex,
       lineNumber: target.lineNumber,
-      eventSide: this.mode === 'diff' ? target.side : undefined,
+      eventSide: this.mode === "diff" ? target.side : undefined,
     };
   }
 
   private resolveSelectionInfo(
     event: PointerEvent,
-    options: SelectionInfoOptions
+    options: SelectionInfoOptions,
   ): SelectionInfo | undefined {
     const path = this.resolveSelectionPath(event, options);
-    return path != null
-      ? this.selectionInfoFromPath(path, options.requireNumberColumn)
-      : undefined;
+    return path != null ? this.selectionInfoFromPath(path, options.requireNumberColumn) : undefined;
   }
 
-  private selectionPointFromPath(
-    path: (EventTarget | undefined)[]
-  ): SelectionPoint | undefined {
+  private selectionPointFromPath(path: (EventTarget | undefined)[]): SelectionPoint | undefined {
     const target = this.resolvePointerTarget(path);
     if (!isLinePointerTarget(target)) {
       return undefined;
     }
     return {
       lineNumber: target.lineNumber,
-      side: this.mode === 'diff' ? target.side : undefined,
+      side: this.mode === "diff" ? target.side : undefined,
     };
   }
 
   private resolveSelectionPoint(
     event: PointerEvent,
-    options: SelectionHitOptions
+    options: SelectionHitOptions,
   ): SelectionPoint | undefined {
     const path = this.resolveSelectionPath(event, options);
     return path != null ? this.selectionPointFromPath(path) : undefined;
@@ -1308,13 +1237,13 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
 
   private resolveSelectionPath(
     event: PointerEvent,
-    options: SelectionHitOptions
+    options: SelectionHitOptions,
   ): (EventTarget | undefined)[] | undefined {
     const excludeUtility = options.excludeUtility !== false;
     switch (options.source) {
-      case 'event-path':
+      case "event-path":
         return this.pathFromEventPath(event.composedPath(), excludeUtility);
-      case 'coordinates-first': {
+      case "coordinates-first": {
         // Touch pointers can keep dispatching move/up events to the element
         // where the drag began. Prefer the row currently under the finger,
         // then fall back only when coordinate hit-testing is unavailable.
@@ -1329,7 +1258,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
 
   private pathFromCoordinates(
     event: PointerEvent,
-    excludeUtility: boolean
+    excludeUtility: boolean,
   ): (EventTarget | undefined)[] | null | undefined {
     const coordinateTarget = this.hitTest(event);
     if (coordinateTarget === undefined) {
@@ -1346,7 +1275,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
 
   private pathFromEventPath(
     path: (EventTarget | undefined)[],
-    excludeUtility: boolean
+    excludeUtility: boolean,
   ): (EventTarget | undefined)[] | undefined {
     if (excludeUtility && isGutterUtilityPath(path)) {
       return undefined;
@@ -1361,7 +1290,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
 
   private pathFromElement(
     element: Element,
-    excludeUtility: boolean
+    excludeUtility: boolean,
   ): (EventTarget | undefined)[] | undefined {
     const path = getElementPath(element);
     if (excludeUtility && isGutterUtilityPath(path)) {
@@ -1378,12 +1307,8 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     return this.pathFromAnnotationSlot(element);
   }
 
-  private pathFromAnnotationSlot(
-    element: Element
-  ): (EventTarget | undefined)[] | undefined {
-    const point = selectionPointFromAnnotationSlotName(
-      getAnnotationSlotName(element)
-    );
+  private pathFromAnnotationSlot(element: Element): (EventTarget | undefined)[] | undefined {
+    const point = selectionPointFromAnnotationSlotName(getAnnotationSlotName(element));
     if (point == null) {
       return undefined;
     }
@@ -1408,21 +1333,13 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     if (elementFromPointRoot == null) {
       return undefined;
     }
-    const element = elementFromPointRoot.elementFromPoint(
-      event.clientX,
-      event.clientY
-    );
+    const element = elementFromPointRoot.elementFromPoint(event.clientX, event.clientY);
     return element;
   }
 
-  private getLineIndex(
-    lineNumber: number,
-    side?: SelectionSide
-  ): [number, number] | undefined {
+  private getLineIndex(lineNumber: number, side?: SelectionSide): [number, number] | undefined {
     const { getLineIndex } = this.options;
-    return getLineIndex != null
-      ? getLineIndex(lineNumber, side)
-      : [lineNumber - 1, lineNumber - 1];
+    return getLineIndex != null ? getLineIndex(lineNumber, side) : [lineNumber - 1, lineNumber - 1];
   }
 
   private getCurrentSelectionRange(): SelectedLineRange | null {
@@ -1438,7 +1355,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
   private updateSelection(
     currentLine: number | null,
     side?: SelectionSide,
-    emitChange = true
+    emitChange = true,
   ): void {
     const previousRange = this.getCurrentSelectionRange();
     let nextRange: SelectedLineRange | null;
@@ -1447,25 +1364,16 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     } else {
       const anchorSide = this.selectionAnchor?.side ?? side;
       const anchorLine = this.selectionAnchor?.lineNumber ?? currentLine;
-      nextRange = this.buildSelectionRange(
-        anchorLine,
-        currentLine,
-        anchorSide,
-        side
-      );
+      nextRange = this.buildSelectionRange(anchorLine, currentLine, anchorSide, side);
     }
-    if (
-      areSelectionsEqual(previousRange ?? undefined, nextRange ?? undefined)
-    ) {
+    if (areSelectionsEqual(previousRange ?? undefined, nextRange ?? undefined)) {
       return;
     }
     if (this.options.controlledSelection === true) {
       this.proposedSelectedRange = nextRange;
     } else {
       this.selectedRange = nextRange;
-      this.queuedSelectionRender ??= requestAnimationFrame(
-        this.renderSelection
-      );
+      this.queuedSelectionRender ??= requestAnimationFrame(this.renderSelection);
     }
     this.placeUtility();
     if (emitChange) {
@@ -1475,18 +1383,15 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
 
   private getIndexesFromSelection(
     selectedRange: SelectedLineRange,
-    split: boolean
+    split: boolean,
   ): { start: number; end: number } | undefined {
     if (this.pre == null) {
       return undefined;
     }
-    const startIndexes = this.getLineIndex(
-      selectedRange.start,
-      selectedRange.side
-    );
+    const startIndexes = this.getLineIndex(selectedRange.start, selectedRange.side);
     const finalIndexes = this.getLineIndex(
       selectedRange.end,
-      selectedRange.endSide ?? selectedRange.side
+      selectedRange.endSide ?? selectedRange.side,
     );
 
     return startIndexes != null && finalIndexes != null
@@ -1502,16 +1407,13 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
       cancelAnimationFrame(this.queuedSelectionRender);
       this.queuedSelectionRender = undefined;
     }
-    if (
-      this.pre == null ||
-      this.renderedSelectionRange === this.selectedRange
-    ) {
+    if (this.pre == null || this.renderedSelectionRange === this.selectedRange) {
       return;
     }
 
-    const allSelected = this.pre.querySelectorAll('[data-selected-line]');
+    const allSelected = this.pre.querySelectorAll("[data-selected-line]");
     for (const element of allSelected) {
-      element.removeAttribute('data-selected-line');
+      element.removeAttribute("data-selected-line");
     }
 
     this.renderedSelectionRange = this.selectedRange;
@@ -1526,14 +1428,14 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     if (codeElements.length > 2) {
       console.error(codeElements);
       throw new Error(
-        'InteractionManager.renderSelection: Somehow there are more than 2 code elements...'
+        "InteractionManager.renderSelection: Somehow there are more than 2 code elements...",
       );
     }
-    const split = this.pre.getAttribute('data-diff-type') === 'split';
+    const split = this.pre.getAttribute("data-diff-type") === "split";
     const rowRange = this.getIndexesFromSelection(this.selectedRange, split);
     if (rowRange == null) {
       console.error({ rowRange, selectedRange: this.selectedRange });
-      throw new Error('InteractionManager.renderSelection: No valid rowRange');
+      throw new Error("InteractionManager.renderSelection: No valid rowRange");
     }
     const isSingle = rowRange.start === rowRange.end;
     const first = Math.min(rowRange.start, rowRange.end);
@@ -1543,16 +1445,13 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
       const len = content.children.length;
       if (len !== gutter.children.length) {
         throw new Error(
-          'InteractionManager.renderSelection: gutter and content children dont match, something is wrong'
+          "InteractionManager.renderSelection: gutter and content children dont match, something is wrong",
         );
       }
       for (let i = 0; i < len; i++) {
         const contentElement = content.children[i];
         const gutterElement = gutter.children[i];
-        if (
-          !(contentElement instanceof HTMLElement) ||
-          !(gutterElement instanceof HTMLElement)
-        ) {
+        if (!(contentElement instanceof HTMLElement) || !(gutterElement instanceof HTMLElement)) {
           continue;
         }
 
@@ -1564,38 +1463,30 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
           continue;
         }
         let attributeValue = isSingle
-          ? 'single'
+          ? "single"
           : lineIndex === first
-            ? 'first'
+            ? "first"
             : lineIndex === last
-              ? 'last'
-              : '';
-        contentElement.setAttribute('data-selected-line', attributeValue);
-        gutterElement.setAttribute('data-selected-line', attributeValue);
+              ? "last"
+              : "";
+        contentElement.setAttribute("data-selected-line", attributeValue);
+        gutterElement.setAttribute("data-selected-line", attributeValue);
         if (
           gutterElement.nextSibling instanceof HTMLElement &&
           contentElement.nextSibling instanceof HTMLElement &&
-          (contentElement.nextSibling.hasAttribute('data-line-annotation') ||
-            contentElement.nextSibling.hasAttribute(
-              'data-merge-conflict-actions'
-            ))
+          (contentElement.nextSibling.hasAttribute("data-line-annotation") ||
+            contentElement.nextSibling.hasAttribute("data-merge-conflict-actions"))
         ) {
           if (isSingle) {
-            attributeValue = 'last';
-            contentElement.setAttribute('data-selected-line', 'first');
+            attributeValue = "last";
+            contentElement.setAttribute("data-selected-line", "first");
           } else if (lineIndex === first) {
-            attributeValue = '';
+            attributeValue = "";
           } else if (lineIndex === last) {
-            contentElement.setAttribute('data-selected-line', '');
+            contentElement.setAttribute("data-selected-line", "");
           }
-          contentElement.nextSibling.setAttribute(
-            'data-selected-line',
-            attributeValue
-          );
-          gutterElement.nextSibling.setAttribute(
-            'data-selected-line',
-            attributeValue
-          );
+          contentElement.nextSibling.setAttribute("data-selected-line", attributeValue);
+          gutterElement.nextSibling.setAttribute("data-selected-line", attributeValue);
         }
       }
     }
@@ -1606,9 +1497,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
   }
 
   private notifySelectionChangeDelta(): void {
-    this.options.onLineSelectionChange?.(
-      this.getCurrentSelectionRange() ?? null
-    );
+    this.options.onLineSelectionChange?.(this.getCurrentSelectionRange() ?? null);
   }
 
   private notifySelectionStart(range: SelectedLineRange | null): void {
@@ -1619,12 +1508,10 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     this.options.onLineSelectionEnd?.(range);
   }
 
-  private toEventBaseProps(
-    target: HoverableLinePointerTarget<TMode>
-  ): EventBaseProps<TMode> {
-    if (this.mode === 'file') {
+  private toEventBaseProps(target: HoverableLinePointerTarget<TMode>): EventBaseProps<TMode> {
+    if (this.mode === "file") {
       return {
-        type: 'line',
+        type: "line",
         lineElement: target.lineElement,
         lineNumber: target.lineNumber,
         numberColumn: target.numberColumn,
@@ -1633,7 +1520,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     }
 
     return {
-      type: 'diff-line',
+      type: "diff-line",
       annotationSide: target.side as AnnotationSide,
       lineType: target.lineType,
       lineElement: target.lineElement,
@@ -1651,9 +1538,9 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     tokenElement,
     tokenText,
   }: TokenPointerTarget<TMode>): OnTokenEventProps<TMode> {
-    if (this.mode === 'file') {
+    if (this.mode === "file") {
       return {
-        type: 'token',
+        type: "token",
         lineCharEnd,
         lineCharStart,
         lineNumber,
@@ -1663,7 +1550,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     }
 
     return {
-      type: 'token',
+      type: "token",
       lineCharEnd,
       lineCharStart,
       lineNumber,
@@ -1675,13 +1562,13 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
 
   private buildSelectedLineRange(
     anchor: SelectionPoint,
-    current: SelectionPoint
+    current: SelectionPoint,
   ): SelectedLineRange {
     return this.buildSelectionRange(
       anchor.lineNumber,
       current.lineNumber,
       anchor.side,
-      current.side
+      current.side,
     );
   }
 
@@ -1689,7 +1576,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     start: number,
     end: number,
     side?: SelectionSide,
-    endSide?: SelectionSide
+    endSide?: SelectionSide,
   ): SelectedLineRange {
     return {
       start,
@@ -1700,7 +1587,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
   }
 
   private resolvePointerTarget(
-    path: (EventTarget | undefined)[]
+    path: (EventTarget | undefined)[],
   ): ResolvedPointerTarget<TMode> | undefined {
     let numberColumn = false;
     let lineType: LineTypes | undefined;
@@ -1719,42 +1606,32 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
         continue;
       }
 
-      if (
-        mergeConflictActionTarget == null &&
-        element.hasAttribute('data-merge-conflict-action')
-      ) {
-        const resolutionValue =
-          element.getAttribute('data-merge-conflict-action') ?? undefined;
+      if (mergeConflictActionTarget == null && element.hasAttribute("data-merge-conflict-action")) {
+        const resolutionValue = element.getAttribute("data-merge-conflict-action") ?? undefined;
         const conflictIndexValue =
-          element.getAttribute('data-merge-conflict-conflict-index') ??
-          undefined;
+          element.getAttribute("data-merge-conflict-conflict-index") ?? undefined;
         const conflictIndex =
-          conflictIndexValue != null
-            ? Number.parseInt(conflictIndexValue, 10)
-            : Number.NaN;
-        if (
-          isMergeConflictResolution(resolutionValue) &&
-          Number.isFinite(conflictIndex)
-        ) {
+          conflictIndexValue != null ? Number.parseInt(conflictIndexValue, 10) : Number.NaN;
+        if (isMergeConflictResolution(resolutionValue) && Number.isFinite(conflictIndex)) {
           mergeConflictActionTarget = {
-            kind: 'merge-conflict-action',
+            kind: "merge-conflict-action",
             resolution: resolutionValue,
             conflictIndex,
           };
         }
       }
 
-      if (tokenElement == null && element.hasAttribute('data-char')) {
+      if (tokenElement == null && element.hasAttribute("data-char")) {
         tokenElement = element;
-        const startAttr = element.getAttribute('data-char');
+        const startAttr = element.getAttribute("data-char");
 
         if (startAttr != null) {
           const lineCharStart = Number.parseInt(startAttr, 10);
           if (!Number.isNaN(lineCharStart)) {
-            const tokenText = element.textContent ?? '';
+            const tokenText = element.textContent ?? "";
             const lineCharEnd = lineCharStart + tokenText.length;
             if (
-              tokenText.trim() !== '' ||
+              tokenText.trim() !== "" ||
               this.options.enableTokenInteractionsOnWhitespace === true
             ) {
               tokenInfo = {
@@ -1771,54 +1648,50 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
 
       const columnNumber =
         numberElement == null
-          ? (element.getAttribute('data-column-number') ?? undefined)
+          ? (element.getAttribute("data-column-number") ?? undefined)
           : undefined;
       if (columnNumber != null) {
         numberElement = element;
         lineNumber = Number.parseInt(columnNumber, 10);
         numberColumn = true;
         lineType = getLineTypeFromElement(element);
-        lineIndexValue = element.getAttribute('data-line-index') ?? undefined;
+        lineIndexValue = element.getAttribute("data-line-index") ?? undefined;
         continue;
       }
 
       const lineAttr =
-        lineElement == null
-          ? (element.getAttribute('data-line') ?? undefined)
-          : undefined;
+        lineElement == null ? (element.getAttribute("data-line") ?? undefined) : undefined;
       if (lineAttr != null) {
         lineElement = element;
         lineNumber = Number.parseInt(lineAttr, 10);
         lineType = getLineTypeFromElement(element);
-        lineIndexValue = element.getAttribute('data-line-index') ?? undefined;
+        lineIndexValue = element.getAttribute("data-line-index") ?? undefined;
         continue;
       }
 
       if (
         expandInfo == null &&
-        (element.hasAttribute('data-expand-button') ||
-          element.hasAttribute('data-unmodified-lines'))
+        (element.hasAttribute("data-expand-button") ||
+          element.hasAttribute("data-unmodified-lines"))
       ) {
         expandInfo = {
           hunkIndex: undefined,
           direction: (() => {
-            if (element.hasAttribute('data-expand-up')) {
-              return 'up';
+            if (element.hasAttribute("data-expand-up")) {
+              return "up";
             }
-            if (element.hasAttribute('data-expand-down')) {
-              return 'down';
+            if (element.hasAttribute("data-expand-down")) {
+              return "down";
             }
-            return 'both';
+            return "both";
           })(),
-          all: element.hasAttribute('data-expand-all-button'),
+          all: element.hasAttribute("data-expand-all-button"),
         };
         continue;
       }
 
       const expandIndexValue =
-        expandInfo != null
-          ? (element.getAttribute('data-expand-index') ?? undefined)
-          : undefined;
+        expandInfo != null ? (element.getAttribute("data-expand-index") ?? undefined) : undefined;
       if (expandInfo != null && expandIndexValue != null) {
         const expandIndex = Number.parseInt(expandIndexValue, 10);
         if (!Number.isNaN(expandIndex)) {
@@ -1827,7 +1700,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
         continue;
       }
 
-      if (codeElement == null && element.hasAttribute('data-code')) {
+      if (codeElement == null && element.hasAttribute("data-code")) {
         codeElement = element;
         break;
       }
@@ -1839,7 +1712,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
 
     if (expandInfo?.hunkIndex != null) {
       return {
-        type: 'line-info',
+        type: "line-info",
         hunkIndex: expandInfo.hunkIndex,
         direction: expandInfo.direction,
         all: expandInfo.all,
@@ -1848,17 +1721,11 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
 
     lineElement ??=
       lineIndexValue != null
-        ? queryHTMLElement(
-            codeElement,
-            `[data-line][data-line-index="${lineIndexValue}"]`
-          )
+        ? queryHTMLElement(codeElement, `[data-line][data-line-index="${lineIndexValue}"]`)
         : undefined;
     numberElement ??=
       lineIndexValue != null
-        ? queryHTMLElement(
-            codeElement,
-            `[data-column-number][data-line-index="${lineIndexValue}"]`
-          )
+        ? queryHTMLElement(codeElement, `[data-column-number][data-line-index="${lineIndexValue}"]`)
         : undefined;
 
     if (
@@ -1875,9 +1742,9 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     const splitLineIndex = this.parseLineIndex(lineElement, this.isSplitDiff());
 
     if (tokenInfo != null) {
-      if (this.mode === 'file') {
+      if (this.mode === "file") {
         return {
-          kind: 'token',
+          kind: "token",
           lineType,
           lineElement,
           lineNumber,
@@ -1890,7 +1757,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
       }
 
       return {
-        kind: 'token',
+        kind: "token",
         lineType,
         lineElement,
         lineNumber,
@@ -1903,9 +1770,9 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     }
 
     // Otherwise return line target
-    if (this.mode === 'file') {
+    if (this.mode === "file") {
       return {
-        kind: 'line',
+        kind: "line",
         lineType,
         lineElement,
         lineNumber,
@@ -1917,7 +1784,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
     }
 
     return {
-      kind: 'line',
+      kind: "line",
       lineType,
       lineElement,
       lineNumber,
@@ -1929,15 +1796,12 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
   }
 
   private isSplitDiff(): boolean {
-    return this.pre?.getAttribute('data-diff-type') === 'split';
+    return this.pre?.getAttribute("data-diff-type") === "split";
   }
 
-  private parseLineIndex(
-    element: HTMLElement,
-    split: boolean
-  ): number | undefined {
-    const lineIndexes = (element.getAttribute('data-line-index') ?? '')
-      .split(',')
+  private parseLineIndex(element: HTMLElement, split: boolean): number | undefined {
+    const lineIndexes = (element.getAttribute("data-line-index") ?? "")
+      .split(",")
       .map((value) => Number.parseInt(value, 10))
       .filter((value) => !Number.isNaN(value));
 
@@ -1954,7 +1818,7 @@ export class InteractionManager<TMode extends InteractionManagerMode> {
 type InteractionPluckOptions<TMode extends InteractionManagerMode> =
   InteractionManagerBaseOptions<TMode> & {
     renderGutterUtility?(
-      getHoveredRow: () => GetHoveredLineResult<TMode> | undefined
+      getHoveredRow: () => GetHoveredLineResult<TMode> | undefined,
     ): HTMLElement | null | undefined;
   };
 
@@ -1983,10 +1847,10 @@ export function pluckInteractionOptions<TMode extends InteractionManagerMode>(
   onHunkExpand?: (
     hunkIndex: number,
     direction: ExpansionDirections,
-    expansionLineCountOverride?: number
+    expansionLineCountOverride?: number,
   ) => unknown,
   getLineIndex?: GetLineIndexUtility,
-  onMergeConflictActionClick?: (target: MergeConflictActionTarget) => void
+  onMergeConflictActionClick?: (target: MergeConflictActionTarget) => void,
 ): InteractionManagerOptions<TMode> {
   return {
     enableTokenInteractionsOnWhitespace,
@@ -2021,64 +1885,57 @@ export function pluckInteractionOptions<TMode extends InteractionManagerMode>(
   };
 }
 
-function resolveEnableGutterUtilityOption<
-  TMode extends InteractionManagerMode,
->({
+function resolveEnableGutterUtilityOption<TMode extends InteractionManagerMode>({
   enableGutterUtility,
   renderGutterUtility,
   onGutterUtilityClick,
 }: Pick<
   InteractionPluckOptions<TMode>,
-  'enableGutterUtility' | 'renderGutterUtility' | 'onGutterUtilityClick'
+  "enableGutterUtility" | "renderGutterUtility" | "onGutterUtilityClick"
 >): boolean {
   if (onGutterUtilityClick != null && renderGutterUtility != null) {
     throw new Error(
-      "Cannot use both 'onGutterUtilityClick' and 'renderGutterUtility'. Use only one gutter utility API."
+      "Cannot use both 'onGutterUtilityClick' and 'renderGutterUtility'. Use only one gutter utility API.",
     );
   }
   return enableGutterUtility ?? false;
 }
 
 function isLinePointerTarget<TMode extends InteractionManagerMode>(
-  target: ResolvedPointerTarget<TMode> | undefined
+  target: ResolvedPointerTarget<TMode> | undefined,
 ): target is LinePointerTarget<TMode> {
-  return target != null && 'kind' in target && target.kind === 'line';
+  return target != null && "kind" in target && target.kind === "line";
 }
 
 function isTokenPointerTarget<TMode extends InteractionManagerMode>(
-  target: ResolvedPointerTarget<TMode> | undefined
+  target: ResolvedPointerTarget<TMode> | undefined,
 ): target is TokenPointerTarget<TMode> {
-  return target != null && 'kind' in target && target.kind === 'token';
+  return target != null && "kind" in target && target.kind === "token";
 }
 
 function isHoverableLinePointerTarget<TMode extends InteractionManagerMode>(
-  target: ResolvedPointerTarget<TMode> | undefined
+  target: ResolvedPointerTarget<TMode> | undefined,
 ): target is HoverableLinePointerTarget<TMode> {
   return isLinePointerTarget(target) || isTokenPointerTarget(target);
 }
 
 function isExpandoPointerTarget<TMode extends InteractionManagerMode>(
-  target: ResolvedPointerTarget<TMode>
+  target: ResolvedPointerTarget<TMode>,
 ): target is ExpandoEventProps {
-  return 'type' in target && target.type === 'line-info';
+  return "type" in target && target.type === "line-info";
 }
 
-function isMergeConflictActionPointerTarget<
-  TMode extends InteractionManagerMode,
->(target: ResolvedPointerTarget<TMode>): target is MergeConflictActionTarget {
-  return 'kind' in target && target.kind === 'merge-conflict-action';
+function isMergeConflictActionPointerTarget<TMode extends InteractionManagerMode>(
+  target: ResolvedPointerTarget<TMode>,
+): target is MergeConflictActionTarget {
+  return "kind" in target && target.kind === "merge-conflict-action";
 }
 
-function isMergeConflictResolution(
-  value: string | undefined
-): value is MergeConflictResolution {
-  return value === 'current' || value === 'incoming' || value === 'both';
+function isMergeConflictResolution(value: string | undefined): value is MergeConflictResolution {
+  return value === "current" || value === "incoming" || value === "both";
 }
 
-function queryHTMLElement(
-  parent: HTMLElement | undefined,
-  query: string
-): HTMLElement | undefined {
+function queryHTMLElement(parent: HTMLElement | undefined, query: string): HTMLElement | undefined {
   const element = parent?.querySelector(query);
   return element instanceof HTMLElement ? element : undefined;
 }
@@ -2096,13 +1953,13 @@ function getElementPath(element: Node): EventTarget[] {
 // Pointer hits often land on text/token descendants. This normalizes those
 // hits back to the row elements InteractionManager knows how to resolve.
 function closestSelectableRow(element: Element): HTMLElement | undefined {
-  const row = element.closest('[data-line], [data-column-number]');
+  const row = element.closest("[data-line], [data-column-number]");
   if (row instanceof HTMLElement) {
     return row;
   }
 
   const annotationRow = element.closest(
-    '[data-line-annotation], [data-gutter-buffer="annotation"]'
+    '[data-line-annotation], [data-gutter-buffer="annotation"]',
   );
   if (!(annotationRow instanceof HTMLElement)) {
     return undefined;
@@ -2110,8 +1967,7 @@ function closestSelectableRow(element: Element): HTMLElement | undefined {
 
   const previousRow = annotationRow.previousElementSibling;
   return previousRow instanceof HTMLElement &&
-    (previousRow.hasAttribute('data-line') ||
-      previousRow.hasAttribute('data-column-number'))
+    (previousRow.hasAttribute("data-line") || previousRow.hasAttribute("data-column-number"))
     ? previousRow
     : undefined;
 }
@@ -2119,21 +1975,19 @@ function closestSelectableRow(element: Element): HTMLElement | undefined {
 function getAnnotationSlotName(element: Element): string | undefined {
   const slottedElement = element.closest('[slot^="annotation-"]');
   if (slottedElement instanceof HTMLElement) {
-    return slottedElement.getAttribute('slot') ?? undefined;
+    return slottedElement.getAttribute("slot") ?? undefined;
   }
 
   if (element instanceof HTMLElement) {
-    const slotName = element.getAttribute('name') ?? undefined;
-    return slotName != null && slotName.startsWith('annotation-')
-      ? slotName
-      : undefined;
+    const slotName = element.getAttribute("name") ?? undefined;
+    return slotName != null && slotName.startsWith("annotation-") ? slotName : undefined;
   }
 
   return undefined;
 }
 
 function selectionPointFromAnnotationSlotName(
-  slotName: string | undefined
+  slotName: string | undefined,
 ): SelectionPoint | undefined {
   if (slotName == null) {
     return undefined;
@@ -2157,42 +2011,33 @@ interface ElementFromPointRoot {
   elementFromPoint(x: number, y: number): Element | null;
 }
 
-function hasElementFromPoint(
-  value: Node | undefined
-): value is Node & ElementFromPointRoot {
+function hasElementFromPoint(value: Node | undefined): value is Node & ElementFromPointRoot {
   return (
-    value != null &&
-    typeof (value as Partial<ElementFromPointRoot>).elementFromPoint ===
-      'function'
+    value != null && typeof (value as Partial<ElementFromPointRoot>).elementFromPoint === "function"
   );
 }
 
-function getAnnotationSide(
-  lineType: LineTypes,
-  codeElement: HTMLElement
-): AnnotationSide {
+function getAnnotationSide(lineType: LineTypes, codeElement: HTMLElement): AnnotationSide {
   switch (lineType) {
-    case 'change-deletion':
-      return 'deletions';
-    case 'change-addition':
-      return 'additions';
+    case "change-deletion":
+      return "deletions";
+    case "change-addition":
+      return "additions";
     default:
-      return codeElement.hasAttribute('data-deletions')
-        ? 'deletions'
-        : 'additions';
+      return codeElement.hasAttribute("data-deletions") ? "deletions" : "additions";
   }
 }
 
 function getLineTypeFromElement(element: HTMLElement): LineTypes | undefined {
-  const lineType = element.getAttribute('data-line-type');
+  const lineType = element.getAttribute("data-line-type");
   if (lineType == null) {
     return undefined;
   }
   switch (lineType) {
-    case 'change-deletion':
-    case 'change-addition':
-    case 'context':
-    case 'context-expanded':
+    case "change-deletion":
+    case "change-addition":
+    case "context":
+    case "context-expanded":
       return lineType;
     default:
       return undefined;
@@ -2205,13 +2050,13 @@ function isGutterUtilityPath(path: (EventTarget | undefined)[]): boolean {
       continue;
     }
     if (
-      element.hasAttribute('data-utility-button') ||
-      element.hasAttribute('data-gutter-utility-slot') ||
+      element.hasAttribute("data-utility-button") ||
+      element.hasAttribute("data-gutter-utility-slot") ||
       // Custom React/DOM utilities are slotted into the same utility surface,
       // so treat both the assigned content and the slot node itself as
       // utility hits.
-      element.getAttribute('slot') === 'gutter-utility-slot' ||
-      element.getAttribute('name') === 'gutter-utility-slot'
+      element.getAttribute("slot") === "gutter-utility-slot" ||
+      element.getAttribute("name") === "gutter-utility-slot"
     ) {
       return true;
     }
@@ -2220,22 +2065,22 @@ function isGutterUtilityPath(path: (EventTarget | undefined)[]): boolean {
 }
 
 function debugLogIfEnabled(
-  debugLogType: LogTypes | undefined = 'none',
-  logIfType: 'move' | 'click',
+  debugLogType: LogTypes | undefined = "none",
+  logIfType: "move" | "click",
   ...args: unknown[]
 ) {
   switch (debugLogType) {
-    case 'none':
+    case "none":
       return;
-    case 'both':
+    case "both":
       break;
-    case 'click':
-      if (logIfType !== 'click') {
+    case "click":
+      if (logIfType !== "click") {
         return;
       }
       break;
-    case 'move':
-      if (logIfType !== 'move') {
+    case "move":
+      if (logIfType !== "move") {
         return;
       }
       break;

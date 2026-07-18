@@ -1,11 +1,11 @@
-import { expect, test } from "bun:test"
-import { createRoot, createSignal } from "solid-js"
-import { createPromptInputTransientState } from "@/components/prompt-input/transient-state"
+import { expect, test } from "bun:test";
+import { createRoot, createSignal } from "solid-js";
+import { createPromptInputTransientState } from "@/components/prompt-input/transient-state";
 
 test("resets transient prompt input state when the prompt session changes", () => {
   createRoot((dispose) => {
-    const [identity, setIdentity] = createSignal("A")
-    const [state, setState] = createPromptInputTransientState(identity, 3)
+    const [identity, setIdentity] = createSignal("A");
+    const [state, setState] = createPromptInputTransientState(identity, 3);
     setState({
       popover: "slash",
       historyIndex: 2,
@@ -17,9 +17,9 @@ test("resets transient prompt input state when the prompt session changes", () =
       mode: "shell",
       applyingHistory: true,
       variantOpen: true,
-    })
+    });
 
-    setIdentity("B")
+    setIdentity("B");
 
     expect(state).toMatchObject({
       popover: null,
@@ -30,7 +30,7 @@ test("resets transient prompt input state when the prompt session changes", () =
       mode: "normal",
       applyingHistory: false,
       variantOpen: false,
-    })
-    dispose()
-  })
-})
+    });
+    dispose();
+  });
+});

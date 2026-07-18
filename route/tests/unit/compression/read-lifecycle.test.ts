@@ -31,7 +31,8 @@ function anthropicResultText(msg: unknown, id: string): string | undefined {
   const blocks = (msg as { content?: unknown[] }).content;
   const b = Array.isArray(blocks)
     ? (blocks.find((x) => (x as { tool_use_id?: string }).tool_use_id === id) as
-        { content?: string } | undefined)
+        | { content?: string }
+        | undefined)
     : undefined;
   return b?.content;
 }
@@ -152,7 +153,7 @@ describe("read-lifecycle — engine integration", () => {
     assert.equal(out.compressed, false);
     assert.equal(
       anthropicResultText((out.body as { messages: unknown[] }).messages[1], "c1"),
-      "OLD"
+      "OLD",
     );
   });
 

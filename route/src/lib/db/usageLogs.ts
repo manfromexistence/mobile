@@ -30,7 +30,7 @@ export function getAutoRoutingTotalCount(): AutoRoutingTotalResult {
       SELECT COUNT(*) as count
       FROM usage_logs
       WHERE model = 'auto' OR model LIKE 'auto/%'
-    `
+    `,
     )
     .get() as AutoRoutingTotalResult | undefined;
   return row ?? { count: 0 };
@@ -64,7 +64,7 @@ export function getAutoRoutingVariantBreakdown(): AutoRoutingVariantRow[] {
       WHERE model = 'auto' OR model LIKE 'auto/%'
       GROUP BY variant
       ORDER BY count DESC
-    `
+    `,
     )
     .all() as AutoRoutingVariantRow[];
 }
@@ -88,7 +88,7 @@ export function getAutoRoutingTopProviders(): AutoRoutingTopProviderRow[] {
       GROUP BY provider
       ORDER BY count DESC
       LIMIT 10
-      `
+      `,
     )
     .all() as AutoRoutingTopProviderRow[];
 }

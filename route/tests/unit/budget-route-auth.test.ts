@@ -24,13 +24,13 @@ test("/api/usage/budget enforces management auth inside GET and POST handlers", 
   assert.match(getBody, /if \(authError\) return authError;/);
   assert.ok(
     getBody.indexOf("requireManagementAuth(request)") < getBody.indexOf("new URL(request.url)"),
-    "GET must authorize before reading arbitrary apiKeyId"
+    "GET must authorize before reading arbitrary apiKeyId",
   );
 
   assert.match(postBody, /const authError = await requireManagementAuth\(request\);/);
   assert.match(postBody, /if \(authError\) return authError;/);
   assert.ok(
     postBody.indexOf("requireManagementAuth(request)") < postBody.indexOf("request.json()"),
-    "POST must authorize before parsing budget mutations"
+    "POST must authorize before parsing budget mutations",
   );
 });

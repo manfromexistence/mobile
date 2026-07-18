@@ -15,7 +15,9 @@ export async function confirm(msg) {
   // "unsettled top-level await" at exit. Decline cleanly instead and point at the
   // non-interactive escape hatch so scripted callers fail safe rather than hang.
   if (!process.stdin.isTTY) {
-    process.stderr.write(`${msg} [y/N] (non-interactive stdin — declined; pass --yes to confirm)\n`);
+    process.stderr.write(
+      `${msg} [y/N] (non-interactive stdin — declined; pass --yes to confirm)\n`,
+    );
     return false;
   }
   const readline = await import("node:readline");
@@ -133,7 +135,7 @@ export function registerContexts(program) {
           scope: c.scope || "",
           description: c.description || "",
         },
-        globalOpts
+        globalOpts,
       );
     });
 
@@ -241,7 +243,7 @@ export function registerContexts(program) {
         imported = JSON.parse(readFileSync(file, "utf8"));
       } catch (e) {
         process.stderr.write(
-          `Cannot read ${file}: ${e instanceof Error ? e.message : String(e)}\n`
+          `Cannot read ${file}: ${e instanceof Error ? e.message : String(e)}\n`,
         );
         process.exit(1);
       }

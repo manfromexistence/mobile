@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { appThumbnails } from '../../app-thumbnails';
+import { appThumbnails } from "../../app-thumbnails";
 
 export default function ThumbnailsPage() {
   return (

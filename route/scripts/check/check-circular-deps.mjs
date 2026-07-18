@@ -92,7 +92,7 @@ function runDpdm() {
         cwd: projectRoot,
         stdio: "inherit",
         timeout: 120_000,
-      }
+      },
     );
 
     if (!existsSync(tmpFile)) {
@@ -134,7 +134,7 @@ function main() {
   // após baseline ser estabelecida.
   console.log(`[circular-deps] circularDeps=${result.count}`);
   console.log(
-    `[circular-deps] Advisory — add to quality-baseline.json: { "value": ${result.count}, "direction": "down" }`
+    `[circular-deps] Advisory — add to quality-baseline.json: { "value": ${result.count}, "direction": "down" }`,
   );
   process.exit(0);
 }

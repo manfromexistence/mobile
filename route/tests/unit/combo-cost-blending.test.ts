@@ -52,7 +52,7 @@ test("blendCost: falls back to input-only when output price is missing", () => {
   assert.strictEqual(
     resultUndefined,
     3.0,
-    "blendCost(3.0, Number(undefined)) should fall back to 3.0"
+    "blendCost(3.0, Number(undefined)) should fall back to 3.0",
   );
 });
 
@@ -61,7 +61,7 @@ test("blendCost: reasoning model ($3 input / $15 output) scores as 7.8, more exp
   const blendedB = 5 * 0.6 + 5 * 0.4; // 5.0
   assert.ok(
     blendedA > blendedB,
-    "reasoning model should be scored as more expensive after blending"
+    "reasoning model should be scored as more expensive after blending",
   );
   assert.strictEqual(blendedA, 7.8);
   assert.strictEqual(blendedB, 5.0);

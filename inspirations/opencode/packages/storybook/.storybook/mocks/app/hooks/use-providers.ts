@@ -1,4 +1,4 @@
-const model_id = "claude-3-7-sonnet"
+const model_id = "claude-3-7-sonnet";
 
 const provider = {
   id: "anthropic",
@@ -10,7 +10,7 @@ const provider = {
       variants: { fast: {}, thinking: {} },
     },
   },
-}
+};
 
 export function useProviders() {
   return {
@@ -19,5 +19,5 @@ export function useProviders() {
     connected: () => [provider],
     paid: () => [provider],
     popular: () => [provider],
-  }
+  };
 }

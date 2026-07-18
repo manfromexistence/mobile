@@ -108,7 +108,7 @@ export class DynamicCertStore {
   /** An SNICallback for `tls.createServer`/`tls.TLSSocket` (`{ SNICallback }`). */
   createSNICallback(): (
     servername: string,
-    cb: (err: Error | null, ctx?: tls.SecureContext) => void
+    cb: (err: Error | null, ctx?: tls.SecureContext) => void,
   ) => void {
     return (servername, cb) => {
       this.getSecureContext(servername)

@@ -142,7 +142,7 @@ test.describe("Combo Unification", () => {
       page
         .locator("button")
         .filter({ has: page.locator("span", { hasText: "layers" }) })
-        .filter({ hasText: "All" })
+        .filter({ hasText: "All" }),
     ).toBeVisible();
     await expect(page.getByRole("button", { name: /intelligent/i })).toBeVisible();
     await expect(page.getByRole("button", { name: /deterministic/i })).toBeVisible();

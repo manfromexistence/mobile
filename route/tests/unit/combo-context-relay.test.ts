@@ -14,8 +14,9 @@ const { registerCodexConnection } = await import("../../open-sse/services/codexQ
 const { clearSessions, touchSession } = await import("../../open-sse/services/sessionManager.ts");
 const { resetAllComboMetrics } = await import("../../open-sse/services/comboMetrics.ts");
 const { resetAllCircuitBreakers } = await import("../../src/shared/utils/circuitBreaker.ts");
-const { resetAll: resetAllSemaphores } =
-  await import("../../open-sse/services/rateLimitSemaphore.ts");
+const { resetAll: resetAllSemaphores } = await import(
+  "../../open-sse/services/rateLimitSemaphore.ts"
+);
 const { _resetAllDecks } = await import("../../src/shared/utils/shuffleDeck.ts");
 
 const originalFetch = globalThis.fetch;
@@ -51,7 +52,7 @@ function providerBreakerOpenResponse() {
         "content-type": "application/json",
         "x-omniroute-provider-breaker": "open",
       },
-    }
+    },
   );
 }
 
@@ -72,7 +73,7 @@ function buildQuotaResponse(usedPercent, resetAfterSeconds = 3600) {
     {
       status: 200,
       headers: { "content-type": "application/json" },
-    }
+    },
   );
 }
 
@@ -397,7 +398,7 @@ test("getLastSessionModel uses latest id as deterministic tie-breaker", async ()
     .prepare(
       `UPDATE session_model_history
        SET used_at = ?
-       WHERE session_id = ? AND combo_name = ?`
+       WHERE session_id = ? AND combo_name = ?`,
     )
     .run("2026-05-26 12:00:00", sessionId, comboName);
 
@@ -460,7 +461,7 @@ test("handleComboChat universal handoff does not accumulate injected handoffs ac
   const fallbackBody = calls.find((call) => call.modelStr === "anthropic/fallback")?.body;
   const handoffMessages = (fallbackBody.messages || []).filter(
     (message) =>
-      typeof message?.content === "string" && message.content.includes("<context_handoff>")
+      typeof message?.content === "string" && message.content.includes("<context_handoff>"),
   );
 
   assert.equal(handoffMessages.length, 1);
@@ -479,7 +480,7 @@ test("handleComboChat universal handoff detects model switch before recording cu
     .prepare(
       `UPDATE session_model_history
        SET used_at = ?
-       WHERE session_id = ? AND combo_name = ?`
+       WHERE session_id = ? AND combo_name = ?`,
     )
     .run("2000-01-01 00:00:00", sessionId, comboName);
 
@@ -546,7 +547,7 @@ test("context_cache_protection: pins body.model to last session model when histo
     sessionId,
     comboName,
     "anthropic/claude-3-5-sonnet",
-    "anthropic"
+    "anthropic",
   );
 
   // Ensure anthropic provider has an active connection so the pin isn't
@@ -554,7 +555,7 @@ test("context_cache_protection: pins body.model to last session model when histo
   const db = core.getDbInstance();
   db.prepare(
     `INSERT OR IGNORE INTO provider_connections (id, provider, auth_type, name, is_active, test_status, created_at, updated_at)
-     VALUES ('test-anthropic-conn', 'anthropic', 'api_key', 'test-anthropic', 1, 'active', datetime('now'), datetime('now'))`
+     VALUES ('test-anthropic-conn', 'anthropic', 'api_key', 'test-anthropic', 1, 'active', datetime('now'), datetime('now'))`,
   ).run();
 
   const capturedModels: string[] = [];
@@ -625,7 +626,7 @@ test("context_cache_protection: does NOT pin when no session history exists (fir
   assert.equal(
     capturedModels[0],
     "openai/gpt-4o",
-    "first request must use combo model (no pinning)"
+    "first request must use combo model (no pinning)",
   );
 });
 
@@ -642,7 +643,7 @@ test("clearSessionModelHistoryForCombo removes all pins for a combo", async () =
     "sess-B",
     comboName,
     "anthropic/claude-3-5-sonnet",
-    "anthropic"
+    "anthropic",
   );
 
   // Sanity: pins exist

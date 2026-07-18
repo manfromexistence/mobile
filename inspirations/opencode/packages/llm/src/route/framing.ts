@@ -1,6 +1,6 @@
-import type { Stream } from "effect"
-import * as ProviderShared from "../protocols/shared"
-import type { LLMError } from "../schema"
+import type { Stream } from "effect";
+import * as ProviderShared from "../protocols/shared";
+import type { LLMError } from "../schema";
 
 /**
  * Decode a streaming HTTP response body into provider-protocol frames.
@@ -17,11 +17,11 @@ import type { LLMError } from "../schema"
  * a frame into a typed chunk.
  */
 export interface Framing<Frame> {
-  readonly id: string
-  readonly frame: (bytes: Stream.Stream<Uint8Array, LLMError>) => Stream.Stream<Frame, LLMError>
+  readonly id: string;
+  readonly frame: (bytes: Stream.Stream<Uint8Array, LLMError>) => Stream.Stream<Frame, LLMError>;
 }
 
 /** Server-Sent Events framing. Used by every JSON-streaming HTTP provider. */
-export const sse: Framing<string> = { id: "sse", frame: ProviderShared.sseFraming }
+export const sse: Framing<string> = { id: "sse", frame: ProviderShared.sseFraming };
 
-export * as Framing from "./framing"
+export * as Framing from "./framing";

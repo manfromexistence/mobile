@@ -33,7 +33,7 @@ type RequestLogger = {
     status: unknown,
     statusText: unknown,
     headers: HeaderInput,
-    body: unknown
+    body: unknown,
   ) => void;
   appendProviderChunk: (chunk: string) => void;
   appendOpenAIChunk: (chunk: string) => void;
@@ -158,7 +158,7 @@ function appendBoundedChunk(
   bytes: { value: number; truncated: boolean },
   chunk: string,
   maxBytes: number,
-  maxItems = DEFAULT_MAX_STREAM_CHUNK_ITEMS
+  maxItems = DEFAULT_MAX_STREAM_CHUNK_ITEMS,
 ) {
   if (typeof chunk !== "string" || chunk.length === 0) {
     return;
@@ -193,7 +193,7 @@ function hasOwnValues(value: unknown): boolean {
 }
 
 function compactPipelinePayloads(
-  payloads: RequestPipelinePayloads
+  payloads: RequestPipelinePayloads,
 ): RequestPipelinePayloads | null {
   const result: RequestPipelinePayloads = {};
 
@@ -206,8 +206,8 @@ function compactPipelinePayloads(
       const chunkRecord = value as Record<string, unknown>;
       const compactedChunks = Object.fromEntries(
         Object.entries(chunkRecord).filter(
-          ([, chunkValue]) => Array.isArray(chunkValue) && chunkValue.length > 0
-        )
+          ([, chunkValue]) => Array.isArray(chunkValue) && chunkValue.length > 0,
+        ),
       );
       if (Object.keys(compactedChunks).length > 0) {
         result.streamChunks = compactedChunks;
@@ -293,7 +293,7 @@ export async function createRequestLogger(
   _sourceFormat?: string,
   _targetFormat?: string,
   _model?: string,
-  options: RequestLoggerOptions = {}
+  options: RequestLoggerOptions = {},
 ): Promise<RequestLogger> {
   const captureStreamChunks = options.captureStreamChunks !== false;
   // Stream chunk capture is always set up — even when the logger is disabled,

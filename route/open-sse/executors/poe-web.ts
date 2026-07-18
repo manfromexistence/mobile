@@ -85,7 +85,7 @@ export class PoeWebExecutor extends BaseExecutor {
         502,
         `Poe fetch failed: ${err instanceof Error ? err.message : "unknown"}`,
         body,
-        GQL_URL
+        GQL_URL,
       );
     }
 
@@ -116,7 +116,7 @@ export class PoeWebExecutor extends BaseExecutor {
               },
             ],
           }),
-          { headers: { "Content-Type": "application/json" } }
+          { headers: { "Content-Type": "application/json" } },
         ),
         url: GQL_URL,
         headers: reqHeaders,

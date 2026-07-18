@@ -128,7 +128,7 @@ export function parseDuckDuckGoLite(rawHtml: string): FreeSearchResult[] {
 export async function freeWebSearch(
   query: string,
   maxResults = 5,
-  timeoutMs = 10_000
+  timeoutMs = 10_000,
 ): Promise<FreeSearchResult[]> {
   const response = await safeOutboundFetch(DUCKDUCKGO_LITE_URL, {
     method: "POST",

@@ -1,7 +1,7 @@
-import type { vec4 } from '../types.js';
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { declarePI, rotation2, textureRandomizerR, textureRandomizerGB } from '../shader-utils.js';
+import type { vec4 } from "../types.js";
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { declarePI, rotation2, textureRandomizerR, textureRandomizerGB } from "../shader-utils.js";
 
 export const dotOrbitMeta = {
   maxColorCount: 10,
@@ -49,7 +49,7 @@ uniform float u_time;
 uniform sampler2D u_noiseTexture;
 
 uniform vec4 u_colorBack;
-uniform vec4 u_colors[${ dotOrbitMeta.maxColorCount }];
+uniform vec4 u_colors[${dotOrbitMeta.maxColorCount}];
 uniform float u_colorsCount;
 uniform float u_stepsPerColor;
 uniform float u_size;
@@ -60,10 +60,10 @@ in vec2 v_patternUV;
 
 out vec4 fragColor;
 
-${ declarePI }
-${ rotation2 }
-${ textureRandomizerR }
-${ textureRandomizerGB }
+${declarePI}
+${rotation2}
+${textureRandomizerR}
+${textureRandomizerGB}
 
 
 vec3 voronoiShape(vec2 uv, float time) {
@@ -117,7 +117,7 @@ void main() {
 
   vec4 gradient = u_colors[0];
   gradient.rgb *= gradient.a;
-  for (int i = 1; i < ${ dotOrbitMeta.maxColorCount }; i++) {
+  for (int i = 1; i < ${dotOrbitMeta.maxColorCount}; i++) {
     if (i >= int(u_colorsCount)) break;
     float localT = clamp(mixer - float(i - 1), 0.0, 1.0);
     localT = round(localT * steps) / steps;

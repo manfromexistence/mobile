@@ -14,10 +14,13 @@ import {
   estimateUsage as defaultEstimateUsage,
 } from "../../utils/usageTracking.ts";
 
-type ResponseLike = {
-  usage?: unknown;
-  choices?: Array<{ message?: { content?: unknown } }>;
-} | null | undefined;
+type ResponseLike =
+  | {
+      usage?: unknown;
+      choices?: Array<{ message?: { content?: unknown } }>;
+    }
+  | null
+  | undefined;
 
 export interface ClientUsageBufferDeps {
   addBufferToUsage: typeof defaultAddBuffer;
@@ -35,7 +38,7 @@ export function applyClientUsageBuffer(
   translatedResponse: ResponseLike,
   body: unknown,
   clientResponseFormat: unknown,
-  deps: ClientUsageBufferDeps = DEFAULT_DEPS
+  deps: ClientUsageBufferDeps = DEFAULT_DEPS,
 ): void {
   // Add buffer and filter usage for client (to prevent CLI context errors)
   if (translatedResponse?.usage) {
@@ -44,7 +47,7 @@ export function applyClientUsageBuffer(
   } else {
     // Fallback: estimate usage when provider returned no usage block
     const contentLength = JSON.stringify(
-      translatedResponse?.choices?.[0]?.message?.content || ""
+      translatedResponse?.choices?.[0]?.message?.content || "",
     ).length;
     if (contentLength > 0) {
       const estimated = deps.estimateUsage(body, contentLength, clientResponseFormat);

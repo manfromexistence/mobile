@@ -24,7 +24,7 @@ import {
 export function toolScore(
   tool: GrokFunctionToolSummary,
   intent: NativeToolIntent,
-  context: ToolBridgeContext
+  context: ToolBridgeContext,
 ): number {
   const name = tool.name.toLowerCase();
   const description = (tool.description || "").toLowerCase();
@@ -82,7 +82,7 @@ export function toolScore(
 
 export function pickDeclaredToolForIntent(
   intent: NativeToolIntent,
-  toolRegistry: GrokToolRegistry
+  toolRegistry: GrokToolRegistry,
 ): string | null {
   let best: { name: string; score: number } | null = null;
   for (const tool of toolRegistry.toolsByName.values()) {
@@ -95,7 +95,7 @@ export function pickDeclaredToolForIntent(
 
 export function mapGrokNativeToolToOpenAI(
   resp: GrokStreamResponse,
-  toolRegistry: GrokToolRegistry
+  toolRegistry: GrokToolRegistry,
 ): OpenAIToolCall | null {
   if (!toolRegistry.enabled || !resp.toolUsageCard) return null;
   const card = resp.toolUsageCard as Record<string, unknown>;
@@ -114,7 +114,8 @@ export function mapGrokNativeToolToOpenAI(
   }
 
   const readFile = (card.readFile || card.read_file) as
-    { args?: Record<string, unknown> } | undefined;
+    | { args?: Record<string, unknown> }
+    | undefined;
   if (readFile?.args) {
     const rawPath = readFile.args.filePath || readFile.args.file_path || readFile.args.path;
     const name = pickDeclaredToolForIntent("readFile", toolRegistry);
@@ -153,7 +154,7 @@ export function mapGrokNativeToolToOpenAI(
         requestedUrl ? { ...webSearch.args, url: requestedUrl, uri: requestedUrl } : webSearch.args,
         toolRegistry,
         requestedUrl ? "webFetch" : "webSearch",
-        { preserveUnknownArgs: false }
+        { preserveUnknownArgs: false },
       );
       if (toolRegistry.executedToolKeys.has(semanticToolKey(name, args))) return null;
       return { id, type: "function", function: { name, arguments: JSON.stringify(args) } };
@@ -161,7 +162,8 @@ export function mapGrokNativeToolToOpenAI(
   }
 
   const browsePage = (card.browsePage || card.browse_page) as
-    { args?: Record<string, unknown> } | undefined;
+    | { args?: Record<string, unknown> }
+    | undefined;
   if (browsePage?.args) {
     const url = firstString(browsePage.args.url, browsePage.args.uri);
     const name = pickDeclaredToolForIntent("browsePage", toolRegistry);
@@ -171,7 +173,7 @@ export function mapGrokNativeToolToOpenAI(
         { ...browsePage.args, url, uri: url, input: url },
         toolRegistry,
         "browsePage",
-        { preserveUnknownArgs: false }
+        { preserveUnknownArgs: false },
       );
       if (toolRegistry.executedToolKeys.has(semanticToolKey(name, args))) return null;
       return { id, type: "function", function: { name, arguments: JSON.stringify(args) } };

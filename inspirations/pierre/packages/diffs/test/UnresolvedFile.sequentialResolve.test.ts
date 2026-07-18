@@ -1,44 +1,44 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from "bun:test";
 
-import { disposeHighlighter } from '../src';
-import { UnresolvedFile } from '../src/components/UnresolvedFile';
-import { DEFAULT_THEMES } from '../src/constants';
+import { disposeHighlighter } from "../src";
+import { UnresolvedFile } from "../src/components/UnresolvedFile";
+import { DEFAULT_THEMES } from "../src/constants";
 import type {
   FileContents,
   MergeConflictActionPayload,
   MergeConflictResolution,
-} from '../src/types';
+} from "../src/types";
 import {
   parseMergeConflictDiffFromFile,
   type ParseMergeConflictDiffFromFileResult,
-} from '../src/utils/parseMergeConflictDiffFromFile';
-import { installDom, wait } from './domHarness';
+} from "../src/utils/parseMergeConflictDiffFromFile";
+import { installDom, wait } from "./domHarness";
 
 // Two independent conflicts, mirroring the docs "Merge conflict resolution UI"
 // example, which lets us resolve one and then attempt to resolve the other.
 const TWO_CONFLICT_FILE: FileContents = {
-  name: 'session.ts',
+  name: "session.ts",
   contents: [
-    'const start = true;',
-    '<<<<<<< HEAD',
-    'const ttl = 12;',
-    '=======',
-    'const ttl = 24;',
-    '>>>>>>> feature',
-    'const middle = true;',
-    '<<<<<<< HEAD',
-    'const max = 1;',
-    '=======',
-    'const max = 2;',
-    '>>>>>>> feature',
-    'const end = true;',
-    '',
-  ].join('\n'),
+    "const start = true;",
+    "<<<<<<< HEAD",
+    "const ttl = 12;",
+    "=======",
+    "const ttl = 24;",
+    ">>>>>>> feature",
+    "const middle = true;",
+    "<<<<<<< HEAD",
+    "const max = 1;",
+    "=======",
+    "const max = 2;",
+    ">>>>>>> feature",
+    "const end = true;",
+    "",
+  ].join("\n"),
 };
 
 type ConflictState = Pick<
   ParseMergeConflictDiffFromFileResult,
-  'fileDiff' | 'actions' | 'markerRows'
+  "fileDiff" | "actions" | "markerRows"
 >;
 
 // Reproduces what packages/diffs/src/react/utils/useUnresolvedFileInstance.ts
@@ -46,19 +46,19 @@ type ConflictState = Pick<
 // onMergeConflictAction), keeps {fileDiff, actions, markerRows} as its own
 // state, and after every state change re-renders the instance from that state.
 function mountControlledUnresolvedFile(file: FileContents) {
-  const fileContainer = document.createElement('div');
+  const fileContainer = document.createElement("div");
   document.body.appendChild(fileContainer);
 
   let state: ConflictState = parseMergeConflictDiffFromFile(file);
 
   const onMergeConflictAction = (
     payload: MergeConflictActionPayload,
-    inst: UnresolvedFile
+    inst: UnresolvedFile,
   ): void => {
     const result = inst.resolveConflict(
       payload.conflict.conflictIndex,
       payload.resolution,
-      state.fileDiff
+      state.fileDiff,
     );
     if (result == null) {
       return;
@@ -80,11 +80,11 @@ function mountControlledUnresolvedFile(file: FileContents) {
   const instance = new UnresolvedFile(
     {
       theme: DEFAULT_THEMES,
-      mergeConflictActionsType: 'default',
+      mergeConflictActionsType: "default",
       onMergeConflictAction,
     },
     undefined,
-    true
+    true,
   );
 
   instance.hydrate({
@@ -100,11 +100,11 @@ function mountControlledUnresolvedFile(file: FileContents) {
 function actionButton(
   fileContainer: HTMLElement,
   conflictIndex: number,
-  resolution: MergeConflictResolution
+  resolution: MergeConflictResolution,
 ): HTMLButtonElement | null {
   const root = fileContainer.shadowRoot ?? fileContainer;
   return root.querySelector<HTMLButtonElement>(
-    `button[data-merge-conflict-action="${resolution}"][data-merge-conflict-conflict-index="${conflictIndex}"]`
+    `button[data-merge-conflict-action="${resolution}"][data-merge-conflict-conflict-index="${conflictIndex}"]`,
   );
 }
 
@@ -113,7 +113,7 @@ function actionButton(
 async function waitForActionButton(
   fileContainer: HTMLElement,
   conflictIndex: number,
-  resolution: MergeConflictResolution
+  resolution: MergeConflictResolution,
 ): Promise<HTMLButtonElement> {
   for (let attempt = 0; attempt < 50; attempt++) {
     const button = actionButton(fileContainer, conflictIndex, resolution);
@@ -122,31 +122,22 @@ async function waitForActionButton(
     }
     await wait(10);
   }
-  throw new Error(
-    `Timed out waiting for conflict ${conflictIndex} ${resolution} button`
-  );
+  throw new Error(`Timed out waiting for conflict ${conflictIndex} ${resolution} button`);
 }
 
 function clickActionButton(button: HTMLButtonElement): void {
-  button.dispatchEvent(
-    new window.MouseEvent('click', { bubbles: true, composed: true })
-  );
+  button.dispatchEvent(new window.MouseEvent("click", { bubbles: true, composed: true }));
 }
 
-describe('UnresolvedFile sequential conflict resolution', () => {
-  test('a second conflict can still be resolved after the first', async () => {
+describe("UnresolvedFile sequential conflict resolution", () => {
+  test("a second conflict can still be resolved after the first", async () => {
     const { cleanup } = installDom();
-    const { fileContainer, getState } =
-      mountControlledUnresolvedFile(TWO_CONFLICT_FILE);
+    const { fileContainer, getState } = mountControlledUnresolvedFile(TWO_CONFLICT_FILE);
     try {
       // Both conflicts start unresolved with clickable action buttons.
       expect(getState().actions[0]).not.toBeUndefined();
       expect(getState().actions[1]).not.toBeUndefined();
-      const firstButton = await waitForActionButton(
-        fileContainer,
-        0,
-        'current'
-      );
+      const firstButton = await waitForActionButton(fileContainer, 0, "current");
 
       // Resolve the first conflict — this updates the rendered diff.
       clickActionButton(firstButton);
@@ -156,11 +147,7 @@ describe('UnresolvedFile sequential conflict resolution', () => {
       expect(getState().actions[1]).not.toBeUndefined();
 
       // The second conflict's buttons should still be present and functional.
-      const secondButton = await waitForActionButton(
-        fileContainer,
-        1,
-        'incoming'
-      );
+      const secondButton = await waitForActionButton(fileContainer, 1, "incoming");
 
       clickActionButton(secondButton);
       await wait(0);
@@ -168,7 +155,7 @@ describe('UnresolvedFile sequential conflict resolution', () => {
       // BUG: clicking the second conflict's action does nothing.
       expect(getState().actions[1]).toBeUndefined();
     } finally {
-      document.body.innerHTML = '';
+      document.body.innerHTML = "";
       await wait(0);
       cleanup();
       await disposeHighlighter();

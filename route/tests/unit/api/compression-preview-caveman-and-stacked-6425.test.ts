@@ -26,9 +26,7 @@ import { makeManagementSessionRequest } from "../../helpers/managementSession.ts
 
 // ─── temp DB isolation ────────────────────────────────────────────────────────
 
-const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-compression-preview-6425-")
-);
+const TEST_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-compression-preview-6425-"));
 const originalDataDir = process.env.DATA_DIR;
 const originalJwtSecret = process.env.JWT_SECRET;
 
@@ -74,22 +72,19 @@ test.after(() => {
 // ─── tests ────────────────────────────────────────────────────────────────────
 
 test("#6425 (a): POST /api/compression/preview accepts mode:'caveman' and produces >0% savings", async () => {
-  const request = await makeManagementSessionRequest(
-    "http://localhost/api/compression/preview",
-    {
-      method: "POST",
-      body: {
-        messages: [{ role: "user", content: CAVEMAN_TRIGGER }],
-        mode: "caveman",
-      },
-    }
-  );
+  const request = await makeManagementSessionRequest("http://localhost/api/compression/preview", {
+    method: "POST",
+    body: {
+      messages: [{ role: "user", content: CAVEMAN_TRIGGER }],
+      mode: "caveman",
+    },
+  });
 
   const response = await previewRoute.POST(request);
   assert.equal(
     response.status,
     200,
-    `mode:"caveman" should be accepted (was rejected before #6425 fix), got ${response.status}`
+    `mode:"caveman" should be accepted (was rejected before #6425 fix), got ${response.status}`,
   );
 
   const body = (await response.json()) as {
@@ -103,22 +98,19 @@ test("#6425 (a): POST /api/compression/preview accepts mode:'caveman' and produc
   assert.ok(body.originalTokens > 0, "originalTokens should be > 0");
   assert.ok(
     body.compressedTokens < body.originalTokens,
-    `caveman rules should shrink well-known filler prose (got ${body.compressedTokens} vs ${body.originalTokens})`
+    `caveman rules should shrink well-known filler prose (got ${body.compressedTokens} vs ${body.originalTokens})`,
   );
   assert.ok(body.savingsPct > 0, `savingsPct should be > 0, got ${body.savingsPct}`);
 });
 
 test("#6425 (b): POST /api/compression/preview mode:'stacked' returns >0% on caveman-trigger prose", async () => {
-  const request = await makeManagementSessionRequest(
-    "http://localhost/api/compression/preview",
-    {
-      method: "POST",
-      body: {
-        messages: [{ role: "user", content: CAVEMAN_TRIGGER }],
-        mode: "stacked",
-      },
-    }
-  );
+  const request = await makeManagementSessionRequest("http://localhost/api/compression/preview", {
+    method: "POST",
+    body: {
+      messages: [{ role: "user", content: CAVEMAN_TRIGGER }],
+      mode: "stacked",
+    },
+  });
 
   const response = await previewRoute.POST(request);
   assert.equal(response.status, 200, `Expected 200, got ${response.status}`);
@@ -133,7 +125,7 @@ test("#6425 (b): POST /api/compression/preview mode:'stacked' returns >0% on cav
   assert.ok(body.originalTokens > 0, "originalTokens should be > 0");
   assert.ok(
     body.savingsPct > 0,
-    `stacked pipeline (default [rtk, caveman]) should produce >0% savings on filler-heavy prose, got ${body.savingsPct}% (regression: caveman step was silently disabled by DEFAULT_CAVEMAN_CONFIG.enabled=false)`
+    `stacked pipeline (default [rtk, caveman]) should produce >0% savings on filler-heavy prose, got ${body.savingsPct}% (regression: caveman step was silently disabled by DEFAULT_CAVEMAN_CONFIG.enabled=false)`,
   );
 
   // Assert the caveman step in the breakdown actually did work — this is the tightest guard
@@ -142,6 +134,6 @@ test("#6425 (b): POST /api/compression/preview mode:'stacked' returns >0% on cav
   assert.ok(cavemanStep, "engineBreakdown should include a caveman step");
   assert.ok(
     cavemanStep.savingsPercent > 0,
-    `caveman step should report >0% savings on trigger prose, got ${cavemanStep.savingsPercent}%`
+    `caveman step should report >0% savings on trigger prose, got ${cavemanStep.savingsPercent}%`,
   );
 });

@@ -1,14 +1,14 @@
-import { expect, test } from "@playwright/test"
-import { mockOpenCodeServer } from "../utils/mock-server"
-import { expectSessionTitle } from "../utils/waits"
+import { expect, test } from "@playwright/test";
+import { mockOpenCodeServer } from "../utils/mock-server";
+import { expectSessionTitle } from "../utils/waits";
 
-const directory = "C:/OpenCode/HiddenTerminalRegression"
-const projectID = "proj_hidden_terminal_regression"
-const sessionID = "ses_hidden_terminal_regression"
-const title = "Hidden terminal regression"
+const directory = "C:/OpenCode/HiddenTerminalRegression";
+const projectID = "proj_hidden_terminal_regression";
+const sessionID = "ses_hidden_terminal_regression";
+const title = "Hidden terminal regression";
 
 test("unmounts the terminal renderer while the pane is hidden", async ({ page }) => {
-  await page.setViewportSize({ width: 1400, height: 900 })
+  await page.setViewportSize({ width: 1400, height: 900 });
   await mockOpenCodeServer(page, {
     directory,
     project: {
@@ -42,38 +42,42 @@ test("unmounts the terminal renderer while the pane is hidden", async ({ page })
       },
     ],
     pageMessages: () => ({ items: [] }),
-  })
+  });
   await page.route("**/pty", (route) =>
     route.fulfill({
       status: 200,
       contentType: "application/json",
       body: JSON.stringify({ id: "pty_hidden_terminal", title: "Terminal 1" }),
     }),
-  )
+  );
   await page.route("**/pty/pty_hidden_terminal", (route) =>
     route.fulfill({ status: 200, contentType: "application/json", body: "{}" }),
-  )
-  await page.routeWebSocket("**/pty/pty_hidden_terminal/connect", () => undefined)
+  );
+  await page.routeWebSocket("**/pty/pty_hidden_terminal/connect", () => undefined);
 
-  await page.goto(`/${base64Encode(directory)}/session/${sessionID}`)
-  await expectSessionTitle(page, title)
+  await page.goto(`/${base64Encode(directory)}/session/${sessionID}`);
+  await expectSessionTitle(page, title);
 
-  await page.keyboard.press("Control+Backquote")
-  const panel = page.locator("#terminal-panel")
-  await expect(panel).toHaveAttribute("aria-hidden", "false")
-  await expect(page.locator('[data-component="terminal"]')).toBeVisible()
+  await page.keyboard.press("Control+Backquote");
+  const panel = page.locator("#terminal-panel");
+  await expect(panel).toHaveAttribute("aria-hidden", "false");
+  await expect(page.locator('[data-component="terminal"]')).toBeVisible();
 
-  await page.keyboard.press("Control+Backquote")
-  await expect(panel).toHaveAttribute("aria-hidden", "true")
-  await expect(page.locator('[data-component="terminal"]')).toHaveCount(0)
+  await page.keyboard.press("Control+Backquote");
+  await expect(panel).toHaveAttribute("aria-hidden", "true");
+  await expect(page.locator('[data-component="terminal"]')).toHaveCount(0);
 
-  await page.setViewportSize({ width: 1200, height: 700 })
-  await expect(page.locator('[data-component="terminal"]')).toHaveCount(0)
+  await page.setViewportSize({ width: 1200, height: 700 });
+  await expect(page.locator('[data-component="terminal"]')).toHaveCount(0);
 
-  await page.keyboard.press("Control+Backquote")
-  await expect(page.locator('[data-component="terminal"]')).toBeVisible()
-})
+  await page.keyboard.press("Control+Backquote");
+  await expect(page.locator('[data-component="terminal"]')).toBeVisible();
+});
 
 function base64Encode(value: string) {
-  return Buffer.from(value, "utf8").toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "")
+  return Buffer.from(value, "utf8")
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=/g, "");
 }

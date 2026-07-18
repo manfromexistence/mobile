@@ -52,7 +52,7 @@ export async function acquireQuotaShareConcurrencySlot(
   target: ResolvedComboTarget | undefined,
   cap: number | null,
   opts: QuotaShareSlotOptions,
-  log: SlotLogger
+  log: SlotLogger,
 ): Promise<(() => void) | null> {
   const connectionId = target?.connectionId ?? "";
   if (!connectionId || cap === null || cap <= 0) return null;
@@ -67,7 +67,7 @@ export async function acquireQuotaShareConcurrencySlot(
     // proceed without a slot rather than reject a dispatchable request.
     log.warn(
       "COMBO",
-      `Quota-share concurrency: connection ${connectionId} gate saturated (cap=${cap}) — proceeding without a slot`
+      `Quota-share concurrency: connection ${connectionId} gate saturated (cap=${cap}) — proceeding without a slot`,
     );
     return null;
   }

@@ -1,45 +1,50 @@
-import type { HttpRecorder } from "@opencode-ai/http-recorder"
-import { describe } from "bun:test"
-import { Effect } from "effect"
-import type { Model } from "../src"
-import { goldenScenarioTags, goldenScenarioTitle, runGoldenScenario, type GoldenScenarioID } from "./recorded-scenarios"
-import { recordedTests } from "./recorded-test"
-import { kebab } from "./recorded-utils"
+import type { HttpRecorder } from "@opencode-ai/http-recorder";
+import { describe } from "bun:test";
+import { Effect } from "effect";
+import type { Model } from "../src";
+import {
+  goldenScenarioTags,
+  goldenScenarioTitle,
+  runGoldenScenario,
+  type GoldenScenarioID,
+} from "./recorded-scenarios";
+import { recordedTests } from "./recorded-test";
+import { kebab } from "./recorded-utils";
 
-type Transport = "http" | "websocket"
+type Transport = "http" | "websocket";
 
 type ScenarioInput =
   | GoldenScenarioID
   | {
-      readonly id: GoldenScenarioID
-      readonly name?: string
-      readonly cassette?: string
-      readonly tags?: ReadonlyArray<string>
-      readonly maxTokens?: number
-      readonly temperature?: number | false
-      readonly timeout?: number
-    }
+      readonly id: GoldenScenarioID;
+      readonly name?: string;
+      readonly cassette?: string;
+      readonly tags?: ReadonlyArray<string>;
+      readonly maxTokens?: number;
+      readonly temperature?: number | false;
+      readonly timeout?: number;
+    };
 
 type TargetInput = {
-  readonly name: string
-  readonly model: Model
-  readonly protocol?: string
-  readonly requires?: ReadonlyArray<string>
-  readonly transport?: Transport
-  readonly prefix?: string
-  readonly tags?: ReadonlyArray<string>
-  readonly metadata?: Record<string, unknown>
-  readonly options?: HttpRecorder.RecorderOptions
-  readonly scenarios: ReadonlyArray<ScenarioInput>
-}
+  readonly name: string;
+  readonly model: Model;
+  readonly protocol?: string;
+  readonly requires?: ReadonlyArray<string>;
+  readonly transport?: Transport;
+  readonly prefix?: string;
+  readonly tags?: ReadonlyArray<string>;
+  readonly metadata?: Record<string, unknown>;
+  readonly options?: HttpRecorder.RecorderOptions;
+  readonly scenarios: ReadonlyArray<ScenarioInput>;
+};
 
-const scenarioInput = (input: ScenarioInput) => (typeof input === "string" ? { id: input } : input)
+const scenarioInput = (input: ScenarioInput) => (typeof input === "string" ? { id: input } : input);
 
 const defaultPrefix = (target: TargetInput) => {
-  if (target.prefix) return target.prefix
-  const transport = target.transport === "websocket" ? "-websocket" : ""
-  return `${target.model.provider}-${target.protocol ?? target.model.route.id}${transport}`
-}
+  if (target.prefix) return target.prefix;
+  const transport = target.transport === "websocket" ? "-websocket" : "";
+  return `${target.model.provider}-${target.protocol ?? target.model.route.id}${transport}`;
+};
 
 const metadata = (target: TargetInput) => ({
   provider: target.model.provider,
@@ -48,12 +53,12 @@ const metadata = (target: TargetInput) => ({
   transport: target.transport ?? "http",
   model: target.model.id,
   ...target.metadata,
-})
+});
 
 const tags = (target: TargetInput) => [
   ...(target.transport === "websocket" ? ["transport:websocket"] : []),
   ...(target.tags ?? []),
-]
+];
 
 const runTarget = (target: TargetInput) => {
   const recorded = recordedTests({
@@ -64,12 +69,12 @@ const runTarget = (target: TargetInput) => {
     tags: tags(target),
     metadata: metadata(target),
     options: target.options,
-  })
+  });
 
   describe(`${target.name} recorded`, () => {
     target.scenarios.forEach((raw) => {
-      const input = scenarioInput(raw)
-      const name = input.name ?? goldenScenarioTitle(input.id)
+      const input = scenarioInput(raw);
+      const name = input.name ?? goldenScenarioTitle(input.id);
       recorded.effect.with(
         name,
         {
@@ -84,14 +89,14 @@ const runTarget = (target: TargetInput) => {
               model: target.model,
               maxTokens: input.maxTokens,
               temperature: input.temperature,
-            })
+            });
           }),
         input.timeout,
-      )
-    })
-  })
-}
+      );
+    });
+  });
+};
 
 export const describeRecordedGoldenScenarios = (targets: ReadonlyArray<TargetInput>) => {
-  targets.forEach(runTarget)
-}
+  targets.forEach(runTarget);
+};

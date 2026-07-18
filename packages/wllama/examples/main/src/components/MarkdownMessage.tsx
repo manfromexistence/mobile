@@ -1,10 +1,10 @@
-import type { Components } from "react-markdown"
-import ReactMarkdown from "react-markdown"
-import remarkBreaks from "remark-breaks"
-import remarkGfm from "remark-gfm"
+import type { Components } from "react-markdown";
+import ReactMarkdown from "react-markdown";
+import remarkBreaks from "remark-breaks";
+import remarkGfm from "remark-gfm";
 
 interface MarkdownMessageProps {
-  content: string
+  content: string;
 }
 
 const markdownComponents: Components = {
@@ -15,7 +15,7 @@ const markdownComponents: Components = {
         <code className="bg-base-200 rounded px-1 py-[2px] text-sm" {...props}>
           {children}
         </code>
-      )
+      );
     }
 
     return (
@@ -24,22 +24,16 @@ const markdownComponents: Components = {
           {children}
         </code>
       </pre>
-    )
+    );
   },
   a({ href, children, ...props }) {
     return (
-      <a
-        href={href}
-        className="link"
-        target="_blank"
-        rel="noreferrer"
-        {...props}
-      >
+      <a href={href} className="link" target="_blank" rel="noreferrer" {...props}>
         {children}
       </a>
-    )
+    );
   },
-}
+};
 
 export function MarkdownMessage({ content }: MarkdownMessageProps) {
   return (
@@ -51,5 +45,5 @@ export function MarkdownMessage({ content }: MarkdownMessageProps) {
     >
       {content}
     </ReactMarkdown>
-  )
+  );
 }

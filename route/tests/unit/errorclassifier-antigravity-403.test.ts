@@ -16,8 +16,7 @@ test("403 'has not been used in project' (antigravity) -> PROJECT_ROUTE_ERROR", 
     error: {
       code: 403,
       status: "PERMISSION_DENIED",
-      message:
-        "Cloud AI Companion API has not been used in project 123 before or it is disabled.",
+      message: "Cloud AI Companion API has not been used in project 123 before or it is disabled.",
     },
   };
   assert.equal(
@@ -27,7 +26,9 @@ test("403 'has not been used in project' (antigravity) -> PROJECT_ROUTE_ERROR", 
 });
 
 test("403 SERVICE_DISABLED / PERMISSION_DENIED (gemini-cli) -> PROJECT_ROUTE_ERROR", () => {
-  const body = { error: { status: "PERMISSION_DENIED", details: [{ reason: "SERVICE_DISABLED" }] } };
+  const body = {
+    error: { status: "PERMISSION_DENIED", details: [{ reason: "SERVICE_DISABLED" }] },
+  };
   assert.equal(
     classifyProviderError(403, body, "gemini-cli"),
     PROVIDER_ERROR_TYPES.PROJECT_ROUTE_ERROR,

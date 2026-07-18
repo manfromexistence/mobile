@@ -63,7 +63,7 @@ function buildJsonErrorPayload(): Buffer {
     JSON.stringify({
       error: { message: "rate limited", code: "resource_exhausted" },
     }),
-    "utf8"
+    "utf8",
   );
 }
 

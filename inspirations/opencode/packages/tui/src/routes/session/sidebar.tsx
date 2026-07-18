@@ -1,27 +1,27 @@
-import { useProject } from "../../context/project"
-import { useSync } from "../../context/sync"
-import { createMemo, Show } from "solid-js"
-import { useTheme } from "../../context/theme"
-import { useTuiConfig } from "../../config"
-import { InstallationChannel, InstallationVersion } from "@opencode-ai/core/installation/version"
-import { usePluginRuntime } from "../../plugin/runtime"
+import { useProject } from "../../context/project";
+import { useSync } from "../../context/sync";
+import { createMemo, Show } from "solid-js";
+import { useTheme } from "../../context/theme";
+import { useTuiConfig } from "../../config";
+import { InstallationChannel, InstallationVersion } from "@opencode-ai/core/installation/version";
+import { usePluginRuntime } from "../../plugin/runtime";
 
-import { getScrollAcceleration } from "../../util/scroll"
-import { WorkspaceLabel } from "../../component/workspace-label"
+import { getScrollAcceleration } from "../../util/scroll";
+import { WorkspaceLabel } from "../../component/workspace-label";
 
 export function Sidebar(props: { sessionID: string; overlay?: boolean }) {
-  const pluginRuntime = usePluginRuntime()
-  const project = useProject()
-  const sync = useSync()
-  const { theme } = useTheme()
-  const tuiConfig = useTuiConfig()
-  const session = createMemo(() => sync.session.get(props.sessionID))
+  const pluginRuntime = usePluginRuntime();
+  const project = useProject();
+  const sync = useSync();
+  const { theme } = useTheme();
+  const tuiConfig = useTuiConfig();
+  const session = createMemo(() => sync.session.get(props.sessionID));
   const workspace = () => {
-    const workspaceID = session()?.workspaceID
-    if (!workspaceID) return
-    return project.workspace.get(workspaceID)
-  }
-  const scrollAcceleration = createMemo(() => getScrollAcceleration(tuiConfig))
+    const workspaceID = session()?.workspaceID;
+    if (!workspaceID) return;
+    return project.workspace.get(workspaceID);
+  };
+  const scrollAcceleration = createMemo(() => getScrollAcceleration(tuiConfig));
 
   return (
     <Show when={session()}>
@@ -64,7 +64,14 @@ export function Sidebar(props: { sessionID: string; overlay?: boolean }) {
                   <text fg={theme.textMuted}>
                     <Show
                       when={workspace()}
-                      fallback={<WorkspaceLabel type="unknown" name={session()!.workspaceID!} status="error" icon />}
+                      fallback={
+                        <WorkspaceLabel
+                          type="unknown"
+                          name={session()!.workspaceID!}
+                          status="error"
+                          icon
+                        />
+                      }
                     >
                       {(item) => (
                         <WorkspaceLabel
@@ -87,7 +94,11 @@ export function Sidebar(props: { sessionID: string; overlay?: boolean }) {
         </scrollbox>
 
         <box flexShrink={0} gap={1} paddingTop={1}>
-          <pluginRuntime.Slot name="sidebar_footer" mode="single_winner" session_id={props.sessionID}>
+          <pluginRuntime.Slot
+            name="sidebar_footer"
+            mode="single_winner"
+            session_id={props.sessionID}
+          >
             <text fg={theme.textMuted}>
               <span style={{ fg: theme.success }}>•</span> <b>Open</b>
               <span style={{ fg: theme.text }}>
@@ -99,5 +110,5 @@ export function Sidebar(props: { sessionID: string; overlay?: boolean }) {
         </box>
       </box>
     </Show>
-  )
+  );
 }

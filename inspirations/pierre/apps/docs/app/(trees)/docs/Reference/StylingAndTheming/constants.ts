@@ -1,8 +1,8 @@
-import { docsCodeSnippet } from '@/lib/docsCodeSnippet';
+import { docsCodeSnippet } from "@/lib/docsCodeSnippet";
 
 export const STYLING_THEMING_REFERENCE_EXAMPLE = docsCodeSnippet(
-  'theme-to-tree-styles.ts',
+  "theme-to-tree-styles.ts",
   `import { themeToTreeStyles } from '@pierre/trees';
 
-const treeStyles = themeToTreeStyles(theme);`
+const treeStyles = themeToTreeStyles(theme);`,
 );

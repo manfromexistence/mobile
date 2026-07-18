@@ -120,12 +120,22 @@ function renderTable(rows, schema, opts = {}) {
 
   if (!quiet) {
     lines.push(separator);
-    lines.push(renderRow(cols.map((c) => c.header), true));
+    lines.push(
+      renderRow(
+        cols.map((c) => c.header),
+        true,
+      ),
+    );
   }
   lines.push(separator);
 
   for (const row of rows) {
-    lines.push(renderRow(cols.map((c) => formatCell(row[c.key], c)), false));
+    lines.push(
+      renderRow(
+        cols.map((c) => formatCell(row[c.key], c)),
+        false,
+      ),
+    );
   }
   lines.push(separator);
 

@@ -41,7 +41,7 @@ test("VertexExecutor.buildUrl uses project from Service Account JSON and configu
 
   assert.equal(
     url,
-    "https://aiplatform.googleapis.com/v1/projects/proj-eu/locations/europe-west4/publishers/google/models/gemini-2.5-flash:streamGenerateContent?alt=sse"
+    "https://aiplatform.googleapis.com/v1/projects/proj-eu/locations/europe-west4/publishers/google/models/gemini-2.5-flash:streamGenerateContent?alt=sse",
   );
 });
 
@@ -54,7 +54,7 @@ test("VertexExecutor.buildUrl defaults to us-central1 and unknown-project when p
 
   assert.equal(
     missingProject,
-    "https://aiplatform.googleapis.com/v1/projects/unknown-project/locations/us-central1/publishers/google/models/gemini-2.5-flash:generateContent"
+    "https://aiplatform.googleapis.com/v1/projects/unknown-project/locations/us-central1/publishers/google/models/gemini-2.5-flash:generateContent",
   );
 });
 
@@ -66,9 +66,12 @@ test("VertexExecutor.buildUrl routes a non-JSON Express API key to the project-l
 
   assert.equal(
     expressUrl,
-    "https://aiplatform.googleapis.com/v1/publishers/google/models/gemini-2.5-flash:generateContent?key=express-key-abc"
+    "https://aiplatform.googleapis.com/v1/publishers/google/models/gemini-2.5-flash:generateContent?key=express-key-abc",
   );
-  assert.ok(!expressUrl.includes("/projects/"), "Express key URL must not route through a project path");
+  assert.ok(
+    !expressUrl.includes("/projects/"),
+    "Express key URL must not route through a project path",
+  );
 });
 
 test("VertexExecutor.buildUrl routes partner and org-prefixed models to the global partner endpoint", () => {
@@ -82,11 +85,11 @@ test("VertexExecutor.buildUrl routes partner and org-prefixed models to the glob
 
   assert.equal(
     deepseek,
-    "https://aiplatform.googleapis.com/v1/projects/proj-deepseek/locations/global/endpoints/openapi/chat/completions"
+    "https://aiplatform.googleapis.com/v1/projects/proj-deepseek/locations/global/endpoints/openapi/chat/completions",
   );
   assert.equal(
     metaLlama,
-    "https://aiplatform.googleapis.com/v1/projects/proj-llama/locations/global/endpoints/openapi/chat/completions"
+    "https://aiplatform.googleapis.com/v1/projects/proj-llama/locations/global/endpoints/openapi/chat/completions",
   );
 });
 
@@ -148,7 +151,7 @@ test("VertexExecutor.execute exchanges a JWT for an access token and then calls 
     assert.equal(result.response.status, 200);
     assert.equal(
       result.url,
-      "https://aiplatform.googleapis.com/v1/projects/proj-run/locations/europe-west4/publishers/google/models/gemini-2.5-flash:generateContent"
+      "https://aiplatform.googleapis.com/v1/projects/proj-run/locations/europe-west4/publishers/google/models/gemini-2.5-flash:generateContent",
     );
     assert.equal(calls.length, 2);
     assert.match(calls[0].url, /oauth2\.googleapis\.com\/token$/);
@@ -213,6 +216,6 @@ test("VertexExecutor.execute rejects incomplete Service Account JSON clearly", a
           apiKey: createServiceAccountJson({ includeEmail: false, includePrivateKey: false }),
         },
       }),
-    /missing required fields/
+    /missing required fields/,
   );
 });

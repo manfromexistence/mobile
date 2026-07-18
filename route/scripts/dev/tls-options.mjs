@@ -27,7 +27,7 @@ import https from "node:https";
  */
 export function resolveTlsOptions(
   env = process.env,
-  { readFileSync = fs.readFileSync, warn = (m) => console.warn(m) } = {}
+  { readFileSync = fs.readFileSync, warn = (m) => console.warn(m) } = {},
 ) {
   const certPath = typeof env?.OMNIROUTE_TLS_CERT === "string" ? env.OMNIROUTE_TLS_CERT.trim() : "";
   const keyPath = typeof env?.OMNIROUTE_TLS_KEY === "string" ? env.OMNIROUTE_TLS_KEY.trim() : "";
@@ -39,7 +39,7 @@ export function resolveTlsOptions(
   if (!certPath || !keyPath) {
     warn(
       `[omniroute][tls] HTTPS not enabled: both OMNIROUTE_TLS_CERT and OMNIROUTE_TLS_KEY ` +
-        `are required (only ${certPath ? "cert" : "key"} provided). Serving HTTP.`
+        `are required (only ${certPath ? "cert" : "key"} provided). Serving HTTP.`,
     );
     return null;
   }
@@ -53,7 +53,7 @@ export function resolveTlsOptions(
   } catch (err) {
     warn(
       `[omniroute][tls] HTTPS not enabled: could not read TLS cert/key ` +
-        `(${err?.code || err?.message || String(err)}). Serving HTTP.`
+        `(${err?.code || err?.message || String(err)}). Serving HTTP.`,
     );
     return null;
   }
@@ -76,7 +76,7 @@ export function resolveTlsOptions(
 export function createServerListener(
   args,
   tlsOptions,
-  { createHttp = http.createServer.bind(http), createHttps = https.createServer.bind(https) } = {}
+  { createHttp = http.createServer.bind(http), createHttps = https.createServer.bind(https) } = {},
 ) {
   const argList = Array.isArray(args) ? args : args === undefined ? [] : [args];
 

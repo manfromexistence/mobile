@@ -79,7 +79,7 @@ export async function POST(request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -126,7 +126,7 @@ export async function POST(request) {
       connectionsToTest = allConnections.filter((c) => getAuthGroup(c.provider) === "local");
     } else if (mode === "upstream-proxy") {
       connectionsToTest = allConnections.filter(
-        (c) => getAuthGroup(c.provider) === "upstream-proxy"
+        (c) => getAuthGroup(c.provider) === "upstream-proxy",
       );
     } else if (mode === "cloud-agent") {
       connectionsToTest = allConnections.filter((c) => getAuthGroup(c.provider) === "cloud-agent");
@@ -142,7 +142,7 @@ export async function POST(request) {
           error:
             "Invalid mode. Use: provider, oauth, free, no-auth, apikey, compatible, all, web-cookie, search, audio, local, upstream-proxy, cloud-agent, ide, selected",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -169,8 +169,8 @@ export async function POST(request) {
           new Promise((_, reject) =>
             setTimeout(
               () => reject(new Error("Connection test timed out after 30s")),
-              PER_CONNECTION_TIMEOUT
-            )
+              PER_CONNECTION_TIMEOUT,
+            ),
           ),
         ]);
         const data = result as {
@@ -236,7 +236,7 @@ export async function POST(request) {
                 },
                 statusCode: null,
                 testedAt: new Date().toISOString(),
-              }
+              },
         );
       }
     }

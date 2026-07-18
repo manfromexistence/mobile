@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import { LiquidMetal, liquidMetalPresets } from '@paper-design/shaders-react';
-import { useControls, button, folder } from 'leva';
-import { setParamsSafe, useResetLevaParams } from '@/helpers/use-reset-leva-params';
-import { usePresetHighlight } from '@/helpers/use-preset-highlight';
-import { cleanUpLevaParams } from '@/helpers/clean-up-leva-params';
-import { LiquidMetalShapes, LiquidMetalShape } from '@paper-design/shaders';
-import { ShaderFit } from '@paper-design/shaders';
-import { levaDeleteImageButton, levaImageButton } from '@/helpers/leva-image-button';
-import { useState, Suspense } from 'react';
-import { ShaderDetails } from '@/components/shader-details';
-import { ShaderContainer } from '@/components/shader-container';
-import { useUrlParams } from '@/helpers/use-url-params';
-import { liquidMetalDef } from '@/shader-defs/liquid-metal-def';
-import { toHsla } from '@/helpers/color-utils';
+import { LiquidMetal, liquidMetalPresets } from "@paper-design/shaders-react";
+import { useControls, button, folder } from "leva";
+import { setParamsSafe, useResetLevaParams } from "@/helpers/use-reset-leva-params";
+import { usePresetHighlight } from "@/helpers/use-preset-highlight";
+import { cleanUpLevaParams } from "@/helpers/clean-up-leva-params";
+import { LiquidMetalShapes, LiquidMetalShape } from "@paper-design/shaders";
+import { ShaderFit } from "@paper-design/shaders";
+import { levaDeleteImageButton, levaImageButton } from "@/helpers/leva-image-button";
+import { useState, Suspense } from "react";
+import { ShaderDetails } from "@/components/shader-details";
+import { ShaderContainer } from "@/components/shader-container";
+import { useUrlParams } from "@/helpers/use-url-params";
+import { liquidMetalDef } from "@/shader-defs/liquid-metal-def";
+import { toHsla } from "@/helpers/color-utils";
 
 // Override just for the docs, we keep it transparent in the preset
 // liquidMetalPresets[0].params.colorBack = '#000000';
@@ -21,14 +21,14 @@ import { toHsla } from '@/helpers/color-utils';
 const { worldWidth, worldHeight, ...defaults } = liquidMetalPresets[0].params;
 
 const LiquidMetalWithControls = () => {
-  const [image, setImage] = useState<HTMLImageElement | string>('');
+  const [image, setImage] = useState<HTMLImageElement | string>("");
 
   const [params, setParams] = useControls(() => {
     const presets = Object.fromEntries(
       liquidMetalPresets.map(({ name, params: { worldWidth, worldHeight, ...preset } }) => [
         name,
         button(() => setParamsSafe(params, setParams, preset)),
-      ])
+      ]),
     );
     return {
       colorBack: { value: toHsla(defaults.colorBack), order: 100 },
@@ -51,10 +51,10 @@ const LiquidMetalWithControls = () => {
       rotation: { value: defaults.rotation, min: 0, max: 360, order: 302 },
       offsetX: { value: defaults.offsetX, min: -1, max: 1, order: 303 },
       offsetY: { value: defaults.offsetY, min: -1, max: 1, order: 304 },
-      fit: { value: defaults.fit, options: ['contain', 'cover'] as ShaderFit[], order: 305 },
+      fit: { value: defaults.fit, options: ["contain", "cover"] as ShaderFit[], order: 305 },
       Image: folder({
-        'Upload image': levaImageButton((img?: HTMLImageElement) => setImage(img ?? '')),
-        ...(image && { 'Delete image': levaDeleteImageButton(() => setImage('')) }),
+        "Upload image": levaImageButton((img?: HTMLImageElement) => setImage(img ?? "")),
+        ...(image && { "Delete image": levaDeleteImageButton(() => setImage("")) }),
       }),
       Presets: folder(presets, { order: -1 }),
     };
@@ -74,7 +74,11 @@ const LiquidMetalWithControls = () => {
           <LiquidMetal {...params} image={image} suspendWhenProcessingImage />
         </Suspense>
       </ShaderContainer>
-      <ShaderDetails shaderDef={liquidMetalDef} currentParams={params} codeSampleImageName="images/logos/diamond.svg" />
+      <ShaderDetails
+        shaderDef={liquidMetalDef}
+        currentParams={params}
+        codeSampleImageName="images/logos/diamond.svg"
+      />
     </>
   );
 };

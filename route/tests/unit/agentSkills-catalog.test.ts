@@ -54,7 +54,7 @@ test("all skill IDs are unique (no duplicates)", () => {
   assert.equal(
     uniqueIds.size,
     ids.length,
-    `Duplicate IDs found: ${ids.filter((id, i) => ids.indexOf(id) !== i).join(", ")}`
+    `Duplicate IDs found: ${ids.filter((id, i) => ids.indexOf(id) !== i).join(", ")}`,
   );
 });
 
@@ -71,15 +71,15 @@ test("all skills have rawUrl and githubUrl as valid GitHub URLs", () => {
   for (const skill of getCatalog()) {
     assert.ok(
       skill.rawUrl.startsWith("https://raw.githubusercontent.com/"),
-      `Skill ${skill.id}: rawUrl "${skill.rawUrl}" is not a GitHub raw URL`
+      `Skill ${skill.id}: rawUrl "${skill.rawUrl}" is not a GitHub raw URL`,
     );
     assert.ok(
       skill.githubUrl.startsWith("https://github.com/"),
-      `Skill ${skill.id}: githubUrl "${skill.githubUrl}" is not a GitHub blob URL`
+      `Skill ${skill.id}: githubUrl "${skill.githubUrl}" is not a GitHub blob URL`,
     );
     assert.ok(
       skill.rawUrl.endsWith("/SKILL.md"),
-      `Skill ${skill.id}: rawUrl does not end with /SKILL.md`
+      `Skill ${skill.id}: rawUrl does not end with /SKILL.md`,
     );
   }
 });
@@ -98,7 +98,7 @@ test("api skills have area matching API_SKILL_IDS derived IDs", () => {
     assert.equal(
       skill!.category,
       "api",
-      `Skill "${id}" expected category api, got ${skill!.category}`
+      `Skill "${id}" expected category api, got ${skill!.category}`,
     );
   }
 });
@@ -111,7 +111,7 @@ test("cli skills have area matching CLI_SKILL_IDS derived IDs", () => {
     assert.equal(
       skill!.category,
       "cli",
-      `Skill "${id}" expected category cli, got ${skill!.category}`
+      `Skill "${id}" expected category cli, got ${skill!.category}`,
     );
   }
 });
@@ -223,7 +223,7 @@ test("computeCoverage() returns valid SkillCoverage shape", () => {
   // generatedAt must be a valid ISO datetime string
   assert.ok(
     !isNaN(Date.parse(cov.generatedAt)),
-    `generatedAt "${cov.generatedAt}" is not a valid ISO date`
+    `generatedAt "${cov.generatedAt}" is not a valid ISO date`,
   );
 });
 

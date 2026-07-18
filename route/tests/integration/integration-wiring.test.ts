@@ -137,7 +137,7 @@ describe("Pipeline Wiring — sse chat handler", () => {
 
   it("should not track backup artifacts in the active src/sse shim", () => {
     const trackedArtifactNames = listProjectFiles("src/sse").filter((file) =>
-      /\.(orig|bak|backup)$/i.test(file)
+      /\.(orig|bak|backup)$/i.test(file),
     );
 
     assert.deepEqual(trackedArtifactNames, []);
@@ -342,7 +342,7 @@ describe("API Routes — T09 /v1 catalog consistency", () => {
     assert.match(v1ModelsRouteSrc, /from\s+["']\.\/catalog["']/);
     assert.doesNotMatch(
       v1ModelsRouteSrc,
-      /export\s+async\s+function\s+getUnifiedModelsResponse\s*\(/
+      /export\s+async\s+function\s+getUnifiedModelsResponse\s*\(/,
     );
   });
 
@@ -354,10 +354,10 @@ describe("API Routes — T09 /v1 catalog consistency", () => {
 
 describe("Dashboard Wiring — T05 payload rules", () => {
   const settingsPageSrc = readProjectFile(
-    "src/app/(dashboard)/dashboard/settings/advanced/page.tsx"
+    "src/app/(dashboard)/dashboard/settings/advanced/page.tsx",
   );
   const payloadRulesTabSrc = readProjectFile(
-    "src/app/(dashboard)/dashboard/settings/components/PayloadRulesTab.tsx"
+    "src/app/(dashboard)/dashboard/settings/components/PayloadRulesTab.tsx",
   );
   const openapiSrc = readProjectFile("docs/openapi.yaml");
 
@@ -365,7 +365,7 @@ describe("Dashboard Wiring — T05 payload rules", () => {
     assert.ok(settingsPageSrc, "settings page source should exist");
     assert.match(
       settingsPageSrc,
-      /import PayloadRulesTab from "\.\.\/components\/PayloadRulesTab"/
+      /import PayloadRulesTab from "\.\.\/components\/PayloadRulesTab"/,
     );
     assert.match(settingsPageSrc, /<PayloadRulesTab\s*\/>/);
   });
@@ -459,7 +459,7 @@ describe("Page Integration — logs page wiring", () => {
 describe("Page Integration — settings page wiring", () => {
   const src = readProjectFile("src/app/(dashboard)/dashboard/settings/resilience/page.tsx");
   const memorySkillsTab = readProjectFile(
-    "src/app/(dashboard)/dashboard/settings/components/MemorySkillsTab.tsx"
+    "src/app/(dashboard)/dashboard/settings/components/MemorySkillsTab.tsx",
   );
 
   it("should include resilience tab in advanced settings", () => {
@@ -485,7 +485,7 @@ describe("Page Integration — cache page wiring", () => {
 describe("Page Integration — cost explorer wiring", () => {
   const costsPage = readProjectFile("src/app/(dashboard)/dashboard/costs/CostOverviewTab.tsx");
   const costExplorerUtils = readProjectFile(
-    "src/app/(dashboard)/dashboard/costs/costExplorerUtils.ts"
+    "src/app/(dashboard)/dashboard/costs/costExplorerUtils.ts",
   );
 
   it("should expose an interactive grouped Cost Explorer on the costs dashboard", () => {
@@ -548,15 +548,15 @@ describe("Page Integration — combos page empty state", () => {
 describe("Page Integration — provider test results privacy", () => {
   const providersSrc = readProjectFile("src/app/(dashboard)/dashboard/providers/page.tsx");
   const providerDetailSrc = readProjectFile(
-    "src/app/(dashboard)/dashboard/providers/[id]/ProviderDetailPageClient.tsx"
+    "src/app/(dashboard)/dashboard/providers/[id]/ProviderDetailPageClient.tsx",
   );
   // #3501 strangler-fig decomposition moved the test-results masking and the upstream-proxy
   // surface out of the page client into dedicated components.
   const batchTestResultsSrc = readProjectFile(
-    "src/app/(dashboard)/dashboard/providers/[id]/components/BatchTestResultsModal.tsx"
+    "src/app/(dashboard)/dashboard/providers/[id]/components/BatchTestResultsModal.tsx",
   );
   const upstreamProxyCardSrc = readProjectFile(
-    "src/app/(dashboard)/dashboard/providers/[id]/components/UpstreamProxyCard.tsx"
+    "src/app/(dashboard)/dashboard/providers/[id]/components/UpstreamProxyCard.tsx",
   );
 
   it("should mask provider test batch names with the global email privacy toggle", () => {
@@ -564,28 +564,28 @@ describe("Page Integration — provider test results privacy", () => {
     assert.match(providersSrc, /useEmailPrivacyStore/);
     assert.match(
       providersSrc,
-      /pickDisplayValue\(\[r\.connectionName\], emailsVisible, r\.connectionName\)/
+      /pickDisplayValue\(\[r\.connectionName\], emailsVisible, r\.connectionName\)/,
     );
   });
 
   it("should mask provider detail test result names with the global email privacy toggle", () => {
     assert.ok(
       providerDetailSrc,
-      "src/app/(dashboard)/dashboard/providers/[id]/ProviderDetailPageClient.tsx should exist"
+      "src/app/(dashboard)/dashboard/providers/[id]/ProviderDetailPageClient.tsx should exist",
     );
     assert.match(providerDetailSrc, /const emailsVisible = useEmailPrivacyStore/);
     // The per-connection test-result masking now lives in the decomposed BatchTestResultsModal.
     assert.ok(batchTestResultsSrc, "BatchTestResultsModal.tsx should exist");
     assert.match(
       batchTestResultsSrc,
-      /pickDisplayValue\(\s*\[r\.connectionName\],\s*emailsVisible,\s*r\.connectionName\s*\)/
+      /pickDisplayValue\(\s*\[r\.connectionName\],\s*emailsVisible,\s*r\.connectionName\s*\)/,
     );
   });
 
   it("should resolve provider detail metadata through the shared dashboard catalog", () => {
     assert.ok(
       providerDetailSrc,
-      "src/app/(dashboard)/dashboard/providers/[id]/ProviderDetailPageClient.tsx should exist"
+      "src/app/(dashboard)/dashboard/providers/[id]/ProviderDetailPageClient.tsx should exist",
     );
     assert.match(providerDetailSrc, /resolveDashboardProviderInfo/);
   });
@@ -593,7 +593,7 @@ describe("Page Integration — provider test results privacy", () => {
   it("should treat upstream proxy entries as a dedicated management surface", () => {
     assert.ok(
       providerDetailSrc,
-      "src/app/(dashboard)/dashboard/providers/[id]/ProviderDetailPageClient.tsx should exist"
+      "src/app/(dashboard)/dashboard/providers/[id]/ProviderDetailPageClient.tsx should exist",
     );
     assert.match(providerDetailSrc, /isUpstreamProxyProvider/);
     // The "managed elsewhere" copy now lives in the decomposed UpstreamProxyCard component.

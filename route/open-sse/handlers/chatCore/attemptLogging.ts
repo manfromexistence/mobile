@@ -61,7 +61,7 @@ function toConnectionId(value: unknown): string | null {
 function buildAccountRotationMeta(
   provider: string | null | undefined,
   initialConnectionId: string | null,
-  finalConnectionId: string | null
+  finalConnectionId: string | null,
 ) {
   if (provider !== "codex" || !initialConnectionId || !finalConnectionId) return null;
   if (initialConnectionId === finalConnectionId) return null;
@@ -116,7 +116,7 @@ export function persistAttemptLogs(args: PersistAttemptLogsArgs, ctx: PersistAtt
   const accountRotationMeta = buildAccountRotationMeta(
     provider,
     initialConnectionId,
-    finalConnectionId
+    finalConnectionId,
   );
 
   const providerWarnings = extractProviderWarnings(providerResponse, clientResponse, responseBody);
@@ -177,7 +177,7 @@ export function persistAttemptLogs(args: PersistAttemptLogsArgs, ctx: PersistAtt
       attachLogMeta(truncateForLog(body as Record<string, unknown>), {
         ...accountRotationMeta,
         claudePromptCache: claudeCacheMeta,
-      })
+      }),
     ),
     responseBody: cloneBoundedChatLogPayload(
       attachLogMeta(truncateForLog(responseBody as Record<string, unknown>), {
@@ -190,7 +190,7 @@ export function persistAttemptLogs(args: PersistAttemptLogsArgs, ctx: PersistAtt
             }
           : null,
         claudePromptCacheUsage: claudeCacheUsageMeta,
-      })
+      }),
     ),
     error: error || null,
     sourceFormat,

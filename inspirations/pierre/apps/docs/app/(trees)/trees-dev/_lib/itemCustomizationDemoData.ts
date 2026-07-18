@@ -5,12 +5,12 @@ import type {
   FileTreeRowDecoration,
   FileTreeRowDecorationRenderer,
   GitStatusEntry,
-} from '@pierre/trees';
+} from "@pierre/trees";
 
 export type TreesDevGitStatusPresetId =
-  | 'direct-file-statuses'
-  | 'ignored-and-overrides'
-  | 'branch-mix';
+  | "direct-file-statuses"
+  | "ignored-and-overrides"
+  | "branch-mix";
 
 export interface TreesDevGitStatusPreset {
   id: TreesDevGitStatusPresetId;
@@ -20,11 +20,11 @@ export interface TreesDevGitStatusPreset {
 }
 
 export type ItemCustomizationDecorationPresetId =
-  | 'none'
-  | 'file-extensions'
-  | 'path-labels'
-  | 'selected-icons'
-  | 'mixed';
+  | "none"
+  | "file-extensions"
+  | "path-labels"
+  | "selected-icons"
+  | "mixed";
 
 export interface ItemCustomizationDecorationPreset {
   id: ItemCustomizationDecorationPresetId;
@@ -42,62 +42,61 @@ export interface ItemCustomizationDemoDefaults {
   triggerMode: ContextMenuTriggerMode;
 }
 
-export const ITEM_CUSTOMIZATION_DEMO_WORKLOAD_NAME = 'demo-small' as const;
+export const ITEM_CUSTOMIZATION_DEMO_WORKLOAD_NAME = "demo-small" as const;
 
 export const ITEM_CUSTOMIZATION_DEMO_DEFAULTS: ItemCustomizationDemoDefaults = {
-  buttonVisibility: 'when-needed',
+  buttonVisibility: "when-needed",
   contextMenuEnabled: true,
-  decorationPresetId: 'mixed',
+  decorationPresetId: "mixed",
   gitStatusEnabled: true,
-  gitStatusPresetId: 'direct-file-statuses',
-  triggerMode: 'right-click',
+  gitStatusPresetId: "direct-file-statuses",
+  triggerMode: "right-click",
 };
 
-export const TREES_DEV_GIT_STATUS_PRESETS: readonly TreesDevGitStatusPreset[] =
-  [
-    {
-      id: 'direct-file-statuses',
-      label: 'Set A · Direct file statuses',
-      description:
-        'Covers A, M, D, U, and R directly on demo-small files so the leaf badges are easy to compare side by side.',
-      entries: [
-        { path: 'alpha/docs/readme.md', status: 'modified' },
-        { path: 'alpha/src/app.ts', status: 'added' },
-        { path: 'alpha/src/utils/math.ts', status: 'renamed' },
-        { path: 'alpha/todo.txt', status: 'deleted' },
-        { path: 'zeta.md', status: 'untracked' },
-      ],
-    },
-    {
-      id: 'ignored-and-overrides',
-      label: 'Set B · Ignored folders + overrides',
-      description:
-        'Shows ignored inheritance on beta/, a child override inside that subtree, and descendant dots for a changed file that is not part of the base workload.',
-      entries: [
-        { path: 'beta/', status: 'ignored' },
-        { path: 'beta/archive/notes.txt', status: 'modified' },
-        { path: 'gamma/logs/tomorrow.txt', status: 'added' },
-      ],
-    },
-    {
-      id: 'branch-mix',
-      label: 'Set C · Alternate branch mix',
-      description:
-        'Spreads statuses across separate branches so folder dots, ignored folders, and direct file badges all move together when the preset changes.',
-      entries: [
-        { path: 'alpha/docs/readme.md', status: 'modified' },
-        { path: 'alpha/src/new-panel.ts', status: 'added' },
-        { path: 'beta/keep.txt', status: 'renamed' },
-        { path: 'gamma/logs/', status: 'ignored' },
-        { path: 'zeta.md', status: 'deleted' },
-      ],
-    },
-  ] as const;
+export const TREES_DEV_GIT_STATUS_PRESETS: readonly TreesDevGitStatusPreset[] = [
+  {
+    id: "direct-file-statuses",
+    label: "Set A · Direct file statuses",
+    description:
+      "Covers A, M, D, U, and R directly on demo-small files so the leaf badges are easy to compare side by side.",
+    entries: [
+      { path: "alpha/docs/readme.md", status: "modified" },
+      { path: "alpha/src/app.ts", status: "added" },
+      { path: "alpha/src/utils/math.ts", status: "renamed" },
+      { path: "alpha/todo.txt", status: "deleted" },
+      { path: "zeta.md", status: "untracked" },
+    ],
+  },
+  {
+    id: "ignored-and-overrides",
+    label: "Set B · Ignored folders + overrides",
+    description:
+      "Shows ignored inheritance on beta/, a child override inside that subtree, and descendant dots for a changed file that is not part of the base workload.",
+    entries: [
+      { path: "beta/", status: "ignored" },
+      { path: "beta/archive/notes.txt", status: "modified" },
+      { path: "gamma/logs/tomorrow.txt", status: "added" },
+    ],
+  },
+  {
+    id: "branch-mix",
+    label: "Set C · Alternate branch mix",
+    description:
+      "Spreads statuses across separate branches so folder dots, ignored folders, and direct file badges all move together when the preset changes.",
+    entries: [
+      { path: "alpha/docs/readme.md", status: "modified" },
+      { path: "alpha/src/new-panel.ts", status: "added" },
+      { path: "beta/keep.txt", status: "renamed" },
+      { path: "gamma/logs/", status: "ignored" },
+      { path: "zeta.md", status: "deleted" },
+    ],
+  },
+] as const;
 
 // These symbols back the custom row-decoration presets used by the docs-only
 // item-customization demo. They intentionally stay outside the trees package.
 export const ITEM_CUSTOMIZATION_DECORATION_ICONS: FileTreeIcons = {
-  set: 'complete',
+  set: "complete",
   spriteSheet: `<svg data-icon-sprite aria-hidden="true" width="0" height="0">
   <symbol id="trees-dev-item-docs" viewBox="0 0 16 16">
     <path fill="currentColor" d="M3 2.5A1.5 1.5 0 0 1 4.5 1H12a1 1 0 0 1 1 1v11.5a1.5 1.5 0 0 1-1.5 1.5H5a2 2 0 0 0-2 2z" opacity="0.2"/>
@@ -125,12 +124,12 @@ export const ITEM_CUSTOMIZATION_DECORATION_ICONS: FileTreeIcons = {
 // Formats leaf-file extensions into short badges so the decoration lane shows
 // content on every file without needing path-specific logic.
 function getExtensionBadge(path: string): string | null {
-  const basename = path.split('/').at(-1);
-  if (basename == null || basename.endsWith('/')) {
+  const basename = path.split("/").at(-1);
+  if (basename == null || basename.endsWith("/")) {
     return null;
   }
 
-  const lastDotIndex = basename.lastIndexOf('.');
+  const lastDotIndex = basename.lastIndexOf(".");
   if (lastDotIndex <= 0 || lastDotIndex === basename.length - 1) {
     return null;
   }
@@ -144,91 +143,87 @@ function getExtensionBadge(path: string): string | null {
 // Adds human-readable path role labels so the decoration lane can highlight how
 // category text sits beside git status and the action affordance.
 function getPathRoleLabel(path: string): string | null {
-  if (path === 'alpha/docs/' || path.startsWith('alpha/docs/')) {
-    return 'Docs';
+  if (path === "alpha/docs/" || path.startsWith("alpha/docs/")) {
+    return "Docs";
   }
-  if (path === 'alpha/src/' || path === 'alpha/src/app.ts') {
-    return 'App';
+  if (path === "alpha/src/" || path === "alpha/src/app.ts") {
+    return "App";
   }
-  if (path === 'alpha/src/utils/' || path === 'alpha/src/utils/math.ts') {
-    return 'Utils';
+  if (path === "alpha/src/utils/" || path === "alpha/src/utils/math.ts") {
+    return "Utils";
   }
-  if (path === 'beta/archive/' || path === 'beta/archive/notes.txt') {
-    return 'Archive';
+  if (path === "beta/archive/" || path === "beta/archive/notes.txt") {
+    return "Archive";
   }
-  if (path === 'gamma/logs/' || path === 'gamma/logs/today.txt') {
-    return 'Logs';
+  if (path === "gamma/logs/" || path === "gamma/logs/today.txt") {
+    return "Logs";
   }
-  if (path === 'zeta.md') {
-    return 'Root';
+  if (path === "zeta.md") {
+    return "Root";
   }
   return null;
 }
 
 // Selected-file presets need stable docs-owned icons so clicking around the demo
 // makes the decoration lane react without changing the underlying file icons.
-function getItemCustomizationSelectedFileDecoration(
-  path: string
-): FileTreeRowDecoration | null {
-  if (path === 'alpha/docs/readme.md') {
+function getItemCustomizationSelectedFileDecoration(path: string): FileTreeRowDecoration | null {
+  if (path === "alpha/docs/readme.md") {
     return {
-      icon: { name: 'trees-dev-item-docs', width: 14, height: 14 },
-      title: 'Selected docs file',
+      icon: { name: "trees-dev-item-docs", width: 14, height: 14 },
+      title: "Selected docs file",
     };
   }
-  if (path === 'alpha/src/app.ts') {
+  if (path === "alpha/src/app.ts") {
     return {
-      icon: { name: 'trees-dev-item-app', width: 14, height: 14 },
-      title: 'Selected app entry file',
+      icon: { name: "trees-dev-item-app", width: 14, height: 14 },
+      title: "Selected app entry file",
     };
   }
-  if (path === 'alpha/src/utils/math.ts') {
+  if (path === "alpha/src/utils/math.ts") {
     return {
-      icon: { name: 'trees-dev-item-math', width: 14, height: 14 },
-      title: 'Selected utility file',
+      icon: { name: "trees-dev-item-math", width: 14, height: 14 },
+      title: "Selected utility file",
     };
   }
-  if (path.endsWith('.txt')) {
+  if (path.endsWith(".txt")) {
     return {
-      icon: { name: 'trees-dev-item-note', width: 14, height: 14 },
-      title: 'Selected notes file',
+      icon: { name: "trees-dev-item-note", width: 14, height: 14 },
+      title: "Selected notes file",
     };
   }
   return {
-    icon: { name: 'trees-dev-item-selected', width: 14, height: 14 },
-    title: 'Selected file',
+    icon: { name: "trees-dev-item-selected", width: 14, height: 14 },
+    title: "Selected file",
   };
 }
 
-function getItemCustomizationMixedStaticDecoration(
-  path: string
-): FileTreeRowDecoration | null {
-  if (path === 'alpha/docs/' || path === 'alpha/docs/readme.md') {
-    return { text: 'Docs', title: 'Documentation branch' };
+function getItemCustomizationMixedStaticDecoration(path: string): FileTreeRowDecoration | null {
+  if (path === "alpha/docs/" || path === "alpha/docs/readme.md") {
+    return { text: "Docs", title: "Documentation branch" };
   }
-  if (path === 'alpha/src/' || path === 'alpha/src/app.ts') {
-    return { text: 'App', title: 'Application entry branch' };
+  if (path === "alpha/src/" || path === "alpha/src/app.ts") {
+    return { text: "App", title: "Application entry branch" };
   }
-  if (path === 'alpha/src/utils/math.ts') {
+  if (path === "alpha/src/utils/math.ts") {
     return {
-      icon: { name: 'trees-dev-item-math', width: 14, height: 14 },
-      title: 'Math utility icon',
+      icon: { name: "trees-dev-item-math", width: 14, height: 14 },
+      title: "Math utility icon",
     };
   }
-  if (path.endsWith('.txt')) {
-    return { text: 'TXT', title: 'Plain-text note' };
+  if (path.endsWith(".txt")) {
+    return { text: "TXT", title: "Plain-text note" };
   }
-  if (path === 'zeta.md') {
+  if (path === "zeta.md") {
     return {
-      icon: { name: 'trees-dev-item-docs', width: 14, height: 14 },
-      title: 'Root markdown file',
+      icon: { name: "trees-dev-item-docs", width: 14, height: 14 },
+      title: "Root markdown file",
     };
   }
   return null;
 }
 
 const extensionBadgeRenderer: FileTreeRowDecorationRenderer = ({ item }) => {
-  if (item.kind !== 'file') {
+  if (item.kind !== "file") {
     return null;
   }
 
@@ -242,66 +237,59 @@ const pathRoleRenderer: FileTreeRowDecorationRenderer = ({ item }) => {
 };
 
 const selectedIconRenderer: FileTreeRowDecorationRenderer = ({ item, row }) => {
-  if (item.kind !== 'file' || row.isSelected !== true) {
+  if (item.kind !== "file" || row.isSelected !== true) {
     return null;
   }
 
   return getItemCustomizationSelectedFileDecoration(item.path);
 };
 
-const mixedDecorationRenderer: FileTreeRowDecorationRenderer = ({
-  item,
-  row,
-}) => {
-  if (item.kind === 'file' && row.isSelected) {
+const mixedDecorationRenderer: FileTreeRowDecorationRenderer = ({ item, row }) => {
+  if (item.kind === "file" && row.isSelected) {
     return getItemCustomizationSelectedFileDecoration(item.path);
   }
 
   return getItemCustomizationMixedStaticDecoration(item.path);
 };
 
-export const ITEM_CUSTOMIZATION_DECORATION_PRESETS: readonly ItemCustomizationDecorationPreset[] =
-  [
-    {
-      id: 'none',
-      label: 'None',
-      description:
-        'Leaves the custom decoration lane empty so only git status and context-menu affordances remain.',
-      renderer: null,
-    },
-    {
-      id: 'file-extensions',
-      label: 'File extensions',
-      description:
-        'Shows short badges on leaf files so every extension competes for the same lane width.',
-      renderer: extensionBadgeRenderer,
-    },
-    {
-      id: 'path-labels',
-      label: 'Path labels',
-      description:
-        'Highlights representative branches like Docs, App, Utils, Archive, Logs, and Root.',
-      renderer: pathRoleRenderer,
-    },
-    {
-      id: 'selected-icons',
-      label: 'Custom icons on selected files',
-      description:
-        'Click files to swap in docs-owned icons without changing the base file icon set.',
-      renderer: selectedIconRenderer,
-    },
-    {
-      id: 'mixed',
-      label: 'Mixed',
-      description:
-        'Combines text labels, selected-file icons, and file-type badges to stress the full lane composition.',
-      renderer: mixedDecorationRenderer,
-    },
-  ] as const;
+export const ITEM_CUSTOMIZATION_DECORATION_PRESETS: readonly ItemCustomizationDecorationPreset[] = [
+  {
+    id: "none",
+    label: "None",
+    description:
+      "Leaves the custom decoration lane empty so only git status and context-menu affordances remain.",
+    renderer: null,
+  },
+  {
+    id: "file-extensions",
+    label: "File extensions",
+    description:
+      "Shows short badges on leaf files so every extension competes for the same lane width.",
+    renderer: extensionBadgeRenderer,
+  },
+  {
+    id: "path-labels",
+    label: "Path labels",
+    description:
+      "Highlights representative branches like Docs, App, Utils, Archive, Logs, and Root.",
+    renderer: pathRoleRenderer,
+  },
+  {
+    id: "selected-icons",
+    label: "Custom icons on selected files",
+    description: "Click files to swap in docs-owned icons without changing the base file icon set.",
+    renderer: selectedIconRenderer,
+  },
+  {
+    id: "mixed",
+    label: "Mixed",
+    description:
+      "Combines text labels, selected-file icons, and file-type badges to stress the full lane composition.",
+    renderer: mixedDecorationRenderer,
+  },
+] as const;
 
-export function getTreesDevGitStatusPreset(
-  id: TreesDevGitStatusPresetId
-): TreesDevGitStatusPreset {
+export function getTreesDevGitStatusPreset(id: TreesDevGitStatusPresetId): TreesDevGitStatusPreset {
   return (
     TREES_DEV_GIT_STATUS_PRESETS.find((preset) => preset.id === id) ??
     TREES_DEV_GIT_STATUS_PRESETS[0]
@@ -309,7 +297,7 @@ export function getTreesDevGitStatusPreset(
 }
 
 export function getItemCustomizationDecorationPreset(
-  id: ItemCustomizationDecorationPresetId
+  id: ItemCustomizationDecorationPresetId,
 ): ItemCustomizationDecorationPreset {
   return (
     ITEM_CUSTOMIZATION_DECORATION_PRESETS.find((preset) => preset.id === id) ??

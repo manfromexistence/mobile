@@ -8,7 +8,7 @@ test("buildMenuItems contains expected entries", () => {
   assert.ok(titles.includes("Open OmniRoute Dashboard"), "has Open entry");
   assert.ok(
     titles.some((t) => t.startsWith("Port: 20128")),
-    "shows port"
+    "shows port",
   );
   assert.ok(titles.includes("Enable Autostart"), "shows toggle when disabled");
   assert.ok(titles.includes("Quit OmniRoute"), "has quit");

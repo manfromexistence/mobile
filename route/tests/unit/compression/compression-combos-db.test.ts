@@ -50,11 +50,11 @@ test("upgrades the legacy seeded default compression combo pipeline", () => {
     UPDATE compression_combos
     SET description = ?, pipeline = ?
     WHERE id = ?
-  `
+  `,
   ).run(
     "Default Caveman compression pipeline",
     JSON.stringify([{ engine: "caveman", intensity: "full" }]),
-    "default-caveman"
+    "default-caveman",
   );
 
   const combo = combosDb.getDefaultCompressionCombo();
@@ -73,12 +73,12 @@ test("does not overwrite a customized default compression combo", () => {
     UPDATE compression_combos
     SET name = ?, description = ?, pipeline = ?
     WHERE id = ?
-  `
+  `,
   ).run(
     "Custom Default",
     "User changed",
     JSON.stringify([{ engine: "caveman", intensity: "lite" }]),
-    "default-caveman"
+    "default-caveman",
   );
 
   const combo = combosDb.getDefaultCompressionCombo();
@@ -123,7 +123,7 @@ test("assigns routing combos to compression combos", () => {
     combosDb
       .getAssignmentsForCompressionCombo(combo.id)
       .map((assignment) => assignment.routingComboId),
-    ["routing-a"]
+    ["routing-a"],
   );
 
   assert.equal(combosDb.updateAssignments(combo.id, ["routing-b", "routing-c"]), true);

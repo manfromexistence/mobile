@@ -29,6 +29,6 @@ test("update-notifier não lança com pkg real", async () => {
     updateNotifier({
       pkg: { name: pkg.name, version: pkg.version },
       updateCheckInterval: 24 * 60 * 60 * 1000,
-    })
+    }),
   );
 });

@@ -1,5 +1,5 @@
-import { memo, useLayoutEffect, useState } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '../shader-mount.js';
+import { memo, useLayoutEffect, useState } from "react";
+import { ShaderMount, type ShaderComponentProps } from "../shader-mount.js";
 import {
   liquidMetalFragmentShader,
   ShaderFitOptions,
@@ -10,9 +10,9 @@ import {
   type ImageShaderPreset,
   getShaderColorFromString,
   LiquidMetalShapes,
-} from '@paper-design/shaders';
-import { transparentPixel } from '../transparent-pixel.js';
-import { suspend } from '../suspend.js';
+} from "@paper-design/shaders";
+import { transparentPixel } from "../transparent-pixel.js";
+import { suspend } from "../suspend.js";
 
 export interface LiquidMetalProps extends ShaderComponentProps, LiquidMetalParams {
   /**
@@ -24,14 +24,14 @@ export interface LiquidMetalProps extends ShaderComponentProps, LiquidMetalParam
 type LiquidMetalPreset = ImageShaderPreset<LiquidMetalParams>;
 
 export const defaultPreset: LiquidMetalPreset = {
-  name: 'Default',
+  name: "Default",
   params: {
     ...defaultObjectSizing,
     scale: 0.6,
     speed: 1,
     frame: 0,
-    colorBack: '#AAAAAC',
-    colorTint: '#ffffff',
+    colorBack: "#AAAAAC",
+    colorTint: "#ffffff",
     distortion: 0.07,
     repetition: 2.0,
     shiftRed: 0.3,
@@ -39,19 +39,19 @@ export const defaultPreset: LiquidMetalPreset = {
     contour: 0.4,
     softness: 0.1,
     angle: 70,
-    shape: 'diamond',
+    shape: "diamond",
   },
 };
 
 export const noirPreset: LiquidMetalPreset = {
-  name: 'Noir',
+  name: "Noir",
   params: {
     ...defaultObjectSizing,
     scale: 0.6,
     speed: 1,
     frame: 0,
-    colorBack: '#000000',
-    colorTint: '#606060',
+    colorBack: "#000000",
+    colorTint: "#606060",
     softness: 0.45,
     repetition: 1.5,
     shiftRed: 0,
@@ -59,26 +59,26 @@ export const noirPreset: LiquidMetalPreset = {
     distortion: 0,
     contour: 0,
     angle: 90,
-    shape: 'diamond',
+    shape: "diamond",
   },
 };
 
 export const fullScreenPreset: LiquidMetalPreset = {
-  name: 'Backdrop',
+  name: "Backdrop",
   params: {
     ...defaultObjectSizing,
     speed: 1,
     frame: 0,
     scale: 1,
-    colorBack: '#AAAAAC',
-    colorTint: '#ffffff',
+    colorBack: "#AAAAAC",
+    colorTint: "#ffffff",
     softness: 0.05,
     repetition: 1.5,
     shiftRed: 0.3,
     shiftBlue: 0.3,
     distortion: 0.1,
     contour: 0.4,
-    shape: 'none',
+    shape: "none",
     angle: 90,
     worldWidth: 0,
     worldHeight: 0,
@@ -86,26 +86,31 @@ export const fullScreenPreset: LiquidMetalPreset = {
 };
 
 export const stripesPreset: LiquidMetalPreset = {
-  name: 'Stripes',
+  name: "Stripes",
   params: {
     ...defaultObjectSizing,
     speed: 1,
     frame: 0,
     scale: 0.6,
-    colorBack: '#000000',
-    colorTint: '#2c5d72',
+    colorBack: "#000000",
+    colorTint: "#2c5d72",
     softness: 0.8,
     repetition: 6,
     shiftRed: 1,
     shiftBlue: -1,
     distortion: 0.4,
     contour: 0.4,
-    shape: 'circle',
+    shape: "circle",
     angle: 0,
   },
 };
 
-export const liquidMetalPresets: LiquidMetalPreset[] = [defaultPreset, noirPreset, fullScreenPreset, stripesPreset];
+export const liquidMetalPresets: LiquidMetalPreset[] = [
+  defaultPreset,
+  noirPreset,
+  fullScreenPreset,
+  stripesPreset,
+];
 
 export const LiquidMetal: React.FC<LiquidMetalProps> = memo(function LiquidMetalImpl({
   // Own props
@@ -113,7 +118,7 @@ export const LiquidMetal: React.FC<LiquidMetalProps> = memo(function LiquidMetal
   colorTint = defaultPreset.params.colorTint,
   speed = defaultPreset.params.speed,
   frame = defaultPreset.params.frame,
-  image = '',
+  image = "",
   contour = defaultPreset.params.contour,
   distortion = defaultPreset.params.distortion,
   softness = defaultPreset.params.softness,
@@ -136,15 +141,16 @@ export const LiquidMetal: React.FC<LiquidMetalProps> = memo(function LiquidMetal
   worldHeight = defaultPreset.params.worldHeight,
   ...props
 }: LiquidMetalProps) {
-  const imageUrl = typeof image === 'string' ? image : image.src;
+  const imageUrl = typeof image === "string" ? image : image.src;
   const [processedStateImage, setProcessedStateImage] = useState<string>(transparentPixel);
 
   let processedImage: string;
 
-  if (suspendWhenProcessingImage && typeof window !== 'undefined' && imageUrl) {
+  if (suspendWhenProcessingImage && typeof window !== "undefined" && imageUrl) {
     processedImage = suspend(
-      (): Promise<string> => toProcessedLiquidMetal(imageUrl).then((result) => URL.createObjectURL(result.pngBlob)),
-      [imageUrl, 'liquid-metal']
+      (): Promise<string> =>
+        toProcessedLiquidMetal(imageUrl).then((result) => URL.createObjectURL(result.pngBlob)),
+      [imageUrl, "liquid-metal"],
     );
   } else {
     processedImage = processedStateImage;
@@ -210,7 +216,7 @@ export const LiquidMetal: React.FC<LiquidMetalProps> = memo(function LiquidMetal
       speed={speed}
       frame={frame}
       fragmentShader={liquidMetalFragmentShader}
-      mipmaps={['u_image']}
+      mipmaps={["u_image"]}
       uniforms={uniforms}
     />
   );

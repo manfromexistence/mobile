@@ -46,7 +46,8 @@
     max-width: min(320px, calc(100vw - 24px));
   }
 
-  [data-component="dropdown-menu-content"].desktop-app-menu [data-slot="dropdown-menu-group-label"] {
+  [data-component="dropdown-menu-content"].desktop-app-menu
+    [data-slot="dropdown-menu-group-label"] {
     display: flex;
     align-items: center;
     height: 28px;
@@ -60,7 +61,8 @@
   [data-component="dropdown-menu-content"].desktop-app-menu [data-slot="dropdown-menu-item"],
   [data-component="dropdown-menu-content"].desktop-app-menu [data-slot="dropdown-menu-sub-trigger"],
   [data-component="dropdown-menu-sub-content"].desktop-app-menu [data-slot="dropdown-menu-item"],
-  [data-component="dropdown-menu-sub-content"].desktop-app-menu [data-slot="dropdown-menu-sub-trigger"] {
+  [data-component="dropdown-menu-sub-content"].desktop-app-menu
+    [data-slot="dropdown-menu-sub-trigger"] {
     min-height: 28px;
     padding: 0 12px;
     gap: 8px;
@@ -69,7 +71,8 @@
   }
 
   [data-component="dropdown-menu-content"].desktop-app-menu [data-slot="dropdown-menu-item-label"],
-  [data-component="dropdown-menu-sub-content"].desktop-app-menu [data-slot="dropdown-menu-item-label"] {
+  [data-component="dropdown-menu-sub-content"].desktop-app-menu
+    [data-slot="dropdown-menu-item-label"] {
     white-space: nowrap;
   }
 
@@ -242,7 +245,8 @@
     background: linear-gradient(to top, var(--v2-background-bg-layer-01), transparent);
   }
 
-  @supports (animation-timeline: --home-projects-scroll) and (timeline-scope: --home-projects-scroll) {
+  @supports (animation-timeline: --home-projects-scroll) and
+    (timeline-scope: --home-projects-scroll) {
     [data-slot="home-projects-scroll"] .scroll-view__viewport {
       scroll-timeline: --home-projects-scroll y;
     }
@@ -260,7 +264,8 @@
     }
   }
 
-  @supports (animation-timeline: --model-selector-scroll) and (timeline-scope: --model-selector-scroll) {
+  @supports (animation-timeline: --model-selector-scroll) and
+    (timeline-scope: --model-selector-scroll) {
     [data-slot="model-selector-scroll"] .scroll-view__viewport {
       scroll-timeline: --model-selector-scroll y;
     }
@@ -278,7 +283,8 @@
     }
   }
 
-  @supports (animation-timeline: --manage-models-scroll) and (timeline-scope: --manage-models-scroll) {
+  @supports (animation-timeline: --manage-models-scroll) and
+    (timeline-scope: --manage-models-scroll) {
     [data-slot="manage-models-scroll"] .settings-v2-panel {
       scroll-timeline: --manage-models-scroll y;
     }

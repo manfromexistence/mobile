@@ -10,11 +10,13 @@ import assert from "node:assert/strict";
 
 // Lazy imports resolved inside tests so RED gives clean "module not found" errors,
 // not mysterious runtime crashes before any assertion.
-let headroomEngine: import("../../../open-sse/services/compression/engines/headroom/index.ts").headroomEngine;
+let headroomEngine: import(
+  "../../../open-sse/services/compression/engines/headroom/index.ts",
+).headroomEngine;
 let encodeTabular: (arr: Record<string, unknown>[]) => string;
 let decodeTabular: (text: string) => Record<string, unknown>[];
 let getCompressionEngine: (
-  id: string
+  id: string,
 ) => import("../../../open-sse/services/compression/engines/types.ts").CompressionEngine | null;
 let registerBuiltinCompressionEngines: () => void;
 
@@ -46,7 +48,7 @@ function makeRows(n: number): Record<string, unknown>[] {
 /** Build a body whose single user message content is JSON of the given array */
 function makeBody(
   arr: Record<string, unknown>[],
-  opts?: { asJsonFence?: boolean }
+  opts?: { asJsonFence?: boolean },
 ): Record<string, unknown> {
   const json = JSON.stringify(arr);
   const content = opts?.asJsonFence ? "Here are the results:\n```json\n" + json + "\n```" : json;
@@ -142,7 +144,7 @@ describe("tabular encoder round-trip", () => {
 describe("tabular codec — prototype-pollution safety", () => {
   it("round-trips rows with a literal __proto__ own-key without polluting Object.prototype", async () => {
     const rows = Array.from({ length: 5 }, (_, i) =>
-      JSON.parse(`{"id":${i},"meta":{"__proto__":{"polluted":true},"real":${i}}}`)
+      JSON.parse(`{"id":${i},"meta":{"__proto__":{"polluted":true},"real":${i}}}`),
     );
     const decoded = decodeTabular(encodeTabular(rows));
     assert.deepEqual(decoded, rows);
@@ -190,7 +192,7 @@ describe("headroomEngine.apply — compression", () => {
     const ratio = (origLen - compLen) / origLen;
     assert.ok(
       ratio >= 0.3,
-      `Expected ≥30% savings, got ${(ratio * 100).toFixed(1)}% (orig=${origLen}, comp=${compLen})`
+      `Expected ≥30% savings, got ${(ratio * 100).toFixed(1)}% (orig=${origLen}, comp=${compLen})`,
     );
   });
 
@@ -203,8 +205,9 @@ describe("headroomEngine.apply — compression", () => {
 
     // The compressed body messages content contains the tabular block. We restore using decodeTabular.
     // The engine must expose a reconstruct helper — we test via the exported reconstructHeadroom fn.
-    const reconstructMod =
-      await import("../../../open-sse/services/compression/engines/headroom/index.ts");
+    const reconstructMod = await import(
+      "../../../open-sse/services/compression/engines/headroom/index.ts"
+    );
     const reconstructHeadroom = reconstructMod.reconstructHeadroom;
 
     const restored = reconstructHeadroom(result.body);
@@ -220,7 +223,7 @@ describe("headroomEngine.apply — compression", () => {
     assert.ok(result.stats !== null, "stats should not be null");
     assert.ok(
       result.stats!.savingsPercent >= 30,
-      `Expected savingsPercent ≥ 30, got ${result.stats!.savingsPercent}`
+      `Expected savingsPercent ≥ 30, got ${result.stats!.savingsPercent}`,
     );
   });
 
@@ -250,7 +253,7 @@ describe("headroomEngine.apply — compression", () => {
     const ratio = (origLen - compLen) / origLen;
     assert.ok(
       ratio >= 0.3,
-      `Expected ≥30% savings from fenced block, got ${(ratio * 100).toFixed(1)}%`
+      `Expected ≥30% savings from fenced block, got ${(ratio * 100).toFixed(1)}%`,
     );
   });
 });
@@ -479,7 +482,7 @@ describe("GCF vs legacy omni-tabular — compression comparison", () => {
     // GCF should achieve at least as much savings as legacy on homogeneous data
     assert.ok(
       gcfSavings >= legacySavings * 0.8, // allow 20% tolerance
-      `GCF savings (${gcfSavings.toFixed(1)}%) should be within 80% of legacy (${legacySavings.toFixed(1)}%)`
+      `GCF savings (${gcfSavings.toFixed(1)}%) should be within 80% of legacy (${legacySavings.toFixed(1)}%)`,
     );
   });
 
@@ -493,8 +496,9 @@ describe("GCF vs legacy omni-tabular — compression comparison", () => {
 
     // Legacy encoder would produce nothing useful for heterogeneous data
     // (detectHomogeneous returns null)
-    const { detectHomogeneous } =
-      await import("../../../open-sse/services/compression/engines/headroom/smartcrusher.ts");
+    const { detectHomogeneous } = await import(
+      "../../../open-sse/services/compression/engines/headroom/smartcrusher.ts"
+    );
     assert.equal(detectHomogeneous(heteroRows), null, "legacy should reject heterogeneous arrays");
 
     // GCF compresses it
@@ -502,7 +506,7 @@ describe("GCF vs legacy omni-tabular — compression comparison", () => {
     const gcfSavings = ((jsonStr.length - gcfEncoded.length) / jsonStr.length) * 100;
     assert.ok(
       gcfSavings > 0,
-      `GCF should compress heterogeneous arrays (savings: ${gcfSavings.toFixed(1)}%)`
+      `GCF should compress heterogeneous arrays (savings: ${gcfSavings.toFixed(1)}%)`,
     );
   });
 
@@ -521,7 +525,7 @@ describe("GCF vs legacy omni-tabular — compression comparison", () => {
     const gcfSavings = ((jsonStr.length - gcfEncoded.length) / jsonStr.length) * 100;
     assert.ok(
       gcfSavings >= 30,
-      `GCF should achieve >=30% savings on nested objects (got ${gcfSavings.toFixed(1)}%)`
+      `GCF should achieve >=30% savings on nested objects (got ${gcfSavings.toFixed(1)}%)`,
     );
   });
 });

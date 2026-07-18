@@ -30,7 +30,7 @@ function tag(id: string, body: Record<string, unknown>): CompressionResult {
   // Tag the user message; drop any padding (non-user) content so the stacked body
   // genuinely shrinks and the #5527 (T02) inflation guard does not revert it.
   const next = messages.map((m) =>
-    m.role === "user" ? { ...m, content: `${m.content}|${id}` } : { ...m, content: "" }
+    m.role === "user" ? { ...m, content: `${m.content}|${id}` } : { ...m, content: "" },
   );
   return {
     body: { ...body, messages: next },
@@ -122,7 +122,7 @@ describe("stacked compression — async interface (H10)", () => {
     assert.equal(result.stats?.engine, "stacked");
     assert.deepEqual(
       result.stats?.engineBreakdown?.map((e) => e.engine),
-      [FS, FA]
+      [FS, FA],
     );
   });
 
@@ -133,7 +133,7 @@ describe("stacked compression — async interface (H10)", () => {
     assert.equal(userContent(result), "hello|fake-async-engine|fake-sync-engine");
     assert.deepEqual(
       result.stats?.engineBreakdown?.map((e) => e.engine),
-      [FA, FS]
+      [FA, FS],
     );
   });
 
@@ -169,7 +169,7 @@ describe("stacked compression — async interface (H10)", () => {
     assert.equal(result.stats?.engine, "stacked");
     assert.deepEqual(
       result.stats?.engineBreakdown?.map((e) => e.engine),
-      ["rtk", "caveman"]
+      ["rtk", "caveman"],
     );
   });
 });

@@ -85,14 +85,14 @@ export function shouldBypassCavemanOutputMode(messages: ChatMessage[]): string |
   }
   if (
     /\b(clarify|explain in detail|more detail|step by step|why exactly|what do you mean)\b/.test(
-      text
+      text,
     )
   ) {
     return "clarification_requested";
   }
   if (
     /\b(first|then|after that|before|rollback|backup)\b[\s\S]{0,240}\b(delete|drop|migrate|deploy|release)\b/.test(
-      text
+      text,
     )
   ) {
     return "order_sensitive_sequence";
@@ -102,7 +102,7 @@ export function shouldBypassCavemanOutputMode(messages: ChatMessage[]): string |
 
 export function buildCavemanOutputInstruction(
   config: CavemanOutputModeConfig,
-  language = "en"
+  language = "en",
 ): string {
   const intensity = config.intensity ?? "full";
   const instructions =
@@ -114,7 +114,7 @@ export function buildCavemanOutputInstruction(
 export function applyCavemanOutputMode(
   body: ChatRequestBody,
   options?: Partial<CavemanOutputModeConfig>,
-  language = "en"
+  language = "en",
 ): CavemanOutputModeResult {
   const config: CavemanOutputModeConfig = {
     ...DEFAULT_CAVEMAN_OUTPUT_MODE_CONFIG,
@@ -149,7 +149,7 @@ export function applyCavemanOutputMode(
     (message) =>
       message.role === "system" &&
       typeof message.content === "string" &&
-      message.content.includes(CAVEMAN_OUTPUT_MARKER)
+      message.content.includes(CAVEMAN_OUTPUT_MARKER),
   );
   if (alreadyApplied) return { body, applied: false, skippedReason: "already_applied" };
 

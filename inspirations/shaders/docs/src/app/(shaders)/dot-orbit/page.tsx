@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { cleanUpLevaParams } from '@/helpers/clean-up-leva-params';
-import { usePresetHighlight } from '@/helpers/use-preset-highlight';
-import { setParamsSafe, useResetLevaParams } from '@/helpers/use-reset-leva-params';
-import { dotOrbitMeta } from '@paper-design/shaders';
-import { DotOrbit, dotOrbitPresets } from '@paper-design/shaders-react';
-import { useControls, button, folder } from 'leva';
-import { useColors } from '@/helpers/use-colors';
-import { toHsla } from '@/helpers/color-utils';
-import { ShaderDetails } from '@/components/shader-details';
-import { dotOrbitDef } from '@/shader-defs/dot-orbit-def';
-import { ShaderContainer } from '@/components/shader-container';
-import { useUrlParams } from '@/helpers/use-url-params';
+import { cleanUpLevaParams } from "@/helpers/clean-up-leva-params";
+import { usePresetHighlight } from "@/helpers/use-preset-highlight";
+import { setParamsSafe, useResetLevaParams } from "@/helpers/use-reset-leva-params";
+import { dotOrbitMeta } from "@paper-design/shaders";
+import { DotOrbit, dotOrbitPresets } from "@paper-design/shaders-react";
+import { useControls, button, folder } from "leva";
+import { useColors } from "@/helpers/use-colors";
+import { toHsla } from "@/helpers/color-utils";
+import { ShaderDetails } from "@/components/shader-details";
+import { dotOrbitDef } from "@/shader-defs/dot-orbit-def";
+import { ShaderContainer } from "@/components/shader-container";
+import { useUrlParams } from "@/helpers/use-url-params";
 
 const { worldWidth, worldHeight, ...defaults } = dotOrbitPresets[0].params;
 
@@ -25,7 +25,7 @@ const DotOrbitWithControls = () => {
       dotOrbitPresets.map(({ name, params: { worldWidth, worldHeight, ...preset } }) => [
         name,
         button(() => setParamsSafe(params, setParams, preset)),
-      ])
+      ]),
     );
 
     return {
@@ -48,7 +48,7 @@ const DotOrbitWithControls = () => {
           setColors(colors);
           setParamsSafe(params, setParams, presetParams);
         }),
-      ])
+      ]),
     );
     return {
       Presets: folder(presets, { order: -1 }),

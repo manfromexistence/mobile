@@ -50,8 +50,9 @@ test("saveContexts persiste e loadContexts relê", async () => {
 });
 
 test("resolveActiveContext retorna contexto ativo", async () => {
-  const { resolveActiveContext, loadContexts, saveContexts } =
-    await import("../../bin/cli/contexts.mjs");
+  const { resolveActiveContext, loadContexts, saveContexts } = await import(
+    "../../bin/cli/contexts.mjs"
+  );
   const cfg = loadContexts();
   cfg.contexts.prod = { baseUrl: "https://prod.example.com", apiKey: "sk-prod" };
   cfg.currentContext = "prod";
@@ -61,8 +62,9 @@ test("resolveActiveContext retorna contexto ativo", async () => {
 });
 
 test("resolveActiveContext aceita override pontual", async () => {
-  const { resolveActiveContext, loadContexts, saveContexts } =
-    await import("../../bin/cli/contexts.mjs");
+  const { resolveActiveContext, loadContexts, saveContexts } = await import(
+    "../../bin/cli/contexts.mjs"
+  );
   const cfg = loadContexts();
   cfg.contexts.staging = { baseUrl: "http://staging:20128", apiKey: null };
   saveContexts(cfg);

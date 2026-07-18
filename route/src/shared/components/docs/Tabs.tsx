@@ -31,7 +31,7 @@ export default function Tabs({ tabs, defaultIndex = 0, className }: TabsProps) {
               "px-4 py-2 text-sm font-medium transition-colors",
               activeIndex === index
                 ? "text-text-primary border-b-2 border-primary"
-                : "text-text-muted hover:text-text-main"
+                : "text-text-muted hover:text-text-main",
             )}
           >
             {tab.label}

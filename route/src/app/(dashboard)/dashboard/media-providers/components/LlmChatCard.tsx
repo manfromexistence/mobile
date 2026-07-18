@@ -28,7 +28,7 @@ const PLAYGROUND_KEY_ID_HEADER = "x-omniroute-playground-key-id";
  */
 function resolvePlaygroundKeyId(
   selectedMaskedKey: string,
-  keys: { id: string; key: string }[]
+  keys: { id: string; key: string }[],
 ): string | null {
   if (!selectedMaskedKey) return null;
   return keys.find((k) => k.key === selectedMaskedKey)?.id ?? null;
@@ -46,7 +46,7 @@ function resolvePlaygroundKeyId(
  */
 export function qualifyPlaygroundModel(
   model: string | null | undefined,
-  providerId: string | null | undefined
+  providerId: string | null | undefined,
 ): string {
   const m = (model ?? "").trim();
   if (!m || !providerId) return m;
@@ -142,7 +142,7 @@ export function LlmChatCard({
       if (onSelectedKeyChange) onSelectedKeyChange(k);
       else setInternalSelectedKey(k);
     },
-    [onSelectedKeyChange]
+    [onSelectedKeyChange],
   );
   const model = modelProp ?? internalModel;
   const setModel = useCallback(
@@ -150,7 +150,7 @@ export function LlmChatCard({
       if (onModelChange) onModelChange(m);
       else setInternalModel(m);
     },
-    [onModelChange]
+    [onModelChange],
   );
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -239,7 +239,7 @@ export function LlmChatCard({
           errData && typeof errData === "object" && (errData as Record<string, unknown>).error
             ? String(
                 ((errData as Record<string, unknown>).error as Record<string, unknown>)?.message ??
-                  `HTTP ${res.status}`
+                  `HTTP ${res.status}`,
               )
             : `HTTP ${res.status}`;
         setMessages((prev) => {
@@ -351,7 +351,7 @@ export function LlmChatCard({
       hasMessages: messages.length > 0,
       streaming,
     }),
-    [handleClear, messages.length, streaming]
+    [handleClear, messages.length, streaming],
   );
 
   // Notify parent of control state changes (for external toolbar)
@@ -369,7 +369,7 @@ export function LlmChatCard({
     <div
       className={cn(
         "flex flex-col gap-3",
-        embedded ? "flex-1 min-h-0" : "rounded-lg border border-border bg-bg-card p-4"
+        embedded ? "flex-1 min-h-0" : "rounded-lg border border-border bg-bg-card p-4",
       )}
     >
       {/* Header controls (hidden when parent renders its own toolbar) */}
@@ -431,7 +431,7 @@ export function LlmChatCard({
             ? "flex-1 min-h-0"
             : messages.length === 0
               ? "min-h-[60px]"
-              : "min-h-[80px] max-h-64"
+              : "min-h-[80px] max-h-64",
         )}
       >
         {messages.length === 0 ? (
@@ -455,7 +455,7 @@ export function LlmChatCard({
                   key={i}
                   className={cn(
                     "flex gap-3 px-4 py-4",
-                    isUser ? "bg-transparent" : "bg-bg-card/40"
+                    isUser ? "bg-transparent" : "bg-bg-card/40",
                   )}
                 >
                   <div
@@ -465,7 +465,7 @@ export function LlmChatCard({
                         ? "bg-primary/15 text-primary"
                         : isError
                           ? "bg-red-500/15 text-red-400"
-                          : "bg-accent/15 text-accent"
+                          : "bg-accent/15 text-accent",
                     )}
                     aria-hidden="true"
                   >
@@ -494,7 +494,7 @@ export function LlmChatCard({
                     <div
                       className={cn(
                         "text-sm whitespace-pre-wrap break-words leading-relaxed",
-                        isError ? "text-red-400" : "text-text-main"
+                        isError ? "text-red-400" : "text-text-main",
                       )}
                     >
                       {msg.content}

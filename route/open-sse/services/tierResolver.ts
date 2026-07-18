@@ -40,7 +40,7 @@ export function classifyTier(provider: string, model: string): TierAssignment {
   }
 
   const providerOverride = currentConfig.providerOverrides.find(
-    (o) => o.provider.toLowerCase() === provider.toLowerCase()
+    (o) => o.provider.toLowerCase() === provider.toLowerCase(),
   );
   if (providerOverride) {
     const pricing = getModelPricing(provider, model);
@@ -59,7 +59,7 @@ export function classifyTier(provider: string, model: string): TierAssignment {
   }
 
   const modelOverride = currentConfig.modelOverrides.find(
-    (o) => o.provider.toLowerCase() === provider.toLowerCase() && matchGlob(o.modelPattern, model)
+    (o) => o.provider.toLowerCase() === provider.toLowerCase() && matchGlob(o.modelPattern, model),
   );
   if (modelOverride) {
     const pricing = getModelPricing(provider, model);
@@ -130,7 +130,7 @@ export function clearTierCache(): void {
 }
 
 export function classifyTiers(
-  targets: Array<{ provider: string; model: string }>
+  targets: Array<{ provider: string; model: string }>,
 ): TierAssignment[] {
   return targets.map((t) => classifyTier(t.provider, t.model));
 }

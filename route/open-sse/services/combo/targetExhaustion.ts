@@ -66,7 +66,7 @@ export type ApplyComboTargetExhaustionOptions = {
  */
 export function applyComboTargetExhaustion(
   target: ResolvedComboTarget,
-  opts: ApplyComboTargetExhaustionOptions
+  opts: ApplyComboTargetExhaustionOptions,
 ): boolean {
   const {
     result,
@@ -98,7 +98,7 @@ export function applyComboTargetExhaustion(
     const emit = exhaustedLogLevel === "debug" ? log.debug : log.info;
     emit?.(
       tag,
-      `Provider ${provider} quota exhausted — marking for skip on remaining targets (#1731)`
+      `Provider ${provider} quota exhausted — marking for skip on remaining targets (#1731)`,
     );
   } else {
     if (result.status === 429 && !isTokenLimitBreach && provider && provider !== "unknown") {
@@ -121,7 +121,7 @@ function markConnectionLevelExhaustion(
   opts: Pick<
     ApplyComboTargetExhaustionOptions,
     "result" | "errorText" | "sets" | "log" | "tag" | "rawModel"
-  >
+  >,
 ): void {
   const { result, errorText, sets, log, tag, rawModel } = opts;
   const provider = target.provider;
@@ -148,13 +148,13 @@ function markConnectionLevelExhaustion(
     sets.exhaustedConnections.add(`${provider}:${connId}`);
     log.info(
       tag,
-      `Provider ${provider} connection ${connId} error (${result.status}) — marking for skip on remaining targets (#1731v2)`
+      `Provider ${provider} connection ${connId} error (${result.status}) — marking for skip on remaining targets (#1731v2)`,
     );
   } else {
     sets.exhaustedProviders.add(provider);
     log.info(
       tag,
-      `Provider ${provider} connection error (${result.status}) — marking for skip on remaining targets (#1731)`
+      `Provider ${provider} connection error (${result.status}) — marking for skip on remaining targets (#1731)`,
     );
   }
 }

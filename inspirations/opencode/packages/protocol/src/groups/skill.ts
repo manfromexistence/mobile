@@ -1,8 +1,8 @@
-import { Skill } from "@opencode-ai/schema/skill"
-import { Location } from "@opencode-ai/schema/location"
-import { Schema } from "effect"
-import { HttpApiEndpoint, HttpApiGroup, OpenApi } from "effect/unstable/httpapi"
-import { LocationQuery, locationQueryOpenApi } from "./location"
+import { Skill } from "@opencode-ai/schema/skill";
+import { Location } from "@opencode-ai/schema/location";
+import { Schema } from "effect";
+import { HttpApiEndpoint, HttpApiGroup, OpenApi } from "effect/unstable/httpapi";
+import { LocationQuery, locationQueryOpenApi } from "./location";
 
 export const SkillGroup = HttpApiGroup.make("server.skill")
   .add(
@@ -24,4 +24,4 @@ export const SkillGroup = HttpApiGroup.make("server.skill")
       title: "skills",
       description: "Experimental skill routes.",
     }),
-  )
+  );

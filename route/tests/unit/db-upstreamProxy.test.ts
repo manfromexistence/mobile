@@ -58,7 +58,7 @@ function upsert(db, data) {
     INSERT OR REPLACE INTO upstream_proxy_config
     (provider_id, mode, cliproxyapi_model_mapping, native_priority, cliproxyapi_priority, enabled, created_at, updated_at)
     VALUES (?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
-  `
+  `,
   ).run(
     data.providerId,
     data.mode ?? "native",
@@ -67,7 +67,7 @@ function upsert(db, data) {
       : null,
     data.nativePriority ?? 1,
     data.cliproxyapiPriority ?? 2,
-    data.enabled !== false ? 1 : 0
+    data.enabled !== false ? 1 : 0,
   );
   return getConfig(db, data.providerId);
 }
@@ -116,7 +116,7 @@ function getAllConfigs(db) {
 function getProvidersByMode(db, mode) {
   return db
     .prepare(
-      "SELECT * FROM upstream_proxy_config WHERE mode = ? AND enabled = 1 ORDER BY provider_id"
+      "SELECT * FROM upstream_proxy_config WHERE mode = ? AND enabled = 1 ORDER BY provider_id",
     )
     .all(mode)
     .map((r) => ({
@@ -222,7 +222,7 @@ describe("db/upstreamProxy (logic)", () => {
       upsert(testDb, { providerId: "u", mode: "native" });
       testDb
         .prepare(
-          "UPDATE upstream_proxy_config SET mode = ?, updated_at = datetime('now') WHERE provider_id = ?"
+          "UPDATE upstream_proxy_config SET mode = ?, updated_at = datetime('now') WHERE provider_id = ?",
         )
         .run("cliproxyapi", "u");
       assert.equal(getConfig(testDb, "u").mode, "cliproxyapi");
@@ -232,7 +232,7 @@ describe("db/upstreamProxy (logic)", () => {
       upsert(testDb, { providerId: "u2" });
       testDb
         .prepare(
-          "UPDATE upstream_proxy_config SET cliproxyapi_model_mapping = ?, updated_at = datetime('now') WHERE provider_id = ?"
+          "UPDATE upstream_proxy_config SET cliproxyapi_model_mapping = ?, updated_at = datetime('now') WHERE provider_id = ?",
         )
         .run(JSON.stringify({ k: "v" }), "u2");
       assert.deepEqual(getConfig(testDb, "u2").cliproxyapiModelMapping, { k: "v" });
@@ -242,7 +242,7 @@ describe("db/upstreamProxy (logic)", () => {
       upsert(testDb, { providerId: "m" });
       testDb
         .prepare(
-          "UPDATE upstream_proxy_config SET mode = ?, native_priority = ?, enabled = ?, updated_at = datetime('now') WHERE provider_id = ?"
+          "UPDATE upstream_proxy_config SET mode = ?, native_priority = ?, enabled = ?, updated_at = datetime('now') WHERE provider_id = ?",
         )
         .run("fallback", 3, 0, "m");
       const config = getConfig(testDb, "m");
@@ -255,7 +255,7 @@ describe("db/upstreamProxy (logic)", () => {
       upsert(testDb, { providerId: "n", cliproxyapiModelMapping: { a: 1 } });
       testDb
         .prepare(
-          "UPDATE upstream_proxy_config SET cliproxyapi_model_mapping = NULL WHERE provider_id = ?"
+          "UPDATE upstream_proxy_config SET cliproxyapi_model_mapping = NULL WHERE provider_id = ?",
         )
         .run("n");
       assert.equal(getConfig(testDb, "n").cliproxyapiModelMapping, null);
@@ -268,7 +268,7 @@ describe("db/upstreamProxy (logic)", () => {
       assert.equal(
         testDb.prepare("DELETE FROM upstream_proxy_config WHERE provider_id = ?").run("del")
           .changes,
-        1
+        1,
       );
       assert.equal(getConfig(testDb, "del"), null);
     });
@@ -277,7 +277,7 @@ describe("db/upstreamProxy (logic)", () => {
       assert.equal(
         testDb.prepare("DELETE FROM upstream_proxy_config WHERE provider_id = ?").run("ghost")
           .changes,
-        0
+        0,
       );
     });
   });
@@ -368,7 +368,7 @@ describe("db/upstreamProxy (module coverage)", () => {
     assert.equal(upstreamProxyDb.validateProxyUrl("ftp://proxy.example.com").valid, false);
     assert.match(
       upstreamProxyDb.validateProxyUrl("http://169.254.169.254").error,
-      /private\/internal address/
+      /private\/internal address/,
     );
     assert.match(upstreamProxyDb.validateProxyUrl("not-a-url").error, /Invalid URL/);
   });
@@ -416,7 +416,7 @@ describe("db/upstreamProxy (module coverage)", () => {
       INSERT INTO upstream_proxy_config
       (provider_id, mode, cliproxyapi_model_mapping, native_priority, cliproxyapi_priority, enabled, created_at, updated_at)
       VALUES (?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))
-    `
+    `,
     ).run("broken", "fallback", "{not-json", 1, 2, 1);
 
     const broken = await upstreamProxyDb.getUpstreamProxyConfig("broken");
@@ -424,7 +424,7 @@ describe("db/upstreamProxy (module coverage)", () => {
 
     await assert.rejects(
       upstreamProxyDb.updateUpstreamProxyConfig("ghost", { mode: "native" }),
-      /Provider ghost not found/
+      /Provider ghost not found/,
     );
 
     assert.equal(await upstreamProxyDb.deleteUpstreamProxyConfig("broken"), true);

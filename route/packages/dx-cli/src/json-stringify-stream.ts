@@ -101,7 +101,7 @@ function* stringifyArray(arr: unknown[], depth: number, indent: number): Iterabl
 function* stringifyObject(
   obj: Record<string, unknown>,
   depth: number,
-  indent: number
+  indent: number,
 ): Iterable<string> {
   const keys = Object.keys(obj);
 

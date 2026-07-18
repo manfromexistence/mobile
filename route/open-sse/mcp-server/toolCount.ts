@@ -24,7 +24,7 @@ function collectionNames(collection: ToolCollection): string[] {
 }
 
 export function countUniqueMcpTools(
-  collectionsByLabel: Readonly<Record<string, ToolCollection>>
+  collectionsByLabel: Readonly<Record<string, ToolCollection>>,
 ): number {
   const uniqueNames = new Set<string>();
   for (const collection of Object.values(collectionsByLabel)) {

@@ -265,7 +265,7 @@ export function getSearchProvider(providerId: string): SearchProviderConfig | nu
 
 export function supportsSearchType(
   providerOrId: SearchProviderConfig | string | null | undefined,
-  searchType: string
+  searchType: string,
 ): boolean {
   const provider =
     typeof providerOrId === "string" ? getSearchProvider(providerOrId) : providerOrId || null;
@@ -295,7 +295,7 @@ export function getAllSearchProviders(): Array<{
  */
 export function selectProvider(
   explicitProvider?: string,
-  searchType?: string
+  searchType?: string,
 ): SearchProviderConfig | null {
   if (explicitProvider) {
     const provider = SEARCH_PROVIDERS[explicitProvider] || null;
@@ -309,7 +309,7 @@ export function selectProvider(
   // route handler's last-resort step.
   const providers = Object.values(SEARCH_PROVIDERS).filter(
     (provider) =>
-      !provider.fallbackOnly && (searchType ? supportsSearchType(provider, searchType) : true)
+      !provider.fallbackOnly && (searchType ? supportsSearchType(provider, searchType) : true),
   );
   if (providers.length === 0) return null;
 

@@ -1,16 +1,16 @@
-import type { PreloadFileOptions } from '@pierre/diffs/ssr';
+import type { PreloadFileOptions } from "@pierre/diffs/ssr";
 
-import { CustomScrollbarCSS } from '@/components/CustomScrollbarCSS';
+import { CustomScrollbarCSS } from "@/components/CustomScrollbarCSS";
 
 const options = {
-  theme: { dark: 'pierre-dark', light: 'pierre-light' },
+  theme: { dark: "pierre-dark", light: "pierre-light" },
   disableFileHeader: true,
   unsafeCSS: CustomScrollbarCSS,
 } as const;
 
 export const HELPER_PARSE_DIFF_FROM_FILE: PreloadFileOptions<undefined> = {
   file: {
-    name: 'parseDiffFromFile.ts',
+    name: "parseDiffFromFile.ts",
     contents: `import {
   parseDiffFromFile,
   type FileDiffMetadata,
@@ -51,7 +51,7 @@ const fileDiff: FileDiffMetadata = parseDiffFromFile(oldFile, newFile);
 
 export const HELPER_PARSE_PATCH_FILES: PreloadFileOptions<undefined> = {
   file: {
-    name: 'parsePatchFiles.ts',
+    name: "parsePatchFiles.ts",
     contents: `import {
   parsePatchFiles,
   type ParsedPatch,
@@ -101,7 +101,7 @@ for (const patch of patches) {
 
 export const HELPER_TRIM_PATCH_CONTEXT: PreloadFileOptions<undefined> = {
   file: {
-    name: 'trimPatchContext.ts',
+    name: "trimPatchContext.ts",
     contents: `import { trimPatchContext } from '@pierre/diffs';
 
 // Trim a patch's context lines down to a fixed window size.
@@ -152,7 +152,7 @@ index abc123..def456 100644
 
 export const HELPER_REGISTER_CUSTOM_THEME: PreloadFileOptions<undefined> = {
   file: {
-    name: 'registerCustomTheme.ts',
+    name: "registerCustomTheme.ts",
     contents: `import { registerCustomTheme } from '@pierre/diffs';
 
 // Register a custom Shiki theme before using it.
@@ -188,7 +188,7 @@ registerCustomTheme('inline-theme', async () => ({
 
 export const HELPER_REGISTER_CUSTOM_LANGUAGE: PreloadFileOptions<undefined> = {
   file: {
-    name: 'registerCustomLanguage.ts',
+    name: "registerCustomLanguage.ts",
     contents: `import { registerCustomLanguage } from '@pierre/diffs';
 
 // Register a custom Shiki language loader before rendering.
@@ -212,7 +212,7 @@ registerCustomLanguage('my-lang', () => import('./my-lang.tmLanguage.json'));`,
 
 export const HELPER_DISPOSE_HIGHLIGHTER: PreloadFileOptions<undefined> = {
   file: {
-    name: 'disposeHighlighter.ts',
+    name: "disposeHighlighter.ts",
     contents: `import { disposeHighlighter } from '@pierre/diffs';
 
 // Dispose the shared highlighter instance to free memory.
@@ -229,7 +229,7 @@ disposeHighlighter();`,
 
 export const HELPER_GET_SHARED_HIGHLIGHTER: PreloadFileOptions<undefined> = {
   file: {
-    name: 'getSharedHighlighter.ts',
+    name: "getSharedHighlighter.ts",
     contents: `import { getSharedHighlighter, DiffsHighlighter } from '@pierre/diffs';
 
 // Get the shared Shiki highlighter instance.
@@ -250,7 +250,7 @@ const tokens = highlighter.codeToTokens('const x = 1;'); `,
 
 export const HELPER_PRELOAD_HIGHLIGHTER: PreloadFileOptions<undefined> = {
   file: {
-    name: 'preloadHighlighter.ts',
+    name: "preloadHighlighter.ts",
     contents: `import { preloadHighlighter } from '@pierre/diffs';
 
 // Preload specific themes and languages before rendering.
@@ -275,7 +275,7 @@ await preloadHighlighter({
 
 export const HELPER_SET_LANGUAGE_OVERRIDE: PreloadFileOptions<undefined> = {
   file: {
-    name: 'setLanguageOverride.ts',
+    name: "setLanguageOverride.ts",
     contents: `import {
   setLanguageOverride,
   parsePatchFiles,
@@ -309,7 +309,7 @@ const typescriptDiff = setLanguageOverride(diff, 'typescript');
 
 export const HELPER_DIFF_ACCEPT_REJECT: PreloadFileOptions<undefined> = {
   file: {
-    name: 'diffAcceptRejectHunk.ts',
+    name: "diffAcceptRejectHunk.ts",
     contents: `import {
   diffAcceptRejectHunk,
   FileDiff,
@@ -360,7 +360,7 @@ instance.render({
 
 export const HELPER_DIFF_ACCEPT_REJECT_REACT: PreloadFileOptions<undefined> = {
   file: {
-    name: 'AcceptRejectExample.tsx',
+    name: "AcceptRejectExample.tsx",
     contents: `import {
   diffAcceptRejectHunk,
   type DiffLineAnnotation,
@@ -455,7 +455,7 @@ export function AcceptRejectExample() {
 
 export const HELPER_RESOLVE_MERGE_CONFLICT: PreloadFileOptions<undefined> = {
   file: {
-    name: 'resolveMergeConflict.ts',
+    name: "resolveMergeConflict.ts",
     contents: `import {
   UnresolvedFile,
   type FileContents,

@@ -55,7 +55,7 @@ const SUBSCRIPTION_QUOTA_COOLDOWN_MS = 60 * 60 * 1000; // 1 hour
 export function buildSubscriptionQuotaFallback(
   errorStr: string,
   getUpstreamRetryHintMs: () => number | null,
-  parseRetryFromErrorText: (text: string) => number | null
+  parseRetryFromErrorText: (text: string) => number | null,
 ): QuotaTextFallback | null {
   if (!isSubscriptionQuotaText(errorStr.toLowerCase())) return null;
   const hintMs = getUpstreamRetryHintMs();

@@ -37,7 +37,7 @@ async function handleSearch(args: z.infer<typeof GitHubSkillsSearchSchema>) {
   if (args.query) {
     const q = args.query.toLowerCase();
     filtered = filtered.filter(
-      (r) => r.fullName.toLowerCase().includes(q) || r.description.toLowerCase().includes(q)
+      (r) => r.fullName.toLowerCase().includes(q) || r.description.toLowerCase().includes(q),
     );
   }
 

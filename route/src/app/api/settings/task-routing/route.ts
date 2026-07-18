@@ -47,7 +47,7 @@ export async function PUT(request: Request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -56,8 +56,9 @@ export async function PUT(request: Request) {
     if (isValidationFailure(validation)) {
       return NextResponse.json({ error: validation.error }, { status: 400 });
     }
-    const config =
-      validation.data as import("@omniroute/open-sse/services/taskAwareRouter.ts").TaskRoutingConfig;
+    const config = validation.data as import(
+      "@omniroute/open-sse/services/taskAwareRouter.ts",
+    ).TaskRoutingConfig;
 
     setTaskRoutingConfig(config);
 
@@ -91,7 +92,7 @@ export async function POST(request: Request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 

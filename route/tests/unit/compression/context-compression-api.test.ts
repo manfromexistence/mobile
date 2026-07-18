@@ -18,7 +18,7 @@ describe("context compression API schemas", () => {
         rawOutputRetention: "failures",
         rawOutputMaxBytes: 4096,
       }).success,
-      true
+      true,
     );
     assert.equal(rtkConfigSchema.safeParse({ rawOutputRetention: "plaintext" }).success, false);
     assert.equal(rtkTestSchema.safeParse({ text: "" }).success, false);
@@ -28,7 +28,7 @@ describe("context compression API schemas", () => {
         text: "ok",
         config: { maxLinesPerResult: -1, madeUp: true },
       }).success,
-      false
+      false,
     );
   });
 
@@ -39,7 +39,7 @@ describe("context compression API schemas", () => {
         name: "Stacked",
         pipeline: [{ engine: "rtk", intensity: "standard" }],
       }).success,
-      true
+      true,
     );
     assert.equal(compressionComboUpdateSchema.safeParse({ isDefault: true }).success, true);
     assert.equal(compressionComboUpdateSchema.safeParse({ pipeline: [] }).success, false);
@@ -50,7 +50,7 @@ describe("context compression API schemas", () => {
         name: "Bad",
         pipeline: [{ engine: "rtk", intensity: "bogus" }],
       }).success,
-      false
+      false,
     );
   });
 });

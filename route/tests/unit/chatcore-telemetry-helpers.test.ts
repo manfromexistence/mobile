@@ -9,8 +9,9 @@ import path from "node:path";
 const TEST_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-telemetry-"));
 process.env.DATA_DIR = TEST_DATA_DIR;
 
-const { forwardDashboardEventToLiveWs, maybeSyncClaudeExtraUsageState } =
-  await import("../../open-sse/handlers/chatCore/telemetryHelpers.ts");
+const { forwardDashboardEventToLiveWs, maybeSyncClaudeExtraUsageState } = await import(
+  "../../open-sse/handlers/chatCore/telemetryHelpers.ts"
+);
 const core = await import("../../src/lib/db/core.ts");
 
 const originalFetch = globalThis.fetch;
@@ -52,7 +53,7 @@ test("forwardDashboardEventToLiveWs POSTs event+payload+timestamp as JSON to the
   assert.equal(capturedInit?.method, "POST");
   assert.equal(
     (capturedInit?.headers as Record<string, string>)["content-type"],
-    "application/json"
+    "application/json",
   );
   assert.ok(capturedInit?.signal, "an AbortSignal is attached for the 1.5s timeout");
 
@@ -62,7 +63,7 @@ test("forwardDashboardEventToLiveWs POSTs event+payload+timestamp as JSON to the
   assert.equal(typeof parsed.timestamp, "number");
   assert.ok(
     parsed.timestamp >= before && parsed.timestamp <= after,
-    "timestamp is Date.now() captured at call time"
+    "timestamp is Date.now() captured at call time",
   );
 });
 
@@ -159,7 +160,7 @@ test("maybeSyncClaudeExtraUsageState enters the try for claude+enabled, swallows
       connectionId: "bogus-conn-id",
       providerSpecificData: {},
       log,
-    })
+    }),
   );
 
   assert.equal(calls.length, 1, "the swallowed error path logs exactly once");
@@ -167,6 +168,6 @@ test("maybeSyncClaudeExtraUsageState enters the try for claude+enabled, swallows
   assert.match(
     String(calls[0][1]),
     /Failed to sync Claude extra-usage state:/,
-    "logs the sync-failure message with the underlying error text"
+    "logs the sync-failure message with the underlying error text",
   );
 });

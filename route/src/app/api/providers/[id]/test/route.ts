@@ -156,7 +156,7 @@ function makeDiagnosis(
   type: string,
   source: string,
   message: string | null,
-  code: string | null = null
+  code: string | null = null,
 ) {
   return {
     type,
@@ -236,7 +236,7 @@ export function classifyFailure({
       "upstream_auth_error",
       "upstream",
       message,
-      numericStatus ? String(numericStatus) : "auth_failed"
+      numericStatus ? String(numericStatus) : "auth_failed",
     );
   }
 
@@ -249,7 +249,7 @@ export function classifyFailure({
       "upstream_rate_limited",
       "upstream",
       message,
-      numericStatus ? String(numericStatus) : "rate_limited"
+      numericStatus ? String(numericStatus) : "rate_limited",
     );
   }
 
@@ -268,7 +268,7 @@ export function classifyFailure({
     "upstream_error",
     "upstream",
     message,
-    numericStatus ? String(numericStatus) : "upstream_error"
+    numericStatus ? String(numericStatus) : "upstream_error",
   );
 }
 
@@ -329,7 +329,7 @@ async function getProviderRuntimeStatus(connection: any) {
         "runtime_error",
         "local",
         runtimeMessage,
-        runtime.reason || "runtime_error"
+        runtime.reason || "runtime_error",
       ),
       error: runtimeMessage,
     };
@@ -438,7 +438,7 @@ async function syncToCloudIfEnabled() {
  */
 export async function testOAuthConnection(
   connection: any,
-  timeoutMs: number = OAUTH_TEST_TIMEOUT_MS
+  timeoutMs: number = OAUTH_TEST_TIMEOUT_MS,
 ) {
   const config = OAUTH_TEST_CONFIG[connection.provider];
 
@@ -756,7 +756,7 @@ export async function testSingleConnection(connectionId: string, validationModel
         "validation_error",
         "local",
         "Connection provider is invalid",
-        "provider_invalid"
+        "provider_invalid",
       ),
       latencyMs: 0,
     };
@@ -792,11 +792,11 @@ export async function testSingleConnection(connectionId: string, validationModel
         }
       : connection;
     result = await runWithProxyContext(proxyInfo?.proxy || null, () =>
-      testApiKeyConnection(enrichedConnection)
+      testApiKeyConnection(enrichedConnection),
     );
   } else {
     result = await runWithProxyContext(proxyInfo?.proxy || null, () =>
-      testOAuthConnection(connection)
+      testOAuthConnection(connection),
     );
   }
 

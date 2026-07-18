@@ -1,15 +1,15 @@
-import { Component, Show } from "solid-js"
-import { Icon } from "@opencode-ai/ui/icon"
+import { Component, Show } from "solid-js";
+import { Icon } from "@opencode-ai/ui/icon";
 
 type PromptDragOverlayProps = {
-  type: "image" | "@mention" | null
-  label: string
-}
+  type: "image" | "@mention" | null;
+  label: string;
+};
 
 const kindToIcon = {
   image: "photo",
   "@mention": "link",
-} as const
+} as const;
 
 export const PromptDragOverlay: Component<PromptDragOverlayProps> = (props) => {
   return (
@@ -21,5 +21,5 @@ export const PromptDragOverlay: Component<PromptDragOverlayProps> = (props) => {
         </div>
       </div>
     </Show>
-  )
-}
+  );
+};

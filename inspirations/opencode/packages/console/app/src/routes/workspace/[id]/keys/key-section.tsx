@@ -1,29 +1,29 @@
-import { json, query, action, useParams, createAsync, useSubmission } from "@solidjs/router"
-import { createEffect, createSignal, For, Show } from "solid-js"
-import { IconCopy, IconCheck } from "~/component/icon"
-import { Key } from "@opencode-ai/console-core/key.js"
-import { withActor } from "~/context/auth.withActor"
-import { createStore } from "solid-js/store"
-import styles from "./key-section.module.css"
-import { Actor } from "@opencode-ai/console-core/actor.js"
-import { useI18n } from "~/context/i18n"
-import { formError, localizeError } from "~/lib/form-error"
+import { json, query, action, useParams, createAsync, useSubmission } from "@solidjs/router";
+import { createEffect, createSignal, For, Show } from "solid-js";
+import { IconCopy, IconCheck } from "~/component/icon";
+import { Key } from "@opencode-ai/console-core/key.js";
+import { withActor } from "~/context/auth.withActor";
+import { createStore } from "solid-js/store";
+import styles from "./key-section.module.css";
+import { Actor } from "@opencode-ai/console-core/actor.js";
+import { useI18n } from "~/context/i18n";
+import { formError, localizeError } from "~/lib/form-error";
 
 const removeKey = action(async (form: FormData) => {
-  "use server"
-  const id = form.get("id") as string | null
-  if (!id) return { error: formError.idRequired }
-  const workspaceID = form.get("workspaceID") as string | null
-  if (!workspaceID) return { error: formError.workspaceRequired }
-  return json(await withActor(() => Key.remove({ id }), workspaceID), { revalidate: listKeys.key })
-}, "key.remove")
+  "use server";
+  const id = form.get("id") as string | null;
+  if (!id) return { error: formError.idRequired };
+  const workspaceID = form.get("workspaceID") as string | null;
+  if (!workspaceID) return { error: formError.workspaceRequired };
+  return json(await withActor(() => Key.remove({ id }), workspaceID), { revalidate: listKeys.key });
+}, "key.remove");
 
 const createKey = action(async (form: FormData) => {
-  "use server"
-  const name = (form.get("name") as string | null)?.trim()
-  if (!name) return { error: formError.nameRequired }
-  const workspaceID = form.get("workspaceID") as string | null
-  if (!workspaceID) return { error: formError.workspaceRequired }
+  "use server";
+  const name = (form.get("name") as string | null)?.trim();
+  if (!name) return { error: formError.nameRequired };
+  const workspaceID = form.get("workspaceID") as string | null;
+  if (!workspaceID) return { error: formError.workspaceRequired };
   return json(
     await withActor(
       () =>
@@ -36,40 +36,40 @@ const createKey = action(async (form: FormData) => {
       workspaceID,
     ),
     { revalidate: listKeys.key },
-  )
-}, "key.create")
+  );
+}, "key.create");
 
 const listKeys = query(async (workspaceID: string) => {
-  "use server"
-  return withActor(() => Key.list(), workspaceID)
-}, "key.list")
+  "use server";
+  return withActor(() => Key.list(), workspaceID);
+}, "key.list");
 
 export function KeySection() {
-  const params = useParams()
-  const i18n = useI18n()
-  const keys = createAsync(() => listKeys(params.id!))
-  const submission = useSubmission(createKey)
-  const [store, setStore] = createStore({ show: false })
+  const params = useParams();
+  const i18n = useI18n();
+  const keys = createAsync(() => listKeys(params.id!));
+  const submission = useSubmission(createKey);
+  const [store, setStore] = createStore({ show: false });
 
-  let input: HTMLInputElement
+  let input: HTMLInputElement;
 
   createEffect(() => {
     if (!submission.pending && submission.result && !submission.result.error) {
-      setStore("show", false)
+      setStore("show", false);
     }
-  })
+  });
 
   function show() {
     while (true) {
-      submission.clear()
-      if (!submission.result) break
+      submission.clear();
+      if (!submission.result) break;
     }
-    setStore("show", true)
-    setTimeout(() => input?.focus(), 0)
+    setStore("show", true);
+    setTimeout(() => input?.focus(), 0);
   }
 
   function hide() {
-    setStore("show", false)
+    setStore("show", false);
   }
 
   return (
@@ -129,7 +129,7 @@ export function KeySection() {
             <tbody>
               <For each={keys()!}>
                 {(key) => {
-                  const [copied, setCopied] = createSignal(false)
+                  const [copied, setCopied] = createSignal(false);
                   // const submission = useSubmission(removeKey, ([fd]) => fd.get("id")?.toString() === key.id)
                   return (
                     <tr>
@@ -140,14 +140,17 @@ export function KeySection() {
                             data-color="ghost"
                             disabled={copied()}
                             onClick={async () => {
-                              await navigator.clipboard.writeText(key.key!)
-                              setCopied(true)
-                              setTimeout(() => setCopied(false), 1000)
+                              await navigator.clipboard.writeText(key.key!);
+                              setCopied(true);
+                              setTimeout(() => setCopied(false), 1000);
                             }}
                             title={i18n.t("workspace.keys.copyApiKey")}
                           >
                             <span>{key.keyDisplay}</span>
-                            <Show when={copied()} fallback={<IconCopy style={{ width: "14px", height: "14px" }} />}>
+                            <Show
+                              when={copied()}
+                              fallback={<IconCopy style={{ width: "14px", height: "14px" }} />}
+                            >
                               <IconCheck style={{ width: "14px", height: "14px" }} />
                             </Show>
                           </button>
@@ -162,7 +165,7 @@ export function KeySection() {
                         </form>
                       </td>
                     </tr>
-                  )
+                  );
                 }}
               </For>
             </tbody>
@@ -170,5 +173,5 @@ export function KeySection() {
         </Show>
       </div>
     </section>
-  )
+  );
 }

@@ -123,7 +123,7 @@ export function registerCombo(program) {
     .addOption(
       new Option("--strategy <strategy>", "Routing strategy")
         .choices(VALID_STRATEGIES)
-        .default("priority")
+        .default("priority"),
     )
     .action(async (name, opts, cmd) => {
       const globalOpts = cmd.parent.optsWithGlobals();
@@ -306,7 +306,7 @@ export async function runComboDeleteCommand(name, opts = {}) {
     const readline = await import("node:readline");
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
     const answer = await new Promise((resolve) =>
-      rl.question(t("combo.confirmDelete", { name }) + " [y/N] ", resolve)
+      rl.question(t("combo.confirmDelete", { name }) + " [y/N] ", resolve),
     );
     rl.close();
     if (!/^y(es)?$/i.test(answer)) {

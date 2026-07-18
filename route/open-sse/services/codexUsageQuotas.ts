@@ -66,7 +66,7 @@ function parseWindowReset(window: unknown): string | null {
   const resetAt = toNumber(getFieldValue(window, "reset_at", "resetAt"), 0);
   const resetAfterSeconds = toNumber(
     getFieldValue(window, "reset_after_seconds", "resetAfterSeconds"),
-    0
+    0,
   );
   if (resetAt > 0) return parseResetTime(resetAt * 1000);
   if (resetAfterSeconds > 0) return parseResetTime(Date.now() + resetAfterSeconds * 1000);
@@ -89,7 +89,7 @@ function findCodexSparkRateLimit(data: JsonRecord): JsonRecord {
   const additionalRateLimits = getFieldValue(
     data,
     "additional_rate_limits",
-    "additionalRateLimits"
+    "additionalRateLimits",
   );
   if (!Array.isArray(additionalRateLimits)) return {};
 
@@ -104,7 +104,7 @@ function findCodexSparkRateLimit(data: JsonRecord): JsonRecord {
         entry["name"],
         entry["title"],
         entry["model"],
-        getFieldValue(entry, "model_id", "modelId")
+        getFieldValue(entry, "model_id", "modelId"),
       )
     ) {
       return toRecord(getFieldValue(entry, "rate_limit", "rateLimit"));
@@ -139,7 +139,7 @@ function findCodexReviewRateLimit(data: JsonRecord): JsonRecord {
   const additionalRateLimits = getFieldValue(
     data,
     "additional_rate_limits",
-    "additionalRateLimits"
+    "additionalRateLimits",
   );
   if (!Array.isArray(additionalRateLimits)) return {};
 
@@ -151,7 +151,7 @@ function findCodexReviewRateLimit(data: JsonRecord): JsonRecord {
         getFieldValue(entry, "metered_feature", "meteredFeature"),
         getFieldValue(entry, "limit_id", "limitId"),
         entry["id"],
-        entry["name"]
+        entry["name"],
       )
     ) {
       return toRecord(getFieldValue(entry, "rate_limit", "rateLimit"));
@@ -170,7 +170,9 @@ function findCodexReviewRateLimit(data: JsonRecord): JsonRecord {
  * (issue #5199).
  */
 function parseBankedResetCredits(data: JsonRecord): number | undefined {
-  const resetCredits = toRecord(getFieldValue(data, "rate_limit_reset_credits", "rateLimitResetCredits"));
+  const resetCredits = toRecord(
+    getFieldValue(data, "rate_limit_reset_credits", "rateLimitResetCredits"),
+  );
   const availableCount = getFieldValue(resetCredits, "available_count", "availableCount");
   const count = toNumber(availableCount, NaN);
   return Number.isFinite(count) ? count : undefined;
@@ -213,7 +215,7 @@ export function buildCodexUsageQuotas(dataValue: unknown): {
   //      `review` descriptor (fallback for plans that bucket every secondary
   //      limit into the same array).
   const dedicatedReviewRateLimit = toRecord(
-    getFieldValue(data, "code_review_rate_limit", "codeReviewRateLimit")
+    getFieldValue(data, "code_review_rate_limit", "codeReviewRateLimit"),
   );
   const reviewRateLimit =
     Object.keys(dedicatedReviewRateLimit).length > 0
@@ -221,7 +223,7 @@ export function buildCodexUsageQuotas(dataValue: unknown): {
       : findCodexReviewRateLimit(data);
 
   const codeReviewWindow = toRecord(
-    getFieldValue(reviewRateLimit, "primary_window", "primaryWindow")
+    getFieldValue(reviewRateLimit, "primary_window", "primaryWindow"),
   );
   if (
     getFieldValue(codeReviewWindow, "used_percent", "usedPercent") !== null ||
@@ -231,7 +233,7 @@ export function buildCodexUsageQuotas(dataValue: unknown): {
   }
 
   const codeReviewSecondaryWindow = toRecord(
-    getFieldValue(reviewRateLimit, "secondary_window", "secondaryWindow")
+    getFieldValue(reviewRateLimit, "secondary_window", "secondaryWindow"),
   );
   if (
     getFieldValue(codeReviewSecondaryWindow, "used_percent", "usedPercent") !== null ||
@@ -242,22 +244,22 @@ export function buildCodexUsageQuotas(dataValue: unknown): {
 
   const sparkRateLimit = findCodexSparkRateLimit(data);
   const sparkPrimaryWindow = toRecord(
-    getFieldValue(sparkRateLimit, "primary_window", "primaryWindow")
+    getFieldValue(sparkRateLimit, "primary_window", "primaryWindow"),
   );
   if (Object.keys(sparkPrimaryWindow).length > 0) {
     quotas[CODEX_SPARK_QUOTA_SESSION] = buildPercentageQuota(
       sparkPrimaryWindow,
-      CODEX_SPARK_DISPLAY_NAME
+      CODEX_SPARK_DISPLAY_NAME,
     );
   }
 
   const sparkSecondaryWindow = toRecord(
-    getFieldValue(sparkRateLimit, "secondary_window", "secondaryWindow")
+    getFieldValue(sparkRateLimit, "secondary_window", "secondaryWindow"),
   );
   if (Object.keys(sparkSecondaryWindow).length > 0) {
     quotas[CODEX_SPARK_QUOTA_WEEKLY] = buildPercentageQuota(
       sparkSecondaryWindow,
-      `${CODEX_SPARK_DISPLAY_NAME} Weekly`
+      `${CODEX_SPARK_DISPLAY_NAME} Weekly`,
     );
   }
 

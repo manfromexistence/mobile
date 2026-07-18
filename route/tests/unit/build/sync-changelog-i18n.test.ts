@@ -9,13 +9,13 @@ function repo() {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "cl-i18n-"));
   fs.writeFileSync(
     path.join(root, "CHANGELOG.md"),
-    "# Changelog\n\n## [Unreleased]\n\n---\n\n## [9.9.9] — 2026-01-01\n\n- **feat:** big new thing\n- **fix:** another\n\n---\n\n## [9.9.8] — 2025-12-01\n\n- old\n"
+    "# Changelog\n\n## [Unreleased]\n\n---\n\n## [9.9.9] — 2026-01-01\n\n- **feat:** big new thing\n- **fix:** another\n\n---\n\n## [9.9.8] — 2025-12-01\n\n- old\n",
   );
   for (const loc of ["fr", "de"]) {
     fs.mkdirSync(path.join(root, "docs/i18n", loc), { recursive: true });
     fs.writeFileSync(
       path.join(root, "docs/i18n", loc, "CHANGELOG.md"),
-      "# Changelog\n\n---\n\n## [9.9.9] — TBD\n\n_stub_\n\n---\n\n## [9.9.8] — 2025-12-01\n\n- old\n"
+      "# Changelog\n\n---\n\n## [9.9.9] — TBD\n\n_stub_\n\n---\n\n## [9.9.8] — 2025-12-01\n\n- old\n",
     );
   }
   return root;
@@ -36,7 +36,7 @@ test("inserts the section when a mirror lacks it", () => {
   // remove the 9.9.9 section from the fr mirror entirely
   fs.writeFileSync(
     path.join(root, "docs/i18n/fr/CHANGELOG.md"),
-    "# Changelog\n\n---\n\n## [9.9.8] — 2025-12-01\n\n- old\n"
+    "# Changelog\n\n---\n\n## [9.9.8] — 2025-12-01\n\n- old\n",
   );
   const n = syncChangelogSection(root, "9.9.9", "9.9.8");
   assert.equal(n, 2);

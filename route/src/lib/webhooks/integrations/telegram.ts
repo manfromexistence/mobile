@@ -27,7 +27,7 @@ export function buildTelegramUrl(botToken: string): string {
 export function buildTelegramPayload(
   event: WebhookEvent,
   data: Record<string, unknown>,
-  chatId: string
+  chatId: string,
 ): TelegramSendMessagePayload {
   const desc = EVENT_DESCRIPTIONS[event];
   const model = typeof data.model === "string" ? escapeMd(data.model) : null;
@@ -40,8 +40,7 @@ export function buildTelegramPayload(
       : null;
   const accountId = typeof data.accountId === "string" ? data.accountId.trim() : null;
   const accountDisplay =
-    account ||
-    (accountId ? escapeMd(getAccountDisplayName({ id: accountId, name: null })) : null);
+    account || (accountId ? escapeMd(getAccountDisplayName({ id: accountId, name: null })) : null);
   const latencyMs =
     typeof data.latencyMs === "number" && Number.isFinite(data.latencyMs) ? data.latencyMs : null;
   const fallbackCount =

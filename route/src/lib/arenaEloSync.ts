@@ -187,8 +187,8 @@ function getEffectiveArenaEloSyncEnabled(): boolean {
   } catch (error) {
     console.warn(
       `[ARENA_ELO_SYNC] Failed to resolve ARENA_ELO_SYNC_ENABLED feature flag: ${getErrorMessage(
-        error
-      )}`
+        error,
+      )}`,
     );
     return process.env.ARENA_ELO_SYNC_ENABLED !== "false";
   }
@@ -239,7 +239,7 @@ export async function fetchArenaLeaderboards(): Promise<ArenaLeaderboardMap> {
       });
       if (!response.ok) {
         throw new Error(
-          `Arena API fetch failed for "${category}" [${response.status}]: ${response.statusText}`
+          `Arena API fetch failed for "${category}" [${response.status}]: ${response.statusText}`,
         );
       }
       const text = await response.text();
@@ -247,7 +247,7 @@ export async function fetchArenaLeaderboards(): Promise<ArenaLeaderboardMap> {
         result[category] = JSON.parse(text) as ArenaLeaderboardData;
       } catch {
         throw new Error(
-          `Arena API returned invalid JSON for "${category}" (${text.slice(0, 100)}...)`
+          `Arena API returned invalid JSON for "${category}" (${text.slice(0, 100)}...)`,
         );
       }
     } catch (err) {
@@ -301,7 +301,7 @@ function computeConfidence(votes: number): "high" | "medium" | "low" {
  * @returns Array of model intelligence entries ready for DB upsert.
  */
 export function transformToModelIntelligence(
-  data: ArenaLeaderboardMap
+  data: ArenaLeaderboardMap,
 ): Array<Omit<ModelIntelligenceEntry, "syncedAt">> {
   const entries: Array<Omit<ModelIntelligenceEntry, "syncedAt">> = [];
   const expiresAt = new Date(Date.now() + EXPIRY_DAYS * 24 * 60 * 60 * 1000).toISOString();
@@ -416,7 +416,7 @@ export async function syncArenaElo(dryRun = false): Promise<SyncResult> {
 
     const countLabel = dryRun ? "would sync" : "synced";
     console.log(
-      `[ARENA_ELO_SYNC] ${countLabel} ${entries.length} model intelligence entries from Arena leaderboards`
+      `[ARENA_ELO_SYNC] ${countLabel} ${entries.length} model intelligence entries from Arena leaderboards`,
     );
 
     return {
@@ -475,14 +475,14 @@ function startPeriodicSync(intervalMs?: number): void {
     .then((result) => {
       if (result.success) {
         console.log(
-          `[ARENA_ELO_SYNC] Initial sync complete: ${result.modelCount} model intelligence entries`
+          `[ARENA_ELO_SYNC] Initial sync complete: ${result.modelCount} model intelligence entries`,
         );
       }
     })
     .catch((err) => {
       console.warn(
         "[ARENA_ELO_SYNC] Initial sync error:",
-        err instanceof Error ? err.message : err
+        err instanceof Error ? err.message : err,
       );
     });
 
@@ -496,7 +496,7 @@ function startPeriodicSync(intervalMs?: number): void {
       .catch((err) => {
         console.warn(
           "[ARENA_ELO_SYNC] Periodic sync error:",
-          err instanceof Error ? err.message : err
+          err instanceof Error ? err.message : err,
         );
       });
   }, interval);
@@ -555,7 +555,7 @@ export function getArenaEloSyncStatus(): SyncStatus {
 export async function initArenaEloSync(): Promise<boolean> {
   if (!getEffectiveArenaEloSyncEnabled()) {
     console.log(
-      "[ARENA_ELO_SYNC] Disabled by the effective ARENA_ELO_SYNC_ENABLED feature flag. Enable it from Dashboard Feature Flags, unset the env var, or set it to true to enable."
+      "[ARENA_ELO_SYNC] Disabled by the effective ARENA_ELO_SYNC_ENABLED feature flag. Enable it from Dashboard Feature Flags, unset the env var, or set it to true to enable.",
     );
     return false;
   }

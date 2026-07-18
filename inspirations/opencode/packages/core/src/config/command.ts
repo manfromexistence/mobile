@@ -1,6 +1,6 @@
-export * as ConfigCommand from "./command"
+export * as ConfigCommand from "./command";
 
-import { Schema } from "effect"
+import { Schema } from "effect";
 
 export class Info extends Schema.Class<Info>("ConfigV2.Command")({
   template: Schema.String,

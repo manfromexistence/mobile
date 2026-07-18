@@ -1,11 +1,11 @@
-import type { Options } from "tsup"
+import type { Options } from "tsup";
 
 const baseConfig: Options = {
   entry: ["./index.ts"],
   format: ["cjs", "esm"],
   outDir: "esm",
   clean: true,
-}
+};
 
 // const nodeConfig: Options = {
 //   ...baseConfig,
@@ -18,6 +18,6 @@ const browserConfig: Options = {
   target: "es2015",
   splitting: false,
   outDir: "esm",
-}
+};
 
-export default [browserConfig]
+export default [browserConfig];

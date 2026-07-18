@@ -3,8 +3,7 @@ import type { ReactNode } from "react";
 type LoaderKind = "square" | "circular" | "triangle" | "hex";
 
 const PATTERN_TYPE = `"diamond" | "full" | "outline" | "rose" | "cross" | "rings"`;
-const COLOR_PRESET_TYPE =
-  `"solid-theme" | "solid-mint" | "grad-sunset" | "grad-ocean" | "grad-neon" | "grad-aurora" | "grad-fire" | "grad-prism"`;
+const COLOR_PRESET_TYPE = `"solid-theme" | "solid-mint" | "grad-sunset" | "grad-ocean" | "grad-neon" | "grad-aurora" | "grad-fire" | "grad-prism"`;
 
 const PATTERN_LIST = ["diamond", "full", "outline", "rose", "cross", "rings"] as const;
 
@@ -29,14 +28,14 @@ const PROP_ROWS: readonly PropRow[] = [
     description:
       "Overall scale of the matrix. With the default 5×5 layout, the outer box is derived from the grid track span (and ignored when you use a fixed `cellPadding` / box layout on square & circular).",
     default: d((k) => (k === "triangle" ? "30" : k === "hex" ? "42" : "24")),
-    kinds: ["square", "circular", "triangle", "hex"]
+    kinds: ["square", "circular", "triangle", "hex"],
   },
   {
     name: "dotSize",
     type: "number",
     description: "Width and height of each dot in pixels.",
     default: d((k) => (k === "triangle" ? "4" : k === "hex" ? "5" : "3")),
-    kinds: ["square", "circular", "triangle", "hex"]
+    kinds: ["square", "circular", "triangle", "hex"],
   },
   {
     name: "color",
@@ -44,41 +43,43 @@ const PROP_ROWS: readonly PropRow[] = [
     description:
       "Dot color override (typically `currentColor` or any CSS color string). Ignored when `colorPreset` is set.",
     default: "currentColor",
-    kinds: ["square", "circular", "triangle", "hex"]
+    kinds: ["square", "circular", "triangle", "hex"],
   },
   {
     name: "colorPreset",
     type: COLOR_PRESET_TYPE,
     description:
       "Applies a built-in solid/gradient look across dots. Sets both glow tint and dot fill using the preset palette.",
-    kinds: ["square", "circular", "triangle", "hex"]
+    kinds: ["square", "circular", "triangle", "hex"],
   },
   {
     name: "speed",
     type: "number",
-    description: "Animation speed multiplier. Higher values run the cycle faster; values ≤ 0 are treated as 1 for timing.",
+    description:
+      "Animation speed multiplier. Higher values run the cycle faster; values ≤ 0 are treated as 1 for timing.",
     default: "1",
-    kinds: ["square", "circular", "triangle", "hex"]
+    kinds: ["square", "circular", "triangle", "hex"],
   },
   {
     name: "ariaLabel",
     type: "string",
     description: "Accessible name for the loading indicator (`aria-label` on the status element).",
     default: "Loading",
-    kinds: ["square", "circular", "triangle", "hex"]
+    kinds: ["square", "circular", "triangle", "hex"],
   },
   {
     name: "className",
     type: "string",
-    description: "Optional class on the root / wrapper (and on the matrix root when not using the slot wrapper).",
-    kinds: ["square", "circular", "triangle", "hex"]
+    description:
+      "Optional class on the root / wrapper (and on the matrix root when not using the slot wrapper).",
+    kinds: ["square", "circular", "triangle", "hex"],
   },
   {
     name: "muted",
     type: "boolean",
     description: "Enables the muted dmx look (softer visual treatment on the root).",
     default: "false",
-    kinds: ["square", "circular", "triangle", "hex"]
+    kinds: ["square", "circular", "triangle", "hex"],
   },
   {
     name: "bloom",
@@ -86,7 +87,7 @@ const PROP_ROWS: readonly PropRow[] = [
     description:
       "Adds a glow treatment: after remapping, dots from opacity 0.6 (weakest glow) up to 1 (strongest) get a graded bloom.",
     default: "false",
-    kinds: ["square", "circular", "triangle", "hex"]
+    kinds: ["square", "circular", "triangle", "hex"],
   },
   {
     name: "halo",
@@ -94,7 +95,7 @@ const PROP_ROWS: readonly PropRow[] = [
     description:
       "Uniform glow on every active dot: 0 is off, 1 is strongest. Same `--dmx-bloom-level` as `bloom`, with a slightly wider drop-shadow falloff than selective bloom only.",
     default: "0",
-    kinds: ["square", "circular", "triangle", "hex"]
+    kinds: ["square", "circular", "triangle", "hex"],
   },
   {
     name: "animated",
@@ -102,7 +103,7 @@ const PROP_ROWS: readonly PropRow[] = [
     description:
       "When true, enables the loader's motion. Continuous auto-loop runs only if `hoverAnimated` is false; if both are true, motion is hover-only (reduced motion still respected).",
     default: "true",
-    kinds: ["square", "circular", "triangle", "hex"]
+    kinds: ["square", "circular", "triangle", "hex"],
   },
   {
     name: "hoverAnimated",
@@ -110,66 +111,67 @@ const PROP_ROWS: readonly PropRow[] = [
     description:
       "When true, disables automatic looping — animation runs on pointer hover instead. With `animated={false}`, the loader stays static until hover (reduced motion still respected).",
     default: "false",
-    kinds: ["square", "circular", "triangle", "hex"]
+    kinds: ["square", "circular", "triangle", "hex"],
   },
   {
     name: "dotClassName",
     type: "string",
     description: "Extra `className` applied to every dot `span` for one-off styling.",
-    kinds: ["square", "circular", "triangle", "hex"]
+    kinds: ["square", "circular", "triangle", "hex"],
   },
   {
     name: "dotShape",
     type: `"circle" | "square" | "diamond" | "hearts"`,
     description: "Dot geometry for each active cell.",
     default: '"circle"',
-    kinds: ["square", "circular", "triangle", "hex"]
+    kinds: ["square", "circular", "triangle", "hex"],
   },
   {
     name: "pattern",
     type: PATTERN_TYPE,
     description: `Active cells on the 5×5 matrix projection. One of: ${PATTERN_LIST.join(", ")}.`,
     default: '"full"',
-    kinds: ["square", "hex"]
+    kinds: ["square", "hex"],
   },
   {
     name: "opacityBase",
     type: "number (0…1)",
     description: "Controls the dimmest baseline opacity (0–1) used by the loader's opacity curve.",
-    kinds: ["square", "circular", "triangle", "hex"]
+    kinds: ["square", "circular", "triangle", "hex"],
   },
   {
     name: "opacityMid",
     type: "number (0…1)",
     description: "Controls the middle brightness stop (0–1) in the loader's opacity curve.",
-    kinds: ["square", "circular", "triangle", "hex"]
+    kinds: ["square", "circular", "triangle", "hex"],
   },
   {
     name: "opacityPeak",
     type: "number (0…1)",
     description: "Controls the brightest stop (0–1) in the loader's opacity curve.",
-    kinds: ["square", "circular", "triangle", "hex"]
+    kinds: ["square", "circular", "triangle", "hex"],
   },
   {
     name: "cellPadding",
     type: "number",
     description:
       "Fixed gap in pixels between grid tracks. When set, layout uses `dotSize * N + cellPadding * (N - 1)` (N is the matrix dimension) and ignores `size` for track spacing.",
-    kinds: ["square", "circular", "triangle", "hex"]
+    kinds: ["square", "circular", "triangle", "hex"],
   },
   {
     name: "boxSize",
     type: "number",
     description:
       "Target outer width/height in px; the matrix is scaled uniformly to fit (combined with `minSize`). Not used by triangle.",
-    kinds: ["square", "circular", "hex"]
+    kinds: ["square", "circular", "hex"],
   },
   {
     name: "minSize",
     type: "number",
-    description: "Minimum width and height in px of the root slot before any `boxSize` scaling. Not used by triangle.",
-    kinds: ["square", "circular", "hex"]
-  }
+    description:
+      "Minimum width and height in px of the root slot before any `boxSize` scaling. Not used by triangle.",
+    kinds: ["square", "circular", "hex"],
+  },
 ] as const;
 
 function resolveDefault(row: PropRow, kind: LoaderKind): string | undefined {
@@ -197,7 +199,7 @@ function loaderKindFromSlug(slug: string): LoaderKind {
 
 const pill = [
   "inline max-w-full rounded-md bg-surface-soft px-2 py-0.5",
-  "font-mono text-[11px] leading-snug theme-text [overflow-wrap:anywhere]"
+  "font-mono text-[11px] leading-snug theme-text [overflow-wrap:anywhere]",
 ].join(" ");
 
 const label = "theme-text-muted w-[2.5rem] shrink-0 select-none text-[12px] font-medium";
@@ -213,7 +215,7 @@ function inlineCodeDesc(text: string): ReactNode {
           </code>
         ) : (
           <span key={i}>{part}</span>
-        )
+        ),
       )}
     </>
   );
@@ -227,12 +229,16 @@ const exampleUsageDotRail = (
   </div>
 );
 
-function extractExplicitPropNames(sourceCode?: string): { names: Set<string>; hasRestSpread: boolean } | null {
+function extractExplicitPropNames(
+  sourceCode?: string,
+): { names: Set<string>; hasRestSpread: boolean } | null {
   if (!sourceCode) {
     return null;
   }
 
-  const fnMatch = sourceCode.match(/export\s+function\s+\w+\s*\(\s*\{([\s\S]*?)\}\s*:\s*[\w<>{}\[\]\s|&?,.]+?\)/);
+  const fnMatch = sourceCode.match(
+    /export\s+function\s+\w+\s*\(\s*\{([\s\S]*?)\}\s*:\s*[\w<>{}\[\]\s|&?,.]+?\)/,
+  );
   if (!fnMatch) {
     return null;
   }
@@ -277,7 +283,9 @@ export function LoaderPropsReference({ slug, sourceCode }: { slug: string; sourc
       {exampleUsageDotRail}
       <div className="grid gap-4">
         <div className="grid gap-1.5">
-          <p className="theme-text-strong text-base font-semibold tracking-tight">Component props</p>
+          <p className="theme-text-strong text-base font-semibold tracking-tight">
+            Component props
+          </p>
         </div>
         <div className="grid gap-8">
           {rows.map((row) => {
@@ -287,7 +295,9 @@ export function LoaderPropsReference({ slug, sourceCode }: { slug: string; sourc
                 <div className="flex w-max items-center rounded-lg bg-surface-soft px-3 py-2">
                   <span className="theme-text-strong font-mono text-[12px]">{row.name}</span>
                 </div>
-                <p className="theme-text max-w-2xl text-pretty text-[14px]">{inlineCodeDesc(row.description)}</p>
+                <p className="theme-text max-w-2xl text-pretty text-[14px]">
+                  {inlineCodeDesc(row.description)}
+                </p>
                 <div className="grid gap-2 pl-0.5">
                   <div className="flex  gap-1.5 min-[400px]:flex-row min-[400px]:items-start min-[400px]:gap-3">
                     <span className={label}>type:</span>

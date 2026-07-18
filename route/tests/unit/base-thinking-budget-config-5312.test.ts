@@ -34,7 +34,7 @@ class ClaudeLikeExecutor extends BaseExecutor {
 }
 
 async function captureUpstreamBody(
-  body: Record<string, unknown>
+  body: Record<string, unknown>,
 ): Promise<Record<string, unknown>> {
   const executor = new ClaudeLikeExecutor();
   const originalFetch = globalThis.fetch;
@@ -78,7 +78,7 @@ test("#5312 RC-B: default/passthrough config still injects adaptive thinking (#4
   assert.deepEqual(
     upstream.thinking,
     { type: "adaptive" },
-    "adaptive thinking must still be injected for native Claude Code by default"
+    "adaptive thinking must still be injected for native Claude Code by default",
   );
   assert.deepEqual(upstream.output_config, { effort: "high" });
 });
@@ -91,7 +91,7 @@ test("#5312 RC-B: mode=auto suppresses the forced adaptive injection (strip hono
   assert.equal(
     upstream.thinking,
     undefined,
-    "operator chose auto (strip) — thinking must NOT be force-injected"
+    "operator chose auto (strip) — thinking must NOT be force-injected",
   );
   assert.equal(upstream.output_config, undefined, "no effort hint should be injected in auto mode");
 });
@@ -106,11 +106,11 @@ test("#5312 RC-B: custom-budget enabled block is remapped to adaptive (Opus 4.8 
   assert.deepEqual(
     upstream.thinking,
     { type: "adaptive" },
-    "type=enabled must be remapped to adaptive for the Claude OAuth path"
+    "type=enabled must be remapped to adaptive for the Claude OAuth path",
   );
   assert.deepEqual(
     upstream.output_config,
     { effort: "medium" },
-    "8192 budget maps to medium effort"
+    "8192 budget maps to medium effort",
   );
 });

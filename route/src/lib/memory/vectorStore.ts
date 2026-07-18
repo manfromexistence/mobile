@@ -222,9 +222,9 @@ class VectorStoreImpl implements VectorStore {
          ORDER BY v.distance ASC`,
       )
       .all(encodeVector(vector), { apiKeyId: apiKeyId ?? null }, k) as Array<{
-        memory_id: string;
-        distance: number;
-      }>;
+      memory_id: string;
+      distance: number;
+    }>;
 
     return rows.map((r) => ({
       memoryId: r.memory_id,
@@ -291,21 +291,14 @@ class VectorStoreImpl implements VectorStore {
          ORDER BY rrf_score DESC
          LIMIT ?`,
       )
-      .all(
-        encodeVector(vector),
-        { apiKeyId: apiKeyId ?? null },
-        k,
-        queryText,
-        k,
-        k,
-      ) as Array<{
-        memory_id: string;
-        vec_rank: number | null;
-        fts_rank: number | null;
-        vec_distance: number | null;
-        fts_score: number | null;
-        rrf_score: number;
-      }>;
+      .all(encodeVector(vector), { apiKeyId: apiKeyId ?? null }, k, queryText, k, k) as Array<{
+      memory_id: string;
+      vec_rank: number | null;
+      fts_rank: number | null;
+      vec_distance: number | null;
+      fts_score: number | null;
+      rrf_score: number;
+    }>;
 
     return rows.map((r) => ({
       memoryId: r.memory_id,

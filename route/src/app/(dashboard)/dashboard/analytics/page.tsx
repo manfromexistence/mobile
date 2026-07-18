@@ -100,7 +100,7 @@ function AnalyticsPageContent() {
                 "focus-ring inline-flex h-9 items-center gap-1.5 rounded-md px-3 text-sm font-medium transition-colors",
                 selected
                   ? "bg-surface text-text-main shadow-sm"
-                  : "text-text-muted hover:bg-surface/70 hover:text-text-main"
+                  : "text-text-muted hover:bg-surface/70 hover:text-text-main",
               )}
             >
               <span className="material-symbols-outlined text-[16px]" aria-hidden="true">

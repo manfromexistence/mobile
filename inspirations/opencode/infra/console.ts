@@ -1,8 +1,8 @@
-import { deployAws, domain } from "./stage"
-import { EMAILOCTOPUS_API_KEY } from "./app"
-import { SECRET } from "./secret"
+import { deployAws, domain } from "./stage";
+import { EMAILOCTOPUS_API_KEY } from "./app";
+import { SECRET } from "./secret";
 
-const lake = deployAws ? await import("./lake") : undefined
+const lake = deployAws ? await import("./lake") : undefined;
 
 ////////////////
 // DATABASE
@@ -11,7 +11,7 @@ const lake = deployAws ? await import("./lake") : undefined
 const cluster = planetscale.getDatabaseOutput({
   name: "opencode",
   organization: "anomalyco",
-})
+});
 
 const branch =
   $app.stage === "production"
@@ -25,13 +25,13 @@ const branch =
         organization: cluster.organization,
         name: $app.stage,
         parentBranch: "production",
-      })
+      });
 const password = new planetscale.Password("DatabasePassword", {
   name: $app.stage,
   database: cluster.name,
   organization: cluster.organization,
   branch: branch.name,
-})
+});
 
 export const database = new sst.Linkable("Database", {
   properties: {
@@ -41,7 +41,7 @@ export const database = new sst.Linkable("Database", {
     password: password.plaintext,
     port: 3306,
   },
-})
+});
 
 new sst.x.DevCommand("Studio", {
   link: [database],
@@ -50,22 +50,28 @@ new sst.x.DevCommand("Studio", {
     directory: "packages/console/core",
     autostart: true,
   },
-})
+});
 
 ////////////////
 // AUTH
 ////////////////
 
-const GITHUB_CLIENT_ID_CONSOLE = new sst.Secret("GITHUB_CLIENT_ID_CONSOLE")
-const GITHUB_CLIENT_SECRET_CONSOLE = new sst.Secret("GITHUB_CLIENT_SECRET_CONSOLE")
-const GOOGLE_CLIENT_ID = new sst.Secret("GOOGLE_CLIENT_ID")
-const authStorage = new sst.cloudflare.Kv("AuthStorage")
+const GITHUB_CLIENT_ID_CONSOLE = new sst.Secret("GITHUB_CLIENT_ID_CONSOLE");
+const GITHUB_CLIENT_SECRET_CONSOLE = new sst.Secret("GITHUB_CLIENT_SECRET_CONSOLE");
+const GOOGLE_CLIENT_ID = new sst.Secret("GOOGLE_CLIENT_ID");
+const authStorage = new sst.cloudflare.Kv("AuthStorage");
 export const auth = new sst.cloudflare.Worker("AuthApi", {
   domain: `auth.${domain}`,
   handler: "packages/console/function/src/auth.ts",
   url: true,
-  link: [database, authStorage, GITHUB_CLIENT_ID_CONSOLE, GITHUB_CLIENT_SECRET_CONSOLE, GOOGLE_CLIENT_ID],
-})
+  link: [
+    database,
+    authStorage,
+    GITHUB_CLIENT_ID_CONSOLE,
+    GITHUB_CLIENT_SECRET_CONSOLE,
+    GOOGLE_CLIENT_ID,
+  ],
+});
 
 ////////////////
 // GATEWAY
@@ -101,44 +107,44 @@ export const stripeWebhook = new stripe.WebhookEndpoint("StripeWebhookEndpoint",
     "customer.subscription.trial_will_end",
     "customer.subscription.updated",
   ],
-})
+});
 
 const zenLiteProduct = new stripe.Product("ZenLite", {
   name: "OpenCode Go",
-})
+});
 const zenLiteCouponFirstMonth50 = new stripe.Coupon("ZenLiteCouponFirstMonth50", {
   name: "First month 50% off",
   percentOff: 50,
   appliesToProducts: [zenLiteProduct.id],
   duration: "once",
-})
+});
 const zenLiteCouponFirstMonth100 = new stripe.Coupon("ZenLiteCouponFirstMonth100", {
   name: "First month 100% off",
   percentOff: 100,
   appliesToProducts: [zenLiteProduct.id],
   duration: "once",
-})
+});
 const zenLiteCouponThreeMonths100 = new stripe.Coupon("ZenLiteCoupon3Months100", {
   name: "3 months 100% off",
   percentOff: 100,
   appliesToProducts: [zenLiteProduct.id],
   duration: "repeating",
   durationInMonths: 3,
-})
+});
 const zenLiteCouponSixMonths100 = new stripe.Coupon("ZenLiteCoupon6Months100", {
   name: "6 months 100% off",
   percentOff: 100,
   appliesToProducts: [zenLiteProduct.id],
   duration: "repeating",
   durationInMonths: 6,
-})
+});
 const zenLiteCouponTwelveMonths100 = new stripe.Coupon("ZenLiteCoupon12Months100", {
   name: "12 months 100% off",
   percentOff: 100,
   appliesToProducts: [zenLiteProduct.id],
   duration: "repeating",
   durationInMonths: 12,
-})
+});
 const zenLitePrice = new stripe.Price("ZenLitePrice", {
   product: zenLiteProduct.id,
   currency: "usd",
@@ -147,7 +153,7 @@ const zenLitePrice = new stripe.Price("ZenLitePrice", {
     intervalCount: 1,
   },
   unitAmount: 1000,
-})
+});
 const ZEN_LITE_PRICE = new sst.Linkable("ZEN_LITE_PRICE", {
   properties: {
     product: zenLiteProduct.id,
@@ -159,11 +165,11 @@ const ZEN_LITE_PRICE = new sst.Linkable("ZEN_LITE_PRICE", {
     sixMonths100Coupon: zenLiteCouponSixMonths100.id,
     twelveMonths100Coupon: zenLiteCouponTwelveMonths100.id,
   },
-})
+});
 
 const zenBlackProduct = new stripe.Product("ZenBlack", {
   name: "OpenCode Black",
-})
+});
 const zenBlackPriceProps = {
   product: zenBlackProduct.id,
   currency: "usd",
@@ -171,10 +177,19 @@ const zenBlackPriceProps = {
     interval: "month",
     intervalCount: 1,
   },
-}
-const zenBlackPrice200 = new stripe.Price("ZenBlackPrice", { ...zenBlackPriceProps, unitAmount: 20000 })
-const zenBlackPrice100 = new stripe.Price("ZenBlack100Price", { ...zenBlackPriceProps, unitAmount: 10000 })
-const zenBlackPrice20 = new stripe.Price("ZenBlack20Price", { ...zenBlackPriceProps, unitAmount: 2000 })
+};
+const zenBlackPrice200 = new stripe.Price("ZenBlackPrice", {
+  ...zenBlackPriceProps,
+  unitAmount: 20000,
+});
+const zenBlackPrice100 = new stripe.Price("ZenBlack100Price", {
+  ...zenBlackPriceProps,
+  unitAmount: 10000,
+});
+const zenBlackPrice20 = new stripe.Price("ZenBlack20Price", {
+  ...zenBlackPriceProps,
+  unitAmount: 2000,
+});
 const ZEN_BLACK_PRICE = new sst.Linkable("ZEN_BLACK_PRICE", {
   properties: {
     product: zenBlackProduct.id,
@@ -182,7 +197,7 @@ const ZEN_BLACK_PRICE = new sst.Linkable("ZEN_BLACK_PRICE", {
     plan100: zenBlackPrice100.id,
     plan20: zenBlackPrice20.id,
   },
-})
+});
 
 const ZEN_MODELS = [
   new sst.Secret("ZEN_MODELS1"),
@@ -215,35 +230,35 @@ const ZEN_MODELS = [
   new sst.Secret("ZEN_MODELS28"),
   new sst.Secret("ZEN_MODELS29"),
   new sst.Secret("ZEN_MODELS30"),
-]
-const STRIPE_SECRET_KEY = new sst.Secret("STRIPE_SECRET_KEY")
-const STRIPE_PUBLISHABLE_KEY = new sst.Secret("STRIPE_PUBLISHABLE_KEY")
+];
+const STRIPE_SECRET_KEY = new sst.Secret("STRIPE_SECRET_KEY");
+const STRIPE_PUBLISHABLE_KEY = new sst.Secret("STRIPE_PUBLISHABLE_KEY");
 const AUTH_API_URL = new sst.Linkable("AUTH_API_URL", {
   properties: { value: auth.url.apply((url) => url!) },
-})
+});
 const STRIPE_WEBHOOK_SECRET = new sst.Linkable("STRIPE_WEBHOOK_SECRET", {
   properties: { value: stripeWebhook.secret },
-})
+});
 
 ////////////////
 // CONSOLE
 ////////////////
 
-const bucket = new sst.cloudflare.Bucket("ZenData")
-const bucketNew = new sst.cloudflare.Bucket("ZenDataNew")
+const bucket = new sst.cloudflare.Bucket("ZenData");
+const bucketNew = new sst.cloudflare.Bucket("ZenDataNew");
 
-const DISCORD_INCIDENT_WEBHOOK_URL = new sst.Secret("DISCORD_INCIDENT_WEBHOOK_URL")
-const AWS_SES_ACCESS_KEY_ID = new sst.Secret("AWS_SES_ACCESS_KEY_ID")
-const AWS_SES_SECRET_ACCESS_KEY = new sst.Secret("AWS_SES_SECRET_ACCESS_KEY")
+const DISCORD_INCIDENT_WEBHOOK_URL = new sst.Secret("DISCORD_INCIDENT_WEBHOOK_URL");
+const AWS_SES_ACCESS_KEY_ID = new sst.Secret("AWS_SES_ACCESS_KEY_ID");
+const AWS_SES_SECRET_ACCESS_KEY = new sst.Secret("AWS_SES_SECRET_ACCESS_KEY");
 
-const SALESFORCE_CLIENT_ID = new sst.Secret("SALESFORCE_CLIENT_ID")
-const SALESFORCE_CLIENT_SECRET = new sst.Secret("SALESFORCE_CLIENT_SECRET")
-const SALESFORCE_INSTANCE_URL = new sst.Secret("SALESFORCE_INSTANCE_URL")
+const SALESFORCE_CLIENT_ID = new sst.Secret("SALESFORCE_CLIENT_ID");
+const SALESFORCE_CLIENT_SECRET = new sst.Secret("SALESFORCE_CLIENT_SECRET");
+const SALESFORCE_INSTANCE_URL = new sst.Secret("SALESFORCE_INSTANCE_URL");
 
 const logProcessor = new sst.cloudflare.Worker("LogProcessor", {
   handler: "packages/console/function/src/log-processor.ts",
   link: [SECRET.HoneycombApiKey, ...(lake?.lakeIngest ? [lake.lakeIngest] : [])],
-})
+});
 
 new sst.cloudflare.x.SolidStart("Console", {
   domain,
@@ -273,7 +288,10 @@ new sst.cloudflare.x.SolidStart("Console", {
     ...ZEN_MODELS,
     ...($dev
       ? [
-          new sst.Secret("CLOUDFLARE_DEFAULT_ACCOUNT_ID", process.env.CLOUDFLARE_DEFAULT_ACCOUNT_ID!),
+          new sst.Secret(
+            "CLOUDFLARE_DEFAULT_ACCOUNT_ID",
+            process.env.CLOUDFLARE_DEFAULT_ACCOUNT_ID!,
+          ),
           new sst.Secret("CLOUDFLARE_API_TOKEN", process.env.CLOUDFLARE_API_TOKEN!),
         ]
       : []),
@@ -294,7 +312,7 @@ new sst.cloudflare.x.SolidStart("Console", {
       },
     },
   },
-})
+});
 
 ////////////////
 // HELPERS
@@ -304,4 +322,4 @@ export const stat = new sst.cloudflare.Worker("Stat", {
   handler: "packages/console/function/src/stat.ts",
   link: [database],
   url: true,
-})
+});

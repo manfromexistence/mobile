@@ -153,7 +153,7 @@ test.describe("Memory settings", () => {
     }).toPass({ timeout: 45_000, intervals: [1000, 2500, 5000] });
     await expect(page.getByTestId("memory-enabled-switch")).toHaveAttribute(
       "aria-checked",
-      "false"
+      "false",
     );
 
     await page.getByTestId("memory-enabled-switch").click();
@@ -170,7 +170,7 @@ test.describe("Memory settings", () => {
     await page.getByTestId("memory-enabled-switch").click();
     await expect(page.getByTestId("memory-enabled-switch")).toHaveAttribute(
       "aria-checked",
-      "false"
+      "false",
     );
     await expect.poll(() => state.config.enabled).toBe(false);
 

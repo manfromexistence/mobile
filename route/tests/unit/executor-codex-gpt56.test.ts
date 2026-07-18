@@ -13,7 +13,7 @@ test("CodexExecutor.transformRequest preserves max effort for GPT-5.6", () => {
       reasoning_effort: "max",
     },
     false,
-    { requestEndpointPath: "/responses" }
+    { requestEndpointPath: "/responses" },
   );
 
   assert.equal(result.model, "gpt-5.6-sol");
@@ -44,7 +44,7 @@ test("CodexExecutor.transformRequest clamps Luna ultra requests to its max effor
       reasoning_effort: "ultra",
     },
     false,
-    { requestEndpointPath: "/responses" }
+    { requestEndpointPath: "/responses" },
   );
 
   assert.equal(result.model, "gpt-5.6-luna");

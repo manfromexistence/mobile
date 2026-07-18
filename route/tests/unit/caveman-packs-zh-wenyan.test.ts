@@ -37,7 +37,7 @@ test("zh: the pack shrinks a representative sample (classical terseness)", () =>
   const out = applyAll(sample, all);
   assert.ok(
     out.length < sample.length,
-    `zh pack should shrink the sample (${sample.length} -> ${out.length})`
+    `zh pack should shrink the sample (${sample.length} -> ${out.length})`,
   );
 });
 

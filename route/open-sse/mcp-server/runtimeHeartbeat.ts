@@ -147,7 +147,7 @@ export function isProcessAlive(pid: number): boolean {
 
 export function isMcpHeartbeatOnline(
   snapshot: McpHeartbeatSnapshot | null,
-  options?: { staleAfterMs?: number; requireLivePid?: boolean }
+  options?: { staleAfterMs?: number; requireLivePid?: boolean },
 ): boolean {
   if (!snapshot) return false;
   const staleAfterMs =

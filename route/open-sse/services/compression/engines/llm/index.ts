@@ -47,7 +47,7 @@ export interface LlmCompressorBackendOptions {
  */
 export type LlmCompressorBackend = (
   text: string,
-  opts?: LlmCompressorBackendOptions
+  opts?: LlmCompressorBackendOptions,
 ) => Promise<string>;
 
 /** The default production backend: a no-op that returns the text unchanged (pass-through). */
@@ -85,7 +85,9 @@ function splitProseAndPreserved(text: string): TextSegment[] {
     if (!part) continue;
     const original = placeholderToOriginal.get(part);
     segments.push(
-      original !== undefined ? { kind: "preserved", text: original } : { kind: "prose", text: part }
+      original !== undefined
+        ? { kind: "preserved", text: original }
+        : { kind: "prose", text: part },
     );
   }
   return segments;
@@ -102,7 +104,7 @@ type MessageLike = {
 async function compressProseText(
   text: string,
   backend: LlmCompressorBackend,
-  opts?: LlmCompressorBackendOptions
+  opts?: LlmCompressorBackendOptions,
 ): Promise<{ text: string; didCompress: boolean }> {
   if (!text.trim()) return { text, didCompress: false };
   try {
@@ -119,7 +121,7 @@ async function compressProseText(
 async function compressMessageText(
   text: string,
   backend: LlmCompressorBackend,
-  opts?: LlmCompressorBackendOptions
+  opts?: LlmCompressorBackendOptions,
 ): Promise<{ text: string; didCompress: boolean }> {
   const segments = splitProseAndPreserved(text);
   let anyCompressed = false;
@@ -139,7 +141,7 @@ async function compressMessageText(
 async function processMessages(
   messages: MessageLike[],
   backend: LlmCompressorBackend,
-  opts?: LlmCompressorBackendOptions
+  opts?: LlmCompressorBackendOptions,
 ): Promise<{ messages: MessageLike[]; compressedCount: number }> {
   let compressedCount = 0;
   const result: MessageLike[] = [];
@@ -165,7 +167,7 @@ async function processMessages(
             const { text, didCompress } = await compressMessageText(
               part["text"] as string,
               backend,
-              opts
+              opts,
             );
             if (didCompress) {
               changed = true;
@@ -224,7 +226,8 @@ function validateLlmCompressorConfig(config: Record<string, unknown>): EngineVal
   }
   if (config["minTokens"] !== undefined) {
     const v = config["minTokens"];
-    if (typeof v !== "number" || Number.isNaN(v) || v < 0) errors.push("minTokens must be a number >= 0");
+    if (typeof v !== "number" || Number.isNaN(v) || v < 0)
+      errors.push("minTokens must be a number >= 0");
   }
   if (config["compressionRate"] !== undefined) {
     const v = config["compressionRate"];
@@ -272,7 +275,7 @@ export const llmCompressorEngine: CompressionEngine = {
 
   async applyAsync(
     body: Record<string, unknown>,
-    options?: CompressionEngineApplyOptions
+    options?: CompressionEngineApplyOptions,
   ): Promise<CompressionResult> {
     const stepConfig = options?.stepConfig ?? {};
     // Opt-in: only runs when explicitly enabled.
@@ -311,7 +314,7 @@ export const llmCompressorEngine: CompressionEngine = {
       const { messages: newMessages, compressedCount } = await processMessages(
         messages as MessageLike[],
         backend,
-        backendOpts
+        backendOpts,
       );
       if (compressedCount === 0) {
         return { body, compressed: false, stats: null };
@@ -324,7 +327,7 @@ export const llmCompressorEngine: CompressionEngine = {
         "stacked",
         [ENGINE_ID],
         [`llm-compressed-${compressedCount}-messages`],
-        durationMs
+        durationMs,
       );
       return { body: newBody, compressed: true, stats };
     } catch {

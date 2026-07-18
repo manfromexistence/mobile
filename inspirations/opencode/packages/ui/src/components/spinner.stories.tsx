@@ -1,6 +1,6 @@
 // @ts-nocheck
-import * as mod from "./spinner"
-import { create } from "../storybook/scaffold"
+import * as mod from "./spinner";
+import { create } from "../storybook/scaffold";
 
 const docs = `### Overview
 Animated loading indicator for inline or page-level loading states.
@@ -22,9 +22,9 @@ Use with \`Button\` or in empty states.
 ### Theming/tokens
 - Uses \`data-component="spinner"\` for styling hooks.
 
-`
+`;
 
-const story = create({ title: "UI/Spinner", mod })
+const story = create({ title: "UI/Spinner", mod });
 
 export default {
   title: "UI/Spinner",
@@ -38,9 +38,9 @@ export default {
       },
     },
   },
-}
+};
 
-export const Basic = story.Basic
+export const Basic = story.Basic;
 
 export const Sizes = {
   render: () => (
@@ -50,4 +50,4 @@ export const Sizes = {
       <mod.Spinner style={{ width: "28px", height: "28px" }} />
     </div>
   ),
-}
+};

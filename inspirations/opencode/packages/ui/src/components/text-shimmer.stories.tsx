@@ -1,7 +1,7 @@
 // @ts-nocheck
-import * as mod from "./text-shimmer"
-import { useArgs } from "storybook/preview-api"
-import { create } from "../storybook/scaffold"
+import * as mod from "./text-shimmer";
+import { useArgs } from "storybook/preview-api";
+import { create } from "../storybook/scaffold";
 
 const docs = `### Overview
 Animated shimmer effect for loading text placeholders.
@@ -25,16 +25,16 @@ Use for pending states inside buttons or list rows.
 ### Theming/tokens
 - Uses \`data-component="text-shimmer"\` and CSS custom properties for timing.
 
-`
+`;
 
 const defaults = {
   text: "Loading...",
   active: true,
   class: "text-14-medium text-text-strong",
   offset: 0,
-} as const
+} as const;
 
-const story = create({ title: "UI/TextShimmer", mod, args: defaults })
+const story = create({ title: "UI/TextShimmer", mod, args: defaults });
 
 export default {
   title: "UI/TextShimmer",
@@ -55,13 +55,13 @@ export default {
       },
     },
   },
-}
+};
 
 export const Basic = {
   args: defaults,
   render: (args) => {
-    const [, updateArgs] = useArgs()
-    const reset = () => updateArgs(defaults)
+    const [, updateArgs] = useArgs();
+    const reset = () => updateArgs(defaults);
     return (
       <div style={{ display: "grid", gap: "12px", "justify-items": "start" }}>
         <mod.TextShimmer {...args} />
@@ -80,13 +80,13 @@ export const Basic = {
           Reset controls
         </button>
       </div>
-    )
+    );
   },
-}
+};
 
 export const Inactive = {
   args: {
     text: "Static text",
     active: false,
   },
-}
+};

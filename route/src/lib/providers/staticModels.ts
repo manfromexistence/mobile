@@ -124,7 +124,7 @@ export function getStaticModelsForProvider(provider: string): LocalCatalogModel[
   const specialtyModels: LocalCatalogModel[] = [];
   const appendModels = (
     models: Array<{ id: string; name?: string }>,
-    metadata?: Pick<LocalCatalogModel, "apiFormat" | "supportedEndpoints">
+    metadata?: Pick<LocalCatalogModel, "apiFormat" | "supportedEndpoints">,
   ) => {
     for (const model of models) {
       if (specialtyModels.some((existing) => existing.id === model.id)) continue;

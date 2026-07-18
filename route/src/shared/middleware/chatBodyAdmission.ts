@@ -39,14 +39,14 @@ function parseRatio(value: string | undefined, fallback: number): number {
  */
 export const CHAT_LARGE_BODY_BYTES = parsePositiveInt(
   process.env.OMNIROUTE_CHAT_LARGE_BODY_BYTES,
-  256 * 1024
+  256 * 1024,
 );
 
 /** Pathological bodies above this are rejected (413) before any clone/parse. Generous by
  * default so real compacts are never rejected; only absurd payloads are. */
 export const CHAT_HARD_MAX_BODY_BYTES = parsePositiveInt(
   process.env.OMNIROUTE_CHAT_HARD_MAX_BODY_BYTES,
-  50 * 1024 * 1024
+  50 * 1024 * 1024,
 );
 
 /** Shed large bodies once heapUsed/heap_size_limit reaches this fraction. 0.75 leaves
@@ -84,7 +84,7 @@ export function evaluateChatBodyAdmission(input: {
       status: 413,
       code: "PAYLOAD_TOO_LARGE",
       message: `Request body too large for chat completions (max ${Math.floor(
-        hardMaxBytes / (1024 * 1024)
+        hardMaxBytes / (1024 * 1024),
       )} MB).`,
     };
   }
@@ -117,7 +117,7 @@ const HEAP_LIMIT_BYTES = v8.getHeapStatistics().heap_size_limit;
  */
 export function checkChatAdmission(
   request: Request,
-  heapOverride?: { heapUsedBytes: number; heapLimitBytes: number }
+  heapOverride?: { heapUsedBytes: number; heapLimitBytes: number },
 ): Response | null {
   const clHeader = request.headers.get("content-length");
   const contentLength = clHeader ? Number.parseInt(clHeader, 10) : null;
@@ -131,10 +131,8 @@ export function checkChatAdmission(
     return null;
   }
 
-  const {
-    heapUsedBytes = process.memoryUsage().heapUsed,
-    heapLimitBytes = HEAP_LIMIT_BYTES,
-  } = heapOverride ?? {};
+  const { heapUsedBytes = process.memoryUsage().heapUsed, heapLimitBytes = HEAP_LIMIT_BYTES } =
+    heapOverride ?? {};
   const decision = evaluateChatBodyAdmission({ contentLength, heapUsedBytes, heapLimitBytes });
 
   if (decision.admit) return null;
@@ -148,14 +146,14 @@ export function checkChatAdmission(
     console.warn(
       `[chat-admission] shedding large body (${contentLength}B) under heap pressure: ` +
         `heapUsed=${Math.round(heapUsedBytes / 1048576)}MB / limit=${Math.round(
-          heapLimitBytes / 1048576
-        )}MB`
+          heapLimitBytes / 1048576,
+        )}MB`,
     );
   }
 
   const type = decision.status === 413 ? "payload_too_large" : "server_error";
   return new Response(
     JSON.stringify({ error: { message: decision.message, type, code: decision.code } }),
-    { status: decision.status, headers }
+    { status: decision.status, headers },
   );
 }

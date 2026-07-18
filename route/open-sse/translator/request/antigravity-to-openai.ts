@@ -203,12 +203,15 @@ function preserveRequired(obj: unknown): void {
     return;
   }
   const record = obj as JsonRecord;
-  if (Array.isArray(record.required) && record.properties && typeof record.properties === "object") {
+  if (
+    Array.isArray(record.required) &&
+    record.properties &&
+    typeof record.properties === "object"
+  ) {
     const properties = record.properties as JsonRecord;
     const valid = (record.required as unknown[]).filter(
       (field) =>
-        typeof field === "string" &&
-        Object.prototype.hasOwnProperty.call(properties, field)
+        typeof field === "string" && Object.prototype.hasOwnProperty.call(properties, field),
     );
     if (valid.length === 0) {
       delete record.required;
@@ -285,7 +288,7 @@ function convertContent(content) {
         role: "tool",
         tool_call_id: part.functionResponse.id || part.functionResponse.name,
         content: JSON.stringify(
-          part.functionResponse.response?.result || part.functionResponse.response || {}
+          part.functionResponse.response?.result || part.functionResponse.response || {},
         ),
       });
     }
@@ -299,9 +302,7 @@ function convertContent(content) {
       const assistantMsg: JsonRecord = { role: "assistant" };
       if (textParts.length > 0) {
         assistantMsg.content =
-          textParts.length === 1 && textParts[0].type === "text"
-            ? textParts[0].text
-            : textParts;
+          textParts.length === 1 && textParts[0].type === "text" ? textParts[0].text : textParts;
       }
       if (reasoningContent) {
         assistantMsg.reasoning_content = reasoningContent;

@@ -11,12 +11,12 @@ type TextToolResult = {
 type ScopeEnforcedHandler = (
   toolName: string,
   handler: (args: unknown, extra?: McpToolExtraLike) => Promise<TextToolResult>,
-  toolScopes?: readonly string[]
+  toolScopes?: readonly string[],
 ) => (args: unknown, extra?: McpToolExtraLike) => Promise<TextToolResult>;
 
 export function registerToolSearchTool(
   server: McpServer,
-  withScopeEnforcement: ScopeEnforcedHandler
+  withScopeEnforcement: ScopeEnforcedHandler,
 ): void {
   server.registerTool(
     "omniroute_tool_search",
@@ -31,6 +31,6 @@ export function registerToolSearchTool(
       return Promise.resolve({
         content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }],
       });
-    })
+    }),
   );
 }

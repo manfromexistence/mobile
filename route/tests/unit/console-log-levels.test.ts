@@ -59,18 +59,18 @@ test("console log API normalizes numeric pino levels correctly", async () => {
         msg: "warn entry",
       }),
     ].join("\n") + "\n",
-    "utf8"
+    "utf8",
   );
 
   const response = await route.GET(
-    new Request("http://localhost/api/logs/console?level=info&limit=10")
+    new Request("http://localhost/api/logs/console?level=info&limit=10"),
   );
   const body = (await response.json()) as ConsoleLogApiEntry[];
 
   assert.equal(response.status, 200);
   assert.deepEqual(
     body.map((entry) => entry.level),
-    ["info", "warn"]
+    ["info", "warn"],
   );
 });
 
@@ -104,11 +104,11 @@ test("console log API filters by component, time window, and result limit", asyn
         msg: "match two",
       }),
     ].join("\n") + "\n",
-    "utf8"
+    "utf8",
   );
 
   const response = await route.GET(
-    new Request("http://localhost/api/logs/console?level=warn&component=router&limit=1")
+    new Request("http://localhost/api/logs/console?level=warn&component=router&limit=1"),
   );
   const body = (await response.json()) as ConsoleLogApiEntry[];
 
@@ -133,7 +133,7 @@ test("console log API serializes structured messages for the viewer", async () =
       },
       correlationId: 12345,
     }) + "\n",
-    "utf8"
+    "utf8",
   );
 
   const response = await route.GET(new Request("http://localhost/api/logs/console?limit=10"));

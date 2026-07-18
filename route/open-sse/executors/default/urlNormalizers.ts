@@ -56,7 +56,7 @@ export function normalizeOpenAIChatUrl(baseUrl) {
 }
 
 export function getOpenRouterConnectionPreset(
-  providerSpecificData?: Record<string, unknown> | null
+  providerSpecificData?: Record<string, unknown> | null,
 ): string | null {
   const preset =
     typeof providerSpecificData?.preset === "string" ? providerSpecificData.preset.trim() : "";

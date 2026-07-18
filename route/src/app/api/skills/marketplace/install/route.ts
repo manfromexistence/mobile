@@ -26,7 +26,7 @@ export async function POST(request: Request) {
           error:
             "Active skills provider is not SkillsMP. Switch provider in Settings → Memory & Skills.",
         },
-        { status: 409 }
+        { status: 409 },
       );
     }
 

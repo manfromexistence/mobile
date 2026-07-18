@@ -65,7 +65,7 @@ export async function OPTIONS(): Promise<Response> {
  */
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ): Promise<Response> {
   const authError = await checkAuth(request);
   if (authError) return authError;
@@ -86,7 +86,7 @@ export async function GET(
     });
   } catch (err: unknown) {
     const safeMsg = sanitizeErrorMessage(
-      err instanceof Error ? err.message : "Failed to fetch preset"
+      err instanceof Error ? err.message : "Failed to fetch preset",
     );
     return errorResp(HTTP_STATUS.SERVER_ERROR, safeMsg);
   }
@@ -99,7 +99,7 @@ export async function GET(
  */
 export async function PUT(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ): Promise<Response> {
   const authError = await checkAuth(request);
   if (authError) return authError;
@@ -147,7 +147,7 @@ export async function PUT(
     });
   } catch (err: unknown) {
     const safeMsg = sanitizeErrorMessage(
-      err instanceof Error ? err.message : "Failed to update preset"
+      err instanceof Error ? err.message : "Failed to update preset",
     );
     return errorResp(HTTP_STATUS.SERVER_ERROR, safeMsg);
   }
@@ -159,7 +159,7 @@ export async function PUT(
  */
 export async function DELETE(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ): Promise<Response> {
   const authError = await checkAuth(request);
   if (authError) return authError;
@@ -180,7 +180,7 @@ export async function DELETE(
     });
   } catch (err: unknown) {
     const safeMsg = sanitizeErrorMessage(
-      err instanceof Error ? err.message : "Failed to delete preset"
+      err instanceof Error ? err.message : "Failed to delete preset",
     );
     return errorResp(HTTP_STATUS.SERVER_ERROR, safeMsg);
   }

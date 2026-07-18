@@ -28,7 +28,7 @@ describe("compression preview diff", () => {
     const preview = buildCompressionPreviewDiff(
       "Use `exact_token` and https://example.com.",
       "Use token.",
-      null
+      null,
     );
     assert.equal(preview.fallbackApplied, true);
     assert.ok(preview.validationErrors.length >= 2);

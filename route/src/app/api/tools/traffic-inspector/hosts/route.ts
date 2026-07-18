@@ -43,7 +43,7 @@ export async function POST(request: Request): Promise<Response> {
   if (!parsed.success) {
     return new Response(
       JSON.stringify(buildErrorBody(400, parsed.error.issues[0]?.message ?? "Validation error")),
-      { status: 400, headers: { "content-type": "application/json" } }
+      { status: 400, headers: { "content-type": "application/json" } },
     );
   }
 
@@ -69,7 +69,7 @@ export async function POST(request: Request): Promise<Response> {
       const msg = sanitizeErrorMessage(err);
       return Response.json(
         { ok: true, host, warning: `DNS routing entry could not be added: ${msg}` },
-        { status: 201 }
+        { status: 201 },
       );
     }
     return Response.json({ ok: true, host }, { status: 201 });
@@ -81,6 +81,6 @@ export async function POST(request: Request): Promise<Response> {
       host,
       warning: "DNS routing requires the MITM proxy to be running with a cached sudo password",
     },
-    { status: 201 }
+    { status: 201 },
   );
 }

@@ -41,7 +41,7 @@ export async function POST(request, { params }) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -74,13 +74,13 @@ export async function POST(request, { params }) {
       default:
         return NextResponse.json(
           { error: `Direct config save not supported for: ${toolId}` },
-          { status: 400 }
+          { status: 400 },
         );
     }
   } catch (error) {
     return NextResponse.json(
       { error: sanitizeErrorMessage(error instanceof Error ? error.message : String(error)) },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -141,7 +141,7 @@ async function saveContinueConfig({ baseUrl, apiKey, model }) {
         // eslint-disable-next-line no-restricted-syntax -- teknik string kontrolü, kullanıcı metni araması değil
         String(m.apiKey || "")
           .toLowerCase()
-          .includes("sk_omniroute"))
+          .includes("sk_omniroute")),
   );
 
   if (existingIdx >= 0) {

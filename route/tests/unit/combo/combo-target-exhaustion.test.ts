@@ -131,7 +131,7 @@ test("structuredError.code takes precedence over raw errorText for exhaustion cl
   assert.equal(exhausted, false, "rate_limit_exceeded should NOT mark provider exhausted");
   assert.ok(
     s.transientRateLimitedProviders.has("test-dedup-provider"),
-    "should be in transientRateLimitedProviders"
+    "should be in transientRateLimitedProviders",
   );
 });
 
@@ -148,7 +148,7 @@ test("structuredError.code with non-matching value falls back to classifyErrorTe
   assert.equal(exhausted, false, "unknown code + non-quota errorText → not exhausted");
   assert.ok(
     s.transientRateLimitedProviders.has("test-dedup-provider"),
-    "should be in transientRateLimitedProviders"
+    "should be in transientRateLimitedProviders",
   );
 });
 
@@ -163,7 +163,7 @@ test("a 200/benign status with no exhaustion mutates nothing and returns false",
   assert.equal(exhausted, false);
   assert.equal(
     s.exhaustedProviders.size + s.exhaustedConnections.size + s.transientRateLimitedProviders.size,
-    0
+    0,
   );
 });
 
@@ -250,7 +250,7 @@ test("does NOT mark connection exhausted for per-model-quota provider on 500 (ge
       errorText: "Internal error encountered.",
       rawModel: "gemma-4-31b-it",
       sets: s,
-    }
+    },
   );
   assert.equal(exhausted, false);
   assert.equal(s.exhaustedProviders.has("gemini"), false);
@@ -272,14 +272,14 @@ test("gemini 500 INTERNAL (sanitized real response) does NOT exhaust connection 
       rawModel: "gemma-4-31b-it",
       structuredError: { code: 500, status: "INTERNAL", message: "Internal error encountered." },
       sets: s,
-    }
+    },
   );
   assert.equal(exhausted, false, "providerExhausted must be false");
   assert.equal(s.exhaustedProviders.has("gemini"), false, "must not exhaust provider");
   assert.equal(
     s.exhaustedConnections.has("gemini:gemini-key-abc"),
     false,
-    "must not exhaust connection — sibling model may succeed"
+    "must not exhaust connection — sibling model may succeed",
   );
   assert.equal(s.transientRateLimitedProviders.has("gemini"), false);
 });
@@ -297,13 +297,13 @@ test("gemini 503 DOES exhaust connection (upstream down, not model-level)", () =
       errorText: "The service is currently unavailable.",
       rawModel: "gemma-4-31b-it",
       sets: s,
-    }
+    },
   );
   assert.equal(exhausted, false, "providerExhausted is false (not quota)");
   assert.equal(
     s.exhaustedConnections.has("gemini:gemini-key-abc"),
     true,
-    "503 must exhaust connection — upstream is down"
+    "503 must exhaust connection — upstream is down",
   );
   assert.equal(s.exhaustedProviders.size, 0);
 });
@@ -319,7 +319,7 @@ test("gemini 502 DOES exhaust connection (bad gateway)", () => {
       errorText: "Bad Gateway",
       rawModel: "gemma-4-31b-it",
       sets: s,
-    }
+    },
   );
   assert.equal(exhausted, false);
   assert.equal(s.exhaustedConnections.has("gemini:gemini-key-abc"), true);

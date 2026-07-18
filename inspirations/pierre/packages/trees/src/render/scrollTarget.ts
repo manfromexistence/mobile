@@ -6,7 +6,7 @@
 // no change is required. Callers that currently own a scroll element perform
 // the single imperative write.
 
-import type { FileTreeScrollOffset } from '../model/publicTypes';
+import type { FileTreeScrollOffset } from "../model/publicTypes";
 
 export type FileTreeScrollTargetInput = {
   focusedIndex: number;
@@ -23,15 +23,9 @@ export type FileTreeMinimalScrollIntoViewInput = FileTreeScrollTargetInput & {
 // respecting a `topInset` (the sticky overlay height). Returns `null` when the
 // row is already visible.
 export function computeFocusedRowScrollIntoView(
-  input: FileTreeMinimalScrollIntoViewInput
+  input: FileTreeMinimalScrollIntoViewInput,
 ): number | null {
-  const {
-    currentScrollTop,
-    focusedIndex,
-    itemHeight,
-    topInset = 0,
-    viewportHeight,
-  } = input;
+  const { currentScrollTop, focusedIndex, itemHeight, topInset = 0, viewportHeight } = input;
 
   if (focusedIndex < 0) {
     return null;
@@ -66,7 +60,7 @@ export type FileTreeOffsetScrollInput = FileTreeScrollTargetInput & {
 // scroll-into-view, while `top` and `center` align inside the unobscured
 // viewport below any sticky overlay.
 export function computeFocusedRowScrollTopForOffset(
-  input: FileTreeOffsetScrollInput
+  input: FileTreeOffsetScrollInput,
 ): number | null {
   const {
     currentScrollTop,
@@ -78,7 +72,7 @@ export function computeFocusedRowScrollTopForOffset(
     viewportHeight,
   } = input;
 
-  if (offset === 'nearest') {
+  if (offset === "nearest") {
     return computeFocusedRowScrollIntoView({
       currentScrollTop,
       focusedIndex,
@@ -96,14 +90,11 @@ export function computeFocusedRowScrollTopForOffset(
   const itemTop = focusedIndex * itemHeight;
   const visibleHeight = Math.max(0, viewportHeight - effectiveInset);
   const targetViewportOffset =
-    offset === 'center'
+    offset === "center"
       ? effectiveInset + Math.max(0, (visibleHeight - itemHeight) / 2)
       : effectiveInset;
   const maxScrollTop = Math.max(0, totalHeight - viewportHeight);
-  const nextScrollTop = Math.max(
-    0,
-    Math.min(itemTop - targetViewportOffset, maxScrollTop)
-  );
+  const nextScrollTop = Math.max(0, Math.min(itemTop - targetViewportOffset, maxScrollTop));
   return nextScrollTop === currentScrollTop ? null : nextScrollTop;
 }
 
@@ -118,7 +109,7 @@ export type FileTreeViewportOffsetScrollInput = FileTreeScrollTargetInput & {
 // Returns `null` when the row already sits inside the offset viewport band or
 // when the resulting scrollTop is unchanged.
 export function computeViewportOffsetScrollTop(
-  input: FileTreeViewportOffsetScrollInput
+  input: FileTreeViewportOffsetScrollInput,
 ): number | null {
   const {
     currentScrollTop,
@@ -144,9 +135,6 @@ export function computeViewportOffsetScrollTop(
   }
 
   const maxScrollTop = Math.max(0, totalHeight - viewportHeight);
-  const preservedScrollTop = Math.max(
-    0,
-    Math.min(itemTop - effectiveOffset, maxScrollTop)
-  );
+  const preservedScrollTop = Math.max(0, Math.min(itemTop - effectiveOffset, maxScrollTop));
   return preservedScrollTop === currentScrollTop ? null : preservedScrollTop;
 }

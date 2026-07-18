@@ -2,10 +2,12 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 const { toJsonErrorPayload } = await import("../../src/shared/utils/upstreamError.ts");
-const { createErrorResponse, createErrorResponseFromUnknown } =
-  await import("../../src/lib/api/errorResponse.ts");
-const { getAccountDisplayName, getProviderDisplayName } =
-  await import("../../src/lib/display/names.ts");
+const { createErrorResponse, createErrorResponseFromUnknown } = await import(
+  "../../src/lib/api/errorResponse.ts"
+);
+const { getAccountDisplayName, getProviderDisplayName } = await import(
+  "../../src/lib/display/names.ts"
+);
 const { resolveProviderName } = await import("../../src/lib/display/useProviderNodeMap.ts");
 
 test("toJsonErrorPayload: preserves upstream error objects that already have error payloads", () => {
@@ -54,7 +56,7 @@ test("toJsonErrorPayload: extracts provider errors arrays into message strings",
           name: "bad request",
         },
       },
-    }
+    },
   );
 });
 
@@ -83,7 +85,7 @@ test("toJsonErrorPayload: normalizes object entries in provider errors arrays", 
           name: "bad request",
         },
       },
-    }
+    },
   );
 });
 
@@ -178,7 +180,7 @@ test("getAccountDisplayName: respects priority order and fallback", () => {
       displayName: "Display Name",
       email: "account@example.com",
     }),
-    "Primary Name"
+    "Primary Name",
   );
   assert.equal(
     getAccountDisplayName({
@@ -187,7 +189,7 @@ test("getAccountDisplayName: respects priority order and fallback", () => {
       displayName: "Display Name",
       email: "account@example.com",
     }),
-    "Display Name"
+    "Display Name",
   );
   assert.equal(
     getAccountDisplayName({
@@ -196,7 +198,7 @@ test("getAccountDisplayName: respects priority order and fallback", () => {
       displayName: " ",
       email: "account@example.com",
     }),
-    "account@example.com"
+    "account@example.com",
   );
   assert.equal(getAccountDisplayName({ id: "abcdef123456" }), "Account #abcdef");
   assert.equal(getAccountDisplayName(null), "Unknown Account");
@@ -209,7 +211,7 @@ test("resolveProviderName: returns user-given name from nodeMap for custom provi
   assert.equal(
     resolveProviderName("openai-compatible-chat-abc123", nodeMap),
     "My LLM",
-    "should return the user-given name when present in the map"
+    "should return the user-given name when present in the map",
   );
   // Falls back to prefix when name is blank
   const mapNoName = new Map([
@@ -219,7 +221,7 @@ test("resolveProviderName: returns user-given name from nodeMap for custom provi
   // Falls back to de-UUIDed label when no node entry exists
   assert.equal(
     resolveProviderName("openai-compatible-chat-02669115-2545-4896-b003-cb4dac09d441", new Map()),
-    "Compatible (openai)"
+    "Compatible (openai)",
   );
   // Falls back gracefully for unknown ids not in the map
   assert.equal(resolveProviderName("plain-provider", nodeMap), "plain-provider");
@@ -234,22 +236,22 @@ test("getProviderDisplayName: prefers node metadata and simplifies compatible ID
       name: "Friendly Node",
       prefix: "ignored-prefix",
     }),
-    "Friendly Node"
+    "Friendly Node",
   );
   assert.equal(
     getProviderDisplayName("anthropic-compatible-responses-02669115-2545-4896-b003-cb4dac09d441", {
       name: " ",
       prefix: "Anthropic Prefix",
     }),
-    "Anthropic Prefix"
+    "Anthropic Prefix",
   );
   assert.equal(
     getProviderDisplayName("openai-compatible-chat-02669115-2545-4896-b003-cb4dac09d441"),
-    "Compatible (openai)"
+    "Compatible (openai)",
   );
   assert.equal(
     getProviderDisplayName("anthropic-compatible-responses-02669115-2545-4896-b003-cb4dac09d441"),
-    "Compatible (anthropic)"
+    "Compatible (anthropic)",
   );
   assert.equal(getProviderDisplayName(undefined), "Unknown Provider");
   assert.equal(getProviderDisplayName("plain-provider-id"), "plain-provider-id");

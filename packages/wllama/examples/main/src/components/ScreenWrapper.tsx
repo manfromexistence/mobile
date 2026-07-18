@@ -2,8 +2,8 @@ export default function ScreenWrapper({
   children,
   fitScreen,
 }: {
-  children: any
-  fitScreen?: boolean
+  children: any;
+  fitScreen?: boolean;
 }) {
   return (
     <div className="overflow-y-auto h-full w-full">
@@ -13,5 +13,5 @@ export default function ScreenWrapper({
         {children}
       </div>
     </div>
-  )
+  );
 }

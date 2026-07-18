@@ -45,9 +45,11 @@ export default function EditCompatibleNodeModal({
   const [checkKey, setCheckKey] = useState("");
   const [checkModelId, setCheckModelId] = useState("");
   const [validating, setValidating] = useState(false);
-  const [validationResult, setValidationResult] = useState<
-    null | { valid: boolean; error?: string | null; method?: string | null }
-  >(null);
+  const [validationResult, setValidationResult] = useState<null | {
+    valid: boolean;
+    error?: string | null;
+    method?: string | null;
+  }>(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   useEffect(() => {
@@ -72,7 +74,7 @@ export default function EditCompatibleNodeModal({
           node.chatPath ||
           (!isCcCompatible && node.modelsPath) ||
           (isCcCompatible && !node.chatPath)
-        )
+        ),
       );
     }
   }, [node, isAnthropic, isCcCompatible]);

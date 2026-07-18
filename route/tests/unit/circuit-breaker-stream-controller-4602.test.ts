@@ -24,12 +24,9 @@ const uniqueName = (suffix: string) =>
 test("#4602 isLocalStreamLifecycleError flags the WS controller-closed error and nothing else", () => {
   assert.equal(
     isLocalStreamLifecycleError(new Error("Invalid state: Controller is already closed")),
-    true
+    true,
   );
-  assert.equal(
-    isLocalStreamLifecycleError({ message: "Controller is already closed" }),
-    true
-  );
+  assert.equal(isLocalStreamLifecycleError({ message: "Controller is already closed" }), true);
   // Real upstream failures must still count.
   assert.equal(isLocalStreamLifecycleError(new Error("502 Bad Gateway")), false);
   assert.equal(isLocalStreamLifecycleError(new Error("upstream timed out")), false);
@@ -49,7 +46,7 @@ test("#4602 breaker stays CLOSED when only the WS controller-closed error is thr
       cb.execute(async () => {
         throw new Error("Invalid state: Controller is already closed");
       }),
-      /Controller is already closed/
+      /Controller is already closed/,
     );
   }
 
@@ -70,7 +67,7 @@ test("#4602 a genuine upstream failure still trips the breaker with the same isF
     await assert.rejects(
       cb.execute(async () => {
         throw new Error("502 Bad Gateway from upstream");
-      })
+      }),
     );
   }
 

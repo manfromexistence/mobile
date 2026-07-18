@@ -1,45 +1,45 @@
-'use client';
+"use client";
 
-import { Water, waterPresets } from '@paper-design/shaders-react';
-import { useControls, button, folder } from 'leva';
-import { setParamsSafe, useResetLevaParams } from '@/helpers/use-reset-leva-params';
-import { usePresetHighlight } from '@/helpers/use-preset-highlight';
-import { cleanUpLevaParams } from '@/helpers/clean-up-leva-params';
-import { ShaderFit } from '@paper-design/shaders';
-import { levaImageButton, levaDeleteImageButton } from '@/helpers/leva-image-button';
-import { useState, useEffect, useCallback } from 'react';
-import { toHsla } from '@/helpers/color-utils';
-import { ShaderDetails } from '@/components/shader-details';
-import { waterDef } from '@/shader-defs/water-def';
-import { ShaderContainer } from '@/components/shader-container';
-import { useUrlParams } from '@/helpers/use-url-params';
+import { Water, waterPresets } from "@paper-design/shaders-react";
+import { useControls, button, folder } from "leva";
+import { setParamsSafe, useResetLevaParams } from "@/helpers/use-reset-leva-params";
+import { usePresetHighlight } from "@/helpers/use-preset-highlight";
+import { cleanUpLevaParams } from "@/helpers/clean-up-leva-params";
+import { ShaderFit } from "@paper-design/shaders";
+import { levaImageButton, levaDeleteImageButton } from "@/helpers/leva-image-button";
+import { useState, useEffect, useCallback } from "react";
+import { toHsla } from "@/helpers/color-utils";
+import { ShaderDetails } from "@/components/shader-details";
+import { waterDef } from "@/shader-defs/water-def";
+import { ShaderContainer } from "@/components/shader-container";
+import { useUrlParams } from "@/helpers/use-url-params";
 
 const { worldWidth, worldHeight, ...defaults } = waterPresets[0].params;
 
 const imageFiles = [
-  '001.webp',
-  '002.webp',
-  '003.webp',
-  '004.webp',
-  '005.webp',
-  '006.webp',
-  '007.webp',
-  '008.webp',
-  '009.webp',
-  '0010.webp',
-  '0011.webp',
-  '0012.webp',
-  '0013.webp',
-  '0014.webp',
-  '0015.webp',
-  '0016.webp',
-  '0017.webp',
-  '0018.webp',
+  "001.webp",
+  "002.webp",
+  "003.webp",
+  "004.webp",
+  "005.webp",
+  "006.webp",
+  "007.webp",
+  "008.webp",
+  "009.webp",
+  "0010.webp",
+  "0011.webp",
+  "0012.webp",
+  "0013.webp",
+  "0014.webp",
+  "0015.webp",
+  "0016.webp",
+  "0017.webp",
+  "0018.webp",
 ] as const;
 
 const WaterWithControls = () => {
   const [imageIdx, setImageIdx] = useState(-1);
-  const [image, setImage] = useState<HTMLImageElement | string>('/images/image-filters/0018.webp');
+  const [image, setImage] = useState<HTMLImageElement | string>("/images/image-filters/0018.webp");
 
   useEffect(() => {
     if (imageIdx >= 0) {
@@ -55,7 +55,7 @@ const WaterWithControls = () => {
   }, []);
 
   const setImageWithoutStatus = useCallback((img?: HTMLImageElement) => {
-    setImage(img ?? '');
+    setImage(img ?? "");
     setImageIdx(-1);
   }, []);
 
@@ -64,7 +64,7 @@ const WaterWithControls = () => {
       waterPresets.map(({ name, params: { worldWidth, worldHeight, ...preset } }) => [
         name,
         button(() => setParamsSafe(params, setParams, preset)),
-      ])
+      ]),
     );
     return {
       colorBack: { value: toHsla(defaults.colorBack), order: 100 },
@@ -77,13 +77,13 @@ const WaterWithControls = () => {
       size: { value: defaults.size, min: 0.01, max: 5, order: 205 },
       speed: { value: defaults.speed, min: 0, max: 3, order: 300 },
       scale: { value: defaults.scale, min: 0.1, max: 4, order: 301 },
-      fit: { value: defaults.fit, options: ['contain', 'cover'] as ShaderFit[], order: 302 },
+      fit: { value: defaults.fit, options: ["contain", "cover"] as ShaderFit[], order: 302 },
       Image: folder(
         {
-          'Upload image': levaImageButton(setImageWithoutStatus),
-          ...(image && { 'Delete image': levaDeleteImageButton(() => setImage('')) }),
+          "Upload image": levaImageButton(setImageWithoutStatus),
+          ...(image && { "Delete image": levaDeleteImageButton(() => setImage("")) }),
         },
-        { order: 0 }
+        { order: 0 },
       ),
       Presets: folder(presets, { order: -1 }),
     };
@@ -101,7 +101,10 @@ const WaterWithControls = () => {
       <ShaderContainer shaderDef={waterDef} currentParams={params}>
         <Water onClick={handleClick} {...params} image={image} />
       </ShaderContainer>
-      <div onClick={handleClick} className="mx-auto mt-16 mb-48 w-fit text-base text-current/70 select-none">
+      <div
+        onClick={handleClick}
+        className="mx-auto mt-16 mb-48 w-fit text-base text-current/70 select-none"
+      >
         Click to change the sample image
       </div>
       <ShaderDetails
@@ -109,12 +112,16 @@ const WaterWithControls = () => {
         currentParams={params}
         notes={
           <>
-            Thanks to{' '}
+            Thanks to{" "}
             <a href="https://x.com/zozuar" target="_blank" rel="noopener">
               zozuar
-            </a>{' '}
-            for the amazing{' '}
-            <a href="https://twigl.app/?ol=true&ss=-NOAlYulOVLklxMdxBDx" target="_blank" rel="noopener">
+            </a>{" "}
+            for the amazing{" "}
+            <a
+              href="https://twigl.app/?ol=true&ss=-NOAlYulOVLklxMdxBDx"
+              target="_blank"
+              rel="noopener"
+            >
               recursive fractal noise algorithm
             </a>
             .

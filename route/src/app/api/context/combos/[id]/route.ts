@@ -72,7 +72,7 @@ export async function DELETE(request: Request, { params }) {
   if (!deleted) {
     return NextResponse.json(
       { error: "Compression combo not found or cannot delete default combo" },
-      { status: 404 }
+      { status: 404 },
     );
   }
   return NextResponse.json({ ok: true });

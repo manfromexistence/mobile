@@ -1,13 +1,13 @@
-export * as SessionCompactionEvent from "./session-compaction-event"
+export * as SessionCompactionEvent from "./session-compaction-event";
 
-import { Event } from "./event"
-import { SessionID } from "./session-id"
+import { Event } from "./event";
+import { SessionID } from "./session-id";
 
 export const Compacted = Event.define({
   type: "session.compacted",
   schema: {
     sessionID: SessionID,
   },
-})
+});
 
-export const Definitions = Event.inventory(Compacted)
+export const Definitions = Event.inventory(Compacted);

@@ -22,15 +22,19 @@ export function DotmCircular11({
   ...rest
 }: DotmCircular11Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
   const phase = useCyclePhase({
     active: !reducedMotion && matrixPhase !== "idle",
     cycleMsBase: 1850,
-    speed
+    speed,
   });
 
   const resolver = useMemo<DotAnimationResolver>(() => {
@@ -42,7 +46,7 @@ export function DotmCircular11({
       const x = col - 2;
       const y = row - 2;
       const ring = Math.sqrt(x * x + y * y);
-      const t = reducedMotion || p === "idle" ? 0 : (phase) * Math.PI * 2;
+      const t = reducedMotion || p === "idle" ? 0 : phase * Math.PI * 2;
       const angle = Math.atan2(y, x);
       const moonCenterX = Math.cos(t) * 0.7;
       const moonCenterY = Math.sin(t) * 0.7;

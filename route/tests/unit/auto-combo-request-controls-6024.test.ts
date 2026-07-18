@@ -46,7 +46,7 @@ test("#6025 unknown/empty/non-string input does NOT override (keeps combo config
     assert.deepEqual(
       resolveRequestModePack(bad as unknown),
       { override: false, modePack: undefined },
-      `input ${JSON.stringify(bad)} must not override`
+      `input ${JSON.stringify(bad)} must not override`,
     );
   }
 });
@@ -61,7 +61,7 @@ test("#6023 budget header parses a positive USD amount, rejects garbage", () => 
     assert.equal(
       parseRequestBudgetCap(bad as unknown),
       undefined,
-      `input ${JSON.stringify(bad)} must be rejected`
+      `input ${JSON.stringify(bad)} must be rejected`,
     );
   }
 });

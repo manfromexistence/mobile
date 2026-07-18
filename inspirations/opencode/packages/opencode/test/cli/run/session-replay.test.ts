@@ -1,7 +1,7 @@
-import { describe, expect, test } from "bun:test"
-import { replayLocalRows, replaySession } from "@/cli/cmd/run/session-replay"
-import type { SessionMessages } from "@/cli/cmd/run/session.shared"
-import type { RunProvider } from "@/cli/cmd/run/types"
+import { describe, expect, test } from "bun:test";
+import { replayLocalRows, replaySession } from "@/cli/cmd/run/session-replay";
+import type { SessionMessages } from "@/cli/cmd/run/session.shared";
+import type { RunProvider } from "@/cli/cmd/run/types";
 
 function userMessage(id: string, text: string): SessionMessages[number] {
   return {
@@ -27,16 +27,16 @@ function userMessage(id: string, text: string): SessionMessages[number] {
         text,
       },
     ],
-  }
+  };
 }
 
 function assistantInfo(
   id: string,
   input: {
-    parentID?: string
-    modelID?: string
-    providerID?: string
-    time?: { created: number; completed?: number }
+    parentID?: string;
+    modelID?: string;
+    providerID?: string;
+    time?: { created: number; completed?: number };
   } = {},
 ) {
   return {
@@ -63,23 +63,23 @@ function assistantInfo(
         write: 0,
       },
     },
-  }
+  };
 }
 
 function assistantMessage(
   id: string,
   text: string,
   input: {
-    parentID?: string
-    modelID?: string
-    providerID?: string
-    time?: { created: number; completed?: number }
+    parentID?: string;
+    modelID?: string;
+    providerID?: string;
+    time?: { created: number; completed?: number };
   } = {},
 ): SessionMessages[number] {
   const time = input.time ?? {
     created: 200,
     completed: 3000,
-  }
+  };
 
   return {
     info: assistantInfo(id, {
@@ -99,7 +99,7 @@ function assistantMessage(
         },
       },
     ],
-  }
+  };
 }
 
 const provider = (name: string): RunProvider => ({
@@ -157,7 +157,7 @@ const provider = (name: string): RunProvider => ({
       release_date: "2026-01-01",
     },
   },
-})
+});
 
 function runningToolMessage(id: string): SessionMessages[number] {
   return {
@@ -181,7 +181,7 @@ function runningToolMessage(id: string): SessionMessages[number] {
         },
       },
     ],
-  }
+  };
 }
 
 function shellUserMessage(id: string): SessionMessages[number] {
@@ -209,7 +209,7 @@ function shellUserMessage(id: string): SessionMessages[number] {
         synthetic: true,
       },
     ],
-  }
+  };
 }
 
 function shellAssistantMessage(id: string, parentID: string): SessionMessages[number] {
@@ -246,7 +246,7 @@ function shellAssistantMessage(id: string, parentID: string): SessionMessages[nu
         },
       },
     ],
-  }
+  };
 }
 
 describe("run session replay", () => {
@@ -260,7 +260,7 @@ describe("run session replay", () => {
       questions: [],
       thinking: true,
       limits: {},
-    })
+    });
 
     expect(out.commits).toEqual([
       expect.objectContaining({
@@ -289,14 +289,14 @@ describe("run session replay", () => {
           duration: "2.8s",
         },
       }),
-    ])
+    ]);
     expect(out.patch).toEqual(
       expect.objectContaining({
         phase: "idle",
         status: "",
       }),
-    )
-  })
+    );
+  });
 
   test("uses provider model names for replayed turn summaries when available", () => {
     const out = replaySession({
@@ -309,7 +309,7 @@ describe("run session replay", () => {
       thinking: true,
       limits: {},
       providers: [provider("Little Frank")],
-    })
+    });
 
     expect(out.commits.at(-1)).toEqual(
       expect.objectContaining({
@@ -321,8 +321,8 @@ describe("run session replay", () => {
           duration: "2.8s",
         },
       }),
-    )
-  })
+    );
+  });
 
   test("replays one turn summary for the final assistant in a multi-step turn", () => {
     const out = replaySession({
@@ -341,7 +341,7 @@ describe("run session replay", () => {
       questions: [],
       thinking: true,
       limits: {},
-    })
+    });
 
     expect(out.commits.filter((commit) => commit.summary)).toEqual([
       expect.objectContaining({
@@ -349,8 +349,8 @@ describe("run session replay", () => {
         text: "▣ Build · gpt-5 · 2.0s",
         messageID: "msg-step-2",
       }),
-    ])
-  })
+    ]);
+  });
 
   test("keeps the footer in a running state for resumed active tools", () => {
     const out = replaySession({
@@ -359,15 +359,15 @@ describe("run session replay", () => {
       questions: [],
       thinking: true,
       limits: {},
-    })
+    });
 
     expect(out.patch).toEqual(
       expect.objectContaining({
         phase: "running",
         status: "running bash",
       }),
-    )
-  })
+    );
+  });
 
   test("does not replay turn summaries for shell-mode commands", () => {
     const out = replaySession({
@@ -379,9 +379,9 @@ describe("run session replay", () => {
       questions: [],
       thinking: true,
       limits: {},
-    })
+    });
 
-    expect(out.commits.some((commit) => commit.summary)).toBe(false)
+    expect(out.commits.some((commit) => commit.summary)).toBe(false);
     expect(out.commits).toContainEqual(
       expect.objectContaining({
         kind: "tool",
@@ -389,8 +389,8 @@ describe("run session replay", () => {
         tool: "bash",
         toolState: "completed",
       }),
-    )
-  })
+    );
+  });
 
   test("merges failed local rows ahead of later persisted prompts", () => {
     const persisted = {
@@ -399,26 +399,30 @@ describe("run session replay", () => {
       phase: "start",
       source: "system",
       messageID: "msg-user-2",
-    } as const
+    } as const;
     const failed = {
       kind: "user",
       text: "failed",
       phase: "start",
       source: "system",
       messageID: "msg-user-1",
-    } as const
+    } as const;
     const error = {
       kind: "error",
       text: "network unavailable",
       phase: "start",
       source: "system",
       messageID: "msg-user-1",
-    } as const
+    } as const;
 
     expect(
-      replayLocalRows([userMessage("msg-user-2", "successful")], [persisted], [{ commit: failed }, { commit: error }]),
-    ).toEqual([failed, error, persisted])
-  })
+      replayLocalRows(
+        [userMessage("msg-user-2", "successful")],
+        [persisted],
+        [{ commit: failed }, { commit: error }],
+      ),
+    ).toEqual([failed, error, persisted]);
+  });
 
   test("retains local errors but not duplicate local prompts once a prompt persists", () => {
     const persisted = {
@@ -427,14 +431,14 @@ describe("run session replay", () => {
       phase: "start",
       source: "system",
       messageID: "msg-user-1",
-    } as const
+    } as const;
     const error = {
       kind: "error",
       text: "connection closed",
       phase: "start",
       source: "system",
       messageID: "msg-user-1",
-    } as const
+    } as const;
 
     expect(
       replayLocalRows(
@@ -442,8 +446,8 @@ describe("run session replay", () => {
         [persisted],
         [{ commit: persisted }, { commit: error }],
       ),
-    ).toEqual([persisted, error])
-  })
+    ).toEqual([persisted, error]);
+  });
 
   test("keeps a local turn failure below assistant output already visible for that turn", () => {
     const first = {
@@ -452,28 +456,28 @@ describe("run session replay", () => {
       phase: "start",
       source: "system",
       messageID: "msg-user-1",
-    } as const
+    } as const;
     const answer = {
       kind: "assistant",
       text: "partial answer",
       phase: "progress",
       source: "assistant",
       messageID: "msg-assistant-1",
-    } as const
+    } as const;
     const error = {
       kind: "error",
       text: "stream failed",
       phase: "start",
       source: "system",
       messageID: "msg-user-1",
-    } as const
+    } as const;
     const second = {
       kind: "user",
       text: "retry",
       phase: "start",
       source: "system",
       messageID: "msg-user-2",
-    } as const
+    } as const;
 
     expect(
       replayLocalRows(
@@ -482,12 +486,17 @@ describe("run session replay", () => {
         [
           {
             commit: error,
-            after: { kind: "assistant", text: "partial answer", phase: "progress", messageID: "msg-assistant-1" },
+            after: {
+              kind: "assistant",
+              text: "partial answer",
+              phase: "progress",
+              messageID: "msg-assistant-1",
+            },
           },
         ],
       ),
-    ).toEqual([first, answer, error, second])
-  })
+    ).toEqual([first, answer, error, second]);
+  });
 
   test("keeps a local failure above assistant output received after the failure", () => {
     const first = {
@@ -496,28 +505,26 @@ describe("run session replay", () => {
       phase: "start",
       source: "system",
       messageID: "msg-user-1",
-    } as const
+    } as const;
     const error = {
       kind: "error",
       text: "request failed",
       phase: "start",
       source: "system",
       messageID: "msg-user-1",
-    } as const
+    } as const;
     const late = {
       kind: "assistant",
       text: "late answer",
       phase: "progress",
       source: "assistant",
       messageID: "msg-assistant-1",
-    } as const
+    } as const;
 
-    expect(replayLocalRows([userMessage("msg-user-1", "start")], [first, late], [{ commit: error }])).toEqual([
-      first,
-      error,
-      late,
-    ])
-  })
+    expect(
+      replayLocalRows([userMessage("msg-user-1", "start")], [first, late], [{ commit: error }]),
+    ).toEqual([first, error, late]);
+  });
 
   test("inserts a local failure between persisted output chunks spanning that failure", () => {
     const first = {
@@ -526,7 +533,7 @@ describe("run session replay", () => {
       phase: "start",
       source: "system",
       messageID: "msg-user-1",
-    } as const
+    } as const;
     const complete = {
       kind: "assistant",
       text: "before after",
@@ -534,14 +541,14 @@ describe("run session replay", () => {
       source: "assistant",
       messageID: "msg-assistant-1",
       partID: "part-1",
-    } as const
+    } as const;
     const error = {
       kind: "error",
       text: "stream failed",
       phase: "start",
       source: "system",
       messageID: "msg-user-1",
-    } as const
+    } as const;
 
     expect(
       replayLocalRows(
@@ -561,8 +568,8 @@ describe("run session replay", () => {
           },
         ],
       ),
-    ).toEqual([first, { ...complete, text: "before " }, error, { ...complete, text: "after" }])
-  })
+    ).toEqual([first, { ...complete, text: "before " }, error, { ...complete, text: "after" }]);
+  });
 
   test("places an unpersisted failed prompt before live output from that turn", () => {
     const prompt = {
@@ -571,21 +578,21 @@ describe("run session replay", () => {
       phase: "start",
       source: "system",
       messageID: "msg-1",
-    } as const
+    } as const;
     const answer = {
       kind: "assistant",
       text: "partial answer",
       phase: "progress",
       source: "assistant",
       messageID: "msg-2",
-    } as const
+    } as const;
     const error = {
       kind: "error",
       text: "stream failed",
       phase: "start",
       source: "system",
       messageID: "msg-1",
-    } as const
+    } as const;
 
     expect(
       replayLocalRows(
@@ -595,12 +602,17 @@ describe("run session replay", () => {
           { commit: prompt },
           {
             commit: error,
-            after: { kind: "assistant", text: "partial answer", phase: "progress", messageID: "msg-2" },
+            after: {
+              kind: "assistant",
+              text: "partial answer",
+              phase: "progress",
+              messageID: "msg-2",
+            },
           },
         ],
       ),
-    ).toEqual([prompt, answer, error])
-  })
+    ).toEqual([prompt, answer, error]);
+  });
 
   test("anchors a failure after the visible start of a tool that later completes", () => {
     const prompt = {
@@ -609,7 +621,7 @@ describe("run session replay", () => {
       phase: "start",
       source: "system",
       messageID: "msg-user-1",
-    } as const
+    } as const;
     const running = {
       kind: "tool",
       text: "running bash",
@@ -618,7 +630,7 @@ describe("run session replay", () => {
       messageID: "msg-assistant-1",
       partID: "part-tool-1",
       toolState: "running",
-    } as const
+    } as const;
     const completed = {
       kind: "tool",
       text: "file.txt",
@@ -627,14 +639,14 @@ describe("run session replay", () => {
       messageID: "msg-assistant-1",
       partID: "part-tool-1",
       toolState: "completed",
-    } as const
+    } as const;
     const error = {
       kind: "error",
       text: "connection lost",
       phase: "start",
       source: "system",
       messageID: "msg-user-1",
-    } as const
+    } as const;
 
     expect(
       replayLocalRows(
@@ -654,8 +666,8 @@ describe("run session replay", () => {
           },
         ],
       ),
-    ).toEqual([prompt, running, error, completed])
-  })
+    ).toEqual([prompt, running, error, completed]);
+  });
 
   test("retains an unpersisted local diagnostic before later persisted prompts", () => {
     const first = {
@@ -664,21 +676,21 @@ describe("run session replay", () => {
       phase: "start",
       source: "system",
       messageID: "msg-user-1",
-    } as const
+    } as const;
     const error = {
       kind: "error",
       text: "failed to start new session",
       phase: "start",
       source: "system",
       messageID: "msg-user-2",
-    } as const
+    } as const;
     const second = {
       kind: "user",
       text: "after",
       phase: "start",
       source: "system",
       messageID: "msg-user-3",
-    } as const
+    } as const;
 
     expect(
       replayLocalRows(
@@ -686,6 +698,6 @@ describe("run session replay", () => {
         [first, second],
         [{ commit: error }],
       ),
-    ).toEqual([first, error, second])
-  })
-})
+    ).toEqual([first, error, second]);
+  });
+});

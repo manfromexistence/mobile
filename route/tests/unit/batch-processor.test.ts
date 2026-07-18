@@ -95,7 +95,7 @@ test("processPendingBatches should start a validating batch", async () => {
         method: "POST",
         url: "/v1/chat/completions",
         body: { model: "gpt-4", messages: [{ role: "user", content: "hi" }] },
-      }) + "\n"
+      }) + "\n",
     ),
     filename: "batch_input.jsonl",
     purpose: "batch_input",
@@ -104,7 +104,7 @@ test("processPendingBatches should start a validating batch", async () => {
         method: "POST",
         url: "/v1/chat/completions",
         body: { model: "gpt-4", messages: [{ role: "user", content: "hi" }] },
-      }) + "\n"
+      }) + "\n",
     ),
   });
 
@@ -122,7 +122,7 @@ test("processPendingBatches should start a validating batch", async () => {
       {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   });
 
@@ -209,7 +209,7 @@ test("processPendingBatches should fail a batch with mismatched endpoint", async
         method: "POST",
         url: "/v1/embeddings", // Mismatch
         body: { model: "gpt-4", input: "hi" },
-      }) + "\n"
+      }) + "\n",
     ),
   });
 
@@ -283,7 +283,7 @@ test("processPendingBatches caches rate-limit headers across sequential batches"
           "x-ratelimit-remaining-tokens-minute": "5000",
           "x-ratelimit-tokens-query-cost": "50",
         },
-      }
+      },
     );
   });
 
@@ -308,7 +308,7 @@ test("processPendingBatches caches rate-limit headers across sequential batches"
   assert.strictEqual(
     afterA.headers!.get("x-ratelimit-remaining-req-minute"),
     "5",
-    "cached header value should match response"
+    "cached header value should match response",
   );
   assert.ok(Date.now() - afterA.timestamp < 60_000, "cached timestamp should be within TTL");
 
@@ -370,7 +370,7 @@ test("processPendingBatches should recover checkpointed stale batches without re
           usage: { prompt_tokens: 10, completion_tokens: 5 },
         },
       },
-    }
+    },
   );
 
   let callCount = 0;
@@ -382,7 +382,7 @@ test("processPendingBatches should recover checkpointed stale batches without re
         choices: [{ message: { content: "processed once" } }],
         usage: { prompt_tokens: 8, completion_tokens: 4 },
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   });
 
@@ -405,7 +405,7 @@ test("processPendingBatches should recover checkpointed stale batches without re
     .map((line) => JSON.parse(line));
   assert.deepStrictEqual(
     outputRows.map((row) => row.custom_id),
-    ["already-done", "needs-dispatch"]
+    ["already-done", "needs-dispatch"],
   );
 });
 
@@ -420,7 +420,7 @@ test("processPendingBatches should not replay interrupted checkpoint items", asy
         method: "POST",
         url: "/v1/chat/completions",
         body: { model: "gpt-4", messages: [{ role: "user", content: "hi" }] },
-      }) + "\n"
+      }) + "\n",
     ),
   });
 
@@ -466,7 +466,7 @@ test("processPendingBatches should fail stale batches without checkpoints instea
         method: "POST",
         url: "/v1/chat/completions",
         body: { model: "gpt-4", messages: [{ role: "user", content: "hi" }] },
-      }) + "\n"
+      }) + "\n",
     ),
   });
 
@@ -525,7 +525,7 @@ test("processPendingBatches should respect BATCH_MAX_CONCURRENT (default 1)", as
         choices: [{ message: { content: "ok" } }],
         usage: { prompt_tokens: 10, completion_tokens: 5 },
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   });
 
@@ -547,7 +547,7 @@ test("processPendingBatches should respect BATCH_MAX_CONCURRENT (default 1)", as
   assert.strictEqual(
     inProgressCount,
     1,
-    "Only one batch should be in_progress (concurrency limit)"
+    "Only one batch should be in_progress (concurrency limit)",
   );
   assert.strictEqual(validatingCount, 2, "Two batches should remain validating");
 
@@ -591,7 +591,7 @@ test("processPendingBatches should not reset an actively processing batch", asyn
         choices: [{ message: { content: "ok" } }],
         usage: { prompt_tokens: 10, completion_tokens: 5 },
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   });
 
@@ -610,7 +610,7 @@ test("processPendingBatches should not reset an actively processing batch", asyn
   assert.strictEqual(
     updated?.status,
     "in_progress",
-    "Actively processing batch should not be reset"
+    "Actively processing batch should not be reset",
   );
 
   // Wait for the slow processing to finish

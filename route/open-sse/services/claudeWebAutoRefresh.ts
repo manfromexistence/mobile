@@ -46,7 +46,7 @@ export function injectCfClearance(existingCookie: string, cfClearanceToken: stri
  */
 export async function refreshCookie(
   existingCookie: string,
-  options?: CookieRefreshOptions
+  options?: CookieRefreshOptions,
 ): Promise<CookieRefreshResult> {
   const { force = false, log } = options || {};
 
@@ -105,7 +105,7 @@ export function getCacheInfo(): {
 export async function fetchWithAutoRefresh<T>(
   fetchFn: (cookie: string) => Promise<T>,
   initialCookie: string,
-  options?: CookieRefreshOptions
+  options?: CookieRefreshOptions,
 ): Promise<{ result: T; cookie: string; refreshed: boolean }> {
   const maxRetries = options?.maxRetries ?? 2;
   let attempt = 0;
@@ -134,7 +134,7 @@ export async function fetchWithAutoRefresh<T>(
 
       options?.log?.warn?.(
         "CLAUDE-WEB-AUTO-REFRESH",
-        `Auth error detected (attempt ${attempt}/${maxRetries}), refreshing cf_clearance...`
+        `Auth error detected (attempt ${attempt}/${maxRetries}), refreshing cf_clearance...`,
       );
 
       try {
@@ -160,7 +160,7 @@ export function createAutoRefreshMiddleware(options?: CookieRefreshOptions) {
   return async (
     fetch: (url: string, init?: any) => Promise<Response>,
     url: string,
-    init?: any
+    init?: any,
   ): Promise<Response> => {
     const { log = options?.log } = options || {};
     const originalCookie = init?.headers?.Cookie || "";
@@ -188,7 +188,7 @@ export function createAutoRefreshMiddleware(options?: CookieRefreshOptions) {
         if ((response.status === 403 || response.status === 401) && attempt < maxRetries) {
           log?.warn?.(
             "CLAUDE-WEB-AUTO-REFRESH",
-            `HTTP ${response.status} - refreshing cf_clearance (attempt ${attempt}/${maxRetries})`
+            `HTTP ${response.status} - refreshing cf_clearance (attempt ${attempt}/${maxRetries})`,
           );
 
           try {
@@ -213,7 +213,7 @@ export function createAutoRefreshMiddleware(options?: CookieRefreshOptions) {
 
         log?.error?.(
           "CLAUDE-WEB-AUTO-REFRESH",
-          `Fetch failed: ${error instanceof Error ? error.message : String(error)}`
+          `Fetch failed: ${error instanceof Error ? error.message : String(error)}`,
         );
         throw error;
       }

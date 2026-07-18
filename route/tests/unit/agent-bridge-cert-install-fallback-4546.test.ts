@@ -21,8 +21,14 @@ test("classifyCertInstallError → 'canceled' only when the message says cancele
 
 test("classifyCertInstallError → 'environment' for trust-store / sudo failures", () => {
   assert.equal(classifyCertInstallError("Certificate install failed"), "environment");
-  assert.equal(classifyCertInstallError("sudo: no tty present and no askpass program specified"), "environment");
-  assert.equal(classifyCertInstallError("Certificate file not found: /x/server.crt"), "environment");
+  assert.equal(
+    classifyCertInstallError("sudo: no tty present and no askpass program specified"),
+    "environment",
+  );
+  assert.equal(
+    classifyCertInstallError("Certificate file not found: /x/server.crt"),
+    "environment",
+  );
 });
 
 test("buildCertManualGuide(linux) → update-ca-certificates steps + download url + cert path", () => {

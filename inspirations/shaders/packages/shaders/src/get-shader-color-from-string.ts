@@ -1,6 +1,6 @@
 /**  Convert color string from HSL, RGB, or hex to 0-to-1-range-RGBA array */
 export function getShaderColorFromString(
-  colorString: string | [number, number, number] | [number, number, number, number] | undefined
+  colorString: string | [number, number, number] | [number, number, number, number] | undefined,
 ): [number, number, number, number] {
   // If the color string is already an array of 3 or 4 numbers, return it (with alpha=1 if needed)
   if (Array.isArray(colorString)) {
@@ -10,7 +10,7 @@ export function getShaderColorFromString(
   }
 
   // If the color string is not a string, return the fallback
-  if (typeof colorString !== 'string') {
+  if (typeof colorString !== "string") {
     return fallbackColor;
   }
 
@@ -18,14 +18,14 @@ export function getShaderColorFromString(
     g: number,
     b: number,
     a = 1;
-  if (colorString.startsWith('#')) {
+  if (colorString.startsWith("#")) {
     [r, g, b, a] = hexToRgba(colorString);
-  } else if (colorString.startsWith('rgb')) {
+  } else if (colorString.startsWith("rgb")) {
     [r, g, b, a] = parseRgba(colorString);
-  } else if (colorString.startsWith('hsl')) {
+  } else if (colorString.startsWith("hsl")) {
     [r, g, b, a] = hslaToRgba(parseHsla(colorString));
   } else {
-    console.error('Unsupported color format', colorString);
+    console.error("Unsupported color format", colorString);
     return fallbackColor;
   }
 
@@ -35,18 +35,18 @@ export function getShaderColorFromString(
 /** Convert hex to RGBA (0 to 1 range) */
 function hexToRgba(hex: string): [number, number, number, number] {
   // Remove # if present
-  hex = hex.replace(/^#/, '');
+  hex = hex.replace(/^#/, "");
 
   // Expand three-letter hex to six-letter
   if (hex.length === 3) {
     hex = hex
-      .split('')
+      .split("")
       .map((char) => char + char)
-      .join('');
+      .join("");
   }
   // Expand six-letter hex to eight-letter (add full opacity if no alpha)
   if (hex.length === 6) {
-    hex = hex + 'ff';
+    hex = hex + "ff";
   }
 
   // Parse the components
@@ -61,26 +61,30 @@ function hexToRgba(hex: string): [number, number, number, number] {
 /** Parse RGBA string to RGBA (0 to 1 range) */
 function parseRgba(rgba: string): [number, number, number, number] {
   // Match both rgb and rgba patterns
-  const match = rgba.match(/^rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([0-9.]+))?\s*\)$/i);
+  const match = rgba.match(
+    /^rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([0-9.]+))?\s*\)$/i,
+  );
   if (!match) return [0, 0, 0, 1];
 
   return [
-    parseInt(match[1] ?? '0') / 255,
-    parseInt(match[2] ?? '0') / 255,
-    parseInt(match[3] ?? '0') / 255,
+    parseInt(match[1] ?? "0") / 255,
+    parseInt(match[2] ?? "0") / 255,
+    parseInt(match[3] ?? "0") / 255,
     match[4] === undefined ? 1 : parseFloat(match[4]),
   ];
 }
 
 /** Parse HSLA string */
 function parseHsla(hsla: string): [number, number, number, number] {
-  const match = hsla.match(/^hsla?\s*\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%\s*(?:,\s*([0-9.]+))?\s*\)$/i);
+  const match = hsla.match(
+    /^hsla?\s*\(\s*(\d+)\s*,\s*(\d+)%\s*,\s*(\d+)%\s*(?:,\s*([0-9.]+))?\s*\)$/i,
+  );
   if (!match) return [0, 0, 0, 1];
 
   return [
-    parseInt(match[1] ?? '0'),
-    parseInt(match[2] ?? '0'),
-    parseInt(match[3] ?? '0'),
+    parseInt(match[1] ?? "0"),
+    parseInt(match[2] ?? "0"),
+    parseInt(match[3] ?? "0"),
     match[4] === undefined ? 1 : parseFloat(match[4]),
   ];
 }
@@ -105,7 +109,8 @@ function hslaToRgba(hsla: [number, number, number, number]): [number, number, nu
       return p;
     };
 
-    const q = lDecimal < 0.5 ? lDecimal * (1 + sDecimal) : lDecimal + sDecimal - lDecimal * sDecimal;
+    const q =
+      lDecimal < 0.5 ? lDecimal * (1 + sDecimal) : lDecimal + sDecimal - lDecimal * sDecimal;
     const p = 2 * lDecimal - q;
     r = hue2rgb(p, q, hDecimal + 1 / 3);
     g = hue2rgb(p, q, hDecimal);
@@ -115,6 +120,7 @@ function hslaToRgba(hsla: [number, number, number, number]): [number, number, nu
   return [r, g, b, a];
 }
 
-export const clamp = (n: number, min: number, max: number): number => Math.min(Math.max(n, min), max);
+export const clamp = (n: number, min: number, max: number): number =>
+  Math.min(Math.max(n, min), max);
 
 const fallbackColor = [0, 0, 0, 1] as [0, 0, 0, 1];

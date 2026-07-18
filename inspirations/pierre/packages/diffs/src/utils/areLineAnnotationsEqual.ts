@@ -1,8 +1,8 @@
-import type { LineAnnotation } from '../types';
+import type { LineAnnotation } from "../types";
 
 export function areLineAnnotationsEqual<LAnnotation = undefined>(
   annotationA: LineAnnotation<LAnnotation>,
-  annotationB: LineAnnotation<LAnnotation>
+  annotationB: LineAnnotation<LAnnotation>,
 ): boolean {
   return (
     annotationA.lineNumber === annotationB.lineNumber &&

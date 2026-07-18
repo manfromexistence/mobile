@@ -205,7 +205,7 @@ describe("Plugin Architecture — plugins/hooks.ts", () => {
     const list = hooks.getHooks("onRequest");
     assert.deepEqual(
       list.map((r) => r.pluginName),
-      ["high", "mid", "low"]
+      ["high", "mid", "low"],
     );
   });
 
@@ -217,7 +217,7 @@ describe("Plugin Architecture — plugins/hooks.ts", () => {
       () => {
         order.push("first");
       },
-      1
+      1,
     );
     hooks.registerHook(
       "onRequest",
@@ -225,7 +225,7 @@ describe("Plugin Architecture — plugins/hooks.ts", () => {
       () => {
         order.push("second");
       },
-      2
+      2,
     );
 
     const ctx = { requestId: "r1", body: {}, model: "test", metadata: {} };
@@ -241,7 +241,7 @@ describe("Plugin Architecture — plugins/hooks.ts", () => {
         blocked: true,
         response: { error: "denied" },
       }),
-      1
+      1,
     );
     hooks.registerHook(
       "onRequest",
@@ -249,7 +249,7 @@ describe("Plugin Architecture — plugins/hooks.ts", () => {
       () => {
         throw new Error("should not run");
       },
-      2
+      2,
     );
 
     const ctx = { requestId: "r2", body: {}, model: "test", metadata: {} };

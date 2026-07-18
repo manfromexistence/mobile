@@ -70,7 +70,7 @@ test("setCandidateQuotaSoftPenalty — exported function exists and is callable"
   assert.strictEqual(
     typeof setCandidateQuotaSoftPenalty,
     "function",
-    "setCandidateQuotaSoftPenalty must be a function exported from combo.ts"
+    "setCandidateQuotaSoftPenalty must be a function exported from combo.ts",
   );
 });
 
@@ -136,7 +136,7 @@ test("setCandidateQuotaSoftPenalty — marks candidate via internal registry (wh
   const handleSingleModel = async (
     _body: Record<string, unknown>,
     _model: string,
-    target?: { executionKey?: string; stepId?: string }
+    target?: { executionKey?: string; stepId?: string },
   ): Promise<Response> => {
     // Capture the target to verify executionKey and stepId were passed
     if (target && "executionKey" in target) {
@@ -146,10 +146,13 @@ test("setCandidateQuotaSoftPenalty — marks candidate via internal registry (wh
         setCandidateQuotaSoftPenalty(target.executionKey, target.stepId, true);
       }
     }
-    return new Response(JSON.stringify({ choices: [{ message: { role: "assistant", content: "ok" } }] }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({ choices: [{ message: { role: "assistant", content: "ok" } }] }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
   };
 
   const combo = {

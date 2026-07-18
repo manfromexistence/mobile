@@ -1,12 +1,8 @@
-'use client';
+"use client";
 
-import {
-  areWorkerStatsEqual,
-  DEFAULT_CODE_VIEW_FILE_METRICS,
-  queueRender,
-} from '@pierre/diffs';
-import { useWorkerPool } from '@pierre/diffs/react';
-import type { WorkerStats } from '@pierre/diffs/worker';
+import { areWorkerStatsEqual, DEFAULT_CODE_VIEW_FILE_METRICS, queueRender } from "@pierre/diffs";
+import { useWorkerPool } from "@pierre/diffs/react";
+import type { WorkerStats } from "@pierre/diffs/worker";
 import {
   IconCircleFill,
   IconEye,
@@ -15,20 +11,14 @@ import {
   IconRepeat,
   IconSquircleLgFill,
   IconTriangleFill,
-} from '@pierre/icons';
-import Link from 'next/link';
-import {
-  memo,
-  type MouseEvent,
-  type RefObject,
-  useEffect,
-  useState,
-} from 'react';
+} from "@pierre/icons";
+import Link from "next/link";
+import { memo, type MouseEvent, type RefObject, useEffect, useState } from "react";
 
-import { StatItem } from './StatItem';
-import { StatusRow } from './StatusRow';
-import type { ThemeCycleControls } from './useThemeCycle';
-import { cn } from '@/lib/cn';
+import { StatItem } from "./StatItem";
+import { StatusRow } from "./StatusRow";
+import type { ThemeCycleControls } from "./useThemeCycle";
+import { cn } from "@/lib/cn";
 
 class AutoScrollTester {
   private running: 0 | 1 | 2 = 0;
@@ -36,7 +26,7 @@ class AutoScrollTester {
 
   constructor(
     private scrollRef: RefObject<HTMLDivElement | null>,
-    private onStateChange?: (running: boolean) => unknown
+    private onStateChange?: (running: boolean) => unknown,
   ) {}
 
   start() {
@@ -58,10 +48,7 @@ class AutoScrollTester {
     }
     // If we're scrolling and we hit a boundary, lets stop, and invert the
     // direction, so next click will scroll us the other direction
-    else if (
-      this.running === 2 &&
-      (scrollTop <= 0 || scrollTop >= scrollHeight - clientHeight)
-    ) {
+    else if (this.running === 2 && (scrollTop <= 0 || scrollTop >= scrollHeight - clientHeight)) {
       this.direction *= -1;
       this.stop();
       return;
@@ -144,40 +131,32 @@ interface StatsDisplayProps {
 // and the status indicator share one source of truth.
 function getStatusIcon(stats: WorkerStats) {
   if (stats.workersFailed) {
-    return { Icon: IconSquircleLgFill, className: 'text-red-400' };
+    return { Icon: IconSquircleLgFill, className: "text-red-400" };
   }
-  if (stats.managerState === 'initializing') {
-    return { Icon: IconTriangleFill, className: 'text-amber-400' };
+  if (stats.managerState === "initializing") {
+    return { Icon: IconTriangleFill, className: "text-amber-400" };
   }
-  if (stats.managerState === 'initialized') {
-    return { Icon: IconCircleFill, className: 'text-green-400' };
+  if (stats.managerState === "initialized") {
+    return { Icon: IconCircleFill, className: "text-green-400" };
   }
-  return { Icon: IconCircleFill, className: 'text-muted-foreground' };
+  return { Icon: IconCircleFill, className: "text-muted-foreground" };
 }
 
-function StatsDisplay({
-  expanded,
-  onToggle,
-  stats,
-  scrollRef,
-  themeCycle,
-}: StatsDisplayProps) {
+function StatsDisplay({ expanded, onToggle, stats, scrollRef, themeCycle }: StatsDisplayProps) {
   const [isBrrt, setIsBrrt] = useState(false);
-  const [scrollTester] = useState(
-    () => new AutoScrollTester(scrollRef, setIsBrrt)
-  );
+  const [scrollTester] = useState(() => new AutoScrollTester(scrollRef, setIsBrrt));
 
   // Mirror the inline (F3) hint with an actual keybinding so the label
   // doesn't lie about how to toggle the panel.
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'F3') {
+      if (event.key === "F3") {
         event.preventDefault();
         onToggle();
       }
     };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
   }, [onToggle]);
 
   const { Icon: StatusIcon, className: statusIconClass } = getStatusIcon(stats);
@@ -192,9 +171,7 @@ function StatsDisplay({
           aria-expanded={expanded}
         >
           <span className="truncate">System Monitor</span>
-          <span className="text-muted-foreground/50 hidden md:inline">
-            (F3)
-          </span>
+          <span className="text-muted-foreground/50 hidden md:inline">(F3)</span>
         </button>
         <div className="ml-auto flex shrink-0 items-center gap-1.5">
           <ThemeCycleToggle controls={themeCycle} />
@@ -202,8 +179,8 @@ function StatsDisplay({
             type="button"
             onClick={scrollTester.toggleState}
             className="hover:bg-muted/50 hover:text-foreground text-muted-foreground hidden size-5 cursor-pointer items-center justify-center rounded-md transition md:inline-flex"
-            title={isBrrt ? 'Pause autoscroll' : 'Start autoscroll'}
-            aria-label={isBrrt ? 'Pause autoscroll' : 'Start autoscroll'}
+            title={isBrrt ? "Pause autoscroll" : "Start autoscroll"}
+            aria-label={isBrrt ? "Pause autoscroll" : "Start autoscroll"}
             aria-pressed={isBrrt}
           >
             <AutoScrollToggleIcon running={isBrrt} />
@@ -213,10 +190,7 @@ function StatsDisplay({
       </StatusRow>
       {expanded && (
         <div className="ml-10 md:mr-3">
-          <StatItem
-            label="Busy Workers"
-            value={`${stats.busyWorkers}/${stats.totalWorkers}`}
-          />
+          <StatItem label="Busy Workers" value={`${stats.busyWorkers}/${stats.totalWorkers}`} />
           <StatItem label="Task Queue" value={stats.queuedTasks} />
           <StatItem label="Rendered Diffs" value={stats.themeSubscribers} />
           <StatItem label="Diff Cache" value={stats.diffCacheSize} />
@@ -224,7 +198,7 @@ function StatsDisplay({
       )}
       <StatusRow icon={IconInfoFill}>
         <div className="text-muted-foreground/75">
-          Powered by{' '}
+          Powered by{" "}
           <Link
             href="https://diffs.com"
             target="_blank"
@@ -232,8 +206,8 @@ function StatsDisplay({
             className="inline-link text-muted-foreground hover:text-foreground no-underline"
           >
             Diffs
-          </Link>{' '}
-          and{' '}
+          </Link>{" "}
+          and{" "}
           <Link
             href="https://trees.software"
             target="_blank"
@@ -278,10 +252,7 @@ function ThemeCycleToggle({ controls }: ThemeCycleToggleProps) {
       aria-label={title}
       aria-pressed={cycling}
     >
-      <IconRepeat
-        aria-hidden="true"
-        className={cn('size-3', cycling && 'animate-pulse')}
-      />
+      <IconRepeat aria-hidden="true" className={cn("size-3", cycling && "animate-pulse")} />
       <span>{stepSeconds}s</span>
     </button>
   );
@@ -294,11 +265,7 @@ interface AutoScrollToggleIconProps {
 function AutoScrollToggleIcon({ running }: AutoScrollToggleIconProps) {
   if (running) {
     return (
-      <svg
-        aria-hidden="true"
-        viewBox="0 0 16 16"
-        className="size-3 fill-current"
-      >
+      <svg aria-hidden="true" viewBox="0 0 16 16" className="size-3 fill-current">
         <rect x="4" y="3" width="3" height="10" rx="1" />
         <rect x="9" y="3" width="3" height="10" rx="1" />
       </svg>

@@ -15,7 +15,8 @@ export const dict = {
   "desktop.updater.downloadFailed.title": "Обновление не удалось",
   "desktop.updater.downloadFailed.message": "Не удалось скачать обновление",
   "desktop.updater.downloaded.title": "Обновление загружено",
-  "desktop.updater.downloaded.prompt": "Версия OpenCode {{version}} загружена. Хотите установить и перезапустить?",
+  "desktop.updater.downloaded.prompt":
+    "Версия OpenCode {{version}} загружена. Хотите установить и перезапустить?",
   "desktop.updater.installFailed.title": "Обновление не удалось",
   "desktop.updater.installFailed.message": "Не удалось установить обновление",
 
@@ -24,4 +25,4 @@ export const dict = {
     "CLI установлен в {{path}}\n\nПерезапустите терминал, чтобы использовать команду 'opencode'.",
   "desktop.cli.failed.title": "Ошибка установки",
   "desktop.cli.failed.message": "Не удалось установить CLI: {{error}}",
-}
+};

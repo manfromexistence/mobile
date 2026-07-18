@@ -4,9 +4,7 @@
   "title": "Contribution Graph",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "A GitHub-style contribution graph component that displays activity levels over time.",
-  "dependencies": [
-    "date-fns"
-  ],
+  "dependencies": ["date-fns"],
   "files": [
     {
       "path": "src/registry/components/contribution-graph/contribution-graph.tsx",
@@ -16,8 +14,6 @@
     }
   ],
   "docs": "https://www.kibo-ui.com/components/contribution-graph",
-  "categories": [
-    "data-display"
-  ],
+  "categories": ["data-display"],
   "type": "registry:component"
 }

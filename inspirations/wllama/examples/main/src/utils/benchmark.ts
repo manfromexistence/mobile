@@ -42,7 +42,7 @@ async function loadModel(modelUrl: string) {
 */
 
 async function benchmark() {
-  throw new Error('Benchmark is not ready yet, stay tuned!');
+  throw new Error("Benchmark is not ready yet, stay tuned!");
   /*
   const output: any[][] = [
     ['model', 'threads', 'test', 't/s'],
@@ -88,7 +88,7 @@ async function benchmark() {
 }
 
 async function perplexity() {
-  throw new Error('Perplexity test is not ready yet, stay tuned!');
+  throw new Error("Perplexity test is not ready yet, stay tuned!");
   /*
   const output: any[][] = [
     ['model', 'PPL', 'n_tokens'],

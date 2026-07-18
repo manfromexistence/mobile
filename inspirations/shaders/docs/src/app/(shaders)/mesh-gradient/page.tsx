@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { MeshGradient, meshGradientPresets } from '@paper-design/shaders-react';
-import { useControls, button, folder } from 'leva';
-import { setParamsSafe, useResetLevaParams } from '@/helpers/use-reset-leva-params';
-import { usePresetHighlight } from '@/helpers/use-preset-highlight';
-import { cleanUpLevaParams } from '@/helpers/clean-up-leva-params';
-import { meshGradientMeta } from '@paper-design/shaders';
-import { useColors } from '@/helpers/use-colors';
-import { ShaderDetails } from '@/components/shader-details';
-import { meshGradientDef } from '@/shader-defs/mesh-gradient-def';
-import { ShaderContainer } from '@/components/shader-container';
-import { useUrlParams } from '@/helpers/use-url-params';
+import { MeshGradient, meshGradientPresets } from "@paper-design/shaders-react";
+import { useControls, button, folder } from "leva";
+import { setParamsSafe, useResetLevaParams } from "@/helpers/use-reset-leva-params";
+import { usePresetHighlight } from "@/helpers/use-preset-highlight";
+import { cleanUpLevaParams } from "@/helpers/clean-up-leva-params";
+import { meshGradientMeta } from "@paper-design/shaders";
+import { useColors } from "@/helpers/use-colors";
+import { ShaderDetails } from "@/components/shader-details";
+import { meshGradientDef } from "@/shader-defs/mesh-gradient-def";
+import { ShaderContainer } from "@/components/shader-container";
+import { useUrlParams } from "@/helpers/use-url-params";
 
 const { worldWidth, worldHeight, ...defaults } = meshGradientPresets[0].params;
 
@@ -43,7 +43,7 @@ const MeshGradientWithControls = () => {
           setColors(colors);
           setParamsSafe(params, setParams, presetParams);
         }),
-      ])
+      ]),
     );
     return {
       Presets: folder(presets, { order: -1 }),

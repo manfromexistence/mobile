@@ -21,7 +21,7 @@ describe("RuleBasedSummarizer", () => {
     const result = summarizer.summarize(
       makeMessages([
         { role: "user", content: "fix: bug in src/lib/db/core.ts causing Error: TS2304" },
-      ])
+      ]),
     );
     assert.ok(result.startsWith("[COMPRESSED:summary]"));
     assert.ok(result.includes("fix:"));
@@ -30,7 +30,7 @@ describe("RuleBasedSummarizer", () => {
 
   it("extracts intent from first user message when no trigger phrase", () => {
     const result = summarizer.summarize(
-      makeMessages([{ role: "user", content: "How do I implement authentication?" }])
+      makeMessages([{ role: "user", content: "How do I implement authentication?" }]),
     );
     assert.ok(result.startsWith("[COMPRESSED:summary]"));
     assert.ok(result.includes("How do I implement"));
@@ -43,7 +43,7 @@ describe("RuleBasedSummarizer", () => {
           role: "user",
           content: "Edit src/lib/db/core.ts and fix the bug in tests/unit/db/compression.test.ts",
         },
-      ])
+      ]),
     );
     assert.ok(result.includes("src/lib/db/core.ts"));
     assert.ok(result.includes("tests/unit/db/compression.test.ts"));
@@ -56,7 +56,7 @@ describe("RuleBasedSummarizer", () => {
           role: "assistant",
           content: "The build failed with Error: TS2304 and Exception: NullPointerException",
         },
-      ])
+      ]),
     );
     assert.ok(result.includes("Error: TS2304") || result.includes("Exception:"));
   });
@@ -66,7 +66,7 @@ describe("RuleBasedSummarizer", () => {
       makeMessages([
         { role: "user", content: "fix the bug" },
         { role: "assistant", content: "I've patched the file and will run tests next." },
-      ])
+      ]),
     );
     assert.ok(result.includes("Last decision:"));
     assert.ok(result.includes("patched"));
@@ -77,7 +77,7 @@ describe("RuleBasedSummarizer", () => {
       makeMessages([
         { role: "system", content: "[COMPRESSED:summary] prior context" },
         { role: "user", content: "implement: new feature" },
-      ])
+      ]),
     );
     assert.ok(!result.includes("prior context"));
     assert.ok(result.includes("implement:"));
@@ -107,7 +107,7 @@ describe("RuleBasedSummarizer", () => {
         { role: "user", content: "fix: the bug" },
         { role: "assistant", content: "```ts\nconst x = 1;\nconst y = 2;\n```" },
       ]),
-      { preserveCode: false }
+      { preserveCode: false },
     );
     assert.ok(result.startsWith("[COMPRESSED:summary]"));
   });
@@ -119,7 +119,7 @@ describe("RuleBasedSummarizer", () => {
         { role: "assistant", content: "Created src/auth/login.ts" },
         { role: "user", content: "fix: typo in login.ts" },
         { role: "assistant", content: "Fixed the typo." },
-      ])
+      ]),
     );
     assert.ok(result.includes("implement:"));
     assert.ok(result.includes("fix:"));
@@ -142,7 +142,7 @@ describe("RuleBasedSummarizer", () => {
     const result = summarizer.summarize(
       makeMessages([
         { role: "assistant", content: "Build failed: Error: TS2304 and error TS2551 found" },
-      ])
+      ]),
     );
     assert.ok(result.includes("Error: TS2304") || result.includes("error TS2551"));
   });
@@ -169,7 +169,7 @@ describe("RuleBasedSummarizer", () => {
   it("truncates last decision to 200 chars", () => {
     const longDecision = "x".repeat(500);
     const result = summarizer.summarize(
-      makeMessages([{ role: "assistant", content: longDecision }])
+      makeMessages([{ role: "assistant", content: longDecision }]),
     );
     const decisionMatch = result.match(/Last decision: (.+?)\./s);
     if (decisionMatch) {
@@ -179,7 +179,7 @@ describe("RuleBasedSummarizer", () => {
 
   it("handles single message with no trigger phrase", () => {
     const result = summarizer.summarize(
-      makeMessages([{ role: "user", content: "Hello, how are you?" }])
+      makeMessages([{ role: "user", content: "Hello, how are you?" }]),
     );
     assert.ok(result.startsWith("[COMPRESSED:summary]"));
     assert.ok(result.includes("Hello"));
@@ -193,7 +193,7 @@ describe("RuleBasedSummarizer", () => {
 
   it("handles messages with only system role", () => {
     const result = summarizer.summarize(
-      makeMessages([{ role: "system", content: "You are a helpful assistant." }])
+      makeMessages([{ role: "system", content: "You are a helpful assistant." }]),
     );
     assert.ok(result.startsWith("[COMPRESSED:summary]"));
   });
@@ -210,7 +210,7 @@ describe("RuleBasedSummarizer", () => {
         { role: "assistant", content: "Created the auth module. Error: TS2304 found." },
         { role: "user", content: "fix: the TS2304 error" },
         { role: "assistant", content: "Fixed the type error in login.ts" },
-      ])
+      ]),
     );
     assert.ok(result.includes("Intents:"));
     assert.ok(result.includes("Files touched:"));

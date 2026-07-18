@@ -6,13 +6,13 @@ import {
   rebuildDirectoryChildAggregates,
   rebuildVisibleChildChunks,
   updateChildPositionsFrom,
-} from './child-index';
-import { createAddEvent, createMoveEvent, createRemoveEvent } from './events';
+} from "./child-index";
+import { createAddEvent, createMoveEvent, createRemoveEvent } from "./events";
 import {
   collectFlattenedDirectoryChainIds,
   getFlattenedChildDirectoryId,
   getFlattenedTerminalDirectoryId,
-} from './flatten';
+} from "./flatten";
 import {
   addNodeFlag,
   createNodeDepthAndFlags,
@@ -21,18 +21,14 @@ import {
   hasNodeFlag,
   isDirectoryNode,
   setNodeDepth,
-} from './internal-types';
-import type {
-  DirectoryChildIndex,
-  NodeId,
-  PathStoreNode,
-} from './internal-types';
-import { PATH_STORE_NODE_FLAG_EXPLICIT } from './internal-types';
-import { PATH_STORE_NODE_FLAG_REMOVED } from './internal-types';
-import { PATH_STORE_NODE_FLAG_ROOT } from './internal-types';
-import { PATH_STORE_NODE_KIND_DIRECTORY } from './internal-types';
-import { withBenchmarkPhase } from './internal/benchmarkInstrumentation';
-import { parseInputPath, parseLookupPath } from './path';
+} from "./internal-types";
+import type { DirectoryChildIndex, NodeId, PathStoreNode } from "./internal-types";
+import { PATH_STORE_NODE_FLAG_EXPLICIT } from "./internal-types";
+import { PATH_STORE_NODE_FLAG_REMOVED } from "./internal-types";
+import { PATH_STORE_NODE_FLAG_ROOT } from "./internal-types";
+import { PATH_STORE_NODE_KIND_DIRECTORY } from "./internal-types";
+import { withBenchmarkPhase } from "./internal/benchmarkInstrumentation";
+import { parseInputPath, parseLookupPath } from "./path";
 import type {
   PathStoreAddEvent,
   PathStoreCollisionStrategy,
@@ -41,11 +37,11 @@ import type {
   PathStoreMoveOptions,
   PathStoreRemoveEvent,
   PathStoreRemoveOptions,
-} from './public-types';
-import { getSegmentValue, internSegment } from './segments';
-import { compareSegmentSortKeys, getSegmentSortKey } from './sort';
-import { clearDirectoryLoadInfo, isDirectoryExpanded } from './state';
-import type { MoveTarget, PathStoreState } from './state';
+} from "./public-types";
+import { getSegmentValue, internSegment } from "./segments";
+import { compareSegmentSortKeys, getSegmentSortKey } from "./sort";
+import { clearDirectoryLoadInfo, isDirectoryExpanded } from "./state";
+import type { MoveTarget, PathStoreState } from "./state";
 
 export function listPaths(state: PathStoreState, path?: string): string[] {
   const nodeId = path == null ? state.snapshot.rootId : findNodeId(state, path);
@@ -56,22 +52,16 @@ export function listPaths(state: PathStoreState, path?: string): string[] {
   return collectCanonicalEntries(state, nodeId);
 }
 
-export function addPath(
-  state: PathStoreState,
-  path: string
-): PathStoreAddEvent {
+export function addPath(state: PathStoreState, path: string): PathStoreAddEvent {
   const preparedPath = parseInputPath(path);
   const parentSegments = preparedPath.isDirectory
     ? preparedPath.segments
     : preparedPath.segments.slice(0, -1);
   const previousProjectionSignature = getCollapsedProjectionSignature(
     state,
-    findDeepestExistingDirectoryId(state, parentSegments)
+    findDeepestExistingDirectoryId(state, parentSegments),
   );
-  const { createdNodeIds, directoryId } = ensureDirectoryChain(
-    state,
-    parentSegments
-  );
+  const { createdNodeIds, directoryId } = ensureDirectoryChain(state, parentSegments);
 
   const affectedNodeIds = new Set<NodeId>(createdNodeIds);
   let addedNodeId = directoryId;
@@ -94,25 +84,19 @@ export function addPath(
   }
 
   recomputeCountsUpwardFrom(state, directoryId);
-  const nextProjectionSignature = getCollapsedProjectionSignature(
-    state,
-    directoryId
-  );
+  const nextProjectionSignature = getCollapsedProjectionSignature(state, directoryId);
   return createAddEvent({
     affectedAncestorIds: collectAncestorIds(state, addedNodeId),
     affectedNodeIds: [...affectedNodeIds],
     path,
-    projectionChanged: didProjectionChange(
-      previousProjectionSignature,
-      nextProjectionSignature
-    ),
+    projectionChanged: didProjectionChange(previousProjectionSignature, nextProjectionSignature),
   });
 }
 
 export function removePath(
   state: PathStoreState,
   path: string,
-  options: PathStoreRemoveOptions
+  options: PathStoreRemoveOptions,
 ): PathStoreRemoveEvent {
   const nodeId = findNodeId(state, path);
   if (nodeId == null) {
@@ -121,7 +105,7 @@ export function removePath(
 
   const node = requireNode(state, nodeId);
   if (hasNodeFlag(node, PATH_STORE_NODE_FLAG_ROOT)) {
-    throw new Error('The root node cannot be removed');
+    throw new Error("The root node cannot be removed");
   }
 
   if (
@@ -129,33 +113,22 @@ export function removePath(
     getDirectoryIndex(state, nodeId).childIds.length > 0 &&
     options.recursive !== true
   ) {
-    throw new Error(
-      `Cannot remove a non-empty directory without recursive: "${path}"`
-    );
+    throw new Error(`Cannot remove a non-empty directory without recursive: "${path}"`);
   }
 
   const parentId = node.parentId;
-  const previousProjectionSignature = getCollapsedProjectionSignature(
-    state,
-    parentId
-  );
+  const previousProjectionSignature = getCollapsedProjectionSignature(state, parentId);
   const removedNodeIds = removeSubtree(state, nodeId);
   removeChildReference(state, parentId, nodeId, node.nameId);
   promoteEmptyAncestorsToExplicit(state, parentId);
   recomputeCountsUpwardFrom(state, parentId);
-  const nextProjectionSignature = getCollapsedProjectionSignature(
-    state,
-    parentId
-  );
+  const nextProjectionSignature = getCollapsedProjectionSignature(state, parentId);
 
   return createRemoveEvent({
     affectedAncestorIds: collectAncestorIds(state, parentId),
     affectedNodeIds: removedNodeIds,
     path,
-    projectionChanged: didProjectionChange(
-      previousProjectionSignature,
-      nextProjectionSignature
-    ),
+    projectionChanged: didProjectionChange(previousProjectionSignature, nextProjectionSignature),
     recursive: options.recursive === true,
   });
 }
@@ -164,7 +137,7 @@ export function movePath(
   state: PathStoreState,
   fromPath: string,
   toPath: string,
-  options: PathStoreMoveOptions
+  options: PathStoreMoveOptions,
 ): PathStoreMoveEvent | null {
   const sourceNodeId = findNodeId(state, fromPath);
   if (sourceNodeId == null) {
@@ -173,68 +146,50 @@ export function movePath(
 
   const sourceNode = requireNode(state, sourceNodeId);
   if (hasNodeFlag(sourceNode, PATH_STORE_NODE_FLAG_ROOT)) {
-    throw new Error('The root node cannot be moved');
+    throw new Error("The root node cannot be moved");
   }
 
-  const collision = options.collision ?? 'error';
+  const collision = options.collision ?? "error";
   const moveTarget = resolveMoveTarget(state, sourceNodeId, toPath);
   const previousSourceProjectionSignature = getCollapsedProjectionSignature(
     state,
-    sourceNode.parentId
+    sourceNode.parentId,
   );
   const previousTargetProjectionSignature = getCollapsedProjectionSignature(
     state,
-    moveTarget.parentId
+    moveTarget.parentId,
   );
-  const sourceName = getSegmentValue(
-    state.snapshot.segmentTable,
-    sourceNode.nameId
-  );
-  const targetNameId = internSegment(
-    state.snapshot.segmentTable,
-    moveTarget.basename
-  );
+  const sourceName = getSegmentValue(state.snapshot.segmentTable, sourceNode.nameId);
+  const targetNameId = internSegment(state.snapshot.segmentTable, moveTarget.basename);
 
-  if (
-    moveTarget.parentId === sourceNode.parentId &&
-    sourceName === moveTarget.basename
-  ) {
+  if (moveTarget.parentId === sourceNode.parentId && sourceName === moveTarget.basename) {
     return null;
   }
 
-  if (
-    isDirectoryNode(sourceNode) &&
-    isAncestor(state, sourceNodeId, moveTarget.parentId)
-  ) {
-    throw new Error('Cannot move a directory into one of its descendants');
+  if (isDirectoryNode(sourceNode) && isAncestor(state, sourceNodeId, moveTarget.parentId)) {
+    throw new Error("Cannot move a directory into one of its descendants");
   }
 
   const siblingCollisionId = ensureChildIdByNameId(
     state.snapshot.nodes,
-    getDirectoryIndex(state, moveTarget.parentId)
+    getDirectoryIndex(state, moveTarget.parentId),
   ).get(targetNameId);
-  const collisionNodeId =
-    moveTarget.existingNodeId ?? siblingCollisionId ?? null;
+  const collisionNodeId = moveTarget.existingNodeId ?? siblingCollisionId ?? null;
   if (collisionNodeId != null && collisionNodeId !== sourceNodeId) {
     const resolvedCollision = handleMoveCollision(
       state,
       collisionNodeId,
       collision,
-      getNodeKind(sourceNode)
+      getNodeKind(sourceNode),
     );
-    if (resolvedCollision === 'skip') {
+    if (resolvedCollision === "skip") {
       return null;
     }
   }
 
   const previousParentId = sourceNode.parentId;
 
-  removeChildReference(
-    state,
-    previousParentId,
-    sourceNodeId,
-    sourceNode.nameId
-  );
+  removeChildReference(state, previousParentId, sourceNodeId, sourceNode.nameId);
 
   sourceNode.parentId = moveTarget.parentId;
   sourceNode.nameId = targetNameId;
@@ -247,14 +202,8 @@ export function movePath(
   if (moveTarget.parentId !== previousParentId) {
     recomputeCountsUpwardFrom(state, moveTarget.parentId);
   }
-  const nextSourceProjectionSignature = getCollapsedProjectionSignature(
-    state,
-    previousParentId
-  );
-  const nextTargetProjectionSignature = getCollapsedProjectionSignature(
-    state,
-    moveTarget.parentId
-  );
+  const nextSourceProjectionSignature = getCollapsedProjectionSignature(state, previousParentId);
+  const nextTargetProjectionSignature = getCollapsedProjectionSignature(state, moveTarget.parentId);
 
   return createMoveEvent({
     affectedAncestorIds: [
@@ -267,27 +216,20 @@ export function movePath(
     from: fromPath,
     projectionChanged: didAnyProjectionChange(
       [previousSourceProjectionSignature, previousTargetProjectionSignature],
-      [nextSourceProjectionSignature, nextTargetProjectionSignature]
+      [nextSourceProjectionSignature, nextTargetProjectionSignature],
     ),
     to: materializeNodePath(state, sourceNodeId),
   });
 }
 
-function getCachedNodePath(
-  state: PathStoreState,
-  nodeId: NodeId
-): string | null {
+function getCachedNodePath(state: PathStoreState, nodeId: NodeId): string | null {
   const cachedEntry = state.pathCacheByNodeId.get(nodeId);
   return cachedEntry != null && cachedEntry.version === state.pathCacheVersion
     ? cachedEntry.path
     : null;
 }
 
-function setCachedNodePath(
-  state: PathStoreState,
-  nodeId: NodeId,
-  path: string
-): string {
+function setCachedNodePath(state: PathStoreState, nodeId: NodeId, path: string): string {
   state.pathCacheByNodeId.set(nodeId, {
     path,
     version: state.pathCacheVersion,
@@ -297,10 +239,7 @@ function setCachedNodePath(
 
 // Materializes canonical paths only for nodes the caller actually touches, so
 // folder moves stay local instead of rewriting descendant strings eagerly.
-export function materializeNodePath(
-  state: PathStoreState,
-  nodeId: NodeId
-): string {
+export function materializeNodePath(state: PathStoreState, nodeId: NodeId): string {
   const node = requireNode(state, nodeId);
   const cachedPath = getCachedNodePath(state, nodeId);
   if (cachedPath != null) {
@@ -308,41 +247,31 @@ export function materializeNodePath(
   }
 
   if (hasNodeFlag(node, PATH_STORE_NODE_FLAG_ROOT)) {
-    return setCachedNodePath(state, nodeId, '');
+    return setCachedNodePath(state, nodeId, "");
   }
 
   const parentPath = materializeNodePath(state, node.parentId);
   const nodeName = getSegmentValue(state.snapshot.segmentTable, node.nameId);
   const path = parentPath.length === 0 ? nodeName : `${parentPath}${nodeName}`;
-  return setCachedNodePath(
-    state,
-    nodeId,
-    isDirectoryNode(node) ? `${path}/` : path
-  );
+  return setCachedNodePath(state, nodeId, isDirectoryNode(node) ? `${path}/` : path);
 }
 
-export function recomputeCountsUpwardFrom(
-  state: PathStoreState,
-  startNodeId: NodeId
-): void {
+export function recomputeCountsUpwardFrom(state: PathStoreState, startNodeId: NodeId): void {
   const instrumentation = state.instrumentation;
   if (instrumentation == null) {
     recomputeCountsUpwardFromNow(state, startNodeId);
     return;
   }
 
-  withBenchmarkPhase(instrumentation, 'store.recomputeCountsUpwardFrom', () =>
-    recomputeCountsUpwardFromNow(state, startNodeId)
+  withBenchmarkPhase(instrumentation, "store.recomputeCountsUpwardFrom", () =>
+    recomputeCountsUpwardFromNow(state, startNodeId),
   );
 }
 
 // Iterative post-order traversal that recomputes subtree and visible counts
 // bottom-up. Uses an explicit stack to avoid recursive function-call overhead
 // while preserving tree-order traversal for cache locality.
-export function recomputeCountsRecursive(
-  state: PathStoreState,
-  nodeId: NodeId
-): void {
+export function recomputeCountsRecursive(state: PathStoreState, nodeId: NodeId): void {
   // Stack frames: [nodeId, childOffset].  When childOffset equals the child
   // count, all children have been processed and we recompute this node.
   const stack: Array<[NodeId, number]> = [[nodeId, 0]];
@@ -374,10 +303,7 @@ export function recomputeCountsRecursive(
   }
 }
 
-export function collectAncestorIds(
-  state: PathStoreState,
-  nodeId: NodeId
-): NodeId[] {
+export function collectAncestorIds(state: PathStoreState, nodeId: NodeId): NodeId[] {
   const ancestorIds: NodeId[] = [];
   let currentNodeId: NodeId | null = nodeId;
 
@@ -400,17 +326,13 @@ export function findNodeId(state: PathStoreState, path: string): NodeId | null {
   }
 
   const lookupPath = parseLookupPath(path);
-  return findNodeIdBySegments(
-    state,
-    lookupPath.segments,
-    lookupPath.requiresDirectory
-  );
+  return findNodeIdBySegments(state, lookupPath.segments, lookupPath.requiresDirectory);
 }
 
 export function findNodeIdBySegments(
   state: PathStoreState,
   segments: readonly string[],
-  requireDirectory: boolean
+  requireDirectory: boolean,
 ): NodeId | null {
   let currentNodeId = state.snapshot.rootId;
 
@@ -421,10 +343,7 @@ export function findNodeIdBySegments(
     }
 
     const currentIndex = getDirectoryIndex(state, currentNodeId);
-    const nextNodeId = ensureChildIdByNameId(
-      state.snapshot.nodes,
-      currentIndex
-    ).get(segmentId);
+    const nextNodeId = ensureChildIdByNameId(state.snapshot.nodes, currentIndex).get(segmentId);
     if (nextNodeId === undefined) {
       return null;
     }
@@ -440,24 +359,16 @@ export function findNodeIdBySegments(
   return currentNodeId;
 }
 
-export function getDirectoryIndex(
-  state: PathStoreState,
-  directoryId: NodeId
-): DirectoryChildIndex {
+export function getDirectoryIndex(state: PathStoreState, directoryId: NodeId): DirectoryChildIndex {
   const directoryIndex = state.snapshot.directories.get(directoryId);
   if (directoryIndex === undefined) {
-    throw new Error(
-      `Unknown directory child index for node ${String(directoryId)}`
-    );
+    throw new Error(`Unknown directory child index for node ${String(directoryId)}`);
   }
 
   return directoryIndex;
 }
 
-export function requireNode(
-  state: PathStoreState,
-  nodeId: NodeId
-): PathStoreNode {
+export function requireNode(state: PathStoreState, nodeId: NodeId): PathStoreNode {
   const node = state.snapshot.nodes[nodeId];
   if (node === undefined || hasNodeFlag(node, PATH_STORE_NODE_FLAG_REMOVED)) {
     throw new Error(`Unknown node ID: ${String(nodeId)}`);
@@ -468,15 +379,9 @@ export function requireNode(
 
 // Canonical list output only includes files and explicit empty directories so
 // the result can round-trip back into an equivalent store.
-function collectCanonicalEntries(
-  state: PathStoreState,
-  nodeId: NodeId
-): string[] {
+function collectCanonicalEntries(state: PathStoreState, nodeId: NodeId): string[] {
   const rootNode = state.snapshot.nodes[nodeId];
-  if (
-    rootNode === undefined ||
-    hasNodeFlag(rootNode, PATH_STORE_NODE_FLAG_REMOVED)
-  ) {
+  if (rootNode === undefined || hasNodeFlag(rootNode, PATH_STORE_NODE_FLAG_REMOVED)) {
     return [];
   }
 
@@ -493,9 +398,7 @@ function collectCanonicalEntries(
 
   const entries: string[] = [];
 
-  const stack: Array<{ childIndex: number; nodeId: NodeId }> = [
-    { childIndex: 0, nodeId },
-  ];
+  const stack: Array<{ childIndex: number; nodeId: NodeId }> = [{ childIndex: 0, nodeId }];
   while (stack.length > 0) {
     const frame = stack[stack.length - 1];
     if (frame == null) {
@@ -503,10 +406,7 @@ function collectCanonicalEntries(
     }
 
     const currentNode = state.snapshot.nodes[frame.nodeId];
-    if (
-      currentNode === undefined ||
-      hasNodeFlag(currentNode, PATH_STORE_NODE_FLAG_REMOVED)
-    ) {
+    if (currentNode === undefined || hasNodeFlag(currentNode, PATH_STORE_NODE_FLAG_REMOVED)) {
       stack.pop();
       continue;
     }
@@ -545,7 +445,7 @@ function collectCanonicalEntries(
 
 function ensureDirectoryChain(
   state: PathStoreState,
-  directorySegments: readonly string[]
+  directorySegments: readonly string[],
 ): { createdNodeIds: NodeId[]; directoryId: NodeId } {
   const createdNodeIds: NodeId[] = [];
   let currentDirectoryId = state.snapshot.rootId;
@@ -553,16 +453,15 @@ function ensureDirectoryChain(
   for (const segment of directorySegments) {
     const segmentId = internSegment(state.snapshot.segmentTable, segment);
     const currentIndex = getDirectoryIndex(state, currentDirectoryId);
-    const existingChildId = ensureChildIdByNameId(
-      state.snapshot.nodes,
-      currentIndex
-    ).get(segmentId);
+    const existingChildId = ensureChildIdByNameId(state.snapshot.nodes, currentIndex).get(
+      segmentId,
+    );
 
     if (existingChildId !== undefined) {
       const existingChild = requireNode(state, existingChildId);
       if (!isDirectoryNode(existingChild)) {
         throw new Error(
-          `Cannot create a directory that collides with an existing file: "${segment}"`
+          `Cannot create a directory that collides with an existing file: "${segment}"`,
         );
       }
 
@@ -570,29 +469,21 @@ function ensureDirectoryChain(
       continue;
     }
 
-    currentDirectoryId = createDirectoryNode(
-      state,
-      currentDirectoryId,
-      segmentId
-    );
+    currentDirectoryId = createDirectoryNode(state, currentDirectoryId, segmentId);
     createdNodeIds.push(currentDirectoryId);
   }
 
   return { createdNodeIds, directoryId: currentDirectoryId };
 }
 
-function createDirectoryNode(
-  state: PathStoreState,
-  parentId: NodeId,
-  nameId: number
-): NodeId {
+function createDirectoryNode(state: PathStoreState, parentId: NodeId, nameId: number): NodeId {
   const parentNode = requireNode(state, parentId);
   const nodeId = state.snapshot.nodes.length;
   state.snapshot.nodes.push({
     depthAndFlags: createNodeDepthAndFlags(
       getNodeDepth(parentNode) + 1,
       0,
-      PATH_STORE_NODE_KIND_DIRECTORY
+      PATH_STORE_NODE_KIND_DIRECTORY,
     ),
     nameId,
     parentId,
@@ -609,17 +500,11 @@ function createDirectoryNode(
   return nodeId;
 }
 
-function createFileNode(
-  state: PathStoreState,
-  parentId: NodeId,
-  basename: string
-): NodeId {
+function createFileNode(state: PathStoreState, parentId: NodeId, basename: string): NodeId {
   const nameId = internSegment(state.snapshot.segmentTable, basename);
   const parentIndex = getDirectoryIndex(state, parentId);
   if (ensureChildIdByNameId(state.snapshot.nodes, parentIndex).has(nameId)) {
-    throw new Error(
-      `Path already exists: "${buildPathPreview(state, parentId, basename)}"`
-    );
+    throw new Error(`Path already exists: "${buildPathPreview(state, parentId, basename)}"`);
   }
 
   const parentNode = requireNode(state, parentId);
@@ -640,7 +525,7 @@ function createFileNode(
 function findChildInsertIndex(
   state: PathStoreState,
   parentIndex: DirectoryChildIndex,
-  childId: NodeId
+  childId: NodeId,
 ): number {
   let low = 0;
   let high = parentIndex.childIds.length;
@@ -663,22 +548,15 @@ function findChildInsertIndex(
   return low;
 }
 
-function insertChildReference(
-  state: PathStoreState,
-  parentId: NodeId,
-  childId: NodeId
-): void {
+function insertChildReference(state: PathStoreState, parentId: NodeId, childId: NodeId): void {
   const parentIndex = getDirectoryIndex(state, parentId);
   const childNode = requireNode(state, childId);
-  ensureChildIdByNameId(state.snapshot.nodes, parentIndex).set(
-    childNode.nameId,
-    childId
-  );
+  ensureChildIdByNameId(state.snapshot.nodes, parentIndex).set(childNode.nameId, childId);
   applyChildAggregateDelta(
     parentIndex,
     childId,
     childNode.subtreeNodeCount,
-    childNode.visibleSubtreeCount
+    childNode.visibleSubtreeCount,
   );
 
   const insertIndex = findChildInsertIndex(state, parentIndex, childId);
@@ -691,7 +569,7 @@ function removeChildReference(
   state: PathStoreState,
   parentId: NodeId,
   childId: NodeId,
-  childNameId: number
+  childNameId: number,
 ): void {
   const parentIndex = getDirectoryIndex(state, parentId);
   const positions = ensureChildPositions(parentIndex);
@@ -704,7 +582,7 @@ function removeChildReference(
       parentIndex,
       childId,
       -childNode.subtreeNodeCount,
-      -childNode.visibleSubtreeCount
+      -childNode.visibleSubtreeCount,
     );
   }
 
@@ -715,26 +593,19 @@ function removeChildReference(
   }
 }
 
-function compareSiblingNodes(
-  state: PathStoreState,
-  leftId: NodeId,
-  rightId: NodeId
-): number {
+function compareSiblingNodes(state: PathStoreState, leftId: NodeId, rightId: NodeId): number {
   const sortOption = state.snapshot.options.sort;
-  if (sortOption === 'default') {
+  if (sortOption === "default") {
     return compareSiblingNodesDefault(state, leftId, rightId);
   }
 
-  return sortOption(
-    createCompareEntry(state, leftId),
-    createCompareEntry(state, rightId)
-  );
+  return sortOption(createCompareEntry(state, leftId), createCompareEntry(state, rightId));
 }
 
 function compareSiblingNodesDefault(
   state: PathStoreState,
   leftId: NodeId,
-  rightId: NodeId
+  rightId: NodeId,
 ): number {
   const leftNode = requireNode(state, leftId);
   const rightNode = requireNode(state, rightId);
@@ -745,27 +616,15 @@ function compareSiblingNodesDefault(
     return leftIsDirectory ? -1 : 1;
   }
 
-  const leftSortKey = getSegmentSortKey(
-    state.snapshot.segmentTable,
-    leftNode.nameId
-  );
-  const rightSortKey = getSegmentSortKey(
-    state.snapshot.segmentTable,
-    rightNode.nameId
-  );
+  const leftSortKey = getSegmentSortKey(state.snapshot.segmentTable, leftNode.nameId);
+  const rightSortKey = getSegmentSortKey(state.snapshot.segmentTable, rightNode.nameId);
   const comparison = compareSegmentSortKeys(leftSortKey, rightSortKey);
   if (comparison !== 0) {
     return comparison;
   }
 
-  const leftName = getSegmentValue(
-    state.snapshot.segmentTable,
-    leftNode.nameId
-  );
-  const rightName = getSegmentValue(
-    state.snapshot.segmentTable,
-    rightNode.nameId
-  );
+  const leftName = getSegmentValue(state.snapshot.segmentTable, leftNode.nameId);
+  const rightName = getSegmentValue(state.snapshot.segmentTable, rightNode.nameId);
   if (leftName !== rightName) {
     return leftName < rightName ? -1 : 1;
   }
@@ -773,10 +632,7 @@ function compareSiblingNodesDefault(
   return leftId < rightId ? -1 : 1;
 }
 
-function createCompareEntry(
-  state: PathStoreState,
-  nodeId: NodeId
-): PathStoreCompareEntry {
+function createCompareEntry(state: PathStoreState, nodeId: NodeId): PathStoreCompareEntry {
   const node = requireNode(state, nodeId);
   const path = materializeNodePath(state, nodeId);
   const isDirectory = isDirectoryNode(node);
@@ -787,14 +643,14 @@ function createCompareEntry(
     depth: getNodeDepth(node),
     isDirectory,
     path,
-    segments: normalizedPath.length === 0 ? [] : normalizedPath.split('/'),
+    segments: normalizedPath.length === 0 ? [] : normalizedPath.split("/"),
   };
 }
 
 function resolveMoveTarget(
   state: PathStoreState,
   sourceNodeId: NodeId,
-  toPath: string
+  toPath: string,
 ): MoveTarget {
   const sourceNode = requireNode(state, sourceNodeId);
   const existingDestinationId = findNodeId(state, toPath);
@@ -802,10 +658,7 @@ function resolveMoveTarget(
     const existingDestination = requireNode(state, existingDestinationId);
     if (isDirectoryNode(existingDestination)) {
       return {
-        basename: getSegmentValue(
-          state.snapshot.segmentTable,
-          sourceNode.nameId
-        ),
+        basename: getSegmentValue(state.snapshot.segmentTable, sourceNode.nameId),
         existingNodeId: null,
         parentId: existingDestinationId,
       };
@@ -813,15 +666,14 @@ function resolveMoveTarget(
 
     const destinationSegments = parseLookupPath(toPath).segments;
     return {
-      basename: destinationSegments[destinationSegments.length - 1] ?? '',
+      basename: destinationSegments[destinationSegments.length - 1] ?? "",
       existingNodeId: existingDestinationId,
       parentId: existingDestination.parentId,
     };
   }
 
   const destinationLookup = parseLookupPath(toPath);
-  const basename =
-    destinationLookup.segments[destinationLookup.segments.length - 1] ?? '';
+  const basename = destinationLookup.segments[destinationLookup.segments.length - 1] ?? "";
   const parentSegments = destinationLookup.segments.slice(0, -1);
   const parentId =
     parentSegments.length === 0
@@ -842,44 +694,35 @@ function handleMoveCollision(
   state: PathStoreState,
   collisionNodeId: NodeId,
   strategy: PathStoreCollisionStrategy,
-  sourceKind: number
-): 'handled' | 'skip' {
-  if (strategy === 'skip') {
-    return 'skip';
+  sourceKind: number,
+): "handled" | "skip" {
+  if (strategy === "skip") {
+    return "skip";
   }
 
-  if (strategy === 'error') {
-    throw new Error(
-      `Destination already exists: "${materializeNodePath(state, collisionNodeId)}"`
-    );
+  if (strategy === "error") {
+    throw new Error(`Destination already exists: "${materializeNodePath(state, collisionNodeId)}"`);
   }
 
   const collisionNode = requireNode(state, collisionNodeId);
   if (getNodeKind(collisionNode) !== sourceKind) {
-    throw new Error(
-      'replace collision requires the same source and destination kinds'
-    );
+    throw new Error("replace collision requires the same source and destination kinds");
   }
 
   if (
     isDirectoryNode(collisionNode) &&
     getDirectoryIndex(state, collisionNodeId).childIds.length > 0
   ) {
-    throw new Error('replace collision does not support non-empty directories');
+    throw new Error("replace collision does not support non-empty directories");
   }
 
   const collisionParentId = collisionNode.parentId;
   const collisionNameId = collisionNode.nameId;
   removeSubtree(state, collisionNodeId);
-  removeChildReference(
-    state,
-    collisionParentId,
-    collisionNodeId,
-    collisionNameId
-  );
+  removeChildReference(state, collisionParentId, collisionNodeId, collisionNameId);
   promoteEmptyAncestorsToExplicit(state, collisionParentId);
   recomputeCountsUpwardFrom(state, collisionParentId);
-  return 'handled';
+  return "handled";
 }
 
 function removeSubtree(state: PathStoreState, nodeId: NodeId): NodeId[] {
@@ -903,8 +746,7 @@ function removeSubtree(state: PathStoreState, nodeId: NodeId): NodeId[] {
       addNodeFlag(node, PATH_STORE_NODE_FLAG_REMOVED);
       state.pathCacheByNodeId.delete(frame.nodeId);
       if (state.collapsedDirectoryIds.delete(frame.nodeId)) {
-        state.hasCollapsedDirectoryOverrides =
-          state.collapsedDirectoryIds.size > 0;
+        state.hasCollapsedDirectoryOverrides = state.collapsedDirectoryIds.size > 0;
       }
       state.expandedDirectoryIds.delete(frame.nodeId);
       clearDirectoryLoadInfo(state, frame.nodeId);
@@ -916,11 +758,7 @@ function removeSubtree(state: PathStoreState, nodeId: NodeId): NodeId[] {
     stack.push({ nodeId: frame.nodeId, visitedChildren: true });
 
     const directoryIndex = getDirectoryIndex(state, frame.nodeId);
-    for (
-      let childIndex = directoryIndex.childIds.length - 1;
-      childIndex >= 0;
-      childIndex--
-    ) {
+    for (let childIndex = directoryIndex.childIds.length - 1; childIndex >= 0; childIndex--) {
       const childId = directoryIndex.childIds[childIndex];
       if (childId != null) {
         stack.push({ nodeId: childId, visitedChildren: false });
@@ -931,18 +769,12 @@ function removeSubtree(state: PathStoreState, nodeId: NodeId): NodeId[] {
   return removedNodeIds;
 }
 
-function promoteEmptyAncestorsToExplicit(
-  state: PathStoreState,
-  startDirectoryId: NodeId
-): void {
+function promoteEmptyAncestorsToExplicit(state: PathStoreState, startDirectoryId: NodeId): void {
   let currentDirectoryId: NodeId | null = startDirectoryId;
 
   while (currentDirectoryId != null) {
     const currentNode = requireNode(state, currentDirectoryId);
-    if (
-      !isDirectoryNode(currentNode) ||
-      hasNodeFlag(currentNode, PATH_STORE_NODE_FLAG_ROOT)
-    ) {
+    if (!isDirectoryNode(currentNode) || hasNodeFlag(currentNode, PATH_STORE_NODE_FLAG_ROOT)) {
       return;
     }
 
@@ -951,14 +783,13 @@ function promoteEmptyAncestorsToExplicit(
     }
 
     addNodeFlag(currentNode, PATH_STORE_NODE_FLAG_EXPLICIT);
-    currentDirectoryId =
-      currentNode.parentId === currentDirectoryId ? null : currentNode.parentId;
+    currentDirectoryId = currentNode.parentId === currentDirectoryId ? null : currentNode.parentId;
   }
 }
 
 function findDeepestExistingDirectoryId(
   state: PathStoreState,
-  segments: readonly string[]
+  segments: readonly string[],
 ): NodeId {
   let currentDirectoryId = state.snapshot.rootId;
 
@@ -970,7 +801,7 @@ function findDeepestExistingDirectoryId(
 
     const nextNodeId = ensureChildIdByNameId(
       state.snapshot.nodes,
-      getDirectoryIndex(state, currentDirectoryId)
+      getDirectoryIndex(state, currentDirectoryId),
     ).get(segmentId);
     if (nextNodeId == null) {
       break;
@@ -989,32 +820,25 @@ function findDeepestExistingDirectoryId(
 
 function getCollapsedProjectionSignature(
   state: PathStoreState,
-  startDirectoryId: NodeId
+  startDirectoryId: NodeId,
 ): string | null {
-  const collapsedAncestorId = findNearestCollapsedAncestor(
-    state,
-    startDirectoryId
-  );
+  const collapsedAncestorId = findNearestCollapsedAncestor(state, startDirectoryId);
   if (collapsedAncestorId == null) {
     return null;
   }
 
-  const terminalDirectoryId = getFlattenedTerminalDirectoryId(
-    state,
-    collapsedAncestorId
-  );
+  const terminalDirectoryId = getFlattenedTerminalDirectoryId(state, collapsedAncestorId);
   const terminalNode = requireNode(state, terminalDirectoryId);
   const flattenedSegmentPaths =
     collapsedAncestorId === terminalDirectoryId
       ? null
-      : collectFlattenedDirectoryChainIds(state, collapsedAncestorId).map(
-          (nodeId) => materializeNodePath(state, nodeId)
+      : collectFlattenedDirectoryChainIds(state, collapsedAncestorId).map((nodeId) =>
+          materializeNodePath(state, nodeId),
         );
 
   return JSON.stringify({
     flattenedSegmentPaths,
-    hasChildren:
-      getDirectoryIndex(state, terminalDirectoryId).childIds.length > 0,
+    hasChildren: getDirectoryIndex(state, terminalDirectoryId).childIds.length > 0,
     path: materializeNodePath(state, terminalDirectoryId),
     terminalKind: getNodeKind(terminalNode),
   });
@@ -1022,17 +846,14 @@ function getCollapsedProjectionSignature(
 
 function didProjectionChange(
   previousProjectionSignature: string | null,
-  nextProjectionSignature: string | null
+  nextProjectionSignature: string | null,
 ): boolean {
-  return didAnyProjectionChange(
-    [previousProjectionSignature],
-    [nextProjectionSignature]
-  );
+  return didAnyProjectionChange([previousProjectionSignature], [nextProjectionSignature]);
 }
 
 function didAnyProjectionChange(
   previousProjectionSignatures: readonly (string | null)[],
-  nextProjectionSignatures: readonly (string | null)[]
+  nextProjectionSignatures: readonly (string | null)[],
 ): boolean {
   for (let index = 0; index < previousProjectionSignatures.length; index += 1) {
     const previousProjectionSignature = previousProjectionSignatures[index];
@@ -1051,16 +872,13 @@ function didAnyProjectionChange(
 
 function findNearestCollapsedAncestor(
   state: PathStoreState,
-  startDirectoryId: NodeId
+  startDirectoryId: NodeId,
 ): NodeId | null {
   let currentDirectoryId: NodeId | null = startDirectoryId;
 
   while (currentDirectoryId != null) {
     const currentNode = requireNode(state, currentDirectoryId);
-    if (
-      !isDirectoryNode(currentNode) ||
-      hasNodeFlag(currentNode, PATH_STORE_NODE_FLAG_ROOT)
-    ) {
+    if (!isDirectoryNode(currentNode) || hasNodeFlag(currentNode, PATH_STORE_NODE_FLAG_ROOT)) {
       return null;
     }
 
@@ -1077,9 +895,7 @@ function findNearestCollapsedAncestor(
 function recomputeDepths(state: PathStoreState, nodeId: NodeId): void {
   const node = requireNode(state, nodeId);
   const parentDepth =
-    nodeId === state.snapshot.rootId
-      ? -1
-      : getNodeDepth(requireNode(state, node.parentId));
+    nodeId === state.snapshot.rootId ? -1 : getNodeDepth(requireNode(state, node.parentId));
   setNodeDepth(node, parentDepth + 1);
 
   if (!isDirectoryNode(node)) {
@@ -1092,11 +908,7 @@ function recomputeDepths(state: PathStoreState, nodeId: NodeId): void {
   }
 }
 
-function isAncestor(
-  state: PathStoreState,
-  ancestorNodeId: NodeId,
-  nodeId: NodeId
-): boolean {
+function isAncestor(state: PathStoreState, ancestorNodeId: NodeId, nodeId: NodeId): boolean {
   let currentNodeId: NodeId | null = nodeId;
 
   while (currentNodeId != null) {
@@ -1119,7 +931,7 @@ function recomputeNodeCounts(
   state: PathStoreState,
   nodeId: NodeId,
   currentNode = requireNode(state, nodeId),
-  rebuildChildAggregates = false
+  rebuildChildAggregates = false,
 ): void {
   const instrumentation = state.instrumentation;
   if (instrumentation == null) {
@@ -1127,15 +939,12 @@ function recomputeNodeCounts(
     return;
   }
 
-  withBenchmarkPhase(instrumentation, 'store.recomputeNodeCounts', () =>
-    recomputeNodeCountsNow(state, nodeId, currentNode, rebuildChildAggregates)
+  withBenchmarkPhase(instrumentation, "store.recomputeNodeCounts", () =>
+    recomputeNodeCountsNow(state, nodeId, currentNode, rebuildChildAggregates),
   );
 }
 
-function recomputeCountsUpwardFromNow(
-  state: PathStoreState,
-  startNodeId: NodeId
-): void {
+function recomputeCountsUpwardFromNow(state: PathStoreState, startNodeId: NodeId): void {
   let currentNodeId: NodeId | null = startNodeId;
 
   while (currentNodeId != null) {
@@ -1148,10 +957,8 @@ function recomputeCountsUpwardFromNow(
       return;
     }
 
-    const subtreeNodeDelta =
-      currentNode.subtreeNodeCount - previousSubtreeNodeCount;
-    const visibleSubtreeDelta =
-      currentNode.visibleSubtreeCount - previousVisibleSubtreeCount;
+    const subtreeNodeDelta = currentNode.subtreeNodeCount - previousSubtreeNodeCount;
+    const visibleSubtreeDelta = currentNode.visibleSubtreeCount - previousVisibleSubtreeCount;
     const parentId = currentNode.parentId;
 
     if (subtreeNodeDelta !== 0 || visibleSubtreeDelta !== 0) {
@@ -1159,7 +966,7 @@ function recomputeCountsUpwardFromNow(
         getDirectoryIndex(state, parentId),
         currentNodeId,
         subtreeNodeDelta,
-        visibleSubtreeDelta
+        visibleSubtreeDelta,
       );
     }
 
@@ -1172,7 +979,7 @@ function recomputeNodeCountsNow(
   state: PathStoreState,
   nodeId: NodeId,
   currentNode: PathStoreNode,
-  rebuildChildAggregates: boolean
+  rebuildChildAggregates: boolean,
 ): void {
   if (!isDirectoryNode(currentNode)) {
     currentNode.subtreeNodeCount = 1;
@@ -1186,11 +993,8 @@ function recomputeNodeCountsNow(
     if (instrumentation == null) {
       rebuildDirectoryChildAggregates(state.snapshot.nodes, currentIndex);
     } else {
-      withBenchmarkPhase(
-        instrumentation,
-        'store.recomputeNodeCounts.rebuildChildAggregates',
-        () =>
-          rebuildDirectoryChildAggregates(state.snapshot.nodes, currentIndex)
+      withBenchmarkPhase(instrumentation, "store.recomputeNodeCounts.rebuildChildAggregates", () =>
+        rebuildDirectoryChildAggregates(state.snapshot.nodes, currentIndex),
       );
     }
   }
@@ -1212,11 +1016,7 @@ function recomputeNodeCountsNow(
         : 1;
 }
 
-function buildPathPreview(
-  state: PathStoreState,
-  parentId: NodeId,
-  basename: string
-): string {
+function buildPathPreview(state: PathStoreState, parentId: NodeId, basename: string): string {
   const parentPath = materializeNodePath(state, parentId);
   return parentPath.length === 0 ? basename : `${parentPath}${basename}`;
 }

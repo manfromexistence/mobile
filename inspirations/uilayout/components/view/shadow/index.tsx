@@ -70,15 +70,11 @@ export default function ShadowGenerator() {
       isVisible: true,
     },
   ]);
-  const [activeShadow, setActiveShadow] = useState<ShadowPreset | null>(
-    preBuiltShadows[0],
-  );
+  const [activeShadow, setActiveShadow] = useState<ShadowPreset | null>(preBuiltShadows[0]);
   const [activeLayerIndex, setActiveLayerIndex] = useState(0);
   const [tailwindClass, setTailwindClass] = useState("");
   const [cssValue, setCssValue] = useState("");
-  const [_uniqueColors, setUniqueColors] = useState<
-    { color: string; count: number }[]
-  >([]);
+  const [_uniqueColors, setUniqueColors] = useState<{ color: string; count: number }[]>([]);
 
   const [globalPositionMode, setGlobalPositionMode] = useState(false);
   const [globalShadowTypeMode, setGlobalShadowTypeMode] = useState(false);
@@ -103,8 +99,7 @@ export default function ShadowGenerator() {
     const shadowString = layers
       .filter((layer) => layer.isVisible !== false)
       .map((layer) => {
-        const { offsetX, offsetY, blur, spread, color, opacity, isInner } =
-          layer;
+        const { offsetX, offsetY, blur, spread, color, opacity, isInner } = layer;
         const rgba = `rgba(${Number.parseInt(
           color.slice(1, 3),
           16,
@@ -112,9 +107,7 @@ export default function ShadowGenerator() {
           color.slice(5, 7),
           16,
         )}, ${opacity / 100})`;
-        return `${
-          isInner ? "inset " : ""
-        }${offsetX}px ${offsetY}px ${blur}px ${spread}px ${rgba}`;
+        return `${isInner ? "inset " : ""}${offsetX}px ${offsetY}px ${blur}px ${spread}px ${rgba}`;
       })
       .join(", ");
 
@@ -123,8 +116,7 @@ export default function ShadowGenerator() {
     const tailwindShadow = `shadow-[${layers
       .filter((layer) => layer.isVisible !== false)
       .map((layer) => {
-        const { offsetX, offsetY, blur, spread, color, opacity, isInner } =
-          layer;
+        const { offsetX, offsetY, blur, spread, color, opacity, isInner } = layer;
         const rgba =
           opacity === 100
             ? color
@@ -132,9 +124,7 @@ export default function ShadowGenerator() {
                 color.slice(3, 5),
                 16,
               )},${Number.parseInt(color.slice(5, 7), 16)},${opacity / 100})`;
-        return `${
-          isInner ? "inset_" : ""
-        }${offsetX}px_${offsetY}px_${blur}px_${spread}px_${rgba}`;
+        return `${isInner ? "inset_" : ""}${offsetX}px_${offsetY}px_${blur}px_${spread}px_${rgba}`;
       })
       .join(",")}]`;
 
@@ -147,12 +137,10 @@ export default function ShadowGenerator() {
       colorMap.set(color, (colorMap.get(color) || 0) + 1);
     }
 
-    const uniqueColorArray = Array.from(colorMap.entries()).map(
-      ([color, count]) => ({
-        color,
-        count,
-      }),
-    );
+    const uniqueColorArray = Array.from(colorMap.entries()).map(([color, count]) => ({
+      color,
+      count,
+    }));
 
     setUniqueColors(uniqueColorArray);
   }, [layers, activeShadow]);
@@ -161,10 +149,7 @@ export default function ShadowGenerator() {
     setIsDarkMode(theme === "dark");
   }, [theme]);
 
-  const checkIfEdited = (
-    currentLayers: ShadowLayer[],
-    originalPreset: ShadowPreset,
-  ) => {
+  const checkIfEdited = (currentLayers: ShadowLayer[], originalPreset: ShadowPreset) => {
     if (!originalPreset) return false;
 
     if (currentLayers.length !== originalPreset.layers.length) return true;

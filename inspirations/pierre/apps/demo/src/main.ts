@@ -20,8 +20,8 @@ import {
   VirtualizedFile,
   VirtualizedFileDiff,
   Virtualizer,
-} from '@pierre/diffs';
-import type { WorkerPoolManager } from '@pierre/diffs/worker';
+} from "@pierre/diffs";
+import type { WorkerPoolManager } from "@pierre/diffs/worker";
 
 import {
   cleanupCodeView,
@@ -29,7 +29,7 @@ import {
   setCodeViewDiffStyle,
   setCodeViewOverflow,
   setCodeViewThemeType,
-} from './codeViewDemo';
+} from "./codeViewDemo";
 import {
   FAKE_DIFF_LINE_ANNOTATIONS,
   FAKE_LINE_ANNOTATIONS,
@@ -37,17 +37,14 @@ import {
   FILE_NEW,
   FILE_OLD,
   type LineCommentMetadata,
-} from './mocks/';
-import './style.css';
-import mdContent from './mocks/example_md.txt?raw';
-import tsContent from './mocks/example_ts.txt?raw';
-import { createFakeContentStream } from './utils/createFakeContentStream';
-import { createHighlighterCleanup } from './utils/createHighlighterCleanup';
-import { createWorkerAPI } from './utils/createWorkerAPI';
-import {
-  renderAnnotation,
-  renderDiffAnnotation,
-} from './utils/renderAnnotation';
+} from "./mocks/";
+import "./style.css";
+import mdContent from "./mocks/example_md.txt?raw";
+import tsContent from "./mocks/example_ts.txt?raw";
+import { createFakeContentStream } from "./utils/createFakeContentStream";
+import { createHighlighterCleanup } from "./utils/createHighlighterCleanup";
+import { createWorkerAPI } from "./utils/createWorkerAPI";
+import { renderAnnotation, renderDiffAnnotation } from "./utils/renderAnnotation";
 
 // FAKE_DIFF_LINE_ANNOTATIONS.length = 0;
 // FAKE_LINE_ANNOTATIONS.length = 0;
@@ -63,7 +60,7 @@ const FileStreamCodeConfigs: FileStreamCodeConfigsItem[] = [
     content: tsContent,
     letterByLetter: false,
     options: {
-      lang: 'tsx',
+      lang: "tsx",
       theme: DEMO_THEME,
       ...createHighlighterCleanup(),
     },
@@ -72,17 +69,15 @@ const FileStreamCodeConfigs: FileStreamCodeConfigsItem[] = [
     content: mdContent,
     letterByLetter: true,
     options: {
-      lang: 'markdown',
+      lang: "markdown",
       theme: DEMO_THEME,
       ...createHighlighterCleanup(),
     },
   },
 ];
 
-const diffInstances: (
-  | FileDiff<LineCommentMetadata>
-  | VirtualizedFileDiff<LineCommentMetadata>
-)[] = [];
+const diffInstances: (FileDiff<LineCommentMetadata> | VirtualizedFileDiff<LineCommentMetadata>)[] =
+  [];
 const fileInstances: File<LineCommentMetadata>[] = [];
 const streamingInstances: FileStream[] = [];
 const conflictInstances: UnresolvedFile<LineCommentMetadata>[] = [];
@@ -94,19 +89,14 @@ interface FileStreamCodeConfigsItem {
 }
 
 function cleanupInstances(container: HTMLElement) {
-  for (const instances of [
-    diffInstances,
-    fileInstances,
-    streamingInstances,
-    conflictInstances,
-  ]) {
+  for (const instances of [diffInstances, fileInstances, streamingInstances, conflictInstances]) {
     for (const instance of instances) {
       instance.cleanUp();
     }
     instances.length = 0;
   }
   cleanupCodeView(container);
-  container.textContent = '';
+  container.textContent = "";
   delete container.dataset.diff;
 }
 
@@ -115,9 +105,7 @@ async function loadPatchContent() {
   loadingPatch =
     loadingPatch ??
     new Promise((resolve) => {
-      void import('./mocks/diff.patch?raw').then(({ default: content }) =>
-        resolve(content)
-      );
+      void import("./mocks/diff.patch?raw").then(({ default: content }) => resolve(content));
     });
   return loadingPatch;
 }
@@ -127,13 +115,12 @@ async function loadLargeConflictFile(): Promise<FileContents> {
   loadingLargeConflict =
     loadingLargeConflict ??
     new Promise((resolve) => {
-      void import('./mocks/fileConflictLarge.txt?raw').then(
-        ({ default: contents }) =>
-          resolve({
-            name: 'fileConflictLarge.ts',
-            contents,
-            cacheKey: 'file-conflict-large',
-          })
+      void import("./mocks/fileConflictLarge.txt?raw").then(({ default: contents }) =>
+        resolve({
+          name: "fileConflictLarge.ts",
+          contents,
+          cacheKey: "file-conflict-large",
+        }),
       );
     });
   return loadingLargeConflict;
@@ -144,12 +131,12 @@ const poolManager: WorkerPoolManager | undefined = WORKER_POOL
   ? (() => {
       const manager = createWorkerAPI({
         theme: DEMO_THEME,
-        langs: ['typescript', 'tsx'],
-        preferredHighlighter: 'shiki-wasm',
+        langs: ["typescript", "tsx"],
+        preferredHighlighter: "shiki-wasm",
         useTokenTransformer: true,
       });
       void manager.initialize().then(() => {
-        console.log('WorkerPoolManager initialized, with:', manager.getStats());
+        console.log("WorkerPoolManager initialized, with:", manager.getStats());
       });
 
       // @ts-expect-error bcuz
@@ -158,19 +145,15 @@ const poolManager: WorkerPoolManager | undefined = WORKER_POOL
     })()
   : undefined;
 
-const virtualizer: Virtualizer | undefined = (() =>
-  VIRTUALIZE ? new Virtualizer() : undefined)();
+const virtualizer: Virtualizer | undefined = (() => (VIRTUALIZE ? new Virtualizer() : undefined))();
 
 function startStreaming() {
-  const container = document.getElementById('wrapper');
+  const container = document.getElementById("wrapper");
   if (container == null) return;
   cleanupInstances(container);
   for (const { content, letterByLetter, options } of FileStreamCodeConfigs) {
     const instance = new FileStream(options);
-    void instance.setup(
-      createFakeContentStream(content, letterByLetter),
-      container
-    );
+    void instance.setup(createFakeContentStream(content, letterByLetter), container);
     streamingInstances.push(instance);
   }
 }
@@ -180,14 +163,14 @@ let parsedCodeViewFilePatches: ParsedPatch[] | undefined;
 
 function createCodeViewFilePatches(): ParsedPatch[] {
   const oldFile: FileContents = {
-    name: 'file_old.ts',
+    name: "file_old.ts",
     contents: FILE_OLD,
-    cacheKey: 'code-view-file-old',
+    cacheKey: "code-view-file-old",
   };
   const newFile: FileContents = {
-    name: 'file_new.ts',
+    name: "file_new.ts",
     contents: FILE_NEW,
-    cacheKey: 'code-view-file-new',
+    cacheKey: "code-view-file-new",
   };
 
   return [{ files: [parseDiffFromFile(oldFile, newFile)] }];
@@ -197,10 +180,7 @@ async function loadCodeViewPatches(): Promise<ParsedPatch[]> {
   if (CODE_VIEW_OLD_NEW_FILE) {
     return (parsedCodeViewFilePatches ??= createCodeViewFilePatches());
   }
-  return (parsedPatches ??= parsePatchFiles(
-    await loadPatchContent(),
-    'parsed-patch'
-  ));
+  return (parsedPatches ??= parsePatchFiles(await loadPatchContent(), "parsed-patch"));
 }
 
 function handlePreloadCodeViewDiff() {
@@ -214,17 +194,17 @@ function handlePreloadCodeViewDiff() {
 async function handlePreloadDiff() {
   if (parsedPatches != null) return;
   const content = await loadPatchContent();
-  parsedPatches = parsePatchFiles(content, 'parsed-patch');
-  console.log('preloaded diff', parsedPatches);
+  parsedPatches = parsePatchFiles(content, "parsed-patch");
+  console.log("preloaded diff", parsedPatches);
 }
 
 function renderDiff(parsedPatches: ParsedPatch[], manager?: WorkerPoolManager) {
-  console.log('renderDiff: rendering patches:', parsedPatches);
-  const wrapper = document.getElementById('wrapper');
+  console.log("renderDiff: rendering patches:", parsedPatches);
+  const wrapper = document.getElementById("wrapper");
   if (wrapper == null) return;
   window.scrollTo({ top: 0 });
   cleanupInstances(wrapper);
-  wrapper.dataset.diff = '';
+  wrapper.dataset.diff = "";
 
   const unified = getUnified();
   const wrap = getWrapped();
@@ -243,24 +223,21 @@ function renderDiff(parsedPatches: ParsedPatch[], manager?: WorkerPoolManager) {
       const options: FileDiffOptions<LineCommentMetadata> = {
         theme: DEMO_THEME,
         themeType,
-        diffStyle: unified ? 'unified' : 'split',
-        overflow: wrap ? 'wrap' : 'scroll',
+        diffStyle: unified ? "unified" : "split",
+        overflow: wrap ? "wrap" : "scroll",
         renderAnnotation: renderDiffAnnotation,
         renderHeaderMetadata() {
-          return createCollapsedToggle(
-            instance?.options.collapsed ?? false,
-            (checked) => {
-              instance?.setOptions({
-                ...instance.options,
-                collapsed: checked,
-              });
-              if (!VIRTUALIZE) {
-                void instance.rerender();
-              }
+          return createCollapsedToggle(instance?.options.collapsed ?? false, (checked) => {
+            instance?.setOptions({
+              ...instance.options,
+              collapsed: checked,
+            });
+            if (!VIRTUALIZE) {
+              void instance.rerender();
             }
-          );
+          });
         },
-        lineHoverHighlight: 'both',
+        lineHoverHighlight: "both",
         expansionLineCount: 10,
         // expandUnchanged: true,
 
@@ -413,20 +390,19 @@ function renderDiff(parsedPatches: ParsedPatch[], manager?: WorkerPoolManager) {
         //   props.tokenElement.style.borderRadius = '';
         // },
       };
-      const instance:
-        | FileDiff<LineCommentMetadata>
-        | VirtualizedFileDiff<LineCommentMetadata> = (() => {
-        if (virtualizer != null) {
-          return new VirtualizedFileDiff<LineCommentMetadata>(
-            options,
-            virtualizer,
-            undefined,
-            manager
-          );
-        } else {
-          return new FileDiff<LineCommentMetadata>(options, manager);
-        }
-      })();
+      const instance: FileDiff<LineCommentMetadata> | VirtualizedFileDiff<LineCommentMetadata> =
+        (() => {
+          if (virtualizer != null) {
+            return new VirtualizedFileDiff<LineCommentMetadata>(
+              options,
+              virtualizer,
+              undefined,
+              manager,
+            );
+          } else {
+            return new FileDiff<LineCommentMetadata>(options, manager);
+          }
+        })();
 
       const fileContainer = document.createElement(DIFFS_TAG_NAME);
       wrapper.appendChild(fileContainer);
@@ -445,23 +421,23 @@ function renderDiff(parsedPatches: ParsedPatch[], manager?: WorkerPoolManager) {
 }
 
 function renderCodeView(parsedPatches: ParsedPatch[]) {
-  const wrapper = document.getElementById('wrapper');
+  const wrapper = document.getElementById("wrapper");
   if (wrapper == null) return;
   window.scrollTo({ top: 0 });
   cleanupInstances(wrapper);
   renderDemoCodeView(wrapper, parsedPatches, {
     theme: DEMO_THEME,
     themeType: getThemeType(),
-    diffStyle: getUnified() ? 'unified' : 'split',
-    overflow: getWrapped() ? 'wrap' : 'scroll',
+    diffStyle: getUnified() ? "unified" : "split",
+    overflow: getWrapped() ? "wrap" : "scroll",
     workerManager: poolManager,
   });
 }
 
 function createFileMetadata(patchMetadata: string) {
-  const metadata = document.createElement('div');
-  metadata.dataset.commitMetadata = '';
-  metadata.innerText = patchMetadata.replace(/\n+$/, '');
+  const metadata = document.createElement("div");
+  metadata.dataset.commitMetadata = "";
+  metadata.innerText = patchMetadata.replace(/\n+$/, "");
   return metadata;
 }
 
@@ -470,28 +446,28 @@ const workerInstances: Promise<unknown>[] = [];
 export function workerRenderDiff(parsedPatches: ParsedPatch[]) {
   workerInstances.length = 0;
 
-  console.log('Worker Render: Starting to async render patch');
+  console.log("Worker Render: Starting to async render patch");
   for (const parsedPatch of parsedPatches) {
     for (const fileDiff of parsedPatch.files) {
       const start = Date.now();
       poolManager?.highlightDiffAST(
         {
-          __id: 'hack',
+          __id: "hack",
           onHighlightSuccess(_diff, { code }) {
             console.log(
-              'Worker Render: rendered file:',
+              "Worker Render: rendered file:",
               fileDiff.name,
-              'lines:',
+              "lines:",
               code.additionLines.length + code.deletionLines.length,
-              'time:',
-              Date.now() - start
+              "time:",
+              Date.now() - start,
             );
           },
           onHighlightError(error: unknown) {
             console.error(error);
           },
         },
-        fileDiff
+        fileDiff,
       );
     }
   }
@@ -507,7 +483,7 @@ function handlePreload() {
     }
     if (item.options.theme == null) {
       continue;
-    } else if (typeof item.options.theme === 'string') {
+    } else if (typeof item.options.theme === "string") {
       themes.push(item.options.theme);
     } else {
       themes.push(item.options.theme.dark);
@@ -517,53 +493,45 @@ function handlePreload() {
   void preloadHighlighter({ langs, themes });
 }
 
-document.getElementById('toggle-theme')?.addEventListener('click', toggleTheme);
+document.getElementById("toggle-theme")?.addEventListener("click", toggleTheme);
 
-const streamCode = document.getElementById('stream-code');
+const streamCode = document.getElementById("stream-code");
 if (streamCode != null) {
-  streamCode.addEventListener('click', startStreaming);
-  streamCode.addEventListener('pointerenter', handlePreload);
+  streamCode.addEventListener("click", startStreaming);
+  streamCode.addEventListener("pointerenter", handlePreload);
 }
 
-const loadDiff = document.getElementById('load-diff');
+const loadDiff = document.getElementById("load-diff");
 if (loadDiff != null) {
   function handleClick() {
     void (async () => {
-      parsedPatches ??= parsePatchFiles(
-        await loadPatchContent(),
-        'parsed-patch'
-      );
+      parsedPatches ??= parsePatchFiles(await loadPatchContent(), "parsed-patch");
       renderDiff(parsedPatches, poolManager);
       // window.scrollTo({ top: 99999999999 });
     })();
   }
 
   // void poolManager.initialize().then(() => handleClick());
-  loadDiff.addEventListener('click', handleClick);
-  loadDiff.addEventListener('pointerenter', () => void handlePreloadDiff());
+  loadDiff.addEventListener("click", handleClick);
+  loadDiff.addEventListener("pointerenter", () => void handlePreloadDiff());
 }
 
-const renderCodeViewButton = document.getElementById('render-code-view');
+const renderCodeViewButton = document.getElementById("render-code-view");
 if (renderCodeViewButton != null) {
-  renderCodeViewButton.addEventListener('click', () => {
+  renderCodeViewButton.addEventListener("click", () => {
     void (async () => {
       renderCodeView(await loadCodeViewPatches());
     })();
   });
-  renderCodeViewButton.addEventListener(
-    'pointerenter',
-    handlePreloadCodeViewDiff
-  );
+  renderCodeViewButton.addEventListener("pointerenter", handlePreloadCodeViewDiff);
 }
 
-const wrapCheckbox = document.getElementById('wrap-lines');
+const wrapCheckbox = document.getElementById("wrap-lines");
 function getWrapped(): boolean {
-  return wrapCheckbox instanceof HTMLInputElement
-    ? wrapCheckbox.checked
-    : false;
+  return wrapCheckbox instanceof HTMLInputElement ? wrapCheckbox.checked : false;
 }
 if (wrapCheckbox != null) {
-  wrapCheckbox.addEventListener('change', ({ currentTarget }) => {
+  wrapCheckbox.addEventListener("change", ({ currentTarget }) => {
     if (!(currentTarget instanceof HTMLInputElement)) {
       return;
     }
@@ -571,7 +539,7 @@ if (wrapCheckbox != null) {
     for (const instance of diffInstances) {
       instance.setOptions({
         ...instance.options,
-        overflow: checked ? 'wrap' : 'scroll',
+        overflow: checked ? "wrap" : "scroll",
       });
       if (!VIRTUALIZE) {
         void instance.rerender();
@@ -580,78 +548,76 @@ if (wrapCheckbox != null) {
     for (const instance of fileInstances) {
       instance.setOptions({
         ...instance.options,
-        overflow: checked ? 'wrap' : 'scroll',
+        overflow: checked ? "wrap" : "scroll",
       });
       void instance.rerender();
     }
-    setCodeViewOverflow(checked ? 'wrap' : 'scroll');
+    setCodeViewOverflow(checked ? "wrap" : "scroll");
   });
 }
 
-const unifiedCheckbox = document.getElementById('unified');
+const unifiedCheckbox = document.getElementById("unified");
 function getUnified(): boolean {
-  return unifiedCheckbox instanceof HTMLInputElement
-    ? unifiedCheckbox.checked
-    : false;
+  return unifiedCheckbox instanceof HTMLInputElement ? unifiedCheckbox.checked : false;
 }
 if (unifiedCheckbox instanceof HTMLInputElement) {
-  unifiedCheckbox.addEventListener('change', () => {
+  unifiedCheckbox.addEventListener("change", () => {
     const checked = unifiedCheckbox.checked;
     for (const instance of diffInstances) {
       instance.setOptions({
         ...instance.options,
-        diffStyle: checked ? 'unified' : 'split',
+        diffStyle: checked ? "unified" : "split",
       });
       if (!VIRTUALIZE) {
         void instance.rerender();
       }
     }
-    setCodeViewDiffStyle(checked ? 'unified' : 'split');
+    setCodeViewDiffStyle(checked ? "unified" : "split");
   });
 }
 
 let lastWrapper: HTMLElement | undefined;
-const diff2Files = document.getElementById('diff-files');
+const diff2Files = document.getElementById("diff-files");
 if (diff2Files != null) {
-  diff2Files.addEventListener('click', () => {
+  diff2Files.addEventListener("click", () => {
     if (lastWrapper != null) {
       lastWrapper.remove();
     }
-    lastWrapper = document.createElement('div');
+    lastWrapper = document.createElement("div");
 
-    const fileOldContainer = document.createElement('div');
-    fileOldContainer.className = 'file';
-    lastWrapper.className = 'files-input';
-    const fileOldName = document.createElement('input');
-    fileOldName.type = 'text';
-    fileOldName.value = 'file_old.ts';
+    const fileOldContainer = document.createElement("div");
+    fileOldContainer.className = "file";
+    lastWrapper.className = "files-input";
+    const fileOldName = document.createElement("input");
+    fileOldName.type = "text";
+    fileOldName.value = "file_old.ts";
     fileOldName.spellcheck = false;
-    const fileOldContents = document.createElement('textarea');
+    const fileOldContents = document.createElement("textarea");
     fileOldContents.value = FILE_OLD;
     fileOldContents.spellcheck = false;
     fileOldContainer.appendChild(fileOldName);
     fileOldContainer.appendChild(fileOldContents);
     lastWrapper.appendChild(fileOldContainer);
 
-    const fileNewContainer = document.createElement('div');
-    fileNewContainer.className = 'file';
-    lastWrapper.className = 'files-input';
-    const fileNewName = document.createElement('input');
-    fileNewName.type = 'text';
-    fileNewName.value = 'file_new.ts';
+    const fileNewContainer = document.createElement("div");
+    fileNewContainer.className = "file";
+    lastWrapper.className = "files-input";
+    const fileNewName = document.createElement("input");
+    fileNewName.type = "text";
+    fileNewName.value = "file_new.ts";
     fileNewName.spellcheck = false;
-    const fileNewContents = document.createElement('textarea');
+    const fileNewContents = document.createElement("textarea");
     fileNewContents.value = FILE_NEW;
     fileNewContents.spellcheck = false;
     fileNewContainer.appendChild(fileNewName);
     fileNewContainer.appendChild(fileNewContents);
     lastWrapper.appendChild(fileNewContainer);
 
-    const bottomWrapper = document.createElement('div');
-    bottomWrapper.className = 'buttons';
-    const render = document.createElement('button');
-    render.innerText = 'Render Diff';
-    render.addEventListener('click', () => {
+    const bottomWrapper = document.createElement("div");
+    bottomWrapper.className = "buttons";
+    const render = document.createElement("button");
+    render.innerText = "Render Diff";
+    render.addEventListener("click", () => {
       const oldFile: FileContents = {
         name: fileOldName.value,
         contents: fileOldContents.value,
@@ -665,16 +631,16 @@ if (diff2Files != null) {
 
       lastWrapper?.remove();
       const parsed = parseDiffFromFile(oldFile, newFile);
-      console.log('ZZZZZ - parsed', parsed);
+      console.log("ZZZZZ - parsed", parsed);
       renderDiff([{ files: [parsed] }], poolManager);
     });
     bottomWrapper.appendChild(render);
 
-    const cancel = document.createElement('button');
-    cancel.innerText = 'Cancel';
+    const cancel = document.createElement("button");
+    cancel.innerText = "Cancel";
     bottomWrapper.appendChild(cancel);
 
-    cancel.addEventListener('click', () => {
+    cancel.addEventListener("click", () => {
       lastWrapper?.remove();
     });
 
@@ -685,23 +651,14 @@ if (diff2Files != null) {
 }
 
 function toggleTheme() {
-  const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
-    ? 'dark'
-    : 'light';
+  const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   const pageTheme =
-    (document.documentElement.dataset.themeType ?? systemTheme) === 'dark'
-      ? 'dark'
-      : 'light';
-  const nextTheme = pageTheme === 'dark' ? 'light' : 'dark';
+    (document.documentElement.dataset.themeType ?? systemTheme) === "dark" ? "dark" : "light";
+  const nextTheme = pageTheme === "dark" ? "light" : "dark";
 
   document.documentElement.dataset.themeType = nextTheme;
 
-  for (const instances of [
-    diffInstances,
-    fileInstances,
-    streamingInstances,
-    conflictInstances,
-  ]) {
+  for (const instances of [diffInstances, fileInstances, streamingInstances, conflictInstances]) {
     for (const instance of instances) {
       instance.setThemeType(nextTheme);
     }
@@ -712,33 +669,33 @@ function toggleTheme() {
 const fileExample: FileContents | Promise<FileContents> = (() => {
   if (CRAZY_FILE) {
     return new Promise<FileContents>((resolve) => {
-      void import('../../../pnpm-lock.yaml?raw').then(({ default: contents }) =>
+      void import("../../../pnpm-lock.yaml?raw").then(({ default: contents }) =>
         resolve({
-          name: 'pnpm-lock.yaml',
+          name: "pnpm-lock.yaml",
           contents,
-          cacheKey: 'diff',
-        })
+          cacheKey: "diff",
+        }),
       );
     });
   }
   return {
-    name: 'main.tsx',
+    name: "main.tsx",
     contents: FILE_NEW,
-    cacheKey: 'file',
+    cacheKey: "file",
   };
 })();
 
 const fileConflict: FileContents = {
-  name: 'file.ts',
+  name: "file.ts",
   contents: FILE_CONFLICT,
 };
 
-const renderFileButton = document.getElementById('render-file');
+const renderFileButton = document.getElementById("render-file");
 if (renderFileButton != null) {
   // oxlint-disable-next-line @typescript-oxlint/no-misused-promises
-  renderFileButton.addEventListener('click', async () => {
+  renderFileButton.addEventListener("click", async () => {
     const file = await fileExample;
-    const wrapper = document.getElementById('wrapper');
+    const wrapper = document.getElementById("wrapper");
     if (wrapper == null) return;
     cleanupInstances(wrapper);
 
@@ -747,23 +704,20 @@ if (renderFileButton != null) {
     const fileContainer = document.createElement(DIFFS_TAG_NAME);
     wrapper.appendChild(fileContainer);
     const options: FileOptions<LineCommentMetadata> = {
-      overflow: wrap ? 'wrap' : 'scroll',
+      overflow: wrap ? "wrap" : "scroll",
       theme: DEMO_THEME,
       themeType: getThemeType(),
       renderAnnotation,
       renderHeaderMetadata() {
-        return createCollapsedToggle(
-          instance?.options.collapsed ?? false,
-          (checked) => {
-            instance?.setOptions({
-              ...instance.options,
-              collapsed: checked,
-            });
-            if (!VIRTUALIZE) {
-              void instance.rerender();
-            }
+        return createCollapsedToggle(instance?.options.collapsed ?? false, (checked) => {
+          instance?.setOptions({
+            ...instance.options,
+            collapsed: checked,
+          });
+          if (!VIRTUALIZE) {
+            void instance.rerender();
           }
-        );
+        });
       },
 
       // Line selection stuff
@@ -844,15 +798,13 @@ if (renderFileButton != null) {
       // },
     };
 
-    const instance:
-      | File<LineCommentMetadata>
-      | VirtualizedFile<LineCommentMetadata> = (() => {
+    const instance: File<LineCommentMetadata> | VirtualizedFile<LineCommentMetadata> = (() => {
       if (virtualizer != null) {
         return new VirtualizedFile<LineCommentMetadata>(
           options,
           virtualizer,
           undefined,
-          poolManager
+          poolManager,
         );
       } else {
         return new File<LineCommentMetadata>(options, poolManager);
@@ -867,11 +819,11 @@ if (renderFileButton != null) {
   });
 }
 
-const renderFileConflictButton = document.getElementById('render-conflict');
+const renderFileConflictButton = document.getElementById("render-conflict");
 if (renderFileConflictButton != null) {
   // oxlint-disable-next-line @typescript-oxlint/no-misused-promises
-  renderFileConflictButton.addEventListener('click', async () => {
-    const wrapper = document.getElementById('wrapper');
+  renderFileConflictButton.addEventListener("click", async () => {
+    const wrapper = document.getElementById("wrapper");
     if (wrapper == null) {
       return;
     }
@@ -883,7 +835,7 @@ if (renderFileConflictButton != null) {
       {
         theme: DEMO_THEME,
         themeType: getThemeType(),
-        overflow: wrap ? 'wrap' : 'scroll',
+        overflow: wrap ? "wrap" : "scroll",
         renderAnnotation,
         enableLineSelection: true,
         enableGutterUtility: true,
@@ -913,11 +865,9 @@ if (renderFileConflictButton != null) {
         //   props.tokenElement.style.borderRadius = '';
         // },
       },
-      poolManager
+      poolManager,
     );
-    const file = LARGE_CONFLICT_FILE
-      ? await loadLargeConflictFile()
-      : fileConflict;
+    const file = LARGE_CONFLICT_FILE ? await loadLargeConflictFile() : fileConflict;
     instance.render({
       file,
       // lineAnnotations: FAKE_DIFF_LINE_ANNOTATIONS[0][0],
@@ -927,26 +877,26 @@ if (renderFileConflictButton != null) {
   });
 }
 
-const workerRenderButton = document.getElementById('worker-load-diff');
-workerRenderButton?.addEventListener('click', () => {
+const workerRenderButton = document.getElementById("worker-load-diff");
+workerRenderButton?.addEventListener("click", () => {
   void (async () => {
-    const patches = parsePatchFiles(await loadPatchContent(), 'parsed-patch');
+    const patches = parsePatchFiles(await loadPatchContent(), "parsed-patch");
     workerRenderDiff(patches);
   })();
 });
 
 function getThemeType() {
   const parentThemeSetting = document.documentElement.dataset.themeType;
-  return parentThemeSetting === 'dark'
-    ? 'dark'
-    : parentThemeSetting === 'light'
-      ? 'light'
-      : 'system';
+  return parentThemeSetting === "dark"
+    ? "dark"
+    : parentThemeSetting === "light"
+      ? "light"
+      : "system";
 }
 
-const cleanButton = document.getElementById('clean');
-cleanButton?.addEventListener('click', () => {
-  const container = document.getElementById('wrapper');
+const cleanButton = document.getElementById("clean");
+cleanButton?.addEventListener("click", () => {
+  const container = document.getElementById("wrapper");
   if (container == null) {
     return;
   }
@@ -955,18 +905,18 @@ cleanButton?.addEventListener('click', () => {
 
 function createCollapsedToggle(
   checked: boolean,
-  onChange: (checked: boolean) => void
+  onChange: (checked: boolean) => void,
 ): HTMLElement {
-  const label = document.createElement('label');
-  const input = document.createElement('input');
-  input.type = 'checkbox';
+  const label = document.createElement("label");
+  const input = document.createElement("input");
+  input.type = "checkbox";
   input.checked = checked;
-  input.addEventListener('change', () => {
+  input.addEventListener("change", () => {
     onChange(input.checked);
   });
-  label.dataset.collapser = '';
+  label.dataset.collapser = "";
   label.appendChild(input);
-  label.append(' Collapse');
+  label.append(" Collapse");
   return label;
 }
 

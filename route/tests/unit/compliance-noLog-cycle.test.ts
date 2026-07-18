@@ -29,7 +29,7 @@ test("callLogs and compliance can both be loaded sequentially without deadlock (
   })();
 
   const timeout = new Promise<never>((_, reject) =>
-    setTimeout(() => reject(new Error("module load timed out — circular init regression")), 5000)
+    setTimeout(() => reject(new Error("module load timed out — circular init regression")), 5000),
   );
 
   const ok = await Promise.race([loadBoth, timeout]);

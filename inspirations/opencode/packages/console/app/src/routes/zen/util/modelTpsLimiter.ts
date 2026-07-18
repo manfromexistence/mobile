@@ -1,15 +1,17 @@
-import { and, Database, inArray, sql } from "@opencode-ai/console-core/drizzle/index.js"
-import { ModelTpsRateLimitTable } from "@opencode-ai/console-core/schema/ip.sql.js"
-import { UsageInfo } from "./provider/provider"
+import { and, Database, inArray, sql } from "@opencode-ai/console-core/drizzle/index.js";
+import { ModelTpsRateLimitTable } from "@opencode-ai/console-core/schema/ip.sql.js";
+import { UsageInfo } from "./provider/provider";
 
-export function createModelTpsLimiter(providers: { id: string; model: string; tpsGoal?: number }[]) {
+export function createModelTpsLimiter(
+  providers: { id: string; model: string; tpsGoal?: number }[],
+) {
   const tpsGoals = Object.fromEntries(
     providers.flatMap((p) => {
-      return p.tpsGoal ? [[`${p.id}/${p.model}/${p.tpsGoal}`, p.tpsGoal]] : []
+      return p.tpsGoal ? [[`${p.id}/${p.model}/${p.tpsGoal}`, p.tpsGoal]] : [];
     }),
-  )
-  const ids = Object.keys(tpsGoals)
-  if (ids.length === 0) return
+  );
+  const ids = Object.keys(tpsGoals);
+  if (ids.length === 0) return;
 
   const toInterval = (date: Date) =>
     parseInt(
@@ -17,10 +19,10 @@ export function createModelTpsLimiter(providers: { id: string; model: string; tp
         .toISOString()
         .replace(/[^0-9]/g, "")
         .substring(0, 12),
-    )
-  const now = Date.now()
-  const currInterval = toInterval(new Date(now))
-  const prevInterval = toInterval(new Date(now - 60_000))
+    );
+  const now = Date.now();
+  const currInterval = toInterval(new Date(now));
+  const prevInterval = toInterval(new Date(now - 60_000));
 
   return {
     check: async () => {
@@ -34,20 +36,20 @@ export function createModelTpsLimiter(providers: { id: string; model: string; tp
               inArray(ModelTpsRateLimitTable.interval, [currInterval, prevInterval]),
             ),
           ),
-      )
+      );
 
       // convert to map of model to summed count across current and previous intervals
       return data.reduce(
         (acc, curr) => {
-          const existing = acc[curr.id] ?? { qualify: 0, unqualify: 0 }
+          const existing = acc[curr.id] ?? { qualify: 0, unqualify: 0 };
           acc[curr.id] = {
             qualify: existing.qualify + curr.qualify,
             unqualify: existing.unqualify + curr.unqualify,
-          }
-          return acc
+          };
+          return acc;
         },
         {} as Record<string, { qualify: number; unqualify: number }>,
-      )
+      );
     },
     track: async (
       provider: string,
@@ -57,16 +59,16 @@ export function createModelTpsLimiter(providers: { id: string; model: string; tp
       tsLastByte: number,
       usageInfo: UsageInfo,
     ) => {
-      if (!tpsGoal) return
-      const id = `${provider}/${model}/${tpsGoal}`
-      if (!ids.includes(id)) return
-      if (tsFirstByte <= 0 || tsLastByte <= 0) return
-      const tokens = usageInfo.outputTokens
-      if (tokens <= 10) return
+      if (!tpsGoal) return;
+      const id = `${provider}/${model}/${tpsGoal}`;
+      if (!ids.includes(id)) return;
+      if (tsFirstByte <= 0 || tsLastByte <= 0) return;
+      const tokens = usageInfo.outputTokens;
+      if (tokens <= 10) return;
 
-      const tps = (tokens / (tsLastByte - tsFirstByte)) * 1000
-      const qualify = tps >= tpsGoal ? 1 : 0
-      const unqualify = tps < tpsGoal ? 1 : 0
+      const tps = (tokens / (tsLastByte - tsFirstByte)) * 1000;
+      const qualify = tps >= tpsGoal ? 1 : 0;
+      const unqualify = tps < tpsGoal ? 1 : 0;
       await Database.use((tx) =>
         tx
           .insert(ModelTpsRateLimitTable)
@@ -82,7 +84,7 @@ export function createModelTpsLimiter(providers: { id: string; model: string; tp
               unqualify: sql`${ModelTpsRateLimitTable.unqualify} + ${unqualify}`,
             },
           }),
-      )
+      );
     },
-  }
+  };
 }

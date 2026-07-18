@@ -11,7 +11,7 @@ const BIN = path.join(
   "..",
   "..",
   "bin",
-  "omniroute.mjs"
+  "omniroute.mjs",
 );
 
 function runCli(dataDir: string): { code: number | null; stderr: string } {
@@ -60,7 +60,7 @@ test("CLI generates STORAGE_ENCRYPTION_KEY into DATA_DIR on first run (#1622)", 
     assert.match(
       content,
       /STORAGE_ENCRYPTION_KEY=[0-9a-f]{64}/,
-      "key persisted into DATA_DIR/.env"
+      "key persisted into DATA_DIR/.env",
     );
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });

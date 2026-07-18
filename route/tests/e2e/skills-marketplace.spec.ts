@@ -79,7 +79,7 @@ test.describe("Skills marketplace", () => {
         query
           ? skill.name.toLowerCase().includes(query) ||
             skill.description.toLowerCase().includes(query)
-          : true
+          : true,
       );
       await fulfillJson(route, { skills: results });
     });
@@ -124,7 +124,7 @@ test.describe("Skills marketplace", () => {
       state.toggleCalls += 1;
       const skillId = route.request().url().split("/").pop() || "";
       state.skills = state.skills.map((skill) =>
-        skill.id === skillId ? { ...skill, enabled: !skill.enabled } : skill
+        skill.id === skillId ? { ...skill, enabled: !skill.enabled } : skill,
       );
       await fulfillJson(route, { success: true });
     });
@@ -186,8 +186,8 @@ test.describe("Skills marketplace", () => {
           handlerCode: "export default async () => ({ ok: true });",
         },
         null,
-        2
-      )
+        2,
+      ),
     );
     await installDialog.getByRole("button", { name: /^install$/i }).click();
 

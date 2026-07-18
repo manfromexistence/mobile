@@ -280,7 +280,7 @@ function BatchRowActions({
                 console.error(
                   "[BatchRowActions] DELETE returned non-ok status",
                   batch.id,
-                  res.status
+                  res.status,
                 );
               }
             } catch (err) {
@@ -331,7 +331,7 @@ export default function BatchListTab({
         console.error(
           "[BatchListTab] DELETE /batches/delete-completed returned",
           res.status,
-          await res.text().catch(() => "")
+          await res.text().catch(() => ""),
         );
       }
     } catch (err) {

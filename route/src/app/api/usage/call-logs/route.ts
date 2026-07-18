@@ -35,7 +35,7 @@ export function buildCallLogListRows({
     connections.map((connection: any) => [
       connection.id,
       connection.displayName || connection.name || connection.email || connection.id,
-    ])
+    ]),
   );
 
   // Include active (in-flight) requests from the pending-by-id map

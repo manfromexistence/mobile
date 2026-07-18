@@ -1,5 +1,5 @@
-import type { CodeView } from './CodeView';
-import type { Virtualizer } from './Virtualizer';
+import type { CodeView } from "./CodeView";
+import type { Virtualizer } from "./Virtualizer";
 
 // FIXME(amadeus): REMOVE ME AFTER RELEASING VIRTUALIZATION
 declare global {

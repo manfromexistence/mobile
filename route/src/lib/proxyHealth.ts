@@ -17,7 +17,7 @@ const FAST_FAIL_TIMEOUT_MS = parseInt(process.env.PROXY_FAST_FAIL_TIMEOUT_MS ?? 
 const HEALTH_CACHE_TTL_MS = parseInt(process.env.PROXY_HEALTH_CACHE_TTL_MS ?? "30000", 10);
 const UNHEALTHY_CACHE_TTL_MS = parseInt(
   process.env.PROXY_HEALTH_UNHEALTHY_CACHE_TTL_MS ?? "2000",
-  10
+  10,
 );
 
 interface ProxyHealthEntry {
@@ -45,7 +45,7 @@ let tcpCheckImpl: TcpCheck = tcpCheck;
 export async function isProxyReachable(
   proxyUrl: string,
   timeoutMs = FAST_FAIL_TIMEOUT_MS,
-  cacheTtlMs = HEALTH_CACHE_TTL_MS
+  cacheTtlMs = HEALTH_CACHE_TTL_MS,
 ): Promise<boolean> {
   const cached = proxyHealthCache.get(proxyUrl);
   if (cached && Date.now() - cached.checkedAt < cached.ttlMs) {

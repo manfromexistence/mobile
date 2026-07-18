@@ -181,7 +181,7 @@ test("IMPLICIT_DEFAULT_STRATEGIES: every documented key carries a non-trivial ju
   for (const [key, justification] of Object.entries(IMPLICIT_DEFAULT_STRATEGIES)) {
     assert.ok(
       typeof justification === "string" && justification.length > 20,
-      `weak/missing justification for "${key}"`
+      `weak/missing justification for "${key}"`,
     );
   }
 });
@@ -196,7 +196,7 @@ test("stale-enforcement: an IMPLICIT_DEFAULT_STRATEGIES key now referenced in di
   const stale = (reportStaleEntries as (a: string[], l: string[], g: string) => string[])(
     ["priority"],
     liveImplicitNeeded,
-    "known-symbols:combo"
+    "known-symbols:combo",
   );
   assert.deepEqual(stale, ["priority"]);
 });
@@ -208,7 +208,7 @@ test("stale-enforcement: an IMPLICIT_DEFAULT_STRATEGIES key still uncovered by d
   const stale = (reportStaleEntries as (a: string[], l: string[], g: string) => string[])(
     ["priority"],
     liveImplicitNeeded,
-    "known-symbols:combo"
+    "known-symbols:combo",
   );
   assert.deepEqual(stale, []);
 });
@@ -221,12 +221,12 @@ test("stale-enforcement: live repo IMPLICIT_DEFAULT_STRATEGIES has no stale entr
   const liveImplicitNeeded = diffComboStrategies(
     ROUTING_STRATEGY_VALUES as readonly string[],
     handled,
-    {}
+    {},
   ).canonicalNotHandled;
   const stale = (reportStaleEntries as (a: string[], l: string[], g: string) => string[])(
     Object.keys(IMPLICIT_DEFAULT_STRATEGIES),
     liveImplicitNeeded,
-    "known-symbols:combo"
+    "known-symbols:combo",
   );
   assert.deepEqual(stale, [], `IMPLICIT_DEFAULT_STRATEGIES has stale entries: ${stale.join(", ")}`);
 });

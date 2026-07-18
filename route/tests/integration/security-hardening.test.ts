@@ -57,7 +57,7 @@ test("proxy.ts does not contain hardcoded JWT_SECRET fallback", () => {
   assert.equal(
     content.includes("omniroute-default-secret-change-me"),
     false,
-    "src/proxy.ts should not have hardcoded JWT_SECRET fallback"
+    "src/proxy.ts should not have hardcoded JWT_SECRET fallback",
   );
 });
 
@@ -67,7 +67,7 @@ test("apiKey.ts does not contain legacy API_KEY_SECRET fallback literal", () => 
   assert.equal(
     content.includes("endpoint-proxy-api-key-secret"),
     false,
-    "src/shared/utils/apiKey.ts should not contain legacy fallback literal"
+    "src/shared/utils/apiKey.ts should not contain legacy fallback literal",
   );
 });
 
@@ -101,7 +101,7 @@ test("schemas.ts does not use .passthrough() in executable code", () => {
   assert.equal(
     hasPassthrough,
     false,
-    "schemas.ts should not use .passthrough() in code — fields must be explicitly listed"
+    "schemas.ts should not use .passthrough() in code — fields must be explicitly listed",
   );
 });
 
@@ -119,7 +119,7 @@ test("CI workflow exists and runs lint + tests", () => {
   assert.ok(content.includes("lint"), "CI should run linting");
   assert.ok(
     content.includes("test:unit") || content.includes("npm test") || content.includes("test"),
-    "CI should run tests"
+    "CI should run tests",
   );
 });
 
@@ -129,7 +129,7 @@ test("package.json test script runs tests", () => {
   assert.ok(testScript, "package.json must have a test script");
   assert.ok(
     testScript.includes("--test") || testScript.includes("vitest") || testScript.includes("jest"),
-    `test script should run tests, got: ${testScript}`
+    `test script should run tests, got: ${testScript}`,
   );
 });
 
@@ -140,7 +140,7 @@ test("chat handler wires guardrail pre-call validation", () => {
   assert.ok(content, "src/sse/handlers/chat.ts should exist");
   assert.ok(
     content.includes("guardrailRegistry") && content.includes("runPreCallHooks"),
-    "chat.ts should route request validation through the guardrail registry"
+    "chat.ts should route request validation through the guardrail registry",
   );
 });
 
@@ -155,7 +155,7 @@ test("instrumentation-node.ts validates runtime env after restoring secrets", ()
   assert.ok(content, "src/instrumentation-node.ts should exist");
   assert.ok(
     content.includes("enforceWebRuntimeEnv"),
-    "instrumentation-node.ts should call enforceWebRuntimeEnv"
+    "instrumentation-node.ts should call enforceWebRuntimeEnv",
   );
 });
 
@@ -166,7 +166,7 @@ test("callLogs.ts wires no-log and PII sanitization before persistence", () => {
   assert.ok(content, "src/lib/usage/callLogs.ts should exist");
   assert.ok(
     content.includes('from "../compliance"') || content.includes('from "../compliance/noLog"'),
-    "callLogs.ts should import compliance module"
+    "callLogs.ts should import compliance module",
   );
   // PII sanitization for error strings was extracted to callLogs/format.ts by #5725
   // (sanitizeErrorForLog); callLogs.ts still wires it in before persistence, and the
@@ -174,13 +174,13 @@ test("callLogs.ts wires no-log and PII sanitization before persistence", () => {
   // persist" invariant holds post-refactor (verified on both the helper and the file).
   assert.ok(
     content.includes("sanitizeErrorForLog") && content.includes('from "./callLogs/format"'),
-    "callLogs.ts should wire the extracted PII-sanitizing error helper (sanitizeErrorForLog)"
+    "callLogs.ts should wire the extracted PII-sanitizing error helper (sanitizeErrorForLog)",
   );
   const formatHelperContent = readIfExists("src/lib/usage/callLogs/format.ts");
   assert.ok(formatHelperContent, "src/lib/usage/callLogs/format.ts should exist");
   assert.ok(
     formatHelperContent.includes('from "../../piiSanitizer"'),
-    "callLogs/format.ts should import piiSanitizer (PII sanitization still wired post-#5725)"
+    "callLogs/format.ts should import piiSanitizer (PII sanitization still wired post-#5725)",
   );
   assert.ok(content.includes("isNoLog("), "callLogs.ts should check no-log policy");
 
@@ -188,11 +188,11 @@ test("callLogs.ts wires no-log and PII sanitization before persistence", () => {
   assert.ok(payloadHelperContent, "src/lib/logPayloads.ts should exist");
   assert.ok(
     content.includes("protectPayloadForLog") && content.includes('from "../logPayloads"'),
-    "callLogs.ts should route payload protection through shared log helpers"
+    "callLogs.ts should route payload protection through shared log helpers",
   );
   assert.ok(
     payloadHelperContent.includes("export function sanitizePayloadPII"),
-    "logPayloads.ts should keep recursive PII sanitization logic"
+    "logPayloads.ts should keep recursive PII sanitization logic",
   );
 });
 
@@ -211,18 +211,18 @@ test("MCP server enforces scopes from caller context before tool execution", () 
   assert.ok(serverContent, "open-sse/mcp-server/server.ts should exist");
   assert.ok(
     serverContent.includes("resolveCallerScopeContext"),
-    "MCP server should resolve caller scopes from request context"
+    "MCP server should resolve caller scopes from request context",
   );
   assert.ok(
     serverContent.includes("evaluateToolScopes"),
-    "MCP server should evaluate required scopes per tool"
+    "MCP server should evaluate required scopes per tool",
   );
 
   const scopeContent = readIfExists("open-sse/mcp-server/scopeEnforcement.ts");
   assert.ok(scopeContent, "open-sse/mcp-server/scopeEnforcement.ts should exist");
   assert.ok(
     scopeContent.includes("authInfo"),
-    "scope enforcement should parse authInfo scopes when provided by transport"
+    "scope enforcement should parse authInfo scopes when provided by transport",
   );
 });
 
@@ -231,11 +231,11 @@ test("ACP agents route requires management authentication before CLI discovery",
   assert.ok(content, "src/app/api/acp/agents/route.ts should exist");
   assert.ok(
     content.includes('from "@/shared/utils/apiAuth"'),
-    "ACP agents route should import shared API auth"
+    "ACP agents route should import shared API auth",
   );
   assert.ok(
     content.includes("if (!(await isAuthenticated(request)))"),
-    "ACP agents route should reject unauthenticated requests before spawning discovery"
+    "ACP agents route should reject unauthenticated requests before spawning discovery",
   );
 });
 
@@ -292,7 +292,7 @@ test("T06 route payload validation uses validateBody in critical endpoints", () 
     assert.ok(content, `${relPath} should exist`);
     assert.ok(
       content.includes("validateBody("),
-      `${relPath} should validate payload with validateBody`
+      `${relPath} should validate payload with validateBody`,
     );
   }
 });

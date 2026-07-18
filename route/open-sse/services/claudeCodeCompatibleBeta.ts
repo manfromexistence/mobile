@@ -11,7 +11,7 @@ export type ClaudeCodeCompatibleBetaOptions = {
 };
 
 export function resolveClaudeCodeCompatibleAnthropicBeta(
-  options: ClaudeCodeCompatibleBetaOptions = {}
+  options: ClaudeCodeCompatibleBetaOptions = {},
 ): string {
   const betas = [...CLAUDE_CODE_COMPATIBLE_BASE_BETAS];
   if (options.redactThinking === true) {

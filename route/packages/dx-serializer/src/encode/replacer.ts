@@ -40,7 +40,7 @@ export function applyReplacer(root: JsonValue, replacer: EncodeReplacer): JsonVa
 function transformChildren(
   value: JsonValue,
   replacer: EncodeReplacer,
-  path: readonly (string | number)[]
+  path: readonly (string | number)[],
 ): JsonValue {
   if (isJsonObject(value)) {
     return transformObject(value, replacer, path);
@@ -65,7 +65,7 @@ function transformChildren(
 function transformObject(
   obj: JsonObject,
   replacer: EncodeReplacer,
-  path: readonly (string | number)[]
+  path: readonly (string | number)[],
 ): JsonObject {
   const result: Record<string, JsonValue> = {};
 
@@ -100,7 +100,7 @@ function transformObject(
 function transformArray(
   arr: JsonArray,
   replacer: EncodeReplacer,
-  path: readonly (string | number)[]
+  path: readonly (string | number)[],
 ): JsonArray {
   const result: JsonValue[] = [];
 

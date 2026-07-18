@@ -28,7 +28,7 @@ function isPositiveInteger(value: unknown): value is number {
 }
 
 export function parseModelOverrideTarget(
-  target: unknown
+  target: unknown,
 ): { provider: string; modelId: string } | null {
   const raw = typeof target === "string" ? target.trim() : "";
   const slashIndex = raw.indexOf("/");
@@ -65,7 +65,7 @@ function toOverride(row: OverrideRow): ModelCapabilityOverride | null {
 export function getModelCapabilityOverride(
   provider: string | null | undefined,
   modelId: string | null | undefined,
-  key: ModelCapabilityOverrideKey
+  key: ModelCapabilityOverrideKey,
 ): number | null {
   const target = parseModelOverrideTarget(`${provider || ""}/${modelId || ""}`);
   if (!target || !isSupportedKey(key)) return null;
@@ -74,7 +74,7 @@ export function getModelCapabilityOverride(
     const row = getDbInstance()
       .prepare(
         "SELECT provider, model_id, override_key, override_value, refreshed_at " +
-          "FROM model_capability_overrides WHERE provider = ? AND model_id = ? AND override_key = ?"
+          "FROM model_capability_overrides WHERE provider = ? AND model_id = ? AND override_key = ?",
       )
       .get(target.provider, target.modelId, key) as OverrideRow | undefined;
     const override = row ? toOverride(row) : null;
@@ -87,7 +87,7 @@ export function getModelCapabilityOverride(
 export function setModelCapabilityOverride(
   target: string,
   key: ModelCapabilityOverrideKey,
-  value: number
+  value: number,
 ): boolean {
   const parsedTarget = parseModelOverrideTarget(target);
   if (!parsedTarget || !isSupportedKey(key) || !isPositiveInteger(value)) return false;
@@ -96,7 +96,7 @@ export function setModelCapabilityOverride(
     .prepare(
       "INSERT OR REPLACE INTO model_capability_overrides " +
         "(provider, model_id, override_key, override_value, refreshed_at) " +
-        "VALUES (?, ?, ?, ?, datetime('now'))"
+        "VALUES (?, ?, ?, ?, datetime('now'))",
     )
     .run(parsedTarget.provider, parsedTarget.modelId, key, JSON.stringify(value));
   return true;
@@ -104,7 +104,7 @@ export function setModelCapabilityOverride(
 
 export function removeModelCapabilityOverride(
   target: string,
-  key: ModelCapabilityOverrideKey
+  key: ModelCapabilityOverrideKey,
 ): boolean {
   const parsedTarget = parseModelOverrideTarget(target);
   if (!parsedTarget || !isSupportedKey(key)) return false;
@@ -112,7 +112,7 @@ export function removeModelCapabilityOverride(
   const info = getDbInstance()
     .prepare(
       "DELETE FROM model_capability_overrides " +
-        "WHERE provider = ? AND model_id = ? AND override_key = ?"
+        "WHERE provider = ? AND model_id = ? AND override_key = ?",
     )
     .run(parsedTarget.provider, parsedTarget.modelId, key);
   return info.changes > 0;
@@ -123,7 +123,7 @@ export function listModelCapabilityOverrides(): ModelCapabilityOverride[] {
     const rows = getDbInstance()
       .prepare(
         "SELECT provider, model_id, override_key, override_value, refreshed_at " +
-          "FROM model_capability_overrides ORDER BY refreshed_at DESC"
+          "FROM model_capability_overrides ORDER BY refreshed_at DESC",
       )
       .all() as OverrideRow[];
     return rows.map(toOverride).filter((entry): entry is ModelCapabilityOverride => entry !== null);

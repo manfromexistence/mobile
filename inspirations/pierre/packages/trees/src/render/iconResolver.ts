@@ -1,13 +1,6 @@
-import {
-  getBuiltInFileIconName,
-  resolveBuiltInFileIconToken,
-} from '../builtInIcons';
-import {
-  type FileTreeIcons,
-  normalizeFileTreeIcons,
-  type RemappedIcon,
-} from '../iconConfig';
-import type { SVGSpriteNames } from '../sprite';
+import { getBuiltInFileIconName, resolveBuiltInFileIconToken } from "../builtInIcons";
+import { type FileTreeIcons, normalizeFileTreeIcons, type RemappedIcon } from "../iconConfig";
+import type { SVGSpriteNames } from "../sprite";
 
 export interface FileTreeResolvedIcon {
   height?: number;
@@ -18,28 +11,24 @@ export interface FileTreeResolvedIcon {
   width?: number;
 }
 
-const normalizeIconRuleKey = (value: string): string =>
-  value.trim().toLowerCase();
+const normalizeIconRuleKey = (value: string): string => value.trim().toLowerCase();
 
 const getBaseFileName = (path: string): string => {
-  const parts = path.split('/');
+  const parts = path.split("/");
   return parts.at(-1) ?? path;
 };
 
 const getExtensionCandidates = (fileName: string): string[] => {
-  const segments = fileName.toLowerCase().split('.');
+  const segments = fileName.toLowerCase().split(".");
   const candidates: string[] = [];
   for (let index = 1; index < segments.length; index += 1) {
-    candidates.push(segments.slice(index).join('.'));
+    candidates.push(segments.slice(index).join("."));
   }
   return candidates;
 };
 
-function remapEntryToIcon(
-  entry: RemappedIcon,
-  remappedFrom: SVGSpriteNames
-): FileTreeResolvedIcon {
-  if (typeof entry === 'string') {
+function remapEntryToIcon(entry: RemappedIcon, remappedFrom: SVGSpriteNames): FileTreeResolvedIcon {
+  if (typeof entry === "string") {
     return { name: entry, remappedFrom };
   }
 
@@ -49,39 +38,26 @@ function remapEntryToIcon(
 // Mirrors the legacy file-icon priority order so the current file tree can gain
 // icon tiers without creating a second icon rule system.
 export function createFileTreeIconResolver(icons?: FileTreeIcons): {
-  resolveIcon: (
-    name: SVGSpriteNames,
-    filePath?: string
-  ) => FileTreeResolvedIcon;
+  resolveIcon: (name: SVGSpriteNames, filePath?: string) => FileTreeResolvedIcon;
 } {
   const normalizedIcons = normalizeFileTreeIcons(icons);
   const iconRemap = normalizedIcons.remap;
   const iconByFileName = new Map<string, RemappedIcon>();
-  for (const [fileName, icon] of Object.entries(
-    normalizedIcons.byFileName ?? {}
-  )) {
+  for (const [fileName, icon] of Object.entries(normalizedIcons.byFileName ?? {})) {
     iconByFileName.set(fileName.toLowerCase(), icon);
   }
 
   const iconByFileExtension = new Map<string, RemappedIcon>();
-  for (const [extension, icon] of Object.entries(
-    normalizedIcons.byFileExtension ?? {}
-  )) {
+  for (const [extension, icon] of Object.entries(normalizedIcons.byFileExtension ?? {})) {
     iconByFileExtension.set(normalizeIconRuleKey(extension), icon);
   }
 
-  const iconByFileNameContains = Object.entries(
-    normalizedIcons.byFileNameContains ?? {}
-  ).map(([needle, icon]): [string, RemappedIcon] => [
-    needle.toLowerCase(),
-    icon,
-  ]);
+  const iconByFileNameContains = Object.entries(normalizedIcons.byFileNameContains ?? {}).map(
+    ([needle, icon]): [string, RemappedIcon] => [needle.toLowerCase(), icon],
+  );
 
-  const resolveIcon = (
-    name: SVGSpriteNames,
-    filePath?: string
-  ): FileTreeResolvedIcon => {
-    if (name === 'file-tree-icon-file' && filePath != null) {
+  const resolveIcon = (name: SVGSpriteNames, filePath?: string): FileTreeResolvedIcon => {
+    if (name === "file-tree-icon-file" && filePath != null) {
       const fileName = getBaseFileName(filePath);
       const lowerFileName = fileName.toLowerCase();
       const fileNameEntry = iconByFileName.get(lowerFileName);
@@ -106,13 +82,13 @@ export function createFileTreeIconResolver(icons?: FileTreeIcons): {
       const builtInToken = resolveBuiltInFileIconToken(
         normalizedIcons.set,
         fileName,
-        extensionCandidates
+        extensionCandidates,
       );
-      if (builtInToken != null && normalizedIcons.set !== 'none') {
+      if (builtInToken != null && normalizedIcons.set !== "none") {
         // When the resolved token is the generic 'default' fallback, let the
         // user's remap['file-tree-icon-file'] win — that slot is explicitly
         // meant to override the generic file placeholder.
-        if (builtInToken === 'default') {
+        if (builtInToken === "default") {
           const remappedEntry = iconRemap?.[name];
           if (remappedEntry != null) {
             return remapEntryToIcon(remappedEntry, name);

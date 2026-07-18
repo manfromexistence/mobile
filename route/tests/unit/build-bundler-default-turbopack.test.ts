@@ -14,14 +14,14 @@ test("resolveNextBuildBundlerFlag defaults to --turbopack when the env var is un
 test("resolveNextBuildBundlerFlag keeps --turbopack for explicit opt-in", () => {
   assert.equal(
     buildIsolated.resolveNextBuildBundlerFlag({ OMNIROUTE_USE_TURBOPACK: "1" }),
-    "--turbopack"
+    "--turbopack",
   );
 });
 
 test("resolveNextBuildBundlerFlag honors the webpack escape hatch (=0)", () => {
   assert.equal(
     buildIsolated.resolveNextBuildBundlerFlag({ OMNIROUTE_USE_TURBOPACK: "0" }),
-    "--webpack"
+    "--webpack",
   );
 });
 
@@ -29,6 +29,6 @@ test("resolveNextBuildBundlerFlag treats other values as the turbopack default",
   // Only the documented "0" opts out — junk values must not silently flip the bundler.
   assert.equal(
     buildIsolated.resolveNextBuildBundlerFlag({ OMNIROUTE_USE_TURBOPACK: "yes" }),
-    "--turbopack"
+    "--turbopack",
   );
 });

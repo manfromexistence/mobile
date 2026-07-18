@@ -11,10 +11,7 @@
  */
 
 import { PoolRegistry } from "./sessionPool/poolRegistry.ts";
-import {
-  isProviderInCooldown,
-  getProviderCooldownRemainingMs,
-} from "./accountFallback.ts";
+import { isProviderInCooldown, getProviderCooldownRemainingMs } from "./accountFallback.ts";
 import { getAllCircuitBreakerStatuses } from "../../src/shared/utils/circuitBreaker.ts";
 import type { PoolStats, PoolSessionDetail } from "./sessionPool/types.ts";
 
@@ -126,9 +123,7 @@ function computeHealth(
 
   // Check breaker state first — most critical
   if (breaker?.inCooldown) {
-    issues.push(
-      `breaker OPEN (cooldown ${breaker.cooldownRemainingMs ?? 0}ms remaining)`,
-    );
+    issues.push(`breaker OPEN (cooldown ${breaker.cooldownRemainingMs ?? 0}ms remaining)`);
     return { health: "down", issues };
   }
 
@@ -150,8 +145,7 @@ function computeHealth(
 
     // >50% sessions in cooldown/dead → degraded
     if (pool.totalSessions > 0) {
-      const unhealthyRatio =
-        (pool.cooldownSessions + pool.deadSessions) / pool.totalSessions;
+      const unhealthyRatio = (pool.cooldownSessions + pool.deadSessions) / pool.totalSessions;
       if (unhealthyRatio > 0.5) {
         issues.push(
           `${pool.cooldownSessions + pool.deadSessions}/${pool.totalSessions} sessions in cooldown/dead`,
@@ -170,7 +164,9 @@ function computeHealth(
 /**
  * Build pool info from PoolRegistry stats.
  */
-function buildPoolInfo(stats: (PoolStats & { createdAt: number }) | null): WebSessionPoolPoolInfo | null {
+function buildPoolInfo(
+  stats: (PoolStats & { createdAt: number }) | null,
+): WebSessionPoolPoolInfo | null {
   if (!stats) return null;
 
   const elapsedMs = Date.now() - stats.createdAt;
@@ -212,9 +208,7 @@ function buildBreakerInfo(
 /**
  * Map PoolSessionDetail[] to our output format.
  */
-function mapSessionDetails(
-  details: PoolSessionDetail[] | null,
-): WebSessionPoolSessionInfo[] {
+function mapSessionDetails(details: PoolSessionDetail[] | null): WebSessionPoolSessionInfo[] {
   if (!details) return [];
   return details.map((d) => ({
     id: d.id,

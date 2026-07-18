@@ -19,8 +19,9 @@ const {
   safeLogEvents,
   withSessionHeader,
 } = await import("../../src/sse/handlers/chatHelpers.ts");
-const { getCircuitBreaker, resetAllCircuitBreakers, STATE } =
-  await import("../../src/shared/utils/circuitBreaker.ts");
+const { getCircuitBreaker, resetAllCircuitBreakers, STATE } = await import(
+  "../../src/shared/utils/circuitBreaker.ts"
+);
 
 async function resetStorage() {
   resetAllCircuitBreakers();
@@ -57,7 +58,7 @@ test("resolveModelOrError resolves built-in auto catalog ids without persisted c
   const result = await resolveModelOrError(
     "auto/best-coding",
     { messages: [{ role: "user", content: "echo hi" }] },
-    "/v1/chat/completions"
+    "/v1/chat/completions",
   );
 
   assert.equal(result.error, undefined);
@@ -77,7 +78,7 @@ test("resolveModelOrError rejects unknown built-in auto catalog ids", async () =
   const result = await resolveModelOrError(
     "auto/not-a-real-template",
     { messages: [{ role: "user", content: "echo hi" }] },
-    "/v1/chat/completions"
+    "/v1/chat/completions",
   );
 
   assert.ok(result.error);
@@ -97,7 +98,7 @@ test("resolveModelOrError preserves persisted fuzzy auto combos before virtual c
   const result = await resolveModelOrError(
     "auto/legacy",
     { messages: [{ role: "user", content: "echo hi" }] },
-    "/v1/chat/completions"
+    "/v1/chat/completions",
   );
 
   assert.equal(result.error, undefined);
@@ -112,7 +113,7 @@ test("resolveModelOrError rejects ambiguous aliases without a provider prefix", 
   const result = await resolveModelOrError(
     "claude-sonnet-4-6",
     { messages: [{ role: "user", content: "hello" }] },
-    "/v1/chat/completions"
+    "/v1/chat/completions",
   );
 
   assert.ok(result.error);
@@ -125,7 +126,7 @@ test("resolveModelOrError rejects ambiguous slashful canonical ids instead of mi
   const result = await resolveModelOrError(
     "openai/gpt-oss-120b",
     { messages: [{ role: "user", content: "hello" }] },
-    "/v1/chat/completions"
+    "/v1/chat/completions",
   );
 
   assert.ok(result.error);
@@ -139,7 +140,7 @@ test("resolveModelOrError rejects malformed model strings", async () => {
   const result = await resolveModelOrError(
     "../etc/passwd",
     { messages: [{ role: "user", content: "hello" }] },
-    "/v1/chat/completions"
+    "/v1/chat/completions",
   );
 
   assert.ok(result.error);
@@ -153,7 +154,7 @@ test("resolveModelOrError routes Codex native compact gpt-5.5 requests to Codex"
     "gpt-5.5",
     { model: "gpt-5.5", input: "compact this session", reasoning: { effort: "xhigh" } },
     "/v1/responses/compact",
-    { "user-agent": "codex-cli/0.128.0" }
+    { "user-agent": "codex-cli/0.128.0" },
   );
 
   assert.equal(result.provider, "codex");
@@ -165,7 +166,7 @@ test("resolveModelOrError keeps non-Codex gpt-5.5 Responses requests on OpenAI",
     "gpt-5.5",
     { model: "gpt-5.5", input: "hello" },
     "/v1/responses",
-    { "user-agent": "OpenAI/Node" }
+    { "user-agent": "OpenAI/Node" },
   );
 
   assert.equal(result.provider, "openai");
@@ -179,7 +180,7 @@ test("resolveModelOrError routes bare gpt-5.5 to Codex medium when Codex is the 
     "gpt-5.5",
     { model: "gpt-5.5", input: "hello" },
     "/v1/responses",
-    { "user-agent": "OpenAI/Node" }
+    { "user-agent": "OpenAI/Node" },
   );
 
   assert.equal(result.provider, "codex");
@@ -194,7 +195,7 @@ test("resolveModelOrError keeps bare gpt-5.5 on OpenAI when OpenAI is the only a
     "gpt-5.5",
     { model: "gpt-5.5", input: "hello" },
     "/v1/responses",
-    { "user-agent": "OpenAI/Node" }
+    { "user-agent": "OpenAI/Node" },
   );
 
   assert.equal(result.provider, "openai");
@@ -267,7 +268,7 @@ test("handleNoCredentials reports missing provider credentials and exhausted acc
     "openai",
     "gpt-4o-mini",
     "Primary account failed",
-    500
+    500,
   );
 
   const missingJson = (await missing.json()) as any;
@@ -293,7 +294,7 @@ test("handleNoCredentials returns Retry-After when every account is rate limited
     "openai",
     "gpt-4o-mini",
     null,
-    null
+    null,
   );
   const json = (await response.json()) as any;
 
@@ -318,7 +319,7 @@ test("handleNoCredentials returns structured model_cooldown when every credentia
     "gemini",
     "gemini-2.5-pro",
     null,
-    null
+    null,
   );
   const json = (await response.json()) as any;
 
@@ -341,7 +342,7 @@ test("handleNoCredentials returns 401 with re-auth hint when every connection is
     "kiro",
     "claude-sonnet-4.6",
     null,
-    null
+    null,
   );
   const json = (await response.json()) as any;
 
@@ -358,7 +359,7 @@ test("handleNoCredentials maps allExpired status='expired' to the 'authenticatio
     "cline",
     "claude-sonnet-4.6",
     null,
-    null
+    null,
   );
   const json = (await response.json()) as any;
 
@@ -466,7 +467,7 @@ test("resolveModelOrError returns model_not_found error for unrecognised bare mo
   const result = await resolveModelOrError(
     "completely-unknown-model-xyz",
     { messages: [{ role: "user", content: "hello" }] },
-    "/v1/chat/completions"
+    "/v1/chat/completions",
   );
 
   assert.ok(result.error);

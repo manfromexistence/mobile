@@ -210,7 +210,7 @@ describe("deepseekWebTools — buildToolConversationPrompt (agentic context)", (
     assert.ok(prompt.includes('"name": "todowrite"'), "prior todowrite call replayed");
     assert.ok(
       prompt.includes("Tool result (todowrite): todos created"),
-      "todowrite result replayed"
+      "todowrite result replayed",
     );
     assert.ok(prompt.includes('"name": "bash"'), "prior bash call replayed");
     assert.ok(prompt.includes("Tool result (bash): train.py"), "bash result replayed");

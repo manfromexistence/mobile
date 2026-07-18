@@ -152,7 +152,7 @@ function normalizePositiveTimeoutMs(value: unknown): number {
 export function resolveComboTargetTimeoutMs(
   config: Record<string, unknown> | null | undefined,
   upstreamTimeoutMs: number,
-  defaultTimeoutMs: number = 0
+  defaultTimeoutMs: number = 0,
 ): number {
   const ceilingTimeoutMs = normalizePositiveTimeoutMs(upstreamTimeoutMs);
   const configuredTimeoutMs = isRecord(config)
@@ -199,7 +199,7 @@ export function resolveComboQueueDepth(config: Record<string, unknown> | null | 
 export function resolveComboConfig(
   combo: ComboConfigLike,
   settings: ComboSettingsLike,
-  provider?: string | null
+  provider?: string | null,
 ) {
   const global = settings?.comboDefaults || {};
   const providerOverride = provider ? settings?.providerOverrides?.[provider] || {} : {};
@@ -210,8 +210,8 @@ export function resolveComboConfig(
     Object.fromEntries(
       Object.entries(obj).filter(
         ([key, value]) =>
-          value !== undefined && value !== null && !LEGACY_COMBO_RESILIENCE_KEYS.has(key)
-      )
+          value !== undefined && value !== null && !LEGACY_COMBO_RESILIENCE_KEYS.has(key),
+      ),
     );
 
   const merged = {

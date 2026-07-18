@@ -56,7 +56,7 @@ function parseArgs(argv) {
           "  --threshold=<n>   Minimum coverage % for every locale (default 80)",
           "  --report          Print full coverage table, exit 0 regardless",
           "  --json            Emit JSON report to stdout",
-        ].join("\n")
+        ].join("\n"),
       );
       process.exit(0);
     }
@@ -203,8 +203,8 @@ async function main() {
           results,
         },
         null,
-        2
-      ) + "\n"
+        2,
+      ) + "\n",
     );
     if (failures.length && !opts.report) process.exit(1);
     return;
@@ -246,14 +246,14 @@ async function main() {
         padLeft(r.placeholder, 11) +
         "  " +
         padLeft(r.total_en, 8) +
-        marker
+        marker,
     );
   }
 
   if (failures.length) {
     if (opts.report) {
       logInfo(
-        `${failures.length} locale(s) below threshold ${opts.threshold}% — report mode, exiting 0.`
+        `${failures.length} locale(s) below threshold ${opts.threshold}% — report mode, exiting 0.`,
       );
     } else {
       logInfo(`FAIL — ${failures.length} locale(s) below threshold ${opts.threshold}%.`);

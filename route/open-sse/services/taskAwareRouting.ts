@@ -65,7 +65,7 @@ const MAX_CONVERSATION_AFFINITY_ENTRIES = 1000;
  */
 export function isTaskRoutingStrategy(strategy: unknown): boolean {
   return ["smart", "task", "task-aware", "task_aware", "auto"].includes(
-    String(strategy ?? "").toLowerCase()
+    String(strategy ?? "").toLowerCase(),
   );
 }
 
@@ -190,7 +190,7 @@ export function getTaskSignals(body: Record<string, unknown>): TaskSignals {
     outputTokens,
     effort,
     hasExplicitReasoning: Boolean(
-      effort && effort !== "none" && effort !== "off" && effort !== "disabled"
+      effort && effort !== "none" && effort !== "off" && effort !== "disabled",
     ),
     lightKeyword: LIGHT_TASK_RE.test(text),
     heavyKeyword: HEAVY_TASK_RE.test(text),
@@ -232,7 +232,7 @@ export function classifyTask(body: Record<string, unknown>): TaskClassification 
     add(s.toolCount >= 8 && s.promptChars >= 16000, "many-tools-large-context") ||
     add(
       s.criticalKeyword && (effortIsHigh || s.toolCount >= 3 || s.promptChars >= 8000),
-      "critical-domain"
+      "critical-domain",
     );
 
   if (critical) {
@@ -315,7 +315,7 @@ export function modelPowerScore(modelStr: string): number {
 
   if (
     /\b(opus|mythos|gpt-5|o3|o4|pro|max|ultra|deepseek-v4-pro|sonnet-4|glm-5|kimi-k2\.7|minimax-m3|reasoner)\b/i.test(
-      id
+      id,
     )
   )
     score += 28;
@@ -336,7 +336,7 @@ const HARD_CAP_CHECKS = new Set(["vision"]);
 export function scoreModelForTask(
   modelStr: string,
   task: TaskClassification = classifyTask({}),
-  required: Set<string> = new Set()
+  required: Set<string> = new Set(),
 ): number {
   const caps = getResolvedModelCapabilities(modelStr);
   const target = TASK_TARGET_POWER[task.level];
@@ -377,7 +377,7 @@ export function scoreModelForTask(
 export function reorderByTaskWeight(
   targets: ResolvedComboTarget[],
   task: TaskClassification = classifyTask({}),
-  required: Set<string> = new Set()
+  required: Set<string> = new Set(),
 ): ResolvedComboTarget[] {
   if (!Array.isArray(targets) || targets.length <= 1) return targets;
 
@@ -401,7 +401,7 @@ function normalizeFingerprintText(value: unknown): string {
 function firstRoleText(
   items: unknown[],
   roles: Set<string>,
-  contentKey: "content" | "parts" = "content"
+  contentKey: "content" | "parts" = "content",
 ): string {
   if (!Array.isArray(items)) return "";
   for (const item of items) {
@@ -418,7 +418,7 @@ function firstRoleText(
 function allRoleText(
   items: unknown[],
   roles: Set<string>,
-  contentKey: "content" | "parts" = "content"
+  contentKey: "content" | "parts" = "content",
 ): string {
   if (!Array.isArray(items)) return "";
   return normalizeFingerprintText(
@@ -427,13 +427,13 @@ function allRoleText(
         (item): item is Record<string, unknown> =>
           !!item &&
           typeof item === "object" &&
-          roles.has(String((item as Record<string, unknown>)["role"] ?? ""))
+          roles.has(String((item as Record<string, unknown>)["role"] ?? "")),
       )
       .map((item) =>
-        collectText(contentKey === "parts" ? item["parts"] : item["content"]).join("\n")
+        collectText(contentKey === "parts" ? item["parts"] : item["content"]).join("\n"),
       )
       .filter(Boolean)
-      .join("\n")
+      .join("\n"),
   );
 }
 
@@ -518,7 +518,7 @@ export function pruneConversationAffinity(now = Date.now()): void {
 export function getOrSetConversationAffinityIndex(
   rotationKey: string,
   conversationCacheKey: string,
-  currentIndex: number
+  currentIndex: number,
 ): number {
   const now = Date.now();
   pruneConversationAffinity(now);

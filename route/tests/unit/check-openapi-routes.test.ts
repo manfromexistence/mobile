@@ -18,7 +18,7 @@ test("documented path with a real route is not flagged", () => {
 test("param name mismatch still matches (param-insensitive)", () => {
   assert.deepEqual(
     findSpecPathsWithoutRoute(["/api/providers/{id}"], ["/api/providers/{providerId}"]),
-    []
+    [],
   );
 });
 
@@ -36,7 +36,7 @@ test("stale-enforcement: allowlist entry no longer needed causes gate to flag it
   const stale = (reportStaleEntries as (a: Set<string>, l: string[], g: string) => string[])(
     new Set(["/api/agent-bridge/{id}/state"]),
     liveOrphans,
-    "openapi-routes"
+    "openapi-routes",
   );
   assert.deepEqual(stale, ["/api/agent-bridge/{id}/state"]);
 });

@@ -1,50 +1,57 @@
-import { Tag } from "@opencode-ai/ui/v2/badge-v2"
-import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon"
-import { IconButtonV2 } from "@opencode-ai/ui/v2/icon-button-v2"
-import { TextInputV2 } from "@opencode-ai/ui/v2/text-input-v2"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import fuzzysort from "fuzzysort"
-import { type Component, For, Show, createMemo } from "solid-js"
-import { createStore } from "solid-js/store"
-import { ServerRowMenu } from "@/components/server/server-row-menu"
-import { ServerHealthIndicator } from "@/components/server/server-row"
-import { useLanguage } from "@/context/language"
-import { ServerConnection, serverName } from "@/context/server"
-import { useServerManagementController } from "../dialog-select-server"
-import { DialogServerV2 } from "./dialog-server-v2"
-import { SettingsListV2 } from "./parts/list"
-import { AddServerMenu, isWslServer, useFilteredWslServers, WslServerSettings } from "@/wsl/settings"
-import "./settings-v2.css"
+import { Tag } from "@opencode-ai/ui/v2/badge-v2";
+import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon";
+import { IconButtonV2 } from "@opencode-ai/ui/v2/icon-button-v2";
+import { TextInputV2 } from "@opencode-ai/ui/v2/text-input-v2";
+import { useDialog } from "@opencode-ai/ui/context/dialog";
+import fuzzysort from "fuzzysort";
+import { type Component, For, Show, createMemo } from "solid-js";
+import { createStore } from "solid-js/store";
+import { ServerRowMenu } from "@/components/server/server-row-menu";
+import { ServerHealthIndicator } from "@/components/server/server-row";
+import { useLanguage } from "@/context/language";
+import { ServerConnection, serverName } from "@/context/server";
+import { useServerManagementController } from "../dialog-select-server";
+import { DialogServerV2 } from "./dialog-server-v2";
+import { SettingsListV2 } from "./parts/list";
+import {
+  AddServerMenu,
+  isWslServer,
+  useFilteredWslServers,
+  WslServerSettings,
+} from "@/wsl/settings";
+import "./settings-v2.css";
 
 export const SettingsServersV2: Component = () => {
-  const dialog = useDialog()
-  const language = useLanguage()
-  const controller = useServerManagementController()
-  const [store, setStore] = createStore({ filter: "" })
-  const wslServers = useFilteredWslServers(() => store.filter)
+  const dialog = useDialog();
+  const language = useLanguage();
+  const controller = useServerManagementController();
+  const [store, setStore] = createStore({ filter: "" });
+  const wslServers = useFilteredWslServers(() => store.filter);
 
   const showSearch = createMemo(
-    () => controller.sortedItems().filter((item) => !isWslServer(item)).length + wslServers().length > 1,
-  )
+    () =>
+      controller.sortedItems().filter((item) => !isWslServer(item)).length + wslServers().length >
+      1,
+  );
 
   const filtered = createMemo(() => {
-    const items = controller.sortedItems().filter((item) => !isWslServer(item))
-    const query = store.filter.trim()
-    if (!query) return items
+    const items = controller.sortedItems().filter((item) => !isWslServer(item));
+    const query = store.filter.trim();
+    if (!query) return items;
     return fuzzysort
       .go(query, items, {
         keys: [(item) => serverName(item), (item) => item.http.url],
       })
-      .map((result) => result.obj)
-  })
+      .map((result) => result.obj);
+  });
 
   const openAdd = () => {
-    dialog.push(() => <DialogServerV2 mode="add" />)
-  }
+    dialog.push(() => <DialogServerV2 mode="add" />);
+  };
 
   const openEdit = (server: ServerConnection.Http) => {
-    dialog.push(() => <DialogServerV2 mode="edit" server={server} />)
-  }
+    dialog.push(() => <DialogServerV2 mode="edit" server={server} />);
+  };
 
   return (
     <>
@@ -89,7 +96,9 @@ export const SettingsServersV2: Component = () => {
           when={filtered().length > 0 || wslServers().length > 0}
           fallback={
             <div class="settings-v2-servers-status">
-              <span>{store.filter ? language.t("palette.empty") : language.t("dialog.server.empty")}</span>
+              <span>
+                {store.filter ? language.t("palette.empty") : language.t("dialog.server.empty")}
+              </span>
               <Show when={store.filter}>
                 <span class="settings-v2-servers-status-filter">&quot;{store.filter}&quot;</span>
               </Show>
@@ -100,9 +109,9 @@ export const SettingsServersV2: Component = () => {
             <WslServerSettings controller={controller} servers={wslServers} />
             <For each={filtered()}>
               {(item) => {
-                const key = ServerConnection.key(item)
-                const health = () => controller.status()[key]
-                const isDefault = () => controller.defaultKey() === key
+                const key = ServerConnection.key(item);
+                const health = () => controller.status()[key];
+                const isDefault = () => controller.defaultKey() === key;
                 return (
                   <div class="settings-v2-servers-row">
                     <div class="settings-v2-servers-lead">
@@ -114,7 +123,11 @@ export const SettingsServersV2: Component = () => {
                           <Show when={health()?.version && item.type === "http"}> • </Show>
                           <Show
                             when={item.type === "http" && item.http.username}
-                            fallback={<Show when={item.type === "http"}>{language.t("server.row.noUsername")}</Show>}
+                            fallback={
+                              <Show when={item.type === "http"}>
+                                {language.t("server.row.noUsername")}
+                              </Show>
+                            }
                           >
                             {item.http.username}
                           </Show>
@@ -128,12 +141,12 @@ export const SettingsServersV2: Component = () => {
                       <ServerRowMenu server={item} controller={controller} onEdit={openEdit} />
                     </div>
                   </div>
-                )
+                );
               }}
             </For>
           </SettingsListV2>
         </Show>
       </div>
     </>
-  )
-}
+  );
+};

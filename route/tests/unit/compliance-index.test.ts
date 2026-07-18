@@ -143,7 +143,7 @@ test("compliance noLog helpers cover missing ids, in-memory overrides and persis
   const now = new Date().toISOString();
 
   db.prepare(
-    "INSERT INTO api_keys (id, name, key, machine_id, allowed_models, no_log, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
+    "INSERT INTO api_keys (id, name, key, machine_id, allowed_models, no_log, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
   ).run("persisted-no-log", "Persisted", "sk-persisted", null, "[]", 1, now);
 
   assert.equal(compliance.isNoLog(""), false);
@@ -168,58 +168,58 @@ test("cleanupExpiredLogs removes stale rows across all log tables and records an
   db.prepare("INSERT INTO usage_history (provider, model, timestamp) VALUES (?, ?, ?)").run(
     "openai",
     "gpt-4o",
-    oldCallTs
+    oldCallTs,
   );
   db.prepare("INSERT INTO usage_history (provider, model, timestamp) VALUES (?, ?, ?)").run(
     "openai",
     "gpt-4o",
-    freshTs
+    freshTs,
   );
 
   db.prepare("INSERT INTO call_logs (id, timestamp, method, path) VALUES (?, ?, ?, ?)").run(
     "call-old",
     oldCallTs,
     "POST",
-    "/v1/chat/completions"
+    "/v1/chat/completions",
   );
   db.prepare("INSERT INTO call_logs (id, timestamp, method, path) VALUES (?, ?, ?, ?)").run(
     "call-new",
     freshTs,
     "POST",
-    "/v1/chat/completions"
+    "/v1/chat/completions",
   );
 
   db.prepare("INSERT INTO proxy_logs (id, timestamp, status, proxy_type) VALUES (?, ?, ?, ?)").run(
     "proxy-old",
     oldCallTs,
     "ok",
-    "http"
+    "http",
   );
   db.prepare("INSERT INTO proxy_logs (id, timestamp, status, proxy_type) VALUES (?, ?, ?, ?)").run(
     "proxy-new",
     freshTs,
     "ok",
-    "http"
+    "http",
   );
 
   db.prepare("INSERT INTO request_detail_logs (id, call_log_id, timestamp) VALUES (?, ?, ?)").run(
     "rdl-old",
     "call-old",
-    oldCallTs
+    oldCallTs,
   );
   db.prepare("INSERT INTO request_detail_logs (id, call_log_id, timestamp) VALUES (?, ?, ?)").run(
     "rdl-new",
     "call-new",
-    freshTs
+    freshTs,
   );
 
   db.prepare("INSERT INTO mcp_tool_audit (tool_name, created_at) VALUES (?, ?)").run(
     "memory_search",
-    oldAppTs
+    oldAppTs,
   );
   db.prepare("INSERT INTO mcp_tool_audit (tool_name, created_at) VALUES (?, ?)").run(
     "memory_add",
-    freshTs
+    freshTs,
   );
 
   compliance.logAuditEvent({
@@ -229,7 +229,7 @@ test("cleanupExpiredLogs removes stale rows across all log tables and records an
   });
   db.prepare("UPDATE audit_log SET timestamp = ? WHERE action = ?").run(
     oldAppTs,
-    "admin.cleanup.seed"
+    "admin.cleanup.seed",
   );
 
   const result = await compliance.cleanupExpiredLogs();

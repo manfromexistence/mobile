@@ -18,15 +18,15 @@ describe("Caveman language packs", () => {
       assert.ok(rules.length >= 15, `${language} expected 15+ rules, got ${rules.length}`);
       assert.ok(
         rules.some((rule) => rule.category === "filler"),
-        `${language} missing filler`
+        `${language} missing filler`,
       );
       assert.ok(
         rules.some((rule) => rule.category === "context"),
-        `${language} missing context`
+        `${language} missing context`,
       );
       assert.ok(
         rules.some((rule) => rule.category === "structural"),
-        `${language} missing structural`
+        `${language} missing structural`,
       );
     }
   });
@@ -54,15 +54,15 @@ describe("Caveman language packs", () => {
     assert.ok(esRules.length >= 40, `es expected 40+ rules, got ${esRules.length}`);
     assert.ok(
       esRules.some((rule) => rule.category === "dedup"),
-      "es missing dedup"
+      "es missing dedup",
     );
     assert.ok(
       esRules.some((rule) => rule.category === "ultra"),
-      "es missing ultra"
+      "es missing ultra",
     );
     assert.ok(
       esRules.some((rule) => rule.category === "terse"),
-      "es missing terse"
+      "es missing terse",
     );
   });
 
@@ -70,7 +70,7 @@ describe("Caveman language packs", () => {
     const esRules = getRulesForContext("user", "ultra", "es");
     const { text } = applyRulesToText(
       "Por favor proporciona una explicación detallada de la base de datos y autenticación en src/auth.ts",
-      esRules
+      esRules,
     );
 
     assert.ok(!text.toLowerCase().includes("por favor"));
@@ -84,7 +84,7 @@ describe("Caveman language packs", () => {
     const idRules = getRulesForContext("user", "ultra", "id");
     const { text } = applyRulesToText(
       "Tolong berikan penjelasan detail tentang basis data dan autentikasi di src/auth.ts",
-      idRules
+      idRules,
     );
 
     assert.ok(!text.toLowerCase().includes("tolong"));

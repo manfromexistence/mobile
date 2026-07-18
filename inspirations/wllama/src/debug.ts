@@ -1,4 +1,4 @@
-import { WASM_SOURCE_MAP } from './wasm/source-map';
+import { WASM_SOURCE_MAP } from "./wasm/source-map";
 
 interface DecodedMap {
   firstId: number;
@@ -14,7 +14,7 @@ async function loadMap(buildKey: string): Promise<DecodedMap> {
   if (!b64) throw new Error(`No source map for build "${buildKey}"`);
 
   const gzipped = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
-  const ds = new DecompressionStream('gzip');
+  const ds = new DecompressionStream("gzip");
   const writer = ds.writable.getWriter();
   writer.write(gzipped);
   writer.close();
@@ -55,16 +55,13 @@ export const Debug = {
    */
   decodeFuncIds: async (
     funcIds: number[],
-    isCompatBuild: boolean
+    isCompatBuild: boolean,
   ): Promise<{ funcId: number; name: string }[]> => {
-    const buildKey = isCompatBuild ? 'compat' : 'default';
+    const buildKey = isCompatBuild ? "compat" : "default";
     const { firstId, funcNames } = await loadMap(buildKey);
     return funcIds.map((funcId) => {
       const i = funcId - firstId;
-      const name =
-        i >= 0 && i < funcNames.length && funcNames[i]
-          ? funcNames[i]!
-          : '(unknown)';
+      const name = i >= 0 && i < funcNames.length && funcNames[i] ? funcNames[i]! : "(unknown)";
       return { funcId, name };
     });
   },
@@ -86,26 +83,21 @@ export const Debug = {
    * Example output:
    *   wasm-func[775] (server_response::send)
    */
-  decodeStackTrace: async (
-    stack: string,
-    isCompatBuild: boolean
-  ): Promise<string> => {
+  decodeStackTrace: async (stack: string, isCompatBuild: boolean): Promise<string> => {
     // match wasm-function[N] from Chrome, Firefox and Safari stack formats
     const re = /wasm-function\[(\d+)\]/g;
-    const funcIds = [
-      ...new Set([...stack.matchAll(re)].map((m) => parseInt(m[1]))),
-    ];
+    const funcIds = [...new Set([...stack.matchAll(re)].map((m) => parseInt(m[1])))];
     if (funcIds.length === 0) return stack;
 
     const resolved = await Debug.decodeFuncIds(funcIds, isCompatBuild);
 
     return resolved
       .map((r) => {
-        if (r.name === '(unknown)') {
+        if (r.name === "(unknown)") {
           return `    wasm-func[${r.funcId}] (unknown)`;
         }
         return `    wasm-func[${r.funcId}] (${r.name})`;
       })
-      .join('\n');
+      .join("\n");
   },
 };

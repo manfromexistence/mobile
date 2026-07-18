@@ -30,7 +30,7 @@ test("Codex catalog exposes the GPT-5.6 lineup in configured priority order", ()
 
   assert.deepEqual(
     models.slice(0, expectedIds.length).map((model) => model.id),
-    expectedIds
+    expectedIds,
   );
 
   for (const modelId of expectedIds) {
@@ -48,7 +48,7 @@ test("Codex catalog exposes the GPT-5.6 lineup in configured priority order", ()
 
   assert.equal(
     models.some((model) => model.id === "gpt-5.6-luna-ultra"),
-    false
+    false,
   );
 });
 
@@ -57,6 +57,6 @@ test("Codex catalog no longer exposes GPT-5.4 models", () => {
 
   assert.deepEqual(
     models.filter((model) => model.id.startsWith("gpt-5.4")).map((model) => model.id),
-    []
+    [],
   );
 });

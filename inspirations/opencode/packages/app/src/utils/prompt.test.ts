@@ -1,6 +1,6 @@
-import { describe, expect, test } from "bun:test"
-import type { Part } from "@opencode-ai/sdk/v2"
-import { extractPromptFromParts } from "./prompt"
+import { describe, expect, test } from "bun:test";
+import type { Part } from "@opencode-ai/sdk/v2";
+import { extractPromptFromParts } from "./prompt";
 
 describe("extractPromptFromParts", () => {
   test("restores multiple uploaded attachments", () => {
@@ -30,15 +30,20 @@ describe("extractPromptFromParts", () => {
         sessionID: "ses_1",
         messageID: "msg_1",
       },
-    ] satisfies Part[]
+    ] satisfies Part[];
 
-    const result = extractPromptFromParts(parts)
+    const result = extractPromptFromParts(parts);
 
-    expect(result).toHaveLength(3)
-    expect(result[0]).toMatchObject({ type: "text", content: "check these" })
+    expect(result).toHaveLength(3);
+    expect(result[0]).toMatchObject({ type: "text", content: "check these" });
     expect(result.slice(1)).toMatchObject([
       { type: "image", filename: "a.png", mime: "image/png", dataUrl: "data:image/png;base64,AAA" },
-      { type: "image", filename: "b.pdf", mime: "application/pdf", dataUrl: "data:application/pdf;base64,BBB" },
-    ])
-  })
-})
+      {
+        type: "image",
+        filename: "b.pdf",
+        mime: "application/pdf",
+        dataUrl: "data:application/pdf;base64,BBB",
+      },
+    ]);
+  });
+});

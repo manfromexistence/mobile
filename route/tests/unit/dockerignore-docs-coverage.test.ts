@@ -148,7 +148,7 @@ test("#2348 .dockerignore keeps every doc the in-product viewer needs", () => {
   assert.deepEqual(
     ignored,
     [],
-    `Files excluded from Docker context — Dashboard Docs viewer will 404 on these:\n  ${ignored.join("\n  ")}`
+    `Files excluded from Docker context — Dashboard Docs viewer will 404 on these:\n  ${ignored.join("\n  ")}`,
   );
 });
 
@@ -157,6 +157,6 @@ test("#2348 .dockerignore still excludes the heavy i18n tree", () => {
   const heavy = "docs/i18n/pt-BR/docs/routing/AUTO-COMBO.md";
   assert.ok(
     isIgnored(heavy, parsed),
-    `${heavy} should be excluded from Docker context but is not — image size will balloon`
+    `${heavy} should be excluded from Docker context but is not — image size will balloon`,
   );
 });

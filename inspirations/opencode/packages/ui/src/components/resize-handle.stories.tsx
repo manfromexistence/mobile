@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { createSignal } from "solid-js"
-import { createStore } from "solid-js/store"
-import * as mod from "./resize-handle"
+import { createSignal } from "solid-js";
+import { createStore } from "solid-js/store";
+import * as mod from "./resize-handle";
 
 const docs = `### Overview
 Drag handle for resizing panels or split views.
@@ -24,7 +24,7 @@ Use alongside resizable panels and split layouts.
 ### Theming/tokens
 - Uses \`data-component="resize-handle"\` with direction/edge data attributes.
 
-`
+`;
 
 export default {
   title: "UI/ResizeHandle",
@@ -38,11 +38,11 @@ export default {
       },
     },
   },
-}
+};
 
 export const Basic = {
   render: () => {
-    const [size, setSize] = createSignal(240)
+    const [size, setSize] = createSignal(240);
     return (
       <div style={{ display: "grid", gap: "8px" }}>
         <div style={{ color: "var(--text-weak)", "font-size": "12px" }}>Size: {size()}px</div>
@@ -63,13 +63,13 @@ export const Basic = {
           style="height:24px;border:1px dashed color-mix(in oklab, var(--text-base) 20%, transparent)"
         />
       </div>
-    )
+    );
   },
-}
+};
 
 export const Vertical = {
   render: () => {
-    const [size, setSize] = createSignal(180)
+    const [size, setSize] = createSignal(180);
     return (
       <div style={{ display: "grid", gap: "8px", width: "220px" }}>
         <div style={{ color: "var(--text-weak)", "font-size": "12px" }}>Size: {size()}px</div>
@@ -89,18 +89,18 @@ export const Vertical = {
           style="width:24px;border:1px dashed color-mix(in oklab, var(--text-base) 20%, transparent)"
         />
       </div>
-    )
+    );
   },
-}
+};
 
 export const Collapse = {
   render: () => {
     const [state, setState] = createStore({
       size: 200,
       collapsed: false,
-    })
-    const size = () => state.size
-    const collapsed = () => state.collapsed
+    });
+    const size = () => state.size;
+    const collapsed = () => state.collapsed;
     return (
       <div style={{ display: "grid", gap: "8px" }}>
         <div style={{ color: "var(--text-weak)", "font-size": "12px" }}>
@@ -121,20 +121,20 @@ export const Collapse = {
           max={360}
           collapseThreshold={100}
           onResize={(next) => {
-            setState("collapsed", false)
-            setState("size", next)
+            setState("collapsed", false);
+            setState("size", next);
           }}
           onCollapse={() => setState("collapsed", true)}
           style="height:24px;border:1px dashed color-mix(in oklab, var(--text-base) 20%, transparent)"
         />
       </div>
-    )
+    );
   },
-}
+};
 
 export const EdgeStart = {
   render: () => {
-    const [size, setSize] = createSignal(240)
+    const [size, setSize] = createSignal(240);
     return (
       <div style={{ display: "grid", gap: "8px" }}>
         <div style={{ color: "var(--text-weak)", "font-size": "12px" }}>Size: {size()}px</div>
@@ -156,6 +156,6 @@ export const EdgeStart = {
           style="height:24px;border:1px dashed color-mix(in oklab, var(--text-base) 20%, transparent)"
         />
       </div>
-    )
+    );
   },
-}
+};

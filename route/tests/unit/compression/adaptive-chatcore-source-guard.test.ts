@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 
 const chatCore = readFileSync(
   fileURLToPath(new URL("../../../open-sse/handlers/chatCore.ts", import.meta.url)),
-  "utf8"
+  "utf8",
 );
 
 test("chatCore threads modelContextLimit + requestMaxTokens into selectCompressionPlan", () => {

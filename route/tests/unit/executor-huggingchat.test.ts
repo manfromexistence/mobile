@@ -96,7 +96,7 @@ describe("HuggingChatExecutor", () => {
       const json = await result.response.json();
       assert.ok(
         json.error.message.includes("initial parent message id"),
-        `expected the parent-message 502 message, got: ${json.error.message}`
+        `expected the parent-message 502 message, got: ${json.error.message}`,
       );
       // Rule #12 sanity: the error body carries a static message, never a stack frame.
       assert.ok(!json.error.message.includes("at /"));

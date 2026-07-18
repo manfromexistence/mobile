@@ -132,7 +132,7 @@ export class OpencodeExecutor extends BaseExecutor {
     account.consecutiveFails++;
     const backoff = Math.min(
       OPENCODE_COOLDOWN_BASE_MS * Math.pow(2, account.consecutiveFails - 1),
-      OPENCODE_COOLDOWN_MAX_MS
+      OPENCODE_COOLDOWN_MAX_MS,
     );
     account.cooldownUntil = Date.now() + backoff + Math.random() * 1000;
   }
@@ -173,14 +173,14 @@ export class OpencodeExecutor extends BaseExecutor {
           `dispatch via account ${masked} (idx ${attempt + 1}/${this.accounts.length})` +
             (account.proxy
               ? ` through proxy ${account.proxy.host}:${account.proxy.port}`
-              : " direct")
+              : " direct"),
         );
 
         // Pin egress to this account's proxy for the whole BaseExecutor dispatch
         // (incl. its intra-URL 429 retries). skipUpstreamRetry lets THIS loop own
         // the cross-account 429 fallback instead of BaseExecutor's same-key retry.
         const result = await runWithProxyContext(account.proxy, () =>
-          super.execute({ ...input, skipUpstreamRetry: true })
+          super.execute({ ...input, skipUpstreamRetry: true }),
         );
         lastResult = result;
 
@@ -206,7 +206,7 @@ export class OpencodeExecutor extends BaseExecutor {
     model: string,
     stream: boolean,
     urlIndex = 0,
-    credentials: ProviderCredentials | null = null
+    credentials: ProviderCredentials | null = null,
   ) {
     void urlIndex;
     void credentials;
@@ -228,7 +228,7 @@ export class OpencodeExecutor extends BaseExecutor {
     credentials: ProviderCredentials | null,
     stream = true,
     clientHeaders?: Record<string, string> | null,
-    model?: string
+    model?: string,
   ) {
     const headers: Record<string, string> = { "Content-Type": "application/json" };
     const key = credentials?.apiKey || credentials?.accessToken;
@@ -257,7 +257,7 @@ export class OpencodeExecutor extends BaseExecutor {
     // with OPENCODE_SYNTHESIZE_CLI_HEADERS=true (values env-overridable). Client-supplied
     // headers always take precedence.
     const synthesizeCli = /^(1|true|yes|on)$/i.test(
-      process.env.OPENCODE_SYNTHESIZE_CLI_HEADERS?.trim() ?? ""
+      process.env.OPENCODE_SYNTHESIZE_CLI_HEADERS?.trim() ?? "",
     );
     const cliDefaults = synthesizeCli
       ? (() => {
@@ -290,7 +290,7 @@ export class OpencodeExecutor extends BaseExecutor {
     model: string,
     body: any,
     stream: boolean,
-    credentials: ProviderCredentials
+    credentials: ProviderCredentials,
   ): any {
     let modifiedBody = super.transformRequest(model, body, stream, credentials);
     // 9router#1442: OpenCode upstreams (e.g. kimi-k2.6 via opencode-go) return

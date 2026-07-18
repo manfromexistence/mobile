@@ -79,7 +79,7 @@ export function parseAndValidateAgyToken(raw: unknown): ParsedAgyAuth {
     throw new AgyAuthFileError(
       "access_token is missing or empty in the agy token file",
       400,
-      "missing_access_token"
+      "missing_access_token",
     );
   }
 
@@ -87,7 +87,7 @@ export function parseAndValidateAgyToken(raw: unknown): ParsedAgyAuth {
     throw new AgyAuthFileError(
       "refresh_token is missing or empty in the agy token file",
       400,
-      "missing_refresh_token"
+      "missing_refresh_token",
     );
   }
 
@@ -115,7 +115,7 @@ export function parseAndValidateAgyToken(raw: unknown): ParsedAgyAuth {
  * run the onboardUser provisioning loop here (that can take up to ~50s).
  */
 export async function enrichWithAntigravityBackend(
-  parsed: ParsedAgyAuth
+  parsed: ParsedAgyAuth,
 ): Promise<EnrichedAgyAuth> {
   let email: string | null = null;
   let projectId: string | null = null;
@@ -188,7 +188,7 @@ export async function findExistingAgyConnection(email: string): Promise<JsonReco
 
 export async function createConnectionFromAgyToken(
   enriched: EnrichedAgyAuth,
-  options: CreateAgyConnectionOptions
+  options: CreateAgyConnectionOptions,
 ): Promise<{ connection: JsonRecord; created: boolean }> {
   const resolvedEmail = options.email || enriched.email;
 
@@ -199,7 +199,7 @@ export async function createConnectionFromAgyToken(
         throw new AgyAuthFileError(
           "An Antigravity CLI connection for this account already exists. Pass overwriteExisting: true to replace it.",
           409,
-          "duplicate_account"
+          "duplicate_account",
         );
       }
 
@@ -230,7 +230,7 @@ export async function createConnectionFromAgyToken(
     throw new AgyAuthFileError(
       "Could not verify the account email from the agy token (no userinfo). Pass overwriteExisting: true to import without email verification.",
       409,
-      "identity_unverified"
+      "identity_unverified",
     );
   }
 

@@ -29,7 +29,7 @@ for (const file of FILES_THAT_MUST_USE_TS_EXTENSION) {
     for (const bad of DISALLOWED_PATTERNS) {
       assert.ok(
         !content.includes(bad),
-        `${file} must not import via "${bad}" — use the .ts extension so the published npm package (which ships only .ts source) can resolve via tsx. See #2509.`
+        `${file} must not import via "${bad}" — use the .ts extension so the published npm package (which ships only .ts source) can resolve via tsx. See #2509.`,
       );
     }
   });

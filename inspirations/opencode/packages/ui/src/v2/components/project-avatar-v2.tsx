@@ -1,15 +1,17 @@
-import { type ComponentProps, splitProps, Show } from "solid-js"
-import "./project-avatar-v2.css"
+import { type ComponentProps, splitProps, Show } from "solid-js";
+import "./project-avatar-v2.css";
 
 const segmenter =
   typeof Intl !== "undefined" && "Segmenter" in Intl
     ? new Intl.Segmenter(undefined, { granularity: "grapheme" })
-    : undefined
+    : undefined;
 
 function first(value: string) {
-  if (!value) return ""
-  if (!segmenter) return Array.from(value)[0] ?? ""
-  return segmenter.segment(value)[Symbol.iterator]().next().value?.segment ?? Array.from(value)[0] ?? ""
+  if (!value) return "";
+  if (!segmenter) return Array.from(value)[0] ?? "";
+  return (
+    segmenter.segment(value)[Symbol.iterator]().next().value?.segment ?? Array.from(value)[0] ?? ""
+  );
 }
 
 export const PROJECT_AVATAR_VARIANTS = [
@@ -22,23 +24,31 @@ export const PROJECT_AVATAR_VARIANTS = [
   "blue",
   "purple",
   "gray",
-] as const
+] as const;
 
-export type ProjectAvatarVariant = (typeof PROJECT_AVATAR_VARIANTS)[number]
+export type ProjectAvatarVariant = (typeof PROJECT_AVATAR_VARIANTS)[number];
 
 // "outline" is a neutral, muted style (e.g. recently closed projects) and is not part of the color rotation.
-export type ProjectAvatarStyle = ProjectAvatarVariant | "outline"
+export type ProjectAvatarStyle = ProjectAvatarVariant | "outline";
 
 export interface ProjectAvatarProps extends ComponentProps<"div"> {
-  fallback: string
-  src?: string
-  variant?: ProjectAvatarStyle
-  unread?: boolean
+  fallback: string;
+  src?: string;
+  variant?: ProjectAvatarStyle;
+  unread?: boolean;
 }
 
 export function ProjectAvatar(props: ProjectAvatarProps) {
-  const [split, rest] = splitProps(props, ["fallback", "src", "variant", "unread", "class", "classList", "style"])
-  const src = split.src
+  const [split, rest] = splitProps(props, [
+    "fallback",
+    "src",
+    "variant",
+    "unread",
+    "class",
+    "classList",
+    "style",
+  ]);
+  const src = split.src;
   return (
     <div
       {...rest}
@@ -63,5 +73,5 @@ export function ProjectAvatar(props: ProjectAvatarProps) {
         <span data-slot="project-avatar-unread-dot" aria-hidden="true" />
       </Show>
     </div>
-  )
+  );
 }

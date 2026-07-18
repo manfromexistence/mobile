@@ -163,7 +163,7 @@ function ComboForecastPanel({ forecast }: { forecast: ComboForecastMetrics }) {
       [...forecast.targets]
         .sort((left, right) => right.forecast.projectedCostUsd - left.forecast.projectedCostUsd)
         .slice(0, 3),
-    [forecast.targets]
+    [forecast.targets],
   );
 
   return (
@@ -191,7 +191,7 @@ function ComboForecastPanel({ forecast }: { forecast: ComboForecastMetrics }) {
           label="Projected cost"
           value={formatUsd(forecast.forecast.projectedCostUsd)}
           subValue={`history ${formatUsd(forecast.history.costUsd)} · ${formatUsd(
-            forecast.history.avgDailyCostUsd
+            forecast.history.avgDailyCostUsd,
           )}/day`}
         />
         <MetricBlock
@@ -277,7 +277,7 @@ function ComboAutopilotPanel({ report }: { report: ComboAutopilotReport }) {
   const topIssues = useMemo(
     () =>
       report.combos.flatMap((combo) => combo.issues.map((issue) => ({ combo, issue }))).slice(0, 5),
-    [report.combos]
+    [report.combos],
   );
 
   return (
@@ -364,7 +364,7 @@ function ComboAutopilotPanel({ report }: { report: ComboAutopilotReport }) {
                           </span>
                           {action.label}
                         </Link>
-                      ) : null
+                      ) : null,
                     )}
                   </div>
                 ) : null}
@@ -498,9 +498,9 @@ function ComboHealthCard({
   const sortedDistribution = useMemo(
     () =>
       [...combo.usageSkew.modelDistribution].sort(
-        (left, right) => right.requestShare - left.requestShare
+        (left, right) => right.requestShare - left.requestShare,
       ),
-    [combo.usageSkew.modelDistribution]
+    [combo.usageSkew.modelDistribution],
   );
   const targetHealth = combo.targetHealth || [];
 
@@ -810,7 +810,7 @@ export default function ComboHealthTab() {
           `/api/usage/combo-health-dashboard?range=${range}&horizon=${horizon}`,
           {
             signal: controller.signal,
-          }
+          },
         );
 
         if (!response.ok) {
@@ -839,7 +839,7 @@ export default function ComboHealthTab() {
         }
       }
     },
-    [range, horizon]
+    [range, horizon],
   );
 
   useEffect(() => {
@@ -851,15 +851,15 @@ export default function ComboHealthTab() {
   const combos = data?.combos ?? [];
   const forecastsByComboId = useMemo(
     () => new Map((forecastData?.combos ?? []).map((forecast) => [forecast.comboId, forecast])),
-    [forecastData]
+    [forecastData],
   );
   const autopilotByComboId = useMemo(
     () => new Map((autopilotData?.combos ?? []).map((combo) => [combo.comboId, combo])),
-    [autopilotData]
+    [autopilotData],
   );
   const scoringByComboId = useMemo(
     () => new Map((scoringData?.combos ?? []).map((combo) => [combo.comboId, combo])),
-    [scoringData]
+    [scoringData],
   );
 
   const handleRetry = useCallback(() => {
@@ -888,7 +888,7 @@ export default function ComboHealthTab() {
                   "rounded-md px-2.5 py-1 text-xs font-medium transition-colors",
                   horizon === value
                     ? "bg-primary text-white"
-                    : "text-text-muted hover:bg-black/5 hover:text-text-main dark:hover:bg-white/5"
+                    : "text-text-muted hover:bg-black/5 hover:text-text-main dark:hover:bg-white/5",
                 )}
               >
                 {value} forecast

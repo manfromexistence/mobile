@@ -94,7 +94,7 @@ function hasEncryptedCredentials(dataDir) {
                OR refresh_token LIKE 'enc:v1:%'
                OR api_key LIKE 'enc:v1:%'
                OR id_token LIKE 'enc:v1:%'
-            LIMIT 1`
+            LIMIT 1`,
         )
         .get();
       return !!row;
@@ -171,14 +171,14 @@ export function bootstrapEnv({ dataDirOverride, quiet = false } = {}) {
   // override the real value persisted in server.env. Only the .env entries
   // that the operator actually set should win.
   const preferredEnvFiltered = Object.fromEntries(
-    Object.entries(preferredEnv).filter(([, v]) => typeof v === "string" && v.length > 0)
+    Object.entries(preferredEnv).filter(([, v]) => typeof v === "string" && v.length > 0),
   );
   // Filter empty strings from process.env so that Docker `-e KEY=` (which sets an
   // empty string) does not override real values persisted in server.env or set
   // in .env. Only shell/Docker vars that the operator actually set should win.
   // Mirrors the filtering already applied to preferredEnv above. (fixes #6824)
   const processEnvFiltered = Object.fromEntries(
-    Object.entries(process.env).filter(([, v]) => typeof v === "string" && v.length > 0)
+    Object.entries(process.env).filter(([, v]) => typeof v === "string" && v.length > 0),
   );
   const merged = { ...persisted, ...preferredEnvFiltered, ...processEnvFiltered };
 
@@ -197,8 +197,8 @@ export function bootstrapEnv({ dataDirOverride, quiet = false } = {}) {
       throw new Error(
         `Refusing to auto-generate STORAGE_ENCRYPTION_KEY: encrypted credentials already exist in ${join(
           dataDir,
-          "storage.sqlite"
-        )}. Restore the key via ${preferredEnvPath ?? "an appropriate .env file"}, ${serverEnvPath}, or process.env.`
+          "storage.sqlite",
+        )}. Restore the key via ${preferredEnvPath ?? "an appropriate .env file"}, ${serverEnvPath}, or process.env.`,
       );
     }
     persisted.STORAGE_ENCRYPTION_KEY = randomBytes(32).toString("hex");
@@ -239,7 +239,7 @@ export function bootstrapEnv({ dataDirOverride, quiet = false } = {}) {
 
   // ── Warn about missing optional OAuth secrets ──────────────────────────────
   const missingOauth = OPTIONAL_OAUTH_SECRETS.filter(
-    ({ keys }) => !keys.some((key) => merged[key]?.trim())
+    ({ keys }) => !keys.some((key) => merged[key]?.trim()),
   );
   if (missingOauth.length > 0) {
     log("ℹ️  The following OAuth integrations are not configured:");
@@ -271,7 +271,7 @@ export function bootstrapEnv({ dataDirOverride, quiet = false } = {}) {
                  OR access_token LIKE 'enc:v1:%'
                  OR refresh_token LIKE 'enc:v1:%'
                  OR id_token LIKE 'enc:v1:%'
-              LIMIT 1`
+              LIMIT 1`,
           )
           .get();
         if (row) {
@@ -319,13 +319,13 @@ export function bootstrapEnv({ dataDirOverride, quiet = false } = {}) {
 
               if (!keyMatched) {
                 log(
-                  "⛔ STORAGE_ENCRYPTION_KEY does not match the key used to encrypt your stored credentials."
+                  "⛔ STORAGE_ENCRYPTION_KEY does not match the key used to encrypt your stored credentials.",
                 );
                 log(
-                  "   Either restore your previous key via ~/.omniroute/server.env or ~/.omniroute/.env,"
+                  "   Either restore your previous key via ~/.omniroute/server.env or ~/.omniroute/.env,",
                 );
                 log(
-                  "   or run: omniroute reset-encrypted-columns --force  (wipes credentials, keeps provider config)"
+                  "   or run: omniroute reset-encrypted-columns --force  (wipes credentials, keeps provider config)",
                 );
               }
             }
@@ -348,6 +348,6 @@ if (process.argv[1] && process.argv[1].endsWith("bootstrap-env.mjs")) {
   process.stderr.write(`[bootstrap] Done. DATA_DIR resolved to: ${resolveDataDir()}\n`);
   process.stderr.write(`[bootstrap] JWT_SECRET length: ${env.JWT_SECRET?.length ?? 0}\n`);
   process.stderr.write(
-    `[bootstrap] STORAGE_ENCRYPTION_KEY length: ${env.STORAGE_ENCRYPTION_KEY?.length ?? 0}\n`
+    `[bootstrap] STORAGE_ENCRYPTION_KEY length: ${env.STORAGE_ENCRYPTION_KEY?.length ?? 0}\n`,
   );
 }

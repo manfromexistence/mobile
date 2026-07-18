@@ -70,7 +70,7 @@ describe("applyCompression — combo fallback bail-out opt-in", () => {
     assert.throws(
       () => applyCompression(body, "stacked", { config: stackedConfig() }),
       /boom from fallback engine/,
-      "the default (opt-out) path is unchanged — bail-out is strictly opt-in"
+      "the default (opt-out) path is unchanged — bail-out is strictly opt-in",
     );
   });
 });

@@ -1,12 +1,12 @@
-import { Effect, Layer } from "effect"
-import { Provider } from "@/provider/provider"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { ModelV2 } from "@opencode-ai/core/model"
+import { Effect, Layer } from "effect";
+import { Provider } from "@/provider/provider";
+import { ProviderV2 } from "@opencode-ai/core/provider";
+import { ModelV2 } from "@opencode-ai/core/model";
 
 export namespace ProviderTest {
   export function model(override: Partial<Provider.Model> = {}): Provider.Model {
-    const id = override.id ?? ModelV2.ID.make("gpt-5.2")
-    const providerID = override.providerID ?? ProviderV2.ID.make("openai")
+    const id = override.id ?? ModelV2.ID.make("gpt-5.2");
+    const providerID = override.providerID ?? ProviderV2.ID.make("openai");
     return {
       id,
       providerID,
@@ -28,11 +28,11 @@ export namespace ProviderTest {
       headers: {},
       release_date: "2025-01-01",
       ...override,
-    }
+    };
   }
 
   export function info(override: Partial<Provider.Info> = {}, mdl = model()): Provider.Info {
-    const id = override.id ?? mdl.providerID
+    const id = override.id ?? mdl.providerID;
     return {
       id,
       name: "Test Provider",
@@ -41,12 +41,14 @@ export namespace ProviderTest {
       options: {},
       models: { [mdl.id]: mdl },
       ...override,
-    }
+    };
   }
 
-  export function fake(override: Partial<Provider.Interface> & { model?: Provider.Model; info?: Provider.Info } = {}) {
-    const mdl = override.model ?? model()
-    const row = override.info ?? info({}, mdl)
+  export function fake(
+    override: Partial<Provider.Interface> & { model?: Provider.Model; info?: Provider.Info } = {},
+  ) {
+    const mdl = override.model ?? model();
+    const row = override.info ?? info({}, mdl);
     return {
       model: mdl,
       info: row,
@@ -55,18 +57,20 @@ export namespace ProviderTest {
         Provider.Service.of({
           list: Effect.fn("TestProvider.list")(() => Effect.succeed({ [row.id]: row })),
           getProvider: Effect.fn("TestProvider.getProvider")((providerID) => {
-            if (providerID === row.id) return Effect.succeed(row)
-            return Effect.die(new Error(`Unknown test provider: ${providerID}`))
+            if (providerID === row.id) return Effect.succeed(row);
+            return Effect.die(new Error(`Unknown test provider: ${providerID}`));
           }),
           getModel: Effect.fn("TestProvider.getModel")((providerID, modelID) => {
-            if (providerID === row.id && modelID === mdl.id) return Effect.succeed(mdl)
-            return Effect.die(new Error(`Unknown test model: ${providerID}/${modelID}`))
+            if (providerID === row.id && modelID === mdl.id) return Effect.succeed(mdl);
+            return Effect.die(new Error(`Unknown test model: ${providerID}/${modelID}`));
           }),
           getLanguage: Effect.fn("TestProvider.getLanguage")(() =>
             Effect.die(new Error("ProviderTest.getLanguage not configured")),
           ),
           closest: Effect.fn("TestProvider.closest")((providerID) =>
-            Effect.succeed(providerID === row.id ? { providerID: row.id, modelID: mdl.id } : undefined),
+            Effect.succeed(
+              providerID === row.id ? { providerID: row.id, modelID: mdl.id } : undefined,
+            ),
           ),
           getSmallModel: Effect.fn("TestProvider.getSmallModel")((providerID) =>
             Effect.succeed(providerID === row.id ? mdl : undefined),
@@ -77,6 +81,6 @@ export namespace ProviderTest {
           ...override,
         }),
       ),
-    }
+    };
   }
 }

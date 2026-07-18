@@ -195,7 +195,7 @@ function main() {
   console.log(
     `  Sections: free=${free.length}, oauth=${oauth.length}, web=${webCookie.length}, ` +
       `apikey=${apiKey.length}, local=${local.length}, search=${search.length}, ` +
-      `audio=${audio.length}, proxy=${upstreamProxy.length}, cloud=${cloudAgent.length}, system=${system.length}`
+      `audio=${audio.length}, proxy=${upstreamProxy.length}, cloud=${cloudAgent.length}, system=${system.length}`,
   );
 }
 

@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { APIKEY_PROVIDERS, OAUTH_PROVIDERS, supportsApiKeyOnFreeProvider } =
-  await import("../../src/shared/constants/providers.ts");
+const { APIKEY_PROVIDERS, OAUTH_PROVIDERS, supportsApiKeyOnFreeProvider } = await import(
+  "../../src/shared/constants/providers.ts"
+);
 const { isManagedProviderConnectionId } = await import("../../src/lib/providers/catalog.ts");
 const { PROVIDERS: oauthFlows } = await import("../../src/lib/oauth/providers/index.ts");
 const { REGISTRY: providerRegistry } = await import("../../open-sse/config/providerRegistry.ts");
@@ -21,7 +22,7 @@ test("ClinePass is registered as an OAuth-primary provider with the canonical id
   // cline/claude), not via FREE_APIKEY_PROVIDER_IDS (which would flip isOAuth off).
   assert.ok(
     !APIKEY_PROVIDERS.clinepass,
-    "clinepass must NOT be in APIKEY_PROVIDERS (single provider)"
+    "clinepass must NOT be in APIKEY_PROVIDERS (single provider)",
   );
 });
 
@@ -65,7 +66,7 @@ test("unwrapClinepassEnvelope: success unwraps to data", () => {
 test("unwrapClinepassEnvelope: {success:false} yields an error", () => {
   const { body, error } = unwrapClinepassEnvelope(
     { success: false, error: "empty response content", statusCode: 502 },
-    "clinepass"
+    "clinepass",
   );
   assert.equal(body, null);
   assert.ok(error);
@@ -76,7 +77,7 @@ test("unwrapClinepassEnvelope: {success:false} yields an error", () => {
 test("unwrapClinepassEnvelope: nested error.message extracted", () => {
   const { error } = unwrapClinepassEnvelope(
     { success: false, error: { message: "quota exceeded" } },
-    "clinepass"
+    "clinepass",
   );
   assert.equal(error?.message, "quota exceeded");
 });
@@ -114,7 +115,7 @@ test("filterClinepassModels keeps only cline-pass/* ids", () => {
 test("parseUpstreamError unwraps clinepass envelope error without leaking a stack", async () => {
   const upstream = new Response(
     JSON.stringify({ success: false, error: "upstream at /srv/x.js:1:1 failed" }),
-    { status: 502, headers: { "content-type": "application/json" } }
+    { status: 502, headers: { "content-type": "application/json" } },
   );
   const parsed = await parseUpstreamError(upstream, "clinepass");
   const body = buildErrorBody(502, parsed.message) as { error: { message: string } };
@@ -134,7 +135,7 @@ test("ClinePass reuses the Cline WorkOS OAuth flow (clinepass -> cline)", () => 
   assert.equal(
     oauthFlows.clinepass,
     oauthFlows.cline,
-    "clinepass must reuse the cline OAuth flow 1:1 (same api.cline.bot host/token)"
+    "clinepass must reuse the cline OAuth flow 1:1 (same api.cline.bot host/token)",
   );
 });
 
@@ -153,11 +154,11 @@ test("ClinePass is a single OAuth-primary provider (no duplicate catalog entry)"
 test("ClinePass API-key connections pass the managed gate while staying OAuth-primary", () => {
   assert.ok(
     isManagedProviderConnectionId("clinepass"),
-    "POST /api/providers must accept a clinepass apikey connection (dual-auth BYOK path)"
+    "POST /api/providers must accept a clinepass apikey connection (dual-auth BYOK path)",
   );
   assert.ok(
     !supportsApiKeyOnFreeProvider("clinepass"),
-    "clinepass must NOT be in FREE_APIKEY_PROVIDER_IDS — that would flip isOAuth false"
+    "clinepass must NOT be in FREE_APIKEY_PROVIDER_IDS — that would flip isOAuth false",
   );
 });
 
@@ -174,7 +175,7 @@ test("ClinePass registry alias matches the OAUTH_PROVIDERS catalog alias (routin
   assert.equal(
     providerRegistry.clinepass.alias,
     cp.alias,
-    "registry alias must equal catalog alias so <alias>/<model> resolves to clinepass"
+    "registry alias must equal catalog alias so <alias>/<model> resolves to clinepass",
   );
   assert.equal(providerRegistry.clinepass.alias, "cp");
 });

@@ -51,7 +51,10 @@ test("buildStreamingResponseHeaders receives zeroed latency/usage/cost and cache
 
 test("no compression meta → no compression header", () => {
   const { build } = makeBuild();
-  const h = assembleStreamingResponseHeaders(baseArgs({ compressionResponseMeta: undefined }), build);
+  const h = assembleStreamingResponseHeaders(
+    baseArgs({ compressionResponseMeta: undefined }),
+    build,
+  );
   assert.ok(!Object.values(h).includes("engine:z"));
 });
 
@@ -59,7 +62,7 @@ test("compression meta present → compression header set", () => {
   const { build } = makeBuild();
   const h = assembleStreamingResponseHeaders(
     baseArgs({ compressionResponseMeta: "engine:z; source=routing" }),
-    build
+    build,
   );
   assert.ok(Object.values(h).includes("engine:z; source=routing"));
 });

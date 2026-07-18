@@ -162,7 +162,7 @@ export function registerOpenapi(program) {
       const paths = Object.keys(spec.paths ?? {}).sort();
       emit(
         paths.map((p) => ({ path: p })),
-        cmd.optsWithGlobals()
+        cmd.optsWithGlobals(),
       );
     });
 }

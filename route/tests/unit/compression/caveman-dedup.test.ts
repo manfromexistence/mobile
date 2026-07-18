@@ -31,7 +31,7 @@ describe("multi-turn dedup rules", () => {
     assert.ok(rules.length > 0);
     const { text } = applyRulesToText(
       "To summarize what we've discussed, here are the key points:",
-      rules
+      rules,
     );
     assert.ok(text.includes("Summary:"));
   });

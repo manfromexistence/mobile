@@ -5,13 +5,13 @@
 
 /** Parse a hex color ("#rgb" or "#rrggbb") to RGB channels in the 0–1 range. */
 export function hexToRgb01(hex: string): [number, number, number] {
-  const cleaned = hex.replace('#', '');
+  const cleaned = hex.replace("#", "");
   const expanded =
     cleaned.length === 3
       ? cleaned
-          .split('')
+          .split("")
           .map((x) => x + x)
-          .join('')
+          .join("")
       : cleaned;
 
   const num = parseInt(expanded, 16);

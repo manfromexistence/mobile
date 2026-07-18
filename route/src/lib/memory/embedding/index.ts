@@ -35,7 +35,7 @@ function noSource(reason: string): EmbeddingResolution {
 function makeSignature(
   source: "remote" | "static" | "transformers" | null,
   model: string | null,
-  dim: number | null
+  dim: number | null,
 ): string {
   return `${source ?? "null"}:${model ?? "null"}:${dim ?? "null"}`;
 }
@@ -165,7 +165,7 @@ export function resolveEmbeddingSource(settings: MemorySettingsExtended): Embedd
  */
 export async function embed(
   text: string,
-  settings: MemorySettingsExtended
+  settings: MemorySettingsExtended,
 ): Promise<EmbeddingResult | EmbeddingError> {
   const resolution = resolveEmbeddingSource(settings);
 

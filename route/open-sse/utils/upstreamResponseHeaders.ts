@@ -33,7 +33,7 @@ export function stripStaleEncodingHeaders(input: Headers): Headers {
  */
 export function filterUpstreamResponseHeaderEntries(
   entries: Iterable<[string, string]>,
-  extraToStrip: ReadonlyArray<string> = []
+  extraToStrip: ReadonlyArray<string> = [],
 ): Array<[string, string]> {
   const drop = new Set<string>(STRIP_HEADER_NAMES);
   for (const h of extraToStrip) drop.add(h.toLowerCase());

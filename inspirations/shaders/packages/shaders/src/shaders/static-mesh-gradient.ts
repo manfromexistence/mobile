@@ -1,10 +1,7 @@
-import type { vec4 } from '../types.js';
-import type { ShaderMotionParams } from '../shader-mount.js';
-import {
-  type ShaderSizingParams,
-  type ShaderSizingUniforms,
-} from '../shader-sizing.js';
-import { declarePI, rotation2, proceduralHash21 } from '../shader-utils.js';
+import type { vec4 } from "../types.js";
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { declarePI, rotation2, proceduralHash21 } from "../shader-utils.js";
 
 export const staticMeshGradientMeta = {
   maxColorCount: 10,
@@ -48,7 +45,7 @@ export const staticMeshGradientMeta = {
 export const staticMeshGradientFragmentShader: string = `#version 300 es
 precision mediump float;
 
-uniform vec4 u_colors[${ staticMeshGradientMeta.maxColorCount }];
+uniform vec4 u_colors[${staticMeshGradientMeta.maxColorCount}];
 uniform float u_colorsCount;
 
 uniform float u_positions;
@@ -63,9 +60,9 @@ uniform float u_grainOverlay;
 in vec2 v_objectUV;
 out vec4 fragColor;
 
-${ declarePI }
-${ rotation2 }
-${ proceduralHash21 }
+${declarePI}
+${rotation2}
+${proceduralHash21}
 
 float valueNoise(vec2 st) {
   vec2 i = floor(st);
@@ -115,7 +112,7 @@ void main() {
   float totalWeight = 0.;
   float positionSeed = 25. + .33 * u_positions;
 
-  for (int i = 0; i < ${ staticMeshGradientMeta.maxColorCount }; i++) {
+  for (int i = 0; i < ${staticMeshGradientMeta.maxColorCount}; i++) {
     if (i >= int(u_colorsCount)) break;
 
     vec2 pos = getPosition(i, positionSeed) + mixerGrain;

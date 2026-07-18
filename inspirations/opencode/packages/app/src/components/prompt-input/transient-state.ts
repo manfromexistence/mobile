@@ -1,17 +1,17 @@
-import { createComputed, on, type Accessor } from "solid-js"
-import { createStore, type SetStoreFunction } from "solid-js/store"
-import type { PromptHistoryEntry } from "./history"
+import { createComputed, on, type Accessor } from "solid-js";
+import { createStore, type SetStoreFunction } from "solid-js/store";
+import type { PromptHistoryEntry } from "./history";
 
 export type PromptInputTransientState = {
-  popover: "at" | "slash" | null
-  historyIndex: number
-  savedPrompt: PromptHistoryEntry | null
-  placeholder: number
-  draggingType: "image" | "@mention" | null
-  mode: "normal" | "shell"
-  applyingHistory: boolean
-  variantOpen: boolean
-}
+  popover: "at" | "slash" | null;
+  historyIndex: number;
+  savedPrompt: PromptHistoryEntry | null;
+  placeholder: number;
+  draggingType: "image" | "@mention" | null;
+  mode: "normal" | "shell";
+  applyingHistory: boolean;
+  variantOpen: boolean;
+};
 
 function resetPromptInputTransientState(setStore: SetStoreFunction<PromptInputTransientState>) {
   setStore({
@@ -22,7 +22,7 @@ function resetPromptInputTransientState(setStore: SetStoreFunction<PromptInputTr
     mode: "normal",
     applyingHistory: false,
     variantOpen: false,
-  })
+  });
 }
 
 export function createPromptInputTransientState(identity: Accessor<unknown>, placeholder: number) {
@@ -35,9 +35,9 @@ export function createPromptInputTransientState(identity: Accessor<unknown>, pla
     mode: "normal",
     applyingHistory: false,
     variantOpen: false,
-  })
+  });
 
-  createComputed(on(identity, () => resetPromptInputTransientState(setStore), { defer: true }))
+  createComputed(on(identity, () => resetPromptInputTransientState(setStore), { defer: true }));
 
-  return [store, setStore] as const
+  return [store, setStore] as const;
 }

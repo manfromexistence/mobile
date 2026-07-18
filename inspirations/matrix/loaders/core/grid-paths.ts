@@ -116,7 +116,7 @@ function buildOuterRingClockwiseOrderToIndexMap(): number[] {
     [4, 0],
     [3, 0],
     [2, 0],
-    [1, 0]
+    [1, 0],
   ];
 
   for (let t = 0; t < coords.length; t += 1) {
@@ -137,7 +137,7 @@ function buildMiddleRingAntiClockwiseOrderToIndexMap(): number[] {
     [3, 3],
     [2, 3],
     [1, 3],
-    [1, 2]
+    [1, 2],
   ];
 
   for (let t = 0; t < coords.length; t += 1) {
@@ -149,7 +149,8 @@ function buildMiddleRingAntiClockwiseOrderToIndexMap(): number[] {
 }
 
 const OUTER_RING_CLOCKWISE_ORDER: readonly number[] = buildOuterRingClockwiseOrderToIndexMap();
-const MIDDLE_RING_ANTI_CLOCKWISE_ORDER: readonly number[] = buildMiddleRingAntiClockwiseOrderToIndexMap();
+const MIDDLE_RING_ANTI_CLOCKWISE_ORDER: readonly number[] =
+  buildMiddleRingAntiClockwiseOrderToIndexMap();
 
 export function outerRingClockwiseOrderValue(index: number): number {
   return OUTER_RING_CLOCKWISE_ORDER[index]!;
@@ -213,7 +214,7 @@ function buildRowWaveSnakeOrderToIndexMap(): number[] {
     { col: 1, dir: "up" },
     { col: 3, dir: "down" },
     { col: 2, dir: "up" },
-    { col: 4, dir: "down" }
+    { col: 4, dir: "down" },
   ];
 
   let t = 0;

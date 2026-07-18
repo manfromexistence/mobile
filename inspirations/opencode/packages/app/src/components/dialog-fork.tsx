@@ -1,89 +1,91 @@
-import { Component, createMemo } from "solid-js"
-import { useNavigate, useParams } from "@solidjs/router"
-import { useSync } from "@/context/sync"
-import { useSDK } from "@/context/sdk"
-import { usePrompt } from "@/context/prompt"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { Dialog } from "@opencode-ai/ui/dialog"
-import { List } from "@opencode-ai/ui/list"
-import { showToast } from "@/utils/toast"
-import { extractPromptFromParts } from "@/utils/prompt"
-import type { TextPart as SDKTextPart } from "@opencode-ai/sdk/v2/client"
-import { base64Encode } from "@opencode-ai/core/util/encode"
-import { useLanguage } from "@/context/language"
+import { Component, createMemo } from "solid-js";
+import { useNavigate, useParams } from "@solidjs/router";
+import { useSync } from "@/context/sync";
+import { useSDK } from "@/context/sdk";
+import { usePrompt } from "@/context/prompt";
+import { useDialog } from "@opencode-ai/ui/context/dialog";
+import { Dialog } from "@opencode-ai/ui/dialog";
+import { List } from "@opencode-ai/ui/list";
+import { showToast } from "@/utils/toast";
+import { extractPromptFromParts } from "@/utils/prompt";
+import type { TextPart as SDKTextPart } from "@opencode-ai/sdk/v2/client";
+import { base64Encode } from "@opencode-ai/core/util/encode";
+import { useLanguage } from "@/context/language";
 
 interface ForkableMessage {
-  id: string
-  text: string
-  time: string
+  id: string;
+  text: string;
+  time: string;
 }
 
 function formatTime(date: Date): string {
-  return date.toLocaleTimeString(undefined, { timeStyle: "short" })
+  return date.toLocaleTimeString(undefined, { timeStyle: "short" });
 }
 
 export const DialogFork: Component = () => {
-  const params = useParams()
-  const navigate = useNavigate()
-  const sync = useSync()
-  const sdk = useSDK()
-  const prompt = usePrompt()
-  const dialog = useDialog()
-  const language = useLanguage()
+  const params = useParams();
+  const navigate = useNavigate();
+  const sync = useSync();
+  const sdk = useSDK();
+  const prompt = usePrompt();
+  const dialog = useDialog();
+  const language = useLanguage();
 
   const messages = createMemo((): ForkableMessage[] => {
-    const sessionID = params.id
-    if (!sessionID) return []
+    const sessionID = params.id;
+    if (!sessionID) return [];
 
-    const msgs = sync().data.message[sessionID] ?? []
-    const result: ForkableMessage[] = []
+    const msgs = sync().data.message[sessionID] ?? [];
+    const result: ForkableMessage[] = [];
 
     for (const message of msgs) {
-      if (message.role !== "user") continue
+      if (message.role !== "user") continue;
 
-      const parts = sync().data.part[message.id] ?? []
-      const textPart = parts.find((x): x is SDKTextPart => x.type === "text" && !x.synthetic && !x.ignored)
-      if (!textPart) continue
+      const parts = sync().data.part[message.id] ?? [];
+      const textPart = parts.find(
+        (x): x is SDKTextPart => x.type === "text" && !x.synthetic && !x.ignored,
+      );
+      if (!textPart) continue;
 
       result.push({
         id: message.id,
         text: textPart.text.replace(/\n/g, " ").slice(0, 200),
         time: formatTime(new Date(message.time.created)),
-      })
+      });
     }
 
-    return result.reverse()
-  })
+    return result.reverse();
+  });
 
   const handleSelect = (item: ForkableMessage | undefined) => {
-    if (!item) return
+    if (!item) return;
 
-    const sessionID = params.id
-    if (!sessionID) return
+    const sessionID = params.id;
+    if (!sessionID) return;
 
-    const parts = sync().data.part[item.id] ?? []
+    const parts = sync().data.part[item.id] ?? [];
     const restored = extractPromptFromParts(parts, {
       directory: sdk().directory,
       attachmentName: language.t("common.attachment"),
-    })
-    const dir = base64Encode(sdk().directory)
+    });
+    const dir = base64Encode(sdk().directory);
 
     sdk()
       .client.session.fork({ sessionID, messageID: item.id })
       .then((forked) => {
         if (!forked.data) {
-          showToast({ title: language.t("common.requestFailed") })
-          return
+          showToast({ title: language.t("common.requestFailed") });
+          return;
         }
-        dialog.close()
-        prompt.set(restored, undefined, { dir, id: forked.data.id })
-        navigate(`/${dir}/session/${forked.data.id}`)
+        dialog.close();
+        prompt.set(restored, undefined, { dir, id: forked.data.id });
+        navigate(`/${dir}/session/${forked.data.id}`);
       })
       .catch((err: unknown) => {
-        const message = err instanceof Error ? err.message : String(err)
-        showToast({ title: language.t("common.requestFailed"), description: message })
-      })
-  }
+        const message = err instanceof Error ? err.message : String(err);
+        showToast({ title: language.t("common.requestFailed"), description: message });
+      });
+  };
 
   return (
     <Dialog title={language.t("command.session.fork")}>
@@ -104,5 +106,5 @@ export const DialogFork: Component = () => {
         )}
       </List>
     </Dialog>
-  )
-}
+  );
+};

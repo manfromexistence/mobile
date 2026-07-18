@@ -62,7 +62,7 @@ export async function POST(request, { params }) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -89,9 +89,7 @@ export async function POST(request, { params }) {
       action = modelAction.includes(":streamGenerateContent")
         ? ":streamGenerateContent"
         : ":generateContent";
-      model = modelAction
-        .replace(":streamGenerateContent", "")
-        .replace(":generateContent", "");
+      model = modelAction.replace(":streamGenerateContent", "").replace(":generateContent", "");
     }
 
     const validation = validateBody(v1betaGeminiGenerateSchema, rawBody);
@@ -129,7 +127,7 @@ export async function POST(request, { params }) {
     console.log("Error handling Gemini request:", error);
     return Response.json(
       { error: { message: sanitizeErrorMessage(error), code: 500 } },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

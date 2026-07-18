@@ -1,5 +1,5 @@
-import type { Dict } from "./en"
-import { dict as en } from "./en"
+import type { Dict } from "./en";
+import { dict as en } from "./en";
 
 export const dict = {
   ...en,
@@ -114,7 +114,8 @@ export const dict = {
   "home.install.ariaLabel": "خيارات التثبيت",
 
   "home.what.title": "ما هو OpenCode؟",
-  "home.what.body": "OpenCode وكيل مفتوح المصدر يساعدك على كتابة الكود في الطرفية، IDE، أو سطح المكتب.",
+  "home.what.body":
+    "OpenCode وكيل مفتوح المصدر يساعدك على كتابة الكود في الطرفية، IDE، أو سطح المكتب.",
   "home.what.lsp.title": "دعم LSP",
   "home.what.lsp.body": "يحمّل تلقائيًا موافقات LSP المناسبة للـ LLM",
   "home.what.multiSession.title": "جلسات متعددة",
@@ -139,7 +140,8 @@ export const dict = {
   "home.growth.monthlyDevs": "مطورون شهريًا",
 
   "home.privacy.title": "مصمم للخصوصية أولاً",
-  "home.privacy.body": "لا يخزّن OpenCode أي كود أو بيانات سياق، ليتمكن من العمل في بيئات حساسة للخصوصية.",
+  "home.privacy.body":
+    "لا يخزّن OpenCode أي كود أو بيانات سياق، ليتمكن من العمل في بيئات حساسة للخصوصية.",
   "home.privacy.learnMore": "اعرف المزيد عن",
   "home.privacy.link": "الخصوصية",
 
@@ -170,7 +172,8 @@ export const dict = {
   "home.faq.a6":
     "OpenCode مجاني 100% للاستخدام. كما يأتي مع مجموعة من النماذج المجانية. قد توجد تكاليف إضافية إذا ربطت مزوّدًا آخر.",
   "home.faq.q7": "ماذا عن البيانات والخصوصية؟",
-  "home.faq.a7.p1": "لا يتم تخزين بياناتك ومعلوماتك إلا عندما تستخدم نماذجنا المجانية أو تنشئ روابط قابلة للمشاركة.",
+  "home.faq.a7.p1":
+    "لا يتم تخزين بياناتك ومعلوماتك إلا عندما تستخدم نماذجنا المجانية أو تنشئ روابط قابلة للمشاركة.",
   "home.faq.a7.p2.beforeModels": "اعرف المزيد عن",
   "home.faq.a7.p2.modelsLink": "نماذجنا",
   "home.faq.a7.p2.and": "و",
@@ -205,7 +208,8 @@ export const dict = {
   "zen.faq.a4.p1.beforePricing": "Zen",
   "zen.faq.a4.p1.pricingLink": "يحاسب لكل طلب",
   "zen.faq.a4.p1.afterPricing": "بدون أي هوامش ربح، لذا تدفع بالضبط ما يفرضه مزود النموذج.",
-  "zen.faq.a4.p2.beforeAccount": "تعتمد تكلفتك الإجمالية على الاستخدام، ويمكنك تعيين حدود إنفاق شهرية في",
+  "zen.faq.a4.p2.beforeAccount":
+    "تعتمد تكلفتك الإجمالية على الاستخدام، ويمكنك تعيين حدود إنفاق شهرية في",
   "zen.faq.a4.p2.accountLink": "حسابك",
   "zen.faq.a4.p3":
     "لتغطية التكاليف، يضيف OpenCode فقط رسومًا صغيرة لمعالجة الدفع قدرها 1.23 دولار لكل إعادة شحن رصيد بقيمة 20 دولارًا.",
@@ -317,7 +321,8 @@ export const dict = {
     "تتم استضافة نماذج Go في الولايات المتحدة. يتبع المزودون سياسة عدم الاحتفاظ بالبيانات ولا يستخدمون بياناتك لتدريب النماذج، مع",
   "go.privacy.exceptionsLink": "الاستثناءات التالية",
   "go.faq.q1": "ما هو OpenCode Go؟",
-  "go.faq.a1": "Go هو اشتراك منخفض التكلفة يمنحك وصولًا موثوقًا إلى نماذج مفتوحة المصدر قادرة على البرمجة الوكيلة.",
+  "go.faq.a1":
+    "Go هو اشتراك منخفض التكلفة يمنحك وصولًا موثوقًا إلى نماذج مفتوحة المصدر قادرة على البرمجة الوكيلة.",
   "go.faq.q2": "ما النماذج التي يتضمنها Go؟",
   "go.faq.a2": "يتضمن Go النماذج المدرجة أدناه، مع حدود سخية وإتاحة موثوقة.",
   "go.faq.q3": "هل Go هو نفسه Zen؟",
@@ -341,7 +346,8 @@ export const dict = {
   "go.faq.q7": "هل يمكنني الإلغاء؟",
   "go.faq.a7": "نعم، يمكنك الإلغاء في أي وقت.",
   "go.faq.q8": "هل يمكنني استخدام Go مع وكلاء برمجة آخرين؟",
-  "go.faq.a8": "نعم، يمكنك استخدام Go مع أي وكيل. اتبع تعليمات الإعداد في وكيل البرمجة المفضل لديك.",
+  "go.faq.a8":
+    "نعم، يمكنك استخدام Go مع أي وكيل. اتبع تعليمات الإعداد في وكيل البرمجة المفضل لديك.",
 
   "go.faq.q9": "ما الفرق بين النماذج المجانية وGo؟",
   "go.faq.a9":
@@ -354,7 +360,8 @@ export const dict = {
   "zen.api.error.providerNotSupported": "المزود {{provider}} غير مدعوم",
   "zen.api.error.missingApiKey": "مفتاح API مفقود.",
   "zen.api.error.invalidApiKey": "مفتاح API غير صالح.",
-  "zen.api.error.subscriptionQuotaExceeded": "تم تجاوز حصة الاشتراك. أعد المحاولة خلال {{retryIn}}.",
+  "zen.api.error.subscriptionQuotaExceeded":
+    "تم تجاوز حصة الاشتراك. أعد المحاولة خلال {{retryIn}}.",
   "zen.api.error.goSubscriptionRollingLimitExceeded":
     "تم الوصول إلى حد الاستخدام لمدة 5 ساعات. تتم إعادة التعيين خلال {{retryIn}}. لمواصلة استخدام هذا النموذج الآن، فعّل الاستخدام من رصيدك المتاح: {{consoleGoUrl}}",
   "zen.api.error.goSubscriptionWeeklyLimitExceeded":
@@ -374,7 +381,8 @@ export const dict = {
     "انتهى العرض المجاني لـ {{model}}. يمكنك مواصلة استخدام النموذج بالاشتراك في OpenCode Go - {{link}}",
 
   "black.meta.title": "OpenCode Black | الوصول إلى أفضل نماذج البرمجة في العالم",
-  "black.meta.description": "احصل على وصول إلى Claude، GPT، Gemini والمزيد مع خطط اشتراك OpenCode Black.",
+  "black.meta.description":
+    "احصل على وصول إلى Claude، GPT، Gemini والمزيد مع خطط اشتراك OpenCode Black.",
   "black.hero.title": "الوصول إلى أفضل نماذج البرمجة في العالم",
   "black.hero.subtitle": "بما في ذلك Claude، GPT، Gemini والمزيد",
   "black.title": "OpenCode Black | الأسعار",
@@ -435,7 +443,8 @@ export const dict = {
   "workspace.home.billing.currentBalance": "الرصيد الحالي",
 
   "workspace.newUser.feature.tested.title": "نماذج مُختبرة ومحققة",
-  "workspace.newUser.feature.tested.body": "لقد قمنا بقياس واختبار النماذج خصيصًا لوكلاء البرمجة لضمان أفضل أداء.",
+  "workspace.newUser.feature.tested.body":
+    "لقد قمنا بقياس واختبار النماذج خصيصًا لوكلاء البرمجة لضمان أفضل أداء.",
   "workspace.newUser.feature.quality.title": "أعلى جودة",
   "workspace.newUser.feature.quality.body":
     "الوصول إلى النماذج التي تم تكوينها لتحقيق الأداء الأمثل - لا تقليل للجودة أو توجيه إلى موفري خدمة أرخص.",
@@ -453,7 +462,8 @@ export const dict = {
   "workspace.newUser.step.models.after": "لاختيار نموذج",
 
   "workspace.models.title": "النماذج",
-  "workspace.models.subtitle.beforeLink": "إدارة النماذج التي يمكن لأعضاء مساحة العمل الوصول إليها.",
+  "workspace.models.subtitle.beforeLink":
+    "إدارة النماذج التي يمكن لأعضاء مساحة العمل الوصول إليها.",
   "workspace.models.table.model": "النموذج",
   "workspace.models.table.enabled": "ممكّن",
 
@@ -620,15 +630,18 @@ export const dict = {
   "workspace.black.subscription.resetsIn": "إعادة تعيين في",
   "workspace.black.subscription.useBalance": "استخدم رصيدك المتوفر بعد الوصول إلى حدود الاستخدام",
   "workspace.black.waitlist.title": "قائمة الانتظار",
-  "workspace.black.waitlist.joined": "أنت في قائمة الانتظار لخطة OpenCode Black بقيمة ${{plan}} شهريًا.",
-  "workspace.black.waitlist.ready": "نحن مستعدون لتسجيلك في خطة OpenCode Black بقيمة ${{plan}} شهريًا.",
+  "workspace.black.waitlist.joined":
+    "أنت في قائمة الانتظار لخطة OpenCode Black بقيمة ${{plan}} شهريًا.",
+  "workspace.black.waitlist.ready":
+    "نحن مستعدون لتسجيلك في خطة OpenCode Black بقيمة ${{plan}} شهريًا.",
   "workspace.black.waitlist.leave": "ترك قائمة الانتظار",
   "workspace.black.waitlist.leaving": "جارٍ المغادرة...",
   "workspace.black.waitlist.left": "غادر",
   "workspace.black.waitlist.enroll": "تسجيل",
   "workspace.black.waitlist.enrolling": "جارٍ التسجيل...",
   "workspace.black.waitlist.enrolled": "مسجل",
-  "workspace.black.waitlist.enrollNote": 'عند النقر فوق "تسجيل"، يبدأ اشتراكك على الفور وسيتم خصم الرسوم من بطاقتك.',
+  "workspace.black.waitlist.enrollNote":
+    'عند النقر فوق "تسجيل"، يبدأ اشتراكك على الفور وسيتم خصم الرسوم من بطاقتك.',
 
   "workspace.lite.loading": "جارٍ التحميل...",
   "workspace.lite.time.day": "يوم",
@@ -671,7 +684,8 @@ export const dict = {
   "workspace.referral.overview.subtitle": "احصل على $5 عند اشتراك صديق. وسيحصل هو أيضًا على $5.",
   "workspace.referral.instructions.share": "شارك رابط الإحالة الخاص بك",
   "workspace.referral.instructions.subscribe": "ينضم صديقك ويشترك في Go",
-  "workspace.referral.instructions.claim": "تحصلان كلاكما على رصيد استخدام بقيمة $5 لتطبيقه على حدود استخدام Go",
+  "workspace.referral.instructions.claim":
+    "تحصلان كلاكما على رصيد استخدام بقيمة $5 لتطبيقه على حدود استخدام Go",
   "workspace.referral.rewards.title": "مكافآت الإحالة",
   "workspace.referral.rewards.description": "طبّق أرصدة الإحالة المتاحة على استخدامك لـ Go.",
   "workspace.referral.rewards.subtitle": "تم تطبيق {{applied}} / {{total}} من المكافآت.",
@@ -695,7 +709,8 @@ export const dict = {
   "workspace.referral.apply.preview": "عرض المكافأة",
   "workspace.referral.apply.action": "تطبيق",
   "workspace.referral.apply.confirmTitle": "تطبيق المكافأة",
-  "workspace.referral.apply.confirmBody": "طبِّق {{amount}} لتقليل الاستخدام الحالي في مساحة العمل هذه.",
+  "workspace.referral.apply.confirmBody":
+    "طبِّق {{amount}} لتقليل الاستخدام الحالي في مساحة العمل هذه.",
   "workspace.referral.apply.confirmAction": "تطبيق",
 
   "download.title": "OpenCode | تنزيل",
@@ -720,7 +735,8 @@ export const dict = {
     "ليس بالضرورة، ولكن على الأرجح. ستحتاج إلى اشتراك ذكاء اصطناعي إذا كنت تريد ربط OpenCode بمزوّد مدفوع، رغم أنه يمكنك العمل مع",
   "download.faq.a3.localLink": "النماذج المحلية",
   "download.faq.a3.afterLocal.beforeZen": "مجانًا. بينما نشجع المستخدمين على استخدام",
-  "download.faq.a3.afterZen": "، فإن OpenCode يعمل مع جميع المزودين الشائعين مثل OpenAI، Anthropic، xAI إلخ.",
+  "download.faq.a3.afterZen":
+    "، فإن OpenCode يعمل مع جميع المزودين الشائعين مثل OpenAI، Anthropic، xAI إلخ.",
 
   "download.faq.a5.p1": "OpenCode مجاني 100% للاستخدام.",
   "download.faq.a5.p2.beforeZen":
@@ -816,4 +832,4 @@ export const dict = {
   "bench.detail.table.duration": "المدة",
   "bench.detail.run.title": "تشغيل {{n}}",
   "bench.detail.rawJson": "JSON خام",
-} satisfies Dict
+} satisfies Dict;

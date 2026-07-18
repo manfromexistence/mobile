@@ -42,7 +42,7 @@ export async function* streamJsonlToOpenAi(
   model: string,
   id: string,
   created: number,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): AsyncGenerator<string> {
   const reader = body.getReader();
   const decoder = new TextDecoder();
@@ -178,7 +178,7 @@ export async function* streamJsonlToOpenAi(
 
 export async function readJsonlResponse(
   body: ReadableStream<Uint8Array>,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): Promise<string> {
   const reader = body.getReader();
   const decoder = new TextDecoder();

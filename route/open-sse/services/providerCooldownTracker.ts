@@ -77,7 +77,7 @@ function cooldownKey(provider: string, connectionId?: string): string {
 export function recordProviderCooldown(
   provider: string,
   connectionId: string | undefined,
-  settings?: ResilienceSettings
+  settings?: ResilienceSettings,
 ): void {
   if (!provider || provider === "unknown") return;
 
@@ -108,7 +108,7 @@ export function recordProviderCooldown(
 export function isProviderInCooldown(
   provider: string,
   connectionId: string | undefined,
-  settings?: ResilienceSettings
+  settings?: ResilienceSettings,
 ): boolean {
   if (!provider || provider === "unknown") return false;
 
@@ -142,7 +142,7 @@ export function isProviderInCooldown(
 export function getRemainingCooldownMs(
   provider: string,
   connectionId: string | undefined,
-  settings?: ResilienceSettings
+  settings?: ResilienceSettings,
 ): number {
   if (!provider || provider === "unknown") return 0;
 

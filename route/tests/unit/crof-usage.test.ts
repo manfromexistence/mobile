@@ -7,7 +7,7 @@ const { USAGE_SUPPORTED_PROVIDERS } = await import("../../src/shared/constants/p
 test("USAGE_SUPPORTED_PROVIDERS includes crof", () => {
   assert.ok(
     (USAGE_SUPPORTED_PROVIDERS as string[]).includes("crof"),
-    "crof must be in the usage-supported providers allowlist"
+    "crof must be in the usage-supported providers allowlist",
   );
 });
 
@@ -90,7 +90,7 @@ test("getUsageForProvider omits Requests Today on pay-as-you-go (usable_requests
     assert.equal(
       result.quotas!["Requests Today"],
       undefined,
-      "no Requests Today quota when not on a subscription plan"
+      "no Requests Today quota when not on a subscription plan",
     );
     assert.ok(result.quotas!["Credits"]);
   } finally {

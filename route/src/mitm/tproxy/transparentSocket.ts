@@ -59,7 +59,7 @@ function addonCandidates(cwd: string): string[] {
 export function loadTransparentAddon(
   req: (path: string) => unknown = createRequire(import.meta.url),
   os: () => string = platform,
-  cwd: () => string = () => process.cwd()
+  cwd: () => string = () => process.cwd(),
 ): TransparentAddon | null {
   if (os() !== "linux") return null; // IP_TRANSPARENT is a Linux-only socket option
   for (const candidate of addonCandidates(cwd())) {
@@ -98,7 +98,7 @@ export function createTransparentListenerFd(ip: string, port: number): number {
     throw new Error(
       "TPROXY transparent-socket addon is not available. It is Linux-only and must be built " +
         "(`npm run build:native:tproxy`, needs a C toolchain) or shipped as a prebuild; " +
-        "CAP_NET_ADMIN is required at runtime."
+        "CAP_NET_ADMIN is required at runtime.",
     );
   }
   return cached.createTransparentListener(ip, port);

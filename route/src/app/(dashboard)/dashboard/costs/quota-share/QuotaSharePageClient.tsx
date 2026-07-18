@@ -243,7 +243,7 @@ export default function QuotaSharePageClient() {
   const handleRenameGroup = useCallback(async () => {
     const name = prompt(
       t("groupNamePrompt"),
-      groups.find((g) => g.id === selectedGroupId)?.name ?? ""
+      groups.find((g) => g.id === selectedGroupId)?.name ?? "",
     );
     if (!name?.trim()) return;
     setRenaming(true);
@@ -296,12 +296,12 @@ export default function QuotaSharePageClient() {
       const raw = conn.name || conn.email || conn.displayName || conn.id.slice(0, 12);
       return emailsVisible ? raw : maskEmailLikeValue(raw);
     },
-    [connections, emailsVisible]
+    [connections, emailsVisible],
   );
 
   const connProvider = useCallback(
     (connectionId: string) => connections.find((c) => c.id === connectionId)?.provider || "unknown",
-    [connections]
+    [connections],
   );
 
   // connectionId → name of the pool it already belongs to (all members, not just
@@ -323,7 +323,7 @@ export default function QuotaSharePageClient() {
   const orphanPools = useMemo(() => {
     const known = new Set(groups.map((g) => g.id));
     return pools.filter(
-      (p) => !known.has((p as unknown as { groupId?: string }).groupId ?? "group-demo")
+      (p) => !known.has((p as unknown as { groupId?: string }).groupId ?? "group-demo"),
     );
   }, [pools, groups]);
 
@@ -336,7 +336,7 @@ export default function QuotaSharePageClient() {
       avgUtilization: aggregate.avgUtilizationPercent,
       borrowingNow: aggregate.borrowingKeyCount,
     }),
-    [pools, aggregate]
+    [pools, aggregate],
   );
 
   // Pools filtered by selected group (kept for stats/empty-state checks)
@@ -346,15 +346,15 @@ export default function QuotaSharePageClient() {
         ? pools
         : pools.filter(
             (p) =>
-              ((p as unknown as { groupId?: string }).groupId ?? "group-demo") === selectedGroupId
+              ((p as unknown as { groupId?: string }).groupId ?? "group-demo") === selectedGroupId,
           ),
-    [pools, selectedGroupId]
+    [pools, selectedGroupId],
   );
 
   // Groups to render as stacked sections
   const groupsToRender = useMemo(
     () => (selectedGroupId === "all" ? groups : groups.filter((g) => g.id === selectedGroupId)),
-    [groups, selectedGroupId]
+    [groups, selectedGroupId],
   );
 
   // ── Computed exclusivity for the pool being edited ───────────────────────
@@ -371,7 +371,7 @@ export default function QuotaSharePageClient() {
         const aq = (k as { allowedQuotas?: string[] } | undefined)?.allowedQuotas;
         return Array.isArray(aq) && aq.includes(editing.id);
       }),
-    [editing, apiKeys]
+    [editing, apiKeys],
   );
 
   // ── Mutations ─────────────────────────────────────────────────────────────
@@ -382,7 +382,7 @@ export default function QuotaSharePageClient() {
       await fetch(`/api/quota/pools/${id}`, { method: "DELETE" });
       await mutate();
     },
-    [mutate, t]
+    [mutate, t],
   );
 
   // ── Render ────────────────────────────────────────────────────────────────
@@ -572,7 +572,7 @@ export default function QuotaSharePageClient() {
           ) : (
             groupsToRender.map((g) => {
               const groupPools = pools.filter(
-                (p) => ((p as unknown as { groupId?: string }).groupId ?? "group-demo") === g.id
+                (p) => ((p as unknown as { groupId?: string }).groupId ?? "group-demo") === g.id,
               );
               return (
                 <div key={g.id} className="flex flex-col gap-3">
@@ -608,7 +608,7 @@ export default function QuotaSharePageClient() {
                           provider={connProvider(pool.connectionId)}
                           providers={[
                             ...new Set(
-                              (pool.connectionIds ?? [pool.connectionId]).map(connProvider)
+                              (pool.connectionIds ?? [pool.connectionId]).map(connProvider),
                             ),
                           ]}
                           connectionIds={pool.connectionIds ?? [pool.connectionId]}
@@ -690,7 +690,7 @@ export default function QuotaSharePageClient() {
           new Set(
             pools
               .filter((p) => p.id !== editing?.id)
-              .flatMap((p) => p.connectionIds ?? [p.connectionId])
+              .flatMap((p) => p.connectionIds ?? [p.connectionId]),
           )
         }
         connectionPoolName={connectionPoolName}

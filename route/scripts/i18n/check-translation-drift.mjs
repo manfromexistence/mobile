@@ -40,7 +40,7 @@ function parseArgs(argv) {
           "  --strict   (default) exit 1 when any source or target is out of date",
           "  --warn     report drift but exit 0",
           "  --json     write a machine-readable report to stdout",
-        ].join("\n")
+        ].join("\n"),
       );
       process.exit(0);
     }
@@ -123,8 +123,8 @@ async function main() {
           driftedTargets,
         },
         null,
-        2
-      ) + "\n"
+        2,
+      ) + "\n",
     );
   } else {
     console.log(`[i18n-check] checked sources=${checkedSources}, targets=${checkedTargets}`);

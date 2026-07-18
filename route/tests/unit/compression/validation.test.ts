@@ -46,7 +46,7 @@ describe("compression preservation and validation", () => {
         minMessageLength: 0,
         preservePatterns: [],
         intensity: "full",
-      }
+      },
     ).body.messages[0].content as string;
 
     assert.match(output, /API_KEY_VALUE/);
@@ -80,7 +80,7 @@ describe("compression preservation and validation", () => {
         minMessageLength: 0,
         preservePatterns: [],
         intensity: "full",
-      }
+      },
     ).body.messages[0].content as string;
 
     assert.match(output, /^---\ntitle: The Test\n---/);
@@ -102,7 +102,7 @@ describe("compression preservation and validation", () => {
         minMessageLength: 0,
         preservePatterns: [],
         intensity: "full",
-      }
+      },
     ).body.messages[0].content as string;
 
     assert.match(output, /\$the value\$/);
@@ -135,7 +135,7 @@ describe("compression preservation and validation", () => {
         minMessageLength: 0,
         preservePatterns: ["`[^`]+"],
         intensity: "full",
-      }
+      },
     );
     const output = result.body.messages[0].content as string;
     assert.match(output, /`the exact token`/);

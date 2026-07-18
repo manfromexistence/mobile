@@ -173,7 +173,7 @@ export async function startOAuthTui({ provider, url, deviceCode }) {
         onDone={onDone}
         onFail={onFail}
         onCancel={onCancel}
-      />
+      />,
     );
 
     waitUntilExit()

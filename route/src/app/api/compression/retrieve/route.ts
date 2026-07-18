@@ -30,7 +30,7 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Invalid request", details: parsed.error.issues },
-      { status: 400 }
+      { status: 400 },
     );
   }
   try {
@@ -43,14 +43,14 @@ export async function POST(req: Request) {
     return NextResponse.json(
       "content" in result
         ? { found: true, block: result.content }
-        : { found: true, error: result.error }
+        : { found: true, error: result.error },
     );
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
     console.error("[/api/compression/retrieve]", msg);
     return NextResponse.json(
       { error: "Retrieve failed", details: sanitizeErrorMessage(msg) },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

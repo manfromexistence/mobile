@@ -1,26 +1,20 @@
-'use client';
+"use client";
 
-import {
-  CodeView,
-  type CodeViewHandle,
-  type CodeViewProps,
-} from '@pierre/diffs/react';
-import { type Ref, useMemo } from 'react';
+import { CodeView, type CodeViewHandle, type CodeViewProps } from "@pierre/diffs/react";
+import { type Ref, useMemo } from "react";
 
-import { useDiffThemeProps } from './useDiffThemeProps';
-import { useWorkerDiffTheme } from './useWorkerDiffTheme';
-import type { DiffThemeInput } from '@/lib/theme/diffThemeProps';
+import { useDiffThemeProps } from "./useDiffThemeProps";
+import { useWorkerDiffTheme } from "./useWorkerDiffTheme";
+import type { DiffThemeInput } from "@/lib/theme/diffThemeProps";
 
 type ThemedCodeViewComponent = <LAnnotation = undefined>(
   props: CodeViewProps<LAnnotation> & {
     ref?: Ref<CodeViewHandle<LAnnotation>>;
     theme?: DiffThemeInput;
-  }
+  },
 ) => React.JSX.Element;
 
-export const ThemedCodeView: ThemedCodeViewComponent = <
-  LAnnotation = undefined,
->({
+export const ThemedCodeView: ThemedCodeViewComponent = <LAnnotation = undefined>({
   disableWorkerPool = false,
   options,
   ref,
@@ -38,7 +32,7 @@ export const ThemedCodeView: ThemedCodeViewComponent = <
       theme: diffTheme.theme,
       themeType: options?.themeType ?? diffTheme.themeType,
     }),
-    [diffTheme, options]
+    [diffTheme, options],
   );
   return (
     <CodeView<LAnnotation>

@@ -251,7 +251,7 @@ describe("TierResolver", () => {
       const derived = deriveNoAuthFreeProviders();
       assert.ok(
         !derived.includes("veoaifree-web"),
-        "veoaifree-web (serviceKinds: video) must not be classified as chat-free"
+        "veoaifree-web (serviceKinds: video) must not be classified as chat-free",
       );
     });
 

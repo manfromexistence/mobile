@@ -35,7 +35,7 @@ test("getLockfileLintConfig: lockfilePath points to package-lock.json", () => {
   const cfg = getLockfileLintConfig();
   assert.ok(
     cfg.lockfilePath.endsWith("package-lock.json"),
-    `lockfilePath should end with package-lock.json, got: ${cfg.lockfilePath}`
+    `lockfilePath should end with package-lock.json, got: ${cfg.lockfilePath}`,
   );
 });
 
@@ -59,7 +59,7 @@ test("getLockfileLintConfig: allowedHosts includes npm (official registry)", () 
   assert.ok(Array.isArray(cfg.allowedHosts), "allowedHosts should be an array");
   assert.ok(
     cfg.allowedHosts.includes("npm"),
-    "npm must be in allowedHosts (covers registry.npmjs.org)"
+    "npm must be in allowedHosts (covers registry.npmjs.org)",
   );
 });
 
@@ -68,7 +68,7 @@ test("getLockfileLintConfig: no http:// hosts in allowedHosts", () => {
   for (const host of cfg.allowedHosts) {
     assert.ok(
       !host.startsWith("http://"),
-      `allowedHosts must not contain http:// URLs, found: ${host}`
+      `allowedHosts must not contain http:// URLs, found: ${host}`,
     );
   }
 });

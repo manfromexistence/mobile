@@ -29,7 +29,7 @@ test("extractSessionAffinityKey extracts x-codex-session-id header for codex fai
   assert.ok(key, "Should return a session affinity key from x-codex-session-id header");
   assert.ok(
     key.includes("codex-session-abc123") || key.length > 0,
-    "Key should be derived from the codex session header"
+    "Key should be derived from the codex session header",
   );
 });
 
@@ -89,7 +89,7 @@ test("codex failover state: excluded IDs accumulate across retries", () => {
   assert.deepEqual(
     codexExcludedIds,
     ["conn-a-1234-5678", "conn-b-5678-9012"],
-    "Both failed IDs should be excluded after two retries"
+    "Both failed IDs should be excluded after two retries",
   );
 
   // Ensure no duplicates if same ID hits again
@@ -151,7 +151,7 @@ test("codex failover: Object.assign patches credentials with new account", () =>
   assert.deepEqual(
     credentials.providerSpecificData,
     { workspaceId: "ws-b" },
-    "Provider specific data should be updated to new account"
+    "Provider specific data should be updated to new account",
   );
 });
 
@@ -161,7 +161,7 @@ test("codex failover: only 429 triggers account rotation", () => {
     provider: string,
     status: number,
     attempt: number,
-    maxAttempts: number
+    maxAttempts: number,
   ) => provider === "codex" && status === 429 && attempt < maxAttempts - 1;
 
   assert.equal(shouldTriggerFailover("codex", 429, 0, 3), true, "Codex 429 attempt 0 → rotate");
@@ -169,14 +169,14 @@ test("codex failover: only 429 triggers account rotation", () => {
   assert.equal(
     shouldTriggerFailover("codex", 429, 2, 3),
     false,
-    "Codex 429 last attempt → no rotate"
+    "Codex 429 last attempt → no rotate",
   );
   assert.equal(shouldTriggerFailover("codex", 500, 0, 3), false, "Codex 500 → no rotate");
   assert.equal(shouldTriggerFailover("codex", 200, 0, 3), false, "Codex 200 → no rotate");
   assert.equal(
     shouldTriggerFailover("openai", 429, 0, 1),
     false,
-    "OpenAI 429 → no rotate (not codex)"
+    "OpenAI 429 → no rotate (not codex)",
   );
 });
 
@@ -194,11 +194,11 @@ test("codex failover: stops rotation when getProviderCredentials returns null", 
   assert.equal(
     guardFailover({ allRateLimited: true }),
     "STOP_ROTATION",
-    "allRateLimited → stop rotation"
+    "allRateLimited → stop rotation",
   );
   assert.equal(
     guardFailover({ connectionId: "conn-b", accessToken: "token-b" }),
     "CONTINUE_ROTATION",
-    "valid creds → continue rotation"
+    "valid creds → continue rotation",
   );
 });

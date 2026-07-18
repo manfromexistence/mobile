@@ -29,7 +29,7 @@ type AntigravityProfileCredentials = AntigravityCredentialsLike & {
 };
 
 export function getAntigravityClientProfile(
-  credentials?: AntigravityProfileCredentials | null
+  credentials?: AntigravityProfileCredentials | null,
 ): AntigravityClientProfile {
   const fromProviderData =
     credentials?.providerSpecificData &&
@@ -42,7 +42,7 @@ export function getAntigravityClientProfile(
 }
 
 function normalizeHarnessPlatform(
-  platform: NodeJS.Platform | string = getRuntimePlatform()
+  platform: NodeJS.Platform | string = getRuntimePlatform(),
 ): string {
   return platform === "win32" ? "windows" : platform || "unknown";
 }
@@ -60,7 +60,7 @@ function normalizeHarnessArch(arch: NodeJS.Architecture | string = getRuntimeArc
 
 function getHarnessPlatformArch(
   platform: NodeJS.Platform | string = getRuntimePlatform(),
-  arch: NodeJS.Architecture | string = getRuntimeArch()
+  arch: NodeJS.Architecture | string = getRuntimeArch(),
 ): string {
   return `${normalizeHarnessPlatform(platform)}/${normalizeHarnessArch(arch)}`;
 }
@@ -68,13 +68,13 @@ function getHarnessPlatformArch(
 export function antigravityHarnessUserAgent(
   version = getCachedAntigravityVersion(),
   platform: NodeJS.Platform | string = getRuntimePlatform(),
-  arch: NodeJS.Architecture | string = getRuntimeArch()
+  arch: NodeJS.Architecture | string = getRuntimeArch(),
 ): string {
   return `antigravity/${version} ${getHarnessPlatformArch(platform, arch)}`;
 }
 
 export function antigravityHarnessLoadCodeAssistUserAgent(
-  version = getCachedAntigravityVersion()
+  version = getCachedAntigravityVersion(),
 ): string {
   return `${antigravityHarnessUserAgent(version)} ${ANTIGRAVITY_NODE_API_CLIENT}`;
 }
@@ -103,7 +103,7 @@ function getProjectHeaderValue(body: unknown): string | null {
 /** Headers used by OAuth/bootstrap calls (loadCodeAssist, token refresh). */
 export function getAntigravityBootstrapHeaders(
   profile: AntigravityClientProfile,
-  accessToken?: string | null
+  accessToken?: string | null,
 ): Record<string, string> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -128,7 +128,7 @@ export function getAntigravityBootstrapHeaders(
 export function applyAntigravityClientProfileHeaders(
   headers: Record<string, string>,
   credentials: AntigravityProfileCredentials | null | undefined,
-  body: unknown
+  body: unknown,
 ): AntigravityClientProfile {
   const profile = getAntigravityClientProfile(credentials);
   const version = getCachedAntigravityVersion();

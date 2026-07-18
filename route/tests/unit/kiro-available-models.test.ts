@@ -34,7 +34,7 @@ test("parseKiroModels reads CodeWhisperer ListAvailableModels shape", () => {
 
   assert.deepEqual(
     models.map((m) => m.id),
-    ["auto", "claude-sonnet-4.6"]
+    ["auto", "claude-sonnet-4.6"],
   );
   assert.equal(models[1].name, "Claude Sonnet 4.6");
   assert.equal(models[0].owned_by, "kiro");
@@ -44,7 +44,7 @@ test("resolveKiroRegion prefers stored region, then profileArn, else us-east-1",
   assert.equal(resolveKiroRegion({ region: "eu-central-1" }), "eu-central-1");
   assert.equal(
     resolveKiroRegion({ profileArn: "arn:aws:codewhisperer:eu-central-1:123:profile/X" }),
-    "eu-central-1"
+    "eu-central-1",
   );
   assert.equal(resolveKiroRegion({}), "us-east-1");
   assert.equal(resolveKiroRegion(null), "us-east-1");
@@ -111,11 +111,11 @@ test("fetchKiroAvailableModels: IAM Identity Center account, region-matched endp
       "claude-opus-4.8-thinking",
       "claude-opus-4.8-agentic",
       "claude-opus-4.8-thinking-agentic",
-    ]
+    ],
   );
   assert.equal(
     calls[0],
-    "https://q.eu-central-1.amazonaws.com/ListAvailableModels?origin=AI_EDITOR"
+    "https://q.eu-central-1.amazonaws.com/ListAvailableModels?origin=AI_EDITOR",
   );
 });
 
@@ -147,7 +147,7 @@ test("fetchKiroAvailableModels: retries with profileArn when origin-only fails",
       "claude-sonnet-4.6-thinking",
       "claude-sonnet-4.6-agentic",
       "claude-sonnet-4.6-thinking-agentic",
-    ]
+    ],
   );
   // origin-only attempted first, then profileArn retry.
   assert.equal(calls.length, 2);
@@ -164,7 +164,7 @@ test("fetchKiroAvailableModels: falls back to static catalog when no token", asy
   assert.equal(result.source, "fallback");
   assert.deepEqual(
     result.models.map((m) => m.id),
-    ["auto-kiro", "claude-sonnet-4.6"]
+    ["auto-kiro", "claude-sonnet-4.6"],
   );
 });
 
@@ -180,6 +180,6 @@ test("fetchKiroAvailableModels: falls back when every upstream attempt fails", a
   assert.equal(result.source, "fallback");
   assert.deepEqual(
     result.models.map((m) => m.id),
-    ["auto-kiro", "claude-sonnet-4.6"]
+    ["auto-kiro", "claude-sonnet-4.6"],
   );
 });

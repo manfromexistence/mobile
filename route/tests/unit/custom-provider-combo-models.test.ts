@@ -31,7 +31,7 @@ function mergeFetchedModels(
   nodeModels: Array<{ id: string }>,
   fallbackEntries: Array<{ id: string }>,
   customEntries: Array<{ id: string }>,
-  fetched: Array<Record<string, string>>
+  fetched: Array<Record<string, string>>,
 ) {
   const fetchedEntries = fetched
     .map((m) => {
@@ -49,7 +49,7 @@ function mergeFetchedModels(
         fm.id &&
         !nodeModels.some((nm) => nm.id === fm.id) &&
         !fallbackEntries.some((fbm) => fbm.id === fm.id) &&
-        !customEntries.some((cm) => cm.id === fm.id)
+        !customEntries.some((cm) => cm.id === fm.id),
     );
   return [...nodeModels, ...fallbackEntries, ...customEntries, ...fetchedEntries];
 }
@@ -67,10 +67,7 @@ test("fetched models merge with alias models, deduping by id", () => {
   }>;
 
   assert.equal(merged.length, 2);
-  assert.deepEqual(
-    merged.map((m) => m.id).sort(),
-    ["gpt-3.5", "gpt-4"]
-  );
+  assert.deepEqual(merged.map((m) => m.id).sort(), ["gpt-3.5", "gpt-4"]);
   const auto = merged.find((m) => m.id === "gpt-3.5");
   assert.equal(auto?.source, "auto");
   // The pre-existing alias entry keeps its original (non-auto) identity.
@@ -83,12 +80,9 @@ test("fetched ids fall back across id/slug/model/name keys", () => {
     [],
     [],
     [],
-    [{ slug: "llama-3" }, { model: "mixtral" }, { name: "qwen" }]
+    [{ slug: "llama-3" }, { model: "mixtral" }, { name: "qwen" }],
   ) as Array<{ id: string; value: string }>;
-  assert.deepEqual(
-    merged.map((m) => m.id).sort(),
-    ["llama-3", "mixtral", "qwen"]
-  );
+  assert.deepEqual(merged.map((m) => m.id).sort(), ["llama-3", "mixtral", "qwen"]);
   assert.equal(merged.find((m) => m.id === "llama-3")?.value, "p/llama-3");
 });
 
@@ -98,12 +92,12 @@ test("fetched entries are deduped against fallback and custom models too", () =>
     [],
     [{ id: "fb-model" }],
     [{ id: "custom-model" }],
-    [{ id: "fb-model" }, { id: "custom-model" }, { id: "brand-new" }]
+    [{ id: "fb-model" }, { id: "custom-model" }, { id: "brand-new" }],
   ) as Array<{ id: string; source?: string }>;
   // Only the genuinely-new model survives as an auto entry.
   const autoEntries = merged.filter((m) => m.source === "auto");
   assert.deepEqual(
     autoEntries.map((m) => m.id),
-    ["brand-new"]
+    ["brand-new"],
   );
 });

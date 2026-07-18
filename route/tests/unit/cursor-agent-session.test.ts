@@ -63,7 +63,7 @@ test("flattenMessages handles role:'tool' messages", () => {
   assert.match(out, /User: what's the weather\?/);
   assert.match(
     out,
-    /Assistant called tool get_weather \(call_xyz\) with arguments: \{"city":"Paris"\}/
+    /Assistant called tool get_weather \(call_xyz\) with arguments: \{"city":"Paris"\}/,
   );
   assert.match(out, /Tool result \(call_xyz\): sunny, 22C/);
 });

@@ -110,7 +110,7 @@ export type GitHubCopilotModelsResult = {
 };
 
 function toFallbackResult(
-  fallbackModels: Array<{ id: string; name?: string }> | undefined
+  fallbackModels: Array<{ id: string; name?: string }> | undefined,
 ): GitHubCopilotModelsResult {
   const models = (fallbackModels || [])
     .map((model) => {
@@ -128,7 +128,7 @@ function toFallbackResult(
  * when no token is available or the upstream request fails.
  */
 export async function fetchGitHubCopilotModels(
-  options: FetchGitHubCopilotModelsOptions
+  options: FetchGitHubCopilotModelsOptions,
 ): Promise<GitHubCopilotModelsResult> {
   const { token, fetchImpl = fetch, fallbackModels } = options;
 

@@ -43,7 +43,7 @@ test("combo created with dimensions persists the value", async () => {
   assert.equal(
     String((stored as Record<string, unknown>).dimensions),
     "1024",
-    "dimensions must be persisted in the combo record"
+    "dimensions must be persisted in the combo record",
   );
 });
 
@@ -61,7 +61,7 @@ test("combo created without dimensions has no dimensions field", async () => {
   // dimensions should be absent or null/undefined — not set to some bogus value
   assert.ok(
     dim === undefined || dim === null,
-    `dimensions should be absent/null when not set, got: ${JSON.stringify(dim)}`
+    `dimensions should be absent/null when not set, got: ${JSON.stringify(dim)}`,
   );
 });
 
@@ -74,7 +74,7 @@ test("combo created without dimensions has no dimensions field", async () => {
 
 function applyDimensionsInjection(
   body: Record<string, unknown>,
-  combo: Record<string, unknown>
+  combo: Record<string, unknown>,
 ): Record<string, unknown> {
   // Mirror of the injection logic in src/lib/embeddings/service.ts
   const comboDimensions =

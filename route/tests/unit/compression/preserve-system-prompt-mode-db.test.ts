@@ -47,7 +47,7 @@ test.after(async () => {
 test("legacy preserveSystemPrompt=false (no mode row) derives whenNoCache", async () => {
   const { db, resetDbInstance } = await freshCompressionDb();
   db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('compression','preserveSystemPrompt','false')"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('compression','preserveSystemPrompt','false')",
   ).run();
   resetDbInstance(); // new db object => TTL cache miss on the next read
 
@@ -55,7 +55,7 @@ test("legacy preserveSystemPrompt=false (no mode row) derives whenNoCache", asyn
   assert.equal(
     cfg.preserveSystemPromptMode,
     "whenNoCache",
-    "legacy preserveSystemPrompt=false must derive whenNoCache, not inherit the 'always' default"
+    "legacy preserveSystemPrompt=false must derive whenNoCache, not inherit the 'always' default",
   );
 
   // End-to-end: without a cacheable prefix, a legacy-off install must still compress the prompt.
@@ -65,7 +65,7 @@ test("legacy preserveSystemPrompt=false (no mode row) derives whenNoCache", asyn
   assert.equal(
     resolveCacheAwareConfig(cfg).preserveSystemPrompt,
     false,
-    "legacy-off install must compress the system prompt when there is no cache"
+    "legacy-off install must compress the system prompt when there is no cache",
   );
 });
 
@@ -81,10 +81,10 @@ test("fresh install (no override rows) defaults to always", async () => {
 test("an explicit mode row wins over the legacy boolean", async () => {
   const { db, resetDbInstance } = await freshCompressionDb();
   db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('compression','preserveSystemPrompt','false')"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('compression','preserveSystemPrompt','false')",
   ).run();
   db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('compression','preserveSystemPromptMode','\"never\"')"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('compression','preserveSystemPromptMode','\"never\"')",
   ).run();
   resetDbInstance();
 

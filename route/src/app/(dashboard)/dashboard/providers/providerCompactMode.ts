@@ -53,7 +53,7 @@ function getCompactProviderEntryGroups<TProvider>({
   cloudAgentProviderEntries,
 }: CompactProviderEntryOptions<TProvider>): ProviderEntry<TProvider>[][] {
   const oauthEntries = oauthProviderEntries.filter(
-    (entry) => !IDE_PROVIDER_IDS.has(entry.providerId)
+    (entry) => !IDE_PROVIDER_IDS.has(entry.providerId),
   );
   const apiKeyEntries = [
     llmProviderEntries,
@@ -100,7 +100,7 @@ function getCompactProviderEntryGroups<TProvider>({
 }
 
 export function buildCompactProviderEntriesForPage<TProvider>(
-  options: CompactProviderEntryOptions<TProvider>
+  options: CompactProviderEntryOptions<TProvider>,
 ): ProviderEntry<TProvider>[] {
   return buildCompactProviderEntries(getCompactProviderEntryGroups(options), {
     deferNoAuth: options.activeCategory !== "no-auth",
@@ -119,7 +119,7 @@ const CATEGORY_AUTH_TYPES: Record<string, string> = {
 
 export function getCompactProviderAuthType<TProvider>(
   entry: ProviderEntry<TProvider>,
-  showFreeOnly: boolean
+  showFreeOnly: boolean,
 ): string {
   if (showFreeOnly && entry.toggleAuthType === "free") return "free";
   if (entry.displayAuthType === "compatible") return "compatible";

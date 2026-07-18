@@ -79,7 +79,7 @@ function authenticate(req: NextRequest): boolean {
 function jsonRpcError(id: string | number | null, code: number, message: string, data?: unknown) {
   return NextResponse.json(
     { jsonrpc: "2.0", id, error: { code, message, data } },
-    { status: code === -32600 ? 400 : code === -32601 ? 404 : code === -32603 ? 500 : 200 }
+    { status: code === -32600 ? 400 : code === -32601 ? 404 : code === -32603 ? 500 : 200 },
   );
 }
 
@@ -99,7 +99,7 @@ async function rejectIfA2ADisabled(id: string | number | null) {
         message: "A2A endpoint is disabled. Enable it from the Endpoints page.",
       },
     },
-    { status: 503 }
+    { status: 503 },
   );
 }
 
@@ -139,7 +139,7 @@ export async function POST(req: NextRequest) {
         return jsonRpcError(
           id,
           -32602,
-          "Invalid params: provide `messages[]` or `message.content`"
+          "Invalid params: provide `messages[]` or `message.content`",
         );
       }
 
@@ -196,7 +196,7 @@ export async function POST(req: NextRequest) {
         return jsonRpcError(
           id,
           -32602,
-          "Invalid params: provide `messages[]` or `message.content`"
+          "Invalid params: provide `messages[]` or `message.content`",
         );
       }
 
@@ -215,7 +215,7 @@ export async function POST(req: NextRequest) {
         {
           onStart: () => tm.beginStream(),
           onEnd: () => tm.endStream(),
-        }
+        },
       );
 
       return new Response(stream, { headers: SSE_HEADERS });

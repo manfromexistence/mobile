@@ -39,7 +39,7 @@ export async function OPTIONS() {
  * priority order when no explicit provider is requested.
  */
 async function resolveCredentials(
-  providerId: WebFetchProviderId
+  providerId: WebFetchProviderId,
 ): Promise<{ apiKey?: string } | null> {
   try {
     const creds = await getProviderCredentialsWithQuotaPreflight(providerId);
@@ -88,7 +88,7 @@ export async function POST(request: Request) {
       return errorResponse(
         HTTP_STATUS.BAD_REQUEST,
         `No credentials configured for web-fetch provider: ${resolvedProvider}. ` +
-          `Add an API key for "${resolvedProvider}" in the dashboard.`
+          `Add an API key for "${resolvedProvider}" in the dashboard.`,
       );
     }
     credentials = creds;
@@ -106,7 +106,7 @@ export async function POST(request: Request) {
       return errorResponse(
         HTTP_STATUS.BAD_REQUEST,
         `No credentials configured for any web-fetch provider. ` +
-          `Add an API key for one of: ${WEB_FETCH_PROVIDERS.join(", ")}.`
+          `Add an API key for one of: ${WEB_FETCH_PROVIDERS.join(", ")}.`,
       );
     }
   }
@@ -122,7 +122,7 @@ export async function POST(request: Request) {
       include_metadata: body.include_metadata,
     },
     credentials,
-    resolvedProvider
+    resolvedProvider,
   );
 
   if (!result.success) {
@@ -133,7 +133,7 @@ export async function POST(request: Request) {
       {
         status: result.status ?? 502,
         headers: { "Content-Type": "application/json", ...CORS_HEADERS },
-      }
+      },
     );
   }
 

@@ -1,31 +1,31 @@
-import { Button } from "@opencode-ai/ui/button"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { Dialog } from "@opencode-ai/ui/dialog"
-import { TextField } from "@opencode-ai/ui/text-field"
-import { useMutation } from "@tanstack/solid-query"
-import { Icon } from "@opencode-ai/ui/icon"
-import { createMemo, For, Show } from "solid-js"
-import { createStore } from "solid-js/store"
-import { type LocalProject, getAvatarColors } from "@/context/layout"
-import { getFilename } from "@opencode-ai/core/util/path"
-import { Avatar } from "@opencode-ai/ui/avatar"
-import { useLanguage } from "@/context/language"
-import { getProjectAvatarSource } from "@/pages/layout/helpers"
-import { ServerConnection } from "@/context/server"
-import { useGlobal } from "@/context/global"
+import { Button } from "@opencode-ai/ui/button";
+import { useDialog } from "@opencode-ai/ui/context/dialog";
+import { Dialog } from "@opencode-ai/ui/dialog";
+import { TextField } from "@opencode-ai/ui/text-field";
+import { useMutation } from "@tanstack/solid-query";
+import { Icon } from "@opencode-ai/ui/icon";
+import { createMemo, For, Show } from "solid-js";
+import { createStore } from "solid-js/store";
+import { type LocalProject, getAvatarColors } from "@/context/layout";
+import { getFilename } from "@opencode-ai/core/util/path";
+import { Avatar } from "@opencode-ai/ui/avatar";
+import { useLanguage } from "@/context/language";
+import { getProjectAvatarSource } from "@/pages/layout/helpers";
+import { ServerConnection } from "@/context/server";
+import { useGlobal } from "@/context/global";
 
-const AVATAR_COLOR_KEYS = ["pink", "mint", "orange", "purple", "cyan", "lime"] as const
+const AVATAR_COLOR_KEYS = ["pink", "mint", "orange", "purple", "cyan", "lime"] as const;
 
 export function DialogEditProject(props: { project: LocalProject; server: ServerConnection.Any }) {
-  const dialog = useDialog()
-  const global = useGlobal()
-  const language = useLanguage()
-  const serverCtx = createMemo(() => global.ensureServerCtx(props.server))
-  const serverSDK = () => serverCtx().sdk
-  const serverSync = () => serverCtx().sync
+  const dialog = useDialog();
+  const global = useGlobal();
+  const language = useLanguage();
+  const serverCtx = createMemo(() => global.ensureServerCtx(props.server));
+  const serverSDK = () => serverCtx().sdk;
+  const serverSync = () => serverCtx().sync;
 
-  const folderName = createMemo(() => getFilename(props.project.worktree))
-  const defaultName = createMemo(() => props.project.name || folderName())
+  const folderName = createMemo(() => getFilename(props.project.worktree));
+  const defaultName = createMemo(() => props.project.name || folderName());
 
   const [store, setStore] = createStore({
     name: defaultName(),
@@ -34,50 +34,50 @@ export function DialogEditProject(props: { project: LocalProject; server: Server
     startup: props.project.commands?.start ?? "",
     dragOver: false,
     iconHover: false,
-  })
+  });
 
-  let iconInput: HTMLInputElement | undefined
+  let iconInput: HTMLInputElement | undefined;
 
   function handleFileSelect(file: File) {
-    if (!file.type.startsWith("image/")) return
-    const reader = new FileReader()
+    if (!file.type.startsWith("image/")) return;
+    const reader = new FileReader();
     reader.onload = (e) => {
-      setStore("iconOverride", e.target?.result as string)
-      setStore("iconHover", false)
-    }
-    reader.readAsDataURL(file)
+      setStore("iconOverride", e.target?.result as string);
+      setStore("iconHover", false);
+    };
+    reader.readAsDataURL(file);
   }
 
   function handleDrop(e: DragEvent) {
-    e.preventDefault()
-    setStore("dragOver", false)
-    const file = e.dataTransfer?.files[0]
-    if (file) handleFileSelect(file)
+    e.preventDefault();
+    setStore("dragOver", false);
+    const file = e.dataTransfer?.files[0];
+    if (file) handleFileSelect(file);
   }
 
   function handleDragOver(e: DragEvent) {
-    e.preventDefault()
-    setStore("dragOver", true)
+    e.preventDefault();
+    setStore("dragOver", true);
   }
 
   function handleDragLeave() {
-    setStore("dragOver", false)
+    setStore("dragOver", false);
   }
 
   function handleInputChange(e: Event) {
-    const input = e.target as HTMLInputElement
-    const file = input.files?.[0]
-    if (file) handleFileSelect(file)
+    const input = e.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (file) handleFileSelect(file);
   }
 
   function clearIcon() {
-    setStore("iconOverride", "")
+    setStore("iconOverride", "");
   }
 
   const saveMutation = useMutation(() => ({
     mutationFn: async () => {
-      const name = store.name.trim() === folderName() ? "" : store.name.trim()
-      const start = store.startup.trim()
+      const name = store.name.trim() === folderName() ? "" : store.name.trim();
+      const start = store.startup.trim();
 
       if (props.project.id && props.project.id !== "global") {
         await serverSDK().client.project.update({
@@ -86,25 +86,25 @@ export function DialogEditProject(props: { project: LocalProject; server: Server
           name,
           icon: { color: store.color || "", override: store.iconOverride || "" },
           commands: { start },
-        })
-        serverSync().project.icon(props.project.worktree, store.iconOverride || undefined)
-        dialog.close()
-        return
+        });
+        serverSync().project.icon(props.project.worktree, store.iconOverride || undefined);
+        dialog.close();
+        return;
       }
 
       serverSync().project.meta(props.project.worktree, {
         name,
         icon: { color: store.color || undefined, override: store.iconOverride || undefined },
         commands: { start: start || undefined },
-      })
-      dialog.close()
+      });
+      dialog.close();
     },
-  }))
+  }));
 
   function handleSubmit(e: SubmitEvent) {
-    e.preventDefault()
-    if (saveMutation.isPending) return
-    saveMutation.mutate()
+    e.preventDefault();
+    if (saveMutation.isPending) return;
+    saveMutation.mutate();
   }
 
   return (
@@ -121,7 +121,9 @@ export function DialogEditProject(props: { project: LocalProject; server: Server
           />
 
           <div class="flex flex-col gap-2">
-            <label class="text-12-medium text-text-weak">{language.t("dialog.project.edit.icon")}</label>
+            <label class="text-12-medium text-text-weak">
+              {language.t("dialog.project.edit.icon")}
+            </label>
             <div class="flex gap-3 items-start">
               <div
                 class="relative"
@@ -140,9 +142,9 @@ export function DialogEditProject(props: { project: LocalProject; server: Server
                   onDragLeave={handleDragLeave}
                   onClick={() => {
                     if (store.iconOverride && store.iconHover) {
-                      clearIcon()
+                      clearIcon();
                     } else {
-                      iconInput?.click()
+                      iconInput?.click();
                     }
                   }}
                 >
@@ -178,7 +180,11 @@ export function DialogEditProject(props: { project: LocalProject; server: Server
                     "opacity-0": !(store.iconHover && !store.iconOverride),
                   }}
                 >
-                  <Icon name="cloud-upload" size="large" class="text-icon-on-interactive-base drop-shadow-sm" />
+                  <Icon
+                    name="cloud-upload"
+                    size="large"
+                    class="text-icon-on-interactive-base drop-shadow-sm"
+                  />
                 </div>
                 <div
                   class="absolute inset-0 size-16 bg-surface-raised-stronger-non-alpha/90 rounded-[6px] z-10 pointer-events-none flex items-center justify-center transition-opacity"
@@ -187,13 +193,17 @@ export function DialogEditProject(props: { project: LocalProject; server: Server
                     "opacity-0": !(store.iconHover && !!store.iconOverride),
                   }}
                 >
-                  <Icon name="trash" size="large" class="text-icon-on-interactive-base drop-shadow-sm" />
+                  <Icon
+                    name="trash"
+                    size="large"
+                    class="text-icon-on-interactive-base drop-shadow-sm"
+                  />
                 </div>
               </div>
               <input
                 id="icon-upload"
                 ref={(el) => {
-                  iconInput = el
+                  iconInput = el;
                 }}
                 type="file"
                 accept="image/*"
@@ -209,7 +219,9 @@ export function DialogEditProject(props: { project: LocalProject; server: Server
 
           <Show when={!store.iconOverride}>
             <div class="flex flex-col gap-2">
-              <label class="text-12-medium text-text-weak">{language.t("dialog.project.edit.color")}</label>
+              <label class="text-12-medium text-text-weak">
+                {language.t("dialog.project.edit.color")}
+              </label>
               <div class="flex gap-1.5">
                 <For each={AVATAR_COLOR_KEYS}>
                   {(color) => (
@@ -225,8 +237,8 @@ export function DialogEditProject(props: { project: LocalProject; server: Server
                           store.color !== color,
                       }}
                       onClick={() => {
-                        if (store.color === color && !props.project.icon?.url) return
-                        setStore("color", store.color === color ? undefined : color)
+                        if (store.color === color && !props.project.icon?.url) return;
+                        setStore("color", store.color === color ? undefined : color);
                       }}
                     >
                       <Avatar
@@ -263,5 +275,5 @@ export function DialogEditProject(props: { project: LocalProject; server: Server
         </div>
       </form>
     </Dialog>
-  )
+  );
 }

@@ -19,7 +19,7 @@ test("create scopes enable own usage by default without shared account quota", (
       manageEnabled: false,
       bypassProviderQuotaPolicyEnabled: true,
     }),
-    [SELF_USAGE_SCOPE, API_KEY_BYPASS_PROVIDER_QUOTA_SCOPE]
+    [SELF_USAGE_SCOPE, API_KEY_BYPASS_PROVIDER_QUOTA_SCOPE],
   );
   assert.deepEqual(
     buildApiKeyCreateScopes({
@@ -27,7 +27,7 @@ test("create scopes enable own usage by default without shared account quota", (
       selfUsageEnabled: false,
       selfAccountQuotaEnabled: true,
     }),
-    []
+    [],
   );
 });
 
@@ -56,7 +56,7 @@ test("permission scope merge removes shared quota visibility when own usage is d
       selfUsageEnabled: false,
       selfAccountQuotaEnabled: true,
       bypassProviderQuotaPolicyEnabled: false,
-    }
+    },
   );
 
   assert.deepEqual(scopes, ["custom:scope"]);

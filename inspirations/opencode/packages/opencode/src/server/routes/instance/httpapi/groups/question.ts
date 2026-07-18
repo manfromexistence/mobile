@@ -1,19 +1,25 @@
-import { Question } from "@/question"
-import { QuestionID } from "@/question/schema"
-import { Schema } from "effect"
-import { HttpApi, HttpApiEndpoint, HttpApiError, HttpApiGroup, OpenApi } from "effect/unstable/httpapi"
-import { QuestionNotFoundError } from "../errors"
-import { Authorization } from "../middleware/authorization"
-import { InstanceContextMiddleware } from "../middleware/instance-context"
-import { WorkspaceRoutingMiddleware, WorkspaceRoutingQuery } from "../middleware/workspace-routing"
-import { described } from "./metadata"
+import { Question } from "@/question";
+import { QuestionID } from "@/question/schema";
+import { Schema } from "effect";
+import {
+  HttpApi,
+  HttpApiEndpoint,
+  HttpApiError,
+  HttpApiGroup,
+  OpenApi,
+} from "effect/unstable/httpapi";
+import { QuestionNotFoundError } from "../errors";
+import { Authorization } from "../middleware/authorization";
+import { InstanceContextMiddleware } from "../middleware/instance-context";
+import { WorkspaceRoutingMiddleware, WorkspaceRoutingQuery } from "../middleware/workspace-routing";
+import { described } from "./metadata";
 
-const root = "/question"
+const root = "/question";
 const ReplyPayload = Schema.Struct({
   answers: Schema.Array(Question.Answer).annotate({
     description: "User answers in order of questions (each answer is an array of selected labels)",
   }),
-})
+});
 
 export const QuestionApi = HttpApi.make("question")
   .add(
@@ -71,4 +77,4 @@ export const QuestionApi = HttpApi.make("question")
       version: "0.0.1",
       description: "Effect HttpApi surface for instance routes.",
     }),
-  )
+  );

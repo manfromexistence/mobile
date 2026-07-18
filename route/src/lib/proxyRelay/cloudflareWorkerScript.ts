@@ -49,7 +49,7 @@ import { randomUUID } from "crypto";
  */
 export function buildCloudflareWorkerUploadRequest(
   workerScript: string,
-  metadata: Record<string, unknown>
+  metadata: Record<string, unknown>,
 ): { headers: Record<string, string>; body: Buffer } {
   const boundary = `----OmniRouteCFWorker${randomUUID().replace(/-/g, "")}`;
   const CRLF = "\r\n";
@@ -57,7 +57,7 @@ export function buildCloudflareWorkerUploadRequest(
     Buffer.from(
       `--${boundary}${CRLF}` +
         `Content-Disposition: form-data; name="index.js"; filename="index.js"${CRLF}` +
-        `Content-Type: application/javascript${CRLF}${CRLF}`
+        `Content-Type: application/javascript${CRLF}${CRLF}`,
     ),
     Buffer.from(workerScript, "utf8"),
     Buffer.from(CRLF),
@@ -65,7 +65,7 @@ export function buildCloudflareWorkerUploadRequest(
       `--${boundary}${CRLF}` +
         `Content-Disposition: form-data; name="metadata"; filename="metadata.json"${CRLF}` +
         `Content-Type: application/json${CRLF}${CRLF}` +
-        `${JSON.stringify(metadata)}${CRLF}`
+        `${JSON.stringify(metadata)}${CRLF}`,
     ),
     Buffer.from(`--${boundary}--${CRLF}`),
   ];

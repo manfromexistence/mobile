@@ -18,7 +18,7 @@ function compress(content: string, options = {}) {
       preservePatterns: [],
       intensity: "full",
       ...options,
-    }
+    },
   );
   return result.body.messages[0].content as string;
 }
@@ -26,7 +26,7 @@ function compress(content: string, options = {}) {
 describe("Caveman v3.7.9 rule parity", () => {
   it("removes articles, pleasantries, leader phrases, and redundant phrasing", () => {
     const text = compress(
-      "Sure, I will make sure to explain the reason is because the function uses a database."
+      "Sure, I will make sure to explain the reason is because the function uses a database.",
     );
     assert.doesNotMatch(text, /\bSure\b/i);
     assert.doesNotMatch(text, /^I will\b/i);
@@ -60,7 +60,7 @@ describe("Caveman v3.7.9 rule parity", () => {
 
   it("preserves articles before proper nouns, numbers, and code-like tokens", () => {
     const text = compress(
-      "Use the OpenAI API, the 404 error, the config.api.endpoint() function, and the database."
+      "Use the OpenAI API, the 404 error, the config.api.endpoint() function, and the database.",
     );
 
     assert.match(text, /\bthe OpenAI API\b/);
@@ -71,7 +71,7 @@ describe("Caveman v3.7.9 rule parity", () => {
 
   it("removes upstream Caveman pleasantry variants without breaking make sure to", () => {
     const text = compress(
-      "Thanks, thank you, glad to help, I'd be glad to, no problem, you're welcome, absolutely. Please make sure to review the database."
+      "Thanks, thank you, glad to help, I'd be glad to, no problem, you're welcome, absolutely. Please make sure to review the database.",
     );
 
     for (const phrase of [

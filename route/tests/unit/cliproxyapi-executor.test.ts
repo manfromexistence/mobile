@@ -343,7 +343,7 @@ describe("CliproxyapiExecutor", () => {
       assert.equal(
         result.output_config,
         undefined,
-        "output_config should be stripped for Anthropic-shape"
+        "output_config should be stripped for Anthropic-shape",
       );
     });
 
@@ -358,7 +358,7 @@ describe("CliproxyapiExecutor", () => {
       assert.deepEqual(
         result.output_config,
         { effort: "max" },
-        "output_config preserved for OpenAI-shape"
+        "output_config preserved for OpenAI-shape",
       );
     });
   });
@@ -379,7 +379,7 @@ describe("CliproxyapiExecutor", () => {
         "claude-opus-4-7",
         anthropicBody({ output_config: { effort: "max" } }),
         true,
-        {}
+        {},
       );
       assert.equal(result.output_config, undefined);
     });
@@ -390,7 +390,7 @@ describe("CliproxyapiExecutor", () => {
         "claude-opus-4-7",
         anthropicBody({ metadata: { user_id: "abc" } }),
         true,
-        {}
+        {},
       );
       assert.equal(result.metadata, undefined);
     });
@@ -401,7 +401,7 @@ describe("CliproxyapiExecutor", () => {
         "claude-opus-4-7",
         anthropicBody({ client_info: { name: "Capy" } }),
         true,
-        {}
+        {},
       );
       assert.equal(result.client_info, undefined);
     });
@@ -412,7 +412,7 @@ describe("CliproxyapiExecutor", () => {
         "claude-opus-4-7",
         anthropicBody({ prompt_cache_key: "key123" }),
         true,
-        {}
+        {},
       );
       assert.equal(result.prompt_cache_key, undefined);
     });
@@ -423,7 +423,7 @@ describe("CliproxyapiExecutor", () => {
         "claude-opus-4-7",
         anthropicBody({ safety_identifier: "sid" }),
         true,
-        {}
+        {},
       );
       assert.equal(result.safety_identifier, undefined);
     });
@@ -453,7 +453,7 @@ describe("CliproxyapiExecutor", () => {
       assert.match(
         toolName,
         /^[A-Z]/,
-        "rewritten name should start with uppercase or differ from mcp_"
+        "rewritten name should start with uppercase or differ from mcp_",
       );
     });
 
@@ -481,21 +481,21 @@ describe("CliproxyapiExecutor", () => {
             content: [{ type: "tool_use", id: "tu_1", name: "mcp_github_create_issue", input: {} }],
           },
           { role: "user", content: [{ type: "tool_result", tool_use_id: "tu_1", content: "ok" }] },
-        ]
+        ],
       );
       const result = exec.transformRequest("claude-opus-4-7", body, true, {});
       const assistantMsg = (result.messages as Array<{ role: string; content: unknown[] }>).find(
-        (m) => m.role === "assistant"
+        (m) => m.role === "assistant",
       );
       const toolUseBlock = assistantMsg?.content.find(
         (b): b is { type: string; name: string } =>
-          typeof b === "object" && b !== null && (b as Record<string, unknown>).type === "tool_use"
+          typeof b === "object" && b !== null && (b as Record<string, unknown>).type === "tool_use",
       );
       assert.ok(toolUseBlock, "tool_use block should exist in assistant message");
       assert.notEqual(
         toolUseBlock.name,
         "mcp_github_create_issue",
-        "tool_use name should be rewritten"
+        "tool_use name should be rewritten",
       );
     });
   });

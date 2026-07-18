@@ -52,7 +52,7 @@ test("fetchCodexQuota can read credentials directly from the provided connection
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -99,7 +99,7 @@ test("fetchCodexQuota parses dual-window usage, forwards workspace headers, and 
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -149,7 +149,7 @@ test("fetchCodexQuota evaluates normal and Spark windows independently by reques
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -240,7 +240,7 @@ test("registerCodexQuotaFetcher exposes Codex quota to preflight and monitor flo
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
 
   const preflight = await preflightQuota("codex", connectionId, {

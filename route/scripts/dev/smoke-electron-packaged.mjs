@@ -47,7 +47,7 @@ function discoverMacExecutable() {
       "OmniRoute.app",
       "Contents",
       "MacOS",
-      "OmniRoute"
+      "OmniRoute",
     ),
     join(distDir, "mac", "OmniRoute.app", "Contents", "MacOS", "OmniRoute"),
     join(distDir, "mac-arm64", "OmniRoute.app", "Contents", "MacOS", "OmniRoute"),
@@ -101,7 +101,7 @@ function discoverLinuxExecutable() {
   const distDir = join(ROOT, "electron", "dist-electron");
   const unpackedDirs = ["linux-unpacked", "linux-arm64-unpacked"];
   const candidates = unpackedDirs.flatMap((dir) =>
-    LINUX_EXECUTABLE_NAMES.map((name) => join(distDir, dir, name))
+    LINUX_EXECUTABLE_NAMES.map((name) => join(distDir, dir, name)),
   );
 
   return (
@@ -142,7 +142,7 @@ async function assertPortIsFree(url) {
   try {
     const response = await fetchWithTimeout(url, 1_000);
     throw new Error(
-      `Smoke URL already responded with HTTP ${response.status}: ${url}. Stop the existing OmniRoute process before running this check.`
+      `Smoke URL already responded with HTTP ${response.status}: ${url}. Stop the existing OmniRoute process before running this check.`,
     );
   } catch (error) {
     if (error instanceof Error && error.message.startsWith("Smoke URL already responded")) {
@@ -169,7 +169,7 @@ async function waitForPortClosed(url, timeoutMs = 5_000) {
   throw new Error(
     `Smoke URL still responded after app shutdown${
       lastStatus === null ? "" : ` with HTTP ${lastStatus}`
-    }: ${url}`
+    }: ${url}`,
   );
 }
 
@@ -363,7 +363,7 @@ async function ensureSmokeEnvDirs(smokeEnv, dataDir) {
   ];
   const dirs = [
     ...new Set(
-      dirNames.map((name) => smokeEnv[name]).filter((dir) => dir && isInsideDir(dataDir, dir))
+      dirNames.map((name) => smokeEnv[name]).filter((dir) => dir && isInsideDir(dataDir, dir)),
     ),
   ];
 
@@ -388,7 +388,7 @@ async function settleAfterReady({ getExitState, logs, settleMs }) {
     const { exitCode, signalCode } = getExitState();
     if (exitCode !== null || signalCode !== null) {
       throw new Error(
-        `Packaged Electron app exited during readiness settle: code=${exitCode} signal=${signalCode}`
+        `Packaged Electron app exited during readiness settle: code=${exitCode} signal=${signalCode}`,
       );
     }
 
@@ -400,7 +400,7 @@ async function main() {
   const appExecutable = discoverPackagedExecutable();
   if (!existsSync(appExecutable)) {
     throw new Error(
-      `Packaged OmniRoute executable not found at ${appExecutable}. Build it first with \`npm run build:<target> --prefix electron\` or set ELECTRON_SMOKE_APP_EXECUTABLE.`
+      `Packaged OmniRoute executable not found at ${appExecutable}. Build it first with \`npm run build:<target> --prefix electron\` or set ELECTRON_SMOKE_APP_EXECUTABLE.`,
     );
   }
 
@@ -468,7 +468,7 @@ async function main() {
 
       if (exitCode !== null || signalCode !== null) {
         throw new Error(
-          `Packaged Electron app exited before readiness: code=${exitCode} signal=${signalCode}`
+          `Packaged Electron app exited before readiness: code=${exitCode} signal=${signalCode}`,
         );
       }
 
@@ -496,7 +496,7 @@ async function main() {
     throw new Error(
       `Packaged Electron app did not serve ${smokeUrl} within ${timeoutMs}ms. Last error: ${
         lastError instanceof Error ? lastError.message : String(lastError)
-      }`
+      }`,
     );
   } catch (error) {
     if (!streamLogs) {
@@ -515,7 +515,7 @@ async function main() {
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   main().catch((error) => {
     console.error(
-      `[electron-smoke] failed: ${error instanceof Error ? error.message : String(error)}`
+      `[electron-smoke] failed: ${error instanceof Error ? error.message : String(error)}`,
     );
     process.exit(1);
   });

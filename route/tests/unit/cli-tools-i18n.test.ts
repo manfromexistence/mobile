@@ -12,7 +12,7 @@ test("CLI tools English messages include custom tab label and keep OpenCode base
   assert.equal(
     en.cliTools?.guides?.opencode?.steps?.[3]?.desc,
     "opencode config set baseUrl {baseUrl}",
-    "OpenCode baseUrl command must use injectable ICU syntax"
+    "OpenCode baseUrl command must use injectable ICU syntax",
   );
 });
 
@@ -28,7 +28,7 @@ test("CLI tools locale messages use ICU baseUrl placeholder for OpenCode step 3"
     assert.equal(
       desc.includes("{baseUrl}") && !desc.includes("{{baseUrl}}"),
       true,
-      `${file} should use ICU-style {baseUrl} placeholder`
+      `${file} should use ICU-style {baseUrl} placeholder`,
     );
   }
 });

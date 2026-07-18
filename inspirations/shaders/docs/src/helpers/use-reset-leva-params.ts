@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 /** Leva will try to cache values for params with the same name, so we need to explicitly reset params to defaults when a new example is mounted */
 export function useResetLevaParams(params: any, setParams: any, defaults: any) {
@@ -13,7 +13,12 @@ export function useResetLevaParams(params: any, setParams: any, defaults: any) {
 }
 
 /** Leva throws an error if you try to set an object with keys it doesn't already have, so we need to prune them off before setting */
-export function setParamsSafe(params: any, setParams: any, defaults: any, setImage?: (img: HTMLImageElement) => void) {
+export function setParamsSafe(
+  params: any,
+  setParams: any,
+  defaults: any,
+  setImage?: (img: HTMLImageElement) => void,
+) {
   const newParamObject: Record<string, any> = {};
 
   // We need to prune off any extra keys from the defaults if there isn't a leva control for it
@@ -28,7 +33,7 @@ export function setParamsSafe(params: any, setParams: any, defaults: any, setIma
   setParams(newParamObject);
 
   // Handle preset image if provided (image loader is separate from Leva controls)
-  if (defaults.image && typeof defaults.image === 'string' && setImage) {
+  if (defaults.image && typeof defaults.image === "string" && setImage) {
     const img = new Image();
     img.src = defaults.image;
     img.onload = () => {

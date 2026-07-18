@@ -12,9 +12,7 @@ import path from "node:path";
 
 // ── DB / auth setup ───────────────────────────────────────────────────────────
 
-const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-auto-combos-free-models-")
-);
+const TEST_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "omniroute-auto-combos-free-models-"));
 process.env.DATA_DIR = TEST_DATA_DIR;
 process.env.API_KEY_SECRET = process.env.API_KEY_SECRET ?? "auto-combos-free-models-test-secret";
 
@@ -72,7 +70,7 @@ test("GET /api/free-models returns 401/403 when auth is required and no token pr
 
   assert.ok(
     res.status === 401 || res.status === 403,
-    `Expected 401 or 403 without auth, got ${res.status}`
+    `Expected 401 or 403 without auth, got ${res.status}`,
   );
 
   await settingsDb.updateSettings({ requireLogin: false });
@@ -119,7 +117,7 @@ test("GET /api/combos/auto returns 401/403 when auth is required and no token pr
 
   assert.ok(
     res.status === 401 || res.status === 403,
-    `Expected 401 or 403 without auth, got ${res.status}`
+    `Expected 401 or 403 without auth, got ${res.status}`,
   );
 
   await settingsDb.updateSettings({ requireLogin: false });

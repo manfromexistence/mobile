@@ -138,25 +138,25 @@ test("Antigravity inferred Gemini family cooldown starts around 30s when no upst
     429,
     "RESOURCE_EXHAUSTED: Resource has been exhausted (queries per minute limit was reached)",
     "antigravity",
-    "gemini-3-pro"
+    "gemini-3-pro",
   );
   const elapsedAllowanceMs = Date.now() - before;
 
   assert.equal(result.shouldFallback, true);
   assert.ok(
     result.cooldownMs >= 30_000 - elapsedAllowanceMs - 500,
-    `expected inferred cooldown near 30s+, got ${result.cooldownMs}`
+    `expected inferred cooldown near 30s+, got ${result.cooldownMs}`,
   );
   assert.ok(
     result.cooldownMs <= 65_000,
-    `expected bounded initial cooldown, got ${result.cooldownMs}`
+    `expected bounded initial cooldown, got ${result.cooldownMs}`,
   );
 
   const otherGemini = await auth.getProviderCredentials(
     "antigravity",
     null,
     null,
-    "gemini-2.5-pro"
+    "gemini-2.5-pro",
   );
   assert.ok(otherGemini && "allRateLimited" in otherGemini && otherGemini.allRateLimited);
   assert.equal(otherGemini.cooldownScope, "model");

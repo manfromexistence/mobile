@@ -37,13 +37,11 @@ export class ZenmuxFreeExecutor extends BaseExecutor {
         401,
         "ZenMux Free: ctoken not found in cookies. Export all cookies from zenmux.ai and paste as the credential.",
         body,
-        CHAT_URL
+        CHAT_URL,
       );
     }
 
-    const messages = (
-      bodyObj.messages as Array<{ role: string; content: unknown }>
-    ) || [];
+    const messages = (bodyObj.messages as Array<{ role: string; content: unknown }>) || [];
     const modelId = (bodyObj.model as string) || "deepseek/deepseek-chat";
     const maxTokens = (bodyObj.max_tokens as number) || 4096;
 
@@ -103,7 +101,7 @@ export class ZenmuxFreeExecutor extends BaseExecutor {
         502,
         `ZenMux Free fetch failed: ${err instanceof Error ? err.message : "unknown"}`,
         body,
-        CHAT_URL
+        CHAT_URL,
       );
     }
 
@@ -138,9 +136,13 @@ export class ZenmuxFreeExecutor extends BaseExecutor {
                 finish_reason: "stop",
               },
             ],
-            usage: { prompt_tokens: 0, completion_tokens: Math.ceil(txt.length / 4), total_tokens: 0 },
+            usage: {
+              prompt_tokens: 0,
+              completion_tokens: Math.ceil(txt.length / 4),
+              total_tokens: 0,
+            },
           }),
-          { headers: { "Content-Type": "application/json" } }
+          { headers: { "Content-Type": "application/json" } },
         ),
         url: CHAT_URL,
         headers: reqHeaders,
@@ -167,8 +169,8 @@ export class ZenmuxFreeExecutor extends BaseExecutor {
               created,
               model: modelId,
               choices: [{ index: 0, delta: { role: "assistant" }, finish_reason: null }],
-            })}\n\n`
-          )
+            })}\n\n`,
+          ),
         );
         let buffer = "";
         try {
@@ -200,8 +202,8 @@ export class ZenmuxFreeExecutor extends BaseExecutor {
                           created,
                           model: modelId,
                           choices: [{ index: 0, delta: { content: text }, finish_reason: null }],
-                        })}\n\n`
-                      )
+                        })}\n\n`,
+                      ),
                     );
                   }
                 } else if (d.type === "message_delta" && delta) {
@@ -219,8 +221,8 @@ export class ZenmuxFreeExecutor extends BaseExecutor {
                             finish_reason: (delta.stop_reason as string) || "stop",
                           },
                         ],
-                      })}\n\n`
-                    )
+                      })}\n\n`,
+                    ),
                   );
                 }
               } catch {

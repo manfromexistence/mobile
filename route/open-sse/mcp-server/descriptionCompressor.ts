@@ -48,7 +48,7 @@ function isDisabledEnvValue(value: string | undefined): boolean {
 }
 
 export function isMcpDescriptionCompressionEnabled(
-  options: DescriptionCompressionOptions = {}
+  options: DescriptionCompressionOptions = {},
 ): boolean {
   if (isDisabledEnvValue(process.env.OMNIROUTE_MCP_COMPRESS_DESCRIPTIONS)) return false;
   if (isDisabledEnvValue(process.env.OMNIROUTE_MCP_DESCRIPTION_COMPRESSION)) return false;
@@ -83,7 +83,7 @@ export function compressMcpDescription(description: string): DescriptionCompress
 
 export function maybeCompressMcpDescription(
   description: string,
-  options: DescriptionCompressionOptions = {}
+  options: DescriptionCompressionOptions = {},
 ): string {
   if (!isMcpDescriptionCompressionEnabled(options)) return description;
   const result = compressMcpDescription(description);
@@ -93,7 +93,7 @@ export function maybeCompressMcpDescription(
     descriptionCompressionStats.charsAfter += result.after;
     descriptionCompressionStats.charsSaved += result.before - result.after;
     descriptionCompressionStats.estimatedTokensSaved += Math.ceil(
-      (result.before - result.after) / 4
+      (result.before - result.after) / 4,
     );
     return result.compressed;
   }
@@ -103,7 +103,7 @@ export function maybeCompressMcpDescription(
 export function compressDescriptionsInPlace(
   value: unknown,
   fieldNames: string[] = ["description"],
-  options: DescriptionCompressionOptions = {}
+  options: DescriptionCompressionOptions = {},
 ): void {
   if (!value || typeof value !== "object") return;
   const fields = new Set(fieldNames);
@@ -128,7 +128,7 @@ function clonePlainMetadata<T>(value: T): T {
 
 function compressMcpListContainersInPlace(
   value: unknown,
-  options: DescriptionCompressionOptions = {}
+  options: DescriptionCompressionOptions = {},
 ): void {
   if (!value || typeof value !== "object") return;
   if (Array.isArray(value)) {
@@ -147,7 +147,7 @@ function compressMcpListContainersInPlace(
 
 export function compressMcpListMetadata<T>(
   value: T,
-  options: DescriptionCompressionOptions = {}
+  options: DescriptionCompressionOptions = {},
 ): T {
   if (!isMcpDescriptionCompressionEnabled(options)) return value;
   const clone = clonePlainMetadata(value);
@@ -157,7 +157,7 @@ export function compressMcpListMetadata<T>(
 
 export function compressMcpRegistryMetadata<T extends Record<string, unknown>>(
   metadata: T,
-  options: DescriptionCompressionOptions = {}
+  options: DescriptionCompressionOptions = {},
 ): T {
   if (!isMcpDescriptionCompressionEnabled(options)) return metadata;
   const clone: Record<string, unknown> = { ...metadata };
@@ -206,8 +206,9 @@ export async function snapshotMcpDescriptionCompressionStats(): Promise<McpDescr
 
   const originalTokens = Math.max(delta.estimatedTokensSaved, Math.ceil(delta.charsBefore / 4));
   const compressedTokens = Math.max(0, originalTokens - delta.estimatedTokensSaved);
-  const { insertCompressionAnalyticsRow } =
-    await import("../../src/lib/db/compressionAnalytics.ts");
+  const { insertCompressionAnalyticsRow } = await import(
+    "../../src/lib/db/compressionAnalytics.ts"
+  );
   insertCompressionAnalyticsRow({
     timestamp: new Date().toISOString(),
     mode: "mcp-description",

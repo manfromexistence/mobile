@@ -48,7 +48,7 @@ export async function handleImagen3ImageGeneration({
     const promptPreview = String(body.prompt ?? "").slice(0, 60);
     log.info(
       "IMAGE",
-      `${provider}/${model} (imagen3) | prompt: "${promptPreview}..." | aspect_ratio: ${aspectRatio}`
+      `${provider}/${model} (imagen3) | prompt: "${promptPreview}..." | aspect_ratio: ${aspectRatio}`,
     );
   }
 
@@ -90,7 +90,7 @@ export async function handleImagen3ImageGeneration({
         ...data.images.map((img: Record<string, unknown>) => ({
           b64_json: img.image ?? img.b64_json ?? img.url ?? img,
           revised_prompt: body.prompt,
-        }))
+        })),
       );
     } else if (Array.isArray(data.data)) {
       images.push(...data.data);
@@ -133,4 +133,3 @@ export async function handleImagen3ImageGeneration({
     return { success: false, status: 502, error: `Image provider error: ${errMsg}` };
   }
 }
-

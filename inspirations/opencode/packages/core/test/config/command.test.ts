@@ -1,22 +1,22 @@
-import fs from "fs/promises"
-import path from "path"
-import { describe, expect } from "bun:test"
-import { Effect, Schema } from "effect"
-import { CommandV2 } from "@opencode-ai/core/command"
-import { Config } from "@opencode-ai/core/config"
-import { ConfigCommandPlugin } from "@opencode-ai/core/config/plugin/command"
-import { AppNodeBuilder } from "@opencode-ai/core/effect/app-node-builder"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
-import { FSUtil } from "@opencode-ai/core/fs-util"
-import { ModelV2 } from "@opencode-ai/core/model"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { AbsolutePath } from "@opencode-ai/core/schema"
-import { tmpdir } from "../fixture/tmpdir"
-import { testEffect } from "../lib/effect"
-import { host } from "../plugin/host"
+import fs from "fs/promises";
+import path from "path";
+import { describe, expect } from "bun:test";
+import { Effect, Schema } from "effect";
+import { CommandV2 } from "@opencode-ai/core/command";
+import { Config } from "@opencode-ai/core/config";
+import { ConfigCommandPlugin } from "@opencode-ai/core/config/plugin/command";
+import { AppNodeBuilder } from "@opencode-ai/core/effect/app-node-builder";
+import { LayerNode } from "@opencode-ai/core/effect/layer-node";
+import { FSUtil } from "@opencode-ai/core/fs-util";
+import { ModelV2 } from "@opencode-ai/core/model";
+import { ProviderV2 } from "@opencode-ai/core/provider";
+import { AbsolutePath } from "@opencode-ai/core/schema";
+import { tmpdir } from "../fixture/tmpdir";
+import { testEffect } from "../lib/effect";
+import { host } from "../plugin/host";
 
-const it = testEffect(AppNodeBuilder.build(LayerNode.group([CommandV2.node, FSUtil.node])))
-const decode = Schema.decodeUnknownSync(Config.Info)
+const it = testEffect(AppNodeBuilder.build(LayerNode.group([CommandV2.node, FSUtil.node])));
+const decode = Schema.decodeUnknownSync(Config.Info);
 
 describe("ConfigCommandPlugin.Plugin", () => {
   it.live("loads inline and file-based commands in config order", () =>
@@ -27,7 +27,7 @@ describe("ConfigCommandPlugin.Plugin", () => {
       Effect.flatMap((tmp) =>
         Effect.gen(function* () {
           yield* Effect.promise(async () => {
-            await fs.mkdir(path.join(tmp.path, "commands", "nested"), { recursive: true })
+            await fs.mkdir(path.join(tmp.path, "commands", "nested"), { recursive: true });
             await fs.writeFile(
               path.join(tmp.path, "commands", "review.md"),
               `---
@@ -38,13 +38,15 @@ variant: high
 subtask: true
 ---
 Review files`,
-            )
-            await fs.writeFile(path.join(tmp.path, "commands", "nested", "docs.md"), "Write docs")
-            await fs.writeFile(path.join(tmp.path, "commands", "empty.md"), "")
-          })
+            );
+            await fs.writeFile(path.join(tmp.path, "commands", "nested", "docs.md"), "Write docs");
+            await fs.writeFile(path.join(tmp.path, "commands", "empty.md"), "");
+          });
 
-          const command = yield* CommandV2.Service
-          yield* ConfigCommandPlugin.Plugin.effect(host({ command: { ...command, reload: command.reload } })).pipe(
+          const command = yield* CommandV2.Service;
+          yield* ConfigCommandPlugin.Plugin.effect(
+            host({ command: { ...command, reload: command.reload } }),
+          ).pipe(
             Effect.provideService(
               Config.Service,
               Config.Service.of({
@@ -58,7 +60,7 @@ Review files`,
                   ]),
               }),
             ),
-          )
+          );
 
           expect(yield* command.list()).toEqual([
             CommandV2.Info.make({
@@ -75,9 +77,9 @@ Review files`,
             }),
             CommandV2.Info.make({ name: "empty", template: "" }),
             CommandV2.Info.make({ name: "nested/docs", template: "Write docs" }),
-          ])
+          ]);
         }),
       ),
     ),
-  )
-})
+  );
+});

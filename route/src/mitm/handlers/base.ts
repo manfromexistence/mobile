@@ -293,10 +293,7 @@ export abstract class MitmHandlerBase {
    * Report a failed request to the Traffic Inspector.
    * No-op when the inspector module is not present.
    */
-  protected async hookBufferError(
-    intercepted: InterceptedRequest,
-    err: unknown,
-  ): Promise<void> {
+  protected async hookBufferError(intercepted: InterceptedRequest, err: unknown): Promise<void> {
     const hook = await loadAgentBridgeHook();
     if (hook?.recordRequestError) {
       try {
@@ -311,11 +308,7 @@ export abstract class MitmHandlerBase {
    * Render a Hard-Rule-#12-compliant error JSON body and send via `res`.
    * Returns the sanitized error string so callers may also log it.
    */
-  protected async writeError(
-    res: ServerResponse,
-    err: unknown,
-    statusCode = 500,
-  ): Promise<string> {
+  protected async writeError(res: ServerResponse, err: unknown, statusCode = 500): Promise<string> {
     const safe = await safeErrorMessage(err);
     if (!res.headersSent) {
       res.writeHead(statusCode, { "Content-Type": "application/json" });

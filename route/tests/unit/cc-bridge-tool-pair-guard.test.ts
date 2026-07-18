@@ -1,10 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { buildAndSignClaudeCodeRequest } =
-  await import("../../open-sse/services/claudeCodeCompatible.ts");
-const { fixToolPairs, stripTrailingAssistantOrphanToolUse } =
-  await import("../../open-sse/services/contextManager.ts");
+const { buildAndSignClaudeCodeRequest } = await import(
+  "../../open-sse/services/claudeCodeCompatible.ts"
+);
+const { fixToolPairs, stripTrailingAssistantOrphanToolUse } = await import(
+  "../../open-sse/services/contextManager.ts"
+);
 
 // Regression for the Anthropic 400:
 //   `messages.N: tool_use ids were found without tool_result blocks
@@ -188,6 +190,6 @@ test("buildAndSignClaudeCodeRequest strips trailing assistant tool_use (gemini H
   const text = JSON.stringify(body.messages);
   assert.ok(
     !text.includes("toolu_trailing"),
-    "trailing assistant tool_use must be stripped before upstream send"
+    "trailing assistant tool_use must be stripped before upstream send",
   );
 });

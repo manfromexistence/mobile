@@ -216,7 +216,7 @@ describe("Bug reproduction: masked key written to config", () => {
 
     // Match by prefix/suffix
     const matchedKey = apiKeysResponse.find(
-      (k) => k.key && k.key.startsWith(fileKeyPrefix) && k.key.endsWith(fileKeySuffix)
+      (k) => k.key && k.key.startsWith(fileKeyPrefix) && k.key.endsWith(fileKeySuffix),
     );
 
     assert.ok(matchedKey);

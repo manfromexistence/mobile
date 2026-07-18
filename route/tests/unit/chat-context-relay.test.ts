@@ -30,7 +30,7 @@ function buildResponsesResponse(text = "ok", model = "gpt-5.6-sol") {
     {
       status: 200,
       headers: { "content-type": "application/json" },
-    }
+    },
   );
 }
 
@@ -73,7 +73,7 @@ function buildQuotaResponse(usedPercent, resetAfterSeconds = 3600) {
     {
       status: 200,
       headers: { "content-type": "application/json" },
-    }
+    },
   );
 }
 
@@ -142,7 +142,7 @@ test("handleChat generates and injects context-relay handoffs across Codex accou
           taskProgress: "Runtime and UI are wired; tests are next",
           activeEntities: ["open-sse/services/combo.ts", "src/sse/handlers/chat.ts"],
         }),
-        "gpt-5.6-sol"
+        "gpt-5.6-sol",
       );
     }
 
@@ -158,7 +158,7 @@ test("handleChat generates and injects context-relay handoffs across Codex accou
         stream: false,
         messages: [{ role: "user", content: "Keep implementing the new combo" }],
       },
-    })
+    }),
   );
   const firstJson = (await firstResponse.json()) as any;
 
@@ -184,7 +184,7 @@ test("handleChat generates and injects context-relay handoffs across Codex accou
         stream: false,
         messages: [{ role: "user", content: "Continue from where you left off" }],
       },
-    })
+    }),
   );
   const secondJson = (await secondResponse.json()) as any;
 
@@ -255,7 +255,7 @@ test("handleChat injects context-relay handoffs during live failover for Respons
           taskProgress: "Continue after the first account is exhausted",
           activeEntities: ["src/sse/handlers/chat.ts", "open-sse/services/contextHandoff.ts"],
         }),
-        "gpt-5.6-sol"
+        "gpt-5.6-sol",
       );
     }
 
@@ -293,7 +293,7 @@ test("handleChat injects context-relay handoffs during live failover for Respons
           },
         ],
       },
-    })
+    }),
   );
 
   assert.equal(firstResponse.status, 200);
@@ -301,7 +301,7 @@ test("handleChat injects context-relay handoffs during live failover for Respons
   const sessionId = "ext:relay-live-session";
   const savedHandoff = await waitFor(
     () => handoffDb.getHandoff(sessionId, "relay-live-combo"),
-    2000
+    2000,
   );
   assert.ok(savedHandoff);
   assert.equal(savedHandoff.fromAccount, primary.id);
@@ -325,20 +325,20 @@ test("handleChat injects context-relay handoffs during live failover for Respons
           },
         ],
       },
-    })
+    }),
   );
 
   assert.equal(secondResponse.status, 200);
 
   const relayedSecondaryCall = upstreamBodies.find(
-    (call) => call.authHeader === "Bearer token-b" && typeof call.body.instructions === "string"
+    (call) => call.authHeader === "Bearer token-b" && typeof call.body.instructions === "string",
   );
 
   assert.ok(relayedSecondaryCall, "secondary account should receive a request after primary 429");
   assert.equal("messages" in relayedSecondaryCall.body, false);
   assert.deepEqual(
     relayedSecondaryCall.body.input[0].content[0].text,
-    "Continue from where you left off"
+    "Continue from where you left off",
   );
   assert.match(relayedSecondaryCall.body.instructions, /Continue with the current task/);
   // The failover request must still target the requested model — the old
@@ -351,7 +351,7 @@ test("handleChat injects context-relay handoffs during live failover for Respons
   assert.match(
     relayedSecondaryCall.serializedBody,
     /Carry over the Responses-native Codex session/,
-    "handoff summary must be injected into the secondary account's request"
+    "handoff summary must be injected into the secondary account's request",
   );
   // Delivered handoffs are one-shot: consumed (deleted) after a successful
   // injected request (src/sse/handlers/chat.ts deleteHandoff-on-success).

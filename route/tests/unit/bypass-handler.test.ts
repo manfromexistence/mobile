@@ -11,9 +11,9 @@ test("handleBypassRequest returns null for non-Claude clients or missing message
         messages: [{ role: "user", content: "Warmup" }],
       },
       "gpt-5",
-      { broken: true }
+      { broken: true },
     ),
-    null
+    null,
   );
   assert.equal(
     handleBypassRequest(
@@ -21,9 +21,9 @@ test("handleBypassRequest returns null for non-Claude clients or missing message
         messages: [{ role: "user", content: "Warmup" }],
       },
       "gpt-5",
-      "curl/8.0"
+      "curl/8.0",
     ),
-    null
+    null,
   );
 });
 
@@ -34,7 +34,7 @@ test("handleBypassRequest returns a canned JSON response for warmup bypasses", a
       messages: [{ role: "user", content: "Warmup" }],
     },
     "gpt-5-mini",
-    "claude-cli/2.1.89"
+    "claude-cli/2.1.89",
   );
 
   assert.ok(result);
@@ -56,7 +56,7 @@ test("handleBypassRequest returns an SSE response for title extraction bypasses"
       ],
     },
     "gpt-5",
-    "claude-cli/2.1.89"
+    "claude-cli/2.1.89",
   );
 
   assert.ok(result);
@@ -75,7 +75,7 @@ test("handleBypassRequest bypasses single-message count probes", async () => {
       messages: [{ role: "user", content: [{ type: "text", text: "count" }] }],
     },
     "gpt-4.1-mini",
-    "claude-cli/2.1.89"
+    "claude-cli/2.1.89",
   );
 
   assert.ok(result);

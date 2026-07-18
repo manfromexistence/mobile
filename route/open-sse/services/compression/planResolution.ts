@@ -25,7 +25,7 @@ export function withSource(plan: DerivedPlan, source: CompressionSource): Derive
 export function planFromHeader(
   config: CompressionConfig,
   header: string,
-  combos: NamedCombos
+  combos: NamedCombos,
 ): DerivedPlan | null {
   const h = header.trim();
   if (!h) return null;
@@ -85,7 +85,7 @@ export function formatCompressionAnnotation(stats: CompressionStats): string {
  * but may be an empty string). Pure.
  */
 export function buildNamedComboLookup(
-  combos: Array<{ id: string; name?: string | null; pipeline: CompressionPipelineStep[] }>
+  combos: Array<{ id: string; name?: string | null; pipeline: CompressionPipelineStep[] }>,
 ): NamedCombos {
   const map: NamedCombos = {};
   for (const c of combos) {
@@ -108,7 +108,7 @@ export function buildNamedComboLookup(
 export function deriveDefaultPlanFromConfig(
   config: CompressionConfig,
   comboId: string | null,
-  combos: NamedCombos = {}
+  combos: NamedCombos = {},
 ): DerivedPlan {
   if (config.enginesExplicit) {
     // Panel-configured: the engines map (via the resolver, which stays header/active-combo

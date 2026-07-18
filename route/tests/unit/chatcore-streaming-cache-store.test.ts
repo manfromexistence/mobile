@@ -18,8 +18,12 @@ function makeDeps(overrides: Record<string, unknown> = {}) {
     isCacheableForWrite: () => true,
     isSmallEnoughForSemanticCache: () => true,
     generateSignature: (...a: unknown[]) => `sig:${JSON.stringify(a)}`,
-    setCachedResponse: (sig: unknown, model: string, body: Record<string, unknown>, tokens: number) =>
-      stored.push({ sig, model, body, tokens }),
+    setCachedResponse: (
+      sig: unknown,
+      model: string,
+      body: Record<string, unknown>,
+      tokens: number,
+    ) => stored.push({ sig, model, body, tokens }),
     ...overrides,
   } as Parameters<typeof storeStreamingSemanticCacheResponse>[1];
   return { deps, stored };

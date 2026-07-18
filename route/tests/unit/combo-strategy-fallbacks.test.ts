@@ -13,15 +13,18 @@ const ORIGINAL_DATA_DIR = process.env.DATA_DIR;
 process.env.DATA_DIR = TEST_DATA_DIR;
 
 const { handleComboChat, preScreenTargets } = await import("../../open-sse/services/combo.ts");
-const { weightedStickyTargets, rrStickyTargets } =
-  await import("../../open-sse/services/combo/rrState.ts");
+const { weightedStickyTargets, rrStickyTargets } = await import(
+  "../../open-sse/services/combo/rrState.ts"
+);
 const core = await import("../../src/lib/db/core.ts");
 const settingsDb = await import("../../src/lib/db/settings.ts");
 const { resetAllComboMetrics } = await import("../../open-sse/services/comboMetrics.ts");
-const { resetAllCircuitBreakers, getCircuitBreaker } =
-  await import("../../src/shared/utils/circuitBreaker.ts");
-const { resetAll: resetAllSemaphores } =
-  await import("../../open-sse/services/rateLimitSemaphore.ts");
+const { resetAllCircuitBreakers, getCircuitBreaker } = await import(
+  "../../src/shared/utils/circuitBreaker.ts"
+);
+const { resetAll: resetAllSemaphores } = await import(
+  "../../open-sse/services/rateLimitSemaphore.ts"
+);
 const { _resetAllDecks } = await import("../../src/shared/utils/shuffleDeck.ts");
 const { clearSessions } = await import("../../open-sse/services/sessionManager.ts");
 
@@ -236,7 +239,7 @@ test("cost-optimized falls back to the next-cheapest target when the cheapest fa
   assert.deepEqual(
     calls,
     ["openai/gpt-4o-nano", "claude/sonnet"],
-    "cheapest first, then next-cheapest on failure"
+    "cheapest first, then next-cheapest on failure",
   );
 });
 
@@ -553,7 +556,7 @@ test("round-robin sticky clears unavailable sticky target before rotation", asyn
   assert.deepEqual(calls, ["claude/b"]);
   assert.equal(
     rrStickyTargets.get("rr-sticky-clears-unavailable")?.executionKey,
-    "rr-sticky-clears-unavailable-model-2-claude-b"
+    "rr-sticky-clears-unavailable-model-2-claude-b",
   );
 });
 
@@ -723,7 +726,7 @@ test("nested execute mode fails cleanly on a circular combo reference", async ()
         settings: null,
         allCombos: [a, b],
       }),
-    /[Cc]ircular/
+    /[Cc]ircular/,
   );
 });
 
@@ -820,6 +823,6 @@ test("preScreenTargets marks an expired-OPEN (HALF_OPEN) target as available", a
   assert.equal(
     openaiResult.available,
     true,
-    "HALF_OPEN (expired OPEN) target must be available for a probe request"
+    "HALF_OPEN (expired OPEN) target must be available for a probe request",
   );
 });

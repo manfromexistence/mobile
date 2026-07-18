@@ -1,5 +1,5 @@
-import { describe, expect, test } from "bun:test"
-import { nextTabListScrollLeft } from "./file-tab-scroll"
+import { describe, expect, test } from "bun:test";
+import { nextTabListScrollLeft } from "./file-tab-scroll";
 
 describe("nextTabListScrollLeft", () => {
   test("does not scroll when width shrinks", () => {
@@ -9,10 +9,10 @@ describe("nextTabListScrollLeft", () => {
       clientWidth: 300,
       prevContextOpen: false,
       contextOpen: false,
-    })
+    });
 
-    expect(left).toBeUndefined()
-  })
+    expect(left).toBeUndefined();
+  });
 
   test("scrolls to start when context tab opens", () => {
     const left = nextTabListScrollLeft({
@@ -21,10 +21,10 @@ describe("nextTabListScrollLeft", () => {
       clientWidth: 320,
       prevContextOpen: false,
       contextOpen: true,
-    })
+    });
 
-    expect(left).toBe(0)
-  })
+    expect(left).toBe(0);
+  });
 
   test("scrolls to right edge for new file tabs", () => {
     const left = nextTabListScrollLeft({
@@ -33,8 +33,8 @@ describe("nextTabListScrollLeft", () => {
       clientWidth: 300,
       prevContextOpen: true,
       contextOpen: true,
-    })
+    });
 
-    expect(left).toBe(480)
-  })
-})
+    expect(left).toBe(480);
+  });
+});

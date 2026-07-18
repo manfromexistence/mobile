@@ -13,7 +13,7 @@ test("CLI_TOOLS.windsurf is undefined (removed per D17 — MITM backlog plan 11)
   assert.equal(
     (CLI_TOOLS as Record<string, unknown>)["windsurf"],
     undefined,
-    "windsurf must be removed from CLI_TOOLS"
+    "windsurf must be removed from CLI_TOOLS",
   );
 });
 
@@ -22,7 +22,7 @@ test("CLI_TOOLS.amp is undefined (removed per D17 — MITM backlog plan 11)", ()
   assert.equal(
     (CLI_TOOLS as Record<string, unknown>)["amp"],
     undefined,
-    "amp must be removed from CLI_TOOLS"
+    "amp must be removed from CLI_TOOLS",
   );
 });
 
@@ -32,7 +32,7 @@ test("CLI_TOOLS['amazon-q'] is undefined (was never added — MITM backlog plan 
   assert.equal(
     (CLI_TOOLS as Record<string, unknown>)["amazon-q"],
     undefined,
-    "amazon-q must not exist in CLI_TOOLS"
+    "amazon-q must not exist in CLI_TOOLS",
   );
 });
 
@@ -40,6 +40,6 @@ test("CLI_TOOLS.cowork is undefined (was never added — MITM backlog plan 11)",
   assert.equal(
     (CLI_TOOLS as Record<string, unknown>)["cowork"],
     undefined,
-    "cowork must not exist in CLI_TOOLS"
+    "cowork must not exist in CLI_TOOLS",
   );
 });

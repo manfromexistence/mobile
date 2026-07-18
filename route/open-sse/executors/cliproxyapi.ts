@@ -132,7 +132,9 @@ export function clearCliproxyapiUrlCache() {
     if (typeof settings.cliproxyapi_url === "string" && settings.cliproxyapi_url.trim()) {
       _cachedSettingsUrl = { url: settings.cliproxyapi_url.trim(), ts: Date.now() };
     }
-  } catch { /* env vars will be used as fallback */ }
+  } catch {
+    /* env vars will be used as fallback */
+  }
 })();
 
 /**
@@ -155,7 +157,9 @@ async function resolveCliproxyapiBaseUrl(): Promise<string> {
       _cachedSettingsUrl = { url, ts: Date.now() };
       return url;
     }
-  } catch { /* fall through to env vars */ }
+  } catch {
+    /* fall through to env vars */
+  }
 
   const host = process.env.CLIPROXYAPI_HOST || DEFAULT_HOST;
   const port = parseInt(process.env.CLIPROXYAPI_PORT || String(DEFAULT_PORT), 10);
@@ -181,7 +185,7 @@ export { resolveCliproxyapiBaseUrl };
  * Used by chatCore's resolveExecutorWithProxy to decide routing.
  */
 export function isCliproxyapiDeepModeEnabled(
-  providerSpecificData?: Record<string, unknown> | null
+  providerSpecificData?: Record<string, unknown> | null,
 ): boolean {
   return providerSpecificData?.cliproxyapiMode === "claude-native";
 }
@@ -203,7 +207,7 @@ export class CliproxyapiExecutor extends BaseExecutor {
     _model: string,
     _stream: boolean,
     _urlIndex = 0,
-    _credentials: ProviderCredentials | null = null
+    _credentials: ProviderCredentials | null = null,
   ): string {
     // Default endpoint when called without body context (kept for back-compat).
     // execute() picks the right endpoint from the body shape; see selectEndpoint().
@@ -283,7 +287,7 @@ export class CliproxyapiExecutor extends BaseExecutor {
     model: string,
     body: unknown,
     _stream: boolean,
-    _credentials: ProviderCredentials | null
+    _credentials: ProviderCredentials | null,
   ): unknown {
     if (!body || typeof body !== "object") return body;
 
@@ -397,7 +401,7 @@ export class CliproxyapiExecutor extends BaseExecutor {
       input.model,
       input.body,
       input.stream,
-      input.credentials
+      input.credentials,
     );
     mergeUpstreamExtraHeaders(headers, input.upstreamExtraHeaders);
 
@@ -413,7 +417,7 @@ export class CliproxyapiExecutor extends BaseExecutor {
     const wireBody =
       transformedBody && typeof transformedBody === "object"
         ? JSON.stringify(transformedBody, (key, value) =>
-            key === "_toolNameMap" ? undefined : value
+            key === "_toolNameMap" ? undefined : value,
           )
         : JSON.stringify(transformedBody);
 

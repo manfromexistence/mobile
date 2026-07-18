@@ -92,7 +92,7 @@ function resolveNodeExecutable(env = process.env) {
       `${app.getName()} Helper.app`,
       "Contents",
       "MacOS",
-      `${app.getName()} Helper`
+      `${app.getName()} Helper`,
     );
     if (fs.existsSync(frameworkHelper)) {
       return frameworkHelper;
@@ -209,7 +209,7 @@ async function waitForServerExit(proc, timeoutMs = 5000) {
           /* already dead */
         }
         r();
-      }, timeoutMs)
+      }, timeoutMs),
     ),
   ]);
 }
@@ -577,8 +577,8 @@ function startNextServer() {
       console.error(
         `[Electron] Refusing to auto-generate STORAGE_ENCRYPTION_KEY: encrypted credentials already exist in ${path.join(
           dataDir,
-          "storage.sqlite"
-        )}. Restore the key via ${preferredEnvPath || "an appropriate .env file"}, ${serverEnvPath}, or process.env.`
+          "storage.sqlite",
+        )}. Restore the key via ${preferredEnvPath || "an appropriate .env file"}, ${serverEnvPath}, or process.env.`,
       );
       sendToRenderer("server-status", { status: "error", port: serverPort });
       return;
@@ -750,7 +750,7 @@ function disableLinuxDesktopAutostart() {
       os.homedir(),
       ".config",
       "autostart",
-      "omniroute-desktop.desktop"
+      "omniroute-desktop.desktop",
     );
     if (fs.existsSync(desktopPath)) {
       fs.unlinkSync(desktopPath);
@@ -768,7 +768,7 @@ function isLinuxDesktopAutostartEnabled() {
     const fs = require("fs");
     const path = require("path");
     return fs.existsSync(
-      path.join(os.homedir(), ".config", "autostart", "omniroute-desktop.desktop")
+      path.join(os.homedir(), ".config", "autostart", "omniroute-desktop.desktop"),
     );
   } catch {
     return false;

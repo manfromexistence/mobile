@@ -21,7 +21,7 @@ export interface ServerConnection {
 export async function connectServer(
   name: string,
   url: string,
-  apiKey: string
+  apiKey: string,
 ): Promise<ServerConnection> {
   const id = crypto.randomUUID();
   const apiKeyHash = crypto
@@ -55,13 +55,13 @@ export async function listServers(): Promise<ServerConnection[]> {
  * Fetches remote scores and merges into local leaderboard.
  */
 export async function syncLeaderboard(
-  serverId: string
+  serverId: string,
 ): Promise<{ synced: number; errors: string[] }> {
   const db = (await import("../db/core")).getDbInstance();
 
   const server = db
     .prepare(
-      "SELECT url, api_key_hash FROM community_servers WHERE id = ? AND status = 'connected'"
+      "SELECT url, api_key_hash FROM community_servers WHERE id = ? AND status = 'connected'",
     )
     .get(serverId) as { url: string; api_key_hash: string } | undefined;
 
@@ -91,21 +91,21 @@ export async function syncLeaderboard(
         .prepare(
           `INSERT INTO leaderboard (api_key_id, scope, score, updated_at)
          VALUES (?, 'global', ?, datetime('now'))
-         ON CONFLICT(api_key_id, scope) DO UPDATE SET score = excluded.score, updated_at = excluded.updated_at`
+         ON CONFLICT(api_key_id, scope) DO UPDATE SET score = excluded.score, updated_at = excluded.updated_at`,
         )
         .run(entry.apiKeyId, entry.score);
     }
 
     // Update last sync time
     db.prepare(
-      "UPDATE community_servers SET last_sync_at = datetime('now'), error_message = NULL WHERE id = ?"
+      "UPDATE community_servers SET last_sync_at = datetime('now'), error_message = NULL WHERE id = ?",
     ).run(serverId);
 
     return { synced: data.entries.length, errors: [] };
   } catch (err: any) {
     db.prepare("UPDATE community_servers SET status = 'error', error_message = ? WHERE id = ?").run(
       err.message,
-      serverId
+      serverId,
     );
 
     return { synced: 0, errors: [err.message] };
@@ -118,13 +118,13 @@ export async function syncLeaderboard(
 export async function pushScore(
   serverId: string,
   apiKeyId: string,
-  score: number
+  score: number,
 ): Promise<{ success: boolean; error?: string }> {
   const db = (await import("../db/core")).getDbInstance();
 
   const server = db
     .prepare(
-      "SELECT url, api_key_hash FROM community_servers WHERE id = ? AND status = 'connected'"
+      "SELECT url, api_key_hash FROM community_servers WHERE id = ? AND status = 'connected'",
     )
     .get(serverId) as { url: string; api_key_hash: string } | undefined;
 
@@ -157,7 +157,7 @@ export async function pushScore(
  * Health check a server connection.
  */
 export async function healthCheck(
-  serverId: string
+  serverId: string,
 ): Promise<{ healthy: boolean; latencyMs: number }> {
   const db = (await import("../db/core")).getDbInstance();
 

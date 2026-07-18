@@ -48,7 +48,7 @@ export function buildBedrockNativeModelsUrl(region: string): string {
 
 export function buildBedrockNativeInferenceProfilesUrl(
   region: string,
-  options: { nextToken?: string | null; typeEquals?: "SYSTEM_DEFINED" | "APPLICATION" } = {}
+  options: { nextToken?: string | null; typeEquals?: "SYSTEM_DEFINED" | "APPLICATION" } = {},
 ): string {
   const url = new URL(`${buildBedrockControlBaseUrl(region)}/inference-profiles`);
   url.searchParams.set("maxResults", "100");
@@ -114,7 +114,7 @@ function withKnownBedrockLimits(model: BedrockDiscoveredModel): BedrockDiscovere
 
 export function normalizeBedrockDiscoveredModels(
   foundationModelsResponse: unknown,
-  inferenceProfilesResponse: unknown = null
+  inferenceProfilesResponse: unknown = null,
 ): BedrockDiscoveredModel[] {
   const byId = new Map<string, BedrockDiscoveredModel>();
   const add = (model: BedrockDiscoveredModel) => {
@@ -142,7 +142,7 @@ export function normalizeBedrockDiscoveredModels(
           provider: typeof model.providerName === "string" ? model.providerName : null,
           supportsStreaming: model.responseStreamingSupported === true,
           supportsVision: inputModalities.includes("IMAGE") || outputModalities.includes("IMAGE"),
-        })
+        }),
       );
     }
   }
@@ -167,7 +167,7 @@ export function normalizeBedrockDiscoveredModels(
                 : id,
             source: "inference_profile",
             supportsStreaming: true,
-          })
+          }),
         );
       }
 
@@ -185,7 +185,7 @@ export function normalizeBedrockDiscoveredModels(
               name: modelId,
               source: "foundation",
               supportsStreaming: true,
-            })
+            }),
           );
         }
       }

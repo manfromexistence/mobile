@@ -38,7 +38,7 @@ test("buildCavemanOutputInstruction includes persistence clause for all intensit
     assert.match(
       instr,
       /active every response|until user asks/i,
-      `${intensity} must have persistence clause`
+      `${intensity} must have persistence clause`,
     );
   }
 });

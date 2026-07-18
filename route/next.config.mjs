@@ -361,7 +361,7 @@ const nextConfig = {
         config.plugins.push(
           new webpack.NormalModuleReplacementPlugin(pattern, (resource) => {
             resource.request = stubPath;
-          })
+          }),
         );
       }
     }

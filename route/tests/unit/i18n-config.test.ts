@@ -13,7 +13,7 @@ import {
 test("i18n config adapter reflects the JSON source of truth", () => {
   assert.deepEqual(
     LOCALES,
-    i18nConfig.locales.map((locale) => locale.code)
+    i18nConfig.locales.map((locale) => locale.code),
   );
   assert.equal(DEFAULT_LOCALE, i18nConfig.default);
   assert.deepEqual(RTL_LOCALES, i18nConfig.rtl);

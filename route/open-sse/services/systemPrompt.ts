@@ -155,7 +155,7 @@ export function injectCustomSystemPrompt(body: Record<string, unknown>, prompt: 
   // OpenAI/Claude messages[] format
   if (result.messages && Array.isArray(result.messages)) {
     const sysIdx = (result.messages as Array<{ role: string; content: unknown }>).findIndex(
-      (m) => m.role === "system" || m.role === "developer"
+      (m) => m.role === "system" || m.role === "developer",
     );
     result.messages = [...(result.messages as Array<{ role: string; content: unknown }>)];
     if (sysIdx >= 0) {

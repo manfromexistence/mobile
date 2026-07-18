@@ -25,7 +25,7 @@ function dataDirFromChild(envDataDir: string | undefined): string {
       // Pass DATA_DIR through verbatim; an empty string means "unset" for the module's
       // `if (!process.env.DATA_DIR)` guard.
       env: { ...process.env, DATA_DIR: envDataDir ?? "" },
-    }
+    },
   );
   return result.stdout.trim().split("\n").pop() ?? "";
 }

@@ -41,7 +41,9 @@ export function HttpProxySnippetCard({ port, onClose }: HttpProxySnippetCardProp
             className="text-text-muted hover:text-text-main focus-ring rounded"
             aria-label="Close"
           >
-            <span className="material-symbols-outlined" aria-hidden="true">close</span>
+            <span className="material-symbols-outlined" aria-hidden="true">
+              close
+            </span>
           </button>
         </div>
 
@@ -55,7 +57,7 @@ export function HttpProxySnippetCard({ port, onClose }: HttpProxySnippetCardProp
                 "px-3 py-1 text-xs rounded border focus-ring",
                 lang === l
                   ? "border-blue-500 bg-blue-900/30 text-blue-300"
-                  : "border-border text-text-muted hover:text-text-main"
+                  : "border-border text-text-muted hover:text-text-main",
               )}
             >
               {l}

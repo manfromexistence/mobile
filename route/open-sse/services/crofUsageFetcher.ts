@@ -124,7 +124,7 @@ export function parseCrofUsageResponse(data: unknown): CrofQuota | null {
 
 export async function fetchCrofUsage(
   connectionId: string,
-  connection?: Record<string, unknown>
+  connection?: Record<string, unknown>,
 ): Promise<QuotaInfo | null> {
   const cached = quotaCache.get(connectionId);
   if (cached && Date.now() - cached.fetchedAt < CACHE_TTL_MS) {

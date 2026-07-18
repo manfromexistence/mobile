@@ -4,8 +4,7 @@ import { siteConfig } from "@/lib/utils";
 import type { Metadata } from "next";
 import React, { Suspense } from "react";
 export const metadata: Metadata = {
-  title:
-    "Color Lab – Generate Color Palettes, Convert Codes & Build Shadcn Themes",
+  title: "Color Lab – Generate Color Palettes, Convert Codes & Build Shadcn Themes",
   description:
     "Color Lab is your all-in-one color and UI toolkit. Create stunning palettes, convert between HEX, RGB, HSL, and design custom themes with the built-in Shadcn UI Theme Generator – ideal for designers and frontend developers.",
   alternates: {
@@ -77,10 +76,7 @@ const PageLoading = () => {
       <div className="mx-auto h-28 w-[50%] animate-pulse rounded-lg border bg-card-bg" />
       <div className="mx-auto grid w-[70%] grid-cols-3 gap-5 pt-10 md:grid-cols-6">
         {Array.from({ length: 18 }).map((_, index) => (
-          <div
-            key={index}
-            className="h-36 w-full animate-pulse rounded-lg border bg-card-bg"
-          />
+          <div key={index} className="h-36 w-full animate-pulse rounded-lg border bg-card-bg" />
         ))}
       </div>
     </>

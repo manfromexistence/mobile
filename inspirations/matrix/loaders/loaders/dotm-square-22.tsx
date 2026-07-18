@@ -7,5 +7,5 @@ import type { DotMatrixCommonProps } from "../types";
 export type DotmSquare22Props = DotMatrixCommonProps;
 
 export const DotmSquare22 = createPathWaveComponent("DotmSquare22", ({ index }) =>
-  colWaveNormFromIndex(index)
+  colWaveNormFromIndex(index),
 );

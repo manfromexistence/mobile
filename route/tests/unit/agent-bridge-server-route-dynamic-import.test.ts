@@ -57,7 +57,7 @@ test("start: dynamically imports startMitm (not stub)", async () => {
       : "";
   assert.ok(
     !errMsg.includes("MITM manager stub reached at runtime"),
-    `Expected real MITM error, got stub error: ${errMsg}`
+    `Expected real MITM error, got stub error: ${errMsg}`,
   );
 });
 
@@ -76,7 +76,7 @@ test("stop: dynamically imports stopMitm (not stub)", async () => {
         : "";
     assert.ok(
       !errMsg.includes("MITM manager stub reached at runtime"),
-      `Expected real error, got stub error: ${errMsg}`
+      `Expected real error, got stub error: ${errMsg}`,
     );
   }
 });
@@ -96,7 +96,7 @@ test("restart: dynamically imports getMitmStatus (not stub)", async () => {
       : "";
   assert.ok(
     !errMsg.includes("MITM manager stub reached at runtime"),
-    `Expected real error, got stub error: ${errMsg}`
+    `Expected real error, got stub error: ${errMsg}`,
   );
 });
 
@@ -117,7 +117,7 @@ test("restart: re-caches password after stopMitm clears it", async () => {
     // Should NOT be a stub error or password-missing error
     assert.ok(
       !errMsg.includes("MITM manager stub reached at runtime"),
-      `Got stub error instead of runtime error: ${errMsg}`
+      `Got stub error instead of runtime error: ${errMsg}`,
     );
   }
 });
@@ -135,7 +135,7 @@ test("malformed JSON returns 400", async () => {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: "not-json",
-    })
+    }),
   );
   assert.equal(res.status, 400);
 });

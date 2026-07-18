@@ -1,10 +1,7 @@
-import type { vec4 } from '../types.js';
-import type { ShaderMotionParams } from '../shader-mount.js';
-import {
-  type ShaderSizingParams,
-  type ShaderSizingUniforms,
-} from '../shader-sizing.js';
-import { declarePI, rotation2, proceduralHash21 } from '../shader-utils.js';
+import type { vec4 } from "../types.js";
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { declarePI, rotation2, proceduralHash21 } from "../shader-utils.js";
 
 export const staticRadialGradientMeta = {
   maxColorCount: 10,
@@ -52,7 +49,7 @@ export const staticRadialGradientFragmentShader: string = `#version 300 es
 precision mediump float;
 
 uniform vec4 u_colorBack;
-uniform vec4 u_colors[${ staticRadialGradientMeta.maxColorCount }];
+uniform vec4 u_colors[${staticRadialGradientMeta.maxColorCount}];
 uniform float u_colorsCount;
 
 uniform float u_radius;
@@ -69,9 +66,9 @@ uniform float u_grainOverlay;
 in vec2 v_objectUV;
 out vec4 fragColor;
 
-${ declarePI }
-${ rotation2 }
-${ proceduralHash21 }
+${declarePI}
+${rotation2}
+${proceduralHash21}
 
 float valueNoise(vec2 st) {
   vec2 i = floor(st);
@@ -169,7 +166,7 @@ void main() {
   gradient.rgb *= gradient.a;
 
   float outerShape = 0.;
-  for (int i = 1; i < ${ staticRadialGradientMeta.maxColorCount + 1 }; i++) {
+  for (int i = 1; i < ${staticRadialGradientMeta.maxColorCount + 1}; i++) {
     if (i > int(u_colorsCount)) break;
     float mLinear = clamp(mixer - float(i - 1), 0.0, 1.0);
 

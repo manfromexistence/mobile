@@ -15,12 +15,12 @@ test("electron build copies standalone runtime dependencies into resources/app/n
     extraResources.find(
       (resource) =>
         resource?.from === "../.build/electron-standalone/node_modules" &&
-        resource?.to === "app/node_modules"
+        resource?.to === "app/node_modules",
     ),
     {
       from: "../.build/electron-standalone/node_modules",
       to: "app/node_modules",
       filter: ["**/*"],
-    }
+    },
   );
 });

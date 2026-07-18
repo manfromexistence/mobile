@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { createSignal } from "solid-js"
-import { CheckboxV2 } from "./checkbox-v2"
+import { createSignal } from "solid-js";
+import { CheckboxV2 } from "./checkbox-v2";
 
 const docs = `### Overview
 Binary and tri-state checkbox using Kobalte Checkbox.
@@ -15,7 +15,7 @@ Binary and tri-state checkbox using Kobalte Checkbox.
 
 ### Theming/tokens
 - Uses \`data-slot="checkbox-v2"\` and slot attributes aligned with radio item layout.
-`
+`;
 
 export default {
   title: "UI V2/Checkbox",
@@ -29,17 +29,22 @@ export default {
       },
     },
   },
-}
+};
 
 export const Basic = {
   render: () => (
-    <CheckboxV2 defaultChecked={false} name="terms" label="Accept terms" description="You must accept to continue." />
+    <CheckboxV2
+      defaultChecked={false}
+      name="terms"
+      label="Accept terms"
+      description="You must accept to continue."
+    />
   ),
-}
+};
 
 export const Controlled = {
   render: () => {
-    const [checked, setChecked] = createSignal(false)
+    const [checked, setChecked] = createSignal(false);
     return (
       <div style={{ display: "grid", gap: "12px" }}>
         <CheckboxV2
@@ -49,33 +54,39 @@ export const Controlled = {
           label="Controlled checkbox"
           description="Toggled from Storybook state."
         />
-        <div style={{ "font-family": "var(--v2-font-family-sans)", "font-size": "12px", color: "#808080" }}>
+        <div
+          style={{
+            "font-family": "var(--v2-font-family-sans)",
+            "font-size": "12px",
+            color: "#808080",
+          }}
+        >
           Checked: {String(checked())}
         </div>
       </div>
-    )
+    );
   },
-}
+};
 
 export const Indeterminate = {
   render: () => {
-    const [indeterminate, setIndeterminate] = createSignal(true)
-    const [checked, setChecked] = createSignal(false)
+    const [indeterminate, setIndeterminate] = createSignal(true);
+    const [checked, setChecked] = createSignal(false);
     return (
       <CheckboxV2
         name="indeterminate-demo"
         checked={checked()}
         indeterminate={indeterminate()}
         onChange={(v) => {
-          setChecked(v)
-          if (v) setIndeterminate(false)
+          setChecked(v);
+          if (v) setIndeterminate(false);
         }}
         label="Select all"
         description="Starts indeterminate; checking clears mixed state."
       />
-    )
+    );
   },
-}
+};
 
 export const States = {
   render: () => (
@@ -86,7 +97,13 @@ export const States = {
       <CheckboxV2 name="s4" disabled label="Disabled" />
       <CheckboxV2 name="s5" disabled defaultChecked label="Checked disabled" />
       <CheckboxV2 name="s6" disabled indeterminate label="Indeterminate disabled" />
-      <CheckboxV2 name="s7" label="Invalid" description="Must be checked." required validationState="invalid" />
+      <CheckboxV2
+        name="s7"
+        label="Invalid"
+        description="Must be checked."
+        required
+        validationState="invalid"
+      />
     </div>
   ),
-}
+};

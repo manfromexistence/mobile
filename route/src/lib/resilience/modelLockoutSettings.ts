@@ -25,7 +25,7 @@ function asRecord(value: unknown): JsonRecord {
 function toInteger(
   value: unknown,
   fallback: number,
-  options: { min?: number; max?: number } = {}
+  options: { min?: number; max?: number } = {},
 ): number {
   const min = options.min ?? 0;
   const max = options.max ?? Number.MAX_SAFE_INTEGER;
@@ -52,7 +52,7 @@ function toNumberArray(value: unknown, fallback: number[]): number[] {
 }
 
 export function resolveModelLockoutSettings(
-  settings: Record<string, unknown> | null | undefined
+  settings: Record<string, unknown> | null | undefined,
 ): ModelLockoutSettings {
   const record = asRecord(settings);
   const raw = asRecord(record.modelLockout);
@@ -67,14 +67,14 @@ export function resolveModelLockoutSettings(
     {
       min: isTest ? 0 : 5_000,
       max: 600_000,
-    }
+    },
   );
   const maxCooldownMs = Math.max(
     toInteger(raw.maxCooldownMs, DEFAULT_MODEL_LOCKOUT_SETTINGS.maxCooldownMs, {
       min: isTest ? 0 : 5_000,
       max: 3_600_000,
     }),
-    baseCooldownMs // cap must be >= base or exponential backoff is meaningless
+    baseCooldownMs, // cap must be >= base or exponential backoff is meaningless
   );
 
   return {
@@ -85,11 +85,11 @@ export function resolveModelLockoutSettings(
     maxBackoffSteps: toInteger(
       raw.maxBackoffSteps,
       DEFAULT_MODEL_LOCKOUT_SETTINGS.maxBackoffSteps,
-      { min: 0, max: 20 }
+      { min: 0, max: 20 },
     ),
     useExponentialBackoff: toBoolean(
       raw.useExponentialBackoff,
-      DEFAULT_MODEL_LOCKOUT_SETTINGS.useExponentialBackoff
+      DEFAULT_MODEL_LOCKOUT_SETTINGS.useExponentialBackoff,
     ),
   };
 }

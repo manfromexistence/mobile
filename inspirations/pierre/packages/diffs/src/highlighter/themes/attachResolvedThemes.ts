@@ -1,10 +1,6 @@
-import type {
-  DiffsHighlighter,
-  DiffsThemeNames,
-  ThemeRegistrationResolved,
-} from '../../types';
-import { AttachedThemes } from './constants';
-import { themeResolver } from './themeResolver';
+import type { DiffsHighlighter, DiffsThemeNames, ThemeRegistrationResolved } from "../../types";
+import { AttachedThemes } from "./constants";
+import { themeResolver } from "./themeResolver";
 
 // Loads resolved themes into the highlighter (loadThemeSync) and records them
 // in AttachedThemes so each theme is attached at most once. Accepts either a
@@ -18,16 +14,16 @@ export function attachResolvedThemes(
     | DiffsThemeNames
     | ThemeRegistrationResolved
     | (DiffsThemeNames | ThemeRegistrationResolved)[],
-  highlighter: DiffsHighlighter
+  highlighter: DiffsHighlighter,
 ): void {
   themes = Array.isArray(themes) ? themes : [themes];
   for (let themeRef of themes) {
     let resolvedTheme: ThemeRegistrationResolved | undefined;
-    if (typeof themeRef === 'string') {
+    if (typeof themeRef === "string") {
       resolvedTheme = themeResolver.getResolvedTheme(themeRef);
       if (resolvedTheme == null) {
         throw new Error(
-          `loadResolvedThemes: ${themeRef} is not resolved, you must resolve it before calling loadResolvedThemes`
+          `loadResolvedThemes: ${themeRef} is not resolved, you must resolve it before calling loadResolvedThemes`,
         );
       }
     } else {

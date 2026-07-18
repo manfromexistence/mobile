@@ -33,7 +33,7 @@ describe("RTK declarative DSL pipeline", () => {
 
     const result = applyLineFilter(
       "\u001b[31mNOISE one\u001b[0m\nimportant-long-line\nsecond-long-line\nthird-long-line",
-      filter
+      filter,
     );
 
     assert.ok(result.appliedRules.includes("dsl-test:strip-ansi"));
@@ -58,7 +58,7 @@ describe("RTK declarative DSL pipeline", () => {
     assert.equal(applyLineFilter("Build complete", filter).text, "build: ok");
     assert.equal(
       applyLineFilter("Build complete\nerror: warning promoted", filter).text,
-      "build: completed with diagnostics"
+      "build: completed with diagnostics",
     );
   });
 
@@ -84,7 +84,7 @@ describe("RTK declarative DSL pipeline", () => {
 
     const result = applyLineFilter(
       "stdout | ok\nstderr | error: boom\nstderr: debug noise",
-      filter
+      filter,
     );
 
     assert.equal(result.text, "error: boom");

@@ -85,7 +85,7 @@ test("after disable+re-enable, withRateLimit must succeed without stopped-limite
     provider,
     connectionId,
     null,
-    async () => "job-1"
+    async () => "job-1",
   );
   assert.equal(r1, "job-1");
 
@@ -104,7 +104,7 @@ test("after disable+re-enable, withRateLimit must succeed without stopped-limite
   assert.equal(
     error,
     null,
-    "Expected no error after disable+re-enable, but got: " + (error && error.message)
+    "Expected no error after disable+re-enable, but got: " + (error && error.message),
   );
   assert.equal(r2, "job-2", "post-reset request must return its value");
 });
@@ -157,7 +157,7 @@ test("in-flight job before disable must complete without stopped-limiter error",
   assert.equal(
     error,
     null,
-    "In-flight job must not throw after disable, but got: " + (error && error.message)
+    "In-flight job must not throw after disable, but got: " + (error && error.message),
   );
   assert.equal(result, "in-flight-ok", "in-flight job must return its value");
 });
@@ -189,7 +189,7 @@ test("after 429 teardown, next withRateLimit must get a fresh limiter and succee
       provider,
       connectionId,
       null,
-      async () => "post-429"
+      async () => "post-429",
     );
   } catch (err) {
     error = err;
@@ -198,7 +198,7 @@ test("after 429 teardown, next withRateLimit must get a fresh limiter and succee
   assert.equal(
     error,
     null,
-    "Post-429 request must not throw, but got: " + (error && error.message)
+    "Post-429 request must not throw, but got: " + (error && error.message),
   );
   assert.equal(result, "post-429", "post-429 request must return its value");
 });
@@ -215,9 +215,9 @@ test("request queue refresh treats zero limits as unbounded for existing limiter
       provider,
       connectionId,
       null,
-      async () => "before-refresh"
+      async () => "before-refresh",
     ),
-    "before-refresh"
+    "before-refresh",
   );
 
   await rateLimitManager.applyRequestQueueSettings({
@@ -231,6 +231,6 @@ test("request queue refresh treats zero limits as unbounded for existing limiter
 
   assert.equal(
     await rateLimitManager.withRateLimit(provider, connectionId, null, async () => "after-refresh"),
-    "after-refresh"
+    "after-refresh",
   );
 });

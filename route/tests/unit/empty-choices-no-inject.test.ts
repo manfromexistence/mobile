@@ -56,7 +56,7 @@ test("empty choices WITHOUT usage are dropped, not injected as retry text (#3502
       provider: "opencode-zen",
       model: "mimo-v2.5-free",
       body: { messages: [{ role: "user", content: "hi" }] },
-    }
+    },
   );
 
   assert.doesNotMatch(text, /Upstream returned an empty response/);
@@ -92,7 +92,7 @@ test("empty choices WITH valid usage are forwarded (preserve #3422)", async () =
       provider: "openai",
       model: "gpt-4.1-mini",
       body: { messages: [{ role: "user", content: "hi" }] },
-    }
+    },
   );
 
   assert.doesNotMatch(text, /Upstream returned an empty response/);

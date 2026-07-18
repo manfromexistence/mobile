@@ -32,7 +32,7 @@ export function insertDelivery(opts: {
   const insertStmt = db.prepare(
     `INSERT INTO webhook_deliveries
        (webhook_id, event_type, status, http_status, latency_ms, error, payload_snapshot)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
   );
   const rotateStmt = db.prepare(
     `DELETE FROM webhook_deliveries
@@ -42,7 +42,7 @@ export function insertDelivery(opts: {
          WHERE webhook_id = ?
          ORDER BY created_at DESC, id DESC
          LIMIT ?
-       )`
+       )`,
   );
   // Sanitize the error before persistence so raw stack traces, hostnames or
   // upstream-internal messages never enter the audit log. The audit log is
@@ -56,7 +56,7 @@ export function insertDelivery(opts: {
       opts.httpStatus ?? null,
       opts.latencyMs ?? null,
       sanitizedError,
-      opts.payloadSnapshot ?? null
+      opts.payloadSnapshot ?? null,
     );
     rotateStmt.run(opts.webhookId, opts.webhookId, MAX_DELIVERIES_PER_WEBHOOK);
   })();
@@ -71,7 +71,7 @@ export function getDeliveries(webhookId: string, limit: number): WebhookDelivery
        FROM webhook_deliveries
        WHERE webhook_id = ?
        ORDER BY created_at DESC, id DESC
-       LIMIT ?`
+       LIMIT ?`,
     )
     .all(webhookId, limit) as WebhookDeliverySafe[];
 }

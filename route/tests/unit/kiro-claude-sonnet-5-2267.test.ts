@@ -20,7 +20,7 @@ test("kiro registry exposes claude-sonnet-5", () => {
   const ids = kiroProvider.models.map((m) => m.id);
   assert.ok(
     ids.includes("claude-sonnet-5"),
-    `expected kiro registry to include claude-sonnet-5, got: ${ids.join(", ")}`
+    `expected kiro registry to include claude-sonnet-5, got: ${ids.join(", ")}`,
   );
 });
 
@@ -37,6 +37,6 @@ test("claude-sonnet-5 degrades to the Sonnet family, not Opus", () => {
   const next = getNextFamilyFallback("kiro/claude-sonnet-5", new Set(["kiro/claude-sonnet-5"]));
   assert.ok(
     next && /claude-sonnet-4/.test(next),
-    `expected claude-sonnet-5 to fall back within the Sonnet family, got: ${next}`
+    `expected claude-sonnet-5 to fall back within the Sonnet family, got: ${next}`,
   );
 });

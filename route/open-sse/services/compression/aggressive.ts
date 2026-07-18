@@ -31,7 +31,7 @@ function estimateTokens(text: string): number {
 export function compressAggressive(
   messages: ChatMessage[],
   config?: Partial<AggressiveConfig>,
-  stats?: CompressionStats
+  stats?: CompressionStats,
 ): AggressiveCompressionResult {
   const cfg: AggressiveConfig = {
     ...DEFAULT_AGGRESSIVE_CONFIG,
@@ -56,7 +56,7 @@ export function compressAggressive(
 
   const originalTokens = messages.reduce(
     (sum, m) => sum + estimateTokens(extractTextContent(m.content)),
-    0
+    0,
   );
   resultStats.originalTokens = originalTokens;
 
@@ -110,7 +110,7 @@ export function compressAggressive(
       currentMessages,
       cfg.thresholds,
       summarizer,
-      cfg.preserveSystemPrompt !== false
+      cfg.preserveSystemPrompt !== false,
     );
     agingSavings = agingResult.saved;
     currentMessages = agingResult.messages as ChatMessage[];
@@ -145,7 +145,7 @@ export function compressAggressive(
   // Downgrade chain: if total savings < threshold, try caveman then lite
   const compressedTokens = currentMessages.reduce(
     (sum, m) => sum + estimateTokens(extractTextContent(m.content)),
-    0
+    0,
   );
   resultStats.compressedTokens = compressedTokens;
   resultStats.savingsPercent =
@@ -153,7 +153,9 @@ export function compressAggressive(
 
   if (resultStats.savingsPercent < cfg.minSavingsThreshold * 100) {
     try {
-      const cavemanResult = cavemanCompress({ messages: currentMessages as unknown as Parameters<typeof cavemanCompress>[0]["messages"] });
+      const cavemanResult = cavemanCompress({
+        messages: currentMessages as unknown as Parameters<typeof cavemanCompress>[0]["messages"],
+      });
       if (cavemanResult?.compressed && cavemanResult.stats) {
         const cavemanSavings = cavemanResult.stats.savingsPercent ?? 0;
         if (cavemanSavings > resultStats.savingsPercent) {
@@ -170,7 +172,7 @@ export function compressAggressive(
     try {
       const liteResult = applyLiteCompression(
         { messages: currentMessages },
-        { preserveSystemPrompt: cfg.preserveSystemPrompt !== false }
+        { preserveSystemPrompt: cfg.preserveSystemPrompt !== false },
       );
       if (liteResult?.compressed && liteResult.stats) {
         const liteSavings = liteResult.stats.savingsPercent ?? 0;
@@ -189,7 +191,7 @@ export function compressAggressive(
   resultStats.techniquesUsed.push(
     ...(toolResultSavings > 0 ? ["toolResult"] : []),
     ...(agingSavings > 0 ? ["aging"] : []),
-    ...(summarizerSavings > 0 ? ["summarizer"] : [])
+    ...(summarizerSavings > 0 ? ["summarizer"] : []),
   );
 
   resultStats.aggressive = {

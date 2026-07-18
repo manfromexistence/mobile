@@ -3,8 +3,8 @@ import type {
   HunkExpansionRegion,
   HunkSeparators,
   VirtualFileMetrics,
-} from '../types';
-import { getDefaultHunkSeparatorHeight } from './computeVirtualFileMetrics';
+} from "../types";
+import { getDefaultHunkSeparatorHeight } from "./computeVirtualFileMetrics";
 
 export interface ExpandedRegionResult {
   fromStart: number;
@@ -29,7 +29,7 @@ export interface GetTrailingContextRangeSizeProps {
 
 export interface GetTrailingExpandedRegionProps extends GetTrailingContextRangeSizeProps {
   hunkIndex: number;
-  expandedHunks: GetExpandedRegionProps['expandedHunks'];
+  expandedHunks: GetExpandedRegionProps["expandedHunks"];
   collapsedContextThreshold: number;
 }
 
@@ -70,10 +70,7 @@ export function getExpandedRegion({
     };
   }
 
-  if (
-    expandedHunks === true ||
-    normalizedRangeSize <= collapsedContextThreshold
-  ) {
+  if (expandedHunks === true || normalizedRangeSize <= collapsedContextThreshold) {
     return {
       fromStart: normalizedRangeSize,
       fromEnd: 0,
@@ -84,14 +81,8 @@ export function getExpandedRegion({
   }
 
   const region = expandedHunks?.get(hunkIndex);
-  const fromStart = Math.min(
-    Math.max(region?.fromStart ?? 0, 0),
-    normalizedRangeSize
-  );
-  const fromEnd = Math.min(
-    Math.max(region?.fromEnd ?? 0, 0),
-    normalizedRangeSize
-  );
+  const fromStart = Math.min(Math.max(region?.fromStart ?? 0, 0), normalizedRangeSize);
+  const fromEnd = Math.min(Math.max(region?.fromEnd ?? 0, 0), normalizedRangeSize);
   const expandedCount = fromStart + fromEnd;
   const renderAll = expandedCount >= normalizedRangeSize;
   return {
@@ -115,11 +106,9 @@ export function hasTrailingContext(fileDiff: FileDiffMetadata): boolean {
   }
 
   const additionRemaining =
-    fileDiff.additionLines.length -
-    (lastHunk.additionLineIndex + lastHunk.additionCount);
+    fileDiff.additionLines.length - (lastHunk.additionLineIndex + lastHunk.additionCount);
   const deletionRemaining =
-    fileDiff.deletionLines.length -
-    (lastHunk.deletionLineIndex + lastHunk.deletionCount);
+    fileDiff.deletionLines.length - (lastHunk.deletionLineIndex + lastHunk.deletionCount);
 
   return additionRemaining > 0 || deletionRemaining > 0;
 }
@@ -141,11 +130,9 @@ export function getTrailingContextRangeSize({
   }
 
   const additionRemaining =
-    fileDiff.additionLines.length -
-    (lastHunk.additionLineIndex + lastHunk.additionCount);
+    fileDiff.additionLines.length - (lastHunk.additionLineIndex + lastHunk.additionCount);
   const deletionRemaining =
-    fileDiff.deletionLines.length -
-    (lastHunk.deletionLineIndex + lastHunk.deletionCount);
+    fileDiff.deletionLines.length - (lastHunk.deletionLineIndex + lastHunk.deletionCount);
 
   if (additionRemaining <= 0 && deletionRemaining <= 0) {
     return 0;
@@ -153,7 +140,7 @@ export function getTrailingContextRangeSize({
 
   if (additionRemaining !== deletionRemaining) {
     throw new Error(
-      `${errorPrefix}: trailing context mismatch (additions=${additionRemaining}, deletions=${deletionRemaining}) for ${fileDiff.name}`
+      `${errorPrefix}: trailing context mismatch (additions=${additionRemaining}, deletions=${deletionRemaining}) for ${fileDiff.name}`,
     );
   }
   return Math.min(additionRemaining, deletionRemaining);
@@ -178,10 +165,7 @@ export function getTrailingExpandedRegion({
     return undefined;
   }
 
-  if (
-    expandedHunks === true ||
-    trailingRangeSize <= collapsedContextThreshold
-  ) {
+  if (expandedHunks === true || trailingRangeSize <= collapsedContextThreshold) {
     return {
       fromStart: trailingRangeSize,
       fromEnd: 0,
@@ -194,10 +178,7 @@ export function getTrailingExpandedRegion({
   // The final trailing separator only exposes upward partial expansion. Treat it
   // as a bottom-only pseudo-hunk and ignore unsupported downward expansion.
   const region = expandedHunks?.get(fileDiff.hunks.length);
-  const fromStart = Math.min(
-    Math.max(region?.fromStart ?? 0, 0),
-    trailingRangeSize
-  );
+  const fromStart = Math.min(Math.max(region?.fromStart ?? 0, 0), trailingRangeSize);
   return {
     fromStart,
     fromEnd: 0,
@@ -207,18 +188,12 @@ export function getTrailingExpandedRegion({
   };
 }
 
-export function getHunkSeparatorHeight({
-  type,
-  metrics,
-}: HunkSeparatorBaseProps): number {
+export function getHunkSeparatorHeight({ type, metrics }: HunkSeparatorBaseProps): number {
   return metrics.hunkSeparatorHeight ?? getDefaultHunkSeparatorHeight(type);
 }
 
-export function getHunkSeparatorGap({
-  type,
-  metrics,
-}: HunkSeparatorBaseProps): number {
-  return type === 'simple' || type === 'metadata' || type === 'line-info-basic'
+export function getHunkSeparatorGap({ type, metrics }: HunkSeparatorBaseProps): number {
+  return type === "simple" || type === "metadata" || type === "line-info-basic"
     ? 0
     : metrics.spacing;
 }
@@ -227,21 +202,21 @@ export function hasLeadingHunkSeparator({
   type,
   hunkIndex,
   hunkSpecs,
-}: Omit<LeadingHunkSeparatorLayoutProps, 'metrics'>): boolean {
+}: Omit<LeadingHunkSeparatorLayoutProps, "metrics">): boolean {
   switch (type) {
-    case 'simple':
+    case "simple":
       return hunkIndex > 0;
-    case 'metadata':
+    case "metadata":
       return hunkSpecs != null;
-    case 'line-info':
-    case 'line-info-basic':
-    case 'custom':
+    case "line-info":
+    case "line-info-basic":
+    case "custom":
       return true;
   }
 }
 
 export function hasTrailingHunkSeparator(type: HunkSeparators): boolean {
-  return type !== 'simple' && type !== 'metadata';
+  return type !== "simple" && type !== "metadata";
 }
 
 // Mirrors the renderer/CSS spacing rules for the separator shown before a hunk.

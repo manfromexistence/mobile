@@ -1,4 +1,4 @@
-import type { ChatConfig } from "../src/config"
+import type { ChatConfig } from "../src/config";
 
 export const llama3_1ChatConfig: ChatConfig = {
   vocab_size: 128256,
@@ -17,8 +17,7 @@ export const llama3_1ChatConfig: ChatConfig = {
     strip_space_in_decode: false,
   },
   conv_template: {
-    system_template:
-      "<|start_header_id|>system<|end_header_id|>\n\n{system_message}<|eot_id|>",
+    system_template: "<|start_header_id|>system<|end_header_id|>\n\n{system_message}<|eot_id|>",
     system_message: "You are a helpful, respectful and honest assistant.",
     system_prefix_token_ids: [128000],
     add_role_after_system_message: true,
@@ -39,7 +38,7 @@ export const llama3_1ChatConfig: ChatConfig = {
     stop_token_ids: [128001, 128008, 128009],
   },
   bos_token_id: 128000,
-}
+};
 
 export const llama2ChatConfigJSONString =
   "{" +
@@ -116,7 +115,7 @@ export const llama2ChatConfigJSONString =
   '    "tokenizer_config.json"' +
   "  ]," +
   '  "version": "0.1.0"' +
-  "}"
+  "}";
 
 export const phi3_5VisionChatConfigJSONString = String.raw`{
   "version": "0.1.0",
@@ -218,7 +217,7 @@ export const phi3_5VisionChatConfigJSONString = String.raw`{
   "pad_token_id": 32000,
   "bos_token_id": 1,
   "eos_token_id": 2
-}`
+}`;
 
 export const qwen3ChatConfigJSONString = String.raw`{
   "version": "0.1.0",
@@ -305,4 +304,4 @@ export const qwen3ChatConfigJSONString = String.raw`{
     151645,
     151643
   ]
-}`
+}`;

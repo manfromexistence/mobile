@@ -46,7 +46,7 @@ export function tokensPerTask(report: EvalReport): Record<string, number> {
 export function checkTokensPerTaskGate(
   report: EvalReport,
   baseline: BudgetBaseline,
-  tolerancePercent = 2
+  tolerancePercent = 2,
 ): BudgetGateResult {
   const current = tokensPerTask(report);
   const regressions: BudgetRegression[] = [];

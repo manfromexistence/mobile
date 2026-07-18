@@ -28,17 +28,17 @@ test("all Claude-Code identity version constants are in lockstep", () => {
   assert.equal(
     ccBridge.DEFAULT_CLAUDE_CODE_VERSION,
     CANONICAL,
-    "ccBridgeTransforms.DEFAULT_CLAUDE_CODE_VERSION drifted from claudeIdentity.CLAUDE_CODE_VERSION"
+    "ccBridgeTransforms.DEFAULT_CLAUDE_CODE_VERSION drifted from claudeIdentity.CLAUDE_CODE_VERSION",
   );
   assert.equal(
     claudeCompat.CLAUDE_CODE_COMPATIBLE_VERSION,
     CANONICAL,
-    "claudeCodeCompatible.CLAUDE_CODE_COMPATIBLE_VERSION drifted from the canonical version"
+    "claudeCodeCompatible.CLAUDE_CODE_COMPATIBLE_VERSION drifted from the canonical version",
   );
   assert.equal(
     anthropicHeaders.CLAUDE_CLI_VERSION,
     CANONICAL,
-    "anthropicHeaders.CLAUDE_CLI_VERSION drifted from the canonical version"
+    "anthropicHeaders.CLAUDE_CLI_VERSION drifted from the canonical version",
   );
 });
 
@@ -46,11 +46,11 @@ test("all claude-cli User-Agent strings embed the canonical version", () => {
   assert.equal(
     versionFromUserAgent(claudeCompat.CLAUDE_CODE_COMPATIBLE_USER_AGENT),
     CANONICAL,
-    "claudeCodeCompatible.CLAUDE_CODE_COMPATIBLE_USER_AGENT embeds a stale version"
+    "claudeCodeCompatible.CLAUDE_CODE_COMPATIBLE_USER_AGENT embeds a stale version",
   );
   assert.equal(
     versionFromUserAgent(glmProvider.GLM_CLAUDE_CODE_USER_AGENT),
     CANONICAL,
-    "glmProvider.GLM_CLAUDE_CODE_USER_AGENT embeds a stale version"
+    "glmProvider.GLM_CLAUDE_CODE_USER_AGENT embeds a stale version",
   );
 });

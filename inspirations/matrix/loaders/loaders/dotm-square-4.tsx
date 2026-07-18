@@ -8,14 +8,21 @@ import {
   middleRingAntiClockwiseNormFromIndex,
   middleRingAntiClockwiseOrderValue,
   outerRingClockwiseNormFromIndex,
-  outerRingClockwiseOrderValue
+  outerRingClockwiseOrderValue,
 } from "../core/grid-paths";
 import { usePrefersReducedMotion } from "../hooks/use-prefers-reduced-motion";
 import type { DotAnimationResolver, DotMatrixCommonProps } from "../types";
 
 export type DotmSquare4Props = DotMatrixCommonProps;
 
-const animationResolver: DotAnimationResolver = ({ isActive, index, row, col, reducedMotion, phase }) => {
+const animationResolver: DotAnimationResolver = ({
+  isActive,
+  index,
+  row,
+  col,
+  reducedMotion,
+  phase,
+}) => {
   if (!isActive) {
     return { className: "dmx-inactive" };
   }
@@ -33,8 +40,8 @@ const animationResolver: DotAnimationResolver = ({ isActive, index, row, col, re
       return {
         style: {
           ...style,
-          opacity: 0.2 + outerNorm * 0.72
-        }
+          opacity: 0.2 + outerNorm * 0.72,
+        },
       };
     }
     return { className: "dmx-outer-snake", style };
@@ -47,8 +54,8 @@ const animationResolver: DotAnimationResolver = ({ isActive, index, row, col, re
     return {
       style: {
         ...style,
-        opacity: 0.2 + middleNorm * 0.72
-      }
+        opacity: 0.2 + middleNorm * 0.72,
+      },
     };
   }
 
@@ -63,10 +70,14 @@ export function DotmSquare4({
   ...rest
 }: DotmSquare4Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
 
   return (

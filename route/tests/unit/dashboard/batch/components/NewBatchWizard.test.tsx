@@ -94,9 +94,7 @@ const { default: NewBatchWizard } = await import(
 
 const containers: Array<{ root: ReturnType<typeof createRoot>; el: HTMLDivElement }> = [];
 
-const DEFAULT_PROVIDERS = [
-  { id: "openai", name: "OpenAI", models: ["gpt-4o-mini", "gpt-4o"] },
-];
+const DEFAULT_PROVIDERS = [{ id: "openai", name: "OpenAI", models: ["gpt-4o-mini", "gpt-4o"] }];
 
 function renderWizard(props?: {
   onClose?: () => void;
@@ -117,7 +115,7 @@ function renderWizard(props?: {
         onClose={onClose}
         onCreated={onCreated}
         availableProviders={availableProviders}
-      />
+      />,
     );
   });
 
@@ -128,7 +126,7 @@ function renderWizard(props?: {
 // Helper: wait for a condition to be true with retries
 async function waitFor(
   fn: () => boolean,
-  options: { timeout?: number; interval?: number } = {}
+  options: { timeout?: number; interval?: number } = {},
 ): Promise<void> {
   const { timeout = 3000, interval = 50 } = options;
   const start = Date.now();
@@ -188,7 +186,7 @@ describe("NewBatchWizard", () => {
     expect(el.textContent).toContain("wizardEndpointLabel");
     expect(el.textContent).toContain("wizardModelLabel");
     const nextBtns = Array.from(el.querySelectorAll("button")).filter(
-      (b) => b.textContent === "wizardNext"
+      (b) => b.textContent === "wizardNext",
     );
     expect(nextBtns.length).toBeGreaterThan(0);
     expect((nextBtns[0] as HTMLButtonElement).disabled).toBe(true);
@@ -216,7 +214,7 @@ describe("NewBatchWizard", () => {
     const onClose = vi.fn();
     const { el } = renderWizard({ onClose });
     const cancelBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent === "wizardCancel"
+      (b) => b.textContent === "wizardCancel",
     );
     expect(cancelBtn).toBeDefined();
     act(() => {
@@ -253,7 +251,7 @@ describe("NewBatchWizard", () => {
     });
 
     const nextBtns = Array.from(el.querySelectorAll("button")).filter(
-      (b) => b.textContent === "wizardNext"
+      (b) => b.textContent === "wizardNext",
     );
     expect((nextBtns[0] as HTMLButtonElement).disabled).toBe(false);
     await act(async () => {
@@ -270,7 +268,7 @@ describe("NewBatchWizard", () => {
     expect(el.textContent).toContain("wizardInputKindJsonl");
     expect(el.textContent).toContain("wizardDropOrPick");
     const nextBtns = Array.from(el.querySelectorAll("button")).filter(
-      (b) => b.textContent === "wizardNext"
+      (b) => b.textContent === "wizardNext",
     );
     expect((nextBtns[0] as HTMLButtonElement).disabled).toBe(true);
   });
@@ -280,7 +278,7 @@ describe("NewBatchWizard", () => {
     const { el } = renderWizard();
     await goToStep2(el);
     const backBtn = Array.from(el.querySelectorAll("button")).find(
-      (b) => b.textContent === "wizardBack"
+      (b) => b.textContent === "wizardBack",
     );
     expect(backBtn).toBeDefined();
     await act(async () => {
@@ -288,7 +286,7 @@ describe("NewBatchWizard", () => {
     });
     expect(el.textContent).toContain("wizardStep1Destination");
     const backBtns = Array.from(el.querySelectorAll("button")).filter(
-      (b) => b.textContent === "wizardBack"
+      (b) => b.textContent === "wizardBack",
     );
     expect(backBtns.length).toBe(0);
   });
@@ -314,14 +312,14 @@ describe("NewBatchWizard", () => {
     // Wait for Next to enable (file loaded)
     await waitFor(() => {
       const btns = Array.from(el.querySelectorAll("button")).filter(
-        (b) => b.textContent === "wizardNext"
+        (b) => b.textContent === "wizardNext",
       );
       return btns.length > 0 && !(btns[0] as HTMLButtonElement).disabled;
     });
 
     await act(async () => {
       const nextBtn = Array.from(el.querySelectorAll("button")).find(
-        (b) => b.textContent === "wizardNext"
+        (b) => b.textContent === "wizardNext",
       );
       nextBtn!.click();
     });
@@ -334,7 +332,7 @@ describe("NewBatchWizard", () => {
 
     // Next disabled
     const nextBtns = Array.from(el.querySelectorAll("button")).filter(
-      (b) => b.textContent === "wizardNext"
+      (b) => b.textContent === "wizardNext",
     );
     expect((nextBtns[0] as HTMLButtonElement).disabled).toBe(true);
   });
@@ -347,7 +345,7 @@ describe("NewBatchWizard", () => {
 
     await waitFor(() => {
       const btns = Array.from(el.querySelectorAll("button")).filter(
-        (b) => b.textContent === "wizardNext"
+        (b) => b.textContent === "wizardNext",
       );
       return btns.length > 0 && !(btns[0] as HTMLButtonElement).disabled;
     });
@@ -355,7 +353,7 @@ describe("NewBatchWizard", () => {
     // Step 3
     await act(async () => {
       const nextBtn = Array.from(el.querySelectorAll("button")).find(
-        (b) => b.textContent === "wizardNext"
+        (b) => b.textContent === "wizardNext",
       );
       nextBtn!.click();
     });
@@ -364,7 +362,7 @@ describe("NewBatchWizard", () => {
     await waitFor(() => el.textContent!.includes("wizardValidationOk"));
     await waitFor(() => {
       const btns = Array.from(el.querySelectorAll("button")).filter(
-        (b) => b.textContent === "wizardNext"
+        (b) => b.textContent === "wizardNext",
       );
       return btns.length > 0 && !(btns[0] as HTMLButtonElement).disabled;
     });
@@ -372,7 +370,7 @@ describe("NewBatchWizard", () => {
     // Step 4
     await act(async () => {
       const nextBtn = Array.from(el.querySelectorAll("button")).find(
-        (b) => b.textContent === "wizardNext"
+        (b) => b.textContent === "wizardNext",
       );
       nextBtn!.click();
     });
@@ -395,7 +393,7 @@ describe("NewBatchWizard", () => {
 
     await waitFor(() => {
       const btns = Array.from(el.querySelectorAll("button")).filter(
-        (b) => b.textContent === "wizardNext"
+        (b) => b.textContent === "wizardNext",
       );
       return btns.length > 0 && !(btns[0] as HTMLButtonElement).disabled;
     });
@@ -409,7 +407,7 @@ describe("NewBatchWizard", () => {
     await waitFor(() => el.textContent!.includes("wizardValidationOk"));
     await waitFor(() => {
       const btns = Array.from(el.querySelectorAll("button")).filter(
-        (b) => b.textContent === "wizardNext"
+        (b) => b.textContent === "wizardNext",
       );
       return btns.length > 0 && !(btns[0] as HTMLButtonElement).disabled;
     });
@@ -435,7 +433,10 @@ describe("NewBatchWizard", () => {
     expect(onClose).toHaveBeenCalled();
 
     // Assert fetch shapes
-    expect(mockFetch).toHaveBeenCalledWith("/api/v1/files", expect.objectContaining({ method: "POST" }));
+    expect(mockFetch).toHaveBeenCalledWith(
+      "/api/v1/files",
+      expect.objectContaining({ method: "POST" }),
+    );
     const batchCall = mockFetch.mock.calls.find((c) => c[0] === "/api/v1/batches");
     expect(batchCall).toBeDefined();
     const body = JSON.parse(batchCall![1].body as string) as Record<string, unknown>;
@@ -452,7 +453,9 @@ describe("NewBatchWizard", () => {
           ok: false,
           status: 500,
           json: async () => ({
-            error: { message: "Internal error at /home/user/server/files.ts:42 — stack at line 42" },
+            error: {
+              message: "Internal error at /home/user/server/files.ts:42 — stack at line 42",
+            },
           }),
         };
       }
@@ -468,7 +471,7 @@ describe("NewBatchWizard", () => {
 
     await waitFor(() => {
       const btns = Array.from(el.querySelectorAll("button")).filter(
-        (b) => b.textContent === "wizardNext"
+        (b) => b.textContent === "wizardNext",
       );
       return btns.length > 0 && !(btns[0] as HTMLButtonElement).disabled;
     });
@@ -481,7 +484,7 @@ describe("NewBatchWizard", () => {
     await waitFor(() => el.textContent!.includes("wizardValidationOk"));
     await waitFor(() => {
       const btns = Array.from(el.querySelectorAll("button")).filter(
-        (b) => b.textContent === "wizardNext"
+        (b) => b.textContent === "wizardNext",
       );
       return btns.length > 0 && !(btns[0] as HTMLButtonElement).disabled;
     });

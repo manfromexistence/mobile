@@ -30,14 +30,15 @@ test("host re-exports processAntigravitySSEPayload", () => {
   const host = readFileSync(HOST, "utf8");
   assert.match(
     host,
-    /export \{ processAntigravitySSEPayload \} from "\.\/antigravity\/sseCollect\.ts"/
+    /export \{ processAntigravitySSEPayload \} from "\.\/antigravity\/sseCollect\.ts"/,
   );
   assert.match(host, /from "\.\/antigravity\/sseCollect\.ts"/);
 });
 
 test("SSE-collect helpers are callable and tolerate empty/garbage input", async () => {
-  const { processAntigravitySSEPayload, stripZeroWidth } =
-    await import("../../open-sse/executors/antigravity/sseCollect.ts");
+  const { processAntigravitySSEPayload, stripZeroWidth } = await import(
+    "../../open-sse/executors/antigravity/sseCollect.ts"
+  );
   assert.equal(typeof processAntigravitySSEPayload, "function");
   // stripZeroWidth removes zero-width markers from strings, passes through non-strings.
   assert.equal(stripZeroWidth("a​b"), "ab");

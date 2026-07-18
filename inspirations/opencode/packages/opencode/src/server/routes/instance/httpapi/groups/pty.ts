@@ -1,30 +1,36 @@
-import { Pty } from "@opencode-ai/core/pty"
-import { PtyTicket } from "@opencode-ai/core/pty/ticket"
-import { PtyID } from "@opencode-ai/core/pty/schema"
-import { PTY_CONNECT_TICKET_QUERY } from "@/server/shared/pty-ticket"
-import { Schema } from "effect"
-import { HttpApi, HttpApiEndpoint, HttpApiError, HttpApiGroup, OpenApi } from "effect/unstable/httpapi"
-import { Authorization, PtyConnectAuthorization } from "../middleware/authorization"
-import { InstanceContextMiddleware } from "../middleware/instance-context"
+import { Pty } from "@opencode-ai/core/pty";
+import { PtyTicket } from "@opencode-ai/core/pty/ticket";
+import { PtyID } from "@opencode-ai/core/pty/schema";
+import { PTY_CONNECT_TICKET_QUERY } from "@/server/shared/pty-ticket";
+import { Schema } from "effect";
+import {
+  HttpApi,
+  HttpApiEndpoint,
+  HttpApiError,
+  HttpApiGroup,
+  OpenApi,
+} from "effect/unstable/httpapi";
+import { Authorization, PtyConnectAuthorization } from "../middleware/authorization";
+import { InstanceContextMiddleware } from "../middleware/instance-context";
 import {
   WorkspaceRoutingMiddleware,
   WorkspaceRoutingQuery,
   WorkspaceRoutingQueryFields,
-} from "../middleware/workspace-routing"
-import { PtyForbiddenError, PtyNotFoundError } from "../errors"
-import { described } from "./metadata"
+} from "../middleware/workspace-routing";
+import { PtyForbiddenError, PtyNotFoundError } from "../errors";
+import { described } from "./metadata";
 
-const root = "/pty"
-export const Params = Schema.Struct({ ptyID: PtyID })
+const root = "/pty";
+export const Params = Schema.Struct({ ptyID: PtyID });
 export const CursorQuery = Schema.Struct({
   ...WorkspaceRoutingQueryFields,
   cursor: Schema.optional(Schema.String),
-})
+});
 export const ShellItem = Schema.Struct({
   path: Schema.String,
   name: Schema.String,
   acceptable: Schema.Boolean,
-})
+});
 
 export const PtyPaths = {
   shells: `${root}/shells`,
@@ -35,7 +41,7 @@ export const PtyPaths = {
   remove: `${root}/:ptyID`,
   connectToken: `${root}/:ptyID/connect-token`,
   connect: `${root}/:ptyID/connect`,
-} as const
+} as const;
 
 export const PtyApi = HttpApi.make("pty")
   .add(
@@ -58,7 +64,8 @@ export const PtyApi = HttpApi.make("pty")
           OpenApi.annotations({
             identifier: "pty.list",
             summary: "List PTY sessions",
-            description: "Get a list of all active pseudo-terminal (PTY) sessions managed by OpenCode.",
+            description:
+              "Get a list of all active pseudo-terminal (PTY) sessions managed by OpenCode.",
           }),
         ),
         HttpApiEndpoint.post("create", PtyPaths.create, {
@@ -70,7 +77,8 @@ export const PtyApi = HttpApi.make("pty")
           OpenApi.annotations({
             identifier: "pty.create",
             summary: "Create PTY session",
-            description: "Create a new pseudo-terminal (PTY) session for running shell commands and processes.",
+            description:
+              "Create a new pseudo-terminal (PTY) session for running shell commands and processes.",
           }),
         ),
         HttpApiEndpoint.get("get", PtyPaths.get, {
@@ -82,7 +90,8 @@ export const PtyApi = HttpApi.make("pty")
           OpenApi.annotations({
             identifier: "pty.get",
             summary: "Get PTY session",
-            description: "Retrieve detailed information about a specific pseudo-terminal (PTY) session.",
+            description:
+              "Retrieve detailed information about a specific pseudo-terminal (PTY) session.",
           }),
         ),
         HttpApiEndpoint.put("update", PtyPaths.update, {
@@ -123,7 +132,9 @@ export const PtyApi = HttpApi.make("pty")
           }),
         ),
       )
-      .annotateMerge(OpenApi.annotations({ title: "pty", description: "Experimental HttpApi PTY routes." }))
+      .annotateMerge(
+        OpenApi.annotations({ title: "pty", description: "Experimental HttpApi PTY routes." }),
+      )
       .middleware(InstanceContextMiddleware)
       .middleware(WorkspaceRoutingMiddleware)
       .middleware(Authorization),
@@ -134,7 +145,7 @@ export const PtyApi = HttpApi.make("pty")
       version: "0.0.1",
       description: "Experimental HttpApi surface for selected instance routes.",
     }),
-  )
+  );
 
 export const PtyConnectApi = HttpApi.make("pty-connect").add(
   HttpApiGroup.make("pty-connect")
@@ -169,4 +180,4 @@ export const PtyConnectApi = HttpApi.make("pty-connect").add(
     .middleware(InstanceContextMiddleware)
     .middleware(WorkspaceRoutingMiddleware)
     .middleware(PtyConnectAuthorization),
-)
+);

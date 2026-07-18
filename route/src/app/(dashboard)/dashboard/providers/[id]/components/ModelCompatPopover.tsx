@@ -48,7 +48,7 @@ function buildModelParamFilterPayload(
   current: ParamFilterConfigLike | null | undefined,
   modelId: string,
   blockText: string,
-  allowText: string
+  allowText: string,
 ) {
   const updatedModels: Record<string, unknown> = { ...(current?.models ?? {}) };
   const block = parseCommaList(blockText);
@@ -83,7 +83,7 @@ export interface ModelCompatPopoverProps {
       normalizeToolCallId?: boolean;
       preserveOpenAIDeveloperRole?: boolean;
       upstreamHeaders?: Record<string, string>;
-    }
+    },
   ) => void;
   showDeveloperToggle?: boolean;
   compact?: boolean;
@@ -141,7 +141,7 @@ export default function ModelCompatPopover({
       if (upstreamHeadersRecordsEqual(parsed, current)) return;
       onCompatPatch(protocol, { upstreamHeaders: parsed });
     },
-    [getUpstreamHeadersRecord, onCompatPatch, protocol]
+    [getUpstreamHeadersRecord, onCompatPatch, protocol],
   );
 
   const onHeaderFieldBlur = useCallback(() => {
@@ -474,7 +474,7 @@ export default function ModelCompatPopover({
               </div>
             </div>
           </div>,
-          document.body
+          document.body,
         )}
     </div>
   );

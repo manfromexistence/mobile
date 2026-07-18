@@ -1,5 +1,5 @@
-import { resolve } from "path"
-import { describe, expect, test } from "bun:test"
+import { resolve } from "path";
+import { describe, expect, test } from "bun:test";
 import {
   completedToolContent,
   completedToolUpdate,
@@ -10,48 +10,55 @@ import {
   shellOutputSnapshot,
   toLocations,
   toToolKind,
-} from "../../src/acp/tool"
+} from "../../src/acp/tool";
 
 describe("acp tool conversion", () => {
   test("maps OpenCode tool ids to ACP tool kinds", () => {
-    expect(toToolKind("bash")).toBe("execute")
-    expect(toToolKind("shell")).toBe("execute")
-    expect(toToolKind("webfetch")).toBe("fetch")
-    expect(toToolKind("edit")).toBe("edit")
-    expect(toToolKind("apply_patch")).toBe("edit")
-    expect(toToolKind("patch")).toBe("edit")
-    expect(toToolKind("write")).toBe("edit")
-    expect(toToolKind("grep")).toBe("search")
-    expect(toToolKind("glob")).toBe("search")
-    expect(toToolKind("context7_resolve_library_id")).toBe("search")
-    expect(toToolKind("context7_get_library_docs")).toBe("search")
-    expect(toToolKind("read")).toBe("read")
-    expect(toToolKind("task")).toBe("think")
-    expect(toToolKind("custom_tool")).toBe("other")
-  })
+    expect(toToolKind("bash")).toBe("execute");
+    expect(toToolKind("shell")).toBe("execute");
+    expect(toToolKind("webfetch")).toBe("fetch");
+    expect(toToolKind("edit")).toBe("edit");
+    expect(toToolKind("apply_patch")).toBe("edit");
+    expect(toToolKind("patch")).toBe("edit");
+    expect(toToolKind("write")).toBe("edit");
+    expect(toToolKind("grep")).toBe("search");
+    expect(toToolKind("glob")).toBe("search");
+    expect(toToolKind("context7_resolve_library_id")).toBe("search");
+    expect(toToolKind("context7_get_library_docs")).toBe("search");
+    expect(toToolKind("read")).toBe("read");
+    expect(toToolKind("task")).toBe("think");
+    expect(toToolKind("custom_tool")).toBe("other");
+  });
 
   test("extracts file locations from tool input", () => {
-    expect(toLocations("read", { filePath: "/tmp/a.ts" })).toEqual([{ path: "/tmp/a.ts" }])
-    expect(toLocations("edit", { filePath: "/tmp/b.ts" })).toEqual([{ path: "/tmp/b.ts" }])
-    expect(toLocations("write", { filePath: "/tmp/c.ts" })).toEqual([{ path: "/tmp/c.ts" }])
-    expect(toLocations("grep", { path: "/repo/src" })).toEqual([{ path: "/repo/src" }])
-    expect(toLocations("glob", { path: "/repo/test" })).toEqual([{ path: "/repo/test" }])
-    expect(toLocations("context7_get_library_docs", { path: "/docs" })).toEqual([{ path: "/docs" }])
-    expect(toLocations("external_directory", { directories: ["/tmp/outside"], patterns: ["/tmp/outside/*"] })).toEqual([
-      { path: "/tmp/outside" },
-    ])
-    expect(toLocations("bash", { cmd: "pwd" }, "/workspace")).toEqual([{ path: "/workspace" }])
+    expect(toLocations("read", { filePath: "/tmp/a.ts" })).toEqual([{ path: "/tmp/a.ts" }]);
+    expect(toLocations("edit", { filePath: "/tmp/b.ts" })).toEqual([{ path: "/tmp/b.ts" }]);
+    expect(toLocations("write", { filePath: "/tmp/c.ts" })).toEqual([{ path: "/tmp/c.ts" }]);
+    expect(toLocations("grep", { path: "/repo/src" })).toEqual([{ path: "/repo/src" }]);
+    expect(toLocations("glob", { path: "/repo/test" })).toEqual([{ path: "/repo/test" }]);
+    expect(toLocations("context7_get_library_docs", { path: "/docs" })).toEqual([
+      { path: "/docs" },
+    ]);
+    expect(
+      toLocations("external_directory", {
+        directories: ["/tmp/outside"],
+        patterns: ["/tmp/outside/*"],
+      }),
+    ).toEqual([{ path: "/tmp/outside" }]);
+    expect(toLocations("bash", { cmd: "pwd" }, "/workspace")).toEqual([{ path: "/workspace" }]);
     // Relative workdir resolves against cwd via the platform path resolver (backslashes on Windows).
     expect(toLocations("bash", { command: "pwd", workdir: "subdir" }, "/workspace")).toEqual([
       { path: resolve("/workspace", "subdir") },
-    ])
-    expect(toLocations("bash", { command: "pwd", workdir: "/abs/dir" }, "/workspace")).toEqual([{ path: "/abs/dir" }])
-    expect(toLocations("bash", { command: "printf hello" })).toEqual([])
-    expect(toLocations("read", { path: "/tmp/missing-file-path.ts" })).toEqual([])
-  })
+    ]);
+    expect(toLocations("bash", { command: "pwd", workdir: "/abs/dir" }, "/workspace")).toEqual([
+      { path: "/abs/dir" },
+    ]);
+    expect(toLocations("bash", { command: "printf hello" })).toEqual([]);
+    expect(toLocations("read", { path: "/tmp/missing-file-path.ts" })).toEqual([]);
+  });
 
   test("builds completed content with text, edit diffs, and image attachments", () => {
-    const image = Buffer.from("image-data").toString("base64")
+    const image = Buffer.from("image-data").toString("base64");
 
     expect(
       completedToolContent("edit", {
@@ -92,8 +99,8 @@ describe("acp tool conversion", () => {
         type: "content",
         content: { type: "image", mimeType: "image/png", data: image },
       },
-    ])
-  })
+    ]);
+  });
 
   test("omits edit diffs until old and new text fields exist", () => {
     expect(
@@ -110,8 +117,8 @@ describe("acp tool conversion", () => {
         type: "content",
         content: { type: "text", text: "wrote /tmp/file.ts" },
       },
-    ])
-  })
+    ]);
+  });
 
   test("sends completed tool calls as partial updates", () => {
     expect(
@@ -134,7 +141,7 @@ describe("acp tool conversion", () => {
         oldString: "before",
         newString: "after",
       },
-    })
+    });
 
     expect(
       completedToolUpdate({
@@ -168,7 +175,7 @@ describe("acp tool conversion", () => {
       rawOutput: {
         output: "Edit applied successfully.",
       },
-    })
+    });
 
     expect(
       completedToolUpdate({
@@ -189,8 +196,8 @@ describe("acp tool conversion", () => {
       toolCallId: "tool-1",
       status: "completed",
       title: "file.ts",
-    })
-  })
+    });
+  });
 
   test("uses clean read display text for completed content", () => {
     const output = [
@@ -202,7 +209,7 @@ describe("acp tool conversion", () => {
       "",
       "(End of file - total 8 lines)",
       "</content>",
-    ].join("\n")
+    ].join("\n");
     const state = {
       status: "completed" as const,
       input: { filePath: "/tmp/file.ts" },
@@ -218,19 +225,19 @@ describe("acp tool conversion", () => {
           truncated: false,
         },
       },
-    }
+    };
 
     expect(completedToolContent("read", state)).toEqual([
       {
         type: "content",
         content: { type: "text", text: "first\nsecond" },
       },
-    ])
+    ]);
     expect(completedToolRawOutput(state)).toEqual({
       output,
       metadata: state.metadata,
-    })
-  })
+    });
+  });
 
   test("builds completed raw output with optional metadata and attachments", () => {
     const attachments = [
@@ -240,7 +247,7 @@ describe("acp tool conversion", () => {
         filename: "photo.jpg",
         url: "data:image/jpeg;base64,AAAA",
       },
-    ]
+    ];
 
     expect(
       completedToolRawOutput({
@@ -254,7 +261,7 @@ describe("acp tool conversion", () => {
       output: "done",
       metadata: { exit: 0 },
       attachments,
-    })
+    });
 
     expect(
       completedToolRawOutput({
@@ -262,8 +269,8 @@ describe("acp tool conversion", () => {
         input: {},
         output: "done",
       }),
-    ).toEqual({ output: "done" })
-  })
+    ).toEqual({ output: "done" });
+  });
 
   test("extracts image attachments only from data URLs", () => {
     const attachments = [
@@ -279,20 +286,22 @@ describe("acp tool conversion", () => {
         mime: "text/plain",
         url: "data:text/plain;base64,BBBB",
       },
-    ]
+    ];
 
-    expect(extractImageAttachments(attachments)).toEqual([{ mimeType: "image/webp", data: "AAAA" }])
+    expect(extractImageAttachments(attachments)).toEqual([
+      { mimeType: "image/webp", data: "AAAA" },
+    ]);
     expect(imageContents(attachments)).toEqual([
       {
         type: "content",
         content: { type: "image", mimeType: "image/webp", data: "AAAA" },
       },
-    ])
-  })
+    ]);
+  });
 
   test("reads shell output snapshot from string metadata output", () => {
-    expect(shellOutputSnapshot({ metadata: { output: "line 1\nline 2" } })).toBe("line 1\nline 2")
-    expect(shellOutputSnapshot({ metadata: { output: 42 } })).toBeUndefined()
-    expect(shellOutputSnapshot({ metadata: undefined })).toBeUndefined()
-  })
-})
+    expect(shellOutputSnapshot({ metadata: { output: "line 1\nline 2" } })).toBe("line 1\nline 2");
+    expect(shellOutputSnapshot({ metadata: { output: 42 } })).toBeUndefined();
+    expect(shellOutputSnapshot({ metadata: undefined })).toBeUndefined();
+  });
+});

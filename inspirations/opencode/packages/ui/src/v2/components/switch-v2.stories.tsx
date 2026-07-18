@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Switch } from "./switch-v2"
+import { Switch } from "./switch-v2";
 
 const docs = `### Overview
 Toggle control for binary settings.
@@ -23,7 +23,7 @@ Use in settings panels or forms.
 ### Theming/tokens
 - Uses \`data-component="switch"\` and slot attributes.
 
-`
+`;
 
 export default {
   title: "UI V2/Switch",
@@ -41,9 +41,9 @@ export default {
     defaultChecked: true,
     children: "Enable notifications",
   },
-}
+};
 
-export const Basic = {}
+export const Basic = {};
 
 export const States = {
   render: () => (
@@ -53,7 +53,7 @@ export const States = {
       <Switch disabled>Disabled switch</Switch>
     </div>
   ),
-}
+};
 
 export const HiddenLabel = {
   args: {
@@ -61,4 +61,4 @@ export const HiddenLabel = {
     hideLabel: true,
     defaultChecked: true,
   },
-}
+};

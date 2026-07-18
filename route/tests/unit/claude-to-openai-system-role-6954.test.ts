@@ -9,8 +9,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { claudeToOpenAIRequest } =
-  await import("../../open-sse/translator/request/claude-to-openai.ts");
+const { claudeToOpenAIRequest } = await import(
+  "../../open-sse/translator/request/claude-to-openai.ts"
+);
 
 // ---------------------------------------------------------------------------
 // 1. system message mid-conversation keeps role: "system"
@@ -26,7 +27,7 @@ test("mid-conversation system message preserves role:system (not assistant)", ()
         { role: "user", content: "ok" },
       ],
     },
-    false
+    false,
   );
 
   const roles = result.messages.map((m: { role: string }) => m.role);
@@ -48,7 +49,7 @@ test("system message with array content preserves role:system", () => {
         },
       ],
     },
-    false
+    false,
   );
 
   const sysMsg = result.messages.find((m: { role: string }) => m.role === "system");
@@ -56,7 +57,7 @@ test("system message with array content preserves role:system", () => {
   // Array content with text blocks is flattened to a string for system role
   assert.equal(
     typeof sysMsg.content === "string" ? sysMsg.content : JSON.stringify(sysMsg.content),
-    "System reminder text"
+    "System reminder text",
   );
 });
 
@@ -70,7 +71,7 @@ test("body.system still produces role:system at index 0", () => {
       system: "You are helpful.",
       messages: [{ role: "user", content: "hi" }],
     },
-    false
+    false,
   );
 
   assert.equal(result.messages[0].role, "system");
@@ -95,7 +96,7 @@ test("assistant role still maps to assistant (no regression)", () => {
         },
       ],
     },
-    false
+    false,
   );
 
   const roles = result.messages.map((m: { role: string }) => m.role);

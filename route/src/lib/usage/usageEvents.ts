@@ -26,7 +26,7 @@ export function onUsageRecorded(listener: UsageRecordedListener): () => void {
 /** Emit a usage-recorded event. No-ops when provider/connectionId is missing. */
 export function emitUsageRecorded(
   provider: string | null | undefined,
-  connectionId: string | null | undefined
+  connectionId: string | null | undefined,
 ): void {
   if (!provider || !connectionId) return;
   for (const listener of listeners) {

@@ -1,7 +1,7 @@
-import type { GitStatus, GitStatusEntry } from '../publicTypes';
-import { getGitStatusSignature } from '../utils/getGitStatusSignature';
-import { normalizeInputPath } from '../utils/normalizeInputPath';
-import type { FileTreeGitStatusPatch } from './publicTypes';
+import type { GitStatus, GitStatusEntry } from "../publicTypes";
+import { getGitStatusSignature } from "../utils/getGitStatusSignature";
+import { normalizeInputPath } from "../utils/normalizeInputPath";
+import type { FileTreeGitStatusPatch } from "./publicTypes";
 
 export interface FileTreeGitStatusState {
   readonly changeCountByDirectoryPath: ReadonlyMap<string, number>;
@@ -14,7 +14,7 @@ export interface FileTreeGitStatusState {
 // Git status is keyed by canonical paths in the file tree so runtime tree
 // mutations can reuse the same decoration state without rebuilding ID maps.
 function getAncestorDirectoryPaths(path: string): readonly string[] {
-  const normalizedPath = path.endsWith('/') ? path.slice(0, -1) : path;
+  const normalizedPath = path.endsWith("/") ? path.slice(0, -1) : path;
   if (normalizedPath.length === 0) {
     return [];
   }
@@ -22,7 +22,7 @@ function getAncestorDirectoryPaths(path: string): readonly string[] {
   const ancestors: string[] = [];
   let searchIndex = 0;
   for (;;) {
-    const slashIndex = normalizedPath.indexOf('/', searchIndex);
+    const slashIndex = normalizedPath.indexOf("/", searchIndex);
     if (slashIndex === -1) {
       break;
     }
@@ -39,12 +39,10 @@ function getCanonicalGitStatusPath(path: string, isDirectory: boolean): string {
 
 export function resolveFileTreeGitStatusState(
   entries: readonly GitStatusEntry[] | undefined,
-  previous: FileTreeGitStatusState | null = null
+  previous: FileTreeGitStatusState | null = null,
 ): FileTreeGitStatusState | null {
-  const signature = getGitStatusSignature(
-    entries == null ? undefined : [...entries]
-  );
-  if (signature === '0') {
+  const signature = getGitStatusSignature(entries == null ? undefined : [...entries]);
+  if (signature === "0") {
     return null;
   }
 
@@ -89,7 +87,7 @@ export function resolveFileTreeGitStatusState(
 
 export function applyFileTreeGitStatusPatch(
   previous: FileTreeGitStatusState | null,
-  patch: FileTreeGitStatusPatch | undefined
+  patch: FileTreeGitStatusPatch | undefined,
 ): FileTreeGitStatusState | null {
   const removeEntries = patch?.remove ?? [];
   const setEntries = patch?.set ?? [];
@@ -100,9 +98,7 @@ export function applyFileTreeGitStatusPatch(
   const statusByPath = new Map(previous?.statusByPath);
   const directoriesWithChanges = new Set(previous?.directoriesWithChanges);
   const ignoredDirectoryPaths = new Set(previous?.ignoredDirectoryPaths);
-  const changeCountByDirectoryPath = new Map(
-    previous?.changeCountByDirectoryPath
-  );
+  const changeCountByDirectoryPath = new Map(previous?.changeCountByDirectoryPath);
   let changed = false;
 
   for (const path of removeEntries) {
@@ -160,25 +156,18 @@ interface GitStatusPathResolution {
   isDirectory: boolean;
 }
 
-function resolveGitStatusEntry(
-  entry: GitStatusEntry
-): GitStatusPathResolution | undefined {
+function resolveGitStatusEntry(entry: GitStatusEntry): GitStatusPathResolution | undefined {
   return resolveGitStatusPath(entry.path);
 }
 
-function resolveGitStatusPath(
-  path: string
-): GitStatusPathResolution | undefined {
+function resolveGitStatusPath(path: string): GitStatusPathResolution | undefined {
   const normalizedPath = normalizeInputPath(path);
   if (normalizedPath == null) {
     return undefined;
   }
 
   return {
-    canonicalPath: getCanonicalGitStatusPath(
-      normalizedPath.path,
-      normalizedPath.isDirectory
-    ),
+    canonicalPath: getCanonicalGitStatusPath(normalizedPath.path, normalizedPath.isDirectory),
     isDirectory: normalizedPath.isDirectory,
   };
 }
@@ -202,14 +191,10 @@ function removeGitStatusPath({
   }
 
   statusByPath.delete(canonicalPath);
-  if (previousStatus === 'ignored' && canonicalPath.endsWith('/')) {
+  if (previousStatus === "ignored" && canonicalPath.endsWith("/")) {
     ignoredDirectoryPaths.delete(canonicalPath);
   }
-  decrementAncestorChangeCounts(
-    changeCountByDirectoryPath,
-    directoriesWithChanges,
-    canonicalPath
-  );
+  decrementAncestorChangeCounts(changeCountByDirectoryPath, directoriesWithChanges, canonicalPath);
   return true;
 }
 
@@ -239,12 +224,12 @@ function setGitStatusPath({
     incrementAncestorChangeCounts(
       changeCountByDirectoryPath,
       directoriesWithChanges,
-      canonicalPath
+      canonicalPath,
     );
   }
 
   statusByPath.set(canonicalPath, status);
-  if (status === 'ignored' && isDirectory) {
+  if (status === "ignored" && isDirectory) {
     ignoredDirectoryPaths.add(canonicalPath);
   } else if (isDirectory) {
     ignoredDirectoryPaths.delete(canonicalPath);
@@ -255,12 +240,12 @@ function setGitStatusPath({
 function incrementAncestorChangeCounts(
   changeCountByDirectoryPath: Map<string, number>,
   directoriesWithChanges: Set<string>,
-  path: string
+  path: string,
 ): void {
   for (const ancestorPath of getAncestorDirectoryPaths(path)) {
     changeCountByDirectoryPath.set(
       ancestorPath,
-      (changeCountByDirectoryPath.get(ancestorPath) ?? 0) + 1
+      (changeCountByDirectoryPath.get(ancestorPath) ?? 0) + 1,
     );
     directoriesWithChanges.add(ancestorPath);
   }
@@ -269,7 +254,7 @@ function incrementAncestorChangeCounts(
 function decrementAncestorChangeCounts(
   changeCountByDirectoryPath: Map<string, number>,
   directoriesWithChanges: Set<string>,
-  path: string
+  path: string,
 ): void {
   for (const ancestorPath of getAncestorDirectoryPaths(path)) {
     const nextCount = (changeCountByDirectoryPath.get(ancestorPath) ?? 0) - 1;
@@ -282,9 +267,7 @@ function decrementAncestorChangeCounts(
   }
 }
 
-function getGitStatusStateSignature(
-  statusByPath: ReadonlyMap<string, GitStatus>
-): string {
+function getGitStatusStateSignature(statusByPath: ReadonlyMap<string, GitStatus>): string {
   let signature = `${statusByPath.size}`;
   for (const [path, status] of statusByPath) {
     signature += `\0${path}\0${status}`;

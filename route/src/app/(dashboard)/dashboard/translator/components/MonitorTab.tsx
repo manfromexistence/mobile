@@ -89,7 +89,7 @@ export default function MonitorTab({ onGoToTranslate }: MonitorTabProps) {
         return fallback;
       }
     },
-    [t]
+    [t],
   );
 
   const [events, setEvents] = useState<TranslationEvent[]>([]);
@@ -156,7 +156,7 @@ export default function MonitorTab({ onGoToTranslate }: MonitorTabProps) {
         <p>
           {translateOrFallback(
             "monitorOriginHint",
-            "Eventos gerados pelo Translate ou pelo pipeline principal aparecem aqui em tempo real."
+            "Eventos gerados pelo Translate ou pelo pipeline principal aparecem aqui em tempo real.",
           )}
         </p>
       </div>
@@ -268,7 +268,7 @@ export default function MonitorTab({ onGoToTranslate }: MonitorTabProps) {
                 title={translateOrFallback("noTranslations", "No translations yet")}
                 description={translateOrFallback(
                   "monitorEmptyCta",
-                  "Go back to the Translate tab and send a request. It will appear here."
+                  "Go back to the Translate tab and send a request. It will appear here.",
                 )}
                 actionLabel={translateOrFallback("monitorOpenTranslateButton", "Go to Translate")}
                 onAction={onGoToTranslate ?? null}

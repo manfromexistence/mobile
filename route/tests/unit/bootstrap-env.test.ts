@@ -49,12 +49,12 @@ test("bootstrapEnv prefers ~/.omniroute/.env over server.env", () => {
     fs.writeFileSync(
       path.join(dataDir, ".env"),
       "STORAGE_ENCRYPTION_KEY=from-dot-env\nJWT_SECRET=jwt-from-dot-env\n",
-      "utf8"
+      "utf8",
     );
     fs.writeFileSync(
       path.join(dataDir, "server.env"),
       "STORAGE_ENCRYPTION_KEY=from-server-env\nJWT_SECRET=jwt-from-server-env\n",
-      "utf8"
+      "utf8",
     );
 
     const env = bootstrapEnv({ quiet: true });
@@ -71,7 +71,7 @@ test("bootstrapEnv strips matching quotes from env values", () => {
     fs.writeFileSync(
       path.join(dataDir, "server.env"),
       'JWT_SECRET="jwt-from-server-env"\nCLAUDE_USER_AGENT="claude-cli/2.1.145 (external, cli)"\n',
-      "utf8"
+      "utf8",
     );
 
     const env = bootstrapEnv({ quiet: true });
@@ -98,7 +98,7 @@ test("bootstrapEnv refuses to generate a new key over encrypted data", () => {
       `);
       db.prepare("INSERT INTO provider_connections (id, access_token) VALUES (?, ?)").run(
         "conn-1",
-        "enc:v1:deadbeef:feedface:cafebabe"
+        "enc:v1:deadbeef:feedface:cafebabe",
       );
     } finally {
       db.close();
@@ -106,7 +106,7 @@ test("bootstrapEnv refuses to generate a new key over encrypted data", () => {
 
     assert.throws(
       () => bootstrapEnv({ quiet: true }),
-      /Refusing to auto-generate STORAGE_ENCRYPTION_KEY/
+      /Refusing to auto-generate STORAGE_ENCRYPTION_KEY/,
     );
   });
 });
@@ -129,7 +129,7 @@ test("bootstrapEnv ignores blank process.env values that would override persiste
     fs.writeFileSync(
       path.join(dataDir, "server.env"),
       "STORAGE_ENCRYPTION_KEY=persisted-key\nJWT_SECRET=persisted-jwt\n",
-      "utf8"
+      "utf8",
     );
 
     // Simulate Docker `-e STORAGE_ENCRYPTION_KEY=` — sets an empty string

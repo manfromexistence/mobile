@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import { usePathname } from 'next/navigation';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { usePathname } from "next/navigation";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-import { MobileNavLink } from '@/components/MobileNavLink';
-import NavLink from '@/components/NavLink';
+import { MobileNavLink } from "@/components/MobileNavLink";
+import NavLink from "@/components/NavLink";
 import {
   DIFFS_THEME_PATH,
   getExternalUrl,
   getProductFromPathname,
   PRODUCTS,
-} from '@/lib/product-config';
+} from "@/lib/product-config";
 
-const siteProduct = process.env.NEXT_PUBLIC_SITE ?? 'diffs';
-const isTrees = siteProduct === 'trees';
+const siteProduct = process.env.NEXT_PUBLIC_SITE ?? "diffs";
+const isTrees = siteProduct === "trees";
 
 interface DocsSidebarProps {
   isMobileOpen?: boolean;
@@ -27,20 +27,17 @@ interface HeadingItem {
   element: HTMLElement;
 }
 
-export function DocsSidebar({
-  isMobileOpen = false,
-  onMobileClose,
-}: DocsSidebarProps) {
+export function DocsSidebar({ isMobileOpen = false, onMobileClose }: DocsSidebarProps) {
   const pathname = usePathname();
   const product = getProductFromPathname(pathname);
   const navRef = useRef<HTMLElement>(null);
   const [headings, setHeadings] = useState<HeadingItem[]>([]);
-  const [activeHeading, setActiveHeading] = useState<string>('');
+  const [activeHeading, setActiveHeading] = useState<string>("");
 
   // Extract headings from the page content
   // IDs are set server-side by rehype-hierarchical-slug during MDX compilation
   useLayoutEffect(() => {
-    const headingElements = document.querySelectorAll('h2[id], h3[id]');
+    const headingElements = document.querySelectorAll("h2[id], h3[id]");
     const headingItems: HeadingItem[] = [];
 
     for (const element of headingElements) {
@@ -48,7 +45,7 @@ export function DocsSidebar({
         continue;
       }
 
-      const text = element.textContent ?? '';
+      const text = element.textContent ?? "";
       const level = parseInt(element.tagName.charAt(1));
       const id = element.id;
 
@@ -63,16 +60,16 @@ export function DocsSidebar({
     setHeadings(headingItems);
 
     // Set first heading as active by default
-    if (headingItems.length > 0 && window.location.hash.trim() === '') {
+    if (headingItems.length > 0 && window.location.hash.trim() === "") {
       setActiveHeading(headingItems[0].id);
     }
 
     // Scroll to hash if present
-    if (window.location.hash.trim() !== '') {
+    if (window.location.hash.trim() !== "") {
       const id = window.location.hash.slice(1);
       const element = document.getElementById(id);
       if (element != null) {
-        element.scrollIntoView({ behavior: 'instant', block: 'start' });
+        element.scrollIntoView({ behavior: "instant", block: "start" });
       }
     }
   }, []);
@@ -99,10 +96,10 @@ export function DocsSidebar({
     };
 
     if (headings.length > 0) {
-      window.addEventListener('scroll', handleScroll);
+      window.addEventListener("scroll", handleScroll);
       handleScroll(); // Check initial position
 
-      return () => window.removeEventListener('scroll', handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
     }
 
     return undefined;
@@ -111,13 +108,11 @@ export function DocsSidebar({
   // Scroll active nav link into view within the sidebar
   useEffect(() => {
     const nav = navRef.current;
-    if (activeHeading === '' || nav == null) {
+    if (activeHeading === "" || nav == null) {
       return;
     }
 
-    const activeLink = nav.querySelector(
-      `a[href="#${CSS.escape(activeHeading)}"]`
-    );
+    const activeLink = nav.querySelector(`a[href="#${CSS.escape(activeHeading)}"]`);
 
     if (activeLink instanceof HTMLElement) {
       // Calculate position to center the link within the sidebar
@@ -126,7 +121,7 @@ export function DocsSidebar({
       const navHeight = nav.clientHeight;
       const scrollTarget = linkTop - navHeight / 2 + linkHeight / 2;
 
-      nav.scrollTo({ top: scrollTarget, behavior: 'smooth' });
+      nav.scrollTo({ top: scrollTarget, behavior: "smooth" });
     }
   }, [activeHeading]);
 
@@ -141,41 +136,30 @@ export function DocsSidebar({
 
       <nav
         ref={navRef}
-        className={`mobile-popover docs-sidebar ${isMobileOpen ? 'is-open' : ''}`}
+        className={`mobile-popover docs-sidebar ${isMobileOpen ? "is-open" : ""}`}
         onClick={onMobileClose}
       >
         {isMobileOpen && (
           <div className="border-border mb-4 border-b pb-4 md:hidden">
-            <MobileNavLink
-              href={product.basePath !== '' ? product.basePath : '/'}
-            >
+            <MobileNavLink href={product.basePath !== "" ? product.basePath : "/"}>
               Home
             </MobileNavLink>
             <MobileNavLink href={product.docsPath}>Docs</MobileNavLink>
-            {product.id === 'diffs' && (
+            {product.id === "diffs" && (
               <MobileNavLink
-                href={
-                  isTrees ? PRODUCTS.trees.basePath : getExternalUrl('trees')
-                }
+                href={isTrees ? PRODUCTS.trees.basePath : getExternalUrl("trees")}
                 external={!isTrees}
               >
                 Trees
               </MobileNavLink>
             )}
-            {product.id === 'trees' && (
-              <MobileNavLink
-                href={isTrees ? getExternalUrl('diffs') : '/'}
-                external={isTrees}
-              >
+            {product.id === "trees" && (
+              <MobileNavLink href={isTrees ? getExternalUrl("diffs") : "/"} external={isTrees}>
                 Diffs
               </MobileNavLink>
             )}
             <MobileNavLink
-              href={
-                isTrees
-                  ? `${getExternalUrl('diffs')}${DIFFS_THEME_PATH}`
-                  : DIFFS_THEME_PATH
-              }
+              href={isTrees ? `${getExternalUrl("diffs")}${DIFFS_THEME_PATH}` : DIFFS_THEME_PATH}
               external={isTrees}
             >
               Theme
@@ -187,7 +171,7 @@ export function DocsSidebar({
             key={heading.id}
             href={`#${heading.id}`}
             active={activeHeading === heading.id}
-            className={`mr-[2px] ${heading.level === 3 ? 'ml-4' : ''}`}
+            className={`mr-[2px] ${heading.level === 3 ? "ml-4" : ""}`}
           >
             {heading.text}
           </NavLink>

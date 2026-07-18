@@ -14,7 +14,7 @@ test("1 modelo por provider crítico (o primeiro do catálogo)", () => {
   const picks = pickSmokeModels(CATALOG, ["openai", "anthropic", "grok"]);
   assert.deepEqual(
     picks.map((p) => p.model),
-    ["openai/gpt-5-mini", "anthropic/claude-sonnet-5", "grok/grok-4-fast"]
+    ["openai/gpt-5-mini", "anthropic/claude-sonnet-5", "grok/grok-4-fast"],
   );
 });
 

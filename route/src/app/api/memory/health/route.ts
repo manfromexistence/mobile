@@ -12,7 +12,7 @@ export async function GET(request: Request) {
   } catch (err: unknown) {
     return NextResponse.json(
       { working: false, latencyMs: 0, error: sanitizeErrorMessage(err) },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

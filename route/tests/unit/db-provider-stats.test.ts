@@ -62,7 +62,7 @@ function insertCallLog(row: Record<string, unknown>) {
       @api_key_id, @api_key_name, @combo_name, @combo_step_id, @combo_execution_key,
       @error_summary, @detail_state, @artifact_relpath, @artifact_size_bytes, @artifact_sha256,
       @has_request_body, @has_response_body, @has_pipeline_details, @request_summary
-    )`
+    )`,
   ).run(full);
 }
 

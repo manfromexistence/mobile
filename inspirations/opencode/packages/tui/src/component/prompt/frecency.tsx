@@ -1,1 +1,1 @@
-export * from "../../prompt/frecency"
+export * from "../../prompt/frecency";

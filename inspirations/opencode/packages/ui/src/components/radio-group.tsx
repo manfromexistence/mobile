@@ -1,23 +1,23 @@
-import { SegmentedControl as Kobalte } from "@kobalte/core/segmented-control"
-import { For, splitProps } from "solid-js"
-import type { ComponentProps, JSX } from "solid-js"
+import { SegmentedControl as Kobalte } from "@kobalte/core/segmented-control";
+import { For, splitProps } from "solid-js";
+import type { ComponentProps, JSX } from "solid-js";
 
 export type RadioGroupProps<T> = Omit<
   ComponentProps<typeof Kobalte>,
   "value" | "defaultValue" | "onChange" | "children"
 > & {
-  options: T[]
-  current?: T
-  defaultValue?: T
-  value?: (x: T) => string
-  label?: (x: T) => JSX.Element | string
-  onSelect?: (value: T | undefined) => void
-  class?: ComponentProps<"div">["class"]
-  classList?: ComponentProps<"div">["classList"]
-  size?: "small" | "medium"
-  fill?: boolean
-  pad?: "none" | "normal"
-}
+  options: T[];
+  current?: T;
+  defaultValue?: T;
+  value?: (x: T) => string;
+  label?: (x: T) => JSX.Element | string;
+  onSelect?: (value: T | undefined) => void;
+  class?: ComponentProps<"div">["class"];
+  classList?: ComponentProps<"div">["classList"];
+  size?: "small" | "medium";
+  fill?: boolean;
+  pad?: "none" | "normal";
+};
 
 export function RadioGroup<T>(props: RadioGroupProps<T>) {
   const [local, others] = splitProps(props, [
@@ -32,21 +32,21 @@ export function RadioGroup<T>(props: RadioGroupProps<T>) {
     "size",
     "fill",
     "pad",
-  ])
+  ]);
 
   const getValue = (item: T): string => {
-    if (local.value) return local.value(item)
-    return String(item)
-  }
+    if (local.value) return local.value(item);
+    return String(item);
+  };
 
   const getLabel = (item: T): JSX.Element | string => {
-    if (local.label) return local.label(item)
-    return String(item)
-  }
+    if (local.label) return local.label(item);
+    return String(item);
+  };
 
   const findOption = (v: string): T | undefined => {
-    return local.options.find((opt) => getValue(opt) === v)
-  }
+    return local.options.find((opt) => getValue(opt) === v);
+  };
 
   return (
     <Kobalte
@@ -68,7 +68,11 @@ export function RadioGroup<T>(props: RadioGroupProps<T>) {
         <div role="presentation" data-slot="radio-group-items">
           <For each={local.options}>
             {(option) => (
-              <Kobalte.Item value={getValue(option)} data-slot="radio-group-item" data-value={getValue(option)}>
+              <Kobalte.Item
+                value={getValue(option)}
+                data-slot="radio-group-item"
+                data-value={getValue(option)}
+              >
                 <Kobalte.ItemInput data-slot="radio-group-item-input" />
                 <Kobalte.ItemLabel data-slot="radio-group-item-label">
                   <span data-slot="radio-group-item-control">{getLabel(option)}</span>
@@ -79,5 +83,5 @@ export function RadioGroup<T>(props: RadioGroupProps<T>) {
         </div>
       </div>
     </Kobalte>
-  )
+  );
 }

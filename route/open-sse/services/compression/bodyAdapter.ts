@@ -106,7 +106,7 @@ function hasTextContent(message: MessageLike): boolean {
   if (typeof message.content === "string") return message.content.length > 0;
   if (!Array.isArray(message.content)) return false;
   return message.content.some(
-    (part) => isRecord(part) && typeof part.text === "string" && part.text.length > 0
+    (part) => isRecord(part) && typeof part.text === "string" && part.text.length > 0,
   );
 }
 
@@ -219,7 +219,7 @@ function adaptKiroBodyForCompression(body: Record<string, unknown>): Compression
   const collectFrom = (
     container: Record<string, unknown>,
     scope: "currentMessage" | "history",
-    historyIndex: number
+    historyIndex: number,
   ): void => {
     const uim = container.userInputMessage;
     if (!isRecord(uim)) return;
@@ -279,7 +279,7 @@ function adaptKiroBodyForCompression(body: Record<string, unknown>): Compression
           } else if (Array.isArray(message.content)) {
             const firstText = message.content.find(
               (part): part is { text: string } =>
-                isRecord(part) && typeof (part as { text?: unknown }).text === "string"
+                isRecord(part) && typeof (part as { text?: unknown }).text === "string",
             );
             if (firstText) nextText = firstText.text;
           }
@@ -315,7 +315,7 @@ function rewriteKiroEntry(
   entry: Record<string, unknown>,
   scope: "currentMessage" | "history",
   historyIndex: number,
-  rewrites: Map<string, string>
+  rewrites: Map<string, string>,
 ): Record<string, unknown> {
   const uim = entry.userInputMessage;
   if (!isRecord(uim)) return entry;
@@ -332,7 +332,12 @@ function rewriteKiroEntry(
     let trChanged = false;
     const nextContent = content.map((part, partIdx) => {
       if (!isRecord(part) || typeof part.text !== "string") return part;
-      const key = kiroPathKey({ scope, historyIndex, toolResultIndex: trIdx, contentIndex: partIdx });
+      const key = kiroPathKey({
+        scope,
+        historyIndex,
+        toolResultIndex: trIdx,
+        contentIndex: partIdx,
+      });
       const rewritten = rewrites.get(key);
       if (rewritten === undefined || rewritten === part.text) return part;
       trChanged = true;

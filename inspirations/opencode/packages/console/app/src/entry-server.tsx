@@ -1,16 +1,16 @@
 // @refresh reload
-import { createHandler, StartServer } from "@solidjs/start/server"
-import { getRequestEvent } from "solid-js/web"
-import { dir, localeFromRequest, tag } from "~/lib/language"
+import { createHandler, StartServer } from "@solidjs/start/server";
+import { getRequestEvent } from "solid-js/web";
+import { dir, localeFromRequest, tag } from "~/lib/language";
 
-const criticalCSS = `[data-component="top"]{min-height:80px;display:flex;align-items:center}`
+const criticalCSS = `[data-component="top"]{min-height:80px;display:flex;align-items:center}`;
 
 export default createHandler(
   () => (
     <StartServer
       document={({ assets, children, scripts }) => {
-        const evt = getRequestEvent()
-        const locale = evt ? localeFromRequest(evt.request) : "en"
+        const evt = getRequestEvent();
+        const locale = evt ? localeFromRequest(evt.request) : "en";
 
         return (
           <html lang={tag(locale)} dir={dir(locale)} data-locale={locale}>
@@ -27,11 +27,11 @@ export default createHandler(
               {scripts}
             </body>
           </html>
-        )
+        );
       }}
     />
   ),
   {
     mode: "async",
   },
-)
+);

@@ -1,120 +1,132 @@
-import logoLight from "../asset/logo-ornate-light.svg"
-import logoDark from "../asset/logo-ornate-dark.svg"
-import copyLogoLight from "../asset/lander/logo-light.svg"
-import copyLogoDark from "../asset/lander/logo-dark.svg"
-import copyWordmarkLight from "../asset/lander/wordmark-light.svg"
-import copyWordmarkDark from "../asset/lander/wordmark-dark.svg"
-import copyBrandAssetsLight from "../asset/lander/brand-assets-light.svg"
-import copyBrandAssetsDark from "../asset/lander/brand-assets-dark.svg"
+import logoLight from "../asset/logo-ornate-light.svg";
+import logoDark from "../asset/logo-ornate-dark.svg";
+import copyLogoLight from "../asset/lander/logo-light.svg";
+import copyLogoDark from "../asset/lander/logo-dark.svg";
+import copyWordmarkLight from "../asset/lander/wordmark-light.svg";
+import copyWordmarkDark from "../asset/lander/wordmark-dark.svg";
+import copyBrandAssetsLight from "../asset/lander/brand-assets-light.svg";
+import copyBrandAssetsDark from "../asset/lander/brand-assets-dark.svg";
 
 // SVG files for copying (separate from button icons)
 // Replace these with your actual SVG files for copying
-import copyLogoSvgLight from "../asset/lander/opencode-logo-light.svg"
-import copyLogoSvgDark from "../asset/lander/opencode-logo-dark.svg"
-import copyWordmarkSvgLight from "../asset/lander/opencode-wordmark-light.svg"
-import copyWordmarkSvgDark from "../asset/lander/opencode-wordmark-dark.svg"
-import { A, useNavigate } from "@solidjs/router"
-import { createMemo, Match, Show, Switch } from "solid-js"
-import { createStore } from "solid-js/store"
-import { createEffect, onCleanup } from "solid-js"
-import { config } from "~/config"
-import { useI18n } from "~/context/i18n"
-import { useLanguage } from "~/context/language"
-import "./header-context-menu.css"
+import copyLogoSvgLight from "../asset/lander/opencode-logo-light.svg";
+import copyLogoSvgDark from "../asset/lander/opencode-logo-dark.svg";
+import copyWordmarkSvgLight from "../asset/lander/opencode-wordmark-light.svg";
+import copyWordmarkSvgDark from "../asset/lander/opencode-wordmark-dark.svg";
+import { A, useNavigate } from "@solidjs/router";
+import { createMemo, Match, Show, Switch } from "solid-js";
+import { createStore } from "solid-js/store";
+import { createEffect, onCleanup } from "solid-js";
+import { config } from "~/config";
+import { useI18n } from "~/context/i18n";
+import { useLanguage } from "~/context/language";
+import "./header-context-menu.css";
 
-const isDarkMode = () => window.matchMedia("(prefers-color-scheme: dark)").matches
+const isDarkMode = () => window.matchMedia("(prefers-color-scheme: dark)").matches;
 
 const fetchSvgContent = async (svgPath: string): Promise<string> => {
   try {
-    const response = await fetch(svgPath)
-    const svgText = await response.text()
-    return svgText
+    const response = await fetch(svgPath);
+    const svgText = await response.text();
+    return svgText;
   } catch (err) {
-    console.error("Failed to fetch SVG content:", err)
-    throw err
+    console.error("Failed to fetch SVG content:", err);
+    throw err;
   }
-}
+};
 
 export function Header(props: { zen?: boolean; go?: boolean; hideGetStarted?: boolean }) {
-  const navigate = useNavigate()
-  const i18n = useI18n()
-  const language = useLanguage()
+  const navigate = useNavigate();
+  const i18n = useI18n();
+  const language = useLanguage();
 
   const [store, setStore] = createStore({
     mobileMenuOpen: false,
     contextMenuOpen: false,
     contextMenuPosition: { x: 0, y: 0 },
-  })
+  });
 
   createEffect(() => {
     const handleClickOutside = () => {
-      setStore("contextMenuOpen", false)
-    }
+      setStore("contextMenuOpen", false);
+    };
 
     const handleContextMenu = (event: MouseEvent) => {
-      event.preventDefault()
-      setStore("contextMenuOpen", false)
-    }
+      event.preventDefault();
+      setStore("contextMenuOpen", false);
+    };
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        setStore("contextMenuOpen", false)
+        setStore("contextMenuOpen", false);
       }
-    }
+    };
 
     if (store.contextMenuOpen) {
-      document.addEventListener("click", handleClickOutside)
-      document.addEventListener("contextmenu", handleContextMenu)
-      document.addEventListener("keydown", handleKeyDown)
+      document.addEventListener("click", handleClickOutside);
+      document.addEventListener("contextmenu", handleContextMenu);
+      document.addEventListener("keydown", handleKeyDown);
       onCleanup(() => {
-        document.removeEventListener("click", handleClickOutside)
-        document.removeEventListener("contextmenu", handleContextMenu)
-        document.removeEventListener("keydown", handleKeyDown)
-      })
+        document.removeEventListener("click", handleClickOutside);
+        document.removeEventListener("contextmenu", handleContextMenu);
+        document.removeEventListener("keydown", handleKeyDown);
+      });
     }
-  })
+  });
 
   const handleLogoContextMenu = (event: MouseEvent) => {
-    event.preventDefault()
-    const logoElement = (event.currentTarget as HTMLElement).querySelector("a")
+    event.preventDefault();
+    const logoElement = (event.currentTarget as HTMLElement).querySelector("a");
     if (logoElement) {
-      const rect = logoElement.getBoundingClientRect()
+      const rect = logoElement.getBoundingClientRect();
       setStore("contextMenuPosition", {
         x: rect.left - 16,
         y: rect.bottom + 8,
-      })
+      });
     }
-    setStore("contextMenuOpen", true)
-  }
+    setStore("contextMenuOpen", true);
+  };
 
   const copyWordmarkToClipboard = async () => {
     try {
-      const isDark = isDarkMode()
-      const wordmarkSvgPath = isDark ? copyWordmarkSvgDark : copyWordmarkSvgLight
-      const wordmarkSvg = await fetchSvgContent(wordmarkSvgPath)
-      await navigator.clipboard.writeText(wordmarkSvg)
+      const isDark = isDarkMode();
+      const wordmarkSvgPath = isDark ? copyWordmarkSvgDark : copyWordmarkSvgLight;
+      const wordmarkSvg = await fetchSvgContent(wordmarkSvgPath);
+      await navigator.clipboard.writeText(wordmarkSvg);
     } catch (err) {
-      console.error("Failed to copy wordmark to clipboard:", err)
+      console.error("Failed to copy wordmark to clipboard:", err);
     }
-  }
+  };
 
   const copyLogoToClipboard = async () => {
     try {
-      const isDark = isDarkMode()
-      const logoSvgPath = isDark ? copyLogoSvgDark : copyLogoSvgLight
-      const logoSvg = await fetchSvgContent(logoSvgPath)
-      await navigator.clipboard.writeText(logoSvg)
+      const isDark = isDarkMode();
+      const logoSvgPath = isDark ? copyLogoSvgDark : copyLogoSvgLight;
+      const logoSvg = await fetchSvgContent(logoSvgPath);
+      await navigator.clipboard.writeText(logoSvg);
     } catch (err) {
-      console.error("Failed to copy logo to clipboard:", err)
+      console.error("Failed to copy logo to clipboard:", err);
     }
-  }
+  };
 
   return (
     <section data-component="top">
       <div onContextMenu={handleLogoContextMenu}>
         <A href={language.route("/")}>
-          <img data-slot="logo light" src={logoLight} alt={i18n.t("nav.logoAlt")} width="189" height="34" />
-          <img data-slot="logo dark" src={logoDark} alt={i18n.t("nav.logoAlt")} width="189" height="34" />
+          <img
+            data-slot="logo light"
+            src={logoLight}
+            alt={i18n.t("nav.logoAlt")}
+            width="189"
+            height="34"
+          />
+          <img
+            data-slot="logo dark"
+            src={logoDark}
+            alt={i18n.t("nav.logoAlt")}
+            width="189"
+            height="34"
+          />
         </A>
       </div>
 
@@ -284,5 +296,5 @@ export function Header(props: { zen?: boolean; go?: boolean; hideGetStarted?: bo
         </Show>
       </nav>
     </section>
-  )
+  );
 }

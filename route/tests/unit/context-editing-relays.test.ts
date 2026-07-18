@@ -84,7 +84,7 @@ test("F4.3: anthropic-compatible-cc-* relay → clear_tool_uses lands in the bod
   assert.equal(
     toolUseEdits(bodies[0]).length,
     1,
-    "cc-* relay must receive the delegated clear_tool_uses edit"
+    "cc-* relay must receive the delegated clear_tool_uses edit",
   );
 });
 
@@ -104,7 +104,7 @@ test("F4.3: generic anthropic-compatible-* (non-cc) relay → NO context_managem
   assert.equal(
     bodies[0]?.context_management,
     undefined,
-    "generic anthropic-compatible relay must NOT receive context_management (uncertain beta support)"
+    "generic anthropic-compatible relay must NOT receive context_management (uncertain beta support)",
   );
 });
 
@@ -113,7 +113,7 @@ test("F4.3: generic anthropic-compatible-* (non-cc) relay → NO context_managem
 test("F4.2: upstream 400 rejecting context_management → strips it and retries once", async () => {
   const { bodies, callCount, restore } = mockFetchErrorThenOk(
     400,
-    JSON.stringify({ type: "error", error: { message: "context_management is not supported" } })
+    JSON.stringify({ type: "error", error: { message: "context_management is not supported" } }),
   );
   try {
     await new DefaultExecutor("anthropic-compatible-cc-myrelay").execute({
@@ -131,14 +131,14 @@ test("F4.2: upstream 400 rejecting context_management → strips it and retries 
   assert.equal(
     bodies[1]?.context_management,
     undefined,
-    "retry must drop context_management entirely"
+    "retry must drop context_management entirely",
   );
 });
 
 test("F4.2: an UNRELATED 400 does NOT strip context_management or retry", async () => {
   const { bodies, callCount, restore } = mockFetchErrorThenOk(
     400,
-    JSON.stringify({ type: "error", error: { message: "max_tokens: must be >= 1" } })
+    JSON.stringify({ type: "error", error: { message: "max_tokens: must be >= 1" } }),
   );
   try {
     await new DefaultExecutor("anthropic-compatible-cc-myrelay").execute({

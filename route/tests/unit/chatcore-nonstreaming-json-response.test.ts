@@ -12,7 +12,7 @@ test("buildNonStreamingJsonResponse sets content-length for the serialized JSON 
     {
       "Content-Type": "application/json",
       "X-OmniRoute-Cache": "MISS",
-    }
+    },
   );
 
   const text = await response.text();

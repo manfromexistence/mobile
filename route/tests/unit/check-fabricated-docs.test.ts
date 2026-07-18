@@ -130,7 +130,7 @@ test("env-var: an `export const` UPPER_SNAKE identifier in backticks is NOT flag
   });
   assert.ok(
     !found.has("env-var::LOCAL_ONLY_API_PREFIXES"),
-    "export const identifier must not be flagged as a fabricated env var"
+    "export const identifier must not be flagged as a fabricated env var",
   );
 });
 
@@ -165,7 +165,7 @@ test('env-var: a var read via an env helper (envInt("X")) is NOT flagged', () =>
   });
   assert.ok(
     !found.has("env-var::OMNIROUTE_CIRCUIT_BREAKER_OAUTH_THRESHOLD"),
-    'envInt("X", …) helper read must be indexed'
+    'envInt("X", …) helper read must be indexed',
   );
 });
 
@@ -179,7 +179,7 @@ test("env-var: a var read ONLY in tests/ (RUN_CHAOS_INT) is NOT flagged", () => 
   });
   assert.ok(
     !found.has("env-var::RUN_CHAOS_INT"),
-    "env vars read only in tests/ must be indexed, not flagged"
+    "env vars read only in tests/ must be indexed, not flagged",
   );
 });
 
@@ -190,7 +190,7 @@ test("env-var: a var present only in .env.example is NOT flagged", () => {
   });
   assert.ok(
     !found.has("env-var::SOME_DOCUMENTED_CONTRACT_VAR"),
-    ".env.example is the env contract — its vars are documented, not fabricated"
+    ".env.example is the env contract — its vars are documented, not fabricated",
   );
 });
 
@@ -203,7 +203,7 @@ test("api-path: a documented prefix with sub-routes (/api/cloud/) is NOT flagged
   });
   assert.ok(
     !found.has("api-path::/api/cloud/"),
-    "a prefix that is an ancestor of a real route.ts must resolve"
+    "a prefix that is an ancestor of a real route.ts must resolve",
   );
 });
 
@@ -216,7 +216,7 @@ test("api-path: a dynamic-segment prefix (/api/services/{name}/) is NOT flagged"
   });
   assert.ok(
     !found.has("api-path::/api/services/{name}/status"),
-    "[name] dynamic segments must match the documented {name} convention"
+    "[name] dynamic segments must match the documented {name} convention",
   );
 });
 
@@ -235,7 +235,7 @@ test("file-ref: a tutorial placeholder (src/app/api/your-route/route.ts) is NOT 
   });
   assert.ok(
     !found.has("file-ref::src/app/api/your-route/route.ts"),
-    "your-* / my* placeholders in how-to scenarios must not be flagged"
+    "your-* / my* placeholders in how-to scenarios must not be flagged",
   );
 });
 
@@ -251,7 +251,7 @@ test("ANTI-OVER-SUPPRESSION: a reference to a genuinely missing file IS still fl
   });
   assert.ok(
     found.has("file-ref::src/nao/existe.ts"),
-    "a non-existent file reference must remain flagged — precision must not blind detection"
+    "a non-existent file reference must remain flagged — precision must not blind detection",
   );
 });
 
@@ -262,7 +262,7 @@ test("ANTI-OVER-SUPPRESSION: a truly fabricated env var IS still flagged", () =>
   });
   assert.ok(
     found.has("env-var::TOTALLY_FABRICATED_ENV_VAR_XYZ"),
-    "a fabricated env var must remain flagged"
+    "a fabricated env var must remain flagged",
   );
 });
 
@@ -274,7 +274,7 @@ test("ANTI-OVER-SUPPRESSION: a fabricated API path with no backing route.ts IS s
   });
   assert.ok(
     found.has("api-path::/api/imaginary/widget"),
-    "an API path with no backing route must remain flagged"
+    "an API path with no backing route must remain flagged",
   );
 });
 
@@ -287,7 +287,7 @@ test("env-var: a doc explicitly stating a var does NOT exist is NOT flagged (doc
   });
   assert.ok(
     !found.has("env-var::MEMORY_RRF_VECTOR_WEIGHT"),
-    "documenting a var's absence is not fabricating it"
+    "documenting a var's absence is not fabricating it",
   );
 });
 
@@ -309,7 +309,7 @@ test("ANTI-OVER-SUPPRESSION: a fabricated env var on a normal (non-negated) line
   });
   assert.ok(
     found.has("env-var::MADE_UP_TUNING_KNOB_FOR_NOTHING"),
-    "a fabricated env var on a plain line must still be flagged"
+    "a fabricated env var on a plain line must still be flagged",
   );
 });
 
@@ -326,7 +326,7 @@ test("cli-cmd: an arg-bearing `.command('connect <host>')` registration is NOT f
   });
   assert.ok(
     !found.has("cli-cmd::omniroute connect"),
-    "a registered arg-bearing subcommand must be recognized and not flagged"
+    "a registered arg-bearing subcommand must be recognized and not flagged",
   );
 });
 
@@ -342,6 +342,6 @@ test("ANTI-OVER-SUPPRESSION: an unregistered subcommand IS still flagged", () =>
   });
   assert.ok(
     found.has("cli-cmd::omniroute teleport"),
-    "an unregistered subcommand must remain flagged — precision must not blind detection"
+    "an unregistered subcommand must remain flagged — precision must not blind detection",
   );
 });

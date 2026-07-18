@@ -1,19 +1,19 @@
-import type { SamplingParams } from './types';
+import type { SamplingParams } from "./types";
 
 // Message content types
 
 export interface ChatCompletionMessageText {
-  type: 'text';
+  type: "text";
   text: string;
 }
 
 export interface ChatCompletionMessageImage {
-  type: 'image';
+  type: "image";
   data: ArrayBuffer;
 }
 
 export interface ChatCompletionMessageAudio {
-  type: 'audio';
+  type: "audio";
   data: ArrayBuffer;
 }
 
@@ -25,7 +25,7 @@ export type ChatCompletionMessageContent =
 // Tool definitions
 
 export interface ChatCompletionToolFunctionParameters {
-  type: 'object';
+  type: "object";
   properties: Record<
     string,
     {
@@ -47,33 +47,33 @@ export interface ChatCompletionToolFunction {
 }
 
 export interface ChatCompletionTool {
-  type: 'function';
+  type: "function";
   function: ChatCompletionToolFunction;
 }
 
 export type ChatCompletionToolChoice =
-  | 'none'
-  | 'auto'
-  | 'required'
-  | { type: 'function'; function: { name: string } };
+  | "none"
+  | "auto"
+  | "required"
+  | { type: "function"; function: { name: string } };
 
 // Message types
 
 export interface ChatCompletionSystemMessage {
-  role: 'system';
+  role: "system";
   content: string;
   name?: string;
 }
 
 export interface ChatCompletionUserMessage {
-  role: 'user';
+  role: "user";
   content: string | ChatCompletionMessageContent[];
   name?: string;
 }
 
 export interface ChatCompletionToolCall {
   id: string;
-  type: 'function';
+  type: "function";
   function: {
     name: string;
     arguments: string; // JSON-encoded string
@@ -81,14 +81,14 @@ export interface ChatCompletionToolCall {
 }
 
 export interface ChatCompletionAssistantMessage {
-  role: 'assistant';
+  role: "assistant";
   content?: string | null;
   name?: string;
   tool_calls?: ChatCompletionToolCall[];
 }
 
 export interface ChatCompletionToolMessage {
-  role: 'tool';
+  role: "tool";
   content: string;
   tool_call_id: string;
 }
@@ -120,7 +120,7 @@ export type ChatCompletionParams = {
   // parallel_tool_calls?: boolean;
   // response format
   response_format?: {
-    type: 'text' | 'json_object' | 'json_schema';
+    type: "text" | "json_object" | "json_schema";
     json_schema?: { name: string; schema: unknown; strict?: boolean };
   };
   // user-facing
@@ -152,7 +152,7 @@ export interface ChatCompletionChoiceLogprobs {
 export interface ChatCompletionChoice {
   index: number;
   message: ChatCompletionAssistantMessage;
-  finish_reason: 'stop' | 'length' | 'tool_calls' | 'content_filter' | null;
+  finish_reason: "stop" | "length" | "tool_calls" | "content_filter" | null;
   logprobs: ChatCompletionChoiceLogprobs | null;
 }
 
@@ -172,7 +172,7 @@ export interface ChatCompletionUsage {
 /** Response when stream=false (or omitted) */
 export interface ChatCompletionResponse {
   id: string;
-  object: 'chat.completion';
+  object: "chat.completion";
   created: number;
   model: string;
   choices: ChatCompletionChoice[];
@@ -184,12 +184,12 @@ export interface ChatCompletionResponse {
 // Streaming response types
 
 export interface ChatCompletionChunkDelta {
-  role?: 'assistant';
+  role?: "assistant";
   content?: string | null;
   tool_calls?: Array<{
     index: number;
     id?: string;
-    type?: 'function';
+    type?: "function";
     function?: { name?: string; arguments?: string };
   }>;
   refusal?: string | null;
@@ -198,7 +198,7 @@ export interface ChatCompletionChunkDelta {
 export interface ChatCompletionChunkChoice {
   index: number;
   delta: ChatCompletionChunkDelta;
-  finish_reason: 'stop' | 'length' | 'tool_calls' | 'content_filter' | null;
+  finish_reason: "stop" | "length" | "tool_calls" | "content_filter" | null;
   logprobs: ChatCompletionChoiceLogprobs | null;
 }
 
@@ -217,7 +217,7 @@ export interface ResultTimings {
 /** Response when stream=true — one chunk per SSE event */
 export interface ChatCompletionChunk {
   id: string;
-  object: 'chat.completion.chunk';
+  object: "chat.completion.chunk";
   created: number;
   model: string;
   choices: ChatCompletionChunkChoice[];
@@ -251,7 +251,7 @@ export type RawCompletionParams = {
 export interface RawCompletionChoice {
   text: string;
   index: number;
-  finish_reason: 'stop' | 'length' | 'content_filter' | null;
+  finish_reason: "stop" | "length" | "content_filter" | null;
   logprobs: {
     tokens: string[];
     token_logprobs: number[];
@@ -263,7 +263,7 @@ export interface RawCompletionChoice {
 /** Response when stream=false */
 export interface RawCompletionResponse {
   id: string;
-  object: 'text_completion';
+  object: "text_completion";
   created: number;
   model: string;
   choices: RawCompletionChoice[];
@@ -275,13 +275,13 @@ export interface RawCompletionResponse {
 /** One chunk when stream=true */
 export interface RawCompletionChunk {
   id: string;
-  object: 'text_completion';
+  object: "text_completion";
   created: number;
   model: string;
   choices: Array<{
     text: string;
     index: number;
-    finish_reason: 'stop' | 'length' | 'content_filter' | null;
+    finish_reason: "stop" | "length" | "content_filter" | null;
     logprobs: null;
   }>;
   usage?: ChatCompletionUsage | null;
@@ -293,13 +293,13 @@ export interface RawCompletionChunk {
 export interface EmbeddingCreateParams {
   input: string | string[] | number[] | number[][];
   model?: string;
-  encoding_format?: 'float' | 'base64';
+  encoding_format?: "float" | "base64";
   // dimensions?: number; // unsupported by llama.cpp
   // user?: string;
 }
 
 export interface Embedding {
-  object: 'embedding';
+  object: "embedding";
   index: number;
   embedding: number[] | string; // float array or base64 string depending on encoding_format
 }
@@ -310,7 +310,7 @@ export interface EmbeddingUsage {
 }
 
 export interface CreateEmbeddingResponse {
-  object: 'list';
+  object: "list";
   data: Embedding[];
   model: string;
   usage: EmbeddingUsage;
@@ -336,7 +336,7 @@ export interface RerankUsage {
 
 export interface RerankResponse {
   model: string;
-  object: 'list';
+  object: "list";
   usage: RerankUsage;
   results: RerankResult[];
 }

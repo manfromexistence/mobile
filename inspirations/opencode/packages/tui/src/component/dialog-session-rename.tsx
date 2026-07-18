@@ -1,18 +1,18 @@
-import { DialogPrompt } from "../ui/dialog-prompt"
-import { useDialog } from "../ui/dialog"
-import { useSync } from "../context/sync"
-import { createMemo } from "solid-js"
-import { useSDK } from "../context/sdk"
+import { DialogPrompt } from "../ui/dialog-prompt";
+import { useDialog } from "../ui/dialog";
+import { useSync } from "../context/sync";
+import { createMemo } from "solid-js";
+import { useSDK } from "../context/sdk";
 
 interface DialogSessionRenameProps {
-  session: string
+  session: string;
 }
 
 export function DialogSessionRename(props: DialogSessionRenameProps) {
-  const dialog = useDialog()
-  const sync = useSync()
-  const sdk = useSDK()
-  const session = createMemo(() => sync.session.get(props.session))
+  const dialog = useDialog();
+  const sync = useSync();
+  const sdk = useSDK();
+  const session = createMemo(() => sync.session.get(props.session));
 
   return (
     <DialogPrompt
@@ -22,10 +22,10 @@ export function DialogSessionRename(props: DialogSessionRenameProps) {
         void sdk.client.session.update({
           sessionID: props.session,
           title: value,
-        })
-        dialog.clear()
+        });
+        dialog.clear();
       }}
       onCancel={() => dialog.clear()}
     />
-  )
+  );
 }

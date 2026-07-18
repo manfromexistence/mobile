@@ -56,7 +56,11 @@ test("normalizeAgentBridgeState maps orphanedStateDetected + dnsConfigured from 
     agents: [],
   };
   const result = normalizeAgentBridgeState(routeShape);
-  assert.equal(result.serverState.orphanedStateDetected, true, "orphanedStateDetected maps through");
+  assert.equal(
+    result.serverState.orphanedStateDetected,
+    true,
+    "orphanedStateDetected maps through",
+  );
   assert.equal(result.serverState.dnsConfigured, true, "dnsConfigured maps through");
 });
 

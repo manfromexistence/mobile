@@ -56,9 +56,9 @@ export function WebhooksPageClient() {
           acc[getStatus(wh)] += 1;
           return acc;
         },
-        { total: 0, active: 0, inactive: 0, errored: 0 }
+        { total: 0, active: 0, inactive: 0, errored: 0 },
       ),
-    [webhooks]
+    [webhooks],
   );
 
   const handleTest = async (wh: WebhookItem) => {
@@ -91,7 +91,7 @@ export function WebhooksPageClient() {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || t("saveFailed"));
       setWebhooks((prev) =>
-        prev.map((item) => (item.id === wh.id ? { ...item, enabled: !wh.enabled } : item))
+        prev.map((item) => (item.id === wh.id ? { ...item, enabled: !wh.enabled } : item)),
       );
     } catch (err) {
       setFeedback({

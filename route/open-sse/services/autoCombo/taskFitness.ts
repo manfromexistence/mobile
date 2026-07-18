@@ -316,7 +316,7 @@ export function getTaskFitness(model: string, taskType: string): number {
 
 export function getTaskFitnessWithSource(
   model: string,
-  taskType: string
+  taskType: string,
 ): { score: number; source: string } {
   const normalizedModel = model.toLowerCase();
   const normalizedTask = taskType.toLowerCase();
@@ -381,7 +381,7 @@ export function setUserFitnessOverride(model: string, category: string, score: n
     invalidateFitnessCache();
   } catch (err) {
     throw new Error(
-      `Failed to set user fitness override for ${model}/${category}: ${err instanceof Error ? err.message : String(err)}`
+      `Failed to set user fitness override for ${model}/${category}: ${err instanceof Error ? err.message : String(err)}`,
     );
   }
 }
@@ -392,7 +392,7 @@ export function clearUserFitnessOverride(model: string, category: string): void 
     invalidateFitnessCache();
   } catch (err) {
     throw new Error(
-      `Failed to clear user fitness override for ${model}/${category}: ${err instanceof Error ? err.message : String(err)}`
+      `Failed to clear user fitness override for ${model}/${category}: ${err instanceof Error ? err.message : String(err)}`,
     );
   }
 }

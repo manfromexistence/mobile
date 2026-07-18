@@ -1,29 +1,24 @@
-'use client';
+"use client";
 
-import { parseDiffFromFile, preloadHighlighter } from '@pierre/diffs';
-import { File, FileDiff } from '@pierre/diffs/react';
+import { parseDiffFromFile, preloadHighlighter } from "@pierre/diffs";
+import { File, FileDiff } from "@pierre/diffs/react";
 import {
   IconCheckCheck,
   IconChevronsNarrow,
   IconColorDark,
   IconColorLight,
   IconFileCode,
-} from '@pierre/icons';
-import { useEffect, useMemo, useRef, useState } from 'react';
+} from "@pierre/icons";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-import { useTheme } from '@/components/theme-provider';
-import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group';
-import { cn } from '@/lib/utils';
+import { useTheme } from "@/components/theme-provider";
+import { ButtonGroup, ButtonGroupItem } from "@/components/ui/button-group";
+import { cn } from "@/lib/utils";
 
 // Preload themes at module level for earliest possible start
 void preloadHighlighter({
-  themes: [
-    'pierre-dark',
-    'pierre-dark-soft',
-    'pierre-light',
-    'pierre-light-soft',
-  ],
-  langs: ['tsx', 'html', 'css'],
+  themes: ["pierre-dark", "pierre-dark-soft", "pierre-light", "pierre-light-soft"],
+  langs: ["tsx", "html", "css"],
 });
 
 // Sample code files for demo
@@ -256,14 +251,14 @@ interface ReviewFile {
 
 const REVIEW_FILES: ReviewFile[] = [
   {
-    id: 'useConfig',
-    name: 'useConfig.ts',
+    id: "useConfig",
+    name: "useConfig.ts",
     oldContents: DIFF_OLD,
     newContents: DIFF_NEW,
   },
   {
-    id: 'apiUtils',
-    name: 'utils/api.ts',
+    id: "apiUtils",
+    name: "utils/api.ts",
     oldContents: DIFF2_OLD,
     newContents: DIFF2_NEW,
   },
@@ -271,36 +266,36 @@ const REVIEW_FILES: ReviewFile[] = [
 
 const TABS = [
   {
-    id: 'typescript',
-    label: 'App.tsx',
-    lang: 'tsx' as const,
+    id: "typescript",
+    label: "App.tsx",
+    lang: "tsx" as const,
     code: TYPESCRIPT_CODE,
     isDiff: false,
   },
   {
-    id: 'html',
-    label: 'index.html',
-    lang: 'html' as const,
+    id: "html",
+    label: "index.html",
+    lang: "html" as const,
     code: HTML_CODE,
     isDiff: false,
   },
   {
-    id: 'css',
-    label: 'styles.css',
-    lang: 'css' as const,
+    id: "css",
+    label: "styles.css",
+    lang: "css" as const,
     code: CSS_CODE,
     isDiff: false,
   },
   {
-    id: 'diff',
-    label: 'Review files',
-    lang: 'tsx' as const,
-    code: '',
+    id: "diff",
+    label: "Review files",
+    lang: "tsx" as const,
+    code: "",
     isDiff: true,
   },
 ] as const;
 
-type TabId = (typeof TABS)[number]['id'];
+type TabId = (typeof TABS)[number]["id"];
 
 interface WorkingFile {
   id: string;
@@ -311,8 +306,8 @@ interface WorkingFile {
 
 export function ThemeDemo() {
   const { resolvedTheme } = useTheme();
-  const [colorMode, setColorMode] = useState<'light' | 'dark'>('dark');
-  const [activeTab, setActiveTab] = useState<TabId>('typescript');
+  const [colorMode, setColorMode] = useState<"light" | "dark">("dark");
+  const [activeTab, setActiveTab] = useState<TabId>("typescript");
   const [mounted, setMounted] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -324,7 +319,7 @@ export function ThemeDemo() {
       name: rf.name,
       oldContents: rf.oldContents,
       newContents: rf.newContents,
-    }))
+    })),
   );
 
   const fileDiffs = useMemo(
@@ -332,10 +327,10 @@ export function ThemeDemo() {
       workingFiles.map((wf) => {
         const diff = parseDiffFromFile(
           { name: wf.name, contents: wf.oldContents },
-          { name: wf.name, contents: wf.newContents }
+          { name: wf.name, contents: wf.newContents },
         );
         const hasChanges = diff.hunks.some((hunk) =>
-          hunk.hunkContent.some((content) => content.type === 'change')
+          hunk.hunkContent.some((content) => content.type === "change"),
         );
         return {
           id: wf.id,
@@ -345,13 +340,13 @@ export function ThemeDemo() {
           hasChanges,
         };
       }),
-    [workingFiles]
+    [workingFiles],
   );
 
   // Sync with system theme on mount
   useEffect(() => {
     setMounted(true);
-    if (resolvedTheme === 'light' || resolvedTheme === 'dark') {
+    if (resolvedTheme === "light" || resolvedTheme === "dark") {
       setColorMode(resolvedTheme);
     }
   }, [resolvedTheme]);
@@ -361,47 +356,42 @@ export function ThemeDemo() {
     if (!dropdownOpen) return;
 
     function handleClickOutside(event: MouseEvent) {
-      if (
-        dropdownRef.current !== null &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      if (dropdownRef.current !== null && !dropdownRef.current.contains(event.target as Node)) {
         setDropdownOpen(false);
       }
     }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [dropdownOpen]);
 
   const currentTab = TABS.find((t) => t.id === activeTab) ?? TABS[0];
 
-  const isDark = colorMode === 'dark';
-  const themeName = isDark ? 'pierre-dark' : 'pierre-light';
+  const isDark = colorMode === "dark";
+  const themeName = isDark ? "pierre-dark" : "pierre-light";
 
   // Consolidated color-mode-specific styles
   const styles = useMemo(
     () => ({
       container: isDark
-        ? 'border-neutral-700/50 bg-[#1b1d23]'
-        : 'border-neutral-300/70 bg-[#f9f9fb]',
-      tabBar: isDark
-        ? 'border-neutral-700/50 bg-neutral-900'
-        : 'border-neutral-200 bg-neutral-50',
+        ? "border-neutral-700/50 bg-[#1b1d23]"
+        : "border-neutral-300/70 bg-[#f9f9fb]",
+      tabBar: isDark ? "border-neutral-700/50 bg-neutral-900" : "border-neutral-200 bg-neutral-50",
       tabActive: isDark
-        ? 'border-neutral-700/50 bg-neutral-950 text-neutral-100'
-        : 'border-neutral-200 bg-[#fff] text-neutral-900',
+        ? "border-neutral-700/50 bg-neutral-950 text-neutral-100"
+        : "border-neutral-200 bg-[#fff] text-neutral-900",
       tabInactive: isDark
-        ? 'text-neutral-400 hover:text-neutral-300'
-        : 'text-neutral-500 hover:text-neutral-700',
-      tabIndicator: isDark ? 'bg-blue-400' : 'bg-blue-500',
-      headerText: isDark ? 'text-neutral-300' : 'text-neutral-700',
+        ? "text-neutral-400 hover:text-neutral-300"
+        : "text-neutral-500 hover:text-neutral-700",
+      tabIndicator: isDark ? "bg-blue-400" : "bg-blue-500",
+      headerText: isDark ? "text-neutral-300" : "text-neutral-700",
       buttonSecondary: isDark
-        ? 'bg-neutral-700 text-neutral-300 hover:bg-neutral-600'
-        : 'bg-neutral-200 text-neutral-700 hover:bg-neutral-300',
+        ? "bg-neutral-700 text-neutral-300 hover:bg-neutral-600"
+        : "bg-neutral-200 text-neutral-700 hover:bg-neutral-300",
       buttonPrimary: isDark
-        ? 'bg-blue-600 text-white hover:bg-blue-500'
-        : 'bg-blue-500 text-white hover:bg-blue-400',
+        ? "bg-blue-600 text-white hover:bg-blue-500"
+        : "bg-blue-500 text-white hover:bg-blue-400",
     }),
-    [isDark]
+    [isDark],
   );
 
   const file = useMemo(
@@ -410,13 +400,10 @@ export function ThemeDemo() {
       lang: currentTab.lang,
       contents: currentTab.code,
     }),
-    [currentTab]
+    [currentTab],
   );
 
-  const activeDiffs = useMemo(
-    () => fileDiffs.filter((fd) => fd.hasChanges === true),
-    [fileDiffs]
-  );
+  const activeDiffs = useMemo(() => fileDiffs.filter((fd) => fd.hasChanges === true), [fileDiffs]);
 
   // Count total change blocks across all files
   const totalChanges = useMemo(() => {
@@ -424,7 +411,7 @@ export function ThemeDemo() {
     fileDiffs.forEach((fd) => {
       fd.diff.hunks.forEach((hunk) => {
         hunk.hunkContent.forEach((content) => {
-          if (content.type === 'change') {
+          if (content.type === "change") {
             count++;
           }
         });
@@ -435,28 +422,28 @@ export function ThemeDemo() {
 
   const filesWithChanges = activeDiffs.length;
 
-  const handleGlobalAction = (action: 'accept' | 'reject') => {
+  const handleGlobalAction = (action: "accept" | "reject") => {
     setWorkingFiles((prev) =>
       prev.map((wf) => {
-        if (action === 'accept') {
+        if (action === "accept") {
           return { ...wf, oldContents: wf.newContents };
         } else {
           return { ...wf, newContents: wf.oldContents };
         }
-      })
+      }),
     );
   };
 
-  const handleFileAction = (fileId: string, action: 'accept' | 'reject') => {
+  const handleFileAction = (fileId: string, action: "accept" | "reject") => {
     setWorkingFiles((prev) =>
       prev.map((wf) => {
         if (wf.id !== fileId) return wf;
-        if (action === 'accept') {
+        if (action === "accept") {
           return { ...wf, oldContents: wf.newContents };
         } else {
           return { ...wf, newContents: wf.oldContents };
         }
-      })
+      }),
     );
   };
 
@@ -471,7 +458,7 @@ export function ThemeDemo() {
       <div className="flex flex-wrap items-center gap-3">
         <ButtonGroup
           value={colorMode}
-          onValueChange={(value) => setColorMode(value as 'light' | 'dark')}
+          onValueChange={(value) => setColorMode(value as "light" | "dark")}
         >
           <ButtonGroupItem value="light">
             <IconColorLight className="size-4" />
@@ -484,22 +471,14 @@ export function ThemeDemo() {
         </ButtonGroup>
       </div>
 
-      <div
-        className={cn(
-          'overflow-hidden rounded-sm border transition-colors',
-          styles.container
-        )}
-      >
+      <div className={cn("overflow-hidden rounded-sm border transition-colors", styles.container)}>
         {/* Mobile dropdown */}
-        <div
-          ref={dropdownRef}
-          className={cn('relative border-b sm:hidden', styles.tabBar)}
-        >
+        <div ref={dropdownRef} className={cn("relative border-b sm:hidden", styles.tabBar)}>
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
             className={cn(
-              'flex w-full items-center justify-between gap-2 px-4 py-2.5 text-sm',
-              styles.tabActive
+              "flex w-full items-center justify-between gap-2 px-4 py-2.5 text-sm",
+              styles.tabActive,
             )}
           >
             <span className="flex items-center gap-2">
@@ -511,10 +490,10 @@ export function ThemeDemo() {
           {dropdownOpen && (
             <div
               className={cn(
-                'absolute right-1 left-1 z-20 mt-1 flex flex-col gap-[2px] rounded-lg border [background-clip:padding-box] p-[3px] shadow-lg',
+                "absolute right-1 left-1 z-20 mt-1 flex flex-col gap-[2px] rounded-lg border [background-clip:padding-box] p-[3px] shadow-lg",
                 isDark
-                  ? 'border-[rgb(255_255_255_/_0.15)] bg-neutral-900'
-                  : 'border-[rgb(0_0_0_/_0.125)] bg-white'
+                  ? "border-[rgb(255_255_255_/_0.15)] bg-neutral-900"
+                  : "border-[rgb(0_0_0_/_0.125)] bg-white",
               )}
             >
               {TABS.map((tab) => {
@@ -527,14 +506,14 @@ export function ThemeDemo() {
                       setDropdownOpen(false);
                     }}
                     className={cn(
-                      'flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors',
+                      "flex w-full items-center gap-2 rounded-md px-3 py-1.5 text-sm transition-colors",
                       isActive
                         ? isDark
-                          ? 'bg-neutral-800 text-neutral-100'
-                          : 'bg-neutral-100 text-neutral-900'
+                          ? "bg-neutral-800 text-neutral-100"
+                          : "bg-neutral-100 text-neutral-900"
                         : isDark
-                          ? 'text-neutral-400 hover:bg-neutral-800 hover:text-neutral-300'
-                          : 'text-neutral-500 hover:bg-neutral-50 hover:text-neutral-700'
+                          ? "text-neutral-400 hover:bg-neutral-800 hover:text-neutral-300"
+                          : "text-neutral-500 hover:bg-neutral-50 hover:text-neutral-700",
                     )}
                   >
                     <FileIcon lang={tab.lang} isDiff={tab.isDiff} />
@@ -547,12 +526,7 @@ export function ThemeDemo() {
         </div>
 
         {/* Desktop tabs */}
-        <div
-          className={cn(
-            '-ml-[1px] hidden items-end border-b sm:flex',
-            styles.tabBar
-          )}
-        >
+        <div className={cn("-ml-[1px] hidden items-end border-b sm:flex", styles.tabBar)}>
           {TABS.map((tab) => {
             const isActive = tab.id === activeTab;
             return (
@@ -560,18 +534,15 @@ export function ThemeDemo() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={cn(
-                  'relative flex items-center gap-2 border-r border-l border-transparent px-4 py-2 text-sm font-medium',
-                  isActive ? styles.tabActive : styles.tabInactive
+                  "relative flex items-center gap-2 border-r border-l border-transparent px-4 py-2 text-sm font-medium",
+                  isActive ? styles.tabActive : styles.tabInactive,
                 )}
               >
                 <FileIcon lang={tab.lang} isDiff={tab.isDiff} />
                 {tab.label}
                 {isActive && (
                   <span
-                    className={cn(
-                      'absolute top-0 right-0 left-0 h-[1px]',
-                      styles.tabIndicator
-                    )}
+                    className={cn("absolute top-0 right-0 left-0 h-[1px]", styles.tabIndicator)}
                   />
                 )}
               </button>
@@ -583,16 +554,15 @@ export function ThemeDemo() {
           <div className="max-h-[720px] overflow-auto">
             <div
               className={cn(
-                'sticky top-0 z-10 flex min-h-[44px] items-center justify-between border-b py-1 pr-4 pl-4.5',
-                styles.tabBar
+                "sticky top-0 z-10 flex min-h-[44px] items-center justify-between border-b py-1 pr-4 pl-4.5",
+                styles.tabBar,
               )}
             >
-              <span className={cn('text-[13px]', styles.headerText)}>
+              <span className={cn("text-[13px]", styles.headerText)}>
                 {totalChanges > 0 ? (
                   <>
-                    {totalChanges} {totalChanges === 1 ? 'change' : 'changes'}{' '}
-                    in {filesWithChanges}{' '}
-                    {filesWithChanges === 1 ? 'file' : 'files'}
+                    {totalChanges} {totalChanges === 1 ? "change" : "changes"} in {filesWithChanges}{" "}
+                    {filesWithChanges === 1 ? "file" : "files"}
                   </>
                 ) : (
                   <div className="flex items-center gap-1.5">
@@ -604,20 +574,14 @@ export function ThemeDemo() {
               {totalChanges > 0 && (
                 <div className="flex gap-2">
                   <button
-                    onClick={() => handleGlobalAction('reject')}
-                    className={cn(
-                      'rounded-md px-2.5 py-1 text-[13px]',
-                      styles.buttonSecondary
-                    )}
+                    onClick={() => handleGlobalAction("reject")}
+                    className={cn("rounded-md px-2.5 py-1 text-[13px]", styles.buttonSecondary)}
                   >
                     Undo All
                   </button>
                   <button
-                    onClick={() => handleGlobalAction('accept')}
-                    className={cn(
-                      'rounded-md px-2.5 py-1 text-[13px]',
-                      styles.buttonPrimary
-                    )}
+                    onClick={() => handleGlobalAction("accept")}
+                    className={cn("rounded-md px-2.5 py-1 text-[13px]", styles.buttonPrimary)}
                   >
                     Accept All
                   </button>
@@ -634,29 +598,25 @@ export function ThemeDemo() {
                       options={{
                         theme: themeName,
                         themeType: colorMode,
-                        diffStyle: 'unified',
+                        diffStyle: "unified",
                         expandUnchanged: true,
                       }}
                       renderHeaderMetadata={() => (
                         <div className="flex gap-2">
                           <button
-                            onClick={() =>
-                              handleFileAction(fileData.id, 'reject')
-                            }
+                            onClick={() => handleFileAction(fileData.id, "reject")}
                             className={cn(
-                              'rounded-md px-2.5 py-1 text-[13px]',
-                              styles.buttonSecondary
+                              "rounded-md px-2.5 py-1 text-[13px]",
+                              styles.buttonSecondary,
                             )}
                           >
                             Undo
                           </button>
                           <button
-                            onClick={() =>
-                              handleFileAction(fileData.id, 'accept')
-                            }
+                            onClick={() => handleFileAction(fileData.id, "accept")}
                             className={cn(
-                              'rounded-md px-2.5 py-1 text-[13px]',
-                              styles.buttonPrimary
+                              "rounded-md px-2.5 py-1 text-[13px]",
+                              styles.buttonPrimary,
                             )}
                           >
                             Accept
@@ -703,18 +663,15 @@ export function ThemeDemo() {
 // Simple file icon based on language
 function FileIcon({ lang, isDiff }: { lang: string; isDiff?: boolean }) {
   const colors: Record<string, string> = {
-    tsx: 'text-blue-400',
-    html: 'text-orange-400',
-    css: 'text-purple-400',
-    diff: 'text-green-400',
+    tsx: "text-blue-400",
+    html: "text-orange-400",
+    css: "text-purple-400",
+    diff: "text-green-400",
   };
 
   return (
     <IconFileCode
-      className={cn(
-        'size-4',
-        colors[isDiff === true ? 'diff' : lang] ?? 'text-neutral-400'
-      )}
+      className={cn("size-4", colors[isDiff === true ? "diff" : lang] ?? "text-neutral-400")}
     />
   );
 }

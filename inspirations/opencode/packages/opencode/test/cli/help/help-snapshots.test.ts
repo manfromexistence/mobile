@@ -11,10 +11,10 @@
 // terminal sizes. The default opencode tui command is excluded —
 // `opencode --help` includes an ASCII banner that pulls in the install
 // version (changes per release), so we'd snapshot a moving target.
-import { describe, expect } from "bun:test"
-import { Effect } from "effect"
-import { cliIt } from "../../lib/cli-process"
-import { normalizeForSnapshot, PATH_SEP } from "../../lib/snapshot"
+import { describe, expect } from "bun:test";
+import { Effect } from "effect";
+import { cliIt } from "../../lib/cli-process";
+import { normalizeForSnapshot, PATH_SEP } from "../../lib/snapshot";
 
 // Composes `normalizeForSnapshot` (CRLF + tmpdir) with two help-specific
 // rules:
@@ -35,7 +35,7 @@ function normalize(text: string): string {
       [new RegExp(`<TMPDIR>${PATH_SEP}oc-cli-[A-Za-z0-9]+`, "g"), "<HOME>"],
       [/\s+\[string\] \[default: "<HOME>"\]/g, ' [string] [default: "<HOME>"]'],
     ],
-  })
+  });
 }
 
 // Top-level commands. Order matches what `opencode --help` prints today;
@@ -63,7 +63,7 @@ const TOP_LEVEL = [
   "session",
   "plugin",
   "db",
-] as const
+] as const;
 
 // Subcommands worth pinning. Not exhaustive — the goal is one snapshot per
 // distinct argv shape, not every leaf. Add new entries when a subcommand
@@ -83,12 +83,12 @@ const SUBCOMMANDS = [
   ["github", "install"],
   ["github", "run"],
   ["db", "path"],
-] as const
+] as const;
 
 // Fixed wrap width so a developer's terminal doesn't affect snapshots.
 // yargs honors COLUMNS; CI runners typically default to 80 which produces
 // different wraps from a 200-col local terminal.
-const SNAPSHOT_ENV = { COLUMNS: "120" }
+const SNAPSHOT_ENV = { COLUMNS: "120" };
 
 describe("opencode CLI help-text snapshots", () => {
   // Single test, parallel spawns. Each command's help fires under
@@ -98,15 +98,18 @@ describe("opencode CLI help-text snapshots", () => {
     "every documented command emits stable help text",
     ({ opencode }) =>
       Effect.gen(function* () {
-        const topLevel = yield* opencode.spawn(["--help"], { env: SNAPSHOT_ENV })
-        expect(topLevel.exitCode).toBe(0)
-        expect(topLevel.stderr.endsWith("\n")).toBe(true)
-        expect(topLevel.stderr).toContain("--mini")
-        expect(topLevel.stderr).not.toContain("--thinking")
-        expect(topLevel.stderr).not.toContain("--variant")
-        expect(topLevel.stderr).not.toContain("--demo")
+        const topLevel = yield* opencode.spawn(["--help"], { env: SNAPSHOT_ENV });
+        expect(topLevel.exitCode).toBe(0);
+        expect(topLevel.stderr.endsWith("\n")).toBe(true);
+        expect(topLevel.stderr).toContain("--mini");
+        expect(topLevel.stderr).not.toContain("--thinking");
+        expect(topLevel.stderr).not.toContain("--variant");
+        expect(topLevel.stderr).not.toContain("--demo");
 
-        const argvs: Array<readonly string[]> = [...TOP_LEVEL.map((c) => [c] as const), ...SUBCOMMANDS]
+        const argvs: Array<readonly string[]> = [
+          ...TOP_LEVEL.map((c) => [c] as const),
+          ...SUBCOMMANDS,
+        ];
 
         // Spawn in parallel, then assert in argv order so snapshot output is
         // deterministic and per-command failures don't abort the rest of
@@ -116,25 +119,25 @@ describe("opencode CLI help-text snapshots", () => {
           argvs,
           (argv) =>
             Effect.gen(function* () {
-              const result = yield* opencode.spawn([...argv, "--help"], { env: SNAPSHOT_ENV })
+              const result = yield* opencode.spawn([...argv, "--help"], { env: SNAPSHOT_ENV });
               if (result.exitCode !== 0) {
-                return yield* Effect.fail(`opencode ${argv.join(" ")}: exit ${result.exitCode}`)
+                return yield* Effect.fail(`opencode ${argv.join(" ")}: exit ${result.exitCode}`);
               }
-              return { argv, result }
+              return { argv, result };
             }),
           { concurrency: 8 },
-        )
+        );
 
         for (const { argv, result } of results) {
           // yargs writes --help to stderr, not stdout. Snapshotting stderr
           // means our test catches the help body; stdout for these commands
           // is expected to be empty.
-          expect(normalize(result.stderr)).toMatchSnapshot(`opencode ${argv.join(" ")} --help`)
+          expect(normalize(result.stderr)).toMatchSnapshot(`opencode ${argv.join(" ")} --help`);
         }
         if (failures.length > 0) {
-          throw new Error(`Help text failed for:\n  ${failures.join("\n  ")}`)
+          throw new Error(`Help text failed for:\n  ${failures.join("\n  ")}`);
         }
       }),
     180_000,
-  )
-})
+  );
+});

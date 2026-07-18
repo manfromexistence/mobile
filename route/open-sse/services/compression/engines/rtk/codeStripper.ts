@@ -65,7 +65,7 @@ function stripJsTsComments(text: string, preserveDocstrings: boolean): string {
     text,
     ts.ScriptTarget.Latest,
     /* setParentNodes */ true,
-    ts.ScriptKind.TSX
+    ts.ScriptKind.TSX,
   );
 
   let hasJsx = false;
@@ -105,7 +105,7 @@ function stripJsTsComments(text: string, preserveDocstrings: boolean): string {
 export function stripCode(
   text: string,
   language: CodeLanguage = "unknown",
-  options: CodeStripperOptions = {}
+  options: CodeStripperOptions = {},
 ): {
   text: string;
   strippedLines: number;

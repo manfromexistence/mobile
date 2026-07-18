@@ -1,4 +1,4 @@
-import type { Key } from "~/i18n"
+import type { Key } from "~/i18n";
 
 export const formError = {
   invalidPlan: "error.invalidPlan",
@@ -15,7 +15,7 @@ export const formError = {
   providerRequired: "error.providerRequired",
   apiKeyRequired: "error.apiKeyRequired",
   modelRequired: "error.modelRequired",
-} as const
+} as const;
 
 const map = {
   [formError.invalidPlan]: "error.invalidPlan",
@@ -51,36 +51,39 @@ const map = {
   "workspace.reload.error.paymentFailed": "workspace.reload.error.paymentFailed",
   "Payment failed": "workspace.reload.error.paymentFailed",
   "Payment failed.": "workspace.reload.error.paymentFailed",
-} as const satisfies Record<string, Key>
+} as const satisfies Record<string, Key>;
 
 export function formErrorReloadAmountMin(amount: number) {
-  return `error.reloadAmountMin:${amount}`
+  return `error.reloadAmountMin:${amount}`;
 }
 
 export function formErrorReloadTriggerMin(amount: number) {
-  return `error.reloadTriggerMin:${amount}`
+  return `error.reloadTriggerMin:${amount}`;
 }
 
-export function localizeError(t: (key: Key, params?: Record<string, string | number>) => string, error?: string) {
-  if (!error) return ""
+export function localizeError(
+  t: (key: Key, params?: Record<string, string | number>) => string,
+  error?: string,
+) {
+  if (!error) return "";
 
   if (error.startsWith("error.reloadAmountMin:")) {
-    const amount = Number(error.split(":")[1] ?? 0)
-    return t("error.reloadAmountMin", { amount })
+    const amount = Number(error.split(":")[1] ?? 0);
+    return t("error.reloadAmountMin", { amount });
   }
 
   if (error.startsWith("error.reloadTriggerMin:")) {
-    const amount = Number(error.split(":")[1] ?? 0)
-    return t("error.reloadTriggerMin", { amount })
+    const amount = Number(error.split(":")[1] ?? 0);
+    return t("error.reloadTriggerMin", { amount });
   }
 
-  const amount = error.match(/^Reload amount must be at least \$(\d+)$/)
-  if (amount) return t("error.reloadAmountMin", { amount: Number(amount[1]) })
+  const amount = error.match(/^Reload amount must be at least \$(\d+)$/);
+  if (amount) return t("error.reloadAmountMin", { amount: Number(amount[1]) });
 
-  const trigger = error.match(/^Balance trigger must be at least \$(\d+)$/)
-  if (trigger) return t("error.reloadTriggerMin", { amount: Number(trigger[1]) })
+  const trigger = error.match(/^Balance trigger must be at least \$(\d+)$/);
+  if (trigger) return t("error.reloadTriggerMin", { amount: Number(trigger[1]) });
 
-  const key = map[error as keyof typeof map]
-  if (key) return t(key)
-  return error
+  const key = map[error as keyof typeof map];
+  if (key) return t(key);
+  return error;
 }

@@ -94,7 +94,7 @@ export function insertPlugin(input: PluginCreateInput): PluginRow {
       id, name, version, description, author, license, main, source, tags,
       status, enabled, manifest, config, config_schema, hooks, permissions,
       plugin_dir, installed_at, updated_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     input.id,
     input.name,
@@ -114,7 +114,7 @@ export function insertPlugin(input: PluginCreateInput): PluginRow {
     JSON.stringify(input.permissions ?? []),
     input.pluginDir,
     now,
-    now
+    now,
   );
 
   log.info("plugin.inserted", { id: input.id, name: input.name });
@@ -148,7 +148,7 @@ export function listPlugins(status?: PluginRow["status"]): PluginRow[] {
 export function updatePluginStatus(
   name: string,
   status: PluginRow["status"],
-  errorMessage?: string
+  errorMessage?: string,
 ): boolean {
   const db = getDbInstance();
   const now = new Date().toISOString();
@@ -161,7 +161,7 @@ export function updatePluginStatus(
     .prepare(
       `UPDATE plugins SET status = ?, enabled = ?, error_message = ?,
        updated_at = ?, activated_at = COALESCE(?, activated_at)
-       WHERE name = ?`
+       WHERE name = ?`,
     )
     .run(status, status === "active" ? 1 : 0, errorMessage ?? null, now, activatedAt, name);
 
@@ -223,12 +223,12 @@ export function recordPluginExecution(
   hook: string,
   durationMs: number,
   success: boolean,
-  errorMessage?: string
+  errorMessage?: string,
 ): void {
   const db = getDbInstance();
   db.prepare(
     `INSERT INTO plugin_analytics (plugin_name, hook, duration_ms, success, error_message)
-     VALUES (?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?)`,
   ).run(pluginName, hook, durationMs, success ? 1 : 0, errorMessage ?? null);
 }
 
@@ -242,7 +242,7 @@ export function getPluginAnalytics(pluginName: string): PluginExecutionRow[] {
       `SELECT plugin_name, hook, duration_ms, success, error_message, created_at
        FROM plugin_analytics
        WHERE plugin_name = ?
-       ORDER BY created_at DESC`
+       ORDER BY created_at DESC`,
     )
     .all(pluginName) as any[];
   return rows.map((r) => ({
@@ -268,7 +268,7 @@ export function getPluginAnalyticsSummary(pluginName: string): PluginAnalyticsSu
          SUM(CASE WHEN success = 0 THEN 1 ELSE 0 END) AS failures,
          AVG(duration_ms) AS avg_duration
        FROM plugin_analytics
-       WHERE plugin_name = ?`
+       WHERE plugin_name = ?`,
     )
     .get(pluginName) as any;
   return {

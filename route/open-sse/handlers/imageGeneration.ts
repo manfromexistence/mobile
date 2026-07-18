@@ -41,7 +41,11 @@ import {
   extractComfyOutputFiles,
 } from "../utils/comfyuiClient.ts";
 import { fetchRemoteImage } from "@/shared/network/remoteImageFetch";
-import { FetchTimeoutError, fetchWithTimeout, getConfiguredTimeout } from "@/shared/utils/fetchTimeout";
+import {
+  FetchTimeoutError,
+  fetchWithTimeout,
+  getConfiguredTimeout,
+} from "@/shared/utils/fetchTimeout";
 import { sanitizeErrorMessage, sanitizeUpstreamDetails } from "../utils/error.ts";
 
 // --- Per-provider handlers (extracted to co-located files in PR-#4582-batch) ---
@@ -62,7 +66,6 @@ import {
   CHATGPT_WEB_IMAGE_ID_RE,
 } from "./imageGeneration/providers/chatgptWeb.ts";
 import { handleNvidiaNimImageGeneration } from "./imageGeneration/providers/nvidiaNim.ts";
-
 
 interface KieImageOptions {
   model: string;
@@ -132,7 +135,7 @@ export function resolveImageBaseUrl(
     | null
     | undefined,
   fallback: string,
-  endpoint: "generations" | "edits" = "generations"
+  endpoint: "generations" | "edits" = "generations",
 ): string {
   const psd = credentials?.providerSpecificData;
   const psdBaseUrl =
@@ -253,7 +256,7 @@ function appendImageFormValue(formData, key, source, filename) {
     new Blob([source.buffer], {
       type: source.contentType || "application/octet-stream",
     }),
-    filename
+    filename,
   );
 }
 
@@ -338,7 +341,7 @@ export async function handleImageGeneration({
       // returned "Please pass a valid API key".
       baseUrl: resolveImageBaseUrl(
         credentials,
-        `https://generativelanguage.googleapis.com/v1beta/openai/images/generations`
+        `https://generativelanguage.googleapis.com/v1beta/openai/images/generations`,
       ),
       authType: "apikey",
       authHeader: "bearer",
@@ -638,7 +641,7 @@ async function handleKieImageGeneration({
     const promptPreview = String(body.prompt ?? "").slice(0, 60);
     log.info(
       "IMAGE",
-      `${provider}/${model} (${isMarket ? "market" : "direct"}) | prompt: "${promptPreview}..."`
+      `${provider}/${model} (${isMarket ? "market" : "direct"}) | prompt: "${promptPreview}..."`,
     );
   }
 
@@ -811,7 +814,7 @@ async function handleGeminiImageGeneration({ model, providerConfig, body, creden
     const promptPreview = promptText.slice(0, 60);
     log.info(
       "IMAGE",
-      `antigravity/${model} (gemini) | prompt: "${promptPreview}..." | format: gemini-image`
+      `antigravity/${model} (gemini) | prompt: "${promptPreview}..." | format: gemini-image`,
     );
   }
 
@@ -968,7 +971,7 @@ async function handleOpenAIImageGeneration({
         : String(body.prompt ?? "").slice(0, 60);
     log.info(
       "IMAGE",
-      `${provider}/${model} | prompt: "${promptPreview}..." | size: ${body.size || "default"}`
+      `${provider}/${model} | prompt: "${promptPreview}..." | size: ${body.size || "default"}`,
     );
   }
 
@@ -980,7 +983,7 @@ async function handleOpenAIImageGeneration({
     headers,
     requestBody,
     provider,
-    log
+    log,
   );
 
   // Fallback for providers with fallbackUrl (e.g., Nebius)
@@ -997,7 +1000,7 @@ async function handleOpenAIImageGeneration({
       headers,
       requestBody,
       provider,
-      log
+      log,
     );
   }
 
@@ -1066,7 +1069,7 @@ export async function handleOpenAIImageEdit({
   const url = resolveImageBaseUrl(
     credentials,
     `https://generativelanguage.googleapis.com/v1beta/openai/images/edits`,
-    "edits"
+    "edits",
   );
 
   // Build the multipart body as a Buffer with an explicit boundary instead of a global
@@ -1081,8 +1084,8 @@ export async function handleOpenAIImageEdit({
   const appendField = (name: string, value: string) => {
     partBuffers.push(
       Buffer.from(
-        `--${boundary}${CRLF}Content-Disposition: form-data; name="${name}"${CRLF}${CRLF}${value}${CRLF}`
-      )
+        `--${boundary}${CRLF}Content-Disposition: form-data; name="${name}"${CRLF}${CRLF}${value}${CRLF}`,
+      ),
     );
   };
   appendField("model", model);
@@ -1093,8 +1096,8 @@ export async function handleOpenAIImageEdit({
   partBuffers.push(
     Buffer.from(
       `--${boundary}${CRLF}Content-Disposition: form-data; name="image"; filename="image.png"${CRLF}` +
-        `Content-Type: ${imageMime || "image/png"}${CRLF}${CRLF}`
-    )
+        `Content-Type: ${imageMime || "image/png"}${CRLF}${CRLF}`,
+    ),
   );
   partBuffers.push(imageBytes);
   partBuffers.push(Buffer.from(`${CRLF}--${boundary}--${CRLF}`));
@@ -1107,7 +1110,10 @@ export async function handleOpenAIImageEdit({
   if (token) headers["Authorization"] = `Bearer ${token}`;
 
   if (log) {
-    log.info("IMAGE", `${provider}/${model} (edit) | prompt: "${prompt.slice(0, 60)}..." -> ${url}`);
+    log.info(
+      "IMAGE",
+      `${provider}/${model} (edit) | prompt: "${prompt.slice(0, 60)}..." -> ${url}`,
+    );
   }
 
   const result = await fetchImageEndpoint(
@@ -1115,7 +1121,7 @@ export async function handleOpenAIImageEdit({
     headers,
     multipartBody as unknown as BodyInit,
     provider,
-    log
+    log,
   );
 
   saveCallLog({
@@ -1201,7 +1207,7 @@ export async function handleImageEdit({
     // unrelated image and confusing the user.
     log?.warn?.(
       "IMAGE",
-      `chatgpt-web edit: no cached match for sha256=${imageHash.slice(0, 16)} (bytes=${imageBytes.length}); returning 400`
+      `chatgpt-web edit: no cached match for sha256=${imageHash.slice(0, 16)} (bytes=${imageBytes.length}); returning 400`,
     );
     return saveImageErrorResult({
       provider,
@@ -1762,7 +1768,7 @@ async function handleRecraftImageGeneration({
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(upstreamBody),
-      }
+      },
     );
 
     if (!response.ok) {
@@ -2024,7 +2030,7 @@ function parseSizeToDimensions(size, fallback = 1024) {
 function normalizeRequestedImageFormat(
   body,
   fallback = "png",
-  allowedFormats = ["jpeg", "png", "webp"]
+  allowedFormats = ["jpeg", "png", "webp"],
 ) {
   const formatCandidate =
     typeof body?.output_format === "string"
@@ -2105,7 +2111,7 @@ async function normalizeProviderImagePayload(payload, body, log) {
   if (normalized.length === 0 && log) {
     log.warn(
       "IMAGE",
-      `Provider returned no recognizable image payload: ${JSON.stringify(payload).slice(0, 240)}`
+      `Provider returned no recognizable image payload: ${JSON.stringify(payload).slice(0, 240)}`,
     );
   }
 
@@ -2173,7 +2179,7 @@ function isHttpUrl(value) {
  * users will receive a 400 from OpenAI.
  */
 export function extractImageGenerationCalls(
-  sseText: string
+  sseText: string,
 ): Array<{ b64: string; revisedPrompt: string | null }> {
   const results: Array<{ b64: string; revisedPrompt: string | null }> = [];
   const lines = String(sseText || "").split("\n");
@@ -2234,7 +2240,7 @@ async function handleCodexImageGeneration({
   if (log && requestedCount > 1) {
     log.warn(
       "IMAGE",
-      `Codex hosted image_generation returns one image per call; requested n=${requestedCount} will fan out in parallel`
+      `Codex hosted image_generation returns one image per call; requested n=${requestedCount} will fan out in parallel`,
     );
   }
 
@@ -2299,7 +2305,7 @@ async function handleCodexImageGeneration({
   if (log) {
     log.info(
       "IMAGE",
-      `${provider}/${model} (codex-responses) | prompt: "${prompt.slice(0, 60)}..."`
+      `${provider}/${model} (codex-responses) | prompt: "${prompt.slice(0, 60)}..."`,
     );
   }
 
@@ -2364,7 +2370,7 @@ async function handleCodexImageGeneration({
   };
 
   const imageResults = await Promise.all(
-    Array.from({ length: requestedCount }, () => fetchOneImage())
+    Array.from({ length: requestedCount }, () => fetchOneImage()),
   );
 
   const collected: Array<{ b64_json: string; revised_prompt?: string }> = [];
@@ -2425,7 +2431,14 @@ export function saveImageSuccessResult({
   };
 }
 
-export function saveImageErrorResult({ provider, model, status, startTime, error, requestBody = null }) {
+export function saveImageErrorResult({
+  provider,
+  model,
+  status,
+  startTime,
+  error,
+  requestBody = null,
+}) {
   saveCallLog({
     method: "POST",
     path: "/v1/images/generations",
@@ -2569,7 +2582,7 @@ async function handleNanoBananaImageGeneration({
     const promptPreview = String(body.prompt ?? "").slice(0, 60);
     log.info(
       "IMAGE",
-      `${provider}/${model} (nanobanana ${isPro ? "pro" : "flash"}) | prompt: "${promptPreview}..."`
+      `${provider}/${model} (nanobanana ${isPro ? "pro" : "flash"}) | prompt: "${promptPreview}..."`,
     );
   }
 
@@ -2588,7 +2601,7 @@ async function handleNanoBananaImageGeneration({
       if (log) {
         log.error(
           "IMAGE",
-          `${provider} submit error ${submitResp.status}: ${errorText.slice(0, 200)}`
+          `${provider} submit error ${submitResp.status}: ${errorText.slice(0, 200)}`,
         );
       }
 
@@ -2663,11 +2676,11 @@ async function handleNanoBananaImageGeneration({
 
     const timeoutMs = normalizePositiveNumber(
       body.timeout_ms,
-      normalizePositiveNumber(process.env.NANOBANANA_POLL_TIMEOUT_MS, 120000)
+      normalizePositiveNumber(process.env.NANOBANANA_POLL_TIMEOUT_MS, 120000),
     );
     const pollIntervalMs = normalizePositiveNumber(
       body.poll_interval_ms,
-      normalizePositiveNumber(process.env.NANOBANANA_POLL_INTERVAL_MS, 2500)
+      normalizePositiveNumber(process.env.NANOBANANA_POLL_INTERVAL_MS, 2500),
     );
 
     let lastTaskData = null;
@@ -2684,7 +2697,7 @@ async function handleNanoBananaImageGeneration({
         if (log) {
           log.error(
             "IMAGE",
-            `${provider} poll error ${pollResp.status}: ${errorText.slice(0, 200)}`
+            `${provider} poll error ${pollResp.status}: ${errorText.slice(0, 200)}`,
           );
         }
         return { success: false, status: pollResp.status, error: errorText };
@@ -2847,7 +2860,7 @@ async function normalizeNanoBananaTaskResult(taskData, body, log) {
   if (log) {
     log.warn(
       "IMAGE",
-      `NanoBanana task completed without image payload: ${JSON.stringify(taskData).slice(0, 240)}`
+      `NanoBanana task completed without image payload: ${JSON.stringify(taskData).slice(0, 240)}`,
     );
   }
 

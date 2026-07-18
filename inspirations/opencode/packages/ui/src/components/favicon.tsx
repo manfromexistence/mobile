@@ -1,4 +1,4 @@
-import { Link, Meta } from "@solidjs/meta"
+import { Link, Meta } from "@solidjs/meta";
 
 export const Favicon = () => {
   return (
@@ -9,5 +9,5 @@ export const Favicon = () => {
       <Link rel="manifest" href="/site.webmanifest" />
       <Meta name="apple-mobile-web-app-title" content="OpenCode" />
     </>
-  )
-}
+  );
+};

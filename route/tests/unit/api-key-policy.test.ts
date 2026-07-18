@@ -198,7 +198,7 @@ function parseAccessSchedule(value) {
     )
       return null;
     const days = parsed.days.filter(
-      (d) => typeof d === "number" && Number.isInteger(d) && d >= 0 && d <= 6
+      (d) => typeof d === "number" && Number.isInteger(d) && d >= 0 && d <= 6,
     );
     return { enabled: parsed.enabled, from: parsed.from, until: parsed.until, days, tz: parsed.tz };
   } catch {
@@ -427,7 +427,7 @@ test("enforceApiKeyPolicy bypasses local mode and unknown keys", async () => {
 
   const unknown = await policy.enforceApiKeyPolicy(
     makePolicyRequest("sk-unknown"),
-    "openai/gpt-4.1"
+    "openai/gpt-4.1",
   );
   assert.equal(unknown.apiKey, "sk-unknown");
   assert.equal(unknown.apiKeyInfo, null);
@@ -466,7 +466,7 @@ test("enforceApiKeyPolicy rejects disallowed models and exhausted budgets", asyn
 
   const disallowed = await policy.enforceApiKeyPolicy(
     makePolicyRequest(restrictedKey.key),
-    "anthropic/claude-3-7-sonnet"
+    "anthropic/claude-3-7-sonnet",
   );
   assert.equal(disallowed.rejection.status, 403);
   assert.match(await readErrorMessage(disallowed.rejection), /not allowed/);
@@ -477,7 +477,7 @@ test("enforceApiKeyPolicy rejects disallowed models and exhausted budgets", asyn
 
   const overBudget = await policy.enforceApiKeyPolicy(
     makePolicyRequest(budgetedKey.key),
-    "openai/gpt-4.1"
+    "openai/gpt-4.1",
   );
   assert.equal(overBudget.rejection.status, 429);
   assert.match(await readErrorMessage(overBudget.rejection), /Daily budget exceeded/);
@@ -492,7 +492,7 @@ test("enforceApiKeyPolicy returns Anthropic error envelope for /v1/messages mode
 
   const denied = await policy.enforceApiKeyPolicy(
     makeAnthropicPolicyRequest(restrictedKey.key),
-    "claude-fable-5"
+    "claude-fable-5",
   );
 
   assert.equal(denied.rejection.status, 400);
@@ -502,7 +502,7 @@ test("enforceApiKeyPolicy returns Anthropic error envelope for /v1/messages mode
   assert.match(body.error.message, /claude-fable-5/);
   assert.equal(
     body.error.message,
-    'Model "claude-fable-5" is not enabled or quota is insufficient. Choose another allowed model.'
+    'Model "claude-fable-5" is not enabled or quota is insufficient. Choose another allowed model.',
   );
   assert.doesNotMatch(body.error.message, /login|authenticate|api key|credential|omniroute/i);
   assert.equal(body.error.code, undefined);
@@ -515,7 +515,7 @@ test("enforceApiKeyPolicy does not rate-limit unrestricted keys by default", asy
   for (let i = 0; i < 1005; i += 1) {
     const result = await policy.enforceApiKeyPolicy(
       makePolicyRequest(unrestrictedKey.key),
-      "openai/gpt-4.1"
+      "openai/gpt-4.1",
     );
     assert.equal(result.rejection, null);
   }
@@ -528,13 +528,13 @@ test("enforceApiKeyPolicy enforces explicit env fallback request limits", async 
 
   const first = await policy.enforceApiKeyPolicy(
     makePolicyRequest(unrestrictedKey.key),
-    "openai/gpt-4.1"
+    "openai/gpt-4.1",
   );
   assert.equal(first.rejection, null);
 
   const second = await policy.enforceApiKeyPolicy(
     makePolicyRequest(unrestrictedKey.key),
-    "openai/gpt-4.1"
+    "openai/gpt-4.1",
   );
   assert.equal(second.rejection.status, 429);
   assert.match(await readErrorMessage(second.rejection), /Request limit exceeded/);
@@ -549,13 +549,13 @@ test("enforceApiKeyPolicy enforces custom multi-window rate limits", async () =>
 
   const first = await policy.enforceApiKeyPolicy(
     makePolicyRequest(limitedKey.key),
-    "openai/gpt-4.1"
+    "openai/gpt-4.1",
   );
   assert.equal(first.rejection, null);
 
   const second = await policy.enforceApiKeyPolicy(
     makePolicyRequest(limitedKey.key),
-    "openai/gpt-4.1"
+    "openai/gpt-4.1",
   );
   assert.equal(second.rejection.status, 429);
   assert.match(await readErrorMessage(second.rejection), /Request limit exceeded/);
@@ -589,20 +589,20 @@ test("enforceApiKeyPolicy enforces combo allowlists separately from model allowl
 
   const allowed = await policy.enforceApiKeyPolicy(
     makePolicyRequest(allowedKey.key),
-    "combo/fast-chat"
+    "combo/fast-chat",
   );
   assert.equal(allowed.rejection, null);
 
   const blocked = await policy.enforceApiKeyPolicy(
     makePolicyRequest(blockedKey.key),
-    "combo/fast-chat"
+    "combo/fast-chat",
   );
   assert.equal(blocked.rejection.status, 403);
   assert.match(await readErrorMessage(blocked.rejection), /Combo "fast-chat" is not allowed/);
 
   const mapped = await policy.enforceApiKeyPolicy(
     makePolicyRequest(allowedKey.key),
-    "mapped-model-1"
+    "mapped-model-1",
   );
   assert.equal(mapped.rejection, null);
 });
@@ -614,7 +614,7 @@ test("enforceApiKeyPolicy applies configured throttle delay", async () => {
   const startedAt = Date.now();
   const result = await policy.enforceApiKeyPolicy(
     makePolicyRequest(delayedKey.key),
-    "openai/gpt-4.1"
+    "openai/gpt-4.1",
   );
 
   assert.equal(result.rejection, null);
@@ -631,14 +631,14 @@ test("enforceApiKeyPolicy enforces request-per-minute limits and returns success
 
   const first = await policy.enforceApiKeyPolicy(
     makePolicyRequest(limitedKey.key),
-    "openai/gpt-4.1"
+    "openai/gpt-4.1",
   );
   assert.equal(first.rejection, null);
   assert.equal(first.apiKeyInfo.maxRequestsPerMinute, 1);
 
   const second = await policy.enforceApiKeyPolicy(
     makePolicyRequest(limitedKey.key),
-    "openai/gpt-4.1"
+    "openai/gpt-4.1",
   );
   assert.equal(second.rejection.status, 429);
   assert.match(await readErrorMessage(second.rejection), /Request limit exceeded/);

@@ -184,15 +184,15 @@ function filterEntries(entries: ToolManifestEntry[], profile: ToolProfile): Tool
  */
 export function reduceToolManifest(
   manifest: ToolManifestEntry[],
-  profile: ToolProfile
+  profile: ToolProfile,
 ): ToolManifestEntry[];
 export function reduceToolManifest(
   manifest: Record<string, ToolManifestEntry>,
-  profile: ToolProfile
+  profile: ToolProfile,
 ): Record<string, ToolManifestEntry>;
 export function reduceToolManifest(
   manifest: ToolManifestEntry[] | Record<string, ToolManifestEntry>,
-  profile: ToolProfile
+  profile: ToolProfile,
 ): ToolManifestEntry[] | Record<string, ToolManifestEntry> {
   if (Array.isArray(manifest)) {
     return filterEntries(manifest, profile);
@@ -211,7 +211,7 @@ export function reduceToolManifest(
  * stats module (chars / 4 ceiling). Accepts both array and Record forms.
  */
 export function estimateManifestTokens(
-  manifest: ToolManifestEntry[] | Record<string, ToolManifestEntry>
+  manifest: ToolManifestEntry[] | Record<string, ToolManifestEntry>,
 ): number {
   const entries = Array.isArray(manifest) ? manifest : Object.values(manifest);
   if (entries.length === 0) return 0;
@@ -234,7 +234,7 @@ export function estimateManifestTokens(
  * and are intentionally not env-exposed here (a tools/list-level hook is a tracked follow-up).
  */
 export function readMcpToolProfileFromEnv(
-  env: Record<string, string | undefined>
+  env: Record<string, string | undefined>,
 ): ToolProfile | null {
   const parse = (value: string | undefined): string[] =>
     value

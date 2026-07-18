@@ -1,5 +1,5 @@
-import type { ThemeLike } from '@pierre/theming';
-import { colorUtils, normalizeThemeColors } from '@pierre/theming/color';
+import type { ThemeLike } from "@pierre/theming";
+import { colorUtils, normalizeThemeColors } from "@pierre/theming/color";
 
 /**
  * Theme-like shape compatible with Shiki/VS Code theme format (e.g. from
@@ -40,23 +40,23 @@ export type TreeThemeStyles = Record<string, string>;
  */
 export function themeToTreeStyles(theme: TreeThemeInput): TreeThemeStyles {
   const colors = normalizeThemeColors(theme).colors ?? {};
-  const isDark = theme.type === 'dark';
+  const isDark = theme.type === "dark";
 
   // Pull every resolved key into a named local so the mapping below reads as a
   // flat list of tokens rather than inline lookups.
-  const sidebarBg = colors['sideBar.background'];
-  const sidebarFg = colors['sideBar.foreground'];
-  const sectionHeaderFg = colors['sideBarSectionHeader.foreground'];
-  const selectionFg = colors['list.activeSelectionForeground'];
-  const hoverBg = colors['list.hoverBackground'];
-  const focusRing = colors['list.focusOutline'];
-  const inputBg = colors['input.background'];
-  const sidebarBorder = colors['sideBar.border'];
-  const inputBorder = colors['input.border'];
-  const scrollbarThumb = colors['scrollbarSlider.background'];
-  const addedFg = colors['gitDecoration.addedResourceForeground'];
-  const modifiedFg = colors['gitDecoration.modifiedResourceForeground'];
-  const deletedFg = colors['gitDecoration.deletedResourceForeground'];
+  const sidebarBg = colors["sideBar.background"];
+  const sidebarFg = colors["sideBar.foreground"];
+  const sectionHeaderFg = colors["sideBarSectionHeader.foreground"];
+  const selectionFg = colors["list.activeSelectionForeground"];
+  const hoverBg = colors["list.hoverBackground"];
+  const focusRing = colors["list.focusOutline"];
+  const inputBg = colors["input.background"];
+  const sidebarBorder = colors["sideBar.border"];
+  const inputBorder = colors["input.border"];
+  const scrollbarThumb = colors["scrollbarSlider.background"];
+  const addedFg = colors["gitDecoration.addedResourceForeground"];
+  const modifiedFg = colors["gitDecoration.modifiedResourceForeground"];
+  const deletedFg = colors["gitDecoration.deletedResourceForeground"];
 
   // Hover fallback is chosen by the ACTUAL sidebar surface luminance, not
   // theme.type — slack-ochin is tagged `light` but ships a dark sidebar.
@@ -68,9 +68,9 @@ export function themeToTreeStyles(theme: TreeThemeInput): TreeThemeStyles {
   // editor.selectionBackground is the shared tail in both branches. The
   // `rawSelectionBg != null` guard stops an absent selection from being treated
   // as "same surface" when sidebarBg is also absent.
-  const rawSelectionBg = colors['list.activeSelectionBackground'];
-  const focusBackground = colors['list.focusBackground'];
-  const editorSelectionBg = colors['editor.selectionBackground'];
+  const rawSelectionBg = colors["list.activeSelectionBackground"];
+  const focusBackground = colors["list.focusBackground"];
+  const editorSelectionBg = colors["editor.selectionBackground"];
   const sidebarBgLower = sidebarBg?.toLowerCase();
   const selectionBg =
     rawSelectionBg != null && rawSelectionBg.toLowerCase() === sidebarBgLower
@@ -78,42 +78,41 @@ export function themeToTreeStyles(theme: TreeThemeInput): TreeThemeStyles {
       : (rawSelectionBg ?? editorSelectionBg);
 
   const result: TreeThemeStyles = {
-    colorScheme: isDark ? 'dark' : 'light',
-    backgroundColor: sidebarBg ?? '',
-    color: sidebarFg ?? '',
+    colorScheme: isDark ? "dark" : "light",
+    backgroundColor: sidebarBg ?? "",
+    color: sidebarFg ?? "",
     borderColor:
-      'var(--trees-theme-sidebar-border, light-dark(oklch(0% 0 0 / 0.15), oklch(100% 0 0 / 0.15)))',
-    '--trees-theme-sidebar-bg': sidebarBg ?? '',
-    '--trees-theme-sidebar-fg': sidebarFg ?? '',
-    '--trees-theme-sidebar-header-fg': sectionHeaderFg ?? '',
-    '--trees-theme-list-active-selection-fg': selectionFg ?? '',
-    '--trees-theme-list-hover-bg':
-      hoverBg ??
-      (sideBarIsDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)'),
-    '--trees-theme-list-active-selection-bg': selectionBg ?? 'transparent',
-    '--trees-theme-focus-ring': focusRing ?? sidebarFg ?? '',
-    '--trees-theme-input-bg': inputBg ?? '',
+      "var(--trees-theme-sidebar-border, light-dark(oklch(0% 0 0 / 0.15), oklch(100% 0 0 / 0.15)))",
+    "--trees-theme-sidebar-bg": sidebarBg ?? "",
+    "--trees-theme-sidebar-fg": sidebarFg ?? "",
+    "--trees-theme-sidebar-header-fg": sectionHeaderFg ?? "",
+    "--trees-theme-list-active-selection-fg": selectionFg ?? "",
+    "--trees-theme-list-hover-bg":
+      hoverBg ?? (sideBarIsDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)"),
+    "--trees-theme-list-active-selection-bg": selectionBg ?? "transparent",
+    "--trees-theme-focus-ring": focusRing ?? sidebarFg ?? "",
+    "--trees-theme-input-bg": inputBg ?? "",
   };
 
   // Expose explicit sidebar border token when present.
   // `borderColor` above always falls back to the default light/dark value.
-  if (sidebarBorder != null && sidebarBorder !== '') {
-    result['--trees-theme-sidebar-border'] = sidebarBorder;
+  if (sidebarBorder != null && sidebarBorder !== "") {
+    result["--trees-theme-sidebar-border"] = sidebarBorder;
   }
-  if (inputBorder != null && inputBorder !== '') {
-    result['--trees-theme-input-border'] = inputBorder;
+  if (inputBorder != null && inputBorder !== "") {
+    result["--trees-theme-input-border"] = inputBorder;
   }
-  if (scrollbarThumb != null && scrollbarThumb !== '') {
-    result['--trees-theme-scrollbar-thumb'] = scrollbarThumb;
+  if (scrollbarThumb != null && scrollbarThumb !== "") {
+    result["--trees-theme-scrollbar-thumb"] = scrollbarThumb;
   }
-  if (addedFg != null && addedFg !== '') {
-    result['--trees-theme-git-added-fg'] = addedFg;
+  if (addedFg != null && addedFg !== "") {
+    result["--trees-theme-git-added-fg"] = addedFg;
   }
-  if (modifiedFg != null && modifiedFg !== '') {
-    result['--trees-theme-git-modified-fg'] = modifiedFg;
+  if (modifiedFg != null && modifiedFg !== "") {
+    result["--trees-theme-git-modified-fg"] = modifiedFg;
   }
-  if (deletedFg != null && deletedFg !== '') {
-    result['--trees-theme-git-deleted-fg'] = deletedFg;
+  if (deletedFg != null && deletedFg !== "") {
+    result["--trees-theme-git-deleted-fg"] = deletedFg;
   }
 
   return result;

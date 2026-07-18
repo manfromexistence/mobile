@@ -5,7 +5,7 @@ export function errorDescriptionKey(error: unknown) {
     "localServerStartup" in error &&
     error.localServerStartup === true
   ) {
-    return "error.page.description.localServerStartup" as const
+    return "error.page.description.localServerStartup" as const;
   }
-  return "error.page.description" as const
+  return "error.page.description" as const;
 }

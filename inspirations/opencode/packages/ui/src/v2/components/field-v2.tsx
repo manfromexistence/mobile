@@ -10,55 +10,55 @@ import {
   Show,
   type ComponentProps,
   type ParentProps,
-} from "solid-js"
-import { TooltipV2 } from "./tooltip-v2"
-import "./field-v2.css"
+} from "solid-js";
+import { TooltipV2 } from "./tooltip-v2";
+import "./field-v2.css";
 
 type FieldContextValue = {
-  controlId: string
-  labelId: string
-  prefixId: string
-  suffixId: string
-  invalid: () => boolean
-  registerPrefix: () => void
-  unregisterPrefix: () => void
-  registerSuffix: () => void
-  unregisterSuffix: () => void
-  getDescribedBy: () => string | undefined
-}
+  controlId: string;
+  labelId: string;
+  prefixId: string;
+  suffixId: string;
+  invalid: () => boolean;
+  registerPrefix: () => void;
+  unregisterPrefix: () => void;
+  registerSuffix: () => void;
+  unregisterSuffix: () => void;
+  getDescribedBy: () => string | undefined;
+};
 
-const FieldContext = createContext<FieldContextValue>()
+const FieldContext = createContext<FieldContextValue>();
 
 function useField() {
-  const ctx = useContext(FieldContext)
+  const ctx = useContext(FieldContext);
   if (!ctx) {
-    throw new Error("Field subcomponents must be used within <Field>")
+    throw new Error("Field subcomponents must be used within <Field>");
   }
-  return ctx
+  return ctx;
 }
 
 const CONTROL_SELECTOR = [
   "[data-slot='text-input-v2-input']",
   "[data-slot='textarea-v2-textarea']",
   "[data-slot='inline-input-v2-input']",
-].join(", ")
+].join(", ");
 
 export interface FieldV2Props extends ComponentProps<"div"> {
-  invalid?: boolean
+  invalid?: boolean;
 }
 
 function FieldV2Root(props: ParentProps<FieldV2Props>) {
-  const [local, rest] = splitProps(props, ["invalid", "class", "classList", "children"])
+  const [local, rest] = splitProps(props, ["invalid", "class", "classList", "children"]);
 
-  const controlId = `field-control-${createUniqueId()}`
-  const labelId = `field-label-${createUniqueId()}`
-  const prefixId = `field-prefix-${createUniqueId()}`
-  const suffixId = `field-suffix-${createUniqueId()}`
+  const controlId = `field-control-${createUniqueId()}`;
+  const labelId = `field-label-${createUniqueId()}`;
+  const prefixId = `field-prefix-${createUniqueId()}`;
+  const suffixId = `field-suffix-${createUniqueId()}`;
 
-  const [prefixCount, setPrefixCount] = createSignal(0)
-  const [suffixCount, setSuffixCount] = createSignal(0)
+  const [prefixCount, setPrefixCount] = createSignal(0);
+  const [suffixCount, setSuffixCount] = createSignal(0);
 
-  let rootRef: HTMLDivElement | undefined
+  let rootRef: HTMLDivElement | undefined;
 
   const ctx: FieldContextValue = {
     controlId,
@@ -71,53 +71,56 @@ function FieldV2Root(props: ParentProps<FieldV2Props>) {
     registerSuffix: () => setSuffixCount((n) => n + 1),
     unregisterSuffix: () => setSuffixCount((n) => Math.max(0, n - 1)),
     getDescribedBy: () => {
-      const ids: string[] = []
-      if (prefixCount() > 0) ids.push(prefixId)
-      if (suffixCount() > 0) ids.push(suffixId)
-      return ids.length > 0 ? ids.join(" ") : undefined
+      const ids: string[] = [];
+      if (prefixCount() > 0) ids.push(prefixId);
+      if (suffixCount() > 0) ids.push(suffixId);
+      return ids.length > 0 ? ids.join(" ") : undefined;
     },
-  }
+  };
 
   const syncControlA11y = () => {
-    const root = rootRef
-    if (!root) return
+    const root = rootRef;
+    if (!root) return;
 
-    const control = root.querySelector(CONTROL_SELECTOR) as HTMLInputElement | HTMLTextAreaElement | null
-    if (!control) return
+    const control = root.querySelector(CONTROL_SELECTOR) as
+      | HTMLInputElement
+      | HTMLTextAreaElement
+      | null;
+    if (!control) return;
 
     const shell = control.closest(
       "[data-component='text-input-v2'], [data-component='textarea-v2'], [data-component='inline-input-v2']",
-    ) as HTMLElement | null
+    ) as HTMLElement | null;
 
-    control.id = controlId
-    control.setAttribute("aria-labelledby", labelId)
+    control.id = controlId;
+    control.setAttribute("aria-labelledby", labelId);
 
-    const describedBy = ctx.getDescribedBy()
+    const describedBy = ctx.getDescribedBy();
     if (describedBy) {
-      control.setAttribute("aria-describedby", describedBy)
+      control.setAttribute("aria-describedby", describedBy);
     } else {
-      control.removeAttribute("aria-describedby")
+      control.removeAttribute("aria-describedby");
     }
 
     if (ctx.invalid()) {
-      control.setAttribute("aria-invalid", "true")
-      shell?.setAttribute("data-invalid", "")
+      control.setAttribute("aria-invalid", "true");
+      shell?.setAttribute("data-invalid", "");
     } else {
-      control.removeAttribute("aria-invalid")
-      shell?.removeAttribute("data-invalid")
+      control.removeAttribute("aria-invalid");
+      shell?.removeAttribute("data-invalid");
     }
-  }
+  };
 
   onMount(() => {
-    syncControlA11y()
-  })
+    syncControlA11y();
+  });
 
   createEffect(() => {
-    prefixCount()
-    suffixCount()
-    local.invalid
-    syncControlA11y()
-  })
+    prefixCount();
+    suffixCount();
+    local.invalid;
+    syncControlA11y();
+  });
 
   return (
     <FieldContext.Provider value={ctx}>
@@ -134,12 +137,19 @@ function FieldV2Root(props: ParentProps<FieldV2Props>) {
         {local.children}
       </div>
     </FieldContext.Provider>
-  )
+  );
 }
 
 function FieldLabelInfoIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
       <path
         fill-rule="evenodd"
         clip-rule="evenodd"
@@ -147,17 +157,17 @@ function FieldLabelInfoIcon() {
         fill="currentColor"
       />
     </svg>
-  )
+  );
 }
 
 export interface FieldLabelProps extends ComponentProps<"label"> {
   /** When set, shows the info icon with a tooltip containing this text. */
-  tooltip?: string
+  tooltip?: string;
 }
 
 function FieldLabel(props: ParentProps<FieldLabelProps>) {
-  const [local, rest] = splitProps(props, ["class", "classList", "children", "tooltip"])
-  const field = useField()
+  const [local, rest] = splitProps(props, ["class", "classList", "children", "tooltip"]);
+  const field = useField();
 
   return (
     <label
@@ -186,17 +196,17 @@ function FieldLabel(props: ParentProps<FieldLabelProps>) {
         )}
       </Show>
     </label>
-  )
+  );
 }
 
 function FieldPrefix(props: ParentProps<ComponentProps<"div">>) {
-  const [local, rest] = splitProps(props, ["class", "classList", "children"])
-  const field = useField()
+  const [local, rest] = splitProps(props, ["class", "classList", "children"]);
+  const field = useField();
 
   onMount(() => {
-    field.registerPrefix()
-    onCleanup(() => field.unregisterPrefix())
-  })
+    field.registerPrefix();
+    onCleanup(() => field.unregisterPrefix());
+  });
 
   return (
     <div
@@ -210,17 +220,17 @@ function FieldPrefix(props: ParentProps<ComponentProps<"div">>) {
     >
       {local.children}
     </div>
-  )
+  );
 }
 
 function FieldSuffix(props: ParentProps<ComponentProps<"div">>) {
-  const [local, rest] = splitProps(props, ["class", "classList", "children"])
-  const field = useField()
+  const [local, rest] = splitProps(props, ["class", "classList", "children"]);
+  const field = useField();
 
   onMount(() => {
-    field.registerSuffix()
-    onCleanup(() => field.unregisterSuffix())
-  })
+    field.registerSuffix();
+    onCleanup(() => field.unregisterSuffix());
+  });
 
   return (
     <div
@@ -234,12 +244,12 @@ function FieldSuffix(props: ParentProps<ComponentProps<"div">>) {
     >
       {local.children}
     </div>
-  )
+  );
 }
 
 /** Optional layout wrapper around the control. */
 function FieldControl(props: ParentProps<ComponentProps<"div">>) {
-  const [local, rest] = splitProps(props, ["class", "classList", "children"])
+  const [local, rest] = splitProps(props, ["class", "classList", "children"]);
 
   return (
     <div
@@ -252,7 +262,7 @@ function FieldControl(props: ParentProps<ComponentProps<"div">>) {
     >
       {local.children}
     </div>
-  )
+  );
 }
 
 export const FieldV2 = Object.assign(FieldV2Root, {
@@ -260,6 +270,6 @@ export const FieldV2 = Object.assign(FieldV2Root, {
   Prefix: FieldPrefix,
   Suffix: FieldSuffix,
   Control: FieldControl,
-})
+});
 
-export const Field = FieldV2
+export const Field = FieldV2;

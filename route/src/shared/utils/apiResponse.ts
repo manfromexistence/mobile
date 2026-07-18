@@ -31,7 +31,7 @@ export function errorResponse(
   code: string,
   message: string,
   status: number,
-  opts?: { correlationId?: string; details?: Record<string, unknown> }
+  opts?: { correlationId?: string; details?: Record<string, unknown> },
 ): NextResponse {
   const body: { error: ApiError } = {
     error: {

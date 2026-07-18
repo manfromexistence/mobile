@@ -18,7 +18,7 @@ test("Every CLI_TOOLS entry passes CliCatalogEntrySchema.parse() without error",
     assert.equal(
       result.success,
       true,
-      `Entry '${key}' failed schema validation: ${!result.success ? JSON.stringify(result.error.issues) : ""}`
+      `Entry '${key}' failed schema validation: ${!result.success ? JSON.stringify(result.error.issues) : ""}`,
     );
   }
 });
@@ -28,7 +28,7 @@ test("CliCatalogSchema.parse() accepts the full CLI_TOOLS record", () => {
   assert.equal(
     result.success,
     true,
-    result.success ? "" : `CliCatalogSchema failed: ${JSON.stringify(result.error.issues)}`
+    result.success ? "" : `CliCatalogSchema failed: ${JSON.stringify(result.error.issues)}`,
   );
 });
 
@@ -38,7 +38,7 @@ test("CliCatalogEntrySchema throws ZodError for invalid category value", () => {
   const invalid = { ...base, category: "invalid" };
   assert.throws(
     () => CliCatalogEntrySchema.parse(invalid),
-    (err) => err instanceof z.ZodError
+    (err) => err instanceof z.ZodError,
   );
 });
 
@@ -47,7 +47,7 @@ test("CliCatalogEntrySchema throws ZodError for invalid color (not #RRGGBB)", ()
   const invalid = { ...base, color: "xyz" };
   assert.throws(
     () => CliCatalogEntrySchema.parse(invalid),
-    (err) => err instanceof z.ZodError
+    (err) => err instanceof z.ZodError,
   );
 });
 
@@ -57,7 +57,7 @@ test("CliCatalogEntrySchema throws ZodError for invalid baseUrlSupport value", (
   const invalid = { ...base, baseUrlSupport: "maybe" };
   assert.throws(
     () => CliCatalogEntrySchema.parse(invalid),
-    (err) => err instanceof z.ZodError
+    (err) => err instanceof z.ZodError,
   );
 });
 
@@ -66,7 +66,7 @@ test("CliCatalogEntrySchema throws ZodError when required string fields are empt
   const invalid = { ...base, vendor: "" };
   assert.throws(
     () => CliCatalogEntrySchema.parse(invalid),
-    (err) => err instanceof z.ZodError
+    (err) => err instanceof z.ZodError,
   );
 });
 
@@ -76,7 +76,7 @@ test("CliCatalogEntrySchema throws ZodError for invalid configType value", () =>
   const invalid = { ...base, configType: "unknown-type" };
   assert.throws(
     () => CliCatalogEntrySchema.parse(invalid),
-    (err) => err instanceof z.ZodError
+    (err) => err instanceof z.ZodError,
   );
 });
 

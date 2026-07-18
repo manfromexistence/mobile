@@ -58,7 +58,7 @@ export async function submitComfyWorkflow(baseUrl: string, workflow: object): Pr
 export async function pollComfyResult(
   baseUrl: string,
   promptId: string,
-  timeoutMs: number = 120_000
+  timeoutMs: number = 120_000,
 ): Promise<ComfyHistoryEntry> {
   const start = Date.now();
 
@@ -87,7 +87,7 @@ export async function fetchComfyOutput(
   baseUrl: string,
   filename: string,
   subfolder: string,
-  type: string
+  type: string,
 ): Promise<ArrayBuffer> {
   const url = new URL(`${baseUrl}/view`);
   url.searchParams.set("filename", filename);
@@ -107,7 +107,7 @@ export async function fetchComfyOutput(
  * Returns an array of { filename, subfolder, type } for each output.
  */
 export function extractComfyOutputFiles(
-  historyEntry: ComfyHistoryEntry
+  historyEntry: ComfyHistoryEntry,
 ): Array<{ filename: string; subfolder: string; type: string }> {
   const files: Array<{ filename: string; subfolder: string; type: string }> = [];
 

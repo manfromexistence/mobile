@@ -24,7 +24,9 @@ const core = await import("../../src/lib/db/core.ts");
 
 function getDb() {
   return core.getDbInstance() as unknown as {
-    prepare: <TRow = unknown>(sql: string) => {
+    prepare: <TRow = unknown>(
+      sql: string,
+    ) => {
       all: (...params: unknown[]) => TRow[];
       get: (...params: unknown[]) => TRow | undefined;
       run: (...params: unknown[]) => { changes: number };
@@ -35,9 +37,7 @@ function getDb() {
 function listSqliteMaster(type: "table" | "index"): string[] {
   const db = getDb();
   const rows = db
-    .prepare<{ name: string }>(
-      `SELECT name FROM sqlite_master WHERE type = ? ORDER BY name`
-    )
+    .prepare<{ name: string }>(`SELECT name FROM sqlite_master WHERE type = ? ORDER BY name`)
     .all(type);
   return rows.map((r) => r.name);
 }
@@ -64,13 +64,16 @@ test("migrations 073-075 create all expected tables and indexes on first init", 
   const indexes = listSqliteMaster("index");
 
   for (const table of EXPECTED_TABLES) {
-    assert.ok(tables.includes(table), `Expected table '${table}' to exist. Found: ${tables.join(", ")}`);
+    assert.ok(
+      tables.includes(table),
+      `Expected table '${table}' to exist. Found: ${tables.join(", ")}`,
+    );
   }
 
   for (const idx of EXPECTED_INDEXES) {
     assert.ok(
       indexes.includes(idx),
-      `Expected index '${idx}' to exist. Found: ${indexes.join(", ")}`
+      `Expected index '${idx}' to exist. Found: ${indexes.join(", ")}`,
     );
   }
 });
@@ -92,14 +95,14 @@ test("running migration runner a second time produces zero errors and identical 
   for (const table of EXPECTED_TABLES) {
     assert.ok(
       tables.includes(table),
-      `Table '${table}' missing after second init. Tables: ${tables.join(", ")}`
+      `Table '${table}' missing after second init. Tables: ${tables.join(", ")}`,
     );
   }
 
   for (const idx of EXPECTED_INDEXES) {
     assert.ok(
       indexes.includes(idx),
-      `Index '${idx}' missing after second init. Indexes: ${indexes.join(", ")}`
+      `Index '${idx}' missing after second init. Indexes: ${indexes.join(", ")}`,
     );
   }
 });
@@ -108,7 +111,7 @@ test("quota_pools schema has correct columns", () => {
   const db = getDb();
   const rows = db
     .prepare<{ name: string; type: string; notnull: number; pk: number }>(
-      `PRAGMA table_info(quota_pools)`
+      `PRAGMA table_info(quota_pools)`,
     )
     .all();
 
@@ -126,7 +129,7 @@ test("quota_allocations schema has correct columns and FK", () => {
   const db = getDb();
   const rows = db
     .prepare<{ name: string; type: string; notnull: number; pk: number }>(
-      `PRAGMA table_info(quota_allocations)`
+      `PRAGMA table_info(quota_allocations)`,
     )
     .all();
 
@@ -143,7 +146,7 @@ test("quota_consumption schema has correct columns", () => {
   const db = getDb();
   const rows = db
     .prepare<{ name: string; type: string; notnull: number; pk: number }>(
-      `PRAGMA table_info(quota_consumption)`
+      `PRAGMA table_info(quota_consumption)`,
     )
     .all();
 
@@ -159,7 +162,7 @@ test("provider_plans schema has correct columns", () => {
   const db = getDb();
   const rows = db
     .prepare<{ name: string; type: string; notnull: number; pk: number }>(
-      `PRAGMA table_info(provider_plans)`
+      `PRAGMA table_info(provider_plans)`,
     )
     .all();
 

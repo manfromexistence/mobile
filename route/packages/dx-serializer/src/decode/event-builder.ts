@@ -31,7 +31,7 @@ export function buildValueFromEvents(events: Iterable<JsonStreamEvent>): JsonVal
 // #region Asynchronous AST builder
 
 export async function buildValueFromEventsAsync(
-  events: AsyncIterable<JsonStreamEvent>
+  events: AsyncIterable<JsonStreamEvent>,
 ): Promise<JsonValue> {
   const state: BuildState = { stack: [], root: undefined };
 

@@ -1,47 +1,49 @@
-import type { Session } from "@opencode-ai/sdk/v2/client"
-import { Avatar } from "@opencode-ai/ui/avatar"
-import { Icon } from "@opencode-ai/ui/icon"
-import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { Spinner } from "@opencode-ai/ui/spinner"
-import { Tooltip } from "@opencode-ai/ui/tooltip"
-import { getFilename } from "@opencode-ai/core/util/path"
-import { A, useParams } from "@solidjs/router"
-import { type Accessor, createMemo, For, type JSX, Match, Show, Switch } from "solid-js"
-import { useServerSync } from "@/context/server-sync"
-import { useLanguage } from "@/context/language"
-import { getAvatarColors, type LocalProject, useLayout } from "@/context/layout"
-import { useNotification } from "@/context/notification"
-import { usePermission } from "@/context/permission"
-import { messageAgentColor } from "@/utils/agent"
-import { sessionTitle } from "@/utils/session-title"
-import { sessionPermissionRequest } from "../session/composer/session-request-tree"
-import { childSessionOnPath, getProjectAvatarSource, hasProjectPermissions } from "./helpers"
+import type { Session } from "@opencode-ai/sdk/v2/client";
+import { Avatar } from "@opencode-ai/ui/avatar";
+import { Icon } from "@opencode-ai/ui/icon";
+import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon";
+import { IconButton } from "@opencode-ai/ui/icon-button";
+import { Spinner } from "@opencode-ai/ui/spinner";
+import { Tooltip } from "@opencode-ai/ui/tooltip";
+import { getFilename } from "@opencode-ai/core/util/path";
+import { A, useParams } from "@solidjs/router";
+import { type Accessor, createMemo, For, type JSX, Match, Show, Switch } from "solid-js";
+import { useServerSync } from "@/context/server-sync";
+import { useLanguage } from "@/context/language";
+import { getAvatarColors, type LocalProject, useLayout } from "@/context/layout";
+import { useNotification } from "@/context/notification";
+import { usePermission } from "@/context/permission";
+import { messageAgentColor } from "@/utils/agent";
+import { sessionTitle } from "@/utils/session-title";
+import { sessionPermissionRequest } from "../session/composer/session-request-tree";
+import { childSessionOnPath, getProjectAvatarSource, hasProjectPermissions } from "./helpers";
 
 export const ProjectIcon = (props: {
-  project: LocalProject
-  class?: string
-  notify?: boolean
-  working?: boolean
+  project: LocalProject;
+  class?: string;
+  notify?: boolean;
+  working?: boolean;
 }): JSX.Element => {
-  const serverSync = useServerSync()
-  const notification = useNotification()
-  const permission = usePermission()
-  const dirs = createMemo(() => [props.project.worktree, ...(props.project.sandboxes ?? [])])
+  const serverSync = useServerSync();
+  const notification = useNotification();
+  const permission = usePermission();
+  const dirs = createMemo(() => [props.project.worktree, ...(props.project.sandboxes ?? [])]);
   const unseenCount = createMemo(() =>
     dirs().reduce((total, directory) => total + notification.project.unseenCount(directory), 0),
-  )
-  const hasError = createMemo(() => dirs().some((directory) => notification.project.unseenHasError(directory)))
+  );
+  const hasError = createMemo(() =>
+    dirs().some((directory) => notification.project.unseenHasError(directory)),
+  );
   const hasPermissions = createMemo(() =>
     dirs().some((directory) => {
       return hasProjectPermissions(serverSync().session.data.permission, (item) => {
-        if (serverSync().session.get(item.sessionID)?.directory !== directory) return false
-        return !permission.autoResponds(item, directory)
-      })
+        if (serverSync().session.get(item.sessionID)?.directory !== directory) return false;
+        return !permission.autoResponds(item, directory);
+      });
     }),
-  )
-  const notify = createMemo(() => props.notify && (hasPermissions() || unseenCount() > 0))
-  const name = createMemo(() => props.project.name || getFilename(props.project.worktree))
+  );
+  const notify = createMemo(() => props.notify && (hasPermissions() || unseenCount() > 0));
+  const name = createMemo(() => props.project.name || getFilename(props.project.worktree));
 
   return (
     <div class={`relative size-8 shrink-0 rounded ${props.class ?? ""}`}>
@@ -70,41 +72,41 @@ export const ProjectIcon = (props: {
         </div>
       </Show>
     </div>
-  )
-}
+  );
+};
 
 export type SessionItemProps = {
-  session: Session
-  list: Session[]
-  navList?: Accessor<Session[]>
-  slug: string
-  mobile?: boolean
-  dense?: boolean
-  showTooltip?: boolean
-  showChild?: boolean
-  level?: number
-  sidebarExpanded: Accessor<boolean>
-  clearHoverProjectSoon: () => void
-  prefetchSession: (session: Session, priority?: "high" | "low") => void
-  archiveSession: (session: Session) => Promise<void>
-}
+  session: Session;
+  list: Session[];
+  navList?: Accessor<Session[]>;
+  slug: string;
+  mobile?: boolean;
+  dense?: boolean;
+  showTooltip?: boolean;
+  showChild?: boolean;
+  level?: number;
+  sidebarExpanded: Accessor<boolean>;
+  clearHoverProjectSoon: () => void;
+  prefetchSession: (session: Session, priority?: "high" | "low") => void;
+  archiveSession: (session: Session) => Promise<void>;
+};
 
 const SessionRow = (props: {
-  session: Session
-  slug: string
-  mobile?: boolean
-  dense?: boolean
-  tint: Accessor<string | undefined>
-  isWorking: Accessor<boolean>
-  hasPermissions: Accessor<boolean>
-  hasError: Accessor<boolean>
-  unseenCount: Accessor<number>
-  clearHoverProjectSoon: () => void
-  sidebarOpened: Accessor<boolean>
-  warmPress: () => void
-  warmFocus: () => void
+  session: Session;
+  slug: string;
+  mobile?: boolean;
+  dense?: boolean;
+  tint: Accessor<string | undefined>;
+  isWorking: Accessor<boolean>;
+  hasPermissions: Accessor<boolean>;
+  hasError: Accessor<boolean>;
+  unseenCount: Accessor<number>;
+  clearHoverProjectSoon: () => void;
+  sidebarOpened: Accessor<boolean>;
+  warmPress: () => void;
+  warmFocus: () => void;
 }): JSX.Element => {
-  const title = () => sessionTitle(props.session.title)
+  const title = () => sessionTitle(props.session.title);
 
   return (
     <A
@@ -113,11 +115,15 @@ const SessionRow = (props: {
       onPointerDown={props.warmPress}
       onFocus={props.warmFocus}
       onClick={() => {
-        if (props.sidebarOpened()) return
-        props.clearHoverProjectSoon()
+        if (props.sidebarOpened()) return;
+        props.clearHoverProjectSoon();
       }}
     >
-      <Show when={props.isWorking() || props.hasPermissions() || props.hasError() || props.unseenCount() > 0}>
+      <Show
+        when={
+          props.isWorking() || props.hasPermissions() || props.hasError() || props.unseenCount() > 0
+        }
+      >
         <div
           class="shrink-0 size-6 flex items-center justify-center"
           style={{ color: props.tint() ?? "var(--icon-interactive-base)" }}
@@ -140,62 +146,66 @@ const SessionRow = (props: {
       </Show>
       <span class="text-14-regular text-text-strong min-w-0 flex-1 truncate">{title()}</span>
     </A>
-  )
-}
+  );
+};
 
 export const SessionItem = (props: SessionItemProps): JSX.Element => {
-  const params = useParams()
-  const layout = useLayout()
-  const language = useLanguage()
-  const notification = useNotification()
-  const permission = usePermission()
-  const serverSync = useServerSync()
-  const unseenCount = createMemo(() => notification.session.unseenCount(props.session.id))
-  const hasError = createMemo(() => notification.session.unseenHasError(props.session.id))
-  const [sessionStore] = serverSync().child(props.session.directory)
+  const params = useParams();
+  const layout = useLayout();
+  const language = useLanguage();
+  const notification = useNotification();
+  const permission = usePermission();
+  const serverSync = useServerSync();
+  const unseenCount = createMemo(() => notification.session.unseenCount(props.session.id));
+  const hasError = createMemo(() => notification.session.unseenHasError(props.session.id));
+  const [sessionStore] = serverSync().child(props.session.directory);
   const hasPermissions = createMemo(() => {
     return !!sessionPermissionRequest(
       sessionStore.session,
       serverSync().session.data.permission,
       props.session.id,
       (item) => {
-        return !permission.autoResponds(item, props.session.directory)
+        return !permission.autoResponds(item, props.session.directory);
       },
-    )
-  })
+    );
+  });
   const isWorking = createMemo(() => {
-    if (hasPermissions()) return false
-    return serverSync().session.data.session_working(props.session.id)
-  })
+    if (hasPermissions()) return false;
+    return serverSync().session.data.session_working(props.session.id);
+  });
 
   const tint = createMemo(() =>
     messageAgentColor(serverSync().session.data.message[props.session.id], sessionStore.agent),
-  )
-  const tooltip = createMemo(() => props.showTooltip ?? (props.mobile || !props.sidebarExpanded()))
+  );
+  const tooltip = createMemo(() => props.showTooltip ?? (props.mobile || !props.sidebarExpanded()));
   const currentChild = createMemo(() => {
-    if (!props.showChild) return
-    return childSessionOnPath(sessionStore.session, props.session.id, params.id)
-  })
+    if (!props.showChild) return;
+    return childSessionOnPath(sessionStore.session, props.session.id, params.id);
+  });
 
   const warm = (span: number, priority: "high" | "low") => {
-    const nav = props.navList?.()
-    const list = nav?.some((item) => item.id === props.session.id && item.directory === props.session.directory)
+    const nav = props.navList?.();
+    const list = nav?.some(
+      (item) => item.id === props.session.id && item.directory === props.session.directory,
+    )
       ? nav
-      : props.list
+      : props.list;
 
-    props.prefetchSession(props.session, priority)
+    props.prefetchSession(props.session, priority);
 
-    const idx = list.findIndex((item) => item.id === props.session.id && item.directory === props.session.directory)
-    if (idx === -1) return
+    const idx = list.findIndex(
+      (item) => item.id === props.session.id && item.directory === props.session.directory,
+    );
+    if (idx === -1) return;
 
     for (let step = 1; step <= span; step++) {
-      const next = list[idx + step]
-      if (next) props.prefetchSession(next, step === 1 ? "high" : priority)
+      const next = list[idx + step];
+      if (next) props.prefetchSession(next, step === 1 ? "high" : priority);
 
-      const prev = list[idx - step]
-      if (prev) props.prefetchSession(prev, step === 1 ? "high" : priority)
+      const prev = list[idx - step];
+      if (prev) props.prefetchSession(prev, step === 1 ? "high" : priority);
     }
-  }
+  };
 
   const item = (
     <SessionRow
@@ -213,7 +223,7 @@ export const SessionItem = (props: SessionItemProps): JSX.Element => {
       warmPress={() => warm(2, "high")}
       warmFocus={() => warm(2, "high")}
     />
-  )
+  );
 
   return (
     <>
@@ -258,9 +268,9 @@ export const SessionItem = (props: SessionItemProps): JSX.Element => {
                   class="size-6 rounded-md"
                   aria-label={language.t("common.archive")}
                   onClick={(event) => {
-                    event.preventDefault()
-                    event.stopPropagation()
-                    void props.archiveSession(props.session)
+                    event.preventDefault();
+                    event.stopPropagation();
+                    void props.archiveSession(props.session);
                   }}
                 />
               </Tooltip>
@@ -276,28 +286,28 @@ export const SessionItem = (props: SessionItemProps): JSX.Element => {
         )}
       </Show>
     </>
-  )
-}
+  );
+};
 
 export const NewSessionItem = (props: {
-  slug: string
-  mobile?: boolean
-  dense?: boolean
-  sidebarExpanded: Accessor<boolean>
-  clearHoverProjectSoon: () => void
+  slug: string;
+  mobile?: boolean;
+  dense?: boolean;
+  sidebarExpanded: Accessor<boolean>;
+  clearHoverProjectSoon: () => void;
 }): JSX.Element => {
-  const layout = useLayout()
-  const language = useLanguage()
-  const label = language.t("command.session.new")
-  const tooltip = () => props.mobile || !props.sidebarExpanded()
+  const layout = useLayout();
+  const language = useLanguage();
+  const label = language.t("command.session.new");
+  const tooltip = () => props.mobile || !props.sidebarExpanded();
   const item = (
     <A
       href={`/${props.slug}/session`}
       end
       class={`flex items-center gap-2 min-w-0 w-full text-left focus:outline-none ${props.dense ? "py-0.5" : "py-1"}`}
       onClick={() => {
-        if (layout.sidebar.opened()) return
-        props.clearHoverProjectSoon()
+        if (layout.sidebar.opened()) return;
+        props.clearHoverProjectSoon();
       }}
     >
       <div class="shrink-0 size-6 flex items-center justify-center">
@@ -305,14 +315,19 @@ export const NewSessionItem = (props: {
       </div>
       <span class="text-14-regular text-text-strong min-w-0 flex-1 truncate">{label}</span>
     </A>
-  )
+  );
 
   return (
     <div class="group/session relative w-full min-w-0 rounded-md cursor-default transition-colors pl-2 pr-3 hover:bg-surface-raised-base-hover [&:has(:focus-visible)]:bg-surface-raised-base-hover has-[.active]:bg-surface-base-active">
       <Show
         when={!tooltip()}
         fallback={
-          <Tooltip placement={props.mobile ? "bottom" : "right"} value={label} gutter={10} class="min-w-0 w-full">
+          <Tooltip
+            placement={props.mobile ? "bottom" : "right"}
+            value={label}
+            gutter={10}
+            class="min-w-0 w-full"
+          >
             {item}
           </Tooltip>
         }
@@ -320,16 +335,18 @@ export const NewSessionItem = (props: {
         {item}
       </Show>
     </div>
-  )
-}
+  );
+};
 
 export const SessionSkeleton = (props: { count?: number }): JSX.Element => {
-  const items = Array.from({ length: props.count ?? 4 }, (_, index) => index)
+  const items = Array.from({ length: props.count ?? 4 }, (_, index) => index);
   return (
     <div class="flex flex-col gap-1">
       <For each={items}>
-        {() => <div class="h-8 w-full rounded-md bg-surface-raised-base opacity-60 animate-pulse" />}
+        {() => (
+          <div class="h-8 w-full rounded-md bg-surface-raised-base opacity-60 animate-pulse" />
+        )}
       </For>
     </div>
-  )
-}
+  );
+};

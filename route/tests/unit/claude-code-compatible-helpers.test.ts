@@ -35,11 +35,11 @@ test("base URL helpers strip messages suffixes and join canonical paths", () => 
   assert.equal(stripClaudeCodeCompatibleEndpointSuffix(baseUrl), "https://cc.example.com");
   assert.equal(
     joinBaseUrlAndPath(baseUrl, CLAUDE_CODE_COMPATIBLE_DEFAULT_MODELS_PATH),
-    "https://cc.example.com/v1/models"
+    "https://cc.example.com/v1/models",
   );
   assert.equal(
     joinClaudeCodeCompatibleUrl(baseUrl, CLAUDE_CODE_COMPATIBLE_DEFAULT_CHAT_PATH),
-    "https://cc.example.com/v1/messages?beta=true"
+    "https://cc.example.com/v1/messages?beta=true",
   );
 });
 
@@ -53,7 +53,7 @@ test("buildClaudeCodeCompatibleHeaders emits bearer auth headers and session id"
   assert.equal(streamHeaders["X-Claude-Code-Session-Id"], "session-123");
   assert.equal(
     streamHeaders["X-Stainless-Timeout"],
-    String(CLAUDE_CODE_COMPATIBLE_STAINLESS_TIMEOUT_SECONDS)
+    String(CLAUDE_CODE_COMPATIBLE_STAINLESS_TIMEOUT_SECONDS),
   );
   assert.equal(jsonHeaders.Accept, "application/json");
   assert.equal(jsonHeaders["X-Claude-Code-Session-Id"], undefined);
@@ -65,43 +65,43 @@ test("Claude Code compatible beta set matches the stable API-key Claude CLI prof
   assert.ok(CLAUDE_CODE_COMPATIBLE_ANTHROPIC_BETA.includes("effort-2025-11-24"));
   assert.equal(
     CLAUDE_CODE_COMPATIBLE_ANTHROPIC_BETA.includes(CLAUDE_CODE_COMPATIBLE_REDACT_THINKING_BETA),
-    false
+    false,
   );
   assert.equal(CLAUDE_CODE_COMPATIBLE_ANTHROPIC_BETA.includes("oauth-2025-04-20"), false);
   assert.equal(
     CLAUDE_CODE_COMPATIBLE_ANTHROPIC_BETA.includes("context-management-2025-06-27"),
-    false
+    false,
   );
   assert.equal(
     CLAUDE_CODE_COMPATIBLE_ANTHROPIC_BETA.includes("prompt-caching-scope-2026-01-05"),
-    false
+    false,
   );
 });
 
 test("Claude Code compatible redacted thinking beta is explicit opt-in", () => {
   assert.equal(
     resolveClaudeCodeCompatibleAnthropicBeta({}).includes(
-      CLAUDE_CODE_COMPATIBLE_REDACT_THINKING_BETA
+      CLAUDE_CODE_COMPATIBLE_REDACT_THINKING_BETA,
     ),
-    false
+    false,
   );
   assert.equal(
     resolveClaudeCodeCompatibleAnthropicBeta({ redactThinking: true }).includes(
-      CLAUDE_CODE_COMPATIBLE_REDACT_THINKING_BETA
+      CLAUDE_CODE_COMPATIBLE_REDACT_THINKING_BETA,
     ),
-    true
+    true,
   );
   assert.equal(
     buildClaudeCodeCompatibleHeaders("sk-demo", true)["anthropic-beta"].includes(
-      CLAUDE_CODE_COMPATIBLE_REDACT_THINKING_BETA
+      CLAUDE_CODE_COMPATIBLE_REDACT_THINKING_BETA,
     ),
-    false
+    false,
   );
   assert.equal(
     buildClaudeCodeCompatibleHeaders("sk-demo", true, undefined, {
       redactThinking: true,
     })["anthropic-beta"].includes(CLAUDE_CODE_COMPATIBLE_REDACT_THINKING_BETA),
-    true
+    true,
   );
 });
 
@@ -114,7 +114,7 @@ test("resolveClaudeCodeCompatibleSessionId prefers explicit session headers and 
   assert.equal(resolveClaudeCodeCompatibleSessionId(headers), "preferred-session");
   assert.match(
     resolveClaudeCodeCompatibleSessionId({}),
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
   );
 });
 

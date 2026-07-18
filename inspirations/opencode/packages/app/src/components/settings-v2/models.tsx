@@ -1,24 +1,24 @@
-import { useFilteredList } from "@opencode-ai/ui/hooks"
-import { ProviderIcon } from "@opencode-ai/ui/provider-icon"
-import { Switch } from "@opencode-ai/ui/v2/switch-v2"
-import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon"
-import { IconButtonV2 } from "@opencode-ai/ui/v2/icon-button-v2"
-import { TextInputV2 } from "@opencode-ai/ui/v2/text-input-v2"
-import { type Component, For, Show } from "solid-js"
-import { useLanguage } from "@/context/language"
-import { useModels } from "@/context/models"
-import { popularProviders } from "@/hooks/use-providers"
-import { SettingsListV2 } from "./parts/list"
-import { SettingsRowV2 } from "./parts/row"
-import "./settings-v2.css"
+import { useFilteredList } from "@opencode-ai/ui/hooks";
+import { ProviderIcon } from "@opencode-ai/ui/provider-icon";
+import { Switch } from "@opencode-ai/ui/v2/switch-v2";
+import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon";
+import { IconButtonV2 } from "@opencode-ai/ui/v2/icon-button-v2";
+import { TextInputV2 } from "@opencode-ai/ui/v2/text-input-v2";
+import { type Component, For, Show } from "solid-js";
+import { useLanguage } from "@/context/language";
+import { useModels } from "@/context/models";
+import { popularProviders } from "@/hooks/use-providers";
+import { SettingsListV2 } from "./parts/list";
+import { SettingsRowV2 } from "./parts/row";
+import "./settings-v2.css";
 
-type ModelItem = ReturnType<ReturnType<typeof useModels>["list"]>[number]
+type ModelItem = ReturnType<ReturnType<typeof useModels>["list"]>[number];
 
-const PROVIDER_ICON_SIZE = 16
+const PROVIDER_ICON_SIZE = 16;
 
 export const SettingsModelsV2: Component = () => {
-  const language = useLanguage()
-  const models = useModels()
+  const language = useLanguage();
+  const models = useModels();
 
   const list = useFilteredList<ModelItem>({
     items: (_filter) => models.list(),
@@ -27,20 +27,20 @@ export const SettingsModelsV2: Component = () => {
     sortBy: (a, b) => a.name.localeCompare(b.name),
     groupBy: (x) => x.provider.id,
     sortGroupsBy: (a, b) => {
-      const aIndex = popularProviders.indexOf(a.category)
-      const bIndex = popularProviders.indexOf(b.category)
-      const aPopular = aIndex >= 0
-      const bPopular = bIndex >= 0
+      const aIndex = popularProviders.indexOf(a.category);
+      const bIndex = popularProviders.indexOf(b.category);
+      const aPopular = aIndex >= 0;
+      const bPopular = bIndex >= 0;
 
-      if (aPopular && !bPopular) return -1
-      if (!aPopular && bPopular) return 1
-      if (aPopular && bPopular) return aIndex - bIndex
+      if (aPopular && !bPopular) return -1;
+      if (!aPopular && bPopular) return 1;
+      if (aPopular && bPopular) return aIndex - bIndex;
 
-      const aName = a.items[0].provider.name
-      const bName = b.items[0].provider.name
-      return aName.localeCompare(bName)
+      const aName = a.items[0].provider.name;
+      const bName = b.items[0].provider.name;
+      return aName.localeCompare(bName);
     },
-  })
+  });
 
   return (
     <>
@@ -108,14 +108,14 @@ export const SettingsModelsV2: Component = () => {
                   <SettingsListV2>
                     <For each={group.items}>
                       {(item) => {
-                        const key = { providerID: item.provider.id, modelID: item.id }
+                        const key = { providerID: item.provider.id, modelID: item.id };
                         return (
                           <SettingsRowV2 title={item.name} description="">
                             <div>
                               <Switch
                                 checked={models.visible(key)}
                                 onChange={(checked) => {
-                                  models.setVisibility(key, checked)
+                                  models.setVisibility(key, checked);
                                 }}
                                 hideLabel
                               >
@@ -123,7 +123,7 @@ export const SettingsModelsV2: Component = () => {
                               </Switch>
                             </div>
                           </SettingsRowV2>
-                        )
+                        );
                       }}
                     </For>
                   </SettingsListV2>
@@ -134,5 +134,5 @@ export const SettingsModelsV2: Component = () => {
         </Show>
       </div>
     </>
-  )
-}
+  );
+};

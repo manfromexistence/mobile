@@ -81,7 +81,7 @@ test("runSimulateCommand exibe tabela com provedores do combo", async () => {
   const { runSimulateCommand } = await import("../../bin/cli/commands/simulate.mjs");
   const cmd = { optsWithGlobals: () => ({ output: "table", quiet: false }) };
   const { stdout } = await captureOutput(() =>
-    runSimulateCommand("explique RAG", { model: "auto" }, cmd as any)
+    runSimulateCommand("explique RAG", { model: "auto" }, cmd as any),
   );
 
   globalThis.fetch = origFetch;
@@ -95,7 +95,7 @@ test("runSimulateCommand --output json retorna simulatedPath completo", async ()
   const { runSimulateCommand } = await import("../../bin/cli/commands/simulate.mjs");
   const cmd = { optsWithGlobals: () => ({ output: "json", quiet: true }) };
   const { stdout } = await captureOutput(() =>
-    runSimulateCommand("test", { model: "auto" }, cmd as any)
+    runSimulateCommand("test", { model: "auto" }, cmd as any),
   );
 
   globalThis.fetch = origFetch;
@@ -114,7 +114,7 @@ test("runSimulateCommand --explain imprime arvore de fallback no stderr", async 
   const { runSimulateCommand } = await import("../../bin/cli/commands/simulate.mjs");
   const cmd = { optsWithGlobals: () => ({ output: "table", quiet: false }) };
   const { stderr } = await captureOutput(() =>
-    runSimulateCommand("test", { model: "auto", explain: true }, cmd as any)
+    runSimulateCommand("test", { model: "auto", explain: true }, cmd as any),
   );
 
   globalThis.fetch = origFetch;
@@ -133,7 +133,7 @@ test("runSimulateCommand --file carrega JSON e usa como body", async () => {
   const { runSimulateCommand } = await import("../../bin/cli/commands/simulate.mjs");
   const cmd = { optsWithGlobals: () => ({ output: "json", quiet: true }) };
   const { stdout } = await captureOutput(() =>
-    runSimulateCommand(undefined, { model: "auto", file: filePath }, cmd as any)
+    runSimulateCommand(undefined, { model: "auto", file: filePath }, cmd as any),
   );
 
   globalThis.fetch = origFetch;
@@ -149,7 +149,7 @@ test("runSimulateCommand --combo filtra por nome do combo", async () => {
   const { runSimulateCommand } = await import("../../bin/cli/commands/simulate.mjs");
   const cmd = { optsWithGlobals: () => ({ output: "json", quiet: true }) };
   const { stdout } = await captureOutput(() =>
-    runSimulateCommand("test", { model: "auto", combo: "default" }, cmd as any)
+    runSimulateCommand("test", { model: "auto", combo: "default" }, cmd as any),
   );
 
   globalThis.fetch = origFetch;
@@ -170,7 +170,7 @@ test("runSimulateCommand quando servidor offline emite mensagem e sai com 3", as
   const { runSimulateCommand } = await import("../../bin/cli/commands/simulate.mjs");
   const cmd = { optsWithGlobals: () => ({ output: "table", quiet: false }) };
   const { stderr } = await captureOutput(() =>
-    runSimulateCommand("test", { model: "auto" }, cmd as any).catch(() => {})
+    runSimulateCommand("test", { model: "auto" }, cmd as any).catch(() => {}),
   );
 
   globalThis.fetch = origFetch;

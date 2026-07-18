@@ -86,7 +86,7 @@ export function resetEmergencyFallbackEnvCache(): void {
 }
 
 export function setEmergencyFallbackFeatureFlagResolverForTest(
-  resolver: FeatureFlagResolver | null
+  resolver: FeatureFlagResolver | null,
 ): void {
   emergencyFallbackFeatureFlagResolver = resolver ?? isFeatureFlagEnabled;
   resetEmergencyFallbackEnvCache();
@@ -104,7 +104,7 @@ export function isEmergencyFallbackEnvEnabled(): boolean {
   } catch (error) {
     console.warn(
       "[emergencyFallback] Feature flag resolution failed; falling back to raw env:",
-      error instanceof Error ? error.message : error
+      error instanceof Error ? error.message : error,
     );
     value = isEmergencyFallbackRawEnvEnabled();
   }
@@ -120,7 +120,7 @@ export function shouldUseFallback(
   status: number,
   errorBody: string,
   requestHasTools: boolean,
-  config: EmergencyFallbackConfig = EMERGENCY_FALLBACK_CONFIG
+  config: EmergencyFallbackConfig = EMERGENCY_FALLBACK_CONFIG,
 ): FallbackResult {
   if (!config.enabled) return { shouldFallback: false, reason: "emergency fallback disabled" };
   if (!isEmergencyFallbackEnvEnabled()) {

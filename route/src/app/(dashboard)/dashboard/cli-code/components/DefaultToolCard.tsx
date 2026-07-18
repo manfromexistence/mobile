@@ -30,7 +30,7 @@ export default function DefaultToolCard({
         return fallback;
       }
     },
-    [t]
+    [t],
   );
   const [copiedField, setCopiedField] = useState(null);
   const [showModelModal, setShowModelModal] = useState(false);
@@ -44,7 +44,7 @@ export default function DefaultToolCard({
 
   // (#523) Initialize state with key *id* instead of masked key string
   const [selectedApiKeyId, setSelectedApiKeyId] = useState(() =>
-    apiKeys?.length > 0 ? apiKeys[0].id : ""
+    apiKeys?.length > 0 ? apiKeys[0].id : "",
   );
   const isMultiModelTool = tool.modelSelectionMode === "multiple";
   const usesOpenCodePreview = tool.previewConfigMode === "opencode";
@@ -52,7 +52,7 @@ export default function DefaultToolCard({
 
   const resolveApiKeyValue = useCallback(
     () => selectedKeyObj?.rawKey || (!cloudEnabled ? "sk_omniroute" : t("yourApiKeyPlaceholder")),
-    [cloudEnabled, selectedKeyObj?.rawKey, t]
+    [cloudEnabled, selectedKeyObj?.rawKey, t],
   );
 
   const getSelectedModelEntries = useCallback(() => {
@@ -70,7 +70,7 @@ export default function DefaultToolCard({
       ? activeProviders.flatMap((provider) => provider?.models || [])
       : [];
     const modelMap = new Map(
-      availableModels.filter((model) => model?.value).map((model) => [model.value, model])
+      availableModels.filter((model) => model?.value).map((model) => [model.value, model]),
     );
 
     return selectedValues.map((value) => {
@@ -84,12 +84,12 @@ export default function DefaultToolCard({
 
   const getSelectedModelLabels = useCallback(
     () => getSelectedModelEntries().map((entry) => entry.label),
-    [getSelectedModelEntries]
+    [getSelectedModelEntries],
   );
 
   const getSelectedModelLabelMap = useCallback(
     () => Object.fromEntries(getSelectedModelEntries().map((entry) => [entry.value, entry.label])),
-    [getSelectedModelEntries]
+    [getSelectedModelEntries],
   );
 
   const normalizedBaseUrl = baseUrl || DEFAULT_DISPLAY_BASE_URL;
@@ -129,7 +129,7 @@ export default function DefaultToolCard({
       const matchedKey = apiKeys.find(
         (k) =>
           (k.rawKey && k.rawKey.startsWith(prefix) && k.rawKey.endsWith(suffix)) ||
-          (k.key && k.key.startsWith(prefix) && k.key.endsWith(suffix))
+          (k.key && k.key.startsWith(prefix) && k.key.endsWith(suffix)),
       );
       if (matchedKey) setSelectedApiKeyId(matchedKey.id);
     }
@@ -144,7 +144,7 @@ export default function DefaultToolCard({
         localStorage.removeItem(`omniroute-cli-model-${toolId}`);
       }
     },
-    [toolId]
+    [toolId],
   );
 
   const handleModelValuesChange = useCallback(
@@ -162,7 +162,7 @@ export default function DefaultToolCard({
         localStorage.removeItem(`omniroute-cli-model-${toolId}`);
       }
     },
-    [toolId]
+    [toolId],
   );
 
   const handleApiKeyChange = useCallback(
@@ -173,7 +173,7 @@ export default function DefaultToolCard({
         localStorage.setItem(`omniroute-cli-key-${toolId}`, value);
       }
     },
-    [toolId]
+    [toolId],
   );
 
   useEffect(() => {
@@ -195,7 +195,7 @@ export default function DefaultToolCard({
         .replace(/\{\{apiKey\}\}/g, keyToUse)
         .replace(/\{\{model\}\}/g, getSelectedModelLabels()[0] || t("modelPlaceholder"));
     },
-    [baseUrl, getSelectedModelLabels, resolveApiKeyValue, t]
+    [baseUrl, getSelectedModelLabels, resolveApiKeyValue, t],
   );
 
   const handleCopy = async (text, field) => {
@@ -223,7 +223,7 @@ export default function DefaultToolCard({
         modelLabels: getSelectedModelLabelMap(),
       }),
       null,
-      2
+      2,
     );
   }, [
     baseUrl,
@@ -350,7 +350,7 @@ export default function DefaultToolCard({
                   e.target.value
                     .split(",")
                     .map((value) => value.trim())
-                    .filter(Boolean)
+                    .filter(Boolean),
                 )
               : handleModelChange(e.target.value)
           }

@@ -1,11 +1,11 @@
 // @ts-nocheck
 
-import { OpenCode } from "@opencode-ai/core"
-import { ReadTool } from "@opencode-ai/core/tools"
+import { OpenCode } from "@opencode-ai/core";
+import { ReadTool } from "@opencode-ai/core/tools";
 
-const opencode = OpenCode.make({})
+const opencode = OpenCode.make({});
 
-opencode.tool.add(ReadTool)
+opencode.tool.add(ReadTool);
 
 opencode.tool.add({
   name: "bash",
@@ -20,13 +20,13 @@ opencode.tool.add({
     required: ["command"],
   },
   execute(input, ctx) {},
-})
+});
 
 opencode.auth.add({
   provider: "openai",
   type: "api",
   value: process.env.OPENAI_API_KEY,
-})
+});
 
 opencode.agent.add({
   name: "build",
@@ -36,20 +36,20 @@ opencode.agent.add({
     provider: "openai",
     variant: "xhigh",
   },
-})
+});
 
 const sessionID = await opencode.session.create({
   agent: "build",
-})
+});
 
 opencode.subscribe((event) => {
-  console.log(event)
-})
+  console.log(event);
+});
 
 await opencode.session.prompt({
   sessionID,
   text: "hey what is up",
-})
+});
 
 await opencode.session.prompt({
   sessionID,
@@ -60,8 +60,8 @@ await opencode.session.prompt({
       uri: "data:image/png;base64,xxxx",
     },
   ],
-})
+});
 
-await opencode.session.wait()
+await opencode.session.wait();
 
-console.log(await opencode.session.messages(sessionID))
+console.log(await opencode.session.messages(sessionID));

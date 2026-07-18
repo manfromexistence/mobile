@@ -1,9 +1,9 @@
-import type { RenderDiffOptions } from '../types';
-import { areThemesEqual } from './areThemesEqual';
+import type { RenderDiffOptions } from "../types";
+import { areThemesEqual } from "./areThemesEqual";
 
 export function areDiffRenderOptionsEqual(
   optionsA: RenderDiffOptions,
-  optionsB: RenderDiffOptions
+  optionsB: RenderDiffOptions,
 ): boolean {
   return (
     areThemesEqual(optionsA.theme, optionsB.theme) &&

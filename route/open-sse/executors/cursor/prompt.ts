@@ -59,12 +59,12 @@ export function buildCursorOutputConstraints(body: {
   if (isRecordLike(fmt)) {
     if (fmt.type === "json_object") {
       constraints.push(
-        "Return a single valid JSON object and no surrounding prose or code fences."
+        "Return a single valid JSON object and no surrounding prose or code fences.",
       );
     } else if (fmt.type === "json_schema") {
       const js = isRecordLike(fmt.json_schema) ? fmt.json_schema.schema : fmt.schema;
       constraints.push(
-        `Return only valid JSON (no prose or code fences) matching this schema: ${JSON.stringify(js ?? fmt)}`
+        `Return only valid JSON (no prose or code fences) matching this schema: ${JSON.stringify(js ?? fmt)}`,
       );
     }
   }

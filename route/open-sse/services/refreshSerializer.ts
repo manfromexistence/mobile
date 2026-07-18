@@ -114,7 +114,7 @@ export async function serializeRefresh<T>(provider: string, fn: () => Promise<T>
  */
 export function wasRefreshTokenRotated(
   attemptedRefreshToken: string | null | undefined,
-  latestRefreshToken: string | null | undefined
+  latestRefreshToken: string | null | undefined,
 ): boolean {
   return (
     typeof attemptedRefreshToken === "string" &&

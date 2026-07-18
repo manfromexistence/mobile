@@ -119,7 +119,7 @@ describe("Files API - Integration Tests", () => {
       assert(batch !== undefined && batch.expiresAt !== null);
       assert(
         persisted !== undefined &&
-          (persisted.expiresAt === null || persisted.expiresAt === undefined)
+          (persisted.expiresAt === null || persisted.expiresAt === undefined),
       );
     });
 

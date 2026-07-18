@@ -1,59 +1,43 @@
-import { describe, expect, test } from 'bun:test';
-import { JSDOM } from 'jsdom';
+import { describe, expect, test } from "bun:test";
+import { JSDOM } from "jsdom";
 
-import { flushDom, installDom } from './helpers/dom';
-import { loadFileTree } from './helpers/loadFileTree';
+import { flushDom, installDom } from "./helpers/dom";
+import { loadFileTree } from "./helpers/loadFileTree";
 
-function pressKey(
-  target: Element,
-  dom: JSDOM,
-  key: string,
-  init: KeyboardEventInit = {}
-): void {
+function pressKey(target: Element, dom: JSDOM, key: string, init: KeyboardEventInit = {}): void {
   target.dispatchEvent(
-    new dom.window.KeyboardEvent('keydown', {
+    new dom.window.KeyboardEvent("keydown", {
       bubbles: true,
       cancelable: true,
       key,
       ...init,
-    })
+    }),
   );
 }
 
-function setInputValue(
-  input: HTMLInputElement,
-  dom: JSDOM,
-  value: string
-): void {
+function setInputValue(input: HTMLInputElement, dom: JSDOM, value: string): void {
   input.value = value;
   input.dispatchEvent(
-    new dom.window.Event('input', {
+    new dom.window.Event("input", {
       bubbles: true,
       cancelable: true,
-    })
+    }),
   );
 }
 
-function getShadowRoot(fileTree: import('../src/index').FileTree): ShadowRoot {
+function getShadowRoot(fileTree: import("../src/index").FileTree): ShadowRoot {
   const shadowRoot = fileTree.getFileTreeContainer()?.shadowRoot;
   if (!(shadowRoot instanceof ShadowRoot)) {
-    throw new Error('Expected file tree shadow root');
+    throw new Error("Expected file tree shadow root");
   }
 
   return shadowRoot;
 }
 
-const CANONICAL_ITEM_SELECTOR =
-  '[data-type="item"]:not([data-file-tree-sticky-row="true"])';
+const CANONICAL_ITEM_SELECTOR = '[data-type="item"]:not([data-file-tree-sticky-row="true"])';
 
-function getItemRow(
-  shadowRoot: ShadowRoot,
-  dom: JSDOM,
-  path: string
-): HTMLElement {
-  const row = shadowRoot.querySelector(
-    `${CANONICAL_ITEM_SELECTOR}[data-item-path="${path}"]`
-  );
+function getItemRow(shadowRoot: ShadowRoot, dom: JSDOM, path: string): HTMLElement {
+  const row = shadowRoot.querySelector(`${CANONICAL_ITEM_SELECTOR}[data-item-path="${path}"]`);
   if (!(row instanceof dom.window.HTMLElement)) {
     throw new Error(`Expected canonical item row for ${path}`);
   }
@@ -61,11 +45,7 @@ function getItemRow(
   return row;
 }
 
-function getItemButton(
-  shadowRoot: ShadowRoot,
-  dom: JSDOM,
-  path: string
-): HTMLButtonElement {
+function getItemButton(shadowRoot: ShadowRoot, dom: JSDOM, path: string): HTMLButtonElement {
   const button = getItemRow(shadowRoot, dom, path);
   if (!(button instanceof dom.window.HTMLButtonElement)) {
     throw new Error(`Expected item button for ${path}`);
@@ -74,14 +54,8 @@ function getItemButton(
   return button;
 }
 
-function getStickyRowButton(
-  shadowRoot: ShadowRoot,
-  dom: JSDOM,
-  path: string
-): HTMLButtonElement {
-  const button = shadowRoot.querySelector(
-    `[data-file-tree-sticky-path="${path}"]`
-  );
+function getStickyRowButton(shadowRoot: ShadowRoot, dom: JSDOM, path: string): HTMLButtonElement {
+  const button = shadowRoot.querySelector(`[data-file-tree-sticky-path="${path}"]`);
   if (!(button instanceof dom.window.HTMLButtonElement)) {
     throw new Error(`Expected sticky row for ${path}`);
   }
@@ -90,11 +64,9 @@ function getStickyRowButton(
 }
 
 function getScrollElement(shadowRoot: ShadowRoot, dom: JSDOM): HTMLElement {
-  const scrollElement = shadowRoot.querySelector(
-    '[data-file-tree-virtualized-scroll="true"]'
-  );
+  const scrollElement = shadowRoot.querySelector('[data-file-tree-virtualized-scroll="true"]');
   if (!(scrollElement instanceof dom.window.HTMLElement)) {
-    throw new Error('Expected virtualized scroll element');
+    throw new Error("Expected virtualized scroll element");
   }
 
   return scrollElement;
@@ -103,11 +75,9 @@ function getScrollElement(shadowRoot: ShadowRoot, dom: JSDOM): HTMLElement {
 function getRenameInput(
   shadowRoot: ShadowRoot,
   dom: JSDOM,
-  flattened: boolean = false
+  flattened: boolean = false,
 ): HTMLInputElement {
-  const selector = flattened
-    ? '[data-item-flattened-rename-input]'
-    : '[data-item-rename-input]';
+  const selector = flattened ? "[data-item-flattened-rename-input]" : "[data-item-rename-input]";
   const input = shadowRoot.querySelector(selector);
   if (!(input instanceof dom.window.HTMLInputElement)) {
     throw new Error(`Expected rename input for selector ${selector}`);
@@ -117,16 +87,16 @@ function getRenameInput(
 }
 
 function getSearchInput(shadowRoot: ShadowRoot, dom: JSDOM): HTMLInputElement {
-  const input = shadowRoot.querySelector('input[data-file-tree-search-input]');
+  const input = shadowRoot.querySelector("input[data-file-tree-search-input]");
   if (!(input instanceof dom.window.HTMLInputElement)) {
-    throw new Error('Expected built-in search input');
+    throw new Error("Expected built-in search input");
   }
 
   return input;
 }
 
-describe('file-tree renaming', () => {
-  test('F2 starts inline rename and Enter commits while preserving focus and selection', async () => {
+describe("file-tree renaming", () => {
+  test("F2 starts inline rename and Enter commits while preserving focus and selection", async () => {
     const { cleanup, dom } = installDom();
     try {
       const renameEvents: Array<{
@@ -137,8 +107,8 @@ describe('file-tree renaming', () => {
       const FileTree = await loadFileTree();
 
       const fileTree = new FileTree({
-        initialExpansion: 'open',
-        paths: ['README.md', 'src/index.ts'],
+        initialExpansion: "open",
+        paths: ["README.md", "src/index.ts"],
         initialVisibleRowCount: 240 / 30,
         renaming: {
           onRename: (event) => {
@@ -146,51 +116,51 @@ describe('file-tree renaming', () => {
           },
         },
       });
-      const containerWrapper = document.createElement('div');
+      const containerWrapper = document.createElement("div");
       fileTree.render({ containerWrapper });
       await flushDom();
 
       const shadowRoot = getShadowRoot(fileTree);
-      const readmeButton = getItemButton(shadowRoot, dom, 'README.md');
+      const readmeButton = getItemButton(shadowRoot, dom, "README.md");
       readmeButton.click();
       readmeButton.focus();
       await flushDom();
 
-      pressKey(readmeButton, dom, 'F2');
+      pressKey(readmeButton, dom, "F2");
       await flushDom();
 
       const renameInput = getRenameInput(shadowRoot, dom);
-      expect(renameInput.value).toBe('README.md');
+      expect(renameInput.value).toBe("README.md");
 
-      setInputValue(renameInput, dom, 'RENAMED.md');
-      pressKey(renameInput, dom, 'Enter');
+      setInputValue(renameInput, dom, "RENAMED.md");
+      pressKey(renameInput, dom, "Enter");
       await flushDom(3);
 
       expect(renameEvents).toEqual([
         {
-          destinationPath: 'RENAMED.md',
+          destinationPath: "RENAMED.md",
           isFolder: false,
-          sourcePath: 'README.md',
+          sourcePath: "README.md",
         },
       ]);
-      expect(fileTree.getItem('RENAMED.md')).not.toBeNull();
+      expect(fileTree.getItem("RENAMED.md")).not.toBeNull();
 
-      const renamedButton = getItemButton(shadowRoot, dom, 'RENAMED.md');
-      expect(renamedButton.dataset.itemSelected).toBe('true');
+      const renamedButton = getItemButton(shadowRoot, dom, "RENAMED.md");
+      expect(renamedButton.dataset.itemSelected).toBe("true");
     } finally {
       cleanup();
     }
   });
 
-  test('Escape cancels inline rename and blur commits it', async () => {
+  test("Escape cancels inline rename and blur commits it", async () => {
     const { cleanup, dom } = installDom();
     try {
       const renameEvents: Array<string> = [];
       const FileTree = await loadFileTree();
 
       const fileTree = new FileTree({
-        initialExpansion: 'open',
-        paths: ['README.md', 'src/index.ts'],
+        initialExpansion: "open",
+        paths: ["README.md", "src/index.ts"],
         initialVisibleRowCount: 240 / 30,
         renaming: {
           onRename: (event) => {
@@ -198,103 +168,92 @@ describe('file-tree renaming', () => {
           },
         },
       });
-      const containerWrapper = document.createElement('div');
+      const containerWrapper = document.createElement("div");
       fileTree.render({ containerWrapper });
       await flushDom();
 
       const shadowRoot = getShadowRoot(fileTree);
-      const readmeButton = getItemButton(shadowRoot, dom, 'README.md');
+      const readmeButton = getItemButton(shadowRoot, dom, "README.md");
       readmeButton.click();
       readmeButton.focus();
       await flushDom();
-      pressKey(readmeButton, dom, 'F2');
+      pressKey(readmeButton, dom, "F2");
       await flushDom();
 
       const escapeInput = getRenameInput(shadowRoot, dom);
-      pressKey(escapeInput, dom, 'Escape');
+      pressKey(escapeInput, dom, "Escape");
       await flushDom();
-      expect(shadowRoot.querySelector('[data-item-rename-input]')).toBeNull();
+      expect(shadowRoot.querySelector("[data-item-rename-input]")).toBeNull();
       expect(renameEvents).toEqual([]);
 
-      const readmeButtonAfterEscape = getItemButton(
-        shadowRoot,
-        dom,
-        'README.md'
-      );
-      pressKey(readmeButtonAfterEscape, dom, 'F2');
+      const readmeButtonAfterEscape = getItemButton(shadowRoot, dom, "README.md");
+      pressKey(readmeButtonAfterEscape, dom, "F2");
       await flushDom();
       const blurInput = getRenameInput(shadowRoot, dom);
-      setInputValue(blurInput, dom, 'README-BLUR.md');
-      blurInput.dispatchEvent(new dom.window.FocusEvent('blur'));
+      setInputValue(blurInput, dom, "README-BLUR.md");
+      blurInput.dispatchEvent(new dom.window.FocusEvent("blur"));
       await flushDom();
 
-      expect(shadowRoot.querySelector('[data-item-rename-input]')).toBeNull();
-      expect(renameEvents).toEqual(['README.md->README-BLUR.md']);
-      expect(fileTree.getItem('README-BLUR.md')).not.toBeNull();
+      expect(shadowRoot.querySelector("[data-item-rename-input]")).toBeNull();
+      expect(renameEvents).toEqual(["README.md->README-BLUR.md"]);
+      expect(fileTree.getItem("README-BLUR.md")).not.toBeNull();
     } finally {
       cleanup();
     }
   });
 
-  test('search-open rename handoff closes search and keeps the focused result anchored', async () => {
+  test("search-open rename handoff closes search and keeps the focused result anchored", async () => {
     const { cleanup, dom } = installDom();
     try {
       const FileTree = await loadFileTree();
       const searchChanges: Array<string | null> = [];
 
       const fileTree = new FileTree({
-        fileTreeSearchMode: 'hide-non-matches',
+        fileTreeSearchMode: "hide-non-matches",
         flattenEmptyDirectories: false,
-        initialExpansion: 'open',
+        initialExpansion: "open",
         onSearchChange: (value) => {
           searchChanges.push(value);
         },
-        paths: [
-          'README.md',
-          'src/index.ts',
-          'src/utils/worker.ts',
-          'src/utils/stream.ts',
-        ],
+        paths: ["README.md", "src/index.ts", "src/utils/worker.ts", "src/utils/stream.ts"],
         renaming: true,
         search: true,
         initialVisibleRowCount: 240 / 30,
       });
-      const containerWrapper = document.createElement('div');
+      const containerWrapper = document.createElement("div");
       fileTree.render({ containerWrapper });
       await flushDom();
 
       const shadowRoot = getShadowRoot(fileTree);
-      const firstRow = getItemButton(shadowRoot, dom, 'README.md');
+      const firstRow = getItemButton(shadowRoot, dom, "README.md");
       firstRow.click();
       firstRow.focus();
       await flushDom();
-      pressKey(firstRow, dom, 'w');
+      pressKey(firstRow, dom, "w");
       await flushDom();
 
       const searchInput = getSearchInput(shadowRoot, dom);
 
-      setInputValue(searchInput, dom, 'worker');
+      setInputValue(searchInput, dom, "worker");
       await flushDom();
-      expect(
-        shadowRoot.querySelector('[data-item-path="README.md"]')
-      ).toBeNull();
-      expect(fileTree.getSelectedPaths()).toEqual(['README.md']);
+      expect(shadowRoot.querySelector('[data-item-path="README.md"]')).toBeNull();
+      expect(fileTree.getSelectedPaths()).toEqual(["README.md"]);
 
-      pressKey(searchInput, dom, 'F2');
+      pressKey(searchInput, dom, "F2");
       await flushDom(3);
 
       const renameInput = getRenameInput(shadowRoot, dom);
-      expect(renameInput.value).toBe('worker.ts');
-      expect(searchInput.value).toBe('');
-      expect(getItemButton(shadowRoot, dom, 'README.md')).toBeDefined();
-      expect(fileTree.getSelectedPaths()).toEqual(['src/utils/worker.ts']);
-      expect(searchChanges).toEqual(['w', 'worker', null]);
+      expect(renameInput.value).toBe("worker.ts");
+      expect(searchInput.value).toBe("");
+      expect(getItemButton(shadowRoot, dom, "README.md")).toBeDefined();
+      expect(fileTree.getSelectedPaths()).toEqual(["src/utils/worker.ts"]);
+      expect(searchChanges).toEqual(["w", "worker", null]);
     } finally {
       cleanup();
     }
   });
 
-  test('context-menu rename closes the menu and focuses the inline input without blur-cancel churn', async () => {
+  test("context-menu rename closes the menu and focuses the inline input without blur-cancel churn", async () => {
     const { cleanup, dom } = installDom();
     try {
       const FileTree = await loadFileTree();
@@ -303,13 +262,13 @@ describe('file-tree renaming', () => {
           contextMenu: {
             enabled: true,
             render: (item, context) => {
-              const menu = document.createElement('div');
-              menu.setAttribute('data-test-context-menu', 'true');
-              const renameButton = document.createElement('button');
-              renameButton.type = 'button';
-              renameButton.textContent = 'Rename';
-              renameButton.setAttribute('data-test-menu-rename', item.path);
-              renameButton.addEventListener('click', () => {
+              const menu = document.createElement("div");
+              menu.setAttribute("data-test-context-menu", "true");
+              const renameButton = document.createElement("button");
+              renameButton.type = "button";
+              renameButton.textContent = "Rename";
+              renameButton.setAttribute("data-test-menu-rename", item.path);
+              renameButton.addEventListener("click", () => {
                 context.close({ restoreFocus: false });
                 fileTree.startRenaming(item.path);
                 queueMicrotask(() => {
@@ -322,34 +281,32 @@ describe('file-tree renaming', () => {
             },
           },
         },
-        initialExpansion: 'open',
-        paths: ['README.md', 'src/index.ts'],
+        initialExpansion: "open",
+        paths: ["README.md", "src/index.ts"],
         initialVisibleRowCount: 240 / 30,
         renaming: true,
       });
-      const containerWrapper = document.createElement('div');
+      const containerWrapper = document.createElement("div");
       fileTree.render({ containerWrapper });
       await flushDom();
 
       const shadowRoot = getShadowRoot(fileTree);
-      const indexButton = getItemButton(shadowRoot, dom, 'src/index.ts');
+      const indexButton = getItemButton(shadowRoot, dom, "src/index.ts");
       indexButton.click();
       await flushDom();
       indexButton.dispatchEvent(
-        new dom.window.MouseEvent('contextmenu', {
+        new dom.window.MouseEvent("contextmenu", {
           bubbles: true,
           cancelable: true,
-        })
+        }),
       );
       await flushDom(3);
 
       const menuButton = fileTree
         .getFileTreeContainer()
-        ?.querySelector(
-          '[data-test-menu-rename="src/index.ts"]'
-        ) as HTMLButtonElement | null;
+        ?.querySelector('[data-test-menu-rename="src/index.ts"]') as HTMLButtonElement | null;
       if (!(menuButton instanceof dom.window.HTMLButtonElement)) {
-        throw new Error('Expected context-menu rename button');
+        throw new Error("Expected context-menu rename button");
       }
 
       const confirmedMenuButton = menuButton;
@@ -357,30 +314,28 @@ describe('file-tree renaming', () => {
       await flushDom(4);
 
       expect(
-        fileTree
-          .getFileTreeContainer()
-          ?.querySelector('[data-test-context-menu="true"]')
+        fileTree.getFileTreeContainer()?.querySelector('[data-test-context-menu="true"]'),
       ).toBeNull();
       const renameInput = getRenameInput(shadowRoot, dom);
-      expect(renameInput.value).toBe('index.ts');
+      expect(renameInput.value).toBe("index.ts");
     } finally {
       cleanup();
     }
   });
 
-  test('sticky-row rename handoff reveals the canonical row input and focuses it', async () => {
+  test("sticky-row rename handoff reveals the canonical row input and focuses it", async () => {
     const { cleanup, dom } = installDom();
     try {
       const FileTree = await loadFileTree();
       const fileTree = new FileTree({
         flattenEmptyDirectories: false,
-        initialExpandedPaths: ['aaa/', 'bbb/', 'src/lib/'],
-        paths: ['aaa/one.ts', 'bbb/two.ts', 'src/index.ts', 'src/lib/util.ts'],
+        initialExpandedPaths: ["aaa/", "bbb/", "src/lib/"],
+        paths: ["aaa/one.ts", "bbb/two.ts", "src/index.ts", "src/lib/util.ts"],
         stickyFolders: true,
         initialVisibleRowCount: 60 / 30,
         renaming: true,
       });
-      const containerWrapper = document.createElement('div');
+      const containerWrapper = document.createElement("div");
       document.body.append(containerWrapper);
       fileTree.render({ containerWrapper });
       await flushDom();
@@ -388,69 +343,67 @@ describe('file-tree renaming', () => {
       const shadowRoot = getShadowRoot(fileTree);
       const scrollElement = getScrollElement(shadowRoot, dom);
 
-      const utilButton = getItemButton(shadowRoot, dom, 'src/lib/util.ts');
+      const utilButton = getItemButton(shadowRoot, dom, "src/lib/util.ts");
       utilButton.click();
       utilButton.focus();
       await flushDom();
-      expect(fileTree.getSelectedPaths()).toEqual(['src/lib/util.ts']);
+      expect(fileTree.getSelectedPaths()).toEqual(["src/lib/util.ts"]);
 
       scrollElement.scrollTop = 149;
-      scrollElement.dispatchEvent(new dom.window.Event('scroll'));
+      scrollElement.dispatchEvent(new dom.window.Event("scroll"));
       await flushDom();
 
-      const stickyButton = getStickyRowButton(shadowRoot, dom, 'src/lib/');
-      expect(stickyButton.dataset.fileTreeStickyPath).toBe('src/lib/');
-      expect(() => getItemButton(shadowRoot, dom, 'src/lib/')).toThrow();
+      const stickyButton = getStickyRowButton(shadowRoot, dom, "src/lib/");
+      expect(stickyButton.dataset.fileTreeStickyPath).toBe("src/lib/");
+      expect(() => getItemButton(shadowRoot, dom, "src/lib/")).toThrow();
 
-      expect(fileTree.startRenaming('src/lib/')).toBe(true);
+      expect(fileTree.startRenaming("src/lib/")).toBe(true);
       await flushDom(4);
       expect(scrollElement.scrollTop).toBe(90);
       const renameInput = getRenameInput(shadowRoot, dom);
-      const renameRow = getItemRow(shadowRoot, dom, 'src/lib/');
-      expect(renameInput.value).toBe('lib');
-      expect(renameRow.querySelector('[data-item-rename-input]')).toBe(
-        renameInput
-      );
-      expect(renameRow.getAttribute('data-file-tree-sticky-row')).toBeNull();
+      const renameRow = getItemRow(shadowRoot, dom, "src/lib/");
+      expect(renameInput.value).toBe("lib");
+      expect(renameRow.querySelector("[data-item-rename-input]")).toBe(renameInput);
+      expect(renameRow.getAttribute("data-file-tree-sticky-row")).toBeNull();
       expect(shadowRoot.activeElement).toBe(renameInput);
       expect(renameInput.selectionStart).toBe(0);
-      expect(renameInput.selectionEnd).toBe('lib'.length);
-      expect(fileTree.getFocusedPath()).toBe('src/lib/');
-      expect(fileTree.getSelectedPaths()).toEqual(['src/lib/']);
+      expect(renameInput.selectionEnd).toBe("lib".length);
+      expect(fileTree.getFocusedPath()).toBe("src/lib/");
+      expect(fileTree.getSelectedPaths()).toEqual(["src/lib/"]);
     } finally {
       cleanup();
     }
   });
 
-  test('starting rename on a path under a collapsed ancestor expands the chain so the input can mount', async () => {
+  test("starting rename on a path under a collapsed ancestor expands the chain so the input can mount", async () => {
     const { cleanup, dom } = installDom();
     try {
       const FileTree = await loadFileTree();
       const fileTree = new FileTree({
         flattenEmptyDirectories: false,
-        initialExpandedPaths: ['src/'],
-        paths: ['src/components/Button.tsx', 'src/index.ts'],
+        initialExpandedPaths: ["src/"],
+        paths: ["src/components/Button.tsx", "src/index.ts"],
         initialVisibleRowCount: 240 / 30,
         renaming: true,
       });
 
-      const componentsItem = fileTree.getItem('src/components/');
+      const componentsItem = fileTree.getItem("src/components/");
       if (
         componentsItem == null ||
         componentsItem.isDirectory() !== true ||
-        !('isExpanded' in componentsItem)
+        !("isExpanded" in componentsItem)
       ) {
-        throw new Error('expected src/components directory item');
+        throw new Error("expected src/components directory item");
       }
 
       expect(componentsItem.isExpanded()).toBe(false);
 
-      const containerWrapper = document.createElement('div');
+      const containerWrapper = document.createElement("div");
       fileTree.render({ containerWrapper });
       await flushDom();
 
-      fileTree.add('src/components/new.ts');
-      expect(fileTree.startRenaming('src/components/new.ts')).toBe(true);
+      fileTree.add("src/components/new.ts");
+      expect(fileTree.startRenaming("src/components/new.ts")).toBe(true);
       await flushDom(4);
 
       // The ancestor directory must be expanded for the new row to render
@@ -461,19 +414,17 @@ describe('file-tree renaming', () => {
 
       const shadowRoot = getShadowRoot(fileTree);
       const renameInput = getRenameInput(shadowRoot, dom);
-      expect(renameInput.value).toBe('new.ts');
-      const renameRow = getItemRow(shadowRoot, dom, 'src/components/new.ts');
-      expect(renameRow.querySelector('[data-item-rename-input]')).toBe(
-        renameInput
-      );
-      expect(fileTree.getFocusedPath()).toBe('src/components/new.ts');
-      expect(fileTree.getSelectedPaths()).toEqual(['src/components/new.ts']);
+      expect(renameInput.value).toBe("new.ts");
+      const renameRow = getItemRow(shadowRoot, dom, "src/components/new.ts");
+      expect(renameRow.querySelector("[data-item-rename-input]")).toBe(renameInput);
+      expect(fileTree.getFocusedPath()).toBe("src/components/new.ts");
+      expect(fileTree.getSelectedPaths()).toEqual(["src/components/new.ts"]);
     } finally {
       cleanup();
     }
   });
 
-  test('flattened leaf rename renders input only on the terminal segment and commits a folder rename', async () => {
+  test("flattened leaf rename renders input only on the terminal segment and commits a folder rename", async () => {
     const { cleanup, dom } = installDom();
     try {
       const renameEvents: Array<{
@@ -485,8 +436,8 @@ describe('file-tree renaming', () => {
 
       const fileTree = new FileTree({
         flattenEmptyDirectories: true,
-        initialExpansion: 'open',
-        paths: ['src/utils/deep/index.ts'],
+        initialExpansion: "open",
+        paths: ["src/utils/deep/index.ts"],
         initialVisibleRowCount: 240 / 30,
         renaming: {
           onRename: (event) => {
@@ -494,78 +445,68 @@ describe('file-tree renaming', () => {
           },
         },
       });
-      const containerWrapper = document.createElement('div');
+      const containerWrapper = document.createElement("div");
       fileTree.render({ containerWrapper });
       await flushDom();
 
       const shadowRoot = getShadowRoot(fileTree);
       const flattenedButton = Array.from(
-        shadowRoot.querySelectorAll(
-          'button[data-type="item"][data-item-type="folder"]'
-        )
+        shadowRoot.querySelectorAll('button[data-type="item"][data-item-type="folder"]'),
       ).find(
         (button) =>
           button instanceof dom.window.HTMLButtonElement &&
-          button.querySelector('[data-item-flattened-subitems]') != null
+          button.querySelector("[data-item-flattened-subitems]") != null,
       ) as HTMLButtonElement | undefined;
       if (flattenedButton == null) {
-        throw new Error('Expected flattened folder row');
+        throw new Error("Expected flattened folder row");
       }
 
       flattenedButton.click();
       flattenedButton.focus();
-      pressKey(flattenedButton, dom, 'F2');
+      pressKey(flattenedButton, dom, "F2");
       await flushDom(3);
 
       const renameInput = getRenameInput(shadowRoot, dom, true);
-      expect(renameInput.value).toBe('deep');
-      const flattenedContainer = renameInput.closest(
-        '[data-item-flattened-subitems]'
-      );
+      expect(renameInput.value).toBe("deep");
+      const flattenedContainer = renameInput.closest("[data-item-flattened-subitems]");
       if (flattenedContainer == null) {
-        throw new Error('Expected flattened segments container');
+        throw new Error("Expected flattened segments container");
       }
 
-      const segments = flattenedContainer.querySelectorAll(
-        '[data-item-flattened-subitem]'
-      );
+      const segments = flattenedContainer.querySelectorAll("[data-item-flattened-subitem]");
       expect(segments.length).toBeGreaterThan(1);
-      expect(
-        segments.item(0)?.querySelector('[data-item-rename-input]')
-      ).toBeNull();
-      expect(
-        segments
-          .item(segments.length - 1)
-          ?.querySelector('[data-item-rename-input]')
-      ).toBe(renameInput);
+      expect(segments.item(0)?.querySelector("[data-item-rename-input]")).toBeNull();
+      expect(segments.item(segments.length - 1)?.querySelector("[data-item-rename-input]")).toBe(
+        renameInput,
+      );
 
-      setInputValue(renameInput, dom, 'renamed');
-      pressKey(renameInput, dom, 'Enter');
+      setInputValue(renameInput, dom, "renamed");
+      pressKey(renameInput, dom, "Enter");
       await flushDom(3);
 
       expect(renameEvents).toEqual([
         {
-          destinationPath: 'src/utils/renamed',
+          destinationPath: "src/utils/renamed",
           isFolder: true,
-          sourcePath: 'src/utils/deep',
+          sourcePath: "src/utils/deep",
         },
       ]);
-      expect(fileTree.getItem('src/utils/renamed')).not.toBeNull();
-      expect(fileTree.getItem('src/utils/deep')).toBeNull();
+      expect(fileTree.getItem("src/utils/renamed")).not.toBeNull();
+      expect(fileTree.getItem("src/utils/deep")).toBeNull();
     } finally {
       cleanup();
     }
   });
 
-  test('collision and invalid-name errors close rename and surface parity errors', async () => {
+  test("collision and invalid-name errors close rename and surface parity errors", async () => {
     const { cleanup, dom } = installDom();
     try {
       const renameErrors: string[] = [];
       const FileTree = await loadFileTree();
 
       const fileTree = new FileTree({
-        initialExpansion: 'open',
-        paths: ['README.md', 'src/index.ts', 'src/utils.ts'],
+        initialExpansion: "open",
+        paths: ["README.md", "src/index.ts", "src/utils.ts"],
         initialVisibleRowCount: 240 / 30,
         renaming: {
           onError: (error) => {
@@ -573,47 +514,40 @@ describe('file-tree renaming', () => {
           },
         },
       });
-      const containerWrapper = document.createElement('div');
+      const containerWrapper = document.createElement("div");
       fileTree.render({ containerWrapper });
       await flushDom();
 
       const shadowRoot = getShadowRoot(fileTree);
-      const indexButton = getItemButton(shadowRoot, dom, 'src/index.ts');
+      const indexButton = getItemButton(shadowRoot, dom, "src/index.ts");
       indexButton.click();
       indexButton.focus();
       await flushDom();
-      pressKey(indexButton, dom, 'F2');
+      pressKey(indexButton, dom, "F2");
       await flushDom();
 
       const collisionInput = getRenameInput(shadowRoot, dom);
-      setInputValue(collisionInput, dom, 'utils.ts');
-      pressKey(collisionInput, dom, 'Enter');
+      setInputValue(collisionInput, dom, "utils.ts");
+      pressKey(collisionInput, dom, "Enter");
       await flushDom();
 
-      const indexButtonAfterCollision = getItemButton(
-        shadowRoot,
-        dom,
-        'src/index.ts'
-      );
-      pressKey(indexButtonAfterCollision, dom, 'F2');
+      const indexButtonAfterCollision = getItemButton(shadowRoot, dom, "src/index.ts");
+      pressKey(indexButtonAfterCollision, dom, "F2");
       await flushDom();
       const invalidInput = getRenameInput(shadowRoot, dom);
-      setInputValue(invalidInput, dom, 'nested/name.ts');
-      pressKey(invalidInput, dom, 'Enter');
+      setInputValue(invalidInput, dom, "nested/name.ts");
+      pressKey(invalidInput, dom, "Enter");
       await flushDom();
 
-      expect(renameErrors).toEqual([
-        '"src/utils.ts" already exists.',
-        'Name cannot include "/".',
-      ]);
-      expect(shadowRoot.querySelector('[data-item-rename-input]')).toBeNull();
-      expect(fileTree.getItem('src/index.ts')).not.toBeNull();
+      expect(renameErrors).toEqual(['"src/utils.ts" already exists.', 'Name cannot include "/".']);
+      expect(shadowRoot.querySelector("[data-item-rename-input]")).toBeNull();
+      expect(fileTree.getItem("src/index.ts")).not.toBeNull();
     } finally {
       cleanup();
     }
   });
 
-  test('Enter during IME composition confirms the candidate without committing the rename', async () => {
+  test("Enter during IME composition confirms the candidate without committing the rename", async () => {
     const { cleanup, dom } = installDom();
     try {
       const renameEvents: Array<{
@@ -624,8 +558,8 @@ describe('file-tree renaming', () => {
       const FileTree = await loadFileTree();
 
       const fileTree = new FileTree({
-        initialExpansion: 'open',
-        paths: ['README.md', 'src/index.ts'],
+        initialExpansion: "open",
+        paths: ["README.md", "src/index.ts"],
         initialVisibleRowCount: 240 / 30,
         renaming: {
           onRename: (event) => {
@@ -633,56 +567,52 @@ describe('file-tree renaming', () => {
           },
         },
       });
-      const containerWrapper = document.createElement('div');
+      const containerWrapper = document.createElement("div");
       fileTree.render({ containerWrapper });
       await flushDom();
 
       const shadowRoot = getShadowRoot(fileTree);
-      const readmeButton = getItemButton(shadowRoot, dom, 'README.md');
+      const readmeButton = getItemButton(shadowRoot, dom, "README.md");
       readmeButton.click();
       readmeButton.focus();
       await flushDom();
 
-      pressKey(readmeButton, dom, 'F2');
+      pressKey(readmeButton, dom, "F2");
       await flushDom();
 
       const renameInput = getRenameInput(shadowRoot, dom);
       // Simulate the input value held mid-composition (e.g. a partial pinyin
       // string) as the IME candidate menu is confirmed with Enter.
-      setInputValue(renameInput, dom, 'shu');
-      pressKey(renameInput, dom, 'Enter', { isComposing: true });
+      setInputValue(renameInput, dom, "shu");
+      pressKey(renameInput, dom, "Enter", { isComposing: true });
       await flushDom(3);
 
       // The IME-confirming Enter must not commit; the rename input stays open.
       expect(renameEvents).toEqual([]);
-      expect(
-        shadowRoot.querySelector('[data-item-rename-input]')
-      ).not.toBeNull();
+      expect(shadowRoot.querySelector("[data-item-rename-input]")).not.toBeNull();
 
       // Older browsers surface composition via keyCode 229 rather than
       // isComposing; that Enter must be ignored too.
-      pressKey(renameInput, dom, 'Enter', { keyCode: 229 });
+      pressKey(renameInput, dom, "Enter", { keyCode: 229 });
       await flushDom(3);
       expect(renameEvents).toEqual([]);
-      expect(
-        shadowRoot.querySelector('[data-item-rename-input]')
-      ).not.toBeNull();
+      expect(shadowRoot.querySelector("[data-item-rename-input]")).not.toBeNull();
 
       // Once composition ends, a real Enter commits the finalized value.
       const finalizedInput = getRenameInput(shadowRoot, dom);
-      setInputValue(finalizedInput, dom, '文档.md');
-      pressKey(finalizedInput, dom, 'Enter');
+      setInputValue(finalizedInput, dom, "文档.md");
+      pressKey(finalizedInput, dom, "Enter");
       await flushDom(3);
 
       expect(renameEvents).toEqual([
         {
-          destinationPath: '文档.md',
+          destinationPath: "文档.md",
           isFolder: false,
-          sourcePath: 'README.md',
+          sourcePath: "README.md",
         },
       ]);
-      expect(shadowRoot.querySelector('[data-item-rename-input]')).toBeNull();
-      expect(fileTree.getItem('文档.md')).not.toBeNull();
+      expect(shadowRoot.querySelector("[data-item-rename-input]")).toBeNull();
+      expect(fileTree.getItem("文档.md")).not.toBeNull();
     } finally {
       cleanup();
     }

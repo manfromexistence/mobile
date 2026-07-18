@@ -1,35 +1,35 @@
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { Tag } from "@opencode-ai/ui/v2/badge-v2"
-import { ButtonV2 } from "@opencode-ai/ui/v2/button-v2"
-import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon"
-import { IconButtonV2 } from "@opencode-ai/ui/v2/icon-button-v2"
-import { MenuV2 } from "@opencode-ai/ui/v2/menu-v2"
-import { useMutation } from "@tanstack/solid-query"
-import fuzzysort from "fuzzysort"
-import { type Accessor, For, Show, createMemo } from "solid-js"
-import type { useServerManagementController } from "@/components/dialog-select-server"
-import { ServerHealthIndicator } from "@/components/server/server-row"
-import { useLanguage } from "@/context/language"
-import { usePlatform } from "@/context/platform"
-import { ServerConnection } from "@/context/server"
-import { showToast } from "@/utils/toast"
-import { DialogAddWslServer } from "./dialog-add-server"
-import { useWslServers } from "./context"
-import { wslOpencodeAction, wslRuntimeRetryable } from "./settings-model"
+import { useDialog } from "@opencode-ai/ui/context/dialog";
+import { Tag } from "@opencode-ai/ui/v2/badge-v2";
+import { ButtonV2 } from "@opencode-ai/ui/v2/button-v2";
+import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon";
+import { IconButtonV2 } from "@opencode-ai/ui/v2/icon-button-v2";
+import { MenuV2 } from "@opencode-ai/ui/v2/menu-v2";
+import { useMutation } from "@tanstack/solid-query";
+import fuzzysort from "fuzzysort";
+import { type Accessor, For, Show, createMemo } from "solid-js";
+import type { useServerManagementController } from "@/components/dialog-select-server";
+import { ServerHealthIndicator } from "@/components/server/server-row";
+import { useLanguage } from "@/context/language";
+import { usePlatform } from "@/context/platform";
+import { ServerConnection } from "@/context/server";
+import { showToast } from "@/utils/toast";
+import { DialogAddWslServer } from "./dialog-add-server";
+import { useWslServers } from "./context";
+import { wslOpencodeAction, wslRuntimeRetryable } from "./settings-model";
 
-type Controller = ReturnType<typeof useServerManagementController>
+type Controller = ReturnType<typeof useServerManagementController>;
 
 export function isWslServer(server: ServerConnection.Any) {
-  return server.type === "sidecar" && server.variant === "wsl"
+  return server.type === "sidecar" && server.variant === "wsl";
 }
 
 export function AddServerMenu(props: { onAddServer: () => void }) {
-  const platform = usePlatform()
-  const dialog = useDialog()
-  const language = useLanguage()
+  const platform = usePlatform();
+  const dialog = useDialog();
+  const language = useLanguage();
   const openAddWsl = () => {
-    dialog.push(() => <DialogAddWslServer />)
-  }
+    dialog.push(() => <DialogAddWslServer />);
+  };
   return (
     <Show
       when={platform.wslServers}
@@ -45,35 +45,37 @@ export function AddServerMenu(props: { onAddServer: () => void }) {
         </MenuV2.Trigger>
         <MenuV2.Portal>
           <MenuV2.Content>
-            <MenuV2.Item onSelect={props.onAddServer}>{language.t("dialog.server.add.button")}</MenuV2.Item>
+            <MenuV2.Item onSelect={props.onAddServer}>
+              {language.t("dialog.server.add.button")}
+            </MenuV2.Item>
             <MenuV2.Item onSelect={openAddWsl}>{language.t("wsl.server.add")}</MenuV2.Item>
           </MenuV2.Content>
         </MenuV2.Portal>
       </MenuV2>
     </Show>
-  )
+  );
 }
 
 export function useFilteredWslServers(filter: Accessor<string>) {
-  const wsl = useWslServers()
+  const wsl = useWslServers();
   return createMemo(() => {
-    const servers = wsl.data?.servers ?? []
-    const query = filter().trim()
-    if (!query) return servers
+    const servers = wsl.data?.servers ?? [];
+    const query = filter().trim();
+    if (!query) return servers;
     return fuzzysort
       .go(query, servers, { keys: [(item) => item.config.distro, (item) => item.config.id] })
-      .map((x) => x.obj)
-  })
+      .map((x) => x.obj);
+  });
 }
 
 export function WslServerSettings(props: {
-  controller: Controller
-  servers: ReturnType<typeof useFilteredWslServers>
+  controller: Controller;
+  servers: ReturnType<typeof useFilteredWslServers>;
 }) {
-  const platform = usePlatform()
-  const language = useLanguage()
-  const wsl = useWslServers()
-  const api = platform.wslServers
+  const platform = usePlatform();
+  const language = useLanguage();
+  const wsl = useWslServers();
+  const api = platform.wslServers;
 
   const request = useMutation(() => ({
     mutationFn: (action: () => Promise<unknown>) => action(),
@@ -83,20 +85,22 @@ export function WslServerSettings(props: {
         title: language.t("common.requestFailed"),
         description: error instanceof Error ? error.message : String(error),
       }),
-  }))
+  }));
 
   const remove = (key: ServerConnection.Key) => {
-    request.mutate(() => props.controller.handleRemove(key))
-  }
+    request.mutate(() => props.controller.handleRemove(key));
+  };
 
   return (
     <Show when={api}>
       <For each={props.servers()}>
         {(item) => {
-          const key = ServerConnection.Key.make(item.config.id)
-          const check = () => wsl.data?.opencodeChecks[item.config.distro]
-          const opencodeAction = () => wslOpencodeAction(check())
-          const busy = () => wsl.data?.job?.kind === "install-opencode" && wsl.data.job.distro === item.config.distro
+          const key = ServerConnection.Key.make(item.config.id);
+          const check = () => wsl.data?.opencodeChecks[item.config.distro];
+          const opencodeAction = () => wslOpencodeAction(check());
+          const busy = () =>
+            wsl.data?.job?.kind === "install-opencode" &&
+            wsl.data.job.distro === item.config.distro;
           return (
             <div class="settings-v2-servers-row">
               <div class="settings-v2-servers-lead">
@@ -122,7 +126,9 @@ export function WslServerSettings(props: {
                     <ButtonV2
                       size="small"
                       disabled={busy() || request.isPending}
-                      onClick={() => api && request.mutate(() => api.installOpencode(item.config.distro))}
+                      onClick={() =>
+                        api && request.mutate(() => api.installOpencode(item.config.distro))
+                      }
                     >
                       {busy() ? language.t("wsl.server.updating") : label()}
                     </ButtonV2>
@@ -141,16 +147,26 @@ export function WslServerSettings(props: {
                       <MenuV2.Group>
                         <MenuV2.GroupLabel>{language.t("wsl.server.menu.label")}</MenuV2.GroupLabel>
                         <Show when={wslRuntimeRetryable(item.runtime)}>
-                          <MenuV2.Item onSelect={() => api && request.mutate(() => api.startServer(key))}>
+                          <MenuV2.Item
+                            onSelect={() => api && request.mutate(() => api.startServer(key))}
+                          >
                             {language.t("wsl.server.retryStart")}
                           </MenuV2.Item>
                         </Show>
-                        <Show when={props.controller.canDefault() && props.controller.defaultKey() !== key}>
+                        <Show
+                          when={
+                            props.controller.canDefault() && props.controller.defaultKey() !== key
+                          }
+                        >
                           <MenuV2.Item onSelect={() => props.controller.setDefault(key)}>
                             {language.t("dialog.server.menu.default")}
                           </MenuV2.Item>
                         </Show>
-                        <Show when={props.controller.canDefault() && props.controller.defaultKey() === key}>
+                        <Show
+                          when={
+                            props.controller.canDefault() && props.controller.defaultKey() === key
+                          }
+                        >
                           <MenuV2.Item onSelect={() => props.controller.setDefault(null)}>
                             {language.t("dialog.server.menu.defaultRemove")}
                           </MenuV2.Item>
@@ -165,9 +181,9 @@ export function WslServerSettings(props: {
                 </MenuV2>
               </div>
             </div>
-          )
+          );
         }}
       </For>
     </Show>
-  )
+  );
 }

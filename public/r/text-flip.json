@@ -4,9 +4,7 @@
   "title": "Text Flip",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "Animated text that cycles through items with a smooth flip transition.",
-  "dependencies": [
-    "motion"
-  ],
+  "dependencies": ["motion"],
   "files": [
     {
       "path": "src/registry/components/text-flip/text-flip.tsx",
@@ -16,8 +14,6 @@
     }
   ],
   "docs": "https://chanhdai.com/components/text-flip",
-  "categories": [
-    "text-effects"
-  ],
+  "categories": ["text-effects"],
   "type": "registry:component"
 }

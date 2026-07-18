@@ -139,7 +139,7 @@ export async function runLaunchCodexCommand(opts = {}, codexArgs = []) {
       (
         t("launch.notRunning") ||
         "OmniRoute is not reachable at {port}. Start it with 'omniroute serve'."
-      ).replace("{port}", baseUrl)
+      ).replace("{port}", baseUrl),
     );
     return 1;
   }
@@ -161,7 +161,7 @@ export async function runLaunchCodexCommand(opts = {}, codexArgs = []) {
     child.on("error", (err) => {
       if (err?.code === "ENOENT") {
         console.error(
-          "The 'codex' CLI was not found in PATH. Install with:\n  npm install -g @openai/codex"
+          "The 'codex' CLI was not found in PATH. Install with:\n  npm install -g @openai/codex",
         );
         resolve(127);
       } else {
@@ -177,18 +177,18 @@ export function registerLaunchCodex(program) {
   program
     .command("launch-codex")
     .description(
-      t("launchCodex.description") || "Launch Codex CLI pointed at OmniRoute (local or remote VPS)"
+      t("launchCodex.description") || "Launch Codex CLI pointed at OmniRoute (local or remote VPS)",
     )
     .option("--port <port>", "Local OmniRoute port (ignored when --remote is set)", "20128")
     .option(
       "--remote <url>",
-      "Remote OmniRoute base URL, e.g. http://192.168.0.15:20128 (overrides --port + context)"
+      "Remote OmniRoute base URL, e.g. http://192.168.0.15:20128 (overrides --port + context)",
     )
     .option("--profile <name>", "Codex profile to activate (passed as --profile <name>)")
     .option("-p, --p <name>", "Alias for --profile")
     .option(
       "--api-key <key>",
-      "OmniRoute API key (overrides OMNIROUTE_API_KEY env var for this invocation)"
+      "OmniRoute API key (overrides OMNIROUTE_API_KEY env var for this invocation)",
     )
     .allowUnknownOption(true)
     .allowExcessArguments(true)

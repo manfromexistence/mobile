@@ -1,10 +1,10 @@
-import { describe, expect, test } from "bun:test"
-import { invalidateFromWatcher } from "./watcher"
+import { describe, expect, test } from "bun:test";
+import { invalidateFromWatcher } from "./watcher";
 
 describe("file watcher invalidation", () => {
   test("reloads open files and refreshes loaded parent on add", () => {
-    const loads: string[] = []
-    const refresh: string[] = []
+    const loads: string[] = [];
+    const refresh: string[] = [];
     invalidateFromWatcher(
       {
         type: "file.watcher.updated",
@@ -21,14 +21,14 @@ describe("file watcher invalidation", () => {
         isDirLoaded: (path) => path === "src",
         refreshDir: (path) => refresh.push(path),
       },
-    )
+    );
 
-    expect(loads).toEqual(["src/new.ts"])
-    expect(refresh).toEqual(["src"])
-  })
+    expect(loads).toEqual(["src/new.ts"]);
+    expect(refresh).toEqual(["src"]);
+  });
 
   test("reloads files that are open in tabs", () => {
-    const loads: string[] = []
+    const loads: string[] = [];
 
     invalidateFromWatcher(
       {
@@ -53,13 +53,13 @@ describe("file watcher invalidation", () => {
         isDirLoaded: () => false,
         refreshDir: () => {},
       },
-    )
+    );
 
-    expect(loads).toEqual(["src/open.ts"])
-  })
+    expect(loads).toEqual(["src/open.ts"]);
+  });
 
   test("refreshes only changed loaded directory nodes", () => {
-    const refresh: string[] = []
+    const refresh: string[] = [];
 
     invalidateFromWatcher(
       {
@@ -73,11 +73,17 @@ describe("file watcher invalidation", () => {
         normalize: (input) => input,
         hasFile: () => false,
         loadFile: () => {},
-        node: () => ({ path: "src", type: "directory", name: "src", absolute: "/repo/src", ignored: false }),
+        node: () => ({
+          path: "src",
+          type: "directory",
+          name: "src",
+          absolute: "/repo/src",
+          ignored: false,
+        }),
         isDirLoaded: (path) => path === "src",
         refreshDir: (path) => refresh.push(path),
       },
-    )
+    );
 
     invalidateFromWatcher(
       {
@@ -101,13 +107,13 @@ describe("file watcher invalidation", () => {
         isDirLoaded: () => true,
         refreshDir: (path) => refresh.push(path),
       },
-    )
+    );
 
-    expect(refresh).toEqual(["src"])
-  })
+    expect(refresh).toEqual(["src"]);
+  });
 
   test("ignores invalid or git watcher updates", () => {
-    const refresh: string[] = []
+    const refresh: string[] = [];
 
     invalidateFromWatcher(
       {
@@ -121,13 +127,13 @@ describe("file watcher invalidation", () => {
         normalize: (input) => input,
         hasFile: () => true,
         loadFile: () => {
-          throw new Error("should not load")
+          throw new Error("should not load");
         },
         node: () => undefined,
         isDirLoaded: () => true,
         refreshDir: (path) => refresh.push(path),
       },
-    )
+    );
 
     invalidateFromWatcher(
       {
@@ -142,8 +148,8 @@ describe("file watcher invalidation", () => {
         isDirLoaded: () => true,
         refreshDir: (path) => refresh.push(path),
       },
-    )
+    );
 
-    expect(refresh).toEqual([])
-  })
-})
+    expect(refresh).toEqual([]);
+  });
+});

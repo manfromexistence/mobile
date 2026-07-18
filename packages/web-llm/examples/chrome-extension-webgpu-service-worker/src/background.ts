@@ -1,14 +1,14 @@
-import { ExtensionServiceWorkerMLCEngineHandler } from "@mlc-ai/web-llm"
+import { ExtensionServiceWorkerMLCEngineHandler } from "@mlc-ai/web-llm";
 
 // Hookup an engine to a service worker handler
-let handler
+let handler;
 
 chrome.runtime.onConnect.addListener((port) => {
-  console.assert(port.name === "web_llm_service_worker")
+  console.assert(port.name === "web_llm_service_worker");
   if (handler === undefined) {
-    handler = new ExtensionServiceWorkerMLCEngineHandler(port)
+    handler = new ExtensionServiceWorkerMLCEngineHandler(port);
   } else {
-    handler.setPort(port)
+    handler.setPort(port);
   }
-  port.onMessage.addListener(handler.onmessage.bind(handler))
-})
+  port.onMessage.addListener(handler.onmessage.bind(handler));
+});

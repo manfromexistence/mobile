@@ -1,17 +1,17 @@
-import { MetaProvider, Title, Meta } from "@solidjs/meta"
-import { Router } from "@solidjs/router"
-import { FileRoutes } from "@solidjs/start/router"
-import { Suspense } from "solid-js"
-import { Favicon } from "@opencode-ai/ui/favicon"
-import { Font } from "@opencode-ai/ui/font"
-import "@ibm/plex/css/ibm-plex.css"
-import "./app.css"
-import { LanguageProvider } from "~/context/language"
-import { I18nProvider, useI18n } from "~/context/i18n"
-import { strip } from "~/lib/language"
+import { MetaProvider, Title, Meta } from "@solidjs/meta";
+import { Router } from "@solidjs/router";
+import { FileRoutes } from "@solidjs/start/router";
+import { Suspense } from "solid-js";
+import { Favicon } from "@opencode-ai/ui/favicon";
+import { Font } from "@opencode-ai/ui/font";
+import "@ibm/plex/css/ibm-plex.css";
+import "./app.css";
+import { LanguageProvider } from "~/context/language";
+import { I18nProvider, useI18n } from "~/context/i18n";
+import { strip } from "~/lib/language";
 
 function AppMeta() {
-  const i18n = useI18n()
+  const i18n = useI18n();
   return (
     <>
       <Title>opencode</Title>
@@ -19,7 +19,7 @@ function AppMeta() {
       <Favicon />
       <Font />
     </>
-  )
+  );
 }
 
 export default function App() {
@@ -40,5 +40,5 @@ export default function App() {
     >
       <FileRoutes />
     </Router>
-  )
+  );
 }

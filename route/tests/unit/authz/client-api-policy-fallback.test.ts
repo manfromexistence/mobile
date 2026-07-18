@@ -52,7 +52,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const STUB_PATH = path.join(__dirname, "__stub_apiKeys.mjs");
 fs.writeFileSync(
   STUB_PATH,
-  `export const validateApiKey = (key) => globalThis.__mockValidateApiKey(key);\n`
+  `export const validateApiKey = (key) => globalThis.__mockValidateApiKey(key);\n`,
 );
 
 // Wire the stub to our local variable
@@ -124,7 +124,7 @@ test("#2257 — invalid bearer + REQUIRE_API_KEY=false → anonymous (with warni
     }
     assert.ok(
       warnings.some((w) => w.includes("[clientApiPolicy]") && w.includes("REQUIRE_API_KEY=false")),
-      "expected a warning about the fallback"
+      "expected a warning about the fallback",
     );
   } finally {
     console.warn = originalWarn;
@@ -146,7 +146,7 @@ test("#2257 — invalid x-api-key + REQUIRE_API_KEY=false → anonymous (with wa
     }
     assert.ok(
       warnings.some((w) => w.includes("[clientApiPolicy]") && w.includes("REQUIRE_API_KEY=false")),
-      "expected a warning about the fallback"
+      "expected a warning about the fallback",
     );
   } finally {
     console.warn = originalWarn;
@@ -164,11 +164,11 @@ test("#2257 — fallback warning masks the x-api-key (only last-4 in log)", asyn
     assert.equal(out.allow, true);
     assert.ok(
       warnings.every((w) => !w.includes("secretprefix") && !w.includes("secretmiddle")),
-      "warning leaked the full bearer; only masked key id should be logged"
+      "warning leaked the full bearer; only masked key id should be logged",
     );
     assert.ok(
       warnings.some((w) => w.includes("key_XYZW")),
-      "expected masked key id (last-4) in the warning"
+      "expected masked key id (last-4) in the warning",
     );
   } finally {
     console.warn = originalWarn;
@@ -186,11 +186,11 @@ test("#2257 — fallback warning masks the bearer (only last-4 in log)", async (
     assert.equal(out.allow, true);
     assert.ok(
       warnings.every((w) => !w.includes("secretprefix") && !w.includes("secretmiddle")),
-      "warning leaked the full bearer; only masked key id should be logged"
+      "warning leaked the full bearer; only masked key id should be logged",
     );
     assert.ok(
       warnings.some((w) => w.includes("key_XYZW")),
-      "expected masked key id (last-4) in the warning"
+      "expected masked key id (last-4) in the warning",
     );
   } finally {
     console.warn = originalWarn;
@@ -212,7 +212,7 @@ test("#2257 — no bearer + REQUIRE_API_KEY=false → anonymous (unchanged, no f
     // the warning is specifically for the "invalid-bearer-fell-through" case.
     assert.ok(
       warnings.every((w) => !w.includes("[clientApiPolicy]")),
-      "no fallback warning expected when no bearer was sent"
+      "no fallback warning expected when no bearer was sent",
     );
   } finally {
     console.warn = originalWarn;
@@ -235,16 +235,14 @@ test("#3504 — empty 'Bearer ' Authorization falls through to the URL path toke
   process.env.REQUIRE_API_KEY = "true";
   const policy = await loadPolicy();
   const headers = new Headers({ authorization: "Bearer " });
-  const out = await policy.evaluate(
-    ctx(headers, "/api/v1/vscode/sk-url-token/chat/completions")
-  );
+  const out = await policy.evaluate(ctx(headers, "/api/v1/vscode/sk-url-token/chat/completions"));
   assert.equal(out.allow, false);
   if (!out.allow) {
     assert.equal(out.status, 401);
     assert.equal(
       out.message,
       "Invalid API key",
-      "URL token must be extracted (→ 'Invalid API key'), not skipped (→ 'Authentication required')"
+      "URL token must be extracted (→ 'Invalid API key'), not skipped (→ 'Authentication required')",
     );
   }
 });
@@ -253,9 +251,7 @@ test("#3504 — a non-Bearer scheme (Basic) also falls through to the URL token"
   process.env.REQUIRE_API_KEY = "true";
   const policy = await loadPolicy();
   const headers = new Headers({ authorization: "Basic Zm9vOmJhcg==" });
-  const out = await policy.evaluate(
-    ctx(headers, "/api/v1/vscode/sk-url-token/chat/completions")
-  );
+  const out = await policy.evaluate(ctx(headers, "/api/v1/vscode/sk-url-token/chat/completions"));
   assert.equal(out.allow, false);
   if (!out.allow) assert.equal(out.message, "Invalid API key");
 });

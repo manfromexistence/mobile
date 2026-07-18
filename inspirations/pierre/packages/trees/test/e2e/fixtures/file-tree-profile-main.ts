@@ -12,16 +12,13 @@ import {
   type FileTreeProfilePageSummary,
   type FileTreeProfileWorkload,
   getFileTreeProfileWorkload,
-} from '../../../scripts/lib/fileTreeProfileShared';
-import type {
-  FileTree as FileTreeClass,
-  FileTreeDirectoryHandle,
-} from '../../../src/index';
-import { createBenchmarkInstrumentation } from './file-tree-profile-benchmarkInstrumentation';
+} from "../../../scripts/lib/fileTreeProfileShared";
+import type { FileTree as FileTreeClass, FileTreeDirectoryHandle } from "../../../src/index";
+import { createBenchmarkInstrumentation } from "./file-tree-profile-benchmarkInstrumentation";
 
 // @ts-expect-error -- the Vite fixture serves the built trees dist from the
 // package root so profiling exercises the same output the script builds.
-const { FileTree } = (await import('/dist/index.js')) as {
+const { FileTree } = (await import("/dist/index.js")) as {
   FileTree: typeof FileTreeClass;
 };
 
@@ -49,12 +46,8 @@ declare global {
         preparedActionId: string | null;
         workload: ReturnType<typeof createFileTreeProfileWorkloadSummary>;
       }>;
-      listExpansionActionScenarios: () => Promise<
-        FileTreeProfileActionSummary[]
-      >;
-      prepareActionProfile: (
-        actionId: string
-      ) => Promise<FileTreeProfileActionSummary>;
+      listExpansionActionScenarios: () => Promise<FileTreeProfileActionSummary[]>;
+      prepareActionProfile: (actionId: string) => Promise<FileTreeProfileActionSummary>;
       profilePreparedAction: () => Promise<FileTreeProfilePageSummary>;
       profileRender: () => Promise<FileTreeProfilePageSummary>;
     };
@@ -73,9 +66,9 @@ interface DirectoryCandidate {
   path: string;
 }
 
-type ActionRowMode = 'flow' | 'sticky';
+type ActionRowMode = "flow" | "sticky";
 type Benchmark = ReturnType<typeof createBenchmarkInstrumentation>;
-type HeapSnapshot = ReturnType<Benchmark['readHeapSnapshot']>;
+type HeapSnapshot = ReturnType<Benchmark["readHeapSnapshot"]>;
 
 interface PreparedActionClickTarget {
   x: number;
@@ -97,21 +90,21 @@ interface PreparedActionProfileState extends PreparedActionContext {
   workload: FileTreeProfileWorkload;
 }
 
-const START_MARK_NAME = 'trees-file-tree-profile-start';
-const END_MARK_NAME = 'trees-file-tree-profile-end';
-const MEASURE_NAME = 'trees-file-tree-profile-measure';
-const START_TRACE_LABEL = 'trees-file-tree-profile-start';
-const END_TRACE_LABEL = 'trees-file-tree-profile-end';
+const START_MARK_NAME = "trees-file-tree-profile-start";
+const END_MARK_NAME = "trees-file-tree-profile-end";
+const MEASURE_NAME = "trees-file-tree-profile-measure";
+const START_TRACE_LABEL = "trees-file-tree-profile-start";
+const END_TRACE_LABEL = "trees-file-tree-profile-end";
 const TREE_UPDATE_TIMEOUT_MS = 30_000;
-const AOSP_WORKLOAD_NAME = 'aosp';
-const AOSP_WORKLOAD_URL = '/trees-dev/aosp-files.json.gz';
+const AOSP_WORKLOAD_NAME = "aosp";
+const AOSP_WORKLOAD_URL = "/trees-dev/aosp-files.json.gz";
 
 const searchParams = new URLSearchParams(window.location.search);
-const instrumentationEnabled = searchParams.get('instrumentation') !== '0';
+const instrumentationEnabled = searchParams.get("instrumentation") !== "0";
 
 function requireElement<TElement extends Element>(
   selector: string,
-  expectedType: { new (): TElement }
+  expectedType: { new (): TElement },
 ): TElement {
   const element = document.querySelector(selector);
   if (!(element instanceof expectedType)) {
@@ -121,40 +114,32 @@ function requireElement<TElement extends Element>(
   return element;
 }
 
-const mount = requireElement('[data-profile-mount]', HTMLDivElement);
-const renderButton = requireElement(
-  '[data-profile-render-button]',
-  HTMLButtonElement
-);
-const workloadInput = requireElement('#workload', HTMLSelectElement);
+const mount = requireElement("[data-profile-mount]", HTMLDivElement);
+const renderButton = requireElement("[data-profile-render-button]", HTMLButtonElement);
+const workloadInput = requireElement("#workload", HTMLSelectElement);
 
 for (const workloadName of FILE_TREE_PROFILE_WORKLOAD_NAMES) {
-  const option = document.createElement('option');
+  const option = document.createElement("option");
   option.value = workloadName;
   option.textContent = workloadName;
   workloadInput.appendChild(option);
 }
 
-const initialWorkloadName =
-  searchParams.get('workload') ?? DEFAULT_FILE_TREE_PROFILE_WORKLOAD_NAME;
+const initialWorkloadName = searchParams.get("workload") ?? DEFAULT_FILE_TREE_PROFILE_WORKLOAD_NAME;
 workloadInput.value = initialWorkloadName;
-if (workloadInput.value === '') {
+if (workloadInput.value === "") {
   workloadInput.value = DEFAULT_FILE_TREE_PROFILE_WORKLOAD_NAME;
 }
 
 let currentFileTree: FileTreeClass | null = null;
-let cachedExpansionActionScenarios: FileTreeProfileActionSummary[] | null =
-  null;
+let cachedExpansionActionScenarios: FileTreeProfileActionSummary[] | null = null;
 let cachedExpansionActionWorkloadName: string | null = null;
 let preparedActionScenario: FileTreeProfileActionSummary | null = null;
-const workloadPromiseCache = new Map<
-  string,
-  Promise<FileTreeProfileWorkload>
->();
+const workloadPromiseCache = new Map<string, Promise<FileTreeProfileWorkload>>();
 const longTaskEntries: LongTaskEntry[] = [];
 const longTaskObserver =
-  typeof PerformanceObserver !== 'undefined' &&
-  PerformanceObserver.supportedEntryTypes?.includes('longtask')
+  typeof PerformanceObserver !== "undefined" &&
+  PerformanceObserver.supportedEntryTypes?.includes("longtask")
     ? new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
           longTaskEntries.push({
@@ -165,7 +150,7 @@ const longTaskObserver =
       })
     : null;
 
-longTaskObserver?.observe({ type: 'longtask', buffered: true });
+longTaskObserver?.observe({ type: "longtask", buffered: true });
 
 function clearActionScenarioCache(): void {
   cachedExpansionActionScenarios = null;
@@ -177,7 +162,7 @@ function clearRenderedTree(): void {
   currentFileTree?.cleanUp();
   currentFileTree = null;
   preparedActionScenario = null;
-  mount.innerHTML = '';
+  mount.innerHTML = "";
 }
 
 function clearProfileSummary(): void {
@@ -189,19 +174,12 @@ function clearProfileSummary(): void {
 }
 
 function getSelectedWorkloadName(): string {
-  return workloadInput.value === ''
-    ? DEFAULT_FILE_TREE_PROFILE_WORKLOAD_NAME
-    : workloadInput.value;
+  return workloadInput.value === "" ? DEFAULT_FILE_TREE_PROFILE_WORKLOAD_NAME : workloadInput.value;
 }
 
 function assertStringArray(value: unknown, label: string): string[] {
-  if (
-    !Array.isArray(value) ||
-    !value.every((item): item is string => typeof item === 'string')
-  ) {
-    throw new Error(
-      `Invalid AOSP profile workload: expected ${label} strings.`
-    );
+  if (!Array.isArray(value) || !value.every((item): item is string => typeof item === "string")) {
+    throw new Error(`Invalid AOSP profile workload: expected ${label} strings.`);
   }
   return value;
 }
@@ -210,8 +188,8 @@ function parseAospPayload(value: unknown): {
   allExpandedPaths: string[];
   paths: string[];
 } {
-  if (typeof value !== 'object' || value == null) {
-    throw new Error('Invalid AOSP profile workload: expected a JSON object.');
+  if (typeof value !== "object" || value == null) {
+    throw new Error("Invalid AOSP profile workload: expected a JSON object.");
   }
 
   const payload = value as {
@@ -219,11 +197,8 @@ function parseAospPayload(value: unknown): {
     paths?: unknown;
   };
   return {
-    allExpandedPaths: assertStringArray(
-      payload.allExpandedPaths,
-      'allExpandedPaths'
-    ),
-    paths: assertStringArray(payload.paths, 'paths'),
+    allExpandedPaths: assertStringArray(payload.allExpandedPaths, "allExpandedPaths"),
+    paths: assertStringArray(payload.paths, "paths"),
   };
 }
 
@@ -234,16 +209,14 @@ async function parseAospPayloadBytes(bytes: ArrayBuffer): Promise<{
   try {
     return parseAospPayload(JSON.parse(new TextDecoder().decode(bytes)));
   } catch (directParseError) {
-    if (typeof DecompressionStream === 'undefined') {
+    if (typeof DecompressionStream === "undefined") {
       throw directParseError;
     }
 
     const decompressedBytes = await new Response(
-      new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))
+      new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip")),
     ).arrayBuffer();
-    return parseAospPayload(
-      JSON.parse(new TextDecoder().decode(decompressedBytes))
-    );
+    return parseAospPayload(JSON.parse(new TextDecoder().decode(decompressedBytes)));
   }
 }
 
@@ -251,24 +224,20 @@ async function loadAospProfileWorkload(): Promise<FileTreeProfileWorkload> {
   const response = await fetch(AOSP_WORKLOAD_URL);
   if (!response.ok) {
     throw new Error(
-      `Failed to load AOSP profile workload from ${AOSP_WORKLOAD_URL}: ${response.status} ${response.statusText}`
+      `Failed to load AOSP profile workload from ${AOSP_WORKLOAD_URL}: ${response.status} ${response.statusText}`,
     );
   }
 
-  const { allExpandedPaths, paths } = await parseAospPayloadBytes(
-    await response.arrayBuffer()
-  );
+  const { allExpandedPaths, paths } = await parseAospPayloadBytes(await response.arrayBuffer());
   return {
     expandedFolders: allExpandedPaths,
     files: paths,
-    label: 'AOSP fixture',
+    label: "AOSP fixture",
     name: AOSP_WORKLOAD_NAME,
   };
 }
 
-async function loadFileTreeProfileWorkload(
-  workloadName: string
-): Promise<FileTreeProfileWorkload> {
+async function loadFileTreeProfileWorkload(workloadName: string): Promise<FileTreeProfileWorkload> {
   const cachedWorkload = workloadPromiseCache.get(workloadName);
   if (cachedWorkload != null) {
     return cachedWorkload;
@@ -289,15 +258,15 @@ async function getSelectedWorkload(): Promise<FileTreeProfileWorkload> {
 function getRenderedItemCount(): number {
   return (
     mount
-      .querySelector('file-tree-container')
+      .querySelector("file-tree-container")
       ?.shadowRoot?.querySelectorAll('button[data-type="item"]').length ?? 0
   );
 }
 
 function getProfileShadowRoot(): ShadowRoot {
-  const host = mount.querySelector('file-tree-container');
+  const host = mount.querySelector("file-tree-container");
   if (!(host instanceof HTMLElement) || host.shadowRoot == null) {
-    throw new Error('Cannot find the rendered file-tree shadow root.');
+    throw new Error("Cannot find the rendered file-tree shadow root.");
   }
 
   return host.shadowRoot;
@@ -305,10 +274,10 @@ function getProfileShadowRoot(): ShadowRoot {
 
 function getVirtualizedScrollElement(): HTMLElement {
   const scrollElement = getProfileShadowRoot().querySelector(
-    '[data-file-tree-virtualized-scroll="true"]'
+    '[data-file-tree-virtualized-scroll="true"]',
   );
   if (!(scrollElement instanceof HTMLElement)) {
-    throw new Error('Cannot find the rendered file-tree scroll element.');
+    throw new Error("Cannot find the rendered file-tree scroll element.");
   }
 
   return scrollElement;
@@ -317,44 +286,39 @@ function getVirtualizedScrollElement(): HTMLElement {
 function getMountedFolderPaths(): Set<string> {
   const rows =
     mount
-      .querySelector('file-tree-container')
+      .querySelector("file-tree-container")
       ?.shadowRoot?.querySelectorAll(
-        'button[data-type="item"][data-item-type="folder"]:not([data-file-tree-sticky-row="true"])'
+        'button[data-type="item"][data-item-type="folder"]:not([data-file-tree-sticky-row="true"])',
       ) ?? [];
   return new Set(
     Array.from(rows)
-      .map((row) => row.getAttribute('data-item-path') ?? '')
-      .filter((path) => path !== '')
+      .map((row) => row.getAttribute("data-item-path") ?? "")
+      .filter((path) => path !== ""),
   );
 }
 
 function getPathDepth(path: string): number {
-  const segmentCount = path.split('/').filter(Boolean).length;
+  const segmentCount = path.split("/").filter(Boolean).length;
   return Math.max(0, segmentCount - 1);
 }
 
 function getButtonPath(button: HTMLButtonElement, mode: ActionRowMode): string {
-  return mode === 'sticky'
-    ? (button.dataset.fileTreeStickyPath ?? button.dataset.itemPath ?? '')
-    : (button.dataset.itemPath ?? '');
+  return mode === "sticky"
+    ? (button.dataset.fileTreeStickyPath ?? button.dataset.itemPath ?? "")
+    : (button.dataset.itemPath ?? "");
 }
 
-function findFolderRowButton(
-  path: string,
-  mode: ActionRowMode
-): HTMLButtonElement | null {
+function findFolderRowButton(path: string, mode: ActionRowMode): HTMLButtonElement | null {
   const buttons = Array.from(
-    getProfileShadowRoot().querySelectorAll(
-      'button[data-type="item"][data-item-type="folder"]'
-    )
+    getProfileShadowRoot().querySelectorAll('button[data-type="item"][data-item-type="folder"]'),
   );
   for (const button of buttons) {
     if (!(button instanceof HTMLButtonElement)) {
       continue;
     }
 
-    const isSticky = button.dataset.fileTreeStickyRow === 'true';
-    if (mode === 'sticky' ? !isSticky : isSticky) {
+    const isSticky = button.dataset.fileTreeStickyRow === "true";
+    if (mode === "sticky" ? !isSticky : isSticky) {
       continue;
     }
 
@@ -366,16 +330,13 @@ function findFolderRowButton(
   return null;
 }
 
-function getActionRowButton(
-  scenario: FileTreeProfileActionSummary
-): HTMLButtonElement {
-  const mode: ActionRowMode =
-    scenario.targetVisibility === 'sticky' ? 'sticky' : 'flow';
+function getActionRowButton(scenario: FileTreeProfileActionSummary): HTMLButtonElement {
+  const mode: ActionRowMode = scenario.targetVisibility === "sticky" ? "sticky" : "flow";
   const matchingButton = findFolderRowButton(scenario.targetPath, mode);
 
   if (!(matchingButton instanceof HTMLButtonElement)) {
     throw new Error(
-      `Cannot click profile action ${scenario.id}; target row is not mounted: ${scenario.targetPath}.`
+      `Cannot click profile action ${scenario.id}; target row is not mounted: ${scenario.targetPath}.`,
     );
   }
 
@@ -384,7 +345,7 @@ function getActionRowButton(
 
 async function waitForFolderRowButton(
   path: string,
-  mode: ActionRowMode
+  mode: ActionRowMode,
 ): Promise<HTMLButtonElement> {
   const startedAt = performance.now();
 
@@ -402,11 +363,11 @@ async function waitForFolderRowButton(
 
 async function prepareStickyActionTarget(path: string): Promise<void> {
   if (currentFileTree == null) {
-    throw new Error('Cannot prepare a sticky action target before rendering.');
+    throw new Error("Cannot prepare a sticky action target before rendering.");
   }
 
   const item = getDirectoryHandle(path);
-  let flowButton = findFolderRowButton(path, 'flow');
+  let flowButton = findFolderRowButton(path, "flow");
   if (flowButton == null && !item.isFocused()) {
     const updatePromise = waitForNextTreeUpdate(currentFileTree);
     item.focus();
@@ -414,24 +375,20 @@ async function prepareStickyActionTarget(path: string): Promise<void> {
   }
   await waitForPaint();
 
-  flowButton = await waitForFolderRowButton(path, 'flow');
+  flowButton = await waitForFolderRowButton(path, "flow");
   const scrollElement = getVirtualizedScrollElement();
   const rowRect = flowButton.getBoundingClientRect();
   const scrollRect = scrollElement.getBoundingClientRect();
-  const rowHeight =
-    rowRect.height > 0 ? rowRect.height : currentFileTree.getItemHeight();
-  scrollElement.scrollTop += Math.max(
-    0,
-    rowRect.top - scrollRect.top + rowHeight
-  );
+  const rowHeight = rowRect.height > 0 ? rowRect.height : currentFileTree.getItemHeight();
+  scrollElement.scrollTop += Math.max(0, rowRect.top - scrollRect.top + rowHeight);
   await waitForPaint();
-  await waitForFolderRowButton(path, 'sticky');
+  await waitForFolderRowButton(path, "sticky");
 }
 
 function getClickTarget(element: HTMLElement): PreparedActionClickTarget {
   const rect = element.getBoundingClientRect();
   if (rect.width <= 0 || rect.height <= 0) {
-    throw new Error('Cannot click profile action target with an empty rect.');
+    throw new Error("Cannot click profile action target with an empty rect.");
   }
 
   return {
@@ -443,9 +400,7 @@ function getClickTarget(element: HTMLElement): PreparedActionClickTarget {
 function getDirectoryHandle(path: string): FileTreeDirectoryHandle {
   const item = currentFileTree?.getItem(path);
   if (item == null || !item.isDirectory()) {
-    throw new Error(
-      `Expected profile action target to be a directory: ${path}`
-    );
+    throw new Error(`Expected profile action target to be a directory: ${path}`);
   }
   return item as FileTreeDirectoryHandle;
 }
@@ -457,14 +412,14 @@ async function waitForRenderedTree(): Promise<{
   const startedAt = performance.now();
 
   while (true) {
-    const host = mount.querySelector('file-tree-container');
+    const host = mount.querySelector("file-tree-container");
     const renderedItemCount = getRenderedItemCount();
     if (host instanceof HTMLElement && renderedItemCount > 0) {
       return { host, renderedItemCount };
     }
 
     if (performance.now() - startedAt > TREE_UPDATE_TIMEOUT_MS) {
-      throw new Error('Timed out waiting for the file-tree to render.');
+      throw new Error("Timed out waiting for the file-tree to render.");
     }
 
     await new Promise((resolve) => setTimeout(resolve, 16));
@@ -485,7 +440,7 @@ function waitForNextTreeUpdate(fileTree: FileTreeClass): Promise<void> {
     let unsubscribe: (() => void) | null = null;
     const timeout = window.setTimeout(() => {
       unsubscribe?.();
-      reject(new Error('Timed out waiting for the file-tree action update.'));
+      reject(new Error("Timed out waiting for the file-tree action update."));
     }, TREE_UPDATE_TIMEOUT_MS);
 
     unsubscribe = fileTree.subscribe(() => {
@@ -500,11 +455,7 @@ function formatMs(value: number): string {
   return `${value.toFixed(1)} ms`;
 }
 
-function getTaskOverlapMs(
-  entry: LongTaskEntry,
-  startTime: number,
-  endTime: number
-): number {
+function getTaskOverlapMs(entry: LongTaskEntry, startTime: number, endTime: number): number {
   const overlapStart = Math.max(entry.startTime, startTime);
   const overlapEnd = Math.min(entry.startTime + entry.duration, endTime);
   return Math.max(0, overlapEnd - overlapStart);
@@ -512,7 +463,7 @@ function getTaskOverlapMs(
 
 function summarizeLongTasks(
   startTime: number,
-  endTime: number
+  endTime: number,
 ): {
   longTaskCount: number;
   longTaskTotalMs: number;
@@ -542,40 +493,27 @@ function createBenchmark(): Benchmark | null {
 function createProfileOptions(
   initialExpansion: FileTreeProfileActionInitialExpansion,
   benchmark: Benchmark | null,
-  workload: FileTreeProfileWorkload
+  workload: FileTreeProfileWorkload,
 ) {
-  const createOptions = () =>
-    createFileTreeProfileFixtureOptions(workload, { initialExpansion });
+  const createOptions = () => createFileTreeProfileFixtureOptions(workload, { initialExpansion });
   return benchmark == null
     ? createOptions()
-    : benchmark.instrumentation.measurePhase(
-        'page.createOptions',
-        createOptions
-      );
+    : benchmark.instrumentation.measurePhase("page.createOptions", createOptions);
 }
 
-function setWorkloadCounters(
-  benchmark: Benchmark | null,
-  workload: FileTreeProfileWorkload
-): void {
+function setWorkloadCounters(benchmark: Benchmark | null, workload: FileTreeProfileWorkload): void {
   if (benchmark == null) {
     return;
   }
 
-  benchmark.instrumentation.setCounter(
-    'workload.inputFiles',
-    workload.files.length
-  );
-  benchmark.instrumentation.setCounter(
-    'workload.expandedFolders',
-    workload.expandedFolders.length
-  );
+  benchmark.instrumentation.setCounter("workload.inputFiles", workload.files.length);
+  benchmark.instrumentation.setCounter("workload.expandedFolders", workload.expandedFolders.length);
 }
 
 function createProfileFileTree(
   initialExpansion: FileTreeProfileActionInitialExpansion,
   benchmark: Benchmark | null,
-  workload: FileTreeProfileWorkload
+  workload: FileTreeProfileWorkload,
 ): FileTreeClass {
   const options = createProfileOptions(initialExpansion, benchmark, workload);
   setWorkloadCounters(benchmark, workload);
@@ -583,22 +521,22 @@ function createProfileFileTree(
   return benchmark == null
     ? new FileTree({
         ...options,
-        id: 'file-tree-profile',
+        id: "file-tree-profile",
       })
     : benchmark.instrumentation.measurePhase(
-        'page.createFileTree',
+        "page.createFileTree",
         () =>
           new FileTree({
             ...options,
-            id: 'file-tree-profile',
-          })
+            id: "file-tree-profile",
+          }),
       );
 }
 
 async function renderProfileTree(
   initialExpansion: FileTreeProfileActionInitialExpansion,
   benchmark: Benchmark | null,
-  workload: FileTreeProfileWorkload
+  workload: FileTreeProfileWorkload,
 ): Promise<{
   fileTree: FileTreeClass;
   renderedItemCount: number;
@@ -610,7 +548,7 @@ async function renderProfileTree(
   if (benchmark == null) {
     fileTree.render({ containerWrapper: mount });
   } else {
-    benchmark.instrumentation.measurePhase('page.renderTree', () => {
+    benchmark.instrumentation.measurePhase("page.renderTree", () => {
       fileTree.render({ containerWrapper: mount });
     });
   }
@@ -618,29 +556,26 @@ async function renderProfileTree(
   const { renderedItemCount } =
     benchmark == null
       ? await waitForRenderedTree()
-      : await benchmark.instrumentation.measurePhase(
-          'page.waitForRenderReady',
-          () => waitForRenderedTree()
+      : await benchmark.instrumentation.measurePhase("page.waitForRenderReady", () =>
+          waitForRenderedTree(),
         );
   return { fileTree, renderedItemCount };
 }
 
 // Computes which directories have visible descendants without repeatedly
 // scanning the full workload for each action candidate.
-function collectDirectoryPathsWithDescendants(
-  workload: FileTreeProfileWorkload
-): Set<string> {
+function collectDirectoryPathsWithDescendants(workload: FileTreeProfileWorkload): Set<string> {
   const directoryPaths = new Set(workload.expandedFolders);
   const pathsWithDescendants = new Set<string>();
 
   for (const filePath of workload.files) {
-    let slashIndex = filePath.indexOf('/');
+    let slashIndex = filePath.indexOf("/");
     while (slashIndex > 0) {
       const directoryPath = filePath.slice(0, slashIndex);
       if (directoryPaths.has(directoryPath)) {
         pathsWithDescendants.add(directoryPath);
       }
-      slashIndex = filePath.indexOf('/', slashIndex + 1);
+      slashIndex = filePath.indexOf("/", slashIndex + 1);
     }
   }
 
@@ -650,7 +585,7 @@ function collectDirectoryPathsWithDescendants(
 function collectDirectoryCandidates(
   fileTree: FileTreeClass,
   mountedPaths: Set<string>,
-  workload: FileTreeProfileWorkload
+  workload: FileTreeProfileWorkload,
 ): DirectoryCandidate[] {
   const seenPaths = new Set<string>();
   const candidates: DirectoryCandidate[] = [];
@@ -669,9 +604,7 @@ function collectDirectoryCandidates(
     seenPaths.add(canonicalPath);
     candidates.push({
       depth: getPathDepth(canonicalPath),
-      hasDescendants:
-        pathsWithDescendants.has(canonicalPath) ||
-        pathsWithDescendants.has(path),
+      hasDescendants: pathsWithDescendants.has(canonicalPath) || pathsWithDescendants.has(path),
       isMounted: mountedPaths.has(canonicalPath),
       path: canonicalPath,
     });
@@ -683,7 +616,7 @@ function selectCandidate(
   candidates: readonly DirectoryCandidate[],
   usedPaths: Set<string>,
   predicate: (candidate: DirectoryCandidate) => boolean,
-  pick: 'first' | 'last' | 'middle'
+  pick: "first" | "last" | "middle",
 ): DirectoryCandidate | null {
   const matches = candidates.filter((candidate) => {
     return !usedPaths.has(candidate.path) && predicate(candidate);
@@ -692,10 +625,10 @@ function selectCandidate(
     return null;
   }
 
-  if (pick === 'last') {
+  if (pick === "last") {
     return matches[matches.length - 1] ?? null;
   }
-  if (pick === 'middle') {
+  if (pick === "middle") {
     return matches[Math.floor(matches.length / 2)] ?? null;
   }
   return matches[0] ?? null;
@@ -723,9 +656,7 @@ function createActionScenario({
   return {
     dispatch:
       dispatch ??
-      (targetVisibility === 'visible' || targetVisibility === 'sticky'
-        ? 'dom-click'
-        : 'api'),
+      (targetVisibility === "visible" || targetVisibility === "sticky" ? "dom-click" : "api"),
     id,
     initialExpansion,
     label,
@@ -737,73 +668,60 @@ function createActionScenario({
   };
 }
 
-async function buildExpansionActionScenarios(): Promise<
-  FileTreeProfileActionSummary[]
-> {
+async function buildExpansionActionScenarios(): Promise<FileTreeProfileActionSummary[]> {
   const workload = await getSelectedWorkload();
   const scenarios: FileTreeProfileActionSummary[] = [];
   const usedOpenPaths = new Set<string>();
 
-  const { fileTree: openTree } = await renderProfileTree(
-    'open',
-    null,
-    workload
-  );
+  const { fileTree: openTree } = await renderProfileTree("open", null, workload);
   await waitForPaint();
   const openMountedPaths = getMountedFolderPaths();
-  const openCandidates = collectDirectoryCandidates(
-    openTree,
-    openMountedPaths,
-    workload
-  );
+  const openCandidates = collectDirectoryCandidates(openTree, openMountedPaths, workload);
   const openTargets = [
     {
-      id: 'open-visible-shallow',
-      label: 'Open visible shallow',
-      pick: 'first' as const,
-      predicate: (candidate: DirectoryCandidate) =>
-        candidate.isMounted && candidate.depth <= 1,
-      visibility: 'visible' as const,
+      id: "open-visible-shallow",
+      label: "Open visible shallow",
+      pick: "first" as const,
+      predicate: (candidate: DirectoryCandidate) => candidate.isMounted && candidate.depth <= 1,
+      visibility: "visible" as const,
     },
     {
-      id: 'open-visible-deep',
-      label: 'Open visible deep',
-      pick: 'last' as const,
-      predicate: (candidate: DirectoryCandidate) =>
-        candidate.isMounted && candidate.depth >= 2,
-      visibility: 'visible' as const,
+      id: "open-visible-deep",
+      label: "Open visible deep",
+      pick: "last" as const,
+      predicate: (candidate: DirectoryCandidate) => candidate.isMounted && candidate.depth >= 2,
+      visibility: "visible" as const,
     },
     {
-      id: 'open-sticky-shallow',
-      label: 'Open sticky shallow',
-      pick: 'first' as const,
+      id: "open-sticky-shallow",
+      label: "Open sticky shallow",
+      pick: "first" as const,
       predicate: (candidate: DirectoryCandidate) =>
         candidate.isMounted && candidate.hasDescendants && candidate.depth <= 1,
-      visibility: 'sticky' as const,
+      visibility: "sticky" as const,
     },
     {
-      id: 'open-sticky-deep',
-      label: 'Open sticky deep',
-      pick: 'last' as const,
+      id: "open-sticky-deep",
+      label: "Open sticky deep",
+      pick: "last" as const,
       predicate: (candidate: DirectoryCandidate) =>
         candidate.isMounted && candidate.hasDescendants && candidate.depth >= 2,
-      visibility: 'sticky' as const,
+      visibility: "sticky" as const,
     },
     {
-      id: 'open-offscreen-mid',
-      label: 'Open offscreen mid-depth',
-      pick: 'middle' as const,
+      id: "open-offscreen-mid",
+      label: "Open offscreen mid-depth",
+      pick: "middle" as const,
       predicate: (candidate: DirectoryCandidate) =>
         !candidate.isMounted && candidate.depth >= 1 && candidate.depth <= 3,
-      visibility: 'offscreen' as const,
+      visibility: "offscreen" as const,
     },
     {
-      id: 'open-offscreen-deep',
-      label: 'Open offscreen deep',
-      pick: 'last' as const,
-      predicate: (candidate: DirectoryCandidate) =>
-        !candidate.isMounted && candidate.depth >= 4,
-      visibility: 'offscreen' as const,
+      id: "open-offscreen-deep",
+      label: "Open offscreen deep",
+      pick: "last" as const,
+      predicate: (candidate: DirectoryCandidate) => !candidate.isMounted && candidate.depth >= 4,
+      visibility: "offscreen" as const,
     },
   ];
 
@@ -812,7 +730,7 @@ async function buildExpansionActionScenarios(): Promise<
       openCandidates,
       usedOpenPaths,
       targetConfig.predicate,
-      targetConfig.pick
+      targetConfig.pick,
     );
     if (target == null) {
       continue;
@@ -822,58 +740,50 @@ async function buildExpansionActionScenarios(): Promise<
     scenarios.push(
       createActionScenario({
         id: `${targetConfig.id}-collapse`,
-        initialExpansion: 'open',
+        initialExpansion: "open",
         label: `${targetConfig.label} collapse`,
-        operation: 'collapse',
+        operation: "collapse",
         target,
         targetVisibility: targetConfig.visibility,
-      })
+      }),
     );
-    if (targetConfig.visibility !== 'sticky') {
+    if (targetConfig.visibility !== "sticky") {
       scenarios.push(
         createActionScenario({
           id: `${targetConfig.id}-expand`,
-          initialExpansion: 'open',
+          initialExpansion: "open",
           label: `${targetConfig.label} expand`,
-          operation: 'expand',
-          setupOperations: [{ operation: 'collapse', path: target.path }],
+          operation: "expand",
+          setupOperations: [{ operation: "collapse", path: target.path }],
           target,
           targetVisibility: targetConfig.visibility,
-        })
+        }),
       );
     }
   }
 
-  const { fileTree: closedTree } = await renderProfileTree(
-    'closed',
-    null,
-    workload
-  );
+  const { fileTree: closedTree } = await renderProfileTree("closed", null, workload);
   await waitForPaint();
   const closedMountedPaths = getMountedFolderPaths();
-  const closedCandidates = collectDirectoryCandidates(
-    closedTree,
-    closedMountedPaths,
-    workload
-  );
+  const closedCandidates = collectDirectoryCandidates(closedTree, closedMountedPaths, workload);
   const usedClosedPaths = new Set<string>();
   const closedVisibleTop = selectCandidate(
     closedCandidates,
     usedClosedPaths,
     (candidate) => candidate.isMounted && candidate.depth === 0,
-    'first'
+    "first",
   );
   if (closedVisibleTop != null) {
     usedClosedPaths.add(closedVisibleTop.path);
     scenarios.push(
       createActionScenario({
-        id: 'closed-visible-top-expand',
-        initialExpansion: 'closed',
-        label: 'Closed visible top-level expand',
-        operation: 'expand',
+        id: "closed-visible-top-expand",
+        initialExpansion: "closed",
+        label: "Closed visible top-level expand",
+        operation: "expand",
         target: closedVisibleTop,
-        targetVisibility: 'visible',
-      })
+        targetVisibility: "visible",
+      }),
     );
   }
 
@@ -882,35 +792,33 @@ async function buildExpansionActionScenarios(): Promise<
       closedCandidates,
       usedClosedPaths,
       (candidate) => !candidate.isMounted && candidate.depth >= 4,
-      'last'
+      "last",
     ) ??
     selectCandidate(
       closedCandidates,
       usedClosedPaths,
       (candidate) => !candidate.isMounted && candidate.depth >= 2,
-      'last'
+      "last",
     );
   if (closedHiddenDeep != null) {
     scenarios.push(
       createActionScenario({
-        id: 'closed-hidden-deep-expand',
-        initialExpansion: 'closed',
-        label: 'Closed hidden deep expand',
-        operation: 'expand',
+        id: "closed-hidden-deep-expand",
+        initialExpansion: "closed",
+        label: "Closed hidden deep expand",
+        operation: "expand",
         target: closedHiddenDeep,
-        targetVisibility: 'hidden',
-      })
+        targetVisibility: "hidden",
+      }),
     );
   }
 
   clearRenderedTree();
-  renderButton.textContent = 'Render';
+  renderButton.textContent = "Render";
   return scenarios;
 }
 
-async function listExpansionActionScenarios(): Promise<
-  FileTreeProfileActionSummary[]
-> {
+async function listExpansionActionScenarios(): Promise<FileTreeProfileActionSummary[]> {
   const workloadName = getSelectedWorkloadName();
   if (
     cachedExpansionActionScenarios != null &&
@@ -925,15 +833,13 @@ async function listExpansionActionScenarios(): Promise<
   return cachedExpansionActionScenarios;
 }
 
-async function applySetupOperation(
-  operation: FileTreeProfileActionSetupOperation
-): Promise<void> {
+async function applySetupOperation(operation: FileTreeProfileActionSetupOperation): Promise<void> {
   if (currentFileTree == null) {
-    throw new Error('Cannot apply an action setup before rendering the tree.');
+    throw new Error("Cannot apply an action setup before rendering the tree.");
   }
 
   const item = getDirectoryHandle(operation.path);
-  const shouldBeExpanded = operation.operation === 'expand';
+  const shouldBeExpanded = operation.operation === "expand";
   if (item.isExpanded() === shouldBeExpanded) {
     return;
   }
@@ -948,9 +854,7 @@ async function applySetupOperation(
   await waitForPaint();
 }
 
-async function prepareActionProfile(
-  actionId: string
-): Promise<FileTreeProfileActionSummary> {
+async function prepareActionProfile(actionId: string): Promise<FileTreeProfileActionSummary> {
   const scenarios = await listExpansionActionScenarios();
   const scenario = scenarios.find((candidate) => candidate.id === actionId);
   if (scenario == null) {
@@ -958,16 +862,12 @@ async function prepareActionProfile(
   }
 
   clearProfileSummary();
-  await renderProfileTree(
-    scenario.initialExpansion,
-    null,
-    await getSelectedWorkload()
-  );
+  await renderProfileTree(scenario.initialExpansion, null, await getSelectedWorkload());
   await waitForPaint();
   for (const operation of scenario.setupOperations) {
     await applySetupOperation(operation);
   }
-  if (scenario.targetVisibility === 'sticky') {
+  if (scenario.targetVisibility === "sticky") {
     await prepareStickyActionTarget(scenario.targetPath);
   }
 
@@ -977,7 +877,7 @@ async function prepareActionProfile(
 
 async function profileRender(): Promise<FileTreeProfilePageSummary> {
   renderButton.disabled = true;
-  renderButton.textContent = 'Rendering...';
+  renderButton.textContent = "Rendering...";
 
   clearProfileSummary();
   const benchmark = createBenchmark();
@@ -990,11 +890,7 @@ async function profileRender(): Promise<FileTreeProfilePageSummary> {
   console.timeStamp(START_TRACE_LABEL);
 
   try {
-    const { renderedItemCount } = await renderProfileTree(
-      'open',
-      benchmark,
-      workload
-    );
+    const { renderedItemCount } = await renderProfileTree("open", benchmark, workload);
     const visibleRowsReadyAt = performance.now();
     await waitForPaint();
     const heapAfter = benchmark?.readHeapSnapshot() ?? null;
@@ -1005,63 +901,61 @@ async function profileRender(): Promise<FileTreeProfilePageSummary> {
 
     const measure = performance.getEntriesByName(MEASURE_NAME).at(-1);
     const renderEndedAt = performance.now();
-    const { longTaskCount, longTaskTotalMs, longestLongTaskMs } =
-      summarizeLongTasks(renderStartedAt, renderEndedAt);
+    const { longTaskCount, longTaskTotalMs, longestLongTaskMs } = summarizeLongTasks(
+      renderStartedAt,
+      renderEndedAt,
+    );
     const instrumentation = benchmark?.summarize(heapBefore, heapAfter) ?? {
       phases: [],
       counters: {},
       heap: null,
     };
-    instrumentation.counters['workload.renderedRows'] = renderedItemCount;
+    instrumentation.counters["workload.renderedRows"] = renderedItemCount;
 
     const summary: FileTreeProfilePageSummary = {
       instrumentation,
       longTaskCount,
       longTaskTotalMs,
       longestLongTaskMs,
-      profileKind: 'render',
+      profileKind: "render",
       renderDurationMs: measure?.duration ?? 0,
       renderedItemCount,
       resultText: `Post-paint ready ${formatMs(
-        measure?.duration ?? 0
+        measure?.duration ?? 0,
       )}. Visible rows ready ${formatMs(
-        visibleRowsReadyAt - renderStartedAt
+        visibleRowsReadyAt - renderStartedAt,
       )}. Visible rows ${renderedItemCount}. Long tasks ${longTaskCount}; total ${formatMs(
-        longTaskTotalMs
+        longTaskTotalMs,
       )}; longest ${formatMs(longestLongTaskMs)}.`,
       visibleRowsReadyMs: visibleRowsReadyAt - renderStartedAt,
       workload: createFileTreeProfileWorkloadSummary(workload),
     };
 
     window.__treesFileTreeProfile = summary;
-    console.info('[trees file-tree profile]', summary.resultText);
-    renderButton.textContent = 'Rendered';
+    console.info("[trees file-tree profile]", summary.resultText);
+    renderButton.textContent = "Rendered";
     return summary;
   } finally {
     renderButton.disabled = false;
     if (window.__treesFileTreeProfile == null) {
-      renderButton.textContent = 'Render';
+      renderButton.textContent = "Render";
     }
   }
 }
 
 function getPreparedActionContext(): PreparedActionContext {
   if (currentFileTree == null || preparedActionScenario == null) {
-    throw new Error(
-      'Call prepareActionProfile(actionId) before profiling a prepared action.'
-    );
+    throw new Error("Call prepareActionProfile(actionId) before profiling a prepared action.");
   }
 
   const scenario = preparedActionScenario;
   const item = getDirectoryHandle(scenario.targetPath);
   const targetWasExpandedBefore = item.isExpanded();
   if (
-    (scenario.operation === 'expand' && targetWasExpandedBefore) ||
-    (scenario.operation === 'collapse' && !targetWasExpandedBefore)
+    (scenario.operation === "expand" && targetWasExpandedBefore) ||
+    (scenario.operation === "collapse" && !targetWasExpandedBefore)
   ) {
-    throw new Error(
-      `Profile action ${scenario.id} would be a no-op for ${scenario.targetPath}.`
-    );
+    throw new Error(`Profile action ${scenario.id} would be a no-op for ${scenario.targetPath}.`);
   }
 
   return {
@@ -1072,11 +966,11 @@ function getPreparedActionContext(): PreparedActionContext {
 }
 
 async function startPreparedActionProfile(
-  context: PreparedActionContext
+  context: PreparedActionContext,
 ): Promise<PreparedActionProfileState> {
   const fileTree = currentFileTree;
   if (fileTree == null) {
-    throw new Error('Cannot profile an action before rendering the tree.');
+    throw new Error("Cannot profile an action before rendering the tree.");
   }
 
   clearProfileSummary();
@@ -1106,7 +1000,7 @@ async function startPreparedActionProfile(
 
 async function finishPreparedActionProfile(
   state: PreparedActionProfileState,
-  getActionDurationMs: () => number | null
+  getActionDurationMs: () => number | null,
 ): Promise<FileTreeProfilePageSummary> {
   const {
     actionStartedAt,
@@ -1123,18 +1017,14 @@ async function finishPreparedActionProfile(
   if (benchmark == null) {
     await updatePromise;
   } else {
-    await benchmark.instrumentation.measurePhase(
-      'action.waitForTreeUpdate',
-      () => updatePromise
-    );
+    await benchmark.instrumentation.measurePhase("action.waitForTreeUpdate", () => updatePromise);
   }
 
   if (benchmark == null) {
     await waitForAnimationFrame();
   } else {
-    await benchmark.instrumentation.measurePhase(
-      'action.waitForVisibleRows',
-      () => waitForAnimationFrame()
+    await benchmark.instrumentation.measurePhase("action.waitForVisibleRows", () =>
+      waitForAnimationFrame(),
     );
   }
   const visibleRowsReadyAt = performance.now();
@@ -1143,8 +1033,8 @@ async function finishPreparedActionProfile(
   if (benchmark == null) {
     await waitForAnimationFrame();
   } else {
-    await benchmark.instrumentation.measurePhase('action.waitForPaint', () =>
-      waitForAnimationFrame()
+    await benchmark.instrumentation.measurePhase("action.waitForPaint", () =>
+      waitForAnimationFrame(),
     );
   }
   const heapAfter = benchmark?.readHeapSnapshot() ?? null;
@@ -1154,24 +1044,24 @@ async function finishPreparedActionProfile(
   performance.measure(MEASURE_NAME, START_MARK_NAME, END_MARK_NAME);
 
   const rawActionDurationMs = getActionDurationMs();
-  const actionDurationMs =
-    rawActionDurationMs == null ? null : Math.max(0, rawActionDurationMs);
+  const actionDurationMs = rawActionDurationMs == null ? null : Math.max(0, rawActionDurationMs);
   const targetIsExpandedAfter = item.isExpanded();
   const measure = performance.getEntriesByName(MEASURE_NAME).at(-1);
   const actionEndedAt = performance.now();
-  const { longTaskCount, longTaskTotalMs, longestLongTaskMs } =
-    summarizeLongTasks(actionStartedAt, actionEndedAt);
+  const { longTaskCount, longTaskTotalMs, longestLongTaskMs } = summarizeLongTasks(
+    actionStartedAt,
+    actionEndedAt,
+  );
   const instrumentation = benchmark?.summarize(heapBefore, heapAfter) ?? {
     phases: [],
     counters: {},
     heap: null,
   };
-  instrumentation.counters['workload.renderedRows'] = renderedItemCount;
-  instrumentation.counters['workload.renderedRowsBefore'] =
-    renderedItemCountBefore;
-  instrumentation.counters['workload.actionTargetDepth'] = scenario.targetDepth;
+  instrumentation.counters["workload.renderedRows"] = renderedItemCount;
+  instrumentation.counters["workload.renderedRowsBefore"] = renderedItemCountBefore;
+  instrumentation.counters["workload.actionTargetDepth"] = scenario.targetDepth;
   if (actionDurationMs != null) {
-    instrumentation.counters['workload.actionDurationMs'] = actionDurationMs;
+    instrumentation.counters["workload.actionDurationMs"] = actionDurationMs;
   }
 
   const action: FileTreeProfileActionSummary = {
@@ -1187,17 +1077,15 @@ async function finishPreparedActionProfile(
     longTaskCount,
     longTaskTotalMs,
     longestLongTaskMs,
-    profileKind: 'action',
+    profileKind: "action",
     renderDurationMs: measure?.duration ?? 0,
     renderedItemCount,
     resultText: `${action.label}: ${action.operation} ${action.targetPath}. Input ${action.dispatch}. API action dispatch ${
-      actionDurationMs == null ? 'n/a' : formatMs(actionDurationMs)
-    }. Post-paint ready ${formatMs(
-      measure?.duration ?? 0
-    )}. Visible rows ready ${formatMs(
-      visibleRowsReadyAt - actionStartedAt
+      actionDurationMs == null ? "n/a" : formatMs(actionDurationMs)
+    }. Post-paint ready ${formatMs(measure?.duration ?? 0)}. Visible rows ready ${formatMs(
+      visibleRowsReadyAt - actionStartedAt,
     )}. Rendered rows ${renderedItemCountBefore} -> ${renderedItemCount}. Long tasks ${longTaskCount}; total ${formatMs(
-      longTaskTotalMs
+      longTaskTotalMs,
     )}; longest ${formatMs(longestLongTaskMs)}.`,
     visibleRowsReadyMs: visibleRowsReadyAt - actionStartedAt,
     workload: createFileTreeProfileWorkloadSummary(workload),
@@ -1205,30 +1093,28 @@ async function finishPreparedActionProfile(
   };
 
   window.__treesFileTreeProfile = summary;
-  console.info('[trees file-tree profile]', summary.resultText);
+  console.info("[trees file-tree profile]", summary.resultText);
   return summary;
 }
 
 async function profilePreparedAction(): Promise<FileTreeProfilePageSummary> {
   const context = getPreparedActionContext();
-  if (context.scenario.dispatch !== 'api') {
-    throw new Error(
-      `Profile action ${context.scenario.id} is configured for DOM click dispatch.`
-    );
+  if (context.scenario.dispatch !== "api") {
+    throw new Error(`Profile action ${context.scenario.id} is configured for DOM click dispatch.`);
   }
 
   const state = await startPreparedActionProfile(context);
   const { benchmark, item, scenario } = state;
   const dispatchStartedAt = performance.now();
   if (benchmark == null) {
-    if (scenario.operation === 'expand') {
+    if (scenario.operation === "expand") {
       item.expand();
     } else {
       item.collapse();
     }
   } else {
-    benchmark.instrumentation.measurePhase('action.dispatch', () => {
-      if (scenario.operation === 'expand') {
+    benchmark.instrumentation.measurePhase("action.dispatch", () => {
+      if (scenario.operation === "expand") {
         item.expand();
       } else {
         item.collapse();
@@ -1242,23 +1128,19 @@ async function profilePreparedAction(): Promise<FileTreeProfilePageSummary> {
 
 async function beginPreparedActionClickProfile(): Promise<PreparedActionClickTarget> {
   const context = getPreparedActionContext();
-  if (context.scenario.dispatch !== 'dom-click') {
-    throw new Error(
-      `Profile action ${context.scenario.id} is configured for direct API dispatch.`
-    );
+  if (context.scenario.dispatch !== "dom-click") {
+    throw new Error(`Profile action ${context.scenario.id} is configured for direct API dispatch.`);
   }
 
   const targetButton = getActionRowButton(context.scenario);
   const target = getClickTarget(targetButton);
   const state = await startPreparedActionProfile(context);
 
-  void finishPreparedActionProfile(state, () => null).catch(
-    (error: unknown) => {
-      const message = error instanceof Error ? error.message : String(error);
-      window.__treesFileTreeProfileError = message;
-      console.error('[trees file-tree profile] action click failed', error);
-    }
-  );
+  void finishPreparedActionProfile(state, () => null).catch((error: unknown) => {
+    const message = error instanceof Error ? error.message : String(error);
+    window.__treesFileTreeProfileError = message;
+    console.error("[trees file-tree profile] action click failed", error);
+  });
 
   return target;
 }
@@ -1266,14 +1148,13 @@ async function beginPreparedActionClickProfile(): Promise<PreparedActionClickTar
 async function configureFixture(config: { workloadName?: string }): Promise<{
   workloadName: string;
 }> {
-  const requestedWorkloadName =
-    config.workloadName ?? getSelectedWorkloadName();
+  const requestedWorkloadName = config.workloadName ?? getSelectedWorkloadName();
   const workload = await loadFileTreeProfileWorkload(requestedWorkloadName);
   workloadInput.value = workload.name;
   clearActionScenarioCache();
   clearRenderedTree();
   clearProfileSummary();
-  renderButton.textContent = 'Render';
+  renderButton.textContent = "Render";
   return {
     workloadName: workload.name,
   };
@@ -1289,15 +1170,15 @@ async function getState() {
   };
 }
 
-renderButton.addEventListener('click', () => {
+renderButton.addEventListener("click", () => {
   void profileRender();
 });
 
-workloadInput.addEventListener('input', () => {
+workloadInput.addEventListener("input", () => {
   clearActionScenarioCache();
   clearRenderedTree();
   clearProfileSummary();
-  renderButton.textContent = 'Render';
+  renderButton.textContent = "Render";
 });
 
 window.treesFileTreeProfile = {

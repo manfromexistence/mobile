@@ -12,7 +12,7 @@ const parse = parseTypeCoverageOutput as (jsonText: string) => number;
 const evaluate = evaluateTypeCoverage as (
   current: number,
   baseline: number,
-  eps?: number
+  eps?: number,
 ) => TypeCoverageVerdict;
 
 // --- parseTypeCoverageOutput tests ---
@@ -33,7 +33,7 @@ test("parseTypeCoverageOutput: throws if percent field is missing", () => {
 test("parseTypeCoverageOutput: throws if percent is not a number", () => {
   assert.throws(
     () => parse(JSON.stringify({ percent: "92.17" })),
-    /missing numeric 'percent' field/
+    /missing numeric 'percent' field/,
   );
 });
 

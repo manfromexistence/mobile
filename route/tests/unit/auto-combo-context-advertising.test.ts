@@ -61,7 +61,7 @@ test("computeAdvertisedLimits returns MAX of candidates' known context windows",
   assert.equal(
     typeof computeAdvertisedLimits,
     "function",
-    "virtualFactory should export computeAdvertisedLimits()"
+    "virtualFactory should export computeAdvertisedLimits()",
   );
 
   // gemini has registry defaultContextLength=1048576; claude has 200000.
@@ -72,7 +72,7 @@ test("computeAdvertisedLimits returns MAX of candidates' known context windows",
   assert.equal(result.contextLength, 1048576, "MAX of candidate windows should win");
   assert.ok(
     typeof result.maxOutputTokens === "number" && result.maxOutputTokens > 0,
-    "maxOutputTokens should be a positive number"
+    "maxOutputTokens should be a positive number",
   );
 });
 
@@ -100,7 +100,7 @@ test("computeAdvertisedLimits never returns 0 for a non-empty pool (unknown mode
   ]);
   assert.ok(
     typeof result.contextLength === "number" && result.contextLength > 0,
-    `unknown candidates should fall back to a positive default, got ${result.contextLength}`
+    `unknown candidates should fall back to a positive default, got ${result.contextLength}`,
   );
 });
 
@@ -121,11 +121,11 @@ test("GET /api/combos/auto includes positive context_length for combos with cand
     if ((combo.candidateCount ?? 0) > 0) {
       assert.ok(
         typeof combo.context_length === "number" && combo.context_length > 0,
-        `combo ${combo.id} with ${combo.candidateCount} candidates must advertise a positive context_length, got ${combo.context_length}`
+        `combo ${combo.id} with ${combo.candidateCount} candidates must advertise a positive context_length, got ${combo.context_length}`,
       );
       assert.ok(
         typeof combo.max_output_tokens === "number" && combo.max_output_tokens > 0,
-        `combo ${combo.id} must advertise a positive max_output_tokens, got ${combo.max_output_tokens}`
+        `combo ${combo.id} must advertise a positive max_output_tokens, got ${combo.max_output_tokens}`,
       );
     }
   }
@@ -144,7 +144,7 @@ test("resolveComboContextLimit prefers the executing target's own limit over com
   assert.equal(
     typeof resolveComboContextLimit,
     "function",
-    "contextManager should export resolveComboContextLimit()"
+    "contextManager should export resolveComboContextLimit()",
   );
 
   // Executing on gemini (1048576 provider default) while the combo also has

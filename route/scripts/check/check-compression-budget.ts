@@ -28,7 +28,7 @@ import {
 
 const BASELINE_PATH = path.join(
   path.dirname(fileURLToPath(import.meta.url)),
-  "compression-budget-baseline.json"
+  "compression-budget-baseline.json",
 );
 const TOLERANCE_PERCENT = 2;
 
@@ -67,12 +67,12 @@ async function main(): Promise<void> {
   for (const { engine, gate } of failed) {
     for (const reg of gate.regressions) {
       console.error(
-        `  ${engine}/${reg.task}: ${reg.baseline} -> ${reg.current} tokens (+${reg.deltaPercent}%)`
+        `  ${engine}/${reg.task}: ${reg.baseline} -> ${reg.current} tokens (+${reg.deltaPercent}%)`,
       );
     }
   }
   console.error(
-    "\nIf this is an intentional improvement/change, refresh: npm run check:compression-budget -- --update"
+    "\nIf this is an intentional improvement/change, refresh: npm run check:compression-budget -- --update",
   );
   process.exit(1);
 }

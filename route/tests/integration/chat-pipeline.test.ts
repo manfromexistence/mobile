@@ -25,8 +25,9 @@ const { clearInflight } = await import("../../open-sse/services/requestDedup.ts"
 const { setCliCompatProviders } = await import("../../open-sse/config/cliFingerprints.ts");
 const { BaseExecutor } = await import("../../open-sse/executors/base.ts");
 const { getCodexClientVersion } = await import("../../open-sse/config/codexClient.ts");
-const { getCircuitBreaker, resetAllCircuitBreakers } =
-  await import("../../src/shared/utils/circuitBreaker.ts");
+const { getCircuitBreaker, resetAllCircuitBreakers } = await import(
+  "../../src/shared/utils/circuitBreaker.ts"
+);
 const { clearProviderFailure } = await import("../../open-sse/services/accountFallback.ts");
 
 const originalFetch = globalThis.fetch;
@@ -67,7 +68,7 @@ function toPlainHeaders(headers: HeadersInit | undefined | null) {
   if (headers instanceof Headers) return Object.fromEntries(headers.entries());
   if (Array.isArray(headers)) return Object.fromEntries(headers);
   return Object.fromEntries(
-    Object.entries(headers).map(([key, value]) => [key, value == null ? "" : String(value)])
+    Object.entries(headers).map(([key, value]) => [key, value == null ? "" : String(value)]),
   );
 }
 
@@ -120,7 +121,7 @@ function buildOpenAIResponse(text = "ok", model = "gpt-4o-mini", usage = null) {
     {
       status: 200,
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 
@@ -164,7 +165,7 @@ function buildOpenAIToolCallResponse({
     {
       status: 200,
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 
@@ -185,7 +186,7 @@ function buildClaudeResponse(text = "ok", model = "claude-3-5-sonnet-20241022") 
     {
       status: 200,
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 
@@ -232,7 +233,7 @@ function buildClaudeStreamResponse(text = "streamed from claude", model = "claud
     {
       status: 200,
       headers: { "Content-Type": "text/event-stream" },
-    }
+    },
   );
 }
 
@@ -259,7 +260,7 @@ function buildGeminiResponse(text = "ok", model = "gemini-2.5-flash") {
     {
       status: 200,
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 
@@ -278,7 +279,7 @@ function buildOpenAIStreamResponse(text = "streamed from openai") {
     {
       status: 200,
       headers: { "Content-Type": "text/event-stream" },
-    }
+    },
   );
 }
 
@@ -324,7 +325,7 @@ function buildOpenAIResponsesSSE({
     {
       status: 200,
       headers: { "Content-Type": "text/event-stream" },
-    }
+    },
   );
 }
 
@@ -357,7 +358,7 @@ function buildOpenAIResponsesJson({
     {
       status: 200,
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 
@@ -435,7 +436,7 @@ function insertLegacyMemory(apiKeyId, content) {
   const db = core.getDbInstance();
   const now = new Date().toISOString();
   const hasModernTable = Boolean(
-    db.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'memories'").get()
+    db.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'memories'").get(),
   );
 
   if (hasModernTable) {
@@ -444,7 +445,7 @@ function insertLegacyMemory(apiKeyId, content) {
         INSERT INTO memories (
           id, api_key_id, session_id, type, key, content, metadata, created_at, updated_at, expires_at
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `
+      `,
     ).run(
       `mem_${Math.random().toString(16).slice(2, 10)}`,
       apiKeyId,
@@ -455,7 +456,7 @@ function insertLegacyMemory(apiKeyId, content) {
       "{}",
       now,
       now,
-      null
+      null,
     );
     return;
   }
@@ -466,7 +467,7 @@ function insertLegacyMemory(apiKeyId, content) {
       INSERT INTO memory (
         id, apiKeyId, sessionId, type, key, content, metadata, createdAt, updatedAt, expiresAt
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `
+    `,
   ).run(
     `mem_${Math.random().toString(16).slice(2, 10)}`,
     apiKeyId,
@@ -477,7 +478,7 @@ function insertLegacyMemory(apiKeyId, content) {
     "{}",
     now,
     now,
-    null
+    null,
   );
 }
 
@@ -546,7 +547,7 @@ test("chat pipeline handles OpenAI passthrough with valid API key auth", async (
         stream: false,
         messages: [{ role: "user", content: "Hello OpenAI" }],
       },
-    })
+    }),
   );
 
   const json = (await response.json()) as any;
@@ -579,7 +580,7 @@ test("chat pipeline persists Codex responses cache and reasoning tokens to call 
         stream: false,
         input: "Persist cache + reasoning usage",
       },
-    })
+    }),
   );
 
   const json = (await response.json()) as any;
@@ -633,7 +634,7 @@ test("chat pipeline applies global Codex priority service tier inside combos", a
         stream: false,
         messages: [{ role: "user", content: "Use Codex combo priority" }],
       },
-    })
+    }),
   );
 
   const json = (await response.json()) as any;
@@ -684,7 +685,7 @@ test("chat pipeline applies Codex CLI fingerprint to OAuth responses requests", 
           },
         ],
       },
-    })
+    }),
   );
 
   await response.json();
@@ -715,13 +716,13 @@ test("chat pipeline applies Codex CLI fingerprint to OAuth responses requests", 
   // surfaced on the release PR full CI.)
   assert.deepEqual(
     bodyOrder.slice(0, 8),
-    "model stream input instructions store reasoning prompt_cache_key include".split(" ")
+    "model stream input instructions store reasoning prompt_cache_key include".split(" "),
   );
   assert.equal(call.body.model, "gpt-5.5");
   assert.equal(call.body.store, false);
   assert.equal(
     call.body.client_metadata["x-codex-installation-id"],
-    "11111111-1111-4111-a111-111111111111"
+    "11111111-1111-4111-a111-111111111111",
   );
 });
 
@@ -756,7 +757,7 @@ test("chat pipeline strips previous_response_id from stateless Codex responses b
           },
         ],
       },
-    })
+    }),
   );
 
   await response.json();
@@ -794,7 +795,7 @@ test("chat pipeline preserve mode forwards previous_response_id for responses re
         previous_response_id: "resp_preserved_prev",
         input: "Second stateful turn",
       },
-    })
+    }),
   );
 
   await response.json();
@@ -825,7 +826,7 @@ test("chat pipeline treats Codex /responses/compact as non-streaming JSON", asyn
         model: "codex/gpt-5.5",
         input: "Compact this session",
       },
-    })
+    }),
   );
 
   const json = (await response.json()) as { object?: string; output_text?: string };
@@ -886,21 +887,21 @@ test("chat pipeline serves repeated /v1/responses requests as MISS then HIT and 
     buildRequest({
       url: "http://localhost/v1/responses",
       body: requestBody,
-    })
+    }),
   );
 
   const secondResponse = await handleChat(
     buildRequest({
       url: "http://localhost/v1/responses",
       body: requestBody,
-    })
+    }),
   );
 
   const thirdResponse = await handleChat(
     buildRequest({
       url: "http://localhost/v1/responses",
       body: requestBody,
-    })
+    }),
   );
 
   await firstResponse.json();
@@ -956,7 +957,7 @@ test("chat pipeline translates OpenAI requests to Claude and returns OpenAI-shap
         stream: false,
         messages: [{ role: "user", content: "Hello Claude" }],
       },
-    })
+    }),
   );
 
   const json = (await response.json()) as any;
@@ -990,7 +991,7 @@ test("chat pipeline translates OpenAI requests to Gemini and returns OpenAI-shap
         stream: false,
         messages: [{ role: "user", content: "Hello Gemini" }],
       },
-    })
+    }),
   );
 
   const json = (await response.json()) as any;
@@ -1027,7 +1028,7 @@ test("chat pipeline translates Claude-format requests into OpenAI upstream and b
         system: [{ text: "Be brief" }],
         messages: [{ role: "user", content: [{ type: "text", text: "Hello from Claude client" }] }],
       },
-    })
+    }),
   );
 
   const json = (await response.json()) as any;
@@ -1054,7 +1055,7 @@ test("chat pipeline converts Claude SSE streams into OpenAI SSE output", async (
         stream: true,
         messages: [{ role: "user", content: "Stream this" }],
       },
-    })
+    }),
   );
 
   const raw = await response.text();
@@ -1075,7 +1076,7 @@ test("chat pipeline rejects invalid API keys and malformed JSON bodies", async (
         model: "openai/gpt-4o-mini",
         messages: [{ role: "user", content: "Hello" }],
       },
-    })
+    }),
   );
   const invalidKeyJson = (await invalidKeyResponse.json()) as any;
 
@@ -1084,7 +1085,7 @@ test("chat pipeline rejects invalid API keys and malformed JSON bodies", async (
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: "{bad-json",
-    })
+    }),
   );
   const invalidJson = (await invalidJsonResponse.json()) as any;
 
@@ -1104,7 +1105,7 @@ test("chat pipeline allows unauthenticated requests through to provider resoluti
         stream: false,
         messages: [{ role: "user", content: "Missing auth" }],
       },
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -1122,7 +1123,7 @@ test("chat pipeline returns 400 when the model field is omitted", async () => {
         stream: false,
         messages: [{ role: "user", content: "No model selected" }],
       },
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -1146,7 +1147,7 @@ test("chat pipeline treats Accept text/event-stream as streaming mode and return
         model: "openai/gpt-4o-mini",
         messages: [{ role: "user", content: "Stream via Accept" }],
       },
-    })
+    }),
   );
 
   const raw = await response.text();
@@ -1181,7 +1182,7 @@ test("chat pipeline supports local mode without Authorization on explicit combos
         stream: false,
         messages: [{ role: "user", content: "No auth header here" }],
       },
-    })
+    }),
   );
 
   const json = (await response.json()) as any;
@@ -1204,7 +1205,7 @@ test("chat pipeline honors noLog by redacting persisted call log payloads", asyn
         stream: false,
         messages: [{ role: "user", content: "Do not persist payloads" }],
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -1225,7 +1226,7 @@ test("chat pipeline returns current no-credentials contract when no provider con
         stream: false,
         messages: [{ role: "user", content: "Hello" }],
       },
-    })
+    }),
   );
 
   const json = (await response.json()) as any;
@@ -1250,7 +1251,7 @@ test("chat pipeline surfaces upstream 500 responses as structured errors", async
         stream: false,
         messages: [{ role: "user", content: "Trigger 500" }],
       },
-    })
+    }),
   );
 
   const json = (await response.json()) as any;
@@ -1277,7 +1278,7 @@ test("chat pipeline returns 429 with Retry-After when the upstream rate-limits t
       {
         status: 429,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   };
 
@@ -1288,7 +1289,7 @@ test("chat pipeline returns 429 with Retry-After when the upstream rate-limits t
         stream: false,
         messages: [{ role: "user", content: "Trigger 429" }],
       },
-    })
+    }),
   );
 
   const json = (await response.json()) as any;
@@ -1315,7 +1316,7 @@ test("chat pipeline keeps provider breaker closed for repeated connection-scoped
       {
         status: 429,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
 
   for (let i = 0; i < 3; i += 1) {
@@ -1326,7 +1327,7 @@ test("chat pipeline keeps provider breaker closed for repeated connection-scoped
           stream: false,
           messages: [{ role: "user", content: `Trigger 429 #${i + 1}` }],
         },
-      })
+      }),
     );
     assert.equal(response.status, 429);
   }
@@ -1354,7 +1355,7 @@ test("chat pipeline maps upstream timeouts to 504 responses", async () => {
         stream: false,
         messages: [{ role: "user", content: "Trigger timeout" }],
       },
-    })
+    }),
   );
 
   const json = (await response.json()) as any;
@@ -1393,7 +1394,7 @@ test("chat pipeline injects memory context before sending the upstream request",
         stream: false,
         messages: [{ role: "user", content: "Summarize my preference" }],
       },
-    })
+    }),
   );
 
   const json = (await response.json()) as any;
@@ -1454,7 +1455,7 @@ test("chat pipeline injects skills into tools and intercepts tool calls with ski
         stream: false,
         messages: [{ role: "user", content: "Check the weather" }],
       },
-    })
+    }),
   );
 
   const json = (await response.json()) as any;
@@ -1501,7 +1502,7 @@ test("chat pipeline falls back to the next account after a provider failure", as
         stream: false,
         messages: [{ role: "user", content: "Use account fallback" }],
       },
-    })
+    }),
   );
 
   const json = (await response.json()) as any;
@@ -1549,7 +1550,7 @@ test("chat pipeline falls back across combo models when the first provider fails
         stream: false,
         messages: [{ role: "user", content: "Use combo fallback" }],
       },
-    })
+    }),
   );
 
   const json = (await response.json()) as any;

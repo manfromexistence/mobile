@@ -1,18 +1,18 @@
-import 'server-only';
-import { getVirtualizationWorkload } from '@pierre/tree-test-data';
+import "server-only";
+import { getVirtualizationWorkload } from "@pierre/tree-test-data";
 
 import {
   AOSP_PREVIEW_ALL_EXPANDED_PATHS,
   AOSP_PREVIEW_PATHS,
   AOSP_TOTAL_PATH_COUNT,
-} from './aospPreview';
+} from "./aospPreview";
 import {
   AOSP_UPGRADE_DATA_URL,
   getWorkloadOption,
   type TreesExpansionMode,
   type TreesWorkloadDataPayload,
   type TreesWorkloadName,
-} from './workloadMeta';
+} from "./workloadMeta";
 
 interface LoadedWorkload {
   defaultExpandedPaths: readonly string[];
@@ -25,10 +25,7 @@ interface LoadedWorkload {
   upgradeDataUrl?: string;
 }
 
-const workloadPromiseCache = new Map<
-  TreesWorkloadName,
-  Promise<LoadedWorkload>
->();
+const workloadPromiseCache = new Map<TreesWorkloadName, Promise<LoadedWorkload>>();
 
 // Derives every ancestor folder path once so the demo can switch between the
 // workload default, fully expanded, and fully collapsed tree states.
@@ -36,20 +33,18 @@ function deriveExpandedPaths(paths: readonly string[]): string[] {
   const folders = new Set<string>();
 
   for (const path of paths) {
-    const isDirectory = path.endsWith('/');
+    const isDirectory = path.endsWith("/");
     const normalizedPath = isDirectory ? path.slice(0, -1) : path;
     if (normalizedPath.length === 0) {
       continue;
     }
 
-    let searchIndex = normalizedPath.indexOf('/');
-    const limit = isDirectory
-      ? normalizedPath.length
-      : normalizedPath.lastIndexOf('/');
+    let searchIndex = normalizedPath.indexOf("/");
+    const limit = isDirectory ? normalizedPath.length : normalizedPath.lastIndexOf("/");
 
     while (searchIndex >= 0 && searchIndex <= limit) {
       folders.add(normalizedPath.slice(0, searchIndex));
-      searchIndex = normalizedPath.indexOf('/', searchIndex + 1);
+      searchIndex = normalizedPath.indexOf("/", searchIndex + 1);
     }
 
     if (isDirectory) {
@@ -60,9 +55,7 @@ function deriveExpandedPaths(paths: readonly string[]): string[] {
   return [...folders];
 }
 
-function adaptSharedWorkload(
-  name: Exclude<TreesWorkloadName, 'aosp'>
-): LoadedWorkload {
+function adaptSharedWorkload(name: Exclude<TreesWorkloadName, "aosp">): LoadedWorkload {
   const workload = getVirtualizationWorkload(name);
   return {
     defaultExpandedPaths: workload.expandedFolders,
@@ -83,8 +76,8 @@ function buildAospWorkload(): LoadedWorkload {
   return {
     defaultExpandedPaths: [],
     fileCountLabel: `${AOSP_TOTAL_PATH_COUNT.toLocaleString()} files across 0 expanded folders`,
-    label: 'AOSP fixture',
-    name: 'aosp',
+    label: "AOSP fixture",
+    name: "aosp",
     paths: AOSP_PREVIEW_PATHS,
     pathsArePresorted: true,
     rootCount: 1,
@@ -92,18 +85,14 @@ function buildAospWorkload(): LoadedWorkload {
   };
 }
 
-function loadWorkload(
-  workloadName: TreesWorkloadName
-): Promise<LoadedWorkload> {
+function loadWorkload(workloadName: TreesWorkloadName): Promise<LoadedWorkload> {
   const cachedWorkload = workloadPromiseCache.get(workloadName);
   if (cachedWorkload != null) {
     return cachedWorkload;
   }
 
   const workloadPromise = Promise.resolve(
-    workloadName === 'aosp'
-      ? buildAospWorkload()
-      : adaptSharedWorkload(workloadName)
+    workloadName === "aosp" ? buildAospWorkload() : adaptSharedWorkload(workloadName),
   );
   workloadPromiseCache.set(workloadName, workloadPromise);
   return workloadPromise;
@@ -111,15 +100,15 @@ function loadWorkload(
 
 export async function loadWorkloadDataPayload(
   workloadName: TreesWorkloadName,
-  expansionMode: TreesExpansionMode
+  expansionMode: TreesExpansionMode,
 ): Promise<TreesWorkloadDataPayload> {
   const workload = await loadWorkload(workloadName);
   const initialExpandedPaths =
-    expansionMode === 'all'
-      ? workloadName === 'aosp'
+    expansionMode === "all"
+      ? workloadName === "aosp"
         ? AOSP_PREVIEW_ALL_EXPANDED_PATHS
         : deriveExpandedPaths(workload.paths)
-      : expansionMode === 'collapsed'
+      : expansionMode === "collapsed"
         ? []
         : workload.defaultExpandedPaths;
 

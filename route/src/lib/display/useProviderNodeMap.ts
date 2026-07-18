@@ -28,7 +28,7 @@ export type ProviderNodeEntry = { name?: string | null; prefix?: string | null }
  */
 export function resolveProviderName(
   id: string | null | undefined,
-  nodeMap: Map<string, ProviderNodeEntry> | null | undefined
+  nodeMap: Map<string, ProviderNodeEntry> | null | undefined,
 ): string {
   const node = id ? (nodeMap?.get(id) ?? null) : null;
   return getProviderDisplayName(id, node as ProviderNodeLike | null);

@@ -104,7 +104,7 @@ test("runCostCommand exibe tabela com provedores", async () => {
   const { runCostCommand } = await import("../../bin/cli/commands/cost.mjs");
   const cmd = { optsWithGlobals: () => ({ output: "table", quiet: false }) };
   const { stdout } = await captureOutput(() =>
-    runCostCommand({ period: "30d", groupBy: "provider", limit: 100 }, cmd as any)
+    runCostCommand({ period: "30d", groupBy: "provider", limit: 100 }, cmd as any),
   );
 
   globalThis.fetch = origFetch;
@@ -118,7 +118,7 @@ test("runCostCommand --output json retorna array de rows", async () => {
   const { runCostCommand } = await import("../../bin/cli/commands/cost.mjs");
   const cmd = { optsWithGlobals: () => ({ output: "json", quiet: true }) };
   const { stdout } = await captureOutput(() =>
-    runCostCommand({ period: "30d", groupBy: "provider", limit: 100 }, cmd as any)
+    runCostCommand({ period: "30d", groupBy: "provider", limit: 100 }, cmd as any),
   );
 
   globalThis.fetch = origFetch;
@@ -137,7 +137,7 @@ test("runCostCommand --group-by model usa byModel do response", async () => {
   const { runCostCommand } = await import("../../bin/cli/commands/cost.mjs");
   const cmd = { optsWithGlobals: () => ({ output: "json", quiet: true }) };
   const { stdout } = await captureOutput(() =>
-    runCostCommand({ period: "7d", groupBy: "model", limit: 100 }, cmd as any)
+    runCostCommand({ period: "7d", groupBy: "model", limit: 100 }, cmd as any),
   );
 
   globalThis.fetch = origFetch;
@@ -153,7 +153,7 @@ test("runCostCommand --group-by day usa byDay do response", async () => {
   const { runCostCommand } = await import("../../bin/cli/commands/cost.mjs");
   const cmd = { optsWithGlobals: () => ({ output: "json", quiet: true }) };
   const { stdout } = await captureOutput(() =>
-    runCostCommand({ period: "7d", groupBy: "day", limit: 100 }, cmd as any)
+    runCostCommand({ period: "7d", groupBy: "day", limit: 100 }, cmd as any),
   );
 
   globalThis.fetch = origFetch;
@@ -169,7 +169,7 @@ test("runCostCommand imprime total em stderr", async () => {
   const { runCostCommand } = await import("../../bin/cli/commands/cost.mjs");
   const cmd = { optsWithGlobals: () => ({ output: "table", quiet: false }) };
   const { stderr } = await captureOutput(() =>
-    runCostCommand({ period: "30d", groupBy: "provider", limit: 100 }, cmd as any)
+    runCostCommand({ period: "30d", groupBy: "provider", limit: 100 }, cmd as any),
   );
 
   globalThis.fetch = origFetch;
@@ -189,8 +189,8 @@ test("runCostCommand --since/--until envia startDate/endDate na query", async ()
   await captureOutput(() =>
     runCostCommand(
       { since: "2026-01-01", until: "2026-05-01", groupBy: "provider", limit: 100 },
-      cmd as any
-    )
+      cmd as any,
+    ),
   );
 
   globalThis.fetch = origFetch;
@@ -206,7 +206,7 @@ test("runCostCommand --limit trunca resultado", async () => {
   const { runCostCommand } = await import("../../bin/cli/commands/cost.mjs");
   const cmd = { optsWithGlobals: () => ({ output: "json", quiet: true }) };
   const { stdout } = await captureOutput(() =>
-    runCostCommand({ period: "30d", groupBy: "provider", limit: 1 }, cmd as any)
+    runCostCommand({ period: "30d", groupBy: "provider", limit: 1 }, cmd as any),
   );
 
   globalThis.fetch = origFetch;

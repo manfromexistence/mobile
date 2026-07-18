@@ -141,7 +141,7 @@ function getCookieValueFromHeader(headers: Headers | undefined, name: string): s
 
 function getRequestApiKey(
   request: RequestLike | Request | null | undefined,
-  opts?: { allowUrl?: boolean }
+  opts?: { allowUrl?: boolean },
 ): string | null {
   if (!request || typeof request !== "object") return null;
 
@@ -206,7 +206,7 @@ export function isManagementApiRequest(request: RequestLike | Request): boolean 
 }
 
 export async function isDashboardSessionAuthenticated(
-  request?: RequestLike | Request | null
+  request?: RequestLike | Request | null,
 ): Promise<boolean> {
   if (!process.env.JWT_SECRET) return false;
 
@@ -315,7 +315,7 @@ export function isPublicRoute(pathname: string, method = "GET"): boolean {
  * requests; exposed network requests must configure INITIAL_PASSWORD or log in.
  */
 export async function isAuthRequired(
-  request?: RequestLike | Request | null | undefined
+  request?: RequestLike | Request | null | undefined,
 ): Promise<boolean> {
   try {
     const settings = await getSettings();
@@ -347,7 +347,7 @@ export async function isAuthRequired(
     // Log the error so failures (e.g., SQLITE_BUSY) aren't silent 401s
     console.error(
       "[API_AUTH_GUARD] isAuthRequired failed, defaulting to true:",
-      error?.message || error
+      error?.message || error,
     );
     return true;
   }

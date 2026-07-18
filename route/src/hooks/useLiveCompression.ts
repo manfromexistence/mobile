@@ -29,7 +29,7 @@ const MAX_RUNS = 100;
 export function accumulateRun(
   prev: CompressionRunModel[],
   payload: CompressionCompletedPayload,
-  maxRuns = MAX_RUNS
+  maxRuns = MAX_RUNS,
 ): CompressionRunModel[] {
   const model = compressionEventToModel(payload);
   return [model, ...prev].slice(0, maxRuns);
@@ -79,7 +79,7 @@ export function useLiveCompression(options?: UseLiveDashboardOptions): UseLiveCo
 
   const getRunById = useCallback(
     (requestId: string) => runs.find((r) => r.requestId === requestId),
-    [runs]
+    [runs],
   );
 
   const inFlightRun =

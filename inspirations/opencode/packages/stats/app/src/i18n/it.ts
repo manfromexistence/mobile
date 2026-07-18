@@ -90,7 +90,8 @@ export const dict = {
   "home.noUsageTitle": "Nessun dato di utilizzo",
   "home.noUsageDescription": "Nessuna riga modello corrispondeva a questo prodotto e intervallo.",
   "home.noLeaderboardTitle": "Nessun dato di classifica",
-  "home.noLeaderboardDescription": "Nessuna riga modello corrispondeva a questo prodotto e intervallo.",
+  "home.noLeaderboardDescription":
+    "Nessuna riga modello corrispondeva a questo prodotto e intervallo.",
   "home.productFilter": "Filtro prodotto",
   "home.dateRange": "Intervallo date",
   "home.stackedUsageChart": "Grafico di utilizzo impilato dei modelli principali",
@@ -122,17 +123,20 @@ export const dict = {
   "home.cacheRatioTitle": "Rapporto cache",
   "home.cacheRatioDescription": "Quota di token di input serviti dalla cache.",
   "home.noCacheTitle": "Nessun dato sul rapporto cache",
-  "home.noCacheDescription": "Nessuna riga modello con token di input corrispondeva a questo prodotto.",
+  "home.noCacheDescription":
+    "Nessuna riga modello con token di input corrispondeva a questo prodotto.",
   "home.sessionCostTitle": "Costo sessione",
   "home.sessionCostDescription": "Costo medio per sessione.",
   "home.noSessionCostTitle": "Nessun dato sul costo sessione",
-  "home.noSessionCostDescription": "Nessuna riga modello con sessioni corrispondeva a questo prodotto.",
+  "home.noSessionCostDescription":
+    "Nessuna riga modello con sessioni corrispondeva a questo prodotto.",
   "home.costSession": "Costo/sessione",
   "lab.title": "Utilizzo e classifiche dei modelli IA {{lab}} | OpenCode Data",
   "lab.description":
     "Confronta i modelli {{lab}} usati in OpenCode Go, inclusi utilizzo dei token, classifiche dei modelli, finestre di contesto, date di rilascio, costi e dati specifici del modello.",
   "lab.loadingTitle": "Laboratorio modelli",
-  "lab.loadingDescription": "Lettura della disponibilità dei modelli e dell'utilizzo recente di OpenCode.",
+  "lab.loadingDescription":
+    "Lettura della disponibilità dei modelli e dell'utilizzo recente di OpenCode.",
   "lab.notFound": "Nessun modello corrispondeva a questo laboratorio.",
   "lab.heroPrefix": "Esplora {{count}} modelli {{lab}} usati in OpenCode",
   "lab.heroIncluding": "inclusi {{models}}",
@@ -146,7 +150,8 @@ export const dict = {
   "lab.usageTitle": "Utilizzo token {{lab}}",
   "lab.usageDescription": "Volume giornaliero di token OpenCode negli ultimi due mesi.",
   "lab.noUsageTitle": "Ancora nessun utilizzo",
-  "lab.noUsageDescription": "L'utilizzo recente dei token apparirà qui quando questo laboratorio avrà attività.",
+  "lab.noUsageDescription":
+    "L'utilizzo recente dei token apparirà qui quando questo laboratorio avrà attività.",
   "lab.dailyTokenChart": "Grafico giornaliero dell'utilizzo token {{lab}}",
   "lab.dailyTokens": "Token giornalieri",
   "lab.tokens": "token",
@@ -193,15 +198,18 @@ export const dict = {
   "model.totalModels": "{{count}} modelli",
   "model.momentum": "Slancio",
   "model.vsPreviousWindow": "vs finestra precedente",
-  "model.usageDescription": "Volume giornaliero di token OpenCode Go nella recente finestra di due mesi.",
+  "model.usageDescription":
+    "Volume giornaliero di token OpenCode Go nella recente finestra di due mesi.",
   "model.noUsageTitle": "Nessun utilizzo",
   "model.noUsageDescription": "Nessun utilizzo è arrivato nella finestra attuale.",
   "model.dailyTokenChart": "Grafico giornaliero di utilizzo dei token",
-  "model.usersDescription": "Utenti unici giornalieri di OpenCode Go nella recente finestra di due mesi.",
+  "model.usersDescription":
+    "Utenti unici giornalieri di OpenCode Go nella recente finestra di due mesi.",
   "model.noUsersTitle": "Nessun dato utente",
   "model.noUsersDescription": "Nessuna riga con utenti è arrivata nella finestra attuale.",
   "model.dailyUserChart": "Grafico giornaliero degli utenti unici",
-  "model.efficiencyDescription": "Costi, comportamento della cache e forma media della sessione OpenCode Go.",
+  "model.efficiencyDescription":
+    "Costi, comportamento della cache e forma media della sessione OpenCode Go.",
   "model.noEfficiencyTitle": "Nessun dato di efficienza",
   "model.noEfficiencyDescription": "I dati di efficienza appaiono dopo l'arrivo dell'utilizzo.",
   "model.cost": "Costo",
@@ -220,7 +228,8 @@ export const dict = {
   "model.worldMap": "Mappa mondiale dell'utilizzo dei token del modello per paese",
   "model.peersDescription": "Modelli vicini per volume recente di token OpenCode Go.",
   "model.noPeersTitle": "Nessun modello simile",
-  "model.noPeersDescription": "Le classifiche dei modelli simili appaiono dopo l'arrivo dell'utilizzo.",
+  "model.noPeersDescription":
+    "Le classifiche dei modelli simili appaiono dopo l'arrivo dell'utilizzo.",
   "model.noUsageLastWeek": "Nessun utilizzo la scorsa settimana",
   "model.newThisWeek": "Nuovo questa settimana",
   "model.sameAsPreviousWeek": "Uguale alla settimana precedente",
@@ -228,4 +237,4 @@ export const dict = {
   "model.pdf": "PDF",
   "format.users": "utenti",
   "format.tokens": "token",
-} as const
+} as const;

@@ -132,7 +132,7 @@ export default function ProviderHealthAutopilotCard() {
   const topProviders = useMemo(
     () =>
       [...(report?.providers ?? [])].sort((left, right) => left.score - right.score).slice(0, 6),
-    [report]
+    [report],
   );
 
   const applyAction = useCallback(
@@ -164,7 +164,7 @@ export default function ProviderHealthAutopilotCard() {
         setBusyAction(null);
       }
     },
-    [load]
+    [load],
   );
 
   return (
@@ -268,7 +268,7 @@ export default function ProviderHealthAutopilotCard() {
               <div className="mt-3 space-y-2">
                 {[...provider.issues]
                   .sort(
-                    (left, right) => SEVERITY_RANK[left.severity] - SEVERITY_RANK[right.severity]
+                    (left, right) => SEVERITY_RANK[left.severity] - SEVERITY_RANK[right.severity],
                   )
                   .slice(0, 4)
                   .map((issue) => (

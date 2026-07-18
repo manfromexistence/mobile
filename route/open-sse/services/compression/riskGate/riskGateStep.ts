@@ -22,14 +22,14 @@ interface TextPart {
 function maskString(
   text: string,
   cfg: RiskGateConfig,
-  tally: Partial<Record<RiskCategory, number>>
+  tally: Partial<Record<RiskCategory, number>>,
 ): { masked: string; blocks: PreservedBlock[] } {
   const spans = detectRiskSpans(text, cfg);
   if (!spans.length) return { masked: text, blocks: [] };
   for (const s of spans) tally[s.category] = (tally[s.category] ?? 0) + 1;
   const { text: masked, blocks } = preserveSpans(
     text,
-    spans.map((s) => ({ start: s.start, end: s.end, kind: `risk_${s.category}` }))
+    spans.map((s) => ({ start: s.start, end: s.end, kind: `risk_${s.category}` })),
   );
   return { masked, blocks };
 }
@@ -86,7 +86,7 @@ export function applyRiskMask(body: Record<string, unknown>, cfg: RiskGateConfig
 /** Restore every masked span in the (possibly compressed) body. Fail-open. */
 export function restoreRiskBlocks(
   body: Record<string, unknown>,
-  blocks: PreservedBlock[]
+  blocks: PreservedBlock[],
 ): Record<string, unknown> {
   if (!blocks.length) return body;
   const messages = body.messages;
@@ -97,7 +97,7 @@ export function restoreRiskBlocks(
       return (content as TextPart[]).map((p) =>
         p && p.type === "text" && typeof p.text === "string"
           ? { ...p, text: restorePreservedBlocks(p.text, blocks) }
-          : p
+          : p,
       );
     }
     return content;

@@ -26,7 +26,7 @@ test("opencode-plugin package.json ships ESM-only (no CJS bundle)", () => {
   assert.equal(
     typeof pkg.main === "string" && pkg.main.endsWith(".cjs"),
     false,
-    "main must not be a .cjs bundle"
+    "main must not be a .cjs bundle",
   );
   // The legacy dual-bundle `module` field should be gone.
   assert.equal("module" in pkg, false, "the dual-bundle `module` field must be removed");
@@ -60,6 +60,6 @@ test("opencode-plugin tsup config builds ESM-only with cjsInterop disabled", () 
   assert.equal(
     /cjsInterop:\s*true/.test(tsup),
     false,
-    "cjsInterop must not be true for an ESM-only build"
+    "cjsInterop must not be true for an ESM-only build",
   );
 });

@@ -15,11 +15,12 @@ vi.mock("next-intl", () => ({
 }));
 
 function mockFetchOnce(results: unknown[]) {
-  const fetchMock = vi.fn(async () =>
-    new Response(JSON.stringify({ results }), {
-      status: 200,
-      headers: { "content-type": "application/json" },
-    })
+  const fetchMock = vi.fn(
+    async () =>
+      new Response(JSON.stringify({ results }), {
+        status: 200,
+        headers: { "content-type": "application/json" },
+      }),
   );
   vi.stubGlobal("fetch", fetchMock);
   return fetchMock;

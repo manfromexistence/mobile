@@ -55,7 +55,7 @@ export function findNearDuplicates(
   blocks: FuzzyBlock[],
   minJaccard: number,
   maxBlocks: number,
-  shingleSize = 3
+  shingleSize = 3,
 ): NearDuplicate[] {
   if (blocks.length > maxBlocks) return [];
   const sets = blocks.map((b) => shingles(b.text, shingleSize));
@@ -118,7 +118,7 @@ export function applyFuzzyPass(messages: MessageLike[], opts: FuzzyPassOptions):
     if (replacements.size === 0) return { messages, fuzzyCount: 0 };
 
     const out = messages.map((m, i) =>
-      replacements.has(i) ? { ...m, content: replacements.get(i) } : m
+      replacements.has(i) ? { ...m, content: replacements.get(i) } : m,
     );
     return { messages: out, fuzzyCount: replacements.size };
   } catch {
@@ -135,7 +135,7 @@ export function runFuzzyPass(
   messages: MessageLike[],
   stepConfig: Record<string, unknown>,
   minBlockChars: number,
-  principalId?: string
+  principalId?: string,
 ): FuzzyPassResult {
   const raw = stepConfig["fuzzy"] as
     | boolean

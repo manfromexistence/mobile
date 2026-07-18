@@ -54,10 +54,14 @@ export default function UsagePage() {
       <section className="theme-page-shell grid gap-6 rounded-2xl py-10 sm:p-6">
         <header className="grid gap-3">
           <p className="theme-text-muted text-xs">Usage</p>
-          <h1 className="theme-text-strong text-2xl tracking-tight sm:text-3xl">Install Dot Matrix from the registry</h1>
+          <h1 className="theme-text-strong text-2xl tracking-tight sm:text-3xl">
+            Install Dot Matrix from the registry
+          </h1>
           <p className="theme-text max-w-[72ch] text-sm leading-relaxed">
-            Dot Matrix loaders ship through a custom shadcn registry (scoped as <code className="font-mono text-[0.9em]">@dotmatrix</code>
-            {" "}in the CLI) so the install flow stays familiar: configure once, pull the items you need, then adapt each loader to your product.
+            Dot Matrix loaders ship through a custom shadcn registry (scoped as{" "}
+            <code className="font-mono text-[0.9em]">@dotmatrix</code> in the CLI) so the install
+            flow stays familiar: configure once, pull the items you need, then adapt each loader to
+            your product.
           </p>
         </header>
 
@@ -80,8 +84,8 @@ export default function UsagePage() {
           <p className="theme-text max-w-[72ch] text-sm leading-relaxed">
             Add the <code className="font-mono text-[0.9em]">@dotmatrix</code> entry in the{" "}
             <code className="font-mono text-[0.9em]">registries</code> field of{" "}
-            <code className="font-mono text-[0.9em]">components.json</code> so the CLI can resolve items like{" "}
-            <code className="font-mono text-[0.9em]">@dotmatrix/dotm-square-3</code>.
+            <code className="font-mono text-[0.9em]">components.json</code> so the CLI can resolve
+            items like <code className="font-mono text-[0.9em]">@dotmatrix/dotm-square-3</code>.
           </p>
           <ManualCodePanel
             title="components.json"
@@ -97,9 +101,7 @@ export default function UsagePage() {
             Pull any loader into your app with the shadcn CLI:
           </p>
           <ManualCodePanel title="Install loader" code={installCommand} lang="bash" />
-          <p className="theme-text text-sm leading-relaxed">
-            Or install everything in one step:
-          </p>
+          <p className="theme-text text-sm leading-relaxed">Or install everything in one step:</p>
           <ManualCodePanel title="Install all loaders" code={installAllCommand} lang="bash" />
           <ul className="theme-text grid gap-2 text-sm leading-relaxed">
             <li>- `@dotmatrix/dotm-square-3`</li>
@@ -113,10 +115,13 @@ export default function UsagePage() {
         </section>
 
         <section className="grid gap-3">
-          <h2 className="theme-text-strong text-lg tracking-tight">Ensure loader styles are imported</h2>
+          <h2 className="theme-text-strong text-lg tracking-tight">
+            Ensure loader styles are imported
+          </h2>
           <p className="theme-text max-w-[72ch] text-sm leading-relaxed">
-            Dot Matrix loaders depend on <code className="font-mono text-[0.9em]">dotmatrix-loader.css</code>. If your
-            setup does not inject it automatically, add this import in{" "}
+            Dot Matrix loaders depend on{" "}
+            <code className="font-mono text-[0.9em]">dotmatrix-loader.css</code>. If your setup does
+            not inject it automatically, add this import in{" "}
             <code className="font-mono text-[0.9em]">app/globals.css</code>.
           </p>
           <ManualCodePanel title="globals.css" code={globalsCssImportExample} lang="css" />
@@ -125,8 +130,8 @@ export default function UsagePage() {
         <section className="grid gap-3">
           <h2 className="theme-text-strong text-lg tracking-tight">Use in real UI states</h2>
           <p className="theme-text max-w-[72ch] text-sm leading-relaxed">
-            Keep indicators close to the action they describe. Inline usage works well when only part
-            of the interface is pending.
+            Keep indicators close to the action they describe. Inline usage works well when only
+            part of the interface is pending.
           </p>
           <ManualCodePanel
             title="Save button example"
@@ -150,7 +155,10 @@ export default function UsagePage() {
           <h2 className="theme-text-strong text-lg tracking-tight">Next step</h2>
           <p className="theme-text text-sm leading-relaxed">
             Browse the{" "}
-            <Link href="/" className="theme-link underline decoration-(--color-fg-dim) underline-offset-2">
+            <Link
+              href="/"
+              className="theme-link underline decoration-(--color-fg-dim) underline-offset-2"
+            >
               components gallery
             </Link>{" "}
             for specific primitives, or read the{" "}

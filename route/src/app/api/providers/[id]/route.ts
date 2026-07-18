@@ -24,11 +24,14 @@ import {
 } from "@/lib/providers/claudeExtraUsage";
 import { requireManagementAuth } from "@/lib/api/requireManagementAuth";
 import { isApiKeyRevealEnabled, maskStoredApiKey } from "@/lib/apiKeyExposure";
-import { refreshConnectionRateLimits, enableRateLimitProtection } from "@/../open-sse/services/rateLimitManager";
+import {
+  refreshConnectionRateLimits,
+  enableRateLimitProtection,
+} from "@/../open-sse/services/rateLimitManager";
 
 function normalizeCodexLimitPolicy(
   incoming: unknown,
-  existing: unknown
+  existing: unknown,
 ): { use5h: boolean; useWeekly: boolean } {
   const incomingRecord =
     incoming && typeof incoming === "object" && !Array.isArray(incoming)
@@ -75,7 +78,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     delete result.idToken;
     if (result.providerSpecificData) {
       result.providerSpecificData = sanitizeProviderSpecificDataForResponse(
-        result.providerSpecificData
+        result.providerSpecificData,
       );
     }
 
@@ -103,7 +106,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -206,7 +209,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
         if ("codexLimitPolicy" in incomingRecord || "codexLimitPolicy" in existingPsd) {
           mergedPsd.codexLimitPolicy = normalizeCodexLimitPolicy(
             incomingRecord.codexLimitPolicy,
-            (existingPsd as Record<string, unknown>).codexLimitPolicy
+            (existingPsd as Record<string, unknown>).codexLimitPolicy,
           );
         }
       }
@@ -301,7 +304,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
     delete result.idToken;
     if (result.providerSpecificData) {
       result.providerSpecificData = sanitizeProviderSpecificDataForResponse(
-        result.providerSpecificData
+        result.providerSpecificData,
       );
     }
 
@@ -359,7 +362,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
     } catch (e) {
       console.error(
         `Failed to clean up synced models for deleted ${connection.provider} connection:`,
-        e
+        e,
       );
     }
 

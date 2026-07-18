@@ -1,18 +1,18 @@
 // @ts-nocheck
-import { createSignal } from "solid-js"
-import { Field as FieldV2 } from "./field-v2"
-import { SelectV2 } from "./select-v2"
+import { createSignal } from "solid-js";
+import { Field as FieldV2 } from "./field-v2";
+import { SelectV2 } from "./select-v2";
 
-const fruits = ["Apple", "Banana", "Cherry", "Date", "Elderberry"]
+const fruits = ["Apple", "Banana", "Cherry", "Date", "Elderberry"];
 
-type Region = "North" | "South" | "East" | "West"
+type Region = "North" | "South" | "East" | "West";
 const cities: { city: string; region: Region }[] = [
   { city: "Boston", region: "North" },
   { city: "Miami", region: "South" },
   { city: "Atlanta", region: "South" },
   { city: "Seattle", region: "West" },
   { city: "Denver", region: "West" },
-]
+];
 
 const docs = `### Overview
 Single-select built on Kobalte with a **TextInput v2** trigger surface and **Menu v2** list styling.
@@ -25,7 +25,7 @@ Single-select built on Kobalte with a **TextInput v2** trigger surface and **Men
 - \`appearance\`: \`base\` (28px), \`large\` (32px), or \`inline\` (compact settings-row trigger).
 - \`placement\`, \`gutter\`, \`sameWidth\`, \`flip\`, \`slide\`, \`fitViewport\`: forwarded to Kobalte popper (defaults match legacy \`Select\`: gutter 4, flip/slide on; inline uses \`bottom-end\` and \`sameWidth: false\`).
 - \`invalid\`, \`disabled\`, \`numeric\`: match text input conventions.
-`
+`;
 
 export default {
   title: "UI V2/Select",
@@ -62,11 +62,11 @@ export default {
       options: ["base", "large", "inline"],
     },
   },
-}
+};
 
 export const Playground = {
   render: (args) => {
-    const [current, setCurrent] = createSignal(undefined)
+    const [current, setCurrent] = createSignal(undefined);
     return (
       <SelectV2
         placeholder={args.placeholder}
@@ -77,13 +77,13 @@ export const Playground = {
         current={current()}
         onSelect={(v) => setCurrent(v === null ? undefined : v)}
       />
-    )
+    );
   },
-}
+};
 
 export const Large = {
   render: (args) => {
-    const [current, setCurrent] = createSignal(undefined)
+    const [current, setCurrent] = createSignal(undefined);
     return (
       <SelectV2
         placeholder={args.placeholder}
@@ -94,13 +94,13 @@ export const Large = {
         current={current()}
         onSelect={(v) => setCurrent(v === null ? undefined : v)}
       />
-    )
+    );
   },
-}
+};
 
 export const Grouped = {
   render: (args) => {
-    const [current, setCurrent] = createSignal(undefined)
+    const [current, setCurrent] = createSignal(undefined);
     return (
       <SelectV2<(typeof cities)[0]>
         placeholder={args.placeholder}
@@ -114,13 +114,13 @@ export const Grouped = {
         label={(x) => x.city}
         groupBy={(x) => x.region}
       />
-    )
+    );
   },
-}
+};
 
 export const Invalid = {
   render: (args) => {
-    const [current, setCurrent] = createSignal(undefined)
+    const [current, setCurrent] = createSignal(undefined);
     return (
       <SelectV2
         placeholder={args.placeholder}
@@ -131,9 +131,9 @@ export const Invalid = {
         current={current()}
         onSelect={(v) => setCurrent(v === null ? undefined : v)}
       />
-    )
+    );
   },
-}
+};
 
 export const Disabled = {
   render: (args) => (
@@ -147,12 +147,12 @@ export const Disabled = {
       onSelect={() => {}}
     />
   ),
-}
+};
 
 export const Field = {
   parameters: { frameHeight: "500px" },
   render: (args) => {
-    const [current, setCurrent] = createSignal(undefined)
+    const [current, setCurrent] = createSignal(undefined);
     return (
       <div style={{ width: "280px" }}>
         <FieldV2>
@@ -170,6 +170,6 @@ export const Field = {
           <FieldV2.Suffix>After selection</FieldV2.Suffix>
         </FieldV2>
       </div>
-    )
+    );
   },
-}
+};

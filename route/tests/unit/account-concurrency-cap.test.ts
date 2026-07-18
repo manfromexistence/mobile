@@ -19,7 +19,7 @@ function assertConnection(connection: Connection): asserts connection is NonNull
 }
 
 function assertStoredConnection(
-  connection: StoredConnection
+  connection: StoredConnection,
 ): asserts connection is NonNullable<StoredConnection> {
   assert.ok(connection);
 }

@@ -26,7 +26,7 @@ export async function runPluginOnResponseHook(args: {
         apiKeyInfo: args.apiKeyInfo,
         metadata: {},
       },
-      { status: 200 }
+      { status: 200 },
     ).catch(() => {});
   } catch (_) {
     /* plugin onResponse optional */

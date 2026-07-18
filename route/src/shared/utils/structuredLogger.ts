@@ -59,7 +59,7 @@ function formatEntry(
   level: string,
   component: string,
   message: string,
-  meta?: Record<string, unknown>
+  meta?: Record<string, unknown>,
 ) {
   const entry: Record<string, unknown> = {
     timestamp: new Date().toISOString(),
@@ -89,7 +89,7 @@ function buildEntry(
   level: string,
   component: string,
   message: string,
-  meta?: Record<string, unknown>
+  meta?: Record<string, unknown>,
 ) {
   const entry: Record<string, unknown> = {
     timestamp: new Date().toISOString(),

@@ -1,5 +1,5 @@
-import { notFound } from 'next/navigation';
-import type { ReactNode } from 'react';
+import { notFound } from "next/navigation";
+import type { ReactNode } from "react";
 
 // Gates every route in the (trees) group to the trees build — the parallel of
 // (diffs)/layout.tsx. Route groups don't prune, so without this the trees-only
@@ -10,7 +10,7 @@ export default function TreesGroupLayout({
 }: {
   children: ReactNode;
 }) {
-  if ((process.env.NEXT_PUBLIC_SITE ?? 'diffs') !== 'trees') {
+  if ((process.env.NEXT_PUBLIC_SITE ?? "diffs") !== "trees") {
     notFound();
   }
   return <>{children}</>;

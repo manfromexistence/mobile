@@ -54,7 +54,7 @@ test("#5899 openai gateway baseUrl ending in /v1/chat/completions never probes /
   try {
     await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models?refresh=true`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -62,10 +62,10 @@ test("#5899 openai gateway baseUrl ending in /v1/chat/completions never probes /
 
   assert.ok(
     requestedUrls.includes("https://api.airforce/v1/models"),
-    `expected a request to the correctly-stripped /v1/models URL; got: ${JSON.stringify(requestedUrls)}`
+    `expected a request to the correctly-stripped /v1/models URL; got: ${JSON.stringify(requestedUrls)}`,
   );
   assert.ok(
     !requestedUrls.includes("https://api.airforce/v1/v1/models"),
-    `must never probe the double-prefixed /v1/v1/models URL; got: ${JSON.stringify(requestedUrls)}`
+    `must never probe the double-prefixed /v1/v1/models URL; got: ${JSON.stringify(requestedUrls)}`,
   );
 });

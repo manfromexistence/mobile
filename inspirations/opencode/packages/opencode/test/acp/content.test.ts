@@ -1,12 +1,18 @@
-import { describe, expect, test } from "bun:test"
-import type { ContentBlock } from "@agentclientprotocol/sdk"
-import { pathToFileURL } from "node:url"
-import { contentBlockToParts, partsToContentChunks, promptContentToParts } from "../../src/acp/content"
+import { describe, expect, test } from "bun:test";
+import type { ContentBlock } from "@agentclientprotocol/sdk";
+import { pathToFileURL } from "node:url";
+import {
+  contentBlockToParts,
+  partsToContentChunks,
+  promptContentToParts,
+} from "../../src/acp/content";
 
 describe("acp content conversion", () => {
   test("plain text block becomes a text part", () => {
-    expect(contentBlockToParts({ type: "text", text: "hello" })).toEqual([{ type: "text", text: "hello" }])
-  })
+    expect(contentBlockToParts({ type: "text", text: "hello" })).toEqual([
+      { type: "text", text: "hello" },
+    ]);
+  });
 
   test("assistant-only text audience becomes synthetic", () => {
     expect(
@@ -15,8 +21,8 @@ describe("acp content conversion", () => {
         text: "internal",
         annotations: { audience: ["assistant"] },
       }),
-    ).toEqual([{ type: "text", text: "internal", synthetic: true }])
-  })
+    ).toEqual([{ type: "text", text: "internal", synthetic: true }]);
+  });
 
   test("user-only text audience becomes ignored", () => {
     expect(
@@ -25,8 +31,8 @@ describe("acp content conversion", () => {
         text: "visible to user",
         annotations: { audience: ["user"] },
       }),
-    ).toEqual([{ type: "text", text: "visible to user", ignored: true }])
-  })
+    ).toEqual([{ type: "text", text: "visible to user", ignored: true }]);
+  });
 
   test("image block with base64 data becomes a data URL file part", () => {
     expect(
@@ -43,8 +49,8 @@ describe("acp content conversion", () => {
         filename: "screenshot.png",
         mime: "image/png",
       },
-    ])
-  })
+    ]);
+  });
 
   test("image block with http URI becomes a file part", () => {
     expect(
@@ -61,8 +67,8 @@ describe("acp content conversion", () => {
         filename: "photo.jpg",
         mime: "image/jpeg",
       },
-    ])
-  })
+    ]);
+  });
 
   test("resource_link file URL becomes a file part with name and fallback mime", () => {
     expect(
@@ -78,8 +84,8 @@ describe("acp content conversion", () => {
         filename: "client-notes.txt",
         mime: "text/plain",
       },
-    ])
-  })
+    ]);
+  });
 
   test("resource_link zed path becomes a file URL part", () => {
     expect(
@@ -96,8 +102,8 @@ describe("acp content conversion", () => {
         filename: "app.ts",
         mime: "text/typescript",
       },
-    ])
-  })
+    ]);
+  });
 
   test("resource with text becomes a sourced text part", () => {
     const result = contentBlockToParts({
@@ -107,15 +113,15 @@ describe("acp content conversion", () => {
         mimeType: "text/plain",
         text: "context",
       },
-    })
-    expect(result).toHaveLength(1)
-    expect(result[0]?.type).toBe("text")
+    });
+    expect(result).toHaveLength(1);
+    expect(result[0]?.type).toBe("text");
     if (result[0]?.type === "text") {
-      expect(result[0].text.endsWith("\ncontext")).toBe(true)
-      expect(result[0].text.includes("context.txt")).toBe(true)
-      expect(result[0].text.includes("12")).toBe(true)
+      expect(result[0].text.endsWith("\ncontext")).toBe(true);
+      expect(result[0].text.includes("context.txt")).toBe(true);
+      expect(result[0].text.includes("12")).toBe(true);
     }
-  })
+  });
 
   test("resource with text uses URI fallback for non-file resources", () => {
     expect(
@@ -126,8 +132,8 @@ describe("acp content conversion", () => {
           text: "context",
         },
       }),
-    ).toEqual([{ type: "text", text: "[mcp://server/context]\ncontext" }])
-  })
+    ).toEqual([{ type: "text", text: "[mcp://server/context]\ncontext" }]);
+  });
 
   test("resource with text includes file path", () => {
     const result = contentBlockToParts({
@@ -137,14 +143,14 @@ describe("acp content conversion", () => {
         mimeType: "text/plain",
         text: "context",
       },
-    })
-    expect(result).toHaveLength(1)
-    expect(result[0]?.type).toBe("text")
+    });
+    expect(result).toHaveLength(1);
+    expect(result[0]?.type).toBe("text");
     if (result[0]?.type === "text") {
-      expect(result[0].text.endsWith("\ncontext")).toBe(true)
-      expect(result[0].text.includes("context.txt")).toBe(true)
+      expect(result[0].text.endsWith("\ncontext")).toBe(true);
+      expect(result[0].text.includes("context.txt")).toBe(true);
     }
-  })
+  });
 
   test("resource with blob and mimeType becomes a data URL file part", () => {
     expect(
@@ -163,8 +169,8 @@ describe("acp content conversion", () => {
         filename: "report.pdf",
         mime: "application/pdf",
       },
-    ])
-  })
+    ]);
+  });
 
   test("data URL resource is preserved as a file part", () => {
     expect(
@@ -183,14 +189,18 @@ describe("acp content conversion", () => {
         filename: "file",
         mime: "text/plain",
       },
-    ])
-  })
+    ]);
+  });
 
   test("unsupported blocks are ignored", () => {
-    expect(promptContentToParts([{ type: "audio", data: "AAAA", mimeType: "audio/wav" }])).toEqual([])
-    expect(promptContentToParts([{ type: "unknown", text: "skip" } as unknown as ContentBlock])).toEqual([])
-  })
-})
+    expect(promptContentToParts([{ type: "audio", data: "AAAA", mimeType: "audio/wav" }])).toEqual(
+      [],
+    );
+    expect(
+      promptContentToParts([{ type: "unknown", text: "skip" } as unknown as ContentBlock]),
+    ).toEqual([]);
+  });
+});
 
 describe("acp replay conversion", () => {
   test("replays text audience annotations", () => {
@@ -202,14 +212,24 @@ describe("acp replay conversion", () => {
           annotations: { audience: ["assistant"] },
         },
       },
-    ])
-  })
+    ]);
+  });
 
   test("replays file and data URL parts as ACP content", () => {
     expect(
       partsToContentChunks([
-        { type: "file", url: "file:///tmp/readme.md", filename: "readme.md", mime: "text/markdown" },
-        { type: "file", url: "data:text/plain;base64,aGVsbG8=", filename: "note.txt", mime: "text/plain" },
+        {
+          type: "file",
+          url: "file:///tmp/readme.md",
+          filename: "readme.md",
+          mime: "text/markdown",
+        },
+        {
+          type: "file",
+          url: "data:text/plain;base64,aGVsbG8=",
+          filename: "note.txt",
+          mime: "text/plain",
+        },
       ]),
     ).toEqual([
       {
@@ -230,6 +250,6 @@ describe("acp replay conversion", () => {
           },
         },
       },
-    ])
-  })
-})
+    ]);
+  });
+});

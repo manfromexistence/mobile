@@ -12,14 +12,14 @@ const { shouldShowConnectionLastError } = await import(
 test("#1447: lastError is shown even when the connection is disabled", () => {
   assert.equal(
     shouldShowConnectionLastError({ lastError: "401 Unauthorized", isActive: false }),
-    true
+    true,
   );
 });
 
 test("#1447: lastError is shown for an active connection", () => {
   assert.equal(
     shouldShowConnectionLastError({ lastError: "429 Too Many Requests", isActive: true }),
-    true
+    true,
   );
 });
 

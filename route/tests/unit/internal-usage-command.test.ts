@@ -32,7 +32,7 @@ test("extractLastUserText supports OpenAI and Anthropic text content", () => {
         { role: "user", content: [{ type: "text", text: "@@om-usage" }] },
       ],
     }),
-    "@@om-usage"
+    "@@om-usage",
   );
 
   assert.equal(
@@ -42,7 +42,7 @@ test("extractLastUserText supports OpenAI and Anthropic text content", () => {
         { role: "user", content: [{ type: "input_text", text: "hello" }] },
       ],
     }),
-    "hello"
+    "hello",
   );
 });
 
@@ -93,7 +93,7 @@ test("buildUsageCommandText formats cached Claude usage windows exactly", async 
         defaultThresholdPercent: 0,
         providerWindowDefaults: {},
       }),
-    }
+    },
   );
 
   assert.equal(
@@ -107,7 +107,7 @@ test("buildUsageCommandText formats cached Claude usage windows exactly", async 
       "Weekly",
       "28% left",
       "⏱ reset in 1d 0h 0m",
-    ].join("\n")
+    ].join("\n"),
   );
 });
 
@@ -150,7 +150,7 @@ test("buildUsageCommandText formats API key USD limits as personal percentages",
         providerWindowDefaults: {},
       }),
     },
-    { preferredProvider: "claude" }
+    { preferredProvider: "claude" },
   );
 
   assert.equal(usageStatusPreferredProvider, "claude");
@@ -168,7 +168,7 @@ test("buildUsageCommandText formats API key USD limits as personal percentages",
       "",
       "Provider quota",
       "No cached usage data available.",
-    ].join("\n")
+    ].join("\n"),
   );
 });
 
@@ -212,7 +212,7 @@ test("buildUsageCommandText scales provider quota remaining by configured cutoff
         defaultThresholdPercent: 0,
         providerWindowDefaults: {},
       }),
-    }
+    },
   );
 
   assert.equal(
@@ -226,7 +226,7 @@ test("buildUsageCommandText scales provider quota remaining by configured cutoff
       "Weekly",
       "0% left",
       "⏱ reset in 1d 0h 44m",
-    ].join("\n")
+    ].join("\n"),
   );
 });
 
@@ -292,7 +292,7 @@ test("handleInternalUsageCommandHttpRequest returns terminal text for an allowed
       getApiKeyUsageLimitStatus: async () => {
         throw new Error("usage limit lookup must not run for provider quota output");
       },
-    }
+    },
   );
 
   assert.equal(response.status, 200);
@@ -308,7 +308,7 @@ test("handleInternalUsageCommandHttpRequest returns terminal text for an allowed
       "Weekly",
       "75% left",
       "⏱ reset in 6d 0h 0m",
-    ].join("\n")
+    ].join("\n"),
   );
 });
 
@@ -320,7 +320,7 @@ test("handleInternalUsageCommandHttpRequest sanitizes internal errors and never 
     {
       isValidApiKey: async () => {
         throw new Error(
-          `boom at /home/diegosouzapw/dev/proxys/OmniRoute/src/lib/usage/internalUsageCommand.ts:1:1`
+          `boom at /home/diegosouzapw/dev/proxys/OmniRoute/src/lib/usage/internalUsageCommand.ts:1:1`,
         );
       },
       getApiKeyMetadata: async () => {
@@ -333,7 +333,7 @@ test("handleInternalUsageCommandHttpRequest sanitizes internal errors and never 
       getApiKeyUsageLimitStatus: async () => {
         throw new Error("usage limit lookup must not run when auth check throws");
       },
-    }
+    },
   );
 
   assert.equal(response.status, 500);
@@ -361,7 +361,7 @@ test("handleInternalUsageCommandHttpRequest rejects invalid API keys as plain te
       getApiKeyUsageLimitStatus: async () => {
         throw new Error("usage limit lookup must not run for invalid keys");
       },
-    }
+    },
   );
 
   assert.equal(response.status, 401);
@@ -387,7 +387,7 @@ test("handleInternalUsageCommandHttpRequest rejects API keys without usage comma
       getApiKeyUsageLimitStatus: async () => {
         throw new Error("usage limit lookup must not run for disabled keys");
       },
-    }
+    },
   );
 
   assert.equal(response.status, 403);
@@ -422,7 +422,7 @@ test("handleInternalUsageCommand returns disabled response locally without provi
       getAllProviderLimitsCache: () => {
         throw new Error("provider cache lookup must not run when disabled");
       },
-    }
+    },
   );
 
   assert.ok(response, "command should be handled locally");
@@ -488,7 +488,7 @@ test("handleInternalUsageCommand returns enabled usage snapshot locally", async 
         defaultThresholdPercent: 0,
         providerWindowDefaults: {},
       }),
-    }
+    },
   );
 
   assert.ok(response, "command should be handled locally");
@@ -519,7 +519,7 @@ test("handleInternalUsageCommand ignores normal prompts", async () => {
       getProviderConnections: async () => [],
       getProviderLimitsCache: () => null,
       getAllProviderLimitsCache: () => ({}),
-    }
+    },
   );
 
   assert.equal(response, null);

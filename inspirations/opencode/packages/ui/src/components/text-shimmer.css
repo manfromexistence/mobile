@@ -14,7 +14,10 @@
     var(--text-shimmer-peak-color) 50%,
     transparent calc(50% + var(--text-shimmer-spread))
   );
-  --text-shimmer-base: linear-gradient(var(--text-shimmer-base-color), var(--text-shimmer-base-color));
+  --text-shimmer-base: linear-gradient(
+    var(--text-shimmer-base-color),
+    var(--text-shimmer-base-color)
+  );
 
   display: inline-flex;
   align-items: baseline;
@@ -67,15 +70,11 @@
 
 @keyframes text-shimmer-sweep {
   0% {
-    background-position:
-      100% 0,
-      0 0;
+    background-position: 100% 0, 0 0;
   }
 
   100% {
-    background-position:
-      0% 0,
-      0 0;
+    background-position: 0% 0, 0 0;
   }
 }
 
@@ -84,12 +83,8 @@
     color: transparent;
     -webkit-text-fill-color: transparent;
     background-image: var(--text-shimmer-sweep), var(--text-shimmer-base);
-    background-size:
-      var(--text-shimmer-size) 100%,
-      100% 100%;
-    background-position:
-      100% 0,
-      0 0;
+    background-size: var(--text-shimmer-size) 100%, 100% 100%;
+    background-position: 100% 0, 0 0;
     background-repeat: no-repeat;
     -webkit-background-clip: text;
     background-clip: text;

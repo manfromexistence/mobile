@@ -1,20 +1,20 @@
-import { Effect, Schema } from "effect"
-import * as Tool from "./tool"
-import DESCRIPTION_WRITE from "./todowrite.txt"
-import { Todo } from "../session/todo"
+import { Effect, Schema } from "effect";
+import * as Tool from "./tool";
+import DESCRIPTION_WRITE from "./todowrite.txt";
+import { Todo } from "../session/todo";
 
 export const Parameters = Schema.Struct({
   todos: Schema.mutable(Schema.Array(Todo.Info)).annotate({ description: "The updated todo list" }),
-})
+});
 
 type Metadata = {
-  todos: Todo.Info[]
-}
+  todos: Todo.Info[];
+};
 
 export const TodoWriteTool = Tool.define<typeof Parameters, Metadata, Todo.Service>(
   "todowrite",
   Effect.gen(function* () {
-    const todo = yield* Todo.Service
+    const todo = yield* Todo.Service;
 
     return {
       description: DESCRIPTION_WRITE,
@@ -26,12 +26,12 @@ export const TodoWriteTool = Tool.define<typeof Parameters, Metadata, Todo.Servi
             patterns: ["*"],
             always: ["*"],
             metadata: {},
-          })
+          });
 
           yield* todo.update({
             sessionID: ctx.sessionID,
             todos: params.todos,
-          })
+          });
 
           return {
             title: `${params.todos.filter((x) => x.status !== "completed").length} todos`,
@@ -39,8 +39,8 @@ export const TodoWriteTool = Tool.define<typeof Parameters, Metadata, Todo.Servi
             metadata: {
               todos: params.todos,
             },
-          }
+          };
         }),
-    } satisfies Tool.DefWithoutID<typeof Parameters, Metadata>
+    } satisfies Tool.DefWithoutID<typeof Parameters, Metadata>;
   }),
-)
+);

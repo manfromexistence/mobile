@@ -10,15 +10,20 @@ import {
   Show,
   type Accessor,
   type JSX,
-} from "solid-js"
-import { createStore, produce } from "solid-js/store"
-import { Dynamic } from "solid-js/web"
-import { useNavigate } from "@solidjs/router"
-import { useMutation } from "@tanstack/solid-query"
-import { createVirtualizer, defaultRangeExtractor, elementScroll, type VirtualItem } from "@tanstack/solid-virtual"
-import { Accordion } from "@opencode-ai/ui/accordion"
-import { Button } from "@opencode-ai/ui/button"
-import { Card } from "@opencode-ai/ui/card"
+} from "solid-js";
+import { createStore, produce } from "solid-js/store";
+import { Dynamic } from "solid-js/web";
+import { useNavigate } from "@solidjs/router";
+import { useMutation } from "@tanstack/solid-query";
+import {
+  createVirtualizer,
+  defaultRangeExtractor,
+  elementScroll,
+  type VirtualItem,
+} from "@tanstack/solid-virtual";
+import { Accordion } from "@opencode-ai/ui/accordion";
+import { Button } from "@opencode-ai/ui/button";
+import { Card } from "@opencode-ai/ui/card";
 import {
   ContextToolGroup,
   Message,
@@ -26,94 +31,110 @@ import {
   Part as MessagePart,
   partDefaultOpen,
   type UserActions,
-} from "@opencode-ai/session-ui/message-part"
-import { DiffChanges } from "@opencode-ai/ui/diff-changes"
-import { FileIcon } from "@opencode-ai/ui/file-icon"
-import { Icon } from "@opencode-ai/ui/icon"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon"
-import { IconButtonV2 } from "@opencode-ai/ui/v2/icon-button-v2"
-import { DropdownMenu } from "@opencode-ai/ui/dropdown-menu"
-import { MenuV2 } from "@opencode-ai/ui/v2/menu-v2"
-import { Dialog } from "@opencode-ai/ui/dialog"
-import { DialogFooter, DialogHeader, DialogTitleGroup, DialogV2 } from "@opencode-ai/ui/v2/dialog-v2"
-import { InlineInput } from "@opencode-ai/ui/inline-input"
-import { ButtonV2 } from "@opencode-ai/ui/v2/button-v2"
-import { SessionRetry } from "@opencode-ai/session-ui/session-retry"
-import { isScrollKeyTarget, scrollKey, scrollKeyOwner, ScrollView } from "@opencode-ai/ui/scroll-view"
-import { StickyAccordionHeader } from "@opencode-ai/ui/sticky-accordion-header"
-import { TextField } from "@opencode-ai/ui/text-field"
-import { TextReveal } from "@opencode-ai/ui/text-reveal"
-import { TextShimmer } from "@opencode-ai/ui/text-shimmer"
+} from "@opencode-ai/session-ui/message-part";
+import { DiffChanges } from "@opencode-ai/ui/diff-changes";
+import { FileIcon } from "@opencode-ai/ui/file-icon";
+import { Icon } from "@opencode-ai/ui/icon";
+import { IconButton } from "@opencode-ai/ui/icon-button";
+import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon";
+import { IconButtonV2 } from "@opencode-ai/ui/v2/icon-button-v2";
+import { DropdownMenu } from "@opencode-ai/ui/dropdown-menu";
+import { MenuV2 } from "@opencode-ai/ui/v2/menu-v2";
+import { Dialog } from "@opencode-ai/ui/dialog";
+import {
+  DialogFooter,
+  DialogHeader,
+  DialogTitleGroup,
+  DialogV2,
+} from "@opencode-ai/ui/v2/dialog-v2";
+import { InlineInput } from "@opencode-ai/ui/inline-input";
+import { ButtonV2 } from "@opencode-ai/ui/v2/button-v2";
+import { SessionRetry } from "@opencode-ai/session-ui/session-retry";
+import {
+  isScrollKeyTarget,
+  scrollKey,
+  scrollKeyOwner,
+  ScrollView,
+} from "@opencode-ai/ui/scroll-view";
+import { StickyAccordionHeader } from "@opencode-ai/ui/sticky-accordion-header";
+import { TextField } from "@opencode-ai/ui/text-field";
+import { TextReveal } from "@opencode-ai/ui/text-reveal";
+import { TextShimmer } from "@opencode-ai/ui/text-shimmer";
 import type {
   AssistantMessage,
   Message as MessageType,
   Part as PartType,
   ToolPart,
   UserMessage,
-} from "@opencode-ai/sdk/v2"
-import { showToast } from "@/utils/toast"
-import { getDirectory, getFilename } from "@opencode-ai/core/util/path"
-import { Popover as KobaltePopover } from "@kobalte/core/popover"
-import { normalize } from "@opencode-ai/session-ui/session-diff"
-import { useFileComponent } from "@opencode-ai/ui/context/file"
-import { shouldMarkBoundaryGesture, normalizeWheelDelta } from "@/pages/session/message-gesture"
-import { SessionContextUsage } from "@/components/session-context-usage"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { useLanguage } from "@/context/language"
-import { useSessionKey } from "@/pages/session/session-layout"
-import { useServerSDK } from "@/context/server-sdk"
-import { usePlatform } from "@/context/platform"
-import { useSettings } from "@/context/settings"
-import { useTabs } from "@/context/tabs"
-import { legacySessionHref, requireServerKey, sessionHref } from "@/utils/session-route"
-import { useSDK } from "@/context/sdk"
-import { useSync } from "@/context/sync"
-import { notifySessionTabsRemoved } from "@/components/titlebar-session-events"
-import { sessionTitle } from "@/utils/session-title"
-import { scheduleConnectedMeasure } from "./measure"
-import { createTimelineProjection } from "./projection"
-import { MessageComment, SummaryDiff, TimelineRow, TimelineRowMap } from "./rows"
-import { filterVirtualIndexes } from "./virtual-items"
+} from "@opencode-ai/sdk/v2";
+import { showToast } from "@/utils/toast";
+import { getDirectory, getFilename } from "@opencode-ai/core/util/path";
+import { Popover as KobaltePopover } from "@kobalte/core/popover";
+import { normalize } from "@opencode-ai/session-ui/session-diff";
+import { useFileComponent } from "@opencode-ai/ui/context/file";
+import { shouldMarkBoundaryGesture, normalizeWheelDelta } from "@/pages/session/message-gesture";
+import { SessionContextUsage } from "@/components/session-context-usage";
+import { useDialog } from "@opencode-ai/ui/context/dialog";
+import { useLanguage } from "@/context/language";
+import { useSessionKey } from "@/pages/session/session-layout";
+import { useServerSDK } from "@/context/server-sdk";
+import { usePlatform } from "@/context/platform";
+import { useSettings } from "@/context/settings";
+import { useTabs } from "@/context/tabs";
+import { legacySessionHref, requireServerKey, sessionHref } from "@/utils/session-route";
+import { useSDK } from "@/context/sdk";
+import { useSync } from "@/context/sync";
+import { notifySessionTabsRemoved } from "@/components/titlebar-session-events";
+import { sessionTitle } from "@/utils/session-title";
+import { scheduleConnectedMeasure } from "./measure";
+import { createTimelineProjection } from "./projection";
+import { MessageComment, SummaryDiff, TimelineRow, TimelineRowMap } from "./rows";
+import { filterVirtualIndexes } from "./virtual-items";
 
-const emptyMessages: MessageType[] = []
-const emptyParts: PartType[] = []
-const emptyTools: ToolPart[] = []
-const emptyAssistantMessages: AssistantMessage[] = []
-const idle = { type: "idle" as const }
+const emptyMessages: MessageType[] = [];
+const emptyParts: PartType[] = [];
+const emptyTools: ToolPart[] = [];
+const emptyAssistantMessages: AssistantMessage[] = [];
+const idle = { type: "idle" as const };
 
-type FramedTimelineRow = Exclude<TimelineRow.TimelineRow, { _tag: "TurnGap" }>
-type TimelineRowByTag<T extends TimelineRow.TimelineRow["_tag"]> = Extract<TimelineRow.TimelineRow, { _tag: T }>
+type FramedTimelineRow = Exclude<TimelineRow.TimelineRow, { _tag: "TurnGap" }>;
+type TimelineRowByTag<T extends TimelineRow.TimelineRow["_tag"]> = Extract<
+  TimelineRow.TimelineRow,
+  { _tag: T }
+>;
 
-const timelineFallbackItemSize = 60
-const timelineCache = new Map<string, { measurements: VirtualItem[]; toolOpen: Record<string, boolean | undefined> }>()
+const timelineFallbackItemSize = 60;
+const timelineCache = new Map<
+  string,
+  { measurements: VirtualItem[]; toolOpen: Record<string, boolean | undefined> }
+>();
 
 const taskDescription = (part: PartType, sessionID: string) => {
-  if (part.type !== "tool" || part.tool !== "task") return
-  const metadata = "metadata" in part.state ? part.state.metadata : undefined
-  if (metadata?.sessionId !== sessionID) return
-  const value = part.state.input?.description
-  if (typeof value === "string" && value) return value
-}
+  if (part.type !== "tool" || part.tool !== "task") return;
+  const metadata = "metadata" in part.state ? part.state.metadata : undefined;
+  if (metadata?.sessionId !== sessionID) return;
+  const value = part.state.input?.description;
+  if (typeof value === "string" && value) return value;
+};
 
 const boundaryTarget = (root: HTMLElement, target: EventTarget | null) => {
-  const current = target instanceof Element ? target : undefined
-  const nested = current?.closest("[data-scrollable]")
-  if (!nested || nested === root) return root
-  if (!(nested instanceof HTMLElement)) return root
-  return nested
-}
+  const current = target instanceof Element ? target : undefined;
+  const nested = current?.closest("[data-scrollable]");
+  if (!nested || nested === root) return root;
+  if (!(nested instanceof HTMLElement)) return root;
+  return nested;
+};
 
 const markBoundaryGesture = (input: {
-  root: HTMLDivElement
-  target: EventTarget | null
-  delta: number
-  onMarkScrollGesture: (target?: EventTarget | null) => void
+  root: HTMLDivElement;
+  target: EventTarget | null;
+  delta: number;
+  onMarkScrollGesture: (target?: EventTarget | null) => void;
 }) => {
-  const target = boundaryTarget(input.root, input.target)
+  const target = boundaryTarget(input.root, input.target);
   if (target === input.root) {
-    input.onMarkScrollGesture(input.root)
-    return
+    input.onMarkScrollGesture(input.root);
+    return;
   }
   if (
     shouldMarkBoundaryGesture({
@@ -123,34 +144,42 @@ const markBoundaryGesture = (input: {
       clientHeight: target.clientHeight,
     })
   ) {
-    input.onMarkScrollGesture(input.root)
+    input.onMarkScrollGesture(input.root);
   }
-}
+};
 
-function TimelineThinkingRow(props: { reasoningHeading?: string; showReasoningSummaries: boolean }) {
-  const language = useLanguage()
+function TimelineThinkingRow(props: {
+  reasoningHeading?: string;
+  showReasoningSummaries: boolean;
+}) {
+  const language = useLanguage();
 
   return (
     <div data-slot="session-turn-thinking">
       <TextShimmer text={language.t("ui.sessionTurn.status.thinking")} />
       <Show when={!props.showReasoningSummaries}>
-        <TextReveal text={props.reasoningHeading} class="session-turn-thinking-heading" travel={25} duration={700} />
+        <TextReveal
+          text={props.reasoningHeading}
+          class="session-turn-thinking-heading"
+          travel={25}
+          duration={700}
+        />
       </Show>
     </div>
-  )
+  );
 }
 
 function TimelineDiffSummaryRow(props: { diffs: SummaryDiff[] }) {
-  const language = useLanguage()
-  const maxFiles = 10
+  const language = useLanguage();
+  const maxFiles = 10;
   const [state, setState] = createStore({
     showAll: false,
     expanded: [] as string[],
-  })
-  const showAll = () => state.showAll
-  const expanded = () => state.expanded
-  const overflow = createMemo(() => Math.max(0, props.diffs.length - maxFiles))
-  const visible = createMemo(() => (showAll() ? props.diffs : props.diffs.slice(0, maxFiles)))
+  });
+  const showAll = () => state.showAll;
+  const expanded = () => state.expanded;
+  const overflow = createMemo(() => Math.max(0, props.diffs.length - maxFiles));
+  const visible = createMemo(() => (showAll() ? props.diffs : props.diffs.slice(0, maxFiles)));
 
   return (
     <div
@@ -165,8 +194,13 @@ function TimelineDiffSummaryRow(props: { diffs: SummaryDiff[] }) {
         </span>
         <DiffChanges changes={props.diffs} />
         <Show when={overflow() > 0}>
-          <span data-slot="session-turn-diffs-toggle" onClick={() => setState("showAll", !showAll())}>
-            {showAll() ? language.t("ui.sessionTurn.diffs.showLess") : language.t("ui.sessionTurn.diffs.showAll")}
+          <span
+            data-slot="session-turn-diffs-toggle"
+            onClick={() => setState("showAll", !showAll())}
+          >
+            {showAll()
+              ? language.t("ui.sessionTurn.diffs.showLess")
+              : language.t("ui.sessionTurn.diffs.showAll")}
           </span>
         </Show>
       </div>
@@ -175,11 +209,13 @@ function TimelineDiffSummaryRow(props: { diffs: SummaryDiff[] }) {
           multiple
           style={{ "--sticky-accordion-offset": "44px" }}
           value={expanded()}
-          onChange={(value) => setState("expanded", Array.isArray(value) ? value : value ? [value] : [])}
+          onChange={(value) =>
+            setState("expanded", Array.isArray(value) ? value : value ? [value] : [])
+          }
         >
           <For each={visible()}>
             {(diff) => {
-              const opened = createMemo(() => expanded().includes(diff.file))
+              const opened = createMemo(() => expanded().includes(diff.file));
 
               return (
                 <Accordion.Item value={diff.file}>
@@ -190,7 +226,9 @@ function TimelineDiffSummaryRow(props: { diffs: SummaryDiff[] }) {
                           <Show when={diff.file.includes("/")}>
                             <span data-slot="session-turn-diff-directory">{`\u202A${getDirectory(diff.file)}\u202C`}</span>
                           </Show>
-                          <span data-slot="session-turn-diff-filename">{getFilename(diff.file)}</span>
+                          <span data-slot="session-turn-diff-filename">
+                            {getFilename(diff.file)}
+                          </span>
                         </span>
                         <div data-slot="session-turn-diff-meta">
                           <span data-slot="session-turn-diff-changes">
@@ -209,7 +247,7 @@ function TimelineDiffSummaryRow(props: { diffs: SummaryDiff[] }) {
                     </Show>
                   </Accordion.Content>
                 </Accordion.Item>
-              )
+              );
             }}
           </For>
         </Accordion>
@@ -220,189 +258,200 @@ function TimelineDiffSummaryRow(props: { diffs: SummaryDiff[] }) {
         </Show>
       </div>
     </div>
-  )
+  );
 }
 
 function TimelineDiffView(props: { diff: SummaryDiff }) {
-  const fileComponent = useFileComponent()
-  const view = normalize(props.diff)
+  const fileComponent = useFileComponent();
+  const view = normalize(props.diff);
 
   return (
     <div data-slot="session-turn-diff-view" data-scrollable>
       <Dynamic component={fileComponent} mode="diff" virtualize={false} fileDiff={view.fileDiff} />
     </div>
-  )
+  );
 }
 
 export function MessageTimeline(props: {
-  actions?: UserActions
-  scroll: { overflow: boolean; bottom: boolean; jump: boolean }
-  onResumeScroll: () => void
-  setScrollRef: (el: HTMLDivElement | undefined) => void
-  onScheduleScrollState: (el: HTMLDivElement) => void
-  onAutoScrollHandleScroll: () => void
-  onMarkScrollGesture: (target?: EventTarget | null) => void
-  hasScrollGesture: () => boolean
-  onUserScroll: () => void
-  onHistoryScroll: () => void
-  onAutoScrollInteraction: (event: MouseEvent) => void
-  shouldAnchorBottom: () => boolean
-  centered: boolean
-  setContentRef: (el: HTMLDivElement) => void
-  userMessages: UserMessage[]
-  anchor: (id: string) => string
-  setRevealMessage?: (fn: (id: string) => void) => void
-  setScrollToEnd?: (fn: () => void) => void
-  setHistoryAnchor?: (handlers: { capture: () => void; restore: (done: boolean) => void }) => void
+  actions?: UserActions;
+  scroll: { overflow: boolean; bottom: boolean; jump: boolean };
+  onResumeScroll: () => void;
+  setScrollRef: (el: HTMLDivElement | undefined) => void;
+  onScheduleScrollState: (el: HTMLDivElement) => void;
+  onAutoScrollHandleScroll: () => void;
+  onMarkScrollGesture: (target?: EventTarget | null) => void;
+  hasScrollGesture: () => boolean;
+  onUserScroll: () => void;
+  onHistoryScroll: () => void;
+  onAutoScrollInteraction: (event: MouseEvent) => void;
+  shouldAnchorBottom: () => boolean;
+  centered: boolean;
+  setContentRef: (el: HTMLDivElement) => void;
+  userMessages: UserMessage[];
+  anchor: (id: string) => string;
+  setRevealMessage?: (fn: (id: string) => void) => void;
+  setScrollToEnd?: (fn: () => void) => void;
+  setHistoryAnchor?: (handlers: { capture: () => void; restore: (done: boolean) => void }) => void;
 }) {
-  let touchGesture: number | undefined
+  let touchGesture: number | undefined;
 
-  const navigate = useNavigate()
-  const serverSDK = useServerSDK()
-  const sdk = useSDK()
-  const sync = useSync()
-  const settings = useSettings()
-  const tabs = useTabs()
-  const dialog = useDialog()
-  const language = useLanguage()
-  const { params, sessionKey } = useSessionKey()
-  const ownerSessionKey = sessionKey()
-  const cached = timelineCache.get(ownerSessionKey)
-  const initialMeasurements = cached?.measurements
-  const coldBottomMount = !initialMeasurements?.length && props.shouldAnchorBottom()
-  const platform = usePlatform()
+  const navigate = useNavigate();
+  const serverSDK = useServerSDK();
+  const sdk = useSDK();
+  const sync = useSync();
+  const settings = useSettings();
+  const tabs = useTabs();
+  const dialog = useDialog();
+  const language = useLanguage();
+  const { params, sessionKey } = useSessionKey();
+  const ownerSessionKey = sessionKey();
+  const cached = timelineCache.get(ownerSessionKey);
+  const initialMeasurements = cached?.measurements;
+  const coldBottomMount = !initialMeasurements?.length && props.shouldAnchorBottom();
+  const platform = usePlatform();
 
-  const [listRoot, setListRoot] = createSignal<HTMLDivElement>()
-  const sessionID = createMemo(() => params.id)
+  const [listRoot, setListRoot] = createSignal<HTMLDivElement>();
+  const sessionID = createMemo(() => params.id);
   const sessionStatus = createMemo(() => {
-    const id = sessionID()
-    if (!id) return idle
-    return sync().data.session_status[id] ?? idle
-  })
-  const sessionMessages = createMemo(() => (sessionID() ? (sync().data.message[sessionID()!] ?? []) : []))
+    const id = sessionID();
+    if (!id) return idle;
+    return sync().data.session_status[id] ?? idle;
+  });
+  const sessionMessages = createMemo(() =>
+    sessionID() ? (sync().data.message[sessionID()!] ?? []) : [],
+  );
   const info = createMemo(() => {
-    const id = sessionID()
-    if (!id) return
-    return sync().session.get(id)
-  })
-  const titleValue = createMemo(() => info()?.title)
-  const titleLabel = createMemo(() => sessionTitle(titleValue()))
-  const shareUrl = createMemo(() => info()?.share?.url)
-  const shareEnabled = createMemo(() => sync().data.config.share !== "disabled")
-  const parentID = createMemo(() => info()?.parentID)
+    const id = sessionID();
+    if (!id) return;
+    return sync().session.get(id);
+  });
+  const titleValue = createMemo(() => info()?.title);
+  const titleLabel = createMemo(() => sessionTitle(titleValue()));
+  const shareUrl = createMemo(() => info()?.share?.url);
+  const shareEnabled = createMemo(() => sync().data.config.share !== "disabled");
+  const parentID = createMemo(() => info()?.parentID);
   const parent = createMemo(() => {
-    const id = parentID()
-    if (!id) return
-    return sync().session.get(id)
-  })
+    const id = parentID();
+    if (!id) return;
+    return sync().session.get(id);
+  });
   const parentMessages = createMemo(() => {
-    const id = parentID()
-    if (!id) return emptyMessages
-    return sync().data.message[id] ?? emptyMessages
-  })
-  const parentTitle = createMemo(() => sessionTitle(parent()?.title) ?? language.t("command.session.new"))
-  const getMsgParts = (msgId: string) => sync().data.part[msgId] ?? emptyParts
-  const getMsgPart = (messageID: string, partID: string) => getMsgParts(messageID).find((part) => part.id === partID)
+    const id = parentID();
+    if (!id) return emptyMessages;
+    return sync().data.message[id] ?? emptyMessages;
+  });
+  const parentTitle = createMemo(
+    () => sessionTitle(parent()?.title) ?? language.t("command.session.new"),
+  );
+  const getMsgParts = (msgId: string) => sync().data.part[msgId] ?? emptyParts;
+  const getMsgPart = (messageID: string, partID: string) =>
+    getMsgParts(messageID).find((part) => part.id === partID);
   const childTaskDescription = createMemo(() => {
-    const id = sessionID()
-    if (!id) return
+    const id = sessionID();
+    if (!id) return;
     return parentMessages()
       .flatMap((message) => getMsgParts(message.id))
       .map((part) => taskDescription(part, id))
-      .findLast((value): value is string => !!value)
-  })
+      .findLast((value): value is string => !!value);
+  });
   const childTitle = createMemo(() => {
-    if (!parentID()) return titleLabel() ?? ""
-    if (childTaskDescription()) return childTaskDescription()
-    const value = titleLabel()?.replace(/\s+\(@[^)]+ subagent\)$/, "")
-    if (value) return value
-    return language.t("command.session.new")
-  })
-  const showHeader = createMemo(() => !!(titleValue() || parentID()))
+    if (!parentID()) return titleLabel() ?? "";
+    if (childTaskDescription()) return childTaskDescription();
+    const value = titleLabel()?.replace(/\s+\(@[^)]+ subagent\)$/, "");
+    if (value) return value;
+    return language.t("command.session.new");
+  });
+  const showHeader = createMemo(() => !!(titleValue() || parentID()));
   const projection = createTimelineProjection({
     messages: sessionMessages,
     userMessages: () => props.userMessages,
     parts: getMsgParts,
     status: sessionStatus,
     showReasoningSummaries: settings.general.showReasoningSummaries,
-  })
-  const activeMessageID = projection.activeMessageID
-  const assistantMessagesByParent = projection.assistantMessagesByParent
-  const lastAssistantGroupKey = projection.lastAssistantGroupKey
-  const messageByID = projection.messageByID
-  const messageLastRowIndex = projection.messageLastRowIndex
-  const messageRowIndex = projection.messageRowIndex
-  const timelineRowByKey = projection.rowByKey
-  const timelineRows = projection.rows
+  });
+  const activeMessageID = projection.activeMessageID;
+  const assistantMessagesByParent = projection.assistantMessagesByParent;
+  const lastAssistantGroupKey = projection.lastAssistantGroupKey;
+  const messageByID = projection.messageByID;
+  const messageLastRowIndex = projection.messageLastRowIndex;
+  const messageRowIndex = projection.messageRowIndex;
+  const timelineRowByKey = projection.rowByKey;
+  const timelineRows = projection.rows;
 
-  let prependAnchor: { key: string; offset: number } | undefined
-  let prependAnchorFrame: number | undefined
-  let prependLoading = false
+  let prependAnchor: { key: string; offset: number } | undefined;
+  let prependAnchorFrame: number | undefined;
+  let prependLoading = false;
   const clearPrependAnchor = () => {
-    prependLoading = false
-    prependAnchor = undefined
-    if (prependAnchorFrame === undefined) return
-    cancelAnimationFrame(prependAnchorFrame)
-    prependAnchorFrame = undefined
-  }
+    prependLoading = false;
+    prependAnchor = undefined;
+    if (prependAnchorFrame === undefined) return;
+    cancelAnimationFrame(prependAnchorFrame);
+    prependAnchorFrame = undefined;
+  };
   const capturePrependAnchor = () => {
-    prependLoading = true
-    updatePrependAnchor()
-  }
+    prependLoading = true;
+    updatePrependAnchor();
+  };
   const updatePrependAnchor = () => {
-    const root = listRoot()
-    if (!root) return
-    const view = root.getBoundingClientRect()
+    const root = listRoot();
+    if (!root) return;
+    const view = root.getBoundingClientRect();
     const anchor = [...root.querySelectorAll<HTMLElement>("[data-timeline-key]")]
       .map((element) => ({ element, rect: element.getBoundingClientRect() }))
       .filter((item) => item.rect.bottom > view.top && item.rect.top < view.bottom)
-      .sort((a, b) => a.rect.top - b.rect.top)[0]
-    if (!anchor) return
-    if (!anchor.element.dataset.timelineKey) return
-    prependAnchor = { key: anchor.element.dataset.timelineKey, offset: anchor.rect.top - view.top }
-  }
+      .sort((a, b) => a.rect.top - b.rect.top)[0];
+    if (!anchor) return;
+    if (!anchor.element.dataset.timelineKey) return;
+    prependAnchor = { key: anchor.element.dataset.timelineKey, offset: anchor.rect.top - view.top };
+  };
   const restorePrependAnchor = (done: boolean) => {
-    if (done) prependLoading = false
-    applyPrependAnchor()
-  }
+    if (done) prependLoading = false;
+    applyPrependAnchor();
+  };
   const applyPrependAnchor = () => {
-    const root = listRoot()
-    if (!root || !prependAnchor) return
-    if (prependAnchorFrame !== undefined) cancelAnimationFrame(prependAnchorFrame)
-    let frames = 0
-    let stable = 0
+    const root = listRoot();
+    if (!root || !prependAnchor) return;
+    if (prependAnchorFrame !== undefined) cancelAnimationFrame(prependAnchorFrame);
+    let frames = 0;
+    let stable = 0;
     const apply = () => {
-      prependAnchorFrame = undefined
-      const anchor = prependAnchor
-      if (!anchor) return
-      const element = root.querySelector<HTMLElement>(`[data-timeline-key="${CSS.escape(anchor.key)}"]`)
+      prependAnchorFrame = undefined;
+      const anchor = prependAnchor;
+      if (!anchor) return;
+      const element = root.querySelector<HTMLElement>(
+        `[data-timeline-key="${CSS.escape(anchor.key)}"]`,
+      );
       const delta = element
         ? element.getBoundingClientRect().top - root.getBoundingClientRect().top - anchor.offset
-        : undefined
+        : undefined;
       if (delta !== undefined && Math.abs(delta) > 0.5) {
-        root.scrollTop += delta
-        stable = 0
+        root.scrollTop += delta;
+        stable = 0;
       } else {
-        stable += 1
+        stable += 1;
       }
-      frames += 1
+      frames += 1;
       if (stable >= 30 || frames >= 180) {
-        if (!prependLoading) prependAnchor = undefined
-        return
+        if (!prependLoading) prependAnchor = undefined;
+        return;
       }
-      prependAnchorFrame = requestAnimationFrame(apply)
-    }
-    prependAnchorFrame = requestAnimationFrame(apply)
-  }
+      prependAnchorFrame = requestAnimationFrame(apply);
+    };
+    prependAnchorFrame = requestAnimationFrame(apply);
+  };
 
-  const [toolOpen, setToolOpen] = createStore<Record<string, boolean | undefined>>(cached?.toolOpen ?? {})
-  const [renderOverscan, setRenderOverscan] = createSignal(initialMeasurements?.length || coldBottomMount ? 6 : 20)
-  let resizePinnedIndexes: number[] = []
-  let resizePinFrame: number | undefined
-  let virtualContent: HTMLDivElement | undefined
+  const [toolOpen, setToolOpen] = createStore<Record<string, boolean | undefined>>(
+    cached?.toolOpen ?? {},
+  );
+  const [renderOverscan, setRenderOverscan] = createSignal(
+    initialMeasurements?.length || coldBottomMount ? 6 : 20,
+  );
+  let resizePinnedIndexes: number[] = [];
+  let resizePinFrame: number | undefined;
+  let virtualContent: HTMLDivElement | undefined;
   const virtualizer = createVirtualizer<HTMLDivElement, HTMLDivElement>({
     get count() {
-      return timelineRows().length
+      return timelineRows().length;
     },
     getScrollElement: () => listRoot() ?? null,
     initialOffset: () => (props.shouldAnchorBottom() ? Number.MAX_SAFE_INTEGER : 0),
@@ -410,132 +459,139 @@ export function MessageTimeline(props: {
     estimateSize: () => timelineFallbackItemSize,
     scrollToFn: (offset, options, instance) => {
       // Expose the computed range before core writes an anchor correction so the browser does not clamp it to the old height.
-      if (virtualContent) virtualContent.style.height = `${instance.getTotalSize()}px`
-      elementScroll(offset, options, instance)
+      if (virtualContent) virtualContent.style.height = `${instance.getTotalSize()}px`;
+      elementScroll(offset, options, instance);
     },
     get getItemKey() {
-      const rows = timelineRows()
+      const rows = timelineRows();
       return (index: number) => {
-        const row = rows[index]
+        const row = rows[index];
         // ResizeObserver can report a removed element after its row has left the projection.
-        if (!row) return `removed:${index}`
-        return TimelineRow.key(row)
-      }
+        if (!row) return `removed:${index}`;
+        return TimelineRow.key(row);
+      };
     },
     anchorTo: "end",
     followOnAppend: true,
     scrollEndThreshold: 80,
     get scrollMargin() {
-      return showHeader() ? 64 : 0
+      return showHeader() ? 64 : 0;
     },
     overscan: 50,
     paddingEnd: 64,
     rangeExtractor: (range) => {
-      const id = activeMessageID()
-      const active = id ? (messageLastRowIndex().get(id) ?? -1) : -1
-      const indexes = defaultRangeExtractor({ ...range, overscan: renderOverscan() })
+      const id = activeMessageID();
+      const active = id ? (messageLastRowIndex().get(id) ?? -1) : -1;
+      const indexes = defaultRangeExtractor({ ...range, overscan: renderOverscan() });
       return filterVirtualIndexes(
-        [...new Set([...resizePinnedIndexes, ...indexes, ...(active < 0 ? [] : [active])])].sort((a, b) => a - b),
+        [...new Set([...resizePinnedIndexes, ...indexes, ...(active < 0 ? [] : [active])])].sort(
+          (a, b) => a - b,
+        ),
         range.count,
-      )
+      );
     },
-  })
-  const resizeItem = virtualizer.resizeItem
-  let resizeAnchorScheduled = false
+  });
+  const resizeItem = virtualizer.resizeItem;
+  let resizeAnchorScheduled = false;
   const anchorResizedBottom = () => {
-    if (resizeAnchorScheduled || props.hasScrollGesture()) return
-    resizeAnchorScheduled = true
+    if (resizeAnchorScheduled || props.hasScrollGesture()) return;
+    resizeAnchorScheduled = true;
     queueMicrotask(() => {
-      resizeAnchorScheduled = false
-      if (!props.shouldAnchorBottom() || props.hasScrollGesture()) return
-      virtualizer.scrollToEnd()
-    })
-  }
+      resizeAnchorScheduled = false;
+      if (!props.shouldAnchorBottom() || props.hasScrollGesture()) return;
+      virtualizer.scrollToEnd();
+    });
+  };
   virtualizer.resizeItem = (index, size) => {
-    const item = virtualizer.measurementsCache[index]
-    const previous = item ? (virtualizer.itemSizeCache.get(item.key) ?? item.size) : undefined
-    const root = listRoot()
+    const item = virtualizer.measurementsCache[index];
+    const previous = item ? (virtualizer.itemSizeCache.get(item.key) ?? item.size) : undefined;
+    const root = listRoot();
     if (root && previous !== undefined && Math.abs(size - previous) > root.clientHeight) {
-      const view = root.getBoundingClientRect()
+      const view = root.getBoundingClientRect();
       resizePinnedIndexes = [...root.querySelectorAll<HTMLElement>("[data-index]")]
         .filter((element) => {
-          const rect = element.getBoundingClientRect()
-          return rect.bottom > view.top && rect.top < view.bottom
+          const rect = element.getBoundingClientRect();
+          return rect.bottom > view.top && rect.top < view.bottom;
         })
-        .map((element) => Number(element.dataset.index))
-      if (resizePinFrame !== undefined) cancelAnimationFrame(resizePinFrame)
+        .map((element) => Number(element.dataset.index));
+      if (resizePinFrame !== undefined) cancelAnimationFrame(resizePinFrame);
       resizePinFrame = requestAnimationFrame(() => {
         resizePinFrame = requestAnimationFrame(() => {
-          resizePinFrame = undefined
-          resizePinnedIndexes = []
-        })
-      })
+          resizePinFrame = undefined;
+          resizePinnedIndexes = [];
+        });
+      });
     }
-    resizeItem(index, size)
-    if (root && props.shouldAnchorBottom()) anchorResizedBottom()
-  }
+    resizeItem(index, size);
+    if (root && props.shouldAnchorBottom()) anchorResizedBottom();
+  };
   virtualizer.shouldAdjustScrollPositionOnItemSizeChange = (item) => {
-    if (props.shouldAnchorBottom()) return false
-    const first = virtualizer.range?.startIndex
-    return first !== undefined && item.index < first
-  }
+    if (props.shouldAnchorBottom()) return false;
+    const first = virtualizer.range?.startIndex;
+    return first !== undefined && item.index < first;
+  };
   const virtualItemByKey = createMemo(
     () => new Map(virtualizer.getVirtualItems().map((item) => [item.key, item] as const)),
-  )
-  const virtualRowKeys = createMemo(() => virtualizer.getVirtualItems().map((item) => item.key as string))
+  );
+  const virtualRowKeys = createMemo(() =>
+    virtualizer.getVirtualItems().map((item) => item.key as string),
+  );
   createEffect(() => {
     props.setRevealMessage?.((id) => {
-      const index = messageRowIndex().get(id)
-      if (index === undefined) return
-      virtualizer.scrollToIndex(index, { align: "center" })
-    })
-    props.setScrollToEnd?.(() => virtualizer.scrollToEnd())
-    props.setHistoryAnchor?.({ capture: capturePrependAnchor, restore: restorePrependAnchor })
-  })
+      const index = messageRowIndex().get(id);
+      if (index === undefined) return;
+      virtualizer.scrollToIndex(index, { align: "center" });
+    });
+    props.setScrollToEnd?.(() => virtualizer.scrollToEnd());
+    props.setHistoryAnchor?.({ capture: capturePrependAnchor, restore: restorePrependAnchor });
+  });
 
-  let overscanFrame: number | undefined
+  let overscanFrame: number | undefined;
   onMount(() => {
     overscanFrame = requestAnimationFrame(() => {
-      if (props.shouldAnchorBottom()) virtualizer.scrollToEnd()
+      if (props.shouldAnchorBottom()) virtualizer.scrollToEnd();
       overscanFrame = requestAnimationFrame(() => {
-        overscanFrame = undefined
-        if (renderOverscan() < 20) setRenderOverscan(20)
-        if (props.shouldAnchorBottom()) virtualizer.scrollToEnd()
-      })
-    })
-  })
+        overscanFrame = undefined;
+        if (renderOverscan() < 20) setRenderOverscan(20);
+        if (props.shouldAnchorBottom()) virtualizer.scrollToEnd();
+      });
+    });
+  });
 
   const maybeAnchorBottom = () => {
-    if (timelineRows().length === 0) return
-    if (!props.shouldAnchorBottom() || props.hasScrollGesture()) return
-    if (resizePinFrame !== undefined) cancelAnimationFrame(resizePinFrame)
-    clearPrependAnchor()
-    if (prependAnchorFrame !== undefined) cancelAnimationFrame(prependAnchorFrame)
-    virtualizer.scrollToEnd()
-  }
+    if (timelineRows().length === 0) return;
+    if (!props.shouldAnchorBottom() || props.hasScrollGesture()) return;
+    if (resizePinFrame !== undefined) cancelAnimationFrame(resizePinFrame);
+    clearPrependAnchor();
+    if (prependAnchorFrame !== undefined) cancelAnimationFrame(prependAnchorFrame);
+    virtualizer.scrollToEnd();
+  };
 
-  let measuredSessionKey = sessionKey()
+  let measuredSessionKey = sessionKey();
   createEffect(() => {
-    const key = sessionKey()
-    timelineRows().length
+    const key = sessionKey();
+    timelineRows().length;
     if (measuredSessionKey !== key) {
-      measuredSessionKey = key
-      virtualizer.measure()
+      measuredSessionKey = key;
+      virtualizer.measure();
     }
-    maybeAnchorBottom()
-  })
+    maybeAnchorBottom();
+  });
 
   onCleanup(() => {
-    clearPrependAnchor()
-    timelineCache.delete(ownerSessionKey)
-    timelineCache.set(ownerSessionKey, { measurements: virtualizer.takeSnapshot(), toolOpen: { ...toolOpen } })
-    while (timelineCache.size > 16) timelineCache.delete(timelineCache.keys().next().value!)
-    if (resizePinFrame !== undefined) cancelAnimationFrame(resizePinFrame)
-    if (overscanFrame !== undefined) cancelAnimationFrame(overscanFrame)
-    props.setRevealMessage?.(() => {})
-    props.setScrollToEnd?.(() => {})
-    props.setHistoryAnchor?.({ capture: () => {}, restore: () => {} })
-  })
+    clearPrependAnchor();
+    timelineCache.delete(ownerSessionKey);
+    timelineCache.set(ownerSessionKey, {
+      measurements: virtualizer.takeSnapshot(),
+      toolOpen: { ...toolOpen },
+    });
+    while (timelineCache.size > 16) timelineCache.delete(timelineCache.keys().next().value!);
+    if (resizePinFrame !== undefined) cancelAnimationFrame(resizePinFrame);
+    if (overscanFrame !== undefined) cancelAnimationFrame(overscanFrame);
+    props.setRevealMessage?.(() => {});
+    props.setScrollToEnd?.(() => {});
+    props.setHistoryAnchor?.({ capture: () => {}, restore: () => {} });
+  });
 
   const [title, setTitle] = createStore({
     draft: "",
@@ -543,116 +599,121 @@ export function MessageTimeline(props: {
     menuOpen: false,
     pendingRename: false,
     pendingShare: false,
-  })
-  let titleRef: HTMLInputElement | undefined
+  });
+  let titleRef: HTMLInputElement | undefined;
 
   const [share, setShare] = createStore({
     open: false,
     dismiss: null as "escape" | "outside" | null,
-  })
-  let more: HTMLButtonElement | undefined
+  });
+  let more: HTMLButtonElement | undefined;
 
   const bindListRoot = (root: HTMLDivElement) => {
-    if (root === listRoot()) return
-    setListRoot(root)
-    props.setScrollRef(root)
-  }
+    if (root === listRoot()) return;
+    setListRoot(root);
+    props.setScrollRef(root);
+  };
 
   const handleListWheel = (event: WheelEvent & { currentTarget: HTMLDivElement }) => {
-    if (!prependLoading) clearPrependAnchor()
-    const root = event.currentTarget
+    if (!prependLoading) clearPrependAnchor();
+    const root = event.currentTarget;
     const delta = normalizeWheelDelta({
       deltaY: event.deltaY,
       deltaMode: event.deltaMode,
       rootHeight: root.clientHeight,
-    })
-    if (!delta) return
-    markBoundaryGesture({ root, target: event.target, delta, onMarkScrollGesture: props.onMarkScrollGesture })
-  }
+    });
+    if (!delta) return;
+    markBoundaryGesture({
+      root,
+      target: event.target,
+      delta,
+      onMarkScrollGesture: props.onMarkScrollGesture,
+    });
+  };
 
   const handleListTouchStart = (event: TouchEvent) => {
-    if (!prependLoading) clearPrependAnchor()
-    touchGesture = event.touches[0]?.clientY
-  }
+    if (!prependLoading) clearPrependAnchor();
+    touchGesture = event.touches[0]?.clientY;
+  };
 
   const handleListTouchMove = (event: TouchEvent & { currentTarget: HTMLDivElement }) => {
-    const next = event.touches[0]?.clientY
-    const prev = touchGesture
-    touchGesture = next
-    if (next === undefined || prev === undefined) return
+    const next = event.touches[0]?.clientY;
+    const prev = touchGesture;
+    touchGesture = next;
+    if (next === undefined || prev === undefined) return;
 
-    const delta = prev - next
-    if (!delta) return
+    const delta = prev - next;
+    if (!delta) return;
 
     markBoundaryGesture({
       root: event.currentTarget,
       target: event.target,
       delta,
       onMarkScrollGesture: props.onMarkScrollGesture,
-    })
-  }
+    });
+  };
 
   const handleListTouchEnd = () => {
-    touchGesture = undefined
-  }
+    touchGesture = undefined;
+  };
 
   const handleListPointerDown = (event: PointerEvent & { currentTarget: HTMLDivElement }) => {
-    if (!prependLoading) clearPrependAnchor()
-    if (event.target !== event.currentTarget) return
-    props.onMarkScrollGesture(event.currentTarget)
-  }
+    if (!prependLoading) clearPrependAnchor();
+    if (event.target !== event.currentTarget) return;
+    props.onMarkScrollGesture(event.currentTarget);
+  };
 
   const handleListKeyDown = (event: KeyboardEvent & { currentTarget: HTMLDivElement }) => {
-    const key = scrollKey(event)
-    if (!key) return
-    if (!isScrollKeyTarget(event.target, key)) return
-    if (scrollKeyOwner(event.currentTarget, event.target, key) !== event.currentTarget) return
-    if (!prependLoading) clearPrependAnchor()
-    props.onMarkScrollGesture(event.currentTarget)
-  }
+    const key = scrollKey(event);
+    if (!key) return;
+    if (!isScrollKeyTarget(event.target, key)) return;
+    if (scrollKeyOwner(event.currentTarget, event.target, key) !== event.currentTarget) return;
+    if (!prependLoading) clearPrependAnchor();
+    props.onMarkScrollGesture(event.currentTarget);
+  };
 
   const handleListScroll = (event: Event & { currentTarget: HTMLDivElement }) => {
-    if (prependLoading) updatePrependAnchor()
-    props.onScheduleScrollState(event.currentTarget)
-    props.onHistoryScroll()
-    if (!props.hasScrollGesture()) return
-    props.onUserScroll()
-    props.onAutoScrollHandleScroll()
-    props.onMarkScrollGesture(event.currentTarget)
-  }
+    if (prependLoading) updatePrependAnchor();
+    props.onScheduleScrollState(event.currentTarget);
+    props.onHistoryScroll();
+    if (!props.hasScrollGesture()) return;
+    props.onUserScroll();
+    props.onAutoScrollHandleScroll();
+    props.onMarkScrollGesture(event.currentTarget);
+  };
 
   onCleanup(() => {
-    props.setScrollRef(undefined)
-  })
+    props.setScrollRef(undefined);
+  });
 
   const viewShare = () => {
-    const url = shareUrl()
-    if (!url) return
-    platform.openLink(url)
-  }
+    const url = shareUrl();
+    if (!url) return;
+    platform.openLink(url);
+  };
 
   const errorMessage = (err: unknown) => {
     if (err && typeof err === "object" && "data" in err) {
-      const data = (err as { data?: { message?: string } }).data
-      if (data?.message) return data.message
+      const data = (err as { data?: { message?: string } }).data;
+      if (data?.message) return data.message;
     }
-    if (err instanceof Error) return err.message
-    return language.t("common.requestFailed")
-  }
+    if (err instanceof Error) return err.message;
+    return language.t("common.requestFailed");
+  };
 
   const shareMutation = useMutation(() => ({
     mutationFn: (id: string) => serverSDK().client.session.share({ sessionID: id }),
     onError: (err) => {
-      console.error("Failed to share session", err)
+      console.error("Failed to share session", err);
     },
-  }))
+  }));
 
   const unshareMutation = useMutation(() => ({
     mutationFn: (id: string) => serverSDK().client.session.unshare({ sessionID: id }),
     onError: (err) => {
-      console.error("Failed to unshare session", err)
+      console.error("Failed to unshare session", err);
     },
-  }))
+  }));
 
   const titleMutation = useMutation(() => ({
     mutationFn: (input: { id: string; title: string }) =>
@@ -660,36 +721,36 @@ export function MessageTimeline(props: {
     onSuccess: (_, input) => {
       sync().set(
         produce((draft) => {
-          const index = draft.session.findIndex((s) => s.id === input.id)
-          if (index !== -1) draft.session[index].title = input.title
+          const index = draft.session.findIndex((s) => s.id === input.id);
+          if (index !== -1) draft.session[index].title = input.title;
         }),
-      )
-      setTitle("editing", false)
+      );
+      setTitle("editing", false);
     },
     onError: (err) => {
       showToast({
         title: language.t("common.requestFailed"),
         description: errorMessage(err),
-      })
+      });
     },
-  }))
+  }));
 
   const shareSession = () => {
-    const id = sessionID()
-    if (!id || shareMutation.isPending) return
-    if (!shareEnabled()) return
-    shareMutation.mutate(id)
-  }
+    const id = sessionID();
+    if (!id || shareMutation.isPending) return;
+    if (!shareEnabled()) return;
+    shareMutation.mutate(id);
+  };
 
   const unshareSession = () => {
-    const id = sessionID()
-    if (!id || unshareMutation.isPending) return
-    if (!shareEnabled()) return
-    unshareMutation.mutate(id)
-  }
+    const id = sessionID();
+    if (!id || unshareMutation.isPending) return;
+    if (!shareEnabled()) return;
+    unshareMutation.mutate(id);
+  };
   const copyShareUrl = () => {
-    const url = shareUrl()
-    if (!url) return
+    const url = shareUrl();
+    if (!url) return;
     void navigator.clipboard
       .writeText(url)
       .then(() =>
@@ -705,16 +766,16 @@ export function MessageTimeline(props: {
           title: language.t("common.requestFailed"),
           description: errorMessage(err),
         }),
-      )
-  }
+      );
+  };
   const selectShareUrlText: JSX.EventHandler<HTMLDivElement, MouseEvent> = (event) => {
-    const selection = window.getSelection()
-    if (!selection) return
-    const range = document.createRange()
-    range.selectNodeContents(event.currentTarget)
-    selection.removeAllRanges()
-    selection.addRange(range)
-  }
+    const selection = window.getSelection();
+    if (!selection) return;
+    const range = document.createRange();
+    range.selectNodeContents(event.currentTarget);
+    selection.removeAllRanges();
+    selection.addRange(range);
+  };
 
   createEffect(
     on(
@@ -729,104 +790,110 @@ export function MessageTimeline(props: {
         }),
       { defer: true },
     ),
-  )
+  );
 
   createEffect(
     on(
       () => [parentID(), childTaskDescription()] as const,
       ([id, description]) => {
-        if (!id || description) return
-        if (sync().data.message[id] !== undefined) return
-        void sync().session.sync(id)
+        if (!id || description) return;
+        if (sync().data.message[id] !== undefined) return;
+        void sync().session.sync(id);
       },
       { defer: true },
     ),
-  )
+  );
 
   const openTitleEditor = () => {
-    if (!sessionID() || parentID()) return
-    setTitle({ editing: true, draft: titleLabel() ?? "" })
+    if (!sessionID() || parentID()) return;
+    setTitle({ editing: true, draft: titleLabel() ?? "" });
     requestAnimationFrame(() => {
-      if (!titleRef) return
-      titleRef.focus()
-      titleRef.select()
-    })
-  }
+      if (!titleRef) return;
+      titleRef.focus();
+      titleRef.select();
+    });
+  };
 
   const closeTitleEditor = () => {
-    if (titleMutation.isPending) return
-    setTitle("editing", false)
-  }
+    if (titleMutation.isPending) return;
+    setTitle("editing", false);
+  };
 
   const saveTitleEditor = () => {
-    const id = sessionID()
-    if (!id) return
-    if (titleMutation.isPending) return
+    const id = sessionID();
+    if (!id) return;
+    if (titleMutation.isPending) return;
 
-    const next = title.draft.trim()
+    const next = title.draft.trim();
     if (!next || next === (titleLabel() ?? "")) {
-      setTitle("editing", false)
-      return
+      setTitle("editing", false);
+      return;
     }
 
-    titleMutation.mutate({ id, title: next })
-  }
+    titleMutation.mutate({ id, title: next });
+  };
 
-  const navigateAfterSessionRemoval = (sessionID: string, parentID?: string, nextSessionID?: string) => {
-    if (params.id !== sessionID) return
+  const navigateAfterSessionRemoval = (
+    sessionID: string,
+    parentID?: string,
+    nextSessionID?: string,
+  ) => {
+    if (params.id !== sessionID) return;
     const href = (id: string) =>
-      params.serverKey ? sessionHref(requireServerKey(params.serverKey), id) : legacySessionHref(sdk().directory, id)
+      params.serverKey
+        ? sessionHref(requireServerKey(params.serverKey), id)
+        : legacySessionHref(sdk().directory, id);
     if (parentID) {
-      navigate(href(parentID))
-      return
+      navigate(href(parentID));
+      return;
     }
     if (nextSessionID) {
-      navigate(href(nextSessionID))
-      return
+      navigate(href(nextSessionID));
+      return;
     }
     if (params.serverKey) {
-      tabs.newDraft({ server: requireServerKey(params.serverKey), directory: sdk().directory })
-      return
+      tabs.newDraft({ server: requireServerKey(params.serverKey), directory: sdk().directory });
+      return;
     }
-    navigate(`/${params.dir}/session`)
-  }
+    navigate(`/${params.dir}/session`);
+  };
 
   const archiveSession = async (sessionID: string) => {
-    const session = sync().session.get(sessionID)
-    if (!session) return
+    const session = sync().session.get(sessionID);
+    if (!session) return;
 
-    const sessions = sync().data.session ?? []
-    const index = sessions.findIndex((s) => s.id === sessionID)
-    const nextSession = index === -1 ? undefined : (sessions[index + 1] ?? sessions[index - 1])
+    const sessions = sync().data.session ?? [];
+    const index = sessions.findIndex((s) => s.id === sessionID);
+    const nextSession = index === -1 ? undefined : (sessions[index + 1] ?? sessions[index - 1]);
 
     await sdk()
       .client.session.update({ sessionID, time: { archived: Date.now() } })
       .then(() => {
         sync().set(
           produce((draft) => {
-            const index = draft.session.findIndex((s) => s.id === sessionID)
-            if (index !== -1) draft.session.splice(index, 1)
+            const index = draft.session.findIndex((s) => s.id === sessionID);
+            if (index !== -1) draft.session.splice(index, 1);
           }),
-        )
-        sync().session.evict(sessionID)
-        navigateAfterSessionRemoval(sessionID, session.parentID, nextSession?.id)
-        notifySessionTabsRemoved({ directory: sdk().directory, sessionIDs: [sessionID] })
+        );
+        sync().session.evict(sessionID);
+        navigateAfterSessionRemoval(sessionID, session.parentID, nextSession?.id);
+        notifySessionTabsRemoved({ directory: sdk().directory, sessionIDs: [sessionID] });
       })
       .catch((err) => {
         showToast({
           title: language.t("common.requestFailed"),
           description: errorMessage(err),
-        })
-      })
-  }
+        });
+      });
+  };
 
   const deleteSession = async (sessionID: string) => {
-    const session = sync().session.get(sessionID)
-    if (!session) return false
+    const session = sync().session.get(sessionID);
+    if (!session) return false;
 
-    const sessions = (sync().data.session ?? []).filter((s) => !s.parentID && !s.time?.archived)
-    const index = sessions.findIndex((s) => s.id === sessionID)
-    const nextSession = index === -1 ? undefined : (sessions[index + 1] ?? sessions[index - 1])
+    const sessions = (sync().data.session ?? []).filter((s) => !s.parentID && !s.time?.archived);
+    const index = sessions.findIndex((s) => s.id === sessionID);
+    const nextSession = index === -1 ? undefined : (sessions[index + 1] ?? sessions[index - 1]);
 
     const result = await sdk()
       .client.session.delete({ sessionID })
@@ -835,71 +902,75 @@ export function MessageTimeline(props: {
         showToast({
           title: language.t("session.delete.failed.title"),
           description: errorMessage(err),
-        })
-        return false
-      })
+        });
+        return false;
+      });
 
-    if (!result) return false
+    if (!result) return false;
 
-    const removed = new Set<string>([sessionID])
-    const byParent = new Map<string, string[]>()
+    const removed = new Set<string>([sessionID]);
+    const byParent = new Map<string, string[]>();
     for (const item of sync().data.session) {
-      const parentID = item.parentID
-      if (!parentID) continue
-      const existing = byParent.get(parentID)
+      const parentID = item.parentID;
+      if (!parentID) continue;
+      const existing = byParent.get(parentID);
       if (existing) {
-        existing.push(item.id)
-        continue
+        existing.push(item.id);
+        continue;
       }
-      byParent.set(parentID, [item.id])
+      byParent.set(parentID, [item.id]);
     }
 
-    const stack = [sessionID]
+    const stack = [sessionID];
     while (stack.length) {
-      const parentID = stack.pop()
-      if (!parentID) continue
+      const parentID = stack.pop();
+      if (!parentID) continue;
 
-      const children = byParent.get(parentID)
-      if (!children) continue
+      const children = byParent.get(parentID);
+      if (!children) continue;
 
       for (const child of children) {
-        if (removed.has(child)) continue
-        removed.add(child)
-        stack.push(child)
+        if (removed.has(child)) continue;
+        removed.add(child);
+        stack.push(child);
       }
     }
 
-    navigateAfterSessionRemoval(sessionID, session.parentID, nextSession?.id)
+    navigateAfterSessionRemoval(sessionID, session.parentID, nextSession?.id);
 
     sync().set(
       produce((draft) => {
-        draft.session = draft.session.filter((s) => !removed.has(s.id))
+        draft.session = draft.session.filter((s) => !removed.has(s.id));
       }),
-    )
+    );
 
     for (const id of removed) {
-      sync().session.evict(id)
+      sync().session.evict(id);
     }
-    notifySessionTabsRemoved({ directory: sdk().directory, sessionIDs: [...removed] })
-    return true
-  }
+    notifySessionTabsRemoved({ directory: sdk().directory, sessionIDs: [...removed] });
+    return true;
+  };
 
   const navigateParent = () => {
-    const id = parentID()
-    if (!id) return
+    const id = parentID();
+    if (!id) return;
     navigate(
-      params.serverKey ? sessionHref(requireServerKey(params.serverKey), id) : legacySessionHref(sdk().directory, id),
-    )
-  }
+      params.serverKey
+        ? sessionHref(requireServerKey(params.serverKey), id)
+        : legacySessionHref(sdk().directory, id),
+    );
+  };
 
   function DialogDeleteSession(props: { sessionID: string }) {
     const name = createMemo(
-      () => sessionTitle(sync().session.get(props.sessionID)?.title) ?? language.t("command.session.new"),
-    )
+      () =>
+        sessionTitle(sync().session.get(props.sessionID)?.title) ??
+        language.t("command.session.new"),
+    );
     const handleDelete = async () => {
-      await deleteSession(props.sessionID)
-      dialog.close()
-    }
+      await deleteSession(props.sessionID);
+      dialog.close();
+    };
 
     if (settings.general.newLayoutDesigns())
       return (
@@ -919,7 +990,7 @@ export function MessageTimeline(props: {
             </ButtonV2>
           </DialogFooter>
         </DialogV2>
-      )
+      );
 
     return (
       <Dialog title={language.t("session.delete.title")} fit>
@@ -939,58 +1010,61 @@ export function MessageTimeline(props: {
           </div>
         </div>
       </Dialog>
-    )
+    );
   }
 
-  const workingTurn = (userMessageID: string) => sessionStatus().type !== "idle" && activeMessageID() === userMessageID
+  const workingTurn = (userMessageID: string) =>
+    sessionStatus().type !== "idle" && activeMessageID() === userMessageID;
 
   const turnDurationMs = (userMessageID: string) => {
-    const message = messageByID().get(userMessageID)
-    if (!message || message.role !== "user") return
-    const end = (assistantMessagesByParent().get(userMessageID) ?? emptyAssistantMessages).reduce<number | undefined>(
-      (max, item) => {
-        const completed = item.time.completed
-        if (typeof completed !== "number") return max
-        if (max === undefined) return completed
-        return Math.max(max, completed)
-      },
-      undefined,
-    )
-    if (typeof end !== "number") return
-    if (end < message.time.created) return
-    return end - message.time.created
-  }
+    const message = messageByID().get(userMessageID);
+    if (!message || message.role !== "user") return;
+    const end = (assistantMessagesByParent().get(userMessageID) ?? emptyAssistantMessages).reduce<
+      number | undefined
+    >((max, item) => {
+      const completed = item.time.completed;
+      if (typeof completed !== "number") return max;
+      if (max === undefined) return completed;
+      return Math.max(max, completed);
+    }, undefined);
+    if (typeof end !== "number") return;
+    if (end < message.time.created) return;
+    return end - message.time.created;
+  };
 
   const assistantCopyPartID = (userMessageID: string) => {
-    if (workingTurn(userMessageID)) return null
-    const messages = assistantMessagesByParent().get(userMessageID) ?? emptyAssistantMessages
+    if (workingTurn(userMessageID)) return null;
+    const messages = assistantMessagesByParent().get(userMessageID) ?? emptyAssistantMessages;
 
     for (let i = messages.length - 1; i >= 0; i--) {
-      const message = messages[i]
-      if (!message) continue
+      const message = messages[i];
+      if (!message) continue;
 
-      const parts = getMsgParts(message.id)
+      const parts = getMsgParts(message.id);
       for (let j = parts.length - 1; j >= 0; j--) {
-        const part = parts[j]
-        if (!part || part.type !== "text" || !part.text?.trim()) continue
-        return part.id
+        const part = parts[j];
+        if (!part || part.type !== "text" || !part.text?.trim()) continue;
+        return part.id;
       }
     }
-  }
+  };
 
-  const renderAssistantPartGroup = (row: Accessor<TimelineRowMap["AssistantPart"]>, onSizeChange?: () => void) => {
+  const renderAssistantPartGroup = (
+    row: Accessor<TimelineRowMap["AssistantPart"]>,
+    onSizeChange?: () => void,
+  ) => {
     if (row().group.type === "context") {
       const parts = createMemo(() => {
-        const group = row().group
-        if (group.type !== "context") return emptyTools
+        const group = row().group;
+        if (group.type !== "context") return emptyTools;
         return group.refs
           .map((ref) => getMsgPart(ref.messageID, ref.partID))
-          .filter((part): part is ToolPart => part?.type === "tool")
-      })
-      const contextOpenKey = () => `context:${row().group.key}`
+          .filter((part): part is ToolPart => part?.type === "tool");
+      });
+      const contextOpenKey = () => `context:${row().group.key}`;
       const open = createMemo(() => {
-        return toolOpen[contextOpenKey()] === true
-      })
+        return toolOpen[contextOpenKey()] === true;
+      });
 
       return (
         <ContextToolGroup
@@ -998,28 +1072,33 @@ export function MessageTimeline(props: {
           open={open()}
           onOpenChange={(value) => setToolOpen(contextOpenKey(), value)}
           busy={
-            workingTurn(row().userMessageID) && lastAssistantGroupKey().get(row().userMessageID) === row().group.key
+            workingTurn(row().userMessageID) &&
+            lastAssistantGroupKey().get(row().userMessageID) === row().group.key
           }
           onSizeChange={onSizeChange}
         />
-      )
+      );
     }
 
     const message = createMemo(() => {
-      const group = row().group
-      if (group.type !== "part") return
-      return messageByID().get(group.ref.messageID)
-    })
+      const group = row().group;
+      if (group.type !== "part") return;
+      return messageByID().get(group.ref.messageID);
+    });
     const part = createMemo(() => {
-      const group = row().group
-      if (group.type !== "part") return
-      return getMsgPart(group.ref.messageID, group.ref.partID)
-    })
+      const group = row().group;
+      if (group.type !== "part") return;
+      return getMsgPart(group.ref.messageID, group.ref.partID);
+    });
     const defaultOpen = createMemo(() => {
-      const item = part()
-      if (!item) return
-      return partDefaultOpen(item, settings.general.shellToolPartsExpanded(), settings.general.editToolPartsExpanded())
-    })
+      const item = part();
+      if (!item) return;
+      return partDefaultOpen(
+        item,
+        settings.general.shellToolPartsExpanded(),
+        settings.general.editToolPartsExpanded(),
+      );
+    });
 
     return (
       <Show when={message()}>
@@ -1043,18 +1122,18 @@ export function MessageTimeline(props: {
           </Show>
         )}
       </Show>
-    )
-  }
+    );
+  };
 
   function TimelineRowFrame(input: { row: Accessor<FramedTimelineRow>; children: JSX.Element }) {
     const anchor = () => {
-      const row = input.row()
-      return row._tag === "CommentStrip" || (row._tag === "UserMessage" && row.anchor)
-    }
+      const row = input.row();
+      return row._tag === "CommentStrip" || (row._tag === "UserMessage" && row.anchor);
+    };
     const previousAssistantPart = () => {
-      const row = input.row()
-      return row._tag === "AssistantPart" && row.previousAssistantPart
-    }
+      const row = input.row();
+      return row._tag === "AssistantPart" && row.previousAssistantPart;
+    };
 
     return (
       <div
@@ -1068,22 +1147,28 @@ export function MessageTimeline(props: {
           "pt-3": previousAssistantPart(),
         }}
       >
-        <div data-component="session-turn" class="min-w-0 w-full relative" style={{ height: "auto" }}>
+        <div
+          data-component="session-turn"
+          class="min-w-0 w-full relative"
+          style={{ height: "auto" }}
+        >
           {input.children}
         </div>
       </div>
-    )
+    );
   }
 
   const renderTimelineRow = (row: Accessor<TimelineRow.TimelineRow>, onSizeChange?: () => void) => {
     switch (row()._tag) {
       case "TurnGap":
-        return <div data-timeline-row="TurnGap" aria-hidden="true" class="h-6" />
+        return <div data-timeline-row="TurnGap" aria-hidden="true" class="h-6" />;
       case "CommentStrip": {
-        const commentStripRow = row as Accessor<TimelineRowByTag<"CommentStrip">>
+        const commentStripRow = row as Accessor<TimelineRowByTag<"CommentStrip">>;
         const comments = createMemo(() =>
-          getMsgParts(commentStripRow().userMessageID).flatMap((part) => MessageComment.fromPart(part) ?? []),
-        )
+          getMsgParts(commentStripRow().userMessageID).flatMap(
+            (part) => MessageComment.fromPart(part) ?? [],
+          ),
+        );
         return (
           <TimelineRowFrame row={commentStripRow}>
             <div class="w-full px-4 md:px-5 pb-2">
@@ -1099,7 +1184,10 @@ export function MessageTimeline(props: {
                         }}
                       >
                         <div class="flex items-center gap-1.5 min-w-0 text-11-medium text-text-strong">
-                          <FileIcon node={{ path: comment().path, type: "file" }} class="size-3.5 shrink-0" />
+                          <FileIcon
+                            node={{ path: comment().path, type: "file" }}
+                            class="size-3.5 shrink-0"
+                          />
                           <span class="truncate">{getFilename(comment().path)}</span>
                           <Show when={comment().selection}>
                             {(selection) => (
@@ -1121,14 +1209,14 @@ export function MessageTimeline(props: {
               </div>
             </div>
           </TimelineRowFrame>
-        )
+        );
       }
       case "UserMessage": {
-        const userMessageRow = row as Accessor<TimelineRowByTag<"UserMessage">>
+        const userMessageRow = row as Accessor<TimelineRowByTag<"UserMessage">>;
         const message = createMemo(() => {
-          const m = messageByID().get(userMessageRow().userMessageID)
-          if (m?.role === "user") return m
-        })
+          const m = messageByID().get(userMessageRow().userMessageID);
+          if (m?.role === "user") return m;
+        });
         return (
           <TimelineRowFrame row={userMessageRow}>
             <Show when={message()}>
@@ -1146,26 +1234,28 @@ export function MessageTimeline(props: {
               )}
             </Show>
           </TimelineRowFrame>
-        )
+        );
       }
       case "TurnDivider": {
-        const turnDividerRow = row as Accessor<TimelineRowByTag<"TurnDivider">>
+        const turnDividerRow = row as Accessor<TimelineRowByTag<"TurnDivider">>;
         return (
           <TimelineRowFrame row={turnDividerRow}>
             <div data-slot="session-turn-message-container" class="w-full px-4 md:px-5">
               <div data-slot="session-turn-compaction">
                 <MessageDivider
                   label={language.t(
-                    turnDividerRow().label === "compaction" ? "ui.messagePart.compaction" : "ui.message.interrupted",
+                    turnDividerRow().label === "compaction"
+                      ? "ui.messagePart.compaction"
+                      : "ui.message.interrupted",
                   )}
                 />
               </div>
             </div>
           </TimelineRowFrame>
-        )
+        );
       }
       case "AssistantPart": {
-        const assistantPartRow = row as Accessor<TimelineRowByTag<"AssistantPart">>
+        const assistantPartRow = row as Accessor<TimelineRowByTag<"AssistantPart">>;
         return (
           <TimelineRowFrame row={assistantPartRow}>
             <div data-slot="session-turn-message-container" class="w-full px-4 md:px-5">
@@ -1177,10 +1267,10 @@ export function MessageTimeline(props: {
               </div>
             </div>
           </TimelineRowFrame>
-        )
+        );
       }
       case "Thinking": {
-        const thinkingRow = row as Accessor<TimelineRowByTag<"Thinking">>
+        const thinkingRow = row as Accessor<TimelineRowByTag<"Thinking">>;
         return (
           <TimelineRowFrame row={thinkingRow}>
             <div data-slot="session-turn-message-container" class="w-full px-4 md:px-5">
@@ -1190,30 +1280,33 @@ export function MessageTimeline(props: {
               />
             </div>
           </TimelineRowFrame>
-        )
+        );
       }
       case "Retry": {
-        const retryRow = row as Accessor<TimelineRowByTag<"Retry">>
+        const retryRow = row as Accessor<TimelineRowByTag<"Retry">>;
         return (
           <TimelineRowFrame row={retryRow}>
             <div data-slot="session-turn-message-container" class="w-full px-4 md:px-5">
-              <SessionRetry status={sessionStatus()} show={activeMessageID() === retryRow().userMessageID} />
+              <SessionRetry
+                status={sessionStatus()}
+                show={activeMessageID() === retryRow().userMessageID}
+              />
             </div>
           </TimelineRowFrame>
-        )
+        );
       }
       case "DiffSummary": {
-        const diffSummaryRow = row as Accessor<TimelineRowByTag<"DiffSummary">>
+        const diffSummaryRow = row as Accessor<TimelineRowByTag<"DiffSummary">>;
         return (
           <TimelineRowFrame row={diffSummaryRow}>
             <div data-slot="session-turn-message-container" class="w-full px-4 md:px-5">
               <TimelineDiffSummaryRow diffs={diffSummaryRow().diffs} />
             </div>
           </TimelineRowFrame>
-        )
+        );
       }
       case "Error": {
-        const errorRow = row as Accessor<TimelineRowByTag<"Error">>
+        const errorRow = row as Accessor<TimelineRowByTag<"Error">>;
         return (
           <TimelineRowFrame row={errorRow}>
             <div data-slot="session-turn-message-container" class="w-full px-4 md:px-5">
@@ -1222,45 +1315,47 @@ export function MessageTimeline(props: {
               </Card>
             </div>
           </TimelineRowFrame>
-        )
+        );
       }
     }
-  }
+  };
 
   function TimelineRowView(props: { row: TimelineRow.TimelineRow; onSizeChange?: () => void }) {
-    return renderTimelineRow(() => props.row, props.onSizeChange)
+    return renderTimelineRow(() => props.row, props.onSizeChange);
   }
 
   function VirtualTimelineRow(props: { rowKey: string }) {
-    let element: HTMLDivElement
-    const initialItem = virtualItemByKey().get(props.rowKey)!
-    const initialRow = timelineRowByKey().get(props.rowKey)!
-    const item = createMemo(() => virtualItemByKey().get(props.rowKey) ?? initialItem)
-    const row = createMemo(() => timelineRowByKey().get(props.rowKey) ?? initialRow)
+    let element: HTMLDivElement;
+    const initialItem = virtualItemByKey().get(props.rowKey)!;
+    const initialRow = timelineRowByKey().get(props.rowKey)!;
+    const item = createMemo(() => virtualItemByKey().get(props.rowKey) ?? initialItem);
+    const row = createMemo(() => timelineRowByKey().get(props.rowKey) ?? initialRow);
     const asyncFile = () => {
-      const value = row()
-      if (value._tag !== "AssistantPart" || value.group.type !== "part") return false
-      const part = getMsgPart(value.group.ref.messageID, value.group.ref.partID)
-      return part?.type === "tool" && ["edit", "write", "apply_patch"].includes(part.tool)
-    }
-    const [ready, setReady] = createSignal(initialItem.size <= timelineFallbackItemSize || !asyncFile())
-    let contentMeasureFrame: number | undefined
+      const value = row();
+      if (value._tag !== "AssistantPart" || value.group.type !== "part") return false;
+      const part = getMsgPart(value.group.ref.messageID, value.group.ref.partID);
+      return part?.type === "tool" && ["edit", "write", "apply_patch"].includes(part.tool);
+    };
+    const [ready, setReady] = createSignal(
+      initialItem.size <= timelineFallbackItemSize || !asyncFile(),
+    );
+    let contentMeasureFrame: number | undefined;
 
-    onMount(() => virtualizer.measureElement(element))
+    onMount(() => virtualizer.measureElement(element));
 
     createEffect(
       on(
         () => item().index,
         () => {
-          virtualizer.measureElement(element)
+          virtualizer.measureElement(element);
         },
         { defer: true },
       ),
-    )
+    );
 
     onCleanup(() => {
-      if (contentMeasureFrame !== undefined) cancelAnimationFrame(contentMeasureFrame)
-    })
+      if (contentMeasureFrame !== undefined) cancelAnimationFrame(contentMeasureFrame);
+    });
 
     return (
       <div
@@ -1276,7 +1371,7 @@ export function MessageTimeline(props: {
       >
         <div
           ref={(value) => {
-            element = value
+            element = value;
           }}
           data-index={item().index}
           style={{ "min-height": ready() ? undefined : `${initialItem.size}px` }}
@@ -1284,14 +1379,14 @@ export function MessageTimeline(props: {
           <TimelineRowView
             row={row()}
             onSizeChange={() => {
-              setReady(true)
-              if (contentMeasureFrame !== undefined) cancelAnimationFrame(contentMeasureFrame)
-              contentMeasureFrame = scheduleConnectedMeasure(element, virtualizer.measureElement)
+              setReady(true);
+              if (contentMeasureFrame !== undefined) cancelAnimationFrame(contentMeasureFrame);
+              contentMeasureFrame = scheduleConnectedMeasure(element, virtualizer.measureElement);
             }}
           />
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -1302,9 +1397,12 @@ export function MessageTimeline(props: {
           "bottom-8": settings.general.newLayoutDesigns(),
           "bottom-6": !settings.general.newLayoutDesigns(),
           "opacity-100 translate-y-0 scale-100": props.scroll.overflow && props.scroll.jump,
-          "opacity-0 translate-y-2 pointer-events-none": !props.scroll.overflow || !props.scroll.jump,
-          "scale-[0.8]": (!props.scroll.overflow || !props.scroll.jump) && settings.general.newLayoutDesigns(),
-          "scale-95": (!props.scroll.overflow || !props.scroll.jump) && !settings.general.newLayoutDesigns(),
+          "opacity-0 translate-y-2 pointer-events-none":
+            !props.scroll.overflow || !props.scroll.jump,
+          "scale-[0.8]":
+            (!props.scroll.overflow || !props.scroll.jump) && settings.general.newLayoutDesigns(),
+          "scale-95":
+            (!props.scroll.overflow || !props.scroll.jump) && !settings.general.newLayoutDesigns(),
         }}
       >
         <Show
@@ -1378,7 +1476,8 @@ export function MessageTimeline(props: {
               "pr-3": true,
               "pl-2": settings.general.newLayoutDesigns(),
               "pl-2 md:pl-4": !settings.general.newLayoutDesigns(),
-              "md:max-w-200 md:mx-auto 2xl:max-w-[1000px]": props.centered && !settings.general.newLayoutDesigns(),
+              "md:max-w-200 md:mx-auto 2xl:max-w-[1000px]":
+                props.centered && !settings.general.newLayoutDesigns(),
             }}
           >
             <div class="h-12 w-full flex items-center justify-between gap-2">
@@ -1426,14 +1525,15 @@ export function MessageTimeline(props: {
                     >
                       <InlineInput
                         ref={(el) => {
-                          titleRef = el
+                          titleRef = el;
                         }}
                         data-slot="session-title-child"
                         value={title.draft}
                         disabled={titleMutation.isPending}
                         classList={{
                           "block text-[13px] font-[530] leading-4 tracking-[-0.04px] text-v2-text-text-base": true,
-                          "w-full flex-1 grow-1 min-w-0 pl-1 -ml-1 rounded-[6px]": !settings.general.newLayoutDesigns(),
+                          "w-full flex-1 grow-1 min-w-0 pl-1 -ml-1 rounded-[6px]":
+                            !settings.general.newLayoutDesigns(),
                           "field-sizing-content self-start rounded-[6px] px-2 py-1 ":
                             settings.general.newLayoutDesigns(),
                         }}
@@ -1444,15 +1544,15 @@ export function MessageTimeline(props: {
                         }}
                         onInput={(event) => setTitle("draft", event.currentTarget.value)}
                         onKeyDown={(event) => {
-                          event.stopPropagation()
+                          event.stopPropagation();
                           if (event.key === "Enter") {
-                            event.preventDefault()
-                            void saveTitleEditor()
-                            return
+                            event.preventDefault();
+                            void saveTitleEditor();
+                            return;
                           }
                           if (event.key === "Escape") {
-                            event.preventDefault()
-                            closeTitleEditor()
+                            event.preventDefault();
+                            closeTitleEditor();
                           }
                         }}
                         onBlur={closeTitleEditor}
@@ -1483,8 +1583,8 @@ export function MessageTimeline(props: {
                             placement="bottom-end"
                             open={title.menuOpen}
                             onOpenChange={(open) => {
-                              setTitle("menuOpen", open)
-                              if (open) return
+                              setTitle("menuOpen", open);
+                              if (open) return;
                             }}
                           >
                             <DropdownMenu.Trigger
@@ -1498,7 +1598,7 @@ export function MessageTimeline(props: {
                               aria-label={language.t("common.moreOptions")}
                               aria-expanded={title.menuOpen || share.open || title.pendingShare}
                               ref={(el: HTMLButtonElement) => {
-                                more = el
+                                more = el;
                               }}
                             />
                             <DropdownMenu.Portal>
@@ -1506,32 +1606,34 @@ export function MessageTimeline(props: {
                                 style={{ "min-width": "104px" }}
                                 onCloseAutoFocus={(event) => {
                                   if (title.pendingRename) {
-                                    event.preventDefault()
-                                    setTitle("pendingRename", false)
-                                    openTitleEditor()
-                                    return
+                                    event.preventDefault();
+                                    setTitle("pendingRename", false);
+                                    openTitleEditor();
+                                    return;
                                   }
                                   if (title.pendingShare) {
-                                    event.preventDefault()
+                                    event.preventDefault();
                                     requestAnimationFrame(() => {
-                                      setShare({ open: true, dismiss: null })
-                                      setTitle("pendingShare", false)
-                                    })
+                                      setShare({ open: true, dismiss: null });
+                                      setTitle("pendingShare", false);
+                                    });
                                   }
                                 }}
                               >
                                 <DropdownMenu.Item
                                   onSelect={() => {
-                                    setTitle("pendingRename", true)
-                                    setTitle("menuOpen", false)
+                                    setTitle("pendingRename", true);
+                                    setTitle("menuOpen", false);
                                   }}
                                 >
-                                  <DropdownMenu.ItemLabel>{language.t("common.rename")}</DropdownMenu.ItemLabel>
+                                  <DropdownMenu.ItemLabel>
+                                    {language.t("common.rename")}
+                                  </DropdownMenu.ItemLabel>
                                 </DropdownMenu.Item>
                                 <Show when={shareEnabled()}>
                                   <DropdownMenu.Item
                                     onSelect={() => {
-                                      setTitle({ pendingShare: true, menuOpen: false })
+                                      setTitle({ pendingShare: true, menuOpen: false });
                                     }}
                                   >
                                     <DropdownMenu.ItemLabel>
@@ -1540,13 +1642,19 @@ export function MessageTimeline(props: {
                                   </DropdownMenu.Item>
                                 </Show>
                                 <DropdownMenu.Item onSelect={() => void archiveSession(id)}>
-                                  <DropdownMenu.ItemLabel>{language.t("common.archive")}</DropdownMenu.ItemLabel>
+                                  <DropdownMenu.ItemLabel>
+                                    {language.t("common.archive")}
+                                  </DropdownMenu.ItemLabel>
                                 </DropdownMenu.Item>
                                 <DropdownMenu.Separator />
                                 <DropdownMenu.Item
-                                  onSelect={() => dialog.show(() => <DialogDeleteSession sessionID={id} />)}
+                                  onSelect={() =>
+                                    dialog.show(() => <DialogDeleteSession sessionID={id} />)
+                                  }
                                 >
-                                  <DropdownMenu.ItemLabel>{language.t("common.delete")}</DropdownMenu.ItemLabel>
+                                  <DropdownMenu.ItemLabel>
+                                    {language.t("common.delete")}
+                                  </DropdownMenu.ItemLabel>
                                 </DropdownMenu.Item>
                               </DropdownMenu.Content>
                             </DropdownMenu.Portal>
@@ -1558,8 +1666,8 @@ export function MessageTimeline(props: {
                           placement="bottom-end"
                           open={title.menuOpen}
                           onOpenChange={(open) => {
-                            setTitle("menuOpen", open)
-                            if (open) return
+                            setTitle("menuOpen", open);
+                            if (open) return;
                           }}
                         >
                           <MenuV2.Trigger
@@ -1571,7 +1679,7 @@ export function MessageTimeline(props: {
                             aria-label={language.t("common.moreOptions")}
                             aria-expanded={title.menuOpen || share.open || title.pendingShare}
                             ref={(el: HTMLButtonElement) => {
-                              more = el
+                              more = el;
                             }}
                           />
                           <MenuV2.Portal>
@@ -1579,24 +1687,24 @@ export function MessageTimeline(props: {
                               style={{ width: "120px", "min-width": "120px" }}
                               onCloseAutoFocus={(event) => {
                                 if (title.pendingRename) {
-                                  event.preventDefault()
-                                  setTitle("pendingRename", false)
-                                  openTitleEditor()
-                                  return
+                                  event.preventDefault();
+                                  setTitle("pendingRename", false);
+                                  openTitleEditor();
+                                  return;
                                 }
                                 if (title.pendingShare) {
-                                  event.preventDefault()
+                                  event.preventDefault();
                                   requestAnimationFrame(() => {
-                                    setShare({ open: true, dismiss: null })
-                                    setTitle("pendingShare", false)
-                                  })
+                                    setShare({ open: true, dismiss: null });
+                                    setTitle("pendingShare", false);
+                                  });
                                 }
                               }}
                             >
                               <MenuV2.Item
                                 onSelect={() => {
-                                  setTitle("pendingRename", true)
-                                  setTitle("menuOpen", false)
+                                  setTitle("pendingRename", true);
+                                  setTitle("menuOpen", false);
                                 }}
                               >
                                 {language.t("common.rename")}
@@ -1604,7 +1712,7 @@ export function MessageTimeline(props: {
                               <Show when={shareEnabled()}>
                                 <MenuV2.Item
                                   onSelect={() => {
-                                    setTitle({ pendingShare: true, menuOpen: false })
+                                    setTitle({ pendingShare: true, menuOpen: false });
                                   }}
                                 >
                                   {language.t("session.share.action.share")}...
@@ -1614,7 +1722,11 @@ export function MessageTimeline(props: {
                                 {language.t("common.archive")}
                               </MenuV2.Item>
                               <MenuV2.Separator />
-                              <MenuV2.Item onSelect={() => dialog.show(() => <DialogDeleteSession sessionID={id} />)}>
+                              <MenuV2.Item
+                                onSelect={() =>
+                                  dialog.show(() => <DialogDeleteSession sessionID={id} />)
+                                }
+                              >
                                 {language.t("common.delete")}...
                               </MenuV2.Item>
                             </MenuV2.Content>
@@ -1629,8 +1741,8 @@ export function MessageTimeline(props: {
                         gutter={settings.general.newLayoutDesigns() ? 6 : 4}
                         modal={false}
                         onOpenChange={(open) => {
-                          if (open) setShare("dismiss", null)
-                          setShare("open", open)
+                          if (open) setShare("dismiss", null);
+                          setShare("open", open);
                         }}
                       >
                         <KobaltePopover.Portal>
@@ -1642,19 +1754,19 @@ export function MessageTimeline(props: {
                             }}
                             style={{ "min-width": "320px" }}
                             onEscapeKeyDown={(event) => {
-                              setShare({ dismiss: "escape", open: false })
-                              event.preventDefault()
-                              event.stopPropagation()
+                              setShare({ dismiss: "escape", open: false });
+                              event.preventDefault();
+                              event.stopPropagation();
                             }}
                             onPointerDownOutside={() => {
-                              setShare({ dismiss: "outside", open: false })
+                              setShare({ dismiss: "outside", open: false });
                             }}
                             onFocusOutside={() => {
-                              setShare({ dismiss: "outside", open: false })
+                              setShare({ dismiss: "outside", open: false });
                             }}
                             onCloseAutoFocus={(event) => {
-                              if (share.dismiss === "outside") event.preventDefault()
-                              setShare("dismiss", null)
+                              if (share.dismiss === "outside") event.preventDefault();
+                              setShare("dismiss", null);
                             }}
                           >
                             <Show
@@ -1812,8 +1924,8 @@ export function MessageTimeline(props: {
         <div
           data-timeline-virtual-content
           ref={(element) => {
-            virtualContent = element
-            props.setContentRef(element)
+            virtualContent = element;
+            props.setContentRef(element);
           }}
           style={{
             height: `${virtualizer.getTotalSize()}px`,
@@ -1833,5 +1945,5 @@ export function MessageTimeline(props: {
         </div>
       </ScrollView>
     </div>
-  )
+  );
 }

@@ -4,10 +4,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 
-import {
-  applyRtkCompression,
-  stripCode,
-} from "../../../open-sse/services/compression/index.ts";
+import { applyRtkCompression, stripCode } from "../../../open-sse/services/compression/index.ts";
 import { rtkConfigSchema } from "../../../src/shared/validation/compressionConfigSchemas.ts";
 import { DEFAULT_RTK_CONFIG } from "../../../open-sse/services/compression/types.ts";
 
@@ -117,7 +114,7 @@ describe("RTK strip-code-comments — config persistence", () => {
   it("accepts stripCodeComments / preserveDocstrings on the write schema", () => {
     assert.equal(
       rtkConfigSchema.safeParse({ stripCodeComments: true, preserveDocstrings: false }).success,
-      true
+      true,
     );
   });
 

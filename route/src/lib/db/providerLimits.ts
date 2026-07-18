@@ -90,32 +90,32 @@ export function getAllProviderLimitsCache(): Record<string, ProviderLimitsCacheE
 
 export function setProviderLimitsCache(
   connectionId: string,
-  entry: ProviderLimitsCacheEntry
+  entry: ProviderLimitsCacheEntry,
 ): ProviderLimitsCacheEntry {
   if (isBuildPhase || isCloud) return entry;
   const db = getDbInstance() as unknown as DbLike;
   db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     PROVIDER_LIMITS_CACHE_NAMESPACE,
     connectionId,
-    JSON.stringify(entry)
+    JSON.stringify(entry),
   );
   return entry;
 }
 
 export function setProviderLimitsCacheBatch(
-  entries: Array<{ connectionId: string; entry: ProviderLimitsCacheEntry }>
+  entries: Array<{ connectionId: string; entry: ProviderLimitsCacheEntry }>,
 ): number {
   if (isBuildPhase || isCloud || entries.length === 0) return 0;
   const db = getDbInstance() as unknown as DbLike;
   const insert = db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)",
   );
   const tx = db.transaction(
     (items: Array<{ connectionId: string; entry: ProviderLimitsCacheEntry }>) => {
       for (const item of items) {
         insert.run(PROVIDER_LIMITS_CACHE_NAMESPACE, item.connectionId, JSON.stringify(item.entry));
       }
-    }
+    },
   );
   tx(entries);
   return entries.length;
@@ -126,6 +126,6 @@ export function deleteProviderLimitsCache(connectionId: string): void {
   const db = getDbInstance() as unknown as DbLike;
   db.prepare("DELETE FROM key_value WHERE namespace = ? AND key = ?").run(
     PROVIDER_LIMITS_CACHE_NAMESPACE,
-    connectionId
+    connectionId,
   );
 }

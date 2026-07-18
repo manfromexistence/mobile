@@ -13,7 +13,7 @@ describe("CodeBuddyCnExecutor reasoning params are opt-in (#2071)", () => {
       "glm-5.2",
       { messages: [{ role: "user", content: "hi" }] },
       false,
-      {}
+      {},
     ) as Record<string, unknown>;
     assert.equal(out.reasoning_effort, undefined);
     assert.equal(out.reasoning_summary, undefined);
@@ -24,7 +24,7 @@ describe("CodeBuddyCnExecutor reasoning params are opt-in (#2071)", () => {
       "glm-5.2",
       { messages: [{ role: "user", content: "hi" }], reasoning_effort: "high" },
       false,
-      {}
+      {},
     ) as Record<string, unknown>;
     assert.equal(out.reasoning_effort, "high");
     assert.equal(out.reasoning_summary, "auto");
@@ -35,7 +35,7 @@ describe("CodeBuddyCnExecutor reasoning params are opt-in (#2071)", () => {
       "glm-5.2",
       { messages: [{ role: "user", content: "hi" }], reasoning_effort: "none" },
       false,
-      {}
+      {},
     ) as Record<string, unknown>;
     assert.equal(out.reasoning_effort, undefined);
     assert.equal(out.reasoning_summary, undefined);

@@ -208,7 +208,7 @@ export function runDocsSymbolsCheck(opts = {}) {
     parts.push(
       `[check-docs-symbols] ${stale.length} entrada(s) obsoleta(s) na allowlist ` +
         `— a violação foi corrigida; REMOVA a entrada para travar a correção:\n` +
-        stale.map((e) => `  ✗ ${e}`).join("\n")
+        stale.map((e) => `  ✗ ${e}`).join("\n"),
     );
   }
   if (misses.length) {
@@ -217,7 +217,7 @@ export function runDocsSymbolsCheck(opts = {}) {
         misses.map((m) => "  ✗ " + m).join("\n") +
         `\n  → crie o route.ts, corrija o path na doc, ou (se for upstream/placeholder)` +
         ` adicione um padrão a IGNORE com justificativa. NÃO adicione à allowlist sem` +
-        ` confirmar que é drift pré-existente real.`
+        ` confirmar que é drift pré-existente real.`,
     );
   }
   if (parts.length) {

@@ -20,8 +20,9 @@ const {
 
 const { getCircuitBreaker, STATE } = await import("../../src/shared/utils/circuitBreaker.ts");
 const { clearProviderFailure } = await import("../../open-sse/services/accountFallback.ts");
-const { getDefaultTaskModelMap, resetTaskRoutingStats, setTaskRoutingConfig } =
-  await import("../../open-sse/services/taskAwareRouter.ts");
+const { getDefaultTaskModelMap, resetTaskRoutingStats, setTaskRoutingConfig } = await import(
+  "../../open-sse/services/taskAwareRouter.ts"
+);
 
 function buildOpenAIStreamResponse(text = "streamed from openai") {
   return new Response(
@@ -38,7 +39,7 @@ function buildOpenAIStreamResponse(text = "streamed from openai") {
     {
       status: 200,
       headers: { "Content-Type": "text/event-stream" },
-    }
+    },
   );
 }
 
@@ -82,7 +83,7 @@ test("handleChat returns 400 for malformed JSON payloads", async () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: "{bad-json",
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -104,7 +105,7 @@ test("handleChat rejects suspicious prompt-injection payloads before routing", a
           },
         ],
       },
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -130,7 +131,7 @@ test("handleChat redacts PII before sending the upstream request", async () => {
         stream: false,
         messages: [{ role: "user", content: "Email me at dev@example.com" }],
       },
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -152,7 +153,7 @@ test("handleChat treats a pure Accept: text/event-stream as stream=true and retu
         model: "openai/gpt-4.1",
         messages: [{ role: "user", content: "stream please" }],
       },
-    })
+    }),
   );
 
   const raw = await response.text();
@@ -175,7 +176,7 @@ test("handleChat returns JSON (not SSE) for the OpenAI/Vercel SDK non-stream sig
         model: "openai/gpt-4.1",
         messages: [{ role: "user", content: "no stream field" }],
       },
-    })
+    }),
   );
 
   const json = (await response.json()) as any;
@@ -191,7 +192,7 @@ test("handleChat rejects requests without a model", async () => {
         stream: false,
         messages: [{ role: "user", content: "No model" }],
       },
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -224,7 +225,7 @@ test("handleChat applies task-aware routing when a semantic override is enabled"
         stream: false,
         messages: [{ role: "user", content: "Write code to sort this array" }],
       },
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -259,7 +260,7 @@ test("handleChat routes exact combo names and can recover via global fallback", 
     }
     assert.equal(
       headers["x-api-key"] ?? headers.Authorization ?? headers.authorization,
-      "sk-claude-global-fallback"
+      "sk-claude-global-fallback",
     );
     return buildClaudeResponse("Global fallback answered");
   };
@@ -271,7 +272,7 @@ test("handleChat routes exact combo names and can recover via global fallback", 
         stream: false,
         messages: [{ role: "user", content: "Use combo fallback" }],
       },
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -312,7 +313,7 @@ test("handleChat keeps the combo error when the global fallback throws", async (
         stream: false,
         messages: [{ role: "user", content: "Use combo fallback but force a throw" }],
       },
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -333,7 +334,7 @@ test("handleChat returns 404 when no provider credentials exist", async () => {
         stream: false,
         messages: [{ role: "user", content: "Hello" }],
       },
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -354,7 +355,7 @@ test("handleChat returns 503 for cooled-down connections and 503 for open circui
         stream: false,
         messages: [{ role: "user", content: "cooldown" }],
       },
-    })
+    }),
   );
   const cooldownJson = (await cooldownResponse.json()) as any;
   assert.equal(cooldownResponse.status, 503);
@@ -373,7 +374,7 @@ test("handleChat returns 503 for cooled-down connections and 503 for open circui
         stream: false,
         messages: [{ role: "user", content: "breaker open" }],
       },
-    })
+    }),
   );
   const breakerJson = (await breakerBlocked.json()) as any;
 
@@ -399,7 +400,7 @@ test("handleChat maps upstream timeouts to HTTP 504", async () => {
         stream: false,
         messages: [{ role: "user", content: "timeout" }],
       },
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -436,7 +437,7 @@ test("handleChat uses the emergency fallback model on budget exhaustion", async 
         max_tokens: 9000,
         messages: [{ role: "user", content: "budget exhausted" }],
       },
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -482,7 +483,7 @@ test("handleChat returns the primary budget error when emergency fallback also f
         stream: false,
         messages: [{ role: "user", content: "budget exhausted again" }],
       },
-    })
+    }),
   );
   const json = (await response.json()) as any;
 
@@ -509,7 +510,7 @@ test("handleChat rejects models that are not allowed by the caller API key polic
         stream: false,
         messages: [{ role: "user", content: "policy reject" }],
       },
-    })
+    }),
   );
   const json = (await response.json()) as any;
 

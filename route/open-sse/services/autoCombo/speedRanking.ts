@@ -146,7 +146,7 @@ function toBoundedRate(value: number | null | undefined): number {
 function poolMax<T>(
   values: ReadonlyArray<T>,
   readMetric: (value: T) => number | null,
-  floor = 1
+  floor = 1,
 ): number {
   let max = floor;
   for (const value of values) {
@@ -163,7 +163,7 @@ function poolMax<T>(
 function poolMaxHigherBetter<T>(
   values: ReadonlyArray<T>,
   readMetric: (value: T) => number | null,
-  floor = 0.000_001
+  floor = 0.000_001,
 ): number {
   let max = floor;
   for (const value of values) {
@@ -208,17 +208,17 @@ function speedPoolMaxima(pool: ReadonlyArray<SpeedCandidate>) {
 function speedFactorsFor(
   candidate: SpeedCandidate,
   maxima: ReturnType<typeof speedPoolMaxima>,
-  failureRate: number
+  failureRate: number,
 ): SpeedFactors {
   return {
     ttft: lowerIsBetter(
       positiveFinite(candidate.avgTtftMs) ?? positiveFinite(candidate.p95LatencyMs),
-      maxima.ttft
+      maxima.ttft,
     ),
     tps: higherIsBetter(positiveFinite(candidate.avgTokensPerSecond), maxima.tps),
     e2e: lowerIsBetter(
       positiveFinite(candidate.avgE2ELatencyMs) ?? positiveFinite(candidate.p95LatencyMs),
-      maxima.e2e
+      maxima.e2e,
     ),
     p95: lowerIsBetter(positiveFinite(candidate.p95LatencyMs), maxima.p95),
     health: healthScoreFor(candidate.circuitBreakerState),
@@ -242,10 +242,16 @@ function weightedSpeedScore(factors: SpeedFactors, weights: SpeedRankingWeights)
 function applySpeedPenalties(weightedSum: number, factors: SpeedFactors): number {
   const reliabilityMultiplier = Math.max(0.05, Math.pow(0.25 + 0.75 * factors.reliability, 2));
   const stabilityMultiplier = Math.max(0.05, Math.pow(0.25 + 0.75 * factors.stability, 2));
-  return clamp01(weightedSum * reliabilityMultiplier * stabilityMultiplier * Math.max(0.25, factors.health));
+  return clamp01(
+    weightedSum * reliabilityMultiplier * stabilityMultiplier * Math.max(0.25, factors.health),
+  );
 }
 
-function speedReason(candidate: SpeedCandidate, factors: SpeedFactors, metrics: SpeedRankedCandidate["metrics"]): string {
+function speedReason(
+  candidate: SpeedCandidate,
+  factors: SpeedFactors,
+  metrics: SpeedRankedCandidate["metrics"],
+): string {
   const reasonParts = [
     `ttft=${metrics.avgTtftMs == null ? "n/a" : `${Math.round(metrics.avgTtftMs)}ms`}`,
     `tps=${metrics.avgTokensPerSecond == null ? "n/a" : metrics.avgTokensPerSecond.toFixed(1)}`,
@@ -274,7 +280,7 @@ function speedReason(candidate: SpeedCandidate, factors: SpeedFactors, metrics: 
 export function rankBySpeed(
   candidates: ReadonlyArray<SpeedCandidate>,
   weights: SpeedRankingWeights = DEFAULT_SPEED_WEIGHTS,
-  options: { includeUnhealthy?: boolean } = {}
+  options: { includeUnhealthy?: boolean } = {},
 ): SpeedRankedCandidate[] {
   if (candidates.length === 0) return [];
 
@@ -292,7 +298,7 @@ export function rankBySpeed(
     const tps = positiveFinite(candidate.avgTokensPerSecond);
     const stdDev = positiveFinite(candidate.latencyStdDev);
     const failureRate = toBoundedRate(
-      candidate.failureRate ?? (typeof candidate.errorRate === "number" ? candidate.errorRate : 0)
+      candidate.failureRate ?? (typeof candidate.errorRate === "number" ? candidate.errorRate : 0),
     );
     const factors = speedFactorsFor(candidate, maxima, failureRate);
     const score = applySpeedPenalties(weightedSpeedScore(factors, weights), factors);
@@ -326,7 +332,7 @@ export function rankBySpeed(
  */
 export function pickFastest(
   candidates: ReadonlyArray<SpeedCandidate>,
-  weights: SpeedRankingWeights = DEFAULT_SPEED_WEIGHTS
+  weights: SpeedRankingWeights = DEFAULT_SPEED_WEIGHTS,
 ): SpeedRankedCandidate | null {
   const ranked = rankBySpeed(candidates, weights);
   return ranked.length > 0 ? ranked[0] : null;

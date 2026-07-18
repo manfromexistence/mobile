@@ -1,19 +1,21 @@
-import { OpenAICompatibleChatLanguageModel } from "@opencode-ai/core/github-copilot/chat/openai-compatible-chat-language-model"
-import { describe, test, expect, mock } from "bun:test"
-import type { LanguageModelV3Prompt } from "@ai-sdk/provider"
+import { OpenAICompatibleChatLanguageModel } from "@opencode-ai/core/github-copilot/chat/openai-compatible-chat-language-model";
+import { describe, test, expect, mock } from "bun:test";
+import type { LanguageModelV3Prompt } from "@ai-sdk/provider";
 
 async function convertReadableStreamToArray<T>(stream: ReadableStream<T>): Promise<T[]> {
-  const reader = stream.getReader()
-  const result: T[] = []
+  const reader = stream.getReader();
+  const result: T[] = [];
   while (true) {
-    const { done, value } = await reader.read()
-    if (done) break
-    result.push(value)
+    const { done, value } = await reader.read();
+    if (done) break;
+    result.push(value);
   }
-  return result
+  return result;
 }
 
-const TEST_PROMPT: LanguageModelV3Prompt = [{ role: "user", content: [{ type: "text", text: "Hello" }] }]
+const TEST_PROMPT: LanguageModelV3Prompt = [
+  { role: "user", content: [{ type: "text", text: "Hello" }] },
+];
 
 // Fixtures from copilot_test.exs
 const FIXTURES = {
@@ -71,24 +73,24 @@ const FIXTURES = {
     `data: {"choices":[{"finish_reason":"tool_calls","index":0,"delta":{"content":null,"role":"assistant","tool_calls":[{"function":{"arguments":"{}","name":"read_file"},"id":"call_reasoning_only_2","index":1,"type":"function"}]}}],"created":1769917420,"id":"opaque-only","usage":{"completion_tokens":12,"prompt_tokens":123,"prompt_tokens_details":{"cached_tokens":0},"total_tokens":135,"reasoning_tokens":0},"model":"gemini-3-flash-preview"}`,
     `data: [DONE]`,
   ],
-}
+};
 
 function createMockFetch(chunks: string[]) {
   return mock(async () => {
     const body = new ReadableStream({
       start(controller) {
         for (const chunk of chunks) {
-          controller.enqueue(new TextEncoder().encode(chunk + "\n\n"))
+          controller.enqueue(new TextEncoder().encode(chunk + "\n\n"));
         }
-        controller.close()
+        controller.close();
       },
-    })
+    });
 
     return new Response(body, {
       status: 200,
       headers: { "Content-Type": "text/event-stream" },
-    })
-  })
+    });
+  });
 }
 
 function createModel(fetchFn: ReturnType<typeof mock>) {
@@ -97,25 +99,29 @@ function createModel(fetchFn: ReturnType<typeof mock>) {
     url: () => "https://api.test.com/chat/completions",
     headers: () => ({ Authorization: "Bearer test-token" }),
     fetch: fetchFn as any,
-  })
+  });
 }
 
 describe("doStream", () => {
   test("should stream text deltas", async () => {
-    const mockFetch = createMockFetch(FIXTURES.basicText)
-    const model = createModel(mockFetch)
+    const mockFetch = createMockFetch(FIXTURES.basicText);
+    const model = createModel(mockFetch);
 
     const { stream } = await model.doStream({
       prompt: TEST_PROMPT,
       includeRawChunks: false,
-    })
+    });
 
-    const parts = await convertReadableStreamToArray(stream)
+    const parts = await convertReadableStreamToArray(stream);
 
     // Filter to just the key events
     const textParts = parts.filter(
-      (p) => p.type === "text-start" || p.type === "text-delta" || p.type === "text-end" || p.type === "finish",
-    )
+      (p) =>
+        p.type === "text-start" ||
+        p.type === "text-delta" ||
+        p.type === "text-end" ||
+        p.type === "finish",
+    );
 
     expect(textParts).toMatchObject([
       { type: "text-start", id: "txt-0" },
@@ -124,44 +130,49 @@ describe("doStream", () => {
       { type: "text-delta", id: "txt-0", delta: "!" },
       { type: "text-end", id: "txt-0" },
       { type: "finish", finishReason: { unified: "stop" } },
-    ])
-  })
+    ]);
+  });
 
   test("should stream reasoning with tool calls and capture reasoning_opaque", async () => {
-    const mockFetch = createMockFetch(FIXTURES.reasoningWithToolCalls)
-    const model = createModel(mockFetch)
+    const mockFetch = createMockFetch(FIXTURES.reasoningWithToolCalls);
+    const model = createModel(mockFetch);
 
     const { stream } = await model.doStream({
       prompt: TEST_PROMPT,
       includeRawChunks: false,
-    })
+    });
 
-    const parts = await convertReadableStreamToArray(stream)
+    const parts = await convertReadableStreamToArray(stream);
 
     // Check reasoning parts
     const reasoningParts = parts.filter(
-      (p) => p.type === "reasoning-start" || p.type === "reasoning-delta" || p.type === "reasoning-end",
-    )
+      (p) =>
+        p.type === "reasoning-start" || p.type === "reasoning-delta" || p.type === "reasoning-end",
+    );
 
     expect(reasoningParts[0]).toEqual({
       type: "reasoning-start",
       id: "reasoning-0",
-    })
+    });
 
     expect(reasoningParts[1]).toMatchObject({
       type: "reasoning-delta",
       id: "reasoning-0",
-    })
-    expect((reasoningParts[1] as { delta: string }).delta).toContain("**Understanding Dayzee's Purpose**")
+    });
+    expect((reasoningParts[1] as { delta: string }).delta).toContain(
+      "**Understanding Dayzee's Purpose**",
+    );
 
     expect(reasoningParts[2]).toMatchObject({
       type: "reasoning-delta",
       id: "reasoning-0",
-    })
-    expect((reasoningParts[2] as { delta: string }).delta).toContain("**Assessing Dayzee's Functionality**")
+    });
+    expect((reasoningParts[2] as { delta: string }).delta).toContain(
+      "**Assessing Dayzee's Functionality**",
+    );
 
     // reasoning_opaque should be in reasoning-end providerMetadata
-    const reasoningEnd = reasoningParts.find((p) => p.type === "reasoning-end")
+    const reasoningEnd = reasoningParts.find((p) => p.type === "reasoning-end");
     expect(reasoningEnd).toMatchObject({
       type: "reasoning-end",
       id: "reasoning-0",
@@ -170,18 +181,18 @@ describe("doStream", () => {
           reasoningOpaque: "4CUQ6696CwSXOdQ5rtvDimqA91tBzfmga4ieRbmZ5P67T2NLW3",
         },
       },
-    })
+    });
 
     // Check tool calls
     const toolParts = parts.filter(
       (p) => p.type === "tool-input-start" || p.type === "tool-call" || p.type === "tool-input-end",
-    )
+    );
 
     expect(toolParts).toContainEqual({
       type: "tool-input-start",
       id: "call_abc123",
       toolName: "read_file",
-    })
+    });
 
     expect(toolParts).toContainEqual(
       expect.objectContaining({
@@ -189,16 +200,16 @@ describe("doStream", () => {
         toolCallId: "call_abc123",
         toolName: "read_file",
       }),
-    )
+    );
 
     expect(toolParts).toContainEqual({
       type: "tool-input-start",
       id: "call_def456",
       toolName: "read_file",
-    })
+    });
 
     // Check finish
-    const finish = parts.find((p) => p.type === "finish")
+    const finish = parts.find((p) => p.type === "finish");
     expect(finish).toMatchObject({
       type: "finish",
       finishReason: { unified: "tool-calls" },
@@ -206,54 +217,58 @@ describe("doStream", () => {
         inputTokens: { total: 19581 },
         outputTokens: { total: 53 },
       },
-    })
-  })
+    });
+  });
 
   test("should handle reasoning_opaque that comes at end with text in between", async () => {
-    const mockFetch = createMockFetch(FIXTURES.reasoningWithOpaqueAtEnd)
-    const model = createModel(mockFetch)
+    const mockFetch = createMockFetch(FIXTURES.reasoningWithOpaqueAtEnd);
+    const model = createModel(mockFetch);
 
     const { stream } = await model.doStream({
       prompt: TEST_PROMPT,
       includeRawChunks: false,
-    })
+    });
 
-    const parts = await convertReadableStreamToArray(stream)
+    const parts = await convertReadableStreamToArray(stream);
 
     // Check that reasoning comes first
-    const reasoningStart = parts.findIndex((p) => p.type === "reasoning-start")
-    const textStart = parts.findIndex((p) => p.type === "text-start")
-    expect(reasoningStart).toBeLessThan(textStart)
+    const reasoningStart = parts.findIndex((p) => p.type === "reasoning-start");
+    const textStart = parts.findIndex((p) => p.type === "text-start");
+    expect(reasoningStart).toBeLessThan(textStart);
 
     // Check reasoning deltas
-    const reasoningDeltas = parts.filter((p) => p.type === "reasoning-delta")
-    expect(reasoningDeltas).toHaveLength(2)
-    expect((reasoningDeltas[0] as { delta: string }).delta).toContain("**Analyzing the Inquiry's Nature**")
-    expect((reasoningDeltas[1] as { delta: string }).delta).toContain("**Reconciling User's Input**")
+    const reasoningDeltas = parts.filter((p) => p.type === "reasoning-delta");
+    expect(reasoningDeltas).toHaveLength(2);
+    expect((reasoningDeltas[0] as { delta: string }).delta).toContain(
+      "**Analyzing the Inquiry's Nature**",
+    );
+    expect((reasoningDeltas[1] as { delta: string }).delta).toContain(
+      "**Reconciling User's Input**",
+    );
 
     // Check text deltas
-    const textDeltas = parts.filter((p) => p.type === "text-delta")
-    expect(textDeltas).toHaveLength(2)
-    expect((textDeltas[0] as { delta: string }).delta).toContain("I am Tidewave")
-    expect((textDeltas[1] as { delta: string }).delta).toContain("How can I help you?")
+    const textDeltas = parts.filter((p) => p.type === "text-delta");
+    expect(textDeltas).toHaveLength(2);
+    expect((textDeltas[0] as { delta: string }).delta).toContain("I am Tidewave");
+    expect((textDeltas[1] as { delta: string }).delta).toContain("How can I help you?");
 
     // reasoning-end should be emitted before text-start
-    const reasoningEndIndex = parts.findIndex((p) => p.type === "reasoning-end")
-    const textStartIndex = parts.findIndex((p) => p.type === "text-start")
-    expect(reasoningEndIndex).toBeGreaterThan(-1)
-    expect(reasoningEndIndex).toBeLessThan(textStartIndex)
+    const reasoningEndIndex = parts.findIndex((p) => p.type === "reasoning-end");
+    const textStartIndex = parts.findIndex((p) => p.type === "text-start");
+    expect(reasoningEndIndex).toBeGreaterThan(-1);
+    expect(reasoningEndIndex).toBeLessThan(textStartIndex);
 
     // In this fixture, reasoning_opaque comes AFTER content has started (in chunk 4)
     // So it arrives too late to be attached to reasoning-end. But it should still
     // be captured and included in the finish event's providerMetadata.
-    const reasoningEnd = parts.find((p) => p.type === "reasoning-end")
+    const reasoningEnd = parts.find((p) => p.type === "reasoning-end");
     expect(reasoningEnd).toMatchObject({
       type: "reasoning-end",
       id: "reasoning-0",
-    })
+    });
 
     // reasoning_opaque should be in the finish event's providerMetadata
-    const finish = parts.find((p) => p.type === "finish")
+    const finish = parts.find((p) => p.type === "finish");
     expect(finish).toMatchObject({
       type: "finish",
       finishReason: { unified: "stop" },
@@ -266,35 +281,39 @@ describe("doStream", () => {
           reasoningOpaque: "/PMlTqxqSJZnUBDHgnnJKLVI4eZQ",
         },
       },
-    })
-  })
+    });
+  });
 
   test("should handle reasoning_opaque and content in the same chunk", async () => {
-    const mockFetch = createMockFetch(FIXTURES.reasoningWithOpaqueAndContentSameChunk)
-    const model = createModel(mockFetch)
+    const mockFetch = createMockFetch(FIXTURES.reasoningWithOpaqueAndContentSameChunk);
+    const model = createModel(mockFetch);
 
     const { stream } = await model.doStream({
       prompt: TEST_PROMPT,
       includeRawChunks: false,
-    })
+    });
 
-    const parts = await convertReadableStreamToArray(stream)
+    const parts = await convertReadableStreamToArray(stream);
 
     // The critical test: reasoning-end should come BEFORE text-start
-    const reasoningEndIndex = parts.findIndex((p) => p.type === "reasoning-end")
-    const textStartIndex = parts.findIndex((p) => p.type === "text-start")
-    expect(reasoningEndIndex).toBeGreaterThan(-1)
-    expect(textStartIndex).toBeGreaterThan(-1)
-    expect(reasoningEndIndex).toBeLessThan(textStartIndex)
+    const reasoningEndIndex = parts.findIndex((p) => p.type === "reasoning-end");
+    const textStartIndex = parts.findIndex((p) => p.type === "text-start");
+    expect(reasoningEndIndex).toBeGreaterThan(-1);
+    expect(textStartIndex).toBeGreaterThan(-1);
+    expect(reasoningEndIndex).toBeLessThan(textStartIndex);
 
     // Check reasoning deltas
-    const reasoningDeltas = parts.filter((p) => p.type === "reasoning-delta")
-    expect(reasoningDeltas).toHaveLength(2)
-    expect((reasoningDeltas[0] as { delta: string }).delta).toContain("**Understanding the Query's Nature**")
-    expect((reasoningDeltas[1] as { delta: string }).delta).toContain("**Framing the Response's Core**")
+    const reasoningDeltas = parts.filter((p) => p.type === "reasoning-delta");
+    expect(reasoningDeltas).toHaveLength(2);
+    expect((reasoningDeltas[0] as { delta: string }).delta).toContain(
+      "**Understanding the Query's Nature**",
+    );
+    expect((reasoningDeltas[1] as { delta: string }).delta).toContain(
+      "**Framing the Response's Core**",
+    );
 
     // reasoning_opaque should be in reasoning-end even though it came with content
-    const reasoningEnd = parts.find((p) => p.type === "reasoning-end")
+    const reasoningEnd = parts.find((p) => p.type === "reasoning-end");
     expect(reasoningEnd).toMatchObject({
       type: "reasoning-end",
       id: "reasoning-0",
@@ -303,51 +322,55 @@ describe("doStream", () => {
           reasoningOpaque: "ExXaGwW7jBo39OXRe9EPoFGN1rOtLJBx",
         },
       },
-    })
+    });
 
     // Check text deltas
-    const textDeltas = parts.filter((p) => p.type === "text-delta")
-    expect(textDeltas).toHaveLength(2)
-    expect((textDeltas[0] as { delta: string }).delta).toContain("Of course. I'm thinking right now.")
-    expect((textDeltas[1] as { delta: string }).delta).toContain("What's on your mind?")
+    const textDeltas = parts.filter((p) => p.type === "text-delta");
+    expect(textDeltas).toHaveLength(2);
+    expect((textDeltas[0] as { delta: string }).delta).toContain(
+      "Of course. I'm thinking right now.",
+    );
+    expect((textDeltas[1] as { delta: string }).delta).toContain("What's on your mind?");
 
     // Check finish
-    const finish = parts.find((p) => p.type === "finish")
+    const finish = parts.find((p) => p.type === "finish");
     expect(finish).toMatchObject({
       type: "finish",
       finishReason: { unified: "stop" },
-    })
-  })
+    });
+  });
 
   test("should handle reasoning_opaque and content followed by tool calls", async () => {
-    const mockFetch = createMockFetch(FIXTURES.reasoningWithOpaqueContentAndToolCalls)
-    const model = createModel(mockFetch)
+    const mockFetch = createMockFetch(FIXTURES.reasoningWithOpaqueContentAndToolCalls);
+    const model = createModel(mockFetch);
 
     const { stream } = await model.doStream({
       prompt: TEST_PROMPT,
       includeRawChunks: false,
-    })
+    });
 
-    const parts = await convertReadableStreamToArray(stream)
+    const parts = await convertReadableStreamToArray(stream);
 
     // Check that reasoning comes first, then text, then tool calls
-    const reasoningEndIndex = parts.findIndex((p) => p.type === "reasoning-end")
-    const textStartIndex = parts.findIndex((p) => p.type === "text-start")
-    const toolStartIndex = parts.findIndex((p) => p.type === "tool-input-start")
+    const reasoningEndIndex = parts.findIndex((p) => p.type === "reasoning-end");
+    const textStartIndex = parts.findIndex((p) => p.type === "text-start");
+    const toolStartIndex = parts.findIndex((p) => p.type === "tool-input-start");
 
-    expect(reasoningEndIndex).toBeGreaterThan(-1)
-    expect(textStartIndex).toBeGreaterThan(-1)
-    expect(toolStartIndex).toBeGreaterThan(-1)
-    expect(reasoningEndIndex).toBeLessThan(textStartIndex)
-    expect(textStartIndex).toBeLessThan(toolStartIndex)
+    expect(reasoningEndIndex).toBeGreaterThan(-1);
+    expect(textStartIndex).toBeGreaterThan(-1);
+    expect(toolStartIndex).toBeGreaterThan(-1);
+    expect(reasoningEndIndex).toBeLessThan(textStartIndex);
+    expect(textStartIndex).toBeLessThan(toolStartIndex);
 
     // Check reasoning content
-    const reasoningDeltas = parts.filter((p) => p.type === "reasoning-delta")
-    expect(reasoningDeltas).toHaveLength(1)
-    expect((reasoningDeltas[0] as { delta: string }).delta).toContain("**Analyzing the Structure**")
+    const reasoningDeltas = parts.filter((p) => p.type === "reasoning-delta");
+    expect(reasoningDeltas).toHaveLength(1);
+    expect((reasoningDeltas[0] as { delta: string }).delta).toContain(
+      "**Analyzing the Structure**",
+    );
 
     // reasoning_opaque should be in reasoning-end (comes with content in same chunk)
-    const reasoningEnd = parts.find((p) => p.type === "reasoning-end")
+    const reasoningEnd = parts.find((p) => p.type === "reasoning-end");
     expect(reasoningEnd).toMatchObject({
       type: "reasoning-end",
       id: "reasoning-0",
@@ -356,25 +379,25 @@ describe("doStream", () => {
           reasoningOpaque: expect.stringContaining("WHOd3dYFnxEBOsKUXjbX6c2rJa0fS214"),
         },
       },
-    })
+    });
 
     // Check text content
-    const textDeltas = parts.filter((p) => p.type === "text-delta")
-    expect(textDeltas).toHaveLength(1)
+    const textDeltas = parts.filter((p) => p.type === "text-delta");
+    expect(textDeltas).toHaveLength(1);
     expect((textDeltas[0] as { delta: string }).delta).toContain(
       "Okay, I need to check out the project's file structure.",
-    )
+    );
 
     // Check tool call
     const toolParts = parts.filter(
       (p) => p.type === "tool-input-start" || p.type === "tool-call" || p.type === "tool-input-end",
-    )
+    );
 
     expect(toolParts).toContainEqual({
       type: "tool-input-start",
       id: "call_MHxqRDd5WVo3NU8wUXRaMmc0MFE",
       toolName: "list_project_files",
-    })
+    });
 
     expect(toolParts).toContainEqual(
       expect.objectContaining({
@@ -382,10 +405,10 @@ describe("doStream", () => {
         toolCallId: "call_MHxqRDd5WVo3NU8wUXRaMmc0MFE",
         toolName: "list_project_files",
       }),
-    )
+    );
 
     // Check finish
-    const finish = parts.find((p) => p.type === "finish")
+    const finish = parts.find((p) => p.type === "finish");
     expect(finish).toMatchObject({
       type: "finish",
       finishReason: { unified: "tool-calls" },
@@ -393,36 +416,40 @@ describe("doStream", () => {
         inputTokens: { total: 3767 },
         outputTokens: { total: 19 },
       },
-    })
-  })
+    });
+  });
 
   test("should emit reasoning-end before tool-input-start when reasoning goes directly to tool calls", async () => {
-    const mockFetch = createMockFetch(FIXTURES.reasoningDirectlyToToolCalls)
-    const model = createModel(mockFetch)
+    const mockFetch = createMockFetch(FIXTURES.reasoningDirectlyToToolCalls);
+    const model = createModel(mockFetch);
 
     const { stream } = await model.doStream({
       prompt: TEST_PROMPT,
       includeRawChunks: false,
-    })
+    });
 
-    const parts = await convertReadableStreamToArray(stream)
+    const parts = await convertReadableStreamToArray(stream);
 
     // Critical check: reasoning-end MUST come before tool-input-start
-    const reasoningEndIndex = parts.findIndex((p) => p.type === "reasoning-end")
-    const toolStartIndex = parts.findIndex((p) => p.type === "tool-input-start")
+    const reasoningEndIndex = parts.findIndex((p) => p.type === "reasoning-end");
+    const toolStartIndex = parts.findIndex((p) => p.type === "tool-input-start");
 
-    expect(reasoningEndIndex).toBeGreaterThan(-1)
-    expect(toolStartIndex).toBeGreaterThan(-1)
-    expect(reasoningEndIndex).toBeLessThan(toolStartIndex)
+    expect(reasoningEndIndex).toBeGreaterThan(-1);
+    expect(toolStartIndex).toBeGreaterThan(-1);
+    expect(reasoningEndIndex).toBeLessThan(toolStartIndex);
 
     // Check reasoning parts
-    const reasoningDeltas = parts.filter((p) => p.type === "reasoning-delta")
-    expect(reasoningDeltas).toHaveLength(2)
-    expect((reasoningDeltas[0] as { delta: string }).delta).toContain("**Executing and Analyzing HTML**")
-    expect((reasoningDeltas[1] as { delta: string }).delta).toContain("**Testing Project Contexts**")
+    const reasoningDeltas = parts.filter((p) => p.type === "reasoning-delta");
+    expect(reasoningDeltas).toHaveLength(2);
+    expect((reasoningDeltas[0] as { delta: string }).delta).toContain(
+      "**Executing and Analyzing HTML**",
+    );
+    expect((reasoningDeltas[1] as { delta: string }).delta).toContain(
+      "**Testing Project Contexts**",
+    );
 
     // reasoning_opaque should be in reasoning-end providerMetadata
-    const reasoningEnd = parts.find((p) => p.type === "reasoning-end")
+    const reasoningEnd = parts.find((p) => p.type === "reasoning-end");
     expect(reasoningEnd).toMatchObject({
       type: "reasoning-end",
       id: "reasoning-0",
@@ -431,45 +458,50 @@ describe("doStream", () => {
           reasoningOpaque: "ytGNWFf2doK38peANDvm7whkLPKrd+Fv6/k34zEPBF6Qwitj4bTZT0FBXleydLb6",
         },
       },
-    })
+    });
 
     // No text parts should exist
-    const textParts = parts.filter((p) => p.type === "text-start" || p.type === "text-delta" || p.type === "text-end")
-    expect(textParts).toHaveLength(0)
+    const textParts = parts.filter(
+      (p) => p.type === "text-start" || p.type === "text-delta" || p.type === "text-end",
+    );
+    expect(textParts).toHaveLength(0);
 
     // Check tool call
-    const toolCall = parts.find((p) => p.type === "tool-call")
+    const toolCall = parts.find((p) => p.type === "tool-call");
     expect(toolCall).toMatchObject({
       type: "tool-call",
       toolCallId: "call_MHw3RDhmT1J5Z3B6WlhpVjlveTc",
       toolName: "project_eval",
-    })
+    });
 
     // Check finish
-    const finish = parts.find((p) => p.type === "finish")
+    const finish = parts.find((p) => p.type === "finish");
     expect(finish).toMatchObject({
       type: "finish",
       finishReason: { unified: "tool-calls" },
-    })
-  })
+    });
+  });
 
   test("should attach reasoning_opaque to tool calls without reasoning_text", async () => {
-    const mockFetch = createMockFetch(FIXTURES.reasoningOpaqueWithToolCallsNoReasoningText)
-    const model = createModel(mockFetch)
+    const mockFetch = createMockFetch(FIXTURES.reasoningOpaqueWithToolCallsNoReasoningText);
+    const model = createModel(mockFetch);
 
     const { stream } = await model.doStream({
       prompt: TEST_PROMPT,
       includeRawChunks: false,
-    })
+    });
 
-    const parts = await convertReadableStreamToArray(stream)
+    const parts = await convertReadableStreamToArray(stream);
     const reasoningParts = parts.filter(
-      (p) => p.type === "reasoning-start" || p.type === "reasoning-delta" || p.type === "reasoning-end",
-    )
+      (p) =>
+        p.type === "reasoning-start" || p.type === "reasoning-delta" || p.type === "reasoning-end",
+    );
 
-    expect(reasoningParts).toHaveLength(0)
+    expect(reasoningParts).toHaveLength(0);
 
-    const toolCall = parts.find((p) => p.type === "tool-call" && p.toolCallId === "call_reasoning_only")
+    const toolCall = parts.find(
+      (p) => p.type === "tool-call" && p.toolCallId === "call_reasoning_only",
+    );
     expect(toolCall).toMatchObject({
       type: "tool-call",
       toolCallId: "call_reasoning_only",
@@ -479,79 +511,79 @@ describe("doStream", () => {
           reasoningOpaque: "opaque-xyz",
         },
       },
-    })
-  })
+    });
+  });
 
   test("should include response metadata from first chunk", async () => {
-    const mockFetch = createMockFetch(FIXTURES.basicText)
-    const model = createModel(mockFetch)
+    const mockFetch = createMockFetch(FIXTURES.basicText);
+    const model = createModel(mockFetch);
 
     const { stream } = await model.doStream({
       prompt: TEST_PROMPT,
       includeRawChunks: false,
-    })
+    });
 
-    const parts = await convertReadableStreamToArray(stream)
+    const parts = await convertReadableStreamToArray(stream);
 
-    const metadata = parts.find((p) => p.type === "response-metadata")
+    const metadata = parts.find((p) => p.type === "response-metadata");
     expect(metadata).toMatchObject({
       type: "response-metadata",
       id: "chatcmpl-123",
       modelId: "gemini-2.0-flash-001",
-    })
-  })
+    });
+  });
 
   test("should emit stream-start with warnings", async () => {
-    const mockFetch = createMockFetch(FIXTURES.basicText)
-    const model = createModel(mockFetch)
+    const mockFetch = createMockFetch(FIXTURES.basicText);
+    const model = createModel(mockFetch);
 
     const { stream } = await model.doStream({
       prompt: TEST_PROMPT,
       includeRawChunks: false,
-    })
+    });
 
-    const parts = await convertReadableStreamToArray(stream)
+    const parts = await convertReadableStreamToArray(stream);
 
-    const streamStart = parts.find((p) => p.type === "stream-start")
+    const streamStart = parts.find((p) => p.type === "stream-start");
     expect(streamStart).toEqual({
       type: "stream-start",
       warnings: [],
-    })
-  })
+    });
+  });
 
   test("should include raw chunks when requested", async () => {
-    const mockFetch = createMockFetch(FIXTURES.basicText)
-    const model = createModel(mockFetch)
+    const mockFetch = createMockFetch(FIXTURES.basicText);
+    const model = createModel(mockFetch);
 
     const { stream } = await model.doStream({
       prompt: TEST_PROMPT,
       includeRawChunks: true,
-    })
+    });
 
-    const parts = await convertReadableStreamToArray(stream)
+    const parts = await convertReadableStreamToArray(stream);
 
-    const rawChunks = parts.filter((p) => p.type === "raw")
-    expect(rawChunks.length).toBeGreaterThan(0)
-  })
-})
+    const rawChunks = parts.filter((p) => p.type === "raw");
+    expect(rawChunks.length).toBeGreaterThan(0);
+  });
+});
 
 describe("request body", () => {
   test("should send tools in OpenAI format", async () => {
-    let capturedBody: unknown
+    let capturedBody: unknown;
     const mockFetch = mock(async (_url: string, init?: RequestInit) => {
-      capturedBody = JSON.parse(init?.body as string)
+      capturedBody = JSON.parse(init?.body as string);
       return new Response(
         new ReadableStream({
           start(controller) {
-            controller.enqueue(new TextEncoder().encode(`data: [DONE]\n\n`))
-            controller.close()
+            controller.enqueue(new TextEncoder().encode(`data: [DONE]\n\n`));
+            controller.close();
           },
         }),
         { status: 200, headers: { "Content-Type": "text/event-stream" } },
-      )
-    })
+      );
+    });
 
-    const model = createModel(mockFetch)
+    const model = createModel(mockFetch);
 
     await model.doStream({
       prompt: TEST_PROMPT,
@@ -570,7 +602,7 @@ describe("request body", () => {
         },
       ],
       includeRawChunks: false,
-    })
+    });
 
     expect((capturedBody as { tools: unknown[] }).tools).toEqual([
       {
@@ -587,6 +619,6 @@ describe("request body", () => {
           },
         },
       },
-    ])
-  })
-})
+    ]);
+  });
+});

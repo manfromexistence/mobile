@@ -30,7 +30,7 @@ function makeFakePluginDist() {
   fs.mkdirSync(path.join(FAKE_PLUGIN_DIR, "dist"), { recursive: true });
   fs.writeFileSync(
     path.join(FAKE_PLUGIN_DIR, "package.json"),
-    JSON.stringify({ name: "@omniroute/opencode-plugin", version: "0.0.0-test" })
+    JSON.stringify({ name: "@omniroute/opencode-plugin", version: "0.0.0-test" }),
   );
   fs.writeFileSync(path.join(FAKE_PLUGIN_DIR, "dist", "index.js"), "export {};\n");
   fs.writeFileSync(path.join(FAKE_PLUGIN_DIR, "dist", "index.cjs"), "module.exports = {};\n");
@@ -90,7 +90,7 @@ describe("omniroute setup opencode", () => {
     assert.equal(
       options.baseURL,
       "http://10.0.0.5:20128",
-      "--base-url flag must reach the registered entry"
+      "--base-url flag must reach the registered entry",
     );
   });
 
@@ -105,13 +105,13 @@ describe("omniroute setup opencode", () => {
     const cfg = readConfig();
     const omniEntries = cfg.plugin.filter(
       (p: unknown) =>
-        Array.isArray(p) && (p[1] as { providerId?: string })?.providerId === "omniroute"
+        Array.isArray(p) && (p[1] as { providerId?: string })?.providerId === "omniroute",
     );
     assert.equal(omniEntries.length, 1, "re-run must not duplicate the entry");
     assert.equal(
       omniEntries[0][1].baseURL,
       "http://10.0.0.9:20128",
-      "re-run updates baseURL in place"
+      "re-run updates baseURL in place",
     );
   });
 
@@ -124,7 +124,7 @@ describe("omniroute setup opencode", () => {
           "opencode-omniroute-auth",
           ["./plugins/other/dist/index.js", { providerId: "other" }],
         ],
-      })
+      }),
     );
 
     const r = await runSetupOpenCodeCommand({ configDir: CONFIG_DIR, nonInteractive: true });

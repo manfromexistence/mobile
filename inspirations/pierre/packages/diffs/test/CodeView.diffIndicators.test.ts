@@ -1,20 +1,20 @@
-import { describe, test } from 'bun:test';
+import { describe, test } from "bun:test";
 
-import { CodeView } from '../src/components/CodeView';
-import { disposeHighlighter } from '../src/highlighter/shared_highlighter';
-import type { CodeViewItem, FileContents } from '../src/types';
-import { parseDiffFromFile } from '../src/utils/parseDiffFromFile';
-import { createRoot, installDom, wait } from './domHarness';
+import { CodeView } from "../src/components/CodeView";
+import { disposeHighlighter } from "../src/highlighter/shared_highlighter";
+import type { CodeViewItem, FileContents } from "../src/types";
+import { parseDiffFromFile } from "../src/utils/parseDiffFromFile";
+import { createRoot, installDom, wait } from "./domHarness";
 
 async function waitForRenderedPre(
   root: ParentNode,
   predicate: (pre: HTMLPreElement) => boolean,
-  message: string
+  message: string,
 ): Promise<HTMLPreElement> {
   let lastAttribute: string | null | undefined;
   for (let attempt = 0; attempt < 50; attempt++) {
     const pre = findRenderedPre(root);
-    lastAttribute = pre?.getAttribute('data-indicators');
+    lastAttribute = pre?.getAttribute("data-indicators");
     if (pre != null && predicate(pre)) {
       return pre;
     }
@@ -24,12 +24,12 @@ async function waitForRenderedPre(
 }
 
 function findRenderedPre(root: ParentNode): HTMLPreElement | null {
-  const directPre = root.querySelector('pre');
+  const directPre = root.querySelector("pre");
   if (directPre instanceof HTMLPreElement) {
     return directPre;
   }
 
-  for (const element of root.querySelectorAll('*')) {
+  for (const element of root.querySelectorAll("*")) {
     if (!(element instanceof HTMLElement)) {
       continue;
     }
@@ -52,20 +52,20 @@ function makeFile(name: string, contents: string): FileContents {
 
 function makeDiffItem(): CodeViewItem<undefined> {
   return {
-    id: 'diff:indicator-style',
-    type: 'diff',
+    id: "diff:indicator-style",
+    type: "diff",
     fileDiff: parseDiffFromFile(
-      makeFile('src/example.ts', 'const value = 1;\n'),
-      makeFile('src/example.ts', 'const value = 2;\n')
+      makeFile("src/example.ts", "const value = 1;\n"),
+      makeFile("src/example.ts", "const value = 2;\n"),
     ),
   };
 }
 
-describe('CodeView diff indicators', () => {
-  test('updates rendered indicator attributes when options change', async () => {
+describe("CodeView diff indicators", () => {
+  test("updates rendered indicator attributes when options change", async () => {
     const { cleanup } = installDom();
     const viewer = new CodeView({
-      diffIndicators: 'bars',
+      diffIndicators: "bars",
       disableErrorHandling: true,
       disableFileHeader: true,
     });
@@ -78,12 +78,12 @@ describe('CodeView diff indicators', () => {
 
       await waitForRenderedPre(
         root,
-        (pre) => pre.getAttribute('data-indicators') === 'bars',
-        'Expected initial bars indicators'
+        (pre) => pre.getAttribute("data-indicators") === "bars",
+        "Expected initial bars indicators",
       );
 
       viewer.setOptions({
-        diffIndicators: 'classic',
+        diffIndicators: "classic",
         disableErrorHandling: true,
         disableFileHeader: true,
       });
@@ -91,12 +91,12 @@ describe('CodeView diff indicators', () => {
 
       await waitForRenderedPre(
         root,
-        (pre) => pre.getAttribute('data-indicators') === 'classic',
-        'Expected classic indicators after option change'
+        (pre) => pre.getAttribute("data-indicators") === "classic",
+        "Expected classic indicators after option change",
       );
 
       viewer.setOptions({
-        diffIndicators: 'none',
+        diffIndicators: "none",
         disableErrorHandling: true,
         disableFileHeader: true,
       });
@@ -104,8 +104,8 @@ describe('CodeView diff indicators', () => {
 
       await waitForRenderedPre(
         root,
-        (pre) => !pre.hasAttribute('data-indicators'),
-        'Expected indicators to be removed after option change'
+        (pre) => !pre.hasAttribute("data-indicators"),
+        "Expected indicators to be removed after option change",
       );
     } finally {
       viewer.cleanUp();

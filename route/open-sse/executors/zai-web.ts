@@ -67,7 +67,7 @@ function parseOpenAiShapedFrame(choices: Array<Record<string, unknown>>): ZaiDel
 /** Parse the z.ai / chatglm internal `{data:{delta_content,phase,done}}` envelope. */
 function parseInternalEnvelopeFrame(
   frame: Record<string, unknown>,
-  data: Record<string, unknown>
+  data: Record<string, unknown>,
 ): ZaiDelta | null {
   const phase = String(data.phase ?? "");
   const deltaContent = data.delta_content ?? data.edit_content ?? data.content;
@@ -108,7 +108,7 @@ export function parseZaiFrame(raw: unknown): ZaiDelta | null {
 }
 
 export function foldMessages(
-  messages: Array<{ role: string; content: unknown }>
+  messages: Array<{ role: string; content: unknown }>,
 ): Array<{ role: string; content: string }> {
   return messages.map((m) => ({
     role: m.role,
@@ -147,7 +147,7 @@ function parseSsePayload(data: string): ZaiDelta | null {
  */
 async function drainSseDeltas(
   sourceBody: ReadableStream<Uint8Array>,
-  onDelta: (delta: ZaiDelta) => boolean
+  onDelta: (delta: ZaiDelta) => boolean,
 ): Promise<boolean> {
   const decoder = new TextDecoder();
   const reader = sourceBody.getReader();
@@ -166,7 +166,7 @@ async function drainSseDeltas(
 type ChunkEmitter = (
   controller: ReadableStreamDefaultController,
   delta: Record<string, unknown>,
-  finish?: string | null
+  finish?: string | null,
 ) => void;
 
 /** Emit role/reasoning/content/stop chunks for one delta. Returns true when the stream ended. */
@@ -174,7 +174,7 @@ function emitDeltaChunks(
   controller: ReadableStreamDefaultController,
   delta: ZaiDelta,
   emitChunk: ChunkEmitter,
-  roleState: { emitted: boolean }
+  roleState: { emitted: boolean },
 ): boolean {
   if (!roleState.emitted && (delta.content || delta.reasoning)) {
     roleState.emitted = true;
@@ -211,7 +211,7 @@ export class ZaiWebExecutor extends BaseExecutor {
 
   private buildRequestBody(
     messages: Array<{ role: string; content: unknown }>,
-    modelId: string
+    modelId: string,
   ): Record<string, unknown> {
     return {
       stream: true,
@@ -231,14 +231,14 @@ export class ZaiWebExecutor extends BaseExecutor {
     sourceBody: ReadableStream<Uint8Array>,
     modelId: string,
     emitChunk: ChunkEmitter,
-    signal: AbortSignal | null | undefined
+    signal: AbortSignal | null | undefined,
   ): ReadableStream {
     return new ReadableStream({
       async start(controller) {
         const roleState = { emitted: false };
         try {
           const ended = await drainSseDeltas(sourceBody, (delta) =>
-            emitDeltaChunks(controller, delta, emitChunk, roleState)
+            emitDeltaChunks(controller, delta, emitChunk, roleState),
           );
           if (ended) return; // emitDeltaChunks already sent [DONE] and closed
           if (!roleState.emitted) emitChunk(controller, { role: "assistant", content: "" });
@@ -260,7 +260,7 @@ export class ZaiWebExecutor extends BaseExecutor {
 
   /** Drain the response body and aggregate all deltas into a single answer/reasoning pair. */
   private async collectNonStreaming(
-    sourceBody: ReadableStream<Uint8Array>
+    sourceBody: ReadableStream<Uint8Array>,
   ): Promise<{ answer: string; reasoning: string }> {
     let answer = "";
     let reasoning = "";
@@ -281,7 +281,7 @@ export class ZaiWebExecutor extends BaseExecutor {
     reqHeaders: Record<string, string>,
     reqBody: Record<string, unknown>,
     body: unknown,
-    signal: AbortSignal | null | undefined
+    signal: AbortSignal | null | undefined,
   ): Promise<{ upstream: Response } | { errorResult: ReturnType<typeof makeErrorResult> }> {
     let upstream: Response;
     try {
@@ -297,7 +297,7 @@ export class ZaiWebExecutor extends BaseExecutor {
           502,
           `Z.ai fetch failed: ${err instanceof Error ? err.message : "unknown"}`,
           body,
-          CHAT_URL
+          CHAT_URL,
         ),
       };
     }
@@ -309,7 +309,7 @@ export class ZaiWebExecutor extends BaseExecutor {
           upstream.status,
           `Z.ai error: ${sanitizeErrorMessage(errText)}`,
           body,
-          CHAT_URL
+          CHAT_URL,
         ),
       };
     }
@@ -340,7 +340,7 @@ export class ZaiWebExecutor extends BaseExecutor {
         400,
         "Missing Z.ai session — paste the full Cookie header from chat.z.ai (must contain token=<JWT>).",
         body,
-        CHAT_URL
+        CHAT_URL,
       );
     }
 

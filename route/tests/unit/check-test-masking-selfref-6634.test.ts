@@ -62,7 +62,7 @@ test("#6634: check-test-masking.test.ts's own tautology fixtures must not self-f
     "check-test-masking.test.ts's own literal tautology fixtures (added for #6404) must be " +
       "excluded from the diff-based weakening check the same way scanBareTautologies() already " +
       "excludes this file from the absolute-floor scan — otherwise the gate's own regression " +
-      "test permanently self-flags as a HARD release-green failure whenever new fixtures are added."
+      "test permanently self-flags as a HARD release-green failure whenever new fixtures are added.",
   );
 });
 

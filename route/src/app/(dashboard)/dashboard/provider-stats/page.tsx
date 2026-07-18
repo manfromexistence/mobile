@@ -110,7 +110,7 @@ export default function ProviderStatsPage() {
   const totalSuccessful = data?.providers.reduce((s, p) => s + (p.successfulRequests || 0), 0) ?? 0;
   const avgLatency = data?.providers.length
     ? Math.round(
-        data.providers.reduce((s, p) => s + (p.avgLatencyMs || 0), 0) / data.providers.length
+        data.providers.reduce((s, p) => s + (p.avgLatencyMs || 0), 0) / data.providers.length,
       )
     : 0;
   const activeProviders = data?.providers.length ?? 0;
@@ -310,7 +310,7 @@ export default function ProviderStatsPage() {
                       className="border-b border-border/50 hover:bg-surface/50 transition-colors cursor-pointer"
                       onClick={() =>
                         setExpandedProvider(
-                          isExpanded ? null : models.length > 0 ? p.provider : null
+                          isExpanded ? null : models.length > 0 ? p.provider : null,
                         )
                       }
                     >

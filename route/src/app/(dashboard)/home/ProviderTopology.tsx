@@ -160,7 +160,7 @@ function buildLayout(
   providers: ProviderEntry[],
   activeSet: Set<string>,
   lastSet: Set<string>,
-  errorSet: Set<string>
+  errorSet: Set<string>,
 ): { nodes: Node[]; edges: Edge[] } {
   const nodeW = 156;
   const nodeH = 28;
@@ -263,14 +263,14 @@ export default function ProviderTopology({
         .filter(Boolean)
         .sort()
         .join(","),
-    [activeRequests]
+    [activeRequests],
   );
   const lastKey = lastProvider.toLowerCase();
   const errorKey = errorProvider.toLowerCase();
 
   const activeSet = useMemo(
     () => new Set<string>(activeKey ? activeKey.split(",") : []),
-    [activeKey]
+    [activeKey],
   );
   const lastSet = useMemo(() => new Set<string>(lastKey ? [lastKey] : []), [lastKey]);
   const errorSet = useMemo(() => new Set<string>(errorKey ? [errorKey] : []), [errorKey]);
@@ -278,7 +278,7 @@ export default function ProviderTopology({
   const { nodes, edges } = useMemo(
     () => buildLayout(providers, activeSet, lastSet, errorSet),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [providers, activeSet, lastKey, errorKey]
+    [providers, activeSet, lastKey, errorKey],
   );
 
   const providersKey = useMemo(
@@ -287,7 +287,7 @@ export default function ProviderTopology({
         .map((p) => p.provider)
         .sort()
         .join(","),
-    [providers]
+    [providers],
   );
 
   const containerClass =

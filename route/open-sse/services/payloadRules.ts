@@ -410,7 +410,7 @@ export function applyPayloadRules(
   payload: JsonRecord,
   model: string,
   protocol: string | string[],
-  rules: PayloadRulesConfig
+  rules: PayloadRulesConfig,
 ) {
   const normalizedPayload = cloneValue(payload);
   const protocols = toPayloadRuleProtocols(protocol);
@@ -457,7 +457,7 @@ export function applyPayloadRules(
 export async function applyConfiguredPayloadRules(
   payload: JsonRecord,
   model: string,
-  protocol: string | string[]
+  protocol: string | string[],
 ) {
   const rules = await getPayloadRulesConfig();
   return applyPayloadRules(payload, model, protocol, rules);

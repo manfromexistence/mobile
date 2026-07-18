@@ -31,7 +31,7 @@ test("auto combo disables hard provider quota cutoffs when relay requests bypass
   // resolveAutoStrategy leaf (Block J Task 2); the source scan follows the code.
   const source = fs.readFileSync(
     path.join(repoRoot, "open-sse/services/combo/resolveAutoStrategy.ts"),
-    "utf8"
+    "utf8",
   );
 
   assert.match(source, /relayOptions\?\.bypassProviderQuotaPolicy === true/);

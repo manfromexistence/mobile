@@ -14,8 +14,9 @@ process.env.DATA_DIR = TEST_DATA_DIR;
 const core = await import("../../src/lib/db/core.ts");
 const { createSSEStream } = await import("../../open-sse/utils/stream.ts");
 const { FORMATS } = await import("../../open-sse/translator/formats.ts");
-const { getPendingRequests, clearPendingRequests } =
-  await import("../../src/lib/usage/usageHistory.ts");
+const { getPendingRequests, clearPendingRequests } = await import(
+  "../../src/lib/usage/usageHistory.ts"
+);
 
 const enc = new TextEncoder();
 
@@ -74,10 +75,10 @@ test("#3685 passthrough: empty Claude SSE (no content_block) rejects the stream"
         onFailure(p: Record<string, unknown>) {
           failurePayload = p;
         },
-      }
+      },
     ),
     /empty response/i,
-    "stream should reject with empty-response error"
+    "stream should reject with empty-response error",
   );
   assert.ok(failurePayload, "onFailure callback must be invoked");
   assert.equal((failurePayload as any).status, 502);
@@ -114,7 +115,7 @@ test("#3685 passthrough: empty Claude SSE emits event: error SSE line before abo
       provider: "anthropic",
       model: "claude-sonnet-4-6",
       body: { messages: [{ role: "user", content: "hello" }] },
-    } as any)
+    } as any),
   );
   const reader = transformed.getReader();
   const dec = new TextDecoder();
@@ -134,7 +135,7 @@ test("#3685 passthrough: empty Claude SSE emits event: error SSE line before abo
   assert.doesNotMatch(
     full,
     /event: content_block_start/,
-    "no synthetic content_block must be emitted"
+    "no synthetic content_block must be emitted",
   );
 });
 
@@ -184,7 +185,7 @@ test("#3685 regression: stream with content_block events is NOT turned into an e
       provider: "anthropic",
       model: "claude-haiku-4-5",
       body: { messages: [{ role: "user", content: "ping" }] },
-    }
+    },
   );
   assert.match(text, /Hi/, "content must pass through untouched");
   assert.doesNotMatch(text, /event: error/, "must NOT emit an error event");
@@ -203,7 +204,7 @@ test("#3685 pending request counter is decremented when empty-stream error fires
   assert.equal(
     getPendingRequests().byModel["claude-sonnet-4-6 (anthropic)"],
     1,
-    "pending count should start at 1 after request begins"
+    "pending count should start at 1 after request begins",
   );
 
   await assert.rejects(
@@ -230,9 +231,9 @@ test("#3685 pending request counter is decremented when empty-stream error fires
         model: "claude-sonnet-4-6",
         connectionId: "conn-test",
         body: { messages: [{ role: "user", content: "hello" }] },
-      }
+      },
     ),
-    /empty response/i
+    /empty response/i,
   );
 
   // emitClaudeEmptyStreamErrorAndAbort must call trackPendingRequest(..., false) so the
@@ -240,7 +241,7 @@ test("#3685 pending request counter is decremented when empty-stream error fires
   assert.equal(
     getPendingRequests().byModel["claude-sonnet-4-6 (anthropic)"],
     0,
-    "pending count must be 0 after empty-stream error — not left inflated"
+    "pending count must be 0 after empty-stream error — not left inflated",
   );
 });
 
@@ -273,6 +274,6 @@ test("#3685 regression: upstream error event sets hasError=true and does NOT tri
   assert.equal(
     wouldInjectOnFlush,
     false,
-    "hasError=true must prevent the empty-stream error path from firing"
+    "hasError=true must prevent the empty-stream error path from firing",
   );
 });

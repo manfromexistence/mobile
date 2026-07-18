@@ -32,7 +32,7 @@ export function isCodexFreePlan(providerSpecificData: unknown): boolean {
 
 export function normalizeCodexTools(
   body: Record<string, unknown>,
-  options?: { dropImageGeneration?: boolean; preserveCustomTools?: boolean }
+  options?: { dropImageGeneration?: boolean; preserveCustomTools?: boolean },
 ): void {
   if (!Array.isArray(body.tools)) return;
 

@@ -8,9 +8,7 @@ import assert from "node:assert/strict";
  * OpenAI-compatible JSON not-found body for every HTTP method.
  */
 
-const catchAll = await import(
-  "../../../src/app/api/v1/[...omnirouteCatchAll]/route.ts"
-);
+const catchAll = await import("../../../src/app/api/v1/[...omnirouteCatchAll]/route.ts");
 
 function makeReq(pathname: string, method = "GET"): Request {
   return new Request(`http://localhost:20128${pathname}`, { method });
@@ -31,9 +29,9 @@ test("v1 catchall returns application/json 404 with not_found error type on GET"
 
 test("v1 catchall returns JSON 404 on POST / PUT / PATCH / DELETE / HEAD", async () => {
   for (const method of ["POST", "PUT", "PATCH", "DELETE", "HEAD"] as const) {
-    const res = await (catchAll as Record<string, (r: Request) => Promise<Response>>)[
-      method
-    ](makeReq(`/v1/nope/${method.toLowerCase()}`, method));
+    const res = await (catchAll as Record<string, (r: Request) => Promise<Response>>)[method](
+      makeReq(`/v1/nope/${method.toLowerCase()}`, method),
+    );
     assert.equal(res.status, 404, `${method} status`);
     assert.ok(
       (res.headers.get("content-type") || "").includes("application/json"),

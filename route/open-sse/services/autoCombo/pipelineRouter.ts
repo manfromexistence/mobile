@@ -86,7 +86,7 @@ export interface StageExecutorResult {
 function resolveModelForTier(
   tier: FitnessTier,
   availableModels: string[],
-  taskType: string
+  taskType: string,
 ): string {
   // Score each available model for this task type and tier
   const scored = availableModels
@@ -126,7 +126,7 @@ function createStageExecutor(
   handleChatCore: (body: Record<string, unknown>, modelStr?: string) => Promise<Response>,
   log: { info: (...args: unknown[]) => void; warn: (...args: unknown[]) => void },
   availableModels: string[],
-  taskType: string
+  taskType: string,
 ): (args: StageExecutorArgs & { fitnessTier?: FitnessTier }) => Promise<StageExecutorResult> {
   return async ({
     messages,
@@ -248,7 +248,7 @@ export async function handlePipelineCombo({
   if (tokenEstimate < skipThreshold) {
     log.info(
       "PIPELINE",
-      `Token estimate ${tokenEstimate} < threshold ${skipThreshold}, skipping pipeline`
+      `Token estimate ${tokenEstimate} < threshold ${skipThreshold}, skipping pipeline`,
     );
     throw new Error("PIPELINE_TOKEN_THRESHOLD");
   }
@@ -321,7 +321,7 @@ export async function handlePipelineCombo({
     reflectionCount++;
     log.info(
       "PIPELINE",
-      `Reflection failed, re-running (loop ${reflectionCount}/${maxReflectionLoops})`
+      `Reflection failed, re-running (loop ${reflectionCount}/${maxReflectionLoops})`,
     );
 
     const retryConfig = buildPipelineConfig(promptText, taskType);
@@ -348,7 +348,7 @@ export async function handlePipelineCombo({
 
   log.info(
     "PIPELINE",
-    `Complete: ${result.stages.length} stages, fallback=${result.fallback}, verdict=${result.reflectVerdict}`
+    `Complete: ${result.stages.length} stages, fallback=${result.fallback}, verdict=${result.reflectVerdict}`,
   );
   return result;
 }
@@ -366,7 +366,7 @@ export async function handlePipelineCombo({
  */
 export function buildPipelineResponse(
   result: PipelineResult,
-  body: Record<string, unknown>
+  body: Record<string, unknown>,
 ): Response {
   const model = typeof body.model === "string" && body.model.length > 0 ? body.model : "auto";
   const id = `chatcmpl-pipeline-${Date.now()}`;

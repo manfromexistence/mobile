@@ -93,7 +93,7 @@ describe("combo selected connection success handling", () => {
       429,
       120_000,
       null,
-      { exactCooldownMs: 60_000 }
+      { exactCooldownMs: 60_000 },
     );
     for (let i = 0; i < 3; i++) {
       recordModelLockoutFailure(
@@ -104,7 +104,7 @@ describe("combo selected connection success handling", () => {
         429,
         120_000,
         null,
-        { exactCooldownMs: 60_000 }
+        { exactCooldownMs: 60_000 },
       );
     }
 
@@ -148,14 +148,14 @@ describe("combo selected connection success handling", () => {
     assert.equal(
       decayCheck.newFailureCount,
       1,
-      "failure count should decay from 4 to 2, and now to 1"
+      "failure count should decay from 4 to 2, and now to 1",
     );
 
     // B. Dynamic connection-level provider success tracking (not in cooldown anymore)
     assert.equal(
       isProviderInCooldown(provider, dynamicConnId, settings),
       false,
-      "provider cooldown should be cleared on success"
+      "provider cooldown should be cleared on success",
     );
 
     // C. Correct LKGP record updated with the dynamic connection ID (setLKGP is called)
@@ -171,7 +171,7 @@ describe("combo selected connection success handling", () => {
     assert.equal(
       persisted?.connectionId,
       dynamicConnId,
-      "LKGP connectionId must be the dynamic connection ID"
+      "LKGP connectionId must be the dynamic connection ID",
     );
   });
 
@@ -197,7 +197,7 @@ describe("combo selected connection success handling", () => {
       429,
       120_000,
       null,
-      { exactCooldownMs: 60_000 }
+      { exactCooldownMs: 60_000 },
     );
     for (let i = 0; i < 3; i++) {
       recordModelLockoutFailure(
@@ -208,7 +208,7 @@ describe("combo selected connection success handling", () => {
         429,
         120_000,
         null,
-        { exactCooldownMs: 60_000 }
+        { exactCooldownMs: 60_000 },
       );
     }
 
@@ -251,13 +251,13 @@ describe("combo selected connection success handling", () => {
     assert.equal(
       decayCheck.newFailureCount,
       1,
-      "failure count should decay from 4 to 2, and now to 1"
+      "failure count should decay from 4 to 2, and now to 1",
     );
 
     assert.equal(
       isProviderInCooldown(provider, dynamicConnId, settings),
       false,
-      "provider cooldown should be cleared on success"
+      "provider cooldown should be cleared on success",
     );
 
     let persisted: any = null;
@@ -272,7 +272,7 @@ describe("combo selected connection success handling", () => {
     assert.equal(
       persisted?.connectionId,
       dynamicConnId,
-      "LKGP connectionId must be the dynamic connection ID"
+      "LKGP connectionId must be the dynamic connection ID",
     );
   });
 
@@ -298,7 +298,7 @@ describe("combo selected connection success handling", () => {
       429,
       120_000,
       null,
-      { exactCooldownMs: 60_000 }
+      { exactCooldownMs: 60_000 },
     );
     for (let i = 0; i < 3; i++) {
       recordModelLockoutFailure(
@@ -309,7 +309,7 @@ describe("combo selected connection success handling", () => {
         429,
         120_000,
         null,
-        { exactCooldownMs: 60_000 }
+        { exactCooldownMs: 60_000 },
       );
     }
 
@@ -352,13 +352,13 @@ describe("combo selected connection success handling", () => {
     assert.equal(
       decayCheck.newFailureCount,
       1,
-      "failure count should decay from 4 to 2, and now to 1"
+      "failure count should decay from 4 to 2, and now to 1",
     );
 
     assert.equal(
       isProviderInCooldown(provider, dynamicConnId, settings),
       false,
-      "provider cooldown should be cleared on success"
+      "provider cooldown should be cleared on success",
     );
 
     let persisted: any = null;
@@ -373,7 +373,7 @@ describe("combo selected connection success handling", () => {
     assert.equal(
       persisted?.connectionId,
       dynamicConnId,
-      "LKGP connectionId must be the dynamic connection ID"
+      "LKGP connectionId must be the dynamic connection ID",
     );
   });
 });

@@ -1,32 +1,32 @@
-import { z } from "zod"
-import { and, asc, eq, inArray, isNull, sql, Database } from "./drizzle"
-import { Actor } from "./actor"
-import { Identifier } from "./identifier"
-import { LiteTable, PaymentTable } from "./schema/billing.sql"
-import { ReferralCodeTable, ReferralRewardTable, ReferralTable } from "./schema/referral.sql"
-import { AuthTable } from "./schema/auth.sql"
-import { UserTable } from "./schema/user.sql"
-import { WorkspaceTable } from "./schema/workspace.sql"
-import { centsToMicroCents, microCentsToCents } from "./util/price"
-import { fn } from "./util/fn"
-import { Billing } from "./billing"
-import { LiteData } from "./lite"
-import { Subscription } from "./subscription"
-import { ulid } from "ulid"
+import { z } from "zod";
+import { and, asc, eq, inArray, isNull, sql, Database } from "./drizzle";
+import { Actor } from "./actor";
+import { Identifier } from "./identifier";
+import { LiteTable, PaymentTable } from "./schema/billing.sql";
+import { ReferralCodeTable, ReferralRewardTable, ReferralTable } from "./schema/referral.sql";
+import { AuthTable } from "./schema/auth.sql";
+import { UserTable } from "./schema/user.sql";
+import { WorkspaceTable } from "./schema/workspace.sql";
+import { centsToMicroCents, microCentsToCents } from "./util/price";
+import { fn } from "./util/fn";
+import { Billing } from "./billing";
+import { LiteData } from "./lite";
+import { Subscription } from "./subscription";
+import { ulid } from "ulid";
 
 export namespace Referral {
-  export const REWARD_AMOUNT = centsToMicroCents(500)
-  export const CODE_LENGTH = 10
+  export const REWARD_AMOUNT = centsToMicroCents(500);
+  export const CODE_LENGTH = 10;
 
   export function normalizeCode(code?: string | null) {
     return code
       ?.toUpperCase()
       .replace(/[^A-Z0-9]/g, "")
-      .slice(0, CODE_LENGTH)
+      .slice(0, CODE_LENGTH);
   }
 
   function generateCode() {
-    return ulid().slice(-CODE_LENGTH).toUpperCase()
+    return ulid().slice(-CODE_LENGTH).toUpperCase();
   }
 
   async function ensureCode(workspaceID = Actor.workspace()) {
@@ -35,29 +35,29 @@ export namespace Referral {
         .select({ code: ReferralCodeTable.code })
         .from(ReferralCodeTable)
         .where(eq(ReferralCodeTable.workspaceID, workspaceID))
-        .then((rows) => rows[0])
-      if (existing) return { code: existing.code }
+        .then((rows) => rows[0]);
+      if (existing) return { code: existing.code };
 
       await db.insert(ReferralCodeTable).ignore().values({
         workspaceID,
         code: generateCode(),
-      })
+      });
 
       const created = await db
         .select({ code: ReferralCodeTable.code })
         .from(ReferralCodeTable)
         .where(eq(ReferralCodeTable.workspaceID, workspaceID))
-        .then((rows) => rows[0])
-      if (created) return { code: created.code }
+        .then((rows) => rows[0]);
+      if (created) return { code: created.code };
 
-      throw new Error("Failed to generate referral code")
-    })
+      throw new Error("Failed to generate referral code");
+    });
   }
 
   export const summary = fn(z.void(), async () => {
-    const workspaceID = Actor.workspace()
-    const accountID = Actor.account()
-    const code = await ensureCode(workspaceID)
+    const workspaceID = Actor.workspace();
+    const accountID = Actor.account();
+    const code = await ensureCode(workspaceID);
     const rows = await Database.use(async (tx) => {
       const [rewards, invites, inviteeReferral, inviteeRewards] = await Promise.all([
         tx
@@ -74,7 +74,10 @@ export namespace Referral {
           .innerJoin(ReferralTable, eq(ReferralTable.id, ReferralRewardTable.referralID))
           .innerJoin(
             AuthTable,
-            and(eq(AuthTable.accountID, ReferralTable.inviteeAccountID), eq(AuthTable.provider, "email")),
+            and(
+              eq(AuthTable.accountID, ReferralTable.inviteeAccountID),
+              eq(AuthTable.provider, "email"),
+            ),
           )
           .where(
             and(
@@ -84,15 +87,28 @@ export namespace Referral {
             ),
           ),
         tx
-          .select({ id: ReferralTable.id, inviteeEmail: AuthTable.subject, timeCreated: ReferralTable.timeCreated })
+          .select({
+            id: ReferralTable.id,
+            inviteeEmail: AuthTable.subject,
+            timeCreated: ReferralTable.timeCreated,
+          })
           .from(ReferralTable)
           .innerJoin(
             AuthTable,
-            and(eq(AuthTable.accountID, ReferralTable.inviteeAccountID), eq(AuthTable.provider, "email")),
+            and(
+              eq(AuthTable.accountID, ReferralTable.inviteeAccountID),
+              eq(AuthTable.provider, "email"),
+            ),
           )
-          .where(and(eq(ReferralTable.workspaceID, workspaceID), isNull(ReferralTable.timeDeleted))),
+          .where(
+            and(eq(ReferralTable.workspaceID, workspaceID), isNull(ReferralTable.timeDeleted)),
+          ),
         tx
-          .select({ id: ReferralTable.id, inviterEmail: AuthTable.subject, timeCreated: ReferralTable.timeCreated })
+          .select({
+            id: ReferralTable.id,
+            inviterEmail: AuthTable.subject,
+            timeCreated: ReferralTable.timeCreated,
+          })
           .from(ReferralTable)
           .leftJoin(
             UserTable,
@@ -102,8 +118,13 @@ export namespace Referral {
               isNull(UserTable.timeDeleted),
             ),
           )
-          .leftJoin(AuthTable, and(eq(AuthTable.accountID, UserTable.accountID), eq(AuthTable.provider, "email")))
-          .where(and(eq(ReferralTable.inviteeAccountID, accountID), isNull(ReferralTable.timeDeleted)))
+          .leftJoin(
+            AuthTable,
+            and(eq(AuthTable.accountID, UserTable.accountID), eq(AuthTable.provider, "email")),
+          )
+          .where(
+            and(eq(ReferralTable.inviteeAccountID, accountID), isNull(ReferralTable.timeDeleted)),
+          )
           .orderBy(asc(UserTable.timeCreated))
           .then((rows) => rows.find((row) => row.inviterEmail) ?? rows[0]),
         tx
@@ -117,25 +138,31 @@ export namespace Referral {
               isNull(ReferralTable.timeDeleted),
             ),
           ),
-      ])
+      ]);
 
-      return { inviteeReferral, inviteeRewards, invites, rewards }
-    })
+      return { inviteeReferral, inviteeRewards, invites, rewards };
+    });
 
-    const rewardReferralIDs = new Set(rows.rewards.map((reward) => reward.referralID))
-    const inviteeRewardReferralIDs = new Set(rows.inviteeRewards.map((reward) => reward.referralID))
+    const rewardReferralIDs = new Set(rows.rewards.map((reward) => reward.referralID));
+    const inviteeRewardReferralIDs = new Set(
+      rows.inviteeRewards.map((reward) => reward.referralID),
+    );
     const rewards = rows.rewards.map((reward) => {
-      const source = reward.workspaceID === reward.referralWorkspaceID ? ("inviter" as const) : ("invitee" as const)
+      const source =
+        reward.workspaceID === reward.referralWorkspaceID
+          ? ("inviter" as const)
+          : ("invitee" as const);
       return {
         id: reward.referralID,
         source,
         status: reward.timeApplied ? ("applied" as const) : ("available" as const),
-        email: source === "invitee" ? (rows.inviteeReferral?.inviterEmail ?? null) : reward.inviteeEmail,
+        email:
+          source === "invitee" ? (rows.inviteeReferral?.inviterEmail ?? null) : reward.inviteeEmail,
         amount: microCentsToCents(reward.amount),
         timeCreated: reward.timeCreated,
         timeApplied: reward.timeApplied,
-      }
-    })
+      };
+    });
     const pending = [
       ...rows.invites
         .filter((referral) => !rewardReferralIDs.has(referral.id))
@@ -161,24 +188,27 @@ export namespace Referral {
             },
           ]
         : []),
-    ]
+    ];
     const allRewards = [...pending, ...rewards].sort(
       (a, b) => new Date(b.timeCreated).getTime() - new Date(a.timeCreated).getTime(),
-    )
+    );
     return {
       referralCode: code.code,
       hasReferral: allRewards.length > 0,
       rewardAmount: microCentsToCents(REWARD_AMOUNT),
       rewards: allRewards,
-    }
-  })
+    };
+  });
 
   export const applyReward = fn(z.object({ referralID: z.string() }), async (input) => {
-    const workspaceID = Actor.workspace()
+    const workspaceID = Actor.workspace();
 
     return Database.transaction(async (tx) => {
       const reward = await tx
-        .select({ amount: ReferralRewardTable.amount, timeApplied: ReferralRewardTable.timeApplied })
+        .select({
+          amount: ReferralRewardTable.amount,
+          timeApplied: ReferralRewardTable.timeApplied,
+        })
         .from(ReferralRewardTable)
         .where(
           and(
@@ -187,9 +217,9 @@ export namespace Referral {
             isNull(ReferralRewardTable.timeDeleted),
           ),
         )
-        .then((rows) => rows[0])
-      if (!reward) throw new Error("Referral reward not found")
-      if (reward.timeApplied) throw new Error("Referral reward already applied")
+        .then((rows) => rows[0]);
+      if (!reward) throw new Error("Referral reward not found");
+      if (reward.timeApplied) throw new Error("Referral reward already applied");
 
       const update = await tx
         .update(ReferralRewardTable)
@@ -203,14 +233,14 @@ export namespace Referral {
             isNull(ReferralRewardTable.timeApplied),
             isNull(ReferralRewardTable.timeDeleted),
           ),
-        )
-      if (update.rowsAffected === 0) throw new Error("Referral reward already applied")
+        );
+      if (update.rowsAffected === 0) throw new Error("Referral reward already applied");
 
-      await Billing.subtractLiteUsage(workspaceID, reward.amount)
+      await Billing.subtractLiteUsage(workspaceID, reward.amount);
 
-      return { amount: microCentsToCents(reward.amount) }
-    })
-  })
+      return { amount: microCentsToCents(reward.amount) };
+    });
+  });
 
   export const usagePreview = fn(z.object({ referralID: z.string() }), async (input) => {
     const row = await Database.use((tx) =>
@@ -237,10 +267,10 @@ export namespace Referral {
           ),
         )
         .then((rows) => rows[0]),
-    )
-    if (!row) return null
+    );
+    if (!row) return null;
 
-    const limits = LiteData.getLimits()
+    const limits = LiteData.getLimits();
     return {
       rollingUsage: usagePreviewItem(
         Subscription.analyzeRollingUsage({
@@ -282,12 +312,12 @@ export namespace Referral {
           timeSubscribed: row.timeCreated,
         }),
       ),
-    }
-  })
+    };
+  });
 
   export async function createFromAccount(input: { accountID: string; referralCode?: string }) {
-    const referralCode = normalizeCode(input.referralCode)
-    if (!referralCode) return
+    const referralCode = normalizeCode(input.referralCode);
+    if (!referralCode) return;
 
     return Database.transaction(async (tx) => {
       const code = await tx
@@ -295,15 +325,20 @@ export namespace Referral {
         .from(ReferralCodeTable)
         .innerJoin(WorkspaceTable, eq(WorkspaceTable.id, ReferralCodeTable.workspaceID))
         .where(and(eq(ReferralCodeTable.code, referralCode), isNull(WorkspaceTable.timeDeleted)))
-        .then((rows) => rows[0])
-      if (!code) throw new Error("Referral code invalid")
+        .then((rows) => rows[0]);
+      if (!code) throw new Error("Referral code invalid");
 
       const existingReferral = await tx
         .select({ id: ReferralTable.id })
         .from(ReferralTable)
-        .where(and(eq(ReferralTable.inviteeAccountID, input.accountID), isNull(ReferralTable.timeDeleted)))
-        .then((rows) => rows[0])
-      if (existingReferral) throw new Error("Referral already redeemed")
+        .where(
+          and(
+            eq(ReferralTable.inviteeAccountID, input.accountID),
+            isNull(ReferralTable.timeDeleted),
+          ),
+        )
+        .then((rows) => rows[0]);
+      if (existingReferral) throw new Error("Referral already redeemed");
 
       const selfReferral = await tx
         .select({ id: UserTable.id })
@@ -315,22 +350,22 @@ export namespace Referral {
             isNull(UserTable.timeDeleted),
           ),
         )
-        .then((rows) => rows[0])
-      if (selfReferral) throw new Error("Self-referral is not allowed")
+        .then((rows) => rows[0]);
+      if (selfReferral) throw new Error("Self-referral is not allowed");
 
       const workspaceIDs = await tx
         .select({ workspaceID: UserTable.workspaceID })
         .from(UserTable)
         .where(and(eq(UserTable.accountID, input.accountID), isNull(UserTable.timeDeleted)))
-        .then((rows) => rows.map((row) => row.workspaceID))
-      if (workspaceIDs.length === 0) return
+        .then((rows) => rows.map((row) => row.workspaceID));
+      if (workspaceIDs.length === 0) return;
 
       const activeLite = await tx
         .select({ id: LiteTable.id })
         .from(LiteTable)
         .where(and(inArray(LiteTable.workspaceID, workspaceIDs), isNull(LiteTable.timeDeleted)))
-        .then((rows) => rows[0])
-      if (activeLite) return
+        .then((rows) => rows[0]);
+      if (activeLite) return;
 
       const litePayment = await tx
         .select({ id: PaymentTable.id })
@@ -342,43 +377,55 @@ export namespace Referral {
             sql`JSON_UNQUOTE(JSON_EXTRACT(${PaymentTable.enrichment}, '$.type')) = 'lite'`,
           ),
         )
-        .then((rows) => rows[0])
-      if (litePayment) return
+        .then((rows) => rows[0]);
+      if (litePayment) return;
 
-      const referralID = Identifier.create("referral")
+      const referralID = Identifier.create("referral");
       await tx.insert(ReferralTable).ignore().values({
         workspaceID: code.workspaceID,
         id: referralID,
         inviteeAccountID: input.accountID,
-      })
+      });
 
       const referral = await tx
         .select({ id: ReferralTable.id, workspaceID: ReferralTable.workspaceID })
         .from(ReferralTable)
-        .where(and(eq(ReferralTable.inviteeAccountID, input.accountID), isNull(ReferralTable.timeDeleted)))
-        .then((rows) => rows[0])
-      if (!referral) throw new Error("Referral not created")
-      if (referral.id !== referralID) throw new Error("Referral already redeemed")
-    })
+        .where(
+          and(
+            eq(ReferralTable.inviteeAccountID, input.accountID),
+            isNull(ReferralTable.timeDeleted),
+          ),
+        )
+        .then((rows) => rows[0]);
+      if (!referral) throw new Error("Referral not created");
+      if (referral.id !== referralID) throw new Error("Referral already redeemed");
+    });
   }
 
   export async function create(input: { inviterWorkspaceID: string; inviteeWorkspaceID: string }) {
     return Database.transaction(async (tx) => {
-      if (input.inviterWorkspaceID === input.inviteeWorkspaceID) throw new Error("Self-referral workspace mismatch")
+      if (input.inviterWorkspaceID === input.inviteeWorkspaceID)
+        throw new Error("Self-referral workspace mismatch");
 
       const inviterWorkspace = await tx
         .select({ id: WorkspaceTable.id })
         .from(WorkspaceTable)
-        .where(and(eq(WorkspaceTable.id, input.inviterWorkspaceID), isNull(WorkspaceTable.timeDeleted)))
-        .then((rows) => rows[0])
-      if (!inviterWorkspace) throw new Error(`Inviter workspace not found: ${input.inviterWorkspaceID}`)
+        .where(
+          and(eq(WorkspaceTable.id, input.inviterWorkspaceID), isNull(WorkspaceTable.timeDeleted)),
+        )
+        .then((rows) => rows[0]);
+      if (!inviterWorkspace)
+        throw new Error(`Inviter workspace not found: ${input.inviterWorkspaceID}`);
 
       const inviteeWorkspace = await tx
         .select({ id: WorkspaceTable.id })
         .from(WorkspaceTable)
-        .where(and(eq(WorkspaceTable.id, input.inviteeWorkspaceID), isNull(WorkspaceTable.timeDeleted)))
-        .then((rows) => rows[0])
-      if (!inviteeWorkspace) throw new Error(`Invitee workspace not found: ${input.inviteeWorkspaceID}`)
+        .where(
+          and(eq(WorkspaceTable.id, input.inviteeWorkspaceID), isNull(WorkspaceTable.timeDeleted)),
+        )
+        .then((rows) => rows[0]);
+      if (!inviteeWorkspace)
+        throw new Error(`Invitee workspace not found: ${input.inviteeWorkspaceID}`);
 
       const invitee = await tx
         .select({ accountID: UserTable.accountID, userID: UserTable.id, liteID: LiteTable.id })
@@ -398,8 +445,9 @@ export namespace Referral {
             isNull(UserTable.timeDeleted),
           ),
         )
-        .then((rows) => rows[0])
-      if (!invitee?.accountID) throw new Error(`Invitee Lite workspace owner not found: ${input.inviteeWorkspaceID}`)
+        .then((rows) => rows[0]);
+      if (!invitee?.accountID)
+        throw new Error(`Invitee Lite workspace owner not found: ${input.inviteeWorkspaceID}`);
 
       const inviterUser = await tx
         .select({ id: UserTable.id })
@@ -411,33 +459,46 @@ export namespace Referral {
             isNull(UserTable.timeDeleted),
           ),
         )
-        .then((rows) => rows[0])
-      if (inviterUser) throw new Error(`Self-referral is not allowed: ${invitee.accountID}`)
+        .then((rows) => rows[0]);
+      if (inviterUser) throw new Error(`Self-referral is not allowed: ${invitee.accountID}`);
 
       const existingReferral = await tx
         .select({ id: ReferralTable.id, workspaceID: ReferralTable.workspaceID })
         .from(ReferralTable)
-        .where(and(eq(ReferralTable.inviteeAccountID, invitee.accountID), isNull(ReferralTable.timeDeleted)))
-        .then((rows) => rows[0])
+        .where(
+          and(
+            eq(ReferralTable.inviteeAccountID, invitee.accountID),
+            isNull(ReferralTable.timeDeleted),
+          ),
+        )
+        .then((rows) => rows[0]);
       if (existingReferral && existingReferral.workspaceID !== input.inviterWorkspaceID) {
-        throw new Error(`Referral already belongs to ${existingReferral.workspaceID}: ${existingReferral.id}`)
+        throw new Error(
+          `Referral already belongs to ${existingReferral.workspaceID}: ${existingReferral.id}`,
+        );
       }
 
-      const referralID = existingReferral?.id ?? Identifier.create("referral")
+      const referralID = existingReferral?.id ?? Identifier.create("referral");
       if (!existingReferral) {
         await tx.insert(ReferralTable).ignore().values({
           workspaceID: input.inviterWorkspaceID,
           id: referralID,
           inviteeAccountID: invitee.accountID,
-        })
+        });
 
         const referral = await tx
           .select({ id: ReferralTable.id })
           .from(ReferralTable)
-          .where(and(eq(ReferralTable.inviteeAccountID, invitee.accountID), isNull(ReferralTable.timeDeleted)))
-          .then((rows) => rows[0])
-        if (!referral) throw new Error(`Referral not created: ${invitee.accountID}`)
-        if (referral.id !== referralID) throw new Error(`Referral already redeemed: ${referral.id}`)
+          .where(
+            and(
+              eq(ReferralTable.inviteeAccountID, invitee.accountID),
+              isNull(ReferralTable.timeDeleted),
+            ),
+          )
+          .then((rows) => rows[0]);
+        if (!referral) throw new Error(`Referral not created: ${invitee.accountID}`);
+        if (referral.id !== referralID)
+          throw new Error(`Referral already redeemed: ${referral.id}`);
       }
 
       const rewardInsert = await tx
@@ -446,21 +507,27 @@ export namespace Referral {
         .values([
           { workspaceID: input.inviterWorkspaceID, referralID, amount: REWARD_AMOUNT },
           { workspaceID: input.inviteeWorkspaceID, referralID, amount: REWARD_AMOUNT },
-        ])
+        ]);
 
       const rewards = await tx
-        .select({ workspaceID: ReferralRewardTable.workspaceID, amount: ReferralRewardTable.amount })
+        .select({
+          workspaceID: ReferralRewardTable.workspaceID,
+          amount: ReferralRewardTable.amount,
+        })
         .from(ReferralRewardTable)
         .where(
           and(
             eq(ReferralRewardTable.referralID, referralID),
-            inArray(ReferralRewardTable.workspaceID, [input.inviterWorkspaceID, input.inviteeWorkspaceID]),
+            inArray(ReferralRewardTable.workspaceID, [
+              input.inviterWorkspaceID,
+              input.inviteeWorkspaceID,
+            ]),
             isNull(ReferralRewardTable.timeDeleted),
           ),
-        )
-      if (rewards.length !== 2) throw new Error(`Referral rewards not created: ${referralID}`)
+        );
+      if (rewards.length !== 2) throw new Error(`Referral rewards not created: ${referralID}`);
       if (rewards.some((reward) => reward.amount !== REWARD_AMOUNT)) {
-        throw new Error(`Referral reward amount mismatch: ${referralID}`)
+        throw new Error(`Referral reward amount mismatch: ${referralID}`);
       }
 
       return {
@@ -471,11 +538,14 @@ export namespace Referral {
         inviteeUserID: invitee.userID,
         liteID: invitee.liteID,
         rewardWorkspaces: rewards.map((reward) => reward.workspaceID),
-      }
-    })
+      };
+    });
   }
 
-  export async function completeFromLiteSubscription(input: { workspaceID: string; userID: string }) {
+  export async function completeFromLiteSubscription(input: {
+    workspaceID: string;
+    userID: string;
+  }) {
     return Database.transaction(async (tx) => {
       const invitee = await tx
         .select({ accountID: UserTable.accountID })
@@ -487,21 +557,26 @@ export namespace Referral {
             isNull(UserTable.timeDeleted),
           ),
         )
-        .then((rows) => rows[0])
-      if (!invitee?.accountID) throw new Error("Referral invitee account missing")
+        .then((rows) => rows[0]);
+      if (!invitee?.accountID) throw new Error("Referral invitee account missing");
 
       const referral = await tx
         .select({ id: ReferralTable.id, workspaceID: ReferralTable.workspaceID })
         .from(ReferralTable)
-        .where(and(eq(ReferralTable.inviteeAccountID, invitee.accountID), isNull(ReferralTable.timeDeleted)))
-        .then((rows) => rows[0])
-      if (!referral) return
+        .where(
+          and(
+            eq(ReferralTable.inviteeAccountID, invitee.accountID),
+            isNull(ReferralTable.timeDeleted),
+          ),
+        )
+        .then((rows) => rows[0]);
+      if (!referral) return;
 
       await tx.insert(ReferralRewardTable).ignore().values({
         workspaceID: referral.workspaceID,
         referralID: referral.id,
         amount: REWARD_AMOUNT,
-      })
+      });
 
       const existingInviteeReward = await tx
         .select({ workspaceID: ReferralRewardTable.workspaceID })
@@ -513,15 +588,15 @@ export namespace Referral {
             isNull(ReferralRewardTable.timeDeleted),
           ),
         )
-        .then((rows) => rows[0])
-      if (existingInviteeReward) return
+        .then((rows) => rows[0]);
+      if (existingInviteeReward) return;
 
       await tx.insert(ReferralRewardTable).ignore().values({
         workspaceID: input.workspaceID,
         referralID: referral.id,
         amount: REWARD_AMOUNT,
-      })
-    })
+      });
+    });
   }
 
   function usagePreviewItem(
@@ -532,6 +607,6 @@ export namespace Referral {
       beforePercent: before.usagePercent,
       afterPercent: after.usagePercent,
       resetInSec: after.resetInSec,
-    }
+    };
   }
 }

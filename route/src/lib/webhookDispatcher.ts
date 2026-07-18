@@ -38,7 +38,7 @@ export function decryptMetadata(encrypted: string | null): Record<string, string
 
 async function deliverRaw(
   url: string,
-  body: Record<string, unknown>
+  body: Record<string, unknown>,
 ): Promise<{ success: boolean; status: number; latencyMs: number; error?: string }> {
   const start = Date.now();
   try {
@@ -72,7 +72,7 @@ export async function deliverWebhook(
   url: string,
   payload: WebhookPayload,
   secret?: string | null,
-  maxRetries = 3
+  maxRetries = 3,
 ): Promise<{ success: boolean; status: number; error?: string }> {
   try {
     parseAndValidateWebhookUrl(url);
@@ -153,8 +153,9 @@ export async function dispatchEvent(event: WebhookEvent, data: Record<string, an
     await import("./db/webhooks");
   const { insertDelivery } = await import("./db/webhookDeliveries");
   const { buildSlackPayload } = await import("./webhooks/integrations/slack");
-  const { buildTelegramUrl, buildTelegramPayload } =
-    await import("./webhooks/integrations/telegram");
+  const { buildTelegramUrl, buildTelegramPayload } = await import(
+    "./webhooks/integrations/telegram"
+  );
   const { buildDiscordPayload } = await import("./webhooks/integrations/discord");
 
   const webhooks = getEnabledWebhooks();

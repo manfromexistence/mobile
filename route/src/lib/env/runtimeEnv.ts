@@ -28,7 +28,7 @@ const optionalTrimmedString = z.preprocess(normalizeOptionalString, z.string().m
 
 const optionalBooleanEnv = z.preprocess(
   normalizeOptionalString,
-  z.enum(BOOLEAN_ENV_VALUES).optional()
+  z.enum(BOOLEAN_ENV_VALUES).optional(),
 );
 
 const optionalHttpUrl = z.preprocess(
@@ -39,7 +39,7 @@ const optionalHttpUrl = z.preprocess(
     .refine((value) => value.startsWith("http://") || value.startsWith("https://"), {
       message: "must start with http:// or https://",
     })
-    .optional()
+    .optional(),
 );
 
 const optionalPortEnv = z.preprocess(
@@ -51,7 +51,7 @@ const optionalPortEnv = z.preprocess(
       const parsed = Number.parseInt(value, 10);
       return Number.isFinite(parsed) && parsed >= 1 && parsed <= 65535;
     }, "must be an integer between 1 and 65535")
-    .optional()
+    .optional(),
 );
 
 export const webRuntimeEnvSchema = z.object({
@@ -88,7 +88,7 @@ function getSchemaIssues(error: z.ZodError): RuntimeEnvIssue[] {
 }
 
 export function validateWebRuntimeEnv(
-  env: NodeJS.ProcessEnv = process.env
+  env: NodeJS.ProcessEnv = process.env,
 ): RuntimeEnvValidationResult {
   const secretValidation = validateSecrets(env);
   const schemaValidation = webRuntimeEnvSchema.safeParse(env);
@@ -109,7 +109,7 @@ export function validateWebRuntimeEnv(
 
 export function formatRuntimeEnvValidationErrors(
   errors: RuntimeEnvIssue[],
-  warnings: RuntimeEnvIssue[] = []
+  warnings: RuntimeEnvIssue[] = [],
 ): string {
   const lines = ["Invalid web runtime environment configuration:"];
 
@@ -137,7 +137,7 @@ export function getWebRuntimeEnv(env: NodeJS.ProcessEnv = process.env): WebRunti
 
 export function enforceWebRuntimeEnv(
   env: NodeJS.ProcessEnv = process.env,
-  logger: Pick<Console, "error" | "warn"> = console
+  logger: Pick<Console, "error" | "warn"> = console,
 ): void {
   const result = validateWebRuntimeEnv(env);
 

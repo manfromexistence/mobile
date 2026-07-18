@@ -42,7 +42,7 @@ export function getProviderCallStats(): ProviderCallStat[] {
        LEFT JOIN provider_nodes pn ON pn.id = c.provider
        WHERE c.provider IS NOT NULL AND c.provider != '-'
        GROUP BY c.provider
-       ORDER BY totalRequests DESC`
+       ORDER BY totalRequests DESC`,
     )
     .all() as ProviderCallStat[];
 }
@@ -62,7 +62,7 @@ export function getModelCallStats(): ModelCallStat[] {
        LEFT JOIN provider_nodes pn ON pn.id = c.provider
        WHERE c.provider IS NOT NULL AND c.model IS NOT NULL
        GROUP BY c.provider, c.model
-       ORDER BY c.provider, requests DESC`
+       ORDER BY c.provider, requests DESC`,
     )
     .all() as ModelCallStat[];
 }

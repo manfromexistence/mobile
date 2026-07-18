@@ -38,13 +38,13 @@ test("stream-body and event-stream acceptance predicates", () => {
     shouldTreatBufferedEventResponseAsExpected(
       false,
       { accept: "application/json" },
-      { stream: true }
+      { stream: true },
     ),
-    true
+    true,
   );
   assert.equal(
     shouldTreatBufferedEventResponseAsExpected(false, { accept: "application/json" }, {}),
-    false
+    false,
   );
 });
 
@@ -68,52 +68,52 @@ test("appendNonStreamingSseTerminalSignal detects [DONE] and terminal event type
     assert.equal(
       appendNonStreamingSseTerminalSignal(typed, `data: {"type":"${eventType}"}\n`),
       true,
-      eventType
+      eventType,
     );
 
     const eventOnly: NonStreamingSseTerminalState = { currentEvent: "", pendingLine: "" };
     assert.equal(
       appendNonStreamingSseTerminalSignal(eventOnly, `event: ${eventType}\n\n`),
       true,
-      eventType
+      eventType,
     );
   }
 
   const splitTerminalData: NonStreamingSseTerminalState = { currentEvent: "", pendingLine: "" };
   assert.equal(
     appendNonStreamingSseTerminalSignal(splitTerminalData, "event: response.completed\n"),
-    false
+    false,
   );
   assert.equal(
     appendNonStreamingSseTerminalSignal(
       splitTerminalData,
-      'data: {"response":{"status":"completed"}}\n'
+      'data: {"response":{"status":"completed"}}\n',
     ),
-    true
+    true,
   );
 
   const messageDeltaWithType: NonStreamingSseTerminalState = { currentEvent: "", pendingLine: "" };
   assert.equal(
     appendNonStreamingSseTerminalSignal(
       messageDeltaWithType,
-      'data: {"type":"message_delta","delta":{"stop_reason":"end_turn"}}\n'
+      'data: {"type":"message_delta","delta":{"stop_reason":"end_turn"}}\n',
     ),
-    true
+    true,
   );
 
   const messageDeltaFromEvent: NonStreamingSseTerminalState = { currentEvent: "", pendingLine: "" };
   assert.equal(
     appendNonStreamingSseTerminalSignal(
       messageDeltaFromEvent,
-      'event: message_delta\ndata: {"delta":{"stop_reason":"end_turn"}}\n'
+      'event: message_delta\ndata: {"delta":{"stop_reason":"end_turn"}}\n',
     ),
-    true
+    true,
   );
 
   const delta: NonStreamingSseTerminalState = { currentEvent: "", pendingLine: "" };
   assert.equal(
     appendNonStreamingSseTerminalSignal(delta, 'data: {"type":"content_block_delta"}\n'),
-    false
+    false,
   );
 });
 

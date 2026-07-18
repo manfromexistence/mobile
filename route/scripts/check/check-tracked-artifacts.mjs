@@ -84,14 +84,14 @@ function main() {
   }
 
   console.error(
-    `[tracked-artifacts] FAIL — ${violations.length} forbidden artifact(s) tracked by git:`
+    `[tracked-artifacts] FAIL — ${violations.length} forbidden artifact(s) tracked by git:`,
   );
   for (const v of violations) {
     console.error(`  ✗ ${v}`);
   }
   console.error(
     "\n  → Run: git rm --cached <path> to untrack the artifact." +
-      "\n  → Add the path to .gitignore to prevent re-tracking."
+      "\n  → Add the path to .gitignore to prevent re-tracking.",
   );
   process.exit(1);
 }

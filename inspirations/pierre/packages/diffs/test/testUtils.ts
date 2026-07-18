@@ -1,15 +1,12 @@
-import type { ElementContent, Element as HASTElement } from 'hast';
+import type { ElementContent, Element as HASTElement } from "hast";
 
-import { DEFAULT_COLLAPSED_CONTEXT_THRESHOLD } from '../src/constants';
-import type { HunksRenderResult } from '../src/renderers/DiffHunksRenderer';
-import type { FileDiffMetadata, ParsedPatch } from '../src/types';
+import { DEFAULT_COLLAPSED_CONTEXT_THRESHOLD } from "../src/constants";
+import type { HunksRenderResult } from "../src/renderers/DiffHunksRenderer";
+import type { FileDiffMetadata, ParsedPatch } from "../src/types";
 
 // Assertion helpers
 
-export function assertDefined<T>(
-  value: T | undefined | null,
-  message: string
-): asserts value is T {
+export function assertDefined<T>(value: T | undefined | null, message: string): asserts value is T {
   if (value == null) {
     throw new Error(message);
   }
@@ -18,44 +15,40 @@ export function assertDefined<T>(
 // HAST element helpers
 
 export function isHastElement(node: ElementContent): node is HASTElement {
-  return node.type === 'element';
+  return node.type === "element";
 }
 
 export function isHastLineElement(node: ElementContent): boolean {
-  return isHastElement(node) && node.properties?.['data-line'] != null;
+  return isHastElement(node) && node.properties?.["data-line"] != null;
 }
 
 export function isHastAnnotationElement(node: ElementContent): boolean {
-  return (
-    isHastElement(node) && node.properties?.['data-line-annotation'] != null
-  );
+  return isHastElement(node) && node.properties?.["data-line-annotation"] != null;
 }
 
 export function getHastLineIndex(node: ElementContent): string | undefined {
   if (!isHastElement(node)) return undefined;
-  const lineIndex = node.properties?.['data-line-index'];
-  return typeof lineIndex === 'string' ? lineIndex : undefined;
+  const lineIndex = node.properties?.["data-line-index"];
+  return typeof lineIndex === "string" ? lineIndex : undefined;
 }
 
-export function getHastAnnotationIndex(
-  node: ElementContent
-): string | undefined {
+export function getHastAnnotationIndex(node: ElementContent): string | undefined {
   if (!isHastElement(node)) return undefined;
-  const lineAnnotation = node.properties?.['data-line-annotation'];
-  return typeof lineAnnotation === 'string' ? lineAnnotation : undefined;
+  const lineAnnotation = node.properties?.["data-line-annotation"];
+  return typeof lineAnnotation === "string" ? lineAnnotation : undefined;
 }
 
 export function getHastLineType(node: ElementContent): string | undefined {
   if (!isHastElement(node)) return undefined;
-  const lineType = node.properties?.['data-line-type'];
-  return typeof lineType === 'string' ? lineType : undefined;
+  const lineType = node.properties?.["data-line-type"];
+  return typeof lineType === "string" ? lineType : undefined;
 }
 
 export function findHastSlotElements(el: HASTElement): HASTElement[] {
   const slots: HASTElement[] = [];
   for (const child of el.children) {
     if (isHastElement(child)) {
-      if (child.tagName === 'slot') {
+      if (child.tagName === "slot") {
         slots.push(child);
       }
       slots.push(...findHastSlotElements(child));
@@ -92,10 +85,7 @@ export interface VerifyResult {
 // This intentionally looks like a second implementation of the parser's
 // arithmetic — it validates that independently-written fields stay in sync,
 // not that the parser matches itself.
-export function verifyHunkLineValues(
-  file: FileDiffMetadata,
-  prefix: string = 'file'
-): string[] {
+export function verifyHunkLineValues(file: FileDiffMetadata, prefix: string = "file"): string[] {
   const errors: string[] = [];
 
   let currentSplitLineTotal = 0;
@@ -111,9 +101,9 @@ export function verifyHunkLineValues(
     let deletionLines = 0;
 
     for (const content of hunk.hunkContent) {
-      if (content.type === 'context') {
+      if (content.type === "context") {
         contextLines += content.lines;
-      } else if (content.type === 'change') {
+      } else if (content.type === "change") {
         additionLines += content.additions;
         deletionLines += content.deletions;
       }
@@ -123,7 +113,7 @@ export function verifyHunkLineValues(
     const expectedAdditionCount = additionLines + contextLines;
     if (hunk.additionCount !== expectedAdditionCount) {
       errors.push(
-        `${hunkPrefix}: additionCount (${hunk.additionCount}) !== additionLines + context (${expectedAdditionCount})`
+        `${hunkPrefix}: additionCount (${hunk.additionCount}) !== additionLines + context (${expectedAdditionCount})`,
       );
     }
 
@@ -131,47 +121,47 @@ export function verifyHunkLineValues(
     const expectedDeletionCount = deletionLines + contextLines;
     if (hunk.deletionCount !== expectedDeletionCount) {
       errors.push(
-        `${hunkPrefix}: deletionCount (${hunk.deletionCount}) !== deletionLines + context (${expectedDeletionCount})`
+        `${hunkPrefix}: deletionCount (${hunk.deletionCount}) !== deletionLines + context (${expectedDeletionCount})`,
       );
     }
 
     // Verify additionLines matches counted
     if (hunk.additionLines !== additionLines) {
       errors.push(
-        `${hunkPrefix}: additionLines (${hunk.additionLines}) !== counted additions (${additionLines})`
+        `${hunkPrefix}: additionLines (${hunk.additionLines}) !== counted additions (${additionLines})`,
       );
     }
 
     // Verify deletionLines matches counted
     if (hunk.deletionLines !== deletionLines) {
       errors.push(
-        `${hunkPrefix}: deletionLines (${hunk.deletionLines}) !== counted deletions (${deletionLines})`
+        `${hunkPrefix}: deletionLines (${hunk.deletionLines}) !== counted deletions (${deletionLines})`,
       );
     }
 
     // Verify splitLineCount = sum of (context lines + max(additions, deletions) per change block)
     const expectedSplitLineCount = hunk.hunkContent.reduce((acc, content) => {
-      if (content.type === 'context') {
+      if (content.type === "context") {
         return acc + content.lines;
       }
       return acc + Math.max(content.additions, content.deletions);
     }, 0);
     if (hunk.splitLineCount !== expectedSplitLineCount) {
       errors.push(
-        `${hunkPrefix}: splitLineCount (${hunk.splitLineCount}) !== calculated from hunkContent (${expectedSplitLineCount})`
+        `${hunkPrefix}: splitLineCount (${hunk.splitLineCount}) !== calculated from hunkContent (${expectedSplitLineCount})`,
       );
     }
 
     // Verify unifiedLineCount = sum of (context lines + additions + deletions per change block)
     const expectedUnifiedLineCount = hunk.hunkContent.reduce((acc, content) => {
-      if (content.type === 'context') {
+      if (content.type === "context") {
         return acc + content.lines;
       }
       return acc + content.additions + content.deletions;
     }, 0);
     if (hunk.unifiedLineCount !== expectedUnifiedLineCount) {
       errors.push(
-        `${hunkPrefix}: unifiedLineCount (${hunk.unifiedLineCount}) !== calculated from hunkContent (${expectedUnifiedLineCount})`
+        `${hunkPrefix}: unifiedLineCount (${hunk.unifiedLineCount}) !== calculated from hunkContent (${expectedUnifiedLineCount})`,
       );
     }
 
@@ -179,29 +169,25 @@ export function verifyHunkLineValues(
     // Verify splitLineStart is cumulative
     if (hunk.splitLineStart !== expectedSplitLineStart) {
       errors.push(
-        `${hunkPrefix}: splitLineStart (${hunk.splitLineStart}) !== expected cumulative (${expectedSplitLineStart})`
+        `${hunkPrefix}: splitLineStart (${hunk.splitLineStart}) !== expected cumulative (${expectedSplitLineStart})`,
       );
     }
     currentSplitLineTotal += hunk.collapsedBefore + hunk.splitLineCount;
 
-    const expectedUnifiedLineStart =
-      currentUnifiedLineTotal + hunk.collapsedBefore;
+    const expectedUnifiedLineStart = currentUnifiedLineTotal + hunk.collapsedBefore;
     // Verify unifiedLineStart is cumulative
     if (hunk.unifiedLineStart !== expectedUnifiedLineStart) {
       errors.push(
-        `${hunkPrefix}: unifiedLineStart (${hunk.unifiedLineStart}) !== expected cumulative (${expectedUnifiedLineStart})`
+        `${hunkPrefix}: unifiedLineStart (${hunk.unifiedLineStart}) !== expected cumulative (${expectedUnifiedLineStart})`,
       );
     }
     currentUnifiedLineTotal += hunk.collapsedBefore + hunk.unifiedLineCount;
 
     // Verify collapsedBefore = additionStart - 1 - lastHunkAdditionEnd
-    const expectedCollapsedBefore = Math.max(
-      hunk.additionStart - 1 - lastHunkAdditionEnd,
-      0
-    );
+    const expectedCollapsedBefore = Math.max(hunk.additionStart - 1 - lastHunkAdditionEnd, 0);
     if (hunk.collapsedBefore !== expectedCollapsedBefore) {
       errors.push(
-        `${hunkPrefix}: collapsedBefore (${hunk.collapsedBefore}) !== expected (${expectedCollapsedBefore})`
+        `${hunkPrefix}: collapsedBefore (${hunk.collapsedBefore}) !== expected (${expectedCollapsedBefore})`,
       );
     }
     lastHunkAdditionEnd = hunk.additionStart + hunk.additionCount - 1;
@@ -210,11 +196,11 @@ export function verifyHunkLineValues(
   // Verify file-level totals
   let expectedTotalSplitLines = file.hunks.reduce(
     (sum, h) => sum + h.collapsedBefore + h.splitLineCount,
-    0
+    0,
   );
   let expectedTotalUnifiedLines = file.hunks.reduce(
     (sum, h) => sum + h.collapsedBefore + h.unifiedLineCount,
-    0
+    0,
   );
 
   // Account for collapsed lines after the final hunk (only for non-partial diffs)
@@ -223,10 +209,7 @@ export function verifyHunkLineValues(
     // Clamp to 0: a diff whose addition side is empty (file deleted to
     // nothing) has additionStart 0 / additionCount 0, and without the clamp
     // the -1 end would invent a phantom trailing context line
-    const lastHunkEnd = Math.max(
-      lastHunk.additionStart + lastHunk.additionCount - 1,
-      0
-    );
+    const lastHunkEnd = Math.max(lastHunk.additionStart + lastHunk.additionCount - 1, 0);
     const totalFileLines = file.additionLines.length;
     const collapsedAfter = Math.max(totalFileLines - lastHunkEnd, 0);
 
@@ -236,13 +219,13 @@ export function verifyHunkLineValues(
 
   if (file.splitLineCount !== expectedTotalSplitLines) {
     errors.push(
-      `${prefix}: splitLineCount (${file.splitLineCount}) !== sum of hunk splitLineCounts (${expectedTotalSplitLines})`
+      `${prefix}: splitLineCount (${file.splitLineCount}) !== sum of hunk splitLineCounts (${expectedTotalSplitLines})`,
     );
   }
 
   if (file.unifiedLineCount !== expectedTotalUnifiedLines) {
     errors.push(
-      `${prefix}: unifiedLineCount (${file.unifiedLineCount}) !== sum of hunk unifiedLineCounts (${expectedTotalUnifiedLines})`
+      `${prefix}: unifiedLineCount (${file.unifiedLineCount}) !== sum of hunk unifiedLineCounts (${expectedTotalUnifiedLines})`,
     );
   }
 
@@ -268,9 +251,7 @@ export function verifyFileDiffHunkValues(diff: FileDiffMetadata): VerifyResult {
 }
 
 export function countRenderedLines(ast: ElementContent[]): number {
-  return collectAllElements(ast).filter(
-    (node) => node.properties?.['data-line'] != null
-  ).length;
+  return collectAllElements(ast).filter((node) => node.properties?.["data-line"] != null).length;
 }
 
 // Count rows in split mode by looking at line-index values
@@ -282,10 +263,10 @@ export function countSplitRows(result: HunksRenderResult): number {
   for (const nodes of [additionsContentAST, deletionsContentAST]) {
     const allElements = collectAllElements(nodes);
     for (const node of allElements) {
-      const lineIndex = node.properties?.['data-line-index'];
-      if (typeof lineIndex === 'string') {
+      const lineIndex = node.properties?.["data-line-index"];
+      if (typeof lineIndex === "string") {
         // data-line-index format is "unifiedIndex,splitIndex"
-        const splitIndex = Number.parseInt(lineIndex.split(',')[1], 10);
+        const splitIndex = Number.parseInt(lineIndex.split(",")[1], 10);
         if (!isNaN(splitIndex)) {
           lineIndices.add(splitIndex);
         }
@@ -304,13 +285,13 @@ export function countSplitRows(result: HunksRenderResult): number {
 
 // Recursively concatenates the text nodes under a HAST node.
 export function hastTextContent(node: ElementContent): string {
-  if (node.type === 'text') {
+  if (node.type === "text") {
     return node.value;
   }
   if (!isHastElement(node)) {
-    return '';
+    return "";
   }
-  let text = '';
+  let text = "";
   for (const child of node.children) {
     text += hastTextContent(child);
   }
@@ -318,7 +299,7 @@ export function hastTextContent(node: ElementContent): string {
 }
 
 export interface ProjectedRow {
-  kind: 'line' | 'buffer' | 'no-newline' | 'separator' | 'annotation' | 'other';
+  kind: "line" | "buffer" | "no-newline" | "separator" | "annotation" | "other";
   unifiedIndex?: number;
   splitIndex?: number;
   lineNumber?: number;
@@ -341,52 +322,44 @@ export function projectColumn(ast: ElementContent[]): ProjectedRow[] {
       continue;
     }
     const props = node.properties ?? {};
-    if (props['data-line'] != null) {
+    if (props["data-line"] != null) {
       const lineIndex =
-        typeof props['data-line-index'] === 'string'
-          ? props['data-line-index']
-          : '';
-      const [unifiedStr, splitStr] = lineIndex.split(',');
+        typeof props["data-line-index"] === "string" ? props["data-line-index"] : "";
+      const [unifiedStr, splitStr] = lineIndex.split(",");
       const unifiedIndex = Number.parseInt(unifiedStr, 10);
       const splitIndex = Number.parseInt(splitStr, 10);
       let text = hastTextContent(node);
-      if (text.endsWith('\n')) {
+      if (text.endsWith("\n")) {
         text = text.slice(0, -1);
       }
       rows.push({
-        kind: 'line',
+        kind: "line",
         unifiedIndex: Number.isNaN(unifiedIndex) ? undefined : unifiedIndex,
         splitIndex: Number.isNaN(splitIndex) ? undefined : splitIndex,
-        lineNumber: Number(props['data-line']),
-        altLineNumber:
-          props['data-alt-line'] != null
-            ? Number(props['data-alt-line'])
-            : undefined,
-        lineType:
-          typeof props['data-line-type'] === 'string'
-            ? props['data-line-type']
-            : undefined,
+        lineNumber: Number(props["data-line"]),
+        altLineNumber: props["data-alt-line"] != null ? Number(props["data-alt-line"]) : undefined,
+        lineType: typeof props["data-line-type"] === "string" ? props["data-line-type"] : undefined,
         text,
       });
-    } else if ('data-content-buffer' in props) {
+    } else if ("data-content-buffer" in props) {
       rows.push({
-        kind: 'buffer',
-        bufferSize: Number(props['data-buffer-size']),
+        kind: "buffer",
+        bufferSize: Number(props["data-buffer-size"]),
       });
-    } else if ('data-no-newline' in props) {
-      rows.push({ kind: 'no-newline' });
-    } else if (props['data-separator'] != null) {
+    } else if ("data-no-newline" in props) {
+      rows.push({ kind: "no-newline" });
+    } else if (props["data-separator"] != null) {
       rows.push({
-        kind: 'separator',
-        separator: String(props['data-separator']),
+        kind: "separator",
+        separator: String(props["data-separator"]),
       });
-    } else if (props['data-line-annotation'] != null) {
+    } else if (props["data-line-annotation"] != null) {
       rows.push({
-        kind: 'annotation',
-        annotationIndex: String(props['data-line-annotation']),
+        kind: "annotation",
+        annotationIndex: String(props["data-line-annotation"]),
       });
     } else {
-      rows.push({ kind: 'other' });
+      rows.push({ kind: "other" });
     }
   }
   return rows;
@@ -400,22 +373,13 @@ export interface RenderResultProjection {
   bufferAfter: number;
 }
 
-export function projectRenderResult(
-  result: HunksRenderResult
-): RenderResultProjection {
+export function projectRenderResult(result: HunksRenderResult): RenderResultProjection {
   return {
-    unified:
-      result.unifiedContentAST != null
-        ? projectColumn(result.unifiedContentAST)
-        : undefined,
+    unified: result.unifiedContentAST != null ? projectColumn(result.unifiedContentAST) : undefined,
     deletions:
-      result.deletionsContentAST != null
-        ? projectColumn(result.deletionsContentAST)
-        : undefined,
+      result.deletionsContentAST != null ? projectColumn(result.deletionsContentAST) : undefined,
     additions:
-      result.additionsContentAST != null
-        ? projectColumn(result.additionsContentAST)
-        : undefined,
+      result.additionsContentAST != null ? projectColumn(result.additionsContentAST) : undefined,
     bufferBefore: result.bufferBefore,
     bufferAfter: result.bufferAfter,
   };
@@ -426,18 +390,18 @@ export function projectRenderResult(
 export function rowDigests(rows: ProjectedRow[]): string[] {
   return rows.map((row) => {
     switch (row.kind) {
-      case 'line': {
+      case "line": {
         const alt =
           row.altLineNumber != null && row.altLineNumber !== row.lineNumber
             ? `(alt ${row.altLineNumber})`
-            : '';
+            : "";
         return `u${row.unifiedIndex}/s${row.splitIndex} ${row.lineType} #${row.lineNumber}${alt} |${row.text}|`;
       }
-      case 'buffer':
+      case "buffer":
         return `buffer x${row.bufferSize}`;
-      case 'separator':
+      case "separator":
         return `separator ${row.separator}`;
-      case 'annotation':
+      case "annotation":
         return `annotation ${row.annotationIndex}`;
       default:
         return row.kind;
@@ -453,9 +417,7 @@ export interface AnnotationProjectionEntry {
 
 // Walks a rendered column in document order and pairs every annotation
 // element with the data-line-index of the line row preceding it.
-export function annotationProjection(
-  ast: ElementContent[]
-): AnnotationProjectionEntry[] {
+export function annotationProjection(ast: ElementContent[]): AnnotationProjectionEntry[] {
   const entries: AnnotationProjectionEntry[] = [];
   let lastLineIndex: string | undefined;
   for (const node of collectAllElements(ast)) {
@@ -474,9 +436,7 @@ export function annotationProjection(
       lineIndex: lastLineIndex,
       annotationIndex,
       slotNames: findHastSlotElements(node).map((slot) =>
-        typeof slot.properties?.name === 'string'
-          ? slot.properties.name
-          : undefined
+        typeof slot.properties?.name === "string" ? slot.properties.name : undefined,
       ),
     });
   }
@@ -490,23 +450,22 @@ export function annotationProjection(
 // new-file number on every other row type.
 export function collectRowSourceMismatches(
   rows: ProjectedRow[],
-  column: 'unified' | 'deletions' | 'additions',
+  column: "unified" | "deletions" | "additions",
   oldLines: string[],
-  newLines: string[]
+  newLines: string[],
 ): string[] {
   const mismatches: string[] = [];
   for (const row of rows) {
-    if (row.kind !== 'line' || row.lineNumber == null) {
+    if (row.kind !== "line" || row.lineNumber == null) {
       continue;
     }
     const fromOld =
-      column === 'deletions' ||
-      (column === 'unified' && row.lineType === 'change-deletion');
+      column === "deletions" || (column === "unified" && row.lineType === "change-deletion");
     const source = fromOld ? oldLines : newLines;
     const expected = source[row.lineNumber - 1];
     if (row.text !== expected) {
       mismatches.push(
-        `${column} #${row.lineNumber} (${row.lineType}): rendered ${JSON.stringify(row.text)} !== source ${JSON.stringify(expected)}`
+        `${column} #${row.lineNumber} (${row.lineType}): rendered ${JSON.stringify(row.text)} !== source ${JSON.stringify(expected)}`,
       );
     }
   }
@@ -519,16 +478,13 @@ export function collectRowSourceMismatches(
 // hidden behind a separator.
 export function countDeclaredRows(
   diff: FileDiffMetadata,
-  style: 'split' | 'unified',
-  collapsedContextThreshold: number = DEFAULT_COLLAPSED_CONTEXT_THRESHOLD
+  style: "split" | "unified",
+  collapsedContextThreshold: number = DEFAULT_COLLAPSED_CONTEXT_THRESHOLD,
 ): number {
   let count = 0;
   for (const hunk of diff.hunks) {
-    count += style === 'split' ? hunk.splitLineCount : hunk.unifiedLineCount;
-    if (
-      hunk.collapsedBefore > 0 &&
-      hunk.collapsedBefore <= collapsedContextThreshold
-    ) {
+    count += style === "split" ? hunk.splitLineCount : hunk.unifiedLineCount;
+    if (hunk.collapsedBefore > 0 && hunk.collapsedBefore <= collapsedContextThreshold) {
       count += hunk.collapsedBefore;
     }
   }
@@ -552,14 +508,14 @@ export function hunkDigest(file: FileDiffMetadata): {
     type: file.type,
     hunks: file.hunks.map(
       (hunk) =>
-        `a${hunk.additionCount}@${hunk.additionStart} d${hunk.deletionCount}@${hunk.deletionStart} split:${hunk.splitLineCount} unified:${hunk.unifiedLineCount} collapsedBefore:${hunk.collapsedBefore}`
+        `a${hunk.additionCount}@${hunk.additionStart} d${hunk.deletionCount}@${hunk.deletionStart} split:${hunk.splitLineCount} unified:${hunk.unifiedLineCount} collapsedBefore:${hunk.collapsedBefore}`,
     ),
     totals: `split:${file.splitLineCount} unified:${file.unifiedLineCount} additionLines:${file.additionLines.length} deletionLines:${file.deletionLines.length}`,
   };
 }
 
 export function patchDigest(
-  patches: ParsedPatch[]
+  patches: ParsedPatch[],
 ): Array<{ patchIndex: number; files: ReturnType<typeof hunkDigest>[] }> {
   return patches.map((patch, patchIndex) => ({
     patchIndex,
@@ -576,11 +532,11 @@ export function extractLineNumbers(ast: ElementContent[]): {
   const allElements = collectAllElements(ast);
 
   for (const node of allElements) {
-    if (node.properties?.['data-line'] != null) {
-      const lineIndex = node.properties?.['data-line-index'];
-      if (typeof lineIndex === 'string') {
+    if (node.properties?.["data-line"] != null) {
+      const lineIndex = node.properties?.["data-line-index"];
+      if (typeof lineIndex === "string") {
         // data-line-index format is "unifiedIndex,splitIndex"
-        const [unifiedStr, splitStr] = lineIndex.split(',');
+        const [unifiedStr, splitStr] = lineIndex.split(",");
         const unified = Number.parseInt(unifiedStr, 10);
         const split = Number.parseInt(splitStr, 10);
         if (!isNaN(unified)) {

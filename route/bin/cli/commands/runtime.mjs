@@ -28,7 +28,7 @@ async function runRepairAction(opts, cmd) {
   await withSpinner(
     "Repairing native deps",
     async () => ensureBetterSqliteRuntime({ silent: true, force: opts.force }),
-    globalOpts
+    globalOpts,
   );
   const ok = hasModule("better-sqlite3") && isBetterSqliteBinaryValid();
   if (ok) {

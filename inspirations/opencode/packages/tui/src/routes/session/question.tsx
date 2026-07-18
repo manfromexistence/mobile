@@ -1,134 +1,134 @@
-import { createStore } from "solid-js/store"
-import { createMemo, createSignal, For, onCleanup, onMount, Show } from "solid-js"
-import { useRenderer } from "@opentui/solid"
-import type { TextareaRenderable } from "@opentui/core"
-import { selectedForeground, tint, useTheme } from "../../context/theme"
-import type { QuestionAnswer, QuestionRequest } from "@opencode-ai/sdk/v2"
-import { useSDK } from "../../context/sdk"
-import { SplitBorder } from "../../ui/border"
-import { useTuiConfig } from "../../config"
-import { useBindings, useOpencodeModeStack } from "../../keymap"
+import { createStore } from "solid-js/store";
+import { createMemo, createSignal, For, onCleanup, onMount, Show } from "solid-js";
+import { useRenderer } from "@opentui/solid";
+import type { TextareaRenderable } from "@opentui/core";
+import { selectedForeground, tint, useTheme } from "../../context/theme";
+import type { QuestionAnswer, QuestionRequest } from "@opencode-ai/sdk/v2";
+import { useSDK } from "../../context/sdk";
+import { SplitBorder } from "../../ui/border";
+import { useTuiConfig } from "../../config";
+import { useBindings, useOpencodeModeStack } from "../../keymap";
 
-const QUESTION_MODE = "question"
+const QUESTION_MODE = "question";
 
 export function QuestionPrompt(props: { request: QuestionRequest; directory?: string }) {
-  const sdk = useSDK()
-  const { theme } = useTheme()
-  const renderer = useRenderer()
-  const tuiConfig = useTuiConfig()
-  const modeStack = useOpencodeModeStack()
+  const sdk = useSDK();
+  const { theme } = useTheme();
+  const renderer = useRenderer();
+  const tuiConfig = useTuiConfig();
+  const modeStack = useOpencodeModeStack();
 
-  const questions = createMemo(() => props.request.questions)
-  const single = createMemo(() => questions().length === 1 && questions()[0]?.multiple !== true)
-  const tabs = createMemo(() => (single() ? 1 : questions().length + 1)) // questions + confirm tab (no confirm for single select)
-  const [tabHover, setTabHover] = createSignal<number | "confirm" | null>(null)
+  const questions = createMemo(() => props.request.questions);
+  const single = createMemo(() => questions().length === 1 && questions()[0]?.multiple !== true);
+  const tabs = createMemo(() => (single() ? 1 : questions().length + 1)); // questions + confirm tab (no confirm for single select)
+  const [tabHover, setTabHover] = createSignal<number | "confirm" | null>(null);
   const [store, setStore] = createStore({
     tab: 0,
     answers: [] as QuestionAnswer[],
     custom: [] as string[],
     selected: 0,
     editing: false,
-  })
+  });
 
-  let textarea: TextareaRenderable | undefined
+  let textarea: TextareaRenderable | undefined;
 
-  const question = createMemo(() => questions()[store.tab])
-  const confirm = createMemo(() => !single() && store.tab === questions().length)
-  const options = createMemo(() => question()?.options ?? [])
-  const custom = createMemo(() => question()?.custom !== false)
-  const other = createMemo(() => custom() && store.selected === options().length)
-  const input = createMemo(() => store.custom[store.tab] ?? "")
-  const multi = createMemo(() => question()?.multiple === true)
+  const question = createMemo(() => questions()[store.tab]);
+  const confirm = createMemo(() => !single() && store.tab === questions().length);
+  const options = createMemo(() => question()?.options ?? []);
+  const custom = createMemo(() => question()?.custom !== false);
+  const other = createMemo(() => custom() && store.selected === options().length);
+  const input = createMemo(() => store.custom[store.tab] ?? "");
+  const multi = createMemo(() => question()?.multiple === true);
   const customPicked = createMemo(() => {
-    const value = input()
-    if (!value) return false
-    return store.answers[store.tab]?.includes(value) ?? false
-  })
+    const value = input();
+    if (!value) return false;
+    return store.answers[store.tab]?.includes(value) ?? false;
+  });
 
   function submit() {
-    const answers = questions().map((_, i) => store.answers[i] ?? [])
+    const answers = questions().map((_, i) => store.answers[i] ?? []);
     void sdk.client.question.reply({
       requestID: props.request.id,
       directory: props.directory,
       answers,
-    })
+    });
   }
 
   function reject() {
     void sdk.client.question.reject({
       requestID: props.request.id,
       directory: props.directory,
-    })
+    });
   }
 
   function pick(answer: string, custom: boolean = false) {
-    const answers = [...store.answers]
-    answers[store.tab] = [answer]
-    setStore("answers", answers)
+    const answers = [...store.answers];
+    answers[store.tab] = [answer];
+    setStore("answers", answers);
     if (custom) {
-      const inputs = [...store.custom]
-      inputs[store.tab] = answer
-      setStore("custom", inputs)
+      const inputs = [...store.custom];
+      inputs[store.tab] = answer;
+      setStore("custom", inputs);
     }
     if (single()) {
       void sdk.client.question.reply({
         requestID: props.request.id,
         directory: props.directory,
         answers: [[answer]],
-      })
-      return
+      });
+      return;
     }
-    setStore("tab", store.tab + 1)
-    setStore("selected", 0)
+    setStore("tab", store.tab + 1);
+    setStore("selected", 0);
   }
 
   function toggle(answer: string) {
-    const existing = store.answers[store.tab] ?? []
-    const next = [...existing]
-    const index = next.indexOf(answer)
-    if (index === -1) next.push(answer)
-    if (index !== -1) next.splice(index, 1)
-    const answers = [...store.answers]
-    answers[store.tab] = next
-    setStore("answers", answers)
+    const existing = store.answers[store.tab] ?? [];
+    const next = [...existing];
+    const index = next.indexOf(answer);
+    if (index === -1) next.push(answer);
+    if (index !== -1) next.splice(index, 1);
+    const answers = [...store.answers];
+    answers[store.tab] = next;
+    setStore("answers", answers);
   }
 
   function moveTo(index: number) {
-    setStore("selected", index)
+    setStore("selected", index);
   }
 
   function selectTab(index: number) {
-    setStore("tab", index)
-    setStore("selected", 0)
+    setStore("tab", index);
+    setStore("selected", 0);
   }
 
   function selectOption() {
     if (other()) {
       if (!multi()) {
-        setStore("editing", true)
-        return
+        setStore("editing", true);
+        return;
       }
-      const value = input()
+      const value = input();
       if (value && customPicked()) {
-        toggle(value)
-        return
+        toggle(value);
+        return;
       }
-      setStore("editing", true)
-      return
+      setStore("editing", true);
+      return;
     }
-    const opt = options()[store.selected]
-    if (!opt) return
+    const opt = options()[store.selected];
+    if (!opt) return;
     if (multi()) {
-      toggle(opt.label)
-      return
+      toggle(opt.label);
+      return;
     }
-    pick(opt.label)
+    pick(opt.label);
   }
 
   onMount(() => {
-    const popMode = modeStack.push(QUESTION_MODE)
-    onCleanup(popMode)
-  })
+    const popMode = modeStack.push(QUESTION_MODE);
+    onCleanup(popMode);
+  });
 
   useBindings(() => ({
     mode: QUESTION_MODE,
@@ -139,12 +139,12 @@ export function QuestionPrompt(props: { request: QuestionRequest; directory?: st
         title: "Clear answer edit",
         category: "Question",
         run() {
-          const text = textarea?.plainText ?? ""
+          const text = textarea?.plainText ?? "";
           if (!text) {
-            setStore("editing", false)
-            return
+            setStore("editing", false);
+            return;
           }
-          textarea?.setText("")
+          textarea?.setText("");
         },
       },
     ],
@@ -154,7 +154,7 @@ export function QuestionPrompt(props: { request: QuestionRequest; directory?: st
         desc: "Cancel answer edit",
         group: "Question",
         cmd: () => {
-          setStore("editing", false)
+          setStore("editing", false);
         },
       },
       ...tuiConfig.keybinds.get("prompt.clear"),
@@ -163,53 +163,53 @@ export function QuestionPrompt(props: { request: QuestionRequest; directory?: st
         desc: "Submit answer edit",
         group: "Question",
         cmd: () => {
-          const text = textarea?.plainText?.trim() ?? ""
-          const prev = store.custom[store.tab]
+          const text = textarea?.plainText?.trim() ?? "";
+          const prev = store.custom[store.tab];
 
           if (!text) {
             if (prev) {
-              const inputs = [...store.custom]
-              inputs[store.tab] = ""
-              setStore("custom", inputs)
+              const inputs = [...store.custom];
+              inputs[store.tab] = "";
+              setStore("custom", inputs);
 
-              const answers = [...store.answers]
-              answers[store.tab] = (answers[store.tab] ?? []).filter((x) => x !== prev)
-              setStore("answers", answers)
+              const answers = [...store.answers];
+              answers[store.tab] = (answers[store.tab] ?? []).filter((x) => x !== prev);
+              setStore("answers", answers);
             }
-            setStore("editing", false)
-            return
+            setStore("editing", false);
+            return;
           }
 
           if (multi()) {
-            const inputs = [...store.custom]
-            inputs[store.tab] = text
-            setStore("custom", inputs)
+            const inputs = [...store.custom];
+            inputs[store.tab] = text;
+            setStore("custom", inputs);
 
-            const existing = store.answers[store.tab] ?? []
-            const next = [...existing]
+            const existing = store.answers[store.tab] ?? [];
+            const next = [...existing];
             if (prev) {
-              const index = next.indexOf(prev)
-              if (index !== -1) next.splice(index, 1)
+              const index = next.indexOf(prev);
+              if (index !== -1) next.splice(index, 1);
             }
-            if (!next.includes(text)) next.push(text)
-            const answers = [...store.answers]
-            answers[store.tab] = next
-            setStore("answers", answers)
-            setStore("editing", false)
-            return
+            if (!next.includes(text)) next.push(text);
+            const answers = [...store.answers];
+            answers[store.tab] = next;
+            setStore("answers", answers);
+            setStore("editing", false);
+            return;
           }
 
-          pick(text, true)
-          setStore("editing", false)
+          pick(text, true);
+          setStore("editing", false);
         },
       },
     ],
-  }))
+  }));
 
   useBindings(() => {
-    const opts = options()
-    const total = opts.length + (custom() ? 1 : 0)
-    const max = Math.min(total, 9)
+    const opts = options();
+    const total = opts.length + (custom() ? 1 : 0);
+    const max = Math.min(total, 9);
 
     return {
       mode: QUESTION_MODE,
@@ -220,7 +220,7 @@ export function QuestionPrompt(props: { request: QuestionRequest; directory?: st
           title: "Reject question",
           category: "Question",
           run() {
-            reject()
+            reject();
           },
         },
       ],
@@ -237,14 +237,24 @@ export function QuestionPrompt(props: { request: QuestionRequest; directory?: st
           group: "Question",
           cmd: () => selectTab((store.tab - 1 + tabs()) % tabs()),
         },
-        { key: "right", desc: "Next question", group: "Question", cmd: () => selectTab((store.tab + 1) % tabs()) },
-        { key: "l", desc: "Next question", group: "Question", cmd: () => selectTab((store.tab + 1) % tabs()) },
+        {
+          key: "right",
+          desc: "Next question",
+          group: "Question",
+          cmd: () => selectTab((store.tab + 1) % tabs()),
+        },
+        {
+          key: "l",
+          desc: "Next question",
+          group: "Question",
+          cmd: () => selectTab((store.tab + 1) % tabs()),
+        },
         {
           key: "tab",
           desc: "Next question",
           group: "Question",
           cmd: ({ event }: { event: { shift: boolean } }) => {
-            selectTab((store.tab + (event.shift ? -1 : 1) + tabs()) % tabs())
+            selectTab((store.tab + (event.shift ? -1 : 1) + tabs()) % tabs());
           },
         },
         ...(confirm()
@@ -259,8 +269,8 @@ export function QuestionPrompt(props: { request: QuestionRequest; directory?: st
                 desc: `Select answer ${index + 1}`,
                 group: "Question",
                 cmd: () => {
-                  moveTo(index)
-                  selectOption()
+                  moveTo(index);
+                  selectOption();
                 },
               })),
               {
@@ -275,15 +285,30 @@ export function QuestionPrompt(props: { request: QuestionRequest; directory?: st
                 group: "Question",
                 cmd: () => moveTo((store.selected - 1 + total) % total),
               },
-              { key: "down", desc: "Next answer", group: "Question", cmd: () => moveTo((store.selected + 1) % total) },
-              { key: "j", desc: "Next answer", group: "Question", cmd: () => moveTo((store.selected + 1) % total) },
-              { key: "return", desc: "Select answer", group: "Question", cmd: () => selectOption() },
+              {
+                key: "down",
+                desc: "Next answer",
+                group: "Question",
+                cmd: () => moveTo((store.selected + 1) % total),
+              },
+              {
+                key: "j",
+                desc: "Next answer",
+                group: "Question",
+                cmd: () => moveTo((store.selected + 1) % total),
+              },
+              {
+                key: "return",
+                desc: "Select answer",
+                group: "Question",
+                cmd: () => selectOption(),
+              },
               { key: "escape", desc: "Reject question", group: "Question", cmd: () => reject() },
               ...tuiConfig.keybinds.get("app.exit"),
             ]),
       ],
-    }
-  })
+    };
+  });
 
   return (
     <box
@@ -297,10 +322,10 @@ export function QuestionPrompt(props: { request: QuestionRequest; directory?: st
           <box flexDirection="row" gap={1} paddingLeft={1}>
             <For each={questions()}>
               {(q, index) => {
-                const isActive = () => index() === store.tab
+                const isActive = () => index() === store.tab;
                 const isAnswered = () => {
-                  return (store.answers[index()]?.length ?? 0) > 0
-                }
+                  return (store.answers[index()]?.length ?? 0) > 0;
+                };
                 return (
                   <box
                     paddingLeft={1}
@@ -315,8 +340,8 @@ export function QuestionPrompt(props: { request: QuestionRequest; directory?: st
                     onMouseOver={() => setTabHover(index())}
                     onMouseOut={() => setTabHover(null)}
                     onMouseUp={() => {
-                      if (renderer.getSelection()?.getSelectedText()) return
-                      selectTab(index())
+                      if (renderer.getSelection()?.getSelectedText()) return;
+                      selectTab(index());
                     }}
                   >
                     <text
@@ -331,23 +356,29 @@ export function QuestionPrompt(props: { request: QuestionRequest; directory?: st
                       {q.header}
                     </text>
                   </box>
-                )
+                );
               }}
             </For>
             <box
               paddingLeft={1}
               paddingRight={1}
               backgroundColor={
-                confirm() ? theme.accent : tabHover() === "confirm" ? theme.backgroundElement : theme.backgroundPanel
+                confirm()
+                  ? theme.accent
+                  : tabHover() === "confirm"
+                    ? theme.backgroundElement
+                    : theme.backgroundPanel
               }
               onMouseOver={() => setTabHover("confirm")}
               onMouseOut={() => setTabHover(null)}
               onMouseUp={() => {
-                if (renderer.getSelection()?.getSelectedText()) return
-                selectTab(questions().length)
+                if (renderer.getSelection()?.getSelectedText()) return;
+                selectTab(questions().length);
               }}
             >
-              <text fg={confirm() ? selectedForeground(theme, theme.accent) : theme.textMuted}>Confirm</text>
+              <text fg={confirm() ? selectedForeground(theme, theme.accent) : theme.textMuted}>
+                Confirm
+              </text>
             </box>
           </box>
         </Show>
@@ -363,25 +394,36 @@ export function QuestionPrompt(props: { request: QuestionRequest; directory?: st
             <box>
               <For each={options()}>
                 {(opt, i) => {
-                  const active = () => i() === store.selected
-                  const picked = () => store.answers[store.tab]?.includes(opt.label) ?? false
+                  const active = () => i() === store.selected;
+                  const picked = () => store.answers[store.tab]?.includes(opt.label) ?? false;
                   return (
                     <box
                       onMouseOver={() => moveTo(i())}
                       onMouseDown={() => moveTo(i())}
                       onMouseUp={() => {
-                        if (renderer.getSelection()?.getSelectedText()) return
-                        selectOption()
+                        if (renderer.getSelection()?.getSelectedText()) return;
+                        selectOption();
                       }}
                     >
                       <box flexDirection="row">
-                        <box backgroundColor={active() ? theme.backgroundElement : undefined} paddingRight={1}>
-                          <text fg={active() ? tint(theme.textMuted, theme.secondary, 0.6) : theme.textMuted}>
+                        <box
+                          backgroundColor={active() ? theme.backgroundElement : undefined}
+                          paddingRight={1}
+                        >
+                          <text
+                            fg={
+                              active()
+                                ? tint(theme.textMuted, theme.secondary, 0.6)
+                                : theme.textMuted
+                            }
+                          >
                             {`${i() + 1}.`}
                           </text>
                         </box>
                         <box backgroundColor={active() ? theme.backgroundElement : undefined}>
-                          <text fg={active() ? theme.secondary : picked() ? theme.success : theme.text}>
+                          <text
+                            fg={active() ? theme.secondary : picked() ? theme.success : theme.text}
+                          >
                             {multi() ? `[${picked() ? "✓" : " "}] ${opt.label}` : opt.label}
                           </text>
                         </box>
@@ -394,7 +436,7 @@ export function QuestionPrompt(props: { request: QuestionRequest; directory?: st
                         <text fg={theme.textMuted}>{opt.description}</text>
                       </box>
                     </box>
-                  )
+                  );
                 }}
               </For>
               <Show when={custom()}>
@@ -402,19 +444,28 @@ export function QuestionPrompt(props: { request: QuestionRequest; directory?: st
                   onMouseOver={() => moveTo(options().length)}
                   onMouseDown={() => moveTo(options().length)}
                   onMouseUp={() => {
-                    if (renderer.getSelection()?.getSelectedText()) return
-                    selectOption()
+                    if (renderer.getSelection()?.getSelectedText()) return;
+                    selectOption();
                   }}
                 >
                   <box flexDirection="row">
-                    <box backgroundColor={other() ? theme.backgroundElement : undefined} paddingRight={1}>
-                      <text fg={other() ? tint(theme.textMuted, theme.secondary, 0.6) : theme.textMuted}>
+                    <box
+                      backgroundColor={other() ? theme.backgroundElement : undefined}
+                      paddingRight={1}
+                    >
+                      <text
+                        fg={other() ? tint(theme.textMuted, theme.secondary, 0.6) : theme.textMuted}
+                      >
                         {`${options().length + 1}.`}
                       </text>
                     </box>
                     <box backgroundColor={other() ? theme.backgroundElement : undefined}>
-                      <text fg={other() ? theme.secondary : customPicked() ? theme.success : theme.text}>
-                        {multi() ? `[${customPicked() ? "✓" : " "}] Type your own answer` : "Type your own answer"}
+                      <text
+                        fg={other() ? theme.secondary : customPicked() ? theme.success : theme.text}
+                      >
+                        {multi()
+                          ? `[${customPicked() ? "✓" : " "}] Type your own answer`
+                          : "Type your own answer"}
                       </text>
                     </box>
 
@@ -426,12 +477,12 @@ export function QuestionPrompt(props: { request: QuestionRequest; directory?: st
                     <box paddingLeft={3}>
                       <textarea
                         ref={(val: TextareaRenderable) => {
-                          textarea = val
-                          val.traits = { status: "ANSWER" }
+                          textarea = val;
+                          val.traits = { status: "ANSWER" };
                           queueMicrotask(() => {
-                            val.focus()
-                            val.gotoLineEnd()
-                          })
+                            val.focus();
+                            val.gotoLineEnd();
+                          });
                         }}
                         initialValue={input()}
                         placeholder="Type your own answer"
@@ -461,8 +512,8 @@ export function QuestionPrompt(props: { request: QuestionRequest; directory?: st
           </box>
           <For each={questions()}>
             {(q, index) => {
-              const value = () => store.answers[index()]?.join(", ") ?? ""
-              const answered = () => Boolean(value())
+              const value = () => store.answers[index()]?.join(", ") ?? "";
+              const answered = () => Boolean(value());
               return (
                 <box paddingLeft={1}>
                   <text>
@@ -472,7 +523,7 @@ export function QuestionPrompt(props: { request: QuestionRequest; directory?: st
                     </span>
                   </text>
                 </box>
-              )
+              );
             }}
           </For>
         </Show>
@@ -510,5 +561,5 @@ export function QuestionPrompt(props: { request: QuestionRequest; directory?: st
         </box>
       </box>
     </box>
-  )
+  );
 }

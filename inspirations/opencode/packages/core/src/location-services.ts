@@ -1,43 +1,43 @@
-import { Effect, Layer, LayerMap } from "effect"
-import { AgentV2 } from "./agent"
-import { AISDK } from "./aisdk"
-import { Catalog } from "./catalog"
-import { CommandV2 } from "./command"
-import { Config } from "./config"
-import { LayerNode } from "./effect/layer-node"
-import { Node } from "./effect/app-node"
-import { FileMutation } from "./file-mutation"
-import { FileSystem } from "./filesystem"
-import { FileSystemSearch } from "./filesystem/search"
-import { Watcher } from "./filesystem/watcher"
-import { Image } from "./image"
-import { Integration } from "./integration"
-import { Location } from "./location"
-import { LocationMutation } from "./location-mutation"
-import { LocationServiceMap } from "./location-service-map"
-import { PermissionV2 } from "./permission"
-import { PluginV2 } from "./plugin"
-import { PluginInternal } from "./plugin/internal"
-import { Policy } from "./policy"
-import { ProjectCopy } from "./project/copy"
-import { Pty } from "./pty"
-import { QuestionV2 } from "./question"
-import { Reference } from "./reference"
-import { ReferenceGuidance } from "./reference/guidance"
-import * as SessionRunnerLLM from "./session/runner/llm"
-import { SessionRunnerModel } from "./session/runner/model"
-import { SessionTodo } from "./session/todo"
-import { SkillV2 } from "./skill"
-import { SkillGuidance } from "./skill/guidance"
-import { Snapshot } from "./snapshot"
-import { SystemContextBuiltIns } from "./system-context/builtins"
-import { SystemContextRegistry } from "./system-context/registry"
-import { BuiltInTools } from "./tool/builtins"
-import { ReadToolFileSystem } from "./tool/read-filesystem"
-import { ToolRegistry } from "./tool/registry"
-import { ToolOutputStore } from "./tool-output-store"
+import { Effect, Layer, LayerMap } from "effect";
+import { AgentV2 } from "./agent";
+import { AISDK } from "./aisdk";
+import { Catalog } from "./catalog";
+import { CommandV2 } from "./command";
+import { Config } from "./config";
+import { LayerNode } from "./effect/layer-node";
+import { Node } from "./effect/app-node";
+import { FileMutation } from "./file-mutation";
+import { FileSystem } from "./filesystem";
+import { FileSystemSearch } from "./filesystem/search";
+import { Watcher } from "./filesystem/watcher";
+import { Image } from "./image";
+import { Integration } from "./integration";
+import { Location } from "./location";
+import { LocationMutation } from "./location-mutation";
+import { LocationServiceMap } from "./location-service-map";
+import { PermissionV2 } from "./permission";
+import { PluginV2 } from "./plugin";
+import { PluginInternal } from "./plugin/internal";
+import { Policy } from "./policy";
+import { ProjectCopy } from "./project/copy";
+import { Pty } from "./pty";
+import { QuestionV2 } from "./question";
+import { Reference } from "./reference";
+import { ReferenceGuidance } from "./reference/guidance";
+import * as SessionRunnerLLM from "./session/runner/llm";
+import { SessionRunnerModel } from "./session/runner/model";
+import { SessionTodo } from "./session/todo";
+import { SkillV2 } from "./skill";
+import { SkillGuidance } from "./skill/guidance";
+import { Snapshot } from "./snapshot";
+import { SystemContextBuiltIns } from "./system-context/builtins";
+import { SystemContextRegistry } from "./system-context/registry";
+import { BuiltInTools } from "./tool/builtins";
+import { ReadToolFileSystem } from "./tool/read-filesystem";
+import { ToolRegistry } from "./tool/registry";
+import { ToolOutputStore } from "./tool-output-store";
 
-export { LocationServiceMap } from "./location-service-map"
+export { LocationServiceMap } from "./location-service-map";
 
 export const locationServices = LayerNode.group([
   Location.node,
@@ -76,10 +76,10 @@ export const locationServices = LayerNode.group([
   SessionRunnerModel.node,
   Snapshot.node,
   SessionRunnerLLM.node,
-])
+]);
 
-export type LocationServices = LayerNode.Output<typeof locationServices>
-export type LocationError = LayerNode.Error<typeof locationServices>
+export type LocationServices = LayerNode.Output<typeof locationServices>;
+export type LocationError = LayerNode.Error<typeof locationServices>;
 
 export function buildLocationServiceMap(
   replacements: LayerNode.Replacements = [],
@@ -88,8 +88,12 @@ export function buildLocationServiceMap(
     LocationServiceMap.Service,
     LayerMap.make(
       (ref: Location.Ref) => {
-        const allReplacements = replacements.concat([[Location.node, Location.boundNode(ref)]])
-        const location = LayerNode.hoist(locationServices, Node.tags.values.global, allReplacements)
+        const allReplacements = replacements.concat([[Location.node, Location.boundNode(ref)]]);
+        const location = LayerNode.hoist(
+          locationServices,
+          Node.tags.values.global,
+          allReplacements,
+        );
 
         return LayerNode.compile(location.node).pipe(
           Layer.fresh,
@@ -100,12 +104,12 @@ export function buildLocationServiceMap(
             }),
           ),
           Layer.provide(LayerNode.compile(location.hoisted)),
-        )
+        );
       },
       { idleTimeToLive: "60 minutes" },
     ),
-  )
+  );
 }
 
 // This is temporary for backwards compatibility
-export const locationServiceMapLayer = buildLocationServiceMap()
+export const locationServiceMapLayer = buildLocationServiceMap();

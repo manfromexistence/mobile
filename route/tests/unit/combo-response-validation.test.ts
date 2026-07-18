@@ -49,19 +49,21 @@ test("jsonPathPredicates: exists / nonEmpty / equals / notEquals", () => {
     evaluateResponseValidation(body, {
       jsonPathPredicates: [{ path: "choices[0].message.content", condition: "nonEmpty" }],
     }).valid,
-    true
+    true,
   );
   assert.equal(
     evaluateResponseValidation(body, {
       jsonPathPredicates: [{ path: "choices[0].message.refusal", condition: "exists" }],
     }).valid,
-    false
+    false,
   );
   assert.equal(
     evaluateResponseValidation(body, {
-      jsonPathPredicates: [{ path: "choices[0].finish_reason", condition: "equals", value: "stop" }],
+      jsonPathPredicates: [
+        { path: "choices[0].finish_reason", condition: "equals", value: "stop" },
+      ],
     }).valid,
-    true
+    true,
   );
   assert.equal(
     evaluateResponseValidation(body, {
@@ -69,13 +71,15 @@ test("jsonPathPredicates: exists / nonEmpty / equals / notEquals", () => {
         { path: "choices[0].finish_reason", condition: "notEquals", value: "content_filter" },
       ],
     }).valid,
-    true
+    true,
   );
   assert.equal(
     evaluateResponseValidation(body, {
-      jsonPathPredicates: [{ path: "choices[0].finish_reason", condition: "equals", value: "length" }],
+      jsonPathPredicates: [
+        { path: "choices[0].finish_reason", condition: "equals", value: "length" },
+      ],
     }).valid,
-    false
+    false,
   );
 });
 
@@ -90,7 +94,12 @@ test("the first failing check wins; otherwise valid", () => {
 });
 
 test("parseJsonPath tokenizes dot + bracket paths without regex", () => {
-  assert.deepEqual(parseJsonPath("choices[0].message.content"), ["choices", 0, "message", "content"]);
+  assert.deepEqual(parseJsonPath("choices[0].message.content"), [
+    "choices",
+    0,
+    "message",
+    "content",
+  ]);
   assert.deepEqual(parseJsonPath("a[1][2].b"), ["a", 1, 2, "b"]);
   assert.deepEqual(parseJsonPath("plain"), ["plain"]);
 });
@@ -107,11 +116,8 @@ test("extractContentText handles string, array parts, and Responses API output",
   assert.equal(extractContentText(chat("hello")), "hello");
   assert.equal(
     extractContentText({ choices: [{ message: { content: [{ text: "a" }, { text: "b" }] } }] }),
-    "ab"
+    "ab",
   );
-  assert.equal(
-    extractContentText({ output: [{ content: [{ text: "resp" }] }] }),
-    "resp"
-  );
+  assert.equal(extractContentText({ output: [{ content: [{ text: "resp" }] }] }), "resp");
   assert.equal(extractContentText({}), "");
 });

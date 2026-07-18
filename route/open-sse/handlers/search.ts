@@ -138,7 +138,7 @@ function makeResult(
     text_format?: string;
   },
   idx: number,
-  now: string
+  now: string,
 ): SearchResult {
   const url = item.url || "";
   return {
@@ -167,7 +167,7 @@ function makeResult(
 function normalizeSerperResponse(
   data: any,
   _query: string,
-  searchType: string
+  searchType: string,
 ): { results: SearchResult[]; totalResults: number | null } {
   const now = new Date().toISOString();
   const items = searchType === "news" ? data.news : data.organic;
@@ -183,8 +183,8 @@ function normalizeSerperResponse(
         published_at: item.date,
       },
       idx,
-      now
-    )
+      now,
+    ),
   );
 
   return {
@@ -199,7 +199,7 @@ function normalizeSerperResponse(
 function normalizeBraveResponse(
   data: any,
   _query: string,
-  searchType: string
+  searchType: string,
 ): { results: SearchResult[]; totalResults: number | null } {
   const now = new Date().toISOString();
   // Brave news endpoint returns { results: [...] } directly,
@@ -219,8 +219,8 @@ function normalizeBraveResponse(
         favicon_url: item.meta_url?.favicon || item.favicon,
       },
       idx,
-      now
-    )
+      now,
+    ),
   );
 
   return { results, totalResults: container?.totalCount ?? null };
@@ -240,7 +240,7 @@ function parseDomainFilter(domainFilter?: string[]): {
 
 function getProviderSettingString(
   params: Pick<SearchRequestParams, "providerOptions" | "providerSpecificData">,
-  key: string
+  key: string,
 ): string | undefined {
   const fromOptions = params.providerOptions?.[key];
   if (typeof fromOptions === "string" && fromOptions.trim().length > 0) {
@@ -289,7 +289,7 @@ interface SearchRequestParams {
 
 function buildSerperRequest(
   config: SearchProviderConfig,
-  params: SearchRequestParams
+  params: SearchRequestParams,
 ): { url: string; init: RequestInit } {
   const endpoint = params.searchType === "news" ? "/news" : "/search";
   const body: Record<string, unknown> = { q: params.query, num: params.maxResults };
@@ -307,7 +307,7 @@ function buildSerperRequest(
 
 function buildBraveRequest(
   config: SearchProviderConfig,
-  params: SearchRequestParams
+  params: SearchRequestParams,
 ): { url: string; init: RequestInit } {
   const endpoint = params.searchType === "news" ? "/news/search" : "/web/search";
   const qp = new URLSearchParams({ q: params.query, count: String(params.maxResults) });
@@ -324,7 +324,7 @@ function buildBraveRequest(
 
 function buildPerplexityRequest(
   config: SearchProviderConfig,
-  params: SearchRequestParams
+  params: SearchRequestParams,
 ): { url: string; init: RequestInit } {
   const body: Record<string, unknown> = { query: params.query, max_results: params.maxResults };
   if (params.country) body.country = params.country;
@@ -342,7 +342,7 @@ function buildPerplexityRequest(
 
 function buildExaRequest(
   config: SearchProviderConfig,
-  params: SearchRequestParams
+  params: SearchRequestParams,
 ): { url: string; init: RequestInit } {
   const { includes, excludes } = parseDomainFilter(params.domainFilter);
   const body: Record<string, unknown> = {
@@ -367,7 +367,7 @@ function buildExaRequest(
 
 function buildTavilyRequest(
   config: SearchProviderConfig,
-  params: SearchRequestParams
+  params: SearchRequestParams,
 ): { url: string; init: RequestInit } {
   const { includes, excludes } = parseDomainFilter(params.domainFilter);
   const body: Record<string, unknown> = {
@@ -390,7 +390,7 @@ function buildTavilyRequest(
 
 function buildGooglePseRequest(
   config: SearchProviderConfig,
-  params: SearchRequestParams
+  params: SearchRequestParams,
 ): { url: string; init: RequestInit } {
   const apiKey = params.token;
   const cx = getProviderSettingString(params, "cx");
@@ -432,7 +432,7 @@ function buildGooglePseRequest(
 
 function buildLinkupRequest(
   config: SearchProviderConfig,
-  params: SearchRequestParams
+  params: SearchRequestParams,
 ): { url: string; init: RequestInit } {
   const apiKey = params.token;
   if (!apiKey) {
@@ -482,7 +482,7 @@ function buildLinkupRequest(
 
 function buildSearchApiRequest(
   config: SearchProviderConfig,
-  params: SearchRequestParams
+  params: SearchRequestParams,
 ): { url: string; init: RequestInit } {
   const apiKey = params.token;
   if (!apiKey) {
@@ -512,7 +512,7 @@ function buildSearchApiRequest(
 
 function buildYouComRequest(
   config: SearchProviderConfig,
-  params: SearchRequestParams
+  params: SearchRequestParams,
 ): { url: string; init: RequestInit } {
   const apiKey = params.token;
   if (!apiKey) {
@@ -540,7 +540,7 @@ function buildYouComRequest(
     qp.set("livecrawl", params.searchType === "news" ? "news" : "web");
     qp.append(
       "livecrawl_formats",
-      params.contentOptions.format === "markdown" ? "markdown" : "html"
+      params.contentOptions.format === "markdown" ? "markdown" : "html",
     );
   }
 
@@ -558,7 +558,7 @@ function buildYouComRequest(
 
 function buildSearxngRequest(
   config: SearchProviderConfig,
-  params: SearchRequestParams
+  params: SearchRequestParams,
 ): { url: string; init: RequestInit } {
   const baseUrl = resolveSearchBaseUrl(config, params);
   const url = baseUrl.endsWith("/search") ? baseUrl : `${baseUrl}/search`;
@@ -590,7 +590,7 @@ function buildSearxngRequest(
 
 function buildOllamaRequest(
   config: SearchProviderConfig,
-  params: SearchRequestParams
+  params: SearchRequestParams,
 ): { url: string; init: RequestInit } {
   return {
     url: resolveSearchBaseUrl(config, params),
@@ -610,7 +610,7 @@ function buildOllamaRequest(
 
 function buildRequest(
   config: SearchProviderConfig,
-  params: SearchRequestParams
+  params: SearchRequestParams,
 ): { url: string; init: RequestInit } {
   if (config.id === "serper-search") return buildSerperRequest(config, params);
   if (config.id === "brave-search") return buildBraveRequest(config, params);
@@ -644,7 +644,7 @@ function buildRequest(
 function normalizePerplexityResponse(
   data: any,
   _query: string,
-  _searchType: string
+  _searchType: string,
 ): { results: SearchResult[]; totalResults: number | null } {
   const now = new Date().toISOString();
   const items = data.results;
@@ -660,8 +660,8 @@ function normalizePerplexityResponse(
         published_at: item.date || item.last_updated,
       },
       idx,
-      now
-    )
+      now,
+    ),
   );
   return { results, totalResults: results.length };
 }
@@ -669,7 +669,7 @@ function normalizePerplexityResponse(
 function normalizeExaResponse(
   data: any,
   _query: string,
-  _searchType: string
+  _searchType: string,
 ): { results: SearchResult[]; totalResults: number | null } {
   const now = new Date().toISOString();
   const items = data.results;
@@ -691,8 +691,8 @@ function normalizeExaResponse(
         text_format: "text",
       },
       idx,
-      now
-    )
+      now,
+    ),
   );
   return { results, totalResults: results.length };
 }
@@ -700,7 +700,7 @@ function normalizeExaResponse(
 function normalizeTavilyResponse(
   data: any,
   _query: string,
-  _searchType: string
+  _searchType: string,
 ): { results: SearchResult[]; totalResults: number | null } {
   const now = new Date().toISOString();
   const items = data.results;
@@ -719,8 +719,8 @@ function normalizeTavilyResponse(
         text_format: "text",
       },
       idx,
-      now
-    )
+      now,
+    ),
   );
   return { results, totalResults: results.length };
 }
@@ -728,7 +728,7 @@ function normalizeTavilyResponse(
 function normalizeGooglePseResponse(
   data: any,
   _query: string,
-  _searchType: string
+  _searchType: string,
 ): { results: SearchResult[]; totalResults: number | null } {
   const now = new Date().toISOString();
   const items = Array.isArray(data.items) ? data.items : [];
@@ -745,8 +745,8 @@ function normalizeGooglePseResponse(
           item.pagemap?.metatags?.[0]?.["og:image"],
       },
       idx,
-      now
-    )
+      now,
+    ),
   );
 
   const totalResultsRaw =
@@ -763,7 +763,7 @@ function normalizeGooglePseResponse(
 function normalizeLinkupResponse(
   data: any,
   _query: string,
-  _searchType: string
+  _searchType: string,
 ): { results: SearchResult[]; totalResults: number | null } {
   const now = new Date().toISOString();
   const items = Array.isArray(data.results) ? data.results : [];
@@ -780,8 +780,8 @@ function normalizeLinkupResponse(
         text_format: "text",
       },
       idx,
-      now
-    )
+      now,
+    ),
   );
 
   return { results, totalResults: results.length };
@@ -790,7 +790,7 @@ function normalizeLinkupResponse(
 function normalizeSearchApiResponse(
   data: any,
   _query: string,
-  _searchType: string
+  _searchType: string,
 ): { results: SearchResult[]; totalResults: number | null } {
   const now = new Date().toISOString();
   const items = Array.isArray(data.organic_results)
@@ -812,8 +812,8 @@ function normalizeSearchApiResponse(
         image_url: item.thumbnail || null,
       },
       idx,
-      now
-    )
+      now,
+    ),
   );
 
   const totalResults =
@@ -832,7 +832,7 @@ function normalizeSearchApiResponse(
 function normalizeYouComResponse(
   data: any,
   _query: string,
-  searchType: string
+  searchType: string,
 ): { results: SearchResult[]; totalResults: number | null } {
   const now = new Date().toISOString();
   const resultsContainer =
@@ -872,7 +872,7 @@ function normalizeYouComResponse(
         text_format: livecrawlText ? livecrawlFormat : undefined,
       },
       idx,
-      now
+      now,
     );
   });
 
@@ -882,7 +882,7 @@ function normalizeYouComResponse(
 function normalizeSearxngResponse(
   data: any,
   _query: string,
-  _searchType: string
+  _searchType: string,
 ): { results: SearchResult[]; totalResults: number | null } {
   const now = new Date().toISOString();
   const items = Array.isArray(data.results) ? data.results : [];
@@ -901,8 +901,8 @@ function normalizeSearxngResponse(
         image_url: item.thumbnail || item.img_src || null,
       },
       idx,
-      now
-    )
+      now,
+    ),
   );
 
   return { results, totalResults: results.length };
@@ -911,7 +911,7 @@ function normalizeSearxngResponse(
 function normalizeOllamaResponse(
   data: any,
   _query: string,
-  _searchType: string
+  _searchType: string,
 ): { results: SearchResult[]; totalResults: number | null } {
   const now = new Date().toISOString();
   const items = Array.isArray(data?.results) ? data.results : [];
@@ -927,8 +927,8 @@ function normalizeOllamaResponse(
         text_format: "text",
       },
       idx,
-      now
-    )
+      now,
+    ),
   );
 
   return { results, totalResults: results.length };
@@ -1069,8 +1069,8 @@ async function zaiSearchExecute(params: {
           source_type: item.media,
         },
         idx,
-        now
-      )
+        now,
+      ),
     );
     return { results, totalResults: results.length };
   } finally {
@@ -1088,7 +1088,7 @@ async function tryZaiMCPProvider(
   providerSpecificData: Record<string, unknown> | undefined,
   startTime: number,
   globalStartTime: number,
-  log?: any
+  log?: any,
 ): Promise<SearchHandlerResult> {
   const { query, searchType, maxResults } = params;
 
@@ -1175,7 +1175,7 @@ function normalizeResponse(
   providerId: string,
   data: any,
   query: string,
-  searchType: string
+  searchType: string,
 ): { results: SearchResult[]; totalResults: number | null } {
   if (providerId === "serper-search") return normalizeSerperResponse(data, query, searchType);
   if (providerId === "brave-search") return normalizeBraveResponse(data, query, searchType);
@@ -1262,7 +1262,7 @@ export async function handleSearch(options: SearchHandlerOptions): Promise<Searc
     if (log) {
       log.warn(
         "SEARCH",
-        `${primaryConfig.id} failed (${result.status}), trying ${alternateConfig.id}`
+        `${primaryConfig.id} failed (${result.status}), trying ${alternateConfig.id}`,
       );
     }
 
@@ -1271,7 +1271,7 @@ export async function handleSearch(options: SearchHandlerOptions): Promise<Searc
       requestParams,
       alternateCredentials,
       startTime,
-      log
+      log,
     );
 
     if (fallbackResult.success) return fallbackResult;
@@ -1293,7 +1293,7 @@ async function tryDuckDuckGoFreeProvider(
   log?: {
     info?: (tag: string, message: string) => void;
     error?: (tag: string, message: string) => void;
-  } | null
+  } | null,
 ): Promise<SearchHandlerResult> {
   const { query, searchType, maxResults } = params;
   const remainingGlobal = GLOBAL_TIMEOUT_MS - (Date.now() - globalStartTime);
@@ -1315,7 +1315,7 @@ async function tryDuckDuckGoFreeProvider(
     const results = freeResults
       .slice(0, maxResults)
       .map((r, idx) =>
-        makeResult(config.id, { title: r.title, url: r.url, snippet: r.snippet }, idx, now)
+        makeResult(config.id, { title: r.title, url: r.url, snippet: r.snippet }, idx, now),
       );
     const duration = Date.now() - startTime;
 
@@ -1384,7 +1384,7 @@ async function tryProvider(
   params: Omit<SearchRequestParams, "token">,
   credentials: Record<string, any>,
   globalStartTime: number,
-  log?: any
+  log?: any,
 ): Promise<SearchHandlerResult> {
   const startTime = Date.now();
   const providerSpecificData =
@@ -1415,7 +1415,7 @@ async function tryProvider(
       providerSpecificData,
       startTime,
       globalStartTime,
-      log
+      log,
     );
   }
 

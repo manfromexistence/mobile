@@ -38,7 +38,7 @@ export const MEDIA_KIND_REGISTRIES = {
 export type RegistryMediaKind = keyof typeof MEDIA_KIND_REGISTRIES;
 
 export const REGISTRY_MEDIA_KINDS: readonly RegistryMediaKind[] = Object.freeze(
-  Object.keys(MEDIA_KIND_REGISTRIES) as RegistryMediaKind[]
+  Object.keys(MEDIA_KIND_REGISTRIES) as RegistryMediaKind[],
 );
 
 /**
@@ -62,7 +62,7 @@ export function getRegistryMediaKinds(providerId: string): RegistryMediaKind[] {
  */
 export function resolveProviderServiceKinds(
   providerId: string,
-  declared: readonly string[] | undefined
+  declared: readonly string[] | undefined,
 ): string[] {
   const set = new Set<string>(declared ?? []);
   for (const kind of getRegistryMediaKinds(providerId)) set.add(kind);

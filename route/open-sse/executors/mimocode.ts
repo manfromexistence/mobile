@@ -66,7 +66,7 @@ function injectSystemMarker(body: Record<string, unknown>): Record<string, unkno
       typeof m === "object" &&
       (m as { role?: unknown }).role === "system" &&
       typeof (m as { content?: unknown }).content === "string" &&
-      (m as { content: string }).content.includes(MIMO_SYSTEM_MARKER)
+      (m as { content: string }).content.includes(MIMO_SYSTEM_MARKER),
   );
   if (hasMarker) return body;
 
@@ -157,7 +157,7 @@ async function bootstrapJwt(
   baseUrl: string,
   fingerprint: string,
   signal?: AbortSignal | null,
-  dispatcher?: Dispatcher
+  dispatcher?: Dispatcher,
 ): Promise<{ jwt: string; expiresAt: number }> {
   const existing = bootstrapInflight.get(fingerprint);
   if (existing) return existing;
@@ -247,7 +247,7 @@ export class MimocodeExecutor extends BaseExecutor {
       // the global Response but nominally different — same pattern as proxyFetch.ts
       const undiciFn = undiciFetch as unknown as (
         url: string,
-        init: RequestInit & { dispatcher?: unknown }
+        init: RequestInit & { dispatcher?: unknown },
       ) => Promise<Response>;
       return undiciFn(url, { ...init, dispatcher });
     }
@@ -321,7 +321,7 @@ export class MimocodeExecutor extends BaseExecutor {
 
   private async getJwtForAccount(
     account: AccountState,
-    signal?: AbortSignal | null
+    signal?: AbortSignal | null,
   ): Promise<string> {
     if (isAccountReady(account)) return account.jwt;
     const dispatcher = this.getProxyDispatcher(account.fingerprint);
@@ -349,7 +349,7 @@ export class MimocodeExecutor extends BaseExecutor {
     account.consecutiveFails++;
     const backoff = Math.min(
       COOLDOWN_BASE_MS * Math.pow(2, account.consecutiveFails - 1),
-      COOLDOWN_MAX_MS
+      COOLDOWN_MAX_MS,
     );
     account.cooldownUntil = Date.now() + backoff + Math.random() * 1000;
   }
@@ -368,7 +368,7 @@ export class MimocodeExecutor extends BaseExecutor {
     reqBody: unknown,
     signal: AbortSignal | null | undefined,
     account: AccountState,
-    log: ExecuteInput["log"]
+    log: ExecuteInput["log"],
   ): Promise<Response> {
     const jwt = await this.getJwtForAccount(account, signal);
     headers["Authorization"] = `Bearer ${jwt}`;
@@ -381,14 +381,14 @@ export class MimocodeExecutor extends BaseExecutor {
         body: JSON.stringify(reqBody),
         signal: signal ?? undefined,
       },
-      account.fingerprint
+      account.fingerprint,
     );
     if (resp.status !== 401 && resp.status !== 403) return resp;
 
     // On auth failure, re-bootstrap this account and retry once
     log?.warn?.(
       "MIMOCODE",
-      `Auth failed (${resp.status}) on account ${account.fingerprint.slice(0, 8)}…`
+      `Auth failed (${resp.status}) on account ${account.fingerprint.slice(0, 8)}…`,
     );
     account.jwt = "";
     account.expiresAt = 0;
@@ -403,7 +403,7 @@ export class MimocodeExecutor extends BaseExecutor {
         body: JSON.stringify(reqBody),
         signal: signal ?? undefined,
       },
-      account.fingerprint
+      account.fingerprint,
     );
   }
 
@@ -416,13 +416,13 @@ export class MimocodeExecutor extends BaseExecutor {
   private async gateRetryableStatus(
     resp: Response,
     account: AccountState,
-    log: ExecuteInput["log"]
+    log: ExecuteInput["log"],
   ): Promise<"rotate" | Response | null> {
     if (resp.status === 429) {
       this.markCooldown(account);
       log?.warn?.(
         "MIMOCODE",
-        `Rate limited on account ${account.fingerprint.slice(0, 8)}, trying next…`
+        `Rate limited on account ${account.fingerprint.slice(0, 8)}, trying next…`,
       );
       return "rotate";
     }
@@ -448,7 +448,7 @@ export class MimocodeExecutor extends BaseExecutor {
   private async handleBadRequest(
     resp: Response,
     account: AccountState,
-    log: ExecuteInput["log"]
+    log: ExecuteInput["log"],
   ): Promise<Response | null> {
     const bodyText = await resp.text().catch(() => "");
 
@@ -456,14 +456,14 @@ export class MimocodeExecutor extends BaseExecutor {
       this.markCooldown(account);
       log?.warn?.(
         "MIMOCODE",
-        `Rate-limit-style 400 on account ${account.fingerprint.slice(0, 8)}, trying next…`
+        `Rate-limit-style 400 on account ${account.fingerprint.slice(0, 8)}, trying next…`,
       );
       return null;
     }
 
     log?.warn?.(
       "MIMOCODE",
-      `Malformed request (400) on account ${account.fingerprint.slice(0, 8)}, not retrying`
+      `Malformed request (400) on account ${account.fingerprint.slice(0, 8)}, not retrying`,
     );
     let upstreamMessage = bodyText;
     try {
@@ -483,7 +483,7 @@ export class MimocodeExecutor extends BaseExecutor {
     _model: string,
     _stream: boolean,
     _urlIndex = 0,
-    _credentials?: ProviderCredentials | null
+    _credentials?: ProviderCredentials | null,
   ): string {
     return `${this.baseUrl.replace(/\/$/, "")}${CHAT_PATH}`;
   }
@@ -492,7 +492,7 @@ export class MimocodeExecutor extends BaseExecutor {
     _credentials: ProviderCredentials,
     stream = true,
     _clientHeaders?: Record<string, string> | null,
-    _model?: string
+    _model?: string,
   ): Record<string, string> {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
@@ -507,7 +507,7 @@ export class MimocodeExecutor extends BaseExecutor {
     model: string,
     body: unknown,
     _stream: boolean,
-    _credentials?: ProviderCredentials | null
+    _credentials?: ProviderCredentials | null,
   ): unknown {
     if (typeof body === "object" && body !== null) {
       const withModel = { ...(body as Record<string, unknown>), model: rewriteModelName(model) };
@@ -519,7 +519,7 @@ export class MimocodeExecutor extends BaseExecutor {
   async testConnection(
     _credentials: ProviderCredentials,
     _signal?: AbortSignal | null,
-    log?: ExecuteInput["log"]
+    log?: ExecuteInput["log"],
   ): Promise<boolean> {
     try {
       this.syncAccountsFromCredentials(_credentials);
@@ -539,11 +539,11 @@ export class MimocodeExecutor extends BaseExecutor {
               model: "mimo-auto",
               messages: [{ role: "user", content: "ping" }],
               stream: false,
-            })
+            }),
           ),
           signal: _signal ?? undefined,
         },
-        account.fingerprint
+        account.fingerprint,
       );
       return resp.status === 200;
     } catch {
@@ -567,9 +567,9 @@ export class MimocodeExecutor extends BaseExecutor {
           encoder.encode(
             JSON.stringify({
               error: { message: "Request aborted", type: "abort", code: "ABORTED" },
-            })
+            }),
           ),
-          { status: 499, headers: { "Content-Type": "application/json" } }
+          { status: 499, headers: { "Content-Type": "application/json" } },
         ),
         url: this.buildUrl(model, stream),
         headers: this.buildHeaders(input.credentials, stream),
@@ -622,9 +622,9 @@ export class MimocodeExecutor extends BaseExecutor {
               encoder.encode(
                 JSON.stringify({
                   error: { message: msg, type: "upstream_error", code: "EXECUTOR_ERROR" },
-                })
+                }),
               ),
-              { status: 502, headers: { "Content-Type": "application/json" } }
+              { status: 502, headers: { "Content-Type": "application/json" } },
             ),
             url,
             headers: this.buildHeaders(input.credentials, stream),
@@ -643,9 +643,9 @@ export class MimocodeExecutor extends BaseExecutor {
               type: "upstream_error",
               code: "NO_ACCOUNTS",
             },
-          })
+          }),
         ),
-        { status: 502, headers: { "Content-Type": "application/json" } }
+        { status: 502, headers: { "Content-Type": "application/json" } },
       ),
       url,
       headers: this.buildHeaders(input.credentials, stream),

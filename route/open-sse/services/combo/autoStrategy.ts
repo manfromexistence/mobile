@@ -46,7 +46,7 @@ import {
 // without being fully blocked (that is done by "hard" policy).
 // Override via QUOTA_SOFT_DEPRIORITIZE_FACTOR env var (range 0..1, default 0.7).
 export const QUOTA_SOFT_DEPRIORITIZE_FACTOR = Number(
-  process.env.QUOTA_SOFT_DEPRIORITIZE_FACTOR ?? "0.7"
+  process.env.QUOTA_SOFT_DEPRIORITIZE_FACTOR ?? "0.7",
 );
 
 // #4540: Status soft-deprioritization factor.
@@ -57,7 +57,7 @@ export const QUOTA_SOFT_DEPRIORITIZE_FACTOR = Number(
 // below an otherwise-identical healthy one, without surfacing a misleading 429.
 // Override via STATUS_SOFT_DEPRIORITIZE_FACTOR env var (range 0..1, default 0.5).
 export const STATUS_SOFT_DEPRIORITIZE_FACTOR = Number(
-  process.env.STATUS_SOFT_DEPRIORITIZE_FACTOR ?? "0.5"
+  process.env.STATUS_SOFT_DEPRIORITIZE_FACTOR ?? "0.5",
 );
 
 // G2: Module-level registry of active combo execution candidates.
@@ -81,7 +81,7 @@ const _activeExecutionCandidates = new Map<string, Map<string, { quotaSoftPenalt
 export function setCandidateQuotaSoftPenalty(
   comboExecutionKey: string | null,
   comboStepId: string | null,
-  penalty: boolean
+  penalty: boolean,
 ): void {
   if (!comboExecutionKey || !comboStepId) return;
   const byStep = _activeExecutionCandidates.get(comboExecutionKey);
@@ -100,7 +100,7 @@ export function setCandidateQuotaSoftPenalty(
  * @internal — not exported; only called within combo.ts by buildAutoCandidates callers.
  */
 export function _registerExecutionCandidates(
-  candidates: Array<{ executionKey: string; stepId: string; quotaSoftPenalty?: boolean }>
+  candidates: Array<{ executionKey: string; stepId: string; quotaSoftPenalty?: boolean }>,
 ): void {
   for (const candidate of candidates) {
     if (!candidate.executionKey) continue;
@@ -191,7 +191,7 @@ function toStringArray(input: unknown): string[] {
 
 export function getIntentConfig(
   settings: Record<string, unknown> | null | undefined,
-  combo: ComboLike
+  combo: ComboLike,
 ): IntentClassifierConfig {
   const resolvedSettings = settings || {};
   const comboAutoConfig = combo?.autoConfig || {};
@@ -226,7 +226,7 @@ export function getIntentConfig(
 export async function applyRequestTagRouting(
   targets: ResolvedComboTarget[],
   body: Record<string, unknown> | null | undefined,
-  log: { info?: (...args: unknown[]) => void; warn?: (...args: unknown[]) => void }
+  log: { info?: (...args: unknown[]) => void; warn?: (...args: unknown[]) => void },
 ): Promise<ResolvedComboTarget[]> {
   const { tags, matchMode } = resolveRequestRoutingTags(body);
   if (tags.length === 0 || targets.length === 0) {
@@ -234,9 +234,9 @@ export async function applyRequestTagRouting(
   }
 
   const providerIds = Array.from(
-    new Set(targets.map((target) => target.providerId || target.provider))
+    new Set(targets.map((target) => target.providerId || target.provider)),
   ).filter(
-    (providerId): providerId is string => typeof providerId === "string" && providerId.length > 0
+    (providerId): providerId is string => typeof providerId === "string" && providerId.length > 0,
   );
   const providerConnections = new Map<string, Array<Record<string, unknown>>>();
 
@@ -246,16 +246,16 @@ export async function applyRequestTagRouting(
         const connections = await getProviderConnections({ provider: providerId, isActive: true });
         providerConnections.set(
           providerId,
-          Array.isArray(connections) ? (connections as Array<Record<string, unknown>>) : []
+          Array.isArray(connections) ? (connections as Array<Record<string, unknown>>) : [],
         );
       } catch (error) {
         log.warn?.(
           "COMBO",
-          `Tag routing failed to load connections for provider=${providerId}: ${error instanceof Error ? error.message : String(error)}`
+          `Tag routing failed to load connections for provider=${providerId}: ${error instanceof Error ? error.message : String(error)}`,
         );
         providerConnections.set(providerId, []);
       }
-    })
+    }),
   );
 
   const filteredTargets = targets.reduce<ResolvedComboTarget[]>((acc, target) => {
@@ -278,8 +278,8 @@ export async function applyRequestTagRouting(
         matchesRoutingTags(
           getConnectionRoutingTags(connection.providerSpecificData),
           tags,
-          matchMode
-        )
+          matchMode,
+        ),
       )
       .map((connection) => connection.id)
       .filter((connectionId): connectionId is string => typeof connectionId === "string");
@@ -300,7 +300,7 @@ export async function applyRequestTagRouting(
     const tagMatched = Array.from(new Set(matchedConnectionIds));
     const stepAllow = Array.isArray(target.allowedConnectionIds)
       ? target.allowedConnectionIds.filter(
-          (id): id is string => typeof id === "string" && id.length > 0
+          (id): id is string => typeof id === "string" && id.length > 0,
         )
       : null;
     const effectiveAllow =
@@ -322,14 +322,14 @@ export async function applyRequestTagRouting(
   if (filteredTargets.length === 0) {
     log.info?.(
       "COMBO",
-      `Tag routing matched 0/${targets.length} targets for [${tags.join(", ")}] (${matchMode}); falling back to the full target set`
+      `Tag routing matched 0/${targets.length} targets for [${tags.join(", ")}] (${matchMode}); falling back to the full target set`,
     );
     return targets;
   }
 
   log.info?.(
     "COMBO",
-    `Tag routing matched ${filteredTargets.length}/${targets.length} targets for [${tags.join(", ")}] (${matchMode})`
+    `Tag routing matched ${filteredTargets.length}/${targets.length} targets for [${tags.join(", ")}] (${matchMode})`,
   );
   return filteredTargets;
 }
@@ -339,7 +339,7 @@ export function scoreAutoTargets(
   candidates: AutoProviderCandidate[],
   taskType: string | null,
   weights: ScoringWeights,
-  manifestHint?: RoutingHint | null
+  manifestHint?: RoutingHint | null,
 ) {
   const targetByExecutionKey = new Map(targets.map((target) => [target.executionKey, target]));
   const activeCandidates = candidates.filter((candidate) => candidate.quotaCutoffBlocked !== true);
@@ -351,7 +351,7 @@ export function scoreAutoTargets(
         targets.find(
           (target) =>
             target.stepId === candidate.stepId ||
-            (target.provider === candidate.provider && target.modelStr === candidate.modelStr)
+            (target.provider === candidate.provider && target.modelStr === candidate.modelStr),
         );
       if (!baseTarget) return null;
 
@@ -368,7 +368,7 @@ export function scoreAutoTargets(
         activeCandidates,
         taskType ?? "general",
         getTaskFitness,
-        manifestHint ?? undefined
+        manifestHint ?? undefined,
       );
       let score = calculateScore(factors, weights);
       // B17: Quota Share soft-policy deprioritization
@@ -401,7 +401,7 @@ export function scoreAutoTargets(
  */
 export async function expandAutoComboCandidatePool(
   eligibleTargets: ResolvedComboTarget[],
-  combo: { autoConfig?: unknown; config?: unknown } | null | undefined
+  combo: { autoConfig?: unknown; config?: unknown } | null | undefined,
 ): Promise<ResolvedComboTarget[]> {
   const localAutoConfig =
     (combo?.autoConfig as Record<string, unknown> | undefined) ||
@@ -420,7 +420,7 @@ export async function expandAutoComboCandidatePool(
       ...new Set(
         (allConnections as Array<{ provider?: unknown }>)
           .map((c) => c.provider)
-          .filter((p): p is string => typeof p === "string" && p.length > 0)
+          .filter((p): p is string => typeof p === "string" && p.length > 0),
       ),
     ];
     for (const providerId of providerIds) {

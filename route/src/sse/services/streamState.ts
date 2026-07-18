@@ -91,7 +91,7 @@ export class StreamTracker {
     const allowed = VALID_TRANSITIONS[this.state] || [];
     if (!allowed.includes(newState)) {
       console.warn(
-        `[StreamTracker] Invalid transition: ${this.state} → ${newState} (request: ${this.requestId})`
+        `[StreamTracker] Invalid transition: ${this.state} → ${newState} (request: ${this.requestId})`,
       );
       return false;
     }

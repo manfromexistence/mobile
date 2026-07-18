@@ -30,14 +30,14 @@ test("#5110-1: resolveEmbedWsHost prefers EMBED_WS_PROXY_HOST, then LIVE_WS_HOST
     assert.equal(
       resolveEmbedWsHost(),
       "0.0.0.0",
-      "LIVE_WS_HOST should control the embed WS bind when EMBED_WS_PROXY_HOST is unset"
+      "LIVE_WS_HOST should control the embed WS bind when EMBED_WS_PROXY_HOST is unset",
     );
 
     process.env.EMBED_WS_PROXY_HOST = "10.0.0.5";
     assert.equal(
       resolveEmbedWsHost(),
       "10.0.0.5",
-      "EMBED_WS_PROXY_HOST still wins when both are set"
+      "EMBED_WS_PROXY_HOST still wins when both are set",
     );
   } finally {
     if (prevEmbed === undefined) delete process.env.EMBED_WS_PROXY_HOST;
@@ -77,15 +77,19 @@ test("#5110-4: an empty messages array is rejected with a clear 400 before hitti
         system: "You are helpful.",
         messages: [],
       },
-    })
+    }),
   );
 
-  assert.equal(response.status, 400, "empty messages must be a 400, not a forwarded upstream error");
+  assert.equal(
+    response.status,
+    400,
+    "empty messages must be a 400, not a forwarded upstream error",
+  );
   const body = (await response.json()) as { error?: { message?: string } };
   assert.match(
     body.error?.message ?? "",
     /at least one message is required/i,
-    "error should clearly state messages must be non-empty"
+    "error should clearly state messages must be non-empty",
   );
   assert.equal(upstreamCalled, false, "must not forward an empty-messages request upstream");
 });
@@ -110,7 +114,7 @@ test("#5110-4: a non-empty messages array still routes normally (guard is not ov
         stream: false,
         messages: [{ role: "user", content: "Hello" }],
       },
-    })
+    }),
   );
 
   assert.notEqual(response.status, 400, "a valid request must not be caught by the empty guard");

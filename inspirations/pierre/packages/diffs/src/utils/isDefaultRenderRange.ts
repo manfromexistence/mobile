@@ -1,4 +1,4 @@
-import type { RenderRange } from '../types';
+import type { RenderRange } from "../types";
 
 export function isDefaultRenderRange(renderRange: RenderRange): boolean {
   return (

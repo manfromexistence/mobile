@@ -70,7 +70,7 @@ test("fetchDeepseekQuota parses USD balance-based quota response", async () => {
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -102,7 +102,7 @@ test("fetchDeepseekQuota parses CNY balance response", async () => {
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -137,7 +137,7 @@ test("fetchDeepseekQuota parses both USD and CNY when both available", async () 
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -168,7 +168,7 @@ test("fetchDeepseekQuota marks exhausted when is_available is false", async () =
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -197,7 +197,7 @@ test("fetchDeepseekQuota marks exhausted when balance is zero", async () => {
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -227,7 +227,7 @@ test("fetchDeepseekQuota caches results within TTL", async () => {
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 
@@ -284,7 +284,7 @@ test("registerDeepseekQuotaFetcher exposes DeepSeek quota to preflight", async (
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   const preflight = await preflightQuota("deepseek", connectionId, {
@@ -314,7 +314,7 @@ test("registerDeepseekQuotaFetcher blocks when balance exhausted", async () => {
           },
         ],
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   const preflight = await preflightQuota("deepseek", connectionId, {

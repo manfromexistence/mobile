@@ -126,7 +126,7 @@ function sanitizeInputItem(item: unknown): unknown {
 export function sanitizeResponsesInputItems(
   items: readonly unknown[],
   clone = true,
-  options: SanitizeResponsesInputOptions = {}
+  options: SanitizeResponsesInputOptions = {},
 ): unknown[] {
   const dropInternalAssistantMessages = options.dropInternalAssistantMessages ?? true;
   const sanitized: unknown[] = [];

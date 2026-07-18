@@ -84,7 +84,7 @@ function resolveMigrationsDir(): string {
     try {
       // Strip the file:// prefix and decode, then normalize for the platform
       const rawPath = decodeURIComponent(
-        metaUrl.replace(/^file:\/\/\//, "/").replace(/^file:\/\//, "")
+        metaUrl.replace(/^file:\/\/\//, "/").replace(/^file:\/\//, ""),
       );
       let currentDir = path.dirname(path.resolve(rawPath));
       while (currentDir !== path.dirname(currentDir)) {
@@ -102,7 +102,7 @@ function resolveMigrationsDir(): string {
   if (fromCwd) return fromCwd;
 
   throw new Error(
-    "[Migration] Could not resolve migrations directory. Set OMNIROUTE_MIGRATIONS_DIR."
+    "[Migration] Could not resolve migrations directory. Set OMNIROUTE_MIGRATIONS_DIR.",
   );
 }
 
@@ -206,7 +206,7 @@ function supportsFts5(db: SqliteAdapter): boolean {
 
 function isDeferredUnsupportedMigration(
   db: SqliteAdapter,
-  migration: { version: string; name: string }
+  migration: { version: string; name: string },
 ): boolean {
   return isOptionalFts5Migration(migration) && !supportsFts5(db);
 }
@@ -246,7 +246,9 @@ function getMigrationFiles(): Array<{ version: string; name: string; path: strin
     if (names.length <= 1) continue;
     const liveNames = names.filter(
       (name) =>
-        !SUPERSEDED_DUPLICATE_MIGRATIONS.some((sup) => sup.version === version && sup.name === name)
+        !SUPERSEDED_DUPLICATE_MIGRATIONS.some(
+          (sup) => sup.version === version && sup.name === name,
+        ),
     );
     if (liveNames.length > 1) {
       realCollisions.push({ version, names: liveNames });
@@ -260,7 +262,7 @@ function getMigrationFiles(): Array<{ version: string; name: string; path: strin
       `Migration version collision detected: ${summary}. ` +
         `Each migration file must have a unique numeric prefix. Rename one of the ` +
         `colliding files (and add a retroactive guard in isSchemaAlreadyApplied for ` +
-        `DBs that already applied the old number). See _tasks/features-v3.8.4/9route/POST-MERGE-AUDIT.md.`
+        `DBs that already applied the old number). See _tasks/features-v3.8.4/9route/POST-MERGE-AUDIT.md.`,
     );
   }
 
@@ -268,11 +270,11 @@ function getMigrationFiles(): Array<{ version: string; name: string; path: strin
 }
 
 function filterSupersededDuplicateMigrations(
-  files: Array<{ version: string; name: string; path: string }>
+  files: Array<{ version: string; name: string; path: string }>,
 ): Array<{ version: string; name: string; path: string }> {
   return files.filter((file) => {
     const superseded = SUPERSEDED_DUPLICATE_MIGRATIONS.find(
-      (migration) => migration.version === file.version && migration.name === file.name
+      (migration) => migration.version === file.version && migration.name === file.name,
     );
     if (!superseded) {
       return true;
@@ -281,7 +283,7 @@ function filterSupersededDuplicateMigrations(
     const hasReplacement = files.some(
       (candidate) =>
         candidate.version === superseded.supersededByVersion &&
-        candidate.name === superseded.supersededByName
+        candidate.name === superseded.supersededByName,
     );
     if (!hasReplacement) {
       return true;
@@ -289,7 +291,7 @@ function filterSupersededDuplicateMigrations(
 
     console.warn(
       `[Migration] Ignoring superseded duplicate migration ${file.version}_${file.name}; ` +
-        `${superseded.supersededByVersion}_${superseded.supersededByName} is the canonical slot.`
+        `${superseded.supersededByVersion}_${superseded.supersededByName} is the canonical slot.`,
     );
     return false;
   });
@@ -337,7 +339,7 @@ function ensureColumn(db: SqliteAdapter, tableName: string, columnName: string, 
 
 function isSchemaAlreadyApplied(
   db: SqliteAdapter,
-  migration: { version: string; name: string }
+  migration: { version: string; name: string },
 ): boolean {
   switch (migration.version) {
     case "003":
@@ -483,7 +485,7 @@ function applySearchRequestTypeMigration(db: SqliteAdapter): void {
     db,
     "call_logs",
     "request_type",
-    "ALTER TABLE call_logs ADD COLUMN request_type TEXT DEFAULT NULL"
+    "ALTER TABLE call_logs ADD COLUMN request_type TEXT DEFAULT NULL",
   );
   db.exec("CREATE INDEX IF NOT EXISTS idx_call_logs_request_type ON call_logs(request_type);");
 }
@@ -493,67 +495,67 @@ function applyCompressionReceiptsMigration(db: SqliteAdapter): void {
     db,
     "compression_analytics",
     "actual_prompt_tokens",
-    "ALTER TABLE compression_analytics ADD COLUMN actual_prompt_tokens INTEGER"
+    "ALTER TABLE compression_analytics ADD COLUMN actual_prompt_tokens INTEGER",
   );
   ensureColumn(
     db,
     "compression_analytics",
     "actual_completion_tokens",
-    "ALTER TABLE compression_analytics ADD COLUMN actual_completion_tokens INTEGER"
+    "ALTER TABLE compression_analytics ADD COLUMN actual_completion_tokens INTEGER",
   );
   ensureColumn(
     db,
     "compression_analytics",
     "actual_total_tokens",
-    "ALTER TABLE compression_analytics ADD COLUMN actual_total_tokens INTEGER"
+    "ALTER TABLE compression_analytics ADD COLUMN actual_total_tokens INTEGER",
   );
   ensureColumn(
     db,
     "compression_analytics",
     "actual_cache_read_tokens",
-    "ALTER TABLE compression_analytics ADD COLUMN actual_cache_read_tokens INTEGER"
+    "ALTER TABLE compression_analytics ADD COLUMN actual_cache_read_tokens INTEGER",
   );
   ensureColumn(
     db,
     "compression_analytics",
     "actual_cache_write_tokens",
-    "ALTER TABLE compression_analytics ADD COLUMN actual_cache_write_tokens INTEGER"
+    "ALTER TABLE compression_analytics ADD COLUMN actual_cache_write_tokens INTEGER",
   );
   ensureColumn(
     db,
     "compression_analytics",
     "estimated_usd_saved",
-    "ALTER TABLE compression_analytics ADD COLUMN estimated_usd_saved REAL"
+    "ALTER TABLE compression_analytics ADD COLUMN estimated_usd_saved REAL",
   );
   ensureColumn(
     db,
     "compression_analytics",
     "mcp_description_tokens_saved",
-    "ALTER TABLE compression_analytics ADD COLUMN mcp_description_tokens_saved INTEGER DEFAULT 0"
+    "ALTER TABLE compression_analytics ADD COLUMN mcp_description_tokens_saved INTEGER DEFAULT 0",
   );
   ensureColumn(
     db,
     "compression_analytics",
     "multimodal_skip_count",
-    "ALTER TABLE compression_analytics ADD COLUMN multimodal_skip_count INTEGER DEFAULT 0"
+    "ALTER TABLE compression_analytics ADD COLUMN multimodal_skip_count INTEGER DEFAULT 0",
   );
   ensureColumn(
     db,
     "compression_analytics",
     "receipt_source",
-    "ALTER TABLE compression_analytics ADD COLUMN receipt_source TEXT"
+    "ALTER TABLE compression_analytics ADD COLUMN receipt_source TEXT",
   );
   ensureColumn(
     db,
     "compression_analytics",
     "validation_fallback",
-    "ALTER TABLE compression_analytics ADD COLUMN validation_fallback INTEGER DEFAULT 0"
+    "ALTER TABLE compression_analytics ADD COLUMN validation_fallback INTEGER DEFAULT 0",
   );
   ensureColumn(
     db,
     "compression_analytics",
     "output_mode",
-    "ALTER TABLE compression_analytics ADD COLUMN output_mode TEXT"
+    "ALTER TABLE compression_analytics ADD COLUMN output_mode TEXT",
   );
 
   db.exec(`
@@ -571,13 +573,13 @@ function applyCompressionCombosMigration(db: SqliteAdapter, migrationPath: strin
     db,
     "compression_analytics",
     "compression_combo_id",
-    "ALTER TABLE compression_analytics ADD COLUMN compression_combo_id TEXT"
+    "ALTER TABLE compression_analytics ADD COLUMN compression_combo_id TEXT",
   );
   ensureColumn(
     db,
     "compression_analytics",
     "engine",
-    "ALTER TABLE compression_analytics ADD COLUMN engine TEXT"
+    "ALTER TABLE compression_analytics ADD COLUMN engine TEXT",
   );
   db.exec(`
     CREATE INDEX IF NOT EXISTS idx_compression_analytics_combo_engine
@@ -611,7 +613,7 @@ function inferPhysicalSchemaBaseline(db: SqliteAdapter): {
 
 function getPlausiblePendingCount(
   files: Array<{ version: string; name: string; path: string }>,
-  baselineVersion: string
+  baselineVersion: string,
 ): number {
   const baseline = Number.parseInt(baselineVersion, 10);
   return files.filter((file) => Number.parseInt(file.version, 10) > baseline).length;
@@ -624,7 +626,7 @@ function getPlausiblePendingCount(
  */
 function detectNameMismatches(
   appliedRecords: Array<{ version: string; name: string }>,
-  files: Array<{ version: string; name: string; path: string }>
+  files: Array<{ version: string; name: string; path: string }>,
 ): Array<{ version: string; appliedName: string; diskName: string }> {
   const appliedByName = new Map(appliedRecords.map((r) => [r.version, r.name]));
   const mismatches: Array<{ version: string; appliedName: string; diskName: string }> = [];
@@ -645,16 +647,16 @@ function detectNameMismatches(
 
 function reconcileRenumberedMigrations(
   db: SqliteAdapter,
-  files: Array<{ version: string; name: string; path: string }>
+  files: Array<{ version: string; name: string; path: string }>,
 ): boolean {
   let repaired = false;
 
   for (const compatibility of RENAMED_MIGRATION_COMPATIBILITY) {
     const hasTargetFile = files.some(
-      (file) => file.version === compatibility.toVersion && file.name === compatibility.toName
+      (file) => file.version === compatibility.toVersion && file.name === compatibility.toName,
     );
     const hasSourceFile = files.some(
-      (file) => file.version === compatibility.fromVersion && file.name !== compatibility.fromName
+      (file) => file.version === compatibility.fromVersion && file.name !== compatibility.fromName,
     );
 
     if (!hasTargetFile || !hasSourceFile) {
@@ -664,7 +666,8 @@ function reconcileRenumberedMigrations(
     const legacyRow = db
       .prepare("SELECT version, name FROM _omniroute_migrations WHERE version = ? AND name = ?")
       .get(compatibility.fromVersion, compatibility.fromName) as
-      { version: string; name: string } | undefined;
+      | { version: string; name: string }
+      | undefined;
     if (!legacyRow) {
       continue;
     }
@@ -677,16 +680,16 @@ function reconcileRenumberedMigrations(
       if (targetRow) {
         db.prepare("DELETE FROM _omniroute_migrations WHERE version = ? AND name = ?").run(
           compatibility.fromVersion,
-          compatibility.fromName
+          compatibility.fromName,
         );
       } else {
         db.prepare(
-          "UPDATE _omniroute_migrations SET version = ?, name = ? WHERE version = ? AND name = ?"
+          "UPDATE _omniroute_migrations SET version = ?, name = ? WHERE version = ? AND name = ?",
         ).run(
           compatibility.toVersion,
           compatibility.toName,
           compatibility.fromVersion,
-          compatibility.fromName
+          compatibility.fromName,
         );
       }
     });
@@ -695,7 +698,7 @@ function reconcileRenumberedMigrations(
     repaired = true;
     console.warn(
       `[Migration] Reconciled renamed migration ${compatibility.fromVersion}_${compatibility.fromName} ` +
-        `to ${compatibility.toVersion}_${compatibility.toName} to preserve pending migrations.`
+        `to ${compatibility.toVersion}_${compatibility.toName} to preserve pending migrations.`,
     );
 
     // After the compat rewrite, verify the old version slot is now free.
@@ -710,10 +713,10 @@ function reconcileRenumberedMigrations(
       console.warn(
         `[Migration] ⚠️  Residual row at version ${compatibility.fromVersion} ` +
           `(name: "${residualRow.name}") still present after compat rewrite — ` +
-          `removing to unblock new migration at this version slot.`
+          `removing to unblock new migration at this version slot.`,
       );
       db.prepare("DELETE FROM _omniroute_migrations WHERE version = ?").run(
-        compatibility.fromVersion
+        compatibility.fromVersion,
       );
     }
   }
@@ -723,7 +726,7 @@ function reconcileRenumberedMigrations(
 
 function rehomeLegacyVersionSlotMigrations(
   db: SqliteAdapter,
-  files: Array<{ version: string; name: string; path: string }>
+  files: Array<{ version: string; name: string; path: string }>,
 ): boolean {
   let repaired = false;
   const diskNamesByVersion = new Map(files.map((file) => [file.version, file.name]));
@@ -750,7 +753,7 @@ function rehomeLegacyVersionSlotMigrations(
       if (existingLegacyRow) {
         db.prepare("DELETE FROM _omniroute_migrations WHERE version = ? AND name = ?").run(
           legacy.version,
-          legacy.name
+          legacy.name,
         );
         return;
       }
@@ -758,7 +761,7 @@ function rehomeLegacyVersionSlotMigrations(
       db.prepare("UPDATE _omniroute_migrations SET version = ? WHERE version = ? AND name = ?").run(
         legacyVersion,
         legacy.version,
-        legacy.name
+        legacy.name,
       );
     });
 
@@ -766,7 +769,7 @@ function rehomeLegacyVersionSlotMigrations(
     repaired = true;
     console.warn(
       `[Migration] Rehomed legacy migration ${legacy.version}_${legacy.name} ` +
-        `to ${legacyVersion} so current ${legacy.version}_${diskName} can apply.`
+        `to ${legacyVersion} so current ${legacy.version}_${diskName} can apply.`,
     );
   }
 
@@ -824,20 +827,20 @@ export function runMigrations(db: SqliteAdapter, options?: { isNewDb?: boolean }
   const mismatches = detectNameMismatches(appliedRecords, files);
   if (mismatches.length > 0) {
     console.error(
-      `[Migration] ⚠️  CRITICAL: ${mismatches.length} migration version(s) have been renumbered!`
+      `[Migration] ⚠️  CRITICAL: ${mismatches.length} migration version(s) have been renumbered!`,
     );
     for (const m of mismatches) {
       console.error(
-        `  Version ${m.version}: applied as "${m.appliedName}" but disk has "${m.diskName}"`
+        `  Version ${m.version}: applied as "${m.appliedName}" but disk has "${m.diskName}"`,
       );
     }
     console.error(
       `[Migration] This indicates migrations were renumbered between releases, ` +
-        `which can cause the migration runner to skip or re-run migrations incorrectly.`
+        `which can cause the migration runner to skip or re-run migrations incorrectly.`,
     );
     console.error(
       `[Migration] The version-only tracking will skip these (version already applied), ` +
-        `but please report this to the OmniRoute maintainers.`
+        `but please report this to the OmniRoute maintainers.`,
     );
   }
 
@@ -855,16 +858,16 @@ export function runMigrations(db: SqliteAdapter, options?: { isNewDb?: boolean }
       console.warn(
         `[Migration] 🔄 RECONCILIATION: Found missing intermediate migration ` +
           `${f.version}_${f.name} (highest applied is ${highestApplied}). ` +
-          `This gap will be back-filled to ensure schema integrity.`
+          `This gap will be back-filled to ensure schema integrity.`,
       );
     }
     return isMissing;
   });
   const deferredUnsupported = pending.filter((migration) =>
-    isDeferredUnsupportedMigration(db, migration)
+    isDeferredUnsupportedMigration(db, migration),
   );
   const actionablePending = pending.filter(
-    (migration) => !deferredUnsupported.some((deferred) => deferred.version === migration.version)
+    (migration) => !deferredUnsupported.some((deferred) => deferred.version === migration.version),
   );
 
   if (pending.length === 0) {
@@ -877,7 +880,7 @@ export function runMigrations(db: SqliteAdapter, options?: { isNewDb?: boolean }
       .join(", ");
     console.warn(
       `[Migration] Deferring optional FTS5 migrations on driver ${db.driver}: ${summary}. ` +
-        `Memory search will fall back until a SQLite driver with FTS5 support is available.`
+        `Memory search will fall back until a SQLite driver with FTS5 support is available.`,
     );
   }
 
@@ -910,7 +913,7 @@ export function runMigrations(db: SqliteAdapter, options?: { isNewDb?: boolean }
       console.warn(
         `[Migration] Allowing ${actionablePending.length} pending migrations on an existing database ` +
           `because the physical schema only proves ${physicalBaseline?.version} ` +
-          `(${physicalBaseline?.description}).`
+          `(${physicalBaseline?.description}).`,
       );
     } else {
       const schemaHint =
@@ -937,7 +940,7 @@ export function runMigrations(db: SqliteAdapter, options?: { isNewDb?: boolean }
         console.error(
           `[Migration] 🛑 ABORT (repeat — see earlier detail): ` +
             `${actionablePending.length} pending > threshold ${maxPendingMigrations}. ` +
-            `Set OMNIROUTE_MAX_PENDING_MIGRATIONS=0 to bypass.`
+            `Set OMNIROUTE_MAX_PENDING_MIGRATIONS=0 to bypass.`,
         );
         throw memoizedSafetyAbort;
       }
@@ -964,7 +967,7 @@ export function runMigrations(db: SqliteAdapter, options?: { isNewDb?: boolean }
     const applyMigration = db.transaction(() => {
       if (isSchemaAlreadyApplied(db, migration)) {
         console.warn(
-          `[Migration] Skipped executing ${migration.version}_${migration.name} as schema changes are already present (Idempotency check).`
+          `[Migration] Skipped executing ${migration.version}_${migration.name} as schema changes are already present (Idempotency check).`,
         );
       } else if (migration.version === "032") {
         applyApiKeyLifecycleMigration(db);
@@ -978,7 +981,7 @@ export function runMigrations(db: SqliteAdapter, options?: { isNewDb?: boolean }
       }
       db.prepare("INSERT INTO _omniroute_migrations (version, name) VALUES (?, ?)").run(
         migration.version,
-        migration.name
+        migration.name,
       );
     });
 
@@ -992,13 +995,13 @@ export function runMigrations(db: SqliteAdapter, options?: { isNewDb?: boolean }
       if (message.includes("duplicate column name")) {
         const applyMarkerOnly = db.transaction(() => {
           db.prepare(
-            "INSERT OR IGNORE INTO _omniroute_migrations (version, name) VALUES (?, ?)"
+            "INSERT OR IGNORE INTO _omniroute_migrations (version, name) VALUES (?, ?)",
           ).run(migration.version, migration.name);
         });
         applyMarkerOnly();
         count++;
         console.log(
-          `[Migration] Applied (column pre-exists): ${migration.version}_${migration.name}`
+          `[Migration] Applied (column pre-exists): ${migration.version}_${migration.name}`,
         );
       } else {
         console.error(`[Migration] FAILED: ${migration.version}_${migration.name} — ${message}`);
@@ -1031,7 +1034,7 @@ function insertDefaultDatabaseSettings(db: SqliteAdapter) {
         db.prepare("INSERT OR IGNORE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
           "databaseSettings",
           `${section}.${key}`,
-          JSON.stringify(value)
+          JSON.stringify(value),
         );
       }
     }

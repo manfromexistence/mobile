@@ -72,7 +72,7 @@ export default function MitmProxyTab() {
   const [apiKey, setApiKey] = useState("");
   const [sudoPassword, setSudoPassword] = useState("");
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(
-    null
+    null,
   );
 
   const loadStatus = useCallback(async () => {
@@ -140,7 +140,7 @@ export default function MitmProxyTab() {
         apiKey: String(apiKey || "").trim() || undefined,
         sudoPassword: sudoPassword || undefined,
       },
-      status.running ? t("stoppedSuccess") : t("startedSuccess")
+      status.running ? t("stoppedSuccess") : t("startedSuccess"),
     );
   };
 

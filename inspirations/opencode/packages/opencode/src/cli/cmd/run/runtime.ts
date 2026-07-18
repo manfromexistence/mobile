@@ -12,148 +12,166 @@
 //   3. starts the stream transport (SDK event subscription), lazily for fresh
 //      local sessions,
 //   4. runs the prompt queue until the footer closes.
-import { createOpencodeClient } from "@opencode-ai/sdk/v2"
-import { Flag } from "@opencode-ai/core/flag/flag"
-import { MessageID } from "@/session/schema"
-import { createRunDemo } from "./demo"
-import { resolveModelInfo, resolveRunTuiConfig, resolveSessionInfo } from "./runtime.boot"
-import { createRuntimeLifecycle } from "./runtime.lifecycle"
-import { trace } from "./trace"
-import { cycleVariant, formatModelLabel, resolveSavedVariant, resolveVariant, saveVariant } from "./variant.shared"
-import type { LocalReplayAnchor, LocalReplayRow, RunInput, RunPrompt, RunProvider, StreamCommit } from "./types"
+import { createOpencodeClient } from "@opencode-ai/sdk/v2";
+import { Flag } from "@opencode-ai/core/flag/flag";
+import { MessageID } from "@/session/schema";
+import { createRunDemo } from "./demo";
+import { resolveModelInfo, resolveRunTuiConfig, resolveSessionInfo } from "./runtime.boot";
+import { createRuntimeLifecycle } from "./runtime.lifecycle";
+import { trace } from "./trace";
+import {
+  cycleVariant,
+  formatModelLabel,
+  resolveSavedVariant,
+  resolveVariant,
+  saveVariant,
+} from "./variant.shared";
+import type {
+  LocalReplayAnchor,
+  LocalReplayRow,
+  RunInput,
+  RunPrompt,
+  RunProvider,
+  StreamCommit,
+} from "./types";
 
 /** @internal Exported for testing */
-export { pickVariant, resolveVariant } from "./variant.shared"
+export { pickVariant, resolveVariant } from "./variant.shared";
 
 /** @internal Exported for testing */
-export { runPromptQueue } from "./runtime.queue"
+export { runPromptQueue } from "./runtime.queue";
 
 type BootContext = Pick<
   RunInput,
   "sdk" | "directory" | "sessionID" | "sessionTitle" | "resume" | "agent" | "model" | "variant"
->
+>;
 
 type CreateSessionInput = {
-  agent: string | undefined
-  model: RunInput["model"]
-  variant: string | undefined
-}
+  agent: string | undefined;
+  model: RunInput["model"];
+  variant: string | undefined;
+};
 
-type CreateSession = (sdk: RunInput["sdk"], input: CreateSessionInput) => Promise<{ id: string; title?: string }>
+type CreateSession = (
+  sdk: RunInput["sdk"],
+  input: CreateSessionInput,
+) => Promise<{ id: string; title?: string }>;
 
 type RunRuntimeInput = {
-  boot: () => Promise<BootContext>
-  afterPaint?: (ctx: BootContext) => Promise<void> | void
+  boot: () => Promise<BootContext>;
+  afterPaint?: (ctx: BootContext) => Promise<void> | void;
   resolveSession?: (
     ctx: BootContext,
-  ) => Promise<{ sessionID: string; sessionTitle?: string; agent?: string | undefined }>
-  createSession?: (ctx: BootContext, input: CreateSessionInput) => Promise<ResolvedSession>
-  files: RunInput["files"]
-  initialInput?: string
-  thinking: boolean
-  backgroundSubagents: boolean
-  replay?: boolean
-  replayLimit?: number
-  demo?: RunInput["demo"]
-}
+  ) => Promise<{ sessionID: string; sessionTitle?: string; agent?: string | undefined }>;
+  createSession?: (ctx: BootContext, input: CreateSessionInput) => Promise<ResolvedSession>;
+  files: RunInput["files"];
+  initialInput?: string;
+  thinking: boolean;
+  backgroundSubagents: boolean;
+  replay?: boolean;
+  replayLimit?: number;
+  demo?: RunInput["demo"];
+};
 
 type RunLocalInput = {
-  directory: string
-  fetch: typeof globalThis.fetch
-  resolveAgent: () => Promise<string | undefined>
-  session: (sdk: RunInput["sdk"]) => Promise<{ id: string; title?: string } | undefined>
-  share: (sdk: RunInput["sdk"], sessionID: string) => Promise<void>
-  createSession?: CreateSession
-  agent: RunInput["agent"]
-  model: RunInput["model"]
-  variant: RunInput["variant"]
-  files: RunInput["files"]
-  initialInput?: string
-  thinking: boolean
-  backgroundSubagents: boolean
-  replay?: boolean
-  replayLimit?: number
-  demo?: RunInput["demo"]
-}
+  directory: string;
+  fetch: typeof globalThis.fetch;
+  resolveAgent: () => Promise<string | undefined>;
+  session: (sdk: RunInput["sdk"]) => Promise<{ id: string; title?: string } | undefined>;
+  share: (sdk: RunInput["sdk"], sessionID: string) => Promise<void>;
+  createSession?: CreateSession;
+  agent: RunInput["agent"];
+  model: RunInput["model"];
+  variant: RunInput["variant"];
+  files: RunInput["files"];
+  initialInput?: string;
+  thinking: boolean;
+  backgroundSubagents: boolean;
+  replay?: boolean;
+  replayLimit?: number;
+  demo?: RunInput["demo"];
+};
 
 type StreamTransportModule = Pick<
   Awaited<typeof import("./stream.transport")>,
   "createSessionTransport" | "formatUnknownError"
->
+>;
 
 export type RunRuntimeDeps = {
-  createRuntimeLifecycle?: typeof createRuntimeLifecycle
-  streamTransport?: Promise<StreamTransportModule>
-}
+  createRuntimeLifecycle?: typeof createRuntimeLifecycle;
+  streamTransport?: Promise<StreamTransportModule>;
+};
 
 type StreamState = {
-  mod: StreamTransportModule
-  handle: Awaited<ReturnType<StreamTransportModule["createSessionTransport"]>>
-}
+  mod: StreamTransportModule;
+  handle: Awaited<ReturnType<StreamTransportModule["createSessionTransport"]>>;
+};
 
 type ResolvedSession = {
-  sessionID: string
-  sessionTitle?: string
-  agent?: string | undefined
-}
+  sessionID: string;
+  sessionTitle?: string;
+  agent?: string | undefined;
+};
 
 function createSessionResolver(fn?: CreateSession) {
   if (!fn) {
-    return undefined
+    return undefined;
   }
 
   return async (ctx: BootContext, input: CreateSessionInput): Promise<ResolvedSession> => {
-    const created = await fn(ctx.sdk, input)
+    const created = await fn(ctx.sdk, input);
     if (!created.id) {
-      throw new Error("Failed to create session")
+      throw new Error("Failed to create session");
     }
 
     return {
       sessionID: created.id,
       sessionTitle: created.title,
       agent: input.agent,
-    }
-  }
+    };
+  };
 }
 
 type RuntimeState = {
-  shown: boolean
-  aborting: boolean
-  model: RunInput["model"]
-  providers: RunProvider[]
-  variants: string[]
-  limits: Record<string, number>
-  activeVariant: string | undefined
-  sessionID: string
-  history: RunPrompt[]
-  localRows: LocalReplayRow[]
-  sessionTitle?: string
-  agent: string | undefined
-  switching?: Promise<void>
-  demo?: ReturnType<typeof createRunDemo>
-  selectSubagent?: (sessionID: string | undefined) => void
-  session?: Promise<void>
-  stream?: Promise<StreamState>
-}
+  shown: boolean;
+  aborting: boolean;
+  model: RunInput["model"];
+  providers: RunProvider[];
+  variants: string[];
+  limits: Record<string, number>;
+  activeVariant: string | undefined;
+  sessionID: string;
+  history: RunPrompt[];
+  localRows: LocalReplayRow[];
+  sessionTitle?: string;
+  agent: string | undefined;
+  switching?: Promise<void>;
+  demo?: ReturnType<typeof createRunDemo>;
+  selectSubagent?: (sessionID: string | undefined) => void;
+  session?: Promise<void>;
+  stream?: Promise<StreamState>;
+};
 
 function hasSession(input: RunRuntimeInput, state: RuntimeState) {
-  return !input.resolveSession || !!state.sessionID
+  return !input.resolveSession || !!state.sessionID;
 }
 
 function eagerStream(input: RunRuntimeInput, ctx: BootContext) {
-  return ctx.resume === true || !input.resolveSession || !!input.demo
+  return ctx.resume === true || !input.resolveSession || !!input.demo;
 }
 
 function variantsFor(providers: RunProvider[], model: RunInput["model"]) {
   if (!model) {
-    return []
+    return [];
   }
 
-  return Object.keys(providers.find((item) => item.id === model.providerID)?.models?.[model.modelID]?.variants ?? {})
+  return Object.keys(
+    providers.find((item) => item.id === model.providerID)?.models?.[model.modelID]?.variants ?? {},
+  );
 }
 
-const RESIZE_DELAY = 250
-const LOCAL_REPLAY_ROW_LIMIT = 100
+const RESIZE_DELAY = 250;
+const LOCAL_REPLAY_ROW_LIMIT = 100;
 
 async function resolveExitTitle(
   ctx: BootContext,
@@ -161,7 +179,7 @@ async function resolveExitTitle(
   state: RuntimeState,
 ): Promise<string | undefined> {
   if (!state.shown || !hasSession(input, state)) {
-    return undefined
+    return undefined;
   }
 
   return ctx.sdk.session
@@ -169,7 +187,7 @@ async function resolveExitTitle(
       sessionID: state.sessionID,
     })
     .then((x) => x.data?.title)
-    .catch(() => undefined)
+    .catch(() => undefined);
 }
 
 // Core runtime loop. Boot resolves the SDK context, then we set up the
@@ -178,12 +196,15 @@ async function resolveExitTitle(
 //
 // Files only attach on the first prompt turn -- after that, includeFiles
 // flips to false so subsequent turns don't re-send attachments.
-async function runInteractiveRuntime(input: RunRuntimeInput, deps: RunRuntimeDeps = {}): Promise<void> {
-  const start = performance.now()
-  const log = trace()
-  const tuiConfigTask = resolveRunTuiConfig()
-  const ctx = await input.boot()
-  const modelTask = resolveModelInfo(ctx.sdk, ctx.directory, ctx.model)
+async function runInteractiveRuntime(
+  input: RunRuntimeInput,
+  deps: RunRuntimeDeps = {},
+): Promise<void> {
+  const start = performance.now();
+  const log = trace();
+  const tuiConfigTask = resolveRunTuiConfig();
+  const ctx = await input.boot();
+  const modelTask = resolveModelInfo(ctx.sdk, ctx.directory, ctx.model);
   const sessionTask =
     ctx.resume === true
       ? resolveSessionInfo(ctx.sdk, ctx.sessionID, ctx.model)
@@ -191,9 +212,13 @@ async function runInteractiveRuntime(input: RunRuntimeInput, deps: RunRuntimeDep
           first: true,
           history: [],
           variant: undefined,
-        })
-  const savedTask = resolveSavedVariant(ctx.model)
-  const [tuiConfig, session, savedVariant] = await Promise.all([tuiConfigTask, sessionTask, savedTask])
+        });
+  const savedTask = resolveSavedVariant(ctx.model);
+  const [tuiConfig, session, savedVariant] = await Promise.all([
+    tuiConfigTask,
+    sessionTask,
+    savedTask,
+  ]);
   const state: RuntimeState = {
     shown: !session.first,
     aborting: false,
@@ -207,23 +232,23 @@ async function runInteractiveRuntime(input: RunRuntimeInput, deps: RunRuntimeDep
     localRows: [],
     sessionTitle: ctx.sessionTitle,
     agent: ctx.agent,
-  }
+  };
   const ensureSession = () => {
     if (!input.resolveSession || state.sessionID) {
-      return Promise.resolve()
+      return Promise.resolve();
     }
 
     if (state.session) {
-      return state.session
+      return state.session;
     }
 
     state.session = input.resolveSession(ctx).then((next) => {
-      state.sessionID = next.sessionID
-      state.sessionTitle = next.sessionTitle ?? state.sessionTitle
-      state.agent = next.agent
-    })
-    return state.session
-  }
+      state.sessionID = next.sessionID;
+      state.sessionTitle = next.sessionTitle ?? state.sessionTitle;
+      state.agent = next.agent;
+    });
+    return state.session;
+  };
 
   const shell = await (deps.createRuntimeLifecycle ?? createRuntimeLifecycle)({
     directory: ctx.directory,
@@ -246,66 +271,74 @@ async function runInteractiveRuntime(input: RunRuntimeInput, deps: RunRuntimeDep
     backgroundSubagents: input.backgroundSubagents,
     onPermissionReply: async (next) => {
       if (state.demo?.permission(next)) {
-        return
+        return;
       }
 
-      log?.write("send.permission.reply", next)
-      await ctx.sdk.permission.reply(next)
+      log?.write("send.permission.reply", next);
+      await ctx.sdk.permission.reply(next);
     },
     onQuestionReply: async (next) => {
       if (state.demo?.questionReply(next)) {
-        return
+        return;
       }
 
-      await ctx.sdk.question.reply(next)
+      await ctx.sdk.question.reply(next);
     },
     onQuestionReject: async (next) => {
       if (state.demo?.questionReject(next)) {
-        return
+        return;
       }
 
-      await ctx.sdk.question.reject(next)
+      await ctx.sdk.question.reject(next);
     },
     onCycleVariant: () => {
       if (!state.model || state.variants.length === 0) {
         return {
           status: "no variants available",
-        }
+        };
       }
 
-      state.activeVariant = cycleVariant(state.activeVariant, state.variants)
-      saveVariant(state.model, state.activeVariant)
+      state.activeVariant = cycleVariant(state.activeVariant, state.variants);
+      saveVariant(state.model, state.activeVariant);
       return {
         status: state.activeVariant ? `variant ${state.activeVariant}` : "variant default",
         modelLabel: formatModelLabel(state.model, state.activeVariant, state.providers),
         variant: state.activeVariant,
-      }
+      };
     },
     onModelSelect: async (model) => {
       if (state.model?.providerID === model.providerID && state.model.modelID === model.modelID) {
-        return
+        return;
       }
 
-      state.model = model
-      state.activeVariant = undefined
-      state.variants = variantsFor(state.providers, model)
+      state.model = model;
+      state.activeVariant = undefined;
+      state.variants = variantsFor(state.providers, model);
       const switching = resolveSavedVariant(model).then((saved) => {
-        const current = state.model
-        if (!current || current.providerID !== model.providerID || current.modelID !== model.modelID) {
-          return
+        const current = state.model;
+        if (
+          !current ||
+          current.providerID !== model.providerID ||
+          current.modelID !== model.modelID
+        ) {
+          return;
         }
 
-        state.activeVariant = resolveVariant(ctx.variant, undefined, saved, state.variants)
-      })
-      state.switching = switching
-      await switching
+        state.activeVariant = resolveVariant(ctx.variant, undefined, saved, state.variants);
+      });
+      state.switching = switching;
+      await switching;
       if (state.switching === switching) {
-        state.switching = undefined
+        state.switching = undefined;
       }
 
-      const current = state.model
-      if (!current || current.providerID !== model.providerID || current.modelID !== model.modelID) {
-        return
+      const current = state.model;
+      if (
+        !current ||
+        current.providerID !== model.providerID ||
+        current.modelID !== model.modelID
+      ) {
+        return;
       }
 
       return {
@@ -313,64 +346,64 @@ async function runInteractiveRuntime(input: RunRuntimeInput, deps: RunRuntimeDep
         status: `model ${model.modelID}`,
         variant: state.activeVariant,
         variants: state.variants,
-      }
+      };
     },
     onVariantSelect: async (variant) => {
       if (!state.model || state.variants.length === 0) {
         return {
           status: "no variants available",
-        }
+        };
       }
 
       if (variant && !state.variants.includes(variant)) {
         return {
           status: `variant ${variant} unavailable`,
-        }
+        };
       }
 
-      state.activeVariant = variant
-      saveVariant(state.model, state.activeVariant)
+      state.activeVariant = variant;
+      saveVariant(state.model, state.activeVariant);
       return {
         status: state.activeVariant ? `variant ${state.activeVariant}` : "variant default",
         modelLabel: formatModelLabel(state.model, state.activeVariant, state.providers),
         variant: state.activeVariant,
         variants: state.variants,
-      }
+      };
     },
     onInterrupt: () => {
       if (!hasSession(input, state) || state.aborting) {
-        return
+        return;
       }
 
-      state.aborting = true
+      state.aborting = true;
       void ctx.sdk.session
         .abort({
           sessionID: state.sessionID,
         })
         .catch(() => {})
         .finally(() => {
-          state.aborting = false
-        })
+          state.aborting = false;
+        });
     },
     onBackground: () => {
-      if (!hasSession(input, state)) return
-      void ctx.sdk.experimental.session.background({ sessionID: state.sessionID }).catch(() => {})
+      if (!hasSession(input, state)) return;
+      void ctx.sdk.experimental.session.background({ sessionID: state.sessionID }).catch(() => {});
     },
     onSubagentSelect: (sessionID) => {
-      state.selectSubagent?.(sessionID)
+      state.selectSubagent?.(sessionID);
       log?.write("subagent.select", {
         sessionID,
-      })
+      });
     },
-  })
-  const footer = shell.footer
+  });
+  const footer = shell.footer;
   const rememberLocal = (commit: StreamCommit, after?: LocalReplayAnchor) => {
-    state.localRows = [...state.localRows, { commit, after }].slice(-LOCAL_REPLAY_ROW_LIMIT)
-  }
+    state.localRows = [...state.localRows, { commit, after }].slice(-LOCAL_REPLAY_ROW_LIMIT);
+  };
 
   const loadCatalog = async (): Promise<void> => {
     if (footer.isClosed) {
-      return
+      return;
     }
 
     const [agents, resources, commands] = await Promise.all([
@@ -386,9 +419,9 @@ async function runInteractiveRuntime(input: RunRuntimeInput, deps: RunRuntimeDep
         .list({ directory: ctx.directory })
         .then((x) => x.data ?? [])
         .catch(() => []),
-    ])
+    ]);
     if (footer.isClosed) {
-      return
+      return;
     }
 
     footer.event({
@@ -396,13 +429,13 @@ async function runInteractiveRuntime(input: RunRuntimeInput, deps: RunRuntimeDep
       agents,
       resources,
       commands,
-    })
-  }
+    });
+  };
 
   void footer
     .idle()
     .then(loadCatalog)
-    .catch(() => {})
+    .catch(() => {});
 
   if (Flag.OPENCODE_SHOW_TTFD) {
     footer.append({
@@ -410,66 +443,66 @@ async function runInteractiveRuntime(input: RunRuntimeInput, deps: RunRuntimeDep
       text: `startup ${Math.max(0, Math.round(performance.now() - start))}ms`,
       phase: "final",
       source: "system",
-    })
+    });
   }
 
   if (input.demo) {
-    await ensureSession()
+    await ensureSession();
     state.demo = createRunDemo({
       footer,
       sessionID: state.sessionID,
       thinking: input.thinking,
       limits: () => state.limits,
-    })
+    });
   }
 
   if (input.afterPaint) {
-    void Promise.resolve(input.afterPaint(ctx)).catch(() => {})
+    void Promise.resolve(input.afterPaint(ctx)).catch(() => {});
   }
 
   void modelTask.then((info) => {
-    state.providers = info.providers
-    state.variants = variantsFor(state.providers, state.model)
-    state.limits = info.limits
+    state.providers = info.providers;
+    state.variants = variantsFor(state.providers, state.model);
+    state.limits = info.limits;
 
-    const next = resolveVariant(ctx.variant, session.variant, savedVariant, state.variants)
+    const next = resolveVariant(ctx.variant, session.variant, savedVariant, state.variants);
     if (next !== state.activeVariant) {
-      state.activeVariant = next
+      state.activeVariant = next;
     }
 
     if (footer.isClosed) {
-      return
+      return;
     }
 
-    footer.event({ type: "models", providers: info.providers })
-    footer.event({ type: "variants", variants: state.variants, current: state.activeVariant })
+    footer.event({ type: "models", providers: info.providers });
+    footer.event({ type: "variants", variants: state.variants, current: state.activeVariant });
     if (!state.model) {
-      return
+      return;
     }
 
     footer.event({
       type: "model",
       model: formatModelLabel(state.model, state.activeVariant, state.providers),
-    })
-  })
+    });
+  });
 
-  const streamTask = deps.streamTransport ?? import("./stream.transport")
+  const streamTask = deps.streamTransport ?? import("./stream.transport");
   const ensureStream = () => {
     if (state.stream) {
-      return state.stream
+      return state.stream;
     }
 
     // Share eager prewarm and first-turn boot through one in-flight promise,
     // but clear it if transport creation fails so a later prompt can retry.
     const next = (async () => {
-      await ensureSession()
+      await ensureSession();
       if (footer.isClosed) {
-        throw new Error("runtime closed")
+        throw new Error("runtime closed");
       }
 
-      const mod = await streamTask
+      const mod = await streamTask;
       if (footer.isClosed) {
-        throw new Error("runtime closed")
+        throw new Error("runtime closed");
       }
 
       const handle = await mod.createSessionTransport({
@@ -483,39 +516,39 @@ async function runInteractiveRuntime(input: RunRuntimeInput, deps: RunRuntimeDep
         providers: () => state.providers,
         footer,
         trace: log,
-      })
+      });
       if (footer.isClosed) {
-        await handle.close()
-        throw new Error("runtime closed")
+        await handle.close();
+        throw new Error("runtime closed");
       }
 
-      state.selectSubagent = (sessionID) => handle.selectSubagent(sessionID)
-      return { mod, handle }
-    })()
-    state.stream = next
+      state.selectSubagent = (sessionID) => handle.selectSubagent(sessionID);
+      return { mod, handle };
+    })();
+    state.stream = next;
     void next.catch(() => {
       if (state.stream === next) {
-        state.stream = undefined
+        state.stream = undefined;
       }
-    })
-    return next
-  }
+    });
+    return next;
+  };
 
-  let resizeTimer: ReturnType<typeof setTimeout> | undefined
+  let resizeTimer: ReturnType<typeof setTimeout> | undefined;
   const offResize = shell.onResize(() => {
     if (resizeTimer) {
-      clearTimeout(resizeTimer)
+      clearTimeout(resizeTimer);
     }
 
     resizeTimer = setTimeout(() => {
-      resizeTimer = undefined
+      resizeTimer = undefined;
       if (footer.isClosed) {
-        return
+        return;
       }
 
-      shell.refreshTheme()
+      shell.refreshTheme();
       if (!input.replay || !state.stream) {
-        return
+        return;
       }
 
       void state.stream
@@ -530,25 +563,25 @@ async function runInteractiveRuntime(input: RunRuntimeInput, deps: RunRuntimeDep
               }),
           }),
         )
-        .catch(() => {})
-    }, RESIZE_DELAY)
-  })
+        .catch(() => {});
+    }, RESIZE_DELAY);
+  });
 
   const runQueue = async () => {
-    let includeFiles = true
+    let includeFiles = true;
     if (state.demo) {
-      await state.demo.start()
+      await state.demo.start();
     }
 
-    const mod = await import("./runtime.queue")
-    const createSession = input.createSession
+    const mod = await import("./runtime.queue");
+    const createSession = input.createSession;
     await mod.runPromptQueue({
       footer,
       initialInput: input.initialInput,
       trace: log,
       onSend: (prompt) => {
-        state.shown = true
-        state.history.push(prompt)
+        state.shown = true;
+        state.history.push(prompt);
         if (prompt.mode !== "shell") {
           rememberLocal({
             kind: "user",
@@ -556,30 +589,30 @@ async function runInteractiveRuntime(input: RunRuntimeInput, deps: RunRuntimeDep
             phase: "start",
             source: "system",
             messageID: prompt.messageID,
-          })
+          });
         }
       },
       onNewSession: createSession
         ? async () => {
             try {
-              await state.switching?.catch(() => {})
+              await state.switching?.catch(() => {});
               const created = await createSession(ctx, {
                 agent: state.agent,
                 model: state.model,
                 variant: state.activeVariant,
-              })
-              await footer.idle().catch(() => {})
-              await state.stream?.then((item) => item.handle.close()).catch(() => {})
-              state.stream = undefined
-              state.session = undefined
-              state.selectSubagent = undefined
-              state.shown = false
-              state.sessionID = created.sessionID
-              state.sessionTitle = created.sessionTitle
-              state.agent = created.agent ?? state.agent
-              state.history = []
-              state.localRows = []
-              includeFiles = true
+              });
+              await footer.idle().catch(() => {});
+              await state.stream?.then((item) => item.handle.close()).catch(() => {});
+              state.stream = undefined;
+              state.session = undefined;
+              state.selectSubagent = undefined;
+              state.shown = false;
+              state.sessionID = created.sessionID;
+              state.sessionTitle = created.sessionTitle;
+              state.agent = created.agent ?? state.agent;
+              state.history = [];
+              state.localRows = [];
+              includeFiles = true;
               state.demo = input.demo
                 ? createRunDemo({
                     footer,
@@ -587,10 +620,10 @@ async function runInteractiveRuntime(input: RunRuntimeInput, deps: RunRuntimeDep
                     thinking: input.thinking,
                     limits: () => state.limits,
                   })
-                : undefined
+                : undefined;
               log?.write("session.new", {
                 sessionID: state.sessionID,
-              })
+              });
               footer.event({
                 type: "stream.subagent",
                 state: {
@@ -599,8 +632,8 @@ async function runInteractiveRuntime(input: RunRuntimeInput, deps: RunRuntimeDep
                   permissions: [],
                   questions: [],
                 },
-              })
-              footer.event({ type: "stream.view", view: { type: "prompt" } })
+              });
+              footer.event({ type: "stream.view", view: { type: "prompt" } });
               footer.event({
                 type: "stream.patch",
                 patch: {
@@ -609,14 +642,14 @@ async function runInteractiveRuntime(input: RunRuntimeInput, deps: RunRuntimeDep
                   usage: "",
                   first: true,
                 },
-              })
+              });
               footer.append({
                 kind: "system",
                 text: `new session ${state.sessionID}`,
                 phase: "final",
                 source: "system",
-              })
-              await state.demo?.start()
+              });
+              await state.demo?.start();
             } catch (error) {
               footer.event({
                 type: "stream.patch",
@@ -624,29 +657,29 @@ async function runInteractiveRuntime(input: RunRuntimeInput, deps: RunRuntimeDep
                   phase: "idle",
                   status: "failed to start new session",
                 },
-              })
+              });
               const commit = {
                 kind: "error",
                 text: error instanceof Error ? error.message : String(error),
                 phase: "start",
                 source: "system",
                 messageID: MessageID.ascending(),
-              } as const
-              rememberLocal(commit)
-              footer.append(commit)
+              } as const;
+              rememberLocal(commit);
+              footer.append(commit);
             }
           }
         : undefined,
       run: async (prompt, signal) => {
         if (state.demo && (await state.demo.prompt(prompt, signal))) {
-          return
+          return;
         }
 
-        await state.switching?.catch(() => {})
+        await state.switching?.catch(() => {});
 
-        let outputAnchor: LocalReplayAnchor | undefined
+        let outputAnchor: LocalReplayAnchor | undefined;
         try {
-          const next = await ensureStream()
+          const next = await ensureStream();
           await next.handle.runPromptTurn({
             agent: state.agent,
             model: state.model,
@@ -655,78 +688,80 @@ async function runInteractiveRuntime(input: RunRuntimeInput, deps: RunRuntimeDep
             files: input.files,
             includeFiles,
             onVisibleOutput: (anchor) => {
-              outputAnchor = anchor
+              outputAnchor = anchor;
             },
             signal,
-          })
+          });
           if (prompt.messageID) {
             state.localRows = state.localRows.filter(
               (row) => row.commit.kind !== "user" || row.commit.messageID !== prompt.messageID,
-            )
+            );
           }
-          includeFiles = false
+          includeFiles = false;
         } catch (error) {
           if (signal.aborted || footer.isClosed) {
-            return
+            return;
           }
 
           const text =
-            (await state.stream?.then((item) => item.mod).catch(() => undefined))?.formatUnknownError(error) ??
-            (error instanceof Error ? error.message : String(error))
+            (
+              await state.stream?.then((item) => item.mod).catch(() => undefined)
+            )?.formatUnknownError(error) ??
+            (error instanceof Error ? error.message : String(error));
           const commit = {
             kind: "error",
             text,
             phase: "start",
             source: "system",
             messageID: prompt.messageID,
-          } as const
-          rememberLocal(commit, outputAnchor)
-          footer.append(commit)
+          } as const;
+          rememberLocal(commit, outputAnchor);
+          footer.append(commit);
         }
       },
-    })
-  }
+    });
+  };
 
   try {
-    const eager = eagerStream(input, ctx)
+    const eager = eagerStream(input, ctx);
     if (eager) {
       if (input.replay && state.shown) {
         // Replay commits immutable scrollback rows, so wait for provider names
         // before bootstrapping existing session history.
-        await modelTask
+        await modelTask;
       }
 
-      await ensureStream()
+      await ensureStream();
     }
 
     if (!eager && input.resolveSession) {
       queueMicrotask(() => {
         if (footer.isClosed) {
-          return
+          return;
         }
 
-        void ensureStream().catch(() => {})
-      })
+        void ensureStream().catch(() => {});
+      });
     }
 
     try {
-      await runQueue()
+      await runQueue();
     } finally {
       if (resizeTimer) {
-        clearTimeout(resizeTimer)
+        clearTimeout(resizeTimer);
       }
-      offResize()
-      await state.stream?.then((item) => item.handle.close()).catch(() => {})
+      offResize();
+      await state.stream?.then((item) => item.handle.close()).catch(() => {});
     }
   } finally {
-    const title = await resolveExitTitle(ctx, input, state)
+    const title = await resolveExitTitle(ctx, input, state);
 
     await shell.close({
       showExit: state.shown && hasSession(input, state),
       sessionTitle: title,
       sessionID: state.sessionID,
       history: state.history,
-    })
+    });
   }
 }
 
@@ -737,8 +772,8 @@ export async function runInteractiveLocalMode(input: RunLocalInput): Promise<voi
     baseUrl: "http://opencode.internal",
     fetch: input.fetch,
     directory: input.directory,
-  })
-  let session: Promise<ResolvedSession> | undefined
+  });
+  let session: Promise<ResolvedSession> | undefined;
 
   return runInteractiveRuntime({
     files: input.files,
@@ -750,22 +785,22 @@ export async function runInteractiveLocalMode(input: RunLocalInput): Promise<voi
     demo: input.demo,
     resolveSession: () => {
       if (session) {
-        return session
+        return session;
       }
 
       session = Promise.all([input.resolveAgent(), input.session(sdk)]).then(([agent, next]) => {
         if (!next?.id) {
-          throw new Error("Session not found")
+          throw new Error("Session not found");
         }
 
-        void input.share(sdk, next.id).catch(() => {})
+        void input.share(sdk, next.id).catch(() => {});
         return {
           sessionID: next.id,
           sessionTitle: next.title,
           agent,
-        }
-      })
-      return session
+        };
+      });
+      return session;
     },
     createSession: createSessionResolver(input.createSession),
     boot: async () => {
@@ -778,9 +813,9 @@ export async function runInteractiveLocalMode(input: RunLocalInput): Promise<voi
         agent: input.agent,
         model: input.model,
         variant: input.variant,
-      }
+      };
     },
-  })
+  });
 }
 
 // Attach mode. Uses the caller-provided SDK client directly.
@@ -810,5 +845,5 @@ export async function runInteractiveMode(
       createSession: createSessionResolver(input.createSession),
     },
     deps,
-  )
+  );
 }

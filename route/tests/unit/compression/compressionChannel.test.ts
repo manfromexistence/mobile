@@ -14,7 +14,7 @@ describe("compression WS channel (U5)", () => {
     const channels = Object.keys(CHANNEL_EVENTS) as DashboardChannel[];
     assert.ok(
       channels.includes("compression" as DashboardChannel),
-      "CHANNEL_EVENTS must have a 'compression' key"
+      "CHANNEL_EVENTS must have a 'compression' key",
     );
   });
 
@@ -23,13 +23,13 @@ describe("compression WS channel (U5)", () => {
     assert.ok(Array.isArray(events), "CHANNEL_EVENTS.compression should be an array");
     assert.ok(
       events.includes("compression.completed"),
-      "compression channel must list 'compression.completed'"
+      "compression channel must list 'compression.completed'",
     );
   });
 
   it("getChannelForEvent maps 'compression.completed' → 'compression'", () => {
     const channel = getChannelForEvent(
-      "compression.completed" as Parameters<typeof getChannelForEvent>[0]
+      "compression.completed" as Parameters<typeof getChannelForEvent>[0],
     );
     assert.equal(channel, "compression");
   });

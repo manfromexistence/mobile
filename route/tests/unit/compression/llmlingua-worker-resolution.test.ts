@@ -24,7 +24,7 @@ import {
 const here = path.dirname(fileURLToPath(import.meta.url));
 const WORKER_SRC = path.resolve(
   here,
-  "../../../open-sse/services/compression/engines/llmlingua/worker.ts"
+  "../../../open-sse/services/compression/engines/llmlingua/worker.ts",
 );
 
 /** Strip // line and block comments so we scan CODE, not doc-comments that may mention the banned APIs. */
@@ -37,7 +37,7 @@ test("worker.ts CODE never uses import.meta.url / createRequire (both die in the
   assert.ok(!code.includes("import.meta"), "worker.ts code must not reference import.meta");
   assert.ok(
     !code.includes('from "node:module"'),
-    "worker.ts must not import from node:module (createRequire)"
+    "worker.ts must not import from node:module (createRequire)",
   );
   // pathToFileURL from node:url is safe — it's a pure path→URL converter with no
   // import.meta.url or createRequire dependency. It's needed to fix "File URL path
@@ -48,7 +48,7 @@ test("worker.ts CODE never uses import.meta.url / createRequire (both die in the
   assert.equal(
     urlImports.length,
     safeUrlImports.length,
-    "worker.ts must not import fileURLToPath or other unsafe node:url APIs (pathToFileURL is allowed)"
+    "worker.ts must not import fileURLToPath or other unsafe node:url APIs (pathToFileURL is allowed)",
   );
 });
 

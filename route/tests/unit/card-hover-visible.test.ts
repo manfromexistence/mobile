@@ -24,19 +24,19 @@ for (const rel of CARD_FILES) {
     const src = readFileSync(ROOT + rel, "utf8");
     assert.ok(
       !src.includes("hover:bg-black/[0.01]"),
-      `${rel} still uses the near-invisible 1% hover (light)`
+      `${rel} still uses the near-invisible 1% hover (light)`,
     );
     assert.ok(
       !src.includes("hover:bg-white/[0.01]"),
-      `${rel} still uses the near-invisible 1% hover (dark)`
+      `${rel} still uses the near-invisible 1% hover (dark)`,
     );
     assert.ok(
       src.includes("hover:bg-black/5") && src.includes("hover:bg-white/5"),
-      `${rel} should use a visible hover background (hover:bg-*/5)`
+      `${rel} should use a visible hover background (hover:bg-*/5)`,
     );
     assert.ok(
       src.includes("hover:border-primary/40"),
-      `${rel} should add a visible hover border highlight`
+      `${rel} should add a visible hover border highlight`,
     );
   });
 }

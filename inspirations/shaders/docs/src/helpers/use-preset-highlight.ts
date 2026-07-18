@@ -1,6 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
-export const usePresetHighlight = (presets: Record<string, any>[], levaParams: Record<string, any>) => {
+export const usePresetHighlight = (
+  presets: Record<string, any>[],
+  levaParams: Record<string, any>,
+) => {
   useEffect(() => {
     const highlightPreset = () => {
       const matchingPreset = presets.find((preset) => {
@@ -10,11 +13,11 @@ export const usePresetHighlight = (presets: Record<string, any>[], levaParams: R
         return Object.entries(paramsToCompare).every(([key, value]) => {
           const levaValue = levaParams[key as keyof typeof levaParams];
           const presetValue =
-            typeof value === 'string' && value.startsWith('hsla') && value.endsWith(', 1)')
-              ? value.replace('hsla', 'hsl').slice(0, -4) + ')'
+            typeof value === "string" && value.startsWith("hsla") && value.endsWith(", 1)")
+              ? value.replace("hsla", "hsl").slice(0, -4) + ")"
               : value;
 
-          if (key === 'speed') {
+          if (key === "speed") {
             return presetValue === levaValue * (levaParams.reverse ? -1 : 1);
           }
 
@@ -26,9 +29,9 @@ export const usePresetHighlight = (presets: Record<string, any>[], levaParams: R
         const buttons = document.querySelectorAll<HTMLButtonElement>(`#leva__root button`);
         if (buttons.length > 0) {
           if (preset === matchingPreset) {
-            buttons[presetIndex].style.backgroundColor = 'var(--leva-colors-elevation3)';
+            buttons[presetIndex].style.backgroundColor = "var(--leva-colors-elevation3)";
           } else {
-            buttons[presetIndex].style.backgroundColor = 'var(--leva-colors-elevation1)';
+            buttons[presetIndex].style.backgroundColor = "var(--leva-colors-elevation1)";
           }
         }
       });

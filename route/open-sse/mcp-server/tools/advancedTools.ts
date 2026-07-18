@@ -275,7 +275,7 @@ export async function handleSimulateRoute(args: {
     // Find target combo
     const targetCombo = args.combo
       ? combos.find(
-          (combo) => toString(combo.id) === args.combo || toString(combo.name) === args.combo
+          (combo) => toString(combo.id) === args.combo || toString(combo.name) === args.combo,
         )
       : combos.find((combo) => combo.enabled !== false);
 
@@ -367,7 +367,7 @@ export async function handleSetBudgetGuard(args: {
       { maxCost: args.maxCost, action: args.action },
       result,
       Date.now() - start,
-      true
+      true,
     );
     return { content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }] };
   } catch (err) {
@@ -387,7 +387,7 @@ export async function handleSetRoutingStrategy(args: {
     const combos = normalizeCombosResponse(await apiFetch("/api/combos"));
     const combo = combos.find(
       (comboEntry) =>
-        toString(comboEntry.id) === args.comboId || toString(comboEntry.name) === args.comboId
+        toString(comboEntry.id) === args.comboId || toString(comboEntry.name) === args.comboId,
     );
 
     if (!combo) {
@@ -398,7 +398,7 @@ export async function handleSetRoutingStrategy(args: {
         null,
         Date.now() - start,
         false,
-        msg
+        msg,
       );
       return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
     }
@@ -412,14 +412,14 @@ export async function handleSetRoutingStrategy(args: {
         null,
         Date.now() - start,
         false,
-        msg
+        msg,
       );
       return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
     }
 
     const comboData = toRecord(combo.data);
     const currentConfig = toRecord(
-      Object.keys(toRecord(combo.config)).length > 0 ? combo.config : comboData.config
+      Object.keys(toRecord(combo.config)).length > 0 ? combo.config : comboData.config,
     );
 
     const normalizedStrategy = normalizeRoutingStrategy(args.strategy);
@@ -444,7 +444,7 @@ export async function handleSetRoutingStrategy(args: {
       await apiFetch(`/api/combos/${encodeURIComponent(comboId)}`, {
         method: "PUT",
         body: JSON.stringify(payload),
-      })
+      }),
     );
 
     const updatedConfig = toRecord(updatedCombo.config);
@@ -505,7 +505,7 @@ export async function handleSetResilienceProfile(args: {
       null,
       Date.now() - start,
       false,
-      msg
+      msg,
     );
     return { content: [{ type: "text" as const, text: `Error: ${msg}` }], isError: true };
   }
@@ -518,7 +518,7 @@ export async function handleTestCombo(args: { comboId: string; testPrompt: strin
     const combos = normalizeCombosResponse(await apiFetch("/api/combos"));
     const combo = combos.find(
       (comboEntry) =>
-        toString(comboEntry.id) === args.comboId || toString(comboEntry.name) === args.comboId
+        toString(comboEntry.id) === args.comboId || toString(comboEntry.name) === args.comboId,
     );
     if (!combo) {
       return {
@@ -550,7 +550,7 @@ export async function handleTestCombo(args: { comboId: string; testPrompt: strin
                 stream: false,
                 "x-provider": model.provider,
               }),
-            })
+            }),
           );
           const usage = toRecord(resp.usage);
 
@@ -573,7 +573,7 @@ export async function handleTestCombo(args: { comboId: string; testPrompt: strin
             error: err instanceof Error ? err.message : String(err),
           };
         }
-      })
+      }),
     );
 
     const providerResults = results.map((r) =>
@@ -587,7 +587,7 @@ export async function handleTestCombo(args: { comboId: string; testPrompt: strin
             cost: 0,
             tokenCount: 0,
             error: "Promise rejected",
-          }
+          },
     );
     const successful = providerResults.filter((r) => r.success);
     const fastest = successful.sort((a, b) => a.latencyMs - b.latencyMs)[0];
@@ -608,7 +608,7 @@ export async function handleTestCombo(args: { comboId: string; testPrompt: strin
       { comboId: args.comboId },
       result.summary,
       Date.now() - start,
-      true
+      true,
     );
     return { content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }] };
   } catch (err) {
@@ -635,7 +635,7 @@ export async function handleGetProviderMetrics(args: { provider: string }) {
     const analytics = analyticsRaw.status === "fulfilled" ? toRecord(analyticsRaw.value) : {};
 
     const cb = toArrayOfRecords(health.circuitBreakers).find(
-      (breaker) => toString(breaker.provider) === args.provider
+      (breaker) => toString(breaker.provider) === args.provider,
     );
     const providerQuota = quota.providers.find((p) => p.provider === args.provider) || null;
 
@@ -741,7 +741,7 @@ export async function handleBestComboForTask(args: {
       args,
       result.recommendedCombo,
       Date.now() - start,
-      true
+      true,
     );
     return { content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }] };
   } catch (err) {
@@ -758,7 +758,7 @@ export async function handleExplainRoute(args: { requestId: string }) {
     let decision: JsonRecord | null = null;
     try {
       decision = toRecord(
-        await apiFetch(`/api/routing/decisions/${encodeURIComponent(args.requestId)}`)
+        await apiFetch(`/api/routing/decisions/${encodeURIComponent(args.requestId)}`),
       );
     } catch {
       // Fall back to a generic explanation
@@ -804,7 +804,7 @@ export async function handleExplainRoute(args: { requestId: string }) {
       args,
       { requestId: args.requestId },
       Date.now() - start,
-      true
+      true,
     );
     return { content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }] };
   } catch (err) {
@@ -824,7 +824,7 @@ export async function handleSyncPricing(args: { sources?: string[]; dryRun?: boo
           sources: args.sources,
           dryRun: args.dryRun ?? false,
         }),
-      })
+      }),
     );
 
     await logToolCall("omniroute_sync_pricing", args, result, Date.now() - start, true);
@@ -840,7 +840,7 @@ export async function handleGetSessionSnapshot() {
   const start = Date.now();
   try {
     const analytics = toRecord(
-      await apiFetch("/api/usage/analytics?period=session").catch(() => ({}))
+      await apiFetch("/api/usage/analytics?period=session").catch(() => ({})),
     );
     const tokenCount = toRecord(analytics.tokenCount);
     const byModel = toArrayOfRecords(analytics.byModel);
@@ -879,7 +879,7 @@ export async function handleGetSessionSnapshot() {
       {},
       { requestCount: result.requestCount },
       Date.now() - start,
-      true
+      true,
     );
     return { content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }] };
   } catch (err) {
@@ -905,7 +905,7 @@ export async function handleDbHealthCheck(args: { autoRepair?: boolean }) {
         repairedCount: toNumber(result.repairedCount, 0),
       },
       Date.now() - start,
-      true
+      true,
     );
 
     return { content: [{ type: "text" as const, text: JSON.stringify(result, null, 2) }] };
@@ -984,7 +984,7 @@ export async function handleCacheFlush(args: { signature?: string; model?: strin
     const raw = toRecord(
       await apiFetch(path, {
         method: "DELETE",
-      })
+      }),
     );
 
     const result = {
@@ -1005,7 +1005,7 @@ export async function handleCacheFlush(args: { signature?: string; model?: strin
 // ============ 1proxy Tools ============
 
 export async function handleOneproxyFetch(
-  args: { protocol?: string; countryCode?: string; minQuality?: number; limit?: number } = {}
+  args: { protocol?: string; countryCode?: string; minQuality?: number; limit?: number } = {},
 ) {
   const start = Date.now();
   try {
@@ -1043,7 +1043,7 @@ export async function handleOneproxyFetch(
 }
 
 export async function handleOneproxyRotate(
-  args: { strategy?: "random" | "quality" | "sequential" } = {}
+  args: { strategy?: "random" | "quality" | "sequential" } = {},
 ) {
   const start = Date.now();
   try {
@@ -1054,7 +1054,7 @@ export async function handleOneproxyRotate(
       await apiFetch("/api/settings/oneproxy/rotate", {
         method: "POST",
         body: JSON.stringify(body),
-      })
+      }),
     );
 
     const result = {

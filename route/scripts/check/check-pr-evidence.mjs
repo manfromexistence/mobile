@@ -239,7 +239,7 @@ if (isMain) {
       "> ℹ️ Editing the PR body to add the evidence does NOT re-run this gate — `ci.yml` " +
         "does not listen to the `edited` event. Add the `## Evidence` block, then **push a " +
         "commit** (or re-run this job) to re-validate. For releases, put the Evidence block in " +
-        "the body BEFORE the first push (see the generate-release skill, Phase 0)."
+        "the body BEFORE the first push (see the generate-release skill, Phase 0).",
     );
   }
 

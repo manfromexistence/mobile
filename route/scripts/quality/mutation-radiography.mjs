@@ -194,19 +194,19 @@ function renderMarkdown(classification) {
   lines.push("# Mutation Radiography");
   lines.push("");
   lines.push(
-    `Test files classified by mutation-kill contribution (\`killedBy\`). Total: **${total}**.`
+    `Test files classified by mutation-kill contribution (\`killedBy\`). Total: **${total}**.`,
   );
   lines.push("");
   lines.push("| Class | Count | Meaning |");
   lines.push("| --- | --- | --- |");
   lines.push(
-    `| 🔴 empty | ${byClass.empty.length} | kills no mutant of the mutated modules (R1-prune candidate) |`
+    `| 🔴 empty | ${byClass.empty.length} | kills no mutant of the mutated modules (R1-prune candidate) |`,
   );
   lines.push(
-    `| 🟠 redundant | ${byClass.redundant.length} | every kill is shared with another file |`
+    `| 🟠 redundant | ${byClass.redundant.length} | every kill is shared with another file |`,
   );
   lines.push(
-    `| 🟡 overlapping | ${byClass.overlapping.length} | kills ≥1 unique but mostly shared |`
+    `| 🟡 overlapping | ${byClass.overlapping.length} | kills ≥1 unique but mostly shared |`,
   );
   lines.push(`| 🟢 unique | ${byClass.unique.length} | kills ≥1 mutant no other file kills |`);
   lines.push("");
@@ -214,7 +214,7 @@ function renderMarkdown(classification) {
     "> **Bail caveat:** Stryker bails on the first kill (no `disableBail`), so `killedBy` is the " +
       "FIRST killer only. 🔴 empty is reliable (safe R1-prune candidate w.r.t. mutationScore); " +
       "🟢/🟠/🟡 are optimistic (unique overstated, redundant understated) — advisory until a " +
-      "`disableBail` run. R1 prunes 🔴 only, with a line-coverage cross-check + human review."
+      "`disableBail` run. R1 prunes 🔴 only, with a line-coverage cross-check + human review.",
   );
   lines.push("");
   for (const k of CLASS_ORDER) {
@@ -241,14 +241,14 @@ function renderCandidates({ empty, redundant, candidates }) {
   lines.push("");
   lines.push(
     `Test files with ZERO unique kills: **${candidates.length}** ` +
-      `(🔴 empty ${empty.length} + 🟠 redundant ${redundant.length}).`
+      `(🔴 empty ${empty.length} + 🟠 redundant ${redundant.length}).`,
   );
   lines.push("");
   lines.push(
     "> Accurate ONLY for a `disableBail:true` run (killedBy lists every killer). " +
       "These are CANDIDATES, not deletions: exclude security/contract/repro tests " +
       "(routeGuard, OAuth, error-sanitization, *-repro*/*-regression*/issue-linked) and " +
-      "require human review before removing any (R1 human gate)."
+      "require human review before removing any (R1 human gate).",
   );
   lines.push("");
   lines.push(`## 🔴 empty — kills no mutant (${empty.length})`);
@@ -271,7 +271,7 @@ function main(argv) {
   if (paths.length === 0) {
     process.stderr.write(
       "usage: mutation-radiography.mjs <mutation-1.json> [<mutation-2.json> ...] " +
-        "[--candidates] [--no-conf-universe]\n"
+        "[--candidates] [--no-conf-universe]\n",
     );
     process.exit(2);
   }
@@ -279,7 +279,7 @@ function main(argv) {
   const universe = useConfUniverse ? tapTestFilesUniverse() : null;
   if (wantCandidates) {
     process.stdout.write(
-      renderCandidates(redundancyCandidates(reports, universe || undefined)) + "\n"
+      renderCandidates(redundancyCandidates(reports, universe || undefined)) + "\n",
     );
     return;
   }

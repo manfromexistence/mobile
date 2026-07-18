@@ -1,1 +1,1 @@
-export * from "../../prompt/history"
+export * from "../../prompt/history";

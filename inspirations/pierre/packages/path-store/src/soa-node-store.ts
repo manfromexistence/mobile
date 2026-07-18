@@ -24,7 +24,7 @@ import {
   type PathStoreNodeKind,
   type PathStoreSnapshot,
   type SegmentId,
-} from './internal-types';
+} from "./internal-types";
 
 // Packing layout mirrors createNodeDepthAndFlags() in internal-types.ts. Kept in
 // sync deliberately: depthAndFlags values are copied verbatim from the snapshot,
@@ -64,12 +64,8 @@ export function getSoaNodeDepth(store: SoaNodeStore, id: NodeId): number {
   return store.depthAndFlags[id] >>> DEPTH_SHIFT;
 }
 
-export function getSoaNodeKind(
-  store: SoaNodeStore,
-  id: NodeId
-): PathStoreNodeKind {
-  return ((store.depthAndFlags[id] & KIND_MASK) >>
-    KIND_SHIFT) as PathStoreNodeKind;
+export function getSoaNodeKind(store: SoaNodeStore, id: NodeId): PathStoreNodeKind {
+  return ((store.depthAndFlags[id] & KIND_MASK) >> KIND_SHIFT) as PathStoreNodeKind;
 }
 
 export function isSoaDirectoryNode(store: SoaNodeStore, id: NodeId): boolean {
@@ -80,11 +76,7 @@ export function getSoaNodeFlags(store: SoaNodeStore, id: NodeId): number {
   return store.depthAndFlags[id] & FLAGS_MASK;
 }
 
-export function hasSoaNodeFlag(
-  store: SoaNodeStore,
-  id: NodeId,
-  flag: number
-): boolean {
+export function hasSoaNodeFlag(store: SoaNodeStore, id: NodeId, flag: number): boolean {
   return (getSoaNodeFlags(store, id) & flag) !== 0;
 }
 
@@ -233,9 +225,7 @@ export function sweepOpenVisibleCountsSoa(store: SoaNodeStore): void {
 // (with subtree counts NOT yet accumulated — i.e. builder.finish was called with
 // skipSubtreeCountPass) and run the count-only sweep over it. Returns the store
 // so callers can read the finalized counts back.
-export function buildAndSweepOpenVisibleCountsSoa(
-  snapshot: PathStoreSnapshot
-): SoaNodeStore {
+export function buildAndSweepOpenVisibleCountsSoa(snapshot: PathStoreSnapshot): SoaNodeStore {
   const store = buildSoaNodeStore(snapshot);
   sweepOpenVisibleCountsSoa(store);
   return store;

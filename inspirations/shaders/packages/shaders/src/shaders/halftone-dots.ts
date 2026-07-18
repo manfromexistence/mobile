@@ -1,6 +1,6 @@
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { declarePI, rotation2, proceduralHash21 } from '../shader-utils.js';
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { declarePI, rotation2, proceduralHash21 } from "../shader-utils.js";
 
 /**
  * A halftone-dot image filter featuring customizable grids, color palettes, and dot styles.
@@ -69,9 +69,9 @@ in vec2 v_imageUV;
 
 out vec4 fragColor;
 
-${ declarePI }
-${ rotation2 }
-${ proceduralHash21 }
+${declarePI}
+${rotation2}
+${proceduralHash21}
 
 float valueNoise(vec2 st) {
   vec2 i = floor(st);

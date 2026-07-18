@@ -1,4 +1,4 @@
-import { dict as en } from "./en"
+import { dict as en } from "./en";
 
 export const dict = {
   ...en,
@@ -108,27 +108,32 @@ export const dict = {
   "home.banner.downloadBetaNow": "Завантажити бета-версію десктопного застосунку",
 
   "home.hero.title": "Відкритий AI-агент для кодування",
-  "home.hero.subtitle.a": "Безкоштовні моделі включено або підключіть будь-яку модель від будь-якого провайдера,",
+  "home.hero.subtitle.a":
+    "Безкоштовні моделі включено або підключіть будь-яку модель від будь-якого провайдера,",
   "home.hero.subtitle.b": "включно з Claude, GPT, Gemini та іншими.",
 
   "home.install.ariaLabel": "Параметри встановлення",
 
   "home.what.title": "Що таке OpenCode?",
-  "home.what.body": "OpenCode — це відкритий агент, який допомагає писати код у терміналі, IDE або на десктопі.",
+  "home.what.body":
+    "OpenCode — це відкритий агент, який допомагає писати код у терміналі, IDE або на десктопі.",
   "home.what.lsp.title": "LSP увімкнено",
   "home.what.lsp.body": "Автоматично завантажує потрібні LSP для LLM",
   "home.what.multiSession.title": "Багатосесійність",
   "home.what.multiSession.body": "Запускайте кількох агентів паралельно в одному проекті",
   "home.what.shareLinks.title": "Посилання для обміну",
-  "home.what.shareLinks.body": "Діліться посиланням на будь-яку сесію для обговорення або налагодження",
+  "home.what.shareLinks.body":
+    "Діліться посиланням на будь-яку сесію для обговорення або налагодження",
   "home.what.copilot.title": "GitHub Copilot",
-  "home.what.copilot.body": "Увійдіть через GitHub, щоб використовувати свій обліковий запис Copilot",
+  "home.what.copilot.body":
+    "Увійдіть через GitHub, щоб використовувати свій обліковий запис Copilot",
   "home.what.chatgptPlus.title": "ChatGPT Plus/Pro",
   "home.what.chatgptPlus.body": "Увійдіть через OpenAI, щоб використовувати ChatGPT Plus або Pro",
   "home.what.anyModel.title": "Будь-яка модель",
   "home.what.anyModel.body": "75+ LLM-провайдерів через Models.dev, включаючи локальні моделі",
   "home.what.anyEditor.title": "Будь-який редактор",
-  "home.what.anyEditor.body": "Доступний як термінальний інтерфейс, десктопний застосунок та розширення IDE",
+  "home.what.anyEditor.body":
+    "Доступний як термінальний інтерфейс, десктопний застосунок та розширення IDE",
   "home.what.readDocs": "Читати документацію",
 
   "home.growth.title": "Відкритий AI-агент для кодування",
@@ -196,7 +201,8 @@ export const dict = {
     "Zen дає доступ до добірки AI-моделей, які OpenCode протестував спеціально для агентів кодування. Не турбуйтеся про нестабільну якість — використовуйте перевірені моделі.",
 
   "zen.faq.q1": "Що таке OpenCode Zen?",
-  "zen.faq.a1": "Zen — це добірка AI-моделей, протестованих для агентів кодування, створена командою OpenCode.",
+  "zen.faq.a1":
+    "Zen — це добірка AI-моделей, протестованих для агентів кодування, створена командою OpenCode.",
   "zen.faq.q2": "Чому Zen точніший?",
   "zen.faq.a2":
     "Zen надає лише моделі, спеціально протестовані для агентів кодування. Ви ж не використовуєте масло ніж для стейка — не використовуйте погані моделі для кодування.",
@@ -206,8 +212,10 @@ export const dict = {
   "zen.faq.q4": "Скільки коштує Zen?",
   "zen.faq.a4.p1.beforePricing": "Zen",
   "zen.faq.a4.p1.pricingLink": "стягує плату за запит",
-  "zen.faq.a4.p1.afterPricing": "без націнок — ви платите рівно стільки, скільки стягує провайдер моделі.",
-  "zen.faq.a4.p2.beforeAccount": "Загальна вартість залежить від використання. Ви можете встановити місячні ліміти в",
+  "zen.faq.a4.p1.afterPricing":
+    "без націнок — ви платите рівно стільки, скільки стягує провайдер моделі.",
+  "zen.faq.a4.p2.beforeAccount":
+    "Загальна вартість залежить від використання. Ви можете встановити місячні ліміти в",
   "zen.faq.a4.p2.accountLink": "обліковому записі",
   "zen.faq.a4.p3":
     "Щоб покрити витрати, OpenCode додає лише невелику комісію за обробку платежу в розмірі $1.23 за кожне поповнення балансу $20.",
@@ -226,7 +234,8 @@ export const dict = {
   "zen.cta.start": "Почати з Zen",
   "zen.pricing.title": "Додати $20 балансу Pay as you go",
   "zen.pricing.fee": "(+$1.23 комісія за обробку карти)",
-  "zen.pricing.body": "Використовуйте з будь-яким агентом. Встановлюйте місячні ліміти. Скасуйте в будь-який час.",
+  "zen.pricing.body":
+    "Використовуйте з будь-яким агентом. Встановлюйте місячні ліміти. Скасуйте в будь-який час.",
   "zen.problem.title": "Яку проблему вирішує Zen?",
   "zen.problem.body":
     "Доступно багато моделей, але лише деякі добре працюють з агентами кодування. Більшість провайдерів налаштовують їх по-різному з різними результатами.",
@@ -289,7 +298,8 @@ export const dict = {
   "go.testimonials.david.name": "David Hill",
   "go.testimonials.david.title": "ex-Head of Design, Laravel",
   "go.testimonials.david.quoteBefore": "Завдяки",
-  "go.testimonials.david.quoteAfter": "я знаю, що всі моделі протестовані та ідеальні для агентів кодування.",
+  "go.testimonials.david.quoteAfter":
+    "я знаю, що всі моделі протестовані та ідеальні для агентів кодування.",
   "go.testimonials.frank.name": "Frank Wang",
   "go.testimonials.frank.title": "ex-Intern, Nvidia (4 times)",
   "go.testimonials.frank.quote": "Хотів би я досі бути в Nvidia.",
@@ -342,7 +352,8 @@ export const dict = {
     "Моделі Go розміщені в США. Провайдери дотримуються політики нульового зберігання та не використовують ваші дані для навчання моделей, за",
   "go.faq.a5.exceptionsLink": "такими винятками",
   "go.faq.q6": "Чи можна поповнити баланс?",
-  "go.faq.a6": "Якщо вам потрібно більше використання, ви можете поповнити баланс в обліковому записі.",
+  "go.faq.a6":
+    "Якщо вам потрібно більше використання, ви можете поповнити баланс в обліковому записі.",
   "go.faq.q7": "Чи можна скасувати?",
   "go.faq.a7": "Так, ви можете скасувати в будь-який час.",
   "go.faq.q8": "Чи можна використовувати Go з іншими агентами кодування?",
@@ -354,12 +365,14 @@ export const dict = {
 
   "zen.api.error.rateLimitExceeded": "Перевищено ліміт запитів. Спробуйте пізніше.",
   "zen.api.error.modelNotSupported": "Модель {{model}} не підтримується",
-  "zen.api.error.modelFormatNotSupported": "Модель {{model}} не підтримується для формату {{format}}",
+  "zen.api.error.modelFormatNotSupported":
+    "Модель {{model}} не підтримується для формату {{format}}",
   "zen.api.error.noProviderAvailable": "Немає доступного провайдера",
   "zen.api.error.providerNotSupported": "Провайдер {{provider}} не підтримується",
   "zen.api.error.missingApiKey": "Відсутній ключ API.",
   "zen.api.error.invalidApiKey": "Недійсний ключ API.",
-  "zen.api.error.subscriptionQuotaExceeded": "Перевищено квоту підписки. Повторіть через {{retryIn}}.",
+  "zen.api.error.subscriptionQuotaExceeded":
+    "Перевищено квоту підписки. Повторіть через {{retryIn}}.",
   "zen.api.error.goSubscriptionRollingLimitExceeded":
     "Досягнуто 5-годинного ліміту використання. Скидається через {{retryIn}}. Щоб продовжити, увімкніть використання з доступного балансу: {{consoleGoUrl}}",
   "zen.api.error.goSubscriptionWeeklyLimitExceeded":
@@ -379,7 +392,8 @@ export const dict = {
     "Безкоштовна акція для {{model}} закінчилася. Ви можете продовжити використання, підписавшись на OpenCode Go — {{link}}",
 
   "black.meta.title": "OpenCode Black | Доступ до найкращих моделей кодування",
-  "black.meta.description": "Отримайте доступ до Claude, GPT, Gemini та інших із планами підписки OpenCode Black.",
+  "black.meta.description":
+    "Отримайте доступ до Claude, GPT, Gemini та інших із планами підписки OpenCode Black.",
   "black.hero.title": "Доступ до найкращих моделей кодування",
   "black.hero.subtitle": "Включаючи Claude, GPT, Gemini та інші",
   "black.title": "OpenCode Black | Ціни",
@@ -394,7 +408,8 @@ export const dict = {
   "black.terms.1": "Ваша підписка не розпочнеться негайно",
   "black.terms.2": "Вас додадуть до списку очікування та активують незабаром",
   "black.terms.3": "Картку буде списано лише після активації підписки",
-  "black.terms.4": "Діють ліміти використання, інтенсивне автоматичне використання може швидше вичерпати ліміти",
+  "black.terms.4":
+    "Діють ліміти використання, інтенсивне автоматичне використання може швидше вичерпати ліміти",
   "black.terms.5": "Підписки призначені для фізичних осіб, зверніться в Enterprise для команд",
   "black.terms.6": "Ліміти можуть бути змінені, а плани можуть бути припинені в майбутньому",
   "black.terms.7": "Скасуйте підписку в будь-який час",
@@ -516,7 +531,8 @@ export const dict = {
   "workspace.members.subtitle": "Керуйте учасниками робочого простору та їхніми дозволами.",
   "workspace.members.invite": "Запросити учасника",
   "workspace.members.inviting": "Запрошення...",
-  "workspace.members.beta.beforeLink": "Робочі простори безкоштовні для команд під час бета-версії.",
+  "workspace.members.beta.beforeLink":
+    "Робочі простори безкоштовні для команд під час бета-версії.",
   "workspace.members.form.invitee": "Запрошений",
   "workspace.members.form.emailPlaceholder": "Введіть email",
   "workspace.members.form.role": "Роль",
@@ -561,7 +577,8 @@ export const dict = {
   "workspace.billing.enable": "Увімкнути оплату",
 
   "workspace.monthlyLimit.title": "Місячний ліміт",
-  "workspace.monthlyLimit.subtitle": "Встановіть місячний ліміт використання для облікового запису.",
+  "workspace.monthlyLimit.subtitle":
+    "Встановіть місячний ліміт використання для облікового запису.",
   "workspace.monthlyLimit.placeholder": "50",
   "workspace.monthlyLimit.setting": "Встановлення...",
   "workspace.monthlyLimit.set": "Встановити",
@@ -624,10 +641,13 @@ export const dict = {
   "workspace.black.subscription.rollingUsage": "Використання (5 год)",
   "workspace.black.subscription.weeklyUsage": "Тижневе використання",
   "workspace.black.subscription.resetsIn": "Скидається через",
-  "workspace.black.subscription.useBalance": "Використовуйте доступний баланс після досягнення лімітів",
+  "workspace.black.subscription.useBalance":
+    "Використовуйте доступний баланс після досягнення лімітів",
   "workspace.black.waitlist.title": "Список очікування",
-  "workspace.black.waitlist.joined": "Ви в списку очікування на план OpenCode Black за ${{plan}} на місяць.",
-  "workspace.black.waitlist.ready": "Ми готові зареєструвати вас на план OpenCode Black за ${{plan}} на місяць.",
+  "workspace.black.waitlist.joined":
+    "Ви в списку очікування на план OpenCode Black за ${{plan}} на місяць.",
+  "workspace.black.waitlist.ready":
+    "Ми готові зареєструвати вас на план OpenCode Black за ${{plan}} на місяць.",
   "workspace.black.waitlist.leave": "Залишити список очікування",
   "workspace.black.waitlist.leaving": "Вихід...",
   "workspace.black.waitlist.left": "Вишли",
@@ -651,18 +671,24 @@ export const dict = {
   "workspace.lite.subscription.weeklyUsage": "Тижневе використання",
   "workspace.lite.subscription.monthlyUsage": "Місячне використання",
   "workspace.lite.subscription.resetsIn": "Скидається через",
-  "workspace.lite.subscription.useBalance": "Використовуйте доступний баланс після досягнення лімітів",
-  "workspace.lite.subscription.selectProvider": 'Виберіть "OpenCode Go" як провайдера в конфігурації opencode.',
+  "workspace.lite.subscription.useBalance":
+    "Використовуйте доступний баланс після досягнення лімітів",
+  "workspace.lite.subscription.selectProvider":
+    'Виберіть "OpenCode Go" як провайдера в конфігурації opencode.',
   "workspace.lite.providers.title": "Провайдери",
-  "workspace.lite.providers.description": "Керуйте провайдерами, які використовуються для маршрутизації.",
+  "workspace.lite.providers.description":
+    "Керуйте провайдерами, які використовуються для маршрутизації.",
   "workspace.lite.providers.useChina": "Увімкнути моделі, розміщені в Китаї",
   "workspace.lite.black.message":
     "Ви вже підписані на OpenCode Black або в списку очікування. Спочатку скасуйте підписку, якщо хочете перейти на Go.",
-  "workspace.lite.other.message": "Інший учасник цього робочого простору вже підписаний на OpenCode Go.",
-  "workspace.lite.promo.description": "OpenCode Go починається від {{price}}, потім $10/місяць, із щедрими лімітами.",
+  "workspace.lite.other.message":
+    "Інший учасник цього робочого простору вже підписаний на OpenCode Go.",
+  "workspace.lite.promo.description":
+    "OpenCode Go починається від {{price}}, потім $10/місяць, із щедрими лімітами.",
   "workspace.lite.promo.price": "$5 за перший місяць",
   "workspace.lite.promo.modelsTitle": "Що включено",
-  "workspace.lite.promo.footer": "План призначений для міжнародних користувачів. Ціни можуть змінюватися.",
+  "workspace.lite.promo.footer":
+    "План призначений для міжнародних користувачів. Ціни можуть змінюватися.",
   "workspace.lite.promo.subscribe": "Підписатися на Go",
   "workspace.lite.promo.subscribing": "Перенаправлення...",
   "workspace.lite.promo.otherMethods": "Інші способи оплати",
@@ -787,4 +813,4 @@ export const dict = {
   "bench.detail.table.duration": "Тривалість",
   "bench.detail.run.title": "Запуск {{n}}",
   "bench.detail.rawJson": "Сирий JSON",
-}
+};

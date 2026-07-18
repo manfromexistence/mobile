@@ -114,7 +114,7 @@ class AmeliaClient {
     frame: string,
     resolveConnect: () => void,
     rejectConnect: (e: Error) => void,
-    timeout: NodeJS.Timeout
+    timeout: NodeJS.Timeout,
   ): void {
     if (frame === "o") {
       this.sendSockJS(this.buildStompConnect());
@@ -137,7 +137,7 @@ class AmeliaClient {
     frame: string,
     resolveConnect: () => void,
     rejectConnect: (e: Error) => void,
-    timeout: NodeJS.Timeout
+    timeout: NodeJS.Timeout,
   ): void {
     const command = frame.split("\n")[0].replace(/\r$/, "");
 
@@ -330,9 +330,9 @@ export class ChipotleExecutor extends BaseExecutor {
                 type: "abort",
                 code: "ABORTED",
               },
-            })
+            }),
           ),
-          { status: 499, headers: { "Content-Type": "application/json" } }
+          { status: 499, headers: { "Content-Type": "application/json" } },
         ),
         url: this.buildUrl(model, stream),
         headers: this.buildHeaders(input.credentials),
@@ -417,9 +417,9 @@ export class ChipotleExecutor extends BaseExecutor {
                 type: "upstream_error",
                 code: "CHIPOTLE_ERROR",
               },
-            })
+            }),
           ),
-          { status: 502, headers: { "Content-Type": "application/json" } }
+          { status: 502, headers: { "Content-Type": "application/json" } },
         ),
         url: this.buildUrl(model, stream),
         headers: this.buildHeaders(input.credentials),

@@ -1,73 +1,76 @@
-import { batch, createMemo, onCleanup, onMount, type Accessor } from "solid-js"
-import { createStore } from "solid-js/store"
-import { makeEventListener } from "@solid-primitives/event-listener"
-import { same } from "@/utils/same"
+import { batch, createMemo, onCleanup, onMount, type Accessor } from "solid-js";
+import { createStore } from "solid-js/store";
+import { makeEventListener } from "@solid-primitives/event-listener";
+import { same } from "@/utils/same";
 
-const emptyTabs: string[] = []
+const emptyTabs: string[] = [];
 
 type Tabs = {
-  active: Accessor<string | undefined>
-  all: Accessor<string[]>
-}
+  active: Accessor<string | undefined>;
+  all: Accessor<string[]>;
+};
 
 type TabsInput = {
-  tabs: Accessor<Tabs>
-  pathFromTab: (tab: string) => string | undefined
-  normalizeTab: (tab: string) => string
-  review?: Accessor<boolean>
-  hasReview?: Accessor<boolean>
-}
+  tabs: Accessor<Tabs>;
+  pathFromTab: (tab: string) => string | undefined;
+  normalizeTab: (tab: string) => string;
+  review?: Accessor<boolean>;
+  hasReview?: Accessor<boolean>;
+};
 
-export const getSessionKey = (dir: string | undefined, id: string | undefined) => `${dir ?? ""}${id ? `/${id}` : ""}`
+export const getSessionKey = (dir: string | undefined, id: string | undefined) =>
+  `${dir ?? ""}${id ? `/${id}` : ""}`;
 
 export function shouldShowFileTree(input: { visible: boolean; opened: boolean }) {
-  return input.opened && input.visible
+  return input.opened && input.visible;
 }
 
 export const createSessionTabs = (input: TabsInput) => {
-  const review = input.review ?? (() => false)
-  const hasReview = input.hasReview ?? (() => false)
-  const contextOpen = createMemo(() => input.tabs().active() === "context" || input.tabs().all().includes("context"))
+  const review = input.review ?? (() => false);
+  const hasReview = input.hasReview ?? (() => false);
+  const contextOpen = createMemo(
+    () => input.tabs().active() === "context" || input.tabs().all().includes("context"),
+  );
   const openedTabs = createMemo(
     () => {
-      const seen = new Set<string>()
+      const seen = new Set<string>();
       return input
         .tabs()
         .all()
         .flatMap((tab) => {
-          if (tab === "context" || tab === "review") return []
-          const value = input.pathFromTab(tab) ? input.normalizeTab(tab) : tab
-          if (seen.has(value)) return []
-          seen.add(value)
-          return [value]
-        })
+          if (tab === "context" || tab === "review") return [];
+          const value = input.pathFromTab(tab) ? input.normalizeTab(tab) : tab;
+          if (seen.has(value)) return [];
+          seen.add(value);
+          return [value];
+        });
     },
     emptyTabs,
     { equals: same },
-  )
+  );
   const activeTab = createMemo(() => {
-    const active = input.tabs().active()
-    if (active === "context") return active
-    if (active === "review" && review()) return active
-    if (active && input.pathFromTab(active)) return input.normalizeTab(active)
+    const active = input.tabs().active();
+    if (active === "context") return active;
+    if (active === "review" && review()) return active;
+    if (active && input.pathFromTab(active)) return input.normalizeTab(active);
 
-    const first = openedTabs()[0]
-    if (first) return first
-    if (contextOpen()) return "context"
-    if (review() && hasReview()) return "review"
-    return "empty"
-  })
+    const first = openedTabs()[0];
+    if (first) return first;
+    if (contextOpen()) return "context";
+    if (review() && hasReview()) return "review";
+    return "empty";
+  });
   const activeFileTab = createMemo(() => {
-    const active = activeTab()
-    if (!openedTabs().includes(active)) return
-    return active
-  })
+    const active = activeTab();
+    if (!openedTabs().includes(active)) return;
+    return active;
+  });
   const closableTab = createMemo(() => {
-    const active = activeTab()
-    if (active === "context") return active
-    if (!openedTabs().includes(active)) return
-    return active
-  })
+    const active = activeTab();
+    if (active === "context") return active;
+    if (!openedTabs().includes(active)) return;
+    return active;
+  });
 
   return {
     contextOpen,
@@ -75,124 +78,126 @@ export const createSessionTabs = (input: TabsInput) => {
     activeTab,
     activeFileTab,
     closableTab,
-  }
-}
+  };
+};
 
 export const focusTerminalById = (id: string) => {
-  const wrapper = document.getElementById(`terminal-wrapper-${id}`)
-  const terminal = wrapper?.querySelector('[data-component="terminal"]')
-  if (!(terminal instanceof HTMLElement)) return false
+  const wrapper = document.getElementById(`terminal-wrapper-${id}`);
+  const terminal = wrapper?.querySelector('[data-component="terminal"]');
+  if (!(terminal instanceof HTMLElement)) return false;
 
-  const textarea = terminal.querySelector("textarea")
+  const textarea = terminal.querySelector("textarea");
   if (textarea instanceof HTMLTextAreaElement) {
-    textarea.focus()
-    return true
+    textarea.focus();
+    return true;
   }
 
-  terminal.focus()
+  terminal.focus();
   terminal.dispatchEvent(
     typeof PointerEvent === "function"
       ? new PointerEvent("pointerdown", { bubbles: true, cancelable: true })
       : new MouseEvent("pointerdown", { bubbles: true, cancelable: true }),
-  )
-  return true
-}
+  );
+  return true;
+};
 
-const skip = new Set(["Alt", "Control", "Meta", "Shift"])
+const skip = new Set(["Alt", "Control", "Meta", "Shift"]);
 
-export const shouldFocusTerminalOnKeyDown = (event: Pick<KeyboardEvent, "key" | "ctrlKey" | "metaKey" | "altKey">) => {
-  if (skip.has(event.key)) return false
-  return !(event.ctrlKey || event.metaKey || event.altKey)
-}
+export const shouldFocusTerminalOnKeyDown = (
+  event: Pick<KeyboardEvent, "key" | "ctrlKey" | "metaKey" | "altKey">,
+) => {
+  if (skip.has(event.key)) return false;
+  return !(event.ctrlKey || event.metaKey || event.altKey);
+};
 
 export const createOpenReviewFile = (input: {
-  showAllFiles: () => void
-  tabForPath: (path: string) => string
-  openTab: (tab: string) => void
-  setActive: (tab: string) => void
-  loadFile: (path: string) => any | Promise<void>
+  showAllFiles: () => void;
+  tabForPath: (path: string) => string;
+  openTab: (tab: string) => void;
+  setActive: (tab: string) => void;
+  loadFile: (path: string) => any | Promise<void>;
 }) => {
   return (path: string) => {
     batch(() => {
-      input.showAllFiles()
-      const maybePromise = input.loadFile(path)
+      input.showAllFiles();
+      const maybePromise = input.loadFile(path);
       const open = () => {
-        const tab = input.tabForPath(path)
-        input.openTab(tab)
-        input.setActive(tab)
-      }
-      if (maybePromise instanceof Promise) void maybePromise.then(open)
-      else open()
-    })
-  }
-}
+        const tab = input.tabForPath(path);
+        input.openTab(tab);
+        input.setActive(tab);
+      };
+      if (maybePromise instanceof Promise) void maybePromise.then(open);
+      else open();
+    });
+  };
+};
 
 export const createOpenSessionFileTab = (input: {
-  normalizeTab: (tab: string) => string
-  openTab: (tab: string) => void
-  pathFromTab: (tab: string) => string | undefined
-  loadFile: (path: string) => void
-  openReviewPanel: () => void
-  setActive: (tab: string) => void
+  normalizeTab: (tab: string) => string;
+  openTab: (tab: string) => void;
+  pathFromTab: (tab: string) => string | undefined;
+  loadFile: (path: string) => void;
+  openReviewPanel: () => void;
+  setActive: (tab: string) => void;
 }) => {
   return (value: string) => {
-    const next = input.normalizeTab(value)
-    input.openTab(next)
+    const next = input.normalizeTab(value);
+    input.openTab(next);
 
-    const path = input.pathFromTab(next)
-    if (!path) return
+    const path = input.pathFromTab(next);
+    if (!path) return;
 
-    input.loadFile(path)
-    input.openReviewPanel()
-    input.setActive(next)
-  }
-}
+    input.loadFile(path);
+    input.openReviewPanel();
+    input.setActive(next);
+  };
+};
 
 export const getTabReorderIndex = (tabs: readonly string[], from: string, to: string) => {
-  const fromIndex = tabs.indexOf(from)
-  const toIndex = tabs.indexOf(to)
-  if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) return undefined
-  return toIndex
-}
+  const fromIndex = tabs.indexOf(from);
+  const toIndex = tabs.indexOf(to);
+  if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) return undefined;
+  return toIndex;
+};
 
 export const createSizing = () => {
-  const [state, setState] = createStore({ active: false })
-  let t: number | undefined
+  const [state, setState] = createStore({ active: false });
+  let t: number | undefined;
 
   const stop = () => {
     if (t !== undefined) {
-      clearTimeout(t)
-      t = undefined
+      clearTimeout(t);
+      t = undefined;
     }
-    setState("active", false)
-  }
+    setState("active", false);
+  };
 
   const start = () => {
     if (t !== undefined) {
-      clearTimeout(t)
-      t = undefined
+      clearTimeout(t);
+      t = undefined;
     }
-    setState("active", true)
-  }
+    setState("active", true);
+  };
 
   onMount(() => {
-    makeEventListener(window, "pointerup", stop)
-    makeEventListener(window, "pointercancel", stop)
-    makeEventListener(window, "blur", stop)
-  })
+    makeEventListener(window, "pointerup", stop);
+    makeEventListener(window, "pointercancel", stop);
+    makeEventListener(window, "blur", stop);
+  });
 
   onCleanup(() => {
-    if (t !== undefined) clearTimeout(t)
-  })
+    if (t !== undefined) clearTimeout(t);
+  });
 
   return {
     active: () => state.active,
     start,
     touch() {
-      start()
-      t = window.setTimeout(stop, 120)
+      start();
+      t = window.setTimeout(stop, 120);
     },
-  }
-}
+  };
+};
 
-export type Sizing = ReturnType<typeof createSizing>
+export type Sizing = ReturnType<typeof createSizing>;

@@ -11,10 +11,10 @@
 // The diff view (when available) uses the same diff component as scrollback
 // tool snapshots.
 /** @jsxImportSource @opentui/solid */
-import type { TextareaRenderable } from "@opentui/core"
-import { useKeyboard, useTerminalDimensions } from "@opentui/solid"
-import { For, Match, Show, Switch, createEffect, createMemo, createSignal } from "solid-js"
-import type { PermissionRequest } from "@opencode-ai/sdk/v2"
+import type { TextareaRenderable } from "@opentui/core";
+import { useKeyboard, useTerminalDimensions } from "@opentui/solid";
+import { For, Match, Show, Switch, createEffect, createMemo, createSignal } from "solid-js";
+import type { PermissionRequest } from "@opencode-ai/sdk/v2";
 import {
   createPermissionBodyState,
   permissionAlwaysLines,
@@ -28,11 +28,11 @@ import {
   permissionRun,
   permissionShift,
   type PermissionOption,
-} from "./permission.shared"
-import { footerWidthPolicy } from "./footer.width"
-import { toolFiletype } from "./tool"
-import { transparent, type RunBlockTheme, type RunFooterTheme } from "./theme"
-import type { PermissionReply, RunDiffStyle } from "./types"
+} from "./permission.shared";
+import { footerWidthPolicy } from "./footer.width";
+import { toolFiletype } from "./tool";
+import { transparent, type RunBlockTheme, type RunFooterTheme } from "./theme";
+import type { PermissionReply, RunDiffStyle } from "./types";
 
 function buttons(
   list: PermissionOption[],
@@ -51,48 +51,50 @@ function buttons(
             paddingRight={1}
             backgroundColor={option === selected ? theme.highlight : transparent}
             onMouseOver={() => {
-              if (!disabled) onHover(option)
+              if (!disabled) onHover(option);
             }}
             onMouseUp={() => {
-              if (!disabled) onSelect(option)
+              if (!disabled) onSelect(option);
             }}
           >
-            <text fg={option === selected ? theme.surface : theme.muted}>{permissionLabel(option)}</text>
+            <text fg={option === selected ? theme.surface : theme.muted}>
+              {permissionLabel(option)}
+            </text>
           </box>
         )}
       </For>
     </box>
-  )
+  );
 }
 
 /** @internal Exported to test managed textarea submission without permission navigation. */
 export function RejectField(props: {
-  theme: RunFooterTheme
-  text: string
-  disabled: boolean
-  onChange: (text: string) => void
-  onConfirm: () => void
-  onCancel: () => void
+  theme: RunFooterTheme;
+  text: string;
+  disabled: boolean;
+  onChange: (text: string) => void;
+  onConfirm: () => void;
+  onCancel: () => void;
 }) {
-  let area: TextareaRenderable | undefined
+  let area: TextareaRenderable | undefined;
 
   createEffect(() => {
     if (!area || area.isDestroyed) {
-      return
+      return;
     }
 
     if (area.plainText !== props.text) {
-      area.setText(props.text)
-      area.cursorOffset = props.text.length
+      area.setText(props.text);
+      area.cursorOffset = props.text.length;
     }
 
     queueMicrotask(() => {
       if (!area || area.isDestroyed || props.disabled) {
-        return
+        return;
       }
-      area.focus()
-    })
-  })
+      area.focus();
+    });
+  });
 
   return (
     <textarea
@@ -111,150 +113,150 @@ export function RejectField(props: {
       onSubmit={props.onConfirm}
       onContentChange={() => {
         if (!area || area.isDestroyed) {
-          return
+          return;
         }
-        props.onChange(area.plainText)
+        props.onChange(area.plainText);
       }}
       onKeyDown={(event) => {
         if (event.name === "escape") {
-          event.preventDefault()
-          props.onCancel()
-          return
+          event.preventDefault();
+          props.onCancel();
+          return;
         }
       }}
       ref={(item) => {
-        area = item
+        area = item;
       }}
     />
-  )
+  );
 }
 
 export function RunPermissionBody(props: {
-  request: PermissionRequest
-  theme: RunFooterTheme
-  block: RunBlockTheme
-  diffStyle?: RunDiffStyle
-  onReply: (input: PermissionReply) => void | Promise<void>
+  request: PermissionRequest;
+  theme: RunFooterTheme;
+  block: RunBlockTheme;
+  diffStyle?: RunDiffStyle;
+  onReply: (input: PermissionReply) => void | Promise<void>;
 }) {
-  const dims = useTerminalDimensions()
-  const [state, setState] = createSignal(createPermissionBodyState(props.request.id))
-  const info = createMemo(() => permissionInfo(props.request))
-  const ft = createMemo(() => toolFiletype(info().file))
-  const narrow = createMemo(() => footerWidthPolicy(dims().width).dialog.narrow)
-  const opts = createMemo(() => permissionOptions(state().stage))
-  const busy = createMemo(() => state().submitting)
+  const dims = useTerminalDimensions();
+  const [state, setState] = createSignal(createPermissionBodyState(props.request.id));
+  const info = createMemo(() => permissionInfo(props.request));
+  const ft = createMemo(() => toolFiletype(info().file));
+  const narrow = createMemo(() => footerWidthPolicy(dims().width).dialog.narrow);
+  const opts = createMemo(() => permissionOptions(state().stage));
+  const busy = createMemo(() => state().submitting);
   const title = createMemo(() => {
     if (state().stage === "always") {
-      return "Always allow"
+      return "Always allow";
     }
 
     if (state().stage === "reject") {
-      return "Reject permission"
+      return "Reject permission";
     }
 
-    return "Permission required"
-  })
+    return "Permission required";
+  });
 
   createEffect(() => {
-    const id = props.request.id
+    const id = props.request.id;
     if (state().requestID === id) {
-      return
+      return;
     }
 
-    setState(createPermissionBodyState(id))
-  })
+    setState(createPermissionBodyState(id));
+  });
 
   const shift = (dir: -1 | 1) => {
-    setState((prev) => permissionShift(prev, dir))
-  }
+    setState((prev) => permissionShift(prev, dir));
+  };
 
   const submit = async (next: PermissionReply) => {
     setState((prev) => ({
       ...prev,
       submitting: true,
-    }))
+    }));
 
     try {
-      await props.onReply(next)
+      await props.onReply(next);
     } catch {
       setState((prev) => ({
         ...prev,
         submitting: false,
-      }))
+      }));
     }
-  }
+  };
 
   const run = (option: PermissionOption) => {
-    const cur = state()
-    const next = permissionRun(cur, props.request.id, option)
+    const cur = state();
+    const next = permissionRun(cur, props.request.id, option);
     if (next.state !== cur) {
-      setState(next.state)
+      setState(next.state);
     }
 
     if (!next.reply) {
-      return
+      return;
     }
 
-    void submit(next.reply)
-  }
+    void submit(next.reply);
+  };
 
   const reject = () => {
-    const next = permissionReject(state(), props.request.id)
+    const next = permissionReject(state(), props.request.id);
     if (!next) {
-      return
+      return;
     }
 
-    void submit(next)
-  }
+    void submit(next);
+  };
 
   const cancelReject = () => {
-    setState((prev) => permissionCancel(prev))
-  }
+    setState((prev) => permissionCancel(prev));
+  };
 
   useKeyboard((event) => {
-    const cur = state()
+    const cur = state();
     if (cur.stage === "reject") {
-      return
+      return;
     }
 
     if (cur.submitting) {
       if (["left", "right", "h", "l", "tab", "return", "escape"].includes(event.name)) {
-        event.preventDefault()
+        event.preventDefault();
       }
-      return
+      return;
     }
 
     if (event.name === "tab") {
-      shift(event.shift ? -1 : 1)
-      event.preventDefault()
-      return
+      shift(event.shift ? -1 : 1);
+      event.preventDefault();
+      return;
     }
 
     if (event.name === "left" || event.name === "h") {
-      shift(-1)
-      event.preventDefault()
-      return
+      shift(-1);
+      event.preventDefault();
+      return;
     }
 
     if (event.name === "right" || event.name === "l") {
-      shift(1)
-      event.preventDefault()
-      return
+      shift(1);
+      event.preventDefault();
+      return;
     }
 
     if (event.name === "return") {
-      run(state().selected)
-      event.preventDefault()
-      return
+      run(state().selected);
+      event.preventDefault();
+      return;
     }
 
     if (event.name !== "escape") {
-      return
+      return;
     }
 
-    setState((prev) => permissionEscape(prev))
-    event.preventDefault()
-  })
+    setState((prev) => permissionEscape(prev));
+    event.preventDefault();
+  });
 
   return (
     <box width="100%" height="100%" flexDirection="column" backgroundColor={props.theme.surface}>
@@ -315,7 +317,7 @@ export function RunPermissionBody(props: {
                     setState((prev) => ({
                       ...prev,
                       message: text,
-                    }))
+                    }));
                   }}
                   onConfirm={reject}
                   onCancel={cancelReject}
@@ -342,7 +344,14 @@ export function RunPermissionBody(props: {
           </box>
         }
       >
-        <box width="100%" flexGrow={1} flexShrink={1} paddingLeft={1} paddingRight={3} paddingBottom={1}>
+        <box
+          width="100%"
+          flexGrow={1}
+          flexShrink={1}
+          paddingLeft={1}
+          paddingRight={3}
+          paddingBottom={1}
+        >
           <Switch>
             <Match when={state().stage === "permission"}>
               <scrollbox
@@ -441,7 +450,7 @@ export function RunPermissionBody(props: {
             props.theme,
             busy(),
             (option) => {
-              setState((prev) => permissionHover(prev, option))
+              setState((prev) => permissionHover(prev, option));
             },
             run,
           )}
@@ -461,12 +470,15 @@ export function RunPermissionBody(props: {
                 enter <span style={{ fg: props.theme.muted }}>confirm</span>
               </text>
               <text fg={props.theme.text}>
-                esc <span style={{ fg: props.theme.muted }}>{state().stage === "always" ? "cancel" : "reject"}</span>
+                esc{" "}
+                <span style={{ fg: props.theme.muted }}>
+                  {state().stage === "always" ? "cancel" : "reject"}
+                </span>
               </text>
             </box>
           </Show>
         </box>
       </Show>
     </box>
-  )
+  );
 }

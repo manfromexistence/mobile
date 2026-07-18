@@ -69,7 +69,7 @@ describe("structural compression rules", () => {
     assert.equal(result.compressed, true);
     assert.ok(
       result.stats.savingsPercent > 10,
-      `Expected meaningful savings, got ${result.stats.savingsPercent}%`
+      `Expected meaningful savings, got ${result.stats.savingsPercent}%`,
     );
   });
 });

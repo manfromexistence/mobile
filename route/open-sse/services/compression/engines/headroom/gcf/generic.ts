@@ -67,7 +67,7 @@ function encodeNamedArray(
   name: string,
   arr: unknown[],
   depth: number,
-  opts?: GenericOptions
+  opts?: GenericOptions,
 ): string {
   const prefix = indent(depth);
   if (arr.length === 0) return `${prefix}## ${name} [0]\n`;
@@ -113,7 +113,12 @@ function inlineSchemaFields(arr: unknown[], fieldName: string): string[] | null 
   let canonicalKeys: string[] | null = null;
   for (const item of arr) {
     const obj = item as Record<string, unknown>;
-    if (!Object.prototype.hasOwnProperty.call(obj, fieldName) || obj[fieldName] === null || obj[fieldName] === undefined) continue;
+    if (
+      !Object.prototype.hasOwnProperty.call(obj, fieldName) ||
+      obj[fieldName] === null ||
+      obj[fieldName] === undefined
+    )
+      continue;
     const v = obj[fieldName];
     if (typeof v !== "object" || Array.isArray(v)) return null;
     const keys = Object.keys(v as Record<string, unknown>);
@@ -145,7 +150,12 @@ function sharedArraySchema(arr: unknown[], fieldName: string): string[] | null {
   let canonicalFields: string[] | null = null;
   for (const item of arr) {
     const obj = item as Record<string, unknown>;
-    if (!Object.prototype.hasOwnProperty.call(obj, fieldName) || obj[fieldName] === null || obj[fieldName] === undefined) continue;
+    if (
+      !Object.prototype.hasOwnProperty.call(obj, fieldName) ||
+      obj[fieldName] === null ||
+      obj[fieldName] === undefined
+    )
+      continue;
     const v = obj[fieldName];
     if (!Array.isArray(v)) return null;
     const fields = tabularFields(v);
@@ -185,7 +195,7 @@ function isUnsafeKey(k: string): boolean {
 function analyzeFlattenable(
   arr: unknown[],
   fieldName: string,
-  parentPath: string
+  parentPath: string,
 ): FlatLeaf[] | null {
   // Field names containing ">" cannot be flattened (would create ambiguous paths).
   if (fieldName.includes(">")) return null;
@@ -193,7 +203,8 @@ function analyzeFlattenable(
 
   for (const item of arr) {
     const obj = item as Record<string, unknown>;
-    if (!Object.prototype.hasOwnProperty.call(obj, fieldName) || obj[fieldName] === undefined) continue;
+    if (!Object.prototype.hasOwnProperty.call(obj, fieldName) || obj[fieldName] === undefined)
+      continue;
     if (obj[fieldName] === null) {
       // A nested (non-top-level) null cannot be flattened losslessly: its leaves would
       // encode as absent ("~") and unflatten back to a missing key, not null. Bail to
@@ -252,7 +263,11 @@ function analyzeFlattenable(
     } else {
       const subArr = arr.map((item) => {
         const obj = item as Record<string, unknown>;
-        if (!Object.prototype.hasOwnProperty.call(obj, fieldName) || obj[fieldName] === null || obj[fieldName] === undefined)
+        if (
+          !Object.prototype.hasOwnProperty.call(obj, fieldName) ||
+          obj[fieldName] === null ||
+          obj[fieldName] === undefined
+        )
           return {};
         return obj[fieldName];
       });
@@ -266,7 +281,12 @@ function analyzeFlattenable(
   if (leaves.length > 0) {
     for (const item of arr) {
       const obj = item as Record<string, unknown>;
-      if (!Object.prototype.hasOwnProperty.call(obj, fieldName) || obj[fieldName] === null || obj[fieldName] === undefined) continue;
+      if (
+        !Object.prototype.hasOwnProperty.call(obj, fieldName) ||
+        obj[fieldName] === null ||
+        obj[fieldName] === undefined
+      )
+        continue;
       const allNull = leaves.every((leaf) => {
         const val = resolveKeyChain(item, leaf.keys);
         return val.exists && val.value === null;
@@ -282,13 +302,15 @@ function resolveKeyChain(item: unknown, keys: string[]): { value: unknown; exist
   if (keys.length === 0) return { value: undefined, exists: false };
   const obj = item as Record<string, unknown>;
   if (typeof obj !== "object" || obj === null) return { value: undefined, exists: false };
-  if (!Object.prototype.hasOwnProperty.call(obj, keys[0])) return { value: undefined, exists: false };
+  if (!Object.prototype.hasOwnProperty.call(obj, keys[0]))
+    return { value: undefined, exists: false };
   let current: unknown = obj[keys[0]];
   if (current === null || current === undefined) return { value: current, exists: true };
   for (let i = 1; i < keys.length; i++) {
     if (typeof current !== "object" || current === null) return { value: undefined, exists: false };
     const c = current as Record<string, unknown>;
-    if (!Object.prototype.hasOwnProperty.call(c, keys[i])) return { value: undefined, exists: false };
+    if (!Object.prototype.hasOwnProperty.call(c, keys[i]))
+      return { value: undefined, exists: false };
     current = c[keys[i]];
   }
   return { value: current, exists: true };
@@ -301,7 +323,7 @@ function encodeTabular(
   arr: unknown[],
   fields: string[],
   depth: number,
-  opts?: GenericOptions
+  opts?: GenericOptions,
 ): string {
   const prefix = indent(depth);
 
@@ -472,7 +494,7 @@ function encodeTabular(
             att.value as unknown[],
             depth + 2,
             sas,
-            opts
+            opts,
           );
         } else {
           out += encodeAttachmentArray(prefix, fk, att.value as unknown[], depth + 2, opts);
@@ -498,7 +520,7 @@ function encodeAttachmentArray(
   fk: string,
   arr: unknown[],
   depth: number,
-  opts?: GenericOptions
+  opts?: GenericOptions,
 ): string {
   if (arr.length === 0) return `${attPrefix}.${fk} [0]\n`;
   if (allPrimitives(arr)) {
@@ -516,7 +538,7 @@ function encodeAttachmentArrayShared(
   arr: unknown[],
   depth: number,
   sharedFields: string[],
-  opts?: GenericOptions
+  opts?: GenericOptions,
 ): string {
   if (arr.length === 0) return `${attPrefix}.${fk} [0]\n`;
   if (allPrimitives(arr)) {
@@ -552,7 +574,7 @@ function encodeExpanded(
   headerPrefix: string,
   arr: unknown[],
   depth: number,
-  opts?: GenericOptions
+  opts?: GenericOptions,
 ): string {
   const prefix = indent(depth);
   let out = `${headerPrefix}[${arr.length}]\n`;
@@ -575,7 +597,7 @@ function encodeExpandedArrayItem(
   idx: number,
   arr: unknown[],
   depth: number,
-  opts?: GenericOptions
+  opts?: GenericOptions,
 ): string {
   if (arr.length === 0) return `${prefix}@${idx} [0]\n`;
   if (allPrimitives(arr)) {

@@ -47,18 +47,22 @@
   display: none;
 }
 
-[data-titlebar-tab][data-title-overflow="true"]:not([data-editing="true"]) [data-slot="tab-close"]::before {
+[data-titlebar-tab][data-title-overflow="true"]:not([data-editing="true"])
+  [data-slot="tab-close"]::before {
   display: block;
   right: 0;
 }
 
-[data-titlebar-tab][data-title-overflow="true"]:hover:not([data-editing="true"]) [data-slot="tab-close"]::before,
+[data-titlebar-tab][data-title-overflow="true"]:hover:not([data-editing="true"])
+  [data-slot="tab-close"]::before,
 [data-titlebar-tab][data-title-overflow="true"][data-active="true"]:not([data-editing="true"])
   [data-slot="tab-close"]::before {
   right: 100%;
 }
 
-[data-titlebar-tab][data-title-overflow="true"]:not(:hover):not([data-active="true"]):not([data-editing="true"])
+[data-titlebar-tab][data-title-overflow="true"]:not(:hover):not([data-active="true"]):not(
+    [data-editing="true"]
+  )
   [data-slot="tab-link"] {
   padding-right: 0;
 }

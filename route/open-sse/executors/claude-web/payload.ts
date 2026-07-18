@@ -187,7 +187,7 @@ export function wantsExtendedThinking(body: Record<string, unknown>): boolean {
  */
 export function transformToClaude(
   body: Record<string, unknown>,
-  model: string
+  model: string,
 ): ClaudeWebRequestPayload {
   const messages = Array.isArray(body.messages) ? body.messages : [];
 
@@ -248,7 +248,7 @@ export function transformFromClaude(
   claudeContent: string,
   model: string,
   stopReason?: string,
-  kind: "content" | "reasoning" = "content"
+  kind: "content" | "reasoning" = "content",
 ): Record<string, unknown> {
   const delta: Record<string, string> =
     kind === "reasoning" ? { reasoning_content: claudeContent } : { content: claudeContent };

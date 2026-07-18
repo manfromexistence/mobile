@@ -42,10 +42,10 @@ export function hasUnsupportedReasoningSignal(value: unknown): boolean {
   const record = asReasoningRecord(value);
   return Boolean(
     !getReadableReasoningValue(record) &&
-    (nonEmptyString(record.reasoning_text) ||
-      nonEmptyString(record.thinking) ||
-      nonEmptyString(record.thought) ||
-      (Array.isArray(record.reasoning_details) && record.reasoning_details.length > 0))
+      (nonEmptyString(record.reasoning_text) ||
+        nonEmptyString(record.thinking) ||
+        nonEmptyString(record.thought) ||
+        (Array.isArray(record.reasoning_details) && record.reasoning_details.length > 0)),
   );
 }
 
@@ -53,10 +53,10 @@ export function hasAnyReasoningSignal(value: unknown): boolean {
   const record = asReasoningRecord(value);
   return Boolean(
     getReadableReasoningValue(record) ||
-    nonEmptyString(record.reasoning_text) ||
-    nonEmptyString(record.thinking) ||
-    nonEmptyString(record.thought) ||
-    (Array.isArray(record.reasoning_details) && record.reasoning_details.length > 0)
+      nonEmptyString(record.reasoning_text) ||
+      nonEmptyString(record.thinking) ||
+      nonEmptyString(record.thought) ||
+      (Array.isArray(record.reasoning_details) && record.reasoning_details.length > 0),
   );
 }
 

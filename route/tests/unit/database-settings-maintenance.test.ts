@@ -11,8 +11,9 @@ process.env.DISABLE_SQLITE_AUTO_BACKUP = "true";
 const core = await import("../../src/lib/db/core.ts");
 const databaseSettings = await import("../../src/lib/db/databaseSettings.ts");
 const databaseSettingsRoute = await import("../../src/app/api/settings/database/route.ts");
-const purgeRequestHistoryRoute =
-  await import("../../src/app/api/settings/purge-request-history/route.ts");
+const purgeRequestHistoryRoute = await import(
+  "../../src/app/api/settings/purge-request-history/route.ts"
+);
 const settingsDb = await import("../../src/lib/db/settings.ts");
 const cleanup = await import("../../src/lib/db/cleanup.ts");
 const aggregateHistory = await import("../../src/lib/usage/aggregateHistory.ts");
@@ -48,7 +49,7 @@ function insertCallLog(id: string, artifactRelPath: string | null = null) {
     `
       INSERT INTO call_logs (id, timestamp, method, path, status, detail_state, artifact_relpath)
       VALUES (?, ?, ?, ?, ?, ?, ?)
-    `
+    `,
   ).run(
     id,
     "2026-06-01T12:00:00.000Z",
@@ -56,7 +57,7 @@ function insertCallLog(id: string, artifactRelPath: string | null = null) {
     "/v1/chat/completions",
     200,
     artifactRelPath ? "ready" : "none",
-    artifactRelPath
+    artifactRelPath,
   );
 }
 
@@ -81,7 +82,7 @@ test("database settings route returns mapped stats and persists editable section
     makeJsonRequest("PATCH", {
       retention: { ...current.retention, callLogs: 12, autoCleanupEnabled: false },
       aggregation: { ...current.aggregation, enabled: false, rawDataRetentionDays: 8 },
-    }) as never
+    }) as never,
   );
   const body = await response.json();
 
@@ -98,7 +99,7 @@ test("database settings route returns mapped stats and persists editable section
   const db = core.getDbInstance();
   const stored = db
     .prepare(
-      "SELECT value FROM key_value WHERE namespace = 'databaseSettings' AND key = 'retention.callLogs'"
+      "SELECT value FROM key_value WHERE namespace = 'databaseSettings' AND key = 'retention.callLogs'",
     )
     .get() as { value: string } | undefined;
   assert.equal(JSON.parse(stored?.value ?? "null"), 12);
@@ -114,7 +115,7 @@ test("database settings route returns mapped stats and persists editable section
 test("database settings reader supports legacy flat keys and lets nested saves win", () => {
   const db = core.getDbInstance();
   db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('databaseSettings', ?, ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('databaseSettings', ?, ?)",
   ).run("callLogs", JSON.stringify(99));
 
   assert.equal(databaseSettings.getUserDatabaseSettings().retention.callLogs, 99);
@@ -161,7 +162,7 @@ test("database optimization settings apply SQLite cache size immediately", () =>
   const db = core.getDbInstance();
   const stored = db
     .prepare(
-      "SELECT value FROM key_value WHERE namespace = 'databaseSettings' AND key = 'optimization.cacheSize'"
+      "SELECT value FROM key_value WHERE namespace = 'databaseSettings' AND key = 'optimization.cacheSize'",
     )
     .get() as { value: string } | undefined;
 
@@ -189,7 +190,7 @@ test("database optimization settings apply SQLite page size immediately", () => 
 test("database optimization cache size is applied when the DB is reopened", () => {
   const db = core.getDbInstance();
   db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('databaseSettings', ?, ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('databaseSettings', ?, ?)",
   ).run("optimization.cacheSize", JSON.stringify(32768));
 
   core.resetDbInstance();
@@ -206,7 +207,7 @@ test("database optimization rejects negative cache size through the API", async 
         ...current.optimization,
         cacheSize: -2000,
       },
-    }) as never
+    }) as never,
   );
 
   assert.equal(response.status, 400);
@@ -215,7 +216,7 @@ test("database optimization rejects negative cache size through the API", async 
 test("database settings reader normalizes legacy negative cache size to the positive default", () => {
   const db = core.getDbInstance();
   db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('databaseSettings', ?, ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('databaseSettings', ?, ?)",
   ).run("optimization.cacheSize", JSON.stringify(-2000));
 
   assert.equal(databaseSettings.getUserDatabaseSettings().optimization.cacheSize, 16384);
@@ -226,12 +227,12 @@ test("purgeDetailedLogs deletes request_detail_logs", async () => {
   db.prepare("INSERT INTO request_detail_logs (id, timestamp, duration_ms) VALUES (?, ?, ?)").run(
     "detail-1",
     new Date().toISOString(),
-    10
+    10,
   );
   db.prepare("INSERT INTO request_detail_logs (id, timestamp, duration_ms) VALUES (?, ?, ?)").run(
     "detail-2",
     new Date().toISOString(),
-    20
+    20,
   );
 
   const result = await cleanup.purgeDetailedLogs();
@@ -240,7 +241,7 @@ test("purgeDetailedLogs deletes request_detail_logs", async () => {
   assert.equal(result.deleted, 2);
   assert.equal(
     (db.prepare("SELECT COUNT(*) AS count FROM request_detail_logs").get() as CountRow).count,
-    0
+    0,
   );
 });
 
@@ -268,11 +269,11 @@ test("purge request history route clears call logs, artifacts, and legacy detail
   db.prepare("INSERT INTO request_detail_logs (id, timestamp, duration_ms) VALUES (?, ?, ?)").run(
     "detail-route",
     "2026-06-01T12:00:01.000Z",
-    25
+    25,
   );
 
   const response = await purgeRequestHistoryRoute.POST(
-    new Request("http://localhost/api/settings/purge-request-history", { method: "POST" })
+    new Request("http://localhost/api/settings/purge-request-history", { method: "POST" }),
   );
   const body = await response.json();
 
@@ -284,7 +285,7 @@ test("purge request history route clears call logs, artifacts, and legacy detail
   assert.equal((db.prepare("SELECT COUNT(*) AS count FROM call_logs").get() as CountRow).count, 0);
   assert.equal(
     (db.prepare("SELECT COUNT(*) AS count FROM request_detail_logs").get() as CountRow).count,
-    0
+    0,
   );
   assert.equal(fs.existsSync(artifactPath), false);
 });
@@ -294,7 +295,7 @@ test("usage aggregation upserts replace recomputed totals instead of adding them
   const insertSnapshot = db.prepare(
     `INSERT INTO quota_snapshots
        (provider, connection_id, window_key, remaining_percentage, is_exhausted, raw_data, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
   );
 
   insertSnapshot.run(
@@ -304,7 +305,7 @@ test("usage aggregation upserts replace recomputed totals instead of adding them
     90,
     0,
     JSON.stringify({ model: "gpt-test", input_tokens: 10, output_tokens: 4, cost: 0.25 }),
-    "2026-05-01 10:15:00"
+    "2026-05-01 10:15:00",
   );
   insertSnapshot.run(
     "openai",
@@ -313,7 +314,7 @@ test("usage aggregation upserts replace recomputed totals instead of adding them
     80,
     0,
     JSON.stringify({ model: "gpt-test", input_tokens: 20, output_tokens: 6, cost: 0.5 }),
-    "2026-05-01 10:45:00"
+    "2026-05-01 10:45:00",
   );
 
   await aggregateHistory.rollupDailyUsage("2026-05-01", "2026-05-01");
@@ -348,7 +349,7 @@ test("cleanupUsageHistory rolls up and deletes old rows using the same day bound
 
   const insertUsage = db.prepare(
     `INSERT INTO usage_history (provider, model, timestamp, tokens_input, tokens_output, success, latency_ms)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?, ?)`,
   );
   insertUsage.run("openai", "gpt-test", oldTimestamp, 100, 40, 1, 200);
   insertUsage.run("openai", "gpt-test", recentTimestamp, 7, 3, 1, 100);

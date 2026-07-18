@@ -2,12 +2,12 @@
  * Deterministic MLCEngine tests that run without WebGPU by mocking LLMChatPipeline.
  */
 
-import { afterEach, describe, expect, jest, test } from "@jest/globals"
-import { ModelType } from "../src/config"
-import { EmbeddingPipeline } from "../src/embedding"
-import { MLCEngine } from "../src/engine"
-import { UnclearModelToUseError } from "../src/error"
-import { LLMChatPipeline } from "../src/llm_chat"
+import { afterEach, describe, expect, jest, test } from "@jest/globals";
+import { ModelType } from "../src/config";
+import { EmbeddingPipeline } from "../src/embedding";
+import { MLCEngine } from "../src/engine";
+import { UnclearModelToUseError } from "../src/error";
+import { LLMChatPipeline } from "../src/llm_chat";
 import type {
   ChatCompletion,
   ChatCompletionChunk,
@@ -15,24 +15,24 @@ import type {
   Completion,
   CompletionCreateParams,
   EmbeddingCreateParams,
-} from "../src/openai_api_protocols"
-import { CustomLock } from "../src/support"
+} from "../src/openai_api_protocols";
+import { CustomLock } from "../src/support";
 
-type ChatConfig = import("../src/config").ChatConfig
-type Conversation = import("../src/conversation").Conversation
-type TVMInstance = import("@mlc-ai/web-runtime").Instance
-type Tokenizer = import("@mlc-ai/web-tokenizers").Tokenizer
+type ChatConfig = import("../src/config").ChatConfig;
+type Conversation = import("../src/conversation").Conversation;
+type TVMInstance = import("@mlc-ai/web-runtime").Instance;
+type Tokenizer = import("@mlc-ai/web-tokenizers").Tokenizer;
 
 jest.mock("../src/llm_chat", () => {
-  const { getConversation } = jest.requireActual(
-    "../src/conversation"
-  ) as typeof import("../src/conversation")
+  const { getConversation } = jest.requireActual("../src/conversation") as typeof import(
+    "../src/conversation",
+  );
 
   class MockLLMChatPipeline {
-    public decodeLimit = 2
-    public prefillCallCount = 0
-    public decodeCallCount = 0
-    public resetCount = 0
+    public decodeLimit = 2;
+    public prefillCallCount = 0;
+    public decodeCallCount = 0;
+    public resetCount = 0;
     private conversation: Conversation = getConversation(
       {
         system_template: "{system_message}",
@@ -42,22 +42,19 @@ jest.mock("../src/llm_chat", () => {
         stop_token_ids: [0],
         stop_str: [],
       } as any,
-      undefined
-    )
-    private stopFlag = true
-    private message = ""
-    private finishReason: string | undefined = undefined
-    private curRoundPrefillTotalTokens = 0
-    private curRoundDecodingTotalTokens = 0
-    private curRoundPrefillTotalTime = 0.001
-    private curRoundDecodingTotalTime = 0.001
-    private curRoundGrammarPerTokenTotalTime = 0
+      undefined,
+    );
+    private stopFlag = true;
+    private message = "";
+    private finishReason: string | undefined = undefined;
+    private curRoundPrefillTotalTokens = 0;
+    private curRoundDecodingTotalTokens = 0;
+    private curRoundPrefillTotalTime = 0.001;
+    private curRoundDecodingTotalTime = 0.001;
+    private curRoundGrammarPerTokenTotalTime = 0;
 
     constructor(_tvm: TVMInstance, _tokenizer: Tokenizer, config: ChatConfig) {
-      this.conversation = getConversation(
-        config.conv_template,
-        config.conv_config
-      )
+      this.conversation = getConversation(config.conv_template, config.conv_config);
     }
 
     async asyncLoadWebGPUPipelines() {}
@@ -65,103 +62,98 @@ jest.mock("../src/llm_chat", () => {
     async sync() {}
 
     getConversationObject() {
-      return this.conversation
+      return this.conversation;
     }
 
     setConversation(newConv: Conversation) {
-      this.conversation = newConv
+      this.conversation = newConv;
     }
 
     resetChat() {
-      this.resetCount++
-      this.stopFlag = true
-      this.decodeCallCount = 0
+      this.resetCount++;
+      this.stopFlag = true;
+      this.decodeCallCount = 0;
     }
 
-    async prefillStep(
-      inp: string,
-      msgRole: string,
-      roleName?: string
-    ): Promise<void> {
-      this.prefillCallCount++
-      const roleSuffix = roleName ? `(${roleName})` : ""
-      this.message = `${msgRole}${roleSuffix}:${inp}`
-      this.stopFlag = false
-      this.decodeCallCount = 0
-      this.curRoundPrefillTotalTokens = Math.max(1, inp.length)
-      this.curRoundPrefillTotalTime = 0.01 * this.curRoundPrefillTotalTokens
-      this.curRoundDecodingTotalTokens = 0
-      this.curRoundDecodingTotalTime = 0.001
-      this.curRoundGrammarPerTokenTotalTime = 0
-      this.finishReason = "length"
+    async prefillStep(inp: string, msgRole: string, roleName?: string): Promise<void> {
+      this.prefillCallCount++;
+      const roleSuffix = roleName ? `(${roleName})` : "";
+      this.message = `${msgRole}${roleSuffix}:${inp}`;
+      this.stopFlag = false;
+      this.decodeCallCount = 0;
+      this.curRoundPrefillTotalTokens = Math.max(1, inp.length);
+      this.curRoundPrefillTotalTime = 0.01 * this.curRoundPrefillTotalTokens;
+      this.curRoundDecodingTotalTokens = 0;
+      this.curRoundDecodingTotalTime = 0.001;
+      this.curRoundGrammarPerTokenTotalTime = 0;
+      this.finishReason = "length";
     }
 
     async decodeStep(genConfig?: { max_tokens?: number | null }) {
-      if (this.stopFlag) return
-      this.decodeCallCount++
-      this.message += `|token${this.decodeCallCount}|`
-      this.curRoundDecodingTotalTokens = this.decodeCallCount
-      this.curRoundDecodingTotalTime = this.curRoundDecodingTotalTokens * 0.02
-      this.curRoundGrammarPerTokenTotalTime =
-        this.curRoundDecodingTotalTokens * 0.001
+      if (this.stopFlag) return;
+      this.decodeCallCount++;
+      this.message += `|token${this.decodeCallCount}|`;
+      this.curRoundDecodingTotalTokens = this.decodeCallCount;
+      this.curRoundDecodingTotalTime = this.curRoundDecodingTotalTokens * 0.02;
+      this.curRoundGrammarPerTokenTotalTime = this.curRoundDecodingTotalTokens * 0.001;
       if (
         this.decodeCallCount >= this.decodeLimit ||
         (genConfig?.max_tokens !== null &&
           genConfig?.max_tokens !== undefined &&
           this.decodeCallCount >= genConfig.max_tokens)
       ) {
-        this.stopFlag = true
-        this.finishReason = "stop"
+        this.stopFlag = true;
+        this.finishReason = "stop";
       }
     }
 
     stopped() {
-      return this.stopFlag
+      return this.stopFlag;
     }
 
     triggerStop() {
-      this.stopFlag = true
-      this.finishReason = "stop"
+      this.stopFlag = true;
+      this.finishReason = "stop";
     }
 
     getMessage() {
-      return this.message
+      return this.message;
     }
 
     getFinishReason() {
-      return this.finishReason ?? "stop"
+      return this.finishReason ?? "stop";
     }
 
     getCurRoundDecodingTotalTokens() {
-      return this.curRoundDecodingTotalTokens
+      return this.curRoundDecodingTotalTokens;
     }
 
     getCurRoundPrefillTotalTokens() {
-      return this.curRoundPrefillTotalTokens
+      return this.curRoundPrefillTotalTokens;
     }
 
     getCurRoundPrefillTokensPerSec() {
-      return this.curRoundPrefillTotalTokens / this.curRoundPrefillTotalTime
+      return this.curRoundPrefillTotalTokens / this.curRoundPrefillTotalTime;
     }
 
     getCurRoundDecodingTokensPerSec() {
-      return this.curRoundDecodingTotalTokens / this.curRoundDecodingTotalTime
+      return this.curRoundDecodingTotalTokens / this.curRoundDecodingTotalTime;
     }
 
     getCurRoundGrammarInitTotalTime() {
-      return 0.001
+      return 0.001;
     }
 
     getCurRoundPrefillTotalTime() {
-      return this.curRoundPrefillTotalTime
+      return this.curRoundPrefillTotalTime;
     }
 
     getCurRoundDecodingTotalTime() {
-      return this.curRoundDecodingTotalTime
+      return this.curRoundDecodingTotalTime;
     }
 
     getCurRoundGrammarPerTokenTotalTime() {
-      return this.curRoundGrammarPerTokenTotalTime
+      return this.curRoundGrammarPerTokenTotalTime;
     }
 
     getCurRoundLatencyBreakdown() {
@@ -172,58 +164,58 @@ jest.mock("../src/llm_chat", () => {
         sampleTime: [0.001],
         totalTime: [0.001],
         grammarBitmaskTime: [0.001],
-      }
+      };
     }
 
     getTokenLogprobArray() {
-      return []
+      return [];
     }
 
     async forwardTokensAndSample(inputIds: Array<number>): Promise<number> {
-      return inputIds[0] ?? 0
+      return inputIds[0] ?? 0;
     }
 
     async runtimeStatsText() {
-      return `prefills=${this.prefillCallCount}`
+      return `prefills=${this.prefillCallCount}`;
     }
   }
 
-  return { LLMChatPipeline: MockLLMChatPipeline }
-})
+  return { LLMChatPipeline: MockLLMChatPipeline };
+});
 
 jest.mock("../src/embedding", () => {
   class MockEmbeddingPipeline {
-    public inputs: any
-    public embedResult: Array<Array<number>> = [[0.1, 0.2, 0.3]]
+    public inputs: any;
+    public embedResult: Array<Array<number>> = [[0.1, 0.2, 0.3]];
     dispose() {}
     async sync() {}
     async embedStep(
-      input: string | Array<string> | Array<number> | Array<Array<number>>
+      input: string | Array<string> | Array<number> | Array<Array<number>>,
     ): Promise<Array<Array<number>>> {
-      this.inputs = input
-      return this.embedResult
+      this.inputs = input;
+      return this.embedResult;
     }
     getCurRoundEmbedTotalTokens(): number {
       if (typeof this.inputs === "string") {
-        return this.inputs.length
+        return this.inputs.length;
       } else if (Array.isArray(this.inputs)) {
-        return this.inputs.length
+        return this.inputs.length;
       }
-      return 0
+      return 0;
     }
     getCurRoundEmbedTokensPerSec(): number {
-      const tokens = this.getCurRoundEmbedTotalTokens()
-      return tokens === 0 ? 0 : tokens / 0.01
+      const tokens = this.getCurRoundEmbedTotalTokens();
+      return tokens === 0 ? 0 : tokens / 0.01;
     }
   }
-  return { EmbeddingPipeline: MockEmbeddingPipeline }
-})
+  return { EmbeddingPipeline: MockEmbeddingPipeline };
+});
 
-const MODEL_ID = "mock-model"
-const SECOND_MODEL_ID = "mock-model-2"
-const EMBED_MODEL_ID = "mock-embed"
-const FIXED_CREATED_DATE = new Date("2024-04-05T06:34:56.789Z")
-const FIXED_CREATED_SECONDS = 1712298896
+const MODEL_ID = "mock-model";
+const SECOND_MODEL_ID = "mock-model-2";
+const EMBED_MODEL_ID = "mock-embed";
+const FIXED_CREATED_DATE = new Date("2024-04-05T06:34:56.789Z");
+const FIXED_CREATED_SECONDS = 1712298896;
 const mockChatConfig: ChatConfig = {
   tokenizer_files: ["tokenizer.json"],
   vocab_size: 10,
@@ -257,7 +249,7 @@ const mockChatConfig: ChatConfig = {
   frequency_penalty: 0,
   repetition_penalty: 1,
   top_p: 1,
-}
+};
 
 function createEngineWithPipeline(decodeLimit = 2, modelId = MODEL_ID) {
   const engine = new MLCEngine({
@@ -271,19 +263,19 @@ function createEngineWithPipeline(decodeLimit = 2, modelId = MODEL_ID) {
       ],
       cacheBackend: "cache",
     },
-  })
+  });
   const pipeline = new LLMChatPipeline(
     null as unknown as TVMInstance,
     null as unknown as Tokenizer,
-    mockChatConfig
-  ) as any
-  pipeline.decodeLimit = decodeLimit
-  const internal = engine as any
-  internal.loadedModelIdToPipeline.set(modelId, pipeline)
-  internal.loadedModelIdToChatConfig.set(modelId, mockChatConfig)
-  internal.loadedModelIdToModelType.set(modelId, ModelType.LLM)
-  internal.loadedModelIdToLock.set(modelId, new CustomLock())
-  return { engine, pipeline }
+    mockChatConfig,
+  ) as any;
+  pipeline.decodeLimit = decodeLimit;
+  const internal = engine as any;
+  internal.loadedModelIdToPipeline.set(modelId, pipeline);
+  internal.loadedModelIdToChatConfig.set(modelId, mockChatConfig);
+  internal.loadedModelIdToModelType.set(modelId, ModelType.LLM);
+  internal.loadedModelIdToLock.set(modelId, new CustomLock());
+  return { engine, pipeline };
 }
 
 function createEngineWithMultiplePipelines() {
@@ -303,32 +295,32 @@ function createEngineWithMultiplePipelines() {
       ],
       cacheBackend: "cache",
     },
-  })
+  });
   const pipeline1 = new LLMChatPipeline(
     null as unknown as TVMInstance,
     null as unknown as Tokenizer,
-    mockChatConfig
-  ) as any
+    mockChatConfig,
+  ) as any;
   const pipeline2 = new LLMChatPipeline(
     null as unknown as TVMInstance,
     null as unknown as Tokenizer,
-    mockChatConfig
-  ) as any
-  const internal = engine as any
-  internal.loadedModelIdToPipeline.set(MODEL_ID, pipeline1)
-  internal.loadedModelIdToPipeline.set(SECOND_MODEL_ID, pipeline2)
-  internal.loadedModelIdToChatConfig.set(MODEL_ID, mockChatConfig)
-  internal.loadedModelIdToChatConfig.set(SECOND_MODEL_ID, mockChatConfig)
-  internal.loadedModelIdToModelType.set(MODEL_ID, ModelType.LLM)
-  internal.loadedModelIdToModelType.set(SECOND_MODEL_ID, ModelType.LLM)
-  internal.loadedModelIdToLock.set(MODEL_ID, new CustomLock())
-  internal.loadedModelIdToLock.set(SECOND_MODEL_ID, new CustomLock())
-  return engine
+    mockChatConfig,
+  ) as any;
+  const internal = engine as any;
+  internal.loadedModelIdToPipeline.set(MODEL_ID, pipeline1);
+  internal.loadedModelIdToPipeline.set(SECOND_MODEL_ID, pipeline2);
+  internal.loadedModelIdToChatConfig.set(MODEL_ID, mockChatConfig);
+  internal.loadedModelIdToChatConfig.set(SECOND_MODEL_ID, mockChatConfig);
+  internal.loadedModelIdToModelType.set(MODEL_ID, ModelType.LLM);
+  internal.loadedModelIdToModelType.set(SECOND_MODEL_ID, ModelType.LLM);
+  internal.loadedModelIdToLock.set(MODEL_ID, new CustomLock());
+  internal.loadedModelIdToLock.set(SECOND_MODEL_ID, new CustomLock());
+  return engine;
 }
 
 const mockEmbeddingConfig: ChatConfig = {
   ...mockChatConfig,
-}
+};
 
 function createEngineWithEmbeddingPipeline() {
   const engine = new MLCEngine({
@@ -343,28 +335,28 @@ function createEngineWithEmbeddingPipeline() {
       ],
       cacheBackend: "cache",
     },
-  })
+  });
   const pipeline = new EmbeddingPipeline(
     null as unknown as TVMInstance,
     null as unknown as Tokenizer,
-    mockEmbeddingConfig
-  ) as any
-  const internal = engine as any
-  internal.loadedModelIdToPipeline.set(EMBED_MODEL_ID, pipeline)
-  internal.loadedModelIdToChatConfig.set(EMBED_MODEL_ID, mockEmbeddingConfig)
-  internal.loadedModelIdToModelType.set(EMBED_MODEL_ID, ModelType.embedding)
-  internal.loadedModelIdToLock.set(EMBED_MODEL_ID, new CustomLock())
-  return { engine, pipeline }
+    mockEmbeddingConfig,
+  ) as any;
+  const internal = engine as any;
+  internal.loadedModelIdToPipeline.set(EMBED_MODEL_ID, pipeline);
+  internal.loadedModelIdToChatConfig.set(EMBED_MODEL_ID, mockEmbeddingConfig);
+  internal.loadedModelIdToModelType.set(EMBED_MODEL_ID, ModelType.embedding);
+  internal.loadedModelIdToLock.set(EMBED_MODEL_ID, new CustomLock());
+  return { engine, pipeline };
 }
 
 afterEach(() => {
-  jest.useRealTimers()
-})
+  jest.useRealTimers();
+});
 
 describe("MLCEngine deterministic integration", () => {
   test("chatCompletion aggregates usage without WebGPU", async () => {
-    jest.useFakeTimers().setSystemTime(FIXED_CREATED_DATE)
-    const { engine, pipeline } = createEngineWithPipeline(3)
+    jest.useFakeTimers().setSystemTime(FIXED_CREATED_DATE);
+    const { engine, pipeline } = createEngineWithPipeline(3);
     const request: ChatCompletionRequest = {
       model: MODEL_ID,
       messages: [
@@ -372,50 +364,46 @@ describe("MLCEngine deterministic integration", () => {
         { role: "user", content: "What is new?" },
       ],
       n: 2,
-    }
-    const response = (await engine.chatCompletion(request)) as ChatCompletion
+    };
+    const response = (await engine.chatCompletion(request)) as ChatCompletion;
 
-    expect(response.choices).toHaveLength(2)
+    expect(response.choices).toHaveLength(2);
     response.choices.forEach((choice) => {
-      expect(choice.message?.content).toContain("What is new?")
-    })
-    expect(response.created).toBe(FIXED_CREATED_SECONDS)
-    expect(response.usage?.completion_tokens).toBe(6)
-    expect(response.usage?.prompt_tokens).toBeGreaterThan(0)
-    expect((pipeline as any).prefillCallCount).toBe(2)
-  })
+      expect(choice.message?.content).toContain("What is new?");
+    });
+    expect(response.created).toBe(FIXED_CREATED_SECONDS);
+    expect(response.usage?.completion_tokens).toBe(6);
+    expect(response.usage?.prompt_tokens).toBeGreaterThan(0);
+    expect((pipeline as any).prefillCallCount).toBe(2);
+  });
 
   test("completion echoes prompt when requested", async () => {
-    jest.useFakeTimers().setSystemTime(FIXED_CREATED_DATE)
-    const { engine } = createEngineWithPipeline(1)
+    jest.useFakeTimers().setSystemTime(FIXED_CREATED_DATE);
+    const { engine } = createEngineWithPipeline(1);
     const request: CompletionCreateParams = {
       model: MODEL_ID,
       prompt: "Alpha ",
       n: 1,
       echo: true,
-    }
-    const response = (await engine.completion(request)) as Completion
+    };
+    const response = (await engine.completion(request)) as Completion;
 
-    expect(response.choices).toHaveLength(1)
-    expect(response.choices[0].text.startsWith("Alpha ")).toBe(true)
-    expect(response.created).toBe(FIXED_CREATED_SECONDS)
-    expect(response.usage?.completion_tokens).toBe(1)
-    expect(response.usage?.prompt_tokens).toBeGreaterThan(0)
-  })
+    expect(response.choices).toHaveLength(1);
+    expect(response.choices[0].text.startsWith("Alpha ")).toBe(true);
+    expect(response.created).toBe(FIXED_CREATED_SECONDS);
+    expect(response.usage?.completion_tokens).toBe(1);
+    expect(response.usage?.prompt_tokens).toBeGreaterThan(0);
+  });
 
   test("forwardTokensAndSample and runtimeStatsText use mock pipeline", async () => {
-    const { engine } = createEngineWithPipeline()
-    await expect(
-      engine.forwardTokensAndSample([9, 4, 2], true, MODEL_ID)
-    ).resolves.toBe(9)
-    await expect(engine.runtimeStatsText(MODEL_ID)).resolves.toContain(
-      "prefills="
-    )
-  })
+    const { engine } = createEngineWithPipeline();
+    await expect(engine.forwardTokensAndSample([9, 4, 2], true, MODEL_ID)).resolves.toBe(9);
+    await expect(engine.runtimeStatsText(MODEL_ID)).resolves.toContain("prefills=");
+  });
 
   test("chatCompletion streaming yields chunks, final delta, and usage data", async () => {
-    jest.useFakeTimers().setSystemTime(FIXED_CREATED_DATE)
-    const { engine } = createEngineWithPipeline(2)
+    jest.useFakeTimers().setSystemTime(FIXED_CREATED_DATE);
+    const { engine } = createEngineWithPipeline(2);
     const request: ChatCompletionRequest = {
       model: MODEL_ID,
       messages: [
@@ -424,47 +412,43 @@ describe("MLCEngine deterministic integration", () => {
       ],
       stream: true,
       stream_options: { include_usage: true },
-    }
-    const iterable = (await engine.chatCompletion(
-      request
-    )) as AsyncIterable<ChatCompletionChunk>
-    const chunks: ChatCompletionChunk[] = []
+    };
+    const iterable = (await engine.chatCompletion(request)) as AsyncIterable<ChatCompletionChunk>;
+    const chunks: ChatCompletionChunk[] = [];
     for await (const chunk of iterable) {
-      chunks.push(chunk)
+      chunks.push(chunk);
     }
-    expect(chunks.length).toBeGreaterThanOrEqual(3)
-    expect(chunks[0].choices[0].delta?.content).toContain("Stream please")
-    expect(
-      chunks.every((chunk) => chunk.created === FIXED_CREATED_SECONDS)
-    ).toBe(true)
-    const finalChunk = chunks[chunks.length - 2]
-    expect(finalChunk.choices[0].finish_reason).toEqual("stop")
-    const usageChunk = chunks[chunks.length - 1]
-    expect(usageChunk.usage?.completion_tokens).toBeGreaterThan(0)
-    expect(usageChunk.usage?.prompt_tokens).toBeGreaterThan(0)
-  })
+    expect(chunks.length).toBeGreaterThanOrEqual(3);
+    expect(chunks[0].choices[0].delta?.content).toContain("Stream please");
+    expect(chunks.every((chunk) => chunk.created === FIXED_CREATED_SECONDS)).toBe(true);
+    const finalChunk = chunks[chunks.length - 2];
+    expect(finalChunk.choices[0].finish_reason).toEqual("stop");
+    const usageChunk = chunks[chunks.length - 1];
+    expect(usageChunk.usage?.completion_tokens).toBeGreaterThan(0);
+    expect(usageChunk.usage?.prompt_tokens).toBeGreaterThan(0);
+  });
 
   test("chatCompletion without specifying model when multiple loaded throws error", async () => {
-    const engine = createEngineWithMultiplePipelines()
+    const engine = createEngineWithMultiplePipelines();
     await expect(
       engine.chatCompletion({
         // purposely omit model to trigger ambiguity
         model: undefined as any,
         messages: [{ role: "user", content: "Hello" }],
-      })
-    ).rejects.toBeInstanceOf(UnclearModelToUseError)
-  })
+      }),
+    ).rejects.toBeInstanceOf(UnclearModelToUseError);
+  });
 
   test("embedding API uses mock pipeline and returns usage", async () => {
-    const { engine } = createEngineWithEmbeddingPipeline()
+    const { engine } = createEngineWithEmbeddingPipeline();
     const request: EmbeddingCreateParams = {
       model: EMBED_MODEL_ID,
       input: "abc",
-    }
-    const response = await engine.embedding(request)
-    expect(response.data).toHaveLength(1)
-    expect(response.data[0].embedding).toEqual([0.1, 0.2, 0.3])
-    expect(response.usage?.prompt_tokens).toBeGreaterThan(0)
-    expect(response.usage?.extra?.prefill_tokens_per_s).toBeGreaterThan(0)
-  })
-})
+    };
+    const response = await engine.embedding(request);
+    expect(response.data).toHaveLength(1);
+    expect(response.data[0].embedding).toEqual([0.1, 0.2, 0.3]);
+    expect(response.usage?.prompt_tokens).toBeGreaterThan(0);
+    expect(response.usage?.extra?.prefill_tokens_per_s).toBeGreaterThan(0);
+  });
+});

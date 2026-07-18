@@ -1,50 +1,50 @@
-'use client';
+"use client";
 
-import { GemSmoke, gemSmokePresets } from '@paper-design/shaders-react';
-import { useControls, button, folder } from 'leva';
-import { setParamsSafe, useResetLevaParams } from '@/helpers/use-reset-leva-params';
-import { usePresetHighlight } from '@/helpers/use-preset-highlight';
-import { cleanUpLevaParams } from '@/helpers/clean-up-leva-params';
-import { gemSmokeMeta, GemSmokeShapes, GemSmokeShape } from '@paper-design/shaders';
-import { ShaderFit } from '@paper-design/shaders';
-import { levaDeleteImageButton, levaImageButton } from '@/helpers/leva-image-button';
-import { useState, Suspense, useEffect, useCallback } from 'react';
-import { ShaderDetails } from '@/components/shader-details';
-import { ShaderContainer } from '@/components/shader-container';
-import { useUrlParams } from '@/helpers/use-url-params';
-import { gemSmokeDef } from '@/shader-defs/gem-smoke-def';
-import { toHsla } from '@/helpers/color-utils';
-import { useColors } from '@/helpers/use-colors';
+import { GemSmoke, gemSmokePresets } from "@paper-design/shaders-react";
+import { useControls, button, folder } from "leva";
+import { setParamsSafe, useResetLevaParams } from "@/helpers/use-reset-leva-params";
+import { usePresetHighlight } from "@/helpers/use-preset-highlight";
+import { cleanUpLevaParams } from "@/helpers/clean-up-leva-params";
+import { gemSmokeMeta, GemSmokeShapes, GemSmokeShape } from "@paper-design/shaders";
+import { ShaderFit } from "@paper-design/shaders";
+import { levaDeleteImageButton, levaImageButton } from "@/helpers/leva-image-button";
+import { useState, Suspense, useEffect, useCallback } from "react";
+import { ShaderDetails } from "@/components/shader-details";
+import { ShaderContainer } from "@/components/shader-container";
+import { useUrlParams } from "@/helpers/use-url-params";
+import { gemSmokeDef } from "@/shader-defs/gem-smoke-def";
+import { toHsla } from "@/helpers/color-utils";
+import { useColors } from "@/helpers/use-colors";
 
 const { worldWidth, worldHeight, ...defaults } = gemSmokePresets[0].params;
 
 const imageFiles = [
-  'contra.svg',
-  'apple.svg',
-  'paradigm.svg',
-  'paper-logo-only.svg',
-  'brave.svg',
-  'capy.svg',
-  'infinite.svg',
-  'linear.svg',
-  'mercury.svg',
-  'mymind.svg',
-  'resend.svg',
-  'shopify.svg',
-  'wealth-simple.svg',
-  'chanel.svg',
-  'cibc.svg',
-  'cloudflare.svg',
-  'discord.svg',
-  'nasa.svg',
-  'nike.svg',
-  'volkswagen.svg',
-  'diamond.svg',
+  "contra.svg",
+  "apple.svg",
+  "paradigm.svg",
+  "paper-logo-only.svg",
+  "brave.svg",
+  "capy.svg",
+  "infinite.svg",
+  "linear.svg",
+  "mercury.svg",
+  "mymind.svg",
+  "resend.svg",
+  "shopify.svg",
+  "wealth-simple.svg",
+  "chanel.svg",
+  "cibc.svg",
+  "cloudflare.svg",
+  "discord.svg",
+  "nasa.svg",
+  "nike.svg",
+  "volkswagen.svg",
+  "diamond.svg",
 ] as const;
 
 const GemSmokeWithControls = () => {
   const [imageIdx, setImageIdx] = useState(-1);
-  const [image, setImage] = useState<HTMLImageElement | string>('');
+  const [image, setImage] = useState<HTMLImageElement | string>("");
 
   useEffect(() => {
     if (imageIdx >= 0) {
@@ -88,10 +88,13 @@ const GemSmokeWithControls = () => {
       // offsetX: { value: defaults.offsetX, min: -1, max: 1, order: 303 },
       // offsetY: { value: defaults.offsetY, min: -1, max: 1, order: 304 },
       // fit: { value: defaults.fit, options: ['contain', 'cover'] as ShaderFit[], order: 305 },
-      Image: folder({
-        'Upload image': levaImageButton((img?: HTMLImageElement) => setImage(img ?? '')),
-        ...(image && { 'Delete image': levaDeleteImageButton(() => setImage('')) }),
-      }, { order: -1 }),
+      Image: folder(
+        {
+          "Upload image": levaImageButton((img?: HTMLImageElement) => setImage(img ?? "")),
+          ...(image && { "Delete image": levaDeleteImageButton(() => setImage("")) }),
+        },
+        { order: -1 },
+      ),
     };
   }, [colors.length, image]);
 
@@ -104,7 +107,7 @@ const GemSmokeWithControls = () => {
           setColors(colors);
           setParamsSafe(params, setParams, presetParams);
         }),
-      ])
+      ]),
     );
     return {
       Presets: folder(presets, { order: -2 }),
@@ -122,7 +125,13 @@ const GemSmokeWithControls = () => {
     <>
       <ShaderContainer shaderDef={gemSmokeDef} currentParams={params}>
         <Suspense fallback={null}>
-          <GemSmoke onClick={handleClick} {...params} colors={colors} image={image} suspendWhenProcessingImage />
+          <GemSmoke
+            onClick={handleClick}
+            {...params}
+            colors={colors}
+            image={image}
+            suspendWhenProcessingImage
+          />
         </Suspense>
       </ShaderContainer>
       <ShaderDetails

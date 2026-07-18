@@ -62,7 +62,7 @@ export class NineRouterExecutor extends BaseExecutor {
     _model: string,
     _stream: boolean,
     _urlIndex = 0,
-    _credentials: ProviderCredentials | null = null
+    _credentials: ProviderCredentials | null = null,
   ): string {
     return `${this.upstreamBaseUrl}/v1/chat/completions`;
   }
@@ -123,7 +123,7 @@ export class NineRouterExecutor extends BaseExecutor {
     model: string,
     body: unknown,
     _stream: boolean,
-    _credentials: ProviderCredentials | null
+    _credentials: ProviderCredentials | null,
   ): unknown {
     if (!body || typeof body !== "object") return body;
     const transformed = { ...(body as Record<string, unknown>) };
@@ -164,7 +164,7 @@ export class NineRouterExecutor extends BaseExecutor {
       innerModel,
       input.body,
       input.stream,
-      dynamicCredentials
+      dynamicCredentials,
     );
     mergeUpstreamExtraHeaders(headers, input.upstreamExtraHeaders ?? null);
 
@@ -175,7 +175,7 @@ export class NineRouterExecutor extends BaseExecutor {
 
     input.log?.info?.(
       "9ROUTER",
-      `→ ${url} (model: ${innerModel}, shape: ${shape}, port: ${dynamicPort})`
+      `→ ${url} (model: ${innerModel}, shape: ${shape}, port: ${dynamicPort})`,
     );
 
     const response = await fetch(url, {

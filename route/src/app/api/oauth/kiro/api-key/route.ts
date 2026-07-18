@@ -37,7 +37,7 @@ export async function POST(request: Request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -88,7 +88,7 @@ export async function POST(request: Request) {
     console.error("Kiro API key import error:", error);
     return NextResponse.json(
       { error: buildKiroImportError(error) },
-      { status: isKiroApiKeyImportClientError(error) ? 400 : 500 }
+      { status: isKiroApiKeyImportClientError(error) ? 400 : 500 },
     );
   }
 }

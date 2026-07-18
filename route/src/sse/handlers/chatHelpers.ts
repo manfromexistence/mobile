@@ -77,7 +77,7 @@ function getHeaderValue(headers: Record<string, unknown> | null | undefined, nam
 function isCodexNativeResponsesRequest(
   body: any,
   endpointPath: string,
-  headers: Record<string, unknown> | null | undefined
+  headers: Record<string, unknown> | null | undefined,
 ) {
   const normalizedEndpoint = String(endpointPath || "").replace(/\/+$/, "");
   if (!/(^|\/)responses(?=\/|$)/i.test(normalizedEndpoint)) return false;
@@ -103,7 +103,7 @@ async function hasOnlyActiveCodexAccount() {
     const providers = new Set(
       connections
         .map((connection: any) => String(connection?.provider || "").trim())
-        .filter(Boolean)
+        .filter(Boolean),
     );
     return providers.size === 1 && providers.has("codex");
   } catch {
@@ -115,7 +115,7 @@ export async function resolveModelOrError(
   modelStr: string,
   body: any,
   endpointPath: string = "",
-  requestHeaders: Record<string, unknown> | null | undefined = null
+  requestHeaders: Record<string, unknown> | null | undefined = null,
 ) {
   const modelInfo = await getModelInfo(modelStr);
   const sourceFormat = detectFormatFromEndpoint(body, endpointPath);
@@ -160,7 +160,7 @@ export async function resolveModelOrError(
   ) {
     log.info(
       "ROUTING",
-      `codex/${modelInfo.model} → re-resolving via native provider (codex OAuth does not serve this model)`
+      `codex/${modelInfo.model} → re-resolving via native provider (codex OAuth does not serve this model)`,
     );
     const rerouted = await getModelInfo(modelInfo.model);
     if (rerouted.provider && rerouted.provider !== "codex") {
@@ -173,7 +173,7 @@ export async function resolveModelOrError(
       if (pick && candidates.includes(pick)) {
         log.info(
           "ROUTING",
-          `codex/${modelInfo.model} → ${pick}/${modelInfo.model} (ambiguity resolved by family)`
+          `codex/${modelInfo.model} → ${pick}/${modelInfo.model} (ambiguity resolved by family)`,
         );
         modelInfo.provider = pick;
         modelInfo.model = (rerouted as any).model;
@@ -207,7 +207,7 @@ export async function resolveModelOrError(
       const poolSize = virtualCombo.candidatePool?.length || 0;
       log.info(
         "AUTO",
-        `"auto" provider → built-in virtual combo "${modelStr}" (${poolSize} candidates)`
+        `"auto" provider → built-in virtual combo "${modelStr}" (${poolSize} candidates)`,
       );
       // #6458: fail fast instead of leaking a silent 15s upstream timeout when
       // the category/tier filter (e.g. auto/coding:pro, auto/reasoning) matches
@@ -228,11 +228,11 @@ export async function resolveModelOrError(
       try {
         const virtualCombo = await createBuiltinAutoCombo(
           candidate,
-          candidate.replace(/^auto\/?/, "")
+          candidate.replace(/^auto\/?/, ""),
         );
         log.info(
           "AUTO",
-          `"auto/${suffix}" → built-in virtual combo "${candidate}" (fuzzy, ${virtualCombo.candidatePool?.length || 0} candidates)`
+          `"auto/${suffix}" → built-in virtual combo "${candidate}" (fuzzy, ${virtualCombo.candidatePool?.length || 0} candidates)`,
         );
         return { combo: virtualCombo, provider: "auto", model: suffix };
       } catch {
@@ -269,7 +269,7 @@ export async function resolveModelOrError(
       if (pick && candidates.includes(pick)) {
         log.info(
           "ROUTING",
-          `${modelStr} → ${pick}/${modelInfo.model} (ambiguity auto-resolved by family)`
+          `${modelStr} → ${pick}/${modelInfo.model} (ambiguity auto-resolved by family)`,
         );
         modelInfo.provider = pick;
       } else {
@@ -328,14 +328,14 @@ export async function checkPipelineGates(
       degradationThreshold?: number;
       resetTimeoutMs?: number;
     } | null;
-  } = {}
+  } = {},
 ) {
   const bypassReason = options.bypassReason || "pipeline override";
   const providerProfile = options.providerProfile ?? (await getRuntimeProviderProfile(provider));
   // Issue #2100 follow-up: opt-in upstream 429 hint trust per provider.
   const useHints429 = resolveUseUpstream429BreakerHints(
     provider,
-    (providerProfile as { useUpstream429BreakerHints?: boolean }).useUpstream429BreakerHints
+    (providerProfile as { useUpstream429BreakerHints?: boolean }).useUpstream429BreakerHints,
   );
   const breaker = getCircuitBreaker(provider, {
     failureThreshold: providerProfile.failureThreshold ?? providerProfile.circuitBreakerThreshold,
@@ -472,7 +472,7 @@ export async function executeChatWithBreaker({
               if (is401 && hasExtraKeys) {
                 log.debug(
                   "AUTH",
-                  `A3 guard: skipping markAccountUnavailable for 401 with extra keys on ${credentials.connectionId.slice(0, 8)}`
+                  `A3 guard: skipping markAccountUnavailable for 401 with extra keys on ${credentials.connectionId.slice(0, 8)}`,
                 );
                 return;
               }
@@ -483,11 +483,11 @@ export async function executeChatWithBreaker({
                 provider,
                 model,
                 providerProfile,
-                { isCombo }
+                { isCombo },
               );
             },
-          })
-        )
+          }),
+        ),
       );
 
     if (isShadowTraffic) {
@@ -566,7 +566,7 @@ export function handleNoCredentials(
   provider: string,
   model: string,
   lastError: string | null,
-  lastStatus: number | null
+  lastStatus: number | null,
 ) {
   if (credentials?.allRateLimited) {
     const errorMsg = lastError || credentials.lastError || "Unavailable";
@@ -582,17 +582,14 @@ export function handleNoCredentials(
         "CHAT",
         `[${provider}/${cooldownModel}] all credentials cooling down${
           credentials.retryAfterHuman ? ` (${credentials.retryAfterHuman})` : ""
-        }`
+        }`,
       );
       return modelCooldownResponse({
         model: cooldownModel,
         retryAfter: credentials.retryAfter,
-        retryAfterAt:
-          typeof credentials.retryAfter === "string" ? credentials.retryAfter : null,
+        retryAfterAt: typeof credentials.retryAfter === "string" ? credentials.retryAfter : null,
         credentialsCoolingCount:
-          typeof credentials.connectionsCount === "number"
-            ? credentials.connectionsCount
-            : null,
+          typeof credentials.connectionsCount === "number" ? credentials.connectionsCount : null,
       });
     }
 
@@ -601,7 +598,7 @@ export function handleNoCredentials(
       status,
       `[${provider}/${model}] ${errorMsg}`,
       credentials.retryAfter,
-      credentials.retryAfterHuman
+      credentials.retryAfterHuman,
     );
   }
 
@@ -647,7 +644,7 @@ export function handleNoCredentials(
   log.warn("CHAT", "No more accounts available", { provider });
   return errorResponse(
     lastStatus || HTTP_STATUS.SERVICE_UNAVAILABLE,
-    lastError || "All accounts unavailable"
+    lastError || "All accounts unavailable",
   );
 }
 
@@ -675,7 +672,7 @@ export const STREAM_EARLY_EOF_MAX_RETRIES = 1;
 
 export function shouldRetryStreamEarlyEof(
   errorCode: string | null | undefined,
-  attempt: number
+  attempt: number,
 ): boolean {
   return errorCode === "STREAM_EARLY_EOF" && attempt < STREAM_EARLY_EOF_MAX_RETRIES;
 }
@@ -687,14 +684,14 @@ export function shouldRetryStreamEarlyEof(
  */
 export function decideProxyResolutionFailure(
   err: unknown,
-  env: { PROXY_FAIL_OPEN?: string } = process.env
+  env: { PROXY_FAIL_OPEN?: string } = process.env,
 ): null {
   if ((env.PROXY_FAIL_OPEN ?? "").trim().toLowerCase() === "true") {
     log.warn(
       "PROXY",
       `Proxy resolution failed — PROXY_FAIL_OPEN=true, falling back to DIRECT: ${
         err instanceof Error ? err.message : String(err)
-      }`
+      }`,
     );
     return null;
   }
@@ -708,14 +705,17 @@ export async function safeResolveProxy(connectionId: string, apiKeyId?: string) 
     // is dead/inactive must fail closed — egressing on the real IP leaks it. Reuse
     // the existing proxy-resolution-failure policy (blocks by default; PROXY_FAIL_OPEN
     // opts back into direct). Explicit "proxy off" is not a leak (see the guard).
-    if (!(resolved as { proxy?: unknown } | null)?.proxy && hasBlockingProxyAssignment(connectionId)) {
+    if (
+      !(resolved as { proxy?: unknown } | null)?.proxy &&
+      hasBlockingProxyAssignment(connectionId)
+    ) {
       return decideProxyResolutionFailure(
         Object.assign(
           new Error(
-            "PROXY_ASSIGNED_UNAVAILABLE: assigned proxy is inactive/unreachable; refusing to egress on a direct connection"
+            "PROXY_ASSIGNED_UNAVAILABLE: assigned proxy is inactive/unreachable; refusing to egress on a direct connection",
           ),
-          { code: "PROXY_ASSIGNED_UNAVAILABLE" }
-        )
+          { code: "PROXY_ASSIGNED_UNAVAILABLE" },
+        ),
       );
     }
     return resolved;
@@ -733,7 +733,7 @@ export async function safeResolveProxy(connectionId: string, apiKeyId?: string) 
  */
 export function applyExecutorProxyToInfo(
   proxyInfo: { proxy?: unknown; level?: string; levelId?: string | null } | null | undefined,
-  appliedProxy: unknown
+  appliedProxy: unknown,
 ) {
   if (!appliedProxy) return proxyInfo;
   const priorLevel = proxyInfo?.level;
@@ -856,7 +856,7 @@ export function withCorrelationId(response: Response, correlationId: string | nu
 
 export function withSelectedConnectionHeader(
   response: Response,
-  connectionId: string | null | undefined
+  connectionId: string | null | undefined,
 ): Response {
   if (!response || !connectionId) return response;
 

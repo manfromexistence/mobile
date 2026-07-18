@@ -52,7 +52,7 @@ function getRequestToolNameMap(body: Record<string, unknown>): Map<string, strin
 function trackToolName(
   body: Record<string, unknown>,
   titleCaseName: string,
-  originalName: string
+  originalName: string,
 ): void {
   getRequestToolNameMap(body).set(titleCaseName, originalName);
 }
@@ -156,7 +156,7 @@ export function remapToolNamesInRequest(body: Record<string, unknown>): boolean 
 export function remapToolNamesInResponse(
   text: string,
   forceLowercase = true,
-  toolNameMap?: Map<string, string>
+  toolNameMap?: Map<string, string>,
 ): string {
   if (!forceLowercase) return text;
 
@@ -269,7 +269,7 @@ export interface CloakOptions {
 
 export function cloakThirdPartyToolNames(
   body: Record<string, unknown>,
-  options?: CloakOptions
+  options?: CloakOptions,
 ): Map<string, string> {
   // Operator kill-switch (documented in .env.example / ENVIRONMENT.md). Checked
   // here so every call site — native base.ts AND the CLIProxyAPI executor —

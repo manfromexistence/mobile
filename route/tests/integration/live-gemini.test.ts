@@ -76,7 +76,7 @@ async function readSSEStream(response: Response): Promise<{
   }
 
   console.log(
-    `[SSE] total raw chunks: ${chunkCount}, content length: ${fullContent.length}, finish: ${finishReason}, model: ${model}, tokens: ${totalTokens}`
+    `[SSE] total raw chunks: ${chunkCount}, content length: ${fullContent.length}, finish: ${finishReason}, model: ${model}, tokens: ${totalTokens}`,
   );
   if (sampleLines.length > 0) {
     console.log(`[SSE] sample lines: ${JSON.stringify(sampleLines)}`);
@@ -121,15 +121,15 @@ test("live Gemini — single hello-world request via combo 'default'", { skip },
     assert.ok(fullContent.length > 0, "response should have content");
     assert.ok(
       finishReason === "stop" || finishReason === "length",
-      `expected stop/length finish, got ${finishReason}`
+      `expected stop/length finish, got ${finishReason}`,
     );
     assert.ok(totalTokens > 0, `should have non-zero token count, got ${totalTokens}`);
     assert.ok(
       model.toLowerCase().includes("gemini") || model.toLowerCase().includes("gemma"),
-      `response model "${model}" should be a Gemini/Gemma model`
+      `response model "${model}" should be a Gemini/Gemma model`,
     );
     console.log(
-      `[TEST] OK: model=${model}, finish=${finishReason}, tokens=${totalTokens}, content=${fullContent.length} chars`
+      `[TEST] OK: model=${model}, finish=${finishReason}, tokens=${totalTokens}, content=${fullContent.length} chars`,
     );
   } catch (err) {
     clearTimeout(timeout);
@@ -173,12 +173,12 @@ test("live Gemini — direct model request (skip combo)", { skip }, async (t) =>
     assert.ok(fullContent.length > 0, "response should have content");
     assert.ok(
       finishReason === "stop" || finishReason === "length",
-      `expected stop/length finish, got ${finishReason}`
+      `expected stop/length finish, got ${finishReason}`,
     );
     assert.ok(totalTokens > 0, `should have non-zero token count, got ${totalTokens}`);
     assert.ok(
       model.toLowerCase().includes("gemini") || model.toLowerCase().includes("gemma"),
-      `response model "${model}" should be a Gemini/Gemma model`
+      `response model "${model}" should be a Gemini/Gemma model`,
     );
     console.log(`[TEST] Direct OK: model=${model}, finish=${finishReason}, tokens=${totalTokens}`);
   } catch (err) {

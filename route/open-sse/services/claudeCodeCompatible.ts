@@ -61,7 +61,7 @@ const CONTEXT_1M_SUPPORTED_MODELS = [
   "claude-opus-4-6",
 ];
 export const CLAUDE_CODE_COMPATIBLE_STAINLESS_TIMEOUT_SECONDS = getStainlessTimeoutSeconds(
-  process.env
+  process.env,
 );
 
 type HeaderLike =
@@ -113,7 +113,7 @@ export function stripAnthropicMessagesSuffix(baseUrl: string | null | undefined)
 }
 
 export function stripClaudeCodeCompatibleEndpointSuffix(
-  baseUrl: string | null | undefined
+  baseUrl: string | null | undefined,
 ): string {
   const normalized = String(baseUrl || "")
     .trim()
@@ -147,7 +147,7 @@ export function joinClaudeCodeCompatibleUrl(baseUrl: string, path: string): stri
 
 export function appendAnthropicBetaHeader(
   headers: Record<string, string>,
-  betaHeader: string
+  betaHeader: string,
 ): void {
   const existingKey = Object.keys(headers).find((key) => key.toLowerCase() === "anthropic-beta");
   if (!existingKey) {
@@ -172,7 +172,7 @@ export function modelSupportsContext1mBeta(model: string | null | undefined): bo
     .replace(/-\d{8}$/, "");
 
   return CONTEXT_1M_SUPPORTED_MODELS.some(
-    (supported) => normalizedModel === supported || normalizedModel.startsWith(`${supported}-`)
+    (supported) => normalizedModel === supported || normalizedModel.startsWith(`${supported}-`),
   );
 }
 
@@ -180,7 +180,7 @@ export function buildClaudeCodeCompatibleHeaders(
   apiKey: string,
   stream = false,
   sessionId?: string | null,
-  options: { redactThinking?: boolean } = {}
+  options: { redactThinking?: boolean } = {},
 ): Record<string, string> {
   // These headers intentionally mirror Claude Code's wire image closely.
   // For CC-compatible relays, passing the upstream's client-gating checks is
@@ -266,11 +266,11 @@ export function buildClaudeCodeCompatibleRequest({
     ? preserveClaudeMessages && preparedClaudeBody
       ? cloneClaudeCodeCompatibleMessagesFromClaude(
           effectiveClaudeBody.messages as MessageLike[],
-          preserveCacheControl
+          preserveCacheControl,
         )
       : buildClaudeCodeCompatibleMessagesFromClaude(
           effectiveClaudeBody.messages as MessageLike[],
-          preserveCacheControl
+          preserveCacheControl,
         )
     : buildClaudeCodeCompatibleMessages(normalizedMessages);
   const system = buildClaudeCodeCompatibleSystemBlocks({
@@ -284,13 +284,13 @@ export function buildClaudeCodeCompatibleRequest({
   const tools = preparedClaudeBody?.tools
     ? buildClaudeCodeCompatibleToolsFromClaude(
         preparedClaudeBody.tools as Record<string, unknown>[],
-        preserveCacheControl
+        preserveCacheControl,
       )
     : buildClaudeCodeCompatibleTools(normalizedBody, sourceBody);
   const toolChoice =
     tools.length > 0
       ? buildClaudeCodeCompatibleToolChoice(
-          normalizedBody?.["tool_choice"] ?? sourceBody?.["tool_choice"]
+          normalizedBody?.["tool_choice"] ?? sourceBody?.["tool_choice"],
         )
       : undefined;
   const metadata = resolveClaudeCodeCompatibleMetadata({
@@ -329,7 +329,7 @@ export function buildClaudeCodeCompatibleRequest({
 }
 
 export async function buildAndSignClaudeCodeRequest(
-  options: BuildRequestOptions & { apiKey: string; enableObfuscation?: boolean }
+  options: BuildRequestOptions & { apiKey: string; enableObfuscation?: boolean },
 ): Promise<{ bodyString: string; headers: Record<string, string> }> {
   const { apiKey, enableObfuscation = false, ...buildOptions } = options;
 
@@ -355,7 +355,7 @@ export async function buildAndSignClaudeCodeRequest(
   {
     const transformResult = applySystemTransformPipeline(
       PROVIDER_CC_BRIDGE,
-      body as Parameters<typeof applySystemTransformPipeline>[1]
+      body as Parameters<typeof applySystemTransformPipeline>[1],
     );
     if (transformResult.appliedOpKinds.length > 0) {
       console.log(`[SystemTransforms] cc-bridge: ${transformResult.appliedOpKinds.join(", ")}`);
@@ -456,7 +456,7 @@ export type { TransformOp, CcBridgeTransformsConfig } from "./ccBridgeTransforms
 export function resolveClaudeCodeCompatibleEffort(
   sourceBody?: Record<string, unknown> | null,
   normalizedBody?: Record<string, unknown> | null,
-  model?: string | null
+  model?: string | null,
 ): "low" | "medium" | "high" | "xhigh" | "max" {
   const raw =
     readNestedString(sourceBody, ["output_config", "effort"]) ||
@@ -487,7 +487,7 @@ export function resolveClaudeCodeCompatibleEffort(
 
 export function resolveClaudeCodeCompatibleMaxTokens(
   sourceBody?: Record<string, unknown> | null,
-  normalizedBody?: Record<string, unknown> | null
+  normalizedBody?: Record<string, unknown> | null,
 ): number {
   const candidates = [
     sourceBody?.["max_tokens"],
@@ -513,11 +513,11 @@ function buildClaudeCodeCompatibleMessages(messages: MessageLike[]) {
     .map((message) => convertClaudeCodeCompatibleMessage(message))
     .filter(
       (
-        message
+        message,
       ): message is {
         role: "user" | "assistant";
         content: Array<{ type: string; text: string }>;
-      } => !!message && message.content.length > 0
+      } => !!message && message.content.length > 0,
     );
 
   const merged: Array<{
@@ -564,16 +564,16 @@ function buildClaudeCodeCompatibleMessages(messages: MessageLike[]) {
 
 function buildClaudeCodeCompatibleMessagesFromClaude(
   messages: MessageLike[] | undefined,
-  preserveCacheControl: boolean
+  preserveCacheControl: boolean,
 ) {
   const converted = Array.isArray(messages)
     ? messages
         .map((message) => convertClaudeCodeCompatibleClaudeMessage(message, preserveCacheControl))
         .filter(
           (
-            message
+            message,
           ): message is { role: "user" | "assistant"; content: Array<Record<string, unknown>> } =>
-            !!message && message.content.length > 0
+            !!message && message.content.length > 0,
         )
     : [];
 
@@ -637,7 +637,7 @@ function buildClaudeCodeCompatibleMessagesFromClaude(
 
 function cloneClaudeCodeCompatibleMessagesFromClaude(
   messages: MessageLike[] | undefined,
-  preserveCacheControl: boolean
+  preserveCacheControl: boolean,
 ) {
   const cloned = Array.isArray(messages)
     ? messages
@@ -702,7 +702,7 @@ function containsDefaultSystemSkeleton(blocks: Array<Record<string, unknown>>) {
       if (!candidateBlock) return false;
 
       return Object.entries(defaultBlock).every(([key, value]) => candidateBlock[key] === value);
-    })
+    }),
   );
 }
 
@@ -728,7 +728,7 @@ function convertClaudeCodeCompatibleMessage(message: MessageLike | null | undefi
 
 function buildClaudeCodeCompatibleTools(
   normalizedBody?: Record<string, unknown> | null,
-  sourceBody?: Record<string, unknown> | null
+  sourceBody?: Record<string, unknown> | null,
 ) {
   const rawTools = Array.isArray(normalizedBody?.["tools"])
     ? normalizedBody?.["tools"]
@@ -744,7 +744,7 @@ function buildClaudeCodeCompatibleTools(
 
 function buildClaudeCodeCompatibleToolsFromClaude(
   tools: Record<string, unknown>[] | undefined,
-  preserveCacheControl: boolean
+  preserveCacheControl: boolean,
 ) {
   if (!Array.isArray(tools)) return [];
 
@@ -817,7 +817,7 @@ function buildClaudeCodeCompatibleToolChoice(choice: unknown) {
 
 function prepareClaudeCodeCompatibleBody(
   claudeBody: Record<string, unknown>,
-  preserveCacheControl: boolean
+  preserveCacheControl: boolean,
 ) {
   void preserveCacheControl;
   const prepared = prepareClaudeRequest(
@@ -831,7 +831,7 @@ function prepareClaudeCodeCompatibleBody(
       thinking: (readRecord(claudeBody.thinking) || null) as Record<string, unknown> | null,
     },
     CLAUDE_CODE_COMPATIBLE_PREFIX,
-    true
+    true,
   );
 
   return readRecord(prepared);
@@ -872,7 +872,7 @@ function prepareClaudeCodeCompatibleSemanticBody(claudeBody: Record<string, unkn
 
 function extractClaudeBodyFromSource(
   sourceBody: Record<string, unknown>,
-  preserveCacheControl: boolean
+  preserveCacheControl: boolean,
 ): Record<string, unknown> | null {
   const rawMessages = Array.isArray(sourceBody.messages)
     ? (sourceBody.messages as MessageLike[])
@@ -900,7 +900,7 @@ function extractClaudeBodyFromSource(
       ...(hasClaudeSystem ? {} : { system: extractCustomSystemBlocks(rawMessages) }),
       messages: normalizedMessages,
     },
-    preserveCacheControl
+    preserveCacheControl,
   );
 }
 
@@ -981,7 +981,7 @@ function normalizeClaudeContentBlock(block: unknown) {
 
 function convertClaudeCodeCompatibleClaudeMessage(
   message: MessageLike | null | undefined,
-  preserveCacheControl: boolean
+  preserveCacheControl: boolean,
 ) {
   const rawRole = String(message?.role || "").toLowerCase();
   const role = rawRole === "user" ? "user" : rawRole === "assistant" ? "assistant" : null;
@@ -1085,7 +1085,7 @@ function resolveClaudeCodeCompatibleThinking({
     {
       normalizedBody,
       summarizeThinking,
-    }
+    },
   );
 }
 
@@ -1183,7 +1183,7 @@ function readRecord(value: unknown): Record<string, unknown> | null {
 
 function readNestedString(
   source: Record<string, unknown> | null | undefined,
-  path: string[]
+  path: string[],
 ): string | null {
   let current: unknown = source;
   for (const key of path) {

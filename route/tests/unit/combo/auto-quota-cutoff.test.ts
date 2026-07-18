@@ -42,7 +42,7 @@ function candidate(
   provider: string,
   model: string,
   connectionId: string,
-  overrides: Partial<AutoProviderCandidate> = {}
+  overrides: Partial<AutoProviderCandidate> = {},
 ): AutoProviderCandidate {
   return {
     provider,
@@ -81,7 +81,7 @@ test("auto scoring skips GLM when its 2% remaining quota hit the hard cutoff", (
       }),
     ],
     "coding",
-    latencyOnlyWeights
+    latencyOnlyWeights,
   );
 
   assert.equal(ranked.length, 1);
@@ -108,25 +108,25 @@ test("blocked quota candidates are not included in the scoring pool", () => {
       }),
     ],
     "coding",
-    latencyOnlyWeights
+    latencyOnlyWeights,
   );
 
   assert.deepEqual(
     ranked.map((entry) => entry.target.provider),
-    ["fast", "slow"]
+    ["fast", "slow"],
   );
   const slowScore = ranked.find((entry) => entry.target.provider === "slow")?.score;
   assert.equal(
     slowScore,
     0,
-    "the blocked GLM latency must not inflate surviving candidates' scores"
+    "the blocked GLM latency must not inflate surviving candidates' scores",
   );
 });
 
 test("connection terminal status maps to quota cutoff reason", () => {
   assert.equal(
     getConnectionStatusQuotaCutoffReason({ testStatus: "credits_exhausted" }),
-    "credits_exhausted"
+    "credits_exhausted",
   );
   assert.equal(getConnectionStatusQuotaCutoffReason({ testStatus: "expired" }), "expired");
   assert.equal(getConnectionStatusQuotaCutoffReason({ testStatus: "active" }), undefined);
@@ -138,14 +138,14 @@ test("future unavailable connection maps to rate_limited quota cutoff reason", (
       testStatus: "unavailable",
       rateLimitedUntil: new Date(Date.now() + 60_000).toISOString(),
     }),
-    "rate_limited"
+    "rate_limited",
   );
   assert.equal(
     getConnectionStatusQuotaCutoffReason({
       testStatus: "unavailable",
       rateLimitedUntil: new Date(Date.now() - 60_000).toISOString(),
     }),
-    undefined
+    undefined,
   );
 });
 
@@ -169,7 +169,7 @@ test("status-blocked candidates are removed before auto scoring", () => {
       }),
     ],
     "coding",
-    latencyOnlyWeights
+    latencyOnlyWeights,
   );
 
   assert.equal(ranked.length, 1);

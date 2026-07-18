@@ -38,7 +38,7 @@ function getFreePort(): Promise<number> {
 
 export function buildCompletion(
   text: string,
-  overrides: Partial<PlannedResponse> & { model?: string } = {}
+  overrides: Partial<PlannedResponse> & { model?: string } = {},
 ) {
   return {
     status: overrides.status ?? 200,
@@ -91,7 +91,7 @@ export class MockUpstreamServer {
 
   configureToken(
     token: string,
-    config: { defaultResponse: PlannedResponse; queue?: PlannedResponse[] }
+    config: { defaultResponse: PlannedResponse; queue?: PlannedResponse[] },
   ): void {
     this.behaviors.set(token, {
       defaultResponse: config.defaultResponse,
@@ -159,7 +159,7 @@ export class MockUpstreamServer {
 
     const planned = behavior.queue.shift() || behavior.defaultResponse;
     process.stderr.write(
-      `[MOCK] ${token.slice(0, 8)} hit=${behavior.hits} status=${planned.status}\n`
+      `[MOCK] ${token.slice(0, 8)} hit=${behavior.hits} status=${planned.status}\n`,
     );
     if (planned.delayMs && planned.delayMs > 0) {
       await new Promise((r) => setTimeout(r, planned.delayMs));

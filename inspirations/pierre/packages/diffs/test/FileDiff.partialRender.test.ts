@@ -1,40 +1,40 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from "bun:test";
 
-import { disposeHighlighter, FileDiff, parseDiffFromFile } from '../src';
-import type { DiffLineAnnotation } from '../src/types';
-import { installDom } from './domHarness';
+import { disposeHighlighter, FileDiff, parseDiffFromFile } from "../src";
+import type { DiffLineAnnotation } from "../src/types";
+import { installDom } from "./domHarness";
 
 async function waitForRenderedCode(container: HTMLElement): Promise<void> {
   for (let attempt = 0; attempt < 50; attempt++) {
-    if (container.shadowRoot?.querySelector('code') != null) {
+    if (container.shadowRoot?.querySelector("code") != null) {
       return;
     }
     await new Promise((resolve) => setTimeout(resolve, 10));
   }
-  throw new Error('Timed out waiting for FileDiff render');
+  throw new Error("Timed out waiting for FileDiff render");
 }
 
-describe('FileDiff partial render', () => {
+describe("FileDiff partial render", () => {
   // Crash regression guard: re-rendering a narrower range over an annotated
   // deleted line exercises the partial-render trim path. disableErrorHandling
   // surfaces applyPartialRender's internal invariant errors as throws, so the
   // not.toThrow assertion catches trim crashes. It does not inspect the
   // resulting DOM, so column alignment itself is not verified here.
-  test('re-rendering a narrower range over an annotated deleted line does not throw', async () => {
+  test("re-rendering a narrower range over an annotated deleted line does not throw", async () => {
     const { cleanup } = installDom();
     let instance: FileDiff<string> | undefined;
     try {
-      const oldFile = { name: 'x.txt', contents: 'a\nb\nc\nd\n' };
-      const newFile = { name: 'x.txt', contents: 'a\nd\n' };
+      const oldFile = { name: "x.txt", contents: "a\nb\nc\nd\n" };
+      const newFile = { name: "x.txt", contents: "a\nd\n" };
       const fileDiff = parseDiffFromFile(oldFile, newFile);
-      const fileContainer = document.createElement('div');
+      const fileContainer = document.createElement("div");
       const lineAnnotations: DiffLineAnnotation<string>[] = [
-        { side: 'deletions', lineNumber: 2, metadata: 'annotation' },
+        { side: "deletions", lineNumber: 2, metadata: "annotation" },
       ];
       instance = new FileDiff<string>({
         disableErrorHandling: true,
         disableFileHeader: true,
-        diffStyle: 'split',
+        diffStyle: "split",
       });
 
       instance.render({
@@ -74,22 +74,22 @@ describe('FileDiff partial render', () => {
     }
   });
 
-  test('re-rendering a range that excludes the top removes file-level annotations', async () => {
+  test("re-rendering a range that excludes the top removes file-level annotations", async () => {
     const { cleanup } = installDom();
     let instance: FileDiff<string> | undefined;
     try {
-      const oldFile = { name: 'x.txt', contents: 'a\nb\nc\nd\n' };
-      const newFile = { name: 'x.txt', contents: 'a\nB\nc\nd\n' };
+      const oldFile = { name: "x.txt", contents: "a\nb\nc\nd\n" };
+      const newFile = { name: "x.txt", contents: "a\nB\nc\nd\n" };
       const fileDiff = parseDiffFromFile(oldFile, newFile);
-      const fileContainer = document.createElement('div');
+      const fileContainer = document.createElement("div");
       const lineAnnotations: DiffLineAnnotation<string>[] = [
-        { side: 'deletions', lineNumber: 0, metadata: 'old-file' },
-        { side: 'additions', lineNumber: 0, metadata: 'new-file' },
+        { side: "deletions", lineNumber: 0, metadata: "old-file" },
+        { side: "additions", lineNumber: 0, metadata: "new-file" },
       ];
       instance = new FileDiff<string>({
         disableErrorHandling: true,
         disableFileHeader: true,
-        diffStyle: 'split',
+        diffStyle: "split",
       });
 
       instance.render({
@@ -108,9 +108,7 @@ describe('FileDiff partial render', () => {
       await waitForRenderedCode(fileContainer);
 
       expect(
-        fileContainer.shadowRoot?.querySelectorAll(
-          '[data-line-annotation="-1,-1"]'
-        ).length
+        fileContainer.shadowRoot?.querySelectorAll('[data-line-annotation="-1,-1"]').length,
       ).toBe(2);
 
       instance.render({
@@ -129,9 +127,7 @@ describe('FileDiff partial render', () => {
       await waitForRenderedCode(fileContainer);
 
       expect(
-        fileContainer.shadowRoot?.querySelectorAll(
-          '[data-line-annotation="-1,-1"]'
-        ).length
+        fileContainer.shadowRoot?.querySelectorAll('[data-line-annotation="-1,-1"]').length,
       ).toBe(0);
     } finally {
       instance?.cleanUp();

@@ -66,7 +66,7 @@ function checkConfig(dataDir) {
     return fail(
       "Config",
       `Invalid port setting: ${invalidPorts.map((item) => item.name).join(", ")}`,
-      { envFile: envFile || null, invalidPorts }
+      { envFile: envFile || null, invalidPorts },
     );
   }
 
@@ -191,7 +191,7 @@ async function checkStorageEncryption(dbPath) {
         ? ok("Storage/encryption", "Encryption key is configured; no encrypted samples found")
         : warn(
             "Storage/encryption",
-            "No STORAGE_ENCRYPTION_KEY configured; credentials are plaintext"
+            "No STORAGE_ENCRYPTION_KEY configured; credentials are plaintext",
           );
     }
 
@@ -199,7 +199,7 @@ async function checkStorageEncryption(dbPath) {
       return fail(
         "Storage/encryption",
         "Encrypted credentials exist but STORAGE_ENCRYPTION_KEY is missing",
-        { encryptedSamples: encryptedValues.length }
+        { encryptedSamples: encryptedValues.length },
       );
     }
 
@@ -230,7 +230,7 @@ function checkPort(port, label) {
           warn("Port availability", `${label} port ${port} could not be checked`, {
             port,
             error: error.message,
-          })
+          }),
         );
       }
     });
@@ -283,7 +283,7 @@ async function checkNodeRuntime(rootDir) {
     return warn(
       "Node runtime",
       `${version} (runtime support module unavailable in this environment)`,
-      { nodeVersion: version }
+      { nodeVersion: version },
     );
   }
 }
@@ -297,7 +297,7 @@ async function checkNativeBinary(rootDir) {
       "better-sqlite3",
       "build",
       "Release",
-      "better_sqlite3.node"
+      "better_sqlite3.node",
     ),
     path.join(rootDir, "node_modules", "better-sqlite3", "build", "Release", "better_sqlite3.node"),
   ];
@@ -341,7 +341,7 @@ function checkMemory() {
         memoryMb,
         totalBytes: total,
         freeBytes: free,
-      }
+      },
     );
   }
 
@@ -395,7 +395,10 @@ async function checkServerLiveness(options = {}) {
   // First attempt: configured health endpoint (may require auth token).
   const primary = await probeUrl(url);
   if (primary.ok) {
-    return ok("Server liveness", "Server health endpoint is reachable", { url, status: primary.status });
+    return ok("Server liveness", "Server health endpoint is reachable", {
+      url,
+      status: primary.status,
+    });
   }
 
   // #6162: /api/health and /api/health/degradation require a management token.
@@ -426,21 +429,30 @@ async function checkServerLiveness(options = {}) {
     return ok(
       "Server liveness",
       `Server reachable (health endpoint returned ${primary.status}, likely requires MANAGEMENT_TOKEN)`,
-      { primaryUrl: url, primaryStatus: primary.status, fallbackUrl, fallbackStatus: fallback.status }
+      {
+        primaryUrl: url,
+        primaryStatus: primary.status,
+        fallbackUrl,
+        fallbackStatus: fallback.status,
+      },
     );
   }
 
   return warn(
     "Server liveness",
     `Server health endpoint returned HTTP ${primary.status || "no-response"} and fallback probe failed`,
-    { primaryUrl: url, primaryStatus: primary.status, fallbackUrl, fallbackStatus: fallback.status }
+    {
+      primaryUrl: url,
+      primaryStatus: primary.status,
+      fallbackUrl,
+      fallbackStatus: fallback.status,
+    },
   );
 }
 
 export async function collectDoctorChecks(context = {}, options = {}) {
   const rootDir =
-    context.rootDir ||
-    path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
+    context.rootDir || path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
   const dataDir = resolveDataDir();
   const dbPath = resolveStoragePath(dataDir);
 
@@ -519,7 +531,7 @@ export async function runDoctorCommand(opts = {}, context = {}) {
       printCheck(check);
     }
     console.log(
-      `\nSummary: ${result.summary.ok} ok, ${result.summary.warn} warning(s), ${result.summary.fail} failure(s)`
+      `\nSummary: ${result.summary.ok} ok, ${result.summary.warn} warning(s), ${result.summary.fail} failure(s)`,
     );
   }
 

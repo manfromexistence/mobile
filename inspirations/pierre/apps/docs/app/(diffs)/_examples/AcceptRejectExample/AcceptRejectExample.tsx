@@ -1,25 +1,20 @@
-'use client';
+"use client";
 
-import { diffAcceptRejectHunk } from '@pierre/diffs';
-import { FileDiff } from '@pierre/diffs/react';
-import type {
-  FileDiffMetadata,
-  PreloadFileDiffResult,
-} from '@pierre/diffs/ssr';
-import { IconRefresh } from '@pierre/icons';
-import { useCallback, useState } from 'react';
+import { diffAcceptRejectHunk } from "@pierre/diffs";
+import { FileDiff } from "@pierre/diffs/react";
+import type { FileDiffMetadata, PreloadFileDiffResult } from "@pierre/diffs/ssr";
+import { IconRefresh } from "@pierre/icons";
+import { useCallback, useState } from "react";
 
-import { type AcceptRejectMetadata } from './constants';
-import { FeatureHeader } from '@/components/FeatureHeader';
-import { Button } from '@/components/ui/button';
+import { type AcceptRejectMetadata } from "./constants";
+import { FeatureHeader } from "@/components/FeatureHeader";
+import { Button } from "@/components/ui/button";
 
 interface AcceptRejectExampleProps {
   prerenderedDiff: PreloadFileDiffResult<AcceptRejectMetadata>;
 }
 
-export function AcceptRejectExample({
-  prerenderedDiff,
-}: AcceptRejectExampleProps) {
+export function AcceptRejectExample({ prerenderedDiff }: AcceptRejectExampleProps) {
   const [instanceKey, setInstanceKey] = useState(0);
   return (
     <AcceptRejectExampleInner
@@ -34,21 +29,19 @@ function AcceptRejectExampleInner({
   prerenderedDiff,
   onReset,
 }: AcceptRejectExampleProps & { onReset: () => void }) {
-  const [fileDiff, setFileDiff] = useState<FileDiffMetadata>(
-    prerenderedDiff.fileDiff
-  );
+  const [fileDiff, setFileDiff] = useState<FileDiffMetadata>(prerenderedDiff.fileDiff);
   const [annotations, setAnnotations] = useState(prerenderedDiff.annotations);
   const hasChanged = fileDiff !== prerenderedDiff.fileDiff;
   const renderAnnotation = useCallback(() => {
     return (
       <div
         style={{
-          position: 'relative',
+          position: "relative",
           zIndex: 10,
-          width: '100%',
-          backgroundColor: 'red',
-          overflow: 'visible',
-          fontFamily: 'Geist',
+          width: "100%",
+          backgroundColor: "red",
+          overflow: "visible",
+          fontFamily: "Geist",
         }}
       >
         <div className="absolute top-1 right-8 flex gap-1">
@@ -57,9 +50,7 @@ function AcceptRejectExampleInner({
             size="xs"
             className="rounded-[4px]"
             onClick={() => {
-              setFileDiff((fileDiff) =>
-                diffAcceptRejectHunk(fileDiff, 0, 'reject')
-              );
+              setFileDiff((fileDiff) => diffAcceptRejectHunk(fileDiff, 0, "reject"));
               setAnnotations([]);
             }}
           >
@@ -70,9 +61,7 @@ function AcceptRejectExampleInner({
             size="xs"
             className="rounded-[4px] text-black dark:text-black"
             onClick={() => {
-              setFileDiff((fileDiff) =>
-                diffAcceptRejectHunk(fileDiff, 0, 'accept')
-              );
+              setFileDiff((fileDiff) => diffAcceptRejectHunk(fileDiff, 0, "accept"));
               setAnnotations([]);
             }}
           >

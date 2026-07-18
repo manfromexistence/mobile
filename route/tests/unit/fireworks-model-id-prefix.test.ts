@@ -38,12 +38,12 @@ test("DefaultExecutor.transformRequest preserves fully-qualified fireworks route
     "accounts/fireworks/routers/kimi-k2p6-turbo",
     body,
     false,
-    {}
+    {},
   );
 
   assert.equal(
     (result as Record<string, unknown>).model,
-    "accounts/fireworks/routers/kimi-k2p6-turbo"
+    "accounts/fireworks/routers/kimi-k2p6-turbo",
   );
 });
 
@@ -71,7 +71,7 @@ test("Fireworks registry models use short IDs (no prefix)", () => {
   for (const model of entry.models) {
     assert.ok(
       !model.id.startsWith("accounts/fireworks/models/"),
-      `Model "${model.id}" should use short ID without prefix`
+      `Model "${model.id}" should use short ID without prefix`,
     );
   }
 });

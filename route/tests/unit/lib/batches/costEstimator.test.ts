@@ -11,7 +11,7 @@ function makeLine(
   customId: string,
   model: string = "gpt-4o",
   maxTokens: number | undefined = undefined,
-  contentLen = 100
+  contentLen = 100,
 ) {
   const body: Record<string, unknown> = {
     model,
@@ -39,7 +39,10 @@ test("estimateBatchCost: known model (gpt-4o) → pricingSource=exact-match, no 
 test("estimateBatchCost: batchCostUsd = syncCostUsd * 0.5", () => {
   const jsonl = makeJsonl([makeLine("req-1")]);
   const result = estimateBatchCost({ jsonl, model: "gpt-4o", endpoint: ENDPOINT });
-  assert.ok(Math.abs(result.batchCostUsd - result.syncCostUsd * 0.5) < 1e-12, "batch cost should be half of sync");
+  assert.ok(
+    Math.abs(result.batchCostUsd - result.syncCostUsd * 0.5) < 1e-12,
+    "batch cost should be half of sync",
+  );
 });
 
 test("estimateBatchCost: savingsUsd = syncCostUsd - batchCostUsd", () => {
@@ -52,7 +55,11 @@ test("estimateBatchCost: savingsUsd = syncCostUsd - batchCostUsd", () => {
 
 test("estimateBatchCost: unknown model → pricingSource=fallback, warning added, cost=0", () => {
   const jsonl = makeJsonl([makeLine("req-1", "totally-unknown-model-xyz-999")]);
-  const result = estimateBatchCost({ jsonl, model: "totally-unknown-model-xyz-999", endpoint: ENDPOINT });
+  const result = estimateBatchCost({
+    jsonl,
+    model: "totally-unknown-model-xyz-999",
+    endpoint: ENDPOINT,
+  });
   assert.equal(result.pricingSource, "fallback");
   assert.ok(result.warnings.length > 0, "should have a warning for unknown model");
   assert.ok(result.warnings[0].includes("totally-unknown-model-xyz-999"));
@@ -95,7 +102,11 @@ test("estimateBatchCost: missing max_tokens → defaults to 256", () => {
 
 test("estimateBatchCost: multiple requests → totalRequests sums correctly", () => {
   const lines = Array.from({ length: 5 }, (_, i) => makeLine(`req-${i}`, "gpt-4o", 100));
-  const result = estimateBatchCost({ jsonl: makeJsonl(lines), model: "gpt-4o", endpoint: ENDPOINT });
+  const result = estimateBatchCost({
+    jsonl: makeJsonl(lines),
+    model: "gpt-4o",
+    endpoint: ENDPOINT,
+  });
   assert.equal(result.totalRequests, 5);
   assert.equal(result.estimatedOutputTokens, 500, "5 * min(100, 1024) = 500");
 });

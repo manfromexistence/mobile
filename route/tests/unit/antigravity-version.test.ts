@@ -66,7 +66,7 @@ test("resolveAntigravityVersion falls back to the last known good version or bun
 
   assert.equal(
     await resolveAntigravityVersion(failingFetch as typeof fetch),
-    ANTIGRAVITY_FALLBACK_VERSION
+    ANTIGRAVITY_FALLBACK_VERSION,
   );
 
   seedAntigravityVersionCache("4.2.1", 0);

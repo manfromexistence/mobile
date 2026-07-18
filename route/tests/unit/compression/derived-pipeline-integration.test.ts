@@ -115,7 +115,7 @@ describe("compression derived-pipeline integration (Task 12)", () => {
     assert.deepEqual(
       derivedResult.stats?.engineBreakdown?.map((e) => e.engine),
       explicitResult.stats?.engineBreakdown?.map((e) => e.engine),
-      "derived and explicit must run the same engine set in the same order"
+      "derived and explicit must run the same engine set in the same order",
     );
 
     // Same compressed output text for the prose user turn.
@@ -127,7 +127,7 @@ describe("compression derived-pipeline integration (Task 12)", () => {
     assert.equal(
       userText(derivedResult),
       userText(explicitResult),
-      "derived and explicit must produce identical compressed text"
+      "derived and explicit must produce identical compressed text",
     );
   });
 });

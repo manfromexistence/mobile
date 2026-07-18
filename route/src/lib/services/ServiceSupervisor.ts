@@ -188,7 +188,7 @@ export class ServiceSupervisor extends EventEmitter {
     // throw — the service may still be initializing — but we DO record a
     // degraded marker so /status returns it and operators can act.
     this.lastError = sanitizeErrorMessage(
-      `Health probe did not succeed within ${timeoutMs}ms — service may still be initializing`
+      `Health probe did not succeed within ${timeoutMs}ms — service may still be initializing`,
     );
     this.emit("healthDegraded", {
       tool: this.config.tool,
@@ -219,7 +219,7 @@ export class ServiceSupervisor extends EventEmitter {
   private async handleExit(
     code: number | null,
     signal: NodeJS.Signals | null,
-    spawnTime: number
+    spawnTime: number,
   ): Promise<void> {
     this.checker.stop();
     this.pid = null;

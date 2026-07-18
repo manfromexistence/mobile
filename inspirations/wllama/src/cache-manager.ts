@@ -1,9 +1,9 @@
-import { getHFFileSHA256 } from './huggingface';
-import type { DownloadProgressCallback } from './model-manager';
-import { COSBackend } from './storage/cos';
-import type { StorageBackend, StorageFileHint } from './storage/index';
+import { getHFFileSHA256 } from "./huggingface";
+import type { DownloadProgressCallback } from "./model-manager";
+import { COSBackend } from "./storage/cos";
+import type { StorageBackend, StorageFileHint } from "./storage/index";
 
-const PREFIX_METADATA = '__metadata__';
+const PREFIX_METADATA = "__metadata__";
 
 export type DownloadOptions = {
   /**
@@ -25,7 +25,7 @@ export type DownloadOptions = {
 };
 
 // To prevent breaking change, we fill etag with a pre-defined value
-export const POLYFILL_ETAG = 'polyfill_for_older_version';
+export const POLYFILL_ETAG = "polyfill_for_older_version";
 
 export interface CacheEntry {
   /**
@@ -66,9 +66,7 @@ export interface CacheEntryMetadata {
   sha256?: string | undefined;
 }
 
-function hintFromMetadata(
-  metadata: CacheEntryMetadata | null
-): StorageFileHint | undefined {
+function hintFromMetadata(metadata: CacheEntryMetadata | null): StorageFileHint | undefined {
   if (!metadata) return undefined;
   if (metadata.sha256) return { sha256: metadata.sha256 };
   return undefined;
@@ -92,7 +90,7 @@ export class CacheManager {
         return;
       }
     }
-    throw new Error('No supported storage backend found');
+    throw new Error("No supported storage backend found");
   }
 
   /**
@@ -101,7 +99,7 @@ export class CacheManager {
    * Format: `${hashSHA1(fullURL)}_${fileName}`
    */
   async getNameFromURL(url: string): Promise<string> {
-    return urlToFileName(url, '');
+    return urlToFileName(url, "");
   }
 
   /**
@@ -111,18 +109,14 @@ export class CacheManager {
    *
    * @param name The file name returned by `getNameFromURL()` or `list()`
    */
-  async write(
-    name: string,
-    stream: ReadableStream,
-    metadata: CacheEntryMetadata
-  ): Promise<void> {
+  async write(name: string, stream: ReadableStream, metadata: CacheEntryMetadata): Promise<void> {
     // write file first, then metadata
     await this.sb.write(name, stream);
     await this.writeMetadata(name, metadata);
   }
 
   async download(url: string, options: DownloadOptions = {}): Promise<void> {
-    const fileKey = await urlToFileName(url, '');
+    const fileKey = await urlToFileName(url, "");
 
     // Fetch sha256 before the GET so we can skip the download entirely if the
     // file is already in COS (avoids opening a connection just to cancel it).
@@ -135,17 +129,14 @@ export class CacheManager {
       // writeMetadata. Ensure it exists before returning.
       if (!(await this.getMetadata(fileKey))) {
         const head = await fetch(url, {
-          method: 'HEAD',
+          method: "HEAD",
           ...(options.headers ? { headers: options.headers } : {}),
         });
-        const contentLength = head.headers.get('content-length');
-        const etag = (head.headers.get('etag') || '').replace(
-          /[^A-Za-z0-9]/g,
-          ''
-        );
+        const contentLength = head.headers.get("content-length");
+        const etag = (head.headers.get("etag") || "").replace(/[^A-Za-z0-9]/g, "");
         await this.writeMetadata(fileKey, {
           originalURL: url,
-          originalSize: parseInt(contentLength ?? '0', 10),
+          originalSize: parseInt(contentLength ?? "0", 10),
           etag,
           sha256,
           ...(options.metadataAdditional ?? {}),
@@ -163,12 +154,9 @@ export class CacheManager {
       throw new Error(`Failed to fetch ${url}: HTTP ${response.status}`);
     }
 
-    const contentLength = response.headers.get('content-length');
-    const etag = (response.headers.get('etag') || '').replace(
-      /[^A-Za-z0-9]/g,
-      ''
-    );
-    const total = parseInt(contentLength ?? '0', 10);
+    const contentLength = response.headers.get("content-length");
+    const etag = (response.headers.get("etag") || "").replace(/[^A-Za-z0-9]/g, "");
+    const total = parseInt(contentLength ?? "0", 10);
 
     const progressCallback = options.progressCallback;
     let loaded = 0;
@@ -201,11 +189,7 @@ export class CacheManager {
       metadata.sha256 = sha256;
     }
 
-    await this.sb.write(
-      fileKey,
-      response.body.pipeThrough(progressStream),
-      hint
-    );
+    await this.sb.write(fileKey, response.body.pipeThrough(progressStream), hint);
     await this.writeMetadata(fileKey, metadata);
   }
 
@@ -220,7 +204,7 @@ export class CacheManager {
     const direct = await this.sb.read(nameOrURL, hint1);
     if (direct) return direct;
     // also accept the original URL
-    const key = await urlToFileName(nameOrURL, '');
+    const key = await urlToFileName(nameOrURL, "");
     const hint2 = hintFromMetadata(await this.getMetadata(key));
     return this.sb.read(key, hint2);
   }
@@ -250,7 +234,7 @@ export class CacheManager {
           {
             etag: POLYFILL_ETAG,
             originalSize: cachedSize,
-            originalURL: '',
+            originalURL: "",
           }
         : // cached file not found
           null;
@@ -288,8 +272,8 @@ export class CacheManager {
           size,
           metadata: metadataMap[key] || {
             originalSize: size,
-            originalURL: '',
-            etag: '',
+            originalURL: "",
+            etag: "",
           },
         });
       }
@@ -311,9 +295,7 @@ export class CacheManager {
    */
   async delete(nameOrURL: string): Promise<void> {
     const name2 = await this.getNameFromURL(nameOrURL);
-    await this.deleteMany(
-      (entry) => entry.name === nameOrURL || entry.name === name2
-    );
+    await this.deleteMany((entry) => entry.name === nameOrURL || entry.name === name2);
   }
 
   /**
@@ -334,11 +316,8 @@ export class CacheManager {
   /**
    * Write the metadata of the file to disk.
    */
-  async writeMetadata(
-    name: string,
-    metadata: CacheEntryMetadata
-  ): Promise<void> {
-    const blob = new Blob([JSON.stringify(metadata)], { type: 'text/plain' });
+  async writeMetadata(name: string, metadata: CacheEntryMetadata): Promise<void> {
+    const blob = new Blob([JSON.stringify(metadata)], { type: "text/plain" });
     await this.sb.write(`${PREFIX_METADATA}${name}`, blob.stream());
   }
 }
@@ -346,13 +325,8 @@ export class CacheManager {
 export default CacheManager;
 
 async function urlToFileName(url: string, prefix: string): Promise<string> {
-  const hashBuffer = await crypto.subtle.digest(
-    'SHA-1',
-    new TextEncoder().encode(url)
-  );
+  const hashBuffer = await crypto.subtle.digest("SHA-1", new TextEncoder().encode(url));
   const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('');
-  return `${prefix}${hashHex}_${url.split('/').pop()}`;
+  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+  return `${prefix}${hashHex}_${url.split("/").pop()}`;
 }

@@ -41,10 +41,12 @@ test("Antigravity fetchAvailableModels(used=0) → localUsageHistory when usage_
   const seededTimestamp = new Date(Date.now() - 30 * 60 * 1000).toISOString(); // within window
 
   // Seed a usage_history row keyed by the CLIENT tier id the fallback queries.
-  const db = core.getDbInstance() as unknown as { prepare: (sql: string) => { run: (...a: unknown[]) => unknown } };
+  const db = core.getDbInstance() as unknown as {
+    prepare: (sql: string) => { run: (...a: unknown[]) => unknown };
+  };
   db.prepare(
     `INSERT INTO usage_history (provider, model, connection_id, tokens_input, tokens_output, tokens_reasoning, success, timestamp)
-     VALUES (?, ?, ?, ?, ?, ?, 1, ?)`
+     VALUES (?, ?, ?, ?, ?, ?, 1, ?)`,
   ).run("antigravity", "gemini-3.5-flash-high", "conn-local-1", 1000, 1500, 500, seededTimestamp);
   // Total seeded tokens = 3000 → ceil(3000/1000) = 3 units used.
 

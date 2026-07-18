@@ -43,7 +43,7 @@ for (const lang of LANGS) {
     const out = applyAll(sample, ultra);
     assert.ok(
       out.length < sample.length,
-      `${lang} ultra should shrink the sample (${sample.length} -> ${out.length})`
+      `${lang} ultra should shrink the sample (${sample.length} -> ${out.length})`,
     );
   });
 }

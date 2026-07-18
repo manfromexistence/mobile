@@ -51,7 +51,8 @@ const ERROR_STUB = `${HEADER}"use client";\nexport default function BackendOnlyE
 // global-error replaces the root layout on a root error, so it must render <html>/<body>.
 const GLOBAL_ERROR_STUB = `${HEADER}"use client";\nexport default function BackendOnlyGlobalErrorStub() {\n  return (\n    <html>\n      <body></body>\n    </html>\n  );\n}\n`;
 
-const UI_BASENAME_RE = /^(page|layout|template|loading|error|global-error|not-found|default)\.(tsx|jsx|ts|js)$/;
+const UI_BASENAME_RE =
+  /^(page|layout|template|loading|error|global-error|not-found|default)\.(tsx|jsx|ts|js)$/;
 const ROUTE_FILE_RE = /[\\/]route\.(ts|js|tsx|jsx)$/;
 
 /**
@@ -185,7 +186,7 @@ export function stubDashboardPages(rootDir = process.cwd(), log = console) {
   log.log?.(
     `[backend-only] Stubbed ${uiCount} App-Router UI file(s) + de-actioned ${
       stubbed.length - uiCount
-    } route handler(s); route.ts HTTP endpoints left intact`
+    } route handler(s); route.ts HTTP endpoints left intact`,
   );
   return stubbed;
 }
@@ -202,7 +203,7 @@ export function restoreDashboardPages(stubbed, log = console) {
     } catch (err) {
       log.error?.(
         `[backend-only] FAILED to restore ${entry.file}: ${err?.message || err} — ` +
-          `run \`git checkout -- ${entry.file}\` to recover`
+          `run \`git checkout -- ${entry.file}\` to recover`,
       );
     }
   }

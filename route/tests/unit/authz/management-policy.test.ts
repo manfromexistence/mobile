@@ -54,7 +54,7 @@ async function dashboardCookieHeader(expiresIn = "1h"): Promise<string> {
   // accessor on the plain ctx() object.
   assert.ok(
     process.env.JWT_SECRET,
-    "JWT_SECRET must be set before minting dashboard cookie (otherwise TextEncoder would encode the string 'undefined' and silently mint a wrong-secret JWT)"
+    "JWT_SECRET must be set before minting dashboard cookie (otherwise TextEncoder would encode the string 'undefined' and silently mint a wrong-secret JWT)",
   );
   const secret = new TextEncoder().encode(process.env.JWT_SECRET);
   const token = await new SignJWT({ authenticated: true })
@@ -68,7 +68,7 @@ function ctx(
   headers: Headers,
   method = "GET",
   path = "/api/keys",
-  requestExtras: Record<string, unknown> = {}
+  requestExtras: Record<string, unknown> = {},
 ) {
   return {
     request: {
@@ -154,7 +154,7 @@ test("managementPolicy: rejects client API keys for dashboard access", async () 
 
   const policy = await loadPolicy();
   const out = await policy.evaluate(
-    ctx(new Headers({ authorization: `Bearer ${created.key}` }), "GET", "/dashboard")
+    ctx(new Headers({ authorization: `Bearer ${created.key}` }), "GET", "/dashboard"),
   );
 
   assert.equal(out.allow, false);
@@ -172,7 +172,7 @@ test("managementPolicy: allows API keys with manage scope", async () => {
 
   const policy = await loadPolicy();
   const out = await policy.evaluate(
-    ctx(new Headers({ authorization: `Bearer ${created.key}` }), "POST", "/api/keys")
+    ctx(new Headers({ authorization: `Bearer ${created.key}` }), "POST", "/api/keys"),
   );
 
   assert.equal(out.allow, true);
@@ -191,7 +191,7 @@ test("managementPolicy: rejects valid API keys that lack manage scope", async ()
 
   const policy = await loadPolicy();
   const out = await policy.evaluate(
-    ctx(new Headers({ authorization: `Bearer ${created.key}` }), "POST", "/api/keys")
+    ctx(new Headers({ authorization: `Bearer ${created.key}` }), "POST", "/api/keys"),
   );
 
   assert.equal(out.allow, false);
@@ -209,7 +209,7 @@ test("managementPolicy: rejects invalid API keys with 403 when bearer is present
 
   const policy = await loadPolicy();
   const out = await policy.evaluate(
-    ctx(new Headers({ authorization: "Bearer not-a-real-key" }), "POST", "/api/keys")
+    ctx(new Headers({ authorization: "Bearer not-a-real-key" }), "POST", "/api/keys"),
   );
 
   assert.equal(out.allow, false);
@@ -254,7 +254,7 @@ test("LOCAL_ONLY manage-scope bypass: non-manage key + non-loopback → 403", as
 
   const policy = await loadPolicy();
   const out = await policy.evaluate(
-    ctx(new Headers({ authorization: `Bearer ${created.key}` }), "GET", "/api/mcp/stream")
+    ctx(new Headers({ authorization: `Bearer ${created.key}` }), "GET", "/api/mcp/stream"),
   );
 
   assert.equal(out.allow, false);
@@ -272,7 +272,7 @@ test("LOCAL_ONLY manage-scope bypass: manage-scope key + non-loopback → allow"
 
   const policy = await loadPolicy();
   const out = await policy.evaluate(
-    ctx(new Headers({ authorization: `Bearer ${created.key}` }), "GET", "/api/mcp/stream")
+    ctx(new Headers({ authorization: `Bearer ${created.key}` }), "GET", "/api/mcp/stream"),
   );
 
   assert.equal(out.allow, true);
@@ -281,7 +281,7 @@ test("LOCAL_ONLY manage-scope bypass: manage-scope key + non-loopback → allow"
     assert.equal(out.subject.id, created.id);
     assert.ok(
       (out.subject.label ?? "").includes("local-only-bypass"),
-      `expected label to include 'local-only-bypass', got ${out.subject.label}`
+      `expected label to include 'local-only-bypass', got ${out.subject.label}`,
     );
   }
 });
@@ -299,8 +299,8 @@ test("LOCAL_ONLY manage-scope bypass: carve-out does not extend to /api/cli-tool
     ctx(
       new Headers({ authorization: `Bearer ${created.key}` }),
       "GET",
-      "/api/cli-tools/runtime/foo"
-    )
+      "/api/cli-tools/runtime/foo",
+    ),
   );
 
   assert.equal(out.allow, false);
@@ -323,7 +323,7 @@ test("LOCAL_ONLY manage-scope bypass: loopback + no Bearer → allow (local CLI 
   const out = await policy.evaluate(
     ctx(new Headers({ host: "localhost:20128" }), "GET", "/api/mcp/stream", {
       socket: { remoteAddress: "127.0.0.1" },
-    })
+    }),
   );
 
   assert.equal(out.allow, true);
@@ -362,7 +362,7 @@ test("LOCAL_ONLY dashboard-session bypass: authenticated dashboard cookie + /api
   const cookie = await dashboardCookieHeader();
   const policy = await loadPolicy();
   const out = await policy.evaluate(
-    ctx(new Headers({ cookie }), "GET", "/api/cli-tools/runtime/foo")
+    ctx(new Headers({ cookie }), "GET", "/api/cli-tools/runtime/foo"),
   );
 
   assert.equal(out.allow, false);
@@ -381,7 +381,7 @@ test("managementPolicy: allows internal model sync only on the dedicated provide
   const internalHeaders = new Headers(modelSync.buildModelSyncInternalHeaders());
 
   const allowed = await policy.evaluate(
-    ctx(internalHeaders, "POST", "/api/providers/conn-123/sync-models")
+    ctx(internalHeaders, "POST", "/api/providers/conn-123/sync-models"),
   );
   assert.equal(allowed.allow, true);
   if (allowed.allow) {
@@ -405,7 +405,7 @@ test("managementPolicy: allows loopback inspector ingest without a dashboard ses
   // Loopback peer (socket.remoteAddress) + ingest path → exempt from management
   // auth; the route handler validates the shared-secret ingest token.
   const out = await policy.evaluate(
-    ctx(new Headers(), "POST", INGEST_PATH, { socket: { remoteAddress: "127.0.0.1" } })
+    ctx(new Headers(), "POST", INGEST_PATH, { socket: { remoteAddress: "127.0.0.1" } }),
   );
 
   assert.equal(out.allow, true);

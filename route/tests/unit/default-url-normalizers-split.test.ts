@@ -30,7 +30,8 @@ test("host imports the normalizers back from the leaf", () => {
 });
 
 test("normalizeOpenAIChatUrl appends chat/completions for a bare base URL", async () => {
-  const { normalizeOpenAIChatUrl } =
-    await import("../../open-sse/executors/default/urlNormalizers.ts");
+  const { normalizeOpenAIChatUrl } = await import(
+    "../../open-sse/executors/default/urlNormalizers.ts"
+  );
   assert.match(normalizeOpenAIChatUrl("https://api.example.com"), /\/v1\/chat\/completions$/);
 });

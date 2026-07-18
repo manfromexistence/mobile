@@ -3,9 +3,7 @@ import fs from "fs";
 import path from "path";
 
 const REPO = "diegosouzapw/OmniRoute";
-const artifactsDir =
-  process.env.ARTIFACTS_DIR ||
-  path.join(process.cwd(), "artifacts");
+const artifactsDir = process.env.ARTIFACTS_DIR || path.join(process.cwd(), "artifacts");
 
 async function main() {
   try {
@@ -13,7 +11,7 @@ async function main() {
     console.log("Fetching open PR numbers...");
     const prNumbersOutput = execSync(
       `gh pr list --repo ${REPO} --state open --limit 500 --json number --jq '.[].number'`,
-      { encoding: "utf-8" }
+      { encoding: "utf-8" },
     );
     const prNumbers = prNumbersOutput.trim().split("\n").map(Number).filter(Boolean);
     console.log(`Found ${prNumbers.length} open PRs:`, prNumbers);

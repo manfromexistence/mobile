@@ -57,7 +57,7 @@ test("hedging — per-combo config overrides the zero-latency defaults", () => {
         predictiveTtftMs: 3000,
       },
     },
-    null
+    null,
   );
   assert.equal(resolved.hedging, true);
   assert.equal(resolved.hedgeDelayMs, 200);

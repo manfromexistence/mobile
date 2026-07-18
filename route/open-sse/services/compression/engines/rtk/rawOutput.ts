@@ -67,7 +67,7 @@ export function redactRtkRawOutput(value: string): { text: string; redacted: boo
 
 export function isLikelyFailureOutput(value: string): boolean {
   return /\b(error|failed|failure|exception|traceback|panic|fatal|critical|TS\d{4}|FAIL)\b/i.test(
-    value
+    value,
   );
 }
 
@@ -78,7 +78,7 @@ export function maybePersistRtkRawOutput(
     command?: string | null;
     maxBytes?: number;
     failure?: boolean;
-  }
+  },
 ): RtkRawOutputPointer | null {
   if (options.retention === "never") return null;
   const failure = options.failure ?? isLikelyFailureOutput(raw);
@@ -119,7 +119,7 @@ export function maybePersistRtkRawOutput(
         failure,
         redacted: redaction.redacted,
         bytes: Buffer.byteLength(redaction.text, "utf8"),
-      })
+      }),
     );
   } catch {
     // Sidecar is an optimisation for learn/discover; the .log (with slug) still works.

@@ -78,7 +78,7 @@ function getDispatcherOptions() {
 }
 
 export function getProxyDispatcherConnectionLimit(
-  env: Record<string, string | undefined> = process.env
+  env: Record<string, string | undefined> = process.env,
 ): number {
   const raw = env.OMNIROUTE_PROXY_DISPATCHER_CONNECTIONS;
   if (raw == null || raw.trim() === "") return DEFAULT_PROXY_DISPATCHER_CONNECTIONS;
@@ -86,7 +86,7 @@ export function getProxyDispatcherConnectionLimit(
   const parsed = Number(raw);
   if (!Number.isFinite(parsed) || parsed < 1) {
     console.warn(
-      `[ProxyDispatcher] Invalid OMNIROUTE_PROXY_DISPATCHER_CONNECTIONS="${raw}". Using default ${DEFAULT_PROXY_DISPATCHER_CONNECTIONS}.`
+      `[ProxyDispatcher] Invalid OMNIROUTE_PROXY_DISPATCHER_CONNECTIONS="${raw}". Using default ${DEFAULT_PROXY_DISPATCHER_CONNECTIONS}.`,
     );
     return DEFAULT_PROXY_DISPATCHER_CONNECTIONS;
   }
@@ -114,7 +114,7 @@ function getProxyDispatcherOptions(env: Record<string, string | undefined> = pro
 }
 
 export function getDefaultDispatcherConnectionLimit(
-  env: Record<string, string | undefined> = process.env
+  env: Record<string, string | undefined> = process.env,
 ): number {
   const raw = env.OMNIROUTE_DIRECT_DISPATCHER_CONNECTIONS;
   if (raw == null || raw.trim() === "") return DEFAULT_PROXY_DISPATCHER_CONNECTIONS;
@@ -122,7 +122,7 @@ export function getDefaultDispatcherConnectionLimit(
   const parsed = Number(raw);
   if (!Number.isFinite(parsed) || parsed < 1) {
     console.warn(
-      `[ProxyDispatcher] Invalid OMNIROUTE_DIRECT_DISPATCHER_CONNECTIONS="${raw}". Using default ${DEFAULT_PROXY_DISPATCHER_CONNECTIONS}.`
+      `[ProxyDispatcher] Invalid OMNIROUTE_DIRECT_DISPATCHER_CONNECTIONS="${raw}". Using default ${DEFAULT_PROXY_DISPATCHER_CONNECTIONS}.`,
     );
     return DEFAULT_PROXY_DISPATCHER_CONNECTIONS;
   }
@@ -268,7 +268,7 @@ export function proxyUrlForLogs(proxyUrl: string): string {
 export function normalizeProxyUrl(
   proxyUrl: string,
   source = "proxy",
-  { allowSocks5 = isSocks5ProxyEnabled() } = {}
+  { allowSocks5 = isSocks5ProxyEnabled() } = {},
 ): string {
   // Strip a trailing synthetic `?family=ipv4|ipv6` marker BEFORE anything else.
   // `extractExplicitPort` slices the authority off the raw string, so a marker
@@ -294,12 +294,12 @@ export function normalizeProxyUrl(
 
   if (!SUPPORTED_PROTOCOLS.has(parsed.protocol)) {
     throw new Error(
-      `[ProxyDispatcher] Unsupported ${source} protocol: ${parsed.protocol.replace(":", "")}`
+      `[ProxyDispatcher] Unsupported ${source} protocol: ${parsed.protocol.replace(":", "")}`,
     );
   }
   if (parsed.protocol === "socks5:" && !allowSocks5) {
     throw new Error(
-      "[ProxyDispatcher] SOCKS5 proxy is disabled (remove ENABLE_SOCKS5_PROXY=false to enable — it is ON by default)"
+      "[ProxyDispatcher] SOCKS5 proxy is disabled (remove ENABLE_SOCKS5_PROXY=false to enable — it is ON by default)",
     );
   }
   if (!parsed.hostname) {
@@ -316,7 +316,7 @@ export function normalizeProxyUrl(
   // The directive may arrive either as the stripped trailing marker (familySuffix)
   // or as an inline query on `baseUrl`; resolve both, append the marker once.
   const fam = parseProxyFamily(
-    (familyMatch ? familyMatch[1] : parsed.searchParams.get("family")) ?? undefined
+    (familyMatch ? familyMatch[1] : parsed.searchParams.get("family")) ?? undefined,
   );
   const base = buildProxyUrlString(parsed, port);
   return fam === "auto" ? base : `${base}?family=${fam}`;
@@ -324,7 +324,7 @@ export function normalizeProxyUrl(
 
 export function buildVercelRelayHeaders(
   targetUrl: string,
-  relayAuth: string
+  relayAuth: string,
 ): Record<string, string> {
   const parsed = new URL(targetUrl);
   return {
@@ -341,7 +341,7 @@ export const buildRelayHeaders = buildVercelRelayHeaders;
 
 export function proxyConfigToUrl(
   proxyConfig: unknown,
-  { allowSocks5 = isSocks5ProxyEnabled() } = {}
+  { allowSocks5 = isSocks5ProxyEnabled() } = {},
 ): string | null {
   if (!proxyConfig) return null;
 
@@ -375,7 +375,7 @@ export function proxyConfigToUrl(
   }
   if (protocol === "socks5:" && !allowSocks5) {
     throw new Error(
-      "[ProxyDispatcher] SOCKS5 proxy is disabled (remove ENABLE_SOCKS5_PROXY=false to enable — it is ON by default)"
+      "[ProxyDispatcher] SOCKS5 proxy is disabled (remove ENABLE_SOCKS5_PROXY=false to enable — it is ON by default)",
     );
   }
 
@@ -401,7 +401,7 @@ function resolveDispatcherFamily(parsed: URL): 4 | 6 | null {
   const want = directive === "ipv6" ? 6 : 4;
   if (literal !== null && literal !== want) {
     throw new Error(
-      `[ProxyDispatcher] Proxy family directive ${directive} contradicts ${literal === 6 ? "IPv6" : "IPv4"} literal host`
+      `[ProxyDispatcher] Proxy family directive ${directive} contradicts ${literal === 6 ? "IPv6" : "IPv4"} literal host`,
     );
   }
   return want;
@@ -414,13 +414,13 @@ export function __resolveDispatcherFamilyForTest(proxyUrl: string): 4 | 6 | null
 
 /** Test-only accessor for proxy dispatcher pool options. */
 export function __getProxyDispatcherOptionsForTest(
-  env: Record<string, string | undefined> = process.env
+  env: Record<string, string | undefined> = process.env,
 ) {
   return getProxyDispatcherOptions(env);
 }
 
 export function __getDefaultDispatcherOptionsForTest(
-  env: Record<string, string | undefined> = process.env
+  env: Record<string, string | undefined> = process.env,
 ) {
   return getDefaultDispatcherOptions(env);
 }
@@ -456,12 +456,12 @@ export function createProxyDispatcher(proxyUrl: string): Dispatcher {
       family === null
         ? (socksDispatcher(
             socksOptions as Parameters<typeof socksDispatcher>[0],
-            proxyDispatcherOptions
+            proxyDispatcherOptions,
           ) as Dispatcher)
         : createSocksDispatcherWithFamily(
             socksOptions as unknown as Parameters<typeof createSocksDispatcherWithFamily>[0],
             family,
-            proxyDispatcherOptions
+            proxyDispatcherOptions,
           );
   } else {
     // ProxyAgent omits `connect`; the client->proxy socket is built from `proxyTls`.

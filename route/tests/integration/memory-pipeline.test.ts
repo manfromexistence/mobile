@@ -36,7 +36,7 @@ function dropFts5Artifacts() {
       "DROP TRIGGER IF EXISTS memory_fts_ai;" +
         "DROP TRIGGER IF EXISTS memory_fts_ad;" +
         "DROP TRIGGER IF EXISTS memory_fts_au;" +
-        "DROP TABLE IF EXISTS memory_fts;"
+        "DROP TABLE IF EXISTS memory_fts;",
     );
   } catch (_: any) {
     /* ignore if already dropped or DB not yet initialized */
@@ -62,7 +62,7 @@ test.after(async () => {
 
 async function enableMemory(
   maxTokens = 400,
-  strategy: "recent" | "semantic" | "hybrid" = "recent"
+  strategy: "recent" | "semantic" | "hybrid" = "recent",
 ) {
   await settingsDb.updateSettings({
     memoryEnabled: true,
@@ -91,7 +91,7 @@ test("first request proceeds without injected context when the store is empty", 
         stream: false,
         messages: [{ role: "user", content: "First turn" }],
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -117,7 +117,7 @@ test("successful responses extract facts and persist them as memories", async ()
         stream: false,
         messages: [{ role: "user", content: "Remember my preferences" }],
       },
-    })
+    }),
   );
 
   const memories = await waitFor(async () => {
@@ -164,7 +164,7 @@ test("later requests inject retrieved memories into upstream messages", async ()
         stream: false,
         messages: [{ role: "user", content: "What do you remember?" }],
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -253,7 +253,7 @@ test("memory injection respects the configured token budget", async () => {
         stream: false,
         messages: [{ role: "user", content: "Use only the relevant memory." }],
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -286,7 +286,7 @@ test("disabled memory skips both extraction and injection", async () => {
         stream: false,
         messages: [{ role: "user", content: "This should not be remembered." }],
       },
-    })
+    }),
   );
 
   const memories = await waitFor(async () => {
@@ -346,7 +346,7 @@ test("extracted memories remain isolated by session id", async () => {
         stream: false,
         messages: [{ role: "user", content: "Remember drink A" }],
       },
-    })
+    }),
   );
 
   globalThis.fetch = async () => buildOpenAIResponse("I prefer coffee.");
@@ -359,7 +359,7 @@ test("extracted memories remain isolated by session id", async () => {
         stream: false,
         messages: [{ role: "user", content: "Remember drink B" }],
       },
-    })
+    }),
   );
 
   const sessionAMemories = await waitFor(async () => {
@@ -570,7 +570,7 @@ test("logging verification: observability logs fire during pipeline operations",
     const allCalls = [...logSpy.mock.calls, ...debugSpy.mock.calls];
     assert.ok(
       allCalls.length > 0,
-      "expected console.log or console.debug to be called by logger during pipeline operations"
+      "expected console.log or console.debug to be called by logger during pipeline operations",
     );
 
     // 6. Check for specific log event strings in the log output
@@ -579,12 +579,12 @@ test("logging verification: observability logs fire during pipeline operations",
     assert.match(
       allLogOutput,
       /memory\.retrieval\.(start|complete)/i,
-      "should log memory retrieval events"
+      "should log memory retrieval events",
     );
     assert.match(
       allLogOutput,
       /memory\.injection\.(injected|skipped)/i,
-      "should log memory injection events"
+      "should log memory injection events",
     );
   } finally {
     // Restore console methods

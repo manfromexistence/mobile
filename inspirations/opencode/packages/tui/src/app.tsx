@@ -1,15 +1,15 @@
-import { render, TimeToFirstDraw, useRenderer, useTerminalDimensions } from "@opentui/solid"
-import { createDefaultOpenTuiKeymap } from "@opentui/keymap/opentui"
-import { Deferred, Effect } from "effect"
-import { Global } from "@opencode-ai/core/global"
-import { Flag } from "@opencode-ai/core/flag/flag"
-import { InstallationVersion } from "@opencode-ai/core/installation/version"
-import { ClipboardProvider, useClipboard } from "./context/clipboard"
-import { ExitProvider, useExit } from "./context/exit"
-import { EpilogueProvider } from "./context/epilogue"
-import * as Selection from "./util/selection"
-import { createCliRenderer, MouseButton } from "@opentui/core"
-import { RouteProvider, useRoute } from "./context/route"
+import { render, TimeToFirstDraw, useRenderer, useTerminalDimensions } from "@opentui/solid";
+import { createDefaultOpenTuiKeymap } from "@opentui/keymap/opentui";
+import { Deferred, Effect } from "effect";
+import { Global } from "@opencode-ai/core/global";
+import { Flag } from "@opencode-ai/core/flag/flag";
+import { InstallationVersion } from "@opencode-ai/core/installation/version";
+import { ClipboardProvider, useClipboard } from "./context/clipboard";
+import { ExitProvider, useExit } from "./context/exit";
+import { EpilogueProvider } from "./context/epilogue";
+import * as Selection from "./util/selection";
+import { createCliRenderer, MouseButton } from "@opentui/core";
+import { RouteProvider, useRoute } from "./context/route";
 import {
   Switch,
   Match,
@@ -22,53 +22,63 @@ import {
   batch,
   Show,
   on,
-} from "solid-js"
-import { TuiPathsProvider, TuiStartupProvider, TuiTerminalEnvironmentProvider, useTuiStartup } from "./context/runtime"
-import { DialogProvider, useDialog } from "./ui/dialog"
-import { DialogProvider as DialogProviderList } from "./component/dialog-provider"
-import { ErrorComponent } from "./component/error-component"
-import { PluginRouteMissing } from "./component/plugin-route-missing"
-import { ProjectProvider, useProject } from "./context/project"
-import { EditorContextProvider } from "./context/editor"
-import { useEvent } from "./context/event"
-import { SDKProvider, useSDK } from "./context/sdk"
-import { StartupLoading } from "./component/startup-loading"
-import { SyncProvider, useSync } from "./context/sync"
-import { DataProvider } from "./context/data"
-import { LocationProvider } from "./context/location"
-import { LocalProvider, useLocal } from "./context/local"
-import { PermissionProvider } from "./context/permission"
-import { DialogModel } from "./component/dialog-model"
-import { useConnected } from "./component/use-connected"
-import { DialogMcp } from "./component/dialog-mcp"
-import { DialogStatus } from "./component/dialog-status"
-import { DialogDebug } from "./component/dialog-debug"
-import { DialogThemeList } from "./component/dialog-theme-list"
-import { DialogHelp } from "./ui/dialog-help"
-import { DialogAgent } from "./component/dialog-agent"
-import { DialogSessionList } from "./component/dialog-session-list"
-import { DialogWorkspaceList } from "./component/dialog-workspace-list"
-import { DialogConsoleOrg } from "./component/dialog-console-org"
-import { ThemeProvider, useTheme } from "./context/theme"
-import { Home } from "./routes/home"
-import { Session } from "./routes/session"
-import { PromptHistoryProvider } from "./component/prompt/history"
-import { FrecencyProvider } from "./component/prompt/frecency"
-import { PromptStashProvider } from "./component/prompt/stash"
-import { DialogAlert } from "./ui/dialog-alert"
-import { DialogConfirm } from "./ui/dialog-confirm"
-import { ToastProvider, useToast } from "./ui/toast"
-import { isDefaultTitle } from "./util/session"
-import { KVProvider, useKV } from "./context/kv"
-import * as Model from "./util/model"
-import { ArgsProvider, useArgs, type Args } from "./context/args"
-import open from "open"
-import { PromptRefProvider, usePromptRef } from "./context/prompt"
-import { TuiConfigProvider, useTuiConfig, type TuiConfig } from "./config"
-import { createTuiApiAdapters } from "./plugin/adapters"
-import { createTuiApi } from "./plugin/api"
-import { createPluginRuntime, PluginRuntimeProvider, usePluginRuntime, type TuiPluginHost } from "./plugin/runtime"
-import { CommandPaletteDialog } from "./component/command-palette"
+} from "solid-js";
+import {
+  TuiPathsProvider,
+  TuiStartupProvider,
+  TuiTerminalEnvironmentProvider,
+  useTuiStartup,
+} from "./context/runtime";
+import { DialogProvider, useDialog } from "./ui/dialog";
+import { DialogProvider as DialogProviderList } from "./component/dialog-provider";
+import { ErrorComponent } from "./component/error-component";
+import { PluginRouteMissing } from "./component/plugin-route-missing";
+import { ProjectProvider, useProject } from "./context/project";
+import { EditorContextProvider } from "./context/editor";
+import { useEvent } from "./context/event";
+import { SDKProvider, useSDK } from "./context/sdk";
+import { StartupLoading } from "./component/startup-loading";
+import { SyncProvider, useSync } from "./context/sync";
+import { DataProvider } from "./context/data";
+import { LocationProvider } from "./context/location";
+import { LocalProvider, useLocal } from "./context/local";
+import { PermissionProvider } from "./context/permission";
+import { DialogModel } from "./component/dialog-model";
+import { useConnected } from "./component/use-connected";
+import { DialogMcp } from "./component/dialog-mcp";
+import { DialogStatus } from "./component/dialog-status";
+import { DialogDebug } from "./component/dialog-debug";
+import { DialogThemeList } from "./component/dialog-theme-list";
+import { DialogHelp } from "./ui/dialog-help";
+import { DialogAgent } from "./component/dialog-agent";
+import { DialogSessionList } from "./component/dialog-session-list";
+import { DialogWorkspaceList } from "./component/dialog-workspace-list";
+import { DialogConsoleOrg } from "./component/dialog-console-org";
+import { ThemeProvider, useTheme } from "./context/theme";
+import { Home } from "./routes/home";
+import { Session } from "./routes/session";
+import { PromptHistoryProvider } from "./component/prompt/history";
+import { FrecencyProvider } from "./component/prompt/frecency";
+import { PromptStashProvider } from "./component/prompt/stash";
+import { DialogAlert } from "./ui/dialog-alert";
+import { DialogConfirm } from "./ui/dialog-confirm";
+import { ToastProvider, useToast } from "./ui/toast";
+import { isDefaultTitle } from "./util/session";
+import { KVProvider, useKV } from "./context/kv";
+import * as Model from "./util/model";
+import { ArgsProvider, useArgs, type Args } from "./context/args";
+import open from "open";
+import { PromptRefProvider, usePromptRef } from "./context/prompt";
+import { TuiConfigProvider, useTuiConfig, type TuiConfig } from "./config";
+import { createTuiApiAdapters } from "./plugin/adapters";
+import { createTuiApi } from "./plugin/api";
+import {
+  createPluginRuntime,
+  PluginRuntimeProvider,
+  usePluginRuntime,
+  type TuiPluginHost,
+} from "./plugin/runtime";
+import { CommandPaletteDialog } from "./component/command-palette";
 import {
   COMMAND_PALETTE_COMMAND,
   OPENCODE_BASE_MODE,
@@ -76,15 +86,15 @@ import {
   registerOpencodeKeymap,
   useBindings,
   useOpencodeKeymap,
-} from "./keymap"
+} from "./keymap";
 
-import type { EventSource } from "./context/sdk"
-import { DialogVariant } from "./component/dialog-variant"
-import { createTuiAttention } from "./attention"
-import * as TuiAudio from "./audio"
-import { win32DisableProcessedInput, win32FlushInputBuffer } from "./terminal-win32"
-import { destroyRenderer } from "./util/renderer"
-import { cliErrorMessage, errorFormat } from "./util/error"
+import type { EventSource } from "./context/sdk";
+import { DialogVariant } from "./component/dialog-variant";
+import { createTuiAttention } from "./attention";
+import * as TuiAudio from "./audio";
+import { win32DisableProcessedInput, win32FlushInputBuffer } from "./terminal-win32";
+import { destroyRenderer } from "./util/renderer";
+import { cliErrorMessage, errorFormat } from "./util/error";
 
 const appGlobalBindingCommands = [
   "session.list",
@@ -98,7 +108,7 @@ const appGlobalBindingCommands = [
   "session.quick_switch.7",
   "session.quick_switch.8",
   "session.quick_switch.9",
-] as const
+] as const;
 
 const appBindingCommands = [
   "command.palette.show",
@@ -134,19 +144,19 @@ const appBindingCommands = [
   "app.toggle.diffwrap",
   "app.toggle.paste_summary",
   "app.toggle.session_directory_filter",
-] as const
+] as const;
 
 export type TuiInput = {
-  url: string
-  args: Args
-  config: TuiConfig.Resolved
-  onSnapshot?: () => Promise<string[]>
-  directory?: string
-  fetch?: typeof fetch
-  headers?: RequestInit["headers"]
-  events?: EventSource
-  pluginHost: TuiPluginHost
-}
+  url: string;
+  args: Args;
+  config: TuiConfig.Resolved;
+  onSnapshot?: () => Promise<string[]>;
+  directory?: string;
+  fetch?: typeof fetch;
+  headers?: RequestInit["headers"];
+  events?: EventSource;
+  pluginHost: TuiPluginHost;
+};
 
 function errorMessage(error: unknown) {
   if (
@@ -158,31 +168,31 @@ function errorMessage(error: unknown) {
     "message" in error.data &&
     typeof error.data.message === "string"
   ) {
-    return error.data.message
+    return error.data.message;
   }
-  return error instanceof Error ? error.message : String(error)
+  return error instanceof Error ? error.message : String(error);
 }
 
 function isVersionGreater(left: string, right: string) {
   const parse = (value: string) => {
-    const [core, prerelease] = value.replace(/^v/, "").split("-", 2)
-    return { core: core.split(".").map((part) => Number.parseInt(part, 10) || 0), prerelease }
-  }
-  const a = parse(left)
-  const b = parse(right)
+    const [core, prerelease] = value.replace(/^v/, "").split("-", 2);
+    return { core: core.split(".").map((part) => Number.parseInt(part, 10) || 0), prerelease };
+  };
+  const a = parse(left);
+  const b = parse(right);
   for (let index = 0; index < Math.max(a.core.length, b.core.length); index++) {
-    const difference = (a.core[index] ?? 0) - (b.core[index] ?? 0)
-    if (difference) return difference > 0
+    const difference = (a.core[index] ?? 0) - (b.core[index] ?? 0);
+    if (difference) return difference > 0;
   }
-  if (a.prerelease === b.prerelease) return false
-  if (!a.prerelease) return true
-  if (!b.prerelease) return false
-  return a.prerelease.localeCompare(b.prerelease, undefined, { numeric: true }) > 0
+  if (a.prerelease === b.prerelease) return false;
+  if (!a.prerelease) return true;
+  if (!b.prerelease) return false;
+  return a.prerelease.localeCompare(b.prerelease, undefined, { numeric: true }) > 0;
 }
 
 export const run = Effect.fn("Tui.run")(function* (input: TuiInput) {
-  const global = yield* Global.Service
-  const exit = { epilogue: undefined as string | undefined, reason: undefined as unknown }
+  const global = yield* Global.Service;
+  const exit = { epilogue: undefined as string | undefined, reason: undefined as unknown };
   const result = yield* Effect.scoped(
     Effect.gen(function* () {
       const renderer = yield* Effect.acquireRelease(
@@ -205,51 +215,55 @@ export const run = Effect.fn("Tui.run")(function* (input: TuiInput) {
         }),
         (renderer) =>
           Effect.sync(() => {
-            destroyRenderer(renderer)
+            destroyRenderer(renderer);
           }),
-      )
-      win32DisableProcessedInput()
-      const keymap = createDefaultOpenTuiKeymap(renderer)
+      );
+      win32DisableProcessedInput();
+      const keymap = createDefaultOpenTuiKeymap(renderer);
       yield* Effect.acquireRelease(
         Effect.sync(() => registerOpencodeKeymap(keymap, renderer, input.config)),
         (unregister) => Effect.sync(unregister),
-      )
+      );
       yield* Effect.addFinalizer(() =>
         Effect.promise(async () => {
           try {
-            await input.pluginHost.dispose()
+            await input.pluginHost.dispose();
           } catch (error) {
-            console.error("Failed to dispose TUI plugins", error)
+            console.error("Failed to dispose TUI plugins", error);
           }
         }),
-      )
-      yield* Effect.addFinalizer(() => Effect.sync(TuiAudio.dispose))
-      const shutdown = yield* Deferred.make<unknown>()
-      const onSighup = () => destroyRenderer(renderer)
+      );
+      yield* Effect.addFinalizer(() => Effect.sync(TuiAudio.dispose));
+      const shutdown = yield* Deferred.make<unknown>();
+      const onSighup = () => destroyRenderer(renderer);
       yield* Effect.acquireRelease(
         Effect.sync(() => process.on("SIGHUP", onSighup)),
         () => Effect.sync(() => process.off("SIGHUP", onSighup)),
-      )
-      renderer.once("destroy", () => Deferred.doneUnsafe(shutdown, Effect.void))
-      const pluginRuntime = createPluginRuntime()
+      );
+      renderer.once("destroy", () => Deferred.doneUnsafe(shutdown, Effect.void));
+      const pluginRuntime = createPluginRuntime();
 
       yield* Effect.tryPromise(async () => {
         // Prewarm palette before ThemeProvider mounts so `system` theme avoids a first-paint fallback flash.
-        void renderer.getPalette({ size: 16 }).catch(() => undefined)
-        const mode = (await renderer.waitForThemeMode(1000)) ?? "dark"
-        if (renderer.isDestroyed) return
+        void renderer.getPalette({ size: 16 }).catch(() => undefined);
+        const mode = (await renderer.waitForThemeMode(1000)) ?? "dark";
+        if (renderer.isDestroyed) return;
 
         await render(() => {
           return (
             <ExitProvider
               exit={(reason) => {
-                if (renderer.isDestroyed) return
-                exit.reason = reason
-                destroyRenderer(renderer)
+                if (renderer.isDestroyed) return;
+                exit.reason = reason;
+                destroyRenderer(renderer);
               }}
             >
               <EpilogueProvider set={(value) => (exit.epilogue = value)}>
-                <ErrorBoundary fallback={(error, reset) => <ErrorComponent error={error} reset={reset} mode={mode} />}>
+                <ErrorBoundary
+                  fallback={(error, reset) => (
+                    <ErrorComponent error={error} reset={reset} mode={mode} />
+                  )}
+                >
                   <TuiPathsProvider
                     value={{
                       cwd: process.cwd(),
@@ -261,7 +275,11 @@ export const run = Effect.fn("Tui.run")(function* (input: TuiInput) {
                     <TuiTerminalEnvironmentProvider
                       value={{
                         platform: process.platform,
-                        multiplexer: process.env.TMUX ? "tmux" : process.env.STY ? "screen" : undefined,
+                        multiplexer: process.env.TMUX
+                          ? "tmux"
+                          : process.env.STY
+                            ? "screen"
+                            : undefined,
                         displayServer: process.env.WAYLAND_DISPLAY
                           ? "wayland"
                           : process.env.DISPLAY
@@ -271,7 +289,9 @@ export const run = Effect.fn("Tui.run")(function* (input: TuiInput) {
                     >
                       <TuiStartupProvider
                         value={{
-                          initialRoute: process.env.OPENCODE_ROUTE ? JSON.parse(process.env.OPENCODE_ROUTE) : undefined,
+                          initialRoute: process.env.OPENCODE_ROUTE
+                            ? JSON.parse(process.env.OPENCODE_ROUTE)
+                            : undefined,
                           skipInitialLoading: Boolean(process.env.OPENCODE_FAST_BOOT),
                         }}
                       >
@@ -344,43 +364,43 @@ export const run = Effect.fn("Tui.run")(function* (input: TuiInput) {
                 </ErrorBoundary>
               </EpilogueProvider>
             </ExitProvider>
-          )
-        }, renderer)
-      })
-      yield* Deferred.await(shutdown)
-      return { epilogue: exit.epilogue, reason: exit.reason }
+          );
+        }, renderer);
+      });
+      yield* Deferred.await(shutdown);
+      return { epilogue: exit.epilogue, reason: exit.reason };
     }),
-  )
+  );
   yield* Effect.sync(() => {
-    win32FlushInputBuffer()
+    win32FlushInputBuffer();
     if (result.reason !== undefined)
-      process.stderr.write((cliErrorMessage(result.reason) ?? errorFormat(result.reason)) + "\n")
-    if (result.epilogue) process.stdout.write(result.epilogue + "\n")
-  })
-})
+      process.stderr.write((cliErrorMessage(result.reason) ?? errorFormat(result.reason)) + "\n");
+    if (result.epilogue) process.stdout.write(result.epilogue + "\n");
+  });
+});
 
 function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPluginHost }) {
-  const startup = useTuiStartup()
-  const tuiConfig = useTuiConfig()
-  const route = useRoute()
-  const dimensions = useTerminalDimensions()
-  const renderer = useRenderer()
-  const dialog = useDialog()
-  const local = useLocal()
-  const kv = useKV()
-  const keymap = useOpencodeKeymap()
-  const event = useEvent()
-  const sdk = useSDK()
-  const toast = useToast()
-  const themeState = useTheme()
-  const { theme, mode, setMode, locked, lock, unlock } = themeState
-  const sync = useSync()
-  const project = useProject()
-  const exit = useExit()
-  const promptRef = usePromptRef()
-  const pluginRuntime = usePluginRuntime()
-  const attention = createTuiAttention({ renderer, config: tuiConfig, kv })
-  const clipboard = useClipboard()
+  const startup = useTuiStartup();
+  const tuiConfig = useTuiConfig();
+  const route = useRoute();
+  const dimensions = useTerminalDimensions();
+  const renderer = useRenderer();
+  const dialog = useDialog();
+  const local = useLocal();
+  const kv = useKV();
+  const keymap = useOpencodeKeymap();
+  const event = useEvent();
+  const sdk = useSDK();
+  const toast = useToast();
+  const themeState = useTheme();
+  const { theme, mode, setMode, locked, lock, unlock } = themeState;
+  const sync = useSync();
+  const project = useProject();
+  const exit = useExit();
+  const promptRef = usePromptRef();
+  const pluginRuntime = usePluginRuntime();
+  const attention = createTuiAttention({ renderer, config: tuiConfig, kv });
+  const clipboard = useClipboard();
 
   const api = createTuiApi(
     createTuiApiAdapters({
@@ -400,8 +420,8 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
       attention,
       Slot: pluginRuntime.Slot,
     }),
-  )
-  const [ready, setReady] = createSignal(false)
+  );
+  const [ready, setReady] = createSignal(false);
   props.pluginHost
     .start({
       api,
@@ -410,149 +430,151 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
       dispose: () => attention.dispose(),
     })
     .catch((error) => {
-      console.error("Failed to load TUI plugins", error)
+      console.error("Failed to load TUI plugins", error);
     })
     .finally(() => {
-      setReady(true)
-    })
+      setReady(true);
+    });
 
   // Let selection copy/dismiss win ahead of normal bindings when explicit copy is required.
   const offSelectionKeys = keymap.intercept(
     "key",
     ({ event }) => {
-      if (!Flag.OPENCODE_EXPERIMENTAL_DISABLE_COPY_ON_SELECT) return
-      Selection.handleSelectionKey(renderer, toast, event, clipboard)
+      if (!Flag.OPENCODE_EXPERIMENTAL_DISABLE_COPY_ON_SELECT) return;
+      Selection.handleSelectionKey(renderer, toast, event, clipboard);
     },
     { priority: 1 },
-  )
+  );
   onCleanup(() => {
-    offSelectionKeys()
-    attention.dispose()
-  })
+    offSelectionKeys();
+    attention.dispose();
+  });
 
   // Wire up console copy-to-clipboard via opentui's onCopySelection callback
   renderer.console.onCopySelection = async (text: string) => {
-    if (!text || text.length === 0) return
+    if (!text || text.length === 0) return;
 
     await clipboard
       .write?.(text)
       .then(() => toast.show({ message: "Copied to clipboard", variant: "info" }))
-      .catch(toast.error)
+      .catch(toast.error);
 
-    renderer.clearSelection()
-  }
-  const [terminalTitleEnabled, setTerminalTitleEnabled] = createSignal(kv.get("terminal_title_enabled", true))
+    renderer.clearSelection();
+  };
+  const [terminalTitleEnabled, setTerminalTitleEnabled] = createSignal(
+    kv.get("terminal_title_enabled", true),
+  );
   const [pasteSummaryEnabled, setPasteSummaryEnabled] = createSignal(
     kv.get("paste_summary_enabled", !sync.data.config.experimental?.disable_paste_summary),
-  )
+  );
 
   // Update terminal window title based on current route and session
   createEffect(() => {
-    if (!terminalTitleEnabled() || Flag.OPENCODE_DISABLE_TERMINAL_TITLE) return
+    if (!terminalTitleEnabled() || Flag.OPENCODE_DISABLE_TERMINAL_TITLE) return;
 
     if (route.data.type === "home") {
-      renderer.setTerminalTitle("OpenCode")
-      return
+      renderer.setTerminalTitle("OpenCode");
+      return;
     }
 
     if (route.data.type === "session") {
-      const session = sync.session.get(route.data.sessionID)
+      const session = sync.session.get(route.data.sessionID);
       if (!session || isDefaultTitle(session.title)) {
-        renderer.setTerminalTitle("OpenCode")
-        return
+        renderer.setTerminalTitle("OpenCode");
+        return;
       }
 
-      const title = session.title.length > 40 ? session.title.slice(0, 37) + "..." : session.title
-      renderer.setTerminalTitle(`OC | ${title}`)
-      return
+      const title = session.title.length > 40 ? session.title.slice(0, 37) + "..." : session.title;
+      renderer.setTerminalTitle(`OC | ${title}`);
+      return;
     }
 
     if (route.data.type === "plugin") {
-      renderer.setTerminalTitle(`OC | ${route.data.id}`)
+      renderer.setTerminalTitle(`OC | ${route.data.id}`);
     }
-  })
+  });
 
-  const args = useArgs()
+  const args = useArgs();
   onMount(() => {
     batch(() => {
-      if (args.agent) local.agent.set(args.agent)
+      if (args.agent) local.agent.set(args.agent);
       if (args.model) {
-        const { providerID, modelID } = Model.parse(args.model)
+        const { providerID, modelID } = Model.parse(args.model);
         if (!providerID || !modelID)
           return toast.show({
             variant: "warning",
             message: `Invalid model format: ${args.model}`,
             duration: 3000,
-          })
-        local.model.set({ providerID, modelID }, { recent: true })
+          });
+        local.model.set({ providerID, modelID }, { recent: true });
       }
       if (args.sessionID && !args.fork) {
         route.navigate({
           type: "session",
           sessionID: args.sessionID,
-        })
+        });
       }
-    })
-  })
+    });
+  });
 
-  let continued = false
+  let continued = false;
   createEffect(() => {
     // When using -c, session list is loaded in blocking phase, so we can navigate at "partial"
-    if (continued || sync.status === "loading" || !args.continue) return
+    if (continued || sync.status === "loading" || !args.continue) return;
     const match = sync.data.session
       .toSorted((a, b) => b.time.updated - a.time.updated)
-      .find((x) => x.parentID === undefined)?.id
+      .find((x) => x.parentID === undefined)?.id;
     if (match) {
-      continued = true
+      continued = true;
       if (args.fork) {
         void sdk.client.session.fork({ sessionID: match }).then((result) => {
           if (result.data?.id) {
-            route.navigate({ type: "session", sessionID: result.data.id })
+            route.navigate({ type: "session", sessionID: result.data.id });
           } else {
-            toast.show({ message: "Failed to fork session", variant: "error" })
+            toast.show({ message: "Failed to fork session", variant: "error" });
           }
-        })
+        });
       } else {
-        route.navigate({ type: "session", sessionID: match })
+        route.navigate({ type: "session", sessionID: match });
       }
     }
-  })
+  });
 
   // Handle --session with --fork: wait for sync to be fully complete before forking
   // (session list loads in non-blocking phase for --session, so we must wait for "complete"
   // to avoid a race where reconcile overwrites the newly forked session)
-  let forked = false
+  let forked = false;
   createEffect(() => {
-    if (forked || sync.status !== "complete" || !args.sessionID || !args.fork) return
-    forked = true
+    if (forked || sync.status !== "complete" || !args.sessionID || !args.fork) return;
+    forked = true;
     void sdk.client.session.fork({ sessionID: args.sessionID }).then((result) => {
       if (result.data?.id) {
-        route.navigate({ type: "session", sessionID: result.data.id })
+        route.navigate({ type: "session", sessionID: result.data.id });
       } else {
-        toast.show({ message: "Failed to fork session", variant: "error" })
+        toast.show({ message: "Failed to fork session", variant: "error" });
       }
-    })
-  })
+    });
+  });
 
   createEffect(
     on(
       () => sync.status === "complete" && sync.data.provider.length === 0,
       (isEmpty, wasEmpty) => {
         // only trigger when we transition into an empty-provider state
-        if (!isEmpty || wasEmpty) return
-        dialog.replace(() => <DialogProviderList />)
+        if (!isEmpty || wasEmpty) return;
+        dialog.replace(() => <DialogProviderList />);
       },
     ),
-  )
+  );
 
-  const connected = useConnected()
+  const connected = useConnected();
   const currentWorktreeWorkspace = createMemo(() => {
-    const workspaceID = project.workspace.current()
-    if (!workspaceID) return
-    const workspace = project.workspace.get(workspaceID)
-    if (workspace?.type !== "worktree" || !workspace.directory) return
-    return workspace
-  })
+    const workspaceID = project.workspace.current();
+    if (!workspaceID) return;
+    const workspace = project.workspace.get(workspaceID);
+    if (workspace?.type !== "worktree" || !workspace.directory) return;
+    return workspace;
+  });
   const appCommands = createMemo(() =>
     [
       {
@@ -561,7 +583,7 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         category: "System",
         hidden: true,
         run: () => {
-          dialog.replace(() => <CommandPaletteDialog />)
+          dialog.replace(() => <CommandPaletteDialog />);
         },
       },
       {
@@ -572,7 +594,7 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         slashName: "sessions",
         slashAliases: ["resume", "continue"],
         run: () => {
-          dialog.replace(() => <DialogSessionList />)
+          dialog.replace(() => <DialogSessionList />);
         },
       },
       {
@@ -585,8 +607,8 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         run: () => {
           route.navigate({
             type: "home",
-          })
-          dialog.clear()
+          });
+          dialog.clear();
         },
       },
       {
@@ -595,13 +617,13 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         category: "Workspace",
         enabled: () => currentWorktreeWorkspace() !== undefined,
         run: async () => {
-          const workspace = currentWorktreeWorkspace()
-          if (!workspace?.directory) return
+          const workspace = currentWorktreeWorkspace();
+          if (!workspace?.directory) return;
           await clipboard
             .write?.(workspace.directory)
             .then(() => toast.show({ message: "Copied worktree path", variant: "info" }))
-            .catch(toast.error)
-          dialog.clear()
+            .catch(toast.error);
+          dialog.clear();
         },
       },
       {
@@ -611,7 +633,7 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         hidden: !Flag.OPENCODE_EXPERIMENTAL_WORKSPACES,
         slashName: "workspaces",
         run: () => {
-          dialog.replace(() => <DialogWorkspaceList />)
+          dialog.replace(() => <DialogWorkspaceList />);
         },
       },
       ...Array.from({ length: 9 }, (_, i) => ({
@@ -620,7 +642,7 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         category: "Session",
         hidden: true,
         run: () => {
-          local.session.quickSwitch(i + 1)
+          local.session.quickSwitch(i + 1);
         },
       })),
       {
@@ -632,7 +654,7 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         // Bias /mo toward /models over /move without changing global fuzzy scoring.
         slashAliases: ["mo"],
         run: () => {
-          dialog.replace(() => <DialogModel />)
+          dialog.replace(() => <DialogModel />);
         },
       },
       {
@@ -641,7 +663,7 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         category: "Agent",
         hidden: true,
         run: () => {
-          local.model.cycle(1)
+          local.model.cycle(1);
         },
       },
       {
@@ -650,7 +672,7 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         category: "Agent",
         hidden: true,
         run: () => {
-          local.model.cycle(-1)
+          local.model.cycle(-1);
         },
       },
       {
@@ -659,7 +681,7 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         category: "Agent",
         hidden: true,
         run: () => {
-          local.model.cycleFavorite(1)
+          local.model.cycleFavorite(1);
         },
       },
       {
@@ -668,7 +690,7 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         category: "Agent",
         hidden: true,
         run: () => {
-          local.model.cycleFavorite(-1)
+          local.model.cycleFavorite(-1);
         },
       },
       {
@@ -677,7 +699,7 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         category: "Agent",
         slashName: "agents",
         run: () => {
-          dialog.replace(() => <DialogAgent />)
+          dialog.replace(() => <DialogAgent />);
         },
       },
       {
@@ -686,7 +708,7 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         category: "Agent",
         slashName: "mcps",
         run: () => {
-          dialog.replace(() => <DialogMcp />)
+          dialog.replace(() => <DialogMcp />);
         },
       },
       {
@@ -695,7 +717,7 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         category: "Agent",
         hidden: true,
         run: () => {
-          local.agent.move(1)
+          local.agent.move(1);
         },
       },
       {
@@ -703,7 +725,7 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         title: "Variant cycle",
         category: "Agent",
         run: () => {
-          local.model.variant.cycle()
+          local.model.variant.cycle();
         },
       },
       {
@@ -718,9 +740,9 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
               title: "No variants available",
               message: "The current model does not support any variants.",
               variant: "info",
-            })
+            });
           }
-          dialog.replace(() => <DialogVariant />)
+          dialog.replace(() => <DialogVariant />);
         },
       },
       {
@@ -729,7 +751,7 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         category: "Agent",
         hidden: true,
         run: () => {
-          local.agent.move(-1)
+          local.agent.move(-1);
         },
       },
       {
@@ -738,7 +760,7 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         suggested: !connected(),
         slashName: "connect",
         run: () => {
-          dialog.replace(() => <DialogProviderList />)
+          dialog.replace(() => <DialogProviderList />);
         },
         category: "Provider",
       },
@@ -751,7 +773,7 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
               slashName: "org",
               slashAliases: ["orgs", "switch-org"],
               run: () => {
-                dialog.replace(() => <DialogConsoleOrg />)
+                dialog.replace(() => <DialogConsoleOrg />);
               },
               category: "Provider",
             },
@@ -762,7 +784,7 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         title: "View status",
         slashName: "status",
         run: () => {
-          dialog.replace(() => <DialogStatus />)
+          dialog.replace(() => <DialogStatus />);
         },
         category: "System",
       },
@@ -771,7 +793,7 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         title: "View debug info",
         slashName: "debug",
         run: () => {
-          dialog.replace(() => <DialogDebug />)
+          dialog.replace(() => <DialogDebug />);
         },
         category: "System",
       },
@@ -780,7 +802,7 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         title: "Switch theme",
         slashName: "themes",
         run: () => {
-          dialog.replace(() => <DialogThemeList />)
+          dialog.replace(() => <DialogThemeList />);
         },
         category: "System",
       },
@@ -788,8 +810,8 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         name: "theme.switch_mode",
         title: mode() === "dark" ? "Switch to light mode" : "Switch to dark mode",
         run: () => {
-          setMode(mode() === "dark" ? "light" : "dark")
-          dialog.clear()
+          setMode(mode() === "dark" ? "light" : "dark");
+          dialog.clear();
         },
         category: "System",
       },
@@ -797,9 +819,9 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         name: "theme.mode.lock",
         title: locked() ? "Unlock theme mode" : "Lock theme mode",
         run: () => {
-          if (locked()) unlock()
-          else lock()
-          dialog.clear()
+          if (locked()) unlock();
+          else lock();
+          dialog.clear();
         },
         category: "System",
       },
@@ -808,7 +830,7 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         title: "Help",
         slashName: "help",
         run: () => {
-          dialog.replace(() => <DialogHelp />)
+          dialog.replace(() => <DialogHelp />);
         },
         category: "System",
       },
@@ -816,8 +838,8 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         name: "docs.open",
         title: "Open docs",
         run: () => {
-          open("https://opencode.ai/docs").catch(() => {})
-          dialog.clear()
+          open("https://opencode.ai/docs").catch(() => {});
+          dialog.clear();
         },
         category: "System",
       },
@@ -834,8 +856,8 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         title: "Toggle debug panel",
         category: "System",
         run: () => {
-          renderer.toggleDebugOverlay()
-          dialog.clear()
+          renderer.toggleDebugOverlay();
+          dialog.clear();
         },
       },
       {
@@ -843,8 +865,8 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         title: "Toggle console",
         category: "System",
         run: () => {
-          renderer.console.toggle()
-          dialog.clear()
+          renderer.console.toggle();
+          dialog.clear();
         },
       },
       {
@@ -852,13 +874,13 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         title: "Write heap snapshot",
         category: "System",
         run: async () => {
-          const files = await props.onSnapshot?.()
+          const files = await props.onSnapshot?.();
           toast.show({
             variant: "info",
             message: `Heap snapshot written to ${files?.join(", ")}`,
             duration: 5000,
-          })
-          dialog.clear()
+          });
+          dialog.clear();
         },
       },
       {
@@ -868,9 +890,9 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         hidden: true,
         enabled: process.platform !== "win32",
         run: () => {
-          renderer.suspend()
-          process.once("SIGCONT", () => renderer.resume())
-          process.kill(0, "SIGTSTP")
+          renderer.suspend();
+          process.once("SIGCONT", () => renderer.resume());
+          process.kill(0, "SIGTSTP");
         },
       },
       {
@@ -879,12 +901,12 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         category: "System",
         run: () => {
           setTerminalTitleEnabled((prev) => {
-            const next = !prev
-            kv.set("terminal_title_enabled", next)
-            if (!next) renderer.setTerminalTitle("")
-            return next
-          })
-          dialog.clear()
+            const next = !prev;
+            kv.set("terminal_title_enabled", next);
+            if (!next) renderer.setTerminalTitle("");
+            return next;
+          });
+          dialog.clear();
         },
       },
       {
@@ -892,27 +914,32 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         title: kv.get("animations_enabled", true) ? "Disable animations" : "Enable animations",
         category: "System",
         run: () => {
-          kv.set("animations_enabled", !kv.get("animations_enabled", true))
-          dialog.clear()
+          kv.set("animations_enabled", !kv.get("animations_enabled", true));
+          dialog.clear();
         },
       },
       {
         name: "app.toggle.file_context",
-        title: kv.get("file_context_enabled", true) ? "Disable file context" : "Enable file context",
+        title: kv.get("file_context_enabled", true)
+          ? "Disable file context"
+          : "Enable file context",
         category: "System",
         run: () => {
-          kv.set("file_context_enabled", !kv.get("file_context_enabled", true))
-          dialog.clear()
+          kv.set("file_context_enabled", !kv.get("file_context_enabled", true));
+          dialog.clear();
         },
       },
       {
         name: "app.toggle.diffwrap",
-        title: kv.get("diff_wrap_mode", "word") === "word" ? "Disable diff wrapping" : "Enable diff wrapping",
+        title:
+          kv.get("diff_wrap_mode", "word") === "word"
+            ? "Disable diff wrapping"
+            : "Enable diff wrapping",
         category: "System",
         run: () => {
-          const current = kv.get("diff_wrap_mode", "word")
-          kv.set("diff_wrap_mode", current === "word" ? "none" : "word")
-          dialog.clear()
+          const current = kv.get("diff_wrap_mode", "word");
+          kv.set("diff_wrap_mode", current === "word" ? "none" : "word");
+          dialog.clear();
         },
       },
       {
@@ -921,11 +948,11 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         category: "System",
         run: () => {
           setPasteSummaryEnabled((prev) => {
-            const next = !prev
-            kv.set("paste_summary_enabled", next)
-            return next
-          })
-          dialog.clear()
+            const next = !prev;
+            kv.set("paste_summary_enabled", next);
+            return next;
+          });
+          dialog.clear();
         },
       },
       {
@@ -935,124 +962,129 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
           : "Enable session directory filtering",
         category: "System",
         run: async () => {
-          kv.set("session_directory_filter_enabled", !kv.get("session_directory_filter_enabled", true))
-          await sync.session.refresh()
-          dialog.clear()
+          kv.set(
+            "session_directory_filter_enabled",
+            !kv.get("session_directory_filter_enabled", true),
+          );
+          await sync.session.refresh();
+          dialog.clear();
         },
       },
       {
         name: "permission.mode",
         title:
-          local.permission.mode === "auto" ? "Disable auto-approve permissions" : "Enable auto-approve permissions",
+          local.permission.mode === "auto"
+            ? "Disable auto-approve permissions"
+            : "Enable auto-approve permissions",
         category: "System",
         run: () => {
-          local.permission.toggle()
-          dialog.clear()
+          local.permission.toggle();
+          dialog.clear();
         },
       },
     ].map((command) => ({
       namespace: "palette",
       ...command,
     })),
-  )
+  );
 
   useBindings(() => ({
     commands: appCommands(),
-  }))
+  }));
 
   useBindings(() => ({
     mode: OPENCODE_BASE_MODE,
     bindings: tuiConfig.keybinds.gather("app", appBindingCommands),
-  }))
+  }));
 
   useBindings(() => ({
     bindings: tuiConfig.keybinds.gather("app.global", appGlobalBindingCommands),
-  }))
+  }));
 
   useBindings(() => ({
     mode: OPENCODE_BASE_MODE,
     enabled: () => {
-      const current = promptRef.current
-      if (!current?.focused) return true
-      return current.current.input === ""
+      const current = promptRef.current;
+      if (!current?.focused) return true;
+      return current.current.input === "";
     },
     bindings: tuiConfig.keybinds.gather("app_exit", ["app.exit"]),
-  }))
+  }));
 
   event.on("tui.command.execute", (evt, { workspace }) => {
-    if (workspace !== project.workspace.current()) return
-    keymap.dispatchCommand(evt.properties.command)
-  })
+    if (workspace !== project.workspace.current()) return;
+    keymap.dispatchCommand(evt.properties.command);
+  });
 
   event.on("tui.toast.show", (evt, { workspace }) => {
-    if (workspace !== project.workspace.current()) return
+    if (workspace !== project.workspace.current()) return;
     toast.show({
       title: evt.properties.title,
       message: evt.properties.message,
       variant: evt.properties.variant,
       duration: evt.properties.duration,
-    })
-  })
+    });
+  });
 
   event.on("tui.session.select", (evt, { workspace }) => {
-    if (workspace !== project.workspace.current()) return
+    if (workspace !== project.workspace.current()) return;
     route.navigate({
       type: "session",
       sessionID: evt.properties.sessionID,
-    })
-  })
+    });
+  });
 
   event.on("session.deleted", (evt) => {
     if (route.data.type === "session" && route.data.sessionID === evt.properties.info.id) {
-      route.navigate({ type: "home" })
+      route.navigate({ type: "home" });
       toast.show({
         variant: "info",
         message: "The current session was deleted",
-      })
+      });
     }
-  })
+  });
 
   event.on("session.error", (evt, { workspace }) => {
-    if (workspace !== project.workspace.current()) return
-    const error = evt.properties.error
-    if (error && typeof error === "object" && error.name === "MessageAbortedError") return
-    const message = errorMessage(error)
+    if (workspace !== project.workspace.current()) return;
+    const error = evt.properties.error;
+    if (error && typeof error === "object" && error.name === "MessageAbortedError") return;
+    const message = errorMessage(error);
 
     toast.show({
       variant: "error",
       message,
       duration: 5000,
-    })
-  })
+    });
+  });
 
   event.on("installation.update-available", async (evt) => {
-    console.log("installation.update-available", evt)
-    const version = evt.properties.version
+    console.log("installation.update-available", evt);
+    const version = evt.properties.version;
 
-    const skipped = kv.get("skipped_version")
-    if (skipped && !isVersionGreater(version, skipped)) return
+    const skipped = kv.get("skipped_version");
+    if (skipped && !isVersionGreater(version, skipped)) return;
 
     const choice = await DialogConfirm.show(
       dialog,
       `Update Available`,
       `A new release v${version} is available. Would you like to update now?`,
       "skip",
-    )
+    );
 
     if (choice === false) {
-      kv.set("skipped_version", version)
-      return
+      kv.set("skipped_version", version);
+      return;
     }
 
-    if (choice !== true) return
+    if (choice !== true) return;
 
     toast.show({
       variant: "info",
       message: `Updating to v${version}...`,
       duration: 30000,
-    })
+    });
 
-    const result = await sdk.client.global.upgrade({ target: version })
+    const result = await sdk.client.global.upgrade({ target: version });
 
     if (result.error || !result.data?.success) {
       toast.show({
@@ -1060,26 +1092,29 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         title: "Update Failed",
         message: "Update failed",
         duration: 10000,
-      })
-      return
+      });
+      return;
     }
 
     await DialogAlert.show(
       dialog,
       "Update Complete",
       `Successfully updated to OpenCode v${result.data.version}. Please restart the application.`,
-    )
+    );
 
-    void exit()
-  })
+    void exit();
+  });
 
   const plugin = createMemo(() => {
-    if (!ready()) return
-    if (route.data.type !== "plugin") return
-    const render = pluginRuntime.routes.get(route.data.id)
-    if (!render) return <PluginRouteMissing id={route.data.id} onHome={() => route.navigate({ type: "home" })} />
-    return render({ params: route.data.data })
-  })
+    if (!ready()) return;
+    if (route.data.type !== "plugin") return;
+    const render = pluginRuntime.routes.get(route.data.id);
+    if (!render)
+      return (
+        <PluginRouteMissing id={route.data.id} onHome={() => route.navigate({ type: "home" })} />
+      );
+    return render({ params: route.data.data });
+  });
 
   return (
     <box
@@ -1088,12 +1123,12 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
       flexDirection="column"
       backgroundColor={theme.background}
       onMouseDown={(evt) => {
-        if (!Flag.OPENCODE_EXPERIMENTAL_DISABLE_COPY_ON_SELECT) return
-        if (evt.button !== MouseButton.RIGHT) return
+        if (!Flag.OPENCODE_EXPERIMENTAL_DISABLE_COPY_ON_SELECT) return;
+        if (evt.button !== MouseButton.RIGHT) return;
 
-        if (!Selection.copy(renderer, toast, clipboard)) return
-        evt.preventDefault()
-        evt.stopPropagation()
+        if (!Selection.copy(renderer, toast, clipboard)) return;
+        evt.preventDefault();
+        evt.stopPropagation();
       }}
       onMouseUp={
         !Flag.OPENCODE_EXPERIMENTAL_DISABLE_COPY_ON_SELECT
@@ -1127,5 +1162,5 @@ function App(props: { onSnapshot?: () => Promise<string[]>; pluginHost: TuiPlugi
         <StartupLoading ready={ready} />
       </Show>
     </box>
-  )
+  );
 }

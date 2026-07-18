@@ -73,7 +73,7 @@ try {
       "--output",
       "none",
     ],
-    { encoding: "utf8" }
+    { encoding: "utf8" },
   );
   fs.writeFileSync("homolog-report/httpyac-junit.xml", hy.stdout || "");
   record("L1 API (httpYac)", hy.status === 0);
@@ -94,7 +94,7 @@ try {
         "homolog-report/raw/promptfoo.json",
         "--no-cache",
       ],
-      { encoding: "utf8", env: process.env }
+      { encoding: "utf8", env: process.env },
     );
     const pfOut = JSON.parse(fs.readFileSync("homolog-report/raw/promptfoo.json", "utf8"));
     const pfCtrf = promptfooToCtrf(pfOut);
@@ -102,7 +102,7 @@ try {
     record(
       "L2 providers reais",
       pfCtrf.results.summary.failed === 0,
-      `${pfCtrf.results.summary.passed}/${pfCtrf.results.summary.tests} providers OK`
+      `${pfCtrf.results.summary.passed}/${pfCtrf.results.summary.tests} providers OK`,
     );
   } catch (err) {
     // gerador/eval quebrando é falha da camada — o run continua para o L4 e o cleanup
@@ -116,7 +116,7 @@ try {
     {
       stdio: "inherit",
       env: process.env,
-    }
+    },
   );
   record("L4 UI (Playwright)", pw.status === 0);
 } finally {
@@ -132,7 +132,7 @@ spawnSync(
   ["junit-to-ctrf", "homolog-report/httpyac-junit.xml", "-o", "homolog-report/api-ctrf.json"],
   {
     stdio: "inherit",
-  }
+  },
 );
 spawnSync(
   "npx",
@@ -147,7 +147,7 @@ spawnSync(
   ],
   {
     stdio: "inherit",
-  }
+  },
 );
 
 writeSummary(layers, BASE, expectedVersion);

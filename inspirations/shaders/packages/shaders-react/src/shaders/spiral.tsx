@@ -1,6 +1,6 @@
-import { memo } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '../shader-mount.js';
-import { colorPropsAreEqual } from '../color-props-are-equal.js';
+import { memo } from "react";
+import { ShaderMount, type ShaderComponentProps } from "../shader-mount.js";
+import { colorPropsAreEqual } from "../color-props-are-equal.js";
 import {
   defaultPatternSizing,
   getShaderColorFromString,
@@ -9,19 +9,19 @@ import {
   type ShaderPreset,
   type SpiralParams,
   type SpiralUniforms,
-} from '@paper-design/shaders';
+} from "@paper-design/shaders";
 
 export interface SpiralProps extends ShaderComponentProps, SpiralParams {}
 
 type SpiralPreset = ShaderPreset<SpiralParams>;
 
 export const defaultPreset: SpiralPreset = {
-  name: 'Default',
+  name: "Default",
   params: {
     ...defaultPatternSizing,
     scale: 1,
-    colorBack: '#001429',
-    colorFront: '#79D1FF',
+    colorBack: "#001429",
+    colorFront: "#79D1FF",
     density: 1,
     distortion: 0,
     strokeWidth: 0.5,
@@ -36,11 +36,11 @@ export const defaultPreset: SpiralPreset = {
 };
 
 export const dropletPreset: SpiralPreset = {
-  name: 'Droplet',
+  name: "Droplet",
   params: {
     ...defaultPatternSizing,
-    colorBack: '#effafe',
-    colorFront: '#bf40a0',
+    colorBack: "#effafe",
+    colorFront: "#bf40a0",
     density: 0.9,
     distortion: 0,
     strokeWidth: 0.75,
@@ -55,13 +55,13 @@ export const dropletPreset: SpiralPreset = {
 };
 
 export const junglePreset: SpiralPreset = {
-  name: 'Jungle',
+  name: "Jungle",
   params: {
     ...defaultPatternSizing,
     scale: 1.3,
     density: 0.5,
-    colorBack: '#a0ef2a',
-    colorFront: '#288b18',
+    colorBack: "#a0ef2a",
+    colorFront: "#288b18",
     distortion: 0,
     strokeWidth: 0.5,
     strokeTaper: 0,
@@ -75,12 +75,12 @@ export const junglePreset: SpiralPreset = {
 };
 
 export const swirlPreset: SpiralPreset = {
-  name: 'Swirl',
+  name: "Swirl",
   params: {
     ...defaultPatternSizing,
     scale: 0.45,
-    colorBack: '#b3e6d9',
-    colorFront: '#1a2b4d',
+    colorBack: "#b3e6d9",
+    colorFront: "#1a2b4d",
     density: 0.2,
     distortion: 0,
     strokeWidth: 0.5,
@@ -94,7 +94,12 @@ export const swirlPreset: SpiralPreset = {
   },
 };
 
-export const spiralPresets: SpiralPreset[] = [defaultPreset, junglePreset, dropletPreset, swirlPreset];
+export const spiralPresets: SpiralPreset[] = [
+  defaultPreset,
+  junglePreset,
+  dropletPreset,
+  swirlPreset,
+];
 
 export const Spiral: React.FC<SpiralProps> = memo(function SpiralImpl({
   // Own props
@@ -149,6 +154,12 @@ export const Spiral: React.FC<SpiralProps> = memo(function SpiralImpl({
   } satisfies SpiralUniforms;
 
   return (
-    <ShaderMount {...props} speed={speed} frame={frame} fragmentShader={spiralFragmentShader} uniforms={uniforms} />
+    <ShaderMount
+      {...props}
+      speed={speed}
+      frame={frame}
+      fragmentShader={spiralFragmentShader}
+      uniforms={uniforms}
+    />
   );
 }, colorPropsAreEqual);

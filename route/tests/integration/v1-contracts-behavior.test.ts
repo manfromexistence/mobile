@@ -116,7 +116,7 @@ test("contract: /api/v1/messages/count_tokens returns 400 on invalid JSON", asyn
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: "not-json",
-    })
+    }),
   );
 
   assert.equal(response.status, 400);
@@ -124,7 +124,7 @@ test("contract: /api/v1/messages/count_tokens returns 400 on invalid JSON", asyn
   assert.ok(body.error, "error payload should exist");
   assert.ok(
     typeof body.error === "string" || typeof body.error === "object",
-    "error payload should be string or object"
+    "error payload should be string or object",
   );
 });
 
@@ -136,7 +136,7 @@ test("contract: /api/v1/messages/count_tokens rejects empty messages payload", a
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ messages: [] }),
-    })
+    }),
   );
 
   assert.equal(response.status, 400);
@@ -144,7 +144,7 @@ test("contract: /api/v1/messages/count_tokens rejects empty messages payload", a
   assert.ok(body.error, "error payload should exist");
   assert.ok(
     typeof body.error === "string" || typeof body.error === "object",
-    "error payload should be string or object"
+    "error payload should be string or object",
   );
 });
 
@@ -166,7 +166,7 @@ test("contract: /api/v1/messages/count_tokens computes token estimate from text 
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
-    })
+    }),
   );
 
   assert.equal(response.status, 200);

@@ -1,7 +1,13 @@
-import type { vec4 } from '../types.js';
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { declarePI, rotation2, textureRandomizerR, colorBandingFix, proceduralHash11 } from '../shader-utils.js';
+import type { vec4 } from "../types.js";
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import {
+  declarePI,
+  rotation2,
+  textureRandomizerR,
+  colorBandingFix,
+  proceduralHash11,
+} from "../shader-utils.js";
 
 export const godRaysMeta = {
   maxColorCount: 5,
@@ -54,7 +60,7 @@ uniform sampler2D u_noiseTexture;
 
 uniform vec4 u_colorBack;
 uniform vec4 u_colorBloom;
-uniform vec4 u_colors[${ godRaysMeta.maxColorCount }];
+uniform vec4 u_colors[${godRaysMeta.maxColorCount}];
 uniform float u_colorsCount;
 
 uniform float u_density;
@@ -68,9 +74,9 @@ in vec2 v_objectUV;
 
 out vec4 fragColor;
 
-${ declarePI }
-${ rotation2 }
-${ textureRandomizerR }
+${declarePI}
+${rotation2}
+${textureRandomizerR}
 float valueNoise(vec2 st) {
   vec2 i = floor(st);
   vec2 f = fract(st);
@@ -84,7 +90,7 @@ float valueNoise(vec2 st) {
   return mix(x1, x2, u.y);
 }
 
-${ proceduralHash11 }
+${proceduralHash11}
 
 float raysShape(vec2 uv, float r, float freq, float intensity, float radius) {
   float a = atan(uv.y, uv.x);
@@ -117,7 +123,7 @@ void main() {
   vec3 accumColor = vec3(0.0);
   float accumAlpha = 0.0;
 
-  for (int i = 0; i < ${ godRaysMeta.maxColorCount }; i++) {
+  for (int i = 0; i < ${godRaysMeta.maxColorCount}; i++) {
     if (i >= int(u_colorsCount)) break;
 
     vec2 rotatedUV = rotate(shape_uv, float(i) + 1.0);
@@ -158,7 +164,7 @@ void main() {
   color = clamp(color, 0., 1.);
   opacity = clamp(opacity, 0., 1.);
 
-  ${ colorBandingFix }
+  ${colorBandingFix}
 
   fragColor = vec4(color, opacity);
 }

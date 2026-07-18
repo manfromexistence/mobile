@@ -32,13 +32,14 @@ export function remapOpacityToTriplet(
   opacity: number,
   opacityBase: number | undefined,
   opacityMid: number | undefined,
-  opacityPeak: number | undefined
+  opacityPeak: number | undefined,
 ): number {
   if (!Number.isFinite(opacity)) {
     return opacity;
   }
 
-  const hasOverrides = opacityBase !== undefined || opacityMid !== undefined || opacityPeak !== undefined;
+  const hasOverrides =
+    opacityBase !== undefined || opacityMid !== undefined || opacityPeak !== undefined;
   if (!hasOverrides) {
     return clamp01(opacity);
   }
@@ -71,7 +72,10 @@ export function remapOpacityToTriplet(
 export const DMX_BLOOM_OPACITY_MIN = 0.6;
 
 export function opacityToBloomLevel(remappedOpacity: number): number {
-  return Math.max(0, Math.min(1, (remappedOpacity - DMX_BLOOM_OPACITY_MIN) / (1 - DMX_BLOOM_OPACITY_MIN)));
+  return Math.max(
+    0,
+    Math.min(1, (remappedOpacity - DMX_BLOOM_OPACITY_MIN) / (1 - DMX_BLOOM_OPACITY_MIN)),
+  );
 }
 
 export function remappedOpacityQualifiesForBloom(remappedOpacity: number): boolean {

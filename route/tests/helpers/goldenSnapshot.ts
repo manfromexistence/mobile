@@ -13,17 +13,17 @@ function stable(v: unknown): string {
         ? Object.fromEntries(
             Object.keys(val as Record<string, unknown>)
               .sort()
-              .map((k) => [k, (val as Record<string, unknown>)[k]])
+              .map((k) => [k, (val as Record<string, unknown>)[k]]),
           )
         : val,
-    2
+    2,
   );
 }
 
 class GoldenMismatchError extends Error {
   constructor(name: string, expected: string, actual: string) {
     super(
-      `golden mismatch for "${name}". Run with UPDATE_GOLDEN=1 to regenerate.\n--- expected\n${expected}\n--- actual\n${actual}`
+      `golden mismatch for "${name}". Run with UPDATE_GOLDEN=1 to regenerate.\n--- expected\n${expected}\n--- actual\n${actual}`,
     );
     this.name = "GoldenMismatchError";
   }

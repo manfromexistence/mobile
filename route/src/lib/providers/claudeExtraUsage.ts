@@ -49,7 +49,7 @@ function toFutureIso(value: unknown): string | null {
 
 export function isClaudeExtraUsageBlockEnabled(
   provider: string | null | undefined,
-  providerSpecificData: unknown
+  providerSpecificData: unknown,
 ): boolean {
   if (provider !== "claude") return false;
   return asRecord(providerSpecificData).blockExtraUsage !== false;
@@ -106,14 +106,14 @@ function buildClearUpdate(): ClaudeExtraUsageUpdate {
 }
 
 export function buildClaudeExtraUsageStateClearUpdate(
-  connection: ClaudeExtraUsageConnectionState
+  connection: ClaudeExtraUsageConnectionState,
 ): ClaudeExtraUsageUpdate | null {
   return isClaudeExtraUsageState(connection) ? buildClearUpdate() : null;
 }
 
 export function buildClaudeExtraUsageConnectionUpdate(
   connection: ClaudeExtraUsageConnectionState,
-  usage: unknown
+  usage: unknown,
 ): ClaudeExtraUsageUpdate | null {
   if (connection.provider !== "claude" || !hasClaudeUsageSnapshot(usage)) {
     return null;
@@ -122,7 +122,7 @@ export function buildClaudeExtraUsageConnectionUpdate(
   const snapshot = asRecord(usage);
   const blockingEnabled = isClaudeExtraUsageBlockEnabled(
     connection.provider,
-    connection.providerSpecificData
+    connection.providerSpecificData,
   );
   const currentIsExtraUsageState = isClaudeExtraUsageState(connection);
 

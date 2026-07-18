@@ -12,11 +12,12 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
   {
     slug: "dotm-square-1",
     title: "Neon Drift",
-    description: "Same ripple family as the icon, with a wave that sweeps from the top-right toward the bottom-left.",
+    description:
+      "Same ripple family as the icon, with a wave that sweeps from the top-right toward the bottom-left.",
     componentName: "DotmSquare1",
     fileName: "dotm-square-1.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-square-2",
@@ -26,16 +27,17 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmSquare2",
     fileName: "dotm-square-2.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-square-3",
     title: "Core Spiral",
-    description: "A 4-dot tail spirals clockwise from the outer border toward the center of the 5x5 grid.",
+    description:
+      "A 4-dot tail spirals clockwise from the outer border toward the center of the 5x5 grid.",
     componentName: "DotmSquare3",
     fileName: "dotm-square-3.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-square-4",
@@ -45,7 +47,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmSquare4",
     fileName: "dotm-square-4.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-square-5",
@@ -54,7 +56,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmSquare5",
     fileName: "dotm-square-5.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-square-6",
@@ -63,16 +65,17 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmSquare6",
     fileName: "dotm-square-6.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-square-7",
     title: "Block Drop",
-    description: "Tetromino-like frames drop and stack in a 5x5 matrix, then flash a row-clear beat.",
+    description:
+      "Tetromino-like frames drop and stack in a 5x5 matrix, then flash a row-clear beat.",
     componentName: "DotmSquare7",
     fileName: "dotm-square-7.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-square-8",
@@ -82,7 +85,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmSquare8",
     fileName: "dotm-square-8.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-square-9",
@@ -92,7 +95,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmSquare9",
     fileName: "dotm-square-9.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-square-10",
@@ -102,7 +105,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmSquare10",
     fileName: "dotm-square-10.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-square-11",
@@ -111,7 +114,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmSquare11",
     fileName: "dotm-square-11.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-square-12",
@@ -120,7 +123,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmSquare12",
     fileName: "dotm-square-12.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-square-13",
@@ -129,7 +132,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmSquare13",
     fileName: "dotm-square-13.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-square-14",
@@ -138,7 +141,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmSquare14",
     fileName: "dotm-square-14.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-square-15",
@@ -147,16 +150,17 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmSquare15",
     fileName: "dotm-square-15.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-square-16",
     title: "Helix Core",
-    description: "A narrower helix variant that stays in the center band while preserving strand/rung rhythm.",
+    description:
+      "A narrower helix variant that stays in the center band while preserving strand/rung rhythm.",
     componentName: "DotmSquare16",
     fileName: "dotm-square-16.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-square-17",
@@ -165,7 +169,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmSquare17",
     fileName: "dotm-square-17.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-square-18",
@@ -174,16 +178,17 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmSquare18",
     fileName: "dotm-square-18.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-square-19",
     title: "Infinity Run",
-    description: "Dual counter-rotating heads trace a figure-eight with a soft crossover pulse at center.",
+    description:
+      "Dual counter-rotating heads trace a figure-eight with a soft crossover pulse at center.",
     componentName: "DotmSquare19",
     fileName: "dotm-square-19.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-square-20",
@@ -193,7 +198,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmSquare20",
     fileName: "dotm-square-20.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-circular-1",
@@ -203,7 +208,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmCircular1",
     fileName: "dotm-circular-1.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-circular-2",
@@ -213,7 +218,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmCircular2",
     fileName: "dotm-circular-2.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-circular-3",
@@ -223,7 +228,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmCircular3",
     fileName: "dotm-circular-3.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-circular-4",
@@ -233,7 +238,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmCircular4",
     fileName: "dotm-circular-4.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-circular-5",
@@ -243,7 +248,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmCircular5",
     fileName: "dotm-circular-5.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-circular-6",
@@ -253,7 +258,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmCircular6",
     fileName: "dotm-circular-6.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-circular-7",
@@ -263,7 +268,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmCircular7",
     fileName: "dotm-circular-7.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-circular-8",
@@ -273,7 +278,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmCircular8",
     fileName: "dotm-circular-8.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-circular-9",
@@ -283,7 +288,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmCircular9",
     fileName: "dotm-circular-9.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-circular-10",
@@ -293,7 +298,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmCircular10",
     fileName: "dotm-circular-10.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-circular-11",
@@ -303,7 +308,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmCircular11",
     fileName: "dotm-circular-11.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-circular-12",
@@ -313,7 +318,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmCircular12",
     fileName: "dotm-circular-12.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-circular-13",
@@ -323,7 +328,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmCircular13",
     fileName: "dotm-circular-13.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-circular-14",
@@ -333,7 +338,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmCircular14",
     fileName: "dotm-circular-14.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-circular-15",
@@ -343,7 +348,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmCircular15",
     fileName: "dotm-circular-15.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-circular-16",
@@ -353,7 +358,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmCircular16",
     fileName: "dotm-circular-16.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-circular-17",
@@ -363,7 +368,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmCircular17",
     fileName: "dotm-circular-17.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-circular-18",
@@ -373,7 +378,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmCircular18",
     fileName: "dotm-circular-18.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-circular-19",
@@ -383,7 +388,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmCircular19",
     fileName: "dotm-circular-19.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-circular-20",
@@ -393,7 +398,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmCircular20",
     fileName: "dotm-circular-20.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-triangle-1",
@@ -403,7 +408,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmTriangle1",
     fileName: "dotm-triangle-1.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-triangle-2",
@@ -413,7 +418,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmTriangle2",
     fileName: "dotm-triangle-2.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-triangle-3",
@@ -423,7 +428,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmTriangle3",
     fileName: "dotm-triangle-3.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-triangle-4",
@@ -433,7 +438,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmTriangle4",
     fileName: "dotm-triangle-4.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-triangle-5",
@@ -443,7 +448,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmTriangle5",
     fileName: "dotm-triangle-5.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-triangle-6",
@@ -453,7 +458,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmTriangle6",
     fileName: "dotm-triangle-6.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-triangle-7",
@@ -463,7 +468,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmTriangle7",
     fileName: "dotm-triangle-7.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-triangle-8",
@@ -473,7 +478,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmTriangle8",
     fileName: "dotm-triangle-8.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-triangle-9",
@@ -483,7 +488,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmTriangle9",
     fileName: "dotm-triangle-9.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-triangle-10",
@@ -493,7 +498,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmTriangle10",
     fileName: "dotm-triangle-10.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-triangle-11",
@@ -503,7 +508,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmTriangle11",
     fileName: "dotm-triangle-11.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-triangle-12",
@@ -513,7 +518,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmTriangle12",
     fileName: "dotm-triangle-12.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-triangle-13",
@@ -523,7 +528,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmTriangle13",
     fileName: "dotm-triangle-13.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-triangle-14",
@@ -533,7 +538,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmTriangle14",
     fileName: "dotm-triangle-14.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-triangle-15",
@@ -543,7 +548,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmTriangle15",
     fileName: "dotm-triangle-15.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-triangle-16",
@@ -553,7 +558,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmTriangle16",
     fileName: "dotm-triangle-16.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-triangle-17",
@@ -563,7 +568,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmTriangle17",
     fileName: "dotm-triangle-17.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-triangle-18",
@@ -573,7 +578,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmTriangle18",
     fileName: "dotm-triangle-18.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-triangle-19",
@@ -583,7 +588,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmTriangle19",
     fileName: "dotm-triangle-19.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-triangle-20",
@@ -593,7 +598,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmTriangle20",
     fileName: "dotm-triangle-20.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-hex-1",
@@ -603,7 +608,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmHex1",
     fileName: "dotm-hex-1.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-hex-2",
@@ -613,7 +618,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmHex2",
     fileName: "dotm-hex-2.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-hex-3",
@@ -623,7 +628,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmHex3",
     fileName: "dotm-hex-3.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-hex-4",
@@ -633,7 +638,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmHex4",
     fileName: "dotm-hex-4.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-hex-5",
@@ -643,7 +648,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmHex5",
     fileName: "dotm-hex-5.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-hex-6",
@@ -653,7 +658,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmHex6",
     fileName: "dotm-hex-6.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-hex-7",
@@ -663,7 +668,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmHex7",
     fileName: "dotm-hex-7.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-hex-8",
@@ -673,7 +678,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmHex8",
     fileName: "dotm-hex-8.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-hex-9",
@@ -683,7 +688,7 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmHex9",
     fileName: "dotm-hex-9.tsx",
     dependencies: [],
-    motionOptional: false
+    motionOptional: false,
   },
   {
     slug: "dotm-hex-10",
@@ -693,8 +698,8 @@ export const loaderRegistry: LoaderRegistryEntry[] = [
     componentName: "DotmHex10",
     fileName: "dotm-hex-10.tsx",
     dependencies: [],
-    motionOptional: false
-  }
+    motionOptional: false,
+  },
 ];
 
 export function getLoaderBySlug(slug: string): LoaderRegistryEntry | undefined {

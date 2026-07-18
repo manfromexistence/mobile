@@ -1,48 +1,48 @@
-import { RGBA, TextAttributes } from "@opentui/core"
-import open from "open"
-import { createSignal } from "solid-js"
-import { selectedForeground, useTheme } from "../context/theme"
-import { useDialog, type DialogContext } from "../ui/dialog"
-import { Link } from "../ui/link"
-import { BgPulse } from "./bg-pulse"
-import { useBindings } from "../keymap"
+import { RGBA, TextAttributes } from "@opentui/core";
+import open from "open";
+import { createSignal } from "solid-js";
+import { selectedForeground, useTheme } from "../context/theme";
+import { useDialog, type DialogContext } from "../ui/dialog";
+import { Link } from "../ui/link";
+import { BgPulse } from "./bg-pulse";
+import { useBindings } from "../keymap";
 
-const GO_URL = "https://opencode.ai/go"
-const PAD_X = 3
-const PAD_TOP_OUTER = 1
-const FOREGROUND_ALPHA = 186
+const GO_URL = "https://opencode.ai/go";
+const PAD_X = 3;
+const PAD_TOP_OUTER = 1;
+const FOREGROUND_ALPHA = 186;
 
 export type DialogRetryActionProps = {
-  title: string
-  message: string
-  label: string
-  link?: string
-  onClose?: (dontShowAgain?: boolean) => void
-}
+  title: string;
+  message: string;
+  label: string;
+  link?: string;
+  onClose?: (dontShowAgain?: boolean) => void;
+};
 
 function runAction(props: DialogRetryActionProps, dialog: ReturnType<typeof useDialog>) {
-  if (props.link) open(props.link).catch(() => {})
-  props.onClose?.()
-  dialog.clear()
+  if (props.link) open(props.link).catch(() => {});
+  props.onClose?.();
+  dialog.clear();
 }
 
 function dismiss(props: DialogRetryActionProps, dialog: ReturnType<typeof useDialog>) {
-  props.onClose?.(true)
-  dialog.clear()
+  props.onClose?.(true);
+  dialog.clear();
 }
 
 function panelOverlay(color: RGBA) {
-  const [r, g, b] = color.toInts()
-  return RGBA.fromInts(r, g, b, FOREGROUND_ALPHA)
+  const [r, g, b] = color.toInts();
+  return RGBA.fromInts(r, g, b, FOREGROUND_ALPHA);
 }
 
 export function DialogRetryAction(props: DialogRetryActionProps) {
-  const dialog = useDialog()
-  const { theme } = useTheme()
-  const fg = selectedForeground(theme)
-  const showGoTreatment = () => props.link === GO_URL
-  const textBg = () => (showGoTreatment() ? panelOverlay(theme.backgroundPanel) : undefined)
-  const [selected, setSelected] = createSignal<"dismiss" | "action">("action")
+  const dialog = useDialog();
+  const { theme } = useTheme();
+  const fg = selectedForeground(theme);
+  const showGoTreatment = () => props.link === GO_URL;
+  const textBg = () => (showGoTreatment() ? panelOverlay(theme.backgroundPanel) : undefined);
+  const [selected, setSelected] = createSignal<"dismiss" | "action">("action");
 
   useBindings(() => ({
     bindings: [
@@ -69,12 +69,12 @@ export function DialogRetryAction(props: DialogRetryActionProps) {
         desc: "Confirm retry option",
         group: "Dialog",
         cmd: () => {
-          if (selected() === "action") runAction(props, dialog)
-          else dismiss(props, dialog)
+          if (selected() === "action") runAction(props, dialog);
+          else dismiss(props, dialog);
         },
       },
     ],
-  }))
+  }));
 
   return (
     <box>
@@ -144,7 +144,7 @@ export function DialogRetryAction(props: DialogRetryActionProps) {
         </box>
       </box>
     </box>
-  )
+  );
 }
 
 DialogRetryAction.show = (
@@ -155,6 +155,6 @@ DialogRetryAction.show = (
     dialog.replace(
       () => <DialogRetryAction {...props} onClose={(dontShow) => resolve(dontShow ?? false)} />,
       () => resolve(false),
-    )
-  })
-}
+    );
+  });
+};

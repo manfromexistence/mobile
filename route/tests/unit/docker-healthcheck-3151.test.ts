@@ -89,6 +89,6 @@ test("probeHealth throws a non-empty error string when every host fails", async 
       assert.ok(err instanceof Error);
       assert.ok(err.message.length > 0, "error message must be non-empty (not swallowed)");
       return true;
-    }
+    },
   );
 });

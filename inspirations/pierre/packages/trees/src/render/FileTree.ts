@@ -1,32 +1,23 @@
-import { h } from 'preact';
-import { renderToString } from 'preact-render-to-string';
+import { h } from "preact";
+import { renderToString } from "preact-render-to-string";
 
-import {
-  getBuiltInSpriteSheet,
-  isColoredBuiltInIconSet,
-} from '../builtInIcons';
-import {
-  FileTreeContainerLoaded,
-  prepareFileTreeShadowRoot,
-} from '../components/web-components';
+import { getBuiltInSpriteSheet, isColoredBuiltInIconSet } from "../builtInIcons";
+import { FileTreeContainerLoaded, prepareFileTreeShadowRoot } from "../components/web-components";
 import {
   FILE_TREE_STYLE_ATTRIBUTE,
   FILE_TREE_TAG_NAME,
   FILE_TREE_UNSAFE_CSS_ATTRIBUTE,
   HEADER_SLOT_NAME,
-} from '../constants';
-import { normalizeFileTreeIcons } from '../iconConfig';
-import {
-  type FileTreeDensityPreset,
-  resolveFileTreeDensity,
-} from '../model/density';
-import { FileTreeController } from '../model/FileTreeController';
+} from "../constants";
+import { normalizeFileTreeIcons } from "../iconConfig";
+import { type FileTreeDensityPreset, resolveFileTreeDensity } from "../model/density";
+import { FileTreeController } from "../model/FileTreeController";
 import {
   applyFileTreeGitStatusPatch,
   type FileTreeGitStatusState,
   resolveFileTreeGitStatusState,
-} from '../model/gitStatus';
-import type { FileTreeViewProps } from '../model/internalTypes';
+} from "../model/gitStatus";
+import type { FileTreeViewProps } from "../model/internalTypes";
 import type {
   FileTreeBatchOperation,
   FileTreeCompositionOptions,
@@ -49,24 +40,16 @@ import type {
   FileTreeSearchSessionHandle,
   FileTreeSelectionChangeListener,
   FileTreeSsrPayload,
-} from '../model/publicTypes';
+} from "../model/publicTypes";
 import {
   FILE_TREE_DEFAULT_ITEM_HEIGHT,
   FILE_TREE_DEFAULT_VIEWPORT_HEIGHT,
-} from '../model/virtualization';
-import fileTreeStyles from '../style.css?inline';
-import {
-  escapeStyleTextForHtml,
-  wrapCoreCSS,
-  wrapUnsafeCSS,
-} from '../utils/cssWrappers';
-import { FileTreeView } from './FileTreeView';
-import {
-  hydrateFileTreeRoot,
-  renderFileTreeRoot,
-  unmountFileTreeRoot,
-} from './runtime';
-import { FileTreeManagedSlotHost } from './slotHost';
+} from "../model/virtualization";
+import fileTreeStyles from "../style.css?inline";
+import { escapeStyleTextForHtml, wrapCoreCSS, wrapUnsafeCSS } from "../utils/cssWrappers";
+import { FileTreeView } from "./FileTreeView";
+import { hydrateFileTreeRoot, renderFileTreeRoot, unmountFileTreeRoot } from "./runtime";
+import { FileTreeManagedSlotHost } from "./slotHost";
 
 let serverInstanceId = 0;
 let clientInstanceId = 0;
@@ -94,30 +77,27 @@ function createServerId(explicitId?: string): string {
 function resolveInitialViewportHeight({
   initialVisibleRowCount,
   itemHeight,
-}: Pick<FileTreeOptions, 'initialVisibleRowCount' | 'itemHeight'>): number {
+}: Pick<FileTreeOptions, "initialVisibleRowCount" | "itemHeight">): number {
   return initialVisibleRowCount == null
     ? FILE_TREE_DEFAULT_VIEWPORT_HEIGHT
-    : Math.max(0, initialVisibleRowCount) *
-        (itemHeight ?? FILE_TREE_DEFAULT_ITEM_HEIGHT);
+    : Math.max(0, initialVisibleRowCount) * (itemHeight ?? FILE_TREE_DEFAULT_ITEM_HEIGHT);
 }
 
 function parseSpriteSheet(spriteSheet: string): SVGElement | undefined {
-  if (typeof document === 'undefined') {
+  if (typeof document === "undefined") {
     return undefined;
   }
 
-  const wrapper = document.createElement('div');
+  const wrapper = document.createElement("div");
   wrapper.innerHTML = spriteSheet;
-  const svg = wrapper.querySelector('svg');
+  const svg = wrapper.querySelector("svg");
   return svg instanceof SVGElement ? svg : undefined;
 }
 
-function getHeaderSlotHtml(
-  composition: FileTreeCompositionOptions | undefined
-): string {
+function getHeaderSlotHtml(composition: FileTreeCompositionOptions | undefined): string {
   const headerHtml = composition?.header?.html?.trim();
   if (headerHtml == null || headerHtml.length === 0) {
-    return '';
+    return "";
   }
 
   return `<div slot="${HEADER_SLOT_NAME}" data-file-tree-managed-slot="${HEADER_SLOT_NAME}">${headerHtml}</div>`;
@@ -127,16 +107,10 @@ function getHeaderSlotHtml(
 // emitted as an inline `style="..."` so vanilla SSR consumers (who serialize
 // the payload directly) get the resolved density variables on first paint
 // without needing the React wrapper to paint them.
-function getFileTreeOuterStart(
-  id: string,
-  mode: 'declarative' | 'dom',
-  hostStyle: string
-): string {
+function getFileTreeOuterStart(id: string, mode: "declarative" | "dom", hostStyle: string): string {
   const templateAttr =
-    mode === 'declarative'
-      ? 'shadowrootmode="open"'
-      : 'data-file-tree-shadowrootmode="open"';
-  const styleAttr = hostStyle.length === 0 ? '' : ` style="${hostStyle}"`;
+    mode === "declarative" ? 'shadowrootmode="open"' : 'data-file-tree-shadowrootmode="open"';
+  const styleAttr = hostStyle.length === 0 ? "" : ` style="${hostStyle}"`;
   return `<file-tree-container id="${id}" data-file-tree-virtualized="true"${styleAttr}><template ${templateAttr}>`;
 }
 
@@ -150,30 +124,27 @@ function getFileTreeOuterEnd(headerSlotHtml: string): string {
 // form preserves native declarative shadow DOM parsing.
 export function serializeFileTreeSsrPayload(
   payload: FileTreeSsrPayload,
-  mode: 'declarative' | 'dom' = 'declarative'
+  mode: "declarative" | "dom" = "declarative",
 ): string {
-  return `${mode === 'declarative' ? payload.outerStart : payload.domOuterStart}${payload.shadowHtml}${payload.outerEnd}`;
+  return `${mode === "declarative" ? payload.outerStart : payload.domOuterStart}${payload.shadowHtml}${payload.outerEnd}`;
 }
 
 function isBuiltInSpriteSheet(spriteSheet: SVGElement): boolean {
   return (
-    spriteSheet.querySelector('#file-tree-icon-chevron') instanceof
-      SVGElement &&
-    spriteSheet.querySelector('#file-tree-icon-file') instanceof SVGElement &&
-    spriteSheet.querySelector('#file-tree-icon-dot') instanceof SVGElement &&
-    spriteSheet.querySelector('#file-tree-icon-lock') instanceof SVGElement
+    spriteSheet.querySelector("#file-tree-icon-chevron") instanceof SVGElement &&
+    spriteSheet.querySelector("#file-tree-icon-file") instanceof SVGElement &&
+    spriteSheet.querySelector("#file-tree-icon-dot") instanceof SVGElement &&
+    spriteSheet.querySelector("#file-tree-icon-lock") instanceof SVGElement
   );
 }
 
 function getTopLevelSpriteSheets(shadowRoot: ShadowRoot): SVGElement[] {
   return Array.from(shadowRoot.children).filter(
-    (element): element is SVGElement => element instanceof SVGElement
+    (element): element is SVGElement => element instanceof SVGElement,
   );
 }
 
-export class FileTree
-  implements FileTreeMutationHandle, FileTreeSearchSessionHandle
-{
+export class FileTree implements FileTreeMutationHandle, FileTreeSearchSessionHandle {
   static LoadedCustomComponent: boolean = FileTreeContainerLoaded;
 
   #composition: FileTreeCompositionOptions | undefined;
@@ -182,18 +153,18 @@ export class FileTree
   readonly #onSelectionChange: FileTreeSelectionChangeListener | undefined;
   readonly #renderRowDecoration: FileTreeRowDecorationRenderer | undefined;
   readonly #renamingEnabled: boolean;
-  readonly #searchBlurBehavior: FileTreeOptions['searchBlurBehavior'];
+  readonly #searchBlurBehavior: FileTreeOptions["searchBlurBehavior"];
   readonly #searchEnabled: boolean;
   readonly #searchFakeFocus: boolean;
   readonly #slotHost = new FileTreeManagedSlotHost();
   readonly #density: FileTreeDensityPreset;
   readonly #viewOptions: Pick<
     FileTreeOptions,
-    'initialVisibleRowCount' | 'itemHeight' | 'overscan' | 'stickyFolders'
+    "initialVisibleRowCount" | "itemHeight" | "overscan" | "stickyFolders"
   >;
   #fileTreeContainer: HTMLElement | undefined;
   #gitStatusState: FileTreeGitStatusState | null;
-  #icons: FileTreeOptions['icons'];
+  #icons: FileTreeOptions["icons"];
   readonly #unsafeCSS: string | undefined;
   #unsafeCSSStyle: HTMLStyleElement | undefined;
   #appliedUnsafeCSS: string | undefined;
@@ -340,10 +311,7 @@ export class FileTree
     this.#controller.focusPath(path);
   }
 
-  public scrollToPath(
-    path: FileTreePublicId,
-    options?: FileTreeScrollToPathOptions
-  ): void {
+  public scrollToPath(path: FileTreePublicId, options?: FileTreeScrollToPathOptions): void {
     this.#controller.scrollToPath(path, options);
   }
 
@@ -360,10 +328,7 @@ export class FileTree
   }
 
   public applyGitStatusPatch(patch: FileTreeGitStatusPatch): void {
-    const nextGitStatusState = applyFileTreeGitStatusPatch(
-      this.#gitStatusState,
-      patch
-    );
+    const nextGitStatusState = applyFileTreeGitStatusPatch(this.#gitStatusState, patch);
     if (nextGitStatusState === this.#gitStatusState) {
       return;
     }
@@ -378,17 +343,13 @@ export class FileTree
     renderFileTreeRoot(mountedTree.wrapper, this.#getViewProps());
   }
 
-  public move(
-    fromPath: string,
-    toPath: string,
-    options?: FileTreeMoveOptions
-  ): void {
+  public move(fromPath: string, toPath: string, options?: FileTreeMoveOptions): void {
     this.#controller.move(fromPath, toPath, options);
   }
 
-  public onMutation<TType extends FileTreeMutationEventType | '*'>(
+  public onMutation<TType extends FileTreeMutationEventType | "*">(
     type: TType,
-    handler: (event: FileTreeMutationEventForType<TType>) => void
+    handler: (event: FileTreeMutationEventForType<TType>) => void,
   ): () => void {
     return this.#controller.onMutation(type, handler);
   }
@@ -425,10 +386,7 @@ export class FileTree
     this.#controller.focusPreviousSearchMatch();
   }
 
-  public startRenaming(
-    path?: string,
-    options?: { removeIfCanceled?: boolean }
-  ): boolean {
+  public startRenaming(path?: string, options?: { removeIfCanceled?: boolean }): boolean {
     return this.#controller.startRenaming(path, options);
   }
 
@@ -436,21 +394,16 @@ export class FileTree
     this.#controller.remove(path, options);
   }
 
-  public resetPaths(
-    paths: readonly string[],
-    options?: FileTreeResetOptions
-  ): void;
+  public resetPaths(paths: readonly string[], options?: FileTreeResetOptions): void;
   public resetPaths(options: FileTreeResetPreparedOptions): void;
   public resetPaths(
     pathsOrOptions: readonly string[] | FileTreeResetPreparedOptions,
-    options?: FileTreeResetOptions
+    options?: FileTreeResetOptions,
   ): void {
     if (Array.isArray(pathsOrOptions)) {
       this.#controller.resetPaths(pathsOrOptions as readonly string[], options);
     } else {
-      this.#controller.resetPaths(
-        pathsOrOptions as FileTreeResetPreparedOptions
-      );
+      this.#controller.resetPaths(pathsOrOptions as FileTreeResetPreparedOptions);
     }
   }
 
@@ -469,11 +422,8 @@ export class FileTree
     renderFileTreeRoot(mountedTree.wrapper, this.#getViewProps());
   }
 
-  public setGitStatus(gitStatus?: FileTreeOptions['gitStatus']): void {
-    const nextGitStatusState = resolveFileTreeGitStatusState(
-      gitStatus,
-      this.#gitStatusState
-    );
+  public setGitStatus(gitStatus?: FileTreeOptions["gitStatus"]): void {
+    const nextGitStatusState = resolveFileTreeGitStatusState(gitStatus, this.#gitStatusState);
     if (nextGitStatusState === this.#gitStatusState) {
       return;
     }
@@ -488,7 +438,7 @@ export class FileTree
     renderFileTreeRoot(mountedTree.wrapper, this.#getViewProps());
   }
 
-  public setIcons(icons?: FileTreeOptions['icons']): void {
+  public setIcons(icons?: FileTreeOptions["icons"]): void {
     this.#icons = icons;
 
     const mountedTree = this.#getMountedTreeElements();
@@ -507,14 +457,8 @@ export class FileTree
     hydrateFileTreeRoot(wrapper, this.#getViewProps());
   }
 
-  public render({
-    containerWrapper,
-    fileTreeContainer,
-  }: FileTreeRenderProps): void {
-    const host = this.#prepareHost(
-      fileTreeContainer ?? this.#fileTreeContainer,
-      containerWrapper
-    );
+  public render({ containerWrapper, fileTreeContainer }: FileTreeRenderProps): void {
+    const host = this.#prepareHost(fileTreeContainer ?? this.#fileTreeContainer, containerWrapper);
     const wrapper = this.#getOrCreateWrapper(host);
     this.#syncHeaderSlotContent();
     renderFileTreeRoot(wrapper, this.#getViewProps());
@@ -604,18 +548,15 @@ export class FileTree
       return;
     }
 
-    this.#slotHost.setSlotHtml(
-      HEADER_SLOT_NAME,
-      this.#composition?.header?.html ?? null
-    );
+    this.#slotHost.setSlotHtml(HEADER_SLOT_NAME, this.#composition?.header?.html ?? null);
   }
 
   #syncBuiltInSpriteSheet(shadowRoot: ShadowRoot): void {
-    const currentBuiltInSprite = getTopLevelSpriteSheets(shadowRoot).find(
-      (sprite) => isBuiltInSpriteSheet(sprite)
+    const currentBuiltInSprite = getTopLevelSpriteSheets(shadowRoot).find((sprite) =>
+      isBuiltInSpriteSheet(sprite),
     );
     const nextBuiltInSprite = parseSpriteSheet(
-      getBuiltInSpriteSheet(normalizeFileTreeIcons(this.#icons).set)
+      getBuiltInSpriteSheet(normalizeFileTreeIcons(this.#icons).set),
     );
     if (nextBuiltInSprite == null) {
       return;
@@ -637,14 +578,9 @@ export class FileTree
 
   #syncCustomSpriteSheet(shadowRoot: ShadowRoot): void {
     const topLevelSprites = getTopLevelSpriteSheets(shadowRoot);
-    const builtInSprite = topLevelSprites.find((sprite) =>
-      isBuiltInSpriteSheet(sprite)
-    );
-    const currentCustomSprites = topLevelSprites.filter(
-      (sprite) => sprite !== builtInSprite
-    );
-    const customSpriteSheet =
-      normalizeFileTreeIcons(this.#icons).spriteSheet?.trim() ?? '';
+    const builtInSprite = topLevelSprites.find((sprite) => isBuiltInSpriteSheet(sprite));
+    const currentCustomSprites = topLevelSprites.filter((sprite) => sprite !== builtInSprite);
+    const customSpriteSheet = normalizeFileTreeIcons(this.#icons).spriteSheet?.trim() ?? "";
     if (customSpriteSheet.length === 0) {
       for (const currentCustomSprite of currentCustomSprites) {
         currentCustomSprite.remove();
@@ -675,11 +611,8 @@ export class FileTree
 
   #syncIconModeAttrs(wrapper: HTMLElement): void {
     const normalizedIcons = normalizeFileTreeIcons(this.#icons);
-    if (
-      normalizedIcons.colored &&
-      isColoredBuiltInIconSet(normalizedIcons.set)
-    ) {
-      wrapper.dataset.fileTreeColoredIcons = 'true';
+    if (normalizedIcons.colored && isColoredBuiltInIconSet(normalizedIcons.set)) {
+      wrapper.dataset.fileTreeColoredIcons = "true";
     } else {
       delete wrapper.dataset.fileTreeColoredIcons;
     }
@@ -687,16 +620,13 @@ export class FileTree
 
   #syncUnsafeCSS(shadowRoot: ShadowRoot): void {
     const existingUnsafeStyle = shadowRoot.querySelector(
-      `style[${FILE_TREE_UNSAFE_CSS_ATTRIBUTE}]`
+      `style[${FILE_TREE_UNSAFE_CSS_ATTRIBUTE}]`,
     );
-    if (
-      this.#unsafeCSSStyle == null &&
-      existingUnsafeStyle instanceof HTMLStyleElement
-    ) {
+    if (this.#unsafeCSSStyle == null && existingUnsafeStyle instanceof HTMLStyleElement) {
       this.#unsafeCSSStyle = existingUnsafeStyle;
     }
 
-    if (this.#unsafeCSS == null || this.#unsafeCSS === '') {
+    if (this.#unsafeCSS == null || this.#unsafeCSS === "") {
       this.#unsafeCSSStyle?.remove();
       this.#unsafeCSSStyle = undefined;
       this.#appliedUnsafeCSS = undefined;
@@ -710,8 +640,8 @@ export class FileTree
       return;
     }
 
-    this.#unsafeCSSStyle ??= document.createElement('style');
-    this.#unsafeCSSStyle.setAttribute(FILE_TREE_UNSAFE_CSS_ATTRIBUTE, '');
+    this.#unsafeCSSStyle ??= document.createElement("style");
+    this.#unsafeCSSStyle.setAttribute(FILE_TREE_UNSAFE_CSS_ATTRIBUTE, "");
     if (this.#unsafeCSSStyle.parentNode !== shadowRoot) {
       shadowRoot.appendChild(this.#unsafeCSSStyle);
     }
@@ -726,25 +656,24 @@ export class FileTree
 
     const shadowRoot = host.shadowRoot;
     if (shadowRoot == null) {
-      throw new Error('FileTree requires a shadow root');
+      throw new Error("FileTree requires a shadow root");
     }
 
     const wrapperCandidates = Array.from(shadowRoot.children).filter(
       (element): element is HTMLDivElement =>
         element instanceof HTMLDivElement &&
-        typeof element.dataset.fileTreeId === 'string' &&
-        element.dataset.fileTreeId.length > 0
+        typeof element.dataset.fileTreeId === "string" &&
+        element.dataset.fileTreeId.length > 0,
     );
     const existingWrapper =
-      wrapperCandidates.find(
-        (element) => element.dataset.fileTreeId === this.#id
-      ) ?? wrapperCandidates[0];
+      wrapperCandidates.find((element) => element.dataset.fileTreeId === this.#id) ??
+      wrapperCandidates[0];
     if (existingWrapper != null) {
       this.#id = existingWrapper.dataset.fileTreeId ?? this.#id;
     }
-    this.#wrapper = existingWrapper ?? document.createElement('div');
+    this.#wrapper = existingWrapper ?? document.createElement("div");
     this.#wrapper.dataset.fileTreeId = this.#id;
-    this.#wrapper.dataset.fileTreeVirtualizedWrapper = 'true';
+    this.#wrapper.dataset.fileTreeVirtualizedWrapper = "true";
     this.#syncIconSurface(host, this.#wrapper);
 
     if (this.#wrapper.parentNode !== shadowRoot) {
@@ -754,23 +683,18 @@ export class FileTree
     return this.#wrapper;
   }
 
-  #prepareHost(
-    fileTreeContainer?: HTMLElement,
-    parentNode?: HTMLElement
-  ): HTMLElement {
+  #prepareHost(fileTreeContainer?: HTMLElement, parentNode?: HTMLElement): HTMLElement {
     const host =
-      fileTreeContainer ??
-      this.#fileTreeContainer ??
-      document.createElement(FILE_TREE_TAG_NAME);
+      fileTreeContainer ?? this.#fileTreeContainer ?? document.createElement(FILE_TREE_TAG_NAME);
     if (parentNode != null && host.parentNode !== parentNode) {
       parentNode.appendChild(host);
     }
 
-    const shadowRoot = host.shadowRoot ?? host.attachShadow({ mode: 'open' });
+    const shadowRoot = host.shadowRoot ?? host.attachShadow({ mode: "open" });
     prepareFileTreeShadowRoot(host, shadowRoot);
     this.#syncUnsafeCSS(shadowRoot);
-    host.dataset.fileTreeVirtualized = 'true';
-    host.style.display = 'flex';
+    host.dataset.fileTreeVirtualized = "true";
+    host.style.display = "flex";
     this.#applyDensityHostStyle(host);
     this.#slotHost.setHost(host);
     this.#fileTreeContainer = host;
@@ -788,18 +712,12 @@ export class FileTree
   // can strip exactly what we wrote and host-reuse scenarios start from a
   // clean slate on the next mount.
   #applyDensityHostStyle(host: HTMLElement): void {
-    if (host.style.getPropertyValue('--trees-item-height') === '') {
-      host.style.setProperty(
-        '--trees-item-height',
-        `${String(this.#density.itemHeight)}px`
-      );
+    if (host.style.getPropertyValue("--trees-item-height") === "") {
+      host.style.setProperty("--trees-item-height", `${String(this.#density.itemHeight)}px`);
       this.#wroteHostItemHeight = true;
     }
-    if (host.style.getPropertyValue('--trees-density-override') === '') {
-      host.style.setProperty(
-        '--trees-density-override',
-        String(this.#density.factor)
-      );
+    if (host.style.getPropertyValue("--trees-density-override") === "") {
+      host.style.setProperty("--trees-density-override", String(this.#density.factor));
       this.#wroteHostDensityFactor = true;
     }
   }
@@ -811,11 +729,11 @@ export class FileTree
   // hitting the empty-check guard above and inheriting stale model values.
   #removeOwnedDensityHostStyle(host: HTMLElement): void {
     if (this.#wroteHostItemHeight) {
-      host.style.removeProperty('--trees-item-height');
+      host.style.removeProperty("--trees-item-height");
       this.#wroteHostItemHeight = false;
     }
     if (this.#wroteHostDensityFactor) {
-      host.style.removeProperty('--trees-density-override');
+      host.style.removeProperty("--trees-density-override");
       this.#wroteHostDensityFactor = false;
     }
   }
@@ -859,17 +777,17 @@ export function preloadFileTree(options: FileTreeOptions): FileTreeSsrPayload {
     itemHeight: resolvedItemHeight,
   });
   const normalizedIcons = normalizeFileTreeIcons(icons);
-  const customSpriteSheet = normalizedIcons.spriteSheet?.trim() ?? '';
+  const customSpriteSheet = normalizedIcons.spriteSheet?.trim() ?? "";
   const coloredIconsAttr =
     normalizedIcons.colored && isColoredBuiltInIconSet(normalizedIcons.set)
       ? ' data-file-tree-colored-icons="true"'
-      : '';
+      : "";
   const wrappedCoreCss = escapeStyleTextForHtml(wrapCoreCSS(fileTreeStyles));
   const unsafeCssStyle =
-    unsafeCSS == null || unsafeCSS === ''
-      ? ''
+    unsafeCSS == null || unsafeCSS === ""
+      ? ""
       : `<style ${FILE_TREE_UNSAFE_CSS_ATTRIBUTE}>${escapeStyleTextForHtml(
-          wrapUnsafeCSS(unsafeCSS)
+          wrapUnsafeCSS(unsafeCSS),
         )}</style>`;
 
   const bodyHtml = renderToString(
@@ -890,7 +808,7 @@ export function preloadFileTree(options: FileTreeOptions): FileTreeSsrPayload {
       searchFakeFocus: searchFakeFocus === true,
       stickyFolders,
       initialViewportHeight,
-    })
+    }),
   );
   controller.destroy();
 
@@ -901,12 +819,8 @@ export function preloadFileTree(options: FileTreeOptions): FileTreeSsrPayload {
   // for them. The two paths must agree because the SSR shadow body was laid
   // out using the same resolved itemHeight.
   const hostStyle = `--trees-item-height:${String(resolvedItemHeight)}px;--trees-density-override:${String(resolvedDensity.factor)}`;
-  const outerStart = getFileTreeOuterStart(
-    resolvedId,
-    'declarative',
-    hostStyle
-  );
-  const domOuterStart = getFileTreeOuterStart(resolvedId, 'dom', hostStyle);
+  const outerStart = getFileTreeOuterStart(resolvedId, "declarative", hostStyle);
+  const domOuterStart = getFileTreeOuterStart(resolvedId, "dom", hostStyle);
   const outerEnd = getFileTreeOuterEnd(headerSlotHtml);
   return {
     domOuterStart,

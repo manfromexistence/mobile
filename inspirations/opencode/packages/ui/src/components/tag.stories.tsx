@@ -1,6 +1,6 @@
 // @ts-nocheck
-import * as mod from "./tag"
-import { create } from "../storybook/scaffold"
+import * as mod from "./tag";
+import { create } from "../storybook/scaffold";
 
 const docs = `### Overview
 Small label tag for metadata and status chips.
@@ -23,9 +23,9 @@ Use alongside headings or lists for quick metadata.
 ### Theming/tokens
 - Uses \`data-component="tag"\` with size data attributes.
 
-`
+`;
 
-const story = create({ title: "UI/Tag", mod, args: { children: "Tag" } })
+const story = create({ title: "UI/Tag", mod, args: { children: "Tag" } });
 export default {
   title: "UI/Tag",
   id: "components-tag",
@@ -44,9 +44,9 @@ export default {
       options: ["normal", "large"],
     },
   },
-}
+};
 
-export const Basic = story.Basic
+export const Basic = story.Basic;
 
 export const Sizes = {
   render: () => (
@@ -55,4 +55,4 @@ export const Sizes = {
       <mod.Tag size="large">Large</mod.Tag>
     </div>
   ),
-}
+};

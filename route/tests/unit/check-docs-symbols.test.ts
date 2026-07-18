@@ -19,7 +19,7 @@ const extract = extractDocApiPaths as (src: string) => string[];
 const findStale = findStaleDocApiRefs as (
   docPathsByFile: { file: string; paths: string[] }[],
   routeFiles: Set<string>,
-  allowlist: Set<string>
+  allowlist: Set<string>,
 ) => string[];
 const collect = collectRouteFiles as () => Set<string>;
 const allowlist = KNOWN_STALE_DOC_REFS as Set<string>;
@@ -177,7 +177,7 @@ test("stale-enforcement: allowlist entry with no live miss is reported as stale"
   const stale = (reportStaleEntries as (a: Set<string>, l: string[], g: string) => string[])(
     new Set(["/api/discovery/results", "/api/ghost-fixed"]),
     liveMissPaths,
-    "check-docs-symbols"
+    "check-docs-symbols",
   );
   assert.deepEqual(stale, ["/api/ghost-fixed"]);
 });

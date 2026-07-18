@@ -52,7 +52,7 @@ test("truncateChatLogText builds head + marker + tail for over-limit strings", (
   const expectedTail = value.slice(-Math.ceil(limit / 2));
   assert.equal(
     out,
-    `${expectedHead}\n[...truncated ${value.length - limit} chars...]\n${expectedTail}`
+    `${expectedHead}\n[...truncated ${value.length - limit} chars...]\n${expectedTail}`,
   );
   // sanity: the marker reports exactly the number of dropped chars
   assert.ok(out.includes(`[...truncated ${value.length - limit} chars...]`));
@@ -198,14 +198,8 @@ test("truncateForLog keeps a bounded `tools` field alive when the request is sum
   assert.ok(summary.tools, "expected the summary to retain a `tools` field");
   const clonedTools = summary.tools as Array<Record<string, unknown>>;
   assert.equal(clonedTools.length, tools.length);
-  assert.equal(
-    (clonedTools[0].function as Record<string, unknown>).name,
-    "get_weather"
-  );
-  assert.equal(
-    (clonedTools[1].function as Record<string, unknown>).name,
-    "search_web"
-  );
+  assert.equal((clonedTools[0].function as Record<string, unknown>).name, "get_weather");
+  assert.equal((clonedTools[1].function as Record<string, unknown>).name, "search_web");
 });
 
 test("truncateForLog bounds an oversized `tools` array to the configured tail-item cap", () => {

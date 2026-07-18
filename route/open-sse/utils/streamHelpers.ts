@@ -80,7 +80,7 @@ export function stripAnsiCodes<T>(str: T): T {
 
 export function parseSSEDataPayload(
   data: unknown,
-  options: SSEPayloadOptions = {}
+  options: SSEPayloadOptions = {},
 ): SSEJsonPayload | null {
   const payload = String(data ?? "").trim();
   if (!payload) return null;
@@ -95,7 +95,7 @@ export function parseSSEDataPayload(
   } catch (error) {
     if (options.logWarning !== false && payload.length > 0) {
       console.log(
-        `[WARN] Failed to parse SSE payload (${payload.length} chars): ${payload.substring(0, 200)}...`
+        `[WARN] Failed to parse SSE payload (${payload.length} chars): ${payload.substring(0, 200)}...`,
       );
     }
     return null;
@@ -104,7 +104,7 @@ export function parseSSEDataPayload(
 
 export function parseSSEDataLines(
   dataLines: string[],
-  options: SSEPayloadOptions = {}
+  options: SSEPayloadOptions = {},
 ): SSEJsonPayload | null {
   return parseSSEDataPayload(dataLines.join("\n"), options);
 }
@@ -319,7 +319,7 @@ function hasGeminiCandidateStreamValue(parsed: Record<string, unknown>): boolean
 
 export function isKnownNonClaudeStreamPayload(
   parsed: Record<string, unknown>,
-  eventType = ""
+  eventType = "",
 ): boolean {
   if (Array.isArray(parsed.choices)) {
     return hasOpenAICompatibleStreamValue(parsed);
@@ -407,7 +407,7 @@ export function hasValuableContent(chunk: Record<string, unknown>, format: strin
  * while standard Gemini returns { candidates: [...] } directly.
  */
 export function unwrapGeminiChunk<T extends Record<string, unknown>>(
-  parsed: T
+  parsed: T,
 ): T | Record<string, unknown> {
   if (!parsed.candidates && isRecord(parsed.response)) {
     return parsed.response;

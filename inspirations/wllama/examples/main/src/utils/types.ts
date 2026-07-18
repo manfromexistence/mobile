@@ -29,7 +29,7 @@ export interface InferenceParams {
 }
 
 export interface MediaData {
-  type: 'image' | 'audio';
+  type: "image" | "audio";
   data: ArrayBuffer;
   dataUrl: string;
 }
@@ -37,7 +37,7 @@ export interface MediaData {
 export interface Message {
   id: number;
   content: string;
-  role: 'system' | 'user' | 'assistant';
+  role: "system" | "user" | "assistant";
   mediaData?: MediaData;
 }
 

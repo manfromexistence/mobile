@@ -1,8 +1,8 @@
-import type { WorkerStats } from '../worker';
+import type { WorkerStats } from "../worker";
 
 export function areWorkerStatsEqual(
   statsA: WorkerStats | undefined,
-  statsB: WorkerStats | undefined
+  statsB: WorkerStats | undefined,
 ): boolean {
   if (statsA == null || statsB == null) {
     return statsA === statsB;

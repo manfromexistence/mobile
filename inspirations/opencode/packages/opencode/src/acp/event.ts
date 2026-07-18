@@ -1,4 +1,4 @@
-import type { AgentSideConnection } from "@agentclientprotocol/sdk"
+import type { AgentSideConnection } from "@agentclientprotocol/sdk";
 import type {
   Event,
   EventMessagePartDelta,
@@ -7,11 +7,11 @@ import type {
   Part,
   SessionMessageResponse,
   ToolPart,
-} from "@opencode-ai/sdk/v2"
-import { Effect } from "effect"
-import { ACPSession } from "./session"
-import { ACPPermission } from "./permission"
-import { partsToContentChunks, type ReplayPart } from "./content"
+} from "@opencode-ai/sdk/v2";
+import { Effect } from "effect";
+import { ACPSession } from "./session";
+import { ACPPermission } from "./permission";
+import { partsToContentChunks, type ReplayPart } from "./content";
 import {
   duplicateRunningToolUpdate,
   errorToolUpdate,
@@ -19,87 +19,91 @@ import {
   runningToolUpdate,
   shellOutputSnapshot,
   completedToolUpdate,
-} from "./tool"
+} from "./tool";
 
 type Connection = Pick<AgentSideConnection, "sessionUpdate"> &
-  Partial<Pick<AgentSideConnection, "requestPermission" | "writeTextFile">>
+  Partial<Pick<AgentSideConnection, "requestPermission" | "writeTextFile">>;
 type GlobalEventEnvelope = {
-  payload?: Event
-}
+  payload?: Event;
+};
 type GlobalEventStream = {
-  stream: AsyncIterable<GlobalEventEnvelope>
-}
+  stream: AsyncIterable<GlobalEventEnvelope>;
+};
 
-export function start(input: { sdk: OpencodeClient; connection: Connection; session: ACPSession.Interface }) {
-  const subscription = new Subscription(input)
-  subscription.start()
-  return subscription
+export function start(input: {
+  sdk: OpencodeClient;
+  connection: Connection;
+  session: ACPSession.Interface;
+}) {
+  const subscription = new Subscription(input);
+  subscription.start();
+  return subscription;
 }
 
 export class Subscription {
-  private readonly abort = new AbortController()
-  private readonly shellSnapshots = new Map<string, string>()
-  private readonly toolStarts = new Set<string>()
-  private readonly permission: ACPPermission.Handler
-  private started = false
+  private readonly abort = new AbortController();
+  private readonly shellSnapshots = new Map<string, string>();
+  private readonly toolStarts = new Set<string>();
+  private readonly permission: ACPPermission.Handler;
+  private started = false;
 
   constructor(
     private readonly input: {
-      sdk: OpencodeClient
-      connection: Connection
-      session: ACPSession.Interface
+      sdk: OpencodeClient;
+      connection: Connection;
+      session: ACPSession.Interface;
     },
   ) {
-    this.permission = new ACPPermission.Handler(input)
+    this.permission = new ACPPermission.Handler(input);
   }
 
   start() {
-    if (this.started) return
-    this.started = true
+    if (this.started) return;
+    this.started = true;
     this.run().catch(() => {
-      if (this.abort.signal.aborted) return
-    })
+      if (this.abort.signal.aborted) return;
+    });
   }
 
   stop() {
-    this.abort.abort()
+    this.abort.abort();
   }
 
   async handle(event: Event) {
     switch (event.type) {
       case "permission.asked":
-        this.permission.handle(event)
-        return
+        this.permission.handle(event);
+        return;
       case "message.part.updated":
-        return this.handlePartUpdated(event)
+        return this.handlePartUpdated(event);
       case "message.part.delta":
-        return this.handlePartDelta(event)
+        return this.handlePartDelta(event);
     }
   }
 
   async replayMessage(message: SessionMessageResponse) {
-    if (message.info.role !== "assistant" && message.info.role !== "user") return
+    if (message.info.role !== "assistant" && message.info.role !== "user") return;
 
-    const cwd = message.info.role === "assistant" ? message.info.path?.cwd : undefined
+    const cwd = message.info.role === "assistant" ? message.info.path?.cwd : undefined;
     for (const part of message.parts) {
-      await this.recordFetchedPart(message.info.sessionID, message, part)
+      await this.recordFetchedPart(message.info.sessionID, message, part);
       if (part.type === "tool") {
-        await this.handleToolPart(message.info.sessionID, part, cwd ?? process.cwd())
-        continue
+        await this.handleToolPart(message.info.sessionID, part, cwd ?? process.cwd());
+        continue;
       }
-      await this.replayContentPart(message, part)
+      await this.replayContentPart(message, part);
     }
   }
 
   private async replayContentPart(message: SessionMessageResponse, part: Part) {
-    if (part.type !== "text" && part.type !== "file" && part.type !== "reasoning") return
+    if (part.type !== "text" && part.type !== "file" && part.type !== "reasoning") return;
 
     const sessionUpdate =
       part.type === "reasoning"
         ? "agent_thought_chunk"
         : message.info.role === "user"
           ? "user_message_chunk"
-          : "agent_message_chunk"
+          : "agent_message_chunk";
 
     for (const chunk of partsToContentChunks([part as ReplayPart])) {
       await this.input.connection.sessionUpdate({
@@ -109,7 +113,7 @@ export class Subscription {
           messageId: message.info.id,
           ...chunk,
         },
-      })
+      });
     }
   }
 
@@ -117,22 +121,22 @@ export class Subscription {
     while (!this.abort.signal.aborted) {
       const events = (await this.input.sdk.global.event({
         signal: this.abort.signal,
-      })) as GlobalEventStream
+      })) as GlobalEventStream;
 
       for await (const event of events.stream) {
-        if (this.abort.signal.aborted) return
-        if (!event.payload) continue
-        await this.handle(event.payload).catch(() => {})
+        if (this.abort.signal.aborted) return;
+        if (!event.payload) continue;
+        await this.handle(event.payload).catch(() => {});
       }
-      if (!this.abort.signal.aborted) await new Promise((resolve) => setTimeout(resolve, 1000))
+      if (!this.abort.signal.aborted) await new Promise((resolve) => setTimeout(resolve, 1000));
     }
   }
 
   private async handlePartUpdated(event: EventMessagePartUpdated) {
-    const part = event.properties.part
-    const sessionId = part.sessionID || event.properties.sessionID
-    const session = await Effect.runPromise(this.input.session.tryGet(sessionId))
-    if (!session) return
+    const part = event.properties.part;
+    const sessionId = part.sessionID || event.properties.sessionID;
+    const session = await Effect.runPromise(this.input.session.tryGet(sessionId));
+    if (!session) return;
 
     await Effect.runPromise(
       this.input.session.recordPartMetadata({
@@ -145,16 +149,16 @@ export class Subscription {
         toolCallId: part.type === "tool" ? part.callID : undefined,
         metadata: "metadata" in part ? part.metadata : undefined,
       }),
-    )
+    );
     if (part.type === "tool") {
-      await this.handleToolPart(session.id, part, session.cwd)
+      await this.handleToolPart(session.id, part, session.cwd);
     }
   }
 
   private async handlePartDelta(event: EventMessagePartDelta) {
-    const props = event.properties
-    const session = await Effect.runPromise(this.input.session.tryGet(props.sessionID))
-    if (!session) return
+    const props = event.properties;
+    const session = await Effect.runPromise(this.input.session.tryGet(props.sessionID));
+    if (!session) return;
 
     const known = await Effect.runPromise(
       this.input.session.tryGetPartMetadata({
@@ -162,12 +166,12 @@ export class Subscription {
         messageId: props.messageID,
         partId: props.partID,
       }),
-    )
+    );
     const metadata =
       known?.role && known.partType
         ? known
-        : await this.fetchPartMetadata(session.id, session.cwd, props.messageID, props.partID)
-    if (metadata?.role !== "assistant") return
+        : await this.fetchPartMetadata(session.id, session.cwd, props.messageID, props.partID);
+    if (metadata?.role !== "assistant") return;
     if (metadata.partType === "text" && props.field === "text" && metadata.ignored !== true) {
       await this.input.connection.sessionUpdate({
         sessionId: session.id,
@@ -179,8 +183,8 @@ export class Subscription {
             text: props.delta,
           },
         },
-      })
-      return
+      });
+      return;
     }
 
     if (metadata.partType === "reasoning" && props.field === "text") {
@@ -194,11 +198,16 @@ export class Subscription {
             text: props.delta,
           },
         },
-      })
+      });
     }
   }
 
-  private async fetchPartMetadata(sessionId: string, cwd: string, messageId: string, partId: string) {
+  private async fetchPartMetadata(
+    sessionId: string,
+    cwd: string,
+    messageId: string,
+    partId: string,
+  ) {
     const message = await this.input.sdk.session
       .message(
         {
@@ -209,12 +218,12 @@ export class Subscription {
         { throwOnError: true },
       )
       .then((response) => response.data)
-      .catch(() => undefined)
-    if (!message) return
+      .catch(() => undefined);
+    if (!message) return;
 
-    const part = message.parts.find((item) => item.id === partId)
-    if (!part) return
-    return await this.recordFetchedPart(sessionId, message, part)
+    const part = message.parts.find((item) => item.id === partId);
+    if (!part) return;
+    return await this.recordFetchedPart(sessionId, message, part);
   }
 
   private async recordFetchedPart(sessionId: string, message: SessionMessageResponse, part: Part) {
@@ -229,23 +238,23 @@ export class Subscription {
         toolCallId: part.type === "tool" ? part.callID : undefined,
         metadata: "metadata" in part ? part.metadata : undefined,
       }),
-    )
+    );
   }
 
   private async handleToolPart(sessionId: string, part: ToolPart, cwd: string) {
-    await this.toolStart(sessionId, part, cwd)
+    await this.toolStart(sessionId, part, cwd);
 
     switch (part.state.status) {
       case "pending":
-        this.shellSnapshots.delete(part.callID)
-        return
+        this.shellSnapshots.delete(part.callID);
+        return;
 
       case "running":
-        await this.runningTool(sessionId, part, cwd)
-        return
+        await this.runningTool(sessionId, part, cwd);
+        return;
 
       case "completed":
-        this.clearTool(part.callID)
+        this.clearTool(part.callID);
         await this.input.connection.sessionUpdate({
           sessionId,
           update: {
@@ -257,11 +266,11 @@ export class Subscription {
               cwd,
             }),
           },
-        })
-        return
+        });
+        return;
 
       case "error":
-        this.clearTool(part.callID)
+        this.clearTool(part.callID);
         await this.input.connection.sessionUpdate({
           sessionId,
           update: {
@@ -273,15 +282,15 @@ export class Subscription {
               cwd,
             }),
           },
-        })
-        return
+        });
+        return;
     }
   }
 
   private async runningTool(sessionId: string, part: ToolPart, cwd: string) {
-    if (part.state.status !== "running") return
+    if (part.state.status !== "running") return;
 
-    const output = part.tool === "bash" ? shellOutputSnapshot(part.state) : undefined
+    const output = part.tool === "bash" ? shellOutputSnapshot(part.state) : undefined;
     if (output !== undefined) {
       if (this.shellSnapshots.get(part.callID) === output) {
         await this.input.connection.sessionUpdate({
@@ -295,10 +304,10 @@ export class Subscription {
               cwd,
             }),
           },
-        })
-        return
+        });
+        return;
       }
-      this.shellSnapshots.set(part.callID, output)
+      this.shellSnapshots.set(part.callID, output);
     }
 
     await this.input.connection.sessionUpdate({
@@ -313,12 +322,12 @@ export class Subscription {
           cwd,
         }),
       },
-    })
+    });
   }
 
   private async toolStart(sessionId: string, part: ToolPart, cwd: string) {
-    if (this.toolStarts.has(part.callID)) return
-    this.toolStarts.add(part.callID)
+    if (this.toolStarts.has(part.callID)) return;
+    this.toolStarts.add(part.callID);
     await this.input.connection.sessionUpdate({
       sessionId,
       update: {
@@ -330,13 +339,13 @@ export class Subscription {
           cwd,
         }),
       },
-    })
+    });
   }
 
   private clearTool(toolCallId: string) {
-    this.toolStarts.delete(toolCallId)
-    this.shellSnapshots.delete(toolCallId)
+    this.toolStarts.delete(toolCallId);
+    this.shellSnapshots.delete(toolCallId);
   }
 }
 
-export * as ACPEvent from "./event"
+export * as ACPEvent from "./event";

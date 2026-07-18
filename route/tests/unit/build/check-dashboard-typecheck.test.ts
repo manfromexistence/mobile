@@ -57,7 +57,7 @@ test("diffAgainstBaseline: flags a brand-new orphaned-identifier error as a regr
   assert.equal(regressions.length, 1);
   assert.equal(
     regressions[0].file,
-    "src/app/(dashboard)/dashboard/settings/components/ProxyRegistryManager.tsx"
+    "src/app/(dashboard)/dashboard/settings/components/ProxyRegistryManager.tsx",
   );
   assert.equal(regressions[0].code, "TS2304");
   assert.equal(regressions[0].liveCount, 5);

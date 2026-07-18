@@ -26,7 +26,7 @@ function sseResponse(events: string[]) {
     {
       status: 200,
       headers: { "Content-Type": "text/event-stream" },
-    }
+    },
   );
 }
 

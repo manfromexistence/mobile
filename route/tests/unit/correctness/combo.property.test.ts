@@ -50,7 +50,7 @@ test("resolveNestedComboModels never throws and is cycle-safe", () => {
       // resolveNestedComboModels must always return an array (never throw, never loop)
       const out = resolveNestedComboModels(combos[0], combos);
       assert.ok(Array.isArray(out), "must return array");
-    })
+    }),
   );
 });
 

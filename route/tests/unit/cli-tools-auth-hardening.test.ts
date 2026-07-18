@@ -46,17 +46,17 @@ test("all cli-tools route handlers require the shared management auth guard", ()
     assert.ok(handlerCount > 0, `${relPath} should export at least one route handler`);
     assert.ok(
       content.includes('from "@/lib/api/requireCliToolsAuth"'),
-      `${relPath} should import requireCliToolsAuth`
+      `${relPath} should import requireCliToolsAuth`,
     );
     assert.equal(
       authCount,
       handlerCount,
-      `${relPath} should guard every exported handler before host access`
+      `${relPath} should guard every exported handler before host access`,
     );
     assert.equal(
       returnCount,
       handlerCount,
-      `${relPath} should return the auth error from every exported handler`
+      `${relPath} should return the auth error from every exported handler`,
     );
   }
 });
@@ -67,10 +67,10 @@ test("cli-tools auth helper delegates to management auth", () => {
 
   assert.ok(
     content.includes('from "@/lib/api/requireManagementAuth"'),
-    "requireCliToolsAuth should reuse the shared management auth helper"
+    "requireCliToolsAuth should reuse the shared management auth helper",
   );
   assert.ok(
     content.includes("return requireManagementAuth(request);"),
-    "requireCliToolsAuth should delegate directly to requireManagementAuth"
+    "requireCliToolsAuth should delegate directly to requireManagementAuth",
   );
 });

@@ -1,4 +1,4 @@
-import { LoaderV2 } from "./loader-v2"
+import { LoaderV2 } from "./loader-v2";
 
 const docs = `### Overview
 Circular v2 loader for compact loading states.
@@ -11,7 +11,7 @@ Circular v2 loader for compact loading states.
 
 ### Accessibility
 - Sets \`aria-hidden="true"\` by default.
-`
+`;
 
 export default {
   title: "UI V2/Loader",
@@ -25,11 +25,11 @@ export default {
       },
     },
   },
-}
+};
 
 export const Basic = {
   render: () => <LoaderV2 />,
-}
+};
 
 export const Sizes = {
   render: () => (
@@ -39,4 +39,4 @@ export const Sizes = {
       <LoaderV2 width={24} height={24} />
     </div>
   ),
-}
+};

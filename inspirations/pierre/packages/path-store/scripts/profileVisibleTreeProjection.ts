@@ -1,10 +1,10 @@
-import inspector from 'node:inspector';
-import { performance } from 'node:perf_hooks';
+import inspector from "node:inspector";
+import { performance } from "node:perf_hooks";
 
 import {
   createVisibleTreeProjectionScenarios,
   createVisibleTreeProjectionWorkload,
-} from './visibleTreeProjectionShared';
+} from "./visibleTreeProjectionShared";
 
 interface ProfileConfig {
   iterations: number;
@@ -43,25 +43,25 @@ function parseArgs(argv: readonly string[]): ProfileConfig {
   const config: ProfileConfig = {
     iterations: 50,
     json: false,
-    scenarioName: 'projection-only',
-    workload: 'linux-1x',
+    scenarioName: "projection-only",
+    workload: "linux-1x",
   };
 
   for (let index = 0; index < argv.length; index += 1) {
     const arg = argv[index];
     switch (arg) {
-      case '--iterations':
+      case "--iterations":
         config.iterations = Number(argv[index + 1] ?? config.iterations);
         index += 1;
         break;
-      case '--json':
+      case "--json":
         config.json = true;
         break;
-      case '--scenario':
+      case "--scenario":
         config.scenarioName = argv[index + 1] ?? config.scenarioName;
         index += 1;
         break;
-      case '--workload':
+      case "--workload":
         config.workload = argv[index + 1] ?? config.workload;
         index += 1;
         break;
@@ -77,22 +77,20 @@ async function main(): Promise<void> {
   const config = parseArgs(process.argv.slice(2));
   const workload = createVisibleTreeProjectionWorkload(config.workload);
   const scenario = createVisibleTreeProjectionScenarios(workload).find(
-    ({ name }) => name === config.scenarioName
+    ({ name }) => name === config.scenarioName,
   );
   if (scenario == null) {
-    throw new Error(
-      `Unknown visible tree projection scenario: "${config.scenarioName}"`
-    );
+    throw new Error(`Unknown visible tree projection scenario: "${config.scenarioName}"`);
   }
 
   const session = new inspector.Session();
   session.connect();
 
-  await postInspector(session, 'Profiler.enable');
-  await postInspector(session, 'Profiler.setSamplingInterval', {
+  await postInspector(session, "Profiler.enable");
+  await postInspector(session, "Profiler.setSamplingInterval", {
     interval: 1_000,
   });
-  await postInspector(session, 'Profiler.start');
+  await postInspector(session, "Profiler.start");
 
   const startedAt = performance.now();
   let rowCount = 0;
@@ -101,15 +99,13 @@ async function main(): Promise<void> {
   }
   const wallTimeMs = performance.now() - startedAt;
 
-  const profile = (
-    await postInspector<{ profile?: CpuProfile }>(session, 'Profiler.stop')
-  ).profile;
-  await postInspector(session, 'Profiler.disable').catch(() => {});
+  const profile = (await postInspector<{ profile?: CpuProfile }>(session, "Profiler.stop")).profile;
+  await postInspector(session, "Profiler.disable").catch(() => {});
   session.disconnect();
 
   const functionSummaries = summarizeCpuProfile(profile ?? null).slice(0, 15);
   const output = {
-    profile: 'visible-tree-projection',
+    profile: "visible-tree-projection",
     scenario: scenario.name,
     summary: {
       iterations: config.iterations,
@@ -126,30 +122,27 @@ async function main(): Promise<void> {
   }
 
   console.log(
-    `${workload.name}:${scenario.name}  iterations=${String(config.iterations)}  rows=${String(rowCount)}  wall=${wallTimeMs.toFixed(3)}ms`
+    `${workload.name}:${scenario.name}  iterations=${String(config.iterations)}  rows=${String(rowCount)}  wall=${wallTimeMs.toFixed(3)}ms`,
   );
   for (const summary of functionSummaries) {
     console.log(
-      `  ${summary.name}  self=${summary.selfMs.toFixed(3)}ms  total=${summary.totalMs.toFixed(3)}ms`
+      `  ${summary.name}  self=${summary.selfMs.toFixed(3)}ms  total=${summary.totalMs.toFixed(3)}ms`,
     );
   }
 }
 
 function createFunctionLabel(callFrame: CpuProfileNodeCallFrame): string {
-  const functionName =
-    callFrame.functionName.length > 0 ? callFrame.functionName : '(anonymous)';
+  const functionName = callFrame.functionName.length > 0 ? callFrame.functionName : "(anonymous)";
   if (callFrame.url.length === 0) {
     return functionName;
   }
 
-  const parts = callFrame.url.split('/');
+  const parts = callFrame.url.split("/");
   const fileName = parts[parts.length - 1] ?? callFrame.url;
   return `${functionName} (${fileName}:${String(callFrame.lineNumber + 1)})`;
 }
 
-function summarizeCpuProfile(
-  profile: CpuProfile | null
-): ProfileFunctionSummary[] {
+function summarizeCpuProfile(profile: CpuProfile | null): ProfileFunctionSummary[] {
   if (
     profile == null ||
     profile.samples == null ||
@@ -182,10 +175,7 @@ function summarizeCpuProfile(
     }
 
     const leafLabel = createFunctionLabel(leafNode.callFrame);
-    selfMsByLabel.set(
-      leafLabel,
-      (selfMsByLabel.get(leafLabel) ?? 0) + durationMs
-    );
+    selfMsByLabel.set(leafLabel, (selfMsByLabel.get(leafLabel) ?? 0) + durationMs);
 
     let currentNodeId: number | null = nodeId;
     while (currentNodeId != null) {
@@ -212,7 +202,7 @@ function summarizeCpuProfile(
 function postInspector<TResult = void>(
   session: inspector.Session,
   method: string,
-  params?: object
+  params?: object,
 ): Promise<TResult> {
   return new Promise((resolve, reject) => {
     session.post(method, params ?? {}, (error, result) => {

@@ -16,7 +16,7 @@ test("#6638: Ollama Cloud weekly-quota-exhausted 429 must NOT get a short generi
     "ollama-cloud",
     null,
     null,
-    undefined
+    undefined,
   );
 
   console.log("checkFallbackError result:", result);
@@ -24,10 +24,10 @@ test("#6638: Ollama Cloud weekly-quota-exhausted 429 must NOT get a short generi
   assert.equal(
     result.reason,
     "quota_exhausted",
-    `expected reason "quota_exhausted" but got "${result.reason}" — quota text is being ignored for apikey-category 429s`
+    `expected reason "quota_exhausted" but got "${result.reason}" — quota text is being ignored for apikey-category 429s`,
   );
   assert.ok(
     result.cooldownMs > 60 * 60 * 1000,
-    `expected a long (>1h) cooldown reflecting the weekly quota reset, got ${result.cooldownMs}ms`
+    `expected a long (>1h) cooldown reflecting the weekly quota reset, got ${result.cooldownMs}ms`,
   );
 });

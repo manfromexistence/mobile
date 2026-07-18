@@ -138,7 +138,7 @@ function validateNumberRange(
   key: string,
   min: number,
   max: number,
-  errors: string[]
+  errors: string[],
 ): void {
   const value = config[key];
   if (value === undefined) return;
@@ -315,14 +315,14 @@ export const cavemanEngine: CompressionEngine = {
       ...(options?.config?.preserveSystemPrompt !== false
         ? {
             compressRoles: (options?.config?.cavemanConfig?.compressRoles ?? ["user"]).filter(
-              (role) => role !== "system"
+              (role) => role !== "system",
             ),
           }
         : {}),
     };
     const result = cavemanCompress(
       adapter.body as Parameters<typeof cavemanCompress>[0],
-      cavemanConfig
+      cavemanConfig,
     );
     return adapter.adapted ? { ...result, body: adapter.restore(result.body) } : result;
   },
@@ -380,7 +380,7 @@ export const aggressiveEngine: CompressionEngine = {
         "aggressive",
         ["aggressive"],
         result.stats.rulesApplied,
-        result.stats.durationMs
+        result.stats.durationMs,
       ),
     };
   },
@@ -438,7 +438,7 @@ export const ultraEngine: CompressionEngine = {
         "ultra",
         ["ultra"],
         result.stats.rulesApplied,
-        result.stats.durationMs
+        result.stats.durationMs,
       ),
     };
   },

@@ -62,7 +62,7 @@ test("fetchBailianQuota uses apiKey when consoleApiKey is absent", async () => {
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -108,7 +108,7 @@ test("fetchBailianQuota uses apiKey when consoleApiKey is empty string", async (
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -157,7 +157,7 @@ test("fetchBailianQuota prefers consoleApiKey when present", async () => {
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -206,7 +206,7 @@ test("fetchBailianQuota parses triple-window and returns percentUsed = max(5h%, 
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -242,7 +242,7 @@ test("fetchBailianQuota retries with China host on ConsoleNeedLogin", async () =
         {
           status: 200,
           headers: { "content-type": "application/json" },
-        }
+        },
       );
     }
 
@@ -271,7 +271,7 @@ test("fetchBailianQuota retries with China host on ConsoleNeedLogin", async () =
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -301,7 +301,7 @@ test("fetchBailianQuota does not retry more than once on ConsoleNeedLogin", asyn
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -347,7 +347,7 @@ test("fetchBailianQuota returns null when response has no codingPlanQuotaInfo", 
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -388,7 +388,7 @@ test("fetchBailianQuota caches results within TTL", async () => {
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -446,7 +446,7 @@ test("ALIBABA_CODING_PLAN_HOST env var overrides default host", async () => {
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -496,7 +496,7 @@ test("ALIBABA_CODING_PLAN_QUOTA_URL env var overrides full URL", async () => {
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -546,7 +546,7 @@ test("registerBailianCodingPlanQuotaFetcher exposes Bailian quota to preflight a
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
 
   const preflight = await preflightQuota("bailian-coding-plan", connectionId, {

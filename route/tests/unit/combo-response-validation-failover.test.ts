@@ -26,7 +26,7 @@ function content200(model: string, text: string) {
       model,
       choices: [{ index: 0, message: { role: "assistant", content: text }, finish_reason: "stop" }],
     }),
-    { status: 200, headers: { "Content-Type": "application/json" } }
+    { status: 200, headers: { "Content-Type": "application/json" } },
   );
 }
 
@@ -61,14 +61,14 @@ test("4985 fails over when leg 1's 200 body trips a forbidden substring", async 
   assert.equal(
     modelsCalled.length,
     2,
-    `predicate failure on leg 1 must advance to leg 2, tried: ${modelsCalled.join(", ")}`
+    `predicate failure on leg 1 must advance to leg 2, tried: ${modelsCalled.join(", ")}`,
   );
   assert.equal(result.status, 200, "the combo must surface the healthy second leg's 200");
   const body = JSON.parse(await result.text());
   assert.match(
     String(body?.choices?.[0]?.message?.content ?? ""),
     /answer you asked for/,
-    "surfaced content must come from the leg that passed the predicate"
+    "surfaced content must come from the leg that passed the predicate",
   );
 });
 

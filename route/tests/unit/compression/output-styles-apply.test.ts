@@ -6,14 +6,13 @@ import {
   type OutputStyleSelectionEntry,
 } from "../../../open-sse/services/compression/outputStyles/apply.ts";
 
-const sel = (
-  ...entries: Array<[string, "lite" | "full" | "ultra"]>
-): OutputStyleSelectionEntry[] => entries.map(([id, level]) => ({ id, level }));
+const sel = (...entries: Array<[string, "lite" | "full" | "ultra"]>): OutputStyleSelectionEntry[] =>
+  entries.map(([id, level]) => ({ id, level }));
 
 test("injects a system instruction with the unified marker", () => {
   const r = applyOutputStyles(
     { messages: [{ role: "user", content: "Summarize this API response." }] },
-    sel(["terse-prose", "full"])
+    sel(["terse-prose", "full"]),
   );
   assert.equal(r.applied, true);
   assert.equal(r.body.messages?.[0]?.role, "system");
@@ -25,7 +24,7 @@ test("injects a system instruction with the unified marker", () => {
 test("combines two styles in catalog order with a single shared boundary", () => {
   const r = applyOutputStyles(
     { messages: [{ role: "user", content: "Refactor this module." }] },
-    sel(["less-code", "full"], ["terse-prose", "full"]) // requested out of order
+    sel(["less-code", "full"], ["terse-prose", "full"]), // requested out of order
   );
   const text = String(r.body.messages?.[0]?.content);
   // catalog order is terse-prose before less-code
@@ -37,7 +36,7 @@ test("combines two styles in catalog order with a single shared boundary", () =>
   assert.equal(boundaryCount, 1);
   assert.deepEqual(
     r.appliedStyles?.map((s) => s.id),
-    ["terse-prose", "less-code"]
+    ["terse-prose", "less-code"],
   );
 });
 
@@ -49,7 +48,7 @@ test("appends to an existing system prompt", () => {
         { role: "user", content: "Summarize logs." },
       ],
     },
-    sel(["terse-prose", "lite"])
+    sel(["terse-prose", "lite"]),
   );
   assert.match(String(r.body.messages?.[0]?.content), /Follow tenant policy/);
   assert.match(String(r.body.messages?.[0]?.content), /Drop filler/);
@@ -61,16 +60,18 @@ test("idempotent: re-applying is a no-op", () => {
   const twice = applyOutputStyles(once, sel(["terse-prose", "full"]));
   assert.equal(twice.applied, false);
   assert.equal(twice.skippedReason, "already_applied");
-  const markerCount = (String(twice.body.messages?.[0]?.content).match(
-    new RegExp(escapeRe(OUTPUT_STYLE_MARKER), "g")
-  ) ?? []).length;
+  const markerCount = (
+    String(twice.body.messages?.[0]?.content).match(
+      new RegExp(escapeRe(OUTPUT_STYLE_MARKER), "g"),
+    ) ?? []
+  ).length;
   assert.equal(markerCount, 1);
 });
 
 test("content bypass is all-or-nothing across every selected style", () => {
   const r = applyOutputStyles(
     { messages: [{ role: "user", content: "Explain this security vulnerability in detail." }] },
-    sel(["terse-prose", "full"], ["less-code", "full"])
+    sel(["terse-prose", "full"], ["less-code", "full"]),
   );
   assert.equal(r.applied, false);
   assert.equal(r.skippedReason, "security_warning");
@@ -88,17 +89,20 @@ test("no styles selected → body untouched", () => {
 test("unknown style id is skipped, never throws", () => {
   const r = applyOutputStyles(
     { messages: [{ role: "user", content: "hi" }] },
-    sel(["__nope__", "full"], ["terse-prose", "full"])
+    sel(["__nope__", "full"], ["terse-prose", "full"]),
   );
   assert.equal(r.applied, true);
-  assert.deepEqual(r.appliedStyles?.map((s) => s.id), ["terse-prose"]);
+  assert.deepEqual(
+    r.appliedStyles?.map((s) => s.id),
+    ["terse-prose"],
+  );
 });
 
 test("locale gate: terse-cjk only honored under zh", () => {
   const enOnly = applyOutputStyles(
     { messages: [{ role: "user", content: "hi" }] },
     sel(["terse-cjk", "full"]),
-    "en"
+    "en",
   );
   assert.equal(enOnly.applied, false);
   assert.equal(enOnly.skippedReason, "no_styles");
@@ -106,7 +110,7 @@ test("locale gate: terse-cjk only honored under zh", () => {
   const zh = applyOutputStyles(
     { messages: [{ role: "user", content: "hi" }] },
     sel(["terse-cjk", "full"]),
-    "zh"
+    "zh",
   );
   assert.equal(zh.applied, true);
   assert.match(String(zh.body.messages?.[0]?.content), /文言/);
@@ -116,7 +120,7 @@ test("determinism: same (selection, language) yields byte-identical injected tex
   const make = () =>
     applyOutputStyles(
       { messages: [{ role: "user", content: "do a thing" }] },
-      sel(["terse-prose", "full"], ["less-code", "lite"])
+      sel(["terse-prose", "full"], ["less-code", "lite"]),
     ).body.messages?.[0]?.content;
   assert.equal(make(), make());
 });
@@ -124,7 +128,7 @@ test("determinism: same (selection, language) yields byte-identical injected tex
 test("Responses input (no messages) uses instructions field", () => {
   const r = applyOutputStyles(
     { input: [{ type: "message", role: "user", content: "Summarize logs." }] },
-    sel(["terse-prose", "full"])
+    sel(["terse-prose", "full"]),
   );
   assert.equal(r.applied, true);
   assert.match(String(r.body.instructions), new RegExp(escapeRe(OUTPUT_STYLE_MARKER)));
@@ -137,7 +141,7 @@ test("terse-prose localizes per language (back-compat with the legacy caveman pa
   const ptBR = applyOutputStyles(
     { messages: [{ role: "user", content: "Resuma os logs." }] },
     sel(["terse-prose", "lite"]),
-    "pt-BR"
+    "pt-BR",
   );
   assert.match(String(ptBR.body.messages?.[0]?.content), /Responda conciso/);
   assert.doesNotMatch(String(ptBR.body.messages?.[0]?.content), /Respond concise/);
@@ -145,7 +149,7 @@ test("terse-prose localizes per language (back-compat with the legacy caveman pa
   const en = applyOutputStyles(
     { messages: [{ role: "user", content: "Summarize logs." }] },
     sel(["terse-prose", "lite"]),
-    "en"
+    "en",
   );
   assert.match(String(en.body.messages?.[0]?.content), /Respond concise/);
 });

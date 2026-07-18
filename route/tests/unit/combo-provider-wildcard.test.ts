@@ -30,8 +30,9 @@ const {
   expandProviderWildcardsInCollection,
 } = await import("../../open-sse/services/combo/providerWildcard.ts");
 
-const { replaceSyncedAvailableModelsForConnection, getSyncedAvailableModels } =
-  await import("../../src/lib/db/models.ts");
+const { replaceSyncedAvailableModelsForConnection, getSyncedAvailableModels } = await import(
+  "../../src/lib/db/models.ts"
+);
 
 const core = await import("../../src/lib/db/core.ts");
 core.getDbInstance(); // initialise DB + run migrations
@@ -47,7 +48,7 @@ async function seedSyncedModels(providerId: string, connectionId: string, modelI
   await replaceSyncedAvailableModelsForConnection(
     providerId,
     connectionId,
-    modelIds.map((id) => ({ id, name: id, source: "imported" as const }))
+    modelIds.map((id) => ({ id, name: id, source: "imported" as const })),
   );
 }
 
@@ -72,7 +73,7 @@ test("isProviderWildcardEntry: rejects plain model strings", () => {
 test("isProviderWildcardEntry: detects object form `{ kind: 'provider-wildcard' }`", () => {
   assert.equal(
     isProviderWildcardEntry({ kind: "provider-wildcard", providerId: "fta", modelPattern: "*" }),
-    true
+    true,
   );
 });
 
@@ -97,7 +98,7 @@ test("expandProviderWildcardsInCombo: expands `openai/*` against static registry
     assert.equal((entry as any).kind, "model");
     assert.ok(
       typeof (entry as any).model === "string" && (entry as any).model.startsWith("openai/"),
-      `model should start with openai/, got: ${(entry as any).model}`
+      `model should start with openai/, got: ${(entry as any).model}`,
     );
   }
 });
@@ -300,7 +301,7 @@ test("expandProviderWildcardsInCombo: two provider wildcards expand independentl
   const models = result.models.map((e) => (e as any).model);
   assert.ok(
     models.indexOf(`${p1}/fast-model`) < models.indexOf(`${p2}/web-search-model`),
-    "p1 models should come before p2 models"
+    "p1 models should come before p2 models",
   );
   assert.ok(models.includes(`${p1}/fast-model`));
   assert.ok(models.includes(`${p1}/smart-model`));

@@ -105,8 +105,9 @@ describe("Task Fitness", () => {
       // "arena_elo_free_alias".
       const baseId = "alias-base-test-4517";
       const freeId = "alias-base-test-4517-free";
-      const { upsertModelIntelligence, deleteModelIntelligence } =
-        await import("../../../../src/lib/db/modelIntelligence.ts");
+      const { upsertModelIntelligence, deleteModelIntelligence } = await import(
+        "../../../../src/lib/db/modelIntelligence.ts"
+      );
       // Seed arena_elo on the base id only — no row exists for the free id.
       upsertModelIntelligence({
         model: baseId,
@@ -410,7 +411,7 @@ describe("SLA-aware Strategy", () => {
           maxErrorRate: 0.1,
           maxCostPer1MTokens: 5,
         },
-      }
+      },
     );
 
     expect(result.finalScore).toBeGreaterThan(0.9);

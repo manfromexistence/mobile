@@ -1,18 +1,18 @@
-import { sentryVitePlugin } from "@sentry/vite-plugin"
-import { defineConfig } from "electron-vite"
-import appPlugin from "@opencode-ai/app/vite"
-import * as fs from "node:fs/promises"
+import { sentryVitePlugin } from "@sentry/vite-plugin";
+import { defineConfig } from "electron-vite";
+import appPlugin from "@opencode-ai/app/vite";
+import * as fs from "node:fs/promises";
 
-const OPENCODE_SERVER_DIST = "../opencode/dist/node"
+const OPENCODE_SERVER_DIST = "../opencode/dist/node";
 
 const channel = (() => {
-  const raw = process.env.OPENCODE_CHANNEL
-  if (raw === "dev" || raw === "beta" || raw === "prod") return raw
-  if (process.env.OPENCODE_CHANNEL === "latest") return "prod"
-  return "dev"
-})()
+  const raw = process.env.OPENCODE_CHANNEL;
+  if (raw === "dev" || raw === "beta" || raw === "prod") return raw;
+  if (process.env.OPENCODE_CHANNEL === "latest") return "prod";
+  return "dev";
+})();
 
-const nodePtyPkg = `@lydell/node-pty-${process.platform}-${process.arch}`
+const nodePtyPkg = `@lydell/node-pty-${process.platform}-${process.arch}`;
 
 const sentry =
   process.env.SENTRY_AUTH_TOKEN && process.env.SENTRY_ORG && process.env.SENTRY_PROJECT
@@ -29,7 +29,7 @@ const sentry =
           filesToDeleteAfterUpload: "./out/renderer/**/*.map",
         },
       })
-    : false
+    : false;
 
 export default defineConfig({
   main: {
@@ -47,22 +47,26 @@ export default defineConfig({
         name: "opencode:node-pty-narrower",
         enforce: "pre",
         resolveId(s) {
-          if (s === "@lydell/node-pty") return nodePtyPkg
+          if (s === "@lydell/node-pty") return nodePtyPkg;
         },
       },
       {
         name: "opencode:virtual-server-module",
         enforce: "pre",
         resolveId(id) {
-          if (id === "virtual:opencode-server") return this.resolve(`${OPENCODE_SERVER_DIST}/node.js`)
+          if (id === "virtual:opencode-server")
+            return this.resolve(`${OPENCODE_SERVER_DIST}/node.js`);
         },
       },
       {
         name: "opencode:copy-server-assets",
         async writeBundle() {
           for (const l of await fs.readdir(OPENCODE_SERVER_DIST)) {
-            if (!l.endsWith(".wasm")) continue
-            await fs.writeFile(`./out/main/chunks/${l}`, await fs.readFile(`${OPENCODE_SERVER_DIST}/${l}`))
+            if (!l.endsWith(".wasm")) continue;
+            await fs.writeFile(
+              `./out/main/chunks/${l}`,
+              await fs.readFile(`${OPENCODE_SERVER_DIST}/${l}`),
+            );
           }
         },
       },
@@ -92,4 +96,4 @@ export default defineConfig({
       },
     },
   },
-})
+});

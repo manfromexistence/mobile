@@ -32,7 +32,7 @@ import { isValidationFailure, validateBody } from "@/shared/validation/helpers";
 
 function normalizeRequestedModelIds(
   searchParams: URLSearchParams,
-  body: Record<string, unknown>
+  body: Record<string, unknown>,
 ): string[] {
   const bodyModelIds = Array.isArray(body.modelIds)
     ? body.modelIds
@@ -55,7 +55,7 @@ export async function GET(request) {
     if (!(await isAuthenticated(request))) {
       return Response.json(
         { error: { message: "Authentication required", type: "invalid_api_key" } },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -85,7 +85,7 @@ export async function GET(request) {
   } catch {
     return Response.json(
       { error: { message: "Failed to fetch provider models", type: "server_error" } },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -101,7 +101,7 @@ export async function POST(request) {
   } catch {
     return Response.json(
       { error: { message: "Invalid JSON body", type: "validation_error" } },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -110,7 +110,7 @@ export async function POST(request) {
     if (!(await isAuthenticated(request))) {
       return Response.json(
         { error: { message: "Authentication required", type: "invalid_api_key" } },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -145,14 +145,14 @@ export async function POST(request) {
         ...(maxInputTokens != null ? { inputTokenLimit: maxInputTokens } : {}),
         ...(maxOutputTokens != null ? { outputTokenLimit: maxOutputTokens } : {}),
       },
-      typeof supportsVision === "boolean" ? supportsVision : undefined
+      typeof supportsVision === "boolean" ? supportsVision : undefined,
     );
     return Response.json({ model });
   } catch (error) {
     console.error("Error adding provider model:", error);
     return Response.json(
       { error: { message: "Failed to add provider model", type: "server_error" } },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -168,7 +168,7 @@ export async function PUT(request) {
   } catch {
     return Response.json(
       { error: { message: "Invalid JSON body", type: "validation_error" } },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -176,7 +176,7 @@ export async function PUT(request) {
     if (!(await isAuthenticated(request))) {
       return Response.json(
         { error: { message: "Authentication required", type: "invalid_api_key" } },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -245,7 +245,7 @@ export async function PUT(request) {
             "upstreamHeaders",
             "compatByProtocol",
             "contextWindowOverride",
-          ].includes(k)
+          ].includes(k),
         ) &&
         ("normalizeToolCallId" in raw ||
           "preserveOpenAIDeveloperRole" in raw ||
@@ -257,14 +257,14 @@ export async function PUT(request) {
           !!provider &&
           (Object.prototype.hasOwnProperty.call(
             AI_PROVIDERS as Record<string, unknown>,
-            provider
+            provider,
           ) ||
             isOpenAICompatibleProvider(provider) ||
             isAnthropicCompatibleProvider(provider));
         if (!knownProvider) {
           return Response.json(
             { error: { message: "Unknown provider", type: "validation_error" } },
-            { status: 400 }
+            { status: 400 },
           );
         }
         const patch: ModelCompatPatch = {};
@@ -299,7 +299,7 @@ export async function PUT(request) {
       }
       return Response.json(
         { error: { message: "Model not found", type: "not_found" } },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -313,7 +313,7 @@ export async function PUT(request) {
     console.error("Error updating provider model:", error);
     return Response.json(
       { error: { message: "Failed to update provider model", type: "server_error" } },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -329,7 +329,7 @@ export async function PATCH(request) {
   } catch {
     return Response.json(
       { error: { message: "Invalid JSON body", type: "validation_error" } },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -337,7 +337,7 @@ export async function PATCH(request) {
     if (!(await isAuthenticated(request))) {
       return Response.json(
         { error: { message: "Authentication required", type: "invalid_api_key" } },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -351,14 +351,14 @@ export async function PATCH(request) {
     if (!provider) {
       return Response.json(
         { error: { message: "provider query param is required", type: "validation_error" } },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (typeof body.isHidden !== "boolean") {
       return Response.json(
         { error: { message: "isHidden boolean is required", type: "validation_error" } },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -371,7 +371,7 @@ export async function PATCH(request) {
             type: "validation_error",
           },
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -403,7 +403,7 @@ export async function PATCH(request) {
     console.error("Error patching provider models:", error);
     return Response.json(
       { error: { message: "Failed to update provider models", type: "server_error" } },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -417,7 +417,7 @@ export async function DELETE(request) {
     if (!(await isAuthenticated(request))) {
       return Response.json(
         { error: { message: "Authentication required", type: "invalid_api_key" } },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -433,7 +433,7 @@ export async function DELETE(request) {
             type: "validation_error",
           },
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -459,7 +459,7 @@ export async function DELETE(request) {
             type: "validation_error",
           },
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -481,7 +481,7 @@ export async function DELETE(request) {
     console.error("Error removing provider model:", error);
     return Response.json(
       { error: { message: "Failed to remove provider model", type: "server_error" } },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

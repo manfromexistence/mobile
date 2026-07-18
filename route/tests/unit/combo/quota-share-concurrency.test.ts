@@ -43,7 +43,7 @@ test("no slot when cap is null (no per-connection limit → unchanged behavior)"
     target("c1"),
     null,
     { queueTimeoutMs: 50, maxQueueSize: 10 },
-    noopLog
+    noopLog,
   );
   assert.equal(release, null);
 });
@@ -55,9 +55,9 @@ test("no slot when cap <= 0", async () => {
       target("c1"),
       0,
       { queueTimeoutMs: 50, maxQueueSize: 10 },
-      noopLog
+      noopLog,
     ),
-    null
+    null,
   );
 });
 
@@ -67,7 +67,7 @@ test("no slot when connectionId is empty", async () => {
     target(""),
     1,
     { queueTimeoutMs: 50, maxQueueSize: 10 },
-    noopLog
+    noopLog,
   );
   assert.equal(release, null);
 });
@@ -78,7 +78,7 @@ test("acquires a slot when a positive cap is set", async () => {
     target("c1"),
     1,
     { queueTimeoutMs: 50, maxQueueSize: 10 },
-    noopLog
+    noopLog,
   );
   assert.equal(typeof release, "function");
   release!();
@@ -100,7 +100,7 @@ test("cap=1 serializes: a second concurrent request WAITS until the first releas
   assert.equal(
     secondResolved,
     false,
-    "second request is still queued while the first holds the slot"
+    "second request is still queued while the first holds the slot",
   );
 
   r1!(); // release the first

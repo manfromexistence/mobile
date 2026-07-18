@@ -35,7 +35,7 @@ describe("ProviderCard — #6936 audio-transcriptions provider badge", () => {
           stats={{ total: 1, connected: 1, error: 0, warning: 0 }}
           authType="apikey"
           onToggle={() => {}}
-        />
+        />,
       );
     });
     const text = (container.textContent || "").toLowerCase();
@@ -60,7 +60,7 @@ describe("ProviderCard — #6936 audio-transcriptions provider badge", () => {
           stats={{ total: 1, connected: 1, error: 0, warning: 0 }}
           authType="apikey"
           onToggle={() => {}}
-        />
+        />,
       );
     });
     const text = (container.textContent || "").toLowerCase();
@@ -85,7 +85,7 @@ describe("ProviderCard — #6936 audio-transcriptions provider badge", () => {
           stats={{ total: 1, connected: 1, error: 0, warning: 0 }}
           authType="apikey"
           onToggle={() => {}}
-        />
+        />,
       );
     });
     const text = (container.textContent || "").toLowerCase();

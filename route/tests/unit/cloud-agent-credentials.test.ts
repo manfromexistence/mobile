@@ -35,7 +35,7 @@ test("migration 061 provisions cloud_agent_credentials (table exists after DB in
   assert.equal(
     row?.name,
     "cloud_agent_credentials",
-    "table must be created by migration, not inline"
+    "table must be created by migration, not inline",
   );
 });
 
@@ -43,7 +43,7 @@ test("ensureCredentialsTable is no longer exported (inline DDL removed)", () => 
   assert.equal(
     (creds as Record<string, unknown>).ensureCredentialsTable,
     undefined,
-    "lazy table creation must be gone — migration owns the schema"
+    "lazy table creation must be gone — migration owns the schema",
   );
 });
 

@@ -24,7 +24,7 @@ export default function CliAgentsPageClient({ machineId: _machineId }: CliAgents
 
   const agentTools = useMemo(
     () => Object.values(CLI_TOOLS).filter((tool) => tool.category === "agent"),
-    []
+    [],
   );
 
   const hasActiveProviders = useMemo(() => {

@@ -1,4 +1,4 @@
-import { loadWorktreeEnv } from '../../scripts/load-worktree-env.mjs';
+import { loadWorktreeEnv } from "../../scripts/load-worktree-env.mjs";
 
 // `next dev` runs under Node, which (like Bun) only auto-loads the standard
 // `.env*` names. Our worktree helper writes `PIERRE_WORKTREE_SLUG` /
@@ -11,15 +11,12 @@ loadWorktreeEnv();
 // `NEXT_PUBLIC_WORKTREE_SLUG` so the value survives into the client bundle.
 // Bridge it from the non-prefixed worktree slug so `.env.worktree` stays the
 // single source of truth.
-if (
-  process.env.PIERRE_WORKTREE_SLUG &&
-  !process.env.NEXT_PUBLIC_WORKTREE_SLUG
-) {
+if (process.env.PIERRE_WORKTREE_SLUG && !process.env.NEXT_PUBLIC_WORKTREE_SLUG) {
   process.env.NEXT_PUBLIC_WORKTREE_SLUG = process.env.PIERRE_WORKTREE_SLUG;
 }
 
-const site = process.env.NEXT_PUBLIC_SITE ?? 'diffs';
-const isTrees = site === 'trees';
+const site = process.env.NEXT_PUBLIC_SITE ?? "diffs";
+const isTrees = site === "trees";
 const isDiffs = !isTrees;
 
 /** @type {import('next').NextConfig} */
@@ -32,17 +29,17 @@ const nextConfig = {
   // in an isolated container AND the Next builder collects output from the
   // literal `.next` (it does not honor an env-dependent distDir when
   // locating routes-manifest.json), so use the default there.
-  distDir: process.env.VERCEL ? '.next' : `.next/${site}`,
+  distDir: process.env.VERCEL ? ".next" : `.next/${site}`,
   reactStrictMode: true,
   reactCompiler: true,
   devIndicators: false,
   experimental: {
-    cssChunking: 'strict',
+    cssChunking: "strict",
   },
   // allowedDevOrigins: [],
   // Resolve and transpile workspace packages so subpath exports (e.g. @pierre/trees/react)
   // resolve correctly when Next follows client-component imports from the server.
-  transpilePackages: ['@pierre/trees', '@pierre/diffs'],
+  transpilePackages: ["@pierre/trees", "@pierre/diffs"],
   // Opt the /trees-dev route out of bfcache / HTTP document caching.
   // iOS Safari kills tabs that briefly hold two copies of the 1.6M-path AOSP
   // tree during a refresh; no-store tells the browser to fully release the old
@@ -50,11 +47,11 @@ const nextConfig = {
   headers() {
     return [
       {
-        source: '/trees-dev',
+        source: "/trees-dev",
         headers: [
           {
-            key: 'Cache-Control',
-            value: 'no-store, max-age=0',
+            key: "Cache-Control",
+            value: "no-store, max-age=0",
           },
         ],
       },
@@ -66,10 +63,10 @@ const nextConfig = {
       // on this site. Redirect any incoming legacy links to the canonical
       // location. `/new` is a long-standing alias kept for memorability.
       return [
-        { source: '/trees', destination: '/', permanent: true },
-        { source: '/trees/docs', destination: '/docs', permanent: true },
-        { source: '/trees/:path*', destination: '/:path*', permanent: true },
-        { source: '/new', destination: '/', permanent: true },
+        { source: "/trees", destination: "/", permanent: true },
+        { source: "/trees/docs", destination: "/docs", permanent: true },
+        { source: "/trees/:path*", destination: "/:path*", permanent: true },
+        { source: "/new", destination: "/", permanent: true },
       ];
     }
     if (isDiffs) {
@@ -77,13 +74,13 @@ const nextConfig = {
       // to the trees site now hosted on a separate domain.
       return [
         {
-          source: '/trees/:path*',
-          destination: 'https://trees.software/:path*',
+          source: "/trees/:path*",
+          destination: "https://trees.software/:path*",
           permanent: false,
         },
         {
-          source: '/trees',
-          destination: 'https://trees.software',
+          source: "/trees",
+          destination: "https://trees.software",
           permanent: false,
         },
       ];

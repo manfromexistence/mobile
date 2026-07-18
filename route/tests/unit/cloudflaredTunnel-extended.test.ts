@@ -112,7 +112,7 @@ test("getCloudflaredRuntimeDirs and status resolve a managed binary from the dat
     dataDir,
     "cloudflared",
     "bin",
-    process.platform === "win32" ? "cloudflared.exe" : "cloudflared"
+    process.platform === "win32" ? "cloudflared.exe" : "cloudflared",
   );
   process.env.DATA_DIR = dataDir;
 
@@ -192,9 +192,9 @@ test("getCloudflaredTunnelStatus reports a starting tunnel while the spawned pid
         lastError: null,
       },
       null,
-      2
+      2,
     ) + "\n",
-    "utf8"
+    "utf8",
   );
   await fs.writeFile(path.join(stateDir, ".quick-tunnel.pid"), "43210", "utf8");
 
@@ -219,7 +219,7 @@ test("startCloudflaredTunnel reaches running state and stopCloudflaredTunnel cle
     dataDir,
     "cloudflared",
     "bin",
-    process.platform === "win32" ? "cloudflared.exe" : "cloudflared"
+    process.platform === "win32" ? "cloudflared.exe" : "cloudflared",
   );
   process.env.DATA_DIR = dataDir;
   process.env.API_PORT = "24128";
@@ -256,7 +256,7 @@ test("startCloudflaredTunnel reaches running state and stopCloudflaredTunnel cle
 
     setTimeout(() => {
       child.stdout.write(
-        Buffer.from("INF Visit https://violet-cloud.trycloudflare.com to inspect the tunnel\n")
+        Buffer.from("INF Visit https://violet-cloud.trycloudflare.com to inspect the tunnel\n"),
       );
     }, 25);
 
@@ -280,7 +280,7 @@ test("startCloudflaredTunnel reaches running state and stopCloudflaredTunnel cle
   ]);
   assert.equal(
     spawnCalls[0].options.env.HOME,
-    path.join(dataDir, "cloudflared", "runtime", "home")
+    path.join(dataDir, "cloudflared", "runtime", "home"),
   );
   assert.equal(started.phase, "running");
   assert.equal(started.running, true);
@@ -301,7 +301,7 @@ test("startCloudflaredTunnel reaches running state and stopCloudflaredTunnel cle
   assert.equal(stoppedState.publicUrl, null);
   assert.ok(
     killCalls.some((entry) => entry.pid === 41001 && entry.signal === "SIGTERM"),
-    "expected stop to signal SIGTERM to the child pid"
+    "expected stop to signal SIGTERM to the child pid",
   );
 });
 
@@ -331,8 +331,8 @@ test("startCloudflaredTunnel records an error state when the child exits before 
     setTimeout(() => {
       child.stderr.write(
         Buffer.from(
-          'ERR failed to request quick Tunnel: Post "https://api.trycloudflare.com/tunnel": tls: failed to verify certificate: x509: certificate signed by unknown authority\n'
-        )
+          'ERR failed to request quick Tunnel: Post "https://api.trycloudflare.com/tunnel": tls: failed to verify certificate: x509: certificate signed by unknown authority\n',
+        ),
       );
       alive.delete(child.pid);
       setTimeout(() => {
@@ -347,17 +347,17 @@ test("startCloudflaredTunnel records an error state when the child exits before 
 
   await assert.rejects(
     () => tunnel.startCloudflaredTunnel(),
-    /(cloudflared exited before tunnel URL was ready \(1\)|certificate signed by unknown authority)/
+    /(cloudflared exited before tunnel URL was ready \(1\)|certificate signed by unknown authority)/,
   );
 
   const state = await readJsonFileWithRetry(
-    path.join(dataDir, "cloudflared", "quick-tunnel-state.json")
+    path.join(dataDir, "cloudflared", "quick-tunnel-state.json"),
   );
 
   assert.equal(state.status, "error");
   assert.match(
     state.lastError,
-    /(certificate signed by unknown authority|cloudflared exited (unexpectedly|before tunnel URL was ready) \(1\))/
+    /(certificate signed by unknown authority|cloudflared exited (unexpectedly|before tunnel URL was ready) \(1\))/,
   );
 });
 

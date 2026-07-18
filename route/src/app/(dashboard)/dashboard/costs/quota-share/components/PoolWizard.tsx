@@ -24,7 +24,13 @@ import useEmailPrivacyStore from "@/store/emailPrivacyStore";
 import { maskEmailLikeValue } from "@/shared/utils/maskEmail";
 import { getKnownPlan } from "@/lib/quota/planRegistry";
 import { quotaModelName } from "@/lib/quota/quotaModelNaming";
-import type { Policy, PoolAllocation, QuotaDimension, QuotaUnit, QuotaWindow } from "@/lib/quota/dimensions";
+import type {
+  Policy,
+  PoolAllocation,
+  QuotaDimension,
+  QuotaUnit,
+  QuotaWindow,
+} from "@/lib/quota/dimensions";
 import type { QuotaPool } from "@/lib/db/quotaPools";
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -222,7 +228,7 @@ export default function PoolWizard({
 
   const selectedConn = useMemo(
     () => connections.find((c) => c.id === primaryConnectionId),
-    [connections, primaryConnectionId]
+    [connections, primaryConnectionId],
   );
 
   // Locked provider: once the first connection is selected, all subsequent
@@ -237,9 +243,9 @@ export default function PoolWizard({
       connections.filter(
         (c) =>
           !existingPoolConnectionIds.has(c.id) &&
-          (lockedProvider ? c.provider === lockedProvider : true)
+          (lockedProvider ? c.provider === lockedProvider : true),
       ),
-    [connections, existingPoolConnectionIds, lockedProvider]
+    [connections, existingPoolConnectionIds, lockedProvider],
   );
 
   // ── Load dimensions when primary connection changes ───────────────────────
@@ -341,13 +347,12 @@ export default function PoolWizard({
 
   const totalWeight = allocations.reduce(
     (s, a) => s + (Number.isFinite(a.weight) ? a.weight : 0),
-    0
+    0,
   );
 
   const availableKeys = apiKeys.filter((k) => !allocations.some((a) => a.apiKeyId === k.id));
 
-  const keyLabel = (id: string) =>
-    apiKeys.find((k) => k.id === id)?.name || id.slice(0, 12) + "…";
+  const keyLabel = (id: string) => apiKeys.find((k) => k.id === id)?.name || id.slice(0, 12) + "…";
 
   const addKey = (id: string) => {
     setAllocations((prev) => {
@@ -363,8 +368,8 @@ export default function PoolWizard({
   const updateWeight = (id: string, value: number) => {
     setAllocations((prev) =>
       prev.map((a) =>
-        a.apiKeyId === id ? { ...a, weight: Math.max(0, Math.min(100, value)) } : a
-      )
+        a.apiKeyId === id ? { ...a, weight: Math.max(0, Math.min(100, value)) } : a,
+      ),
     );
   };
 
@@ -385,7 +390,7 @@ export default function PoolWizard({
     const each = Math.floor(100 / allocations.length);
     const remainder = 100 - each * allocations.length;
     setAllocations((prev) =>
-      prev.map((a, i) => ({ ...a, weight: each + (i < remainder ? 1 : 0) }))
+      prev.map((a, i) => ({ ...a, weight: each + (i < remainder ? 1 : 0) })),
     );
   };
 
@@ -397,21 +402,23 @@ export default function PoolWizard({
     if (connectionIds.length === 0 || !name) return [];
 
     const MAX_PER_PROVIDER = 3;
-    return connectionIds.map((cid) => {
-      const conn = connections.find((c) => c.id === cid);
-      if (!conn) return null;
-      const allModels = getPreviewModels(conn.provider);
-      const names = allModels.slice(0, MAX_PER_PROVIDER).map((m) =>
-        quotaModelName(name, conn.provider, m)
-      );
-      return { provider: conn.provider, names, totalModels: allModels.length };
-    }).filter(Boolean) as Array<{ provider: string; names: string[]; totalModels: number }>;
+    return connectionIds
+      .map((cid) => {
+        const conn = connections.find((c) => c.id === cid);
+        if (!conn) return null;
+        const allModels = getPreviewModels(conn.provider);
+        const names = allModels
+          .slice(0, MAX_PER_PROVIDER)
+          .map((m) => quotaModelName(name, conn.provider, m));
+        return { provider: conn.provider, names, totalModels: allModels.length };
+      })
+      .filter(Boolean) as Array<{ provider: string; names: string[]; totalModels: number }>;
   }, [connectionIds, connections, poolName]);
 
   // Flat list (for legacy single-provider path, kept for step-3 rendering simplicity)
   const previewNames = useMemo(
     () => previewByProvider.flatMap((p) => p.names),
-    [previewByProvider]
+    [previewByProvider],
   );
 
   // Default pool name uses provider slug — NOT the raw connection label/email.
@@ -450,7 +457,7 @@ export default function PoolWizard({
         if (!createRes.ok) {
           const errBody = await createRes.json().catch(() => null);
           throw new Error(
-            errBody?.error?.message || `POST /api/quota/pools failed: HTTP ${createRes.status}`
+            errBody?.error?.message || `POST /api/quota/pools failed: HTTP ${createRes.status}`,
           );
         }
         const createData = (await createRes.json()) as { pool: { id: string } };
@@ -466,7 +473,7 @@ export default function PoolWizard({
           if (!planRes.ok) {
             const errBody = await planRes.json().catch(() => null);
             throw new Error(
-              errBody?.error?.message || `PUT /api/quota/plans failed: HTTP ${planRes.status}`
+              errBody?.error?.message || `PUT /api/quota/plans failed: HTTP ${planRes.status}`,
             );
           }
         }
@@ -480,7 +487,7 @@ export default function PoolWizard({
         if (!patchRes.ok) {
           const errBody = await patchRes.json().catch(() => null);
           throw new Error(
-            errBody?.error?.message || `PATCH /api/quota/pools failed: HTTP ${patchRes.status}`
+            errBody?.error?.message || `PATCH /api/quota/pools failed: HTTP ${patchRes.status}`,
           );
         }
       } else {
@@ -502,8 +509,7 @@ export default function PoolWizard({
         if (!editPatchRes.ok) {
           const errBody = await editPatchRes.json().catch(() => null);
           throw new Error(
-            errBody?.error?.message ||
-              `PATCH /api/quota/pools failed: HTTP ${editPatchRes.status}`
+            errBody?.error?.message || `PATCH /api/quota/pools failed: HTTP ${editPatchRes.status}`,
           );
         }
 
@@ -517,7 +523,7 @@ export default function PoolWizard({
           if (!planRes.ok) {
             const errBody = await planRes.json().catch(() => null);
             throw new Error(
-              errBody?.error?.message || `PUT /api/quota/plans failed: HTTP ${planRes.status}`
+              errBody?.error?.message || `PUT /api/quota/plans failed: HTTP ${planRes.status}`,
             );
           }
         }
@@ -537,7 +543,12 @@ export default function PoolWizard({
   if (!open) return null;
 
   return (
-    <Modal isOpen onClose={onClose} title={editPool ? t("editPoolTitle") : t("wizardTitle")} size="lg">
+    <Modal
+      isOpen
+      onClose={onClose}
+      title={editPool ? t("editPoolTitle") : t("wizardTitle")}
+      size="lg"
+    >
       <div className="flex flex-col" style={{ minHeight: 420 }}>
         <Stepper currentStep={step} />
 
@@ -631,7 +642,9 @@ export default function PoolWizard({
                   type="text"
                   value={poolName}
                   onChange={(e) => setPoolName(e.target.value)}
-                  placeholder={selectedConn ? selectedConn.provider : t("wizardPoolNamePlaceholder")}
+                  placeholder={
+                    selectedConn ? selectedConn.provider : t("wizardPoolNamePlaceholder")
+                  }
                   className="w-full px-3 py-2 rounded border border-border bg-bg-base text-sm"
                 />
               </div>
@@ -675,7 +688,11 @@ export default function PoolWizard({
                           : "border-border text-text-muted hover:text-text-main"
                       }`}
                     >
-                      {p === "hard" ? t("policyHard") : p === "soft" ? t("policySoft") : t("policyBurst")}
+                      {p === "hard"
+                        ? t("policyHard")
+                        : p === "soft"
+                          ? t("policySoft")
+                          : t("policyBurst")}
                     </button>
                   ))}
                 </div>
@@ -854,7 +871,7 @@ export default function PoolWizard({
                         onChange={(e) =>
                           updateCapValue(
                             a.apiKeyId,
-                            e.target.value ? Number(e.target.value) : undefined
+                            e.target.value ? Number(e.target.value) : undefined,
                           )
                         }
                         placeholder={t("policyCapAbsolutePlaceholder")}

@@ -7,7 +7,7 @@ test("PuterExecutor.buildUrl always uses Puter OpenAI endpoint", () => {
   const executor = new PuterExecutor();
   assert.equal(
     executor.buildUrl("gpt-4.1", true),
-    "https://api.puter.com/puterai/openai/v1/chat/completions"
+    "https://api.puter.com/puterai/openai/v1/chat/completions",
   );
 });
 

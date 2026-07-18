@@ -18,7 +18,7 @@ test("buildClineGlobalState sets the openai provider for Plan + Act, root base U
 test("buildClineGlobalState merges (preserves unrelated existing keys)", () => {
   const gs = buildClineGlobalState(
     { telemetrySetting: "off", taskHistory: [1, 2, 3] },
-    { baseUrl: "http://x:20128", model: "m" }
+    { baseUrl: "http://x:20128", model: "m" },
   );
   assert.equal(gs.telemetrySetting, "off");
   assert.deepEqual(gs.taskHistory, [1, 2, 3]);

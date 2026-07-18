@@ -13,7 +13,7 @@ test("detectFormatFromEndpoint classifies the /v1/antigravity path as antigravit
   assert.equal(detectFormatFromEndpoint(ENVELOPE, "/api/v1/antigravity"), "antigravity");
   assert.equal(
     detectFormatFromEndpoint(ENVELOPE, "/v1/antigravity:streamGenerateContent"),
-    "antigravity"
+    "antigravity",
   );
 });
 

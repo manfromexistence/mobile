@@ -52,7 +52,7 @@ export default function KiroAuthModal({
 
       try {
         const res = await fetch(
-          `/api/oauth/kiro/auto-import?targetProvider=${encodeURIComponent(providerId)}`
+          `/api/oauth/kiro/auto-import?targetProvider=${encodeURIComponent(providerId)}`,
         );
         const data = await res.json();
 
@@ -111,7 +111,7 @@ export default function KiroAuthModal({
             refreshToken: refreshToken.trim(),
             ...(idcCredentials || {}),
           }),
-        }
+        },
       );
 
       const data = await res.json();
@@ -148,7 +148,7 @@ export default function KiroAuthModal({
             apiKey: apiKey.trim(),
             region: apiKeyRegion.trim() || "us-east-1",
           }),
-        }
+        },
       );
 
       const data = await res.json();

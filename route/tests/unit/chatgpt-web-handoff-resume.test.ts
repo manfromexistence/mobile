@@ -3,10 +3,12 @@ import test from "node:test";
 
 import type { TlsFetchOptions } from "../../open-sse/services/chatgptTlsClient.ts";
 
-const { ChatGptWebExecutor, __resetChatGptWebCachesForTesting } =
-  await import("../../open-sse/executors/chatgpt-web.ts");
-const { __setTlsFetchOverrideForTesting } =
-  await import("../../open-sse/services/chatgptTlsClient.ts");
+const { ChatGptWebExecutor, __resetChatGptWebCachesForTesting } = await import(
+  "../../open-sse/executors/chatgpt-web.ts"
+);
+const { __setTlsFetchOverrideForTesting } = await import(
+  "../../open-sse/services/chatgptTlsClient.ts"
+);
 
 function makeHeaders(values: Record<string, string> = {}): Headers {
   const headers = new Headers();
@@ -25,7 +27,7 @@ type ResumeRequest = {
 
 function installHandoffMock(
   finalText: string,
-  options: { firstResumeStatus?: number } = {}
+  options: { firstResumeStatus?: number } = {},
 ): {
   calls: { conversationDetail: number; resume: ResumeRequest[] };
   restore: () => void;
@@ -140,7 +142,7 @@ function installHandoffMock(
             code: "conversation_not_found",
           },
         },
-        404
+        404,
       );
     }
 
@@ -217,7 +219,7 @@ test("ChatGPT Web handoff retries the next resume offset after a 404", async () 
     assert.equal(response.choices[0].message.content, "OFFSET_ONE_OK");
     assert.deepEqual(
       mock.calls.resume.map((call) => call.body.offset),
-      [0, 1]
+      [0, 1],
     );
     assert.equal(mock.calls.conversationDetail, 0);
   } finally {

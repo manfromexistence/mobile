@@ -44,7 +44,7 @@ test("getCliConfigPaths('crush') resolves to ~/.config/crush/crush.json (matches
   assert.ok(paths);
   assert.ok(
     paths.config?.endsWith(path.join(".config", "crush", "crush.json")),
-    `Expected config path to end with .config/crush/crush.json, got: ${paths.config}`
+    `Expected config path to end with .config/crush/crush.json, got: ${paths.config}`,
   );
 });
 
@@ -88,7 +88,7 @@ test("crush-settings GET: returns 200 when auth not required", async () => {
   const body = await res.json();
   assert.ok(
     "installed" in body || "config" in body,
-    "Response should contain installed or config field"
+    "Response should contain installed or config field",
   );
 });
 
@@ -98,7 +98,7 @@ test("crush-settings POST: 400 when baseUrl is missing", async () => {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ apiKey: "sk-test", model: "openai/gpt-5" }),
-    })
+    }),
   );
   assert.equal(res.status, 400, `Expected 400, got ${res.status}`);
   const body = await res.json();
@@ -111,7 +111,7 @@ test("crush-settings POST: 400 when model is missing", async () => {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ baseUrl: "http://localhost:20128", apiKey: "sk-test" }),
-    })
+    }),
   );
   assert.equal(res.status, 400, `Expected 400, got ${res.status}`);
 });
@@ -131,7 +131,7 @@ test("crush-settings POST: writes crush.json with an openai-compat providers.omn
           apiKey: "sk-test-crush-key",
           model: "openai/gpt-5.4-mini",
         }),
-      })
+      }),
     );
     assert.ok([200, 403, 500].includes(res.status), `Unexpected status ${res.status}`);
     if (res.status === 200) {
@@ -177,11 +177,11 @@ test("crush-settings DELETE: removes only the omniroute provider entry", async (
           },
           other: { type: "openai-compat", base_url: "http://example.com/v1" },
         },
-      })
+      }),
     );
 
     const res = await DELETE(
-      new Request("http://localhost/api/cli-tools/crush-settings", { method: "DELETE" })
+      new Request("http://localhost/api/cli-tools/crush-settings", { method: "DELETE" }),
     );
     assert.ok([200, 403, 500].includes(res.status), `Expected 200/403/500, got ${res.status}`);
     if (res.status === 200) {
@@ -210,14 +210,14 @@ test("crush-settings: error responses do not leak stack traces", async () => {
   const bodyStr = JSON.stringify(await res.json());
   assert.ok(
     !bodyStr.match(/\s+at\s+\/[^\s]/),
-    "Error response must not contain absolute-path stack traces"
+    "Error response must not contain absolute-path stack traces",
   );
 });
 
 test("crush-settings route.ts: does not call exec() or spawn() directly", () => {
   const routePath = path.resolve(
     import.meta.dirname,
-    "../../src/app/api/cli-tools/crush-settings/route.ts"
+    "../../src/app/api/cli-tools/crush-settings/route.ts",
   );
   const content = fs.readFileSync(routePath, "utf-8");
   assert.ok(!content.match(/\bexec\s*\(/), "Handler must not use exec()");

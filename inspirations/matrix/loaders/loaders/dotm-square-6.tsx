@@ -19,10 +19,14 @@ export function DotmSquare6({
   ...rest
 }: DotmSquare6Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
 
   const animationResolver = useMemo<DotAnimationResolver>(() => {
@@ -40,7 +44,7 @@ export function DotmSquare6({
 
       return {
         className: "dmx-square6-col-snake",
-        style: { "--dmx-col-pos": position } as CSSProperties
+        style: { "--dmx-col-pos": position } as CSSProperties,
       };
     };
   }, [reducedMotion]);

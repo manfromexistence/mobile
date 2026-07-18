@@ -149,7 +149,7 @@ export function registerWebhooks(program) {
     .action(async (opts, cmd) => {
       emit(
         EVENT_TYPES.map((e) => ({ event: e })),
-        cmd.optsWithGlobals()
+        cmd.optsWithGlobals(),
       );
     });
 
@@ -167,7 +167,7 @@ export function registerWebhooks(program) {
       "--header <kv>",
       t("webhooks.add.header"),
       (v, prev) => [...(prev ?? []), parseHeader(v)],
-      []
+      [],
     )
     .option("--no-enabled", t("webhooks.add.no_enabled"))
     .action(runWebhooksAdd);

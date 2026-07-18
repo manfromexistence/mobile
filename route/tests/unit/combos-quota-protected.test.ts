@@ -59,7 +59,7 @@ test("DELETE /api/combos/[id] returns 409 for a qtSd/* combo and does NOT delete
   const body = (await response.json()) as any;
   assert.ok(
     body.error?.message?.includes("Quota Share"),
-    `Error message should mention Quota Share; got: ${JSON.stringify(body)}`
+    `Error message should mention Quota Share; got: ${JSON.stringify(body)}`,
   );
 
   // Verify the combo was NOT deleted
@@ -77,7 +77,7 @@ test("PUT /api/combos/[id] returns 409 for a qtSd/* combo and does NOT mutate it
 
   const response = await comboRoute.PUT(
     makePutRequest(combo.id, { name: "qtSd/groupdemo/openai/gpt-4o", strategy: "random" }),
-    { params: Promise.resolve({ id: combo.id }) }
+    { params: Promise.resolve({ id: combo.id }) },
   );
 
   assert.equal(response.status, 409, "PUT quota combo should return 409");
@@ -85,12 +85,16 @@ test("PUT /api/combos/[id] returns 409 for a qtSd/* combo and does NOT mutate it
   const body = (await response.json()) as any;
   assert.ok(
     body.error?.message?.includes("Quota Share"),
-    `Error message should mention Quota Share; got: ${JSON.stringify(body)}`
+    `Error message should mention Quota Share; got: ${JSON.stringify(body)}`,
   );
 
   // Verify the combo was NOT mutated
   const unchanged = await combosDb.getComboById(combo.id);
-  assert.equal(unchanged?.strategy, "priority", "Strategy must remain unchanged after rejected PUT");
+  assert.equal(
+    unchanged?.strategy,
+    "priority",
+    "Strategy must remain unchanged after rejected PUT",
+  );
 });
 
 // ---- non-quota combos still work ----
@@ -129,7 +133,7 @@ test("PUT /api/combos/[id] succeeds for a regular (non-quota) combo", async () =
       strategy: "round-robin",
       models: [{ providerId: "openai", model: "gpt-4o" }],
     }),
-    { params: Promise.resolve({ id: combo.id }) }
+    { params: Promise.resolve({ id: combo.id }) },
   );
 
   assert.equal(response.status, 200, "PUT regular combo should return 200");
@@ -152,14 +156,11 @@ test("DELETE /api/combos/[id] returns 404 when combo does not exist", async () =
 
 test("combos page source filters isHidden from rendered list", async () => {
   const pageSource = fs.readFileSync(
-    new URL(
-      "../../src/app/(dashboard)/dashboard/combos/page.tsx",
-      import.meta.url
-    ).pathname,
-    "utf8"
+    new URL("../../src/app/(dashboard)/dashboard/combos/page.tsx", import.meta.url).pathname,
+    "utf8",
   );
   assert.ok(
     pageSource.includes("!c.isHidden") || pageSource.includes("!combo.isHidden"),
-    "Combos page must filter out isHidden combos from the rendered list"
+    "Combos page must filter out isHidden combos from the rendered list",
   );
 });

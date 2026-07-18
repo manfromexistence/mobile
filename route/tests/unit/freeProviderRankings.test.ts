@@ -8,8 +8,9 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 
-const { stripVersionSuffix, findMatchingIntelligence } =
-  await import("../../src/lib/freeProviderRankings.ts");
+const { stripVersionSuffix, findMatchingIntelligence } = await import(
+  "../../src/lib/freeProviderRankings.ts"
+);
 
 type IntelEntry = {
   score: number;
@@ -22,7 +23,7 @@ function e(
   score: number,
   category = "default",
   eloRaw: number | null = null,
-  confidence: string | null = "high"
+  confidence: string | null = "high",
 ): IntelEntry {
   return { score, eloRaw, confidence, category };
 }

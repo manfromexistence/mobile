@@ -24,10 +24,14 @@ export function DotmCircular13({
   ...rest
 }: DotmCircular13Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
   const step = useSteppedCycle({
     active: !reducedMotion && matrixPhase !== "idle",
@@ -53,7 +57,8 @@ export function DotmCircular13({
       const rightDistance = Math.abs(x - rightStrand);
       const strandDistance = Math.min(leftDistance, rightDistance);
       const bridgeOn = Math.cos(y * 2 + t * 2.1) > 0.55;
-      const isBetweenStrands = x > Math.min(leftStrand, rightStrand) && x < Math.max(leftStrand, rightStrand);
+      const isBetweenStrands =
+        x > Math.min(leftStrand, rightStrand) && x < Math.max(leftStrand, rightStrand);
 
       let opacity = BASE_OPACITY;
       if (strandDistance < 0.34) {

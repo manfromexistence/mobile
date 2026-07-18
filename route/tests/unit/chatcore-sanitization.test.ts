@@ -26,7 +26,7 @@ function toPlainHeaders(headers) {
   if (!headers) return {};
   if (headers instanceof Headers) return Object.fromEntries(headers.entries());
   return Object.fromEntries(
-    Object.entries(headers).map(([key, value]) => [key, value == null ? "" : String(value)])
+    Object.entries(headers).map(([key, value]) => [key, value == null ? "" : String(value)]),
   );
 }
 
@@ -37,7 +37,7 @@ function buildUpstreamResponse(stream) {
       {
         status: 200,
         headers: { "Content-Type": "text/event-stream" },
-      }
+      },
     );
   }
 
@@ -62,7 +62,7 @@ function buildUpstreamResponse(stream) {
     {
       status: 200,
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 
@@ -210,7 +210,7 @@ test("chatCore sanitization preserves max_output_tokens for openai-responses tar
           ],
           usage: { input_tokens: 1, output_tokens: 1, total_tokens: 2 },
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       ),
   });
 
@@ -218,7 +218,7 @@ test("chatCore sanitization preserves max_output_tokens for openai-responses tar
   assert.equal(
     "max_tokens" in call.body,
     false,
-    "max_tokens must not be injected for Responses targets"
+    "max_tokens must not be injected for Responses targets",
   );
 
   // Reverse normalization: max_tokens → max_output_tokens for Responses targets
@@ -242,14 +242,14 @@ test("chatCore sanitization preserves max_output_tokens for openai-responses tar
           ],
           usage: { input_tokens: 1, output_tokens: 1, total_tokens: 2 },
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       ),
   });
 
   assert.equal(
     "max_tokens" in fromMaxTokens.call.body,
     false,
-    "max_tokens should be converted to max_output_tokens"
+    "max_tokens should be converted to max_output_tokens",
   );
 
   // Reverse normalization: max_completion_tokens → max_output_tokens for Responses targets
@@ -273,14 +273,14 @@ test("chatCore sanitization preserves max_output_tokens for openai-responses tar
           ],
           usage: { input_tokens: 1, output_tokens: 1, total_tokens: 2 },
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       ),
   });
 
   assert.equal(
     "max_completion_tokens" in fromMaxCompletion.call.body,
     false,
-    "max_completion_tokens should be converted to max_output_tokens"
+    "max_completion_tokens should be converted to max_output_tokens",
   );
 });
 
@@ -338,7 +338,7 @@ test("chatCore sanitization strips empty input item names on responses endpoint"
           ],
           usage: { input_tokens: 1, output_tokens: 1, total_tokens: 2 },
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       ),
   });
 
@@ -397,45 +397,45 @@ test("chatCore sanitization normalizes mixed content blocks and removes unsuppor
 
   assert.equal(
     content.some((block) => block.type === "text" && block.text === ""),
-    false
+    false,
   );
   assert.equal(
     content.some((block) => block.type === "unknown_block"),
-    false
+    false,
   );
   assert.equal(
     content.some((block) => block.type === "image_url"),
-    true
+    true,
   );
   assert.equal(
     content.some((block) => block.type === "image"),
-    true
+    true,
   );
   assert.equal(
     content.some(
-      (block) => block.type === "file_url" && block.file_url.url.startsWith("data:text/plain")
+      (block) => block.type === "file_url" && block.file_url.url.startsWith("data:text/plain"),
     ),
-    true
+    true,
   );
   assert.equal(
     content.some((block) => block.type === "file" && block.file?.data === "AAEC"),
-    true
+    true,
   );
   assert.equal(
     content.some((block) => block.type === "document" && block.document?.url.startsWith("data:")),
-    true
+    true,
   );
   assert.equal(
     textBlocks.some((block) => block.text === "[README.md]\nRead me please."),
-    true
+    true,
   );
   assert.equal(
     textBlocks.some((block) => block.text === "[notes.txt]\nMeeting notes"),
-    true
+    true,
   );
   assert.equal(
     textBlocks.some((block) => block.text === "[draft.txt]\nDraft text"),
-    true
+    true,
   );
   // Orphaned tool_result blocks (no matching tool_use anywhere in the request) are
   // stripped by `stripOrphanedToolResults` (#5805) before reaching content normalization,
@@ -443,13 +443,13 @@ test("chatCore sanitization normalizes mixed content blocks and removes unsuppor
   // as tool_result blocks nor inlined as "[Tool Result: …]" text.
   assert.equal(
     content.some((block) => block.type === "tool_result"),
-    false
+    false,
   );
   assert.equal(
     textBlocks.some(
-      (block) => typeof block.text === "string" && block.text.includes("[Tool Result:")
+      (block) => typeof block.text === "string" && block.text.includes("[Tool Result:"),
     ),
-    false
+    false,
   );
 });
 
@@ -486,9 +486,9 @@ test("chatCore preserves Claude passthrough tool_result blocks instead of conver
   assert.equal(call.body.messages[1].content[0].tool_use_id, "toolu_keep");
   assert.equal(
     call.body.messages[1].content.some(
-      (block) => block.type === "text" && /\[Tool Result:/.test(block.text)
+      (block) => block.type === "text" && /\[Tool Result:/.test(block.text),
     ),
-    false
+    false,
   );
 });
 
@@ -550,7 +550,7 @@ test("chatCore honors API key JSON stream-default compatibility mode", async () 
   assert.equal(jsonCompatibleDefault.call.headers.Accept, "application/json");
   assert.equal(
     jsonCompatibleDefault.result.response.headers.get("content-type"),
-    "application/json"
+    "application/json",
   );
   assert.equal(explicitSse.call.headers.Accept, "text/event-stream");
 });
@@ -587,7 +587,7 @@ test("chatCore injects memories when enabled and memories are found", async () =
   assert.equal(call.body.messages[0].role, "system");
   assert.match(
     call.body.messages[0].content,
-    /Memory context: User prefers concise Rust examples\./
+    /Memory context: User prefers concise Rust examples\./,
   );
   assert.equal(call.body.messages[1].role, "user");
 });
@@ -714,7 +714,7 @@ test("chatCore extracts memories from Claude content arrays and Responses output
         {
           status: 200,
           headers: { "Content-Type": "application/json" },
-        }
+        },
       ),
   });
 
@@ -745,7 +745,7 @@ test("chatCore extracts memories from Claude content arrays and Responses output
         {
           status: 200,
           headers: { "Content-Type": "application/json" },
-        }
+        },
       ),
   });
 
@@ -813,7 +813,7 @@ test("chatCore request memory extraction for responses input ignores assistant i
         {
           status: 200,
           headers: { "Content-Type": "application/json" },
-        }
+        },
       ),
   });
 

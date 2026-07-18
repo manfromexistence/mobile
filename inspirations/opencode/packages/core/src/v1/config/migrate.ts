@@ -1,11 +1,11 @@
-export * as ConfigMigrateV1 from "./migrate"
+export * as ConfigMigrateV1 from "./migrate";
 
-import { ConfigV1 } from "./config"
-import { ConfigAgentV1 } from "./agent"
-import { ConfigMCPV1 } from "./mcp"
-import { ConfigPermissionV1 } from "./permission"
-import { ConfigProviderV1 } from "./provider"
-import { ConfigProviderOptionsV1 } from "./provider-options"
+import { ConfigV1 } from "./config";
+import { ConfigAgentV1 } from "./agent";
+import { ConfigMCPV1 } from "./mcp";
+import { ConfigPermissionV1 } from "./permission";
+import { ConfigProviderV1 } from "./provider";
+import { ConfigProviderOptionsV1 } from "./provider-options";
 
 const keys = new Set([
   "logLevel",
@@ -25,11 +25,11 @@ const keys = new Set([
   "tools",
   "attachment",
   "layout",
-])
+]);
 
 export function isV1(input: unknown) {
-  if (typeof input !== "object" || input === null || Array.isArray(input)) return false
-  return Object.keys(input).some((key) => keys.has(key))
+  if (typeof input !== "object" || input === null || Array.isArray(input)) return false;
+  return Object.keys(input).some((key) => keys.has(key));
 }
 
 export function migrate(info: typeof ConfigV1.Info.Type) {
@@ -68,39 +68,42 @@ export function migrate(info: typeof ConfigV1.Info.Type) {
     ),
     experimental: info.experimental?.policies && { policies: info.experimental.policies },
     providers: providers(info.provider),
-  }
+  };
 }
 
 function permissions(info?: ConfigPermissionV1.Info, tools?: Readonly<Record<string, boolean>>) {
-  const rules: Array<{ action: string; resource: string; effect: ConfigPermissionV1.Action }> = Object.entries(
-    tools ?? {},
-  ).map(([action, enabled]) => ({
-    action: normalizeAction(action),
-    resource: "*",
-    effect: enabled ? ("allow" as const) : ("deny" as const),
-  }))
+  const rules: Array<{ action: string; resource: string; effect: ConfigPermissionV1.Action }> =
+    Object.entries(tools ?? {}).map(([action, enabled]) => ({
+      action: normalizeAction(action),
+      resource: "*",
+      effect: enabled ? ("allow" as const) : ("deny" as const),
+    }));
   for (const [action, rule] of Object.entries(info ?? {})) {
-    if (!rule) continue
+    if (!rule) continue;
     if (typeof rule === "string") {
-      rules.push({ action, resource: "*", effect: rule })
-      continue
+      rules.push({ action, resource: "*", effect: rule });
+      continue;
     }
-    rules.push(...Object.entries(rule).map(([resource, effect]) => ({ action, resource, effect })))
+    rules.push(...Object.entries(rule).map(([resource, effect]) => ({ action, resource, effect })));
   }
-  return rules.length ? rules : undefined
+  return rules.length ? rules : undefined;
 }
 
 function normalizeAction(action: string) {
-  return action === "write" || action === "patch" ? "edit" : action
+  return action === "write" || action === "patch" ? "edit" : action;
 }
 
 function agents(info: typeof ConfigV1.Info.Type) {
   const entries = [
     ...Object.entries(info.agent ?? {}),
-    ...Object.entries(info.mode ?? {}).map(([name, agent]) => [name, { ...agent, mode: "primary" as const }] as const),
-  ]
-  if (!entries.length) return undefined
-  return Object.fromEntries(entries.flatMap(([name, agent]) => (agent ? [[name, migrateAgent(agent)]] : [])))
+    ...Object.entries(info.mode ?? {}).map(
+      ([name, agent]) => [name, { ...agent, mode: "primary" as const }] as const,
+    ),
+  ];
+  if (!entries.length) return undefined;
+  return Object.fromEntries(
+    entries.flatMap(([name, agent]) => (agent ? [[name, migrateAgent(agent)]] : [])),
+  );
 }
 
 export function migrateAgent(info: ConfigAgentV1.Info) {
@@ -108,7 +111,7 @@ export function migrateAgent(info: ConfigAgentV1.Info) {
     ...info.options,
     ...(info.temperature === undefined ? {} : { temperature: info.temperature }),
     ...(info.top_p === undefined ? {} : { top_p: info.top_p }),
-  }
+  };
   return {
     model: info.model,
     variant: info.variant,
@@ -121,7 +124,7 @@ export function migrateAgent(info: ConfigAgentV1.Info) {
     steps: info.steps,
     disabled: info.disable,
     permissions: permissions(info.permission),
-  }
+  };
 }
 
 function mcp(info: typeof ConfigV1.Info.Type) {
@@ -129,14 +132,14 @@ function mcp(info: typeof ConfigV1.Info.Type) {
     Object.entries(info.mcp ?? {}).flatMap(([name, server]) =>
       "type" in server ? [[name, migrateMcp(server)] as const] : [],
     ),
-  )
-  const timeout = info.experimental?.mcp_timeout
-  if (!timeout && !Object.keys(servers).length) return undefined
-  return { timeout: timeout === undefined ? undefined : { request: timeout }, servers }
+  );
+  const timeout = info.experimental?.mcp_timeout;
+  if (!timeout && !Object.keys(servers).length) return undefined;
+  return { timeout: timeout === undefined ? undefined : { request: timeout }, servers };
 }
 
 function migrateMcp(info: ConfigMCPV1.Info) {
-  const disabled = info.enabled === undefined ? undefined : !info.enabled
+  const disabled = info.enabled === undefined ? undefined : !info.enabled;
   if (info.type === "local")
     return {
       type: info.type,
@@ -145,7 +148,7 @@ function migrateMcp(info: ConfigMCPV1.Info) {
       environment: info.environment,
       disabled,
       timeout: info.timeout === undefined ? undefined : { request: info.timeout },
-    }
+    };
   return {
     type: info.type,
     url: info.url,
@@ -159,18 +162,20 @@ function migrateMcp(info: ConfigMCPV1.Info) {
     },
     disabled,
     timeout: info.timeout === undefined ? undefined : { request: info.timeout },
-  }
+  };
 }
 
 function providers(info?: Readonly<Record<string, ConfigProviderV1.Info>>) {
-  if (!info) return undefined
-  return Object.fromEntries(Object.entries(info).map(([name, provider]) => [name, migrateProvider(provider)]))
+  if (!info) return undefined;
+  return Object.fromEntries(
+    Object.entries(info).map(([name, provider]) => [name, migrateProvider(provider)]),
+  );
 }
 
 function migrateProvider(info: ConfigProviderV1.Info) {
-  const lowerer = ConfigProviderOptionsV1.get(info.npm)
-  const options = lowerer.provider(info.options ?? {})
-  const url = info.api ?? options.url
+  const lowerer = ConfigProviderOptionsV1.get(info.npm);
+  const options = lowerer.provider(info.options ?? {});
+  const url = info.api ?? options.url;
   return {
     name: info.name,
     env: info.env,
@@ -185,14 +190,16 @@ function migrateProvider(info: ConfigProviderV1.Info) {
     request: info.options && { headers: options.headers, body: options.body },
     models:
       info.models &&
-      Object.fromEntries(Object.entries(info.models).map(([name, model]) => [name, migrateModel(model, info.npm)])),
-  }
+      Object.fromEntries(
+        Object.entries(info.models).map(([name, model]) => [name, migrateModel(model, info.npm)]),
+      ),
+  };
 }
 
 function migrateModel(info: typeof ConfigProviderV1.Model.Type, packageName?: string) {
-  const packageID = info.provider?.npm ?? packageName
-  const lowerer = ConfigProviderOptionsV1.get(packageID)
-  const request = info.options && lowerer.request(info.options)
+  const packageID = info.provider?.npm ?? packageName;
+  const lowerer = ConfigProviderOptionsV1.get(packageID);
+  const request = info.options && lowerer.request(info.options);
   const costs = info.cost && [
     {
       input: info.cost.input,
@@ -205,15 +212,24 @@ function migrateModel(info: typeof ConfigProviderV1.Model.Type, packageName?: st
             tier: { type: "context" as const, size: 200_000 },
             input: info.cost.context_over_200k.input,
             output: info.cost.context_over_200k.output,
-            cache: { read: info.cost.context_over_200k.cache_read, write: info.cost.context_over_200k.cache_write },
+            cache: {
+              read: info.cost.context_over_200k.cache_read,
+              write: info.cost.context_over_200k.cache_write,
+            },
           },
         ]
       : []),
-  ]
+  ];
   const capabilities =
-    info.tool_call !== undefined || info.modalities?.input !== undefined || info.modalities?.output !== undefined
-      ? { tools: info.tool_call ?? false, input: info.modalities?.input ?? [], output: info.modalities?.output ?? [] }
-      : undefined
+    info.tool_call !== undefined ||
+    info.modalities?.input !== undefined ||
+    info.modalities?.output !== undefined
+      ? {
+          tools: info.tool_call ?? false,
+          input: info.modalities?.input ?? [],
+          output: info.modalities?.output ?? [],
+        }
+      : undefined;
   return {
     family: info.family,
     name: info.name,
@@ -246,9 +262,9 @@ function migrateModel(info: typeof ConfigProviderV1.Model.Type, packageName?: st
       input: info.limit.input === undefined ? undefined : int(info.limit.input),
       output: int(info.limit.output),
     },
-  }
+  };
 }
 
 function int(value: number) {
-  return Math.max(Number.MIN_SAFE_INTEGER, Math.min(Number.MAX_SAFE_INTEGER, Math.trunc(value)))
+  return Math.max(Number.MIN_SAFE_INTEGER, Math.min(Number.MAX_SAFE_INTEGER, Math.trunc(value)));
 }

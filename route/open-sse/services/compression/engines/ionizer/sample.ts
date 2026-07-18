@@ -131,8 +131,7 @@ export interface IonizerPassResult {
 
 function isPlainObjectArray(v: unknown): v is Array<Record<string, unknown>> {
   return (
-    Array.isArray(v) &&
-    v.every((el) => el !== null && typeof el === "object" && !Array.isArray(el))
+    Array.isArray(v) && v.every((el) => el !== null && typeof el === "object" && !Array.isArray(el))
   );
 }
 
@@ -144,7 +143,7 @@ function isPlainObjectArray(v: unknown): v is Array<Record<string, unknown>> {
  */
 export function applyIonizerPass(
   messages: MessageLike[],
-  opts: IonizerPassOptions
+  opts: IonizerPassOptions,
 ): IonizerPassResult {
   try {
     let ionizedCount = 0;
@@ -191,10 +190,12 @@ export function applyIonizerPass(
 export function runIonizerPass(
   messages: MessageLike[],
   stepConfig: Record<string, unknown>,
-  principalId?: string
+  principalId?: string,
 ): IonizerPassResult {
   if (stepConfig["enabled"] === false) return { messages, ionizedCount: 0 };
-  const threshold = typeof stepConfig["threshold"] === "number" ? (stepConfig["threshold"] as number) : 200;
-  const targetRows = typeof stepConfig["targetRows"] === "number" ? (stepConfig["targetRows"] as number) : 50;
+  const threshold =
+    typeof stepConfig["threshold"] === "number" ? (stepConfig["threshold"] as number) : 200;
+  const targetRows =
+    typeof stepConfig["targetRows"] === "number" ? (stepConfig["targetRows"] as number) : 50;
   return applyIonizerPass(messages, { threshold, targetRows, principalId });
 }

@@ -149,7 +149,7 @@ test("search-providers-catalog: returns 16 providers (13 search + 3 fetch)", asy
   assert.equal(
     body.providers.length,
     EXPECTED_TOTAL,
-    `Expected ${EXPECTED_TOTAL} providers, got ${body.providers.length}`
+    `Expected ${EXPECTED_TOTAL} providers, got ${body.providers.length}`,
   );
 });
 
@@ -164,12 +164,12 @@ test("search-providers-catalog: correct count of search and fetch kinds", async 
   assert.equal(
     searchItems.length,
     EXPECTED_SEARCH_COUNT,
-    `Expected ${EXPECTED_SEARCH_COUNT} search-kind items, got ${searchItems.length}`
+    `Expected ${EXPECTED_SEARCH_COUNT} search-kind items, got ${searchItems.length}`,
   );
   assert.equal(
     fetchItems.length,
     EXPECTED_FETCH_COUNT,
-    `Expected ${EXPECTED_FETCH_COUNT} fetch-kind items, got ${fetchItems.length}`
+    `Expected ${EXPECTED_FETCH_COUNT} fetch-kind items, got ${fetchItems.length}`,
   );
 });
 
@@ -181,7 +181,7 @@ test("search-providers-catalog: every item has a valid kind value", async () => 
   for (const item of body.providers) {
     assert.ok(
       item.kind === "search" || item.kind === "fetch",
-      `item.kind must be 'search' or 'fetch', got '${item.kind}' for id=${item.id}`
+      `item.kind must be 'search' or 'fetch', got '${item.kind}' for id=${item.id}`,
     );
   }
 });
@@ -196,7 +196,7 @@ test("search-providers-catalog: status=missing when no DB credentials exist", as
     assert.equal(
       item.status,
       "missing",
-      `provider ${item.id} should be 'missing', got '${item.status}'`
+      `provider ${item.id} should be 'missing', got '${item.status}'`,
     );
   }
 });
@@ -214,12 +214,12 @@ test("search-providers-catalog: status=configured when active credentials seeded
   assert.equal(
     serper.status,
     "configured",
-    `serper-search should be 'configured' after seeding active credentials`
+    `serper-search should be 'configured' after seeding active credentials`,
   );
 
   // Other providers (no creds) should still be "missing"
   const missingItems = body.providers.filter(
-    (p: { id: string; status: string }) => p.id !== "serper-search" && p.id !== "perplexity-search"
+    (p: { id: string; status: string }) => p.id !== "serper-search" && p.id !== "perplexity-search",
   );
   for (const item of missingItems) {
     assert.equal(item.status, "missing", `${item.id} should be 'missing'`);
@@ -239,7 +239,7 @@ test("search-providers-catalog: status=rate_limited when all connections are rat
   assert.equal(
     brave.status,
     "rate_limited",
-    `brave-search should be 'rate_limited' when all connections have future rateLimitedUntil`
+    `brave-search should be 'rate_limited' when all connections have future rateLimitedUntil`,
   );
 });
 
@@ -299,11 +299,11 @@ test("search-providers-catalog: fetch providers have correct metadata", async ()
   assert.ok(Array.isArray(firecrawl.fetchFormats), "fetchFormats must be an array");
   assert.ok(
     firecrawl.fetchFormats.includes("markdown"),
-    "firecrawl fetchFormats must include markdown"
+    "firecrawl fetchFormats must include markdown",
   );
   assert.ok(
     firecrawl.fetchFormats.includes("screenshot"),
-    "firecrawl fetchFormats must include screenshot"
+    "firecrawl fetchFormats must include screenshot",
   );
 
   const jina = fetchProviders.find((p: { id: string }) => p.id === "jina-reader");
@@ -320,7 +320,7 @@ test("search-providers-catalog: fetch providers have correct metadata", async ()
   assert.equal(tinyfish.costPerQuery, 0);
   assert.ok(
     tinyfish.fetchFormats.includes("markdown"),
-    "tinyfish fetchFormats must include markdown"
+    "tinyfish fetchFormats must include markdown",
   );
 });
 
@@ -339,7 +339,7 @@ test("search-providers-catalog: search providers have correct fields", async () 
     assert.equal(
       item.configureHref,
       "/dashboard/providers",
-      "configureHref must be /dashboard/providers"
+      "configureHref must be /dashboard/providers",
     );
   }
 
@@ -355,13 +355,14 @@ test("search-providers-catalog: response validates against SearchProviderCatalog
   const res = await route.GET(req);
   const body = await res.json();
 
-  const { SearchProviderCatalogResponseSchema } =
-    await import("../../src/shared/schemas/searchTools.ts");
+  const { SearchProviderCatalogResponseSchema } = await import(
+    "../../src/shared/schemas/searchTools.ts"
+  );
 
   const result = SearchProviderCatalogResponseSchema.safeParse({ providers: body.providers });
   assert.ok(
     result.success,
-    `Schema validation failed: ${(result as { error?: { message: string } }).error?.message ?? "unknown"}`
+    `Schema validation failed: ${(result as { error?: { message: string } }).error?.message ?? "unknown"}`,
   );
 });
 
@@ -375,7 +376,7 @@ test("search-providers-catalog: fetch providers have configureHref set", async (
     assert.equal(
       item.configureHref,
       "/dashboard/providers",
-      `fetch provider ${item.id} must have configureHref='/dashboard/providers'`
+      `fetch provider ${item.id} must have configureHref='/dashboard/providers'`,
     );
   }
 });
@@ -394,6 +395,6 @@ test("search-providers-catalog: perplexity-search uses credential fallback", asy
   assert.equal(
     perplexity.status,
     "configured",
-    "perplexity-search should be 'configured' via fallback to perplexity credentials"
+    "perplexity-search should be 'configured' via fallback to perplexity credentials",
   );
 });

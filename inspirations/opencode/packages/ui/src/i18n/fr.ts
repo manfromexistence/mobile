@@ -14,7 +14,8 @@ export const dict = {
   "ui.sessionReview.image.loading": "Chargement...",
   "ui.sessionReview.image.placeholder": "Image",
   "ui.sessionReview.largeDiff.title": "Diff trop volumineux pour être affiché",
-  "ui.sessionReview.largeDiff.meta": "Limite : {{limit}} lignes modifiées. Actuel : {{current}} lignes modifiées.",
+  "ui.sessionReview.largeDiff.meta":
+    "Limite : {{limit}} lignes modifiées. Actuel : {{current}} lignes modifiées.",
   "ui.sessionReview.largeDiff.renderAnyway": "Afficher quand même",
   "ui.fileMedia.kind.image": "image",
   "ui.fileMedia.kind.audio": "audio",
@@ -23,8 +24,10 @@ export const dict = {
   "ui.fileMedia.state.error": "Erreur avec le fichier {{kind}}",
   "ui.fileMedia.state.unavailable": "Fichier {{kind}} indisponible",
   "ui.fileMedia.binary.title": "Fichier binaire",
-  "ui.fileMedia.binary.description.path": "Impossible d'afficher {{path}} car il s'agit d'un fichier binaire.",
-  "ui.fileMedia.binary.description.default": "Impossible d'afficher ce fichier car il s'agit d'un fichier binaire.",
+  "ui.fileMedia.binary.description.path":
+    "Impossible d'afficher {{path}} car il s'agit d'un fichier binaire.",
+  "ui.fileMedia.binary.description.default":
+    "Impossible d'afficher ce fichier car il s'agit d'un fichier binaire.",
 
   "ui.lineComment.label.prefix": "Commenter sur ",
   "ui.lineComment.label.suffix": "",
@@ -165,4 +168,4 @@ export const dict = {
   "ui.toolErrorCard.copyError": "Copier l'erreur",
   "ui.message.duration.seconds": "{{count}}s",
   "ui.message.duration.minutesSeconds": "{{minutes}}m {{seconds}}s",
-}
+};

@@ -10,11 +10,11 @@
 //
 // Use individually for fine-grained control, or compose them via
 // `normalizeForSnapshot` for the common "snapshot subprocess output" path.
-import fs from "node:fs"
-import os from "node:os"
+import fs from "node:fs";
+import os from "node:os";
 
-const TMP = os.tmpdir()
-const REAL_TMP = fs.realpathSync(TMP)
+const TMP = os.tmpdir();
+const REAL_TMP = fs.realpathSync(TMP);
 
 /**
  * Collapses CRLF to LF. Bun's subprocess pipes emit native line endings —
@@ -22,7 +22,7 @@ const REAL_TMP = fs.realpathSync(TMP)
  * this step always diffs.
  */
 export function stripCrlf(text: string): string {
-  return text.replaceAll("\r\n", "\n")
+  return text.replaceAll("\r\n", "\n");
 }
 
 /**
@@ -31,7 +31,7 @@ export function stripCrlf(text: string): string {
  * snapshot, not for filesystem operations.
  */
 export function toPosixPath(p: string): string {
-  return p.replaceAll("\\", "/")
+  return p.replaceAll("\\", "/");
 }
 
 /**
@@ -40,7 +40,7 @@ export function toPosixPath(p: string): string {
  * occurrence with `marker` (default `<TMPDIR>`).
  */
 export function withTmpdirStripped(text: string, marker = "<TMPDIR>"): string {
-  return text.replaceAll(REAL_TMP, marker).replaceAll(TMP, marker)
+  return text.replaceAll(REAL_TMP, marker).replaceAll(TMP, marker);
 }
 
 /**
@@ -48,7 +48,7 @@ export function withTmpdirStripped(text: string, marker = "<TMPDIR>"): string {
  * larger regex when you want to match both `/` (POSIX) and `\` (Windows)
  * boundaries — e.g. `<TMPDIR>${PATH_SEP}oc-cli-[a-z0-9]+`.
  */
-export const PATH_SEP = "[/\\\\]"
+export const PATH_SEP = "[/\\\\]";
 
 /**
  * One-shot normalization for the common case: strip CRLF, strip tmpdir,
@@ -60,14 +60,14 @@ export const PATH_SEP = "[/\\\\]"
 export function normalizeForSnapshot(
   text: string,
   options?: {
-    readonly tmpdirMarker?: string
-    readonly pathReplacements?: ReadonlyArray<readonly [RegExp, string]>
+    readonly tmpdirMarker?: string;
+    readonly pathReplacements?: ReadonlyArray<readonly [RegExp, string]>;
   },
 ): string {
-  let out = stripCrlf(text)
-  out = withTmpdirStripped(out, options?.tmpdirMarker)
+  let out = stripCrlf(text);
+  out = withTmpdirStripped(out, options?.tmpdirMarker);
   for (const [pattern, replacement] of options?.pathReplacements ?? []) {
-    out = out.replace(pattern, replacement)
+    out = out.replace(pattern, replacement);
   }
-  return out
+  return out;
 }

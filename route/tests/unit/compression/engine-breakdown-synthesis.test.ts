@@ -45,7 +45,7 @@ describe("ensureEngineBreakdown", () => {
         techniquesUsed: ["lite-strip"],
         rulesApplied: ["r1"],
         durationMs: 3,
-      })
+      }),
     );
     assert.equal(out.length, 1);
     assert.equal(out[0].engine, "lite");

@@ -246,7 +246,7 @@ export default function ApiEndpointsTab() {
       throw new Error(
         res.status === 403
           ? "API key reveal is disabled (ALLOW_API_KEY_REVEAL). Change it in the feature flag page or paste an API key manually."
-          : `Failed to reveal API key (${res.status})`
+          : `Failed to reveal API key (${res.status})`,
       );
     }
     const data = await res.json();

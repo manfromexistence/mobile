@@ -38,7 +38,7 @@ export class GrokCliExecutor extends BaseExecutor {
 
   async refreshCredentials(
     credentials: ProviderCredentials,
-    log?: ExecutorLog | null
+    log?: ExecutorLog | null,
   ): Promise<Partial<ProviderCredentials> | null> {
     if (!credentials?.refreshToken) {
       log?.warn?.("TOKEN_REFRESH", "Grok Build: no refresh token available");
@@ -60,7 +60,7 @@ export class GrokCliExecutor extends BaseExecutor {
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body.toString(),
-        10_000
+        10_000,
       );
 
       if (result.status !== 200) {
@@ -87,7 +87,7 @@ export class GrokCliExecutor extends BaseExecutor {
     } catch (error) {
       log?.warn?.(
         "TOKEN_REFRESH",
-        `Grok Build: refresh error: ${error instanceof Error ? error.message : String(error)}`
+        `Grok Build: refresh error: ${error instanceof Error ? error.message : String(error)}`,
       );
       return null;
     }
@@ -97,7 +97,7 @@ export class GrokCliExecutor extends BaseExecutor {
     url: string,
     headers: Record<string, string>,
     bodyStr: string,
-    timeoutMs = 10_000
+    timeoutMs = 10_000,
   ): Promise<{ status: number; body: string }> {
     const urlObj = new URL(url);
 
@@ -126,7 +126,7 @@ export class GrokCliExecutor extends BaseExecutor {
               body: Buffer.concat(chunks).toString("utf-8"),
             });
           });
-        }
+        },
       );
 
       req.on("error", (err) => {
@@ -142,7 +142,7 @@ export class GrokCliExecutor extends BaseExecutor {
     url: string,
     headers: Record<string, string>,
     bodyStr: string,
-    signal?: AbortSignal | null
+    signal?: AbortSignal | null,
   ): Promise<Response> {
     const urlObj = new URL(url);
 
@@ -188,11 +188,11 @@ export class GrokCliExecutor extends BaseExecutor {
                 new Response(responseBody, {
                   status: res.statusCode ?? 500,
                   headers: responseHeaders,
-                })
+                }),
               );
             });
           });
-        }
+        },
       );
 
       if (signal) {
@@ -231,7 +231,7 @@ export class GrokCliExecutor extends BaseExecutor {
     model: string,
     body: unknown,
     stream: boolean,
-    _credentials: ProviderCredentials
+    _credentials: ProviderCredentials,
   ) {
     const transformed =
       body && typeof body === "object" ? { ...(body as Record<string, unknown>) } : {};

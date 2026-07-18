@@ -1,9 +1,6 @@
-import { diffChars, diffWordsWithSpace } from 'diff';
+import { diffChars, diffWordsWithSpace } from "diff";
 
-import {
-  DEFAULT_COLLAPSED_CONTEXT_THRESHOLD,
-  DEFAULT_THEMES,
-} from '../constants';
+import { DEFAULT_COLLAPSED_CONTEXT_THRESHOLD, DEFAULT_THEMES } from "../constants";
 import type {
   CodeToHastOptions,
   DecorationItem,
@@ -18,18 +15,15 @@ import type {
   RenderDiffOptions,
   SupportedLanguages,
   ThemedDiffResult,
-} from '../types';
-import { cleanLastNewline } from './cleanLastNewline';
-import { createTransformerWithState } from './createTransformerWithState';
-import { formatCSSVariablePrefix } from './formatCSSVariablePrefix';
-import { getFiletypeFromFileName } from './getFiletypeFromFileName';
-import { getHighlighterThemeStyles } from './getHighlighterThemeStyles';
-import { getLineNodes } from './getLineNodes';
-import { iterateOverDiff } from './iterateOverDiff';
-import {
-  createDiffSpanDecoration,
-  pushOrJoinSpan,
-} from './parseDiffDecorations';
+} from "../types";
+import { cleanLastNewline } from "./cleanLastNewline";
+import { createTransformerWithState } from "./createTransformerWithState";
+import { formatCSSVariablePrefix } from "./formatCSSVariablePrefix";
+import { getFiletypeFromFileName } from "./getFiletypeFromFileName";
+import { getHighlighterThemeStyles } from "./getHighlighterThemeStyles";
+import { getLineNodes } from "./getLineNodes";
+import { iterateOverDiff } from "./iterateOverDiff";
+import { createDiffSpanDecoration, pushOrJoinSpan } from "./parseDiffDecorations";
 
 const DEFAULT_PLAIN_TEXT_OPTIONS: ForceDiffPlainTextOptions = {
   forcePlainText: false,
@@ -45,7 +39,7 @@ export function renderDiffWithHighlighter(
     totalLines,
     expandedHunks,
     collapsedContextThreshold = DEFAULT_COLLAPSED_CONTEXT_THRESHOLD,
-  }: ForceDiffPlainTextOptions = DEFAULT_PLAIN_TEXT_OPTIONS
+  }: ForceDiffPlainTextOptions = DEFAULT_PLAIN_TEXT_OPTIONS,
 ): ThemedDiffResult {
   if (forcePlainText) {
     startingLine ??= 0;
@@ -60,9 +54,7 @@ export function renderDiffWithHighlighter(
   }
   const isWindowedHighlight = startingLine > 0 || totalLines < Infinity;
   const baseThemeType =
-    typeof options.theme === 'string'
-      ? highlighter.getTheme(options.theme).type
-      : undefined;
+    typeof options.theme === "string" ? highlighter.getTheme(options.theme).type : undefined;
   const themeStyles = getHighlighterThemeStyles({
     theme: options.theme,
     highlighter,
@@ -76,7 +68,7 @@ export function renderDiffWithHighlighter(
     forcePlainText &&
     !isWindowedHighlight &&
     (diff.unifiedLineCount > 1000 || diff.splitLineCount > 1000)
-      ? 'none'
+      ? "none"
       : options.lineDiffType;
 
   const code: RenderDiffFilesResult = {
@@ -99,14 +91,11 @@ export function renderDiffWithHighlighter(
     lineContent: string,
     lineIndex: number,
     segments: HighlightSegment[],
-    contentWrapper: FakeArrayType
+    contentWrapper: FakeArrayType,
   ) {
     if (isWindowedHighlight) {
       let segment = segments.at(-1);
-      if (
-        segment == null ||
-        segment.targetIndex + segment.count !== lineIndex
-      ) {
+      if (segment == null || segment.targetIndex + segment.count !== lineIndex) {
         segment = {
           targetIndex: lineIndex,
           originalOffset: contentWrapper.length,
@@ -121,7 +110,7 @@ export function renderDiffWithHighlighter(
 
   iterateOverDiff({
     diff,
-    diffStyle: 'both',
+    diffStyle: "both",
     startingLine,
     totalLines,
     expandedHunks: isWindowedHighlight ? expandedHunksForIteration : true,
@@ -129,11 +118,9 @@ export function renderDiffWithHighlighter(
     callback: ({ hunkIndex, additionLine, deletionLine, type }) => {
       const bucket = getBucketForHunk(hunkIndex);
       const splitLineIndex =
-        additionLine != null
-          ? additionLine.splitLineIndex
-          : deletionLine.splitLineIndex;
+        additionLine != null ? additionLine.splitLineIndex : deletionLine.splitLineIndex;
 
-      if (type === 'change' && additionLine != null && deletionLine != null) {
+      if (type === "change" && additionLine != null && deletionLine != null) {
         computeLineDiffDecorations({
           additionLine: diff.additionLines[additionLine.lineIndex],
           deletionLine: diff.deletionLines[deletionLine.lineIndex],
@@ -151,15 +138,12 @@ export function renderDiffWithHighlighter(
           diff.deletionLines[deletionLine.lineIndex],
           deletionLine.lineIndex,
           bucket.deletionSegments,
-          bucket.deletionContent
+          bucket.deletionContent,
         );
         bucket.deletionInfo.push({
-          type: type === 'change' ? 'change-deletion' : type,
+          type: type === "change" ? "change-deletion" : type,
           lineNumber: deletionLine.lineNumber,
-          altLineNumber:
-            type === 'change'
-              ? undefined
-              : (additionLine.lineNumber ?? undefined),
+          altLineNumber: type === "change" ? undefined : (additionLine.lineNumber ?? undefined),
           lineIndex: `${deletionLine.unifiedLineIndex},${splitLineIndex}`,
         });
       }
@@ -169,15 +153,12 @@ export function renderDiffWithHighlighter(
           diff.additionLines[additionLine.lineIndex],
           additionLine.lineIndex,
           bucket.additionSegments,
-          bucket.additionContent
+          bucket.additionContent,
         );
         bucket.additionInfo.push({
-          type: type === 'change' ? 'change-addition' : type,
+          type: type === "change" ? "change-addition" : type,
           lineNumber: additionLine.lineNumber,
-          altLineNumber:
-            type === 'change'
-              ? undefined
-              : (deletionLine.lineNumber ?? undefined),
+          altLineNumber: type === "change" ? undefined : (deletionLine.lineNumber ?? undefined),
           lineIndex: `${additionLine.unifiedLineIndex},${splitLineIndex}`,
         });
       }
@@ -185,10 +166,7 @@ export function renderDiffWithHighlighter(
   });
 
   for (const bucket of buckets.values()) {
-    if (
-      bucket.deletionContent.length === 0 &&
-      bucket.additionContent.length === 0
-    ) {
+    if (bucket.deletionContent.length === 0 && bucket.additionContent.length === 0) {
       continue;
     }
 
@@ -211,7 +189,7 @@ export function renderDiffWithHighlighter(
 
       highlighter,
       options,
-      languageOverride: forcePlainText ? 'text' : diff.lang,
+      languageOverride: forcePlainText ? "text" : diff.lang,
     });
 
     if (shouldGroupAll) {
@@ -223,8 +201,7 @@ export function renderDiffWithHighlighter(
     if (bucket.deletionSegments.length > 0) {
       for (const seg of bucket.deletionSegments) {
         for (let i = 0; i < seg.count; i++) {
-          code.deletionLines[seg.targetIndex + i] =
-            deletionLines[seg.originalOffset + i];
+          code.deletionLines[seg.targetIndex + i] = deletionLines[seg.originalOffset + i];
         }
       }
     } else {
@@ -233,8 +210,7 @@ export function renderDiffWithHighlighter(
     if (bucket.additionSegments.length > 0) {
       for (const seg of bucket.additionSegments) {
         for (let i = 0; i < seg.count; i++) {
-          code.additionLines[seg.targetIndex + i] =
-            additionLines[seg.originalOffset + i];
+          code.additionLines[seg.targetIndex + i] = additionLines[seg.originalOffset + i];
         }
       }
     } else {
@@ -266,28 +242,25 @@ function computeLineDiffDecorations({
   lineDiffType,
   maxLineDiffLength,
 }: ProcessLineDiffProps) {
-  if (deletionLine == null || additionLine == null || lineDiffType === 'none') {
+  if (deletionLine == null || additionLine == null || lineDiffType === "none") {
     return;
   }
   deletionLine = cleanLastNewline(deletionLine);
   additionLine = cleanLastNewline(additionLine);
   // If we have really long lines, we probably shouldn't compute diffs on them.
-  if (
-    deletionLine.length > maxLineDiffLength ||
-    additionLine.length > maxLineDiffLength
-  ) {
+  if (deletionLine.length > maxLineDiffLength || additionLine.length > maxLineDiffLength) {
     return;
   }
   // NOTE(amadeus): Because we visually trim trailing newlines when rendering,
   // we also gotta make sure the diff parsing doesn't include the newline
   // character that could be there...
   const lineDiff =
-    lineDiffType === 'char'
+    lineDiffType === "char"
       ? diffChars(deletionLine, additionLine)
       : diffWordsWithSpace(deletionLine, additionLine);
   const deletionSpans: [0 | 1, string][] = [];
   const additionSpans: [0 | 1, string][] = [];
-  const enableJoin = lineDiffType === 'word-alt';
+  const enableJoin = lineDiffType === "word-alt";
   const lastItem = lineDiff.at(-1);
   for (const item of lineDiff) {
     const isLastItem = item === lastItem;
@@ -320,7 +293,7 @@ function computeLineDiffDecorations({
           line: deletionLineIndex,
           spanStart: spanIndex,
           spanLength: span[1].length,
-        })
+        }),
       );
     }
     spanIndex += span[1].length;
@@ -333,7 +306,7 @@ function computeLineDiffDecorations({
           line: additionLineIndex,
           spanStart: spanIndex,
           spanLength: span[1].length,
-        })
+        }),
       );
     }
     spanIndex += span[1].length;
@@ -373,7 +346,7 @@ function createBucket(): RenderBucket {
         this.value += value;
         this.length++;
       },
-      value: '',
+      value: "",
       length: 0,
     },
     additionContent: {
@@ -381,7 +354,7 @@ function createBucket(): RenderBucket {
         this.value += value;
         this.length++;
       },
-      value: '',
+      value: "",
       length: 0,
     },
     deletionInfo: [],
@@ -416,67 +389,57 @@ function renderTwoFiles({
   languageOverride,
   options: { theme: themeOrThemes = DEFAULT_THEMES, ...options },
 }: RenderTwoFilesProps): RenderDiffFilesResult {
-  const deletionLang =
-    languageOverride ?? getFiletypeFromFileName(deletionFile.name);
-  const additionLang =
-    languageOverride ?? getFiletypeFromFileName(additionFile.name);
-  const { state, transformers } = createTransformerWithState(
-    options.useTokenTransformer
-  );
+  const deletionLang = languageOverride ?? getFiletypeFromFileName(deletionFile.name);
+  const additionLang = languageOverride ?? getFiletypeFromFileName(additionFile.name);
+  const { state, transformers } = createTransformerWithState(options.useTokenTransformer);
   // tokenizeTimeLimit: 0 — never trade silently-wrong token colors for
   // latency; see renderFileWithHighlighter for the full rationale.
   const hastConfig: CodeToHastOptions<DiffsThemeNames> = (() => {
-    return typeof themeOrThemes === 'string'
+    return typeof themeOrThemes === "string"
       ? {
           ...options,
           // language will be overwritten for each highlight
-          lang: 'text',
+          lang: "text",
           theme: themeOrThemes,
           transformers,
           decorations: undefined,
           defaultColor: false,
-          cssVariablePrefix: formatCSSVariablePrefix('token'),
+          cssVariablePrefix: formatCSSVariablePrefix("token"),
           tokenizeTimeLimit: 0,
         }
       : {
           ...options,
           // language will be overwritten for each highlight
-          lang: 'text',
+          lang: "text",
           themes: themeOrThemes,
           transformers,
           decorations: undefined,
           defaultColor: false,
-          cssVariablePrefix: formatCSSVariablePrefix('token'),
+          cssVariablePrefix: formatCSSVariablePrefix("token"),
           tokenizeTimeLimit: 0,
         };
   })();
 
   const deletionLines = (() => {
-    if (deletionFile.contents === '') {
+    if (deletionFile.contents === "") {
       return [];
     }
     hastConfig.lang = deletionLang;
     state.lineInfo = deletionInfo;
     hastConfig.decorations = deletionDecorations;
     return getLineNodes(
-      highlighter.codeToHast(
-        cleanLastNewline(deletionFile.contents),
-        hastConfig
-      )
+      highlighter.codeToHast(cleanLastNewline(deletionFile.contents), hastConfig),
     );
   })();
   const additionLines = (() => {
-    if (additionFile.contents === '') {
+    if (additionFile.contents === "") {
       return [];
     }
     hastConfig.lang = additionLang;
     hastConfig.decorations = additionDecorations;
     state.lineInfo = additionInfo;
     return getLineNodes(
-      highlighter.codeToHast(
-        cleanLastNewline(additionFile.contents),
-        hastConfig
-      )
+      highlighter.codeToHast(cleanLastNewline(additionFile.contents), hastConfig),
     );
   })();
 

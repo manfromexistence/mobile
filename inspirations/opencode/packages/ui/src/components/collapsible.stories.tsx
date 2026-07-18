@@ -1,5 +1,5 @@
 // @ts-nocheck
-import * as mod from "./collapsible"
+import * as mod from "./collapsible";
 
 const docs = `### Overview
 Toggleable content region with optional arrow indicator.
@@ -23,7 +23,7 @@ Compose \`Collapsible.Trigger\`, \`Collapsible.Content\`, and \`Collapsible.Arro
 ### Theming/tokens
 - Uses \`data-component="collapsible"\` and slots for trigger/content/arrow.
 
-`
+`;
 
 export default {
   title: "UI/Collapsible",
@@ -43,7 +43,7 @@ export default {
       options: ["normal", "ghost"],
     },
   },
-}
+};
 
 export const Basic = {
   args: {
@@ -59,11 +59,13 @@ export const Basic = {
         </div>
       </mod.Collapsible.Trigger>
       <mod.Collapsible.Content data-slot="collapsible-content">
-        <div style={{ color: "var(--text-weak)", "padding-top": "8px" }}>Optional details sit here.</div>
+        <div style={{ color: "var(--text-weak)", "padding-top": "8px" }}>
+          Optional details sit here.
+        </div>
       </mod.Collapsible.Content>
     </mod.Collapsible>
   ),
-}
+};
 
 export const Ghost = {
   args: {
@@ -83,4 +85,4 @@ export const Ghost = {
       </mod.Collapsible.Content>
     </mod.Collapsible>
   ),
-}
+};

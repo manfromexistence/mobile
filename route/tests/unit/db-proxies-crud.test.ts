@@ -134,7 +134,7 @@ test("proxy assignments resolve by account, provider and global scope", async ()
 
   const providerResolved = await proxiesDb.resolveProxyForProvider("openai");
   const beforeAccount = await proxiesDb.resolveProxyForConnectionFromRegistry(
-    (connection as any).id
+    (connection as any).id,
   );
 
   await proxiesDb.assignProxyToScope("key", (connection as any).id, accountProxy.id);
@@ -143,7 +143,7 @@ test("proxy assignments resolve by account, provider and global scope", async ()
     proxyId: accountProxy.id,
   });
   const accountResolved = await proxiesDb.resolveProxyForConnectionFromRegistry(
-    (connection as any).id
+    (connection as any).id,
   );
   const usage = await proxiesDb.getProxyWhereUsed(accountProxy.id);
 
@@ -179,12 +179,12 @@ test("bulk assignment deduplicates scope ids and reports failures for missing pr
   const success = await proxiesDb.bulkAssignProxyToScope(
     "account",
     [first.id, second.id, first.id, " "],
-    proxy.id
+    proxy.id,
   );
   const failure = await proxiesDb.bulkAssignProxyToScope(
     "account",
     [first.id, second.id],
-    "missing-proxy"
+    "missing-proxy",
   );
 
   assert.equal(success.updated, 2);
@@ -258,7 +258,7 @@ test("assignProxyToScope normalizes key scope, supports removal, and blocks dele
 
   await assert.rejects(
     () => proxiesDb.deleteProxyById(proxy.id),
-    /Remove assignments first or use force=true/
+    /Remove assignments first or use force=true/,
   );
 
   const removed = await proxiesDb.assignProxyToScope("key", (connection as any).id, null);
@@ -274,7 +274,7 @@ test("legacy proxy config migrates into the registry and subsequent runs can be 
   db.prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "proxyConfig",
     "global",
-    JSON.stringify("http://global-user:global-pass@global.local:8080")
+    JSON.stringify("http://global-user:global-pass@global.local:8080"),
   );
   db.prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "proxyConfig",
@@ -282,7 +282,7 @@ test("legacy proxy config migrates into the registry and subsequent runs can be 
     JSON.stringify({
       openai: "https://provider.local:8443",
       broken: "not a proxy url",
-    })
+    }),
   );
   db.prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "proxyConfig",
@@ -293,7 +293,7 @@ test("legacy proxy config migrates into the registry and subsequent runs can be 
         host: "combo.local",
         port: 1080,
       },
-    })
+    }),
   );
   db.prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "proxyConfig",
@@ -304,7 +304,7 @@ test("legacy proxy config migrates into the registry and subsequent runs can be 
         host: "account.local",
         port: 9000,
       },
-    })
+    }),
   );
 
   const migrated = await proxiesDb.migrateLegacyProxyConfigToRegistry();

@@ -53,7 +53,7 @@ test("returns after terminal SSE even when underlying cancel never resolves", as
   const out = await Promise.race([
     readNonStreamingResponseBody(response, "text/event-stream", true),
     new Promise<string>((_, reject) =>
-      setTimeout(() => reject(new Error("read timed out after terminal SSE")), 1000)
+      setTimeout(() => reject(new Error("read timed out after terminal SSE")), 1000),
     ),
   ]);
 
@@ -80,7 +80,7 @@ test("aborts and throws when an SSE stream exceeds the byte cap (no unbounded st
 
   await assert.rejects(
     () => readNonStreamingResponseBody(response, "text/event-stream", true, 8 * 1024),
-    (err) => err instanceof NonStreamingResponseTooLargeError && err.maxBytes === 8 * 1024
+    (err) => err instanceof NonStreamingResponseTooLargeError && err.maxBytes === 8 * 1024,
   );
   assert.equal(cancelled, true, "upstream reader must be cancelled on cap exceed");
 });
@@ -104,6 +104,6 @@ test("rejects a non-SSE response whose declared Content-Length exceeds the cap (
   });
   await assert.rejects(
     () => readNonStreamingResponseBody(response, "application/json", false, 1024 * 1024),
-    (err) => err instanceof NonStreamingResponseTooLargeError
+    (err) => err instanceof NonStreamingResponseTooLargeError,
   );
 });

@@ -35,7 +35,7 @@ describe("claude OAuth usage 429 backoff", () => {
       assert.equal(
         isClaudeOauthUsageCoolingDown("tok-a", t0 + dt),
         true,
-        `still cooling at +${dt}ms`
+        `still cooling at +${dt}ms`,
       );
     }
   });
@@ -45,12 +45,12 @@ describe("claude OAuth usage 429 backoff", () => {
     markClaudeOauthUsage429("tok-a", t0);
     assert.equal(
       isClaudeOauthUsageCoolingDown("tok-a", t0 + OAUTH_USAGE_429_COOLDOWN_MS - 1),
-      true
+      true,
     );
     assert.equal(
       isClaudeOauthUsageCoolingDown("tok-a", t0 + OAUTH_USAGE_429_COOLDOWN_MS + 1),
       false,
-      "should be eligible again after cooldown window"
+      "should be eligible again after cooldown window",
     );
   });
 

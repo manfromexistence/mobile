@@ -52,14 +52,14 @@ test("HEAP_PRESSURE_THRESHOLD_MB auto-calibrates from the live V8 heap ceiling (
   // actual ceiling — no drift between the resolved value and the formula.
   assert.equal(
     HEAP_PRESSURE_THRESHOLD_MB,
-    computeHeapPressureThresholdMb(limitMb, process.env.HEAP_PRESSURE_THRESHOLD_MB)
+    computeHeapPressureThresholdMb(limitMb, process.env.HEAP_PRESSURE_THRESHOLD_MB),
   );
   // With no operator override it must clear the ~260MB baseline, otherwise the
   // guard would reject every request at idle (the bug we are fixing).
   if (!process.env.HEAP_PRESSURE_THRESHOLD_MB) {
     assert.ok(
       HEAP_PRESSURE_THRESHOLD_MB >= 400,
-      `live threshold ${HEAP_PRESSURE_THRESHOLD_MB}MB must clear the ~260MB app baseline`
+      `live threshold ${HEAP_PRESSURE_THRESHOLD_MB}MB must clear the ~260MB app baseline`,
     );
   }
 });
@@ -82,7 +82,7 @@ test("estimateSizeFast distinguishes small vs large for 8KB threshold", async ()
   };
   assert.ok(
     estimateSizeFast(small) <= MAX_LOG_BODY_CHARS,
-    `Small payload (${estimateSizeFast(small)}B) should be <= ${MAX_LOG_BODY_CHARS}`
+    `Small payload (${estimateSizeFast(small)}B) should be <= ${MAX_LOG_BODY_CHARS}`,
   );
 
   // Large: 500 messages with long content
@@ -95,6 +95,6 @@ test("estimateSizeFast distinguishes small vs large for 8KB threshold", async ()
   };
   assert.ok(
     estimateSizeFast(large) > MAX_LOG_BODY_CHARS,
-    `Large payload (${estimateSizeFast(large)}B) should be > ${MAX_LOG_BODY_CHARS}`
+    `Large payload (${estimateSizeFast(large)}B) should be > ${MAX_LOG_BODY_CHARS}`,
   );
 });

@@ -16,7 +16,7 @@ import { HTTP_STATUS } from "../../config/constants.ts";
 export function isSelfInflictedUpstreamTimeout(
   status: number,
   errorType: string | undefined | null,
-  provider: string
+  provider: string,
 ): boolean {
   return (
     status === HTTP_STATUS.GATEWAY_TIMEOUT &&

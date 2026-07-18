@@ -1,20 +1,17 @@
-import { expect } from 'bun:test';
+import { expect } from "bun:test";
 
-import { PathStore, StaticPathStore } from '../../src/index';
-import type {
-  PathStoreCleanupEvent,
-  PathStoreEvent,
-} from '../../src/public-types';
+import { PathStore, StaticPathStore } from "../../src/index";
+import type { PathStoreCleanupEvent, PathStoreEvent } from "../../src/public-types";
 
 export const demoSmallPaths: string[] = [
-  'alpha/docs/readme.md',
-  'alpha/src/app.ts',
-  'alpha/src/utils/math.ts',
-  'alpha/todo.txt',
-  'beta/archive/notes.txt',
-  'beta/keep.txt',
-  'gamma/logs/today.txt',
-  'zeta.md',
+  "alpha/docs/readme.md",
+  "alpha/src/app.ts",
+  "alpha/src/utils/math.ts",
+  "alpha/todo.txt",
+  "beta/archive/notes.txt",
+  "beta/keep.txt",
+  "gamma/logs/today.txt",
+  "zeta.md",
 ];
 
 export interface ProjectionFlattenedSegment {
@@ -32,7 +29,7 @@ export interface ProjectionVisibleRow {
   isExpanded: boolean;
   isFlattened: boolean;
   isLoading: boolean;
-  kind: 'directory' | 'file';
+  kind: "directory" | "file";
   loadState?: string;
   name: string;
   path: string;
@@ -44,8 +41,8 @@ export interface ProjectionReadableStore {
 }
 
 export type VisibleRowsSansIdsSnapshot = Array<
-  Omit<ProjectionVisibleRow, 'flattenedSegments' | 'id'> & {
-    flattenedSegments?: Array<Omit<ProjectionFlattenedSegment, 'nodeId'>>;
+  Omit<ProjectionVisibleRow, "flattenedSegments" | "id"> & {
+    flattenedSegments?: Array<Omit<ProjectionFlattenedSegment, "nodeId">>;
   }
 >;
 
@@ -72,37 +69,26 @@ export function createWideRootFilePaths(count: number): string[] {
 }
 
 export function createWideDirectoryPaths(count: number): string[] {
-  return Array.from(
-    { length: count },
-    (_, index) => `wide/item${index + 1}.ts`
-  );
+  return Array.from({ length: count }, (_, index) => `wide/item${index + 1}.ts`);
 }
 
 export function createDeepChainPaths(depth: number): string[] {
-  const nestedDirectoryPath = Array.from(
-    { length: depth },
-    (_, index) => `level${index + 1}`
-  ).join('/');
-  return [`${nestedDirectoryPath}/leaf.txt`, 'root.txt'];
+  const nestedDirectoryPath = Array.from({ length: depth }, (_, index) => `level${index + 1}`).join(
+    "/",
+  );
+  return [`${nestedDirectoryPath}/leaf.txt`, "root.txt"];
 }
 
-export function createDeepChainWithSiblingDirectoryPaths(
-  depth: number
-): string[] {
-  const nestedDirectoryPath = Array.from(
-    { length: depth },
-    (_, index) => `level${index + 1}`
-  ).join('/');
-  return [
-    `${nestedDirectoryPath}/leaf.txt`,
-    'sibling-folder/child.txt',
-    'root.txt',
-  ];
+export function createDeepChainWithSiblingDirectoryPaths(depth: number): string[] {
+  const nestedDirectoryPath = Array.from({ length: depth }, (_, index) => `level${index + 1}`).join(
+    "/",
+  );
+  return [`${nestedDirectoryPath}/leaf.txt`, "sibling-folder/child.txt", "root.txt"];
 }
 
 export function collectWildcardEvents(store: PathStore): PathStoreEvent[] {
   const events: PathStoreEvent[] = [];
-  store.on('*', (event) => {
+  store.on("*", (event) => {
     events.push(event);
   });
   return events;
@@ -111,7 +97,7 @@ export function collectWildcardEvents(store: PathStore): PathStoreEvent[] {
 export function getVisiblePaths(
   store: ProjectionReadableStore,
   start: number = 0,
-  end: number = Number.MAX_SAFE_INTEGER
+  end: number = Number.MAX_SAFE_INTEGER,
 ): string[] {
   return store.getVisibleSlice(start, end).map((row) => row.path);
 }
@@ -119,12 +105,12 @@ export function getVisiblePaths(
 export function getVisibleRowsSansIds(
   store: ProjectionReadableStore,
   start: number = 0,
-  end: number = Number.MAX_SAFE_INTEGER
+  end: number = Number.MAX_SAFE_INTEGER,
 ): VisibleRowsSansIdsSnapshot {
   return store.getVisibleSlice(start, end).map(({ id: _id, ...row }) => ({
     ...row,
     flattenedSegments: row.flattenedSegments?.map(
-      ({ nodeId: _segmentNodeId, ...segment }) => segment
+      ({ nodeId: _segmentNodeId, ...segment }) => segment,
     ),
   }));
 }
@@ -132,7 +118,7 @@ export function getVisibleRowsSansIds(
 export function getVisibleRowIdentitySnapshot(
   store: ProjectionReadableStore,
   start: number = 0,
-  end: number = Number.MAX_SAFE_INTEGER
+  end: number = Number.MAX_SAFE_INTEGER,
 ): VisibleRowIdentitySnapshotEntry[] {
   return store.getVisibleSlice(start, end).map((row) => ({
     flattenedSegments: row.flattenedSegments?.map((segment) => ({
@@ -147,15 +133,13 @@ export function getVisibleRowIdentitySnapshot(
 export function getVisiblePathDepthSnapshot(
   store: ProjectionReadableStore,
   start: number = 0,
-  end: number = Number.MAX_SAFE_INTEGER
+  end: number = Number.MAX_SAFE_INTEGER,
 ): VisiblePathDepthSnapshotEntry[] {
-  return store
-    .getVisibleSlice(start, end)
-    .map((row) => ({ depth: row.depth, path: row.path }));
+  return store.getVisibleSlice(start, end).map((row) => ({ depth: row.depth, path: row.path }));
 }
 
 export function getVisiblePathDepthSnapshotViaSingleReads(
-  store: ProjectionReadableStore
+  store: ProjectionReadableStore,
 ): VisiblePathDepthSnapshotEntry[] {
   const rows: VisiblePathDepthSnapshotEntry[] = [];
   for (let index = 0; index < store.getVisibleCount(); index += 1) {
@@ -173,28 +157,20 @@ export function getVisiblePathDepthSnapshotViaSingleReads(
 export function getExpandedDirectoryPaths(store: PathStore): string[] {
   const expandedPaths = new Set<string>();
 
-  for (const row of store.getVisibleSlice(
-    0,
-    Math.max(0, store.getVisibleCount() - 1)
-  )) {
-    if (row.kind !== 'directory') {
+  for (const row of store.getVisibleSlice(0, Math.max(0, store.getVisibleCount() - 1))) {
+    if (row.kind !== "directory") {
       continue;
     }
 
     if (row.isFlattened && row.flattenedSegments != null) {
-      for (
-        let segmentIndex = 0;
-        segmentIndex < row.flattenedSegments.length - 1;
-        segmentIndex++
-      ) {
+      for (let segmentIndex = 0; segmentIndex < row.flattenedSegments.length - 1; segmentIndex++) {
         const segment = row.flattenedSegments[segmentIndex];
         if (segment != null) {
           expandedPaths.add(segment.path);
         }
       }
 
-      const terminalSegment =
-        row.flattenedSegments[row.flattenedSegments.length - 1];
+      const terminalSegment = row.flattenedSegments[row.flattenedSegments.length - 1];
       if (row.isExpanded && terminalSegment != null) {
         expandedPaths.add(terminalSegment.path);
       }
@@ -211,7 +187,7 @@ export function getExpandedDirectoryPaths(store: PathStore): string[] {
 
 export function assertMatchesRebuild(
   store: PathStore,
-  { flattenEmptyDirectories = false }: AssertMatchesRebuildOptions = {}
+  { flattenEmptyDirectories = false }: AssertMatchesRebuildOptions = {},
 ): void {
   const rebuiltStore = new PathStore({
     flattenEmptyDirectories,
@@ -230,10 +206,7 @@ export function assertMatchesRebuild(
       : [
           { end: Math.min(visibleCount - 1, 49), start: 0 },
           {
-            end: Math.min(
-              visibleCount - 1,
-              Math.max(0, Math.floor(visibleCount / 2) + 24)
-            ),
+            end: Math.min(visibleCount - 1, Math.max(0, Math.floor(visibleCount / 2) + 24)),
             start: Math.max(0, Math.floor(visibleCount / 2) - 25),
           },
           {
@@ -243,16 +216,16 @@ export function assertMatchesRebuild(
         ];
 
   for (const window of windows) {
-    expect(
-      getVisibleRowsSansIds(rebuiltStore, window.start, window.end)
-    ).toEqual(getVisibleRowsSansIds(store, window.start, window.end));
+    expect(getVisibleRowsSansIds(rebuiltStore, window.start, window.end)).toEqual(
+      getVisibleRowsSansIds(store, window.start, window.end),
+    );
   }
 }
 
 export function createDemoSmallStore(): PathStore {
   return new PathStore({
     flattenEmptyDirectories: false,
-    initialExpansion: 'open',
+    initialExpansion: "open",
     paths: demoSmallPaths,
   });
 }
@@ -260,7 +233,7 @@ export function createDemoSmallStore(): PathStore {
 export function createStaticDemoSmallStore(): StaticPathStore {
   return new StaticPathStore({
     flattenEmptyDirectories: false,
-    initialExpansion: 'open',
+    initialExpansion: "open",
     paths: demoSmallPaths,
   });
 }
@@ -273,10 +246,10 @@ export function applyCleanupChurn(store: PathStore): string {
 
   const removedPath = store.list()[0];
   if (removedPath == null) {
-    throw new Error('Cleanup churn requires at least one canonical path.');
+    throw new Error("Cleanup churn requires at least one canonical path.");
   }
 
-  store.remove(removedPath, { recursive: removedPath.endsWith('/') });
+  store.remove(removedPath, { recursive: removedPath.endsWith("/") });
 
   for (let index = 0; index < 12; index++) {
     const tempPath = `zzz-cleanup-temp-${index}.ts`;
@@ -288,10 +261,6 @@ export function applyCleanupChurn(store: PathStore): string {
   return removedPath;
 }
 
-export function filterCleanupEvents(
-  events: readonly PathStoreEvent[]
-): PathStoreCleanupEvent[] {
-  return events.filter(
-    (event): event is PathStoreCleanupEvent => event.operation === 'cleanup'
-  );
+export function filterCleanupEvents(events: readonly PathStoreEvent[]): PathStoreCleanupEvent[] {
+  return events.filter((event): event is PathStoreCleanupEvent => event.operation === "cleanup");
 }

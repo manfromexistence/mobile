@@ -22,9 +22,9 @@ export const LOADER_GALLERY_PREVIEW_PROPS: Record<string, DotMatrixCommonProps> 
   "dotm-square-19": { size: 36, dotSize: 5, pattern: "full", animated: true, speed: 1.45 },
   "dotm-square-20": { size: 36, dotSize: 5, pattern: "full", animated: true, speed: 1.45 },
   "dotm-circular-1": { size: 36, dotSize: 5, pattern: "full", animated: true, speed: 2.5 },
-  "dotm-circular-2": { size: 36, dotSize: 5, pattern: "full", animated: true, speed: 1.8, },
-  "dotm-circular-3": { size: 36, dotSize: 5, pattern: "full", animated: true, speed: 1.6, },
-  "dotm-circular-4": { size: 36, dotSize: 5, pattern: "full", animated: true, speed: 1.55, },
+  "dotm-circular-2": { size: 36, dotSize: 5, pattern: "full", animated: true, speed: 1.8 },
+  "dotm-circular-3": { size: 36, dotSize: 5, pattern: "full", animated: true, speed: 1.6 },
+  "dotm-circular-4": { size: 36, dotSize: 5, pattern: "full", animated: true, speed: 1.55 },
   "dotm-circular-5": { size: 36, dotSize: 5, pattern: "full", animated: true, speed: 1.7 },
   "dotm-circular-6": { size: 36, dotSize: 5, pattern: "full", animated: true, speed: 1.6 },
   "dotm-circular-7": { size: 36, dotSize: 5, pattern: "full", animated: true, speed: 1.8 },
@@ -70,6 +70,5 @@ export const LOADER_GALLERY_PREVIEW_PROPS: Record<string, DotMatrixCommonProps> 
   "dotm-hex-7": { size: 34, dotSize: 5, pattern: "full", animated: true, speed: 1.9 },
   "dotm-hex-8": { size: 34, dotSize: 5, pattern: "full", animated: true, speed: 1.35 },
   "dotm-hex-9": { size: 34, dotSize: 5, pattern: "full", animated: true, speed: 1.8 },
-  "dotm-hex-10": { size: 34, dotSize: 5, pattern: "full", animated: true, speed: 1.55 }
+  "dotm-hex-10": { size: 34, dotSize: 5, pattern: "full", animated: true, speed: 1.55 },
 };
-

@@ -65,7 +65,7 @@ test("codex client (originator: codex_exec) receives a top-level `models` array 
         "user-agent":
           "codex_exec/0.137.0 (Ubuntu 24.4.0; x86_64) vscode/3.7.19 (codex_exec; 0.137.0)",
       },
-    })
+    }),
   );
 
   assert.equal(res.status, 200);
@@ -80,7 +80,7 @@ test("codex client (originator: codex_exec) receives a top-level `models` array 
   assert.equal(
     (body.models as unknown[]).length,
     0,
-    "`models` must be empty so codex keeps its built-in per-model base_instructions"
+    "`models` must be empty so codex keeps its built-in per-model base_instructions",
   );
 });
 
@@ -88,7 +88,7 @@ test("codex TUI (user-agent: codex_cli_rs) is detected via user-agent too", asyn
   const res = await v1ModelsCatalog.getUnifiedModelsResponse(
     new Request("http://localhost/v1/models", {
       headers: { "user-agent": "codex_cli_rs/0.137.0 (Ubuntu 24.4.0; x86_64)" },
-    })
+    }),
   );
 
   const body = (await res.json()) as Record<string, unknown>;
@@ -99,7 +99,7 @@ test("non-codex OpenAI client keeps the unchanged {object,data} shape (no `model
   const res = await v1ModelsCatalog.getUnifiedModelsResponse(
     new Request("http://localhost/v1/models", {
       headers: { "user-agent": "OpenAI/Python 1.99.0" },
-    })
+    }),
   );
 
   const body = (await res.json()) as Record<string, unknown>;
@@ -107,7 +107,7 @@ test("non-codex OpenAI client keeps the unchanged {object,data} shape (no `model
   assert.ok(Array.isArray(body.data));
   assert.ok(
     !("models" in body),
-    "non-codex clients must NOT receive a `models` key (response stays byte-identical)"
+    "non-codex clients must NOT receive a `models` key (response stays byte-identical)",
   );
 });
 
@@ -143,7 +143,7 @@ test("v1 models catalog exposes remote-only Codex IDs from the discovery cache",
   ]);
 
   const response = await v1ModelsCatalog.getUnifiedModelsResponse(
-    new Request("http://localhost/api/v1/models")
+    new Request("http://localhost/api/v1/models"),
   );
   const body = (await response.json()) as CatalogResponse;
   const ids = new Set((body.data || []).map((item) => item.id));

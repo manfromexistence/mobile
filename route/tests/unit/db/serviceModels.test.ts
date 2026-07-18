@@ -16,8 +16,9 @@ process.env.NODE_ENV = "test";
 process.env.DISABLE_SQLITE_AUTO_BACKUP = "true";
 
 const core = await import("../../../src/lib/db/core.ts");
-const { getServiceModels, saveServiceModels, markAllUnavailable } =
-  await import("../../../src/lib/db/serviceModels.ts");
+const { getServiceModels, saveServiceModels, markAllUnavailable } = await import(
+  "../../../src/lib/db/serviceModels.ts"
+);
 
 function resetDb() {
   core.resetDbInstance();
@@ -89,7 +90,7 @@ test("getServiceModels — tolerates corrupt JSON by returning []", () => {
   db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "serviceModels",
     "9router",
-    "not-valid-json{"
+    "not-valid-json{",
   );
 
   const result = getServiceModels("9router");
@@ -101,7 +102,7 @@ test("getServiceModels — returns [] when stored value is not an array", () => 
   db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     "serviceModels",
     "9router",
-    JSON.stringify({ id: "not-an-array" })
+    JSON.stringify({ id: "not-an-array" }),
   );
 
   const result = getServiceModels("9router");

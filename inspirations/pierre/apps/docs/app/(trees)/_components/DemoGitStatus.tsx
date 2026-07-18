@@ -1,51 +1,42 @@
-'use client';
+"use client";
 
-import {
-  IconColorDark,
-  IconColorLight,
-  IconFolders,
-  IconTableRowHeader,
-} from '@pierre/icons';
-import type { GitStatusEntry } from '@pierre/trees';
-import {
-  FileTree,
-  type FileTreePreloadedData,
-  useFileTree,
-} from '@pierre/trees/react';
-import type { FileTreePathOptions } from '@trees/_lib/fileTreePathOptions';
-import Link from 'next/link';
-import type { CSSProperties } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { IconColorDark, IconColorLight, IconFolders, IconTableRowHeader } from "@pierre/icons";
+import type { GitStatusEntry } from "@pierre/trees";
+import { FileTree, type FileTreePreloadedData, useFileTree } from "@pierre/trees/react";
+import type { FileTreePathOptions } from "@trees/_lib/fileTreePathOptions";
+import Link from "next/link";
+import type { CSSProperties } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import { sampleFileList } from '../_lib/demo-data';
-import { TREE_NEW_VIEWPORT_HEIGHTS } from '../_lib/dimensions';
+import { sampleFileList } from "../_lib/demo-data";
+import { TREE_NEW_VIEWPORT_HEIGHTS } from "../_lib/dimensions";
 import {
   TREE_NEW_GIT_STATUS_EXPANDED_PATHS,
   TREE_NEW_GIT_STATUSES,
-} from '../_lib/gitStatusDemoData';
-import { getDefaultFileTreePanelClass } from './tree-examples/demo-data';
-import { TreeExampleSection } from './tree-examples/TreeExampleSection';
-import { FeatureHeader } from '@/components/FeatureHeader';
-import { Button } from '@/components/ui/button';
-import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group';
-import { Switch } from '@/components/ui/switch';
-import { PRODUCTS } from '@/lib/product-config';
+} from "../_lib/gitStatusDemoData";
+import { getDefaultFileTreePanelClass } from "./tree-examples/demo-data";
+import { TreeExampleSection } from "./tree-examples/TreeExampleSection";
+import { FeatureHeader } from "@/components/FeatureHeader";
+import { Button } from "@/components/ui/button";
+import { ButtonGroup, ButtonGroupItem } from "@/components/ui/button-group";
+import { Switch } from "@/components/ui/switch";
+import { PRODUCTS } from "@/lib/product-config";
 
 function escapePathForRegex(path: string): string {
-  return path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return path.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 // Keep ignored descendants visible when the demo hides unmodified files so the
 // inherited ignored styling still has real rows to act on.
 function getVisibleGitStatusPaths(
   paths: readonly string[],
-  entries: readonly GitStatusEntry[]
+  entries: readonly GitStatusEntry[],
 ): string[] {
   const directPaths = new Set<string>();
   const ignoredDirectoryPaths: string[] = [];
 
   for (const entry of entries) {
-    if (entry.status === 'ignored' && entry.path.endsWith('/')) {
+    if (entry.status === "ignored" && entry.path.endsWith("/")) {
       ignoredDirectoryPaths.push(entry.path);
       continue;
     }
@@ -58,18 +49,13 @@ function getVisibleGitStatusPaths(
   }
 
   const ignoredDirectoryPattern = new RegExp(
-    `^(?:${ignoredDirectoryPaths.map(escapePathForRegex).join('|')})`
+    `^(?:${ignoredDirectoryPaths.map(escapePathForRegex).join("|")})`,
   );
 
-  return paths.filter(
-    (path) => directPaths.has(path) || ignoredDirectoryPattern.test(path)
-  );
+  return paths.filter((path) => directPaths.has(path) || ignoredDirectoryPattern.test(path));
 }
 
-const FILE_TREE_GIT_STATUS_BASE_OPTIONS: Omit<
-  FileTreePathOptions,
-  'gitStatus' | 'id'
-> = {
+const FILE_TREE_GIT_STATUS_BASE_OPTIONS: Omit<FileTreePathOptions, "gitStatus" | "id"> = {
   flattenEmptyDirectories: true,
   initialExpandedPaths: TREE_NEW_GIT_STATUS_EXPANDED_PATHS,
   paths: sampleFileList,
@@ -86,18 +72,18 @@ interface DemoGitStatusProps {
 
 export function DemoGitStatus({ preloadedData }: DemoGitStatusProps) {
   const [showUnmodified, setShowUnmodified] = useState(true);
-  const [colorMode, setColorMode] = useState<'light' | 'dark'>('dark');
-  const [mobileView, setMobileView] = useState<'tree' | 'legend'>('tree');
+  const [colorMode, setColorMode] = useState<"light" | "dark">("dark");
+  const [mobileView, setMobileView] = useState<"tree" | "legend">("tree");
 
   const activeGitStatus = TREE_NEW_GIT_STATUSES;
-  const isDark = colorMode === 'dark';
+  const isDark = colorMode === "dark";
   const panelStyle = useMemo(
     () =>
       ({
         colorScheme: colorMode,
-        '--trees-search-bg-override': isDark ? 'oklch(14.5% 0 0)' : '#fff',
+        "--trees-search-bg-override": isDark ? "oklch(14.5% 0 0)" : "#fff",
       }) as CSSProperties,
-    [colorMode, isDark]
+    [colorMode, isDark],
   );
   const visiblePaths = useMemo(() => {
     if (showUnmodified) {
@@ -110,12 +96,12 @@ export function DemoGitStatus({ preloadedData }: DemoGitStatusProps) {
   const { model: fullViewportModel } = useFileTree({
     ...FILE_TREE_GIT_STATUS_BASE_OPTIONS,
     gitStatus: TREE_NEW_GIT_STATUSES,
-    id: 'file-tree-git-status-demo-full',
+    id: "file-tree-git-status-demo-full",
   });
   const { model: filteredViewportModel } = useFileTree({
     ...FILE_TREE_GIT_STATUS_BASE_OPTIONS,
     gitStatus: TREE_NEW_GIT_STATUSES,
-    id: 'file-tree-git-status-demo-filtered',
+    id: "file-tree-git-status-demo-filtered",
     initialVisibleRowCount: TREE_NEW_VIEWPORT_HEIGHTS.gitStatusFiltered / 30,
   });
   const model = showUnmodified ? fullViewportModel : filteredViewportModel;
@@ -140,17 +126,16 @@ export function DemoGitStatus({ preloadedData }: DemoGitStatusProps) {
         title="Show Git status on files"
         description={
           <>
-            Use the{' '}
+            Use the{" "}
             <Link
               href={`${PRODUCTS.trees.docsPath}#show-git-status-and-row-annotations`}
               className="inline-link"
             >
               <code>gitStatus</code>
-            </Link>{' '}
-            option to show status badges for added, modified, deleted, renamed,
-            untracked, and ignored files. Ignored items inherit their styling
-            without rendering an indicator while folders with changed
-            descendants get a dot indicator automatically.
+            </Link>{" "}
+            option to show status badges for added, modified, deleted, renamed, untracked, and
+            ignored files. Ignored items inherit their styling without rendering an indicator while
+            folders with changed descendants get a dot indicator automatically.
           </>
         }
       />
@@ -175,7 +160,7 @@ export function DemoGitStatus({ preloadedData }: DemoGitStatusProps) {
 
           <ButtonGroup
             value={colorMode}
-            onValueChange={(value) => setColorMode(value as 'light' | 'dark')}
+            onValueChange={(value) => setColorMode(value as "light" | "dark")}
           >
             <ButtonGroupItem value="light">
               <IconColorLight className="size-4" />
@@ -190,7 +175,7 @@ export function DemoGitStatus({ preloadedData }: DemoGitStatusProps) {
           <ButtonGroup
             className="min-[500px]:ml-auto md:hidden"
             value={mobileView}
-            onValueChange={(value) => setMobileView(value as 'tree' | 'legend')}
+            onValueChange={(value) => setMobileView(value as "tree" | "legend")}
           >
             <ButtonGroupItem value="tree">
               <IconFolders /> Tree
@@ -202,9 +187,7 @@ export function DemoGitStatus({ preloadedData }: DemoGitStatusProps) {
         </div>
 
         <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
-          <div
-            className={mobileView === 'tree' ? undefined : 'hidden md:block'}
-          >
+          <div className={mobileView === "tree" ? undefined : "hidden md:block"}>
             <FileTree
               className={getDefaultFileTreePanelClass(colorMode)}
               model={model}
@@ -215,9 +198,7 @@ export function DemoGitStatus({ preloadedData }: DemoGitStatusProps) {
               }}
             />
           </div>
-          <div
-            className={mobileView === 'legend' ? undefined : 'hidden md:block'}
-          >
+          <div className={mobileView === "legend" ? undefined : "hidden md:block"}>
             <GitStatusLegend />
           </div>
         </div>
@@ -227,60 +208,53 @@ export function DemoGitStatus({ preloadedData }: DemoGitStatusProps) {
 }
 
 const GIT_STATUS_LEGEND: ReadonlyArray<{
-  status:
-    | 'modified'
-    | 'added'
-    | 'deleted'
-    | 'renamed'
-    | 'untracked'
-    | 'ignored'
-    | 'descendant';
+  status: "modified" | "added" | "deleted" | "renamed" | "untracked" | "ignored" | "descendant";
   badge: string | null;
   badgeClassName?: string;
   badgeOpacity?: number;
   description: string;
 }> = [
   {
-    status: 'modified',
-    badge: 'M',
-    badgeClassName: 'text-[#1ca1c7] dark:text-[#08c0ef]',
-    description: 'Tracked file with uncommitted changes',
+    status: "modified",
+    badge: "M",
+    badgeClassName: "text-[#1ca1c7] dark:text-[#08c0ef]",
+    description: "Tracked file with uncommitted changes",
   },
   {
-    status: 'added',
-    badge: 'A',
-    badgeClassName: 'text-[#16a994] dark:text-[#00cab1]',
-    description: 'New file staged in the working tree',
+    status: "added",
+    badge: "A",
+    badgeClassName: "text-[#16a994] dark:text-[#00cab1]",
+    description: "New file staged in the working tree",
   },
   {
-    status: 'deleted',
-    badge: 'D',
-    badgeClassName: 'text-[#ff2e3f] dark:text-[#ff6762]',
-    description: 'Tracked file removed from the working tree',
+    status: "deleted",
+    badge: "D",
+    badgeClassName: "text-[#ff2e3f] dark:text-[#ff6762]",
+    description: "Tracked file removed from the working tree",
   },
   {
-    status: 'renamed',
-    badge: 'R',
-    badgeClassName: 'text-[#d5a910] dark:text-[#ffd452]',
-    description: 'Tracked file moved or renamed',
+    status: "renamed",
+    badge: "R",
+    badgeClassName: "text-[#d5a910] dark:text-[#ffd452]",
+    description: "Tracked file moved or renamed",
   },
   {
-    status: 'untracked',
-    badge: 'U',
-    badgeClassName: 'text-[#16a994] dark:text-[#00cab1]',
-    description: 'New file not yet tracked by Git',
+    status: "untracked",
+    badge: "U",
+    badgeClassName: "text-[#16a994] dark:text-[#00cab1]",
+    description: "New file not yet tracked by Git",
   },
   {
-    status: 'ignored',
+    status: "ignored",
     badge: null,
-    description: 'Path excluded by gitignore; inherits muted styling',
+    description: "Path excluded by gitignore; inherits muted styling",
   },
   {
-    status: 'descendant',
-    badge: '●',
-    badgeClassName: 'text-[#1ca1c7] dark:text-[#08c0ef]',
+    status: "descendant",
+    badge: "●",
+    badgeClassName: "text-[#1ca1c7] dark:text-[#08c0ef]",
     badgeOpacity: 0.5,
-    description: 'Folder contains changed descendants',
+    description: "Folder contains changed descendants",
   },
 ];
 
@@ -290,9 +264,7 @@ function GitStatusLegend() {
       <table className="w-full text-sm">
         <thead>
           <tr className="bg-muted/50 border-b border-[var(--color-border)]">
-            <th className="w-14 px-4 py-2.5 text-left font-medium">
-              Indicator
-            </th>
+            <th className="w-14 px-4 py-2.5 text-left font-medium">Indicator</th>
             <th className="w-14 px-4 py-2.5 text-left font-medium">State</th>
             <th className="px-4 py-2.5 text-left font-medium">Description</th>
           </tr>
@@ -306,13 +278,11 @@ function GitStatusLegend() {
               >
                 <td className="px-4 py-2">
                   {entry.badge == null ? (
-                    <div className="text-muted-foreground w-6 text-center text-xs">
-                      None
-                    </div>
+                    <div className="text-muted-foreground w-6 text-center text-xs">None</div>
                   ) : (
                     <span
                       aria-label={entry.status}
-                      className={`inline-flex h-6 w-6 items-center justify-center rounded-md text-xs font-semibold tabular-nums shadow-[inset_0_0_0_1px_rgb(0_0_0_/_0.05)] ${entry.badgeClassName ?? ''}`}
+                      className={`inline-flex h-6 w-6 items-center justify-center rounded-md text-xs font-semibold tabular-nums shadow-[inset_0_0_0_1px_rgb(0_0_0_/_0.05)] ${entry.badgeClassName ?? ""}`}
                       style={{
                         opacity: entry.badgeOpacity,
                       }}
@@ -324,9 +294,7 @@ function GitStatusLegend() {
                 <td className="px-4 py-2">
                   <code>{entry.status}</code>
                 </td>
-                <td className="text-muted-foreground px-4 py-2">
-                  {entry.description}
-                </td>
+                <td className="text-muted-foreground px-4 py-2">{entry.description}</td>
               </tr>
             );
           })}

@@ -1,11 +1,9 @@
-import { DEFAULT_THEMES } from '../constants';
-import type { DiffsThemeNames, ThemesType } from '../types';
+import { DEFAULT_THEMES } from "../constants";
+import type { DiffsThemeNames, ThemesType } from "../types";
 
-export function getThemes(
-  theme: DiffsThemeNames | ThemesType = DEFAULT_THEMES
-): DiffsThemeNames[] {
+export function getThemes(theme: DiffsThemeNames | ThemesType = DEFAULT_THEMES): DiffsThemeNames[] {
   const themesArr: DiffsThemeNames[] = [];
-  if (typeof theme === 'string') {
+  if (typeof theme === "string") {
     themesArr.push(theme);
   } else {
     themesArr.push(theme.dark);

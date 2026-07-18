@@ -5,10 +5,7 @@ import { getGitHubCopilotRefreshHeaders } from "../config/providerHeaderProfiles
 import { pbkdf2Sync } from "node:crypto";
 import { runWithProxyContext } from "../utils/proxyFetch.ts";
 import { serializeRefresh, wasRefreshTokenRotated } from "./refreshSerializer.ts";
-import {
-  buildExternalIdpRefreshParams,
-  isExternalIdpAuthMethod,
-} from "./kiroExternalIdp.ts";
+import { buildExternalIdpRefreshParams, isExternalIdpAuthMethod } from "./kiroExternalIdp.ts";
 import { WINDSURF_CONFIG } from "@/lib/oauth/constants/oauth";
 import { buildGitLabOAuthEndpoints, resolveGitLabOAuthBaseUrl } from "@/lib/oauth/gitlab";
 
@@ -63,7 +60,7 @@ export const REFRESH_LEAD_MS: Record<string, number> = {
  */
 export function getRefreshLeadMs(
   provider: string,
-  providerSpecificData?: { refreshLeadMs?: unknown } | null
+  providerSpecificData?: { refreshLeadMs?: unknown } | null,
 ): number {
   const override = providerSpecificData?.refreshLeadMs;
   if (typeof override === "number" && Number.isFinite(override) && override > 0) {
@@ -131,7 +128,7 @@ function lookupRotation(provider: string, refreshToken: string): RotationEntry |
 function recordRotation(
   provider: string,
   oldRefreshToken: string,
-  result: { accessToken: string; refreshToken: string; expiresIn?: number; expiresAt?: string }
+  result: { accessToken: string; refreshToken: string; expiresIn?: number; expiresAt?: string },
 ): void {
   if (!oldRefreshToken || !result.refreshToken || oldRefreshToken === result.refreshToken) {
     return;
@@ -165,7 +162,7 @@ const onPersistStore = new AsyncLocalStorage<RefreshPersistFn>();
 
 export function runWithOnPersist<T>(
   onPersist: RefreshPersistFn | undefined | null,
-  fn: () => Promise<T>
+  fn: () => Promise<T>,
 ): Promise<T> {
   if (!onPersist) return fn();
   return onPersistStore.run(onPersist, fn);
@@ -202,7 +199,7 @@ const casGuardStats = { skipped: 0, persisted: 0 };
 
 export function runWithCasGuard<T>(
   guard: CasGuard | undefined | null,
-  fn: () => Promise<T>
+  fn: () => Promise<T>,
 ): Promise<T> {
   if (!guard) return fn();
   return casGuardStore.run(guard, fn);
@@ -242,7 +239,7 @@ async function casGuardShouldSkipPersist(log?: RefreshLogger): Promise<boolean> 
     casGuardStats.skipped++;
     log?.warn?.(
       "TOKEN_REFRESH",
-      "CAS guard: skipping persist — a concurrent writer already rotated the refresh_token (#4038)"
+      "CAS guard: skipping persist — a concurrent writer already rotated the refresh_token (#4038)",
     );
     return true;
   }
@@ -346,7 +343,7 @@ export function extractOAuthErrorCode(raw: unknown, depth = 0): string | null {
  * later `response.text()` returns empty.
  */
 async function readRefreshErrorBody(
-  response: Response
+  response: Response,
 ): Promise<{ rawText: string; code: string | null }> {
   const rawText = await response.text().catch(() => "");
   let parsed: unknown = rawText;
@@ -367,7 +364,7 @@ export async function refreshAccessToken(
   refreshToken,
   credentials,
   log,
-  proxyConfig: unknown = null
+  proxyConfig: unknown = null,
 ) {
   const config = PROVIDERS[provider];
 
@@ -398,7 +395,7 @@ export async function refreshAccessToken(
           Accept: "application/json",
         },
         body: params,
-      })
+      }),
     );
 
     if (!response.ok) {
@@ -452,12 +449,12 @@ export async function refreshWindsurfToken(
   refreshToken: string,
   providerSpecificData: Record<string, unknown> | null | undefined,
   log: RefreshLogger,
-  proxyConfig: unknown = null
+  proxyConfig: unknown = null,
 ) {
   if (!refreshToken) {
     log?.warn?.(
       "TOKEN_REFRESH",
-      "No refresh token stored for Windsurf — token may be a long-lived API key"
+      "No refresh token stored for Windsurf — token may be a long-lived API key",
     );
     return null;
   }
@@ -478,7 +475,7 @@ export async function refreshWindsurfToken(
   if (!firebaseApiKey) {
     log?.warn?.(
       "TOKEN_REFRESH",
-      "Windsurf Firebase API key unavailable — skipping Firebase token refresh"
+      "Windsurf Firebase API key unavailable — skipping Firebase token refresh",
     );
     return null;
   }
@@ -490,7 +487,7 @@ export async function refreshWindsurfToken(
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: buildFormParams({ grant_type: "refresh_token", refresh_token: refreshToken }),
-      })
+      }),
     );
 
     if (!response.ok) {
@@ -521,7 +518,7 @@ export async function refreshWindsurfToken(
             "Windsurf Firebase token is permanently invalid. Re-authentication required.",
             {
               fbCode,
-            }
+            },
           );
           return { error: "unrecoverable_refresh_error", code: fbCode };
         }
@@ -548,7 +545,7 @@ export async function refreshWindsurfToken(
   } catch (error) {
     log?.error?.(
       "TOKEN_REFRESH",
-      `Network error refreshing Windsurf token: ${error instanceof Error ? error.message : String(error)}`
+      `Network error refreshing Windsurf token: ${error instanceof Error ? error.message : String(error)}`,
     );
     return null;
   }
@@ -562,7 +559,7 @@ export async function refreshWindsurfToken(
 export async function refreshCodebuddyCnToken(
   refreshToken: string,
   log: RefreshLogger,
-  proxyConfig: unknown = null
+  proxyConfig: unknown = null,
 ) {
   if (!refreshToken) return null;
   const { CODEBUDDY_CN_CONFIG } = await import("@/lib/oauth/constants/oauth");
@@ -582,7 +579,7 @@ export async function refreshCodebuddyCnToken(
           "X-Product": "SaaS",
         },
         body: "{}",
-      })
+      }),
     );
 
     if (!response.ok) {
@@ -640,7 +637,7 @@ export async function refreshClineToken(refreshToken, log, proxyConfig: unknown 
           grantType: "refresh_token",
           clientType: "extension",
         }),
-      })
+      }),
     );
 
     if (!response.ok) {
@@ -693,7 +690,7 @@ export async function refreshKimiCodingToken(
   refreshToken: string,
   providerSpecificData: Record<string, unknown> | null | undefined,
   log: RefreshLogger,
-  proxyConfig: unknown = null
+  proxyConfig: unknown = null,
 ) {
   const endpoint = PROVIDERS["kimi-coding"]?.refreshUrl || PROVIDERS["kimi-coding"]?.tokenUrl;
   if (!endpoint) {
@@ -741,7 +738,7 @@ export async function refreshKimiCodingToken(
           "X-Msh-Os-Version": (providerSpecificData?.osVersion as string) || osTypeStr,
         },
         body: params,
-      })
+      }),
     );
 
     if (!response.ok) {
@@ -757,7 +754,7 @@ export async function refreshKimiCodingToken(
             "Kimi Coding refresh token invalid. Re-authentication required.",
             {
               errorCode,
-            }
+            },
           );
           return { error: "unrecoverable_refresh_error", code: errorCode };
         }
@@ -789,7 +786,7 @@ export async function refreshKimiCodingToken(
   } catch (error) {
     log?.error?.(
       "TOKEN_REFRESH",
-      `Network error refreshing Kimi Coding token: ${error instanceof Error ? error.message : String(error)}`
+      `Network error refreshing Kimi Coding token: ${error instanceof Error ? error.message : String(error)}`,
     );
     return null;
   }
@@ -806,7 +803,7 @@ export async function refreshGitLabDuoToken(
   refreshToken: string,
   providerSpecificData: Record<string, unknown> | null | undefined,
   log: RefreshLogger,
-  proxyConfig: unknown = null
+  proxyConfig: unknown = null,
 ) {
   if (!refreshToken) {
     log?.warn?.("TOKEN_REFRESH", "No refresh token for GitLab Duo");
@@ -838,7 +835,7 @@ export async function refreshGitLabDuoToken(
           refresh_token: refreshToken,
           client_id: clientId,
         }),
-      })
+      }),
     );
 
     if (!response.ok) {
@@ -854,7 +851,7 @@ export async function refreshGitLabDuoToken(
             "GitLab Duo refresh token invalid. Re-authentication required.",
             {
               errorCode,
-            }
+            },
           );
           return { error: "unrecoverable_refresh_error", code: errorCode };
         }
@@ -885,7 +882,7 @@ export async function refreshGitLabDuoToken(
   } catch (error) {
     log?.error?.(
       "TOKEN_REFRESH",
-      `Network error refreshing GitLab Duo token: ${error instanceof Error ? error.message : String(error)}`
+      `Network error refreshing GitLab Duo token: ${error instanceof Error ? error.message : String(error)}`,
     );
     return null;
   }
@@ -912,7 +909,7 @@ export async function refreshClaudeOAuthToken(refreshToken, log, proxyConfig: un
           "anthropic-beta": "oauth-2025-04-20",
         },
         body: params.toString(),
-      })
+      }),
     );
 
     if (!response.ok) {
@@ -958,7 +955,7 @@ export async function refreshGoogleToken(
   clientId,
   clientSecret,
   log,
-  proxyConfig: unknown = null
+  proxyConfig: unknown = null,
 ) {
   const response = await runWithProxyContext(proxyConfig, () =>
     fetch(OAUTH_ENDPOINTS.google.token, {
@@ -973,7 +970,7 @@ export async function refreshGoogleToken(
         client_id: clientId,
         client_secret: clientSecret,
       }),
-    })
+    }),
   );
 
   if (!response.ok) {
@@ -1030,7 +1027,7 @@ export async function refreshQwenToken(refreshToken, log, proxyConfig: unknown =
           refresh_token: refreshToken,
           client_id: PROVIDERS.qwen.clientId,
         }),
-      })
+      }),
     );
 
     if (response.status === 200) {
@@ -1069,7 +1066,7 @@ export async function refreshQwenToken(refreshToken, log, proxyConfig: unknown =
           {
             status: response.status,
             errorCode,
-          }
+          },
         );
         return { error: "unrecoverable_refresh_error", code: errorCode };
       }
@@ -1116,7 +1113,7 @@ export async function refreshCodexToken(refreshToken, log, proxyConfig: unknown 
           refresh_token: refreshToken,
           client_id: PROVIDERS.codex.clientId,
         }),
-      })
+      }),
     );
 
     if (!response.ok) {
@@ -1146,7 +1143,7 @@ export async function refreshCodexToken(refreshToken, log, proxyConfig: unknown 
           {
             status: response.status,
             errorCode,
-          }
+          },
         );
         return { error: "unrecoverable_refresh_error", code: errorCode };
       }
@@ -1166,7 +1163,7 @@ export async function refreshCodexToken(refreshToken, log, proxyConfig: unknown 
           {
             status: response.status,
             errorCode: code,
-          }
+          },
         );
         return { error: "unrecoverable_refresh_error", code };
       }
@@ -1205,7 +1202,7 @@ export async function refreshKiroToken(
   refreshToken,
   providerSpecificData,
   log,
-  proxyConfig: unknown = null
+  proxyConfig: unknown = null,
 ) {
   try {
     const authMethod = providerSpecificData?.authMethod;
@@ -1224,7 +1221,7 @@ export async function refreshKiroToken(
       } catch (cfgErr) {
         log?.error?.(
           "TOKEN_REFRESH",
-          `Invalid Kiro external_idp refresh config: ${cfgErr instanceof Error ? cfgErr.message : String(cfgErr)}`
+          `Invalid Kiro external_idp refresh config: ${cfgErr instanceof Error ? cfgErr.message : String(cfgErr)}`,
         );
         return null;
       }
@@ -1237,7 +1234,7 @@ export async function refreshKiroToken(
             Accept: "application/json",
           },
           body: refreshRequest.body,
-        })
+        }),
       );
 
       if (!response.ok) {
@@ -1252,7 +1249,7 @@ export async function refreshKiroToken(
           log?.error?.(
             "TOKEN_REFRESH",
             "Kiro external_idp refresh token expired/invalid. Re-authentication required.",
-            { oauthErr }
+            { oauthErr },
           );
           return { error: "unrecoverable_refresh_error", code: oauthErr };
         }
@@ -1297,7 +1294,7 @@ export async function refreshKiroToken(
             refreshToken: refreshToken,
             grantType: "refresh_token",
           }),
-        })
+        }),
       );
 
       if (!response.ok) {
@@ -1321,7 +1318,7 @@ export async function refreshKiroToken(
           log?.error?.(
             "TOKEN_REFRESH",
             "Kiro AWS refresh token expired/invalid. Re-authentication required.",
-            { awsErrorType }
+            { awsErrorType },
           );
           return { error: "unrecoverable_refresh_error", code: awsErrorType };
         }
@@ -1331,7 +1328,7 @@ export async function refreshKiroToken(
         log?.warn?.(
           "TOKEN_REFRESH",
           "Kiro OIDC refresh failed, attempting client re-registration...",
-          { status: response.status, error: errorText.slice(0, 200) }
+          { status: response.status, error: errorText.slice(0, 200) },
         );
 
         try {
@@ -1352,7 +1349,7 @@ export async function refreshKiroToken(
                 grantTypes: ["urn:ietf:params:oauth:grant-type:device_code", "refresh_token"],
                 issuerUrl: "https://identitycenter.amazonaws.com/ssoins-722374e8c3c8e6c6",
               }),
-            })
+            }),
           );
 
           if (regRes.ok) {
@@ -1367,7 +1364,7 @@ export async function refreshKiroToken(
                   refreshToken: refreshToken,
                   grantType: "refresh_token",
                 }),
-              })
+              }),
             );
 
             if (retryRes.ok) {
@@ -1429,7 +1426,7 @@ export async function refreshKiroToken(
         body: JSON.stringify({
           refreshToken: refreshToken,
         }),
-      })
+      }),
     );
 
     if (!response.ok) {
@@ -1449,7 +1446,7 @@ export async function refreshKiroToken(
             "Kiro social refresh token expired/invalid. Re-authentication required.",
             {
               awsErrorType,
-            }
+            },
           );
           return { error: "unrecoverable_refresh_error", code: awsErrorType };
         }
@@ -1489,7 +1486,7 @@ export async function refreshQoderToken(refreshToken, log, proxyConfig: unknown 
   if (!OAUTH_ENDPOINTS.qoder.token || !PROVIDERS.qoder.clientId || !PROVIDERS.qoder.clientSecret) {
     log?.warn?.(
       "TOKEN_REFRESH",
-      "Qoder OAuth refresh skipped: browser OAuth is not configured in this environment"
+      "Qoder OAuth refresh skipped: browser OAuth is not configured in this environment",
     );
     return null;
   }
@@ -1510,7 +1507,7 @@ export async function refreshQoderToken(refreshToken, log, proxyConfig: unknown 
         client_id: PROVIDERS.qoder.clientId,
         client_secret: PROVIDERS.qoder.clientSecret,
       }),
-    })
+    }),
   );
 
   if (!response.ok) {
@@ -1558,7 +1555,7 @@ export async function refreshGitHubToken(refreshToken, log, proxyConfig: unknown
         client_id: PROVIDERS.github.clientId,
         client_secret: PROVIDERS.github.clientSecret,
       }),
-    })
+    }),
   );
 
   if (!response.ok) {
@@ -1597,7 +1594,7 @@ export async function refreshCopilotToken(githubAccessToken, log, proxyConfig: u
     const response = await runWithProxyContext(proxyConfig, () =>
       fetch("https://api.github.com/copilot_internal/v2/token", {
         headers: getGitHubCopilotRefreshHeaders(`token ${githubAccessToken}`),
-      })
+      }),
     );
 
     if (!response.ok) {
@@ -1641,7 +1638,7 @@ async function _getAccessTokenInternal(provider, credentials, log, proxyConfig: 
         PROVIDERS[provider].clientId,
         PROVIDERS[provider].clientSecret,
         log,
-        proxyConfig
+        proxyConfig,
       );
 
     case "claude":
@@ -1665,7 +1662,7 @@ async function _getAccessTokenInternal(provider, credentials, log, proxyConfig: 
         credentials.refreshToken,
         credentials.providerSpecificData,
         log,
-        proxyConfig
+        proxyConfig,
       );
 
     case "cline":
@@ -1677,7 +1674,7 @@ async function _getAccessTokenInternal(provider, credentials, log, proxyConfig: 
         credentials.refreshToken,
         credentials.providerSpecificData,
         log,
-        proxyConfig
+        proxyConfig,
       );
 
     case "gitlab-duo":
@@ -1685,7 +1682,7 @@ async function _getAccessTokenInternal(provider, credentials, log, proxyConfig: 
         credentials.refreshToken,
         credentials.providerSpecificData,
         log,
-        proxyConfig
+        proxyConfig,
       );
 
     case "windsurf":
@@ -1694,7 +1691,7 @@ async function _getAccessTokenInternal(provider, credentials, log, proxyConfig: 
         credentials.refreshToken,
         credentials.providerSpecificData,
         log,
-        proxyConfig
+        proxyConfig,
       );
 
     case "codebuddy-cn":
@@ -1774,7 +1771,7 @@ export async function getAccessToken(
   credentials,
   log,
   proxyConfig: unknown = null,
-  onPersist?: RefreshPersistFn
+  onPersist?: RefreshPersistFn,
 ) {
   if (!credentials || !credentials.refreshToken || typeof credentials.refreshToken !== "string") {
     log?.warn?.("TOKEN_REFRESH", `No valid refresh token available for provider: ${provider}`);
@@ -1808,7 +1805,7 @@ export async function getAccessToken(
         provider,
         credentials,
         log,
-        proxyConfig
+        proxyConfig,
       );
       // Invoke onPersist INSIDE the mutex so [network call + DB write] are one atomic step.
       // This prevents a concurrent waiter from reading stale credentials before the DB is updated.
@@ -1824,7 +1821,7 @@ export async function getAccessToken(
           const { sanitizeErrorMessage } = await import("../utils/error.ts");
           log?.error?.(
             "TOKEN_REFRESH",
-            `onPersist callback failed for ${provider}/${connectionId}: ${sanitizeErrorMessage(persistErr instanceof Error ? persistErr : new Error(String(persistErr)))}`
+            `onPersist callback failed for ${provider}/${connectionId}: ${sanitizeErrorMessage(persistErr instanceof Error ? persistErr : new Error(String(persistErr)))}`,
           );
           throw persistErr;
         }
@@ -1851,7 +1848,7 @@ export async function getAccessToken(
   // leaving DB rows out of sync with rotated tokens (Codex/OpenAI). We still
   // resolve the promise to all waiters with the refreshed credentials.
   const refreshPromise = serializeRefresh(provider, () =>
-    _getAccessTokenInternal(provider, credentials, log, proxyConfig)
+    _getAccessTokenInternal(provider, credentials, log, proxyConfig),
   )
     .then(async (result) => {
       if (result?.accessToken && effectiveOnPersist) {
@@ -1866,14 +1863,14 @@ export async function getAccessToken(
           const { sanitizeErrorMessage } = await import("../utils/error.ts");
           log?.error?.(
             "TOKEN_REFRESH",
-            `Layer 2 onPersist callback failed for ${provider}: ${sanitizeErrorMessage(persistErr instanceof Error ? persistErr : new Error(String(persistErr)))}`
+            `Layer 2 onPersist callback failed for ${provider}: ${sanitizeErrorMessage(persistErr instanceof Error ? persistErr : new Error(String(persistErr)))}`,
           );
           throw persistErr;
         }
       } else if (result?.accessToken && !effectiveOnPersist) {
         log?.warn?.(
           "TOKEN_REFRESH",
-          `Layer 2 refresh succeeded for ${provider} without onPersist — DB row will not be updated with rotated token. Callers should pass connectionId for Layer 1 atomicity.`
+          `Layer 2 refresh succeeded for ${provider} without onPersist — DB row will not be updated with rotated token. Callers should pass connectionId for Layer 1 atomicity.`,
         );
       }
       return result;
@@ -1902,7 +1899,7 @@ async function _getAccessTokenWithStalenessCheck(provider, credentials, log, pro
   if (rotated) {
     log?.info?.(
       "TOKEN_REFRESH",
-      `Rotation map hit for ${provider}. Returning cached rotated tokens (avoids family-revoke).`
+      `Rotation map hit for ${provider}. Returning cached rotated tokens (avoids family-revoke).`,
     );
     return rotated.result;
   }
@@ -1923,7 +1920,7 @@ async function _getAccessTokenWithStalenessCheck(provider, credentials, log, pro
         if (dbConnection.refreshToken !== credentials.refreshToken) {
           log?.info?.(
             "TOKEN_REFRESH",
-            `Stale token detected in memory for ${provider}. Using refreshed token from DB.`
+            `Stale token detected in memory for ${provider}. Using refreshed token from DB.`,
           );
 
           // If the DB token is not expired, we can just return it!
@@ -1955,7 +1952,7 @@ async function _getAccessTokenWithStalenessCheck(provider, credentials, log, pro
     } catch (e) {
       log?.warn?.(
         "TOKEN_REFRESH",
-        `Failed to check DB for stale token: ${e instanceof Error ? e.message : String(e)}`
+        `Failed to check DB for stale token: ${e instanceof Error ? e.message : String(e)}`,
       );
     }
   }
@@ -1965,7 +1962,7 @@ async function _getAccessTokenWithStalenessCheck(provider, credentials, log, pro
   // rotation group (e.g. Codex+openai share one Auth0 client) so two sibling
   // accounts never refresh concurrently and trip Auth0 family revocation.
   const result = await serializeRefresh(provider, () =>
-    _getAccessTokenInternal(provider, credentials, log, proxyConfig)
+    _getAccessTokenInternal(provider, credentials, log, proxyConfig),
   );
 
   // Record the rotation so subsequent stale callers can be redirected to the
@@ -1986,7 +1983,7 @@ async function _getAccessTokenWithStalenessCheck(provider, credentials, log, pro
         refreshToken: string;
         expiresIn?: number;
         expiresAt?: string;
-      }
+      },
     );
   }
 
@@ -2065,7 +2062,7 @@ export async function getAllAccessTokens(userInfo, log) {
           {
             refreshToken: connection.refreshToken,
           },
-          log
+          log,
         );
 
         if (token) {
@@ -2176,7 +2173,7 @@ function recordFailure(provider: string, log: RefreshLoggerLike | null = null) {
     log?.error?.(
       "TOKEN_REFRESH",
       `🔴 Circuit breaker tripped for ${provider}: ${CIRCUIT_BREAKER_THRESHOLD} consecutive failures. ` +
-        `Blocked for ${CIRCUIT_BREAKER_COOLDOWN / 60000}min. Provider needs re-authentication.`
+        `Blocked for ${CIRCUIT_BREAKER_COOLDOWN / 60000}min. Provider needs re-authentication.`,
     );
   }
 }
@@ -2199,7 +2196,7 @@ async function withTimeout<T>(fn: () => Promise<T>, timeoutMs: number): Promise<
       (error) => {
         clearTimeout(timer);
         reject(error);
-      }
+      },
     );
   });
 }
@@ -2208,7 +2205,7 @@ export async function refreshWithRetry(
   refreshFn,
   maxRetries = 3,
   log: RefreshLogger = null,
-  provider = "unknown"
+  provider = "unknown",
 ) {
   // Circuit breaker check
   if (isProviderBlocked(provider)) {
@@ -2228,7 +2225,7 @@ export async function refreshWithRetry(
       if (isUnrecoverableRefreshError(result)) {
         log?.warn?.(
           "TOKEN_REFRESH",
-          `Unrecoverable refresh error for ${provider}: ${result.error} — skipping retries`
+          `Unrecoverable refresh error for ${provider}: ${result.error} — skipping retries`,
         );
         return result;
       }

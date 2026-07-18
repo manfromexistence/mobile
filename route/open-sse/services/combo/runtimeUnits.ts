@@ -30,7 +30,7 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 function getCombosList(allCombos: ComboCollectionLike): ComboLike[] {
   const combos = Array.isArray(allCombos) ? allCombos : allCombos?.combos || [];
   return combos.filter(
-    (combo): combo is ComboLike => isRecord(combo) && typeof combo.name === "string"
+    (combo): combo is ComboLike => isRecord(combo) && typeof combo.name === "string",
   );
 }
 
@@ -202,7 +202,7 @@ export async function executeRuntimeUnitCombo(args: {
       }
       args.log.info(
         "COMBO",
-        `Trying ${unit.kind} ${unitDisplayName(unit)}${retry > 0 ? ` (retry ${retry})` : ""}`
+        `Trying ${unit.kind} ${unitDisplayName(unit)}${retry > 0 ? ` (retry ${retry})` : ""}`,
       );
       const response = await executeRuntimeUnit({
         body: args.body,
@@ -238,7 +238,7 @@ export async function executeRuntimeUnitCombo(args: {
           unitClone,
           clientRequestedStream,
           args.log,
-          args.config.responseValidation as ResponseValidationConfig | undefined
+          args.config.responseValidation as ResponseValidationConfig | undefined,
         );
         releaseQualityClone(unitClone, response, quality);
         if (quality.valid) {

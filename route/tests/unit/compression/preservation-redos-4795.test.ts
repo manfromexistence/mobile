@@ -21,15 +21,14 @@ describe("preservation ReDoS guard (#4795)", () => {
     const elapsed = Date.now() - start;
     assert.ok(
       elapsed < 1000,
-      `extractPreservedBlocks must not backtrack catastrophically (took ${elapsed}ms)`
+      `extractPreservedBlocks must not backtrack catastrophically (took ${elapsed}ms)`,
     );
     // The pathological input is not valid inline math, so it stays untouched.
     assert.equal(text, evil, "non-math text must be returned unchanged");
   });
 
   it("does not hang on Windows-path-style payloads with backslashes after a `$`", () => {
-    const evil =
-      "$C:\\Users\\Alpha\\Net\\DESKTOP\\" + "sub\\".repeat(120) + "no-closing-dollar";
+    const evil = "$C:\\Users\\Alpha\\Net\\DESKTOP\\" + "sub\\".repeat(120) + "no-closing-dollar";
     const start = Date.now();
     extractPreservedBlocks(evil);
     assert.ok(Date.now() - start < 1000, "Windows-path payload must resolve quickly");
@@ -44,7 +43,7 @@ describe("preservation ReDoS guard (#4795)", () => {
     assert.equal(
       restorePreservedBlocks(extracted, blocks),
       text,
-      "round-trip must reproduce the original text"
+      "round-trip must reproduce the original text",
     );
   });
 
@@ -53,7 +52,7 @@ describe("preservation ReDoS guard (#4795)", () => {
     const { blocks } = extractPreservedBlocks(text);
     assert.ok(
       blocks.some((b) => b.kind === "math_inline" && b.content === "$a \\$ b$"),
-      "inline math with an escaped dollar must still be captured via the `\\.` branch"
+      "inline math with an escaped dollar must still be captured via the `\\.` branch",
     );
   });
 });

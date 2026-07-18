@@ -1,5 +1,5 @@
-import type { StorageBackend, StorageFileHint } from './index';
-import { OPFSBackend } from './opfs';
+import type { StorageBackend, StorageFileHint } from "./index";
+import { OPFSBackend } from "./opfs";
 
 interface CrossOriginStorageRequestFileHandleHash {
   value: string;
@@ -9,7 +9,7 @@ interface CrossOriginStorageRequestFileHandleHash {
 interface CrossOriginStorageManager {
   requestFileHandle(
     hash: CrossOriginStorageRequestFileHandleHash,
-    options?: { create?: boolean; origins?: string[] | string }
+    options?: { create?: boolean; origins?: string[] | string },
   ): Promise<FileSystemFileHandle>;
 }
 
@@ -20,23 +20,19 @@ declare global {
 }
 
 function makeHash(key: string): CrossOriginStorageRequestFileHandleHash {
-  return { algorithm: 'SHA-256', value: key };
+  return { algorithm: "SHA-256", value: key };
 }
 
 // internal, non-standard implementation
 class COSInternalBackend implements StorageBackend {
   isSupported(): boolean {
-    return (
-      typeof navigator !== 'undefined' && 'crossOriginStorage' in navigator
-    );
+    return typeof navigator !== "undefined" && "crossOriginStorage" in navigator;
   }
 
   // IMPORTANT: key must be SHA-256 hash of the data
   async read(key: string): Promise<Blob | null> {
     try {
-      const handle = await navigator.crossOriginStorage!.requestFileHandle(
-        makeHash(key)
-      );
+      const handle = await navigator.crossOriginStorage!.requestFileHandle(makeHash(key));
       return handle.getFile();
     } catch {
       return null;
@@ -45,10 +41,9 @@ class COSInternalBackend implements StorageBackend {
 
   // IMPORTANT: key must be SHA-256 hash of the data
   async write(key: string, stream: ReadableStream): Promise<void> {
-    const handle = await navigator.crossOriginStorage!.requestFileHandle(
-      makeHash(key),
-      { create: true }
-    );
+    const handle = await navigator.crossOriginStorage!.requestFileHandle(makeHash(key), {
+      create: true,
+    });
     const writable = await (handle as any).createWritable();
     const reader = stream.getReader();
     try {
@@ -65,9 +60,7 @@ class COSInternalBackend implements StorageBackend {
   // IMPORTANT: key must be SHA-256 hash of the data
   async getSize(key: string): Promise<number> {
     try {
-      const handle = await navigator.crossOriginStorage!.requestFileHandle(
-        makeHash(key)
-      );
+      const handle = await navigator.crossOriginStorage!.requestFileHandle(makeHash(key));
       const file = await handle.getFile();
       return file.size;
     } catch {
@@ -76,11 +69,11 @@ class COSInternalBackend implements StorageBackend {
   }
 
   async list(): Promise<Array<{ key: string; size: number }>> {
-    throw new Error('not implemented');
+    throw new Error("not implemented");
   }
 
   async delete(_key: string): Promise<void> {
-    throw new Error('not implemented');
+    throw new Error("not implemented");
   }
 }
 
@@ -105,11 +98,7 @@ export class COSBackend implements StorageBackend {
     return this.priv.read(key);
   }
 
-  async write(
-    key: string,
-    stream: ReadableStream,
-    hint?: StorageFileHint
-  ): Promise<void> {
+  async write(key: string, stream: ReadableStream, hint?: StorageFileHint): Promise<void> {
     if (hint?.sha256 && this.cos.isSupported()) {
       await this.cos.write(hint.sha256, stream);
     } else {
@@ -141,15 +130,15 @@ export function mockCOS(): void {
   (navigator as any).crossOriginStorage = {
     async requestFileHandle(
       { value }: CrossOriginStorageRequestFileHandleHash,
-      options?: { create?: boolean }
+      options?: { create?: boolean },
     ): Promise<FileSystemFileHandle> {
       if (!options?.create && !store.has(value)) {
-        throw new DOMException('File not found', 'NotFoundError');
+        throw new DOMException("File not found", "NotFoundError");
       }
       return {
         getFile() {
           const blob = store.get(value);
-          if (!blob) throw new DOMException('File not found', 'NotFoundError');
+          if (!blob) throw new DOMException("File not found", "NotFoundError");
           return Promise.resolve(new File([blob], value));
         },
         createWritable() {

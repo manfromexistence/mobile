@@ -56,7 +56,7 @@ export function extractSystemMessagesToBody(payload: Record<string, unknown>) {
 export function normalizeClaudeUpstreamMessages(
   payload: Record<string, unknown>,
   options?: { preserveToolResultBlocks?: boolean },
-  log?: LoggerLike
+  log?: LoggerLike,
 ) {
   const preserveToolResultBlocks = options?.preserveToolResultBlocks === true;
   if (!Array.isArray(payload.messages)) return;
@@ -71,7 +71,7 @@ export function normalizeClaudeUpstreamMessages(
     if (Array.isArray(msg.content)) {
       msg.content = msg.content.filter(
         (block: ClaudeContentBlock) =>
-          block.type !== "text" || (typeof block.text === "string" && block.text.length > 0)
+          block.type !== "text" || (typeof block.text === "string" && block.text.length > 0),
       );
     }
   }
@@ -138,6 +138,6 @@ export function normalizeClaudeUpstreamMessages(
 
   // #2815: move stray tool_result blocks out of assistant messages.
   payload.messages = splitMisplacedToolResults(
-    payload.messages as ClaudeMessage[]
+    payload.messages as ClaudeMessage[],
   ) as unknown as Record<string, unknown>[];
 }

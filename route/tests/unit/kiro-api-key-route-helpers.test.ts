@@ -28,7 +28,7 @@ test("Kiro API key import classifies client validation failures as 400-class", (
   assert.equal(isKiroApiKeyImportClientError(new Error("Invalid region")), true);
   assert.equal(
     isKiroApiKeyImportClientError(new Error("Failed to list profiles: Invalid API key")),
-    true
+    true,
   );
 });
 

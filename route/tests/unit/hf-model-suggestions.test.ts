@@ -26,7 +26,7 @@ test("sortHfSuggestedModels: sorts descending by downloads (default)", () => {
   const result = sortHfSuggestedModels(models);
   assert.deepEqual(
     result.map((m) => m.id),
-    ["b/high", "c/mid", "a/low"]
+    ["b/high", "c/mid", "a/low"],
   );
 });
 
@@ -40,7 +40,7 @@ test("sortHfSuggestedModels: sorts descending by likes when requested", () => {
   const result = sortHfSuggestedModels(models, "likes");
   assert.deepEqual(
     result.map((m) => m.id),
-    ["a/low", "c/mid", "b/high"]
+    ["a/low", "c/mid", "b/high"],
   );
 });
 
@@ -55,7 +55,7 @@ test("sortHfSuggestedModels: caps results at the requested limit", () => {
   // Highest downloads (29..25) come first
   assert.deepEqual(
     result.map((m) => m.id),
-    ["model/29", "model/28", "model/27", "model/26", "model/25"]
+    ["model/29", "model/28", "model/27", "model/26", "model/25"],
   );
 });
 
@@ -70,7 +70,7 @@ test("sortHfSuggestedModels: drops entries without a usable string id", () => {
   const result = sortHfSuggestedModels(models);
   assert.deepEqual(
     result.map((m) => m.id),
-    ["valid/model"]
+    ["valid/model"],
   );
 });
 
@@ -84,7 +84,7 @@ test("sortHfSuggestedModels: treats missing/non-numeric metric values as 0 (no t
   const result = sortHfSuggestedModels(models, "downloads");
   assert.deepEqual(
     result.map((m) => m.id),
-    ["b/has-metric", "a/no-metric", "c/nan-metric"]
+    ["b/has-metric", "a/no-metric", "c/nan-metric"],
   );
 });
 

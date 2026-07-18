@@ -1,21 +1,21 @@
-import { json, action, useParams, createAsync, useSubmission } from "@solidjs/router"
-import { createEffect, Show } from "solid-js"
-import { createStore } from "solid-js/store"
-import { withActor } from "~/context/auth.withActor"
-import { Billing } from "@opencode-ai/console-core/billing.js"
-import styles from "./monthly-limit-section.module.css"
-import { queryBillingInfo } from "../../common"
-import { useI18n } from "~/context/i18n"
-import { formError, localizeError } from "~/lib/form-error"
+import { json, action, useParams, createAsync, useSubmission } from "@solidjs/router";
+import { createEffect, Show } from "solid-js";
+import { createStore } from "solid-js/store";
+import { withActor } from "~/context/auth.withActor";
+import { Billing } from "@opencode-ai/console-core/billing.js";
+import styles from "./monthly-limit-section.module.css";
+import { queryBillingInfo } from "../../common";
+import { useI18n } from "~/context/i18n";
+import { formError, localizeError } from "~/lib/form-error";
 
 const setMonthlyLimit = action(async (form: FormData) => {
-  "use server"
-  const limit = form.get("limit") as string | null
-  if (!limit) return { error: formError.limitRequired }
-  const numericLimit = parseInt(limit)
-  if (numericLimit < 0) return { error: formError.monthlyLimitInvalid }
-  const workspaceID = form.get("workspaceID") as string | null
-  if (!workspaceID) return { error: formError.workspaceRequired }
+  "use server";
+  const limit = form.get("limit") as string | null;
+  if (!limit) return { error: formError.limitRequired };
+  const numericLimit = parseInt(limit);
+  if (numericLimit < 0) return { error: formError.monthlyLimitInvalid };
+  const workspaceID = form.get("workspaceID") as string | null;
+  if (!workspaceID) return { error: formError.workspaceRequired };
   return json(
     await withActor(
       () =>
@@ -25,23 +25,23 @@ const setMonthlyLimit = action(async (form: FormData) => {
       workspaceID,
     ),
     { revalidate: queryBillingInfo.key },
-  )
-}, "billing.setMonthlyLimit")
+  );
+}, "billing.setMonthlyLimit");
 
 export function MonthlyLimitSection() {
-  const params = useParams()
-  const i18n = useI18n()
-  const submission = useSubmission(setMonthlyLimit)
-  const [store, setStore] = createStore({ show: false })
-  const billingInfo = createAsync(() => queryBillingInfo(params.id!))
+  const params = useParams();
+  const i18n = useI18n();
+  const submission = useSubmission(setMonthlyLimit);
+  const [store, setStore] = createStore({ show: false });
+  const billingInfo = createAsync(() => queryBillingInfo(params.id!));
 
-  let input: HTMLInputElement
+  let input: HTMLInputElement;
 
   createEffect(() => {
     if (!submission.pending && submission.result && !submission.result.error) {
-      hide()
+      hide();
     }
-  })
+  });
 
   function show() {
     // submission.clear() does not clear the result in some cases, ie.
@@ -50,15 +50,15 @@ export function MonthlyLimitSection() {
     //  3. Click add key button again => form shows with the same error if
     //     submission.clear() is called only once
     while (true) {
-      submission.clear()
-      if (!submission.result) break
+      submission.clear();
+      if (!submission.result) break;
     }
-    setStore("show", true)
-    input.focus()
+    setStore("show", true);
+    input.focus();
   }
 
   function hide() {
-    setStore("show", false)
+    setStore("show", false);
   }
 
   return (
@@ -120,26 +120,25 @@ export function MonthlyLimitSection() {
             {new Date().toLocaleDateString(undefined, { month: "long", timeZone: "UTC" })}{" "}
             {i18n.t("workspace.monthlyLimit.currentUsage.beforeAmount")}
             {(() => {
-              const dateLastUsed = billingInfo()?.timeMonthlyUsageUpdated
-              if (!dateLastUsed) return "0"
+              const dateLastUsed = billingInfo()?.timeMonthlyUsageUpdated;
+              if (!dateLastUsed) return "0";
 
               const current = new Date().toLocaleDateString(undefined, {
                 year: "numeric",
                 month: "long",
                 timeZone: "UTC",
-              })
+              });
               const lastUsed = dateLastUsed.toLocaleDateString(undefined, {
                 year: "numeric",
                 month: "long",
                 timeZone: "UTC",
-              })
-              if (current !== lastUsed) return "0"
-              return ((billingInfo()?.monthlyUsage ?? 0) / 100000000).toFixed(2)
-            })()}
-            .
+              });
+              if (current !== lastUsed) return "0";
+              return ((billingInfo()?.monthlyUsage ?? 0) / 100000000).toFixed(2);
+            })()}.
           </p>
         </Show>
       </div>
     </section>
-  )
+  );
 }

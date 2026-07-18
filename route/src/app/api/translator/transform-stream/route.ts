@@ -22,7 +22,7 @@ export async function POST(request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -41,7 +41,7 @@ export async function POST(request) {
         error:
           error instanceof Error ? error.message : "Failed to transform chat completions stream",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

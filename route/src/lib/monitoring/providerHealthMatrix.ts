@@ -165,7 +165,7 @@ function isTerminalConnection(connection: JsonRecord): boolean {
   const status = toString(connection.testStatus)?.toLowerCase();
   const errorType = toString(connection.lastErrorType)?.toLowerCase();
   return Boolean(
-    (status && TERMINAL_STATUSES.has(status)) || (errorType && TERMINAL_STATUSES.has(errorType))
+    (status && TERMINAL_STATUSES.has(status)) || (errorType && TERMINAL_STATUSES.has(errorType)),
   );
 }
 
@@ -208,7 +208,7 @@ function maxIso(left: string | null, right: string | null): string | null {
 
 function queryCallLogTargetStats(
   cutoff: string,
-  providerFilter: string | null
+  providerFilter: string | null,
 ): CallLogTargetStats[] {
   const db = getDbInstance();
   const providerClause = providerFilter ? "AND c.provider = @provider" : "";
@@ -278,7 +278,7 @@ function queryCallLogTargetStats(
         MAX(CASE WHEN latestRank = 1 THEN status ELSE NULL END) as lastStatus,
         MAX(CASE WHEN isError = 1 AND errorRank = 1 THEN status ELSE NULL END) as lastErrorStatus
       FROM ranked
-      GROUP BY provider, connectionId, model`
+      GROUP BY provider, connectionId, model`,
     )
     .all(params) as JsonRecord[];
 
@@ -301,7 +301,7 @@ function queryCallLogTargetStats(
 
 function classifyModel(
   stats: CallLogTargetStats | null,
-  locked: boolean
+  locked: boolean,
 ): ProviderModelHealthStatus {
   if (locked) return "locked";
   if (!stats || stats.requests === 0) return "idle";
@@ -314,7 +314,7 @@ function classifyModel(
 function classifyAccount(
   connection: JsonRecord | null,
   models: ProviderHealthMatrixModel[],
-  now: number
+  now: number,
 ): ProviderHealthState {
   if (connection) {
     if (!isActiveConnection(connection.isActive) || isTerminalConnection(connection)) return "down";
@@ -329,7 +329,7 @@ function classifyAccount(
 
 function classifyProvider(
   breaker: ProviderHealthMatrixProvider["circuitBreaker"],
-  accounts: ProviderHealthMatrixAccount[]
+  accounts: ProviderHealthMatrixAccount[],
 ): ProviderHealthState {
   if (breaker?.state === "OPEN") return "down";
   if (breaker?.state === "HALF_OPEN") return "degraded";
@@ -339,7 +339,7 @@ function classifyProvider(
 }
 
 export async function buildProviderHealthMatrix(
-  options: ProviderHealthMatrixOptions = {}
+  options: ProviderHealthMatrixOptions = {},
 ): Promise<ProviderHealthMatrixResponse> {
   const now = Date.now();
   const checkedAt = new Date(now).toISOString();
@@ -391,7 +391,7 @@ export async function buildProviderHealthMatrix(
   await Promise.all(
     [...providerIds].map(async (provider) => {
       syncedModelsByProvider.set(provider, await getSyncedAvailableModelsByConnection(provider));
-    })
+    }),
   );
 
   const statsByTarget = new Map<string, CallLogTargetStats>();
@@ -418,7 +418,7 @@ export async function buildProviderHealthMatrix(
   const providers: ProviderHealthMatrixProvider[] = [];
   for (const provider of [...providerIds].sort()) {
     const providerConnections = connectionRows.filter(
-      (connection) => toString(connection.provider) === provider
+      (connection) => toString(connection.provider) === provider,
     );
     const providerStats = stats.filter((row) => row.provider === provider);
     const providerBreaker = breakerRows.find((breaker) => toString(breaker.name) === provider);
@@ -524,7 +524,7 @@ export async function buildProviderHealthMatrix(
     const successes = providerStats.reduce((sum, row) => sum + row.successes, 0);
     const weightedLatency = providerStats.reduce(
       (sum, row) => sum + (row.avgLatencyMs ?? 0) * row.requests,
-      0
+      0,
     );
     const state = classifyProvider(circuitBreaker, accounts);
     const issueCount =
@@ -532,7 +532,7 @@ export async function buildProviderHealthMatrix(
       accounts.reduce((sum, account) => sum + account.issueCount, 0);
     const totalConnections = providerConnections.length;
     const activeConnections = providerConnections.filter((connection) =>
-      isActiveConnection(connection.isActive)
+      isActiveConnection(connection.isActive),
     ).length;
     const cooldownConnections = providerConnections.filter((connection) => {
       const until = parseTimeMs(connection.rateLimitedUntil);
@@ -557,7 +557,7 @@ export async function buildProviderHealthMatrix(
         active: activeConnections,
         cooldown: cooldownConnections,
         inactive: providerConnections.filter(
-          (connection) => !isActiveConnection(connection.isActive)
+          (connection) => !isActiveConnection(connection.isActive),
         ).length,
         terminal: terminalConnections,
       },
@@ -567,11 +567,11 @@ export async function buildProviderHealthMatrix(
       avgLatencyMs: requests > 0 ? Math.round(weightedLatency / requests) : null,
       lastRequestAt: providerStats.reduce<string | null>(
         (latest, row) => maxIso(latest, row.lastRequestAt),
-        null
+        null,
       ),
       lastErrorAt: providerStats.reduce<string | null>(
         (latest, row) => maxIso(latest, row.lastErrorAt),
-        null
+        null,
       ),
       issueCount,
       accounts,
@@ -595,7 +595,7 @@ export async function buildProviderHealthMatrix(
         (sum, provider) =>
           sum +
           provider.accounts.reduce((accountSum, account) => accountSum + account.modelCount, 0),
-        0
+        0,
       ),
       issueCount: providers.reduce((sum, provider) => sum + provider.issueCount, 0),
       healthyCount: providers.filter((provider) => provider.state === "healthy").length,

@@ -1,6 +1,6 @@
-import { describe, expect, test } from "bun:test"
-import { patchFiles } from "./apply-patch-file"
-import { text } from "./session-diff"
+import { describe, expect, test } from "bun:test";
+import { patchFiles } from "./apply-patch-file";
+import { text } from "./session-diff";
 
 describe("apply patch file", () => {
   test("parses patch metadata from the server", () => {
@@ -14,14 +14,14 @@ describe("apply patch file", () => {
         additions: 1,
         deletions: 1,
       },
-    ])[0]
+    ])[0];
 
-    expect(file).toBeDefined()
-    expect(file?.view.fileDiff.name).toBe("a.ts")
-    expect(file?.view.fileDiff.isPartial).toBe(false)
-    expect(text(file!.view, "deletions")).toBe("one\ntwo\n")
-    expect(text(file!.view, "additions")).toBe("one\nthree\n")
-  })
+    expect(file).toBeDefined();
+    expect(file?.view.fileDiff.name).toBe("a.ts");
+    expect(file?.view.fileDiff.isPartial).toBe(false);
+    expect(text(file!.view, "deletions")).toBe("one\ntwo\n");
+    expect(text(file!.view, "additions")).toBe("one\nthree\n");
+  });
 
   test("keeps legacy before and after payloads working", () => {
     const file = patchFiles([
@@ -34,10 +34,10 @@ describe("apply patch file", () => {
         additions: 1,
         deletions: 1,
       },
-    ])[0]
+    ])[0];
 
-    expect(file).toBeDefined()
-    expect(text(file!.view, "deletions")).toBe("one\n")
-    expect(text(file!.view, "additions")).toBe("two\n")
-  })
-})
+    expect(file).toBeDefined();
+    expect(text(file!.view, "deletions")).toBe("one\n");
+    expect(text(file!.view, "additions")).toBe("two\n");
+  });
+});

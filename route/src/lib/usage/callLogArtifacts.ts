@@ -196,7 +196,7 @@ function serializeArtifactForStorage(artifact: CallLogArtifact): string {
 
 export function writeCallArtifact(
   artifact: CallLogArtifact,
-  relativePath = buildArtifactRelativePath(artifact.summary.timestamp, artifact.summary.id)
+  relativePath = buildArtifactRelativePath(artifact.summary.timestamp, artifact.summary.id),
 ): CallLogArtifactWriteResult | null {
   if (!CALL_LOGS_DIR || isBuildPhase) return null;
 
@@ -314,7 +314,7 @@ export function listCallLogArtifactFiles(baseDir = CALL_LOGS_DIR) {
 }
 
 export function purgeCallLogArtifactDirectory(
-  baseDir = CALL_LOGS_DIR
+  baseDir = CALL_LOGS_DIR,
 ): PurgeCallLogArtifactDirectoryResult {
   const result = { deletedArtifacts: 0, errors: 0 };
   if (!baseDir || !fs.existsSync(baseDir)) return result;

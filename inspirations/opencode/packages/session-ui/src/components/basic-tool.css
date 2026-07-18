@@ -180,10 +180,7 @@
   border-radius: 6px;
   border: 0.5px solid var(--border-weak-base, rgba(255, 255, 255, 0.08));
   background: color-mix(in srgb, var(--background-base) 92%, transparent);
-  transition:
-    border-color 0.15s ease,
-    background-color 0.15s ease,
-    color 0.15s ease;
+  transition: border-color 0.15s ease, background-color 0.15s ease, color 0.15s ease;
 
   [data-slot="basic-tool-tool-info-structured"] {
     flex: 1 1 auto;
@@ -216,9 +213,7 @@
     color: var(--v2-text-text-faint);
     margin-left: auto;
     opacity: 0;
-    transition:
-      opacity 0.15s ease,
-      color 0.15s ease;
+    transition: opacity 0.15s ease, color 0.15s ease;
   }
 
   [data-component="task-tool-title"] {

@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Tag } from "./badge-v2"
+import { Tag } from "./badge-v2";
 
 const docs = `### Overview
 Small label tag for metadata and status chips.
@@ -23,7 +23,7 @@ Use alongside headings or lists for quick metadata.
 ### Theming/tokens
 - Uses \`data-component="tag"\`.
 
-`
+`;
 
 export default {
   title: "UI V2/Badge",
@@ -40,9 +40,9 @@ export default {
   args: {
     children: "Label",
   },
-}
+};
 
-export const Basic = {}
+export const Basic = {};
 
 export const HighContrast = {
   render: () => (
@@ -51,4 +51,4 @@ export const HighContrast = {
       <Tag data-high-contrast>Label</Tag>
     </div>
   ),
-}
+};

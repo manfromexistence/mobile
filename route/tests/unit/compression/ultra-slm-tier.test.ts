@@ -60,7 +60,7 @@ describe("ultra SLM tier — modelPath routes through llmlingua", () => {
     const result = await applyCompressionAsync(
       body(),
       "ultra",
-      ultraOpts({ modelPath: "/models/fake.onnx", compressionRate: 0.5 })
+      ultraOpts({ modelPath: "/models/fake.onnx", compressionRate: 0.5 }),
     );
     assert.equal(backendCalls > 0, true, "backend was consulted");
     assert.equal(result.compressed, true);
@@ -73,7 +73,7 @@ describe("ultra SLM tier — modelPath routes through llmlingua", () => {
     const result = await applyCompressionAsync(
       body(),
       "ultra",
-      ultraOpts({ modelPath: "/models/fake.onnx", slmFallbackToAggressive: true })
+      ultraOpts({ modelPath: "/models/fake.onnx", slmFallbackToAggressive: true }),
     );
     assert.ok(techniques(result.stats).includes("aggressive"), "fell back to aggressive");
     assert.ok(!techniques(result.stats).includes("ultra-slm"));
@@ -84,7 +84,7 @@ describe("ultra SLM tier — modelPath routes through llmlingua", () => {
     const result = await applyCompressionAsync(
       body(),
       "ultra",
-      ultraOpts({ modelPath: "/models/fake.onnx", slmFallbackToAggressive: false })
+      ultraOpts({ modelPath: "/models/fake.onnx", slmFallbackToAggressive: false }),
     );
     const techs = techniques(result.stats);
     assert.equal((result.stats as { mode?: string } | null)?.mode, "ultra");
@@ -145,7 +145,7 @@ test("ultraCompressHeuristic is a synchronous pure heuristic (no SLM)", () => {
   };
   const r = ultraCompressHeuristic(
     [{ role: "user", content: "the quick brown fox jumps over the lazy dog" }],
-    cfg
+    cfg,
   );
   assert.equal(r.stats.mode, "ultra");
   assert.equal(r.stats.ultraTier, "heuristic");
@@ -183,7 +183,7 @@ test("ultraEngine:'slm' with available stub backend records ultraTier:'slm'", as
         slmFallbackToAggressive: false,
         maxTokensPerMessage: 0,
         ultraEngine: "slm",
-      }
+      },
     );
     assert.equal(r.stats.ultraTier, "slm");
     assert.ok(r.stats.techniquesUsed.includes("ultra-slm"));
@@ -210,7 +210,7 @@ test("ultraEngine:'slm' but backend throws → ultraTier:'heuristic-fallback'", 
         slmFallbackToAggressive: false,
         maxTokensPerMessage: 0,
         ultraEngine: "slm",
-      }
+      },
     );
     assert.equal(r.stats.ultraTier, "heuristic-fallback");
   } finally {
@@ -274,7 +274,7 @@ import { ultraEngine } from "../../../open-sse/services/compression/engines/cave
 test("stacked ultraEngine.apply stays synchronous and compresses via heuristic", () => {
   const res = ultraEngine.apply(
     { messages: [{ role: "user", content: "the quick brown fox jumps over the lazy dog" }] },
-    { config: { ultra: { compressionRate: 0.5 } } as never }
+    { config: { ultra: { compressionRate: 0.5 } } as never },
   );
   // Synchronous result object (not a Promise), with a real stats record.
   assert.equal(typeof (res as { then?: unknown }).then, "undefined");

@@ -1,7 +1,7 @@
-import type { vec4 } from '../types.js';
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { declarePI, textureRandomizerR, colorBandingFix } from '../shader-utils.js';
+import type { vec4 } from "../types.js";
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { declarePI, textureRandomizerR, colorBandingFix } from "../shader-utils.js";
 
 export const smokeRingMeta = {
   maxColorCount: 10,
@@ -51,7 +51,7 @@ uniform float u_time;
 uniform sampler2D u_noiseTexture;
 
 uniform vec4 u_colorBack;
-uniform vec4 u_colors[${ smokeRingMeta.maxColorCount }];
+uniform vec4 u_colors[${smokeRingMeta.maxColorCount}];
 uniform float u_colorsCount;
 
 uniform float u_thickness;
@@ -64,8 +64,8 @@ in vec2 v_objectUV;
 
 out vec4 fragColor;
 
-${ declarePI }
-${ textureRandomizerR }
+${declarePI}
+${textureRandomizerR}
 float valueNoise(vec2 st) {
   vec2 i = floor(st);
   vec2 f = fract(st);
@@ -81,7 +81,7 @@ float valueNoise(vec2 st) {
 vec2 fbm(vec2 n0, vec2 n1) {
   vec2 total = vec2(0.0);
   float amplitude = .4;
-  for (int i = 0; i < ${ smokeRingMeta.maxNoiseIterations }; i++) {
+  for (int i = 0; i < ${smokeRingMeta.maxNoiseIterations}; i++) {
     if (i >= int(u_noiseIterations)) break;
     total.x += valueNoise(n0) * amplitude;
     total.y += valueNoise(n1) * amplitude;
@@ -141,7 +141,7 @@ void main() {
   int idxLast = int(u_colorsCount) - 1;
   vec4 gradient = u_colors[idxLast];
   gradient.rgb *= gradient.a;
-  for (int i = ${ smokeRingMeta.maxColorCount } - 2; i >= 0; i--) {
+  for (int i = ${smokeRingMeta.maxColorCount} - 2; i >= 0; i--) {
     float localT = clamp(mixer - float(idxLast - i - 1), 0., 1.);
     vec4 c = u_colors[i];
     c.rgb *= c.a;
@@ -155,7 +155,7 @@ void main() {
   color = color + bgColor * (1. - opacity);
   opacity = opacity + u_colorBack.a * (1. - opacity);
 
-  ${ colorBandingFix }
+  ${colorBandingFix}
 
   fragColor = vec4(color, opacity);
 }

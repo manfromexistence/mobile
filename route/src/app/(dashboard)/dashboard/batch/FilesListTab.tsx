@@ -217,7 +217,7 @@ export default function FilesListTab({
                   (b) =>
                     b.inputFileId === file.id ||
                     b.outputFileId === file.id ||
-                    b.errorFileId === file.id
+                    b.errorFileId === file.id,
                 );
                 const allTerminal = related.every((b) => TERMINAL_STATUSES.has(b.status));
                 const canDelete = related.length === 0 || allTerminal;

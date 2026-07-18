@@ -39,7 +39,7 @@ test("all safety finish reasons map to content_filter", () => {
     assert.equal(
       normalizeOpenAICompatibleFinishReason(reason),
       "content_filter",
-      `${reason} should map to content_filter`
+      `${reason} should map to content_filter`,
     );
   }
 });

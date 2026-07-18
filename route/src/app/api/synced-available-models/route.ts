@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     if (!(await isAuthenticated(request))) {
       return Response.json(
         { error: { message: "Authentication required", type: "invalid_api_key" } },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -27,7 +27,7 @@ export async function GET(request: Request) {
   } catch {
     return Response.json(
       { error: { message: "Failed to fetch synced available models", type: "server_error" } },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

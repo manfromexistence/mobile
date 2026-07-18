@@ -1,204 +1,204 @@
-import { createEffect, createMemo, createSignal, onCleanup, Show, type Ref } from "solid-js"
-import { makeEventListener } from "@solid-primitives/event-listener"
-import { createResizeObserver } from "@solid-primitives/resize-observer"
-import { IconButtonV2 } from "@opencode-ai/ui/v2/icon-button-v2"
-import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon"
-import { useGlobal } from "@/context/global"
-import { useLanguage } from "@/context/language"
-import { ServerConnection, serverName } from "@/context/server"
-import { displayName, projectForSession } from "@/pages/layout/helpers"
-import { SessionTabAvatar } from "@/pages/layout/session-tab-avatar"
-import { showToast } from "@/utils/toast"
-import type { Session } from "@opencode-ai/sdk/v2"
-import { canOpenTabRename, forwardTabRef } from "./titlebar-tab-gesture"
-import { TabPreviewPopover } from "./titlebar-tab-popover"
-import "./titlebar-tab-nav.css"
+import { createEffect, createMemo, createSignal, onCleanup, Show, type Ref } from "solid-js";
+import { makeEventListener } from "@solid-primitives/event-listener";
+import { createResizeObserver } from "@solid-primitives/resize-observer";
+import { IconButtonV2 } from "@opencode-ai/ui/v2/icon-button-v2";
+import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon";
+import { useGlobal } from "@/context/global";
+import { useLanguage } from "@/context/language";
+import { ServerConnection, serverName } from "@/context/server";
+import { displayName, projectForSession } from "@/pages/layout/helpers";
+import { SessionTabAvatar } from "@/pages/layout/session-tab-avatar";
+import { showToast } from "@/utils/toast";
+import type { Session } from "@opencode-ai/sdk/v2";
+import { canOpenTabRename, forwardTabRef } from "./titlebar-tab-gesture";
+import { TabPreviewPopover } from "./titlebar-tab-popover";
+import "./titlebar-tab-nav.css";
 
 // MouseEvent.button uses 1 for the middle/wheel button.
-const MIDDLE_MOUSE_BUTTON = 1
+const MIDDLE_MOUSE_BUTTON = 1;
 
 export function TabNavItem(props: {
-  ref?: Ref<HTMLDivElement>
-  href: string
-  server: ServerConnection.Key
-  session: () => Session | undefined
-  fallbackTitle?: string
-  onTitleChange?: (title: string) => void
-  onTitleChangeFailed?: (title: string) => void
-  onClose: () => void
-  onNavigate: () => void
-  active?: boolean
-  forceTruncate?: boolean
-  suppressNavigation?: () => boolean
-  dragging?: boolean
-  pressed?: boolean
-  hidden?: boolean
+  ref?: Ref<HTMLDivElement>;
+  href: string;
+  server: ServerConnection.Key;
+  session: () => Session | undefined;
+  fallbackTitle?: string;
+  onTitleChange?: (title: string) => void;
+  onTitleChangeFailed?: (title: string) => void;
+  onClose: () => void;
+  onNavigate: () => void;
+  active?: boolean;
+  forceTruncate?: boolean;
+  suppressNavigation?: () => boolean;
+  dragging?: boolean;
+  pressed?: boolean;
+  hidden?: boolean;
 }) {
-  const language = useLanguage()
-  const [editing, setEditing] = createSignal(false)
-  const [titleOverflowing, setTitleOverflowing] = createSignal(false)
-  let tabRoot!: HTMLDivElement
-  let titleEl!: HTMLSpanElement
-  let committing = false
-  let measureFrame: number | undefined
+  const language = useLanguage();
+  const [editing, setEditing] = createSignal(false);
+  const [titleOverflowing, setTitleOverflowing] = createSignal(false);
+  let tabRoot!: HTMLDivElement;
+  let titleEl!: HTMLSpanElement;
+  let committing = false;
+  let measureFrame: number | undefined;
 
   const closeTab = (event: MouseEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
-    props.onClose()
-  }
-  const global = useGlobal()
+    event.preventDefault();
+    event.stopPropagation();
+    props.onClose();
+  };
+  const global = useGlobal();
   const serverCtx = createMemo(() => {
-    const conn = global.servers.list().find((item) => ServerConnection.key(item) === props.server)
-    if (conn) return global.ensureServerCtx(conn)
-  })
+    const conn = global.servers.list().find((item) => ServerConnection.key(item) === props.server);
+    if (conn) return global.ensureServerCtx(conn);
+  });
   const project = createMemo(() => {
-    const session = props.session()
-    if (!session) return
-    return projectForSession(session, serverCtx()?.projects.list() ?? [])
-  })
-  const title = createMemo(() => props.session()?.title ?? props.fallbackTitle)
+    const session = props.session();
+    if (!session) return;
+    return projectForSession(session, serverCtx()?.projects.list() ?? []);
+  });
+  const title = createMemo(() => props.session()?.title ?? props.fallbackTitle);
 
   const projectName = createMemo(() => {
-    const session = props.session()
-    if (!session) return
-    return displayName(project() ?? { worktree: session.directory })
-  })
+    const session = props.session();
+    if (!session) return;
+    return displayName(project() ?? { worktree: session.directory });
+  });
   const previewPath = createMemo(() => {
-    const session = props.session()
-    if (!session) return
-    const home = serverCtx()?.sync.data.path.home
-    return home ? session.directory.replace(home, "~") : session.directory
-  })
+    const session = props.session();
+    if (!session) return;
+    const home = serverCtx()?.sync.data.path.home;
+    return home ? session.directory.replace(home, "~") : session.directory;
+  });
   // Only label the server when multiple servers are connected.
   const serverLabel = createMemo(() => {
-    if (global.servers.list().length <= 1) return
-    const conn = global.servers.list().find((item) => ServerConnection.key(item) === props.server)
-    return conn ? serverName(conn) : undefined
-  })
+    if (global.servers.list().length <= 1) return;
+    const conn = global.servers.list().find((item) => ServerConnection.key(item) === props.server);
+    return conn ? serverName(conn) : undefined;
+  });
 
-  const [popoverOpen, setPopoverOpen] = createSignal(false)
-  const previewBlocked = () => !!props.dragging || editing() || !!props.pressed || !props.session()
+  const [popoverOpen, setPopoverOpen] = createSignal(false);
+  const previewBlocked = () => !!props.dragging || editing() || !!props.pressed || !props.session();
 
   const measureTitleOverflow = () => {
     if (!titleEl || editing()) {
-      setTitleOverflowing(false)
-      return
+      setTitleOverflowing(false);
+      return;
     }
-    setTitleOverflowing(titleEl.scrollWidth > titleEl.clientWidth)
-  }
+    setTitleOverflowing(titleEl.scrollWidth > titleEl.clientWidth);
+  };
 
   const scheduleTitleOverflow = () => {
-    if (measureFrame !== undefined) return
+    if (measureFrame !== undefined) return;
     measureFrame = requestAnimationFrame(() => {
-      measureFrame = undefined
-      measureTitleOverflow()
-    })
-  }
+      measureFrame = undefined;
+      measureTitleOverflow();
+    });
+  };
 
   createEffect(() => {
-    title()
-    props.forceTruncate
-    editing()
-    scheduleTitleOverflow()
-  })
+    title();
+    props.forceTruncate;
+    editing();
+    scheduleTitleOverflow();
+  });
 
-  createResizeObserver(() => tabRoot, scheduleTitleOverflow)
+  createResizeObserver(() => tabRoot, scheduleTitleOverflow);
   onCleanup(() => {
-    if (measureFrame !== undefined) cancelAnimationFrame(measureFrame)
-  })
+    if (measureFrame !== undefined) cancelAnimationFrame(measureFrame);
+  });
 
   const selectTitle = () => {
-    const range = document.createRange()
-    range.selectNodeContents(titleEl)
-    const selection = window.getSelection()
-    selection?.removeAllRanges()
-    selection?.addRange(range)
-  }
+    const range = document.createRange();
+    range.selectNodeContents(titleEl);
+    const selection = window.getSelection();
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+  };
 
   const rename = async (title: string) => {
-    const ctx = serverCtx()
-    const session = props.session()
-    if (!ctx || !session) return
-    const client = ctx.sdk.createClient({ directory: session.directory, throwOnError: true })
-    await client.session.update({ sessionID: session.id, title })
-  }
+    const ctx = serverCtx();
+    const session = props.session();
+    if (!ctx || !session) return;
+    const client = ctx.sdk.createClient({ directory: session.directory, throwOnError: true });
+    await client.session.update({ sessionID: session.id, title });
+  };
 
   const closeRename = async (save: boolean) => {
-    if (committing || !editing()) return
-    committing = true
+    if (committing || !editing()) return;
+    committing = true;
 
-    const original = props.session()?.title ?? ""
-    const next = (titleEl.textContent ?? "").trim()
+    const original = props.session()?.title ?? "";
+    const next = (titleEl.textContent ?? "").trim();
 
-    titleEl.scrollLeft = 0
-    if (save && next && next !== original) props.onTitleChange?.(next)
-    setEditing(false)
+    titleEl.scrollLeft = 0;
+    if (save && next && next !== original) props.onTitleChange?.(next);
+    setEditing(false);
 
     if (!save || !next || next === original) {
-      committing = false
-      return
+      committing = false;
+      return;
     }
 
     try {
-      await rename(next)
+      await rename(next);
     } catch (err) {
-      props.onTitleChangeFailed?.(original)
+      props.onTitleChangeFailed?.(original);
       showToast({
         title: language.t("common.requestFailed"),
         description: err instanceof Error ? err.message : undefined,
-      })
+      });
     }
 
-    committing = false
-  }
+    committing = false;
+  };
 
   createEffect(() => {
-    if (editing()) return
-    if (!titleEl) return
-    const value = title()
-    if (value === undefined) return
-    titleEl.textContent = value
-  })
+    if (editing()) return;
+    if (!titleEl) return;
+    const value = title();
+    if (value === undefined) return;
+    titleEl.textContent = value;
+  });
 
   const openRename = (event: MouseEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
-    if (!canOpenTabRename(props.dragging, editing(), committing)) return
-    const session = props.session()
-    if (!session) return
-    titleEl.textContent = session.title
-    setEditing(true)
+    event.preventDefault();
+    event.stopPropagation();
+    if (!canOpenTabRename(props.dragging, editing(), committing)) return;
+    const session = props.session();
+    if (!session) return;
+    titleEl.textContent = session.title;
+    setEditing(true);
 
     requestAnimationFrame(() => {
-      titleEl.focus()
-      selectTitle()
-    })
-  }
+      titleEl.focus();
+      selectTitle();
+    });
+  };
 
   createEffect(() => {
-    if (!editing()) return
+    if (!editing()) return;
 
     const cleanup = makeEventListener(
       document,
       "pointerdown",
       (event) => {
-        const target = event.target
-        if (!(target instanceof Node)) return
-        if (tabRoot.contains(target)) return
-        void closeRename(true)
+        const target = event.target;
+        if (!(target instanceof Node)) return;
+        if (tabRoot.contains(target)) return;
+        void closeRename(true);
       },
       { capture: true },
-    )
+    );
 
-    onCleanup(cleanup)
-  })
+    onCleanup(cleanup);
+  });
 
   const tab = (
     <div
       ref={(el) => {
-        tabRoot = el
-        forwardTabRef(props.ref, el)
+        tabRoot = el;
+        forwardTabRef(props.ref, el);
       }}
       data-titlebar-tab
       data-slot="titlebar-tab-item"
@@ -210,13 +210,13 @@ export function TabNavItem(props: {
       data-dragging={props.dragging}
       data-pressed={props.pressed}
       onMouseDown={(event) => {
-        if (event.button !== MIDDLE_MOUSE_BUTTON) return
-        event.preventDefault()
-        event.stopPropagation()
+        if (event.button !== MIDDLE_MOUSE_BUTTON) return;
+        event.preventDefault();
+        event.stopPropagation();
       }}
       onAuxClick={(event) => {
-        if (event.button !== MIDDLE_MOUSE_BUTTON) return
-        closeTab(event)
+        if (event.button !== MIDDLE_MOUSE_BUTTON) return;
+        closeTab(event);
       }}
     >
       <Show when={title() !== undefined}>
@@ -226,23 +226,23 @@ export function TabNavItem(props: {
           href={props.href}
           draggable={false}
           onDragStart={(event) => {
-            event.preventDefault()
-            event.stopPropagation()
+            event.preventDefault();
+            event.stopPropagation();
           }}
           onMouseDown={(event) => {
             // Navigate on mousedown to shave the press-release delay off tab switches.
-            if (event.button !== 0) return
-            if (editing()) return
-            if (props.suppressNavigation?.()) return
-            props.onNavigate()
+            if (event.button !== 0) return;
+            if (editing()) return;
+            if (props.suppressNavigation?.()) return;
+            props.onNavigate();
           }}
           onClick={(event) => {
-            event.preventDefault()
+            event.preventDefault();
             // Mouse navigation already happened on mousedown; detail 0 means keyboard activation.
-            if (event.detail > 0) return
-            if (editing()) return
-            if (props.suppressNavigation?.()) return
-            props.onNavigate()
+            if (event.detail > 0) return;
+            if (editing()) return;
+            if (props.suppressNavigation?.()) return;
+            props.onNavigate();
           }}
           class="flex h-full min-w-0 flex-1 flex-row items-center gap-1.5 text-[13px] font-medium text-v2-text-text-faint group-data-[active='true']:text-v2-text-text-base group-data-[editing='true']:text-v2-text-text-base [-webkit-user-drag:none]"
         >
@@ -260,8 +260,8 @@ export function TabNavItem(props: {
           </Show>
           <span
             ref={(el) => {
-              titleEl = el
-              titleEl.textContent = title() ?? ""
+              titleEl = el;
+              titleEl.textContent = title() ?? "";
             }}
             data-slot="tab-title"
             data-titlebar-tab-title
@@ -273,53 +273,56 @@ export function TabNavItem(props: {
             contenteditable={editing() ? true : undefined}
             onDblClick={openRename}
             onKeyDown={(event) => {
-              event.stopPropagation()
+              event.stopPropagation();
               if (event.key === "Enter") {
-                event.preventDefault()
-                void closeRename(true)
-                return
+                event.preventDefault();
+                void closeRename(true);
+                return;
               }
-              if (event.key !== "Escape") return
-              event.preventDefault()
-              titleEl.textContent = props.session()?.title ?? ""
-              void closeRename(false)
+              if (event.key !== "Escape") return;
+              event.preventDefault();
+              titleEl.textContent = props.session()?.title ?? "";
+              void closeRename(false);
             }}
             onBlur={() => void closeRename(true)}
             onPointerDown={(event) => {
-              if (!editing()) return
-              event.stopPropagation()
+              if (!editing()) return;
+              event.stopPropagation();
             }}
             onClick={(event) => {
-              if (!editing()) return
-              event.preventDefault()
+              if (!editing()) return;
+              event.preventDefault();
             }}
           />
         </a>
       </Show>
 
-      <div data-slot="tab-close" class="group-hover:bg-[var(--tab-bg)] group-data-[active=true]:bg-[var(--tab-bg)]">
+      <div
+        data-slot="tab-close"
+        class="group-hover:bg-[var(--tab-bg)] group-data-[active=true]:bg-[var(--tab-bg)]"
+      >
         <IconButtonV2
           size="small"
           variant="ghost-muted"
           class="hover-reveal relative z-10 group-hover:opacity-100 group-data-[active=true]:opacity-100 group-data-[editing=true]:opacity-100"
           onPointerDown={(event) => {
-            event.preventDefault()
-            event.stopPropagation()
+            event.preventDefault();
+            event.stopPropagation();
           }}
           onClick={closeTab}
           icon={<IconV2 name="xmark-small" />}
         />
       </div>
     </div>
-  )
+  );
 
   return (
     <TabPreviewPopover
       trigger={tab}
       open={popoverOpen() && !previewBlocked()}
       onOpenChange={(value) => {
-        if (value && previewBlocked()) return
-        setPopoverOpen(value)
+        if (value && previewBlocked()) return;
+        setPopoverOpen(value);
       }}
       data={{
         projectName: projectName(),
@@ -328,26 +331,26 @@ export function TabNavItem(props: {
         serverName: serverLabel(),
       }}
     />
-  )
+  );
 }
 
 export function DraftTabItem(props: {
-  ref?: Ref<HTMLDivElement>
-  href: string
-  title: string
-  active?: boolean
-  onNavigate: () => void
-  onClose: () => void
-  suppressNavigation?: () => boolean
-  dragging?: boolean
-  pressed?: boolean
-  hidden?: boolean
+  ref?: Ref<HTMLDivElement>;
+  href: string;
+  title: string;
+  active?: boolean;
+  onNavigate: () => void;
+  onClose: () => void;
+  suppressNavigation?: () => boolean;
+  dragging?: boolean;
+  pressed?: boolean;
+  hidden?: boolean;
 }) {
   const closeTab = (event: MouseEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
-    props.onClose()
-  }
+    event.preventDefault();
+    event.stopPropagation();
+    props.onClose();
+  };
   return (
     <div
       ref={(el) => forwardTabRef(props.ref, el)}
@@ -359,13 +362,13 @@ export function DraftTabItem(props: {
       class="group relative flex h-7 w-full min-w-0 flex-row items-center gap-1.5 overflow-hidden rounded-[6px] bg-[var(--tab-bg)] px-1.5 [container-type:inline-size] whitespace-nowrap [--tab-bg:var(--v2-background-bg-deep)] hover:[--tab-bg:var(--v2-background-bg-layer-02)] has-[>a:focus-visible]:[--tab-bg:var(--v2-background-bg-layer-02)] data-[active='true']:[--tab-bg:var(--v2-background-bg-layer-02)] data-[dragging='true']:[--tab-bg:var(--v2-background-bg-layer-02)] data-[pressed='true']:[--tab-bg:var(--v2-background-bg-layer-02)] data-[editing='true']:[--tab-bg:var(--v2-background-bg-layer-02)]"
       classList={{ invisible: props.hidden }}
       onMouseDown={(event) => {
-        if (event.button !== MIDDLE_MOUSE_BUTTON) return
-        event.preventDefault()
-        event.stopPropagation()
+        if (event.button !== MIDDLE_MOUSE_BUTTON) return;
+        event.preventDefault();
+        event.stopPropagation();
       }}
       onAuxClick={(event) => {
-        if (event.button !== MIDDLE_MOUSE_BUTTON) return
-        closeTab(event)
+        if (event.button !== MIDDLE_MOUSE_BUTTON) return;
+        closeTab(event);
       }}
     >
       <a
@@ -374,21 +377,21 @@ export function DraftTabItem(props: {
         href={props.href}
         draggable={false}
         onDragStart={(event) => {
-          event.preventDefault()
-          event.stopPropagation()
+          event.preventDefault();
+          event.stopPropagation();
         }}
         onMouseDown={(event) => {
           // Navigate on mousedown to shave the press-release delay off tab switches.
-          if (event.button !== 0) return
-          if (props.suppressNavigation?.()) return
-          props.onNavigate()
+          if (event.button !== 0) return;
+          if (props.suppressNavigation?.()) return;
+          props.onNavigate();
         }}
         onClick={(event) => {
-          event.preventDefault()
+          event.preventDefault();
           // Mouse navigation already happened on mousedown; detail 0 means keyboard activation.
-          if (event.detail > 0) return
-          if (props.suppressNavigation?.()) return
-          props.onNavigate()
+          if (event.detail > 0) return;
+          if (props.suppressNavigation?.()) return;
+          props.onNavigate();
         }}
         class="flex h-full min-w-0 flex-1 flex-row items-center gap-1.5 text-[13px] font-medium text-v2-text-text-faint group-data-[active='true']:text-v2-text-text-base [-webkit-user-drag:none]"
       >
@@ -402,17 +405,20 @@ export function DraftTabItem(props: {
           {props.title}
         </span>
       </a>
-      <div data-slot="tab-close" class="group-hover:bg-[var(--tab-bg)] group-data-[active=true]:bg-[var(--tab-bg)]">
+      <div
+        data-slot="tab-close"
+        class="group-hover:bg-[var(--tab-bg)] group-data-[active=true]:bg-[var(--tab-bg)]"
+      >
         <IconButtonV2
           size="small"
           variant="ghost-muted"
           onPointerDown={(event) => {
-            event.preventDefault()
-            event.stopPropagation()
+            event.preventDefault();
+            event.stopPropagation();
           }}
           onMouseDown={(event) => {
-            event.preventDefault()
-            event.stopPropagation()
+            event.preventDefault();
+            event.stopPropagation();
           }}
           class="hover-reveal relative z-10 group-hover:opacity-100 group-data-[active=true]:opacity-100 group-data-[editing=true]:opacity-100"
           onClick={closeTab}
@@ -421,5 +427,5 @@ export function DraftTabItem(props: {
         />
       </div>
     </div>
-  )
+  );
 }

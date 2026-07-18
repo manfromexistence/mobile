@@ -1,15 +1,15 @@
-import { Database, eq } from "@opencode-ai/console-core/drizzle/index.js"
-import { ModelStickyProviderTable } from "@opencode-ai/console-core/schema/ip.sql.js"
+import { Database, eq } from "@opencode-ai/console-core/drizzle/index.js";
+import { ModelStickyProviderTable } from "@opencode-ai/console-core/schema/ip.sql.js";
 
 export function createStickyTracker(
   modelId: string,
   stickyProvider: "strict" | "prefer" | undefined,
   stickyId: string,
 ) {
-  if (!stickyProvider) return
-  if (!stickyId) return
-  const id = `${modelId}/${stickyId}`
-  let _providerId: string | undefined
+  if (!stickyProvider) return;
+  if (!stickyId) return;
+  const id = `${modelId}/${stickyId}`;
+  let _providerId: string | undefined;
 
   return {
     get: async () => {
@@ -21,12 +21,12 @@ export function createStickyTracker(
           .from(ModelStickyProviderTable)
           .where(eq(ModelStickyProviderTable.id, id))
           .limit(1),
-      )
-      _providerId = data[0]?.providerId
-      return _providerId
+      );
+      _providerId = data[0]?.providerId;
+      return _providerId;
     },
     set: async (providerId: string) => {
-      if (_providerId === providerId) return
+      if (_providerId === providerId) return;
 
       await Database.use((tx) =>
         tx
@@ -40,7 +40,7 @@ export function createStickyTracker(
               providerId,
             },
           }),
-      )
+      );
     },
-  }
+  };
 }

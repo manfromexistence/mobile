@@ -1,24 +1,24 @@
-import { Show, type JSX } from "solid-js"
-import { useLanguage } from "@/context/language"
-import { useSettings } from "@/context/settings"
-import { SessionPermissionDock } from "@/pages/session/composer/session-permission-dock"
-import { SessionQuestionDock } from "@/pages/session/composer/session-question-dock"
-import { SessionFollowupDock } from "@/pages/session/composer/session-followup-dock"
-import { SessionRevertDock } from "@/pages/session/composer/session-revert-dock"
-import { SessionTodoDock } from "@/pages/session/composer/session-todo-dock"
-import type { SessionComposerRegionController } from "./session-composer-region-controller"
+import { Show, type JSX } from "solid-js";
+import { useLanguage } from "@/context/language";
+import { useSettings } from "@/context/settings";
+import { SessionPermissionDock } from "@/pages/session/composer/session-permission-dock";
+import { SessionQuestionDock } from "@/pages/session/composer/session-question-dock";
+import { SessionFollowupDock } from "@/pages/session/composer/session-followup-dock";
+import { SessionRevertDock } from "@/pages/session/composer/session-revert-dock";
+import { SessionTodoDock } from "@/pages/session/composer/session-todo-dock";
+import type { SessionComposerRegionController } from "./session-composer-region-controller";
 
 export function SessionComposerRegion(props: {
-  controller: SessionComposerRegionController
-  promptInput: JSX.Element
+  controller: SessionComposerRegionController;
+  promptInput: JSX.Element;
 }) {
-  const language = useLanguage()
-  const controller = props.controller
-  const settings = useSettings()
+  const language = useLanguage();
+  const controller = props.controller;
+  const settings = useSettings();
   const rolled = () => {
-    const revert = controller.revert()
-    return revert?.items.length ? revert : undefined
-  }
+    const revert = controller.revert();
+    return revert?.items.length ? revert : undefined;
+  };
 
   return (
     <div
@@ -51,8 +51,8 @@ export function SessionComposerRegion(props: {
                 request={request}
                 responding={controller.state.permissionResponding()}
                 onDecide={(response) => {
-                  controller.onResponseSubmit()
-                  controller.state.decide(response)
+                  controller.onResponseSubmit();
+                  controller.state.decide(response);
                 }}
               />
             </div>
@@ -164,5 +164,5 @@ export function SessionComposerRegion(props: {
         </Show>
       </div>
     </div>
-  )
+  );
 }

@@ -80,13 +80,13 @@ export function normalizeMemorySettings(rawSettings: Record<string, unknown> = {
       rawSettings.memoryMaxTokens,
       DEFAULT_MEMORY_SETTINGS.maxTokens,
       0,
-      16000
+      16000,
     ),
     retentionDays: clampInteger(
       rawSettings.memoryRetentionDays,
       DEFAULT_MEMORY_SETTINGS.retentionDays,
       1,
-      365
+      365,
     ),
     strategy: normalizeStrategy(rawSettings.memoryStrategy),
     skillsEnabled: toBoolean(rawSettings.skillsEnabled, DEFAULT_MEMORY_SETTINGS.skillsEnabled),
@@ -94,24 +94,30 @@ export function normalizeMemorySettings(rawSettings: Record<string, unknown> = {
     embeddingSource: normalizeEmbeddingSource(rawSettings.memoryEmbeddingSource),
     embeddingProviderModel: normalizeNullableString(
       rawSettings.memoryEmbeddingProviderModel,
-      DEFAULT_MEMORY_SETTINGS.embeddingProviderModel
+      DEFAULT_MEMORY_SETTINGS.embeddingProviderModel,
     ),
     transformersEnabled: toBoolean(
       rawSettings.memoryTransformersEnabled,
-      DEFAULT_MEMORY_SETTINGS.transformersEnabled
+      DEFAULT_MEMORY_SETTINGS.transformersEnabled,
     ),
-    staticEnabled: toBoolean(rawSettings.memoryStaticEnabled, DEFAULT_MEMORY_SETTINGS.staticEnabled),
-    rerankEnabled: toBoolean(rawSettings.memoryRerankEnabled, DEFAULT_MEMORY_SETTINGS.rerankEnabled),
+    staticEnabled: toBoolean(
+      rawSettings.memoryStaticEnabled,
+      DEFAULT_MEMORY_SETTINGS.staticEnabled,
+    ),
+    rerankEnabled: toBoolean(
+      rawSettings.memoryRerankEnabled,
+      DEFAULT_MEMORY_SETTINGS.rerankEnabled,
+    ),
     rerankProviderModel: normalizeNullableString(
       rawSettings.memoryRerankProviderModel,
-      DEFAULT_MEMORY_SETTINGS.rerankProviderModel
+      DEFAULT_MEMORY_SETTINGS.rerankProviderModel,
     ),
     vectorStore: normalizeVectorStore(rawSettings.memoryVectorStore),
   };
 }
 
 export function toMemorySettingsUpdates(
-  settings: Partial<MemorySettings>
+  settings: Partial<MemorySettings>,
 ): Record<string, unknown> {
   const updates: Record<string, unknown> = {};
 
@@ -138,7 +144,7 @@ export function toMemorySettingsUpdates(
 
 export function toMemoryRetrievalConfig(
   settings: MemorySettings,
-  extra: { query?: string } = {}
+  extra: { query?: string } = {},
 ): Partial<MemoryConfig> & { query?: string } {
   const enabled = settings.enabled && settings.maxTokens > 0;
 

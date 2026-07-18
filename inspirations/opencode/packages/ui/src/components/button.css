@@ -173,11 +173,14 @@
   background-color: var(--surface-base-active);
 }
 
-[data-component="button"].titlebar-icon[data-variant="ghost"][aria-expanded="true"] [data-slot="icon-svg"] {
+[data-component="button"].titlebar-icon[data-variant="ghost"][aria-expanded="true"]
+  [data-slot="icon-svg"] {
   color: var(--icon-strong-base);
 }
 
-[data-component="button"].titlebar-icon[data-variant="ghost"][aria-expanded="true"]:hover:not(:disabled) {
+[data-component="button"].titlebar-icon[data-variant="ghost"][aria-expanded="true"]:hover:not(
+    :disabled
+  ) {
   background-color: var(--surface-base-active);
 }
 
@@ -185,10 +188,13 @@
   background-color: var(--surface-base-active);
 }
 
-[data-component="button"].titlebar-icon[data-variant="ghost"][aria-current="page"] [data-slot="icon-svg"] {
+[data-component="button"].titlebar-icon[data-variant="ghost"][aria-current="page"]
+  [data-slot="icon-svg"] {
   color: var(--icon-strong-base);
 }
 
-[data-component="button"].titlebar-icon[data-variant="ghost"][aria-current="page"]:hover:not(:disabled) {
+[data-component="button"].titlebar-icon[data-variant="ghost"][aria-current="page"]:hover:not(
+    :disabled
+  ) {
   background-color: var(--surface-base-active);
 }

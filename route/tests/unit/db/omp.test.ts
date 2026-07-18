@@ -15,11 +15,9 @@ import os from "node:os";
 import path from "node:path";
 import Database from "better-sqlite3";
 
-const {
-  getOmpCredentials,
-  saveOmpCredentials,
-  deleteOmpCredentials,
-} = await import("../../../src/lib/db/omp.ts");
+const { getOmpCredentials, saveOmpCredentials, deleteOmpCredentials } = await import(
+  "../../../src/lib/db/omp.ts"
+);
 
 const PROVIDER_ID = "omniroute";
 

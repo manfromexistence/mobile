@@ -1,5 +1,5 @@
-import { notFound } from 'next/navigation';
-import type { ReactNode } from 'react';
+import { notFound } from "next/navigation";
+import type { ReactNode } from "react";
 
 // Gates every route in the (diffs) group to the diffs build. Route groups are
 // not build or URL boundaries — Next compiles each group's routes into every
@@ -12,7 +12,7 @@ export default function DiffsGroupLayout({
 }: {
   children: ReactNode;
 }) {
-  if ((process.env.NEXT_PUBLIC_SITE ?? 'diffs') !== 'diffs') {
+  if ((process.env.NEXT_PUBLIC_SITE ?? "diffs") !== "diffs") {
     notFound();
   }
   return <>{children}</>;

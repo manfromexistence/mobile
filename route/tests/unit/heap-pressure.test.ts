@@ -44,7 +44,7 @@ describe("computeHeapPressureThresholdMb", () => {
       assert.equal(
         computeHeapPressureThresholdMb(2240, bad as string | number | null | undefined),
         1904,
-        `override ${JSON.stringify(bad)} must fall back to auto-calibration`
+        `override ${JSON.stringify(bad)} must fall back to auto-calibration`,
       );
     }
   });

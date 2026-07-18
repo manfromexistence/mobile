@@ -84,7 +84,7 @@ export class TlsClientHangError extends Error {
 async function raceWithTimeout<T>(
   promise: Promise<T>,
   timeoutMs: number,
-  signal: AbortSignal | null | undefined
+  signal: AbortSignal | null | undefined,
 ): Promise<T> {
   let timer: ReturnType<typeof setTimeout> | null = null;
   let abortListener: (() => void) | null = null;
@@ -95,8 +95,8 @@ async function raceWithTimeout<T>(
         timer = setTimeout(() => {
           reject(
             new TlsClientHangError(
-              `tls-client-node call exceeded ${timeoutMs}ms — native binding likely deadlocked`
-            )
+              `tls-client-node call exceeded ${timeoutMs}ms — native binding likely deadlocked`,
+            ),
           );
         }, timeoutMs);
       }),
@@ -110,7 +110,7 @@ async function raceWithTimeout<T>(
           }
           abortListener = () => reject(makeAbortError(signal));
           signal.addEventListener("abort", abortListener, { once: true });
-        })
+        }),
       );
     }
     return await Promise.race(racers);
@@ -145,7 +145,7 @@ async function getClient(): Promise<{
         const msg = err instanceof Error ? err.message : String(err);
         throw new TlsClientUnavailableError(
           `TLS impersonation client failed to start: ${msg}. ` +
-            `Verify tls-client-node is installed and its native binary downloaded.`
+            `Verify tls-client-node is installed and its native binary downloaded.`,
         );
       }
     })();
@@ -263,14 +263,14 @@ async function tlsFetchNonStreaming(
   client: { request: (url: string, opts: Record<string, unknown>) => Promise<TlsResponseLike> },
   url: string,
   requestOptions: Record<string, unknown>,
-  options: TlsFetchOptions
+  options: TlsFetchOptions,
 ): Promise<TlsFetchResult> {
   let tlsResponse: TlsResponseLike;
   try {
     tlsResponse = await raceWithTimeout(
       client.request(url, requestOptions),
       hardTimeoutMs(options),
-      options.signal ?? null
+      options.signal ?? null,
     );
   } catch (err) {
     if (err instanceof TlsClientHangError) resetClientCache();
@@ -291,7 +291,7 @@ async function tlsFetchNonStreaming(
  */
 export async function tlsFetchLMArena(
   url: string,
-  options: TlsFetchOptions = {}
+  options: TlsFetchOptions = {},
 ): Promise<TlsFetchResult> {
   if (testOverride) return testOverride(url, options);
   throwIfAborted(options.signal);
@@ -306,7 +306,7 @@ export async function tlsFetchLMArena(
       requestOptions,
       options.streamEofSymbol,
       options.signal ?? null,
-      hardTimeoutMs(options)
+      hardTimeoutMs(options),
     );
   }
   return tlsFetchNonStreaming(client, url, requestOptions, options);
@@ -340,7 +340,7 @@ function toHeaders(raw: Record<string, string[]>): Headers {
 export function isCloudflareChallenge(text: string | null | undefined): boolean {
   if (!text) return false;
   return /just a moment|window\._cf_chl_opt|challenges\.cloudflare\.com|attention required|cf-chl/i.test(
-    text
+    text,
   );
 }
 
@@ -355,7 +355,7 @@ async function tlsFetchStreaming(
   requestOptions: Record<string, unknown>,
   eofSymbol = "[DONE]",
   signal: AbortSignal | null = null,
-  hardTimeoutMs: number = DEFAULT_TIMEOUT_MS + HARD_TIMEOUT_GRACE_MS
+  hardTimeoutMs: number = DEFAULT_TIMEOUT_MS + HARD_TIMEOUT_GRACE_MS,
 ): Promise<TlsFetchResult> {
   const dir = await mkdtemp(join(tmpdir(), "LMArena-stream-"));
   const path = join(dir, `${randomUUID()}.ndjson`);
@@ -376,7 +376,7 @@ async function tlsFetchStreaming(
   const requestPromise = raceWithTimeout(
     client.request(url, streamOpts),
     hardTimeoutMs,
-    signal
+    signal,
   ).catch((err: unknown) => {
     if (resetOnHang && err instanceof TlsClientHangError) {
       resetClientCache();
@@ -392,7 +392,7 @@ async function tlsFetchStreaming(
   const ready = await waitForContent(path, 5_000, requestPromise);
   if (!ready) {
     const r = await requestPromise.catch(
-      (e) => ({ status: 502, headers: {}, body: String(e) }) as TlsResponseLike
+      (e) => ({ status: 502, headers: {}, body: String(e) }) as TlsResponseLike,
     );
     await cleanupTempPath(path);
     return {
@@ -466,7 +466,7 @@ async function readFirstBytes(path: string, n: number): Promise<string> {
 async function waitForContent(
   path: string,
   timeoutMs: number,
-  requestPromise: Promise<TlsResponseLike>
+  requestPromise: Promise<TlsResponseLike>,
 ): Promise<boolean> {
   let requestSettled = false;
   requestPromise.then(
@@ -475,7 +475,7 @@ async function waitForContent(
     },
     () => {
       requestSettled = true;
-    }
+    },
   );
   const start = Date.now();
   while (Date.now() - start < timeoutMs) {
@@ -497,7 +497,7 @@ async function waitForContent(
 function enqueueChunkMaybeEof(
   controller: ReadableStreamDefaultController<Uint8Array>,
   chunk: Buffer,
-  eofSymbol: string
+  eofSymbol: string,
 ): boolean {
   const text = chunk.toString("utf8");
   if (!text.includes(eofSymbol)) {
@@ -517,7 +517,7 @@ async function drainRemaining(
   buf: Buffer,
   offsetRef: { offset: number },
   controller: ReadableStreamDefaultController<Uint8Array>,
-  eofSymbol: string
+  eofSymbol: string,
 ): Promise<"closed" | "drained"> {
   while (true) {
     const { bytesRead } = await fd.read(buf, 0, buf.length, offsetRef.offset);
@@ -532,7 +532,7 @@ function tailFile(
   path: string,
   eofSymbol: string,
   done: Promise<TlsResponseLike>,
-  signal: AbortSignal | null = null
+  signal: AbortSignal | null = null,
 ): ReadableStream<Uint8Array> {
   return new ReadableStream<Uint8Array>({
     async start(controller) {
@@ -551,7 +551,7 @@ function tailFile(
         (err) => {
           upstreamError = err instanceof Error ? err : new Error(String(err));
           finished = true;
-        }
+        },
       );
 
       const onAbort = () => {

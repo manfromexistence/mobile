@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
         } catch (err) {
           const msg = err instanceof Error ? err.message : String(err);
           controller.enqueue(
-            encoder.encode(`event: error\ndata: ${JSON.stringify({ error: msg })}\n\n`)
+            encoder.encode(`event: error\ndata: ${JSON.stringify({ error: msg })}\n\n`),
           );
         }
       };

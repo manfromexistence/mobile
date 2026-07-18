@@ -13,7 +13,7 @@ export function useReplay() {
     try {
       const res = await fetch(
         `/api/tools/traffic-inspector/requests/${encodeURIComponent(req.id)}/replay`,
-        { method: "POST" }
+        { method: "POST" },
       );
       if (!res.ok) {
         const body = (await res.json().catch(() => ({}))) as { error?: { message?: string } };

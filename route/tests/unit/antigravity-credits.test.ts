@@ -25,7 +25,7 @@ describe("getAntigravityRemainingCredits / updateAntigravityRemainingCredits", (
     assert.equal(
       getAntigravityRemainingCredits(accountId),
       null,
-      "should return null before any update"
+      "should return null before any update",
     );
   });
 
@@ -48,7 +48,7 @@ describe("getAntigravityRemainingCredits / updateAntigravityRemainingCredits", (
     assert.equal(
       getAntigravityRemainingCredits(accountId),
       0,
-      "balance 0 must be stored and returned as 0"
+      "balance 0 must be stored and returned as 0",
     );
   });
 
@@ -78,7 +78,7 @@ describe("accountId key consistency: executor vs fetcher derivation", () => {
     assert.equal(
       executorAccountId,
       fetcherAccountId,
-      "accountId must match between executor and fetcher"
+      "accountId must match between executor and fetcher",
     );
   });
 
@@ -168,7 +168,7 @@ describe("SSE remainingCredits extraction logic", () => {
     assert.equal(
       getAntigravityRemainingCredits(accountId),
       null,
-      "balance should remain null when parsing yields NaN"
+      "balance should remain null when parsing yields NaN",
     );
   });
 });

@@ -62,7 +62,7 @@ const simulateRequestSchema = z
               provider: z.string().trim().min(1),
               model: z.string().trim().min(1),
               weight: z.number().optional(),
-            })
+            }),
           )
           .min(1),
       })
@@ -172,7 +172,7 @@ export async function POST(request: Request) {
     for (let i = 0; i < comboInfo.targets.length; i++) {
       const t = comboInfo.targets[i];
       const conn = connections.find(
-        (c: any) => c.id === t.provider || c.name === t.provider || c.displayName === t.provider
+        (c: any) => c.id === t.provider || c.name === t.provider || c.displayName === t.provider,
       );
       const cost = estimateCost(t.model, promptTokens);
       const latency = estimateLatency(t.model);

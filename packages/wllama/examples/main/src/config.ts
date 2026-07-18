@@ -1,26 +1,26 @@
 // See: https://vitejs.dev/guide/assets#explicit-url-imports
 
-import compatConfig from "virtual:wllama-compat"
-import wllamaPackageJson from "@wllama/wllama/package.json"
-import wllamaWasm from "@wllama/wllama/src/wasm/wllama.wasm?url"
-import type { InferenceParams } from "./utils/types"
+import compatConfig from "virtual:wllama-compat";
+import wllamaPackageJson from "@wllama/wllama/package.json";
+import wllamaWasm from "@wllama/wllama/src/wasm/wllama.wasm?url";
+import type { InferenceParams } from "./utils/types";
 
-export const WLLAMA_VERSION = wllamaPackageJson.version
+export const WLLAMA_VERSION = wllamaPackageJson.version;
 
 export const WLLAMA_CONFIG_PATHS = {
   default: wllamaWasm,
-}
+};
 
 // Either a local { wasm, worker } object (when compat package is built) or 'default' (CDN fallback)
-export const WLLAMA_COMPAT_CONFIG = compatConfig
+export const WLLAMA_COMPAT_CONFIG = compatConfig;
 
-export const MAX_GGUF_SIZE = 2 * 1024 * 1024 * 1024 // 2GB
+export const MAX_GGUF_SIZE = 2 * 1024 * 1024 * 1024; // 2GB
 
 export const LIST_MODELS: {
-  url: string
-  mmprojUrl?: string
-  size: number
-  modalities?: ("image" | "audio")[]
+  url: string;
+  mmprojUrl?: string;
+  size: number;
+  modalities?: ("image" | "audio")[];
 }[] = [
   {
     url: "https://huggingface.co/LiquidAI/LFM2.5-VL-450M-GGUF/resolve/main/LFM2.5-VL-450M-Q4_0.gguf",
@@ -93,7 +93,7 @@ export const LIST_MODELS: {
     url: "https://huggingface.co/ngxson/wllama-split-models/resolve/main/Meta-Llama-3.1-8B-Instruct-Q2_K-00001-of-00014.gguf",
     size: 3179138048,
   },
-]
+];
 
 export const DEFAULT_INFERENCE_PARAMS: InferenceParams = {
   nThreads: -1, // auto
@@ -101,4 +101,4 @@ export const DEFAULT_INFERENCE_PARAMS: InferenceParams = {
   nPredict: 4096,
   nBatch: 128,
   temperature: 0.2,
-}
+};

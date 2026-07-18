@@ -249,7 +249,7 @@ export function parseQuotedString(s: string): string {
     }
     if (s.charCodeAt(i) < 0x20) {
       throw new Error(
-        `invalid_escape: unescaped control U+${s.charCodeAt(i).toString(16).padStart(4, "0")}`
+        `invalid_escape: unescaped control U+${s.charCodeAt(i).toString(16).padStart(4, "0")}`,
       );
     }
     out += s[i];

@@ -1,5 +1,5 @@
-import { Effect } from "effect"
-import type { DatabaseMigration } from "../migration"
+import { Effect } from "effect";
+import type { DatabaseMigration } from "../migration";
 
 export default {
   id: "20260127222353_familiar_lady_ursula",
@@ -18,7 +18,7 @@ export default {
           \`time_initialized\` integer,
           \`sandboxes\` text NOT NULL
         );
-      `)
+      `);
       yield* tx.run(`
         CREATE TABLE \`message\` (
           \`id\` text PRIMARY KEY,
@@ -28,7 +28,7 @@ export default {
           \`data\` text NOT NULL,
           CONSTRAINT \`fk_message_session_id_session_id_fk\` FOREIGN KEY (\`session_id\`) REFERENCES \`session\`(\`id\`) ON DELETE CASCADE
         );
-      `)
+      `);
       yield* tx.run(`
         CREATE TABLE \`part\` (
           \`id\` text PRIMARY KEY,
@@ -39,7 +39,7 @@ export default {
           \`data\` text NOT NULL,
           CONSTRAINT \`fk_part_message_id_message_id_fk\` FOREIGN KEY (\`message_id\`) REFERENCES \`message\`(\`id\`) ON DELETE CASCADE
         );
-      `)
+      `);
       yield* tx.run(`
         CREATE TABLE \`permission\` (
           \`project_id\` text PRIMARY KEY,
@@ -48,7 +48,7 @@ export default {
           \`data\` text NOT NULL,
           CONSTRAINT \`fk_permission_project_id_project_id_fk\` FOREIGN KEY (\`project_id\`) REFERENCES \`project\`(\`id\`) ON DELETE CASCADE
         );
-      `)
+      `);
       yield* tx.run(`
         CREATE TABLE \`session\` (
           \`id\` text PRIMARY KEY,
@@ -71,7 +71,7 @@ export default {
           \`time_archived\` integer,
           CONSTRAINT \`fk_session_project_id_project_id_fk\` FOREIGN KEY (\`project_id\`) REFERENCES \`project\`(\`id\`) ON DELETE CASCADE
         );
-      `)
+      `);
       yield* tx.run(`
         CREATE TABLE \`todo\` (
           \`session_id\` text NOT NULL,
@@ -84,7 +84,7 @@ export default {
           CONSTRAINT \`todo_pk\` PRIMARY KEY(\`session_id\`, \`position\`),
           CONSTRAINT \`fk_todo_session_id_session_id_fk\` FOREIGN KEY (\`session_id\`) REFERENCES \`session\`(\`id\`) ON DELETE CASCADE
         );
-      `)
+      `);
       yield* tx.run(`
         CREATE TABLE \`session_share\` (
           \`session_id\` text PRIMARY KEY,
@@ -95,13 +95,13 @@ export default {
           \`time_updated\` integer NOT NULL,
           CONSTRAINT \`fk_session_share_session_id_session_id_fk\` FOREIGN KEY (\`session_id\`) REFERENCES \`session\`(\`id\`) ON DELETE CASCADE
         );
-      `)
-      yield* tx.run(`CREATE INDEX \`message_session_idx\` ON \`message\` (\`session_id\`);`)
-      yield* tx.run(`CREATE INDEX \`part_message_idx\` ON \`part\` (\`message_id\`);`)
-      yield* tx.run(`CREATE INDEX \`part_session_idx\` ON \`part\` (\`session_id\`);`)
-      yield* tx.run(`CREATE INDEX \`session_project_idx\` ON \`session\` (\`project_id\`);`)
-      yield* tx.run(`CREATE INDEX \`session_parent_idx\` ON \`session\` (\`parent_id\`);`)
-      yield* tx.run(`CREATE INDEX \`todo_session_idx\` ON \`todo\` (\`session_id\`);`)
-    })
+      `);
+      yield* tx.run(`CREATE INDEX \`message_session_idx\` ON \`message\` (\`session_id\`);`);
+      yield* tx.run(`CREATE INDEX \`part_message_idx\` ON \`part\` (\`message_id\`);`);
+      yield* tx.run(`CREATE INDEX \`part_session_idx\` ON \`part\` (\`session_id\`);`);
+      yield* tx.run(`CREATE INDEX \`session_project_idx\` ON \`session\` (\`project_id\`);`);
+      yield* tx.run(`CREATE INDEX \`session_parent_idx\` ON \`session\` (\`parent_id\`);`);
+      yield* tx.run(`CREATE INDEX \`todo_session_idx\` ON \`todo\` (\`session_id\`);`);
+    });
   },
-} satisfies DatabaseMigration.Migration
+} satisfies DatabaseMigration.Migration;

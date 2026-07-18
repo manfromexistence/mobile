@@ -47,7 +47,7 @@ test("Pixtral resolves supportsVision=true via model-id heuristic (no synced dat
 test("a text-only Mistral model is NOT a vision false-positive", () => {
   assert.notEqual(
     getResolvedModelCapabilities("mistral/ministral-14b-latest").supportsVision,
-    true
+    true,
   );
 });
 
@@ -88,7 +88,7 @@ test("image request: combo drops the non-vision target, keeps the vision target"
   const out = filterTargetsByRequestCompatibility(
     [target("mistral/pixtral-12b-latest"), target("mistral/ministral-14b-latest")],
     imageBody,
-    noopLog
+    noopLog,
   );
   const ids = out.map((t) => t.modelStr);
   assert.ok(ids.includes("mistral/pixtral-12b-latest"), "vision target must be kept");
@@ -99,7 +99,7 @@ test("image request with NO confirmed-vision target: keep all (fallback, no regr
   const out = filterTargetsByRequestCompatibility(
     [target("mistral/ministral-14b-latest"), target("groq/llama-3.1-8b-instant")],
     imageBody,
-    noopLog
+    noopLog,
   );
   assert.equal(out.length, 2, "must not strip every target when none is confirmed vision");
 });
@@ -108,7 +108,7 @@ test("text-only request: targets are untouched by the vision filter", () => {
   const out = filterTargetsByRequestCompatibility(
     [target("mistral/ministral-14b-latest")],
     { messages: [{ role: "user", content: "hello" }] },
-    noopLog
+    noopLog,
   );
   assert.equal(out.length, 1);
 });
@@ -117,7 +117,7 @@ test("large output request: unknown maxOutputTokens does not filter a target", (
   const out = filterTargetsByRequestCompatibility(
     [target("openai-compatible-local/custom-large-output-model"), target("openai/gpt-4o-mini")],
     { messages: [{ role: "user", content: "hello" }], max_tokens: 32000 },
-    noopLog
+    noopLog,
   );
   const ids = out.map((t) => t.modelStr);
 

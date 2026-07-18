@@ -15,7 +15,7 @@ const upstreamProxySchema = z.object({
 
 export async function GET(
   _request: Request,
-  { params }: { params: Promise<{ providerId: string }> }
+  { params }: { params: Promise<{ providerId: string }> },
 ) {
   const { providerId } = await params;
   if (!providerId) {
@@ -30,7 +30,7 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: Promise<{ providerId: string }> }
+  { params }: { params: Promise<{ providerId: string }> },
 ) {
   const { providerId } = await params;
   if (!providerId) {
@@ -56,7 +56,7 @@ export async function PUT(
 
 export async function DELETE(
   _request: Request,
-  { params }: { params: Promise<{ providerId: string }> }
+  { params }: { params: Promise<{ providerId: string }> },
 ) {
   const { providerId } = await params;
   if (!providerId) {

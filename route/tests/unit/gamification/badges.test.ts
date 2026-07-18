@@ -29,7 +29,7 @@ describe("Badge Definitions", () => {
       for (const badge of BUILTIN_BADGES) {
         assert.doesNotThrow(
           () => JSON.parse(badge.criteria),
-          `Badge ${badge.id} has invalid criteria JSON`
+          `Badge ${badge.id} has invalid criteria JSON`,
         );
       }
     });
@@ -57,7 +57,7 @@ describe("Badge Definitions", () => {
         assert.equal(
           criteria.type,
           "action_count",
-          `Badge ${badge.id} should have action_count type`
+          `Badge ${badge.id} should have action_count type`,
         );
         assert.ok(criteria.threshold > 0, `Badge ${badge.id} threshold should be positive`);
       }
@@ -79,7 +79,7 @@ describe("Badge Definitions", () => {
         assert.equal(
           criteria.type,
           "action_count",
-          `Badge ${badge.id} should have action_count type`
+          `Badge ${badge.id} should have action_count type`,
         );
       }
     });

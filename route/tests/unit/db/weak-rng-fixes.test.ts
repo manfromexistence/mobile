@@ -50,6 +50,6 @@ test("migrationRunner probe table format uses crypto.randomUUID", async () => {
   const probeName = `__omniroute_fts5_probe_${crypto.randomUUID().replace(/-/g, "_")}`;
   assert.match(
     probeName,
-    /^__omniroute_fts5_probe_[0-9a-f]{8}_[0-9a-f]{4}_[0-9a-f]{4}_[0-9a-f]{4}_[0-9a-f]{12}$/i
+    /^__omniroute_fts5_probe_[0-9a-f]{8}_[0-9a-f]{4}_[0-9a-f]{4}_[0-9a-f]{4}_[0-9a-f]{12}$/i,
   );
 });

@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
   type CSSProperties,
-  type ReactNode
+  type ReactNode,
 } from "react";
 import type { BundledLanguage } from "shiki/bundle/web";
 
@@ -98,7 +98,7 @@ const HEART_MATRIX_ACTIVE: ReadonlyArray<readonly [number, number]> = [
   [10, 16],
   [12, 16],
   [14, 16],
-  [12, 18]
+  [12, 18],
 ];
 
 export type MatrixDotIconProps = {
@@ -110,42 +110,53 @@ export type MatrixDotIconProps = {
 export function CopyClipboardIcon({ className, size = 18 }: MatrixDotIconProps) {
   const activeDots = new Set<string>([
     // top tab (M10 2H14) + cap (M8 4V6H16V4)
-    dotKey(10, 2), dotKey(12, 2), dotKey(14, 2),
-    dotKey(8, 4), dotKey(10, 4), dotKey(12, 4), dotKey(14, 4), dotKey(16, 4),
-    dotKey(8, 6), dotKey(10, 6), dotKey(12, 6), dotKey(14, 6), dotKey(16, 6),
+    dotKey(10, 2),
+    dotKey(12, 2),
+    dotKey(14, 2),
+    dotKey(8, 4),
+    dotKey(10, 4),
+    dotKey(12, 4),
+    dotKey(14, 4),
+    dotKey(16, 4),
+    dotKey(8, 6),
+    dotKey(10, 6),
+    dotKey(12, 6),
+    dotKey(14, 6),
+    dotKey(16, 6),
     // side rails (M4 5V20 and M20 5V20)
-    dotKey(4, 6), dotKey(4, 8), dotKey(4, 10), dotKey(4, 12), dotKey(4, 14), dotKey(4, 16), dotKey(4, 18), dotKey(4, 20),
-    dotKey(20, 6), dotKey(20, 8), dotKey(20, 10), dotKey(20, 12), dotKey(20, 14), dotKey(20, 16), dotKey(20, 18), dotKey(20, 20),
+    dotKey(4, 6),
+    dotKey(4, 8),
+    dotKey(4, 10),
+    dotKey(4, 12),
+    dotKey(4, 14),
+    dotKey(4, 16),
+    dotKey(4, 18),
+    dotKey(4, 20),
+    dotKey(20, 6),
+    dotKey(20, 8),
+    dotKey(20, 10),
+    dotKey(20, 12),
+    dotKey(20, 14),
+    dotKey(20, 16),
+    dotKey(20, 18),
+    dotKey(20, 20),
     // bottom rail (M18 22L6 22)
-    dotKey(6, 22), dotKey(8, 22), dotKey(10, 22), dotKey(12, 22), dotKey(14, 22), dotKey(16, 22), dotKey(18, 22)
+    dotKey(6, 22),
+    dotKey(8, 22),
+    dotKey(10, 22),
+    dotKey(12, 22),
+    dotKey(14, 22),
+    dotKey(16, 22),
+    dotKey(18, 22),
   ]);
 
   return (
-    <svg
-      className={className}
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      aria-hidden
-    >
+    <svg className={className} width={size} height={size} viewBox="0 0 24 24" aria-hidden>
       {ICON_DOT_GRID.map(([x, y]) => (
-        <circle
-          key={`${x}-${y}`}
-          cx={x}
-          cy={y}
-          r="0.7"
-          fill="currentColor"
-          opacity={0.1}
-        />
+        <circle key={`${x}-${y}`} cx={x} cy={y} r="0.7" fill="currentColor" opacity={0.1} />
       ))}
       {ICON_DOT_GRID.filter(([x, y]) => activeDots.has(dotKey(x, y))).map(([x, y]) => (
-        <circle
-          key={`active-${x}-${y}`}
-          cx={x}
-          cy={y}
-          r="0.8"
-          fill="currentColor"
-        />
+        <circle key={`active-${x}-${y}`} cx={x} cy={y} r="0.8" fill="currentColor" />
       ))}
     </svg>
   );
@@ -154,42 +165,57 @@ export function CopyClipboardIcon({ className, size = 18 }: MatrixDotIconProps) 
 export function CheckIcon({ className, size = 18 }: MatrixDotIconProps) {
   const activeDots = new Set<string>([
     // Clipboard shell
-    dotKey(10, 2), dotKey(12, 2), dotKey(14, 2),
-    dotKey(8, 4), dotKey(10, 4), dotKey(12, 4), dotKey(14, 4), dotKey(16, 4),
-    dotKey(8, 6), dotKey(10, 6), dotKey(12, 6), dotKey(14, 6), dotKey(16, 6),
-    dotKey(4, 6), dotKey(4, 8), dotKey(4, 10), dotKey(4, 12), dotKey(4, 14), dotKey(4, 16), dotKey(4, 18), dotKey(4, 20),
-    dotKey(20, 6), dotKey(20, 8), dotKey(20, 10), dotKey(20, 12), dotKey(20, 14), dotKey(20, 16), dotKey(20, 18), dotKey(20, 20),
-    dotKey(6, 22), dotKey(8, 22), dotKey(10, 22), dotKey(12, 22), dotKey(14, 22), dotKey(16, 22), dotKey(18, 22),
+    dotKey(10, 2),
+    dotKey(12, 2),
+    dotKey(14, 2),
+    dotKey(8, 4),
+    dotKey(10, 4),
+    dotKey(12, 4),
+    dotKey(14, 4),
+    dotKey(16, 4),
+    dotKey(8, 6),
+    dotKey(10, 6),
+    dotKey(12, 6),
+    dotKey(14, 6),
+    dotKey(16, 6),
+    dotKey(4, 6),
+    dotKey(4, 8),
+    dotKey(4, 10),
+    dotKey(4, 12),
+    dotKey(4, 14),
+    dotKey(4, 16),
+    dotKey(4, 18),
+    dotKey(4, 20),
+    dotKey(20, 6),
+    dotKey(20, 8),
+    dotKey(20, 10),
+    dotKey(20, 12),
+    dotKey(20, 14),
+    dotKey(20, 16),
+    dotKey(20, 18),
+    dotKey(20, 20),
+    dotKey(6, 22),
+    dotKey(8, 22),
+    dotKey(10, 22),
+    dotKey(12, 22),
+    dotKey(14, 22),
+    dotKey(16, 22),
+    dotKey(18, 22),
     // Inner success pattern (dot-matrix version of provided points)
-    dotKey(10, 18), dotKey(12, 16), dotKey(14, 14), dotKey(16, 12), dotKey(8, 16)
+    dotKey(10, 18),
+    dotKey(12, 16),
+    dotKey(14, 14),
+    dotKey(16, 12),
+    dotKey(8, 16),
   ]);
 
   return (
-    <svg
-      className={className}
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      aria-hidden
-    >
+    <svg className={className} width={size} height={size} viewBox="0 0 24 24" aria-hidden>
       {ICON_DOT_GRID.map(([x, y]) => (
-        <circle
-          key={`${x}-${y}`}
-          cx={x}
-          cy={y}
-          r="0.7"
-          fill="currentColor"
-          opacity={0.1}
-        />
+        <circle key={`${x}-${y}`} cx={x} cy={y} r="0.7" fill="currentColor" opacity={0.1} />
       ))}
       {ICON_DOT_GRID.filter(([x, y]) => activeDots.has(dotKey(x, y))).map(([x, y]) => (
-        <circle
-          key={`active-${x}-${y}`}
-          cx={x}
-          cy={y}
-          r="0.8"
-          fill="currentColor"
-        />
+        <circle key={`active-${x}-${y}`} cx={x} cy={y} r="0.8" fill="currentColor" />
       ))}
     </svg>
   );
@@ -197,45 +223,83 @@ export function CheckIcon({ className, size = 18 }: MatrixDotIconProps) {
 
 export function ThemeMatrixIcon({ className, size = 18 }: MatrixDotIconProps) {
   const activeDots = new Set<string>([
-    dotKey(2, 8), dotKey(2, 10), dotKey(2, 12), dotKey(2, 14), dotKey(2, 16),
-    dotKey(4, 6), dotKey(4, 8), dotKey(4, 10), dotKey(4, 12), dotKey(4, 14), dotKey(4, 16), dotKey(4, 18),
-    dotKey(6, 4), dotKey(6, 6), dotKey(6, 8), dotKey(6, 14), dotKey(6, 16), dotKey(6, 18), dotKey(6, 20),
-    dotKey(8, 2), dotKey(8, 4), dotKey(8, 6), dotKey(8, 16), dotKey(8, 18), dotKey(8, 20), dotKey(8, 22),
-    dotKey(10, 2), dotKey(10, 4), dotKey(10, 18), dotKey(10, 20), dotKey(10, 22),
-    dotKey(12, 2), dotKey(12, 6), dotKey(12, 8), dotKey(12, 10), dotKey(12, 12), dotKey(12, 14), dotKey(12, 16), dotKey(12, 18), dotKey(12, 22),
-    dotKey(14, 2), dotKey(14, 6), dotKey(14, 8), dotKey(14, 10), dotKey(14, 12), dotKey(14, 14), dotKey(14, 16), dotKey(14, 18), dotKey(14, 22),
-    dotKey(16, 2), dotKey(16, 8), dotKey(16, 10), dotKey(16, 12), dotKey(16, 14), dotKey(16, 16), dotKey(16, 22),
-    dotKey(18, 4), dotKey(18, 10), dotKey(18, 12), dotKey(18, 14), dotKey(18, 20),
-    dotKey(20, 6), dotKey(20, 18),
-    dotKey(22, 8), dotKey(22, 10), dotKey(22, 12), dotKey(22, 14), dotKey(22, 16)
+    dotKey(2, 8),
+    dotKey(2, 10),
+    dotKey(2, 12),
+    dotKey(2, 14),
+    dotKey(2, 16),
+    dotKey(4, 6),
+    dotKey(4, 8),
+    dotKey(4, 10),
+    dotKey(4, 12),
+    dotKey(4, 14),
+    dotKey(4, 16),
+    dotKey(4, 18),
+    dotKey(6, 4),
+    dotKey(6, 6),
+    dotKey(6, 8),
+    dotKey(6, 14),
+    dotKey(6, 16),
+    dotKey(6, 18),
+    dotKey(6, 20),
+    dotKey(8, 2),
+    dotKey(8, 4),
+    dotKey(8, 6),
+    dotKey(8, 16),
+    dotKey(8, 18),
+    dotKey(8, 20),
+    dotKey(8, 22),
+    dotKey(10, 2),
+    dotKey(10, 4),
+    dotKey(10, 18),
+    dotKey(10, 20),
+    dotKey(10, 22),
+    dotKey(12, 2),
+    dotKey(12, 6),
+    dotKey(12, 8),
+    dotKey(12, 10),
+    dotKey(12, 12),
+    dotKey(12, 14),
+    dotKey(12, 16),
+    dotKey(12, 18),
+    dotKey(12, 22),
+    dotKey(14, 2),
+    dotKey(14, 6),
+    dotKey(14, 8),
+    dotKey(14, 10),
+    dotKey(14, 12),
+    dotKey(14, 14),
+    dotKey(14, 16),
+    dotKey(14, 18),
+    dotKey(14, 22),
+    dotKey(16, 2),
+    dotKey(16, 8),
+    dotKey(16, 10),
+    dotKey(16, 12),
+    dotKey(16, 14),
+    dotKey(16, 16),
+    dotKey(16, 22),
+    dotKey(18, 4),
+    dotKey(18, 10),
+    dotKey(18, 12),
+    dotKey(18, 14),
+    dotKey(18, 20),
+    dotKey(20, 6),
+    dotKey(20, 18),
+    dotKey(22, 8),
+    dotKey(22, 10),
+    dotKey(22, 12),
+    dotKey(22, 14),
+    dotKey(22, 16),
   ]);
 
   return (
-    <svg
-      className={className}
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      aria-hidden
-    >
+    <svg className={className} width={size} height={size} viewBox="0 0 24 24" aria-hidden>
       {ICON_DOT_GRID.map(([x, y]) => (
-        <circle
-          key={`${x}-${y}`}
-          cx={x}
-          cy={y}
-          r="0.7"
-          fill="currentColor"
-          opacity={0.1}
-        />
+        <circle key={`${x}-${y}`} cx={x} cy={y} r="0.7" fill="currentColor" opacity={0.1} />
       ))}
       {ICON_DOT_GRID.filter(([x, y]) => activeDots.has(dotKey(x, y))).map(([x, y]) => (
-        <circle
-          key={`active-${x}-${y}`}
-          cx={x}
-          cy={y}
-          r="0.8"
-          fill="currentColor"
-        />
+        <circle key={`active-${x}-${y}`} cx={x} cy={y} r="0.8" fill="currentColor" />
       ))}
     </svg>
   );
@@ -284,35 +348,16 @@ export function HomeMatrixIcon({ className, size = 18 }: MatrixDotIconProps) {
     dotKey(12, 20),
     dotKey(14, 20),
     dotKey(16, 20),
-    dotKey(18, 20)
+    dotKey(18, 20),
   ]);
 
   return (
-    <svg
-      className={className}
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      aria-hidden
-    >
+    <svg className={className} width={size} height={size} viewBox="0 0 24 24" aria-hidden>
       {ICON_DOT_GRID.map(([x, y]) => (
-        <circle
-          key={`${x}-${y}`}
-          cx={x}
-          cy={y}
-          r="0.7"
-          fill="currentColor"
-          opacity={0.1}
-        />
+        <circle key={`${x}-${y}`} cx={x} cy={y} r="0.7" fill="currentColor" opacity={0.1} />
       ))}
       {ICON_DOT_GRID.filter(([x, y]) => activeDots.has(dotKey(x, y))).map(([x, y]) => (
-        <circle
-          key={`active-${x}-${y}`}
-          cx={x}
-          cy={y}
-          r="0.8"
-          fill="currentColor"
-        />
+        <circle key={`active-${x}-${y}`} cx={x} cy={y} r="0.8" fill="currentColor" />
       ))}
     </svg>
   );
@@ -324,23 +369,10 @@ export function HeartMatrixIcon({ className, size = 18 }: MatrixDotIconProps) {
 
   return (
     <span className={["dmx-root inline-flex", className].filter(Boolean).join(" ")}>
-      <svg
-        width={size}
-        height={size}
-        viewBox="0 0 24 24"
-        aria-hidden
-        className="block"
-      >
+      <svg width={size} height={size} viewBox="0 0 24 24" aria-hidden className="block">
         <g transform="translate(0, 1)">
           {ICON_DOT_GRID.map(([x, y]) => (
-            <circle
-              key={`${x}-${y}`}
-              cx={x}
-              cy={y}
-              r="0.7"
-              fill="currentColor"
-              opacity={0}
-            />
+            <circle key={`${x}-${y}`} cx={x} cy={y} r="0.7" fill="currentColor" opacity={0} />
           ))}
           {HEART_MATRIX_ACTIVE.map(([x, y]) => (
             <circle
@@ -363,7 +395,10 @@ export function HeartMatrixIcon({ className, size = 18 }: MatrixDotIconProps) {
   );
 }
 
-function PackageManagerTabIcon({ manager, className }: { manager: ShadcnPackageManager; className?: string }) {
+function PackageManagerTabIcon({
+  manager,
+  className,
+}: { manager: ShadcnPackageManager; className?: string }) {
   const c = className ?? "size-3 shrink-0";
   switch (manager) {
     case "npm":
@@ -441,7 +476,7 @@ function PackageManagerTabIcon({ manager, className }: { manager: ShadcnPackageM
 function MeasuredPackageManagerDotRail({
   managers,
   value,
-  onValueChange
+  onValueChange,
 }: {
   managers: readonly ShadcnPackageManager[];
   value: ShadcnPackageManager;
@@ -508,8 +543,11 @@ function MeasuredPackageManagerDotRail({
               role="tab"
               aria-selected={active}
               onClick={() => onValueChange(pm)}
-              className={`inline-flex items-center gap-1 rounded-md px-1 text-xs font-medium transition sm:text-[12px] ${active ? "theme-text-strong" : "theme-text-dim hover:text-(--color-fg-muted) focus-visible:outline-none! focus-visible:ring-0!"
-                }`}
+              className={`inline-flex items-center gap-1 rounded-md px-1 text-xs font-medium transition sm:text-[12px] ${
+                active
+                  ? "theme-text-strong"
+                  : "theme-text-dim hover:text-(--color-fg-muted) focus-visible:outline-none! focus-visible:ring-0!"
+              }`}
             >
               <PackageManagerTabIcon manager={pm} />
               {pm}
@@ -517,26 +555,23 @@ function MeasuredPackageManagerDotRail({
           );
         })}
       </div>
-      <div
-        className="relative w-full shrink-0"
-        style={{ height: PM_TAB_DOT_ROW_H }}
-        aria-hidden
-      >
+      <div className="relative w-full shrink-0" style={{ height: PM_TAB_DOT_ROW_H }} aria-hidden>
         {width > 0 && tabRanges.length === managers.length && dotCount > 0 && activeIndex >= 0
           ? Array.from({ length: dotCount }, (_, i) => {
-            const t = (i + 0.5) / dotCount;
-            const x = t * width;
-            const range = tabRanges[activeIndex]!;
-            const lit = x >= range[0] && x <= range[1];
-            return (
-              <span
-                key={i}
-                className={`absolute top-1/2 size-[2px] -translate-x-1/2 -translate-y-1/2 rounded-full transition-colors duration-200 ease-out ${lit ? "bg-(--color-dot-on)" : "bg-(--color-dot-off)"
+              const t = (i + 0.5) / dotCount;
+              const x = t * width;
+              const range = tabRanges[activeIndex]!;
+              const lit = x >= range[0] && x <= range[1];
+              return (
+                <span
+                  key={i}
+                  className={`absolute top-1/2 size-[2px] -translate-x-1/2 -translate-y-1/2 rounded-full transition-colors duration-200 ease-out ${
+                    lit ? "bg-(--color-dot-on)" : "bg-(--color-dot-off)"
                   }`}
-                style={{ left: `${t * 100}%` }}
-              />
-            );
-          })
+                  style={{ left: `${t * 100}%` }}
+                />
+              );
+            })
           : null}
       </div>
     </div>
@@ -616,7 +651,7 @@ function CodeBlockWithCopy({
   wrapperClassName,
   highlightLang,
   showCodeLineNumbers = true,
-  codeCollapsedMaxHeightClassName = CODE_COLLAPSED_MAX_DEFAULT
+  codeCollapsedMaxHeightClassName = CODE_COLLAPSED_MAX_DEFAULT,
 }: PackageManagerInstallCardCopyProps & {
   code: string;
   codeBlockClassName?: string;
@@ -657,9 +692,7 @@ function CodeBlockWithCopy({
   const codeEl = (
     <code
       className={
-        codeScrollClassName
-          ? "block min-w-0 whitespace-pre"
-          : "min-w-0 flex-1 whitespace-pre"
+        codeScrollClassName ? "block min-w-0 whitespace-pre" : "min-w-0 flex-1 whitespace-pre"
       }
     >
       {code}
@@ -681,7 +714,7 @@ function CodeBlockWithCopy({
       ? "bg-(--color-code-bg) theme-text"
       : "bg-(--color-shell) leading-relaxed theme-text",
     codeScrollClassName ? "min-h-0 items-stretch overflow-hidden" : "items-start overflow-x-auto",
-    codeBlockClassName
+    codeBlockClassName,
   ]
     .filter(Boolean)
     .join(" ");
@@ -697,11 +730,11 @@ function CodeBlockWithCopy({
         codeExpanded
           ? [CODE_EXPAND_MAX_HEIGHT_CLASS, "overflow-y-auto overflow-x-auto"].join(" ")
           : [
-            "!min-h-0",
-            codeCollapsedMaxHeightClassName,
-            // Beat `overflow-y-*` from `codeScrollClassName` (CSS: longhand can win over `overflow` shorthand).
-            "overflow-x-auto !overflow-y-hidden"
-          ].join(" ")
+              "!min-h-0",
+              codeCollapsedMaxHeightClassName,
+              // Beat `overflow-y-*` from `codeScrollClassName` (CSS: longhand can win over `overflow` shorthand).
+              "overflow-x-auto !overflow-y-hidden",
+            ].join(" "),
       ]
         .filter(Boolean)
         .join(" ")}
@@ -712,7 +745,7 @@ function CodeBlockWithCopy({
           <div
             className={[
               "pointer-events-none absolute inset-x-0 bottom-0 h-[80%] bg-linear-to-b from-transparent",
-              fadeToClass
+              fadeToClass,
             ].join(" ")}
             aria-hidden
           />
@@ -740,9 +773,7 @@ function CodeBlockWithCopy({
   const Tag = highlightLang ? "div" : "pre";
 
   return (
-    <div
-      className={["px-1 pb-1", wrapperClassName].filter(Boolean).join(" ")}
-    >
+    <div className={["px-1 pb-1", wrapperClassName].filter(Boolean).join(" ")}>
       <Tag className={rowClass} {...(highlightLang ? { role: "group" as const } : {})}>
         {scrollOrPlain}
         <button
@@ -751,7 +782,7 @@ function CodeBlockWithCopy({
           onClick={onCopy}
           className={[
             "relative inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-lg theme-text-strong transition-colors duration-150 ease-out",
-            codeScrollClassName ? "self-start" : ""
+            codeScrollClassName ? "self-start" : "",
           ]
             .filter(Boolean)
             .join(" ")}
@@ -772,11 +803,7 @@ function CodeBlockWithCopy({
                 transition={{ duration: 0.2, ease: [0.215, 0.61, 0.355, 1] }}
                 className="absolute inset-0 flex items-center justify-center"
               >
-                {copied ? (
-                  <CheckIcon className="" />
-                ) : (
-                  <CopyClipboardIcon className="" />
-                )}
+                {copied ? <CheckIcon className="" /> : <CopyClipboardIcon className="" />}
               </motion.span>
             </AnimatePresence>
           )}
@@ -802,23 +829,20 @@ export function TitledCodeCopyCard({
   copied,
   onCopy,
   copyAriaLabel = "Copy code",
-  copyAriaLabelCopied = "Copied"
+  copyAriaLabelCopied = "Copied",
 }: TitledCodeCopyCardProps) {
-  const headingClass =
-    titleClassName ??
-    "theme-text text-xs";
+  const headingClass = titleClassName ?? "theme-text text-xs";
 
   return (
     <div
-      className={[
-        "overflow-hidden rounded-lg bg-(--color-surface-soft)",
-        shellClassName
-      ]
+      className={["overflow-hidden rounded-lg bg-(--color-surface-soft)", shellClassName]
         .filter(Boolean)
         .join(" ")}
     >
       <div className="flex min-w-0 shrink-0 items-center justify-between gap-2 rounded-t-lg bg-(--color-surface-soft) py-1.5 pt-2.5 pl-3 pr-2.5">
-        <h3 className={["min-w-0 flex-1 truncate", headingClass].filter(Boolean).join(" ")}>{title}</h3>
+        <h3 className={["min-w-0 flex-1 truncate", headingClass].filter(Boolean).join(" ")}>
+          {title}
+        </h3>
         {titleEnd}
       </div>
       <CodeBlockWithCopy
@@ -842,13 +866,13 @@ export function PackageManagerInstallToolbar({
   value,
   onValueChange,
   managers = SHADCN_PACKAGE_MANAGERS,
-  className
+  className,
 }: PackageManagerInstallToolbarProps) {
   return (
     <div
       className={[
         "flex items-center gap-1 rounded-t-lg bg-(--color-surface-soft) px-3 py-1.5 pt-2.5",
-        className
+        className,
       ]
         .filter(Boolean)
         .join(" ")}
@@ -878,10 +902,7 @@ export function PackageManagerInstallCard({
 }: PackageManagerInstallCardProps) {
   return (
     <div
-      className={[
-        "overflow-hidden rounded-lg bg-(--color-surface-soft)",
-        shellClassName
-      ]
+      className={["overflow-hidden rounded-lg bg-(--color-surface-soft)", shellClassName]
         .filter(Boolean)
         .join(" ")}
     >

@@ -1,16 +1,13 @@
-import type { ElementContent, Element as HASTElement } from 'hast';
+import type { ElementContent, Element as HASTElement } from "hast";
 
-import { createHastElement } from './hast_utils';
+import { createHastElement } from "./hast_utils";
 
-export function createContentColumn(
-  children: ElementContent[],
-  rowCount: number
-): HASTElement {
+export function createContentColumn(children: ElementContent[], rowCount: number): HASTElement {
   return createHastElement({
-    tagName: 'div',
+    tagName: "div",
     children,
     properties: {
-      'data-content': '',
+      "data-content": "",
       style: `grid-row: span ${rowCount}`,
     },
   });

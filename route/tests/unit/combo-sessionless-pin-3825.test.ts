@@ -127,7 +127,7 @@ test("context_cache_protection ON + NO sessionId: combo re-pins to the same mode
   assert.deepEqual(
     calls,
     ["model-a", "model-b", "model-b"],
-    "turn 2 must re-pin to model-b (turn 1's selected model) and skip model-a"
+    "turn 2 must re-pin to model-b (turn 1's selected model) and skip model-a",
   );
 });
 
@@ -175,10 +175,10 @@ test("context_cache_protection OFF + NO sessionId: no pin, strategy re-runs each
   assert.deepEqual(
     calls,
     ["model-a", "model-b", "model-a", "model-b"],
-    "with protection OFF the combo must re-run strategy each turn (no sessionless pin)"
+    "with protection OFF the combo must re-run strategy each turn (no sessionless pin)",
   );
   assert.ok(
     forwardedContents.every((c) => !c.includes("<omniModel>")),
-    "no <omniModel> tag may be injected into the forwarded body (#454/#3399)"
+    "no <omniModel> tag may be injected into the forwarded body (#454/#3399)",
   );
 });

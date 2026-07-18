@@ -18,7 +18,7 @@ const COMPRESSED_PREFIX = "[COMPRESSED:";
  */
 async function mapTextContentAsync(
   msg: Message,
-  fn: (text: string) => Promise<string>
+  fn: (text: string) => Promise<string>,
 ): Promise<Message> {
   if (typeof msg.content === "string") {
     return { ...msg, content: await fn(msg.content) };
@@ -126,7 +126,10 @@ async function slmOrHeuristic(prose: string, cfg: UltraConfig): Promise<ProseSlm
     });
     return { text, usedSlm: true };
   } catch {
-    return { text: pruneByScore(prose, cfg.compressionRate, cfg.minScoreThreshold), usedSlm: false };
+    return {
+      text: pruneByScore(prose, cfg.compressionRate, cfg.minScoreThreshold),
+      usedSlm: false,
+    };
   }
 }
 
@@ -149,7 +152,7 @@ export type UltraTier = "slm" | "heuristic-fallback" | "heuristic";
 export function ultraCompressHeuristic(
   messages: Message[],
   config: Partial<UltraConfig> = {},
-  tier: UltraTier = "heuristic"
+  tier: UltraTier = "heuristic",
 ): UltraCompressResult {
   const start = Date.now();
   const effectiveConfig: UltraConfig = {
@@ -220,7 +223,7 @@ export function ultraCompressHeuristic(
  */
 export async function ultraCompress(
   messages: Message[],
-  config: Partial<UltraConfig> & { ultraEngine?: "heuristic" | "slm" } = {}
+  config: Partial<UltraConfig> & { ultraEngine?: "heuristic" | "slm" } = {},
 ): Promise<UltraCompressResult> {
   if (config.ultraEngine !== "slm" || !slmAvailable()) {
     return ultraCompressHeuristic(messages, config, "heuristic");

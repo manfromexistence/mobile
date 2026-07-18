@@ -8,12 +8,12 @@
  * prefers-color-scheme listener simply no-op) and hydrates on the client.
  */
 
-import type { ThemeCatalog } from './createThemeCatalog';
-import { createThemeResolver, type ThemeResolver } from './createThemeResolver';
-import type { ColorMode, ColorScheme, ThemeLike } from './types';
+import type { ThemeCatalog } from "./createThemeCatalog";
+import { createThemeResolver, type ThemeResolver } from "./createThemeResolver";
+import type { ColorMode, ColorScheme, ThemeLike } from "./types";
 
-const FALLBACK_LIGHT_THEME = 'pierre-light';
-const FALLBACK_DARK_THEME = 'pierre-dark';
+const FALLBACK_LIGHT_THEME = "pierre-light";
+const FALLBACK_DARK_THEME = "pierre-dark";
 
 export interface ThemeControllerState {
   darkThemeName: string;
@@ -73,10 +73,7 @@ export interface ThemeControllerBaseOptions {
   // Default false: only the active theme is resolved.
   preloadInactive?: boolean;
   // Receives active-theme resolution failures. Defaults to console.error.
-  onResolutionError?: (
-    error: unknown,
-    context: ThemeResolutionErrorContext
-  ) => void;
+  onResolutionError?: (error: unknown, context: ThemeResolutionErrorContext) => void;
   // Built-in localStorage persistence under this key (one JSON entry). Omit to
   // disable persistence, or pass `persistence` for a custom layout.
   storageKey?: string;
@@ -95,9 +92,7 @@ export interface ThemeControllerResolverOptions extends ThemeControllerBaseOptio
   resolver: ThemeResolver;
 }
 
-export type ThemeControllerOptions =
-  | ThemeControllerCatalogOptions
-  | ThemeControllerResolverOptions;
+export type ThemeControllerOptions = ThemeControllerCatalogOptions | ThemeControllerResolverOptions;
 
 // The user's persisted selection. Only this is stored — never the resolved
 // theme object, which is re-derived from the resolver on load.
@@ -116,17 +111,14 @@ export interface ThemePersistence {
 }
 
 type ActiveSelectionPatch = Partial<
-  Pick<
-    ThemeControllerState,
-    'darkThemeName' | 'lightThemeName' | 'mode' | 'resolvedColorScheme'
-  >
+  Pick<ThemeControllerState, "darkThemeName" | "lightThemeName" | "mode" | "resolvedColorScheme">
 >;
 
 // Reads window.localStorage defensively. Returns undefined on the server or if
 // storage access throws (e.g. disabled cookies / private mode).
 function getStorage(): Storage | undefined {
   try {
-    if (typeof globalThis !== 'undefined' && globalThis.localStorage != null) {
+    if (typeof globalThis !== "undefined" && globalThis.localStorage != null) {
       return globalThis.localStorage;
     }
   } catch {
@@ -140,7 +132,7 @@ function getStorage(): Storage | undefined {
 // need a different layout pass their own `persistence` adapter instead.
 function createLocalStorageAdapter(
   storageKey: string,
-  defaults: { darkThemeName: string; lightThemeName: string }
+  defaults: { darkThemeName: string; lightThemeName: string },
 ): ThemePersistence {
   return {
     load() {
@@ -175,8 +167,8 @@ function createLocalStorageAdapter(
 // light theme until the client can report otherwise.
 function systemPrefersDark(): boolean {
   try {
-    if (typeof globalThis !== 'undefined' && globalThis.matchMedia != null) {
-      return globalThis.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (typeof globalThis !== "undefined" && globalThis.matchMedia != null) {
+      return globalThis.matchMedia("(prefers-color-scheme: dark)").matches;
     }
   } catch {
     // Ignore — fall through to the light default.
@@ -187,36 +179,27 @@ function systemPrefersDark(): boolean {
 // Collapses a ColorMode to the concrete 'light'/'dark' color scheme that should
 // apply now, resolving 'system' against the OS preference.
 function resolveColorScheme(mode: ColorMode): ColorScheme {
-  if (mode === 'dark') return 'dark';
-  if (mode === 'light') return 'light';
-  return systemPrefersDark() ? 'dark' : 'light';
+  if (mode === "dark") return "dark";
+  if (mode === "light") return "light";
+  return systemPrefersDark() ? "dark" : "light";
 }
 
-export function createThemeController(
-  options: ThemeControllerOptions
-): ThemeController {
+export function createThemeController(options: ThemeControllerOptions): ThemeController {
   const { storageKey, preloadInactive = false } = options;
-  const catalog =
-    'catalog' in options && options.catalog != null
-      ? options.catalog
-      : undefined;
+  const catalog = "catalog" in options && options.catalog != null ? options.catalog : undefined;
   const selectedResolver =
     options.resolver ?? (catalog != null ? createThemeResolver() : undefined);
   if (selectedResolver == null) {
-    throw new Error('createThemeController requires a catalog or resolver');
+    throw new Error("createThemeController requires a catalog or resolver");
   }
   const resolver: ThemeResolver = selectedResolver;
 
   catalog?.registerInto(resolver);
 
   const defaultDarkThemeName =
-    options.defaultDarkThemeName ??
-    catalog?.defaultDarkThemeName ??
-    FALLBACK_DARK_THEME;
+    options.defaultDarkThemeName ?? catalog?.defaultDarkThemeName ?? FALLBACK_DARK_THEME;
   const defaultLightThemeName =
-    options.defaultLightThemeName ??
-    catalog?.defaultLightThemeName ??
-    FALLBACK_LIGHT_THEME;
+    options.defaultLightThemeName ?? catalog?.defaultLightThemeName ?? FALLBACK_LIGHT_THEME;
 
   // Custom adapter wins; otherwise fall back to the single-JSON-key localStorage
   // adapter when a storageKey is given; otherwise persistence is disabled.
@@ -229,7 +212,7 @@ export function createThemeController(
         })
       : undefined);
 
-  const initialMode = options.defaultMode ?? 'system';
+  const initialMode = options.defaultMode ?? "system";
   let state: ThemeControllerState = {
     darkThemeName: defaultDarkThemeName,
     lightThemeName: defaultLightThemeName,
@@ -274,28 +257,23 @@ export function createThemeController(
     lightThemeName: string;
     resolvedColorScheme: ColorScheme;
   }): string {
-    return selection.resolvedColorScheme === 'dark'
+    return selection.resolvedColorScheme === "dark"
       ? selection.darkThemeName
       : selection.lightThemeName;
   }
 
-  function intendedState(
-    patch: ActiveSelectionPatch = {}
-  ): ThemeControllerState {
+  function intendedState(patch: ActiveSelectionPatch = {}): ThemeControllerState {
     return { ...state, ...pendingSelectionPatch, ...patch };
   }
 
-  function reportResolutionError(
-    error: unknown,
-    context: ThemeResolutionErrorContext
-  ): void {
+  function reportResolutionError(error: unknown, context: ThemeResolutionErrorContext): void {
     if (options.onResolutionError != null) {
       options.onResolutionError(error, context);
       return;
     }
     console.error(
       `[theming] Failed to resolve theme "${context.name}" for ${context.colorScheme} color scheme`,
-      error
+      error,
     );
   }
 
@@ -308,13 +286,8 @@ export function createThemeController(
 
     const activeName = activeThemeNameFor(selection);
     const inactive =
-      selection.resolvedColorScheme === 'dark'
-        ? selection.lightThemeName
-        : selection.darkThemeName;
-    if (
-      inactive !== activeName &&
-      resolver.getResolvedTheme(inactive) === undefined
-    ) {
+      selection.resolvedColorScheme === "dark" ? selection.lightThemeName : selection.darkThemeName;
+    if (inactive !== activeName && resolver.getResolvedTheme(inactive) === undefined) {
       void resolver.resolveTheme(inactive).catch(() => {});
     }
   }
@@ -325,7 +298,7 @@ export function createThemeController(
   // with the previous theme's derived tokens.
   function resolveActive(
     patch: ActiveSelectionPatch = {},
-    { notifyPending = false, persistOnSuccess = false } = {}
+    { notifyPending = false, persistOnSuccess = false } = {},
   ): void {
     const selectionPatch = { ...pendingSelectionPatch, ...patch };
     const next = intendedState(patch);
@@ -395,10 +368,7 @@ export function createThemeController(
       });
   }
 
-  function updateInactiveThemeName(
-    key: 'darkThemeName' | 'lightThemeName',
-    name: string
-  ): void {
+  function updateInactiveThemeName(key: "darkThemeName" | "lightThemeName", name: string): void {
     state = { ...state, [key]: name, resolutionError: undefined };
     persist();
     notify();
@@ -407,7 +377,7 @@ export function createThemeController(
 
   function isSchemeActiveInIntendedState(
     scheme: ColorScheme,
-    patch: ActiveSelectionPatch = {}
+    patch: ActiveSelectionPatch = {},
   ): boolean {
     return intendedState(patch).resolvedColorScheme === scheme;
   }
@@ -418,8 +388,8 @@ export function createThemeController(
 
   function setInactiveThemeName(
     scheme: ColorScheme,
-    key: 'darkThemeName' | 'lightThemeName',
-    name: string
+    key: "darkThemeName" | "lightThemeName",
+    name: string,
   ): void {
     if (isSchemeActiveInIntendedState(scheme, { [key]: name })) {
       setActiveSelection({ [key]: name });
@@ -434,16 +404,16 @@ export function createThemeController(
   }
 
   function maybeUpdateSystemColorScheme(): void {
-    if (intendedState().mode !== 'system') return;
-    const next = resolveColorScheme('system');
+    if (intendedState().mode !== "system") return;
+    const next = resolveColorScheme("system");
     if (next !== intendedState().resolvedColorScheme) {
       resolveActive({ resolvedColorScheme: next }, { notifyPending: true });
     }
   }
 
   function isSelectedValue(
-    key: 'darkThemeName' | 'lightThemeName' | 'mode',
-    value: string
+    key: "darkThemeName" | "lightThemeName" | "mode",
+    value: string,
   ): boolean {
     return intendedState()[key] === value;
   }
@@ -457,9 +427,9 @@ export function createThemeController(
   };
   function attachMediaListener(): void {
     try {
-      if (typeof globalThis !== 'undefined' && globalThis.matchMedia != null) {
-        mediaQuery = globalThis.matchMedia('(prefers-color-scheme: dark)');
-        mediaQuery.addEventListener('change', handleMediaChange);
+      if (typeof globalThis !== "undefined" && globalThis.matchMedia != null) {
+        mediaQuery = globalThis.matchMedia("(prefers-color-scheme: dark)");
+        mediaQuery.addEventListener("change", handleMediaChange);
       }
     } catch {
       // No matchMedia (server / unsupported) — system mode falls back to light.
@@ -474,7 +444,7 @@ export function createThemeController(
     resolver,
     destroy() {
       if (mediaQuery != null) {
-        mediaQuery.removeEventListener('change', handleMediaChange);
+        mediaQuery.removeEventListener("change", handleMediaChange);
         mediaQuery = undefined;
       }
       listeners.clear();
@@ -483,11 +453,11 @@ export function createThemeController(
       return state;
     },
     setColorMode(mode) {
-      if (isSelectedValue('mode', mode)) return;
+      if (isSelectedValue("mode", mode)) return;
       setMode(mode);
     },
     setThemeNameForScheme(scheme, name) {
-      const key = scheme === 'light' ? 'lightThemeName' : 'darkThemeName';
+      const key = scheme === "light" ? "lightThemeName" : "darkThemeName";
       if (isSelectedValue(key, name)) return;
       setInactiveThemeName(scheme, key, name);
     },

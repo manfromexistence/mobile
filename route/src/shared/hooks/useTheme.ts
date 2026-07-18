@@ -29,7 +29,7 @@ export function useTheme() {
   const systemPrefersDark = useSyncExternalStore(
     subscribeToSystemTheme,
     getSystemThemeSnapshot,
-    getServerSnapshot
+    getServerSnapshot,
   );
 
   useEffect(() => {

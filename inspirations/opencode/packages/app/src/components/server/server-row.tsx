@@ -1,5 +1,5 @@
-import { Tooltip } from "@opencode-ai/ui/tooltip"
-import { createResizeObserver } from "@solid-primitives/resize-observer"
+import { Tooltip } from "@opencode-ai/ui/tooltip";
+import { createResizeObserver } from "@solid-primitives/resize-observer";
 import {
   children,
   createEffect,
@@ -9,47 +9,47 @@ import {
   onMount,
   type ParentProps,
   Show,
-} from "solid-js"
-import { useLanguage } from "@/context/language"
-import { type ServerConnection, serverName } from "@/context/server"
-import type { ServerHealth } from "@/utils/server-health"
+} from "solid-js";
+import { useLanguage } from "@/context/language";
+import { type ServerConnection, serverName } from "@/context/server";
+import type { ServerHealth } from "@/utils/server-health";
 
 interface ServerRowProps extends ParentProps {
-  conn: ServerConnection.Any
-  status?: ServerHealth
-  class?: string
-  nameClass?: string
-  versionClass?: string
-  dimmed?: boolean
-  badge?: JSXElement
-  showCredentials?: boolean
+  conn: ServerConnection.Any;
+  status?: ServerHealth;
+  class?: string;
+  nameClass?: string;
+  versionClass?: string;
+  dimmed?: boolean;
+  badge?: JSXElement;
+  showCredentials?: boolean;
 }
 
 export function ServerRow(props: ServerRowProps) {
-  const language = useLanguage()
-  const [truncated, setTruncated] = createSignal(false)
-  let nameRef: HTMLSpanElement | undefined
-  let versionRef: HTMLSpanElement | undefined
-  const name = createMemo(() => serverName(props.conn))
+  const language = useLanguage();
+  const [truncated, setTruncated] = createSignal(false);
+  let nameRef: HTMLSpanElement | undefined;
+  let versionRef: HTMLSpanElement | undefined;
+  const name = createMemo(() => serverName(props.conn));
 
   const check = () => {
-    const nameTruncated = nameRef ? nameRef.scrollWidth > nameRef.clientWidth : false
-    const versionTruncated = versionRef ? versionRef.scrollWidth > versionRef.clientWidth : false
-    setTruncated(nameTruncated || versionTruncated)
-  }
+    const nameTruncated = nameRef ? nameRef.scrollWidth > nameRef.clientWidth : false;
+    const versionTruncated = versionRef ? versionRef.scrollWidth > versionRef.clientWidth : false;
+    setTruncated(nameTruncated || versionTruncated);
+  };
 
   createEffect(() => {
-    name()
-    props.conn.http.url
-    props.status?.version
-    queueMicrotask(check)
-  })
+    name();
+    props.conn.http.url;
+    props.status?.version;
+    queueMicrotask(check);
+  });
 
   onMount(() => {
-    if (typeof ResizeObserver !== "function") return
-    createResizeObserver([nameRef, versionRef], check)
-    check()
-  })
+    if (typeof ResizeObserver !== "function") return;
+    createResizeObserver([nameRef, versionRef], check);
+    check();
+  });
 
   const tooltipValue = () => (
     <span class="flex items-center gap-2">
@@ -58,9 +58,9 @@ export function ServerRow(props: ServerRowProps) {
         <span class="text-text-invert-weak">v{props.status?.version}</span>
       </Show>
     </span>
-  )
+  );
 
-  const badge = children(() => props.badge)
+  const badge = children(() => props.badge);
 
   return (
     <Tooltip
@@ -110,7 +110,7 @@ export function ServerRow(props: ServerRowProps) {
         {props.children}
       </div>
     </Tooltip>
-  )
+  );
 }
 
 export function ServerHealthIndicator(props: { health?: ServerHealth }) {
@@ -123,5 +123,5 @@ export function ServerHealthIndicator(props: { health?: ServerHealth }) {
         "bg-border-weak-base": props.health === undefined,
       }}
     />
-  )
+  );
 }

@@ -9,8 +9,9 @@ import assert from "node:assert/strict";
 
 describe("AutoStartToggle — module shape", () => {
   it("exports AutoStartToggle function", async () => {
-    const mod =
-      await import("../../../../../src/app/(dashboard)/dashboard/providers/services/components/AutoStartToggle.tsx");
+    const mod = await import(
+      "../../../../../src/app/(dashboard)/dashboard/providers/services/components/AutoStartToggle.tsx"
+    );
     assert.equal(typeof mod.AutoStartToggle, "function");
   });
 });

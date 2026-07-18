@@ -87,7 +87,7 @@ test("parseOmniRoutePluginOptions: unknown features key → throws (strict)", ()
       parseOmniRoutePluginOptions({
         features: { combos: true, unknown_field: "oops" },
       }),
-    /Invalid @omniroute\/opencode-plugin options/
+    /Invalid @omniroute\/opencode-plugin options/,
   );
 });
 
@@ -97,14 +97,14 @@ test("parseOmniRoutePluginOptions: non-boolean for boolean feature → throws", 
       parseOmniRoutePluginOptions({
         features: { combos: "yes" as unknown as boolean },
       }),
-    /Invalid @omniroute\/opencode-plugin options/
+    /Invalid @omniroute\/opencode-plugin options/,
   );
 });
 
 test("parseOmniRoutePluginOptions: empty mcpToken → throws (min 1)", () => {
   assert.throws(
     () => parseOmniRoutePluginOptions({ features: { mcpToken: "" } }),
-    /Invalid @omniroute\/opencode-plugin options/
+    /Invalid @omniroute\/opencode-plugin options/,
   );
 });
 
@@ -284,7 +284,7 @@ test("formatCompressionPipeline: empty pipeline → empty string", () => {
 test("formatCompressionPipeline: single step with intensity → emoji", () => {
   assert.equal(
     formatCompressionPipeline([{ engine: "caveman", intensity: "full" }]),
-    "[caveman\u{1F7E0}]"
+    "[caveman\u{1F7E0}]",
   );
 });
 
@@ -294,7 +294,7 @@ test("formatCompressionPipeline: multi-step pipeline → emoji per step", () => 
       { engine: "rtk", intensity: "standard" },
       { engine: "caveman", intensity: "full" },
     ]),
-    "[rtk\u{1F7E1} → caveman\u{1F7E0}]"
+    "[rtk\u{1F7E1} → caveman\u{1F7E0}]",
   );
 });
 
@@ -305,7 +305,7 @@ test("formatCompressionPipeline: step without intensity → engine bare", () => 
 test("formatCompressionPipeline: ultra → red", () => {
   assert.equal(
     formatCompressionPipeline([{ engine: "caveman", intensity: "ultra" }]),
-    "[caveman\u{1F534}]"
+    "[caveman\u{1F534}]",
   );
 });
 
@@ -313,25 +313,25 @@ test("formatCompressionPipeline: lite/minimal → green", () => {
   assert.equal(formatCompressionPipeline([{ engine: "rtk", intensity: "lite" }]), "[rtk\u{1F7E2}]");
   assert.equal(
     formatCompressionPipeline([{ engine: "rtk", intensity: "minimal" }]),
-    "[rtk\u{1F7E2}]"
+    "[rtk\u{1F7E2}]",
   );
 });
 
 test("formatCompressionPipeline: intensity case-insensitive", () => {
   assert.equal(
     formatCompressionPipeline([{ engine: "caveman", intensity: "ULTRA" }]),
-    "[caveman\u{1F534}]"
+    "[caveman\u{1F534}]",
   );
   assert.equal(
     formatCompressionPipeline([{ engine: "caveman", intensity: "Standard" }]),
-    "[caveman\u{1F7E1}]"
+    "[caveman\u{1F7E1}]",
   );
 });
 
 test("formatCompressionPipeline: unknown intensity falls back to raw text", () => {
   assert.equal(
     formatCompressionPipeline([{ engine: "rtk", intensity: "custom-thing" }]),
-    "[rtk:custom-thing]"
+    "[rtk:custom-thing]",
   );
 });
 
@@ -372,7 +372,7 @@ test("provider hook: enrichment fetcher called when features.enrichment !== fals
         called++;
         return enrichment;
       },
-    }
+    },
   );
   const out = await hook.models!({} as never, { auth: apiAuth("sk") as never });
   assert.equal(called, 1, "enrichment fetcher called once");
@@ -398,15 +398,11 @@ test("provider hook: enrichment fetcher NOT called when features.enrichment:fals
         called++;
         return new Map();
       },
-    }
+    },
   );
   const out = await hook.models!({} as never, { auth: apiAuth("sk") as never });
   assert.equal(called, 0, "enrichment fetcher NOT called when gated off");
-  assert.equal(
-    out["omniroute/claude-sonnet-4-6"].name,
-    "claude-sonnet-4-6",
-    "raw id preserved"
-  );
+  assert.equal(out["omniroute/claude-sonnet-4-6"].name, "claude-sonnet-4-6", "raw id preserved");
 });
 
 test("provider hook: compression metadata fetcher NOT called by default (opt-in)", async () => {
@@ -421,7 +417,7 @@ test("provider hook: compression metadata fetcher NOT called by default (opt-in)
         called++;
         return [];
       },
-    }
+    },
   );
   await hook.models!({} as never, { auth: apiAuth("sk") as never });
   assert.equal(called, 0, "compression metadata is opt-in (features.compressionMetadata:true)");
@@ -460,7 +456,7 @@ test("provider hook: compression metadata fetcher called when opted in", async (
         called++;
         return compressionCombos;
       },
-    }
+    },
   );
   const out = await hook.models!({} as never, { auth: apiAuth("sk") as never });
   assert.equal(called, 1, "compression metadata fetcher called");
@@ -469,7 +465,7 @@ test("provider hook: compression metadata fetcher called when opted in", async (
   assert.match(
     combo.name,
     /\[rtk\u{1F7E1} → caveman\u{1F7E0}\]/u,
-    "combo name decorated with emoji pipeline (rtk:standard=🟡, caveman:full=🟠)"
+    "combo name decorated with emoji pipeline (rtk:standard=🟡, caveman:full=🟠)",
   );
 });
 
@@ -489,7 +485,7 @@ test("config hook: MCP auto-emit OFF by default (no mcp entry)", async () => {
       fetcher: async () => SAMPLE_RAW,
       combosFetcher: async () => [],
       logger: { warn: () => {} },
-    }
+    },
   );
   const input: { provider?: Record<string, unknown>; mcp?: Record<string, unknown> } = {};
   await hook(input as never);
@@ -509,7 +505,7 @@ test("config hook: features.mcpAutoEmit:true writes mcp entry with provider apiK
       fetcher: async () => SAMPLE_RAW,
       combosFetcher: async () => [],
       logger: { warn: () => {} },
-    }
+    },
   );
   const input: { provider?: Record<string, unknown>; mcp?: Record<string, unknown> } = {};
   await hook(input as never);
@@ -521,7 +517,7 @@ test("config hook: features.mcpAutoEmit:true writes mcp entry with provider apiK
   assert.equal(
     entry.url,
     "https://or.example.com/api/mcp/stream",
-    "baseURL /v1 stripped to /api/mcp/stream"
+    "baseURL /v1 stripped to /api/mcp/stream",
   );
   assert.equal(entry.enabled, true);
   assert.equal(entry.headers.Authorization, "Bearer sk-prod-key");
@@ -539,7 +535,7 @@ test("config hook: features.mcpToken overrides provider apiKey in mcp Bearer", a
       fetcher: async () => SAMPLE_RAW,
       combosFetcher: async () => [],
       logger: { warn: () => {} },
-    }
+    },
   );
   const input: { provider?: Record<string, unknown>; mcp?: Record<string, unknown> } = {};
   await hook(input as never);
@@ -547,7 +543,7 @@ test("config hook: features.mcpToken overrides provider apiKey in mcp Bearer", a
   assert.equal(
     entry.headers.Authorization,
     "Bearer sk-mcp-narrower",
-    "mcpToken takes precedence over apiKey"
+    "mcpToken takes precedence over apiKey",
   );
 });
 
@@ -563,7 +559,7 @@ test("config hook: existing operator mcp.<providerId> wins (no overwrite)", asyn
       fetcher: async () => SAMPLE_RAW,
       combosFetcher: async () => [],
       logger: { warn: () => {} },
-    }
+    },
   );
   const input: { provider?: Record<string, unknown>; mcp?: Record<string, unknown> } = {
     mcp: { "opencode-omniroute": { type: "custom-user-entry", url: "https://manual.example/mcp" } },
@@ -572,7 +568,7 @@ test("config hook: existing operator mcp.<providerId> wins (no overwrite)", asyn
   assert.deepEqual(
     input.mcp?.["opencode-omniroute"],
     { type: "custom-user-entry", url: "https://manual.example/mcp" },
-    "operator override preserved"
+    "operator override preserved",
   );
 });
 
@@ -590,7 +586,7 @@ test("config hook: features.mcpAutoEmit:true with /v1 in baseURL → strips corr
       fetcher: async () => SAMPLE_RAW,
       combosFetcher: async () => [],
       logger: { warn: () => {} },
-    }
+    },
   );
   const input: { provider?: Record<string, unknown>; mcp?: Record<string, unknown> } = {};
   await hook(input as never);
@@ -598,7 +594,7 @@ test("config hook: features.mcpAutoEmit:true with /v1 in baseURL → strips corr
   assert.equal(
     entry.url,
     "https://or-preprod.example.com/api/mcp/stream",
-    "/v1 stripped, /api/mcp/stream appended"
+    "/v1 stripped, /api/mcp/stream appended",
   );
 });
 
@@ -647,7 +643,7 @@ test("defaultOmniRouteEnrichmentFetcher: merges names from /api/pricing/models a
             ],
           },
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
     if (url.endsWith("/api/pricing")) {
@@ -667,7 +663,7 @@ test("defaultOmniRouteEnrichmentFetcher: merges names from /api/pricing/models a
             },
           },
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
     return new Response("not found", { status: 404 });
@@ -677,15 +673,15 @@ test("defaultOmniRouteEnrichmentFetcher: merges names from /api/pricing/models a
     const map = await defaultOmniRouteEnrichmentFetcher(
       "https://or.example.com/v1",
       "sk-test",
-      5_000
+      5_000,
     );
     assert.ok(
       calls.some((u) => u.endsWith("/api/pricing/models")),
-      "catalog endpoint hit"
+      "catalog endpoint hit",
     );
     assert.ok(
       calls.some((u) => u.endsWith("/api/pricing")),
-      "pricing endpoint hit"
+      "pricing endpoint hit",
     );
     const opus = map.get("cc/claude-opus-4-7");
     assert.ok(opus, "namespaced entry present");
@@ -717,7 +713,7 @@ test("defaultOmniRouteEnrichmentFetcher: name-only when pricing endpoint 5xxs", 
         JSON.stringify({
           cc: { models: [{ id: "claude-opus-4-7", name: "Claude Opus 4.7", custom: false }] },
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
     return new Response("boom", { status: 500 });
@@ -766,7 +762,7 @@ function makeEnrichmentMap(
     providerAlias?: string;
     providerCanonical?: string;
     providerDisplayName?: string;
-  }>
+  }>,
 ): OmniRouteEnrichmentMap {
   const map: OmniRouteEnrichmentMap = new Map();
   for (const e of entries) {

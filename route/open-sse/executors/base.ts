@@ -166,7 +166,7 @@ export type ExecuteInput = {
    * `{ testStatus: "expired", isActive: false }`); the caller merges into the
    * stored connection row. */
   onCredentialsRefreshed?: (
-    newCredentials: Partial<ProviderCredentials> & Record<string, unknown>
+    newCredentials: Partial<ProviderCredentials> & Record<string, unknown>,
   ) => Promise<void> | void;
   /** When true, skip the intra-URL 429 retry in execute() so the caller handles fallback. */
   skipUpstreamRetry?: boolean;
@@ -295,7 +295,7 @@ export class BaseExecutor {
     model: string,
     stream: boolean,
     urlIndex = 0,
-    credentials: ProviderCredentials | null = null
+    credentials: ProviderCredentials | null = null,
   ) {
     void model;
     void stream;
@@ -343,7 +343,7 @@ export class BaseExecutor {
         credentials.connectionId,
         credentials.apiKey,
         extraKeys,
-        selectedKeyId ?? null
+        selectedKeyId ?? null,
       );
       effectiveKey = resolved?.key ?? credentials.apiKey;
       if (resolved && credentials.providerSpecificData) {
@@ -361,7 +361,7 @@ export class BaseExecutor {
    */
   protected buildHeadersPreamble(
     credentials: ProviderCredentials,
-    stream: boolean
+    stream: boolean,
   ): { headers: Record<string, string>; effectiveKey: string | undefined } {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
@@ -389,7 +389,7 @@ export class BaseExecutor {
     stream = true,
     clientHeaders?: Record<string, string> | null,
     model?: string,
-    health?: Record<string, KeyHealth>
+    health?: Record<string, KeyHealth>,
   ): Record<string, string> {
     void clientHeaders;
     void model;
@@ -413,7 +413,7 @@ export class BaseExecutor {
     model: string,
     body: unknown,
     stream: boolean,
-    credentials: ProviderCredentials
+    credentials: ProviderCredentials,
   ): unknown {
     void model;
     void stream;
@@ -474,7 +474,7 @@ export class BaseExecutor {
   // Override in subclass for provider-specific refresh
   async refreshCredentials(
     credentials: ProviderCredentials,
-    log: ExecutorLog | null
+    log: ExecutorLog | null,
   ): Promise<Partial<ProviderCredentials> | null> {
     void credentials;
     void log;
@@ -558,7 +558,7 @@ export class BaseExecutor {
     } catch (error) {
       log?.debug?.(
         "COUNT_TOKENS",
-        `${this.provider}/${model} real count unavailable: ${error instanceof Error ? error.message : String(error)}`
+        `${this.provider}/${model} real count unavailable: ${error instanceof Error ? error.message : String(error)}`,
       );
       return null;
     } finally {
@@ -608,7 +608,7 @@ export class BaseExecutor {
           : null;
 
         const refreshed = await runWithOnPersist(proactiveOnPersist, () =>
-          this.refreshCredentials(credentials, log || null)
+          this.refreshCredentials(credentials, log || null),
         );
 
         if (refreshed && !proactivePersistRan) {
@@ -647,7 +647,7 @@ export class BaseExecutor {
             const refreshCode = (refreshed as Record<string, unknown>).code;
             log?.warn?.(
               "TOKEN",
-              `${this.provider.toUpperCase()} | proactive refresh returned unrecoverable sentinel (code=${String(refreshCode ?? "unknown")}); keeping stale credentials, deferring to reactive path.`
+              `${this.provider.toUpperCase()} | proactive refresh returned unrecoverable sentinel (code=${String(refreshCode ?? "unknown")}); keeping stale credentials, deferring to reactive path.`,
             );
             // Intentionally NOT spreading the sentinel and NOT persisting
             // expired status. The next upstream call either succeeds (rotation
@@ -671,7 +671,7 @@ export class BaseExecutor {
         // surfaces upstream rather than being silently absorbed here.
         log?.error?.(
           "TOKEN",
-          `Credential refresh failed for ${this.provider}: ${error instanceof Error ? error.message : String(error)}`
+          `Credential refresh failed for ${this.provider}: ${error instanceof Error ? error.message : String(error)}`,
         );
       }
     }
@@ -689,7 +689,7 @@ export class BaseExecutor {
       const requestCredentials = withForcedResponsesUpstream(
         this.provider,
         body,
-        activeCredentials
+        activeCredentials,
       );
       const url = this.buildUrl(model, stream, urlIndex, requestCredentials);
       const headers = this.buildHeaders(requestCredentials, stream, clientHeaders, model);
@@ -701,7 +701,7 @@ export class BaseExecutor {
       if (strippedStainless.length > 0) {
         log?.debug?.(
           "HEADERS",
-          `Stripped X-Stainless-* from OpenAI-compatible request: ${strippedStainless.join(", ")}`
+          `Stripped X-Stainless-* from OpenAI-compatible request: ${strippedStainless.join(", ")}`,
         );
       }
 
@@ -722,17 +722,17 @@ export class BaseExecutor {
         model,
         body,
         stream,
-        requestCredentials
+        requestCredentials,
       );
       let transformedBody = sanitizeReasoningEffortForProvider(
         rawTransformedBody,
         this.provider,
         model,
-        log
+        log,
       );
       if (this.provider === "groq") {
         transformedBody = stripGroqUnsupportedFields(
-          transformedBody as Record<string, unknown>
+          transformedBody as Record<string, unknown>,
         ) as typeof transformedBody;
       }
 
@@ -745,7 +745,7 @@ export class BaseExecutor {
           if (timeoutController) {
             timeoutId = setTimeout(() => {
               const timeoutError = new Error(
-                `Fetch timeout after ${fetchStartTimeoutMs}ms on ${requestUrl}`
+                `Fetch timeout after ${fetchStartTimeoutMs}ms on ${requestUrl}`,
               );
               timeoutError.name = "TimeoutError";
               timeoutController.abort(timeoutError);
@@ -938,11 +938,14 @@ export class BaseExecutor {
 
           const seed = activeCredentials?.accessToken || activeCredentials?.apiKey || "anon";
           const psd = activeCredentials?.providerSpecificData as
-            Record<string, unknown> | undefined;
+            | Record<string, unknown>
+            | undefined;
 
           let identitySource:
-            "upstream-metadata" | "upstream-header" | "synthesized" | "synthesized-cloaked" =
-            "synthesized";
+            | "upstream-metadata"
+            | "upstream-header"
+            | "synthesized"
+            | "synthesized-cloaked" = "synthesized";
           let sessionId: string;
           let deviceId: string;
           let accountUUID: string;
@@ -962,7 +965,7 @@ export class BaseExecutor {
             const headerSid = cloakIdentity
               ? null
               : passthroughUpstreamSessionId(
-                  clientHeaders as Record<string, string | undefined> | undefined
+                  clientHeaders as Record<string, string | undefined> | undefined,
                 );
             sessionId = headerSid ?? getSessionId(seed);
             deviceId = resolveCliUserID(psd, seed);
@@ -1016,7 +1019,7 @@ export class BaseExecutor {
             const transformResult = applySystemTransformPipeline(PROVIDER_CLAUDE, tb);
             if (transformResult.appliedOpKinds.length > 0) {
               console.log(
-                `[SystemTransforms] claude-native: ${transformResult.appliedOpKinds.join(", ")}`
+                `[SystemTransforms] claude-native: ${transformResult.appliedOpKinds.join(", ")}`,
               );
             }
           }
@@ -1044,7 +1047,7 @@ export class BaseExecutor {
             // rejected; selectBetaFlags still gates thinking/effort per #3415.
             "anthropic-beta": mergeClientAnthropicBeta(
               selectBetaFlags(tb, null, clientAnthropicBeta),
-              clientAnthropicBeta
+              clientAnthropicBeta,
             ),
             "anthropic-dangerous-direct-browser-access": "true",
             "x-app": "cli",
@@ -1082,7 +1085,7 @@ export class BaseExecutor {
               : "";
           log?.debug?.(
             "CLAUDE",
-            `identity=${identitySource} sid=${sessionId.slice(0, 8)} dev=${deviceId.slice(0, 8)} acct=${accountUUID.slice(0, 8)}${overrideTag}`
+            `identity=${identitySource} sid=${sessionId.slice(0, 8)} dev=${deviceId.slice(0, 8)} acct=${accountUUID.slice(0, 8)}${overrideTag}`,
           );
         }
 
@@ -1155,7 +1158,7 @@ export class BaseExecutor {
           });
           log?.debug?.(
             "CONTEXT_EDITING",
-            "Delegated context editing on — attached clear_tool_uses to the Claude request"
+            "Delegated context editing on — attached clear_tool_uses to the Claude request",
           );
         }
 
@@ -1237,7 +1240,7 @@ export class BaseExecutor {
             }
             log?.debug?.(
               "CONTEXT_EDITING",
-              `Upstream 400 rejected context_management on ${url} — retrying without it`
+              `Upstream 400 rejected context_management on ${url} — retrying without it`,
             );
             response = await fetchWithStartTimeout(url, { ...fetchOptions, body: retryBody });
           }
@@ -1267,7 +1270,7 @@ export class BaseExecutor {
             }
             log?.debug?.(
               "FIELD_400",
-              `Upstream 400 rejected ${offending} on ${url} — retrying without it`
+              `Upstream 400 rejected ${offending} on ${url} — retrying without it`,
             );
             response = await fetchWithStartTimeout(url, { ...fetchOptions, body: retryBody });
           } else {
@@ -1292,14 +1295,14 @@ export class BaseExecutor {
                   }
                   log?.info?.(
                     "AUTO_LEARN",
-                    `Auto-learned "${autoLearned}" for provider ${this.provider} (model: ${model}) from 400 on ${url} — retrying`
+                    `Auto-learned "${autoLearned}" for provider ${this.provider} (model: ${model}) from 400 on ${url} — retrying`,
                   );
                   response = await fetchWithStartTimeout(url, { ...fetchOptions, body: retryBody });
                 }
               } catch (learnError) {
                 log?.warn?.(
                   "AUTO_LEARN",
-                  `Failed to persist auto-learned param "${autoLearned}" for ${this.provider}: ${String(learnError)}`
+                  `Failed to persist auto-learned param "${autoLearned}" for ${this.provider}: ${String(learnError)}`,
                 );
               }
             }
@@ -1316,7 +1319,7 @@ export class BaseExecutor {
           const attempt = retryAttemptsByUrl[urlIndex];
           log?.debug?.(
             "RETRY",
-            `429 intra-retry ${attempt}/${BaseExecutor.RETRY_CONFIG.maxAttempts} on ${url} — waiting ${BaseExecutor.RETRY_CONFIG.delayMs}ms`
+            `429 intra-retry ${attempt}/${BaseExecutor.RETRY_CONFIG.maxAttempts} on ${url} — waiting ${BaseExecutor.RETRY_CONFIG.delayMs}ms`,
           );
           await new Promise((resolve) => setTimeout(resolve, BaseExecutor.RETRY_CONFIG.delayMs));
           urlIndex--; // re-run this urlIndex on the next loop iteration

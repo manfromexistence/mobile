@@ -276,7 +276,7 @@ export function inferCategory(fullName: string, description: string): string {
 export function resolveInstallPath(
   target: InstallTarget,
   skillName: string,
-  description: string
+  description: string,
 ): string {
   const category = inferCategory(skillName, description);
   let template = INSTALL_PATHS[target];
@@ -333,7 +333,7 @@ export interface SearchOptions {
  * Returns scored results sorted by score descending.
  */
 export async function searchGitHubSkills(
-  options: SearchOptions = {}
+  options: SearchOptions = {},
 ): Promise<{ repos: GitHubSkillRepo[]; errors: string[] }> {
   const { token = process.env.GITHUB_TOKEN || "", minStars = 1, maxResults = 100 } = options;
   const seen = new Set<string>();

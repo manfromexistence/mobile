@@ -213,7 +213,7 @@ function extractText(content: unknown): string {
   if (Array.isArray(content)) {
     return content
       .map((part: any) =>
-        typeof part === "string" ? part.toLowerCase() : part?.text?.toLowerCase() || ""
+        typeof part === "string" ? part.toLowerCase() : part?.text?.toLowerCase() || "",
       )
       .join(" ");
   }
@@ -297,7 +297,7 @@ export function detectTaskType(body: any): TaskType {
  */
 export function applyTaskAwareRouting(
   originalModel: string,
-  body: any
+  body: any,
 ): { model: string; taskType: TaskType; wasRouted: boolean } {
   if (!_config.enabled || !_config.detectionEnabled) {
     return { model: originalModel, taskType: "chat", wasRouted: false };

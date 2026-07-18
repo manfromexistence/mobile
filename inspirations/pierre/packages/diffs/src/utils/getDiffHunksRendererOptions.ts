@@ -1,10 +1,10 @@
-import type { FileDiffOptions } from '../components/FileDiff';
-import type { DiffHunksRendererOptions } from '../renderers/DiffHunksRenderer';
+import type { FileDiffOptions } from "../components/FileDiff";
+import type { DiffHunksRendererOptions } from "../renderers/DiffHunksRenderer";
 
 // Build the renderer option snapshot with direct property reads. CodeView item
 // options may inherit prototype getters, so object spread can miss values.
 export function getDiffHunksRendererOptions<LAnnotation>(
-  options: FileDiffOptions<LAnnotation> | undefined
+  options: FileDiffOptions<LAnnotation> | undefined,
 ): DiffHunksRendererOptions {
   return {
     theme: options?.theme,
@@ -23,15 +23,12 @@ export function getDiffHunksRendererOptions<LAnnotation>(
     diffIndicators: options?.diffIndicators,
     disableBackground: options?.disableBackground,
     hunkSeparators:
-      typeof options?.hunkSeparators === 'function'
-        ? 'custom'
-        : options?.hunkSeparators,
+      typeof options?.hunkSeparators === "function" ? "custom" : options?.hunkSeparators,
     expandUnchanged: options?.expandUnchanged,
     collapsedContextThreshold: options?.collapsedContextThreshold,
     lineDiffType: options?.lineDiffType,
     maxLineDiffLength: options?.maxLineDiffLength,
     expansionLineCount: options?.expansionLineCount,
-    headerRenderMode:
-      options?.renderCustomHeader != null ? 'custom' : 'default',
+    headerRenderMode: options?.renderCustomHeader != null ? "custom" : "default",
   };
 }

@@ -137,13 +137,13 @@ export async function runStreamCommand(promptArg, opts, cmd) {
           },
         },
         null,
-        2
-      ) + "\n"
+        2,
+      ) + "\n",
     );
   } else {
     if (!globalOpts.quiet) {
       process.stderr.write(
-        `\n\n[TTFT: ${firstTokenAt}ms · Total: ${totalMs}ms · ~${tokens} tok · ~${Math.round(tokens / (totalMs / 1000))} tok/s]\n`
+        `\n\n[TTFT: ${firstTokenAt}ms · Total: ${totalMs}ms · ~${tokens} tok · ~${Math.round(tokens / (totalMs / 1000))} tok/s]\n`,
       );
     }
     process.stdout.write("\n");

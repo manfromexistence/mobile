@@ -47,7 +47,7 @@ export function extractTextContent(msg: Record<string, unknown>): string {
       (msg.content as Array<Record<string, unknown>>)
         .filter((c) => c.type === "text")
         .map((c) => String(c.text || ""))
-        .join(" ")
+        .join(" "),
     );
   }
   return "";
@@ -184,7 +184,7 @@ export function extractFirstUrl(text: string): string | undefined {
 export function wantsUrlFetch(text: string): boolean {
   return (
     /\b(webfetch|web_fetch|fetch|browse|open|read|lee|abre|extrae|investiga|analiza|resume|summarize|de qu[eé] va)\b/i.test(
-      text
+      text,
     ) && !!extractFirstUrl(text)
   );
 }
@@ -200,7 +200,7 @@ export function forcedToolChoiceName(toolChoice: unknown): string | null {
 
 export function parseOpenAIMessages(
   messages: Array<Record<string, unknown>>,
-  beforeLatestUser = ""
+  beforeLatestUser = "",
 ): string {
   const parts: string[] = [];
   let lastUserIdx = -1;
@@ -354,11 +354,11 @@ export function isTerminalTool(tool: GrokFunctionToolSummary): boolean {
   const text = toolText(tool);
   const name = tool.name.toLowerCase();
   const explicitName = /\b(bash|shell|terminal|run_command|execute_command|exec|command)\b/.test(
-    name
+    name,
   );
   const explicitText =
     /\b(?:run|execute).{0,24}\b(?:shell|bash|terminal|command)\b|\b(?:shell|bash|terminal)\b/.test(
-      text
+      text,
     );
   return explicitName || (hasAnyProperty(tool, ["command", "cmd", "shell"]) && explicitText);
 }
@@ -379,7 +379,7 @@ export function isUrlFetchTool(tool: GrokFunctionToolSummary): boolean {
     /\b(webfetch|web.fetch|fetch_url|url_fetch|read_url|browse_page|browsepage)\b/.test(name);
   const explicitUrlText =
     /\b(?:fetch|browse|read).{0,32}\b(?:url|uri|web page|page content)\b|\b(?:url|uri|web page|page content).{0,32}\b(?:fetch|browse|read)\b/.test(
-      text
+      text,
     );
   return (
     explicitName ||
@@ -400,14 +400,14 @@ export function isWebSearchTool(tool: GrokFunctionToolSummary): boolean {
 export function isContextMemoryTool(tool: GrokFunctionToolSummary): boolean {
   const text = toolText(tool);
   return /\b(ctx_|memory|memories|conversation history|session notes|git commits|project memories|context.db|magic context)\b/.test(
-    text
+    text,
   );
 }
 
 export function isMetaOrInfrastructureTool(tool: GrokFunctionToolSummary): boolean {
   const text = toolText(tool);
   return /\b(mcp|mcpproxy|upstream|registry|registries|quarantine|oauth|cache key|token usage|session notes|conversation transcript|handoff|context management|memory|memories|lsp|language server|plan file|server management|tool discovery|tools? using bm25)\b/.test(
-    text
+    text,
   );
 }
 
@@ -431,16 +431,16 @@ export function latestUserIntentScore(tool: GrokFunctionToolSummary, lastUserTex
   const asksLineCount = /\b(l[ií]neas?|line count|cu[aá]ntas? l[ií]neas?|wc\s+-l)\b/.test(user);
   const asksFileContent =
     /\b(lee|leer|read|archivo|file|json|config|modelo|default|por defecto|de qu[eé] va|consiste|contenido)\b/.test(
-      user
+      user,
     ) && hasPath;
   const asksContext =
     /\b(contexto|memoria|historial|conversation history|project memories|ctx_|memory|memories|recordabas?)\b/.test(
-      user
+      user,
     );
   const asksWeb =
     !asksContext &&
     /\b(web|internet|fuente|oficial|release|versi[oó]n|ubuntu|latest|actual|contrasta|busca|search)\b/.test(
-      user
+      user,
     );
   let score = 0;
 
@@ -459,7 +459,7 @@ export function latestUserIntentScore(tool: GrokFunctionToolSummary, lastUserTex
 }
 
 export function orderedToolsForManifest(
-  toolRegistry: GrokToolRegistry
+  toolRegistry: GrokToolRegistry,
 ): Array<{ tool: GrokFunctionToolSummary; score: number }> {
   return [...toolRegistry.toolsByName.values()]
     .map((tool, index) => ({
@@ -480,7 +480,7 @@ export function formatToolManifestEntry(tool: GrokFunctionToolSummary, rank: num
 
 export function buildClientToolManifest(
   toolRegistry: GrokToolRegistry,
-  toolChoice: unknown
+  toolChoice: unknown,
 ): string {
   if (!toolRegistry.enabled) return "";
   const orderedTools = orderedToolsForManifest(toolRegistry);
@@ -503,7 +503,7 @@ export function buildClientToolManifest(
 export function buildGrokMessage(
   messages: Array<Record<string, unknown>>,
   toolRegistry: GrokToolRegistry,
-  toolChoice: unknown
+  toolChoice: unknown,
 ): string {
   const manifest = buildClientToolManifest(toolRegistry, toolChoice);
   return parseOpenAIMessages(messages, manifest);
@@ -531,7 +531,7 @@ export function defaultRequiredValue(
   key: string,
   type: string | undefined,
   args: Record<string, unknown>,
-  intent: string
+  intent: string,
 ): unknown {
   const lower = key.toLowerCase();
   const command = firstString(args.command, args.cmd, args.shell, args.input);
@@ -569,7 +569,7 @@ export function adaptArgumentsToDeclaredTool(
   args: Record<string, unknown>,
   toolRegistry: GrokToolRegistry,
   intent: string,
-  options: { preserveUnknownArgs?: boolean } = { preserveUnknownArgs: true }
+  options: { preserveUnknownArgs?: boolean } = { preserveUnknownArgs: true },
 ): Record<string, unknown> {
   const tool = toolRegistry.toolsByName.get(toolName);
   if (!tool) return args;
@@ -625,7 +625,7 @@ export function normalizeArbitraryToolArguments(value: unknown): Record<string, 
 
 export function parseClientToolCallMarkup(
   text: string,
-  toolRegistry: GrokToolRegistry
+  toolRegistry: GrokToolRegistry,
 ): OpenAIToolCall[] | null {
   if (!toolRegistry.enabled || !text.includes("<tool_call>")) return null;
   const calls: OpenAIToolCall[] = [];

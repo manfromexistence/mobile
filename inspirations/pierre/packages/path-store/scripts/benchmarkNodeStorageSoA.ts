@@ -1,6 +1,6 @@
 // packages/path-store/scripts/benchmarkNodeStorageSoA.ts
 
-import { getVirtualizationWorkload } from '@pierre/tree-test-data';
+import { getVirtualizationWorkload } from "@pierre/tree-test-data";
 /**
  * Hypothesis #1 probe: does converting the `PathStoreNode[]` array-of-objects
  * (AoS) plus the per-directory `childIds: number[]` / `directories: Map` into a
@@ -21,15 +21,15 @@ import { getVirtualizationWorkload } from '@pierre/tree-test-data';
  *
  * Run: AGENT=1 bun run ./scripts/benchmarkNodeStorageSoA.ts --workload linux-10x
  */
-import { performance } from 'node:perf_hooks';
+import { performance } from "node:perf_hooks";
 
-import { PathStoreBuilder } from '../src/builder';
+import { PathStoreBuilder } from "../src/builder";
 import {
   type DirectoryChildIndex,
   isDirectoryNode,
   type PathStoreNode,
   type PathStoreSnapshot,
-} from '../src/internal-types';
+} from "../src/internal-types";
 
 interface Config {
   runs: number;
@@ -44,14 +44,12 @@ const KIND_MASK = 1 << 3; // PATH_STORE_NODE_KIND_SHIFT === 3
 const DEPTH_SHIFT = 4;
 
 function parseArgs(argv: readonly string[]): Config {
-  const config: Config = { runs: 25, warmupRuns: 5, workload: 'linux-10x' };
+  const config: Config = { runs: 25, warmupRuns: 5, workload: "linux-10x" };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
-    if (arg === '--runs') config.runs = Number(argv[++i] ?? config.runs);
-    else if (arg === '--warmup-runs')
-      config.warmupRuns = Number(argv[++i] ?? config.warmupRuns);
-    else if (arg === '--workload')
-      config.workload = argv[++i] ?? config.workload;
+    if (arg === "--runs") config.runs = Number(argv[++i] ?? config.runs);
+    else if (arg === "--warmup-runs") config.warmupRuns = Number(argv[++i] ?? config.warmupRuns);
+    else if (arg === "--workload") config.workload = argv[++i] ?? config.workload;
   }
   return config;
 }
@@ -77,14 +75,14 @@ function fmt(metrics: ReturnType<typeof summarize>): string {
     `median=${metrics.medianMs.toFixed(2)}ms`,
     `p95=${metrics.p95Ms.toFixed(2)}ms`,
     `min=${metrics.minMs.toFixed(2)}ms`,
-  ].join('  ');
+  ].join("  ");
 }
 
 // Returns resident set size in MB after forcing a synchronous GC. Bun's
 // JSC-backed `heapUsed` does not reliably reflect large typed-array / object
 // allocations, so RSS deltas are used to compare retained footprint instead.
 function retainedRssMb(): number {
-  if (typeof Bun !== 'undefined') Bun.gc(true);
+  if (typeof Bun !== "undefined") Bun.gc(true);
   return process.memoryUsage().rss / (1024 * 1024);
 }
 
@@ -188,7 +186,7 @@ function sweepAoS(
   lastRowAtDepth: Int32Array,
   stackDirId: Int32Array,
   stackCursor: Int32Array,
-  stackDepth: Int32Array
+  stackDepth: Int32Array,
 ): SweepOutput {
   const { nodes, directories, rootId } = snapshot;
   lastRowAtDepth.fill(-1);
@@ -217,10 +215,7 @@ function sweepAoS(
     posInSet[rowCount] = cursor;
     setSize[rowCount] = childIds.length;
     checksum =
-      (checksum +
-        (node.depthAndFlags >>> DEPTH_SHIFT) +
-        node.nameId +
-        node.visibleSubtreeCount) |
+      (checksum + (node.depthAndFlags >>> DEPTH_SHIFT) + node.nameId + node.visibleSubtreeCount) |
       0;
     lastRowAtDepth[visibleDepth + 1] = rowCount;
     rowCount += 1;
@@ -248,16 +243,9 @@ function sweepSoa(
   lastRowAtDepth: Int32Array,
   stackDirId: Int32Array,
   stackCursor: Int32Array,
-  stackDepth: Int32Array
+  stackDepth: Int32Array,
 ): SweepOutput {
-  const {
-    depthAndFlags,
-    nameId,
-    visibleSubtreeCount,
-    childStart,
-    childCount,
-    childIdsFlat,
-  } = soa;
+  const { depthAndFlags, nameId, visibleSubtreeCount, childStart, childCount, childIdsFlat } = soa;
   lastRowAtDepth.fill(-1);
   let sp = 0;
   stackDirId[0] = rootId;
@@ -285,11 +273,7 @@ function sweepSoa(
     posInSet[rowCount] = cursor;
     setSize[rowCount] = count;
     checksum =
-      (checksum +
-        (flags >>> DEPTH_SHIFT) +
-        nameId[childId] +
-        visibleSubtreeCount[childId]) |
-      0;
+      (checksum + (flags >>> DEPTH_SHIFT) + nameId[childId] + visibleSubtreeCount[childId]) | 0;
     lastRowAtDepth[visibleDepth + 1] = rowCount;
     rowCount += 1;
 
@@ -306,7 +290,7 @@ function sweepSoa(
 
 function timeSweep(
   config: Config,
-  run: () => SweepOutput
+  run: () => SweepOutput,
 ): { metrics: ReturnType<typeof summarize>; out: SweepOutput } {
   let out: SweepOutput = { rowCount: 0, checksum: 0 };
   for (let i = 0; i < config.warmupRuns; i += 1) out = run();
@@ -337,9 +321,7 @@ function allocAosObjects(count: number): PathStoreNode[] {
 
 function main(): void {
   const config = parseArgs(process.argv.slice(2));
-  console.log(
-    `\nworkload=${config.workload}  runs=${config.runs}  warmup=${config.warmupRuns}\n`
-  );
+  console.log(`\nworkload=${config.workload}  runs=${config.runs}  warmup=${config.warmupRuns}\n`);
 
   const snapshot = buildSnapshot(config.workload);
   const nodeCount = snapshot.nodes.length;
@@ -350,12 +332,12 @@ function main(): void {
     totalChildren += index.childIds.length;
   }
   console.log(
-    `nodes=${nodeCount.toLocaleString()}  directories=${directoryCount.toLocaleString()}  childEdges=${totalChildren.toLocaleString()}\n`
+    `nodes=${nodeCount.toLocaleString()}  directories=${directoryCount.toLocaleString()}  childEdges=${totalChildren.toLocaleString()}\n`,
   );
 
   // --- Construction + retained memory --------------------------------------
   const { soa, buildMs } = buildSoa(snapshot);
-  console.log('=== construction / memory ===');
+  console.log("=== construction / memory ===");
   console.log(`SoA mirror fill: ${buildMs.toFixed(2)}ms`);
 
   // Measure one representation at a time (RSS deltas), freeing each before the
@@ -382,14 +364,12 @@ function main(): void {
   park.__keep = undefined;
 
   console.log(
-    `AoS ${nodeCount.toLocaleString()} node objects (5 int fields): ~${aosMb.toFixed(1)} MB RSS`
+    `AoS ${nodeCount.toLocaleString()} node objects (5 int fields): ~${aosMb.toFixed(1)} MB RSS`,
   );
   console.log(
-    `SoA 5 x Int32Array(${nodeCount.toLocaleString()}):              ~${soaMb.toFixed(1)} MB RSS  (theoretical floor ${((nodeCount * 5 * 4) / (1024 * 1024)).toFixed(1)} MB)`
+    `SoA 5 x Int32Array(${nodeCount.toLocaleString()}):              ~${soaMb.toFixed(1)} MB RSS  (theoretical floor ${((nodeCount * 5 * 4) / (1024 * 1024)).toFixed(1)} MB)`,
   );
-  console.log(
-    `memory ratio AoS/SoA: ${soaMb > 0 ? (aosMb / soaMb).toFixed(2) : 'n/a'}x\n`
-  );
+  console.log(`memory ratio AoS/SoA: ${soaMb > 0 ? (aosMb / soaMb).toFixed(2) : "n/a"}x\n`);
 
   // --- Traversal: shared output + stack buffers ----------------------------
   const parentRowIndex = new Int32Array(nodeCount);
@@ -409,8 +389,8 @@ function main(): void {
       lastRowAtDepth,
       stackDirId,
       stackCursor,
-      stackDepth
-    )
+      stackDepth,
+    ),
   );
   const soaSweep = timeSweep(config, () =>
     sweepSoa(
@@ -422,18 +402,18 @@ function main(): void {
       lastRowAtDepth,
       stackDirId,
       stackCursor,
-      stackDepth
-    )
+      stackDepth,
+    ),
   );
 
-  console.log('=== full-tree DFS sweep (all directories expanded) ===');
+  console.log("=== full-tree DFS sweep (all directories expanded) ===");
   console.log(
-    `rows swept: AoS=${aos.out.rowCount.toLocaleString()}  SoA=${soaSweep.out.rowCount.toLocaleString()}  checksumMatch=${aos.out.checksum === soaSweep.out.checksum}`
+    `rows swept: AoS=${aos.out.rowCount.toLocaleString()}  SoA=${soaSweep.out.rowCount.toLocaleString()}  checksumMatch=${aos.out.checksum === soaSweep.out.checksum}`,
   );
   console.log(`AoS (objects + Map):  ${fmt(aos.metrics)}`);
   console.log(`SoA (typed arrays):   ${fmt(soaSweep.metrics)}`);
   console.log(
-    `speedup (median AoS/SoA): ${(aos.metrics.medianMs / soaSweep.metrics.medianMs).toFixed(2)}x\n`
+    `speedup (median AoS/SoA): ${(aos.metrics.medianMs / soaSweep.metrics.medianMs).toFixed(2)}x\n`,
   );
 }
 

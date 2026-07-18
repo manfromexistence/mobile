@@ -13,7 +13,13 @@ import { buildNodeHeapArgs } from "../../../scripts/build/runtime-env.mjs";
 const CRASH_LOG_LINES = 50;
 
 export class ServerSupervisor {
-  constructor({ serverPath, env, maxRestarts = DEFAULT_MAX_RESTARTS, memoryLimit = 512, onCrashCallback }) {
+  constructor({
+    serverPath,
+    env,
+    maxRestarts = DEFAULT_MAX_RESTARTS,
+    memoryLimit = 512,
+    onCrashCallback,
+  }) {
     this.serverPath = serverPath;
     this.env = env;
     this.maxRestarts = maxRestarts;
@@ -105,7 +111,7 @@ export class ServerSupervisor {
     this.restartCount++;
     const delay = computeRestartDelayMs(this.restartCount);
     console.error(
-      `\n⚠ Server exited (code=${code ?? "?"}). Restarting in ${delay / 1000}s... (${this.restartCount}/${this.maxRestarts})`
+      `\n⚠ Server exited (code=${code ?? "?"}). Restarting in ${delay / 1000}s... (${this.restartCount}/${this.maxRestarts})`,
     );
     if (this.crashLog.length) this.dumpCrashLog();
     // #4425: after a crash the OS may not have released the listen socket yet — restarting

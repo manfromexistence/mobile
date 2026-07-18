@@ -1,7 +1,7 @@
-import type { FileTreeIcons, RemappedIcon } from '../iconConfig';
-import type { FileTreePreparedInput } from '../preparedInput';
-import type { ContextMenuAnchorRect, GitStatusEntry } from '../publicTypes';
-import type { FileTreeDensity } from './density';
+import type { FileTreeIcons, RemappedIcon } from "../iconConfig";
+import type { FileTreePreparedInput } from "../preparedInput";
+import type { ContextMenuAnchorRect, GitStatusEntry } from "../publicTypes";
+import type { FileTreeDensity } from "./density";
 
 /**
  * Public tree identity is path-first so render and model callers never depend
@@ -33,30 +33,27 @@ export interface FileTreeSortEntry {
   segments: readonly string[];
 }
 
-export type FileTreeSortComparator = (
-  left: FileTreeSortEntry,
-  right: FileTreeSortEntry
-) => number;
+export type FileTreeSortComparator = (left: FileTreeSortEntry, right: FileTreeSortEntry) => number;
 
-export type FileTreeInitialExpansion = 'closed' | 'open' | number;
+export type FileTreeInitialExpansion = "closed" | "open" | number;
 
 export interface FileTreeRemoveOptions {
   recursive?: boolean;
 }
 
-export type FileTreeCollisionStrategy = 'error' | 'replace' | 'skip';
+export type FileTreeCollisionStrategy = "error" | "replace" | "skip";
 
 export interface FileTreeMoveOptions {
   collision?: FileTreeCollisionStrategy;
 }
 
 export type FileTreeBatchOperation =
-  | { path: FileTreePublicId; type: 'add' }
-  | ({ path: FileTreePublicId; type: 'remove' } & FileTreeRemoveOptions)
+  | { path: FileTreePublicId; type: "add" }
+  | ({ path: FileTreePublicId; type: "remove" } & FileTreeRemoveOptions)
   | ({
       from: FileTreePublicId;
       to: FileTreePublicId;
-      type: 'move';
+      type: "move";
     } & FileTreeMoveOptions);
 
 export interface FileTreeGitStatusPatch {
@@ -71,7 +68,7 @@ interface FileTreeStoreOptions {
   initialExpansion?: FileTreeInitialExpansion;
   initialExpandedPaths?: readonly FileTreePublicId[];
   presorted?: boolean;
-  sort?: 'default' | FileTreeSortComparator;
+  sort?: "default" | FileTreeSortComparator;
 }
 
 type FileTreeInputOptions =
@@ -93,8 +90,7 @@ type FileTreeControllerBehaviorOptions = FileTreeStoreOptions & {
   renaming?: boolean | FileTreeRenamingConfig;
 };
 
-export type FileTreeControllerOptions = FileTreeControllerBehaviorOptions &
-  FileTreeInputOptions;
+export type FileTreeControllerOptions = FileTreeControllerBehaviorOptions & FileTreeInputOptions;
 
 export interface FileTreeVisibleSegment {
   isTerminal: boolean;
@@ -112,7 +108,7 @@ export interface FileTreeVisibleRow {
   isSelected: boolean;
   isExpanded: boolean;
   isFlattened: boolean;
-  kind: 'directory' | 'file';
+  kind: "directory" | "file";
   level: number;
   name: string;
   path: FileTreePublicId;
@@ -155,17 +151,14 @@ export interface FileTreeRenderOptions {
   stickyFolders?: boolean;
 }
 
-export type FileTreeScrollOffset = 'top' | 'center' | 'nearest';
+export type FileTreeScrollOffset = "top" | "center" | "nearest";
 
 export interface FileTreeScrollToPathOptions {
   focus?: boolean;
   offset?: FileTreeScrollOffset;
 }
 
-export type FileTreeSearchMode =
-  | 'expand-matches'
-  | 'collapse-non-matches'
-  | 'hide-non-matches';
+export type FileTreeSearchMode = "expand-matches" | "collapse-non-matches" | "hide-non-matches";
 
 // Controls what happens to the search session when the search input loses
 // focus. `'close'` (the default, and the legacy behavior) clears the query and
@@ -175,7 +168,7 @@ export type FileTreeSearchMode =
 // `closeSearch()`). `'retain'` is useful for trees mounted with an
 // `initialSearchQuery` that should survive concurrent siblings stealing focus
 // during mount.
-export type FileTreeSearchBlurBehavior = 'close' | 'retain';
+export type FileTreeSearchBlurBehavior = "close" | "retain";
 
 export type FileTreeSearchChangeListener = (value: string | null) => void;
 
@@ -194,7 +187,7 @@ export interface FileTreeDropTarget {
   directoryPath: FileTreePublicId | null;
   flattenedSegmentPath: FileTreePublicId | null;
   hoveredPath: FileTreePublicId | null;
-  kind: 'directory' | 'root';
+  kind: "directory" | "root";
 }
 
 export interface FileTreeDropContext {
@@ -203,7 +196,7 @@ export interface FileTreeDropContext {
 }
 
 export interface FileTreeDropResult extends FileTreeDropContext {
-  operation: 'batch' | 'move';
+  operation: "batch" | "move";
 }
 
 export interface FileTreeDragAndDropConfig {
@@ -277,24 +270,24 @@ export interface FileTreeMutationEventInvalidation {
 }
 
 export interface FileTreeAddEvent extends FileTreeMutationEventInvalidation {
-  operation: 'add';
+  operation: "add";
   path: FileTreePublicId;
 }
 
 export interface FileTreeRemoveEvent extends FileTreeMutationEventInvalidation {
-  operation: 'remove';
+  operation: "remove";
   path: FileTreePublicId;
   recursive: boolean;
 }
 
 export interface FileTreeMoveEvent extends FileTreeMutationEventInvalidation {
   from: FileTreePublicId;
-  operation: 'move';
+  operation: "move";
   to: FileTreePublicId;
 }
 
 export interface FileTreeResetEvent extends FileTreeMutationEventInvalidation {
-  operation: 'reset';
+  operation: "reset";
   pathCountAfter: number;
   pathCountBefore: number;
   usedPreparedInput: boolean;
@@ -308,20 +301,15 @@ export type FileTreeMutationSemanticEvent =
 
 export interface FileTreeBatchEvent extends FileTreeMutationEventInvalidation {
   events: readonly FileTreeMutationSemanticEvent[];
-  operation: 'batch';
+  operation: "batch";
 }
 
-export type FileTreeMutationEvent =
-  | FileTreeMutationSemanticEvent
-  | FileTreeBatchEvent;
+export type FileTreeMutationEvent = FileTreeMutationSemanticEvent | FileTreeBatchEvent;
 
-export type FileTreeMutationEventType = FileTreeMutationEvent['operation'];
+export type FileTreeMutationEventType = FileTreeMutationEvent["operation"];
 
-export type FileTreeMutationEventForType<
-  TType extends FileTreeMutationEventType | '*',
-> = TType extends '*'
-  ? FileTreeMutationEvent
-  : Extract<FileTreeMutationEvent, { operation: TType }>;
+export type FileTreeMutationEventForType<TType extends FileTreeMutationEventType | "*"> =
+  TType extends "*" ? FileTreeMutationEvent : Extract<FileTreeMutationEvent, { operation: TType }>;
 
 interface FileTreeResetBehaviorOptions {
   // When provided, replaces the baseline expansion set stored at construction
@@ -347,34 +335,25 @@ export type FileTreeResetPreparedOptions = FileTreeResetBehaviorOptions & {
 export interface FileTreeMutationHandle {
   add(path: FileTreePublicId): void;
   batch(operations: readonly FileTreeBatchOperation[]): void;
-  move(
-    fromPath: FileTreePublicId,
-    toPath: FileTreePublicId,
-    options?: FileTreeMoveOptions
-  ): void;
-  onMutation<TType extends FileTreeMutationEventType | '*'>(
+  move(fromPath: FileTreePublicId, toPath: FileTreePublicId, options?: FileTreeMoveOptions): void;
+  onMutation<TType extends FileTreeMutationEventType | "*">(
     type: TType,
-    handler: (event: FileTreeMutationEventForType<TType>) => void
+    handler: (event: FileTreeMutationEventForType<TType>) => void,
   ): () => void;
   remove(path: FileTreePublicId, options?: FileTreeRemoveOptions): void;
   // Exactly one of `paths` or `preparedInput` is required. Pass raw `paths`
   // (optionally with a matching `preparedInput`), or pass `preparedInput`
   // alone to skip the parse + sort that raw `paths` would otherwise require.
-  resetPaths(
-    paths: readonly FileTreePublicId[],
-    options?: FileTreeResetOptions
-  ): void;
+  resetPaths(paths: readonly FileTreePublicId[], options?: FileTreeResetOptions): void;
   resetPaths(options: FileTreeResetPreparedOptions): void;
 }
 
 export type FileTreeListener = () => void;
 
-export type FileTreeSelectionChangeListener = (
-  selectedPaths: readonly FileTreePublicId[]
-) => void;
+export type FileTreeSelectionChangeListener = (selectedPaths: readonly FileTreePublicId[]) => void;
 
 export interface FileTreeContextMenuItem {
-  kind: 'directory' | 'file';
+  kind: "directory" | "file";
   name: string;
   path: FileTreePublicId;
 }
@@ -397,17 +376,14 @@ export interface FileTreeHeaderCompositionOptions {
   render?: () => HTMLElement | null;
 }
 
-export type FileTreeContextMenuTriggerMode = 'both' | 'button' | 'right-click';
-export type FileTreeContextMenuButtonVisibility = 'always' | 'when-needed';
+export type FileTreeContextMenuTriggerMode = "both" | "button" | "right-click";
+export type FileTreeContextMenuButtonVisibility = "always" | "when-needed";
 
 export interface FileTreeContextMenuCompositionOptions {
   enabled?: boolean;
   triggerMode?: FileTreeContextMenuTriggerMode;
   buttonVisibility?: FileTreeContextMenuButtonVisibility;
-  onOpen?: (
-    item: FileTreeContextMenuItem,
-    context: FileTreeContextMenuOpenContext
-  ) => void;
+  onOpen?: (item: FileTreeContextMenuItem, context: FileTreeContextMenuOpenContext) => void;
   onClose?: () => void;
   /**
    * If the interactive menu surface renders through a portal instead of inside
@@ -417,7 +393,7 @@ export interface FileTreeContextMenuCompositionOptions {
    */
   render?: (
     item: FileTreeContextMenuItem,
-    context: FileTreeContextMenuOpenContext
+    context: FileTreeContextMenuOpenContext,
   ) => HTMLElement | null;
 }
 
@@ -436,9 +412,7 @@ export interface FileTreeRowDecorationIcon {
   title?: string;
 }
 
-export type FileTreeRowDecoration =
-  | FileTreeRowDecorationText
-  | FileTreeRowDecorationIcon;
+export type FileTreeRowDecoration = FileTreeRowDecorationText | FileTreeRowDecorationIcon;
 
 export interface FileTreeRowDecorationContext {
   item: FileTreeContextMenuItem;
@@ -446,5 +420,5 @@ export interface FileTreeRowDecorationContext {
 }
 
 export type FileTreeRowDecorationRenderer = (
-  context: FileTreeRowDecorationContext
+  context: FileTreeRowDecorationContext,
 ) => FileTreeRowDecoration | null;

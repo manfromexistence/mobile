@@ -30,7 +30,7 @@ test("Claude passthrough: stream field must be a boolean (stream=true)", () => {
     true,
     null,
     null,
-    null
+    null,
   );
 
   const result = translateRequest(
@@ -41,7 +41,7 @@ test("Claude passthrough: stream field must be a boolean (stream=true)", () => {
     true,
     null,
     null,
-    null
+    null,
   );
 
   assert.equal(typeof result.stream, "boolean", "stream must be a boolean, not an object");
@@ -64,7 +64,7 @@ test("Claude passthrough: stream field must be a boolean (stream=false)", () => 
     false,
     null,
     null,
-    null
+    null,
   );
 
   const result = translateRequest(
@@ -75,7 +75,7 @@ test("Claude passthrough: stream field must be a boolean (stream=false)", () => 
     false,
     null,
     null,
-    null
+    null,
   );
 
   assert.equal(typeof result.stream, "boolean", "stream must be a boolean, not an object");
@@ -97,7 +97,7 @@ test("Claude passthrough: passing an object as stream propagates invalid type (g
     true,
     null,
     null,
-    null
+    null,
   );
 
   // Simulate the old bug: passing openaiBody (an object) where stream should be
@@ -109,7 +109,7 @@ test("Claude passthrough: passing an object as stream propagates invalid type (g
     openaiBody, // BUG: object instead of boolean
     null,
     null,
-    null
+    null,
   );
 
   // This test documents the bug: if an object is passed as stream, it ends up
@@ -117,6 +117,6 @@ test("Claude passthrough: passing an object as stream propagates invalid type (g
   assert.notEqual(
     typeof result.stream,
     "boolean",
-    "passing an object as stream should produce a non-boolean (documents the bug)"
+    "passing an object as stream should produce a non-boolean (documents the bug)",
   );
 });

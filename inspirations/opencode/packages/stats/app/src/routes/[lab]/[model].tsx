@@ -1,11 +1,11 @@
-import "../index.css"
-import { Meta, Title } from "@solidjs/meta"
-import { ProviderIcon } from "@opencode-ai/ui/provider-icon"
-import { geoEquirectangular, geoPath } from "d3-geo"
-import { scaleSqrt } from "d3-scale"
-import countryCodesSource from "i18n-iso-countries/codes.json?raw"
-import { feature, mesh } from "topojson-client"
-import countriesTopologySource from "world-atlas/countries-50m.json?raw"
+import "../index.css";
+import { Meta, Title } from "@solidjs/meta";
+import { ProviderIcon } from "@opencode-ai/ui/provider-icon";
+import { geoEquirectangular, geoPath } from "d3-geo";
+import { scaleSqrt } from "d3-scale";
+import countryCodesSource from "i18n-iso-countries/codes.json?raw";
+import { feature, mesh } from "topojson-client";
+import countriesTopologySource from "world-atlas/countries-50m.json?raw";
 import {
   getStatsModelData,
   type CountryEntry,
@@ -13,16 +13,16 @@ import {
   type ModelUsagePoint,
   type StatsModelData,
   type UsageRange,
-} from "@opencode-ai/stats-core/domain/home"
-import { createAsync, query, useParams } from "@solidjs/router"
-import { createMemo, createSignal, For, onMount, Show, type JSX } from "solid-js"
-import { getRequestEvent } from "solid-js/web"
-import type { FeatureCollection, GeometryObject, GeoJsonProperties } from "geojson"
-import type { GeometryCollection, Topology } from "topojson-specification"
-import { LocaleLinks } from "../../component/locale-links"
-import { useI18n } from "../../context/i18n"
-import { useLanguage } from "../../context/language"
-import { localizedUrl } from "../../lib/language"
+} from "@opencode-ai/stats-core/domain/home";
+import { createAsync, query, useParams } from "@solidjs/router";
+import { createMemo, createSignal, For, onMount, Show, type JSX } from "solid-js";
+import { getRequestEvent } from "solid-js/web";
+import type { FeatureCollection, GeometryObject, GeoJsonProperties } from "geojson";
+import type { GeometryCollection, Topology } from "topojson-specification";
+import { LocaleLinks } from "../../component/locale-links";
+import { useI18n } from "../../context/i18n";
+import { useLanguage } from "../../context/language";
+import { localizedUrl } from "../../lib/language";
 import {
   findModelCatalogEntry,
   formatCatalogLabName,
@@ -30,10 +30,10 @@ import {
   type ModelCatalog,
   type ModelCatalogCost,
   type ModelCatalogEntry,
-} from "../model-catalog"
-import { SectionHeading } from "../section-heading"
-import { runStatsEffect } from "../../stats-runtime"
-import { setStatsPageCacheHeaders } from "../stats-cache"
+} from "../model-catalog";
+import { SectionHeading } from "../section-heading";
+import { runStatsEffect } from "../../stats-runtime";
+import { setStatsPageCacheHeaders } from "../stats-cache";
 import {
   applyThemePreference,
   Footer,
@@ -43,80 +43,89 @@ import {
   themeStorageKey,
   type HeaderLink,
   type ThemePreference,
-} from "../stats-shell"
+} from "../stats-shell";
 
-const statsUnfurlPath = "banner.png"
-const geoMapWidth = 960
-const geoMapHeight = 430
+const statsUnfurlPath = "banner.png";
+const geoMapWidth = 960;
+const geoMapHeight = 430;
 
-type IsoCountryCode = readonly [string, string, string]
-type WorldCountryProperties = GeoJsonProperties & { name?: string }
-type WorldTopology = Topology<{ countries: GeometryCollection<WorldCountryProperties> }>
+type IsoCountryCode = readonly [string, string, string];
+type WorldCountryProperties = GeoJsonProperties & { name?: string };
+type WorldTopology = Topology<{ countries: GeometryCollection<WorldCountryProperties> }>;
 
 const countryNumericIds = new Map(
-  (JSON.parse(countryCodesSource) as IsoCountryCode[]).map((country) => [country[0], country[2]] as const),
-)
-const worldTopology = JSON.parse(countriesTopologySource) as WorldTopology
+  (JSON.parse(countryCodesSource) as IsoCountryCode[]).map(
+    (country) => [country[0], country[2]] as const,
+  ),
+);
+const worldTopology = JSON.parse(countriesTopologySource) as WorldTopology;
 const worldCountryGeometries: GeometryCollection<WorldCountryProperties> = {
   ...worldTopology.objects.countries,
-  geometries: worldTopology.objects.countries.geometries.filter((country) => String(country.id ?? "") !== "010"),
-}
-const worldCountries = feature<WorldCountryProperties>(worldTopology, worldCountryGeometries) as FeatureCollection<
-  GeometryObject,
-  WorldCountryProperties
->
+  geometries: worldTopology.objects.countries.geometries.filter(
+    (country) => String(country.id ?? "") !== "010",
+  ),
+};
+const worldCountries = feature<WorldCountryProperties>(
+  worldTopology,
+  worldCountryGeometries,
+) as FeatureCollection<GeometryObject, WorldCountryProperties>;
 const worldProjection = geoEquirectangular().fitExtent(
   [
     [10, 12],
     [geoMapWidth - 10, geoMapHeight - 12],
   ],
   worldCountries,
-)
-const worldPath = geoPath(worldProjection)
+);
+const worldPath = geoPath(worldProjection);
 const worldCountryPaths = worldCountries.features.map((country) => ({
   id: String(country.id ?? "").padStart(3, "0"),
   path: worldPath(country) ?? "",
   marker: geoCountryMarker(country),
-}))
-const worldBorderPath = worldPath(mesh(worldTopology, worldCountryGeometries, (a, b) => a !== b)) ?? ""
+}));
+const worldBorderPath =
+  worldPath(mesh(worldTopology, worldCountryGeometries, (a, b) => a !== b)) ?? "";
 
 const getModelData = query(async (lab: string, model: string) => {
-  "use server"
-  return runStatsEffect(getStatsModelData(model, lab))
-}, "getStatsModelData")
+  "use server";
+  return runStatsEffect(getStatsModelData(model, lab));
+}, "getStatsModelData");
 
 export default function StatsModel() {
-  const i18n = useI18n()
-  const language = useLanguage()
-  const event = getRequestEvent()
-  setStatsPageCacheHeaders(event?.response.headers)
-  const params = useParams()
-  const labParam = createMemo(() => params.lab ?? "")
-  const modelParam = createMemo(() => params.model ?? "")
-  const catalog = createAsync(() => getModelCatalog())
+  const i18n = useI18n();
+  const language = useLanguage();
+  const event = getRequestEvent();
+  setStatsPageCacheHeaders(event?.response.headers);
+  const params = useParams();
+  const labParam = createMemo(() => params.lab ?? "");
+  const modelParam = createMemo(() => params.model ?? "");
+  const catalog = createAsync(() => getModelCatalog());
   const catalogEntry = createMemo(() => {
-    const data = catalog()
-    if (!data) return undefined
-    return findModelCatalogEntry(data, modelParam(), labParam()) ?? null
-  })
+    const data = catalog();
+    if (!data) return undefined;
+    return findModelCatalogEntry(data, modelParam(), labParam()) ?? null;
+  });
   const stats = createAsync(() => {
-    const entry = catalogEntry()
-    if (catalog() === undefined || entry === undefined) return Promise.resolve(undefined)
-    if (!entry && (!labParam() || !modelParam())) return Promise.resolve(null)
-    return getModelData(labParam(), entry?.slug ?? modelParam())
-  })
-  const githubStars = createAsync(() => getGitHubStars())
-  const [themePreference, setThemePreference] = createSignal<ThemePreference>("system")
-  const modelName = createMemo(() => catalogEntry()?.name ?? stats()?.model ?? modelParam() ?? i18n.t("model.fallback"))
-  const labName = createMemo(() => formatCatalogLabName(catalogEntry()?.lab ?? stats()?.provider ?? labParam()))
-  const modelTitle = createMemo(() => i18n.t("model.title", { model: modelName() }))
-  const modelDescription = createMemo(() => i18n.t("model.description", { model: modelName() }))
+    const entry = catalogEntry();
+    if (catalog() === undefined || entry === undefined) return Promise.resolve(undefined);
+    if (!entry && (!labParam() || !modelParam())) return Promise.resolve(null);
+    return getModelData(labParam(), entry?.slug ?? modelParam());
+  });
+  const githubStars = createAsync(() => getGitHubStars());
+  const [themePreference, setThemePreference] = createSignal<ThemePreference>("system");
+  const modelName = createMemo(
+    () => catalogEntry()?.name ?? stats()?.model ?? modelParam() ?? i18n.t("model.fallback"),
+  );
+  const labName = createMemo(() =>
+    formatCatalogLabName(catalogEntry()?.lab ?? stats()?.provider ?? labParam()),
+  );
+  const modelTitle = createMemo(() => i18n.t("model.title", { model: modelName() }));
+  const modelDescription = createMemo(() => i18n.t("model.description", { model: modelName() }));
   const modelPath = createMemo(
     () =>
       `/data/${catalogEntry()?.id ?? [labParam(), stats()?.slug ?? modelParam()].filter((part) => part.length > 0).join("/")}`,
-  )
-  const modelUrl = createMemo(() => localizedUrl(language.locale(), modelPath()))
-  const statsUnfurlUrl = new URL(statsUnfurlPath, localizedUrl("en", "/data/")).toString()
+  );
+  const modelUrl = createMemo(() => localizedUrl(language.locale(), modelPath()));
+  const statsUnfurlUrl = new URL(statsUnfurlPath, localizedUrl("en", "/data/")).toString();
   const modelHeaderLinks = createMemo<readonly HeaderLink[]>(() => [
     { href: "#overview", label: i18n.t("nav.overview") },
     { href: "#usage", label: i18n.t("nav.usage") },
@@ -124,7 +133,7 @@ export default function StatsModel() {
     { href: "#efficiency", label: i18n.t("nav.efficiency") },
     { href: "#geo-breakdown", label: i18n.t("nav.geoBreakdown") },
     { href: "#peers", label: i18n.t("nav.peers") },
-  ])
+  ]);
   const modelFooterLinks = createMemo<readonly HeaderLink[]>(() => [
     { href: import.meta.env.BASE_URL, label: i18n.t("nav.dataHome") },
     { href: `${import.meta.env.BASE_URL}#top-models`, label: i18n.t("nav.topModels") },
@@ -133,21 +142,21 @@ export default function StatsModel() {
     { href: `${import.meta.env.BASE_URL}#cache-ratio`, label: i18n.t("nav.cacheRatio") },
     { href: `${import.meta.env.BASE_URL}#market-share`, label: i18n.t("nav.marketShare") },
     { href: `${import.meta.env.BASE_URL}#geo-breakdown`, label: i18n.t("nav.geoBreakdown") },
-  ])
+  ]);
   const updateThemePreference = (preference: ThemePreference) => {
-    applyThemePreference(preference)
-    setThemePreference(preference)
-    if (typeof window === "undefined") return
-    window.localStorage.setItem(themeStorageKey, preference)
-  }
+    applyThemePreference(preference);
+    setThemePreference(preference);
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(themeStorageKey, preference);
+  };
 
   onMount(() => {
-    if (typeof window === "undefined") return
-    const preference = window.localStorage.getItem(themeStorageKey)
-    const nextPreference = isThemePreference(preference) ? preference : "system"
-    applyThemePreference(nextPreference)
-    setThemePreference(nextPreference)
-  })
+    if (typeof window === "undefined") return;
+    const preference = window.localStorage.getItem(themeStorageKey);
+    const nextPreference = isThemePreference(preference) ? preference : "system";
+    applyThemePreference(nextPreference);
+    setThemePreference(nextPreference);
+  });
 
   return (
     <main data-page="stats" data-theme={themePreference()}>
@@ -169,11 +178,18 @@ export default function StatsModel() {
       <Meta name="twitter:description" content={modelDescription()} />
       <Meta name="twitter:image" content={statsUnfurlUrl} />
       <Meta name="twitter:image:alt" content={i18n.t("app.unfurlAlt")} />
-      <Header githubStars={githubStars() ?? "150K"} links={modelHeaderLinks()} brandHref={import.meta.env.BASE_URL} />
+      <Header
+        githubStars={githubStars() ?? "150K"}
+        links={modelHeaderLinks()}
+        brandHref={import.meta.env.BASE_URL}
+      />
       <div data-component="container">
         <div data-component="content">
           <Show when={catalogEntry() || stats() !== undefined} fallback={<ModelLoading />}>
-            <Show when={catalogEntry() || stats()} fallback={<ModelNotFound lab={labParam()} model={modelParam()} />}>
+            <Show
+              when={catalogEntry() || stats()}
+              fallback={<ModelNotFound lab={labParam()} model={modelParam()} />}
+            >
               <>
                 <ModelHero
                   data={stats() ?? null}
@@ -198,12 +214,12 @@ export default function StatsModel() {
         />
       </div>
     </main>
-  )
+  );
 }
 
 function ModelLoading() {
-  const i18n = useI18n()
-  const language = useLanguage()
+  const i18n = useI18n();
+  const language = useLanguage();
   return (
     <>
       <section id="overview" data-section="model-hero">
@@ -222,15 +238,18 @@ function ModelLoading() {
         </div>
       </section>
       <section data-section="model-panel">
-        <ModelEmptyState title={i18n.t("model.loadingTitle")} description={i18n.t("model.loadingProfile")} />
+        <ModelEmptyState
+          title={i18n.t("model.loadingTitle")}
+          description={i18n.t("model.loadingProfile")}
+        />
       </section>
     </>
-  )
+  );
 }
 
 function ModelNotFound(props: { lab: string; model: string }) {
-  const i18n = useI18n()
-  const language = useLanguage()
+  const i18n = useI18n();
+  const language = useLanguage();
   return (
     <>
       <section id="overview" data-section="model-hero">
@@ -244,32 +263,39 @@ function ModelNotFound(props: { lab: string; model: string }) {
                 {props.model || i18n.t("model.fallback")}
               </a>
             </h1>
-            <p>{i18n.t("model.noMatched", { id: props.lab ? `${props.lab}/${props.model}` : props.model })}</p>
+            <p>
+              {i18n.t("model.noMatched", {
+                id: props.lab ? `${props.lab}/${props.model}` : props.model,
+              })}
+            </p>
           </div>
         </div>
       </section>
       <section data-section="model-panel">
-        <ModelEmptyState title={i18n.t("model.noDataTitle")} description={i18n.t("model.noDataDescription")} />
+        <ModelEmptyState
+          title={i18n.t("model.noDataTitle")}
+          description={i18n.t("model.noDataDescription")}
+        />
       </section>
     </>
-  )
+  );
 }
 
 function ModelHero(props: {
-  data: StatsModelData | null
-  catalog: ModelCatalogEntry | null
-  catalogData: ModelCatalog | null
-  labName: string
+  data: StatsModelData | null;
+  catalog: ModelCatalogEntry | null;
+  catalogData: ModelCatalog | null;
+  labName: string;
 }) {
-  const i18n = useI18n()
-  const language = useLanguage()
-  const labId = () => props.catalog?.lab ?? props.data?.provider ?? props.labName
-  const modelName = () => props.catalog?.name ?? props.data?.model ?? i18n.t("model.fallback")
-  const weights = () => props.catalog?.weights[0]
-  const labs = () => props.catalogData?.labs ?? []
+  const i18n = useI18n();
+  const language = useLanguage();
+  const labId = () => props.catalog?.lab ?? props.data?.provider ?? props.labName;
+  const modelName = () => props.catalog?.name ?? props.data?.model ?? i18n.t("model.fallback");
+  const weights = () => props.catalog?.weights[0];
+  const labs = () => props.catalogData?.labs ?? [];
   const labModels = () =>
     props.catalogData?.labs.find((lab) => lab.id === providerSlug(labId()))?.models ??
-    (props.catalog ? [props.catalog] : [])
+    (props.catalog ? [props.catalog] : []);
   return (
     <section id="overview" data-section="model-hero">
       <nav data-component="model-hero-breadcrumb" aria-label="Data breadcrumb">
@@ -345,7 +371,12 @@ function ModelHero(props: {
         <div data-slot="model-hero-actions">
           <Show when={props.catalog?.openWeights && weights()}>
             {(weight) => (
-              <a data-slot="model-hero-action" href={weight().url} target="_blank" rel="noopener noreferrer">
+              <a
+                data-slot="model-hero-action"
+                href={weight().url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <ModelHeroActionIcon kind="weights" />
                 <span>Model weights</span>
               </a>
@@ -381,7 +412,7 @@ function ModelHero(props: {
         )}
       </Show>
     </section>
-  )
+  );
 }
 
 function ModelHeroActionIcon(props: { kind: "weights" | "compare" }) {
@@ -392,7 +423,7 @@ function ModelHeroActionIcon(props: { kind: "weights" | "compare" }) {
         <path d="M8.5 4.5H11.5V7.5" stroke="currentColor" stroke-linecap="square" />
         <path d="M11.25 4.75L7.25 8.75" stroke="currentColor" stroke-linecap="square" />
       </svg>
-    )
+    );
   return (
     <svg data-slot="model-hero-action-icon" viewBox="0 0 16 16" aria-hidden="true" fill="none">
       <rect x="3.5" y="3.5" width="3" height="3" stroke="currentColor" />
@@ -400,19 +431,24 @@ function ModelHeroActionIcon(props: { kind: "weights" | "compare" }) {
       <rect x="3.5" y="9.5" width="3" height="3" stroke="currentColor" />
       <rect x="9.5" y="9.5" width="3" height="3" stroke="currentColor" />
     </svg>
-  )
+  );
 }
 
 function ModelHeroSparkline(props: { data: StatsModelData }) {
-  const values = () => props.data.usage.slice(-14).map((point) => point.tokens)
+  const values = () => props.data.usage.slice(-14).map((point) => point.tokens);
   return (
     <span data-slot="model-hero-sparkline" aria-hidden="true">
       <svg viewBox="0 0 36 24" fill="none">
         <path d={sparklineAreaPath(values())} fill="currentColor" opacity="0.14" />
-        <path d={sparklineLinePath(values())} stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+        <path
+          d={sparklineLinePath(values())}
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linejoin="round"
+        />
       </svg>
     </span>
-  )
+  );
 }
 
 function ChevronDownIcon() {
@@ -420,11 +456,11 @@ function ChevronDownIcon() {
     <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none">
       <path d="M4.75 6.25L8 9.5L11.25 6.25" stroke="currentColor" stroke-width="1.5" />
     </svg>
-  )
+  );
 }
 
 function ModelOverview(props: { data: StatsModelData | null }) {
-  const i18n = useI18n()
+  const i18n = useI18n();
   return (
     <section id="model-overview" data-section="model-panel">
       <SectionTitle
@@ -435,7 +471,10 @@ function ModelOverview(props: { data: StatsModelData | null }) {
       <Show
         when={props.data}
         fallback={
-          <ModelEmptyState title={i18n.t("model.noSummaryTitle")} description={i18n.t("model.noSummaryDescription")} />
+          <ModelEmptyState
+            title={i18n.t("model.noSummaryTitle")}
+            description={i18n.t("model.noSummaryDescription")}
+          />
         }
       >
         {(data) => (
@@ -470,52 +509,80 @@ function ModelOverview(props: { data: StatsModelData | null }) {
         )}
       </Show>
     </section>
-  )
+  );
 }
 
 function ModelUsageSection(props: { data: ModelUsagePoint[] }) {
-  const i18n = useI18n()
+  const i18n = useI18n();
   return (
     <section id="usage" data-section="model-panel">
-      <SectionTitle href="#usage" title={i18n.t("nav.usage")} description={i18n.t("model.usageDescription")} />
+      <SectionTitle
+        href="#usage"
+        title={i18n.t("nav.usage")}
+        description={i18n.t("model.usageDescription")}
+      />
       <Show
         when={props.data.some((item) => item.tokens > 0)}
         fallback={
-          <ModelEmptyState title={i18n.t("model.noUsageTitle")} description={i18n.t("model.noUsageDescription")} />
+          <ModelEmptyState
+            title={i18n.t("model.noUsageTitle")}
+            description={i18n.t("model.noUsageDescription")}
+          />
         }
       >
-        <ModelColumnChart data={props.data} metric="tokens" ariaLabel={i18n.t("model.dailyTokenChart")} />
+        <ModelColumnChart
+          data={props.data}
+          metric="tokens"
+          ariaLabel={i18n.t("model.dailyTokenChart")}
+        />
       </Show>
     </section>
-  )
+  );
 }
 
 function ModelUsersSection(props: { data: ModelUsagePoint[] }) {
-  const i18n = useI18n()
+  const i18n = useI18n();
   return (
     <section id="users" data-section="model-panel">
-      <SectionTitle href="#users" title={i18n.t("model.uniqueUsers")} description={i18n.t("model.usersDescription")} />
+      <SectionTitle
+        href="#users"
+        title={i18n.t("model.uniqueUsers")}
+        description={i18n.t("model.usersDescription")}
+      />
       <Show
         when={props.data.some((item) => item.users > 0)}
         fallback={
-          <ModelEmptyState title={i18n.t("model.noUsersTitle")} description={i18n.t("model.noUsersDescription")} />
+          <ModelEmptyState
+            title={i18n.t("model.noUsersTitle")}
+            description={i18n.t("model.noUsersDescription")}
+          />
         }
       >
-        <ModelColumnChart data={props.data} metric="users" ariaLabel={i18n.t("model.dailyUserChart")} />
+        <ModelColumnChart
+          data={props.data}
+          metric="users"
+          ariaLabel={i18n.t("model.dailyUserChart")}
+        />
       </Show>
     </section>
-  )
+  );
 }
 
-function ModelColumnChart(props: { data: ModelUsagePoint[]; metric: "tokens" | "users"; ariaLabel: string }) {
-  const i18n = useI18n()
-  const [activeIndex, setActiveIndex] = createSignal<number>()
-  const max = createMemo(() => Math.max(0, ...props.data.map((item) => modelUsageMetricValue(item, props.metric))) || 1)
+function ModelColumnChart(props: {
+  data: ModelUsagePoint[];
+  metric: "tokens" | "users";
+  ariaLabel: string;
+}) {
+  const i18n = useI18n();
+  const [activeIndex, setActiveIndex] = createSignal<number>();
+  const max = createMemo(
+    () => Math.max(0, ...props.data.map((item) => modelUsageMetricValue(item, props.metric))) || 1,
+  );
   const activePoint = createMemo(() => {
-    const index = activeIndex()
-    if (index === undefined) return undefined
-    return props.data[index]
-  })
+    const index = activeIndex();
+    if (index === undefined) return undefined;
+    return props.data[index];
+  });
 
   return (
     <div
@@ -526,8 +593,8 @@ function ModelColumnChart(props: { data: ModelUsagePoint[]; metric: "tokens" | "
       aria-label={props.ariaLabel}
       style={{ "--model-usage-count": props.data.length } as JSX.CSSProperties}
       onPointerLeave={(event) => {
-        if (event.pointerType === "touch") return
-        setActiveIndex(undefined)
+        if (event.pointerType === "touch") return;
+        setActiveIndex(undefined);
       }}
     >
       <div data-slot="model-usage-axis" aria-hidden="true">
@@ -535,10 +602,14 @@ function ModelColumnChart(props: { data: ModelUsagePoint[]; metric: "tokens" | "
           {(point, index) => (
             <div
               data-active={activeIndex() === index() ? "true" : undefined}
-              data-label-hidden={isModelUsageLabelHidden(index(), props.data.length) ? "true" : undefined}
+              data-label-hidden={
+                isModelUsageLabelHidden(index(), props.data.length) ? "true" : undefined
+              }
             >
               <span data-slot="model-usage-label">
-                <span data-slot="model-usage-total">{formatModelUsageValue(point, props.metric)}</span>
+                <span data-slot="model-usage-total">
+                  {formatModelUsageValue(point, props.metric)}
+                </span>
                 <span data-slot="model-usage-date">{point.date}</span>
               </span>
             </div>
@@ -554,23 +625,25 @@ function ModelColumnChart(props: { data: ModelUsagePoint[]; metric: "tokens" | "
               tabIndex={0}
               aria-label={`${point.date} ${formatModelUsageValue(point, props.metric)} ${modelUsageLabel(props.metric, i18n)}`}
               data-active={activeIndex() === index() ? "true" : undefined}
-              data-muted={activeIndex() !== undefined && activeIndex() !== index() ? "true" : undefined}
+              data-muted={
+                activeIndex() !== undefined && activeIndex() !== index() ? "true" : undefined
+              }
               onPointerDown={(event) => {
-                if (event.pointerType !== "touch") return
-                setActiveIndex(index())
+                if (event.pointerType !== "touch") return;
+                setActiveIndex(index());
               }}
               onPointerEnter={() => setActiveIndex(index())}
               onPointerMove={(event) => {
-                if (event.pointerType === "touch") return
-                setActiveIndex(index())
+                if (event.pointerType === "touch") return;
+                setActiveIndex(index());
               }}
               onClick={() => setActiveIndex(index())}
               onFocus={() => setActiveIndex(index())}
               onBlur={() => setActiveIndex(undefined)}
               onKeyDown={(event) => {
-                if (event.key !== "Enter" && event.key !== " ") return
-                event.preventDefault()
-                setActiveIndex(index())
+                if (event.key !== "Enter" && event.key !== " ") return;
+                event.preventDefault();
+                setActiveIndex(index());
               }}
             >
               <div
@@ -589,7 +662,8 @@ function ModelColumnChart(props: { data: ModelUsagePoint[]; metric: "tokens" | "
                   >
                     <strong>{active().date}</strong>
                     <span>
-                      {formatModelUsageValue(active(), props.metric)} {modelUsageLabel(props.metric, i18n)}
+                      {formatModelUsageValue(active(), props.metric)}{" "}
+                      {modelUsageLabel(props.metric, i18n)}
                     </span>
                     <div data-slot="tooltip-divider" />
                     <p>
@@ -606,26 +680,29 @@ function ModelColumnChart(props: { data: ModelUsagePoint[]; metric: "tokens" | "
         </For>
       </div>
     </div>
-  )
+  );
 }
 
 function modelUsageMetricValue(point: ModelUsagePoint, metric: "tokens" | "users") {
-  if (metric === "users") return point.users
-  return point.tokens
+  if (metric === "users") return point.users;
+  return point.tokens;
 }
 
 function formatModelUsageValue(point: ModelUsagePoint, metric: "tokens" | "users") {
-  if (metric === "users") return formatUsers(point.users)
-  return formatTokens(point.tokens)
+  if (metric === "users") return formatUsers(point.users);
+  return formatTokens(point.tokens);
 }
 
 function modelUsageLabel(metric: "tokens" | "users", i18n: ReturnType<typeof useI18n>) {
-  if (metric === "users") return i18n.t("format.users")
-  return i18n.t("format.tokens")
+  if (metric === "users") return i18n.t("format.users");
+  return i18n.t("format.tokens");
 }
 
-function ModelEfficiencySection(props: { data: StatsModelData | null; catalog: ModelCatalogEntry | null }) {
-  const i18n = useI18n()
+function ModelEfficiencySection(props: {
+  data: StatsModelData | null;
+  catalog: ModelCatalogEntry | null;
+}) {
+  const i18n = useI18n();
   return (
     <section id="efficiency" data-section="model-panel">
       <SectionTitle
@@ -652,9 +729,13 @@ function ModelEfficiencySection(props: { data: StatsModelData | null; catalog: M
             <MetricCard
               label={i18n.t("model.costPerMillion")}
               value={
-                props.catalog?.cost ? formatCatalogPrice(props.catalog.cost) : formatMoney(data().totals.costPerMillion)
+                props.catalog?.cost
+                  ? formatCatalogPrice(props.catalog.cost)
+                  : formatMoney(data().totals.costPerMillion)
               }
-              detail={props.catalog?.cost ? i18n.t("model.inputOutput") : i18n.t("model.observedTokens")}
+              detail={
+                props.catalog?.cost ? i18n.t("model.inputOutput") : i18n.t("model.observedTokens")
+              }
             />
             <MetricCard
               label={i18n.t("model.costSession")}
@@ -675,34 +756,36 @@ function ModelEfficiencySection(props: { data: StatsModelData | null; catalog: M
         )}
       </Show>
     </section>
-  )
+  );
 }
 
 function ModelGeoBreakdownSection(props: { data: Record<UsageRange, CountryEntry[]> }) {
-  const i18n = useI18n()
-  const language = useLanguage()
-  const [activeCountry, setActiveCountry] = createSignal<string>()
-  const data = createMemo(() => props.data["2M"])
+  const i18n = useI18n();
+  const language = useLanguage();
+  const [activeCountry, setActiveCountry] = createSignal<string>();
+  const data = createMemo(() => props.data["2M"]);
   const countryById = createMemo(
     () =>
       new Map(
         data().flatMap((country) => {
-          const id = countryNumericId(country.country)
-          return id ? [[id, country] as const] : []
+          const id = countryNumericId(country.country);
+          return id ? [[id, country] as const] : [];
         }),
       ),
-  )
-  const maxTokens = createMemo(() => Math.max(0, ...data().map((country) => country.tokens)) || 1)
-  const topCountries = createMemo(() => data().slice(0, 15))
-  const active = createMemo(() => data().find((country) => country.country === activeCountry()) ?? data()[0])
+  );
+  const maxTokens = createMemo(() => Math.max(0, ...data().map((country) => country.tokens)) || 1);
+  const topCountries = createMemo(() => data().slice(0, 15));
+  const active = createMemo(
+    () => data().find((country) => country.country === activeCountry()) ?? data()[0],
+  );
 
   return (
     <section
       id="geo-breakdown"
       data-section="geo-breakdown"
       onPointerLeave={(event) => {
-        if (event.pointerType === "touch") return
-        setActiveCountry(undefined)
+        if (event.pointerType === "touch") return;
+        setActiveCountry(undefined);
       }}
     >
       <SectionTitle
@@ -712,7 +795,12 @@ function ModelGeoBreakdownSection(props: { data: Record<UsageRange, CountryEntry
       />
       <Show
         when={data().length > 0}
-        fallback={<ModelEmptyState title={i18n.t("model.noGeoTitle")} description={i18n.t("model.noGeoDescription")} />}
+        fallback={
+          <ModelEmptyState
+            title={i18n.t("model.noGeoTitle")}
+            description={i18n.t("model.noGeoDescription")}
+          />
+        }
       >
         <div data-component="geo-breakdown">
           <div data-slot="geo-map-panel">
@@ -726,7 +814,9 @@ function ModelGeoBreakdownSection(props: { data: Record<UsageRange, CountryEntry
               {(country) => (
                 <div data-slot="geo-active-country">
                   <span>#{String(country().rank).padStart(2, "0")}</span>
-                  <strong>{formatCountryName(country().country, language.tag(language.locale()), i18n)}</strong>
+                  <strong>
+                    {formatCountryName(country().country, language.tag(language.locale()), i18n)}
+                  </strong>
                   <p>
                     <b>{formatGeoTokens(country().tokens)}</b>
                     <em>{formatGeoShare(country().share)}</em>
@@ -744,23 +834,25 @@ function ModelGeoBreakdownSection(props: { data: Record<UsageRange, CountryEntry
         </div>
       </Show>
     </section>
-  )
+  );
 }
 
 function GeoWorldMap(props: {
-  countryById: Map<string, CountryEntry>
-  activeCountry: string | undefined
-  maxTokens: number
-  onActiveCountryChange: (country: string | undefined) => void
+  countryById: Map<string, CountryEntry>;
+  activeCountry: string | undefined;
+  maxTokens: number;
+  onActiveCountryChange: (country: string | undefined) => void;
 }) {
-  const i18n = useI18n()
-  const opacityScale = createMemo(() => scaleSqrt().domain([0, props.maxTokens]).range([0.26, 0.96]).clamp(true))
+  const i18n = useI18n();
+  const opacityScale = createMemo(() =>
+    scaleSqrt().domain([0, props.maxTokens]).range([0.26, 0.96]).clamp(true),
+  );
   const countryOpacity = (country: CountryEntry | undefined) => {
-    if (!country) return 0
-    const opacity = opacityScale()(country.tokens)
-    if (!props.activeCountry || props.activeCountry === country.country) return opacity
-    return Math.max(0.18, opacity * 0.36)
-  }
+    if (!country) return 0;
+    const opacity = opacityScale()(country.tokens);
+    if (!props.activeCountry || props.activeCountry === country.country) return opacity;
+    return Math.max(0.18, opacity * 0.36);
+  };
 
   return (
     <svg
@@ -773,34 +865,36 @@ function GeoWorldMap(props: {
       <g data-slot="geo-countries">
         <For each={worldCountryPaths}>
           {(country) => {
-            const entry = () => props.countryById.get(country.id)
+            const entry = () => props.countryById.get(country.id);
             return (
               <path
                 d={country.path}
                 data-country-id={country.id}
                 data-has-data={entry() ? "true" : undefined}
                 data-active={entry()?.country === props.activeCountry ? "true" : undefined}
-                style={{ "--geo-country-opacity": String(countryOpacity(entry())) } as JSX.CSSProperties}
+                style={
+                  { "--geo-country-opacity": String(countryOpacity(entry())) } as JSX.CSSProperties
+                }
                 aria-hidden="true"
                 onPointerEnter={() => {
-                  const item = entry()
-                  if (!item) return
-                  props.onActiveCountryChange(item.country)
+                  const item = entry();
+                  if (!item) return;
+                  props.onActiveCountryChange(item.country);
                 }}
                 onClick={() => {
-                  const item = entry()
-                  if (!item) return
-                  props.onActiveCountryChange(item.country)
+                  const item = entry();
+                  if (!item) return;
+                  props.onActiveCountryChange(item.country);
                 }}
               />
-            )
+            );
           }}
         </For>
       </g>
       <g data-slot="geo-country-markers">
         <For each={worldCountryPaths}>
           {(country) => {
-            const entry = () => props.countryById.get(country.id)
+            const entry = () => props.countryById.get(country.id);
             return (
               <Show when={country.marker && entry() ? country.marker : undefined}>
                 {(marker) => (
@@ -809,39 +903,45 @@ function GeoWorldMap(props: {
                     cy={marker().y}
                     r={entry()?.country === props.activeCountry ? 3.4 : 2.4}
                     data-active={entry()?.country === props.activeCountry ? "true" : undefined}
-                    style={{ "--geo-country-opacity": String(countryOpacity(entry())) } as JSX.CSSProperties}
+                    style={
+                      {
+                        "--geo-country-opacity": String(countryOpacity(entry())),
+                      } as JSX.CSSProperties
+                    }
                     aria-hidden="true"
                     onPointerEnter={() => {
-                      const item = entry()
-                      if (!item) return
-                      props.onActiveCountryChange(item.country)
+                      const item = entry();
+                      if (!item) return;
+                      props.onActiveCountryChange(item.country);
                     }}
                     onClick={() => {
-                      const item = entry()
-                      if (!item) return
-                      props.onActiveCountryChange(item.country)
+                      const item = entry();
+                      if (!item) return;
+                      props.onActiveCountryChange(item.country);
                     }}
                   />
                 )}
               </Show>
-            )
+            );
           }}
         </For>
       </g>
       <path data-slot="geo-borders" d={worldBorderPath} aria-hidden="true" />
     </svg>
-  )
+  );
 }
 
 function GeoCountryList(props: {
-  data: CountryEntry[]
-  activeCountry: string | undefined
-  maxTokens: number
-  onActiveCountryChange: (country: string | undefined) => void
+  data: CountryEntry[];
+  activeCountry: string | undefined;
+  maxTokens: number;
+  onActiveCountryChange: (country: string | undefined) => void;
 }) {
-  const i18n = useI18n()
-  const language = useLanguage()
-  const opacityScale = createMemo(() => scaleSqrt().domain([0, props.maxTokens]).range([0.26, 0.96]).clamp(true))
+  const i18n = useI18n();
+  const language = useLanguage();
+  const opacityScale = createMemo(() =>
+    scaleSqrt().domain([0, props.maxTokens]).range([0.26, 0.96]).clamp(true),
+  );
 
   return (
     <ol data-component="geo-country-list">
@@ -851,7 +951,9 @@ function GeoCountryList(props: {
             <button
               type="button"
               data-active={props.activeCountry === country.country ? "true" : undefined}
-              style={{ "--geo-row-opacity": String(opacityScale()(country.tokens)) } as JSX.CSSProperties}
+              style={
+                { "--geo-row-opacity": String(opacityScale()(country.tokens)) } as JSX.CSSProperties
+              }
               aria-label={`${formatCountryName(country.country, language.tag(language.locale()), i18n)} ${formatGeoTokens(country.tokens)} ${formatGeoShare(country.share)}`}
               onClick={() => props.onActiveCountryChange(country.country)}
               onPointerEnter={() => props.onActiveCountryChange(country.country)}
@@ -859,7 +961,9 @@ function GeoCountryList(props: {
             >
               <span>{String(country.rank).padStart(2, "0")}</span>
               <i />
-              <strong>{formatCountryName(country.country, language.tag(language.locale()), i18n)}</strong>
+              <strong>
+                {formatCountryName(country.country, language.tag(language.locale()), i18n)}
+              </strong>
               <em>{formatGeoTokens(country.tokens)}</em>
               <b>{formatGeoShare(country.share)}</b>
             </button>
@@ -867,18 +971,25 @@ function GeoCountryList(props: {
         )}
       </For>
     </ol>
-  )
+  );
 }
 
 function ModelPeersSection(props: { data: StatsModelData | null }) {
-  const i18n = useI18n()
+  const i18n = useI18n();
   return (
     <section id="peers" data-section="model-panel">
-      <SectionTitle href="#peers" title={i18n.t("nav.peers")} description={i18n.t("model.peersDescription")} />
+      <SectionTitle
+        href="#peers"
+        title={i18n.t("nav.peers")}
+        description={i18n.t("model.peersDescription")}
+      />
       <Show
         when={props.data?.peers.length}
         fallback={
-          <ModelEmptyState title={i18n.t("model.noPeersTitle")} description={i18n.t("model.noPeersDescription")} />
+          <ModelEmptyState
+            title={i18n.t("model.noPeersTitle")}
+            description={i18n.t("model.noPeersDescription")}
+          />
         }
       >
         <ol data-component="model-peer-list">
@@ -888,25 +999,32 @@ function ModelPeersSection(props: { data: StatsModelData | null }) {
         </ol>
       </Show>
     </section>
-  )
+  );
 }
 
-function MetricCard(props: { label: string; value: string; detail: string; state?: "positive" | "negative" }) {
+function MetricCard(props: {
+  label: string;
+  value: string;
+  detail: string;
+  state?: "positive" | "negative";
+}) {
   return (
     <article data-component="model-metric" data-state={props.state}>
       <span>{props.label}</span>
       <strong>{props.value}</strong>
       <p>{props.detail}</p>
     </article>
-  )
+  );
 }
 
 function PeerRow(props: { peer: ModelPeerEntry; active: boolean }) {
-  const language = useLanguage()
+  const language = useLanguage();
   return (
     <li>
       <a
-        href={language.route(`${import.meta.env.BASE_URL}${providerSlug(props.peer.provider)}/${props.peer.slug}`)}
+        href={language.route(
+          `${import.meta.env.BASE_URL}${providerSlug(props.peer.provider)}/${props.peer.slug}`,
+        )}
         data-active={props.active ? "true" : undefined}
       >
         <span>{String(props.peer.rank).padStart(2, "0")}</span>
@@ -916,11 +1034,11 @@ function PeerRow(props: { peer: ModelPeerEntry; active: boolean }) {
         <b>{formatTokens(props.peer.tokens)}</b>
       </a>
     </li>
-  )
+  );
 }
 
 function SectionTitle(props: { href: string; title: string; description: string }) {
-  return <SectionHeading href={props.href} title={props.title} description={props.description} />
+  return <SectionHeading href={props.href} title={props.title} description={props.description} />;
 }
 
 function ModelEmptyState(props: { title: string; description: string; compact?: boolean }) {
@@ -929,14 +1047,14 @@ function ModelEmptyState(props: { title: string; description: string; compact?: 
       <strong>{props.title}</strong>
       <p>{props.description}</p>
     </div>
-  )
+  );
 }
 
 function getProviderIconId(author: string) {
-  if (author === "MiniMax") return "minimax"
-  if (author === "Moonshot") return "moonshotai"
-  if (author === "Zhipu") return "zhipuai"
-  return author.toLowerCase().replace(/[^a-z0-9]+/g, "")
+  if (author === "MiniMax") return "minimax";
+  if (author === "Moonshot") return "moonshotai";
+  if (author === "Zhipu") return "zhipuai";
+  return author.toLowerCase().replace(/[^a-z0-9]+/g, "");
 }
 
 function emptyCountryRecord(): Record<UsageRange, CountryEntry[]> {
@@ -949,147 +1067,149 @@ function emptyCountryRecord(): Record<UsageRange, CountryEntry[]> {
     "3M": [],
     YTD: [],
     ALL: [],
-  }
+  };
 }
 
 function countryNumericId(country: string) {
-  return countryNumericIds.get(country.toUpperCase())?.padStart(3, "0")
+  return countryNumericIds.get(country.toUpperCase())?.padStart(3, "0");
 }
 
 function geoCountryMarker(country: (typeof worldCountries.features)[number]) {
-  const bounds = worldPath.bounds(country)
-  const [x, y] = worldPath.centroid(country)
-  if (!Number.isFinite(x) || !Number.isFinite(y)) return undefined
-  if (bounds[1][0] - bounds[0][0] >= 3 && bounds[1][1] - bounds[0][1] >= 3) return undefined
-  return { x, y }
+  const bounds = worldPath.bounds(country);
+  const [x, y] = worldPath.centroid(country);
+  if (!Number.isFinite(x) || !Number.isFinite(y)) return undefined;
+  if (bounds[1][0] - bounds[0][0] >= 3 && bounds[1][1] - bounds[0][1] >= 3) return undefined;
+  return { x, y };
 }
 
 function formatCountryName(country: string, locale: string, i18n: ReturnType<typeof useI18n>) {
-  const code = country.toUpperCase()
-  if (code === "ZZ") return i18n.t("home.unknown")
-  if (!countryNumericId(code)) return code
-  return new Intl.DisplayNames([locale], { type: "region" }).of(code) ?? code
+  const code = country.toUpperCase();
+  if (code === "ZZ") return i18n.t("home.unknown");
+  if (!countryNumericId(code)) return code;
+  return new Intl.DisplayNames([locale], { type: "region" }).of(code) ?? code;
 }
 
 function formatGeoTokens(value: number) {
-  return formatTokens(value * 1_000_000_000_000)
+  return formatTokens(value * 1_000_000_000_000);
 }
 
 function formatGeoShare(value: number) {
-  return `${value.toFixed(value > 0 && value < 1 ? 1 : 0)}%`
+  return `${value.toFixed(value > 0 && value < 1 ? 1 : 0)}%`;
 }
 
 function modelUsageHeight(tokens: number, max: number) {
-  if (tokens <= 0) return 0
-  return Math.max(2, Math.min(100, (tokens / max) * 100))
+  if (tokens <= 0) return 0;
+  return Math.max(2, Math.min(100, (tokens / max) * 100));
 }
 
 function isModelUsageDense(count: number) {
-  return count > 20
+  return count > 20;
 }
 
 function isModelUsageLabelHidden(index: number, count: number) {
-  if (count <= 16) return false
-  const interval = Math.ceil(count / 8)
-  return index !== count - 1 && index % interval !== 0
+  if (count <= 16) return false;
+  const interval = Math.ceil(count / 8);
+  return index !== count - 1 && index % interval !== 0;
 }
 
 function formatRankMove(change: number) {
-  if (change > 0) return `+${change}`
-  return `${change}`
+  if (change > 0) return `+${change}`;
+  return `${change}`;
 }
 
 function formatHeroRank(rank: number | null) {
-  if (rank === null) return "--"
-  return String(rank).padStart(2, "0")
+  if (rank === null) return "--";
+  return String(rank).padStart(2, "0");
 }
 
 function sparklineLinePath(values: number[]) {
   return sparklinePoints(values)
     .map(
-      (point, index) => `${index === 0 ? "M" : "L"}${formatSparklinePoint(point.x)} ${formatSparklinePoint(point.y)}`,
+      (point, index) =>
+        `${index === 0 ? "M" : "L"}${formatSparklinePoint(point.x)} ${formatSparklinePoint(point.y)}`,
     )
-    .join(" ")
+    .join(" ");
 }
 
 function sparklineAreaPath(values: number[]) {
-  const points = sparklinePoints(values)
+  const points = sparklinePoints(values);
   return `M${formatSparklinePoint(points[0].x)} 18 ${points
     .map((point) => `L${formatSparklinePoint(point.x)} ${formatSparklinePoint(point.y)}`)
-    .join(" ")} L${formatSparklinePoint(points[points.length - 1].x)} 18 Z`
+    .join(" ")} L${formatSparklinePoint(points[points.length - 1].x)} 18 Z`;
 }
 
 function sparklinePoints(values: number[]) {
-  const normalized = values.length > 1 ? values : [values[0] ?? 0, values[0] ?? 0]
-  const min = Math.min(...normalized)
-  const max = Math.max(...normalized)
+  const normalized = values.length > 1 ? values : [values[0] ?? 0, values[0] ?? 0];
+  const min = Math.min(...normalized);
+  const max = Math.max(...normalized);
   return normalized.map((value, index) => ({
     x: 8 + (index / Math.max(1, normalized.length - 1)) * 20,
     y: min === max ? 12 : 18 - ((value - min) / (max - min)) * 12,
-  }))
+  }));
 }
 
 function formatSparklinePoint(value: number) {
-  return Number(value.toFixed(2)).toString()
+  return Number(value.toFixed(2)).toString();
 }
 
 function formatModelRankMoveLabel(data: StatsModelData, i18n: ReturnType<typeof useI18n>) {
-  if (data.rank === null) return i18n.t("model.noUsageLastWeek")
-  if (data.previousRank === null) return i18n.t("model.newThisWeek")
-  const change = data.previousRank - data.rank
-  if (change === 0) return i18n.t("model.sameAsPreviousWeek")
-  return i18n.t("model.vsPreviousWeek", { change: formatRankMove(change) })
+  if (data.rank === null) return i18n.t("model.noUsageLastWeek");
+  if (data.previousRank === null) return i18n.t("model.newThisWeek");
+  const change = data.previousRank - data.rank;
+  if (change === 0) return i18n.t("model.sameAsPreviousWeek");
+  return i18n.t("model.vsPreviousWeek", { change: formatRankMove(change) });
 }
 
 function formatTokens(value: number) {
   if (value >= 1_000_000_000_000)
-    return `${trimNumber(value / 1_000_000_000_000, value >= 10_000_000_000_000 ? 0 : 1)}T`
-  if (value >= 1_000_000_000) return `${trimNumber(value / 1_000_000_000, value >= 10_000_000_000 ? 0 : 1)}B`
-  if (value >= 1_000_000) return `${trimNumber(value / 1_000_000, value >= 10_000_000 ? 0 : 1)}M`
-  if (value >= 1_000) return `${trimNumber(value / 1_000, value >= 10_000 ? 0 : 1)}K`
-  return String(Math.round(value))
+    return `${trimNumber(value / 1_000_000_000_000, value >= 10_000_000_000_000 ? 0 : 1)}T`;
+  if (value >= 1_000_000_000)
+    return `${trimNumber(value / 1_000_000_000, value >= 10_000_000_000 ? 0 : 1)}B`;
+  if (value >= 1_000_000) return `${trimNumber(value / 1_000_000, value >= 10_000_000 ? 0 : 1)}M`;
+  if (value >= 1_000) return `${trimNumber(value / 1_000, value >= 10_000 ? 0 : 1)}K`;
+  return String(Math.round(value));
 }
 
 function formatInteger(value: number) {
-  return new Intl.NumberFormat("en").format(value)
+  return new Intl.NumberFormat("en").format(value);
 }
 
 function formatUsers(value: number) {
-  if (value >= 1_000_000) return `${trimNumber(value / 1_000_000, value >= 10_000_000 ? 0 : 1)}M`
-  if (value >= 1_000) return `${trimNumber(value / 1_000, value >= 10_000 ? 0 : 1)}K`
-  return formatInteger(Math.round(value))
+  if (value >= 1_000_000) return `${trimNumber(value / 1_000_000, value >= 10_000_000 ? 0 : 1)}M`;
+  if (value >= 1_000) return `${trimNumber(value / 1_000, value >= 10_000 ? 0 : 1)}K`;
+  return formatInteger(Math.round(value));
 }
 
 function formatPercent(value: number) {
-  return `${value.toFixed(value > 0 && value < 10 ? 1 : 0)}%`
+  return `${value.toFixed(value > 0 && value < 10 ? 1 : 0)}%`;
 }
 
 function formatMoney(value: number) {
-  if (value >= 1_000_000) return `$${trimNumber(value / 1_000_000, value >= 10_000_000 ? 0 : 1)}M`
-  if (value >= 1_000) return `$${trimNumber(value / 1_000, value >= 10_000 ? 0 : 1)}K`
-  return `$${value.toFixed(value >= 10 ? 0 : 2)}`
+  if (value >= 1_000_000) return `$${trimNumber(value / 1_000_000, value >= 10_000_000 ? 0 : 1)}M`;
+  if (value >= 1_000) return `$${trimNumber(value / 1_000, value >= 10_000 ? 0 : 1)}K`;
+  return `$${value.toFixed(value >= 10 ? 0 : 2)}`;
 }
 
 function formatCatalogPrice(value: ModelCatalogCost) {
-  return `${formatModelPrice(value.input)} / ${formatModelPrice(value.output)}`
+  return `${formatModelPrice(value.input)} / ${formatModelPrice(value.output)}`;
 }
 
 function formatModelPrice(value: number) {
-  if (value > 0 && value < 0.01) return `$${value.toFixed(4)}`
-  return formatMoney(value)
+  if (value > 0 && value < 0.01) return `$${value.toFixed(4)}`;
+  return formatMoney(value);
 }
 
 function formatSessionCost(value: number) {
-  return `$${value.toFixed(value > 0 && value < 0.01 ? 4 : 2)}`
+  return `$${value.toFixed(value > 0 && value < 0.01 ? 4 : 2)}`;
 }
 
 function formatChange(value: number) {
-  if (value > 0) return `+${value}%`
-  return `${value}%`
+  if (value > 0) return `+${value}%`;
+  return `${value}%`;
 }
 
 function trimNumber(value: number, digits: number) {
-  return Number(value.toFixed(digits)).toLocaleString("en")
+  return Number(value.toFixed(digits)).toLocaleString("en");
 }
 
 function providerSlug(provider: string) {
@@ -1098,5 +1218,5 @@ function providerSlug(provider: string) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
-    .replace(/-{2,}/g, "-")
+    .replace(/-{2,}/g, "-");
 }

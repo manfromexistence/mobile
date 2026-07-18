@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     if (!SQLITE_FILE) {
       return NextResponse.json(
         { error: "Export is only available in local (non-cloud) mode" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -107,7 +107,7 @@ export async function GET(request: NextRequest) {
         error: "Failed to create full export",
         details: sanitizeErrorMessage(error instanceof Error ? error.message : String(error)),
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

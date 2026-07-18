@@ -13,13 +13,16 @@ const providersDb = await import("../../src/lib/db/providers.ts");
 const settingsDb = await import("../../src/lib/db/settings.ts");
 const auth = await import("../../src/sse/services/auth.ts");
 const upstreamProxyDb = await import("../../src/lib/db/upstreamProxy.ts");
-const { invalidateCacheControlSettingsCache } =
-  await import("../../src/lib/cacheControlSettings.ts");
-const { clearCache, getCachedResponse, generateSignature } =
-  await import("../../src/lib/semanticCache.ts");
+const { invalidateCacheControlSettingsCache } = await import(
+  "../../src/lib/cacheControlSettings.ts"
+);
+const { clearCache, getCachedResponse, generateSignature } = await import(
+  "../../src/lib/semanticCache.ts"
+);
 const { clearIdempotency } = await import("../../src/lib/idempotencyLayer.ts");
-const { getPendingRequests, clearPendingRequests } =
-  await import("../../src/lib/usage/usageHistory.ts");
+const { getPendingRequests, clearPendingRequests } = await import(
+  "../../src/lib/usage/usageHistory.ts"
+);
 const { clearInflight } = await import("../../open-sse/services/requestDedup.ts");
 const {
   buildAccountSemaphoreKey,
@@ -27,10 +30,12 @@ const {
   resetAll: resetAccountSemaphores,
 } = await import("../../open-sse/services/accountSemaphore.ts");
 const { getExecutor } = await import("../../open-sse/executors/index.ts");
-const { clearModelLock, isModelLocked } =
-  await import("../../open-sse/services/accountFallback.ts");
-const { saveModelsDevCapabilities, clearModelsDevCapabilities } =
-  await import("../../src/lib/modelsDevSync.ts");
+const { clearModelLock, isModelLocked } = await import(
+  "../../open-sse/services/accountFallback.ts"
+);
+const { saveModelsDevCapabilities, clearModelsDevCapabilities } = await import(
+  "../../src/lib/modelsDevSync.ts"
+);
 const {
   getBackgroundDegradationConfig,
   setBackgroundDegradationConfig,
@@ -45,8 +50,9 @@ const {
   clearUpstreamProxyConfigCache,
   buildStreamingResponseHeaders,
 } = await import("../../open-sse/handlers/chatCore.ts");
-const { resetPayloadRulesConfigForTests, setPayloadRulesConfig } =
-  await import("../../open-sse/services/payloadRules.ts");
+const { resetPayloadRulesConfigForTests, setPayloadRulesConfig } = await import(
+  "../../open-sse/services/payloadRules.ts"
+);
 const { FORMATS } = await import("../../open-sse/translator/formats.ts");
 const { register, getRequestTranslator } = await import("../../open-sse/translator/registry.ts");
 
@@ -79,7 +85,7 @@ function toPlainHeaders(headers) {
   if (!headers) return {};
   if (headers instanceof Headers) return Object.fromEntries(headers.entries());
   return Object.fromEntries(
-    Object.entries(headers).map(([key, value]) => [key, value == null ? "" : String(value)])
+    Object.entries(headers).map(([key, value]) => [key, value == null ? "" : String(value)]),
   );
 }
 
@@ -94,7 +100,7 @@ function buildOpenAIResponse(stream, text = "ok") {
       {
         status: 200,
         headers: { "Content-Type": "text/event-stream" },
-      }
+      },
     );
   }
 
@@ -119,7 +125,7 @@ function buildOpenAIResponse(stream, text = "ok") {
     {
       status: 200,
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 
@@ -167,7 +173,7 @@ function buildClaudeResponse(stream, text = "ok") {
       {
         status: 200,
         headers: { "Content-Type": "text/event-stream" },
-      }
+      },
     );
   }
 
@@ -187,7 +193,7 @@ function buildClaudeResponse(stream, text = "ok") {
     {
       status: 200,
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 
@@ -215,7 +221,7 @@ function buildResponsesResponse(text = "ok") {
     {
       status: 200,
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 
@@ -253,7 +259,7 @@ function hasCacheControl(value) {
 function collectTextBlocks(messages) {
   if (!Array.isArray(messages)) return [];
   return messages.flatMap((message) =>
-    Array.isArray(message.content) ? message.content.filter((block) => block?.type === "text") : []
+    Array.isArray(message.content) ? message.content.filter((block) => block?.type === "text") : [],
   );
 }
 
@@ -438,7 +444,7 @@ test("chatCore times out upstream execution before provider response headers", a
       // undefined), so the waitFor could never resolve. Flatten to the details.
       Object.values(getPendingRequests().details[connectionId] || {})
         .flat()
-        .find((detail: any) => detail?.providerRequest?.model === "gpt-4o-mini")
+        .find((detail: any) => detail?.providerRequest?.model === "gpt-4o-mini"),
     )) as any;
     assert.equal(pendingDetail?.providerRequest?.model, "gpt-4o-mini");
     assert.deepEqual(pendingDetail?.providerRequest?.messages, body.messages);
@@ -545,7 +551,7 @@ test("chatCore helper exports detect responses passthrough paths and token expir
       sourceFormat: FORMATS.OPENAI_RESPONSES,
       endpointPath: "/v1/responses///",
     }),
-    true
+    true,
   );
   assert.equal(
     shouldUseNativeCodexPassthrough({
@@ -553,15 +559,15 @@ test("chatCore helper exports detect responses passthrough paths and token expir
       sourceFormat: FORMATS.OPENAI_RESPONSES,
       endpointPath: "/v1/chat/completions",
     }),
-    false
+    false,
   );
   assert.equal(
     isTokenExpiringSoon(new Date(Date.now() + 60_000).toISOString(), 5 * 60 * 1000),
-    true
+    true,
   );
   assert.equal(
     isTokenExpiringSoon(new Date(Date.now() + 10 * 60 * 1000).toISOString(), 5 * 60 * 1000),
-    false
+    false,
   );
   assert.equal(isTokenExpiringSoon(null), false);
 });
@@ -574,7 +580,7 @@ test("chatCore helper detects Claude Code semantic passthrough only for direct C
       targetFormat: FORMATS.CLAUDE,
       userAgent: "claude-cli/2.1.137",
     }),
-    true
+    true,
   );
   assert.equal(
     isClaudeCodeSemanticPassthroughRequest({
@@ -584,7 +590,7 @@ test("chatCore helper detects Claude Code semantic passthrough only for direct C
       headers: new Headers({ "x-app": "cli" }),
       userAgent: "unit-test",
     }),
-    true
+    true,
   );
   assert.equal(
     isClaudeCodeSemanticPassthroughRequest({
@@ -593,7 +599,7 @@ test("chatCore helper detects Claude Code semantic passthrough only for direct C
       targetFormat: FORMATS.CLAUDE,
       userAgent: "claude-cli/2.1.137",
     }),
-    false
+    false,
   );
   assert.equal(
     isClaudeCodeSemanticPassthroughRequest({
@@ -602,7 +608,7 @@ test("chatCore helper detects Claude Code semantic passthrough only for direct C
       targetFormat: FORMATS.CLAUDE,
       userAgent: "generic-client",
     }),
-    false
+    false,
   );
 });
 
@@ -738,9 +744,9 @@ test("chatCore normalizes native Claude Code messages for native Claude OAuth pa
   // system-role block appended to top-level system array
   assert.equal(
     call.body.system.some(
-      (block: { text?: string }) => block.text === "system-message-that-should-stay-in-messages"
+      (block: { text?: string }) => block.text === "system-message-that-should-stay-in-messages",
     ),
-    true
+    true,
   );
 
   // user msg[0] (was clientMessages[1]): empty text, document and future_block are preserved
@@ -788,7 +794,7 @@ test("chatCore keeps Claude normalization for non-Claude-Code Claude passthrough
   assert.equal(result.success, true);
   assert.equal(
     call.body.messages.some((message) => message.role === "system"),
-    false
+    false,
   );
   assert.equal(call.body.system.at(-1).text, "system role should move");
   assert.deepEqual(call.body.messages[0].content, [
@@ -858,13 +864,13 @@ test("chatCore normalizes native Claude Code messages before CC-compatible relay
   // CC bridge prepends its own system block; extracted system block is appended after it
   assert.equal(
     call.body.system[0].text,
-    "You are a Claude agent, built on Anthropic's Claude Agent SDK."
+    "You are a Claude agent, built on Anthropic's Claude Agent SDK.",
   );
   assert.equal(
     call.body.system.some(
-      (block: { text?: string }) => block.text === "system-message-remains-in-source-history"
+      (block: { text?: string }) => block.text === "system-message-remains-in-source-history",
     ),
-    true
+    true,
   );
 
   // user msg[0] (was clientMessages[1]): empty text, document and future_block are preserved
@@ -953,14 +959,15 @@ test("chatCore auto cache policy becomes false for nondeterministic combos", asy
 
   assert.equal(
     call.body.system.some(
-      (block: { type?: string; text?: string }) => block?.type === "text" && block.text === "system"
+      (block: { type?: string; text?: string }) =>
+        block?.type === "text" && block.text === "system",
     ),
-    true
+    true,
   );
   // Cache markers are kept natively due to the latest Claude strict proxy passthrough implementation
   assert.equal(
     call.body.system.some((block) => !!block.cache_control),
-    true
+    true,
   );
 });
 
@@ -1012,9 +1019,10 @@ test("chatCore disables raw Claude passthrough when cache preservation is off an
 
   assert.equal(
     call.body.system.some(
-      (block: { type?: string; text?: string }) => block?.type === "text" && block.text === "system"
+      (block: { type?: string; text?: string }) =>
+        block?.type === "text" && block.text === "system",
     ),
-    true
+    true,
   );
   // Cache preservation is on for native Claude, so cache markers are intact
   assert.deepEqual(call.body.messages[0].content[0].cache_control, { type: "ephemeral" });
@@ -1087,7 +1095,7 @@ test("chatCore sets Claude tool prefix disabling, strips empty Anthropic text bl
   assert.equal(call.body._disableToolPrefix, undefined);
   assert.deepEqual(
     collectTextBlocks(call.body.messages).map((block) => block.text),
-    ["hello"]
+    ["hello"],
   );
 });
 
@@ -1133,7 +1141,7 @@ test("chatCore restores prefixed Claude passthrough tool names in upstream respo
         {
           status: 200,
           headers: { "Content-Type": "application/json" },
-        }
+        },
       );
     },
   });
@@ -1223,7 +1231,7 @@ test("chatCore surfaces translation errors with explicit status codes", async ()
       error.statusCode = 409;
       throw error;
     },
-    null
+    null,
   );
 
   const { result } = await invokeChatCore({
@@ -1251,7 +1259,7 @@ test("chatCore surfaces typed translation errors with the declared error type", 
       error.errorType = "unsupported_feature";
       throw error;
     },
-    null
+    null,
   );
 
   const { result } = await invokeChatCore({
@@ -1279,7 +1287,7 @@ test("chatCore returns 500 when translation throws a generic error", async () =>
     () => {
       throw new Error("unexpected translator crash");
     },
-    null
+    null,
   );
 
   const { result } = await invokeChatCore({
@@ -1325,12 +1333,12 @@ test("chatCore refreshes GitHub credentials after 401 and retries with the refre
           {
             status: 200,
             headers: { "Content-Type": "application/json" },
-          }
+          },
         );
       }
 
       const providerCalls = seenCalls.filter((entry) =>
-        entry.url.startsWith("https://api.githubcopilot.com/")
+        entry.url.startsWith("https://api.githubcopilot.com/"),
       );
       if (providerCalls.length === 1) {
         return new Response(
@@ -1340,7 +1348,7 @@ test("chatCore refreshes GitHub credentials after 401 and retries with the refre
           {
             status: 401,
             headers: { "Content-Type": "application/json" },
-          }
+          },
         );
       }
 
@@ -1350,14 +1358,14 @@ test("chatCore refreshes GitHub credentials after 401 and retries with the refre
 
   const payload = (await result.response.json()) as any;
   const providerCalls = calls.filter((entry) =>
-    entry.url.startsWith("https://api.githubcopilot.com/")
+    entry.url.startsWith("https://api.githubcopilot.com/"),
   );
 
   assert.equal(result.success, true);
   assert.equal(providerCalls.length, 2);
   assert.equal(
     providerCalls[1].headers.authorization ?? providerCalls[1].headers.Authorization,
-    "Bearer copilot-refreshed-token"
+    "Bearer copilot-refreshed-token",
   );
   assert.equal(refreshedCredentials?.providerSpecificData?.copilotToken, "copilot-refreshed-token");
   assert.equal(payload.choices[0].message.content, "retry succeeded after refresh");
@@ -1732,7 +1740,7 @@ test("chatCore normalizes tool finish reasons and estimates usage when upstream 
         {
           status: 200,
           headers: { "Content-Type": "application/json" },
-        }
+        },
       );
     },
   });
@@ -1815,7 +1823,7 @@ test("chatCore retries Qwen quota 429 responses before succeeding", async () => 
             {
               status: 429,
               headers: { "Content-Type": "application/json" },
-            }
+            },
           );
         }
         return buildOpenAIResponse(false, "qwen recovered");
@@ -1941,7 +1949,7 @@ test("chatCore preserves Codex dual-window scope cooldowns on 429 responses", as
   assert.equal((updated as any).providerSpecificData.codexQuotaState.scope, "codex");
   assert.equal(
     typeof (updated as any).providerSpecificData.codexScopeRateLimitedUntil.codex,
-    "string"
+    "string",
   );
   assert.equal((updated as any).providerSpecificData.codexExhaustedWindow, "5h");
 });
@@ -1995,7 +2003,7 @@ test("chatCore 429 lets account fallback apply the configured resilience cooldow
     result.status,
     result.error,
     "openai",
-    "gpt-4o-mini"
+    "gpt-4o-mini",
   );
   const afterFallback = await providersDb.getProviderConnectionById((connection as any).id);
   const cooldownRemaining =
@@ -2159,7 +2167,7 @@ test("chatCore falls back after an empty-content success response", async () => 
           {
             status: 200,
             headers: { "Content-Type": "application/json" },
-          }
+          },
         );
       }
       return buildOpenAIResponse(false, "empty-content fallback ok");
@@ -2200,7 +2208,7 @@ test("chatCore returns a gateway error when the empty-content fallback responds 
           {
             status: 200,
             headers: { "Content-Type": "application/json" },
-          }
+          },
         );
       }
 
@@ -2274,7 +2282,7 @@ test("chatCore records Claude prompt cache and cache usage metadata in call logs
         {
           status: 200,
           headers: { "Content-Type": "application/json" },
-        }
+        },
       );
     },
   });
@@ -2320,7 +2328,7 @@ test("chatCore propagates budget errors without an executor-level emergency hop"
         {
           status: 402,
           headers: { "Content-Type": "application/json" },
-        }
+        },
       );
     },
   });
@@ -2332,7 +2340,7 @@ test("chatCore propagates budget errors without an executor-level emergency hop"
   assert.match(String(body?.error?.message ?? ""), /insufficient funds/);
   assert.ok(
     !calls.some((c: any) => String(c.body?.model ?? "").includes("gpt-oss-120b")),
-    "emergency fallback model must not be called at executor level"
+    "emergency fallback model must not be called at executor level",
   );
 });
 
@@ -2382,7 +2390,7 @@ test("chatCore emits final SSE metadata comments before [DONE] on streaming resp
   assert.match(streamText, /: x-omniroute-tokens-in=\d+/);
   assert.match(streamText, /: x-omniroute-tokens-out=\d+/);
   assert.ok(
-    streamText.indexOf(": x-omniroute-response-cost=") < streamText.indexOf("data: [DONE]")
+    streamText.indexOf(": x-omniroute-response-cost=") < streamText.indexOf("data: [DONE]"),
   );
 });
 
@@ -2403,8 +2411,8 @@ test("buildStreamingResponseHeaders drops upstream compression and framing heade
         latencyMs: 0,
         usage: null,
         costUsd: 0,
-      }
-    )
+      },
+    ),
   );
 
   assert.equal(headers.get("Content-Type"), "text/event-stream");
@@ -2499,8 +2507,8 @@ test("chatCore returns streaming responses without waiting for upstream completi
                       delta: { role: "assistant", content: "streamed-without-buffering" },
                     },
                   ],
-                })}\n\n`
-              )
+                })}\n\n`,
+              ),
             );
             closeUpstream = () => {
               controller.enqueue(encoder.encode("data: [DONE]\n\n"));
@@ -2511,7 +2519,7 @@ test("chatCore returns streaming responses without waiting for upstream completi
         {
           status: 200,
           headers: { "Content-Type": "text/event-stream" },
-        }
+        },
       );
     },
   });
@@ -2604,7 +2612,7 @@ test("chatCore locks per-model quota failures without dropping quota helper refe
           {
             status: 402,
             headers: { "Content-Type": "application/json" },
-          }
+          },
         );
       },
     });
@@ -2667,7 +2675,7 @@ test("chatCore caches streaming response and serves cache HIT on repeat", async 
   assert.equal(
     second.result.response.headers.get("Content-Type"),
     "text/event-stream",
-    "streaming cache HIT should be served as SSE"
+    "streaming cache HIT should be served as SSE",
   );
   const sse = await second.result.response.text();
   assert.match(sse, /^data:/m, "cache HIT should be SSE-framed");
@@ -2801,7 +2809,7 @@ test("chatCore returns cache HIT as SSE when the client requests streaming", asy
   assert.equal(
     second.result.response.headers.get("Content-Type"),
     "text/event-stream",
-    "streaming cache HIT should be served as SSE"
+    "streaming cache HIT should be served as SSE",
   );
   const sse = await second.result.response.text();
   assert.match(sse, /^data:/m, "cache HIT should be SSE-framed");

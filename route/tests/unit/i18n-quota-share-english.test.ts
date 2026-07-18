@@ -11,7 +11,7 @@ const EN = path.join(
   "src",
   "i18n",
   "messages",
-  "en.json"
+  "en.json",
 );
 
 // Regression for #2540: the English source-of-truth (en.json) had Portuguese values for the

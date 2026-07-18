@@ -1,32 +1,32 @@
-import type { DesktopTheme, ResolvedTheme, ResolvedV2Theme } from "./types"
-import { resolveThemeVariant, themeToCss } from "./resolve"
-import { resolveThemeVariantV2, themeV2ToCss } from "./v2/resolve"
+import type { DesktopTheme, ResolvedTheme, ResolvedV2Theme } from "./types";
+import { resolveThemeVariant, themeToCss } from "./resolve";
+import { resolveThemeVariantV2, themeV2ToCss } from "./v2/resolve";
 
-let activeTheme: DesktopTheme | null = null
-const THEME_STYLE_ID = "opencode-theme"
+let activeTheme: DesktopTheme | null = null;
+const THEME_STYLE_ID = "opencode-theme";
 
 function ensureLoaderStyleElement(): HTMLStyleElement {
-  const existing = document.getElementById(THEME_STYLE_ID) as HTMLStyleElement | null
+  const existing = document.getElementById(THEME_STYLE_ID) as HTMLStyleElement | null;
   if (existing) {
-    return existing
+    return existing;
   }
-  const element = document.createElement("style")
-  element.id = THEME_STYLE_ID
-  document.head.appendChild(element)
-  return element
+  const element = document.createElement("style");
+  element.id = THEME_STYLE_ID;
+  document.head.appendChild(element);
+  return element;
 }
 
 export function applyTheme(theme: DesktopTheme, themeId?: string): void {
-  activeTheme = theme
-  const lightTokens = resolveThemeVariant(theme.light, false)
-  const darkTokens = resolveThemeVariant(theme.dark, true)
-  const lightV2Tokens = resolveThemeVariantV2(theme.light, false)
-  const darkV2Tokens = resolveThemeVariantV2(theme.dark, true)
-  const targetThemeId = themeId ?? theme.id
-  const css = buildThemeCss(lightTokens, darkTokens, lightV2Tokens, darkV2Tokens, targetThemeId)
-  const themeStyleElement = ensureLoaderStyleElement()
-  themeStyleElement.textContent = css
-  document.documentElement.setAttribute("data-theme", targetThemeId)
+  activeTheme = theme;
+  const lightTokens = resolveThemeVariant(theme.light, false);
+  const darkTokens = resolveThemeVariant(theme.dark, true);
+  const lightV2Tokens = resolveThemeVariantV2(theme.light, false);
+  const darkV2Tokens = resolveThemeVariantV2(theme.dark, true);
+  const targetThemeId = themeId ?? theme.id;
+  const css = buildThemeCss(lightTokens, darkTokens, lightV2Tokens, darkV2Tokens, targetThemeId);
+  const themeStyleElement = ensureLoaderStyleElement();
+  themeStyleElement.textContent = css;
+  document.documentElement.setAttribute("data-theme", targetThemeId);
 }
 
 function buildThemeCss(
@@ -36,9 +36,9 @@ function buildThemeCss(
   darkV2: ResolvedV2Theme,
   themeId: string,
 ): string {
-  const isDefaultTheme = themeId === "oc-2"
-  const lightCss = `${themeToCss(light)}\n  ${themeV2ToCss(lightV2)}`
-  const darkCss = `${themeToCss(dark)}\n  ${themeV2ToCss(darkV2)}`
+  const isDefaultTheme = themeId === "oc-2";
+  const lightCss = `${themeToCss(light)}\n  ${themeV2ToCss(lightV2)}`;
+  const darkCss = `${themeToCss(dark)}\n  ${themeV2ToCss(darkV2)}`;
 
   if (isDefaultTheme) {
     return `
@@ -55,7 +55,7 @@ function buildThemeCss(
     ${darkCss}
   }
 }
-`
+`;
   }
 
   return `
@@ -72,41 +72,41 @@ html[data-theme="${themeId}"] {
     ${darkCss}
   }
 }
-`
+`;
 }
 
 export async function loadThemeFromUrl(url: string): Promise<DesktopTheme> {
-  const response = await fetch(url)
+  const response = await fetch(url);
   if (!response.ok) {
-    throw new Error(`Failed to load theme from ${url}: ${response.statusText}`)
+    throw new Error(`Failed to load theme from ${url}: ${response.statusText}`);
   }
-  return response.json()
+  return response.json();
 }
 
 export function getActiveTheme(): DesktopTheme | null {
-  const activeId = document.documentElement.getAttribute("data-theme")
+  const activeId = document.documentElement.getAttribute("data-theme");
   if (!activeId) {
-    return null
+    return null;
   }
   if (activeTheme?.id === activeId) {
-    return activeTheme
+    return activeTheme;
   }
-  return null
+  return null;
 }
 
 export function removeTheme(): void {
-  activeTheme = null
-  const existingElement = document.getElementById(THEME_STYLE_ID)
+  activeTheme = null;
+  const existingElement = document.getElementById(THEME_STYLE_ID);
   if (existingElement) {
-    existingElement.remove()
+    existingElement.remove();
   }
-  document.documentElement.removeAttribute("data-theme")
+  document.documentElement.removeAttribute("data-theme");
 }
 
 export function setColorScheme(scheme: "light" | "dark" | "auto"): void {
   if (scheme === "auto") {
-    document.documentElement.style.removeProperty("color-scheme")
+    document.documentElement.style.removeProperty("color-scheme");
   } else {
-    document.documentElement.style.setProperty("color-scheme", scheme)
+    document.documentElement.style.setProperty("color-scheme", scheme);
   }
 }

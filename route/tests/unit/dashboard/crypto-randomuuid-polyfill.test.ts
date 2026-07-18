@@ -22,12 +22,12 @@ test("layout.tsx polyfills crypto.randomUUID for non-secure contexts (guarded)",
   assert.match(
     layout,
     /if\s*\(\s*!\s*window\.crypto\.randomUUID\s*\)/,
-    "layout.tsx must guard the polyfill behind `if (!window.crypto.randomUUID)`"
+    "layout.tsx must guard the polyfill behind `if (!window.crypto.randomUUID)`",
   );
   assert.match(
     layout,
     /window\.crypto\.randomUUID\s*=\s*function/,
-    "layout.tsx must assign a fallback window.crypto.randomUUID implementation"
+    "layout.tsx must assign a fallback window.crypto.randomUUID implementation",
   );
 });
 
@@ -37,12 +37,12 @@ test("the crypto.randomUUID polyfill emits an RFC4122 v4-shaped UUID", () => {
   assert.match(
     layout,
     /xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx/,
-    "the polyfill must build a v4-shaped UUID template (…-4xxx-yxxx-…)"
+    "the polyfill must build a v4-shaped UUID template (…-4xxx-yxxx-…)",
   );
   assert.match(
     layout,
     /r\s*&\s*0x3\s*\|\s*0x8/,
-    "the polyfill must set the RFC4122 variant bits via (r & 0x3 | 0x8)"
+    "the polyfill must set the RFC4122 variant bits via (r & 0x3 | 0x8)",
   );
 });
 
@@ -53,7 +53,7 @@ test("the polyfill prefers crypto.getRandomValues and falls back to Math.random"
   assert.match(
     layout,
     /window\.crypto\.getRandomValues/,
-    "the polyfill should prefer crypto.getRandomValues when present"
+    "the polyfill should prefer crypto.getRandomValues when present",
   );
   assert.match(layout, /Math\.random\(\)/, "the polyfill must keep a Math.random fallback");
 });

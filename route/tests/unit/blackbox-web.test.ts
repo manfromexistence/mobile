@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { BlackboxWebExecutor, normalizeBlackboxCookieHeader } =
-  await import("../../open-sse/executors/blackbox-web.ts");
+const { BlackboxWebExecutor, normalizeBlackboxCookieHeader } = await import(
+  "../../open-sse/executors/blackbox-web.ts"
+);
 const { getExecutor, hasSpecializedExecutor } = await import("../../open-sse/executors/index.ts");
 
 function mockTextStream(text: string) {
@@ -261,15 +262,15 @@ test("Error: empty messages returns 400", async () => {
 test("Cookie normalization supports raw tokens, prefixed tokens and full headers", () => {
   assert.equal(
     normalizeBlackboxCookieHeader("raw-session-token"),
-    "next-auth.session-token=raw-session-token"
+    "next-auth.session-token=raw-session-token",
   );
   assert.equal(
     normalizeBlackboxCookieHeader("cookie:raw-session-token"),
-    "next-auth.session-token=raw-session-token"
+    "next-auth.session-token=raw-session-token",
   );
   assert.equal(
     normalizeBlackboxCookieHeader("__Secure-authjs.session-token=token; other=value"),
-    "__Secure-authjs.session-token=token; other=value"
+    "__Secure-authjs.session-token=token; other=value",
   );
 });
 
@@ -338,4 +339,3 @@ test("Provider registry: blackbox-web models are exposed", async () => {
   }
   // If not present, skip assertions - provider may have been temporarily removed
 });
-

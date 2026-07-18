@@ -67,9 +67,7 @@ export function renderStructuredTable(
   const extra = objects.length > MAX_TABLE_ROWS ? objects.length - MAX_TABLE_ROWS : 0;
 
   const header = columns.join("\t");
-  const body = rows
-    .map((obj) => columns.map((k) => String(obj[k] ?? "")).join("\t"))
-    .join("\n");
+  const body = rows.map((obj) => columns.map((k) => String(obj[k] ?? "")).join("\t")).join("\n");
 
   const out = extra > 0 ? `${header}\n${body}\n… (+${extra} more)` : `${header}\n${body}`;
 

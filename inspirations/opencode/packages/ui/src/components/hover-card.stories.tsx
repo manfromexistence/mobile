@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { createSignal } from "solid-js"
-import * as mod from "./hover-card"
+import { createSignal } from "solid-js";
+import * as mod from "./hover-card";
 
 const docs = `### Overview
 Hover-triggered card for lightweight previews and metadata.
@@ -23,7 +23,7 @@ Use for short summaries; avoid dense interactive controls.
 ### Theming/tokens
 - Uses \`data-component="hover-card-content"\` and slots for styling.
 
-`
+`;
 
 export default {
   title: "UI/HoverCard",
@@ -37,34 +37,40 @@ export default {
       },
     },
   },
-}
+};
 
 export const Basic = {
   render: () => (
-    <mod.HoverCard trigger={<span style={{ "text-decoration": "underline", cursor: "default" }}>Hover me</span>}>
+    <mod.HoverCard
+      trigger={<span style={{ "text-decoration": "underline", cursor: "default" }}>Hover me</span>}
+    >
       <div style={{ display: "grid", gap: "6px" }}>
         <div style={{ "font-weight": 600 }}>Preview</div>
         <div style={{ color: "var(--text-weak)", "font-size": "12px" }}>Short supporting text.</div>
       </div>
     </mod.HoverCard>
   ),
-}
+};
 
 export const InlineMount = {
   render: () => {
-    const [mount, setMount] = createSignal<HTMLDivElement | undefined>(undefined)
+    const [mount, setMount] = createSignal<HTMLDivElement | undefined>(undefined);
     return (
       <div ref={setMount} style={{ padding: "16px", border: "1px dashed var(--border-weak)" }}>
         <mod.HoverCard
           mount={mount()}
-          trigger={<span style={{ "text-decoration": "underline", cursor: "default" }}>Hover me</span>}
+          trigger={
+            <span style={{ "text-decoration": "underline", cursor: "default" }}>Hover me</span>
+          }
         >
           <div style={{ display: "grid", gap: "6px" }}>
             <div style={{ "font-weight": 600 }}>Mounted inside</div>
-            <div style={{ color: "var(--text-weak)", "font-size": "12px" }}>Uses custom mount node.</div>
+            <div style={{ color: "var(--text-weak)", "font-size": "12px" }}>
+              Uses custom mount node.
+            </div>
           </div>
         </mod.HoverCard>
       </div>
-    )
+    );
   },
-}
+};

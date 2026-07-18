@@ -27,13 +27,13 @@ export function getMainServerTimeoutConfig(env = process.env, logger) {
     env,
     "MAIN_SERVER_KEEPALIVE_TIMEOUT_MS",
     DEFAULT_MAIN_SERVER_KEEPALIVE_TIMEOUT_MS,
-    { allowZero: true, logger }
+    { allowZero: true, logger },
   );
   const headersTimeoutMs = readTimeoutMs(
     env,
     "MAIN_SERVER_HEADERS_TIMEOUT_MS",
     DEFAULT_MAIN_SERVER_HEADERS_TIMEOUT_MS,
-    { allowZero: true, logger }
+    { allowZero: true, logger },
   );
   return {
     keepAliveTimeoutMs,

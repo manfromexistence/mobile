@@ -67,7 +67,7 @@ export function consumeBadgeUnlocks(apiKeyId: string): BadgeUnlockEvent[] {
  */
 export function createBadgeNotificationStream(
   apiKeyId: string,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): ReadableStream {
   return new ReadableStream({
     start(controller) {

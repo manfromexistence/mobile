@@ -123,7 +123,7 @@ function createLegacySchemaDb(sqliteFile, { withData = false } = {}) {
     const now = new Date().toISOString();
     seedDb
       .prepare(
-        "INSERT INTO provider_connections (id, provider, auth_type, name, is_active, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        "INSERT INTO provider_connections (id, provider, auth_type, name, is_active, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
       )
       .run("legacy-openai", "openai", "apikey", "Legacy", 1, now, now);
   }
@@ -257,12 +257,12 @@ function createRecoverableDb(sqliteFile) {
 
   seedDb
     .prepare(
-      "INSERT INTO provider_connections (id, provider, auth_type, name, is_active, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
+      "INSERT INTO provider_connections (id, provider, auth_type, name, is_active, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
     )
     .run("recover-openai", "openai", "apikey", "Recover Me", 1, now, now);
   seedDb
     .prepare(
-      "INSERT INTO provider_nodes (id, type, name, prefix, api_type, base_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+      "INSERT INTO provider_nodes (id, type, name, prefix, api_type, base_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
     )
     .run(
       "recover-node",
@@ -272,7 +272,7 @@ function createRecoverableDb(sqliteFile) {
       "openai",
       "https://example.com",
       now,
-      now
+      now,
     );
   seedDb
     .prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)")
@@ -282,7 +282,7 @@ function createRecoverableDb(sqliteFile) {
     .run("modelAliases", "fast-default", JSON.stringify("openai/gpt-4o-mini"));
   seedDb
     .prepare(
-      "INSERT INTO combos (id, name, data, sort_order, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)"
+      "INSERT INTO combos (id, name, data, sort_order, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)",
     )
     .run(
       "recover-combo",
@@ -294,11 +294,11 @@ function createRecoverableDb(sqliteFile) {
       }),
       1,
       now,
-      now
+      now,
     );
   seedDb
     .prepare(
-      "INSERT INTO api_keys (id, name, key, machine_id, allowed_models, no_log, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
+      "INSERT INTO api_keys (id, name, key, machine_id, allowed_models, no_log, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
     )
     .run(
       "recover-key",
@@ -307,7 +307,7 @@ function createRecoverableDb(sqliteFile) {
       "machine-recover",
       JSON.stringify(["openai/gpt-4o-mini"]),
       1,
-      now
+      now,
     );
   seedDb.close();
 }
@@ -356,7 +356,7 @@ test("getDbInstance creates sqlite schema, metadata and applies migrations", ser
       assert.ok(
         db
           .prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?")
-          .get("provider_connections")
+          .get("provider_connections"),
       );
       assert.deepEqual(db.prepare("SELECT value FROM db_meta WHERE key = 'schema_version'").get(), {
         value: "1",
@@ -372,7 +372,7 @@ test("getDbInstance creates sqlite schema, metadata and applies migrations", ser
       assert.ok(
         db
           .prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?")
-          .get("version_manager")
+          .get("version_manager"),
       );
 
       core.resetDbInstance();
@@ -467,12 +467,12 @@ test(
 
           assert.equal(core.DATA_DIR, expectedDir);
           assert.equal(core.SQLITE_FILE, path.join(expectedDir, "storage.sqlite"));
-        }
+        },
       );
     } finally {
       removePath(fakeHome);
     }
-  }
+  },
 );
 
 test("build phase uses an in-memory database without creating sqlite files", serial, async () => {
@@ -491,48 +491,52 @@ test("build phase uses an in-memory database without creating sqlite files", ser
         assert.ok(
           db
             .prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?")
-            .get("provider_connections")
+            .get("provider_connections"),
         );
         assert.equal(fs.existsSync(path.join(dataDir, "storage.sqlite")), false);
         assert.equal(db.pragma("journal_mode", { simple: true }), "memory");
 
         core.resetDbInstance();
-      }
+      },
     );
   } finally {
     removePath(dataDir);
   }
 });
 
-test("invalid DATA_DIR (a file where a dir is expected) surfaces as a startup failure", serial, async () => {
-  const sandboxDir = makeTempDir("omniroute-db-bad-path-");
-  const fileAsDir = path.join(sandboxDir, "not-a-directory");
-  fs.writeFileSync(fileAsDir, "blocked");
+test(
+  "invalid DATA_DIR (a file where a dir is expected) surfaces as a startup failure",
+  serial,
+  async () => {
+    const sandboxDir = makeTempDir("omniroute-db-bad-path-");
+    const fileAsDir = path.join(sandboxDir, "not-a-directory");
+    fs.writeFileSync(fileAsDir, "blocked");
 
-  try {
-    // Since #4767, db/core.ts resolves a writable data dir at module load via
-    // resolveWritableDataDir() → mkdirSync(recursive). Pointing DATA_DIR at a
-    // regular file is a non-permission misconfiguration (EEXIST/ENOTDIR), which
-    // resolveWritableDataDir rethrows by design (only EACCES/EPERM fall back), so
-    // the failure now surfaces at import time, not lazily from getDbInstance().
-    let caught: unknown;
-    await withEnv({ DATA_DIR: fileAsDir }, () => importFresh("src/lib/db/core.ts")).then(
-      () => {
-        throw new Error("expected importing db/core with an invalid DATA_DIR to reject");
-      },
-      (err) => {
-        caught = err;
-      }
-    );
-    assert.ok(caught instanceof Error, "an invalid DATA_DIR must surface as a thrown Error");
-    assert.match(
-      String((caught as Error).message),
-      /unable to open database file|ENOTDIR|EEXIST|not a directory|file already exists/i
-    );
-  } finally {
-    removePath(sandboxDir);
-  }
-});
+    try {
+      // Since #4767, db/core.ts resolves a writable data dir at module load via
+      // resolveWritableDataDir() → mkdirSync(recursive). Pointing DATA_DIR at a
+      // regular file is a non-permission misconfiguration (EEXIST/ENOTDIR), which
+      // resolveWritableDataDir rethrows by design (only EACCES/EPERM fall back), so
+      // the failure now surfaces at import time, not lazily from getDbInstance().
+      let caught: unknown;
+      await withEnv({ DATA_DIR: fileAsDir }, () => importFresh("src/lib/db/core.ts")).then(
+        () => {
+          throw new Error("expected importing db/core with an invalid DATA_DIR to reject");
+        },
+        (err) => {
+          caught = err;
+        },
+      );
+      assert.ok(caught instanceof Error, "an invalid DATA_DIR must surface as a thrown Error");
+      assert.match(
+        String((caught as Error).message),
+        /unable to open database file|ENOTDIR|EEXIST|not a directory|file already exists/i,
+      );
+    } finally {
+      removePath(sandboxDir);
+    }
+  },
+);
 
 test(
   "legacy empty schema databases are renamed before a fresh sqlite database is created",
@@ -551,13 +555,13 @@ test(
         assert.ok(
           db
             .prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?")
-            .get("_omniroute_migrations")
+            .get("_omniroute_migrations"),
         );
         assert.equal(
           db
             .prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?")
             .get("schema_migrations"),
-          undefined
+          undefined,
         );
 
         core.resetDbInstance();
@@ -565,7 +569,7 @@ test(
     } finally {
       removePath(dataDir);
     }
-  }
+  },
 );
 
 test(
@@ -585,23 +589,23 @@ test(
           db
             .prepare("SELECT id, provider FROM provider_connections WHERE id = ?")
             .get("legacy-openai"),
-          { id: "legacy-openai", provider: "openai" }
+          { id: "legacy-openai", provider: "openai" },
         );
         assert.equal(
           db
             .prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?")
             .get("schema_migrations"),
-          undefined
+          undefined,
         );
         assert.ok(
           db
             .prepare("SELECT name FROM pragma_table_info('provider_connections') WHERE name = ?")
-            .get("rate_limit_protection")
+            .get("rate_limit_protection"),
         );
         assert.ok(
           db
             .prepare("SELECT name FROM pragma_table_info('provider_connections') WHERE name = ?")
-            .get("last_used_at")
+            .get("last_used_at"),
         );
 
         core.resetDbInstance();
@@ -609,7 +613,7 @@ test(
     } finally {
       removePath(dataDir);
     }
-  }
+  },
 );
 
 test(
@@ -644,7 +648,7 @@ test(
     `);
     seedDb
       .prepare(
-        "INSERT INTO provider_connections (id, provider, auth_type, name, priority, is_active, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+        "INSERT INTO provider_connections (id, provider, auth_type, name, priority, is_active, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
       )
       .run("missing-max-openai", "openai", "apikey", "Missing max", 0, 1, now, now);
     seedDb.close();
@@ -657,25 +661,25 @@ test(
         assert.ok(
           db
             .prepare("SELECT name FROM pragma_table_info('provider_connections') WHERE name = ?")
-            .get("max_concurrent")
+            .get("max_concurrent"),
         );
         assert.ok(
           db
             .prepare("SELECT name FROM sqlite_master WHERE type = 'index' AND name = ?")
-            .get("idx_pc_max_concurrent")
+            .get("idx_pc_max_concurrent"),
         );
 
         db.prepare(
-          "INSERT INTO provider_connections (id, provider, auth_type, name, priority, is_active, max_concurrent, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+          "INSERT INTO provider_connections (id, provider, auth_type, name, priority, is_active, max_concurrent, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
         ).run("healed-openai", "openai", "apikey", "Healed", 0, 1, 2, now, now);
 
         assert.deepEqual(
           db
             .prepare(
-              "SELECT max_concurrent AS maxConcurrent FROM provider_connections WHERE id = ?"
+              "SELECT max_concurrent AS maxConcurrent FROM provider_connections WHERE id = ?",
             )
             .get("healed-openai"),
-          { maxConcurrent: 2 }
+          { maxConcurrent: 2 },
         );
 
         core.resetDbInstance();
@@ -683,7 +687,7 @@ test(
     } finally {
       removePath(dataDir);
     }
-  }
+  },
 );
 
 test(
@@ -702,37 +706,37 @@ test(
         assert.ok(
           db
             .prepare("SELECT name FROM pragma_table_info('call_logs') WHERE name = ?")
-            .get("requested_model")
+            .get("requested_model"),
         );
         assert.ok(
           db
             .prepare("SELECT name FROM pragma_table_info('call_logs') WHERE name = ?")
-            .get("request_type")
+            .get("request_type"),
         );
         assert.ok(
           db
             .prepare("SELECT name FROM pragma_table_info('call_logs') WHERE name = ?")
-            .get("combo_step_id")
+            .get("combo_step_id"),
         );
         assert.ok(
           db
             .prepare("SELECT name FROM pragma_table_info('call_logs') WHERE name = ?")
-            .get("combo_execution_key")
+            .get("combo_execution_key"),
         );
         assert.ok(
           db
             .prepare("SELECT name FROM sqlite_master WHERE type = 'index' AND name = ?")
-            .get("idx_call_logs_requested_model")
+            .get("idx_call_logs_requested_model"),
         );
         assert.ok(
           db
             .prepare("SELECT name FROM sqlite_master WHERE type = 'index' AND name = ?")
-            .get("idx_call_logs_request_type")
+            .get("idx_call_logs_request_type"),
         );
         assert.ok(
           db
             .prepare("SELECT name FROM sqlite_master WHERE type = 'index' AND name = ?")
-            .get("idx_cl_combo_target")
+            .get("idx_cl_combo_target"),
         );
 
         core.resetDbInstance();
@@ -740,7 +744,7 @@ test(
     } finally {
       removePath(dataDir);
     }
-  }
+  },
 );
 
 test(
@@ -769,25 +773,25 @@ test(
           db
             .prepare("SELECT id, provider, name FROM provider_connections WHERE id = ?")
             .get("recover-openai"),
-          { id: "recover-openai", provider: "openai", name: "Recover Me" }
+          { id: "recover-openai", provider: "openai", name: "Recover Me" },
         );
         assert.deepEqual(
           db.prepare("SELECT id, name FROM provider_nodes WHERE id = ?").get("recover-node"),
-          { id: "recover-node", name: "Recover Node" }
+          { id: "recover-node", name: "Recover Node" },
         );
         assert.deepEqual(
           db.prepare("SELECT id, name FROM combos WHERE id = ?").get("recover-combo"),
-          { id: "recover-combo", name: "Recover Combo" }
+          { id: "recover-combo", name: "Recover Combo" },
         );
         assert.deepEqual(
           db.prepare("SELECT id, name, no_log FROM api_keys WHERE id = ?").get("recover-key"),
-          { id: "recover-key", name: "Recover Key", no_log: 1 }
+          { id: "recover-key", name: "Recover Key", no_log: 1 },
         );
         assert.deepEqual(
           db
             .prepare("SELECT value FROM key_value WHERE namespace = 'settings' AND key = ?")
             .get("globalFallbackModel"),
-          { value: JSON.stringify("openai/gpt-4o-mini") }
+          { value: JSON.stringify("openai/gpt-4o-mini") },
         );
         assert.equal(listProbeFailedBackups(sqliteFile).length >= 1, true);
 
@@ -797,7 +801,7 @@ test(
       Database.prototype.prepare = originalPrepare;
       removePath(dataDir);
     }
-  }
+  },
 );
 
 test(
@@ -814,12 +818,12 @@ test(
     fs.utimesSync(
       olderBackup,
       new Date("2030-01-01T00:00:00.000Z"),
-      new Date("2030-01-01T00:00:00.000Z")
+      new Date("2030-01-01T00:00:00.000Z"),
     );
     fs.utimesSync(
       newerBackup,
       new Date("2020-01-01T00:00:00.000Z"),
-      new Date("2020-01-01T00:00:00.000Z")
+      new Date("2020-01-01T00:00:00.000Z"),
     );
 
     try {
@@ -831,7 +835,7 @@ test(
           db
             .prepare("SELECT id, provider, name FROM provider_connections WHERE id = ?")
             .get("legacy-openai"),
-          { id: "legacy-openai", provider: "openai", name: "Newer Backup" }
+          { id: "legacy-openai", provider: "openai", name: "Newer Backup" },
         );
         assert.equal(fs.existsSync(sqliteFile), true);
         assert.equal(fs.existsSync(newerBackup), false);
@@ -842,7 +846,7 @@ test(
     } finally {
       removePath(dataDir);
     }
-  }
+  },
 );
 
 test(
@@ -864,7 +868,7 @@ test(
         const restartedCore = await importFresh("src/lib/db/core.ts");
         assert.throws(
           () => restartedCore.getDbInstance(),
-          /Manual recovery required after probe failure/i
+          /Manual recovery required after probe failure/i,
         );
         assert.equal(fs.existsSync(sqliteFile), false);
         core.resetDbInstance();
@@ -872,5 +876,5 @@ test(
     } finally {
       removePath(dataDir);
     }
-  }
+  },
 );

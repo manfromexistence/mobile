@@ -268,7 +268,7 @@ function main() {
         "  Install them to enable workflow linting and security audit:\n" +
         "  • actionlint: https://github.com/rhysd/actionlint\n" +
         "  • zizmor:     https://github.com/woodruffw/zizmor\n" +
-        "  Graceful SKIP — exits 0 even with --ratchet (missing binaries never block)."
+        "  Graceful SKIP — exits 0 even with --ratchet (missing binaries never block).",
     );
     process.stdout.write("workflowFindings=SKIP\n");
     process.exit(0);
@@ -279,7 +279,7 @@ function main() {
   if (workflowFiles.length === 0) {
     if (!QUIET) {
       console.log(
-        `[check-workflows] No workflow files found in ${WORKFLOWS_DIR} — nothing to check.`
+        `[check-workflows] No workflow files found in ${WORKFLOWS_DIR} — nothing to check.`,
       );
     }
     process.stdout.write("workflowFindings=0\nactionlintFindings=0\nzizmorFindings=0\n");
@@ -351,7 +351,7 @@ function main() {
     if (!hasZizmor) {
       if (!QUIET) {
         process.stderr.write(
-          "[check-workflows] --ratchet: zizmor absent — SKIP (no measurement, never blocks).\n"
+          "[check-workflows] --ratchet: zizmor absent — SKIP (no measurement, never blocks).\n",
         );
       }
       process.exit(0);
@@ -361,7 +361,7 @@ function main() {
     if (baselineValue === null) {
       if (!QUIET) {
         process.stderr.write(
-          "[check-workflows] --ratchet: baseline absent (metrics.zizmorFindings) — SKIP, exit 0.\n"
+          "[check-workflows] --ratchet: baseline absent (metrics.zizmorFindings) — SKIP, exit 0.\n",
         );
       }
       process.exit(0);
@@ -373,13 +373,13 @@ function main() {
         `\n[check-workflows] REGRESSION — ${zizmorCount} zizmor finding(s) > baseline ${baselineValue}.\n` +
           "  → Fix the new workflow finding(s), or re-baseline metrics.zizmorFindings in\n" +
           "    config/quality/quality-baseline.json if the rise is a legitimate, justified drift.\n" +
-          "  (actionlint findings are reported, not ratcheted — use --strict for those.)"
+          "  (actionlint findings are reported, not ratcheted — use --strict for those.)",
       );
       process.exit(1);
     }
     if (!QUIET) {
       process.stderr.write(
-        `[check-workflows] --ratchet OK — ${zizmorCount} zizmor finding(s), baseline ${baselineValue} (no regression).\n`
+        `[check-workflows] --ratchet OK — ${zizmorCount} zizmor finding(s), baseline ${baselineValue} (no regression).\n`,
       );
     }
     process.exit(0);
@@ -388,7 +388,7 @@ function main() {
   if (total > 0 && !QUIET) {
     console.log(
       `[check-workflows] ADVISORY — ${total} finding(s) detected. ` +
-        "Pass --strict to block on any finding, or --ratchet to block on a zizmor regression."
+        "Pass --strict to block on any finding, or --ratchet to block on a zizmor regression.",
     );
   }
 

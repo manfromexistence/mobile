@@ -79,7 +79,7 @@ test("persists a call log row with the mapped fields (default cacheSource=upstre
   const id = "attempt-basic-1";
   persistAttemptLogs(
     { status: 200, tokens: { input: 1, output: 2 } },
-    baseCtx({ pendingRequestId: id, credentials: { connectionId: "conn-1" } })
+    baseCtx({ pendingRequestId: id, credentials: { connectionId: "conn-1" } }),
   );
   const row = await pollForCallLog(id);
   assert.ok(row, "call log row should be persisted");
@@ -100,7 +100,7 @@ test("uses final credentials connectionId when Codex failover rotates the accoun
       provider: "codex",
       connectionId: "initial-conn",
       credentials: { connectionId: "final-conn" },
-    })
+    }),
   );
 
   const row = await pollForCallLog(id);
@@ -128,7 +128,7 @@ test("connectionId falls back to credentials.connectionId when null, and error i
   const id = "attempt-fallback-1";
   persistAttemptLogs(
     { status: 502, error: "upstream boom" },
-    baseCtx({ pendingRequestId: id, connectionId: null })
+    baseCtx({ pendingRequestId: id, connectionId: null }),
   );
   const row = await pollForCallLog(id);
   assert.ok(row);

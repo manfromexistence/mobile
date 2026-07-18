@@ -13,7 +13,7 @@ const animationResolver: DotAnimationResolver = ({
   isActive,
   phase,
   reducedMotion,
-  distanceFromCenter
+  distanceFromCenter,
 }) => {
   if (!isActive) {
     return { className: "dmx-inactive" };
@@ -27,7 +27,7 @@ const animationResolver: DotAnimationResolver = ({
     const ring = Math.round(distanceFromCenter);
     return {
       className: "dmx-ripple",
-      style: { "--dmx-ripple-ring": ring } as CSSProperties
+      style: { "--dmx-ripple-ring": ring } as CSSProperties,
     };
   }
 
@@ -61,7 +61,7 @@ export function DotMatrixIcon({
   const { phase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
     animated: animated && !reducedMotion,
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
 
   return (

@@ -111,7 +111,7 @@ test("combo builder options route aggregates providers, connections, models and 
     "Text Embedding",
     "manual",
     "chat-completions",
-    ["embeddings"]
+    ["embeddings"],
   );
   modelsDb.mergeModelCompatOverride("openai", "gpt-4o-mini", { isHidden: true });
 
@@ -147,13 +147,13 @@ test("combo builder options route aggregates providers, connections, models and 
   assert.equal(openai.models.find((model) => model.id === "gpt-4.1").supportsThinking, false);
   assert.equal(
     openai.models.some((model) => model.id === "gpt-4o-mini"),
-    false
+    false,
   );
   assert.ok(openai.models.some((model) => model.id === "custom-ops"));
   // #6975: embeddings-only models must now appear in the combo builder output.
   assert.equal(
     openai.models.some((model) => model.id === "text-embedding-visible"),
-    true
+    true,
   );
   assert.deepEqual(
     openai.connections.map((connection) => ({
@@ -172,19 +172,19 @@ test("combo builder options route aggregates providers, connections, models and 
         status: "inactive",
         isActive: false,
       },
-    ]
+    ],
   );
   assert.equal(
     openai.connections.some((connection) =>
-      Object.prototype.hasOwnProperty.call(connection, "apiKey")
+      Object.prototype.hasOwnProperty.call(connection, "apiKey"),
     ),
-    false
+    false,
   );
   assert.equal(
     openai.connections.some((connection) =>
-      Object.prototype.hasOwnProperty.call(connection, "accessToken")
+      Object.prototype.hasOwnProperty.call(connection, "accessToken"),
     ),
-    false
+    false,
   );
 
   assert.ok(codex);
@@ -193,7 +193,7 @@ test("combo builder options route aggregates providers, connections, models and 
 
   assert.deepEqual(
     body.comboRefs.map((combo) => combo.name),
-    [visibleCombo.name]
+    [visibleCombo.name],
   );
 });
 
@@ -213,7 +213,7 @@ test("combo builder options route includes no-auth provider (opencode) even with
   // Spot-check a known built-in model from providerRegistry.ts
   assert.ok(
     opencode.models.some((m: any) => m.id === "big-pickle"),
-    "big-pickle should be among opencode models"
+    "big-pickle should be among opencode models",
   );
   // #2901: no-auth opencode routes under its alias "oc/" (the bare "opencode/"
   // prefix misroutes to the opencode-zen api-key tier via ALIAS_TO_PROVIDER_ID).

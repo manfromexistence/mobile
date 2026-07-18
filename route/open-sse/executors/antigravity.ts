@@ -133,7 +133,7 @@ function getChunkedOrFixedBody(bodyStr: string, stream: boolean): BodyInit {
           controller.close();
         },
       },
-      { highWaterMark: 16384 }
+      { highWaterMark: 16384 },
     );
   }
   return bodyStr;
@@ -154,7 +154,7 @@ function cloneAntigravityRequestBody(body: unknown): unknown {
 function serializeAntigravityRequest(
   provider: string,
   headers: Record<string, string>,
-  body: unknown
+  body: unknown,
 ): { headers: Record<string, string>; bodyString: string } {
   const serializedBody = cloneAntigravityRequestBody(body);
 
@@ -452,7 +452,7 @@ function getAntigravitySafetySettings(safetySettings: unknown): unknown[] {
 }
 
 function sanitizeAntigravityGeminiRequest(
-  request: Record<string, unknown>
+  request: Record<string, unknown>,
 ): Record<string, unknown> {
   const clean: Record<string, unknown> = {};
 
@@ -511,7 +511,7 @@ function sanitizeAntigravityGeminiRequest(
  * always preserved.
  */
 function stripTrailingAntigravityAssistantTurn(
-  request: Record<string, unknown>
+  request: Record<string, unknown>,
 ): Record<string, unknown> {
   const contents = request.contents;
   if (!Array.isArray(contents) || contents.length === 0) {
@@ -565,7 +565,7 @@ export class AntigravityExecutor extends BaseExecutor {
     body: unknown,
     _stream: boolean,
     credentials: AntigravityCredentials,
-    modelIdOverride?: string
+    modelIdOverride?: string,
   ): Promise<AntigravityRequestEnvelope | Response> {
     // Project ID resolution: prefer OAuth-stored projectId over incoming body.project
     // to avoid stale/wrong client-side values causing 404/403 from Cloud Code endpoints.
@@ -579,7 +579,7 @@ export class AntigravityExecutor extends BaseExecutor {
     const bodyProjectId = normalizeProjectId(bodyRecord.project);
     const credentialsProjectId = normalizeProjectId(credentials?.projectId);
     const providerSpecificProjectId = normalizeProjectId(
-      (credentials?.providerSpecificData as Record<string, unknown> | undefined)?.projectId
+      (credentials?.providerSpecificData as Record<string, unknown> | undefined)?.projectId,
     );
     const allowBodyProjectOverride = process.env.OMNIROUTE_ALLOW_BODY_PROJECT_OVERRIDE === "1";
 
@@ -636,7 +636,7 @@ export class AntigravityExecutor extends BaseExecutor {
             code: "missing_project_id",
           },
         }),
-        { status: 422, headers: { "Content-Type": "application/json" } }
+        { status: 422, headers: { "Content-Type": "application/json" } },
       );
       return resp as unknown as never;
     }
@@ -696,7 +696,7 @@ export class AntigravityExecutor extends BaseExecutor {
       ...(contents.length > 0 && { contents }),
       sessionId: getAntigravitySessionId(
         credentials,
-        typeof normalizedRequest?.sessionId === "string" ? normalizedRequest.sessionId : undefined
+        typeof normalizedRequest?.sessionId === "string" ? normalizedRequest.sessionId : undefined,
       ),
       // #5003: send explicit all-OFF safety entries that Cloud Code accepts. Omitting the
       // field lets Cloud Code apply server-side defaults that false-flag benign technical
@@ -710,7 +710,7 @@ export class AntigravityExecutor extends BaseExecutor {
 
     const transformedRequest = isClaude
       ? stripTrailingAntigravityAssistantTurn(
-          sanitizeAntigravityGeminiRequest(rawTransformedRequest)
+          sanitizeAntigravityGeminiRequest(rawTransformedRequest),
         )
       : rawTransformedRequest;
 
@@ -775,7 +775,7 @@ export class AntigravityExecutor extends BaseExecutor {
 
   async refreshCredentials(
     credentials: AntigravityCredentials,
-    log?: ExecutorLog | null
+    log?: ExecutorLog | null,
   ): Promise<AntigravityCredentials | null> {
     if (!credentials.refreshToken) return null;
 
@@ -938,7 +938,7 @@ export class AntigravityExecutor extends BaseExecutor {
     headers: Record<string, string>,
     transformedBody: Record<string, unknown>,
     log?: ExecutorLog | null,
-    signal?: AbortSignal | null
+    signal?: AbortSignal | null,
   ) {
     if (!response.body) {
       return Promise.resolve({ response, url, headers, transformedBody });
@@ -970,8 +970,8 @@ export class AntigravityExecutor extends BaseExecutor {
               timeout.addEventListener(
                 "abort",
                 () => reject(new Error("SSE collection timed out")),
-                { once: true }
-              )
+                { once: true },
+              ),
             ),
           ]);
           if (done) break;
@@ -979,7 +979,7 @@ export class AntigravityExecutor extends BaseExecutor {
             decoder.decode(value, { stream: true }),
             partialLine,
             collected,
-            logger
+            logger,
           );
         }
       } catch (err) {
@@ -1084,7 +1084,7 @@ export class AntigravityExecutor extends BaseExecutor {
       if (!isLast) {
         input.log?.debug?.(
           "AG_PRO_FALLBACK",
-          `400 on "${candidate}" — retrying with next Pro candidate "${chain[i + 1]}"`
+          `400 on "${candidate}" — retrying with next Pro candidate "${chain[i + 1]}"`,
         );
         continue;
       }
@@ -1092,7 +1092,7 @@ export class AntigravityExecutor extends BaseExecutor {
       // Chain exhausted: surface the FIRST candidate's sanitized 400.
       input.log?.warn?.(
         "AG_PRO_FALLBACK",
-        `Pro fallback chain exhausted (all ${chain.length} candidates 400'd) for "${resolvedUpstreamId}"`
+        `Pro fallback chain exhausted (all ${chain.length} candidates 400'd) for "${resolvedUpstreamId}"`,
       );
       return firstResult ?? result;
     }
@@ -1110,7 +1110,7 @@ export class AntigravityExecutor extends BaseExecutor {
    */
   private async executeOnce(
     { model, body, stream, credentials, signal, log, upstreamExtraHeaders }: ExecuteInput,
-    modelIdOverride?: string
+    modelIdOverride?: string,
   ) {
     await resolveAntigravityVersion();
     const fallbackCount = this.getFallbackCount();
@@ -1139,7 +1139,7 @@ export class AntigravityExecutor extends BaseExecutor {
     const fetchWithReadinessTimeout = async (
       url: string,
       init: RequestInit,
-      timeoutMs = STREAM_READINESS_TIMEOUT_MS
+      timeoutMs = STREAM_READINESS_TIMEOUT_MS,
     ): Promise<Response> => {
       const boundedTimeoutMs = Math.max(0, Math.floor(timeoutMs));
       if (boundedTimeoutMs <= 0) {
@@ -1183,7 +1183,7 @@ export class AntigravityExecutor extends BaseExecutor {
         body,
         upstreamStream,
         credentials,
-        modelIdOverride
+        modelIdOverride,
       );
       let requestToolNameMap: Map<string, string> | null = null;
 
@@ -1216,7 +1216,7 @@ export class AntigravityExecutor extends BaseExecutor {
         const serializedRequest = serializeAntigravityRequest(
           this.provider,
           headers,
-          transformedBody
+          transformedBody,
         );
         let finalHeaders = serializedRequest.headers;
         const capture = (h: Record<string, string>, s: string) =>
@@ -1224,12 +1224,12 @@ export class AntigravityExecutor extends BaseExecutor {
         const clientProfile = applyAntigravityClientProfileHeaders(
           finalHeaders,
           credentials,
-          transformedBody
+          transformedBody,
         );
 
         log?.debug?.(
           "TELEMETRY",
-          `[Antigravity] Execute - URL: ${url}, Model: ${model}, Target: ${getRequestTargetModel(transformedBody)}, RetryAttempt: ${retryAttemptsByUrl[urlIndex]}`
+          `[Antigravity] Execute - URL: ${url}, Model: ${model}, Target: ${getRequestTargetModel(transformedBody)}, RetryAttempt: ${retryAttemptsByUrl[urlIndex]}`,
         );
 
         // Dump outgoing headers (mask Authorization) and envelope shape for debugging
@@ -1253,7 +1253,7 @@ export class AntigravityExecutor extends BaseExecutor {
               clientProfile,
               sessionId: requestInner?.sessionId,
               generationConfig: requestInner?.generationConfig,
-            })
+            }),
           );
         }
 
@@ -1284,7 +1284,7 @@ export class AntigravityExecutor extends BaseExecutor {
         if (!response.ok) {
           log?.warn?.(
             "TELEMETRY",
-            `[Antigravity] Error Response - URL: ${url}, Status: ${response.status}, Model: ${model}`
+            `[Antigravity] Error Response - URL: ${url}, Status: ${response.status}, Model: ${model}`,
           );
         }
 
@@ -1329,7 +1329,7 @@ export class AntigravityExecutor extends BaseExecutor {
               retryMs = decision.retryAfterMs;
               log?.debug?.(
                 "AG_429",
-                `Category: ${category}, Decision: ${decision.kind} — ${decision.reason}`
+                `Category: ${category}, Decision: ${decision.kind} — ${decision.reason}`,
               );
 
               if (decision.kind === "full_quota_exhausted" && retryMs) {
@@ -1356,7 +1356,7 @@ export class AntigravityExecutor extends BaseExecutor {
                 const serializedCreditsRequest = serializeAntigravityRequest(
                   this.provider,
                   headers,
-                  creditsBody
+                  creditsBody,
                 );
                 const finalCreditsHeaders = serializedCreditsRequest.headers;
                 try {
@@ -1378,7 +1378,7 @@ export class AntigravityExecutor extends BaseExecutor {
                         finalCreditsHeaders,
                         creditsBody,
                         log,
-                        signal
+                        signal,
                       );
                       // Parse _remainingCredits from the synthetic response and cache
                       try {
@@ -1438,7 +1438,7 @@ export class AntigravityExecutor extends BaseExecutor {
             const effectiveRetryMs = Math.min(retryMs, MAX_RETRY_AFTER_MS);
             log?.debug?.(
               "RETRY",
-              `${response.status} retry ${retryAttemptsByUrl[urlIndex]}/${MAX_AUTO_RETRIES} with Retry-After: ${Math.ceil(effectiveRetryMs / 1000)}s, waiting...`
+              `${response.status} retry ${retryAttemptsByUrl[urlIndex]}/${MAX_AUTO_RETRIES} with Retry-After: ${Math.ceil(effectiveRetryMs / 1000)}s, waiting...`,
             );
             await new Promise((resolve) => setTimeout(resolve, effectiveRetryMs));
             urlIndex--;
@@ -1475,7 +1475,7 @@ export class AntigravityExecutor extends BaseExecutor {
               const backoffMs = Math.min(1000 * 2 ** retryAttemptsByUrl[urlIndex], cap);
               log?.debug?.(
                 "RETRY",
-                `${response.status} transient auto retry ${retryAttemptsByUrl[urlIndex]}/${MAX_AUTO_RETRIES} after ${backoffMs / 1000}s`
+                `${response.status} transient auto retry ${retryAttemptsByUrl[urlIndex]}/${MAX_AUTO_RETRIES} after ${backoffMs / 1000}s`,
               );
               await new Promise((resolve) => setTimeout(resolve, backoffMs));
               urlIndex--;
@@ -1485,7 +1485,7 @@ export class AntigravityExecutor extends BaseExecutor {
 
           log?.debug?.(
             "RETRY",
-            `${response.status}, Retry-After ${retryMs ? `too long (${Math.ceil(retryMs / 1000)}s)` : "missing"}, trying fallback`
+            `${response.status}, Retry-After ${retryMs ? `too long (${Math.ceil(retryMs / 1000)}s)` : "missing"}, trying fallback`,
           );
           lastStatus = response.status;
 
@@ -1546,7 +1546,7 @@ export class AntigravityExecutor extends BaseExecutor {
             const errorBody = buildAntigravityUpstreamError(
               response.status,
               response.statusText,
-              rawBody
+              rawBody,
             );
             return {
               response: new Response(JSON.stringify(errorBody), {
@@ -1565,7 +1565,7 @@ export class AntigravityExecutor extends BaseExecutor {
             finalHeaders,
             transformedBody,
             log,
-            signal
+            signal,
           );
           // When credits were injected (credits-first or credits-retry), the
           // synthetic body contains _remainingCredits — mirror it into the
@@ -1575,7 +1575,7 @@ export class AntigravityExecutor extends BaseExecutor {
             const rc = syntheticJson?._remainingCredits;
             if (Array.isArray(rc)) {
               const googleCredit = rc.find(
-                (c: { creditType?: string }) => c?.creditType === "GOOGLE_ONE_AI"
+                (c: { creditType?: string }) => c?.creditType === "GOOGLE_ONE_AI",
               );
               if (googleCredit) {
                 const balance = parseInt(googleCredit.creditAmount, 10);
@@ -1606,7 +1606,7 @@ export class AntigravityExecutor extends BaseExecutor {
           const errorBody = buildAntigravityUpstreamError(
             response.status,
             response.statusText,
-            rawBody
+            rawBody,
           );
           return {
             response: new Response(JSON.stringify(errorBody), {
@@ -1655,7 +1655,7 @@ export class AntigravityExecutor extends BaseExecutor {
                   if (sseBuffer.length > MAX_BUFFER_SIZE) {
                     const lastNewline = sseBuffer.lastIndexOf(
                       "\n",
-                      sseBuffer.length - MAX_BUFFER_SIZE
+                      sseBuffer.length - MAX_BUFFER_SIZE,
                     );
                     if (lastNewline !== -1) {
                       sseBuffer = sseBuffer.slice(lastNewline + 1);
@@ -1712,7 +1712,7 @@ export class AntigravityExecutor extends BaseExecutor {
               },
             },
             { highWaterMark: 16384 },
-            { highWaterMark: 16384 }
+            { highWaterMark: 16384 },
           );
           const tappedBody = response.body.pipeThrough(passThrough);
           const tappedResponse = new Response(tappedBody, {
@@ -1738,7 +1738,7 @@ export class AntigravityExecutor extends BaseExecutor {
         lastError = error;
         log?.error?.(
           "TELEMETRY",
-          `[Antigravity] Network/Fetch Error - URL: ${url}, Model: ${model}, Error: ${error instanceof Error ? error.message : String(error)}`
+          `[Antigravity] Network/Fetch Error - URL: ${url}, Model: ${model}, Error: ${error instanceof Error ? error.message : String(error)}`,
         );
         if (urlIndex + 1 < fallbackCount) {
           log?.debug?.("RETRY", `Error on ${url}, trying fallback ${urlIndex + 1}`);

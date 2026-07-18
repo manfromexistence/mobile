@@ -1,13 +1,15 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { checkFallbackError, getProviderProfile, parseRetryFromErrorText } =
-  await import("../../open-sse/services/accountFallback.ts");
+const { checkFallbackError, getProviderProfile, parseRetryFromErrorText } = await import(
+  "../../open-sse/services/accountFallback.ts"
+);
 
 const { getProviderCategory } = await import("../../open-sse/config/providerRegistry.ts");
 
-const { BACKOFF_CONFIG, COOLDOWN_MS, PROVIDER_PROFILES, RateLimitReason } =
-  await import("../../open-sse/config/constants.ts");
+const { BACKOFF_CONFIG, COOLDOWN_MS, PROVIDER_PROFILES, RateLimitReason } = await import(
+  "../../open-sse/config/constants.ts"
+);
 
 // ─── Provider Category Tests ────────────────────────────────────────────────
 
@@ -49,7 +51,7 @@ test("getProviderProfile: OAuth provider returns oauth profile", () => {
   assert.equal(profile.transientCooldown, PROVIDER_PROFILES.oauth.transientCooldown);
   assert.equal(
     profile.rateLimitCooldown,
-    profile.useUpstreamRetryHints ? 0 : profile.baseCooldownMs
+    profile.useUpstreamRetryHints ? 0 : profile.baseCooldownMs,
   );
   assert.equal(profile.maxBackoffLevel, PROVIDER_PROFILES.oauth.maxBackoffLevel);
   assert.equal(profile.circuitBreakerThreshold, PROVIDER_PROFILES.oauth.circuitBreakerThreshold);
@@ -67,7 +69,7 @@ test("getProviderProfile: API provider returns apikey profile", () => {
   assert.equal(profile.transientCooldown, PROVIDER_PROFILES.apikey.transientCooldown);
   assert.equal(
     profile.rateLimitCooldown,
-    profile.useUpstreamRetryHints ? 0 : profile.baseCooldownMs
+    profile.useUpstreamRetryHints ? 0 : profile.baseCooldownMs,
   );
   assert.equal(profile.maxBackoffLevel, PROVIDER_PROFILES.apikey.maxBackoffLevel);
   assert.equal(profile.circuitBreakerThreshold, PROVIDER_PROFILES.apikey.circuitBreakerThreshold);
@@ -79,11 +81,11 @@ test("getProviderProfile: profiles have different thresholds", () => {
   const api = getProviderProfile("groq");
   assert.ok(
     oauth.circuitBreakerThreshold < api.circuitBreakerThreshold,
-    "OAuth should have lower threshold than API"
+    "OAuth should have lower threshold than API",
   );
   assert.ok(
     oauth.maxBackoffLevel > api.maxBackoffLevel,
-    "OAuth should have higher max backoff level"
+    "OAuth should have higher max backoff level",
   );
 });
 
@@ -199,13 +201,13 @@ test("quota reset text is ignored for oauth providers when upstream retry hints 
     0,
     null,
     "antigravity",
-    null
+    null,
   );
   assert.equal(result.shouldFallback, true);
   assert.notEqual(result.cooldownMs, 99696000);
   assert.ok(
     result.cooldownMs < 5 * 60 * 1000,
-    `expected local short cooldown, got ${result.cooldownMs}ms`
+    `expected local short cooldown, got ${result.cooldownMs}ms`,
   );
   assert.equal(result.usedUpstreamRetryHint, false);
   assert.equal(result.reason, "quota_exhausted");
@@ -218,7 +220,7 @@ test("quota reset text is honored when upstream retry hints are enabled", () => 
     0,
     null,
     "groq",
-    null
+    null,
   );
   assert.equal(result.shouldFallback, true);
   assert.equal(result.cooldownMs, 2 * 60 * 60 * 1000);
@@ -239,6 +241,6 @@ test("high transient backoff levels clamp to the configured maxBackoffSteps", ()
   assert.equal(result.newBackoffLevel, BACKOFF_CONFIG.maxLevel);
   assert.equal(
     result.cooldownMs,
-    COOLDOWN_MS.transientInitial * Math.pow(2, BACKOFF_CONFIG.maxLevel)
+    COOLDOWN_MS.transientInitial * Math.pow(2, BACKOFF_CONFIG.maxLevel),
   );
 });

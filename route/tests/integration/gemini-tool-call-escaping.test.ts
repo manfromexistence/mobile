@@ -63,7 +63,7 @@ test("gemini direct: streaming tool call produces valid JSON", { skip }, async (
   }
   validateToolCallArguments(toolCalls);
   console.log(
-    `  [OK] gemini direct streaming: ${toolCalls.length} tool calls, finish=${data.choices[0].finish_reason}`
+    `  [OK] gemini direct streaming: ${toolCalls.length} tool calls, finish=${data.choices[0].finish_reason}`,
   );
 });
 
@@ -78,7 +78,7 @@ test("gemini direct: responses tool call arguments are valid JSON", { skip }, as
   }
   validateToolCallArguments(toolCalls);
   console.log(
-    `  [OK] gemini direct responses: ${toolCalls.length} tool calls, model=${data.model}`
+    `  [OK] gemini direct responses: ${toolCalls.length} tool calls, model=${data.model}`,
   );
 });
 
@@ -110,7 +110,7 @@ test("omniroute combo: streaming tool call produces valid JSON", { skip }, async
   }
   validateToolCallArguments(toolCalls);
   console.log(
-    `  [OK] omniroute combo streaming: ${toolCalls.length} tool calls, finish=${data.choices[0].finish_reason}`
+    `  [OK] omniroute combo streaming: ${toolCalls.length} tool calls, finish=${data.choices[0].finish_reason}`,
   );
 });
 
@@ -125,7 +125,7 @@ test("omniroute combo: responses tool call arguments are valid JSON", { skip }, 
   }
   validateToolCallArguments(toolCalls);
   console.log(
-    `  [OK] omniroute combo responses: ${toolCalls.length} tool calls, model=${data.model}`
+    `  [OK] omniroute combo responses: ${toolCalls.length} tool calls, model=${data.model}`,
   );
 });
 

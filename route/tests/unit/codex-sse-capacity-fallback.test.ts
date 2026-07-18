@@ -9,7 +9,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { CodexExecutor, __setCodexWebSocketTransportForTesting } from "../../open-sse/executors/codex.ts";
+import {
+  CodexExecutor,
+  __setCodexWebSocketTransportForTesting,
+} from "../../open-sse/executors/codex.ts";
 
 test.afterEach(() => {
   __setCodexWebSocketTransportForTesting(undefined);
@@ -42,7 +45,7 @@ test("CodexExecutor.execute converts a 200-OK SSE stream carrying a model-at-cap
       {
         status: 200,
         headers: { "Content-Type": "text/event-stream" },
-      }
+      },
     );
 
   try {
@@ -76,7 +79,7 @@ test("CodexExecutor.execute converts server_is_overloaded / service_unavailable_
       {
         status: 200,
         headers: { "Content-Type": "text/event-stream" },
-      }
+      },
     );
 
   try {

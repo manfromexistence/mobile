@@ -23,7 +23,7 @@ export default function LinkifiedText({ text }: { text: string | null | undefine
           </a>
         ) : (
           <Fragment key={i}>{seg.text}</Fragment>
-        )
+        ),
       )}
     </>
   );

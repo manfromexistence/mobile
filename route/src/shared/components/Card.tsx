@@ -40,7 +40,7 @@ export default function Card({
         "rounded-card shadow-sm",
         hover && "hover:shadow-md hover:border-primary/30 transition-all cursor-pointer",
         paddings[padding],
-        className
+        className,
       )}
       {...props}
     >
@@ -77,7 +77,7 @@ Card.Section = function CardSection({ children, className, ...props }: CardSecti
         "p-4 rounded-lg",
         "bg-black/[0.02] dark:bg-white/[0.02]",
         "border border-border",
-        className
+        className,
       )}
       {...props}
     >
@@ -98,7 +98,7 @@ Card.Row = function CardRow({ children, className, ...props }: CardRowProps) {
         "p-3 -mx-3 px-3 transition-colors",
         "border-b border-border last:border-b-0",
         "hover:bg-black/[0.02] dark:hover:bg-white/[0.02]",
-        className
+        className,
       )}
       {...props}
     >
@@ -126,7 +126,7 @@ Card.ListItem = function CardListItem({
         "border-b border-black/[0.03] dark:border-white/[0.03] last:border-b-0",
         "hover:bg-black/[0.02] dark:hover:bg-white/[0.02]",
         "transition-colors",
-        className
+        className,
       )}
       {...props}
     >

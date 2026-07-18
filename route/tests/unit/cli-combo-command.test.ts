@@ -65,8 +65,9 @@ test("combo create fails if combo already exists", async () => {
 
 test("combo delete removes the combo", async () => {
   await withComboEnv(async () => {
-    const { runComboCreateCommand, runComboDeleteCommand } =
-      await import("../../bin/cli/commands/combo.mjs");
+    const { runComboCreateCommand, runComboDeleteCommand } = await import(
+      "../../bin/cli/commands/combo.mjs"
+    );
 
     await runComboCreateCommand("to-delete", "weighted", {});
     const result = await runComboDeleteCommand("to-delete", { yes: true });
@@ -88,8 +89,9 @@ test("combo list returns 0 with empty combos table", async () => {
 
 test("combo switch updates active combo when server is offline", async () => {
   await withComboEnv(async () => {
-    const { runComboCreateCommand, runComboSwitchCommand } =
-      await import("../../bin/cli/commands/combo.mjs");
+    const { runComboCreateCommand, runComboSwitchCommand } = await import(
+      "../../bin/cli/commands/combo.mjs"
+    );
 
     await runComboCreateCommand("my-switch", "round-robin", {});
     const result = await runComboSwitchCommand("my-switch", {});

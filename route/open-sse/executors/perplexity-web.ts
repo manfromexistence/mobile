@@ -67,7 +67,7 @@ function sessionStore(
   history: Array<{ role: string; content: string }>,
   currentMsg: string,
   responseText: string,
-  backendUuid: string | null
+  backendUuid: string | null,
 ): void {
   if (!backendUuid) return;
   const full = [
@@ -97,7 +97,7 @@ function buildStreamingResponse(
   created: number,
   history: Array<{ role: string; content: string }>,
   currentMsg: string,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder();
 
@@ -117,8 +117,8 @@ function buildStreamingResponse(
                 choices: [
                   { index: 0, delta: { role: "assistant" }, finish_reason: null, logprobs: null },
                 ],
-              })
-            )
+              }),
+            ),
           );
 
           let fullAnswer = "";
@@ -144,8 +144,8 @@ function buildStreamingResponse(
                         logprobs: null,
                       },
                     ],
-                  })
-                )
+                  }),
+                ),
               );
               break;
             }
@@ -167,8 +167,8 @@ function buildStreamingResponse(
                         logprobs: null,
                       },
                     ],
-                  })
-                )
+                  }),
+                ),
               );
               continue;
             }
@@ -193,8 +193,8 @@ function buildStreamingResponse(
                       choices: [
                         { index: 0, delta: { content: dt }, finish_reason: null, logprobs: null },
                       ],
-                    })
-                  )
+                    }),
+                  ),
                 );
               }
             }
@@ -211,8 +211,8 @@ function buildStreamingResponse(
                 model,
                 system_fingerprint: null,
                 choices: [{ index: 0, delta: {}, finish_reason: "stop", logprobs: null }],
-              })
-            )
+              }),
+            ),
           );
           controller.enqueue(encoder.encode("data: [DONE]\n\n"));
 
@@ -236,8 +236,8 @@ function buildStreamingResponse(
                     logprobs: null,
                   },
                 ],
-              })
-            )
+              }),
+            ),
           );
           controller.enqueue(encoder.encode("data: [DONE]\n\n"));
         } finally {
@@ -247,7 +247,7 @@ function buildStreamingResponse(
         }
       },
     },
-    { highWaterMark: 16384 }
+    { highWaterMark: 16384 },
   );
 }
 
@@ -258,7 +258,7 @@ async function buildNonStreamingResponse(
   created: number,
   history: Array<{ role: string; content: string }>,
   currentMsg: string,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): Promise<Response> {
   let fullAnswer = "";
   let respBackendUuid: string | null = null;
@@ -271,7 +271,7 @@ async function buildNonStreamingResponse(
         JSON.stringify({
           error: { message: chunk.error, type: "upstream_error", code: "PPLX_ERROR" },
         }),
-        { status: 502, headers: { "Content-Type": "application/json" } }
+        { status: 502, headers: { "Content-Type": "application/json" } },
       );
     }
     if (chunk.thinking) {
@@ -309,7 +309,7 @@ async function buildNonStreamingResponse(
         total_tokens: promptTokens + completionTokens,
       },
     }),
-    { status: 200, headers: { "Content-Type": "application/json" } }
+    { status: 200, headers: { "Content-Type": "application/json" } },
   );
 }
 
@@ -328,14 +328,14 @@ export class PerplexityWebExecutor extends BaseExecutor {
         JSON.stringify({
           error: { message: "Missing or empty messages array", type: "invalid_request" },
         }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
       return { response: errResp, url: PPLX_SSE_ENDPOINT, headers: {}, transformedBody: body };
     }
 
     const { hasTools, requestedTools, effectiveMessages } = prepareToolMessages(
       bodyObj,
-      rawMessages as Array<{ role: string; content: unknown }>
+      rawMessages as Array<{ role: string; content: unknown }>,
     );
 
     // Resolve thinking mode
@@ -370,7 +370,7 @@ export class PerplexityWebExecutor extends BaseExecutor {
         JSON.stringify({
           error: { message: "Empty query after processing", type: "invalid_request" },
         }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        { status: 400, headers: { "Content-Type": "application/json" } },
       );
       return { response: errResp, url: PPLX_SSE_ENDPOINT, headers: {}, transformedBody: body };
     }
@@ -383,7 +383,7 @@ export class PerplexityWebExecutor extends BaseExecutor {
       pplxMode,
       modelPref,
       followUpUuid,
-      requestId
+      requestId,
     );
 
     const headers: Record<string, string> = {
@@ -408,7 +408,7 @@ export class PerplexityWebExecutor extends BaseExecutor {
 
     log?.info?.(
       "PPLX-WEB",
-      `Query to ${model} (pref=${modelPref}, mode=${pplxMode}), len=${query.length}`
+      `Query to ${model} (pref=${modelPref}, mode=${pplxMode}), len=${query.length}`,
     );
 
     // Fetch from Perplexity through the Firefox-fingerprinted TLS client.
@@ -437,7 +437,7 @@ export class PerplexityWebExecutor extends BaseExecutor {
             type: "upstream_error",
           },
         }),
-        { status: 502, headers: { "Content-Type": "application/json" } }
+        { status: 502, headers: { "Content-Type": "application/json" } },
       );
       return { response: errResp, url: PPLX_SSE_ENDPOINT, headers, transformedBody: pplxBody };
     }
@@ -464,7 +464,7 @@ export class PerplexityWebExecutor extends BaseExecutor {
         JSON.stringify({
           error: { message: errMsg, type: "upstream_error", code: `HTTP_${status}` },
         }),
-        { status, headers: { "Content-Type": "application/json" } }
+        { status, headers: { "Content-Type": "application/json" } },
       );
       return { response: errResp, url: PPLX_SSE_ENDPOINT, headers, transformedBody: pplxBody };
     }
@@ -474,7 +474,7 @@ export class PerplexityWebExecutor extends BaseExecutor {
         JSON.stringify({
           error: { message: "Perplexity returned empty response body", type: "upstream_error" },
         }),
-        { status: 502, headers: { "Content-Type": "application/json" } }
+        { status: 502, headers: { "Content-Type": "application/json" } },
       );
       return { response: errResp, url: PPLX_SSE_ENDPOINT, headers, transformedBody: pplxBody };
     }
@@ -497,7 +497,7 @@ export class PerplexityWebExecutor extends BaseExecutor {
         created,
         parsed.history,
         parsed.currentMsg,
-        signal
+        signal,
       );
       finalResponse = await buildToolModeResponse(bufferedJson, requestedTools, stream, {
         cid,
@@ -513,7 +513,7 @@ export class PerplexityWebExecutor extends BaseExecutor {
         created,
         parsed.history,
         parsed.currentMsg,
-        signal
+        signal,
       );
       finalResponse = new Response(sseStream, {
         status: 200,
@@ -531,7 +531,7 @@ export class PerplexityWebExecutor extends BaseExecutor {
         created,
         parsed.history,
         parsed.currentMsg,
-        signal
+        signal,
       );
     }
 

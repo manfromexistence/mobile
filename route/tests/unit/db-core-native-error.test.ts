@@ -10,7 +10,7 @@ test("isNativeSqliteLoadError detects Module did not self-register", () => {
 
 test("isNativeSqliteLoadError detects NODE_MODULE_VERSION mismatch", () => {
   const err = new Error(
-    "The module was compiled against a different Node.js version using NODE_MODULE_VERSION 115."
+    "The module was compiled against a different Node.js version using NODE_MODULE_VERSION 115.",
   );
   assert.equal(isNativeSqliteLoadError(err), true);
 });
@@ -30,7 +30,7 @@ test("isNativeSqliteLoadError detects ERR_DLOPEN_FAILED via error.code", () => {
 // DLOPEN even happens, and we need to surface the friendly rebuild guide.
 test("isNativeSqliteLoadError detects 'Could not locate the bindings file' (bun #2358)", () => {
   const err = new Error(
-    "Could not locate the bindings file. Tried: → /Users/x/.../better-sqlite3/build/better_sqlite3.node"
+    "Could not locate the bindings file. Tried: → /Users/x/.../better-sqlite3/build/better_sqlite3.node",
   );
   assert.equal(isNativeSqliteLoadError(err), true);
 });
@@ -55,7 +55,7 @@ test("isNativeSqliteLoadError returns false for unrelated errors", () => {
 
 test("isSqliteDriverUnavailableError detects pre-init sql.js fallback errors", () => {
   const err = new Error(
-    "[DB] Nenhum driver SQLite disponível para '/tmp/storage.sqlite'. Chame ensureDbInitialized() no startup. sql.js WASM ainda não foi pré-inicializado."
+    "[DB] Nenhum driver SQLite disponível para '/tmp/storage.sqlite'. Chame ensureDbInitialized() no startup. sql.js WASM ainda não foi pré-inicializado.",
   );
 
   assert.equal(isSqliteDriverUnavailableError(err), true);

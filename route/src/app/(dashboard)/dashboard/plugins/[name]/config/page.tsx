@@ -100,9 +100,7 @@ export default function PluginConfigPage({
                 <label className="text-sm font-medium">
                   {key}
                   {field.description && (
-                    <span className="ml-2 text-xs text-gray-500">
-                      {field.description}
-                    </span>
+                    <span className="ml-2 text-xs text-gray-500">{field.description}</span>
                   )}
                 </label>
                 {field.type === "boolean" ? (

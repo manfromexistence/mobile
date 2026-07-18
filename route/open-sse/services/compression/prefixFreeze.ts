@@ -44,13 +44,13 @@ function toPositiveInt(raw: string | undefined, fallback: number): number {
 
 /** Resolve config from env (`COMPRESSION_PREFIX_FREEZE_ENABLED` / `_THRESHOLD`). Opt-in. */
 export function resolvePrefixFreezeConfig(
-  env: NodeJS.ProcessEnv = process.env
+  env: NodeJS.ProcessEnv = process.env,
 ): PrefixFreezeConfig {
   return {
     enabled: env.COMPRESSION_PREFIX_FREEZE_ENABLED === "true",
     threshold: toPositiveInt(
       env.COMPRESSION_PREFIX_FREEZE_THRESHOLD,
-      DEFAULT_PREFIX_FREEZE.threshold
+      DEFAULT_PREFIX_FREEZE.threshold,
     ),
   };
 }

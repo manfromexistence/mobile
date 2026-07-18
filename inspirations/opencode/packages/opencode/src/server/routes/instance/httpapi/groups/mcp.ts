@@ -1,33 +1,38 @@
-import { MCP } from "@/mcp"
-import { ConfigMCPV1 } from "@opencode-ai/core/v1/config/mcp"
-import { Schema } from "effect"
-import { HttpApi, HttpApiEndpoint, HttpApiError, HttpApiGroup, OpenApi } from "effect/unstable/httpapi"
-import { McpServerNotFoundError } from "../errors"
-import { Authorization } from "../middleware/authorization"
-import { InstanceContextMiddleware } from "../middleware/instance-context"
-import { WorkspaceRoutingMiddleware, WorkspaceRoutingQuery } from "../middleware/workspace-routing"
-import { described } from "./metadata"
+import { MCP } from "@/mcp";
+import { ConfigMCPV1 } from "@opencode-ai/core/v1/config/mcp";
+import { Schema } from "effect";
+import {
+  HttpApi,
+  HttpApiEndpoint,
+  HttpApiError,
+  HttpApiGroup,
+  OpenApi,
+} from "effect/unstable/httpapi";
+import { McpServerNotFoundError } from "../errors";
+import { Authorization } from "../middleware/authorization";
+import { InstanceContextMiddleware } from "../middleware/instance-context";
+import { WorkspaceRoutingMiddleware, WorkspaceRoutingQuery } from "../middleware/workspace-routing";
+import { described } from "./metadata";
 
 export const AddPayload = Schema.Struct({
   name: Schema.String,
   config: ConfigMCPV1.Info,
-})
+});
 
-export const StatusMap = Schema.Record(Schema.String, MCP.Status)
+export const StatusMap = Schema.Record(Schema.String, MCP.Status);
 export const AuthStartResponse = Schema.Struct({
   authorizationUrl: Schema.String,
   oauthState: Schema.String,
-})
+});
 export const AuthCallbackPayload = Schema.Struct({
   code: Schema.String,
-})
+});
 export const AuthRemoveResponse = Schema.Struct({
   success: Schema.Literal(true),
-})
-export class UnsupportedOAuthError extends Schema.ErrorClass<UnsupportedOAuthError>("McpUnsupportedOAuthError")(
-  { error: Schema.String },
-  { httpApiStatus: 400 },
-) {}
+});
+export class UnsupportedOAuthError extends Schema.ErrorClass<UnsupportedOAuthError>(
+  "McpUnsupportedOAuthError",
+)({ error: Schema.String }, { httpApiStatus: 400 }) {}
 
 export const McpPaths = {
   status: "/mcp",
@@ -36,7 +41,7 @@ export const McpPaths = {
   authAuthenticate: "/mcp/:name/auth/authenticate",
   connect: "/mcp/:name/connect",
   disconnect: "/mcp/:name/disconnect",
-} as const
+} as const;
 
 export const McpApi = HttpApi.make("mcp")
   .add(
@@ -73,7 +78,8 @@ export const McpApi = HttpApi.make("mcp")
           OpenApi.annotations({
             identifier: "mcp.auth.start",
             summary: "Start MCP OAuth",
-            description: "Start OAuth authentication flow for a Model Context Protocol (MCP) server.",
+            description:
+              "Start OAuth authentication flow for a Model Context Protocol (MCP) server.",
           }),
         ),
         HttpApiEndpoint.post("authCallback", McpPaths.authCallback, {
@@ -153,4 +159,4 @@ export const McpApi = HttpApi.make("mcp")
       version: "0.0.1",
       description: "Experimental HttpApi surface for selected instance routes.",
     }),
-  )
+  );

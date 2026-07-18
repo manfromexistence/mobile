@@ -1,4 +1,4 @@
-import { KeybindV2 } from "./keybind-v2"
+import { KeybindV2 } from "./keybind-v2";
 
 const docs = `### Overview
 Inline keybind indicator that renders one or more keyboard keys in a compact row.
@@ -11,7 +11,7 @@ Inline keybind indicator that renders one or more keyboard keys in a compact row
 ### Variants
 - **Neutral** — each key sits on a \`#D4D4D4\` pill with darker text.
 - **Ghost** — keys render without a background, lighter text color.
-`
+`;
 
 export default {
   title: "UI V2/Keybind",
@@ -40,9 +40,9 @@ export default {
       options: ["neutral", "ghost"],
     },
   },
-}
+};
 
-export const Playground = {}
+export const Playground = {};
 
 export const Variants = {
   render: () => (
@@ -51,7 +51,7 @@ export const Variants = {
       <KeybindV2 keys={["⌘"]} variant="ghost" />
     </div>
   ),
-}
+};
 
 export const MultipleKeys = {
   render: () => (
@@ -60,7 +60,7 @@ export const MultipleKeys = {
       <KeybindV2 keys={["⌘", "K"]} variant="ghost" />
     </div>
   ),
-}
+};
 
 export const AllExamples = {
   render: () => (
@@ -79,4 +79,4 @@ export const AllExamples = {
       </div>
     </div>
   ),
-}
+};

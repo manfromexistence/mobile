@@ -58,7 +58,7 @@ async function getQuotaAwareConnectionsForTarget(
   connectionCache: Map<string, Array<Record<string, unknown>>>,
   connectionLoadPromises: Map<string, Promise<Array<Record<string, unknown>>>>,
   comboName: string,
-  log: { warn?: (...args: unknown[]) => void }
+  log: { warn?: (...args: unknown[]) => void },
 ) {
   const provider = getResetAwareProvider(target);
   if (!provider || !getQuotaFetcher(provider)) return [];
@@ -99,7 +99,7 @@ async function getQuotaAwareConnectionsForTarget(
             });
             return [];
           }
-        })()
+        })(),
       );
     }
 
@@ -113,14 +113,14 @@ function normalizeConnectionIds(value: unknown): string[] | null {
   if (!Array.isArray(value)) return null;
   const ids = value.filter(
     (connectionId): connectionId is string =>
-      typeof connectionId === "string" && connectionId.trim().length > 0
+      typeof connectionId === "string" && connectionId.trim().length > 0,
   );
   return ids.length > 0 ? ids : null;
 }
 
 function filterAllowedConnectionIds(
   connectionIds: string[],
-  apiKeyAllowedConnectionIds: string[] | null | undefined
+  apiKeyAllowedConnectionIds: string[] | null | undefined,
 ): string[] {
   const allowedIds = normalizeConnectionIds(apiKeyAllowedConnectionIds);
   if (!allowedIds) return connectionIds;
@@ -130,7 +130,7 @@ function filterAllowedConnectionIds(
 
 function getTargetConnectionIds(
   target: ResolvedComboTarget,
-  connections: Array<Record<string, unknown>>
+  connections: Array<Record<string, unknown>>,
 ): string[] {
   let connectionIds: string[];
   if (target.connectionId) {
@@ -140,7 +140,7 @@ function getTargetConnectionIds(
   if (Array.isArray(target.allowedConnectionIds) && target.allowedConnectionIds.length > 0) {
     return target.allowedConnectionIds.filter(
       (connectionId): connectionId is string =>
-        typeof connectionId === "string" && connectionId.trim().length > 0
+        typeof connectionId === "string" && connectionId.trim().length > 0,
     );
   }
 
@@ -154,7 +154,7 @@ async function expandTargetsByQuotaAwareConnections(
   targets: ResolvedComboTarget[],
   comboName: string,
   log: { warn?: (...args: unknown[]) => void },
-  apiKeyAllowedConnectionIds?: string[] | null
+  apiKeyAllowedConnectionIds?: string[] | null,
 ): Promise<{
   connectionById: Map<string, Record<string, unknown>>;
   expandedTargets: ResolvedComboTarget[];
@@ -171,10 +171,10 @@ async function expandTargetsByQuotaAwareConnections(
         connectionCache,
         connectionLoadPromises,
         comboName,
-        log
+        log,
       ),
       target,
-    }))
+    })),
   );
 
   for (const { target, connections } of targetsWithConnections) {
@@ -185,7 +185,7 @@ async function expandTargetsByQuotaAwareConnections(
     const unrestrictedConnectionIds = getTargetConnectionIds(target, connections);
     const connectionIds = filterAllowedConnectionIds(
       unrestrictedConnectionIds,
-      apiKeyAllowedConnectionIds
+      apiKeyAllowedConnectionIds,
     );
     if (connectionIds.length === 0) {
       if (
@@ -250,21 +250,21 @@ async function scoreQuotaAwareTargets<TScore extends object>({
               config,
               log,
               comboName,
-            })
+            }),
           );
         }
         quota = await quotaPromises.get(quotaKey)!;
       }
 
       return { target, index, ...scoreQuota(quota) };
-    }
+    },
   );
 }
 
 function rotateLeadingTies<T extends { target: ResolvedComboTarget }>(
   sortedTargets: T[],
   tiedTargets: T[],
-  key: string
+  key: string,
 ): T[] {
   let orderedTiedTargets = tiedTargets;
   if (tiedTargets.length > 1) {
@@ -288,7 +288,7 @@ function rotateLeadingTies<T extends { target: ResolvedComboTarget }>(
 async function mapWithConcurrency<T, R>(
   items: T[],
   concurrency: number,
-  mapper: (item: T, index: number) => Promise<R>
+  mapper: (item: T, index: number) => Promise<R>,
 ): Promise<R[]> {
   const results = new Array<R>(items.length);
   let nextIndex = 0;
@@ -300,7 +300,7 @@ async function mapWithConcurrency<T, R>(
         const currentIndex = nextIndex++;
         results[currentIndex] = await mapper(items[currentIndex], currentIndex);
       }
-    })
+    }),
   );
 
   return results;
@@ -418,7 +418,7 @@ export type PreScreenResult = { profile: ProviderProfile | null; available: bool
 
 export async function preScreenTargets(
   targets: ResolvedComboTarget[],
-  isModelAvailable?: IsModelAvailable | null
+  isModelAvailable?: IsModelAvailable | null,
 ): Promise<Map<string, PreScreenResult>> {
   if (targets.length === 0) {
     return new Map();
@@ -440,11 +440,11 @@ export async function preScreenTargets(
         // IsModelAvailable may return a sync boolean or a Promise; Promise.resolve
         // normalizes both so the .catch() never runs against a bare boolean.
         available = await Promise.resolve(isModelAvailable(target.modelStr, target)).catch(
-          () => true
+          () => true,
         );
       }
       return { key: target.executionKey, result: { profile, available } };
-    }
+    },
   );
 
   const map = new Map<string, PreScreenResult>();
@@ -459,7 +459,7 @@ export async function orderTargetsByResetAwareQuota(
   comboName: string,
   configSource: Record<string, unknown> | null | undefined,
   log: { warn?: (...args: unknown[]) => void },
-  apiKeyAllowedConnectionIds?: string[] | null
+  apiKeyAllowedConnectionIds?: string[] | null,
 ) {
   if (targets.length === 0) return targets;
 
@@ -468,7 +468,7 @@ export async function orderTargetsByResetAwareQuota(
     targets,
     comboName,
     log,
-    apiKeyAllowedConnectionIds
+    apiKeyAllowedConnectionIds,
   );
 
   const scoredTargets = await scoreQuotaAwareTargets({
@@ -488,7 +488,7 @@ export async function orderTargetsByResetAwareQuota(
   const bestScore = scoredTargets[0]?.score ?? 0;
   const tiedTargets = scoredTargets.filter((entry) => bestScore - entry.score <= config.tieBand);
   return rotateLeadingTies(scoredTargets, tiedTargets, `reset-aware:${comboName}`).map(
-    (entry) => entry.target
+    (entry) => entry.target,
   );
 }
 
@@ -497,7 +497,7 @@ export async function orderTargetsByResetWindow(
   comboName: string,
   configSource: Record<string, unknown> | null | undefined,
   log: { warn?: (...args: unknown[]) => void },
-  apiKeyAllowedConnectionIds?: string[] | null
+  apiKeyAllowedConnectionIds?: string[] | null,
 ) {
   if (targets.length === 0) return targets;
 
@@ -506,7 +506,7 @@ export async function orderTargetsByResetWindow(
     targets,
     comboName,
     log,
-    apiKeyAllowedConnectionIds
+    apiKeyAllowedConnectionIds,
   );
 
   const scoredTargets = await scoreQuotaAwareTargets({
@@ -529,12 +529,12 @@ export async function orderTargetsByResetWindow(
   }
 
   const tiedTargets = scoredTargets.filter(
-    (entry) => entry.resetMs - bestResetMs <= config.tieBandMs
+    (entry) => entry.resetMs - bestResetMs <= config.tieBandMs,
   );
   if (tiedTargets.length <= 1) return scoredTargets.map((entry) => entry.target);
 
   return rotateLeadingTies(scoredTargets, tiedTargets, `reset-window:${comboName}`).map(
-    (entry) => entry.target
+    (entry) => entry.target,
   );
 }
 
@@ -548,7 +548,7 @@ type SaturationFetcher = (
   connectionId: string,
   provider: string,
   dim: { unit: "percent"; window: "5h" | "weekly" },
-  connection?: Record<string, unknown>
+  connection?: Record<string, unknown>,
 ) => Promise<number>;
 
 let _headroomSaturationFetcherOverride: SaturationFetcher | null = null;
@@ -581,7 +581,7 @@ export async function orderTargetsByHeadroom(
   targets: ResolvedComboTarget[],
   comboName: string,
   log: { warn?: (...args: unknown[]) => void },
-  apiKeyAllowedConnectionIds?: string[] | null
+  apiKeyAllowedConnectionIds?: string[] | null,
 ): Promise<ResolvedComboTarget[]> {
   if (targets.length <= 1) return targets;
 
@@ -590,7 +590,7 @@ export async function orderTargetsByHeadroom(
       targets,
       comboName,
       log,
-      apiKeyAllowedConnectionIds
+      apiKeyAllowedConnectionIds,
     );
 
     if (expandedTargets.length <= 1) return expandedTargets;
@@ -625,14 +625,14 @@ export async function orderTargetsByHeadroom(
                 connectionId,
                 provider,
                 { unit: "percent", window: "weekly" },
-                connection
+                connection,
               ),
             ]);
             return { util5h, util7d } satisfies HeadroomSaturation;
-          })()
+          })(),
         );
         await satByConnection.get(key);
-      }
+      },
     );
 
     // Resolve the per-connection saturation, keyed by the per-target executionKey
@@ -648,7 +648,7 @@ export async function orderTargetsByHeadroom(
   } catch (err) {
     log.warn?.(
       { err: (err as Error)?.message, comboName },
-      "headroom ordering failed — keeping target order"
+      "headroom ordering failed — keeping target order",
     );
     return targets;
   }

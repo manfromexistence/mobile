@@ -79,7 +79,7 @@ async function main() {
   }
 
   console.log(
-    `[sync-llm-mirrors] done — updated=${updated} unchanged=${unchanged} missing=${missing} (${locales.length} locales)`
+    `[sync-llm-mirrors] done — updated=${updated} unchanged=${unchanged} missing=${missing} (${locales.length} locales)`,
   );
 }
 

@@ -71,7 +71,7 @@ function collectRouteFiles() {
   return new Set(
     walk(API)
       .filter((p) => /route\.tsx?$/.test(p))
-      .map((p) => path.relative(cwd, p).replace(/\\/g, "/"))
+      .map((p) => path.relative(cwd, p).replace(/\\/g, "/")),
   );
 }
 
@@ -155,17 +155,18 @@ export function resolveApiPrefixToRoute(prefix, routeFiles) {
  */
 export function routeExportsMethod(routeSource, method) {
   // Direct export: `export [async] function METHOD` or `export const METHOD`
-  const directRe = new RegExp(
-    `export\\s+(?:async\\s+)?(?:function|const)\\s+${method}\\b`
-  );
+  const directRe = new RegExp(`export\\s+(?:async\\s+)?(?:function|const)\\s+${method}\\b`);
   if (directRe.test(routeSource)) return true;
   // Re-export: `export { GET, PUT } from "…"`
   const reExportRe = /export\s*\{([^}]+)\}\s*from/g;
   let m;
   while ((m = reExportRe.exec(routeSource))) {
-    const names = m[1]
-      .split(",")
-      .map((s) => s.trim().split(/\s+as\s+/)[0].trim());
+    const names = m[1].split(",").map((s) =>
+      s
+        .trim()
+        .split(/\s+as\s+/)[0]
+        .trim(),
+    );
     if (names.includes(method)) return true;
   }
   return false;
@@ -246,7 +247,7 @@ function main() {
       }
       if (!resolveApiPathToRoute(apiPath, routeFiles)) {
         console.error(
-          `[check-fetch-targets] ✗ rota inexistente: ${path.relative(cwd, f)} → ${apiPath}`
+          `[check-fetch-targets] ✗ rota inexistente: ${path.relative(cwd, f)} → ${apiPath}`,
         );
         process.exitCode = 1;
         liveMissesStatic.add(apiPath);
@@ -258,7 +259,7 @@ function main() {
       if (IGNORE.some((rx) => rx.test(prefix))) continue;
       if (!resolveApiPrefixToRoute(prefix, routeFiles)) {
         console.error(
-          `[check-fetch-targets] ✗ prefixo de template inexistente: ${path.relative(cwd, f)} → "${prefix}"`
+          `[check-fetch-targets] ✗ prefixo de template inexistente: ${path.relative(cwd, f)} → "${prefix}"`,
         );
         process.exitCode = 1;
       }
@@ -278,7 +279,7 @@ function main() {
       const routeSource = fs.readFileSync(path.join(cwd, routeFile), "utf8");
       if (!routeExportsMethod(routeSource, method)) {
         console.error(
-          `[check-fetch-targets] ✗ método ${method} não exportado: ${path.relative(cwd, f)} → ${apiPath} (em ${routeFile})`
+          `[check-fetch-targets] ✗ método ${method} não exportado: ${path.relative(cwd, f)} → ${apiPath} (em ${routeFile})`,
         );
         process.exitCode = 1;
         liveMissesMethod.add(key);

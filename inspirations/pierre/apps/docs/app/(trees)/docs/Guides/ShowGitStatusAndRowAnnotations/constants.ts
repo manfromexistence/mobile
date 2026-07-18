@@ -1,7 +1,7 @@
-import { docsCodeSnippet } from '@/lib/docsCodeSnippet';
+import { docsCodeSnippet } from "@/lib/docsCodeSnippet";
 
 export const GIT_STATUS_BASIC = docsCodeSnippet(
-  'git-status.ts',
+  "git-status.ts",
   `const fileTree = new FileTree({
   paths,
   gitStatus: [
@@ -10,17 +10,17 @@ export const GIT_STATUS_BASIC = docsCodeSnippet(
     { path: 'src/index.ts', status: 'modified' },
     { path: 'src/components/Button.tsx', status: 'added' },
   ],
-});`
+});`,
 );
 
 export const GIT_STATUS_SET = docsCodeSnippet(
-  'set-git-status.ts',
+  "set-git-status.ts",
   `fileTree.setGitStatus(nextStatuses);
-fileTree.setGitStatus(undefined);`
+fileTree.setGitStatus(undefined);`,
 );
 
 export const GIT_STATUS_ROW_DECORATION = docsCodeSnippet(
-  'render-row-decoration.ts',
+  "render-row-decoration.ts",
   `const fileTree = new FileTree({
   paths,
   renderRowDecoration: ({ item }) => {
@@ -34,5 +34,5 @@ export const GIT_STATUS_ROW_DECORATION = docsCodeSnippet(
 
     return null;
   },
-});`
+});`,
 );

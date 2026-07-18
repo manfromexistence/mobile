@@ -48,7 +48,7 @@ export function selectAccount(
   accounts,
   strategy = "fill-first",
   state: { lastIndex?: number } = {},
-  model = null
+  model = null,
 ) {
   if (!accounts || accounts.length === 0) {
     return { account: null, state };

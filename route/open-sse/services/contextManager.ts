@@ -72,7 +72,7 @@ export function getTokenLimit(provider: string, model: string | null = null): nu
  */
 function resolveTokenLimit(
   provider: string,
-  model: string | null = null
+  model: string | null = null,
 ): { limit: number; specific: boolean } {
   // 1. Check environment variable override first
   const envOverride = getEnvOverride(provider);
@@ -134,7 +134,7 @@ export function resolveComboContextLimit(options: {
     return { limit: own.limit, source: "target" };
   }
   const knownTargets = (options.comboTargetLimits || []).filter(
-    (value) => Number.isFinite(value) && value > 0
+    (value) => Number.isFinite(value) && value > 0,
   );
   if (knownTargets.length > 0) {
     return { limit: Math.min(...knownTargets), source: "combo-min" };
@@ -156,7 +156,7 @@ export function resolveComboContextLimit(options: {
  */
 export function compressContext(
   body: Record<string, unknown>,
-  options: { provider?: string; model?: string; maxTokens?: number; reserveTokens?: number } = {}
+  options: { provider?: string; model?: string; maxTokens?: number; reserveTokens?: number } = {},
 ) {
   if (!body || !body.messages || !Array.isArray(body.messages)) {
     return { body, compressed: false, stats: {} };
@@ -168,7 +168,7 @@ export function compressContext(
   const defaultReserveTokens = Math.min(16000, Math.max(256, Math.floor(maxTokens * 0.15)));
   const reserveTokens = Math.min(
     options.reserveTokens ?? getReserveTokensOverride() ?? defaultReserveTokens,
-    Math.max(0, maxTokens - 1)
+    Math.max(0, maxTokens - 1),
   );
   const targetTokens = Math.max(0, maxTokens - reserveTokens);
 
@@ -357,7 +357,7 @@ export function fixToolPairs(messages: Record<string, unknown>[]) {
 
       if (Array.isArray(newMsg.tool_calls)) {
         const filteredToolCalls = newMsg.tool_calls.filter(
-          (tc: Record<string, unknown>) => !tc.id || toolResultIds.has(tc.id)
+          (tc: Record<string, unknown>) => !tc.id || toolResultIds.has(tc.id),
         );
         if (filteredToolCalls.length !== newMsg.tool_calls.length) {
           newMsg.tool_calls = filteredToolCalls;
@@ -368,7 +368,7 @@ export function fixToolPairs(messages: Record<string, unknown>[]) {
       if (Array.isArray(newMsg.content)) {
         const filteredContent = newMsg.content.filter(
           (block: Record<string, unknown>) =>
-            block.type !== "tool_use" || !block.id || toolResultIds.has(block.id)
+            block.type !== "tool_use" || !block.id || toolResultIds.has(block.id),
         );
         if (filteredContent.length !== newMsg.content.length) {
           newMsg.content = filteredContent;
@@ -410,7 +410,9 @@ export function fixToolPairs(messages: Record<string, unknown>[]) {
       if (msg.role === "user" && Array.isArray(msg.content)) {
         const filteredContent = msg.content.filter(
           (block: Record<string, unknown>) =>
-            block.type !== "tool_result" || !block.tool_use_id || toolCallIds.has(block.tool_use_id)
+            block.type !== "tool_result" ||
+            !block.tool_use_id ||
+            toolCallIds.has(block.tool_use_id),
         );
         if (filteredContent.length !== msg.content.length) {
           if (filteredContent.length === 0) return null;
@@ -476,7 +478,8 @@ export function fixToolAdjacency(messages: Record<string, unknown>[]): Record<st
     // Filter tool_use blocks in content array (Claude format)
     if (Array.isArray(newMsg.content)) {
       const filteredContent = (newMsg.content as Record<string, unknown>[]).filter(
-        (block) => block.type !== "tool_use" || !block.id || nextToolResultIds.has(String(block.id))
+        (block) =>
+          block.type !== "tool_use" || !block.id || nextToolResultIds.has(String(block.id)),
       );
       if (filteredContent.length !== (newMsg.content as unknown[]).length) {
         newMsg.content = filteredContent;
@@ -487,7 +490,7 @@ export function fixToolAdjacency(messages: Record<string, unknown>[]): Record<st
     // Filter tool_calls array (OpenAI format) — independently of content
     if (Array.isArray(newMsg.tool_calls)) {
       const filteredToolCalls = (newMsg.tool_calls as Record<string, unknown>[]).filter(
-        (tc: Record<string, unknown>) => !tc.id || nextToolResultIds.has(String(tc.id))
+        (tc: Record<string, unknown>) => !tc.id || nextToolResultIds.has(String(tc.id)),
       );
       if (filteredToolCalls.length !== (newMsg.tool_calls as unknown[]).length) {
         newMsg.tool_calls = filteredToolCalls;
@@ -534,7 +537,7 @@ export function fixToolAdjacency(messages: Record<string, unknown>[]): Record<st
  *    only text/thinking, etc.).
  */
 export function stripTrailingAssistantOrphanToolUse(
-  messages: Record<string, unknown>[]
+  messages: Record<string, unknown>[],
 ): Record<string, unknown>[] {
   if (!Array.isArray(messages) || messages.length === 0) return messages;
 
@@ -547,7 +550,7 @@ export function stripTrailingAssistantOrphanToolUse(
 
   if (Array.isArray(newLast.tool_calls)) {
     const filteredCalls = (newLast.tool_calls as Record<string, unknown>[]).filter(
-      () => false // remove all trailing tool_calls (none can be paired by definition)
+      () => false, // remove all trailing tool_calls (none can be paired by definition)
     );
     if (filteredCalls.length !== (newLast.tool_calls as unknown[]).length) {
       newLast.tool_calls = filteredCalls;
@@ -557,7 +560,7 @@ export function stripTrailingAssistantOrphanToolUse(
 
   if (Array.isArray(newLast.content)) {
     const filteredContent = (newLast.content as Record<string, unknown>[]).filter(
-      (block) => block.type !== "tool_use"
+      (block) => block.type !== "tool_use",
     );
     if (filteredContent.length !== (newLast.content as unknown[]).length) {
       newLast.content = filteredContent;
@@ -597,7 +600,7 @@ const PROVIDERS_REQUIRING_USER_LAST_MESSAGE = new Set(["mistral"]);
  */
 export function stripTrailingAssistantForProvider(
   messages: Record<string, unknown>[],
-  provider: string
+  provider: string,
 ): Record<string, unknown>[] {
   if (!PROVIDERS_REQUIRING_USER_LAST_MESSAGE.has(provider)) return messages;
   if (!Array.isArray(messages) || messages.length === 0) return messages;

@@ -203,7 +203,7 @@ function main() {
       process.stderr.write(
         "[check-secrets] SKIP — gitleaks não encontrado no PATH.\n" +
           "[check-secrets] Instale via: https://github.com/gitleaks/gitleaks\n" +
-          "[check-secrets] SKIP gracioso — sai 0 mesmo com --ratchet (binário ausente nunca bloqueia).\n"
+          "[check-secrets] SKIP gracioso — sai 0 mesmo com --ratchet (binário ausente nunca bloqueia).\n",
       );
     }
     process.exitCode = 0;
@@ -225,7 +225,7 @@ function main() {
 
   if (!QUIET) {
     process.stderr.write(
-      `[check-secrets] Rodando gitleaks dir <dir> --report-format json para: ${scanDirs.join(", ")} ...\n`
+      `[check-secrets] Rodando gitleaks dir <dir> --report-format json para: ${scanDirs.join(", ")} ...\n`,
     );
   }
 
@@ -266,7 +266,7 @@ function main() {
         // Normal: gitleaks achou findings neste dir e saiu com exit 1
       } else if (!stdout.trim()) {
         process.stderr.write(
-          `[check-secrets] ERRO ao executar gitleaks em '${dir}': ${err.message}\n`
+          `[check-secrets] ERRO ao executar gitleaks em '${dir}': ${err.message}\n`,
         );
         if (stderr) process.stderr.write(`[check-secrets] stderr: ${stderr.slice(0, 500)}\n`);
         process.exit(2);
@@ -281,10 +281,10 @@ function main() {
       parsed = JSON.parse(stdout.trim());
     } catch (parseErr) {
       process.stderr.write(
-        `[check-secrets] ERRO ao parsear JSON do gitleaks em '${dir}': ${parseErr.message}\n`
+        `[check-secrets] ERRO ao parsear JSON do gitleaks em '${dir}': ${parseErr.message}\n`,
       );
       process.stderr.write(
-        `[check-secrets] stdout (primeiros 500 chars): ${stdout.slice(0, 500)}\n`
+        `[check-secrets] stdout (primeiros 500 chars): ${stdout.slice(0, 500)}\n`,
       );
       process.exit(2);
     }
@@ -313,7 +313,7 @@ function main() {
       process.stderr.write(`[check-secrets] Findings: ${findingCount} (top rules: ${topRules})\n`);
       process.stderr.write(
         "[check-secrets] Para allowlistar findings legítimos (fixtures de teste, creds públicas),\n" +
-          "[check-secrets] adicione entradas em .gitleaks.toml [[allowlist]] com comentário.\n"
+          "[check-secrets] adicione entradas em .gitleaks.toml [[allowlist]] com comentário.\n",
       );
     } else {
       process.stderr.write("[check-secrets] Nenhum finding detectado.\n");
@@ -335,7 +335,7 @@ function applyRatchet(findingCount) {
   if (!RATCHET) {
     if (!QUIET) {
       process.stderr.write(
-        "[check-secrets] ADVISORY — não falha pela contagem (passe --ratchet para bloquear regressão).\n"
+        "[check-secrets] ADVISORY — não falha pela contagem (passe --ratchet para bloquear regressão).\n",
       );
     }
     process.exitCode = 0;
@@ -346,7 +346,7 @@ function applyRatchet(findingCount) {
   if (baselineValue === null) {
     if (!QUIET) {
       process.stderr.write(
-        "[check-secrets] baseline ausente (metrics.secretFindings) — SKIP gracioso, sai 0.\n"
+        "[check-secrets] baseline ausente (metrics.secretFindings) — SKIP gracioso, sai 0.\n",
       );
     }
     process.exitCode = 0;
@@ -358,7 +358,7 @@ function applyRatchet(findingCount) {
     process.stderr.write(
       `[check-secrets] REGRESSÃO — ${findingCount} secret findings > baseline ${baselineValue}\n` +
         "  → Remova o novo secret (ou allowliste em .gitleaks.toml se for falso-positivo legítimo),\n" +
-        "    depois re-baseline metrics.secretFindings em config/quality/quality-baseline.json.\n"
+        "    depois re-baseline metrics.secretFindings em config/quality/quality-baseline.json.\n",
     );
     process.exitCode = 1;
     return;
@@ -366,7 +366,7 @@ function applyRatchet(findingCount) {
 
   if (!QUIET) {
     process.stderr.write(
-      `[check-secrets] OK — sem regressão (${findingCount} findings, baseline ${baselineValue}).\n`
+      `[check-secrets] OK — sem regressão (${findingCount} findings, baseline ${baselineValue}).\n`,
     );
   }
   process.exitCode = 0;

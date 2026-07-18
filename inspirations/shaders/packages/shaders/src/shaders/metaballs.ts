@@ -1,7 +1,7 @@
-import type { vec4 } from '../types.js';
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { declarePI, textureRandomizerR, colorBandingFix } from '../shader-utils.js';
+import type { vec4 } from "../types.js";
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { declarePI, textureRandomizerR, colorBandingFix } from "../shader-utils.js";
 
 export const metaballsMeta = {
   maxColorCount: 8,
@@ -47,7 +47,7 @@ uniform float u_time;
 uniform sampler2D u_noiseTexture;
 
 uniform vec4 u_colorBack;
-uniform vec4 u_colors[${ metaballsMeta.maxColorCount }];
+uniform vec4 u_colors[${metaballsMeta.maxColorCount}];
 uniform float u_colorsCount;
 uniform float u_size;
 uniform float u_sizeRange;
@@ -57,8 +57,8 @@ in vec2 v_objectUV;
 
 out vec4 fragColor;
 
-${ declarePI }
-${ textureRandomizerR }
+${declarePI}
+${textureRandomizerR}
 float noise(float x) {
   float i = floor(x);
   float f = fract(x);
@@ -87,10 +87,10 @@ void main() {
   float totalShape = 0.;
   float totalOpacity = 0.;
 
-  for (int i = 0; i < ${ metaballsMeta.maxBallsCount }; i++) {
+  for (int i = 0; i < ${metaballsMeta.maxBallsCount}; i++) {
     if (i >= int(ceil(u_count))) break;
 
-    float idxFract = float(i) / float(${ metaballsMeta.maxBallsCount });
+    float idxFract = float(i) / float(${metaballsMeta.maxBallsCount});
     float angle = TWO_PI * idxFract;
 
     float speed = 1. - .2 * idxFract;
@@ -130,7 +130,7 @@ void main() {
   color = color + bgColor * (1. - opacity);
   opacity = opacity + u_colorBack.a * (1. - opacity);
 
-  ${ colorBandingFix }
+  ${colorBandingFix}
 
   fragColor = vec4(color, opacity);
 }

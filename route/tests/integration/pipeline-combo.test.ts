@@ -64,13 +64,13 @@ function makeOpenAIResponse(content: string, stream = false): Response {
     JSON.stringify({
       choices: [{ message: { role: "assistant", content } }],
     }),
-    { status: 200, headers: { "Content-Type": "application/json" } }
+    { status: 200, headers: { "Content-Type": "application/json" } },
   );
 }
 
 // Build a mock handleChatCore that records calls and returns scripted responses
 function createMockHandleChatCore(
-  responses: string[] | ((body: Record<string, unknown>) => string)
+  responses: string[] | ((body: Record<string, unknown>) => string),
 ) {
   const calls: Array<{ body: Record<string, unknown>; stream: boolean }> = [];
   let callIndex = 0;
@@ -125,7 +125,7 @@ test("pipeline-combo: code task runs plan → execute → reflect stages", async
   // Should have executed at least plan + execute + reflect (fix skipped when reflect passes)
   assert.ok(
     pipelineResult.stages.length >= 3,
-    `Expected >= 3 stages, got ${pipelineResult.stages.length}`
+    `Expected >= 3 stages, got ${pipelineResult.stages.length}`,
   );
 
   // Verify stage names
@@ -215,7 +215,7 @@ test("pipeline-combo: config cascade — combo config overrides settings", async
   const pipelineResult = result as Awaited<ReturnType<typeof executePipeline>>;
   assert.ok(
     pipelineResult.stages.length > 0,
-    "Pipeline should execute with combo override threshold"
+    "Pipeline should execute with combo override threshold",
   );
 });
 
@@ -240,7 +240,7 @@ test("pipeline-combo: config cascade — settings override defaults", async () =
   const pipelineResult = result as Awaited<ReturnType<typeof executePipeline>>;
   assert.ok(
     pipelineResult.stages.length > 0,
-    "Pipeline should execute with settings override threshold"
+    "Pipeline should execute with settings override threshold",
   );
 });
 
@@ -263,7 +263,7 @@ test("pipeline-combo: throws PIPELINE_DISABLED when pipeline_enabled is false", 
     (err: Error) => {
       assert.equal(err.message, "PIPELINE_DISABLED");
       return true;
-    }
+    },
   );
 });
 
@@ -288,7 +288,7 @@ test("pipeline-combo: short prompts below threshold throw PIPELINE_TOKEN_THRESHO
     (err: Error) => {
       assert.equal(err.message, "PIPELINE_TOKEN_THRESHOLD");
       return true;
-    }
+    },
   );
 });
 

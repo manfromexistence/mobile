@@ -1,6 +1,6 @@
-import { dict as en } from "./en"
+import { dict as en } from "./en";
 
-type Keys = keyof typeof en
+type Keys = keyof typeof en;
 
 export const dict = {
   "ui.sessionReview.title": "Sitzungsänderungen",
@@ -19,7 +19,8 @@ export const dict = {
   "ui.sessionReview.image.loading": "Wird geladen...",
   "ui.sessionReview.image.placeholder": "Bild",
   "ui.sessionReview.largeDiff.title": "Diff zu groß zum Rendern",
-  "ui.sessionReview.largeDiff.meta": "Limit: {{limit}} geänderte Zeilen. Aktuell: {{current}} geänderte Zeilen.",
+  "ui.sessionReview.largeDiff.meta":
+    "Limit: {{limit}} geänderte Zeilen. Aktuell: {{current}} geänderte Zeilen.",
   "ui.sessionReview.largeDiff.renderAnyway": "Trotzdem rendern",
   "ui.fileMedia.kind.image": "bild",
   "ui.fileMedia.kind.audio": "audio",
@@ -170,4 +171,4 @@ export const dict = {
   "ui.toolErrorCard.copyError": "Fehler kopieren",
   "ui.message.duration.seconds": "{{count}}s",
   "ui.message.duration.minutesSeconds": "{{minutes}}m {{seconds}}s",
-} satisfies Partial<Record<Keys, string>>
+} satisfies Partial<Record<Keys, string>>;

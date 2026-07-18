@@ -15,7 +15,7 @@ test("#5590 extractZip uses PowerShell Expand-Archive on Windows, not `unzip`", 
   const script = args[args.length - 1];
   assert.match(
     script,
-    /Expand-Archive -LiteralPath 'C:\\tmp\\cli\.zip' -DestinationPath 'C:\\tmp\\dest' -Force/
+    /Expand-Archive -LiteralPath 'C:\\tmp\\cli\.zip' -DestinationPath 'C:\\tmp\\dest' -Force/,
   );
 });
 

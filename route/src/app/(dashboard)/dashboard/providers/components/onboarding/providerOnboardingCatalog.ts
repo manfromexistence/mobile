@@ -52,7 +52,7 @@ export const SUPPORTED_WIZARD_OAUTH_PROVIDER_IDS = new Set([
 
 function toProviderOption(
   provider: WizardProviderDefinition,
-  authKind: WizardProviderAuthKind
+  authKind: WizardProviderAuthKind,
 ): WizardProviderOption {
   const name = provider.name || provider.id;
   const fallbackDescription =
@@ -82,7 +82,7 @@ function sortProviderOptions(options: WizardProviderOption[]): WizardProviderOpt
 
 export function getWizardApiKeyProviderOptions(): WizardProviderOption[] {
   const freeApiKeyProviders = Object.values(FREE_PROVIDERS).filter(
-    (provider) => provider.noAuth || supportsApiKeyOnFreeProvider(provider.id)
+    (provider) => provider.noAuth || supportsApiKeyOnFreeProvider(provider.id),
   );
   const providers = [...Object.values(APIKEY_PROVIDERS), ...freeApiKeyProviders];
   return sortProviderOptions(providers.map((provider) => toProviderOption(provider, "apikey")));
@@ -96,13 +96,13 @@ export function getWizardOAuthProviderOptions(): WizardProviderOption[] {
     }
   }
   return sortProviderOptions(
-    [...providersById.values()].map((provider) => toProviderOption(provider, "oauth"))
+    [...providersById.values()].map((provider) => toProviderOption(provider, "oauth")),
   );
 }
 
 export function filterWizardProviderOptions(
   options: WizardProviderOption[],
-  query: string
+  query: string,
 ): WizardProviderOption[] {
   const normalizedQuery = query.trim().toLowerCase();
   if (!normalizedQuery) return options;
@@ -129,7 +129,7 @@ export function buildProviderSpecificData(input: {
   const providerSpecificData = Object.fromEntries(
     Object.entries(input)
       .map(([key, value]) => [key, typeof value === "string" ? value.trim() : ""])
-      .filter(([, value]) => value.length > 0)
+      .filter(([, value]) => value.length > 0),
   );
 
   return Object.keys(providerSpecificData).length > 0 ? providerSpecificData : null;

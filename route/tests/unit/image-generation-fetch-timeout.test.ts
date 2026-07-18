@@ -1,9 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { handleImageGeneration } = await import(
-  "../../open-sse/handlers/imageGeneration.ts"
-);
+const { handleImageGeneration } = await import("../../open-sse/handlers/imageGeneration.ts");
 
 function restore<T>(fn: () => T): T {
   const originalFetch = globalThis.fetch;
@@ -65,7 +63,7 @@ test("successful image gen passes AbortSignal and returns URL", () =>
           created: 999,
           data: [{ url: "https://cdn.example.com/timeout-test.png" }],
         }),
-        { status: 200, headers: { "content-type": "application/json" } }
+        { status: 200, headers: { "content-type": "application/json" } },
       );
     };
 

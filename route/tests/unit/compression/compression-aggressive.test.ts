@@ -164,7 +164,7 @@ describe("Integration: strategySelector → aggressive pipeline", () => {
 
     assert.deepEqual(
       result.messages.filter((message) => message.role === "system"),
-      messages.filter((message) => message.role === "system")
+      messages.filter((message) => message.role === "system"),
     );
   });
 

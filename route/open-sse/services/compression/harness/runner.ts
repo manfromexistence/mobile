@@ -32,7 +32,7 @@ export interface EvalReport {
 
 export async function runCompressionEval(
   corpus: EvalCase[],
-  compress: CompressFn
+  compress: CompressFn,
 ): Promise<EvalReport> {
   const results: EvalResult[] = [];
   for (const item of corpus) {

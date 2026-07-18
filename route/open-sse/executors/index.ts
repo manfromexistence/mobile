@@ -185,7 +185,7 @@ export function getExecutor(provider) {
   if (executors[provider]) return executors[provider];
   if (CHAT_UNSUPPORTED_CLOUD_AGENT_PROVIDERS.has(provider)) {
     const err = new Error(
-      `Provider "${provider}" is a cloud-agent provider and does not support direct chat completions; use the Cloud Agents task API instead.`
+      `Provider "${provider}" is a cloud-agent provider and does not support direct chat completions; use the Cloud Agents task API instead.`,
     );
     (err as Error & { status?: number }).status = 400;
     throw err;

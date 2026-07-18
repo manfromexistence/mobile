@@ -47,7 +47,7 @@ describe("evalRunner", () => {
         input: {},
         expected: { strategy: "exact", value: "hello" },
       },
-      "hello"
+      "hello",
     );
     assert.equal(result.passed, true);
   });
@@ -61,7 +61,7 @@ describe("evalRunner", () => {
         input: {},
         expected: { strategy: "exact", value: "hello" },
       },
-      "world"
+      "world",
     );
     assert.equal(result.passed, false);
   });
@@ -75,7 +75,7 @@ describe("evalRunner", () => {
         input: {},
         expected: { strategy: "contains", value: "paris" },
       },
-      "The capital is Paris."
+      "The capital is Paris.",
     );
     assert.equal(result.passed, true);
   });
@@ -89,7 +89,7 @@ describe("evalRunner", () => {
         input: {},
         expected: { strategy: "regex", value: "\\d+" },
       },
-      "The answer is 42."
+      "The answer is 42.",
     );
     assert.equal(result.passed, true);
   });
@@ -103,7 +103,7 @@ describe("evalRunner", () => {
         input: {},
         expected: { strategy: "regex" },
       },
-      "The answer is 42."
+      "The answer is 42.",
     );
     assert.equal(result.passed, false);
     assert.equal(result.details.error, "No regex value provided for evaluation.");
@@ -118,7 +118,7 @@ describe("evalRunner", () => {
         input: {},
         expected: { strategy: "regex", value: "a".repeat(513) },
       },
-      "test"
+      "test",
     );
     assert.equal(result.passed, false);
     assert.equal(result.details.error, "Regex pattern too large for safe evaluation.");
@@ -147,7 +147,7 @@ describe("evalRunner", () => {
         input: {},
         expected: { strategy: "custom", fn: (output) => output.length > 5 },
       },
-      "this is long enough"
+      "this is long enough",
     );
     assert.equal(result.passed, true);
   });
@@ -155,7 +155,7 @@ describe("evalRunner", () => {
   it("should handle unknown strategy gracefully", () => {
     const result = evaluateCase(
       { id: "t6", name: "test", model: "test", input: {}, expected: { strategy: "unknown" } },
-      "test"
+      "test",
     );
     assert.equal(result.passed, false);
     assert.ok(result.error.includes("Unknown strategy"));
@@ -175,7 +175,7 @@ describe("evalRunner", () => {
           },
         },
       },
-      "test"
+      "test",
     );
     assert.equal(result.passed, false);
     assert.equal(result.error, "custom failure");

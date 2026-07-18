@@ -1,45 +1,45 @@
-'use client';
+"use client";
 
-import { HalftoneCmyk, halftoneCmykPresets } from '@paper-design/shaders-react';
-import { useControls, button, folder } from 'leva';
-import { setParamsSafe, useResetLevaParams } from '@/helpers/use-reset-leva-params';
-import { usePresetHighlight } from '@/helpers/use-preset-highlight';
-import { cleanUpLevaParams } from '@/helpers/clean-up-leva-params';
-import { HalftoneCmykType, HalftoneCmykTypes, ShaderFit } from '@paper-design/shaders';
-import { levaImageButton } from '@/helpers/leva-image-button';
-import { useState, useEffect, useCallback } from 'react';
-import { toHsla } from '@/helpers/color-utils';
-import { ShaderDetails } from '@/components/shader-details';
-import { halftoneCmykDef } from '@/shader-defs/halftone-cmyk-def';
-import { ShaderContainer } from '@/components/shader-container';
-import { useUrlParams } from '@/helpers/use-url-params';
+import { HalftoneCmyk, halftoneCmykPresets } from "@paper-design/shaders-react";
+import { useControls, button, folder } from "leva";
+import { setParamsSafe, useResetLevaParams } from "@/helpers/use-reset-leva-params";
+import { usePresetHighlight } from "@/helpers/use-preset-highlight";
+import { cleanUpLevaParams } from "@/helpers/clean-up-leva-params";
+import { HalftoneCmykType, HalftoneCmykTypes, ShaderFit } from "@paper-design/shaders";
+import { levaImageButton } from "@/helpers/leva-image-button";
+import { useState, useEffect, useCallback } from "react";
+import { toHsla } from "@/helpers/color-utils";
+import { ShaderDetails } from "@/components/shader-details";
+import { halftoneCmykDef } from "@/shader-defs/halftone-cmyk-def";
+import { ShaderContainer } from "@/components/shader-container";
+import { useUrlParams } from "@/helpers/use-url-params";
 
 const { worldWidth, worldHeight, ...defaults } = halftoneCmykPresets[0].params;
 
 const imageFiles = [
-  '001.webp',
-  '002.webp',
-  '003.webp',
-  '004.webp',
-  '005.webp',
-  '006.webp',
-  '007.webp',
-  '008.webp',
-  '009.webp',
-  '0010.webp',
-  '0011.webp',
-  '0012.webp',
-  '0013.webp',
-  '0014.webp',
-  '0015.webp',
-  '0016.webp',
-  '0017.webp',
-  '0018.webp',
+  "001.webp",
+  "002.webp",
+  "003.webp",
+  "004.webp",
+  "005.webp",
+  "006.webp",
+  "007.webp",
+  "008.webp",
+  "009.webp",
+  "0010.webp",
+  "0011.webp",
+  "0012.webp",
+  "0013.webp",
+  "0014.webp",
+  "0015.webp",
+  "0016.webp",
+  "0017.webp",
+  "0018.webp",
 ] as const;
 
 const HalftoneCmykWithControls = () => {
   const [imageIdx, setImageIdx] = useState(-1);
-  const [image, setImage] = useState<HTMLImageElement | string>('/images/image-filters/0018.webp');
+  const [image, setImage] = useState<HTMLImageElement | string>("/images/image-filters/0018.webp");
 
   useEffect(() => {
     if (imageIdx >= 0) {
@@ -55,7 +55,7 @@ const HalftoneCmykWithControls = () => {
   }, []);
 
   const setImageWithoutStatus = useCallback((img?: HTMLImageElement) => {
-    setImage(img ?? '');
+    setImage(img ?? "");
     setImageIdx(-1);
   }, []);
 
@@ -64,7 +64,7 @@ const HalftoneCmykWithControls = () => {
       halftoneCmykPresets.map(({ name, params: { worldWidth, worldHeight, ...preset } }) => [
         name,
         button(() => setParamsSafe(params, setParams, preset)),
-      ])
+      ]),
     );
     return {
       colorBack: { value: toHsla(defaults.colorBack), order: 100 },
@@ -98,12 +98,12 @@ const HalftoneCmykWithControls = () => {
       // originY: { value: defaults.originY, min: 0, max: 1, order: 412 },
       // rotation: { value: defaults.rotation, min: 0, max: 360, order: 420 },
       scale: { value: defaults.scale, min: 0, max: 4, order: 420 },
-      fit: { value: defaults.fit, options: ['contain', 'cover'] as ShaderFit[], order: 450 },
+      fit: { value: defaults.fit, options: ["contain", "cover"] as ShaderFit[], order: 450 },
       Image: folder(
         {
-          'Upload image': levaImageButton(setImageWithoutStatus),
+          "Upload image": levaImageButton(setImageWithoutStatus),
         },
-        { order: 0 }
+        { order: 0 },
       ),
       Presets: folder(presets, { order: -1 }),
     };
@@ -121,7 +121,10 @@ const HalftoneCmykWithControls = () => {
       <ShaderContainer shaderDef={halftoneCmykDef} currentParams={params}>
         <HalftoneCmyk onClick={handleClick} {...params} image={image} />
       </ShaderContainer>
-      <div onClick={handleClick} className="text-current/70 mx-auto mb-48 mt-16 w-fit select-none text-base">
+      <div
+        onClick={handleClick}
+        className="text-current/70 mx-auto mb-48 mt-16 w-fit select-none text-base"
+      >
         Click to change the sample image
       </div>
       <ShaderDetails shaderDef={halftoneCmykDef} currentParams={params} />

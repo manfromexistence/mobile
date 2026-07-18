@@ -124,7 +124,7 @@ test("echoModelInObject/echoModelInSseLine leave non-Responses shapes governed b
 
   const line = echoModelInSseLine(
     'data: {"id":"1","model":"gpt-5.5","choices":[]}',
-    "claude-sonnet-cx"
+    "claude-sonnet-cx",
   );
   assert.equal(line, 'data: {"id":"1","model":"claude-sonnet-cx","choices":[]}');
 });

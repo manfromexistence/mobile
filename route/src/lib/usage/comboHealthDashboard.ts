@@ -20,7 +20,7 @@ export interface ComboHealthDashboardOptions {
 }
 
 export async function buildComboHealthDashboardResponse(
-  options: ComboHealthDashboardOptions
+  options: ComboHealthDashboardOptions,
 ): Promise<ComboHealthDashboardResponse> {
   const allCombos = options.combos ?? ((await getCombos()) as ComboRecord[]);
   const errors: ComboHealthDashboardResponse["errors"] = {};

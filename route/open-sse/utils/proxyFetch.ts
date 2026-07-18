@@ -56,7 +56,7 @@ export function runWithAppliedProxyCapture<T>(sink: AppliedProxySink, fn: () => 
 type FetchWithDispatcherOptions = RequestInit & { dispatcher?: unknown };
 type FetchWithDispatcher = (
   input: RequestInfo | URL,
-  init?: FetchWithDispatcherOptions
+  init?: FetchWithDispatcherOptions,
 ) => Promise<Response>;
 
 /**
@@ -107,7 +107,6 @@ export function describeFetchCause(err: unknown): string {
   return parts.join(" | ") || String(err);
 }
 
-
 function isStreamLikeBody(body: unknown): boolean {
   return (
     body !== null &&
@@ -120,7 +119,7 @@ function isStreamLikeBody(body: unknown): boolean {
 
 function requestHasNonReplayableBody(
   input: RequestInfo | URL,
-  options: FetchWithDispatcherOptions
+  options: FetchWithDispatcherOptions,
 ): boolean {
   if (isStreamLikeBody(options.body as unknown)) return true;
   if (typeof Request !== "undefined" && input instanceof Request) {
@@ -305,7 +304,7 @@ function getTargetUrl(input) {
 export async function runWithProxyContext(
   proxyConfig,
   fn,
-  opts?: { directFallbackOnUnreachable?: boolean }
+  opts?: { directFallbackOnUnreachable?: boolean },
 ) {
   if (typeof fn !== "function") {
     throw new TypeError("runWithProxyContext requires a callback function");
@@ -336,7 +335,7 @@ export async function runWithProxyContext(
       const proxyLabel = proxyUrlForLogs(resolvedProxyUrl);
       if (directFallbackOnUnreachable) {
         console.warn(
-          `[ProxyFetch] Proxy unreachable (${proxyLabel}); using a direct connection for this request.`
+          `[ProxyFetch] Proxy unreachable (${proxyLabel}); using a direct connection for this request.`,
         );
         return runDirect();
       }
@@ -365,7 +364,7 @@ export async function runWithProxyContext(
     } catch (familyErr) {
       if (directFallbackOnUnreachable) {
         console.warn(
-          `[ProxyFetch] Proxy family pre-check failed (${proxyUrlForLogs(resolvedProxyUrl)}); using a direct connection for this request.`
+          `[ProxyFetch] Proxy family pre-check failed (${proxyUrlForLogs(resolvedProxyUrl)}); using a direct connection for this request.`,
         );
         return runDirect();
       }
@@ -379,7 +378,7 @@ export async function runWithProxyContext(
   return proxyContext.run(effectiveProxyConfig, async () => {
     if (resolvedProxyUrl && effectiveProxyConfig !== currentContext) {
       console.log(
-        `[ProxyFetch] Applied request proxy context: ${proxyUrlForLogs(resolvedProxyUrl)}`
+        `[ProxyFetch] Applied request proxy context: ${proxyUrlForLogs(resolvedProxyUrl)}`,
       );
     }
     // #5217: record the proxy actually applied so a post-execution egress logger
@@ -413,7 +412,7 @@ export async function runWithProxyContextOrDirect(proxyConfig, fn) {
 async function patchedFetch(
   input: RequestInfo | URL,
   options: FetchWithDispatcherOptions = {},
-  deps: ProxyFetchDeps = {}
+  deps: ProxyFetchDeps = {},
 ) {
   if (options?.dispatcher) {
     // When a dispatcher is present, we MUST use the undici library fetch
@@ -449,7 +448,7 @@ async function patchedFetch(
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         console.warn(
-          `[ProxyFetch] TLS fingerprint failed, falling back to native fetch: ${message}`
+          `[ProxyFetch] TLS fingerprint failed, falling back to native fetch: ${message}`,
         );
         const store = tlsFingerprintContext.getStore();
         if (store) store.used = false;
@@ -489,7 +488,7 @@ async function patchedFetch(
         // because the native fetch will definitely fail with the undici v8 dispatcher.
         if (msg.includes("onRequestStart")) {
           console.error(
-            `[ProxyFetch] Fatal version mismatch: Dispatcher (v8) vs Fetch (v6/native). Hardware upgrade or SOCKS5 config isolation required. Error: ${msg}`
+            `[ProxyFetch] Fatal version mismatch: Dispatcher (v8) vs Fetch (v6/native). Hardware upgrade or SOCKS5 config isolation required. Error: ${msg}`,
           );
           throw dispatcherError;
         }
@@ -514,7 +513,7 @@ async function patchedFetch(
           if (hasNonReplayableBody) {
             const detail = `dispatcher=[${describeFetchCause(dispatcherError)}] native=[skipped: non-replayable request body]`;
             console.warn(
-              `[ProxyFetch] skipping native fetch fallback for non-replayable body: ${detail}`
+              `[ProxyFetch] skipping native fetch fallback for non-replayable body: ${detail}`,
             );
             if (dispatcherError instanceof Error) {
               (dispatcherError as Error & { proxyFetchDetail?: string }).proxyFetchDetail = detail;
@@ -546,7 +545,7 @@ async function patchedFetch(
           // #4252: append the flattened err.cause (code/syscall/errno/address) — the bare
           // "fetch failed" message hides what actually broke, making bursts undiagnosable.
           console.warn(
-            `[ProxyFetch] Undici dispatcher failed, falling back to native fetch (after retry): ${describeFetchCause(dispatcherError)}`
+            `[ProxyFetch] Undici dispatcher failed, falling back to native fetch (after retry): ${describeFetchCause(dispatcherError)}`,
           );
           try {
             return await _nativeFallback(input, options);
@@ -628,7 +627,7 @@ async function patchedFetch(
 export async function proxyFetch(
   input: RequestInfo | URL,
   options: RequestInit = {},
-  deps: ProxyFetchDeps = {}
+  deps: ProxyFetchDeps = {},
 ): Promise<Response> {
   return patchedFetch(input, options as FetchWithDispatcherOptions, deps);
 }

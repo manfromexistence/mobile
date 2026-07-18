@@ -1,4 +1,4 @@
-import { IconButtonV2 } from "./icon-button-v2"
+import { IconButtonV2 } from "./icon-button-v2";
 
 const docs = `### Overview
 Square icon-only button v2 with three visual variants and three sizes.
@@ -13,7 +13,7 @@ Square icon-only button v2 with three visual variants and three sizes.
 ### States
 - default, hover, pressed, focus, disabled.
 - State selectors are available via pseudo-classes and \`[data-state]\`.
-`
+`;
 
 export default {
   title: "UI V2/IconButton",
@@ -51,9 +51,9 @@ export default {
       options: ["small", "normal", "large"],
     },
   },
-}
+};
 
-export const Playground = {}
+export const Playground = {};
 
 export const Variants = {
   render: () => (
@@ -63,7 +63,7 @@ export const Variants = {
       <IconButtonV2 icon="plus" variant="ghost" />
     </div>
   ),
-}
+};
 
 export const Sizes = {
   render: () => (
@@ -73,18 +73,24 @@ export const Sizes = {
       <IconButtonV2 icon="plus" size="large" variant="neutral" />
     </div>
   ),
-}
+};
 
 export const AllStates = {
   render: () => {
-    const variants = ["neutral", "contrast", "ghost"] as const
-    const states = ["default", "hover", "pressed", "focus", "disabled"] as const
+    const variants = ["neutral", "contrast", "ghost"] as const;
+    const states = ["default", "hover", "pressed", "focus", "disabled"] as const;
 
     return (
       <div style={{ display: "grid", gap: "12px" }}>
         {variants.map((variant) => (
           <div style={{ display: "grid", gap: "8px" }}>
-            <div style={{ "font-size": "12px", color: "var(--text-weak)", "text-transform": "capitalize" }}>
+            <div
+              style={{
+                "font-size": "12px",
+                color: "var(--text-weak)",
+                "text-transform": "capitalize",
+              }}
+            >
               {variant}
             </div>
             <div style={{ display: "flex", gap: "8px", "flex-wrap": "wrap" }}>
@@ -100,6 +106,6 @@ export const AllStates = {
           </div>
         ))}
       </div>
-    )
+    );
   },
-}
+};

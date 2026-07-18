@@ -34,7 +34,9 @@ function flatten(items: unknown[][]) {
 
 function assembleToolUseInput(events: Array<Record<string, unknown>>) {
   const jsonDeltas = events.filter(
-    (e) => e?.type === "content_block_delta" && (e.delta as Record<string, unknown>)?.type === "input_json_delta"
+    (e) =>
+      e?.type === "content_block_delta" &&
+      (e.delta as Record<string, unknown>)?.type === "input_json_delta",
   );
   const assembled = jsonDeltas
     .map((e) => (e.delta as Record<string, unknown>).partial_json as string)
@@ -66,7 +68,7 @@ test("#6459: tool-call arguments delivered as a structured object (not a JSON st
         },
       ],
     },
-    state
+    state,
   );
 
   // Non-conformant upstream: the FULL arguments value arrives as an already-
@@ -98,7 +100,7 @@ test("#6459: tool-call arguments delivered as a structured object (not a JSON st
         },
       ],
     },
-    state
+    state,
   );
 
   const events = flatten([chunk1, chunk2]) as Array<Record<string, unknown>>;
@@ -107,14 +109,16 @@ test("#6459: tool-call arguments delivered as a structured object (not a JSON st
   assert.ok(assembled.length > 0, "expected at least one input_json_delta with the tool args");
   assert.ok(
     !assembled.includes("[object Object]"),
-    `assembled partial_json leaked a stringified-object coercion: ${assembled}`
+    `assembled partial_json leaked a stringified-object coercion: ${assembled}`,
   );
 
   let parsed: Record<string, unknown>;
   try {
     parsed = JSON.parse(assembled);
   } catch {
-    assert.fail(`assembled partial_json is not valid JSON — arguments object was corrupted: ${assembled}`);
+    assert.fail(
+      `assembled partial_json is not valid JSON — arguments object was corrupted: ${assembled}`,
+    );
   }
 
   assert.ok(Array.isArray(parsed.questions), "questions array must survive as structured data");
@@ -132,7 +136,7 @@ test("#6459 no-regression: a plain text-only turn still translates normally", ()
       model: "auto/claude-opus",
       choices: [{ index: 0, delta: { role: "assistant" }, finish_reason: null }],
     },
-    state
+    state,
   );
   const chunk2 = openaiToClaudeResponse(
     {
@@ -140,7 +144,7 @@ test("#6459 no-regression: a plain text-only turn still translates normally", ()
       model: "auto/claude-opus",
       choices: [{ index: 0, delta: { content: "Hello, world!" }, finish_reason: null }],
     },
-    state
+    state,
   );
   const chunk3 = openaiToClaudeResponse(
     {
@@ -148,12 +152,14 @@ test("#6459 no-regression: a plain text-only turn still translates normally", ()
       model: "auto/claude-opus",
       choices: [{ index: 0, delta: {}, finish_reason: "stop" }],
     },
-    state
+    state,
   );
 
   const events = flatten([chunk1, chunk2, chunk3]) as Array<Record<string, unknown>>;
   const textDeltas = events.filter(
-    (e) => e?.type === "content_block_delta" && (e.delta as Record<string, unknown>)?.type === "text_delta"
+    (e) =>
+      e?.type === "content_block_delta" &&
+      (e.delta as Record<string, unknown>)?.type === "text_delta",
   );
 
   assert.equal(textDeltas.length, 1);

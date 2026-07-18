@@ -85,7 +85,7 @@ test("#6929: playground-test-key request forwards pre-fetched policy.apiKeyInfo 
         data: [{ object: "embedding", embedding: [0.1, 0.2], index: 0 }],
         usage: { prompt_tokens: 3, total_tokens: 3 },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
 
   try {
@@ -110,12 +110,12 @@ test("#6929: playground-test-key request forwards pre-fetched policy.apiKeyInfo 
     assert.equal(
       logged!.apiKeyId,
       created.id,
-      "downstream handler must receive policy.apiKeyInfo.id, not a null/independent lookup"
+      "downstream handler must receive policy.apiKeyInfo.id, not a null/independent lookup",
     );
     assert.equal(
       logged!.apiKeyName,
       "embed-6929-playground-key",
-      "downstream handler must receive policy.apiKeyInfo.name"
+      "downstream handler must receive policy.apiKeyInfo.name",
     );
   } finally {
     globalThis.fetch = originalFetch;

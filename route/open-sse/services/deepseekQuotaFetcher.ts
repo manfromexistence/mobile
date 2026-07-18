@@ -168,7 +168,7 @@ function parseAllBalanceInfos(data: unknown): BalanceInfo[] {
  */
 export async function fetchDeepseekQuota(
   connectionId: string,
-  connection?: Record<string, unknown>
+  connection?: Record<string, unknown>,
 ): Promise<QuotaInfo | null> {
   // Check cache first
   const cached = quotaCache.get(connectionId);

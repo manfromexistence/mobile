@@ -52,7 +52,7 @@ export async function POST(request: Request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -82,8 +82,8 @@ export async function POST(request: Request) {
           target: entry,
           apiKeyId,
           runGroupId,
-        })
-      )
+        }),
+      ),
     );
 
     const scorecard =
@@ -94,7 +94,7 @@ export async function POST(request: Request) {
               suiteName: `${run.suiteName} · ${run.target.label}`,
               results: run.results,
               summary: run.summary,
-            }))
+            })),
           )
         : null;
 

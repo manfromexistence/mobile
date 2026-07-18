@@ -1,6 +1,6 @@
-import { dict as en } from "./en"
+import { dict as en } from "./en";
 
-type Keys = keyof typeof en
+type Keys = keyof typeof en;
 
 export const dict = {
   "ui.sessionReview.title": "Oturum değişiklikleri",
@@ -19,7 +19,8 @@ export const dict = {
   "ui.sessionReview.image.loading": "Yükleniyor...",
   "ui.sessionReview.image.placeholder": "Görsel",
   "ui.sessionReview.largeDiff.title": "Fark gösterimi için çok büyük",
-  "ui.sessionReview.largeDiff.meta": "Limit: {{limit}} değişen satır. Mevcut: {{current}} değişen satır.",
+  "ui.sessionReview.largeDiff.meta":
+    "Limit: {{limit}} değişen satır. Mevcut: {{current}} değişen satır.",
   "ui.sessionReview.largeDiff.renderAnyway": "Yine de göster",
 
   "ui.fileMedia.kind.image": "görsel",
@@ -171,4 +172,4 @@ export const dict = {
   "ui.toolErrorCard.copyError": "Hatayı kopyala",
   "ui.message.duration.seconds": "{{count}}sn",
   "ui.message.duration.minutesSeconds": "{{minutes}}dk {{seconds}}sn",
-} satisfies Partial<Record<Keys, string>>
+} satisfies Partial<Record<Keys, string>>;

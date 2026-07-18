@@ -67,7 +67,7 @@ describe("applyContextEditingToBody", () => {
     assert.equal(
       edits.filter((e) => e.type === CLEAR_TOOL_USES_STRATEGY).length,
       1,
-      "only one clear_tool_uses edit should exist"
+      "only one clear_tool_uses edit should exist",
     );
   });
 

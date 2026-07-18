@@ -313,7 +313,7 @@ export function registerCompletion(program) {
       mkdirSync(dirname(dest), { recursive: true });
       writeFileSync(dest, gen());
       process.stdout.write(
-        `Installed ${target} completion at ${dest}\nRestart your shell or source the file.\n`
+        `Installed ${target} completion at ${dest}\nRestart your shell or source the file.\n`,
       );
     });
 
@@ -326,7 +326,7 @@ export function registerCompletion(program) {
       const data = await refreshCache(globalOpts);
       if (!opts.quiet && !globalOpts.quiet) {
         process.stdout.write(
-          `Cached: ${data.combos.length} combos, ${data.providers.length} providers, ${data.models.length} models\n`
+          `Cached: ${data.combos.length} combos, ${data.providers.length} providers, ${data.models.length} models\n`,
         );
       }
     });

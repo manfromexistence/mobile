@@ -1,45 +1,40 @@
-'use client';
+"use client";
 
-import { MultiFileDiff } from '@pierre/diffs/react';
-import type { PreloadMultiFileDiffResult } from '@pierre/diffs/ssr';
-import {
-  IconCheck,
-  IconChevronSm,
-  IconFunction,
-  IconType,
-} from '@pierre/icons';
-import { useState } from 'react';
+import { MultiFileDiff } from "@pierre/diffs/react";
+import type { PreloadMultiFileDiffResult } from "@pierre/diffs/ssr";
+import { IconCheck, IconChevronSm, IconFunction, IconType } from "@pierre/icons";
+import { useState } from "react";
 
-import { FeatureHeader } from '@/components/FeatureHeader';
-import { Button } from '@/components/ui/button';
+import { FeatureHeader } from "@/components/FeatureHeader";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { InputWithIcon } from '@/components/ui/input-group';
+} from "@/components/ui/dropdown-menu";
+import { InputWithIcon } from "@/components/ui/input-group";
 
 const fontMap: Record<string, string> = {
-  'Berkeley Mono': '--font-berkeley-mono',
-  'Geist Mono': '--font-geist-mono',
-  'Fira Code': '--font-fira-mono',
-  'IBM Plex Mono': '--font-ibm-plex-mono',
-  'JetBrains Mono': '--font-jetbrains-mono',
-  'Cascadia Code': '--font-cascadia-code',
+  "Berkeley Mono": "--font-berkeley-mono",
+  "Geist Mono": "--font-geist-mono",
+  "Fira Code": "--font-fira-mono",
+  "IBM Plex Mono": "--font-ibm-plex-mono",
+  "JetBrains Mono": "--font-jetbrains-mono",
+  "Cascadia Code": "--font-cascadia-code",
 };
 
-const fontSizes = ['10px', '12px', '13px', '14px', '18px'];
-const lineHeights = ['16px', '20px', '24px', '28px'];
+const fontSizes = ["10px", "12px", "13px", "14px", "18px"];
+const lineHeights = ["16px", "20px", "24px", "28px"];
 
 interface FontStylesProps {
   prerenderedDiff: PreloadMultiFileDiffResult<undefined>;
 }
 
 export function FontStyles({ prerenderedDiff }: FontStylesProps) {
-  const [selectedFont, setSelectedFont] = useState('Berkeley Mono');
-  const [selectedFontSize, setSelectedFontSize] = useState('14px');
-  const [selectedLineHeight, setSelectedLineHeight] = useState('20px');
+  const [selectedFont, setSelectedFont] = useState("Berkeley Mono");
+  const [selectedFontSize, setSelectedFontSize] = useState("14px");
+  const [selectedLineHeight, setSelectedLineHeight] = useState("20px");
   const [fontFeatureSettings, setFontFeatureSettings] = useState('"aalt" 1');
 
   return (
@@ -50,10 +45,9 @@ export function FontStyles({ prerenderedDiff }: FontStylesProps) {
           title="Bring your own fonts"
           description={
             <>
-              <code>@pierre/diffs</code> adapts to any <code>font</code>,{' '}
-              <code>font-size</code>, <code>line-height</code>, and even{' '}
-              <code>font-feature-settings</code> you may have set. Configure
-              font options with your preferred CSS method globally or on a
+              <code>@pierre/diffs</code> adapts to any <code>font</code>, <code>font-size</code>,{" "}
+              <code>line-height</code>, and even <code>font-feature-settings</code> you may have
+              set. Configure font options with your preferred CSS method globally or on a
               per-component basis.
             </>
           }
@@ -62,29 +56,22 @@ export function FontStyles({ prerenderedDiff }: FontStylesProps) {
           <div className="flex flex-wrap gap-3">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-full min-w-[140px] flex-1 justify-start"
-                >
+                <Button variant="outline" className="w-full min-w-[140px] flex-1 justify-start">
                   <IconType className="h-4 w-4" />
                   {selectedFont}
                   <IconChevronSm className="text-muted-foreground ml-auto" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent
-                align="start"
-                className="w-40"
-                scrollSelectedIntoView
-              >
+              <DropdownMenuContent align="start" className="w-40" scrollSelectedIntoView>
                 {Object.keys(fontMap).map((font) => (
                   <DropdownMenuItem
                     key={font}
                     onClick={() => {
                       setSelectedFont(font);
-                      if (font === 'Berkeley Mono') {
+                      if (font === "Berkeley Mono") {
                         setFontFeatureSettings('"aalt" 1');
                       } else {
-                        setFontFeatureSettings('');
+                        setFontFeatureSettings("");
                       }
                     }}
                     selected={selectedFont === font}
@@ -111,9 +98,7 @@ export function FontStyles({ prerenderedDiff }: FontStylesProps) {
                     selected={selectedFontSize === size}
                   >
                     {size}
-                    {selectedFontSize === size && (
-                      <IconCheck className="ml-auto" />
-                    )}
+                    {selectedFontSize === size && <IconCheck className="ml-auto" />}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
@@ -134,9 +119,7 @@ export function FontStyles({ prerenderedDiff }: FontStylesProps) {
                     selected={selectedLineHeight === height}
                   >
                     {height}
-                    {selectedLineHeight === height && (
-                      <IconCheck className="ml-auto" />
-                    )}
+                    {selectedLineHeight === height && <IconCheck className="ml-auto" />}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
@@ -145,9 +128,7 @@ export function FontStyles({ prerenderedDiff }: FontStylesProps) {
 
           <InputWithIcon
             value={fontFeatureSettings}
-            onChange={({ currentTarget }) =>
-              setFontFeatureSettings(currentTarget.value)
-            }
+            onChange={({ currentTarget }) => setFontFeatureSettings(currentTarget.value)}
             icon={<IconFunction className="h-4 w-4" />}
             placeholder="Font feature settings"
             className="text-sm md:max-w-sm"
@@ -159,10 +140,10 @@ export function FontStyles({ prerenderedDiff }: FontStylesProps) {
         className="diff-container"
         style={
           {
-            '--diffs-font-family': `var(${fontMap[selectedFont]})`,
-            '--diffs-font-size': selectedFontSize,
-            '--diffs-line-height': selectedLineHeight,
-            '--diffs-font-features': fontFeatureSettings,
+            "--diffs-font-family": `var(${fontMap[selectedFont]})`,
+            "--diffs-font-size": selectedFontSize,
+            "--diffs-line-height": selectedLineHeight,
+            "--diffs-font-features": fontFeatureSettings,
           } as React.CSSProperties
         }
       />

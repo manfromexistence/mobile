@@ -43,7 +43,7 @@ export default function ClaudeFastModeTab() {
 
   const subtitle = useMemo(
     () => t("claudeFastModeModelsLabel", { count: modelsCount }),
-    [t, modelsCount]
+    [t, modelsCount],
   );
 
   const persist = async (payload: { enabled: boolean; supportedModels: string[] }) => {

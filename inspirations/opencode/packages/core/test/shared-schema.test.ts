@@ -1,35 +1,35 @@
-import { expect, test } from "bun:test"
-import { Schema } from "effect"
-import { AgentV2 } from "@opencode-ai/core/agent"
-import { ModelV2 } from "@opencode-ai/core/model"
-import { SessionV2 } from "@opencode-ai/core/session"
-import { Agent } from "@opencode-ai/schema/agent"
-import { Location } from "@opencode-ai/schema/location"
-import { Model } from "@opencode-ai/schema/model"
-import { AgentAttachment, FileAttachment, Prompt, Source } from "@opencode-ai/schema/prompt"
-import { Provider } from "@opencode-ai/schema/provider"
-import { Project } from "@opencode-ai/schema/project"
-import { ProjectDirectories } from "@opencode-ai/schema/project-directories"
-import { PermissionV1 } from "@opencode-ai/schema/permission-v1"
-import { Session } from "@opencode-ai/schema/session"
-import { SessionInput } from "@opencode-ai/schema/session-input"
-import { SessionMessage } from "@opencode-ai/schema/session-message"
-import { Workspace } from "@opencode-ai/schema/workspace"
-import { Command } from "@opencode-ai/schema/command"
-import { Connection } from "@opencode-ai/schema/connection"
-import { Credential } from "@opencode-ai/schema/credential"
-import { FileSystem } from "@opencode-ai/schema/filesystem"
-import { Integration } from "@opencode-ai/schema/integration"
-import { LLM } from "@opencode-ai/schema/llm"
-import { Permission } from "@opencode-ai/schema/permission"
-import { Plugin } from "@opencode-ai/schema/plugin"
-import { Pty } from "@opencode-ai/schema/pty"
-import { Reference } from "@opencode-ai/schema/reference"
-import { SessionTodo } from "@opencode-ai/schema/session-todo"
-import { Skill } from "@opencode-ai/schema/skill"
-import { AbsolutePath, DateTimeUtcFromMillis, optional, statics } from "@opencode-ai/schema/schema"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { PluginV2 } from "@opencode-ai/core/plugin"
+import { expect, test } from "bun:test";
+import { Schema } from "effect";
+import { AgentV2 } from "@opencode-ai/core/agent";
+import { ModelV2 } from "@opencode-ai/core/model";
+import { SessionV2 } from "@opencode-ai/core/session";
+import { Agent } from "@opencode-ai/schema/agent";
+import { Location } from "@opencode-ai/schema/location";
+import { Model } from "@opencode-ai/schema/model";
+import { AgentAttachment, FileAttachment, Prompt, Source } from "@opencode-ai/schema/prompt";
+import { Provider } from "@opencode-ai/schema/provider";
+import { Project } from "@opencode-ai/schema/project";
+import { ProjectDirectories } from "@opencode-ai/schema/project-directories";
+import { PermissionV1 } from "@opencode-ai/schema/permission-v1";
+import { Session } from "@opencode-ai/schema/session";
+import { SessionInput } from "@opencode-ai/schema/session-input";
+import { SessionMessage } from "@opencode-ai/schema/session-message";
+import { Workspace } from "@opencode-ai/schema/workspace";
+import { Command } from "@opencode-ai/schema/command";
+import { Connection } from "@opencode-ai/schema/connection";
+import { Credential } from "@opencode-ai/schema/credential";
+import { FileSystem } from "@opencode-ai/schema/filesystem";
+import { Integration } from "@opencode-ai/schema/integration";
+import { LLM } from "@opencode-ai/schema/llm";
+import { Permission } from "@opencode-ai/schema/permission";
+import { Plugin } from "@opencode-ai/schema/plugin";
+import { Pty } from "@opencode-ai/schema/pty";
+import { Reference } from "@opencode-ai/schema/reference";
+import { SessionTodo } from "@opencode-ai/schema/session-todo";
+import { Skill } from "@opencode-ai/schema/skill";
+import { AbsolutePath, DateTimeUtcFromMillis, optional, statics } from "@opencode-ai/schema/schema";
+import { ProviderV2 } from "@opencode-ai/core/provider";
+import { PluginV2 } from "@opencode-ai/core/plugin";
 
 test("Core reuses the canonical shared schemas", async () => {
   const [
@@ -76,7 +76,7 @@ test("Core reuses the canonical shared schemas", async () => {
     import("@opencode-ai/core/v2-schema"),
     import("@opencode-ai/core/schema"),
     import("@opencode-ai/core/workspace"),
-  ])
+  ]);
 
   const schemas = [
     [AgentV2.ID, Agent.ID],
@@ -177,30 +177,42 @@ test("Core reuses the canonical shared schemas", async () => {
     [coreSchema.optional, optional],
     [coreSchema.statics, statics],
     [coreWorkspace.ID, Workspace.ID],
-  ]
-  for (const [core, shared] of schemas) expect(core).toBe(shared)
+  ];
+  for (const [core, shared] of schemas) expect(core).toBe(shared);
 
-  expect(Agent.Info.empty(Agent.ID.make("test"))).toEqual(AgentV2.Info.empty(AgentV2.ID.make("test")))
+  expect(Agent.Info.empty(Agent.ID.make("test"))).toEqual(
+    AgentV2.Info.empty(AgentV2.ID.make("test")),
+  );
   expect(Model.Info.empty(Provider.ID.make("test"), Model.ID.make("model"))).toEqual(
     ModelV2.Info.empty(ProviderV2.ID.make("test"), ModelV2.ID.make("model")),
-  )
-  expect(Provider.Info.empty(Provider.ID.make("test"))).toEqual(ProviderV2.Info.empty(ProviderV2.ID.make("test")))
-  expect(Skill.Source.key(Skill.DirectorySource.make({ type: "directory", path: AbsolutePath.make("/tmp") }))).toBe(
-    "directory:/tmp",
-  )
-})
+  );
+  expect(Provider.Info.empty(Provider.ID.make("test"))).toEqual(
+    ProviderV2.Info.empty(ProviderV2.ID.make("test")),
+  );
+  expect(
+    Skill.Source.key(
+      Skill.DirectorySource.make({ type: "directory", path: AbsolutePath.make("/tmp") }),
+    ),
+  ).toBe("directory:/tmp");
+});
 
 test("shared record schemas construct and decode plain objects", () => {
-  const made = Prompt.make({ text: "hello" })
-  const decoded = Schema.decodeUnknownSync(Prompt)({ text: "hello" })
-  const content = Schema.decodeUnknownSync(SessionMessage.AssistantText)({ type: "text", id: "part_1", text: "hi" })
+  const made = Prompt.make({ text: "hello" });
+  const decoded = Schema.decodeUnknownSync(Prompt)({ text: "hello" });
+  const content = Schema.decodeUnknownSync(SessionMessage.AssistantText)({
+    type: "text",
+    id: "part_1",
+    text: "hi",
+  });
 
-  expect(Object.getPrototypeOf(made)).toBe(Object.prototype)
-  expect(Object.getPrototypeOf(decoded)).toBe(Object.prototype)
-  expect(Object.getPrototypeOf(content)).toBe(Object.prototype)
-  expect(Prompt.ast.annotations?.identifier).toBe("Prompt")
-  expect(SessionMessage.AssistantText.ast.annotations?.identifier).toBe("Session.Message.Assistant.Text")
-  expect(Prompt.equivalence(Prompt.make({ text: "hello" }), decoded)).toBe(true)
-  expect(Prompt.fromUserMessage({ text: "hello" })).toEqual(made)
-  expect(Workspace.ID.ascending("")).toStartWith("wrk_")
-})
+  expect(Object.getPrototypeOf(made)).toBe(Object.prototype);
+  expect(Object.getPrototypeOf(decoded)).toBe(Object.prototype);
+  expect(Object.getPrototypeOf(content)).toBe(Object.prototype);
+  expect(Prompt.ast.annotations?.identifier).toBe("Prompt");
+  expect(SessionMessage.AssistantText.ast.annotations?.identifier).toBe(
+    "Session.Message.Assistant.Text",
+  );
+  expect(Prompt.equivalence(Prompt.make({ text: "hello" }), decoded)).toBe(true);
+  expect(Prompt.fromUserMessage({ text: "hello" })).toEqual(made);
+  expect(Workspace.ID.ascending("")).toStartWith("wrk_");
+});

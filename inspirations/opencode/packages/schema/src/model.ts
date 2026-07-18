@@ -1,32 +1,32 @@
-export * as Model from "./model"
+export * as Model from "./model";
 
-import { Schema } from "effect"
-import { optional } from "./schema"
-import { Provider } from "./provider"
-import { statics } from "./schema"
+import { Schema } from "effect";
+import { optional } from "./schema";
+import { Provider } from "./provider";
+import { statics } from "./schema";
 
-export const ID = Schema.String.pipe(Schema.brand("ModelV2.ID"))
-export type ID = typeof ID.Type
+export const ID = Schema.String.pipe(Schema.brand("ModelV2.ID"));
+export type ID = typeof ID.Type;
 
-export const VariantID = Schema.String.pipe(Schema.brand("VariantID"))
-export type VariantID = typeof VariantID.Type
+export const VariantID = Schema.String.pipe(Schema.brand("VariantID"));
+export type VariantID = typeof VariantID.Type;
 
 export const Ref = Schema.Struct({
   id: ID,
   providerID: Provider.ID,
   variant: VariantID.pipe(optional),
-}).annotate({ identifier: "Model.Ref" })
+}).annotate({ identifier: "Model.Ref" });
 export interface Ref extends Schema.Schema.Type<typeof Ref> {}
 
-export const Family = Schema.String.pipe(Schema.brand("Family"))
-export type Family = typeof Family.Type
+export const Family = Schema.String.pipe(Schema.brand("Family"));
+export type Family = typeof Family.Type;
 
 export interface Capabilities extends Schema.Schema.Type<typeof Capabilities> {}
 export const Capabilities = Schema.Struct({
   tools: Schema.Boolean,
   input: Schema.Array(Schema.String),
   output: Schema.Array(Schema.String),
-}).annotate({ identifier: "Model.Capabilities" })
+}).annotate({ identifier: "Model.Capabilities" });
 
 export interface Cost extends Schema.Schema.Type<typeof Cost> {}
 export const Cost = Schema.Struct({
@@ -40,7 +40,7 @@ export const Cost = Schema.Struct({
     read: Schema.Finite,
     write: Schema.Finite,
   }),
-}).annotate({ identifier: "Model.Cost" })
+}).annotate({ identifier: "Model.Cost" });
 
 export const Api = Schema.Union([
   Schema.Struct({
@@ -53,8 +53,8 @@ export const Api = Schema.Union([
   }),
 ])
   .pipe(Schema.toTaggedUnion("type"))
-  .annotate({ identifier: "Model.Api" })
-export type Api = typeof Api.Type
+  .annotate({ identifier: "Model.Api" });
+export type Api = typeof Api.Type;
 
 export interface Info extends Schema.Schema.Type<typeof Info> {}
 export const Info = Schema.Struct({
@@ -103,4 +103,4 @@ export const Info = Schema.Struct({
           limit: { context: 0, output: 0 },
         }),
     })),
-  )
+  );

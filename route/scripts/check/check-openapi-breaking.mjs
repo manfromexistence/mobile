@@ -264,7 +264,7 @@ export function resolveBaseSpec(baseRef) {
 
   const tmpFile = path.join(
     os.tmpdir(),
-    `oasdiff-base-${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2)}.yaml`
+    `oasdiff-base-${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2)}.yaml`,
   );
   try {
     fs.writeFileSync(tmpFile, stdout, "utf8");
@@ -299,7 +299,7 @@ function main() {
       process.stderr.write(
         "[openapi-breaking] SKIP — oasdiff não encontrado no PATH.\n" +
           "[openapi-breaking] Instale via: https://github.com/oasdiff/oasdiff\n" +
-          "[openapi-breaking] ADVISORY — este gate sai 0 (promove a bloqueante depois).\n"
+          "[openapi-breaking] ADVISORY — este gate sai 0 (promove a bloqueante depois).\n",
       );
     }
     process.exitCode = 0;
@@ -314,7 +314,7 @@ function main() {
       process.stderr.write(
         `[openapi-breaking] SKIP — não consegui ler ${SPEC_REL} em '${baseRef}'.\n` +
           "[openapi-breaking] Causas: clone shallow sem o ref base, arquivo novo (não existia no base),\n" +
-          "[openapi-breaking] ou ref inválido. Em CI use fetch-depth: 0 ou git fetch do base ref.\n"
+          "[openapi-breaking] ou ref inválido. Em CI use fetch-depth: 0 ou git fetch do base ref.\n",
       );
     }
     process.exitCode = 0;
@@ -329,7 +329,7 @@ function main() {
 
     if (!QUIET) {
       process.stderr.write(
-        `[openapi-breaking] Rodando: oasdiff breaking --format json <base:${baseRef}> ${SPEC_REL} ...\n`
+        `[openapi-breaking] Rodando: oasdiff breaking --format json <base:${baseRef}> ${SPEC_REL} ...\n`,
       );
     }
 
@@ -371,7 +371,7 @@ function main() {
         if (!QUIET) {
           process.stderr.write(
             `[openapi-breaking] SKIP — JSON do oasdiff não parseável: ${parseErr.message}\n` +
-              `[openapi-breaking] stdout (primeiros 500): ${trimmed.slice(0, 500)}\n`
+              `[openapi-breaking] stdout (primeiros 500): ${trimmed.slice(0, 500)}\n`,
           );
         }
         process.exitCode = 0;
@@ -397,7 +397,7 @@ function main() {
           .map(([id, n]) => `${id}(${n})`)
           .join(", ");
         process.stderr.write(
-          `[openapi-breaking] ⚠️  ${count} breaking change(s) vs '${baseRef}' (top: ${topIds})\n`
+          `[openapi-breaking] ⚠️  ${count} breaking change(s) vs '${baseRef}' (top: ${topIds})\n`,
         );
         for (const it of items.slice(0, 20)) {
           const op = it.operation ?? it.Operation ?? "?";
@@ -419,17 +419,17 @@ function main() {
           process.stderr.write(
             "[openapi-breaking] Se a quebra é intencional (major bump), documente no PR e\n" +
               "[openapi-breaking] re-baseline metrics.openapiBreaking em config/quality/quality-baseline.json\n" +
-              "[openapi-breaking] com justificativa + issue de tracking; senão, ajuste a spec.\n"
+              "[openapi-breaking] com justificativa + issue de tracking; senão, ajuste a spec.\n",
           );
         } else {
           process.stderr.write(
             "[openapi-breaking] ADVISORY — passe --ratchet para BLOQUEAR uma regressão. Se a quebra é\n" +
-              "[openapi-breaking] intencional (major bump), documente no PR; senão, ajuste a spec.\n"
+              "[openapi-breaking] intencional (major bump), documente no PR; senão, ajuste a spec.\n",
           );
         }
       } else {
         process.stderr.write(
-          `[openapi-breaking] OK — nenhuma breaking change na spec vs '${baseRef}'.\n`
+          `[openapi-breaking] OK — nenhuma breaking change na spec vs '${baseRef}'.\n`,
         );
       }
     }
@@ -468,7 +468,7 @@ function applyRatchet(count) {
   if (skipped) {
     if (!QUIET) {
       process.stderr.write(
-        "[openapi-breaking] baseline ausente (metrics.openapiBreaking) — SKIP gracioso, sai 0.\n"
+        "[openapi-breaking] baseline ausente (metrics.openapiBreaking) — SKIP gracioso, sai 0.\n",
       );
     }
     process.exitCode = 0;
@@ -480,7 +480,7 @@ function applyRatchet(count) {
       `[openapi-breaking] REGRESSÃO — ${count} breaking change(s) > baseline ${baselineValue}\n` +
         "  → Ajuste a spec para não quebrar clientes existentes. Se a quebra é intencional\n" +
         "    (major bump), re-baseline metrics.openapiBreaking em\n" +
-        "    config/quality/quality-baseline.json com justificativa + issue de tracking.\n"
+        "    config/quality/quality-baseline.json com justificativa + issue de tracking.\n",
     );
     process.exitCode = 1;
     return;
@@ -488,7 +488,7 @@ function applyRatchet(count) {
 
   if (!QUIET) {
     process.stderr.write(
-      `[openapi-breaking] OK — sem regressão (${count} breaking change(s), baseline ${baselineValue}).\n`
+      `[openapi-breaking] OK — sem regressão (${count} breaking change(s), baseline ${baselineValue}).\n`,
     );
   }
   process.exitCode = 0;

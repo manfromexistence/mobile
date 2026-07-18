@@ -53,14 +53,14 @@ export function setFeatureFlagOverride(key: string, value: string): void {
     !definition.enumValues.includes(value)
   ) {
     throw new Error(
-      `Invalid value "${value}" for enum flag ${key}. Allowed: ${definition.enumValues.join(", ")}`
+      `Invalid value "${value}" for enum flag ${key}. Allowed: ${definition.enumValues.join(", ")}`,
     );
   }
   const db = getDbInstance();
   db.prepare("INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
     NAMESPACE,
     key,
-    value
+    value,
   );
 }
 

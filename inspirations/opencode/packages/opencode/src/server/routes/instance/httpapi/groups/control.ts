@@ -1,18 +1,24 @@
-import { Auth } from "@/auth"
+import { Auth } from "@/auth";
 
-import { Schema } from "effect"
-import { HttpApi, HttpApiEndpoint, HttpApiError, HttpApiGroup, OpenApi } from "effect/unstable/httpapi"
-import { described } from "./metadata"
-import { ProviderV2 } from "@opencode-ai/core/provider"
+import { Schema } from "effect";
+import {
+  HttpApi,
+  HttpApiEndpoint,
+  HttpApiError,
+  HttpApiGroup,
+  OpenApi,
+} from "effect/unstable/httpapi";
+import { described } from "./metadata";
+import { ProviderV2 } from "@opencode-ai/core/provider";
 
 const AuthParams = Schema.Struct({
   providerID: ProviderV2.ID,
-})
+});
 
 const LogQuery = Schema.Struct({
   directory: Schema.optional(Schema.String),
   workspace: Schema.optional(Schema.String),
-})
+});
 
 export const LogInput = Schema.Struct({
   service: Schema.String.annotate({ description: "Service name for the log entry" }),
@@ -26,12 +32,12 @@ export const LogInput = Schema.Struct({
   extra: Schema.optional(Schema.Record(Schema.String, Schema.Unknown)).annotate({
     description: "Additional metadata for the log entry",
   }),
-})
+});
 
 export const ControlPaths = {
   auth: "/auth/:providerID",
   log: "/log",
-} as const
+} as const;
 
 export const ControlApi = HttpApi.make("control").add(
   HttpApiGroup.make("control")
@@ -73,4 +79,4 @@ export const ControlApi = HttpApi.make("control").add(
       ),
     )
     .annotateMerge(OpenApi.annotations({ title: "control", description: "Control plane routes." })),
-)
+);

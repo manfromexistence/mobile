@@ -94,7 +94,7 @@ export class CopilotM365WebExecutor extends BaseExecutor {
             // type:2 invocation result. Emit it if nothing was streamed.
             if (!previousText && finalResultMessage) {
               controller.enqueue(
-                encoder.encode(sseChunk(input.model, { content: finalResultMessage }))
+                encoder.encode(sseChunk(input.model, { content: finalResultMessage })),
               );
             }
             controller.enqueue(encoder.encode(sseChunk(input.model, {}, "stop")));
@@ -107,7 +107,9 @@ export class CopilotM365WebExecutor extends BaseExecutor {
             settled = true;
             cleanup();
             const message = sanitizeErrorMessage(reason);
-            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ error: { message } })}\n\n`));
+            controller.enqueue(
+              encoder.encode(`data: ${JSON.stringify({ error: { message } })}\n\n`),
+            );
             controller.close();
           };
 
@@ -115,12 +117,14 @@ export class CopilotM365WebExecutor extends BaseExecutor {
 
           const timeout = setTimeout(
             () => abort("Microsoft 365 Copilot WebSocket timeout"),
-            FETCH_TIMEOUT_MS
+            FETCH_TIMEOUT_MS,
           );
 
           try {
             const wsUrlParts = new URL(input.wsUrl);
-            const traceId = wsUrlParts.searchParams.get("clientrequestid") ?? crypto.randomUUID().replace(/-/g, "");
+            const traceId =
+              wsUrlParts.searchParams.get("clientrequestid") ??
+              crypto.randomUUID().replace(/-/g, "");
             const sessionId = wsUrlParts.searchParams.get("X-SessionId") ?? crypto.randomUUID();
 
             log?.debug?.("M365_WS", `connecting → ${redactWsUrl(input.wsUrl)}`);
@@ -142,8 +146,8 @@ export class CopilotM365WebExecutor extends BaseExecutor {
                     traceId,
                     sessionId,
                     isStartOfSession: true,
-                  })
-                )
+                  }),
+                ),
               );
             };
 
@@ -162,7 +166,7 @@ export class CopilotM365WebExecutor extends BaseExecutor {
                 const frame = parseFrame(rawFrame);
                 log?.debug?.(
                   "M365_WS",
-                  `frame type=${String(frame?.type)} target=${String(frame?.target)}`
+                  `frame type=${String(frame?.type)} target=${String(frame?.target)}`,
                 );
                 if (!handshakeComplete) {
                   const err = handshakeError(frame);
@@ -201,12 +205,12 @@ export class CopilotM365WebExecutor extends BaseExecutor {
               clearTimeout(timeout);
               log?.debug?.(
                 "M365_WS",
-                `socket error: ${err instanceof Error ? err.message : String(err)}`
+                `socket error: ${err instanceof Error ? err.message : String(err)}`,
               );
               abort(
                 sanitizeErrorMessage(
-                  err instanceof Error ? err.message : "Microsoft 365 Copilot WebSocket error"
-                )
+                  err instanceof Error ? err.message : "Microsoft 365 Copilot WebSocket error",
+                ),
               );
             });
 
@@ -218,13 +222,13 @@ export class CopilotM365WebExecutor extends BaseExecutor {
             clearTimeout(timeout);
             abort(
               sanitizeErrorMessage(
-                err instanceof Error ? err.message : "Failed to connect to Microsoft 365 Copilot"
-              )
+                err instanceof Error ? err.message : "Failed to connect to Microsoft 365 Copilot",
+              ),
             );
           }
         },
       },
-      { highWaterMark: 16384 }
+      { highWaterMark: 16384 },
     );
   }
 
@@ -320,7 +324,7 @@ export class CopilotM365WebExecutor extends BaseExecutor {
             ],
             usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
           }),
-          { headers: { "Content-Type": "application/json" } }
+          { headers: { "Content-Type": "application/json" } },
         ),
         url: redactWsUrl(wsUrl),
         headers: {},
@@ -328,7 +332,7 @@ export class CopilotM365WebExecutor extends BaseExecutor {
       };
     } catch (err) {
       const message = sanitizeErrorMessage(
-        err instanceof Error ? err.message : "Microsoft 365 Copilot executor error"
+        err instanceof Error ? err.message : "Microsoft 365 Copilot executor error",
       );
       return {
         response: errorResponse(message),

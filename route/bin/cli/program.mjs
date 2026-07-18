@@ -18,7 +18,7 @@ export function createProgram() {
     .addOption(
       new Option("--output <format>", t("program.output"))
         .choices(["table", "json", "jsonl", "csv"])
-        .default("table")
+        .default("table"),
     )
     .addOption(new Option("-q, --quiet", t("program.quiet")))
     .addOption(new Option("--no-color", t("program.no_color")))
@@ -28,8 +28,8 @@ export function createProgram() {
     .addOption(
       new Option(
         "--context <name>",
-        t("program.context") || "Server context/profile to use for this command"
-      ).env("OMNIROUTE_CONTEXT")
+        t("program.context") || "Server context/profile to use for this command",
+      ).env("OMNIROUTE_CONTEXT"),
     )
     .addOption(new Option("--lang <code>", t("program.lang")))
     .showHelpAfterError(true)

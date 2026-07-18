@@ -36,7 +36,7 @@ function getIconBase64() {
 
 export async function initSystrayUnix(
   { port, onQuit, onOpenDashboard, onShowLogs },
-  loadCtor = loadSystray2
+  loadCtor = loadSystray2,
 ) {
   const SysTray = await loadCtor();
   if (!SysTray) return null;

@@ -101,7 +101,7 @@ interface ProviderModalsPanelProps {
   handleUpdateConnection: (data: any) => Promise<string | null>;
   handleCompatibleImportWithProgress: (
     connectionId: string,
-    mode?: "import" | "sync"
+    mode?: "import" | "sync",
   ) => Promise<void>;
   // Edit compatible node
   showEditNodeModal: boolean;

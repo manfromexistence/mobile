@@ -1,29 +1,23 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from "@playwright/test";
 
 async function openMenuFromTrigger(
-  page: import('@playwright/test').Page,
-  tree: import('@playwright/test').Locator,
-  rowPath: string
+  page: import("@playwright/test").Page,
+  tree: import("@playwright/test").Locator,
+  rowPath: string,
 ): Promise<void> {
-  const row = tree.locator(
-    `button[data-type="item"][data-item-path="${rowPath}"]`
-  );
+  const row = tree.locator(`button[data-type="item"][data-item-path="${rowPath}"]`);
   await row.click();
   const box = await row.boundingBox();
   if (box != null) {
     await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
   }
   await row.hover();
-  const trigger = tree.locator(
-    'button[data-type="context-menu-trigger"][data-visible="true"]'
-  );
+  const trigger = tree.locator('button[data-type="context-menu-trigger"][data-visible="true"]');
   await expect(trigger).toBeVisible();
   await trigger.click();
 }
 
-async function readMainMenuGeometry(
-  page: import('@playwright/test').Page
-): Promise<{
+async function readMainMenuGeometry(page: import("@playwright/test").Page): Promise<{
   anchorLeft: number;
   anchorTop: number;
   menuLeft: number;
@@ -32,14 +26,10 @@ async function readMainMenuGeometry(
   triggerLeft: number;
 } | null> {
   return page.evaluate(() => {
-    const host = document.querySelector('file-tree-container');
+    const host = document.querySelector("file-tree-container");
     const shadowRoot = host?.shadowRoot;
-    const anchor = shadowRoot?.querySelector(
-      '[data-type="context-menu-anchor"]'
-    );
-    const trigger = shadowRoot?.querySelector(
-      'button[data-type="context-menu-trigger"]'
-    );
+    const anchor = shadowRoot?.querySelector('[data-type="context-menu-anchor"]');
+    const trigger = shadowRoot?.querySelector('button[data-type="context-menu-trigger"]');
     const menu = document.querySelector('[data-test-context-menu="true"]');
     if (
       !(anchor instanceof HTMLElement) ||
@@ -64,7 +54,7 @@ async function readMainMenuGeometry(
 }
 
 async function expectMainMenuTopLeftAlignedToTrigger(
-  page: import('@playwright/test').Page
+  page: import("@playwright/test").Page,
 ): Promise<void> {
   await expect
     .poll(async () => {
@@ -85,7 +75,7 @@ async function expectMainMenuTopLeftAlignedToTrigger(
 }
 
 async function expectMainMenuTopLeftAlignedToPointerAnchor(
-  page: import('@playwright/test').Page
+  page: import("@playwright/test").Page,
 ): Promise<void> {
   await expect
     .poll(async () => {
@@ -105,9 +95,7 @@ async function expectMainMenuTopLeftAlignedToPointerAnchor(
     .toBeLessThanOrEqual(4);
 }
 
-async function readReactMenuGeometry(
-  page: import('@playwright/test').Page
-): Promise<{
+async function readReactMenuGeometry(page: import("@playwright/test").Page): Promise<{
   bottom: number;
   left: number;
   right: number;
@@ -118,11 +106,9 @@ async function readReactMenuGeometry(
 } | null> {
   return page.evaluate(() => {
     const slottedMenu = document
-      .querySelectorAll('file-tree-container')[1]
+      .querySelectorAll("file-tree-container")[1]
       ?.querySelector('[slot="context-menu"] > div');
-    const portaledMenu = document.querySelector(
-      '[data-test-react-context-menu="true"]'
-    );
+    const portaledMenu = document.querySelector('[data-test-react-context-menu="true"]');
     const menu =
       portaledMenu instanceof HTMLElement
         ? portaledMenu
@@ -147,7 +133,7 @@ async function readReactMenuGeometry(
 }
 
 async function expectReactMenuVisibleInViewport(
-  page: import('@playwright/test').Page
+  page: import("@playwright/test").Page,
 ): Promise<void> {
   await expect
     .poll(() => readReactMenuGeometry(page))
@@ -160,7 +146,7 @@ async function expectReactMenuVisibleInViewport(
         viewportHeight: expect.any(Number),
         viewportWidth: expect.any(Number),
         width: expect.any(Number),
-      })
+      }),
     );
 
   const geometry = await readReactMenuGeometry(page);
@@ -172,167 +158,135 @@ async function expectReactMenuVisibleInViewport(
   expect(geometry!.bottom).toBeLessThanOrEqual(geometry!.viewportHeight);
 }
 async function expectContextMenuTriggerOpacity(
-  page: import('@playwright/test').Page,
+  page: import("@playwright/test").Page,
   treeIndex: number,
-  expectedOpacity: string
+  expectedOpacity: string,
 ): Promise<void> {
   await expect
     .poll(() =>
       page.evaluate(
         ({ expectedTreeIndex }) => {
-          const host = document.querySelectorAll('file-tree-container')[
-            expectedTreeIndex
-          ];
+          const host = document.querySelectorAll("file-tree-container")[expectedTreeIndex];
           const trigger = host?.shadowRoot?.querySelector(
-            'button[data-type="context-menu-trigger"]'
+            'button[data-type="context-menu-trigger"]',
           );
-          return trigger instanceof HTMLElement
-            ? getComputedStyle(trigger).opacity
-            : null;
+          return trigger instanceof HTMLElement ? getComputedStyle(trigger).opacity : null;
         },
-        { expectedTreeIndex: treeIndex }
-      )
+        { expectedTreeIndex: treeIndex },
+      ),
     )
     .toBe(expectedOpacity);
 }
 
 async function expectContextMenuTriggerExpanded(
-  page: import('@playwright/test').Page,
+  page: import("@playwright/test").Page,
   treeIndex: number,
-  expectedExpanded: string
+  expectedExpanded: string,
 ): Promise<void> {
   await expect
     .poll(() =>
       page.evaluate(
         ({ expectedTreeIndex }) => {
-          const host = document.querySelectorAll('file-tree-container')[
-            expectedTreeIndex
-          ];
+          const host = document.querySelectorAll("file-tree-container")[expectedTreeIndex];
           const trigger = host?.shadowRoot?.querySelector(
-            'button[data-type="context-menu-trigger"]'
+            'button[data-type="context-menu-trigger"]',
           );
-          return trigger instanceof HTMLElement
-            ? trigger.getAttribute('aria-expanded')
-            : null;
+          return trigger instanceof HTMLElement ? trigger.getAttribute("aria-expanded") : null;
         },
-        { expectedTreeIndex: treeIndex }
-      )
+        { expectedTreeIndex: treeIndex },
+      ),
     )
     .toBe(expectedExpanded);
 }
 
-test.describe('trees-dev real page context menus', () => {
-  test('main demo trigger-opened menu aligns top-left below the trigger bottom-left', async ({
+test.describe("trees-dev real page context menus", () => {
+  test("main demo trigger-opened menu aligns top-left below the trigger bottom-left", async ({
     page,
   }) => {
-    await page.goto('/trees-dev');
+    await page.goto("/trees-dev");
 
-    const tree = page.locator('file-tree-container').first();
-    await openMenuFromTrigger(page, tree, 'arch/alpha/boot/bootp.c');
+    const tree = page.locator("file-tree-container").first();
+    await openMenuFromTrigger(page, tree, "arch/alpha/boot/bootp.c");
 
     await expect(page.locator('[data-test-context-menu="true"]')).toBeVisible();
-    await expectContextMenuTriggerExpanded(page, 0, 'true');
+    await expectContextMenuTriggerExpanded(page, 0, "true");
     await expectMainMenuTopLeftAlignedToTrigger(page);
   });
 
-  test('main demo right-click menu aligns top-left to the pointer anchor', async ({
-    page,
-  }) => {
-    await page.goto('/trees-dev');
+  test("main demo right-click menu aligns top-left to the pointer anchor", async ({ page }) => {
+    await page.goto("/trees-dev");
 
-    const tree = page.locator('file-tree-container').first();
-    const row = tree.locator(
-      'button[data-type="item"][data-item-path="arch/alpha/boot/bootp.c"]'
-    );
+    const tree = page.locator("file-tree-container").first();
+    const row = tree.locator('button[data-type="item"][data-item-path="arch/alpha/boot/bootp.c"]');
     await row.click();
     await row.hover();
-    await row.click({ button: 'right' });
+    await row.click({ button: "right" });
 
-    await expectContextMenuTriggerExpanded(page, 0, 'true');
-    await expectContextMenuTriggerOpacity(page, 0, '0');
-    await expect(page.locator('[data-test-context-menu="true"]')).toHaveCount(
-      1
-    );
+    await expectContextMenuTriggerExpanded(page, 0, "true");
+    await expectContextMenuTriggerOpacity(page, 0, "0");
+    await expect(page.locator('[data-test-context-menu="true"]')).toHaveCount(1);
     await expectMainMenuTopLeftAlignedToPointerAnchor(page);
   });
 
-  test('navigating to the React demo with an open main menu does not log a root unmount warning', async ({
+  test("navigating to the React demo with an open main menu does not log a root unmount warning", async ({
     page,
   }) => {
     const consoleErrors: string[] = [];
-    const handleConsole = (
-      message: import('@playwright/test').ConsoleMessage
-    ) => {
-      if (message.type() === 'error') {
+    const handleConsole = (message: import("@playwright/test").ConsoleMessage) => {
+      if (message.type() === "error") {
         consoleErrors.push(message.text());
       }
     };
-    page.on('console', handleConsole);
+    page.on("console", handleConsole);
 
     try {
-      await page.goto('/trees-dev');
+      await page.goto("/trees-dev");
 
-      const tree = page.locator('file-tree-container').first();
-      await openMenuFromTrigger(page, tree, 'arch/alpha/boot/bootp.c');
-      await expect(
-        page.locator('[data-test-context-menu="true"]')
-      ).toBeVisible();
+      const tree = page.locator("file-tree-container").first();
+      await openMenuFromTrigger(page, tree, "arch/alpha/boot/bootp.c");
+      await expect(page.locator('[data-test-context-menu="true"]')).toBeVisible();
 
-      await page
-        .locator('nav')
-        .getByRole('link', { name: 'React', exact: true })
-        .first()
-        .click();
+      await page.locator("nav").getByRole("link", { name: "React", exact: true }).first().click();
       await expect(page).toHaveURL(/\/trees-dev\/react$/);
-      await expect(
-        page.getByRole('heading', { level: 1, name: 'React' })
-      ).toBeVisible();
+      await expect(page.getByRole("heading", { level: 1, name: "React" })).toBeVisible();
 
       expect(
         consoleErrors.filter((message) =>
-          message.includes('Attempted to synchronously unmount a root')
-        )
+          message.includes("Attempted to synchronously unmount a root"),
+        ),
       ).toEqual([]);
     } finally {
-      page.off('console', handleConsole);
+      page.off("console", handleConsole);
     }
   });
 
-  test('react client demo defaults to right-click without a visible trigger button', async ({
+  test("react client demo defaults to right-click without a visible trigger button", async ({
     page,
   }) => {
-    await page.goto('/trees-dev/react');
+    await page.goto("/trees-dev/react");
 
-    const tree = page.locator('file-tree-container').nth(1);
+    const tree = page.locator("file-tree-container").nth(1);
     await expect(
-      tree.locator(
-        'button[data-type="context-menu-trigger"][data-visible="true"]'
-      )
+      tree.locator('button[data-type="context-menu-trigger"][data-visible="true"]'),
     ).toHaveCount(0);
     await expect
       .poll(() =>
         tree.evaluate((host) => {
           const treeRoot = host.shadowRoot?.querySelector('[role="tree"]');
-          return treeRoot?.getAttribute(
-            'data-file-tree-context-menu-trigger-mode'
-          );
-        })
+          return treeRoot?.getAttribute("data-file-tree-context-menu-trigger-mode");
+        }),
       )
-      .toBe('right-click');
+      .toBe("right-click");
   });
 
-  test('react client demo right-click menu has a visible surface', async ({
-    page,
-  }) => {
-    await page.goto('/trees-dev/react');
+  test("react client demo right-click menu has a visible surface", async ({ page }) => {
+    await page.goto("/trees-dev/react");
 
-    const tree = page.locator('file-tree-container').nth(1);
-    const row = tree.locator(
-      'button[data-type="item"][data-item-path="src/index.ts"]'
-    );
+    const tree = page.locator("file-tree-container").nth(1);
+    const row = tree.locator('button[data-type="item"][data-item-path="src/index.ts"]');
     await row.click();
     await row.hover();
-    await row.click({ button: 'right' });
+    await row.click({ button: "right" });
 
     await expectReactMenuVisibleInViewport(page);
   });

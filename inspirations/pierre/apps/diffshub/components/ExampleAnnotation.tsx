@@ -1,12 +1,12 @@
-import type { CodeViewLineSelection, DiffLineAnnotation } from '@pierre/diffs';
-import { IconX } from '@pierre/icons';
-import { memo } from 'react';
+import type { CodeViewLineSelection, DiffLineAnnotation } from "@pierre/diffs";
+import { IconX } from "@pierre/icons";
+import { memo } from "react";
 
-import { CommentAuthorAvatar } from './CommentAuthorAvatar';
-import { Button } from '@/components/Button';
-import { annotationCardBase } from '@/lib/annotation';
-import { cn } from '@/lib/cn';
-import type { SavedCommentMetadata } from '@/lib/types';
+import { CommentAuthorAvatar } from "./CommentAuthorAvatar";
+import { Button } from "@/components/Button";
+import { annotationCardBase } from "@/lib/annotation";
+import { cn } from "@/lib/cn";
+import type { SavedCommentMetadata } from "@/lib/types";
 
 interface ExampleAnnotationProps {
   annotation: DiffLineAnnotation<SavedCommentMetadata>;
@@ -28,11 +28,11 @@ export const ExampleAnnotation = memo(function ExampleAnnotation({
       tabIndex={0}
       className={cn(
         annotationCardBase,
-        'group relative cursor-pointer hover:border-[var(--diffshub-annotation-hover-border,var(--diffshub-annotation-border,var(--color-border)))]'
+        "group relative cursor-pointer hover:border-[var(--diffshub-annotation-hover-border,var(--diffshub-annotation-border,var(--color-border)))]",
       )}
       onClick={() => onToggleSelection(selection)}
       onKeyDown={(event) => {
-        if (event.key !== 'Enter' && event.key !== ' ') {
+        if (event.key !== "Enter" && event.key !== " ") {
           return;
         }
         event.preventDefault();
@@ -53,12 +53,8 @@ export const ExampleAnnotation = memo(function ExampleAnnotation({
         <IconX size={12} />
       </Button>
       <div className="flex flex-col">
-        <strong className="mt-1 block text-[14px]">
-          {annotation.metadata.author}
-        </strong>
-        <p className="m-0 text-[14px] whitespace-pre-wrap">
-          {annotation.metadata.message}
-        </p>
+        <strong className="mt-1 block text-[14px]">{annotation.metadata.author}</strong>
+        <p className="m-0 text-[14px] whitespace-pre-wrap">{annotation.metadata.message}</p>
       </div>
     </div>
   );

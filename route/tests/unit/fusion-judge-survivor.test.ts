@@ -33,7 +33,7 @@ function okResponse(content: string): Promise<Response> {
     new Response(body, {
       status: 200,
       headers: { "Content-Type": "application/json" },
-    })
+    }),
   );
 }
 
@@ -43,7 +43,7 @@ function errResponse(status: number): Promise<Response> {
     new Response(body, {
       status,
       headers: { "Content-Type": "application/json" },
-    })
+    }),
   );
 }
 
@@ -70,14 +70,14 @@ test("fusion judge-survivor: no explicit judge + panel[0] fails fan-out → synt
   assert.notEqual(
     res.status,
     503,
-    "a healthy quorum (B, C) must not error just because panel[0] died"
+    "a healthy quorum (B, C) must not error just because panel[0] died",
   );
   const body = (await res.clone().json()) as {
     choices?: Array<{ message?: { content?: string } }>;
   };
   assert.ok(
     (body.choices?.[0]?.message?.content ?? "").length > 0,
-    "must carry a real synthesized answer"
+    "must carry a real synthesized answer",
   );
 
   // The synthesis dispatch is the LAST handleSingleModel call.
@@ -85,7 +85,7 @@ test("fusion judge-survivor: no explicit judge + panel[0] fails fan-out → synt
   assert.notEqual(synthesisJudge, "prov/model-a", "judge must NOT be the failed panel[0]");
   assert.ok(
     synthesisJudge === "prov/model-b" || synthesisJudge === "prov/model-c",
-    `judge must be a survivor (B or C), got ${synthesisJudge}`
+    `judge must be a survivor (B or C), got ${synthesisJudge}`,
   );
 });
 
@@ -110,7 +110,7 @@ test("fusion judge-survivor: no explicit judge + panel[0] survives → panel[0] 
   assert.equal(
     seen[seen.length - 1],
     "prov/model-a",
-    "when panel[0] survives it remains the default judge"
+    "when panel[0] survives it remains the default judge",
   );
 });
 
@@ -136,6 +136,6 @@ test("fusion judge-survivor: explicit judge is honored unchanged even if it fail
   assert.equal(
     seen[seen.length - 1],
     "prov/model-a",
-    "an explicitly configured judge is dispatched unchanged (operator's choice)"
+    "an explicitly configured judge is dispatched unchanged (operator's choice)",
   );
 });

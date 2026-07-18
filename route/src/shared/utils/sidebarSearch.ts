@@ -12,16 +12,14 @@ export interface SearchableGroup<TItem extends SearchableLabeled> {
   items: readonly TItem[];
 }
 
-export type SearchableChild<TItem extends SearchableLabeled> =
-  | TItem
-  | SearchableGroup<TItem>;
+export type SearchableChild<TItem extends SearchableLabeled> = TItem | SearchableGroup<TItem>;
 
 export interface SearchableSection<TItem extends SearchableLabeled> {
   children: readonly SearchableChild<TItem>[];
 }
 
 function isGroupChild<TItem extends SearchableLabeled>(
-  child: SearchableChild<TItem>
+  child: SearchableChild<TItem>,
 ): child is SearchableGroup<TItem> {
   return (
     typeof child === "object" &&

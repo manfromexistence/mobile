@@ -123,7 +123,7 @@ function zedUrl(
   config: ZedRequestConfig | undefined,
   key: "cloudBaseUrl" | "llmBaseUrl" | "webBaseUrl",
   path: string,
-  fallbackBase: string
+  fallbackBase: string,
 ): string {
   const base = normalizeBaseUrl(config?.[key], fallbackBase);
   return `${base}${path}`;
@@ -154,7 +154,7 @@ export type ZedNativeAuthData = {
 /** Generate a fresh RSA keypair + the zed.dev native_app_signin URL for it. */
 export function createZedNativeAuthData(
   config: ZedRequestConfig = {},
-  options: { nativeAppPort?: number; systemId?: string } = {}
+  options: { nativeAppPort?: number; systemId?: string } = {},
 ): ZedNativeAuthData {
   const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
     modulusLength: 2048,
@@ -166,7 +166,7 @@ export function createZedNativeAuthData(
   const systemId = options.systemId || crypto.randomUUID();
   const publicKeyString = b64urlPadded(publicKey as unknown as Buffer);
   const signInUrl = new URL(
-    `${normalizeBaseUrl(config.webBaseUrl, ZED_WEB_BASE_URL)}/native_app_signin`
+    `${normalizeBaseUrl(config.webBaseUrl, ZED_WEB_BASE_URL)}/native_app_signin`,
   );
   signInUrl.searchParams.set("native_app_port", String(nativeAppPort));
   signInUrl.searchParams.set("native_app_public_key", publicKeyString);
@@ -222,14 +222,17 @@ export function parseZedCallbackPayload(input: unknown): ZedCallbackPayload {
 }
 
 /** Decrypt the RSA-encrypted access token Zed returned, using our stored private key. */
-export function decryptZedAccessToken(encryptedAccessToken: unknown, privateKeyVerifier: unknown): string {
+export function decryptZedAccessToken(
+  encryptedAccessToken: unknown,
+  privateKeyVerifier: unknown,
+): string {
   const privateKey = decodeZedPrivateKeyVerifier(privateKeyVerifier);
   const encrypted = Buffer.from(String(encryptedAccessToken), "base64url");
   try {
     return crypto
       .privateDecrypt(
         { key: privateKey, padding: crypto.constants.RSA_PKCS1_OAEP_PADDING, oaepHash: "sha256" },
-        encrypted
+        encrypted,
       )
       .toString("utf8");
   } catch (oaepError) {
@@ -258,7 +261,7 @@ function getSystemId(credentials: ZedCredentials | null | undefined): string {
   return String(
     credentials?.providerSpecificData?.systemId ||
       (credentials as Record<string, unknown> | null)?.systemId ||
-      ""
+      "",
   );
 }
 
@@ -274,7 +277,8 @@ async function fetchJson(url: string, options: RequestInit) {
     }
   }
   if (!res.ok) {
-    const message = data?.message || data?.error?.message || data?.error || text || `HTTP ${res.status}`;
+    const message =
+      data?.message || data?.error?.message || data?.error || text || `HTTP ${res.status}`;
     const err = new Error(String(message)) as Error & { status?: number; body?: unknown };
     err.status = res.status;
     err.body = data;
@@ -285,7 +289,7 @@ async function fetchJson(url: string, options: RequestInit) {
 
 export async function fetchZedAuthenticatedUser(
   credentials: ZedCredentials,
-  options: { config?: ZedRequestConfig; signal?: AbortSignal | null } = {}
+  options: { config?: ZedRequestConfig; signal?: AbortSignal | null } = {},
 ) {
   const config = options.config || {};
   const headers: Record<string, string> = {
@@ -313,15 +317,12 @@ function normalizeOrganizationId(value: unknown): string {
   return String(value);
 }
 
-export function resolveZedOrganizationId(
-  credentials: ZedCredentials,
-  userInfo = null
-): string {
+export function resolveZedOrganizationId(credentials: ZedCredentials, userInfo = null): string {
   const psd = credentials?.providerSpecificData || {};
   const explicit = normalizeOrganizationId(psd.organizationId || psd.defaultOrganizationId);
   if (explicit) return explicit;
   const fromUser = normalizeOrganizationId(
-    userInfo?.default_organization_id || userInfo?.defaultOrganizationId
+    userInfo?.default_organization_id || userInfo?.defaultOrganizationId,
   );
   if (fromUser) return fromUser;
   const org =
@@ -351,7 +352,7 @@ export async function fetchZedLlmToken(
     organizationId?: string;
     forceRefresh?: boolean;
     signal?: AbortSignal | null;
-  } = {}
+  } = {},
 ): Promise<string> {
   const config = options.config || {};
   let organizationId = options.organizationId || resolveZedOrganizationId(credentials);
@@ -373,12 +374,15 @@ export async function fetchZedLlmToken(
   const systemId = getSystemId(credentials);
   if (systemId) headers[ZED_HEADERS.systemId] = systemId;
 
-  const data = await fetchJson(zedUrl(config, "cloudBaseUrl", "/client/llm_tokens", ZED_CLOUD_BASE_URL), {
-    method: "POST",
-    headers,
-    body: JSON.stringify({ organization_id: organizationId }),
-    signal: options.signal ?? undefined,
-  });
+  const data = await fetchJson(
+    zedUrl(config, "cloudBaseUrl", "/client/llm_tokens", ZED_CLOUD_BASE_URL),
+    {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ organization_id: organizationId }),
+      signal: options.signal ?? undefined,
+    },
+  );
   const token =
     typeof data?.token === "string" ? data.token : data?.token?.[0] || data?.token?.value;
   if (!token) throw new Error("Zed did not return an LLM token");
@@ -403,7 +407,7 @@ export async function zedLlmFetch(
     fetchOptions?: RequestInit;
     organizationId?: string;
     forceRefresh?: boolean;
-  } = {}
+  } = {},
 ): Promise<Response> {
   const config = options.config || {};
   const url = zedUrl(config, "llmBaseUrl", path, ZED_LLM_BASE_URL);
@@ -469,7 +473,7 @@ export async function resolveZedModels(
     config?: ZedRequestConfig;
     signal?: AbortSignal | null;
     forceRefresh?: boolean;
-  } = {}
+  } = {},
 ): Promise<ZedModelCatalog | null> {
   if (!credentials?.accessToken) return null;
   const key = zedModelCacheKey(credentials);

@@ -84,8 +84,9 @@ describe("Compression Settings API Schema Validation", () => {
   });
 
   it("should validate all caveman compression rules are defined", async () => {
-    const { CAVEMAN_RULES } =
-      await import("../../../../open-sse/services/compression/cavemanRules.ts");
+    const { CAVEMAN_RULES } = await import(
+      "../../../../open-sse/services/compression/cavemanRules.ts"
+    );
     assert.ok(Array.isArray(CAVEMAN_RULES));
     assert.ok(CAVEMAN_RULES.length >= 29, `Expected >= 29 rules, got ${CAVEMAN_RULES.length}`);
     for (const rule of CAVEMAN_RULES) {
@@ -93,11 +94,11 @@ describe("Compression Settings API Schema Validation", () => {
       assert.ok(rule.pattern instanceof RegExp, `Rule ${rule.name} must have a RegExp pattern`);
       assert.ok(
         typeof rule.replacement === "string" || typeof rule.replacement === "function",
-        `Rule ${rule.name} must have string or function replacement`
+        `Rule ${rule.name} must have string or function replacement`,
       );
       assert.ok(
         rule.pattern.source !== "^$" || rule.replacement !== "",
-        `Rule ${rule.name} must not be a no-op (empty pattern + empty replacement)`
+        `Rule ${rule.name} must not be a no-op (empty pattern + empty replacement)`,
       );
     }
   });
@@ -147,7 +148,7 @@ describe("settings/compression route — engines + activeComboId", () => {
 
   it("PUT engines map persists and GET returns engines + activeComboId", async () => {
     const putRes = await route.PUT(
-      makeRequest("PUT", { engines: { rtk: { enabled: true, level: "standard" } } })
+      makeRequest("PUT", { engines: { rtk: { enabled: true, level: "standard" } } }),
     );
     assert.equal(putRes.status, 200);
 
@@ -162,7 +163,7 @@ describe("settings/compression route — engines + activeComboId", () => {
     assert.equal(
       body.engines?.rtk?.level,
       "standard",
-      "engines.rtk.level should be 'standard' after PUT"
+      "engines.rtk.level should be 'standard' after PUT",
     );
     // activeComboId is always present (null by default)
     assert.ok("activeComboId" in body, "GET response must include activeComboId");

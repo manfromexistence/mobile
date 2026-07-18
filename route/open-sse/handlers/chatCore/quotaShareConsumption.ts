@@ -33,7 +33,7 @@ export async function scheduleQuotaShareConsumption(args: {
         model: args.model ?? undefined,
         cost: buildConsumptionCost(args.usage, args.estimatedCost),
       },
-      args.log
+      args.log,
     );
   } catch (_) {
     // Outer fail-open — never throws to caller

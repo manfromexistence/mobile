@@ -67,7 +67,7 @@ export default function EmptyConnectionsPlaceholder({
                 }
                 onClick={() =>
                   gateConnectionFlow(
-                    isCommandCode ? handleOpenCommandCodeConnect : openPrimaryAddFlow
+                    isCommandCode ? handleOpenCommandCodeConnect : openPrimaryAddFlow,
                   )
                 }
               >

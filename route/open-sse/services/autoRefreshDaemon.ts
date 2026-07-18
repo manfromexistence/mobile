@@ -83,7 +83,7 @@ class AutoRefreshDaemon {
     (this.timerId as { unref?: () => void })?.unref?.();
 
     console.log(
-      `[AutoRefreshDaemon] Started — checking ${this.credentialStore.size} credentials every ${this.checkIntervalMs / 1000}s`
+      `[AutoRefreshDaemon] Started — checking ${this.credentialStore.size} credentials every ${this.checkIntervalMs / 1000}s`,
     );
   }
 
@@ -122,7 +122,7 @@ class AutoRefreshDaemon {
         if (!isValid) {
           newlyExpired.push(providerId);
           console.warn(
-            `[AutoRefreshDaemon] Credential expired for "${providerId}" (${config.displayName})`
+            `[AutoRefreshDaemon] Credential expired for "${providerId}" (${config.displayName})`,
           );
         }
       } catch {

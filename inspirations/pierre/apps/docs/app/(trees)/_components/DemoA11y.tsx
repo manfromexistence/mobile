@@ -1,15 +1,15 @@
-import { preloadFileTree } from '@pierre/trees/ssr';
+import { preloadFileTree } from "@pierre/trees/ssr";
 
-import { sampleFileList } from '../_lib/demo-data';
-import { TREE_NEW_VIEWPORT_HEIGHTS } from '../_lib/dimensions';
-import { DemoA11yClient } from './DemoA11yClient';
+import { sampleFileList } from "../_lib/demo-data";
+import { TREE_NEW_VIEWPORT_HEIGHTS } from "../_lib/dimensions";
+import { DemoA11yClient } from "./DemoA11yClient";
 
-const PRESELECTED_PATH = 'package.json';
+const PRESELECTED_PATH = "package.json";
 
 const preloadedData = preloadFileTree({
   flattenEmptyDirectories: true,
-  id: 'file-tree-a11y-demo',
-  initialExpandedPaths: ['src', 'src/components'],
+  id: "file-tree-a11y-demo",
+  initialExpandedPaths: ["src", "src/components"],
   initialSelectedPaths: [PRESELECTED_PATH],
   paths: sampleFileList,
   search: true,

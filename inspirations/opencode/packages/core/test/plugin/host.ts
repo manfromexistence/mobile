@@ -1,14 +1,18 @@
-import type { PluginContext } from "@opencode-ai/plugin/v2/effect"
-import { AgentV2 } from "@opencode-ai/core/agent"
-import { Catalog } from "@opencode-ai/core/catalog"
-import { Credential } from "@opencode-ai/core/credential"
-import { Integration } from "@opencode-ai/core/integration"
-import { ModelV2 } from "@opencode-ai/core/model"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import type { IntegrationEnvMethod, IntegrationKeyMethod, IntegrationOAuthMethod } from "@opencode-ai/sdk/v2/types"
-import { Effect } from "effect"
+import type { PluginContext } from "@opencode-ai/plugin/v2/effect";
+import { AgentV2 } from "@opencode-ai/core/agent";
+import { Catalog } from "@opencode-ai/core/catalog";
+import { Credential } from "@opencode-ai/core/credential";
+import { Integration } from "@opencode-ai/core/integration";
+import { ModelV2 } from "@opencode-ai/core/model";
+import { ProviderV2 } from "@opencode-ai/core/provider";
+import type {
+  IntegrationEnvMethod,
+  IntegrationKeyMethod,
+  IntegrationOAuthMethod,
+} from "@opencode-ai/sdk/v2/types";
+import { Effect } from "effect";
 
-type Overrides = Partial<Omit<PluginContext, "options">>
+type Overrides = Partial<Omit<PluginContext, "options">>;
 
 export function host(overrides: Overrides = {}): PluginContext {
   return {
@@ -49,7 +53,7 @@ export function host(overrides: Overrides = {}): PluginContext {
       transform: () => Effect.die("unused skill.transform"),
       reload: () => Effect.die("unused skill.reload"),
     },
-  }
+  };
 }
 
 export function agentHost(agent: AgentV2.Interface): PluginContext["agent"] {
@@ -60,20 +64,20 @@ export function agentHost(agent: AgentV2.Interface): PluginContext["agent"] {
         callback({
           list: () => draft.list().map(agentInfo),
           get: (id) => {
-            const value = draft.get(AgentV2.ID.make(id))
-            return value && agentInfo(value)
+            const value = draft.get(AgentV2.ID.make(id));
+            return value && agentInfo(value);
           },
           default: (id) => draft.default(id === undefined ? undefined : AgentV2.ID.make(id)),
           update: (id, update) =>
             draft.update(AgentV2.ID.make(id), (value) => {
-              const current = agentInfo(value)
-              update(current)
-              Object.assign(value, current, { id: AgentV2.ID.make(current.id) })
+              const current = agentInfo(value);
+              update(current);
+              Object.assign(value, current, { id: AgentV2.ID.make(current.id) });
             }),
           remove: (id) => draft.remove(AgentV2.ID.make(id)),
         }),
       ),
-  }
+  };
 }
 
 export function catalogHost(catalog: Catalog.Interface): PluginContext["catalog"] {
@@ -89,47 +93,59 @@ export function catalogHost(catalog: Catalog.Interface): PluginContext["catalog"
                 models: new Map(Array.from(value.models, ([id, model]) => [id, modelInfo(model)])),
               })),
             get: (id) => {
-              const value = draft.provider.get(ProviderV2.ID.make(id))
+              const value = draft.provider.get(ProviderV2.ID.make(id));
               return (
                 value && {
                   provider: providerInfo(value.provider),
-                  models: new Map(Array.from(value.models, ([id, model]) => [id, modelInfo(model)])),
+                  models: new Map(
+                    Array.from(value.models, ([id, model]) => [id, modelInfo(model)]),
+                  ),
                 }
-              )
+              );
             },
             update: (id, update) =>
               draft.provider.update(ProviderV2.ID.make(id), (value) => {
-                const current = providerInfo(value)
-                update(current)
-                Object.assign(value, current, { id: ProviderV2.ID.make(current.id) })
+                const current = providerInfo(value);
+                update(current);
+                Object.assign(value, current, { id: ProviderV2.ID.make(current.id) });
               }),
             remove: (id) => draft.provider.remove(ProviderV2.ID.make(id)),
           },
           model: {
             get: (providerID, modelID) => {
-              const value = draft.model.get(ProviderV2.ID.make(providerID), ModelV2.ID.make(modelID))
-              return value && modelInfo(value)
+              const value = draft.model.get(
+                ProviderV2.ID.make(providerID),
+                ModelV2.ID.make(modelID),
+              );
+              return value && modelInfo(value);
             },
             update: (providerID, modelID, update) =>
-              draft.model.update(ProviderV2.ID.make(providerID), ModelV2.ID.make(modelID), (value) => {
-                const current = modelInfo(value)
-                update(current)
-                Object.assign(value, current, {
-                  id: ModelV2.ID.make(current.id),
-                  providerID: ProviderV2.ID.make(current.providerID),
-                  family: current.family === undefined ? undefined : ModelV2.Family.make(current.family),
-                  variants: current.variants.map((variant) => ({
-                    ...variant,
-                    id: ModelV2.VariantID.make(variant.id),
-                  })),
-                })
-              }),
+              draft.model.update(
+                ProviderV2.ID.make(providerID),
+                ModelV2.ID.make(modelID),
+                (value) => {
+                  const current = modelInfo(value);
+                  update(current);
+                  Object.assign(value, current, {
+                    id: ModelV2.ID.make(current.id),
+                    providerID: ProviderV2.ID.make(current.providerID),
+                    family:
+                      current.family === undefined
+                        ? undefined
+                        : ModelV2.Family.make(current.family),
+                    variants: current.variants.map((variant) => ({
+                      ...variant,
+                      id: ModelV2.VariantID.make(variant.id),
+                    })),
+                  });
+                },
+              ),
             remove: (providerID, modelID) =>
               draft.model.remove(ProviderV2.ID.make(providerID), ModelV2.ID.make(modelID)),
             default: {
               get: () => {
-                const value = draft.model.default.get()
-                return value && { providerID: value.providerID, modelID: value.modelID }
+                const value = draft.model.default.get();
+                return value && { providerID: value.providerID, modelID: value.modelID };
               },
               set: (providerID, modelID) =>
                 draft.model.default.set(ProviderV2.ID.make(providerID), ModelV2.ID.make(modelID)),
@@ -137,7 +153,7 @@ export function catalogHost(catalog: Catalog.Interface): PluginContext["catalog"
           },
         }),
       ),
-  }
+  };
 }
 
 export function integrationHost(integration: Integration.Interface): PluginContext["integration"] {
@@ -147,7 +163,9 @@ export function integrationHost(integration: Integration.Interface): PluginConte
       active: (id) => integration.connection.active(Integration.ID.make(id)),
       resolve: (connection) =>
         integration.connection.resolve(
-          connection.type === "credential" ? { ...connection, id: Credential.ID.make(connection.id) } : connection,
+          connection.type === "credential"
+            ? { ...connection, id: Credential.ID.make(connection.id) }
+            : connection,
         ),
     },
     transform: (callback) =>
@@ -155,8 +173,8 @@ export function integrationHost(integration: Integration.Interface): PluginConte
         callback({
           list: () => draft.list().map((value) => ({ id: value.id, name: value.name })),
           get: (id) => {
-            const value = draft.get(Integration.ID.make(id))
-            return value && { id: value.id, name: value.name }
+            const value = draft.get(Integration.ID.make(id));
+            return value && { id: value.id, name: value.name };
           },
           update: (id, update) => draft.update(Integration.ID.make(id), update),
           remove: (id) => draft.remove(Integration.ID.make(id)),
@@ -164,8 +182,8 @@ export function integrationHost(integration: Integration.Interface): PluginConte
             list: (id) => draft.method.list(Integration.ID.make(id)).map(method),
             update: (input) => {
               if ("authorize" in input) {
-                const methodID = Integration.MethodID.make(input.method.id)
-                const refresh = input.refresh
+                const methodID = Integration.MethodID.make(input.method.id);
+                const refresh = input.refresh;
                 draft.method.update({
                   integrationID: Integration.ID.make(input.integrationID),
                   method: { ...input.method, id: methodID },
@@ -183,7 +201,7 @@ export function integrationHost(integration: Integration.Interface): PluginConte
                                 }),
                               ),
                             ),
-                          }
+                          };
                         }
                         return {
                           ...authorization,
@@ -196,7 +214,7 @@ export function integrationHost(integration: Integration.Interface): PluginConte
                                 }),
                               ),
                             ),
-                        }
+                        };
                       }),
                     ),
                   ...(refresh
@@ -213,51 +231,52 @@ export function integrationHost(integration: Integration.Interface): PluginConte
                       }
                     : {}),
                   ...(input.label ? { label: input.label } : {}),
-                })
-                return
+                });
+                return;
               }
               if (input.method.type === "env") {
                 draft.method.update({
                   integrationID: Integration.ID.make(input.integrationID),
                   method: { ...input.method, names: [...input.method.names] },
-                })
-                return
+                });
+                return;
               }
               draft.method.update({
                 integrationID: Integration.ID.make(input.integrationID),
                 method: input.method,
-              })
+              });
             },
-            remove: (id, item) => draft.method.remove(Integration.ID.make(id), internalMethod(item)),
+            remove: (id, item) =>
+              draft.method.remove(Integration.ID.make(id), internalMethod(item)),
           },
         }),
       ),
-  }
+  };
 }
 
 function method(value: Integration.Method) {
-  if (value.type === "env") return { type: value.type, names: [...value.names] }
-  if (value.type === "key") return { type: value.type, label: value.label }
+  if (value.type === "env") return { type: value.type, names: [...value.names] };
+  if (value.type === "key") return { type: value.type, label: value.label };
   return {
     type: value.type,
     id: value.id,
     label: value.label,
     prompts: value.prompts?.map((prompt) => {
-      if (prompt.type === "text") return { ...prompt }
-      return { ...prompt, options: prompt.options.map((option) => ({ ...option })) }
+      if (prompt.type === "text") return { ...prompt };
+      return { ...prompt, options: prompt.options.map((option) => ({ ...option })) };
     }),
-  }
+  };
 }
 
 function internalMethod(
   value: IntegrationOAuthMethod | IntegrationKeyMethod | IntegrationEnvMethod,
 ): Integration.Method {
-  if (value.type === "env") return value
-  if (value.type === "key") return value
+  if (value.type === "env") return value;
+  if (value.type === "key") return value;
   return {
     ...value,
     id: Integration.MethodID.make(value.id),
-  }
+  };
 }
 
 function agentInfo(value: AgentV2.Info) {
@@ -266,7 +285,7 @@ function agentInfo(value: AgentV2.Info) {
     model: value.model && { ...value.model },
     request: { headers: { ...value.request.headers }, body: { ...value.request.body } },
     permissions: value.permissions.map((permission) => ({ ...permission })),
-  }
+  };
 }
 
 function providerInfo(value: ProviderV2.MutableInfo) {
@@ -274,7 +293,7 @@ function providerInfo(value: ProviderV2.MutableInfo) {
     ...value,
     api: { ...value.api, settings: value.api.settings && { ...value.api.settings } },
     request: { headers: { ...value.request.headers }, body: { ...value.request.body } },
-  }
+  };
 }
 
 function modelInfo(value: ModelV2.Info | ModelV2.MutableInfo) {
@@ -297,7 +316,11 @@ function modelInfo(value: ModelV2.Info | ModelV2.MutableInfo) {
       body: { ...variant.body },
     })),
     time: { ...value.time },
-    cost: value.cost.map((cost) => ({ ...cost, tier: cost.tier && { ...cost.tier }, cache: { ...cost.cache } })),
+    cost: value.cost.map((cost) => ({
+      ...cost,
+      tier: cost.tier && { ...cost.tier },
+      cache: { ...cost.cache },
+    })),
     limit: { ...value.limit },
-  }
+  };
 }

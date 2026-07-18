@@ -8,7 +8,7 @@ describe("jsonStreamFromEvents", () => {
       const events = [{ type: "primitive" as const, value: null }];
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 0))).toBe(JSON.stringify(null));
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 2))).toBe(
-        JSON.stringify(null, null, 2)
+        JSON.stringify(null, null, 2),
       );
     });
 
@@ -17,13 +17,13 @@ describe("jsonStreamFromEvents", () => {
       const eventsFalse = [{ type: "primitive" as const, value: false }];
 
       expect(await join(jsonStreamFromEvents(asyncEvents(eventsTrue), 0))).toBe(
-        JSON.stringify(true)
+        JSON.stringify(true),
       );
       expect(await join(jsonStreamFromEvents(asyncEvents(eventsFalse), 0))).toBe(
-        JSON.stringify(false)
+        JSON.stringify(false),
       );
       expect(await join(jsonStreamFromEvents(asyncEvents(eventsTrue), 2))).toBe(
-        JSON.stringify(true, null, 2)
+        JSON.stringify(true, null, 2),
       );
     });
 
@@ -37,10 +37,10 @@ describe("jsonStreamFromEvents", () => {
       expect(await join(jsonStreamFromEvents(asyncEvents(events42), 0))).toBe(JSON.stringify(42));
       expect(await join(jsonStreamFromEvents(asyncEvents(eventsNeg), 0))).toBe(JSON.stringify(-17));
       expect(await join(jsonStreamFromEvents(asyncEvents(eventsFloat), 0))).toBe(
-        JSON.stringify(3.14159)
+        JSON.stringify(3.14159),
       );
       expect(await join(jsonStreamFromEvents(asyncEvents(events42), 2))).toBe(
-        JSON.stringify(42, null, 2)
+        JSON.stringify(42, null, 2),
       );
     });
 
@@ -50,13 +50,13 @@ describe("jsonStreamFromEvents", () => {
       const eventsQuotes = [{ type: "primitive" as const, value: 'with "quotes"' }];
 
       expect(await join(jsonStreamFromEvents(asyncEvents(eventsEmpty), 0))).toBe(
-        JSON.stringify("")
+        JSON.stringify(""),
       );
       expect(await join(jsonStreamFromEvents(asyncEvents(eventsHello), 0))).toBe(
-        JSON.stringify("hello")
+        JSON.stringify("hello"),
       );
       expect(await join(jsonStreamFromEvents(asyncEvents(eventsQuotes), 0))).toBe(
-        JSON.stringify('with "quotes"')
+        JSON.stringify('with "quotes"'),
       );
     });
   });
@@ -65,20 +65,20 @@ describe("jsonStreamFromEvents", () => {
     it("converts empty array events", async () => {
       const events = [{ type: "startArray" as const, length: 0 }, { type: "endArray" as const }];
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 0))).toBe(
-        JSON.stringify([], null, 0)
+        JSON.stringify([], null, 0),
       );
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 2))).toBe(
-        JSON.stringify([], null, 2)
+        JSON.stringify([], null, 2),
       );
     });
 
     it("converts empty object events", async () => {
       const events = [{ type: "startObject" as const }, { type: "endObject" as const }];
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 0))).toBe(
-        JSON.stringify({}, null, 0)
+        JSON.stringify({}, null, 0),
       );
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 2))).toBe(
-        JSON.stringify({}, null, 2)
+        JSON.stringify({}, null, 2),
       );
     });
   });
@@ -94,7 +94,7 @@ describe("jsonStreamFromEvents", () => {
       ];
       const value = [1, 2, 3];
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 0))).toBe(
-        JSON.stringify(value, null, 0)
+        JSON.stringify(value, null, 0),
       );
     });
 
@@ -108,7 +108,7 @@ describe("jsonStreamFromEvents", () => {
       ];
       const value = [1, 2, 3];
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 2))).toBe(
-        JSON.stringify(value, null, 2)
+        JSON.stringify(value, null, 2),
       );
     });
 
@@ -127,10 +127,10 @@ describe("jsonStreamFromEvents", () => {
       ];
       const value = [1, "two", true, null, { key: "value" }];
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 0))).toBe(
-        JSON.stringify(value, null, 0)
+        JSON.stringify(value, null, 0),
       );
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 2))).toBe(
-        JSON.stringify(value, null, 2)
+        JSON.stringify(value, null, 2),
       );
     });
 
@@ -157,10 +157,10 @@ describe("jsonStreamFromEvents", () => {
         [5, 6],
       ];
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 0))).toBe(
-        JSON.stringify(value, null, 0)
+        JSON.stringify(value, null, 0),
       );
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 2))).toBe(
-        JSON.stringify(value, null, 2)
+        JSON.stringify(value, null, 2),
       );
     });
   });
@@ -179,7 +179,7 @@ describe("jsonStreamFromEvents", () => {
       ];
       const value = { a: 1, b: 2, c: 3 };
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 0))).toBe(
-        JSON.stringify(value, null, 0)
+        JSON.stringify(value, null, 0),
       );
     });
 
@@ -196,7 +196,7 @@ describe("jsonStreamFromEvents", () => {
       ];
       const value = { a: 1, b: 2, c: 3 };
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 2))).toBe(
-        JSON.stringify(value, null, 2)
+        JSON.stringify(value, null, 2),
       );
     });
 
@@ -227,10 +227,10 @@ describe("jsonStreamFromEvents", () => {
         arr: [1, 2, 3],
       };
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 0))).toBe(
-        JSON.stringify(value, null, 0)
+        JSON.stringify(value, null, 0),
       );
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 2))).toBe(
-        JSON.stringify(value, null, 2)
+        JSON.stringify(value, null, 2),
       );
     });
 
@@ -255,10 +255,10 @@ describe("jsonStreamFromEvents", () => {
         },
       };
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 0))).toBe(
-        JSON.stringify(value, null, 0)
+        JSON.stringify(value, null, 0),
       );
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 2))).toBe(
-        JSON.stringify(value, null, 2)
+        JSON.stringify(value, null, 2),
       );
     });
 
@@ -282,10 +282,10 @@ describe("jsonStreamFromEvents", () => {
         'key"with"quotes': 4,
       };
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 0))).toBe(
-        JSON.stringify(value, null, 0)
+        JSON.stringify(value, null, 0),
       );
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 2))).toBe(
-        JSON.stringify(value, null, 2)
+        JSON.stringify(value, null, 2),
       );
     });
   });
@@ -320,10 +320,10 @@ describe("jsonStreamFromEvents", () => {
         },
       };
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 0))).toBe(
-        JSON.stringify(value, null, 0)
+        JSON.stringify(value, null, 0),
       );
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 2))).toBe(
-        JSON.stringify(value, null, 2)
+        JSON.stringify(value, null, 2),
       );
     });
 
@@ -356,10 +356,10 @@ describe("jsonStreamFromEvents", () => {
         { id: 3, name: "Charlie" },
       ];
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 0))).toBe(
-        JSON.stringify(value, null, 0)
+        JSON.stringify(value, null, 0),
       );
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 2))).toBe(
-        JSON.stringify(value, null, 2)
+        JSON.stringify(value, null, 2),
       );
     });
   });
@@ -383,25 +383,25 @@ describe("jsonStreamFromEvents", () => {
 
     it("handles indent=0 (compact)", async () => {
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 0))).toBe(
-        JSON.stringify(value, null, 0)
+        JSON.stringify(value, null, 0),
       );
     });
 
     it("handles indent=2", async () => {
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 2))).toBe(
-        JSON.stringify(value, null, 2)
+        JSON.stringify(value, null, 2),
       );
     });
 
     it("handles indent=4", async () => {
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 4))).toBe(
-        JSON.stringify(value, null, 4)
+        JSON.stringify(value, null, 4),
       );
     });
 
     it("handles indent=8", async () => {
       expect(await join(jsonStreamFromEvents(asyncEvents(events), 8))).toBe(
-        JSON.stringify(value, null, 8)
+        JSON.stringify(value, null, 8),
       );
     });
   });

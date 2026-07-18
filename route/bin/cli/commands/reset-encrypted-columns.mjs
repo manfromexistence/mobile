@@ -52,7 +52,7 @@ export async function runResetEncryptedColumns(argv) {
 
     // Build WHERE clause for encrypted values
     const whereClause = ENCRYPTED_COLUMNS.map((col) => `${col} LIKE '${ENCRYPTED_PATTERN}'`).join(
-      " OR "
+      " OR ",
     );
 
     // Count affected rows
@@ -72,12 +72,12 @@ export async function runResetEncryptedColumns(argv) {
 
     console.log(
       `\x1b[32m✔ Reset ${count} provider connection(s).\x1b[0m\n` +
-        `  Re-authenticate your providers in the dashboard or re-add API keys.\n`
+        `  Re-authenticate your providers in the dashboard or re-add API keys.\n`,
     );
     return 0;
   } catch (err) {
     console.error(
-      `\x1b[31m✖ Failed to reset encrypted columns:\x1b[0m ${err instanceof Error ? err.message : String(err)}`
+      `\x1b[31m✖ Failed to reset encrypted columns:\x1b[0m ${err instanceof Error ? err.message : String(err)}`,
     );
     return 1;
   } finally {

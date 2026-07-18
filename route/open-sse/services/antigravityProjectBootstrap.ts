@@ -48,7 +48,7 @@ function getProjectCacheKey(accessToken: string, clientProfile: AntigravityClien
 async function tryLoadCodeAssist(
   accessToken: string,
   fetchImpl: FetchLike,
-  clientProfile: AntigravityClientProfile
+  clientProfile: AntigravityClientProfile,
 ): Promise<string | null> {
   const urls = getAntigravityLoadCodeAssistUrls();
   const headers =
@@ -67,7 +67,7 @@ async function tryLoadCodeAssist(
 
       if (!response.ok) {
         console.warn(
-          `[models] antigravity loadCodeAssist failed at ${url} (${response.status}) — trying next`
+          `[models] antigravity loadCodeAssist failed at ${url} (${response.status}) — trying next`,
         );
         continue;
       }
@@ -90,7 +90,7 @@ async function tryLoadCodeAssist(
       }
 
       console.warn(
-        `[models] antigravity loadCodeAssist at ${url} returned no project id — trying next`
+        `[models] antigravity loadCodeAssist at ${url} returned no project id — trying next`,
       );
     } catch (error) {
       const msg = error instanceof Error ? error.message : String(error);
@@ -114,7 +114,7 @@ async function tryLoadCodeAssist(
 export async function ensureAntigravityProjectAssigned(
   accessToken: string,
   fetchImpl: FetchLike = fetch,
-  clientProfile: AntigravityClientProfile = "ide"
+  clientProfile: AntigravityClientProfile = "ide",
 ): Promise<string | undefined> {
   const cacheKey = getProjectCacheKey(accessToken, clientProfile);
   if (projectCache.has(cacheKey)) {
@@ -139,7 +139,7 @@ export function clearAntigravityProjectCache(): void {
 /** Exported for tests — inspect cache state. */
 export function getAntigravityProjectFromCache(
   accessToken: string,
-  clientProfile: AntigravityClientProfile = "ide"
+  clientProfile: AntigravityClientProfile = "ide",
 ): string | undefined {
   return projectCache.get(getProjectCacheKey(accessToken, clientProfile));
 }

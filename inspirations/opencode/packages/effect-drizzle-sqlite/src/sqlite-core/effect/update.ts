@@ -1,29 +1,35 @@
 /* oxlint-disable */
-import type * as Effect from "effect/Effect"
-import { applyEffectWrapper, type QueryEffectHKTBase } from "drizzle-orm/effect-core/query-effect"
-import { entityKind, is } from "drizzle-orm/entity"
-import type { SelectResultFields } from "drizzle-orm/query-builders/select.types"
-import type { RunnableQuery } from "drizzle-orm/runnable-query"
-import { SelectionProxyHandler } from "drizzle-orm/selection-proxy"
-import type { Placeholder, Query, SQL, SQLWrapper } from "drizzle-orm/sql/sql"
-import type { SQLiteDialect } from "drizzle-orm/sqlite-core/dialect"
-import type { SelectedFields, SQLiteSelectJoinConfig } from "drizzle-orm/sqlite-core/query-builders/select.types"
-import type { SQLiteUpdateConfig, SQLiteUpdateSetSource } from "drizzle-orm/sqlite-core/query-builders/update"
-import type { PreparedQueryConfig } from "drizzle-orm/sqlite-core/session"
-import { SQLiteTable } from "drizzle-orm/sqlite-core/table"
-import { extractUsedTable } from "drizzle-orm/sqlite-core/utils"
-import { SQLiteViewBase } from "drizzle-orm/sqlite-core/view-base"
-import { Subquery } from "drizzle-orm/subquery"
-import { type DrizzleTypeError, type UpdateSet, type ValueOrArray } from "drizzle-orm/utils"
-import type { SQLiteColumn } from "drizzle-orm/sqlite-core/columns/common"
+import type * as Effect from "effect/Effect";
+import { applyEffectWrapper, type QueryEffectHKTBase } from "drizzle-orm/effect-core/query-effect";
+import { entityKind, is } from "drizzle-orm/entity";
+import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
+import type { RunnableQuery } from "drizzle-orm/runnable-query";
+import { SelectionProxyHandler } from "drizzle-orm/selection-proxy";
+import type { Placeholder, Query, SQL, SQLWrapper } from "drizzle-orm/sql/sql";
+import type { SQLiteDialect } from "drizzle-orm/sqlite-core/dialect";
+import type {
+  SelectedFields,
+  SQLiteSelectJoinConfig,
+} from "drizzle-orm/sqlite-core/query-builders/select.types";
+import type {
+  SQLiteUpdateConfig,
+  SQLiteUpdateSetSource,
+} from "drizzle-orm/sqlite-core/query-builders/update";
+import type { PreparedQueryConfig } from "drizzle-orm/sqlite-core/session";
+import { SQLiteTable } from "drizzle-orm/sqlite-core/table";
+import { extractUsedTable } from "drizzle-orm/sqlite-core/utils";
+import { SQLiteViewBase } from "drizzle-orm/sqlite-core/view-base";
+import { Subquery } from "drizzle-orm/subquery";
+import { type DrizzleTypeError, type UpdateSet, type ValueOrArray } from "drizzle-orm/utils";
+import type { SQLiteColumn } from "drizzle-orm/sqlite-core/columns/common";
 import {
   getTableColumnsRuntime,
   getTableLikeName,
   getViewSelectedFieldsRuntime,
   mapUpdateSet,
   orderSelectedFields,
-} from "../../internal/drizzle-utils"
-import type { SQLiteEffectPreparedQuery, SQLiteEffectSession } from "./session"
+} from "../../internal/drizzle-utils";
+import type { SQLiteEffectPreparedQuery, SQLiteEffectSession } from "./session";
 
 export type SQLiteEffectUpdateWithout<
   T extends AnySQLiteEffectUpdate,
@@ -42,7 +48,7 @@ export type SQLiteEffectUpdateWithout<
         T["_"]["effectHKT"]
       >,
       T["_"]["excludedMethods"] | K
-    >
+    >;
 
 export type SQLiteEffectUpdateWithJoins<
   T extends AnySQLiteEffectUpdate,
@@ -57,11 +63,17 @@ export type SQLiteEffectUpdateWithJoins<
         TFrom,
         T["_"]["returning"],
         TDynamic,
-        Exclude<T["_"]["excludedMethods"] | "from", "leftJoin" | "rightJoin" | "innerJoin" | "fullJoin">,
+        Exclude<
+          T["_"]["excludedMethods"] | "from",
+          "leftJoin" | "rightJoin" | "innerJoin" | "fullJoin"
+        >,
         T["_"]["effectHKT"]
       >,
-      Exclude<T["_"]["excludedMethods"] | "from", "leftJoin" | "rightJoin" | "innerJoin" | "fullJoin">
-    >
+      Exclude<
+        T["_"]["excludedMethods"] | "from",
+        "leftJoin" | "rightJoin" | "innerJoin" | "fullJoin"
+      >
+    >;
 
 export type SQLiteEffectUpdateReturningAll<
   T extends AnySQLiteEffectUpdate,
@@ -78,7 +90,7 @@ export type SQLiteEffectUpdateReturningAll<
   >,
   TDynamic,
   "returning"
->
+>;
 
 export type SQLiteEffectUpdateReturning<
   T extends AnySQLiteEffectUpdate,
@@ -96,31 +108,30 @@ export type SQLiteEffectUpdateReturning<
   >,
   TDynamic,
   "returning"
->
+>;
 
-export type SQLiteEffectUpdateExecute<T extends AnySQLiteEffectUpdate> = T["_"]["returning"] extends undefined
-  ? T["_"]["runResult"]
-  : T["_"]["returning"][]
+export type SQLiteEffectUpdateExecute<T extends AnySQLiteEffectUpdate> =
+  T["_"]["returning"] extends undefined ? T["_"]["runResult"] : T["_"]["returning"][];
 
 export type SQLiteEffectUpdatePrepare<
   T extends AnySQLiteEffectUpdate,
   TEffectHKT extends QueryEffectHKTBase = T["_"]["effectHKT"],
 > = SQLiteEffectPreparedQuery<
   PreparedQueryConfig & {
-    run: T["_"]["runResult"]
+    run: T["_"]["runResult"];
     all: T["_"]["returning"] extends undefined
       ? DrizzleTypeError<".all() cannot be used without .returning()">
-      : T["_"]["returning"][]
+      : T["_"]["returning"][];
     get: T["_"]["returning"] extends undefined
       ? DrizzleTypeError<".get() cannot be used without .returning()">
-      : T["_"]["returning"]
+      : T["_"]["returning"];
     values: T["_"]["returning"] extends undefined
       ? DrizzleTypeError<".values() cannot be used without .returning()">
-      : any[][]
-    execute: SQLiteEffectUpdateExecute<T>
+      : any[][];
+    execute: SQLiteEffectUpdateExecute<T>;
   },
   TEffectHKT
->
+>;
 
 export type SQLiteEffectUpdateDynamic<T extends AnySQLiteEffectUpdate> = SQLiteEffectUpdate<
   T["_"]["table"],
@@ -128,7 +139,7 @@ export type SQLiteEffectUpdateDynamic<T extends AnySQLiteEffectUpdate> = SQLiteE
   T["_"]["from"],
   T["_"]["returning"],
   T["_"]["effectHKT"]
->
+>;
 
 export type SQLiteEffectUpdate<
   TTable extends SQLiteTable = SQLiteTable,
@@ -136,9 +147,9 @@ export type SQLiteEffectUpdate<
   TFrom extends SQLiteTable | Subquery | SQLiteViewBase | SQL | undefined = undefined,
   TReturning extends Record<string, unknown> | undefined = Record<string, unknown> | undefined,
   TEffectHKT extends QueryEffectHKTBase = QueryEffectHKTBase,
-> = SQLiteEffectUpdateBase<TTable, TRunResult, TFrom, TReturning, true, never, TEffectHKT>
+> = SQLiteEffectUpdateBase<TTable, TRunResult, TFrom, TReturning, true, never, TEffectHKT>;
 
-export type AnySQLiteEffectUpdate = SQLiteEffectUpdateBase<any, any, any, any, any, any, any>
+export type AnySQLiteEffectUpdate = SQLiteEffectUpdateBase<any, any, any, any, any, any, any>;
 
 export type SQLiteEffectUpdateJoinFn<T extends AnySQLiteEffectUpdate> = <
   TJoinedTable extends SQLiteTable | Subquery | SQLiteViewBase | SQL,
@@ -155,18 +166,18 @@ export type SQLiteEffectUpdateJoinFn<T extends AnySQLiteEffectUpdate> = <
       ) => SQL | undefined)
     | SQL
     | undefined,
-) => T
+) => T;
 
 export class SQLiteEffectUpdateBuilder<
   TTable extends SQLiteTable,
   TRunResult,
   TEffectHKT extends QueryEffectHKTBase = QueryEffectHKTBase,
 > {
-  static readonly [entityKind]: string = "SQLiteEffectUpdateBuilder"
+  static readonly [entityKind]: string = "SQLiteEffectUpdateBuilder";
 
   declare readonly _: {
-    readonly table: TTable
-  }
+    readonly table: TTable;
+  };
 
   constructor(
     protected table: TTable,
@@ -188,7 +199,7 @@ export class SQLiteEffectUpdateBuilder<
       this.session,
       this.dialect,
       this.withList,
-    ) as any
+    ) as any;
   }
 }
 
@@ -208,34 +219,35 @@ export interface SQLiteEffectUpdateBase<
       TEffectHKT["context"]
     > {
   readonly _: {
-    readonly dialect: "sqlite"
-    readonly table: TTable
-    readonly resultType: "async"
-    readonly runResult: TRunResult
-    readonly from: TFrom
-    readonly returning: TReturning
-    readonly dynamic: TDynamic
-    readonly excludedMethods: _TExcludedMethods
-    readonly result: TReturning extends undefined ? TRunResult : TReturning[]
-    readonly effectHKT: TEffectHKT
-  }
+    readonly dialect: "sqlite";
+    readonly table: TTable;
+    readonly resultType: "async";
+    readonly runResult: TRunResult;
+    readonly from: TFrom;
+    readonly returning: TReturning;
+    readonly dynamic: TDynamic;
+    readonly excludedMethods: _TExcludedMethods;
+    readonly result: TReturning extends undefined ? TRunResult : TReturning[];
+    readonly effectHKT: TEffectHKT;
+  };
 }
 
 export class SQLiteEffectUpdateBase<
-    TTable extends SQLiteTable = SQLiteTable,
-    TRunResult = unknown,
-    TFrom extends SQLiteTable | Subquery | SQLiteViewBase | SQL | undefined = undefined,
-    TReturning = undefined,
-    TDynamic extends boolean = false,
-    _TExcludedMethods extends string = never,
-    TEffectHKT extends QueryEffectHKTBase = QueryEffectHKTBase,
-  >
-  implements RunnableQuery<TReturning extends undefined ? TRunResult : TReturning[], "sqlite">, SQLWrapper
+  TTable extends SQLiteTable = SQLiteTable,
+  TRunResult = unknown,
+  TFrom extends SQLiteTable | Subquery | SQLiteViewBase | SQL | undefined = undefined,
+  TReturning = undefined,
+  TDynamic extends boolean = false,
+  _TExcludedMethods extends string = never,
+  TEffectHKT extends QueryEffectHKTBase = QueryEffectHKTBase,
+> implements
+    RunnableQuery<TReturning extends undefined ? TRunResult : TReturning[], "sqlite">,
+    SQLWrapper
 {
-  static readonly [entityKind]: string = "SQLiteEffectUpdate"
+  static readonly [entityKind]: string = "SQLiteEffectUpdate";
 
   /** @internal */
-  config: SQLiteUpdateConfig
+  config: SQLiteUpdateConfig;
 
   constructor(
     table: TTable,
@@ -244,14 +256,14 @@ export class SQLiteEffectUpdateBase<
     private effectDialect: SQLiteDialect,
     withList?: Subquery[],
   ) {
-    this.config = { set, table, withList, joins: [] }
+    this.config = { set, table, withList, joins: [] };
   }
 
   from<TFrom extends SQLiteTable | Subquery | SQLiteViewBase | SQL>(
     source: TFrom,
   ): SQLiteEffectUpdateWithJoins<this, TDynamic, TFrom> {
-    this.config.from = source
-    return this as any
+    this.config.from = source;
+    return this as any;
   }
 
   private createJoin<TJoinType extends SQLiteSelectJoinConfig["joinType"]>(
@@ -261,10 +273,13 @@ export class SQLiteEffectUpdateBase<
       table: SQLiteTable | Subquery | SQLiteViewBase | SQL,
       on: ((updateTable: TTable, from: TFrom) => SQL | undefined) | SQL | undefined,
     ) => {
-      const tableName = getTableLikeName(table)
+      const tableName = getTableLikeName(table);
 
-      if (typeof tableName === "string" && this.config.joins.some((join) => join.alias === tableName)) {
-        throw new Error(`Alias "${tableName}" is already used in this query`)
+      if (
+        typeof tableName === "string" &&
+        this.config.joins.some((join) => join.alias === tableName)
+      ) {
+        throw new Error(`Alias "${tableName}" is already used in this query`);
       }
 
       if (typeof on === "function") {
@@ -276,40 +291,45 @@ export class SQLiteEffectUpdateBase<
               : is(table, SQLiteViewBase)
                 ? getViewSelectedFieldsRuntime(table).selectedFields
                 : undefined
-          : undefined
+          : undefined;
         on = on(
           new Proxy(
             this.config.table._.columns,
             new SelectionProxyHandler({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" }),
           ) as any,
           from &&
-            (new Proxy(from, new SelectionProxyHandler({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" })) as any),
-        )
+            (new Proxy(
+              from,
+              new SelectionProxyHandler({ sqlAliasedBehavior: "sql", sqlBehavior: "sql" }),
+            ) as any),
+        );
       }
 
-      this.config.joins.push({ on, table, joinType, alias: tableName })
+      this.config.joins.push({ on, table, joinType, alias: tableName });
 
-      return this as any
-    }) as any
+      return this as any;
+    }) as any;
   }
 
-  leftJoin = this.createJoin("left")
+  leftJoin = this.createJoin("left");
 
-  rightJoin = this.createJoin("right")
+  rightJoin = this.createJoin("right");
 
-  innerJoin = this.createJoin("inner")
+  innerJoin = this.createJoin("inner");
 
-  fullJoin = this.createJoin("full")
+  fullJoin = this.createJoin("full");
 
   where(where: SQL | undefined): SQLiteEffectUpdateWithout<this, TDynamic, "where"> {
-    this.config.where = where
-    return this as any
+    this.config.where = where;
+    return this as any;
   }
 
   orderBy(
     builder: (updateTable: TTable) => ValueOrArray<SQLiteColumn | SQL | SQL.Aliased>,
-  ): SQLiteEffectUpdateWithout<this, TDynamic, "orderBy">
-  orderBy(...columns: (SQLiteColumn | SQL | SQL.Aliased)[]): SQLiteEffectUpdateWithout<this, TDynamic, "orderBy">
+  ): SQLiteEffectUpdateWithout<this, TDynamic, "orderBy">;
+  orderBy(
+    ...columns: (SQLiteColumn | SQL | SQL.Aliased)[]
+  ): SQLiteEffectUpdateWithout<this, TDynamic, "orderBy">;
   orderBy(
     ...columns:
       | [(updateTable: TTable) => ValueOrArray<SQLiteColumn | SQL | SQL.Aliased>]
@@ -321,39 +341,39 @@ export class SQLiteEffectUpdateBase<
           getTableColumnsRuntime(this.config.table),
           new SelectionProxyHandler({ sqlAliasedBehavior: "alias", sqlBehavior: "sql" }),
         ) as any,
-      )
+      );
 
-      this.config.orderBy = Array.isArray(orderBy) ? orderBy : [orderBy]
-      return this as any
+      this.config.orderBy = Array.isArray(orderBy) ? orderBy : [orderBy];
+      return this as any;
     }
 
-    this.config.orderBy = columns as (SQLiteColumn | SQL | SQL.Aliased)[]
-    return this as any
+    this.config.orderBy = columns as (SQLiteColumn | SQL | SQL.Aliased)[];
+    return this as any;
   }
 
   limit(limit: number | Placeholder): SQLiteEffectUpdateWithout<this, TDynamic, "limit"> {
-    this.config.limit = limit
-    return this as any
+    this.config.limit = limit;
+    return this as any;
   }
 
-  returning(): SQLiteEffectUpdateReturningAll<this, TDynamic>
+  returning(): SQLiteEffectUpdateReturningAll<this, TDynamic>;
   returning<TSelectedFields extends SelectedFields>(
     fields: TSelectedFields,
-  ): SQLiteEffectUpdateReturning<this, TDynamic, TSelectedFields>
+  ): SQLiteEffectUpdateReturning<this, TDynamic, TSelectedFields>;
   returning(
     fields: SelectedFields = getTableColumnsRuntime(this.config.table),
   ): SQLiteEffectUpdateWithout<AnySQLiteEffectUpdate, TDynamic, "returning"> {
-    this.config.returning = orderSelectedFields<SQLiteColumn>(fields)
-    return this as any
+    this.config.returning = orderSelectedFields<SQLiteColumn>(fields);
+    return this as any;
   }
 
   /** @internal */
   getSQL(): SQL {
-    return this.effectDialect.buildUpdateQuery(this.config)
+    return this.effectDialect.buildUpdateQuery(this.config);
   }
 
   toSQL(): Query {
-    return this.effectDialect.sqlToQuery(this.getSQL())
+    return this.effectDialect.sqlToQuery(this.getSQL());
   }
 
   /** @internal */
@@ -367,36 +387,36 @@ export class SQLiteEffectUpdateBase<
         type: "update",
         tables: extractUsedTable(this.config.table),
       },
-    ) as SQLiteEffectUpdatePrepare<this, TEffectHKT>
+    ) as SQLiteEffectUpdatePrepare<this, TEffectHKT>;
   }
 
   prepare(): SQLiteEffectUpdatePrepare<this, TEffectHKT> {
-    return this._prepare(false)
+    return this._prepare(false);
   }
 
   run: ReturnType<this["prepare"]>["run"] = (placeholderValues) => {
-    return this._prepare().run(placeholderValues)
-  }
+    return this._prepare().run(placeholderValues);
+  };
 
   all: ReturnType<this["prepare"]>["all"] = (placeholderValues) => {
-    return this._prepare().all(placeholderValues)
-  }
+    return this._prepare().all(placeholderValues);
+  };
 
   get: ReturnType<this["prepare"]>["get"] = (placeholderValues) => {
-    return this._prepare().get(placeholderValues)
-  }
+    return this._prepare().get(placeholderValues);
+  };
 
   values: ReturnType<this["prepare"]>["values"] = (placeholderValues) => {
-    return this._prepare().values(placeholderValues)
-  }
+    return this._prepare().values(placeholderValues);
+  };
 
   execute: ReturnType<this["prepare"]>["execute"] = (placeholderValues) => {
-    return this._prepare().execute(placeholderValues)
-  }
+    return this._prepare().execute(placeholderValues);
+  };
 
   $dynamic(): SQLiteEffectUpdateDynamic<this> {
-    return this as any
+    return this as any;
   }
 }
 
-applyEffectWrapper(SQLiteEffectUpdateBase)
+applyEffectWrapper(SQLiteEffectUpdateBase);

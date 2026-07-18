@@ -1,27 +1,34 @@
-import { type ComponentProps, createMemo, splitProps } from "solid-js"
+import { type ComponentProps, createMemo, splitProps } from "solid-js";
 
-export interface ProgressCircleProps extends Pick<ComponentProps<"svg">, "class" | "classList" | "style"> {
-  percentage: number
-  size?: number
-  strokeWidth?: number
+export interface ProgressCircleProps
+  extends Pick<ComponentProps<"svg">, "class" | "classList" | "style"> {
+  percentage: number;
+  size?: number;
+  strokeWidth?: number;
 }
 
 export function ProgressCircle(props: ProgressCircleProps) {
-  const [split, rest] = splitProps(props, ["percentage", "size", "strokeWidth", "class", "classList"])
+  const [split, rest] = splitProps(props, [
+    "percentage",
+    "size",
+    "strokeWidth",
+    "class",
+    "classList",
+  ]);
 
-  const size = () => split.size || 16
-  const strokeWidth = () => split.strokeWidth || 3
+  const size = () => split.size || 16;
+  const strokeWidth = () => split.strokeWidth || 3;
 
-  const viewBoxSize = 16
-  const center = viewBoxSize / 2
-  const radius = () => center - strokeWidth() / 2
-  const circumference = createMemo(() => 2 * Math.PI * radius())
+  const viewBoxSize = 16;
+  const center = viewBoxSize / 2;
+  const radius = () => center - strokeWidth() / 2;
+  const circumference = createMemo(() => 2 * Math.PI * radius());
 
   const offset = createMemo(() => {
-    const clampedPercentage = Math.max(0, Math.min(100, split.percentage || 0))
-    const progress = clampedPercentage / 100
-    return circumference() * (1 - progress)
-  })
+    const clampedPercentage = Math.max(0, Math.min(100, split.percentage || 0));
+    const progress = clampedPercentage / 100;
+    return circumference() * (1 - progress);
+  });
 
   return (
     <svg
@@ -60,5 +67,5 @@ export function ProgressCircle(props: ProgressCircleProps) {
         stroke-dashoffset={offset()}
       />
     </svg>
-  )
+  );
 }

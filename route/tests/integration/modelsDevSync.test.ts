@@ -38,7 +38,7 @@ describe("modelsDevSync — integration: live fetch → DB → retrieve", () => 
     assert.ok(result.providerCount > 0, `should have providers, got ${result.providerCount}`);
     assert.ok(
       result.capabilityCount > 0,
-      `should have capabilities, got ${result.capabilityCount}`
+      `should have capabilities, got ${result.capabilityCount}`,
     );
 
     // 2. Retrieve pricing from DB
@@ -86,8 +86,9 @@ describe("modelsDevSync — integration: live fetch → DB → retrieve", () => 
   });
 
   it("dryRun returns data without saving to DB", async () => {
-    const { syncModelsDev, getModelsDevPricing, clearModelsDevPricing } =
-      await import("../../src/lib/modelsDevSync.ts");
+    const { syncModelsDev, getModelsDevPricing, clearModelsDevPricing } = await import(
+      "../../src/lib/modelsDevSync.ts"
+    );
 
     // Clear any existing data first
     clearModelsDevPricing();
@@ -133,8 +134,9 @@ describe("modelsDevSync — integration: live fetch → DB → retrieve", () => 
 
 describe("modelsDevSync — resolution order: user > models.dev > LiteLLM > default", () => {
   it("returns models.dev pricing when no user override exists", async () => {
-    const { syncModelsDev, getModelsDevPricing, clearModelsDevPricing } =
-      await import("../../src/lib/modelsDevSync.ts");
+    const { syncModelsDev, getModelsDevPricing, clearModelsDevPricing } = await import(
+      "../../src/lib/modelsDevSync.ts"
+    );
 
     clearModelsDevPricing();
     await syncModelsDev({ dryRun: false, syncCapabilities: false });
@@ -148,8 +150,9 @@ describe("modelsDevSync — resolution order: user > models.dev > LiteLLM > defa
 
   it("getPricing() merges all layers correctly", async () => {
     const { getPricing } = await import("../../src/lib/db/settings.ts");
-    const { syncModelsDev, clearModelsDevPricing, saveModelsDevPricing } =
-      await import("../../src/lib/modelsDevSync.ts");
+    const { syncModelsDev, clearModelsDevPricing, saveModelsDevPricing } = await import(
+      "../../src/lib/modelsDevSync.ts"
+    );
     const { updatePricing, resetPricing } = await import("../../src/lib/db/settings.ts");
 
     // Clear all synced data first
@@ -176,7 +179,7 @@ describe("modelsDevSync — resolution order: user > models.dev > LiteLLM > defa
     assert.equal(
       mergedWithOverride.openai?.["gpt-4o"]?.input,
       999,
-      "user override should win over models.dev"
+      "user override should win over models.dev",
     );
 
     // Reset the override

@@ -100,8 +100,8 @@ export default function MediaProviderPageClient({
           const data = await res.json();
           setConnections(
             (data.connections ?? []).filter(
-              (c: Connection & { provider?: string }) => c.provider === providerId
-            )
+              (c: Connection & { provider?: string }) => c.provider === providerId,
+            ),
           );
         }
       } catch {

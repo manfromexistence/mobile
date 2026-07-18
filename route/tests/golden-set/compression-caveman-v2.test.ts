@@ -13,7 +13,7 @@ function compressText(text: string, intensity: "lite" | "full" | "ultra" = "full
       minMessageLength: 0,
       preservePatterns: [],
       intensity,
-    }
+    },
   );
   return (result.body.messages[0].content as string) ?? text;
 }

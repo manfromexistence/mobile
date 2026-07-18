@@ -1,84 +1,86 @@
-import { afterEach, describe, expect, it } from "bun:test"
+import { afterEach, describe, expect, it } from "bun:test";
 import type {
   AgentSideConnection,
   RequestPermissionRequest,
   RequestPermissionResponse,
   SessionUpdate,
-} from "@agentclientprotocol/sdk"
-import type { Event, OpencodeClient } from "@opencode-ai/sdk/v2"
-import { LayerNode } from "@opencode-ai/core/effect/layer-node"
-import { createTwoFilesPatch } from "diff"
-import { Effect, ManagedRuntime } from "effect"
-import { mkdtemp, rm } from "node:fs/promises"
-import { tmpdir } from "node:os"
-import path from "node:path"
-import { ACPEvent } from "@/acp/event"
-import { ACPSession } from "@/acp/session"
+} from "@agentclientprotocol/sdk";
+import type { Event, OpencodeClient } from "@opencode-ai/sdk/v2";
+import { LayerNode } from "@opencode-ai/core/effect/layer-node";
+import { createTwoFilesPatch } from "diff";
+import { Effect, ManagedRuntime } from "effect";
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import path from "node:path";
+import { ACPEvent } from "@/acp/event";
+import { ACPSession } from "@/acp/session";
 
-type PermissionEvent = Extract<Event, { type: "permission.asked" }>
-type PermissionReplyParams = Parameters<OpencodeClient["permission"]["reply"]>[0]
-type SessionUpdateParams = Parameters<AgentSideConnection["sessionUpdate"]>[0]
-const cleanupDirs: string[] = []
+type PermissionEvent = Extract<Event, { type: "permission.asked" }>;
+type PermissionReplyParams = Parameters<OpencodeClient["permission"]["reply"]>[0];
+type SessionUpdateParams = Parameters<AgentSideConnection["sessionUpdate"]>[0];
+const cleanupDirs: string[] = [];
 
 afterEach(async () => {
-  await Promise.all(cleanupDirs.splice(0).map((dir) => rm(dir, { recursive: true, force: true })))
-})
+  await Promise.all(cleanupDirs.splice(0).map((dir) => rm(dir, { recursive: true, force: true })));
+});
 
 const pollUntil = async (
   check: () => boolean | Promise<boolean>,
   message: string,
   opts?: { timeoutMs?: number; intervalMs?: number },
 ) => {
-  const started = Date.now()
+  const started = Date.now();
   while (true) {
-    if (await check()) return
-    if (Date.now() - started > (opts?.timeoutMs ?? 2000)) throw new Error(message)
-    await new Promise((resolve) => setTimeout(resolve, opts?.intervalMs ?? 5))
+    if (await check()) return;
+    if (Date.now() - started > (opts?.timeoutMs ?? 2000)) throw new Error(message);
+    await new Promise((resolve) => setTimeout(resolve, opts?.intervalMs ?? 5));
   }
-}
+};
 
 function makeSessionService() {
   return ManagedRuntime.make(LayerNode.compile(ACPSession.node)).runSync(
     ACPSession.Service.use((service) => Effect.succeed(service)),
-  )
+  );
 }
 
 function createHarness(
-  requestPermission: (params: RequestPermissionRequest) => Promise<RequestPermissionResponse> = () =>
+  requestPermission: (
+    params: RequestPermissionRequest,
+  ) => Promise<RequestPermissionResponse> = () =>
     Promise.resolve({ outcome: { outcome: "selected", optionId: "once" } }),
 ) {
-  const replies: PermissionReplyParams[] = []
-  const requests: RequestPermissionRequest[] = []
-  const updates: SessionUpdateParams[] = []
-  const session = makeSessionService()
+  const replies: PermissionReplyParams[] = [];
+  const requests: RequestPermissionRequest[] = [];
+  const updates: SessionUpdateParams[] = [];
+  const session = makeSessionService();
   const sdk = {
     permission: {
       reply: (params: PermissionReplyParams) => {
-        replies.push(params)
-        return Promise.resolve({ data: true })
+        replies.push(params);
+        return Promise.resolve({ data: true });
       },
     },
     session: {
       message: () => Promise.resolve({ data: undefined }),
     },
-  } as unknown as OpencodeClient
+  } as unknown as OpencodeClient;
   const connection = {
     requestPermission: (params: RequestPermissionRequest) => {
-      requests.push(params)
-      return requestPermission(params)
+      requests.push(params);
+      return requestPermission(params);
     },
     sessionUpdate: (params: SessionUpdateParams) => {
-      updates.push(params)
-      return Promise.resolve()
+      updates.push(params);
+      return Promise.resolve();
     },
-  } satisfies Pick<AgentSideConnection, "requestPermission" | "sessionUpdate">
-  const subscription = new ACPEvent.Subscription({ sdk, connection, session })
+  } satisfies Pick<AgentSideConnection, "requestPermission" | "sessionUpdate">;
+  const subscription = new ACPEvent.Subscription({ sdk, connection, session });
 
-  return { connection, replies, requests, sdk, session, subscription, updates }
+  return { connection, replies, requests, sdk, session, subscription, updates };
 }
 
 async function createSession(session: ACPSession.Interface, sessionId: string, cwd = "/workspace") {
-  await Effect.runPromise(session.create({ id: sessionId, cwd }))
+  await Effect.runPromise(session.create({ id: sessionId, cwd }));
 }
 
 async function createKnownTextPart(
@@ -95,16 +97,16 @@ async function createKnownTextPart(
       partType: "text",
       role: "assistant",
     }),
-  )
+  );
 }
 
 function permissionAsked(
   sessionID: string,
   id: string,
   input: {
-    permission?: string
-    metadata?: Record<string, unknown>
-    tool?: { messageID: string; callID: string }
+    permission?: string;
+    metadata?: Record<string, unknown>;
+    tool?: { messageID: string; callID: string };
   } = {},
 ) {
   return {
@@ -119,7 +121,7 @@ function permissionAsked(
       always: [],
       ...(input.tool ? { tool: input.tool } : {}),
     },
-  } as PermissionEvent
+  } as PermissionEvent;
 }
 
 function textDelta(sessionID: string, messageID: string, partID: string, delta: string) {
@@ -133,36 +135,40 @@ function textDelta(sessionID: string, messageID: string, partID: string, delta: 
       field: "text",
       delta,
     },
-  } as Event
+  } as Event;
 }
 
 function textFromUpdates(updates: SessionUpdateParams[], sessionId: string) {
   return updates
     .filter((item) => item.sessionId === sessionId)
     .map((item) => item.update)
-    .filter((update): update is Extract<SessionUpdate, { sessionUpdate: "agent_message_chunk" }> => {
-      return update.sessionUpdate === "agent_message_chunk"
-    })
+    .filter(
+      (update): update is Extract<SessionUpdate, { sessionUpdate: "agent_message_chunk" }> => {
+        return update.sessionUpdate === "agent_message_chunk";
+      },
+    )
     .map((update) => (update.content.type === "text" ? update.content.text : ""))
-    .join("")
+    .join("");
 }
 
 async function tempFile(name: string, content: string) {
-  const dir = await mkdtemp(path.join(tmpdir(), "opencode-acp-permission-"))
-  cleanupDirs.push(dir)
-  const file = path.join(dir, name)
-  await Bun.write(file, content)
-  return file
+  const dir = await mkdtemp(path.join(tmpdir(), "opencode-acp-permission-"));
+  cleanupDirs.push(dir);
+  const file = path.join(dir, name);
+  await Bun.write(file, content);
+  return file;
 }
 
 describe("acp permissions", () => {
   it("sends requestPermission and replies with the selected outcome", async () => {
-    const harness = createHarness()
-    await createSession(harness.session, "ses_a")
+    const harness = createHarness();
+    await createSession(harness.session, "ses_a");
 
-    harness.subscription.handle(permissionAsked("ses_a", "perm_1", { tool: { messageID: "msg_1", callID: "call_1" } }))
+    harness.subscription.handle(
+      permissionAsked("ses_a", "perm_1", { tool: { messageID: "msg_1", callID: "call_1" } }),
+    );
 
-    await pollUntil(() => harness.replies.length === 1, "permission was never replied")
+    await pollUntil(() => harness.replies.length === 1, "permission was never replied");
 
     expect(harness.requests[0]).toMatchObject({
       sessionId: "ses_a",
@@ -179,13 +185,15 @@ describe("acp permissions", () => {
         { optionId: "always", kind: "allow_always", name: "Always allow" },
         { optionId: "reject", kind: "reject_once", name: "Reject" },
       ],
-    })
-    expect(harness.replies).toEqual([{ requestID: "perm_1", reply: "once", directory: "/workspace" }])
-  })
+    });
+    expect(harness.replies).toEqual([
+      { requestID: "perm_1", reply: "once", directory: "/workspace" },
+    ]);
+  });
 
   it("uses permission metadata for non-shell titles", async () => {
-    const harness = createHarness()
-    await createSession(harness.session, "ses_a")
+    const harness = createHarness();
+    await createSession(harness.session, "ses_a");
 
     harness.subscription.handle(
       permissionAsked("ses_a", "perm_fetch", {
@@ -196,22 +204,22 @@ describe("acp permissions", () => {
         },
         tool: { messageID: "msg_1", callID: "call_1" },
       }),
-    )
+    );
 
-    await pollUntil(() => harness.replies.length === 1, "webfetch permission was never replied")
+    await pollUntil(() => harness.replies.length === 1, "webfetch permission was never replied");
 
     expect(harness.requests[0]?.toolCall).toMatchObject({
       toolCallId: "call_1",
       title: "https://example.com/docs",
       kind: "fetch",
       rawInput: { url: "https://example.com/docs", format: "markdown" },
-    })
-  })
+    });
+  });
 
   it("includes a diff content block for edit permission metadata", async () => {
-    const filepath = await tempFile("file.ts", "before\n")
-    const harness = createHarness()
-    await createSession(harness.session, "ses_a")
+    const filepath = await tempFile("file.ts", "before\n");
+    const harness = createHarness();
+    await createSession(harness.session, "ses_a");
 
     harness.subscription.handle(
       permissionAsked("ses_a", "perm_edit", {
@@ -222,9 +230,9 @@ describe("acp permissions", () => {
         },
         tool: { messageID: "msg_1", callID: "call_1" },
       }),
-    )
+    );
 
-    await pollUntil(() => harness.replies.length === 1, "edit permission was never replied")
+    await pollUntil(() => harness.replies.length === 1, "edit permission was never replied");
 
     expect(harness.requests[0]?.toolCall).toMatchObject({
       toolCallId: "call_1",
@@ -239,14 +247,14 @@ describe("acp permissions", () => {
           newText: "after\n",
         },
       ],
-    })
-  })
+    });
+  });
 
   it("includes per-file diff blocks and locations for apply_patch permission metadata", async () => {
-    const first = await tempFile("first.ts", "one\n")
-    const second = await tempFile("second.ts", "alpha\n")
-    const harness = createHarness()
-    await createSession(harness.session, "ses_a")
+    const first = await tempFile("first.ts", "one\n");
+    const second = await tempFile("second.ts", "alpha\n");
+    const harness = createHarness();
+    await createSession(harness.session, "ses_a");
 
     harness.subscription.handle(
       permissionAsked("ses_a", "perm_patch", {
@@ -268,9 +276,9 @@ describe("acp permissions", () => {
         },
         tool: { messageID: "msg_1", callID: "call_1" },
       }),
-    )
+    );
 
-    await pollUntil(() => harness.replies.length === 1, "apply_patch permission was never replied")
+    await pollUntil(() => harness.replies.length === 1, "apply_patch permission was never replied");
 
     expect(harness.requests[0]?.toolCall).toMatchObject({
       toolCallId: "call_1",
@@ -290,12 +298,12 @@ describe("acp permissions", () => {
           newText: "beta\n",
         },
       ],
-    })
-  })
+    });
+  });
 
   it("forwards external_directory metadata and locations to requestPermission", async () => {
-    const harness = createHarness()
-    await createSession(harness.session, "ses_a")
+    const harness = createHarness();
+    await createSession(harness.session, "ses_a");
 
     harness.subscription.handle(
       permissionAsked("ses_a", "perm_external", {
@@ -308,9 +316,12 @@ describe("acp permissions", () => {
         },
         tool: { messageID: "msg_1", callID: "call_1" },
       }),
-    )
+    );
 
-    await pollUntil(() => harness.replies.length === 1, "external_directory permission was never replied")
+    await pollUntil(
+      () => harness.replies.length === 1,
+      "external_directory permission was never replied",
+    );
 
     expect(harness.requests[0]).toMatchObject({
       sessionId: "ses_a",
@@ -326,76 +337,87 @@ describe("acp permissions", () => {
         },
         locations: [{ path: "/tmp/outside" }],
       },
-    })
-  })
+    });
+  });
 
   it("rejects non-selected outcomes", async () => {
-    const harness = createHarness(() => Promise.resolve({ outcome: { outcome: "cancelled" } }))
-    await createSession(harness.session, "ses_a")
+    const harness = createHarness(() => Promise.resolve({ outcome: { outcome: "cancelled" } }));
+    await createSession(harness.session, "ses_a");
 
-    harness.subscription.handle(permissionAsked("ses_a", "perm_cancelled"))
+    harness.subscription.handle(permissionAsked("ses_a", "perm_cancelled"));
 
-    await pollUntil(() => harness.replies.length === 1, "cancelled permission was never replied")
+    await pollUntil(() => harness.replies.length === 1, "cancelled permission was never replied");
 
-    expect(harness.replies[0]).toMatchObject({ requestID: "perm_cancelled", reply: "reject" })
-  })
+    expect(harness.replies[0]).toMatchObject({ requestID: "perm_cancelled", reply: "reject" });
+  });
 
   it("rejects when requestPermission fails", async () => {
-    const harness = createHarness(() => Promise.reject(new Error("client permission UI failed")))
-    await createSession(harness.session, "ses_a")
+    const harness = createHarness(() => Promise.reject(new Error("client permission UI failed")));
+    await createSession(harness.session, "ses_a");
 
-    harness.subscription.handle(permissionAsked("ses_a", "perm_failed"))
+    harness.subscription.handle(permissionAsked("ses_a", "perm_failed"));
 
-    await pollUntil(() => harness.replies.length === 1, "failed permission was never rejected")
+    await pollUntil(() => harness.replies.length === 1, "failed permission was never rejected");
 
-    expect(harness.replies[0]).toMatchObject({ requestID: "perm_failed", reply: "reject" })
-  })
+    expect(harness.replies[0]).toMatchObject({ requestID: "perm_failed", reply: "reject" });
+  });
 
   it("does not let a blocked session A permission block session B message updates", async () => {
-    let releasePermission: (() => void) | undefined
+    let releasePermission: (() => void) | undefined;
     const blocked = new Promise<RequestPermissionResponse>((resolve) => {
-      releasePermission = () => resolve({ outcome: { outcome: "selected", optionId: "once" } })
-    })
-    const harness = createHarness(() => blocked)
-    await createSession(harness.session, "ses_a")
-    await createSession(harness.session, "ses_b")
-    await createKnownTextPart(harness.session, "ses_b", "msg_b", "part_b")
+      releasePermission = () => resolve({ outcome: { outcome: "selected", optionId: "once" } });
+    });
+    const harness = createHarness(() => blocked);
+    await createSession(harness.session, "ses_a");
+    await createSession(harness.session, "ses_b");
+    await createKnownTextPart(harness.session, "ses_b", "msg_b", "part_b");
 
-    harness.subscription.handle(permissionAsked("ses_a", "perm_blocked"))
-    await pollUntil(() => harness.requests.length === 1, "blocked permission was never requested")
+    harness.subscription.handle(permissionAsked("ses_a", "perm_blocked"));
+    await pollUntil(() => harness.requests.length === 1, "blocked permission was never requested");
 
-    await harness.subscription.handle(textDelta("ses_b", "msg_b", "part_b", "session_b_message"))
+    await harness.subscription.handle(textDelta("ses_b", "msg_b", "part_b", "session_b_message"));
 
-    expect(textFromUpdates(harness.updates, "ses_b")).toBe("session_b_message")
-    expect(harness.replies).toHaveLength(0)
+    expect(textFromUpdates(harness.updates, "ses_b")).toBe("session_b_message");
+    expect(harness.replies).toHaveLength(0);
 
-    releasePermission?.()
-    await pollUntil(() => harness.replies.length === 1, "blocked permission was never replied after release")
-  })
+    releasePermission?.();
+    await pollUntil(
+      () => harness.replies.length === 1,
+      "blocked permission was never replied after release",
+    );
+  });
 
   it("serializes permission requests per session", async () => {
-    let releaseFirst: (() => void) | undefined
+    let releaseFirst: (() => void) | undefined;
     const first = new Promise<RequestPermissionResponse>((resolve) => {
-      releaseFirst = () => resolve({ outcome: { outcome: "selected", optionId: "once" } })
-    })
+      releaseFirst = () => resolve({ outcome: { outcome: "selected", optionId: "once" } });
+    });
     const harness = createHarness(() =>
-      harness.requests.length === 1 ? first : Promise.resolve({ outcome: { outcome: "selected", optionId: "always" } }),
-    )
-    await createSession(harness.session, "ses_a")
+      harness.requests.length === 1
+        ? first
+        : Promise.resolve({ outcome: { outcome: "selected", optionId: "always" } }),
+    );
+    await createSession(harness.session, "ses_a");
 
-    harness.subscription.handle(permissionAsked("ses_a", "perm_1"))
-    harness.subscription.handle(permissionAsked("ses_a", "perm_2"))
+    harness.subscription.handle(permissionAsked("ses_a", "perm_1"));
+    harness.subscription.handle(permissionAsked("ses_a", "perm_2"));
 
-    await pollUntil(() => harness.requests.length === 1, "first permission was never requested")
-    expect(harness.requests.map((request) => request.toolCall.toolCallId)).toEqual(["perm_1"])
+    await pollUntil(() => harness.requests.length === 1, "first permission was never requested");
+    expect(harness.requests.map((request) => request.toolCall.toolCallId)).toEqual(["perm_1"]);
 
-    releaseFirst?.()
-    await pollUntil(() => harness.requests.length === 2, "second permission was not requested after first resolved")
-    await pollUntil(() => harness.replies.length === 2, "serialized permissions were not both replied")
+    releaseFirst?.();
+    await pollUntil(
+      () => harness.requests.length === 2,
+      "second permission was not requested after first resolved",
+    );
+    await pollUntil(
+      () => harness.replies.length === 2,
+      "serialized permissions were not both replied",
+    );
 
     expect(harness.replies.map((reply) => [reply.requestID, reply.reply])).toEqual([
       ["perm_1", "once"],
       ["perm_2", "always"],
-    ])
-  })
-})
+    ]);
+  });
+});

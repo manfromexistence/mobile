@@ -28,7 +28,7 @@ type ApiKeyLookup = (rawKey: string) => Promise<{ id?: string | number | null } 
  */
 export async function resolvePrincipalFromHeaders(
   headers: Record<string, string>,
-  lookup: ApiKeyLookup = getApiKeyMetadata
+  lookup: ApiKeyLookup = getApiKeyMetadata,
 ): Promise<string | undefined> {
   // Nothing to resolve without an Authorization / x-api-key header.
   if (!headers.Authorization && !headers["x-api-key"]) return undefined;

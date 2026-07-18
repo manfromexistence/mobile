@@ -19,11 +19,13 @@ import {
 // Helpers — synthetic allowlists for testing classifyLicense in isolation
 // ---------------------------------------------------------------------------
 
-function makeAllowlist(overrides: Partial<{
-  allowed: string[];
-  allowedExpressions: string[];
-  exceptions: Record<string, { license: string; justification: string; risk: string }>;
-}> = {}) {
+function makeAllowlist(
+  overrides: Partial<{
+    allowed: string[];
+    allowedExpressions: string[];
+    exceptions: Record<string, { license: string; justification: string; risk: string }>;
+  }> = {},
+) {
   return {
     allowed: ["MIT", "Apache-2.0", "BSD-3-Clause", "ISC", "0BSD"],
     allowedExpressions: ["(MIT OR Apache-2.0)", "MIT AND ISC", "MIT*"],
@@ -53,7 +55,10 @@ test("stripVersion: handles scoped package without version", () => {
 });
 
 test("stripVersion: handles nested scope-like name with version", () => {
-  assert.equal(stripVersion("@aws-sdk/client-bedrock-runtime@3.1063.0"), "@aws-sdk/client-bedrock-runtime");
+  assert.equal(
+    stripVersion("@aws-sdk/client-bedrock-runtime@3.1063.0"),
+    "@aws-sdk/client-bedrock-runtime",
+  );
 });
 
 // ---------------------------------------------------------------------------
@@ -150,7 +155,10 @@ test("classifyLicense: LGPL package with registered exception returns 'exception
   });
   const result = classifyLicense("lgpl-native-pkg@1.2.3", "LGPL-3.0-or-later", allowlist);
   assert.equal(result.status, "exception");
-  assert.ok(result.reason.includes("exception"), `reason should mention exception: ${result.reason}`);
+  assert.ok(
+    result.reason.includes("exception"),
+    `reason should mention exception: ${result.reason}`,
+  );
 });
 
 test("classifyLicense: scoped package with exception: version is stripped for lookup", () => {
@@ -166,7 +174,7 @@ test("classifyLicense: scoped package with exception: version is stripped for lo
   const result = classifyLicense(
     "@img/sharp-libvips-linux-x64@1.2.4",
     "LGPL-3.0-or-later",
-    allowlist
+    allowlist,
   );
   assert.equal(result.status, "exception", "scoped exception should be found after version strip");
 });
@@ -207,7 +215,7 @@ test("classifyLicense: denied result includes package name in reason", () => {
   const result = classifyLicense("bad-pkg@1.0.0", "GPL-3.0", makeAllowlist());
   assert.ok(
     result.reason.includes("bad-pkg"),
-    `reason should include package name; got: ${result.reason}`
+    `reason should include package name; got: ${result.reason}`,
   );
 });
 
@@ -248,19 +256,19 @@ test("loadAllowlist: exceptions entries have required fields", () => {
   for (const [pkgName, exc] of Object.entries(allowlist.exceptions)) {
     assert.ok(
       typeof (exc as any).license === "string",
-      `exceptions.${pkgName}.license should be a string`
+      `exceptions.${pkgName}.license should be a string`,
     );
     assert.ok(
       typeof (exc as any).justification === "string",
-      `exceptions.${pkgName}.justification should be a string`
+      `exceptions.${pkgName}.justification should be a string`,
     );
     assert.ok(
       typeof (exc as any).risk === "string",
-      `exceptions.${pkgName}.risk should be a string`
+      `exceptions.${pkgName}.risk should be a string`,
     );
     assert.ok(
       (exc as any).justification.length > 10,
-      `exceptions.${pkgName}.justification must be non-trivial (> 10 chars)`
+      `exceptions.${pkgName}.justification must be non-trivial (> 10 chars)`,
     );
   }
 });
@@ -278,7 +286,7 @@ test("loadAllowlist: LGPL packages have registered exceptions", () => {
   for (const pkg of lgplPkgs) {
     assert.ok(
       allowlist.exceptions[pkg],
-      `${pkg} (LGPL-3.0-or-later) must have a registered exception`
+      `${pkg} (LGPL-3.0-or-later) must have a registered exception`,
     );
   }
 });
@@ -291,7 +299,7 @@ test("loadAllowlist: MPL-2.0 packages have registered exceptions or allowed expr
     const mplExpr = allowlist.allowedExpressions.some((e: string) => e.includes("MPL"));
     assert.ok(
       hasException || mplExpr,
-      `${pkg} (MPL-2.0) must be in exceptions or have an allowed expression`
+      `${pkg} (MPL-2.0) must be in exceptions or have an allowed expression`,
     );
   }
 });

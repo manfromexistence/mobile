@@ -7,14 +7,14 @@ test("isOpenAICompatibleEndpoint matches openai-compatible-* providers", () => {
   assert.equal(base.isOpenAICompatibleEndpoint("openai-compatible-foo", "https://x/y"), true);
   assert.equal(
     base.isOpenAICompatibleEndpoint("claude", "https://api.anthropic.com/v1/messages"),
-    false
+    false,
   );
 });
 
 test("isOpenAICompatibleEndpoint matches chat/completions and responses URLs", () => {
   assert.equal(
     base.isOpenAICompatibleEndpoint("groq", "https://api.groq.com/openai/v1/chat/completions"),
-    true
+    true,
   );
   assert.equal(base.isOpenAICompatibleEndpoint("groq", "https://x/v1/responses"), true);
   assert.equal(base.isOpenAICompatibleEndpoint("groq", "https://x/v1/embeddings"), false);
@@ -31,7 +31,7 @@ test("strips X-Stainless-* headers on OpenAI-compatible passthrough", () => {
   const stripped = base.stripStainlessHeadersForOpenAICompat(
     headers,
     "openai-compatible-acme",
-    "https://acme.example/v1/chat/completions"
+    "https://acme.example/v1/chat/completions",
   );
   assert.deepEqual(stripped.sort(), ["X-Stainless-Lang", "X-Stainless-OS", "x-stainless-runtime"]);
   assert.equal(headers["X-Stainless-Lang"], undefined);
@@ -50,7 +50,7 @@ test("does NOT strip X-Stainless-* for non-OpenAI-compatible endpoints", () => {
   const stripped = base.stripStainlessHeadersForOpenAICompat(
     headers,
     "claude",
-    "https://api.anthropic.com/v1/messages"
+    "https://api.anthropic.com/v1/messages",
   );
   assert.deepEqual(stripped, []);
   // Claude-code-compat spoofing path keeps its X-Stainless-* headers intact.
@@ -65,7 +65,7 @@ test("normalizes SDK-derived User-Agent on OpenAI-compatible request", () => {
   base.stripStainlessHeadersForOpenAICompat(
     headers,
     "openai-compatible-acme",
-    "https://acme.example/v1/chat/completions"
+    "https://acme.example/v1/chat/completions",
   );
   assert.equal(headers["User-Agent"], "Mozilla/5.0 (compatible; OpenAI Compatible)");
 });
@@ -77,7 +77,7 @@ test("leaves a non-SDK User-Agent untouched", () => {
   base.stripStainlessHeadersForOpenAICompat(
     headers,
     "openai-compatible-acme",
-    "https://acme.example/v1/chat/completions"
+    "https://acme.example/v1/chat/completions",
   );
   assert.equal(headers["User-Agent"], "my-custom-agent/2.0");
 });

@@ -32,7 +32,7 @@ export async function POST(req: Request) {
   if (!parsed.success) {
     return NextResponse.json(
       { error: "Invalid request", details: parsed.error.issues },
-      { status: 400 }
+      { status: 400 },
     );
   }
   const { items, provider, judgeModel, costCapUsd } = parsed.data;
@@ -41,7 +41,7 @@ export async function POST(req: Request) {
     if (!rawCredentials) {
       return NextResponse.json(
         { error: `No credentials configured for provider "${provider}"` },
-        { status: 400 }
+        { status: 400 },
       );
     }
     // Positively require a credential-shaped object before casting. This rejects the
@@ -57,7 +57,7 @@ export async function POST(req: Request) {
     if (!looksLikeCredentials) {
       return NextResponse.json(
         { error: `Provider "${provider}" credentials are unavailable` },
-        { status: 503 }
+        { status: 503 },
       );
     }
     const credentials = rawCredentials as unknown as ProviderCredentials;
@@ -69,7 +69,7 @@ export async function POST(req: Request) {
     console.error("[/api/compression/compare/verify]", msg);
     return NextResponse.json(
       { error: "Verify failed", details: sanitizeErrorMessage(msg) },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

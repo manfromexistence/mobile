@@ -146,7 +146,7 @@ function openaiToGeminiBase(
   model: string,
   body: Record<string, unknown>,
   stream: boolean,
-  toolNameOptions: GeminiToolNameOptions = {}
+  toolNameOptions: GeminiToolNameOptions = {},
 ) {
   const result: GeminiRequest = {
     model: model,
@@ -181,7 +181,7 @@ function openaiToGeminiBase(
   }
   const maxOutputTokens = capMaxOutputTokens(
     model,
-    (body.max_tokens ?? body.max_completion_tokens) as number | undefined
+    (body.max_tokens ?? body.max_completion_tokens) as number | undefined,
   );
   if (maxOutputTokens !== null) {
     result.generationConfig.maxOutputTokens = maxOutputTokens;
@@ -333,7 +333,7 @@ function openaiToGeminiBase(
             const id = tc.id as string;
             const resolved = resolveGeminiThoughtSignature(
               buildGeminiThoughtSignatureKey(toolNameOptions.signatureNamespace, id),
-              extractClientThoughtSignature(tc)
+              extractClientThoughtSignature(tc),
             );
             if (typeof resolved === "string" && resolved.length > 0) {
               resolvedSignatures.set(id, resolved);
@@ -573,7 +573,7 @@ export function openaiToGeminiRequest(
   credentials: Record<string, unknown> | null = null,
   options: {
     signaturelessToolCallMode?: "native" | "text" | "context";
-  } = {}
+  } = {},
 ) {
   // Thread the signature namespace so a thinking model's thoughtSignature (cached on the
   // response turn under `<connectionId>:<toolCallId>`) is found and re-attached to the
@@ -598,7 +598,7 @@ export function openaiToCloudCodeGeminiRequest(
   options: {
     signatureNamespace?: string | null;
     signaturelessToolCallMode?: "native" | "text" | "context";
-  } = {}
+  } = {},
 ) {
   return openaiToGeminiBase(model, body, stream, {
     stripNamespace: true,
@@ -622,7 +622,7 @@ function wrapInCloudCodeEnvelope(model, cloudCodeRequest, credentials = null) {
   if (!projectId) {
     console.warn(
       `[OmniRoute] Antigravity account is missing projectId. ` +
-        `Attempting request with empty project — reconnect OAuth to resolve.`
+        `Attempting request with empty project — reconnect OAuth to resolve.`,
     );
     projectId = "";
   }
@@ -668,18 +668,18 @@ function wrapInCloudCodeEnvelope(model, cloudCodeRequest, credentials = null) {
           return tool;
         }
         const customDecls = tool.functionDeclarations.filter(
-          (fn) => !GEMINI_BUILTIN_TOOL_NAMES.has(fn.name)
+          (fn) => !GEMINI_BUILTIN_TOOL_NAMES.has(fn.name),
         );
         return { ...tool, functionDeclarations: customDecls };
       })
       .filter(
-        (tool) => !Array.isArray(tool.functionDeclarations) || tool.functionDeclarations.length > 0
+        (tool) => !Array.isArray(tool.functionDeclarations) || tool.functionDeclarations.length > 0,
       );
     envelope.request.tools = cleanedTools.length > 0 ? cleanedTools : undefined;
   }
 
   const hasCustomTools = envelope.request.tools?.some(
-    (tool) => (tool.functionDeclarations?.length ?? 0) > 0
+    (tool) => (tool.functionDeclarations?.length ?? 0) > 0,
   );
   if (hasCustomTools) {
     envelope.request.toolConfig = {
@@ -766,6 +766,6 @@ register(
     openaiToGeminiRequest(model, body, stream, credentials, {
       signaturelessToolCallMode: "context",
     }),
-  null
+  null,
 );
 register(FORMATS.OPENAI, FORMATS.ANTIGRAVITY, openaiToAntigravityRequest, null);

@@ -21,7 +21,7 @@ export function registerTunnel(program) {
     .command("create [type]")
     .description(t("tunnel.createDescription"))
     .addArgument(
-      new Argument("[type]", "Tunnel type").choices(VALID_TUNNEL_TYPES).default("cloudflare")
+      new Argument("[type]", "Tunnel type").choices(VALID_TUNNEL_TYPES).default("cloudflare"),
     )
     .action(async (type, opts, cmd) => {
       const globalOpts = cmd.parent.optsWithGlobals();
@@ -156,7 +156,7 @@ export async function runTunnelStopCommand(type, opts = {}) {
     const readline = await import("node:readline");
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
     const answer = await new Promise((resolve) =>
-      rl.question(t("tunnel.confirmStop", { id: type }) + " [y/N] ", resolve)
+      rl.question(t("tunnel.confirmStop", { id: type }) + " [y/N] ", resolve),
     );
     rl.close();
     if (!/^y(es)?$/i.test(answer)) {
@@ -313,7 +313,7 @@ export async function runTunnelRotateCommand(type, opts = {}) {
     const readline = await import("node:readline");
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
     const answer = await new Promise((resolve) =>
-      rl.question(t("tunnel.confirmRotate", { type }) + " [y/N] ", resolve)
+      rl.question(t("tunnel.confirmRotate", { type }) + " [y/N] ", resolve),
     );
     rl.close();
     if (!/^y(es)?$/i.test(answer)) {

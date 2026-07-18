@@ -1,14 +1,14 @@
-import { Resource } from "@opencode-ai/console-resource"
-import type { TraceItem } from "@cloudflare/workers-types"
+import { Resource } from "@opencode-ai/console-resource";
+import type { TraceItem } from "@cloudflare/workers-types";
 
 export default {
   async tail(events: TraceItem[]) {
     for (const event of events) {
-      if (!event.event) continue
-      if (!("request" in event.event)) continue
-      if (event.event.request.method !== "POST") continue
+      if (!event.event) continue;
+      if (!("request" in event.event)) continue;
+      if (event.event.request.method !== "POST") continue;
 
-      const url = new URL(event.event.request.url)
+      const url = new URL(event.event.request.url);
       if (
         url.pathname !== "/zen/v1/chat/completions" &&
         url.pathname !== "/zen/v1/messages" &&
@@ -19,9 +19,9 @@ export default {
         url.pathname !== "/zen/go/v1/responses" &&
         !url.pathname.startsWith("/zen/go/v1/models/")
       )
-        continue
+        continue;
 
-      const ip = event.event.request.headers["x-real-ip"]
+      const ip = event.event.request.headers["x-real-ip"];
       let data: Record<string, unknown> = {
         "cf.continent": event.event.request.cf?.continent,
         "cf.country": event.event.request.cf?.country,
@@ -35,25 +35,25 @@ export default {
         status: event.event.response?.status ?? 0,
         ip,
         "ip.prefix": ipPrefix(ip),
-      }
-      const time = new Date(event.eventTimestamp ?? Date.now()).toISOString()
+      };
+      const time = new Date(event.eventTimestamp ?? Date.now()).toISOString();
       const events = [
         ...event.logs.flatMap((log) =>
           log.message.flatMap((message: string) => {
-            if (!message.startsWith("_metric:")) return []
-            const json = JSON.parse(message.slice(8)) as Record<string, unknown>
-            data = { ...data, ...json }
+            if (!message.startsWith("_metric:")) return [];
+            const json = JSON.parse(message.slice(8)) as Record<string, unknown>;
+            data = { ...data, ...json };
             if ("llm.error.code" in json) {
-              return [{ time, data: { ...data, event_type: "llm.error" } }]
+              return [{ time, data: { ...data, event_type: "llm.error" } }];
             }
-            return []
+            return [];
           }),
         ),
         { time, data: { ...data, event_type: "completions" } },
-      ]
-      console.log(JSON.stringify(data, null, 2))
+      ];
+      console.log(JSON.stringify(data, null, 2));
 
-      const lakeIngest = getLakeIngest()
+      const lakeIngest = getLakeIngest();
       const [honeycomb, lake] = await Promise.all([
         fetch("https://api.honeycomb.io/1/batch/zen", {
           method: "POST",
@@ -71,26 +71,28 @@ export default {
                   "Content-Type": "application/json",
                   Authorization: `Bearer ${lakeIngest.secret}`,
                 },
-                body: JSON.stringify({ events: events.map((event) => toLakeEvent(event.time, event.data)) }),
+                body: JSON.stringify({
+                  events: events.map((event) => toLakeEvent(event.time, event.data)),
+                }),
               }),
             ]
           : []),
-      ])
-      console.log(honeycomb.status)
-      console.log(await honeycomb.text())
+      ]);
+      console.log(honeycomb.status);
+      console.log(await honeycomb.text());
       if (lake) {
-        console.log(lake.status)
-        console.log(await lake.text())
+        console.log(lake.status);
+        console.log(await lake.text());
       }
     }
   },
-}
+};
 
 function getLakeIngest(): { url: string; secret: string } | undefined {
   try {
-    return Resource.LakeIngest
+    return Resource.LakeIngest;
   } catch {
-    return undefined
+    return undefined;
   }
 }
 
@@ -151,7 +153,7 @@ function toLakeEvent(time: string, data: Record<string, unknown>) {
     cost_cache_read_microcents: integer(data, "cost.cache_read.microcents"),
     cost_cache_write_microcents: integer(data, "cost.cache_write.microcents"),
     cost_total_microcents: integer(data, "cost.total.microcents"),
-  }
+  };
 }
 
 // Returns a stable lookup key for an IP address.
@@ -160,52 +162,53 @@ function toLakeEvent(time: string, data: Record<string, unknown>) {
 // rotate the lower 64 host bits via SLAAC privacy extensions (RFC 8981), so
 // grouping by /64 collapses those rotations into one key.
 function ipPrefix(ip: string | undefined) {
-  if (!ip) return undefined
-  if (ip.includes(".") && !ip.includes(":")) return `${ip}/32`
-  if (!ip.includes(":")) return undefined
+  if (!ip) return undefined;
+  if (ip.includes(".") && !ip.includes(":")) return `${ip}/32`;
+  if (!ip.includes(":")) return undefined;
 
   // Expand "::" to its full form, then keep the first 4 hextets.
-  const [head, tail] = ip.split("::") as [string, string | undefined]
-  const headParts = head ? head.split(":") : []
-  const tailParts = tail !== undefined ? tail.split(":") : []
-  const missing = 8 - headParts.length - tailParts.length
-  if (missing < 0) return undefined
-  const full = [...headParts, ...new Array(missing).fill("0"), ...tailParts]
-  if (full.length !== 8) return undefined
+  const [head, tail] = ip.split("::") as [string, string | undefined];
+  const headParts = head ? head.split(":") : [];
+  const tailParts = tail !== undefined ? tail.split(":") : [];
+  const missing = 8 - headParts.length - tailParts.length;
+  if (missing < 0) return undefined;
+  const full = [...headParts, ...new Array(missing).fill("0"), ...tailParts];
+  if (full.length !== 8) return undefined;
 
   const prefix = full
     .slice(0, 4)
     .map((part) => part.toLowerCase().replace(/^0+(?=.)/, ""))
-    .join(":")
-  return `${prefix}::/64`
+    .join(":");
+  return `${prefix}::/64`;
 }
 
 function string(data: Record<string, unknown>, key: string) {
-  const value = data[key]
-  if (typeof value === "string") return value
-  if (typeof value === "number" || typeof value === "boolean") return String(value)
-  return undefined
+  const value = data[key];
+  if (typeof value === "string") return value;
+  if (typeof value === "number" || typeof value === "boolean") return String(value);
+  return undefined;
 }
 
 function boolean(data: Record<string, unknown>, key: string) {
-  const value = data[key]
-  if (typeof value === "boolean") return value
-  if (typeof value === "string") return value === "true" ? true : value === "false" ? false : undefined
-  return undefined
+  const value = data[key];
+  if (typeof value === "boolean") return value;
+  if (typeof value === "string")
+    return value === "true" ? true : value === "false" ? false : undefined;
+  return undefined;
 }
 
 function integer(data: Record<string, unknown>, key: string) {
-  const value = number(data, key)
-  if (value === undefined) return undefined
-  return Math.round(value)
+  const value = number(data, key);
+  if (value === undefined) return undefined;
+  return Math.round(value);
 }
 
 function number(data: Record<string, unknown>, key: string) {
-  const value = data[key]
-  if (typeof value === "number") return Number.isFinite(value) ? value : undefined
+  const value = data[key];
+  if (typeof value === "number") return Number.isFinite(value) ? value : undefined;
   if (typeof value === "string") {
-    const parsed = Number(value)
-    return Number.isFinite(parsed) ? parsed : undefined
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : undefined;
   }
-  return undefined
+  return undefined;
 }

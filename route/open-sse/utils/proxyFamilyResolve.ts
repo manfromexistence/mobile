@@ -2,7 +2,7 @@ import dns from "node:dns/promises";
 import { detectIpLiteralFamily, stripIpv6Brackets } from "./proxyFamily.ts";
 
 export type FamilyLookupFn = (
-  hostname: string
+  hostname: string,
 ) => Promise<Array<{ address: string; family: number }>>;
 
 const defaultLookup: FamilyLookupFn = (hostname) => dns.lookup(hostname, { all: true });
@@ -15,7 +15,7 @@ const defaultLookup: FamilyLookupFn = (hostname) => dns.lookup(hostname, { all: 
 export async function assertHostnameSupportsFamily(
   host: string,
   family: 4 | 6,
-  lookupFn: FamilyLookupFn = defaultLookup
+  lookupFn: FamilyLookupFn = defaultLookup,
 ): Promise<void> {
   if (detectIpLiteralFamily(host) !== null) return;
   let records: Array<{ address: string; family: number }>;
@@ -25,7 +25,7 @@ export async function assertHostnameSupportsFamily(
     throw new Error(
       `[ProxyFamily] DNS resolution failed for ${host}; refusing to egress (fail-closed): ${
         err instanceof Error ? err.message : String(err)
-      }`
+      }`,
     );
   }
   const hasFamily = records.some((r) => r.family === family);
@@ -33,7 +33,7 @@ export async function assertHostnameSupportsFamily(
     throw new Error(
       `[ProxyFamily] Proxy host ${host} has no ${family === 6 ? "IPv6 (AAAA)" : "IPv4 (A)"} record; refusing ${
         family === 6 ? "IPv6" : "IPv4"
-      }-only egress (fail-closed)`
+      }-only egress (fail-closed)`,
     );
   }
 }

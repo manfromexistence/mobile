@@ -1,88 +1,92 @@
-import { Show, createEffect, createMemo, on, onCleanup } from "solid-js"
-import { createStore } from "solid-js/store"
-import { TextShimmer } from "@opencode-ai/ui/text-shimmer"
+import { Show, createEffect, createMemo, on, onCleanup } from "solid-js";
+import { createStore } from "solid-js/store";
+import { TextShimmer } from "@opencode-ai/ui/text-shimmer";
 
 function common(active: string, done: string) {
-  const a = Array.from(active)
-  const b = Array.from(done)
-  let i = 0
-  while (i < a.length && i < b.length && a[i] === b[i]) i++
+  const a = Array.from(active);
+  const b = Array.from(done);
+  let i = 0;
+  while (i < a.length && i < b.length && a[i] === b[i]) i++;
   return {
     prefix: a.slice(0, i).join(""),
     active: a.slice(i).join(""),
     done: b.slice(i).join(""),
-  }
+  };
 }
 
 function contentWidth(el: HTMLSpanElement | undefined) {
-  if (!el) return
-  return `${Math.ceil(el.getBoundingClientRect().width)}px`
+  if (!el) return;
+  return `${Math.ceil(el.getBoundingClientRect().width)}px`;
 }
 
 export function ToolStatusTitle(props: {
-  active: boolean
-  activeText: string
-  doneText: string
-  class?: string
-  split?: boolean
+  active: boolean;
+  activeText: string;
+  doneText: string;
+  class?: string;
+  split?: boolean;
 }) {
-  const split = createMemo(() => common(props.activeText, props.doneText))
+  const split = createMemo(() => common(props.activeText, props.doneText));
   const suffix = createMemo(
-    () => (props.split ?? true) && split().prefix.length >= 2 && split().active.length > 0 && split().done.length > 0,
-  )
-  const prefixLen = createMemo(() => Array.from(split().prefix).length)
-  const activeTail = createMemo(() => (suffix() ? split().active : props.activeText))
-  const doneTail = createMemo(() => (suffix() ? split().done : props.doneText))
+    () =>
+      (props.split ?? true) &&
+      split().prefix.length >= 2 &&
+      split().active.length > 0 &&
+      split().done.length > 0,
+  );
+  const prefixLen = createMemo(() => Array.from(split().prefix).length);
+  const activeTail = createMemo(() => (suffix() ? split().active : props.activeText));
+  const doneTail = createMemo(() => (suffix() ? split().done : props.doneText));
 
   const [state, setState] = createStore({
     active: props.active,
     animating: false,
     width: undefined as string | undefined,
-  })
-  const width = () => state.width
-  const active = () => state.active
-  const animating = () => state.animating
-  let activeRef: HTMLSpanElement | undefined
-  let doneRef: HTMLSpanElement | undefined
-  let widthRef: HTMLSpanElement | undefined
-  let frame: number | undefined
-  let finishTimer: ReturnType<typeof setTimeout> | undefined
+  });
+  const width = () => state.width;
+  const active = () => state.active;
+  const animating = () => state.animating;
+  let activeRef: HTMLSpanElement | undefined;
+  let doneRef: HTMLSpanElement | undefined;
+  let widthRef: HTMLSpanElement | undefined;
+  let frame: number | undefined;
+  let finishTimer: ReturnType<typeof setTimeout> | undefined;
 
   const finish = () => {
-    if (frame !== undefined) cancelAnimationFrame(frame)
-    if (finishTimer !== undefined) clearTimeout(finishTimer)
-    frame = undefined
-    finishTimer = undefined
-    setState("animating", false)
-    setState("width", undefined)
-  }
+    if (frame !== undefined) cancelAnimationFrame(frame);
+    if (finishTimer !== undefined) clearTimeout(finishTimer);
+    frame = undefined;
+    finishTimer = undefined;
+    setState("animating", false);
+    setState("width", undefined);
+  };
 
   const animate = () => {
-    const first = contentWidth(widthRef)
-    const next = props.active
-    finish()
-    setState("active", next)
-    if (!first) return
+    const first = contentWidth(widthRef);
+    const next = props.active;
+    finish();
+    setState("active", next);
+    if (!first) return;
 
-    setState("animating", true)
-    setState("width", first)
+    setState("animating", true);
+    setState("width", first);
     frame = requestAnimationFrame(() => {
-      frame = undefined
-      const last = contentWidth(next ? activeRef : doneRef)
+      frame = undefined;
+      const last = contentWidth(next ? activeRef : doneRef);
       if (!last) {
-        finish()
-        return
+        finish();
+        return;
       }
-      if (first !== last) setState("width", last)
-      finishTimer = setTimeout(finish, 600)
-    })
-  }
+      if (first !== last) setState("width", last);
+      finishTimer = setTimeout(finish, 600);
+    });
+  };
 
-  createEffect(on([() => props.active, activeTail, doneTail], () => animate(), { defer: true }))
+  createEffect(on([() => props.active, activeTail, doneTail], () => animate(), { defer: true }));
 
   onCleanup(() => {
-    finish()
-  })
+    finish();
+  });
 
   return (
     <span
@@ -129,5 +133,5 @@ export function ToolStatusTitle(props: {
         </span>
       </Show>
     </span>
-  )
+  );
 }

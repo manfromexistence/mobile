@@ -80,9 +80,9 @@ test("getDbInstance creates tables from SCHEMA_SQL (proves initialization succee
     // The preservedCriticalState sentinel is captureSucceeded: true on fresh DB
     // (no existing file = no corruption path = initialized with default sentinel).
     // Verify this indirectly: the DB is fully functional and migrations ran.
-    const migrationCount = db
-      .prepare("SELECT COUNT(*) as c FROM _omniroute_migrations")
-      .get() as { c: number };
+    const migrationCount = db.prepare("SELECT COUNT(*) as c FROM _omniroute_migrations").get() as {
+      c: number;
+    };
     assert.ok(migrationCount.c >= 1, "at least one migration should be recorded");
   } finally {
     cleanup();
@@ -99,7 +99,7 @@ test("getDbInstance supports basic CRUD operations after startup", async () => {
     db.prepare("INSERT INTO key_value (namespace, key, value) VALUES (?, ?, ?)").run(
       "test_ns",
       "test_key",
-      JSON.stringify({ hello: "world" })
+      JSON.stringify({ hello: "world" }),
     );
 
     const row = db
@@ -112,7 +112,7 @@ test("getDbInstance supports basic CRUD operations after startup", async () => {
     db.prepare("UPDATE key_value SET value = ? WHERE namespace = ? AND key = ?").run(
       JSON.stringify({ hello: "updated" }),
       "test_ns",
-      "test_key"
+      "test_key",
     );
     const updated = db
       .prepare("SELECT value FROM key_value WHERE namespace = ? AND key = ?")

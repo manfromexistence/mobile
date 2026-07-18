@@ -23,16 +23,13 @@ import { sanitizeErrorMessage } from "@omniroute/open-sse/utils/error";
 const PROVIDER = "codex";
 
 // GET — validate the ticket so the public page can show "ready" vs "expired".
-export async function GET(
-  _request: Request,
-  { params }: { params: Promise<{ token: string }> }
-) {
+export async function GET(_request: Request, { params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
   const ticket = peekDeviceFlowTicket(token);
   if (!ticket || ticket.provider !== PROVIDER || ticket.status !== "pending") {
     return NextResponse.json(
       { valid: false, error: "This link is invalid, already used, or expired." },
-      { status: 404 }
+      { status: 404 },
     );
   }
   return NextResponse.json({
@@ -43,10 +40,7 @@ export async function GET(
 }
 
 // POST — the browser finished the device flow; consume the ticket and persist.
-export async function POST(
-  request: Request,
-  { params }: { params: Promise<{ token: string }> }
-) {
+export async function POST(request: Request, { params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
 
   let rawBody: any;
@@ -68,7 +62,7 @@ export async function POST(
   if (!ticket) {
     return NextResponse.json(
       { success: false, error: "This link is invalid, already used, or expired." },
-      { status: 410 }
+      { status: 410 },
     );
   }
 
@@ -105,7 +99,7 @@ export async function POST(
     console.error("Codex public device-flow completion error:", err);
     return NextResponse.json(
       { success: false, error: sanitizeErrorMessage(err?.message) || "Failed to save connection" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

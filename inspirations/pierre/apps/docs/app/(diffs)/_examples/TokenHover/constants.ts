@@ -1,11 +1,11 @@
-import { DEFAULT_THEMES } from '@pierre/diffs';
-import type { PreloadMultiFileDiffOptions } from '@pierre/diffs/ssr';
+import { DEFAULT_THEMES } from "@pierre/diffs";
+import type { PreloadMultiFileDiffOptions } from "@pierre/diffs/ssr";
 
-import { CustomScrollbarCSS } from '@/components/CustomScrollbarCSS';
+import { CustomScrollbarCSS } from "@/components/CustomScrollbarCSS";
 
 export const TOKEN_HOVER_EXAMPLE: PreloadMultiFileDiffOptions<undefined> = {
   oldFile: {
-    name: 'styles.css',
+    name: "styles.css",
     contents: `.card-grid {
   display: flex;
   flex-direction: column;
@@ -53,7 +53,7 @@ export const TOKEN_HOVER_EXAMPLE: PreloadMultiFileDiffOptions<undefined> = {
 `,
   },
   newFile: {
-    name: 'styles.css',
+    name: "styles.css",
     contents: `@layer components {
   .card-grid {
     container: cards / inline-size;
@@ -114,8 +114,8 @@ export const TOKEN_HOVER_EXAMPLE: PreloadMultiFileDiffOptions<undefined> = {
   },
   options: {
     theme: DEFAULT_THEMES,
-    themeType: 'dark',
-    diffStyle: 'split',
+    themeType: "dark",
+    diffStyle: "split",
     useTokenTransformer: true,
     unsafeCSS: CustomScrollbarCSS,
   },

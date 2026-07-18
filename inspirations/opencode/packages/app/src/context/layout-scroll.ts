@@ -1,116 +1,116 @@
-import { createStore, produce } from "solid-js/store"
+import { createStore, produce } from "solid-js/store";
 
 export type SessionScroll = {
-  x: number
-  y: number
-}
+  x: number;
+  y: number;
+};
 
-type ScrollMap = Record<string, SessionScroll>
+type ScrollMap = Record<string, SessionScroll>;
 
 type Options = {
-  debounceMs?: number
-  getSnapshot: (sessionKey: string) => ScrollMap | undefined
-  onFlush: (sessionKey: string, scroll: ScrollMap) => void
-}
+  debounceMs?: number;
+  getSnapshot: (sessionKey: string) => ScrollMap | undefined;
+  onFlush: (sessionKey: string, scroll: ScrollMap) => void;
+};
 
 export function createScrollPersistence(opts: Options) {
-  const wait = opts.debounceMs ?? 200
-  const [cache, setCache] = createStore<Record<string, ScrollMap>>({})
-  const dirty = new Set<string>()
-  const timers = new Map<string, ReturnType<typeof setTimeout>>()
+  const wait = opts.debounceMs ?? 200;
+  const [cache, setCache] = createStore<Record<string, ScrollMap>>({});
+  const dirty = new Set<string>();
+  const timers = new Map<string, ReturnType<typeof setTimeout>>();
 
   function clone(input?: ScrollMap) {
-    const out: ScrollMap = {}
-    if (!input) return out
+    const out: ScrollMap = {};
+    if (!input) return out;
 
     for (const key of Object.keys(input)) {
-      const pos = input[key]
-      if (!pos) continue
-      out[key] = { x: pos.x, y: pos.y }
+      const pos = input[key];
+      if (!pos) continue;
+      out[key] = { x: pos.x, y: pos.y };
     }
 
-    return out
+    return out;
   }
 
   function seed(sessionKey: string) {
-    const next = clone(opts.getSnapshot(sessionKey))
-    const current = cache[sessionKey]
+    const next = clone(opts.getSnapshot(sessionKey));
+    const current = cache[sessionKey];
     if (!current) {
-      setCache(sessionKey, next)
-      return
+      setCache(sessionKey, next);
+      return;
     }
 
-    if (Object.keys(current).length > 0) return
-    if (Object.keys(next).length === 0) return
-    setCache(sessionKey, next)
+    if (Object.keys(current).length > 0) return;
+    if (Object.keys(next).length === 0) return;
+    setCache(sessionKey, next);
   }
 
   function scroll(sessionKey: string, tab: string) {
-    seed(sessionKey)
-    return cache[sessionKey]?.[tab] ?? opts.getSnapshot(sessionKey)?.[tab]
+    seed(sessionKey);
+    return cache[sessionKey]?.[tab] ?? opts.getSnapshot(sessionKey)?.[tab];
   }
 
   function schedule(sessionKey: string) {
-    const prev = timers.get(sessionKey)
-    if (prev) clearTimeout(prev)
+    const prev = timers.get(sessionKey);
+    if (prev) clearTimeout(prev);
     timers.set(
       sessionKey,
       setTimeout(() => flush(sessionKey), wait),
-    )
+    );
   }
 
   function setScroll(sessionKey: string, tab: string, pos: SessionScroll) {
-    seed(sessionKey)
+    seed(sessionKey);
 
-    const prev = cache[sessionKey]?.[tab]
-    if (prev?.x === pos.x && prev?.y === pos.y) return
+    const prev = cache[sessionKey]?.[tab];
+    if (prev?.x === pos.x && prev?.y === pos.y) return;
 
-    setCache(sessionKey, tab, { x: pos.x, y: pos.y })
-    dirty.add(sessionKey)
-    schedule(sessionKey)
+    setCache(sessionKey, tab, { x: pos.x, y: pos.y });
+    dirty.add(sessionKey);
+    schedule(sessionKey);
   }
 
   function flush(sessionKey: string) {
-    const timer = timers.get(sessionKey)
-    if (timer) clearTimeout(timer)
-    timers.delete(sessionKey)
+    const timer = timers.get(sessionKey);
+    if (timer) clearTimeout(timer);
+    timers.delete(sessionKey);
 
-    if (!dirty.has(sessionKey)) return
-    dirty.delete(sessionKey)
+    if (!dirty.has(sessionKey)) return;
+    dirty.delete(sessionKey);
 
-    opts.onFlush(sessionKey, clone(cache[sessionKey]))
+    opts.onFlush(sessionKey, clone(cache[sessionKey]));
   }
 
   function flushAll() {
-    const keys = Array.from(dirty)
-    if (keys.length === 0) return
+    const keys = Array.from(dirty);
+    if (keys.length === 0) return;
 
     for (const key of keys) {
-      flush(key)
+      flush(key);
     }
   }
 
   function drop(keys: string[]) {
-    if (keys.length === 0) return
+    if (keys.length === 0) return;
 
     for (const key of keys) {
-      const timer = timers.get(key)
-      if (timer) clearTimeout(timer)
-      timers.delete(key)
-      dirty.delete(key)
+      const timer = timers.get(key);
+      if (timer) clearTimeout(timer);
+      timers.delete(key);
+      dirty.delete(key);
     }
 
     setCache(
       produce((draft) => {
         for (const key of keys) {
-          delete draft[key]
+          delete draft[key];
         }
       }),
-    )
+    );
   }
 
   function dispose() {
-    drop(Array.from(timers.keys()))
+    drop(Array.from(timers.keys()));
   }
 
   return {
@@ -122,5 +122,5 @@ export function createScrollPersistence(opts: Options) {
     seed,
     setScroll,
     dispose,
-  }
+  };
 }

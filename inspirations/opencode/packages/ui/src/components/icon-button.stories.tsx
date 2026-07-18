@@ -1,6 +1,6 @@
 // @ts-nocheck
-import * as mod from "./icon-button"
-import { create } from "../storybook/scaffold"
+import * as mod from "./icon-button";
+import { create } from "../storybook/scaffold";
 
 const docs = `### Overview
 Compact icon-only button with size and variant control.
@@ -25,9 +25,13 @@ Use \`Button\` for text labels and primary actions.
 ### Theming/tokens
 - Uses \`data-component="icon-button"\` and size/variant data attributes.
 
-`
+`;
 
-const story = create({ title: "UI/IconButton", mod, args: { icon: "check", "aria-label": "Icon" } })
+const story = create({
+  title: "UI/IconButton",
+  mod,
+  args: { icon: "check", "aria-label": "Icon" },
+});
 export default {
   title: "UI/IconButton",
   id: "components-icon-button",
@@ -40,9 +44,9 @@ export default {
       },
     },
   },
-}
+};
 
-export const Basic = story.Basic
+export const Basic = story.Basic;
 
 export const Sizes = {
   render: () => (
@@ -52,7 +56,7 @@ export const Sizes = {
       <mod.IconButton icon="check" size="large" aria-label="Large" />
     </div>
   ),
-}
+};
 
 export const Variants = {
   render: () => (
@@ -62,13 +66,23 @@ export const Variants = {
       <mod.IconButton icon="check" variant="ghost" aria-label="Ghost" />
     </div>
   ),
-}
+};
 
 export const IconSizeOverride = {
   render: () => (
     <div style={{ display: "flex", gap: "12px", "align-items": "center" }}>
-      <mod.IconButton icon="check" size="small" iconSize="large" aria-label="Small with large icon" />
-      <mod.IconButton icon="check" size="large" iconSize="small" aria-label="Large with small icon" />
+      <mod.IconButton
+        icon="check"
+        size="small"
+        iconSize="large"
+        aria-label="Small with large icon"
+      />
+      <mod.IconButton
+        icon="check"
+        size="large"
+        iconSize="small"
+        aria-label="Large with small icon"
+      />
     </div>
   ),
-}
+};

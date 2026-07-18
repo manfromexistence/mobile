@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   type Context,
@@ -8,7 +8,7 @@ import {
   useEffect,
   useInsertionEffect,
   useState,
-} from 'react';
+} from "react";
 
 import {
   getOrCreateWorkerPoolSingleton,
@@ -17,12 +17,13 @@ import {
   type WorkerInitializationRenderOptions,
   type WorkerPoolManager,
   type WorkerPoolOptions,
-} from '../worker';
+} from "../worker";
 
 export type { WorkerPoolOptions, WorkerInitializationRenderOptions };
 
-export const WorkerPoolContext: Context<WorkerPoolManager | undefined> =
-  createContext<WorkerPoolManager | undefined>(undefined);
+export const WorkerPoolContext: Context<WorkerPoolManager | undefined> = createContext<
+  WorkerPoolManager | undefined
+>(undefined);
 
 let instanceCount = 0;
 
@@ -36,7 +37,7 @@ export function WorkerPoolContextProvider({
   highlighterOptions,
 }: WorkerPoolContextProps): React.JSX.Element {
   const [poolManager] = useState(() => {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return undefined;
     }
     return getOrCreateWorkerPoolSingleton({
@@ -62,11 +63,7 @@ export function WorkerPoolContextProvider({
       }
     };
   }, []);
-  return (
-    <WorkerPoolContext.Provider value={poolManager}>
-      {children}
-    </WorkerPoolContext.Provider>
-  );
+  return <WorkerPoolContext.Provider value={poolManager}>{children}</WorkerPoolContext.Provider>;
 }
 
 export function useWorkerPool(): WorkerPoolManager | undefined {

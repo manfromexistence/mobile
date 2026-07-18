@@ -92,7 +92,7 @@ export async function tinyfishFetch(opts: TinyFishFetchOptions): Promise<WebFetc
     if (!result) {
       const errorEntry = data.errors?.[0];
       const msg = sanitizeErrorMessage(
-        errorEntry?.message ?? errorEntry?.error ?? "TinyFish could not fetch the requested URL"
+        errorEntry?.message ?? errorEntry?.error ?? "TinyFish could not fetch the requested URL",
       );
       const body = buildErrorBody(502, msg);
       return { success: false, status: 502, error: body.error.message };

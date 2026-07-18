@@ -1,14 +1,11 @@
-import {
-  type ShikiTransformerStyleToClass,
-  transformerStyleToClass,
-} from '@shikijs/transformers';
-import type { ElementContent } from 'hast';
-import type { ThemedToken } from 'shiki';
+import { type ShikiTransformerStyleToClass, transformerStyleToClass } from "@shikijs/transformers";
+import type { ElementContent } from "hast";
+import type { ThemedToken } from "shiki";
 
-import type { SharedRenderState, ShikiTransformer } from '../types';
-import { findCodeElement } from './hast_utils';
-import { processLine } from './processLine';
-import { wrapTokenFragments } from './wrapTokenFragments';
+import type { SharedRenderState, ShikiTransformer } from "../types";
+import { findCodeElement } from "./hast_utils";
+import { processLine } from "./processLine";
+import { wrapTokenFragments } from "./wrapTokenFragments";
 
 interface CreateTransformerWithStateReturn {
   state: SharedRenderState;
@@ -22,7 +19,7 @@ type TokenWithLineChar = ThemedToken & {
 
 export function createTransformerWithState(
   useTokenTransformer = false,
-  useCSSClasses = false
+  useCSSClasses = false,
 ): CreateTransformerWithStateReturn {
   const state: SharedRenderState = { lineInfo: [] };
   const transformers: ShikiTransformer[] = [
@@ -38,7 +35,7 @@ export function createTransformerWithState(
         if (code != null) {
           let index = 1;
           for (const node of code.children) {
-            if (node.type !== 'element') continue;
+            if (node.type !== "element") continue;
             if (useTokenTransformer) {
               wrapTokenFragments(node);
             }
@@ -62,14 +59,14 @@ export function createTransformerWithState(
               }
             },
             preprocess(_code, options) {
-              options.mergeWhitespaces = 'never';
+              options.mergeWhitespaces = "never";
             },
             span(hast, _line, _char, _lineElement, token) {
               if (token?.offset != null && token.content != null) {
                 const tokenWithOriginalRange = token as TokenWithLineChar;
                 const tokenChar = tokenWithOriginalRange.__lineChar;
                 if (tokenChar != null) {
-                  hast.properties['data-char'] = tokenChar;
+                  hast.properties["data-char"] = tokenChar;
                 }
                 return hast;
               }
@@ -85,12 +82,12 @@ export function createTransformerWithState(
   return { state, transformers, toClass };
 }
 
-const toClass = transformerStyleToClass({ classPrefix: 'hl-' });
+const toClass = transformerStyleToClass({ classPrefix: "hl-" });
 
 // Create a transformer that converts token color/fontStyle to htmlStyle
 // This needs to run BEFORE transformerStyleToClass
 const tokenStyleNormalizer: ShikiTransformer = {
-  name: 'token-style-normalizer',
+  name: "token-style-normalizer",
   tokens(lines) {
     for (const line of lines) {
       for (const token of line) {
@@ -103,18 +100,18 @@ const tokenStyleNormalizer: ShikiTransformer = {
           style.color = token.color;
         }
         if (token.bgColor != null) {
-          style['background-color'] = token.bgColor;
+          style["background-color"] = token.bgColor;
         }
         if (token.fontStyle != null && token.fontStyle !== 0) {
           // FontStyle is a bitmask: 1 = italic, 2 = bold, 4 = underline
           if ((token.fontStyle & 1) !== 0) {
-            style['font-style'] = 'italic';
+            style["font-style"] = "italic";
           }
           if ((token.fontStyle & 2) !== 0) {
-            style['font-weight'] = 'bold';
+            style["font-weight"] = "bold";
           }
           if ((token.fontStyle & 4) !== 0) {
-            style['text-decoration'] = 'underline';
+            style["text-decoration"] = "underline";
           }
         }
 

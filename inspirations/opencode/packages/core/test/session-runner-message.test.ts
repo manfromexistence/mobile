@@ -1,17 +1,17 @@
-import { describe, expect, test } from "bun:test"
-import { Message, Model } from "@opencode-ai/llm"
-import * as OpenAIChat from "@opencode-ai/llm/protocols/openai-chat"
-import { ModelV2 } from "@opencode-ai/core/model"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { SessionMessage } from "@opencode-ai/core/session/message"
-import { AgentAttachment, FileAttachment } from "@opencode-ai/core/session/prompt"
-import { toLLMMessages } from "@opencode-ai/core/session/runner/to-llm-message"
-import { SessionV2 } from "@opencode-ai/core/session"
-import { DateTime } from "effect"
+import { describe, expect, test } from "bun:test";
+import { Message, Model } from "@opencode-ai/llm";
+import * as OpenAIChat from "@opencode-ai/llm/protocols/openai-chat";
+import { ModelV2 } from "@opencode-ai/core/model";
+import { ProviderV2 } from "@opencode-ai/core/provider";
+import { SessionMessage } from "@opencode-ai/core/session/message";
+import { AgentAttachment, FileAttachment } from "@opencode-ai/core/session/prompt";
+import { toLLMMessages } from "@opencode-ai/core/session/runner/to-llm-message";
+import { SessionV2 } from "@opencode-ai/core/session";
+import { DateTime } from "effect";
 
-const created = DateTime.makeUnsafe(0)
-const id = (value: string) => SessionMessage.ID.make(`msg_${value}`)
-const model = Model.make({ id: "model", provider: "provider", route: OpenAIChat.route })
+const created = DateTime.makeUnsafe(0);
+const id = (value: string) => SessionMessage.ID.make(`msg_${value}`);
+const model = Model.make({ id: "model", provider: "provider", route: OpenAIChat.route });
 
 describe("toLLMMessages", () => {
   test("omits empty assistant turns", () => {
@@ -23,15 +23,23 @@ describe("toLLMMessages", () => {
         model: { id: ModelV2.ID.make("model"), providerID: ProviderV2.ID.make("provider") },
         content,
         time: { created, completed: created },
-      })
+      });
     const messages = toLLMMessages(
       [
         assistant("empty", []),
-        assistant("empty-text", [SessionMessage.AssistantText.make({ type: "text", id: "empty", text: "" })]),
-        assistant("empty-reasoning", [
-          SessionMessage.AssistantReasoning.make({ type: "reasoning", id: "empty-reasoning", text: "" }),
+        assistant("empty-text", [
+          SessionMessage.AssistantText.make({ type: "text", id: "empty", text: "" }),
         ]),
-        assistant("text", [SessionMessage.AssistantText.make({ type: "text", id: "text", text: "Partial" })]),
+        assistant("empty-reasoning", [
+          SessionMessage.AssistantReasoning.make({
+            type: "reasoning",
+            id: "empty-reasoning",
+            text: "",
+          }),
+        ]),
+        assistant("text", [
+          SessionMessage.AssistantText.make({ type: "text", id: "text", text: "Partial" }),
+        ]),
         assistant("reasoning", [
           SessionMessage.AssistantReasoning.make({
             type: "reasoning",
@@ -42,13 +50,17 @@ describe("toLLMMessages", () => {
         ]),
       ],
       model,
-    )
+    );
 
-    expect(messages.map((message) => message.id)).toEqual([id("text"), id("reasoning")])
-  })
+    expect(messages.map((message) => message.id)).toEqual([id("text"), id("reasoning")]);
+  });
 
   test("maps every top-level V2 Session message type", () => {
-    const file = FileAttachment.make({ uri: "data:image/png;base64,aGVsbG8=", mime: "image/png", name: "hello.png" })
+    const file = FileAttachment.make({
+      uri: "data:image/png;base64,aGVsbG8=",
+      mime: "image/png",
+      name: "hello.png",
+    });
     const messages = toLLMMessages(
       [
         SessionMessage.AgentSwitched.make({
@@ -102,21 +114,32 @@ describe("toLLMMessages", () => {
         }),
       ],
       model,
-    )
+    );
 
-    expect(messages.map((message) => message.role)).toEqual(["system", "user", "user", "user", "user"])
-    expect(messages[0]).toEqual(Message.system("Updated context\n\nOther context"))
+    expect(messages.map((message) => message.role)).toEqual([
+      "system",
+      "user",
+      "user",
+      "user",
+      "user",
+    ]);
+    expect(messages[0]).toEqual(Message.system("Updated context\n\nOther context"));
     expect(messages[1]).toEqual(
       Message.make({
         id: id("user"),
         role: "user",
         content: [
           { type: "text", text: "Inspect this image" },
-          { type: "media", mediaType: "image/png", data: "data:image/png;base64,aGVsbG8=", filename: "hello.png" },
+          {
+            type: "media",
+            mediaType: "image/png",
+            data: "data:image/png;base64,aGVsbG8=",
+            filename: "hello.png",
+          },
         ],
         metadata: { agents: [{ name: "build" }] },
       }),
-    )
+    );
     expect(messages.slice(2).map((message) => message.content)).toEqual([
       [{ type: "text", text: "Synthetic context" }],
       [{ type: "text", text: "Shell command: pwd\n\n/project" }],
@@ -136,8 +159,8 @@ Recent work
 </conversation-checkpoint>`,
         },
       ],
-    ])
-  })
+    ]);
+  });
 
   test("replays durable tool media into canonical tool messages without structured base64", () => {
     const messages = toLLMMessages(
@@ -159,7 +182,10 @@ Recent work
               type: "tool",
               id: "pending",
               name: "read",
-              state: SessionMessage.ToolStatePending.make({ status: "pending", input: '{"path":"README.md"}' }),
+              state: SessionMessage.ToolStatePending.make({
+                status: "pending",
+                input: '{"path":"README.md"}',
+              }),
               time: { created },
             }),
             SessionMessage.AssistantTool.make({
@@ -230,9 +256,9 @@ Recent work
         }),
       ],
       model,
-    )
+    );
 
-    expect(messages.map((message) => message.role)).toEqual(["assistant", "tool"])
+    expect(messages.map((message) => message.role)).toEqual(["assistant", "tool"]);
     expect(messages[0]?.content).toEqual([
       { type: "text", text: "Checking" },
       { type: "reasoning", text: "Think", providerMetadata: { anthropic: { signature: "sig_1" } } },
@@ -279,7 +305,7 @@ Recent work
           value: { error: { type: "unknown", message: "Denied" }, content: [], structured: {} },
         },
       },
-    ])
+    ]);
     expect(messages[1]?.content).toEqual([
       {
         type: "tool-result",
@@ -289,12 +315,17 @@ Recent work
           type: "content",
           value: [
             { type: "text", text: "Hello" },
-            { type: "file", uri: "data:image/png;base64,aGVsbG8=", mime: "image/png", name: "hello.png" },
+            {
+              type: "file",
+              uri: "data:image/png;base64,aGVsbG8=",
+              mime: "image/png",
+              name: "hello.png",
+            },
           ],
         },
       },
-    ])
-  })
+    ]);
+  });
 
   test("restores OpenAI encrypted reasoning metadata", () => {
     const messages = toLLMMessages(
@@ -309,23 +340,27 @@ Recent work
               type: "reasoning",
               id: "reasoning-openai",
               text: "Think",
-              providerMetadata: { openai: { itemId: "rs_1", reasoningEncryptedContent: "encrypted-state" } },
+              providerMetadata: {
+                openai: { itemId: "rs_1", reasoningEncryptedContent: "encrypted-state" },
+              },
             }),
           ],
           time: { created, completed: created },
         }),
       ],
       model,
-    )
+    );
 
     expect(messages[0]?.content).toEqual([
       {
         type: "reasoning",
         text: "Think",
-        providerMetadata: { openai: { itemId: "rs_1", reasoningEncryptedContent: "encrypted-state" } },
+        providerMetadata: {
+          openai: { itemId: "rs_1", reasoningEncryptedContent: "encrypted-state" },
+        },
       },
-    ])
-  })
+    ]);
+  });
 
   test("drops provider-native continuation metadata from failed assistant turns", () => {
     const messages = toLLMMessages(
@@ -340,7 +375,9 @@ Recent work
               type: "reasoning",
               id: "reasoning-failed",
               text: "Partial thought",
-              providerMetadata: { openai: { itemId: "rs_failed", reasoningEncryptedContent: null } },
+              providerMetadata: {
+                openai: { itemId: "rs_failed", reasoningEncryptedContent: null },
+              },
             }),
             SessionMessage.AssistantTool.make({
               type: "tool",
@@ -367,7 +404,7 @@ Recent work
         }),
       ],
       model,
-    )
+    );
 
     expect(messages[0]?.content).toEqual([
       { type: "reasoning", text: "Partial thought", providerMetadata: undefined },
@@ -396,8 +433,8 @@ Recent work
         metadata: undefined,
         providerMetadata: undefined,
       },
-    ])
-  })
+    ]);
+  });
 
   test("drops provider-native continuation metadata after a model switch", () => {
     const messages = toLLMMessages(
@@ -454,7 +491,7 @@ Recent work
         }),
       ],
       model,
-    )
+    );
 
     expect(messages[0]?.content).toEqual([
       { type: "text", text: "Visible thought" },
@@ -484,7 +521,7 @@ Recent work
         providerExecuted: false,
         providerMetadata: undefined,
       },
-    ])
+    ]);
     expect(messages[1]?.content).toEqual([
       {
         type: "tool-result",
@@ -496,6 +533,6 @@ Recent work
         metadata: undefined,
         providerMetadata: undefined,
       },
-    ])
-  })
-})
+    ]);
+  });
+});

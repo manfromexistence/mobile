@@ -27,7 +27,7 @@ export function getPromptCacheReadTokens(tokens: unknown): number {
     tokenRecord.cacheRead ??
       tokenRecord.cache_read_input_tokens ??
       tokenRecord.cached_tokens ??
-      promptDetails.cached_tokens
+      promptDetails.cached_tokens,
   );
 }
 
@@ -37,7 +37,7 @@ export function getPromptCacheCreationTokens(tokens: unknown): number {
   return toFiniteNumber(
     tokenRecord.cacheCreation ??
       tokenRecord.cache_creation_input_tokens ??
-      promptDetails.cache_creation_tokens
+      promptDetails.cache_creation_tokens,
   );
 }
 
@@ -89,7 +89,7 @@ export function getReasoningTokens(tokens: unknown): number {
   const tokenRecord = asRecord(tokens);
   const completionDetails = asRecord(tokenRecord.completion_tokens_details);
   return toFiniteNumber(
-    tokenRecord.reasoning ?? tokenRecord.reasoning_tokens ?? completionDetails.reasoning_tokens
+    tokenRecord.reasoning ?? tokenRecord.reasoning_tokens ?? completionDetails.reasoning_tokens,
   );
 }
 

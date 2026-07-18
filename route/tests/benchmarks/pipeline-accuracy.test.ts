@@ -72,7 +72,7 @@ interface CallResult {
 }
 
 async function callDeepSeek(
-  messages: Array<{ role: string; content: string }>
+  messages: Array<{ role: string; content: string }>,
 ): Promise<CallResult> {
   const start = Date.now();
   const res = await fetch(`${BASE_URL}/chat/completions`, {
@@ -229,10 +229,10 @@ async function main() {
     const type = mathResults.includes(r) ? "MATH" : "CODE";
     console.log(`[${type}] ${r.question.slice(0, 55)}...`);
     console.log(
-      `  Baseline: ${r.baselineCorrect ? "CORRECT" : "WRONG"} | ${r.baselineTokens.input + r.baselineTokens.output} tok | ${r.baselineLatencyMs}ms`
+      `  Baseline: ${r.baselineCorrect ? "CORRECT" : "WRONG"} | ${r.baselineTokens.input + r.baselineTokens.output} tok | ${r.baselineLatencyMs}ms`,
     );
     console.log(
-      `  Pipeline: ${r.pipelineCorrect ? "CORRECT" : "WRONG"} | ${r.pipelineTokens.input + r.pipelineTokens.output} tok | ${r.pipelineLatencyMs}ms | ${r.stagesExecuted} stages`
+      `  Pipeline: ${r.pipelineCorrect ? "CORRECT" : "WRONG"} | ${r.pipelineTokens.input + r.pipelineTokens.output} tok | ${r.pipelineLatencyMs}ms | ${r.stagesExecuted} stages`,
     );
   }
 
@@ -244,36 +244,36 @@ async function main() {
 
   const bTokens = allResults.reduce(
     (s, r) => s + r.baselineTokens.input + r.baselineTokens.output,
-    0
+    0,
   );
   const pTokens = allResults.reduce(
     (s, r) => s + r.pipelineTokens.input + r.pipelineTokens.output,
-    0
+    0,
   );
   const bCost = (bTokens / 1_000_000) * COST_INPUT_PER_M;
   const pCost = (pTokens / 1_000_000) * COST_INPUT_PER_M;
   const bLatency = Math.round(
-    allResults.reduce((s, r) => s + r.baselineLatencyMs, 0) / allResults.length
+    allResults.reduce((s, r) => s + r.baselineLatencyMs, 0) / allResults.length,
   );
   const pLatency = Math.round(
-    allResults.reduce((s, r) => s + r.pipelineLatencyMs, 0) / allResults.length
+    allResults.reduce((s, r) => s + r.pipelineLatencyMs, 0) / allResults.length,
   );
 
   console.log("\n=== Summary ===\n");
   console.log(
-    `Math accuracy:     Baseline ${mathBC}/${MATH_PROBLEMS.length} | Pipeline ${mathPC}/${MATH_PROBLEMS.length}`
+    `Math accuracy:     Baseline ${mathBC}/${MATH_PROBLEMS.length} | Pipeline ${mathPC}/${MATH_PROBLEMS.length}`,
   );
   console.log(
-    `Coding accuracy:   Baseline ${codeBC}/${CODING_PROBLEMS.length} | Pipeline ${codePC}/${CODING_PROBLEMS.length}`
+    `Coding accuracy:   Baseline ${codeBC}/${CODING_PROBLEMS.length} | Pipeline ${codePC}/${CODING_PROBLEMS.length}`,
   );
   console.log(
-    `Total tokens:      Baseline ${bTokens} | Pipeline ${pTokens} (${(pTokens / bTokens).toFixed(1)}x)`
+    `Total tokens:      Baseline ${bTokens} | Pipeline ${pTokens} (${(pTokens / bTokens).toFixed(1)}x)`,
   );
   console.log(
-    `Estimated cost:    Baseline $${bCost.toFixed(4)} | Pipeline $${pCost.toFixed(4)} (${(pCost / bCost).toFixed(1)}x)`
+    `Estimated cost:    Baseline $${bCost.toFixed(4)} | Pipeline $${pCost.toFixed(4)} (${(pCost / bCost).toFixed(1)}x)`,
   );
   console.log(
-    `Avg latency:       Baseline ${bLatency}ms | Pipeline ${pLatency}ms (${(pLatency / bLatency).toFixed(1)}x)`
+    `Avg latency:       Baseline ${bLatency}ms | Pipeline ${pLatency}ms (${(pLatency / bLatency).toFixed(1)}x)`,
   );
   console.log(`\nNote: Single provider (DeepSeek) for all stages. Multi-provider routing`);
   console.log(`would reduce cost by using cheap providers for execute/fix stages.`);

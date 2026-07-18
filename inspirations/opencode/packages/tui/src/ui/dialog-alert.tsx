@@ -1,17 +1,17 @@
-import { TextAttributes } from "@opentui/core"
-import { useTheme } from "../context/theme"
-import { useDialog, type DialogContext } from "./dialog"
-import { useBindings } from "../keymap"
+import { TextAttributes } from "@opentui/core";
+import { useTheme } from "../context/theme";
+import { useDialog, type DialogContext } from "./dialog";
+import { useBindings } from "../keymap";
 
 export type DialogAlertProps = {
-  title: string
-  message: string
-  onConfirm?: () => void
-}
+  title: string;
+  message: string;
+  onConfirm?: () => void;
+};
 
 export function DialogAlert(props: DialogAlertProps) {
-  const dialog = useDialog()
-  const { theme } = useTheme()
+  const dialog = useDialog();
+  const { theme } = useTheme();
 
   useBindings(() => ({
     bindings: [
@@ -20,12 +20,12 @@ export function DialogAlert(props: DialogAlertProps) {
         desc: "Confirm alert",
         group: "Dialog",
         cmd: () => {
-          props.onConfirm?.()
-          dialog.clear()
+          props.onConfirm?.();
+          dialog.clear();
         },
       },
     ],
-  }))
+  }));
   return (
     <box paddingLeft={2} paddingRight={2} gap={1}>
       <box flexDirection="row" justifyContent="space-between">
@@ -45,15 +45,15 @@ export function DialogAlert(props: DialogAlertProps) {
           paddingRight={3}
           backgroundColor={theme.primary}
           onMouseUp={() => {
-            props.onConfirm?.()
-            dialog.clear()
+            props.onConfirm?.();
+            dialog.clear();
           }}
         >
           <text fg={theme.selectedListItemText}>ok</text>
         </box>
       </box>
     </box>
-  )
+  );
 }
 
 DialogAlert.show = (dialog: DialogContext, title: string, message: string) => {
@@ -61,6 +61,6 @@ DialogAlert.show = (dialog: DialogContext, title: string, message: string) => {
     dialog.replace(
       () => <DialogAlert title={title} message={message} onConfirm={() => resolve()} />,
       () => resolve(),
-    )
-  })
-}
+    );
+  });
+};

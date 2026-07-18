@@ -12,7 +12,7 @@ test.describe("Visual Smoke — Resilience Routes", () => {
       expect(screenshotBuffer.byteLength).toBeGreaterThan(10_000);
 
       const hasOverflow = await page.evaluate(
-        () => document.documentElement.scrollWidth > window.innerWidth + 1
+        () => document.documentElement.scrollWidth > window.innerWidth + 1,
       );
       expect(hasOverflow).toBeFalsy();
     });

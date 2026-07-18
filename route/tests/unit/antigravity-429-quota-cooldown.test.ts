@@ -66,7 +66,7 @@ test("classify429: standard Gemini rate limit 'resource has been exhausted' -> r
   assert.notEqual(
     result,
     "quota_exhausted",
-    "RESOURCE_EXHAUSTED rate limit should not be classified as quota_exhausted"
+    "RESOURCE_EXHAUSTED rate limit should not be classified as quota_exhausted",
   );
 });
 
@@ -83,7 +83,7 @@ test("markConnectionQuotaExhausted persists 24h cooldown; isConnectionRateLimite
   assert.equal(
     providersDb.isConnectionRateLimited(connId),
     false,
-    "should start as not rate-limited"
+    "should start as not rate-limited",
   );
 
   markConnectionQuotaExhausted(connId, FULL_QUOTA_COOLDOWN_MS);
@@ -91,7 +91,7 @@ test("markConnectionQuotaExhausted persists 24h cooldown; isConnectionRateLimite
   assert.equal(
     providersDb.isConnectionRateLimited(connId),
     true,
-    "should be rate-limited after marking quota exhausted"
+    "should be rate-limited after marking quota exhausted",
   );
 });
 
@@ -108,6 +108,6 @@ test("markConnectionQuotaExhausted: expired cooldown does not block the connecti
   assert.equal(
     providersDb.isConnectionRateLimited(connId),
     false,
-    "expired cooldown should not block"
+    "expired cooldown should not block",
   );
 });

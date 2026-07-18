@@ -194,7 +194,7 @@ function getRetryConfig(retry: SafeOutboundFetchRetryOptions | false | undefined
   }
 
   const methods = new Set(
-    (retry?.methods || DEFAULT_IDEMPOTENT_METHODS).map((value) => value.toUpperCase())
+    (retry?.methods || DEFAULT_IDEMPOTENT_METHODS).map((value) => value.toUpperCase()),
   );
   const attempts = Math.max(1, retry?.attempts || 1);
   const backoffMs = Array.isArray(retry?.backoffMs)
@@ -234,7 +234,7 @@ function normalizeFetchFailure(
   error: unknown,
   targetUrl: string,
   method: string,
-  attempts: number
+  attempts: number,
 ): SafeOutboundFetchError {
   if (error instanceof SafeOutboundFetchError) {
     error.attempts = attempts;
@@ -317,7 +317,7 @@ export async function safeOutboundFetch(url: string | URL, options: SafeOutbound
             status: response.status,
             location,
             isRetryable: false,
-          }
+          },
         );
       }
 

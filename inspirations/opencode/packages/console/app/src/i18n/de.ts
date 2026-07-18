@@ -1,5 +1,5 @@
-import type { Dict } from "./en"
-import { dict as en } from "./en"
+import type { Dict } from "./en";
+import { dict as en } from "./en";
 
 export const dict = {
   ...en,
@@ -35,7 +35,8 @@ export const dict = {
   "email.subtitle": "Trage dich in die Warteliste für frühen Zugang ein.",
   "email.placeholder": "E-Mail-Adresse",
   "email.subscribe": "Anmelden",
-  "email.success": "Fast geschafft, überprüfe deinen Posteingang und bestätige deine E-Mail-Adresse",
+  "email.success":
+    "Fast geschafft, überprüfe deinen Posteingang und bestätige deine E-Mail-Adresse",
 
   "notFound.title": "Nicht gefunden | OpenCode",
   "notFound.heading": "404 - Seite nicht gefunden",
@@ -108,7 +109,8 @@ export const dict = {
   "home.banner.downloadBetaNow": "Desktop-Beta jetzt herunterladen",
 
   "home.hero.title": "Der Open-Source AI-Coding-Agent",
-  "home.hero.subtitle.a": "Kostenlose Modelle inklusive oder verbinde jedes Modell eines beliebigen Anbieters,",
+  "home.hero.subtitle.a":
+    "Kostenlose Modelle inklusive oder verbinde jedes Modell eines beliebigen Anbieters,",
   "home.hero.subtitle.b": "einschließlich Claude, GPT, Gemini und mehr.",
 
   "home.install.ariaLabel": "Installationsoptionen",
@@ -125,7 +127,8 @@ export const dict = {
   "home.what.copilot.title": "GitHub Copilot",
   "home.what.copilot.body": "Melde dich mit GitHub an, um deinen Copilot-Account zu nutzen",
   "home.what.chatgptPlus.title": "ChatGPT Plus/Pro",
-  "home.what.chatgptPlus.body": "Melde dich mit OpenAI an, um deinen ChatGPT Plus- oder Pro-Account zu nutzen",
+  "home.what.chatgptPlus.body":
+    "Melde dich mit OpenAI an, um deinen ChatGPT Plus- oder Pro-Account zu nutzen",
   "home.what.anyModel.title": "Jedes Modell",
   "home.what.anyModel.body": "75+ LLM-Anbieter durch Models.dev, einschließlich lokaler Modelle",
   "home.what.anyEditor.title": "Jeder Editor",
@@ -154,7 +157,8 @@ export const dict = {
   "home.faq.q3": "Brauche ich zusätzliche AI-Abos, um OpenCode zu nutzen?",
   "home.faq.a3.p1":
     "Nicht unbedingt, OpenCode kommt mit einer Reihe kostenloser Modelle, die du ohne Account nutzen kannst.",
-  "home.faq.a3.p2.beforeZen": "Abgesehen davon kannst du jedes beliebige Coding-Modell nutzen, indem du einen",
+  "home.faq.a3.p2.beforeZen":
+    "Abgesehen davon kannst du jedes beliebige Coding-Modell nutzen, indem du einen",
   "home.faq.a3.p2.afterZen": " Account erstellst.",
   "home.faq.a3.p3":
     "Während wir dazu raten, Zen zu nutzen, funktioniert OpenCode auch mit allen beliebten Anbietern wie OpenAI, Anthropic, xAI etc.",
@@ -190,7 +194,8 @@ export const dict = {
     "Zen gibt dir Zugriff auf ein handverlesenes Set an AI-Modellen, die OpenCode speziell für Coding-Agents getestet und bewertet hat. Keine Sorge wegen inkonsistenter Leistung und Qualität bei verschiedenen Anbietern – nutze validierte Modelle, die funktionieren.",
   "home.zenCta.link": "Erfahre mehr über Zen",
 
-  "zen.title": "OpenCode Zen | Ein kuratiertes Set zuverlässiger, optimierter Modelle für Coding-Agents",
+  "zen.title":
+    "OpenCode Zen | Ein kuratiertes Set zuverlässiger, optimierter Modelle für Coding-Agents",
   "zen.hero.title": "Zuverlässige, optimierte Modelle für Coding-Agents",
   "zen.hero.body":
     "Zen gibt dir Zugriff auf ein kuratiertes Set an AI-Modellen, die OpenCode speziell für Coding-Agents getestet und bewertet hat. Keine Sorge wegen inkonsistenter Leistung und Qualität – nutze validierte Modelle, die funktionieren.",
@@ -207,7 +212,8 @@ export const dict = {
   "zen.faq.q4": "Wie viel kostet Zen?",
   "zen.faq.a4.p1.beforePricing": "Zen",
   "zen.faq.a4.p1.pricingLink": "berechnet pro Anfrage",
-  "zen.faq.a4.p1.afterPricing": "ohne Aufschläge, also zahlst du genau das, was der Modellanbieter berechnet.",
+  "zen.faq.a4.p1.afterPricing":
+    "ohne Aufschläge, also zahlst du genau das, was der Modellanbieter berechnet.",
   "zen.faq.a4.p2.beforeAccount":
     "Deine Gesamtkosten hängen von der Nutzung ab, und du kannst monatliche Ausgabenlimits in deinem",
   "zen.faq.a4.p2.accountLink": "Account festlegen",
@@ -220,7 +226,8 @@ export const dict = {
   "zen.faq.q6": "Kann ich Ausgabenlimits setzen?",
   "zen.faq.a6": "Ja, du kannst monatliche Ausgabenlimits in deinem Account setzen.",
   "zen.faq.q7": "Kann ich kündigen?",
-  "zen.faq.a7": "Ja, du kannst die Abrechnung jederzeit deaktivieren und dein verbleibendes Guthaben nutzen.",
+  "zen.faq.a7":
+    "Ja, du kannst die Abrechnung jederzeit deaktivieren und dein verbleibendes Guthaben nutzen.",
   "zen.faq.q8": "Kann ich Zen mit anderen Coding-Agents nutzen?",
   "zen.faq.a8":
     "Während Zen großartig mit OpenCode funktioniert, kannst du Zen mit jedem Agent nutzen. Folge den Einrichtungsanweisungen in deinem bevorzugten Coding-Agent.",
@@ -228,7 +235,8 @@ export const dict = {
   "zen.cta.start": "Starte mit Zen",
   "zen.pricing.title": "Füge $20 Pay-as-you-go Guthaben hinzu",
   "zen.pricing.fee": "(+$1.23 Bearbeitungsgebühr)",
-  "zen.pricing.body": "Nutze es mit jedem Agent. Setze monatliche Ausgabenlimits. Jederzeit kündbar.",
+  "zen.pricing.body":
+    "Nutze es mit jedem Agent. Setze monatliche Ausgabenlimits. Jederzeit kündbar.",
   "zen.problem.title": "Welches Problem löst Zen?",
   "zen.problem.body":
     "Es gibt so viele Modelle, aber nur wenige funktionieren gut mit Coding-Agents. Die meisten Anbieter konfigurieren sie unterschiedlich, was zu variierenden Ergebnissen führt.",
@@ -237,7 +245,8 @@ export const dict = {
   "zen.problem.item2": "Zusammenarbeit mit Anbietern, um korrekte Bereitstellung zu sichern",
   "zen.problem.item3": "Benchmarking aller Modell-Anbieter-Kombinationen, die wir empfehlen",
   "zen.how.title": "Wie Zen funktioniert",
-  "zen.how.body": "Während wir dir raten, Zen mit OpenCode zu nutzen, kannst du Zen mit jedem Agent nutzen.",
+  "zen.how.body":
+    "Während wir dir raten, Zen mit OpenCode zu nutzen, kannst du Zen mit jedem Agent nutzen.",
   "zen.how.step1.title": "Melde dich an und füge $20 Guthaben hinzu",
   "zen.how.step1.beforeLink": "folge den",
   "zen.how.step1.link": "Einrichtungsanweisungen",
@@ -290,7 +299,8 @@ export const dict = {
   "go.testimonials.david.name": "David Hill",
   "go.testimonials.david.title": "ex-Head of Design, Laravel",
   "go.testimonials.david.quoteBefore": "Mit",
-  "go.testimonials.david.quoteAfter": "weiß ich, dass alle Modelle getestet und perfekt für Coding-Agenten sind.",
+  "go.testimonials.david.quoteAfter":
+    "weiß ich, dass alle Modelle getestet und perfekt für Coding-Agenten sind.",
   "go.testimonials.frank.name": "Frank Wang",
   "go.testimonials.frank.title": "ex-Praktikant, Nvidia (4 mal)",
   "go.testimonials.frank.quote": "Ich wünschte, ich wäre noch bei Nvidia.",
@@ -325,7 +335,8 @@ export const dict = {
   "go.faq.a1":
     "Go ist ein kostengünstiges Abonnement, das dir zuverlässigen Zugang zu leistungsfähigen Open-Source-Modellen für Agentic Coding bietet.",
   "go.faq.q2": "Welche Modelle beinhaltet Go?",
-  "go.faq.a2": "Go umfasst die unten aufgeführten Modelle mit großzügigen Limits und zuverlässigem Zugriff.",
+  "go.faq.a2":
+    "Go umfasst die unten aufgeführten Modelle mit großzügigen Limits und zuverlässigem Zugriff.",
   "go.faq.q3": "Ist Go dasselbe wie Zen?",
   "go.faq.a3":
     "Nein. Zen ist Pay-as-you-go, während Go bei $5 für den ersten Monat beginnt, danach $10/Monat, mit großzügigen Limits und zuverlässigem Zugang zu den Open-Source-Modellen GLM-5.2, GLM-5.1, Kimi K2.7 Code, Kimi K2.6, MiMo-V2.5-Pro, MiMo-V2.5, Qwen3.7 Max, Qwen3.7 Plus, Qwen3.6 Plus, MiniMax M2.7, MiniMax M3, DeepSeek V4 Pro und DeepSeek V4 Flash.",
@@ -356,20 +367,24 @@ export const dict = {
 
   "zen.api.error.rateLimitExceeded": "Ratenlimit überschritten. Bitte versuche es später erneut.",
   "zen.api.error.modelNotSupported": "Modell {{model}} wird nicht unterstützt",
-  "zen.api.error.modelFormatNotSupported": "Modell {{model}} wird für das Format {{format}} nicht unterstützt",
+  "zen.api.error.modelFormatNotSupported":
+    "Modell {{model}} wird für das Format {{format}} nicht unterstützt",
   "zen.api.error.noProviderAvailable": "Kein Anbieter verfügbar",
   "zen.api.error.providerNotSupported": "Anbieter {{provider}} wird nicht unterstützt",
   "zen.api.error.missingApiKey": "Fehlender API-Key.",
   "zen.api.error.invalidApiKey": "Ungültiger API-Key.",
-  "zen.api.error.subscriptionQuotaExceeded": "Abonnement-Quote überschritten. Erneuter Versuch in {{retryIn}}.",
+  "zen.api.error.subscriptionQuotaExceeded":
+    "Abonnement-Quote überschritten. Erneuter Versuch in {{retryIn}}.",
   "zen.api.error.goSubscriptionRollingLimitExceeded":
     "5-Stunden-Nutzungslimit erreicht. Wird in {{retryIn}} zurückgesetzt. Um dieses Modell jetzt weiter zu nutzen, aktiviere die Nutzung über dein verfügbares Guthaben: {{consoleGoUrl}}",
   "zen.api.error.goSubscriptionWeeklyLimitExceeded":
     "Wöchentliches Nutzungslimit erreicht. Wird in {{retryIn}} zurückgesetzt. Um dieses Modell jetzt weiter zu nutzen, aktiviere die Nutzung über dein verfügbares Guthaben: {{consoleGoUrl}}",
   "zen.api.error.goSubscriptionMonthlyLimitExceeded":
     "Monatliches Nutzungslimit erreicht. Wird in {{retryIn}} zurückgesetzt. Um dieses Modell jetzt weiter zu nutzen, aktiviere die Nutzung über dein verfügbares Guthaben: {{consoleGoUrl}}",
-  "zen.api.error.noPaymentMethod": "Keine Zahlungsmethode. Füge hier eine Zahlungsmethode hinzu: {{billingUrl}}",
-  "zen.api.error.insufficientBalance": "Unzureichendes Guthaben. Verwalte deine Abrechnung hier: {{billingUrl}}",
+  "zen.api.error.noPaymentMethod":
+    "Keine Zahlungsmethode. Füge hier eine Zahlungsmethode hinzu: {{billingUrl}}",
+  "zen.api.error.insufficientBalance":
+    "Unzureichendes Guthaben. Verwalte deine Abrechnung hier: {{billingUrl}}",
   "zen.api.error.workspaceMonthlyLimitReached":
     "Dein Workspace hat sein monatliches Ausgabenlimit von ${{amount}} erreicht. Verwalte deine Limits hier: {{billingUrl}}",
   "zen.api.error.userMonthlyLimitReached":
@@ -381,7 +396,8 @@ export const dict = {
     "Die kostenlose Aktion für {{model}} ist beendet. Du kannst das Modell weiterhin nutzen, indem du OpenCode Go abonnierst - {{link}}",
 
   "black.meta.title": "OpenCode Black | Zugriff auf die weltweit besten Coding-Modelle",
-  "black.meta.description": "Erhalte Zugriff auf Claude, GPT, Gemini und mehr mit OpenCode Black Abos.",
+  "black.meta.description":
+    "Erhalte Zugriff auf Claude, GPT, Gemini und mehr mit OpenCode Black Abos.",
   "black.hero.title": "Zugriff auf die weltweit besten Coding-Modelle",
   "black.hero.subtitle": "Einschließlich Claude, GPT, Gemini und mehr",
   "black.title": "OpenCode Black | Preise",
@@ -396,7 +412,8 @@ export const dict = {
   "black.terms.1": "Dein Abonnement startet nicht sofort",
   "black.terms.2": "Du wirst auf die Warteliste gesetzt und bald freigeschaltet",
   "black.terms.3": "Deine Karte wird erst belastet, wenn dein Abonnement aktiviert ist",
-  "black.terms.4": "Nutzungslimits gelten, stark automatisierte Nutzung kann Limits schneller erreichen",
+  "black.terms.4":
+    "Nutzungslimits gelten, stark automatisierte Nutzung kann Limits schneller erreichen",
   "black.terms.5": "Abonnements sind für Einzelpersonen, kontaktiere Enterprise für Teams",
   "black.terms.6": "Limits können angepasst werden und Pläne können in Zukunft eingestellt werden",
   "black.terms.7": "Kündige dein Abonnement jederzeit",
@@ -425,7 +442,8 @@ export const dict = {
   "black.subscribe.success.amountValue": "${{plan}} pro Monat",
   "black.subscribe.success.paymentMethod": "Zahlungsmethode",
   "black.subscribe.success.dateJoined": "Beitrittsdatum",
-  "black.subscribe.success.chargeNotice": "Deine Karte wird belastet, sobald dein Abonnement aktiviert ist",
+  "black.subscribe.success.chargeNotice":
+    "Deine Karte wird belastet, sobald dein Abonnement aktiviert ist",
 
   "workspace.nav.zen": "Zen",
   "workspace.nav.go": "Go",
@@ -461,7 +479,8 @@ export const dict = {
   "workspace.newUser.step.models.after": "aus, um ein Modell zu wählen",
 
   "workspace.models.title": "Modelle",
-  "workspace.models.subtitle.beforeLink": "Verwalte, auf welche Modelle Workspace-Mitglieder zugreifen können.",
+  "workspace.models.subtitle.beforeLink":
+    "Verwalte, auf welche Modelle Workspace-Mitglieder zugreifen können.",
   "workspace.models.table.model": "Modell",
   "workspace.models.table.enabled": "Aktiviert",
 
@@ -573,7 +592,8 @@ export const dict = {
   "workspace.monthlyLimit.currentUsage.beforeAmount": "ist $",
 
   "workspace.redeem.title": "Gutschein einlösen",
-  "workspace.redeem.subtitle": "Löse einen Gutscheincode ein, um Guthaben oder Vorteile zu erhalten.",
+  "workspace.redeem.subtitle":
+    "Löse einen Gutscheincode ein, um Guthaben oder Vorteile zu erhalten.",
   "workspace.redeem.placeholder": "Gutscheincode eingeben",
   "workspace.redeem.redeem": "Einlösen",
   "workspace.redeem.redeeming": "Wird eingelöst...",
@@ -582,7 +602,8 @@ export const dict = {
   "workspace.reload.title": "Auto-Reload",
   "workspace.reload.disabled.before": "Auto-Reload ist",
   "workspace.reload.disabled.state": "deaktiviert",
-  "workspace.reload.disabled.after": "Aktivieren, um automatisch aufzuladen, wenn das Guthaben niedrig ist.",
+  "workspace.reload.disabled.after":
+    "Aktivieren, um automatisch aufzuladen, wenn das Guthaben niedrig ist.",
   "workspace.reload.enabled.before": "Auto-Reload ist",
   "workspace.reload.enabled.state": "aktiviert",
   "workspace.reload.enabled.middle": "Wir laden auf",
@@ -597,7 +618,8 @@ export const dict = {
   "workspace.reload.save": "Speichern",
   "workspace.reload.failedAt": "Aufladung fehlgeschlagen am",
   "workspace.reload.reason": "Grund:",
-  "workspace.reload.updatePaymentMethod": "Bitte aktualisiere deine Zahlungsmethode und versuche es erneut.",
+  "workspace.reload.updatePaymentMethod":
+    "Bitte aktualisiere deine Zahlungsmethode und versuche es erneut.",
   "workspace.reload.retrying": "Versuche erneut...",
   "workspace.reload.retry": "Erneut versuchen",
   "workspace.reload.error.paymentFailed": "Zahlung fehlgeschlagen.",
@@ -621,15 +643,19 @@ export const dict = {
   "workspace.black.time.minutes": "Minuten",
   "workspace.black.time.fewSeconds": "einige Sekunden",
   "workspace.black.subscription.title": "Abonnement",
-  "workspace.black.subscription.message": "Du hast OpenCode Black für ${{plan}} pro Monat abonniert.",
+  "workspace.black.subscription.message":
+    "Du hast OpenCode Black für ${{plan}} pro Monat abonniert.",
   "workspace.black.subscription.manage": "Abo verwalten",
   "workspace.black.subscription.rollingUsage": "5-Stunden-Nutzung",
   "workspace.black.subscription.weeklyUsage": "Wöchentliche Nutzung",
   "workspace.black.subscription.resetsIn": "Setzt zurück in",
-  "workspace.black.subscription.useBalance": "Nutze dein verfügbares Guthaben, nachdem die Limits erreicht sind",
+  "workspace.black.subscription.useBalance":
+    "Nutze dein verfügbares Guthaben, nachdem die Limits erreicht sind",
   "workspace.black.waitlist.title": "Warteliste",
-  "workspace.black.waitlist.joined": "Du bist auf der Warteliste für den ${{plan}} pro Monat OpenCode Black Plan.",
-  "workspace.black.waitlist.ready": "Wir sind bereit, dich in den ${{plan}} pro Monat OpenCode Black Plan aufzunehmen.",
+  "workspace.black.waitlist.joined":
+    "Du bist auf der Warteliste für den ${{plan}} pro Monat OpenCode Black Plan.",
+  "workspace.black.waitlist.ready":
+    "Wir sind bereit, dich in den ${{plan}} pro Monat OpenCode Black Plan aufzunehmen.",
   "workspace.black.waitlist.leave": "Warteliste verlassen",
   "workspace.black.waitlist.leaving": "Verlasse...",
   "workspace.black.waitlist.left": "Verlassen",
@@ -653,11 +679,13 @@ export const dict = {
   "workspace.lite.subscription.weeklyUsage": "Wöchentliche Nutzung",
   "workspace.lite.subscription.monthlyUsage": "Monatliche Nutzung",
   "workspace.lite.subscription.resetsIn": "Setzt zurück in",
-  "workspace.lite.subscription.useBalance": "Nutze dein verfügbares Guthaben, nachdem die Nutzungslimits erreicht sind",
+  "workspace.lite.subscription.useBalance":
+    "Nutze dein verfügbares Guthaben, nachdem die Nutzungslimits erreicht sind",
   "workspace.lite.subscription.selectProvider":
     'Wähle "OpenCode Go" als Anbieter in deiner opencode-Konfiguration, um Go-Modelle zu verwenden.',
   "workspace.lite.providers.title": "Anbieter",
-  "workspace.lite.providers.description": "Steuere, welche Anbieter für das Routing verwendet werden.",
+  "workspace.lite.providers.description":
+    "Steuere, welche Anbieter für das Routing verwendet werden.",
   "workspace.lite.providers.useChina": "In China gehostete Modelle aktivieren",
   "workspace.lite.black.message":
     "Du hast derzeit OpenCode Black abonniert oder stehst auf der Warteliste. Bitte kündige zuerst, wenn du zu Go wechseln möchtest.",
@@ -677,13 +705,15 @@ export const dict = {
   "workspace.referral.copyLink": "Link kopieren",
   "workspace.referral.copied": "Kopiert",
   "workspace.referral.overview.title": "Freunde einladen",
-  "workspace.referral.overview.subtitle": "Erhalte $5, wenn ein Freund abonniert. Er bekommt ebenfalls $5.",
+  "workspace.referral.overview.subtitle":
+    "Erhalte $5, wenn ein Freund abonniert. Er bekommt ebenfalls $5.",
   "workspace.referral.instructions.share": "Teile deinen Empfehlungslink",
   "workspace.referral.instructions.subscribe": "Dein Freund tritt bei und abonniert Go",
   "workspace.referral.instructions.claim":
     "Ihr erhaltet beide ein Nutzungsguthaben von $5, das ihr auf eure Go-Nutzungslimits anrechnen könnt",
   "workspace.referral.rewards.title": "Empfehlungsbelohnungen",
-  "workspace.referral.rewards.description": "Verfügbare Empfehlungsguthaben auf deine Go-Nutzung anwenden.",
+  "workspace.referral.rewards.description":
+    "Verfügbare Empfehlungsguthaben auf deine Go-Nutzung anwenden.",
   "workspace.referral.rewards.subtitle": "{{applied}} / {{total}} Belohnungen eingelöst.",
   "workspace.referral.rewards.empty": "Noch keine Empfehlungsbelohnungen.",
   "workspace.referral.table.reward": "Belohnung",
@@ -829,4 +859,4 @@ export const dict = {
   "bench.detail.table.duration": "Dauer",
   "bench.detail.run.title": "Durchlauf {{n}}",
   "bench.detail.rawJson": "Raw JSON",
-} satisfies Dict
+} satisfies Dict;

@@ -98,7 +98,7 @@ export async function runSimulateCommand(promptArg, opts, cmd) {
     }
     const costs = simulatedPath.map((s) => s.estimatedCost);
     process.stderr.write(
-      `Est. cost range: $${Math.min(...costs).toFixed(4)} – $${Math.max(...costs).toFixed(4)}\n`
+      `Est. cost range: $${Math.min(...costs).toFixed(4)} – $${Math.max(...costs).toFixed(4)}\n`,
     );
   }
 }

@@ -21,7 +21,7 @@ const originalFetch = globalThis.fetch;
 const originalDnsLookup = dns.promises.lookup;
 (dns.promises as { lookup: unknown }).lookup = (async (
   _hostname: string,
-  options?: { all?: boolean }
+  options?: { all?: boolean },
 ) => {
   const record = { address: "203.0.113.1", family: 4 };
   return options && options.all ? [record] : record;
@@ -50,7 +50,7 @@ test("callVisionModel returns description on success", async () => {
 
     const result = await callVisionModel(
       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
-      config
+      config,
     );
 
     assert.strictEqual(result, "A beautiful sunset over the ocean");
@@ -78,7 +78,7 @@ test("callVisionModel throws on HTTP error", async () => {
 
     await assert.rejects(
       async () => await callVisionModel("data:image/png;base64,iVBORw0KGgo", config),
-      /Vision API error 500/
+      /Vision API error 500/,
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -104,7 +104,7 @@ test("callVisionModel throws on API error response", async () => {
 
     await assert.rejects(
       async () => await callVisionModel("data:image/png;base64,iVBORw0KGgo", config),
-      /Invalid API key/
+      /Invalid API key/,
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -130,7 +130,7 @@ test("callVisionModel throws on empty response", async () => {
 
     await assert.rejects(
       async () => await callVisionModel("data:image/png;base64,iVBORw0KGgo", config),
-      /empty or invalid/
+      /empty or invalid/,
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -271,7 +271,7 @@ test("callVisionModel fetches remote images before Anthropic requests", async ()
       {
         status: 200,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   };
 

@@ -1,25 +1,25 @@
-import { Location } from "@opencode-ai/core/location"
-import { ProjectCopy } from "@opencode-ai/core/project/copy"
-import { Git } from "@opencode-ai/core/git"
-import { Effect } from "effect"
-import { HttpApiBuilder, HttpApiSchema } from "effect/unstable/httpapi"
-import { Api } from "../api"
-import { ProjectCopyError } from "@opencode-ai/protocol/groups/project-copy"
+import { Location } from "@opencode-ai/core/location";
+import { ProjectCopy } from "@opencode-ai/core/project/copy";
+import { Git } from "@opencode-ai/core/git";
+import { Effect } from "effect";
+import { HttpApiBuilder, HttpApiSchema } from "effect/unstable/httpapi";
+import { Api } from "../api";
+import { ProjectCopyError } from "@opencode-ai/protocol/groups/project-copy";
 
 export const ProjectCopyHandler = HttpApiBuilder.group(Api, "server.projectCopy", (handlers) =>
   Effect.succeed(
     handlers
       .handle("projectCopy.create", (ctx) =>
         Effect.gen(function* () {
-          const copies = yield* ProjectCopy.Service
-          const location = yield* Location.Service
+          const copies = yield* ProjectCopy.Service;
+          const location = yield* Location.Service;
           return yield* badRequest(
             copies.create({
               ...ctx.payload,
               projectID: ctx.params.projectID,
               sourceDirectory: location.project.directory,
             }),
-          )
+          );
         }),
       )
       .handle("projectCopy.remove", (ctx) =>
@@ -37,7 +37,7 @@ export const ProjectCopyHandler = HttpApiBuilder.group(Api, "server.projectCopy"
         ),
       ),
   ),
-)
+);
 
 function badRequest<A, R>(effect: Effect.Effect<A, ProjectCopy.Error, R>) {
   return effect.pipe(
@@ -51,18 +51,19 @@ function badRequest<A, R>(effect: Effect.Effect<A, ProjectCopy.Error, R>) {
           },
         }),
     ),
-  )
+  );
 }
 
 function message(error: ProjectCopy.Error) {
   if (error instanceof ProjectCopy.SourceDirectoryNotFoundError)
-    return `Project copy source not found: ${error.directory}`
+    return `Project copy source not found: ${error.directory}`;
   if (error instanceof ProjectCopy.DestinationExistsError)
-    return `Project copy destination already exists: ${error.directory}`
+    return `Project copy destination already exists: ${error.directory}`;
   if (error instanceof ProjectCopy.DirectoryUnavailableError)
-    return `Project copy directory unavailable: ${error.directory}`
-  if (error instanceof ProjectCopy.InvalidDirectoryError) return `Invalid project copy directory: ${error.directory}`
+    return `Project copy directory unavailable: ${error.directory}`;
+  if (error instanceof ProjectCopy.InvalidDirectoryError)
+    return `Invalid project copy directory: ${error.directory}`;
   if (error instanceof ProjectCopy.StrategyUnavailableError)
-    return `Project copy strategy unavailable: ${error.strategy}`
-  return error.message
+    return `Project copy strategy unavailable: ${error.strategy}`;
+  return error.message;
 }

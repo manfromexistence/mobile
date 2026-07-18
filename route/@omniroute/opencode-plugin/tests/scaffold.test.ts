@@ -11,7 +11,7 @@ test("scaffold: exports public surface", () => {
   assert.equal(
     typeof OmniRoutePlugin,
     "function",
-    "OmniRoutePlugin must be a function (Plugin factory)"
+    "OmniRoutePlugin must be a function (Plugin factory)",
   );
   assert.equal(OMNIROUTE_PROVIDER_KEY, "omniroute");
   assert.equal(DEFAULT_MODEL_CACHE_TTL_MS, 300_000);

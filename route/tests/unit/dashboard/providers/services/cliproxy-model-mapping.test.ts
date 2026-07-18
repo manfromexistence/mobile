@@ -15,14 +15,16 @@ import {
 
 describe("CliproxyModelMappingEditor — module shape", () => {
   it("exports parseMappingJson as a function", async () => {
-    const mod =
-      await import("../../../../../src/app/(dashboard)/dashboard/providers/services/components/CliproxyModelMappingEditor.tsx");
+    const mod = await import(
+      "../../../../../src/app/(dashboard)/dashboard/providers/services/components/CliproxyModelMappingEditor.tsx"
+    );
     assert.equal(typeof mod.parseMappingJson, "function");
   });
 
   it("exports CliproxyModelMappingEditor as a function", async () => {
-    const mod =
-      await import("../../../../../src/app/(dashboard)/dashboard/providers/services/components/CliproxyModelMappingEditor.tsx");
+    const mod = await import(
+      "../../../../../src/app/(dashboard)/dashboard/providers/services/components/CliproxyModelMappingEditor.tsx"
+    );
     assert.equal(typeof mod.CliproxyModelMappingEditor, "function");
   });
 

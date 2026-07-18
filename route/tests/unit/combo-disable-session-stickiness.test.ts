@@ -67,7 +67,7 @@ async function gatedStickiness(
   messages: Array<{ role?: string; content?: unknown }> | null | undefined,
   config: Record<string, unknown> | null | undefined,
   settings: Record<string, unknown> | null | undefined,
-  observe: { called: number }
+  observe: { called: number },
 ) {
   const disable = resolveDisableSessionStickiness(config, settings);
   if (disable) {
@@ -96,14 +96,8 @@ test("resolver: default false when neither config nor settings set it", () => {
 });
 
 test("resolver: global settings fallback (AC #3 global on)", () => {
-  assert.equal(
-    resolveDisableSessionStickiness({}, { disableSessionStickiness: true }),
-    true
-  );
-  assert.equal(
-    resolveDisableSessionStickiness({}, { disableSessionStickiness: false }),
-    false
-  );
+  assert.equal(resolveDisableSessionStickiness({}, { disableSessionStickiness: true }), true);
+  assert.equal(resolveDisableSessionStickiness({}, { disableSessionStickiness: false }), false);
 });
 
 test("resolver: per-combo config wins over global (AC #3 precedence)", () => {
@@ -111,17 +105,17 @@ test("resolver: per-combo config wins over global (AC #3 precedence)", () => {
   assert.equal(
     resolveDisableSessionStickiness(
       { disableSessionStickiness: true },
-      { disableSessionStickiness: false }
+      { disableSessionStickiness: false },
     ),
-    true
+    true,
   );
   // combo false beats global true
   assert.equal(
     resolveDisableSessionStickiness(
       { disableSessionStickiness: false },
-      { disableSessionStickiness: true }
+      { disableSessionStickiness: true },
     ),
-    false
+    false,
   );
 });
 
@@ -129,9 +123,9 @@ test("resolver: non-boolean per-combo value is ignored, falls back to global", (
   assert.equal(
     resolveDisableSessionStickiness(
       { disableSessionStickiness: "true" as unknown as boolean },
-      { disableSessionStickiness: true }
+      { disableSessionStickiness: true },
     ),
-    true
+    true,
   );
 });
 
@@ -149,7 +143,7 @@ test("flag ON (per-combo): applySessionStickiness is bypassed even with a health
     messages,
     { disableSessionStickiness: true },
     { disableSessionStickiness: false },
-    observe
+    observe,
   );
 
   assert.equal(observe.called, 0, "applySessionStickiness must NOT be called when disabled");
@@ -158,7 +152,7 @@ test("flag ON (per-combo): applySessionStickiness is bypassed even with a health
   assert.deepEqual(
     result.targets.map((t) => t.connectionId),
     ["conn-A", "conn-B", "conn-C"],
-    "targets left untouched (no reordering to the sticky connection)"
+    "targets left untouched (no reordering to the sticky connection)",
   );
 });
 
@@ -179,7 +173,7 @@ test("flag ON (global settings): identical first message fans out to distinct ta
       messages,
       {},
       { disableSessionStickiness: true },
-      observe
+      observe,
     );
     assert.equal(observe.called, 0);
     assert.equal(result.stuck, false);
@@ -189,7 +183,7 @@ test("flag ON (global settings): identical first message fans out to distinct ta
   assert.deepEqual(
     firstOfEach,
     ["conn-A", "conn-B", "conn-C"],
-    "rotation is free — not collapsed onto the sticky connection"
+    "rotation is free — not collapsed onto the sticky connection",
   );
 });
 
@@ -224,7 +218,7 @@ test("flag explicit false (per-combo) also preserves stickiness", async () => {
     messages,
     { disableSessionStickiness: false },
     { disableSessionStickiness: true }, // per-combo false must win
-    observe
+    observe,
   );
 
   assert.equal(observe.called, 1, "per-combo false → stickiness still runs");

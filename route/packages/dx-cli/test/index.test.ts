@@ -112,7 +112,7 @@ describe("toon CLI", () => {
         const output = await context.read("output.toon");
         expect(output).toBe(encode(data));
         expect(consolaSuccess).toHaveBeenCalledWith(
-          expect.stringMatching(/Encoded.*stdin[^\n\r\u2028\u2029\u2192]*\u2192.*output\.toon/)
+          expect.stringMatching(/Encoded.*stdin[^\n\r\u2028\u2029\u2192]*\u2192.*output\.toon/),
         );
       } finally {
         cleanup();
@@ -183,7 +183,7 @@ describe("toon CLI", () => {
         const output = await context.read("output.json");
         expect(JSON.parse(output)).toEqual(data);
         expect(consolaSuccess).toHaveBeenCalledWith(
-          expect.stringMatching(/Decoded.*stdin[^\n\r\u2028\u2029\u2192]*\u2192.*output\.json/)
+          expect.stringMatching(/Decoded.*stdin[^\n\r\u2028\u2029\u2192]*\u2192.*output\.json/),
         );
       } finally {
         cleanup();

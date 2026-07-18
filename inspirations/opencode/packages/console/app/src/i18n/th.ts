@@ -1,5 +1,5 @@
-import type { Dict } from "./en"
-import { dict as en } from "./en"
+import type { Dict } from "./en";
+import { dict as en } from "./en";
 
 export const dict = {
   ...en,
@@ -363,7 +363,8 @@ export const dict = {
   "zen.api.error.goSubscriptionMonthlyLimitExceeded":
     "ถึงขีดจำกัดการใช้งานรายเดือนแล้ว จะรีเซ็ตในอีก {{retryIn}} หากต้องการใช้โมเดลนี้ต่อทันที ให้เปิดใช้งานจากยอดเงินคงเหลือของคุณ: {{consoleGoUrl}}",
   "zen.api.error.noPaymentMethod": "ไม่มีวิธีการชำระเงิน เพิ่มวิธีการชำระเงินที่นี่: {{billingUrl}}",
-  "zen.api.error.insufficientBalance": "ยอดเงินคงเหลือไม่เพียงพอ จัดการการเรียกเก็บเงินของคุณที่นี่: {{billingUrl}}",
+  "zen.api.error.insufficientBalance":
+    "ยอดเงินคงเหลือไม่เพียงพอ จัดการการเรียกเก็บเงินของคุณที่นี่: {{billingUrl}}",
   "zen.api.error.workspaceMonthlyLimitReached":
     "Workspace ของคุณถึงขีดจำกัดการใช้จ่ายรายเดือนที่ ${{amount}} แล้ว จัดการขีดจำกัดของคุณที่นี่: {{billingUrl}}",
   "zen.api.error.userMonthlyLimitReached":
@@ -623,7 +624,8 @@ export const dict = {
   "workspace.black.subscription.useBalance": "ใช้ยอดเงินคงเหลือของคุณหลังจากถึงขีดจำกัดการใช้งานแล้ว",
   "workspace.black.waitlist.title": "รายชื่อรอ",
   "workspace.black.waitlist.joined": "คุณอยู่ในรายชื่อรอสำหรับแผน OpenCode Black ราคา ${{plan}} ต่อเดือน",
-  "workspace.black.waitlist.ready": "เราพร้อมที่จะลงทะเบียนให้คุณเข้าสู่แผน OpenCode Black ราคา ${{plan}} ต่อเดือนแล้ว",
+  "workspace.black.waitlist.ready":
+    "เราพร้อมที่จะลงทะเบียนให้คุณเข้าสู่แผน OpenCode Black ราคา ${{plan}} ต่อเดือนแล้ว",
   "workspace.black.waitlist.leave": "ออกจากรายชื่อรอ",
   "workspace.black.waitlist.leaving": "กำลังออกจาก...",
   "workspace.black.waitlist.left": "ออกแล้ว",
@@ -723,7 +725,8 @@ export const dict = {
     "ไม่จำเป็นเสมอไป แต่อาจจะต้องมี คุณจะต้องมีการสมัครสมาชิก AI หากต้องการเชื่อมต่อ OpenCode กับผู้ให้บริการที่มีค่าใช้จ่าย แม้ว่าคุณจะสามารถทำงานกับ",
   "download.faq.a3.localLink": "โมเดล Local",
   "download.faq.a3.afterLocal.beforeZen": "ได้ฟรี แม้ว่าเราจะแนะนำให้ผู้ใช้ใช้งาน",
-  "download.faq.a3.afterZen": ", OpenCode ก็ทำงานร่วมกับผู้ให้บริการยอดนิยมทั้งหมด เช่น OpenAI, Anthropic, xAI เป็นต้น",
+  "download.faq.a3.afterZen":
+    ", OpenCode ก็ทำงานร่วมกับผู้ให้บริการยอดนิยมทั้งหมด เช่น OpenAI, Anthropic, xAI เป็นต้น",
 
   "download.faq.a5.p1": "OpenCode ใช้งานได้ฟรี 100%",
   "download.faq.a5.p2.beforeZen":
@@ -819,4 +822,4 @@ export const dict = {
   "bench.detail.table.duration": "ระยะเวลา",
   "bench.detail.run.title": "Run {{n}}",
   "bench.detail.rawJson": "Raw JSON",
-} satisfies Dict
+} satisfies Dict;

@@ -4,11 +4,7 @@
   "title": "Code Block Command",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "Display install commands with package manager switcher and copy button.",
-  "dependencies": [
-    "@base-ui/react",
-    "motion",
-    "jotai"
-  ],
+  "dependencies": ["@base-ui/react", "motion", "jotai"],
   "registryDependencies": [
     "https://chanhdai.com/r/icon-swap.json",
     "https://chanhdai.com/r/copy-button.json"
@@ -42,8 +38,6 @@
     }
   },
   "docs": "https://chanhdai.com/components/code-block-command",
-  "categories": [
-    "data-display"
-  ],
+  "categories": ["data-display"],
   "type": "registry:component"
 }

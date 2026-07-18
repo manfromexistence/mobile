@@ -43,9 +43,7 @@ export function ProxyHealthCell({ testResult, health }: ProxyHealthCellProps) {
         </div>
       );
     }
-    return (
-      <span className="text-red-400">✗ {testResult.error || t("failed")}</span>
-    );
+    return <span className="text-red-400">✗ {testResult.error || t("failed")}</span>;
   }
 
   if (health) {

@@ -1,8 +1,8 @@
-import type { Argv } from "yargs"
-import { Effect, Schema } from "effect"
-import type { AppServices } from "@/effect/app-runtime"
-import type { InstanceStore } from "@/project/instance-store"
-import { cmd, type WithDoubleDash } from "./cmd/cmd"
+import type { Argv } from "yargs";
+import { Effect, Schema } from "effect";
+import type { AppServices } from "@/effect/app-runtime";
+import type { InstanceStore } from "@/project/instance-store";
+import { cmd, type WithDoubleDash } from "./cmd/cmd";
 
 /**
  * User-visible command failure. Throw via `fail("...")` from an effectCmd handler
@@ -15,13 +15,14 @@ export class CliError extends Schema.TaggedErrorClass<CliError>()("CliError", {
   exitCode: Schema.optional(Schema.Number),
 }) {}
 
-export const fail = (message: string, exitCode = 1) => Effect.fail(new CliError({ message, exitCode }))
+export const fail = (message: string, exitCode = 1) =>
+  Effect.fail(new CliError({ message, exitCode }));
 
 interface EffectCmdOpts<Args, A> {
-  command: string | readonly string[]
-  aliases?: string | readonly string[]
-  describe: string | false
-  builder?: (yargs: Argv) => Argv<Args>
+  command: string | readonly string[];
+  aliases?: string | readonly string[];
+  describe: string | false;
+  builder?: (yargs: Argv) => Argv<Args>;
   /**
    * Whether the command needs a project InstanceContext. Defaults to true.
    *
@@ -43,10 +44,12 @@ interface EffectCmdOpts<Args, A> {
    * Use `false` for commands that don't read project state (e.g. `models`,
    * `serve`, `web`, `account`, `db`, `upgrade`).
    */
-  instance?: boolean | ((args: Args) => boolean)
+  instance?: boolean | ((args: Args) => boolean);
   /** Defaults to process.cwd(). Override for commands that take a directory positional. */
-  directory?: (args: Args) => string
-  handler: (args: WithDoubleDash<Args>) => Effect.Effect<A, CliError, AppServices | InstanceStore.Service>
+  directory?: (args: Args) => string;
+  handler: (
+    args: WithDoubleDash<Args>,
+  ) => Effect.Effect<A, CliError, AppServices | InstanceStore.Service>;
 }
 
 /**
@@ -73,24 +76,29 @@ export const effectCmd = <Args, A>(opts: EffectCmdOpts<Args, A>) =>
     describe: opts.describe,
     builder: opts.builder as never,
     async handler(rawArgs) {
-      const { AppRuntime } = await import("@/effect/app-runtime")
+      const { AppRuntime } = await import("@/effect/app-runtime");
       // yargs typing wraps Args in ArgumentsCamelCase<WithDoubleDash<...>>; cast at the boundary.
-      const args = rawArgs as unknown as WithDoubleDash<Args>
-      const useInstance = typeof opts.instance === "function" ? opts.instance(args) : opts.instance !== false
+      const args = rawArgs as unknown as WithDoubleDash<Args>;
+      const useInstance =
+        typeof opts.instance === "function" ? opts.instance(args) : opts.instance !== false;
       if (!useInstance) {
-        await AppRuntime.runPromise(opts.handler(args))
-        return
+        await AppRuntime.runPromise(opts.handler(args));
+        return;
       }
-      const { InstanceStore } = await import("@/project/instance-store")
-      const { InstanceRef } = await import("@/effect/instance-ref")
-      const directory = opts.directory?.(args) ?? process.cwd()
+      const { InstanceStore } = await import("@/project/instance-store");
+      const { InstanceRef } = await import("@/effect/instance-ref");
+      const directory = opts.directory?.(args) ?? process.cwd();
       const { store, ctx } = await AppRuntime.runPromise(
-        InstanceStore.Service.use((store) => store.load({ directory }).pipe(Effect.map((ctx) => ({ store, ctx })))),
-      )
+        InstanceStore.Service.use((store) =>
+          store.load({ directory }).pipe(Effect.map((ctx) => ({ store, ctx }))),
+        ),
+      );
       try {
-        await AppRuntime.runPromise(opts.handler(args).pipe(Effect.provideService(InstanceRef, ctx)))
+        await AppRuntime.runPromise(
+          opts.handler(args).pipe(Effect.provideService(InstanceRef, ctx)),
+        );
       } finally {
-        await AppRuntime.runPromise(store.dispose(ctx))
+        await AppRuntime.runPromise(store.dispose(ctx));
       }
     },
-  })
+  });

@@ -259,12 +259,9 @@ export function ShaderGradientGenerator(): JSX.Element {
   const isMobile = useMediaQuery("(max-width:1024px)");
   const [viewAll, setViewAll] = useState(false);
 
-  const [settings, setSettings] =
-    useState<ShaderGradientSettings>(defaultSettings);
+  const [settings, setSettings] = useState<ShaderGradientSettings>(defaultSettings);
   const [selectedExample, setSelectedExample] = useState<string>("");
-  const updateSettings = (
-    newSettings: Partial<ShaderGradientSettings>,
-  ): void => {
+  const updateSettings = (newSettings: Partial<ShaderGradientSettings>): void => {
     setSettings((prev) => ({ ...prev, ...newSettings }));
   };
 
@@ -307,35 +304,33 @@ export function ShaderGradientGenerator(): JSX.Element {
           <div className="absolute bottom-0 left-0 z-10 grid h-60 w-full place-content-center bg-gradient-to-t from-42% from-white dark:from-black" />
         )}
 
-        {(viewAll ? ExampleGradients : ExampleGradients.slice(0, 10)).map(
-          (mesh) => (
-            <div
-              key={mesh.id}
-              className="relative grid aspect-square w-full cursor-pointer place-items-center rounded-lg border bg-card-bg p-2 shadow-[0px_1px_0px_0px_rgba(17,17,26,0.1)] lg:p-5 2xl:h-48 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-neutral-950"
-              onClick={() => {
+        {(viewAll ? ExampleGradients : ExampleGradients.slice(0, 10)).map((mesh) => (
+          <div
+            key={mesh.id}
+            className="relative grid aspect-square w-full cursor-pointer place-items-center rounded-lg border bg-card-bg p-2 shadow-[0px_1px_0px_0px_rgba(17,17,26,0.1)] lg:p-5 2xl:h-48 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)] dark:border-neutral-950"
+            onClick={() => {
+              setSelectedExample(mesh.id);
+              setSettings(mesh?.settings);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
                 setSelectedExample(mesh.id);
                 setSettings(mesh?.settings);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  setSelectedExample(mesh.id);
-                  setSettings(mesh?.settings);
-                }
+              }
+            }}
+          >
+            <div
+              className="relative h-full w-full overflow-hidden rounded-md"
+              style={{
+                background: `linear-gradient(135deg, ${mesh.settings.color1}, ${mesh.settings.color2}, ${mesh.settings.color3})`,
               }}
             >
-              <div
-                className="relative h-full w-full overflow-hidden rounded-md"
-                style={{
-                  background: `linear-gradient(135deg, ${mesh.settings.color1}, ${mesh.settings.color2}, ${mesh.settings.color3})`,
-                }}
-              >
-                {mesh?.settings?.grain === "on" && (
-                  <div className=" absolute top-0 left-0 h-full w-full bg-[url('/noise.gif')] opacity-10" />
-                )}
-              </div>
+              {mesh?.settings?.grain === "on" && (
+                <div className=" absolute top-0 left-0 h-full w-full bg-[url('/noise.gif')] opacity-10" />
+              )}
             </div>
-          ),
-        )}
+          </div>
+        ))}
       </div>
       {isMobile && (
         <p className="pb-2 text-center text-primary/60">
@@ -436,9 +431,7 @@ export function ShaderGradientGenerator(): JSX.Element {
                   }}
                   className={cn(
                     "relative h-full w-32 shrink-0 cursor-pointer overflow-hidden rounded-md p-2",
-                    selectedExample === example.id
-                      ? "border bg-main"
-                      : "layeroutline",
+                    selectedExample === example.id ? "border bg-main" : "layeroutline",
                   )}
                 >
                   <div

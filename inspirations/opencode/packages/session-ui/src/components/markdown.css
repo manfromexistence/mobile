@@ -229,7 +229,11 @@
     font-weight: var(--font-weight-medium);
     padding: 2px 4px;
     border-radius: 4px;
-    background: color-mix(in oklch, var(--v2-text-text-base) var(--markdown-inline-code-bg-mix), transparent);
+    background: color-mix(
+      in oklch,
+      var(--v2-text-text-base) var(--markdown-inline-code-bg-mix),
+      transparent
+    );
   }
 
   :not(pre) > code[data-inline-code-kind="path"] {

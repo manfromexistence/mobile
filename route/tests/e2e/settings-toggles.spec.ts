@@ -26,7 +26,7 @@ test.describe("Settings Toggles", () => {
       (response) =>
         response.url().includes("/api/settings") &&
         response.request().method() === "PATCH" &&
-        response.ok()
+        response.ok(),
     );
 
   test("Debug mode toggle should work", async ({ page }) => {
@@ -44,7 +44,7 @@ test.describe("Settings Toggles", () => {
     await expect(debugToggle).toHaveAttribute(
       "aria-checked",
       initialState === "true" ? "false" : "true",
-      { timeout: 15000 }
+      { timeout: 15000 },
     );
   });
 
@@ -62,7 +62,7 @@ test.describe("Settings Toggles", () => {
     await expect(sidebarToggle).toHaveAttribute(
       "aria-checked",
       initialState === "true" ? "false" : "true",
-      { timeout: 15000 }
+      { timeout: 15000 },
     );
   });
 
@@ -91,7 +91,7 @@ test.describe("Settings Toggles", () => {
 
     const [request] = await Promise.all([
       page.waitForRequest(
-        (req) => req.url().includes("/api/settings/purge-logs") && req.method() === "POST"
+        (req) => req.url().includes("/api/settings/purge-logs") && req.method() === "POST",
       ),
       purgeBtn.click(),
     ]);

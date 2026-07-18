@@ -74,7 +74,7 @@ export function useSessionRecorder() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ payload }),
-          }
+          },
         );
       } catch {
         // best-effort: don't break recording UI on network failure
@@ -90,7 +90,7 @@ export function useSessionRecorder() {
         void flushSnapshots(sessionId);
       }, SNAPSHOT_FLUSH_MS);
     },
-    [flushSnapshots]
+    [flushSnapshots],
   );
 
   const stopRecordingWs = useCallback(() => {
@@ -155,7 +155,7 @@ export function useSessionRecorder() {
         // ignore
       }
     },
-    [flushSnapshots, scheduleFlush]
+    [flushSnapshots, scheduleFlush],
   );
 
   const stop = useCallback(async () => {
@@ -185,16 +185,19 @@ export function useSessionRecorder() {
     setSession(null);
   }, [session, fetchSessions, stopRecordingWs, flushSnapshots]);
 
-  const deleteSession = useCallback(async (id: string) => {
-    try {
-      await fetch(`/api/tools/traffic-inspector/sessions/${encodeURIComponent(id)}`, {
-        method: "DELETE",
-      });
-      await fetchSessions();
-    } catch {
-      // ignore
-    }
-  }, [fetchSessions]);
+  const deleteSession = useCallback(
+    async (id: string) => {
+      try {
+        await fetch(`/api/tools/traffic-inspector/sessions/${encodeURIComponent(id)}`, {
+          method: "DELETE",
+        });
+        await fetchSessions();
+      } catch {
+        // ignore
+      }
+    },
+    [fetchSessions],
+  );
 
   useEffect(() => {
     return () => {

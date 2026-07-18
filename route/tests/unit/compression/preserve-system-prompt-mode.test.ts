@@ -19,12 +19,18 @@ test("isPreserveSystemPromptMode only accepts the three known tokens", () => {
 
 test("normalize: an explicit mode wins over the legacy boolean", () => {
   assert.equal(
-    normalizePreserveSystemPromptMode({ preserveSystemPrompt: true, preserveSystemPromptMode: "never" }),
-    "never"
+    normalizePreserveSystemPromptMode({
+      preserveSystemPrompt: true,
+      preserveSystemPromptMode: "never",
+    }),
+    "never",
   );
   assert.equal(
-    normalizePreserveSystemPromptMode({ preserveSystemPrompt: false, preserveSystemPromptMode: "always" }),
-    "always"
+    normalizePreserveSystemPromptMode({
+      preserveSystemPrompt: false,
+      preserveSystemPromptMode: "always",
+    }),
+    "always",
   );
 });
 
@@ -41,7 +47,7 @@ test("normalize: an invalid mode string falls back to the legacy boolean", () =>
       preserveSystemPrompt: false,
       preserveSystemPromptMode: "garbage" as unknown as "always",
     }),
-    "whenNoCache"
+    "whenNoCache",
   );
 });
 

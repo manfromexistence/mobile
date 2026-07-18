@@ -41,7 +41,7 @@ type ChatCompletionPayload = {
 async function withEnv<T>(
   name: string,
   value: string | undefined,
-  fn: () => T | Promise<T>
+  fn: () => T | Promise<T>,
 ): Promise<T> {
   const previous = process.env[name];
   if (value === undefined) {
@@ -69,11 +69,11 @@ test("AntigravityExecutor.buildUrl always targets the streaming endpoint", () =>
   const executor = new AntigravityExecutor();
   assert.match(
     executor.buildUrl("gemini-2.5-flash", true),
-    /\/v1internal:streamGenerateContent\?alt=sse$/
+    /\/v1internal:streamGenerateContent\?alt=sse$/,
   );
   assert.equal(
     executor.buildUrl("gemini-2.5-flash", false),
-    executor.buildUrl("gemini-2.5-flash", true)
+    executor.buildUrl("gemini-2.5-flash", true),
   );
 });
 
@@ -227,7 +227,7 @@ test("AntigravityExecutor.transformRequest returns a structured error response w
     "gemini-2.5-flash",
     { request: { contents: [] } },
     true,
-    {}
+    {},
   );
   if (!(result instanceof Response)) throw new Error("Expected Response from transformRequest");
   const payload = (await result.json()) as ErrorPayload;
@@ -263,7 +263,7 @@ test("AntigravityExecutor.transformRequest auto-discovers a missing projectId vi
       "antigravity/gemini-3.1-pro",
       { request: { contents: [] } },
       true,
-      { accessToken: "fresh-account-token-2334" }
+      { accessToken: "fresh-account-token-2334" },
     );
     if (result instanceof Response) {
       throw new Error(`Expected an envelope but got a ${result.status} Response`);
@@ -271,7 +271,7 @@ test("AntigravityExecutor.transformRequest auto-discovers a missing projectId vi
     assert.equal(
       loadCodeAssistCalled,
       true,
-      "loadCodeAssist should be called to recover the project"
+      "loadCodeAssist should be called to recover the project",
     );
     assert.equal(result.project, "discovered-project-123");
   } finally {
@@ -299,7 +299,7 @@ test("AntigravityExecutor.transformRequest still 422s when loadCodeAssist finds 
       "antigravity/gemini-3.1-pro",
       { request: { contents: [] } },
       true,
-      { accessToken: "no-project-token-2334" }
+      { accessToken: "no-project-token-2334" },
     );
     if (!(result instanceof Response)) throw new Error("Expected a 422 Response");
     assert.equal(result.status, 422);
@@ -325,7 +325,7 @@ test("AntigravityExecutor.transformRequest prefers top-level credentials project
     {
       projectId: "credential-project",
       providerSpecificData: { projectId: "nested-project" },
-    }
+    },
   );
 
   if (result instanceof Response) throw new Error("Unexpected Response from transformRequest");
@@ -344,7 +344,7 @@ test("AntigravityExecutor.transformRequest uses nested providerSpecificData proj
     true,
     {
       providerSpecificData: { projectId: "nested-project" },
-    }
+    },
   );
 
   if (result instanceof Response) throw new Error("Unexpected Response from transformRequest");
@@ -366,7 +366,7 @@ test("AntigravityExecutor.transformRequest treats whitespace-only project values
     {
       projectId: "   ",
       providerSpecificData: { projectId: " nested-project " },
-    }
+    },
   );
 
   if (nestedFallback instanceof Response)
@@ -385,7 +385,7 @@ test("AntigravityExecutor.transformRequest treats whitespace-only project values
     {
       projectId: "   ",
       providerSpecificData: { projectId: "   " },
-    }
+    },
   );
 
   if (bodyFallback instanceof Response)
@@ -407,7 +407,7 @@ test("AntigravityExecutor.transformRequest allows body project overrides when th
         },
       },
       true,
-      { projectId: "credential-project" }
+      { projectId: "credential-project" },
     );
 
     if (result instanceof Response) throw new Error("Unexpected Response from transformRequest");
@@ -427,7 +427,7 @@ test("AntigravityExecutor parses retry timing from headers and error strings", (
   assert.equal(executor.parseRetryHeaders(headers), 120_000);
   assert.equal(
     executor.parseRetryFromErrorMessage("Your quota will reset after 2h7m23s"),
-    7_643_000
+    7_643_000,
   );
 });
 
@@ -437,11 +437,11 @@ test("AntigravityExecutor.parseRetryHeaders falls back to reset-after and reset 
 
   assert.equal(
     executor.parseRetryHeaders(new Headers({ "x-ratelimit-reset-after": "45" })),
-    45_000
+    45_000,
   );
   assert.ok(
     executor.parseRetryHeaders(new Headers({ "x-ratelimit-reset": String(futureSeconds) })) >=
-      89_000
+      89_000,
   );
 });
 
@@ -455,7 +455,7 @@ test("AntigravityExecutor.collectStreamToResponse turns SSE Gemini chunks into a
     {
       status: 200,
       headers: { "Content-Type": "text/event-stream" },
-    }
+    },
   );
 
   const result = await executor.collectStreamToResponse(
@@ -463,7 +463,7 @@ test("AntigravityExecutor.collectStreamToResponse turns SSE Gemini chunks into a
     "gemini-2.5-flash",
     "https://example.com",
     { Authorization: "Bearer ag-token" },
-    { request: {} }
+    { request: {} },
   );
   const payload = (await result.response.json()) as ChatCompletionPayload;
 
@@ -507,7 +507,7 @@ test("AntigravityExecutor.collectStreamToResponse converts textual tool call SSE
     {
       status: 200,
       headers: { "Content-Type": "text/event-stream" },
-    }
+    },
   );
 
   const result = await executor.collectStreamToResponse(
@@ -515,7 +515,7 @@ test("AntigravityExecutor.collectStreamToResponse converts textual tool call SSE
     "gemini-3.5-flash-low",
     "https://example.com",
     { Authorization: "Bearer ag-token" },
-    { request: {} }
+    { request: {} },
   );
   const payload = await result.response.json();
   const choice = payload.choices[0];
@@ -575,7 +575,7 @@ test("AntigravityExecutor.collectStreamToResponse parses fragmented SSE lines in
     {
       status: 200,
       headers: { "Content-Type": "text/event-stream" },
-    }
+    },
   );
 
   const result = await executor.collectStreamToResponse(
@@ -583,7 +583,7 @@ test("AntigravityExecutor.collectStreamToResponse parses fragmented SSE lines in
     "gemini-2.5-flash",
     "https://example.com",
     { Authorization: "Bearer ag-token" },
-    { request: {} }
+    { request: {} },
   );
   const payload = (await result.response.json()) as ChatCompletionPayload;
 
@@ -607,14 +607,14 @@ test("AntigravityExecutor.refreshCredentials refreshes Google OAuth tokens", asy
         refresh_token: "new-refresh",
         expires_in: 3600,
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   };
 
   try {
     const result = await executor.refreshCredentials(
       { refreshToken: "refresh", projectId: "project-1" },
-      null
+      null,
     );
     assert.deepEqual(result, {
       accessToken: "new-token",
@@ -656,7 +656,7 @@ test("AntigravityExecutor.execute auto-retries short 429 responses and collects 
       {
         status: 200,
         headers: { "Content-Type": "text/event-stream" },
-      }
+      },
     );
   };
   globalThis.setTimeout = ((callback) => {
@@ -703,7 +703,7 @@ test("AntigravityExecutor.execute embeds retryAfterMs when the upstream asks for
       {
         status: 429,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
 
   try {
@@ -808,7 +808,7 @@ test("AntigravityExecutor.execute tags pre-response stalls with a fallbackable t
         assert.equal((error as { name?: string }).name, "TimeoutError");
         assert.match((error as Error).message, /did not return response headers/);
         return true;
-      }
+      },
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -851,7 +851,7 @@ test("AntigravityExecutor.execute applies CLI fingerprint when enabled", async (
       {
         status: 200,
         headers: { "Content-Type": "text/event-stream" },
-      }
+      },
     );
   };
 
@@ -876,8 +876,8 @@ test("AntigravityExecutor.execute applies CLI fingerprint when enabled", async (
           stream: false,
           credentials: { accessToken: "token", projectId: "project-1" },
           log: { debug() {}, warn() {}, info() {} },
-        })
-      )
+        }),
+      ),
     );
 
     assert.equal(result.response.status, 200);

@@ -27,7 +27,7 @@ function normalizeBaseUrl(value: unknown): string {
 
 function hasCustomGoogleOAuthCredentials(
   providerName: string,
-  env: OAuthRedirectEnv | null | undefined = process.env
+  env: OAuthRedirectEnv | null | undefined = process.env,
 ): boolean {
   if (providerName === "antigravity" || providerName === "agy") {
     // `agy` reuses the antigravity OAuth client + env overrides.
@@ -57,7 +57,7 @@ function isLoopbackHostname(hostname: string): boolean {
 export function resolveBrowserOAuthRedirectUri(
   providerName: string,
   redirectUri: string,
-  env: OAuthRedirectEnv | null | undefined = process.env
+  env: OAuthRedirectEnv | null | undefined = process.env,
 ): string {
   if (!GOOGLE_BROWSER_PROVIDERS.has(providerName)) {
     return redirectUri;
@@ -190,7 +190,7 @@ export async function exchangeTokens(providerName, code, redirectUri, codeVerifi
     code,
     redirectUri,
     codeVerifier,
-    state
+    state,
   );
 
   let extra = null;

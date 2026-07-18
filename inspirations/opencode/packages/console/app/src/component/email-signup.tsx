@@ -1,12 +1,12 @@
-import { action, useSubmission } from "@solidjs/router"
-import { Resource } from "@opencode-ai/console-resource"
-import { Show } from "solid-js"
-import { useI18n } from "~/context/i18n"
+import { action, useSubmission } from "@solidjs/router";
+import { Resource } from "@opencode-ai/console-resource";
+import { Show } from "solid-js";
+import { useI18n } from "~/context/i18n";
 
 const emailSignup = action(async (formData: FormData) => {
-  "use server"
-  const emailAddress = formData.get("email")!
-  const listId = "8b9bb82c-9d5f-11f0-975f-0df6fd1e4945"
+  "use server";
+  const emailAddress = formData.get("email")!;
+  const listId = "8b9bb82c-9d5f-11f0-975f-0df6fd1e4945";
   const response = await fetch(`https://api.emailoctopus.com/lists/${listId}/contacts`, {
     method: "PUT",
     headers: {
@@ -16,14 +16,14 @@ const emailSignup = action(async (formData: FormData) => {
     body: JSON.stringify({
       email_address: emailAddress,
     }),
-  })
-  console.log(response)
-  return true
-})
+  });
+  console.log(response);
+  return true;
+});
 
 export function EmailSignup() {
-  const submission = useSubmission(emailSignup)
-  const i18n = useI18n()
+  const submission = useSubmission(emailSignup);
+  const i18n = useI18n();
   return (
     <section data-component="email">
       <div data-slot="section-title">
@@ -43,5 +43,5 @@ export function EmailSignup() {
         <div style="color: #FF408F; margin-top: 24px;">{submission.error}</div>
       </Show>
     </section>
-  )
+  );
 }

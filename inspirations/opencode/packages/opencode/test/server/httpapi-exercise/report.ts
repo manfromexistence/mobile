@@ -1,6 +1,6 @@
-import { Duration } from "effect"
-import { indent, pad } from "./assertions"
-import type { Options, Result, Scenario } from "./types"
+import { Duration } from "effect";
+import { indent, pad } from "./assertions";
+import type { Options, Result, Scenario } from "./types";
 
 export const color = {
   dim: "\x1b[2m",
@@ -9,7 +9,7 @@ export const color = {
   yellow: "\x1b[33m",
   cyan: "\x1b[36m",
   reset: "\x1b[0m",
-}
+};
 
 export function printHeader(
   options: Options,
@@ -19,13 +19,13 @@ export function printHeader(
   extra: Scenario[],
   paths: { database: string; global: string },
 ) {
-  console.log(`${color.cyan}HttpApi exerciser${color.reset}`)
-  console.log(`${color.dim}db=${paths.database}${color.reset}`)
-  console.log(`${color.dim}global=${paths.global}${color.reset}`)
+  console.log(`${color.cyan}HttpApi exerciser${color.reset}`);
+  console.log(`${color.dim}db=${paths.database}${color.reset}`);
+  console.log(`${color.dim}global=${paths.global}${color.reset}`);
   console.log(
     `${color.dim}mode=${options.mode} selected=${selected.length} scenarioTimeout=${Duration.format(options.scenarioTimeout)} effectRoutes=${effectRoutes.length} missing=${missing.length} extra=${extra.length}${color.reset}`,
-  )
-  console.log("")
+  );
+  console.log("");
 }
 
 export function printResults(results: Result[], missing: string[], extra: Scenario[]) {
@@ -33,34 +33,34 @@ export function printResults(results: Result[], missing: string[], extra: Scenar
     if (result.status === "pass") {
       console.log(
         `${color.green}PASS${color.reset} ${pad(result.scenario.method, 6)} ${pad(result.scenario.path, 48)} ${result.scenario.name}`,
-      )
-      continue
+      );
+      continue;
     }
     if (result.status === "skip") {
       console.log(
         `${color.yellow}SKIP${color.reset} ${pad(result.scenario.method, 6)} ${pad(result.scenario.path, 48)} ${result.scenario.name} ${color.dim}${result.scenario.reason}${color.reset}`,
-      )
-      continue
+      );
+      continue;
     }
     console.log(
       `${color.red}FAIL${color.reset} ${pad(result.scenario.method, 6)} ${pad(result.scenario.path, 48)} ${result.scenario.name}`,
-    )
-    console.log(`${color.red}${indent(result.message)}${color.reset}`)
+    );
+    console.log(`${color.red}${indent(result.message)}${color.reset}`);
   }
   if (missing.length > 0) {
-    console.log("\nMissing scenarios")
-    for (const route of missing) console.log(`${color.red}MISS${color.reset} ${route}`)
+    console.log("\nMissing scenarios");
+    for (const route of missing) console.log(`${color.red}MISS${color.reset} ${route}`);
   }
   if (extra.length > 0) {
-    console.log("\nExtra scenarios")
+    console.log("\nExtra scenarios");
     for (const scenario of extra)
-      console.log(`${color.yellow}EXTRA${color.reset} ${routeKey(scenario)} ${scenario.name}`)
+      console.log(`${color.yellow}EXTRA${color.reset} ${routeKey(scenario)} ${scenario.name}`);
   }
   console.log(
     `\n${color.dim}summary pass=${results.filter((result) => result.status === "pass").length} fail=${results.filter((result) => result.status === "fail").length} skip=${results.filter((result) => result.status === "skip").length} missing=${missing.length} extra=${extra.length}${color.reset}`,
-  )
+  );
 }
 
 function routeKey(scenario: Scenario) {
-  return `${scenario.method} ${scenario.path}`
+  return `${scenario.method} ${scenario.path}`;
 }

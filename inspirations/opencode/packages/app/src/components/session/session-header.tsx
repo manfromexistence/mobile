@@ -1,36 +1,36 @@
-import { AppIcon } from "@opencode-ai/ui/app-icon"
-import { Button } from "@opencode-ai/ui/button"
-import { DropdownMenu } from "@opencode-ai/ui/dropdown-menu"
-import { Icon } from "@opencode-ai/ui/icon"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { Keybind } from "@opencode-ai/ui/keybind"
-import { Spinner } from "@opencode-ai/ui/spinner"
-import { showToast } from "@/utils/toast"
-import { Tooltip, TooltipKeybind } from "@opencode-ai/ui/tooltip"
-import { getFilename } from "@opencode-ai/core/util/path"
-import { createEffect, createMemo, createSignal, For, onMount, Show } from "solid-js"
-import { createStore } from "solid-js/store"
-import { createMediaQuery } from "@solid-primitives/media"
-import { Portal } from "solid-js/web"
-import { useCommand } from "@/context/command"
-import { useLanguage } from "@/context/language"
-import { useLayout } from "@/context/layout"
-import { usePlatform } from "@/context/platform"
-import { useServer } from "@/context/server"
-import { useSettings } from "@/context/settings"
-import { useSync } from "@/context/sync"
-import { useTerminal } from "@/context/terminal"
-import { focusTerminalById } from "@/pages/session/helpers"
-import { useSessionLayout } from "@/pages/session/session-layout"
-import { messageAgentColor } from "@/utils/agent"
-import { decode64 } from "@/utils/base64"
-import { Persist, persisted } from "@/utils/persist"
-import { StatusPopover, StatusPopoverV2 } from "../status-popover"
-import { IconButtonV2 } from "@opencode-ai/ui/v2/icon-button-v2"
-import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon"
-import { KeybindV2 } from "@opencode-ai/ui/v2/keybind-v2"
-import { TooltipV2 } from "@opencode-ai/ui/v2/tooltip-v2"
-import { reviewTooltipKeybind } from "../command-tooltip-keybind"
+import { AppIcon } from "@opencode-ai/ui/app-icon";
+import { Button } from "@opencode-ai/ui/button";
+import { DropdownMenu } from "@opencode-ai/ui/dropdown-menu";
+import { Icon } from "@opencode-ai/ui/icon";
+import { IconButton } from "@opencode-ai/ui/icon-button";
+import { Keybind } from "@opencode-ai/ui/keybind";
+import { Spinner } from "@opencode-ai/ui/spinner";
+import { showToast } from "@/utils/toast";
+import { Tooltip, TooltipKeybind } from "@opencode-ai/ui/tooltip";
+import { getFilename } from "@opencode-ai/core/util/path";
+import { createEffect, createMemo, createSignal, For, onMount, Show } from "solid-js";
+import { createStore } from "solid-js/store";
+import { createMediaQuery } from "@solid-primitives/media";
+import { Portal } from "solid-js/web";
+import { useCommand } from "@/context/command";
+import { useLanguage } from "@/context/language";
+import { useLayout } from "@/context/layout";
+import { usePlatform } from "@/context/platform";
+import { useServer } from "@/context/server";
+import { useSettings } from "@/context/settings";
+import { useSync } from "@/context/sync";
+import { useTerminal } from "@/context/terminal";
+import { focusTerminalById } from "@/pages/session/helpers";
+import { useSessionLayout } from "@/pages/session/session-layout";
+import { messageAgentColor } from "@/utils/agent";
+import { decode64 } from "@/utils/base64";
+import { Persist, persisted } from "@/utils/persist";
+import { StatusPopover, StatusPopoverV2 } from "../status-popover";
+import { IconButtonV2 } from "@opencode-ai/ui/v2/icon-button-v2";
+import { Icon as IconV2 } from "@opencode-ai/ui/v2/icon";
+import { KeybindV2 } from "@opencode-ai/ui/v2/keybind-v2";
+import { TooltipV2 } from "@opencode-ai/ui/v2/tooltip-v2";
+import { reviewTooltipKeybind } from "../command-tooltip-keybind";
 
 const OPEN_APPS = [
   "vscode",
@@ -47,10 +47,10 @@ const OPEN_APPS = [
   "android-studio",
   "powershell",
   "sublime-text",
-] as const
+] as const;
 
-type OpenApp = (typeof OPEN_APPS)[number]
-type OS = "macos" | "windows" | "linux" | "unknown"
+type OpenApp = (typeof OPEN_APPS)[number];
+type OS = "macos" | "windows" | "linux" | "unknown";
 
 const MAC_APPS = [
   {
@@ -61,14 +61,24 @@ const MAC_APPS = [
   },
   { id: "cursor", label: "session.header.open.app.cursor", icon: "cursor", openWith: "Cursor" },
   { id: "zed", label: "session.header.open.app.zed", icon: "zed", openWith: "Zed" },
-  { id: "textmate", label: "session.header.open.app.textmate", icon: "textmate", openWith: "TextMate" },
+  {
+    id: "textmate",
+    label: "session.header.open.app.textmate",
+    icon: "textmate",
+    openWith: "TextMate",
+  },
   {
     id: "antigravity",
     label: "session.header.open.app.antigravity",
     icon: "antigravity",
     openWith: "Antigravity",
   },
-  { id: "terminal", label: "session.header.open.app.terminal", icon: "terminal", openWith: "Terminal" },
+  {
+    id: "terminal",
+    label: "session.header.open.app.terminal",
+    icon: "terminal",
+    openWith: "Terminal",
+  },
   { id: "iterm2", label: "session.header.open.app.iterm2", icon: "iterm2", openWith: "iTerm" },
   { id: "ghostty", label: "session.header.open.app.ghostty", icon: "ghostty", openWith: "Ghostty" },
   { id: "warp", label: "session.header.open.app.warp", icon: "warp", openWith: "Warp" },
@@ -85,7 +95,7 @@ const MAC_APPS = [
     icon: "sublime-text",
     openWith: "Sublime Text",
   },
-] as const
+] as const;
 
 const WINDOWS_APPS = [
   { id: "vscode", label: "session.header.open.app.vscode", icon: "vscode", openWith: "code" },
@@ -103,7 +113,7 @@ const WINDOWS_APPS = [
     icon: "sublime-text",
     openWith: "Sublime Text",
   },
-] as const
+] as const;
 
 const LINUX_APPS = [
   { id: "vscode", label: "session.header.open.app.vscode", icon: "vscode", openWith: "code" },
@@ -115,78 +125,85 @@ const LINUX_APPS = [
     icon: "sublime-text",
     openWith: "Sublime Text",
   },
-] as const
+] as const;
 
 const detectOS = (platform: ReturnType<typeof usePlatform>): OS => {
-  if (platform.platform === "desktop" && platform.os) return platform.os
-  if (typeof navigator !== "object") return "unknown"
-  const value = navigator.platform || navigator.userAgent
-  if (/Mac/i.test(value)) return "macos"
-  if (/Win/i.test(value)) return "windows"
-  if (/Linux/i.test(value)) return "linux"
-  return "unknown"
-}
+  if (platform.platform === "desktop" && platform.os) return platform.os;
+  if (typeof navigator !== "object") return "unknown";
+  const value = navigator.platform || navigator.userAgent;
+  if (/Mac/i.test(value)) return "macos";
+  if (/Win/i.test(value)) return "windows";
+  if (/Linux/i.test(value)) return "linux";
+  return "unknown";
+};
 
 const showRequestError = (language: ReturnType<typeof useLanguage>, err: unknown) => {
   showToast({
     variant: "error",
     title: language.t("common.requestFailed"),
     description: err instanceof Error ? err.message : String(err),
-  })
-}
+  });
+};
 
 export function SessionHeader() {
-  const layout = useLayout()
-  const command = useCommand()
-  const server = useServer()
-  const platform = usePlatform()
-  const language = useLanguage()
-  const settings = useSettings()
-  const sync = useSync()
-  const terminal = useTerminal()
-  const { params, view } = useSessionLayout()
+  const layout = useLayout();
+  const command = useCommand();
+  const server = useServer();
+  const platform = usePlatform();
+  const language = useLanguage();
+  const settings = useSettings();
+  const sync = useSync();
+  const terminal = useTerminal();
+  const { params, view } = useSessionLayout();
 
-  const projectDirectory = createMemo(() => decode64(params.dir) ?? "")
+  const projectDirectory = createMemo(() => decode64(params.dir) ?? "");
   const project = createMemo(() => {
-    const directory = projectDirectory()
-    if (!directory) return
-    return layout.projects.list().find((p) => p.worktree === directory || p.sandboxes?.includes(directory))
-  })
+    const directory = projectDirectory();
+    if (!directory) return;
+    return layout.projects
+      .list()
+      .find((p) => p.worktree === directory || p.sandboxes?.includes(directory));
+  });
   const name = createMemo(() => {
-    const current = project()
-    if (current) return current.name || getFilename(current.worktree)
-    return getFilename(projectDirectory())
-  })
-  const hotkey = createMemo(() => command.keybind("file.open"))
-  const os = createMemo(() => detectOS(platform))
-  const isV2 = settings.general.newLayoutDesigns
-  const search = settings.visibility.search
-  const status = settings.visibility.status
-  const isDesktop = createMediaQuery("(min-width: 768px)")
+    const current = project();
+    if (current) return current.name || getFilename(current.worktree);
+    return getFilename(projectDirectory());
+  });
+  const hotkey = createMemo(() => command.keybind("file.open"));
+  const os = createMemo(() => detectOS(platform));
+  const isV2 = settings.general.newLayoutDesigns;
+  const search = settings.visibility.search;
+  const status = settings.visibility.status;
+  const isDesktop = createMediaQuery("(min-width: 768px)");
 
   const [exists, setExists] = createStore<Partial<Record<OpenApp, boolean>>>({
     finder: true,
-  })
+  });
 
   const apps = createMemo(() => {
-    if (os() === "macos") return MAC_APPS
-    if (os() === "windows") return WINDOWS_APPS
-    return LINUX_APPS
-  })
+    if (os() === "macos") return MAC_APPS;
+    if (os() === "windows") return WINDOWS_APPS;
+    return LINUX_APPS;
+  });
 
   const fileManager = createMemo(() => {
-    if (os() === "macos") return { label: "session.header.open.finder", icon: "finder" as const }
-    if (os() === "windows") return { label: "session.header.open.fileExplorer", icon: "file-explorer" as const }
-    return { label: "session.header.open.fileManager", icon: "finder" as const }
-  })
+    if (os() === "macos") return { label: "session.header.open.finder", icon: "finder" as const };
+    if (os() === "windows")
+      return { label: "session.header.open.fileExplorer", icon: "file-explorer" as const };
+    return { label: "session.header.open.fileManager", icon: "finder" as const };
+  });
 
   createEffect(() => {
-    if (platform.platform !== "desktop") return
-    if (!platform.checkAppExists) return
+    if (platform.platform !== "desktop") return;
+    if (!platform.checkAppExists) return;
 
-    const list = apps()
+    const list = apps();
 
-    setExists(Object.fromEntries(list.map((app) => [app.id, undefined])) as Partial<Record<OpenApp, boolean>>)
+    setExists(
+      Object.fromEntries(list.map((app) => [app.id, undefined])) as Partial<
+        Record<OpenApp, boolean>
+      >,
+    );
 
     void Promise.all(
       list.map((app) =>
@@ -196,9 +213,9 @@ export function SessionHeader() {
           .then((ok) => [app.id, ok] as const),
       ),
     ).then((entries) => {
-      setExists(Object.fromEntries(entries) as Partial<Record<OpenApp, boolean>>)
-    })
-  })
+      setExists(Object.fromEntries(entries) as Partial<Record<OpenApp, boolean>>);
+    });
+  });
 
   const options = createMemo(() => {
     return [
@@ -206,36 +223,41 @@ export function SessionHeader() {
       ...apps()
         .filter((app) => exists[app.id])
         .map((app) => ({ ...app, label: language.t(app.label) })),
-    ] as const
-  })
+    ] as const;
+  });
 
   const toggleTerminal = () => {
-    const next = !view().terminal.opened()
-    view().terminal.toggle()
-    if (!next) return
+    const next = !view().terminal.opened();
+    view().terminal.toggle();
+    if (!next) return;
 
-    const id = terminal.active()
-    if (!id) return
-    focusTerminalById(id)
-  }
+    const id = terminal.active();
+    if (!id) return;
+    focusTerminalById(id);
+  };
 
-  const [prefs, setPrefs] = persisted(Persist.global("open.app"), createStore({ app: "finder" as OpenApp }))
-  const [menu, setMenu] = createStore({ open: false })
+  const [prefs, setPrefs] = persisted(
+    Persist.global("open.app"),
+    createStore({ app: "finder" as OpenApp }),
+  );
+  const [menu, setMenu] = createStore({ open: false });
   const [openRequest, setOpenRequest] = createStore({
     app: undefined as OpenApp | undefined,
-  })
+  });
 
-  const canOpen = createMemo(() => platform.platform === "desktop" && !!platform.openPath && server.isLocal())
+  const canOpen = createMemo(
+    () => platform.platform === "desktop" && !!platform.openPath && server.isLocal(),
+  );
   const current = createMemo(
     () =>
       options().find((o) => o.id === prefs.app) ??
       options()[0] ??
       ({ id: "finder", label: fileManager().label, icon: fileManager().icon } as const),
-  )
-  const opening = createMemo(() => openRequest.app !== undefined)
+  );
+  const opening = createMemo(() => openRequest.app !== undefined);
   const tint = createMemo(() =>
     messageAgentColor(params.id ? sync().data.message[params.id] : undefined, sync().data.agent),
-  )
+  );
   const v2ActionsState = createMemo<SessionHeaderV2ActionsState>(() => ({
     statusVisible: status(),
     statusLabel: language.t("status.popover.trigger"),
@@ -244,32 +266,32 @@ export function SessionHeader() {
     reviewVisible: isDesktop(),
     reviewOpened: view().reviewPanel.opened(),
     onReviewToggle: () => view().reviewPanel.toggle(),
-  }))
+  }));
 
   const selectApp = (app: OpenApp) => {
-    if (!options().some((item) => item.id === app)) return
-    setPrefs("app", app)
-  }
+    if (!options().some((item) => item.id === app)) return;
+    setPrefs("app", app);
+  };
 
   const openDir = (app: OpenApp) => {
-    if (opening() || !canOpen() || !platform.openPath) return
-    const directory = projectDirectory()
-    if (!directory) return
+    if (opening() || !canOpen() || !platform.openPath) return;
+    const directory = projectDirectory();
+    if (!directory) return;
 
-    const item = options().find((o) => o.id === app)
-    const openWith = item && "openWith" in item ? item.openWith : undefined
-    setOpenRequest("app", app)
+    const item = options().find((o) => o.id === app);
+    const openWith = item && "openWith" in item ? item.openWith : undefined;
+    setOpenRequest("app", app);
     platform
       .openPath(directory, openWith)
       .catch((err: unknown) => showRequestError(language, err))
       .finally(() => {
-        setOpenRequest("app", undefined)
-      })
-  }
+        setOpenRequest("app", undefined);
+      });
+  };
 
   const copyPath = () => {
-    const directory = projectDirectory()
-    if (!directory) return
+    const directory = projectDirectory();
+    if (!directory) return;
     navigator.clipboard
       .writeText(directory)
       .then(() => {
@@ -278,17 +300,17 @@ export function SessionHeader() {
           icon: "circle-check",
           title: language.t("session.share.copy.copied"),
           description: directory,
-        })
+        });
       })
-      .catch((err: unknown) => showRequestError(language, err))
-  }
+      .catch((err: unknown) => showRequestError(language, err));
+  };
 
-  const [centerMount, setCenterMount] = createSignal<HTMLElement | null>(null)
-  const [rightMount, setRightMount] = createSignal<HTMLElement | null>(null)
+  const [centerMount, setCenterMount] = createSignal<HTMLElement | null>(null);
+  const [rightMount, setRightMount] = createSignal<HTMLElement | null>(null);
   onMount(() => {
-    setCenterMount(document.getElementById("opencode-titlebar-center"))
-    setRightMount(document.getElementById("opencode-titlebar-right"))
-  })
+    setCenterMount(document.getElementById("opencode-titlebar-center"));
+    setRightMount(document.getElementById("opencode-titlebar-right"));
+  });
 
   return (
     <>
@@ -359,11 +381,16 @@ export function SessionHeader() {
                               }}
                               onClick={() => openDir(current().id)}
                               disabled={opening()}
-                              aria-label={language.t("session.header.open.ariaLabel", { app: current().label })}
+                              aria-label={language.t("session.header.open.ariaLabel", {
+                                app: current().label,
+                              })}
                             >
                               <div class="flex size-5 shrink-0 items-center justify-center [&_[data-component=app-icon]]:size-5">
                                 <Show when={opening()} fallback={<AppIcon id={current().icon} />}>
-                                  <Spinner class="size-3.5" style={{ color: tint() ?? "var(--icon-base)" }} />
+                                  <Spinner
+                                    class="size-3.5"
+                                    style={{ color: tint() ?? "var(--icon-base)" }}
+                                  />
                                 </Show>
                               </div>
                             </Button>
@@ -394,8 +421,8 @@ export function SessionHeader() {
                                       class="mt-1"
                                       value={current().id}
                                       onChange={(value) => {
-                                        if (!OPEN_APPS.includes(value as OpenApp)) return
-                                        selectApp(value as OpenApp)
+                                        if (!OPEN_APPS.includes(value as OpenApp)) return;
+                                        selectApp(value as OpenApp);
                                       }}
                                     >
                                       <For each={options()}>
@@ -404,16 +431,22 @@ export function SessionHeader() {
                                             value={o.id}
                                             disabled={opening()}
                                             onSelect={() => {
-                                              setMenu("open", false)
-                                              openDir(o.id)
+                                              setMenu("open", false);
+                                              openDir(o.id);
                                             }}
                                           >
                                             <div class="flex size-5 shrink-0 items-center justify-center [&_[data-component=app-icon]]:size-5">
                                               <AppIcon id={o.icon} />
                                             </div>
-                                            <DropdownMenu.ItemLabel>{o.label}</DropdownMenu.ItemLabel>
+                                            <DropdownMenu.ItemLabel>
+                                              {o.label}
+                                            </DropdownMenu.ItemLabel>
                                             <DropdownMenu.ItemIndicator>
-                                              <Icon name="check-small" size="small" class="text-icon-weak" />
+                                              <Icon
+                                                name="check-small"
+                                                size="small"
+                                                class="text-icon-weak"
+                                              />
                                             </DropdownMenu.ItemIndicator>
                                           </DropdownMenu.RadioItem>
                                         )}
@@ -423,8 +456,8 @@ export function SessionHeader() {
                                   <DropdownMenu.Separator />
                                   <DropdownMenu.Item
                                     onSelect={() => {
-                                      setMenu("open", false)
-                                      copyPath()
+                                      setMenu("open", false);
+                                      copyPath();
                                     }}
                                   >
                                     <div class="flex size-5 shrink-0 items-center justify-center">
@@ -460,7 +493,10 @@ export function SessionHeader() {
                         aria-expanded={view().terminal.opened()}
                         aria-controls="terminal-panel"
                       >
-                        <Icon size="small" name={view().terminal.opened() ? "terminal-active" : "terminal"} />
+                        <Icon
+                          size="small"
+                          name={view().terminal.opened() ? "terminal-active" : "terminal"}
+                        />
                       </Button>
                     </TooltipKeybind>
 
@@ -477,7 +513,10 @@ export function SessionHeader() {
                           aria-expanded={view().reviewPanel.opened()}
                           aria-controls="review-panel"
                         >
-                          <Icon size="small" name={view().reviewPanel.opened() ? "review-active" : "review"} />
+                          <Icon
+                            size="small"
+                            name={view().reviewPanel.opened() ? "review-active" : "review"}
+                          />
                         </Button>
                       </TooltipKeybind>
 
@@ -516,21 +555,21 @@ export function SessionHeader() {
         )}
       </Show>
     </>
-  )
+  );
 }
 
 type SessionHeaderV2ActionsState = {
-  statusVisible: boolean
-  statusLabel: string
-  reviewLabel: string
-  reviewKeybind: string[]
-  reviewVisible: boolean
-  reviewOpened: boolean
-  onReviewToggle: () => void
-}
+  statusVisible: boolean;
+  statusLabel: string;
+  reviewLabel: string;
+  reviewKeybind: string[];
+  reviewVisible: boolean;
+  reviewOpened: boolean;
+  onReviewToggle: () => void;
+};
 
 function SessionHeaderV2Actions(props: { state: SessionHeaderV2ActionsState }) {
-  const language = useLanguage()
+  const language = useLanguage();
 
   return (
     <div class="flex items-center gap-2">
@@ -567,5 +606,5 @@ function SessionHeaderV2Actions(props: { state: SessionHeaderV2ActionsState }) {
         </TooltipV2>
       </Show>
     </div>
-  )
+  );
 }

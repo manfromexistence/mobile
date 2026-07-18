@@ -1,7 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert";
 // @ts-expect-error — .mjs module has no type declarations
-import { extractModuleCoverage, CRITICAL_MODULE_PATHS } from "../../scripts/quality/collect-metrics.mjs";
+import {
+  extractModuleCoverage,
+  CRITICAL_MODULE_PATHS,
+} from "../../scripts/quality/collect-metrics.mjs";
 
 // ─── Task 7.9: extractModuleCoverage (pure function) ─────────────────────────
 //
@@ -17,23 +20,21 @@ function entry(rel: string, pct: number) {
 }
 
 test("7.9 extractModuleCoverage: returns empty object for empty summary", () => {
-  const result = (extractModuleCoverage as (s: object, m: object, r: string) => Record<string, number>)(
+  const result = (
+    extractModuleCoverage as (s: object, m: object, r: string) => Record<string, number>
+  )(
     { total: { lines: { pct: 80 } } },
     { "coverage.chatCore.lines": ["open-sse/handlers/chatCore.ts"] },
-    FAKE_ROOT
+    FAKE_ROOT,
   );
   assert.deepEqual(result, {}, "no match → empty result (file absent from coverage)");
 });
 
 test("7.9 extractModuleCoverage: extracts a single matching module", () => {
-  const summary = Object.fromEntries([
-    entry("open-sse/handlers/chatCore.ts", 78.5),
-  ]);
-  const result = (extractModuleCoverage as (s: object, m: object, r: string) => Record<string, number>)(
-    summary,
-    { "coverage.chatCore.lines": ["open-sse/handlers/chatCore.ts"] },
-    FAKE_ROOT
-  );
+  const summary = Object.fromEntries([entry("open-sse/handlers/chatCore.ts", 78.5)]);
+  const result = (
+    extractModuleCoverage as (s: object, m: object, r: string) => Record<string, number>
+  )(summary, { "coverage.chatCore.lines": ["open-sse/handlers/chatCore.ts"] }, FAKE_ROOT);
   assert.equal(result["coverage.chatCore.lines"], 78.5);
 });
 
@@ -43,14 +44,16 @@ test("7.9 extractModuleCoverage: extracts multiple modules independently", () =>
     entry("open-sse/services/combo.ts", 62),
     entry("src/shared/utils/circuitBreaker.ts", 91),
   ]);
-  const result = (extractModuleCoverage as (s: object, m: object, r: string) => Record<string, number>)(
+  const result = (
+    extractModuleCoverage as (s: object, m: object, r: string) => Record<string, number>
+  )(
     summary,
     {
       "coverage.chatCore.lines": ["open-sse/handlers/chatCore.ts"],
       "coverage.combo.lines": ["open-sse/services/combo.ts"],
       "coverage.circuitBreaker.lines": ["src/shared/utils/circuitBreaker.ts"],
     },
-    FAKE_ROOT
+    FAKE_ROOT,
   );
   assert.equal(result["coverage.chatCore.lines"], 85);
   assert.equal(result["coverage.combo.lines"], 62);
@@ -62,13 +65,15 @@ test("7.9 extractModuleCoverage: skips modules not present in coverage (no error
     entry("open-sse/handlers/chatCore.ts", 70),
     // combo.ts intentionally absent
   ]);
-  const result = (extractModuleCoverage as (s: object, m: object, r: string) => Record<string, number>)(
+  const result = (
+    extractModuleCoverage as (s: object, m: object, r: string) => Record<string, number>
+  )(
     summary,
     {
       "coverage.chatCore.lines": ["open-sse/handlers/chatCore.ts"],
       "coverage.combo.lines": ["open-sse/services/combo.ts"],
     },
-    FAKE_ROOT
+    FAKE_ROOT,
   );
   assert.equal(result["coverage.chatCore.lines"], 70);
   assert.ok(!("coverage.combo.lines" in result), "absent module should not appear in result");
@@ -79,13 +84,15 @@ test("7.9 extractModuleCoverage: ignores 'total' key", () => {
     total: { lines: { pct: 99 } },
     [`${FAKE_ROOT}/open-sse/handlers/chatCore.ts`]: { lines: { pct: 55 } },
   };
-  const result = (extractModuleCoverage as (s: object, m: object, r: string) => Record<string, number>)(
+  const result = (
+    extractModuleCoverage as (s: object, m: object, r: string) => Record<string, number>
+  )(
     summary,
     {
       "coverage.chatCore.lines": ["open-sse/handlers/chatCore.ts"],
       "coverage.total.lines": ["total"], // should NOT match even if someone maps it
     },
-    FAKE_ROOT
+    FAKE_ROOT,
   );
   assert.equal(result["coverage.chatCore.lines"], 55);
   assert.ok(!("coverage.total.lines" in result), "'total' key must never be returned as a module");
@@ -96,13 +103,15 @@ test("7.9 extractModuleCoverage: uses first candidate in fallback list", () => {
     entry("src/sse/services/auth.ts", 67),
     // alternative fallback path intentionally absent
   ]);
-  const result = (extractModuleCoverage as (s: object, m: object, r: string) => Record<string, number>)(
+  const result = (
+    extractModuleCoverage as (s: object, m: object, r: string) => Record<string, number>
+  )(
     summary,
     {
       // first candidate matches
       "coverage.auth.lines": ["src/sse/services/auth.ts", "open-sse/services/auth.ts"],
     },
-    FAKE_ROOT
+    FAKE_ROOT,
   );
   assert.equal(result["coverage.auth.lines"], 67);
 });
@@ -112,12 +121,14 @@ test("7.9 extractModuleCoverage: uses second candidate when first is absent", ()
     // first candidate absent; second present
     entry("open-sse/services/auth.ts", 42),
   ]);
-  const result = (extractModuleCoverage as (s: object, m: object, r: string) => Record<string, number>)(
+  const result = (
+    extractModuleCoverage as (s: object, m: object, r: string) => Record<string, number>
+  )(
     summary,
     {
       "coverage.auth.lines": ["src/sse/services/auth.ts", "open-sse/services/auth.ts"],
     },
-    FAKE_ROOT
+    FAKE_ROOT,
   );
   assert.equal(result["coverage.auth.lines"], 42);
 });
@@ -126,31 +137,25 @@ test("7.9 extractModuleCoverage: handles missing lines.pct gracefully (no entry 
   const summary = {
     [`${FAKE_ROOT}/open-sse/handlers/chatCore.ts`]: { statements: { pct: 80 } }, // no lines key
   };
-  const result = (extractModuleCoverage as (s: object, m: object, r: string) => Record<string, number>)(
-    summary,
-    { "coverage.chatCore.lines": ["open-sse/handlers/chatCore.ts"] },
-    FAKE_ROOT
-  );
+  const result = (
+    extractModuleCoverage as (s: object, m: object, r: string) => Record<string, number>
+  )(summary, { "coverage.chatCore.lines": ["open-sse/handlers/chatCore.ts"] }, FAKE_ROOT);
   assert.ok(!("coverage.chatCore.lines" in result), "entry without lines.pct should not appear");
 });
 
 test("7.9 extractModuleCoverage: handles pct=0 correctly (zero coverage is valid data)", () => {
   const summary = Object.fromEntries([entry("open-sse/utils/error.ts", 0)]);
-  const result = (extractModuleCoverage as (s: object, m: object, r: string) => Record<string, number>)(
-    summary,
-    { "coverage.error.lines": ["open-sse/utils/error.ts"] },
-    FAKE_ROOT
-  );
+  const result = (
+    extractModuleCoverage as (s: object, m: object, r: string) => Record<string, number>
+  )(summary, { "coverage.error.lines": ["open-sse/utils/error.ts"] }, FAKE_ROOT);
   assert.equal(result["coverage.error.lines"], 0);
 });
 
 test("7.9 extractModuleCoverage: handles pct=100 correctly (full coverage)", () => {
   const summary = Object.fromEntries([entry("open-sse/utils/publicCreds.ts", 100)]);
-  const result = (extractModuleCoverage as (s: object, m: object, r: string) => Record<string, number>)(
-    summary,
-    { "coverage.publicCreds.lines": ["open-sse/utils/publicCreds.ts"] },
-    FAKE_ROOT
-  );
+  const result = (
+    extractModuleCoverage as (s: object, m: object, r: string) => Record<string, number>
+  )(summary, { "coverage.publicCreds.lines": ["open-sse/utils/publicCreds.ts"] }, FAKE_ROOT);
   assert.equal(result["coverage.publicCreds.lines"], 100);
 });
 
@@ -165,9 +170,7 @@ test("7.9 CRITICAL_MODULE_PATHS: exports the 8 required module paths", () => {
     "coverage.publicCreds.lines",
     "coverage.circuitBreaker.lines",
   ];
-  const keys = Object.keys(
-    CRITICAL_MODULE_PATHS as Record<string, string[]>
-  );
+  const keys = Object.keys(CRITICAL_MODULE_PATHS as Record<string, string[]>);
   for (const key of required) {
     assert.ok(keys.includes(key), `CRITICAL_MODULE_PATHS must contain ${key}`);
   }

@@ -47,7 +47,7 @@ function bodySpecific400() {
     JSON.stringify({
       detail: "Invalid message format: the request body is malformed.",
     }),
-    { status: 400, headers: { "Content-Type": "application/json" } }
+    { status: 400, headers: { "Content-Type": "application/json" } },
   );
 }
 
@@ -79,7 +79,7 @@ test("#4279 combo stops at the first body-specific 400 instead of trying every t
   assert.equal(
     modelsCalled.length,
     1,
-    `body-specific 400 must stop the combo at target 1, but it tried: ${modelsCalled.join(", ")}`
+    `body-specific 400 must stop the combo at target 1, but it tried: ${modelsCalled.join(", ")}`,
   );
   assert.equal(result.status, 400, "the combo must surface the body-specific 400 to the client");
 });

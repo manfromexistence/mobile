@@ -4,9 +4,7 @@
   "title": "Testimonial Spotlight",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "Testimonial card with spotlight effect on hover.",
-  "registryDependencies": [
-    "https://chanhdai.com/r/testimonial.json"
-  ],
+  "registryDependencies": ["https://chanhdai.com/r/testimonial.json"],
   "files": [
     {
       "path": "src/registry/components/testimonial-spotlight/testimonial-spotlight.tsx",
@@ -16,8 +14,6 @@
     }
   ],
   "docs": "https://chanhdai.com/components/testimonial-spotlight",
-  "categories": [
-    "marketing"
-  ],
+  "categories": ["marketing"],
   "type": "registry:component"
 }

@@ -1,4 +1,4 @@
-import { type ModelSource } from './model-manager';
+import { type ModelSource } from "./model-manager";
 
 export interface HuggingFaceParams {
   /**
@@ -29,8 +29,8 @@ export interface HuggingFaceParams {
   hfToken?: string;
 }
 
-const HF_BASE = 'https://huggingface.co';
-const DEFAULT_QUANTS = ['Q4_K_M', 'Q8_0'];
+const HF_BASE = "https://huggingface.co";
+const DEFAULT_QUANTS = ["Q4_K_M", "Q8_0"];
 
 interface HFFileEntry {
   type: string;
@@ -40,14 +40,11 @@ interface HFFileEntry {
   lfs?: { oid: string; size: number };
 }
 
-async function fetchRepoFiles(
-  repo: string,
-  token?: string
-): Promise<HFFileEntry[]> {
+async function fetchRepoFiles(repo: string, token?: string): Promise<HFFileEntry[]> {
   const url = `${HF_BASE}/api/models/${repo}/tree/main?recursive=true`;
-  const headers: Record<string, string> = { Accept: 'application/json' };
+  const headers: Record<string, string> = { Accept: "application/json" };
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers["Authorization"] = `Bearer ${token}`;
   }
   const res = await fetch(url, { headers });
   if (!res.ok) {
@@ -74,12 +71,11 @@ function firstShardPath(files: HFFileEntry[], path: string): string {
 function selectFile(
   files: HFFileEntry[],
   quant: string | undefined,
-  mmprojOnly: boolean
+  mmprojOnly: boolean,
 ): string | null {
   const candidates = files.filter((f) => {
-    if (f.type !== 'file' || !f.path.toLowerCase().endsWith('.gguf'))
-      return false;
-    const ismmproj = f.path.toLowerCase().includes('mmproj');
+    if (f.type !== "file" || !f.path.toLowerCase().endsWith(".gguf")) return false;
+    const ismmproj = f.path.toLowerCase().includes("mmproj");
     return mmprojOnly ? ismmproj : !ismmproj;
   });
 
@@ -101,9 +97,7 @@ function selectFile(
   return firstShardPath(candidates, candidates[0].path);
 }
 
-export async function getHFModelSource(
-  config: HuggingFaceParams
-): Promise<ModelSource> {
+export async function getHFModelSource(config: HuggingFaceParams): Promise<ModelSource> {
   const { repo, file, quant, mmprojFile, mmprojQuant, hfToken } = config;
 
   const files = await fetchRepoFiles(repo, hfToken);
@@ -137,10 +131,10 @@ export async function getHFModelSource(
 
 export async function getHFFileSHA256(
   url: string,
-  headers: Record<string, string>
+  headers: Record<string, string>,
 ): Promise<string | undefined> {
-  if (!url.includes('/resolve/')) return undefined;
-  const rawUrl = url.replace('/resolve/', '/raw/');
+  if (!url.includes("/resolve/")) return undefined;
+  const rawUrl = url.replace("/resolve/", "/raw/");
   try {
     const text = await fetch(rawUrl, { headers }).then((r) => r.text());
     const match = text.match(/^oid sha256:([0-9a-f]{64})$/m);

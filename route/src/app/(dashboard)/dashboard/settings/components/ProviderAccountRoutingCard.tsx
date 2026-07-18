@@ -16,7 +16,7 @@ type Props = {
 };
 
 const STRATEGY_OPTIONS = ACCOUNT_FALLBACK_STRATEGY_VALUES.filter((v) =>
-  ["fill-first", "round-robin", "priority", "p2c", "random", "least-used"].includes(v)
+  ["fill-first", "round-robin", "priority", "p2c", "random", "least-used"].includes(v),
 );
 
 function clampProviderStickyLimit(raw: string): number {
@@ -40,7 +40,7 @@ function useProviderAccountRoutingState(providerKey: string) {
     ];
     setStrategy(override?.fallbackStrategy || "");
     setStickyLimit(
-      override?.stickyRoundRobinLimit != null ? String(override.stickyRoundRobinLimit) : ""
+      override?.stickyRoundRobinLimit != null ? String(override.stickyRoundRobinLimit) : "",
     );
   }, [providerKey]);
 
@@ -79,7 +79,7 @@ function useProviderAccountRoutingState(providerKey: string) {
         setBusy(false);
       }
     },
-    [providerKey]
+    [providerKey],
   );
 
   return { strategy, setStrategy, stickyLimit, setStickyLimit, busy, save };

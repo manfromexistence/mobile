@@ -3,7 +3,12 @@
   "metadata": {
     "name": "bedrock-converse/streams-a-tool-call",
     "recordedAt": "2026-04-28T21:18:46.929Z",
-    "tags": ["prefix:bedrock-converse", "provider:amazon-bedrock", "protocol:bedrock-converse", "tool"]
+    "tags": [
+      "prefix:bedrock-converse",
+      "provider:amazon-bedrock",
+      "protocol:bedrock-converse",
+      "tool"
+    ]
   },
   "interactions": [
     {

@@ -1,6 +1,6 @@
-import type { vec4 } from '../types.js';
-import type { ShaderMotionParams } from '../shader-mount.js';
-import type { ShaderSizingParams, ShaderSizingUniforms } from '../shader-sizing.js';
+import type { vec4 } from "../types.js";
+import type { ShaderMotionParams } from "../shader-mount.js";
+import type { ShaderSizingParams, ShaderSizingUniforms } from "../shader-sizing.js";
 
 export const heatmapMeta = {
   maxColorCount: 10,
@@ -56,7 +56,7 @@ uniform float u_time;
 uniform mediump float u_imageAspectRatio;
 
 uniform vec4 u_colorBack;
-uniform vec4 u_colors[${ heatmapMeta.maxColorCount }];
+uniform vec4 u_colors[${heatmapMeta.maxColorCount}];
 uniform float u_colorsCount;
 
 uniform float u_angle;
@@ -272,7 +272,7 @@ void main() {
   vec4 gradient = u_colors[0];
   gradient.rgb *= gradient.a;
   float outerShape = 0.;
-  for (int i = 1; i < ${ heatmapMeta.maxColorCount + 1 }; i++) {
+  for (int i = 1; i < ${heatmapMeta.maxColorCount + 1}; i++) {
     if (i > int(u_colorsCount)) break;
     float m = clamp(mixer - float(i - 1), 0., 1.);
     if (i == 1) {
@@ -297,15 +297,15 @@ void main() {
 `;
 
 export function toProcessedHeatmap(file: File | string): Promise<{ blob: Blob }> {
-  const canvas = document.createElement('canvas');
+  const canvas = document.createElement("canvas");
   const canvasSize = 1000;
 
   return new Promise((resolve, reject) => {
     const image = new Image();
-    image.crossOrigin = 'anonymous';
+    image.crossOrigin = "anonymous";
 
-    image.addEventListener('load', () => {
-      if (typeof file === 'string' ? file.endsWith('.svg') : file.type === 'image/svg+xml') {
+    image.addEventListener("load", () => {
+      if (typeof file === "string" ? file.endsWith(".svg") : file.type === "image/svg+xml") {
         // Force SVG to load at a high fidelity size if it's an SVG
         image.width = canvasSize;
         image.height = canvasSize;
@@ -326,13 +326,13 @@ export function toProcessedHeatmap(file: File | string): Promise<{ blob: Blob }>
       canvas.width = imgWidth + 2 * padding;
       canvas.height = imgHeight + 2 * padding;
 
-      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
       if (!ctx) {
-        throw new Error('Failed to get canvas 2d context');
+        throw new Error("Failed to get canvas 2d context");
       }
 
       // 1) Draw original image once, no filters
-      ctx.fillStyle = 'white';
+      ctx.fillStyle = "white";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(image, padding, padding, imgWidth, imgHeight);
 
@@ -377,18 +377,18 @@ export function toProcessedHeatmap(file: File | string): Promise<{ blob: Blob }>
 
       canvas.toBlob((blob) => {
         if (!blob) {
-          reject(new Error('Failed to create PNG blob'));
+          reject(new Error("Failed to create PNG blob"));
           return;
         }
         resolve({ blob });
-      }, 'image/png');
+      }, "image/png");
     });
 
-    image.addEventListener('error', () => {
-      reject(new Error('Failed to load image'));
+    image.addEventListener("error", () => {
+      reject(new Error("Failed to load image"));
     });
 
-    image.src = typeof file === 'string' ? file : URL.createObjectURL(file);
+    image.src = typeof file === "string" ? file : URL.createObjectURL(file);
   });
 }
 
@@ -397,7 +397,12 @@ export function toProcessedHeatmap(file: File | string): Promise<{ blob: Blob }>
  * gray: Uint8ClampedArray of length width * height
  * radius: blur radius in pixels
  */
-function blurGray(gray: Uint8ClampedArray, width: number, height: number, radius: number): Uint8ClampedArray {
+function blurGray(
+  gray: Uint8ClampedArray,
+  width: number,
+  height: number,
+  radius: number,
+): Uint8ClampedArray {
   if (radius <= 0) {
     return gray.slice();
   }
@@ -448,7 +453,7 @@ function multiPassBlurGray(
   width: number,
   height: number,
   radius: number,
-  passes: number
+  passes: number,
 ): Uint8ClampedArray {
   if (radius <= 0 || passes <= 1) {
     return blurGray(gray, width, height, radius);

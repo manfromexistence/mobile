@@ -1,7 +1,7 @@
 // @ts-nocheck
-import * as mod from "./markdown"
-import { create } from "@opencode-ai/ui/storybook/scaffold"
-import { markdown } from "@opencode-ai/ui/storybook/fixtures"
+import * as mod from "./markdown";
+import { create } from "@opencode-ai/ui/storybook/scaffold";
+import { markdown } from "@opencode-ai/ui/storybook/fixtures";
 
 const docs = `### Overview
 Render sanitized Markdown with code blocks, inline code, and safe links.
@@ -26,7 +26,7 @@ Pair with \`Code\` for standalone code views.
 ### Theming/tokens
 - Uses \`data-component="markdown"\` and related slots for styling.
 
-`
+`;
 
 const story = create({
   title: "UI/Markdown",
@@ -34,7 +34,7 @@ const story = create({
   args: {
     text: markdown,
   },
-})
+});
 
 export default {
   title: "UI/Markdown",
@@ -48,6 +48,6 @@ export default {
       },
     },
   },
-}
+};
 
-export const Basic = story.Basic
+export const Basic = story.Basic;

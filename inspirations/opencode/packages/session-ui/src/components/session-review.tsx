@@ -1,131 +1,147 @@
-import { Accordion } from "@opencode-ai/ui/accordion"
-import { Button } from "@opencode-ai/ui/button"
-import { DropdownMenu } from "@opencode-ai/ui/dropdown-menu"
-import { RadioGroup } from "@opencode-ai/ui/radio-group"
-import { DiffChanges } from "@opencode-ai/ui/diff-changes"
-import { FileIcon } from "@opencode-ai/ui/file-icon"
-import { Icon } from "@opencode-ai/ui/icon"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { StickyAccordionHeader } from "@opencode-ai/ui/sticky-accordion-header"
-import { Tooltip } from "@opencode-ai/ui/tooltip"
-import { ScrollView } from "@opencode-ai/ui/scroll-view"
-import { useFileComponent } from "@opencode-ai/ui/context/file"
-import { useI18n } from "@opencode-ai/ui/context/i18n"
-import { getDirectory, getFilename } from "@opencode-ai/core/util/path"
-import { checksum } from "@opencode-ai/core/util/encode"
-import { createEffect, createMemo, For, Match, onCleanup, Show, Switch, untrack, type JSX } from "solid-js"
-import { createStore } from "solid-js/store"
-import { type FileContent, type SnapshotFileDiff, type VcsFileDiff } from "@opencode-ai/sdk/v2"
-import { PreloadMultiFileDiffResult } from "@pierre/diffs/ssr"
-import { type SelectedLineRange } from "@pierre/diffs"
-import { Dynamic } from "solid-js/web"
-import { mediaKindFromPath } from "../pierre/media"
-import { cloneSelectedLineRange, previewSelectedLines } from "../pierre/selection-bridge"
-import { createLineCommentController } from "./line-comment-annotations"
-import type { LineCommentEditorProps } from "./line-comment"
-import { normalize, text, type ViewDiff } from "./session-diff"
+import { Accordion } from "@opencode-ai/ui/accordion";
+import { Button } from "@opencode-ai/ui/button";
+import { DropdownMenu } from "@opencode-ai/ui/dropdown-menu";
+import { RadioGroup } from "@opencode-ai/ui/radio-group";
+import { DiffChanges } from "@opencode-ai/ui/diff-changes";
+import { FileIcon } from "@opencode-ai/ui/file-icon";
+import { Icon } from "@opencode-ai/ui/icon";
+import { IconButton } from "@opencode-ai/ui/icon-button";
+import { StickyAccordionHeader } from "@opencode-ai/ui/sticky-accordion-header";
+import { Tooltip } from "@opencode-ai/ui/tooltip";
+import { ScrollView } from "@opencode-ai/ui/scroll-view";
+import { useFileComponent } from "@opencode-ai/ui/context/file";
+import { useI18n } from "@opencode-ai/ui/context/i18n";
+import { getDirectory, getFilename } from "@opencode-ai/core/util/path";
+import { checksum } from "@opencode-ai/core/util/encode";
+import {
+  createEffect,
+  createMemo,
+  For,
+  Match,
+  onCleanup,
+  Show,
+  Switch,
+  untrack,
+  type JSX,
+} from "solid-js";
+import { createStore } from "solid-js/store";
+import { type FileContent, type SnapshotFileDiff, type VcsFileDiff } from "@opencode-ai/sdk/v2";
+import { PreloadMultiFileDiffResult } from "@pierre/diffs/ssr";
+import { type SelectedLineRange } from "@pierre/diffs";
+import { Dynamic } from "solid-js/web";
+import { mediaKindFromPath } from "../pierre/media";
+import { cloneSelectedLineRange, previewSelectedLines } from "../pierre/selection-bridge";
+import { createLineCommentController } from "./line-comment-annotations";
+import type { LineCommentEditorProps } from "./line-comment";
+import { normalize, text, type ViewDiff } from "./session-diff";
 
-const MAX_DIFF_CHANGED_LINES = 500
-const REVIEW_MOUNT_MARGIN = 300
+const MAX_DIFF_CHANGED_LINES = 500;
+const REVIEW_MOUNT_MARGIN = 300;
 
-export type SessionReviewDiffStyle = "unified" | "split"
+export type SessionReviewDiffStyle = "unified" | "split";
 
 export type SessionReviewComment = {
-  id: string
-  file: string
-  selection: SelectedLineRange
-  comment: string
-}
+  id: string;
+  file: string;
+  selection: SelectedLineRange;
+  comment: string;
+};
 
 export type SessionReviewLineComment = {
-  file: string
-  selection: SelectedLineRange
-  comment: string
-  preview?: string
-}
+  file: string;
+  selection: SelectedLineRange;
+  comment: string;
+  preview?: string;
+};
 
 export type SessionReviewCommentUpdate = SessionReviewLineComment & {
-  id: string
-}
+  id: string;
+};
 
 export type SessionReviewCommentDelete = {
-  id: string
-  file: string
-}
+  id: string;
+  file: string;
+};
 
 export type SessionReviewCommentActions = {
-  moreLabel: string
-  editLabel: string
-  deleteLabel: string
-  saveLabel: string
-}
+  moreLabel: string;
+  editLabel: string;
+  deleteLabel: string;
+  saveLabel: string;
+};
 
-export type SessionReviewFocus = { file: string; id: string }
+export type SessionReviewFocus = { file: string; id: string };
 
 type RawReviewDiff = (SnapshotFileDiff | VcsFileDiff) & {
-  preloaded?: PreloadMultiFileDiffResult<any>
-}
+  preloaded?: PreloadMultiFileDiffResult<any>;
+};
 type ReviewDiff = ((SnapshotFileDiff & { file: string }) | VcsFileDiff) & {
-  preloaded?: PreloadMultiFileDiffResult<any>
-}
-type Item = ViewDiff & { preloaded?: PreloadMultiFileDiffResult<any> }
+  preloaded?: PreloadMultiFileDiffResult<any>;
+};
+type Item = ViewDiff & { preloaded?: PreloadMultiFileDiffResult<any> };
 
 function diff(value: unknown): value is ReviewDiff {
-  if (!value || typeof value !== "object" || Array.isArray(value)) return false
-  if (!("file" in value) || typeof value.file !== "string") return false
-  if (!("additions" in value) || typeof value.additions !== "number") return false
-  if (!("deletions" in value) || typeof value.deletions !== "number") return false
-  if ("patch" in value && value.patch !== undefined && typeof value.patch !== "string") return false
-  if ("before" in value && value.before !== undefined && typeof value.before !== "string") return false
-  if ("after" in value && value.after !== undefined && typeof value.after !== "string") return false
-  if (!("status" in value) || value.status === undefined) return true
-  return value.status === "added" || value.status === "deleted" || value.status === "modified"
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  if (!("file" in value) || typeof value.file !== "string") return false;
+  if (!("additions" in value) || typeof value.additions !== "number") return false;
+  if (!("deletions" in value) || typeof value.deletions !== "number") return false;
+  if ("patch" in value && value.patch !== undefined && typeof value.patch !== "string")
+    return false;
+  if ("before" in value && value.before !== undefined && typeof value.before !== "string")
+    return false;
+  if ("after" in value && value.after !== undefined && typeof value.after !== "string")
+    return false;
+  if (!("status" in value) || value.status === undefined) return true;
+  return value.status === "added" || value.status === "deleted" || value.status === "modified";
 }
 
 function list(value: unknown): ReviewDiff[] {
-  if (Array.isArray(value) && value.every(diff)) return value
-  if (Array.isArray(value)) return value.filter(diff)
-  if (diff(value)) return [value]
-  if (!value || typeof value !== "object") return []
-  return Object.values(value).filter(diff)
+  if (Array.isArray(value) && value.every(diff)) return value;
+  if (Array.isArray(value)) return value.filter(diff);
+  if (diff(value)) return [value];
+  if (!value || typeof value !== "object") return [];
+  return Object.values(value).filter(diff);
 }
 
 export interface SessionReviewProps {
-  title?: JSX.Element
-  empty?: JSX.Element
-  split?: boolean
-  diffStyle?: SessionReviewDiffStyle
-  onDiffStyleChange?: (diffStyle: SessionReviewDiffStyle) => void
-  onDiffRendered?: VoidFunction
-  onLineComment?: (comment: SessionReviewLineComment) => void
-  onLineCommentUpdate?: (comment: SessionReviewCommentUpdate) => void
-  onLineCommentDelete?: (comment: SessionReviewCommentDelete) => void
-  lineCommentActions?: SessionReviewCommentActions
-  comments?: SessionReviewComment[]
-  focusedComment?: SessionReviewFocus | null
-  onFocusedCommentChange?: (focus: SessionReviewFocus | null) => void
-  focusedFile?: string
-  open?: string[]
-  onOpenChange?: (open: string[]) => void
-  scrollRef?: (el: HTMLDivElement) => void
-  onScroll?: JSX.EventHandlerUnion<HTMLDivElement, Event>
-  class?: string
-  classList?: Record<string, boolean | undefined>
-  classes?: { root?: string; header?: string; container?: string }
-  actions?: JSX.Element
-  diffs: RawReviewDiff[]
-  onViewFile?: (file: string) => void
-  readFile?: (path: string) => Promise<FileContent | undefined>
-  lineCommentMention?: LineCommentEditorProps["mention"]
+  title?: JSX.Element;
+  empty?: JSX.Element;
+  split?: boolean;
+  diffStyle?: SessionReviewDiffStyle;
+  onDiffStyleChange?: (diffStyle: SessionReviewDiffStyle) => void;
+  onDiffRendered?: VoidFunction;
+  onLineComment?: (comment: SessionReviewLineComment) => void;
+  onLineCommentUpdate?: (comment: SessionReviewCommentUpdate) => void;
+  onLineCommentDelete?: (comment: SessionReviewCommentDelete) => void;
+  lineCommentActions?: SessionReviewCommentActions;
+  comments?: SessionReviewComment[];
+  focusedComment?: SessionReviewFocus | null;
+  onFocusedCommentChange?: (focus: SessionReviewFocus | null) => void;
+  focusedFile?: string;
+  open?: string[];
+  onOpenChange?: (open: string[]) => void;
+  scrollRef?: (el: HTMLDivElement) => void;
+  onScroll?: JSX.EventHandlerUnion<HTMLDivElement, Event>;
+  class?: string;
+  classList?: Record<string, boolean | undefined>;
+  classes?: { root?: string; header?: string; container?: string };
+  actions?: JSX.Element;
+  diffs: RawReviewDiff[];
+  onViewFile?: (file: string) => void;
+  readFile?: (path: string) => Promise<FileContent | undefined>;
+  lineCommentMention?: LineCommentEditorProps["mention"];
 }
 
 function ReviewCommentMenu(props: {
-  labels: SessionReviewCommentActions
-  onEdit: VoidFunction
-  onDelete: VoidFunction
+  labels: SessionReviewCommentActions;
+  onEdit: VoidFunction;
+  onDelete: VoidFunction;
 }) {
   return (
-    <div onMouseDown={(event) => event.stopPropagation()} onClick={(event) => event.stopPropagation()}>
+    <div
+      onMouseDown={(event) => event.stopPropagation()}
+      onClick={(event) => event.stopPropagation()}
+    >
       <DropdownMenu gutter={4} placement="bottom-end">
         <DropdownMenu.Trigger
           as={IconButton}
@@ -147,28 +163,28 @@ function ReviewCommentMenu(props: {
         </DropdownMenu.Portal>
       </DropdownMenu>
     </div>
-  )
+  );
 }
 
 function diffId(file: string): string | undefined {
-  const sum = checksum(file)
-  if (!sum) return
-  return `session-review-diff-${sum}`
+  const sum = checksum(file);
+  if (!sum) return;
+  return `session-review-diff-${sum}`;
 }
 
 type SessionReviewSelection = {
-  file: string
-  range: SelectedLineRange
-}
+  file: string;
+  range: SelectedLineRange;
+};
 
 export const SessionReview = (props: SessionReviewProps) => {
-  let scroll: HTMLDivElement | undefined
-  let focusToken = 0
-  let frame: number | undefined
-  const i18n = useI18n()
-  const fileComponent = useFileComponent()
-  const anchors = new Map<string, HTMLElement>()
-  const nodes = new Map<string, HTMLDivElement>()
+  let scroll: HTMLDivElement | undefined;
+  let focusToken = 0;
+  let frame: number | undefined;
+  const i18n = useI18n();
+  const fileComponent = useFileComponent();
+  const anchors = new Map<string, HTMLElement>();
+  const nodes = new Map<string, HTMLDivElement>();
   const [store, setStore] = createStore({
     open: [] as string[],
     visible: {} as Record<string, boolean>,
@@ -176,165 +192,178 @@ export const SessionReview = (props: SessionReviewProps) => {
     selection: null as SessionReviewSelection | null,
     commenting: null as SessionReviewSelection | null,
     opened: null as SessionReviewFocus | null,
-  })
-  const selection = () => store.selection
-  const commenting = () => store.commenting
-  const opened = () => store.opened
+  });
+  const selection = () => store.selection;
+  const commenting = () => store.commenting;
+  const opened = () => store.opened;
 
-  const open = () => props.open ?? store.open
+  const open = () => props.open ?? store.open;
   const itemsMap = createMemo(() =>
-    Object.fromEntries(list(props.diffs).map((diff) => [diff.file, { ...normalize(diff), preloaded: diff.preloaded }])),
-  )
-  const files = createMemo(() => props.diffs.map((diff) => diff.file!))
+    Object.fromEntries(
+      list(props.diffs).map((diff) => [
+        diff.file,
+        { ...normalize(diff), preloaded: diff.preloaded },
+      ]),
+    ),
+  );
+  const files = createMemo(() => props.diffs.map((diff) => diff.file!));
   const grouped = createMemo(() => {
-    const next = new Map<string, SessionReviewComment[]>()
+    const next = new Map<string, SessionReviewComment[]>();
     for (const comment of props.comments ?? []) {
-      const list = next.get(comment.file)
+      const list = next.get(comment.file);
       if (list) {
-        list.push(comment)
-        continue
+        list.push(comment);
+        continue;
       }
-      next.set(comment.file, [comment])
+      next.set(comment.file, [comment]);
     }
-    return next
-  })
-  const diffStyle = () => props.diffStyle ?? (props.split ? "split" : "unified")
-  const hasDiffs = () => files().length > 0
+    return next;
+  });
+  const diffStyle = () => props.diffStyle ?? (props.split ? "split" : "unified");
+  const hasDiffs = () => files().length > 0;
 
   const syncVisible = () => {
-    frame = undefined
-    if (!scroll) return
+    frame = undefined;
+    if (!scroll) return;
 
-    const root = scroll.getBoundingClientRect()
-    const top = root.top - REVIEW_MOUNT_MARGIN
-    const bottom = root.bottom + REVIEW_MOUNT_MARGIN
-    const openSet = new Set(open())
-    const next: Record<string, boolean> = {}
+    const root = scroll.getBoundingClientRect();
+    const top = root.top - REVIEW_MOUNT_MARGIN;
+    const bottom = root.bottom + REVIEW_MOUNT_MARGIN;
+    const openSet = new Set(open());
+    const next: Record<string, boolean> = {};
 
     for (const [file, el] of nodes) {
-      if (!openSet.has(file)) continue
-      const rect = el.getBoundingClientRect()
-      if (rect.bottom < top || rect.top > bottom) continue
-      next[file] = true
+      if (!openSet.has(file)) continue;
+      const rect = el.getBoundingClientRect();
+      if (rect.bottom < top || rect.top > bottom) continue;
+      next[file] = true;
     }
 
-    const prev = untrack(() => store.visible)
-    const prevKeys = Object.keys(prev)
-    const nextKeys = Object.keys(next)
-    if (prevKeys.length === nextKeys.length && nextKeys.every((file) => prev[file])) return
-    setStore("visible", next)
-  }
+    const prev = untrack(() => store.visible);
+    const prevKeys = Object.keys(prev);
+    const nextKeys = Object.keys(next);
+    if (prevKeys.length === nextKeys.length && nextKeys.every((file) => prev[file])) return;
+    setStore("visible", next);
+  };
 
   const queue = () => {
-    if (frame !== undefined) return
-    frame = requestAnimationFrame(syncVisible)
-  }
+    if (frame !== undefined) return;
+    frame = requestAnimationFrame(syncVisible);
+  };
 
   const pinned = (file: string) =>
     props.focusedComment?.file === file ||
     props.focusedFile === file ||
     selection()?.file === file ||
     commenting()?.file === file ||
-    opened()?.file === file
+    opened()?.file === file;
 
   const handleScroll: JSX.EventHandler<HTMLDivElement, Event> = (event) => {
-    queue()
-    const next = props.onScroll
-    if (!next) return
+    queue();
+    const next = props.onScroll;
+    if (!next) return;
     if (Array.isArray(next)) {
-      const [fn, data] = next as [(data: unknown, event: Event) => void, unknown]
-      fn(data, event)
-      return
+      const [fn, data] = next as [(data: unknown, event: Event) => void, unknown];
+      fn(data, event);
+      return;
     }
-    ;(next as JSX.EventHandler<HTMLDivElement, Event>)(event)
-  }
+    (next as JSX.EventHandler<HTMLDivElement, Event>)(event);
+  };
 
   onCleanup(() => {
-    if (frame === undefined) return
-    cancelAnimationFrame(frame)
-  })
+    if (frame === undefined) return;
+    cancelAnimationFrame(frame);
+  });
 
   createEffect(() => {
-    props.open
-    files()
-    queue()
-  })
+    props.open;
+    files();
+    queue();
+  });
 
   const handleChange = (next: string[]) => {
-    props.onOpenChange?.(next)
-    if (props.open === undefined) setStore("open", next)
-    queue()
-  }
+    props.onOpenChange?.(next);
+    if (props.open === undefined) setStore("open", next);
+    queue();
+  };
 
   const handleExpandOrCollapseAll = () => {
-    const next = open().length > 0 ? [] : files()
-    handleChange(next)
-  }
+    const next = open().length > 0 ? [] : files();
+    handleChange(next);
+  };
 
-  const openFileLabel = () => i18n.t("ui.sessionReview.openFile")
+  const openFileLabel = () => i18n.t("ui.sessionReview.openFile");
 
-  const selectionSide = (range: SelectedLineRange) => range.endSide ?? range.side ?? "additions"
+  const selectionSide = (range: SelectedLineRange) => range.endSide ?? range.side ?? "additions";
 
   const selectionPreview = (diff: ViewDiff, range: SelectedLineRange) => {
-    const side = selectionSide(range)
-    const contents = text(diff, side)
-    if (contents.length === 0) return undefined
+    const side = selectionSide(range);
+    const contents = text(diff, side);
+    if (contents.length === 0) return undefined;
 
-    return previewSelectedLines(contents, range)
-  }
+    return previewSelectedLines(contents, range);
+  };
 
   createEffect(() => {
-    const focus = props.focusedComment
-    if (!focus) return
+    const focus = props.focusedComment;
+    if (!focus) return;
 
     untrack(() => {
-      focusToken++
-      const token = focusToken
+      focusToken++;
+      const token = focusToken;
 
-      setStore("opened", focus)
+      setStore("opened", focus);
 
-      const comment = (props.comments ?? []).find((c) => c.file === focus.file && c.id === focus.id)
-      if (comment) setStore("selection", { file: comment.file, range: cloneSelectedLineRange(comment.selection) })
+      const comment = (props.comments ?? []).find(
+        (c) => c.file === focus.file && c.id === focus.id,
+      );
+      if (comment)
+        setStore("selection", {
+          file: comment.file,
+          range: cloneSelectedLineRange(comment.selection),
+        });
 
-      const current = open()
+      const current = open();
       if (!current.includes(focus.file)) {
-        handleChange([...current, focus.file])
+        handleChange([...current, focus.file]);
       }
 
       const scrollTo = (attempt: number) => {
-        if (token !== focusToken) return
+        if (token !== focusToken) return;
 
-        const root = scroll
-        if (!root) return
+        const root = scroll;
+        if (!root) return;
 
-        const wrapper = anchors.get(focus.file)
-        const anchor = wrapper?.querySelector(`[data-comment-id="${focus.id}"]`)
+        const wrapper = anchors.get(focus.file);
+        const anchor = wrapper?.querySelector(`[data-comment-id="${focus.id}"]`);
         const ready =
-          anchor instanceof HTMLElement && anchor.style.pointerEvents !== "none" && anchor.style.opacity !== "0"
+          anchor instanceof HTMLElement &&
+          anchor.style.pointerEvents !== "none" &&
+          anchor.style.opacity !== "0";
 
-        const target = ready ? anchor : wrapper
+        const target = ready ? anchor : wrapper;
         if (!target) {
-          if (attempt >= 120) return
-          requestAnimationFrame(() => scrollTo(attempt + 1))
-          return
+          if (attempt >= 120) return;
+          requestAnimationFrame(() => scrollTo(attempt + 1));
+          return;
         }
 
-        const rootRect = root.getBoundingClientRect()
-        const targetRect = target.getBoundingClientRect()
-        const offset = targetRect.top - rootRect.top
-        const next = root.scrollTop + offset - rootRect.height / 2 + targetRect.height / 2
-        root.scrollTop = Math.max(0, next)
+        const rootRect = root.getBoundingClientRect();
+        const targetRect = target.getBoundingClientRect();
+        const offset = targetRect.top - rootRect.top;
+        const next = root.scrollTop + offset - rootRect.height / 2 + targetRect.height / 2;
+        root.scrollTop = Math.max(0, next);
 
-        if (ready) return
-        if (attempt >= 120) return
-        requestAnimationFrame(() => scrollTo(attempt + 1))
-      }
+        if (ready) return;
+        if (attempt >= 120) return;
+        requestAnimationFrame(() => scrollTo(attempt + 1));
+      };
 
-      requestAnimationFrame(() => scrollTo(0))
+      requestAnimationFrame(() => scrollTo(0));
 
-      requestAnimationFrame(() => props.onFocusedCommentChange?.(null))
-    })
-  })
+      requestAnimationFrame(() => props.onFocusedCommentChange?.(null));
+    });
+  });
 
   return (
     <div data-component="session-review" class={props.class} classList={props.classList}>
@@ -350,7 +379,11 @@ export const SessionReview = (props: SessionReviewProps) => {
               size="small"
               value={(style) => style}
               label={(style) =>
-                i18n.t(style === "unified" ? "ui.sessionReview.diffStyle.unified" : "ui.sessionReview.diffStyle.split")
+                i18n.t(
+                  style === "unified"
+                    ? "ui.sessionReview.diffStyle.unified"
+                    : "ui.sessionReview.diffStyle.split",
+                )
               }
               onSelect={(style) => style && props.onDiffStyleChange?.(style)}
             />
@@ -375,9 +408,9 @@ export const SessionReview = (props: SessionReviewProps) => {
       <ScrollView
         data-slot="session-review-scroll"
         viewportRef={(el) => {
-          scroll = el
-          props.scrollRef?.(el)
-          queue()
+          scroll = el;
+          props.scrollRef?.(el);
+          queue();
         }}
         onScroll={handleScroll}
         classList={{
@@ -390,46 +423,50 @@ export const SessionReview = (props: SessionReviewProps) => {
               <Accordion multiple value={open()} onChange={handleChange}>
                 <For each={files()}>
                   {(file) => {
-                    const diff = () => itemsMap()[file]
+                    const diff = () => itemsMap()[file];
 
                     // binary files have empty diffs that we can't render
-                    const diffCanRender = () => diff().additions !== 0 || diff().deletions !== 0
+                    const diffCanRender = () => diff().additions !== 0 || diff().deletions !== 0;
 
-                    const expanded = createMemo(() => open().includes(file))
-                    const mounted = createMemo(() => expanded() && (!!store.visible[file] || pinned(file)))
-                    const force = () => !!store.force[file]
+                    const expanded = createMemo(() => open().includes(file));
+                    const mounted = createMemo(
+                      () => expanded() && (!!store.visible[file] || pinned(file)),
+                    );
+                    const force = () => !!store.force[file];
 
-                    const comments = createMemo(() => grouped().get(file) ?? [])
-                    const commentedLines = createMemo(() => comments().map((c) => c.selection))
+                    const comments = createMemo(() => grouped().get(file) ?? []);
+                    const commentedLines = createMemo(() => comments().map((c) => c.selection));
 
-                    const beforeText = () => text(diff(), "deletions")
-                    const afterText = () => text(diff(), "additions")
-                    const changedLines = () => diff().additions + diff().deletions
-                    const mediaKind = createMemo(() => mediaKindFromPath(file))
+                    const beforeText = () => text(diff(), "deletions");
+                    const afterText = () => text(diff(), "additions");
+                    const changedLines = () => diff().additions + diff().deletions;
+                    const mediaKind = createMemo(() => mediaKindFromPath(file));
 
                     const tooLarge = createMemo(() => {
-                      if (!expanded()) return false
-                      if (force()) return false
-                      if (mediaKind()) return false
-                      return changedLines() > MAX_DIFF_CHANGED_LINES
-                    })
+                      if (!expanded()) return false;
+                      if (force()) return false;
+                      if (mediaKind()) return false;
+                      return changedLines() > MAX_DIFF_CHANGED_LINES;
+                    });
 
                     const isAdded = () =>
-                      diff().status === "added" || (beforeText().length === 0 && afterText().length > 0)
+                      diff().status === "added" ||
+                      (beforeText().length === 0 && afterText().length > 0);
                     const isDeleted = () =>
-                      diff().status === "deleted" || (afterText().length === 0 && beforeText().length > 0)
+                      diff().status === "deleted" ||
+                      (afterText().length === 0 && beforeText().length > 0);
 
                     const selectedLines = createMemo(() => {
-                      const current = selection()
-                      if (!current || current.file !== file) return null
-                      return current.range
-                    })
+                      const current = selection();
+                      if (!current || current.file !== file) return null;
+                      return current.range;
+                    });
 
                     const draftRange = createMemo(() => {
-                      const current = commenting()
-                      if (!current || current.file !== file) return null
-                      return current.range
-                    })
+                      const current = commenting();
+                      if (!current || current.file !== file) return null;
+                      return current.range;
+                    });
 
                     const commentsUi = createLineCommentController<SessionReviewComment>({
                       comments,
@@ -438,15 +475,17 @@ export const SessionReview = (props: SessionReviewProps) => {
                       mention: props.lineCommentMention,
                       state: {
                         opened: () => {
-                          const current = opened()
-                          if (!current || current.file !== file) return null
-                          return current.id
+                          const current = opened();
+                          if (!current || current.file !== file) return null;
+                          return current.id;
                         },
                         setOpened: (id) => setStore("opened", id ? { file, id } : null),
                         selected: selectedLines,
-                        setSelected: (range) => setStore("selection", range ? { file, range } : null),
+                        setSelected: (range) =>
+                          setStore("selection", range ? { file, range } : null),
                         commenting: draftRange,
-                        setCommenting: (range) => setStore("commenting", range ? { file, range } : null),
+                        setCommenting: (range) =>
+                          setStore("commenting", range ? { file, range } : null),
                       },
                       getSide: selectionSide,
                       clearSelectionOnSelectionEndNull: false,
@@ -456,7 +495,7 @@ export const SessionReview = (props: SessionReviewProps) => {
                           selection,
                           comment,
                           preview: selectionPreview(diff(), selection),
-                        })
+                        });
                       },
                       onUpdate: ({ id, comment, selection }) => {
                         props.onLineCommentUpdate?.({
@@ -465,13 +504,13 @@ export const SessionReview = (props: SessionReviewProps) => {
                           selection,
                           comment,
                           preview: selectionPreview(diff(), selection),
-                        })
+                        });
                       },
                       onDelete: (comment) => {
                         props.onLineCommentDelete?.({
                           id: comment.id,
                           file,
-                        })
+                        });
                       },
                       editSubmitLabel: props.lineCommentActions?.saveLabel,
                       renderCommentActions: props.lineCommentActions
@@ -483,23 +522,23 @@ export const SessionReview = (props: SessionReviewProps) => {
                             />
                           )
                         : undefined,
-                    })
+                    });
 
                     onCleanup(() => {
-                      anchors.delete(file)
-                      nodes.delete(file)
-                      queue()
-                    })
+                      anchors.delete(file);
+                      nodes.delete(file);
+                      queue();
+                    });
 
                     const handleLineSelected = (range: SelectedLineRange | null) => {
-                      if (!props.onLineComment) return
-                      commentsUi.onLineSelected(range)
-                    }
+                      if (!props.onLineComment) return;
+                      commentsUi.onLineSelected(range);
+                    };
 
                     const handleLineSelectionEnd = (range: SelectedLineRange | null) => {
-                      if (!props.onLineComment) return
-                      commentsUi.onLineSelectionEnd(range)
-                    }
+                      if (!props.onLineComment) return;
+                      commentsUi.onLineSelectionEnd(range);
+                    };
 
                     return (
                       <Accordion.Item
@@ -518,7 +557,9 @@ export const SessionReview = (props: SessionReviewProps) => {
                                   <Show when={file.includes("/")}>
                                     <span data-slot="session-review-directory">{`\u202A${getDirectory(file)}\u202C`}</span>
                                   </Show>
-                                  <span data-slot="session-review-filename">{getFilename(file)}</span>
+                                  <span data-slot="session-review-filename">
+                                    {getFilename(file)}
+                                  </span>
                                   <Show when={props.onViewFile && diffCanRender()}>
                                     <Tooltip value={openFileLabel()} placement="top" gutter={4}>
                                       <button
@@ -526,8 +567,8 @@ export const SessionReview = (props: SessionReviewProps) => {
                                         type="button"
                                         aria-label={openFileLabel()}
                                         onClick={(e) => {
-                                          e.stopPropagation()
-                                          props.onViewFile?.(file)
+                                          e.stopPropagation();
+                                          props.onViewFile?.(file);
                                         }}
                                       >
                                         <Icon name="open-file" size="small" />
@@ -573,9 +614,9 @@ export const SessionReview = (props: SessionReviewProps) => {
                           <div
                             data-slot="session-review-diff-wrapper"
                             ref={(el) => {
-                              anchors.set(file, el)
-                              nodes.set(file, el)
-                              queue()
+                              anchors.set(file, el);
+                              nodes.set(file, el);
+                              queue();
                             }}
                           >
                             <Show when={expanded()}>
@@ -617,7 +658,7 @@ export const SessionReview = (props: SessionReviewProps) => {
                                     preloadedDiff={diff().preloaded}
                                     diffStyle={diffStyle()}
                                     onRendered={() => {
-                                      props.onDiffRendered?.()
+                                      props.onDiffRendered?.();
                                     }}
                                     enableLineSelection={props.onLineComment != null}
                                     enableGutterUtility={props.onLineComment != null}
@@ -626,7 +667,9 @@ export const SessionReview = (props: SessionReviewProps) => {
                                     annotations={commentsUi.annotations()}
                                     renderAnnotation={commentsUi.renderAnnotation}
                                     renderGutterUtility={
-                                      props.onLineComment ? commentsUi.renderGutterUtility : undefined
+                                      props.onLineComment
+                                        ? commentsUi.renderGutterUtility
+                                        : undefined
                                     }
                                     selectedLines={selectedLines()}
                                     commentedLines={commentedLines()}
@@ -634,7 +677,8 @@ export const SessionReview = (props: SessionReviewProps) => {
                                       mode: "auto",
                                       path: file,
                                       deleted: diff().status === "deleted",
-                                      readFile: diff().status === "deleted" ? undefined : props.readFile,
+                                      readFile:
+                                        diff().status === "deleted" ? undefined : props.readFile,
                                     }}
                                   />
                                 </Match>
@@ -643,7 +687,7 @@ export const SessionReview = (props: SessionReviewProps) => {
                           </div>
                         </Accordion.Content>
                       </Accordion.Item>
-                    )
+                    );
                   }}
                 </For>
               </Accordion>
@@ -652,5 +696,5 @@ export const SessionReview = (props: SessionReviewProps) => {
         </div>
       </ScrollView>
     </div>
-  )
-}
+  );
+};

@@ -40,13 +40,13 @@ describe("#6479/#6491 — null-stats step no longer silently dropped from the pi
         warnings.some((w) => w.includes("session-dedup")) ||
         errors.some((w) => w.includes("session-dedup")),
       `session-dedup missing from engineBreakdown (${JSON.stringify(engines)}) with no ` +
-        `explanation in validationWarnings/validationErrors — matches issue #6479's report`
+        `explanation in validationWarnings/validationErrors — matches issue #6479's report`,
     );
     // Specifically: the shared no-op reason must be present.
     assert.ok(
       warnings.some((w) => w === "session-dedup: skipped (no eligible content)") ||
         engines.includes("session-dedup"),
-      `expected an explicit skip reason for session-dedup, got warnings=${JSON.stringify(warnings)}`
+      `expected an explicit skip reason for session-dedup, got warnings=${JSON.stringify(warnings)}`,
     );
   });
 
@@ -77,11 +77,11 @@ describe("#6479/#6491 — null-stats step no longer silently dropped from the pi
         warnings.some((w) => w.includes("ccr")) ||
         errors.some((w) => w.includes("ccr")),
       `ccr missing from engineBreakdown (${JSON.stringify(engines)}) with no explanation in ` +
-        `validationWarnings/validationErrors — matches issue #6491's report`
+        `validationWarnings/validationErrors — matches issue #6491's report`,
     );
     assert.ok(
       warnings.some((w) => w === "ccr: skipped (no eligible content)") || engines.includes("ccr"),
-      `expected an explicit skip reason for ccr, got warnings=${JSON.stringify(warnings)}`
+      `expected an explicit skip reason for ccr, got warnings=${JSON.stringify(warnings)}`,
     );
   });
 
@@ -98,6 +98,9 @@ describe("#6479/#6491 — null-stats step no longer silently dropped from the pi
 
     const result = applyStackedCompression(bigBody, [{ engine: "ccr" }]);
     const engines = result.stats?.engineBreakdown?.map((e) => e.engine) ?? [];
-    assert.ok(engines.includes("ccr"), `expected 'ccr' in engineBreakdown (control), got ${JSON.stringify(engines)}`);
+    assert.ok(
+      engines.includes("ccr"),
+      `expected 'ccr' in engineBreakdown (control), got ${JSON.stringify(engines)}`,
+    );
   });
 });

@@ -136,7 +136,8 @@ export const dict = {
   "lab.notFound": "Ingen modeller matchede dette lab.",
   "lab.heroPrefix": "Udforsk {{count}} {{lab}}-modeller brugt i OpenCode",
   "lab.heroIncluding": "inklusive {{models}}",
-  "lab.heroSuffix": "Sammenlign seneste tokenbrug, kontekstvinduer, udgivelsesdatoer og modelspecifikke data.",
+  "lab.heroSuffix":
+    "Sammenlign seneste tokenbrug, kontekstvinduer, udgivelsesdatoer og modelspecifikke data.",
   "lab.tokensProcessed": "Behandlede tokens",
   "lab.pending": "Afventer",
   "lab.usageAfterActivity": "Brug vises, når modelaktivitet lander",
@@ -200,7 +201,8 @@ export const dict = {
   "model.noUsersTitle": "Ingen brugerdata",
   "model.noUsersDescription": "Ingen rækker med brugere landede i det aktuelle vindue.",
   "model.dailyUserChart": "Dagligt diagram over unikke brugere",
-  "model.efficiencyDescription": "Omkostning, cacheadfærd og gennemsnitlig OpenCode Go-sessionsform.",
+  "model.efficiencyDescription":
+    "Omkostning, cacheadfærd og gennemsnitlig OpenCode Go-sessionsform.",
   "model.noEfficiencyTitle": "Ingen effektivitetsdata",
   "model.noEfficiencyDescription": "Effektivitetsdata vises, når brug lander.",
   "model.cost": "Omkostning",
@@ -227,4 +229,4 @@ export const dict = {
   "model.pdf": "PDF",
   "format.users": "brugere",
   "format.tokens": "tokens",
-} as const
+} as const;

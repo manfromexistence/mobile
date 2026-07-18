@@ -14,9 +14,9 @@
 // Speed: each test pays ~1.5s for bun startup. 7 tests serialize within this
 // file. See script/prebuild-test-cli.ts for an opt-in pre-built binary that
 // cuts per-spawn cost when this suite gets bigger.
-import { describe, expect } from "bun:test"
-import { Effect } from "effect"
-import { cliIt } from "../../lib/cli-process"
+import { describe, expect } from "bun:test";
+import { Effect } from "effect";
+import { cliIt } from "../../lib/cli-process";
 
 describe("opencode read-only commands (smoke)", () => {
   // `mcp list` reads MCP server config and pings each one. With the empty
@@ -26,11 +26,11 @@ describe("opencode read-only commands (smoke)", () => {
     "mcp list: exits 0",
     ({ opencode }) =>
       Effect.gen(function* () {
-        const r = yield* opencode.spawn(["mcp", "list"])
-        opencode.expectExit(r, 0, "mcp list")
+        const r = yield* opencode.spawn(["mcp", "list"]);
+        opencode.expectExit(r, 0, "mcp list");
       }),
     60_000,
-  )
+  );
 
   // `providers list` enumerates credentials + env-resolved providers.
   // (Not config-injected ones — those don't appear here by design.) The
@@ -42,12 +42,12 @@ describe("opencode read-only commands (smoke)", () => {
     "providers list: exits 0 and prints the credentials section",
     ({ opencode }) =>
       Effect.gen(function* () {
-        const r = yield* opencode.spawn(["providers", "list"])
-        opencode.expectExit(r, 0, "providers list")
-        expect(r.stdout).toContain("Credentials")
+        const r = yield* opencode.spawn(["providers", "list"]);
+        opencode.expectExit(r, 0, "providers list");
+        expect(r.stdout).toContain("Credentials");
       }),
     60_000,
-  )
+  );
 
   // `models` lists models from configured providers. Our test/test-model
   // should appear because it's wired into the test provider config.
@@ -55,12 +55,12 @@ describe("opencode read-only commands (smoke)", () => {
     "models: exits 0 and lists the test model",
     ({ opencode }) =>
       Effect.gen(function* () {
-        const r = yield* opencode.spawn(["models"])
-        opencode.expectExit(r, 0, "models")
-        expect(r.stdout).toContain("test/test-model")
+        const r = yield* opencode.spawn(["models"]);
+        opencode.expectExit(r, 0, "models");
+        expect(r.stdout).toContain("test/test-model");
       }),
     60_000,
-  )
+  );
 
   // `agent list` walks the agent config. Empty config means no agents
   // configured; the command should still exit 0 with a "no agents" line or
@@ -69,11 +69,11 @@ describe("opencode read-only commands (smoke)", () => {
     "agent list: exits 0",
     ({ opencode }) =>
       Effect.gen(function* () {
-        const r = yield* opencode.spawn(["agent", "list"])
-        opencode.expectExit(r, 0, "agent list")
+        const r = yield* opencode.spawn(["agent", "list"]);
+        opencode.expectExit(r, 0, "agent list");
       }),
     60_000,
-  )
+  );
 
   // `session list` reads the session DB. Fresh OPENCODE_TEST_HOME means
   // empty DB. Exit 0 with no sessions.
@@ -81,22 +81,22 @@ describe("opencode read-only commands (smoke)", () => {
     "session list: exits 0",
     ({ opencode }) =>
       Effect.gen(function* () {
-        const r = yield* opencode.spawn(["session", "list"])
-        opencode.expectExit(r, 0, "session list")
+        const r = yield* opencode.spawn(["session", "list"]);
+        opencode.expectExit(r, 0, "session list");
       }),
     60_000,
-  )
+  );
 
   // `stats` aggregates token usage from the session DB. Empty DB → all zeros.
   cliIt.live(
     "stats: exits 0",
     ({ opencode }) =>
       Effect.gen(function* () {
-        const r = yield* opencode.spawn(["stats"])
-        opencode.expectExit(r, 0, "stats")
+        const r = yield* opencode.spawn(["stats"]);
+        opencode.expectExit(r, 0, "stats");
       }),
     60_000,
-  )
+  );
 
   // `db path` prints the DB file location. Under harness isolation the DB
   // resolves to SQLite's `:memory:` (no on-disk pollution between tests);
@@ -106,10 +106,10 @@ describe("opencode read-only commands (smoke)", () => {
     "db path: exits 0 and prints a path or :memory:",
     ({ opencode }) =>
       Effect.gen(function* () {
-        const r = yield* opencode.spawn(["db", "path"])
-        opencode.expectExit(r, 0, "db path")
-        expect(r.stdout.trim()).toMatch(/^(:memory:|[/\\].+\.(db|sqlite|sqlite3))$/i)
+        const r = yield* opencode.spawn(["db", "path"]);
+        opencode.expectExit(r, 0, "db path");
+        expect(r.stdout.trim()).toMatch(/^(:memory:|[/\\].+\.(db|sqlite|sqlite3))$/i);
       }),
     60_000,
-  )
-})
+  );
+});

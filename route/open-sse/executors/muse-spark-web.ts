@@ -285,7 +285,7 @@ function canonicalizeNormalizedHistory(messages: NormalizedMessage[]): string {
 function makeConversationCacheKey(
   connectionId: string,
   model: string,
-  normalizedPrefix: NormalizedMessage[]
+  normalizedPrefix: NormalizedMessage[],
 ): string {
   return createHash("sha256")
     .update(`${connectionId}\x1f${model}\x1f${canonicalizeNormalizedHistory(normalizedPrefix)}`)
@@ -304,7 +304,7 @@ function lookupCachedConversation(key: string): CachedConversation | null {
 
 function rememberConversation(
   key: string,
-  context: { conversationId: string; branchPath: string }
+  context: { conversationId: string; branchPath: string },
 ): void {
   if (conversationCache.size >= MUSE_CONV_CACHE_MAX && !conversationCache.has(key)) {
     // Map iteration is insertion order, so the first key is the oldest.
@@ -386,7 +386,7 @@ function buildStreamingResponse(
   reasoningDeltas: string[],
   model: string,
   id: string,
-  created: number
+  created: number,
 ): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder();
 
@@ -409,8 +409,8 @@ function buildStreamingResponse(
                   logprobs: null,
                 },
               ],
-            })
-          )
+            }),
+          ),
         );
 
         for (const delta of reasoningDeltas) {
@@ -431,8 +431,8 @@ function buildStreamingResponse(
                     logprobs: null,
                   },
                 ],
-              })
-            )
+              }),
+            ),
           );
         }
 
@@ -454,8 +454,8 @@ function buildStreamingResponse(
                     logprobs: null,
                   },
                 ],
-              })
-            )
+              }),
+            ),
           );
         }
 
@@ -468,14 +468,14 @@ function buildStreamingResponse(
               model,
               system_fingerprint: null,
               choices: [{ index: 0, delta: {}, finish_reason: "stop", logprobs: null }],
-            })
-          )
+            }),
+          ),
         );
         controller.enqueue(encoder.encode("data: [DONE]\n\n"));
         controller.close();
       },
     },
-    { highWaterMark: 16384 }
+    { highWaterMark: 16384 },
   );
 }
 
@@ -484,7 +484,7 @@ function buildNonStreamingResponse(
   reasoningContent: string,
   model: string,
   id: string,
-  created: number
+  created: number,
 ) {
   const completionTokens = estimateTokens(content);
   const message: Record<string, unknown> = { role: "assistant", content };
@@ -516,7 +516,7 @@ function buildNonStreamingResponse(
     {
       status: 200,
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 
@@ -529,13 +529,13 @@ function buildErrorResponse(status: number, message: string, code?: string | nul
         ...(code ? { code } : {}),
       },
     }),
-    { status, headers: { "Content-Type": "application/json" } }
+    { status, headers: { "Content-Type": "application/json" } },
   );
 }
 
 async function readTextResponse(
   body: ReadableStream<Uint8Array>,
-  signal?: AbortSignal | null
+  signal?: AbortSignal | null,
 ): Promise<string> {
   const reader = body.getReader();
   const decoder = new TextDecoder();
@@ -566,13 +566,13 @@ export function normalizeMetaAiCookieHeader(apiKey: string): string {
 function selectMetaAiCookieHeader(credentials: ExecuteInput["credentials"]): string {
   const extraCookieValues = Array.isArray(credentials.providerSpecificData?.extraApiKeys)
     ? credentials.providerSpecificData.extraApiKeys.filter(
-        (value): value is string => typeof value === "string" && value.trim().length > 0
+        (value): value is string => typeof value === "string" && value.trim().length > 0,
       )
     : [];
 
   const normalizedPool = normalizeSessionCookieHeaders(
     [credentials.apiKey || "", ...extraCookieValues],
-    META_AI_DEFAULT_COOKIE
+    META_AI_DEFAULT_COOKIE,
   );
 
   if (normalizedPool.length === 0) {
@@ -614,7 +614,7 @@ type MuseSparkExecuteResult = {
 function resultWithResponse(
   response: Response,
   headers: Record<string, string>,
-  transformedBody: unknown
+  transformedBody: unknown,
 ): MuseSparkExecuteResult {
   return {
     response,
@@ -629,7 +629,7 @@ function errorResult(
   message: string,
   code: string,
   headers: Record<string, string>,
-  transformedBody: unknown
+  transformedBody: unknown,
 ): MuseSparkExecuteResult {
   return resultWithResponse(buildErrorResponse(status, message, code), headers, transformedBody);
 }
@@ -643,7 +643,7 @@ function getOpenAiMessages(body: unknown): Array<Record<string, unknown>> | null
 function getContinuationCacheKey(
   parsedHistory: ParsedHistory,
   credentials: ExecuteInput["credentials"],
-  model: string
+  model: string,
 ): string | null {
   if (
     parsedHistory.lastAssistantIndex < 0 ||
@@ -656,7 +656,7 @@ function getContinuationCacheKey(
   return makeConversationCacheKey(
     credentials.connectionId,
     model,
-    parsedHistory.normalized.slice(0, parsedHistory.lastAssistantIndex + 1)
+    parsedHistory.normalized.slice(0, parsedHistory.lastAssistantIndex + 1),
   );
 }
 
@@ -678,7 +678,7 @@ function getConversationContext(cached: CachedConversation | null): Conversation
 
 function evictContinuationIfNeeded(
   cached: CachedConversation | null,
-  cacheKey: string | null
+  cacheKey: string | null,
 ): void {
   if (cached && cacheKey) {
     conversationCache.delete(cacheKey);
@@ -689,7 +689,7 @@ async function postMetaAiRequest(
   headers: Record<string, string>,
   transformedBody: unknown,
   signal: AbortSignal,
-  log: ExecuteInput["log"]
+  log: ExecuteInput["log"],
 ): Promise<{ ok: true; response: Response } | { ok: false; result: MuseSparkExecuteResult }> {
   try {
     const response = await fetch(META_AI_GRAPHQL_API, {
@@ -709,7 +709,7 @@ async function postMetaAiRequest(
         `Meta AI connection failed: ${message}`,
         "meta_ai_fetch_failed",
         headers,
-        transformedBody
+        transformedBody,
       ),
     };
   }
@@ -720,7 +720,7 @@ function buildHttpErrorResult(
   headers: Record<string, string>,
   transformedBody: unknown,
   cached: CachedConversation | null,
-  cacheKey: string | null
+  cacheKey: string | null,
 ): MuseSparkExecuteResult {
   evictContinuationIfNeeded(cached, cacheKey);
 
@@ -736,7 +736,7 @@ function buildHttpErrorResult(
     message,
     `HTTP_${upstreamResponse.status}`,
     headers,
-    transformedBody
+    transformedBody,
   );
 }
 
@@ -745,7 +745,7 @@ function buildParsedErrorResult(
   headers: Record<string, string>,
   transformedBody: unknown,
   cached: CachedConversation | null,
-  cacheKey: string | null
+  cacheKey: string | null,
 ): MuseSparkExecuteResult {
   evictContinuationIfNeeded(cached, cacheKey);
   return errorResult(
@@ -753,7 +753,7 @@ function buildParsedErrorResult(
     parsed.errorMessage || "Meta AI returned an unknown error",
     parsed.errorCode || "meta_ai_unknown_error",
     headers,
-    transformedBody
+    transformedBody,
   );
 }
 
@@ -762,7 +762,7 @@ function rememberAssistantTurn(
   credentials: ExecuteInput["credentials"],
   model: string,
   parsedHistory: ParsedHistory,
-  conversationContext: ConversationContext
+  conversationContext: ConversationContext,
 ): void {
   if (!parsed.content || !credentials.connectionId) return;
 
@@ -783,7 +783,7 @@ async function buildSuccessResult(
   headers: Record<string, string>,
   transformedBody: unknown,
   hasTools?: boolean,
-  requestedTools?: unknown
+  requestedTools?: unknown,
 ): Promise<MuseSparkExecuteResult> {
   const id = `chatcmpl-meta-${crypto.randomUUID().slice(0, 12)}`;
   const created = Math.floor(Date.now() / 1000);
@@ -808,7 +808,7 @@ async function buildSuccessResult(
       const { content, toolCalls, finishReason } = buildToolAwareResult(
         rawContent,
         requestedTools,
-        "muse"
+        "muse",
       );
       if (toolCalls) {
         json.choices[0].message = { role: "assistant", content: null, tool_calls: toolCalls };
@@ -850,7 +850,7 @@ export class MuseSparkWebExecutor extends BaseExecutor {
 
     const { hasTools, requestedTools, effectiveMessages } = prepareToolMessages(
       bodyObj,
-      rawMessages as Array<{ role: string; content: unknown }>
+      rawMessages as Array<{ role: string; content: unknown }>,
     );
     const parsedHistory = parseOpenAIMessages(effectiveMessages);
     if (!parsedHistory.foldedPrompt) {
@@ -898,7 +898,7 @@ export class MuseSparkWebExecutor extends BaseExecutor {
         headers,
         transformedBody,
         cached,
-        continuationCacheKey
+        continuationCacheKey,
       );
     }
 
@@ -908,7 +908,7 @@ export class MuseSparkWebExecutor extends BaseExecutor {
         "Meta AI returned an empty response body",
         "meta_ai_empty_body",
         headers,
-        transformedBody
+        transformedBody,
       );
     }
 
@@ -926,7 +926,7 @@ export class MuseSparkWebExecutor extends BaseExecutor {
       headers,
       transformedBody,
       hasTools,
-      requestedTools
+      requestedTools,
     );
   }
 }

@@ -234,7 +234,7 @@ describe("omniroute_web_search handler (via MCP dispatch)", () => {
 
     expect(mockFetch).toHaveBeenCalledWith(
       expect.stringContaining("/v1/search"),
-      expect.objectContaining({ method: "POST" })
+      expect.objectContaining({ method: "POST" }),
     );
     const [, options] = mockFetch.mock.calls[0];
     const body = JSON.parse(options.body as string);

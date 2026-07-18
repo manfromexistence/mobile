@@ -1,5 +1,5 @@
-import type { Heading, Root } from 'mdast';
-import { visit } from 'unist-util-visit';
+import type { Heading, Root } from "mdast";
+import { visit } from "unist-util-visit";
 
 const TOC_IGNORE_PATTERN = /\s*\[toc-ignore\]\s*$/;
 
@@ -15,23 +15,22 @@ const TOC_IGNORE_PATTERN = /\s*\[toc-ignore\]\s*$/;
  */
 export default function remarkTocIgnore() {
   return (tree: Root) => {
-    visit(tree, 'heading', (node: Heading) => {
+    visit(tree, "heading", (node: Heading) => {
       const lastChild = node.children[node.children.length - 1];
 
-      if (lastChild?.type !== 'text') return;
+      if (lastChild?.type !== "text") return;
 
       const match = lastChild.value.match(TOC_IGNORE_PATTERN);
 
       if (match == null) return;
 
       // Remove the {data-toc-ignore} from the text
-      lastChild.value = lastChild.value.replace(TOC_IGNORE_PATTERN, '');
+      lastChild.value = lastChild.value.replace(TOC_IGNORE_PATTERN, "");
 
       // Add hProperties so rehype will add the data attribute
       const data = node.data ?? (node.data = {});
-      const hProperties = (data.hProperties ??
-        (data.hProperties = {})) as Record<string, unknown>;
-      hProperties['data-toc-ignore'] = true;
+      const hProperties = (data.hProperties ?? (data.hProperties = {})) as Record<string, unknown>;
+      hProperties["data-toc-ignore"] = true;
     });
   };
 }

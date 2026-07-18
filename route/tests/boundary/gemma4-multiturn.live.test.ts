@@ -9,11 +9,8 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 const BASE = process.env.OMNIROUTE_TEST_BASE || "http://localhost:20128/v1";
-const AUTH = process.env.OMNIROUTE_TEST_BEARER
-    ? `Bearer ${process.env.OMNIROUTE_TEST_BEARER}`
-    : "";
-const COOKIE =
-  process.env.OMNIROUTE_TEST_COOKIE || "";
+const AUTH = process.env.OMNIROUTE_TEST_BEARER ? `Bearer ${process.env.OMNIROUTE_TEST_BEARER}` : "";
+const COOKIE = process.env.OMNIROUTE_TEST_COOKIE || "";
 
 const MODEL = "gemini/gemma-4-26b-a4b-it";
 
@@ -86,7 +83,7 @@ async function doNonStreaming(messages: Message[], tools: ToolDef[]): Promise<Re
 
 async function analyzeTools(
   content: string,
-  filesSoFar: number
+  filesSoFar: number,
 ): Promise<{ ok: boolean; details: string }> {
   const messages: Message[] = [{ role: "user", content: [contentText(content)] }];
   const tools: ToolDef[] = [
@@ -166,17 +163,17 @@ async function analyzeTools(
           allOk = false;
           details.push(
             `Turn ${turn} write(${args.path}): ${literalBSN} literal BSN, ${realNewlines} real NLs! ` +
-              `Content start: ${JSON.stringify(content.slice(0, 100))}`
+              `Content start: ${JSON.stringify(content.slice(0, 100))}`,
           );
         } else {
           details.push(
-            `Turn ${turn} write(${args.path}): OK (${realNewlines} newlines, ${content.length} bytes)`
+            `Turn ${turn} write(${args.path}): OK (${realNewlines} newlines, ${content.length} bytes)`,
           );
         }
       } else if (tc.name === "exec") {
         const cmd = args.command || "";
         details.push(
-          `Turn ${turn} exec: ${cmd.length} chars, starts with: ${JSON.stringify(cmd.slice(0, 60))}`
+          `Turn ${turn} exec: ${cmd.length} chars, starts with: ${JSON.stringify(cmd.slice(0, 60))}`,
         );
       }
     }
@@ -293,7 +290,7 @@ test("Gemma4 multi-turn: just write lots of files", { skip }, async () => {
       content: [
         contentText(
           "Write a file /tmp/mt_a.py with a Python function that computes factorial:\n" +
-            "```python\ndef factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n-1)\n```"
+            "```python\ndef factorial(n):\n    if n <= 1:\n        return 1\n    return n * factorial(n-1)\n```",
         ),
       ],
     },
@@ -343,11 +340,11 @@ test("Gemma4 multi-turn: just write lots of files", { skip }, async () => {
         allOk = false;
         failures.push(
           `Turn ${turn}: ${literalBSN} literal BSN in ${args.path}. ` +
-            `Content start: ${JSON.stringify(content.slice(0, 120))}`
+            `Content start: ${JSON.stringify(content.slice(0, 120))}`,
         );
       } else {
         console.log(
-          `Turn ${turn} ${args.path}: OK (${(content.match(/\n/g) || []).length} NLs, ${content.length}B)`
+          `Turn ${turn} ${args.path}: OK (${(content.match(/\n/g) || []).length} NLs, ${content.length}B)`,
         );
       }
     }
@@ -379,7 +376,7 @@ test("Gemma4 multi-turn: just write lots of files", { skip }, async () => {
         role: "user",
         content: [
           contentText(
-            `Write a file /tmp/mt_${fileLetters[turn - 1] || turn}.py that implements ${topic}`
+            `Write a file /tmp/mt_${fileLetters[turn - 1] || turn}.py that implements ${topic}`,
           ),
         ],
       });

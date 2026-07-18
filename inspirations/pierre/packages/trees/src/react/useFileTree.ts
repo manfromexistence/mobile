@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
-import type { FileTreeOptions } from '../model/publicTypes';
-import { FileTree } from '../render/FileTree';
+import type { FileTreeOptions } from "../model/publicTypes";
+import { FileTree } from "../render/FileTree";
 
 interface CleanUpRef {
   timeout: ReturnType<typeof setTimeout> | null;

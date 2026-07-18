@@ -61,7 +61,7 @@ export const DEFAULT_DISCOVERY_CONFIG: DiscoveryConfig = {
  */
 export async function probeEndpoint(
   url: string,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): Promise<{ accessible: boolean; status?: number; hasModels?: boolean }> {
   try {
     const res = await fetch(url, {
@@ -87,7 +87,7 @@ export async function probeEndpoint(
  */
 export async function scanProvider(
   providerId: string,
-  _config: Partial<DiscoveryConfig> = {}
+  _config: Partial<DiscoveryConfig> = {},
 ): Promise<DiscoveryResult[]> {
   log.info("discovery.scan_stub", {
     providerId,

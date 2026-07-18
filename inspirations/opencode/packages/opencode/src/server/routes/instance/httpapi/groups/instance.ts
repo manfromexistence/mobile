@@ -1,19 +1,25 @@
-import { Agent } from "@/agent/agent"
-import { Command } from "@/command"
-import { Format } from "@/format"
-import { LSP } from "@/lsp/lsp"
-import { Vcs } from "@/project/vcs"
-import { Skill } from "@/skill"
-import { Schema } from "effect"
-import { HttpApi, HttpApiEndpoint, HttpApiGroup, HttpApiSchema, OpenApi } from "effect/unstable/httpapi"
-import { Authorization } from "../middleware/authorization"
-import { InstanceContextMiddleware } from "../middleware/instance-context"
+import { Agent } from "@/agent/agent";
+import { Command } from "@/command";
+import { Format } from "@/format";
+import { LSP } from "@/lsp/lsp";
+import { Vcs } from "@/project/vcs";
+import { Skill } from "@/skill";
+import { Schema } from "effect";
+import {
+  HttpApi,
+  HttpApiEndpoint,
+  HttpApiGroup,
+  HttpApiSchema,
+  OpenApi,
+} from "effect/unstable/httpapi";
+import { Authorization } from "../middleware/authorization";
+import { InstanceContextMiddleware } from "../middleware/instance-context";
 import {
   WorkspaceRoutingMiddleware,
   WorkspaceRoutingQuery,
   WorkspaceRoutingQueryFields,
-} from "../middleware/workspace-routing"
-import { described } from "./metadata"
+} from "../middleware/workspace-routing";
+import { described } from "./metadata";
 
 const PathInfo = Schema.Struct({
   home: Schema.String,
@@ -21,13 +27,15 @@ const PathInfo = Schema.Struct({
   config: Schema.String,
   worktree: Schema.String,
   directory: Schema.String,
-}).annotate({ identifier: "Path" })
+}).annotate({ identifier: "Path" });
 
 export const VcsDiffQuery = Schema.Struct({
   ...WorkspaceRoutingQueryFields,
   mode: Vcs.Mode,
-  context: Schema.optional(Schema.NumberFromString.check(Schema.isInt(), Schema.isGreaterThanOrEqualTo(0))),
-})
+  context: Schema.optional(
+    Schema.NumberFromString.check(Schema.isInt(), Schema.isGreaterThanOrEqualTo(0)),
+  ),
+});
 
 export class ApiVcsApplyError extends Schema.ErrorClass<ApiVcsApplyError>("VcsApplyError")(
   {
@@ -53,7 +61,7 @@ export const InstancePaths = {
   skill: "/skill",
   lsp: "/lsp",
   formatter: "/formatter",
-} as const
+} as const;
 
 export const InstanceApi = HttpApi.make("instance")
   .add(
@@ -66,7 +74,8 @@ export const InstanceApi = HttpApi.make("instance")
           OpenApi.annotations({
             identifier: "instance.dispose",
             summary: "Dispose instance",
-            description: "Clean up and dispose the current OpenCode instance, releasing all resources.",
+            description:
+              "Clean up and dispose the current OpenCode instance, releasing all resources.",
           }),
         ),
         HttpApiEndpoint.get("path", InstancePaths.path, {
@@ -108,7 +117,8 @@ export const InstanceApi = HttpApi.make("instance")
           OpenApi.annotations({
             identifier: "vcs.diff",
             summary: "Get VCS diff",
-            description: "Retrieve the current git diff for the working tree or against the default branch.",
+            description:
+              "Retrieve the current git diff for the working tree or against the default branch.",
           }),
         ),
         HttpApiEndpoint.get("vcsDiffRaw", InstancePaths.vcsDiffRaw, {
@@ -203,4 +213,4 @@ export const InstanceApi = HttpApi.make("instance")
       version: "0.0.1",
       description: "Experimental HttpApi surface for selected instance routes.",
     }),
-  )
+  );

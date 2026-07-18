@@ -13,7 +13,7 @@ type CostResolver = (
   provider: string,
   model: string,
   usage: Record<string, number | undefined> | null | undefined,
-  options: { serviceTier?: string }
+  options: { serviceTier?: string },
 ) => Promise<number>;
 
 export function recordStreamingCost(args: {

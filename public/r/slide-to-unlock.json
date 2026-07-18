@@ -4,12 +4,8 @@
   "title": "Slide to Unlock",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "Interactive slider inspired by the classic iPhone “slide to unlock” gesture.",
-  "dependencies": [
-    "motion"
-  ],
-  "registryDependencies": [
-    "https://chanhdai.com/r/shimmering-text.json"
-  ],
+  "dependencies": ["motion"],
+  "registryDependencies": ["https://chanhdai.com/r/shimmering-text.json"],
   "files": [
     {
       "path": "src/registry/components/slide-to-unlock/slide-to-unlock.tsx",
@@ -19,8 +15,6 @@
     }
   ],
   "docs": "https://chanhdai.com/components/slide-to-unlock",
-  "categories": [
-    "controls"
-  ],
+  "categories": ["controls"],
   "type": "registry:component"
 }

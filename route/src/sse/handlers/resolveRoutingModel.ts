@@ -10,7 +10,7 @@ type HeaderCarrier = { headers: { get(name: string): string | null } };
 
 export function resolveRoutingModel(
   request: HeaderCarrier,
-  body: { model?: string | null }
+  body: { model?: string | null },
 ): string | null | undefined {
   const headerModel = request.headers.get("x-route-model")?.trim();
   return headerModel || body.model;

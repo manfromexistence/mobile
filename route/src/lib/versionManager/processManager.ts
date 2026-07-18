@@ -15,7 +15,7 @@ function defaultConfigDir(): string {
 async function writeConfig(
   configDir: string,
   port: number,
-  overrides?: Record<string, unknown>
+  overrides?: Record<string, unknown>,
 ): Promise<string> {
   await fs.mkdir(configDir, { recursive: true });
   const configPath = path.join(configDir, "config.yaml");
@@ -30,7 +30,7 @@ log_level: warn
 export async function startProcess(
   binaryPath: string,
   port?: number,
-  configDir?: string
+  configDir?: string,
 ): Promise<{ pid: number; port: number }> {
   const existing = await getVersionManagerTool("cliproxyapi");
   if (existing?.pid) {
@@ -112,7 +112,7 @@ export async function restartProcess(
   binaryPath: string,
   port?: number,
   configDir?: string,
-  currentPid?: number | null
+  currentPid?: number | null,
 ): Promise<{ pid: number; port: number }> {
   if (currentPid) {
     await stopProcess(currentPid);

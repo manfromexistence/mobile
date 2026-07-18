@@ -67,7 +67,7 @@ describe("synthesizeOpenAiSseFromJson (#3089)", () => {
 
   test("content-only completion converts without a reasoning_content delta", () => {
     const sse = synthesizeOpenAiSseFromJson(
-      JSON.stringify({ choices: [{ message: { role: "assistant", content: "ok" } }] })
+      JSON.stringify({ choices: [{ message: { role: "assistant", content: "ok" } }] }),
     );
     const deltas = parseDataChunks(sse)
       .filter((c) => c !== "[DONE]")
@@ -75,7 +75,7 @@ describe("synthesizeOpenAiSseFromJson (#3089)", () => {
     assert.equal(deltas.filter((d) => d.content === "ok").length, 1);
     assert.equal(
       deltas.some((d) => d.reasoning_content !== undefined),
-      false
+      false,
     );
   });
 
@@ -91,7 +91,7 @@ describe("synthesizeOpenAiSseFromJson (#3089)", () => {
             },
           },
         ],
-      })
+      }),
     );
     const deltas = parseDataChunks(sse)
       .filter((c) => c !== "[DONE]")
@@ -99,11 +99,11 @@ describe("synthesizeOpenAiSseFromJson (#3089)", () => {
 
     assert.equal(
       deltas.find((d) => d.reasoning !== undefined)?.reasoning,
-      "client-readable thinking"
+      "client-readable thinking",
     );
     assert.equal(
       deltas.some((d) => d.reasoning_content !== undefined),
-      false
+      false,
     );
   });
 
@@ -119,7 +119,7 @@ describe("synthesizeOpenAiSseFromJson (#3089)", () => {
             },
           },
         ],
-      })
+      }),
     );
     const deltas = parseDataChunks(sse)
       .filter((c) => c !== "[DONE]")
@@ -127,7 +127,7 @@ describe("synthesizeOpenAiSseFromJson (#3089)", () => {
 
     assert.equal(
       deltas.find((d) => d.reasoning_content !== undefined)?.reasoning_content,
-      "alias thinking"
+      "alias thinking",
     );
   });
 
@@ -145,7 +145,7 @@ describe("synthesizeOpenAiSseFromJson (#3089)", () => {
             finish_reason: "tool_calls",
           },
         ],
-      })
+      }),
     );
     const deltas = parseDataChunks(sse)
       .filter((c) => c !== "[DONE]")
@@ -164,7 +164,7 @@ describe("synthesizeOpenAiSseFromJson (#3089)", () => {
             finish_reason: "prohibited_content",
           },
         ],
-      })
+      }),
     );
     const events = parseDataChunks(sse)
       .filter((c) => c !== "[DONE]")
@@ -174,7 +174,7 @@ describe("synthesizeOpenAiSseFromJson (#3089)", () => {
     assert.equal(finishChunk.choices[0].finish_reason, "content_filter");
     assert.equal(
       events.some((event) => event.choices[0].delta.content === "partial text"),
-      true
+      true,
     );
   });
 

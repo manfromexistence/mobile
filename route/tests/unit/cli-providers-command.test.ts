@@ -34,8 +34,9 @@ async function withProvidersEnv(fn: (dataDir: string) => Promise<void>) {
 }
 
 async function createProvider(dataDir: string) {
-  const { ensureProviderSchema, upsertApiKeyProviderConnection } =
-    await import("../../bin/cli/provider-store.mjs");
+  const { ensureProviderSchema, upsertApiKeyProviderConnection } = await import(
+    "../../bin/cli/provider-store.mjs"
+  );
   const db = new Database(path.join(dataDir, "storage.sqlite"));
   ensureProviderSchema(db);
   const connection = upsertApiKeyProviderConnection(db, {
@@ -122,12 +123,12 @@ test("providers validate fails encrypted API keys without storage key", async ()
         priority INTEGER,
         created_at TEXT,
         updated_at TEXT
-      )`
+      )`,
     ).run();
     db.prepare(
       `INSERT INTO provider_connections
         (id, provider, auth_type, name, api_key, is_active, priority, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, 1, 1, ?, ?)`
+       VALUES (?, ?, ?, ?, ?, 1, 1, ?, ?)`,
     ).run(
       "conn-1",
       "openai",
@@ -135,7 +136,7 @@ test("providers validate fails encrypted API keys without storage key", async ()
       "Encrypted OpenAI",
       "enc:v1:00112233445566778899aabbccddeeff:00:00112233445566778899aabbccddeeff",
       new Date().toISOString(),
-      new Date().toISOString()
+      new Date().toISOString(),
     );
     db.close();
 

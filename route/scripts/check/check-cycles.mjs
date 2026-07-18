@@ -161,12 +161,12 @@ const files = roots.flatMap((root) => listSourceFiles(root));
 const graph = buildGraph(files);
 const components = stronglyConnectedComponents(graph);
 const cycles = components.filter(
-  (component) => component.length > 1 || isSelfCycle(component, graph)
+  (component) => component.length > 1 || isSelfCycle(component, graph),
 );
 
 if (cycles.length === 0) {
   console.log(
-    `[cycles] OK - no cycles detected across ${graph.size} files in: ${roots.join(", ")}`
+    `[cycles] OK - no cycles detected across ${graph.size} files in: ${roots.join(", ")}`,
   );
   process.exit(0);
 }

@@ -102,7 +102,7 @@ function SidePanel({ session }) {
             <Text key={c} dimColor>
               {c}
             </Text>
-          )
+          ),
         )}
       </Box>
     </Box>
@@ -294,7 +294,8 @@ function ReplApp({ initialOptions, onExit }) {
           sessions.length > 0
             ? sessions
                 .map(
-                  (s) => `• ${s.name}  ${s.updatedAt ? new Date(s.updatedAt).toLocaleString() : ""}`
+                  (s) =>
+                    `• ${s.name}  ${s.updatedAt ? new Date(s.updatedAt).toLocaleString() : ""}`,
                 )
                 .join("\n")
             : "No saved sessions";
@@ -385,7 +386,7 @@ function ReplApp({ initialOptions, onExit }) {
 export async function runRepl(opts = {}) {
   return new Promise((resolve) => {
     const { unmount, waitUntilExit } = render(
-      <ReplApp initialOptions={opts} onExit={() => unmount()} />
+      <ReplApp initialOptions={opts} onExit={() => unmount()} />,
     );
     waitUntilExit().then(resolve);
   });

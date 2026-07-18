@@ -30,7 +30,7 @@ const readBaseline = readBaselineOpenapiValue as (p?: string) => number | null;
 const releaseBranch = releaseBranchForVersion as (v: string | null | undefined) => string | null;
 
 const SCRIPT_PATH = fileURLToPath(
-  new URL("../../scripts/check/check-openapi-breaking.mjs", import.meta.url)
+  new URL("../../scripts/check/check-openapi-breaking.mjs", import.meta.url),
 );
 
 // ---------------------------------------------------------------------------

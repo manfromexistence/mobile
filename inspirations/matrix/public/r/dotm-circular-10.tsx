@@ -29,15 +29,19 @@ export function DotmCircular10({
   ...rest
 }: DotmCircular10Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
   const animPhase = useCyclePhase({
     active: !reducedMotion && matrixPhase !== "idle",
     cycleMsBase: 1600,
-    speed
+    speed,
   });
 
   const resolver = useMemo<DotAnimationResolver>(() => {
@@ -49,7 +53,7 @@ export function DotmCircular10({
       const x = col - 2;
       const y = row - 2;
       const ring = Math.round(Math.sqrt(x * x + y * y));
-      const tick = reducedMotion || phase === "idle" ? 0 : Math.floor((animPhase) * 10);
+      const tick = reducedMotion || phase === "idle" ? 0 : Math.floor(animPhase * 10);
       const cellCode = (row * 3 + col * 5 + ring * 2) % 10;
       const d = moduloDistance(cellCode, tick, 10);
       const parityGate = (row + col + tick) % 2 === 0;

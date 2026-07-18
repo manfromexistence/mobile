@@ -64,7 +64,7 @@ function upstreamErrorResponse(res, errText) {
     {
       status: res.status,
       headers: { ...CORS_HEADERS },
-    }
+    },
   );
 }
 
@@ -594,7 +594,7 @@ async function handleKieAudioSpeech(providerConfig, body, modelId, token) {
       {
         status,
         headers: { ...CORS_HEADERS },
-      }
+      },
     );
   }
 
@@ -611,7 +611,7 @@ async function handleKieAudioSpeech(providerConfig, body, modelId, token) {
 
   return errorResponse(
     502,
-    data?.msg || data?.message || "Kie audio generation did not return taskId or audio URL"
+    data?.msg || data?.message || "Kie audio generation did not return taskId or audio URL",
   );
 }
 
@@ -641,7 +641,7 @@ async function pollKieAudioResult(baseUrl, modelId, taskId, token) {
   } catch (err: unknown) {
     return errorResponse(
       getKieErrorStatus(err, 504),
-      getKieErrorMessage(err, "Kie audio generation timed out or failed")
+      getKieErrorMessage(err, "Kie audio generation timed out or failed"),
     );
   }
 
@@ -674,7 +674,7 @@ async function handleAwsPollySpeech(providerConfig, body, modelId, token, creden
   const outputFormat = normalizeAwsPollyOutputFormat(body.response_format);
   const sampleRate = getAwsPollySampleRate(
     body.response_format,
-    body.sample_rate || body.sampleRate
+    body.sample_rate || body.sampleRate,
   );
 
   const requestBody = {
@@ -952,7 +952,7 @@ export async function handleAudioSpeech({
   if (!providerConfig) {
     return errorResponse(
       400,
-      `No speech provider found for model "${body.model}". Use format provider/model. Available: openai, hyperbolic, deepgram, nvidia, elevenlabs, huggingface, inworld, cartesia, playht, kie, aws-polly, xiaomi-mimo, coqui, tortoise, qwen`
+      `No speech provider found for model "${body.model}". Use format provider/model. Available: openai, hyperbolic, deepgram, nvidia, elevenlabs, huggingface, inworld, cartesia, playht, kie, aws-polly, xiaomi-mimo, coqui, tortoise, qwen`,
     );
   }
 

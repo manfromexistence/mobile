@@ -56,7 +56,7 @@ test("detectRestrictedEnvironment retorna ci quando CI=1", async () => {
       const env = detectRestrictedEnvironment();
       assert.equal(env.type, "ci");
       assert.equal(env.canOpenBrowser, false);
-    }
+    },
   );
 });
 
@@ -86,7 +86,7 @@ test("getEnvBanner retorna null para desktop", async () => {
       // So we just test the function exists and returns a string or null
       const banner = getEnvBanner();
       assert.ok(banner === null || typeof banner === "string");
-    }
+    },
   );
 });
 

@@ -185,7 +185,7 @@ export function translateSseResponse(
   response: Response,
   provider: string,
   model: string,
-  suppressThinkClose: boolean = false
+  suppressThinkClose: boolean = false,
 ): Response {
   if (!response.body) return response;
   const transform = createSSETransformStreamWithLogger(
@@ -201,7 +201,7 @@ export function translateSseResponse(
     null,
     null,
     false,
-    suppressThinkClose
+    suppressThinkClose,
   );
   const headers = cloneHeaders(response.headers);
   headers.set("content-type", "text/event-stream");
@@ -222,7 +222,7 @@ export class GlmExecutor extends DefaultExecutor {
     _model: string,
     _stream: boolean,
     _urlIndex = 0,
-    credentials: ProviderCredentials | null = null
+    credentials: ProviderCredentials | null = null,
   ) {
     const primaryTransport = getGlmTransport(credentials?.providerSpecificData);
     const transport =
@@ -243,7 +243,7 @@ export class GlmExecutor extends DefaultExecutor {
     stream = true,
     _clientHeaders?: Record<string, string> | null,
     _model?: string,
-    transport: GlmTransport = getGlmTransport(credentials.providerSpecificData)
+    transport: GlmTransport = getGlmTransport(credentials.providerSpecificData),
   ): Record<string, string> {
     if (transport === "openai") {
       return buildGlmCodingHeaders(getEffectiveKey(credentials), stream);
@@ -264,7 +264,7 @@ export class GlmExecutor extends DefaultExecutor {
     model: string,
     body: unknown,
     stream: boolean,
-    credentials: ProviderCredentials
+    credentials: ProviderCredentials,
   ) {
     const cleanedBody = super.transformRequest(model, body, stream, credentials);
     return applyGlmRequestDefaults(cleanedBody, this.config.requestDefaults as JsonRecord | null);
@@ -275,7 +275,7 @@ export class GlmExecutor extends DefaultExecutor {
     body: unknown,
     stream: boolean,
     credentials: ProviderCredentials,
-    transport: GlmTransport
+    transport: GlmTransport,
   ) {
     const effortTier = parseGlm52Effort(model);
     const effectiveModel = effortTier ? effortTier.baseModel : model;
@@ -319,7 +319,7 @@ export class GlmExecutor extends DefaultExecutor {
       credentials,
       this.provider,
       null,
-      { preserveCacheControl: false }
+      { preserveCacheControl: false },
     );
 
     // Inject effort and thinking for the Anthropic transport.
@@ -351,7 +351,7 @@ export class GlmExecutor extends DefaultExecutor {
 
   private async executeTransport(
     input: ExecuteInput,
-    transport: GlmTransport
+    transport: GlmTransport,
   ): Promise<GlmExecuteResult> {
     const credentials = input.credentials;
     const url = buildGlmChatUrl(credentials?.providerSpecificData, transport, this.config.baseUrl);
@@ -360,7 +360,7 @@ export class GlmExecutor extends DefaultExecutor {
       input.stream,
       input.clientHeaders,
       input.model,
-      transport
+      transport,
     );
     applyConfiguredUserAgent(headers, credentials.providerSpecificData);
     mergeUpstreamExtraHeaders(headers, input.upstreamExtraHeaders);
@@ -370,7 +370,7 @@ export class GlmExecutor extends DefaultExecutor {
       input.body,
       input.stream,
       credentials,
-      transport
+      transport,
     );
 
     const fetchStartTimeoutMs = this.getTimeoutMs();
@@ -465,7 +465,7 @@ export class GlmExecutor extends DefaultExecutor {
 
     const primaryTransport = getGlmTransport(
       input.credentials.providerSpecificData,
-      this.config.baseUrl
+      this.config.baseUrl,
     );
     const fallbackTransport: GlmTransport = primaryTransport === "openai" ? "anthropic" : "openai";
 
@@ -477,13 +477,13 @@ export class GlmExecutor extends DefaultExecutor {
       }
       input.log?.debug?.(
         "GLM_FALLBACK",
-        `${primaryTransport} returned ${primaryResult.response.status}; trying ${fallbackTransport}`
+        `${primaryTransport} returned ${primaryResult.response.status}; trying ${fallbackTransport}`,
       );
     } catch (error) {
       if (!isRetryableGlmFallbackError(error)) throw error;
       input.log?.debug?.(
         "GLM_FALLBACK",
-        `${primaryTransport} error (${error instanceof Error ? error.message : String(error)}); trying ${fallbackTransport}`
+        `${primaryTransport} error (${error instanceof Error ? error.message : String(error)}); trying ${fallbackTransport}`,
       );
     }
 
@@ -496,7 +496,7 @@ export class GlmExecutor extends DefaultExecutor {
       if (!primaryResult) throw error;
       input.log?.debug?.(
         "GLM_FALLBACK",
-        `${fallbackTransport} fallback failed (${error instanceof Error ? error.message : String(error)}); returning primary response`
+        `${fallbackTransport} fallback failed (${error instanceof Error ? error.message : String(error)}); returning primary response`,
       );
     }
 

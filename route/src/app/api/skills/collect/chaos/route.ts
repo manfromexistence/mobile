@@ -98,7 +98,7 @@ export async function POST(request: Request) {
     if (!bearerToken) {
       return NextResponse.json(
         buildErrorBody(401, "Missing or invalid Authorization header — Bearer token required"),
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -122,8 +122,11 @@ export async function POST(request: Request) {
     const globalConfig = await getChaosConfig();
     if (!globalConfig.enabled) {
       return NextResponse.json(
-        buildErrorBody(400, "Chaos Mode is not enabled globally. Enable it in Dashboard → Chaos Mode."),
-        { status: 400 }
+        buildErrorBody(
+          400,
+          "Chaos Mode is not enabled globally. Enable it in Dashboard → Chaos Mode.",
+        ),
+        { status: 400 },
       );
     }
 

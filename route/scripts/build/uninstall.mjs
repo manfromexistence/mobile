@@ -57,8 +57,6 @@ if (uninstallAlreadyInProgress) {
       console.log(`ℹ️ Your configurations and databases were preserved in ${dataDir}.`);
     }
   } catch (error) {
-    console.warn(
-      "⚠️ Failed to remove npm package. You might need to run this command with 'sudo'."
-    );
+    console.warn("⚠️ Failed to remove npm package. You might need to run this command with 'sudo'.");
   }
 }

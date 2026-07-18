@@ -1,16 +1,20 @@
-import { Effect } from "effect"
-import type { DatabaseMigration } from "../migration"
+import { Effect } from "effect";
+import type { DatabaseMigration } from "../migration";
 
 export default {
   id: "20260510033149_session_usage",
   up(tx) {
     return Effect.gen(function* () {
-      yield* tx.run(`ALTER TABLE \`session\` ADD \`cost\` real DEFAULT 0 NOT NULL;`)
-      yield* tx.run(`ALTER TABLE \`session\` ADD \`tokens_input\` integer DEFAULT 0 NOT NULL;`)
-      yield* tx.run(`ALTER TABLE \`session\` ADD \`tokens_output\` integer DEFAULT 0 NOT NULL;`)
-      yield* tx.run(`ALTER TABLE \`session\` ADD \`tokens_reasoning\` integer DEFAULT 0 NOT NULL;`)
-      yield* tx.run(`ALTER TABLE \`session\` ADD \`tokens_cache_read\` integer DEFAULT 0 NOT NULL;`)
-      yield* tx.run(`ALTER TABLE \`session\` ADD \`tokens_cache_write\` integer DEFAULT 0 NOT NULL;`)
+      yield* tx.run(`ALTER TABLE \`session\` ADD \`cost\` real DEFAULT 0 NOT NULL;`);
+      yield* tx.run(`ALTER TABLE \`session\` ADD \`tokens_input\` integer DEFAULT 0 NOT NULL;`);
+      yield* tx.run(`ALTER TABLE \`session\` ADD \`tokens_output\` integer DEFAULT 0 NOT NULL;`);
+      yield* tx.run(`ALTER TABLE \`session\` ADD \`tokens_reasoning\` integer DEFAULT 0 NOT NULL;`);
+      yield* tx.run(
+        `ALTER TABLE \`session\` ADD \`tokens_cache_read\` integer DEFAULT 0 NOT NULL;`,
+      );
+      yield* tx.run(
+        `ALTER TABLE \`session\` ADD \`tokens_cache_write\` integer DEFAULT 0 NOT NULL;`,
+      );
       yield* tx.run(`
         UPDATE session
         SET
@@ -50,7 +54,7 @@ export default {
             WHERE message.session_id = session.id
               AND json_extract(message.data, '$.role') = 'assistant'
           ), 0)
-      `)
-    })
+      `);
+    });
   },
-} satisfies DatabaseMigration.Migration
+} satisfies DatabaseMigration.Migration;

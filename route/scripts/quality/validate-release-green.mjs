@@ -80,7 +80,7 @@ function saveGateLog(id, out) {
 export function baselineValue(metric, root = ROOT) {
   try {
     const raw = JSON.parse(
-      readFileSync(join(root, "config/quality/quality-baseline.json"), "utf8")
+      readFileSync(join(root, "config/quality/quality-baseline.json"), "utf8"),
     );
     const metrics = raw.metrics || raw;
     const v = metrics?.[metric]?.value;
@@ -96,9 +96,7 @@ export function firstFailureLine(out) {
     .split("\n")
     .map((l) => l.trim())
     .filter(Boolean);
-  const hit = lines.find((l) =>
-    /✖|✗|not ok|AssertionError|error TS|FAIL|Error:|REGRESS/i.test(l)
-  );
+  const hit = lines.find((l) => /✖|✗|not ok|AssertionError|error TS|FAIL|Error:|REGRESS/i.test(l));
   return (hit || lines[lines.length - 1] || "failed").slice(0, 200);
 }
 
@@ -192,7 +190,7 @@ export const FULL_CI_ENV = { "check:test-masking": { GITHUB_BASE_REF: "main" } }
  */
 export function extractCiGates(
   yamlText,
-  { jobs = FULL_CI_GATE_JOBS, skip = FULL_CI_SKIP, envMap = FULL_CI_ENV } = {}
+  { jobs = FULL_CI_GATE_JOBS, skip = FULL_CI_SKIP, envMap = FULL_CI_ENV } = {},
 ) {
   const doc = parseYaml(yamlText) || {};
   const gates = [];
@@ -369,7 +367,7 @@ async function main() {
         "--suppressions-location",
         "config/quality/eslint-suppressions.json",
       ],
-      { timeout: 30 * 60 * 1000 }
+      { timeout: 30 * 60 * 1000 },
     );
     saveGateLog("lint", out);
     const parsed = parseEslintJson(out);
@@ -561,7 +559,7 @@ async function main() {
     }
     slow.forEach((g) => announce(`${g.label} [parallel]`));
     const slowResults = await Promise.all(
-      slow.map((g) => runAsync(npmCmd, g.args, { timeout: g.timeout }))
+      slow.map((g) => runAsync(npmCmd, g.args, { timeout: g.timeout })),
     );
     slow.forEach((g, i) => {
       const { code, out } = slowResults[i];
@@ -632,7 +630,7 @@ async function main() {
   process.stderr.write(
     releaseGreen
       ? "\n✅ RELEASE-GREEN (no hard failures). Any drift above is rebaselined at release, not a contributor concern.\n"
-      : "\n❌ NOT release-green — hard failures must be fixed (in the originating PR branch, via co-authorship).\n"
+      : "\n❌ NOT release-green — hard failures must be fixed (in the originating PR branch, via co-authorship).\n",
   );
 
   if (JSON_OUT) {
@@ -645,8 +643,8 @@ async function main() {
           checks: results.map((r) => ({ id: r.id, kind: r.kind, ok: r.ok, detail: r.detail })),
         },
         null,
-        2
-      ) + "\n"
+        2,
+      ) + "\n",
     );
   }
 

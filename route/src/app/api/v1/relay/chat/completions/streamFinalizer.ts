@@ -1,6 +1,6 @@
 export function finalizeReadableStream(
   body: ReadableStream<Uint8Array>,
-  onFinalize: (error?: unknown) => void
+  onFinalize: (error?: unknown) => void,
 ): ReadableStream<Uint8Array> {
   const reader = body.getReader();
   let finalized = false;

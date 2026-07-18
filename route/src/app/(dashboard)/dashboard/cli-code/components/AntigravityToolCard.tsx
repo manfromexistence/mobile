@@ -93,9 +93,7 @@ export default function AntigravityToolCard({
   // browser hitting a Windows server does not (#822).
   const serverIsWindows = status?.isWin === true;
   const canRunWithoutPassword =
-    serverIsWindows ||
-    status?.hasCachedPassword === true ||
-    status?.needsSudoPassword === false;
+    serverIsWindows || status?.hasCachedPassword === true || status?.needsSudoPassword === false;
 
   const handleStart = () => {
     if (canRunWithoutPassword) {
@@ -231,7 +229,7 @@ export default function AntigravityToolCard({
         const data = await res.json();
         throw new Error(
           (typeof data.error === "string" ? data.error : data.error?.message) ||
-            t("failedSaveMappings")
+            t("failedSaveMappings"),
         );
       }
 

@@ -1,13 +1,13 @@
-import { Schema } from "effect"
-import { optional } from "./schema"
-import { statics } from "./schema"
+import { Schema } from "effect";
+import { optional } from "./schema";
+import { statics } from "./schema";
 
 export interface Source extends Schema.Schema.Type<typeof Source> {}
 export const Source = Schema.Struct({
   start: Schema.Finite,
   end: Schema.Finite,
   text: Schema.String,
-}).annotate({ identifier: "Prompt.Source" })
+}).annotate({ identifier: "Prompt.Source" });
 
 export interface FileAttachment extends Schema.Schema.Type<typeof FileAttachment> {}
 export const FileAttachment = Schema.Struct({
@@ -29,13 +29,13 @@ export const FileAttachment = Schema.Struct({
           source: input.source,
         }),
     })),
-  )
+  );
 
 export interface AgentAttachment extends Schema.Schema.Type<typeof AgentAttachment> {}
 export const AgentAttachment = Schema.Struct({
   name: Schema.String,
   source: Source.pipe(optional),
-}).annotate({ identifier: "Prompt.AgentAttachment" })
+}).annotate({ identifier: "Prompt.AgentAttachment" });
 
 export interface Prompt extends Schema.Schema.Type<typeof Prompt> {}
 export const Prompt = Schema.Struct({
@@ -54,4 +54,4 @@ export const Prompt = Schema.Struct({
           ...(input.agents === undefined ? {} : { agents: input.agents }),
         }),
     })),
-  )
+  );

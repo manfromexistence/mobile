@@ -1,24 +1,24 @@
 ---
-import config from "../../config.mjs"
-import astroConfig from "virtual:starlight/user-config"
-import { getRelativeLocaleUrl } from "astro:i18n"
-import { Icon } from "@astrojs/starlight/components"
-import Default from "toolbeam-docs-theme/overrides/Header.astro"
-import SiteTitle from "@astrojs/starlight/components/SiteTitle.astro"
+import config from "../../config.mjs";
+import astroConfig from "virtual:starlight/user-config";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { Icon } from "@astrojs/starlight/components";
+import Default from "toolbeam-docs-theme/overrides/Header.astro";
+import SiteTitle from "@astrojs/starlight/components/SiteTitle.astro";
 
-const path = Astro.url.pathname
-const locale = Astro.currentLocale || "root"
-const route = Astro.locals.starlightRoute
-const t = Astro.locals.t as (key: string) => string
-const links = astroConfig.social || []
-const headerLinks = config.headerLinks
-const sharePath = /\/s(\/|$)/.test(path)
+const path = Astro.url.pathname;
+const locale = Astro.currentLocale || "root";
+const route = Astro.locals.starlightRoute;
+const t = Astro.locals.t as (key: string) => string;
+const links = astroConfig.social || [];
+const headerLinks = config.headerLinks;
+const sharePath = /\/s(\/|$)/.test(path);
 
 function href(url: string) {
   if (url === "/" || url === "/docs" || url === "/docs/") {
-    return getRelativeLocaleUrl(locale, "")
+    return getRelativeLocaleUrl(locale, "");
   }
-  return url
+  return url;
 }
 ---
 

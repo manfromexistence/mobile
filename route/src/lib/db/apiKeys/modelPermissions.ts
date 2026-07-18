@@ -57,13 +57,13 @@ export function modelPatternMatches(pattern: string, candidates: string[]): bool
 
 export function hasClaudeCodeWildcardPermission(
   allowedModels: string[] | undefined,
-  candidates: string[]
+  candidates: string[],
 ): boolean {
   if (!allowedModels || allowedModels.length === 0) return false;
   return allowedModels.some(
     (pattern) =>
       (pattern === "cc/*" || pattern === "claude/*") &&
-      candidates.some((candidate) => modelPatternMatches(pattern, [candidate]))
+      candidates.some((candidate) => modelPatternMatches(pattern, [candidate])),
   );
 }
 

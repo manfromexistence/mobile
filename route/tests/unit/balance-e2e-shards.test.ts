@@ -20,7 +20,7 @@ test("lptAssign puts the heaviest item alone before doubling up lighter shards",
       { file: "b.spec.ts", weight: 30 },
       { file: "c.spec.ts", weight: 30 },
     ],
-    2
+    2,
   );
   assert.deepEqual(shards[0].files, ["huge.spec.ts"]);
   assert.deepEqual(shards[1].files, ["a.spec.ts", "b.spec.ts", "c.spec.ts"]);
@@ -63,7 +63,7 @@ test("weightItems gives unknown/new specs the median weight, not an extreme", ()
 
 test("the committed timings seed covers every current e2e spec (no drift)", () => {
   const timings = JSON.parse(
-    fs.readFileSync(path.join(ROOT, "config", "quality", "e2e-timings.json"), "utf8")
+    fs.readFileSync(path.join(ROOT, "config", "quality", "e2e-timings.json"), "utf8"),
   );
   const specs = fs
     .readdirSync(path.join(ROOT, "tests", "e2e"))

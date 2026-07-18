@@ -1,36 +1,36 @@
-import { Billing } from "@opencode-ai/console-core/billing.js"
-import { query, action, useParams, createAsync, useAction } from "@solidjs/router"
-import { For, Match, Show, Switch } from "solid-js"
-import { withActor } from "~/context/auth.withActor"
-import { formatDateUTC, formatDateForTable } from "../../common"
-import styles from "./payment-section.module.css"
-import { useI18n } from "~/context/i18n"
+import { Billing } from "@opencode-ai/console-core/billing.js";
+import { query, action, useParams, createAsync, useAction } from "@solidjs/router";
+import { For, Match, Show, Switch } from "solid-js";
+import { withActor } from "~/context/auth.withActor";
+import { formatDateUTC, formatDateForTable } from "../../common";
+import styles from "./payment-section.module.css";
+import { useI18n } from "~/context/i18n";
 
 function money(amount: number, currency?: string) {
   const formatter =
     currency === "inr"
       ? new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" })
-      : new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" })
-  return formatter.format(amount / 100_000_000)
+      : new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" });
+  return formatter.format(amount / 100_000_000);
 }
 
 const getPaymentsInfo = query(async (workspaceID: string) => {
-  "use server"
+  "use server";
   return withActor(async () => {
-    return await Billing.payments()
-  }, workspaceID)
-}, "payment.list")
+    return await Billing.payments();
+  }, workspaceID);
+}, "payment.list");
 
 const downloadReceipt = action(async (workspaceID: string, paymentID: string) => {
-  "use server"
-  return withActor(() => Billing.generateReceiptUrl({ paymentID }), workspaceID)
-}, "receipt.download")
+  "use server";
+  return withActor(() => Billing.generateReceiptUrl({ paymentID }), workspaceID);
+}, "receipt.download");
 
 export function PaymentSection() {
-  const params = useParams()
-  const i18n = useI18n()
-  const payments = createAsync(() => getPaymentsInfo(params.id!))
-  const downloadReceiptAction = useAction(downloadReceipt)
+  const params = useParams();
+  const i18n = useI18n();
+  const payments = createAsync(() => getPaymentsInfo(params.id!));
+  const downloadReceiptAction = useAction(downloadReceipt);
 
   // DUMMY DATA FOR TESTING
   // const payments = () => [
@@ -86,13 +86,16 @@ export function PaymentSection() {
             <tbody>
               <For each={payments()!}>
                 {(payment) => {
-                  const date = new Date(payment.timeCreated)
+                  const date = new Date(payment.timeCreated);
                   const amount =
-                    payment.enrichment?.type === "subscription" && payment.enrichment.couponID ? 0 : payment.amount
+                    payment.enrichment?.type === "subscription" && payment.enrichment.couponID
+                      ? 0
+                      : payment.amount;
                   const currency =
-                    payment.enrichment?.type === "subscription" || payment.enrichment?.type === "lite"
+                    payment.enrichment?.type === "subscription" ||
+                    payment.enrichment?.type === "lite"
                       ? payment.enrichment.currency
-                      : undefined
+                      : undefined;
                   return (
                     <tr>
                       <td data-slot="payment-date" title={formatDateUTC(date)}>
@@ -115,9 +118,12 @@ export function PaymentSection() {
                         {payment.paymentID ? (
                           <button
                             onClick={async () => {
-                              const receiptUrl = await downloadReceiptAction(params.id!, payment.paymentID!)
+                              const receiptUrl = await downloadReceiptAction(
+                                params.id!,
+                                payment.paymentID!,
+                              );
                               if (receiptUrl) {
-                                window.open(receiptUrl, "_blank")
+                                window.open(receiptUrl, "_blank");
                               }
                             }}
                             data-slot="receipt-button"
@@ -129,7 +135,7 @@ export function PaymentSection() {
                         )}
                       </td>
                     </tr>
-                  )
+                  );
                 }}
               </For>
             </tbody>
@@ -137,5 +143,5 @@ export function PaymentSection() {
         </div>
       </section>
     </Show>
-  )
+  );
 }

@@ -100,7 +100,7 @@ function getCatalogModelCapabilities(model: JsonRecord): string[] {
 function normalizeCatalogStatus(
   model: JsonRecord,
   source: string,
-  warning?: string
+  warning?: string,
 ): McpCatalogStatus {
   const explicitStatus = toString(model.status);
   if (
@@ -132,7 +132,7 @@ function normalizeProviderModelRecord(
   fallbackProvider: string,
   source: string,
   warning?: string,
-  thinkingEffort?: string
+  thinkingEffort?: string,
 ) {
   const model = toRecord(rawModel);
   const id = toString(model.id, "");
@@ -150,19 +150,23 @@ function normalizeProviderModelRecord(
 function activeProviderConnections(
   connections: ProviderConnectionLike[],
   normalizeProviderId: (value: string) => string,
-  requestedProvider: string | null
+  requestedProvider: string | null,
 ): ProviderConnectionLike[] {
   return connections.filter((connection) => {
     const provider =
       typeof connection?.provider === "string" ? normalizeProviderId(connection.provider) : null;
-    return !!provider && !!connection?.id && connection.isActive !== false &&
-      (!requestedProvider || provider === requestedProvider);
+    return (
+      !!provider &&
+      !!connection?.id &&
+      connection.isActive !== false &&
+      (!requestedProvider || provider === requestedProvider)
+    );
   });
 }
 
 function providerModelRequestSpecs(
   connections: ProviderConnectionLike[],
-  normalizeProviderId: (value: string) => string
+  normalizeProviderId: (value: string) => string,
 ): McpCatalogRequestSpec[] {
   return connections.map((connection) => ({
     provider: normalizeProviderId(String(connection.provider)),
@@ -198,10 +202,11 @@ function maybeCatalogModel(
   spec: McpCatalogRequestSpec,
   source: string,
   warning: string | undefined,
-  requestedCapability: string | null
+  requestedCapability: string | null,
 ): McpCatalogResponse["models"][number] | null {
   const normalized = normalizeProviderModelRecord(rawModel, spec.provider, source, warning);
-  if (spec.thinkingEffort && !normalized.thinkingEffort) normalized.thinkingEffort = spec.thinkingEffort;
+  if (spec.thinkingEffort && !normalized.thinkingEffort)
+    normalized.thinkingEffort = spec.thinkingEffort;
   if (!normalized.id) return null;
   if (requestedCapability && !normalized.capabilities.includes(requestedCapability)) return null;
   return normalized;
@@ -213,7 +218,7 @@ function addCatalogModels(
   source: string,
   warning: string | undefined,
   requestedCapability: string | null,
-  collectedModels: Map<string, McpCatalogResponse["models"][number]>
+  collectedModels: Map<string, McpCatalogResponse["models"][number]>,
 ) {
   for (const rawModel of rawModelsFromCatalog(raw)) {
     const normalized = maybeCatalogModel(rawModel, spec, source, warning, requestedCapability);
@@ -224,7 +229,7 @@ function addCatalogModels(
 async function collectCatalogModels(
   requestSpecs: McpCatalogRequestSpec[],
   fetchJson: (path: string) => Promise<unknown>,
-  requestedCapability: string | null
+  requestedCapability: string | null,
 ) {
   const collectedModels = new Map<string, McpCatalogResponse["models"][number]>();
   const warnings = new Set<string>();
@@ -232,7 +237,10 @@ async function collectCatalogModels(
 
   for (const spec of requestSpecs) {
     const raw = toRecord(await fetchJson(spec.path));
-    const source = toString(raw.source, spec.path.startsWith("/api/providers/") ? "api" : "v1_catalog");
+    const source = toString(
+      raw.source,
+      spec.path.startsWith("/api/providers/") ? "api" : "v1_catalog",
+    );
     const warning = raw.warning ? String(raw.warning) : undefined;
     if (warning) warnings.add(warning);
     sources.add(source);
@@ -247,9 +255,10 @@ export async function getMcpModelsCatalog(
   deps: {
     fetchJson?: (path: string) => Promise<unknown>;
     listProviderConnections?: () => Promise<ProviderConnectionLike[]>;
-  } = {}
+  } = {},
 ): Promise<McpCatalogResponse> {
-  const fetchJson = deps.fetchJson ?? ((path: string) => import("./server.ts").then((m) => m.omniRouteFetch(path)));
+  const fetchJson =
+    deps.fetchJson ?? ((path: string) => import("./server.ts").then((m) => m.omniRouteFetch(path)));
   const listProviderConnections = deps.listProviderConnections ?? getProviderConnections;
   const aliasMap = buildProviderAliasMap();
   const normalizeProviderId = (value: string) => aliasMap[value] || value;
@@ -261,13 +270,13 @@ export async function getMcpModelsCatalog(
   const activeConnections = activeProviderConnections(
     connections,
     normalizeProviderId,
-    requestedProvider
+    requestedProvider,
   );
   const requestSpecs = providerModelRequestSpecs(activeConnections, normalizeProviderId);
 
   if (requestedProvider && requestSpecs.length === 0) {
     const isNoAuthProvider = Object.values(NOAUTH_PROVIDERS).some(
-      (provider) => provider.id === requestedProvider
+      (provider) => provider.id === requestedProvider,
     );
     if (isNoAuthProvider) {
       requestSpecs.push(noAuthProviderSpec(requestedProvider));
@@ -279,7 +288,7 @@ export async function getMcpModelsCatalog(
   const { collectedModels, warnings, sources } = await collectCatalogModels(
     requestSpecs,
     fetchJson,
-    requestedCapability
+    requestedCapability,
   );
 
   return {

@@ -1,6 +1,6 @@
-import { dict as en } from "./en"
+import { dict as en } from "./en";
 
-type Keys = keyof typeof en
+type Keys = keyof typeof en;
 
 export const dict = {
   "ui.sessionReview.title": "Promjene sesije",
@@ -18,7 +18,8 @@ export const dict = {
   "ui.sessionReview.image.loading": "Učitavanje...",
   "ui.sessionReview.image.placeholder": "Slika",
   "ui.sessionReview.largeDiff.title": "Diff je prevelik za prikaz",
-  "ui.sessionReview.largeDiff.meta": "Limit: {{limit}} izmijenjenih linija. Trenutno: {{current}} izmijenjenih linija.",
+  "ui.sessionReview.largeDiff.meta":
+    "Limit: {{limit}} izmijenjenih linija. Trenutno: {{current}} izmijenjenih linija.",
   "ui.sessionReview.largeDiff.renderAnyway": "Prikaži svejedno",
   "ui.fileMedia.kind.image": "slika",
   "ui.fileMedia.kind.audio": "audio",
@@ -169,4 +170,4 @@ export const dict = {
   "ui.toolErrorCard.copyError": "Kopiraj grešku",
   "ui.message.duration.seconds": "{{count}}s",
   "ui.message.duration.minutesSeconds": "{{minutes}}m {{seconds}}s",
-} satisfies Partial<Record<Keys, string>>
+} satisfies Partial<Record<Keys, string>>;

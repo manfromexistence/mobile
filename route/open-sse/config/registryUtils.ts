@@ -30,7 +30,7 @@ export interface BaseProvider<M extends BaseModel = BaseModel> {
  */
 const registryModelIndexCache = new WeakMap<object, Map<string, string>>();
 function getRegistryModelIndex<P extends BaseProvider>(
-  registry: Record<string, P>
+  registry: Record<string, P>,
 ): Map<string, string> {
   let index = registryModelIndexCache.get(registry);
   if (!index) {
@@ -51,7 +51,7 @@ function getRegistryModelIndex<P extends BaseProvider>(
  */
 export function parseModelFromRegistry<P extends BaseProvider>(
   modelStr: string | null,
-  registry: Record<string, P>
+  registry: Record<string, P>,
 ): { provider: string | null; model: string | null } {
   if (!modelStr) return { provider: null, model: null };
 
@@ -81,7 +81,7 @@ export function parseModelFromRegistry<P extends BaseProvider>(
  */
 export function getAllModelsFromRegistry<P extends BaseProvider>(
   registry: Record<string, P>,
-  extra?: (providerId: string, config: P) => Record<string, unknown>
+  extra?: (providerId: string, config: P) => Record<string, unknown>,
 ): Array<{ id: string; name: string; provider: string } & Record<string, unknown>> {
   const models: Array<{ id: string; name: string; provider: string } & Record<string, unknown>> =
     [];
@@ -90,7 +90,7 @@ export function getAllModelsFromRegistry<P extends BaseProvider>(
     const extraFields = extra ? extra(providerId, config) : {};
     for (const model of config.models) {
       const entries = [providerId, config.alias].filter(
-        (prefix): prefix is string => typeof prefix === "string" && prefix.length > 0
+        (prefix): prefix is string => typeof prefix === "string" && prefix.length > 0,
       );
       for (const prefix of entries) {
         models.push({
@@ -112,7 +112,7 @@ export function getAllModelsFromRegistry<P extends BaseProvider>(
  */
 export function buildAuthHeaders(
   provider: BaseProvider,
-  token: string | null
+  token: string | null,
 ): Record<string, string> {
   if (provider.authType === "none" || provider.authHeader === "none" || !token) {
     return {};

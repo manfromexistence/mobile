@@ -128,7 +128,7 @@ interface GeminiStreamChunk {
 export function openAIChunkToGeminiChunk(
   parsed: OpenAIStreamChunk,
   fallbackModel: string,
-  state?: GeminiToolCallState
+  state?: GeminiToolCallState,
 ): GeminiStreamChunk | null {
   const choice = parsed.choices?.[0];
   if (!choice) return null;
@@ -334,7 +334,7 @@ interface GeminiNonStreamResponse {
  */
 export async function convertOpenAIResponseToGemini(
   response: Response,
-  model: string
+  model: string,
 ): Promise<Response> {
   if (!response.ok) return response;
 
@@ -349,7 +349,7 @@ export async function convertOpenAIResponseToGemini(
       {
         status: response.status,
         headers: { "Content-Type": "application/json", "Access-Control-Allow-Origin": "*" },
-      }
+      },
     );
   }
 

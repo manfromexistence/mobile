@@ -21,7 +21,7 @@ function seedLogs() {
   const now = new Date().toISOString();
   db.prepare(
     `INSERT OR REPLACE INTO call_logs (id, timestamp, method, path, status, model, provider, account, duration, tokens_in, tokens_out, correlation_id)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     "log-1",
     now,
@@ -34,11 +34,11 @@ function seedLogs() {
     100,
     10,
     20,
-    "abc123-def456-ghi789"
+    "abc123-def456-ghi789",
   );
   db.prepare(
     `INSERT OR REPLACE INTO call_logs (id, timestamp, method, path, status, model, provider, account, duration, tokens_in, tokens_out, correlation_id)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     "log-2",
     now,
@@ -51,11 +51,11 @@ function seedLogs() {
     200,
     15,
     30,
-    "xyz999-uvw888-tsr777"
+    "xyz999-uvw888-tsr777",
   );
   db.prepare(
     `INSERT OR REPLACE INTO call_logs (id, timestamp, method, path, status, model, provider, account, duration, tokens_in, tokens_out, correlation_id)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     "log-3",
     now,
@@ -68,7 +68,7 @@ function seedLogs() {
     50,
     0,
     0,
-    null
+    null,
   );
 }
 
@@ -110,7 +110,7 @@ test("correlationId substring match returns multiple when shared", async () => {
   // Add another log sharing a substring
   db.prepare(
     `INSERT OR REPLACE INTO call_logs (id, timestamp, method, path, status, model, provider, account, duration, tokens_in, tokens_out, correlation_id)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
   ).run(
     "log-4",
     now,
@@ -123,7 +123,7 @@ test("correlationId substring match returns multiple when shared", async () => {
     100,
     10,
     20,
-    "abc123-RETRY-suffix"
+    "abc123-RETRY-suffix",
   );
 
   const results = await callLogs.getCallLogs({ correlationId: "abc123" });

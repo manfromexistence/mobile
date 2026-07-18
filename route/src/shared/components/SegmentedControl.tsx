@@ -38,7 +38,7 @@ export default function SegmentedControl({
       className={cn(
         "inline-flex items-center p-1 rounded-lg",
         "bg-black/5 dark:bg-white/5",
-        className
+        className,
       )}
     >
       {options.map((option) => (
@@ -53,7 +53,7 @@ export default function SegmentedControl({
             sizes[size],
             value === option.value
               ? "bg-white dark:bg-white/10 text-text-main shadow-sm"
-              : "text-text-muted hover:text-text-main"
+              : "text-text-muted hover:text-text-main",
           )}
         >
           {option.icon && (

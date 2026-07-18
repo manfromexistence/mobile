@@ -26,7 +26,7 @@ const UPDATE = process.argv.includes("--update");
 const COMPLEXITY_BASELINE = path.resolve(
   process.argv.includes("--baseline")
     ? process.argv[process.argv.indexOf("--baseline") + 1]
-    : path.join(ROOT, "config/quality/complexity-baseline.json")
+    : path.join(ROOT, "config/quality/complexity-baseline.json"),
 );
 const QUALITY_BASELINE = path.join(ROOT, "config/quality/quality-baseline.json");
 
@@ -53,7 +53,7 @@ function main() {
   const cognitiveMetric = qualityBaseline.metrics?.cognitiveComplexity;
   if (!cognitiveMetric || typeof cognitiveMetric.value !== "number") {
     console.error(
-      "[complexity-ratchets] FAIL — metrics.cognitiveComplexity ausente em quality-baseline.json."
+      "[complexity-ratchets] FAIL — metrics.cognitiveComplexity ausente em quality-baseline.json.",
     );
     process.exit(2);
   }
@@ -63,14 +63,14 @@ function main() {
 
   if (UPDATE && cyc.improved) {
     console.log(
-      `[complexity] baseline ratcheado: ${complexityCount} (era ${complexityBaseline.count})`
+      `[complexity] baseline ratcheado: ${complexityCount} (era ${complexityBaseline.count})`,
     );
     complexityBaseline.count = complexityCount;
     fs.writeFileSync(COMPLEXITY_BASELINE, JSON.stringify(complexityBaseline, null, 2) + "\n");
   }
   if (UPDATE && cog.improved) {
     console.log(
-      `[cognitive-complexity] baseline ratcheado: ${cognitiveCount} (era ${cognitiveMetric.value})`
+      `[cognitive-complexity] baseline ratcheado: ${cognitiveCount} (era ${cognitiveMetric.value})`,
     );
     qualityBaseline.metrics.cognitiveComplexity.value = cognitiveCount;
     fs.writeFileSync(QUALITY_BASELINE, JSON.stringify(qualityBaseline, null, 2) + "\n");
@@ -79,23 +79,23 @@ function main() {
   let failed = false;
   if (cyc.regressed) {
     console.error(
-      `[complexity] REGRESSÃO — ${complexityCount} violações > baseline ${complexityBaseline.count}`
+      `[complexity] REGRESSÃO — ${complexityCount} violações > baseline ${complexityBaseline.count}`,
     );
     failed = true;
   } else {
     console.log(
-      `[complexity] OK — ${complexityCount} violações (baseline ${complexityBaseline.count})`
+      `[complexity] OK — ${complexityCount} violações (baseline ${complexityBaseline.count})`,
     );
   }
 
   if (cog.regressed) {
     console.error(
-      `[cognitive-complexity] REGRESSÃO — ${cognitiveCount} violações > baseline ${cognitiveMetric.value}`
+      `[cognitive-complexity] REGRESSÃO — ${cognitiveCount} violações > baseline ${cognitiveMetric.value}`,
     );
     failed = true;
   } else {
     console.log(
-      `[cognitive-complexity] OK — ${cognitiveCount} violações (baseline ${cognitiveMetric.value})`
+      `[cognitive-complexity] OK — ${cognitiveCount} violações (baseline ${cognitiveMetric.value})`,
     );
   }
 

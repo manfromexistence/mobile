@@ -105,10 +105,9 @@ test.describe("Group B — Quota Plans Config", () => {
   test("quota share page exists and returns 200", async ({ page }) => {
     // /dashboard/costs/quota-share/plans does not exist as a standalone route;
     // the plans wizard is embedded in /dashboard/costs/quota-share.
-    const response = await page.goto(
-      "http://localhost:20128/dashboard/costs/quota-share",
-      { waitUntil: "domcontentloaded" }
-    );
+    const response = await page.goto("http://localhost:20128/dashboard/costs/quota-share", {
+      waitUntil: "domcontentloaded",
+    });
     expect(response?.status()).not.toBe(404);
     expect(response?.status()).not.toBe(500);
   });
@@ -121,7 +120,7 @@ test.describe("Group B — Quota Plans Config", () => {
 
     // Group selector (a <select> element) should be visible
     const providerSelector = page.locator(
-      "select, [role='combobox'], [data-testid='provider-selector']"
+      "select, [role='combobox'], [data-testid='provider-selector']",
     );
     await expect(providerSelector.first()).toBeVisible({ timeout: 15000 });
   });

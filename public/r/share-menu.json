@@ -4,11 +4,7 @@
   "title": "Share Menu",
   "author": "ncdai <dai@chanhdai.com>",
   "description": "Share menu to copy a link or post to X, LinkedIn, and the native share sheet.",
-  "registryDependencies": [
-    "button",
-    "dropdown-menu",
-    "sonner"
-  ],
+  "registryDependencies": ["button", "dropdown-menu", "sonner"],
   "files": [
     {
       "path": "src/registry/components/share-menu/share-menu.tsx",
@@ -18,8 +14,6 @@
     }
   ],
   "docs": "https://chanhdai.com/components/share-menu",
-  "categories": [
-    "menus"
-  ],
+  "categories": ["menus"],
   "type": "registry:component"
 }

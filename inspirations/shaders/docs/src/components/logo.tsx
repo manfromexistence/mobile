@@ -1,4 +1,4 @@
-export function Logo(props: React.ComponentProps<'svg'>) {
+export function Logo(props: React.ComponentProps<"svg">) {
   return (
     <svg height="40" viewBox="0 0 110 40" {...props}>
       <path

@@ -1,54 +1,61 @@
-import type { Event, Message, Part, PermissionRequest, QuestionRequest, ToolPart } from "@opencode-ai/sdk/v2"
-import * as Locale from "@/util/locale"
+import type {
+  Event,
+  Message,
+  Part,
+  PermissionRequest,
+  QuestionRequest,
+  ToolPart,
+} from "@opencode-ai/sdk/v2";
+import * as Locale from "@/util/locale";
 import {
   bootstrapSessionData,
   createSessionData,
   formatError,
   reduceSessionData,
   type SessionData,
-} from "./session-data"
-import type { FooterSubagentState, FooterSubagentTab, StreamCommit } from "./types"
+} from "./session-data";
+import type { FooterSubagentState, FooterSubagentTab, StreamCommit } from "./types";
 
-export const SUBAGENT_BOOTSTRAP_LIMIT = 200
-export const SUBAGENT_CALL_BOOTSTRAP_LIMIT = 80
+export const SUBAGENT_BOOTSTRAP_LIMIT = 200;
+export const SUBAGENT_CALL_BOOTSTRAP_LIMIT = 80;
 
-const SUBAGENT_COMMIT_LIMIT = 80
-const SUBAGENT_CALL_LIMIT = 32
-const SUBAGENT_ROLE_LIMIT = 32
-const SUBAGENT_ERROR_LIMIT = 16
-const SUBAGENT_ECHO_LIMIT = 8
+const SUBAGENT_COMMIT_LIMIT = 80;
+const SUBAGENT_CALL_LIMIT = 32;
+const SUBAGENT_ROLE_LIMIT = 32;
+const SUBAGENT_ERROR_LIMIT = 16;
+const SUBAGENT_ECHO_LIMIT = 8;
 
 type SessionMessage = {
-  parts: Part[]
-}
+  parts: Part[];
+};
 
 type BootstrapChildMessage = SessionMessage & {
-  info: Message
-}
+  info: Message;
+};
 
 type Frame = {
-  key: string
-  commit: StreamCommit
-}
+  key: string;
+  commit: StreamCommit;
+};
 
 type DetailState = {
-  sessionID: string
-  data: SessionData
-  frames: Frame[]
-}
+  sessionID: string;
+  data: SessionData;
+  frames: Frame[];
+};
 
 export type SubagentData = {
-  tabs: Map<string, FooterSubagentTab>
-  details: Map<string, DetailState>
-}
+  tabs: Map<string, FooterSubagentTab>;
+  details: Map<string, DetailState>;
+};
 
 export type BootstrapSubagentInput = {
-  data: SubagentData
-  messages: SessionMessage[]
-  children: Array<{ id: string; title?: string }>
-  permissions: PermissionRequest[]
-  questions: QuestionRequest[]
-}
+  data: SubagentData;
+  messages: SessionMessage[];
+  children: Array<{ id: string; title?: string }>;
+  permissions: PermissionRequest[];
+  questions: QuestionRequest[];
+};
 
 function createDetail(sessionID: string): DetailState {
   return {
@@ -57,23 +64,26 @@ function createDetail(sessionID: string): DetailState {
       includeUserText: true,
     }),
     frames: [],
-  }
+  };
 }
 
 function ensureDetail(data: SubagentData, sessionID: string) {
-  const current = data.details.get(sessionID)
+  const current = data.details.get(sessionID);
   if (current) {
-    return current
+    return current;
   }
 
-  const next = createDetail(sessionID)
-  data.details.set(sessionID, next)
-  return next
+  const next = createDetail(sessionID);
+  data.details.set(sessionID, next);
+  return next;
 }
 
-export function sameSubagentTab(a: FooterSubagentTab | undefined, b: FooterSubagentTab | undefined) {
+export function sameSubagentTab(
+  a: FooterSubagentTab | undefined,
+  b: FooterSubagentTab | undefined,
+) {
   if (!a || !b) {
-    return false
+    return false;
   }
 
   return (
@@ -87,24 +97,27 @@ export function sameSubagentTab(a: FooterSubagentTab | undefined, b: FooterSubag
     a.title === b.title &&
     a.toolCalls === b.toolCalls &&
     a.lastUpdatedAt === b.lastUpdatedAt
-  )
+  );
 }
 
 function sameQueue<T extends { id: string }>(left: T[], right: T[]) {
   return (
-    left.length === right.length && left.every((item, index) => item.id === right[index]?.id && item === right[index])
-  )
+    left.length === right.length &&
+    left.every((item, index) => item.id === right[index]?.id && item === right[index])
+  );
 }
 
 function queueSnapshot(data: SessionData) {
   return {
     permissions: data.permissions.slice(),
     questions: data.questions.slice(),
-  }
+  };
 }
 
 function queueChanged(data: SessionData, before: ReturnType<typeof queueSnapshot>) {
-  return !sameQueue(before.permissions, data.permissions) || !sameQueue(before.questions, data.questions)
+  return (
+    !sameQueue(before.permissions, data.permissions) || !sameQueue(before.questions, data.questions)
+  );
 }
 
 function sameCommit(left: StreamCommit, right: StreamCommit) {
@@ -119,80 +132,80 @@ function sameCommit(left: StreamCommit, right: StreamCommit) {
     left.interrupted === right.interrupted &&
     left.toolState === right.toolState &&
     left.toolError === right.toolError
-  )
+  );
 }
 
 function text(value: unknown): string | undefined {
   if (typeof value !== "string") {
-    return undefined
+    return undefined;
   }
 
-  const next = value.trim()
-  return next || undefined
+  const next = value.trim();
+  return next || undefined;
 }
 
 function num(value: unknown): number | undefined {
   if (typeof value === "number" && Number.isFinite(value)) {
-    return value
+    return value;
   }
 
-  return undefined
+  return undefined;
 }
 
 function inputLabel(input: Record<string, unknown>): string | undefined {
-  const description = text(input.description)
+  const description = text(input.description);
   if (description) {
-    return description
+    return description;
   }
 
-  const command = text(input.command)
+  const command = text(input.command);
   if (command) {
-    return command
+    return command;
   }
 
-  const filePath = text(input.filePath) ?? text(input.filepath)
+  const filePath = text(input.filePath) ?? text(input.filepath);
   if (filePath) {
-    return filePath
+    return filePath;
   }
 
-  const pattern = text(input.pattern)
+  const pattern = text(input.pattern);
   if (pattern) {
-    return pattern
+    return pattern;
   }
 
-  const query = text(input.query)
+  const query = text(input.query);
   if (query) {
-    return query
+    return query;
   }
 
-  const url = text(input.url)
+  const url = text(input.url);
   if (url) {
-    return url
+    return url;
   }
 
-  const path = text(input.path)
+  const path = text(input.path);
   if (path) {
-    return path
+    return path;
   }
 
-  const prompt = text(input.prompt)
+  const prompt = text(input.prompt);
   if (prompt) {
-    return prompt
+    return prompt;
   }
 
-  return undefined
+  return undefined;
 }
 
 function stateTitle(part: ToolPart) {
-  return text("title" in part.state ? part.state.title : undefined)
+  return text("title" in part.state ? part.state.title : undefined);
 }
 
 function callKey(messageID: string | undefined, callID: string | undefined): string | undefined {
   if (!messageID || !callID) {
-    return undefined
+    return undefined;
   }
 
-  return `${messageID}:${callID}`
+  return `${messageID}:${callID}`;
 }
 
 function compactToolState(part: ToolPart): ToolPart["state"] {
@@ -201,7 +214,7 @@ function compactToolState(part: ToolPart): ToolPart["state"] {
       status: "pending",
       input: part.state.input,
       raw: part.state.raw,
-    }
+    };
   }
 
   if (part.state.status === "running") {
@@ -211,7 +224,7 @@ function compactToolState(part: ToolPart): ToolPart["state"] {
       time: part.state.time,
       ...(part.state.metadata ? { metadata: part.state.metadata } : {}),
       ...(part.state.title ? { title: part.state.title } : {}),
-    }
+    };
   }
 
   if (part.state.status === "completed") {
@@ -222,7 +235,7 @@ function compactToolState(part: ToolPart): ToolPart["state"] {
       title: part.state.title,
       metadata: part.state.metadata,
       time: part.state.time,
-    }
+    };
   }
 
   return {
@@ -231,24 +244,24 @@ function compactToolState(part: ToolPart): ToolPart["state"] {
     error: part.state.error,
     time: part.state.time,
     ...(part.state.metadata ? { metadata: part.state.metadata } : {}),
-  }
+  };
 }
 
 function recent<T>(input: Iterable<T>, limit: number) {
-  const list = [...input]
-  return list.slice(Math.max(0, list.length - limit))
+  const list = [...input];
+  return list.slice(Math.max(0, list.length - limit));
 }
 
 function copyMap<K, V>(source: Map<K, V>, keep: Set<K>) {
-  const out = new Map<K, V>()
+  const out = new Map<K, V>();
   for (const [key, value] of source) {
     if (!keep.has(key)) {
-      continue
+      continue;
     }
 
-    out.set(key, value)
+    out.set(key, value);
   }
-  return out
+  return out;
 }
 
 function compactToolPart(part: ToolPart): ToolPart {
@@ -261,56 +274,62 @@ function compactToolPart(part: ToolPart): ToolPart {
     tool: part.tool,
     state: compactToolState(part),
     ...(part.metadata ? { metadata: part.metadata } : {}),
-  }
+  };
 }
 
 function compactCommit(commit: StreamCommit): StreamCommit {
   if (!commit.part) {
-    return commit
+    return commit;
   }
 
   return {
     ...commit,
     part: compactToolPart(commit.part),
-  }
+  };
 }
 
 function stateUpdatedAt(part: ToolPart) {
   if (!("time" in part.state)) {
-    return Date.now()
+    return Date.now();
   }
 
-  const time = part.state.time
+  const time = part.state.time;
   if (!("end" in time)) {
-    return time.start ?? Date.now()
+    return time.start ?? Date.now();
   }
 
-  return time.end ?? time.start ?? Date.now()
+  return time.end ?? time.start ?? Date.now();
 }
 
 function metadata(part: ToolPart, key: string) {
-  return ("metadata" in part.state ? part.state.metadata?.[key] : undefined) ?? part.metadata?.[key]
+  return (
+    ("metadata" in part.state ? part.state.metadata?.[key] : undefined) ?? part.metadata?.[key]
+  );
 }
 
 function taskStatus(part: ToolPart): FooterSubagentTab["status"] {
   if (part.state.status === "completed") {
-    return "completed"
+    return "completed";
   }
 
   if (part.state.status === "error") {
-    if (metadata(part, "interrupted") === true || text(part.state.error) === "Tool execution aborted") {
-      return "cancelled"
+    if (
+      metadata(part, "interrupted") === true ||
+      text(part.state.error) === "Tool execution aborted"
+    ) {
+      return "cancelled";
     }
 
-    return "error"
+    return "error";
   }
 
-  return "running"
+  return "running";
 }
 
 function taskTab(part: ToolPart, sessionID: string): FooterSubagentTab {
-  const label = Locale.titlecase(text(part.state.input.subagent_type) ?? "general")
-  const description = text(part.state.input.description) ?? stateTitle(part) ?? inputLabel(part.state.input) ?? ""
+  const label = Locale.titlecase(text(part.state.input.subagent_type) ?? "general");
+  const description =
+    text(part.state.input.description) ?? stateTitle(part) ?? inputLabel(part.state.input) ?? "";
 
   return {
     sessionID,
@@ -321,114 +340,117 @@ function taskTab(part: ToolPart, sessionID: string): FooterSubagentTab {
     status: taskStatus(part),
     background: metadata(part, "background") === true,
     title: stateTitle(part),
-    toolCalls: num(metadata(part, "toolcalls")) ?? num(metadata(part, "toolCalls")) ?? num(metadata(part, "calls")),
+    toolCalls:
+      num(metadata(part, "toolcalls")) ??
+      num(metadata(part, "toolCalls")) ??
+      num(metadata(part, "calls")),
     lastUpdatedAt: stateUpdatedAt(part),
-  }
+  };
 }
 
 function taskSessionID(part: ToolPart) {
-  return text(metadata(part, "sessionId")) ?? text(metadata(part, "sessionID"))
+  return text(metadata(part, "sessionId")) ?? text(metadata(part, "sessionID"));
 }
 
 function syncTaskTab(data: SubagentData, part: ToolPart, children?: Set<string>) {
   if (part.tool !== "task") {
-    return false
+    return false;
   }
 
-  const sessionID = taskSessionID(part)
+  const sessionID = taskSessionID(part);
   if (!sessionID) {
-    return false
+    return false;
   }
 
   if (children && children.size > 0 && !children.has(sessionID)) {
-    return false
+    return false;
   }
 
-  const next = taskTab(part, sessionID)
+  const next = taskTab(part, sessionID);
   if (sameSubagentTab(data.tabs.get(sessionID), next)) {
-    ensureDetail(data, sessionID)
-    return false
+    ensureDetail(data, sessionID);
+    return false;
   }
 
-  data.tabs.set(sessionID, next)
-  ensureDetail(data, sessionID)
-  return true
+  data.tabs.set(sessionID, next);
+  ensureDetail(data, sessionID);
+  return true;
 }
 
 function frameKey(commit: StreamCommit) {
   if (commit.partID) {
-    return `${commit.kind}:${commit.partID}:${commit.phase}`
+    return `${commit.kind}:${commit.partID}:${commit.phase}`;
   }
 
   if (commit.messageID) {
-    return `${commit.kind}:${commit.messageID}:${commit.phase}`
+    return `${commit.kind}:${commit.messageID}:${commit.phase}`;
   }
 
-  return `${commit.kind}:${commit.phase}:${commit.text}`
+  return `${commit.kind}:${commit.phase}:${commit.text}`;
 }
 
 function limitFrames(detail: DetailState) {
   if (detail.frames.length <= SUBAGENT_COMMIT_LIMIT) {
-    return
+    return;
   }
 
-  detail.frames.splice(0, detail.frames.length - SUBAGENT_COMMIT_LIMIT)
+  detail.frames.splice(0, detail.frames.length - SUBAGENT_COMMIT_LIMIT);
 }
 
 function mergeLiveCommit(current: StreamCommit, next: StreamCommit) {
   if (current.phase !== "progress" || next.phase !== "progress") {
     if (sameCommit(current, next)) {
-      return current
+      return current;
     }
 
-    return next
+    return next;
   }
 
   const merged = {
     ...current,
     ...next,
     text: current.text + next.text,
-  }
+  };
 
   if (sameCommit(current, merged)) {
-    return current
+    return current;
   }
 
-  return merged
+  return merged;
 }
 
 function appendCommits(detail: DetailState, commits: StreamCommit[]) {
-  let changed = false
+  let changed = false;
 
   for (const commit of commits.map(compactCommit)) {
-    const key = frameKey(commit)
-    const index = detail.frames.findIndex((item) => item.key === key)
+    const key = frameKey(commit);
+    const index = detail.frames.findIndex((item) => item.key === key);
     if (index === -1) {
       detail.frames.push({
         key,
         commit,
-      })
-      changed = true
-      continue
+      });
+      changed = true;
+      continue;
     }
 
-    const next = mergeLiveCommit(detail.frames[index].commit, commit)
+    const next = mergeLiveCommit(detail.frames[index].commit, commit);
     if (sameCommit(detail.frames[index].commit, next)) {
-      continue
+      continue;
     }
 
     detail.frames[index] = {
       key,
       commit: next,
-    }
-    changed = true
+    };
+    changed = true;
   }
 
   if (changed) {
-    limitFrames(detail)
+    limitFrames(detail);
   }
 
-  return changed
+  return changed;
 }
 
 function ensureBlockerTab(
@@ -437,11 +459,11 @@ function ensureBlockerTab(
   title: string | undefined,
   kind: "permission" | "question",
 ) {
-  const current = data.tabs.get(sessionID)
+  const current = data.tabs.get(sessionID);
   if (current) {
-    ensureDetail(data, sessionID)
+    ensureDetail(data, sessionID);
     if (current.status !== "running") {
-      return false
+      return false;
     }
 
     const next = {
@@ -450,13 +472,13 @@ function ensureBlockerTab(
       status: "running" as const,
       title: current.title ?? title,
       lastUpdatedAt: Date.now(),
-    }
+    };
     if (sameSubagentTab(current, next)) {
-      return false
+      return false;
     }
 
-    data.tabs.set(sessionID, next)
-    return true
+    data.tabs.set(sessionID, next);
+    return true;
   }
 
   data.tabs.set(sessionID, {
@@ -467,118 +489,120 @@ function ensureBlockerTab(
     description: kind === "permission" ? "Pending permission" : "Pending question",
     status: "running",
     lastUpdatedAt: Date.now(),
-  })
-  ensureDetail(data, sessionID)
-  return true
+  });
+  ensureDetail(data, sessionID);
+  return true;
 }
 
 function isAbortedAssistantMessage(info: Message) {
-  return info.role === "assistant" && info.error?.name === "MessageAbortedError"
+  return info.role === "assistant" && info.error?.name === "MessageAbortedError";
 }
 
 function cancelSubagentTab(data: SubagentData, sessionID: string) {
-  const current = data.tabs.get(sessionID)
+  const current = data.tabs.get(sessionID);
   if (!current || current.status !== "running") {
-    return false
+    return false;
   }
 
   const next = {
     ...current,
     status: "cancelled" as const,
     lastUpdatedAt: Date.now(),
-  }
+  };
   if (sameSubagentTab(current, next)) {
-    return false
+    return false;
   }
 
-  data.tabs.set(sessionID, next)
-  return true
+  data.tabs.set(sessionID, next);
+  return true;
 }
 
 function compactCallMap(detail: DetailState) {
-  const keep = new Set(recent(detail.data.call.keys(), SUBAGENT_CALL_LIMIT))
+  const keep = new Set(recent(detail.data.call.keys(), SUBAGENT_CALL_LIMIT));
 
   for (const request of detail.data.permissions) {
-    const key = callKey(request.tool?.messageID, request.tool?.callID)
+    const key = callKey(request.tool?.messageID, request.tool?.callID);
     if (key) {
-      keep.add(key)
+      keep.add(key);
     }
   }
 
   for (const item of detail.frames) {
-    const key = callKey(item.commit.part?.messageID, item.commit.part?.callID)
+    const key = callKey(item.commit.part?.messageID, item.commit.part?.callID);
     if (key) {
-      keep.add(key)
+      keep.add(key);
     }
   }
 
-  return copyMap(detail.data.call, keep)
+  return copyMap(detail.data.call, keep);
 }
 
 function compactEchoMap(data: SessionData, messageIDs: Set<string>) {
-  const keys = new Set([...messageIDs, ...recent(data.echo.keys(), SUBAGENT_ECHO_LIMIT)])
-  return copyMap(data.echo, keys)
+  const keys = new Set([...messageIDs, ...recent(data.echo.keys(), SUBAGENT_ECHO_LIMIT)]);
+  return copyMap(data.echo, keys);
 }
 
 function compactIDs(detail: DetailState) {
-  return new Set(recent(detail.data.ids, SUBAGENT_COMMIT_LIMIT + SUBAGENT_ERROR_LIMIT))
+  return new Set(recent(detail.data.ids, SUBAGENT_COMMIT_LIMIT + SUBAGENT_ERROR_LIMIT));
 }
 
 function compactDetail(detail: DetailState) {
   const next = createSessionData({
     includeUserText: true,
-  })
-  const activePartIDs = new Set(detail.data.part.keys())
-  const framePartIDs = new Set(detail.frames.flatMap((item) => (item.commit.partID ? [item.commit.partID] : [])))
-  const partIDs = new Set([...activePartIDs, ...framePartIDs, ...detail.data.tools])
+  });
+  const activePartIDs = new Set(detail.data.part.keys());
+  const framePartIDs = new Set(
+    detail.frames.flatMap((item) => (item.commit.partID ? [item.commit.partID] : [])),
+  );
+  const partIDs = new Set([...activePartIDs, ...framePartIDs, ...detail.data.tools]);
   const messageIDs = new Set([
     ...[...activePartIDs]
       .map((partID) => detail.data.msg.get(partID))
       .filter((item): item is string => typeof item === "string"),
     ...recent(detail.data.role.keys(), SUBAGENT_ROLE_LIMIT),
-  ])
+  ]);
 
-  next.announced = detail.data.announced
-  next.permissions = detail.data.permissions
-  next.questions = detail.data.questions
-  next.ids = compactIDs(detail)
-  next.tools = new Set([...detail.data.tools].filter((item) => partIDs.has(item)))
-  next.call = compactCallMap(detail)
-  next.role = copyMap(detail.data.role, messageIDs)
-  next.msg = copyMap(detail.data.msg, activePartIDs)
-  next.part = copyMap(detail.data.part, activePartIDs)
-  next.text = copyMap(detail.data.text, activePartIDs)
-  next.sent = copyMap(detail.data.sent, activePartIDs)
-  next.end = new Set([...detail.data.end].filter((item) => activePartIDs.has(item)))
-  next.echo = compactEchoMap(detail.data, messageIDs)
-  detail.data = next
+  next.announced = detail.data.announced;
+  next.permissions = detail.data.permissions;
+  next.questions = detail.data.questions;
+  next.ids = compactIDs(detail);
+  next.tools = new Set([...detail.data.tools].filter((item) => partIDs.has(item)));
+  next.call = compactCallMap(detail);
+  next.role = copyMap(detail.data.role, messageIDs);
+  next.msg = copyMap(detail.data.msg, activePartIDs);
+  next.part = copyMap(detail.data.part, activePartIDs);
+  next.text = copyMap(detail.data.text, activePartIDs);
+  next.sent = copyMap(detail.data.sent, activePartIDs);
+  next.end = new Set([...detail.data.end].filter((item) => activePartIDs.has(item)));
+  next.echo = compactEchoMap(detail.data, messageIDs);
+  detail.data = next;
 }
 
 function applyChildEvent(input: {
-  detail: DetailState
-  event: Event
-  thinking: boolean
-  limits: Record<string, number>
+  detail: DetailState;
+  event: Event;
+  thinking: boolean;
+  limits: Record<string, number>;
 }) {
-  const before = queueSnapshot(input.detail.data)
+  const before = queueSnapshot(input.detail.data);
   const out = reduceSessionData({
     data: input.detail.data,
     event: input.event,
     sessionID: input.detail.sessionID,
     thinking: input.thinking,
     limits: input.limits,
-  })
-  const changed = appendCommits(input.detail, out.commits)
-  compactDetail(input.detail)
+  });
+  const changed = appendCommits(input.detail, out.commits);
+  compactDetail(input.detail);
 
-  return changed || queueChanged(input.detail.data, before)
+  return changed || queueChanged(input.detail.data, before);
 }
 
 function bootstrapChildEvent(input: {
-  detail: DetailState
-  event: Event
-  thinking: boolean
-  limits: Record<string, number>
+  detail: DetailState;
+  event: Event;
+  thinking: boolean;
+  limits: Record<string, number>;
 }) {
   const out = reduceSessionData({
     data: input.detail.data,
@@ -586,18 +610,18 @@ function bootstrapChildEvent(input: {
     sessionID: input.detail.sessionID,
     thinking: input.thinking,
     limits: input.limits,
-  })
+  });
 
-  return appendCommits(input.detail, out.commits)
+  return appendCommits(input.detail, out.commits);
 }
 
 function bootstrapChildMessages(input: {
-  detail: DetailState
-  messages: BootstrapChildMessage[]
-  thinking: boolean
-  limits: Record<string, number>
+  detail: DetailState;
+  messages: BootstrapChildMessage[];
+  thinking: boolean;
+  limits: Record<string, number>;
 }) {
-  let changed = false
+  let changed = false;
 
   for (const message of input.messages) {
     changed =
@@ -613,7 +637,7 @@ function bootstrapChildMessages(input: {
         },
         thinking: input.thinking,
         limits: input.limits,
-      }) || changed
+      }) || changed;
 
     for (const part of message.parts) {
       changed =
@@ -630,116 +654,129 @@ function bootstrapChildMessages(input: {
           },
           thinking: input.thinking,
           limits: input.limits,
-        }) || changed
+        }) || changed;
     }
   }
 
-  compactDetail(input.detail)
-  return changed
+  compactDetail(input.detail);
+  return changed;
 }
 
 function knownSession(data: SubagentData, sessionID: string) {
-  return data.tabs.has(sessionID)
+  return data.tabs.has(sessionID);
 }
 
 export function listSubagentPermissions(data: SubagentData) {
-  return [...data.details.values()].flatMap((detail) => detail.data.permissions)
+  return [...data.details.values()].flatMap((detail) => detail.data.permissions);
 }
 
 export function listSubagentQuestions(data: SubagentData) {
-  return [...data.details.values()].flatMap((detail) => detail.data.questions)
+  return [...data.details.values()].flatMap((detail) => detail.data.questions);
 }
 
 export function createSubagentData(): SubagentData {
   return {
     tabs: new Map(),
     details: new Map(),
-  }
+  };
 }
 
 function snapshotDetail(detail: DetailState) {
   return {
     sessionID: detail.sessionID,
     commits: detail.frames.map((item) => item.commit),
-  }
+  };
 }
 
 export function listSubagentTabs(data: SubagentData) {
   return [...data.tabs.values()].sort((a, b) => {
-    const active = Number(b.status === "running") - Number(a.status === "running")
+    const active = Number(b.status === "running") - Number(a.status === "running");
     if (active !== 0) {
-      return active
+      return active;
     }
 
-    return b.lastUpdatedAt - a.lastUpdatedAt
-  })
+    return b.lastUpdatedAt - a.lastUpdatedAt;
+  });
 }
 
 function snapshotQueues(data: SubagentData) {
   return {
     permissions: listSubagentPermissions(data).sort((a, b) => a.id.localeCompare(b.id)),
     questions: listSubagentQuestions(data).sort((a, b) => a.id.localeCompare(b.id)),
-  }
+  };
 }
 
-function snapshotState(data: SubagentData, details: FooterSubagentState["details"]): FooterSubagentState {
+function snapshotState(
+  data: SubagentData,
+  details: FooterSubagentState["details"],
+): FooterSubagentState {
   return {
     tabs: listSubagentTabs(data),
     details,
     ...snapshotQueues(data),
-  }
+  };
 }
 
 export function snapshotSubagentData(data: SubagentData): FooterSubagentState {
   return snapshotState(
     data,
-    Object.fromEntries([...data.details.entries()].map(([sessionID, detail]) => [sessionID, snapshotDetail(detail)])),
-  )
+    Object.fromEntries(
+      [...data.details.entries()].map(([sessionID, detail]) => [sessionID, snapshotDetail(detail)]),
+    ),
+  );
 }
 
 export function snapshotSelectedSubagentData(
   data: SubagentData,
   selectedSessionID: string | undefined,
 ): FooterSubagentState {
-  const detail = selectedSessionID ? data.details.get(selectedSessionID) : undefined
+  const detail = selectedSessionID ? data.details.get(selectedSessionID) : undefined;
 
-  return snapshotState(data, detail ? { [detail.sessionID]: snapshotDetail(detail) } : {})
+  return snapshotState(data, detail ? { [detail.sessionID]: snapshotDetail(detail) } : {});
 }
 
 export function bootstrapSubagentData(input: BootstrapSubagentInput) {
-  const child = new Map(input.children.map((item) => [item.id, item]))
-  const children = new Set(child.keys())
-  let changed = false
+  const child = new Map(input.children.map((item) => [item.id, item]));
+  const children = new Set(child.keys());
+  let changed = false;
 
   for (const message of input.messages) {
     for (const part of message.parts) {
       if (part.type !== "tool") {
-        continue
+        continue;
       }
 
-      changed = syncTaskTab(input.data, part, children) || changed
+      changed = syncTaskTab(input.data, part, children) || changed;
     }
   }
 
   for (const item of input.permissions) {
     if (!children.has(item.sessionID)) {
-      continue
+      continue;
     }
 
-    changed = ensureBlockerTab(input.data, item.sessionID, child.get(item.sessionID)?.title, "permission") || changed
+    changed =
+      ensureBlockerTab(
+        input.data,
+        item.sessionID,
+        child.get(item.sessionID)?.title,
+        "permission",
+      ) || changed;
   }
 
   for (const item of input.questions) {
     if (!children.has(item.sessionID)) {
-      continue
+      continue;
     }
 
-    changed = ensureBlockerTab(input.data, item.sessionID, child.get(item.sessionID)?.title, "question") || changed
+    changed =
+      ensureBlockerTab(input.data, item.sessionID, child.get(item.sessionID)?.title, "question") ||
+      changed;
   }
 
   for (const sessionID of input.data.tabs.keys()) {
-    const detail = ensureDetail(input.data, sessionID)
-    const before = queueSnapshot(detail.data)
+    const detail = ensureDetail(input.data, sessionID);
+    const before = queueSnapshot(detail.data);
 
     bootstrapSessionData({
       data: detail.data,
@@ -750,62 +787,62 @@ export function bootstrapSubagentData(input: BootstrapSubagentInput) {
       questions: input.questions
         .filter((item) => item.sessionID === sessionID)
         .sort((a, b) => a.id.localeCompare(b.id)),
-    })
-    compactDetail(detail)
+    });
+    compactDetail(detail);
 
-    changed = queueChanged(detail.data, before) || changed
+    changed = queueChanged(detail.data, before) || changed;
   }
 
-  return changed
+  return changed;
 }
 
 export function bootstrapSubagentCalls(input: {
-  data: SubagentData
-  sessionID: string
-  messages: BootstrapChildMessage[]
-  thinking: boolean
-  limits: Record<string, number>
+  data: SubagentData;
+  sessionID: string;
+  messages: BootstrapChildMessage[];
+  thinking: boolean;
+  limits: Record<string, number>;
 }) {
   if (!knownSession(input.data, input.sessionID) || input.messages.length === 0) {
-    return false
+    return false;
   }
 
-  const detail = ensureDetail(input.data, input.sessionID)
-  const before = queueSnapshot(detail.data)
-  const beforeCallCount = detail.data.call.size
+  const detail = ensureDetail(input.data, input.sessionID);
+  const before = queueSnapshot(detail.data);
+  const beforeCallCount = detail.data.call.size;
   bootstrapSessionData({
     data: detail.data,
     messages: input.messages,
     permissions: detail.data.permissions,
     questions: detail.data.questions,
-  })
+  });
   const changed = bootstrapChildMessages({
     detail,
     messages: input.messages,
     thinking: input.thinking,
     limits: input.limits,
-  })
+  });
 
-  return changed || beforeCallCount !== detail.data.call.size || queueChanged(detail.data, before)
+  return changed || beforeCallCount !== detail.data.call.size || queueChanged(detail.data, before);
 }
 
 export function reduceSubagentData(input: {
-  data: SubagentData
-  event: Event
-  sessionID: string
-  thinking: boolean
-  limits: Record<string, number>
+  data: SubagentData;
+  event: Event;
+  sessionID: string;
+  thinking: boolean;
+  limits: Record<string, number>;
 }) {
-  const event = input.event
+  const event = input.event;
 
   if (event.type === "message.part.updated") {
-    const part = event.properties.part
+    const part = event.properties.part;
     if (part.sessionID === input.sessionID) {
       if (part.type !== "tool") {
-        return false
+        return false;
       }
 
-      return syncTaskTab(input.data, part)
+      return syncTaskTab(input.data, part);
     }
   }
 
@@ -822,20 +859,20 @@ export function reduceSubagentData(input: {
       ? event.properties.sessionID
       : event.type === "message.part.updated"
         ? event.properties.part.sessionID
-        : undefined
+        : undefined;
 
   if (!sessionID || !knownSession(input.data, sessionID)) {
-    return false
+    return false;
   }
 
-  const detail = ensureDetail(input.data, sessionID)
+  const detail = ensureDetail(input.data, sessionID);
   const cancelled =
     event.type === "message.updated" && isAbortedAssistantMessage(event.properties.info)
       ? cancelSubagentTab(input.data, sessionID)
-      : false
+      : false;
   if (event.type === "session.status") {
     if (event.properties.status.type !== "retry") {
-      return cancelled
+      return cancelled;
     }
 
     return (
@@ -848,7 +885,7 @@ export function reduceSubagentData(input: {
           messageID: `retry:${event.properties.status.attempt}`,
         },
       ]) || cancelled
-    )
+    );
   }
 
   if (event.type === "session.error" && event.properties.error) {
@@ -862,7 +899,7 @@ export function reduceSubagentData(input: {
           messageID: `session.error:${event.properties.sessionID}:${formatError(event.properties.error)}`,
         },
       ]) || cancelled
-    )
+    );
   }
 
   return (
@@ -872,5 +909,5 @@ export function reduceSubagentData(input: {
       thinking: input.thinking,
       limits: input.limits,
     }) || cancelled
-  )
+  );
 }

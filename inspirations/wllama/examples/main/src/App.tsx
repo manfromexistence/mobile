@@ -1,13 +1,13 @@
-import ChatScreen from './components/ChatScreen';
-import GuideScreen from './components/GuideScreen';
-import LogScreen from './components/LogScreen';
-import ModelScreen from './components/ModelScreen';
-import Navbar from './components/Navbar';
-import Sidebar from './components/Sidebar';
-import { MessagesProvider } from './utils/messages.context';
-import { Screen } from './utils/types';
-import { useWllama, WllamaProvider } from './utils/wllama.context';
-import './utils/benchmark';
+import ChatScreen from "./components/ChatScreen";
+import GuideScreen from "./components/GuideScreen";
+import LogScreen from "./components/LogScreen";
+import ModelScreen from "./components/ModelScreen";
+import Navbar from "./components/Navbar";
+import Sidebar from "./components/Sidebar";
+import { MessagesProvider } from "./utils/messages.context";
+import { Screen } from "./utils/types";
+import { useWllama, WllamaProvider } from "./utils/wllama.context";
+import "./utils/benchmark";
 
 function App() {
   return (

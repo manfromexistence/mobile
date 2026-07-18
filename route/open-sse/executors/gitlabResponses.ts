@@ -11,7 +11,7 @@ export function buildStreamingResponse(
   content: string,
   model: string,
   id: string,
-  created: number
+  created: number,
 ): Response {
   const encoder = new TextEncoder();
 
@@ -25,8 +25,8 @@ export function buildStreamingResponse(
             created,
             model,
             choices: [{ index: 0, delta: { role: "assistant" }, finish_reason: null }],
-          })
-        )
+          }),
+        ),
       );
 
       if (content) {
@@ -38,8 +38,8 @@ export function buildStreamingResponse(
               created,
               model,
               choices: [{ index: 0, delta: { content }, finish_reason: null }],
-            })
-          )
+            }),
+          ),
         );
       }
 
@@ -51,8 +51,8 @@ export function buildStreamingResponse(
             created,
             model,
             choices: [{ index: 0, delta: {}, finish_reason: "stop" }],
-          })
-        )
+          }),
+        ),
       );
       controller.enqueue(encoder.encode("data: [DONE]\n\n"));
       controller.close();
@@ -69,7 +69,7 @@ export function buildJsonCompletion(
   content: string,
   model: string,
   id: string,
-  created: number
+  created: number,
 ): Response {
   const estimated = Math.max(1, Math.ceil(content.length / 4));
   return new Response(
@@ -94,7 +94,7 @@ export function buildJsonCompletion(
     {
       status: 200,
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 
@@ -103,7 +103,7 @@ export function buildToolJsonCompletion(
   finishReason: string,
   model: string,
   id: string,
-  created: number
+  created: number,
 ): Response {
   const contentForEstimate = typeof message.content === "string" ? message.content : "";
   const estimated = Math.max(1, Math.ceil(contentForEstimate.length / 4));
@@ -129,7 +129,7 @@ export function buildToolJsonCompletion(
     {
       status: 200,
       headers: { "Content-Type": "application/json" },
-    }
+    },
   );
 }
 
@@ -138,7 +138,7 @@ export function buildToolStreamingResponse(
   finishReason: string,
   model: string,
   id: string,
-  created: number
+  created: number,
 ): Response {
   const encoder = new TextEncoder();
 
@@ -152,8 +152,8 @@ export function buildToolStreamingResponse(
             created,
             model,
             choices: [{ index: 0, delta: { role: "assistant" }, finish_reason: null }],
-          })
-        )
+          }),
+        ),
       );
 
       controller.enqueue(
@@ -164,8 +164,8 @@ export function buildToolStreamingResponse(
             created,
             model,
             choices: [{ index: 0, delta: message, finish_reason: null }],
-          })
-        )
+          }),
+        ),
       );
 
       controller.enqueue(
@@ -176,8 +176,8 @@ export function buildToolStreamingResponse(
             created,
             model,
             choices: [{ index: 0, delta: {}, finish_reason: finishReason }],
-          })
-        )
+          }),
+        ),
       );
       controller.enqueue(encoder.encode("data: [DONE]\n\n"));
       controller.close();

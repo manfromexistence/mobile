@@ -1,4 +1,4 @@
-import type { Key } from "../i18n"
+import type { Key } from "../i18n";
 
 export const dict = {
   "app.title": "AIモデル使用ランキング | OpenCodeデータ",
@@ -138,7 +138,8 @@ export const dict = {
   "lab.notFound": "このラボに一致するモデルはありません。",
   "lab.heroPrefix": "OpenCodeで使用されている{{count}}件の{{lab}}モデルを確認",
   "lab.heroIncluding": "{{models}}など",
-  "lab.heroSuffix": "最近のトークン使用量、コンテキストウィンドウ、リリース日、モデル別データを比較できます。",
+  "lab.heroSuffix":
+    "最近のトークン使用量、コンテキストウィンドウ、リリース日、モデル別データを比較できます。",
   "lab.tokensProcessed": "処理済みトークン",
   "lab.pending": "保留中",
   "lab.usageAfterActivity": "モデルのアクティビティが届くと使用量が表示されます",
@@ -147,7 +148,8 @@ export const dict = {
   "lab.usageTitle": "{{lab}}のトークン使用量",
   "lab.usageDescription": "過去2か月の日次OpenCodeトークン量。",
   "lab.noUsageTitle": "まだ使用量がありません",
-  "lab.noUsageDescription": "このラボにアクティビティが発生すると、最近のトークン使用量がここに表示されます。",
+  "lab.noUsageDescription":
+    "このラボにアクティビティが発生すると、最近のトークン使用量がここに表示されます。",
   "lab.dailyTokenChart": "{{lab}}の日次トークン使用量グラフ",
   "lab.dailyTokens": "日次トークン",
   "lab.tokens": "トークン",
@@ -229,4 +231,4 @@ export const dict = {
   "model.pdf": "PDF",
   "format.users": "ユーザー",
   "format.tokens": "トークン",
-} satisfies Record<Key, string>
+} satisfies Record<Key, string>;

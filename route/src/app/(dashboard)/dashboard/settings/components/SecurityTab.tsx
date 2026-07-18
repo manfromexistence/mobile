@@ -81,7 +81,7 @@ export default function SecurityTab() {
       } else {
         const data = await res.json();
         setRequireLoginError(
-          data?.error?.message || t("errorOccurred", { fallback: "An error occurred" })
+          data?.error?.message || t("errorOccurred", { fallback: "An error occurred" }),
         );
       }
     } catch (err) {
@@ -399,7 +399,7 @@ export default function SecurityTab() {
             <p className="text-sm text-text-muted">
               {getSettingsLabel(
                 "customBannedSignalsDesc",
-                "Additional keywords that trigger permanent account ban detection. Built-in keywords always apply."
+                "Additional keywords that trigger permanent account ban detection. Built-in keywords always apply.",
               )}
             </p>
           </div>
@@ -409,7 +409,7 @@ export default function SecurityTab() {
             <Input
               placeholder={getSettingsLabel(
                 "customBannedSignalsPlaceholder",
-                "e.g. api key revoked"
+                "e.g. api key revoked",
               )}
               value={newBannedKeyword}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -450,7 +450,7 @@ export default function SecurityTab() {
             <p className="text-xs text-text-muted">
               {getSettingsLabel(
                 "noCustomBannedSignals",
-                "No custom keywords. Only built-in keywords are active."
+                "No custom keywords. Only built-in keywords are active.",
               )}
             </p>
           )}

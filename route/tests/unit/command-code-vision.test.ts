@@ -61,7 +61,7 @@ function userContent(calls: FetchCall[]): unknown {
 
 test("vision model minimax-m3 preserves image_url part as CC CLI {type:image}", async () => {
   const calls = captureFetch(
-    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }])
+    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }]),
   );
 
   await getExecutor("command-code").execute({
@@ -100,7 +100,7 @@ test("vision model minimax-m3 preserves image_url part as CC CLI {type:image}", 
 
 test("vision model minimax-m3 preserves image_url with HTTP URL", async () => {
   const calls = captureFetch(
-    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }])
+    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }]),
   );
 
   await getExecutor("command-code").execute({
@@ -133,7 +133,7 @@ test("vision model minimax-m3 preserves image_url with HTTP URL", async () => {
 
 test("vision model mimo-v2.5 preserves image parts", async () => {
   const calls = captureFetch(
-    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }])
+    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }]),
   );
 
   await getExecutor("command-code").execute({
@@ -165,7 +165,7 @@ test("vision model mimo-v2.5 preserves image parts", async () => {
 
 test("vision model mimo-v2.5-pro is text-only (no image parts)", async () => {
   const calls = captureFetch(
-    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }])
+    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }]),
   );
 
   await getExecutor("command-code").execute({
@@ -196,7 +196,7 @@ test("vision model mimo-v2.5-pro is text-only (no image parts)", async () => {
 
 test("vision model mimo-v2-omni preserves image parts", async () => {
   const calls = captureFetch(
-    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }])
+    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }]),
   );
 
   await getExecutor("command-code").execute({
@@ -231,7 +231,7 @@ test("vision model mimo-v2-omni preserves image parts", async () => {
 
 test("text-only model deepseek-v4-pro strips image_url parts", async () => {
   const calls = captureFetch(
-    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }])
+    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }]),
   );
 
   await getExecutor("command-code").execute({
@@ -262,7 +262,7 @@ test("text-only model deepseek-v4-pro strips image_url parts", async () => {
 
 test("text-only model deepseek-v4-flash strips image_url parts (no regression)", async () => {
   const calls = captureFetch(
-    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }])
+    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }]),
   );
 
   await getExecutor("command-code").execute({
@@ -294,7 +294,7 @@ test("text-only model deepseek-v4-flash strips image_url parts (no regression)",
 
 test("vision model with only image content emits empty text fallback", async () => {
   const calls = captureFetch(
-    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }])
+    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }]),
   );
 
   await getExecutor("command-code").execute({
@@ -328,7 +328,7 @@ test("vision model with only image content emits empty text fallback", async () 
 
 test("vision model passes plain string content through unchanged", async () => {
   const calls = captureFetch(
-    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }])
+    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }]),
   );
 
   await getExecutor("command-code").execute({
@@ -349,7 +349,7 @@ test("vision model honors body.model rewrite for vision detection", async () => 
   // #5166 scenario: body.model overwrites the execute model arg.
   // Vision detection must use the rewritten model id.
   const calls = captureFetch(
-    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }])
+    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }]),
   );
 
   // execute() gets a non-vision combo model, body.model rewrites to a vision model
@@ -384,7 +384,7 @@ test("vision model honors body.model rewrite for vision detection", async () => 
 
 test("vision model with multiple image parts preserves all of them", async () => {
   const calls = captureFetch(
-    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }])
+    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }]),
   );
 
   await getExecutor("command-code").execute({
@@ -424,7 +424,7 @@ test("vision model with multiple image parts preserves all of them", async () =>
 
 test("vision model with image_url as plain string (no object wrapper) still works", async () => {
   const calls = captureFetch(
-    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }])
+    commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }]),
   );
 
   await getExecutor("command-code").execute({
@@ -478,7 +478,7 @@ const VISION_CASES = [
 for (const [name, model] of VISION_CASES) {
   test(`vision model ${name} preserves image parts`, async () => {
     const calls = captureFetch(
-      commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }])
+      commandCodeStream([{ type: "text-delta", text: "ok" }, { type: "finish" }]),
     );
     await getExecutor("command-code").execute({
       model,

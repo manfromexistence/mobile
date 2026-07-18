@@ -90,8 +90,10 @@ export function phaseComboSetup(ctx: ComboContext): ComboSetup {
 
   const universalHandoffConfig = resolveUniversalHandoffConfig(
     (combo.universal_handoff || combo.universalHandoff) as
-      Record<string, unknown> | null | undefined,
-    relayOptions?.universalHandoffConfig as Record<string, unknown> | null | undefined
+      | Record<string, unknown>
+      | null
+      | undefined,
+    relayOptions?.universalHandoffConfig as Record<string, unknown> | null | undefined,
   );
 
   // Server-side context cache pinning (rewrites ctx.body when a model is pinned).
@@ -103,7 +105,7 @@ export function phaseComboSetup(ctx: ComboContext): ComboSetup {
   const { body: agentBody } = applyComboAgentMiddleware(
     ctx.body,
     combo,
-    "" // provider/model not yet known — resolved per-model in loop
+    "", // provider/model not yet known — resolved per-model in loop
   );
   ctx.body = agentBody;
   const clientRequestedStream = ctx.body?.stream === true;
@@ -114,7 +116,7 @@ export function phaseComboSetup(ctx: ComboContext): ComboSetup {
   const comboTargetTimeoutMs = resolveComboTargetTimeoutMs(
     config,
     FETCH_TIMEOUT_MS,
-    DEFAULT_COMBO_TARGET_TIMEOUT_MS
+    DEFAULT_COMBO_TARGET_TIMEOUT_MS,
   );
   const reasoningTokenBufferEnabled = config.reasoningTokenBufferEnabled !== false;
 

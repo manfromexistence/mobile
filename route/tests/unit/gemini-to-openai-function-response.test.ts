@@ -54,10 +54,7 @@ test("preserves multiple functionResponses in the same content", () => {
   const result = geminiToOpenAIRequest("gemini-pro", body, false);
   const toolMsgs = result.messages.filter((m) => m.role === "tool");
   assert.equal(toolMsgs.length, 2);
-  assert.deepEqual(
-    toolMsgs.map((m) => m.tool_call_id).sort(),
-    ["call_a", "call_b"]
-  );
+  assert.deepEqual(toolMsgs.map((m) => m.tool_call_id).sort(), ["call_a", "call_b"]);
 });
 
 test("preserves text co-located with a functionResponse, keeping the original turn role", () => {
@@ -75,10 +72,10 @@ test("preserves text co-located with a functionResponse, keeping the original tu
   const result = geminiToOpenAIRequest("gemini-pro", body, false);
   const toolMsg = result.messages.find((m) => m.role === "tool");
   const userMsg = result.messages.find(
-    (m) => m.role === "user" && m.content === "also please summarize"
+    (m) => m.role === "user" && m.content === "also please summarize",
   );
   const asstWithText = result.messages.find(
-    (m) => m.role === "assistant" && m.content === "also please summarize"
+    (m) => m.role === "assistant" && m.content === "also please summarize",
   );
   assert.ok(toolMsg, "tool result must be preserved");
   assert.ok(userMsg, "co-located text must be preserved with role:user");

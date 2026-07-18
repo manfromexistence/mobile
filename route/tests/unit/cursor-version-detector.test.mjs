@@ -6,8 +6,9 @@ import path from "node:path";
 
 const Database = (await import("better-sqlite3")).default;
 
-const { getCursorVersion, resetCursorVersionCache, FALLBACK_VERSION } =
-  await import("../../open-sse/utils/cursorVersionDetector.ts");
+const { getCursorVersion, resetCursorVersionCache, FALLBACK_VERSION } = await import(
+  "../../open-sse/utils/cursorVersionDetector.ts"
+);
 
 function createStateDb(dir, version) {
   const dbPath = path.join(dir, "state.vscdb");
@@ -16,7 +17,7 @@ function createStateDb(dir, version) {
   if (version) {
     db.prepare("INSERT INTO itemTable (key, value) VALUES (?, ?)").run(
       "cursorupdate.lastUpdatedAndShown.version",
-      version
+      version,
     );
   }
   db.close();
@@ -82,7 +83,7 @@ test("getCursorVersion caches the result across calls", () => {
     const db = new Database(dbPath);
     db.prepare("UPDATE itemTable SET value = ? WHERE key = ?").run(
       "20.0.0",
-      "cursorupdate.lastUpdatedAndShown.version"
+      "cursorupdate.lastUpdatedAndShown.version",
     );
     db.close();
 
@@ -107,7 +108,7 @@ test("resetCursorVersionCache forces re-read from DB", () => {
     const db = new Database(dbPath);
     db.prepare("UPDATE itemTable SET value = ? WHERE key = ?").run(
       "6.0.0",
-      "cursorupdate.lastUpdatedAndShown.version"
+      "cursorupdate.lastUpdatedAndShown.version",
     );
     db.close();
 

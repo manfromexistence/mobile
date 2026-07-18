@@ -89,7 +89,7 @@ export default function ProviderDetailPageClient() {
   )?.serviceKinds;
   const isSearchProvider = providerLacksModelListing(
     providerId,
-    getProviderServiceKinds(providerId, declaredServiceKinds)
+    getProviderServiceKinds(providerId, declaredServiceKinds),
   );
 
   // ── Phase 1f hooks ────────────────────────────────────────────────────────
@@ -381,7 +381,7 @@ export default function ProviderDetailPageClient() {
 
   const compatibleFallbackModels = useMemo(
     () => getCompatibleFallbackModels(providerId, modelMeta.customModels),
-    [providerId, modelMeta.customModels]
+    [providerId, modelMeta.customModels],
   );
 
   // ── Phase 1l: model visibility handlers ─────────────────────────────────
@@ -484,7 +484,10 @@ export default function ProviderDetailPageClient() {
       )}
       {!isUpstreamProxyProvider && !isFreeNoAuth && (
         <Card>
-          <ProviderAccountRoutingCard providerKey={providerId} connectionCount={connections.length} />
+          <ProviderAccountRoutingCard
+            providerKey={providerId}
+            connectionCount={connections.length}
+          />
           <ConnectionsHeaderToolbar
             providerId={providerId}
             providerInfo={providerInfo}

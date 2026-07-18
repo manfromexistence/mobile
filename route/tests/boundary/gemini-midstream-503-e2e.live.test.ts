@@ -23,7 +23,7 @@ interface SseEvent {
 
 async function fetchStream(
   url: string,
-  body: Record<string, unknown>
+  body: Record<string, unknown>,
 ): Promise<{ events: SseEvent[]; status: number }> {
   const response = await fetch(url, {
     method: "POST",
@@ -108,11 +108,11 @@ test(
       const err = respError as Record<string, unknown>;
       assert.ok(
         typeof err.code === "string" || typeof err.code === "number",
-        "error should have code"
+        "error should have code",
       );
       assert.ok(
         typeof err.message === "string" && err.message.length > 0,
-        "error should have message"
+        "error should have message",
       );
       console.log(`[PASS] Mid-stream 503 detected: code=${err.code}, message="${err.message}"`);
     } else {
@@ -124,5 +124,5 @@ test(
     }
 
     console.log(`Total SSE events received: ${events.length}`);
-  }
+  },
 );

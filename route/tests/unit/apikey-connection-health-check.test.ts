@@ -73,12 +73,12 @@ test("API-key-only gemini connection is NOT marked expired by health check", asy
   assert.equal(
     updated?.testStatus,
     "active",
-    "API-key-only connection should remain active — not be marked expired"
+    "API-key-only connection should remain active — not be marked expired",
   );
   assert.notEqual(
     updated?.errorCode,
     "no_refresh_token",
-    "API-key-only connection should not get no_refresh_token error"
+    "API-key-only connection should not get no_refresh_token error",
   );
 });
 
@@ -107,12 +107,12 @@ test("gemini connection WITHOUT apiKey AND WITHOUT refreshToken IS marked expire
   assert.equal(
     updated?.testStatus,
     "expired",
-    "OAuth connection without refresh token should be marked expired"
+    "OAuth connection without refresh token should be marked expired",
   );
   assert.equal(
     updated?.errorCode,
     "no_refresh_token",
-    "OAuth connection should get no_refresh_token error code"
+    "OAuth connection should get no_refresh_token error code",
   );
 });
 
@@ -136,7 +136,7 @@ test("API-key-only antigravity connection is NOT marked expired by health check"
   assert.equal(
     updated?.testStatus,
     "active",
-    "antigravity API-key-only connection should remain active"
+    "antigravity API-key-only connection should remain active",
   );
 });
 
@@ -168,6 +168,6 @@ test("connection with both apiKey and refreshToken: refresh path is tried", asyn
   assert.equal(
     updated?.testStatus,
     "expired",
-    "dual-auth connection with stale refresh token should be expired (refresh path takes precedence)"
+    "dual-auth connection with stale refresh token should be expired (refresh path takes precedence)",
   );
 });

@@ -1,44 +1,49 @@
-import { Resource } from "sst/resource"
-import type { AthenaData } from "../athena"
-import type { GeoStatAggregate } from "./geo"
-import type { ModelStatAggregate } from "./model"
+import { Resource } from "sst/resource";
+import type { AthenaData } from "../athena";
+import type { GeoStatAggregate } from "./geo";
+import type { ModelStatAggregate } from "./model";
 import {
   EXCLUDED_MODELS,
   MODEL_AUTHOR_RULES,
   RETIRED_STAT_PROVIDERS,
   statModel,
   statProvider,
-} from "./model-normalization"
-import type { ProviderStatAggregate } from "./provider"
-import { normalizeCountry, normalizeTier, type StatBaseAggregate } from "./stat"
+} from "./model-normalization";
+import type { ProviderStatAggregate } from "./provider";
+import { normalizeCountry, normalizeTier, type StatBaseAggregate } from "./stat";
 
-export type StatDimension = "model" | "provider" | "geo" | "geo_model"
+export type StatDimension = "model" | "provider" | "geo" | "geo_model";
 
 export function buildStatsQuery(periodStart: Date, periodEnd: Date, dimension: StatDimension) {
-  const periodStartValue = sqlString(periodStart.toISOString())
-  const periodEndValue = sqlString(periodEnd.toISOString())
-  const periodStartDateValue = sqlString(periodStart.toISOString().slice(0, 10))
-  const periodEndDateValue = sqlString(periodEnd.toISOString().slice(0, 10))
-  const sourceTable = [Resource.InferenceEvent.catalog, Resource.InferenceEvent.database, Resource.InferenceEvent.table]
+  const periodStartValue = sqlString(periodStart.toISOString());
+  const periodEndValue = sqlString(periodEnd.toISOString());
+  const periodStartDateValue = sqlString(periodStart.toISOString().slice(0, 10));
+  const periodEndDateValue = sqlString(periodEnd.toISOString().slice(0, 10));
+  const sourceTable = [
+    Resource.InferenceEvent.catalog,
+    Resource.InferenceEvent.database,
+    Resource.InferenceEvent.table,
+  ]
     .map(sqlIdentifier)
-    .join(".")
+    .join(".");
   const dimensionSql = (() => {
     if (dimension === "model")
       return {
         select: "provider, model, COALESCE(MAX(NULLIF(provider_model, '')), '') AS provider_model",
         groupBy: "provider, model",
-      }
-    if (dimension === "provider") return { select: "provider", groupBy: "provider" }
+      };
+    if (dimension === "provider") return { select: "provider", groupBy: "provider" };
     if (dimension === "geo_model")
       return {
         select: "provider, model, country, COALESCE(MAX(NULLIF(continent, '')), '') AS continent",
         groupBy: "provider, model, country",
-      }
+      };
     return {
-      select: "'all' AS provider, 'all' AS model, country, COALESCE(MAX(NULLIF(continent, '')), '') AS continent",
+      select:
+        "'all' AS provider, 'all' AS model, country, COALESCE(MAX(NULLIF(continent, '')), '') AS continent",
       groupBy: "country",
-    }
-  })()
+    };
+  })();
   const aggregateColumns = `
     COUNT(DISTINCT session) AS sessions,
     COUNT(*) AS requests,
@@ -60,7 +65,7 @@ export function buildStatsQuery(periodStart: Date, periodEnd: Date, dimension: S
     AVG(output_tps) AS avg_output_tps,
     SUM(CASE WHEN status >= 200 AND status < 400 THEN 1 ELSE 0 END) AS success_count,
     SUM(CASE WHEN status >= 400 THEN 1 ELSE 0 END) AS error_count,
-    COUNT(*) AS sample_count`
+    COUNT(*) AS sample_count`;
 
   return `
 WITH normalized AS (
@@ -164,23 +169,26 @@ SELECT
 FROM daily
 GROUP BY day_key, tier, ${dimensionSql.groupBy}
 ORDER BY grain, period_key, total_tokens DESC
-`
+`;
 }
 
 export function toModelAggregate(data: AthenaData): ModelStatAggregate[] {
-  const model = statModel(data.model, data.provider_model)
-  const provider = statProvider(model, data.provider_model, data.provider)
-  if (!provider) return []
+  const model = statModel(data.model, data.provider_model);
+  const provider = statProvider(model, data.provider_model, data.provider);
+  if (!provider) return [];
 
   return toStatBaseAggregate(data).flatMap((base) => [
     { ...base, provider, model, provider_model: data.provider_model || "" },
-  ])
+  ]);
 }
 
 export function toProviderAggregate(data: AthenaData): ProviderStatAggregate[] {
   return toStatBaseAggregate(data).flatMap((base) => [
-    { ...base, provider: statProvider(data.model, data.provider_model, data.provider) || "unknown" },
-  ])
+    {
+      ...base,
+      provider: statProvider(data.model, data.provider_model, data.provider) || "unknown",
+    },
+  ]);
 }
 
 export function toGeoAggregate(data: AthenaData): GeoStatAggregate[] {
@@ -192,12 +200,12 @@ export function toGeoAggregate(data: AthenaData): GeoStatAggregate[] {
       country: normalizeCountry(data.country),
       continent: data.continent || "",
     },
-  ])
+  ]);
 }
 
 function toStatBaseAggregate(data: AthenaData): StatBaseAggregate[] {
-  const grain = data.grain === "day" || data.grain === "week" ? data.grain : undefined
-  if (!grain || !data.period_key) return []
+  const grain = data.grain === "day" || data.grain === "week" ? data.grain : undefined;
+  if (!grain || !data.period_key) return [];
 
   return [
     {
@@ -227,41 +235,41 @@ function toStatBaseAggregate(data: AthenaData): StatBaseAggregate[] {
       error_count: integer(data, "error_count"),
       sample_count: integer(data, "sample_count"),
     },
-  ]
+  ];
 }
 
 function integer(data: AthenaData, key: string) {
-  return Math.round(number(data, key))
+  return Math.round(number(data, key));
 }
 
 function nullableNumber(data: AthenaData, key: string) {
-  if (data[key] === undefined || data[key] === "") return null
-  return Number(number(data, key).toFixed(2))
+  if (data[key] === undefined || data[key] === "") return null;
+  return Number(number(data, key).toFixed(2));
 }
 
 function nullableInteger(data: AthenaData, key: string) {
-  if (data[key] === undefined || data[key] === "") return null
-  return Math.round(number(data, key))
+  if (data[key] === undefined || data[key] === "") return null;
+  return Math.round(number(data, key));
 }
 
 function number(data: AthenaData, key: string) {
-  const value = Number(data[key])
-  return Number.isFinite(value) ? value : 0
+  const value = Number(data[key]);
+  return Number.isFinite(value) ? value : 0;
 }
 
 function sqlIdentifier(value: string) {
-  return `"${value.replace(/"/g, '""')}"`
+  return `"${value.replace(/"/g, '""')}"`;
 }
 
 function sqlString(value: string) {
-  return `'${value.replace(/'/g, "''")}'`
+  return `'${value.replace(/'/g, "''")}'`;
 }
 
 function statModelSql(model: string, providerModel: string) {
   return `COALESCE(NULLIF(regexp_replace(CASE
       WHEN lower(${model}) = 'big-pickle' THEN NULLIF(${providerModel}, '')
       ELSE ${model}
-    END, '(-free|:global)+$', ''), ''), 'unknown')`
+    END, '(-free|:global)+$', ''), ''), 'unknown')`;
 }
 
 function statProviderSql(model: string, providerModel: string, provider: string) {
@@ -270,5 +278,5 @@ ${MODEL_AUTHOR_RULES.map((item) => `      WHEN strpos(lower(${providerModel}), $
 ${MODEL_AUTHOR_RULES.map((item) => `      WHEN strpos(lower(${model}), ${sqlString(item.match)}) > 0 THEN ${sqlString(item.author)}`).join("\n")}
       WHEN ${provider} <> '' AND lower(${provider}) NOT IN (${RETIRED_STAT_PROVIDERS.map(sqlString).join(", ")}) THEN ${provider}
       ELSE 'unknown'
-    END`
+    END`;
 }

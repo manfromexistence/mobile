@@ -131,11 +131,7 @@ test("cloudSync returns a generic error when the API responds with a non-OK stat
   const originalConsoleLog = console.log;
   const logged = [];
   console.log = (...args) =>
-    logged.push(
-      args
-        .map((x) => (typeof x === "object" ? JSON.stringify(x) : String(x)))
-        .join(" ")
-    );
+    logged.push(args.map((x) => (typeof x === "object" ? JSON.stringify(x) : String(x))).join(" "));
   globalThis.fetch = async () =>
     new Response("upstream unavailable", {
       status: 503,
@@ -149,7 +145,7 @@ test("cloudSync returns a generic error when the API responds with a non-OK stat
     assert.deepEqual(result, { error: "Cloud sync failed" });
     assert.equal(
       logged.some((entry) => entry.includes("Cloud sync failed") && entry.includes("503")),
-      true
+      true,
     );
   } finally {
     console.log = originalConsoleLog;
@@ -181,11 +177,11 @@ test("cloudSync syncs data upstream and refreshes only locally stale provider to
   const db = coreDb.getDbInstance();
   db.prepare("UPDATE provider_connections SET updated_at = ? WHERE id = ?").run(
     "2026-01-01T00:00:00.000Z",
-    stale.id
+    stale.id,
   );
   db.prepare("UPDATE provider_connections SET updated_at = ? WHERE id = ?").run(
     "2026-03-01T00:00:00.000Z",
-    fresh.id
+    fresh.id,
   );
 
   let postedBody = null;

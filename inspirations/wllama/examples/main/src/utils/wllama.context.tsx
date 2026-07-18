@@ -1,30 +1,15 @@
-import { createContext, useContext, useMemo, useState } from 'react';
-import {
-  DebugLogger,
-  getDefaultScreen,
-  useDidMount,
-  WllamaStorage,
-} from './utils';
-import { Model, ModelManager, Wllama } from '@wllama/wllama';
-import {
-  DEFAULT_INFERENCE_PARAMS,
-  WLLAMA_COMPAT_CONFIG,
-  WLLAMA_CONFIG_PATHS,
-} from '../config';
-import {
-  InferenceParams,
-  Message,
-  RuntimeInfo,
-  ModelState,
-  Screen,
-} from './types';
-import { verifyCustomModel } from './custom-models';
+import { createContext, useContext, useMemo, useState } from "react";
+import { DebugLogger, getDefaultScreen, useDidMount, WllamaStorage } from "./utils";
+import { Model, ModelManager, Wllama } from "@wllama/wllama";
+import { DEFAULT_INFERENCE_PARAMS, WLLAMA_COMPAT_CONFIG, WLLAMA_CONFIG_PATHS } from "../config";
+import { InferenceParams, Message, RuntimeInfo, ModelState, Screen } from "./types";
+import { verifyCustomModel } from "./custom-models";
 import {
   DisplayedModel,
   getDisplayedModels,
   getUserAddedModels,
   updateUserAddedModels,
-} from './displayed-model';
+} from "./displayed-model";
 
 interface WllamaContextValue {
   // functions for managing models
@@ -48,10 +33,7 @@ interface WllamaContextValue {
   removeCustomModel(model: DisplayedModel): Promise<void>;
 
   // functions for chat completion
-  createCompletion(
-    messages: Message[],
-    callback: (currentText: string) => void
-  ): Promise<void>;
+  createCompletion(messages: Message[], callback: (currentText: string) => void): Promise<void>;
   stopCompletion(): void;
   isGenerating: boolean;
   currentConvId: number;
@@ -84,10 +66,10 @@ export const WllamaProvider = ({ children }: any) => {
   const [isBusy, setBusy] = useState(false);
   const [currRuntimeInfo, setCurrRuntimeInfo] = useState<RuntimeInfo>();
   const [currParams, setCurrParams] = useState<InferenceParams>(
-    WllamaStorage.load('params', DEFAULT_INFERENCE_PARAMS)
+    WllamaStorage.load("params", DEFAULT_INFERENCE_PARAMS),
   );
   const [downloadingProgress, setDownloadingProgress] = useState<
-    Record<DisplayedModel['url'], number>
+    Record<DisplayedModel["url"], number>
   >({});
   const [loadedModel, setLoadedModel] = useState<DisplayedModel>();
 
@@ -112,18 +94,15 @@ export const WllamaProvider = ({ children }: any) => {
   }, [cachedModels, downloadingProgress, loadedModel]);
   const isDownloading = useMemo(
     () => models.some((m) => m.state === ModelState.DOWNLOADING),
-    [models]
+    [models],
   );
   const isLoadingModel = useMemo(
     () => isBusy || loadedModel?.state === ModelState.LOADING,
-    [loadedModel, isBusy]
+    [loadedModel, isBusy],
   );
 
   // utils
-  const updateModelDownloadState = (
-    url: string,
-    downloadPercent: number = -1
-  ) => {
+  const updateModelDownloadState = (url: string, downloadPercent: number = -1) => {
     if (downloadPercent < 0) {
       setDownloadingProgress((p) => {
         const newProgress = { ...p };
@@ -145,12 +124,12 @@ export const WllamaProvider = ({ children }: any) => {
           progressCallback(opts) {
             updateModelDownloadState(model.url, opts.loaded / opts.total);
           },
-        }
+        },
       );
       updateModelDownloadState(model.url, -1);
       await refreshCachedModels();
     } catch (e) {
-      alert((e as any)?.message || 'unknown error while downloading model');
+      alert((e as any)?.message || "unknown error while downloading model");
     }
   };
 
@@ -172,7 +151,7 @@ export const WllamaProvider = ({ children }: any) => {
     if (isDownloading || loadedModel || isLoadingModel) return;
     // make sure the model is cached
     if (!model.cachedModel) {
-      throw new Error('Model is not in cache');
+      throw new Error("Model is not in cache");
     }
     setLoadedModel(model.clone({ state: ModelState.LOADING }));
     try {
@@ -185,12 +164,12 @@ export const WllamaProvider = ({ children }: any) => {
       setCurrRuntimeInfo({
         isMultithread: wllamaInstance.isMultithread(),
         hasChatTemplate: !!wllamaInstance.getChatTemplate(),
-        supportsImage: wllamaInstance.supportInputModality('image'),
-        supportsAudio: wllamaInstance.supportInputModality('audio'),
+        supportsImage: wllamaInstance.supportInputModality("image"),
+        supportsAudio: wllamaInstance.supportInputModality("audio"),
       });
     } catch (e) {
       resetWllamaInstance();
-      alert(`Failed to load model: ${(e as any).message ?? 'Unknown error'}`);
+      alert(`Failed to load model: ${(e as any).message ?? "Unknown error"}`);
       setLoadedModel(undefined);
     }
   };
@@ -203,27 +182,24 @@ export const WllamaProvider = ({ children }: any) => {
     setCurrRuntimeInfo(undefined);
   };
 
-  const createCompletion = async (
-    messages: Message[],
-    callback: (currentText: string) => void
-  ) => {
+  const createCompletion = async (messages: Message[], callback: (currentText: string) => void) => {
     if (isDownloading || !loadedModel || isLoadingModel) return;
     setGenerating(true);
     stopSignal = false;
     const abortController = new AbortController();
-    let accumulatedText = '';
+    let accumulatedText = "";
     try {
       const stream = await wllamaInstance.createChatCompletion({
         messages: messages.map((m) =>
           m.mediaData
             ? {
-                role: m.role as 'user',
+                role: m.role as "user",
                 content: [
                   { type: m.mediaData.type, data: m.mediaData.data },
-                  { type: 'text' as const, text: m.content },
+                  { type: "text" as const, text: m.content },
                 ],
               }
-            : { role: m.role, content: m.content }
+            : { role: m.role, content: m.content },
         ),
         max_tokens: currParams.nPredict,
         temperature: currParams.temperature,
@@ -256,13 +232,13 @@ export const WllamaProvider = ({ children }: any) => {
     setScreen(screen);
     setCurrentConvId(conversationId ?? -1);
     if (screen === Screen.MODEL) {
-      WllamaStorage.save('welcome', false);
+      WllamaStorage.save("welcome", false);
     }
   };
 
   // proxy function for saving to localStorage
   const setParams = (val: InferenceParams) => {
-    WllamaStorage.save('params', val);
+    WllamaStorage.save("params", val);
     setCurrParams(val);
   };
 
@@ -272,7 +248,7 @@ export const WllamaProvider = ({ children }: any) => {
     try {
       const custom = await verifyCustomModel(url);
       if (models.some((m) => m.url === custom.url)) {
-        throw new Error('Model with the same URL already exist');
+        throw new Error("Model with the same URL already exist");
       }
       const userAddedModels = getUserAddedModels(cachedModels);
       updateUserAddedModels([
@@ -295,7 +271,7 @@ export const WllamaProvider = ({ children }: any) => {
       updateUserAddedModels(newList);
       await refreshCachedModels();
     } else {
-      throw new Error('Cannot remove non-user-added model');
+      throw new Error("Cannot remove non-user-added model");
     }
     setBusy(false);
   };

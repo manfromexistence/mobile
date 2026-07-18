@@ -25,7 +25,7 @@ export function createPiiSseTransform(options?: PiiTransformOptions): TransformS
 
   let windowSize = Math.max(
     200,
-    options?.windowSize ?? (parseInt(process.env.PII_WINDOW_SIZE || "", 10) || 200)
+    options?.windowSize ?? (parseInt(process.env.PII_WINDOW_SIZE || "", 10) || 200),
   );
   if (options?.windowSize !== undefined && process.env.PII_TEST_BYPASS_MIN_WINDOW === "true") {
     windowSize = options.windowSize;
@@ -37,7 +37,7 @@ export function createPiiSseTransform(options?: PiiTransformOptions): TransformS
     field: FieldCategory,
     isStopSignal = false,
     index: string | number = "0_0",
-    isSnapshot = false
+    isSnapshot = false,
   ): string => {
     if (field === "toolArgs" || field === "partialJson") {
       return text;
@@ -180,7 +180,7 @@ export function createPiiSseTransform(options?: PiiTransformOptions): TransformS
     if (lastJson.choices && Array.isArray(lastJson.choices)) {
       const finalJson = JSON.parse(JSON.stringify(lastJson));
       const presentIndexes = new Set(
-        finalJson.choices.map((c: any) => c.index).filter((idx: any) => typeof idx === "number")
+        finalJson.choices.map((c: any) => c.index).filter((idx: any) => typeof idx === "number"),
       );
       for (const [compositeKey, choiceBuf] of choiceBuffers.entries()) {
         const choiceIdx = parseInt(compositeKey.split("_")[0] || "0", 10);
@@ -198,7 +198,7 @@ export function createPiiSseTransform(options?: PiiTransformOptions): TransformS
 
         // Find if we have tool buffers for this choice
         const toolEntries = Array.from(choiceBuffers.entries()).filter(
-          ([key]) => key.startsWith(`${choiceIdx}_`) && key !== `${choiceIdx}_0`
+          ([key]) => key.startsWith(`${choiceIdx}_`) && key !== `${choiceIdx}_0`,
         );
 
         const choiceBuf = getBuffers(`${choiceIdx}_0`);

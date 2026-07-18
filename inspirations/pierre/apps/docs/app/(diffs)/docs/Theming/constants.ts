@@ -1,21 +1,21 @@
-import type { PreloadFileOptions } from '@pierre/diffs/ssr';
+import type { PreloadFileOptions } from "@pierre/diffs/ssr";
 
-import { CustomScrollbarCSS } from '@/components/CustomScrollbarCSS';
+import { CustomScrollbarCSS } from "@/components/CustomScrollbarCSS";
 
 const options = {
-  theme: { dark: 'pierre-dark', light: 'pierre-light' },
+  theme: { dark: "pierre-dark", light: "pierre-light" },
   unsafeCSS: CustomScrollbarCSS,
   lineNumbers: false,
 } as const;
 
-const THEME_REPO_BASE = 'https://github.com/pierrecomputer/theme/blob/main';
+const THEME_REPO_BASE = "https://github.com/pierrecomputer/theme/blob/main";
 
 type ThemingConstant = PreloadFileOptions<undefined> & { href?: string };
 
 export const THEMING_PROJECT_STRUCTURE: ThemingConstant = {
   file: {
-    name: 'project-structure.txt',
-    lang: 'text',
+    name: "project-structure.txt",
+    lang: "text",
     contents: `theme/
 ├── src/
 │   ├── build.ts        # Build script entry point
@@ -42,7 +42,7 @@ export const THEMING_PROJECT_STRUCTURE: ThemingConstant = {
 export const THEMING_PALETTE_COLORS: ThemingConstant = {
   href: `${THEME_REPO_BASE}/src/palette.ts`,
   file: {
-    name: 'src/palette.ts',
+    name: "src/palette.ts",
     contents: `const gray = {
   "020":"#fbfbfb",
   "040":"#f9f9f9",
@@ -90,7 +90,7 @@ const red = {
 export const THEMING_PALETTE_ROLES: ThemingConstant = {
   href: `${THEME_REPO_BASE}/src/palette.ts`,
   file: {
-    name: 'src/palette.ts',
+    name: "src/palette.ts",
     contents: `export type Roles = {
   bg: {
     editor: string;    // main editor background
@@ -172,7 +172,7 @@ export const THEMING_PALETTE_ROLES: ThemingConstant = {
 export const THEMING_PALETTE_LIGHT: ThemingConstant = {
   href: `${THEME_REPO_BASE}/src/palette.ts`,
   file: {
-    name: 'src/palette.ts',
+    name: "src/palette.ts",
     contents: `export const light: Roles = {
   bg: {
     editor: "#ffffff",
@@ -254,7 +254,7 @@ export const THEMING_PALETTE_LIGHT: ThemingConstant = {
 export const THEMING_PALETTE_DARK: ThemingConstant = {
   href: `${THEME_REPO_BASE}/src/palette.ts`,
   file: {
-    name: 'src/palette.ts',
+    name: "src/palette.ts",
     contents: `export const dark: Roles = {
   bg: {
     editor: gray["1040"],
@@ -336,7 +336,7 @@ export const THEMING_PALETTE_DARK: ThemingConstant = {
 export const THEMING_TOKEN_COLORS_EXAMPLE: ThemingConstant = {
   href: `${THEME_REPO_BASE}/src/theme.ts`,
   file: {
-    name: 'src/theme.ts',
+    name: "src/theme.ts",
     contents: `import type { Roles } from "./palette";
 
 type VSCodeTheme = {
@@ -440,7 +440,7 @@ export function makeTheme(name: string, kind: "light" | "dark", c: Roles): VSCod
 
 export const THEMING_PACKAGE_JSON_EXAMPLE: ThemingConstant = {
   file: {
-    name: 'package.json',
+    name: "package.json",
     contents: `{
   "name": "my-custom-theme",
   "displayName": "My Custom Theme",
@@ -488,7 +488,7 @@ export const THEMING_PACKAGE_JSON_EXAMPLE: ThemingConstant = {
 
 export const THEMING_REGISTER_THEME: ThemingConstant = {
   file: {
-    name: 'register-theme.ts',
+    name: "register-theme.ts",
     contents: `import { registerCustomTheme } from '@pierre/diffs';
 
 // Register your theme files before rendering.
@@ -513,7 +513,7 @@ registerCustomTheme('my-theme-dark', async () => {
 
 export const THEMING_USE_IN_COMPONENT: ThemingConstant = {
   file: {
-    name: 'DiffWithCustomTheme.tsx',
+    name: "DiffWithCustomTheme.tsx",
     contents: `import { FileDiff } from '@pierre/diffs/react';
 
 export function DiffWithCustomTheme({ fileDiff }) {

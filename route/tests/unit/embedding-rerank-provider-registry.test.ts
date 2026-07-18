@@ -74,7 +74,7 @@ test("upstage embedding registry exposes current embedding models", () => {
   const all = getAllEmbeddingModels().filter((model) => model.provider === "upstage");
   assert.deepEqual(
     all.map((model) => model.id),
-    ["upstage/embedding-query", "upstage/embedding-passage"]
+    ["upstage/embedding-query", "upstage/embedding-passage"],
   );
 });
 

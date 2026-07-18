@@ -1,7 +1,7 @@
-import type { V2ColorValue } from "../types"
-import { V2_AVATAR_DARK, V2_AVATAR_LIGHT } from "./avatar"
+import type { V2ColorValue } from "../types";
+import { V2_AVATAR_DARK, V2_AVATAR_LIGHT } from "./avatar";
 
-const ref = (name: string): V2ColorValue => `var(--${name})`
+const ref = (name: string): V2ColorValue => `var(--${name})`;
 
 const lightAgentTokens: Record<string, V2ColorValue> = {
   "v2-agent-plan-solid": ref("v2-pink-900"),
@@ -13,7 +13,7 @@ const lightAgentTokens: Record<string, V2ColorValue> = {
   "v2-agent-explore-solid": ref("v2-yellow-900"),
   "v2-agent-explore-border": "rgba(142, 114, 49, 0.5)",
   "v2-agent-explore-background": "rgba(254, 250, 236, 0.33)",
-}
+};
 
 const darkAgentTokens: Record<string, V2ColorValue> = {
   "v2-agent-plan-solid": ref("v2-pink-400"),
@@ -25,7 +25,7 @@ const darkAgentTokens: Record<string, V2ColorValue> = {
   "v2-agent-explore-solid": ref("v2-yellow-400"),
   "v2-agent-explore-border": "rgba(247, 229, 181, 0.5)",
   "v2-agent-explore-background": "rgba(252, 239, 208, 0.1)",
-}
+};
 
 const light: Record<string, V2ColorValue> = {
   "v2-background-bg-base": ref("v2-grey-100"),
@@ -90,7 +90,7 @@ const light: Record<string, V2ColorValue> = {
   "v2-illustration-illustration-layer-01": ref("v2-grey-300"),
   "v2-illustration-illustration-layer-02": ref("v2-grey-400"),
   "v2-illustration-illustration-layer-03": ref("v2-grey-500"),
-}
+};
 
 const dark: Record<string, V2ColorValue> = {
   "v2-background-bg-base": ref("v2-grey-1000"),
@@ -155,12 +155,14 @@ const dark: Record<string, V2ColorValue> = {
   "v2-illustration-illustration-layer-01": ref("v2-grey-900"),
   "v2-illustration-illustration-layer-02": ref("v2-grey-800"),
   "v2-illustration-illustration-layer-03": ref("v2-grey-700"),
-}
+};
 
 export function mapV2Semantics(isDark: boolean): Record<string, V2ColorValue> {
-  return isDark ? dark : light
+  return isDark ? dark : light;
 }
 
-export function mergeV2Tokens(...layers: Record<string, V2ColorValue>[]): Record<string, V2ColorValue> {
-  return Object.assign({}, ...layers)
+export function mergeV2Tokens(
+  ...layers: Record<string, V2ColorValue>[]
+): Record<string, V2ColorValue> {
+  return Object.assign({}, ...layers);
 }

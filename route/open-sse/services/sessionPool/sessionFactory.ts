@@ -48,10 +48,7 @@ export class SessionFactory {
   }
 
   /** Build headers from session fingerprint */
-  buildHeaders(
-    session: Session,
-    extra?: Record<string, string>,
-  ): Record<string, string> {
+  buildHeaders(session: Session, extra?: Record<string, string>): Record<string, string> {
     return session.buildHeaders(extra);
   }
 }

@@ -33,7 +33,7 @@ test("inputSanitizer.detectInjection: directive at the TOP of a >16 KB body is s
   const detections = detectInjection(body);
   assert.ok(
     detections.some((d) => d.pattern === "system_override"),
-    "injection at the top must still be detected"
+    "injection at the top must still be detected",
   );
 });
 
@@ -45,7 +45,7 @@ test("inputSanitizer.detectInjection: a directive BEYOND the 16 KB cap is NOT sc
   assert.equal(
     detections.length,
     0,
-    "an injection marker placed beyond the 16 KB cap must not be detected"
+    "an injection marker placed beyond the 16 KB cap must not be detected",
   );
 });
 
@@ -61,7 +61,7 @@ test("promptInjection guard: directive at the TOP of a >16 KB message is still f
   assert.equal(decision.result.flagged, true, "injection at the top must still flag");
   assert.ok(
     decision.result.detections.some((d) => d.pattern === "system_override"),
-    "the system_override detection must survive the bound"
+    "the system_override detection must survive the bound",
   );
 });
 
@@ -80,7 +80,7 @@ test("promptInjection guard: a directive BEYOND the 16 KB cap is NOT scanned", (
   assert.equal(
     decision.result.flagged,
     false,
-    "an injection marker beyond the 16 KB cap must not be flagged"
+    "an injection marker beyond the 16 KB cap must not be flagged",
   );
   assert.equal(decision.blocked, false);
 });

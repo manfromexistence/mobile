@@ -179,7 +179,7 @@ function getUtcDateMs(year: number, month: number, day: number, hours: number, m
 export function getBudgetWindow(
   resetInterval: BudgetResetInterval,
   resetTime = "00:00",
-  now = Date.now()
+  now = Date.now(),
 ): BudgetWindow {
   const current = new Date(now);
   const [hours, minutes] = getResetTimeParts(normalizeResetTime(resetTime));
@@ -250,7 +250,7 @@ function getBudgetWindowTotal(apiKeyId: string, periodStartAt: number): number {
 function getBudgetWindowRangeTotal(
   apiKeyId: string,
   periodStartAt: number,
-  periodEndAt: number
+  periodEndAt: number,
 ): number {
   try {
     return (
@@ -267,12 +267,12 @@ function emitBudgetWarning(
   budget: NormalizedBudgetConfig,
   projectedTotal: number,
   activeLimitUsd: number,
-  nextResetAt: number
+  nextResetAt: number,
 ) {
   const percentage =
     activeLimitUsd > 0 ? ((projectedTotal / activeLimitUsd) * 100).toFixed(1) : "0.0";
   console.warn(
-    `[BudgetWarning] ${apiKeyId} reached ${percentage}% of ${budget.resetInterval} budget ($${projectedTotal.toFixed(4)} / $${activeLimitUsd.toFixed(2)}) — next reset ${new Date(nextResetAt).toISOString()}`
+    `[BudgetWarning] ${apiKeyId} reached ${percentage}% of ${budget.resetInterval} budget ($${projectedTotal.toFixed(4)} / $${activeLimitUsd.toFixed(2)}) — next reset ${new Date(nextResetAt).toISOString()}`,
   );
 }
 
@@ -280,7 +280,7 @@ function syncBudgetSchedule(
   apiKeyId: string,
   config: BudgetConfig,
   now = Date.now(),
-  options: SyncBudgetScheduleOptions = {}
+  options: SyncBudgetScheduleOptions = {},
 ): NormalizedBudgetConfig {
   const normalized = normalizeBudgetConfig(config);
   const window = getBudgetWindow(normalized.resetInterval, normalized.resetTime, now);
@@ -291,7 +291,7 @@ function syncBudgetSchedule(
     const previousSpend = getBudgetWindowRangeTotal(
       apiKeyId,
       normalized.lastBudgetResetAt as number,
-      window.periodStartAt
+      window.periodStartAt,
     );
     try {
       saveBudgetResetLog({
@@ -475,7 +475,7 @@ export function checkBudget(apiKeyId: string, additionalCost = 0) {
         updatedBudget,
         projectedTotal,
         activeLimitUsd,
-        window.nextResetAt
+        window.nextResetAt,
       );
     } catch {
       // Non-critical.

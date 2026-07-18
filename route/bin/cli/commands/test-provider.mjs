@@ -55,7 +55,7 @@ export async function runTestProviderCommand(provider, model, opts = {}) {
       console.log(t("test.saved", { path: opts.save }));
     } catch (err) {
       console.error(
-        t("common.error", { message: err instanceof Error ? err.message : String(err) })
+        t("common.error", { message: err instanceof Error ? err.message : String(err) }),
       );
     }
   }
@@ -81,7 +81,7 @@ async function _runAllProviders(opts) {
   }
   const data = await res.json();
   const connections = (data.providers ?? data.items ?? data).filter(
-    (c) => c.authType === "apikey" || c.testStatus !== "unavailable"
+    (c) => c.authType === "apikey" || c.testStatus !== "unavailable",
   );
   if (connections.length === 0) {
     console.log(t("test.noProviders"));
@@ -105,7 +105,7 @@ async function _runAllProviders(opts) {
     providers.map(async ({ provider, model }) => {
       const r = await _runSingleTest(provider, model);
       return { provider, model, ...r };
-    })
+    }),
   );
 
   if (opts.json || opts.output === "json") {
@@ -150,7 +150,7 @@ async function _runCompare(provider, opts) {
       console.log(t("test.saved", { path: opts.save }));
     } catch (err) {
       console.error(
-        t("common.error", { message: err instanceof Error ? err.message : String(err) })
+        t("common.error", { message: err instanceof Error ? err.message : String(err) }),
       );
     }
   }
@@ -163,7 +163,7 @@ async function _runCompare(provider, opts) {
   console.log(`\n\x1b[1m\x1b[36m${t("test.compareTitle")}\x1b[0m\n`);
   const colW = Math.max(...models.map((m) => m.length), 20);
   console.log(
-    `  ${"Model".padEnd(colW)}  ${"Status".padEnd(8)}  ${"Avg ms".padEnd(8)}  ${"Min ms".padEnd(8)}  Max ms`
+    `  ${"Model".padEnd(colW)}  ${"Status".padEnd(8)}  ${"Avg ms".padEnd(8)}  ${"Min ms".padEnd(8)}  Max ms`,
   );
   console.log(`  ${"─".repeat(colW)}  ────────  ────────  ────────  ──────`);
   for (const row of rows) {
@@ -172,7 +172,7 @@ async function _runCompare(provider, opts) {
     const min = row.latency?.minMs != null ? String(row.latency.minMs) : "N/A";
     const max = row.latency?.maxMs != null ? String(row.latency.maxMs) : "N/A";
     console.log(
-      `  ${row.model.padEnd(colW)}  ${statusMark}        ${avg.padEnd(8)}  ${min.padEnd(8)}  ${max}`
+      `  ${row.model.padEnd(colW)}  ${statusMark}        ${avg.padEnd(8)}  ${min.padEnd(8)}  ${max}`,
     );
   }
   console.log();
@@ -231,12 +231,12 @@ function _printResult(result, showLatency) {
   } else {
     const runs = result.runs > 1 ? ` (${result.passed}/${result.runs} passed)` : "";
     console.error(
-      `\x1b[31m✖ ${t("test.failed", { error: result.error || "Unknown error" })}\x1b[0m${runs}`
+      `\x1b[31m✖ ${t("test.failed", { error: result.error || "Unknown error" })}\x1b[0m${runs}`,
     );
   }
   if (showLatency && result.latency) {
     console.log(
-      `\x1b[2m  Latency — avg: ${result.latency.avgMs}ms  min: ${result.latency.minMs}ms  max: ${result.latency.maxMs}ms\x1b[0m`
+      `\x1b[2m  Latency — avg: ${result.latency.avgMs}ms  min: ${result.latency.minMs}ms  max: ${result.latency.maxMs}ms\x1b[0m`,
     );
   }
 }

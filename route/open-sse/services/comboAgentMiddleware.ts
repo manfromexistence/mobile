@@ -132,7 +132,7 @@ export function applySystemMessageOverride(messages: Message[], systemMessage: s
  */
 export function applyToolFilter(
   tools: unknown[] | undefined,
-  pattern: string | null | undefined
+  pattern: string | null | undefined,
 ): unknown[] | undefined {
   if (!tools || !pattern) return tools;
 
@@ -176,7 +176,7 @@ export function stripModelTags(messages: Message[]): Message[] {
 export function applyComboAgentMiddleware(
   body: Record<string, unknown>,
   comboConfig: ComboConfig | null | undefined,
-  providerModel: string // "provider/model" string for context caching
+  providerModel: string, // "provider/model" string for context caching
 ): { body: Record<string, unknown>; pinnedModel: string | null } {
   if (!comboConfig) return { body, pinnedModel: null };
 
@@ -195,7 +195,7 @@ export function applyComboAgentMiddleware(
   // 3. Tool filter
   const filteredTools = applyToolFilter(
     body.tools as unknown[] | undefined,
-    comboConfig.tool_filter_regex
+    comboConfig.tool_filter_regex,
   );
 
   // 4. Strip internal <omniModel> tags before forwarding to provider (#454)

@@ -85,7 +85,7 @@ function walk(dir, acc = []) {
 // A raw caught-error value assigned to / interpolated into a `message:`/`error:` field.
 const RAW_ERR_FIELD = new RegExp(String.raw`\b(?:message|error)\s*:\s*` + RAW_ERR);
 const RAW_ERR_FIELD_INTERP = new RegExp(
-  String.raw`\b(?:message|error)\s*:\s*[\`"'][^\n]*\$\{[^}]*` + RAW_ERR
+  String.raw`\b(?:message|error)\s*:\s*[\`"'][^\n]*\$\{[^}]*` + RAW_ERR,
 );
 
 // A raw caught-error value interpolated anywhere on a line that also builds a Response.
@@ -102,7 +102,7 @@ const RESPONSE_BUILDER_CALL =
 // `const|let <id> = <expr containing a raw caught-error>` — a tainted local holding a
 // raw, unsanitized error string. Captures the variable name for downstream tracking.
 const TAINT_DECL = new RegExp(
-  String.raw`\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*[^;\n]*` + RAW_ERR
+  String.raw`\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*[^;\n]*` + RAW_ERR,
 );
 
 /**
@@ -261,13 +261,13 @@ function main() {
         violations.map((v) => "  ✗ " + v).join("\n") +
         `\n  → route the message through buildErrorBody()/sanitizeErrorMessage()/` +
         `makeExecutorErrorResult() (see docs/security/ERROR_SANITIZATION.md), or — if it is a ` +
-        `false positive — add it to KNOWN_MISSING_ERROR_HELPER with a justification.`
+        `false positive — add it to KNOWN_MISSING_ERROR_HELPER with a justification.`,
     );
     process.exit(1);
   }
   if (process.exitCode === 1) return; // stale entries already logged
   console.log(
-    `[check-error-helper] OK (${files.length} files scanned, ${KNOWN_MISSING_ERROR_HELPER.size} known-missing frozen)`
+    `[check-error-helper] OK (${files.length} files scanned, ${KNOWN_MISSING_ERROR_HELPER.size} known-missing frozen)`,
   );
 }
 

@@ -24,7 +24,7 @@ test("combo diagnostics: headers + body carry the sanitized trace (code override
       attemptOrder: [{ provider: "openai", model: "gpt-x" }],
       terminalReason: "all_accounts_inactive",
     },
-    { code: "ALL_ACCOUNTS_INACTIVE", type: "service_unavailable" }
+    { code: "ALL_ACCOUNTS_INACTIVE", type: "service_unavailable" },
   );
 
   assert.equal(res.status, 503);
@@ -89,10 +89,12 @@ test("combo diagnostics: terminalReason with a non-Latin1 char (em dash) must no
       {
         poolSize: 4,
         attempted: 1,
-        excluded: [{ provider: "deepseek", model: "deepseek-v4-flash-free", reason: "quality — bad" }],
+        excluded: [
+          { provider: "deepseek", model: "deepseek-v4-flash-free", reason: "quality — bad" },
+        ],
         attemptOrder: [{ provider: "deepseek", model: "deepseek-v4-flash-free" }],
         terminalReason,
-      }
+      },
     );
     assert.equal(res.status, 502);
   });
@@ -109,10 +111,13 @@ test("combo diagnostics: JSON body keeps the original non-Latin1 text even thoug
       excluded: [],
       attemptOrder: [{ provider: "deepseek", model: "deepseek-v4-flash-free" }],
       terminalReason,
-    }
+    },
   );
   // Header value must be a valid Latin1 ByteString — em dash (U+2014) replaced.
-  assert.equal(res.headers.get("x-omniroute-combo-terminal-reason"), terminalReason.replace("—", "?"));
+  assert.equal(
+    res.headers.get("x-omniroute-combo-terminal-reason"),
+    terminalReason.replace("—", "?"),
+  );
   const body = await res.json();
   // JSON body keeps the original, readable (unsanitized) em dash.
   assert.equal(body.diagnostics.terminalReason, terminalReason);

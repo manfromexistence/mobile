@@ -1,12 +1,12 @@
-import { LOCALE_HEADER } from "../lib/language"
+import { LOCALE_HEADER } from "../lib/language";
 
-const statsPageCacheControl = "public, max-age=60, s-maxage=300, stale-while-revalidate=86400"
+const statsPageCacheControl = "public, max-age=60, s-maxage=300, stale-while-revalidate=86400";
 
 export function setStatsPageCacheHeaders(headers: Headers | undefined) {
-  if (!headers) return
+  if (!headers) return;
 
-  headers.set("Cache-Control", statsPageCacheControl)
-  appendVary(headers, "Accept-Language", "Cookie", LOCALE_HEADER)
+  headers.set("Cache-Control", statsPageCacheControl);
+  appendVary(headers, "Accept-Language", "Cookie", LOCALE_HEADER);
 }
 
 function appendVary(headers: Headers, ...values: string[]) {
@@ -14,16 +14,18 @@ function appendVary(headers: Headers, ...values: string[]) {
     .get("vary")
     ?.split(",")
     .map((value) => value.trim())
-    .filter(Boolean)
+    .filter(Boolean);
 
   headers.set(
     "vary",
     values
       .reduce(
         (result, value) =>
-          result.some((item) => item.toLowerCase() === value.toLowerCase()) ? result : [...result, value],
+          result.some((item) => item.toLowerCase() === value.toLowerCase())
+            ? result
+            : [...result, value],
         existing ?? [],
       )
       .join(", "),
-  )
+  );
 }

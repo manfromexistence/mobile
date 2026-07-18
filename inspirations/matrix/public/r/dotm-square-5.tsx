@@ -4,7 +4,10 @@ import type { CSSProperties } from "react";
 
 import { DotMatrixBase } from "@/components/ui/dotmatrix-core";
 import { useDotMatrixPhases } from "@/components/ui/dotmatrix-hooks";
-import { diagonalSnakeNormFromIndex, diagonalSnakeOrderValue } from "@/components/ui/dotmatrix-core";
+import {
+  diagonalSnakeNormFromIndex,
+  diagonalSnakeOrderValue,
+} from "@/components/ui/dotmatrix-core";
 import { usePrefersReducedMotion } from "@/components/ui/dotmatrix-hooks";
 import type { DotAnimationResolver, DotMatrixCommonProps } from "@/components/ui/dotmatrix-core";
 
@@ -23,8 +26,8 @@ const animationResolver: DotAnimationResolver = ({ isActive, index, reducedMotio
     return {
       style: {
         ...style,
-        opacity: 0.16 + pathNorm * 0.78
-      }
+        opacity: 0.16 + pathNorm * 0.78,
+      },
     };
   }
 
@@ -39,10 +42,14 @@ export function DotmSquare5({
   ...rest
 }: DotmSquare5Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
 
   return (

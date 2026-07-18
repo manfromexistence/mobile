@@ -1,21 +1,21 @@
-import { Component } from "solid-js"
-import { Dialog } from "@opencode-ai/ui/v2/dialog-v2"
-import { TabsV2 } from "@opencode-ai/ui/v2/tabs-v2"
-import { Icon } from "@opencode-ai/ui/icon"
-import { useLanguage } from "@/context/language"
-import { usePlatform } from "@/context/platform"
-import { SettingsGeneralV2 } from "./general"
-import { SettingsKeybinds } from "../settings-keybinds"
-import { SettingsProvidersV2 } from "./providers"
-import { SettingsModelsV2 } from "./models"
-import "./settings-v2.css"
-import { SettingsServersV2 } from "./servers"
+import { Component } from "solid-js";
+import { Dialog } from "@opencode-ai/ui/v2/dialog-v2";
+import { TabsV2 } from "@opencode-ai/ui/v2/tabs-v2";
+import { Icon } from "@opencode-ai/ui/icon";
+import { useLanguage } from "@/context/language";
+import { usePlatform } from "@/context/platform";
+import { SettingsGeneralV2 } from "./general";
+import { SettingsKeybinds } from "../settings-keybinds";
+import { SettingsProvidersV2 } from "./providers";
+import { SettingsModelsV2 } from "./models";
+import "./settings-v2.css";
+import { SettingsServersV2 } from "./servers";
 
 export const DialogSettings: Component<{
-  sessionID?: string
+  sessionID?: string;
 }> = (props) => {
-  const language = useLanguage()
-  const platform = usePlatform()
+  const language = useLanguage();
+  const platform = usePlatform();
 
   return (
     <Dialog size="x-large" variant="settings" class="settings-v2-dialog">
@@ -25,7 +25,9 @@ export const DialogSettings: Component<{
             <div class="flex flex-col gap-3 w-full">
               <div class="flex flex-col gap-3">
                 <div class="flex flex-col gap-1.5">
-                  <TabsV2.SectionTitle>{language.t("settings.section.desktop")}</TabsV2.SectionTitle>
+                  <TabsV2.SectionTitle>
+                    {language.t("settings.section.desktop")}
+                  </TabsV2.SectionTitle>
                   <div class="flex flex-col gap-1.5 w-full">
                     <TabsV2.Trigger value="general">
                       <Icon name="sliders" />
@@ -80,5 +82,5 @@ export const DialogSettings: Component<{
         </TabsV2.Content>
       </TabsV2>
     </Dialog>
-  )
-}
+  );
+};

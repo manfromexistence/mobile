@@ -7,15 +7,15 @@ import { AnimatePresence, motion } from "motion/react";
 import { type JSX, useState } from "react";
 
 interface CopyCodeProps {
-	settings: ShaderGradientSettings;
+  settings: ShaderGradientSettings;
 }
 
 export function CopyCode({ settings }: CopyCodeProps): JSX.Element {
-	const [_copied, _setCopied] = useState<boolean>(false);
-	const [showCode, setShowCode] = useState(false);
+  const [_copied, _setCopied] = useState<boolean>(false);
+  const [showCode, setShowCode] = useState(false);
 
-	const generateCode = (): string => {
-		return `<ShaderGradientCanvas
+  const generateCode = (): string => {
+    return `<ShaderGradientCanvas
   style={{
     width: '100%',
     height: '100%',
@@ -69,57 +69,52 @@ export function CopyCode({ settings }: CopyCodeProps): JSX.Element {
     enableTransition={false}
   />
 </ShaderGradientCanvas>`;
-	};
+  };
 
-	return (
-		<>
-			{!showCode && (
-				<CopyToClipboard
-					text={generateCode()}
-					classname="right-32 top-5 h-10 w-10"
-				/>
-			)}
-			<Button
-				variant="outline"
-				size="sm"
-				className="absolute top-4 right-4 z-[3] h-11"
-				onClick={() => setShowCode(!showCode)}
-			>
-				{showCode ? "Hide Code" : "Show Code"}
-			</Button>
-			<AnimatePresence mode="wait">
-				{showCode && (
-					<div
-						className={
-							"absolute inset-shadow-[0_1px_rgb(0_0_0/0.10)] top-4 right-4 z-[2] h-[95%] w-[44rem] rounded-lg bg-card-bg p-4 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]"
-						}
-					>
-						<motion.div
-							initial={{ opacity: 0, y: -20 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: -20 }}
-							className="relative h-full space-y-2 overflow-auto"
-						>
-							<div className="relative mt-10 h-fit">
-								<CopyToClipboard
-									text={`pnpm add three @react-three/fiber @react-spring/three @shadergradient/react
+  return (
+    <>
+      {!showCode && <CopyToClipboard text={generateCode()} classname="right-32 top-5 h-10 w-10" />}
+      <Button
+        variant="outline"
+        size="sm"
+        className="absolute top-4 right-4 z-[3] h-11"
+        onClick={() => setShowCode(!showCode)}
+      >
+        {showCode ? "Hide Code" : "Show Code"}
+      </Button>
+      <AnimatePresence mode="wait">
+        {showCode && (
+          <div
+            className={
+              "absolute inset-shadow-[0_1px_rgb(0_0_0/0.10)] top-4 right-4 z-[2] h-[95%] w-[44rem] rounded-lg bg-card-bg p-4 dark:inset-shadow-[0_1px_rgb(255_255_255/0.15)]"
+            }
+          >
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="relative h-full space-y-2 overflow-auto"
+            >
+              <div className="relative mt-10 h-fit">
+                <CopyToClipboard
+                  text={`pnpm add three @react-three/fiber @react-spring/three @shadergradient/react
 pnpm add -D @types/three`}
-								/>
-								<pre className="h-full rounded-lg bg-main p-3 text-sm">
-									<code>{`pnpm add three @react-three/fiber @react-spring/three @shadergradient/react
+                />
+                <pre className="h-full rounded-lg bg-main p-3 text-sm">
+                  <code>{`pnpm add three @react-three/fiber @react-spring/three @shadergradient/react
 pnpm add -D @types/three`}</code>
-								</pre>
-							</div>
-							<div className="relative h-full">
-								<CopyToClipboard text={generateCode()} />
-								<pre className="h-full rounded-lg bg-main p-3 text-sm">
-									<code>{generateCode()}</code>
-								</pre>
-							</div>
-						</motion.div>
-					</div>
-				)}
-			</AnimatePresence>
-		</>
-	);
+                </pre>
+              </div>
+              <div className="relative h-full">
+                <CopyToClipboard text={generateCode()} />
+                <pre className="h-full rounded-lg bg-main p-3 text-sm">
+                  <code>{generateCode()}</code>
+                </pre>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </>
+  );
 }

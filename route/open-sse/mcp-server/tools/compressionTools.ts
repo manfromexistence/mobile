@@ -25,7 +25,7 @@ import {
  */
 export async function handleCompressionStatus(
   args: Record<string, never>,
-  extra?: McpToolExtraLike
+  extra?: McpToolExtraLike,
 ): Promise<{
   enabled: boolean;
   strategy: string;
@@ -97,7 +97,7 @@ export async function handleCompressionStatus(
         totalRequests: analyticsSummary.totalRequests,
         compressedRequests: Object.values(analyticsSummary.byMode ?? {}).reduce(
           (sum, mode) => sum + mode.count,
-          0
+          0,
         ),
         tokensSaved: analyticsSummary.totalTokensSaved,
         avgCompressionRatio: analyticsSummary.avgSavingsPct,
@@ -143,7 +143,7 @@ export async function handleCompressionStatus(
       { error: errorMessage },
       duration,
       false,
-      "ERROR"
+      "ERROR",
     );
     throw error;
   }
@@ -162,7 +162,7 @@ export async function handleCompressionConfigure(
     preserveSystemPrompt?: boolean;
     mcpDescriptionCompressionEnabled?: boolean;
   },
-  extra?: McpToolExtraLike
+  extra?: McpToolExtraLike,
 ): Promise<{
   success: boolean;
   updated: Record<string, unknown>;
@@ -228,7 +228,7 @@ export async function handleCompressionConfigure(
       { error: errorMessage },
       duration,
       false,
-      "ERROR"
+      "ERROR",
     );
     throw error;
   }
@@ -270,7 +270,7 @@ const ccrRetrieveInput = z.object({
 });
 
 export async function handleSetCompressionEngine(
-  args: z.infer<typeof setCompressionEngineInput>
+  args: z.infer<typeof setCompressionEngineInput>,
 ): Promise<{ success: boolean; settings: Record<string, unknown> }> {
   const updates: Record<string, unknown> = { enabled: true };
   if (args.engine) {
@@ -309,7 +309,7 @@ export async function handleListCompressionCombos(): Promise<{
 }
 
 export async function handleCompressionComboStats(
-  args: z.infer<typeof compressionComboStatsInput>
+  args: z.infer<typeof compressionComboStatsInput>,
 ): Promise<Record<string, unknown>> {
   const summary = getCompressionAnalyticsSummary(args.since === "all" ? undefined : args.since);
   if (!args.comboId) return summary as unknown as Record<string, unknown>;
@@ -323,12 +323,24 @@ export async function handleCompressionComboStats(
 // T07 — RTK learn/discover exposed via MCP (read-only; suggestions only). Mines the opt-in
 // raw-output sample store, exactly like the /api/context/rtk/{discover,learn} routes.
 const rtkDiscoverInput = z.object({
-  limit: z.number().int().positive().max(2000).optional().describe("Max samples to scan (default 500)"),
+  limit: z
+    .number()
+    .int()
+    .positive()
+    .max(2000)
+    .optional()
+    .describe("Max samples to scan (default 500)"),
 });
 
 const rtkLearnInput = z.object({
   command: z.string().min(1).max(500).describe("The command to learn an RTK filter draft for"),
-  limit: z.number().int().positive().max(2000).optional().describe("Max samples to scan (default 500)"),
+  limit: z
+    .number()
+    .int()
+    .positive()
+    .max(2000)
+    .optional()
+    .describe("Max samples to scan (default 500)"),
 });
 
 function resolveSampleLimit(limit?: number): number {
@@ -337,7 +349,7 @@ function resolveSampleLimit(limit?: number): number {
 }
 
 export async function handleRtkDiscover(
-  args: z.infer<typeof rtkDiscoverInput>
+  args: z.infer<typeof rtkDiscoverInput>,
 ): Promise<{ sampleCount: number; candidates: ReturnType<typeof discoverRepeatedNoise> }> {
   const start = Date.now();
   const samples = listRtkCommandSamples({ limit: resolveSampleLimit(args.limit) });
@@ -348,13 +360,13 @@ export async function handleRtkDiscover(
 }
 
 export async function handleRtkLearn(
-  args: z.infer<typeof rtkLearnInput>
+  args: z.infer<typeof rtkLearnInput>,
 ): Promise<{ command: string; sampleCount: number; filter: ReturnType<typeof suggestFilter> }> {
   const start = Date.now();
   const command = args.command.trim();
   const targetId = commandToId(command);
   const matching = listRtkCommandSamples({ limit: resolveSampleLimit(args.limit) }).filter(
-    (sample) => commandToId(sample.command) === targetId
+    (sample) => commandToId(sample.command) === targetId,
   );
   const filter = suggestFilter(command, matching);
   const result = { command, sampleCount: matching.length, filter };

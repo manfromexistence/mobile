@@ -1,6 +1,14 @@
 "use client";
 
-import { memo, useCallback, useEffect, useRef, useState, type ComponentType, type CSSProperties } from "react";
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ComponentType,
+  type CSSProperties,
+} from "react";
 import type { LoaderCard } from "@/components/loader-details-drawer";
 import { ReducedMotionOverrideProvider } from "@/loaders/hooks/use-prefers-reduced-motion";
 import type { DotMatrixCommonProps } from "@/loaders";
@@ -22,7 +30,7 @@ export const LoaderGalleryGridCard = memo(function LoaderGalleryGridCard({
   PreviewComponent,
   previewProps,
   previewStyle,
-  ignoreReducedMotion = false
+  ignoreReducedMotion = false,
 }: LoaderGalleryGridCardProps) {
   const cardRef = useRef<HTMLButtonElement | null>(null);
   const [isNearViewport, setIsNearViewport] = useState(false);
@@ -31,7 +39,9 @@ export const LoaderGalleryGridCard = memo(function LoaderGalleryGridCard({
     onSelect(item.slug);
   }, [onSelect, item.slug]);
 
-  const shouldAnimate = Boolean(isAnimationEnabled && isNearViewport && (previewProps.animated ?? true));
+  const shouldAnimate = Boolean(
+    isAnimationEnabled && isNearViewport && (previewProps.animated ?? true),
+  );
   const previewNode = <PreviewComponent {...previewProps} animated={shouldAnimate} />;
 
   useEffect(() => {
@@ -52,8 +62,8 @@ export const LoaderGalleryGridCard = memo(function LoaderGalleryGridCard({
       {
         root: null,
         rootMargin: "150px 0px",
-        threshold: 0
-      }
+        threshold: 0,
+      },
     );
 
     observer.observe(node);
@@ -79,7 +89,9 @@ export const LoaderGalleryGridCard = memo(function LoaderGalleryGridCard({
             <ReducedMotionOverrideProvider reducedMotion={false}>
               {previewNode}
             </ReducedMotionOverrideProvider>
-          ) : previewNode}
+          ) : (
+            previewNode
+          )}
         </div>
       </div>
     </button>

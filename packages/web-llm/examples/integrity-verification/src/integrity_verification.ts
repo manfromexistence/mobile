@@ -1,10 +1,10 @@
-import * as webllm from "@mlc-ai/web-llm"
+import * as webllm from "@mlc-ai/web-llm";
 
-const statusEl = document.getElementById("status")!
+const statusEl = document.getElementById("status")!;
 
 function setStatus(msg: string) {
-  console.log(msg)
-  statusEl.innerText = msg
+  console.log(msg);
+  statusEl.innerText = msg;
 }
 
 /**
@@ -22,15 +22,14 @@ function setStatus(msg: string) {
  * - `openssl dgst -sha512 -binary <file> | openssl base64 -A | sed 's/^/sha512-/'`
  */
 async function main() {
-  setStatus("Initializing...")
+  setStatus("Initializing...");
 
   // Example model configuration with integrity hashes.
   // Replace the placeholder hashes below with real SRI hashes for your model.
   const appConfig: webllm.AppConfig = {
     model_list: [
       {
-        model:
-          "https://huggingface.co/mlc-ai/Llama-3.2-1B-Instruct-q4f16_1-MLC",
+        model: "https://huggingface.co/mlc-ai/Llama-3.2-1B-Instruct-q4f16_1-MLC",
         model_id: "Llama-3.2-1B-Instruct-q4f16_1-MLC",
         model_lib:
           webllm.modelLibURLPrefix +
@@ -52,38 +51,35 @@ async function main() {
         // },
       },
     ],
-  }
+  };
 
   try {
-    const engine = await webllm.CreateMLCEngine(
-      "Llama-3.2-1B-Instruct-q4f16_1-MLC",
-      {
-        appConfig,
-        initProgressCallback: (report: webllm.InitProgressReport) => {
-          setStatus(report.text)
-        },
-      }
-    )
+    const engine = await webllm.CreateMLCEngine("Llama-3.2-1B-Instruct-q4f16_1-MLC", {
+      appConfig,
+      initProgressCallback: (report: webllm.InitProgressReport) => {
+        setStatus(report.text);
+      },
+    });
 
-    setStatus("Model loaded! Generating response...")
+    setStatus("Model loaded! Generating response...");
 
     const reply = await engine.chat.completions.create({
       messages: [{ role: "user", content: "Hello! What can you do?" }],
-    })
+    });
 
-    setStatus("Response: " + reply.choices[0].message.content)
+    setStatus("Response: " + reply.choices[0].message.content);
   } catch (error) {
     if (error instanceof webllm.IntegrityError) {
       setStatus(
         `Integrity verification failed!\n` +
           `URL: ${error.url}\n` +
           `Expected: ${error.expected}\n` +
-          `Got: ${error.actual}`
-      )
+          `Got: ${error.actual}`,
+      );
     } else {
-      setStatus("Error: " + error)
+      setStatus("Error: " + error);
     }
   }
 }
 
-main()
+main();

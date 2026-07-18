@@ -29,11 +29,11 @@ test("#6480: session-dedup no-op on out-of-charter single message does not fire 
   assert.equal(
     result.stats?.fallbackApplied,
     undefined,
-    "expected no fallbackApplied flag on a trivial no-op pipeline (engine never advanced)"
+    "expected no fallbackApplied flag on a trivial no-op pipeline (engine never advanced)",
   );
   assert.equal(
     (result.stats?.validationWarnings ?? []).some((w) => w.includes("pipeline-inflation-guard")),
     false,
-    "expected no misleading pipeline-inflation-guard warning when nothing was ever compressed"
+    "expected no misleading pipeline-inflation-guard warning when nothing was ever compressed",
   );
 });

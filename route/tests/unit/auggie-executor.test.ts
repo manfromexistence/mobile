@@ -27,7 +27,6 @@ function writeFakeBin(name: string, script: string): string {
   return p;
 }
 
-
 async function readSseEvents(response: Response): Promise<Record<string, unknown>[]> {
   const text = await response.text();
   const events: Record<string, unknown>[] = [];
@@ -55,13 +54,19 @@ test("buildAuggiePrompt flattens system/user/assistant turns with role tags", ()
   ]);
   assert.equal(
     prompt,
-    "[System]\nBe terse.\n\n[User]\nhi\n\n[Assistant]\nhello\n\n[User]\nhow are you?"
+    "[System]\nBe terse.\n\n[User]\nhi\n\n[Assistant]\nhello\n\n[User]\nhow are you?",
   );
 });
 
 test("buildAuggiePrompt flattens array-shaped content blocks and skips empty turns", () => {
   const prompt = buildAuggiePrompt([
-    { role: "user", content: [{ type: "text", text: "part1 " }, { type: "text", text: "part2" }] },
+    {
+      role: "user",
+      content: [
+        { type: "text", text: "part1 " },
+        { type: "text", text: "part2" },
+      ],
+    },
     { role: "user", content: "" },
     { role: "user", content: [] },
   ]);
@@ -138,7 +143,10 @@ test("execute() surfaces a sanitized 'CLI not found' error on ENOENT (non-stream
 // ─── execute(): non-zero exit → sanitized error ────────────────────────────
 
 test("execute() surfaces a sanitized error when the CLI exits non-zero (streaming)", async () => {
-  const bin = writeFakeBin("fake-auggie-fail.sh", 'echo "boom at /home/attacker/secret.ts:42" 1>&2\nexit 3');
+  const bin = writeFakeBin(
+    "fake-auggie-fail.sh",
+    'echo "boom at /home/attacker/secret.ts:42" 1>&2\nexit 3',
+  );
   const prevBin = process.env.AUGGIE_BIN;
   process.env.AUGGIE_BIN = bin;
   try {
@@ -307,7 +315,7 @@ test("execute() spawns with a valid allowlisted model, no shell, and a '--' argv
   const argvFile = path.join(TMP_DIR, "captured-argv.txt");
   const bin = writeFakeBin(
     "fake-auggie-argv.sh",
-    `for a in "$@"; do printf '%s\\n' "$a" >> "${argvFile}"; done\nprintf "ok"`
+    `for a in "$@"; do printf '%s\\n' "$a" >> "${argvFile}"; done\nprintf "ok"`,
   );
   const prevBin = process.env.AUGGIE_BIN;
   process.env.AUGGIE_BIN = bin;

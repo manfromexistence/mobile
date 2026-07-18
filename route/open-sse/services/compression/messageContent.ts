@@ -37,7 +37,7 @@ export function extractTextContent(content: ChatMessageLike["content"]): string 
 
 export function mapTextContent(
   msg: ChatMessageLike,
-  transform: (text: string, index: number) => string
+  transform: (text: string, index: number) => string,
 ): ChatMessageLike {
   if (typeof msg.content === "string") {
     return { ...msg, content: transform(msg.content, 0) };

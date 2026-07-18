@@ -31,7 +31,7 @@ const normalizeModelLabels = (labels: unknown): Record<string, string> => {
   return Object.fromEntries(
     Object.entries(labels)
       .map(([key, value]) => [normalizeValue(key), String(value || "").trim()])
-      .filter(([key, value]) => key && value)
+      .filter(([key, value]) => key && value),
   );
 };
 
@@ -84,7 +84,7 @@ export const buildOpenCodeConfigDocument = (input: OpenCodeConfigInput) => ({
 
 export const mergeOpenCodeConfig = (
   existingConfig: Record<string, any> | null | undefined,
-  input: OpenCodeConfigInput
+  input: OpenCodeConfigInput,
 ) => {
   const safeConfig =
     existingConfig && typeof existingConfig === "object" && !Array.isArray(existingConfig)
@@ -103,7 +103,7 @@ export const mergeOpenCodeConfig = (
 
 export const mergeOpenCodeConfigText = (
   existingText: string | null | undefined,
-  input: OpenCodeConfigInput
+  input: OpenCodeConfigInput,
 ) => {
   const providerConfig = buildOpenCodeProviderConfig(input);
   const content = typeof existingText === "string" ? existingText : "";
@@ -128,7 +128,7 @@ export const mergeOpenCodeConfigText = (
     parsed.$schema || "https://opencode.ai/config.json",
     {
       formattingOptions: { insertSpaces: true, tabSize: 2 },
-    }
+    },
   );
   nextText = applyEdits(nextText, schemaEdits);
 

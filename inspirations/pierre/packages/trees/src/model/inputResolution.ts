@@ -1,11 +1,11 @@
-import { PathStore } from '@pierre/path-store';
+import { PathStore } from "@pierre/path-store";
 
-import type { FileTreePreparedInput } from '../preparedInput';
-import type { FileTreeControllerOptions } from './publicTypes';
+import type { FileTreePreparedInput } from "../preparedInput";
+import type { FileTreeControllerOptions } from "./publicTypes";
 
 function haveMatchingPaths(
   currentPaths: readonly string[],
-  preparedPaths: readonly string[]
+  preparedPaths: readonly string[],
 ): boolean {
   if (currentPaths === preparedPaths) {
     return true;
@@ -27,9 +27,9 @@ function haveMatchingPaths(
 // Keeps raw path lists and prepared input aligned so callers cannot silently
 // reuse stale prepared data after the tree source changes.
 export function resolveFileTreeInput(
-  options: Pick<FileTreeControllerOptions, 'paths' | 'preparedInput'>,
-  context: 'constructor' | 'resetPaths',
-  sort: FileTreeControllerOptions['sort']
+  options: Pick<FileTreeControllerOptions, "paths" | "preparedInput">,
+  context: "constructor" | "resetPaths",
+  sort: FileTreeControllerOptions["sort"],
 ): {
   paths: readonly string[];
   preparedInput: FileTreePreparedInput | undefined;
@@ -37,7 +37,7 @@ export function resolveFileTreeInput(
   const { paths, preparedInput } = options;
   if (preparedInput == null) {
     if (paths == null) {
-      throw new Error('FileTree requires paths or preparedInput');
+      throw new Error("FileTree requires paths or preparedInput");
     }
 
     return {
@@ -54,13 +54,10 @@ export function resolveFileTreeInput(
     };
   }
 
-  const comparablePaths = PathStore.preparePaths(
-    paths,
-    sort == null ? {} : { sort }
-  );
+  const comparablePaths = PathStore.preparePaths(paths, sort == null ? {} : { sort });
   if (!haveMatchingPaths(comparablePaths, preparedPaths)) {
     throw new Error(
-      `FileTree ${context} received paths and preparedInput for different path lists`
+      `FileTree ${context} received paths and preparedInput for different path lists`,
     );
   }
 

@@ -172,13 +172,13 @@ const MANAGED_PROVIDER_CONNECTION_CATEGORIES = new Set<StaticProviderCatalogCate
 ]);
 
 export function getStaticProviderCatalogGroup(
-  category: StaticProviderCatalogCategory
+  category: StaticProviderCatalogCategory,
 ): StaticProviderCatalogGroup {
   return STATIC_PROVIDER_CATALOG_GROUPS[category];
 }
 
 export function resolveStaticProviderCatalogEntry(
-  providerId: string
+  providerId: string,
 ): ResolvedStaticProviderCatalogEntry | null {
   for (const category of STATIC_PROVIDER_CATALOG_RESOLUTION_ORDER) {
     const group = STATIC_PROVIDER_CATALOG_GROUPS[category];
@@ -218,7 +218,7 @@ export function isManagedProviderConnectionId(providerId: string): boolean {
 
 export function resolveCompatibleProviderCatalogEntry(
   providerNode: CompatibleProviderNodeLike,
-  labels: CompatibleProviderLabels
+  labels: CompatibleProviderLabels,
 ): ResolvedCompatibleProviderCatalogEntry {
   const isCcCompatible = isClaudeCodeCompatibleProvider(providerNode.id);
   const isAnthropicCompatible = providerNode.type === "anthropic-compatible" && !isCcCompatible;
@@ -250,7 +250,7 @@ export function resolveProviderCatalogEntry(
   options?: {
     providerNode?: CompatibleProviderNodeLike | null;
     compatibleLabels?: CompatibleProviderLabels | null;
-  }
+  },
 ): ResolvedProviderCatalogEntry | null {
   if (options?.providerNode && options.compatibleLabels) {
     return resolveCompatibleProviderCatalogEntry(options.providerNode, options.compatibleLabels);

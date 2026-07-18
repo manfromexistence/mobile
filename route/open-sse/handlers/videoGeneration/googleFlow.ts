@@ -67,7 +67,9 @@ const ASPECT_RATIO_RE = /^\d{1,2}:\d{1,2}$/;
  * Accepts both snake_case (OpenAI) and camelCase (native) field names, and
  * treats a `size` that looks like a ratio (e.g. "16:9") as the aspect ratio.
  */
-export function normalizeFlowVideoParams(body: Record<string, unknown> | null | undefined): FlowVideoParams {
+export function normalizeFlowVideoParams(
+  body: Record<string, unknown> | null | undefined,
+): FlowVideoParams {
   const b = body ?? {};
   const prompt = typeof b.prompt === "string" ? b.prompt : String(b.prompt ?? "");
 
@@ -112,7 +114,8 @@ export function buildGoogleFlowSubmitBody(params: FlowVideoParams): {
 } {
   const parameters: Record<string, unknown> = { sampleCount: params.sampleCount };
   if (params.aspectRatio) parameters.aspectRatio = params.aspectRatio;
-  if (typeof params.durationSeconds === "number") parameters.durationSeconds = params.durationSeconds;
+  if (typeof params.durationSeconds === "number")
+    parameters.durationSeconds = params.durationSeconds;
   if (params.negativePrompt) parameters.negativePrompt = params.negativePrompt;
   if (params.resolution) parameters.resolution = params.resolution;
 
@@ -159,9 +162,7 @@ function extractVideoFromResponse(response: unknown): { base64?: string; url?: s
   if (Array.isArray(samples) && samples.length > 0) {
     const sample = samples[0];
     const video =
-      sample && typeof sample === "object"
-        ? (sample as { video?: unknown }).video
-        : undefined;
+      sample && typeof sample === "object" ? (sample as { video?: unknown }).video : undefined;
     if (video && typeof video === "object") {
       const rec = video as Record<string, unknown>;
       if (typeof rec.uri === "string") return { url: rec.uri };
@@ -197,7 +198,7 @@ export function parseFlowOperationResult(json: unknown): FlowOperationResult {
 
 /** Resolve the Cloud Code projectId from the OAuth credential record (mirrors Antigravity). */
 export function resolveFlowProjectId(
-  credentials: Record<string, unknown> | null | undefined
+  credentials: Record<string, unknown> | null | undefined,
 ): string | null {
   const cred = credentials ?? {};
   const direct = asTrimmedString(cred.projectId);
@@ -212,7 +213,7 @@ export function resolveFlowProjectId(
 
 /** Resolve the OAuth bearer token from the credential record. */
 export function resolveFlowAccessToken(
-  credentials: Record<string, unknown> | null | undefined
+  credentials: Record<string, unknown> | null | undefined,
 ): string | null {
   const cred = credentials ?? {};
   return asTrimmedString(cred.accessToken) ?? asTrimmedString(cred.apiKey) ?? null;

@@ -49,7 +49,7 @@ test("#2905 addCustomModel persists targetFormat", async () => {
     "manual",
     "chat-completions",
     ["chat"],
-    "claude"
+    "claude",
   );
   const models = (await modelsDb.getCustomModels("openai-compatible-2905")) as Array<{
     id: string;
@@ -76,7 +76,7 @@ test("#2905 a custom model without targetFormat surfaces none (provider default 
     "Plain Model",
     "manual",
     "chat-completions",
-    ["chat"]
+    ["chat"],
   );
   const info = (await getModelInfo("g29/plain-model")) as { targetFormat?: string };
   assert.equal(info.targetFormat, undefined, "no targetFormat → falls back to provider default");

@@ -28,7 +28,7 @@ test("requestUserCode posts client_id and normalizes interval + verification uri
     calls.push({ url, body: typeof init?.body === "string" ? init.body : undefined });
     return new Response(
       JSON.stringify({ device_auth_id: "dev-1", user_code: "ABCD-1234", interval: "7" }),
-      { status: 200 }
+      { status: 200 },
     );
   });
 
@@ -47,9 +47,10 @@ test("requestUserCode posts client_id and normalizes interval + verification uri
 
 test("requestUserCode accepts the alternate 'usercode' field", async () => {
   const restore = withFetch(
-    () => new Response(JSON.stringify({ device_auth_id: "d", usercode: "X-1", interval: 0 }), {
-      status: 200,
-    })
+    () =>
+      new Response(JSON.stringify({ device_auth_id: "d", usercode: "X-1", interval: 0 }), {
+        status: 200,
+      }),
   );
   try {
     const uc = await requestUserCode();
@@ -81,7 +82,7 @@ test("pollForAuthorization treats 403 as pending then returns code + verifier", 
     if (n === 1) return new Response("pending", { status: 403 });
     return new Response(
       JSON.stringify({ authorization_code: "auth-code", code_verifier: "ver-123" }),
-      { status: 200 }
+      { status: 200 },
     );
   });
   try {
@@ -115,7 +116,7 @@ test("pollForAuthorization aborts via signal", async () => {
       (err) => {
         assert.equal((err as CodexDeviceFlowError).code, "aborted");
         return true;
-      }
+      },
     );
   } finally {
     restore();
@@ -134,7 +135,7 @@ test("exchangeCodeForTokens posts the authorization_code grant with the server v
         id_token: "it",
         expires_in: 3600,
       }),
-      { status: 200 }
+      { status: 200 },
     );
   });
   try {
@@ -158,7 +159,7 @@ test("runCodexDeviceFlow drives usercode → poll → exchange and reports the u
     if (url === USERCODE_URL) {
       return new Response(
         JSON.stringify({ device_auth_id: "dev-1", user_code: "WXYZ-9", interval: 0.001 }),
-        { status: 200 }
+        { status: 200 },
       );
     }
     if (url === POLL_URL) {
@@ -166,13 +167,13 @@ test("runCodexDeviceFlow drives usercode → poll → exchange and reports the u
       if (polls < 2) return new Response("pending", { status: 404 });
       return new Response(
         JSON.stringify({ authorization_code: "auth-code", code_verifier: "ver-123" }),
-        { status: 200 }
+        { status: 200 },
       );
     }
     if (url === TOKEN_URL) {
       return new Response(
         JSON.stringify({ access_token: "at", refresh_token: "rt", id_token: "it", expires_in: 60 }),
-        { status: 200 }
+        { status: 200 },
       );
     }
     return new Response("not-found", { status: 404 });

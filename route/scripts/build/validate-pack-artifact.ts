@@ -34,7 +34,7 @@ function runNpm(args: string[], stdio: "inherit" | "pipe" = "pipe"): string {
 
 function ensureAppStagingReady(): void {
   const missingAppRequiredPaths = PACK_ARTIFACT_REQUIRED_PATHS.filter((requiredPath) =>
-    requiredPath.startsWith("dist/")
+    requiredPath.startsWith("dist/"),
   ).filter((requiredPath) => !existsSync(join(ROOT, requiredPath)));
 
   if (missingAppRequiredPaths.length === 0) return;

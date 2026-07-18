@@ -1,9 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {
-  normalizeThinkingForModel,
-  getModelSpec,
-} from "../../src/shared/constants/modelSpecs.ts";
+import { normalizeThinkingForModel, getModelSpec } from "../../src/shared/constants/modelSpecs.ts";
 
 // Regression for #3554: a combo can substitute the upstream model AFTER the client
 // already chose its `thinking` value. Claude Code sends `thinking:{type:"disabled"}` for
@@ -39,7 +36,7 @@ test("#3554 normalizeThinkingForModel preserves disabled for opus-4-8 and sonnet
 test("#3554 normalizeThinkingForModel preserves enabled/adaptive thinking for fable-5", () => {
   const enabled = normalizeThinkingForModel(
     { thinking: { type: "enabled", budget_tokens: 4000 } },
-    "claude-fable-5"
+    "claude-fable-5",
   );
   assert.deepEqual(enabled.thinking, { type: "enabled", budget_tokens: 4000 });
   const adaptive = normalizeThinkingForModel({ thinking: { type: "adaptive" } }, "claude-fable-5");
@@ -55,7 +52,7 @@ test("#3554 normalizeThinkingForModel is a no-op when there is no thinking field
 test("#3554 normalizeThinkingForModel tolerates unknown models (no spec → preserve)", () => {
   const out = normalizeThinkingForModel(
     { thinking: { type: "disabled" } },
-    "some-unknown-model-xyz"
+    "some-unknown-model-xyz",
   );
   assert.deepEqual(out.thinking, { type: "disabled" });
 });

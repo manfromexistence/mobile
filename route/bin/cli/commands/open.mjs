@@ -34,7 +34,7 @@ export function registerOpen(program) {
         const base = RESOURCES[resource];
         if (!base) {
           process.stderr.write(
-            `Unknown resource: ${resource}\nAvailable: ${Object.keys(RESOURCES).join(", ")}\n`
+            `Unknown resource: ${resource}\nAvailable: ${Object.keys(RESOURCES).join(", ")}\n`,
           );
           process.exit(2);
         }

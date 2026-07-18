@@ -26,8 +26,7 @@ export const PRESERVE_SYSTEM_PROMPT_MODES: readonly PreserveSystemPromptMode[] =
 
 export function isPreserveSystemPromptMode(value: unknown): value is PreserveSystemPromptMode {
   return (
-    typeof value === "string" &&
-    (PRESERVE_SYSTEM_PROMPT_MODES as readonly string[]).includes(value)
+    typeof value === "string" && (PRESERVE_SYSTEM_PROMPT_MODES as readonly string[]).includes(value)
   );
 }
 
@@ -37,7 +36,7 @@ export function isPreserveSystemPromptMode(value: unknown): value is PreserveSys
  * 1:1 to the behaviour it already had (`false → whenNoCache`, anything else → `always`).
  */
 export function normalizePreserveSystemPromptMode(
-  config: Pick<CompressionConfig, "preserveSystemPrompt" | "preserveSystemPromptMode">
+  config: Pick<CompressionConfig, "preserveSystemPrompt" | "preserveSystemPromptMode">,
 ): PreserveSystemPromptMode {
   if (isPreserveSystemPromptMode(config.preserveSystemPromptMode)) {
     return config.preserveSystemPromptMode;
@@ -51,7 +50,7 @@ export function normalizePreserveSystemPromptMode(
  */
 export function resolvePreserveSystemPrompt(
   mode: PreserveSystemPromptMode,
-  { hasCache }: { hasCache: boolean }
+  { hasCache }: { hasCache: boolean },
 ): boolean {
   switch (mode) {
     case "always":

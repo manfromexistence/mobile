@@ -26,7 +26,7 @@ export function RequestStreamingList({
 }: RequestStreamingListProps) {
   const { virtualItems, totalHeight, containerRef, rowRef } = useVirtualList(
     requests,
-    containerHeight
+    containerHeight,
   );
 
   if (requests.length === 0) {
@@ -56,7 +56,9 @@ export function RequestStreamingList({
               network_check
             </span>
             <p>No requests captured yet.</p>
-            <p className="text-xs">Make sure AgentBridge is running or enable another capture mode.</p>
+            <p className="text-xs">
+              Make sure AgentBridge is running or enable another capture mode.
+            </p>
           </div>
         </div>
       </div>

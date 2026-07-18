@@ -137,7 +137,7 @@ function normalizeClaudeSessionCookie(rawValue: string): string {
  */
 async function normalizeClaudeSessionCookieWithAutoRefresh(
   rawValue: string,
-  options?: { allowAutoSolve?: boolean; log?: any }
+  options?: { allowAutoSolve?: boolean; log?: any },
 ): Promise<string> {
   let normalized = normalizeClaudeSessionCookie(rawValue);
 
@@ -176,7 +176,7 @@ async function normalizeClaudeSessionCookieWithAutoRefresh(
 async function verifyCookieValidity(
   cookieHeader: string,
   deviceId: string | undefined,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): Promise<boolean> {
   try {
     const timeoutSignal = AbortSignal.timeout(FETCH_TIMEOUT_MS);
@@ -202,7 +202,7 @@ async function verifyCookieValidity(
 async function getOrganizationId(
   cookieHeader: string,
   deviceId: string | undefined,
-  signal?: AbortSignal
+  signal?: AbortSignal,
 ): Promise<string | null> {
   try {
     const timeoutSignal = AbortSignal.timeout(FETCH_TIMEOUT_MS);
@@ -275,7 +275,7 @@ async function buildClaudeStreamingResponse(
     | { warn?: (tag: string, msg: string) => void; error?: (tag: string, msg: string) => void }
     | null
     | undefined,
-  tlsBody: ReadableStream<Uint8Array> | null | undefined
+  tlsBody: ReadableStream<Uint8Array> | null | undefined,
 ): Promise<Response> {
   const src = tlsBody ?? upstreamResp.body;
   if (!src) {
@@ -286,7 +286,7 @@ async function buildClaudeStreamingResponse(
           type: "upstream_error",
         },
       }),
-      { status: 502, headers: { "Content-Type": "application/json" } }
+      { status: 502, headers: { "Content-Type": "application/json" } },
     );
   }
 
@@ -388,12 +388,12 @@ async function buildClaudeStreamingResponse(
                 if (text) {
                   const chunk = transformFromClaude(text, model);
                   controller.enqueue(
-                    new TextEncoder().encode(`data: ${JSON.stringify(chunk)}\n\n`)
+                    new TextEncoder().encode(`data: ${JSON.stringify(chunk)}\n\n`),
                   );
                 } else if (thinking) {
                   const chunk = transformFromClaude(thinking, model, undefined, "reasoning");
                   controller.enqueue(
-                    new TextEncoder().encode(`data: ${JSON.stringify(chunk)}\n\n`)
+                    new TextEncoder().encode(`data: ${JSON.stringify(chunk)}\n\n`),
                   );
                 }
               }
@@ -447,7 +447,7 @@ export class ClaudeWebExecutor extends BaseExecutor {
    */
   async testConnection(
     credentials: Record<string, unknown>,
-    signal?: AbortSignal
+    signal?: AbortSignal,
   ): Promise<boolean> {
     try {
       const rawCookie = readClaudeWebCookie(credentials);
@@ -486,7 +486,7 @@ export class ClaudeWebExecutor extends BaseExecutor {
             status: 400,
             statusText: "Bad Request",
             headers: { "Content-Type": "application/json" },
-          }
+          },
         );
         return {
           response: errorResp,
@@ -509,7 +509,7 @@ export class ClaudeWebExecutor extends BaseExecutor {
             status: 401,
             statusText: "Unauthorized",
             headers: { "Content-Type": "application/json" },
-          }
+          },
         );
         return {
           response: errorResp,
@@ -542,7 +542,7 @@ export class ClaudeWebExecutor extends BaseExecutor {
             status: 400,
             statusText: "Bad Request",
             headers: { "Content-Type": "application/json" },
-          }
+          },
         );
         return {
           response: errorResp,
@@ -622,7 +622,7 @@ export class ClaudeWebExecutor extends BaseExecutor {
           JSON.stringify({
             error: {
               message: `Claude Web browser-backed chat captured no upstream response (timing: ${JSON.stringify(
-                result.timing
+                result.timing,
               )})`,
               type: "upstream_error",
             },
@@ -630,7 +630,7 @@ export class ClaudeWebExecutor extends BaseExecutor {
           {
             status: 502,
             headers: { "Content-Type": "application/json" },
-          }
+          },
         );
         return {
           response: errorResp,
@@ -682,7 +682,7 @@ export class ClaudeWebExecutor extends BaseExecutor {
               status: 401,
               statusText: "Unauthorized",
               headers: { "Content-Type": "application/json" },
-            }
+            },
           );
           return {
             response: errorResp,
@@ -704,7 +704,7 @@ export class ClaudeWebExecutor extends BaseExecutor {
               status: 429,
               statusText: "Too Many Requests",
               headers: { "Content-Type": "application/json" },
-            }
+            },
           );
           return {
             response: errorResp,
@@ -815,7 +815,7 @@ export class ClaudeWebExecutor extends BaseExecutor {
             status: fetchResponse.status,
             statusText: "HTTP Error",
             headers: { "Content-Type": "application/json" },
-          }
+          },
         );
         return {
           response: errorResp,
@@ -847,7 +847,7 @@ export class ClaudeWebExecutor extends BaseExecutor {
           status: 500,
           statusText: "Internal Server Error",
           headers: { "Content-Type": "application/json" },
-        }
+        },
       );
 
       return {

@@ -43,7 +43,7 @@ export function shouldStripCloudCodeThinking(provider: string, model: string): b
  * @deprecated This function will be removed in v4.0, reasoning configuration processing has migrated to translateRequest
  */
 export function stripCloudCodeThinkingConfig(
-  body: Record<string, unknown>
+  body: Record<string, unknown>,
 ): Record<string, unknown> {
   const next = { ...body };
 

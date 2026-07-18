@@ -17,9 +17,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { injectCustomSystemPrompt } = await import(
-  "../../open-sse/services/systemPrompt.ts"
-);
+const { injectCustomSystemPrompt } = await import("../../open-sse/services/systemPrompt.ts");
 
 // ─── injectCustomSystemPrompt ────────────────────────────────────────────────
 
@@ -35,11 +33,11 @@ test("injectCustomSystemPrompt: appends to existing string system message", () =
   assert.ok(sysMsg, "system message must exist");
   assert.ok(
     typeof sysMsg.content === "string" && sysMsg.content.includes("You are a helpful assistant."),
-    "original content preserved"
+    "original content preserved",
   );
   assert.ok(
     typeof sysMsg.content === "string" && sysMsg.content.includes("Always respond formally."),
-    "custom prompt appended"
+    "custom prompt appended",
   );
 });
 
@@ -142,13 +140,9 @@ test("settings defaults include customSystemPromptEnabled=false and customSystem
   assert.equal(
     settings.customSystemPromptEnabled,
     false,
-    "customSystemPromptEnabled default is false"
+    "customSystemPromptEnabled default is false",
   );
-  assert.equal(
-    settings.customSystemPrompt,
-    "",
-    "customSystemPrompt default is empty string"
-  );
+  assert.equal(settings.customSystemPrompt, "", "customSystemPrompt default is empty string");
 
   t.after(() => {
     resetDbInstance();

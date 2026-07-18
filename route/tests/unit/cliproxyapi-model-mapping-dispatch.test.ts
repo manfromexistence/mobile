@@ -22,10 +22,12 @@ process.env.DATA_DIR = testDataDir;
 
 const coreDb = await import("../../src/lib/db/core.ts");
 const upstreamProxyDb = await import("../../src/lib/db/upstreamProxy.ts");
-const { resolveExecutorWithProxy } =
-  await import("../../open-sse/handlers/chatCore/executorProxy.ts");
-const { clearUpstreamProxyConfigCache } =
-  await import("../../open-sse/handlers/chatCore/comboContextCache.ts");
+const { resolveExecutorWithProxy } = await import(
+  "../../open-sse/handlers/chatCore/executorProxy.ts"
+);
+const { clearUpstreamProxyConfigCache } = await import(
+  "../../open-sse/handlers/chatCore/comboContextCache.ts"
+);
 
 before(async () => {
   await coreDb.ensureDbInitialized();
@@ -81,12 +83,12 @@ describe("#6876 — cliproxyapiModelMapping applied at dispatch", () => {
     const executor = await resolveExecutorWithProxy(
       "anthropic-mapped-passthrough",
       undefined,
-      null
+      null,
     );
     assert.equal(
       (executor as { provider?: string }).provider,
       "cliproxyapi",
-      "sanity: provider should route through the cliproxyapi executor"
+      "sanity: provider should route through the cliproxyapi executor",
     );
 
     const capturedBody = await captureFetchBody(() =>
@@ -95,13 +97,13 @@ describe("#6876 — cliproxyapiModelMapping applied at dispatch", () => {
         body: { model: "claude-3-opus", messages: [{ role: "user", content: "hi" }] },
         stream: false,
         credentials: { apiKey: "test-key" },
-      })
+      }),
     );
 
     assert.equal(
       capturedBody.model,
       "claude-3-opus-mapped",
-      `expected mapped model "claude-3-opus-mapped" to be forwarded upstream, got unmapped "${capturedBody.model}"`
+      `expected mapped model "claude-3-opus-mapped" to be forwarded upstream, got unmapped "${capturedBody.model}"`,
     );
   });
 
@@ -120,7 +122,7 @@ describe("#6876 — cliproxyapiModelMapping applied at dispatch", () => {
         body: { model: "claude-3-opus", messages: [{ role: "user", content: "hi" }] },
         stream: false,
         credentials: { apiKey: "test-key" },
-      })
+      }),
     );
 
     assert.equal(capturedBody.model, "claude-3-opus", "unmapped model must pass through unchanged");

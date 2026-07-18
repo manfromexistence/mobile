@@ -155,7 +155,7 @@ test("encodeAgentRunRequest sends ModelDetails for pinned thinking models (#3714
   // (3) → the id must now appear at least 4 times (it appeared once before the fix).
   assert.ok(
     occurrences >= 4,
-    `pinned model id must be encoded in both RequestedModel and ModelDetails (got ${occurrences})`
+    `pinned model id must be encoded in both RequestedModel and ModelDetails (got ${occurrences})`,
   );
 });
 
@@ -166,14 +166,17 @@ test("encodeAgentRunRequest keeps RequestedModel + parameters alongside ModelDet
   const composerText = composer.toString("latin1");
   assert.ok(composerText.includes("composer-2"), "split model id still present");
   assert.ok(composerText.includes("fast"), "'-fast' parameter id still present (RequestedModel)");
-  assert.ok(composerText.includes("true"), "'-fast' parameter value still present (RequestedModel)");
+  assert.ok(
+    composerText.includes("true"),
+    "'-fast' parameter value still present (RequestedModel)",
+  );
 
   // auto → default, now appearing in both RequestedModel and ModelDetails.
   const auto = encodeAgentRunRequest({ modelId: "auto", userText: "hi" });
   const autoOccurrences = auto.toString("latin1").split("default").length - 1;
   assert.ok(
     autoOccurrences >= 4,
-    `'default' must appear in RequestedModel + ModelDetails (got ${autoOccurrences})`
+    `'default' must appear in RequestedModel + ModelDetails (got ${autoOccurrences})`,
   );
 });
 
@@ -274,7 +277,7 @@ function assertEcmShape(
   framed: Buffer,
   expectedExecMsgId: number,
   expectedExecId: string,
-  expectedResultField: number
+  expectedResultField: number,
 ) {
   const payload = unwrapFrame(framed);
   // Top-level: AgentClientMessage { exec_client_message (2): ECM }

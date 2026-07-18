@@ -130,7 +130,7 @@ export function deleteGroup(id: string): boolean {
   // Protect the seed group.
   if (id === "group-demo") {
     throw new Error(
-      "Cannot delete the protected seed group 'group-demo'. Reassign its pools to another group first."
+      "Cannot delete the protected seed group 'group-demo'. Reassign its pools to another group first.",
     );
   }
 

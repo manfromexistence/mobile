@@ -22,7 +22,7 @@ export const PoolCreateSchema = z
       if (data.connectionIds === undefined) return true;
       return data.connectionIds.includes(data.connectionId);
     },
-    { message: "primary connectionId must be one of connectionIds" }
+    { message: "primary connectionId must be one of connectionIds" },
   );
 
 export const PoolUpdateSchema = z.object({

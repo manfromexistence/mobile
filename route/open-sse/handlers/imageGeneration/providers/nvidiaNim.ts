@@ -42,7 +42,7 @@ function parseDimensions(body: Record<string, unknown>): { width: number; height
 function copyIfPresent(
   target: Record<string, unknown>,
   source: Record<string, unknown>,
-  key: string
+  key: string,
 ): void {
   if (source[key] !== undefined && source[key] !== null && source[key] !== "") {
     target[key] = source[key];
@@ -53,7 +53,7 @@ function copyNumberIfPresent(
   target: Record<string, unknown>,
   source: Record<string, unknown>,
   key: string,
-  options: { greaterThan?: number } = {}
+  options: { greaterThan?: number } = {},
 ): void {
   if (source[key] === undefined || source[key] === null || source[key] === "") return;
   const value = Number(source[key]);
@@ -87,13 +87,16 @@ function isFlux1DevDimension(value: number): boolean {
  */
 export function buildNvidiaNimRequestBody(
   model: string,
-  body: Record<string, unknown>
+  body: Record<string, unknown>,
 ): Record<string, unknown> {
   const req: Record<string, unknown> = { prompt: body.prompt };
   const dimensions = parseDimensions(body);
 
   if (dimensions && model !== FLUX_1_KONTEXT_DEV) {
-    if (model !== FLUX_1_DEV || (isFlux1DevDimension(dimensions.width) && isFlux1DevDimension(dimensions.height))) {
+    if (
+      model !== FLUX_1_DEV ||
+      (isFlux1DevDimension(dimensions.width) && isFlux1DevDimension(dimensions.height))
+    ) {
       req.width = dimensions.width;
       req.height = dimensions.height;
     }
@@ -124,7 +127,9 @@ export function buildNvidiaNimRequestBody(
   return req;
 }
 
-function imageItemFromValue(value: unknown): { b64_json?: string; url?: string; finish_reason?: string } | null {
+function imageItemFromValue(
+  value: unknown,
+): { b64_json?: string; url?: string; finish_reason?: string } | null {
   if (!value) return null;
   if (typeof value === "string") return { b64_json: value };
   if (typeof value !== "object") return null;
@@ -170,7 +175,9 @@ export function normalizeNvidiaNimImages(responseBody: unknown): {
 
   return {
     created: Math.floor(Date.now() / 1000),
-    data: candidates.map(imageItemFromValue).filter((item): item is NonNullable<typeof item> => item !== null),
+    data: candidates
+      .map(imageItemFromValue)
+      .filter((item): item is NonNullable<typeof item> => item !== null),
   };
 }
 

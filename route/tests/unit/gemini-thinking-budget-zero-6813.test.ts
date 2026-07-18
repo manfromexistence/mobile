@@ -20,18 +20,20 @@ test("thinking.budget_tokens: 0 is honored as thinkingBudget 0 (not dropped) (#6
       messages: [{ role: "user", content: "hi" }],
       thinking: { type: "enabled", budget_tokens: 0 },
     },
-    false
-  ) as { generationConfig: { thinkingConfig?: { thinkingBudget: number; includeThoughts: boolean } } };
+    false,
+  ) as {
+    generationConfig: { thinkingConfig?: { thinkingBudget: number; includeThoughts: boolean } };
+  };
 
   assert.equal(
     result.generationConfig.thinkingConfig?.thinkingBudget,
     0,
-    "explicit budget_tokens: 0 must map to thinkingBudget: 0"
+    "explicit budget_tokens: 0 must map to thinkingBudget: 0",
   );
   assert.equal(
     result.generationConfig.thinkingConfig?.includeThoughts,
     false,
-    "with a zero budget there are no thoughts to include"
+    "with a zero budget there are no thoughts to include",
   );
 });
 
@@ -42,8 +44,10 @@ test("thinking.budget_tokens: positive value still maps through with includeThou
       messages: [{ role: "user", content: "hi" }],
       thinking: { type: "enabled", budget_tokens: 2048 },
     },
-    false
-  ) as { generationConfig: { thinkingConfig?: { thinkingBudget: number; includeThoughts: boolean } } };
+    false,
+  ) as {
+    generationConfig: { thinkingConfig?: { thinkingBudget: number; includeThoughts: boolean } };
+  };
 
   assert.equal(result.generationConfig.thinkingConfig?.thinkingBudget, 2048);
   assert.equal(result.generationConfig.thinkingConfig?.includeThoughts, true);

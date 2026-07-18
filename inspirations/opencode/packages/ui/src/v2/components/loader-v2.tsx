@@ -1,8 +1,8 @@
-import { splitProps, type ComponentProps } from "solid-js"
-import "./loader-v2.css"
+import { splitProps, type ComponentProps } from "solid-js";
+import "./loader-v2.css";
 
 export function LoaderV2(props: ComponentProps<"svg">) {
-  const [local, rest] = splitProps(props, ["class", "classList", "width", "height"])
+  const [local, rest] = splitProps(props, ["class", "classList", "width", "height"]);
   return (
     <svg
       {...rest}
@@ -27,5 +27,5 @@ export function LoaderV2(props: ComponentProps<"svg">) {
         stroke-dasharray="33 67"
       />
     </svg>
-  )
+  );
 }

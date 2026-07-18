@@ -111,7 +111,13 @@ function resolveBaseRef() {
   if (process.env.GITHUB_BASE_REF) return `origin/${process.env.GITHUB_BASE_REF}`;
   // Local fallback: the highest release/v* on origin (the active development base).
   try {
-    const branches = git(["branch", "-r", "--list", "origin/release/v*", "--format=%(refname:short)"])
+    const branches = git([
+      "branch",
+      "-r",
+      "--list",
+      "origin/release/v*",
+      "--format=%(refname:short)",
+    ])
       .split("\n")
       .map((s) => s.trim())
       .filter(Boolean)
@@ -127,7 +133,9 @@ function main() {
   // eat-guard below structurally unnecessary for PRs that stop editing CHANGELOG.md).
   const invalidFragments = findInvalidFragments();
   if (invalidFragments.length > 0) {
-    console.error(`[changelog-integrity] ${invalidFragments.length} invalid changelog fragment(s):`);
+    console.error(
+      `[changelog-integrity] ${invalidFragments.length} invalid changelog fragment(s):`,
+    );
     for (const { file, error } of invalidFragments) console.error(`  ✗ ${file}: ${error}`);
     console.error("\nSee changelog.d/README.md for the fragment convention.");
     return 1;
@@ -155,7 +163,7 @@ function main() {
   }
 
   console.error(
-    `[changelog-integrity] ${lost.length} bullet(s) present in ${baseRef} are MISSING from this tree's ${CHANGELOG}:`
+    `[changelog-integrity] ${lost.length} bullet(s) present in ${baseRef} are MISSING from this tree's ${CHANGELOG}:`,
   );
   for (const b of lost.slice(0, 15)) console.error(`  ✗ ${b.slice(0, 160)}`);
   if (lost.length > 15) console.error(`  … and ${lost.length - 15} more`);
@@ -163,10 +171,12 @@ function main() {
     "\nThis is the CHANGELOG-eat pattern (merge auto-resolve dropping sibling bullets)." +
       "\nFix: restore the base CHANGELOG (`git checkout <base> -- CHANGELOG.md`), re-insert ONLY" +
       "\nyour own bullet, and prove the net diff is additive. Intentional removals (rare):" +
-      "\nre-run with ALLOW_CHANGELOG_REMOVALS=1 and justify in the PR body."
+      "\nre-run with ALLOW_CHANGELOG_REMOVALS=1 and justify in the PR body.",
   );
   if (process.env.ALLOW_CHANGELOG_REMOVALS === "1") {
-    console.error("[changelog-integrity] ALLOW_CHANGELOG_REMOVALS=1 — reporting only, not failing.");
+    console.error(
+      "[changelog-integrity] ALLOW_CHANGELOG_REMOVALS=1 — reporting only, not failing.",
+    );
     return 0;
   }
   return 1;

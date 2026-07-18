@@ -123,7 +123,7 @@ test("mcp tools list com --scope filtra por scope", async () => {
 
   globalThis.fetch = origFetch;
   assert.ok(
-    capturedUrl.includes("scope=read%3Ahealth") || capturedUrl.includes("scope=read:health")
+    capturedUrl.includes("scope=read%3Ahealth") || capturedUrl.includes("scope=read:health"),
   );
 });
 

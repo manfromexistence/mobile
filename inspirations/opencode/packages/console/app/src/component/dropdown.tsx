@@ -1,46 +1,46 @@
-import { JSX, Show, createEffect, onCleanup } from "solid-js"
-import { createStore } from "solid-js/store"
-import { IconChevron } from "./icon"
-import "./dropdown.css"
+import { JSX, Show, createEffect, onCleanup } from "solid-js";
+import { createStore } from "solid-js/store";
+import { IconChevron } from "./icon";
+import "./dropdown.css";
 
 interface DropdownProps {
-  trigger: JSX.Element | string
-  children: JSX.Element
-  open?: boolean
-  onOpenChange?: (open: boolean) => void
-  align?: "left" | "right"
-  class?: string
+  trigger: JSX.Element | string;
+  children: JSX.Element;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  align?: "left" | "right";
+  class?: string;
 }
 
 export function Dropdown(props: DropdownProps) {
   const [store, setStore] = createStore({
     isOpen: props.open ?? false,
-  })
-  let dropdownRef: HTMLDivElement | undefined
+  });
+  let dropdownRef: HTMLDivElement | undefined;
 
   createEffect(() => {
     if (props.open !== undefined) {
-      setStore("isOpen", props.open)
+      setStore("isOpen", props.open);
     }
-  })
+  });
 
   createEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef && !dropdownRef.contains(event.target as Node)) {
-        setStore("isOpen", false)
-        props.onOpenChange?.(false)
+        setStore("isOpen", false);
+        props.onOpenChange?.(false);
       }
-    }
+    };
 
-    document.addEventListener("click", handleClickOutside)
-    onCleanup(() => document.removeEventListener("click", handleClickOutside))
-  })
+    document.addEventListener("click", handleClickOutside);
+    onCleanup(() => document.removeEventListener("click", handleClickOutside));
+  });
 
   const toggle = () => {
-    const newValue = !store.isOpen
-    setStore("isOpen", newValue)
-    props.onOpenChange?.(newValue)
-  }
+    const newValue = !store.isOpen;
+    setStore("isOpen", newValue);
+    props.onOpenChange?.(newValue);
+  };
 
   return (
     <div data-component="dropdown" class={props.class} ref={dropdownRef}>
@@ -55,14 +55,14 @@ export function Dropdown(props: DropdownProps) {
         </div>
       </Show>
     </div>
-  )
+  );
 }
 
 interface DropdownItemProps {
-  children: JSX.Element
-  selected?: boolean
-  onClick?: () => void
-  type?: "button" | "submit" | "reset"
+  children: JSX.Element;
+  selected?: boolean;
+  onClick?: () => void;
+  type?: "button" | "submit" | "reset";
 }
 
 export function DropdownItem(props: DropdownItemProps) {
@@ -75,5 +75,5 @@ export function DropdownItem(props: DropdownItemProps) {
     >
       {props.children}
     </button>
-  )
+  );
 }

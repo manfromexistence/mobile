@@ -5,12 +5,12 @@ const FOOTER_WIDTH_BREAKPOINTS = {
   commandHint: 66,
   model: 120,
   spacious: 150,
-} as const
+} as const;
 
 export function footerWidthPolicy(width: number) {
-  const compact = width >= FOOTER_WIDTH_BREAKPOINTS.compact
-  const model = width >= FOOTER_WIDTH_BREAKPOINTS.model
-  const spacious = width >= FOOTER_WIDTH_BREAKPOINTS.spacious
+  const compact = width >= FOOTER_WIDTH_BREAKPOINTS.compact;
+  const model = width >= FOOTER_WIDTH_BREAKPOINTS.model;
+  const spacious = width >= FOOTER_WIDTH_BREAKPOINTS.spacious;
 
   return {
     dialog: {
@@ -23,5 +23,5 @@ export function footerWidthPolicy(width: number) {
       contextHintLimit: !compact ? 0 : spacious ? undefined : model ? 2 : 1,
       showModel: model,
     },
-  }
+  };
 }

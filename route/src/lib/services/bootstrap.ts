@@ -8,10 +8,7 @@ import {
   CLIPROXY_DEFAULT_PORT,
 } from "./installers/cliproxy";
 import { resolveSpawnArgs as muxSpawnArgs, MUX_DEFAULT_PORT } from "./installers/mux";
-import {
-  resolveSpawnArgs as bifrostSpawnArgs,
-  BIFROST_DEFAULT_PORT,
-} from "./installers/bifrost";
+import { resolveSpawnArgs as bifrostSpawnArgs, BIFROST_DEFAULT_PORT } from "./installers/bifrost";
 import { getOrCreateApiKey } from "./apiKey";
 import { scheduleServiceModelSync, stopServiceModelSync } from "./modelSync";
 import type { ServiceStatus } from "./types";
@@ -72,7 +69,7 @@ const SERVICES: ServiceEntry[] = [
 
 function buildSpawnArgsFactory(
   cfg: ServiceEntry,
-  apiKey: string
+  apiKey: string,
 ): () => ReturnType<typeof nineRouterSpawnArgs> {
   if (cfg.tool === "9router") {
     return () => nineRouterSpawnArgs(apiKey, cfg.port);

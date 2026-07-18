@@ -6,11 +6,9 @@ import {
   PackageManagerInstallCard,
   TitledCodeCopyCard,
   shadcnRegistryAddCommand,
-  type ShadcnPackageManager
+  type ShadcnPackageManager,
 } from "@/components/package-manager-install-toolbar";
-import {
-  DIALOG_CODE_SCROLL_CLASS
-} from "@/components/loader-details-drawer.constants";
+import { DIALOG_CODE_SCROLL_CLASS } from "@/components/loader-details-drawer.constants";
 import { DrawerPreviewPane } from "@/components/loader-details-drawer/drawer-preview-pane";
 import { ExampleUsageDotRail } from "@/components/loader-details-drawer/example-usage-dot-rail";
 import { FloatingCloseCrossDots } from "@/components/loader-details-drawer/floating-close-cross-dots";
@@ -19,14 +17,7 @@ import { HIDE_CODE_SCROLLBARS } from "@/lib/hide-code-scrollbar-class";
 import { LoaderPropsReference } from "@/lib/loader-props-reference";
 import { GeistSans } from "geist/font/sans";
 import Link from "next/link";
-import {
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode
-} from "react";
+import { memo, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 
 const MemoLoaderPropsReference = memo(LoaderPropsReference);
 
@@ -65,7 +56,7 @@ export function LoaderDetailsDrawer({
   selected,
   preview,
   activeExamplePreviewId,
-  onExamplePreview
+  onExamplePreview,
 }: LoaderDetailsDrawerProps) {
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"cli" | "manual">("cli");
@@ -103,7 +94,7 @@ export function BloomGlow() {
       bloom
     />
   );
-}`
+}`,
     };
     const opacityItem = {
       id: "ex-opacity" as const,
@@ -122,7 +113,7 @@ export function OpacityAndSpeed() {
       opacityPeak={0.95}
     />
   );
-}`
+}`,
     };
     const layoutItem = {
       id: "ex-layout" as const,
@@ -139,7 +130,7 @@ export function LayoutSlot() {
       minSize={48}
     />
   );
-}`
+}`,
     };
     return [
       bloomItem,
@@ -172,8 +163,8 @@ export function ColorAndLook() {
       muted
     />
   );
-}`
-      }
+}`,
+      },
     ];
   }, [selected]);
 
@@ -217,7 +208,7 @@ export function ColorAndLook() {
                     "focus-visible:outline-1 focus-visible:outline-offset-1 focus-visible:outline-(--focus-ring)",
                     active
                       ? "border-border bg-shell-overlay"
-                      : "border-transparent bg-code-bg hover:text-link-hover"
+                      : "border-transparent bg-code-bg hover:text-link-hover",
                   ].join(" ")}
                   aria-pressed={active}
                 >
@@ -238,7 +229,7 @@ export function ColorAndLook() {
         })}
       </div>
     ),
-    [activeExamplePreviewId, copiedToken, copySnippet, onExamplePreview, propExampleCards]
+    [activeExamplePreviewId, copiedToken, copySnippet, onExamplePreview, propExampleCards],
   );
 
   return (
@@ -262,20 +253,22 @@ export function ColorAndLook() {
               className="pointer-events-none absolute inset-x-0 bottom-0 z-50 h-16 backdrop-blur-[2px]"
               style={{
                 backgroundImage: "var(--drawer-fade)",
-                WebkitMaskImage: "linear-gradient(to top, var(--color-fg-strong) 0%, var(--color-fg-strong) 40%, transparent 100%)",
-                maskImage: "linear-gradient(to top, var(--color-fg-strong) 0%, var(--color-fg-strong) 40%, transparent 100%)"
+                WebkitMaskImage:
+                  "linear-gradient(to top, var(--color-fg-strong) 0%, var(--color-fg-strong) 40%, transparent 100%)",
+                maskImage:
+                  "linear-gradient(to top, var(--color-fg-strong) 0%, var(--color-fg-strong) 40%, transparent 100%)",
               }}
             />
             <div
               className="pointer-events-none absolute inset-x-0 bottom-0 z-50 h-30 backdrop-blur-[3px]"
               style={{
                 backgroundImage: "var(--drawer-fade)",
-                WebkitMaskImage: "linear-gradient(to top, var(--color-fg-strong) 0%, var(--color-fg-strong) 40%, transparent 100%)",
-                maskImage: "linear-gradient(to top, var(--color-fg-strong) 0%, var(--color-fg-strong) 40%, transparent 100%)"
+                WebkitMaskImage:
+                  "linear-gradient(to top, var(--color-fg-strong) 0%, var(--color-fg-strong) 40%, transparent 100%)",
+                maskImage:
+                  "linear-gradient(to top, var(--color-fg-strong) 0%, var(--color-fg-strong) 40%, transparent 100%)",
               }}
             />
-
-
 
             {selected ? (
               <div className="flex h-full min-h-0 w-full min-w-0 flex-1 flex-col gap-2 overflow-hidden sm:px-1.5">
@@ -307,16 +300,18 @@ export function ColorAndLook() {
 
                       <ExampleUsageDotRail />
                       {exampleUsageCardList}
-                      <MemoLoaderPropsReference slug={selected.slug} sourceCode={selected.sourceCode} />
+                      <MemoLoaderPropsReference
+                        slug={selected.slug}
+                        sourceCode={selected.sourceCode}
+                      />
                     </div>
                   ) : (
                     <div className="flex min-h-0 flex-col gap-4">
                       <div className="grid shrink-0 gap-1">
-                        <h3 className="theme-text text-lg">
-                          Manual Usage
-                        </h3>
+                        <h3 className="theme-text text-lg">Manual Usage</h3>
                         <p className="theme-text text-sm leading-relaxed">
-                          You need to manually create the shared runtime files before using individual loaders. Follow the{" "}
+                          You need to manually create the shared runtime files before using
+                          individual loaders. Follow the{" "}
                           <Link
                             href="/getting-started/manual"
                             className="theme-link underline underline-offset-4"
@@ -340,7 +335,10 @@ export function ColorAndLook() {
                         copyAriaLabel="Copy loader source"
                       />
                       {exampleUsageCardList}
-                      <MemoLoaderPropsReference slug={selected.slug} sourceCode={selected.sourceCode} />
+                      <MemoLoaderPropsReference
+                        slug={selected.slug}
+                        sourceCode={selected.sourceCode}
+                      />
                     </div>
                   )}
                 </section>

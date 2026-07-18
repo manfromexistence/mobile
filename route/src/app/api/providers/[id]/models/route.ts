@@ -112,7 +112,7 @@ import {
  */
 export async function GET(
   request: Request,
-  context: { params: Promise<{ id: string }> | { id: string } }
+  context: { params: Promise<{ id: string }> | { id: string } },
 ) {
   try {
     const params = await context.params;
@@ -189,7 +189,7 @@ export async function GET(
 
         const catalog = mergeLocalCatalogModels(
           getModelsByProviderId(id) || [],
-          getStaticModelsForProvider(id) || []
+          getStaticModelsForProvider(id) || [],
         ).map((model) => ({ id: model.id, name: model.name || model.id }));
         const visible = excludeHidden
           ? catalog.filter((m) => !getModelIsHidden(id, m.id))
@@ -246,7 +246,7 @@ export async function GET(
       if (customModelsForProvider.length === 0) return models;
       const base = Array.isArray(models) ? models : [];
       const existing = new Set(
-        base.map((m) => (m && typeof m.id === "string" ? m.id : null)).filter(Boolean)
+        base.map((m) => (m && typeof m.id === "string" ? m.id : null)).filter(Boolean),
       );
       const extra = customModelsForProvider
         .filter((m) => m && typeof m.id === "string" && m.id.length > 0 && !existing.has(m.id))
@@ -309,7 +309,8 @@ export async function GET(
         ...((model as Record<string, unknown>).supportedEndpoints
           ? {
               supportedEndpoints: (model as Record<string, unknown>).supportedEndpoints as
-                string[] | undefined,
+                | string[]
+                | undefined,
             }
           : {}),
         ...(registryCatalogModels.length > 0 ? { owned_by: provider } : {}),
@@ -361,7 +362,7 @@ export async function GET(
       warnings?: {
         cacheWarning?: string;
         localWarning?: string;
-      }
+      },
     ) => {
       // #6267 — a models-endpoint redirect (307/308) is not a fixable-config
       // error. safeOutboundFetch throws REDIRECT_BLOCKED which
@@ -404,7 +405,7 @@ export async function GET(
     const buildApiDiscoveryResponse = async (
       models: any[],
       warning?: string,
-      extraPayload: Record<string, unknown> = {}
+      extraPayload: Record<string, unknown> = {},
     ) => {
       const discoveredModels = await persistDiscoveredModels(provider, connectionId, models);
       if (discoveredModels.length > 0) {
@@ -449,7 +450,8 @@ export async function GET(
         ...((model as Record<string, unknown>).supportedEndpoints
           ? {
               supportedEndpoints: (model as Record<string, unknown>).supportedEndpoints as
-                string[] | undefined,
+                | string[]
+                | undefined,
             }
           : {}),
         ...(freshRegistry.length > 0 ? { owned_by: provider } : {}),
@@ -505,7 +507,7 @@ export async function GET(
             error:
               "No API key configured for this provider. Please add an API key in the provider settings.",
           },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -553,7 +555,7 @@ export async function GET(
         if (status === 400) {
           return NextResponse.json(
             { error: "Invalid Bedrock region or models request" },
-            { status }
+            { status },
           );
         }
         const fallback = buildDiscoveryFallbackResponse({
@@ -601,7 +603,7 @@ export async function GET(
                 ? "No base URL configured for local provider"
                 : "No base URL configured for provider",
           },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -693,7 +695,7 @@ export async function GET(
         if (lastErrorStatus === 401 || lastErrorStatus === 403) {
           return NextResponse.json(
             { error: `Auth failed: ${lastErrorStatus}` },
-            { status: lastErrorStatus }
+            { status: lastErrorStatus },
           );
         }
 
@@ -729,7 +731,7 @@ export async function GET(
             error:
               "No API key configured for this provider. Please add an API key in the provider settings.",
           },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -787,7 +789,7 @@ export async function GET(
         if (fallback) return fallback;
         return NextResponse.json(
           { error: `Failed to fetch models: ${response.status}` },
-          { status: response.status }
+          { status: response.status },
         );
       }
 
@@ -796,7 +798,7 @@ export async function GET(
         models.map((model) => ({
           ...model,
           owned_by: "datarobot",
-        }))
+        })),
       );
     }
 
@@ -819,7 +821,7 @@ export async function GET(
             error:
               "No API key configured for this provider. Please add an API key in the provider settings.",
           },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -856,7 +858,7 @@ export async function GET(
         if (fallback) return fallback;
         return NextResponse.json(
           { error: `Failed to fetch models: ${response.status}` },
-          { status: response.status }
+          { status: response.status },
         );
       }
 
@@ -891,7 +893,7 @@ export async function GET(
             error:
               "No API key configured for this provider. Please add an API key in the provider settings.",
           },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -899,13 +901,13 @@ export async function GET(
       if (!rawBaseUrl) {
         return NextResponse.json(
           { error: "No Azure OpenAI resource endpoint configured" },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
       const baseUrl = normalizeAzureOpenAIBaseUrl(rawBaseUrl);
       const apiVersion = encodeURIComponent(
-        getAzureOpenAIApiVersion(connection.providerSpecificData)
+        getAzureOpenAIApiVersion(connection.providerSpecificData),
       );
       const discoveryUrls = [
         `${baseUrl}/openai/deployments?api-version=${apiVersion}`,
@@ -937,7 +939,7 @@ export async function GET(
 
         if (response.ok) {
           return buildApiDiscoveryResponse(
-            normalizeOpenAiLikeModelsResponse(await response.json(), "azure-openai")
+            normalizeOpenAiLikeModelsResponse(await response.json(), "azure-openai"),
           );
         }
 
@@ -952,7 +954,7 @@ export async function GET(
       if (fallback) return fallback;
       return NextResponse.json(
         { error: `Failed to fetch models: ${lastStatus || "unknown"}` },
-        { status: lastStatus || 502 }
+        { status: lastStatus || 502 },
       );
     }
 
@@ -975,7 +977,7 @@ export async function GET(
             error:
               "No API key configured for this provider. Please add an API key in the provider settings.",
           },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -1008,12 +1010,12 @@ export async function GET(
         if (fallback) return fallback;
         return NextResponse.json(
           { error: `Failed to fetch models: ${response.status}` },
-          { status: response.status }
+          { status: response.status },
         );
       }
 
       return buildApiDiscoveryResponse(
-        normalizeOpenAiLikeModelsResponse(await response.json(), "watsonx")
+        normalizeOpenAiLikeModelsResponse(await response.json(), "watsonx"),
       );
     }
 
@@ -1036,7 +1038,7 @@ export async function GET(
             error:
               "No API key configured for this provider. Please add an API key in the provider settings.",
           },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -1074,12 +1076,12 @@ export async function GET(
         if (fallback) return fallback;
         return NextResponse.json(
           { error: `Failed to fetch models: ${response.status}` },
-          { status: response.status }
+          { status: response.status },
         );
       }
 
       return buildApiDiscoveryResponse(
-        normalizeOpenAiLikeModelsResponse(await response.json(), "oci")
+        normalizeOpenAiLikeModelsResponse(await response.json(), "oci"),
       );
     }
 
@@ -1102,7 +1104,7 @@ export async function GET(
             error:
               "No API key configured for this provider. Please add an API key in the provider settings.",
           },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -1139,7 +1141,7 @@ export async function GET(
         if (fallback) return fallback;
         return NextResponse.json(
           { error: `Failed to fetch models: ${response.status}` },
-          { status: response.status }
+          { status: response.status },
         );
       }
 
@@ -1174,7 +1176,7 @@ export async function GET(
         if (fallback) return fallback;
         return NextResponse.json(
           { error: `Failed to fetch Cursor models: ${message}` },
-          { status: 502 }
+          { status: 502 },
         );
       }
     }
@@ -1214,7 +1216,7 @@ export async function GET(
                 payload?.deviceId ??
                 payload?.["device-id"] ??
                 payload?.did ??
-                ""
+                "",
             ).trim();
           }
         } catch {
@@ -1234,7 +1236,7 @@ export async function GET(
         const modelsResp = await safeOutboundFetch(
           "https://platformapi.innerai.com/api/v1/ai_models",
           { headers: innerAiHeaders },
-          getProviderOutboundGuard(provider)
+          getProviderOutboundGuard(provider),
         );
         if (!modelsResp.ok) {
           throw new Error(`Inner.ai models API returned HTTP ${modelsResp.status}`);
@@ -1259,7 +1261,7 @@ export async function GET(
           if (cats && cats.length > 0) {
             return cats.some(
               (c: Record<string, unknown>) =>
-                String(c.unique_identifier ?? c.name ?? "").toLowerCase() === "text"
+                String(c.unique_identifier ?? c.name ?? "").toLowerCase() === "text",
             );
           }
           // No categories field — fall back to name heuristic
@@ -1281,7 +1283,7 @@ export async function GET(
         if (fallback) return fallback;
         return NextResponse.json(
           { error: `Failed to fetch Inner.ai models: ${message}` },
-          { status: 502 }
+          { status: 502 },
         );
       }
     }
@@ -1309,7 +1311,7 @@ export async function GET(
         },
       ];
       const discoveryTargets = discoveredTargets.filter(
-        (target, index, all) => all.findIndex((other) => other.url === target.url) === index
+        (target, index, all) => all.findIndex((other) => other.url === target.url) === index,
       );
 
       let response: Response | null = null;
@@ -1345,14 +1347,14 @@ export async function GET(
         if (response?.status === 401 || response?.status === 403) {
           return NextResponse.json(
             { error: `Failed to fetch models: ${response.status}` },
-            { status: response.status }
+            { status: response.status },
           );
         }
         const fallback = buildDiscoveryFallbackResponse();
         if (fallback) return fallback;
         return NextResponse.json(
           { error: `Failed to fetch models: ${response?.status || 502}` },
-          { status: response?.status || 502 }
+          { status: response?.status || 502 },
         );
       }
 
@@ -1390,7 +1392,7 @@ export async function GET(
         accessToken,
         connectionId,
         proxy,
-        connection.providerSpecificData
+        connection.providerSpecificData,
       );
       if (remoteModels.length > 0) {
         return buildApiDiscoveryResponse(remoteModels);
@@ -1533,8 +1535,9 @@ export async function GET(
       let queryKey: string | null = null;
       let bearerToken: string | null = null;
       try {
-        const { parseSAFromApiKey, getAccessToken } =
-          await import("@omniroute/open-sse/executors/vertex.ts");
+        const { parseSAFromApiKey, getAccessToken } = await import(
+          "@omniroute/open-sse/executors/vertex.ts"
+        );
         if (accessToken) {
           bearerToken = accessToken;
         } else if (credential) {
@@ -1572,7 +1575,7 @@ export async function GET(
         if (fallback) return fallback;
         return NextResponse.json(
           { error: "No usable Vertex AI credential configured for model discovery." },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -1607,7 +1610,7 @@ export async function GET(
             if (fallback) return fallback;
             return NextResponse.json(
               { error: `Failed to fetch Vertex models: ${response.status}` },
-              { status: response.status }
+              { status: response.status },
             );
           }
 
@@ -1650,7 +1653,7 @@ export async function GET(
       if (isClaudeCodeCompatibleProvider(provider)) {
         return NextResponse.json(
           { error: `Provider ${provider} does not support models listing` },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -1663,7 +1666,7 @@ export async function GET(
         if (fallback) return fallback;
         return NextResponse.json(
           { error: "No base URL configured for Anthropic compatible provider" },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -1704,7 +1707,7 @@ export async function GET(
         if (fallback) return fallback;
         return NextResponse.json(
           { error: `Failed to fetch models: ${response.status}` },
-          { status: response.status }
+          { status: response.status },
         );
       }
 
@@ -1742,7 +1745,7 @@ export async function GET(
       // denylist filters (e.g. drop GPT-5.4 family). Do not gate remote-only IDs.
       const staticCodexCatalog = mergeLocalCatalogModels(
         getModelsByProviderId("codex") || [],
-        getStaticModelsForProvider("codex") || []
+        getStaticModelsForProvider("codex") || [],
       );
       const finalizeCodexCatalog = (remoteModels: typeof cachedDiscoveryModels) =>
         buildCodexDiscoveryCatalog(remoteModels, staticCodexCatalog);
@@ -1806,7 +1809,7 @@ export async function GET(
       if (githubCatalogModels && githubCatalogModels.length > 0) {
         return buildApiDiscoveryResponse(
           finalizeCodexCatalog(githubCatalogModels),
-          "Codex live catalog unavailable — using GitHub model catalog"
+          "Codex live catalog unavailable — using GitHub model catalog",
         );
       }
 
@@ -1844,7 +1847,8 @@ export async function GET(
           ...((m as Record<string, unknown>).supportedEndpoints
             ? {
                 supportedEndpoints: (m as Record<string, unknown>).supportedEndpoints as
-                  string[] | undefined,
+                  | string[]
+                  | undefined,
               }
             : {}),
           ...(registryCatalogModels.length > 0 ? { owned_by: provider } : {}),
@@ -1860,7 +1864,7 @@ export async function GET(
     if (!config) {
       return NextResponse.json(
         { error: `Provider ${provider} does not support models listing` },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -1883,7 +1887,7 @@ export async function GET(
           error:
             "No API key configured for this provider. Please add an API key in the provider settings.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -1921,7 +1925,7 @@ export async function GET(
       if (!accountId) {
         return NextResponse.json(
           { error: "Cloudflare Workers AI requires an Account ID in provider settings." },
-          { status: 400 }
+          { status: 400 },
         );
       }
       url = url.replace("{accountId}", accountId);
@@ -1977,7 +1981,7 @@ export async function GET(
         if (fallback) return fallback;
         return NextResponse.json(
           { error: `Failed to fetch models: ${response.status}` },
-          { status: response.status }
+          { status: response.status },
         );
       }
 
@@ -2000,7 +2004,7 @@ export async function GET(
 
     if (pageCount > 1) {
       console.log(
-        `[models] ${provider}: fetched ${allModels.length} models across ${pageCount} pages`
+        `[models] ${provider}: fetched ${allModels.length} models across ${pageCount} pages`,
       );
     }
 

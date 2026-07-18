@@ -11,10 +11,12 @@ const core = await import("../../src/lib/db/core.ts");
 const providersDb = await import("../../src/lib/db/providers.ts");
 const settingsDb = await import("../../src/lib/db/settings.ts");
 const chatRoute = await import("../../src/app/api/v1/chat/completions/route.ts");
-const { generateSignature, invalidateBySignature, setCachedResponse } =
-  await import("../../src/lib/semanticCache.ts");
-const { getCircuitBreaker, resetAllCircuitBreakers, STATE } =
-  await import("../../src/shared/utils/circuitBreaker.ts");
+const { generateSignature, invalidateBySignature, setCachedResponse } = await import(
+  "../../src/lib/semanticCache.ts"
+);
+const { getCircuitBreaker, resetAllCircuitBreakers, STATE } = await import(
+  "../../src/shared/utils/circuitBreaker.ts"
+);
 
 const originalFetch = globalThis.fetch;
 
@@ -168,7 +170,7 @@ test("combo live test bypasses connection cooldown and breaker state to perform 
   assert.equal(fetchCalls.length, 0);
 
   const liveResponse = await chatRoute.POST(
-    makeRequest({ "X-Internal-Test": "combo-health-check" })
+    makeRequest({ "X-Internal-Test": "combo-health-check" }),
   );
   const liveBody = (await liveResponse.json()) as any;
 
@@ -189,7 +191,7 @@ test("combo live test bypasses semantic cache and forces a fresh upstream reques
     "gpt-4.1",
     [{ role: "user", content: "Reply with OK only." }],
     0,
-    1
+    1,
   );
 
   setCachedResponse(signature, "gpt-4.1", {
@@ -233,7 +235,7 @@ test("combo live test bypasses semantic cache and forces a fresh upstream reques
         "X-Internal-Test": "combo-health-check",
         "X-OmniRoute-No-Cache": "true",
         "X-Request-Id": "combo-test-cache-bypass",
-      })
+      }),
     );
     const liveBody = (await liveResponse.json()) as any;
 
@@ -265,7 +267,7 @@ test("chat completions route emits early keepalive while waiting for stream read
       {
         status: 200,
         headers: { "Content-Type": "text/event-stream" },
-      }
+      },
     );
   };
 
@@ -274,10 +276,7 @@ test("chat completions route emits early keepalive while waiting for stream read
   assert.match(response.headers.get("content-type") || "", /text\/event-stream/);
 
   const body = await readAll(response);
-  assert.match(
-    body,
-    /data: \{"id":"omniroute-keepalive","object":"chat\.completion\.chunk"/
-  );
+  assert.match(body, /data: \{"id":"omniroute-keepalive","object":"chat\.completion\.chunk"/);
   assert.match(body, /OK/);
   assert.match(body, /\[DONE\]/);
 });
@@ -305,7 +304,7 @@ test("chat completions route returns JSON without early SSE framing when stream 
       Accept: "application/json",
       "X-OmniRoute-No-Cache": "true",
       "X-Request-Id": "chat-route-omitted-stream-json",
-    })
+    }),
   );
   assert.equal(response.status, 200);
   assert.doesNotMatch(response.headers.get("content-type") || "", /text\/event-stream/);
@@ -330,12 +329,12 @@ test("combo live test does not use cooldown-aware request retry on upstream fail
           message: "upstream unavailable",
         },
       },
-      { status: 503 }
+      { status: 503 },
     );
   };
 
   const liveResponse = await chatRoute.POST(
-    makeRequest({ "X-Internal-Test": "combo-health-check" })
+    makeRequest({ "X-Internal-Test": "combo-health-check" }),
   );
   const liveBody = (await liveResponse.json()) as any;
 

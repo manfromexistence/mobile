@@ -17,14 +17,14 @@ test("GlmExecutor normalizes GLM coding and Anthropic URLs without duplicating e
     executor.buildUrl("glm-5.1", true, 0, {
       providerSpecificData: { baseUrl: "https://api.z.ai/api/coding/paas/v4" },
     }),
-    "https://api.z.ai/api/coding/paas/v4/chat/completions"
+    "https://api.z.ai/api/coding/paas/v4/chat/completions",
   );
 
   assert.equal(
     executor.buildUrl("glm-5.1", true, 0, {
       providerSpecificData: { baseUrl: "https://api.z.ai/api/coding/paas/v4/" },
     }),
-    "https://api.z.ai/api/coding/paas/v4/chat/completions"
+    "https://api.z.ai/api/coding/paas/v4/chat/completions",
   );
 
   assert.equal(
@@ -33,7 +33,7 @@ test("GlmExecutor normalizes GLM coding and Anthropic URLs without duplicating e
         baseUrl: "https://api.z.ai/api/coding/paas/v4/chat/completions",
       },
     }),
-    "https://api.z.ai/api/coding/paas/v4/chat/completions"
+    "https://api.z.ai/api/coding/paas/v4/chat/completions",
   );
 
   assert.equal(
@@ -42,21 +42,21 @@ test("GlmExecutor normalizes GLM coding and Anthropic URLs without duplicating e
         baseUrl: "https://proxy.example.com/api/coding/paas/v4/v1/messages",
       },
     }),
-    "https://proxy.example.com/api/coding/paas/v4/chat/completions"
+    "https://proxy.example.com/api/coding/paas/v4/chat/completions",
   );
 
   assert.equal(
     executor.buildUrl("glm-5.1", true, 0, {
       providerSpecificData: { baseUrl: "https://api.z.ai/api/anthropic" },
     }),
-    "https://api.z.ai/api/anthropic/v1/messages?beta=true"
+    "https://api.z.ai/api/anthropic/v1/messages?beta=true",
   );
 
   assert.equal(
     executor.buildUrl("glm-5.1", true, 0, {
       providerSpecificData: { baseUrl: "https://api.z.ai/api/anthropic/v1" },
     }),
-    "https://api.z.ai/api/anthropic/v1/messages?beta=true"
+    "https://api.z.ai/api/anthropic/v1/messages?beta=true",
   );
 
   assert.equal(
@@ -66,28 +66,28 @@ test("GlmExecutor normalizes GLM coding and Anthropic URLs without duplicating e
         primaryTransport: "anthropic",
       },
     }),
-    "https://open.bigmodel.cn/api/anthropic/v1/messages?beta=true"
+    "https://open.bigmodel.cn/api/anthropic/v1/messages?beta=true",
   );
 
   assert.equal(
     executor.buildUrl("glm-5.1", true, 1, {
       providerSpecificData: { baseUrl: "https://api.z.ai/api/anthropic" },
     }),
-    "https://api.z.ai/api/coding/paas/v4/chat/completions"
+    "https://api.z.ai/api/coding/paas/v4/chat/completions",
   );
 
   assert.equal(
     executor.buildUrl("glm-5.1", true, 0, {
       providerSpecificData: { baseUrl: "https://api.z.ai/api/anthropic/v1/messages" },
     }),
-    "https://api.z.ai/api/anthropic/v1/messages?beta=true"
+    "https://api.z.ai/api/anthropic/v1/messages?beta=true",
   );
 
   assert.equal(
     executor.buildUrl("glm-5.1", true, 1, {
       providerSpecificData: { baseUrl: "https://api.z.ai/api/anthropic/v1/messages" },
     }),
-    "https://api.z.ai/api/coding/paas/v4/chat/completions"
+    "https://api.z.ai/api/coding/paas/v4/chat/completions",
   );
 
   assert.equal(
@@ -96,7 +96,7 @@ test("GlmExecutor normalizes GLM coding and Anthropic URLs without duplicating e
         baseUrl: "https://api.z.ai/api/anthropic/v1/messages?beta=true",
       },
     }),
-    "https://api.z.ai/api/anthropic/v1/messages?beta=true"
+    "https://api.z.ai/api/anthropic/v1/messages?beta=true",
   );
 
   assert.equal(
@@ -105,7 +105,7 @@ test("GlmExecutor normalizes GLM coding and Anthropic URLs without duplicating e
         baseUrl: "https://proxy.example.com/api/anthropic/v1/messages/count_tokens",
       },
     }),
-    "https://proxy.example.com/api/anthropic/v1/messages/count_tokens?beta=true"
+    "https://proxy.example.com/api/anthropic/v1/messages/count_tokens?beta=true",
   );
 
   assert.equal(
@@ -115,7 +115,7 @@ test("GlmExecutor normalizes GLM coding and Anthropic URLs without duplicating e
           "https://proxy.example.com/api/coding/paas/v4/chat/completions?tenant=alpha&route=glm",
       },
     }),
-    "https://proxy.example.com/api/coding/paas/v4/chat/completions?tenant=alpha&route=glm"
+    "https://proxy.example.com/api/coding/paas/v4/chat/completions?tenant=alpha&route=glm",
   );
 
   assert.equal(
@@ -125,7 +125,7 @@ test("GlmExecutor normalizes GLM coding and Anthropic URLs without duplicating e
           "https://proxy.example.com/api/anthropic/v1/messages/count_tokens?tenant=alpha&route=glm",
       },
     }),
-    "https://proxy.example.com/api/anthropic/v1/messages/count_tokens?tenant=alpha&route=glm&beta=true"
+    "https://proxy.example.com/api/anthropic/v1/messages/count_tokens?tenant=alpha&route=glm&beta=true",
   );
 });
 
@@ -140,7 +140,7 @@ test("GlmExecutor separates OpenAI-compatible coding headers from Anthropic head
       apiKey: "glm-key",
       providerSpecificData: { baseUrl: "https://api.z.ai/api/coding/paas/v4" },
     },
-    true
+    true,
   );
 
   assert.equal(codingHeaders.Authorization, "Bearer glm-key");
@@ -158,7 +158,7 @@ test("GlmExecutor separates OpenAI-compatible coding headers from Anthropic head
     false,
     null,
     undefined,
-    "anthropic"
+    "anthropic",
   );
   assert.equal(countTokensHeaders["x-api-key"], "glm-key");
   assert.equal(countTokensHeaders.Authorization, undefined);
@@ -172,7 +172,7 @@ test("GlmExecutor separates OpenAI-compatible coding headers from Anthropic head
     true,
     null,
     undefined,
-    "anthropic"
+    "anthropic",
   );
 
   assert.equal(anthropicHeaders["x-api-key"], "glm-key");
@@ -200,7 +200,7 @@ test("GlmExecutor preserves extra API key rotation", () => {
     true,
     null,
     undefined,
-    "anthropic"
+    "anthropic",
   );
 
   assert.ok(["primary-key", "extra-key"].includes(headers["x-api-key"]));
@@ -260,7 +260,7 @@ test("GlmExecutor count_tokens is best-effort and timeout bounded", async () => 
     executor.buildCountTokensUrl("glm-5.1", {
       providerSpecificData: { baseUrl: "https://api.z.ai/api/coding/paas/v4" },
     }),
-    "https://api.z.ai/api/anthropic/v1/messages/count_tokens?beta=true"
+    "https://api.z.ai/api/anthropic/v1/messages/count_tokens?beta=true",
   );
   assert.equal(executor.getCountTokensTimeoutMs(), 3_000);
 
@@ -304,7 +304,7 @@ test("GlmExecutor translates Anthropic streaming fallback to OpenAI SSE", async 
       'event: message_start\ndata: {"type":"message_start","message":{"id":"msg_1","type":"message","role":"assistant","model":"glm-5.1","content":[],"stop_reason":null,"usage":{"input_tokens":1,"output_tokens":0}}}\n\nevent: content_block_delta\ndata: {"type":"content_block_delta","index":0,"delta":{"type":"text_delta","text":"hi"}}\n\nevent: message_stop\ndata: {"type":"message_stop"}\n\n',
       {
         headers: { "Content-Type": "text/event-stream" },
-      }
+      },
     );
   };
 
@@ -554,7 +554,7 @@ test("GlmExecutor translates Anthropic JSON errors to OpenAI-shaped fallback res
       {
         status: 400,
         headers: { "Content-Type": "application/json" },
-      }
+      },
     );
   };
 
@@ -657,7 +657,7 @@ test("GlmExecutor defaults GLM-5.2+ max_tokens to 131072 when the client omits i
     {
       apiKey: "glm-key",
     },
-    "openai"
+    "openai",
   ) as any;
 
   assert.equal((body as any).max_tokens, undefined, "caller body must not be mutated");
@@ -675,7 +675,7 @@ test("GlmExecutor preserves a client-supplied max_tokens for GLM-5.2+ (no overri
     {
       apiKey: "glm-key",
     },
-    "openai"
+    "openai",
   ) as any;
 
   assert.equal(transformed.max_tokens, 4096);
@@ -692,7 +692,7 @@ test("GlmExecutor does NOT bump max_tokens for non-thinking GLM (glm-4.6)", () =
     {
       apiKey: "glm-key",
     },
-    "openai"
+    "openai",
   ) as any;
 
   // Stays at the generic GLM default (16_384) — never the 131072 thinking budget.

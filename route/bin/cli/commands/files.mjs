@@ -82,7 +82,7 @@ export function registerFiles(program) {
       const stat = statSync(filePath);
       if (stat.size > 100 * 1024 * 1024) {
         process.stderr.write(
-          `Warning: file is ${fmtBytes(stat.size)} (${stat.size > 500e6 ? "very " : ""}large)\n`
+          `Warning: file is ${fmtBytes(stat.size)} (${stat.size > 500e6 ? "very " : ""}large)\n`,
         );
       }
       const globalOpts = cmd.optsWithGlobals();

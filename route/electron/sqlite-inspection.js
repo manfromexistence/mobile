@@ -46,7 +46,7 @@ function hasEncryptedCredentials(dbPath, openDatabase = openReadOnlySqliteDataba
              OR refresh_token LIKE 'enc:v1:%'
              OR api_key LIKE 'enc:v1:%'
              OR id_token LIKE 'enc:v1:%'
-          LIMIT 1`
+          LIMIT 1`,
       )
       .get();
     return !!row;

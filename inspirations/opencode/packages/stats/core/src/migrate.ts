@@ -1,4 +1,4 @@
-import { Effect } from "effect"
-import { layer, migrate } from "./database"
+import { Effect } from "effect";
+import { layer, migrate } from "./database";
 
-await Effect.runPromise(migrate().pipe(Effect.provide(layer)))
+await Effect.runPromise(migrate().pipe(Effect.provide(layer)));

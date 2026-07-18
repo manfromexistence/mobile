@@ -94,7 +94,7 @@ test("the real migrations dir produces ZERO anomalies under the frozen allowlist
   assert.deepEqual(
     r.duplicates,
     [],
-    `unexpected duplicate versions: ${JSON.stringify(r.duplicates)}`
+    `unexpected duplicate versions: ${JSON.stringify(r.duplicates)}`,
   );
   assert.deepEqual(r.gaps, [], `unexpected sequence gaps: ${r.gaps.join(", ")}`);
 });
@@ -115,7 +115,7 @@ test("stale-enforcement: a gap allowlist entry no longer needed is reported as s
   const stale = (reportStaleEntries as (a: Set<string>, l: string[], g: string) => string[])(
     new Set(["042"]),
     liveGaps,
-    "check-migration-numbering:gaps"
+    "check-migration-numbering:gaps",
   );
   assert.deepEqual(stale, ["042"]);
 });
@@ -126,7 +126,7 @@ test("stale-enforcement: a duplicate allowlist entry no longer needed is reporte
   const stale = (reportStaleEntries as (a: Set<string>, l: string[], g: string) => string[])(
     new Set(["099"]),
     liveDups,
-    "check-migration-numbering:duplicates"
+    "check-migration-numbering:duplicates",
   );
   assert.deepEqual(stale, ["099"]);
 });
@@ -142,7 +142,7 @@ test("stale-enforcement: live repo KNOWN_GAPS are all still real (no stale gap e
   const stale = (reportStaleEntries as (a: Set<string>, l: string[], g: string) => string[])(
     KNOWN_GAPS as Set<string>,
     raw.gaps,
-    "check-migration-numbering:gaps"
+    "check-migration-numbering:gaps",
   );
   assert.deepEqual(stale, [], `KNOWN_GAPS has stale entries: ${stale.join(", ")}`);
 });
@@ -159,7 +159,7 @@ test("stale-enforcement: live repo KNOWN_DUPLICATE_VERSIONS are all still real (
   const stale = (reportStaleEntries as (a: Set<string>, l: string[], g: string) => string[])(
     KNOWN_DUPLICATE_VERSIONS as Set<string>,
     liveDupVersions,
-    "check-migration-numbering:duplicates"
+    "check-migration-numbering:duplicates",
   );
   assert.deepEqual(stale, [], `KNOWN_DUPLICATE_VERSIONS has stale entries: ${stale.join(", ")}`);
 });

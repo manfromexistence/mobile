@@ -21,7 +21,7 @@ export async function getModelAliases() {
 export async function setModelAlias(alias: string, model: unknown) {
   const db = getDbInstance();
   db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('modelAliases', ?, ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES ('modelAliases', ?, ?)",
   ).run(alias, JSON.stringify(model));
   backupDbFile("pre-write");
 }

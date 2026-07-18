@@ -46,7 +46,7 @@ export {
   postInitAndCheckFields as postInitAndCheckFieldsChatCompletion,
   ResponseFormat,
   TopLogprob,
-} from "./chat_completion"
+} from "./chat_completion";
 
 export {
   Completion,
@@ -57,7 +57,7 @@ export {
   CompletionCreateParamsStreaming,
   Completions,
   postInitAndCheckFields as postInitAndCheckFieldsCompletion,
-} from "./completion"
+} from "./completion";
 
 export {
   CreateEmbeddingResponse,
@@ -65,4 +65,4 @@ export {
   EmbeddingCreateParams,
   Embeddings,
   postInitAndCheckFields as postInitAndCheckFieldsEmbedding,
-} from "./embedding"
+} from "./embedding";

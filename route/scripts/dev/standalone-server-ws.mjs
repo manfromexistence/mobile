@@ -143,8 +143,8 @@ http.createServer = function createServerWithResponsesWs(...args) {
     // HEAD request regardless of which inner layer ends up handling it (#6400).
     args[lastFnIdx] = wrapRequestListenerWithHeadResponseGuard(
       wrapRequestListenerWithMethodGuard(
-        wrapRequestListenerWithWebdav(wrapRequestListenerWithPeerStamp(args[lastFnIdx]))
-      )
+        wrapRequestListenerWithWebdav(wrapRequestListenerWithPeerStamp(args[lastFnIdx])),
+      ),
     );
   }
 
@@ -178,9 +178,9 @@ http.createServer = function createServerWithResponsesWs(...args) {
         eventName,
         wrapRequestListenerWithHeadResponseGuard(
           wrapRequestListenerWithMethodGuard(
-            wrapRequestListenerWithWebdav(wrapRequestListenerWithPeerStamp(listener))
-          )
-        )
+            wrapRequestListenerWithWebdav(wrapRequestListenerWithPeerStamp(listener)),
+          ),
+        ),
       );
     }
     return originalOn(eventName, listener);
@@ -195,9 +195,9 @@ http.createServer = function createServerWithResponsesWs(...args) {
         eventName,
         wrapRequestListenerWithHeadResponseGuard(
           wrapRequestListenerWithMethodGuard(
-            wrapRequestListenerWithWebdav(wrapRequestListenerWithPeerStamp(listener))
-          )
-        )
+            wrapRequestListenerWithWebdav(wrapRequestListenerWithPeerStamp(listener)),
+          ),
+        ),
       );
     }
     return originalAddListener(eventName, listener);

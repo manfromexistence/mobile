@@ -31,7 +31,7 @@ export function getMemoryVecMeta(): MemoryVecMeta {
   const db = getDbInstance();
   const row = db
     .prepare(
-      "SELECT active_dim, embedding_signature, last_reset_at, vec_loaded FROM memory_vec_meta WHERE id = 1"
+      "SELECT active_dim, embedding_signature, last_reset_at, vec_loaded FROM memory_vec_meta WHERE id = 1",
     )
     .get() as
     | {
@@ -70,20 +70,16 @@ export function setMemoryVecMeta(meta: Partial<MemoryVecMeta>): void {
   // Read current values first so we can merge (partial update pattern).
   const current = getMemoryVecMeta();
 
-  const activeDim = "activeDim" in meta ? meta.activeDim ?? null : current.activeDim;
+  const activeDim = "activeDim" in meta ? (meta.activeDim ?? null) : current.activeDim;
   const embeddingSignature =
-    "embeddingSignature" in meta
-      ? meta.embeddingSignature ?? null
-      : current.embeddingSignature;
-  const lastResetAt =
-    "lastResetAt" in meta ? meta.lastResetAt ?? null : current.lastResetAt;
-  const vecLoaded =
-    "vecLoaded" in meta ? (meta.vecLoaded ? 1 : 0) : current.vecLoaded ? 1 : 0;
+    "embeddingSignature" in meta ? (meta.embeddingSignature ?? null) : current.embeddingSignature;
+  const lastResetAt = "lastResetAt" in meta ? (meta.lastResetAt ?? null) : current.lastResetAt;
+  const vecLoaded = "vecLoaded" in meta ? (meta.vecLoaded ? 1 : 0) : current.vecLoaded ? 1 : 0;
 
   db.prepare(
     `INSERT OR REPLACE INTO memory_vec_meta
        (id, active_dim, embedding_signature, last_reset_at, vec_loaded)
-     VALUES (1, ?, ?, ?, ?)`
+     VALUES (1, ?, ?, ?, ?)`,
   ).run(activeDim, embeddingSignature, lastResetAt, vecLoaded);
 }
 
@@ -112,7 +108,7 @@ export function markAllMemoriesNeedReindex(): number {
  * Returns id, content, and key for each memory so the vector can be regenerated.
  */
 export function getMemoryReindexQueue(
-  limit: number
+  limit: number,
 ): Array<{ id: string; content: string; key: string }> {
   const db = getDbInstance();
   return db
@@ -121,7 +117,7 @@ export function getMemoryReindexQueue(
        FROM memories
        WHERE needs_reindex = 1
        ORDER BY created_at ASC
-       LIMIT ?`
+       LIMIT ?`,
     )
     .all(limit) as Array<{ id: string; content: string; key: string }>;
 }
@@ -131,8 +127,8 @@ export function getMemoryReindexQueue(
  */
 export function countMemoryReindexPending(): number {
   const db = getDbInstance();
-  const row = db
-    .prepare("SELECT COUNT(*) AS cnt FROM memories WHERE needs_reindex = 1")
-    .get() as { cnt: number };
+  const row = db.prepare("SELECT COUNT(*) AS cnt FROM memories WHERE needs_reindex = 1").get() as {
+    cnt: number;
+  };
   return row.cnt;
 }

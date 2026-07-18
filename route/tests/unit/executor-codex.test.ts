@@ -88,24 +88,26 @@ test("Codex helper functions isolate rate-limit scopes and parse quota headers",
   assert.equal(getCodexUpstreamModel("gpt-5.5-medium"), "gpt-5.5");
   assert.equal(getCodexUpstreamModel("gpt-5.1-codex-max"), "gpt-5.1-codex-max");
   // With mock WS transport + codexTransport=websocket, gpt-5.5 models require WS
-  __setCodexWebSocketTransportForTesting(async (): Promise<MockCodexWebSocket> => ({
-    send() {},
-    close() {},
-    onmessage: null,
-    onerror: null,
-    onclose: null,
-  }));
+  __setCodexWebSocketTransportForTesting(
+    async (): Promise<MockCodexWebSocket> => ({
+      send() {},
+      close() {},
+      onmessage: null,
+      onerror: null,
+      onclose: null,
+    }),
+  );
   assert.equal(
     isCodexResponsesWebSocketRequired("gpt-5.5-xhigh", {
       providerSpecificData: { codexTransport: "websocket" },
     }),
-    true
+    true,
   );
   assert.equal(
     isCodexResponsesWebSocketRequired("gpt-5.5-medium", {
       providerSpecificData: { codexTransport: "websocket" },
     }),
-    true
+    true,
   );
   // Without codexTransport setting, defaults to HTTP (false)
   assert.equal(isCodexResponsesWebSocketRequired("gpt-5.5-xhigh", {}), false);
@@ -129,7 +131,7 @@ test("isCodexResponsesWebSocketRequired: OMNIROUTE_CODEX_WS_ENABLED=false forces
         onopen: null,
         onerror: null,
         onclose: null,
-      }) as unknown as ReturnType<typeof Object>
+      }) as unknown as ReturnType<typeof Object>,
   );
   const prev = process.env.OMNIROUTE_CODEX_WS_ENABLED;
   process.env.OMNIROUTE_CODEX_WS_ENABLED = "false";
@@ -139,7 +141,7 @@ test("isCodexResponsesWebSocketRequired: OMNIROUTE_CODEX_WS_ENABLED=false forces
       isCodexResponsesWebSocketRequired("gpt-5.5-xhigh", {
         providerSpecificData: { codexTransport: "websocket" },
       }),
-      false
+      false,
     );
   } finally {
     if (prev === undefined) delete process.env.OMNIROUTE_CODEX_WS_ENABLED;
@@ -152,15 +154,15 @@ test("CodexExecutor.buildUrl honors /responses subpaths and compact mode", () =>
   const executor = new CodexExecutor();
   assert.equal(
     executor.buildUrl("gpt-5.3-codex", true, 0, {}),
-    "https://chatgpt.com/backend-api/codex/responses"
+    "https://chatgpt.com/backend-api/codex/responses",
   );
   assert.equal(
     executor.buildUrl("gpt-5.3-codex", true, 0, { requestEndpointPath: "/responses" }),
-    "https://chatgpt.com/backend-api/codex/responses"
+    "https://chatgpt.com/backend-api/codex/responses",
   );
   assert.equal(
     executor.buildUrl("gpt-5.3-codex", true, 0, { requestEndpointPath: "/responses/compact" }),
-    "https://chatgpt.com/backend-api/codex/responses/compact"
+    "https://chatgpt.com/backend-api/codex/responses/compact",
   );
 });
 
@@ -171,14 +173,14 @@ test("CodexExecutor.buildHeaders binds workspace ids and disables SSE accept for
       accessToken: "codex-token",
       providerSpecificData: { workspaceId: "workspace-1" },
     },
-    true
+    true,
   );
   const compactHeaders = executor.buildHeaders(
     {
       accessToken: "codex-token",
       requestEndpointPath: "/responses/compact",
     },
-    true
+    true,
   );
 
   assert.equal(standardHeaders.Authorization, "Bearer codex-token");
@@ -203,7 +205,7 @@ test("CodexExecutor.buildHeaders honors safe env overrides for Version and User-
       const headers = executor.buildHeaders({ accessToken: "codex-token" }, true);
       assert.equal(headers.Version, "0.144.0");
       assert.equal(headers["User-Agent"], "codex-cli/0.144.0 (Windows 10.0.26200; x64)");
-    }
+    },
   );
 
   await withEnv(
@@ -215,7 +217,7 @@ test("CodexExecutor.buildHeaders honors safe env overrides for Version and User-
       const headers = executor.buildHeaders({ accessToken: "codex-token" }, true);
       assert.equal(headers.Version, "0.144.1");
       assert.equal(headers["User-Agent"], "custom-codex/9.9.9");
-    }
+    },
   );
 });
 
@@ -332,7 +334,7 @@ test("CodexExecutor.transformRequest normalizes max reasoning_effort to xhigh", 
     false,
     {
       requestEndpointPath: "/responses",
-    }
+    },
   );
 
   assert.equal(result.reasoning.effort, "xhigh");
@@ -508,38 +510,38 @@ test("CodexExecutor.transformRequest preserves native assistant commentary histo
 
   assert.equal(
     result.input.some((item) => JSON.stringify(item).includes("Need maybe inspect tool output")),
-    true
+    true,
   );
   assert.equal(
     result.input.some((item) => JSON.stringify(item).includes("Visible final assistant answer")),
-    true
+    true,
   );
   assert.equal(
     result.input.some((item) =>
-      JSON.stringify(item).includes("Visible final_answer assistant answer")
+      JSON.stringify(item).includes("Visible final_answer assistant answer"),
     ),
-    true
+    true,
   );
   assert.equal(
     result.input.some((item) =>
-      JSON.stringify(item).includes("Visible assistant history without phase")
+      JSON.stringify(item).includes("Visible assistant history without phase"),
     ),
-    true
+    true,
   );
   // Reasoning items are stripped from the Responses input — encrypted_content is
   // unusable with store=false (previous_response_id deleted) and the summary blob
   // only inflates context on every subsequent agentic turn (decolua/9router#1599).
   assert.equal(
     result.input.some((item) => item.type === "reasoning"),
-    false
+    false,
   );
   assert.equal(
     result.input.some((item) => item.type === "function_call"),
-    true
+    true,
   );
   assert.equal(
     result.input.some((item) => item.type === "function_call_output"),
-    true
+    true,
   );
 });
 
@@ -570,16 +572,16 @@ test("CodexExecutor.transformRequest still strips assistant commentary outside n
       stream: false,
     },
     false,
-    { requestEndpointPath: "/responses" }
+    { requestEndpointPath: "/responses" },
   );
 
   assert.equal(
     result.input.some((item) => JSON.stringify(item).includes("Internal progress note")),
-    false
+    false,
   );
   assert.equal(
     result.input.some((item) => JSON.stringify(item).includes("Visible final answer")),
-    true
+    true,
   );
 });
 
@@ -612,14 +614,14 @@ test("CodexExecutor.transformRequest inserts missing function_call_output items"
     false,
     {
       requestEndpointPath: "/responses",
-    }
+    },
   );
 
   const missingOutputIndex = result.input.findIndex(
-    (item) => item.type === "function_call_output" && item.call_id === "call_missing_result"
+    (item) => item.type === "function_call_output" && item.call_id === "call_missing_result",
   );
   const functionCallIndex = result.input.findIndex(
-    (item) => item.type === "function_call" && item.call_id === "call_missing_result"
+    (item) => item.type === "function_call" && item.call_id === "call_missing_result",
   );
 
   assert.equal(missingOutputIndex, functionCallIndex + 1);
@@ -652,16 +654,16 @@ test("CodexExecutor.transformRequest preserves native assistant commentary befor
       stream: false,
     },
     false,
-    { requestEndpointPath: "/responses" }
+    { requestEndpointPath: "/responses" },
   );
 
   assert.equal(
     result.input.some((item) => JSON.stringify(item).includes("Need maybe update PR body")),
-    true
+    true,
   );
   assert.equal(
     result.input.some((item) => JSON.stringify(item).includes("Visible final assistant answer")),
-    true
+    true,
   );
   assert.equal(result.messages, undefined);
 });
@@ -707,7 +709,7 @@ test("CodexExecutor.transformRequest applies per-connection reasoning and servic
           serviceTier: "priority",
         },
       },
-    }
+    },
   );
 
   assert.equal(result.reasoning.effort, "high");
@@ -732,7 +734,7 @@ test("CodexExecutor.transformRequest keeps explicit request values ahead of conn
           serviceTier: "priority",
         },
       },
-    }
+    },
   );
 
   assert.deepEqual([result.reasoning, result.include], [{ effort: "none" }, undefined]);
@@ -751,7 +753,7 @@ test("CodexExecutor.transformRequest lets model suffix beat connection reasoning
           reasoningEffort: "low",
         },
       },
-    }
+    },
   );
 
   assert.equal(result.model, "gpt-5.3-codex");
@@ -764,7 +766,7 @@ test("CodexExecutor.transformRequest keeps gpt-5.5 as the model and applies xhig
     "gpt-5.5-xhigh",
     { model: "gpt-5.5-xhigh", input: [] },
     false,
-    {}
+    {},
   );
 
   assert.equal(result.model, "gpt-5.5");
@@ -783,13 +785,13 @@ test("CodexExecutor.transformRequest keeps GPT 5.3 Codex reasoning in Responses 
     true,
     {
       requestEndpointPath: "/responses",
-    }
+    },
   );
   const sanitized = sanitizeReasoningEffortForProvider(
     transformed,
     "codex",
     "gpt-5.3-codex",
-    null
+    null,
   ) as Record<string, unknown>;
   const reasoning = getRecord(sanitized.reasoning);
 
@@ -811,13 +813,13 @@ test("CodexExecutor.transformRequest passes GPT 5.6 Luna xhigh reasoning through
     true,
     {
       requestEndpointPath: "/responses",
-    }
+    },
   );
   const sanitized = sanitizeReasoningEffortForProvider(
     transformed,
     "codex",
     "gpt-5.6-luna",
-    null
+    null,
   ) as Record<string, unknown>;
   const reasoning = getRecord(sanitized.reasoning);
 
@@ -849,7 +851,7 @@ test("CodexExecutor.transformRequest merges Codex installation metadata", () => 
           installationId: "11111111-1111-4111-a111-111111111111",
         },
       },
-    }
+    },
   );
 
   assert.deepEqual(result.client_metadata, {
@@ -879,7 +881,7 @@ test("CodexExecutor.transformRequest omits client metadata for compact requests"
           installationId: "11111111-1111-4111-a111-111111111111",
         },
       },
-    }
+    },
   );
 
   assert.equal(result.client_metadata, undefined);
@@ -960,7 +962,7 @@ test("CodexExecutor.execute captures the exact websocket request body before sen
         accessToken: "codex-token",
         providerSpecificData: { codexTransport: "websocket" },
       },
-    })
+    }),
   );
   await result.response.text();
 
@@ -1014,7 +1016,7 @@ test("CodexExecutor.execute adds CLI-like session identity headers without chang
     assert.equal(capturedBody?.prompt_cache_key, "conversation-1");
     assert.equal(
       (capturedBody?.client_metadata as Record<string, unknown>)?.["x-codex-installation-id"],
-      "7f06a8ee-2981-4c81-a4ca-e443b5400a63"
+      "7f06a8ee-2981-4c81-a4ca-e443b5400a63",
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -1081,7 +1083,7 @@ test("CodexExecutor.transformRequest preserves namespace MCP tools and hosted to
       tool_choice: { type: "function", name: "jira_get_issue" },
     },
     false,
-    {}
+    {},
   );
 
   const types = (result.tools as Array<Record<string, unknown>>).map((tool) => tool.type);
@@ -1094,7 +1096,7 @@ test("CodexExecutor.transformRequest preserves namespace MCP tools and hosted to
   ]);
 
   const namespaceTool = (result.tools as Array<Record<string, unknown>>).find(
-    (tool) => tool.type === "namespace"
+    (tool) => tool.type === "namespace",
   );
   assert.equal((namespaceTool as { name: string }).name, "mcp__atlassian__");
   assert.equal(((namespaceTool as { tools: unknown[] }).tools ?? []).length, 2);
@@ -1135,7 +1137,7 @@ test("CodexExecutor.transformRequest preserves native Codex custom tools", () =>
       ],
     },
     true,
-    { requestEndpointPath: "/responses" }
+    { requestEndpointPath: "/responses" },
   );
 
   const tools = result.tools as Array<Record<string, unknown>>;
@@ -1166,13 +1168,13 @@ test("CodexExecutor.transformRequest still drops custom tools outside native pas
       ],
     },
     true,
-    { requestEndpointPath: "/responses" }
+    { requestEndpointPath: "/responses" },
   );
 
   const tools = result.tools as Array<Record<string, unknown>>;
   assert.deepEqual(
     tools.map((tool) => tool.name),
-    ["exec_command"]
+    ["exec_command"],
   );
 });
 
@@ -1213,7 +1215,7 @@ test("CodexExecutor.transformRequest does not apply connection reasoning default
           reasoningEffort: "high",
         },
       },
-    }
+    },
   );
   const explicit = executor.transformRequest(
     "gpt-5.3-codex",
@@ -1225,7 +1227,7 @@ test("CodexExecutor.transformRequest does not apply connection reasoning default
           reasoningEffort: "low",
         },
       },
-    }
+    },
   );
 
   assert.equal(noDefaults.reasoning, undefined);
@@ -1243,7 +1245,7 @@ test("CodexExecutor.refreshCredentials refreshes OAuth tokens and returns null w
         refresh_token: "new-refresh",
         expires_in: 3600,
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   };
 
@@ -1270,7 +1272,7 @@ test("CodexExecutor.refreshCredentials returns null for unrecoverable errors to 
   globalThis.fetch = async () =>
     new Response(
       JSON.stringify({ error: "invalid_grant", error_description: "Refresh token expired" }),
-      { status: 400, headers: { "Content-Type": "application/json" } }
+      { status: 400, headers: { "Content-Type": "application/json" } },
     );
 
   try {
@@ -1307,8 +1309,9 @@ test("CodexExecutor maps usage_limit_reached websocket failures without explicit
 });
 
 test("Codex internal websocket bridge secret comparison handles mismatched lengths safely", async () => {
-  const { bridgeSecretMatches } =
-    await import("../../src/app/api/internal/codex-responses-ws/route.ts");
+  const { bridgeSecretMatches } = await import(
+    "../../src/app/api/internal/codex-responses-ws/route.ts"
+  );
 
   assert.equal(bridgeSecretMatches("bridge-secret", "bridge-secret"), true);
   assert.equal(bridgeSecretMatches("bridge-secret", "bridge-secret-extra"), false);
@@ -1327,7 +1330,7 @@ test("Codex internal websocket bridge rejects non-object JSON payloads", async (
           "x-omniroute-ws-bridge-secret": "bridge-secret",
         },
         body: JSON.stringify(["invalid"]),
-      })
+      }),
     );
     const body = await response.json();
 

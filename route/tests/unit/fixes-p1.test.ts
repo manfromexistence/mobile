@@ -82,7 +82,7 @@ test("token refresh dedupe key avoids collision for same-prefix tokens", async (
       {
         status: 200,
         headers: { "content-type": "application/json" },
-      }
+      },
     );
   };
 
@@ -114,7 +114,7 @@ test(
     const db = core.getDbInstance();
     const now = new Date().toISOString();
     db.prepare(
-      "INSERT INTO provider_connections (id, provider, auth_type, name, is_active, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
+      "INSERT INTO provider_connections (id, provider, auth_type, name, is_active, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
     ).run("restore-test-conn", "openai", "apikey", "restore-test", 1, now, now);
 
     const backupId = "db_2000-01-01T00-00-00-000Z_manual.sqlite";
@@ -141,7 +141,7 @@ test(
       .prepare("SELECT COUNT(*) AS cnt FROM provider_connections WHERE id = ?")
       .get("restore-test-conn");
     assert.equal((row as any).cnt, 1);
-  }
+  },
 );
 
 test("closeDbInstance checkpoints WAL changes into the primary SQLite file", async () => {
@@ -150,7 +150,7 @@ test("closeDbInstance checkpoints WAL changes into the primary SQLite file", asy
   const db = core.getDbInstance();
   const now = new Date().toISOString();
   db.prepare(
-    "INSERT INTO provider_connections (id, provider, auth_type, name, is_active, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
+    "INSERT INTO provider_connections (id, provider, auth_type, name, is_active, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
   ).run("checkpoint-test-conn", "openai", "apikey", "checkpoint-test", 1, now, now);
 
   core.closeDbInstance();
@@ -382,7 +382,7 @@ test("normalizeProxyUrl accepts socks5 only when explicitly allowed", () => {
       proxyDispatcher.normalizeProxyUrl(socksUrl, "test proxy", {
         allowSocks5: false,
       }),
-    /SOCKS5 proxy is disabled/i
+    /SOCKS5 proxy is disabled/i,
   );
 });
 
@@ -401,8 +401,8 @@ test("createProxyDispatcher builds dispatchers for http, https, and socks5", asy
 test("proxy fetch fails closed when context proxy is invalid", async () => {
   await assert.rejects(
     proxyFetch.runWithProxyContext({ type: "http", host: "127.0.0.1", port: "9" }, async () =>
-      fetch("https://example.com")
-    )
+      fetch("https://example.com"),
+    ),
   );
 });
 
@@ -411,9 +411,9 @@ test("proxy fetch rejects socks5 context when feature flag is disabled", async (
     await assert.rejects(
       proxyFetch.runWithProxyContext(
         { type: "socks5", host: "127.0.0.1", port: "1080" },
-        async () => fetch("https://example.com")
+        async () => fetch("https://example.com"),
       ),
-      /ENABLE_SOCKS5_PROXY/i
+      /ENABLE_SOCKS5_PROXY/i,
     );
   });
 });
@@ -432,7 +432,7 @@ test("proxy fetch accepts socks5 context when feature flag is enabled", async ()
     try {
       const result = await proxyFetch.runWithProxyContext(
         { type: "socks5", host: "127.0.0.1", port: String(address.port) },
-        async () => "ok"
+        async () => "ok",
       );
       assert.equal(result, "ok");
     } finally {
@@ -547,7 +547,7 @@ test("proxy test route validates JSON, schema, and proxy types before dispatchin
       method: "POST",
       headers: { "content-type": "application/json" },
       body: "{",
-    })
+    }),
   );
   const invalidJsonBody = (await invalidJsonResponse.json()) as any;
   assert.equal(invalidJsonResponse.status, 400);
@@ -558,7 +558,7 @@ test("proxy test route validates JSON, schema, and proxy types before dispatchin
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ proxy: { port: "8080" } }),
-    })
+    }),
   );
   const invalidBody = (await invalidBodyResponse.json()) as any;
   assert.equal(invalidBodyResponse.status, 400);
@@ -575,7 +575,7 @@ test("proxy test route validates JSON, schema, and proxy types before dispatchin
           port: "1080",
         },
       }),
-    })
+    }),
   );
   const socks4Body = (await socks4Response.json()) as any;
   assert.equal(socks4Response.status, 400);
@@ -592,13 +592,13 @@ test("proxy test route validates JSON, schema, and proxy types before dispatchin
           port: "21",
         },
       }),
-    })
+    }),
   );
   const unsupportedBody = (await unsupportedResponse.json()) as any;
   assert.equal(unsupportedResponse.status, 400);
   assert.match(
     unsupportedBody.error.message,
-    /proxy\.type must be http(, https, or socks5| or https)/i
+    /proxy\.type must be http(, https, or socks5| or https)/i,
   );
 });
 
@@ -616,7 +616,7 @@ test("proxy test route handles invalid proxy ports and uses stored proxy config 
           port: "70000",
         },
       }),
-    })
+    }),
   );
   const invalidPortBody = (await invalidPortResponse.json()) as any;
   assert.equal(invalidPortResponse.status, 400);
@@ -642,7 +642,7 @@ test("proxy test route handles invalid proxy ports and uses stored proxy config 
           port: 0,
         },
       }),
-    })
+    }),
   );
   const proxyIdBody = (await proxyIdResponse.json()) as any;
   assert.notEqual(proxyIdResponse.status, 400);

@@ -135,8 +135,8 @@ export default function VisionBridgeSettingsTab() {
                       300000,
                       Math.max(
                         1000,
-                        settings.visionBridgeTimeout || VISION_BRIDGE_DEFAULTS.timeoutMs
-                      )
+                        settings.visionBridgeTimeout || VISION_BRIDGE_DEFAULTS.timeoutMs,
+                      ),
                     ),
                   })
                 }
@@ -164,8 +164,9 @@ export default function VisionBridgeSettingsTab() {
                       20,
                       Math.max(
                         1,
-                        settings.visionBridgeMaxImages || VISION_BRIDGE_DEFAULTS.maxImagesPerRequest
-                      )
+                        settings.visionBridgeMaxImages ||
+                          VISION_BRIDGE_DEFAULTS.maxImagesPerRequest,
+                      ),
                     ),
                   })
                 }

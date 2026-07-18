@@ -1,22 +1,32 @@
-import { describe, expect, test } from "bun:test"
-import { ConfigProviderOptionsV1 } from "@opencode-ai/core/v1/config/provider-options"
+import { describe, expect, test } from "bun:test";
+import { ConfigProviderOptionsV1 } from "@opencode-ai/core/v1/config/provider-options";
 
 describe("ConfigProviderOptionsV1", () => {
   test("keeps raw provider and request options unchanged", () => {
-    const lowerer = ConfigProviderOptionsV1.get("custom-provider")
+    const lowerer = ConfigProviderOptionsV1.get("custom-provider");
 
-    expect(lowerer.provider({ apiKey: "secret", headers: { "x-test": "1" }, nested: { camelCase: true } })).toEqual({
+    expect(
+      lowerer.provider({
+        apiKey: "secret",
+        headers: { "x-test": "1" },
+        nested: { camelCase: true },
+      }),
+    ).toEqual({
       body: { apiKey: "secret", headers: { "x-test": "1" }, nested: { camelCase: true } },
-    })
-    expect(lowerer.request({ nested: { camelCase: true } })).toEqual({ nested: { camelCase: true } })
-  })
+    });
+    expect(lowerer.request({ nested: { camelCase: true } })).toEqual({
+      nested: { camelCase: true },
+    });
+  });
 
   test("falls back to raw lowering for prototype property package names", () => {
-    expect(ConfigProviderOptionsV1.get("toString").provider({ enabled: true })).toEqual({ body: { enabled: true } })
-  })
+    expect(ConfigProviderOptionsV1.get("toString").provider({ enabled: true })).toEqual({
+      body: { enabled: true },
+    });
+  });
 
   test("lowers OpenAI provider and request options", () => {
-    const lowerer = ConfigProviderOptionsV1.get("@ai-sdk/openai")
+    const lowerer = ConfigProviderOptionsV1.get("@ai-sdk/openai");
 
     expect(
       lowerer.provider({
@@ -38,7 +48,7 @@ describe("ConfigProviderOptionsV1", () => {
       },
       body: { store: true },
       settings: { timeout: 1000 },
-    })
+    });
     expect(
       lowerer.request({
         reasoningEffort: "high",
@@ -52,11 +62,11 @@ describe("ConfigProviderOptionsV1", () => {
       reasoning: { encrypted_content: true, effort: "high", summary: "auto" },
       text: { output_format: "plain", verbosity: "low" },
       nested_value: { camel_case: true },
-    })
-  })
+    });
+  });
 
   test("lowers Anthropic provider and request options", () => {
-    const lowerer = ConfigProviderOptionsV1.get("@ai-sdk/anthropic")
+    const lowerer = ConfigProviderOptionsV1.get("@ai-sdk/anthropic");
 
     expect(
       lowerer.provider({
@@ -72,7 +82,7 @@ describe("ConfigProviderOptionsV1", () => {
       headers: { "x-api-key": "secret", Authorization: "Bearer token", "x-test": "1" },
       body: { beta: true },
       settings: { generateId: "custom" },
-    })
+    });
     expect(
       lowerer.request({
         effort: "high",
@@ -84,11 +94,11 @@ describe("ConfigProviderOptionsV1", () => {
       output_config: { effort: "high", task_budget: 1024 },
       metadata: { user_id: "user", trace_id: "trace" },
       nested_value: { camel_case: true },
-    })
-  })
+    });
+  });
 
   test("lowers Google provider and request options", () => {
-    const lowerer = ConfigProviderOptionsV1.get("@ai-sdk/google")
+    const lowerer = ConfigProviderOptionsV1.get("@ai-sdk/google");
 
     expect(
       lowerer.provider({
@@ -103,7 +113,7 @@ describe("ConfigProviderOptionsV1", () => {
       headers: { "x-goog-api-key": "secret", "x-test": "1" },
       body: { trace: true },
       settings: { project: "project" },
-    })
+    });
     expect(
       lowerer.request({
         thinkingConfig: { thinkingBudget: 1024 },
@@ -120,11 +130,11 @@ describe("ConfigProviderOptionsV1", () => {
         mediaResolution: "high",
         imageConfig: { aspectRatio: "16:9" },
       },
-    })
-  })
+    });
+  });
 
   test("lowers Azure provider options and uses OpenAI request lowering", () => {
-    const lowerer = ConfigProviderOptionsV1.get("@ai-sdk/azure")
+    const lowerer = ConfigProviderOptionsV1.get("@ai-sdk/azure");
 
     expect(
       lowerer.provider({
@@ -139,15 +149,17 @@ describe("ConfigProviderOptionsV1", () => {
       headers: { "api-key": "secret", "x-test": "1" },
       body: { trace: true },
       settings: { resourceName: "resource" },
-    })
-    expect(lowerer.request({ reasoningEffort: "high", reasoningSummary: "auto", textVerbosity: "low" })).toEqual({
+    });
+    expect(
+      lowerer.request({ reasoningEffort: "high", reasoningSummary: "auto", textVerbosity: "low" }),
+    ).toEqual({
       reasoning: { effort: "high", summary: "auto" },
       text: { verbosity: "low" },
-    })
-  })
+    });
+  });
 
   test("lowers Amazon Bedrock provider and request options", () => {
-    const lowerer = ConfigProviderOptionsV1.get("@ai-sdk/amazon-bedrock")
+    const lowerer = ConfigProviderOptionsV1.get("@ai-sdk/amazon-bedrock");
 
     expect(
       lowerer.provider({
@@ -160,14 +172,14 @@ describe("ConfigProviderOptionsV1", () => {
       headers: { "x-test": "1" },
       body: { trace: true },
       settings: { region: "us-east-1", profile: "dev" },
-    })
+    });
     expect(lowerer.request({ temperature: 0.2 })).toEqual({
       additionalModelRequestFields: { temperature: 0.2 },
-    })
-  })
+    });
+  });
 
   test("lowers OpenAI-compatible provider and request options", () => {
-    const lowerer = ConfigProviderOptionsV1.get("@ai-sdk/openai-compatible")
+    const lowerer = ConfigProviderOptionsV1.get("@ai-sdk/openai-compatible");
 
     expect(
       lowerer.provider({
@@ -181,12 +193,12 @@ describe("ConfigProviderOptionsV1", () => {
       headers: { "x-test": "1" },
       body: { trace: true },
       settings: { apiKey: "secret" },
-    })
+    });
     expect(lowerer.request({ reasoningEffort: "high", serviceTier: "priority" })).toEqual({
       reasoning_effort: "high",
       serviceTier: "priority",
-    })
-  })
+    });
+  });
 
   test.each([
     "@ai-sdk/cerebras",
@@ -199,26 +211,26 @@ describe("ConfigProviderOptionsV1", () => {
     "ai-gateway-provider",
     "venice-ai-sdk-provider",
   ])("uses OpenAI-compatible lowering for %s", (packageName) => {
-    const lowerer = ConfigProviderOptionsV1.get(packageName)
+    const lowerer = ConfigProviderOptionsV1.get(packageName);
 
     expect(lowerer.provider({ baseURL: "https://example.test", apiKey: "secret" })).toEqual({
       url: "https://example.test",
       headers: undefined,
       body: undefined,
       settings: { apiKey: "secret" },
-    })
-    expect(lowerer.request({ reasoningEffort: "high" })).toEqual({ reasoning_effort: "high" })
-  })
+    });
+    expect(lowerer.request({ reasoningEffort: "high" })).toEqual({ reasoning_effort: "high" });
+  });
 
   test.each(["@ai-sdk/google-vertex", "@ai-sdk/google-vertex/anthropic"])(
     "uses provider family lowering for %s",
     (packageName) => {
-      const lowerer = ConfigProviderOptionsV1.get(packageName)
+      const lowerer = ConfigProviderOptionsV1.get(packageName);
 
       expect(lowerer.provider({ baseURL: "https://example.test", profile: "dev" })).toMatchObject({
         url: "https://example.test",
         settings: { profile: "dev" },
-      })
+      });
     },
-  )
-})
+  );
+});

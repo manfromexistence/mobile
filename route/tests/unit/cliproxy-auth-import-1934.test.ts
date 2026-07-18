@@ -26,7 +26,7 @@ test("parseCliProxyAuthRecord maps a claude (anthropic) auth file", () => {
       refresh_token: "rt-1",
       expires_in: 3600,
     },
-    T0
+    T0,
   );
   assert.deepEqual(parsed, {
     provider: "claude",
@@ -42,7 +42,7 @@ test("parseCliProxyAuthRecord maps a claude (anthropic) auth file", () => {
 test("parseCliProxyAuthRecord skips discontinued gemini records", () => {
   const parsed = parseCliProxyAuthRecord(
     { type: "gemini", access_token: "at", project_id: "proj-9" },
-    T0
+    T0,
   );
   assert.equal(parsed, null);
 });
@@ -59,7 +59,7 @@ test("every CLIPROXY_TYPE_TO_PROVIDER target is a real OAuth provider id", () =>
   for (const provider of Object.values(CLIPROXY_TYPE_TO_PROVIDER)) {
     assert.ok(
       ["claude", "codex", "antigravity", "qwen", "kimi"].includes(provider),
-      `unexpected provider mapping: ${provider}`
+      `unexpected provider mapping: ${provider}`,
     );
   }
 });
@@ -67,11 +67,11 @@ test("every CLIPROXY_TYPE_TO_PROVIDER target is a real OAuth provider id", () =>
 test("resolveCliProxyExpiry handles absolute `expired` (string + unix) and relative `expires_in`", () => {
   assert.equal(
     resolveCliProxyExpiry({ expired: "2030-01-01T00:00:00Z" }, T0),
-    "2030-01-01T00:00:00.000Z"
+    "2030-01-01T00:00:00.000Z",
   );
   assert.equal(
     resolveCliProxyExpiry({ expired: 1_800_000_000 }, T0),
-    new Date(1_800_000_000 * 1000).toISOString()
+    new Date(1_800_000_000 * 1000).toISOString(),
   );
   assert.equal(resolveCliProxyExpiry({ expires_in: 60 }, T0), new Date(T0 + 60_000).toISOString());
   assert.equal(resolveCliProxyExpiry({}, T0), null);
@@ -93,7 +93,7 @@ test("toConnectionPayload produces a createProviderConnection-shaped oauth paylo
   assert.equal(payload.accessToken, "at");
   assert.equal(
     (payload.providerSpecificData as Record<string, unknown>).importedFrom,
-    "cliproxyapi"
+    "cliproxyapi",
   );
 });
 
@@ -102,11 +102,11 @@ test("scanCliProxyAuthDir reads importable files and counts skips", async () => 
   try {
     await fs.writeFile(
       path.join(dir, "acct1.json"),
-      JSON.stringify({ type: "antigravity", access_token: "at1", email: "x@y.com" })
+      JSON.stringify({ type: "antigravity", access_token: "at1", email: "x@y.com" }),
     );
     await fs.writeFile(
       path.join(dir, "acct2.json"),
-      JSON.stringify({ type: "unknown-thing", access_token: "at2" })
+      JSON.stringify({ type: "unknown-thing", access_token: "at2" }),
     );
     await fs.writeFile(path.join(dir, "broken.json"), "{ not json");
     await fs.writeFile(path.join(dir, "config.yaml"), "ignored: true");
@@ -124,7 +124,7 @@ test("scanCliProxyAuthDir reads importable files and counts skips", async () => 
 test("scanCliProxyAuthDir returns empty for a missing directory", async () => {
   const { candidates, scanned } = await scanCliProxyAuthDir(
     path.join(os.tmpdir(), "does-not-exist-1934-xyz"),
-    T0
+    T0,
   );
   assert.equal(candidates.length, 0);
   assert.equal(scanned, 0);

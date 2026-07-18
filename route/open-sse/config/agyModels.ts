@@ -145,7 +145,7 @@ const AGY_CLIENT_VISIBLE_MODEL_NAMES = Object.freeze(
   AGY_PUBLIC_MODELS.reduce<Record<string, string>>((acc, model) => {
     acc[model.id] = model.name;
     return acc;
-  }, {})
+  }, {}),
 );
 
 export function getClientVisibleAgyModelName(modelId: string, fallbackName?: string): string {

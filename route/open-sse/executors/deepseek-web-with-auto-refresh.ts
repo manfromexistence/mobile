@@ -131,7 +131,7 @@ export class DeepSeekWebWithAutoRefreshExecutor extends DeepSeekWebExecutor {
    * caller surfaces the original failure instead of looping.
    */
   private async refreshAndRetry(
-    input: ExecuteInput
+    input: ExecuteInput,
   ): Promise<Awaited<ReturnType<typeof this.executeBase>> | null> {
     this.retryCount++;
     try {
@@ -140,7 +140,7 @@ export class DeepSeekWebWithAutoRefreshExecutor extends DeepSeekWebExecutor {
     } catch (refreshError) {
       console.error(
         `[DeepSeek-WEB] Session refresh failed (attempt ${this.retryCount}/${this.maxRetries}):`,
-        refreshError
+        refreshError,
       );
       return null;
     }

@@ -1,44 +1,61 @@
-import { Component, For, Show, createMemo, lazy, onCleanup, onMount } from "solid-js"
-import { createStore } from "solid-js/store"
-import { makeEventListener } from "@solid-primitives/event-listener"
-import { Button } from "@opencode-ai/ui/button"
-import { Icon } from "@opencode-ai/ui/icon"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { TextField } from "@opencode-ai/ui/text-field"
-import { showToast } from "@/utils/toast"
-import fuzzysort from "fuzzysort"
-import { formatKeybind, parseKeybind, useCommand } from "@/context/command"
-import { useLanguage } from "@/context/language"
-import { useSettings } from "@/context/settings"
-import { SettingsList } from "./settings-list"
+import { Component, For, Show, createMemo, lazy, onCleanup, onMount } from "solid-js";
+import { createStore } from "solid-js/store";
+import { makeEventListener } from "@solid-primitives/event-listener";
+import { Button } from "@opencode-ai/ui/button";
+import { Icon } from "@opencode-ai/ui/icon";
+import { IconButton } from "@opencode-ai/ui/icon-button";
+import { TextField } from "@opencode-ai/ui/text-field";
+import { showToast } from "@/utils/toast";
+import fuzzysort from "fuzzysort";
+import { formatKeybind, parseKeybind, useCommand } from "@/context/command";
+import { useLanguage } from "@/context/language";
+import { useSettings } from "@/context/settings";
+import { SettingsList } from "./settings-list";
 
-const ButtonV2 = lazy(() => import("@opencode-ai/ui/v2/button-v2").then((module) => ({ default: module.ButtonV2 })))
-const IconV2 = lazy(() => import("@opencode-ai/ui/v2/icon").then((module) => ({ default: module.Icon })))
+const ButtonV2 = lazy(() =>
+  import("@opencode-ai/ui/v2/button-v2").then((module) => ({ default: module.ButtonV2 })),
+);
+const IconV2 = lazy(() =>
+  import("@opencode-ai/ui/v2/icon").then((module) => ({ default: module.Icon })),
+);
 const IconButtonV2 = lazy(() =>
   import("@opencode-ai/ui/v2/icon-button-v2").then((module) => ({ default: module.IconButtonV2 })),
-)
+);
 const TextInputV2 = lazy(() =>
   import("@opencode-ai/ui/v2/text-input-v2").then((module) => ({ default: module.TextInputV2 })),
-)
+);
 const SettingsListV2 = lazy(() =>
   import("./settings-v2/parts/list").then((module) => ({ default: module.SettingsListV2 })),
-)
+);
 
-const IS_MAC = typeof navigator === "object" && /(Mac|iPod|iPhone|iPad)/.test(navigator.platform)
-const PALETTE_ID = "command.palette"
-const DEFAULT_PALETTE_KEYBIND = "mod+shift+p"
+const IS_MAC = typeof navigator === "object" && /(Mac|iPod|iPhone|iPad)/.test(navigator.platform);
+const PALETTE_ID = "command.palette";
+const DEFAULT_PALETTE_KEYBIND = "mod+shift+p";
 
-type KeybindGroup = "General" | "Session" | "Navigation" | "Model and agent" | "Terminal" | "Prompt"
+type KeybindGroup =
+  | "General"
+  | "Session"
+  | "Navigation"
+  | "Model and agent"
+  | "Terminal"
+  | "Prompt";
 
 type KeybindMeta = {
-  title: string
-  group: KeybindGroup
-}
+  title: string;
+  group: KeybindGroup;
+};
 
-type KeybindMap = Record<string, string | undefined>
-type CommandContext = ReturnType<typeof useCommand>
+type KeybindMap = Record<string, string | undefined>;
+type CommandContext = ReturnType<typeof useCommand>;
 
-const GROUPS: KeybindGroup[] = ["General", "Session", "Navigation", "Model and agent", "Terminal", "Prompt"]
+const GROUPS: KeybindGroup[] = [
+  "General",
+  "Session",
+  "Navigation",
+  "Model and agent",
+  "Terminal",
+  "Prompt",
+];
 
 type GroupKey =
   | "settings.shortcuts.group.general"
@@ -46,7 +63,7 @@ type GroupKey =
   | "settings.shortcuts.group.navigation"
   | "settings.shortcuts.group.modelAndAgent"
   | "settings.shortcuts.group.terminal"
-  | "settings.shortcuts.group.prompt"
+  | "settings.shortcuts.group.prompt";
 
 const groupKey: Record<KeybindGroup, GroupKey> = {
   General: "settings.shortcuts.group.general",
@@ -55,14 +72,15 @@ const groupKey: Record<KeybindGroup, GroupKey> = {
   "Model and agent": "settings.shortcuts.group.modelAndAgent",
   Terminal: "settings.shortcuts.group.terminal",
   Prompt: "settings.shortcuts.group.prompt",
-}
+};
 
 function groupFor(id: string): KeybindGroup {
-  if (id === PALETTE_ID) return "General"
-  if (id.startsWith("terminal.")) return "Terminal"
-  if (id.startsWith("model.") || id.startsWith("agent.") || id.startsWith("mcp.")) return "Model and agent"
-  if (id.startsWith("file.") || id.startsWith("fileTree.")) return "Navigation"
-  if (id.startsWith("prompt.")) return "Prompt"
+  if (id === PALETTE_ID) return "General";
+  if (id.startsWith("terminal.")) return "Terminal";
+  if (id.startsWith("model.") || id.startsWith("agent.") || id.startsWith("mcp."))
+    return "Model and agent";
+  if (id.startsWith("file.") || id.startsWith("fileTree.")) return "Navigation";
+  if (id.startsWith("prompt.")) return "Prompt";
   if (
     id.startsWith("session.") ||
     id.startsWith("message.") ||
@@ -70,107 +88,107 @@ function groupFor(id: string): KeybindGroup {
     id.startsWith("steps.") ||
     id.startsWith("review.")
   )
-    return "Session"
+    return "Session";
 
-  return "General"
+  return "General";
 }
 
 function isModifier(key: string) {
-  return key === "Shift" || key === "Control" || key === "Alt" || key === "Meta"
+  return key === "Shift" || key === "Control" || key === "Alt" || key === "Meta";
 }
 
 function normalizeKey(key: string) {
-  if (key === ",") return "comma"
-  if (key === "+") return "plus"
-  if (key === " ") return "space"
-  return key.toLowerCase()
+  if (key === ",") return "comma";
+  if (key === "+") return "plus";
+  if (key === " ") return "space";
+  return key.toLowerCase();
 }
 
 function recordKeybind(event: KeyboardEvent) {
-  if (isModifier(event.key)) return
+  if (isModifier(event.key)) return;
 
-  const parts: string[] = []
+  const parts: string[] = [];
 
-  const mod = IS_MAC ? event.metaKey : event.ctrlKey
-  if (mod) parts.push("mod")
+  const mod = IS_MAC ? event.metaKey : event.ctrlKey;
+  if (mod) parts.push("mod");
 
-  if (IS_MAC && event.ctrlKey) parts.push("ctrl")
-  if (!IS_MAC && event.metaKey) parts.push("meta")
-  if (event.altKey) parts.push("alt")
-  if (event.shiftKey) parts.push("shift")
+  if (IS_MAC && event.ctrlKey) parts.push("ctrl");
+  if (!IS_MAC && event.metaKey) parts.push("meta");
+  if (event.altKey) parts.push("alt");
+  if (event.shiftKey) parts.push("shift");
 
-  const key = normalizeKey(event.key)
-  if (!key) return
-  parts.push(key)
+  const key = normalizeKey(event.key);
+  if (!key) return;
+  parts.push(key);
 
-  return parts.join("+")
+  return parts.join("+");
 }
 
 function signatures(config: string | undefined) {
-  if (!config) return []
-  const sigs: string[] = []
+  if (!config) return [];
+  const sigs: string[] = [];
 
   for (const kb of parseKeybind(config)) {
-    const parts: string[] = []
-    if (kb.ctrl) parts.push("ctrl")
-    if (kb.alt) parts.push("alt")
-    if (kb.shift) parts.push("shift")
-    if (kb.meta) parts.push("meta")
-    if (kb.key) parts.push(kb.key)
-    if (parts.length === 0) continue
-    sigs.push(parts.join("+"))
+    const parts: string[] = [];
+    if (kb.ctrl) parts.push("ctrl");
+    if (kb.alt) parts.push("alt");
+    if (kb.shift) parts.push("shift");
+    if (kb.meta) parts.push("meta");
+    if (kb.key) parts.push(kb.key);
+    if (parts.length === 0) continue;
+    sigs.push(parts.join("+"));
   }
 
-  return sigs
+  return sigs;
 }
 
 function keybinds(value: unknown): KeybindMap {
-  if (!value || typeof value !== "object" || Array.isArray(value)) return {}
-  return value as KeybindMap
+  if (!value || typeof value !== "object" || Array.isArray(value)) return {};
+  return value as KeybindMap;
 }
 
 function listFor(command: CommandContext, map: KeybindMap, palette: string) {
-  const out = new Map<string, KeybindMeta>()
-  out.set(PALETTE_ID, { title: palette, group: "General" })
+  const out = new Map<string, KeybindMeta>();
+  out.set(PALETTE_ID, { title: palette, group: "General" });
 
   for (const opt of command.catalog) {
-    if (opt.id.startsWith("suggested.")) continue
-    if (opt.hidden) continue
-    out.set(opt.id, { title: opt.title, group: groupFor(opt.id) })
+    if (opt.id.startsWith("suggested.")) continue;
+    if (opt.hidden) continue;
+    out.set(opt.id, { title: opt.title, group: groupFor(opt.id) });
   }
 
   for (const opt of command.options) {
-    if (opt.id.startsWith("suggested.")) continue
-    if (opt.hidden) continue
-    out.set(opt.id, { title: opt.title, group: groupFor(opt.id) })
+    if (opt.id.startsWith("suggested.")) continue;
+    if (opt.hidden) continue;
+    out.set(opt.id, { title: opt.title, group: groupFor(opt.id) });
   }
 
   for (const [id, value] of Object.entries(map)) {
-    if (typeof value !== "string") continue
-    if (out.has(id)) continue
-    out.set(id, { title: id, group: groupFor(id) })
+    if (typeof value !== "string") continue;
+    if (out.has(id)) continue;
+    out.set(id, { title: id, group: groupFor(id) });
   }
 
-  return out
+  return out;
 }
 
 function groupedFor(list: Map<string, KeybindMeta>) {
-  const out = new Map<KeybindGroup, string[]>()
-  for (const group of GROUPS) out.set(group, [])
+  const out = new Map<KeybindGroup, string[]>();
+  for (const group of GROUPS) out.set(group, []);
 
   for (const [id, item] of list) {
-    const ids = out.get(item.group)
-    if (!ids) continue
-    ids.push(id)
+    const ids = out.get(item.group);
+    if (!ids) continue;
+    ids.push(id);
   }
 
   for (const group of GROUPS) {
-    const ids = out.get(group)
-    if (!ids) continue
-    ids.sort((a, b) => (list.get(a)?.title ?? "").localeCompare(list.get(b)?.title ?? ""))
+    const ids = out.get(group);
+    if (!ids) continue;
+    ids.sort((a, b) => (list.get(a)?.title ?? "").localeCompare(list.get(b)?.title ?? ""));
   }
 
-  return out
+  return out;
 }
 
 function filteredFor(
@@ -179,52 +197,52 @@ function filteredFor(
   grouped: Map<KeybindGroup, string[]>,
   keybind: (id: string) => string,
 ) {
-  const value = query.toLowerCase().trim()
-  if (!value) return grouped
+  const value = query.toLowerCase().trim();
+  if (!value) return grouped;
 
-  const out = new Map<KeybindGroup, string[]>()
-  for (const group of GROUPS) out.set(group, [])
+  const out = new Map<KeybindGroup, string[]>();
+  for (const group of GROUPS) out.set(group, []);
 
   const items = Array.from(list.entries()).map(([id, meta]) => ({
     id,
     title: meta.title,
     group: meta.group,
     keybind: keybind(id),
-  }))
+  }));
 
   const results = fuzzysort.go(value, items, {
     keys: ["title", "keybind"],
     threshold: -10000,
-  })
+  });
 
   for (const result of results) {
-    const ids = out.get(result.obj.group)
-    if (!ids) continue
-    ids.push(result.obj.id)
+    const ids = out.get(result.obj.group);
+    if (!ids) continue;
+    ids.push(result.obj.id);
   }
 
-  return out
+  return out;
 }
 
 function useKeyCapture(input: {
-  active: () => string | null
-  stop: () => void
-  set: (id: string, keybind: string) => void
-  used: () => Map<string, { id: string; title: string }[]>
-  language: ReturnType<typeof useLanguage>
+  active: () => string | null;
+  stop: () => void;
+  set: (id: string, keybind: string) => void;
+  used: () => Map<string, { id: string; title: string }[]>;
+  language: ReturnType<typeof useLanguage>;
 }) {
   onMount(() => {
     const handle = (event: KeyboardEvent) => {
-      const id = input.active()
-      if (!id) return
+      const id = input.active();
+      if (!id) return;
 
-      event.preventDefault()
-      event.stopPropagation()
-      event.stopImmediatePropagation()
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
 
       if (event.key === "Escape") {
-        input.stop()
-        return
+        input.stop();
+        return;
       }
 
       const clear =
@@ -232,21 +250,21 @@ function useKeyCapture(input: {
         !event.ctrlKey &&
         !event.metaKey &&
         !event.altKey &&
-        !event.shiftKey
+        !event.shiftKey;
       if (clear) {
-        input.set(id, "none")
-        input.stop()
-        return
+        input.set(id, "none");
+        input.stop();
+        return;
       }
 
-      const next = recordKeybind(event)
-      if (!next) return
+      const next = recordKeybind(event);
+      if (!next) return;
 
-      const conflicts = new Map<string, string>()
+      const conflicts = new Map<string, string>();
       for (const sig of signatures(next)) {
         for (const item of input.used().get(sig) ?? []) {
-          if (item.id === id) continue
-          conflicts.set(item.id, item.title)
+          if (item.id === id) continue;
+          conflicts.set(item.id, item.title);
         }
       }
 
@@ -257,119 +275,119 @@ function useKeyCapture(input: {
             keybind: formatKeybind(next, input.language.t),
             titles: [...conflicts.values()].join(", "),
           }),
-        })
-        return
+        });
+        return;
       }
 
-      input.set(id, next)
-      input.stop()
-    }
+      input.set(id, next);
+      input.stop();
+    };
 
-    makeEventListener(document, "keydown", handle, { capture: true })
-  })
+    makeEventListener(document, "keydown", handle, { capture: true });
+  });
 }
 
 export const SettingsKeybinds: Component<{ v2?: boolean }> = (props) => {
-  const command = useCommand()
-  const language = useLanguage()
-  const settings = useSettings()
+  const command = useCommand();
+  const language = useLanguage();
+  const settings = useSettings();
 
   const [store, setStore] = createStore({
     active: null as string | null,
     filter: "",
-  })
+  });
 
   const stop = () => {
-    if (!store.active) return
-    setStore("active", null)
-    command.keybinds(true)
-  }
+    if (!store.active) return;
+    setStore("active", null);
+    command.keybinds(true);
+  };
 
   const start = (id: string) => {
     if (store.active === id) {
-      stop()
-      return
+      stop();
+      return;
     }
 
-    if (store.active) stop()
+    if (store.active) stop();
 
-    setStore("active", id)
-    command.keybinds(false)
-  }
+    setStore("active", id);
+    command.keybinds(false);
+  };
 
-  const map = createMemo(() => keybinds(settings.current.keybinds))
+  const map = createMemo(() => keybinds(settings.current.keybinds));
 
-  const hasOverrides = createMemo(() => Object.values(map()).some((x) => typeof x === "string"))
+  const hasOverrides = createMemo(() => Object.values(map()).some((x) => typeof x === "string"));
 
   const resetAll = () => {
-    stop()
-    settings.keybinds.resetAll()
+    stop();
+    settings.keybinds.resetAll();
     showToast({
       title: language.t("settings.shortcuts.reset.toast.title"),
       description: language.t("settings.shortcuts.reset.toast.description"),
-    })
-  }
+    });
+  };
 
   const list = createMemo(() => {
-    language.locale()
-    return listFor(command, map(), language.t("command.palette"))
-  })
+    language.locale();
+    return listFor(command, map(), language.t("command.palette"));
+  });
 
-  const title = (id: string) => list().get(id)?.title ?? ""
+  const title = (id: string) => list().get(id)?.title ?? "";
 
-  const grouped = createMemo(() => groupedFor(list()))
+  const grouped = createMemo(() => groupedFor(list()));
 
   const filtered = createMemo(() => {
-    return filteredFor(store.filter, list(), grouped(), (id) => command.keybind(id) || "")
-  })
+    return filteredFor(store.filter, list(), grouped(), (id) => command.keybind(id) || "");
+  });
 
   const hasResults = createMemo(() => {
     for (const group of GROUPS) {
-      const ids = filtered().get(group) ?? []
-      if (ids.length > 0) return true
+      const ids = filtered().get(group) ?? [];
+      if (ids.length > 0) return true;
     }
-    return false
-  })
+    return false;
+  });
 
   const used = createMemo(() => {
-    const map = new Map<string, { id: string; title: string }[]>()
+    const map = new Map<string, { id: string; title: string }[]>();
 
     const add = (key: string, value: { id: string; title: string }) => {
-      const list = map.get(key)
+      const list = map.get(key);
       if (!list) {
-        map.set(key, [value])
-        return
+        map.set(key, [value]);
+        return;
       }
-      list.push(value)
-    }
+      list.push(value);
+    };
 
-    const palette = settings.keybinds.get(PALETTE_ID) ?? DEFAULT_PALETTE_KEYBIND
+    const palette = settings.keybinds.get(PALETTE_ID) ?? DEFAULT_PALETTE_KEYBIND;
     for (const sig of signatures(palette)) {
-      add(sig, { id: PALETTE_ID, title: title(PALETTE_ID) })
+      add(sig, { id: PALETTE_ID, title: title(PALETTE_ID) });
     }
 
     const valueFor = (id: string) => {
-      const custom = settings.keybinds.get(id)
-      if (typeof custom === "string") return custom
+      const custom = settings.keybinds.get(id);
+      if (typeof custom === "string") return custom;
 
-      const live = command.options.find((x) => x.id === id)
-      if (live?.keybind) return live.keybind
+      const live = command.options.find((x) => x.id === id);
+      if (live?.keybind) return live.keybind;
 
-      const meta = command.catalog.find((x) => x.id === id)
-      return meta?.keybind
-    }
+      const meta = command.catalog.find((x) => x.id === id);
+      return meta?.keybind;
+    };
 
     for (const id of list().keys()) {
-      if (id === PALETTE_ID) continue
+      if (id === PALETTE_ID) continue;
       for (const sig of signatures(valueFor(id))) {
-        add(sig, { id, title: title(id) })
+        add(sig, { id, title: title(id) });
       }
     }
 
-    return map
-  })
+    return map;
+  });
 
-  const setKeybind = (id: string, keybind: string) => settings.keybinds.set(id, keybind)
+  const setKeybind = (id: string, keybind: string) => settings.keybinds.set(id, keybind);
 
   useKeyCapture({
     active: () => store.active,
@@ -377,11 +395,11 @@ export const SettingsKeybinds: Component<{ v2?: boolean }> = (props) => {
     set: setKeybind,
     used,
     language,
-  })
+  });
 
   onCleanup(() => {
-    if (store.active) command.keybinds(true)
-  })
+    if (store.active) command.keybinds(true);
+  });
 
   const emptyResults = (
     <Show when={store.filter && !hasResults()}>
@@ -410,9 +428,9 @@ export const SettingsKeybinds: Component<{ v2?: boolean }> = (props) => {
         </Show>
       </div>
     </Show>
-  )
+  );
 
-  const List = props.v2 ? SettingsListV2 : SettingsList
+  const List = props.v2 ? SettingsListV2 : SettingsList;
 
   const groups = (
     <div
@@ -465,7 +483,9 @@ export const SettingsKeybinds: Component<{ v2?: boolean }> = (props) => {
                       >
                         <Show
                           when={store.active === id}
-                          fallback={command.keybind(id) || language.t("settings.shortcuts.unassigned")}
+                          fallback={
+                            command.keybind(id) || language.t("settings.shortcuts.unassigned")
+                          }
                         >
                           {language.t("settings.shortcuts.pressKeys")}
                         </Show>
@@ -480,7 +500,7 @@ export const SettingsKeybinds: Component<{ v2?: boolean }> = (props) => {
       </For>
       {emptyResults}
     </div>
-  )
+  );
 
   return (
     <Show
@@ -490,8 +510,15 @@ export const SettingsKeybinds: Component<{ v2?: boolean }> = (props) => {
           <div class="sticky top-0 z-10 bg-[linear-gradient(to_bottom,var(--surface-stronger-non-alpha)_calc(100%_-_24px),transparent)]">
             <div class="flex flex-col gap-4 pt-6 pb-6 max-w-[720px]">
               <div class="flex items-center justify-between gap-4">
-                <h2 class="text-16-medium text-text-strong">{language.t("settings.shortcuts.title")}</h2>
-                <Button size="small" variant="secondary" onClick={resetAll} disabled={!hasOverrides()}>
+                <h2 class="text-16-medium text-text-strong">
+                  {language.t("settings.shortcuts.title")}
+                </h2>
+                <Button
+                  size="small"
+                  variant="secondary"
+                  onClick={resetAll}
+                  disabled={!hasOverrides()}
+                >
                   {language.t("settings.shortcuts.reset.button")}
                 </Button>
               </div>
@@ -511,7 +538,11 @@ export const SettingsKeybinds: Component<{ v2?: boolean }> = (props) => {
                   class="flex-1"
                 />
                 <Show when={store.filter}>
-                  <IconButton icon="circle-x" variant="ghost" onClick={() => setStore("filter", "")} />
+                  <IconButton
+                    icon="circle-x"
+                    variant="ghost"
+                    onClick={() => setStore("filter", "")}
+                  />
                 </Show>
               </div>
             </div>
@@ -556,5 +587,5 @@ export const SettingsKeybinds: Component<{ v2?: boolean }> = (props) => {
         <div class="settings-v2-tab-body">{groups}</div>
       </>
     </Show>
-  )
-}
+  );
+};

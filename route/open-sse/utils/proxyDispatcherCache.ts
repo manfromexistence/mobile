@@ -37,7 +37,7 @@ class RoundRobinDispatcher {
 
   close(callback?: () => void): Promise<void> | void {
     const done = Promise.all(this.dispatchers.map((dispatcher) => dispatcher.close())).then(
-      () => undefined
+      () => undefined,
     );
     if (callback) {
       done.then(callback);
@@ -48,12 +48,12 @@ class RoundRobinDispatcher {
 
   destroy(
     errorOrCallback?: Error | null | (() => void),
-    callback?: () => void
+    callback?: () => void,
   ): Promise<void> | void {
     const callbackFn = typeof errorOrCallback === "function" ? errorOrCallback : callback;
     const error = typeof errorOrCallback === "function" ? null : (errorOrCallback ?? null);
     const done = Promise.all(this.dispatchers.map((dispatcher) => dispatcher.destroy(error))).then(
-      () => undefined
+      () => undefined,
     );
     if (callbackFn) {
       done.then(callbackFn);

@@ -66,7 +66,7 @@ describe("IdempotencyLayer", () => {
           activeKeys={0}
           totalProcessed={0}
           savedCalls={0}
-        />
+        />,
       );
       expect(screen.getAllByText("0").length).toBeGreaterThan(0);
     });

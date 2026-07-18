@@ -17,7 +17,7 @@ test("AntigravityExecutor.collectStreamToResponse normalizes prohibited content 
     {
       status: 200,
       headers: { "Content-Type": "text/event-stream" },
-    }
+    },
   );
 
   const result = await executor.collectStreamToResponse(
@@ -25,7 +25,7 @@ test("AntigravityExecutor.collectStreamToResponse normalizes prohibited content 
     "gemini-2.5-flash",
     "https://example.com",
     { Authorization: "Bearer ag-token" },
-    { request: {} }
+    { request: {} },
   );
   const payload = (await result.response.json()) as ChatCompletionPayload;
 

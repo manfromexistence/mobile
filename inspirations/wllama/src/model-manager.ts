@@ -2,9 +2,9 @@ import CacheManager, {
   type CacheEntryMetadata,
   type CacheEntry,
   type DownloadOptions,
-} from './cache-manager';
-import { isString, isValidGgufFile, sumArr } from './utils';
-import { WllamaError, type WllamaLogger } from './wllama';
+} from "./cache-manager";
+import { isString, isValidGgufFile, sumArr } from "./utils";
+import { WllamaError, type WllamaLogger } from "./wllama";
 
 const DEFAULT_PARALLEL_DOWNLOADS = 3;
 
@@ -34,9 +34,9 @@ export type DownloadProgressCallback = (opts: {
  * Status of the model validation
  */
 export enum ModelValidationStatus {
-  VALID = 'valid',
-  INVALID = 'invalid',
-  DELETED = 'deleted',
+  VALID = "valid",
+  INVALID = "invalid",
+  DELETED = "deleted",
 }
 
 /**
@@ -70,7 +70,7 @@ export class Model {
     modelManager: ModelManager,
     url: string,
     mmprojUrl?: string,
-    savedFiles?: CacheEntry[]
+    savedFiles?: CacheEntry[],
   ) {
     this.modelManager = modelManager;
     this.url = url;
@@ -112,7 +112,7 @@ export class Model {
     if (this.size === -1) {
       throw new WllamaError(
         `Model is deleted from the cache; Call ModelManager.downloadModel to re-download the model`,
-        'load_error'
+        "load_error",
       );
     }
     const blobs: Blob[] = [];
@@ -120,7 +120,7 @@ export class Model {
       const blob = await this.modelManager.cacheManager.open(file.name);
       if (!blob) {
         throw new Error(
-          `Failed to open file ${file.name}; Hint: the model may be invalid, please refresh it`
+          `Failed to open file ${file.name}; Hint: the model may be invalid, please refresh it`,
         );
       }
       blobs.push(blob);
@@ -166,9 +166,8 @@ export class Model {
       url,
       index,
     }));
-    this.modelManager.logger.debug('Downloading model files:', urls);
-    const nParallel =
-      this.modelManager.params.parallelDownloads ?? DEFAULT_PARALLEL_DOWNLOADS;
+    this.modelManager.logger.debug("Downloading model files:", urls);
+    const nParallel = this.modelManager.params.parallelDownloads ?? DEFAULT_PARALLEL_DOWNLOADS;
     const totalSize = await this.getTotalDownloadSize(urls);
     const loadedSize: number[] = [];
     const worker = async () => {
@@ -206,7 +205,7 @@ export class Model {
   async remove(): Promise<void> {
     this.files = this.getAllFiles(await this.modelManager.cacheManager.list());
     await this.modelManager.cacheManager.deleteMany(
-      (f) => !!this.files.find((file) => file.name === f.name)
+      (f) => !!this.files.find((file) => file.name === f.name),
     );
     this.size = -1;
   }
@@ -225,19 +224,13 @@ export class Model {
       }
       allFiles.push(file);
     }
-    allFiles.sort((a, b) =>
-      a.metadata.originalURL.localeCompare(b.metadata.originalURL)
-    );
+    allFiles.sort((a, b) => a.metadata.originalURL.localeCompare(b.metadata.originalURL));
     return allFiles;
   }
 
   private async getTotalDownloadSize(urls: string[]): Promise<number> {
-    const responses = await Promise.all(
-      urls.map((url) => fetch(url, { method: 'HEAD' }))
-    );
-    const sizes = responses.map((res) =>
-      Number(res.headers.get('content-length') || '0')
-    );
+    const responses = await Promise.all(urls.map((url) => fetch(url, { method: "HEAD" })));
+    const sizes = responses.map((res) => Number(res.headers.get("content-length") || "0"));
     return sumArr(sizes);
   }
 }
@@ -268,19 +261,17 @@ export class ModelManager {
     }
     const urlPartsRegex = /-(\d{5})-of-(\d{5})\.gguf(?:\?.*)?$/;
     const queryMatch = modelUrl.match(/\.gguf(\?.*)?$/);
-    const queryParams = queryMatch?.[1] ?? '';
+    const queryParams = queryMatch?.[1] ?? "";
     const matches = modelUrl.match(urlPartsRegex);
     if (!matches) {
       return [modelUrl];
     }
-    const baseURL = modelUrl.replace(urlPartsRegex, '');
+    const baseURL = modelUrl.replace(urlPartsRegex, "");
     const total = matches[2];
     const paddedShardIds = Array.from({ length: Number(total) }, (_, index) =>
-      (index + 1).toString().padStart(5, '0')
+      (index + 1).toString().padStart(5, "0"),
     );
-    return paddedShardIds.map(
-      (current) => `${baseURL}-${current}-of-${total}.gguf${queryParams}`
-    );
+    return paddedShardIds.map((current) => `${baseURL}-${current}-of-${total}.gguf${queryParams}`);
   }
 
   /**
@@ -292,18 +283,13 @@ export class ModelManager {
     for (const file of cachedFiles) {
       const shards = ModelManager.parseModelUrl(file.metadata.originalURL);
       const mmprojUrl = file.metadata.mmprojURL;
-      const isFirstShard =
-        shards.length === 1 || shards[0] === file.metadata.originalURL;
+      const isFirstShard = shards.length === 1 || shards[0] === file.metadata.originalURL;
       if (isFirstShard) {
-        models.push(
-          new Model(this, file.metadata.originalURL, mmprojUrl, cachedFiles)
-        );
+        models.push(new Model(this, file.metadata.originalURL, mmprojUrl, cachedFiles));
       }
     }
     if (!opts.includeInvalid) {
-      models = models.filter(
-        (m) => m.validate() === ModelValidationStatus.VALID
-      );
+      models = models.filter((m) => m.validate() === ModelValidationStatus.VALID);
     }
     return models;
   }
@@ -315,7 +301,7 @@ export class ModelManager {
    */
   async downloadModel(
     sourceOrURL: ModelSource | string,
-    options: DownloadOptions = {}
+    options: DownloadOptions = {},
   ): Promise<Model> {
     const source: ModelSource = isString(sourceOrURL)
       ? { url: sourceOrURL as string }
@@ -323,7 +309,7 @@ export class ModelManager {
     if (!isValidGgufFile(source.url)) {
       throw new WllamaError(
         `Invalid model URL: ${source.url}; URL must ends with ".gguf"`,
-        'download_error'
+        "download_error",
       );
     }
     const model = new Model(this, source.url, source.mmprojUrl);
@@ -337,10 +323,7 @@ export class ModelManager {
   /**
    * Get a model from the cache or download it if it's not available.
    */
-  async getModelOrDownload(
-    source: ModelSource,
-    options: DownloadOptions = {}
-  ): Promise<Model> {
+  async getModelOrDownload(source: ModelSource, options: DownloadOptions = {}): Promise<Model> {
     const models = await this.getModels();
     const model = models.find((m) => m.url === source.url);
     if (model) {

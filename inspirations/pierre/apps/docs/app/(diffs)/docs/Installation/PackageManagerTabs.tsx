@@ -1,27 +1,22 @@
-'use client';
+"use client";
 
-import type { PreloadedFileResult } from '@pierre/diffs/ssr';
-import { useState } from 'react';
+import type { PreloadedFileResult } from "@pierre/diffs/ssr";
+import { useState } from "react";
 
-import { PACKAGE_MANAGERS, type PackageManager } from './constants';
-import { DocsCodeExample } from '@/components/docs/DocsCodeExample';
-import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group';
+import { PACKAGE_MANAGERS, type PackageManager } from "./constants";
+import { DocsCodeExample } from "@/components/docs/DocsCodeExample";
+import { ButtonGroup, ButtonGroupItem } from "@/components/ui/button-group";
 
 interface PackageManagerTabsProps {
   installationExamples: Record<PackageManager, PreloadedFileResult<undefined>>;
 }
 
-export function PackageManagerTabs({
-  installationExamples,
-}: PackageManagerTabsProps) {
-  const [selectedPm, setSelectedPm] = useState<PackageManager>('pnpm');
+export function PackageManagerTabs({ installationExamples }: PackageManagerTabsProps) {
+  const [selectedPm, setSelectedPm] = useState<PackageManager>("pnpm");
 
   return (
     <>
-      <ButtonGroup
-        value={selectedPm}
-        onValueChange={(v) => setSelectedPm(v as PackageManager)}
-      >
+      <ButtonGroup value={selectedPm} onValueChange={(v) => setSelectedPm(v as PackageManager)}>
         {PACKAGE_MANAGERS.map((pm) => (
           <ButtonGroupItem key={pm} value={pm}>
             {pm}

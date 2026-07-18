@@ -34,13 +34,13 @@ test("migration backfills engines map from prior defaultMode + default combo", a
   const db = getDbInstance(); // runs migrations incl. 102
   // simulate a pre-102 install: master on, defaultMode 'standard', caveman enabled
   db.prepare(
-    "INSERT OR REPLACE INTO key_value(namespace,key,value) VALUES('compression','enabled','true')"
+    "INSERT OR REPLACE INTO key_value(namespace,key,value) VALUES('compression','enabled','true')",
   ).run();
   db.prepare(
-    "INSERT OR REPLACE INTO key_value(namespace,key,value) VALUES('compression','defaultMode','\"standard\"')"
+    "INSERT OR REPLACE INTO key_value(namespace,key,value) VALUES('compression','defaultMode','\"standard\"')",
   ).run();
   db.prepare(
-    "INSERT OR REPLACE INTO key_value(namespace,key,value) VALUES('compression','cavemanConfig','{\"enabled\":true}')"
+    "INSERT OR REPLACE INTO key_value(namespace,key,value) VALUES('compression','cavemanConfig','{\"enabled\":true}')",
   ).run();
   const cfg = await getCompressionSettings();
   assert.equal(cfg.engines.caveman.enabled, true);

@@ -32,7 +32,7 @@ function sseChunk(data: unknown): string {
 async function applyToolCallsToJsonResponse(
   response: Response,
   requestedTools: unknown,
-  idSeed: string
+  idSeed: string,
 ): Promise<Response> {
   const bodyText = await response.text();
   try {
@@ -41,7 +41,7 @@ async function applyToolCallsToJsonResponse(
     const { content, toolCalls, finishReason } = buildToolAwareResult(
       rawContent,
       requestedTools,
-      idSeed
+      idSeed,
     );
     if (toolCalls) {
       json.choices[0].message = { role: "assistant", content: null, tool_calls: toolCalls };
@@ -71,7 +71,7 @@ function toolCompletionToSseStream(
   completion: Record<string, unknown>,
   cid: string,
   created: number,
-  model: string
+  model: string,
 ): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder();
   const choice = (completion?.choices as Array<Record<string, unknown>> | undefined)?.[0] ?? {};
@@ -86,7 +86,7 @@ function toolCompletionToSseStream(
         model,
         system_fingerprint: null,
         choices: [{ index: 0, delta, finish_reason: fr, logprobs: null }],
-      })
+      }),
     );
 
   return new ReadableStream<Uint8Array>({
@@ -111,12 +111,12 @@ export async function buildToolModeResponse(
   bufferedJson: Response,
   requestedTools: unknown,
   stream: boolean,
-  meta: { cid: string; created: number; model: string; idSeed?: string }
+  meta: { cid: string; created: number; model: string; idSeed?: string },
 ): Promise<Response> {
   const jsonResponse = await applyToolCallsToJsonResponse(
     bufferedJson,
     requestedTools,
-    meta.idSeed ?? "cgpt"
+    meta.idSeed ?? "cgpt",
   );
   if (!stream) return jsonResponse;
   const completion = await jsonResponse.json();

@@ -1,9 +1,9 @@
-import { and, asc, eq, inArray, or } from "drizzle-orm"
-import { Effect, Layer } from "effect"
-import * as Context from "effect/Context"
-import { DatabaseError, DrizzleClient } from "../database"
-import { modelStat } from "../database/schema"
-import { RETIRED_STAT_MODELS, RETIRED_STAT_PROVIDERS } from "./model-normalization"
+import { and, asc, eq, inArray, or } from "drizzle-orm";
+import { Effect, Layer } from "effect";
+import * as Context from "effect/Context";
+import { DatabaseError, DrizzleClient } from "../database";
+import { modelStat } from "../database/schema";
+import { RETIRED_STAT_MODELS, RETIRED_STAT_PROVIDERS } from "./model-normalization";
 import {
   chunks,
   collapseRows,
@@ -17,34 +17,38 @@ import {
   toStatBaseRow,
   UPSERT_CHUNK_SIZE,
   type StatBaseAggregate,
-} from "./stat"
+} from "./stat";
 
-export type ModelStatRow = typeof modelStat.$inferInsert
-export type ModelStatAggregate = StatBaseAggregate & { provider: string; model: string; provider_model: string }
+export type ModelStatRow = typeof modelStat.$inferInsert;
+export type ModelStatAggregate = StatBaseAggregate & {
+  provider: string;
+  model: string;
+  provider_model: string;
+};
 
 export type ModelStatMetric = {
-  periodKey: string
-  updatedAt: Date
-  tier: string
-  provider: string
-  model: string
-  sessions: number
-  uniqueUsers: number
-  inputTokens: number
-  outputTokens: number
-  reasoningTokens: number
-  cacheReadTokens: number
-  totalTokens: number
-  inputCostMicrocents: number
-  outputCostMicrocents: number
-  totalCostMicrocents: number
-}
+  periodKey: string;
+  updatedAt: Date;
+  tier: string;
+  provider: string;
+  model: string;
+  sessions: number;
+  uniqueUsers: number;
+  inputTokens: number;
+  outputTokens: number;
+  reasoningTokens: number;
+  cacheReadTokens: number;
+  totalTokens: number;
+  inputCostMicrocents: number;
+  outputCostMicrocents: number;
+  totalCostMicrocents: number;
+};
 
 export declare namespace ModelStatRepo {
   export interface Service {
-    readonly listDaily: () => Effect.Effect<ModelStatMetric[], DatabaseError>
-    readonly upsert: (rows: ModelStatRow[]) => Effect.Effect<void, DatabaseError>
-    readonly deleteRetiredDimensions: (rows: ModelStatRow[]) => Effect.Effect<void, DatabaseError>
+    readonly listDaily: () => Effect.Effect<ModelStatMetric[], DatabaseError>;
+    readonly upsert: (rows: ModelStatRow[]) => Effect.Effect<void, DatabaseError>;
+    readonly deleteRetiredDimensions: (rows: ModelStatRow[]) => Effect.Effect<void, DatabaseError>;
   }
 }
 
@@ -54,7 +58,7 @@ export class ModelStatRepo extends Context.Service<ModelStatRepo, ModelStatRepo.
   static readonly layer: Layer.Layer<ModelStatRepo, never, DrizzleClient> = Layer.effect(
     ModelStatRepo,
     Effect.gen(function* () {
-      const db = yield* DrizzleClient
+      const db = yield* DrizzleClient;
 
       const listDaily = Effect.fn("ModelStatRepo.listDaily")(function* () {
         return yield* Effect.tryPromise({
@@ -80,9 +84,9 @@ export class ModelStatRepo extends Context.Service<ModelStatRepo, ModelStatRepo.
                 })
                 .from(modelStat)
                 .where(modelDailyScope())
-                .orderBy(asc(modelStat.period_key))
+                .orderBy(asc(modelStat.period_key));
             } catch (cause) {
-              if (!isMissingUniqueUsersColumn(cause)) throw cause
+              if (!isMissingUniqueUsersColumn(cause)) throw cause;
               return (
                 await db
                   .select({
@@ -104,12 +108,12 @@ export class ModelStatRepo extends Context.Service<ModelStatRepo, ModelStatRepo.
                   .from(modelStat)
                   .where(modelDailyScope())
                   .orderBy(asc(modelStat.period_key))
-              ).map((row) => ({ ...row, uniqueUsers: 0 }))
+              ).map((row) => ({ ...row, uniqueUsers: 0 }));
             }
           },
           catch: (cause) => DatabaseError.make({ cause }),
-        })
-      })
+        });
+      });
 
       const upsert = Effect.fn("ModelStatRepo.upsert")(function* (rows: ModelStatRow[]) {
         yield* Effect.forEach(
@@ -118,17 +122,17 @@ export class ModelStatRepo extends Context.Service<ModelStatRepo, ModelStatRepo.
             Effect.tryPromise({
               try: async () => {
                 try {
-                  return await upsertModelChunk(chunk, true)
+                  return await upsertModelChunk(chunk, true);
                 } catch (cause) {
-                  if (!isMissingUniqueUsersColumn(cause)) throw cause
-                  return upsertModelChunk(chunk, false)
+                  if (!isMissingUniqueUsersColumn(cause)) throw cause;
+                  return upsertModelChunk(chunk, false);
                 }
               },
               catch: (cause) => DatabaseError.make({ cause }),
             }),
           { discard: true },
-        )
-      })
+        );
+      });
 
       function upsertModelChunk(chunk: ModelStatRow[], includeUniqueUsers: boolean) {
         return db
@@ -162,14 +166,14 @@ export class ModelStatRepo extends Context.Service<ModelStatRepo, ModelStatRepo.
               rank_by_requests: inserted("rank_by_requests"),
               rank_by_cost: inserted("rank_by_cost"),
             },
-          })
+          });
       }
 
       const deleteRetiredDimensions = Effect.fn("ModelStatRepo.deleteRetiredDimensions")(function* (
         rows: ModelStatRow[],
       ) {
-        const scope = statRowScope(rows)
-        if (!scope) return
+        const scope = statRowScope(rows);
+        if (!scope) return;
 
         yield* Effect.tryPromise({
           try: () =>
@@ -189,12 +193,12 @@ export class ModelStatRepo extends Context.Service<ModelStatRepo, ModelStatRepo.
                 ),
               ),
           catch: (cause) => DatabaseError.make({ cause }),
-        })
-      })
+        });
+      });
 
-      return ModelStatRepo.of({ listDaily, upsert, deleteRetiredDimensions })
+      return ModelStatRepo.of({ listDaily, upsert, deleteRetiredDimensions });
     }),
-  )
+  );
 }
 
 function modelDailyScope() {
@@ -203,7 +207,7 @@ function modelDailyScope() {
     eq(modelStat.client, "all"),
     eq(modelStat.source, "all"),
     inArray(modelStat.tier, ["Go", "go"]),
-  )
+  );
 }
 
 export function rowsFromAggregates(aggregates: ModelStatAggregate[]) {
@@ -216,7 +220,7 @@ export function rowsFromAggregates(aggregates: ModelStatAggregate[]) {
       collapseRows(aggregates.filter((item) => item.grain === "day").map(toRow), dimensionKey),
       dimensionKey,
     ),
-  ])
+  ]);
 }
 
 function toRow(data: ModelStatAggregate): ModelStatRow {
@@ -225,29 +229,29 @@ function toRow(data: ModelStatAggregate): ModelStatRow {
     provider: data.provider,
     model: data.model,
     provider_model: data.provider_model,
-  }
+  };
 }
 
 function rankRows(rows: ModelStatRow[]) {
   return Object.values(
     rows.reduce<Record<string, ModelStatRow[]>>((result, row) => {
-      const key = statPeriodKey(row)
-      result[key] = [...(result[key] ?? []), row]
-      return result
+      const key = statPeriodKey(row);
+      result[key] = [...(result[key] ?? []), row];
+      return result;
     }, {}),
   ).flatMap((group) => {
-    const tokenRanks = rankBy(group, (row) => row.total_tokens ?? 0)
-    const requestRanks = rankBy(group, (row) => row.requests ?? 0)
-    const costRanks = rankBy(group, (row) => row.total_cost_microcents ?? 0)
+    const tokenRanks = rankBy(group, (row) => row.total_tokens ?? 0);
+    const requestRanks = rankBy(group, (row) => row.requests ?? 0);
+    const costRanks = rankBy(group, (row) => row.total_cost_microcents ?? 0);
     return group.map((row) => ({
       ...row,
       rank_by_tokens: tokenRanks.get(row) ?? null,
       rank_by_requests: requestRanks.get(row) ?? null,
       rank_by_cost: costRanks.get(row) ?? null,
-    }))
-  })
+    }));
+  });
 }
 
 function dimensionKey(row: ModelStatRow) {
-  return [row.provider, row.model].join("\u0000")
+  return [row.provider, row.model].join("\u0000");
 }

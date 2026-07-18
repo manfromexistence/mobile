@@ -1,35 +1,38 @@
-import { For, Show, createEffect, createMemo } from "solid-js"
-import { createStore } from "solid-js/store"
-import { Button } from "@opencode-ai/ui/button"
-import { DockTray } from "@opencode-ai/ui/dock-surface"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { useLanguage } from "@/context/language"
+import { For, Show, createEffect, createMemo } from "solid-js";
+import { createStore } from "solid-js/store";
+import { Button } from "@opencode-ai/ui/button";
+import { DockTray } from "@opencode-ai/ui/dock-surface";
+import { IconButton } from "@opencode-ai/ui/icon-button";
+import { useLanguage } from "@/context/language";
 
 export function SessionRevertDock(props: {
-  items: { id: string; text: string }[]
-  restoring?: string
-  disabled?: boolean
-  onRestore: (id: string) => void
+  items: { id: string; text: string }[];
+  restoring?: string;
+  disabled?: boolean;
+  onRestore: (id: string) => void;
 }) {
-  const language = useLanguage()
+  const language = useLanguage();
   const [store, setStore] = createStore({
     collapsed: true,
-  })
+  });
 
   createEffect(() => {
-    props.items.length
-    props.items[0]?.id
-    setStore("collapsed", true)
-  })
+    props.items.length;
+    props.items[0]?.id;
+    setStore("collapsed", true);
+  });
 
-  const toggle = () => setStore("collapsed", (value) => !value)
-  const total = createMemo(() => props.items.length)
+  const toggle = () => setStore("collapsed", (value) => !value);
+  const total = createMemo(() => props.items.length);
   const label = createMemo(() =>
-    language.t(total() === 1 ? "session.revertDock.summary.one" : "session.revertDock.summary.other", {
-      count: total(),
-    }),
-  )
-  const preview = createMemo(() => props.items[0]?.text ?? "")
+    language.t(
+      total() === 1 ? "session.revertDock.summary.one" : "session.revertDock.summary.other",
+      {
+        count: total(),
+      },
+    ),
+  );
+  const preview = createMemo(() => props.items[0]?.text ?? "");
 
   return (
     <DockTray data-component="session-revert-dock">
@@ -39,14 +42,16 @@ export function SessionRevertDock(props: {
         tabIndex={0}
         onClick={toggle}
         onKeyDown={(event) => {
-          if (event.key !== "Enter" && event.key !== " ") return
-          event.preventDefault()
-          toggle()
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          toggle();
         }}
       >
         <span class="shrink-0 text-14-regular text-text-strong cursor-default">{label()}</span>
         <Show when={store.collapsed && preview()}>
-          <span class="min-w-0 flex-1 truncate text-14-regular text-text-base cursor-default">{preview()}</span>
+          <span class="min-w-0 flex-1 truncate text-14-regular text-text-base cursor-default">
+            {preview()}
+          </span>
         </Show>
         <div class="ml-auto shrink-0">
           <IconButton
@@ -56,15 +61,17 @@ export function SessionRevertDock(props: {
             variant="ghost"
             style={{ transform: `rotate(${store.collapsed ? 180 : 0}deg)` }}
             onMouseDown={(event) => {
-              event.preventDefault()
-              event.stopPropagation()
+              event.preventDefault();
+              event.stopPropagation();
             }}
             onClick={(event) => {
-              event.stopPropagation()
-              toggle()
+              event.stopPropagation();
+              toggle();
             }}
             aria-label={
-              store.collapsed ? language.t("session.revertDock.expand") : language.t("session.revertDock.collapse")
+              store.collapsed
+                ? language.t("session.revertDock.expand")
+                : language.t("session.revertDock.collapse")
             }
           />
         </div>
@@ -79,7 +86,9 @@ export function SessionRevertDock(props: {
           <For each={props.items}>
             {(item) => (
               <div class="flex items-center gap-2 min-w-0 py-1">
-                <span class="min-w-0 flex-1 truncate text-13-regular text-text-strong">{item.text}</span>
+                <span class="min-w-0 flex-1 truncate text-13-regular text-text-strong">
+                  {item.text}
+                </span>
                 <Button
                   size="small"
                   variant="secondary"
@@ -95,5 +104,5 @@ export function SessionRevertDock(props: {
         </div>
       </Show>
     </DockTray>
-  )
+  );
 }

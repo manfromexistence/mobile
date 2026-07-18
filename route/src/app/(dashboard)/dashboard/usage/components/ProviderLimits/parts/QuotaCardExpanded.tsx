@@ -28,7 +28,7 @@ const DEFAULT_VISIBLE_ROWS = 3;
 /** Pure helper — sorts quotas by remaining percentage, highest first. */
 export function sortQuotasByRemaining(quotas: any[]): any[] {
   return [...quotas].sort(
-    (a, b) => getQuotaRemainingPercentage(b) - getQuotaRemainingPercentage(a)
+    (a, b) => getQuotaRemainingPercentage(b) - getQuotaRemainingPercentage(a),
   );
 }
 
@@ -191,11 +191,11 @@ export default function QuotaCardExpanded({
   const [expanded, setExpanded] = useState(false);
   const sortedQuotas = useMemo(
     () => resolveQuotaDisplayOrder(providerId, quotas),
-    [quotas, providerId]
+    [quotas, providerId],
   );
   const visibleQuotas = useMemo(
     () => getVisibleQuotas(sortedQuotas, expanded),
-    [sortedQuotas, expanded]
+    [sortedQuotas, expanded],
   );
   const hiddenCount = sortedQuotas.length - visibleQuotas.length;
 

@@ -1,14 +1,20 @@
-import { OpenAIResponsesLanguageModel } from "@opencode-ai/core/github-copilot/responses/openai-responses-language-model"
-import { convertToOpenAIResponsesInput } from "@opencode-ai/core/github-copilot/responses/convert-to-openai-responses-input"
-import { describe, test, expect, mock } from "bun:test"
-import type { LanguageModelV3Prompt } from "@ai-sdk/provider"
+import { OpenAIResponsesLanguageModel } from "@opencode-ai/core/github-copilot/responses/openai-responses-language-model";
+import { convertToOpenAIResponsesInput } from "@opencode-ai/core/github-copilot/responses/convert-to-openai-responses-input";
+import { describe, test, expect, mock } from "bun:test";
+import type { LanguageModelV3Prompt } from "@ai-sdk/provider";
 
-const TEST_PROMPT: LanguageModelV3Prompt = [{ role: "user", content: [{ type: "text", text: "Hello" }] }]
+const TEST_PROMPT: LanguageModelV3Prompt = [
+  { role: "user", content: [{ type: "text", text: "Hello" }] },
+];
 
 function createMockFetch(body: unknown) {
   return mock(
-    async () => new Response(JSON.stringify(body), { status: 200, headers: { "Content-Type": "application/json" } }),
-  )
+    async () =>
+      new Response(JSON.stringify(body), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+  );
 }
 
 function createModel(fetchFn: ReturnType<typeof mock>) {
@@ -17,7 +23,7 @@ function createModel(fetchFn: ReturnType<typeof mock>) {
     url: () => "https://api.test.com/responses",
     headers: () => ({ Authorization: "Bearer test-token" }),
     fetch: fetchFn as any,
-  })
+  });
 }
 
 // GitHub Copilot's Responses model echoes item metadata (itemId, reasoningEncryptedContent,
@@ -53,31 +59,31 @@ describe("doGenerate", () => {
         },
       ],
       usage: { input_tokens: 10, output_tokens: 5 },
-    })
-    const model = createModel(mockFetch)
+    });
+    const model = createModel(mockFetch);
 
     const { content, providerMetadata } = await model.doGenerate({
       prompt: TEST_PROMPT,
       includeRawChunks: false,
-    } as any)
+    } as any);
 
-    const reasoning = content.find((part: any) => part.type === "reasoning") as any
-    expect(reasoning.providerMetadata?.copilot?.itemId).toBe("rs_1")
-    expect(reasoning.providerMetadata?.copilot?.reasoningEncryptedContent).toBe("enc_1")
-    expect(reasoning.providerMetadata?.openai).toBeUndefined()
+    const reasoning = content.find((part: any) => part.type === "reasoning") as any;
+    expect(reasoning.providerMetadata?.copilot?.itemId).toBe("rs_1");
+    expect(reasoning.providerMetadata?.copilot?.reasoningEncryptedContent).toBe("enc_1");
+    expect(reasoning.providerMetadata?.openai).toBeUndefined();
 
-    const text = content.find((part: any) => part.type === "text") as any
-    expect(text.providerMetadata?.copilot?.itemId).toBe("msg_1")
-    expect(text.providerMetadata?.openai).toBeUndefined()
+    const text = content.find((part: any) => part.type === "text") as any;
+    expect(text.providerMetadata?.copilot?.itemId).toBe("msg_1");
+    expect(text.providerMetadata?.openai).toBeUndefined();
 
-    const toolCall = content.find((part: any) => part.type === "tool-call") as any
-    expect(toolCall.providerMetadata?.copilot?.itemId).toBe("fc_1")
-    expect(toolCall.providerMetadata?.openai).toBeUndefined()
+    const toolCall = content.find((part: any) => part.type === "tool-call") as any;
+    expect(toolCall.providerMetadata?.copilot?.itemId).toBe("fc_1");
+    expect(toolCall.providerMetadata?.openai).toBeUndefined();
 
-    expect(providerMetadata?.copilot?.responseId).toBe("resp_1")
-    expect(providerMetadata?.openai).toBeUndefined()
-  })
-})
+    expect(providerMetadata?.copilot?.responseId).toBe("resp_1");
+    expect(providerMetadata?.openai).toBeUndefined();
+  });
+});
 
 describe("convertToOpenAIResponsesInput", () => {
   test("echoes a stale tool-call itemId from the copilot namespace as the function_call id", async () => {
@@ -98,7 +104,7 @@ describe("convertToOpenAIResponsesInput", () => {
       ],
       systemMessageMode: "system",
       store: false,
-    })
+    });
 
     expect(input).toEqual([
       {
@@ -108,8 +114,8 @@ describe("convertToOpenAIResponsesInput", () => {
         arguments: JSON.stringify({ command: "ls" }),
         id: "fc_999",
       },
-    ])
-  })
+    ]);
+  });
 
   test("omits the function_call id once the stale copilot itemId has been stripped", async () => {
     const { input } = await convertToOpenAIResponsesInput({
@@ -129,10 +135,10 @@ describe("convertToOpenAIResponsesInput", () => {
       ],
       systemMessageMode: "system",
       store: false,
-    })
+    });
 
-    expect((input[0] as any).id).toBeUndefined()
-  })
+    expect((input[0] as any).id).toBeUndefined();
+  });
 
   test("preserves reasoning items keyed by the copilot namespace instead of dropping them", async () => {
     const { input, warnings } = await convertToOpenAIResponsesInput({
@@ -150,9 +156,9 @@ describe("convertToOpenAIResponsesInput", () => {
       ],
       systemMessageMode: "system",
       store: false,
-    })
+    });
 
-    expect(warnings).toEqual([])
+    expect(warnings).toEqual([]);
     expect(input).toEqual([
       {
         type: "reasoning",
@@ -160,8 +166,8 @@ describe("convertToOpenAIResponsesInput", () => {
         encrypted_content: "enc_1",
         summary: [{ type: "summary_text", text: "thinking..." }],
       },
-    ])
-  })
+    ]);
+  });
 
   test("drops reasoning items with no copilot itemId and warns, as before", async () => {
     const { input, warnings } = await convertToOpenAIResponsesInput({
@@ -173,14 +179,14 @@ describe("convertToOpenAIResponsesInput", () => {
       ],
       systemMessageMode: "system",
       store: false,
-    })
+    });
 
-    expect(input).toEqual([])
-    expect(warnings).toHaveLength(1)
+    expect(input).toEqual([]);
+    expect(warnings).toHaveLength(1);
     expect(warnings[0]).toMatchObject({
       message: expect.stringContaining("Non-OpenAI reasoning parts are not supported"),
-    })
-  })
+    });
+  });
 
   test("reads imageDetail from the copilot namespace on user file parts", async () => {
     const { input } = await convertToOpenAIResponsesInput({
@@ -199,8 +205,8 @@ describe("convertToOpenAIResponsesInput", () => {
       ],
       systemMessageMode: "system",
       store: false,
-    })
+    });
 
-    expect((input[0] as any).content[0].detail).toBe("high")
-  })
-})
+    expect((input[0] as any).content[0].detail).toBe("high");
+  });
+});

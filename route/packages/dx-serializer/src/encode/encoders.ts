@@ -27,7 +27,7 @@ import { encodeKey, encodePrimitive } from "./primitives.ts";
 export function* encodeJsonValue(
   value: JsonValue,
   options: ResolvedEncodeOptions,
-  depth: Depth
+  depth: Depth,
 ): Generator<string> {
   if (isJsonPrimitive(value)) {
     yield encodePrimitive(value);
@@ -43,7 +43,7 @@ export function* encodeJsonValue(
 function* encodeObjectLines(
   value: JsonObject,
   depth: Depth,
-  options: ResolvedEncodeOptions
+  options: ResolvedEncodeOptions,
 ): Generator<string> {
   for (const [key, val] of Object.entries(value)) {
     yield* encodeKeyValueLine(key, val, depth, options);
@@ -71,7 +71,7 @@ function* encodeKeyValueLine(
   key: string,
   value: JsonValue,
   depth: Depth,
-  options: ResolvedEncodeOptions
+  options: ResolvedEncodeOptions,
 ): Generator<string> {
   const encodedKey = encodeKey(key);
 
@@ -116,7 +116,7 @@ function* encodeArrayLines(
   key: string | undefined,
   value: JsonArray,
   depth: Depth,
-  options: ResolvedEncodeOptions
+  options: ResolvedEncodeOptions,
 ): Generator<string> {
   if (value.length === 0) {
     if (key === undefined) {
@@ -149,7 +149,7 @@ function* encodeTabularArrayLines(
   key: string | undefined,
   rows: JsonObject[],
   depth: Depth,
-  options: ResolvedEncodeOptions
+  options: ResolvedEncodeOptions,
 ): Generator<string> {
   if (rows.length === 0) {
     if (key === undefined) {
@@ -232,7 +232,7 @@ function* encodeMixedArrayLines(
   key: string | undefined,
   items: JsonValue[],
   depth: Depth,
-  options: ResolvedEncodeOptions
+  options: ResolvedEncodeOptions,
 ): Generator<string> {
   const encodedKey = key === undefined ? "" : key;
   const prefix = key === undefined ? "" : encodedKey + EQUALS;

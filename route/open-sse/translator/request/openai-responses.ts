@@ -36,7 +36,7 @@ export function openaiResponsesToOpenAIRequest(
   model: unknown,
   body: unknown,
   stream: unknown,
-  credentials: unknown
+  credentials: unknown,
 ): unknown {
   void model;
   void stream;
@@ -71,7 +71,7 @@ export function openaiResponsesToOpenAIRequest(
         !tool.function
       ) {
         throw unsupportedFeature(
-          `Unsupported Responses API feature: ${toolType} tool type is not supported by omniroute`
+          `Unsupported Responses API feature: ${toolType} tool type is not supported by omniroute`,
         );
       }
     }
@@ -100,7 +100,7 @@ export function openaiResponsesToOpenAIRequest(
     const providerStr = toString(credentialRecord.provider);
     const modelStr = toString(model);
     console.warn(
-      `BACKGROUND_DEGRADE provider=${providerStr || "unknown"} model=${modelStr || "unknown"}`
+      `BACKGROUND_DEGRADE provider=${providerStr || "unknown"} model=${modelStr || "unknown"}`,
     );
   }
   if (result.background !== undefined) {
@@ -477,7 +477,7 @@ export function openaiResponsesToOpenAIRequest(
     } else if (tcType && tcType !== "function" && tcType !== "allowed_tools") {
       // Built-in tool types (web_search_preview, file_search, etc.) have no Chat equivalent
       throw unsupportedFeature(
-        `Unsupported Responses API feature: tool_choice type '${tcType}' is not supported by omniroute`
+        `Unsupported Responses API feature: tool_choice type '${tcType}' is not supported by omniroute`,
       );
     }
   }

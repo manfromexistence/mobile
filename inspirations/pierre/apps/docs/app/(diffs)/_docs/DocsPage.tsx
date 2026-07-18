@@ -1,13 +1,9 @@
-import '@/app/prose.css';
-import {
-  preloadFile,
-  preloadMultiFileDiff,
-  preloadUnresolvedFile,
-} from '@pierre/diffs/ssr';
-import type { Metadata } from 'next';
+import "@/app/prose.css";
+import { preloadFile, preloadMultiFileDiff, preloadUnresolvedFile } from "@pierre/diffs/ssr";
+import type { Metadata } from "next";
 
-import { MERGE_CONFLICT_EXAMPLE } from '../_examples/MergeConflict/constants';
-import { MergeConflict } from '../_examples/MergeConflict/MergeConflict';
+import { MERGE_CONFLICT_EXAMPLE } from "../_examples/MergeConflict/constants";
+import { MergeConflict } from "../_examples/MergeConflict/MergeConflict";
 import {
   CODE_VIEW_ITEM_METRICS_OPTIONS_EXAMPLE,
   CODE_VIEW_ITEM_TYPE_EXAMPLE,
@@ -15,28 +11,25 @@ import {
   CODE_VIEW_REACT_EXAMPLE,
   CODE_VIEW_SCROLL_TARGETS_EXAMPLE,
   CODE_VIEW_VANILLA_EXAMPLE,
-} from '../docs/CodeView/constants';
+} from "../docs/CodeView/constants";
 import {
   FILE_CONTENTS_TYPE,
   FILE_DIFF_METADATA_TYPE,
   PARSE_DIFF_FROM_FILE_EXAMPLE,
   PARSE_PATCH_FILES_EXAMPLE,
-} from '../docs/CoreTypes/constants';
+} from "../docs/CoreTypes/constants";
 import {
   CUSTOM_HUNK_SEPARATORS_EXAMPLE,
   CUSTOM_HUNK_SEPARATORS_SWITCHER,
-} from '../docs/CustomHunkSeparators/constants';
-import {
-  INSTALLATION_EXAMPLES,
-  PACKAGE_MANAGERS,
-} from '../docs/Installation/constants';
+} from "../docs/CustomHunkSeparators/constants";
+import { INSTALLATION_EXAMPLES, PACKAGE_MANAGERS } from "../docs/Installation/constants";
 import {
   OVERVIEW_INITIAL_EXAMPLE,
   OVERVIEW_REACT_PATCH_FILE,
   OVERVIEW_REACT_SINGLE_FILE,
   OVERVIEW_VANILLA_PATCH_FILE,
   OVERVIEW_VANILLA_SINGLE_FILE,
-} from '../docs/Overview/constants';
+} from "../docs/Overview/constants";
 import {
   REACT_API_CODE_VIEW,
   REACT_API_FILE,
@@ -49,7 +42,7 @@ import {
   REACT_API_SHARED_FILE_OPTIONS,
   REACT_API_SHARED_FILE_RENDER_PROPS,
   REACT_API_UNRESOLVED_FILE,
-} from '../docs/ReactAPI/constants';
+} from "../docs/ReactAPI/constants";
 import {
   SSR_PRELOAD_FILE,
   SSR_PRELOAD_FILE_DIFF,
@@ -59,16 +52,13 @@ import {
   SSR_PRELOAD_UNRESOLVED_FILE,
   SSR_USAGE_CLIENT,
   SSR_USAGE_SERVER,
-} from '../docs/SSR/constants';
+} from "../docs/SSR/constants";
 import {
   STYLING_CODE_GLOBAL,
   STYLING_CODE_INLINE,
   STYLING_CODE_UNSAFE,
-} from '../docs/Styling/constants';
-import {
-  TOKEN_HOOKS_REACT,
-  TOKEN_HOOKS_VANILLA,
-} from '../docs/TokenHooks/constants';
+} from "../docs/Styling/constants";
+import { TOKEN_HOOKS_REACT, TOKEN_HOOKS_VANILLA } from "../docs/TokenHooks/constants";
 import {
   HELPER_DIFF_ACCEPT_REJECT,
   HELPER_DIFF_ACCEPT_REJECT_REACT,
@@ -82,7 +72,7 @@ import {
   HELPER_RESOLVE_MERGE_CONFLICT,
   HELPER_SET_LANGUAGE_OVERRIDE,
   HELPER_TRIM_PATCH_CONTEXT,
-} from '../docs/Utilities/constants';
+} from "../docs/Utilities/constants";
 import {
   VANILLA_API_CODE_VIEW_EXAMPLE,
   VANILLA_API_CUSTOM_HUNK_FILE,
@@ -95,12 +85,12 @@ import {
   VANILLA_API_HUNKS_RENDERER_PATCH_FILE,
   VANILLA_API_POST_RENDER_LIFECYCLE,
   VANILLA_API_UNRESOLVED_FILE_EXAMPLE,
-} from '../docs/VanillaAPI/constants';
+} from "../docs/VanillaAPI/constants";
 import {
   VIRTUALIZATION_REACT_BASIC,
   VIRTUALIZATION_REACT_CONFIG,
   VIRTUALIZATION_VANILLA_DIFF,
-} from '../docs/Virtualization/constants';
+} from "../docs/Virtualization/constants";
 import {
   WORKER_POOL_API_REFERENCE,
   WORKER_POOL_ARCHITECTURE_ASCII,
@@ -120,16 +110,16 @@ import {
   WORKER_POOL_VSCODE_INLINE_SCRIPT,
   WORKER_POOL_VSCODE_LOCAL_ROOTS,
   WORKER_POOL_VSCODE_WORKER_URI,
-} from '../docs/WorkerPool/constants';
-import { DocsLayout } from '@/components/docs/DocsLayout';
-import { HeadingAnchors } from '@/components/docs/HeadingAnchors';
-import { ProseWrapper } from '@/components/docs/ProseWrapper';
-import Footer from '@/components/Footer';
-import { renderMDX } from '@/lib/mdx';
+} from "../docs/WorkerPool/constants";
+import { DocsLayout } from "@/components/docs/DocsLayout";
+import { HeadingAnchors } from "@/components/docs/HeadingAnchors";
+import { ProseWrapper } from "@/components/docs/ProseWrapper";
+import Footer from "@/components/Footer";
+import { renderMDX } from "@/lib/mdx";
 
-const docsTitle = 'Diffs docs';
+const docsTitle = "Diffs docs";
 const docsDescription =
-  'Documentation for @pierre/diffs: React and vanilla APIs, virtualization, theming, token hooks, the worker pool, and SSR hydration.';
+  "Documentation for @pierre/diffs: React and vanilla APIs, virtualization, theming, token hooks, the worker pool, and SSR hydration.";
 
 // Next.js replaces (does not deep-merge) nested metadata objects like
 // `openGraph` and `twitter` from parent segments. Re-declare `images` here
@@ -140,13 +130,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: docsTitle,
     description: docsDescription,
-    images: ['/diffs-brand/opengraph-image.png'],
+    images: ["/diffs-brand/opengraph-image.png"],
   },
   twitter: {
-    card: 'summary_large_image',
+    card: "summary_large_image",
     title: docsTitle,
     description: docsDescription,
-    images: ['/diffs-brand/twitter-image.png'],
+    images: ["/diffs-brand/twitter-image.png"],
   },
 };
 
@@ -181,13 +171,15 @@ export default function DocsPage() {
 async function MergeConflictDemoSection() {
   return (
     <MergeConflict
-      prerenderedFile={await preloadUnresolvedFile({
-        ...MERGE_CONFLICT_EXAMPLE,
-        options: {
-          ...MERGE_CONFLICT_EXAMPLE.options,
-          themeType: 'system',
-        },
-      })}
+      prerenderedFile={
+        await preloadUnresolvedFile({
+          ...MERGE_CONFLICT_EXAMPLE,
+          options: {
+            ...MERGE_CONFLICT_EXAMPLE.options,
+            themeType: "system",
+          },
+        })
+      }
     />
   );
 }
@@ -195,33 +187,26 @@ async function MergeConflictDemoSection() {
 async function InstallationSection() {
   const installationExamples = Object.fromEntries(
     await Promise.all(
-      PACKAGE_MANAGERS.map(async (pm) => [
-        pm,
-        await preloadFile(INSTALLATION_EXAMPLES[pm]),
-      ])
-    )
+      PACKAGE_MANAGERS.map(async (pm) => [pm, await preloadFile(INSTALLATION_EXAMPLES[pm])]),
+    ),
   );
   const content = await renderMDX({
-    filePath: '(diffs)/docs/Installation/content.mdx',
+    filePath: "(diffs)/docs/Installation/content.mdx",
     scope: { installationExamples },
   });
   return <ProseWrapper>{content}</ProseWrapper>;
 }
 
 async function CoreTypesSection() {
-  const [
-    fileContentsType,
-    fileDiffMetadataType,
-    parseDiffFromFileExample,
-    parsePatchFilesExample,
-  ] = await Promise.all([
-    preloadFile(FILE_CONTENTS_TYPE),
-    preloadFile(FILE_DIFF_METADATA_TYPE),
-    preloadFile(PARSE_DIFF_FROM_FILE_EXAMPLE),
-    preloadFile(PARSE_PATCH_FILES_EXAMPLE),
-  ]);
+  const [fileContentsType, fileDiffMetadataType, parseDiffFromFileExample, parsePatchFilesExample] =
+    await Promise.all([
+      preloadFile(FILE_CONTENTS_TYPE),
+      preloadFile(FILE_DIFF_METADATA_TYPE),
+      preloadFile(PARSE_DIFF_FROM_FILE_EXAMPLE),
+      preloadFile(PARSE_PATCH_FILES_EXAMPLE),
+    ]);
   const content = await renderMDX({
-    filePath: '(diffs)/docs/CoreTypes/content.mdx',
+    filePath: "(diffs)/docs/CoreTypes/content.mdx",
     scope: {
       fileContentsType,
       fileDiffMetadataType,
@@ -233,21 +218,16 @@ async function CoreTypesSection() {
 }
 
 async function OverviewSection() {
-  const [
-    initialDiffProps,
-    reactSingleFile,
-    reactPatchFile,
-    vanillaSingleFile,
-    vanillaPatchFile,
-  ] = await Promise.all([
-    preloadMultiFileDiff(OVERVIEW_INITIAL_EXAMPLE),
-    preloadFile(OVERVIEW_REACT_SINGLE_FILE),
-    preloadFile(OVERVIEW_REACT_PATCH_FILE),
-    preloadFile(OVERVIEW_VANILLA_SINGLE_FILE),
-    preloadFile(OVERVIEW_VANILLA_PATCH_FILE),
-  ]);
+  const [initialDiffProps, reactSingleFile, reactPatchFile, vanillaSingleFile, vanillaPatchFile] =
+    await Promise.all([
+      preloadMultiFileDiff(OVERVIEW_INITIAL_EXAMPLE),
+      preloadFile(OVERVIEW_REACT_SINGLE_FILE),
+      preloadFile(OVERVIEW_REACT_PATCH_FILE),
+      preloadFile(OVERVIEW_VANILLA_SINGLE_FILE),
+      preloadFile(OVERVIEW_VANILLA_PATCH_FILE),
+    ]);
   const content = await renderMDX({
-    filePath: '(diffs)/docs/Overview/content.mdx',
+    filePath: "(diffs)/docs/Overview/content.mdx",
     scope: {
       initialDiffProps,
       reactSingleFile,
@@ -286,7 +266,7 @@ async function ReactAPISection() {
     preloadFile(REACT_API_SHARED_FILE_RENDER_PROPS),
   ]);
   const content = await renderMDX({
-    filePath: '(diffs)/docs/ReactAPI/content.mdx',
+    filePath: "(diffs)/docs/ReactAPI/content.mdx",
     scope: {
       reactAPICodeView,
       reactAPIMultiFileDiff,
@@ -331,7 +311,7 @@ async function VanillaAPISection() {
     preloadFile(VANILLA_API_FILE_RENDERER),
   ]);
   const content = await renderMDX({
-    filePath: '(diffs)/docs/VanillaAPI/content.mdx',
+    filePath: "(diffs)/docs/VanillaAPI/content.mdx",
     scope: {
       codeViewExample,
       fileDiffExample,
@@ -366,7 +346,7 @@ async function CodeViewSection() {
     preloadFile(CODE_VIEW_VANILLA_EXAMPLE),
   ]);
   const content = await renderMDX({
-    filePath: '(diffs)/docs/CodeView/content.mdx',
+    filePath: "(diffs)/docs/CodeView/content.mdx",
     scope: {
       codeViewItemTypeExample,
       codeViewLayoutOptionsExample,
@@ -380,17 +360,14 @@ async function CodeViewSection() {
 }
 
 async function VirtualizationSection() {
-  const [
-    reactVirtualizerBasic,
-    reactVirtualizerConfig,
-    vanillaVirtualizedFileDiff,
-  ] = await Promise.all([
-    preloadFile(VIRTUALIZATION_REACT_BASIC),
-    preloadFile(VIRTUALIZATION_REACT_CONFIG),
-    preloadFile(VIRTUALIZATION_VANILLA_DIFF),
-  ]);
+  const [reactVirtualizerBasic, reactVirtualizerConfig, vanillaVirtualizedFileDiff] =
+    await Promise.all([
+      preloadFile(VIRTUALIZATION_REACT_BASIC),
+      preloadFile(VIRTUALIZATION_REACT_CONFIG),
+      preloadFile(VIRTUALIZATION_VANILLA_DIFF),
+    ]);
   const content = await renderMDX({
-    filePath: '(diffs)/docs/Virtualization/content.mdx',
+    filePath: "(diffs)/docs/Virtualization/content.mdx",
     scope: {
       reactVirtualizerBasic,
       reactVirtualizerConfig,
@@ -429,7 +406,7 @@ async function UtilitiesSection() {
     preloadFile(HELPER_TRIM_PATCH_CONTEXT),
   ]);
   const content = await renderMDX({
-    filePath: '(diffs)/docs/Utilities/content.mdx',
+    filePath: "(diffs)/docs/Utilities/content.mdx",
     scope: {
       diffAcceptReject,
       diffAcceptRejectReact,
@@ -449,13 +426,12 @@ async function UtilitiesSection() {
 }
 
 async function CustomHunkSeparatorsSection() {
-  const [customHunkSeparatorsExample, customHunkSeparatorsSwitcher] =
-    await Promise.all([
-      preloadMultiFileDiff(CUSTOM_HUNK_SEPARATORS_EXAMPLE),
-      preloadFile(CUSTOM_HUNK_SEPARATORS_SWITCHER),
-    ]);
+  const [customHunkSeparatorsExample, customHunkSeparatorsSwitcher] = await Promise.all([
+    preloadMultiFileDiff(CUSTOM_HUNK_SEPARATORS_EXAMPLE),
+    preloadFile(CUSTOM_HUNK_SEPARATORS_SWITCHER),
+  ]);
   const content = await renderMDX({
-    filePath: '(diffs)/docs/CustomHunkSeparators/content.mdx',
+    filePath: "(diffs)/docs/CustomHunkSeparators/content.mdx",
     scope: {
       customHunkSeparatorsExample,
       customHunkSeparatorsSwitcher,
@@ -471,7 +447,7 @@ async function StylingSection() {
     preloadFile(STYLING_CODE_UNSAFE),
   ]);
   const content = await renderMDX({
-    filePath: '(diffs)/docs/Styling/content.mdx',
+    filePath: "(diffs)/docs/Styling/content.mdx",
     scope: {
       stylingGlobal,
       stylingInline,
@@ -483,7 +459,7 @@ async function StylingSection() {
 
 async function ThemingSection() {
   const content = await renderMDX({
-    filePath: '(diffs)/docs/Theming/docs-content.mdx',
+    filePath: "(diffs)/docs/Theming/docs-content.mdx",
   });
   return <ProseWrapper>{content}</ProseWrapper>;
 }
@@ -494,7 +470,7 @@ async function TokenHooksSection() {
     preloadFile(TOKEN_HOOKS_VANILLA),
   ]);
   const content = await renderMDX({
-    filePath: '(diffs)/docs/TokenHooks/content.mdx',
+    filePath: "(diffs)/docs/TokenHooks/content.mdx",
     scope: {
       reactTokenHooks,
       vanillaTokenHooks,
@@ -524,7 +500,7 @@ async function SSRSection() {
     preloadFile(SSR_PRELOAD_PATCH_FILE),
   ]);
   const content = await renderMDX({
-    filePath: '(diffs)/docs/SSR/content.mdx',
+    filePath: "(diffs)/docs/SSR/content.mdx",
     scope: {
       usageServer,
       usageClient,
@@ -580,7 +556,7 @@ async function WorkerPoolSection() {
     preloadFile(WORKER_POOL_ARCHITECTURE_ASCII),
   ]);
   const content = await renderMDX({
-    filePath: '(diffs)/docs/WorkerPool/content.mdx',
+    filePath: "(diffs)/docs/WorkerPool/content.mdx",
     scope: {
       helperVite,
       helperNextJS,

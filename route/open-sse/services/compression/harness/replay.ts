@@ -33,7 +33,7 @@ export function transcriptsToCorpus(transcripts: Transcript[]): EvalCase[] {
 
 export function replayTranscripts(
   transcripts: Transcript[],
-  compress: CompressFn
+  compress: CompressFn,
 ): Promise<EvalReport> {
   return runCompressionEval(transcriptsToCorpus(transcripts), compress);
 }
@@ -66,7 +66,7 @@ export function requestBodyToTranscript(id: string, body: unknown): Transcript {
  * transcripts. Pair with {@link replayTranscripts} to benchmark compression over real traffic.
  */
 export function requestBodiesToTranscripts(
-  entries: Array<{ id: string; body: unknown }>
+  entries: Array<{ id: string; body: unknown }>,
 ): Transcript[] {
   return entries.map((entry) => requestBodyToTranscript(entry.id, entry.body));
 }

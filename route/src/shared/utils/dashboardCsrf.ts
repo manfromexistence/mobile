@@ -109,7 +109,7 @@ function isClientApiPath(pathname: string): boolean {
   if (pathname === "/v1beta" || pathname.startsWith("/v1beta/")) return true;
   if (pathname === "/v1/v1" || pathname.startsWith("/v1/v1/")) return true;
   return CLIENT_API_ALIAS_PREFIXES.some(
-    (prefix) => pathname === prefix || pathname.startsWith(prefix + "/")
+    (prefix) => pathname === prefix || pathname.startsWith(prefix + "/"),
   );
 }
 
@@ -120,7 +120,7 @@ function isPublicApiPath(pathname: string): boolean {
 function shouldAttachDashboardCsrf(url: URL): boolean {
   if (
     TOP_LEVEL_MANAGEMENT_PATH_PREFIXES.some(
-      (prefix) => url.pathname === prefix || url.pathname.startsWith(prefix + "/")
+      (prefix) => url.pathname === prefix || url.pathname.startsWith(prefix + "/"),
     )
   ) {
     return true;

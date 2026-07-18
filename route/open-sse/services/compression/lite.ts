@@ -64,7 +64,7 @@ function modelSupportsVision(model: string): boolean {
 
 export function collapseWhitespace(
   body: ChatBody,
-  options: LiteCompressionOptions = {}
+  options: LiteCompressionOptions = {},
 ): {
   body: ChatBody;
   applied: boolean;
@@ -83,7 +83,7 @@ export function collapseWhitespace(
 
 export function dedupSystemPrompt(
   body: ChatBody,
-  options: LiteCompressionOptions = {}
+  options: LiteCompressionOptions = {},
 ): {
   body: ChatBody;
   applied: boolean;
@@ -126,7 +126,7 @@ export function compressToolResults(body: ChatBody): {
 
 export function removeRedundantContent(
   body: ChatBody,
-  options: LiteCompressionOptions = {}
+  options: LiteCompressionOptions = {},
 ): {
   body: ChatBody;
   applied: boolean;
@@ -157,7 +157,7 @@ export function removeRedundantContent(
 
 export function replaceImageUrls(
   body: ChatBody,
-  options?: LiteCompressionOptions | string
+  options?: LiteCompressionOptions | string,
 ): { body: ChatBody; applied: boolean } {
   if (!body.messages) return { body, applied: false };
   const supportsVision =
@@ -180,7 +180,7 @@ export function replaceImageUrls(
         ((part as Record<string, unknown>).image_url as Record<string, unknown>)?.url
       ) {
         const url = String(
-          ((part as Record<string, unknown>).image_url as Record<string, unknown>).url
+          ((part as Record<string, unknown>).image_url as Record<string, unknown>).url,
         );
         if (url.startsWith("data:image/")) {
           applied = true;
@@ -197,7 +197,7 @@ export function replaceImageUrls(
 
 export function applyLiteCompression(
   body: Record<string, unknown>,
-  options?: LiteCompressionOptions
+  options?: LiteCompressionOptions,
 ): CompressionResult {
   const originalBody = body;
   let current = body as ChatBody;
@@ -229,7 +229,7 @@ export function applyLiteCompression(
         originalBody,
         current as Record<string, unknown>,
         "lite" as CompressionMode,
-        techniquesApplied
+        techniquesApplied,
       )
     : null;
 

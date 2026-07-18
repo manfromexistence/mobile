@@ -27,7 +27,7 @@ type LoggerLike =
 export async function resolveExecutorWithProxy(
   prov: string,
   log?: LoggerLike,
-  providerSpecificData?: Record<string, unknown> | null
+  providerSpecificData?: Record<string, unknown> | null,
 ) {
   // Per-connection routing override (#6339): the resolved connection can opt itself
   // into the CLIProxyAPI passthrough executor via providerSpecificData.cliproxyapiMode
@@ -38,7 +38,7 @@ export async function resolveExecutorWithProxy(
   if (isCliproxyapiDeepModeEnabled(providerSpecificData)) {
     log?.info?.(
       "UPSTREAM_PROXY",
-      `${prov} routed through CLIProxyAPI (per-connection claude-native override)`
+      `${prov} routed through CLIProxyAPI (per-connection claude-native override)`,
     );
     return getExecutor("cliproxyapi");
   }
@@ -50,7 +50,7 @@ export async function resolveExecutorWithProxy(
     log?.info?.("UPSTREAM_PROXY", `${prov} routed through CLIProxyAPI (passthrough)`);
     return wrapExecutorWithCliproxyapiModelMapping(
       getExecutor("cliproxyapi"),
-      cfg.cliproxyapiModelMapping
+      cfg.cliproxyapiModelMapping,
     );
   }
 
@@ -60,7 +60,7 @@ export async function resolveExecutorWithProxy(
   const nativeExec = getExecutor(prov);
   const proxyExec = wrapExecutorWithCliproxyapiModelMapping(
     getExecutor("cliproxyapi"),
-    cfg.cliproxyapiModelMapping
+    cfg.cliproxyapiModelMapping,
   );
 
   // Read custom fallback codes from settings. Default: 5xx + 429 + network errors.
@@ -112,7 +112,7 @@ export async function resolveExecutorWithProxy(
     }
     log?.info?.(
       "UPSTREAM_PROXY",
-      `${prov} native failed (${result.response.status}), retrying via CLIProxyAPI`
+      `${prov} native failed (${result.response.status}), retrying via CLIProxyAPI`,
     );
     try {
       return await proxyExec.execute(input);

@@ -1,21 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import CopyToClipboard from "@/components/ui/copy-to-clipboard";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { CustomSlider } from "@/components/ui/range-slider";
 import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import {
@@ -89,19 +79,14 @@ function SVGLineDrawGenerator() {
   const [exampleViewBox, setExampleViewBox] = useQueryState("viewBox", {
     defaultValue: "0 0 250 100",
   });
-  const [editPath, setEditPath] = useQueryState(
-    "editPath",
-    parseAsBoolean.withDefault(false),
-  );
+  const [editPath, setEditPath] = useQueryState("editPath", parseAsBoolean.withDefault(false));
   const [customDrawLine, setCustomDrawLine] = useQueryState(
     "customDrawLine",
     parseAsBoolean.withDefault(false),
   );
   const [viewAll, setViewAll] = useState(false);
   const [currentPath, setCurrentPath] = useState<string>("");
-  const [animationKeys, setAnimationKeys] = useState<Record<number, number>>(
-    {},
-  );
+  const [animationKeys, setAnimationKeys] = useState<Record<number, number>>({});
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [savedPaths, _setSavedPaths] = useState<string[]>([]);
   const [previewKey, setPreviewKey] = useState(0);
@@ -222,11 +207,7 @@ function SVGLineDrawGenerator() {
   animationBounce={${settings.animationBounce}}
   reverseAnimation={${settings.reverseAnimation}}
   enableHoverAnimation={${settings.enableHoverAnimation}}
-  ${
-    settings.enableHoverAnimation
-      ? `hoverAnimationType="${settings.hoverAnimationType}"`
-      : ""
-  }
+  ${settings.enableHoverAnimation ? `hoverAnimationType="${settings.hoverAnimationType}"` : ""}
 />`;
   };
 
@@ -321,83 +302,78 @@ function SVGLineDrawGenerator() {
           <div className="absolute bottom-0 left-0 z-10 grid h-60 w-full place-content-center bg-gradient-to-t from-42% from-white dark:from-black" />
         )}
 
-        {(viewAll ? examplesSvgPath : examplesSvgPath.slice(0, 10)).map(
-          (example, index) => (
+        {(viewAll ? examplesSvgPath : examplesSvgPath.slice(0, 10)).map((example, index) => (
+          <div key={index} className="group relative rounded-xl border bg-card-bg p-1">
             <div
-              key={index}
-              className="group relative rounded-xl border bg-card-bg p-1"
+              className={cn(
+                " relative h-44 w-full cursor-pointer rounded-xl p-4",
+                activePresets === example.id && " bg-main",
+              )}
+              onClick={() => {
+                setCurrentPath(example.path);
+                setExampleViewBox(example.viewBox);
+                setActivePresets(example.id);
+              }}
+              onKeyUp={() => {
+                setCurrentPath(example.path);
+                setExampleViewBox(example.viewBox);
+                setActivePresets(example.id);
+              }}
+              onKeyDown={() => {
+                setCurrentPath(example.path);
+                setExampleViewBox(example.viewBox);
+                setActivePresets(example.id);
+              }}
+              onKeyPress={() => {
+                setCurrentPath(example.path);
+                setExampleViewBox(example.viewBox);
+                setActivePresets(example.id);
+              }}
             >
-              <div
-                className={cn(
-                  " relative h-44 w-full cursor-pointer rounded-xl p-4",
-                  activePresets === example.id && " bg-main",
-                )}
-                onClick={() => {
-                  setCurrentPath(example.path);
-                  setExampleViewBox(example.viewBox);
-                  setActivePresets(example.id);
-                }}
-                onKeyUp={() => {
-                  setCurrentPath(example.path);
-                  setExampleViewBox(example.viewBox);
-                  setActivePresets(example.id);
-                }}
-                onKeyDown={() => {
-                  setCurrentPath(example.path);
-                  setExampleViewBox(example.viewBox);
-                  setActivePresets(example.id);
-                }}
-                onKeyPress={() => {
-                  setCurrentPath(example.path);
-                  setExampleViewBox(example.viewBox);
-                  setActivePresets(example.id);
-                }}
-              >
-                <AnimateSvg
-                  key={animationKeys[index] || 0}
-                  width="100"
-                  height="100"
-                  viewBox={example.viewBox}
-                  className="h-full w-full"
-                  path={example.path}
-                  strokeColor={theme === "light" ? "#000000" : "#ffffff"}
-                  strokeWidth={3}
-                  strokeLinecap="round"
-                  animationDuration={1.5}
-                  animationDelay={0}
-                  animationBounce={0.3}
-                  reverseAnimation={false}
-                />
-                <p className="absolute bottom-0 left-0 w-full p-2 text-center font-semibold">
-                  {example.name}
-                </p>
-              </div>
-
-              <div className="absolute top-1 right-1 z-50 flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="group h-8 w-8"
-                  onClick={() => reloadAnimation(index)}
-                >
-                  <RefreshCw className="h-4 w-4 transition-transform group-hover:rotate-45" />
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="h-8 w-8 "
-                  onClick={() => copyDynamicCode(index)}
-                >
-                  {copiedIndex === index ? (
-                    <Check className="h-4 w-4 " />
-                  ) : (
-                    <Copy className="h-4 w-4 " />
-                  )}
-                </Button>
-              </div>
+              <AnimateSvg
+                key={animationKeys[index] || 0}
+                width="100"
+                height="100"
+                viewBox={example.viewBox}
+                className="h-full w-full"
+                path={example.path}
+                strokeColor={theme === "light" ? "#000000" : "#ffffff"}
+                strokeWidth={3}
+                strokeLinecap="round"
+                animationDuration={1.5}
+                animationDelay={0}
+                animationBounce={0.3}
+                reverseAnimation={false}
+              />
+              <p className="absolute bottom-0 left-0 w-full p-2 text-center font-semibold">
+                {example.name}
+              </p>
             </div>
-          ),
-        )}
+
+            <div className="absolute top-1 right-1 z-50 flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="group h-8 w-8"
+                onClick={() => reloadAnimation(index)}
+              >
+                <RefreshCw className="h-4 w-4 transition-transform group-hover:rotate-45" />
+              </Button>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="h-8 w-8 "
+                onClick={() => copyDynamicCode(index)}
+              >
+                {copiedIndex === index ? (
+                  <Check className="h-4 w-4 " />
+                ) : (
+                  <Copy className="h-4 w-4 " />
+                )}
+              </Button>
+            </div>
+          </div>
+        ))}
       </div>
       <div className="relative grid h-screen grid-cols-12 gap-6" id="editor">
         {/* Left Column - Examples and Animation Settings */}
@@ -465,10 +441,7 @@ function SVGLineDrawGenerator() {
                 <div className="space-y-2">
                   <Label htmlFor="strokeColor">Stroke Color</Label>
                   <div className="flex gap-2">
-                    <Popover
-                      open={strokeColorPickerOpen}
-                      onOpenChange={setStrokeColorPickerOpen}
-                    >
+                    <Popover open={strokeColorPickerOpen} onOpenChange={setStrokeColorPickerOpen}>
                       <PopoverTrigger asChild>
                         <Button
                           variant="outline"
@@ -481,16 +454,12 @@ function SVGLineDrawGenerator() {
                       <PopoverContent className="w-auto p-3">
                         <HexColorPicker
                           color={settings.strokeColor}
-                          onChange={(color) =>
-                            updateSetting("strokeColor", color)
-                          }
+                          onChange={(color) => updateSetting("strokeColor", color)}
                         />
                         <div className="mt-2 flex">
                           <Input
                             value={settings.strokeColor}
-                            onChange={(e) =>
-                              updateSetting("strokeColor", e.target.value)
-                            }
+                            onChange={(e) => updateSetting("strokeColor", e.target.value)}
                             className="flex-1"
                           />
                         </div>
@@ -498,27 +467,21 @@ function SVGLineDrawGenerator() {
                     </Popover>
                     <Input
                       value={settings.strokeColor}
-                      onChange={(e) =>
-                        updateSetting("strokeColor", e.target.value)
-                      }
+                      onChange={(e) => updateSetting("strokeColor", e.target.value)}
                       className="flex-1"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-3">
-                  <Label htmlFor="strokeWidth">
-                    Stroke Width: {settings.strokeWidth}
-                  </Label>
+                  <Label htmlFor="strokeWidth">Stroke Width: {settings.strokeWidth}</Label>
                   <CustomSlider
                     id="strokeWidth"
                     min={1}
                     max={10}
                     step={0.5}
                     value={[settings.strokeWidth]}
-                    onValueChange={(value) =>
-                      updateSetting("strokeWidth", value[0])
-                    }
+                    onValueChange={(value) => updateSetting("strokeWidth", value[0])}
                   />
                 </div>
 
@@ -526,9 +489,7 @@ function SVGLineDrawGenerator() {
                   <Label htmlFor="strokeLinecap">Stroke Linecap</Label>
                   <Select
                     value={settings.strokeLinecap}
-                    onValueChange={(value) =>
-                      updateSetting("strokeLinecap", value as any)
-                    }
+                    onValueChange={(value) => updateSetting("strokeLinecap", value as any)}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select linecap style" />
@@ -551,9 +512,7 @@ function SVGLineDrawGenerator() {
                     max={5}
                     step={0.1}
                     value={[settings.animationDuration]}
-                    onValueChange={(value) =>
-                      updateSetting("animationDuration", value[0])
-                    }
+                    onValueChange={(value) => updateSetting("animationDuration", value[0])}
                   />
                 </div>
 
@@ -567,9 +526,7 @@ function SVGLineDrawGenerator() {
                     max={2}
                     step={0.1}
                     value={[settings.animationDelay]}
-                    onValueChange={(value) =>
-                      updateSetting("animationDelay", value[0])
-                    }
+                    onValueChange={(value) => updateSetting("animationDelay", value[0])}
                   />
                 </div>
 
@@ -583,9 +540,7 @@ function SVGLineDrawGenerator() {
                     max={1}
                     step={0.05}
                     value={[settings.animationBounce]}
-                    onValueChange={(value) =>
-                      updateSetting("animationBounce", value[0])
-                    }
+                    onValueChange={(value) => updateSetting("animationBounce", value[0])}
                   />
                 </div>
 
@@ -593,9 +548,7 @@ function SVGLineDrawGenerator() {
                   <Switch
                     id="reverseAnimation"
                     checked={settings.reverseAnimation}
-                    onCheckedChange={(checked) =>
-                      updateSetting("reverseAnimation", checked)
-                    }
+                    onCheckedChange={(checked) => updateSetting("reverseAnimation", checked)}
                   />
                   <Label htmlFor="reverseAnimation">Reverse Animation</Label>
                 </div>
@@ -604,25 +557,17 @@ function SVGLineDrawGenerator() {
                   <Switch
                     id="enableHoverAnimation"
                     checked={settings.enableHoverAnimation}
-                    onCheckedChange={(checked) =>
-                      updateSetting("enableHoverAnimation", checked)
-                    }
+                    onCheckedChange={(checked) => updateSetting("enableHoverAnimation", checked)}
                   />
-                  <Label htmlFor="enableHoverAnimation">
-                    Enable Hover Animation
-                  </Label>
+                  <Label htmlFor="enableHoverAnimation">Enable Hover Animation</Label>
                 </div>
 
                 {settings.enableHoverAnimation && (
                   <div className="space-y-2">
-                    <Label htmlFor="hoverAnimationType">
-                      Hover Animation Type
-                    </Label>
+                    <Label htmlFor="hoverAnimationType">Hover Animation Type</Label>
                     <Select
                       value={settings.hoverAnimationType}
-                      onValueChange={(value) =>
-                        updateSetting("hoverAnimationType", value as any)
-                      }
+                      onValueChange={(value) => updateSetting("hoverAnimationType", value as any)}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select animation type" />
@@ -685,17 +630,11 @@ function SVGLineDrawGenerator() {
               <div
                 className={cn(
                   "flex flex-wrap items-center",
-                  customDrawLine || editPath
-                    ? "justify-between"
-                    : "justify-between",
+                  customDrawLine || editPath ? "justify-between" : "justify-between",
                 )}
               >
                 <CardTitle>
-                  {customDrawLine
-                    ? "Drawing"
-                    : editPath
-                      ? "Editing"
-                      : "Preview"}
+                  {customDrawLine ? "Drawing" : editPath ? "Editing" : "Preview"}
                 </CardTitle>
 
                 <div className="flex flex-wrap items-center justify-between gap-2">
@@ -720,11 +659,7 @@ function SVGLineDrawGenerator() {
                     className="w-fit"
                     disabled={!activePresets}
                   >
-                    {editPath ? (
-                      <X className="h-4 w-4" />
-                    ) : (
-                      <Edit2 className="h-4 w-4" />
-                    )}
+                    {editPath ? <X className="h-4 w-4" /> : <Edit2 className="h-4 w-4" />}
                     {editPath ? "Close Edit" : "Edit Path"}
                   </Button>
                   <Button
@@ -772,10 +707,7 @@ function SVGLineDrawGenerator() {
                           >
                             <div className="absolute top-0 right-0 bottom-0 left-0 z-0 rounded-xl bg-[radial-gradient(#79797960_1px,#f3f4f6_1px)] bg-[size:20px_20px] dark:bg-[radial-gradient(#ffffff33_1px,#000000_1px)] " />
 
-                            <div
-                              key={previewKey}
-                              className="relative z-10 h-full w-full "
-                            >
+                            <div key={previewKey} className="relative z-10 h-full w-full ">
                               <AnimateSvg
                                 width="100%"
                                 height="100%"
@@ -789,9 +721,7 @@ function SVGLineDrawGenerator() {
                                 animationDelay={settings.animationDelay}
                                 animationBounce={settings.animationBounce}
                                 reverseAnimation={settings.reverseAnimation}
-                                enableHoverAnimation={
-                                  settings.enableHoverAnimation
-                                }
+                                enableHoverAnimation={settings.enableHoverAnimation}
                                 hoverAnimationType={settings.hoverAnimationType}
                               />
                             </div>
@@ -819,10 +749,7 @@ function SVGLineDrawGenerator() {
                         <div className="absolute top-0 right-0 bottom-0 left-0 z-0 rounded-xl bg-[radial-gradient(#79797960_1px,#f3f4f6_1px)] bg-[size:20px_20px] dark:bg-[radial-gradient(#ffffff33_1px,#000000_1px)] " />
 
                         {currentPath || savedPaths.length > 0 ? (
-                          <div
-                            key={previewKey}
-                            className="relative z-10 h-full w-full"
-                          >
+                          <div key={previewKey} className="relative z-10 h-full w-full">
                             {/* {savedPaths.length > 0 ? (
                               <AnimateSvg
                                 width="100%"
@@ -856,9 +783,7 @@ function SVGLineDrawGenerator() {
                               animationDelay={settings.animationDelay}
                               animationBounce={settings.animationBounce}
                               reverseAnimation={settings.reverseAnimation}
-                              enableHoverAnimation={
-                                settings.enableHoverAnimation
-                              }
+                              enableHoverAnimation={settings.enableHoverAnimation}
                               hoverAnimationType={settings.hoverAnimationType}
                             />
                             {/* )} */}

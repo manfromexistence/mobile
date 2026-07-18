@@ -35,7 +35,7 @@ describe("#2130: body.system passthrough in openai→claude translator", () => {
     assert.ok(Array.isArray(result.system), "result.system must be an array");
     assert.ok(
       result.system.some((b) => b.text && b.text.includes("You are Claude Code")),
-      "result.system must contain the Claude Code system prompt"
+      "result.system must contain the Claude Code system prompt",
     );
   });
 
@@ -77,11 +77,11 @@ describe("#2130: body.system passthrough in openai→claude translator", () => {
     // Should have the original body.system + the extracted role=system text
     assert.ok(
       result.system.some((b) => b.text && b.text.includes("You are Claude Code")),
-      "must contain the body.system content"
+      "must contain the body.system content",
     );
     assert.ok(
       result.system.some((b) => b.text && b.text.includes("Be concise")),
-      "must contain the role=system message content"
+      "must contain the role=system message content",
     );
   });
 
@@ -97,7 +97,7 @@ describe("#2130: body.system passthrough in openai→claude translator", () => {
     assert.equal(
       result.system,
       undefined,
-      "result.system should be undefined when no system input exists"
+      "result.system should be undefined when no system input exists",
     );
   });
 });

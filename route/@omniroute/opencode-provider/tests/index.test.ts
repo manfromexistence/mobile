@@ -49,11 +49,11 @@ test("normalizeBaseURL rejects malformed URLs", () => {
 test("createOmniRouteProvider validates required fields", () => {
   assert.throws(
     () => createOmniRouteProvider({ baseURL: "", apiKey: "x" } as never),
-    /baseURL is required/
+    /baseURL is required/,
   );
   assert.throws(
     () => createOmniRouteProvider({ baseURL: "http://x", apiKey: "" } as never),
-    /apiKey is required/
+    /apiKey is required/,
   );
 });
 
@@ -214,7 +214,7 @@ test("mergeIntoExistingConfig writes model and small_model when supplied", () =>
       apiKey: "sk_omniroute",
       model: "claude-sonnet-4-5-thinking",
       smallModel: "gemini-3-flash",
-    }
+    },
   );
   assert.equal(result.model, "omniroute/claude-sonnet-4-5-thinking");
   assert.equal(result.small_model, "omniroute/gemini-3-flash");
@@ -223,7 +223,7 @@ test("mergeIntoExistingConfig writes model and small_model when supplied", () =>
 test("mergeIntoExistingConfig does not add model keys when not supplied", () => {
   const result = mergeIntoExistingConfig(
     {},
-    { baseURL: "http://localhost:20128", apiKey: "sk_omniroute" }
+    { baseURL: "http://localhost:20128", apiKey: "sk_omniroute" },
   );
   assert.ok(!("model" in result));
   assert.ok(!("small_model" in result));
@@ -271,16 +271,16 @@ test("createOmniRouteMCPEntry sets management key and scopes when supplied", () 
 test("createOmniRouteMCPEntry rejects missing required fields", () => {
   assert.throws(
     () => createOmniRouteMCPEntry({ serverPath: "", apiKey: "x" }),
-    /serverPath is required/
+    /serverPath is required/,
   );
   assert.throws(
     () => createOmniRouteMCPEntry({ serverPath: "/p", apiKey: "" }),
-    /apiKey is required/
+    /apiKey is required/,
   );
 });
 
 function startMockServer(
-  handler: (path: string) => unknown
+  handler: (path: string) => unknown,
 ): Promise<{ url: string; close: () => void }> {
   return new Promise((resolve) => {
     const server: Server = createServer((req, res) => {
@@ -394,7 +394,7 @@ test("OMNIROUTE_DEFAULT_OPENCODE_MODELS includes cc/ prefixed models", () => {
   assert.ok(defaults.includes("cc/claude-opus-4-8"));
   assert.ok(
     defaults.some((m) => m.startsWith("cc/")),
-    "should have cc/ prefixed models"
+    "should have cc/ prefixed models",
   );
   assert.ok(defaults.length >= 7, "should have at least 7 models");
 });
@@ -404,7 +404,7 @@ test("OMNIROUTE_DEFAULT_MODEL_CONTEXT_LENGTHS covers every default model id", ()
     const ctx = OMNIROUTE_DEFAULT_MODEL_CONTEXT_LENGTHS[id];
     assert.ok(
       typeof ctx === "number" && ctx > 0,
-      `default context_length for ${id} missing — should be a positive number`
+      `default context_length for ${id} missing — should be a positive number`,
     );
     // Sanity: context should be at least 8K, at most 2M tokens
     assert.ok(ctx >= 8_000, `${id} context_length ${ctx} seems too low`);
@@ -445,7 +445,10 @@ test("createOmniRouteProvider reads contextLength from a live model entry for id
     models: [{ id: "completely-unknown-model", contextLength: 262_144 }],
   });
   const entry = provider.models["completely-unknown-model"];
-  assert.ok(entry.limit, "a live contextLength should produce a limit field even for ids absent from the static map");
+  assert.ok(
+    entry.limit,
+    "a live contextLength should produce a limit field even for ids absent from the static map",
+  );
   assert.equal(entry.limit!.context, 262_144);
 });
 
@@ -472,7 +475,7 @@ test("createOmniRouteProvider serialises limit.context to JSON", () => {
     assert.equal(
       round.models[id].limit?.context,
       expectedContext,
-      `${id} should serialise limit.context=${expectedContext}`
+      `${id} should serialise limit.context=${expectedContext}`,
     );
   }
 });

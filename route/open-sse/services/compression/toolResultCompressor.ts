@@ -171,9 +171,7 @@ export interface AnthropicToolResultBlock {
 
 export function isAnthropicToolResultBlock(value: unknown): value is AnthropicToolResultBlock {
   return (
-    !!value &&
-    typeof value === "object" &&
-    (value as { type?: unknown }).type === "tool_result"
+    !!value && typeof value === "object" && (value as { type?: unknown }).type === "tool_result"
   );
 }
 
@@ -185,7 +183,7 @@ export function isAnthropicToolResultBlock(value: unknown): value is AnthropicTo
  */
 export function compressAnthropicToolResultBlock(
   block: AnthropicToolResultBlock,
-  opts: ToolStrategiesConfig
+  opts: ToolStrategiesConfig,
 ): { block: AnthropicToolResultBlock; saved: number } {
   const content = block.content;
 

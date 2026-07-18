@@ -2,74 +2,74 @@ import { hexToRgb, rgbToHsl } from "./color-utils";
 
 // Generate shadcn theme colors based on a base color
 export function generateShadcnTheme(baseColor: string) {
-	const rgb = hexToRgb(baseColor);
-	if (!rgb) return null;
+  const rgb = hexToRgb(baseColor);
+  if (!rgb) return null;
 
-	const { h, s, l } = rgbToHsl(rgb.r, rgb.g, rgb.b);
+  const { h, s, l } = rgbToHsl(rgb.r, rgb.g, rgb.b);
 
-	// Generate light theme colors
-	const lightTheme = {
-		background: "0 0% 100%",
-		foreground: `${h} ${Math.max(5, s)}% ${Math.max(5, Math.min(15, l))}%`,
-		card: "0 0% 100%",
-		"card-foreground": `${h} ${Math.max(5, s)}% ${Math.max(5, Math.min(15, l))}%`,
-		popover: "0 0% 100%",
-		"popover-foreground": `${h} ${Math.max(5, s)}% ${Math.max(5, Math.min(15, l))}%`,
-		primary: `${h} ${Math.min(90, Math.max(50, s))}% ${Math.min(50, Math.max(40, l))}%`,
-		"primary-foreground": "0 0% 98%",
-		secondary: `${h} ${Math.min(30, Math.max(5, s))}% ${Math.min(96, Math.max(90, 100 - l))}%`,
-		"secondary-foreground": `${h} ${Math.min(90, Math.max(50, s))}% ${Math.min(50, Math.max(40, l))}%`,
-		muted: `${h} ${Math.min(10, Math.max(0, s))}% ${Math.min(96, Math.max(90, 100 - l))}%`,
-		"muted-foreground": `${h} ${Math.min(30, Math.max(10, s))}% ${Math.min(40, Math.max(30, l))}%`,
-		accent: `${h} ${Math.min(30, Math.max(5, s))}% ${Math.min(96, Math.max(90, 100 - l))}%`,
-		"accent-foreground": `${h} ${Math.min(90, Math.max(50, s))}% ${Math.min(50, Math.max(40, l))}%`,
-		destructive: "0 84% 60%",
-		"destructive-foreground": "0 0% 98%",
-		border: `${h} ${Math.min(20, Math.max(5, s))}% 90%`,
-		input: `${h} ${Math.min(20, Math.max(5, s))}% 90%`,
-		ring: `${h} ${Math.min(90, Math.max(50, s))}% ${Math.min(50, Math.max(40, l))}%`,
-		radius: "0.5rem",
-	};
+  // Generate light theme colors
+  const lightTheme = {
+    background: "0 0% 100%",
+    foreground: `${h} ${Math.max(5, s)}% ${Math.max(5, Math.min(15, l))}%`,
+    card: "0 0% 100%",
+    "card-foreground": `${h} ${Math.max(5, s)}% ${Math.max(5, Math.min(15, l))}%`,
+    popover: "0 0% 100%",
+    "popover-foreground": `${h} ${Math.max(5, s)}% ${Math.max(5, Math.min(15, l))}%`,
+    primary: `${h} ${Math.min(90, Math.max(50, s))}% ${Math.min(50, Math.max(40, l))}%`,
+    "primary-foreground": "0 0% 98%",
+    secondary: `${h} ${Math.min(30, Math.max(5, s))}% ${Math.min(96, Math.max(90, 100 - l))}%`,
+    "secondary-foreground": `${h} ${Math.min(90, Math.max(50, s))}% ${Math.min(50, Math.max(40, l))}%`,
+    muted: `${h} ${Math.min(10, Math.max(0, s))}% ${Math.min(96, Math.max(90, 100 - l))}%`,
+    "muted-foreground": `${h} ${Math.min(30, Math.max(10, s))}% ${Math.min(40, Math.max(30, l))}%`,
+    accent: `${h} ${Math.min(30, Math.max(5, s))}% ${Math.min(96, Math.max(90, 100 - l))}%`,
+    "accent-foreground": `${h} ${Math.min(90, Math.max(50, s))}% ${Math.min(50, Math.max(40, l))}%`,
+    destructive: "0 84% 60%",
+    "destructive-foreground": "0 0% 98%",
+    border: `${h} ${Math.min(20, Math.max(5, s))}% 90%`,
+    input: `${h} ${Math.min(20, Math.max(5, s))}% 90%`,
+    ring: `${h} ${Math.min(90, Math.max(50, s))}% ${Math.min(50, Math.max(40, l))}%`,
+    radius: "0.5rem",
+  };
 
-	// Generate dark theme colors
-	const darkTheme = {
-		background: `${h} ${Math.min(10, Math.max(5, s))}% ${Math.min(10, Math.max(5, l))}%`,
-		foreground: "0 0% 98%",
-		card: `${h} ${Math.min(10, Math.max(5, s))}% ${Math.min(10, Math.max(5, l))}%`,
-		"card-foreground": "0 0% 98%",
-		popover: `${h} ${Math.min(10, Math.max(5, s))}% ${Math.min(10, Math.max(5, l))}%`,
-		"popover-foreground": "0 0% 98%",
-		primary: `${h} ${Math.min(90, Math.max(50, s))}% ${Math.min(60, Math.max(50, l))}%`,
-		"primary-foreground": "0 0% 98%",
-		secondary: `${h} ${Math.min(30, Math.max(15, s))}% ${Math.min(25, Math.max(15, l))}%`,
-		"secondary-foreground": "0 0% 98%",
-		muted: `${h} ${Math.min(30, Math.max(15, s))}% ${Math.min(25, Math.max(15, l))}%`,
-		"muted-foreground": `${h} ${Math.min(20, Math.max(10, s))}% ${Math.min(70, Math.max(60, 100 - l))}%`,
-		accent: `${h} ${Math.min(30, Math.max(15, s))}% ${Math.min(25, Math.max(15, l))}%`,
-		"accent-foreground": "0 0% 98%",
-		destructive: "0 62% 30%",
-		"destructive-foreground": "0 0% 98%",
-		border: `${h} ${Math.min(20, Math.max(10, s))}% ${Math.min(25, Math.max(15, l))}%`,
-		input: `${h} ${Math.min(20, Math.max(10, s))}% ${Math.min(25, Math.max(15, l))}%`,
-		ring: `${h} ${Math.min(90, Math.max(50, s))}% ${Math.min(60, Math.max(50, l))}%`,
-	};
+  // Generate dark theme colors
+  const darkTheme = {
+    background: `${h} ${Math.min(10, Math.max(5, s))}% ${Math.min(10, Math.max(5, l))}%`,
+    foreground: "0 0% 98%",
+    card: `${h} ${Math.min(10, Math.max(5, s))}% ${Math.min(10, Math.max(5, l))}%`,
+    "card-foreground": "0 0% 98%",
+    popover: `${h} ${Math.min(10, Math.max(5, s))}% ${Math.min(10, Math.max(5, l))}%`,
+    "popover-foreground": "0 0% 98%",
+    primary: `${h} ${Math.min(90, Math.max(50, s))}% ${Math.min(60, Math.max(50, l))}%`,
+    "primary-foreground": "0 0% 98%",
+    secondary: `${h} ${Math.min(30, Math.max(15, s))}% ${Math.min(25, Math.max(15, l))}%`,
+    "secondary-foreground": "0 0% 98%",
+    muted: `${h} ${Math.min(30, Math.max(15, s))}% ${Math.min(25, Math.max(15, l))}%`,
+    "muted-foreground": `${h} ${Math.min(20, Math.max(10, s))}% ${Math.min(70, Math.max(60, 100 - l))}%`,
+    accent: `${h} ${Math.min(30, Math.max(15, s))}% ${Math.min(25, Math.max(15, l))}%`,
+    "accent-foreground": "0 0% 98%",
+    destructive: "0 62% 30%",
+    "destructive-foreground": "0 0% 98%",
+    border: `${h} ${Math.min(20, Math.max(10, s))}% ${Math.min(25, Math.max(15, l))}%`,
+    input: `${h} ${Math.min(20, Math.max(10, s))}% ${Math.min(25, Math.max(15, l))}%`,
+    ring: `${h} ${Math.min(90, Math.max(50, s))}% ${Math.min(60, Math.max(50, l))}%`,
+  };
 
-	return { lightTheme, darkTheme };
+  return { lightTheme, darkTheme };
 }
 
 // Format theme for CSS variables
 export function formatThemeForCSS(theme: Record<string, string>) {
-	return Object.entries(theme)
-		.map(([key, value]) => `  --${key}: ${value};`)
-		.join("\n");
+  return Object.entries(theme)
+    .map(([key, value]) => `  --${key}: ${value};`)
+    .join("\n");
 }
 
 // Generate the full CSS for the theme
 export function generateThemeCSS(
-	lightTheme: Record<string, string>,
-	darkTheme: Record<string, string>,
+  lightTheme: Record<string, string>,
+  darkTheme: Record<string, string>,
 ) {
-	return `:root {
+  return `:root {
 ${formatThemeForCSS(lightTheme)}
 }
 
@@ -81,10 +81,10 @@ ${formatThemeForCSS(darkTheme)}
 
 // Generate the full CSS for the theme with Tailwind v4 syntax
 export function generateThemeCSSv4(
-	lightTheme: Record<string, string>,
-	darkTheme: Record<string, string>,
+  lightTheme: Record<string, string>,
+  darkTheme: Record<string, string>,
 ) {
-	return `
+  return `
 // global.css
 
 @import "tailwindcss";
@@ -126,7 +126,7 @@ ${formatThemeForCSS(darkTheme)}
 
 // Generate the Tailwind config for the theme
 export function generateTailwindConfig(_baseColor: string) {
-	return `/** @type {import('tailwindcss').Config} */
+  return `/** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
   content: [

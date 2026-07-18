@@ -1,12 +1,9 @@
-import type { FileOptions } from '../components/File';
-import { FileRenderer } from '../renderers/FileRenderer';
-import type { FileContents, LineAnnotation } from '../types';
-import {
-  createStyleElement,
-  createThemeStyleElement,
-} from '../utils/createStyleElement';
-import { wrapThemeCSS } from '../utils/cssWrappers';
-import { renderHTML } from './renderHTML';
+import type { FileOptions } from "../components/File";
+import { FileRenderer } from "../renderers/FileRenderer";
+import type { FileContents, LineAnnotation } from "../types";
+import { createStyleElement, createThemeStyleElement } from "../utils/createStyleElement";
+import { wrapThemeCSS } from "../utils/cssWrappers";
+import { renderHTML } from "./renderHTML";
 
 export type PreloadFileOptions<LAnnotation> = {
   file: FileContents;
@@ -28,8 +25,7 @@ export async function preloadFile<LAnnotation = undefined>({
 }: PreloadFileOptions<LAnnotation>): Promise<PreloadedFileResult<LAnnotation>> {
   const fileRenderer = new FileRenderer<LAnnotation>({
     ...options,
-    headerRenderMode:
-      options?.renderCustomHeader != null ? 'custom' : 'default',
+    headerRenderMode: options?.renderCustomHeader != null ? "custom" : "default",
   });
 
   // Set line annotations if provided
@@ -44,9 +40,9 @@ export async function preloadFile<LAnnotation = undefined>({
     createThemeStyleElement(
       wrapThemeCSS(
         fileResult.themeStyles,
-        fileResult.baseThemeType ?? options?.themeType ?? 'system'
-      )
-    )
+        fileResult.baseThemeType ?? options?.themeType ?? "system",
+      ),
+    ),
   );
 
   if (options?.unsafeCSS != null) {
@@ -57,7 +53,7 @@ export async function preloadFile<LAnnotation = undefined>({
     children.push(fileResult.headerAST);
   }
   const code = fileRenderer.renderFullAST(fileResult);
-  code.properties['data-dehydrated'] = '';
+  code.properties["data-dehydrated"] = "";
   children.push(code);
 
   return {

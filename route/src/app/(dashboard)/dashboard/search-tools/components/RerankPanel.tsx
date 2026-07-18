@@ -72,7 +72,7 @@ export default function RerankPanel({ query, results, onClose }: RerankPanelProp
             score: r.relevance_score,
             delta: origIndex - newIndex,
           };
-        }
+        },
       );
       setReranked(rerankedResults);
     } catch (err: any) {

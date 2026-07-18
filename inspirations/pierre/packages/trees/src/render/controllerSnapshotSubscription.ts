@@ -22,7 +22,7 @@ export interface ControllerSnapshotSeenHolder {
 // emit observed by a given holder is suppressed; every later emit — including
 // the first emit after a re-subscribe that reuses the same holder — bumps.
 export function shouldBumpControllerRevision(
-  hasSeenInitialSnapshot: ControllerSnapshotSeenHolder
+  hasSeenInitialSnapshot: ControllerSnapshotSeenHolder,
 ): boolean {
   if (hasSeenInitialSnapshot.current) {
     return true;

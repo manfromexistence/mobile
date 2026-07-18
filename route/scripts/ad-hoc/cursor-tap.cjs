@@ -28,7 +28,7 @@ const crypto = require("crypto");
 const args = process.argv.slice(2);
 if (args.length < 2) {
   console.error(
-    "Usage: cursor-tap.cjs <fixture-name> <prompt> [--model=...] [--tools=name1,name2]"
+    "Usage: cursor-tap.cjs <fixture-name> <prompt> [--model=...] [--tools=name1,name2]",
   );
   process.exit(1);
 }
@@ -38,7 +38,7 @@ const flagMap = Object.fromEntries(
   flags.map((f) => {
     const m = f.match(/^--([^=]+)=(.*)$/);
     return m ? [m[1], m[2]] : [f.replace(/^--/, ""), true];
-  })
+  }),
 );
 
 const token = process.env.CURSOR_TOKEN;
@@ -91,7 +91,7 @@ const userMessage = lenField(
     strField(2, crypto.randomUUID()),
     lenField(3, Buffer.alloc(0)),
     varintField(4, 1),
-  ])
+  ]),
 );
 const userMessageAction = lenField(1, userMessage);
 const action = lenField(2, userMessageAction);

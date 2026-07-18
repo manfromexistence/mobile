@@ -32,7 +32,7 @@ function hashToken(token: string): string {
 export async function createInvite(
   createdByApiKeyId: string,
   serverUrl?: string,
-  maxUses: number = 1
+  maxUses: number = 1,
 ): Promise<{ code: string; token: string }> {
   const code = generateInviteCode();
   const token = crypto.randomBytes(32).toString("base64url");
@@ -50,7 +50,7 @@ export async function createInvite(
  */
 export async function redeemInvite(
   code: string,
-  usedByApiKeyId: string
+  usedByApiKeyId: string,
 ): Promise<{ success: boolean; serverUrl?: string; error?: string }> {
   const { getInviteByCode, redeemInvite: dbRedeem } = await import("../db/gamification");
 
@@ -92,7 +92,7 @@ export async function listInvites(apiKeyId: string) {
   const rows = db
     .prepare(
       `SELECT id, code, server_url, max_uses, use_count, expires_at, revoked_at, created_at
-       FROM invite_tokens WHERE created_by = ? ORDER BY created_at DESC`
+       FROM invite_tokens WHERE created_by = ? ORDER BY created_at DESC`,
     )
     .all(apiKeyId) as Array<{
     id: string;

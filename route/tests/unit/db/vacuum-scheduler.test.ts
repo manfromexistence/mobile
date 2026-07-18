@@ -38,7 +38,7 @@ const scheduler = await import("../../../src/lib/db/vacuumScheduler.ts");
 function setOptimizationSettings(values: { scheduledVacuum?: string; vacuumHour?: number }) {
   const db = core.getDbInstance();
   const insert = db.prepare(
-    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)"
+    "INSERT OR REPLACE INTO key_value (namespace, key, value) VALUES (?, ?, ?)",
   );
   for (const [key, value] of Object.entries(values)) {
     insert.run("databaseSettings", `optimization.${key}`, JSON.stringify(value));
@@ -84,26 +84,26 @@ test("resolveNextRunAt respects Storage frequency and vacuumHour", () => {
   const todayAtTwo = new Date(2026, 0, 1, 2, 0, 0, 0).getTime();
   assert.equal(
     scheduler.resolveNextRunAt({ scheduledVacuum: "daily", vacuumHour: 2 }, null, nowBeforeHour),
-    todayAtTwo
+    todayAtTwo,
   );
 
   const nowAfterHour = new Date(2026, 0, 1, 3, 0, 0, 0).getTime();
   const tomorrowAtTwo = new Date(2026, 0, 2, 2, 0, 0, 0).getTime();
   assert.equal(
     scheduler.resolveNextRunAt({ scheduledVacuum: "daily", vacuumHour: 2 }, null, nowAfterHour),
-    tomorrowAtTwo
+    tomorrowAtTwo,
   );
 
   const lastRun = new Date(2026, 0, 1, 3, 0, 0, 0).getTime();
   const nextWeekAtTwo = new Date(2026, 0, 8, 2, 0, 0, 0).getTime();
   assert.equal(
     scheduler.resolveNextRunAt({ scheduledVacuum: "weekly", vacuumHour: 2 }, lastRun, lastRun),
-    nextWeekAtTwo
+    nextWeekAtTwo,
   );
 
   assert.equal(
     scheduler.resolveNextRunAt({ scheduledVacuum: "never", vacuumHour: 2 }, null, nowBeforeHour),
-    null
+    null,
   );
 });
 

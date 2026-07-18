@@ -1,9 +1,9 @@
-import { and, asc, eq, inArray, or } from "drizzle-orm"
-import { Effect, Layer } from "effect"
-import * as Context from "effect/Context"
-import { DatabaseError, DrizzleClient } from "../database"
-import { geoStat } from "../database/schema"
-import { RETIRED_STAT_MODELS, RETIRED_STAT_PROVIDERS } from "./model-normalization"
+import { and, asc, eq, inArray, or } from "drizzle-orm";
+import { Effect, Layer } from "effect";
+import * as Context from "effect/Context";
+import { DatabaseError, DrizzleClient } from "../database";
+import { geoStat } from "../database/schema";
+import { RETIRED_STAT_MODELS, RETIRED_STAT_PROVIDERS } from "./model-normalization";
 import {
   chunks,
   collapseRows,
@@ -17,63 +17,65 @@ import {
   toStatBaseRow,
   UPSERT_CHUNK_SIZE,
   type StatBaseAggregate,
-} from "./stat"
+} from "./stat";
 
-export type GeoStatRow = typeof geoStat.$inferInsert
+export type GeoStatRow = typeof geoStat.$inferInsert;
 export type GeoStatAggregate = StatBaseAggregate & {
-  provider: string
-  model: string
-  country: string
-  continent: string
-}
+  provider: string;
+  model: string;
+  country: string;
+  continent: string;
+};
 export type GeoStatMetric = {
-  periodKey: string
-  updatedAt: Date
-  tier: string
-  provider: string
-  model: string
-  country: string
-  continent: string
-  totalTokens: number
-}
+  periodKey: string;
+  updatedAt: Date;
+  tier: string;
+  provider: string;
+  model: string;
+  country: string;
+  continent: string;
+  totalTokens: number;
+};
 
 export declare namespace GeoStatRepo {
   export interface Service {
     readonly listDaily: (opts?: {
-      readonly provider?: string
-      readonly model?: string
-    }) => Effect.Effect<GeoStatMetric[], DatabaseError>
+      readonly provider?: string;
+      readonly model?: string;
+    }) => Effect.Effect<GeoStatMetric[], DatabaseError>;
     readonly listByPeriod: (opts: {
-      readonly grain: string
-      readonly periodKey: string
-      readonly dataset?: string
-      readonly tier?: string
-      readonly client?: string
-      readonly source?: string
-      readonly provider?: string
-      readonly model?: string
-    }) => Effect.Effect<GeoStatRow[], DatabaseError>
-    readonly upsert: (rows: GeoStatRow[]) => Effect.Effect<void, DatabaseError>
-    readonly deleteRetiredDimensions: (rows: GeoStatRow[]) => Effect.Effect<void, DatabaseError>
+      readonly grain: string;
+      readonly periodKey: string;
+      readonly dataset?: string;
+      readonly tier?: string;
+      readonly client?: string;
+      readonly source?: string;
+      readonly provider?: string;
+      readonly model?: string;
+    }) => Effect.Effect<GeoStatRow[], DatabaseError>;
+    readonly upsert: (rows: GeoStatRow[]) => Effect.Effect<void, DatabaseError>;
+    readonly deleteRetiredDimensions: (rows: GeoStatRow[]) => Effect.Effect<void, DatabaseError>;
   }
 }
 
-export class GeoStatRepo extends Context.Service<GeoStatRepo, GeoStatRepo.Service>()("@opencode/stats/GeoStatRepo") {
+export class GeoStatRepo extends Context.Service<GeoStatRepo, GeoStatRepo.Service>()(
+  "@opencode/stats/GeoStatRepo",
+) {
   static readonly layer: Layer.Layer<GeoStatRepo, never, DrizzleClient> = Layer.effect(
     GeoStatRepo,
     Effect.gen(function* () {
-      const db = yield* DrizzleClient
+      const db = yield* DrizzleClient;
 
       const listDaily = Effect.fn("GeoStatRepo.listDaily")(function* (opts?: {
-        readonly provider?: string
-        readonly model?: string
+        readonly provider?: string;
+        readonly model?: string;
       }) {
         const scope =
           opts?.model && opts.provider
             ? and(eq(geoStat.provider, opts.provider), eq(geoStat.model, opts.model))
             : opts?.model
               ? eq(geoStat.model, opts.model)
-              : and(eq(geoStat.provider, "all"), eq(geoStat.model, "all"))
+              : and(eq(geoStat.provider, "all"), eq(geoStat.model, "all"));
         return yield* Effect.tryPromise({
           try: () =>
             db
@@ -99,18 +101,18 @@ export class GeoStatRepo extends Context.Service<GeoStatRepo, GeoStatRepo.Servic
               )
               .orderBy(asc(geoStat.period_key)),
           catch: (cause) => DatabaseError.make({ cause }),
-        })
-      })
+        });
+      });
 
       const listByPeriod = Effect.fn("GeoStatRepo.listByPeriod")(function* (opts: {
-        readonly grain: string
-        readonly periodKey: string
-        readonly dataset?: string
-        readonly tier?: string
-        readonly client?: string
-        readonly source?: string
-        readonly provider?: string
-        readonly model?: string
+        readonly grain: string;
+        readonly periodKey: string;
+        readonly dataset?: string;
+        readonly tier?: string;
+        readonly client?: string;
+        readonly source?: string;
+        readonly provider?: string;
+        readonly model?: string;
       }) {
         return yield* Effect.tryPromise({
           try: () =>
@@ -130,8 +132,8 @@ export class GeoStatRepo extends Context.Service<GeoStatRepo, GeoStatRepo.Servic
                 ),
               ),
           catch: (cause) => DatabaseError.make({ cause }),
-        })
-      })
+        });
+      });
 
       const upsert = Effect.fn("GeoStatRepo.upsert")(function* (rows: GeoStatRow[]) {
         yield* Effect.forEach(
@@ -140,17 +142,17 @@ export class GeoStatRepo extends Context.Service<GeoStatRepo, GeoStatRepo.Servic
             Effect.tryPromise({
               try: async () => {
                 try {
-                  return await upsertGeoChunk(chunk, true)
+                  return await upsertGeoChunk(chunk, true);
                 } catch (cause) {
-                  if (!isMissingUniqueUsersColumn(cause)) throw cause
-                  return upsertGeoChunk(chunk, false)
+                  if (!isMissingUniqueUsersColumn(cause)) throw cause;
+                  return upsertGeoChunk(chunk, false);
                 }
               },
               catch: (cause) => DatabaseError.make({ cause }),
             }),
           { discard: true },
-        )
-      })
+        );
+      });
 
       function upsertGeoChunk(chunk: GeoStatRow[], includeUniqueUsers: boolean) {
         return db
@@ -188,12 +190,14 @@ export class GeoStatRepo extends Context.Service<GeoStatRepo, GeoStatRepo.Servic
               rank_by_sessions: inserted("rank_by_sessions"),
               rank_by_cost: inserted("rank_by_cost"),
             },
-          })
+          });
       }
 
-      const deleteRetiredDimensions = Effect.fn("GeoStatRepo.deleteRetiredDimensions")(function* (rows: GeoStatRow[]) {
-        const scope = statRowScope(rows)
-        if (!scope) return
+      const deleteRetiredDimensions = Effect.fn("GeoStatRepo.deleteRetiredDimensions")(function* (
+        rows: GeoStatRow[],
+      ) {
+        const scope = statRowScope(rows);
+        if (!scope) return;
 
         yield* Effect.tryPromise({
           try: () =>
@@ -206,16 +210,19 @@ export class GeoStatRepo extends Context.Service<GeoStatRepo, GeoStatRepo.Servic
                   inArray(geoStat.dataset, scope.datasets),
                   inArray(geoStat.client, scope.clients),
                   inArray(geoStat.source, scope.sources),
-                  or(inArray(geoStat.provider, RETIRED_STAT_PROVIDERS), inArray(geoStat.model, RETIRED_STAT_MODELS)),
+                  or(
+                    inArray(geoStat.provider, RETIRED_STAT_PROVIDERS),
+                    inArray(geoStat.model, RETIRED_STAT_MODELS),
+                  ),
                 ),
               ),
           catch: (cause) => DatabaseError.make({ cause }),
-        })
-      })
+        });
+      });
 
-      return GeoStatRepo.of({ listDaily, listByPeriod, upsert, deleteRetiredDimensions })
+      return GeoStatRepo.of({ listDaily, listByPeriod, upsert, deleteRetiredDimensions });
     }),
-  )
+  );
 }
 
 export function rowsFromAggregates(aggregates: GeoStatAggregate[]) {
@@ -231,7 +238,7 @@ export function rowsFromAggregates(aggregates: GeoStatAggregate[]) {
       ),
     ],
     marketShareKey,
-  )
+  );
 }
 
 function toRow(data: GeoStatAggregate): GeoStatRow {
@@ -241,13 +248,13 @@ function toRow(data: GeoStatAggregate): GeoStatRow {
     model: data.model,
     country: data.country,
     continent: data.continent,
-  }
+  };
 }
 
 function dimensionKey(row: GeoStatRow) {
-  return [row.provider, row.model, row.country].join("\u0000")
+  return [row.provider, row.model, row.country].join("\u0000");
 }
 
 function marketShareKey(row: GeoStatRow) {
-  return [statPeriodKey(row), row.provider, row.model].join("\u0000")
+  return [statPeriodKey(row), row.provider, row.model].join("\u0000");
 }

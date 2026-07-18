@@ -1,14 +1,14 @@
-import { Show } from "solid-js"
-import { createAsync, RouteSectionProps, useParams, A } from "@solidjs/router"
-import { querySessionInfo } from "./common"
-import "./[id].css"
-import { useI18n } from "~/context/i18n"
-import { Legal } from "~/component/legal"
+import { Show } from "solid-js";
+import { createAsync, RouteSectionProps, useParams, A } from "@solidjs/router";
+import { querySessionInfo } from "./common";
+import "./[id].css";
+import { useI18n } from "~/context/i18n";
+import { Legal } from "~/component/legal";
 
 export default function WorkspaceLayout(props: RouteSectionProps) {
-  const params = useParams()
-  const i18n = useI18n()
-  const userInfo = createAsync(() => querySessionInfo(params.id!))
+  const params = useParams();
+  const i18n = useI18n();
+  const userInfo = createAsync(() => querySessionInfo(params.id!));
 
   return (
     <main data-page="workspace">
@@ -76,5 +76,5 @@ export default function WorkspaceLayout(props: RouteSectionProps) {
         </div>
       </div>
     </main>
-  )
+  );
 }

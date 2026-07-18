@@ -54,12 +54,7 @@ test.after(async () => {
 // ---------------------------------------------------------------------------
 
 test("upsertPlan creates a plan row", () => {
-  plansDb.upsertPlan(
-    "conn-1",
-    "codex",
-    [{ unit: "percent", window: "5h", limit: 100 }],
-    "auto"
-  );
+  plansDb.upsertPlan("conn-1", "codex", [{ unit: "percent", window: "5h", limit: 100 }], "auto");
 
   const all = plansDb.listPlans();
   assert.equal(all.length, 1);
@@ -72,13 +67,13 @@ test("upsertPlan with same connectionId twice yields exactly 1 row", () => {
     "conn-idempotent",
     "kimi",
     [{ unit: "requests", window: "hourly", limit: 1500 }],
-    "auto"
+    "auto",
   );
   plansDb.upsertPlan(
     "conn-idempotent",
     "kimi",
     [{ unit: "requests", window: "hourly", limit: 2000 }], // updated limit
-    "manual"
+    "manual",
   );
 
   const all = plansDb.listPlans();
@@ -104,7 +99,7 @@ test("getPlan returns a plan with correctly parsed dimensions", () => {
       { unit: "percent", window: "5h", limit: 100 },
       { unit: "percent", window: "weekly", limit: 100 },
     ],
-    "auto"
+    "auto",
   );
 
   const plan = plansDb.getPlan("conn-parse");
@@ -147,13 +142,13 @@ test("listPlans returns all stored plans", () => {
     "conn-b",
     "kimi",
     [{ unit: "requests", window: "hourly", limit: 1500 }],
-    "manual"
+    "manual",
   );
   plansDb.upsertPlan(
     "conn-c",
     "bailian",
     [{ unit: "percent", window: "monthly", limit: 100 }],
-    "auto"
+    "auto",
   );
 
   const plans = plansDb.listPlans();
@@ -176,7 +171,7 @@ test("deletePlan removes the plan and returns true", () => {
     "conn-delete-me",
     "codex",
     [{ unit: "percent", window: "5h", limit: 100 }],
-    "auto"
+    "auto",
   );
 
   const deleted = plansDb.deletePlan("conn-delete-me");
@@ -200,11 +195,16 @@ test("upserting one plan does not affect other connection plans", () => {
     "conn-y",
     "anthropic",
     [{ unit: "tokens", window: "daily", limit: 100_000 }],
-    "auto"
+    "auto",
   );
 
   // Update conn-x
-  plansDb.upsertPlan("conn-x", "openai", [{ unit: "usd", window: "monthly", limit: 100 }], "manual");
+  plansDb.upsertPlan(
+    "conn-x",
+    "openai",
+    [{ unit: "usd", window: "monthly", limit: 100 }],
+    "manual",
+  );
 
   const planY = plansDb.getPlan("conn-y");
   assert.ok(planY, "conn-y should still exist");

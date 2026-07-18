@@ -368,7 +368,7 @@ function isObfuscateWordsOp(op: TransformOp): op is ObfuscateWordsOp {
  */
 export function applyTransformPipeline(
   body: RequestBody,
-  pipeline: TransformOp[]
+  pipeline: TransformOp[],
 ): ApplyPipelineResult {
   if (!body || typeof body !== "object") return { body, appliedOpKinds: [] };
   if (!Array.isArray(pipeline) || pipeline.length === 0) {
@@ -385,7 +385,7 @@ export function applyTransformPipeline(
     // exported by ccBridgeTransforms — system transforms accept any shape.
     const result = applyCcBridgeTransformPipeline(
       body as Parameters<typeof applyCcBridgeTransformPipeline>[0],
-      config
+      config,
     );
     appliedOpKinds.push(...result.appliedOpKinds);
     baseRun = [];
@@ -417,7 +417,7 @@ export function applyTransformPipeline(
 export function applySystemTransformPipeline(
   providerId: string,
   body: RequestBody,
-  config: SystemTransformsConfig = getSystemTransformsConfig()
+  config: SystemTransformsConfig = getSystemTransformsConfig(),
 ): ApplyPipelineResult {
   if (!body || typeof body !== "object") return { body, appliedOpKinds: [] };
   if (!config || !config.providers) return { body, appliedOpKinds: [] };
@@ -432,7 +432,7 @@ export function applySystemTransformPipeline(
 
 function resolveProviderConfig(
   providerId: string,
-  config: SystemTransformsConfig
+  config: SystemTransformsConfig,
 ): ProviderTransformsConfig | undefined {
   if (!providerId) return undefined;
   const exact = config.providers[providerId];
@@ -510,7 +510,7 @@ export function setSystemTransformsConfig(input: unknown): void {
     // Merge defaults for any unset provider — keeps ZWJ on by default even
     // when the user only configured one provider explicitly.
     for (const [providerId, providerDefault] of Object.entries(
-      DEFAULT_SYSTEM_TRANSFORMS_CONFIG.providers
+      DEFAULT_SYSTEM_TRANSFORMS_CONFIG.providers,
     )) {
       if (!next.providers[providerId]) {
         next.providers[providerId] = providerDefault;

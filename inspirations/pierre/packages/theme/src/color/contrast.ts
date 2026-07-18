@@ -5,14 +5,10 @@
 // glyphs. The CVD gate re-checks contrast *after* simulation, since simulation
 // shifts luminance.
 
-import { hexToRgb01, srgbToLinear } from './srgb';
+import { hexToRgb01, srgbToLinear } from "./srgb";
 
 function relativeLuminance(hex: string): number {
-  const [r, g, b] = hexToRgb01(hex).map(srgbToLinear) as [
-    number,
-    number,
-    number,
-  ];
+  const [r, g, b] = hexToRgb01(hex).map(srgbToLinear) as [number, number, number];
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 

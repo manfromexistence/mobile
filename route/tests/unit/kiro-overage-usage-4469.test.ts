@@ -38,7 +38,7 @@ test("#4469 Kiro overageStatus ENABLED keeps exhausted base quota routable", () 
   const result = buildKiroUsageResult(
     exhaustedKiroUsage({
       overageConfiguration: { overageStatus: "ENABLED" },
-    })
+    }),
   ) as KiroQuotaResult;
 
   assert.equal(result.quotas.agentic_request.remaining, 0);
@@ -52,7 +52,7 @@ test("#4469 Kiro top-level overageEnabled keeps exhausted base quota routable", 
   const result = buildKiroUsageResult(
     exhaustedKiroUsage({
       overageEnabled: true,
-    })
+    }),
   ) as KiroQuotaResult;
 
   assert.equal(result.quotas.agentic_request.remainingPercentage, 100);
@@ -64,7 +64,7 @@ test("#4469 Kiro disabled overage preserves exhausted quota signal", () => {
     exhaustedKiroUsage({
       overageConfiguration: { overageStatus: "DISABLED" },
       overageEnabled: false,
-    })
+    }),
   ) as KiroQuotaResult;
 
   assert.equal(result.quotas.agentic_request.remaining, 0);

@@ -29,17 +29,17 @@ test("transformRequest drops a top-level output_config from the Antigravity enve
   assert.equal(
     (result as Record<string, unknown>).output_config,
     undefined,
-    "output_config must not reach the Google Cloud Code envelope"
+    "output_config must not reach the Google Cloud Code envelope",
   );
   assert.equal(
     (result as Record<string, unknown>).output_format,
     undefined,
-    "legacy output_format must not reach the envelope either"
+    "legacy output_format must not reach the envelope either",
   );
   // The sanitized inner request (Claude path) must also be free of output_config.
   assert.equal(
     (result.request as Record<string, unknown>).output_config,
     undefined,
-    "output_config must not survive in the inner Gemini request"
+    "output_config must not survive in the inner Gemini request",
   );
 });

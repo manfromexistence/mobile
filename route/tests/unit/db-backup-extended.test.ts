@@ -35,7 +35,7 @@ function seedConnections(count = 8) {
   const db = core.getDbInstance();
   const now = new Date().toISOString();
   const insert = db.prepare(
-    "INSERT INTO provider_connections (id, provider, auth_type, name, is_active, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
+    "INSERT INTO provider_connections (id, provider, auth_type, name, is_active, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
   );
 
   for (let index = 0; index < count; index++) {
@@ -60,7 +60,7 @@ async function waitForBackupEntry(filename, expectedConnectionCount, timeoutMs =
     await new Promise((resolve) => setTimeout(resolve, 50));
   }
   throw new Error(
-    `Timed out waiting for backup ${filename} to finish copying ${expectedConnectionCount} connections`
+    `Timed out waiting for backup ${filename} to finish copying ${expectedConnectionCount} connections`,
   );
 }
 
@@ -121,7 +121,7 @@ test(
       maxAttempts: 20,
       baseDelayMs: 25,
     });
-  }
+  },
 );
 
 test("restoreDbBackup restores SQLite contents and returns entity counts", async () => {
@@ -171,7 +171,7 @@ test("cleanupDbBackups removes overflow families and orphaned sidecars", async (
 
   fs.writeFileSync(
     path.join(core.DB_BACKUPS_DIR, "db_2026-04-09T00-00-00-000Z_manual.sqlite-wal"),
-    "orphan-wal"
+    "orphan-wal",
   );
 
   const result = backupDb.cleanupDbBackups({ maxFiles: 2, retentionDays: 0 });
@@ -181,17 +181,17 @@ test("cleanupDbBackups removes overflow families and orphaned sidecars", async (
   assert.equal(
     remaining.includes("db_2026-04-10T00-00-00-000Z_manual.sqlite"),
     false,
-    "oldest backup family should be removed"
+    "oldest backup family should be removed",
   );
   assert.equal(
     remaining.some((name) => name.startsWith("db_2026-04-09T00-00-00-000Z_manual.sqlite")),
     false,
-    "orphaned backup sidecars should be removed"
+    "orphaned backup sidecars should be removed",
   );
   assert.equal(
     remaining.includes("db_2026-04-10T02-00-00-000Z_manual.sqlite"),
     true,
-    "newest backup family should remain"
+    "newest backup family should remain",
   );
 });
 
@@ -293,7 +293,7 @@ test("PATCH /api/db-backups persists retention controls without cleanup", async 
   fs.utimesSync(oldBackup, oldTime, oldTime);
 
   const response = await dbBackupsRoute.PATCH(
-    makeDbBackupsJsonRequest("PATCH", { keepLatest: 9, retentionDays: 5 })
+    makeDbBackupsJsonRequest("PATCH", { keepLatest: 9, retentionDays: 5 }),
   );
   const body = await response.json();
 
@@ -311,7 +311,7 @@ test("DELETE /api/db-backups persists both retention controls", async () => {
   delete process.env.DB_BACKUP_RETENTION_DAYS;
 
   const response = await dbBackupsRoute.DELETE(
-    makeDbBackupsJsonRequest("DELETE", { keepLatest: 11, retentionDays: 17 })
+    makeDbBackupsJsonRequest("DELETE", { keepLatest: 11, retentionDays: 17 }),
   );
   const body = await response.json();
 

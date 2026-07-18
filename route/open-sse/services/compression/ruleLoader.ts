@@ -44,7 +44,10 @@ function compileReplacement(rule: FileRule): CavemanRule["replacement"] {
   if (!rule.replacementMap) return rule.replacement ?? "";
 
   const normalizedMap = new Map(
-    Object.entries(rule.replacementMap).map(([key, value]) => [normalizeReplacementKey(key), value])
+    Object.entries(rule.replacementMap).map(([key, value]) => [
+      normalizeReplacementKey(key),
+      value,
+    ]),
   );
   const fallback = rule.replacement;
   return (match: string) => {
@@ -191,7 +194,7 @@ function readPack(language: string, category: string): RulePack | null {
   const validation = validateRulePack(parsed);
   if (!validation.valid) {
     throw new Error(
-      `Invalid Caveman rule pack ${language}/${category}: ${validation.errors.join("; ")}`
+      `Invalid Caveman rule pack ${language}/${category}: ${validation.errors.join("; ")}`,
     );
   }
   return parsed as RulePack;
@@ -200,7 +203,7 @@ function readPack(language: string, category: string): RulePack | null {
 export function loadRulePack(
   language: string,
   category: string,
-  options: { refresh?: boolean } = {}
+  options: { refresh?: boolean } = {},
 ): CavemanRule[] {
   const key = `${getRulesDir()}:${language}:${category}`;
   if (cache.has(key) && !options.refresh) return cache.get(key) ?? [];
@@ -218,7 +221,7 @@ export function loadRulePack(
 
 export function loadAllRulesForLanguage(
   language: string,
-  options: { refresh?: boolean } = {}
+  options: { refresh?: boolean } = {},
 ): CavemanRule[] {
   const key = `${getRulesDir()}:${language}:*`;
   if (cache.has(key) && !options.refresh) return cache.get(key) ?? [];
@@ -254,7 +257,7 @@ export function getAvailableLanguagePacks(): RulePackMetadata[] {
         .sort();
       const ruleCount = categories.reduce(
         (count, category) => count + loadRulePack(language, category).length,
-        0
+        0,
       );
       return { language, categories, ruleCount };
     })
@@ -263,7 +266,7 @@ export function getAvailableLanguagePacks(): RulePackMetadata[] {
 
 export function loadCavemanFileRules(
   language: string,
-  options: { refresh?: boolean } = {}
+  options: { refresh?: boolean } = {},
 ): CavemanRule[] {
   return loadAllRulesForLanguage(language, options);
 }

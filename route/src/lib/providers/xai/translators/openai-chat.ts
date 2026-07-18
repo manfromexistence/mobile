@@ -279,7 +279,7 @@ function extractAssistantTextAndCalls(completed: XaiCompleted): {
  */
 export function xaiCompletedToChatJson(
   completed: XaiCompleted,
-  origReq: OpenAiChatRequest | null = null
+  origReq: OpenAiChatRequest | null = null,
 ): object {
   const { text, toolCalls, refusal } = extractAssistantTextAndCalls(completed);
   const finishReason = toolCalls.length ? "tool_calls" : "stop";

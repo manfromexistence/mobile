@@ -57,8 +57,16 @@ describe("Connection Density Factor", () => {
   const baseCandidate = makeCandidate({ provider: "cerebras", model: "llama-70b" });
 
   it("multi-connection provider scores higher than single-connection at same quality", () => {
-    const multiConn = makeCandidate({ provider: "cerebras", model: "llama-70b", connectionPoolSize: 43 });
-    const singleConn = makeCandidate({ provider: "anthropic", model: "claude-sonnet", connectionPoolSize: 1 });
+    const multiConn = makeCandidate({
+      provider: "cerebras",
+      model: "llama-70b",
+      connectionPoolSize: 43,
+    });
+    const singleConn = makeCandidate({
+      provider: "anthropic",
+      model: "claude-sonnet",
+      connectionPoolSize: 1,
+    });
     const pool = [multiConn, singleConn];
 
     const multiFactors = calculateFactors(multiConn, pool, "coding", getTaskFitness);
@@ -181,7 +189,7 @@ describe("Per-Connection Rotation", () => {
         provider: "cerebras",
         model: "llama-3.1-70b",
         connectionId: `cerebras-conn-${i + 1}`,
-      })
+      }),
     );
     const config = makeConfig("smart");
 
@@ -195,7 +203,7 @@ describe("Per-Connection Rotation", () => {
 
   it("different combos maintain independent round-robin state", () => {
     const candidates: ProviderCandidate[] = Array.from({ length: 5 }, (_, i) =>
-      makeCandidate({ provider: "p", model: "m", connectionId: `c-${i}` })
+      makeCandidate({ provider: "p", model: "m", connectionId: `c-${i}` }),
     );
     const smartConfig = makeConfig("smart-A");
     const fastConfig = makeConfig("fast-B");
@@ -226,7 +234,7 @@ describe("Per-Connection Rotation", () => {
 
   it("tied-score candidates from same provider+model are all reachable", () => {
     const candidates: ProviderCandidate[] = Array.from({ length: 5 }, (_, i) =>
-      makeCandidate({ provider: "free", model: "free-model", connectionId: `key-${i}` })
+      makeCandidate({ provider: "free", model: "free-model", connectionId: `key-${i}` }),
     );
     const config = makeConfig("smart");
     const visited = new Set<string>();

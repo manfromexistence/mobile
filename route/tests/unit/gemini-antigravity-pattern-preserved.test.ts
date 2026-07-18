@@ -25,7 +25,7 @@ test("GEMINI_UNSUPPORTED_SCHEMA_KEYS does not strip `pattern` for antigravity", 
   assert.equal(
     GEMINI_UNSUPPORTED_SCHEMA_KEYS.has("pattern"),
     false,
-    "`pattern` is supported by antigravity and must be preserved on tool schemas"
+    "`pattern` is supported by antigravity and must be preserved on tool schemas",
   );
 });
 
@@ -49,6 +49,6 @@ test("cleanJSONSchemaForAntigravity preserves `pattern` on glob/grep-style tool 
   assert.equal(
     cleaned.properties.glob.pattern,
     "^[A-Za-z0-9_\\-/*.]+$",
-    "`pattern` constraint on a string property must survive antigravity cleaning"
+    "`pattern` constraint on a string property must survive antigravity cleaning",
   );
 });

@@ -88,7 +88,7 @@ test("triedPaths includes the Windows APPDATA path when process.env.APPDATA is s
   const expectedWindowsPath = path.join(tmpHome, "kiro", "storage.db");
   assert.ok(
     (body.triedPaths as string[]).includes(expectedWindowsPath),
-    `triedPaths must include the Windows APPDATA path ${expectedWindowsPath}, got: ${JSON.stringify(body.triedPaths)}`
+    `triedPaths must include the Windows APPDATA path ${expectedWindowsPath}, got: ${JSON.stringify(body.triedPaths)}`,
   );
 });
 
@@ -102,13 +102,11 @@ test("triedPaths does NOT include any Windows path when process.env.APPDATA is n
   const paths = body.triedPaths as string[];
 
   // No path should reference "kiro/storage.db" (the Windows IDE storage path).
-  const hasWindowsPath = paths.some(
-    (p) => p.includes("storage.db") && p.includes("kiro")
-  );
+  const hasWindowsPath = paths.some((p) => p.includes("storage.db") && p.includes("kiro"));
   assert.equal(
     hasWindowsPath,
     false,
-    `triedPaths must not include any Windows kiro/storage.db path when APPDATA is unset, got: ${JSON.stringify(paths)}`
+    `triedPaths must not include any Windows kiro/storage.db path when APPDATA is unset, got: ${JSON.stringify(paths)}`,
   );
 });
 
@@ -120,7 +118,7 @@ test("triedPaths always includes the Linux/macOS kiro-cli path", async () => {
   const expectedLinuxPath = path.join(tmpHome, ".local/share/kiro-cli/data.sqlite3");
   assert.ok(
     (body.triedPaths as string[]).includes(expectedLinuxPath),
-    `triedPaths must always include the Linux/macOS kiro-cli path ${expectedLinuxPath}, got: ${JSON.stringify(body.triedPaths)}`
+    `triedPaths must always include the Linux/macOS kiro-cli path ${expectedLinuxPath}, got: ${JSON.stringify(body.triedPaths)}`,
   );
 });
 
@@ -151,10 +149,7 @@ test("GET extracts refresh_token from a Windows storage.db with ItemTable schema
     expires_at: new Date(Date.now() + 3600 * 1000).toISOString(),
     region: "us-east-1",
   });
-  db.prepare("INSERT INTO ItemTable (key, value) VALUES (?, ?)").run(
-    "kiro:auth:token",
-    tokenValue
-  );
+  db.prepare("INSERT INTO ItemTable (key, value) VALUES (?, ?)").run("kiro:auth:token", tokenValue);
   db.close();
 
   // Point APPDATA at tmpHome so tryKiroCliSqlite() resolves
@@ -169,7 +164,7 @@ test("GET extracts refresh_token from a Windows storage.db with ItemTable schema
     if (u.includes("oidc.") && u.endsWith("/client/register")) {
       return new Response(
         JSON.stringify({ clientId: "reg-cid", clientSecret: "reg-secret", expiresIn: 86400 }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
     // refreshToken() call — simulates Kiro OIDC token refresh.
@@ -180,7 +175,7 @@ test("GET extracts refresh_token from a Windows storage.db with ItemTable schema
           refreshToken: "aorAAAAAGrefreshed-token",
           expiresIn: 3600,
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { "Content-Type": "application/json" } },
       );
     }
     throw new Error(`[kiro-3363 test] unexpected fetch to ${u}`);
@@ -188,14 +183,10 @@ test("GET extracts refresh_token from a Windows storage.db with ItemTable schema
 
   const { status, body } = await callGet();
 
-  assert.equal(
-    status,
-    200,
-    `expected HTTP 200, got ${status}: ${JSON.stringify(body)}`
-  );
+  assert.equal(status, 200, `expected HTTP 200, got ${status}: ${JSON.stringify(body)}`);
   assert.equal(
     body.found,
     true,
-    `expected found:true from Windows storage.db, got: ${JSON.stringify(body)}`
+    `expected found:true from Windows storage.db, got: ${JSON.stringify(body)}`,
   );
 });

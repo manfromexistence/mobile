@@ -33,7 +33,7 @@ test("fusion #1905: an oversized panel (73 models) is rejected before fan-out in
       choices: [{ message: { role: "assistant", content: "x".repeat(1000) } }],
     });
     return Promise.resolve(
-      new Response(body, { status: 200, headers: { "Content-Type": "application/json" } })
+      new Response(body, { status: 200, headers: { "Content-Type": "application/json" } }),
     );
   };
 
@@ -61,7 +61,7 @@ test("fusion #1905: a panel at or under the cap still fans out normally", async 
       choices: [{ message: { role: "assistant", content: "ok" } }],
     });
     return Promise.resolve(
-      new Response(body, { status: 200, headers: { "Content-Type": "application/json" } })
+      new Response(body, { status: 200, headers: { "Content-Type": "application/json" } }),
     );
   };
 

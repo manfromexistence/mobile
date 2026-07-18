@@ -21,15 +21,18 @@ describe("DuckDuckGo AI Chat domain consistency (#4037)", () => {
     it("STATUS_URL uses duckduckgo.com", () => {
       assert.ok(
         STATUS_URL.startsWith(`${DUCKDUCKGO_BASE}/`),
-        `STATUS_URL should start with ${DUCKDUCKGO_BASE}, got ${STATUS_URL}`
+        `STATUS_URL should start with ${DUCKDUCKGO_BASE}, got ${STATUS_URL}`,
       );
-      assert.ok(!STATUS_URL.includes("duck.ai"), `STATUS_URL must not reference duck.ai: ${STATUS_URL}`);
+      assert.ok(
+        !STATUS_URL.includes("duck.ai"),
+        `STATUS_URL must not reference duck.ai: ${STATUS_URL}`,
+      );
     });
 
     it("CHAT_URL uses duckduckgo.com", () => {
       assert.ok(
         CHAT_URL.startsWith(`${DUCKDUCKGO_BASE}/`),
-        `CHAT_URL should start with ${DUCKDUCKGO_BASE}, got ${CHAT_URL}`
+        `CHAT_URL should start with ${DUCKDUCKGO_BASE}, got ${CHAT_URL}`,
       );
       assert.ok(!CHAT_URL.includes("duck.ai"), `CHAT_URL must not reference duck.ai: ${CHAT_URL}`);
     });
@@ -65,17 +68,16 @@ describe("DuckDuckGo AI Chat domain consistency (#4037)", () => {
       assert.equal(
         FE_VERSION_PATTERN.test(realToken),
         true,
-        `FE_VERSION_PATTERN should match the real 20-hex token: ${realToken}`
+        `FE_VERSION_PATTERN should match the real 20-hex token: ${realToken}`,
       );
     });
 
     it("still matches a 40-hex-tail token (backward compatible)", () => {
-      const fortyHexToken =
-        "serp_20260424_180649_ET-0bdc33b2a02ebf8f235def65d887787f694720a1";
+      const fortyHexToken = "serp_20260424_180649_ET-0bdc33b2a02ebf8f235def65d887787f694720a1";
       assert.equal(
         FE_VERSION_PATTERN.test(fortyHexToken),
         true,
-        "FE_VERSION_PATTERN should still match a 40-hex token"
+        "FE_VERSION_PATTERN should still match a 40-hex token",
       );
     });
 

@@ -134,8 +134,8 @@ test("runPolicyEvaluate envia apiKey e action no body", async () => {
   await captureStdout(() =>
     runPolicyEvaluate(
       { apiKey: "sk-test", action: "chat", resource: "/v1/chat/completions" },
-      makeCmd() as any
-    )
+      makeCmd() as any,
+    ),
   );
 
   globalThis.fetch = origFetch;
@@ -159,7 +159,7 @@ test("runPolicyEvaluate com resultado negado retorna exit 4", async () => {
 
   const { runPolicyEvaluate } = await import("../../bin/cli/commands/policy.mjs");
   await captureStdout(() =>
-    runPolicyEvaluate({ apiKey: "sk-test", action: "admin" }, makeCmd() as any)
+    runPolicyEvaluate({ apiKey: "sk-test", action: "admin" }, makeCmd() as any),
   );
 
   globalThis.fetch = origFetch;

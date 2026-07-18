@@ -39,14 +39,38 @@ function rrCombo(name: string) {
     strategy: "round-robin",
     config: { maxRetries: 0 },
     models: [
-      { kind: "model", provider: "codex", providerId: "codex", model: "m-a", connectionId: "conn-A", id: `${name}-0` },
-      { kind: "model", provider: "codex", providerId: "codex", model: "m-b", connectionId: "conn-B", id: `${name}-1` },
-      { kind: "model", provider: "glm-cn", providerId: "glm-cn", model: "m-c", connectionId: "conn-C", id: `${name}-2` },
+      {
+        kind: "model",
+        provider: "codex",
+        providerId: "codex",
+        model: "m-a",
+        connectionId: "conn-A",
+        id: `${name}-0`,
+      },
+      {
+        kind: "model",
+        provider: "codex",
+        providerId: "codex",
+        model: "m-b",
+        connectionId: "conn-B",
+        id: `${name}-1`,
+      },
+      {
+        kind: "model",
+        provider: "glm-cn",
+        providerId: "glm-cn",
+        model: "m-c",
+        connectionId: "conn-C",
+        id: `${name}-2`,
+      },
     ],
   };
 }
 
-async function dispatchConnection(combo: Record<string, unknown>, firstMessage: string): Promise<string> {
+async function dispatchConnection(
+  combo: Record<string, unknown>,
+  firstMessage: string,
+): Promise<string> {
   let conn = "?";
   await handleComboChat({
     body: { model: combo.name, messages: [{ role: "user", content: firstMessage }], stream: false },
@@ -60,7 +84,7 @@ async function dispatchConnection(combo: Record<string, unknown>, firstMessage: 
     handleSingleModel: async (
       _b: unknown,
       modelStr: string,
-      target?: { connectionId?: string | null }
+      target?: { connectionId?: string | null },
     ) => {
       conn = target?.connectionId ?? "?";
       return Response.json({ choices: [{ message: { role: "assistant", content: modelStr } }] });
@@ -95,7 +119,7 @@ test("round-robin: a sessionless conversation re-pins to its turn-1 connection a
   assert.equal(
     new Set(conns.slice(1)).size,
     1,
-    `turns 2..5 must stick to one connection, got: ${conns.join(", ")}`
+    `turns 2..5 must stick to one connection, got: ${conns.join(", ")}`,
   );
   assert.equal(conns[1], conns[0], "turn 2 must reuse turn 1's connection");
 });
@@ -104,13 +128,16 @@ test("round-robin: DISTINCT conversations still spread across connections on tur
   const combo = rrCombo("rr-spread");
   const hist: Record<string, number> = {};
   for (let i = 0; i < 6; i++) {
-    const conn = await dispatchConnection(combo, `conversation number ${i} — distinct first message`);
+    const conn = await dispatchConnection(
+      combo,
+      `conversation number ${i} — distinct first message`,
+    );
     hist[conn] = (hist[conn] || 0) + 1;
   }
   // Round-robin distribution must be preserved across conversations: more than one
   // connection used (the pin must NOT collapse all conversations onto one connection).
   assert.ok(
     Object.keys(hist).length > 1,
-    `distinct conversations must spread across connections, got: ${JSON.stringify(hist)}`
+    `distinct conversations must spread across connections, got: ${JSON.stringify(hist)}`,
   );
 });

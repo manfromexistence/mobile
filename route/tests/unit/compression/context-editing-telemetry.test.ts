@@ -29,7 +29,7 @@ describe("extractContextEditingTelemetry", () => {
     assert.equal(extractContextEditingTelemetry({ context_management: {} }), null);
     assert.equal(
       extractContextEditingTelemetry({ context_management: { applied_edits: [] } }),
-      null
+      null,
     );
   });
 

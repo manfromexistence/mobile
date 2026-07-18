@@ -1,7 +1,7 @@
-import type { vec4 } from '../types.js';
-import type { ShaderMotionParams } from '../shader-mount.js';
-import { type ShaderSizingParams, type ShaderSizingUniforms } from '../shader-sizing.js';
-import { simplexNoise, colorBandingFix } from '../shader-utils.js';
+import type { vec4 } from "../types.js";
+import type { ShaderMotionParams } from "../shader-mount.js";
+import { type ShaderSizingParams, type ShaderSizingUniforms } from "../shader-sizing.js";
+import { simplexNoise, colorBandingFix } from "../shader-utils.js";
 
 export const simplexNoiseMeta = {
   maxColorCount: 10,
@@ -43,7 +43,7 @@ precision mediump float;
 uniform float u_time;
 uniform float u_scale;
 
-uniform vec4 u_colors[${ simplexNoiseMeta.maxColorCount }];
+uniform vec4 u_colors[${simplexNoiseMeta.maxColorCount}];
 uniform float u_colorsCount;
 uniform float u_stepsPerColor;
 uniform float u_softness;
@@ -52,7 +52,7 @@ in vec2 v_patternUV;
 
 out vec4 fragColor;
 
-${ simplexNoise }
+${simplexNoise}
 
 float getNoise(vec2 uv, float t) {
   float noise = .5 * snoise(uv - vec2(0., .3 * t));
@@ -88,7 +88,7 @@ void main() {
 
   vec4 gradient = u_colors[0];
   gradient.rgb *= gradient.a;
-  for (int i = 1; i < ${ simplexNoiseMeta.maxColorCount }; i++) {
+  for (int i = 1; i < ${simplexNoiseMeta.maxColorCount}; i++) {
     if (i >= int(u_colorsCount)) break;
 
     float localM = clamp(mixer - float(i - 1), 0., 1.);
@@ -117,7 +117,7 @@ void main() {
   vec3 color = gradient.rgb;
   float opacity = gradient.a;
 
-  ${ colorBandingFix }
+  ${colorBandingFix}
 
   fragColor = vec4(color, opacity);
 }

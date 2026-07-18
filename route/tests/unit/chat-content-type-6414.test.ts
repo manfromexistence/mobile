@@ -38,7 +38,7 @@ test("returns 415 when Content-Type header is missing on POST", async () => {
 
 test("returns 415 for application/x-www-form-urlencoded on POST", async () => {
   const rejection = requireJsonContentType(
-    makeRequest("POST", "application/x-www-form-urlencoded")
+    makeRequest("POST", "application/x-www-form-urlencoded"),
   );
   assert.ok(rejection);
   assert.equal(rejection.status, 415);
@@ -51,7 +51,7 @@ test("admits application/json", () => {
 test("admits application/json with charset suffix", () => {
   assert.equal(
     requireJsonContentType(makeRequest("POST", "application/json; charset=utf-8")),
-    null
+    null,
   );
 });
 

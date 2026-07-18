@@ -9,7 +9,7 @@ const execFileAsync = promisify(execFile);
 type ExecFileLike = (
   file: string,
   args: string[],
-  options: { timeout?: number; cwd?: string }
+  options: { timeout?: number; cwd?: string },
 ) => Promise<{ stdout: string | Buffer }>;
 
 type ExistsLike = (target: string) => boolean;
@@ -27,7 +27,7 @@ type ExistsLike = (target: string) => boolean;
  */
 export async function resolveGlobalOmniroutePath(
   execImpl: ExecFileLike = execFileAsync,
-  fsExists: ExistsLike = existsSync
+  fsExists: ExistsLike = existsSync,
 ): Promise<string> {
   const result = await execImpl("npm", ["root", "-g"], {
     timeout: 10000,

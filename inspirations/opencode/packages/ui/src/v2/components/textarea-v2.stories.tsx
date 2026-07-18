@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { createSignal } from "solid-js"
-import { Field as FieldV2 } from "./field-v2"
-import { TextareaV2 } from "./textarea-v2"
+import { createSignal } from "solid-js";
+import { Field as FieldV2 } from "./field-v2";
+import { TextareaV2 } from "./textarea-v2";
 
 const docs = `### Overview
 Multiline text field with the same neutral elevation, states, and tokens as TextInput v2.
@@ -18,7 +18,7 @@ Multiline text field with the same neutral elevation, states, and tokens as Text
 
 ### Field
 Compose with \`Field\` for label, helper prefix/suffix, and tooltip — see the **Field** story.
-`
+`;
 
 export default {
   title: "UI V2/Textarea",
@@ -54,16 +54,20 @@ export default {
       control: { type: "number", min: 1, max: 12 },
     },
   },
-}
+};
 
-export const Playground = {}
+export const Playground = {};
 
 export const Controlled = {
   render: () => {
-    const [value, setValue] = createSignal("Controlled value")
+    const [value, setValue] = createSignal("Controlled value");
     return (
       <div style={{ display: "grid", gap: "12px", width: "280px" }}>
-        <TextareaV2 value={value()} onInput={(e) => setValue(e.currentTarget.value)} placeholder="Type here…" />
+        <TextareaV2
+          value={value()}
+          onInput={(e) => setValue(e.currentTarget.value)}
+          placeholder="Type here…"
+        />
         <div
           style={{
             "font-family": "var(--v2-font-family-sans)",
@@ -74,9 +78,9 @@ export const Controlled = {
           Value: {value()}
         </div>
       </div>
-    )
+    );
   },
-}
+};
 
 export const Field = {
   parameters: { frameHeight: "500px" },
@@ -96,7 +100,7 @@ export const Field = {
       </FieldV2>
     </div>
   ),
-}
+};
 
 export const States = {
   render: () => (
@@ -108,4 +112,4 @@ export const States = {
       <TextareaV2 placeholder="Disabled with value" defaultValue="Read only" disabled />
     </div>
   ),
-}
+};

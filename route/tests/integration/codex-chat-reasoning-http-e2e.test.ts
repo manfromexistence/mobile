@@ -201,7 +201,7 @@ function parseSse(raw: string) {
       block
         .split("\n")
         .find((line) => line.startsWith("data: "))
-        ?.slice(6)
+        ?.slice(6),
     )
     .filter((data): data is string => Boolean(data));
 }
@@ -209,7 +209,7 @@ function parseSse(raw: string) {
 async function closeServer(server: http.Server) {
   if (!server.listening) return;
   await new Promise<void>((resolve, reject) =>
-    server.close((error) => (error ? reject(error) : resolve()))
+    server.close((error) => (error ? reject(error) : resolve())),
   );
 }
 
@@ -289,7 +289,7 @@ test("chat completions streams Codex Responses reasoning through real route HTTP
     assert(!raw.includes(ENCRYPTED_CONTENT_SENTINEL), raw);
     assert(!reasoningContent.includes(ENCRYPTED_CONTENT_SENTINEL), reasoningContent);
     assert(
-      payloads.some((payload) => payload.choices?.[0]?.delta?.content === "The answer is 42.")
+      payloads.some((payload) => payload.choices?.[0]?.delta?.content === "The answer is 42."),
     );
     assert(!raw.includes("response.reasoning_summary_text.delta"), raw);
     assert(!raw.includes('"type":"error"'), raw);

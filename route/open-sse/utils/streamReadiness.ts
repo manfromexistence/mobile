@@ -185,7 +185,7 @@ function createErrorResponse(
   status: number,
   message: string,
   code: string,
-  type: string
+  type: string,
 ): Response {
   return new Response(
     JSON.stringify({
@@ -195,13 +195,13 @@ function createErrorResponse(
         code,
       },
     }),
-    { status, headers: { "Content-Type": "application/json" } }
+    { status, headers: { "Content-Type": "application/json" } },
   );
 }
 
 function prependBufferedChunks(
   chunks: Uint8Array[],
-  reader: ReadableStreamDefaultReader<Uint8Array>
+  reader: ReadableStreamDefaultReader<Uint8Array>,
 ): ReadableStream<Uint8Array> {
   return new ReadableStream<Uint8Array>({
     async start(controller) {
@@ -232,7 +232,7 @@ function prependBufferedChunks(
 
 function readWithTimeout(
   reader: ReadableStreamDefaultReader<Uint8Array>,
-  timeoutMs: number
+  timeoutMs: number,
 ): Promise<ReadableStreamReadResult<Uint8Array>> {
   return new Promise((resolve, reject) => {
     const timeout = setTimeout(() => reject(new Error("STREAM_READINESS_TIMEOUT")), timeoutMs);
@@ -244,7 +244,7 @@ function readWithTimeout(
       (error) => {
         clearTimeout(timeout);
         reject(error);
-      }
+      },
     );
   });
 }
@@ -256,7 +256,7 @@ export async function ensureStreamReadiness(
     provider?: string | null;
     model?: string | null;
     log?: StreamReadinessLogger | null;
-  }
+  },
 ): Promise<StreamReadinessResult> {
   if (!response.body || options.timeoutMs <= 0) return { ok: true, response };
 
@@ -290,7 +290,7 @@ export async function ensureStreamReadiness(
         const reason = timeoutReason();
         options.log?.warn?.(
           "STREAM",
-          `${reason} (${options.provider || "provider"}/${options.model || "unknown"})`
+          `${reason} (${options.provider || "provider"}/${options.model || "unknown"})`,
         );
         await reader.cancel(reason).catch(() => {});
         return {
@@ -302,7 +302,7 @@ export async function ensureStreamReadiness(
             HTTP_STATUS.GATEWAY_TIMEOUT,
             reason,
             "STREAM_READINESS_TIMEOUT",
-            "stream_timeout"
+            "stream_timeout",
           ),
         };
       }
@@ -314,7 +314,7 @@ export async function ensureStreamReadiness(
         const reason = timeoutReason();
         options.log?.warn?.(
           "STREAM",
-          `${reason} (${options.provider || "provider"}/${options.model || "unknown"})`
+          `${reason} (${options.provider || "provider"}/${options.model || "unknown"})`,
         );
         await reader.cancel(reason).catch(() => {});
         return {
@@ -326,7 +326,7 @@ export async function ensureStreamReadiness(
             HTTP_STATUS.GATEWAY_TIMEOUT,
             reason,
             "STREAM_READINESS_TIMEOUT",
-            "stream_timeout"
+            "stream_timeout",
           ),
         };
       }
@@ -345,7 +345,7 @@ export async function ensureStreamReadiness(
         const reason = "Stream ended before producing a non-ping SSE event";
         options.log?.warn?.(
           "STREAM",
-          `${reason} (${options.provider || "provider"}/${options.model || "unknown"})`
+          `${reason} (${options.provider || "provider"}/${options.model || "unknown"})`,
         );
         return {
           ok: false,
@@ -356,7 +356,7 @@ export async function ensureStreamReadiness(
             HTTP_STATUS.BAD_GATEWAY,
             reason,
             "STREAM_EARLY_EOF",
-            "stream_early_eof"
+            "stream_early_eof",
           ),
         };
       }
@@ -368,7 +368,7 @@ export async function ensureStreamReadiness(
       if (appendStreamReadinessSignal(readinessState, decodedChunk)) {
         options.log?.debug?.(
           "STREAM",
-          `Stream readiness confirmed in ${Date.now() - startedAt}ms (${options.provider || "provider"}/${options.model || "unknown"})`
+          `Stream readiness confirmed in ${Date.now() - startedAt}ms (${options.provider || "provider"}/${options.model || "unknown"})`,
         );
         handedOffReader = true;
         return {

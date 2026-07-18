@@ -60,15 +60,12 @@
   border-radius: 6px;
   outline: 1px solid transparent;
   outline-offset: 0;
-  background:
-    linear-gradient(180deg, var(--v2-alpha-light-2) 0%, var(--v2-alpha-light-0) 100%), var(--v2-background-bg-base);
+  background: linear-gradient(180deg, var(--v2-alpha-light-2) 0%, var(--v2-alpha-light-0) 100%),
+    var(--v2-background-bg-base);
   box-shadow: var(--v2-elevation-button-neutral);
   flex: none;
   align-self: stretch;
-  transition:
-    background 85ms ease-out,
-    outline-color 85ms ease-out,
-    box-shadow 85ms ease-out;
+  transition: background 85ms ease-out, outline-color 85ms ease-out, box-shadow 85ms ease-out;
 }
 
 [data-component="select-v2"][data-appearance="large"] {
@@ -76,22 +73,30 @@
   padding: 0 8px 0 0;
 }
 
-[data-component="select-v2"]:where(:hover):not([data-disabled], [data-invalid]):not(:focus-within):not(
-    [data-expanded]
-  ) {
-  background:
-    linear-gradient(0deg, var(--v2-overlay-simple-overlay-hover), var(--v2-overlay-simple-overlay-hover)),
-    linear-gradient(180deg, var(--v2-alpha-light-2) 0%, var(--v2-alpha-light-0) 100%), var(--v2-background-bg-base);
+[data-component="select-v2"]:where(:hover):not([data-disabled], [data-invalid]):not(
+    :focus-within
+  ):not([data-expanded]) {
+  background: linear-gradient(
+      0deg,
+      var(--v2-overlay-simple-overlay-hover),
+      var(--v2-overlay-simple-overlay-hover)
+    ), linear-gradient(180deg, var(--v2-alpha-light-2) 0%, var(--v2-alpha-light-0) 100%),
+    var(--v2-background-bg-base);
 }
 
 [data-component="select-v2"]:where([data-expanded]):not([data-disabled], [data-invalid]) {
-  background:
-    linear-gradient(0deg, var(--v2-overlay-simple-overlay-hover), var(--v2-overlay-simple-overlay-hover)),
-    linear-gradient(180deg, var(--v2-alpha-light-2) 0%, var(--v2-alpha-light-0) 100%), var(--v2-background-bg-base);
+  background: linear-gradient(
+      0deg,
+      var(--v2-overlay-simple-overlay-hover),
+      var(--v2-overlay-simple-overlay-hover)
+    ), linear-gradient(180deg, var(--v2-alpha-light-2) 0%, var(--v2-alpha-light-0) 100%),
+    var(--v2-background-bg-base);
   outline-color: transparent;
 }
 
-[data-component="select-v2"]:where(:focus-within):not([data-disabled], [data-invalid]):not([data-expanded]) {
+[data-component="select-v2"]:where(:focus-within):not([data-disabled], [data-invalid]):not(
+    [data-expanded]
+  ) {
   outline-color: var(--v2-border-border-focus);
   box-shadow: none;
 }
@@ -149,7 +154,8 @@
   font-variant-numeric: tabular-nums;
 }
 
-[data-component="select-v2"]:where([data-invalid]):not([data-disabled]) [data-slot="select-v2-value-text"] {
+[data-component="select-v2"]:where([data-invalid]):not([data-disabled])
+  [data-slot="select-v2-value-text"] {
   color: var(--v2-state-fg-danger);
 }
 
@@ -196,21 +202,26 @@
   align-self: auto;
 }
 
-[data-component="select-v2"][data-appearance="inline"]:where(:hover):not([data-disabled], [data-invalid]):not(
-    :focus-within
-  ):not([data-expanded]) {
+[data-component="select-v2"][data-appearance="inline"]:where(:hover):not(
+    [data-disabled],
+    [data-invalid]
+  ):not(:focus-within):not([data-expanded]) {
   background: var(--v2-overlay-simple-overlay-hover);
 }
 
-[data-component="select-v2"][data-appearance="inline"]:where([data-expanded]):not([data-disabled], [data-invalid]) {
+[data-component="select-v2"][data-appearance="inline"]:where([data-expanded]):not(
+    [data-disabled],
+    [data-invalid]
+  ) {
   background: var(--v2-overlay-simple-overlay-hover);
   outline: none;
   box-shadow: none;
 }
 
-[data-component="select-v2"][data-appearance="inline"]:where(:active):not([data-disabled], [data-invalid]):not(
-    [data-expanded]
-  ) {
+[data-component="select-v2"][data-appearance="inline"]:where(:active):not(
+    [data-disabled],
+    [data-invalid]
+  ):not([data-expanded]) {
   background: var(--v2-overlay-simple-overlay-pressed);
 }
 
@@ -268,12 +279,16 @@
 }
 
 /* Listbox uses data-selected; menu item CSS uses data-checked — mirror accent */
-[data-slot="select-v2-listbox"] [data-component="menu-v2-item"][data-selected] [data-slot="menu-v2-item-content"] {
+[data-slot="select-v2-listbox"]
+  [data-component="menu-v2-item"][data-selected]
+  [data-slot="menu-v2-item-content"] {
   font-weight: 530;
   color: var(--menu-v2-accent);
 }
 
-[data-slot="select-v2-listbox"] [data-component="menu-v2-item"][data-selected] [data-slot="menu-v2-item-indicator"] {
+[data-slot="select-v2-listbox"]
+  [data-component="menu-v2-item"][data-selected]
+  [data-slot="menu-v2-item-indicator"] {
   color: var(--menu-v2-accent);
 }
 

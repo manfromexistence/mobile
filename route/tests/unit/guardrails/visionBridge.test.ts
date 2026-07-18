@@ -200,7 +200,7 @@ test("VB-S02b: respects native vision support for GPT-family models", async () =
       assert.strictEqual(
         result.modifiedPayload,
         undefined,
-        `expected unmodified payload for ${model}`
+        `expected unmodified payload for ${model}`,
       );
     }
   }
@@ -318,7 +318,7 @@ test("VB-S01: reroutes non-vision model with images to best vision model", async
   assert.notStrictEqual(
     modified.model,
     "minimax/minimax-01",
-    "model should be different from original"
+    "model should be different from original",
   );
 
   // Images should be KEPT since the vision model handles them natively
@@ -332,7 +332,7 @@ test("VB-S01: reroutes non-vision model with images to best vision model", async
   assert.strictEqual(meta.fromModel, "minimax/minimax-01");
   assert.ok(
     typeof meta.toModel === "string" && meta.toModel.length > 0,
-    "toModel should be a non-empty string"
+    "toModel should be a non-empty string",
   );
   assert.notStrictEqual(meta.toModel, "minimax/minimax-01", "toModel should differ from original");
   assert.strictEqual(meta.imagesKept, 1);
@@ -417,7 +417,7 @@ test("VB-S07: reroutes base64 image to vision model", async () => {
   assert.notStrictEqual(
     modified.model,
     "minimax/minimax-01",
-    "model should be different from original"
+    "model should be different from original",
   );
   // Don't assert a specific model — auto-router picks the best available vision model
   assert.strictEqual(visionCallCount, 0, "should NOT call vision API");
@@ -506,7 +506,7 @@ test("VB-S03: logs warning when vision API fails (via combo mapping)", async () 
     createContext({
       model: "openai/gpt-4o",
       log: mockLog as GuardrailContext["log"],
-    })
+    }),
   );
 
   assert.strictEqual(warningLogged, true);
@@ -578,7 +578,7 @@ test("VB-S10: returns meta with reroute info for individual non-vision model", a
   assert.strictEqual(meta.fromModel, "minimax/minimax-01");
   assert.ok(
     typeof meta.toModel === "string" && meta.toModel.length > 0,
-    "toModel should be a non-empty string"
+    "toModel should be a non-empty string",
   );
   assert.notStrictEqual(meta.toModel, "minimax/minimax-01", "toModel should differ from original");
   assert.strictEqual(meta.imagesKept, 2);
@@ -661,7 +661,7 @@ test("VB-S11: processes images when vision-capable model has combo mapping", asy
   assert.ok(visionCallCount > startCallCount, "Expected vision model to be called");
   assert.ok(
     result.modifiedPayload !== undefined,
-    "Expected modifiedPayload when combo mapping forces vision bridge"
+    "Expected modifiedPayload when combo mapping forces vision bridge",
   );
 });
 

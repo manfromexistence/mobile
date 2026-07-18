@@ -1,8 +1,8 @@
-import type { SelectedLineRange } from '../types';
+import type { SelectedLineRange } from "../types";
 
 export function areSelectionsEqual(
   selectionA: SelectedLineRange | undefined,
-  selectionB: SelectedLineRange | undefined
+  selectionB: SelectedLineRange | undefined,
 ): boolean {
   return (
     selectionA?.start === selectionB?.start &&

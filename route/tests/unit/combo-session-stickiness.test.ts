@@ -37,7 +37,9 @@ const {
 
 // ─── helpers ─────────────────────────────────────────────────────────────────
 
-function makeTarget(connectionId: string): import("../../open-sse/services/combo/types.ts").ResolvedComboTarget {
+function makeTarget(
+  connectionId: string,
+): import("../../open-sse/services/combo/types.ts").ResolvedComboTarget {
   return {
     kind: "model",
     stepId: `step-${connectionId}`,
@@ -181,7 +183,7 @@ test("no user message in body → normal ordering, no crash", async () => {
   assert.equal(r1.stuck, false);
   assert.deepEqual(
     r1.targets.map((t) => t.connectionId),
-    ["conn-A", "conn-B"]
+    ["conn-A", "conn-B"],
   );
 
   const r2 = await applySessionStickiness(targets, []);
@@ -229,7 +231,7 @@ test("saturation fetch error → fail-open (original order, no crash)", async ()
   assert.deepEqual(
     result.targets.map((t) => t.connectionId),
     ["conn-A", "conn-B"],
-    "original order preserved"
+    "original order preserved",
   );
 });
 
@@ -281,7 +283,7 @@ test("sticky connection no longer in target list → clear binding, normal order
   assert.equal(result.stuck, false, "should not be stuck when connection is gone");
   assert.deepEqual(
     result.targets.map((t) => t.connectionId),
-    ["conn-X", "conn-Y"]
+    ["conn-X", "conn-Y"],
   );
 });
 

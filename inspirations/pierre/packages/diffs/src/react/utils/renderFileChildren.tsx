@@ -1,25 +1,25 @@
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
 
 import {
   CUSTOM_HEADER_SLOT_ID,
   HEADER_METADATA_SLOT_ID,
   HEADER_PREFIX_SLOT_ID,
-} from '../../constants';
-import type { GetHoveredLineResult } from '../../managers/InteractionManager';
-import type { FileContents } from '../../types';
-import { getLineAnnotationName } from '../../utils/getLineAnnotationName';
-import { GutterUtilitySlotStyles } from '../constants';
-import type { FileProps } from '../types';
+} from "../../constants";
+import type { GetHoveredLineResult } from "../../managers/InteractionManager";
+import type { FileContents } from "../../types";
+import { getLineAnnotationName } from "../../utils/getLineAnnotationName";
+import { GutterUtilitySlotStyles } from "../constants";
+import type { FileProps } from "../types";
 
 interface RenderFileChildrenProps<LAnnotation> {
   file: FileContents;
-  renderCustomHeader: FileProps<LAnnotation>['renderCustomHeader'];
-  renderHeaderPrefix: FileProps<LAnnotation>['renderHeaderPrefix'];
-  renderHeaderMetadata: FileProps<LAnnotation>['renderHeaderMetadata'];
-  renderAnnotation: FileProps<LAnnotation>['renderAnnotation'];
-  lineAnnotations: FileProps<LAnnotation>['lineAnnotations'];
-  renderGutterUtility: FileProps<LAnnotation>['renderGutterUtility'];
-  getHoveredLine(): GetHoveredLineResult<'file'> | undefined;
+  renderCustomHeader: FileProps<LAnnotation>["renderCustomHeader"];
+  renderHeaderPrefix: FileProps<LAnnotation>["renderHeaderPrefix"];
+  renderHeaderMetadata: FileProps<LAnnotation>["renderHeaderMetadata"];
+  renderAnnotation: FileProps<LAnnotation>["renderAnnotation"];
+  lineAnnotations: FileProps<LAnnotation>["lineAnnotations"];
+  renderGutterUtility: FileProps<LAnnotation>["renderGutterUtility"];
+  getHoveredLine(): GetHoveredLineResult<"file"> | undefined;
 }
 
 export function renderFileChildren<LAnnotation>({
@@ -42,9 +42,7 @@ export function renderFileChildren<LAnnotation>({
       ) : (
         <>
           {prefix != null && <div slot={HEADER_PREFIX_SLOT_ID}>{prefix}</div>}
-          {metadata != null && (
-            <div slot={HEADER_METADATA_SLOT_ID}>{metadata}</div>
-          )}
+          {metadata != null && <div slot={HEADER_METADATA_SLOT_ID}>{metadata}</div>}
         </>
       )}
       {renderAnnotation != null &&

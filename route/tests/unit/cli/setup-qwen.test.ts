@@ -20,7 +20,7 @@ test("buildQwenSettings adds an openai modelProvider (baseUrl /v1, envKey), sets
 test("buildQwenSettings de-dupes the omniroute provider + preserves others", () => {
   const s = buildQwenSettings(
     { modelProviders: [{ id: "other" }, { id: "omniroute", baseUrl: "old" }], theme: "dark" },
-    { baseUrl: "http://x/v1", model: "m" }
+    { baseUrl: "http://x/v1", model: "m" },
   );
   assert.equal(s.modelProviders.filter((p) => p.id === "omniroute").length, 1);
   assert.ok(s.modelProviders.some((p) => p.id === "other"));

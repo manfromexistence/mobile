@@ -81,7 +81,7 @@ export function saveRequestDetailLog(entry: RequestDetailLog): void {
       (id, call_log_id, timestamp, client_request, translated_request,
        provider_response, client_response, provider, model, source_format, target_format, duration_ms)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `
+  `,
   ).run(
     id,
     entry.call_log_id ?? null,
@@ -94,7 +94,7 @@ export function saveRequestDetailLog(entry: RequestDetailLog): void {
     entry.model ?? null,
     entry.source_format ?? null,
     entry.target_format ?? null,
-    entry.duration_ms ?? 0
+    entry.duration_ms ?? 0,
   );
 }
 
@@ -108,7 +108,7 @@ export function getRequestDetailLogs(limit = 50, offset = 0): RequestDetailLog[]
       SELECT * FROM request_detail_logs
       ORDER BY timestamp DESC
       LIMIT ? OFFSET ?
-    `
+    `,
     )
     .all(limit, offset) as Array<Record<string, unknown>>;
 
@@ -136,7 +136,7 @@ export function getRequestDetailLogByCallLogId(callLogId: string): RequestDetail
       WHERE call_log_id = ?
       ORDER BY timestamp DESC
       LIMIT 1
-    `
+    `,
     )
     .get(callLogId) as Record<string, unknown> | undefined;
   return row ? mapDetailedLogRow(row) : null;

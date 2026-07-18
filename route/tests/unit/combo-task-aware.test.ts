@@ -212,7 +212,7 @@ describe("reorderByTaskWeight", () => {
     assert.ok(
       scoreModelForTask(out[0].modelStr, task, required) >=
         scoreModelForTask(out[1].modelStr, task, required),
-      "first model should score >= second"
+      "first model should score >= second",
     );
   });
 

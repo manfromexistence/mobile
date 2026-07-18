@@ -47,7 +47,7 @@ function countFiles(dir, suffix = ".ts") {
         f.endsWith(suffix) &&
         !f.endsWith(".test.ts") &&
         !f.startsWith("__") &&
-        !COMMON_NON_IMPL_BASENAMES.has(f)
+        !COMMON_NON_IMPL_BASENAMES.has(f),
     ).length;
 }
 
@@ -186,7 +186,7 @@ function main() {
     console.error(
       `✗ ${strict} STRICT drift(s) detected. ` +
         `Update the docs above to the real counts, or regenerate auto-generated sources ` +
-        `(npm run gen:provider-reference).`
+        `(npm run gen:provider-reference).`,
     );
     process.exit(1);
   }

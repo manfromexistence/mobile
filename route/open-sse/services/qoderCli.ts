@@ -68,7 +68,7 @@ function getString(value: unknown): string {
 
 export function getQoderCliWorkspace(): string {
   const explicit = String(
-    process.env.QODER_CLI_WORKSPACE || process.env.OMNIROUTE_QODER_WORKSPACE || ""
+    process.env.QODER_CLI_WORKSPACE || process.env.OMNIROUTE_QODER_WORKSPACE || "",
   ).trim();
   if (explicit) return explicit;
   const home = String(process.env.HOME || "").trim();
@@ -274,7 +274,7 @@ export async function listQoderCliModels(
     signal?: AbortSignal | null;
     timeoutMs?: number;
     command?: string | null;
-  } = {}
+  } = {},
 ): Promise<QoderCliRunResult> {
   const configDir = ensureQoderCliConfigDir();
   return spawnQoderCli({
@@ -303,7 +303,7 @@ export function parseQoderCliModelNames(stdout: string): string[] {
       (line) =>
         line.length > 0 &&
         line.toLowerCase() !== "model" && // header row
-        !/invalid model|not logged in|please run|available model keys/i.test(line)
+        !/invalid model|not logged in|please run|available model keys/i.test(line),
     );
 }
 
@@ -321,7 +321,7 @@ export function parseQoderCliModelNames(stdout: string): string[] {
  */
 export function resolveQoderModelName(
   requested: string | null | undefined,
-  availableNames: string[]
+  availableNames: string[],
 ): string {
   const normalized = normalizeQoderModelKey(requested);
   if (!normalized) return "auto";
@@ -339,7 +339,7 @@ const qoderModelNamesPending = new Map<string, Promise<string[]>>();
 
 async function getCachedQoderCliModelNames(
   token?: string | null,
-  options: { command?: string | null; signal?: AbortSignal | null; now?: number } = {}
+  options: { command?: string | null; signal?: AbortSignal | null; now?: number } = {},
 ): Promise<string[]> {
   const key = String(token || "").trim() || "default";
   const now = options.now ?? Date.now();
@@ -368,7 +368,7 @@ async function getCachedQoderCliModelNames(
 export async function resolveQoderCliModel(
   requested: string | null | undefined,
   token?: string | null,
-  options: { command?: string | null; signal?: AbortSignal | null } = {}
+  options: { command?: string | null; signal?: AbortSignal | null } = {},
 ): Promise<string> {
   let names: string[] = [];
   try {
@@ -581,7 +581,7 @@ export function buildQoderPrompt(body: unknown): string {
     const jsonSchema = asRecord(responseFormat.json_schema);
     if (jsonSchema.schema && typeof jsonSchema.schema === "object") {
       lines.push(
-        `Return only valid JSON matching this schema:\n${JSON.stringify(jsonSchema.schema, null, 2)}`
+        `Return only valid JSON matching this schema:\n${JSON.stringify(jsonSchema.schema, null, 2)}`,
       );
     }
   }
@@ -726,7 +726,7 @@ export function createQoderErrorResponse(failure: QoderCliFailure): Response {
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 }
 
@@ -757,7 +757,7 @@ export function buildCosyHeadersForValidation(bodyStr: string, token: string) {
 
   const encryptedKeyBuf = crypto.publicEncrypt(
     { key: PUBLIC_KEY, padding: crypto.constants.RSA_PKCS1_PADDING },
-    aesKeyBuf
+    aesKeyBuf,
   );
   const cosyKeyB64 = encryptedKeyBuf.toString("base64");
   const timestamp = Math.floor(Date.now() / 1000).toString();
@@ -829,7 +829,7 @@ export function parseQoderJobTokenResponse(json: unknown): {
   if (!jobToken) return null;
 
   const expiresRaw = [root.expires_in, root.expiresIn, data.expires_in, data.expiresIn].find(
-    (v) => typeof v === "number" && Number.isFinite(v) && (v as number) > 0
+    (v) => typeof v === "number" && Number.isFinite(v) && (v as number) > 0,
   ) as number | undefined;
   // Qoder reports expiry in seconds; fall back to the default ~24h window.
   const expiresInMs = expiresRaw ? expiresRaw * 1000 : QODER_JOB_TOKEN_DEFAULT_TTL_MS;
@@ -839,7 +839,7 @@ export function parseQoderJobTokenResponse(json: unknown): {
 /** Exchange a `pt-*` PAT for a short-lived `jt-*` job token (no caching). */
 export async function exchangeQoderJobToken(
   pat: string,
-  options: { fetchImpl?: FetchLike; signal?: AbortSignal | null } = {}
+  options: { fetchImpl?: FetchLike; signal?: AbortSignal | null } = {},
 ): Promise<{ jobToken: string; expiresInMs: number } | null> {
   const fetchImpl = options.fetchImpl || (fetch as unknown as FetchLike);
   const res = await fetchImpl(QODER_JOB_TOKEN_EXCHANGE_URL, {
@@ -866,7 +866,7 @@ export async function exchangeQoderJobToken(
  */
 export async function resolveQoderJobToken(
   token: string,
-  options: { fetchImpl?: FetchLike; signal?: AbortSignal | null; now?: number } = {}
+  options: { fetchImpl?: FetchLike; signal?: AbortSignal | null; now?: number } = {},
 ): Promise<string> {
   const trimmed = (token || "").trim();
   if (!isQoderPatToken(trimmed)) return trimmed;
@@ -962,7 +962,7 @@ export async function validateQoderCliPat({
 
   if (
     /not logged in|please run \/login|login required|unauthorized|forbidden|exchangejobtoken failed|personal token format|invalid[\s\w]{0,40}?(?:token|credential|api[\s_-]*key)/i.test(
-      normalized
+      normalized,
     )
   ) {
     return {

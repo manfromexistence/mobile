@@ -1,74 +1,91 @@
-import type { ProviderAuthAuthorization, ProviderAuthMethod } from "@opencode-ai/sdk/v2/client"
-import { Button } from "@opencode-ai/ui/button"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { Dialog } from "@opencode-ai/ui/dialog"
-import { Icon } from "@opencode-ai/ui/icon"
-import { IconButton } from "@opencode-ai/ui/icon-button"
-import { List, type ListRef } from "@opencode-ai/ui/list"
-import { ProviderIcon } from "@opencode-ai/ui/provider-icon"
-import { Spinner } from "@opencode-ai/ui/spinner"
-import { TextField } from "@opencode-ai/ui/text-field"
-import { showToast } from "@/utils/toast"
-import { type Accessor, createEffect, createMemo, createResource, Match, onCleanup, onMount, Switch } from "solid-js"
-import { createStore, produce } from "solid-js/store"
-import { Link } from "@/components/link"
-import { useServerSDK } from "@/context/server-sdk"
-import { useServerSync } from "@/context/server-sync"
-import { useLanguage } from "@/context/language"
-import { useProviders } from "@/hooks/use-providers"
+import type { ProviderAuthAuthorization, ProviderAuthMethod } from "@opencode-ai/sdk/v2/client";
+import { Button } from "@opencode-ai/ui/button";
+import { useDialog } from "@opencode-ai/ui/context/dialog";
+import { Dialog } from "@opencode-ai/ui/dialog";
+import { Icon } from "@opencode-ai/ui/icon";
+import { IconButton } from "@opencode-ai/ui/icon-button";
+import { List, type ListRef } from "@opencode-ai/ui/list";
+import { ProviderIcon } from "@opencode-ai/ui/provider-icon";
+import { Spinner } from "@opencode-ai/ui/spinner";
+import { TextField } from "@opencode-ai/ui/text-field";
+import { showToast } from "@/utils/toast";
+import {
+  type Accessor,
+  createEffect,
+  createMemo,
+  createResource,
+  Match,
+  onCleanup,
+  onMount,
+  Switch,
+} from "solid-js";
+import { createStore, produce } from "solid-js/store";
+import { Link } from "@/components/link";
+import { useServerSDK } from "@/context/server-sdk";
+import { useServerSync } from "@/context/server-sync";
+import { useLanguage } from "@/context/language";
+import { useProviders } from "@/hooks/use-providers";
 
-export function DialogConnectProvider(props: { provider: string; directory?: Accessor<string | undefined> }) {
-  const dialog = useDialog()
-  const serverSync = useServerSync()
-  const serverSDK = useServerSDK()
-  const language = useLanguage()
-  const providers = useProviders(props.directory)
+export function DialogConnectProvider(props: {
+  provider: string;
+  directory?: Accessor<string | undefined>;
+}) {
+  const dialog = useDialog();
+  const serverSync = useServerSync();
+  const serverSDK = useServerSDK();
+  const language = useLanguage();
+  const providers = useProviders(props.directory);
 
   const all = () => {
     void import("./dialog-select-provider").then((x) => {
-      dialog.show(() => <x.DialogSelectProvider directory={props.directory} />)
-    })
-  }
+      dialog.show(() => <x.DialogSelectProvider directory={props.directory} />);
+    });
+  };
 
-  const alive = { value: true }
-  const timer = { current: undefined as ReturnType<typeof setTimeout> | undefined }
+  const alive = { value: true };
+  const timer = { current: undefined as ReturnType<typeof setTimeout> | undefined };
 
   onCleanup(() => {
-    alive.value = false
-    if (timer.current === undefined) return
-    clearTimeout(timer.current)
-    timer.current = undefined
-  })
+    alive.value = false;
+    if (timer.current === undefined) return;
+    clearTimeout(timer.current);
+    timer.current = undefined;
+  });
 
   const provider = createMemo(
-    () => providers.all().get(props.provider) ?? serverSync().data.provider.all.get(props.provider)!,
-  )
+    () =>
+      providers.all().get(props.provider) ?? serverSync().data.provider.all.get(props.provider)!,
+  );
   const fallback = createMemo<ProviderAuthMethod[]>(() => [
     {
       type: "api" as const,
       label: language.t("provider.connect.method.apiKey"),
     },
-  ])
+  ]);
   const [auth] = createResource(
     () => props.provider,
     async () => {
-      const cached = serverSync().data.provider_auth[props.provider]
-      if (cached) return cached
-      const res = await serverSDK().client.provider.auth()
-      if (!alive.value) return fallback()
-      serverSync().set("provider_auth", res.data ?? {})
-      return res.data?.[props.provider] ?? fallback()
+      const cached = serverSync().data.provider_auth[props.provider];
+      if (cached) return cached;
+      const res = await serverSDK().client.provider.auth();
+      if (!alive.value) return fallback();
+      serverSync().set("provider_auth", res.data ?? {});
+      return res.data?.[props.provider] ?? fallback();
     },
-  )
-  const loading = createMemo(() => auth.loading && !serverSync().data.provider_auth[props.provider])
-  const methods = createMemo(() => auth.latest ?? serverSync().data.provider_auth[props.provider] ?? fallback())
+  );
+  const loading = createMemo(
+    () => auth.loading && !serverSync().data.provider_auth[props.provider],
+  );
+  const methods = createMemo(
+    () => auth.latest ?? serverSync().data.provider_auth[props.provider] ?? fallback(),
+  );
   const [store, setStore] = createStore({
     methodIndex: undefined as undefined | number,
     authorization: undefined as undefined | ProviderAuthAuthorization,
     promptInputs: undefined as undefined | Record<string, string>,
     state: "pending" as undefined | "pending" | "complete" | "error" | "prompt",
     error: undefined as string | undefined,
-  })
+  });
 
   type Action =
     | { type: "method.select"; index: number }
@@ -77,106 +94,108 @@ export function DialogConnectProvider(props: { provider: string; directory?: Acc
     | { type: "auth.inputs"; inputs: Record<string, string> }
     | { type: "auth.pending" }
     | { type: "auth.complete"; authorization: ProviderAuthAuthorization }
-    | { type: "auth.error"; error: string }
+    | { type: "auth.error"; error: string };
 
   function dispatch(action: Action) {
     setStore(
       produce((draft) => {
         if (action.type === "method.select") {
-          draft.methodIndex = action.index
-          draft.authorization = undefined
-          draft.promptInputs = undefined
-          draft.state = undefined
-          draft.error = undefined
-          return
+          draft.methodIndex = action.index;
+          draft.authorization = undefined;
+          draft.promptInputs = undefined;
+          draft.state = undefined;
+          draft.error = undefined;
+          return;
         }
         if (action.type === "method.reset") {
-          draft.methodIndex = undefined
-          draft.authorization = undefined
-          draft.promptInputs = undefined
-          draft.state = undefined
-          draft.error = undefined
-          return
+          draft.methodIndex = undefined;
+          draft.authorization = undefined;
+          draft.promptInputs = undefined;
+          draft.state = undefined;
+          draft.error = undefined;
+          return;
         }
         if (action.type === "auth.prompt") {
-          draft.state = "prompt"
-          draft.error = undefined
-          return
+          draft.state = "prompt";
+          draft.error = undefined;
+          return;
         }
         if (action.type === "auth.inputs") {
-          draft.promptInputs = action.inputs
-          draft.state = undefined
-          draft.error = undefined
-          return
+          draft.promptInputs = action.inputs;
+          draft.state = undefined;
+          draft.error = undefined;
+          return;
         }
         if (action.type === "auth.pending") {
-          draft.state = "pending"
-          draft.error = undefined
-          return
+          draft.state = "pending";
+          draft.error = undefined;
+          return;
         }
         if (action.type === "auth.complete") {
-          draft.state = "complete"
-          draft.authorization = action.authorization
-          draft.error = undefined
-          return
+          draft.state = "complete";
+          draft.authorization = action.authorization;
+          draft.error = undefined;
+          return;
         }
-        draft.state = "error"
-        draft.error = action.error
+        draft.state = "error";
+        draft.error = action.error;
       }),
-    )
+    );
   }
 
-  const method = createMemo(() => (store.methodIndex !== undefined ? methods().at(store.methodIndex!) : undefined))
+  const method = createMemo(() =>
+    store.methodIndex !== undefined ? methods().at(store.methodIndex!) : undefined,
+  );
 
   const methodLabel = (value?: { type?: string; label?: string }) => {
-    if (!value) return ""
-    if (value.type === "api") return language.t("provider.connect.method.apiKey")
-    return value.label ?? ""
-  }
+    if (!value) return "";
+    if (value.type === "api") return language.t("provider.connect.method.apiKey");
+    return value.label ?? "";
+  };
 
   function formatError(value: unknown, fallback: string): string {
     if (value && typeof value === "object" && "data" in value) {
-      const data = (value as { data?: { message?: unknown } }).data
-      if (typeof data?.message === "string" && data.message) return data.message
+      const data = (value as { data?: { message?: unknown } }).data;
+      if (typeof data?.message === "string" && data.message) return data.message;
     }
     if (value && typeof value === "object" && "error" in value) {
-      const nested = formatError((value as { error?: unknown }).error, "")
-      if (nested) return nested
+      const nested = formatError((value as { error?: unknown }).error, "");
+      if (nested) return nested;
     }
     if (value && typeof value === "object" && "message" in value) {
-      const message = (value as { message?: unknown }).message
-      if (typeof message === "string" && message) return message
+      const message = (value as { message?: unknown }).message;
+      if (typeof message === "string" && message) return message;
     }
-    if (value instanceof Error && value.message) return value.message
-    if (typeof value === "string" && value) return value
-    return fallback
+    if (value instanceof Error && value.message) return value.message;
+    if (typeof value === "string" && value) return value;
+    return fallback;
   }
 
   async function selectMethod(index: number, inputs?: Record<string, string>) {
     if (timer.current !== undefined) {
-      clearTimeout(timer.current)
-      timer.current = undefined
+      clearTimeout(timer.current);
+      timer.current = undefined;
     }
 
-    const method = methods()[index]
-    dispatch({ type: "method.select", index })
+    const method = methods()[index];
+    dispatch({ type: "method.select", index });
 
     if (method.type === "api" && method.prompts?.length) {
       if (!inputs) {
-        dispatch({ type: "auth.prompt" })
-        return
+        dispatch({ type: "auth.prompt" });
+        return;
       }
-      dispatch({ type: "auth.inputs", inputs })
-      return
+      dispatch({ type: "auth.inputs", inputs });
+      return;
     }
 
     if (method.type === "oauth") {
       if (method.prompts?.length && !inputs) {
-        dispatch({ type: "auth.prompt" })
-        return
+        dispatch({ type: "auth.prompt" });
+        return;
       }
-      dispatch({ type: "auth.pending" })
-      const start = Date.now()
+      dispatch({ type: "auth.pending" });
+      const start = Date.now();
       await serverSDK()
         .client.provider.oauth.authorize(
           {
@@ -187,25 +206,28 @@ export function DialogConnectProvider(props: { provider: string; directory?: Acc
           { throwOnError: true },
         )
         .then((x) => {
-          if (!alive.value) return
-          const elapsed = Date.now() - start
-          const delay = 1000 - elapsed
+          if (!alive.value) return;
+          const elapsed = Date.now() - start;
+          const delay = 1000 - elapsed;
 
           if (delay > 0) {
-            if (timer.current !== undefined) clearTimeout(timer.current)
+            if (timer.current !== undefined) clearTimeout(timer.current);
             timer.current = setTimeout(() => {
-              timer.current = undefined
-              if (!alive.value) return
-              dispatch({ type: "auth.complete", authorization: x.data! })
-            }, delay)
-            return
+              timer.current = undefined;
+              if (!alive.value) return;
+              dispatch({ type: "auth.complete", authorization: x.data! });
+            }, delay);
+            return;
           }
-          dispatch({ type: "auth.complete", authorization: x.data! })
+          dispatch({ type: "auth.complete", authorization: x.data! });
         })
         .catch((e) => {
-          if (!alive.value) return
-          dispatch({ type: "auth.error", error: formatError(e, language.t("common.requestFailed")) })
-        })
+          if (!alive.value) return;
+          dispatch({
+            type: "auth.error",
+            error: formatError(e, language.t("common.requestFailed")),
+          });
+        });
     }
   }
 
@@ -213,67 +235,72 @@ export function DialogConnectProvider(props: { provider: string; directory?: Acc
     const [formStore, setFormStore] = createStore({
       value: {} as Record<string, string>,
       index: 0,
-    })
+    });
 
     const prompts = createMemo<NonNullable<ProviderAuthMethod["prompts"]>>(() => {
-      const value = method()
-      return value?.prompts ?? []
-    })
-    const matches = (prompt: NonNullable<ReturnType<typeof prompts>[number]>, value: Record<string, string>) => {
-      if (!prompt.when) return true
-      const actual = value[prompt.when.key]
-      if (actual === undefined) return false
-      return prompt.when.op === "eq" ? actual === prompt.when.value : actual !== prompt.when.value
-    }
+      const value = method();
+      return value?.prompts ?? [];
+    });
+    const matches = (
+      prompt: NonNullable<ReturnType<typeof prompts>[number]>,
+      value: Record<string, string>,
+    ) => {
+      if (!prompt.when) return true;
+      const actual = value[prompt.when.key];
+      if (actual === undefined) return false;
+      return prompt.when.op === "eq" ? actual === prompt.when.value : actual !== prompt.when.value;
+    };
     const current = createMemo(() => {
-      const all = prompts()
-      const index = all.findIndex((prompt, index) => index >= formStore.index && matches(prompt, formStore.value))
-      if (index === -1) return
+      const all = prompts();
+      const index = all.findIndex(
+        (prompt, index) => index >= formStore.index && matches(prompt, formStore.value),
+      );
+      if (index === -1) return;
       return {
         index,
         prompt: all[index],
-      }
-    })
+      };
+    });
     const valid = createMemo(() => {
-      const item = current()
-      if (!item || item.prompt.type !== "text") return false
-      const value = formStore.value[item.prompt.key] ?? ""
-      return value.trim().length > 0
-    })
+      const item = current();
+      if (!item || item.prompt.type !== "text") return false;
+      const value = formStore.value[item.prompt.key] ?? "";
+      return value.trim().length > 0;
+    });
 
     async function next(index: number, value: Record<string, string>) {
-      if (store.methodIndex === undefined) return
-      const next = prompts().findIndex((prompt, i) => i > index && matches(prompt, value))
+      if (store.methodIndex === undefined) return;
+      const next = prompts().findIndex((prompt, i) => i > index && matches(prompt, value));
       if (next !== -1) {
-        setFormStore("index", next)
-        return
+        setFormStore("index", next);
+        return;
       }
       if (method()?.type === "api") {
-        dispatch({ type: "auth.inputs", inputs: value })
-        return
+        dispatch({ type: "auth.inputs", inputs: value });
+        return;
       }
-      await selectMethod(store.methodIndex, value)
+      await selectMethod(store.methodIndex, value);
     }
 
     async function handleSubmit(e: SubmitEvent) {
-      e.preventDefault()
-      const item = current()
-      if (!item || item.prompt.type !== "text") return
-      if (!valid()) return
-      await next(item.index, formStore.value)
+      e.preventDefault();
+      const item = current();
+      if (!item || item.prompt.type !== "text") return;
+      if (!valid()) return;
+      await next(item.index, formStore.value);
     }
 
-    const item = () => current()
+    const item = () => current();
     const text = createMemo(() => {
-      const prompt = item()?.prompt
-      if (!prompt || prompt.type !== "text") return
-      return prompt
-    })
+      const prompt = item()?.prompt;
+      if (!prompt || prompt.type !== "text") return;
+      return prompt;
+    });
     const select = createMemo(() => {
-      const prompt = item()?.prompt
-      if (!prompt || prompt.type !== "select") return
-      return prompt
-    })
+      const prompt = item()?.prompt;
+      if (!prompt || prompt.type !== "select") return;
+      return prompt;
+    });
 
     return (
       <form onSubmit={handleSubmit} class="flex flex-col items-start gap-4">
@@ -285,9 +312,9 @@ export function DialogConnectProvider(props: { provider: string; directory?: Acc
               placeholder={text()?.placeholder}
               value={text() ? (formStore.value[text()!.key] ?? "") : ""}
               onChange={(value) => {
-                const prompt = text()
-                if (!prompt) return
-                setFormStore("value", prompt.key, value)
+                const prompt = text();
+                if (!prompt) return;
+                setFormStore("value", prompt.key, value);
               }}
             />
             <Button class="w-auto" type="submit" size="large" variant="primary" disabled={!valid()}>
@@ -302,23 +329,28 @@ export function DialogConnectProvider(props: { provider: string; directory?: Acc
                   class="px-3"
                   items={select()?.options ?? []}
                   key={(x) => x.value}
-                  current={select()?.options.find((x) => x.value === formStore.value[select()!.key])}
+                  current={select()?.options.find(
+                    (x) => x.value === formStore.value[select()!.key],
+                  )}
                   onSelect={(value) => {
-                    if (!value) return
-                    const prompt = select()
-                    if (!prompt) return
+                    if (!value) return;
+                    const prompt = select();
+                    if (!prompt) return;
                     const nextValue = {
                       ...formStore.value,
                       [prompt.key]: value.value,
-                    }
-                    setFormStore("value", prompt.key, value.value)
-                    void next(item()!.index, nextValue)
+                    };
+                    setFormStore("value", prompt.key, value.value);
+                    void next(item()!.index, nextValue);
                   }}
                 >
                   {(option) => (
                     <div class="w-full flex items-center gap-x-2">
                       <div class="w-4 h-2 rounded-[1px] bg-input-base shadow-xs-border-base flex items-center justify-center">
-                        <div class="w-2.5 h-0.5 ml-0 bg-icon-strong-base hidden" data-slot="list-item-extra-icon" />
+                        <div
+                          class="w-2.5 h-0.5 ml-0 bg-icon-strong-base hidden"
+                          data-slot="list-item-extra-icon"
+                        />
                       </div>
                       <span>{option.label}</span>
                       <span class="text-14-regular text-text-weak">{option.hint}</span>
@@ -330,53 +362,55 @@ export function DialogConnectProvider(props: { provider: string; directory?: Acc
           </Match>
         </Switch>
       </form>
-    )
+    );
   }
 
-  let listRef: ListRef | undefined
+  let listRef: ListRef | undefined;
   function handleKey(e: KeyboardEvent) {
     if (e.key === "Enter" && e.target instanceof HTMLInputElement) {
-      return
+      return;
     }
-    if (e.key === "Escape") return
-    listRef?.onKeyDown(e)
+    if (e.key === "Escape") return;
+    listRef?.onKeyDown(e);
   }
 
-  let auto = false
+  let auto = false;
   createEffect(() => {
-    if (auto) return
-    if (loading()) return
+    if (auto) return;
+    if (loading()) return;
     if (methods().length === 1) {
-      auto = true
-      void selectMethod(0)
+      auto = true;
+      void selectMethod(0);
     }
-  })
+  });
 
   async function complete() {
-    await serverSDK().client.global.dispose()
-    dialog.close()
+    await serverSDK().client.global.dispose();
+    dialog.close();
     showToast({
       variant: "success",
       icon: "circle-check",
       title: language.t("provider.connect.toast.connected.title", { provider: provider().name }),
-      description: language.t("provider.connect.toast.connected.description", { provider: provider().name }),
-    })
+      description: language.t("provider.connect.toast.connected.description", {
+        provider: provider().name,
+      }),
+    });
   }
 
   function goBack() {
     if (methods().length === 1) {
-      all()
-      return
+      all();
+      return;
     }
     if (store.authorization) {
-      dispatch({ type: "method.reset" })
-      return
+      dispatch({ type: "method.reset" });
+      return;
     }
     if (store.methodIndex !== undefined) {
-      dispatch({ type: "method.reset" })
-      return
+      dispatch({ type: "method.reset" });
+      return;
     }
-    all()
+    all();
   }
 
   function MethodSelection() {
@@ -389,19 +423,22 @@ export function DialogConnectProvider(props: { provider: string; directory?: Acc
           <List
             class="px-3"
             ref={(ref) => {
-              listRef = ref
+              listRef = ref;
             }}
             items={methods}
             key={(m) => m?.label}
             onSelect={async (selected, index) => {
-              if (!selected) return
-              void selectMethod(index)
+              if (!selected) return;
+              void selectMethod(index);
             }}
           >
             {(i) => (
               <div class="w-full flex items-center gap-x-2">
                 <div class="w-4 h-2 rounded-[1px] bg-input-base shadow-xs-border-base flex items-center justify-center">
-                  <div class="w-2.5 h-0.5 ml-0 bg-icon-strong-base hidden" data-slot="list-item-extra-icon" />
+                  <div
+                    class="w-2.5 h-0.5 ml-0 bg-icon-strong-base hidden"
+                    data-slot="list-item-extra-icon"
+                  />
                 </div>
                 <span>{methodLabel(i)}</span>
               </div>
@@ -409,28 +446,28 @@ export function DialogConnectProvider(props: { provider: string; directory?: Acc
           </List>
         </div>
       </>
-    )
+    );
   }
 
   function ApiAuthView() {
     const [formStore, setFormStore] = createStore({
       value: "",
       error: undefined as string | undefined,
-    })
+    });
 
     async function handleSubmit(e: SubmitEvent) {
-      e.preventDefault()
+      e.preventDefault();
 
-      const form = e.currentTarget as HTMLFormElement
-      const formData = new FormData(form)
-      const apiKey = formData.get("apiKey") as string
+      const form = e.currentTarget as HTMLFormElement;
+      const formData = new FormData(form);
+      const apiKey = formData.get("apiKey") as string;
 
       if (!apiKey?.trim()) {
-        setFormStore("error", language.t("provider.connect.apiKey.required"))
-        return
+        setFormStore("error", language.t("provider.connect.apiKey.required"));
+        return;
       }
 
-      setFormStore("error", undefined)
+      setFormStore("error", undefined);
       await serverSDK().client.auth.set({
         providerID: props.provider,
         auth: {
@@ -438,8 +475,8 @@ export function DialogConnectProvider(props: { provider: string; directory?: Acc
           key: apiKey,
           ...(store.promptInputs ? { metadata: store.promptInputs } : {}),
         },
-      })
-      await complete()
+      });
+      await complete();
     }
 
     return (
@@ -447,8 +484,12 @@ export function DialogConnectProvider(props: { provider: string; directory?: Acc
         <Switch>
           <Match when={provider().id === "opencode"}>
             <div class="flex flex-col gap-4">
-              <div class="text-14-regular text-text-base">{language.t("provider.connect.opencodeZen.line1")}</div>
-              <div class="text-14-regular text-text-base">{language.t("provider.connect.opencodeZen.line2")}</div>
+              <div class="text-14-regular text-text-base">
+                {language.t("provider.connect.opencodeZen.line1")}
+              </div>
+              <div class="text-14-regular text-text-base">
+                {language.t("provider.connect.opencodeZen.line2")}
+              </div>
               <div class="text-14-regular text-text-base">
                 {language.t("provider.connect.opencodeZen.visit.prefix")}
                 <Link href="https://opencode.ai/zen" tabIndex={-1}>
@@ -481,55 +522,64 @@ export function DialogConnectProvider(props: { provider: string; directory?: Acc
           </Button>
         </form>
       </div>
-    )
+    );
   }
 
   function OAuthCodeView() {
     const [formStore, setFormStore] = createStore({
       value: "",
       error: undefined as string | undefined,
-    })
+    });
 
     async function handleSubmit(e: SubmitEvent) {
-      e.preventDefault()
+      e.preventDefault();
 
-      const form = e.currentTarget as HTMLFormElement
-      const formData = new FormData(form)
-      const code = formData.get("code") as string
+      const form = e.currentTarget as HTMLFormElement;
+      const formData = new FormData(form);
+      const code = formData.get("code") as string;
 
       if (!code?.trim()) {
-        setFormStore("error", language.t("provider.connect.oauth.code.required"))
-        return
+        setFormStore("error", language.t("provider.connect.oauth.code.required"));
+        return;
       }
 
-      setFormStore("error", undefined)
+      setFormStore("error", undefined);
       const result = await serverSDK()
         .client.provider.oauth.callback({
           providerID: props.provider,
           method: store.methodIndex,
           code,
         })
-        .then((value) => (value.error ? { ok: false as const, error: value.error } : { ok: true as const }))
-        .catch((error) => ({ ok: false as const, error }))
+        .then((value) =>
+          value.error ? { ok: false as const, error: value.error } : { ok: true as const },
+        )
+        .catch((error) => ({ ok: false as const, error }));
       if (result.ok) {
-        await complete()
-        return
+        await complete();
+        return;
       }
-      setFormStore("error", formatError(result.error, language.t("provider.connect.oauth.code.invalid")))
+      setFormStore(
+        "error",
+        formatError(result.error, language.t("provider.connect.oauth.code.invalid")),
+      );
     }
 
     return (
       <div class="flex flex-col gap-6">
         <div class="text-14-regular text-text-base">
           {language.t("provider.connect.oauth.code.visit.prefix")}
-          <Link href={store.authorization!.url}>{language.t("provider.connect.oauth.code.visit.link")}</Link>
+          <Link href={store.authorization!.url}>
+            {language.t("provider.connect.oauth.code.visit.link")}
+          </Link>
           {language.t("provider.connect.oauth.code.visit.suffix", { provider: provider().name })}
         </div>
         <form onSubmit={handleSubmit} class="flex flex-col items-start gap-4">
           <TextField
             autofocus
             type="text"
-            label={language.t("provider.connect.oauth.code.label", { method: method()?.label ?? "" })}
+            label={language.t("provider.connect.oauth.code.label", {
+              method: method()?.label ?? "",
+            })}
             placeholder={language.t("provider.connect.oauth.code.placeholder")}
             name="code"
             value={formStore.value}
@@ -542,17 +592,17 @@ export function DialogConnectProvider(props: { provider: string; directory?: Acc
           </Button>
         </form>
       </div>
-    )
+    );
   }
 
   function OAuthAutoView() {
     const code = createMemo(() => {
-      const instructions = store.authorization?.instructions
+      const instructions = store.authorization?.instructions;
       if (instructions?.includes(":")) {
-        return instructions.split(":").pop()?.trim()
+        return instructions.split(":").pop()?.trim();
       }
-      return instructions
-    })
+      return instructions;
+    });
 
     onMount(() => {
       void (async () => {
@@ -561,26 +611,30 @@ export function DialogConnectProvider(props: { provider: string; directory?: Acc
             providerID: props.provider,
             method: store.methodIndex,
           })
-          .then((value) => (value.error ? { ok: false as const, error: value.error } : { ok: true as const }))
-          .catch((error) => ({ ok: false as const, error }))
+          .then((value) =>
+            value.error ? { ok: false as const, error: value.error } : { ok: true as const },
+          )
+          .catch((error) => ({ ok: false as const, error }));
 
-        if (!alive.value) return
+        if (!alive.value) return;
 
         if (!result.ok) {
-          const message = formatError(result.error, language.t("common.requestFailed"))
-          dispatch({ type: "auth.error", error: message })
-          return
+          const message = formatError(result.error, language.t("common.requestFailed"));
+          dispatch({ type: "auth.error", error: message });
+          return;
         }
 
-        await complete()
-      })()
-    })
+        await complete();
+      })();
+    });
 
     return (
       <div class="flex flex-col gap-6">
         <div class="text-14-regular text-text-base">
           {language.t("provider.connect.oauth.auto.visit.prefix")}
-          <Link href={store.authorization!.url}>{language.t("provider.connect.oauth.auto.visit.link")}</Link>
+          <Link href={store.authorization!.url}>
+            {language.t("provider.connect.oauth.auto.visit.link")}
+          </Link>
           {language.t("provider.connect.oauth.auto.visit.suffix", { provider: provider().name })}
         </div>
         <TextField
@@ -595,7 +649,7 @@ export function DialogConnectProvider(props: { provider: string; directory?: Acc
           <span>{language.t("provider.connect.status.waiting")}</span>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -615,15 +669,25 @@ export function DialogConnectProvider(props: { provider: string; directory?: Acc
           <ProviderIcon id={props.provider} class="size-5 shrink-0 icon-strong-base" />
           <div class="text-16-medium text-text-strong">
             <Switch>
-              <Match when={props.provider === "anthropic" && method()?.label?.toLowerCase().includes("max")}>
+              <Match
+                when={
+                  props.provider === "anthropic" && method()?.label?.toLowerCase().includes("max")
+                }
+              >
                 {language.t("provider.connect.title.anthropicProMax")}
               </Match>
-              <Match when={true}>{language.t("provider.connect.title", { provider: provider().name })}</Match>
+              <Match when={true}>
+                {language.t("provider.connect.title", { provider: provider().name })}
+              </Match>
             </Switch>
           </div>
         </div>
         <div class="px-2.5 pb-10 flex flex-col gap-6">
-          <div onKeyDown={handleKey} tabIndex={0} autofocus={store.methodIndex === undefined ? true : undefined}>
+          <div
+            onKeyDown={handleKey}
+            tabIndex={0}
+            autofocus={store.methodIndex === undefined ? true : undefined}
+          >
             <Switch>
               <Match when={loading()}>
                 <div class="text-14-regular text-text-base">
@@ -651,7 +715,9 @@ export function DialogConnectProvider(props: { provider: string; directory?: Acc
                 <div class="text-14-regular text-text-base">
                   <div class="flex items-center gap-x-2">
                     <Icon name="circle-ban-sign" class="text-icon-critical-base" />
-                    <span>{language.t("provider.connect.status.failed", { error: store.error ?? "" })}</span>
+                    <span>
+                      {language.t("provider.connect.status.failed", { error: store.error ?? "" })}
+                    </span>
                   </div>
                 </div>
               </Match>
@@ -673,5 +739,5 @@ export function DialogConnectProvider(props: { provider: string; directory?: Acc
         </div>
       </div>
     </Dialog>
-  )
+  );
 }

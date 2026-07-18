@@ -1,32 +1,39 @@
-import { PermissionV1 } from "@opencode-ai/core/v1/permission"
-import { Permission } from "@/permission"
-import { SessionV1 } from "@opencode-ai/core/v1/session"
+import { PermissionV1 } from "@opencode-ai/core/v1/permission";
+import { Permission } from "@/permission";
+import { SessionV1 } from "@opencode-ai/core/v1/session";
 
-import { Session } from "@/session/session"
-import { MessageV2 } from "@/session/message-v2"
-import { SessionPrompt } from "@/session/prompt"
-import { SessionRevert } from "@/session/revert"
-import { SessionStatus } from "@/session/status"
-import { SessionSummary } from "@/session/summary"
-import { Todo } from "@/session/todo"
-import { MessageID, PartID, SessionID } from "@/session/schema"
-import { Snapshot } from "@/snapshot"
-import { Schema, Struct } from "effect"
-import { HttpApi, HttpApiEndpoint, HttpApiError, HttpApiGroup, HttpApiSchema, OpenApi } from "effect/unstable/httpapi"
-import { Authorization } from "../middleware/authorization"
-import { InstanceContextMiddleware } from "../middleware/instance-context"
+import { Session } from "@/session/session";
+import { MessageV2 } from "@/session/message-v2";
+import { SessionPrompt } from "@/session/prompt";
+import { SessionRevert } from "@/session/revert";
+import { SessionStatus } from "@/session/status";
+import { SessionSummary } from "@/session/summary";
+import { Todo } from "@/session/todo";
+import { MessageID, PartID, SessionID } from "@/session/schema";
+import { Snapshot } from "@/snapshot";
+import { Schema, Struct } from "effect";
+import {
+  HttpApi,
+  HttpApiEndpoint,
+  HttpApiError,
+  HttpApiGroup,
+  HttpApiSchema,
+  OpenApi,
+} from "effect/unstable/httpapi";
+import { Authorization } from "../middleware/authorization";
+import { InstanceContextMiddleware } from "../middleware/instance-context";
 import {
   WorkspaceRoutingMiddleware,
   WorkspaceRoutingQuery,
   WorkspaceRoutingQueryFields,
-} from "../middleware/workspace-routing"
-import { ApiNotFoundError, PermissionNotFoundError, SessionBusyError } from "../errors"
-import { described } from "./metadata"
-import { QueryBoolean } from "./query"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { ModelV2 } from "@opencode-ai/core/model"
+} from "../middleware/workspace-routing";
+import { ApiNotFoundError, PermissionNotFoundError, SessionBusyError } from "../errors";
+import { described } from "./metadata";
+import { QueryBoolean } from "./query";
+import { ProviderV2 } from "@opencode-ai/core/provider";
+import { ModelV2 } from "@opencode-ai/core/model";
 
-const root = "/session"
+const root = "/session";
 export const ListQuery = Schema.Struct({
   ...WorkspaceRoutingQueryFields,
   scope: Schema.optional(Schema.Literals(["project"])),
@@ -35,17 +42,19 @@ export const ListQuery = Schema.Struct({
   start: Schema.optional(Schema.NumberFromString),
   search: Schema.optional(Schema.String),
   limit: Schema.optional(Schema.NumberFromString),
-})
+});
 export const DiffQuery = Schema.Struct({
   ...WorkspaceRoutingQueryFields,
   ...Struct.omit(SessionSummary.DiffInput.fields, ["sessionID"]),
-})
+});
 export const MessagesQuery = Schema.Struct({
   ...WorkspaceRoutingQueryFields,
-  limit: Schema.optional(Schema.NumberFromString.check(Schema.isInt(), Schema.isGreaterThanOrEqualTo(0))),
+  limit: Schema.optional(
+    Schema.NumberFromString.check(Schema.isInt(), Schema.isGreaterThanOrEqualTo(0)),
+  ),
   before: Schema.optional(Schema.String),
-})
-export const StatusMap = Schema.Record(Schema.String, SessionStatus.Info)
+});
+export const StatusMap = Schema.Record(Schema.String, SessionStatus.Info);
 export const UpdatePayload = Schema.Struct({
   title: Schema.optional(Schema.String),
   metadata: Schema.optional(Session.Metadata),
@@ -55,25 +64,33 @@ export const UpdatePayload = Schema.Struct({
       archived: Schema.optional(Session.ArchivedTimestamp),
     }),
   ),
-})
-export const ForkPayload = Schema.Struct(Struct.omit(Session.ForkInput.fields, ["sessionID"]))
+});
+export const ForkPayload = Schema.Struct(Struct.omit(Session.ForkInput.fields, ["sessionID"]));
 export const InitPayload = Schema.Struct({
   modelID: ModelV2.ID,
   providerID: ProviderV2.ID,
   messageID: MessageID,
-})
+});
 export const SummarizePayload = Schema.Struct({
   providerID: ProviderV2.ID,
   modelID: ModelV2.ID,
   auto: Schema.optional(Schema.Boolean),
-})
-export const PromptPayload = Schema.Struct(Struct.omit(SessionPrompt.PromptInput.fields, ["sessionID"]))
-export const CommandPayload = Schema.Struct(Struct.omit(SessionPrompt.CommandInput.fields, ["sessionID"]))
-export const ShellPayload = Schema.Struct(Struct.omit(SessionPrompt.ShellInput.fields, ["sessionID"]))
-export const RevertPayload = Schema.Struct(Struct.omit(SessionRevert.RevertInput.fields, ["sessionID"]))
+});
+export const PromptPayload = Schema.Struct(
+  Struct.omit(SessionPrompt.PromptInput.fields, ["sessionID"]),
+);
+export const CommandPayload = Schema.Struct(
+  Struct.omit(SessionPrompt.CommandInput.fields, ["sessionID"]),
+);
+export const ShellPayload = Schema.Struct(
+  Struct.omit(SessionPrompt.ShellInput.fields, ["sessionID"]),
+);
+export const RevertPayload = Schema.Struct(
+  Struct.omit(SessionRevert.RevertInput.fields, ["sessionID"]),
+);
 export const PermissionResponsePayload = Schema.Struct({
   response: PermissionV1.Reply,
-})
+});
 
 export const SessionPaths = {
   list: root,
@@ -102,7 +119,7 @@ export const SessionPaths = {
   deleteMessage: `${root}/:sessionID/message/:messageID`,
   deletePart: `${root}/:sessionID/message/:messageID/part/:partID`,
   updatePart: `${root}/:sessionID/message/:messageID/part/:partID`,
-} as const
+} as const;
 
 export const SessionApi = HttpApi.make("session")
   .add(
@@ -126,7 +143,8 @@ export const SessionApi = HttpApi.make("session")
           OpenApi.annotations({
             identifier: "session.status",
             summary: "Get session status",
-            description: "Retrieve the current status of all sessions, including active, idle, and completed states.",
+            description:
+              "Retrieve the current status of all sessions, including active, idle, and completed states.",
           }),
         ),
         HttpApiEndpoint.get("get", SessionPaths.get, {
@@ -150,7 +168,8 @@ export const SessionApi = HttpApi.make("session")
           OpenApi.annotations({
             identifier: "session.children",
             summary: "Get session children",
-            description: "Retrieve all child sessions that were forked from the specified parent session.",
+            description:
+              "Retrieve all child sessions that were forked from the specified parent session.",
           }),
         ),
         HttpApiEndpoint.get("todo", SessionPaths.todo, {
@@ -162,7 +181,8 @@ export const SessionApi = HttpApi.make("session")
           OpenApi.annotations({
             identifier: "session.todo",
             summary: "Get session todos",
-            description: "Retrieve the todo list associated with a specific session, showing tasks and action items.",
+            description:
+              "Retrieve the todo list associated with a specific session, showing tasks and action items.",
           }),
         ),
         HttpApiEndpoint.get("diff", SessionPaths.diff, {
@@ -173,7 +193,8 @@ export const SessionApi = HttpApi.make("session")
           OpenApi.annotations({
             identifier: "session.diff",
             summary: "Get message diff",
-            description: "Get the file changes (diff) that resulted from a specific user message in the session.",
+            description:
+              "Get the file changes (diff) that resulted from a specific user message in the session.",
           }),
         ),
         HttpApiEndpoint.get("messages", SessionPaths.messages, {
@@ -185,7 +206,8 @@ export const SessionApi = HttpApi.make("session")
           OpenApi.annotations({
             identifier: "session.messages",
             summary: "Get session messages",
-            description: "Retrieve all messages in a session, including user prompts and AI responses.",
+            description:
+              "Retrieve all messages in a session, including user prompts and AI responses.",
           }),
         ),
         HttpApiEndpoint.get("message", SessionPaths.message, {
@@ -209,7 +231,8 @@ export const SessionApi = HttpApi.make("session")
           OpenApi.annotations({
             identifier: "session.create",
             summary: "Create session",
-            description: "Create a new OpenCode session for interacting with AI assistants and managing conversations.",
+            description:
+              "Create a new OpenCode session for interacting with AI assistants and managing conversations.",
           }),
         ),
         HttpApiEndpoint.delete("remove", SessionPaths.remove, {
@@ -221,7 +244,8 @@ export const SessionApi = HttpApi.make("session")
           OpenApi.annotations({
             identifier: "session.delete",
             summary: "Delete session",
-            description: "Delete a session and permanently remove all associated data, including messages and history.",
+            description:
+              "Delete a session and permanently remove all associated data, including messages and history.",
           }),
         ),
         HttpApiEndpoint.patch("update", SessionPaths.update, {
@@ -234,7 +258,8 @@ export const SessionApi = HttpApi.make("session")
           OpenApi.annotations({
             identifier: "session.update",
             summary: "Update session",
-            description: "Update properties of an existing session, such as title or other metadata.",
+            description:
+              "Update properties of an existing session, such as title or other metadata.",
           }),
         ),
         HttpApiEndpoint.post("fork", SessionPaths.fork, {
@@ -247,7 +272,8 @@ export const SessionApi = HttpApi.make("session")
           OpenApi.annotations({
             identifier: "session.fork",
             summary: "Fork session",
-            description: "Create a new session by forking an existing session at a specific message point.",
+            description:
+              "Create a new session by forking an existing session at a specific message point.",
           }),
         ),
         HttpApiEndpoint.post("abort", SessionPaths.abort, {
@@ -259,7 +285,8 @@ export const SessionApi = HttpApi.make("session")
           OpenApi.annotations({
             identifier: "session.abort",
             summary: "Abort session",
-            description: "Abort an active session and stop any ongoing AI processing or command execution.",
+            description:
+              "Abort an active session and stop any ongoing AI processing or command execution.",
           }),
         ),
         HttpApiEndpoint.post("init", SessionPaths.init, {
@@ -285,7 +312,8 @@ export const SessionApi = HttpApi.make("session")
           OpenApi.annotations({
             identifier: "session.share",
             summary: "Share session",
-            description: "Create a shareable link for a session, allowing others to view the conversation.",
+            description:
+              "Create a shareable link for a session, allowing others to view the conversation.",
           }),
         ),
         HttpApiEndpoint.delete("unshare", SessionPaths.share, {
@@ -310,7 +338,8 @@ export const SessionApi = HttpApi.make("session")
           OpenApi.annotations({
             identifier: "session.summarize",
             summary: "Summarize session",
-            description: "Generate a concise summary of the session using AI compaction to preserve key information.",
+            description:
+              "Generate a concise summary of the session using AI compaction to preserve key information.",
           }),
         ),
         HttpApiEndpoint.post("prompt", SessionPaths.prompt, {
@@ -363,7 +392,8 @@ export const SessionApi = HttpApi.make("session")
           OpenApi.annotations({
             identifier: "session.shell",
             summary: "Run shell command",
-            description: "Execute a shell command within the session context and return the AI's response.",
+            description:
+              "Execute a shell command within the session context and return the AI's response.",
           }),
         ),
         HttpApiEndpoint.post("revert", SessionPaths.revert, {
@@ -459,4 +489,4 @@ export const SessionApi = HttpApi.make("session")
       version: "0.0.1",
       description: "Experimental HttpApi surface for selected instance routes.",
     }),
-  )
+  );

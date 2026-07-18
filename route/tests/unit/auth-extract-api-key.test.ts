@@ -97,14 +97,14 @@ test("extractApiKey extracts a path-scoped token from /api/v1/vscode/<token>/...
 
 test("extractApiKey extracts a path-scoped token from /api/v1/vscode/raw/<token>/...", () => {
   const req = new Request(
-    "https://omniroute.test/api/v1/vscode/raw/sk-test-path-token/api/version"
+    "https://omniroute.test/api/v1/vscode/raw/sk-test-path-token/api/version",
   );
   assert.equal(extractApiKey(req), "sk-test-path-token");
 });
 
 test("extractApiKey extracts a path-scoped token from /api/v1/vscode/combos/<token>/...", () => {
   const req = new Request(
-    "https://omniroute.test/api/v1/vscode/combos/sk-test-path-token/api/version"
+    "https://omniroute.test/api/v1/vscode/combos/sk-test-path-token/api/version",
   );
   assert.equal(extractApiKey(req), "sk-test-path-token");
 });

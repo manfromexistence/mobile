@@ -43,7 +43,7 @@ function getTargetContextWindow(target: ResolvedComboTarget): number | null {
 export function applyContextRequirements(
   targets: ResolvedComboTarget[],
   requirements: ContextRequirements | undefined,
-  log: ComboLogger
+  log: ComboLogger,
 ): ResolvedComboTarget[] {
   if (!requirements || targets.length === 0) return targets;
 
@@ -73,11 +73,11 @@ export function applyContextRequirements(
     if (filtered.length < beforeFilterCount) {
       log.info(
         "COMBO",
-        `Context requirements: filtered ${beforeFilterCount} → ${filtered.length} targets (minContextWindow: ${minContextWindow}, mode: ${contextFilterMode})`
+        `Context requirements: filtered ${beforeFilterCount} → ${filtered.length} targets (minContextWindow: ${minContextWindow}, mode: ${contextFilterMode})`,
       );
       log.debug?.(
         "COMBO",
-        `Context requirements: kept models ${filtered.map((t) => t.modelStr).join(", ")}`
+        `Context requirements: kept models ${filtered.map((t) => t.modelStr).join(", ")}`,
       );
     }
   }
@@ -97,7 +97,7 @@ export function applyContextRequirements(
           const ctx = getTargetContextWindow(t);
           return `${t.modelStr}(${ctx === null ? "unknown" : ctx})`;
         })
-        .join(", ")}`
+        .join(", ")}`,
     );
   }
 

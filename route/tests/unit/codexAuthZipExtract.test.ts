@@ -106,7 +106,7 @@ test("extractCodexAuthZip: rejects total size exceeding cap", () => {
         maxFileSizeBytes: 5 * 1024 * 1024,
         maxTotalSizeBytes: 10 * 1024 * 1024,
       }),
-    /total/i
+    /total/i,
   );
 });
 

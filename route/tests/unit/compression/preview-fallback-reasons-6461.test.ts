@@ -37,7 +37,7 @@ test("#6461 preview exposes fallbackReasons and mirrors it into skippedReasons",
     makeReq({
       messages: [{ role: "user", content: "$ git status\nOn branch main\nnothing to commit" }],
       engineId: "rtk",
-    })
+    }),
   );
   assert.equal(res.status, 200);
   const body = await res.json();
@@ -46,7 +46,7 @@ test("#6461 preview exposes fallbackReasons and mirrors it into skippedReasons",
   assert.deepEqual(
     body.skippedReasons,
     body.fallbackReasons,
-    "skippedReasons must mirror fallbackReasons"
+    "skippedReasons must mirror fallbackReasons",
   );
   // Happy path (no fallback): both empty, and fallbackReason is null.
   if (body.fallbackApplied !== true) {

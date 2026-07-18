@@ -45,7 +45,7 @@ function buildExecServerMessage(
   execMsgId: number,
   execId: string,
   variantField: number,
-  variantPayload: Buffer
+  variantPayload: Buffer,
 ): Buffer {
   return Buffer.concat([
     varintField(1, execMsgId),

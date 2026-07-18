@@ -1,6 +1,6 @@
-import { memo } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '../shader-mount.js';
-import { colorPropsAreEqual } from '../color-props-are-equal.js';
+import { memo } from "react";
+import { ShaderMount, type ShaderComponentProps } from "../shader-mount.js";
+import { colorPropsAreEqual } from "../color-props-are-equal.js";
 import {
   defaultObjectSizing,
   getShaderColorFromString,
@@ -10,20 +10,20 @@ import {
   type ShaderPreset,
   type SmokeRingParams,
   type SmokeRingUniforms,
-} from '@paper-design/shaders';
+} from "@paper-design/shaders";
 
 export interface SmokeRingProps extends ShaderComponentProps, SmokeRingParams {}
 
 type SmokeRingPreset = ShaderPreset<SmokeRingParams>;
 
 export const defaultPreset: SmokeRingPreset = {
-  name: 'Default',
+  name: "Default",
   params: {
     ...defaultObjectSizing,
     speed: 0.5,
     frame: 0,
-    colorBack: '#000000',
-    colors: ['#ffffff'],
+    colorBack: "#000000",
+    colors: ["#ffffff"],
     noiseScale: 3,
     noiseIterations: 8,
     radius: 0.25,
@@ -34,13 +34,13 @@ export const defaultPreset: SmokeRingPreset = {
 };
 
 export const solarPreset: SmokeRingPreset = {
-  name: 'Solar',
+  name: "Solar",
   params: {
     ...defaultObjectSizing,
     speed: 1,
     frame: 0,
-    colorBack: '#000000',
-    colors: ['#ffffff', '#ffca0a', '#fc6203', '#fc620366'],
+    colorBack: "#000000",
+    colors: ["#ffffff", "#ffca0a", "#fc6203", "#fc620366"],
     noiseScale: 2,
     noiseIterations: 3,
     radius: 0.4,
@@ -52,12 +52,12 @@ export const solarPreset: SmokeRingPreset = {
 };
 
 export const linePreset: SmokeRingPreset = {
-  name: 'Line',
+  name: "Line",
   params: {
     ...defaultObjectSizing,
     frame: 0,
-    colorBack: '#000000',
-    colors: ['#4540a4', '#1fe8ff'],
+    colorBack: "#000000",
+    colors: ["#4540a4", "#1fe8ff"],
     noiseScale: 1.1,
     noiseIterations: 2,
     radius: 0.38,
@@ -68,12 +68,12 @@ export const linePreset: SmokeRingPreset = {
 };
 
 export const cloudPreset: SmokeRingPreset = {
-  name: 'Cloud',
+  name: "Cloud",
   params: {
     ...defaultObjectSizing,
     frame: 0,
-    colorBack: '#81ADEC',
-    colors: ['#ffffff'],
+    colorBack: "#81ADEC",
+    colors: ["#ffffff"],
     noiseScale: 3,
     noiseIterations: 10,
     radius: 0.5,
@@ -84,7 +84,12 @@ export const cloudPreset: SmokeRingPreset = {
   },
 };
 
-export const smokeRingPresets: SmokeRingPreset[] = [defaultPreset, linePreset, solarPreset, cloudPreset];
+export const smokeRingPresets: SmokeRingPreset[] = [
+  defaultPreset,
+  linePreset,
+  solarPreset,
+  cloudPreset,
+];
 
 export const SmokeRing: React.FC<SmokeRingProps> = memo(function SmokeRingImpl({
   // Own props
@@ -135,6 +140,12 @@ export const SmokeRing: React.FC<SmokeRingProps> = memo(function SmokeRingImpl({
   } satisfies SmokeRingUniforms;
 
   return (
-    <ShaderMount {...props} speed={speed} frame={frame} fragmentShader={smokeRingFragmentShader} uniforms={uniforms} />
+    <ShaderMount
+      {...props}
+      speed={speed}
+      frame={frame}
+      fragmentShader={smokeRingFragmentShader}
+      uniforms={uniforms}
+    />
   );
 }, colorPropsAreEqual);

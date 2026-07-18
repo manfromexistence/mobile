@@ -17,8 +17,9 @@ const {
   semanticCacheModule,
 } = harness;
 
-const { getBackgroundDegradationConfig } =
-  await import("../../open-sse/services/backgroundTaskDetector.ts");
+const { getBackgroundDegradationConfig } = await import(
+  "../../open-sse/services/backgroundTaskDetector.ts"
+);
 const { setCustomAliases } = await import("../../open-sse/services/modelDeprecation.ts");
 const { setModelAlias } = await import("../../src/lib/db/models.ts");
 
@@ -59,7 +60,7 @@ test("handleChat resolves model alias before routing", async () => {
         stream: false,
         messages: [{ role: "user", content: "Test alias" }],
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 200, "Should succeed with 200 OK");
@@ -89,7 +90,7 @@ test("Test 3: handleChat returns cached response directly for Semantic Cache hit
         ],
         usage: { prompt_tokens: 2, completion_tokens: 4, total_tokens: 6 },
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   };
 
@@ -138,7 +139,7 @@ test("Test 4: handleChat supports X-OmniRoute-Progress tracking header for strea
       {
         status: 200,
         headers: { "Content-Type": "text/event-stream" },
-      }
+      },
     );
   };
 
@@ -152,7 +153,7 @@ test("Test 4: handleChat supports X-OmniRoute-Progress tracking header for strea
         stream: true,
         messages: [{ role: "user", content: "progress check" }],
       },
-    })
+    }),
   );
 
   assert.equal(response.status, 200);
@@ -170,15 +171,15 @@ test("Test 5: isTokenExpiringSoon detects token boundaries", async () => {
   assert.equal(isTokenExpiringSoon(null), false);
   assert.equal(
     isTokenExpiringSoon(new Date(now + 10 * 60 * 1000).toISOString(), 5 * 60 * 1000),
-    false
+    false,
   );
   assert.equal(
     isTokenExpiringSoon(new Date(now + 2 * 60 * 1000).toISOString(), 5 * 60 * 1000),
-    true
+    true,
   );
   assert.equal(
     isTokenExpiringSoon(new Date(now - 1 * 60 * 1000).toISOString(), 5 * 60 * 1000),
-    true
+    true,
   );
 });
 
@@ -198,7 +199,7 @@ test("handleChat returns cached response directly for Idempotency hits", async (
     buildRequest({
       headers: { "idempotency-key": "req-idempotent-123" },
       body: reqBody,
-    })
+    }),
   );
   await response1.json(); // Consume body
 
@@ -206,7 +207,7 @@ test("handleChat returns cached response directly for Idempotency hits", async (
     buildRequest({
       headers: { "idempotency-key": "req-idempotent-123" },
       body: reqBody,
-    })
+    }),
   );
 
   const json2 = (await response2.json()) as any;
@@ -227,7 +228,7 @@ test("Test 6: handleChat correctly sets isResponsesEndpoint for /v1/responses", 
           { message: { role: "assistant", content: "Responses OK" }, finish_reason: "stop" },
         ],
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   };
 
@@ -242,7 +243,7 @@ test("Test 6: handleChat correctly sets isResponsesEndpoint for /v1/responses", 
         stream: false,
         messages: [{ role: "user", content: "hi" }],
       }),
-    })
+    }),
   );
 
   const json = (await response.json()) as any;

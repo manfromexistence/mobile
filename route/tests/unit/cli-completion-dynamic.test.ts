@@ -90,6 +90,6 @@ test("completion scripts incluem combos/providers/models no cache dinamicamente"
   const out = chunks.join("");
   assert.ok(
     out.includes("completion-cache.json") || out.includes("omniroute_get_cache"),
-    "should reference cache"
+    "should reference cache",
   );
 });

@@ -63,7 +63,7 @@ test("movePath falls back to copy/remove when rename raises EXDEV", async () => 
     assert.equal(fsSync.existsSync(sourceDir), false);
     assert.equal(
       await fs.readFile(path.join(destinationDir, "nested", "file.txt"), "utf8"),
-      "legacy payload"
+      "legacy payload",
     );
     assert.match(warnings[0] ?? "", /EXDEV while moving/);
   });
@@ -89,7 +89,7 @@ test("movePath rethrows non-EXDEV rename failures", async () => {
           throw new Error("remove fallback should not run");
         },
       }),
-      (error) => error instanceof Error && "code" in error && error.code === "EACCES"
+      (error) => error instanceof Error && "code" in error && error.code === "EACCES",
     );
   });
 });
@@ -117,11 +117,11 @@ test("resolveNextBuildEnv raises the Node heap for memory-constrained local buil
   const match = (env.NODE_OPTIONS ?? "").match(/--max-old-space-size=(\d+)/);
   assert.ok(
     match,
-    "local build must set NODE_OPTIONS --max-old-space-size to avoid the webpack-pass OOM"
+    "local build must set NODE_OPTIONS --max-old-space-size to avoid the webpack-pass OOM",
   );
   assert.ok(
     Number(match[1]) >= 4096,
-    `build heap default must be >= 4096 MB (the V8 default ~2 GB OOMed); got ${match[1]}`
+    `build heap default must be >= 4096 MB (the V8 default ~2 GB OOMed); got ${match[1]}`,
   );
 });
 
@@ -144,11 +144,11 @@ test("getTransientBuildPaths leaves _tasks in place by default", () => {
   // transient path left is the Wine prefix. ("legacy app snapshot" is gone.)
   assert.deepEqual(
     paths.map((entry) => entry.label),
-    ["local Wine prefix"]
+    ["local Wine prefix"],
   );
   assert.equal(
     paths.some((entry) => path.basename(entry.sourcePath) === "_tasks"),
-    false
+    false,
   );
 });
 
@@ -157,7 +157,7 @@ test("getTransientBuildPaths only moves _tasks when explicitly enabled", () => {
 
   assert.equal(
     paths.some((entry) => path.basename(entry.sourcePath) === "_tasks"),
-    true
+    true,
   );
 });
 
@@ -172,7 +172,7 @@ test("pruneStandaloneArtifacts removes traced _tasks from standalone output", as
 
     assert.equal(
       fsSync.existsSync(path.join(tempDir, ".build", "next", "standalone", "_tasks")),
-      false
+      false,
     );
   });
 });
@@ -184,7 +184,7 @@ test("syncStandaloneNativeAssets copies wreq-js native runtime into standalone o
       "node_modules",
       "wreq-js",
       "rust",
-      "wreq-js.linux-x64-gnu.node"
+      "wreq-js.linux-x64-gnu.node",
     );
     const destinationNativeFile = path.join(
       tempDir,
@@ -194,7 +194,7 @@ test("syncStandaloneNativeAssets copies wreq-js native runtime into standalone o
       "node_modules",
       "wreq-js",
       "rust",
-      "wreq-js.linux-x64-gnu.node"
+      "wreq-js.linux-x64-gnu.node",
     );
     const logs: string[] = [];
 

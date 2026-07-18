@@ -9,8 +9,9 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 
-const { sha3_512Hex, sha3_512HexJs, __setSha3NativeForTesting } =
-  await import("../../open-sse/utils/sha3-512.ts");
+const { sha3_512Hex, sha3_512HexJs, __setSha3NativeForTesting } = await import(
+  "../../open-sse/utils/sha3-512.ts"
+);
 
 // FIPS-202 known-answer vectors for SHA3-512.
 const FIPS: Record<string, string> = {
@@ -71,12 +72,12 @@ test("sha3_512Hex uses the native digest where available (parity with fallback)"
 
 test("chatgpt-web PoW routes SHA3-512 through the portable helper, not inline createHash (#5531 guard)", async () => {
   const execPath = fileURLToPath(
-    new URL("../../open-sse/executors/chatgpt-web.ts", import.meta.url)
+    new URL("../../open-sse/executors/chatgpt-web.ts", import.meta.url),
   );
   const src = await readFile(execPath, "utf8");
   assert.ok(
     !/createHash\(\s*["']sha3-512["']\s*\)/.test(src),
-    "PoW must NOT call native createHash('sha3-512') inline — it crashes under Electron/BoringSSL"
+    "PoW must NOT call native createHash('sha3-512') inline — it crashes under Electron/BoringSSL",
   );
   assert.ok(/sha3_512Hex\s*\(/.test(src), "chatgpt-web PoW must hash via sha3_512Hex()");
 });

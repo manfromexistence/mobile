@@ -53,11 +53,11 @@ export interface AutoComboConfig {
 export class BudgetExceededError extends Error {
   constructor(
     public readonly budgetCap: number,
-    public readonly cheapestCostUsd: number
+    public readonly cheapestCostUsd: number,
   ) {
     super(
       `No candidate fits within the configured budget cap of $${budgetCap.toFixed(4)} ` +
-        `(cheapest available candidate costs $${cheapestCostUsd.toFixed(4)})`
+        `(cheapest available candidate costs $${cheapestCostUsd.toFixed(4)})`,
     );
     this.name = "BudgetExceededError";
   }
@@ -110,12 +110,15 @@ class ScoreTierRotator {
     const tiers = groupIntoTiers(candidates);
     const best = candidates[0].score;
     const worst = candidates[candidates.length - 1].score;
-    if (tiers.top.length > 0 && (best - worst) >= CLEAR_WINNER_THRESHOLD) {
+    if (tiers.top.length > 0 && best - worst >= CLEAR_WINNER_THRESHOLD) {
       return this.pickFromPool(tiers.top);
     }
     const prefs = tierPreferencesForName(this.comboName);
-    const chosen = chooseTierWeighted(tiers, prefs, (pool) => this.pickFromPool(pool), () =>
-      this.advance(tiers, prefs, candidates)
+    const chosen = chooseTierWeighted(
+      tiers,
+      prefs,
+      (pool) => this.pickFromPool(pool),
+      () => this.advance(tiers, prefs, candidates),
     );
     return chosen;
   }
@@ -123,7 +126,7 @@ class ScoreTierRotator {
   private advance(
     tiers: Record<TierName, ScoredProvider[]>,
     prefs: Record<TierName, number>,
-    candidates: ScoredProvider[]
+    candidates: ScoredProvider[],
   ): ScoredProvider {
     const order: TierName[] = ["top", "mid", "rest"];
     for (const tier of order) {
@@ -175,7 +178,7 @@ function chooseTierWeighted(
   tiers: Record<TierName, ScoredProvider[]>,
   prefs: Record<TierName, number>,
   pickFromPool: (pool: ScoredProvider[]) => ScoredProvider,
-  fallback: () => ScoredProvider
+  fallback: () => ScoredProvider,
 ): ScoredProvider {
   const active = {
     top: tiers.top.length > 0 ? prefs.top : 0,
@@ -215,7 +218,7 @@ export function selectProvider(
   config: AutoComboConfig,
   candidates: ProviderCandidate[],
   taskType: string = "default",
-  promptMessages?: Array<{ role: string; content: unknown }>
+  promptMessages?: Array<{ role: string; content: unknown }>,
 ): SelectionResult {
   const healer = getSelfHealingManager();
 
@@ -319,10 +322,13 @@ export function selectProvider(
         selected = rotator.pick(budgetOk);
       } else {
         const cheapest = [...candidates_].sort(
-          (a, b) => estimatedCostFor(a) - estimatedCostFor(b)
+          (a, b) => estimatedCostFor(a) - estimatedCostFor(b),
         )[0];
         if (config.budgetFallback === "strict") {
-          throw new BudgetExceededError(config.budgetCap, cheapest ? estimatedCostFor(cheapest) : 0);
+          throw new BudgetExceededError(
+            config.budgetCap,
+            cheapest ? estimatedCostFor(cheapest) : 0,
+          );
         }
         if (cheapest) selected = cheapest;
       }

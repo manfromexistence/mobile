@@ -5,7 +5,7 @@ export function applyClaudeCodeCompatibleThinkingDisplay(
   options: {
     normalizedBody?: Record<string, unknown> | null;
     summarizeThinking?: boolean;
-  } = {}
+  } = {},
 ) {
   if (thinking.type === "disabled") {
     return thinking;

@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useControls, button, folder } from 'leva';
-import { setParamsSafe, useResetLevaParams } from '@/helpers/use-reset-leva-params';
-import { usePresetHighlight } from '@/helpers/use-preset-highlight';
-import { cleanUpLevaParams } from '@/helpers/clean-up-leva-params';
+import { useControls, button, folder } from "leva";
+import { setParamsSafe, useResetLevaParams } from "@/helpers/use-reset-leva-params";
+import { usePresetHighlight } from "@/helpers/use-preset-highlight";
+import { cleanUpLevaParams } from "@/helpers/clean-up-leva-params";
 
-import { memo } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '@paper-design/shaders-react';
-import { getShaderColorFromString, type ShaderPreset } from '@paper-design/shaders';
-import { useColors } from '@/helpers/use-colors';
-import { ShaderContainer } from '@/components/shader-container';
+import { memo } from "react";
+import { ShaderMount, type ShaderComponentProps } from "@paper-design/shaders-react";
+import { getShaderColorFromString, type ShaderPreset } from "@paper-design/shaders";
+import { useColors } from "@/helpers/use-colors";
+import { ShaderContainer } from "@/components/shader-container";
 
 type vec4 = [number, number, number, number];
 const gradientDemoMixerMaxColorCount = 10;
@@ -98,13 +98,18 @@ interface GradientDemoMixerProps extends ShaderComponentProps, GradientDemoMixer
 type GradientDemoMixerPreset = ShaderPreset<GradientDemoMixerParams>;
 
 const defaultPreset: GradientDemoMixerPreset = {
-  name: 'Default',
+  name: "Default",
   params: {
     shape: 1,
     softness: 0.5,
     test: 1,
     extraSides: true,
-    colors: ['hsla(259, 29%, 73%, 1)', 'hsla(263, 57%, 39%, 1)', 'hsla(48, 73%, 84%, 1)', 'hsla(295, 32%, 70%, 1)'],
+    colors: [
+      "hsla(259, 29%, 73%, 1)",
+      "hsla(263, 57%, 39%, 1)",
+      "hsla(48, 73%, 84%, 1)",
+      "hsla(295, 32%, 70%, 1)",
+    ],
   },
 };
 
@@ -127,7 +132,9 @@ const GradientDemoMixer: React.FC<GradientDemoMixerProps> = memo(function Gradie
     u_test: test ?? defaultPreset.params.test,
   };
 
-  return <ShaderMount {...props} fragmentShader={gradientDemoMixerFragmentShader} uniforms={uniforms} />;
+  return (
+    <ShaderMount {...props} fragmentShader={gradientDemoMixerFragmentShader} uniforms={uniforms} />
+  );
 });
 
 const defaults = gradientDemoMixerPresets[0].params;
@@ -149,7 +156,7 @@ export default function Page() {
             setColors(colors);
           }),
         ];
-      })
+      }),
     );
 
     return {
@@ -160,7 +167,7 @@ export default function Page() {
           test: { value: defaults.test, min: 0, max: 3, step: 1, order: 2 },
           softness: { value: defaults.softness, min: 0, max: 1, order: 3 },
         },
-        { order: 1 }
+        { order: 1 },
       ),
       Presets: folder(presets as Record<string, string>, { order: 2 }),
     };
@@ -207,7 +214,9 @@ export default function Page() {
   return (
     <ShaderContainer>
       <div className="relative flex h-full flex-col">
-        <div className="absolute top-1/3 left-0 p-2 font-bold whitespace-pre text-white">{getBlending()}</div>
+        <div className="absolute top-1/3 left-0 p-2 font-bold whitespace-pre text-white">
+          {getBlending()}
+        </div>
         <GradientDemoMixer {...params} colors={colors} className="h-full" />
       </div>
     </ShaderContainer>

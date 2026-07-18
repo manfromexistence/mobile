@@ -38,12 +38,12 @@ export default function RequestCountByProviderDateTable({ range }: { range: stri
         setSortOrder("desc");
       }
     },
-    [sortBy]
+    [sortBy],
   );
 
   const sorted = useMemo(
     () => sortProviderDailyUsageRows(rows, sortBy, sortOrder),
-    [rows, sortBy, sortOrder]
+    [rows, sortBy, sortOrder],
   );
 
   return (

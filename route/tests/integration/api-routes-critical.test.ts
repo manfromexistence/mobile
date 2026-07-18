@@ -67,12 +67,12 @@ test("critical routes: v1 management proxies covers auth, lookup, where-used, pa
   await createManagementKey();
 
   const unauthenticated = await proxiesRoute.GET(
-    new Request("http://localhost/api/v1/management/proxies")
+    new Request("http://localhost/api/v1/management/proxies"),
   );
   const invalidToken = await proxiesRoute.GET(
     new Request("http://localhost/api/v1/management/proxies", {
       headers: { authorization: "Bearer sk-invalid" },
-    })
+    }),
   );
   const createResponse = await proxiesRoute.POST(
     await makeManagementSessionRequest("http://localhost/api/v1/management/proxies", {
@@ -83,7 +83,7 @@ test("critical routes: v1 management proxies covers auth, lookup, where-used, pa
         host: "branch.local",
         port: 8080,
       },
-    })
+    }),
   );
   const created = (await createResponse.json()) as any;
 
@@ -91,56 +91,56 @@ test("critical routes: v1 management proxies covers auth, lookup, where-used, pa
 
   const getById = await proxiesRoute.GET(
     await makeManagementSessionRequest(
-      `http://localhost/api/v1/management/proxies?id=${created.id}`
-    )
+      `http://localhost/api/v1/management/proxies?id=${created.id}`,
+    ),
   );
   const whereUsed = await proxiesRoute.GET(
     await makeManagementSessionRequest(
-      `http://localhost/api/v1/management/proxies?id=${created.id}&where_used=1`
-    )
+      `http://localhost/api/v1/management/proxies?id=${created.id}&where_used=1`,
+    ),
   );
   const missingGet = await proxiesRoute.GET(
-    await makeManagementSessionRequest("http://localhost/api/v1/management/proxies?id=missing")
+    await makeManagementSessionRequest("http://localhost/api/v1/management/proxies?id=missing"),
   );
   const invalidJsonPatch = await proxiesRoute.PATCH(
     await makeManagementSessionRequest("http://localhost/api/v1/management/proxies", {
       method: "PATCH",
       headers: { "content-type": "application/json" },
       body: "{",
-    })
+    }),
   );
   const invalidPatch = await proxiesRoute.PATCH(
     await makeManagementSessionRequest("http://localhost/api/v1/management/proxies", {
       method: "PATCH",
       body: {},
-    })
+    }),
   );
   const validPatch = await proxiesRoute.PATCH(
     await makeManagementSessionRequest("http://localhost/api/v1/management/proxies", {
       method: "PATCH",
       body: { id: created.id, host: "patched.local", notes: "updated" },
-    })
+    }),
   );
   const missingDelete = await proxiesRoute.DELETE(
     await makeManagementSessionRequest("http://localhost/api/v1/management/proxies", {
       method: "DELETE",
-    })
+    }),
   );
   const conflictDelete = await proxiesRoute.DELETE(
     await makeManagementSessionRequest(
       `http://localhost/api/v1/management/proxies?id=${created.id}`,
       {
         method: "DELETE",
-      }
-    )
+      },
+    ),
   );
   const forcedDelete = await proxiesRoute.DELETE(
     await makeManagementSessionRequest(
       `http://localhost/api/v1/management/proxies?id=${created.id}&force=1`,
       {
         method: "DELETE",
-      }
-    )
+      },
+    ),
   );
 
   const unauthenticatedBody = (await unauthenticated.json()) as any;
@@ -189,13 +189,13 @@ test("critical routes: v1 management proxies validates create payloads and clamp
       method: "POST",
       headers: { "content-type": "application/json" },
       body: "{",
-    })
+    }),
   );
   const invalidPost = await proxiesRoute.POST(
     await makeManagementSessionRequest("http://localhost/api/v1/management/proxies", {
       method: "POST",
       body: {},
-    })
+    }),
   );
 
   const createdIds = [];
@@ -209,7 +209,7 @@ test("critical routes: v1 management proxies validates create payloads and clamp
           host: `paged-${index + 1}.local`,
           port: 8000 + index,
         },
-      })
+      }),
     );
     const created = (await createResponse.json()) as any;
     createdIds.push(created.id);
@@ -218,19 +218,19 @@ test("critical routes: v1 management proxies validates create payloads and clamp
 
   const pagedList = await proxiesRoute.GET(
     await makeManagementSessionRequest(
-      "http://localhost/api/v1/management/proxies?limit=999&offset=-5"
-    )
+      "http://localhost/api/v1/management/proxies?limit=999&offset=-5",
+    ),
   );
   const missingPatch = await proxiesRoute.PATCH(
     await makeManagementSessionRequest("http://localhost/api/v1/management/proxies", {
       method: "PATCH",
       body: { id: "missing", host: "absent.local" },
-    })
+    }),
   );
   const missingDelete = await proxiesRoute.DELETE(
     await makeManagementSessionRequest("http://localhost/api/v1/management/proxies?id=missing", {
       method: "DELETE",
-    })
+    }),
   );
 
   const invalidJsonPostBody = (await invalidJsonPost.json()) as any;
@@ -265,7 +265,7 @@ test("critical routes: v1 management proxies requires auth on mutating routes", 
         host: "denied.local",
         port: 8080,
       },
-    })
+    }),
   );
   const invalidPost = await proxiesRoute.POST(
     makeRequest("http://localhost/api/v1/management/proxies", {
@@ -277,31 +277,31 @@ test("critical routes: v1 management proxies requires auth on mutating routes", 
         host: "denied.local",
         port: 8080,
       },
-    })
+    }),
   );
   const unauthenticatedPatch = await proxiesRoute.PATCH(
     makeRequest("http://localhost/api/v1/management/proxies", {
       method: "PATCH",
       body: { id: "proxy-1", host: "patched.local" },
-    })
+    }),
   );
   const invalidPatch = await proxiesRoute.PATCH(
     makeRequest("http://localhost/api/v1/management/proxies", {
       method: "PATCH",
       token: "sk-invalid",
       body: { id: "proxy-1", host: "patched.local" },
-    })
+    }),
   );
   const unauthenticatedDelete = await proxiesRoute.DELETE(
     makeRequest("http://localhost/api/v1/management/proxies?id=proxy-1", {
       method: "DELETE",
-    })
+    }),
   );
   const invalidDelete = await proxiesRoute.DELETE(
     makeRequest("http://localhost/api/v1/management/proxies?id=proxy-1", {
       method: "DELETE",
       token: "sk-invalid",
-    })
+    }),
   );
 
   for (const response of [unauthenticatedPost, unauthenticatedPatch, unauthenticatedDelete]) {
@@ -330,13 +330,13 @@ test("critical routes: settings proxy resolves config, validates payloads, and d
       method: "PUT",
       headers: { "content-type": "application/json" },
       body: "{",
-    })
+    }),
   );
   const invalidProviders = await settingsProxyRoute.PUT(
     makeRequest("http://localhost/api/settings/proxy", {
       method: "PUT",
       body: { providers: "not-an-object" },
-    })
+    }),
   );
   const setProviderProxy = await settingsProxyRoute.PUT(
     makeRequest("http://localhost/api/settings/proxy", {
@@ -351,24 +351,24 @@ test("critical routes: settings proxy resolves config, validates payloads, and d
           username: "alice",
         },
       },
-    })
+    }),
   );
   const getProviderProxy = await settingsProxyRoute.GET(
-    new Request("http://localhost/api/settings/proxy?level=provider&id=openai")
+    new Request("http://localhost/api/settings/proxy?level=provider&id=openai"),
   );
   const resolveProxy = await settingsProxyRoute.GET(
-    new Request(`http://localhost/api/settings/proxy?resolve=${connection.id}`)
+    new Request(`http://localhost/api/settings/proxy?resolve=${connection.id}`),
   );
   const missingLevelDelete = await settingsProxyRoute.DELETE(
-    new Request("http://localhost/api/settings/proxy")
+    new Request("http://localhost/api/settings/proxy"),
   );
   const deleteProviderProxy = await settingsProxyRoute.DELETE(
     new Request("http://localhost/api/settings/proxy?level=provider&id=openai", {
       method: "DELETE",
-    })
+    }),
   );
   const getFullConfig = await settingsProxyRoute.GET(
-    new Request("http://localhost/api/settings/proxy")
+    new Request("http://localhost/api/settings/proxy"),
   );
 
   const invalidJsonBody = (await invalidJson.json()) as any;
@@ -412,7 +412,7 @@ test("critical routes: settings proxy prefers registry assignment for global loo
   await localDb.assignProxyToScope("global", null, proxy.id);
 
   const response = await settingsProxyRoute.GET(
-    new Request("http://localhost/api/settings/proxy?level=global")
+    new Request("http://localhost/api/settings/proxy?level=global"),
   );
   const body = (await response.json()) as any;
 
@@ -431,7 +431,7 @@ test("critical routes: MITM settings reject non-443 transparent interception por
   fs.writeFileSync(path.join(mitmDir, "settings.json"), JSON.stringify({ port: 9443 }));
 
   const staleConfig = await settingsMitmRoute.GET(
-    await makeManagementSessionRequest("http://localhost/api/settings/mitm")
+    await makeManagementSessionRequest("http://localhost/api/settings/mitm"),
   );
   const staleConfigBody = (await staleConfig.json()) as any;
 
@@ -439,7 +439,7 @@ test("critical routes: MITM settings reject non-443 transparent interception por
     await makeManagementSessionRequest("http://localhost/api/settings/mitm", {
       method: "PUT",
       body: { port: 9443 },
-    })
+    }),
   );
   const invalidPortBody = (await invalidPort.json()) as any;
 
@@ -447,14 +447,14 @@ test("critical routes: MITM settings reject non-443 transparent interception por
     await makeManagementSessionRequest("http://localhost/api/settings/mitm", {
       method: "PUT",
       body: { port: 443 },
-    })
+    }),
   );
   const validPortBody = (await validPort.json()) as any;
   const staleAntigravityTarget = staleConfigBody.targets.find(
-    (target: any) => target.id === "antigravity"
+    (target: any) => target.id === "antigravity",
   );
   const validAntigravityTarget = validPortBody.targets.find(
-    (target: any) => target.id === "antigravity"
+    (target: any) => target.id === "antigravity",
   );
 
   assert.equal(staleConfig.status, 200);
@@ -479,10 +479,10 @@ test("critical routes: settings proxy covers global fallback and socks5 gating",
           port: 9443,
         },
       },
-    })
+    }),
   );
   const getLegacyGlobalProxy = await settingsProxyRoute.GET(
-    new Request("http://localhost/api/settings/proxy?level=global")
+    new Request("http://localhost/api/settings/proxy?level=global"),
   );
   // SOCKS5 is now enabled by default (opt-out via ENABLE_SOCKS5_PROXY); set it false
   // explicitly to exercise the disabled-rejection path (an unset env now means enabled).
@@ -499,7 +499,7 @@ test("critical routes: settings proxy covers global fallback and socks5 gating",
           port: 1080,
         },
       },
-    })
+    }),
   );
 
   process.env.ENABLE_SOCKS5_PROXY = "true";
@@ -515,7 +515,7 @@ test("critical routes: settings proxy covers global fallback and socks5 gating",
           port: 1080,
         },
       },
-    })
+    }),
   );
 
   const setLegacyGlobalProxyBody = (await setLegacyGlobalProxy.json()) as any;
@@ -536,7 +536,7 @@ test("critical routes: settings proxy covers global fallback and socks5 gating",
 test("critical routes: v1 models route exposes CORS and list contracts", async () => {
   const options = await v1ModelsRoute.OPTIONS();
   const response = await v1ModelsRoute.GET(
-    new Request("http://localhost/api/v1/models", { method: "GET" })
+    new Request("http://localhost/api/v1/models", { method: "GET" }),
   );
   const body = (await response.json()) as any;
 

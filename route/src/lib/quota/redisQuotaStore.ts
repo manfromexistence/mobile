@@ -16,10 +16,7 @@
  * Part of: Group B — Quota Sharing Engine (plan 22, frente F6).
  */
 
-import {
-  getPool,
-  listAllocationsForApiKey,
-} from "@/lib/localDb";
+import { getPool, listAllocationsForApiKey } from "@/lib/localDb";
 import { WINDOW_MS, dimensionKeyToString } from "./dimensions";
 import type { DimensionKey } from "./dimensions";
 import type { QuotaStore, PoolUsageSnapshot } from "./types";
@@ -91,7 +88,7 @@ function slidingWindowEffective(
   curr: number,
   prev: number,
   nowMs: number,
-  windowMs: number
+  windowMs: number,
 ): number {
   const currentBucketIndex = Math.floor(nowMs / windowMs);
   const currentBucketStartMs = currentBucketIndex * windowMs;
@@ -241,7 +238,7 @@ export class RedisQuotaStore implements QuotaStore {
    */
   async poolUsageWithDimensions(
     poolId: string,
-    planDimensions: Array<{ unit: string; window: string; limit: number }>
+    planDimensions: Array<{ unit: string; window: string; limit: number }>,
   ): Promise<PoolUsageSnapshot> {
     const nowMs = Date.now();
     const pool = getPool(poolId);

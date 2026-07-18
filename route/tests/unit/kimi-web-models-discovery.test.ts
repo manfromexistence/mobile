@@ -49,18 +49,18 @@ test("kimi-web model discovery sends Kimi auth as bearer and cookie", async () =
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models?refresh=true`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
     const body = await response.json();
     assert.equal(body.source, "api");
     assert.deepEqual(
       body.models.map((model: { id: string }) => model.id),
-      ["k2d6", "k2d6-thinking"]
+      ["k2d6", "k2d6-thinking"],
     );
     assert.equal(
       captured?.url,
-      "https://www.kimi.com/apiv2/kimi.gateway.config.v1.ConfigService/GetAvailableModels"
+      "https://www.kimi.com/apiv2/kimi.gateway.config.v1.ConfigService/GetAvailableModels",
     );
     assert.equal(captured?.init?.method, "POST");
     assert.equal(captured?.init?.body, "{}");

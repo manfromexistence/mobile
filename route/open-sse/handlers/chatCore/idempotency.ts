@@ -77,7 +77,8 @@ export async function checkIdempotencyCache({
     const idempotentUsage =
       cachedIdemp.response && typeof cachedIdemp.response === "object"
         ? ((cachedIdemp.response as Record<string, unknown>).usage as
-            Record<string, unknown> | undefined)
+            | Record<string, unknown>
+            | undefined)
         : undefined;
     const idempotentCost = idempotentUsage
       ? await calculateCost(provider, model, idempotentUsage as Record<string, number>, {

@@ -1,48 +1,43 @@
-import { beforeEach, expect, jest, test } from "@jest/globals"
-import * as tvmMockImport from "@mlc-ai/web-runtime"
-import * as tokenizerMockImport from "@mlc-ai/web-tokenizers"
+import { beforeEach, expect, jest, test } from "@jest/globals";
+import * as tvmMockImport from "@mlc-ai/web-runtime";
+import * as tokenizerMockImport from "@mlc-ai/web-tokenizers";
 import {
   asyncLoadTokenizer,
   deleteModelInCache,
   getCacheOptions,
   getTensorCacheAccessOptions,
   hasModelInCache,
-} from "../src/cache_util"
-import type { AppConfig } from "../src/config"
-import type { ModelIntegrity } from "../src/integrity"
-import * as integrityModule from "../src/integrity"
+} from "../src/cache_util";
+import type { AppConfig } from "../src/config";
+import type { ModelIntegrity } from "../src/integrity";
+import * as integrityModule from "../src/integrity";
 
 jest.mock("@mlc-ai/web-runtime", () => {
   const state = {
-    hasTensorInCache: jest
-      .fn<() => Promise<boolean>>()
-      .mockResolvedValue(false),
+    hasTensorInCache: jest.fn<() => Promise<boolean>>().mockResolvedValue(false),
     deleteTensorCache: jest.fn(),
-    createArtifactCache:
-      jest.fn<(scope: string, options: unknown) => BaseCache>(),
+    createArtifactCache: jest.fn<(scope: string, options: unknown) => BaseCache>(),
     deletes: [] as Array<{ cache: string; url: string }>,
     fetches: [] as Array<{ cache: string; url: string; format: string }>,
-  }
+  };
   class BaseCache {
     constructor(private name: string) {}
     async deleteInCache(url: string) {
-      state.deletes.push({ cache: this.name, url })
+      state.deletes.push({ cache: this.name, url });
     }
     async fetchWithCache(url: string, format: string) {
-      state.fetches.push({ cache: this.name, url, format })
-      return new ArrayBuffer(4)
+      state.fetches.push({ cache: this.name, url, format });
+      return new ArrayBuffer(4);
     }
   }
-  state.createArtifactCache.mockImplementation(
-    (scope: string) => new BaseCache(scope)
-  )
+  state.createArtifactCache.mockImplementation((scope: string) => new BaseCache(scope));
   return {
     hasTensorInCache: state.hasTensorInCache,
     deleteTensorCache: state.deleteTensorCache,
     createArtifactCache: state.createArtifactCache,
     __cacheState: state,
-  }
-})
+  };
+});
 
 jest.mock("@mlc-ai/web-tokenizers", () => {
   return {
@@ -50,11 +45,11 @@ jest.mock("@mlc-ai/web-tokenizers", () => {
       fromJSON: jest.fn(() => ({ kind: "json" })),
       fromSentencePiece: jest.fn(() => ({ kind: "sp" })),
     },
-  }
-})
+  };
+});
 
-const tvmMock = tvmMockImport as any
-const tokenizerMock = tokenizerMockImport as any
+const tvmMock = tvmMockImport as any;
+const tokenizerMock = tokenizerMockImport as any;
 
 const baseAppConfig: AppConfig = {
   cacheBackend: "cache",
@@ -65,67 +60,64 @@ const baseAppConfig: AppConfig = {
       model_lib: "https://example.com/model.wasm",
     },
   ],
-}
+};
 
 beforeEach(() => {
-  tvmMock.__cacheState.deletes.length = 0
-  tvmMock.__cacheState.fetches.length = 0
-  tvmMock.__cacheState.hasTensorInCache.mockClear()
-  tvmMock.__cacheState.deleteTensorCache.mockClear()
-  tvmMock.__cacheState.createArtifactCache.mockClear()
-  tokenizerMock.Tokenizer.fromJSON.mockClear()
-  tokenizerMock.Tokenizer.fromSentencePiece.mockClear()
-})
+  tvmMock.__cacheState.deletes.length = 0;
+  tvmMock.__cacheState.fetches.length = 0;
+  tvmMock.__cacheState.hasTensorInCache.mockClear();
+  tvmMock.__cacheState.deleteTensorCache.mockClear();
+  tvmMock.__cacheState.createArtifactCache.mockClear();
+  tokenizerMock.Tokenizer.fromJSON.mockClear();
+  tokenizerMock.Tokenizer.fromSentencePiece.mockClear();
+});
 
 test("hasModelInCache delegates to tvm cache helpers", async () => {
-  tvmMock.__cacheState.hasTensorInCache.mockResolvedValueOnce(true)
-  const result = await hasModelInCache("demo-model", baseAppConfig)
-  expect(result).toBe(true)
+  tvmMock.__cacheState.hasTensorInCache.mockResolvedValueOnce(true);
+  const result = await hasModelInCache("demo-model", baseAppConfig);
+  expect(result).toBe(true);
   expect(tvmMock.__cacheState.hasTensorInCache).toHaveBeenCalledWith(
     "https://huggingface.co/mlc-ai/demo-model/resolve/main/",
     {
       cacheScope: "webllm/model",
       cacheType: "cache",
-    }
-  )
-})
+    },
+  );
+});
 
 test("cache option helpers include scope only for tensor cache access", () => {
   const appConfig: AppConfig = {
     ...baseAppConfig,
     cacheBackend: "opfs",
     opfsAccessMode: "auto",
-  }
+  };
   expect(getCacheOptions(appConfig)).toEqual({
     cacheType: "opfs",
     opfsAccessMode: "auto",
-  })
+  });
   expect(getTensorCacheAccessOptions("webllm/model", appConfig)).toEqual({
     cacheScope: "webllm/model",
     cacheType: "opfs",
     opfsAccessMode: "auto",
-  })
-})
+  });
+});
 
 test("deleteModelInCache clears tensors and tokenizer assets for indexeddb cache", async () => {
   const indexedConfig: AppConfig = {
     ...baseAppConfig,
     cacheBackend: "indexeddb",
-  }
-  await deleteModelInCache("demo-model", indexedConfig)
-  expect(tvmMock.__cacheState.createArtifactCache).toHaveBeenCalledWith(
-    "webllm/model",
-    {
-      cacheType: "indexeddb",
-    }
-  )
+  };
+  await deleteModelInCache("demo-model", indexedConfig);
+  expect(tvmMock.__cacheState.createArtifactCache).toHaveBeenCalledWith("webllm/model", {
+    cacheType: "indexeddb",
+  });
   expect(tvmMock.__cacheState.deleteTensorCache).toHaveBeenCalledWith(
     "https://huggingface.co/mlc-ai/demo-model/resolve/main/",
     {
       cacheScope: "webllm/model",
       cacheType: "indexeddb",
-    }
-  )
+    },
+  );
   expect(tvmMock.__cacheState.deletes).toEqual(
     expect.arrayContaining([
       {
@@ -136,172 +128,152 @@ test("deleteModelInCache clears tensors and tokenizer assets for indexeddb cache
         cache: "webllm/model",
         url: "https://huggingface.co/mlc-ai/demo-model/resolve/main/tokenizer.json",
       },
-    ])
-  )
-})
+    ]),
+  );
+});
 
 test("asyncLoadTokenizer prefers tokenizer.json and falls back to sentencepiece", async () => {
   const makeChatConfig = (files: string[]) =>
     ({
       tokenizer_files: files,
-    }) as unknown as import("../src/config").ChatConfig
+    }) as unknown as import("../src/config").ChatConfig;
 
-  const configJson = makeChatConfig(["tokenizer.json"])
-  await asyncLoadTokenizer(
-    baseAppConfig.model_list[0].model,
-    configJson,
-    baseAppConfig
-  )
-  expect(tokenizerMock.Tokenizer.fromJSON).toHaveBeenCalled()
-  expect(tokenizerMock.Tokenizer.fromSentencePiece).not.toHaveBeenCalled()
+  const configJson = makeChatConfig(["tokenizer.json"]);
+  await asyncLoadTokenizer(baseAppConfig.model_list[0].model, configJson, baseAppConfig);
+  expect(tokenizerMock.Tokenizer.fromJSON).toHaveBeenCalled();
+  expect(tokenizerMock.Tokenizer.fromSentencePiece).not.toHaveBeenCalled();
   expect(tvmMock.__cacheState.fetches[0]).toEqual({
     cache: "webllm/model",
     url: "https://huggingface.co/mlc-ai/tokenizer.json",
     format: "arraybuffer",
-  })
+  });
 
-  const configSp = makeChatConfig(["tokenizer.model"])
-  await asyncLoadTokenizer(
-    baseAppConfig.model_list[0].model,
-    configSp,
-    baseAppConfig
-  )
-  expect(tokenizerMock.Tokenizer.fromSentencePiece).toHaveBeenCalled()
-})
+  const configSp = makeChatConfig(["tokenizer.model"]);
+  await asyncLoadTokenizer(baseAppConfig.model_list[0].model, configSp, baseAppConfig);
+  expect(tokenizerMock.Tokenizer.fromSentencePiece).toHaveBeenCalled();
+});
 
 test("asyncLoadTokenizer calls verifyIntegrity for tokenizer.json when integrity is provided", async () => {
-  const verifySpy = jest
-    .spyOn(integrityModule, "verifyIntegrity")
-    .mockResolvedValue(undefined)
+  const verifySpy = jest.spyOn(integrityModule, "verifyIntegrity").mockResolvedValue(undefined);
 
   const configJson = {
     tokenizer_files: ["tokenizer.json"],
-  } as unknown as import("../src/config").ChatConfig
+  } as unknown as import("../src/config").ChatConfig;
 
   const integrity: ModelIntegrity = {
     tokenizer: { "tokenizer.json": "sha256-testHash123=" },
     onFailure: "error",
-  }
+  };
 
   await asyncLoadTokenizer(
     baseAppConfig.model_list[0].model,
     configJson,
     baseAppConfig,
     console.log,
-    integrity
-  )
+    integrity,
+  );
 
-  expect(verifySpy).toHaveBeenCalledTimes(1)
+  expect(verifySpy).toHaveBeenCalledTimes(1);
   expect(verifySpy).toHaveBeenCalledWith(
     expect.any(ArrayBuffer),
     "sha256-testHash123=",
     "https://huggingface.co/mlc-ai/tokenizer.json",
-    "error"
-  )
+    "error",
+  );
 
-  verifySpy.mockRestore()
-})
+  verifySpy.mockRestore();
+});
 
 test("asyncLoadTokenizer calls verifyIntegrity for tokenizer.model when integrity is provided", async () => {
-  const verifySpy = jest
-    .spyOn(integrityModule, "verifyIntegrity")
-    .mockResolvedValue(undefined)
+  const verifySpy = jest.spyOn(integrityModule, "verifyIntegrity").mockResolvedValue(undefined);
 
   const configSp = {
     tokenizer_files: ["tokenizer.model"],
-  } as unknown as import("../src/config").ChatConfig
+  } as unknown as import("../src/config").ChatConfig;
 
   const integrity: ModelIntegrity = {
     tokenizer: { "tokenizer.model": "sha256-spHash456=" },
     onFailure: "warn",
-  }
+  };
 
   await asyncLoadTokenizer(
     baseAppConfig.model_list[0].model,
     configSp,
     baseAppConfig,
     console.log,
-    integrity
-  )
+    integrity,
+  );
 
-  expect(verifySpy).toHaveBeenCalledTimes(1)
+  expect(verifySpy).toHaveBeenCalledTimes(1);
   expect(verifySpy).toHaveBeenCalledWith(
     expect.any(ArrayBuffer),
     "sha256-spHash456=",
     "https://huggingface.co/mlc-ai/tokenizer.model",
-    "warn"
-  )
+    "warn",
+  );
 
-  verifySpy.mockRestore()
-})
+  verifySpy.mockRestore();
+});
 
 test("asyncLoadTokenizer skips verifyIntegrity when no integrity is provided", async () => {
-  const verifySpy = jest
-    .spyOn(integrityModule, "verifyIntegrity")
-    .mockResolvedValue(undefined)
+  const verifySpy = jest.spyOn(integrityModule, "verifyIntegrity").mockResolvedValue(undefined);
 
   const configJson = {
     tokenizer_files: ["tokenizer.json"],
-  } as unknown as import("../src/config").ChatConfig
+  } as unknown as import("../src/config").ChatConfig;
 
-  await asyncLoadTokenizer(
-    baseAppConfig.model_list[0].model,
-    configJson,
-    baseAppConfig
-  )
+  await asyncLoadTokenizer(baseAppConfig.model_list[0].model, configJson, baseAppConfig);
 
-  expect(verifySpy).not.toHaveBeenCalled()
+  expect(verifySpy).not.toHaveBeenCalled();
 
-  verifySpy.mockRestore()
-})
+  verifySpy.mockRestore();
+});
 
 test("asyncLoadTokenizer skips verifyIntegrity when integrity has no tokenizer hashes", async () => {
-  const verifySpy = jest
-    .spyOn(integrityModule, "verifyIntegrity")
-    .mockResolvedValue(undefined)
+  const verifySpy = jest.spyOn(integrityModule, "verifyIntegrity").mockResolvedValue(undefined);
 
   const configJson = {
     tokenizer_files: ["tokenizer.json"],
-  } as unknown as import("../src/config").ChatConfig
+  } as unknown as import("../src/config").ChatConfig;
 
   const integrity: ModelIntegrity = {
     config: "sha256-configHash=",
     // no tokenizer hashes
-  }
+  };
 
   await asyncLoadTokenizer(
     baseAppConfig.model_list[0].model,
     configJson,
     baseAppConfig,
     console.log,
-    integrity
-  )
+    integrity,
+  );
 
-  expect(verifySpy).not.toHaveBeenCalled()
+  expect(verifySpy).not.toHaveBeenCalled();
 
-  verifySpy.mockRestore()
-})
+  verifySpy.mockRestore();
+});
 
 test("asyncLoadTokenizer propagates IntegrityError when verification fails", async () => {
-  const { IntegrityError } = await import("../src/error")
+  const { IntegrityError } = await import("../src/error");
   const verifySpy = jest
     .spyOn(integrityModule, "verifyIntegrity")
     .mockRejectedValue(
       new IntegrityError(
         "https://huggingface.co/mlc-ai/tokenizer.json",
         "sha256-expected=",
-        "sha256-actual="
-      )
-    )
+        "sha256-actual=",
+      ),
+    );
 
   const configJson = {
     tokenizer_files: ["tokenizer.json"],
-  } as unknown as import("../src/config").ChatConfig
+  } as unknown as import("../src/config").ChatConfig;
 
   const integrity: ModelIntegrity = {
     tokenizer: { "tokenizer.json": "sha256-expected=" },
     onFailure: "error",
-  }
+  };
 
   await expect(
     asyncLoadTokenizer(
@@ -309,9 +281,9 @@ test("asyncLoadTokenizer propagates IntegrityError when verification fails", asy
       configJson,
       baseAppConfig,
       console.log,
-      integrity
-    )
-  ).rejects.toThrow(IntegrityError)
+      integrity,
+    ),
+  ).rejects.toThrow(IntegrityError);
 
-  verifySpy.mockRestore()
-})
+  verifySpy.mockRestore();
+});

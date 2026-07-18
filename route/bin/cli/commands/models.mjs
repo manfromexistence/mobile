@@ -53,7 +53,7 @@ export async function runModelsCommand(provider, opts = {}) {
       (m) =>
         (m.provider && m.provider.toLowerCase().includes(filter)) ||
         (m.id && m.id.toLowerCase().startsWith(filter)) ||
-        (m.name && m.name.toLowerCase().includes(filter))
+        (m.name && m.name.toLowerCase().includes(filter)),
     );
   }
 
@@ -64,7 +64,7 @@ export async function runModelsCommand(provider, opts = {}) {
         (m.id && m.id.toLowerCase().includes(search)) ||
         (m.name && m.name.toLowerCase().includes(search)) ||
         (m.provider && m.provider.toLowerCase().includes(search)) ||
-        (m.description && m.description.toLowerCase().includes(search))
+        (m.description && m.description.toLowerCase().includes(search)),
     );
   }
 
@@ -84,7 +84,7 @@ export async function runModelsCommand(provider, opts = {}) {
 
   if (models.length > 50) {
     console.log(
-      `\x1b[2m  ... and ${models.length - 50} more. Use --output json for full list.\x1b[0m`
+      `\x1b[2m  ... and ${models.length - 50} more. Use --output json for full list.\x1b[0m`,
     );
   }
 

@@ -53,8 +53,8 @@ test("compliance audit route keeps array payloads and exposes total count with s
 
   const response = await auditRoute.GET(
     new Request(
-      "http://localhost/api/compliance/audit-log?resourceType=provider_validation&status=blocked&requestId=req-validation-1&limit=10&offset=0"
-    )
+      "http://localhost/api/compliance/audit-log?resourceType=provider_validation&status=blocked&requestId=req-validation-1&limit=10&offset=0",
+    ),
   );
 
   assert.equal(response.status, 200);

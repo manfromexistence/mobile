@@ -2,10 +2,7 @@ export default function Navbar() {
   return (
     <div className="navbar bg-base-100 shadow-md z-40">
       <div className="flex-none">
-        <label
-          htmlFor="my-drawer-2"
-          className="btn btn-square btn-ghost flex lg:hidden"
-        >
+        <label htmlFor="my-drawer-2" className="btn btn-square btn-ghost flex lg:hidden">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -23,5 +20,5 @@ export default function Navbar() {
       </div>
       <a className="btn btn-ghost text-xl">wllama</a>
     </div>
-  )
+  );
 }

@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { createSignal } from "solid-js"
-import { Field as FieldV2 } from "./field-v2"
-import { TextInputV2 } from "./text-input-v2"
+import { createSignal } from "solid-js";
+import { Field as FieldV2 } from "./field-v2";
+import { TextInputV2 } from "./text-input-v2";
 
 const docs = `### Overview
 Compact single-line text field with neutral elevation, optional trailing copy action, and theme tokens.
@@ -23,7 +23,7 @@ Compact single-line text field with neutral elevation, optional trailing copy ac
 
 ### Field
 Compose with \`Field\` for label, helper prefix/suffix, and tooltip — see the **Field** story.
-`
+`;
 
 export default {
   title: "UI V2/TextInput",
@@ -64,9 +64,9 @@ export default {
       control: "text",
     },
   },
-}
+};
 
-export const Playground = {}
+export const Playground = {};
 
 export const WithCopyButton = {
   args: {
@@ -75,14 +75,18 @@ export const WithCopyButton = {
     showCopyButton: true,
     copyLabel: "Copy URL",
   },
-}
+};
 
 export const Controlled = {
   render: () => {
-    const [value, setValue] = createSignal("Controlled value")
+    const [value, setValue] = createSignal("Controlled value");
     return (
       <div style={{ display: "grid", gap: "12px" }}>
-        <TextInputV2 value={value()} onInput={(e) => setValue(e.currentTarget.value)} placeholder="Type here…" />
+        <TextInputV2
+          value={value()}
+          onInput={(e) => setValue(e.currentTarget.value)}
+          placeholder="Type here…"
+        />
         <div
           style={{
             "font-family": "var(--v2-font-family-sans)",
@@ -93,19 +97,24 @@ export const Controlled = {
           Value: {value()}
         </div>
       </div>
-    )
+    );
   },
-}
+};
 
 export const Appearances = {
   render: () => (
     <div style={{ display: "grid", gap: "20px", width: "280px" }}>
       <TextInputV2 appearance="base" placeholder="Base (28px)" defaultValue="Base" />
       <TextInputV2 appearance="large" placeholder="Large (32px)" defaultValue="Large" />
-      <TextInputV2 appearance="large" placeholder="Large with copy" defaultValue="copy-me" showCopyButton />
+      <TextInputV2
+        appearance="large"
+        placeholder="Large with copy"
+        defaultValue="copy-me"
+        showCopyButton
+      />
     </div>
   ),
-}
+};
 
 export const Field = {
   parameters: { frameHeight: "500px" },
@@ -125,7 +134,7 @@ export const Field = {
       </FieldV2>
     </div>
   ),
-}
+};
 
 export const States = {
   render: () => (
@@ -135,7 +144,12 @@ export const States = {
       <TextInputV2 placeholder="With copy" defaultValue="copy-me" showCopyButton />
       <TextInputV2 placeholder="Invalid" defaultValue="Invalid value" invalid showCopyButton />
       <TextInputV2 placeholder="Disabled" disabled />
-      <TextInputV2 placeholder="Disabled with value" defaultValue="Read only" disabled showCopyButton />
+      <TextInputV2
+        placeholder="Disabled with value"
+        defaultValue="Read only"
+        disabled
+        showCopyButton
+      />
     </div>
   ),
-}
+};

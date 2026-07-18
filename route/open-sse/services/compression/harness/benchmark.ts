@@ -160,7 +160,7 @@ export const BENCHMARK_CORPUS: EvalCase[] = [
         created: 1718000000,
       },
       null,
-      2
+      2,
     ),
   },
 ];
@@ -221,7 +221,7 @@ export function engineToCompressFn(engineId: string): CompressFn {
  */
 export async function benchmarkEngines(
   corpus: EvalCase[],
-  engineIds: string[]
+  engineIds: string[],
 ): Promise<Record<string, EvalReport>> {
   const reports: Record<string, EvalReport> = {};
   for (const id of engineIds) {
@@ -269,7 +269,7 @@ export function compareReports(reports: Record<string, EvalReport>): EngineSumma
 export function runBenchmarkGate(
   reports: Record<string, EvalReport>,
   baselines: Record<string, BudgetBaseline>,
-  tolerancePercent = 2
+  tolerancePercent = 2,
 ): EngineBenchmarkGateRow[] {
   return Object.entries(reports).map(([engine, report]) => {
     const baseline = baselines[engine];

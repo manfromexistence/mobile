@@ -31,7 +31,7 @@ test("[26] concurrent load — 2 threads × 2 iterations", { skip }, async () =>
   const TOTAL_REQUESTS = THREAD_COUNT * SET_COUNT;
 
   console.log(
-    `\n  Concurrent load: ${THREAD_COUNT} threads × ${SET_COUNT} iterations = ${TOTAL_REQUESTS} requests`
+    `\n  Concurrent load: ${THREAD_COUNT} threads × ${SET_COUNT} iterations = ${TOTAL_REQUESTS} requests`,
   );
 
   const start = performance.now();
@@ -77,8 +77,8 @@ test("[26] concurrent load — 2 threads × 2 iterations", { skip }, async () =>
           results.push({ ...r } as any);
         }
         return results;
-      })()
-    )
+      })(),
+    ),
   );
 
   const totalDuration = performance.now() - start;
@@ -106,7 +106,7 @@ test("[26] concurrent load — 2 threads × 2 iterations", { skip }, async () =>
       `${allResults.length}/${TOTAL_REQUESTS} requests succeeded | ` +
       `${Math.round(totalDuration)}ms wall clock | ` +
       `${avgDuration}ms avg per request | ` +
-      `${totalTokens} total tokens`
+      `${totalTokens} total tokens`,
   );
 
   if (rejected.length > 0) {
@@ -122,11 +122,11 @@ test("[26] concurrent load — 2 threads × 2 iterations", { skip }, async () =>
 
   assert.ok(
     fulfilled.length === THREAD_COUNT,
-    `expected all ${THREAD_COUNT} threads to complete, ${rejected.length} failed`
+    `expected all ${THREAD_COUNT} threads to complete, ${rejected.length} failed`,
   );
   assert.ok(
     allResults.length === TOTAL_REQUESTS,
-    `expected ${TOTAL_REQUESTS} total requests, got ${allResults.length}`
+    `expected ${TOTAL_REQUESTS} total requests, got ${allResults.length}`,
   );
   assert.ok(!parallelViolation, parallelViolation);
 });
@@ -176,7 +176,7 @@ test("[27] single-thread sequential — 1 thread × 5 iterations", { skip }, asy
     `\n  Sequential summary: ${results.length}/${SET_COUNT} succeeded | ` +
       `${Math.round(totalDuration)}ms wall clock | ` +
       `${avgDuration}ms avg per request | ` +
-      `${totalTokens} total tokens`
+      `${totalTokens} total tokens`,
   );
 
   // Verify no duplicate correlation IDs (no retries created parallel entries)
@@ -185,7 +185,7 @@ test("[27] single-thread sequential — 1 thread × 5 iterations", { skip }, asy
   assert.equal(
     uniqueCids.size,
     cids.length,
-    `expected ${cids.length} unique correlation IDs, got ${uniqueCids.size} — duplicates detected`
+    `expected ${cids.length} unique correlation IDs, got ${uniqueCids.size} — duplicates detected`,
   );
   assert.equal(results.length, SET_COUNT, `expected ${SET_COUNT} results, got ${results.length}`);
 });
@@ -219,7 +219,7 @@ test("[28] streaming: all payloads return content", { skip }, async () => {
   assert.equal(
     failures.length,
     0,
-    `${failures.length}/${CASE_BUILDERS.length} streaming payloads failed`
+    `${failures.length}/${CASE_BUILDERS.length} streaming payloads failed`,
   );
 });
 
@@ -237,6 +237,6 @@ test("[29] streaming: correlation IDs are unique per request", { skip }, async (
   assert.equal(
     unique.size,
     count,
-    `expected ${count} unique CIDs, got ${unique.size}: ${cids.join(", ")}`
+    `expected ${count} unique CIDs, got ${unique.size}: ${cids.join(", ")}`,
   );
 });

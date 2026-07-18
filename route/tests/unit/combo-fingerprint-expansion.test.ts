@@ -89,7 +89,7 @@ test("getConnectionFingerprints: returns empty array when no fingerprints field"
 test("getConnectionFingerprints: returns empty array when fingerprints is not an array", () => {
   assert.deepEqual(
     getConnectionFingerprints({ providerSpecificData: { fingerprints: "not-array" } }),
-    []
+    [],
   );
 });
 

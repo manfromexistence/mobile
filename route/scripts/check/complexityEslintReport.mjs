@@ -18,7 +18,7 @@ const ESLINT_BIN = path.join(
   ROOT,
   "node_modules",
   ".bin",
-  process.platform === "win32" ? "eslint.cmd" : "eslint"
+  process.platform === "win32" ? "eslint.cmd" : "eslint",
 );
 
 /** Args after the eslint binary (tests lock scan dirs on this array). */

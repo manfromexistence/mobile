@@ -1,6 +1,6 @@
 // @ts-nocheck
-import * as mod from "./typewriter"
-import { create } from "../storybook/scaffold"
+import * as mod from "./typewriter";
+import { create } from "../storybook/scaffold";
 
 const docs = `### Overview
 Animated typewriter text effect for short inline messages.
@@ -23,9 +23,9 @@ Use for short status lines; avoid long paragraphs.
 ### Theming/tokens
 - Uses \`blinking-cursor\` class for cursor styling.
 
-`
+`;
 
-const story = create({ title: "UI/Typewriter", mod, args: { text: "Typewriter text" } })
+const story = create({ title: "UI/Typewriter", mod, args: { text: "Typewriter text" } });
 
 export default {
   title: "UI/Typewriter",
@@ -39,13 +39,13 @@ export default {
       },
     },
   },
-}
+};
 
-export const Basic = story.Basic
+export const Basic = story.Basic;
 
 export const Inline = {
   args: {
     text: "Inline typewriter",
     as: "span",
   },
-}
+};

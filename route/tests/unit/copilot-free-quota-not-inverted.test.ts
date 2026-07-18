@@ -63,7 +63,7 @@ test("#2876 — Copilot Free brand-new account shows 100% remaining (not 0%)", a
   assert.equal(
     result.quotas.chat.remainingPercentage,
     100,
-    "brand-new free account must show 100% remaining, not 0%"
+    "brand-new free account must show 100% remaining, not 0%",
   );
 
   assert.equal(result.quotas.completions.total, 2000);
@@ -99,7 +99,7 @@ test("#2876 — Copilot Free realistic mid-month account computes correct remain
   assert.equal(
     result.quotas.chat.remainingPercentage,
     82,
-    "410 of 500 remaining must surface as 82%, not 18%"
+    "410 of 500 remaining must surface as 82%, not 18%",
   );
 
   assert.equal(result.quotas.completions.remainingPercentage, 100);
@@ -132,7 +132,7 @@ test("#2876 — Copilot Free fully-exhausted quota shows 0% remaining (not 100%)
   assert.equal(
     result.quotas.chat.remainingPercentage,
     0,
-    "fully-exhausted quota must show 0% remaining, not 100%"
+    "fully-exhausted quota must show 0% remaining, not 100%",
   );
 
   assert.equal(result.quotas.completions.remainingPercentage, 0);

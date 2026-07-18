@@ -87,7 +87,7 @@ async function tryLoadRuntimeInstalled() {
       const expected = platformBinaryLabel();
       if (!magic || (magic !== expected && magic !== "macho-le" && magic !== "macho-fat")) {
         console.warn(
-          `[omniroute] runtime sqlite binary magic mismatch (${magic} ≠ ${expected}) — skipping`
+          `[omniroute] runtime sqlite binary magic mismatch (${magic} ≠ ${expected}) — skipping`,
         );
         return null;
       }
@@ -109,7 +109,7 @@ function ensureRuntimeDir() {
     writeFileSync(
       pkg,
       JSON.stringify({ name: "omniroute-runtime", private: true, type: "commonjs" }),
-      "utf-8"
+      "utf-8",
     );
   }
 }
@@ -119,7 +119,7 @@ async function installRuntime() {
   const npm = process.platform === "win32" ? "npm.cmd" : "npm";
   execSync(
     `${npm} install --prefix "${RUNTIME_DIR}" ${BETTER_SQLITE3_VERSION} --no-audit --no-fund --silent`,
-    { stdio: ["ignore", "ignore", "pipe"], timeout: 180_000 }
+    { stdio: ["ignore", "ignore", "pipe"], timeout: 180_000 },
   );
 }
 

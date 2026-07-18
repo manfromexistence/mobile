@@ -171,7 +171,7 @@ export function collectReasoningTexts(
   value: unknown,
   seen: Set<string>,
   depth = 0,
-  force = false
+  force = false,
 ): string[] {
   if (depth > 8) {
     return [];
@@ -286,7 +286,7 @@ export function classifyMetaAiError(errorMessage: string | null, content: string
 
 export function parseMetaAiResponseText(
   text: string,
-  isThinkingModel: boolean
+  isThinkingModel: boolean,
 ): ParsedMetaAiResponse {
   let lastContent = "";
   const deltas: string[] = [];
@@ -298,7 +298,7 @@ export function parseMetaAiResponseText(
   for (const payload of readMetaJsonPayloads(text)) {
     if (Array.isArray(payload.errors) && payload.errors.length > 0) {
       const firstError = payload.errors.find(
-        (item) => isRecord(item) && typeof item.message === "string"
+        (item) => isRecord(item) && typeof item.message === "string",
       );
       if (isRecord(firstError) && typeof firstError.message === "string") {
         errorMessage = firstError.message.trim();
@@ -321,7 +321,7 @@ export function parseMetaAiResponseText(
       const reasoning = extractAssistantReasoning(sendMessageStream);
       if (reasoning && reasoning !== content && reasoning !== lastReasoning) {
         reasoningDeltas.push(
-          reasoning.startsWith(lastReasoning) ? reasoning.slice(lastReasoning.length) : reasoning
+          reasoning.startsWith(lastReasoning) ? reasoning.slice(lastReasoning.length) : reasoning,
         );
         lastReasoning = reasoning;
       }

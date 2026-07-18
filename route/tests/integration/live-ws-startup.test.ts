@@ -38,7 +38,7 @@ function terminateTree(child: ChildProcessWithoutNullStreams): void {
 
 function waitForStartup(
   child: ChildProcessWithoutNullStreams,
-  getOutput: () => string
+  getOutput: () => string,
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     // Startup eagerly warms the SSE auth module (see liveServer.ts), which takes
@@ -59,7 +59,7 @@ function waitForStartup(
     const onExit = (code: number | null, signal: NodeJS.Signals | null) => {
       cleanup();
       reject(
-        new Error(`LiveWS exited before listening: code=${code} signal=${signal}\n${getOutput()}`)
+        new Error(`LiveWS exited before listening: code=${code} signal=${signal}\n${getOutput()}`),
       );
     };
 
@@ -157,5 +157,5 @@ test(
     } finally {
       terminateTree(child);
     }
-  }
+  },
 );

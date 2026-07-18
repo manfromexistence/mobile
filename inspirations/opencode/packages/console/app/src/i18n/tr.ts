@@ -1,5 +1,5 @@
-import type { Dict } from "./en"
-import { dict as en } from "./en"
+import type { Dict } from "./en";
+import { dict as en } from "./en";
 
 export const dict = {
   ...en,
@@ -108,7 +108,8 @@ export const dict = {
   "home.banner.downloadBetaNow": "Masaüstü betayı şimdi indir",
 
   "home.hero.title": "Açık kaynaklı yapay zeka kodlama ajanı",
-  "home.hero.subtitle.a": "Ücretsiz modeller dahil veya herhangi bir sağlayıcıdan herhangi bir modeli bağlayın,",
+  "home.hero.subtitle.a":
+    "Ücretsiz modeller dahil veya herhangi bir sağlayıcıdan herhangi bir modeli bağlayın,",
   "home.hero.subtitle.b": "Claude, GPT, Gemini ve daha fazlası dahil.",
 
   "home.install.ariaLabel": "Kurulum seçenekleri",
@@ -121,15 +122,18 @@ export const dict = {
   "home.what.multiSession.title": "Çoklu oturum",
   "home.what.multiSession.body": "Aynı projede birden fazla ajanı paralel çalıştırın",
   "home.what.shareLinks.title": "Paylaşım bağlantıları",
-  "home.what.shareLinks.body": "Referans veya hata ayıklama için herhangi bir oturumu bağlantı olarak paylaşın",
+  "home.what.shareLinks.body":
+    "Referans veya hata ayıklama için herhangi bir oturumu bağlantı olarak paylaşın",
   "home.what.copilot.title": "GitHub Copilot",
   "home.what.copilot.body": "Copilot hesabınızı kullanmak için GitHub ile giriş yapın",
   "home.what.chatgptPlus.title": "ChatGPT Plus/Pro",
-  "home.what.chatgptPlus.body": "ChatGPT Plus veya Pro hesabınızı kullanmak için OpenAI ile giriş yapın",
+  "home.what.chatgptPlus.body":
+    "ChatGPT Plus veya Pro hesabınızı kullanmak için OpenAI ile giriş yapın",
   "home.what.anyModel.title": "Herhangi bir model",
   "home.what.anyModel.body": "Models.dev üzerinden 75+ LLM sağlayıcısı, yerel modeller dahil",
   "home.what.anyEditor.title": "Herhangi bir editör",
-  "home.what.anyEditor.body": "Terminal arayüzü, masaüstü uygulaması ve IDE uzantısı olarak kullanılabilir",
+  "home.what.anyEditor.body":
+    "Terminal arayüzü, masaüstü uygulaması ve IDE uzantısı olarak kullanılabilir",
   "home.what.readDocs": "Dokümanları oku",
 
   "home.growth.title": "Açık kaynaklı yapay zeka kodlama ajanı",
@@ -152,10 +156,12 @@ export const dict = {
   "home.faq.a2.before": "Başlamanın en kolay yolu",
   "home.faq.a2.link": "girişi okumaktır",
   "home.faq.q3": "OpenCode için ek AI aboneliklerine ihtiyacım var mı?",
-  "home.faq.a3.p1": "Şart değil. OpenCode, hesap açmadan kullanabileceğiniz ücretsiz modellerle gelir.",
+  "home.faq.a3.p1":
+    "Şart değil. OpenCode, hesap açmadan kullanabileceğiniz ücretsiz modellerle gelir.",
   "home.faq.a3.p2.beforeZen": "Bunun dışında, popüler kodlama modellerini kullanmak için bir",
   "home.faq.a3.p2.afterZen": " hesabı oluşturabilirsiniz.",
-  "home.faq.a3.p3": "Zen'i öneriyoruz, ancak OpenCode OpenAI, Anthropic, xAI gibi popüler sağlayıcılarla da çalışır.",
+  "home.faq.a3.p3":
+    "Zen'i öneriyoruz, ancak OpenCode OpenAI, Anthropic, xAI gibi popüler sağlayıcılarla da çalışır.",
   "home.faq.a3.p4.beforeLocal": "Hatta",
   "home.faq.a3.p4.localLink": "yerel modellerinizi bağlayabilirsiniz",
   "home.faq.q4": "Mevcut AI aboneliklerimi OpenCode ile kullanabilir miyim?",
@@ -188,7 +194,8 @@ export const dict = {
     "Zen, OpenCode'un kodlama ajanları için özel olarak test edip benchmark ettiği seçilmiş AI modellerine erişim sağlar. Sağlayıcılar arasında tutarsız performans ve kalite konusunda endişelenmeyin; çalışan, doğrulanmış modelleri kullanın.",
   "home.zenCta.link": "Zen hakkında",
 
-  "zen.title": "OpenCode Zen | Kodlama ajanları için güvenilir, optimize edilmiş modellerin seçilmiş seti",
+  "zen.title":
+    "OpenCode Zen | Kodlama ajanları için güvenilir, optimize edilmiş modellerin seçilmiş seti",
   "zen.hero.title": "Kodlama ajanları için güvenilir, optimize modeller",
   "zen.hero.body":
     "Zen, OpenCode'un kodlama ajanları için özel olarak test edip benchmark ettiği seçilmiş AI modellerine erişim sağlar. Sağlayıcılar arasında tutarsız performans ve kalite konusunda endişelenmeyin; çalışan, doğrulanmış modelleri kullanın.",
@@ -207,7 +214,8 @@ export const dict = {
   "zen.faq.a4.p1.pricingLink": "istek başı ücret alır",
   "zen.faq.a4.p1.afterPricing":
     "ve hiçbir markup eklemez, yani model sağlayıcının ücretlendirdiği tutarı aynen ödersiniz.",
-  "zen.faq.a4.p2.beforeAccount": "Toplam maliyetiniz kullanım miktarına bağlıdır ve aylık harcama limitlerini",
+  "zen.faq.a4.p2.beforeAccount":
+    "Toplam maliyetiniz kullanım miktarına bağlıdır ve aylık harcama limitlerini",
   "zen.faq.a4.p2.accountLink": "hesabınızda ayarlayabilirsiniz",
   "zen.faq.a4.p3":
     "Maliyetleri karşılamak için OpenCode, $20 bakiye yüklemesi başına yalnızca $1.23 tutarında küçük bir ödeme işleme ücreti ekler.",
@@ -232,12 +240,15 @@ export const dict = {
   "zen.problem.title": "Zen hangi sorunu çözüyor?",
   "zen.problem.body":
     "Pek çok model mevcut ancak yalnızca birkaçı kodlama ajanlarıyla iyi çalışıyor. Çoğu sağlayıcı, bunları değişen sonuçlarla farklı şekilde yapılandırır.",
-  "zen.problem.subtitle": "Bu sorunu yalnızca OpenCode kullanıcıları için değil, herkes için düzeltiyoruz.",
+  "zen.problem.subtitle":
+    "Bu sorunu yalnızca OpenCode kullanıcıları için değil, herkes için düzeltiyoruz.",
   "zen.problem.item1": "Seçilen modelleri test etme ve ekiplerine danışmanlık yapma",
-  "zen.problem.item2": "Düzgün bir şekilde teslim edildiklerinden emin olmak için sağlayıcılarla çalışmak",
+  "zen.problem.item2":
+    "Düzgün bir şekilde teslim edildiklerinden emin olmak için sağlayıcılarla çalışmak",
   "zen.problem.item3": "Önerdiğimiz tüm model-sağlayıcı kombinasyonlarının karşılaştırılması",
   "zen.how.title": "Zen nasıl çalışır?",
-  "zen.how.body": "Zen'i OpenCode ile kullanmanızı önersek de, Zen'i herhangi bir ajan ile kullanabilirsiniz.",
+  "zen.how.body":
+    "Zen'i OpenCode ile kullanmanızı önersek de, Zen'i herhangi bir ajan ile kullanabilirsiniz.",
   "zen.how.step1.title": "Kaydolun ve 20$ bakiye ekleyin",
   "zen.how.step1.beforeLink": "takip edin",
   "zen.how.step1.link": "kurulum talimatları",
@@ -357,20 +368,24 @@ export const dict = {
 
   "zen.api.error.rateLimitExceeded": "İstek limiti aşıldı. Lütfen daha sonra tekrar deneyin.",
   "zen.api.error.modelNotSupported": "{{model}} modeli desteklenmiyor",
-  "zen.api.error.modelFormatNotSupported": "{{model}} modeli {{format}} formatı için desteklenmiyor",
+  "zen.api.error.modelFormatNotSupported":
+    "{{model}} modeli {{format}} formatı için desteklenmiyor",
   "zen.api.error.noProviderAvailable": "Kullanılabilir sağlayıcı yok",
   "zen.api.error.providerNotSupported": "{{provider}} sağlayıcısı desteklenmiyor",
   "zen.api.error.missingApiKey": "API anahtarı eksik.",
   "zen.api.error.invalidApiKey": "Geçersiz API anahtarı.",
-  "zen.api.error.subscriptionQuotaExceeded": "Abonelik kotası aşıldı. {{retryIn}} içinde tekrar deneyin.",
+  "zen.api.error.subscriptionQuotaExceeded":
+    "Abonelik kotası aşıldı. {{retryIn}} içinde tekrar deneyin.",
   "zen.api.error.goSubscriptionRollingLimitExceeded":
     "5 saatlik kullanım limitine ulaşıldı. {{retryIn}} içinde sıfırlanır. Bu modeli şimdi kullanmaya devam etmek için kullanılabilir bakiyenizden kullanımı etkinleştirin: {{consoleGoUrl}}",
   "zen.api.error.goSubscriptionWeeklyLimitExceeded":
     "Haftalık kullanım limitine ulaşıldı. {{retryIn}} içinde sıfırlanır. Bu modeli şimdi kullanmaya devam etmek için kullanılabilir bakiyenizden kullanımı etkinleştirin: {{consoleGoUrl}}",
   "zen.api.error.goSubscriptionMonthlyLimitExceeded":
     "Aylık kullanım limitine ulaşıldı. {{retryIn}} içinde sıfırlanır. Bu modeli şimdi kullanmaya devam etmek için kullanılabilir bakiyenizden kullanımı etkinleştirin: {{consoleGoUrl}}",
-  "zen.api.error.noPaymentMethod": "Ödeme yöntemi bulunamadı. Buradan bir ödeme yöntemi ekleyin: {{billingUrl}}",
-  "zen.api.error.insufficientBalance": "Yetersiz bakiye. Faturalandırmanızı buradan yönetin: {{billingUrl}}",
+  "zen.api.error.noPaymentMethod":
+    "Ödeme yöntemi bulunamadı. Buradan bir ödeme yöntemi ekleyin: {{billingUrl}}",
+  "zen.api.error.insufficientBalance":
+    "Yetersiz bakiye. Faturalandırmanızı buradan yönetin: {{billingUrl}}",
   "zen.api.error.workspaceMonthlyLimitReached":
     "Çalışma alanınız aylık ${{amount}} harcama limitine ulaştı. Limitlerinizi buradan yönetin: {{billingUrl}}",
   "zen.api.error.userMonthlyLimitReached":
@@ -382,7 +397,8 @@ export const dict = {
     "{{model}} için ücretsiz promosyon sona erdi. OpenCode Go'ya abone olarak modeli kullanmaya devam edebilirsiniz - {{link}}",
 
   "black.meta.title": "OpenCode Black | Dünyanın en iyi kodlama modellerine erişin",
-  "black.meta.description": "OpenCode Black abonelik planlarıyla Claude, GPT, Gemini ve daha fazlasına erişin.",
+  "black.meta.description":
+    "OpenCode Black abonelik planlarıyla Claude, GPT, Gemini ve daha fazlasına erişin.",
   "black.hero.title": "Dünyanın en iyi kodlama modellerine erişin",
   "black.hero.subtitle": "Claude, GPT, Gemini ve daha fazlası dahil",
   "black.title": "OpenCode Black | Fiyatlandırma",
@@ -397,7 +413,8 @@ export const dict = {
   "black.terms.1": "Aboneliğiniz hemen başlamayacak",
   "black.terms.2": "Bekleme listesine ekleneceksiniz ve yakında aktive edileceksiniz",
   "black.terms.3": "Kartınızdan sadece aboneliğiniz aktive edildiğinde ödeme alınacaktır",
-  "black.terms.4": "Kullanım limitleri geçerlidir, yoğun otomatik kullanım limitlere daha erken ulaşabilir",
+  "black.terms.4":
+    "Kullanım limitleri geçerlidir, yoğun otomatik kullanım limitlere daha erken ulaşabilir",
   "black.terms.5": "Abonelikler bireyler içindir, ekipler için Enterprise ile iletişime geçin",
   "black.terms.6": "Limitler ayarlanabilir ve planlar gelecekte sonlandırılabilir",
   "black.terms.7": "Aboneliğinizi istediğiniz zaman iptal edin",
@@ -418,7 +435,8 @@ export const dict = {
   "black.subscribe.error.alreadySubscribed": "Bu çalışma alanının zaten bir aboneliği var",
   "black.subscribe.processing": "İşleniyor...",
   "black.subscribe.submit": "${{plan}} Abone Ol",
-  "black.subscribe.form.chargeNotice": "Sadece aboneliğiniz aktive edildiğinde ücretlendirileceksiniz",
+  "black.subscribe.form.chargeNotice":
+    "Sadece aboneliğiniz aktive edildiğinde ücretlendirileceksiniz",
   "black.subscribe.success.title": "OpenCode Black bekleme listesindesiniz",
   "black.subscribe.success.subscriptionPlan": "Abonelik planı",
   "black.subscribe.success.planName": "OpenCode Black {{plan}}",
@@ -426,7 +444,8 @@ export const dict = {
   "black.subscribe.success.amountValue": "Aylık ${{plan}}",
   "black.subscribe.success.paymentMethod": "Ödeme yöntemi",
   "black.subscribe.success.dateJoined": "Katılma tarihi",
-  "black.subscribe.success.chargeNotice": "Aboneliğiniz aktive edildiğinde kartınızdan ödeme alınacaktır",
+  "black.subscribe.success.chargeNotice":
+    "Aboneliğiniz aktive edildiğinde kartınızdan ödeme alınacaktır",
 
   "workspace.nav.zen": "Zen",
   "workspace.nav.go": "Go",
@@ -462,12 +481,14 @@ export const dict = {
   "workspace.newUser.step.models.after": "bir model seçmek için",
 
   "workspace.models.title": "Modeller",
-  "workspace.models.subtitle.beforeLink": "Çalışma alanı üyelerinin hangi modellere erişebileceğini yönetin.",
+  "workspace.models.subtitle.beforeLink":
+    "Çalışma alanı üyelerinin hangi modellere erişebileceğini yönetin.",
   "workspace.models.table.model": "Model",
   "workspace.models.table.enabled": "Etkin",
 
   "workspace.providers.title": "Kendi Anahtarınızı Getirin",
-  "workspace.providers.subtitle": "Yapay zeka sağlayıcılarından kendi API anahtarlarınızı yapılandırın.",
+  "workspace.providers.subtitle":
+    "Yapay zeka sağlayıcılarından kendi API anahtarlarınızı yapılandırın.",
   "workspace.providers.placeholder": "{{provider}} API anahtarını girin ({{prefix}}...)",
   "workspace.providers.configure": "Yapılandır",
   "workspace.providers.edit": "Düzenle",
@@ -537,7 +558,8 @@ export const dict = {
   "workspace.members.role.admin": "Yönetici",
   "workspace.members.role.adminDescription": "Modelleri, üyeleri ve faturalamayı yönetebilir",
   "workspace.members.role.member": "Üye",
-  "workspace.members.role.memberDescription": "Yalnızca kendileri için API anahtarları oluşturabilirler",
+  "workspace.members.role.memberDescription":
+    "Yalnızca kendileri için API anahtarları oluşturabilirler",
 
   "workspace.settings.title": "Ayarlar",
   "workspace.settings.subtitle": "Çalışma alanı adınızı ve tercihlerinizi güncelleyin.",
@@ -583,7 +605,8 @@ export const dict = {
   "workspace.reload.title": "Otomatik Yeniden Yükleme",
   "workspace.reload.disabled.before": "Otomatik yeniden yükleme:",
   "workspace.reload.disabled.state": "devre dışı",
-  "workspace.reload.disabled.after": "Bakiye azaldığında otomatik olarak yeniden yüklemeyi etkinleştirin.",
+  "workspace.reload.disabled.after":
+    "Bakiye azaldığında otomatik olarak yeniden yüklemeyi etkinleştirin.",
   "workspace.reload.enabled.before": "Otomatik yeniden yükleme:",
   "workspace.reload.enabled.state": "etkin",
   "workspace.reload.enabled.middle": "Yeniden yükleyeceğiz",
@@ -622,15 +645,19 @@ export const dict = {
   "workspace.black.time.minutes": "dakika",
   "workspace.black.time.fewSeconds": "birkaç saniye",
   "workspace.black.subscription.title": "Abonelik",
-  "workspace.black.subscription.message": "Aylık ${{plan}} karşılığında OpenCode Black'e abonesiniz.",
+  "workspace.black.subscription.message":
+    "Aylık ${{plan}} karşılığında OpenCode Black'e abonesiniz.",
   "workspace.black.subscription.manage": "Aboneliği Yönet",
   "workspace.black.subscription.rollingUsage": "5 Saatlik Kullanım",
   "workspace.black.subscription.weeklyUsage": "Haftalık Kullanım",
   "workspace.black.subscription.resetsIn": "Sıfırlama süresi",
-  "workspace.black.subscription.useBalance": "Kullanım limitlerine ulaştıktan sonra mevcut bakiyenizi kullanın",
+  "workspace.black.subscription.useBalance":
+    "Kullanım limitlerine ulaştıktan sonra mevcut bakiyenizi kullanın",
   "workspace.black.waitlist.title": "Bekleme listesi",
-  "workspace.black.waitlist.joined": "Aylık ${{plan}} OpenCode Black planı için bekleme listesindesiniz.",
-  "workspace.black.waitlist.ready": "Sizi ayda {{plan}} $ tutarındaki OpenCode Black planına kaydetmeye hazırız.",
+  "workspace.black.waitlist.joined":
+    "Aylık ${{plan}} OpenCode Black planı için bekleme listesindesiniz.",
+  "workspace.black.waitlist.ready":
+    "Sizi ayda {{plan}} $ tutarındaki OpenCode Black planına kaydetmeye hazırız.",
   "workspace.black.waitlist.leave": "Bekleme Listesinden Ayrıl",
   "workspace.black.waitlist.leaving": "Ayrılıyor...",
   "workspace.black.waitlist.left": "Ayrıldı",
@@ -654,11 +681,13 @@ export const dict = {
   "workspace.lite.subscription.weeklyUsage": "Haftalık Kullanım",
   "workspace.lite.subscription.monthlyUsage": "Aylık Kullanım",
   "workspace.lite.subscription.resetsIn": "Sıfırlama süresi",
-  "workspace.lite.subscription.useBalance": "Kullanım limitlerine ulaştıktan sonra mevcut bakiyenizi kullanın",
+  "workspace.lite.subscription.useBalance":
+    "Kullanım limitlerine ulaştıktan sonra mevcut bakiyenizi kullanın",
   "workspace.lite.subscription.selectProvider":
     'Go modellerini kullanmak için opencode yapılandırmanızda "OpenCode Go"\'yu sağlayıcı olarak seçin.',
   "workspace.lite.providers.title": "Sağlayıcılar",
-  "workspace.lite.providers.description": "Yönlendirme için hangi sağlayıcıların kullanılacağını kontrol edin.",
+  "workspace.lite.providers.description":
+    "Yönlendirme için hangi sağlayıcıların kullanılacağını kontrol edin.",
   "workspace.lite.providers.useChina": "Çin'de barındırılan modelleri etkinleştir",
   "workspace.lite.black.message":
     "Şu anda OpenCode Black abonesisiniz veya bekleme listesindesiniz. Go'ya geçmek istiyorsanız lütfen önce aboneliğinizi iptal edin.",
@@ -706,7 +735,8 @@ export const dict = {
   "workspace.referral.apply.preview": "Ödülü Görüntüle",
   "workspace.referral.apply.action": "Kullan",
   "workspace.referral.apply.confirmTitle": "Ödülü kullan",
-  "workspace.referral.apply.confirmBody": "Bu workspace'in mevcut kullanımını azaltmak için {{amount}} kullan.",
+  "workspace.referral.apply.confirmBody":
+    "Bu workspace'in mevcut kullanımını azaltmak için {{amount}} kullan.",
   "workspace.referral.apply.confirmAction": "Kullan",
 
   "download.title": "OpenCode | İndir",
@@ -829,4 +859,4 @@ export const dict = {
   "bench.detail.table.duration": "Süre",
   "bench.detail.run.title": "Çalıştırma {{n}}",
   "bench.detail.rawJson": "Ham JSON",
-} satisfies Dict
+} satisfies Dict;

@@ -1,8 +1,8 @@
-import { SessionV2 } from "@opencode-ai/core/session"
-import { DateTime, Effect, Stream } from "effect"
-import { HttpApiBuilder, HttpApiSchema } from "effect/unstable/httpapi"
-import { Api } from "../api"
-import { SessionsCursor } from "@opencode-ai/protocol/groups/session"
+import { SessionV2 } from "@opencode-ai/core/session";
+import { DateTime, Effect, Stream } from "effect";
+import { HttpApiBuilder, HttpApiSchema } from "effect/unstable/httpapi";
+import { Api } from "../api";
+import { SessionsCursor } from "@opencode-ai/protocol/groups/session";
 import {
   ConflictError,
   InvalidCursorError,
@@ -10,15 +10,15 @@ import {
   ServiceUnavailableError,
   SessionNotFoundError,
   UnknownError,
-} from "@opencode-ai/protocol/errors"
-import { AbsolutePath } from "@opencode-ai/core/schema"
+} from "@opencode-ai/protocol/errors";
+import { AbsolutePath } from "@opencode-ai/core/schema";
 
-const DefaultSessionsLimit = 50
-const DefaultSessionHistoryLimit = 50
+const DefaultSessionsLimit = 50;
+const DefaultSessionHistoryLimit = 50;
 
 export const SessionHandler = HttpApiBuilder.group(Api, "server.session", (handlers) =>
   Effect.gen(function* () {
-    const session = yield* SessionV2.Service
+    const session = yield* SessionV2.Service;
 
     return handlers
       .handle(
@@ -29,14 +29,14 @@ export const SessionHandler = HttpApiBuilder.group(Api, "server.session", (handl
               ? yield* SessionsCursor.parse(ctx.query.cursor).pipe(
                   Effect.mapError(() => new InvalidCursorError({ message: "Invalid cursor" })),
                 )
-              : ctx.query
+              : ctx.query;
           const sessions = yield* session.list({
             ...query,
             workspaceID: query.workspace,
             limit: ctx.query.limit ?? DefaultSessionsLimit,
-          })
-          const first = sessions[0]
-          const last = sessions.at(-1)
+          });
+          const first = sessions[0];
+          const last = sessions.at(-1);
           return {
             data: sessions,
             cursor: {
@@ -61,7 +61,7 @@ export const SessionHandler = HttpApiBuilder.group(Api, "server.session", (handl
                   })
                 : undefined,
             },
-          }
+          };
         }),
       )
       .handle(
@@ -74,7 +74,7 @@ export const SessionHandler = HttpApiBuilder.group(Api, "server.session", (handl
               model: ctx.payload.model,
               location: ctx.payload.location ?? { directory: AbsolutePath.make(process.cwd()) },
             }),
-          }
+          };
         }),
       )
       .handle(
@@ -82,9 +82,12 @@ export const SessionHandler = HttpApiBuilder.group(Api, "server.session", (handl
         Effect.fn(function* () {
           return {
             data: Object.fromEntries(
-              Array.from(yield* session.active, (sessionID) => [sessionID, { type: "running" as const }]),
+              Array.from(yield* session.active, (sessionID) => [
+                sessionID,
+                { type: "running" as const },
+              ]),
             ),
-          }
+          };
         }),
       )
       .handle(
@@ -101,39 +104,43 @@ export const SessionHandler = HttpApiBuilder.group(Api, "server.session", (handl
                   }),
               ),
             ),
-          }
+          };
         }),
       )
       .handle(
         "session.switchAgent",
         Effect.fn(function* (ctx) {
-          yield* session.switchAgent({ sessionID: ctx.params.sessionID, agent: ctx.payload.agent }).pipe(
-            Effect.catchTag("Session.NotFoundError", (error) =>
-              Effect.fail(
-                new SessionNotFoundError({
-                  sessionID: error.sessionID,
-                  message: `Session not found: ${error.sessionID}`,
-                }),
+          yield* session
+            .switchAgent({ sessionID: ctx.params.sessionID, agent: ctx.payload.agent })
+            .pipe(
+              Effect.catchTag("Session.NotFoundError", (error) =>
+                Effect.fail(
+                  new SessionNotFoundError({
+                    sessionID: error.sessionID,
+                    message: `Session not found: ${error.sessionID}`,
+                  }),
+                ),
               ),
-            ),
-          )
-          return HttpApiSchema.NoContent.make()
+            );
+          return HttpApiSchema.NoContent.make();
         }),
       )
       .handle(
         "session.switchModel",
         Effect.fn(function* (ctx) {
-          yield* session.switchModel({ sessionID: ctx.params.sessionID, model: ctx.payload.model }).pipe(
-            Effect.catchTag("Session.NotFoundError", (error) =>
-              Effect.fail(
-                new SessionNotFoundError({
-                  sessionID: error.sessionID,
-                  message: `Session not found: ${error.sessionID}`,
-                }),
+          yield* session
+            .switchModel({ sessionID: ctx.params.sessionID, model: ctx.payload.model })
+            .pipe(
+              Effect.catchTag("Session.NotFoundError", (error) =>
+                Effect.fail(
+                  new SessionNotFoundError({
+                    sessionID: error.sessionID,
+                    message: `Session not found: ${error.sessionID}`,
+                  }),
+                ),
               ),
-            ),
-          )
-          return HttpApiSchema.NoContent.make()
+            );
+          return HttpApiSchema.NoContent.make();
         }),
       )
       .handle(
@@ -166,7 +173,7 @@ export const SessionHandler = HttpApiBuilder.group(Api, "server.session", (handl
                   ),
                 ),
               ),
-          }
+          };
         }),
       )
       .handle(
@@ -189,8 +196,8 @@ export const SessionHandler = HttpApiBuilder.group(Api, "server.session", (handl
                 }),
               ),
             ),
-          )
-          return HttpApiSchema.NoContent.make()
+          );
+          return HttpApiSchema.NoContent.make();
         }),
       )
       .handle(
@@ -213,8 +220,8 @@ export const SessionHandler = HttpApiBuilder.group(Api, "server.session", (handl
                 }),
               ),
             ),
-          )
-          return HttpApiSchema.NoContent.make()
+          );
+          return HttpApiSchema.NoContent.make();
         }),
       )
       .handle(
@@ -240,7 +247,7 @@ export const SessionHandler = HttpApiBuilder.group(Api, "server.session", (handl
                   }),
               ),
               Effect.catchTag("Snapshot.Error", (error) => {
-                const ref = `err_${crypto.randomUUID().slice(0, 8)}`
+                const ref = `err_${crypto.randomUUID().slice(0, 8)}`;
                 return Effect.logError("failed to stage session revert", { cause: error }).pipe(
                   Effect.andThen(
                     Effect.fail(
@@ -250,10 +257,10 @@ export const SessionHandler = HttpApiBuilder.group(Api, "server.session", (handl
                       }),
                     ),
                   ),
-                )
+                );
               }),
             ),
-          }
+          };
         }),
       )
       .handle(
@@ -269,7 +276,7 @@ export const SessionHandler = HttpApiBuilder.group(Api, "server.session", (handl
                 }),
             ),
             Effect.catchTag("Snapshot.Error", (error) => {
-              const ref = `err_${crypto.randomUUID().slice(0, 8)}`
+              const ref = `err_${crypto.randomUUID().slice(0, 8)}`;
               return Effect.logError("failed to clear session revert", { cause: error }).pipe(
                 Effect.andThen(
                   Effect.fail(
@@ -279,10 +286,10 @@ export const SessionHandler = HttpApiBuilder.group(Api, "server.session", (handl
                     }),
                   ),
                 ),
-              )
+              );
             }),
-          )
-          return HttpApiSchema.NoContent.make()
+          );
+          return HttpApiSchema.NoContent.make();
         }),
       )
       .handle(
@@ -297,8 +304,8 @@ export const SessionHandler = HttpApiBuilder.group(Api, "server.session", (handl
                   message: `Session not found: ${error.sessionID}`,
                 }),
             ),
-          )
-          return HttpApiSchema.NoContent.make()
+          );
+          return HttpApiSchema.NoContent.make();
         }),
       )
       .handle(
@@ -315,18 +322,25 @@ export const SessionHandler = HttpApiBuilder.group(Api, "server.session", (handl
                 ),
               ),
               Effect.catchTag("Session.MessageDecodeError", (error) => {
-                const ref = `err_${crypto.randomUUID().slice(0, 8)}`
+                const ref = `err_${crypto.randomUUID().slice(0, 8)}`;
                 return Effect.logError("failed to decode session message").pipe(
-                  Effect.annotateLogs({ ref, sessionID: error.sessionID, messageID: error.messageID }),
+                  Effect.annotateLogs({
+                    ref,
+                    sessionID: error.sessionID,
+                    messageID: error.messageID,
+                  }),
                   Effect.andThen(
                     Effect.fail(
-                      new UnknownError({ message: "Unexpected server error. Check server logs for details.", ref }),
+                      new UnknownError({
+                        message: "Unexpected server error. Check server logs for details.",
+                        ref,
+                      }),
                     ),
                   ),
-                )
+                );
               }),
             ),
-          }
+          };
         }),
       )
       .handle(
@@ -351,35 +365,37 @@ export const SessionHandler = HttpApiBuilder.group(Api, "server.session", (handl
                     message: `Session not found: ${error.sessionID}`,
                   }),
               ),
-            )
+            );
         }),
       )
       .handle(
         "session.events",
         Effect.fn((ctx) =>
           Effect.succeed(
-            session.events({ sessionID: ctx.params.sessionID, after: ctx.query.after }).pipe(Stream.orDie),
+            session
+              .events({ sessionID: ctx.params.sessionID, after: ctx.query.after })
+              .pipe(Stream.orDie),
           ),
         ),
       )
       .handle(
         "session.interrupt",
         Effect.fn(function* (ctx) {
-          yield* session.interrupt(ctx.params.sessionID)
-          return HttpApiSchema.NoContent.make()
+          yield* session.interrupt(ctx.params.sessionID);
+          return HttpApiSchema.NoContent.make();
         }),
       )
       .handle(
         "session.message",
         Effect.fn(function* (ctx) {
-          const message = yield* session.message(ctx.params)
-          if (message) return { data: message }
+          const message = yield* session.message(ctx.params);
+          if (message) return { data: message };
           return yield* new MessageNotFoundError({
             sessionID: ctx.params.sessionID,
             messageID: ctx.params.messageID,
             message: `Message not found: ${ctx.params.messageID}`,
-          })
+          });
         }),
-      )
+      );
   }),
-)
+);

@@ -26,7 +26,7 @@ const MAX_LINES = 1000;
 
 export function useServiceLogs(
   name: string,
-  options: UseServiceLogsOptions = {}
+  options: UseServiceLogsOptions = {},
 ): UseServiceLogsResult {
   const [lines, setLines] = useState<LogLine[]>([]);
   const [isPaused, setIsPaused] = useState(false);

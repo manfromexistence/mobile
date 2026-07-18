@@ -2,7 +2,7 @@ sst.Linkable.wrap(random.RandomPassword, (resource) => ({
   properties: {
     value: resource.result,
   },
-}))
+}));
 
 export const SECRET = {
   R2AccessKey: new sst.Secret("R2AccessKey", "unknown"),
@@ -12,4 +12,4 @@ export const SECRET = {
   SupportApiKey: new sst.Secret("SUPPORT_API_KEY"),
   UpstashRedisRestUrl: new sst.Secret("UpstashRedisRestUrl"),
   UpstashRedisRestToken: new sst.Secret("UpstashRedisRestToken"),
-}
+};

@@ -25,7 +25,7 @@ test("sessions list chama /api/sessions com filtros", async () => {
   globalThis.fetch = ((url: string) => {
     capturedUrl = url;
     return Promise.resolve(
-      makeResp({ items: [{ id: "sess-1", user: "admin", kind: "dashboard" }] })
+      makeResp({ items: [{ id: "sess-1", user: "admin", kind: "dashboard" }] }),
     );
   }) as any;
 

@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { iconNames } from "./app-icons/types"
-import * as mod from "./app-icon"
-import { create } from "../storybook/scaffold"
+import { iconNames } from "./app-icons/types";
+import * as mod from "./app-icon";
+import { create } from "../storybook/scaffold";
 
 const docs = `### Overview
 Application icon renderer for known editor/terminal apps.
@@ -24,9 +24,9 @@ Use in provider or app selection lists.
 ### Theming/tokens
 - Uses \`data-component="app-icon"\`.
 
-`
+`;
 
-const story = create({ title: "UI/AppIcon", mod, args: { id: "vscode" } })
+const story = create({ title: "UI/AppIcon", mod, args: { id: "vscode" } });
 export default {
   title: "UI/AppIcon",
   id: "components-app-icon",
@@ -45,9 +45,9 @@ export default {
       options: iconNames,
     },
   },
-}
+};
 
-export const Basic = story.Basic
+export const Basic = story.Basic;
 
 export const AllIcons = {
   render: () => (
@@ -61,9 +61,11 @@ export const AllIcons = {
       {iconNames.map((id) => (
         <div style={{ display: "grid", gap: "6px", "justify-items": "center" }}>
           <mod.AppIcon id={id} alt={id} />
-          <div style={{ "font-size": "10px", color: "var(--text-weak)", "text-align": "center" }}>{id}</div>
+          <div style={{ "font-size": "10px", color: "var(--text-weak)", "text-align": "center" }}>
+            {id}
+          </div>
         </div>
       ))}
     </div>
   ),
-}
+};

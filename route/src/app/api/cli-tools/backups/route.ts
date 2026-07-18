@@ -56,7 +56,7 @@ export async function POST(request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -91,7 +91,7 @@ export async function POST(request) {
           sanitizeErrorMessage(error instanceof Error ? error.message : String(error)) ||
           "Failed to restore backup",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -112,7 +112,7 @@ export async function DELETE(request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 

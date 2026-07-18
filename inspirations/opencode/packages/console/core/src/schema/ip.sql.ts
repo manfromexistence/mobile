@@ -1,5 +1,5 @@
-import { mysqlTable, int, primaryKey, varchar, bigint } from "drizzle-orm/mysql-core"
-import { timestamps } from "../drizzle/types"
+import { mysqlTable, int, primaryKey, varchar, bigint } from "drizzle-orm/mysql-core";
+import { timestamps } from "../drizzle/types";
 
 export const IpTable = mysqlTable(
   "ip",
@@ -9,7 +9,7 @@ export const IpTable = mysqlTable(
     usage: int("usage"),
   },
   (table) => [primaryKey({ columns: [table.ip] })],
-)
+);
 
 export const IpRateLimitTable = mysqlTable(
   "ip_rate_limit",
@@ -19,7 +19,7 @@ export const IpRateLimitTable = mysqlTable(
     count: int("count").notNull(),
   },
   (table) => [primaryKey({ columns: [table.ip, table.interval] })],
-)
+);
 
 export const KeyRateLimitTable = mysqlTable(
   "key_rate_limit",
@@ -29,7 +29,7 @@ export const KeyRateLimitTable = mysqlTable(
     count: int("count").notNull(),
   },
   (table) => [primaryKey({ columns: [table.key, table.interval] })],
-)
+);
 
 export const ModelTpmRateLimitTable = mysqlTable(
   "model_tpm_rate_limit",
@@ -39,7 +39,7 @@ export const ModelTpmRateLimitTable = mysqlTable(
     count: int("count").notNull(),
   },
   (table) => [primaryKey({ columns: [table.id, table.interval] })],
-)
+);
 
 export const ModelTpsRateLimitTable = mysqlTable(
   "model_tps_rate_limit",
@@ -50,7 +50,7 @@ export const ModelTpsRateLimitTable = mysqlTable(
     unqualify: int("unqualify").notNull(),
   },
   (table) => [primaryKey({ columns: [table.id, table.interval] })],
-)
+);
 
 export const ModelStickyProviderTable = mysqlTable(
   "model_sticky_provider",
@@ -60,4 +60,4 @@ export const ModelStickyProviderTable = mysqlTable(
     providerId: varchar("provider_id", { length: 255 }).notNull(),
   },
   (table) => [primaryKey({ columns: [table.id] })],
-)
+);

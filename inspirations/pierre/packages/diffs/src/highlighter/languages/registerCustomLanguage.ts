@@ -1,7 +1,7 @@
-import type { DynamicImportLanguageRegistration } from 'shiki';
+import type { DynamicImportLanguageRegistration } from "shiki";
 
-import { setCustomExtension } from '../../utils/getFiletypeFromFileName';
-import { RegisteredCustomLanguages } from './constants';
+import { setCustomExtension } from "../../utils/getFiletypeFromFileName";
+import { RegisteredCustomLanguages } from "./constants";
 
 /**
  * Register a custom language loader and optionally map it to
@@ -16,17 +16,13 @@ export function registerCustomLanguage(
    * (e.g., "proto", "foo"). Compound extensions are supported
    * (e.g., "blade.php").
    */
-  extensionsOrFilenames: string[] = []
+  extensionsOrFilenames: string[] = [],
 ): void {
-  if (lang === 'text' || lang === 'ansi') {
-    throw new Error(
-      "registerCustomLanguage: 'text' and 'ansi' are reserved language names"
-    );
+  if (lang === "text" || lang === "ansi") {
+    throw new Error("registerCustomLanguage: 'text' and 'ansi' are reserved language names");
   }
   if (RegisteredCustomLanguages.has(lang)) {
-    console.error(
-      `registerCustomLanguage: lang: ${lang} is already registered`
-    );
+    console.error(`registerCustomLanguage: lang: ${lang} is already registered`);
     return;
   }
   RegisteredCustomLanguages.set(lang, loader);

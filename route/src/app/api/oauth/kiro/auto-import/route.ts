@@ -229,7 +229,7 @@ async function readKiroIdeProfileArn(): Promise<string | null> {
       "User",
       "globalStorage",
       "kiro.kiroagent",
-      "profile.json"
+      "profile.json",
     ),
     join(homedir(), ".config", "Kiro", "User", "globalStorage", "kiro.kiroagent", "profile.json"),
     join(
@@ -240,7 +240,7 @@ async function readKiroIdeProfileArn(): Promise<string | null> {
       "User",
       "globalStorage",
       "kiro.kiroagent",
-      "profile.json"
+      "profile.json",
     ),
   ];
   for (const profilePath of kiroProfilePaths) {
@@ -404,7 +404,7 @@ type ProviderConnectionLike = {
  */
 export function findKiroConnectionByProfileArn(
   connections: ProviderConnectionLike[],
-  profileArn: string | undefined
+  profileArn: string | undefined,
 ): ProviderConnectionLike | null {
   if (!profileArn) return null;
   for (const conn of connections) {
@@ -432,7 +432,7 @@ type SaveAndRespondResult = Awaited<ReturnType<typeof tryKiroCliSqlite>> & {
 async function saveAndRespond(
   result: SaveAndRespondResult,
   targetProvider: string,
-  request: Request
+  request: Request,
 ) {
   try {
     const kiroService = new KiroService();
@@ -454,7 +454,7 @@ async function saveAndRespond(
         region,
       };
       const refreshed = await runWithProxyContext(proxy, () =>
-        kiroService.refreshToken(result.refreshToken!, externalIdpPsd)
+        kiroService.refreshToken(result.refreshToken!, externalIdpPsd),
       );
       const email =
         emailFromExternalIdpToken(refreshed.accessToken) ||
@@ -479,7 +479,7 @@ async function saveAndRespond(
       const existingConnections = await getProviderConnections({ provider: targetProvider });
       const existingByArn = findKiroConnectionByProfileArn(
         existingConnections,
-        profileArn || undefined
+        profileArn || undefined,
       );
       const record = {
         accessToken: refreshed.accessToken,
@@ -555,14 +555,14 @@ async function saveAndRespond(
       } catch (err) {
         console.warn(
           "[kiro auto-import] registerClient failed, continuing without isolated client:",
-          err
+          err,
         );
       }
     }
 
     // Refresh token to get a fresh access token and confirm it works
     const refreshed = await runWithProxyContext(proxy, () =>
-      kiroService.refreshToken(refreshToken, providerSpecificData)
+      kiroService.refreshToken(refreshToken, providerSpecificData),
     );
 
     accessToken = refreshed.accessToken;

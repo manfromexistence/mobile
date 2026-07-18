@@ -29,7 +29,7 @@ interface DecoderContext {
 
 export function* decodeStreamSync(
   source: Iterable<string>,
-  options?: DecodeStreamOptions
+  options?: DecodeStreamOptions,
 ): Generator<JsonStreamEvent> {
   const resolvedOptions: DecoderContext = { strict: options?.strict ?? true };
   const lines: ParsedLine[] = [];
@@ -144,7 +144,7 @@ export function decodeFromLines(lines: Iterable<string>, options?: DecodeStreamO
       return buildTableRowsInline(
         rootTable,
         first.slice(parenOpen + 1, parenClose),
-        resolvedOptions
+        resolvedOptions,
       );
     }
     const tableEnd = findBlockEnd(parsedLines, 1, parsedLines.length, 0);
@@ -167,7 +167,7 @@ function* decodeBlockSync(
   start: number,
   end: number,
   baseDepth: Depth,
-  options: DecoderContext
+  options: DecoderContext,
 ): Generator<JsonStreamEvent> {
   const seenKeys = options.strict ? new Set<string>() : undefined;
   let i = start;
@@ -278,7 +278,7 @@ function* decodeBlockSync(
 function* decodeInlineBlockSync(
   inner: string,
   options: DecoderContext,
-  headerLine: ParsedLine
+  headerLine: ParsedLine,
 ): Generator<JsonStreamEvent> {
   yield { type: "startObject" };
   if (inner) {
@@ -546,7 +546,7 @@ function* decodeTableRowsSync(
   header: TableHeader,
   rows: ParsedLine[],
   options: DecoderContext,
-  headerLine: ParsedLine
+  headerLine: ParsedLine,
 ): Generator<JsonStreamEvent> {
   const colCount = header.columns.length;
   yield { type: "startArray", length: rows.length };
@@ -576,7 +576,7 @@ function* decodeTableRowsSync(
 function* emitValue(
   rawValue: string,
   options: DecoderContext,
-  line: ParsedLine
+  line: ParsedLine,
 ): Generator<JsonStreamEvent> {
   const v = withLine(line, () => parseRawValue(rawValue));
   if (typeof v === "object" && !Array.isArray(v) && v !== null) {
@@ -600,7 +600,7 @@ function* emitValue(
 function* emitPrimitiveValue(
   v: unknown,
   _options: DecoderContext,
-  _line: ParsedLine
+  _line: ParsedLine,
 ): Generator<JsonStreamEvent> {
   if (v === null || typeof v === "string" || typeof v === "number" || typeof v === "boolean") {
     yield { type: "primitive", value: v as JsonPrimitive };
@@ -624,7 +624,7 @@ function findBlockEnd(
   parsedLines: ParsedLine[],
   start: number,
   end: number,
-  baseDepth: Depth
+  baseDepth: Depth,
 ): number {
   for (let i = start; i < end; i++) {
     const line = parsedLines[i];
@@ -653,7 +653,7 @@ function findBlockEnd(
 function assertNoDuplicateKey(
   key: string,
   line: ParsedLine,
-  seenKeys: Set<string> | undefined
+  seenKeys: Set<string> | undefined,
 ): void {
   if (!seenKeys) return;
   if (seenKeys.has(key)) {
@@ -667,7 +667,7 @@ function buildValue(
   start: number,
   end: number,
   baseDepth: Depth,
-  options: DecoderContext
+  options: DecoderContext,
 ): Record<string, unknown> {
   const result: Record<string, unknown> = {};
   let i = start;
@@ -714,7 +714,7 @@ function buildValue(
       const closeParenIndex = findMatchingParenInStr(afterParen);
       if (closeParenIndex >= 0) {
         result[key] = parseRawValue(
-          content.slice(parenIndex, parenIndex + 1 + closeParenIndex + 1)
+          content.slice(parenIndex, parenIndex + 1 + closeParenIndex + 1),
         );
         i++;
         continue;
@@ -725,7 +725,7 @@ function buildValue(
         i + 1,
         blockEnd >= 0 ? blockEnd : end,
         line.depth,
-        options
+        options,
       );
       i = (blockEnd >= 0 ? blockEnd : end) + 1;
       continue;
@@ -749,7 +749,7 @@ function buildValue(
 function buildTableRowsInline(
   header: TableHeader,
   content: string,
-  _options: DecoderContext
+  _options: DecoderContext,
 ): unknown[] {
   const trimmed = content.trim();
   if (!trimmed) return [];
@@ -841,7 +841,7 @@ function splitInlineTableRowValues(input: string): string[] {
 function buildTableRows(
   header: TableHeader,
   rows: ParsedLine[],
-  options: DecoderContext
+  options: DecoderContext,
 ): unknown[] {
   const result: unknown[] = [];
   for (const row of rows) {

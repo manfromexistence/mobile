@@ -41,17 +41,27 @@ import { gotoDashboardRoute } from "./helpers/dashboardAuth";
 // Conditional import — skip entire suite if @axe-core/playwright is absent.
 // ---------------------------------------------------------------------------
 
-let AxeBuilder: (new (args: { page: Page }) => {
-  analyze(): Promise<{ violations: Array<{ id: string; description: string; impact: string | null; nodes: unknown[] }> }>;
-  withTags(tags: string[]): unknown;
-  exclude(selector: string): unknown;
-  disableRules(rules: string[]): unknown;
-}) | null = null;
+let AxeBuilder:
+  | (new (args: { page: Page }) => {
+      analyze(): Promise<{
+        violations: Array<{
+          id: string;
+          description: string;
+          impact: string | null;
+          nodes: unknown[];
+        }>;
+      }>;
+      withTags(tags: string[]): unknown;
+      exclude(selector: string): unknown;
+      disableRules(rules: string[]): unknown;
+    })
+  | null = null;
 
 try {
   // Dynamic import so the module parse does not fail when the package is absent.
   const mod = await import("@axe-core/playwright");
-  AxeBuilder = mod.default ?? (mod as unknown as { AxeBuilder: typeof AxeBuilder }).AxeBuilder ?? null;
+  AxeBuilder =
+    mod.default ?? (mod as unknown as { AxeBuilder: typeof AxeBuilder }).AxeBuilder ?? null;
 } catch {
   // Package not installed — suite will skip gracefully below.
   AxeBuilder = null;
@@ -87,10 +97,7 @@ type AxeViolation = {
   nodes: unknown[];
 };
 
-async function runAxe(
-  page: Page,
-  label: string
-): Promise<AxeViolation[]> {
+async function runAxe(page: Page, label: string): Promise<AxeViolation[]> {
   if (!AxeBuilder) {
     throw new Error("@axe-core/playwright not available");
   }
@@ -105,7 +112,10 @@ async function runAxe(
 
   if (results.violations.length > 0) {
     const summary = results.violations
-      .map((v) => `  [${v.impact ?? "unknown"}] ${v.id}: ${v.description} (${(v.nodes as unknown[]).length} nodes)`)
+      .map(
+        (v) =>
+          `  [${v.impact ?? "unknown"}] ${v.id}: ${v.description} (${(v.nodes as unknown[]).length} nodes)`,
+      )
       .join("\n");
     console.log(`axeViolations page=${label}:\n${summary}`);
   }
@@ -123,7 +133,7 @@ test.describe("A11y — Dashboard key surfaces (@axe-core, nightly advisory)", (
       // Log once; individual tests will call test.skip().
       console.log(
         "[a11y.spec.ts] SKIP: @axe-core/playwright is not installed.\n" +
-          "Install with: npm install --save-dev @axe-core/playwright"
+          "Install with: npm install --save-dev @axe-core/playwright",
       );
     }
   });
@@ -141,7 +151,7 @@ test.describe("A11y — Dashboard key surfaces (@axe-core, nightly advisory)", (
         true,
         AxeBuilder
           ? "axe analysis runs in the nightly job only (set REQUIRE_AXE=1)"
-          : "@axe-core/playwright not installed"
+          : "@axe-core/playwright not installed",
       );
       return;
     }
@@ -156,7 +166,7 @@ test.describe("A11y — Dashboard key surfaces (@axe-core, nightly advisory)", (
       baseline,
       `New a11y violations introduced on /login. ` +
         `Expected ≤${baseline}, got ${violations.length}. ` +
-        `Run axe locally and update VIOLATION_BASELINES["/login"] if the new count is intentional.`
+        `Run axe locally and update VIOLATION_BASELINES["/login"] if the new count is intentional.`,
     );
   });
 
@@ -173,7 +183,7 @@ test.describe("A11y — Dashboard key surfaces (@axe-core, nightly advisory)", (
         true,
         AxeBuilder
           ? "axe analysis runs in the nightly job only (set REQUIRE_AXE=1)"
-          : "@axe-core/playwright not installed"
+          : "@axe-core/playwright not installed",
       );
       return;
     }
@@ -186,7 +196,7 @@ test.describe("A11y — Dashboard key surfaces (@axe-core, nightly advisory)", (
     expect(violations.length).toBeLessThanOrEqual(
       baseline,
       `New a11y violations introduced on /dashboard. ` +
-        `Expected ≤${baseline}, got ${violations.length}.`
+        `Expected ≤${baseline}, got ${violations.length}.`,
     );
   });
 
@@ -205,7 +215,7 @@ test.describe("A11y — Dashboard key surfaces (@axe-core, nightly advisory)", (
         true,
         AxeBuilder
           ? "axe analysis runs in the nightly job only (set REQUIRE_AXE=1)"
-          : "@axe-core/playwright not installed"
+          : "@axe-core/playwright not installed",
       );
       return;
     }
@@ -218,7 +228,7 @@ test.describe("A11y — Dashboard key surfaces (@axe-core, nightly advisory)", (
     expect(violations.length).toBeLessThanOrEqual(
       baseline,
       `New a11y violations introduced on /dashboard/providers. ` +
-        `Expected ≤${baseline}, got ${violations.length}.`
+        `Expected ≤${baseline}, got ${violations.length}.`,
     );
   });
 
@@ -237,7 +247,7 @@ test.describe("A11y — Dashboard key surfaces (@axe-core, nightly advisory)", (
         true,
         AxeBuilder
           ? "axe analysis runs in the nightly job only (set REQUIRE_AXE=1)"
-          : "@axe-core/playwright not installed"
+          : "@axe-core/playwright not installed",
       );
       return;
     }
@@ -251,7 +261,7 @@ test.describe("A11y — Dashboard key surfaces (@axe-core, nightly advisory)", (
     expect(violations.length).toBeLessThanOrEqual(
       baseline,
       `New a11y violations introduced on /dashboard/settings. ` +
-        `Expected ≤${baseline}, got ${violations.length}.`
+        `Expected ≤${baseline}, got ${violations.length}.`,
     );
   });
 
@@ -271,7 +281,7 @@ test.describe("A11y — Dashboard key surfaces (@axe-core, nightly advisory)", (
       if (requireAxe) {
         throw new Error(
           "REQUIRE_AXE=1 but @axe-core/playwright is not installed. " +
-            "Add it as a devDependency and run npm install."
+            "Add it as a devDependency and run npm install.",
         );
       }
       // Advisory skip in PR context.

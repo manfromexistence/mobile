@@ -67,15 +67,11 @@ export interface ConsumptionEvent {
 /**
  * Read the consumed value for a single bucket. Returns 0 if no row exists.
  */
-export function getBucket(
-  apiKeyId: string,
-  dimensionKey: string,
-  bucketIndex: number
-): number {
+export function getBucket(apiKeyId: string, dimensionKey: string, bucketIndex: number): number {
   const row = getDb()
     .prepare<BucketRow>(
       `SELECT consumed FROM quota_consumption
-       WHERE api_key_id = ? AND dimension_key = ? AND bucket_index = ?`
+       WHERE api_key_id = ? AND dimension_key = ? AND bucket_index = ?`,
     )
     .get(apiKeyId, dimensionKey, bucketIndex);
   return row?.consumed ?? 0;
@@ -97,7 +93,7 @@ export function incrementBucket(
   dimensionKey: string,
   bucketIndex: number,
   delta: number,
-  nowMs: number
+  nowMs: number,
 ): void {
   getDb()
     .prepare(
@@ -106,7 +102,7 @@ export function incrementBucket(
        ON CONFLICT(api_key_id, dimension_key, bucket_index)
        DO UPDATE SET
          consumed = consumed + excluded.consumed,
-         updated_at = excluded.updated_at`
+         updated_at = excluded.updated_at`,
     )
     .run(apiKeyId, dimensionKey, bucketIndex, delta, nowMs);
 }
@@ -123,21 +119,21 @@ export function incrementBucket(
 export function getPair(
   apiKeyId: string,
   dimensionKey: string,
-  currentBucket: number
+  currentBucket: number,
 ): { curr: number; prev: number } {
   const prevBucket = currentBucket - 1;
 
   const currRow = getDb()
     .prepare<BucketRow>(
       `SELECT consumed FROM quota_consumption
-       WHERE api_key_id = ? AND dimension_key = ? AND bucket_index = ?`
+       WHERE api_key_id = ? AND dimension_key = ? AND bucket_index = ?`,
     )
     .get(apiKeyId, dimensionKey, currentBucket);
 
   const prevRow = getDb()
     .prepare<BucketRow>(
       `SELECT consumed FROM quota_consumption
-       WHERE api_key_id = ? AND dimension_key = ? AND bucket_index = ?`
+       WHERE api_key_id = ? AND dimension_key = ? AND bucket_index = ?`,
     )
     .get(apiKeyId, dimensionKey, prevBucket);
 
@@ -179,7 +175,7 @@ export function listConsumptionForPool(poolId: string, limit: number): Consumpti
        FROM quota_consumption
        WHERE dimension_key LIKE ? ESCAPE '\\'
        ORDER BY updated_at DESC
-       LIMIT ?`
+       LIMIT ?`,
     )
     .all(prefix, safeLimit);
 
@@ -222,7 +218,7 @@ interface BucketPairRow {
  */
 export function sumPoolDimension(
   dimensionKey: string,
-  currentBucket: number
+  currentBucket: number,
 ): { currTotal: number; prevTotal: number } {
   const prevBucket = currentBucket - 1;
 
@@ -234,7 +230,7 @@ export function sumPoolDimension(
     .prepare<SumRow>(
       `SELECT COALESCE(SUM(consumed), 0) AS total
        FROM quota_consumption
-       WHERE dimension_key = ? AND bucket_index = ?`
+       WHERE dimension_key = ? AND bucket_index = ?`,
     )
     .get(dimensionKey, currentBucket);
 
@@ -242,7 +238,7 @@ export function sumPoolDimension(
     .prepare<SumRow>(
       `SELECT COALESCE(SUM(consumed), 0) AS total
        FROM quota_consumption
-       WHERE dimension_key = ? AND bucket_index = ?`
+       WHERE dimension_key = ? AND bucket_index = ?`,
     )
     .get(dimensionKey, prevBucket);
 

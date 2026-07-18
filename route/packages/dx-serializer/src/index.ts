@@ -62,14 +62,14 @@ export function decodeFromLines(lines: Iterable<string>, options?: DecodeOptions
 
 export function decodeStreamSync(
   lines: Iterable<string>,
-  options?: DecodeStreamOptions
+  options?: DecodeStreamOptions,
 ): Iterable<JsonStreamEvent> {
   return decodeStreamSyncCore(lines, options);
 }
 
 export function decodeStream(
   source: AsyncIterable<string> | Iterable<string>,
-  options?: DecodeStreamOptions
+  options?: DecodeStreamOptions,
 ): AsyncIterable<JsonStreamEvent> {
   if (Symbol.asyncIterator in source) {
     return decodeStreamAsync(source as AsyncIterable<string>, options);
@@ -91,7 +91,7 @@ export function decodeStream(
 
 async function* decodeStreamAsync(
   source: AsyncIterable<string>,
-  _options?: DecodeStreamOptions
+  _options?: DecodeStreamOptions,
 ): AsyncGenerator<JsonStreamEvent> {
   const lines: string[] = [];
   for await (const chunk of source) {

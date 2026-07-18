@@ -55,7 +55,7 @@ test("runProvidersMetrics --output json normaliza objeto de metrics", async () =
 
   const { runProvidersMetrics } = await import("../../bin/cli/commands/providers.mjs");
   const out = await captureStdout(() =>
-    runProvidersMetrics({ period: "24h", limit: 50 }, makeCmd() as any)
+    runProvidersMetrics({ period: "24h", limit: 50 }, makeCmd() as any),
   );
 
   globalThis.fetch = origFetch;
@@ -72,7 +72,7 @@ test("runProvidersMetrics --output json aceita array de providers", async () => 
 
   const { runProvidersMetrics } = await import("../../bin/cli/commands/providers.mjs");
   const out = await captureStdout(() =>
-    runProvidersMetrics({ period: "24h", limit: 50 }, makeCmd() as any)
+    runProvidersMetrics({ period: "24h", limit: 50 }, makeCmd() as any),
   );
 
   globalThis.fetch = origFetch;
@@ -88,7 +88,7 @@ test("runProvidersMetrics --limit trunca resultado", async () => {
 
   const { runProvidersMetrics } = await import("../../bin/cli/commands/providers.mjs");
   const out = await captureStdout(() =>
-    runProvidersMetrics({ period: "24h", limit: 2 }, makeCmd() as any)
+    runProvidersMetrics({ period: "24h", limit: 2 }, makeCmd() as any),
   );
 
   globalThis.fetch = origFetch;
@@ -106,7 +106,7 @@ test("runProvidersMetrics envia --provider na query", async () => {
 
   const { runProvidersMetrics } = await import("../../bin/cli/commands/providers.mjs");
   await captureStdout(() =>
-    runProvidersMetrics({ period: "7d", provider: "openai", limit: 50 }, makeCmd() as any)
+    runProvidersMetrics({ period: "7d", provider: "openai", limit: 50 }, makeCmd() as any),
   );
 
   globalThis.fetch = origFetch;
@@ -120,7 +120,7 @@ test("runProvidersMetrics exibe tabela com success rate formatada", async () => 
 
   const { runProvidersMetrics } = await import("../../bin/cli/commands/providers.mjs");
   const out = await captureStdout(() =>
-    runProvidersMetrics({ period: "24h", limit: 50 }, makeCmd("table") as any)
+    runProvidersMetrics({ period: "24h", limit: 50 }, makeCmd("table") as any),
   );
 
   globalThis.fetch = origFetch;
@@ -134,7 +134,7 @@ test("runProvidersMetrics retorna vazio quando endpoint retorna 404", async () =
 
   const { runProvidersMetrics } = await import("../../bin/cli/commands/providers.mjs");
   const out = await captureStdout(() =>
-    runProvidersMetrics({ period: "24h", limit: 50 }, makeCmd() as any)
+    runProvidersMetrics({ period: "24h", limit: 50 }, makeCmd() as any),
   );
 
   globalThis.fetch = origFetch;

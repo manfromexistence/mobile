@@ -4,7 +4,7 @@ import type { EmbeddingResult, EmbeddingError } from "./types";
 
 export async function embedRemote(
   text: string,
-  model: string
+  model: string,
 ): Promise<EmbeddingResult | EmbeddingError> {
   const t0 = Date.now();
 
@@ -59,7 +59,7 @@ export async function embedRemote(
       model,
       reason: "request_failed",
       message: sanitizeErrorMessage(
-        err instanceof Error ? err.message : "Failed to parse embedding response"
+        err instanceof Error ? err.message : "Failed to parse embedding response",
       ),
     };
   }
@@ -71,7 +71,9 @@ export async function embedRemote(
         source: "remote",
         model,
         reason: "request_failed",
-        message: sanitizeErrorMessage("Unexpected embedding response shape: missing data[0].embedding"),
+        message: sanitizeErrorMessage(
+          "Unexpected embedding response shape: missing data[0].embedding",
+        ),
       };
     }
     const rawVec = data[0].embedding as number[];

@@ -105,12 +105,12 @@ test("WS prepare() rejects a DIRECT model not in the key's allowedModels policy 
   assert.equal(
     response.status,
     403,
-    `expected a policy rejection (403), got ${response.status}: ${JSON.stringify(body)}`
+    `expected a policy rejection (403), got ${response.status}: ${JSON.stringify(body)}`,
   );
   assert.notEqual(
     body.error?.code,
     "codex_credentials_unavailable",
-    "must be rejected by API-key policy, not by (unrelated) missing Codex credentials"
+    "must be rejected by API-key policy, not by (unrelated) missing Codex credentials",
   );
   assert.match(body.error?.message ?? "", /not allowed|not enabled/i);
 });
@@ -148,14 +148,14 @@ test("WS prepare() rejects a combo not in the key's allowedCombos policy (403)",
   });
 
   const response = await route.POST(
-    buildPrepareRequest(comboRestrictedKey.key, "combo/other-combo")
+    buildPrepareRequest(comboRestrictedKey.key, "combo/other-combo"),
   );
   const body = (await response.json()) as { error?: { code?: string; message?: string } };
 
   assert.equal(
     response.status,
     403,
-    `expected a policy rejection (403), got ${response.status}: ${JSON.stringify(body)}`
+    `expected a policy rejection (403), got ${response.status}: ${JSON.stringify(body)}`,
   );
   assert.notEqual(body.error?.code, "codex_credentials_unavailable");
 });

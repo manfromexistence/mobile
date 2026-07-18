@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import type { GitStatusEntry } from '@pierre/trees';
-import { useMemo, useState } from 'react';
+import type { GitStatusEntry } from "@pierre/trees";
+import { useMemo, useState } from "react";
 
 export interface GitStatusControlPreset<Id extends string = string> {
   id: Id;
@@ -24,7 +24,7 @@ export function useGitStatusControls<Id extends string>({
 
   const activePreset = useMemo(
     () => presets.find((preset) => preset.id === presetId) ?? presets[0],
-    [presetId, presets]
+    [presetId, presets],
   );
   const gitStatus = enabled ? activePreset.entries : undefined;
 
@@ -44,10 +44,7 @@ export function useGitStatusControls<Id extends string>({
         />
         Enable git status
       </label>
-      <label
-        htmlFor={`git-status-preset-${idSuffix}`}
-        className="flex items-center gap-2"
-      >
+      <label htmlFor={`git-status-preset-${idSuffix}`} className="flex items-center gap-2">
         <span className="text-muted-foreground">Preset</span>
         <select
           data-test-git-status-preset="true"

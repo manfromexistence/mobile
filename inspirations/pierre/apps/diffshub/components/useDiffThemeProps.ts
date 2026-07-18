@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import type { ThemesType, ThemeTypes } from '@pierre/diffs';
-import { useMemo } from 'react';
+import type { ThemesType, ThemeTypes } from "@pierre/diffs";
+import { useMemo } from "react";
 
-import { useThemeSelection } from './useThemeSelection';
-import { useThemeSource } from './useThemeSource';
+import { useThemeSelection } from "./useThemeSelection";
+import { useThemeSource } from "./useThemeSource";
 import {
   type DiffThemeInput,
   diffThemeProps,
   diffThemeSelectionFromInput,
-} from '@/lib/theme/diffThemeProps';
-import { hasThemeNameSelection } from '@/lib/theme/ThemeSource';
+} from "@/lib/theme/diffThemeProps";
+import { hasThemeNameSelection } from "@/lib/theme/ThemeSource";
 
 // Names-now diffs hook. Reads the selection (names + scheme) — for the provider
 // path it comes from the controller; for an override `theme` prop the names are
@@ -28,9 +28,7 @@ export function useDiffThemeProps(theme?: DiffThemeInput): {
   const { activeTheme, source } = useThemeSource();
   return useMemo(() => {
     if (theme != null) {
-      return diffThemeProps(
-        diffThemeSelectionFromInput(theme, activeTheme.colorScheme)
-      );
+      return diffThemeProps(diffThemeSelectionFromInput(theme, activeTheme.colorScheme));
     }
     const sourceSelection = hasThemeNameSelection(source)
       ? source.getThemeNameSelection()
@@ -43,11 +41,5 @@ export function useDiffThemeProps(theme?: DiffThemeInput): {
       darkThemeName: selection.darkThemeName,
       colorScheme: activeTheme.colorScheme,
     });
-  }, [
-    theme,
-    selection.lightThemeName,
-    selection.darkThemeName,
-    source,
-    activeTheme.colorScheme,
-  ]);
+  }, [theme, selection.lightThemeName, selection.darkThemeName, source, activeTheme.colorScheme]);
 }

@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { buildComboTestRequestBody, extractComboTestResponseText } =
-  await import("../../src/lib/combos/testHealth.ts");
+const { buildComboTestRequestBody, extractComboTestResponseText } = await import(
+  "../../src/lib/combos/testHealth.ts"
+);
 
 test("combo test helper builds a realistic smoke payload", () => {
   const originalRandom = Math.random;

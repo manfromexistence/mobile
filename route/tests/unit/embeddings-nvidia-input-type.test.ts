@@ -22,7 +22,7 @@ function captureFetch(captured: { body?: Record<string, unknown> }) {
         data: [{ object: "embedding", embedding: [0.1, 0.2], index: 0 }],
         usage: { prompt_tokens: 4, total_tokens: 4 },
       }),
-      { status: 200, headers: { "content-type": "application/json" } }
+      { status: 200, headers: { "content-type": "application/json" } },
     );
   };
 }
@@ -47,7 +47,7 @@ test("handleEmbedding injects NVIDIA asymmetric default input_type when client o
     assert.equal(
       captured.body?.input_type,
       "query",
-      "expected NVIDIA asymmetric model default input_type to be injected"
+      "expected NVIDIA asymmetric model default input_type to be injected",
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -74,7 +74,7 @@ test("handleEmbedding respects a client-supplied input_type (does not overwrite)
     assert.equal(
       captured.body?.input_type,
       "passage",
-      "expected client-supplied input_type to be respected, not overwritten by the default"
+      "expected client-supplied input_type to be respected, not overwritten by the default",
     );
   } finally {
     globalThis.fetch = originalFetch;
@@ -100,7 +100,7 @@ test("handleEmbedding does not inject input_type for symmetric models without a 
     assert.equal(
       "input_type" in (captured.body || {}),
       false,
-      "symmetric models without a default must not receive an injected input_type"
+      "symmetric models without a default must not receive an injected input_type",
     );
   } finally {
     globalThis.fetch = originalFetch;

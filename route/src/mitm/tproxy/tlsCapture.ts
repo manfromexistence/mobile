@@ -52,7 +52,7 @@ export function isTlsClientHello(firstByte: number): boolean {
 export function resolveCaptureHost(
   sniServername: string | undefined,
   hostHeader: string | undefined,
-  destIp: string
+  destIp: string,
 ): string {
   const sni = (sniServername ?? "").trim();
   if (sni) return sni;
@@ -118,7 +118,7 @@ async function readBody(req: http.IncomingMessage): Promise<Buffer> {
  */
 export function buildForwardHeaders(
   raw: http.IncomingHttpHeaders,
-  host: string
+  host: string,
 ): Record<string, string> {
   const out: Record<string, string> = {};
   for (const [name, value] of Object.entries(raw)) {
@@ -154,7 +154,7 @@ export function handleDecryptedRequest(
   req: http.IncomingMessage,
   res: http.ServerResponse,
   dest: DecryptedDest,
-  deps: TlsCaptureDeps
+  deps: TlsCaptureDeps,
 ): void {
   const startedAt = deps.now();
   const socket = req.socket as tls.TLSSocket;
@@ -188,7 +188,12 @@ export function handleDecryptedRequest(
 
       const result = await deps.forward(
         { ip: dest.ip, port: dest.port, sni },
-        { method: req.method ?? "GET", path, headers: buildForwardHeaders(req.headers, host), body }
+        {
+          method: req.method ?? "GET",
+          path,
+          headers: buildForwardHeaders(req.headers, host),
+          body,
+        },
       );
 
       const totalLatencyMs = deps.now() - startedAt;
@@ -240,7 +245,7 @@ export interface TlsCaptureServer {
  */
 export function createTlsCaptureServer(
   certStore: Pick<DynamicCertStore, "createSNICallback">,
-  deps: Partial<TlsCaptureDeps> = {}
+  deps: Partial<TlsCaptureDeps> = {},
 ): TlsCaptureServer {
   const resolved = defaultDeps(deps);
   const pending = new WeakMap<object, DecryptedDest>();
@@ -301,7 +306,7 @@ export function createTlsCaptureServer(
  */
 export function createForward(
   connectRaw: (ip: string, port: number) => net.Socket,
-  opts: { rejectUnauthorized?: boolean } = {}
+  opts: { rejectUnauthorized?: boolean } = {},
 ): TlsCaptureDeps["forward"] {
   const rejectUnauthorized = opts.rejectUnauthorized ?? true;
   return (dest, init) =>
@@ -344,7 +349,7 @@ export function createForward(
               }
               resolve({ status: upstream.statusCode ?? 0, headers, body: Buffer.concat(chunks) });
             });
-          }
+          },
         );
       } catch (err) {
         reject(err);
@@ -364,5 +369,5 @@ export function createForward(
  * proxy rejects exactly what the original client would have rejected.
  */
 export const realForward: TlsCaptureDeps["forward"] = createForward(
-  (ip, port) => new net.Socket({ fd: connectMarked(ip, port, DEFAULT_BYPASS_MARK) })
+  (ip, port) => new net.Socket({ fd: connectMarked(ip, port, DEFAULT_BYPASS_MARK) }),
 );

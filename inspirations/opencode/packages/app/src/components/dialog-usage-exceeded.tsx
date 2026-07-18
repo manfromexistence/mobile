@@ -1,31 +1,31 @@
-import { usePlatform } from "@/context/platform"
-import { Button } from "@opencode-ai/ui/button"
-import { useDialog } from "@opencode-ai/ui/context/dialog"
-import { Dialog } from "@opencode-ai/ui/dialog"
-import { JSX } from "solid-js"
+import { usePlatform } from "@/context/platform";
+import { Button } from "@opencode-ai/ui/button";
+import { useDialog } from "@opencode-ai/ui/context/dialog";
+import { Dialog } from "@opencode-ai/ui/dialog";
+import { JSX } from "solid-js";
 
 export type DialogGoUpsellProps = {
-  title: string
-  description: JSX.Element
-  link?: string
-  actionLabel: string
-  onClose?: (dontShowAgain?: boolean) => void
-}
+  title: string;
+  description: JSX.Element;
+  link?: string;
+  actionLabel: string;
+  onClose?: (dontShowAgain?: boolean) => void;
+};
 
 export function DialogUsageExceeded(props: DialogGoUpsellProps) {
-  const dialog = useDialog()
-  const platform = usePlatform()
+  const dialog = useDialog();
+  const platform = usePlatform();
 
   const runAction = () => {
-    if (props.link) platform.openLink(props.link)
-    props.onClose?.()
-    dialog.close()
-  }
+    if (props.link) platform.openLink(props.link);
+    props.onClose?.();
+    dialog.close();
+  };
 
   const dismiss = () => {
-    props.onClose?.(true)
-    dialog.close()
-  }
+    props.onClose?.(true);
+    dialog.close();
+  };
 
   return (
     <Dialog title={props.title} description={props.description} fit>
@@ -40,5 +40,5 @@ export function DialogUsageExceeded(props: DialogGoUpsellProps) {
         </div>
       </div>
     </Dialog>
-  )
+  );
 }

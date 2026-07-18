@@ -38,11 +38,11 @@ test("6A.8: discoverManifests finds root and workspace package.json files", () =
   assert.ok(manifests.includes("open-sse/package.json"), "open-sse/package.json must be included");
   assert.ok(
     manifests.includes("@omniroute/opencode-plugin/package.json"),
-    "@omniroute/opencode-plugin/package.json must be included"
+    "@omniroute/opencode-plugin/package.json must be included",
   );
   assert.ok(
     manifests.includes("@omniroute/opencode-provider/package.json"),
-    "@omniroute/opencode-provider/package.json must be included"
+    "@omniroute/opencode-provider/package.json must be included",
   );
 });
 
@@ -72,14 +72,14 @@ test("6A.8: all workspace package deps are in the allowlist (gate exits 0 with e
       ...Object.keys(pkg.dependencies || {}),
       ...Object.keys(pkg.devDependencies || {}),
       ...Object.keys(pkg.optionalDependencies || {}),
-      ...Object.keys(pkg.peerDependencies || {})
+      ...Object.keys(pkg.peerDependencies || {}),
     );
   }
   const unapproved = findUnapprovedDeps(allDeps, allowlist);
   assert.deepEqual(
     unapproved,
     [],
-    `expected all deps to be approved, got: ${unapproved.join(", ")}`
+    `expected all deps to be approved, got: ${unapproved.join(", ")}`,
   );
 });
 
@@ -92,7 +92,7 @@ test("6A.8 stale: a dep removed from all manifests is detected as stale in allow
   const stale = (reportStaleEntries as (a: string[], b: string[], c: string) => string[])(
     ["removed-lib", "react"],
     ["react"], // only "react" is live
-    "check-deps"
+    "check-deps",
   );
   assert.deepEqual(stale, ["removed-lib"]);
 });
@@ -165,7 +165,7 @@ test("7.8 auditNewDepsRegistry: empty dep list returns all-empty results", () =>
     auditNewDepsRegistry as (
       deps: string[],
       minAge?: number,
-      now?: number
+      now?: number,
     ) => {
       notFound: string[];
       tooNew: Array<{ name: string; ageHours: number }>;

@@ -12,8 +12,9 @@ const providersDb = await import("../../src/lib/db/providers.ts");
 const providerNodesRoute = await import("../../src/app/api/provider-nodes/route.ts");
 const providerNodesIdRoute = await import("../../src/app/api/provider-nodes/[id]/route.ts");
 const { OPENAI_COMPATIBLE_PREFIX } = await import("../../src/shared/constants/providers.ts");
-const { createProviderNodeSchema, updateProviderNodeSchema } =
-  await import("../../src/shared/validation/schemas.ts");
+const { createProviderNodeSchema, updateProviderNodeSchema } = await import(
+  "../../src/shared/validation/schemas.ts"
+);
 const { DefaultExecutor } = await import("../../open-sse/executors/default.ts");
 
 async function resetStorage() {
@@ -147,7 +148,7 @@ test("provider nodes route creates OpenAI-compatible nodes with customHeaders", 
         "X-Custom-Auth": "auth-token-123",
         "X-Request-ID": "req-abc",
       },
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -166,7 +167,7 @@ test("provider nodes route creates nodes without customHeaders (null)", async ()
       prefix: "no-custom",
       apiType: "chat",
       baseUrl: "https://nocustom.example.com/v1",
-    })
+    }),
   );
   const body = (await response.json()) as any;
 
@@ -182,7 +183,7 @@ test("provider nodes route update modifies customHeaders", async () => {
       apiType: "chat",
       baseUrl: "https://original.example.com/v1",
       customHeaders: { "X-Original": "original-value" },
-    })
+    }),
   );
   const created = (await createResponse.json()) as any;
   const nodeId = created.node.id;
@@ -214,7 +215,7 @@ test("provider nodes route update can clear customHeaders by passing null", asyn
       apiType: "chat",
       baseUrl: "https://withheaders.example.com/v1",
       customHeaders: { "X-Keep": "keep-value" },
-    })
+    }),
   );
   const created = (await createResponse.json()) as any;
   const nodeId = created.node.id;
@@ -250,7 +251,7 @@ test("DefaultExecutor.buildHeaders applies customHeaders from providerSpecificDa
         },
       },
     },
-    true
+    true,
   ) as Record<string, string>;
 
   assert.equal(headers["X-Custom-Auth"], "custom-auth-value");
@@ -275,7 +276,7 @@ test("DefaultExecutor.buildHeaders does NOT override auth headers with customHea
         },
       },
     },
-    true
+    true,
   ) as Record<string, string>;
 
   assert.equal(headers.Authorization, "Bearer real-key");
@@ -299,7 +300,7 @@ test("DefaultExecutor.buildHeaders blocks forbidden hop-by-hop headers from cust
         },
       },
     },
-    true
+    true,
   ) as Record<string, string>;
 
   assert.equal(headers.host, undefined);
@@ -319,7 +320,7 @@ test("DefaultExecutor.buildHeaders handles string customHeaders (JSON parsed)", 
         customHeaders: JSON.stringify({ "X-From-String": "parsed-value" }),
       },
     },
-    true
+    true,
   ) as Record<string, string>;
 
   assert.equal(headers["X-From-String"], "parsed-value");
@@ -336,7 +337,7 @@ test("DefaultExecutor.buildHeaders handles invalid JSON in string customHeaders 
         customHeaders: "not valid json {",
       },
     },
-    true
+    true,
   ) as Record<string, string>;
 
   assert.equal(headers["X-From-String"], undefined);
@@ -354,7 +355,7 @@ test("DefaultExecutor.buildHeaders handles array customHeaders gracefully", () =
         customHeaders: ["array", "not", "valid"],
       },
     },
-    true
+    true,
   ) as Record<string, string>;
 
   assert.equal(headers["X-From-String"], undefined);
@@ -366,15 +367,15 @@ test("DefaultExecutor.buildHeaders handles null/undefined/empty customHeaders", 
 
   const nullHeaders = executor.buildHeaders(
     { apiKey: "key", providerSpecificData: { customHeaders: null } },
-    true
+    true,
   ) as Record<string, string>;
   const undefinedHeaders = executor.buildHeaders(
     { apiKey: "key", providerSpecificData: {} },
-    true
+    true,
   ) as Record<string, string>;
   const emptyHeaders = executor.buildHeaders(
     { apiKey: "key", providerSpecificData: { customHeaders: {} } },
-    true
+    true,
   ) as Record<string, string>;
 
   for (const headers of [nullHeaders, undefinedHeaders, emptyHeaders]) {
@@ -398,7 +399,7 @@ test("DefaultExecutor.buildHeaders customHeaders are case-sensitive for header n
         },
       },
     },
-    true
+    true,
   ) as Record<string, string>;
 
   assert.equal(headers["x-lower"], "lower-value");
@@ -418,7 +419,7 @@ test("DefaultExecutor.buildHeaders for non-openai-compatible providers ignores c
         },
       },
     },
-    true
+    true,
   ) as Record<string, string>;
 
   assert.equal(headers["X-Custom"], undefined);
@@ -554,7 +555,7 @@ test("db: createProviderNode and getProviderNodeById handle customHeaders as JSO
   assert.deepEqual(node.customHeaders, { "X-DB-Header": "db-value", "X-Another": "another" });
 
   const retrieved = await providersDb.getProviderNodeById(
-    "openai-compatible-chat-custom-headers-db"
+    "openai-compatible-chat-custom-headers-db",
   );
   assert.deepEqual(retrieved.customHeaders, { "X-DB-Header": "db-value", "X-Another": "another" });
 });

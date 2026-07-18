@@ -1,82 +1,85 @@
-import { createSimpleContext } from "@opencode-ai/ui/context"
-import { base64Encode, checksum } from "@opencode-ai/core/util/encode"
-import { useParams, useSearchParams } from "@solidjs/router"
-import { batch, createMemo, createRoot, getOwner, onCleanup, type Accessor } from "solid-js"
-import { createStore, type SetStoreFunction } from "solid-js/store"
-import type { FileSelection } from "@/context/file"
-import { Persist, persisted } from "@/utils/persist"
-import { useServerSDK } from "./server-sdk"
-import type { ServerScope } from "@/utils/server-scope"
-import { useSDK } from "./sdk"
-import { useTabs, type Tab } from "./tabs"
-import { ServerConnection } from "./server"
-import { requireServerKey } from "@/utils/session-route"
-import { useSettings } from "./settings"
-import type { FilePartSource } from "@opencode-ai/sdk/v2/client"
+import { createSimpleContext } from "@opencode-ai/ui/context";
+import { base64Encode, checksum } from "@opencode-ai/core/util/encode";
+import { useParams, useSearchParams } from "@solidjs/router";
+import { batch, createMemo, createRoot, getOwner, onCleanup, type Accessor } from "solid-js";
+import { createStore, type SetStoreFunction } from "solid-js/store";
+import type { FileSelection } from "@/context/file";
+import { Persist, persisted } from "@/utils/persist";
+import { useServerSDK } from "./server-sdk";
+import type { ServerScope } from "@/utils/server-scope";
+import { useSDK } from "./sdk";
+import { useTabs, type Tab } from "./tabs";
+import { ServerConnection } from "./server";
+import { requireServerKey } from "@/utils/session-route";
+import { useSettings } from "./settings";
+import type { FilePartSource } from "@opencode-ai/sdk/v2/client";
 
 interface PartBase {
-  content: string
-  start: number
-  end: number
+  content: string;
+  start: number;
+  end: number;
 }
 
 export interface TextPart extends PartBase {
-  type: "text"
+  type: "text";
 }
 
 export interface FileAttachmentPart extends PartBase {
-  type: "file"
-  path: string
-  selection?: FileSelection
-  mime?: string
-  filename?: string
-  url?: string
-  source?: FilePartSource
+  type: "file";
+  path: string;
+  selection?: FileSelection;
+  mime?: string;
+  filename?: string;
+  url?: string;
+  source?: FilePartSource;
 }
 
 export interface AgentPart extends PartBase {
-  type: "agent"
-  name: string
+  type: "agent";
+  name: string;
 }
 
 export interface ImageAttachmentPart {
-  type: "image"
-  id: string
-  filename: string
-  sourcePath?: string
-  mime: string
-  dataUrl: string
+  type: "image";
+  id: string;
+  filename: string;
+  sourcePath?: string;
+  mime: string;
+  dataUrl: string;
 }
 
-export type ContentPart = TextPart | FileAttachmentPart | AgentPart | ImageAttachmentPart
-export type Prompt = ContentPart[]
+export type ContentPart = TextPart | FileAttachmentPart | AgentPart | ImageAttachmentPart;
+export type Prompt = ContentPart[];
 
 export type FileContextItem = {
-  type: "file"
-  path: string
-  selection?: FileSelection
-  comment?: string
-  commentID?: string
-  commentOrigin?: "review" | "file"
-  preview?: string
-}
+  type: "file";
+  path: string;
+  selection?: FileSelection;
+  comment?: string;
+  commentID?: string;
+  commentOrigin?: "review" | "file";
+  preview?: string;
+};
 
-export type ContextItem = FileContextItem
+export type ContextItem = FileContextItem;
 
-export const DEFAULT_PROMPT: Prompt = [{ type: "text", content: "", start: 0, end: 0 }]
+export const DEFAULT_PROMPT: Prompt = [{ type: "text", content: "", start: 0, end: 0 }];
 
 function isSelectionEqual(a?: FileSelection, b?: FileSelection) {
-  if (!a && !b) return true
-  if (!a || !b) return false
+  if (!a && !b) return true;
+  if (!a || !b) return false;
   return (
-    a.startLine === b.startLine && a.startChar === b.startChar && a.endLine === b.endLine && a.endChar === b.endChar
-  )
+    a.startLine === b.startLine &&
+    a.startChar === b.startChar &&
+    a.endLine === b.endLine &&
+    a.endChar === b.endChar
+  );
 }
 
 function isPartEqual(partA: ContentPart, partB: ContentPart) {
   switch (partA.type) {
     case "text":
-      return partB.type === "text" && partA.content === partB.content
+      return partB.type === "text" && partA.content === partB.content;
     case "file":
       return (
         partB.type === "file" &&
@@ -84,140 +87,142 @@ function isPartEqual(partA: ContentPart, partB: ContentPart) {
         partA.mime === partB.mime &&
         partA.filename === partB.filename &&
         isSelectionEqual(partA.selection, partB.selection)
-      )
+      );
     case "agent":
-      return partB.type === "agent" && partA.name === partB.name
+      return partB.type === "agent" && partA.name === partB.name;
     case "image":
-      return partB.type === "image" && partA.id === partB.id
+      return partB.type === "image" && partA.id === partB.id;
   }
 }
 
 export function isPromptEqual(promptA: Prompt, promptB: Prompt): boolean {
-  if (promptA.length !== promptB.length) return false
+  if (promptA.length !== promptB.length) return false;
   for (let i = 0; i < promptA.length; i++) {
-    if (!isPartEqual(promptA[i], promptB[i])) return false
+    if (!isPartEqual(promptA[i], promptB[i])) return false;
   }
-  return true
+  return true;
 }
 
 function cloneSelection(selection?: FileSelection) {
-  if (!selection) return undefined
-  return { ...selection }
+  if (!selection) return undefined;
+  return { ...selection };
 }
 
 function clonePart(part: ContentPart): ContentPart {
-  if (part.type === "text") return { ...part }
-  if (part.type === "image") return { ...part }
-  if (part.type === "agent") return { ...part }
+  if (part.type === "text") return { ...part };
+  if (part.type === "image") return { ...part };
+  if (part.type === "agent") return { ...part };
   return {
     ...part,
     selection: cloneSelection(part.selection),
-  }
+  };
 }
 
 function clonePrompt(prompt: Prompt): Prompt {
-  return prompt.map(clonePart)
+  return prompt.map(clonePart);
 }
 
 function contextItemKey(item: ContextItem) {
-  if (item.type !== "file") return item.type
-  const start = item.selection?.startLine
-  const end = item.selection?.endLine
-  const key = `${item.type}:${item.path}:${start}:${end}`
+  if (item.type !== "file") return item.type;
+  const start = item.selection?.startLine;
+  const end = item.selection?.endLine;
+  const key = `${item.type}:${item.path}:${start}:${end}`;
 
   if (item.commentID) {
-    return `${key}:c=${item.commentID}`
+    return `${key}:c=${item.commentID}`;
   }
 
-  const comment = item.comment?.trim()
-  if (!comment) return key
-  const digest = checksum(comment) ?? comment
-  return `${key}:c=${digest.slice(0, 8)}`
+  const comment = item.comment?.trim();
+  if (!comment) return key;
+  const digest = checksum(comment) ?? comment;
+  return `${key}:c=${digest.slice(0, 8)}`;
 }
 
 function isCommentItem(item: ContextItem | (ContextItem & { key: string })) {
-  return item.type === "file" && !!item.comment?.trim()
+  return item.type === "file" && !!item.comment?.trim();
 }
 
 function createPromptActions(
   setStore: SetStoreFunction<{
-    prompt: Prompt
-    cursor?: number
+    prompt: Prompt;
+    cursor?: number;
     context: {
-      items: (ContextItem & { key: string })[]
-    }
+      items: (ContextItem & { key: string })[];
+    };
   }>,
 ) {
   return {
     set(prompt: Prompt, cursorPosition?: number) {
-      const next = clonePrompt(prompt)
+      const next = clonePrompt(prompt);
       batch(() => {
-        setStore("prompt", next)
-        if (cursorPosition !== undefined) setStore("cursor", cursorPosition)
-      })
+        setStore("prompt", next);
+        if (cursorPosition !== undefined) setStore("cursor", cursorPosition);
+      });
     },
     reset() {
       batch(() => {
-        setStore("prompt", clonePrompt(DEFAULT_PROMPT))
-        setStore("cursor", 0)
-      })
+        setStore("prompt", clonePrompt(DEFAULT_PROMPT));
+        setStore("cursor", 0);
+      });
     },
-  }
+  };
 }
 
-const WORKSPACE_KEY = "__workspace__"
-const MAX_PROMPT_SESSIONS = 20
+const WORKSPACE_KEY = "__workspace__";
+const MAX_PROMPT_SESSIONS = 20;
 
-type PromptSession = ReturnType<typeof createPromptSession>
+type PromptSession = ReturnType<typeof createPromptSession>;
 
 type PromptStore = {
-  prompt: Prompt
-  cursor?: number
+  prompt: Prompt;
+  cursor?: number;
   context: {
-    items: (ContextItem & { key: string })[]
-  }
-}
+    items: (ContextItem & { key: string })[];
+  };
+};
 
-type Scope = { draftID: string } | { dir: string; id?: string }
+type Scope = { draftID: string } | { dir: string; id?: string };
 
 export function selectPromptTab(tabs: Tab[], scope: Scope, server: ServerConnection.Key) {
-  if ("draftID" in scope) return tabs.find((tab) => tab.type === "draft" && tab.draftID === scope.draftID)
-  if (!scope.id) return
+  if ("draftID" in scope)
+    return tabs.find((tab) => tab.type === "draft" && tab.draftID === scope.draftID);
+  if (!scope.id) return;
   return (
-    tabs.find((tab) => tab.type === "session" && tab.server === server && tab.sessionId === scope.id) ??
-    ({ type: "session", server, sessionId: scope.id } satisfies Tab)
-  )
+    tabs.find(
+      (tab) => tab.type === "session" && tab.server === server && tab.sessionId === scope.id,
+    ) ?? ({ type: "session", server, sessionId: scope.id } satisfies Tab)
+  );
 }
 
 function scopeKey(scope: Scope) {
-  if ("draftID" in scope) return `draft:${scope.draftID}`
-  return `${scope.dir}:${scope.id ?? WORKSPACE_KEY}`
+  if ("draftID" in scope) return `draft:${scope.draftID}`;
+  return `${scope.dir}:${scope.id ?? WORKSPACE_KEY}`;
 }
 
 type PromptCacheEntry = {
-  value: PromptSession
-  dispose: VoidFunction
-}
+  value: PromptSession;
+  dispose: VoidFunction;
+};
 
 function promptTarget(serverScope: ServerScope, scope: Scope) {
-  if ("draftID" in scope) return Persist.draft(scope.draftID, "prompt")
-  const legacy = `${scope.dir}/prompt${scope.id ? "/" + scope.id : ""}.v2`
-  return Persist.serverScoped(serverScope, scope.dir, scope.id, "prompt", [legacy])
+  if ("draftID" in scope) return Persist.draft(scope.draftID, "prompt");
+  const legacy = `${scope.dir}/prompt${scope.id ? "/" + scope.id : ""}.v2`;
+  return Persist.serverScoped(serverScope, scope.dir, scope.id, "prompt", [legacy]);
 }
 
 export function createPromptSession(serverScope: ServerScope, scope: Scope) {
   const [store, setStore, _, ready] = persisted(
     promptTarget(serverScope, scope),
     createStore<PromptStore>(promptStore()),
-  )
+  );
 
-  return { ready, ...createPromptStateValue(store, setStore) }
+  return { ready, ...createPromptStateValue(store, setStore) };
 }
 
 export function createPromptReady(session: Accessor<PromptSession>) {
   return Object.defineProperty(() => session().ready(), "promise", {
     get: () => session().ready.promise,
-  }) as (() => boolean) & { readonly promise: Promise<unknown> | undefined }
+  }) as (() => boolean) & { readonly promise: Promise<unknown> | undefined };
 }
 
 function promptStore(): PromptStore {
@@ -227,11 +232,11 @@ function promptStore(): PromptStore {
     context: {
       items: [],
     },
-  }
+  };
 }
 
 function createPromptStateValue(store: PromptStore, setStore: SetStoreFunction<PromptStore>) {
-  const actions = createPromptActions(setStore)
+  const actions = createPromptActions(setStore);
 
   const value = {
     current: () => store.prompt,
@@ -240,104 +245,117 @@ function createPromptStateValue(store: PromptStore, setStore: SetStoreFunction<P
     context: {
       items: createMemo(() => store.context.items),
       add(item: ContextItem) {
-        const key = contextItemKey(item)
-        if (store.context.items.find((x) => x.key === key)) return
-        setStore("context", "items", (items) => [...items, { key, ...item }])
+        const key = contextItemKey(item);
+        if (store.context.items.find((x) => x.key === key)) return;
+        setStore("context", "items", (items) => [...items, { key, ...item }]);
       },
       remove(key: string) {
-        setStore("context", "items", (items) => items.filter((x) => x.key !== key))
+        setStore("context", "items", (items) => items.filter((x) => x.key !== key));
       },
       removeComment(path: string, commentID: string) {
         setStore("context", "items", (items) =>
-          items.filter((item) => !(item.type === "file" && item.path === path && item.commentID === commentID)),
-        )
+          items.filter(
+            (item) => !(item.type === "file" && item.path === path && item.commentID === commentID),
+          ),
+        );
       },
-      updateComment(path: string, commentID: string, next: Partial<FileContextItem> & { comment?: string }) {
+      updateComment(
+        path: string,
+        commentID: string,
+        next: Partial<FileContextItem> & { comment?: string },
+      ) {
         setStore("context", "items", (items) =>
           items.map((item) => {
-            if (item.type !== "file" || item.path !== path || item.commentID !== commentID) return item
-            const value = { ...item, ...next }
-            return { ...value, key: contextItemKey(value) }
+            if (item.type !== "file" || item.path !== path || item.commentID !== commentID)
+              return item;
+            const value = { ...item, ...next };
+            return { ...value, key: contextItemKey(value) };
           }),
-        )
+        );
       },
       replaceComments(items: FileContextItem[]) {
         setStore("context", "items", (current) => [
           ...current.filter((item) => !isCommentItem(item)),
           ...items.map((item) => ({ ...item, key: contextItemKey(item) })),
-        ])
+        ]);
       },
     },
     set: actions.set,
     reset: actions.reset,
     capture: () => value,
-  }
-  return value
+  };
+  return value;
 }
 
 export function createPromptState() {
-  const [store, setStore] = createStore<PromptStore>(promptStore())
-  const ready = Object.assign(() => true, { promise: Promise.resolve(true) })
+  const [store, setStore] = createStore<PromptStore>(promptStore());
+  const ready = Object.assign(() => true, { promise: Promise.resolve(true) });
   return {
     ready,
     ...createPromptStateValue(store, setStore),
-  }
+  };
 }
 
 export const createTabPromptState = (
   tabs: ReturnType<typeof useTabs>,
   tab: Tab,
   ...args: Parameters<typeof createPromptSession>
-) => tabs.state(tab, "prompt", () => createPromptSession(...args))
+) => tabs.state(tab, "prompt", () => createPromptSession(...args));
 
 export const { use: usePrompt, provider: PromptProvider } = createSimpleContext({
   name: "Prompt",
   gate: false,
   init: () => {
-    const params = useParams<{ serverKey?: string; id?: string }>()
-    const sdk = useSDK()
-    const [search] = useSearchParams<{ draftId?: string }>()
-    const serverSDK = useServerSDK()
-    const tabs = useTabs()
-    const settings = useSettings()
-    const cache = new Map<string, PromptCacheEntry>()
+    const params = useParams<{ serverKey?: string; id?: string }>();
+    const sdk = useSDK();
+    const [search] = useSearchParams<{ draftId?: string }>();
+    const serverSDK = useServerSDK();
+    const tabs = useTabs();
+    const settings = useSettings();
+    const cache = new Map<string, PromptCacheEntry>();
 
     const disposeAll = () => {
       for (const entry of cache.values()) {
-        entry.dispose()
+        entry.dispose();
       }
-      cache.clear()
-    }
+      cache.clear();
+    };
 
-    onCleanup(disposeAll)
+    onCleanup(disposeAll);
 
     const prune = () => {
       while (cache.size > MAX_PROMPT_SESSIONS) {
-        const first = cache.keys().next().value
-        if (!first) return
-        const entry = cache.get(first)
-        entry?.dispose()
-        cache.delete(first)
+        const first = cache.keys().next().value;
+        if (!first) return;
+        const entry = cache.get(first);
+        entry?.dispose();
+        cache.delete(first);
       }
-    }
+    };
 
-    const owner = getOwner()
+    const owner = getOwner();
     const serverKey = () =>
-      params.serverKey ? requireServerKey(params.serverKey) : ServerConnection.key(serverSDK().server)
+      params.serverKey
+        ? requireServerKey(params.serverKey)
+        : ServerConnection.key(serverSDK().server);
     const scope = () =>
-      search.draftId ? { draftID: search.draftId } : { dir: base64Encode(sdk().directory), id: params.id }
+      search.draftId
+        ? { draftID: search.draftId }
+        : { dir: base64Encode(sdk().directory), id: params.id };
     const load = (scope: Scope) => {
-      const current = settings.general.newLayoutDesigns() ? selectPromptTab(tabs.store, scope, serverKey()) : undefined
+      const current = settings.general.newLayoutDesigns()
+        ? selectPromptTab(tabs.store, scope, serverKey())
+        : undefined;
       if (current) {
-        return createTabPromptState(tabs, current, serverSDK().scope, scope)
+        return createTabPromptState(tabs, current, serverSDK().scope, scope);
       }
 
-      const key = scopeKey(scope)
-      const existing = cache.get(key)
+      const key = scopeKey(scope);
+      const existing = cache.get(key);
       if (existing) {
-        cache.delete(key)
-        cache.set(key, existing)
-        return existing.value
+        cache.delete(key);
+        cache.set(key, existing);
+        return existing.value;
       }
 
       const entry = createRoot(
@@ -346,16 +364,16 @@ export const { use: usePrompt, provider: PromptProvider } = createSimpleContext(
           dispose,
         }),
         owner,
-      )
+      );
 
-      cache.set(key, entry)
-      prune()
-      return entry.value
-    }
+      cache.set(key, entry);
+      prune();
+      return entry.value;
+    };
 
-    const session = createMemo(() => load(scope()))
-    const pick = (scope?: Scope) => (scope ? load(scope) : session())
-    const ready = createPromptReady(session)
+    const session = createMemo(() => load(scope()));
+    const pick = (scope?: Scope) => (scope ? load(scope) : session());
+    const ready = createPromptReady(session);
 
     return {
       ready,
@@ -367,13 +385,18 @@ export const { use: usePrompt, provider: PromptProvider } = createSimpleContext(
         items: () => session().context.items(),
         add: (item: ContextItem) => session().context.add(item),
         remove: (key: string) => session().context.remove(key),
-        removeComment: (path: string, commentID: string) => session().context.removeComment(path, commentID),
-        updateComment: (path: string, commentID: string, next: Partial<FileContextItem> & { comment?: string }) =>
-          session().context.updateComment(path, commentID, next),
+        removeComment: (path: string, commentID: string) =>
+          session().context.removeComment(path, commentID),
+        updateComment: (
+          path: string,
+          commentID: string,
+          next: Partial<FileContextItem> & { comment?: string },
+        ) => session().context.updateComment(path, commentID, next),
         replaceComments: (items: FileContextItem[]) => session().context.replaceComments(items),
       },
-      set: (prompt: Prompt, cursorPosition?: number, scope?: Scope) => pick(scope).set(prompt, cursorPosition),
+      set: (prompt: Prompt, cursorPosition?: number, scope?: Scope) =>
+        pick(scope).set(prompt, cursorPosition),
       reset: (scope?: Scope) => pick(scope).reset(),
-    }
+    };
   },
-})
+});

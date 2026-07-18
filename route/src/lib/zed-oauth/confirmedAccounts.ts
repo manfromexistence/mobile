@@ -25,10 +25,10 @@ export function parseConfirmedAccounts(body: unknown): ConfirmedAccount[] | null
 
 export function filterCredentialsByConfirmation(
   credentials: ZedCredential[],
-  confirmed: ConfirmedAccount[]
+  confirmed: ConfirmedAccount[],
 ): ZedCredential[] {
   const confirmedKeys = new Set(
-    confirmed.map((c) => c.service + "|" + c.account + "|" + c.fingerprint)
+    confirmed.map((c) => c.service + "|" + c.account + "|" + c.fingerprint),
   );
   return credentials.filter((cred) => {
     const fp = fingerprintZedCredential(cred.service, cred.account, cred.token);

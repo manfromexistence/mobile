@@ -1,32 +1,32 @@
-import meshGradientImg from '../../public/shaders/mesh-gradient.webp';
-import simplexNoiseImg from '../../public/shaders/simplex-noise.webp';
-import neuroNoiseImg from '../../public/shaders/neuro-noise.webp';
-import perlinNoiseImg from '../../public/shaders/perlin-noise.webp';
-import dotGridImg from '../../public/shaders/dot-grid.webp';
-import dotOrbitImg from '../../public/shaders/dot-orbit.webp';
-import smokeRingImg from '../../public/shaders/smoke-ring.webp';
-import metaballsImg from '../../public/shaders/metaballs.webp';
-import voronoiImg from '../../public/shaders/voronoi.webp';
-import wavesImg from '../../public/shaders/waves.webp';
-import warpImg from '../../public/shaders/warp.webp';
-import godRaysImg from '../../public/shaders/god-rays.webp';
-import spiralImg from '../../public/shaders/spiral.webp';
-import swirlImg from '../../public/shaders/swirl.webp';
-import ditheringImg from '../../public/shaders/dithering.webp';
-import grainGradientImg from '../../public/shaders/grain-gradient.webp';
-import pulsingBorderImg from '../../public/shaders/pulsing-border.webp';
-import colorPanelsImg from '../../public/shaders/color-panels.webp';
-import staticMeshGradientImg from '../../public/shaders/static-mesh-gradient.webp';
-import staticRadialGradientImg from '../../public/shaders/static-radial-gradient.webp';
-import flutedGlassImg from '../../public/shaders/fluted-glass.webp';
-import imageDitheringImg from '../../public/shaders/image-dithering.webp';
-import paperTextureImg from '../../public/shaders/paper-texture.webp';
-import waterImg from '../../public/shaders/water.webp';
-import heatmapImg from '../../public/shaders/heatmap.webp';
-import liquidMetalImg from '../../public/shaders/liquid-metal.webp';
-import halftoneDotsImg from '../../public/shaders/halftone-dots.webp';
-import halftoneCmykImg from '../../public/shaders/halftone-cmyk.webp';
-import gemSmokeImg from '../../public/shaders/gem-smoke.webp';
+import meshGradientImg from "../../public/shaders/mesh-gradient.webp";
+import simplexNoiseImg from "../../public/shaders/simplex-noise.webp";
+import neuroNoiseImg from "../../public/shaders/neuro-noise.webp";
+import perlinNoiseImg from "../../public/shaders/perlin-noise.webp";
+import dotGridImg from "../../public/shaders/dot-grid.webp";
+import dotOrbitImg from "../../public/shaders/dot-orbit.webp";
+import smokeRingImg from "../../public/shaders/smoke-ring.webp";
+import metaballsImg from "../../public/shaders/metaballs.webp";
+import voronoiImg from "../../public/shaders/voronoi.webp";
+import wavesImg from "../../public/shaders/waves.webp";
+import warpImg from "../../public/shaders/warp.webp";
+import godRaysImg from "../../public/shaders/god-rays.webp";
+import spiralImg from "../../public/shaders/spiral.webp";
+import swirlImg from "../../public/shaders/swirl.webp";
+import ditheringImg from "../../public/shaders/dithering.webp";
+import grainGradientImg from "../../public/shaders/grain-gradient.webp";
+import pulsingBorderImg from "../../public/shaders/pulsing-border.webp";
+import colorPanelsImg from "../../public/shaders/color-panels.webp";
+import staticMeshGradientImg from "../../public/shaders/static-mesh-gradient.webp";
+import staticRadialGradientImg from "../../public/shaders/static-radial-gradient.webp";
+import flutedGlassImg from "../../public/shaders/fluted-glass.webp";
+import imageDitheringImg from "../../public/shaders/image-dithering.webp";
+import paperTextureImg from "../../public/shaders/paper-texture.webp";
+import waterImg from "../../public/shaders/water.webp";
+import heatmapImg from "../../public/shaders/heatmap.webp";
+import liquidMetalImg from "../../public/shaders/liquid-metal.webp";
+import halftoneDotsImg from "../../public/shaders/halftone-dots.webp";
+import halftoneCmykImg from "../../public/shaders/halftone-cmyk.webp";
+import gemSmokeImg from "../../public/shaders/gem-smoke.webp";
 import {
   DotGrid,
   dotGridPresets,
@@ -86,8 +86,8 @@ import {
   halftoneCmykPresets,
   GemSmoke,
   gemSmokePresets,
-} from '@paper-design/shaders-react';
-import { StaticImageData } from 'next/image';
+} from "@paper-design/shaders-react";
+import { StaticImageData } from "next/image";
 
 export type HomeShaderConfig = {
   name: string;
@@ -111,60 +111,60 @@ type HomeCategory = {
 
 export const homeThumbnails = [
   {
-    name: 'Image Filters',
+    name: "Image Filters",
     shaders: [
       {
-        name: 'paper texture',
-        url: '/paper-texture',
+        name: "paper texture",
+        url: "/paper-texture",
         ShaderComponent: PaperTexture,
         image: paperTextureImg,
         shaderConfig: { ...paperTexturePresets[0].params, scale: 1.05 },
       },
       {
-        name: 'fluted glass',
-        url: '/fluted-glass',
+        name: "fluted glass",
+        url: "/fluted-glass",
         ShaderComponent: FlutedGlass,
         image: flutedGlassImg,
         shaderConfig: { ...flutedGlassPresets[0].params, scale: 1.05, distortion: 0.2 },
       },
       {
-        name: 'water',
-        url: '/water',
+        name: "water",
+        url: "/water",
         ShaderComponent: Water,
         image: waterImg,
         shaderConfig: {
           ...waterPresets[0].params,
           scale: 1.05,
-          colorBack: '#e0f2ff',
-          image: '/images/image-filters/0018.webp',
+          colorBack: "#e0f2ff",
+          image: "/images/image-filters/0018.webp",
         },
       },
       {
-        name: 'image dithering',
-        url: '/image-dithering',
+        name: "image dithering",
+        url: "/image-dithering",
         ShaderComponent: ImageDithering,
         image: imageDitheringImg,
         shaderConfig: { ...imageDitheringPresets[0].params, scale: 1.05 },
       },
       {
-        name: 'halftone dots',
-        url: '/halftone-dots',
+        name: "halftone dots",
+        url: "/halftone-dots",
         ShaderComponent: HalftoneDots,
         image: halftoneDotsImg,
         shaderConfig: {
           ...halftoneDotsPresets[0].params,
-          image: '/images/image-filters/0018.webp',
+          image: "/images/image-filters/0018.webp",
           speed: 0,
         },
       },
       {
-        name: 'halftone cmyk',
-        url: '/halftone-cmyk',
+        name: "halftone cmyk",
+        url: "/halftone-cmyk",
         ShaderComponent: HalftoneCmyk,
         image: halftoneCmykImg,
         shaderConfig: {
           ...halftoneCmykPresets[0].params,
-          image: '/images/image-filters/0018.webp',
+          image: "/images/image-filters/0018.webp",
           size: 0.7,
           softness: 0.5,
           speed: 0,
@@ -173,11 +173,11 @@ export const homeThumbnails = [
     ],
   },
   {
-    name: 'Logo Animations',
+    name: "Logo Animations",
     shaders: [
       {
-        name: 'heatmap',
-        url: '/heatmap',
+        name: "heatmap",
+        url: "/heatmap",
         ShaderComponent: Heatmap,
         image: heatmapImg,
         shaderConfig: {
@@ -185,24 +185,24 @@ export const homeThumbnails = [
           scale: 0.9,
           frame: 5800,
           suspendWhenProcessingImage: true,
-          image: '/images/logos/diamond.svg',
+          image: "/images/logos/diamond.svg",
         },
       },
       {
-        name: 'liquid metal',
-        url: '/liquid-metal',
+        name: "liquid metal",
+        url: "/liquid-metal",
         ShaderComponent: LiquidMetal,
         image: liquidMetalImg,
         shaderConfig: {
           ...liquidMetalPresets[0].params,
           scale: 0.9,
           suspendWhenProcessingImage: true,
-          image: '/images/logos/diamond.svg',
+          image: "/images/logos/diamond.svg",
         },
       },
       {
-        name: 'gem smoke',
-        url: '/gem-smoke',
+        name: "gem smoke",
+        url: "/gem-smoke",
         ShaderComponent: GemSmoke,
         image: gemSmokeImg,
         shaderConfig: {
@@ -212,38 +212,38 @@ export const homeThumbnails = [
           outerGlow: 0.4,
           size: 0.5,
           suspendWhenProcessingImage: true,
-          image: '/images/logos/diamond.svg',
+          image: "/images/logos/diamond.svg",
         },
       },
     ],
   },
   {
-    name: 'Effects',
+    name: "Effects",
     shaders: [
       {
-        name: 'mesh gradient',
+        name: "mesh gradient",
         image: meshGradientImg,
-        url: '/mesh-gradient',
+        url: "/mesh-gradient",
         ShaderComponent: MeshGradient,
         shaderConfig: { ...meshGradientPresets[0].params },
       },
       {
-        name: 'static mesh gradient',
-        url: '/static-mesh-gradient',
+        name: "static mesh gradient",
+        url: "/static-mesh-gradient",
         ShaderComponent: StaticMeshGradient,
         image: staticMeshGradientImg,
         shaderConfig: { ...staticMeshGradientPresets[0].params },
       },
       {
-        name: 'static radial gradient',
-        url: '/static-radial-gradient',
+        name: "static radial gradient",
+        url: "/static-radial-gradient",
         ShaderComponent: StaticRadialGradient,
         image: staticRadialGradientImg,
         shaderConfig: { ...staticRadialGradientPresets[0].params, radius: 0.65, offsetY: -0.03 },
       },
       {
-        name: 'dithering',
-        url: '/dithering',
+        name: "dithering",
+        url: "/dithering",
         ShaderComponent: Dithering,
         image: ditheringImg,
         pixelated: true,
@@ -253,9 +253,9 @@ export const homeThumbnails = [
         alwaysLivePreview: true,
       },
       {
-        name: 'grain gradient',
+        name: "grain gradient",
         image: grainGradientImg,
-        url: '/grain-gradient',
+        url: "/grain-gradient",
         ShaderComponent: GrainGradient,
         shaderConfig: { ...grainGradientPresets[0].params, speed: 1.5 },
         // This shader thumbnails look nowhere near as crisp
@@ -263,65 +263,65 @@ export const homeThumbnails = [
         alwaysLivePreview: true,
       },
       {
-        name: 'dot orbit',
+        name: "dot orbit",
         image: dotOrbitImg,
-        url: '/dot-orbit',
+        url: "/dot-orbit",
         ShaderComponent: DotOrbit,
         shaderConfig: { ...dotOrbitPresets[0].params, scale: 0.45 },
       },
       {
-        name: 'dot grid',
-        url: '/dot-grid',
+        name: "dot grid",
+        url: "/dot-grid",
         ShaderComponent: DotGrid,
         image: dotGridImg,
         shaderConfig: { ...dotGridPresets[0].params, gapX: 24, gapY: 24, size: 1.5, speed: 0 },
       },
       {
-        name: 'warp',
-        url: '/warp',
+        name: "warp",
+        url: "/warp",
         ShaderComponent: Warp,
         image: warpImg,
         shaderConfig: { ...warpPresets[0].params, scale: 0.6 },
       },
       {
-        name: 'spiral',
-        url: '/spiral',
+        name: "spiral",
+        url: "/spiral",
         ShaderComponent: Spiral,
         image: spiralImg,
         shaderConfig: { ...spiralPresets[0].params, scale: 0.5, speed: 2 },
       },
       {
-        name: 'swirl',
-        url: '/swirl',
+        name: "swirl",
+        url: "/swirl",
         ShaderComponent: Swirl,
         image: swirlImg,
         shaderConfig: { ...swirlPresets[0].params },
       },
       {
-        name: 'waves',
-        url: '/waves',
+        name: "waves",
+        url: "/waves",
         ShaderComponent: Waves,
         image: wavesImg,
         shaderConfig: { ...wavesPresets[0].params, speed: 0, scale: 0.55, spacing: 1.2 },
       },
       {
-        name: 'neuro noise',
+        name: "neuro noise",
         image: neuroNoiseImg,
-        url: '/neuro-noise',
+        url: "/neuro-noise",
         ShaderComponent: NeuroNoise,
         shaderConfig: { ...neuroNoisePresets[0].params, scale: 0.8 },
       },
       {
-        name: 'perlin',
-        url: '/perlin-noise',
+        name: "perlin",
+        url: "/perlin-noise",
         ShaderComponent: PerlinNoise,
         image: perlinNoiseImg,
         shaderConfig: { ...perlinNoisePresets[0].params, scale: 0.8, speed: 0.2 },
       },
       {
-        name: 'simplex noise',
+        name: "simplex noise",
         image: simplexNoiseImg,
-        url: '/simplex-noise',
+        url: "/simplex-noise",
         ShaderComponent: SimplexNoise,
         shaderConfig: {
           ...simplexNoisePresets[0].params,
@@ -329,43 +329,43 @@ export const homeThumbnails = [
         },
       },
       {
-        name: 'voronoi',
-        url: '/voronoi',
+        name: "voronoi",
+        url: "/voronoi",
         ShaderComponent: Voronoi,
         image: voronoiImg,
         shaderConfig: { ...voronoiPresets[0].params, scale: 0.35 },
       },
       {
-        name: 'pulsing border',
-        url: '/pulsing-border',
+        name: "pulsing border",
+        url: "/pulsing-border",
         ShaderComponent: PulsingBorder,
         image: pulsingBorderImg,
         shaderConfig: { ...pulsingBorderPresets[0].params },
       },
       {
-        name: 'metaballs',
+        name: "metaballs",
         image: metaballsImg,
-        url: '/metaballs',
+        url: "/metaballs",
         ShaderComponent: Metaballs,
         shaderConfig: { ...metaballsPresets[0].params, scale: 1, count: 8, speed: 1.5 },
       },
       {
-        name: 'color panels',
-        url: '/color-panels',
+        name: "color panels",
+        url: "/color-panels",
         ShaderComponent: ColorPanels,
         image: colorPanelsImg,
         shaderConfig: { ...colorPanelsPresets[0].params, scale: 0.75, speed: 2 },
       },
       {
-        name: 'smoke ring',
+        name: "smoke ring",
         image: smokeRingImg,
-        url: '/smoke-ring',
+        url: "/smoke-ring",
         ShaderComponent: SmokeRing,
         shaderConfig: { ...smokeRingPresets[0].params, scale: 0.8, speed: 1 },
       },
       {
-        name: 'god rays',
-        url: '/god-rays',
+        name: "god rays",
+        url: "/god-rays",
         ShaderComponent: GodRays,
         image: godRaysImg,
         shaderConfig: { ...godRaysPresets[0].params, offsetY: -0.7, speed: 1.25 },
@@ -374,4 +374,6 @@ export const homeThumbnails = [
   },
 ] satisfies HomeCategory[];
 
-export const flatHomeThumbnails = homeThumbnails.flatMap((category) => category.shaders as HomeShaderConfig[]);
+export const flatHomeThumbnails = homeThumbnails.flatMap(
+  (category) => category.shaders as HomeShaderConfig[],
+);

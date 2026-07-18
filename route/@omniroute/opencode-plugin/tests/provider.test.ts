@@ -81,11 +81,11 @@ test("createOmniRouteProviderHook: default providerId is 'omniroute'", () => {
 test("createOmniRouteProviderHook: custom providerId binds to hook.id (multi-instance)", () => {
   const a = createOmniRouteProviderHook(
     { providerId: "omniroute-preprod" },
-    { combosFetcher: async () => [] }
+    { combosFetcher: async () => [] },
   );
   const b = createOmniRouteProviderHook(
     { providerId: "omniroute-local" },
-    { combosFetcher: async () => [] }
+    { combosFetcher: async () => [] },
   );
   assert.equal(a.id, "opencode-omniroute-preprod");
   assert.equal(b.id, "opencode-omniroute-local");
@@ -95,7 +95,7 @@ test("models: extracts apiKey from ctx.auth (type=api) and calls fetcher with it
   const fetcher = stubFetcher(FIXTURE);
   const hook = createOmniRouteProviderHook(
     { baseURL: "https://or.example.com/v1" },
-    { fetcher, combosFetcher: async () => [] }
+    { fetcher, combosFetcher: async () => [] },
   );
   const out = await hook.models!({} as never, { auth: apiAuth("sk-abc") as never });
   assert.equal(fetcher.callCount(), 1);
@@ -111,7 +111,7 @@ test("models: returns {} when ctx.auth is null/undefined/wrong-type/empty-key", 
   const fetcher = stubFetcher(FIXTURE);
   const hook = createOmniRouteProviderHook(
     { baseURL: "https://or.example.com/v1" },
-    { fetcher, combosFetcher: async () => [] }
+    { fetcher, combosFetcher: async () => [] },
   );
 
   assert.deepEqual(await hook.models!({} as never, {} as never), {});
@@ -120,11 +120,11 @@ test("models: returns {} when ctx.auth is null/undefined/wrong-type/empty-key", 
     await hook.models!({} as never, {
       auth: { type: "oauth", refresh: "r", access: "a", expires: 0 } as never,
     }),
-    {}
+    {},
   );
   assert.deepEqual(
     await hook.models!({} as never, { auth: { type: "api", key: "" } as never }),
-    {}
+    {},
   );
   assert.equal(fetcher.callCount(), 0, "fetcher must not be called on auth rejection");
 });
@@ -152,7 +152,7 @@ test("models: maps a sample /v1/models entry to ModelV2 (sanity)", async () => {
   const fetcher = stubFetcher(FIXTURE);
   const hook = createOmniRouteProviderHook(
     { providerId: "omniroute", baseURL: "https://or.example.com/v1" },
-    { fetcher, combosFetcher: async () => [] }
+    { fetcher, combosFetcher: async () => [] },
   );
   const out = await hook.models!({} as never, { auth: apiAuth("sk-abc") as never });
   // #6859: dynamic-hook catalog keys/ids/providerID use the unprefixed
@@ -196,7 +196,7 @@ test("mapRawModelToModelV2: thinking-only model still surfaces reasoning=true", 
       context_length: 100000,
       max_output_tokens: 8192,
     },
-    { providerId: "omniroute", baseURL: "https://or.example.com/v1" }
+    { providerId: "omniroute", baseURL: "https://or.example.com/v1" },
   );
   assert.equal(m.capabilities.reasoning, true);
 });
@@ -204,7 +204,7 @@ test("mapRawModelToModelV2: thinking-only model still surfaces reasoning=true", 
 test("mapRawModelToModelV2: missing capabilities defaults to all-false (except temperature)", () => {
   const m = mapRawModelToModelV2(
     { id: "minimal" },
-    { providerId: "omniroute", baseURL: "https://or.example.com/v1" }
+    { providerId: "omniroute", baseURL: "https://or.example.com/v1" },
   );
   assert.equal(m.capabilities.temperature, true);
   assert.equal(m.capabilities.reasoning, false);
@@ -223,7 +223,7 @@ test("models: caches result for second call within TTL (fetcher called once)", a
   let nowMs = 1_000_000;
   const hook = createOmniRouteProviderHook(
     { baseURL: "https://or.example.com/v1", modelCacheTtl: 60_000 },
-    { fetcher, now: () => nowMs, combosFetcher: async () => [] }
+    { fetcher, now: () => nowMs, combosFetcher: async () => [] },
   );
 
   const a = await hook.models!({} as never, { auth: apiAuth("sk-z") as never });
@@ -239,7 +239,7 @@ test("models: refetches after TTL expires", async () => {
   let nowMs = 1_000_000;
   const hook = createOmniRouteProviderHook(
     { baseURL: "https://or.example.com/v1", modelCacheTtl: 60_000 },
-    { fetcher, now: () => nowMs, combosFetcher: async () => [] }
+    { fetcher, now: () => nowMs, combosFetcher: async () => [] },
   );
 
   await hook.models!({} as never, { auth: apiAuth("sk-z") as never });
@@ -252,7 +252,7 @@ test("models: caches per (baseURL, apiKey) tuple (different keys → independent
   const fetcher = stubFetcher(FIXTURE);
   const hook = createOmniRouteProviderHook(
     { baseURL: "https://or.example.com/v1", modelCacheTtl: 300_000 },
-    { fetcher, combosFetcher: async () => [] }
+    { fetcher, combosFetcher: async () => [] },
   );
 
   await hook.models!({} as never, { auth: apiAuth("sk-A") as never });
@@ -266,7 +266,7 @@ test("models: caches per (baseURL, apiKey) tuple (different baseURL → independ
   const fetcher = stubFetcher(FIXTURE);
   const hook = createOmniRouteProviderHook(
     { modelCacheTtl: 300_000 }, // no opts.baseURL → falls back to auth.baseURL
-    { fetcher, combosFetcher: async () => [] }
+    { fetcher, combosFetcher: async () => [] },
   );
 
   await hook.models!({} as never, { auth: apiAuth("sk-same", "https://prod.example/v1") as never });

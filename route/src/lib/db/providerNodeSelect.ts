@@ -10,8 +10,7 @@ export interface SelectableNode {
   [key: string]: unknown;
 }
 
-const TRAILING_UUID =
-  /-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const TRAILING_UUID = /-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /**
  * Recover the derived TYPE of a provider node from its id. Node ids are
@@ -38,7 +37,7 @@ export function nodeTypeFromId(id: unknown): string {
  */
 export function selectProviderNodeForConnection<T extends SelectableNode>(
   idOrType: string,
-  nodes: T[]
+  nodes: T[],
 ): T | null {
   if (!idOrType) return null;
   const exact = nodes.find((n) => n.id === idOrType);

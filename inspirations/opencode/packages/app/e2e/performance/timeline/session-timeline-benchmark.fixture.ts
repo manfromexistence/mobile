@@ -1,23 +1,23 @@
-import { base64Encode } from "@opencode-ai/core/util/encode"
-import type { Page } from "@playwright/test"
-import { mockOpenCodeServer } from "../../utils/mock-server"
-import { expectAppVisible, expectSessionTitle } from "../../utils/waits"
-import { expect } from "../benchmark"
+import { base64Encode } from "@opencode-ai/core/util/encode";
+import type { Page } from "@playwright/test";
+import { mockOpenCodeServer } from "../../utils/mock-server";
+import { expectAppVisible, expectSessionTitle } from "../../utils/waits";
+import { expect } from "../benchmark";
 
-const directory = "C:/OpenCode/TimelineStateRegression"
-const projectID = "proj_timeline_state_regression"
-const sessionID = "ses_timeline_state_regression"
-const userMessageID = "msg_user_regression"
-const assistantMessageID = "msg_assistant_regression"
-const editPartID = "prt_0001_edit"
-export const textPartID = "prt_9999_text"
-const title = "Timeline collapse state regression"
-const model = { providerID: "opencode", modelID: "claude-opus-4-6", variant: "max" }
+const directory = "C:/OpenCode/TimelineStateRegression";
+const projectID = "proj_timeline_state_regression";
+const sessionID = "ses_timeline_state_regression";
+const userMessageID = "msg_user_regression";
+const assistantMessageID = "msg_assistant_regression";
+const editPartID = "prt_0001_edit";
+export const textPartID = "prt_9999_text";
+const title = "Timeline collapse state regression";
+const model = { providerID: "opencode", modelID: "claude-opus-4-6", variant: "max" };
 
 type EventPayload = {
-  directory: string
-  payload: Record<string, unknown>
-}
+  directory: string;
+  payload: Record<string, unknown>;
+};
 
 const userMessage = {
   info: {
@@ -38,7 +38,7 @@ const userMessage = {
       text: "Please edit the file.",
     },
   ],
-}
+};
 
 const editPart = {
   id: editPartID,
@@ -64,7 +64,7 @@ const editPart = {
     },
     time: { start: 1700000001000, end: 1700000002000 },
   },
-}
+};
 
 const streamedTextPart = {
   id: textPartID,
@@ -72,7 +72,7 @@ const streamedTextPart = {
   messageID: assistantMessageID,
   type: "text",
   text: "Streaming added a later assistant text part.",
-}
+};
 
 const assistantMessage = {
   info: {
@@ -91,23 +91,23 @@ const assistantMessage = {
     variant: "max",
   },
   parts: [editPart],
-}
+};
 
 export async function setupTimelineBenchmark(
   page: Page,
   options: {
-    historyTurns: number
-    eventBatch: number
-    newLayoutDesigns?: boolean
-    vcsDiff?: unknown[]
-    turnDiffs?: unknown[]
+    historyTurns: number;
+    eventBatch: number;
+    newLayoutDesigns?: boolean;
+    vcsDiff?: unknown[];
+    turnDiffs?: unknown[];
   },
 ) {
-  const events: EventPayload[] = []
-  let eventBatch = options.eventBatch
+  const events: EventPayload[] = [];
+  let eventBatch = options.eventBatch;
   const currentUserMessage = options.turnDiffs
     ? { ...userMessage, info: { ...userMessage.info, summary: { diffs: options.turnDiffs } } }
-    : userMessage
+    : userMessage;
   await mockOpenCodeServer(page, {
     directory,
     project: project(),
@@ -116,14 +116,16 @@ export async function setupTimelineBenchmark(
     vcsDiff: options.vcsDiff,
     pageMessages: () => ({
       items: [
-        ...Array.from({ length: options.historyTurns }, (_, index) => performanceTurn(index)).flat(),
+        ...Array.from({ length: options.historyTurns }, (_, index) =>
+          performanceTurn(index),
+        ).flat(),
         currentUserMessage,
         assistantMessage,
       ],
     }),
     events: () => events.splice(0, eventBatch),
     eventRetry: 16,
-  })
+  });
   await page.addInitScript(
     (input) => {
       localStorage.setItem(
@@ -136,55 +138,64 @@ export async function setupTimelineBenchmark(
             showReasoningSummaries: true,
           },
         }),
-      )
+      );
     },
     { newLayoutDesigns: options.newLayoutDesigns ?? false },
-  )
-  await page.setViewportSize({ width: 1366, height: 768 })
-  const scroller = page.locator(".scroll-view__viewport", { has: page.locator("[data-timeline-row]") })
-  const text = page.locator(`[data-timeline-part-id="${textPartID}"]`).first()
-  await page.goto(`/${base64Encode(directory)}/session/${sessionID}`)
-  await expectSessionTitle(page, title)
-  await expectAppVisible(scroller)
+  );
+  await page.setViewportSize({ width: 1366, height: 768 });
+  const scroller = page.locator(".scroll-view__viewport", {
+    has: page.locator("[data-timeline-row]"),
+  });
+  const text = page.locator(`[data-timeline-part-id="${textPartID}"]`).first();
+  await page.goto(`/${base64Encode(directory)}/session/${sessionID}`);
+  await expectSessionTitle(page, title);
+  await expectAppVisible(scroller);
   return {
     scroller,
     text,
     transport: {
       enqueue(payload: EventPayload | EventPayload[]) {
-        events.push(...(Array.isArray(payload) ? payload : [payload]))
+        events.push(...(Array.isArray(payload) ? payload : [payload]));
       },
       pendingCount() {
-        return events.length
+        return events.length;
       },
       releaseAll() {
-        eventBatch = events.length
+        eventBatch = events.length;
       },
     },
     async scrollToBottom() {
       await scroller.evaluate((element) => {
-        element.scrollTop = element.scrollHeight
-      })
+        element.scrollTop = element.scrollHeight;
+      });
     },
     async waitForStableGeometry() {
       await expect
-        .poll(() => scroller.evaluate((element) => element.scrollHeight - element.clientHeight - element.scrollTop))
-        .toBeLessThanOrEqual(1)
-      await page.waitForFunction((partID) => {
-        const root = [...document.querySelectorAll<HTMLElement>(".scroll-view__viewport")].find((element) =>
-          element.querySelector(`[data-timeline-part-id="${partID}"]`),
+        .poll(() =>
+          scroller.evaluate(
+            (element) => element.scrollHeight - element.clientHeight - element.scrollTop,
+          ),
         )
-        if (!root) return false
+        .toBeLessThanOrEqual(1);
+      await page.waitForFunction((partID) => {
+        const root = [...document.querySelectorAll<HTMLElement>(".scroll-view__viewport")].find(
+          (element) => element.querySelector(`[data-timeline-part-id="${partID}"]`),
+        );
+        if (!root) return false;
         return new Promise<boolean>((resolve) => {
-          const height = root.scrollHeight
+          const height = root.scrollHeight;
           requestAnimationFrame(() =>
             requestAnimationFrame(() =>
-              resolve(root.scrollHeight === height && root.scrollHeight - root.clientHeight - root.scrollTop <= 1),
+              resolve(
+                root.scrollHeight === height &&
+                  root.scrollHeight - root.clientHeight - root.scrollTop <= 1,
+              ),
             ),
-          )
-        })
-      }, textPartID)
+          );
+        });
+      }, textPartID);
     },
-  }
+  };
 }
 
 export function buildInitialStreamEvent(deltaCount: number): EventPayload {
@@ -199,7 +210,7 @@ export function buildInitialStreamEvent(deltaCount: number): EventPayload {
         },
       },
     },
-  }
+  };
 }
 
 export function buildStreamDeltaEvents(deltaCount: number): EventPayload[] {
@@ -214,15 +225,15 @@ export function buildStreamDeltaEvents(deltaCount: number): EventPayload[] {
         delta: streamChunk(index + 1, deltaCount + 1),
       },
     },
-  }))
+  }));
 }
 
 function performanceTurn(index: number) {
-  const suffix = String(index).padStart(4, "0")
-  const userID = `msg_0000_${suffix}_a_user`
-  const assistantID = `msg_0000_${suffix}_b_assistant`
-  const before = historicalSource(index, false)
-  const after = historicalSource(index, true)
+  const suffix = String(index).padStart(4, "0");
+  const userID = `msg_0000_${suffix}_a_user`;
+  const assistantID = `msg_0000_${suffix}_b_assistant`;
+  const before = historicalSource(index, false);
+  const after = historicalSource(index, true);
   const parts = [
     ...(index % 5 === 0
       ? [
@@ -258,7 +269,13 @@ function performanceTurn(index: number) {
               output: `Edited src/history-${index}.ts`,
               title: `src/history-${index}.ts`,
               metadata: {
-                filediff: { file: `src/history-${index}.ts`, additions: 48, deletions: 48, before, after },
+                filediff: {
+                  file: `src/history-${index}.ts`,
+                  additions: 48,
+                  deletions: 48,
+                  before,
+                  after,
+                },
               },
               time: { start: 1690000001200 + index * 2_000, end: 1690000001400 + index * 2_000 },
             },
@@ -280,7 +297,13 @@ function performanceTurn(index: number) {
               output: `Wrote src/generated-${index}.tsx`,
               title: `src/generated-${index}.tsx`,
               metadata: {
-                filediff: { file: `src/generated-${index}.tsx`, additions: 32, deletions: 0, before: "", after },
+                filediff: {
+                  file: `src/generated-${index}.tsx`,
+                  additions: 32,
+                  deletions: 0,
+                  before: "",
+                  after,
+                },
               },
               time: { start: 1690000001400 + index * 2_000, end: 1690000001500 + index * 2_000 },
             },
@@ -320,7 +343,7 @@ function performanceTurn(index: number) {
           },
         ]
       : []),
-  ]
+  ];
   return [
     {
       info: {
@@ -361,7 +384,7 @@ function performanceTurn(index: number) {
       },
       parts,
     },
-  ]
+  ];
 }
 
 function historicalMarkdown(index: number) {
@@ -380,7 +403,7 @@ export function SessionList(props: { rows: SessionRow[] }) {
       )}</For>
     </section>
   )
-}`
+}`;
   return `## Session renderer review ${index}
 
 The active session keeps **semantic row identity** while reconciling measured content. See [Solid documentation](https://docs.solidjs.com/) and the inline \`measureElement(node)\` call.
@@ -393,12 +416,12 @@ The active session keeps **semantic row identity** while reconciling measured co
 
 > Long sessions combine Markdown, syntax highlighting, tool output, and asynchronously rendered diffs.
 
-${index % 4 === 0 ? `\`\`\`tsx\n${code}\n\`\`\`\n\n\`\`\`bash\nbun typecheck\nbun test --preload ./happydom.ts ./src/pages/session\ngit diff --check\n\`\`\`` : "- preserve the viewport anchor\n- avoid replacing stable Markdown nodes\n- process provider deltas without blocking input"}`
+${index % 4 === 0 ? `\`\`\`tsx\n${code}\n\`\`\`\n\n\`\`\`bash\nbun typecheck\nbun test --preload ./happydom.ts ./src/pages/session\ngit diff --check\n\`\`\`` : "- preserve the viewport anchor\n- avoid replacing stable Markdown nodes\n- process provider deltas without blocking input"}`;
 }
 
 function historicalSource(index: number, updated: boolean) {
-  const method = updated ? "toLocaleUpperCase(props.locale)" : "toUpperCase()"
-  const limit = updated ? 24 : 20
+  const method = updated ? "toLocaleUpperCase(props.locale)" : "toUpperCase()";
+  const limit = updated ? 24 : 20;
   return `import { createMemo, For } from "solid-js"
 
 type Message = {
@@ -418,7 +441,7 @@ export function MessageSummary(props: { messages: Message[]; locale: string }) {
     </article>
   )
 }
-`
+`;
 }
 
 function realisticPatch(index: number) {
@@ -434,15 +457,15 @@ function realisticPatch(index: number) {
 -  <h2>{title}</h2>
 +  <h2 data-session-index="${index}">{title}</h2>
 +  <span>{outputTokens.toLocaleString(props.locale)} output tokens</span>
-*** End Patch`
+*** End Patch`;
 }
 
 export function streamChunk(index: number, count: number) {
-  if (index === 0) return `\n\n## Implementation plan\n\nStreaming **bold analysis`
+  if (index === 0) return `\n\n## Implementation plan\n\nStreaming **bold analysis`;
   if (index === count - 1)
-    return `\n\`\`\`\n\n## Verification\n\n- **Typecheck:** passed\n- **Timeline geometry:** stable\n- **Streaming output:** benchmark-complete <!-- stream-${index} -->`
+    return `\n\`\`\`\n\n## Verification\n\n- **Typecheck:** passed\n- **Timeline geometry:** stable\n- **Streaming output:** benchmark-complete <!-- stream-${index} -->`;
 
-  const section = Math.floor(index / 18) + 1
+  const section = Math.floor(index / 18) + 1;
   const fragments = [
     ` continues across three`,
     ` or four word`,
@@ -462,8 +485,8 @@ export function streamChunk(index: number, count: number) {
     ` => row.id ===`,
     ` activeID()) // stream-${index}\n`,
     `// stream-${index}\n\`\`\`\n\n### Iteration ${section}\n\nStreaming **bold analysis`,
-  ]
-  return fragments[(index - 1) % fragments.length]!
+  ];
+  return fragments[(index - 1) % fragments.length]!;
 }
 
 function project() {
@@ -474,7 +497,7 @@ function project() {
     name: "timeline-state-regression",
     time: { created: 1700000000000, updated: 1700000000000 },
     sandboxes: [],
-  }
+  };
 }
 
 function session() {
@@ -486,7 +509,7 @@ function session() {
     title,
     version: "dev",
     time: { created: 1700000000000, updated: 1700000000000 },
-  }
+  };
 }
 
 function provider() {
@@ -495,10 +518,16 @@ function provider() {
       {
         id: "opencode",
         name: "OpenCode",
-        models: { "claude-opus-4-6": { id: "claude-opus-4-6", name: "Claude Opus 4.6", limit: { context: 200_000 } } },
+        models: {
+          "claude-opus-4-6": {
+            id: "claude-opus-4-6",
+            name: "Claude Opus 4.6",
+            limit: { context: 200_000 },
+          },
+        },
       },
     ],
     connected: ["opencode"],
     default: { providerID: "opencode", modelID: "claude-opus-4-6" },
-  }
+  };
 }

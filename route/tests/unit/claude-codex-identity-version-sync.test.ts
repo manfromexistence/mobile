@@ -27,12 +27,12 @@ test("Claude CLI version constants are in lockstep across all 4 sources", () => 
   assert.equal(
     hdr.CLAUDE_CLI_USER_AGENT,
     `claude-cli/${V} (external, cli)`,
-    "CLAUDE_CLI_USER_AGENT drift"
+    "CLAUDE_CLI_USER_AGENT drift",
   );
   assert.equal(
     compat.CLAUDE_CODE_COMPATIBLE_USER_AGENT,
     `claude-cli/${V} (external, sdk-cli)`,
-    "CLAUDE_CODE_COMPATIBLE_USER_AGENT drift"
+    "CLAUDE_CODE_COMPATIBLE_USER_AGENT drift",
   );
 });
 

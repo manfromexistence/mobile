@@ -1,12 +1,12 @@
-import { Schema } from "effect"
-import { SessionID } from "./schema"
+import { Schema } from "effect";
+import { SessionID } from "./schema";
 
-import { NonNegativeInt } from "@opencode-ai/core/schema"
-import { MessageError } from "./message-error"
-import { AuthError, OutputLengthError } from "./message-error"
-import { ProviderV2 } from "@opencode-ai/core/provider"
-import { ModelV2 } from "@opencode-ai/core/model"
-export { AuthError, OutputLengthError } from "./message-error"
+import { NonNegativeInt } from "@opencode-ai/core/schema";
+import { MessageError } from "./message-error";
+import { AuthError, OutputLengthError } from "./message-error";
+import { ProviderV2 } from "@opencode-ai/core/provider";
+import { ModelV2 } from "@opencode-ai/core/model";
+export { AuthError, OutputLengthError } from "./message-error";
 
 export const ToolCall = Schema.Struct({
   state: Schema.Literal("call"),
@@ -14,8 +14,8 @@ export const ToolCall = Schema.Struct({
   toolCallId: Schema.String,
   toolName: Schema.String,
   args: Schema.Unknown,
-}).annotate({ identifier: "ToolCall" })
-export type ToolCall = Schema.Schema.Type<typeof ToolCall>
+}).annotate({ identifier: "ToolCall" });
+export type ToolCall = Schema.Schema.Type<typeof ToolCall>;
 
 export const ToolPartialCall = Schema.Struct({
   state: Schema.Literal("partial-call"),
@@ -23,8 +23,8 @@ export const ToolPartialCall = Schema.Struct({
   toolCallId: Schema.String,
   toolName: Schema.String,
   args: Schema.Unknown,
-}).annotate({ identifier: "ToolPartialCall" })
-export type ToolPartialCall = Schema.Schema.Type<typeof ToolPartialCall>
+}).annotate({ identifier: "ToolPartialCall" });
+export type ToolPartialCall = Schema.Schema.Type<typeof ToolPartialCall>;
 
 export const ToolResult = Schema.Struct({
   state: Schema.Literal("result"),
@@ -33,33 +33,33 @@ export const ToolResult = Schema.Struct({
   toolName: Schema.String,
   args: Schema.Unknown,
   result: Schema.String,
-}).annotate({ identifier: "ToolResult" })
-export type ToolResult = Schema.Schema.Type<typeof ToolResult>
+}).annotate({ identifier: "ToolResult" });
+export type ToolResult = Schema.Schema.Type<typeof ToolResult>;
 
 export const ToolInvocation = Schema.Union([ToolCall, ToolPartialCall, ToolResult]).annotate({
   identifier: "ToolInvocation",
   discriminator: "state",
-})
-export type ToolInvocation = Schema.Schema.Type<typeof ToolInvocation>
+});
+export type ToolInvocation = Schema.Schema.Type<typeof ToolInvocation>;
 
 export const TextPart = Schema.Struct({
   type: Schema.Literal("text"),
   text: Schema.String,
-}).annotate({ identifier: "TextPart" })
-export type TextPart = Schema.Schema.Type<typeof TextPart>
+}).annotate({ identifier: "TextPart" });
+export type TextPart = Schema.Schema.Type<typeof TextPart>;
 
 export const ReasoningPart = Schema.Struct({
   type: Schema.Literal("reasoning"),
   text: Schema.String,
   providerMetadata: Schema.optional(Schema.Record(Schema.String, Schema.Unknown)),
-}).annotate({ identifier: "ReasoningPart" })
-export type ReasoningPart = Schema.Schema.Type<typeof ReasoningPart>
+}).annotate({ identifier: "ReasoningPart" });
+export type ReasoningPart = Schema.Schema.Type<typeof ReasoningPart>;
 
 export const ToolInvocationPart = Schema.Struct({
   type: Schema.Literal("tool-invocation"),
   toolInvocation: ToolInvocation,
-}).annotate({ identifier: "ToolInvocationPart" })
-export type ToolInvocationPart = Schema.Schema.Type<typeof ToolInvocationPart>
+}).annotate({ identifier: "ToolInvocationPart" });
+export type ToolInvocationPart = Schema.Schema.Type<typeof ToolInvocationPart>;
 
 export const SourceUrlPart = Schema.Struct({
   type: Schema.Literal("source-url"),
@@ -67,21 +67,21 @@ export const SourceUrlPart = Schema.Struct({
   url: Schema.String,
   title: Schema.optional(Schema.String),
   providerMetadata: Schema.optional(Schema.Record(Schema.String, Schema.Unknown)),
-}).annotate({ identifier: "SourceUrlPart" })
-export type SourceUrlPart = Schema.Schema.Type<typeof SourceUrlPart>
+}).annotate({ identifier: "SourceUrlPart" });
+export type SourceUrlPart = Schema.Schema.Type<typeof SourceUrlPart>;
 
 export const FilePart = Schema.Struct({
   type: Schema.Literal("file"),
   mediaType: Schema.String,
   filename: Schema.optional(Schema.String),
   url: Schema.String,
-}).annotate({ identifier: "FilePart" })
-export type FilePart = Schema.Schema.Type<typeof FilePart>
+}).annotate({ identifier: "FilePart" });
+export type FilePart = Schema.Schema.Type<typeof FilePart>;
 
 export const StepStartPart = Schema.Struct({
   type: Schema.Literal("step-start"),
-}).annotate({ identifier: "StepStartPart" })
-export type StepStartPart = Schema.Schema.Type<typeof StepStartPart>
+}).annotate({ identifier: "StepStartPart" });
+export type StepStartPart = Schema.Schema.Type<typeof StepStartPart>;
 
 export const MessagePart = Schema.Union([
   TextPart,
@@ -90,8 +90,8 @@ export const MessagePart = Schema.Union([
   SourceUrlPart,
   FilePart,
   StepStartPart,
-]).annotate({ identifier: "MessagePart", discriminator: "type" })
-export type MessagePart = Schema.Schema.Type<typeof MessagePart>
+]).annotate({ identifier: "MessagePart", discriminator: "type" });
+export type MessagePart = Schema.Schema.Type<typeof MessagePart>;
 
 export const Info = Schema.Struct({
   id: Schema.String,
@@ -142,7 +142,7 @@ export const Info = Schema.Struct({
     ),
     snapshot: Schema.optional(Schema.String),
   }).annotate({ identifier: "MessageMetadata" }),
-}).annotate({ identifier: "Message" })
-export type Info = Schema.Schema.Type<typeof Info>
+}).annotate({ identifier: "Message" });
+export type Info = Schema.Schema.Type<typeof Info>;
 
-export * as Message from "./message"
+export * as Message from "./message";

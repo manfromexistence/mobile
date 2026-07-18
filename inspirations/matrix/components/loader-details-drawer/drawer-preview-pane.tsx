@@ -13,7 +13,7 @@ interface DrawerPreviewPaneProps {
 export const DrawerPreviewPane = memo(function DrawerPreviewPane({
   selectedSlug,
   selectedTitle,
-  preview
+  preview,
 }: DrawerPreviewPaneProps) {
   if (!selectedTitle) {
     return null;
@@ -36,9 +36,7 @@ export const DrawerPreviewPane = memo(function DrawerPreviewPane({
           </Link>
         ) : null}
       </div>
-      <div className="flex min-h-0 flex-1 items-center justify-center px-4 pb-4">
-        {preview}
-      </div>
+      <div className="flex min-h-0 flex-1 items-center justify-center px-4 pb-4">{preview}</div>
     </section>
   );
 });

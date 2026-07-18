@@ -172,10 +172,13 @@
   background-color: var(--surface-raised-base-active);
 }
 
-[data-component="icon-button"].titlebar-icon[data-variant="ghost"][aria-expanded="true"] [data-slot="icon-svg"] {
+[data-component="icon-button"].titlebar-icon[data-variant="ghost"][aria-expanded="true"]
+  [data-slot="icon-svg"] {
   color: var(--icon-strong-base);
 }
 
-[data-component="icon-button"].titlebar-icon[data-variant="ghost"][aria-expanded="true"]:hover:not(:disabled) {
+[data-component="icon-button"].titlebar-icon[data-variant="ghost"][aria-expanded="true"]:hover:not(
+    :disabled
+  ) {
   background-color: var(--surface-raised-base-active);
 }

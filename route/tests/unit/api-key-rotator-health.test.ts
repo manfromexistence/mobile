@@ -426,7 +426,7 @@ describe("E2E: Complete 401 flow simulation", () => {
     const key2 = getValidApiKey(connectionId, primaryKey, extraKeys, { primary: health1 });
     assert.ok(
       key2!.key === primaryKey || extraKeys.includes(key2!.key),
-      "should return a valid key"
+      "should return a valid key",
     );
 
     // Step 5: Second 401 failure
@@ -470,7 +470,7 @@ describe("E2E: Complete 401 flow simulation", () => {
     const key4 = getValidApiKey(connectionId, primaryKey, extraKeys, recoveredState);
     assert.ok(
       key4!.key === primaryKey || extraKeys.includes(key4!.key),
-      "should rotate among valid keys"
+      "should rotate among valid keys",
     );
   });
 
@@ -523,7 +523,7 @@ describe("E2E: Complete 401 flow simulation", () => {
     const validSet = new Set(["extra-2", "extra-3"]);
     assert.ok(
       validKeys.every((k) => validSet.has(k)),
-      "only extra_2 and extra_3 should be returned"
+      "only extra_2 and extra_3 should be returned",
     );
   });
 

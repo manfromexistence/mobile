@@ -45,7 +45,7 @@ test(
     const BURST = 30;
     console.error(`\n[RPM] Sending ${BURST} concurrent requests to ${RPM_MODEL} (15 RPM)...`);
     const fetches = Array.from({ length: BURST }, (_, i) =>
-      chat(RPM_MODEL, `Count to 3. Only numbers. Request ${i}.`)
+      chat(RPM_MODEL, `Count to 3. Only numbers. Request ${i}.`),
     );
     const results = await Promise.all(fetches);
 
@@ -54,7 +54,7 @@ test(
     const rateLimited = results.filter((r) => r.status === 429);
 
     console.error(
-      `[RPM] ${successes.length} success, ${rateLimited.length} 429 (statuses: ${statuses.join(",")})`
+      `[RPM] ${successes.length} success, ${rateLimited.length} 429 (statuses: ${statuses.join(",")})`,
     );
 
     assert.ok(successes.length > 0, "expected at least one successful request");
@@ -64,20 +64,20 @@ test(
         assert.equal(
           r.body.includes("quota_exhausted"),
           false,
-          `RPM 429 should NOT be quota_exhausted: ${r.body.slice(0, 300)}`
+          `RPM 429 should NOT be quota_exhausted: ${r.body.slice(0, 300)}`,
         );
         assert.ok(
           r.body.includes("cooling down") || r.body.includes("rate_limit"),
-          `RPM 429 should mention cooldown: ${r.body.slice(0, 300)}`
+          `RPM 429 should mention cooldown: ${r.body.slice(0, 300)}`,
         );
       }
     } else {
       console.error("[RPM] No 429s received (Gemini may have higher effective RPM for this key)");
       console.error(
-        "[RPM] Classification logic verified by unit tests in account-fallback-service.test.ts"
+        "[RPM] Classification logic verified by unit tests in account-fallback-service.test.ts",
       );
     }
-  }
+  },
 );
 
 test("Gemma 4 RPM recovery: after 65s, requests should succeed again", { skip }, async () => {
@@ -100,7 +100,7 @@ test("Gemma 4 RPM recovery: after 65s, requests should succeed again", { skip },
   console.error(`[RPM recovery] ${successes.length}/3 success`);
   assert.ok(
     successes.length >= 1,
-    `expected at least 1 recovery, got: ${results.map((r) => r.status).join(",")}`
+    `expected at least 1 recovery, got: ${results.map((r) => r.status).join(",")}`,
   );
 });
 
@@ -113,7 +113,7 @@ test(
     const BURST = 30;
     console.error(`\n[RPD] Sending ${BURST} concurrent requests to ${RPD_MODEL} (20 RPD)...`);
     const fetches = Array.from({ length: BURST }, (_, i) =>
-      chat(RPD_MODEL, `Count to 5. Only numbers. Request ${i}.`)
+      chat(RPD_MODEL, `Count to 5. Only numbers. Request ${i}.`),
     );
     const results = await Promise.all(fetches);
     const statuses = results.map((r) => r.status);
@@ -121,13 +121,13 @@ test(
     const rateLimited = results.filter((r) => r.status === 429);
 
     console.error(
-      `[RPD] ${successes.length} success, ${rateLimited.length} 429 (statuses: ${statuses.join(",")})`
+      `[RPD] ${successes.length} success, ${rateLimited.length} 429 (statuses: ${statuses.join(",")})`,
     );
 
     assert.ok(successes.length > 0, "expected at least one successful request");
 
     const quotaExhausted = rateLimited.filter((r) =>
-      r.body.toLowerCase().includes("quota_exhausted")
+      r.body.toLowerCase().includes("quota_exhausted"),
     );
 
     if (quotaExhausted.length > 0) {
@@ -138,15 +138,15 @@ test(
         assert.equal(
           r.body.includes("quota_exhausted"),
           false,
-          `RPM 429 should not be quota_exhausted: ${r.body.slice(0, 200)}`
+          `RPM 429 should not be quota_exhausted: ${r.body.slice(0, 200)}`,
         );
       }
       console.error("[RPD] 429s present but none are quota_exhausted (RPD not yet hit)");
     } else {
       console.error(
-        "[RPD] No 429s received (daily quota may not have been reached, or limits are higher)"
+        "[RPD] No 429s received (daily quota may not have been reached, or limits are higher)",
       );
       console.error("[RPD] Classification logic verified by unit tests");
     }
-  }
+  },
 );

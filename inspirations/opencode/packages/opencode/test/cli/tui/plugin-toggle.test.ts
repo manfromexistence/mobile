@@ -1,20 +1,20 @@
-import { expect, spyOn, test } from "bun:test"
-import fs from "fs/promises"
-import path from "path"
-import { pathToFileURL } from "url"
-import { tmpdir } from "../../fixture/fixture"
-import { createTuiPluginApi } from "../../fixture/tui-plugin"
-import { createTuiResolvedConfig } from "../../fixture/tui-runtime"
-import { TuiConfig } from "../../../src/config/tui"
+import { expect, spyOn, test } from "bun:test";
+import fs from "fs/promises";
+import path from "path";
+import { pathToFileURL } from "url";
+import { tmpdir } from "../../fixture/fixture";
+import { createTuiPluginApi } from "../../fixture/tui-plugin";
+import { createTuiResolvedConfig } from "../../fixture/tui-runtime";
+import { TuiConfig } from "../../../src/config/tui";
 
-const { TuiPluginRuntime } = await import("../../../src/plugin/tui/runtime")
+const { TuiPluginRuntime } = await import("../../../src/plugin/tui/runtime");
 
 test("toggles plugin runtime state by exported id", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      const file = path.join(dir, "toggle-plugin.ts")
-      const spec = pathToFileURL(file).href
-      const marker = path.join(dir, "toggle.txt")
+      const file = path.join(dir, "toggle-plugin.ts");
+      const spec = pathToFileURL(file).href;
+      const marker = path.join(dir, "toggle.txt");
 
       await Bun.write(
         file,
@@ -30,16 +30,16 @@ test("toggles plugin runtime state by exported id", async () => {
   },
 }
 `,
-      )
+      );
 
       return {
         spec,
         marker,
-      }
+      };
     },
-  })
+  });
 
-  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json")
+  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json");
   const config = createTuiResolvedConfig({
     plugin: [[tmp.extra.spec, { marker: tmp.extra.marker }]],
     plugin_enabled: {
@@ -52,15 +52,15 @@ test("toggles plugin runtime state by exported id", async () => {
         source: path.join(tmp.path, "tui.json"),
       },
     ],
-  })
-  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue()
-  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path)
-  const api = createTuiPluginApi()
+  });
+  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue();
+  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path);
+  const api = createTuiPluginApi();
 
   try {
-    await TuiPluginRuntime.init({ api, config })
+    await TuiPluginRuntime.init({ api, config });
 
-    await expect(fs.readFile(tmp.extra.marker, "utf8")).rejects.toThrow()
+    await expect(fs.readFile(tmp.extra.marker, "utf8")).rejects.toThrow();
     expect(TuiPluginRuntime.list().find((item) => item.id === "demo.toggle")).toEqual({
       id: "demo.toggle",
       source: "file",
@@ -68,34 +68,34 @@ test("toggles plugin runtime state by exported id", async () => {
       target: tmp.extra.spec,
       enabled: false,
       active: false,
-    })
+    });
 
-    await expect(TuiPluginRuntime.activatePlugin("demo.toggle")).resolves.toBe(true)
-    await expect(fs.readFile(tmp.extra.marker, "utf8")).resolves.toBe("start\n")
+    await expect(TuiPluginRuntime.activatePlugin("demo.toggle")).resolves.toBe(true);
+    await expect(fs.readFile(tmp.extra.marker, "utf8")).resolves.toBe("start\n");
     expect(api.kv.get("plugin_enabled", {})).toEqual({
       "demo.toggle": true,
-    })
+    });
 
-    await expect(TuiPluginRuntime.deactivatePlugin("demo.toggle")).resolves.toBe(true)
-    await expect(fs.readFile(tmp.extra.marker, "utf8")).resolves.toBe("start\nstop\n")
+    await expect(TuiPluginRuntime.deactivatePlugin("demo.toggle")).resolves.toBe(true);
+    await expect(fs.readFile(tmp.extra.marker, "utf8")).resolves.toBe("start\nstop\n");
     expect(api.kv.get("plugin_enabled", {})).toEqual({
       "demo.toggle": false,
-    })
+    });
 
-    await expect(TuiPluginRuntime.activatePlugin("missing.id")).resolves.toBe(false)
+    await expect(TuiPluginRuntime.activatePlugin("missing.id")).resolves.toBe(false);
   } finally {
-    await TuiPluginRuntime.dispose()
-    cwd.mockRestore()
-    wait.mockRestore()
-    delete process.env.OPENCODE_PLUGIN_META_FILE
+    await TuiPluginRuntime.dispose();
+    cwd.mockRestore();
+    wait.mockRestore();
+    delete process.env.OPENCODE_PLUGIN_META_FILE;
   }
-})
+});
 
 test("deactivating plugin pops pushed mode", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      const file = path.join(dir, "mode-plugin.ts")
-      const spec = pathToFileURL(file).href
+      const file = path.join(dir, "mode-plugin.ts");
+      const spec = pathToFileURL(file).href;
 
       await Bun.write(
         file,
@@ -106,61 +106,63 @@ test("deactivating plugin pops pushed mode", async () => {
   },
 }
 `,
-      )
+      );
 
-      return { spec }
+      return { spec };
     },
-  })
+  });
 
-  const stack: { id: symbol; mode: string }[] = []
-  let popCount = 0
+  const stack: { id: symbol; mode: string }[] = [];
+  let popCount = 0;
   const api = createTuiPluginApi({
     mode: {
       current: () => stack.at(-1)?.mode ?? "base",
       push(mode) {
-        const id = Symbol(mode)
-        let active = true
-        stack.push({ id, mode })
+        const id = Symbol(mode);
+        let active = true;
+        stack.push({ id, mode });
         return () => {
-          if (!active) return
-          active = false
-          popCount += 1
-          const index = stack.findIndex((item) => item.id === id)
-          if (index !== -1) stack.splice(index, 1)
-        }
+          if (!active) return;
+          active = false;
+          popCount += 1;
+          const index = stack.findIndex((item) => item.id === id);
+          if (index !== -1) stack.splice(index, 1);
+        };
       },
     },
-  })
+  });
   const config = createTuiResolvedConfig({
     plugin: [tmp.extra.spec],
-    plugin_origins: [{ spec: tmp.extra.spec, scope: "local", source: path.join(tmp.path, "tui.json") }],
-  })
-  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue()
-  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path)
+    plugin_origins: [
+      { spec: tmp.extra.spec, scope: "local", source: path.join(tmp.path, "tui.json") },
+    ],
+  });
+  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue();
+  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path);
 
   try {
-    await TuiPluginRuntime.init({ api, config })
+    await TuiPluginRuntime.init({ api, config });
 
-    expect(api.mode.current()).toBe("demo.mode")
-    expect(popCount).toBe(0)
+    expect(api.mode.current()).toBe("demo.mode");
+    expect(popCount).toBe(0);
 
-    await expect(TuiPluginRuntime.deactivatePlugin("demo.mode")).resolves.toBe(true)
+    await expect(TuiPluginRuntime.deactivatePlugin("demo.mode")).resolves.toBe(true);
 
-    expect(api.mode.current()).toBe("base")
-    expect(popCount).toBe(1)
+    expect(api.mode.current()).toBe("base");
+    expect(popCount).toBe(1);
   } finally {
-    await TuiPluginRuntime.dispose()
-    cwd.mockRestore()
-    wait.mockRestore()
+    await TuiPluginRuntime.dispose();
+    cwd.mockRestore();
+    wait.mockRestore();
   }
-})
+});
 
 test("kv plugin_enabled overrides tui config on startup", async () => {
   await using tmp = await tmpdir({
     init: async (dir) => {
-      const file = path.join(dir, "startup-plugin.ts")
-      const spec = pathToFileURL(file).href
-      const marker = path.join(dir, "startup.txt")
+      const file = path.join(dir, "startup-plugin.ts");
+      const spec = pathToFileURL(file).href;
+      const marker = path.join(dir, "startup.txt");
 
       await Bun.write(
         file,
@@ -171,16 +173,16 @@ test("kv plugin_enabled overrides tui config on startup", async () => {
   },
 }
 `,
-      )
+      );
 
       return {
         spec,
         marker,
-      }
+      };
     },
-  })
+  });
 
-  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json")
+  process.env.OPENCODE_PLUGIN_META_FILE = path.join(tmp.path, "plugin-meta.json");
   const config = createTuiResolvedConfig({
     plugin: [[tmp.extra.spec, { marker: tmp.extra.marker }]],
     plugin_enabled: {
@@ -193,18 +195,18 @@ test("kv plugin_enabled overrides tui config on startup", async () => {
         source: path.join(tmp.path, "tui.json"),
       },
     ],
-  })
-  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue()
-  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path)
-  const api = createTuiPluginApi()
+  });
+  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue();
+  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path);
+  const api = createTuiPluginApi();
   api.kv.set("plugin_enabled", {
     "demo.startup": true,
-  })
+  });
 
   try {
-    await TuiPluginRuntime.init({ api, config })
+    await TuiPluginRuntime.init({ api, config });
 
-    await expect(fs.readFile(tmp.extra.marker, "utf8")).resolves.toBe("on")
+    await expect(fs.readFile(tmp.extra.marker, "utf8")).resolves.toBe("on");
     expect(TuiPluginRuntime.list().find((item) => item.id === "demo.startup")).toEqual({
       id: "demo.startup",
       source: "file",
@@ -212,29 +214,31 @@ test("kv plugin_enabled overrides tui config on startup", async () => {
       target: tmp.extra.spec,
       enabled: true,
       active: true,
-    })
+    });
   } finally {
-    await TuiPluginRuntime.dispose()
-    cwd.mockRestore()
-    wait.mockRestore()
-    delete process.env.OPENCODE_PLUGIN_META_FILE
+    await TuiPluginRuntime.dispose();
+    cwd.mockRestore();
+    wait.mockRestore();
+    delete process.env.OPENCODE_PLUGIN_META_FILE;
   }
-})
+});
 
 test("loads disabled-by-default internal plugin inactive and activates on demand", async () => {
-  await using tmp = await tmpdir()
-  const config = createTuiResolvedConfig()
-  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue()
-  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path)
-  const api = createTuiPluginApi()
+  await using tmp = await tmpdir();
+  const config = createTuiResolvedConfig();
+  const wait = spyOn(TuiConfig, "waitForDependencies").mockResolvedValue();
+  const cwd = spyOn(process, "cwd").mockImplementation(() => tmp.path);
+  const api = createTuiPluginApi();
 
   try {
-    await TuiPluginRuntime.init({ api, config })
+    await TuiPluginRuntime.init({ api, config });
 
-    expect(TuiPluginRuntime.list().find((item) => item.id === "internal:plugin-manager")).toMatchObject({
+    expect(
+      TuiPluginRuntime.list().find((item) => item.id === "internal:plugin-manager"),
+    ).toMatchObject({
       enabled: true,
       active: true,
-    })
+    });
     expect(TuiPluginRuntime.list().find((item) => item.id === "which-key")).toEqual({
       id: "which-key",
       source: "internal",
@@ -242,9 +246,9 @@ test("loads disabled-by-default internal plugin inactive and activates on demand
       target: "which-key",
       enabled: false,
       active: false,
-    })
+    });
 
-    await expect(TuiPluginRuntime.activatePlugin("which-key")).resolves.toBe(true)
+    await expect(TuiPluginRuntime.activatePlugin("which-key")).resolves.toBe(true);
     expect(TuiPluginRuntime.list().find((item) => item.id === "which-key")).toEqual({
       id: "which-key",
       source: "internal",
@@ -252,13 +256,13 @@ test("loads disabled-by-default internal plugin inactive and activates on demand
       target: "which-key",
       enabled: true,
       active: true,
-    })
+    });
     expect(api.kv.get("plugin_enabled", {})).toEqual({
       "which-key": true,
-    })
+    });
   } finally {
-    await TuiPluginRuntime.dispose()
-    cwd.mockRestore()
-    wait.mockRestore()
+    await TuiPluginRuntime.dispose();
+    cwd.mockRestore();
+    wait.mockRestore();
   }
-})
+});

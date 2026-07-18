@@ -1,6 +1,6 @@
-import { sqliteTable, text } from "drizzle-orm/sqlite-core"
-import { SessionTable } from "../session/sql"
-import { Timestamps } from "../database/schema.sql"
+import { sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { SessionTable } from "../session/sql";
+import { Timestamps } from "../database/schema.sql";
 
 export const SessionShareTable = sqliteTable("session_share", {
   session_id: text()
@@ -10,4 +10,4 @@ export const SessionShareTable = sqliteTable("session_share", {
   secret: text().notNull(),
   url: text().notNull(),
   ...Timestamps,
-})
+});

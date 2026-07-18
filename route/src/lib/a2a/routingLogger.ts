@@ -44,7 +44,7 @@ const RETENTION_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
  * Log a routing decision.
  */
 export function logRoutingDecision(
-  params: Omit<RoutingDecision, "requestId" | "timestamp">
+  params: Omit<RoutingDecision, "requestId" | "timestamp">,
 ): RoutingDecision {
   const decision: RoutingDecision = {
     ...params,

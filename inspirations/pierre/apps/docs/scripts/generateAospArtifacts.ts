@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { resolve as resolvePath } from 'node:path';
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { resolve as resolvePath } from "node:path";
 // Produces the two artifacts the trees-dev demo needs to serve the AOSP
 // workload without loading the full 141 MB fixture inside the Vercel function:
 //
@@ -12,22 +12,19 @@ import { resolve as resolvePath } from 'node:path';
 //      DecompressionStream, and upgrades the tree in place.
 //
 // Run from the repo root: `bun apps/docs/scripts/generateAospArtifacts.ts`.
-import { gzipSync } from 'node:zlib';
+import { gzipSync } from "node:zlib";
 
-import { preparePaths as sortCanonicalPaths } from '../../../packages/path-store/src/builder';
+import { preparePaths as sortCanonicalPaths } from "../../../packages/path-store/src/builder";
 
 const PREVIEW_PATH_COUNT = 100;
-const repoRoot = resolvePath(import.meta.dirname, '../../..');
-const sourcePath = resolvePath(
-  repoRoot,
-  'packages/tree-test-data/aosp-files.json'
-);
+const repoRoot = resolvePath(import.meta.dirname, "../../..");
+const sourcePath = resolvePath(repoRoot, "packages/tree-test-data/aosp-files.json");
 const previewOutputPath = resolvePath(
   repoRoot,
-  'apps/docs/app/(trees)/trees-dev/_lib/aospPreview.ts'
+  "apps/docs/app/(trees)/trees-dev/_lib/aospPreview.ts",
 );
-const gzOutputDir = resolvePath(repoRoot, 'apps/docs/public/trees-dev');
-const gzOutputPath = resolvePath(gzOutputDir, 'aosp-files.json.gz');
+const gzOutputDir = resolvePath(repoRoot, "apps/docs/public/trees-dev");
+const gzOutputPath = resolvePath(gzOutputDir, "aosp-files.json.gz");
 
 // Matches deriveExpandedPaths in workloadLoader.ts, but we precompute at
 // artifact-build time so the client can simply read the result out of the gzip
@@ -36,20 +33,18 @@ function deriveAllExpandedPaths(paths: readonly string[]): string[] {
   const folders = new Set<string>();
 
   for (const path of paths) {
-    const isDirectory = path.endsWith('/');
+    const isDirectory = path.endsWith("/");
     const normalizedPath = isDirectory ? path.slice(0, -1) : path;
     if (normalizedPath.length === 0) {
       continue;
     }
 
-    let searchIndex = normalizedPath.indexOf('/');
-    const limit = isDirectory
-      ? normalizedPath.length
-      : normalizedPath.lastIndexOf('/');
+    let searchIndex = normalizedPath.indexOf("/");
+    const limit = isDirectory ? normalizedPath.length : normalizedPath.lastIndexOf("/");
 
     while (searchIndex >= 0 && searchIndex <= limit) {
       folders.add(normalizedPath.slice(0, searchIndex));
-      searchIndex = normalizedPath.indexOf('/', searchIndex + 1);
+      searchIndex = normalizedPath.indexOf("/", searchIndex + 1);
     }
 
     if (isDirectory) {
@@ -61,14 +56,12 @@ function deriveAllExpandedPaths(paths: readonly string[]): string[] {
 }
 
 console.log(`[aosp] reading ${sourcePath}`);
-const rawPaths = JSON.parse(readFileSync(sourcePath, 'utf8')) as string[];
+const rawPaths = JSON.parse(readFileSync(sourcePath, "utf8")) as string[];
 console.log(`[aosp] sorting ${rawPaths.length.toLocaleString()} paths`);
 const sortedPaths = sortCanonicalPaths(rawPaths);
 console.log(`[aosp] deriving fully-expanded path set`);
 const allExpandedPaths = deriveAllExpandedPaths(sortedPaths);
-console.log(
-  `[aosp] fully-expanded set has ${allExpandedPaths.length.toLocaleString()} folders`
-);
+console.log(`[aosp] fully-expanded set has ${allExpandedPaths.length.toLocaleString()} folders`);
 
 console.log(`[aosp] writing preview (${String(PREVIEW_PATH_COUNT)} paths)`);
 const preview = sortedPaths.slice(0, PREVIEW_PATH_COUNT);
@@ -81,15 +74,15 @@ export const AOSP_PREVIEW_PATHS: readonly string[] = ${JSON.stringify(preview, n
 export const AOSP_PREVIEW_ALL_EXPANDED_PATHS: readonly string[] = ${JSON.stringify(previewAllExpanded, null, 2)};
 export const AOSP_TOTAL_PATH_COUNT = ${String(sortedPaths.length)};
 `;
-writeFileSync(previewOutputPath, previewContent, 'utf8');
+writeFileSync(previewOutputPath, previewContent, "utf8");
 console.log(`[aosp] preview → ${previewOutputPath}`);
 
-console.log('[aosp] gzipping full sorted path list + expansion set');
+console.log("[aosp] gzipping full sorted path list + expansion set");
 const payload = { paths: sortedPaths, allExpandedPaths };
 const fullJson = JSON.stringify(payload);
 const gz = gzipSync(fullJson, { level: 9 });
 mkdirSync(gzOutputDir, { recursive: true });
 writeFileSync(gzOutputPath, gz);
 console.log(
-  `[aosp] gzip → ${gzOutputPath} (${(gz.byteLength / 1024 / 1024).toFixed(1)} MB, from ${(fullJson.length / 1024 / 1024).toFixed(1)} MB)`
+  `[aosp] gzip → ${gzOutputPath} (${(gz.byteLength / 1024 / 1024).toFixed(1)} MB, from ${(fullJson.length / 1024 / 1024).toFixed(1)} MB)`,
 );

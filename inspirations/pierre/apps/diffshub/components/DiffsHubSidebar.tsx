@@ -1,15 +1,9 @@
-'use client';
+"use client";
 
-import {
-  IconComment,
-  IconFileTree,
-  IconFilter,
-  IconSearch,
-  IconXSquircle,
-} from '@pierre/icons';
-import { FileTree } from '@pierre/trees';
-import type { GitStatus } from '@pierre/trees';
-import { useFileTreeSearch } from '@pierre/trees/react';
+import { IconComment, IconFileTree, IconFilter, IconSearch, IconXSquircle } from "@pierre/icons";
+import { FileTree } from "@pierre/trees";
+import type { GitStatus } from "@pierre/trees";
+import { useFileTreeSearch } from "@pierre/trees/react";
 import {
   type CSSProperties,
   memo,
@@ -20,17 +14,17 @@ import {
   useMemo,
   useRef,
   useState,
-} from 'react';
+} from "react";
 
-import { CHROME_ICON_BUTTON_CLASS } from './chromeButtonStyles';
-import { DiffsHubCommentsList } from './DiffsHubCommentsList';
-import { DiffsHubDiffStats } from './DiffsHubDiffStats';
-import { DiffsHubFileTree } from './DiffsHubFileTree';
-import { useChromeThemeProps } from './useChromeThemeProps';
-import type { ThemeCycleControls } from './useThemeCycle';
-import { WorkerPoolStatus } from './WorkerPoolStatus';
-import { Button } from '@/components/Button';
-import { ButtonGroup, ButtonGroupItem } from '@/components/ButtonGroup';
+import { CHROME_ICON_BUTTON_CLASS } from "./chromeButtonStyles";
+import { DiffsHubCommentsList } from "./DiffsHubCommentsList";
+import { DiffsHubDiffStats } from "./DiffsHubDiffStats";
+import { DiffsHubFileTree } from "./DiffsHubFileTree";
+import { useChromeThemeProps } from "./useChromeThemeProps";
+import type { ThemeCycleControls } from "./useThemeCycle";
+import { WorkerPoolStatus } from "./WorkerPoolStatus";
+import { Button } from "@/components/Button";
+import { ButtonGroup, ButtonGroupItem } from "@/components/ButtonGroup";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -39,23 +33,23 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/DropdownMenu';
-import { cn } from '@/lib/cn';
-import { filterDiffsHubFileTreeSource } from '@/lib/filterDiffsHubFileTreeSource';
-import { getDiffsHubFileTreeAvailableStatuses } from '@/lib/getDiffsHubFileTreeAvailableStatuses';
-import { diffshubChromeMapping } from '@/lib/theme/diffshubChromeMapping';
-import { getDropdownThemeStyle } from '@/lib/theme/dropdownChromeStyle';
+} from "@/components/DropdownMenu";
+import { cn } from "@/lib/cn";
+import { filterDiffsHubFileTreeSource } from "@/lib/filterDiffsHubFileTreeSource";
+import { getDiffsHubFileTreeAvailableStatuses } from "@/lib/getDiffsHubFileTreeAvailableStatuses";
+import { diffshubChromeMapping } from "@/lib/theme/diffshubChromeMapping";
+import { getDropdownThemeStyle } from "@/lib/theme/dropdownChromeStyle";
 import type {
   DiffsHubDiffStats as DiffsHubDiffStatsData,
   DiffsHubFileTreeSource,
   DiffsHubSavedCommentEntry,
   DiffsHubSavedCommentItem,
-} from '@/lib/types';
+} from "@/lib/types";
 
-type SidebarTab = 'files' | 'comments';
-type SidebarStatusPanel = 'diffStats' | 'systemMonitor';
+type SidebarTab = "files" | "comments";
+type SidebarStatusPanel = "diffStats" | "systemMonitor";
 
-const MOBILE_MEDIA_QUERY = '(max-width: 767px)';
+const MOBILE_MEDIA_QUERY = "(max-width: 767px)";
 
 interface DiffsHubSidebarProps {
   className?: string;
@@ -84,7 +78,7 @@ export const DiffsHubSidebar = memo(function DiffsHubSidebar({
   streaming,
   themeCycle,
 }: DiffsHubSidebarProps) {
-  const [activeTab, setActiveTab] = useState<SidebarTab>('files');
+  const [activeTab, setActiveTab] = useState<SidebarTab>("files");
   let totalCommentCount = 0;
   for (const section of commentSections) {
     totalCommentCount += section.comments.length;
@@ -94,34 +88,24 @@ export const DiffsHubSidebar = memo(function DiffsHubSidebar({
   // and its chrome text follows the theme's own foreground tokens
   // instead of an opacity-derived fade of the file-tree's muted text.
   // Shared with the header so both chrome surfaces stay in sync.
-  const { style: sidebarChromeStyle } = useChromeThemeProps(
-    diffshubChromeMapping
-  );
-  const sidebarStyle =
-    Object.keys(sidebarChromeStyle).length > 0 ? sidebarChromeStyle : undefined;
+  const { style: sidebarChromeStyle } = useChromeThemeProps(diffshubChromeMapping);
+  const sidebarStyle = Object.keys(sidebarChromeStyle).length > 0 ? sidebarChromeStyle : undefined;
   // Portaled dropdowns (the Git-status filter) render outside the sidebar
   // wrapper, so the chrome variables set on it don't cascade. Re-apply the
   // resolved chrome on the menu surface itself, mirroring the header dropdowns.
-  const dropdownThemeStyle = useMemo(
-    () => getDropdownThemeStyle(sidebarStyle),
-    [sidebarStyle]
+  const dropdownThemeStyle = useMemo(() => getDropdownThemeStyle(sidebarStyle), [sidebarStyle]);
+  const [activeStatusPanel, setActiveStatusPanel] = useState<SidebarStatusPanel | null>(
+    "diffStats",
   );
-  const [activeStatusPanel, setActiveStatusPanel] =
-    useState<SidebarStatusPanel | null>('diffStats');
   const [fileTreeModel, setFileTreeModel] = useState<FileTree | null>(null);
   // Inclusion filter: the statuses the tree should show. Empty means "no
   // filter" — every file is shown — so the menu opens with nothing checked and
   // checking statuses narrows the tree to just those.
-  const [selectedStatuses, setSelectedStatuses] = useState<
-    ReadonlySet<GitStatus>
-  >(() => new Set());
-  const availableStatuses = useMemo(
-    () => getDiffsHubFileTreeAvailableStatuses(source),
-    [source]
-  );
+  const [selectedStatuses, setSelectedStatuses] = useState<ReadonlySet<GitStatus>>(() => new Set());
+  const availableStatuses = useMemo(() => getDiffsHubFileTreeAvailableStatuses(source), [source]);
   const filteredSource = useMemo(
     () => filterDiffsHubFileTreeSource(source, selectedStatuses),
-    [source, selectedStatuses]
+    [source, selectedStatuses],
   );
   const handleModelReady = useCallback((model: FileTree | null) => {
     setFileTreeModel(model);
@@ -172,21 +156,20 @@ export const DiffsHubSidebar = memo(function DiffsHubSidebar({
     const { body, documentElement } = document;
     const codeViewScroll = scrollRef.current;
     const previousBodyOverflow = body.style.overflow;
-    const previousRootOverscrollBehavior =
-      documentElement.style.overscrollBehavior;
+    const previousRootOverscrollBehavior = documentElement.style.overscrollBehavior;
     const previousCodeViewOverflow = codeViewScroll?.style.overflow;
 
-    body.style.overflow = 'hidden';
-    documentElement.style.overscrollBehavior = 'none';
+    body.style.overflow = "hidden";
+    documentElement.style.overscrollBehavior = "none";
     if (codeViewScroll != null) {
-      codeViewScroll.style.overflow = 'hidden';
+      codeViewScroll.style.overflow = "hidden";
     }
 
     return () => {
       body.style.overflow = previousBodyOverflow;
       documentElement.style.overscrollBehavior = previousRootOverscrollBehavior;
       if (codeViewScroll != null) {
-        codeViewScroll.style.overflow = previousCodeViewOverflow ?? '';
+        codeViewScroll.style.overflow = previousCodeViewOverflow ?? "";
       }
     };
   }, [mobileOverlayOpen, scrollRef]);
@@ -199,10 +182,8 @@ export const DiffsHubSidebar = memo(function DiffsHubSidebar({
         aria-label="Close file tree"
         tabIndex={mobileOverlayOpen ? 0 : -1}
         className={cn(
-          'z-20 cursor-default bg-background/60 backdrop-blur-xs transition-opacity [grid-column:1/-1] [grid-row:1/-1] md:hidden',
-          mobileOverlayOpen
-            ? 'pointer-events-auto opacity-100'
-            : 'pointer-events-none opacity-0'
+          "z-20 cursor-default bg-background/60 backdrop-blur-xs transition-opacity [grid-column:1/-1] [grid-row:1/-1] md:hidden",
+          mobileOverlayOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0",
         )}
         onClick={onMobileClose}
       />
@@ -219,21 +200,14 @@ export const DiffsHubSidebar = memo(function DiffsHubSidebar({
             value={activeTab}
             onValueChange={(value) => setActiveTab(value as SidebarTab)}
           >
-            <ButtonGroupItem
-              value="files"
-              size="icon-only"
-              className="shadow-none"
-            >
+            <ButtonGroupItem value="files" size="icon-only" className="shadow-none">
               <IconFileTree className="size-4 md:size-3" />
               <span className="sr-only">Files</span>
             </ButtonGroupItem>
             <ButtonGroupItem
               value="comments"
               size="icon-only"
-              className={cn(
-                'shadow-none',
-                totalCommentCount > 0 && 'w-auto gap-1 pr-1'
-              )}
+              className={cn("shadow-none", totalCommentCount > 0 && "w-auto gap-1 pr-1")}
             >
               <IconComment className="size-4 md:size-3" />
               <span className="sr-only">Comments</span>
@@ -254,10 +228,10 @@ export const DiffsHubSidebar = memo(function DiffsHubSidebar({
               )}
             </ButtonGroupItem>
           </ButtonGroup>
-          {activeTab === 'files' && fileTreeModel != null && (
+          {activeTab === "files" && fileTreeModel != null && (
             <FileTreeSearchToggle model={fileTreeModel} />
           )}
-          {activeTab === 'files' && availableStatuses.size > 1 && (
+          {activeTab === "files" && availableStatuses.size > 1 && (
             <FileTreeFilterButton
               availableStatuses={availableStatuses}
               selectedStatuses={selectedStatuses}
@@ -271,7 +245,7 @@ export const DiffsHubSidebar = memo(function DiffsHubSidebar({
             <Button
               variant="ghost"
               size="icon-only"
-              className={cn(CHROME_ICON_BUTTON_CLASS, 'md:hidden')}
+              className={cn(CHROME_ICON_BUTTON_CLASS, "md:hidden")}
               aria-label="Close file tree"
               onClick={onMobileClose}
             >
@@ -283,7 +257,7 @@ export const DiffsHubSidebar = memo(function DiffsHubSidebar({
           <div
             role="region"
             aria-label="Files"
-            hidden={activeTab !== 'files'}
+            hidden={activeTab !== "files"}
             className="h-full min-h-0"
           >
             <DiffsHubFileTree
@@ -295,7 +269,7 @@ export const DiffsHubSidebar = memo(function DiffsHubSidebar({
           <div
             role="region"
             aria-label="Comments"
-            hidden={activeTab !== 'comments'}
+            hidden={activeTab !== "comments"}
             className="h-full min-h-0"
           >
             <DiffsHubCommentsList
@@ -306,14 +280,14 @@ export const DiffsHubSidebar = memo(function DiffsHubSidebar({
           </div>
         </div>
         <DiffsHubDiffStats
-          expanded={activeStatusPanel === 'diffStats'}
-          onToggle={() => toggleStatusPanel('diffStats')}
+          expanded={activeStatusPanel === "diffStats"}
+          onToggle={() => toggleStatusPanel("diffStats")}
           stats={diffStats}
           streaming={streaming}
         />
         <WorkerPoolStatus
-          expanded={activeStatusPanel === 'systemMonitor'}
-          onToggle={() => toggleStatusPanel('systemMonitor')}
+          expanded={activeStatusPanel === "systemMonitor"}
+          onToggle={() => toggleStatusPanel("systemMonitor")}
           scrollRef={scrollRef}
           themeCycle={themeCycle}
         />
@@ -339,14 +313,14 @@ function SidebarWrapper({
     <div
       className={cn(
         className,
-        'contain-strict z-30 flex h-full min-h-0 flex-col transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] will-change-transform motion-reduce:transition-none md:z-auto md:translate-y-0 md:will-change-auto',
+        "contain-strict z-30 flex h-full min-h-0 flex-col transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] will-change-transform motion-reduce:transition-none md:z-auto md:translate-y-0 md:will-change-auto",
         // Fall back to the neutral diffshub chrome background when no Shiki
         // theme bg is available yet (initial render before the resolver
         // returns).
-        themeStyle == null && 'bg-[var(--diffshub-sidebar-bg)]',
+        themeStyle == null && "bg-[var(--diffshub-sidebar-bg)]",
         mobileOverlayOpen
-          ? 'pointer-events-auto translate-y-0 overflow-hidden rounded-t-xl shadow-[0_0_0_1px_var(--color-border-opaque),_0_16px_32px_rgb(0_0_0_/0.25)] md:h-full md:overflow-visible md:rounded-none md:border-0 md:shadow-none'
-          : 'pointer-events-none translate-y-[calc(100%+1.5rem)] overflow-hidden rounded-xl md:pointer-events-auto md:h-full md:overflow-visible md:rounded-none pt-3 border-r border-[var(--color-border-opaque)]'
+          ? "pointer-events-auto translate-y-0 overflow-hidden rounded-t-xl shadow-[0_0_0_1px_var(--color-border-opaque),_0_16px_32px_rgb(0_0_0_/0.25)] md:h-full md:overflow-visible md:rounded-none md:border-0 md:shadow-none"
+          : "pointer-events-none translate-y-[calc(100%+1.5rem)] overflow-hidden rounded-xl md:pointer-events-auto md:h-full md:overflow-visible md:rounded-none pt-3 border-r border-[var(--color-border-opaque)]",
       )}
       style={themeStyle}
     >
@@ -365,28 +339,28 @@ const DIFF_STATUS_ITEMS: {
   color: string;
 }[] = [
   {
-    status: 'added',
-    label: 'Added',
-    short: 'A',
-    color: 'light-dark(#16a994, #00cab1)',
+    status: "added",
+    label: "Added",
+    short: "A",
+    color: "light-dark(#16a994, #00cab1)",
   },
   {
-    status: 'modified',
-    label: 'Modified',
-    short: 'M',
-    color: 'light-dark(#1ca1c7, #08c0ef)',
+    status: "modified",
+    label: "Modified",
+    short: "M",
+    color: "light-dark(#1ca1c7, #08c0ef)",
   },
   {
-    status: 'renamed',
-    label: 'Renamed',
-    short: 'R',
-    color: 'light-dark(#d5a910, #ffd452)',
+    status: "renamed",
+    label: "Renamed",
+    short: "R",
+    color: "light-dark(#d5a910, #ffd452)",
   },
   {
-    status: 'deleted',
-    label: 'Deleted',
-    short: 'D',
-    color: 'light-dark(#ff2e3f, #ff6762)',
+    status: "deleted",
+    label: "Deleted",
+    short: "D",
+    color: "light-dark(#ff2e3f, #ff6762)",
   },
 ];
 
@@ -408,11 +382,9 @@ function FileTreeFilterButton({
   selectedStatuses,
 }: FileTreeFilterButtonProps) {
   const isFiltered = selectedStatuses.size > 0;
-  const visibleItems = DIFF_STATUS_ITEMS.filter(({ status }) =>
-    availableStatuses.has(status)
-  );
+  const visibleItems = DIFF_STATUS_ITEMS.filter(({ status }) => availableStatuses.has(status));
   const [isMac] = useState(
-    () => typeof navigator !== 'undefined' && /mac/i.test(navigator.platform)
+    () => typeof navigator !== "undefined" && /mac/i.test(navigator.platform),
   );
   // Track whether Alt was held on the most recent pointer-down so the
   // onCheckedChange handler (which receives no event) can branch on it.
@@ -426,7 +398,7 @@ function FileTreeFilterButton({
           size="icon-only"
           aria-label="Filter by Git status"
           aria-pressed={isFiltered}
-          className={cn(CHROME_ICON_BUTTON_CLASS, 'relative')}
+          className={cn(CHROME_ICON_BUTTON_CLASS, "relative")}
         >
           <IconFilter className="size-4 md:size-3" />
           {isFiltered && (
@@ -434,15 +406,11 @@ function FileTreeFilterButton({
           )}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="end"
-        className="p-2"
-        style={dropdownThemeStyle}
-      >
+      <DropdownMenuContent align="end" className="p-2" style={dropdownThemeStyle}>
         <DropdownMenuLabel className="flex flex-col px-2 font-normal">
           Filter by Git status
           <small className="text-muted-foreground text-xs">
-            {isMac ? 'Option' : 'Alt'}-click to show only one status
+            {isMac ? "Option" : "Alt"}-click to show only one status
           </small>
         </DropdownMenuLabel>
         <DropdownMenuSeparator className="mx-2" />
@@ -462,11 +430,7 @@ function FileTreeFilterButton({
                 onToggle(status);
               }
             }}
-            className={
-              isFiltered && !selectedStatuses.has(status)
-                ? 'text-muted-foreground'
-                : ''
-            }
+            className={isFiltered && !selectedStatuses.has(status) ? "text-muted-foreground" : ""}
           >
             <span
               className="mr-2 w-4 shrink-0 rounded-sm text-center font-mono text-xs font-semibold"
@@ -481,11 +445,7 @@ function FileTreeFilterButton({
           </DropdownMenuCheckboxItem>
         ))}
         <DropdownMenuSeparator className="mx-2" />
-        <DropdownMenuItem
-          className="px-2"
-          disabled={!isFiltered}
-          onSelect={onClear}
-        >
+        <DropdownMenuItem className="px-2" disabled={!isFiltered} onSelect={onClear}>
           <IconXSquircle className="mr-2 opacity-50" />
           Clear filter
         </DropdownMenuItem>
@@ -503,7 +463,7 @@ function FileTreeSearchToggle({ model }: { model: FileTree }) {
       type="button"
       variant="ghost"
       size="icon-only"
-      aria-label={search.isOpen ? 'Hide file search' : 'Show file search'}
+      aria-label={search.isOpen ? "Hide file search" : "Show file search"}
       aria-pressed={search.isOpen}
       className={CHROME_ICON_BUTTON_CLASS}
       // Avoid focus moving to this button before click: the tree search input

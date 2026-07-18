@@ -100,6 +100,6 @@ export const iconNames = [
   "aihubmix",
   "abacus",
   "302ai",
-] as const
+] as const;
 
-export type IconName = (typeof iconNames)[number]
+export type IconName = (typeof iconNames)[number];

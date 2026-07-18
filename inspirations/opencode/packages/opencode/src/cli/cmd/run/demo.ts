@@ -14,11 +14,18 @@
 //
 // Demo mode also handles permission and question replies locally, completing
 // or failing the synthetic tool parts as appropriate.
-import path from "path"
-import type { Event, ToolPart } from "@opencode-ai/sdk/v2"
-import { createSessionData, reduceSessionData, type SessionData } from "./session-data"
-import { writeSessionOutput } from "./stream"
-import type { FooterApi, PermissionReply, QuestionReject, QuestionReply, RunPrompt, StreamCommit } from "./types"
+import path from "path";
+import type { Event, ToolPart } from "@opencode-ai/sdk/v2";
+import { createSessionData, reduceSessionData, type SessionData } from "./session-data";
+import { writeSessionOutput } from "./stream";
+import type {
+  FooterApi,
+  PermissionReply,
+  QuestionReject,
+  QuestionReply,
+  RunPrompt,
+  StreamCommit,
+} from "./types";
 
 const KINDS = [
   "markdown",
@@ -34,21 +41,21 @@ const KINDS = [
   "question",
   "error",
   "mix",
-]
-const PERMISSIONS = ["edit", "bash", "read", "task", "external", "doom"] as const
-const QUESTIONS = ["multi", "single", "checklist", "custom"] as const
+];
+const PERMISSIONS = ["edit", "bash", "read", "task", "external", "doom"] as const;
+const QUESTIONS = ["multi", "single", "checklist", "custom"] as const;
 
-type PermissionKind = (typeof PERMISSIONS)[number]
-type QuestionKind = (typeof QUESTIONS)[number]
+type PermissionKind = (typeof PERMISSIONS)[number];
+type QuestionKind = (typeof QUESTIONS)[number];
 
 function permissionKind(value: string | undefined): PermissionKind | undefined {
-  const next = (value || "edit").toLowerCase()
-  return PERMISSIONS.find((item) => item === next)
+  const next = (value || "edit").toLowerCase();
+  return PERMISSIONS.find((item) => item === next);
 }
 
 function questionKind(value: string | undefined): QuestionKind | undefined {
-  const next = (value || "multi").toLowerCase()
-  return QUESTIONS.find((item) => item === next)
+  const next = (value || "multi").toLowerCase();
+  return QUESTIONS.find((item) => item === next);
 }
 
 const SAMPLE_MARKDOWN = [
@@ -86,7 +93,7 @@ const SAMPLE_MARKDOWN = [
   "| `footer.test.ts` | Capture real split-footer markdown payloads during idle completion |",
   "",
   "Next step: run `/fmt table` if you want a tighter table-only sample.",
-].join("\n")
+].join("\n");
 
 const SAMPLE_TABLE = [
   "# Table Sample",
@@ -97,60 +104,60 @@ const SAMPLE_TABLE = [
   "| Unicode | `漢字` | Wide characters should remain aligned |",
   "| Wrap | `LongTokenWithoutNaturalBreaks_1234567890` | Useful for width stress |",
   "| Status | done | Final row should still appear after idle |",
-].join("\n")
+].join("\n");
 
 type Ref = {
-  msg: string
-  part: string
-  call: string
-  tool: string
-  input: Record<string, unknown>
-  start: number
-}
+  msg: string;
+  part: string;
+  call: string;
+  tool: string;
+  input: Record<string, unknown>;
+  start: number;
+};
 
 type Ask = {
-  ref: Ref
-}
+  ref: Ref;
+};
 
 type Perm = {
-  ref: Ref
+  ref: Ref;
   done: {
-    title: string
-    output: string
-    metadata?: Record<string, unknown>
-  }
-}
+    title: string;
+    output: string;
+    metadata?: Record<string, unknown>;
+  };
+};
 
 type Permit = {
-  ref: Ref
-  permission: string
-  patterns: string[]
-  metadata?: Record<string, unknown>
-  always: string[]
-  done: Perm["done"]
-}
+  ref: Ref;
+  permission: string;
+  patterns: string[];
+  metadata?: Record<string, unknown>;
+  always: string[];
+  done: Perm["done"];
+};
 
 type State = {
-  id: string
-  thinking: boolean
-  data: SessionData
-  footer: FooterApi
-  limits: () => Record<string, number>
-  msg: number
-  part: number
-  call: number
-  perm: number
-  ask: number
-  perms: Map<string, Perm>
-  asks: Map<string, Ask>
-}
+  id: string;
+  thinking: boolean;
+  data: SessionData;
+  footer: FooterApi;
+  limits: () => Record<string, number>;
+  msg: number;
+  part: number;
+  call: number;
+  perm: number;
+  ask: number;
+  perms: Map<string, Perm>;
+  asks: Map<string, Ask>;
+};
 
 type Input = {
-  sessionID: string
-  thinking: boolean
-  limits: () => Record<string, number>
-  footer: FooterApi
-}
+  sessionID: string;
+  thinking: boolean;
+  limits: () => Record<string, number>;
+  footer: FooterApi;
+};
 
 function note(footer: FooterApi, text: string): void {
   footer.append({
@@ -158,7 +165,7 @@ function note(footer: FooterApi, text: string): void {
     text,
     phase: "start",
     source: "system",
-  })
+  });
 }
 
 function clearSubagent(footer: FooterApi): void {
@@ -170,21 +177,21 @@ function clearSubagent(footer: FooterApi): void {
       permissions: [],
       questions: [],
     },
-  })
+  });
 }
 
 function showSubagent(
   state: State,
   input: {
-    sessionID: string
-    partID: string
-    callID: string
-    label: string
-    description: string
-    status: "running" | "completed" | "cancelled" | "error"
-    title?: string
-    toolCalls?: number
-    commits: StreamCommit[]
+    sessionID: string;
+    partID: string;
+    callID: string;
+    label: string;
+    description: string;
+    status: "running" | "completed" | "cancelled" | "error";
+    title?: string;
+    toolCalls?: number;
+    commits: StreamCommit[];
   },
 ) {
   state.footer.event({
@@ -212,48 +219,48 @@ function showSubagent(
       permissions: [],
       questions: [],
     },
-  })
+  });
 }
 
 function wait(ms: number, signal?: AbortSignal): Promise<void> {
   return new Promise((resolve) => {
     if (!signal) {
-      setTimeout(resolve, ms)
-      return
+      setTimeout(resolve, ms);
+      return;
     }
 
     if (signal.aborted) {
-      resolve()
-      return
+      resolve();
+      return;
     }
 
     const done = () => {
-      clearTimeout(timer)
-      signal.removeEventListener("abort", done)
-      resolve()
-    }
+      clearTimeout(timer);
+      signal.removeEventListener("abort", done);
+      resolve();
+    };
 
     const timer = setTimeout(() => {
-      signal.removeEventListener("abort", done)
-      resolve()
-    }, ms)
+      signal.removeEventListener("abort", done);
+      resolve();
+    }, ms);
 
-    signal.addEventListener("abort", done, { once: true })
-  })
+    signal.addEventListener("abort", done, { once: true });
+  });
 }
 
 function split(text: string): string[] {
   if (text.length <= 48) {
-    return [text]
+    return [text];
   }
 
-  const size = Math.ceil(text.length / 3)
-  return [text.slice(0, size), text.slice(size, size * 2), text.slice(size * 2)]
+  const size = Math.ceil(text.length / 3);
+  return [text.slice(0, size), text.slice(size, size * 2), text.slice(size * 2)];
 }
 
 function take(state: State, key: "msg" | "part" | "call" | "perm" | "ask", prefix: string): string {
-  state[key] += 1
-  return `demo_${prefix}_${state[key]}`
+  state[key] += 1;
+  return `demo_${prefix}_${state[key]}`;
 }
 
 function feed(state: State, event: Event): void {
@@ -263,18 +270,18 @@ function feed(state: State, event: Event): void {
     sessionID: state.id,
     thinking: state.thinking,
     limits: state.limits(),
-  })
-  state.data = out.data
+  });
+  state.data = out.data;
   writeSessionOutput(
     {
       footer: state.footer,
     },
     out,
-  )
+  );
 }
 
 function open(state: State): string {
-  const id = take(state, "msg", "msg")
+  const id = take(state, "msg", "msg");
   feed(state, {
     type: "message.updated",
     properties: {
@@ -307,14 +314,14 @@ function open(state: State): string {
         },
       },
     },
-  } as Event)
-  return id
+  } as Event);
+  return id;
 }
 
 async function emitText(state: State, body: string, signal?: AbortSignal): Promise<void> {
-  const msg = open(state)
-  const part = take(state, "part", "part")
-  const start = Date.now()
+  const msg = open(state);
+  const part = take(state, "part", "part");
+  const start = Date.now();
 
   feed(state, {
     type: "message.part.updated",
@@ -332,15 +339,15 @@ async function emitText(state: State, body: string, signal?: AbortSignal): Promi
         },
       },
     },
-  } as Event)
+  } as Event);
 
-  let next = ""
+  let next = "";
   for (const item of split(body)) {
     if (signal?.aborted) {
-      return
+      return;
     }
 
-    next += item
+    next += item;
     feed(state, {
       type: "message.part.delta",
       properties: {
@@ -350,8 +357,8 @@ async function emitText(state: State, body: string, signal?: AbortSignal): Promi
         field: "text",
         delta: item,
       },
-    } as Event)
-    await wait(45, signal)
+    } as Event);
+    await wait(45, signal);
   }
 
   feed(state, {
@@ -371,13 +378,13 @@ async function emitText(state: State, body: string, signal?: AbortSignal): Promi
         },
       },
     },
-  } as Event)
+  } as Event);
 }
 
 async function emitReasoning(state: State, body: string, signal?: AbortSignal): Promise<void> {
-  const msg = open(state)
-  const part = take(state, "part", "part")
-  const start = Date.now()
+  const msg = open(state);
+  const part = take(state, "part", "part");
+  const start = Date.now();
 
   feed(state, {
     type: "message.part.updated",
@@ -395,15 +402,15 @@ async function emitReasoning(state: State, body: string, signal?: AbortSignal): 
         },
       },
     },
-  } as Event)
+  } as Event);
 
-  let next = ""
+  let next = "";
   for (const item of split(body)) {
     if (signal?.aborted) {
-      return
+      return;
     }
 
-    next += item
+    next += item;
     feed(state, {
       type: "message.part.delta",
       properties: {
@@ -413,8 +420,8 @@ async function emitReasoning(state: State, body: string, signal?: AbortSignal): 
         field: "text",
         delta: item,
       },
-    } as Event)
-    await wait(45, signal)
+    } as Event);
+    await wait(45, signal);
   }
 
   feed(state, {
@@ -434,7 +441,7 @@ async function emitReasoning(state: State, body: string, signal?: AbortSignal): 
         },
       },
     },
-  } as Event)
+  } as Event);
 }
 
 function make(state: State, tool: string, input: Record<string, unknown>): Ref {
@@ -445,7 +452,7 @@ function make(state: State, tool: string, input: Record<string, unknown>): Ref {
     tool,
     input,
     start: Date.now(),
-  }
+  };
 }
 
 function startTool(state: State, ref: Ref, metadata: Record<string, unknown> = {}): void {
@@ -471,17 +478,17 @@ function startTool(state: State, ref: Ref, metadata: Record<string, unknown> = {
         },
       },
     },
-  } as Event)
+  } as Event);
 }
 
 function askPermission(state: State, item: Permit): void {
-  startTool(state, item.ref)
+  startTool(state, item.ref);
 
-  const id = take(state, "perm", "perm")
+  const id = take(state, "perm", "perm");
   state.perms.set(id, {
     ref: item.ref,
     done: item.done,
-  })
+  });
 
   feed(state, {
     type: "permission.asked",
@@ -497,16 +504,16 @@ function askPermission(state: State, item: Permit): void {
         callID: item.ref.call,
       },
     },
-  } as Event)
+  } as Event);
 }
 
 function doneTool(
   state: State,
   ref: Ref,
   output: {
-    title: string
-    output: string
-    metadata?: Record<string, unknown>
+    title: string;
+    output: string;
+    metadata?: Record<string, unknown>;
   },
 ): void {
   feed(state, {
@@ -534,7 +541,7 @@ function doneTool(
         },
       },
     },
-  } as Event)
+  } as Event);
 }
 
 function failTool(state: State, ref: Ref, error: string): void {
@@ -562,7 +569,7 @@ function failTool(state: State, ref: Ref, error: string): void {
         },
       },
     },
-  } as Event)
+  } as Event);
 }
 
 function emitError(state: State, text: string): void {
@@ -578,8 +585,8 @@ function emitError(state: State, text: string): void {
         },
       },
     },
-  } satisfies Event
-  feed(state, event)
+  } satisfies Event;
+  feed(state, event);
 }
 
 async function emitBash(state: State, signal?: AbortSignal): Promise<void> {
@@ -587,50 +594,50 @@ async function emitBash(state: State, signal?: AbortSignal): Promise<void> {
     command: "git status",
     workdir: process.cwd(),
     description: "Show git status",
-  })
-  startTool(state, ref)
-  await wait(70, signal)
+  });
+  startTool(state, ref);
+  await wait(70, signal);
   doneTool(state, ref, {
     title: "git status",
     output: `${process.cwd()}\ngit status\nOn branch demo\nnothing to commit, working tree clean\n`,
     metadata: {
       exitCode: 0,
     },
-  })
+  });
 }
 
 function emitWrite(state: State): void {
-  const file = path.join(process.cwd(), "src", "demo-format.ts")
+  const file = path.join(process.cwd(), "src", "demo-format.ts");
   const ref = make(state, "write", {
     filePath: file,
     content: "export const demo = 42\n",
-  })
+  });
   doneTool(state, ref, {
     title: "write",
     output: "",
     metadata: {},
-  })
+  });
 }
 
 function emitEdit(state: State): void {
-  const file = path.join(process.cwd(), "src", "demo-format.ts")
+  const file = path.join(process.cwd(), "src", "demo-format.ts");
   const ref = make(state, "edit", {
     filePath: file,
-  })
+  });
   doneTool(state, ref, {
     title: "edit",
     output: "",
     metadata: {
       diff: "@@ -1 +1 @@\n-export const demo = 1\n+export const demo = 42\n",
     },
-  })
+  });
 }
 
 function emitPatch(state: State): void {
-  const file = path.join(process.cwd(), "src", "demo-format.ts")
+  const file = path.join(process.cwd(), "src", "demo-format.ts");
   const ref = make(state, "apply_patch", {
     patchText: "*** Begin Patch\n*** End Patch",
-  })
+  });
   doneTool(state, ref, {
     title: "apply_patch",
     output: "",
@@ -652,14 +659,14 @@ function emitPatch(state: State): void {
         },
       ],
     },
-  })
+  });
 }
 
 function emitTask(state: State): void {
   const ref = make(state, "task", {
     description: "Scan run/* for reducer touchpoints",
     subagent_type: "explore",
-  })
+  });
   doneTool(state, ref, {
     title: "Reducer touchpoints found",
     output: "",
@@ -667,7 +674,7 @@ function emitTask(state: State): void {
       toolcalls: 4,
       sessionId: "sub_demo_1",
     },
-  })
+  });
   const part = {
     id: "sub_demo_tool_1",
     type: "tool",
@@ -686,7 +693,7 @@ function emitTask(state: State): void {
         start: Date.now(),
       },
     },
-  } satisfies ToolPart
+  } satisfies ToolPart;
   showSubagent(state, {
     sessionID: "sub_demo_1",
     partID: ref.part,
@@ -730,7 +737,7 @@ function emitTask(state: State): void {
         partID: "sub_demo_text_1",
       },
     ],
-  })
+  });
 }
 
 function emitTodo(state: State): void {
@@ -749,12 +756,12 @@ function emitTodo(state: State): void {
         status: "pending",
       },
     ],
-  })
+  });
   doneTool(state, ref, {
     title: "todowrite",
     output: "",
     metadata: {},
-  })
+  });
 }
 
 function emitQuestionTool(state: State): void {
@@ -780,27 +787,27 @@ function emitQuestionTool(state: State): void {
         custom: true,
       },
     ],
-  })
+  });
   doneTool(state, ref, {
     title: "question",
     output: "",
     metadata: {
       answers: [["Diff"], ["Usage", "custom-note"]],
     },
-  })
+  });
 }
 
 function emitPermission(state: State, kind: PermissionKind = "edit"): void {
-  const root = process.cwd()
-  const file = path.join(root, "src", "demo-format.ts")
+  const root = process.cwd();
+  const file = path.join(root, "src", "demo-format.ts");
 
   if (kind === "bash") {
-    const command = "git status --short"
+    const command = "git status --short";
     const ref = make(state, "bash", {
       command,
       workdir: root,
       description: "Inspect worktree changes",
-    })
+    });
     askPermission(state, {
       ref,
       permission: "bash",
@@ -813,17 +820,17 @@ function emitPermission(state: State, kind: PermissionKind = "edit"): void {
           exitCode: 0,
         },
       },
-    })
-    return
+    });
+    return;
   }
 
   if (kind === "read") {
-    const target = path.join(root, "package.json")
+    const target = path.join(root, "package.json");
     const ref = make(state, "read", {
       filePath: target,
       offset: 1,
       limit: 80,
-    })
+    });
     askPermission(state, {
       ref,
       permission: "read",
@@ -834,15 +841,15 @@ function emitPermission(state: State, kind: PermissionKind = "edit"): void {
         output: ["1: {", '2:   "name": "opencode",', '3:   "private": true', "4: }"].join("\n"),
         metadata: {},
       },
-    })
-    return
+    });
+    return;
   }
 
   if (kind === "task") {
     const ref = make(state, "task", {
       description: "Inspect footer spacing across direct-mode prompts",
       subagent_type: "explore",
-    })
+    });
     askPermission(state, {
       ref,
       permission: "task",
@@ -856,18 +863,18 @@ function emitPermission(state: State, kind: PermissionKind = "edit"): void {
           sessionId: "sub_demo_perm_1",
         },
       },
-    })
-    return
+    });
+    return;
   }
 
   if (kind === "external") {
-    const dir = path.join(path.dirname(root), "demo-shared")
-    const target = path.join(dir, "README.md")
+    const dir = path.join(path.dirname(root), "demo-shared");
+    const target = path.join(dir, "README.md");
     const ref = make(state, "read", {
       filePath: target,
       offset: 1,
       limit: 40,
-    })
+    });
     askPermission(state, {
       ref,
       permission: "external_directory",
@@ -882,15 +889,15 @@ function emitPermission(state: State, kind: PermissionKind = "edit"): void {
         output: `1: # External demo\n2: Shared preview file\nPath: ${target}`,
         metadata: {},
       },
-    })
-    return
+    });
+    return;
   }
 
   if (kind === "doom") {
     const ref = make(state, "task", {
       description: "Retry the formatter after repeated failures",
       subagent_type: "general",
-    })
+    });
     askPermission(state, {
       ref,
       permission: "doom_loop",
@@ -901,16 +908,16 @@ function emitPermission(state: State, kind: PermissionKind = "edit"): void {
         output: "Continuing after repeated failures.\n",
         metadata: {},
       },
-    })
-    return
+    });
+    return;
   }
 
-  const diff = "@@ -1 +1 @@\n-export const demo = 1\n+export const demo = 42\n"
+  const diff = "@@ -1 +1 @@\n-export const demo = 1\n+export const demo = 42\n";
   const ref = make(state, "edit", {
     filePath: file,
     filepath: file,
     diff,
-  })
+  });
   askPermission(state, {
     ref,
     permission: "edit",
@@ -923,7 +930,7 @@ function emitPermission(state: State, kind: PermissionKind = "edit"): void {
         diff,
       },
     },
-  })
+  });
 }
 
 function emitQuestion(state: State, kind: QuestionKind = "multi"): void {
@@ -941,7 +948,7 @@ function emitQuestion(state: State, kind: QuestionKind = "multi"): void {
           multiple: false,
           custom: false,
         },
-      ]
+      ];
     }
 
     if (kind === "checklist") {
@@ -958,7 +965,7 @@ function emitQuestion(state: State, kind: QuestionKind = "multi"): void {
           multiple: true,
           custom: false,
         },
-      ]
+      ];
     }
 
     if (kind === "custom") {
@@ -973,7 +980,7 @@ function emitQuestion(state: State, kind: QuestionKind = "multi"): void {
           multiple: false,
           custom: true,
         },
-      ]
+      ];
     }
 
     return [
@@ -997,14 +1004,14 @@ function emitQuestion(state: State, kind: QuestionKind = "multi"): void {
         multiple: true,
         custom: true,
       },
-    ]
-  })()
+    ];
+  })();
 
-  const ref = make(state, "question", { questions })
-  startTool(state, ref)
+  const ref = make(state, "question", { questions });
+  startTool(state, ref);
 
-  const id = take(state, "ask", "ask")
-  state.asks.set(id, { ref })
+  const id = take(state, "ask", "ask");
+  state.asks.set(id, { ref });
 
   feed(state, {
     type: "question.asked",
@@ -1017,87 +1024,96 @@ function emitQuestion(state: State, kind: QuestionKind = "multi"): void {
         callID: ref.call,
       },
     },
-  } as Event)
+  } as Event);
 }
 
-async function emitFmt(state: State, kind: string, body: string, signal?: AbortSignal): Promise<boolean> {
+async function emitFmt(
+  state: State,
+  kind: string,
+  body: string,
+  signal?: AbortSignal,
+): Promise<boolean> {
   if (kind === "text") {
-    await emitText(state, body || SAMPLE_MARKDOWN, signal)
-    return true
+    await emitText(state, body || SAMPLE_MARKDOWN, signal);
+    return true;
   }
 
   if (kind === "markdown" || kind === "md") {
-    await emitText(state, body || SAMPLE_MARKDOWN, signal)
-    return true
+    await emitText(state, body || SAMPLE_MARKDOWN, signal);
+    return true;
   }
 
   if (kind === "table") {
-    await emitText(state, body || SAMPLE_TABLE, signal)
-    return true
+    await emitText(state, body || SAMPLE_TABLE, signal);
+    return true;
   }
 
   if (kind === "reasoning") {
-    await emitReasoning(state, body || "Planning next steps [REDACTED] while preserving reducer ordering.", signal)
-    return true
+    await emitReasoning(
+      state,
+      body || "Planning next steps [REDACTED] while preserving reducer ordering.",
+      signal,
+    );
+    return true;
   }
 
   if (kind === "bash") {
-    await emitBash(state, signal)
-    return true
+    await emitBash(state, signal);
+    return true;
   }
 
   if (kind === "write") {
-    emitWrite(state)
-    return true
+    emitWrite(state);
+    return true;
   }
 
   if (kind === "edit") {
-    emitEdit(state)
-    return true
+    emitEdit(state);
+    return true;
   }
 
   if (kind === "patch") {
-    emitPatch(state)
-    return true
+    emitPatch(state);
+    return true;
   }
 
   if (kind === "task") {
-    emitTask(state)
-    return true
+    emitTask(state);
+    return true;
   }
 
   if (kind === "todo") {
-    emitTodo(state)
-    return true
+    emitTodo(state);
+    return true;
   }
 
   if (kind === "question") {
-    emitQuestionTool(state)
-    return true
+    emitQuestionTool(state);
+    return true;
   }
 
   if (kind === "error") {
-    emitError(state, body || "demo error event")
-    return true
+    emitError(state, body || "demo error event");
+    return true;
   }
 
   if (kind === "mix") {
-    await emitText(state, SAMPLE_MARKDOWN, signal)
-    await wait(50, signal)
-    await emitReasoning(state, "Thinking through formatter edge cases [REDACTED].", signal)
-    await wait(50, signal)
-    await emitBash(state, signal)
-    emitWrite(state)
-    emitEdit(state)
-    emitPatch(state)
-    emitTask(state)
-    emitTodo(state)
-    emitQuestionTool(state)
-    emitError(state, "demo mixed scenario error")
-    return true
+    await emitText(state, SAMPLE_MARKDOWN, signal);
+    await wait(50, signal);
+    await emitReasoning(state, "Thinking through formatter edge cases [REDACTED].", signal);
+    await wait(50, signal);
+    await emitBash(state, signal);
+    emitWrite(state);
+    emitEdit(state);
+    emitPatch(state);
+    emitTask(state);
+    emitTodo(state);
+    emitQuestionTool(state);
+    emitError(state, "demo mixed scenario error");
+    return true;
   }
 
-  return false
+  return false;
 }
 
 function intro(state: State): void {
@@ -1115,7 +1131,7 @@ function intro(state: State): void {
       "- /fmt table",
       "- /fmt text your custom text",
     ].join("\n"),
-  )
+  );
 }
 
 export function createRunDemo(input: Input) {
@@ -1132,73 +1148,73 @@ export function createRunDemo(input: Input) {
     ask: 0,
     perms: new Map(),
     asks: new Map(),
-  }
+  };
 
   const start = async (): Promise<void> => {
-    intro(state)
-  }
+    intro(state);
+  };
 
   const prompt = async (line: RunPrompt, signal?: AbortSignal): Promise<boolean> => {
-    const text = line.text.trim()
-    const list = text.split(/\s+/)
-    const cmd = list[0] || ""
+    const text = line.text.trim();
+    const list = text.split(/\s+/);
+    const cmd = list[0] || "";
 
-    clearSubagent(state.footer)
+    clearSubagent(state.footer);
 
     if (cmd === "/help") {
-      intro(state)
-      return true
+      intro(state);
+      return true;
     }
 
     if (cmd === "/permission") {
-      const kind = permissionKind(list[1])
+      const kind = permissionKind(list[1]);
       if (!kind) {
-        note(state.footer, `Pick a permission kind: ${PERMISSIONS.join(", ")}`)
-        return true
+        note(state.footer, `Pick a permission kind: ${PERMISSIONS.join(", ")}`);
+        return true;
       }
 
-      emitPermission(state, kind)
-      return true
+      emitPermission(state, kind);
+      return true;
     }
 
     if (cmd === "/question") {
-      const kind = questionKind(list[1])
+      const kind = questionKind(list[1]);
       if (!kind) {
-        note(state.footer, `Pick a question kind: ${QUESTIONS.join(", ")}`)
-        return true
+        note(state.footer, `Pick a question kind: ${QUESTIONS.join(", ")}`);
+        return true;
       }
 
-      emitQuestion(state, kind)
-      return true
+      emitQuestion(state, kind);
+      return true;
     }
 
     if (cmd === "/fmt") {
-      const kind = (list[1] || "").toLowerCase()
-      const body = list.slice(2).join(" ")
+      const kind = (list[1] || "").toLowerCase();
+      const body = list.slice(2).join(" ");
       if (!kind) {
-        note(state.footer, `Pick a kind: ${KINDS.join(", ")}`)
-        return true
+        note(state.footer, `Pick a kind: ${KINDS.join(", ")}`);
+        return true;
       }
 
-      const ok = await emitFmt(state, kind, body, signal)
+      const ok = await emitFmt(state, kind, body, signal);
       if (ok) {
-        return true
+        return true;
       }
 
-      note(state.footer, `Unknown kind "${kind}". Use: ${KINDS.join(", ")}`)
-      return true
+      note(state.footer, `Unknown kind "${kind}". Use: ${KINDS.join(", ")}`);
+      return true;
     }
 
-    return false
-  }
+    return false;
+  };
 
   const permission = (input: PermissionReply): boolean => {
-    const item = state.perms.get(input.requestID)
+    const item = state.perms.get(input.requestID);
     if (!item || !input.reply) {
-      return false
+      return false;
     }
 
-    state.perms.delete(input.requestID)
+    state.perms.delete(input.requestID);
     const event = {
       id: `permission.replied:${input.requestID}:${Date.now()}`,
       type: "permission.replied",
@@ -1207,25 +1223,25 @@ export function createRunDemo(input: Input) {
         requestID: input.requestID,
         reply: input.reply,
       },
-    } satisfies Event
-    feed(state, event)
+    } satisfies Event;
+    feed(state, event);
 
     if (input.reply === "reject") {
-      failTool(state, item.ref, input.message || "permission rejected")
-      return true
+      failTool(state, item.ref, input.message || "permission rejected");
+      return true;
     }
 
-    doneTool(state, item.ref, item.done)
-    return true
-  }
+    doneTool(state, item.ref, item.done);
+    return true;
+  };
 
   const questionReply = (input: QuestionReply): boolean => {
-    const ask = state.asks.get(input.requestID)
+    const ask = state.asks.get(input.requestID);
     if (!ask || !input.answers) {
-      return false
+      return false;
     }
 
-    state.asks.delete(input.requestID)
+    state.asks.delete(input.requestID);
     const event = {
       id: `question.replied:${input.requestID}:${Date.now()}`,
       type: "question.replied",
@@ -1234,35 +1250,35 @@ export function createRunDemo(input: Input) {
         requestID: input.requestID,
         answers: input.answers,
       },
-    } satisfies Event
-    feed(state, event)
+    } satisfies Event;
+    feed(state, event);
     doneTool(state, ask.ref, {
       title: "question",
       output: "",
       metadata: {
         answers: input.answers,
       },
-    })
-    return true
-  }
+    });
+    return true;
+  };
 
   const questionReject = (input: QuestionReject): boolean => {
-    const ask = state.asks.get(input.requestID)
+    const ask = state.asks.get(input.requestID);
     if (!ask) {
-      return false
+      return false;
     }
 
-    state.asks.delete(input.requestID)
+    state.asks.delete(input.requestID);
     feed(state, {
       type: "question.rejected",
       properties: {
         sessionID: state.id,
         requestID: input.requestID,
       },
-    } as Event)
-    failTool(state, ask.ref, "question rejected")
-    return true
-  }
+    } as Event);
+    failTool(state, ask.ref, "question rejected");
+    return true;
+  };
 
   return {
     start,
@@ -1270,5 +1286,5 @@ export function createRunDemo(input: Input) {
     permission,
     questionReply,
     questionReject,
-  }
+  };
 }

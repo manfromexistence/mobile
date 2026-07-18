@@ -155,17 +155,13 @@
     }
 
     th {
-      &:nth-child(2)
-
-      /* Training Data */ {
+      &:nth-child(2) /* Training Data */ {
         display: none;
       }
     }
 
     td {
-      &:nth-child(2)
-
-      /* Training Data */ {
+      &:nth-child(2) /* Training Data */ {
         display: none;
       }
     }

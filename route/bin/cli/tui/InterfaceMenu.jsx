@@ -49,7 +49,7 @@ export async function showInterfaceMenu({ version, baseUrl, hasUpdate, latestVer
           unmount();
           resolve(choice);
         }}
-      />
+      />,
     );
   });
 }

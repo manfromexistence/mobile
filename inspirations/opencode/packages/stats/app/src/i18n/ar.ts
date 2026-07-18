@@ -81,7 +81,8 @@ export const dict = {
   "home.updated": "تم التحديث",
   "home.noRows": "لا توجد صفوف بعد",
   "home.justNow": "الآن للتو",
-  "home.heroCopy": "تعرّف على النماذج التي تحقق استخدامًا فعليًا أكبر، وكيف يتغير المزيج، وما يعنيه ذلك للتكلفة.",
+  "home.heroCopy":
+    "تعرّف على النماذج التي تحقق استخدامًا فعليًا أكبر، وكيف يتغير المزيج، وما يعنيه ذلك للتكلفة.",
   "home.loadingTitle": "تحميل البيانات",
   "home.loadingDescription": "قراءة تجميعات النماذج.",
   "home.usageTitle": "الاستخدام",
@@ -135,7 +136,8 @@ export const dict = {
   "lab.notFound": "لم تطابق أي نماذج هذا المختبر.",
   "lab.heroPrefix": "استكشف {{count}} من نماذج {{lab}} المستخدمة في OpenCode",
   "lab.heroIncluding": "بما في ذلك {{models}}",
-  "lab.heroSuffix": "قارن الاستخدام الأخير للرموز، ونوافذ السياق، وتواريخ الإصدار، والبيانات الخاصة بكل نموذج.",
+  "lab.heroSuffix":
+    "قارن الاستخدام الأخير للرموز، ونوافذ السياق، وتواريخ الإصدار، والبيانات الخاصة بكل نموذج.",
   "lab.tokensProcessed": "الرموز المعالجة",
   "lab.pending": "قيد الانتظار",
   "lab.usageAfterActivity": "يظهر الاستخدام بعد وصول نشاط النموذج",
@@ -195,7 +197,8 @@ export const dict = {
   "model.noUsageTitle": "لا يوجد استخدام",
   "model.noUsageDescription": "لم يصل أي استخدام في النافذة الحالية.",
   "model.dailyTokenChart": "مخطط استخدام الرموز اليومي",
-  "model.usersDescription": "المستخدمون اليوميون الفريدون لـ OpenCode Go خلال نافذة الشهرين الأخيرة.",
+  "model.usersDescription":
+    "المستخدمون اليوميون الفريدون لـ OpenCode Go خلال نافذة الشهرين الأخيرة.",
   "model.noUsersTitle": "لا توجد بيانات مستخدمين",
   "model.noUsersDescription": "لم تصل أي صفوف تحتوي على مستخدمين في النافذة الحالية.",
   "model.dailyUserChart": "مخطط المستخدمين الفريدين اليومي",
@@ -226,4 +229,4 @@ export const dict = {
   "model.pdf": "PDF",
   "format.users": "مستخدمون",
   "format.tokens": "رموز",
-} as const
+} as const;

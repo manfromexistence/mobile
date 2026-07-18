@@ -156,14 +156,14 @@ function main(argv) {
     const { regressed } = evaluateMutationRatchet(current, baseline[mod]);
     const tag = regressed ? "REGRESSED" : "ok";
     process.stdout.write(
-      `mutationScore.${mod}=${current.toFixed(2)} baseline=${baseline[mod].toFixed(2)} ${tag}\n`
+      `mutationScore.${mod}=${current.toFixed(2)} baseline=${baseline[mod].toFixed(2)} ${tag}\n`,
     );
     if (regressed) regressions.push({ mod, current, baseline: baseline[mod] });
   }
 
   if (regressions.length > 0 && RATCHET) {
     process.stderr.write(
-      `\nMutation ratchet FAILED — ${regressions.length} module(s) dropped below baseline:\n`
+      `\nMutation ratchet FAILED — ${regressions.length} module(s) dropped below baseline:\n`,
     );
     for (const r of regressions) {
       process.stderr.write(`  ${r.mod}: ${r.current.toFixed(2)} < ${r.baseline.toFixed(2)}\n`);

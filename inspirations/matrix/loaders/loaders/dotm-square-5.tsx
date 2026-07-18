@@ -23,8 +23,8 @@ const animationResolver: DotAnimationResolver = ({ isActive, index, reducedMotio
     return {
       style: {
         ...style,
-        opacity: 0.16 + pathNorm * 0.78
-      }
+        opacity: 0.16 + pathNorm * 0.78,
+      },
     };
   }
 
@@ -39,10 +39,14 @@ export function DotmSquare5({
   ...rest
 }: DotmSquare5Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
 
   return (

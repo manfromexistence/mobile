@@ -29,7 +29,7 @@ const FRAME_MASKS: readonly string[] = [
   "....." + "....." + "....." + "....." + ".....",
   "ccccc" + "ccccc" + "ccccc" + "ccccc" + "ccccc",
   "....." + "....." + "....." + "....." + ".....",
-  "....." + "....." + "....." + "....." + "....."
+  "....." + "....." + "....." + "....." + ".....",
 ];
 
 const FRAME_SEQUENCE: readonly number[] = [0, 1, 2, 3, 4, 4, 5, 6, 7, 8, 9];
@@ -46,10 +46,14 @@ export function DotmSquare7({
   ...rest
 }: DotmSquare7Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
   const sequenceLength = FRAME_SEQUENCE.length;
   const step = useSteppedCycle({
@@ -57,7 +61,7 @@ export function DotmSquare7({
     cycleMsBase: 1900,
     steps: sequenceLength,
     speed,
-    idleStep: Math.min(IDLE_STEP, sequenceLength - 1)
+    idleStep: Math.min(IDLE_STEP, sequenceLength - 1),
   });
 
   const frame = FRAME_SEQUENCE[step] ?? FRAME_SEQUENCE[0] ?? 0;

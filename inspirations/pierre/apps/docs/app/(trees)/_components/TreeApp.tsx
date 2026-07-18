@@ -1,44 +1,23 @@
-'use client';
+"use client";
 
-import type { FileContents } from '@pierre/diffs';
-import { File, type FileOptions } from '@pierre/diffs/react';
-import {
-  IconFilePlus,
-  IconFolderPlus,
-  IconMoon,
-  IconSearch,
-  IconSun,
-  IconX,
-} from '@pierre/icons';
+import type { FileContents } from "@pierre/diffs";
+import { File, type FileOptions } from "@pierre/diffs/react";
+import { IconFilePlus, IconFolderPlus, IconMoon, IconSearch, IconSun, IconX } from "@pierre/icons";
 import type {
   ContextMenuItem,
   ContextMenuOpenContext,
   FileTreeIcons,
   FileTree as FileTreeModel,
-} from '@pierre/trees';
-import {
-  createFileTreeIconResolver,
-  getBuiltInSpriteSheet,
-} from '@pierre/trees';
+} from "@pierre/trees";
+import { createFileTreeIconResolver, getBuiltInSpriteSheet } from "@pierre/trees";
 import {
   FileTree,
   type FileTreePreloadedData,
   useFileTreeSearch,
   useFileTreeSelection,
-} from '@pierre/trees/react';
-import type {
-  CSSProperties,
-  ReactNode,
-  PointerEvent as ReactPointerEvent,
-} from 'react';
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  useSyncExternalStore,
-} from 'react';
+} from "@pierre/trees/react";
+import type { CSSProperties, ReactNode, PointerEvent as ReactPointerEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 
 import {
   DropdownMenu,
@@ -46,15 +25,15 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from "@/components/ui/dropdown-menu";
 
 const DEFAULT_EXPLORER_WIDTH = 280;
 const DEFAULT_MIN_EXPLORER_WIDTH = 180;
 const DEFAULT_MAX_EXPLORER_WIDTH = 600;
-const DEFAULT_NEW_FILE_NAME = 'untitled';
-const DEFAULT_NEW_FOLDER_NAME = 'untitled';
+const DEFAULT_NEW_FILE_NAME = "untitled";
+const DEFAULT_NEW_FOLDER_NAME = "untitled";
 
-export type TreeAppTheme = 'light' | 'dark';
+export type TreeAppTheme = "light" | "dark";
 
 // Callers can opt out of light/dark split by passing a single value, or pass
 // a `{ light, dark }` pair to supply distinct payloads for each mode.
@@ -63,17 +42,17 @@ export type TreeAppThemeValue<T> = T | ThemeScoped<T>;
 
 function isThemeScoped<T>(value: unknown): value is ThemeScoped<T> {
   return (
-    typeof value === 'object' &&
+    typeof value === "object" &&
     value !== null &&
     !Array.isArray(value) &&
-    'light' in (value as Record<string, unknown>) &&
-    'dark' in (value as Record<string, unknown>)
+    "light" in (value as Record<string, unknown>) &&
+    "dark" in (value as Record<string, unknown>)
   );
 }
 
 function pickByTheme<T>(
   value: TreeAppThemeValue<T> | undefined,
-  theme: TreeAppTheme
+  theme: TreeAppTheme,
 ): T | undefined {
   if (value === undefined) {
     return undefined;
@@ -107,40 +86,40 @@ interface TreeAppChromeStyles {
 
 const CHROME_STYLES: Record<TreeAppTheme, TreeAppChromeStyles> = {
   dark: {
-    container: 'bg-[#070707] text-zinc-200',
-    tabbarBgVar: '#070707',
-    editorBgVar: '#070707',
-    treeSurfaceFallback: '#141415',
-    tabActive: 'bg-neutral-900 text-zinc-100',
+    container: "bg-[#070707] text-zinc-200",
+    tabbarBgVar: "#070707",
+    editorBgVar: "#070707",
+    treeSurfaceFallback: "#141415",
+    tabActive: "bg-neutral-900 text-zinc-100",
     tabInactive:
-      'bg-transparent text-zinc-400 group-hover/tabbar:bg-neutral-900/30 group-hover/tabbar:hover:bg-neutral-800/60 group-hover/tabbar:hover:text-zinc-200',
-    tabCloseGradientFrom: 'from-neutral-900 via-neutral-900',
-    tabCloseButton: 'bg-neutral-800 text-neutral-500 hover:text-zinc-100',
-    emptyText: 'text-zinc-500',
-    headerTitle: 'text-neutral-200',
-    headerIconButton: 'text-neutral-400 hover:text-neutral-100',
-    headerSearchActive: 'text-neutral-100',
+      "bg-transparent text-zinc-400 group-hover/tabbar:bg-neutral-900/30 group-hover/tabbar:hover:bg-neutral-800/60 group-hover/tabbar:hover:text-zinc-200",
+    tabCloseGradientFrom: "from-neutral-900 via-neutral-900",
+    tabCloseButton: "bg-neutral-800 text-neutral-500 hover:text-zinc-100",
+    emptyText: "text-zinc-500",
+    headerTitle: "text-neutral-200",
+    headerIconButton: "text-neutral-400 hover:text-neutral-100",
+    headerSearchActive: "text-neutral-100",
     headerSearchInactive:
-      'text-neutral-400 hover:text-neutral-100 group-hover/tree-app-explorer:opacity-100',
-    themeToggleButton: 'text-neutral-400 hover:text-neutral-100',
+      "text-neutral-400 hover:text-neutral-100 group-hover/tree-app-explorer:opacity-100",
+    themeToggleButton: "text-neutral-400 hover:text-neutral-100",
   },
   light: {
-    container: 'bg-white text-zinc-900',
-    tabbarBgVar: '#ffffff',
-    editorBgVar: '#ffffff',
-    treeSurfaceFallback: '#f8f8f8',
-    tabActive: 'bg-zinc-100 text-zinc-900',
+    container: "bg-white text-zinc-900",
+    tabbarBgVar: "#ffffff",
+    editorBgVar: "#ffffff",
+    treeSurfaceFallback: "#f8f8f8",
+    tabActive: "bg-zinc-100 text-zinc-900",
     tabInactive:
-      'bg-transparent text-zinc-500 group-hover/tabbar:bg-zinc-100/60 group-hover/tabbar:hover:bg-zinc-200/70 group-hover/tabbar:hover:text-zinc-900',
-    tabCloseGradientFrom: 'from-zinc-100 via-zinc-100',
-    tabCloseButton: 'bg-zinc-200 text-zinc-500 hover:text-zinc-900',
-    emptyText: 'text-zinc-500',
-    headerTitle: 'text-zinc-900',
-    headerIconButton: 'text-zinc-500 hover:text-zinc-900',
-    headerSearchActive: 'text-zinc-900',
+      "bg-transparent text-zinc-500 group-hover/tabbar:bg-zinc-100/60 group-hover/tabbar:hover:bg-zinc-200/70 group-hover/tabbar:hover:text-zinc-900",
+    tabCloseGradientFrom: "from-zinc-100 via-zinc-100",
+    tabCloseButton: "bg-zinc-200 text-zinc-500 hover:text-zinc-900",
+    emptyText: "text-zinc-500",
+    headerTitle: "text-zinc-900",
+    headerIconButton: "text-zinc-500 hover:text-zinc-900",
+    headerSearchActive: "text-zinc-900",
     headerSearchInactive:
-      'text-zinc-500 hover:text-zinc-900 group-hover/tree-app-explorer:opacity-100',
-    themeToggleButton: 'text-zinc-500 hover:text-zinc-900',
+      "text-zinc-500 hover:text-zinc-900 group-hover/tree-app-explorer:opacity-100",
+    themeToggleButton: "text-zinc-500 hover:text-zinc-900",
   },
 };
 
@@ -233,9 +212,7 @@ export interface TreeAppProps<LAnnotation = unknown> {
   // name and "new file" / "new folder" buttons. Pass `renderProjectHeader` to
   // fully replace the default markup while still receiving the actions.
   projectName?: string;
-  renderProjectHeader?: (
-    context: TreeAppProjectHeaderRenderContext
-  ) => ReactNode;
+  renderProjectHeader?: (context: TreeAppProjectHeaderRenderContext) => ReactNode;
   // Set to true when the underlying FileTree model was constructed with
   // `search: true`. Enables the search toggle in the default project header
   // and lets custom headers know they can show a toggle of their own.
@@ -276,28 +253,22 @@ interface TreeAppResolvedTabIcon {
 // slash so directory-style paths still render a sensible name (even though we
 // avoid opening directories as tabs in practice).
 function basename(path: string): string {
-  const trimmed = path.endsWith('/') ? path.slice(0, -1) : path;
-  const lastSlash = trimmed.lastIndexOf('/');
+  const trimmed = path.endsWith("/") ? path.slice(0, -1) : path;
+  const lastSlash = trimmed.lastIndexOf("/");
   return lastSlash < 0 ? trimmed : trimmed.slice(lastSlash + 1);
 }
 
 // Returns the parent directory path for a file or folder path, including the
 // trailing slash. Returns the empty string when the path is at the root.
 function getParentPath(path: string): string {
-  const normalizedPath = path.endsWith('/') ? path.slice(0, -1) : path;
-  const lastSlashIndex = normalizedPath.lastIndexOf('/');
-  return lastSlashIndex < 0
-    ? ''
-    : `${normalizedPath.slice(0, lastSlashIndex + 1)}`;
+  const normalizedPath = path.endsWith("/") ? path.slice(0, -1) : path;
+  const lastSlashIndex = normalizedPath.lastIndexOf("/");
+  return lastSlashIndex < 0 ? "" : `${normalizedPath.slice(0, lastSlashIndex + 1)}`;
 }
 
 // Remaps one path after a tree move so open tabs and editor state keep
 // following the same file or directory even when its parent folder changes.
-function remapMovedPath(
-  path: string,
-  fromPath: string,
-  toPath: string
-): string {
+function remapMovedPath(path: string, fromPath: string, toPath: string): string {
   if (path === fromPath) {
     return toPath;
   }
@@ -313,7 +284,7 @@ function remapMovedPath(
 function remapMovedPaths(
   paths: readonly string[],
   fromPath: string,
-  toPath: string
+  toPath: string,
 ): readonly string[] {
   const seen = new Set<string>();
   const remapped: string[] = [];
@@ -337,9 +308,7 @@ function remapMovedPaths(
 function getUniquePath(model: FileTreeModel, basePath: string): string {
   const hasCollision = (candidate: string): boolean => {
     if (model.getItem(candidate) != null) return true;
-    const alternate = candidate.endsWith('/')
-      ? candidate.slice(0, -1)
-      : `${candidate}/`;
+    const alternate = candidate.endsWith("/") ? candidate.slice(0, -1) : `${candidate}/`;
     return model.getItem(alternate) != null;
   };
 
@@ -347,13 +316,13 @@ function getUniquePath(model: FileTreeModel, basePath: string): string {
   let candidate = basePath;
   while (hasCollision(candidate)) {
     suffix += 1;
-    if (basePath.endsWith('/')) {
+    if (basePath.endsWith("/")) {
       candidate = `${basePath.slice(0, -1)}-${String(suffix)}/`;
       continue;
     }
 
-    const dotIndex = basePath.lastIndexOf('.');
-    const slashIndex = basePath.lastIndexOf('/');
+    const dotIndex = basePath.lastIndexOf(".");
+    const slashIndex = basePath.lastIndexOf("/");
     if (dotIndex > slashIndex) {
       candidate = `${basePath.slice(0, dotIndex)}-${String(suffix)}${basePath.slice(dotIndex)}`;
       continue;
@@ -368,7 +337,7 @@ function getUniquePath(model: FileTreeModel, basePath: string): string {
 // the file-tree anchor point. Radix then aligns the menu's top-left corner to
 // that trigger point.
 function getFloatingContextMenuTriggerStyle(
-  anchorRect: ContextMenuOpenContext['anchorRect']
+  anchorRect: ContextMenuOpenContext["anchorRect"],
 ): CSSProperties {
   return {
     border: 0,
@@ -376,22 +345,20 @@ function getFloatingContextMenuTriggerStyle(
     left: `${String(anchorRect.left)}px`,
     opacity: 0,
     padding: 0,
-    pointerEvents: 'none',
-    position: 'fixed',
+    pointerEvents: "none",
+    position: "fixed",
     top: `${String(anchorRect.bottom - 1)}px`,
     width: 1,
   };
 }
 
-function getContextMenuSideOffset(
-  anchorRect: ContextMenuOpenContext['anchorRect']
-): number {
+function getContextMenuSideOffset(anchorRect: ContextMenuOpenContext["anchorRect"]): number {
   return anchorRect.width === 0 && anchorRect.height === 0 ? 0 : -2;
 }
 
 function hasCustomIconOverrides(icons: FileTreeIcons): boolean {
   return (
-    typeof icons !== 'string' &&
+    typeof icons !== "string" &&
     (icons.spriteSheet != null ||
       icons.remap != null ||
       icons.byFileName != null ||
@@ -405,22 +372,21 @@ function hasCustomIconOverrides(icons: FileTreeIcons): boolean {
 // sprite set (when enabled) and the caller's custom sprite symbols.
 function getTabIconSpriteMarkup(icons?: FileTreeIcons): string {
   if (icons == null) {
-    return getBuiltInSpriteSheet('complete');
+    return getBuiltInSpriteSheet("complete");
   }
 
-  if (typeof icons === 'string') {
+  if (typeof icons === "string") {
     return getBuiltInSpriteSheet(icons);
   }
 
-  const set =
-    icons.set ?? (hasCustomIconOverrides(icons) ? 'none' : 'complete');
-  const builtInSpriteSheet = set === 'none' ? '' : getBuiltInSpriteSheet(set);
-  const customSpriteSheet = icons.spriteSheet?.trim() ?? '';
+  const set = icons.set ?? (hasCustomIconOverrides(icons) ? "none" : "complete");
+  const builtInSpriteSheet = set === "none" ? "" : getBuiltInSpriteSheet(set);
+  const customSpriteSheet = icons.spriteSheet?.trim() ?? "";
   return `${builtInSpriteSheet}${customSpriteSheet}`;
 }
 
 function areColoredTabIconsEnabled(icons?: FileTreeIcons): boolean {
-  if (icons == null || typeof icons === 'string') {
+  if (icons == null || typeof icons === "string") {
     return true;
   }
 
@@ -438,7 +404,7 @@ interface UseTreeMutationsOptions {
 }
 
 interface TreeMutations {
-  addEntry(targetDirectoryPath: string, kind: 'file' | 'folder'): void;
+  addEntry(targetDirectoryPath: string, kind: "file" | "folder"): void;
   remove(item: ContextMenuItem): void;
   rename(item: ContextMenuItem): void;
 }
@@ -451,12 +417,8 @@ function useTreeMutations({
   return useMemo<TreeMutations>(
     () => ({
       addEntry(targetDirectoryPath, kind) {
-        const template =
-          kind === 'folder' ? `${newFolderTemplateName}/` : newFileTemplateName;
-        const nextPath = getUniquePath(
-          model,
-          `${targetDirectoryPath}${template}`
-        );
+        const template = kind === "folder" ? `${newFolderTemplateName}/` : newFileTemplateName;
+        const nextPath = getUniquePath(model, `${targetDirectoryPath}${template}`);
         model.add(nextPath);
         // Drop straight into rename mode so the user types the real name.
         // startRenaming returns false when the model was constructed without
@@ -466,33 +428,30 @@ function useTreeMutations({
         });
       },
       remove(item) {
-        model.remove(
-          item.path,
-          item.kind === 'directory' ? { recursive: true } : undefined
-        );
+        model.remove(item.path, item.kind === "directory" ? { recursive: true } : undefined);
       },
       rename(item) {
         model.startRenaming(item.path);
       },
     }),
-    [model, newFileTemplateName, newFolderTemplateName]
+    [model, newFileTemplateName, newFolderTemplateName],
   );
 }
 
 // Returns true when the viewport currently matches the mobile media query.
 // useSyncExternalStore keeps SSR stable (always false) and flips to true after
 // hydration if the viewport is narrow, avoiding a hydration mismatch.
-function useIsMobile(query = '(max-width: 767px)'): boolean {
+function useIsMobile(query = "(max-width: 767px)"): boolean {
   return useSyncExternalStore(
     (onChange) => {
       const mql = window.matchMedia(query);
-      mql.addEventListener('change', onChange);
+      mql.addEventListener("change", onChange);
       return () => {
-        mql.removeEventListener('change', onChange);
+        mql.removeEventListener("change", onChange);
       };
     },
     () => window.matchMedia(query).matches,
-    () => false
+    () => false,
   );
 }
 
@@ -500,14 +459,9 @@ function useIsMobile(query = '(max-width: 767px)'): boolean {
 // drag handle. Uses pointer capture so the drag continues smoothly even if the
 // pointer leaves the handle element.
 function useExplorerWidth(initial: number, min: number, max: number) {
-  const clamp = useCallback(
-    (value: number) => Math.max(min, Math.min(max, value)),
-    [max, min]
-  );
+  const clamp = useCallback((value: number) => Math.max(min, Math.min(max, value)), [max, min]);
   const [width, setWidth] = useState(() => clamp(initial));
-  const dragStateRef = useRef<{ startX: number; startWidth: number } | null>(
-    null
-  );
+  const dragStateRef = useRef<{ startX: number; startWidth: number } | null>(null);
 
   const onPointerDown = useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -519,7 +473,7 @@ function useExplorerWidth(initial: number, min: number, max: number) {
       handle.setPointerCapture(event.pointerId);
       dragStateRef.current = { startWidth: width, startX: event.clientX };
     },
-    [width]
+    [width],
   );
 
   const onPointerMove = useCallback(
@@ -531,7 +485,7 @@ function useExplorerWidth(initial: number, min: number, max: number) {
       const delta = event.clientX - dragState.startX;
       setWidth(clamp(dragState.startWidth + delta));
     },
-    [clamp]
+    [clamp],
   );
 
   const endDrag = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
@@ -578,16 +532,14 @@ function useOpenTabs({
     const seed = initialOpenPaths ?? [];
     if (
       initialActivePath != null &&
-      initialActivePath !== '' &&
+      initialActivePath !== "" &&
       !seed.includes(initialActivePath)
     ) {
       return [...seed, initialActivePath];
     }
     return seed;
   });
-  const [activePath, setActivePath] = useState<string | null>(
-    initialActivePath ?? null
-  );
+  const [activePath, setActivePath] = useState<string | null>(initialActivePath ?? null);
   const selectedPaths = useFileTreeSelection(model);
 
   // Track which selected paths we have already turned into tabs so a re-render
@@ -615,9 +567,7 @@ function useOpenTabs({
       }
       setOpenPaths((current) => {
         if (isMobile) {
-          return current.length === 1 && current[0] === candidate
-            ? current
-            : [candidate];
+          return current.length === 1 && current[0] === candidate ? current : [candidate];
         }
         return current.includes(candidate) ? current : [...current, candidate];
       });
@@ -637,9 +587,7 @@ function useOpenTabs({
       if (activePath == null) {
         return current.length === 0 ? current : [];
       }
-      return current.length === 1 && current[0] === activePath
-        ? current
-        : [activePath];
+      return current.length === 1 && current[0] === activePath ? current : [activePath];
     });
   }, [activePath, isMobile]);
 
@@ -668,7 +616,7 @@ function useOpenTabs({
         return nextOpen;
       });
     },
-    [activePath, model]
+    [activePath, model],
   );
 
   const activateTab = useCallback((path: string) => {
@@ -699,12 +647,12 @@ function useOpenTabs({
 
   useEffect(
     () =>
-      model.onMutation('*', (event) => {
+      model.onMutation("*", (event) => {
         const moveEvents =
-          event.operation === 'move'
+          event.operation === "move"
             ? [event]
-            : event.operation === 'batch'
-              ? event.events.filter((entry) => entry.operation === 'move')
+            : event.operation === "batch"
+              ? event.events.filter((entry) => entry.operation === "move")
               : [];
         if (moveEvents.length === 0) {
           return;
@@ -713,11 +661,7 @@ function useOpenTabs({
         setOpenPaths((current) => {
           let nextPaths = current;
           for (const moveEvent of moveEvents) {
-            nextPaths = remapMovedPaths(
-              nextPaths,
-              moveEvent.from,
-              moveEvent.to
-            );
+            nextPaths = remapMovedPaths(nextPaths, moveEvent.from, moveEvent.to);
           }
           return nextPaths;
         });
@@ -733,7 +677,7 @@ function useOpenTabs({
           return nextPath;
         });
       }),
-    [model]
+    [model],
   );
 
   return { activePath, activateTab, closeTab, openPaths };
@@ -753,10 +697,9 @@ function DefaultEmpty({ theme }: { theme: TreeAppTheme }): React.JSX.Element {
   const chrome = CHROME_STYLES[theme];
   return (
     <div
-      className={[
-        'flex flex-1 items-center justify-center px-6 text-sm',
-        chrome.emptyText,
-      ].join(' ')}
+      className={["flex flex-1 items-center justify-center px-6 text-sm", chrome.emptyText].join(
+        " ",
+      )}
     >
       Select a file from the explorer.
     </div>
@@ -777,12 +720,7 @@ function DefaultProjectHeader({
     <div className="mb-2 flex h-10 items-center justify-between gap-2 px-3 py-3">
       <div className="flex min-w-0 items-center gap-2.5">
         <WindowControls />
-        <div
-          className={[
-            'min-w-0 truncate text-xs font-medium',
-            chrome.headerTitle,
-          ].join(' ')}
-        >
+        <div className={["min-w-0 truncate text-xs font-medium", chrome.headerTitle].join(" ")}>
           {projectName}
         </div>
       </div>
@@ -794,7 +732,7 @@ function DefaultProjectHeader({
           // match the new-file/new-folder affordance.
           <button
             type="button"
-            title={isSearchOpen ? 'Clear and close search' : 'Search files'}
+            title={isSearchOpen ? "Clear and close search" : "Search files"}
             aria-pressed={isSearchOpen}
             // preventDefault on mousedown keeps focus on the search input so
             // its onBlur handler doesn't race our click and auto-close+reopen
@@ -808,11 +746,11 @@ function DefaultProjectHeader({
             }}
             onClick={actions.toggleSearch}
             className={[
-              'h-4 w-4 transition-opacity duration-150 cursor-pointer',
+              "h-4 w-4 transition-opacity duration-150 cursor-pointer",
               isSearchOpen
                 ? `${chrome.headerSearchActive} opacity-100`
                 : `${chrome.headerSearchInactive} opacity-25 focus-visible:opacity-100`,
-            ].join(' ')}
+            ].join(" ")}
           >
             <IconSearch aria-hidden="true" className="h-[14px] w-[14px]" />
           </button>
@@ -826,9 +764,7 @@ function DefaultProjectHeader({
             type="button"
             title="New file"
             onClick={actions.addFile}
-            className={['h-4 w-4 cursor-pointer', chrome.headerIconButton].join(
-              ' '
-            )}
+            className={["h-4 w-4 cursor-pointer", chrome.headerIconButton].join(" ")}
           >
             <IconFilePlus aria-hidden="true" />
           </button>
@@ -836,9 +772,7 @@ function DefaultProjectHeader({
             type="button"
             title="New folder"
             onClick={actions.addFolder}
-            className={['h-4 w-4 cursor-pointer', chrome.headerIconButton].join(
-              ' '
-            )}
+            className={["h-4 w-4 cursor-pointer", chrome.headerIconButton].join(" ")}
           >
             <IconFolderPlus aria-hidden="true" />
           </button>
@@ -856,8 +790,7 @@ function ThemeToggleButton({
   theme: TreeAppTheme;
 }): React.JSX.Element {
   const chrome = CHROME_STYLES[theme];
-  const nextLabel =
-    theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode';
+  const nextLabel = theme === "dark" ? "Switch to light mode" : "Switch to dark mode";
   return (
     <button
       type="button"
@@ -865,11 +798,11 @@ function ThemeToggleButton({
       title={nextLabel}
       aria-label={nextLabel}
       className={[
-        'flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-sm opacity-25 transition duration-150 group-hover/tabbar:opacity-100 focus-visible:opacity-100',
+        "flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-sm opacity-25 transition duration-150 group-hover/tabbar:opacity-100 focus-visible:opacity-100",
         chrome.themeToggleButton,
-      ].join(' ')}
+      ].join(" ")}
     >
-      {theme === 'dark' ? (
+      {theme === "dark" ? (
         <IconSun aria-hidden="true" className="h-4 w-4" />
       ) : (
         <IconMoon aria-hidden="true" className="h-4 w-4" />
@@ -971,10 +904,8 @@ function TreeAppTabIcon({
   colored: boolean;
   icon: TreeAppResolvedTabIcon;
 }): React.JSX.Element {
-  const href = `#${icon.name.replace(/^#/, '')}`;
-  const viewBox =
-    icon.viewBox ??
-    `0 0 ${String(icon.width ?? 16)} ${String(icon.height ?? 16)}`;
+  const href = `#${icon.name.replace(/^#/, "")}`;
+  const viewBox = icon.viewBox ?? `0 0 ${String(icon.width ?? 16)} ${String(icon.height ?? 16)}`;
   const colorStyle =
     colored && icon.token != null
       ? {
@@ -1018,9 +949,9 @@ function DefaultTab({
   return (
     <div
       className={[
-        'group relative isolate flex h-7 max-w-[200px] items-center overflow-hidden rounded-sm text-xs font-medium transition-colors',
+        "group relative isolate flex h-7 max-w-[200px] items-center overflow-hidden rounded-sm text-xs font-medium transition-colors",
         isActive ? chrome.tabActive : chrome.tabInactive,
-      ].join(' ')}
+      ].join(" ")}
     >
       <button
         type="button"
@@ -1036,9 +967,9 @@ function DefaultTab({
           <div
             aria-hidden="true"
             className={[
-              'pointer-events-none absolute top-0 right-0 bottom-0 z-10 w-12 bg-gradient-to-l to-transparent opacity-0 transition-opacity group-hover:opacity-100',
+              "pointer-events-none absolute top-0 right-0 bottom-0 z-10 w-12 bg-gradient-to-l to-transparent opacity-0 transition-opacity group-hover:opacity-100",
               chrome.tabCloseGradientFrom,
-            ].join(' ')}
+            ].join(" ")}
           />
           <button
             type="button"
@@ -1046,9 +977,9 @@ function DefaultTab({
             title="Close tab"
             aria-label={`Close ${label}`}
             className={[
-              'absolute top-1/2 right-1 z-20 flex h-5 w-5 -translate-y-1/2 cursor-pointer items-center justify-center rounded opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100',
+              "absolute top-1/2 right-1 z-20 flex h-5 w-5 -translate-y-1/2 cursor-pointer items-center justify-center rounded opacity-0 transition-opacity group-hover:opacity-100 focus:opacity-100",
               chrome.tabCloseButton,
-            ].join(' ')}
+            ].join(" ")}
           >
             <IconX aria-hidden="true" className="h-3 w-3" />
           </button>
@@ -1061,10 +992,10 @@ function DefaultTab({
 export function TreeApp<LAnnotation = unknown>({
   className,
   contextMenuPortalContainer,
-  defaultTheme = 'dark',
+  defaultTheme = "dark",
   files,
   fileOptions,
-  height = '100%',
+  height = "100%",
   initialActivePath,
   initialExplorerWidth = DEFAULT_EXPLORER_WIDTH,
   initialOpenPaths,
@@ -1092,13 +1023,12 @@ export function TreeApp<LAnnotation = unknown>({
   treeClassName,
   treeStyle,
 }: TreeAppProps<LAnnotation>): React.JSX.Element {
-  const [internalTheme, setInternalTheme] =
-    useState<TreeAppTheme>(defaultTheme);
+  const [internalTheme, setInternalTheme] = useState<TreeAppTheme>(defaultTheme);
   const theme = themeProp ?? internalTheme;
   const chrome = CHROME_STYLES[theme];
 
   const toggleTheme = useCallback(() => {
-    const nextTheme: TreeAppTheme = theme === 'dark' ? 'light' : 'dark';
+    const nextTheme: TreeAppTheme = theme === "dark" ? "light" : "dark";
     if (themeProp == null) {
       setInternalTheme(nextTheme);
     }
@@ -1110,20 +1040,11 @@ export function TreeApp<LAnnotation = unknown>({
   const resolvedTreeStyle = pickByTheme(treeStyle, theme);
   const resolvedTreeClassName = pickByTheme(treeClassName, theme);
   const resolvedFileOptions = pickByTheme(fileOptions, theme);
-  const resolvedPrerenderedHTMLByPath = pickByTheme(
-    prerenderedHTMLByPath,
-    theme
-  );
+  const resolvedPrerenderedHTMLByPath = pickByTheme(prerenderedHTMLByPath, theme);
 
-  const treeStyleRecord = resolvedTreeStyle as
-    | Record<string, string | number>
-    | undefined;
+  const treeStyleRecord = resolvedTreeStyle as Record<string, string | number> | undefined;
   const isMobile = useIsMobile();
-  const explorer = useExplorerWidth(
-    initialExplorerWidth,
-    minExplorerWidth,
-    maxExplorerWidth
-  );
+  const explorer = useExplorerWidth(initialExplorerWidth, minExplorerWidth, maxExplorerWidth);
   const { activePath, activateTab, closeTab, openPaths } = useOpenTabs({
     initialActivePath,
     initialOpenPaths,
@@ -1151,16 +1072,15 @@ export function TreeApp<LAnnotation = unknown>({
     () =>
       ({
         ...resolvedFileOptions,
-        overflow: 'wrap',
+        overflow: "wrap",
       }) as FileOptions<LAnnotation>,
-    [resolvedFileOptions]
+    [resolvedFileOptions],
   );
 
   const treeSurfaceColor = useMemo(() => {
     const explicitTreeBackground =
-      treeStyleRecord?.['--trees-bg-override'] ??
-      treeStyleRecord?.['--trees-theme-sidebar-bg'];
-    return typeof explicitTreeBackground === 'string'
+      treeStyleRecord?.["--trees-bg-override"] ?? treeStyleRecord?.["--trees-theme-sidebar-bg"];
+    return typeof explicitTreeBackground === "string"
       ? explicitTreeBackground
       : chrome.treeSurfaceFallback;
   }, [chrome.treeSurfaceFallback, treeStyleRecord]);
@@ -1171,68 +1091,57 @@ export function TreeApp<LAnnotation = unknown>({
     }
 
     return Object.fromEntries(
-      Object.entries(treeStyleRecord).filter(([key]) =>
-        key.startsWith('--trees-')
-      )
+      Object.entries(treeStyleRecord).filter(([key]) => key.startsWith("--trees-")),
     ) as CSSProperties;
   }, [treeStyleRecord]);
 
   const containerStyle = useMemo<CSSProperties>(() => {
-    const normalizedHeight =
-      typeof height === 'number' ? `${String(height)}px` : height;
+    const normalizedHeight = typeof height === "number" ? `${String(height)}px` : height;
     return {
       ...treeCssVariables,
-      '--tree-app-tree-surface': treeSurfaceColor,
-      '--tree-app-chrome-bg': chrome.tabbarBgVar,
-      '--tree-app-editor-bg': chrome.editorBgVar,
-      '--tree-app-height': normalizedHeight,
+      "--tree-app-tree-surface": treeSurfaceColor,
+      "--tree-app-chrome-bg": chrome.tabbarBgVar,
+      "--tree-app-editor-bg": chrome.editorBgVar,
+      "--tree-app-height": normalizedHeight,
       ...style,
     } as CSSProperties;
-  }, [
-    chrome.editorBgVar,
-    chrome.tabbarBgVar,
-    height,
-    style,
-    treeCssVariables,
-    treeSurfaceColor,
-  ]);
+  }, [chrome.editorBgVar, chrome.tabbarBgVar, height, style, treeCssVariables, treeSurfaceColor]);
 
   const sidebarStyle = useMemo<CSSProperties>(
     () =>
       ({
-        '--tree-app-explorer-width': `${String(explorer.width)}px`,
+        "--tree-app-explorer-width": `${String(explorer.width)}px`,
       }) as CSSProperties,
-    [explorer.width]
+    [explorer.width],
   );
 
   const treeHostStyle = useMemo<CSSProperties>(
     () => ({
       ...resolvedTreeStyle,
-      width: '100%',
-      height: '100%',
+      width: "100%",
+      height: "100%",
       paddingBottom: 10,
       borderRadius: 8,
       // Subtle border that works on both dark and light surfaces by relying on
       // the current text color rather than a hardcoded white alpha.
-      border: '1px solid currentColor',
-      borderColor:
-        theme === 'dark' ? 'rgb(255 255 255 / 0.05)' : 'rgb(0 0 0 / 0.08)',
+      border: "1px solid currentColor",
+      borderColor: theme === "dark" ? "rgb(255 255 255 / 0.05)" : "rgb(0 0 0 / 0.08)",
     }),
-    [resolvedTreeStyle, theme]
+    [resolvedTreeStyle, theme],
   );
   const windowChromeNode = renderWindowChrome?.();
-  const effectiveTabIcons = tabIcons ?? 'complete';
+  const effectiveTabIcons = tabIcons ?? "complete";
   const tabIconSpriteMarkup = useMemo(
     () => getTabIconSpriteMarkup(effectiveTabIcons),
-    [effectiveTabIcons]
+    [effectiveTabIcons],
   );
   const resolveTabIcon = useMemo(
     () => createFileTreeIconResolver(effectiveTabIcons).resolveIcon,
-    [effectiveTabIcons]
+    [effectiveTabIcons],
   );
   const tabIconsColored = useMemo(
     () => areColoredTabIconsEnabled(effectiveTabIcons),
-    [effectiveTabIcons]
+    [effectiveTabIcons],
   );
 
   const headerNode = useMemo<ReactNode>(() => {
@@ -1242,16 +1151,16 @@ export function TreeApp<LAnnotation = unknown>({
     const headerContext: TreeAppProjectHeaderRenderContext = {
       actions: {
         addFile: () => {
-          mutations.addEntry('', 'file');
+          mutations.addEntry("", "file");
         },
         addFolder: () => {
-          mutations.addEntry('', 'folder');
+          mutations.addEntry("", "folder");
         },
         toggleSearch,
       },
       isSearchEnabled: searchEnabled,
       isSearchOpen: search.isOpen,
-      projectName: projectName ?? '',
+      projectName: projectName ?? "",
     };
     if (renderProjectHeader != null) {
       return renderProjectHeader(headerContext);
@@ -1272,14 +1181,13 @@ export function TreeApp<LAnnotation = unknown>({
   // folder, otherwise next to the file.
   const buildContextMenuActions = useCallback(
     (item: ContextMenuItem): TreeAppContextMenuActions => {
-      const baseDirectoryPath =
-        item.kind === 'directory' ? item.path : getParentPath(item.path);
+      const baseDirectoryPath = item.kind === "directory" ? item.path : getParentPath(item.path);
       return {
         addFile: () => {
-          mutations.addEntry(baseDirectoryPath, 'file');
+          mutations.addEntry(baseDirectoryPath, "file");
         },
         addFolder: () => {
-          mutations.addEntry(baseDirectoryPath, 'folder');
+          mutations.addEntry(baseDirectoryPath, "folder");
         },
         remove: () => {
           mutations.remove(item);
@@ -1289,7 +1197,7 @@ export function TreeApp<LAnnotation = unknown>({
         },
       };
     },
-    [mutations]
+    [mutations],
   );
 
   const renderFileTreeContextMenu = useCallback(
@@ -1306,16 +1214,12 @@ export function TreeApp<LAnnotation = unknown>({
         />
       );
     },
-    [buildContextMenuActions, contextMenuPortalContainer, renderContextMenu]
+    [buildContextMenuActions, contextMenuPortalContainer, renderContextMenu],
   );
 
   const editor = useMemo(() => {
     if (activePath == null) {
-      return renderEmpty != null ? (
-        renderEmpty()
-      ) : (
-        <DefaultEmpty theme={theme} />
-      );
+      return renderEmpty != null ? renderEmpty() : <DefaultEmpty theme={theme} />;
     }
     const file = files?.[activePath];
     const prerenderedHTML = resolvedPrerenderedHTMLByPath?.[activePath];
@@ -1323,11 +1227,7 @@ export function TreeApp<LAnnotation = unknown>({
       return renderEditor({ file, path: activePath, prerenderedHTML });
     }
     if (file == null) {
-      return renderEmpty != null ? (
-        renderEmpty()
-      ) : (
-        <DefaultEmpty theme={theme} />
-      );
+      return renderEmpty != null ? renderEmpty() : <DefaultEmpty theme={theme} />;
     }
     // Keying the File by `theme` forces a remount when the user toggles modes.
     // Prerendered HTML is theme-specific (different syntax colors) and
@@ -1372,14 +1272,12 @@ export function TreeApp<LAnnotation = unknown>({
     if (!hasTabs || activePath == null) return;
     const scroller = tabScrollerRef.current;
     if (scroller == null) return;
-    const activeTab = scroller.querySelector<HTMLElement>(
-      '[data-tree-app-tab-active="true"]'
-    );
+    const activeTab = scroller.querySelector<HTMLElement>('[data-tree-app-tab-active="true"]');
     if (activeTab == null) return;
     activeTab.scrollIntoView({
-      behavior: 'smooth',
-      block: 'nearest',
-      inline: 'nearest',
+      behavior: "smooth",
+      block: "nearest",
+      inline: "nearest",
     });
   }, [activePath, hasTabs, openPaths]);
 
@@ -1406,7 +1304,7 @@ export function TreeApp<LAnnotation = unknown>({
     };
 
     update();
-    scroller.addEventListener('scroll', update, { passive: true });
+    scroller.addEventListener("scroll", update, { passive: true });
     const resizeObserver = new ResizeObserver(update);
     resizeObserver.observe(scroller);
     for (const child of Array.from(scroller.children)) {
@@ -1414,7 +1312,7 @@ export function TreeApp<LAnnotation = unknown>({
     }
 
     return () => {
-      scroller.removeEventListener('scroll', update);
+      scroller.removeEventListener("scroll", update);
       resizeObserver.disconnect();
     };
   }, [hasTabs, openPaths.length]);
@@ -1422,12 +1320,12 @@ export function TreeApp<LAnnotation = unknown>({
   return (
     <div
       className={[
-        'relative flex flex-col overflow-hidden rounded-xl bg-clip-padding border border-[rgb(0_0_0_/0.1)] dark:border-[rgb(255_255_255_/0.1)] shadow-lg p-1.5 h-[var(--tree-app-height)]',
+        "relative flex flex-col overflow-hidden rounded-xl bg-clip-padding border border-[rgb(0_0_0_/0.1)] dark:border-[rgb(255_255_255_/0.1)] shadow-lg p-1.5 h-[var(--tree-app-height)]",
         chrome.container,
         className,
       ]
         .filter(Boolean)
-        .join(' ')}
+        .join(" ")}
       style={containerStyle}
     >
       <div
@@ -1435,9 +1333,7 @@ export function TreeApp<LAnnotation = unknown>({
         className="absolute h-0 w-0 overflow-hidden"
         dangerouslySetInnerHTML={{ __html: tabIconSpriteMarkup }}
       />
-      {windowChromeNode != null ? (
-        <div className="shrink-0">{windowChromeNode}</div>
-      ) : null}
+      {windowChromeNode != null ? <div className="shrink-0">{windowChromeNode}</div> : null}
       <div className="flex min-h-0 flex-1 flex-row">
         <aside
           className="group/tree-app-explorer flex w-[var(--tree-app-explorer-width)] shrink-0 flex-col"
@@ -1468,7 +1364,7 @@ export function TreeApp<LAnnotation = unknown>({
           {showTabBar ? (
             <div
               className="group/tabbar flex h-10 items-center gap-1 px-2 pt-0.75"
-              style={{ backgroundColor: 'var(--tree-app-chrome-bg)' }}
+              style={{ backgroundColor: "var(--tree-app-chrome-bg)" }}
             >
               <div className="relative flex min-w-0 flex-1">
                 <div
@@ -1489,16 +1385,14 @@ export function TreeApp<LAnnotation = unknown>({
                           path,
                         };
                         const tabIcon = resolveTabIcon(
-                          'file-tree-icon-file',
-                          path
+                          "file-tree-icon-file",
+                          path,
                         ) as TreeAppResolvedTabIcon;
                         return (
                           <div
                             key={path}
                             className="flex"
-                            data-tree-app-tab-active={
-                              isActive ? 'true' : undefined
-                            }
+                            data-tree-app-tab-active={isActive ? "true" : undefined}
                           >
                             {renderTab != null ? (
                               renderTab(tabContext)
@@ -1523,35 +1417,30 @@ export function TreeApp<LAnnotation = unknown>({
                 <div
                   aria-hidden="true"
                   className={[
-                    'pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-[var(--tree-app-chrome-bg)] to-transparent transition-opacity duration-150',
-                    tabScrollState.canScrollLeft ? 'opacity-100' : 'opacity-0',
-                  ].join(' ')}
+                    "pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-[var(--tree-app-chrome-bg)] to-transparent transition-opacity duration-150",
+                    tabScrollState.canScrollLeft ? "opacity-100" : "opacity-0",
+                  ].join(" ")}
                 />
                 <div
                   aria-hidden="true"
                   className={[
-                    'pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[var(--tree-app-chrome-bg)] to-transparent transition-opacity duration-150',
-                    tabScrollState.canScrollRight ? 'opacity-100' : 'opacity-0',
-                  ].join(' ')}
+                    "pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-[var(--tree-app-chrome-bg)] to-transparent transition-opacity duration-150",
+                    tabScrollState.canScrollRight ? "opacity-100" : "opacity-0",
+                  ].join(" ")}
                 />
               </div>
-              {showThemeToggle ? (
-                <ThemeToggleButton onToggle={toggleTheme} theme={theme} />
-              ) : null}
+              {showThemeToggle ? <ThemeToggleButton onToggle={toggleTheme} theme={theme} /> : null}
             </div>
           ) : null}
           <div
             className="relative flex min-h-0 flex-1"
-            style={{ backgroundColor: 'var(--tree-app-editor-bg)' }}
+            style={{ backgroundColor: "var(--tree-app-editor-bg)" }}
           >
             {/* `inert` removes the editor contents from the focus order on
                 mobile so keyboard users can't tab into a region that's
                 visually faded out and mostly clipped off-screen. Passing
                 `undefined` on desktop disables the attribute entirely. */}
-            <div
-              className="relative flex min-h-0 flex-1"
-              inert={isMobile ? true : undefined}
-            >
+            <div className="relative flex min-h-0 flex-1" inert={isMobile ? true : undefined}>
               {editor}
             </div>
           </div>

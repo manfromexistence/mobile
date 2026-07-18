@@ -1,11 +1,11 @@
-import { DEFAULT_THEMES } from '@pierre/diffs';
-import type { PreloadMultiFileDiffOptions } from '@pierre/diffs/ssr';
+import { DEFAULT_THEMES } from "@pierre/diffs";
+import type { PreloadMultiFileDiffOptions } from "@pierre/diffs/ssr";
 
-import { CustomScrollbarCSS } from '@/components/CustomScrollbarCSS';
+import { CustomScrollbarCSS } from "@/components/CustomScrollbarCSS";
 
 export const DIFF_STYLES: PreloadMultiFileDiffOptions<undefined> = {
   oldFile: {
-    name: 'main.zig',
+    name: "main.zig",
     contents: `const std = @import("std");
 const Allocator = std.heap.page_allocator;
 const ArrayList = std.ArrayList;
@@ -23,7 +23,7 @@ pub fn main() !void {
 `,
   },
   newFile: {
-    name: 'main.zig',
+    name: "main.zig",
     contents: `const std = @import("std");
 const GeneralPurposeAllocator = std.heap.GeneralPurposeAllocator;
 const ArrayList = std.ArrayList;
@@ -47,9 +47,9 @@ pub fn main() !void {
   },
   options: {
     theme: DEFAULT_THEMES,
-    themeType: 'dark',
-    diffStyle: 'split',
-    overflow: 'wrap',
+    themeType: "dark",
+    diffStyle: "split",
+    overflow: "wrap",
     disableLineNumbers: false,
     unsafeCSS: CustomScrollbarCSS,
   },

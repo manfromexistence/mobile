@@ -45,7 +45,7 @@ export class AcpManager extends EventEmitter {
     agentId: string,
     binary: string,
     args: string[] = [],
-    env: Record<string, string> = {}
+    env: Record<string, string> = {},
   ): AcpSession {
     const ALLOWED_AGENTS = ["claude", "codex", "gemini", "qwen"];
     if (!ALLOWED_AGENTS.includes(agentId)) {

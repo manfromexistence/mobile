@@ -27,9 +27,7 @@ const apiKeysDb = await import("../../src/lib/db/apiKeys.ts");
 const { clearCache, setCached } = await import("../../src/lib/cliTools/batchStatusCache.ts");
 
 // Import the route under test
-const allStatusesRoute = await import(
-  "../../src/app/api/cli-tools/all-statuses/route.ts"
-);
+const allStatusesRoute = await import("../../src/app/api/cli-tools/all-statuses/route.ts");
 
 // Import CLI_TOOLS to know how many tools exist
 const { CLI_TOOLS } = await import("../../src/shared/constants/cliTools.ts");
@@ -65,7 +63,7 @@ test("auth fail: no auth header → 401 with Unauthorized body", async () => {
   await enableAuth();
 
   const response = await allStatusesRoute.GET(
-    new Request("http://localhost/api/cli-tools/all-statuses")
+    new Request("http://localhost/api/cli-tools/all-statuses"),
   );
 
   assert.equal(response.status, 401);
@@ -77,7 +75,7 @@ test("auth fail: no auth header → 401 with Unauthorized body", async () => {
 test("auth pass: authenticated session → 200 response", async () => {
   // When auth is not configured (no INITIAL_PASSWORD, no requireLogin), requests pass through
   const response = await allStatusesRoute.GET(
-    new Request("http://localhost/api/cli-tools/all-statuses")
+    new Request("http://localhost/api/cli-tools/all-statuses"),
   );
   // Should not be 401 — status 200 or possibly 500 if DB fails, but not auth-blocked
   assert.notEqual(response.status, 401, "should not reject without auth when auth is not enabled");
@@ -87,7 +85,7 @@ test("auth pass: authenticated session → 200 response", async () => {
 
 test("happy path: returns status map covering all tools in CLI_TOOLS", async () => {
   const response = await allStatusesRoute.GET(
-    new Request("http://localhost/api/cli-tools/all-statuses")
+    new Request("http://localhost/api/cli-tools/all-statuses"),
   );
 
   // Route might return 200 or possibly 500 depending on runtime environment
@@ -100,19 +98,13 @@ test("happy path: returns status map covering all tools in CLI_TOOLS", async () 
     const returnedKeys = Object.keys(body);
     assert.ok(
       returnedKeys.length >= 1,
-      `expected at least 1 tool in response, got ${returnedKeys.length}`
+      `expected at least 1 tool in response, got ${returnedKeys.length}`,
     );
     // Each returned entry should have detection and config fields
     for (const [toolId, entry] of Object.entries(body)) {
       const e = entry as Record<string, unknown>;
-      assert.ok(
-        "detection" in e,
-        `tool ${toolId} missing detection field`
-      );
-      assert.ok(
-        "config" in e,
-        `tool ${toolId} missing config field`
-      );
+      assert.ok("detection" in e, `tool ${toolId} missing detection field`);
+      assert.ok("config" in e, `tool ${toolId} missing config field`);
     }
   } else {
     // If 500 (e.g., runtime detection fails in CI), error body must be sanitized
@@ -123,7 +115,7 @@ test("happy path: returns status map covering all tools in CLI_TOOLS", async () 
 
 test("happy path: response covers at least 20 tools when auth is not required", async () => {
   const response = await allStatusesRoute.GET(
-    new Request("http://localhost/api/cli-tools/all-statuses")
+    new Request("http://localhost/api/cli-tools/all-statuses"),
   );
 
   if (response.status !== 200) {
@@ -135,7 +127,7 @@ test("happy path: response covers at least 20 tools when auth is not required", 
   const returnedCount = Object.keys(body).length;
   assert.ok(
     returnedCount >= 20,
-    `expected >= 20 tools in batch response, got ${returnedCount}. Total tools: ${TOOL_COUNT}`
+    `expected >= 20 tools in batch response, got ${returnedCount}. Total tools: ${TOOL_COUNT}`,
   );
 });
 
@@ -150,7 +142,7 @@ test("error response is sanitized: no raw stack trace in 500 body", async () => 
   // Force auth required with an invalid setup to trigger a potential error path:
   await enableAuth();
   const unauthResponse = await allStatusesRoute.GET(
-    new Request("http://localhost/api/cli-tools/all-statuses")
+    new Request("http://localhost/api/cli-tools/all-statuses"),
   );
 
   const body = (await unauthResponse.json()) as Record<string, unknown>;
@@ -159,7 +151,7 @@ test("error response is sanitized: no raw stack trace in 500 body", async () => 
   // Must not expose stack trace patterns
   assert.ok(
     !bodyStr.match(/\s+at\s+\//),
-    `response body must not contain stack trace paths. Got: ${bodyStr.slice(0, 200)}`
+    `response body must not contain stack trace paths. Got: ${bodyStr.slice(0, 200)}`,
   );
 });
 
@@ -172,13 +164,13 @@ test("timeout in 1 tool: others succeed + slot has error field (no full request 
   // 2. If a tool slot has an error, it's properly structured
 
   const response = await allStatusesRoute.GET(
-    new Request("http://localhost/api/cli-tools/all-statuses")
+    new Request("http://localhost/api/cli-tools/all-statuses"),
   );
 
   // Route should complete (not hang) — status could be 200 or 500
   assert.ok(
     response.status === 200 || response.status === 500,
-    `expected 200 or 500, got ${response.status}`
+    `expected 200 or 500, got ${response.status}`,
   );
 
   if (response.status === 200) {
@@ -188,16 +180,10 @@ test("timeout in 1 tool: others succeed + slot has error field (no full request 
       if (entry.error) {
         assert.ok(
           typeof entry.error === "string",
-          `tool ${toolId} error should be a string, got ${typeof entry.error}`
+          `tool ${toolId} error should be a string, got ${typeof entry.error}`,
         );
-        assert.ok(
-          "detection" in entry,
-          `tool ${toolId} with error should still have detection`
-        );
-        assert.ok(
-          "config" in entry,
-          `tool ${toolId} with error should still have config`
-        );
+        assert.ok("detection" in entry, `tool ${toolId} with error should still have detection`);
+        assert.ok("config" in entry, `tool ${toolId} with error should still have config`);
       }
     }
   }
@@ -216,7 +202,7 @@ test("cache hit: pre-populated cache is returned without re-executing", async ()
   setCached(toolId, 0, knownStatus);
 
   const response = await allStatusesRoute.GET(
-    new Request("http://localhost/api/cli-tools/all-statuses")
+    new Request("http://localhost/api/cli-tools/all-statuses"),
   );
 
   if (response.status !== 200) return; // skip if non-200
@@ -239,7 +225,7 @@ test("cache miss: different mtime forces re-execution (cache not used)", async (
   setCached(toolId, 99999, staleStatus); // mtime=99999 won't match stat result (0 for non-existent file)
 
   const response = await allStatusesRoute.GET(
-    new Request("http://localhost/api/cli-tools/all-statuses")
+    new Request("http://localhost/api/cli-tools/all-statuses"),
   );
 
   if (response.status !== 200) return; // skip if non-200

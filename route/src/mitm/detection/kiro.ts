@@ -18,7 +18,7 @@ const PATHS = [
     process.env.LOCALAPPDATA ?? path.join(HOME, "AppData", "Local"),
     "Programs",
     "Kiro",
-    "Kiro.exe"
+    "Kiro.exe",
   ),
 ];
 

@@ -1,6 +1,6 @@
-import { memo } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '../shader-mount.js';
-import { colorPropsAreEqual } from '../color-props-are-equal.js';
+import { memo } from "react";
+import { ShaderMount, type ShaderComponentProps } from "../shader-mount.js";
+import { colorPropsAreEqual } from "../color-props-are-equal.js";
 import {
   defaultPatternSizing,
   getShaderColorFromString,
@@ -9,19 +9,19 @@ import {
   type WavesParams,
   type WavesUniforms,
   type ShaderPreset,
-} from '@paper-design/shaders';
+} from "@paper-design/shaders";
 
 export interface WavesProps extends ShaderComponentProps, WavesParams {}
 
 type WavesPreset = ShaderPreset<WavesParams>;
 
 export const defaultPreset: WavesPreset = {
-  name: 'Default',
+  name: "Default",
   params: {
     ...defaultPatternSizing,
     scale: 0.6,
-    colorFront: '#ffbb00',
-    colorBack: '#000000',
+    colorFront: "#ffbb00",
+    colorBack: "#000000",
     shape: 0,
     frequency: 0.5,
     amplitude: 0.5,
@@ -32,13 +32,13 @@ export const defaultPreset: WavesPreset = {
 };
 
 export const groovyPreset: WavesPreset = {
-  name: 'Groovy',
+  name: "Groovy",
   params: {
     ...defaultPatternSizing,
     scale: 5,
     rotation: 90,
-    colorFront: '#fcfcee',
-    colorBack: '#ff896b',
+    colorFront: "#fcfcee",
+    colorBack: "#ff896b",
     shape: 3,
     frequency: 0.2,
     amplitude: 0.25,
@@ -49,13 +49,13 @@ export const groovyPreset: WavesPreset = {
 };
 
 export const tangledUpPreset: WavesPreset = {
-  name: 'Tangled up',
+  name: "Tangled up",
   params: {
     ...defaultPatternSizing,
     scale: 0.5,
     rotation: 0,
-    colorFront: '#133a41',
-    colorBack: '#c2d8b6',
+    colorFront: "#133a41",
+    colorBack: "#c2d8b6",
     shape: 2.07,
     frequency: 0.44,
     amplitude: 0.57,
@@ -66,13 +66,13 @@ export const tangledUpPreset: WavesPreset = {
 };
 
 export const waveRidePreset: WavesPreset = {
-  name: 'Ride the wave',
+  name: "Ride the wave",
   params: {
     ...defaultPatternSizing,
     scale: 1.7,
     rotation: 0,
-    colorFront: '#fdffe6',
-    colorBack: '#1f1f1f',
+    colorFront: "#fdffe6",
+    colorBack: "#1f1f1f",
     shape: 2.25,
     frequency: 0.2,
     amplitude: 1,
@@ -82,7 +82,12 @@ export const waveRidePreset: WavesPreset = {
   },
 };
 
-export const wavesPresets: WavesPreset[] = [defaultPreset, groovyPreset, tangledUpPreset, waveRidePreset];
+export const wavesPresets: WavesPreset[] = [
+  defaultPreset,
+  groovyPreset,
+  tangledUpPreset,
+  waveRidePreset,
+];
 
 export const Waves: React.FC<WavesProps> = memo(function WavesImpl({
   // Own props

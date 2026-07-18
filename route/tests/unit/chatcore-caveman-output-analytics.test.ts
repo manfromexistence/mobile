@@ -21,7 +21,7 @@ function rowFor(requestId: string): Record<string, unknown> | undefined {
   return coreDb
     .getDbInstance()
     .prepare(
-      "SELECT mode, engine, original_tokens AS orig, compressed_tokens AS comp, tokens_saved AS saved, output_mode AS om FROM compression_analytics WHERE request_id = ?"
+      "SELECT mode, engine, original_tokens AS orig, compressed_tokens AS comp, tokens_saved AS saved, output_mode AS om FROM compression_analytics WHERE request_id = ?",
     )
     .get(requestId) as Record<string, unknown> | undefined;
 }
@@ -69,7 +69,7 @@ test("the returned promise never rejects even on a bad write", async () => {
       estimatedTokens: 10,
       skillRequestId: "caveman-req-2",
       cavemanOutputModeIntensity: null,
-    })
+    }),
   );
   await coreDb.ensureDbInitialized();
 });

@@ -5,11 +5,7 @@ import type { CSSProperties } from "react";
 import { DotMatrixBase } from "../base/dot-matrix-base";
 import { useDotMatrixPhases } from "./phases";
 import { usePrefersReducedMotion } from "../hooks/use-prefers-reduced-motion";
-import type {
-  DotAnimationContext,
-  DotAnimationResolver,
-  DotMatrixCommonProps
-} from "../types";
+import type { DotAnimationContext, DotAnimationResolver, DotMatrixCommonProps } from "../types";
 
 type NormFn = (ctx: Pick<DotAnimationContext, "row" | "col" | "index">) => number;
 
@@ -26,8 +22,8 @@ export function createPathWaveResolver(getPathNorm: NormFn): DotAnimationResolve
       return {
         style: {
           ...style,
-          opacity: 0.12 + path * 0.72
-        }
+          opacity: 0.12 + path * 0.72,
+        },
       };
     }
 
@@ -48,10 +44,14 @@ export function createPathWaveComponent(displayName: string, getPathNorm: NormFn
     ...rest
   }: PathWaveComponentProps) {
     const reducedMotion = usePrefersReducedMotion();
-    const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+    const {
+      phase: matrixPhase,
+      onMouseEnter,
+      onMouseLeave,
+    } = useDotMatrixPhases({
       animated: Boolean(animated && !reducedMotion),
       hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-      speed
+      speed,
     });
     return (
       <DotMatrixBase

@@ -21,7 +21,7 @@ test("#5406: import route uses unlinkFileWithRetry (EBUSY-safe on Windows)", () 
   assert.match(
     src,
     /unlinkFileWithRetry/,
-    "import route must delete the sqlite files via unlinkFileWithRetry (EBUSY retry)"
+    "import route must delete the sqlite files via unlinkFileWithRetry (EBUSY retry)",
   );
 });
 
@@ -32,6 +32,6 @@ test("#5406: import route does not raw-unlink the live sqlite files (EBUSY race)
   // temp-upload cleanup (`fs.unlinkSync(tmpPath)`) is a different, unlocked file.
   assert.ok(
     !/fs\.unlinkSync\s*\(\s*filePath\b/.test(src),
-    "the sqlite-replace loop must use unlinkFileWithRetry, not raw fs.unlinkSync(filePath)"
+    "the sqlite-replace loop must use unlinkFileWithRetry, not raw fs.unlinkSync(filePath)",
   );
 });

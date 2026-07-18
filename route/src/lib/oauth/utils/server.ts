@@ -9,7 +9,7 @@ import { URL } from "url";
  */
 export function startLocalServer(
   onCallback: (params: Record<string, string>) => void,
-  fixedPort: number | null = null
+  fixedPort: number | null = null,
 ): Promise<{ server: any; port: number; close: () => void }> {
   return new Promise((resolve, reject) => {
     const server = http.createServer((req, res) => {
@@ -82,8 +82,8 @@ export function startLocalServer(
       if (err.code === "EADDRINUSE" && fixedPort) {
         reject(
           new Error(
-            `Port ${fixedPort} is already in use. Please close other applications using this port.`
-          )
+            `Port ${fixedPort} is already in use. Please close other applications using this port.`,
+          ),
         );
       } else {
         reject(err);

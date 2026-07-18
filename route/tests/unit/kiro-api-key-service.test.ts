@@ -20,7 +20,7 @@ test("KiroService.validateApiKey validates via ListAvailableProfiles with API_KE
           { arn: "arn:aws:codewhisperer:eu-central-1:1:profile/MATCH" },
         ],
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   }) as typeof fetch;
 
@@ -46,7 +46,7 @@ test("KiroService.validateApiKey accepts API keys when profile discovery is deni
         __type: "com.amazon.aws.codewhisperer#AccessDeniedException",
         message: "API key authentication is not supported for this operation.",
       }),
-      { status: 403, headers: { "Content-Type": "application/json" } }
+      { status: 403, headers: { "Content-Type": "application/json" } },
     )) as typeof fetch;
 
   try {

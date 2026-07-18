@@ -1,18 +1,17 @@
-import { DEFAULT_THEMES } from '@pierre/diffs';
-import type { PreloadMultiFileDiffOptions } from '@pierre/diffs/ssr';
+import { DEFAULT_THEMES } from "@pierre/diffs";
+import type { PreloadMultiFileDiffOptions } from "@pierre/diffs/ssr";
 
-import { CustomScrollbarCSS } from '@/components/CustomScrollbarCSS';
+import { CustomScrollbarCSS } from "@/components/CustomScrollbarCSS";
 
 export interface AnnotationMetadata {
   key: string;
   isThread: boolean;
 }
 
-export const ANNOTATION_EXAMPLE: PreloadMultiFileDiffOptions<AnnotationMetadata> =
-  {
-    oldFile: {
-      name: 'auth.py',
-      contents: `import jwt
+export const ANNOTATION_EXAMPLE: PreloadMultiFileDiffOptions<AnnotationMetadata> = {
+  oldFile: {
+    name: "auth.py",
+    contents: `import jwt
 import time
 from typing import Optional
 
@@ -34,10 +33,10 @@ def verify_token(token: str) -> Optional[str]:
     except jwt.InvalidTokenError:
         return None
 `,
-    },
-    newFile: {
-      name: 'auth.py',
-      contents: `import jwt
+  },
+  newFile: {
+    name: "auth.py",
+    contents: `import jwt
 import time
 from typing import Optional
 
@@ -60,21 +59,21 @@ def verify_token(token: str) -> Optional[dict]:
     except jwt.InvalidTokenError:
         return None
 `,
-    },
-    options: {
-      theme: DEFAULT_THEMES,
-      themeType: 'dark',
-      diffStyle: 'unified',
-      unsafeCSS: CustomScrollbarCSS,
-    },
-    annotations: [
-      {
-        side: 'additions',
-        lineNumber: 20,
-        metadata: {
-          key: 'additions-20',
-          isThread: true,
-        },
+  },
+  options: {
+    theme: DEFAULT_THEMES,
+    themeType: "dark",
+    diffStyle: "unified",
+    unsafeCSS: CustomScrollbarCSS,
+  },
+  annotations: [
+    {
+      side: "additions",
+      lineNumber: 20,
+      metadata: {
+        key: "additions-20",
+        isThread: true,
       },
-    ],
-  };
+    },
+  ],
+};

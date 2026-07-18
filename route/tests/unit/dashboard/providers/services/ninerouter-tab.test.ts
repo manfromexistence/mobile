@@ -15,44 +15,50 @@ import assert from "node:assert/strict";
 
 describe("NinerouterServiceTab — module shape", () => {
   it("exports NinerouterServiceTab function", async () => {
-    const mod =
-      await import("../../../../../src/app/(dashboard)/dashboard/providers/services/tabs/NinerouterServiceTab.tsx");
+    const mod = await import(
+      "../../../../../src/app/(dashboard)/dashboard/providers/services/tabs/NinerouterServiceTab.tsx"
+    );
     assert.equal(typeof mod.NinerouterServiceTab, "function");
   });
 });
 
 describe("NinerouterInstallWizard — module shape", () => {
   it("exports NinerouterInstallWizard function", async () => {
-    const mod =
-      await import("../../../../../src/app/(dashboard)/dashboard/providers/services/components/NinerouterInstallWizard.tsx");
+    const mod = await import(
+      "../../../../../src/app/(dashboard)/dashboard/providers/services/components/NinerouterInstallWizard.tsx"
+    );
     assert.equal(typeof mod.NinerouterInstallWizard, "function");
   });
 });
 
 describe("NinerouterProviderExposureCard — module shape", () => {
   it("exports NinerouterProviderExposureCard function", async () => {
-    const mod =
-      await import("../../../../../src/app/(dashboard)/dashboard/providers/services/components/NinerouterProviderExposureCard.tsx");
+    const mod = await import(
+      "../../../../../src/app/(dashboard)/dashboard/providers/services/components/NinerouterProviderExposureCard.tsx"
+    );
     assert.equal(typeof mod.NinerouterProviderExposureCard, "function");
   });
 });
 
 describe("NinerouterModelList — module shape + pagination helper", () => {
   it("exports NinerouterModelList function", async () => {
-    const mod =
-      await import("../../../../../src/app/(dashboard)/dashboard/providers/services/components/NinerouterModelList.tsx");
+    const mod = await import(
+      "../../../../../src/app/(dashboard)/dashboard/providers/services/components/NinerouterModelList.tsx"
+    );
     assert.equal(typeof mod.NinerouterModelList, "function");
   });
 
   it("exports paginateModels helper", async () => {
-    const { paginateModels } =
-      await import("../../../../../src/app/(dashboard)/dashboard/providers/services/components/NinerouterModelList.tsx");
+    const { paginateModels } = await import(
+      "../../../../../src/app/(dashboard)/dashboard/providers/services/components/NinerouterModelList.tsx"
+    );
     assert.equal(typeof paginateModels, "function");
   });
 
   it("paginateModels returns correct slice for page 1", async () => {
-    const { paginateModels } =
-      await import("../../../../../src/app/(dashboard)/dashboard/providers/services/components/NinerouterModelList.tsx");
+    const { paginateModels } = await import(
+      "../../../../../src/app/(dashboard)/dashboard/providers/services/components/NinerouterModelList.tsx"
+    );
     const models = Array.from({ length: 50 }, (_, i) => ({ id: `model-${i}` }));
     const page1 = paginateModels(models, 1, 20);
     assert.equal(page1.length, 20);
@@ -61,8 +67,9 @@ describe("NinerouterModelList — module shape + pagination helper", () => {
   });
 
   it("paginateModels returns correct slice for page 2", async () => {
-    const { paginateModels } =
-      await import("../../../../../src/app/(dashboard)/dashboard/providers/services/components/NinerouterModelList.tsx");
+    const { paginateModels } = await import(
+      "../../../../../src/app/(dashboard)/dashboard/providers/services/components/NinerouterModelList.tsx"
+    );
     const models = Array.from({ length: 50 }, (_, i) => ({ id: `model-${i}` }));
     const page2 = paginateModels(models, 2, 20);
     assert.equal(page2.length, 20);
@@ -70,16 +77,18 @@ describe("NinerouterModelList — module shape + pagination helper", () => {
   });
 
   it("paginateModels returns empty array when page exceeds total", async () => {
-    const { paginateModels } =
-      await import("../../../../../src/app/(dashboard)/dashboard/providers/services/components/NinerouterModelList.tsx");
+    const { paginateModels } = await import(
+      "../../../../../src/app/(dashboard)/dashboard/providers/services/components/NinerouterModelList.tsx"
+    );
     const models = [{ id: "model-0" }];
     const page5 = paginateModels(models, 5, 20);
     assert.equal(page5.length, 0);
   });
 
   it("paginateModels handles partial last page", async () => {
-    const { paginateModels } =
-      await import("../../../../../src/app/(dashboard)/dashboard/providers/services/components/NinerouterModelList.tsx");
+    const { paginateModels } = await import(
+      "../../../../../src/app/(dashboard)/dashboard/providers/services/components/NinerouterModelList.tsx"
+    );
     const models = Array.from({ length: 25 }, (_, i) => ({ id: `model-${i}` }));
     const page2 = paginateModels(models, 2, 20);
     assert.equal(page2.length, 5);

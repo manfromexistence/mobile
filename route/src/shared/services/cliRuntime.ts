@@ -83,7 +83,7 @@ const CLI_TOOLS: Record<string, any> = {
           ? path.join(
               process.env.APPDATA || path.join(os.homedir(), "AppData", "Roaming"),
               "devin",
-              "config.json"
+              "config.json",
             )
           : path.join(os.homedir(), ".config", "devin", "config.json");
       },
@@ -314,7 +314,7 @@ const runProcess = (
     env?: Record<string, string | undefined>;
     timeoutMs?: number;
     useShell?: boolean;
-  } = {}
+  } = {},
 ): Promise<any> =>
   new Promise((resolve) => {
     // Guard: reject commands with shell metacharacters — command comes from
@@ -609,8 +609,8 @@ export const getKnownToolPaths = (toolId: string): string[] => {
             "WinGet",
             "Packages",
             "Anthropic.ClaudeCode_Microsoft.Winget.Source_8wekyb3d8bbwe",
-            "claude.exe"
-          )
+            "claude.exe",
+          ),
         );
       }
     }
@@ -868,7 +868,7 @@ const checkKnownPath = async (commandPath: string) => {
 const locateCommandCandidate = async (
   commands: string[],
   env: Record<string, string | undefined>,
-  toolId?: string
+  toolId?: string,
 ) => {
   if (!Array.isArray(commands) || commands.length === 0) {
     return { command: null, installed: false, commandPath: null, reason: "missing_command" };
@@ -918,7 +918,7 @@ const locateCommandCandidate = async (
 const checkRunnable = async (
   commandPath: string,
   env: Record<string, string | undefined>,
-  timeoutMs = 4000
+  timeoutMs = 4000,
 ) => {
   // Minimal environment to prevent credential leakage to potentially malicious binaries
   const minimalEnv: Record<string, string | undefined> = {
@@ -982,7 +982,7 @@ export const getCliConfigHome = () => {
 export const resolveOpencodeConfigDir = (
   _platform = process.platform,
   env: NodeJS.ProcessEnv = process.env,
-  homeDir = os.homedir()
+  homeDir = os.homedir(),
 ) => {
   // #3330: OpenCode reads its config from XDG `~/.config/opencode/` on ALL
   // platforms — including Windows, where it uses `%USERPROFILE%\.config`, NOT
@@ -996,7 +996,7 @@ export const resolveOpencodeConfigDir = (
 export const resolveOpencodeConfigPath = (
   platform = process.platform,
   env: NodeJS.ProcessEnv = process.env,
-  homeDir = os.homedir()
+  homeDir = os.homedir(),
 ) => path.join(resolveOpencodeConfigDir(platform, env, homeDir), "opencode", "opencode.json");
 
 export const getOpenCodeConfigPath = () => resolveOpencodeConfigPath();
@@ -1036,7 +1036,7 @@ export const getCliConfigPaths = (toolId: string) => {
         resolvedPath = path.join(home, relativePath as string);
       }
       return [key, resolvedPath];
-    })
+    }),
   );
 };
 
@@ -1111,7 +1111,7 @@ export const getCliRuntimeStatus = async (toolId: string) => {
   const healthcheck = await checkRunnable(
     located.commandPath || command || "", // located + executable ⇒ commandPath set
     env,
-    Number(tool.healthcheckTimeoutMs || 4000)
+    Number(tool.healthcheckTimeoutMs || 4000),
   );
   return {
     installed: true,

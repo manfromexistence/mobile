@@ -33,14 +33,14 @@ describe("Engine Combos UI ↔ stackedPipelineStepSchema parity (#4955 / #6747)"
       assert.equal(
         stackedPipelineStepSchema.safeParse({ engine }).success,
         true,
-        `expected bare { engine: "${engine}" } to be accepted`
+        `expected bare { engine: "${engine}" } to be accepted`,
       );
       for (const intensity of intensities) {
         const result = stackedPipelineStepSchema.safeParse({ engine, intensity });
         assert.equal(
           result.success,
           true,
-          `expected { engine: "${engine}", intensity: "${intensity}" } to be accepted`
+          `expected { engine: "${engine}", intensity: "${intensity}" } to be accepted`,
         );
       }
     }
@@ -51,11 +51,11 @@ describe("Engine Combos UI ↔ stackedPipelineStepSchema parity (#4955 / #6747)"
       assert.equal(
         stackedPipelineStepSchema.safeParse({ engine }).success,
         true,
-        `engine "${engine}" must be a valid stacked-pipeline step`
+        `engine "${engine}" must be a valid stacked-pipeline step`,
       );
       assert.ok(
         Object.prototype.hasOwnProperty.call(STACKED_PIPELINE_ENGINE_INTENSITIES, engine),
-        `engine "${engine}" must be offered by the combos UI`
+        `engine "${engine}" must be offered by the combos UI`,
       );
     }
   });
@@ -76,7 +76,7 @@ describe("Engine Combos UI ↔ stackedPipelineStepSchema parity (#4955 / #6747)"
       ],
     });
     assert.equal(result.success, true, () =>
-      result.success ? "" : JSON.stringify(result.error.issues)
+      result.success ? "" : JSON.stringify(result.error.issues),
     );
   });
 });

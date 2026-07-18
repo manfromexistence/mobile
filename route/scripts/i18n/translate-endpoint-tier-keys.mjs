@@ -176,7 +176,7 @@ async function main() {
 
   log(
     isDryRun ? "[DRY RUN]" : "",
-    `Processing ${locales.length} locales — ${Object.keys(NEW_ENDPOINT_KEYS).length} keys each`
+    `Processing ${locales.length} locales — ${Object.keys(NEW_ENDPOINT_KEYS).length} keys each`,
   );
 
   let totalAdded = 0;

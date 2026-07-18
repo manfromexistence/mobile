@@ -3,23 +3,20 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { LayoutGroup, motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
-import {
-  LoaderDetailsDrawer,
-  type ExamplePreviewId
-} from "@/components/loader-details-drawer";
+import { LoaderDetailsDrawer, type ExamplePreviewId } from "@/components/loader-details-drawer";
 import {
   LOADER_GALLERY_DEFAULT_DETAIL_DOT_BOOST,
   LOADER_GALLERY_DEFAULT_DETAIL_PREVIEW_SCALE,
-  LOADER_GALLERY_DEFAULT_HERO_CONTENT
+  LOADER_GALLERY_DEFAULT_HERO_CONTENT,
 } from "@/components/loader-gallery-defaults";
 import {
   LOADER_GALLERY_EXAMPLE_SNIPPET_PROPS,
-  LOADER_GALLERY_EX_OPACITY_FOR_TRIANGLE
+  LOADER_GALLERY_EX_OPACITY_FOR_TRIANGLE,
 } from "@/components/loader-gallery-example-props";
 import { LoaderGalleryGridCard } from "@/components/loader-gallery-grid-card";
 import type {
   LoaderGalleryProps,
-  LoaderPreviewOverrideMap
+  LoaderPreviewOverrideMap,
 } from "@/components/loader-gallery.types";
 import { LoaderGalleryHeroInstallCommand } from "@/components/loader-gallery-hero-install-command";
 import { loaderComponentMap } from "@/lib/loader-component-map";
@@ -31,55 +28,63 @@ const heroNavLinkClassName =
   "text-fg-dim inline-block outline-offset-2 transition-[color,transform] duration-200 ease-out hover:text-link-hover focus-visible:text-link-hover motion-reduce:transition-colors";
 
 const HOMEPAGE_COLOR_PRESETS = [
-  { id: "solid-theme", label: "Theme", fill: "var(--color-dot-on)", glow: "var(--color-dot-on)", swatch: "var(--color-dot-on)" },
+  {
+    id: "solid-theme",
+    label: "Theme",
+    fill: "var(--color-dot-on)",
+    glow: "var(--color-dot-on)",
+    swatch: "var(--color-dot-on)",
+  },
   { id: "solid-mint", label: "Mint", fill: "#34d399", glow: "#34d399", swatch: "#34d399" },
   {
     id: "grad-sunset",
     label: "Sunset",
     fill: "linear-gradient(135deg, #ff5f6d 0%, #ffc371 52%, #ffe29a 100%)",
     glow: "#ff8b73",
-    swatch: "linear-gradient(135deg, #ff5f6d 0%, #ffc371 52%, #ffe29a 100%)"
+    swatch: "linear-gradient(135deg, #ff5f6d 0%, #ffc371 52%, #ffe29a 100%)",
   },
   {
     id: "grad-ocean",
     label: "Ocean",
     fill: "linear-gradient(140deg, #00c6ff 0%, #0072ff 48%, #4facfe 100%)",
     glow: "#2f8fff",
-    swatch: "linear-gradient(140deg, #00c6ff 0%, #0072ff 48%, #4facfe 100%)"
+    swatch: "linear-gradient(140deg, #00c6ff 0%, #0072ff 48%, #4facfe 100%)",
   },
   {
     id: "grad-neon",
     label: "Neon",
     fill: "linear-gradient(145deg, #b4ff39 0%, #39ffb6 46%, #00d4ff 100%)",
     glow: "#59ffc8",
-    swatch: "linear-gradient(145deg, #b4ff39 0%, #39ffb6 46%, #00d4ff 100%)"
+    swatch: "linear-gradient(145deg, #b4ff39 0%, #39ffb6 46%, #00d4ff 100%)",
   },
   {
     id: "grad-aurora",
     label: "Aurora",
     fill: "linear-gradient(145deg, #ff3cac 0%, #784ba0 45%, #2b86c5 100%)",
     glow: "#9c64bf",
-    swatch: "linear-gradient(145deg, #ff3cac 0%, #784ba0 45%, #2b86c5 100%)"
+    swatch: "linear-gradient(145deg, #ff3cac 0%, #784ba0 45%, #2b86c5 100%)",
   },
   {
     id: "grad-fire",
     label: "Fire",
     fill: "linear-gradient(145deg, #ff512f 0%, #dd2476 45%, #ffb347 100%)",
     glow: "#f96a5f",
-    swatch: "linear-gradient(145deg, #ff512f 0%, #dd2476 45%, #ffb347 100%)"
+    swatch: "linear-gradient(145deg, #ff512f 0%, #dd2476 45%, #ffb347 100%)",
   },
   {
     id: "grad-prism",
     label: "Prism",
     fill: "linear-gradient(145deg, #12c2e9 0%, #c471ed 45%, #f64f59 100%)",
     glow: "#9e7de8",
-    swatch: "linear-gradient(145deg, #12c2e9 0%, #c471ed 45%, #f64f59 100%)"
-  }
+    swatch: "linear-gradient(145deg, #12c2e9 0%, #c471ed 45%, #f64f59 100%)",
+  },
 ] as const;
 
-function resolvePreviewProps(slug: string, overrides?: LoaderPreviewOverrideMap): DotMatrixCommonProps {
-  const base =
-    LOADER_GALLERY_PREVIEW_PROPS[slug] ?? LOADER_GALLERY_PREVIEW_PROPS["dotm-square-1"];
+function resolvePreviewProps(
+  slug: string,
+  overrides?: LoaderPreviewOverrideMap,
+): DotMatrixCommonProps {
+  const base = LOADER_GALLERY_PREVIEW_PROPS[slug] ?? LOADER_GALLERY_PREVIEW_PROPS["dotm-square-1"];
   const override = overrides?.[slug];
   return override ? { ...base, ...override } : base;
 }
@@ -87,14 +92,17 @@ function resolvePreviewProps(slug: string, overrides?: LoaderPreviewOverrideMap)
 export function LoaderGallery({
   items,
   heroContent,
-  cardAnimationEnabled = true, detailPreviewScale = LOADER_GALLERY_DEFAULT_DETAIL_PREVIEW_SCALE,
+  cardAnimationEnabled = true,
+  detailPreviewScale = LOADER_GALLERY_DEFAULT_DETAIL_PREVIEW_SCALE,
   detailPreviewDotBoost = LOADER_GALLERY_DEFAULT_DETAIL_DOT_BOOST,
   previewPropsOverrides,
-  className
+  className,
 }: LoaderGalleryProps) {
   const [selectedSlug, setSelectedSlug] = useState<string | null>(null);
   const [activeExampleId, setActiveExampleId] = useState<ExamplePreviewId | null>(null);
-  const [activeColorPresetId, setActiveColorPresetId] = useState<string>(HOMEPAGE_COLOR_PRESETS[0].id);
+  const [activeColorPresetId, setActiveColorPresetId] = useState<string>(
+    HOMEPAGE_COLOR_PRESETS[0].id,
+  );
   const [hoveredColorPresetId, setHoveredColorPresetId] = useState<string | null>(null);
   const reduceMotion = useReducedMotion();
   const handleSelectSlug = useCallback((slug: string) => {
@@ -104,16 +112,18 @@ export function LoaderGallery({
     title: heroContent?.title ?? LOADER_GALLERY_DEFAULT_HERO_CONTENT.title,
     description: heroContent?.description ?? LOADER_GALLERY_DEFAULT_HERO_CONTENT.description,
     navLinks: heroContent?.navLinks ?? LOADER_GALLERY_DEFAULT_HERO_CONTENT.navLinks,
-    installCommand: heroContent?.installCommand ?? LOADER_GALLERY_DEFAULT_HERO_CONTENT.installCommand
+    installCommand:
+      heroContent?.installCommand ?? LOADER_GALLERY_DEFAULT_HERO_CONTENT.installCommand,
   };
   const firstLoaderSlug = items[0]?.slug ?? "dotm-square-1";
 
   const selected = useMemo(
     () => items.find((item) => item.slug === selectedSlug) ?? null,
-    [items, selectedSlug]
+    [items, selectedSlug],
   );
   const activeColorPreset =
-    HOMEPAGE_COLOR_PRESETS.find((preset) => preset.id === activeColorPresetId) ?? HOMEPAGE_COLOR_PRESETS[0];
+    HOMEPAGE_COLOR_PRESETS.find((preset) => preset.id === activeColorPresetId) ??
+    HOMEPAGE_COLOR_PRESETS[0];
 
   const toggleExamplePreview = useCallback((id: ExamplePreviewId) => {
     setActiveExampleId((p) => (p === id ? null : id));
@@ -135,7 +145,7 @@ export function LoaderGallery({
     const SelectedComponent = loaderComponentMap[selected.slug] ?? DotMatrixIcon;
     const base: DotMatrixCommonProps = {
       ...resolvePreviewProps(selected.slug, previewPropsOverrides),
-      colorPreset: activeColorPreset.id as DotMatrixColorPreset
+      colorPreset: activeColorPreset.id as DotMatrixColorPreset,
     };
     const detailSize = base.size ?? 30;
     const detailDotSize = base.dotSize ?? 4;
@@ -151,12 +161,7 @@ export function LoaderGallery({
       if (activeExampleId === "ex-layout" && isTriangleMatrix) {
         return (
           <ReducedMotionOverrideProvider reducedMotion={false}>
-            <SelectedComponent
-              key={previewKey}
-              {...base}
-              size={largeSize}
-              dotSize={largeDotSize}
-            />
+            <SelectedComponent key={previewKey} {...base} size={largeSize} dotSize={largeDotSize} />
           </ReducedMotionOverrideProvider>
         );
       }
@@ -181,25 +186,24 @@ export function LoaderGallery({
       }
       return (
         <ReducedMotionOverrideProvider reducedMotion={false}>
-          <SelectedComponent
-            key={previewKey}
-            {...merged}
-          />
+          <SelectedComponent key={previewKey} {...merged} />
         </ReducedMotionOverrideProvider>
       );
     }
 
     return (
       <ReducedMotionOverrideProvider reducedMotion={false}>
-        <SelectedComponent
-          key={previewKey}
-          {...base}
-          size={largeSize}
-          dotSize={largeDotSize}
-        />
+        <SelectedComponent key={previewKey} {...base} size={largeSize} dotSize={largeDotSize} />
       </ReducedMotionOverrideProvider>
     );
-  }, [selected, activeExampleId, previewPropsOverrides, detailPreviewScale, detailPreviewDotBoost, activeColorPreset.id]);
+  }, [
+    selected,
+    activeExampleId,
+    previewPropsOverrides,
+    detailPreviewScale,
+    detailPreviewDotBoost,
+    activeColorPreset.id,
+  ]);
 
   return (
     <main
@@ -210,7 +214,6 @@ export function LoaderGallery({
           <div className="flex flex-col gap-8">
             <div className="space-y-4">
               <div className="flex  justify-between w-full sm:gap-4">
-
                 <h1 className="theme-text-strong text-balance text-3xl tracking-tight sm:text-8xl">
                   {resolvedHero.title}
                 </h1>
@@ -293,7 +296,7 @@ export function LoaderGallery({
             PreviewComponent={loaderComponentMap[item.slug] ?? DotMatrixIcon}
             previewProps={{
               ...resolvePreviewProps(item.slug, previewPropsOverrides),
-              colorPreset: activeColorPreset.id as DotMatrixColorPreset
+              colorPreset: activeColorPreset.id as DotMatrixColorPreset,
             }}
             ignoreReducedMotion
           />

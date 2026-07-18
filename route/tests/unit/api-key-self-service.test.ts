@@ -5,13 +5,16 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import DatabaseSync from "better-sqlite3";
 
-import { SELF_ACCOUNT_QUOTA_SCOPE, SELF_USAGE_SCOPE } from "../../src/shared/constants/selfServiceScopes.ts";
+import {
+  SELF_ACCOUNT_QUOTA_SCOPE,
+  SELF_USAGE_SCOPE,
+} from "../../src/shared/constants/selfServiceScopes.ts";
 import { buildApiKeySelfServiceStatus } from "../../src/lib/usage/apiKeySelfService.ts";
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const migrationPath = path.join(
   repoRoot,
-  "src/lib/db/migrations/075_api_key_self_service_usage_scopes.sql"
+  "src/lib/db/migrations/075_api_key_self_service_usage_scopes.sql",
 );
 
 test("self-service scope migration backfills own usage once and preserves explicit account quota opt-in", () => {
@@ -34,7 +37,7 @@ test("self-service scope migration backfills own usage once and preserves explic
   db.exec(sql);
   db.prepare("UPDATE api_keys SET scopes = ? WHERE id = ?").run(
     JSON.stringify(["custom:scope"]),
-    "already-disabled-after-migration"
+    "already-disabled-after-migration",
   );
   db.exec(sql);
 
@@ -47,10 +50,7 @@ test("self-service scope migration backfills own usage once and preserves explic
   assert.deepEqual(scopesById.get("legacy-empty"), [SELF_USAGE_SCOPE]);
   assert.deepEqual(scopesById.get("legacy-null"), [SELF_USAGE_SCOPE]);
   assert.deepEqual(scopesById.get("custom"), ["custom:scope", SELF_USAGE_SCOPE]);
-  assert.deepEqual(scopesById.get("quota-opt-in"), [
-    SELF_ACCOUNT_QUOTA_SCOPE,
-    SELF_USAGE_SCOPE,
-  ]);
+  assert.deepEqual(scopesById.get("quota-opt-in"), [SELF_ACCOUNT_QUOTA_SCOPE, SELF_USAGE_SCOPE]);
   assert.deepEqual(scopesById.get("already-disabled-after-migration"), ["custom:scope"]);
 });
 
@@ -221,7 +221,11 @@ test("self-service status reports all explicitly allowed provider account quotas
         usage: {
           plan: "Claude Max",
           quotas: {
-            daily: { usedPercentage: 35, remainingPercentage: 65, resetAt: "2026-05-30T00:00:00.000Z" },
+            daily: {
+              usedPercentage: 35,
+              remainingPercentage: 65,
+              resetAt: "2026-05-30T00:00:00.000Z",
+            },
           },
         },
         cache: { quotas: null, plan: null, message: null, fetchedAt: "" },
@@ -234,7 +238,7 @@ test("self-service status reports all explicitly allowed provider account quotas
   assert.deepEqual(fetches, ["conn-codex", "conn-claude"]);
   assert.deepEqual(
     status.accountQuotas.map((quota: { connectionId: string }) => quota.connectionId),
-    ["conn-codex", "conn-claude"]
+    ["conn-codex", "conn-claude"],
   );
   assert.equal(status.accountQuotas[0].provider, "codex");
   assert.equal(status.accountQuotas[0].plan, "ChatGPT Plus");
@@ -258,7 +262,10 @@ test("self-service status reports all active provider account quotas for unrestr
       { id: "conn-disabled", provider: "claude", isActive: false },
     ],
     fetchAndPersistProviderLimits: async (connectionId: string) => ({
-      connection: { id: connectionId, provider: connectionId === "conn-codex" ? "codex" : "cursor" },
+      connection: {
+        id: connectionId,
+        provider: connectionId === "conn-codex" ? "codex" : "cursor",
+      },
       usage: {
         plan: connectionId === "conn-codex" ? "ChatGPT Plus" : "Cursor Pro",
         quotas: {
@@ -273,7 +280,7 @@ test("self-service status reports all active provider account quotas for unrestr
 
   assert.deepEqual(
     status.accountQuotas.map((quota: { connectionId: string }) => quota.connectionId),
-    ["conn-codex", "conn-cursor"]
+    ["conn-codex", "conn-cursor"],
   );
   assert.equal(status.accountQuotas[0].quotas.monthly.remainingPercentage, 75);
   assert.equal(status.accountQuotas[1].plan, "Cursor Pro");

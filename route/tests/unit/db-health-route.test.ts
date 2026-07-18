@@ -45,10 +45,10 @@ function insertBrokenRows(db) {
   db.prepare(
     `INSERT INTO quota_snapshots
       (provider, connection_id, window_key, remaining_percentage, is_exhausted, created_at)
-     VALUES (?, ?, ?, ?, ?, ?)`
+     VALUES (?, ?, ?, ?, ?, ?)`,
   ).run("openai", "missing-conn", "monthly", 75, 0, new Date().toISOString());
   db.prepare(
-    "INSERT INTO domain_budgets (api_key_id, daily_limit_usd, monthly_limit_usd, warning_threshold) VALUES (?, ?, ?, ?)"
+    "INSERT INTO domain_budgets (api_key_id, daily_limit_usd, monthly_limit_usd, warning_threshold) VALUES (?, ?, ?, ?)",
   ).run("missing-key", 10, 100, 0.8);
 }
 

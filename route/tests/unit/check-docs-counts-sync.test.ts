@@ -20,7 +20,7 @@ const tally = tallyDrift as (
     strict: boolean;
     files: string[];
   }[],
-  getContent: (file: string) => string | null
+  getContent: (file: string) => string | null,
 ) => { strict: number; soft: number; lines: string[] };
 const readTotal = readProviderTotal as () => number;
 const locales = countLocales as () => number;
@@ -57,7 +57,7 @@ test("no drift when every file mentions the real count", () => {
 
 test("STRICT drift is counted when a file omits the real count", () => {
   const { strict, soft } = tally([strictCheck], (f) =>
-    f === "README.md" ? "we have 226 providers" : "we have 177 providers"
+    f === "README.md" ? "we have 226 providers" : "we have 177 providers",
   );
   assert.equal(strict, 1, "AGENTS.md (177) should register one strict drift");
   assert.equal(soft, 0);

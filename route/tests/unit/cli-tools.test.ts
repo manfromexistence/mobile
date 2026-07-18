@@ -10,8 +10,9 @@ const {
   normalizeCliCompatProviderId,
 } = await import("../../src/shared/constants/cliCompatProviders.ts");
 const { CLI_TOOL_IDS } = await import("../../src/shared/services/cliRuntime.ts");
-const { applyFingerprint, isCliCompatEnabled, setCliCompatProviders } =
-  await import("../../open-sse/config/cliFingerprints.ts");
+const { applyFingerprint, isCliCompatEnabled, setCliCompatProviders } = await import(
+  "../../open-sse/config/cliFingerprints.ts"
+);
 
 test("Amp CLI was removed from CLI_TOOLS per plan 14 D17 (MITM backlog plan 11)", () => {
   // amp (Sourcegraph) removed from CLI_TOOLS in plan 14 because it has a closed ecosystem
@@ -38,7 +39,7 @@ test("CLI fingerprint toggles only expose implemented fingerprints and functiona
     assert.equal(
       implemented.has(providerId),
       true,
-      `${providerId} should have an implemented fingerprint`
+      `${providerId} should have an implemented fingerprint`,
     );
   }
 
@@ -47,7 +48,7 @@ test("CLI fingerprint toggles only expose implemented fingerprints and functiona
     assert.equal(
       implemented.has(providerId),
       true,
-      `${toggleId} should map to an implemented fingerprint provider`
+      `${toggleId} should map to an implemented fingerprint provider`,
     );
   }
 
@@ -73,7 +74,7 @@ test("CLI fingerprint strips OmniRoute internal body fields before upstream seri
       messages: [],
       stream: true,
       _claudeCodeRequiresLowercaseToolNames: true,
-    }
+    },
   );
 
   const body = JSON.parse(claude.bodyString);
@@ -88,7 +89,7 @@ test("CLI fingerprint preserves Codex executor User-Agent and maps legacy Copilo
       Authorization: "Bearer token",
       "User-Agent": "codex-cli/0.144.1 (Windows 10.0.26200; x64)",
     },
-    { model: "gpt-5.5", messages: [], stream: true }
+    { model: "gpt-5.5", messages: [], stream: true },
   );
 
   assert.equal(codex.headers["User-Agent"], "codex-cli/0.144.1 (Windows 10.0.26200; x64)");
@@ -97,7 +98,7 @@ test("CLI fingerprint preserves Codex executor User-Agent and maps legacy Copilo
   const copilot = applyFingerprint(
     "copilot",
     { Authorization: "Bearer token", Accept: "application/json" },
-    { model: "gpt-4o", messages: [] }
+    { model: "gpt-4o", messages: [] },
   );
 
   assert.equal(copilot.headers["User-Agent"], "GitHubCopilotChat/0.54.0");

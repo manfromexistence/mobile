@@ -81,7 +81,8 @@ export const dict = {
   "home.updated": "Actualizado",
   "home.noRows": "Aún no hay filas",
   "home.justNow": "ahora mismo",
-  "home.heroCopy": "Mira qué modelos ganan uso real, cómo cambia la mezcla y qué significa eso para el coste.",
+  "home.heroCopy":
+    "Mira qué modelos ganan uso real, cómo cambia la mezcla y qué significa eso para el coste.",
   "home.loadingTitle": "Cargando datos",
   "home.loadingDescription": "Leyendo agregados de modelos.",
   "home.usageTitle": "Uso",
@@ -121,11 +122,13 @@ export const dict = {
   "home.cacheRatioTitle": "Ratio de caché",
   "home.cacheRatioDescription": "Porción de tokens de entrada servidos desde caché.",
   "home.noCacheTitle": "Sin datos de ratio de caché",
-  "home.noCacheDescription": "Ninguna fila de modelo con tokens de entrada coincidió con este producto.",
+  "home.noCacheDescription":
+    "Ninguna fila de modelo con tokens de entrada coincidió con este producto.",
   "home.sessionCostTitle": "Coste por sesión",
   "home.sessionCostDescription": "Coste medio por sesión.",
   "home.noSessionCostTitle": "Sin datos de coste por sesión",
-  "home.noSessionCostDescription": "Ninguna fila de modelo con sesiones coincidió con este producto.",
+  "home.noSessionCostDescription":
+    "Ninguna fila de modelo con sesiones coincidió con este producto.",
   "home.costSession": "Coste/sesión",
   "lab.title": "Uso y clasificaciones de modelos de IA de {{lab}} | OpenCode Data",
   "lab.description":
@@ -145,7 +148,8 @@ export const dict = {
   "lab.usageTitle": "Uso de tokens de {{lab}}",
   "lab.usageDescription": "Volumen diario de tokens de OpenCode durante los últimos dos meses.",
   "lab.noUsageTitle": "Aún sin uso",
-  "lab.noUsageDescription": "El uso reciente de tokens aparecerá aquí cuando este laboratorio tenga actividad.",
+  "lab.noUsageDescription":
+    "El uso reciente de tokens aparecerá aquí cuando este laboratorio tenga actividad.",
   "lab.dailyTokenChart": "Gráfico de uso diario de tokens de {{lab}}",
   "lab.dailyTokens": "Tokens diarios",
   "lab.tokens": "tokens",
@@ -180,7 +184,8 @@ export const dict = {
   "model.knowledge": "Conocimiento",
   "model.release": "Lanzamiento",
   "model.inputs": "Entradas",
-  "model.overviewDescription": "Tokens recientes de OpenCode Go, usuarios únicos y posición de mercado.",
+  "model.overviewDescription":
+    "Tokens recientes de OpenCode Go, usuarios únicos y posición de mercado.",
   "model.noSummaryTitle": "Sin resumen de uso",
   "model.noSummaryDescription": "Este modelo aún no tiene filas de uso de OpenCode Go.",
   "model.tokens": "Tokens",
@@ -192,15 +197,18 @@ export const dict = {
   "model.totalModels": "{{count}} modelos",
   "model.momentum": "Impulso",
   "model.vsPreviousWindow": "vs ventana anterior",
-  "model.usageDescription": "Volumen diario de tokens de OpenCode Go durante la ventana reciente de dos meses.",
+  "model.usageDescription":
+    "Volumen diario de tokens de OpenCode Go durante la ventana reciente de dos meses.",
   "model.noUsageTitle": "Sin uso",
   "model.noUsageDescription": "No llegó uso en la ventana actual.",
   "model.dailyTokenChart": "Gráfico de uso diario de tokens",
-  "model.usersDescription": "Usuarios únicos diarios de OpenCode Go durante la ventana reciente de dos meses.",
+  "model.usersDescription":
+    "Usuarios únicos diarios de OpenCode Go durante la ventana reciente de dos meses.",
   "model.noUsersTitle": "Sin datos de usuarios",
   "model.noUsersDescription": "No llegaron filas con usuarios en la ventana actual.",
   "model.dailyUserChart": "Gráfico diario de usuarios únicos",
-  "model.efficiencyDescription": "Coste, comportamiento de caché y forma media de sesión de OpenCode Go.",
+  "model.efficiencyDescription":
+    "Coste, comportamiento de caché y forma media de sesión de OpenCode Go.",
   "model.noEfficiencyTitle": "Sin datos de eficiencia",
   "model.noEfficiencyDescription": "Los datos de eficiencia aparecen después de que llegue uso.",
   "model.cost": "Coste",
@@ -219,7 +227,8 @@ export const dict = {
   "model.worldMap": "Mapa mundial del uso de tokens del modelo por país",
   "model.peersDescription": "Modelos cercanos por volumen reciente de tokens de OpenCode Go.",
   "model.noPeersTitle": "Sin modelos similares",
-  "model.noPeersDescription": "Las clasificaciones de modelos similares aparecen después de que llegue uso.",
+  "model.noPeersDescription":
+    "Las clasificaciones de modelos similares aparecen después de que llegue uso.",
   "model.noUsageLastWeek": "Sin uso la semana pasada",
   "model.newThisWeek": "Nuevo esta semana",
   "model.sameAsPreviousWeek": "Igual que la semana anterior",
@@ -227,4 +236,4 @@ export const dict = {
   "model.pdf": "PDF",
   "format.users": "usuarios",
   "format.tokens": "tokens",
-} as const
+} as const;

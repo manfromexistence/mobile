@@ -52,7 +52,7 @@ test("DGrid ships the Free Models Router as the seeded default model", () => {
   assert.equal(new Set(ids).size, ids.length, "model ids must be unique");
   assert.equal(
     models.find((model: { id: string }) => model.id === DGRID_FREE_ROUTER)?.name,
-    "DGrid Free Models Router"
+    "DGrid Free Models Router",
   );
 });
 
@@ -116,7 +116,7 @@ test("DGrid import fetches the live /v1/models catalog", async () => {
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models?refresh=true`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
     const body = (await response.json()) as ModelsBody;
@@ -146,7 +146,7 @@ test("DGrid import falls back to the seeded free router when live fetch fails", 
   try {
     const response = await modelsRoute.GET(
       new Request(`http://localhost/api/providers/${connection.id}/models?refresh=true`),
-      { params: { id: connection.id } }
+      { params: { id: connection.id } },
     );
     assert.equal(response.status, 200);
     const body = (await response.json()) as ModelsBody;
@@ -154,7 +154,7 @@ test("DGrid import falls back to the seeded free router when live fetch fails", 
     assert.equal(body.source, "local_catalog", "import must not break when upstream is down");
     assert.deepEqual(
       body.models.map((model) => model.id),
-      [DGRID_FREE_ROUTER]
+      [DGRID_FREE_ROUTER],
     );
   } finally {
     globalThis.fetch = originalFetch;

@@ -27,19 +27,19 @@ export function stripZeroWidth(value: unknown): unknown {
       Object.entries(value as Record<string, unknown>).map(([key, item]) => [
         key,
         stripZeroWidth(item),
-      ])
+      ]),
     );
   }
   return value;
 }
 
 export function parseAntigravityTextualToolCall(
-  text: unknown
+  text: unknown,
 ): { name: string; args: unknown } | null {
   if (typeof text !== "string") return null;
   const normalized = text.replace(/[\u200B-\u200D\uFEFF]/g, "");
   const match = normalized.match(
-    /^[\s\S]*?\[Tool call:\s*([^\]\n]+)\]\s*\nArguments:\s*([\s\S]+?)\s*$/
+    /^[\s\S]*?\[Tool call:\s*([^\]\n]+)\]\s*\nArguments:\s*([\s\S]+?)\s*$/,
   );
   if (!match) return null;
   const name = match[1]?.trim();
@@ -54,7 +54,7 @@ export function parseAntigravityTextualToolCall(
 
 export function addAntigravityTextualToolCall(
   collected: AntigravityCollectedStream,
-  parsed: { name: string; args: unknown }
+  parsed: { name: string; args: unknown },
 ): void {
   collected.toolCalls.push({
     id: `${parsed.name}-${Date.now()}-${collected.toolCalls.length}`,
@@ -71,7 +71,7 @@ export function addAntigravityTextualToolCall(
 export function processAntigravitySSEPayload(
   payload: string,
   collected: AntigravityCollectedStream,
-  log?: { debug?: (scope: string, message: string) => void }
+  log?: { debug?: (scope: string, message: string) => void },
 ) {
   if (!payload || payload === "[DONE]") return;
   try {
@@ -100,7 +100,7 @@ export function processAntigravitySSEPayload(
     }
     if (candidate?.finishReason) {
       collected.finishReason = normalizeOpenAICompatibleFinishReasonString(
-        String(candidate.finishReason).toLowerCase()
+        String(candidate.finishReason).toLowerCase(),
       );
     }
     if (parsed?.response?.usageMetadata) {
@@ -123,7 +123,7 @@ export function processAntigravitySSEText(
   text: string,
   partialLine: { value: string },
   collected: AntigravityCollectedStream,
-  log?: { debug?: (scope: string, message: string) => void }
+  log?: { debug?: (scope: string, message: string) => void },
 ) {
   partialLine.value += text;
   const lines = partialLine.value.split("\n");
@@ -139,7 +139,7 @@ export function processAntigravitySSEText(
 export function flushAntigravitySSEText(
   partialLine: { value: string },
   collected: AntigravityCollectedStream,
-  log?: { debug?: (scope: string, message: string) => void }
+  log?: { debug?: (scope: string, message: string) => void },
 ) {
   const trimmed = partialLine.value.trim();
   partialLine.value = "";

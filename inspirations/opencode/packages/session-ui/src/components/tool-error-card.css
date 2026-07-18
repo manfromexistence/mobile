@@ -35,7 +35,8 @@
     user-select: text;
   }
 
-  > [data-component="collapsible"].tool-collapsible[data-open="true"] [data-slot="tool-error-card-content"] {
+  > [data-component="collapsible"].tool-collapsible[data-open="true"]
+    [data-slot="tool-error-card-content"] {
     padding-right: 40px;
   }
 

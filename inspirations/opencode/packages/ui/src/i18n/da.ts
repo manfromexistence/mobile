@@ -15,7 +15,8 @@ export const dict = {
   "ui.sessionReview.image.loading": "Indlæser...",
   "ui.sessionReview.image.placeholder": "Billede",
   "ui.sessionReview.largeDiff.title": "Diff er for stor til at blive vist",
-  "ui.sessionReview.largeDiff.meta": "Grænse: {{limit}} ændrede linjer. Nuværende: {{current}} ændrede linjer.",
+  "ui.sessionReview.largeDiff.meta":
+    "Grænse: {{limit}} ændrede linjer. Nuværende: {{current}} ændrede linjer.",
   "ui.sessionReview.largeDiff.renderAnyway": "Vis alligevel",
   "ui.fileMedia.kind.image": "billede",
   "ui.fileMedia.kind.audio": "lyd",
@@ -164,4 +165,4 @@ export const dict = {
   "ui.toolErrorCard.copyError": "Kopier fejl",
   "ui.message.duration.seconds": "{{count}}s",
   "ui.message.duration.minutesSeconds": "{{minutes}}m {{seconds}}s",
-}
+};

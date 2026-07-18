@@ -31,7 +31,7 @@ test("normalizeCodexTools drops image_generation when dropImageGeneration=true (
   assert.equal(
     tools.some((t) => t.type === "image_generation"),
     false,
-    "image_generation must be dropped for free-plan accounts"
+    "image_generation must be dropped for free-plan accounts",
   );
   assert.equal(tools.length, 1, "the function tool must survive");
   assert.equal(tools[0].type, "function");
@@ -47,7 +47,7 @@ test("normalizeCodexTools preserves image_generation for paid plans (default / f
     assert.equal(
       tools.some((t) => t.type === "image_generation"),
       true,
-      "image_generation must be preserved for paid/unknown plans"
+      "image_generation must be preserved for paid/unknown plans",
     );
   }
 });

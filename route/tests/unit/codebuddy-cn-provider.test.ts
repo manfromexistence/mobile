@@ -92,7 +92,7 @@ test("CodeBuddyCnExecutor.transformRequest forces stream:true and leaves reasoni
     "glm-5.2",
     { model: "glm-5.2", messages: [{ role: "user", content: "hi" }], stream: false },
     false,
-    {} as unknown as Parameters<typeof e.transformRequest>[3]
+    {} as unknown as Parameters<typeof e.transformRequest>[3],
   );
   assert.ok(out && typeof out === "object" && !Array.isArray(out));
   const body = out as Record<string, unknown>;
@@ -103,9 +103,13 @@ test("CodeBuddyCnExecutor.transformRequest forces stream:true and leaves reasoni
   assert.equal(
     Object.prototype.hasOwnProperty.call(body, "reasoning_effort"),
     false,
-    "plain request must not inject reasoning_effort (opt-in only)"
+    "plain request must not inject reasoning_effort (opt-in only)",
   );
-  assert.notEqual(body.reasoning_summary, "auto", "plain request must not inject reasoning_summary");
+  assert.notEqual(
+    body.reasoning_summary,
+    "auto",
+    "plain request must not inject reasoning_summary",
+  );
 });
 
 test("CodeBuddyCnExecutor preserves explicit reasoning_effort", () => {
@@ -114,7 +118,7 @@ test("CodeBuddyCnExecutor preserves explicit reasoning_effort", () => {
     "glm-5.2",
     { model: "glm-5.2", messages: [], reasoning_effort: "high" },
     true,
-    {} as unknown as Parameters<typeof e.transformRequest>[3]
+    {} as unknown as Parameters<typeof e.transformRequest>[3],
   );
   const body = out as Record<string, unknown>;
   assert.equal(body.reasoning_effort, "high");
@@ -128,21 +132,25 @@ test("CodeBuddyCnExecutor strips reasoning_effort when caller asks for none/off"
       "glm-5.2",
       { model: "glm-5.2", messages: [], reasoning_effort: effort },
       true,
-      {} as unknown as Parameters<typeof e.transformRequest>[3]
+      {} as unknown as Parameters<typeof e.transformRequest>[3],
     );
     const body = out as Record<string, unknown>;
     assert.equal(
       Object.prototype.hasOwnProperty.call(body, "reasoning_effort"),
       false,
-      `reasoning_effort must be omitted for ${effort}`
+      `reasoning_effort must be omitted for ${effort}`,
     );
-    assert.notEqual(body.reasoning_summary, "auto", `reasoning_summary must not be auto for ${effort}`);
+    assert.notEqual(
+      body.reasoning_summary,
+      "auto",
+      `reasoning_summary must not be auto for ${effort}`,
+    );
   }
 });
 
 test("codebuddy-cn OAuth provider is wired with device_code flow and GET-poll on state", async () => {
   assert.equal(OAUTH_PROVIDER_IDS.CODEBUDDY_CN, "codebuddy-cn");
-  const map = (PROVIDERS_MAP as Record<string, any>);
+  const map = PROVIDERS_MAP as Record<string, any>;
   const cb = map["codebuddy-cn"];
   assert.ok(cb, "PROVIDERS map must include 'codebuddy-cn'");
   assert.equal(cb.flowType, "device_code");
@@ -165,7 +173,7 @@ test("codebuddy-cn OAuth provider is wired with device_code flow and GET-poll on
           expiresIn: 3600,
         },
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     ) as unknown as Response;
   };
   try {
@@ -187,9 +195,7 @@ test("codebuddy-cn token refresh handler is wired in tokenRefresh.ts", () => {
 
 test("codebuddy-cn is in USAGE_SUPPORTED_PROVIDERS and quota handler parses Tencent accounts", async () => {
   assert.ok(USAGE_SUPPORTED_PROVIDERS.includes("codebuddy-cn"));
-  const { getCodeBuddyCnUsage } = await import(
-    "../../open-sse/services/usage/codebuddy-cn.ts"
-  );
+  const { getCodeBuddyCnUsage } = await import("../../open-sse/services/usage/codebuddy-cn.ts");
 
   const origFetch = globalThis.fetch;
   // Compose a mixed payload: one refill (CycleEndTime << DeductionEndTime) and
@@ -235,7 +241,7 @@ test("codebuddy-cn is in USAGE_SUPPORTED_PROVIDERS and quota handler parses Tenc
           },
         },
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     ) as unknown as Response;
   };
 
@@ -264,6 +270,6 @@ test("codebuddy-cn is treated as a managed dual-auth provider (oauth + apikey ac
   // OAuth-category providers that also accept a direct API key (like qoder).
   assert.ok(
     FREE_APIKEY_PROVIDER_IDS.has("codebuddy-cn"),
-    "codebuddy-cn must be admitted by the dual-auth gate"
+    "codebuddy-cn must be admitted by the dual-auth gate",
   );
 });

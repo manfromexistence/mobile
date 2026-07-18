@@ -185,7 +185,7 @@ export function encodeWsFrame(opcode, payload = Buffer.alloc(0)) {
 
 export function decodeClientFrames(
   buffer,
-  { maxPayloadBytes = DEFAULT_MAX_WS_MESSAGE_BYTES } = {}
+  { maxPayloadBytes = DEFAULT_MAX_WS_MESSAGE_BYTES } = {},
 ) {
   const frames = [];
   let offset = 0;
@@ -444,11 +444,11 @@ class ResponsesWsSession {
           error instanceof WebSocketInputTooLargeError || error?.closeCode === 1009;
         this.sendFailure(
           isTooLarge ? "message_too_large" : "frame_decode_failed",
-          error instanceof Error ? error.message : String(error)
+          error instanceof Error ? error.message : String(error),
         );
         this.close(
           isTooLarge ? 1009 : 1011,
-          isTooLarge ? error.reason || "message_too_large" : "frame_decode_failed"
+          isTooLarge ? error.reason || "message_too_large" : "frame_decode_failed",
         );
       });
   }
@@ -505,7 +505,7 @@ class ResponsesWsSession {
         this.fragmentBytes += frame.payload.length;
         if (this.fragmentBytes > this.maxMessageBytes) {
           throw new WebSocketInputTooLargeError(
-            "Fragmented WebSocket message exceeds configured limit"
+            "Fragmented WebSocket message exceeds configured limit",
           );
         }
         this.fragmentParts.push(frame.payload);
@@ -526,7 +526,7 @@ class ResponsesWsSession {
           this.fragmentBytes = frame.payload.length;
           if (this.fragmentBytes > this.maxMessageBytes) {
             throw new WebSocketInputTooLargeError(
-              "Fragmented WebSocket message exceeds configured limit"
+              "Fragmented WebSocket message exceeds configured limit",
             );
           }
           return;
@@ -588,7 +588,7 @@ class ResponsesWsSession {
           headers: getAuthHeaders(this.requestUrl, this.requestHeaders),
           message: firstMessage,
           response: responseBody,
-        }
+        },
       );
 
       if (!prepared.ok) {
@@ -658,7 +658,7 @@ class ResponsesWsSession {
           errorMessage: event.reason || "Codex upstream WebSocket closed before completion",
           terminalMessage: buildFailurePayload(
             "upstream_websocket_closed",
-            event.reason || "Codex upstream WebSocket closed before completion"
+            event.reason || "Codex upstream WebSocket closed before completion",
           ),
         });
         this.close(event.code || 1000, event.reason || "upstream_closed");
@@ -810,7 +810,7 @@ export function createResponsesWsProxy({
                 "Responses WebSocket proxy unavailable: wreq-js is not installed on this platform",
               code: "wreq_js_unavailable",
             },
-          })
+          }),
         );
         return true;
       }
@@ -826,7 +826,7 @@ export function createResponsesWsProxy({
               code: "upgrade_required",
             },
           }),
-          { Upgrade: "websocket" }
+          { Upgrade: "websocket" },
         );
         return true;
       }
@@ -855,7 +855,7 @@ export function createResponsesWsProxy({
                 message: "Missing sec-websocket-key header",
                 code: "bad_websocket_handshake",
               },
-            })
+            }),
           );
           return true;
         }
@@ -898,7 +898,7 @@ export function createResponsesWsProxy({
               message: error instanceof Error ? error.message : String(error),
               code: "responses_websocket_proxy_failed",
             },
-          })
+          }),
         );
         return true;
       }

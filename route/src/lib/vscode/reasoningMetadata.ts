@@ -80,10 +80,10 @@ function getNativeReasoningEffortValues(model: VscodeCatalogModel) {
       new Set(
         candidate
           .map((value) =>
-            typeof value === "string" ? normalizeReasoningEffortValue(value) : undefined
+            typeof value === "string" ? normalizeReasoningEffortValue(value) : undefined,
           )
-          .filter(Boolean)
-      )
+          .filter(Boolean),
+      ),
     ) as string[];
 
     if (normalized.length > 0) {
@@ -155,7 +155,7 @@ export function buildSupportedReasoningEfforts(supportedValues: string[]): strin
 
 export function inferSelectedReasoningEffort(
   model: VscodeCatalogModel,
-  supportedValues?: string[]
+  supportedValues?: string[],
 ) {
   const modelId = getCatalogModelName(model);
   const match = matchReasoningEffortSuffix(modelId);
@@ -183,7 +183,7 @@ export function getDefaultReasoningEffort(model: VscodeCatalogModel, supportedVa
 
 export function buildReasoningConfigSchema(
   supportedValues: string[],
-  defaultReasoningEffort: string
+  defaultReasoningEffort: string,
 ): VscodeModelConfigSchema {
   return {
     type: "object",

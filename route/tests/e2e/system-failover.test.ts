@@ -38,7 +38,7 @@ function resetConnectionCooldowns() {
          error_code = NULL,
          last_error_at = NULL
      WHERE rate_limited_until IS NOT NULL
-        OR test_status != 'active'`
+        OR test_status != 'active'`,
   ).run();
   db.pragma("wal_checkpoint(TRUNCATE)");
 }
@@ -147,7 +147,7 @@ async function waitForServer(
     stdoutLines: string[];
     stderrLines: string[];
     exitInfo?: { code: number | null; signal: NodeJS.Signals | null } | null;
-  }
+  },
 ) {
   const startedAt = Date.now();
   let lastError = "";
@@ -160,7 +160,7 @@ async function waitForServer(
           ...logs.stdoutLines.slice(-40),
           "--- stderr ---",
           ...logs.stderrLines.slice(-40),
-        ].join("\n")
+        ].join("\n"),
       );
     }
 
@@ -183,7 +183,7 @@ async function waitForServer(
       ...logs.stdoutLines.slice(-40),
       "--- stderr ---",
       ...logs.stderrLines.slice(-40),
-    ].join("\n")
+    ].join("\n"),
   );
 }
 
@@ -204,7 +204,7 @@ async function postChat(
   baseUrl: string,
   model: string,
   content: string,
-  extraHeaders?: Record<string, string>
+  extraHeaders?: Record<string, string>,
 ) {
   const response = await fetch(`${baseUrl}/api/v1/chat/completions`, {
     method: "POST",
@@ -604,7 +604,7 @@ test("same server failoverBeforeRetry disabled: first model 429 retried before t
   const result = await postChat(
     app.baseUrl,
     "sys-same-server",
-    "test same server failover disabled"
+    "test same server failover disabled",
   );
 
   assert.equal(result.response.status, 200, JSON.stringify(result.json));
@@ -625,7 +625,7 @@ test("same server failoverBeforeRetry enabled: first model 429 skipped to second
   const result = await postChat(
     app.baseUrl,
     "sys-same-server-fobr",
-    "test same server failover enabled"
+    "test same server failover enabled",
   );
 
   assert.equal(result.response.status, 200, JSON.stringify(result.json));

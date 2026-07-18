@@ -96,7 +96,7 @@ test("falls back to body.input when messages absent", () => {
   });
   storeSemanticCacheResponse(
     baseArgs({ body: { input: "the-input", temperature: 0, top_p: 1 } }),
-    deps
+    deps,
   );
   // args: (model, messages ?? input, temperature, top_p, apiKeyId)
   assert.equal(captured[1], "the-input");

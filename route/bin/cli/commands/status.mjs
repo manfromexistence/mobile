@@ -77,7 +77,7 @@ export async function runStatusCommand(opts = {}) {
   console.log(`  Version:     ${status.version}`);
   console.log(`  Data Dir:    ${status.dataDir}`);
   console.log(
-    `  Database:    ${status.database.exists ? "Found" : "Not found"} (${status.database.size || "N/A"})`
+    `  Database:    ${status.database.exists ? "Found" : "Not found"} (${status.database.size || "N/A"})`,
   );
   console.log(`  Config Dir:  ${status.configExists ? "Exists" : "Not found"}`);
 
@@ -86,7 +86,7 @@ export async function runStatusCommand(opts = {}) {
     for (const tool of status.tools) {
       const icon = tool.configured ? "✓" : tool.installed ? "~" : "✗";
       console.log(
-        `    ${icon} ${tool.name.padEnd(14)} ${tool.installed ? "installed" : "not installed"}${tool.version ? ` (${tool.version})` : ""}`
+        `    ${icon} ${tool.name.padEnd(14)} ${tool.installed ? "installed" : "not installed"}${tool.version ? ` (${tool.version})` : ""}`,
       );
     }
   }

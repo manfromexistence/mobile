@@ -75,7 +75,7 @@ export async function handleResponsesCore({
       signal,
       intervalMs: SSE_HEARTBEAT_INTERVAL_MS,
       shape: HEARTBEAT_SHAPES.OPENAI_RESPONSES_IN_PROGRESS,
-    })
+    }),
   );
 
   return {

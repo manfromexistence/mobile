@@ -22,7 +22,7 @@ import path from "node:path";
  * provider, and the healthy one must remain fully eligible).
  */
 const TEST_DATA_DIR = fs.mkdtempSync(
-  path.join(os.tmpdir(), "omniroute-quota-cutoff-priority-5923-")
+  path.join(os.tmpdir(), "omniroute-quota-cutoff-priority-5923-"),
 );
 process.env.DATA_DIR = TEST_DATA_DIR;
 
@@ -105,7 +105,7 @@ test("#5923 priority combo skips a 0%-remaining lead connection but keeps the si
     handleSingleModel: async (
       _body: unknown,
       modelStr: string,
-      target?: { connectionId?: string | null }
+      target?: { connectionId?: string | null },
     ) => {
       calls.push(target?.connectionId ?? null);
       return okResponse(modelStr);
@@ -117,11 +117,11 @@ test("#5923 priority combo skips a 0%-remaining lead connection but keeps the si
   assert.equal(
     calls[0],
     HEALTHY_CONNECTION_ID,
-    "the 0%-remaining lead connection must be skipped; the sibling connection must be dispatched instead"
+    "the 0%-remaining lead connection must be skipped; the sibling connection must be dispatched instead",
   );
   assert.ok(
     !calls.includes(EXHAUSTED_CONNECTION_ID),
-    "the exhausted connection must never be dispatched to"
+    "the exhausted connection must never be dispatched to",
   );
 
   // Strictly per-connection — the provider circuit breaker must stay CLOSED.
@@ -129,7 +129,7 @@ test("#5923 priority combo skips a 0%-remaining lead connection but keeps the si
   assert.equal(
     getCircuitBreaker(PROVIDER).getStatus().state,
     "CLOSED",
-    "quota-exhaustion cutoff must never trip the whole-provider circuit breaker"
+    "quota-exhaustion cutoff must never trip the whole-provider circuit breaker",
   );
 });
 
@@ -167,7 +167,7 @@ test("#5923 priority combo does NOT skip a 0%-remaining connection when the cuto
     handleSingleModel: async (
       _body: unknown,
       modelStr: string,
-      target?: { connectionId?: string | null }
+      target?: { connectionId?: string | null },
     ) => {
       calls.push(target?.connectionId ?? null);
       return okResponse(modelStr);
@@ -178,6 +178,6 @@ test("#5923 priority combo does NOT skip a 0%-remaining connection when the cuto
   assert.deepEqual(
     calls,
     [exhaustedConnectionId],
-    "with the cutoff setting OFF (default), the exhausted connection must still be dispatched to (unchanged auto-off behavior)"
+    "with the cutoff setting OFF (default), the exhausted connection must still be dispatched to (unchanged auto-off behavior)",
   );
 });

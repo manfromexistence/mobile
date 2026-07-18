@@ -1,5 +1,5 @@
-import { Resource } from "sst"
-import { defineConfig } from "drizzle-kit"
+import { Resource } from "sst";
+import { defineConfig } from "drizzle-kit";
 
 export default defineConfig({
   out: "./migrations/",
@@ -17,4 +17,4 @@ export default defineConfig({
       rejectUnauthorized: false,
     },
   },
-})
+});

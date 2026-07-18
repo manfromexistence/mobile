@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { File } from '@pierre/diffs/react';
+import { File } from "@pierre/diffs/react";
 
-import { useTheme } from '@/components/theme-provider';
+import { useTheme } from "@/components/theme-provider";
 
 export function TreeCssViewer({
   contents,
-  filename = 'tree.css',
+  filename = "tree.css",
 }: {
   contents: string;
   filename?: string;
 }) {
   const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === 'dark';
-  const theme = isDark ? 'pierre-dark' : 'pierre-light';
-  const themeType = isDark ? 'dark' : 'light';
+  const isDark = resolvedTheme === "dark";
+  const theme = isDark ? "pierre-dark" : "pierre-light";
+  const themeType = isDark ? "dark" : "light";
 
   return (
     <File

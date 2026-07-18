@@ -1,6 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert";
-import { findOrphanRegistryIds, KNOWN_REGISTRY_ONLY } from "../../scripts/check/check-provider-consistency.ts";
+import {
+  findOrphanRegistryIds,
+  KNOWN_REGISTRY_ONLY,
+} from "../../scripts/check/check-provider-consistency.ts";
 import { reportStaleEntries } from "../../scripts/check/lib/allowlist.mjs";
 
 const known = new Set(["openai", "anthropic", "gemini"]);
@@ -11,13 +14,15 @@ test("no orphans when every registry id is a known provider", () => {
 });
 
 test("flags a registry id that is not a canonical provider (hallucinated/half-registered)", () => {
-  assert.deepEqual(findOrphanRegistryIds(["openai", "ghostprovider"], isKnown, {}), ["ghostprovider"]);
+  assert.deepEqual(findOrphanRegistryIds(["openai", "ghostprovider"], isKnown, {}), [
+    "ghostprovider",
+  ]);
 });
 
 test("allowlisted ids are not flagged", () => {
   assert.deepEqual(
     findOrphanRegistryIds(["openai", "krutrim"], isKnown, { krutrim: "pré-existente" }),
-    []
+    [],
   );
 });
 
@@ -33,7 +38,7 @@ test("stale-enforcement: allowlist entry no longer needed causes gate to flag it
   const stale = (reportStaleEntries as (a: string[], l: string[], g: string) => string[])(
     ["now-registered-provider"],
     liveOrphans,
-    "provider-consistency"
+    "provider-consistency",
   );
   assert.deepEqual(stale, ["now-registered-provider"]);
 });

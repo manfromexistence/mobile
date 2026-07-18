@@ -29,7 +29,7 @@ describe("Context pinning — tool call responses (#721)", () => {
     assert.equal(result[2].role, "assistant");
     assert.ok(
       (result[2].content as any).includes("<omniModel>ollamacloud/glm-5</omniModel>"),
-      "Synthetic message should contain the pin tag"
+      "Synthetic message should contain the pin tag",
     );
   });
 
@@ -125,7 +125,7 @@ describe("Context pinning — tool call responses (#721)", () => {
     assert.equal(pinned, "new/model", "Should return new pinned model, not old one");
     // Verify old tag was cleaned
     const oldTagPresent = tagged.some(
-      (m) => typeof m.content === "string" && m.content.includes("old/model")
+      (m) => typeof m.content === "string" && m.content.includes("old/model"),
     );
     assert.equal(oldTagPresent, false, "Old pin tag should be cleaned");
   });

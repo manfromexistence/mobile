@@ -63,8 +63,9 @@ describe("claudeTlsClient", () => {
 
   describe("test override hook", () => {
     it("__setTlsFetchOverrideForTesting allows mocking tlsFetchClaude", async () => {
-      const { tlsFetchClaude, __setTlsFetchOverrideForTesting } =
-        await import("../claudeTlsClient.ts");
+      const { tlsFetchClaude, __setTlsFetchOverrideForTesting } = await import(
+        "../claudeTlsClient.ts"
+      );
 
       const mockResponse = {
         status: 200,
@@ -91,8 +92,9 @@ describe("claudeTlsClient", () => {
     });
 
     it("tlsFetchClaude respects the test override", async () => {
-      const { tlsFetchClaude, __setTlsFetchOverrideForTesting } =
-        await import("../claudeTlsClient.ts");
+      const { tlsFetchClaude, __setTlsFetchOverrideForTesting } = await import(
+        "../claudeTlsClient.ts"
+      );
 
       const mockResponse = {
         status: 401,
@@ -112,8 +114,9 @@ describe("claudeTlsClient", () => {
 
   describe("TlsFetchOptions type contract", () => {
     it("allows method, headers, body, timeoutMs, signal, stream, streamEofSymbol, proxyUrl options", async () => {
-      const { __setTlsFetchOverrideForTesting, tlsFetchClaude } =
-        await import("../claudeTlsClient.ts");
+      const { __setTlsFetchOverrideForTesting, tlsFetchClaude } = await import(
+        "../claudeTlsClient.ts"
+      );
 
       const mockFn = vi.fn().mockResolvedValue({
         status: 200,
@@ -149,8 +152,9 @@ describe("claudeTlsClient", () => {
     });
 
     it("allows optional proxyUrl for per-call proxy override", async () => {
-      const { __setTlsFetchOverrideForTesting, tlsFetchClaude } =
-        await import("../claudeTlsClient.ts");
+      const { __setTlsFetchOverrideForTesting, tlsFetchClaude } = await import(
+        "../claudeTlsClient.ts"
+      );
 
       const mockFn = vi.fn().mockResolvedValue({
         status: 200,
@@ -171,7 +175,7 @@ describe("claudeTlsClient", () => {
       });
       expect(mockFn).toHaveBeenCalledWith(
         "https://claude.ai/test",
-        expect.objectContaining({ proxyUrl: "http://custom:8080" })
+        expect.objectContaining({ proxyUrl: "http://custom:8080" }),
       );
 
       __setTlsFetchOverrideForTesting(null);
@@ -180,8 +184,9 @@ describe("claudeTlsClient", () => {
 
   describe("TlsFetchResult response contract", () => {
     it("returns object with status, headers, text, and body fields", async () => {
-      const { __setTlsFetchOverrideForTesting, tlsFetchClaude } =
-        await import("../claudeTlsClient.ts");
+      const { __setTlsFetchOverrideForTesting, tlsFetchClaude } = await import(
+        "../claudeTlsClient.ts"
+      );
 
       const mockResponse = {
         status: 200,
@@ -205,8 +210,9 @@ describe("claudeTlsClient", () => {
     });
 
     it("handles streaming response with body stream", async () => {
-      const { __setTlsFetchOverrideForTesting, tlsFetchClaude } =
-        await import("../claudeTlsClient.ts");
+      const { __setTlsFetchOverrideForTesting, tlsFetchClaude } = await import(
+        "../claudeTlsClient.ts"
+      );
 
       const mockStream = new ReadableStream<Uint8Array>({
         start(controller) {
@@ -235,8 +241,9 @@ describe("claudeTlsClient", () => {
 
   describe("proxy resolution order", () => {
     it("uses per-call proxyUrl when provided (highest priority)", async () => {
-      const { __setTlsFetchOverrideForTesting, tlsFetchClaude } =
-        await import("../claudeTlsClient.ts");
+      const { __setTlsFetchOverrideForTesting, tlsFetchClaude } = await import(
+        "../claudeTlsClient.ts"
+      );
 
       process.env.HTTP_PROXY = "http://env-proxy:8080";
       const mockFn = vi.fn().mockResolvedValue({
@@ -259,8 +266,9 @@ describe("claudeTlsClient", () => {
     });
 
     it("falls back to env var when per-call proxyUrl not provided", async () => {
-      const { __setTlsFetchOverrideForTesting, tlsFetchClaude } =
-        await import("../claudeTlsClient.ts");
+      const { __setTlsFetchOverrideForTesting, tlsFetchClaude } = await import(
+        "../claudeTlsClient.ts"
+      );
 
       process.env.HTTPS_PROXY = "http://env-proxy:8080";
       const mockFn = vi.fn().mockResolvedValue({

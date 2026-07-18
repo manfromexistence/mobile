@@ -1,10 +1,10 @@
-export * as SessionStatusEvent from "./session-status-event"
+export * as SessionStatusEvent from "./session-status-event";
 
-import { Schema } from "effect"
-import { optional } from "./schema"
-import { Event } from "./event"
-import { NonNegativeInt } from "./schema"
-import { SessionID } from "./session-id"
+import { Schema } from "effect";
+import { optional } from "./schema";
+import { Event } from "./event";
+import { NonNegativeInt } from "./schema";
+import { SessionID } from "./session-id";
 
 export const Info = Schema.Union([
   Schema.Struct({
@@ -29,8 +29,8 @@ export const Info = Schema.Union([
   Schema.Struct({
     type: Schema.Literal("busy"),
   }),
-]).annotate({ identifier: "SessionStatus" })
-export type Info = Schema.Schema.Type<typeof Info>
+]).annotate({ identifier: "SessionStatus" });
+export type Info = Schema.Schema.Type<typeof Info>;
 
 export const Status = Event.define({
   type: "session.status",
@@ -38,7 +38,7 @@ export const Status = Event.define({
     sessionID: SessionID,
     status: Info,
   },
-})
+});
 
 // deprecated
 export const Idle = Event.define({
@@ -46,6 +46,6 @@ export const Idle = Event.define({
   schema: {
     sessionID: SessionID,
   },
-})
+});
 
-export const Definitions = Event.inventory(Status, Idle)
+export const Definitions = Event.inventory(Status, Idle);

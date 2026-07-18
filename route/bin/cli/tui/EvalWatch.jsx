@@ -51,7 +51,7 @@ function EvalWatchApp({ runId, suiteId, baseUrl, apiKey, onExit }) {
         model: s.model ?? "-",
         score: s.score,
         latencyMs: s.latencyMs,
-      }))
+      })),
     );
   }, [run]);
 
@@ -163,7 +163,7 @@ export async function startEvalWatchTui({ runId, suiteId, baseUrl, apiKey }) {
         baseUrl={baseUrl}
         apiKey={apiKey}
         onExit={onExit}
-      />
+      />,
     );
 
     waitUntilExit().then(resolve).catch(reject);

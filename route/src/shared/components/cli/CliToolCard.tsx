@@ -73,7 +73,7 @@ export default function CliToolCard({
         "block min-h-[180px]",
         "bg-surface border border-black/5 dark:border-white/5 rounded-lg shadow-sm",
         "hover:shadow-md hover:border-primary/30 transition-all",
-        "p-4 flex flex-col gap-3"
+        "p-4 flex flex-col gap-3",
       )}
     >
       {/* Header */}
@@ -85,7 +85,7 @@ export default function CliToolCard({
         <span
           className={cn(
             "inline-flex items-center gap-1 text-[11px] font-medium px-1.5 py-0.5 rounded",
-            installed ? "text-green-600 dark:text-green-400" : "text-zinc-500 dark:text-zinc-400"
+            installed ? "text-green-600 dark:text-green-400" : "text-zinc-500 dark:text-zinc-400",
           )}
         >
           <span aria-hidden="true">{installed ? "✓" : "✗"}</span>

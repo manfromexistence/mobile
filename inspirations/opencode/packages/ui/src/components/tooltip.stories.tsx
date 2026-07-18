@@ -1,6 +1,6 @@
 // @ts-nocheck
-import * as mod from "./tooltip"
-import { create } from "../storybook/scaffold"
+import * as mod from "./tooltip";
+import { create } from "../storybook/scaffold";
 
 const docs = `### Overview
 Tooltip for contextual hints and keybind callouts.
@@ -23,9 +23,13 @@ Use for short hints; avoid long descriptions.
 ### Theming/tokens
 - Uses \`data-component="tooltip"\` and related slots.
 
-`
+`;
 
-const story = create({ title: "UI/Tooltip", mod, args: { value: "Tooltip", children: "Hover me" } })
+const story = create({
+  title: "UI/Tooltip",
+  mod,
+  args: { value: "Tooltip", children: "Hover me" },
+});
 
 export default {
   title: "UI/Tooltip",
@@ -39,9 +43,9 @@ export default {
       },
     },
   },
-}
+};
 
-export const Basic = story.Basic
+export const Basic = story.Basic;
 
 export const Keybind = {
   render: () => (
@@ -49,16 +53,16 @@ export const Keybind = {
       <span style={{ "text-decoration": "underline" }}>Hover for keybind</span>
     </mod.TooltipKeybind>
   ),
-}
+};
 
 export const ForcedOpen = {
   args: {
     forceOpen: true,
   },
-}
+};
 
 export const Inactive = {
   args: {
     inactive: true,
   },
-}
+};

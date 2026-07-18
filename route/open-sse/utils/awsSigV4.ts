@@ -32,7 +32,7 @@ function hmacHex(key: string | Buffer, value: string) {
 function awsEncode(value: string) {
   return encodeURIComponent(value).replace(
     /[!'()*]/g,
-    (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`
+    (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`,
   );
 }
 
@@ -47,7 +47,7 @@ function canonicalUri(pathname: string) {
 function canonicalQuery(searchParams: URLSearchParams) {
   return [...searchParams.entries()]
     .sort(([keyA, valueA], [keyB, valueB]) =>
-      keyA === keyB ? valueA.localeCompare(valueB) : keyA.localeCompare(keyB)
+      keyA === keyB ? valueA.localeCompare(valueB) : keyA.localeCompare(keyB),
     )
     .map(([key, value]) => `${awsEncode(key)}=${awsEncode(value)}`)
     .join("&");
@@ -124,7 +124,7 @@ export function signAwsRequest({
   ].join("\n");
   const signature = hmacHex(
     signingKey(credentials.secretAccessKey, dateStamp, region, service),
-    stringToSign
+    stringToSign,
   );
 
   return {

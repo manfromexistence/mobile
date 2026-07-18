@@ -731,7 +731,7 @@ export function resolveLmarenaArenaId(catalogOrArenaId: string): string | null {
       m.displayName === raw ||
       m.catalogId.toLowerCase() === lower ||
       m.publicName.toLowerCase() === lower ||
-      m.displayName.toLowerCase() === lower
+      m.displayName.toLowerCase() === lower,
   );
   return hit?.arenaId ?? null;
 }

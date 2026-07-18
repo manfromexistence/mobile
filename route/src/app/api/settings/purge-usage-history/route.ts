@@ -27,7 +27,7 @@ export async function POST(request: Request) {
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
         deletedHourlySummary: result.deletedHourlySummary,
         errors: result.errors,
       },
-      { status: result.errors > 0 ? 500 : 200 }
+      { status: result.errors > 0 ? 500 : 200 },
     );
   } catch {
     return NextResponse.json(buildErrorBody(500, "Failed to reset usage history"), {

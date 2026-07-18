@@ -31,7 +31,7 @@ test("no raw header -> null (idempotency disabled for the request)", () => {
       model: "claude-opus-4-8",
       messages: MSGS,
     }),
-    null
+    null,
   );
 });
 

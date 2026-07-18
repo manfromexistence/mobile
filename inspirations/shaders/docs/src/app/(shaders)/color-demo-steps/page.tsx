@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useControls, button, folder } from 'leva';
-import { setParamsSafe, useResetLevaParams } from '@/helpers/use-reset-leva-params';
-import { usePresetHighlight } from '@/helpers/use-preset-highlight';
-import { cleanUpLevaParams } from '@/helpers/clean-up-leva-params';
+import { useControls, button, folder } from "leva";
+import { setParamsSafe, useResetLevaParams } from "@/helpers/use-reset-leva-params";
+import { usePresetHighlight } from "@/helpers/use-preset-highlight";
+import { cleanUpLevaParams } from "@/helpers/clean-up-leva-params";
 
-import { memo } from 'react';
-import { ShaderMount, type ShaderComponentProps } from '@paper-design/shaders-react';
-import { getShaderColorFromString, type ShaderPreset } from '@paper-design/shaders';
-import { useColors } from '@/helpers/use-colors';
-import { ShaderContainer } from '@/components/shader-container';
+import { memo } from "react";
+import { ShaderMount, type ShaderComponentProps } from "@paper-design/shaders-react";
+import { getShaderColorFromString, type ShaderPreset } from "@paper-design/shaders";
+import { useColors } from "@/helpers/use-colors";
+import { ShaderContainer } from "@/components/shader-container";
 
 type vec4 = [number, number, number, number];
 const gradientDemoStepsMaxColorCount = 10;
@@ -107,13 +107,18 @@ interface GradientDemoStepsProps extends ShaderComponentProps, GradientDemoSteps
 type GradientDemoStepsPreset = ShaderPreset<GradientDemoStepsParams>;
 
 const defaultPreset: GradientDemoStepsPreset = {
-  name: 'Default',
+  name: "Default",
   params: {
     shape: 1,
     extraSides: true,
     extraSteps: 0,
     softness: 0,
-    colors: ['hsla(259, 100%, 50%, 1)', 'hsla(150, 100%, 50%, 1)', 'hsla(48, 100%, 50%, 1)', 'hsla(295, 100%, 50%, 1)'],
+    colors: [
+      "hsla(259, 100%, 50%, 1)",
+      "hsla(150, 100%, 50%, 1)",
+      "hsla(48, 100%, 50%, 1)",
+      "hsla(295, 100%, 50%, 1)",
+    ],
   },
 };
 
@@ -136,7 +141,9 @@ const GradientDemoSteps: React.FC<GradientDemoStepsProps> = memo(function Gradie
     u_softness: softness ?? defaultPreset.params.softness,
   };
 
-  return <ShaderMount {...props} fragmentShader={gradientDemoStepsFragmentShader} uniforms={uniforms} />;
+  return (
+    <ShaderMount {...props} fragmentShader={gradientDemoStepsFragmentShader} uniforms={uniforms} />
+  );
 });
 
 const defaults = gradientDemoStepsPresets[0].params;
@@ -158,7 +165,7 @@ export default function Page() {
             setColors(colors);
           }),
         ];
-      })
+      }),
     );
 
     return {
@@ -169,7 +176,7 @@ export default function Page() {
           extraSteps: { value: defaults.extraSteps, min: 0, max: 10, step: 1, order: 2 },
           softness: { value: defaults.softness, min: 0, max: 1, order: 3 },
         },
-        { order: 1 }
+        { order: 1 },
       ),
       Presets: folder(presets as Record<string, string>, { order: 2 }),
     };

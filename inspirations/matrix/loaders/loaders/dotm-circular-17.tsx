@@ -24,15 +24,19 @@ export function DotmCircular17({
   ...rest
 }: DotmCircular17Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
   const animPhase = useCyclePhase({
     active: !reducedMotion && matrixPhase !== "idle",
     cycleMsBase: 1500,
-    speed
+    speed,
   });
 
   const resolver = useMemo<DotAnimationResolver>(() => {
@@ -42,9 +46,7 @@ export function DotmCircular17({
       }
 
       const holdStill = reducedMotion || dmxPhase === "idle";
-      const t = holdStill
-        ? 0
-        : Math.floor(animPhase * CHECKER_STEPS) % CHECKER_STEPS;
+      const t = holdStill ? 0 : Math.floor(animPhase * CHECKER_STEPS) % CHECKER_STEPS;
       const parity = (row + col + t) % 2;
       const brailleBias = col === 1 || col === 3;
       const centerBias = row === 2 || col === 2;

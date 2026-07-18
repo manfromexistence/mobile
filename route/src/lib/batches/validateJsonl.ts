@@ -20,7 +20,7 @@ interface LineResult {
 function validateOneLine(
   raw: string,
   endpoint: SupportedBatchEndpoint,
-  lineNo: number
+  lineNo: number,
 ): LineResult {
   const errors: JsonlLineError[] = [];
   if (raw.trim().length === 0) return { errors };
@@ -95,7 +95,7 @@ export function validateJsonl(
     endpoint: SupportedBatchEndpoint;
     maxLinesToInspect?: number;
     tailLinesToInspect?: number;
-  }
+  },
 ): ValidationResult {
   const maxHead = opts.maxLinesToInspect ?? 1000;
   const maxTail = opts.tailLinesToInspect ?? 100;

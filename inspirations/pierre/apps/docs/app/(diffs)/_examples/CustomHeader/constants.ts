@@ -1,10 +1,10 @@
-import { DEFAULT_THEMES, type FileContents } from '@pierre/diffs';
-import type { PreloadMultiFileDiffOptions } from '@pierre/diffs/ssr';
+import { DEFAULT_THEMES, type FileContents } from "@pierre/diffs";
+import type { PreloadMultiFileDiffOptions } from "@pierre/diffs/ssr";
 
-import { CustomScrollbarCSS } from '@/components/CustomScrollbarCSS';
+import { CustomScrollbarCSS } from "@/components/CustomScrollbarCSS";
 
 const CUSTOM_HEADER_OLD_FILE: FileContents = {
-  name: 'AppConfig.swift',
+  name: "AppConfig.swift",
   contents: `import Foundation
 
 struct AppConfig {
@@ -31,7 +31,7 @@ struct AppConfig {
 };
 
 const CUSTOM_HEADER_NEW_FILE: FileContents = {
-  name: 'AppConfig.swift',
+  name: "AppConfig.swift",
   contents: `import Foundation
 
 struct AppConfig {
@@ -69,8 +69,8 @@ export const CUSTOM_HEADER_EXAMPLE: PreloadMultiFileDiffOptions<undefined> = {
   newFile: CUSTOM_HEADER_NEW_FILE,
   options: {
     theme: DEFAULT_THEMES,
-    themeType: 'dark',
-    diffStyle: 'split',
+    themeType: "dark",
+    diffStyle: "split",
     disableBackground: false,
     unsafeCSS: CustomScrollbarCSS,
   },

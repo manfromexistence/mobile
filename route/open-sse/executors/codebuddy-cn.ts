@@ -25,7 +25,7 @@ export class CodeBuddyCnExecutor extends DefaultExecutor {
     model: string,
     body: unknown,
     stream: boolean,
-    credentials: ProviderCredentials
+    credentials: ProviderCredentials,
   ): unknown {
     const transformed = super.transformRequest(model, body, stream, credentials);
     if (!transformed || typeof transformed !== "object" || Array.isArray(transformed)) {

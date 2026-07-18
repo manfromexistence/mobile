@@ -18,7 +18,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ suit
   } catch (error: any) {
     return NextResponse.json(
       { error: error?.message || "Failed to load eval suite" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -38,7 +38,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ suit
           details: [{ field: "body", message: "Invalid JSON body" }],
         },
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -59,14 +59,14 @@ export async function PUT(request: Request, { params }: { params: Promise<{ suit
   } catch (error: any) {
     return NextResponse.json(
       { error: error?.message || "Failed to update eval suite" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function DELETE(
   request: Request,
-  { params }: { params: Promise<{ suiteId: string }> }
+  { params }: { params: Promise<{ suiteId: string }> },
 ) {
   const authError = await requireManagementAuth(request);
   if (authError) return authError;
@@ -81,7 +81,7 @@ export async function DELETE(
   } catch (error: any) {
     return NextResponse.json(
       { error: error?.message || "Failed to delete eval suite" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

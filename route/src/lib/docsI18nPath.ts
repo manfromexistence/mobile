@@ -18,7 +18,7 @@ const SEGMENT_RE = /^[a-z0-9-]+$/i;
 export function resolveSafeI18nSectionDir(
   docsRoot: string,
   locale: string,
-  slug: string[]
+  slug: string[],
 ): string | null {
   if (!locale || !SEGMENT_RE.test(locale)) return null;
   if (!slug.length || !slug.every((s) => SEGMENT_RE.test(s))) return null;

@@ -46,13 +46,13 @@ test("attaches the usage receipt only after pendingWrite resolves", async () => 
     setTimeout(() => {
       pendingResolved = true;
       res();
-    }, 20)
+    }, 20),
   );
 
   attachCompressionUsageReceiptAfterAnalytics(
     { prompt_tokens: 10, completion_tokens: 5, total_tokens: 15 },
     "provider",
-    { pendingWrite, skillRequestId: "req-1" }
+    { pendingWrite, skillRequestId: "req-1" },
   );
 
   await tick(80);
@@ -66,11 +66,10 @@ test("attaches the usage receipt only after pendingWrite resolves", async () => 
 
 test("swallows the no-matching-row case without throwing or recording a receipt", async () => {
   assert.doesNotThrow(() =>
-    attachCompressionUsageReceiptAfterAnalytics(
-      { prompt_tokens: 1, total_tokens: 1 },
-      "provider",
-      { pendingWrite: null, skillRequestId: "does-not-exist" }
-    )
+    attachCompressionUsageReceiptAfterAnalytics({ prompt_tokens: 1, total_tokens: 1 }, "provider", {
+      pendingWrite: null,
+      skillRequestId: "does-not-exist",
+    }),
   );
   await tick(40);
   const summary = getCompressionAnalyticsSummary();

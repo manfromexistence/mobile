@@ -10,15 +10,15 @@ export function normalizeBlockedProviderSet(blockedProviders: unknown): Set<stri
   return new Set(
     Array.isArray(entries)
       ? entries.filter(
-          (provider): provider is string => typeof provider === "string" && provider.length > 0
+          (provider): provider is string => typeof provider === "string" && provider.length > 0,
         )
-      : []
+      : [],
   );
 }
 
 export function isProviderBlockedByIdOrAlias(
   providerId: string,
-  blockedProviders: unknown
+  blockedProviders: unknown,
 ): boolean {
   const blockedProviderSet = normalizeBlockedProviderSet(blockedProviders);
   const provider = getProviderById(providerId) as ProviderWithAlias | undefined;
@@ -30,7 +30,7 @@ export function isProviderBlockedByIdOrAlias(
 
 export function isNoAuthProviderKey(...keys: Array<string | null | undefined>): boolean {
   return noAuthProviderEntries.some((provider) =>
-    keys.some((key) => key === provider.id || key === provider.alias)
+    keys.some((key) => key === provider.id || key === provider.alias),
   );
 }
 
@@ -43,7 +43,7 @@ export function isNoAuthProviderBlocked(
     (provider) =>
       keys.some((key) => key === provider.id || key === provider.alias) &&
       (blockedProviderSet.has(provider.id) ||
-        (typeof provider.alias === "string" && blockedProviderSet.has(provider.alias)))
+        (typeof provider.alias === "string" && blockedProviderSet.has(provider.alias))),
   );
 }
 

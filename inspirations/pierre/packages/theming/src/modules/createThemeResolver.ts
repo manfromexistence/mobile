@@ -8,8 +8,8 @@
  * imports (`import('some-theme.json')`) that wrap the value under `default`.
  */
 
-import type { ThemeLike } from './types';
-import { type DefaultExport, unwrapDefault } from './unwrapDefault';
+import type { ThemeLike } from "./types";
+import { type DefaultExport, unwrapDefault } from "./unwrapDefault";
 
 // A loader is a zero-argument async factory that returns either a ThemeLike
 // directly or a module-style `{ default: ThemeLike }` (the shape produced by
@@ -76,7 +76,7 @@ export interface ThemeResolver<TTheme extends ThemeLike = ThemeLike> {
 export class DuplicateThemeError extends Error {
   constructor(name: string) {
     super(`Theme "${name}" is already registered`);
-    this.name = 'DuplicateThemeError';
+    this.name = "DuplicateThemeError";
   }
 }
 
@@ -84,7 +84,7 @@ export class DuplicateThemeError extends Error {
 export class UnregisteredThemeError extends Error {
   constructor(name: string) {
     super(`No loader registered for theme "${name}"`);
-    this.name = 'UnregisteredThemeError';
+    this.name = "UnregisteredThemeError";
   }
 }
 
@@ -94,16 +94,14 @@ export class UnregisteredThemeError extends Error {
 export class UnresolvedThemeError extends Error {
   constructor(name: string) {
     super(`Theme "${name}" has not been resolved`);
-    this.name = 'UnresolvedThemeError';
+    this.name = "UnresolvedThemeError";
   }
 }
 
 // Creates an isolated ThemeResolver instance with its own loader registry,
 // resolved-theme cache, and in-flight dedupe map. Multiple instances never
 // share state.
-export function createThemeResolver<
-  TTheme extends ThemeLike = ThemeLike,
->(): ThemeResolver<TTheme> {
+export function createThemeResolver<TTheme extends ThemeLike = ThemeLike>(): ThemeResolver<TTheme> {
   // Maps theme name → registered loader function (set at register time).
   const loaders = new Map<string, ThemeLoader<TTheme>>();
 
@@ -126,10 +124,7 @@ export function createThemeResolver<
     loaders.set(name, loader);
   }
 
-  function registerThemeIfAbsent(
-    name: string,
-    loader: ThemeLoader<TTheme>
-  ): boolean {
+  function registerThemeIfAbsent(name: string, loader: ThemeLoader<TTheme>): boolean {
     if (loaders.has(name)) return false;
     loaders.set(name, loader);
     return true;
@@ -203,9 +198,7 @@ export function createThemeResolver<
     resolved.set(name, theme);
   }
 
-  function seedResolvedThemes(
-    entries: Iterable<readonly [string, TTheme]>
-  ): void {
+  function seedResolvedThemes(entries: Iterable<readonly [string, TTheme]>): void {
     for (const [name, theme] of entries) {
       seedResolvedTheme(name, theme);
     }

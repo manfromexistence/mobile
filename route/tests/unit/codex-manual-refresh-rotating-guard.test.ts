@@ -28,7 +28,7 @@ test("manual refresh route imports rotationGroupFor", async () => {
   assert.match(
     src,
     /import\s*\{[^}]*rotationGroupFor[^}]*\}\s*from\s*["'][^"']*refreshSerializer/,
-    "refresh route must import rotationGroupFor to detect rotating providers"
+    "refresh route must import rotationGroupFor to detect rotating providers",
   );
 });
 
@@ -38,15 +38,18 @@ test("manual refresh route skips proactive refresh for the OpenAI Auth0 family B
   const guardIdx = src.search(/rotationGroup\s*===\s*["']openai-auth0["']/);
   assert.ok(
     guardIdx >= 0,
-    "refresh route must only skip proactive refresh for the OpenAI Auth0 family"
+    "refresh route must only skip proactive refresh for the OpenAI Auth0 family",
   );
 
   const getAccessTokenIdx = src.indexOf("getAccessToken(");
-  assert.ok(getAccessTokenIdx >= 0, "refresh route still calls getAccessToken for non-rotating providers");
+  assert.ok(
+    getAccessTokenIdx >= 0,
+    "refresh route still calls getAccessToken for non-rotating providers",
+  );
 
   assert.ok(
     guardIdx < getAccessTokenIdx,
-    "the OpenAI Auth0 guard must run BEFORE getAccessToken so the risky refresh_token is never exercised"
+    "the OpenAI Auth0 guard must run BEFORE getAccessToken so the risky refresh_token is never exercised",
   );
 
   // The guard short-circuits with an early return (no token rotation).
@@ -54,7 +57,7 @@ test("manual refresh route skips proactive refresh for the OpenAI Auth0 family B
   assert.match(
     guardBlock,
     /return\b/,
-    "the OpenAI Auth0 guard must return early (defer to the reactive 401 path) instead of refreshing"
+    "the OpenAI Auth0 guard must return early (defer to the reactive 401 path) instead of refreshing",
   );
 });
 
@@ -63,11 +66,11 @@ test("manual refresh route does not skip Kiro just because it is serialized", as
   assert.doesNotMatch(
     src,
     /rotationGroupFor\s*\(\s*[\w.]*provider[\w.]*\s*\)\s*!==\s*null/,
-    "a blanket rotation-group skip blocks Kiro manual refresh"
+    "a blanket rotation-group skip blocks Kiro manual refresh",
   );
   assert.match(
     src,
     /rotationGroup\s*===\s*["']openai-auth0["']/,
-    "only the OpenAI Auth0 family should be skipped by the manual refresh route"
+    "only the OpenAI Auth0 family should be skipped by the manual refresh route",
   );
 });

@@ -89,14 +89,14 @@ test("promoteSuccessfulComboModel persists the reordered combo when flag is on",
         calls.push({ id, data });
         return data;
       },
-    }
+    },
   );
   assert.equal(ok, true);
   assert.equal(calls.length, 1);
   assert.equal(calls[0].id, "combo-1");
   assert.deepEqual(
     (calls[0].data.models as Array<{ model: string }>).map((m) => m.model),
-    ["b/2", "a/1"]
+    ["b/2", "a/1"],
   );
 });
 
@@ -111,7 +111,7 @@ test("promoteSuccessfulComboModel is a no-op when the flag is off", async () => 
         called = true;
         return data;
       },
-    }
+    },
   );
   assert.equal(ok, false);
   assert.equal(called, false);
@@ -128,7 +128,7 @@ test("promoteSuccessfulComboModel is a no-op when the winner is already first", 
         called = true;
         return data;
       },
-    }
+    },
   );
   assert.equal(ok, false);
   assert.equal(called, false);
@@ -147,7 +147,7 @@ test("promoteSuccessfulComboModel swallows DB errors and never throws", async ()
       warn: (_tag, msg) => {
         warned = msg;
       },
-    }
+    },
   );
   assert.equal(ok, false);
   assert.match(warned, /Failed to promote/);

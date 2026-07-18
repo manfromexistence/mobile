@@ -73,7 +73,7 @@ test("encrypted backup removes temporary ciphertext files", async () => {
     const backupPath = path.join(backupDir, entries[0]);
     assert.deepEqual(
       fs.readdirSync(backupPath).filter((name) => name.endsWith(".ciphertext")),
-      []
+      [],
     );
     assert.ok(fs.existsSync(path.join(backupPath, "settings.json.enc")));
   });

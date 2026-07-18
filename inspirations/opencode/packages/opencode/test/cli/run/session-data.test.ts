@@ -1,7 +1,7 @@
-import { describe, expect, test } from "bun:test"
-import type { Event } from "@opencode-ai/sdk/v2"
-import { createSessionData, flushInterrupted, reduceSessionData } from "@/cli/cmd/run/session-data"
-import type { StreamCommit } from "@/cli/cmd/run/types"
+import { describe, expect, test } from "bun:test";
+import type { Event } from "@opencode-ai/sdk/v2";
+import { createSessionData, flushInterrupted, reduceSessionData } from "@/cli/cmd/run/session-data";
+import type { StreamCommit } from "@/cli/cmd/run/types";
 
 function reduce(data: ReturnType<typeof createSessionData>, event: unknown, thinking = true) {
   return reduceSessionData({
@@ -10,7 +10,7 @@ function reduce(data: ReturnType<typeof createSessionData>, event: unknown, thin
     sessionID: "session-1",
     thinking,
     limits: {},
-  })
+  });
 }
 
 function assistant(id: string, extra: Record<string, unknown> = {}) {
@@ -32,7 +32,7 @@ function assistant(id: string, extra: Record<string, unknown> = {}) {
         ...extra,
       },
     },
-  }
+  };
 }
 
 function user(id: string) {
@@ -45,10 +45,15 @@ function user(id: string) {
         role: "user",
       },
     },
-  }
+  };
 }
 
-function text(input: { id: string; messageID: string; text: string; time?: Record<string, number> }) {
+function text(input: {
+  id: string;
+  messageID: string;
+  text: string;
+  time?: Record<string, number>;
+}) {
   return {
     type: "message.part.updated",
     properties: {
@@ -61,10 +66,15 @@ function text(input: { id: string; messageID: string; text: string; time?: Recor
         ...(input.time ? { time: input.time } : {}),
       },
     },
-  }
+  };
 }
 
-function reasoning(input: { id: string; messageID: string; text: string; time?: Record<string, number> }) {
+function reasoning(input: {
+  id: string;
+  messageID: string;
+  text: string;
+  time?: Record<string, number>;
+}) {
   return {
     type: "message.part.updated",
     properties: {
@@ -77,7 +87,7 @@ function reasoning(input: { id: string; messageID: string; text: string; time?: 
         ...(input.time ? { time: input.time } : {}),
       },
     },
-  }
+  };
 }
 
 function delta(messageID: string, partID: string, value: string) {
@@ -90,10 +100,16 @@ function delta(messageID: string, partID: string, value: string) {
       field: "text",
       delta: value,
     },
-  }
+  };
 }
 
-function tool(input: { id: string; messageID: string; tool: string; state: Record<string, unknown>; callID?: string }) {
+function tool(input: {
+  id: string;
+  messageID: string;
+  tool: string;
+  state: Record<string, unknown>;
+  callID?: string;
+}) {
   return {
     type: "message.part.updated",
     properties: {
@@ -107,14 +123,14 @@ function tool(input: { id: string; messageID: string; tool: string; state: Recor
         state: input.state,
       },
     },
-  }
+  };
 }
 
 describe("run session data", () => {
   test("buffers delayed assistant text until the role is known", () => {
-    let data = createSessionData()
-    data = reduce(data, delta("msg-1", "txt-1", "hello")).data
-    data = reduce(data, assistant("msg-1")).data
+    let data = createSessionData();
+    data = reduce(data, delta("msg-1", "txt-1", "hello")).data;
+    data = reduce(data, assistant("msg-1")).data;
 
     const out = reduce(
       data,
@@ -124,7 +140,7 @@ describe("run session data", () => {
         text: "",
         time: { end: 1 },
       }),
-    )
+    );
 
     expect(out.commits).toEqual([
       expect.objectContaining({
@@ -132,35 +148,41 @@ describe("run session data", () => {
         text: "hello",
         partID: "txt-1",
       }),
-    ])
-  })
+    ]);
+  });
 
   test("keeps leading whitespace buffered until real assistant content arrives", () => {
-    let data = createSessionData()
-    data = reduce(data, assistant("msg-1")).data
-    data = reduce(data, text({ id: "txt-1", messageID: "msg-1", text: "", time: { start: 1 } })).data
+    let data = createSessionData();
+    data = reduce(data, assistant("msg-1")).data;
+    data = reduce(
+      data,
+      text({ id: "txt-1", messageID: "msg-1", text: "", time: { start: 1 } }),
+    ).data;
 
-    let out = reduce(data, delta("msg-1", "txt-1", " "))
-    expect(out.commits).toEqual([])
+    let out = reduce(data, delta("msg-1", "txt-1", " "));
+    expect(out.commits).toEqual([]);
 
-    out = reduce(out.data, delta("msg-1", "txt-1", "Found"))
+    out = reduce(out.data, delta("msg-1", "txt-1", "Found"));
     expect(out.commits).toEqual([
       expect.objectContaining({
         kind: "assistant",
         text: " Found",
       }),
-    ])
-  })
+    ]);
+  });
 
   test("drops delayed text once the message resolves to a user role", () => {
-    let data = createSessionData()
-    data = reduce(data, text({ id: "txt-user-1", messageID: "msg-user-1", text: "HELLO", time: { end: 1 } })).data
+    let data = createSessionData();
+    data = reduce(
+      data,
+      text({ id: "txt-user-1", messageID: "msg-user-1", text: "HELLO", time: { end: 1 } }),
+    ).data;
 
-    const out = reduce(data, user("msg-user-1"))
+    const out = reduce(data, user("msg-user-1"));
 
-    expect(out.commits).toEqual([])
-    expect(out.data.ids.has("txt-user-1")).toBe(true)
-  })
+    expect(out.commits).toEqual([]);
+    expect(out.data.ids.has("txt-user-1")).toBe(true);
+  });
 
   test("suppresses reasoning commits when thinking is disabled", () => {
     const out = reduce(
@@ -172,14 +194,14 @@ describe("run session data", () => {
         time: { end: 1 },
       }),
       false,
-    )
+    );
 
-    expect(out.commits).toEqual([])
-    expect(out.data.ids.has("reason-1")).toBe(true)
-  })
+    expect(out.commits).toEqual([]);
+    expect(out.data.ids.has("reason-1")).toBe(true);
+  });
 
   test("keeps permission precedence over queued questions", () => {
-    let data = createSessionData()
+    let data = createSessionData();
     data = reduce(data, {
       type: "permission.asked",
       properties: {
@@ -190,7 +212,7 @@ describe("run session data", () => {
         metadata: {},
         always: [],
       },
-    }).data
+    }).data;
 
     const ask = reduce(data, {
       type: "question.asked",
@@ -206,7 +228,7 @@ describe("run session data", () => {
           },
         ],
       },
-    })
+    });
 
     expect(ask.footer).toEqual({
       patch: { status: "awaiting permission" },
@@ -214,7 +236,7 @@ describe("run session data", () => {
         type: "permission",
         request: expect.objectContaining({ id: "perm-1" }),
       },
-    })
+    });
 
     expect(
       reduce(ask.data, {
@@ -231,8 +253,8 @@ describe("run session data", () => {
         type: "question",
         request: expect.objectContaining({ id: "question-1" }),
       },
-    })
-  })
+    });
+  });
 
   test("refreshes the active permission view when tool input arrives later", () => {
     const data = reduce(createSessionData(), {
@@ -249,7 +271,7 @@ describe("run session data", () => {
           callID: "call-1",
         },
       },
-    }).data
+    }).data;
 
     const out = reduce(
       data,
@@ -265,7 +287,7 @@ describe("run session data", () => {
           },
         },
       }),
-    )
+    );
 
     expect(out.footer).toEqual({
       view: {
@@ -279,12 +301,12 @@ describe("run session data", () => {
           }),
         }),
       },
-    })
-  })
+    });
+  });
 
   test("strips bash echo only from the first assistant flush", () => {
-    let data = createSessionData()
-    data = reduce(data, assistant("msg-1")).data
+    let data = createSessionData();
+    data = reduce(data, assistant("msg-1")).data;
     data = reduce(
       data,
       tool({
@@ -300,7 +322,7 @@ describe("run session data", () => {
           time: { start: 1, end: 2 },
         },
       }),
-    ).data
+    ).data;
 
     const first = reduce(
       data,
@@ -309,25 +331,25 @@ describe("run session data", () => {
         messageID: "msg-1",
         text: "echoed\nanswer",
       }),
-    )
+    );
 
     expect(first.commits).toEqual([
       expect.objectContaining({
         kind: "assistant",
         text: "answer",
       }),
-    ])
+    ]);
 
     expect(reduce(first.data, delta("msg-1", "txt-1", "\nechoed\nagain")).commits).toEqual([
       expect.objectContaining({
         kind: "assistant",
         text: "\nechoed\nagain",
       }),
-    ])
-  })
+    ]);
+  });
 
   test("renders direct shell mode from first-class shell events", () => {
-    let data = createSessionData()
+    let data = createSessionData();
     const started = reduce(data, {
       type: "session.next.shell.started",
       properties: {
@@ -336,7 +358,7 @@ describe("run session data", () => {
         callID: "call-1",
         command: "pwd",
       },
-    })
+    });
 
     expect(started.commits).toEqual([
       expect.objectContaining({
@@ -349,9 +371,9 @@ describe("run session data", () => {
           command: "pwd",
         },
       }),
-    ])
+    ]);
 
-    data = started.data
+    data = started.data;
     const ended = reduce(data, {
       type: "session.next.shell.ended",
       properties: {
@@ -360,7 +382,7 @@ describe("run session data", () => {
         callID: "call-1",
         output: "/tmp/demo\n",
       },
-    })
+    });
 
     expect(ended.commits).toEqual([
       expect.objectContaining({
@@ -375,8 +397,8 @@ describe("run session data", () => {
           command: "pwd",
         },
       }),
-    ])
-  })
+    ]);
+  });
 
   test("suppresses legacy bash part updates once shell events claim the call", () => {
     let data = reduce(createSessionData(), {
@@ -387,7 +409,7 @@ describe("run session data", () => {
         callID: "call-1",
         command: "pwd",
       },
-    }).data
+    }).data;
 
     expect(
       reduce(
@@ -406,7 +428,7 @@ describe("run session data", () => {
           },
         }),
       ).commits,
-    ).toEqual([])
+    ).toEqual([]);
 
     data = reduce(data, {
       type: "session.next.shell.ended",
@@ -416,7 +438,7 @@ describe("run session data", () => {
         callID: "call-1",
         output: "/tmp/demo\n",
       },
-    }).data
+    }).data;
 
     expect(
       reduce(
@@ -440,8 +462,8 @@ describe("run session data", () => {
           },
         }),
       ).commits,
-    ).toEqual([])
-  })
+    ).toEqual([]);
+  });
 
   test("suppresses shell events when the legacy bash part claimed the call first", () => {
     let data = reduce(
@@ -459,7 +481,7 @@ describe("run session data", () => {
           time: { start: 1 },
         },
       }),
-    ).data
+    ).data;
 
     expect(
       reduce(data, {
@@ -471,7 +493,7 @@ describe("run session data", () => {
           command: "pwd",
         },
       }).commits,
-    ).toEqual([])
+    ).toEqual([]);
 
     data = reduce(
       data,
@@ -493,7 +515,7 @@ describe("run session data", () => {
           time: { start: 1, end: 2 },
         },
       }),
-    ).data
+    ).data;
 
     expect(
       reduce(data, {
@@ -505,8 +527,8 @@ describe("run session data", () => {
           output: "/tmp/demo\n",
         },
       }).commits,
-    ).toEqual([])
-  })
+    ).toEqual([]);
+  });
 
   test("synthesizes a glob start before an error when the running update is missed", () => {
     expect(
@@ -544,8 +566,8 @@ describe("run session data", () => {
         toolState: "error",
         toolError: "No such file or directory: '/tmp/demo/run'",
       }),
-    ])
-  })
+    ]);
+  });
 
   test("flushInterrupted emits one interrupted final per live part", () => {
     const data = reduce(
@@ -555,19 +577,19 @@ describe("run session data", () => {
         messageID: "msg-1",
         text: "unfinished",
       }),
-    ).data
+    ).data;
 
-    const first: StreamCommit[] = []
-    flushInterrupted(data, first)
+    const first: StreamCommit[] = [];
+    flushInterrupted(data, first);
     expect(first).toEqual([
       expect.objectContaining({ kind: "assistant", text: "unfinished", phase: "progress" }),
       expect.objectContaining({ kind: "assistant", phase: "final", interrupted: true }),
-    ])
+    ]);
 
-    const next: StreamCommit[] = []
-    flushInterrupted(data, next)
-    expect(next).toEqual([])
-  })
+    const next: StreamCommit[] = [];
+    flushInterrupted(data, next);
+    expect(next).toEqual([]);
+  });
 
   test("surfaces session errors as error commits", () => {
     const out = reduce(createSessionData(), {
@@ -581,13 +603,13 @@ describe("run session data", () => {
           },
         },
       },
-    })
+    });
 
     expect(out.commits).toEqual([
       expect.objectContaining({
         kind: "error",
         text: "permission denied",
       }),
-    ])
-  })
-})
+    ]);
+  });
+});

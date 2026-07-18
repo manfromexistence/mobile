@@ -19,7 +19,7 @@ function toPlainHeaders(headers: any): Record<string, string> {
   if (!headers) return {};
   if (headers instanceof Headers) return Object.fromEntries(headers.entries());
   return Object.fromEntries(
-    Object.entries(headers).map(([key, value]) => [key, value == null ? "" : String(value)])
+    Object.entries(headers).map(([key, value]) => [key, value == null ? "" : String(value)]),
   );
 }
 
@@ -97,7 +97,7 @@ test("fast-skip on quota-exhausted 429: first same-provider target causes remain
         stream: false,
         messages: [{ role: "user", content: "test quota exhaustion skip" }],
       },
-    })
+    }),
   );
 
   const body = (await response.json()) as any;
@@ -106,13 +106,13 @@ test("fast-skip on quota-exhausted 429: first same-provider target causes remain
   assert.equal(
     body.choices[0].message.content,
     "anthropic fallback success",
-    "should fallback to anthropic"
+    "should fallback to anthropic",
   );
   // The key assertion: openai should only be called once (not twice for both gpt-4o-mini and gpt-3.5-turbo)
   assert.equal(
     openaiCalls,
     1,
-    `openai should be called only once, but was called ${openaiCalls} times. Call sequence: ${callSequence.join(" -> ")}`
+    `openai should be called only once, but was called ${openaiCalls} times. Call sequence: ${callSequence.join(" -> ")}`,
   );
   assert.equal(anthropicCalls, 1, "anthropic should be called once");
 });
@@ -152,7 +152,7 @@ test("fast-skip on credits-exhausted 429: same-provider targets are skipped (#17
           {
             status: 429,
             headers: { "Content-Type": "application/json" },
-          }
+          },
         );
       }
       throw new Error("Second openai call should have been skipped!");
@@ -176,7 +176,7 @@ test("fast-skip on credits-exhausted 429: same-provider targets are skipped (#17
         stream: false,
         messages: [{ role: "user", content: "test credits exhaustion" }],
       },
-    })
+    }),
   );
 
   const body = (await response.json()) as any;
@@ -241,7 +241,7 @@ test("no skip on transient 429: plain rate-limit does not skip same-provider tar
         stream: false,
         messages: [{ role: "user", content: "test transient 429" }],
       },
-    })
+    }),
   );
 
   const body = (await response.json()) as any;
@@ -325,7 +325,7 @@ test("cross-provider not affected: different providers both return 429, both are
         stream: false,
         messages: [{ role: "user", content: "test cross provider" }],
       },
-    })
+    }),
   );
 
   const body = (await response.json()) as any;
@@ -405,7 +405,7 @@ test("exhaustion does not persist across requests: second request starts fresh (
         stream: false,
         messages: [{ role: "user", content: "first request" }],
       },
-    })
+    }),
   );
 
   const body1 = (await response1.json()) as any;
@@ -434,7 +434,7 @@ test("exhaustion does not persist across requests: second request starts fresh (
         stream: false,
         messages: [{ role: "user", content: "second request" }],
       },
-    })
+    }),
   );
 
   const body2 = (await response2.json()) as any;
@@ -500,7 +500,7 @@ test("round-robin path fast-skip: round-robin combo also skips exhausted provide
         stream: false,
         messages: [{ role: "user", content: "test round-robin exhaustion" }],
       },
-    })
+    }),
   );
 
   const body = (await response.json()) as any;
@@ -533,10 +533,7 @@ test("allow rate-limited connections after transient 429 on subsequent targets i
     name: "rate-limit-reuse-combo",
     strategy: "priority",
     config: { maxRetries: 0, retryDelayMs: 0, fallbackDelayMs: 0 },
-    models: [
-      "openai/gpt-4o-mini",
-      "openai/gpt-3.5-turbo",
-    ],
+    models: ["openai/gpt-4o-mini", "openai/gpt-3.5-turbo"],
   });
 
   let openaiCalls = 0;
@@ -562,7 +559,7 @@ test("allow rate-limited connections after transient 429 on subsequent targets i
         {
           status: 200,
           headers: { "Content-Type": "application/json" },
-        }
+        },
       );
     }
 
@@ -576,7 +573,7 @@ test("allow rate-limited connections after transient 429 on subsequent targets i
         stream: false,
         messages: [{ role: "user", content: "test rate limit reuse" }],
       },
-    })
+    }),
   );
 
   const body = (await response.json()) as any;
@@ -630,7 +627,7 @@ test("emergency fallback never sends the failing provider's credentials to anoth
           stream: false,
           messages: [{ role: "user", content: "test emergency credential leak guard" }],
         },
-      })
+      }),
     );
 
     assert.notEqual(response.status, 200, "request should fail (no fallback available)");
@@ -648,11 +645,10 @@ test("emergency fallback never sends the failing provider's credentials to anoth
   assert.deepEqual(
     leaks,
     [],
-    `the OpenAI key must never be sent to a non-OpenAI host: ${JSON.stringify(upstreamCalls)}`
+    `the OpenAI key must never be sent to a non-OpenAI host: ${JSON.stringify(upstreamCalls)}`,
   );
   assert.ok(
     upstreamCalls.every((call) => call.usedOpenAIKey),
-    `no unauthenticated emergency call should reach upstream either: ${JSON.stringify(upstreamCalls)}`
+    `no unauthenticated emergency call should reach upstream either: ${JSON.stringify(upstreamCalls)}`,
   );
 });
-

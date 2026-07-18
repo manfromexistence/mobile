@@ -1,7 +1,7 @@
-import { folder, useControls } from 'leva';
-import { setParamsSafe } from './use-reset-leva-params';
-import { toHsla } from './color-utils';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { folder, useControls } from "leva";
+import { setParamsSafe } from "./use-reset-leva-params";
+import { toHsla } from "./color-utils";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 interface UseColorsArgs {
   defaultColors: string[];
@@ -16,7 +16,7 @@ export function useColors({ defaultColors, maxColorCount }: UseColorsArgs) {
     return Object.fromEntries(
       defaultColors.map((color: string, index: number) => {
         return [`color${index + 1}`, toHsla(color)];
-      })
+      }),
     );
   });
 
@@ -72,8 +72,8 @@ export function useColors({ defaultColors, maxColorCount }: UseColorsArgs) {
       Object.fromEntries(
         colors.map((color: string, index: number) => {
           return [`color${index + 1}`, toHsla(color)];
-        })
-      )
+        }),
+      ),
     );
   };
 

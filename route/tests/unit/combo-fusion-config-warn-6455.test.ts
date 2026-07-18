@@ -66,7 +66,7 @@ test("6455: warns when config.judgeModel is set but strategy is not fusion", asy
 
   assert.equal(res.status, 200);
   const warns = records.filter(
-    (r) => r.level === "warn" && r.scope === "COMBO" && r.msg.includes("judgeModel")
+    (r) => r.level === "warn" && r.scope === "COMBO" && r.msg.includes("judgeModel"),
   );
   assert.equal(warns.length, 1, `expected exactly one judgeModel warn, got ${warns.length}`);
   assert.match(warns[0].msg, /priority/);
@@ -93,7 +93,7 @@ test("6455: warns when config.fusionTuning is set but strategy is not fusion", a
   });
 
   const warns = records.filter(
-    (r) => r.level === "warn" && r.scope === "COMBO" && r.msg.includes("fusionTuning")
+    (r) => r.level === "warn" && r.scope === "COMBO" && r.msg.includes("fusionTuning"),
   );
   assert.equal(warns.length, 1);
 });
@@ -120,12 +120,12 @@ test("6455: does NOT warn when strategy is fusion (legitimate use)", async () =>
     (r) =>
       r.level === "warn" &&
       r.scope === "COMBO" &&
-      (r.msg.includes("judgeModel") || r.msg.includes("fusionTuning"))
+      (r.msg.includes("judgeModel") || r.msg.includes("fusionTuning")),
   );
   assert.equal(
     warns.length,
     0,
-    `expected no judgeModel warn on legitimate fusion, got ${warns.length}`
+    `expected no judgeModel warn on legitimate fusion, got ${warns.length}`,
   );
 });
 
@@ -151,7 +151,7 @@ test("6455: does NOT warn when strategy is non-fusion and no judgeModel/fusionTu
     (r) =>
       r.level === "warn" &&
       r.scope === "COMBO" &&
-      (r.msg.includes("judgeModel") || r.msg.includes("fusionTuning"))
+      (r.msg.includes("judgeModel") || r.msg.includes("fusionTuning")),
   );
   assert.equal(warns.length, 0);
 });

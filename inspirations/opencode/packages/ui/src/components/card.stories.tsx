@@ -1,6 +1,6 @@
 // @ts-nocheck
-import { Card, CardActions, CardDescription, CardTitle } from "./card"
-import { Button } from "./button"
+import { Card, CardActions, CardDescription, CardTitle } from "./card";
+import { Button } from "./button";
 
 const docs = `### Overview
 Surface container for grouping related content and actions.
@@ -23,7 +23,7 @@ Pair with \`Button\` or \`Tag\` for quick actions.
 ### Theming/tokens
 - Uses \`data-component="card"\` with variant data attributes.
 
-`
+`;
 
 export default {
   title: "UI/Card",
@@ -57,32 +57,32 @@ export default {
           </Button>
         </CardActions>
       </Card>
-    )
+    );
   },
-}
+};
 
-export const Normal = {}
+export const Normal = {};
 
 export const Error = {
   args: {
     variant: "error",
   },
-}
+};
 
 export const Warning = {
   args: {
     variant: "warning",
   },
-}
+};
 
 export const Success = {
   args: {
     variant: "success",
   },
-}
+};
 
 export const Info = {
   args: {
     variant: "info",
   },
-}
+};

@@ -1,1 +1,1 @@
-export const Font = () => null
+export const Font = () => null;

@@ -181,7 +181,7 @@ async function handleDashscopeVideoGeneration({
   if (log) {
     log.info(
       "VIDEO",
-      `${provider}/${model} (dashscope-video) | prompt: "${prompt.slice(0, 60)}..."`
+      `${provider}/${model} (dashscope-video) | prompt: "${prompt.slice(0, 60)}..."`,
     );
   }
 
@@ -442,7 +442,7 @@ async function handleComfyUIVideoGeneration({ model, provider, providerConfig, b
     const promptPreview = String(body.prompt ?? "").slice(0, 60);
     log.info(
       "VIDEO",
-      `${provider}/${model} (comfyui) | prompt: "${promptPreview}..." | frames: ${frames}`
+      `${provider}/${model} (comfyui) | prompt: "${promptPreview}..." | frames: ${frames}`,
     );
   }
 
@@ -457,7 +457,7 @@ async function handleComfyUIVideoGeneration({ model, provider, providerConfig, b
         providerConfig.baseUrl,
         file.filename,
         file.subfolder,
-        file.type
+        file.type,
       );
       const base64 = Buffer.from(buffer).toString("base64");
       videos.push({ b64_json: base64, format: "webp" });
@@ -750,7 +750,7 @@ async function handleRunwayVideoGeneration({
   const pollIntervalMs = resolvePositiveInteger(body.poll_interval_ms, 5000);
   const submitUrl = buildRunwayApiUrl(
     useImageToVideo ? "/image_to_video" : "/text_to_video",
-    providerConfig.baseUrl
+    providerConfig.baseUrl,
   );
   const headers = buildRunwayHeaders(token);
 
@@ -770,7 +770,7 @@ async function handleRunwayVideoGeneration({
     const promptPreview = String(body.prompt ?? "").slice(0, 60);
     log.info(
       "VIDEO",
-      `${provider}/${model} (runway ${useImageToVideo ? "image_to_video" : "text_to_video"}) | prompt: "${promptPreview}..."`
+      `${provider}/${model} (runway ${useImageToVideo ? "image_to_video" : "text_to_video"}) | prompt: "${promptPreview}..."`,
     );
   }
 
@@ -786,7 +786,7 @@ async function handleRunwayVideoGeneration({
       if (log) {
         log.error(
           "VIDEO",
-          `${provider} submit error ${submitResponse.status}: ${errorText.slice(0, 200)}`
+          `${provider} submit error ${submitResponse.status}: ${errorText.slice(0, 200)}`,
         );
       }
       saveCallLog({
@@ -826,7 +826,7 @@ async function handleRunwayVideoGeneration({
         {
           method: "GET",
           headers,
-        }
+        },
       );
 
       if (!taskResponse.ok) {
@@ -834,7 +834,7 @@ async function handleRunwayVideoGeneration({
         if (log) {
           log.error(
             "VIDEO",
-            `${provider} poll error ${taskResponse.status}: ${errorText.slice(0, 200)}`
+            `${provider} poll error ${taskResponse.status}: ${errorText.slice(0, 200)}`,
           );
         }
         saveCallLog({
@@ -891,7 +891,7 @@ async function handleRunwayVideoGeneration({
     }
 
     const timeoutError = `Runway task timeout after ${timeoutMs}ms (taskId=${taskId}, status=${String(
-      lastTask?.status || "unknown"
+      lastTask?.status || "unknown",
     )})`;
     saveCallLog({
       method: "POST",
@@ -1049,7 +1049,7 @@ async function normalizeRunwayVideoResult(task, body) {
   const urls = extractRunwayOutputUrls(task);
   if (urls.length === 0) {
     throw new Error(
-      `Runway task completed without output URLs: ${JSON.stringify(task).slice(0, 400)}`
+      `Runway task completed without output URLs: ${JSON.stringify(task).slice(0, 400)}`,
     );
   }
 

@@ -76,7 +76,7 @@ export function useAvailableModels(provider?: string) {
 
   const availableModels = useMemo(
     () => filterModelsByProvider(allModels, provider),
-    [allModels, provider]
+    [allModels, provider],
   );
 
   /**
@@ -93,7 +93,7 @@ export function useAvailableModels(provider?: string) {
       }
       return availableModels[0];
     },
-    [availableModels]
+    [availableModels],
   );
 
   return { model, setModel, availableModels, modelCapabilities, loading, pickModelForFormat };

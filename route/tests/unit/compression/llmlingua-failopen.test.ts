@@ -92,7 +92,7 @@ describe("llmlingua engine", () => {
       .content;
     assert.ok(
       outContent.length < originalContent.length,
-      `output (${outContent.length}) should be shorter than input (${originalContent.length})`
+      `output (${outContent.length}) should be shorter than input (${originalContent.length})`,
     );
   });
 
@@ -137,14 +137,14 @@ describe("llmlingua engine", () => {
       .content;
     assert.ok(
       outContent.includes(codeBlock),
-      `Code block must survive verbatim in output.\nOutput:\n${outContent}`
+      `Code block must survive verbatim in output.\nOutput:\n${outContent}`,
     );
 
     // Backend must only have been called with prose segments, never with the code block
     for (const call of backendCalls) {
       assert.ok(
         !call.includes("```typescript"),
-        `Backend must NOT receive code block content, but received:\n${call}`
+        `Backend must NOT receive code block content, but received:\n${call}`,
       );
     }
   });
@@ -177,7 +177,7 @@ describe("llmlingua engine", () => {
     for (const call of systemCalls) {
       assert.ok(
         !call.includes(systemContent),
-        `Backend must NOT be called with system message content`
+        `Backend must NOT be called with system message content`,
       );
     }
   });
@@ -269,27 +269,27 @@ describe("llmlingua engine — minTokens floor + config schema (Task 3/4)", () =
     assert.equal(
       llmlinguaEngine.validateConfig({ model: "mobilebert" }).valid,
       false,
-      "unknown model must be invalid"
+      "unknown model must be invalid",
     );
     assert.equal(
       llmlinguaEngine.validateConfig({ compressionRate: 1.5 }).valid,
       false,
-      "compressionRate > 0.9 must be invalid"
+      "compressionRate > 0.9 must be invalid",
     );
     assert.equal(
       llmlinguaEngine.validateConfig({ compressionRate: 0.05 }).valid,
       false,
-      "compressionRate < 0.1 must be invalid"
+      "compressionRate < 0.1 must be invalid",
     );
     assert.equal(
       llmlinguaEngine.validateConfig({ minTokens: -1 }).valid,
       false,
-      "negative minTokens must be invalid"
+      "negative minTokens must be invalid",
     );
     assert.equal(
       llmlinguaEngine.validateConfig({ modelPath: 123 }).valid,
       false,
-      "non-string modelPath must be invalid"
+      "non-string modelPath must be invalid",
     );
   });
 

@@ -39,13 +39,10 @@ export function isTurbopackCacheCorruption(message) {
  */
 export function turbopackCacheDirs(
   distDir = process.env.NEXT_DIST_DIR || ".build/next",
-  cwd = process.cwd()
+  cwd = process.cwd(),
 ) {
   const base = path.isAbsolute(distDir) ? distDir : path.join(cwd, distDir);
-  return [
-    path.join(base, "cache", "turbopack"),
-    path.join(base, "dev", "cache", "turbopack"),
-  ];
+  return [path.join(base, "cache", "turbopack"), path.join(base, "dev", "cache", "turbopack")];
 }
 
 /**

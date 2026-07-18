@@ -1,72 +1,77 @@
-import { cmd } from "@/cli/cmd/cmd"
-import { Rpc } from "@/util/rpc"
-import { type rpc } from "../tui/worker"
-import path from "path"
-import { fileURLToPath } from "url"
-import { UI } from "@/cli/ui"
-import { errorMessage } from "@opencode-ai/tui/util/error"
-import { withTimeout } from "@/util/timeout"
-import { withNetworkOptions, resolveNetworkOptionsNoConfig, hasArg } from "@/cli/network"
-import { Filesystem } from "@/util/filesystem"
-import type { GlobalEvent } from "@opencode-ai/sdk/v2"
-import type { EventSource } from "@opencode-ai/tui/context/sdk"
-import { writeHeapSnapshot } from "v8"
-import { ServerAuth } from "@/server/auth"
-import { validateSession } from "../tui/validate-session"
-import { win32InstallCtrlCGuard } from "@opencode-ai/tui/terminal-win32"
+import { cmd } from "@/cli/cmd/cmd";
+import { Rpc } from "@/util/rpc";
+import { type rpc } from "../tui/worker";
+import path from "path";
+import { fileURLToPath } from "url";
+import { UI } from "@/cli/ui";
+import { errorMessage } from "@opencode-ai/tui/util/error";
+import { withTimeout } from "@/util/timeout";
+import { withNetworkOptions, resolveNetworkOptionsNoConfig, hasArg } from "@/cli/network";
+import { Filesystem } from "@/util/filesystem";
+import type { GlobalEvent } from "@opencode-ai/sdk/v2";
+import type { EventSource } from "@opencode-ai/tui/context/sdk";
+import { writeHeapSnapshot } from "v8";
+import { ServerAuth } from "@/server/auth";
+import { validateSession } from "../tui/validate-session";
+import { win32InstallCtrlCGuard } from "@opencode-ai/tui/terminal-win32";
 
 declare global {
-  const OPENCODE_WORKER_PATH: string
+  const OPENCODE_WORKER_PATH: string;
 }
 
-type RpcClient = ReturnType<typeof Rpc.client<typeof rpc>>
+type RpcClient = ReturnType<typeof Rpc.client<typeof rpc>>;
 
 function createWorkerFetch(client: RpcClient): typeof fetch {
   const fn = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
-    const request = new Request(input, init)
-    const body = request.body ? await request.text() : undefined
+    const request = new Request(input, init);
+    const body = request.body ? await request.text() : undefined;
     const result = await client.call("fetch", {
       url: request.url,
       method: request.method,
       headers: Object.fromEntries(request.headers.entries()),
       body,
-    })
+    });
     return new Response(result.body, {
       status: result.status,
       headers: result.headers,
-    })
-  }
-  return fn as typeof fetch
+    });
+  };
+  return fn as typeof fetch;
 }
 
 function createEventSource(client: RpcClient): EventSource {
   return {
     subscribe: async (handler) => {
       return client.on<GlobalEvent>("global.event", (e) => {
-        handler(e)
-      })
+        handler(e);
+      });
     },
-  }
+  };
 }
 
 async function target() {
-  if (typeof OPENCODE_WORKER_PATH !== "undefined") return OPENCODE_WORKER_PATH
-  const dist = new URL("./cli/tui/worker.js", import.meta.url)
-  if (await Filesystem.exists(fileURLToPath(dist))) return dist
-  return new URL("../tui/worker.ts", import.meta.url)
+  if (typeof OPENCODE_WORKER_PATH !== "undefined") return OPENCODE_WORKER_PATH;
+  const dist = new URL("./cli/tui/worker.js", import.meta.url);
+  if (await Filesystem.exists(fileURLToPath(dist))) return dist;
+  return new URL("../tui/worker.ts", import.meta.url);
 }
 
 async function input(value?: string) {
-  const piped = process.stdin.isTTY ? undefined : await Bun.stdin.text()
-  if (!value) return piped
-  if (!piped) return value
-  return piped + "\n" + value
+  const piped = process.stdin.isTTY ? undefined : await Bun.stdin.text();
+  if (!value) return piped;
+  if (!piped) return value;
+  return piped + "\n" + value;
 }
 
-export function resolveThreadDirectory(project?: string, envPWD = process.env.PWD, cwd = process.cwd()) {
-  const root = Filesystem.resolve(envPWD ?? cwd)
-  if (project) return Filesystem.resolve(path.isAbsolute(project) ? project : path.join(root, project))
-  return Filesystem.resolve(cwd)
+export function resolveThreadDirectory(
+  project?: string,
+  envPWD = process.env.PWD,
+  cwd = process.cwd(),
+) {
+  const root = Filesystem.resolve(envPWD ?? cwd);
+  if (project)
+    return Filesystem.resolve(path.isAbsolute(project) ? project : path.join(root, project));
+  return Filesystem.resolve(cwd);
 }
 
 export const TuiThreadCommand = cmd({
@@ -143,23 +148,30 @@ export const TuiThreadCommand = cmd({
       }),
   handler: async (args) => {
     if (args.replay === true) {
-      UI.error("--replay is not supported; replay is enabled by default")
-      process.exitCode = 1
-      return
+      UI.error("--replay is not supported; replay is enabled by default");
+      process.exitCode = 1;
+      return;
     }
-    const noReplay = args.replay === false || args.noReplay === true
+    const noReplay = args.replay === false || args.noReplay === true;
 
     if (args.mini) {
-      const network = ["--port", "--hostname", "--mdns", "--no-mdns", "--mdns-domain", "--cors"].find((option) =>
+      const network = [
+        "--port",
+        "--hostname",
+        "--mdns",
+        "--no-mdns",
+        "--mdns-domain",
+        "--cors",
+      ].find((option) =>
         process.argv.some((arg) => arg === option || arg.startsWith(option + "=")),
-      )
+      );
       if (network) {
-        UI.error(`${network} cannot be used with --mini`)
-        process.exitCode = 1
-        return
+        UI.error(`${network} cannot be used with --mini`);
+        process.exitCode = 1;
+        return;
       }
 
-      const { runMini } = await import("./run")
+      const { runMini } = await import("./run");
       await runMini({
         directory: resolveThreadDirectory(args.project),
         continue: args.continue,
@@ -171,65 +183,65 @@ export const TuiThreadCommand = cmd({
         replay: noReplay ? false : undefined,
         replayLimit: args.replayLimit,
         demo: args.demo,
-      })
-      return
+      });
+      return;
     }
 
     const unsupported = [
       ["--no-replay", noReplay],
       ["--replay-limit", args.replayLimit !== undefined],
       ["--demo", args.demo !== undefined],
-    ].find((entry) => entry[1])?.[0]
+    ].find((entry) => entry[1])?.[0];
     if (unsupported) {
-      UI.error(`${unsupported} requires --mini`)
-      process.exitCode = 1
-      return
+      UI.error(`${unsupported} requires --mini`);
+      process.exitCode = 1;
+      return;
     }
 
-    const unguard = win32InstallCtrlCGuard()
+    const unguard = win32InstallCtrlCGuard();
     try {
-      const { TuiConfig } = await import("@/config/tui")
+      const { TuiConfig } = await import("@/config/tui");
       if (args.fork && !args.continue && !args.session) {
-        UI.error("--fork requires --continue or --session")
-        process.exitCode = 1
-        return
+        UI.error("--fork requires --continue or --session");
+        process.exitCode = 1;
+        return;
       }
 
       // Resolve relative --project paths from PWD, then use the real cwd after
       // chdir so the thread and worker share the same directory key.
-      const next = resolveThreadDirectory(args.project)
-      const file = await target()
+      const next = resolveThreadDirectory(args.project);
+      const file = await target();
       try {
-        process.chdir(next)
+        process.chdir(next);
       } catch {
-        UI.error("Failed to change directory to " + next)
-        return
+        UI.error("Failed to change directory to " + next);
+        return;
       }
-      const cwd = Filesystem.resolve(process.cwd())
+      const cwd = Filesystem.resolve(process.cwd());
 
-      const worker = new Worker(file)
-      const client = Rpc.client<typeof rpc>(worker)
+      const worker = new Worker(file);
+      const client = Rpc.client<typeof rpc>(worker);
       const reload = () => {
-        client.call("reload", undefined).catch(() => {})
-      }
-      process.on("SIGUSR2", reload)
+        client.call("reload", undefined).catch(() => {});
+      };
+      process.on("SIGUSR2", reload);
 
-      let stopped = false
+      let stopped = false;
       const stop = async () => {
-        if (stopped) return
-        stopped = true
-        process.off("SIGUSR2", reload)
-        await withTimeout(client.call("shutdown", undefined), 5000).catch(() => {})
-        worker.terminate()
-      }
+        if (stopped) return;
+        stopped = true;
+        process.off("SIGUSR2", reload);
+        await withTimeout(client.call("shutdown", undefined), 5000).catch(() => {});
+        worker.terminate();
+      };
 
-      const prompt = await input(args.prompt)
-      const config = await TuiConfig.get()
+      const prompt = await input(args.prompt);
+      const config = await TuiConfig.get();
 
-      const network = resolveNetworkOptionsNoConfig(args)
-      const external = hasArg("--port") || hasArg("--hostname") || network.mdns === true
+      const network = resolveNetworkOptionsNoConfig(args);
+      const external = hasArg("--port") || hasArg("--hostname") || network.mdns === true;
 
-      const headers = external ? ServerAuth.headers() : undefined
+      const headers = external ? ServerAuth.headers() : undefined;
 
       const transport = external
         ? {
@@ -242,7 +254,7 @@ export const TuiThreadCommand = cmd({
             url: "http://opencode.internal",
             fetch: createWorkerFetch(client),
             events: createEventSource(client),
-          }
+          };
 
       try {
         await validateSession({
@@ -251,28 +263,28 @@ export const TuiThreadCommand = cmd({
           directory: cwd,
           fetch: transport.fetch,
           headers,
-        })
+        });
       } catch (error) {
-        UI.error(errorMessage(error))
-        process.exitCode = 1
-        return
+        UI.error(errorMessage(error));
+        process.exitCode = 1;
+        return;
       }
 
       setTimeout(() => {
-        client.call("checkUpgrade", { directory: cwd }).catch(() => {})
-      }, 1000).unref?.()
+        client.call("checkUpgrade", { directory: cwd }).catch(() => {});
+      }, 1000).unref?.();
 
       try {
-        const { Effect } = await import("effect")
-        const { run } = await import("../tui/layer")
-        const { createLegacyTuiPluginHost } = await import("@/plugin/tui/runtime")
+        const { Effect } = await import("effect");
+        const { run } = await import("../tui/layer");
+        const { createLegacyTuiPluginHost } = await import("@/plugin/tui/runtime");
         await Effect.runPromise(
           run({
             url: transport.url,
             async onSnapshot() {
-              const tui = writeHeapSnapshot("tui.heapsnapshot")
-              const server = await client.call("snapshot", undefined)
-              return [tui, server]
+              const tui = writeHeapSnapshot("tui.heapsnapshot");
+              const server = await client.call("snapshot", undefined);
+              return [tui, server];
             },
             config,
             pluginHost: createLegacyTuiPluginHost(),
@@ -290,16 +302,16 @@ export const TuiThreadCommand = cmd({
               auto: args.auto || args.yolo || args["dangerously-skip-permissions"],
             },
           }),
-        )
+        );
       } finally {
-        await stop()
+        await stop();
       }
     } finally {
       try {
-        unguard?.()
+        unguard?.();
       } catch {}
     }
-    process.exit(0)
+    process.exit(0);
   },
-})
+});
 // scratch

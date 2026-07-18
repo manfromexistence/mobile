@@ -67,7 +67,7 @@ test("targetRatio:0.5 halves the token count", () => {
   assert.ok(result.compressed, "should be compressed");
   assert.ok(
     outTokens <= Math.ceil(proseTokens * 0.5),
-    `Output tokens ${outTokens} exceed ratio target ${Math.ceil(proseTokens * 0.5)}`
+    `Output tokens ${outTokens} exceed ratio target ${Math.ceil(proseTokens * 0.5)}`,
   );
 });
 
@@ -129,7 +129,7 @@ test("targetTokens wins when both targetTokens and targetRatio are set", () => {
   const ratioTarget = Math.ceil(proseTokens * 0.9);
   assert.ok(
     outTokens <= 200,
-    `targetTokens should win: outTokens=${outTokens} should be ≤200, not ≤${ratioTarget}`
+    `targetTokens should win: outTokens=${outTokens} should be ≤200, not ≤${ratioTarget}`,
   );
 });
 
@@ -139,7 +139,7 @@ test("techniquesUsed includes hard-budget", () => {
   assert.ok(result.stats !== null, "stats should be present");
   assert.ok(
     result.stats!.techniquesUsed.includes("hard-budget"),
-    `techniquesUsed should include 'hard-budget', got: ${result.stats!.techniquesUsed}`
+    `techniquesUsed should include 'hard-budget', got: ${result.stats!.techniquesUsed}`,
   );
 });
 
@@ -188,10 +188,10 @@ test("review#1: plain prose ending in a period is still droppable", () => {
   const proseLine = "This is plain prose here.";
   assert.equal(
     /\d|https?:\/\/|(?:Error|Exception|TypeError|RangeError|SyntaxError|ReferenceError|Traceback):|```|^\s*at\s|\/[\w.-]+\/|[A-Za-z_]\w*=\S/i.test(
-      proseLine
+      proseLine,
     ),
     false,
-    "plain prose with a trailing period must remain droppable"
+    "plain prose with a trailing period must remain droppable",
   );
 });
 
@@ -221,7 +221,7 @@ test("review#2: aggregate target keeps TOTAL ≤ target across multiple messages
   const target = 200;
   const totalBefore = (body.messages as Array<{ content: string }>).reduce(
     (s, m) => s + countTextTokens(m.content),
-    0
+    0,
   );
   assert.ok(totalBefore > target, `Fixture too small: ${totalBefore} tokens`);
 
@@ -251,7 +251,7 @@ test("review#3: warns when preserved content exceeds budget", () => {
   const warnings = result.stats!.validationWarnings ?? [];
   assert.ok(
     warnings.some((w) => w.includes("hard-budget") && w.includes("could not reach target")),
-    `expected a hard-budget warning, got: ${JSON.stringify(warnings)}`
+    `expected a hard-budget warning, got: ${JSON.stringify(warnings)}`,
   );
 });
 
@@ -265,7 +265,7 @@ test("review#4: targetTokens:0 attempts compression (not a silent no-op)", () =>
   const warnings = result.stats?.validationWarnings ?? [];
   assert.ok(
     result.compressed || warnings.length > 0,
-    "targetTokens:0 must engage the post-pass, not silently skip"
+    "targetTokens:0 must engage the post-pass, not silently skip",
   );
 });
 
@@ -290,7 +290,7 @@ test("review#4: seam runs hard-budget post-pass when config.targetTokens is 0 (f
   const techniques = result.stats?.techniquesUsed ?? [];
   assert.ok(
     techniques.includes("hard-budget"),
-    `seam must run hard-budget for targetTokens:0, got techniques: ${techniques}`
+    `seam must run hard-budget for targetTokens:0, got techniques: ${techniques}`,
   );
 });
 
@@ -323,7 +323,7 @@ test("integration: applyStackedCompression with config.targetTokens cuts at end 
   const techniques = result.stats?.techniquesUsed ?? [];
   assert.ok(
     techniques.includes("hard-budget"),
-    `Integration: techniquesUsed should include 'hard-budget', got: ${techniques}`
+    `Integration: techniquesUsed should include 'hard-budget', got: ${techniques}`,
   );
 });
 
@@ -332,7 +332,7 @@ test("review#3: unreachable-budget warning propagates through applyStackedCompre
   // is false. The seam still surfaces the warning instead of swallowing it (the gate is on
   // `compressed`, so the warning must be merged on the else branch).
   const lines = ["Value 11111", "Value 22222", "Value 33333", "Value 44444", "Value 55555"].join(
-    "\n"
+    "\n",
   );
   const body = makeBody(lines);
   const totalTokens = countTextTokens(lines);
@@ -354,6 +354,6 @@ test("review#3: unreachable-budget warning propagates through applyStackedCompre
   const warnings = result.stats?.validationWarnings ?? [];
   assert.ok(
     warnings.some((w) => w.includes("hard-budget") && w.includes("could not reach target")),
-    `warning must propagate through the stacked seam, got: ${JSON.stringify(warnings)}`
+    `warning must propagate through the stacked seam, got: ${JSON.stringify(warnings)}`,
   );
 });

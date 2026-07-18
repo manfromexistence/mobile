@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { NeuroNoise, neuroNoisePresets } from '@paper-design/shaders-react';
-import { useControls, button, folder } from 'leva';
-import { setParamsSafe, useResetLevaParams } from '@/helpers/use-reset-leva-params';
-import { usePresetHighlight } from '@/helpers/use-preset-highlight';
-import { cleanUpLevaParams } from '@/helpers/clean-up-leva-params';
-import { toHsla } from '@/helpers/color-utils';
-import { ShaderDetails } from '@/components/shader-details';
-import { neuroNoiseDef } from '@/shader-defs/neuro-noise-def';
-import { ShaderContainer } from '@/components/shader-container';
-import { useUrlParams } from '@/helpers/use-url-params';
+import { NeuroNoise, neuroNoisePresets } from "@paper-design/shaders-react";
+import { useControls, button, folder } from "leva";
+import { setParamsSafe, useResetLevaParams } from "@/helpers/use-reset-leva-params";
+import { usePresetHighlight } from "@/helpers/use-preset-highlight";
+import { cleanUpLevaParams } from "@/helpers/clean-up-leva-params";
+import { toHsla } from "@/helpers/color-utils";
+import { ShaderDetails } from "@/components/shader-details";
+import { neuroNoiseDef } from "@/shader-defs/neuro-noise-def";
+import { ShaderContainer } from "@/components/shader-container";
+import { useUrlParams } from "@/helpers/use-url-params";
 
 const { worldWidth, worldHeight, ...defaults } = neuroNoisePresets[0].params;
 
@@ -19,7 +19,7 @@ const NeuroNoiseWithControls = () => {
       neuroNoisePresets.map(({ name, params: { worldWidth, worldHeight, ...preset } }) => [
         name,
         button(() => setParamsSafe(params, setParams, preset)),
-      ])
+      ]),
     );
 
     return {
@@ -52,12 +52,16 @@ const NeuroNoiseWithControls = () => {
         currentParams={params}
         notes={
           <>
-            Thanks to{' '}
+            Thanks to{" "}
             <a href="https://x.com/zozuar" target="_blank" rel="noopener">
               zozuar
-            </a>{' '}
-            for the amazing{' '}
-            <a href="https://twigl.app/?ol=true&ss=-NOAlYulOVLklxMdxBDx" target="_blank" rel="noopener">
+            </a>{" "}
+            for the amazing{" "}
+            <a
+              href="https://twigl.app/?ol=true&ss=-NOAlYulOVLklxMdxBDx"
+              target="_blank"
+              rel="noopener"
+            >
               recursive fractal noise algorithm
             </a>
             .

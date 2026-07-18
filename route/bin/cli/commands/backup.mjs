@@ -163,7 +163,7 @@ async function promptPassphrase() {
     rl.question(t("backup.passphrasePrompt"), (ans) => {
       rl.close();
       resolve(ans.trim());
-    })
+    }),
   );
 }
 
@@ -245,7 +245,7 @@ export async function runBackupCommand(opts = {}) {
         version: "omniroute-cli-v1",
         encrypted: !!opts.encrypt,
         files: FILES_TO_BACKUP.filter(
-          (f) => existsSync(join(dataDir, f.name)) && !shouldExclude(f.name, excludePatterns)
+          (f) => existsSync(join(dataDir, f.name)) && !shouldExclude(f.name, excludePatterns),
         ).map((f) => (opts.encrypt ? `${f.name}.enc` : f.name)),
       };
       writeFileSync(join(backupPath, "backup-info.json"), JSON.stringify(info, null, 2), "utf8");
@@ -263,7 +263,7 @@ export async function runBackupCommand(opts = {}) {
 
       console.log(t("backup.done", { path: backupPath }));
       console.log(
-        `\x1b[2m  ${backedUp} backed up, ${skipped} skipped${opts.encrypt ? " (encrypted)" : ""}\x1b[0m`
+        `\x1b[2m  ${backedUp} backed up, ${skipped} skipped${opts.encrypt ? " (encrypted)" : ""}\x1b[0m`,
       );
       return 0;
     }
@@ -317,7 +317,7 @@ async function* createBackupMultipartStream(backupPath, info, boundary) {
   const encoder = new TextEncoder();
   const encode = (value) => encoder.encode(value);
   yield encode(
-    `--${boundary}\r\nContent-Disposition: form-data; name="info"\r\nContent-Type: application/json\r\n\r\n${JSON.stringify(info)}\r\n`
+    `--${boundary}\r\nContent-Disposition: form-data; name="info"\r\nContent-Type: application/json\r\n\r\n${JSON.stringify(info)}\r\n`,
   );
   for (const fname of readdirSync(backupPath)) {
     const fullPath = join(backupPath, fname);
@@ -325,7 +325,7 @@ async function* createBackupMultipartStream(backupPath, info, boundary) {
     if (!stat.isFile()) continue;
     const safeName = fname.replace(/["\r\n]/g, "_");
     yield encode(
-      `--${boundary}\r\nContent-Disposition: form-data; name="files"; filename="${safeName}"\r\nContent-Type: application/octet-stream\r\n\r\n`
+      `--${boundary}\r\nContent-Disposition: form-data; name="files"; filename="${safeName}"\r\nContent-Type: application/octet-stream\r\n\r\n`,
     );
     yield* createReadStream(fullPath);
     yield encode("\r\n");
@@ -417,7 +417,7 @@ export async function runRestoreCommand(backupId, opts = {}) {
       }
     } catch (err) {
       console.error(
-        t("common.error", { message: err instanceof Error ? err.message : String(err) })
+        t("common.error", { message: err instanceof Error ? err.message : String(err) }),
       );
       return 1;
     }
@@ -440,7 +440,7 @@ export async function runRestoreCommand(backupId, opts = {}) {
     const readline = await import("node:readline");
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
     const answer = await new Promise((resolve) =>
-      rl.question(t("backup.confirmRestore", { ts }) + " [y/N] ", resolve)
+      rl.question(t("backup.confirmRestore", { ts }) + " [y/N] ", resolve),
     );
     rl.close();
     if (!/^y(es)?$/i.test(answer)) {

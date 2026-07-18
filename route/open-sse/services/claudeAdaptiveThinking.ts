@@ -30,7 +30,7 @@ function asRecord(value: unknown): JsonRecord | null {
  */
 export function normalizeClaudeAdaptiveThinking<T extends Record<string, unknown>>(
   body: T,
-  model: string | null | undefined
+  model: string | null | undefined,
 ): T {
   if (!isAdaptiveThinkingOnly(model)) return body;
   const record = asRecord(body);

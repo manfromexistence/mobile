@@ -99,7 +99,7 @@ test("requestedModel read-time transformation for old logs stored with UUID pref
   db.prepare(
     `INSERT INTO call_logs (id, timestamp, method, path, status, model, requested_model, provider,
       account, duration, tokens_in, tokens_out, cache_source)
-     VALUES (?, ?, 'POST', '/v1/chat/completions', 200, 'gpt-4', ?, ?, '-', 100, 10, 20, 'upstream')`
+     VALUES (?, ?, 'POST', '/v1/chat/completions', 200, 'gpt-4', ?, ?, '-', 100, 10, 20, 'upstream')`,
   ).run(logId, new Date().toISOString(), `${providerId}/gpt-4`, providerId);
 
   const all = await callLogs.getCallLogs({ limit: 10 });

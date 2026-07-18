@@ -88,12 +88,12 @@ describe("kimi-web catalog", () => {
       [
         { id: "k2d6", name: "K2.6 Instant" },
         { id: "k2d6-thinking", name: "K2.6 Thinking" },
-      ]
+      ],
     );
     assert.ok(models.find((model) => model.id === "k2d6-thinking")?.supportsReasoning);
     assert.ok(!models.some((model) => model.id.includes("agent")));
     assert.ok(
-      !models.some((model) => ["kimi-default", "kimi-k2.6", "kimi-128k"].includes(model.id))
+      !models.some((model) => ["kimi-default", "kimi-k2.6", "kimi-128k"].includes(model.id)),
     );
   });
 });

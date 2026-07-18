@@ -36,7 +36,7 @@ test.describe("A11y — Resilience Routes", () => {
 
     await page.keyboard.press("Tab");
     const activeTag = await page.evaluate(
-      () => document.activeElement?.tagName?.toLowerCase() || null
+      () => document.activeElement?.tagName?.toLowerCase() || null,
     );
 
     expect(activeTag).not.toBeNull();

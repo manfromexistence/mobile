@@ -63,7 +63,7 @@ test("localOnlyManageScopeBypassPrefixes rejects spawn-capable prefixes (BYPASS_
   if (validation.success) return;
   assert.ok(
     validation.error.issues.some((i) => i.message.includes("BYPASS_PREFIX_NOT_ALLOWED")),
-    "expected a BYPASS_PREFIX_NOT_ALLOWED issue for the spawn-capable prefix"
+    "expected a BYPASS_PREFIX_NOT_ALLOWED issue for the spawn-capable prefix",
   );
 });
 

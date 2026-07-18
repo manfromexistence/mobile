@@ -1,20 +1,20 @@
-import { Portal } from "solid-js/web"
-import { useI18n } from "@opencode-ai/ui/context/i18n"
-import { Icon } from "@opencode-ai/ui/icon"
+import { Portal } from "solid-js/web";
+import { useI18n } from "@opencode-ai/ui/context/i18n";
+import { Icon } from "@opencode-ai/ui/icon";
 
 export function FileSearchBar(props: {
-  pos: () => { top: number; right: number }
-  query: () => string
-  index: () => number
-  count: () => number
-  setInput: (el: HTMLInputElement) => void
-  onInput: (value: string) => void
-  onKeyDown: (event: KeyboardEvent) => void
-  onClose: () => void
-  onPrev: () => void
-  onNext: () => void
+  pos: () => { top: number; right: number };
+  query: () => string;
+  index: () => number;
+  count: () => number;
+  setInput: (el: HTMLInputElement) => void;
+  onInput: (value: string) => void;
+  onKeyDown: (event: KeyboardEvent) => void;
+  onClose: () => void;
+  onPrev: () => void;
+  onNext: () => void;
 }) {
-  const i18n = useI18n()
+  const i18n = useI18n();
 
   return (
     <Portal>
@@ -35,7 +35,10 @@ export function FileSearchBar(props: {
           onInput={(e) => props.onInput(e.currentTarget.value)}
           onKeyDown={(e) => props.onKeyDown(e as KeyboardEvent)}
         />
-        <div class="shrink-0 text-12-regular text-text-weak tabular-nums text-right" style={{ width: "10ch" }}>
+        <div
+          class="shrink-0 text-12-regular text-text-weak tabular-nums text-right"
+          style={{ width: "10ch" }}
+        >
           {props.count() ? `${props.index() + 1}/${props.count()}` : "0/0"}
         </div>
         <div class="flex items-center">
@@ -68,5 +71,5 @@ export function FileSearchBar(props: {
         </button>
       </div>
     </Portal>
-  )
+  );
 }

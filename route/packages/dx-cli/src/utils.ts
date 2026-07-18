@@ -7,7 +7,7 @@ import process from "node:process";
 export function detectMode(
   input: InputSource,
   encodeFlag?: boolean,
-  decodeFlag?: boolean
+  decodeFlag?: boolean,
 ): "encode" | "decode" {
   if (encodeFlag) return "encode";
   if (decodeFlag) return "decode";

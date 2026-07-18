@@ -63,7 +63,7 @@ describe("VALID_TYPES", () => {
     const warnOutput = stderrChunks.join("");
     assert.ok(
       warnOutput.includes("deprecated"),
-      `expected deprecation warning for legacy type 'user', got: ${JSON.stringify(warnOutput)}`
+      `expected deprecation warning for legacy type 'user', got: ${JSON.stringify(warnOutput)}`,
     );
   });
 });
@@ -101,15 +101,15 @@ describe("legacy type deprecation warning", () => {
       const warnOutput = stderrChunks.join("");
       assert.ok(
         warnOutput.includes("deprecated"),
-        `expected warning for legacy type '${legacyType}', stderr: ${JSON.stringify(warnOutput)}`
+        `expected warning for legacy type '${legacyType}', stderr: ${JSON.stringify(warnOutput)}`,
       );
       assert.ok(
         warnOutput.includes(legacyType),
-        `warning must mention the legacy type name '${legacyType}'`
+        `warning must mention the legacy type name '${legacyType}'`,
       );
       assert.ok(
         warnOutput.includes("factual"),
-        "warning must mention 'factual' as the replacement"
+        "warning must mention 'factual' as the replacement",
       );
     });
   }
@@ -124,8 +124,7 @@ describe("legacy type mapping", () => {
     globalThis.fetch = async (_url, opts) => {
       if (opts && opts.body) {
         try {
-          capturedBody =
-            typeof opts.body === "string" ? JSON.parse(opts.body) : opts.body;
+          capturedBody = typeof opts.body === "string" ? JSON.parse(opts.body) : opts.body;
         } catch {}
       }
       return {
@@ -151,7 +150,7 @@ describe("legacy type mapping", () => {
     assert.equal(
       capturedBody.type,
       "factual",
-      `expected body.type='factual' but got '${capturedBody?.type}'`
+      `expected body.type='factual' but got '${capturedBody?.type}'`,
     );
   });
 });
@@ -165,8 +164,7 @@ describe("default type", () => {
     globalThis.fetch = async (_url, opts) => {
       if (opts && opts.body) {
         try {
-          capturedBody =
-            typeof opts.body === "string" ? JSON.parse(opts.body) : opts.body;
+          capturedBody = typeof opts.body === "string" ? JSON.parse(opts.body) : opts.body;
         } catch {}
       }
       return {
@@ -193,7 +191,7 @@ describe("default type", () => {
     assert.equal(
       capturedBody.type,
       "factual",
-      `expected default body.type='factual' but got '${capturedBody?.type}'`
+      `expected default body.type='factual' but got '${capturedBody?.type}'`,
     );
   });
 });
@@ -212,8 +210,7 @@ describe("valid new types", () => {
       globalThis.fetch = async (_url, opts) => {
         if (opts && opts.body) {
           try {
-            capturedBody =
-              typeof opts.body === "string" ? JSON.parse(opts.body) : opts.body;
+            capturedBody = typeof opts.body === "string" ? JSON.parse(opts.body) : opts.body;
           } catch {}
         }
         return {
@@ -241,13 +238,13 @@ describe("valid new types", () => {
       const warnOutput = stderrChunks.join("");
       assert.ok(
         !warnOutput.includes("deprecated"),
-        `should NOT emit deprecation warning for valid type '${validType}', got: ${JSON.stringify(warnOutput)}`
+        `should NOT emit deprecation warning for valid type '${validType}', got: ${JSON.stringify(warnOutput)}`,
       );
       assert.ok(capturedBody !== null, "apiFetch must have been called with a body");
       assert.equal(
         capturedBody.type,
         validType,
-        `expected body.type='${validType}' but got '${capturedBody?.type}'`
+        `expected body.type='${validType}' but got '${capturedBody?.type}'`,
       );
     });
   }

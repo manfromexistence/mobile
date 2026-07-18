@@ -100,7 +100,7 @@ export const DEFAULT_RESILIENCE_SETTINGS: ResilienceSettings = {
     // disabled by default and must be explicitly enabled by the operator until
     // its interaction with those layers is validated in production.
     enabled: ["true", "1", "on"].includes(
-      (process.env.PROVIDER_COOLDOWN_ENABLED || "").trim().toLowerCase()
+      (process.env.PROVIDER_COOLDOWN_ENABLED || "").trim().toLowerCase(),
     ),
   },
   quotaPreflight: {
@@ -109,7 +109,7 @@ export const DEFAULT_RESILIENCE_SETTINGS: ResilienceSettings = {
     // cooldown, so it must be explicitly enabled by the operator until its
     // interaction with the scorer is validated in production.
     enabled: ["true", "1", "on"].includes(
-      (process.env.QUOTA_PREFLIGHT_CUTOFF_ENABLED || "").trim().toLowerCase()
+      (process.env.QUOTA_PREFLIGHT_CUTOFF_ENABLED || "").trim().toLowerCase(),
     ),
     // Remaining-% semantics. 2 = "stop when only 2% remaining" (= 98% used).
     // Uniform across all providers and windows; operators set per-window
@@ -125,11 +125,11 @@ export const DEFAULT_RESILIENCE_SETTINGS: ResilienceSettings = {
     // up to STREAM_RECOVERY.HOLDBACK_MS of time-to-first-token latency on every
     // streaming request, so it must be explicitly enabled by the operator.
     enabled: ["true", "1", "on"].includes(
-      (process.env.STREAM_RECOVERY_ENABLED || "").trim().toLowerCase()
+      (process.env.STREAM_RECOVERY_ENABLED || "").trim().toLowerCase(),
     ),
     // Opt-in (default OFF): mid-stream continuation re-requests after a post-commit cut.
     continueMidStream: ["true", "1", "on"].includes(
-      (process.env.STREAM_RECOVERY_MIDSTREAM_ENABLED || "").trim().toLowerCase()
+      (process.env.STREAM_RECOVERY_MIDSTREAM_ENABLED || "").trim().toLowerCase(),
     ),
   },
 };
@@ -145,12 +145,12 @@ function buildLegacyFallback(settings: JsonRecord): ResilienceSettings {
   const waitMaxRetrySec = toInteger(
     settings.maxRetryIntervalSec,
     DEFAULT_RESILIENCE_SETTINGS.waitForCooldown.maxRetryWaitSec,
-    { min: 0, max: 300 }
+    { min: 0, max: 300 },
   );
   const waitMaxRetries = toInteger(
     settings.requestRetry,
     DEFAULT_RESILIENCE_SETTINGS.waitForCooldown.maxRetries,
-    { min: 0, max: 10 }
+    { min: 0, max: 10 },
   );
 
   return {
@@ -159,28 +159,28 @@ function buildLegacyFallback(settings: JsonRecord): ResilienceSettings {
       requestsPerMinute: toInteger(
         defaults.requestsPerMinute,
         DEFAULT_RESILIENCE_SETTINGS.requestQueue.requestsPerMinute,
-        { min: 1, max: 1_000_000 }
+        { min: 1, max: 1_000_000 },
       ),
       minTimeBetweenRequestsMs: toInteger(
         defaults.minTimeBetweenRequests,
         DEFAULT_RESILIENCE_SETTINGS.requestQueue.minTimeBetweenRequestsMs,
-        { min: 0, max: 60 * 60 * 1000 }
+        { min: 0, max: 60 * 60 * 1000 },
       ),
       concurrentRequests: toInteger(
         defaults.concurrentRequests,
         DEFAULT_RESILIENCE_SETTINGS.requestQueue.concurrentRequests,
-        { min: 1, max: 10_000 }
+        { min: 1, max: 10_000 },
       ),
       maxWaitMs: DEFAULT_RESILIENCE_SETTINGS.requestQueue.maxWaitMs,
     },
     connectionCooldown: {
       oauth: normalizeLegacyConnectionCooldownProfile(
         oauthLegacy,
-        DEFAULT_RESILIENCE_SETTINGS.connectionCooldown.oauth
+        DEFAULT_RESILIENCE_SETTINGS.connectionCooldown.oauth,
       ),
       apikey: normalizeLegacyConnectionCooldownProfile(
         apikeyLegacy,
-        DEFAULT_RESILIENCE_SETTINGS.connectionCooldown.apikey
+        DEFAULT_RESILIENCE_SETTINGS.connectionCooldown.apikey,
       ),
     },
     providerBreaker: {
@@ -188,28 +188,28 @@ function buildLegacyFallback(settings: JsonRecord): ResilienceSettings {
         failureThreshold: toInteger(
           oauthLegacy.circuitBreakerThreshold,
           DEFAULT_RESILIENCE_SETTINGS.providerBreaker.oauth.failureThreshold,
-          { min: 1, max: 1000 }
+          { min: 1, max: 1000 },
         ),
         degradationThreshold:
           DEFAULT_RESILIENCE_SETTINGS.providerBreaker.oauth.degradationThreshold,
         resetTimeoutMs: toInteger(
           oauthLegacy.circuitBreakerReset,
           DEFAULT_RESILIENCE_SETTINGS.providerBreaker.oauth.resetTimeoutMs,
-          { min: 1000, max: 24 * 60 * 60 * 1000 }
+          { min: 1000, max: 24 * 60 * 60 * 1000 },
         ),
       },
       apikey: {
         failureThreshold: toInteger(
           apikeyLegacy.circuitBreakerThreshold,
           DEFAULT_RESILIENCE_SETTINGS.providerBreaker.apikey.failureThreshold,
-          { min: 1, max: 1000 }
+          { min: 1, max: 1000 },
         ),
         degradationThreshold:
           DEFAULT_RESILIENCE_SETTINGS.providerBreaker.apikey.degradationThreshold,
         resetTimeoutMs: toInteger(
           apikeyLegacy.circuitBreakerReset,
           DEFAULT_RESILIENCE_SETTINGS.providerBreaker.apikey.resetTimeoutMs,
-          { min: 1000, max: 24 * 60 * 60 * 1000 }
+          { min: 1000, max: 24 * 60 * 60 * 1000 },
         ),
       },
     },
@@ -239,7 +239,7 @@ function buildLegacyFallback(settings: JsonRecord): ResilienceSettings {
  * on top of `resolveResilienceSettings(...).streamRecovery.enabled`.
  */
 export function isStreamRecoveryExplicitlyConfigured(
-  settings: Record<string, unknown> | null | undefined
+  settings: Record<string, unknown> | null | undefined,
 ): boolean {
   const record = asRecord(settings);
   const current = asRecord(record.resilienceSettings);
@@ -251,7 +251,7 @@ export function isStreamRecoveryExplicitlyConfigured(
 }
 
 export function resolveResilienceSettings(
-  settings: Record<string, unknown> | null | undefined
+  settings: Record<string, unknown> | null | undefined,
 ): ResilienceSettings {
   const record = asRecord(settings);
   const current = asRecord(record.resilienceSettings);
@@ -262,91 +262,91 @@ export function resolveResilienceSettings(
     connectionCooldown: {
       oauth: normalizeConnectionCooldownProfile(
         asRecord(current.connectionCooldown).oauth,
-        fallback.connectionCooldown.oauth
+        fallback.connectionCooldown.oauth,
       ),
       apikey: normalizeConnectionCooldownProfile(
         asRecord(current.connectionCooldown).apikey,
-        fallback.connectionCooldown.apikey
+        fallback.connectionCooldown.apikey,
       ),
     },
     providerBreaker: {
       oauth: normalizeProviderBreakerProfile(
         asRecord(current.providerBreaker).oauth,
-        fallback.providerBreaker.oauth
+        fallback.providerBreaker.oauth,
       ),
       apikey: normalizeProviderBreakerProfile(
         asRecord(current.providerBreaker).apikey,
-        fallback.providerBreaker.apikey
+        fallback.providerBreaker.apikey,
       ),
     },
     waitForCooldown: normalizeWaitForCooldownSettings(
       current.waitForCooldown,
-      fallback.waitForCooldown
+      fallback.waitForCooldown,
     ),
     comboCooldownWait: normalizeComboCooldownWaitSettings(
       current.comboCooldownWait,
-      fallback.comboCooldownWait
+      fallback.comboCooldownWait,
     ),
     quotaShareConcurrencyLimit: normalizeQuotaShareConcurrencyLimitSettings(
       current.quotaShareConcurrencyLimit,
-      fallback.quotaShareConcurrencyLimit
+      fallback.quotaShareConcurrencyLimit,
     ),
     providerCooldown: normalizeProviderCooldownSettings(
       current.providerCooldown,
-      fallback.providerCooldown
+      fallback.providerCooldown,
     ),
     quotaPreflight: normalizeQuotaPreflightSettings(
       current.quotaPreflight,
-      fallback.quotaPreflight
+      fallback.quotaPreflight,
     ),
     streamRecovery: normalizeStreamRecoverySettings(
       current.streamRecovery,
-      fallback.streamRecovery
+      fallback.streamRecovery,
     ),
   };
 }
 
 export function mergeResilienceSettings(
   current: ResilienceSettings,
-  updates: ResilienceSettingsPatch
+  updates: ResilienceSettingsPatch,
 ): ResilienceSettings {
   return {
     requestQueue: normalizeRequestQueueSettings(updates.requestQueue, current.requestQueue),
     connectionCooldown: {
       oauth: normalizeConnectionCooldownProfile(
         updates.connectionCooldown?.oauth,
-        current.connectionCooldown.oauth
+        current.connectionCooldown.oauth,
       ),
       apikey: normalizeConnectionCooldownProfile(
         updates.connectionCooldown?.apikey,
-        current.connectionCooldown.apikey
+        current.connectionCooldown.apikey,
       ),
     },
     providerBreaker: {
       oauth: normalizeProviderBreakerProfile(
         updates.providerBreaker?.oauth,
-        current.providerBreaker.oauth
+        current.providerBreaker.oauth,
       ),
       apikey: normalizeProviderBreakerProfile(
         updates.providerBreaker?.apikey,
-        current.providerBreaker.apikey
+        current.providerBreaker.apikey,
       ),
     },
     waitForCooldown: normalizeWaitForCooldownSettings(
       updates.waitForCooldown,
-      current.waitForCooldown
+      current.waitForCooldown,
     ),
     comboCooldownWait: normalizeComboCooldownWaitSettings(
       updates.comboCooldownWait,
-      current.comboCooldownWait
+      current.comboCooldownWait,
     ),
     quotaShareConcurrencyLimit: normalizeQuotaShareConcurrencyLimitSettings(
       updates.quotaShareConcurrencyLimit,
-      current.quotaShareConcurrencyLimit
+      current.quotaShareConcurrencyLimit,
     ),
     providerCooldown: normalizeProviderCooldownSettings(
       updates.providerCooldown,
-      current.providerCooldown
+      current.providerCooldown,
     ),
     quotaPreflight: normalizeQuotaPreflightSettings(updates.quotaPreflight, current.quotaPreflight),
     streamRecovery: normalizeStreamRecoverySettings(updates.streamRecovery, current.streamRecovery),

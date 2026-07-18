@@ -44,13 +44,13 @@ test("pt-BR cliCommon.concept.code.phrase contains 'código'", () => {
   assert.ok(
     typeof pt.cliCommon.concept?.code?.phrase === "string" &&
       pt.cliCommon.concept.code.phrase.includes("código"),
-    `expected cliCommon.concept.code.phrase to contain 'código', got: ${pt.cliCommon.concept?.code?.phrase}`
+    `expected cliCommon.concept.code.phrase to contain 'código', got: ${pt.cliCommon.concept?.code?.phrase}`,
   );
 });
 
 test("pt-BR cliCommon.comparison.title is non-empty string", () => {
   assert.ok(
-    typeof pt.cliCommon.comparison?.title === "string" && pt.cliCommon.comparison.title.length > 0
+    typeof pt.cliCommon.comparison?.title === "string" && pt.cliCommon.comparison.title.length > 0,
   );
 });
 
@@ -105,7 +105,7 @@ test("en cliAgents.pageTitle is 'ACP Agents'", () => {
 test("en cliCommon.concept.code.phrase is a non-empty string", () => {
   assert.ok(
     typeof en.cliCommon.concept?.code?.phrase === "string" &&
-      en.cliCommon.concept.code.phrase.length > 0
+      en.cliCommon.concept.code.phrase.length > 0,
   );
 });
 

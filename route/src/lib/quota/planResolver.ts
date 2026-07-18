@@ -40,7 +40,7 @@ export interface RuntimeSignals {
 export function resolvePlan(
   connectionId: string,
   provider: string,
-  _runtimeSignals?: RuntimeSignals
+  _runtimeSignals?: RuntimeSignals,
 ): ProviderPlan {
   // 1. Manual DB override
   try {

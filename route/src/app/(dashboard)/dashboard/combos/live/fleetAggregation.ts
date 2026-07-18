@@ -42,7 +42,7 @@ export interface FleetSets {
 export function aggregateComboEventsToSets(
   events: ComboEventInput[],
   windowMs: number,
-  now: number
+  now: number,
 ): FleetSets {
   // Build a map of provider → {latestTimestamp, latestType}
   // We only care about the most recent event per provider.

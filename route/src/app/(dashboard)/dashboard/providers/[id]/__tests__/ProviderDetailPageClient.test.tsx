@@ -56,7 +56,8 @@ vi.mock("next/link", () => ({
 
 vi.mock("next-intl", () => ({
   // Echo the key back so assertions don't depend on a full message catalog.
-  useTranslations: (namespace?: string) => (key: string) => (namespace ? `${namespace}.${key}` : key),
+  useTranslations: (namespace?: string) => (key: string) =>
+    namespace ? `${namespace}.${key}` : key,
 }));
 
 function renderProviderPage() {
@@ -97,7 +98,7 @@ describe("ProviderDetailPageClient (Phase 0 smoke)", () => {
         removeEventListener: vi.fn(),
         addListener: vi.fn(),
         removeListener: vi.fn(),
-      }))
+      })),
     );
     installLocalStorageStub();
   });

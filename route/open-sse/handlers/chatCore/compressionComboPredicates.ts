@@ -18,7 +18,7 @@ export type RuntimeCompressionCombo = {
 };
 
 export function isBuiltinStackedPipeline(
-  pipeline: CompressionConfig["stackedPipeline"] | undefined
+  pipeline: CompressionConfig["stackedPipeline"] | undefined,
 ): boolean {
   if (!Array.isArray(pipeline) || pipeline.length !== 2) return false;
   const [first, second] = pipeline;
@@ -33,7 +33,7 @@ export function isBuiltinStackedPipeline(
 }
 
 export function isStackedCompressionCombo(
-  compressionCombo: RuntimeCompressionCombo | null
+  compressionCombo: RuntimeCompressionCombo | null,
 ): compressionCombo is RuntimeCompressionCombo {
   // >= 1: a single-engine default combo (user enabled exactly one layer via the per-engine config
   // page) must still apply. applyCompressionComboConfig already guards length === 0.

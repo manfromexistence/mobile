@@ -10,8 +10,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-const { translateNonStreamingResponse } =
-  await import("../../open-sse/handlers/responseTranslator.ts");
+const { translateNonStreamingResponse } = await import(
+  "../../open-sse/handlers/responseTranslator.ts"
+);
 const { FORMATS } = await import("../../open-sse/translator/formats.ts");
 
 const ERROR_BODY = {
@@ -35,7 +36,7 @@ test("Responses API non-streaming: Gemini error returns raw error body (no candi
   const result = translateNonStreamingResponse(
     ERROR_BODY,
     FORMATS.GEMINI,
-    FORMATS.OPENAI_RESPONSES
+    FORMATS.OPENAI_RESPONSES,
   );
 
   // The translator has no candidates or promptFeedback to work with
@@ -48,7 +49,7 @@ test("Responses API non-streaming: Gemini error body has no valid output", () =>
   const result = translateNonStreamingResponse(
     ERROR_BODY,
     FORMATS.GEMINI,
-    FORMATS.OPENAI_RESPONSES
+    FORMATS.OPENAI_RESPONSES,
   ) as Record<string, unknown>;
 
   // No chat.completion shape, no choices, no output array
@@ -68,7 +69,7 @@ test("Non-streaming: 429 RESOURCE_EXHAUSTED also returns raw error body", () => 
   const result = translateNonStreamingResponse(
     ERROR_BODY_RESOURCE_EXHAUSTED,
     FORMATS.GEMINI,
-    FORMATS.OPENAI_RESPONSES
+    FORMATS.OPENAI_RESPONSES,
   ) as Record<string, unknown>;
 
   assert.equal(result, ERROR_BODY_RESOURCE_EXHAUSTED);
@@ -88,7 +89,7 @@ test("Non-streaming: Antigravity error inside response envelope is passed throug
   const result = translateNonStreamingResponse(
     agErrorBody,
     FORMATS.GEMINI,
-    FORMATS.OPENAI_RESPONSES
+    FORMATS.OPENAI_RESPONSES,
   );
 
   // The response envelope has no candidates → passes through
@@ -114,7 +115,7 @@ test("Non-streaming: valid Gemini response with candidates still translates corr
       },
     },
     FORMATS.GEMINI,
-    FORMATS.OPENAI_RESPONSES
+    FORMATS.OPENAI_RESPONSES,
   ) as Record<string, unknown>;
 
   assert.equal(result.object, "chat.completion");
@@ -131,6 +132,6 @@ test("detectMalformedNonStream classifies Gemini error body as empty_choices", a
   assert.equal(
     diagnosis,
     "empty_choices",
-    "error body without choices should be classified as empty_choices"
+    "error body without choices should be classified as empty_choices",
   );
 });

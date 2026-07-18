@@ -24,7 +24,7 @@ const ORBIT_POINTS: ReadonlyArray<readonly [number, number]> = [
   [3, 3],
   [3, 2],
   [3, 1],
-  [2, 1]
+  [2, 1],
 ];
 
 export function DotmCircular19({
@@ -34,15 +34,19 @@ export function DotmCircular19({
   ...rest
 }: DotmCircular19Props) {
   const reducedMotion = usePrefersReducedMotion();
-  const { phase: matrixPhase, onMouseEnter, onMouseLeave } = useDotMatrixPhases({
+  const {
+    phase: matrixPhase,
+    onMouseEnter,
+    onMouseLeave,
+  } = useDotMatrixPhases({
     animated: Boolean(animated && !reducedMotion),
     hoverAnimated: Boolean(hoverAnimated && !reducedMotion),
-    speed
+    speed,
   });
   const phase = useCyclePhase({
     active: !reducedMotion && matrixPhase !== "idle",
     cycleMsBase: 1280,
-    speed
+    speed,
   });
 
   const resolver = useMemo<DotAnimationResolver>(() => {
@@ -54,7 +58,7 @@ export function DotmCircular19({
       const t =
         reducedMotion || p === "idle"
           ? 0
-          : Math.floor((phase) * ORBIT_POINTS.length) % ORBIT_POINTS.length;
+          : Math.floor(phase * ORBIT_POINTS.length) % ORBIT_POINTS.length;
       const [headRow, headCol] = ORBIT_POINTS[t]!;
       const [tailRow, tailCol] = ORBIT_POINTS[(t + ORBIT_POINTS.length - 1) % ORBIT_POINTS.length]!;
 

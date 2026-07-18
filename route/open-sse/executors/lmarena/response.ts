@@ -11,27 +11,27 @@ export function errorResponse(
   status: number,
   message: string,
   type: string,
-  code: string
+  code: string,
 ): Response {
   return new Response(
     JSON.stringify({
       error: { message: sanitizeErrorMessage(message), type, code },
     }),
-    { status, headers: { "Content-Type": "application/json" } }
+    { status, headers: { "Content-Type": "application/json" } },
   );
 }
 
 export function missingCookieResult(
   url: string,
   headers: Record<string, string>,
-  transformedBody: unknown
+  transformedBody: unknown,
 ) {
   return {
     response: errorResponse(
       401,
       "Arena requires a session cookie. Paste the full Cookie header from arena.ai (include arena-auth-prod-v1.* chunks and ideally cf_clearance).",
       "authentication_error",
-      "missing_cookie"
+      "missing_cookie",
     ),
     url,
     headers,
@@ -82,7 +82,7 @@ export function mapFailedTlsResult(opts: {
         status || 403,
         botBlockMessage(text, hasRecaptcha, status),
         "api_error",
-        "cloudflare_or_bot"
+        "cloudflare_or_bot",
       ),
       url,
       headers,
@@ -107,14 +107,14 @@ export function mapTlsUnavailable(
   error: Error,
   url: string,
   headers: Record<string, string>,
-  transformedBody: unknown
+  transformedBody: unknown,
 ) {
   return {
     response: errorResponse(
       502,
       `Arena TLS impersonation unavailable: ${error.message}. Install/repair tls-client-node native binary.`,
       "upstream_error",
-      "TLS_CLIENT_UNAVAILABLE"
+      "TLS_CLIENT_UNAVAILABLE",
     ),
     url,
     headers,
@@ -126,7 +126,7 @@ export function mapNetworkError(
   message: string,
   url: string,
   headers: Record<string, string>,
-  transformedBody: unknown
+  transformedBody: unknown,
 ) {
   return {
     response: errorResponse(502, message, "network_error", "request_failed"),
@@ -181,7 +181,7 @@ function emitStopAndDone(controller: ReadableStreamDefaultController, model: str
 function handleArenaEventLine(
   sseLine: string,
   model: string,
-  controller: ReadableStreamDefaultController
+  controller: ReadableStreamDefaultController,
 ): boolean {
   const event = parseArenaSSE(sseLine);
   if (!event) return false;
@@ -265,7 +265,7 @@ export function createOpenAIArenaStream(opts: {
 
 export async function handleNonStreamingArenaResponse(
   response: Response,
-  model: string
+  model: string,
 ): Promise<Response> {
   const text = await response.text();
   let fullText = "";
@@ -300,6 +300,6 @@ export async function handleNonStreamingArenaResponse(
       ],
       usage: { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 },
     }),
-    { status: 200, headers: { "Content-Type": "application/json" } }
+    { status: 200, headers: { "Content-Type": "application/json" } },
   );
 }

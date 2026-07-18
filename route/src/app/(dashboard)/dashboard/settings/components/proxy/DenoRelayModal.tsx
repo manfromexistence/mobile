@@ -14,7 +14,7 @@ export default function DenoRelayModal({ isOpen, onClose, onDeployed }: DenoRela
   const [denoToken, setDenoToken] = useState("");
   const [orgDomain, setOrgDomain] = useState("");
   const [projectName, setProjectName] = useState(
-    process.env.NEXT_PUBLIC_DENO_RELAY_DEFAULT_PROJECT || "omniroute-deno-relay"
+    process.env.NEXT_PUBLIC_DENO_RELAY_DEFAULT_PROJECT || "omniroute-deno-relay",
   );
   const [deploying, setDeploying] = useState(false);
   const [error, setError] = useState<string | null>(null);

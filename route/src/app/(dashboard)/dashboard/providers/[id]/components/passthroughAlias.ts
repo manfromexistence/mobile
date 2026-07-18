@@ -14,7 +14,7 @@
  */
 export function generateUniqueModelAlias(
   modelId: string,
-  existingAliases: Record<string, unknown> = {}
+  existingAliases: Record<string, unknown> = {},
 ): string {
   const parts = String(modelId ?? "")
     .split("/")

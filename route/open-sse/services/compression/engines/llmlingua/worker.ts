@@ -65,7 +65,7 @@ const WORKER_JS_REL = path.join(
   "compression",
   "engines",
   "llmlingua",
-  "onnxWorker.js"
+  "onnxWorker.js",
 );
 const WORKER_TS_REL = path.join(
   "open-sse",
@@ -73,7 +73,7 @@ const WORKER_TS_REL = path.join(
   "compression",
   "engines",
   "llmlingua",
-  "onnxWorker.ts"
+  "onnxWorker.ts",
 );
 
 const MAX_WALK_UP = 8;

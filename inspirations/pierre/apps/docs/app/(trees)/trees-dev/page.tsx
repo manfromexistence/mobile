@@ -1,14 +1,11 @@
-import {
-  preloadFileTree,
-  serializeFileTreeSsrPayload,
-} from '@pierre/trees/ssr';
-import type { FileTreePathOptions } from '@trees/_lib/fileTreePathOptions';
+import { preloadFileTree, serializeFileTreeSsrPayload } from "@pierre/trees/ssr";
+import type { FileTreePathOptions } from "@trees/_lib/fileTreePathOptions";
 
-import { ExampleCard } from './_components/ExampleCard';
-import { readSettingsCookies } from './_components/readSettingsCookies';
-import { MainDemoClient } from './_demos/MainDemoClient';
-import { createPresortedPreparedInput } from './_lib/createPresortedPreparedInput';
-import { loadWorkloadDataPayload } from './_lib/workloadLoader';
+import { ExampleCard } from "./_components/ExampleCard";
+import { readSettingsCookies } from "./_components/readSettingsCookies";
+import { MainDemoClient } from "./_demos/MainDemoClient";
+import { createPresortedPreparedInput } from "./_lib/createPresortedPreparedInput";
+import { loadWorkloadDataPayload } from "./_lib/workloadLoader";
 import {
   DEFAULT_TREES_WORKLOAD_NAME,
   FILE_TREE_PROOF_VIEWPORT_HEIGHT,
@@ -16,11 +13,11 @@ import {
   getRequestedWorkloadName,
   TREES_WORKLOAD_OPTIONS,
   type TreesPageSearchParams,
-} from './_lib/workloadMeta';
+} from "./_lib/workloadMeta";
 
 const TREE_HEADER_HTML =
   '<div data-tree-demo-header style="align-items:center;display:flex;gap:12px;padding:8px 12px"><strong>Trees demo header</strong><button type="button">Log header action</button></div>';
-const MAIN_DEMO_TITLE = 'Main demo';
+const MAIN_DEMO_TITLE = "Main demo";
 
 export default async function TreesDevIndexPage({
   searchParams,
@@ -31,15 +28,12 @@ export default async function TreesDevIndexPage({
   const resolvedSearchParams = (await searchParams) ?? {};
   const selectedWorkloadName = getRequestedWorkloadName(resolvedSearchParams);
   const expansionMode = getRequestedExpansionMode(resolvedSearchParams);
-  const workloadData = await loadWorkloadDataPayload(
-    selectedWorkloadName,
-    expansionMode
-  );
-  const sharedOptions: Omit<FileTreePathOptions, 'id' | 'preparedInput'> = {
+  const workloadData = await loadWorkloadDataPayload(selectedWorkloadName, expansionMode);
+  const sharedOptions: Omit<FileTreePathOptions, "id" | "preparedInput"> = {
     composition: {
       contextMenu: {
         enabled: true,
-        triggerMode: 'both',
+        triggerMode: "both",
       },
       header: {
         html: TREE_HEADER_HTML,
@@ -47,7 +41,7 @@ export default async function TreesDevIndexPage({
     },
     dragAndDrop: true,
     flattenEmptyDirectories,
-    fileTreeSearchMode: 'hide-non-matches',
+    fileTreeSearchMode: "hide-non-matches",
     initialExpandedPaths: workloadData.initialExpandedPaths,
     paths: workloadData.paths,
     search: true,
@@ -56,7 +50,7 @@ export default async function TreesDevIndexPage({
   };
   const payload = preloadFileTree({
     ...sharedOptions,
-    icons: 'complete',
+    icons: "complete",
     id: `trees-dev-main-${selectedWorkloadName}`,
     preparedInput: workloadData.pathsArePresorted
       ? createPresortedPreparedInput(workloadData.paths)
@@ -81,7 +75,7 @@ export default async function TreesDevIndexPage({
           id={treeMountId}
           style={{ height: `${String(FILE_TREE_PROOF_VIEWPORT_HEIGHT)}px` }}
           dangerouslySetInnerHTML={{
-            __html: serializeFileTreeSsrPayload(payload, 'dom'),
+            __html: serializeFileTreeSsrPayload(payload, "dom"),
           }}
           suppressHydrationWarning
         />

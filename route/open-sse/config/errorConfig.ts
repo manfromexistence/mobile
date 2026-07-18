@@ -217,7 +217,7 @@ export interface ServiceSupervisorCooldown {
  */
 export function serviceSupervisorCooldown(
   status: number,
-  headers: Headers | Record<string, string> | null
+  headers: Headers | Record<string, string> | null,
 ): ServiceSupervisorCooldown | null {
   if (status !== 503 || !headers) return null;
   const hintValue =

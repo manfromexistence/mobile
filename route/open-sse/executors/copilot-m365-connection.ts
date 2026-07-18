@@ -116,7 +116,7 @@ export function newChatSessionId(): string {
 }
 
 function parsePastedCredential(
-  raw: string
+  raw: string,
 ): Partial<Pick<M365ConnectionParams, "accessToken" | "chathubPath">> {
   const value = raw.trim();
   const parts: Record<string, string> = {};
@@ -134,7 +134,7 @@ function parsePastedCredential(
       const url = new URL(value);
       parts.access_token ||= url.searchParams.get("access_token") || "";
       parts.chathubPath ||= decodeURIComponent(
-        url.pathname.split("/m365Copilot/Chathub/")[1] || ""
+        url.pathname.split("/m365Copilot/Chathub/")[1] || "",
       );
     } catch {
       // Keep any key/value fields already parsed from the pasted text.
@@ -153,7 +153,7 @@ function parsePastedCredential(
  * alongside it because it is not derivable from the opaque token.
  */
 export function resolveConnectionParams(
-  credentials: ProviderCredentials | undefined
+  credentials: ProviderCredentials | undefined,
 ): M365ConnectionParams | { error: string } {
   const psd = (credentials?.providerSpecificData ?? {}) as JsonRecord;
   const parsedApiKey =
@@ -195,7 +195,7 @@ export function resolveConnectionParams(
  * (#6210, #6334)
  */
 function resolveTierOverrides(
-  psd: JsonRecord
+  psd: JsonRecord,
 ): Pick<M365ConnectionParams, "scenario" | "isEdu" | "licenseType" | "agent"> {
   const tier = typeof psd.tier === "string" ? psd.tier.toLowerCase() : "";
   const isEduTier = tier === "edu" || tier === "included";

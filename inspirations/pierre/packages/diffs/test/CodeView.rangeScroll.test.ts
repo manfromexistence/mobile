@@ -1,12 +1,9 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from "bun:test";
 
-import { CodeView } from '../src/components/CodeView';
-import {
-  DEFAULT_CODE_VIEW_FILE_METRICS,
-  DEFAULT_CODE_VIEW_LAYOUT,
-} from '../src/constants';
-import type { CodeViewItem } from '../src/types';
-import { parseDiffFromFile } from '../src/utils/parseDiffFromFile';
+import { CodeView } from "../src/components/CodeView";
+import { DEFAULT_CODE_VIEW_FILE_METRICS, DEFAULT_CODE_VIEW_LAYOUT } from "../src/constants";
+import type { CodeViewItem } from "../src/types";
+import { parseDiffFromFile } from "../src/utils/parseDiffFromFile";
 import {
   createRoot,
   dispatchScroll,
@@ -14,32 +11,22 @@ import {
   makeFileItem,
   renderItems,
   wait,
-} from './domHarness';
+} from "./domHarness";
 
 const ROOT_HEIGHT = 800;
 const ROOT_WIDTH = 1000;
 
 function makeInsertedDiffItem(id: string): CodeViewItem<undefined> {
-  const oldLines = Array.from(
-    { length: 160 },
-    (_, index) => `line ${index + 1}`
-  );
-  const insertedLines = Array.from(
-    { length: 10 },
-    (_, index) => `inserted ${index + 1}`
-  );
-  const newLines = [
-    ...oldLines.slice(0, 80),
-    ...insertedLines,
-    ...oldLines.slice(80),
-  ];
+  const oldLines = Array.from({ length: 160 }, (_, index) => `line ${index + 1}`);
+  const insertedLines = Array.from({ length: 10 }, (_, index) => `inserted ${index + 1}`);
+  const newLines = [...oldLines.slice(0, 80), ...insertedLines, ...oldLines.slice(80)];
 
   return {
     id,
-    type: 'diff',
+    type: "diff",
     fileDiff: parseDiffFromFile(
-      { name: 'src/inserted.ts', contents: oldLines.join('\n') },
-      { name: 'src/inserted.ts', contents: newLines.join('\n') }
+      { name: "src/inserted.ts", contents: oldLines.join("\n") },
+      { name: "src/inserted.ts", contents: newLines.join("\n") },
     ),
   };
 }
@@ -55,22 +42,22 @@ function getViewportTopForLocalTop(localTop: number): number {
   return DEFAULT_CODE_VIEW_LAYOUT.paddingTop + localTop;
 }
 
-describe('CodeView range scrolling', () => {
-  test('scrolls a single-line range to the same position as a line target', async () => {
+describe("CodeView range scrolling", () => {
+  test("scrolls a single-line range to the same position as a line target", async () => {
     const { cleanup } = installDom();
     const viewer = new CodeView();
     const root = createRoot({ height: ROOT_HEIGHT, width: ROOT_WIDTH });
 
     try {
       viewer.setup(root);
-      await renderItems(viewer, [makeFileItem('file:example', 120)]);
+      await renderItems(viewer, [makeFileItem("file:example", 120)]);
 
       viewer.scrollTo({
-        type: 'line',
-        id: 'file:example',
+        type: "line",
+        id: "file:example",
         lineNumber: 50,
-        align: 'center',
-        behavior: 'instant',
+        align: "center",
+        behavior: "instant",
       });
       viewer.render(true);
       const lineScrollTop = root.scrollTop;
@@ -81,15 +68,15 @@ describe('CodeView range scrolling', () => {
       const lineHeight = DEFAULT_CODE_VIEW_FILE_METRICS.lineHeight;
       expect(lineScrollTop).toBe(lineTop - (ROOT_HEIGHT - lineHeight) / 2);
 
-      viewer.scrollTo({ type: 'position', position: 0, behavior: 'instant' });
+      viewer.scrollTo({ type: "position", position: 0, behavior: "instant" });
       viewer.render(true);
 
       viewer.scrollTo({
-        type: 'range',
-        id: 'file:example',
+        type: "range",
+        id: "file:example",
         range: { start: 50, end: 50 },
-        align: 'center',
-        behavior: 'instant',
+        align: "center",
+        behavior: "instant",
       });
       viewer.render(true);
 
@@ -101,21 +88,21 @@ describe('CodeView range scrolling', () => {
     }
   });
 
-  test('centers a multi-line range as a single region', async () => {
+  test("centers a multi-line range as a single region", async () => {
     const { cleanup } = installDom();
     const viewer = new CodeView();
     const root = createRoot({ height: ROOT_HEIGHT, width: ROOT_WIDTH });
 
     try {
       viewer.setup(root);
-      await renderItems(viewer, [makeFileItem('file:example', 120)]);
+      await renderItems(viewer, [makeFileItem("file:example", 120)]);
 
       viewer.scrollTo({
-        type: 'range',
-        id: 'file:example',
+        type: "range",
+        id: "file:example",
         range: { start: 20, end: 30 },
-        align: 'center',
-        behavior: 'instant',
+        align: "center",
+        behavior: "instant",
       });
       viewer.render(true);
 
@@ -130,25 +117,25 @@ describe('CodeView range scrolling', () => {
     }
   });
 
-  test('keeps nearest alignment still when the full range is visible', async () => {
+  test("keeps nearest alignment still when the full range is visible", async () => {
     const { cleanup } = installDom();
     const viewer = new CodeView();
     const root = createRoot({ height: ROOT_HEIGHT, width: ROOT_WIDTH });
 
     try {
       viewer.setup(root);
-      await renderItems(viewer, [makeFileItem('file:example', 120)]);
+      await renderItems(viewer, [makeFileItem("file:example", 120)]);
 
       root.scrollTop = 500;
       dispatchScroll(root);
       viewer.render(true);
 
       viewer.scrollTo({
-        type: 'range',
-        id: 'file:example',
+        type: "range",
+        id: "file:example",
         range: { start: 30, end: 35 },
-        align: 'nearest',
-        behavior: 'instant',
+        align: "nearest",
+        behavior: "instant",
       });
       viewer.render(true);
 
@@ -160,31 +147,29 @@ describe('CodeView range scrolling', () => {
     }
   });
 
-  test('moves nearest alignment when the range starts above the viewport', async () => {
+  test("moves nearest alignment when the range starts above the viewport", async () => {
     const { cleanup } = installDom();
     const viewer = new CodeView();
     const root = createRoot({ height: ROOT_HEIGHT, width: ROOT_WIDTH });
 
     try {
       viewer.setup(root);
-      await renderItems(viewer, [makeFileItem('file:example', 120)]);
+      await renderItems(viewer, [makeFileItem("file:example", 120)]);
 
       root.scrollTop = 700;
       dispatchScroll(root);
       viewer.render(true);
 
       viewer.scrollTo({
-        type: 'range',
-        id: 'file:example',
+        type: "range",
+        id: "file:example",
         range: { start: 30, end: 35 },
-        align: 'nearest',
-        behavior: 'instant',
+        align: "nearest",
+        behavior: "instant",
       });
       viewer.render(true);
 
-      expect(root.scrollTop).toBe(
-        getViewportTopForLocalTop(getFileLineTop(30))
-      );
+      expect(root.scrollTop).toBe(getViewportTopForLocalTop(getFileLineTop(30)));
     } finally {
       viewer.cleanUp();
       await wait(0);
@@ -192,27 +177,25 @@ describe('CodeView range scrolling', () => {
     }
   });
 
-  test('falls back to start alignment when a centered range is taller than the viewport', async () => {
+  test("falls back to start alignment when a centered range is taller than the viewport", async () => {
     const { cleanup } = installDom();
     const viewer = new CodeView();
     const root = createRoot({ height: ROOT_HEIGHT, width: ROOT_WIDTH });
 
     try {
       viewer.setup(root);
-      await renderItems(viewer, [makeFileItem('file:example', 120)]);
+      await renderItems(viewer, [makeFileItem("file:example", 120)]);
 
       viewer.scrollTo({
-        type: 'range',
-        id: 'file:example',
+        type: "range",
+        id: "file:example",
         range: { start: 10, end: 60 },
-        align: 'center',
-        behavior: 'instant',
+        align: "center",
+        behavior: "instant",
       });
       viewer.render(true);
 
-      expect(root.scrollTop).toBe(
-        getViewportTopForLocalTop(getFileLineTop(10))
-      );
+      expect(root.scrollTop).toBe(getViewportTopForLocalTop(getFileLineTop(10)));
     } finally {
       viewer.cleanUp();
       await wait(0);
@@ -220,39 +203,39 @@ describe('CodeView range scrolling', () => {
     }
   });
 
-  test('resolves split-view range endpoints against their requested sides', async () => {
+  test("resolves split-view range endpoints against their requested sides", async () => {
     const { cleanup } = installDom();
-    const viewer = new CodeView({ diffStyle: 'split', expandUnchanged: true });
+    const viewer = new CodeView({ diffStyle: "split", expandUnchanged: true });
     const root = createRoot({ height: ROOT_HEIGHT, width: ROOT_WIDTH });
 
     try {
       viewer.setup(root);
-      await renderItems(viewer, [makeInsertedDiffItem('diff:inserted')]);
+      await renderItems(viewer, [makeInsertedDiffItem("diff:inserted")]);
 
       viewer.scrollTo({
-        type: 'range',
-        id: 'diff:inserted',
-        range: { start: 120, end: 120, side: 'additions' },
-        align: 'center',
-        behavior: 'instant',
+        type: "range",
+        id: "diff:inserted",
+        range: { start: 120, end: 120, side: "additions" },
+        align: "center",
+        behavior: "instant",
       });
       viewer.render(true);
       const additionsScrollTop = root.scrollTop;
 
-      viewer.scrollTo({ type: 'position', position: 0, behavior: 'instant' });
+      viewer.scrollTo({ type: "position", position: 0, behavior: "instant" });
       viewer.render(true);
 
       viewer.scrollTo({
-        type: 'range',
-        id: 'diff:inserted',
-        range: { start: 120, end: 120, side: 'deletions' },
-        align: 'center',
-        behavior: 'instant',
+        type: "range",
+        id: "diff:inserted",
+        range: { start: 120, end: 120, side: "deletions" },
+        align: "center",
+        behavior: "instant",
       });
       viewer.render(true);
 
       expect(root.scrollTop - additionsScrollTop).toBe(
-        10 * DEFAULT_CODE_VIEW_FILE_METRICS.lineHeight
+        10 * DEFAULT_CODE_VIEW_FILE_METRICS.lineHeight,
       );
     } finally {
       viewer.cleanUp();

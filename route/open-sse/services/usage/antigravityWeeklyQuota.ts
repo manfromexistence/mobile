@@ -39,7 +39,7 @@ const _weeklyQuotaCacheCleanupTimer = setInterval(
       if (now - entry.fetchedAt > WEEKLY_QUOTA_CACHE_TTL_MS) _weeklyQuotaCache.delete(key);
     }
   },
-  5 * 60 * 1000
+  5 * 60 * 1000,
 );
 _weeklyQuotaCacheCleanupTimer.unref?.();
 
@@ -55,13 +55,17 @@ function buildCacheKey(accessToken: string, projectId?: string | null): string {
 export async function fetchAntigravityUserQuotaSummaryCached(
   accessToken: string,
   projectId?: string | null,
-  options: AntigravityWeeklyQuotaOptions = {}
+  options: AntigravityWeeklyQuotaOptions = {},
 ): Promise<unknown | null> {
   if (!accessToken || !projectId) return null;
 
   const cacheKey = buildCacheKey(accessToken, projectId);
   const cached = _weeklyQuotaCache.get(cacheKey);
-  if (!options.forceRefresh && cached && Date.now() - cached.fetchedAt < WEEKLY_QUOTA_CACHE_TTL_MS) {
+  if (
+    !options.forceRefresh &&
+    cached &&
+    Date.now() - cached.fetchedAt < WEEKLY_QUOTA_CACHE_TTL_MS
+  ) {
     return cached.data;
   }
 
@@ -80,7 +84,7 @@ export async function fetchAntigravityUserQuotaSummaryCached(
           },
           body: JSON.stringify({ project: projectId }),
           signal: AbortSignal.timeout(10000),
-        }
+        },
       );
 
       if (!response.ok) return null;
@@ -145,7 +149,7 @@ function extractSummaryGroups(summaryData: unknown): unknown[] {
 function parseGroupWeeklyQuota(group: JsonRecord): { key: string; quota: UsageQuota } | null {
   const buckets = Array.isArray(group.buckets) ? group.buckets : [];
   const weeklyBucketValue = buckets.find(
-    (b) => b && typeof b === "object" && bucketMatchesWindow(toRecord(b), WEEKLY_KEYWORD)
+    (b) => b && typeof b === "object" && bucketMatchesWindow(toRecord(b), WEEKLY_KEYWORD),
   );
   if (!weeklyBucketValue) return null;
 
@@ -184,7 +188,7 @@ function parseGroupWeeklyQuota(group: JsonRecord): { key: string; quota: UsageQu
 export async function fetchAndParseAntigravityWeeklyQuotas(
   accessToken: string,
   projectId: string | undefined | null,
-  options: AntigravityWeeklyQuotaOptions = {}
+  options: AntigravityWeeklyQuotaOptions = {},
 ): Promise<Record<string, UsageQuota>> {
   const data = await fetchAntigravityUserQuotaSummaryCached(accessToken, projectId, options);
   return parseAntigravityWeeklyQuotas(data);

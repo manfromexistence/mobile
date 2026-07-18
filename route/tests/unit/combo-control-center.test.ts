@@ -43,7 +43,7 @@ test("getComboControlCenterTargets normalizes legacy, structured and nested comb
           avgLatencyMs: 850,
         },
       ],
-    }
+    },
   );
 
   assert.equal(targets.length, 3);
@@ -89,7 +89,7 @@ test("summarizeComboControlCenter combines health and runtime metrics", () => {
         { model: "openai/gpt-4.1", provider: "openai" },
         { model: "anthropic/claude-sonnet", provider: "anthropic" },
       ],
-    }
+    },
   );
 
   assert.equal(summary.strategy, "weighted");
@@ -116,7 +116,7 @@ test("summarizeComboControlCenter marks exhausted quota as critical", () => {
         worstRemainingPct: 0,
         providers: [{ provider: "openai", remainingPct: 0, isExhausted: true, trend: "declining" }],
       },
-    }
+    },
   );
 
   assert.equal(summary.healthState, "critical");

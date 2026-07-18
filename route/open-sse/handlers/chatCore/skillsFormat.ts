@@ -9,7 +9,7 @@
 import { FORMATS } from "../../translator/formats.ts";
 
 export function getSkillsProviderForFormat(
-  format: string
+  format: string,
 ): "openai" | "anthropic" | "google" | "other" {
   switch (format) {
     case FORMATS.CLAUDE:

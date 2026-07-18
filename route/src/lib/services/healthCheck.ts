@@ -16,7 +16,7 @@ export class HealthChecker {
   constructor(
     private readonly healthUrl: () => string,
     private readonly intervalMs: number,
-    private readonly onChange: OnHealthChange
+    private readonly onChange: OnHealthChange,
   ) {}
 
   start(): void {

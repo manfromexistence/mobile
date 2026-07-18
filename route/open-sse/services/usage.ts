@@ -158,7 +158,7 @@ async function getCrofUsage(apiKey: string) {
       now.getUTCFullYear(),
       now.getUTCMonth(),
       now.getUTCDate(),
-      RESET_HOUR_UTC
+      RESET_HOUR_UTC,
     );
     const nextResetMs =
       todayResetMs > now.getTime() ? todayResetMs : todayResetMs + 24 * 60 * 60 * 1000;
@@ -195,7 +195,7 @@ async function getCrofUsage(apiKey: string) {
 async function getBailianCodingPlanUsage(
   connectionId: string,
   apiKey: string,
-  providerSpecificData?: Record<string, unknown>
+  providerSpecificData?: Record<string, unknown>,
 ) {
   try {
     const connection = { apiKey, providerSpecificData };
@@ -299,7 +299,7 @@ async function getXiaomiMimoUsage(connectionId: string) {
     const total = XIAOMI_MIMO_MONTHLY_TOKEN_LIMIT;
     const now = new Date();
     const resetAt = new Date(
-      Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1)
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1),
     ).toISOString();
     return {
       plan: "Xiaomi MiMo Token Plan (OmniRoute-tracked)",
@@ -550,7 +550,7 @@ export type UsageFetcherProvider = (typeof USAGE_FETCHER_PROVIDERS)[number];
  */
 export async function getUsageForProvider(
   connection: UsageProviderConnection,
-  options: { forceRefresh?: boolean } = {}
+  options: { forceRefresh?: boolean } = {},
 ) {
   const { id, provider, accessToken, apiKey, providerSpecificData, projectId, email } = connection;
 
@@ -565,7 +565,7 @@ export async function getUsageForProvider(
         providerSpecificData,
         projectId,
         id,
-        options
+        options,
       );
     case "claude":
       return await getClaudeUsage(accessToken);
@@ -663,7 +663,7 @@ async function getGitHubUsage(accessToken?: string, providerSpecificData?: JsonR
       // Paid plan format
       const snapshots = toRecord(dataRecord.quota_snapshots);
       const resetAt = parseResetTime(
-        getFieldValue(dataRecord, "quota_reset_date", "quotaResetDate")
+        getFieldValue(dataRecord, "quota_reset_date", "quotaResetDate"),
       );
       const premiumQuota = formatGitHubQuotaSnapshot(snapshots.premium_interactions, resetAt);
       const chatQuota = formatGitHubQuotaSnapshot(snapshots.chat, resetAt);
@@ -700,7 +700,7 @@ async function getGitHubUsage(accessToken?: string, providerSpecificData?: JsonR
       const resetDate = getFieldValue(
         dataRecord,
         "limited_user_reset_date",
-        "limitedUserResetDate"
+        "limitedUserResetDate",
       );
       const resetAt = parseResetTime(resetDate);
       const quotas: Record<string, UsageQuota> = {};
@@ -741,7 +741,7 @@ async function getGitHubUsage(accessToken?: string, providerSpecificData?: JsonR
 
 function formatGitHubQuotaSnapshot(
   quota: unknown,
-  resetAt: string | null = null
+  resetAt: string | null = null,
 ): UsageQuota | null {
   const source = toRecord(quota);
   if (Object.keys(source).length === 0) return null;
@@ -753,7 +753,7 @@ function formatGitHubQuotaSnapshot(
   const usedValue = toNumber(source.used, Number.NaN);
   const percentRemainingValue = toNumber(
     getFieldValue(source, "percent_remaining", "percentRemaining"),
-    Number.NaN
+    Number.NaN,
   );
 
   let total = Number.isFinite(totalValue)

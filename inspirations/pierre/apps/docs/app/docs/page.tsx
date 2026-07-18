@@ -1,13 +1,9 @@
 // Build-time dispatcher for `/docs`: see app/page.tsx for rationale.
-import DiffsDocsPage, {
-  metadata as diffsDocsMetadata,
-} from '../(diffs)/_docs/DocsPage';
-import TreesDocsPage, {
-  metadata as treesDocsMetadata,
-} from '../(trees)/_docs/DocsPage';
+import DiffsDocsPage, { metadata as diffsDocsMetadata } from "../(diffs)/_docs/DocsPage";
+import TreesDocsPage, { metadata as treesDocsMetadata } from "../(trees)/_docs/DocsPage";
 
 const SITE = process.env.NEXT_PUBLIC_SITE;
-const isTrees = SITE === 'trees';
+const isTrees = SITE === "trees";
 
 export const metadata = isTrees ? treesDocsMetadata : diffsDocsMetadata;
 

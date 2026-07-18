@@ -34,7 +34,7 @@ test("wire leaf exposes the primitives and wire-type constants", () => {
     assert.equal(
       typeof (wire as Record<string, unknown>)[fn],
       "function",
-      `${fn} must be exported`
+      `${fn} must be exported`,
     );
   }
 });

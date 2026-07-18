@@ -15,8 +15,9 @@ delete process.env.JWT_SECRET;
 const core = await import("../../src/lib/db/core.ts");
 const providersDb = await import("../../src/lib/db/providers.ts");
 const proxySettingsRoute = await import("../../src/app/api/settings/proxies/route.ts");
-const proxyAssignmentsRoute =
-  await import("../../src/app/api/settings/proxies/assignments/route.ts");
+const proxyAssignmentsRoute = await import(
+  "../../src/app/api/settings/proxies/assignments/route.ts"
+);
 const proxyBulkRoute = await import("../../src/app/api/settings/proxies/bulk-assign/route.ts");
 const proxyHealthRoute = await import("../../src/app/api/settings/proxies/health/route.ts");
 const proxyLogger = await import("../../src/lib/proxyLogger.ts");
@@ -45,7 +46,7 @@ test("integration: proxy create with inline assignment is atomic and clears lega
         id: "openai",
         proxy: { type: "http", host: "legacy-openai.local", port: 8080 },
       }),
-    })
+    }),
   );
   assert.equal(legacySetRes.status, 200);
 
@@ -61,7 +62,7 @@ test("integration: proxy create with inline assignment is atomic and clears lega
         source: "dashboard-custom",
         assignment: { scope: "provider", scopeId: "openai" },
       }),
-    })
+    }),
   );
   assert.equal(createRes.status, 201);
   const createdProxy = (await createRes.json()) as any;
@@ -71,7 +72,7 @@ test("integration: proxy create with inline assignment is atomic and clears lega
   assert.equal(createdProxy.assignment.scopeId, "openai");
 
   const assignmentsRes = await proxyAssignmentsRoute.GET(
-    new Request("http://localhost/api/settings/proxies/assignments?scope=provider&scopeId=openai")
+    new Request("http://localhost/api/settings/proxies/assignments?scope=provider&scopeId=openai"),
   );
   assert.equal(assignmentsRes.status, 200);
   const assignments = (await assignmentsRes.json()) as any;
@@ -79,7 +80,7 @@ test("integration: proxy create with inline assignment is atomic and clears lega
   assert.equal(assignments.items[0].proxyId, createdProxy.id);
 
   const legacyGetRes = await proxyLegacyRoute.GET(
-    new Request("http://localhost/api/settings/proxy?level=provider&id=openai")
+    new Request("http://localhost/api/settings/proxy?level=provider&id=openai"),
   );
   assert.equal(legacyGetRes.status, 200);
   const legacyGet = (await legacyGetRes.json()) as any;
@@ -112,7 +113,7 @@ test("integration: proxy registry full flow works and enforces safe delete", asy
         port: 8080,
         source: "dashboard-custom",
       }),
-    })
+    }),
   );
   assert.equal(createRes.status, 201);
   const createdProxy = (await createRes.json()) as any;
@@ -128,14 +129,14 @@ test("integration: proxy registry full flow works and enforces safe delete", asy
         scopeId: connection.id,
         proxyId: createdProxy.id,
       }),
-    })
+    }),
   );
   assert.equal(assignRes.status, 200);
 
   const resolveRes = await proxyAssignmentsRoute.GET(
     new Request(
-      `http://localhost/api/settings/proxies/assignments?resolveConnectionId=${connection.id}`
-    )
+      `http://localhost/api/settings/proxies/assignments?resolveConnectionId=${connection.id}`,
+    ),
   );
   assert.equal(resolveRes.status, 200);
   const resolved = (await resolveRes.json()) as any;
@@ -152,7 +153,7 @@ test("integration: proxy registry full flow works and enforces safe delete", asy
         scopeIds: ["openai", "anthropic"],
         proxyId: createdProxy.id,
       }),
-    })
+    }),
   );
   assert.equal(bulkRes.status, 200);
   const bulkPayload = (await bulkRes.json()) as any;
@@ -177,7 +178,7 @@ test("integration: proxy registry full flow works and enforces safe delete", asy
   });
 
   const healthRes = await proxyHealthRoute.GET(
-    new Request("http://localhost/api/settings/proxies/health?hours=24")
+    new Request("http://localhost/api/settings/proxies/health?hours=24"),
   );
   assert.equal(healthRes.status, 200);
   const healthPayload = (await healthRes.json()) as any;
@@ -189,7 +190,7 @@ test("integration: proxy registry full flow works and enforces safe delete", asy
   const deleteConflictRes = await proxySettingsRoute.DELETE(
     new Request(`http://localhost/api/settings/proxies?id=${createdProxy.id}`, {
       method: "DELETE",
-    })
+    }),
   );
   assert.equal(deleteConflictRes.status, 409);
   const deleteConflict = (await deleteConflictRes.json()) as any;
@@ -206,7 +207,7 @@ test("integration: proxy registry full flow works and enforces safe delete", asy
         scopeId: connection.id,
         proxyId: null,
       }),
-    })
+    }),
   );
   assert.equal(clearAccountAssignment.status, 200);
 
@@ -219,14 +220,14 @@ test("integration: proxy registry full flow works and enforces safe delete", asy
         scopeIds: ["openai", "anthropic"],
         proxyId: null,
       }),
-    })
+    }),
   );
   assert.equal(clearProviderBulk.status, 200);
 
   const deleteOkRes = await proxySettingsRoute.DELETE(
     new Request(`http://localhost/api/settings/proxies?id=${createdProxy.id}`, {
       method: "DELETE",
-    })
+    }),
   );
   assert.equal(deleteOkRes.status, 200);
   const deleteOkPayload = (await deleteOkRes.json()) as any;

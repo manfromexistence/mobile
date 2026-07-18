@@ -22,7 +22,7 @@ for (const providerId of ["antigravity", "agy"]) {
     assert.equal(
       PROVIDERS[providerId].flowType,
       "authorization_code",
-      `${providerId} must use a plain authorization_code grant (no PKCE) for the Google native client`
+      `${providerId} must use a plain authorization_code grant (no PKCE) for the Google native client`,
     );
 
     const authData = generateAuthData(providerId, REDIRECT);
@@ -35,7 +35,7 @@ for (const providerId of ["antigravity", "agy"]) {
     assert.equal(
       url.searchParams.get("code_challenge"),
       null,
-      `${providerId} auth URL must NOT carry a PKCE code_challenge`
+      `${providerId} auth URL must NOT carry a PKCE code_challenge`,
     );
     assert.equal(url.searchParams.get("code_challenge_method"), null);
 
@@ -44,7 +44,7 @@ for (const providerId of ["antigravity", "agy"]) {
     assert.ok(!scopes.includes("openid"), `${providerId} must not request the openid scope`);
     assert.ok(
       scopes.includes("https://www.googleapis.com/auth/cloud-platform"),
-      `${providerId} must still request the cloud-platform scope`
+      `${providerId} must still request the cloud-platform scope`,
     );
   });
 }
@@ -56,7 +56,7 @@ test("antigravity.exchangeToken never forwards code_verifier (no PKCE → no inv
     sentBody = String(init.body ?? "");
     return new Response(
       JSON.stringify({ access_token: "t", refresh_token: "r", expires_in: 3600 }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      { status: 200, headers: { "Content-Type": "application/json" } },
     );
   }) as typeof fetch;
   try {
@@ -71,7 +71,7 @@ test("antigravity.exchangeToken never forwards code_verifier (no PKCE → no inv
       },
       "the-code",
       "http://127.0.0.1:20128/callback",
-      "should-be-ignored-verifier"
+      "should-be-ignored-verifier",
     );
   } finally {
     globalThis.fetch = origFetch;

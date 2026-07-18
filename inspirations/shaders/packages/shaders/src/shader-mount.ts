@@ -1,4 +1,4 @@
-import { vertexShaderSource } from './vertex-shader.js';
+import { vertexShaderSource } from "./vertex-shader.js";
 
 const DEFAULT_MAX_PIXEL_COUNT: number = 1920 * 1080 * 4;
 
@@ -61,26 +61,26 @@ export class ShaderMount {
      */
     maxPixelCount: number = DEFAULT_MAX_PIXEL_COUNT,
     /** Names of the uniforms that should have mipmaps generated for them */
-    mipmaps: string[] = []
+    mipmaps: string[] = [],
   ) {
     // nodeType check instead of `instanceof` to work across document boundaries (iframes, PiP windows)
     if (parentElement?.nodeType === 1) {
       this.parentElement = parentElement as PaperShaderElement;
     } else {
-      throw new Error('Paper Shaders: parent element must be an HTMLElement');
+      throw new Error("Paper Shaders: parent element must be an HTMLElement");
     }
 
     this.ownerDocument = parentElement.ownerDocument;
 
-    if (!this.ownerDocument.querySelector('style[data-paper-shader]')) {
-      const styleElement = this.ownerDocument.createElement('style');
+    if (!this.ownerDocument.querySelector("style[data-paper-shader]")) {
+      const styleElement = this.ownerDocument.createElement("style");
       styleElement.innerHTML = defaultStyle;
-      styleElement.setAttribute('data-paper-shader', '');
+      styleElement.setAttribute("data-paper-shader", "");
       this.ownerDocument.head.prepend(styleElement);
     }
 
     // Create the canvas element and mount it into the provided element
-    const canvasElement = this.ownerDocument.createElement('canvas');
+    const canvasElement = this.ownerDocument.createElement("canvas");
     this.canvasElement = canvasElement;
     this.parentElement.prepend(canvasElement);
     this.fragmentShader = fragmentShader;
@@ -91,9 +91,9 @@ export class ShaderMount {
     this.minPixelRatio = minPixelRatio;
     this.maxPixelCount = maxPixelCount;
 
-    const gl = canvasElement.getContext('webgl2', webGlContextAttributes);
+    const gl = canvasElement.getContext("webgl2", webGlContextAttributes);
     if (!gl) {
-      throw new Error('Paper Shaders: WebGL is not supported in this browser');
+      throw new Error("Paper Shaders: WebGL is not supported in this browser");
     }
     this.gl = gl;
 
@@ -106,19 +106,19 @@ export class ShaderMount {
     // Set up the resize observer to handle window resizing and set u_resolution
     this.setupResizeObserver();
     // Set up the visual viewport change listener to handle zoom changes (pinch zoom and classic browser zoom)
-    visualViewport?.addEventListener('resize', this.handleVisualViewportChange);
+    visualViewport?.addEventListener("resize", this.handleVisualViewportChange);
 
     // Set the animation speed after everything is ready to go
     this.setSpeed(speed);
 
     // Mark parent element as paper shader mount
-    this.parentElement.setAttribute('data-paper-shader', '');
+    this.parentElement.setAttribute("data-paper-shader", "");
 
     // Add the shaderMount instance to the div mount element to make it easily accessible
     this.parentElement.paperShaderMount = this;
 
     // Listen for document visibility changes to pause the shader when the tab is hidden
-    this.ownerDocument.addEventListener('visibilitychange', this.handleDocumentVisibilityChange);
+    this.ownerDocument.addEventListener("visibilitychange", this.handleDocumentVisibilityChange);
   }
 
   private initProgram = () => {
@@ -128,7 +128,7 @@ export class ShaderMount {
   };
 
   private setupPositionAttribute = () => {
-    const positionAttributeLocation = this.gl.getAttribLocation(this.program!, 'a_position');
+    const positionAttributeLocation = this.gl.getAttribLocation(this.program!, "a_position");
     const positionBuffer = this.gl.createBuffer();
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, positionBuffer);
     const positions = [-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1];
@@ -140,9 +140,9 @@ export class ShaderMount {
   private setupUniforms = () => {
     // Create a map to store all uniform locations
     const uniformLocations: Record<string, WebGLUniformLocation | null> = {
-      u_time: this.gl.getUniformLocation(this.program!, 'u_time'),
-      u_pixelRatio: this.gl.getUniformLocation(this.program!, 'u_pixelRatio'),
-      u_resolution: this.gl.getUniformLocation(this.program!, 'u_resolution'),
+      u_time: this.gl.getUniformLocation(this.program!, "u_time"),
+      u_pixelRatio: this.gl.getUniformLocation(this.program!, "u_pixelRatio"),
+      u_resolution: this.gl.getUniformLocation(this.program!, "u_resolution"),
     };
 
     // Add locations for all provided uniforms
@@ -152,7 +152,10 @@ export class ShaderMount {
       // For texture uniforms, also look for the aspect ratio uniform
       if (value instanceof HTMLImageElement) {
         const aspectRatioUniformName = `${key}AspectRatio`;
-        uniformLocations[aspectRatioUniformName] = this.gl.getUniformLocation(this.program!, aspectRatioUniformName);
+        uniformLocations[aspectRatioUniformName] = this.gl.getUniformLocation(
+          this.program!,
+          aspectRatioUniformName,
+        );
       }
     });
 
@@ -250,7 +253,8 @@ export class ShaderMount {
     }
 
     // Prevent the total rendered pixel count from exceeding maxPixelCount
-    const maxPixelCountHeadroom = Math.sqrt(this.maxPixelCount) / Math.sqrt(targetPixelWidth * targetPixelHeight);
+    const maxPixelCountHeadroom =
+      Math.sqrt(this.maxPixelCount) / Math.sqrt(targetPixelWidth * targetPixelHeight);
     const scaleToMeetMaxPixelCount = Math.min(1, maxPixelCountHeadroom);
     const newWidth = Math.round(targetPixelWidth * scaleToMeetMaxPixelCount);
     const newHeight = Math.round(targetPixelHeight * scaleToMeetMaxPixelCount);
@@ -276,7 +280,7 @@ export class ShaderMount {
     if (this.hasBeenDisposed) return;
 
     if (this.program === null) {
-      console.warn('Tried to render before program or gl was initialized');
+      console.warn("Tried to render before program or gl was initialized");
       return;
     }
 
@@ -299,7 +303,11 @@ export class ShaderMount {
 
     // If the resolution has changed, we need to update the uniform
     if (this.resolutionChanged) {
-      this.gl.uniform2f(this.uniformLocations.u_resolution!, this.gl.canvas.width, this.gl.canvas.height);
+      this.gl.uniform2f(
+        this.uniformLocations.u_resolution!,
+        this.gl.canvas.width,
+        this.gl.canvas.height,
+      );
       this.gl.uniform1f(this.uniformLocations.u_pixelRatio!, this.renderScale);
       this.resolutionChanged = false;
     }
@@ -352,17 +360,28 @@ export class ShaderMount {
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
 
     // Upload image to texture
-    this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, this.gl.RGBA, this.gl.UNSIGNED_BYTE, image);
+    this.gl.texImage2D(
+      this.gl.TEXTURE_2D,
+      0,
+      this.gl.RGBA,
+      this.gl.RGBA,
+      this.gl.UNSIGNED_BYTE,
+      image,
+    );
 
     // Generate mipmaps if the uniform is in the mipmaps list
     if (this.mipmaps.includes(uniformName)) {
       this.gl.generateMipmap(this.gl.TEXTURE_2D);
-      this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR_MIPMAP_LINEAR);
+      this.gl.texParameteri(
+        this.gl.TEXTURE_2D,
+        this.gl.TEXTURE_MIN_FILTER,
+        this.gl.LINEAR_MIPMAP_LINEAR,
+      );
     }
 
     const error = this.gl.getError();
     if (error !== this.gl.NO_ERROR || texture === null) {
-      console.error('Paper Shaders: WebGL error when uploading texture:', error);
+      console.error("Paper Shaders: WebGL error when uploading texture:", error);
       return;
     }
 
@@ -461,10 +480,10 @@ export class ShaderMount {
           default:
             console.warn(`Unsupported uniform array length: ${valueLength}`);
         }
-      } else if (typeof value === 'number') {
+      } else if (typeof value === "number") {
         // Number case, supports floats and ints
         this.gl.uniform1f(location, value);
-      } else if (typeof value === 'boolean') {
+      } else if (typeof value === "boolean") {
         // Boolean case, supports true and false
         this.gl.uniform1i(location, value ? 1 : 0);
       } else {
@@ -571,8 +590,8 @@ export class ShaderMount {
       this.resizeObserver = null;
     }
 
-    visualViewport?.removeEventListener('resize', this.handleVisualViewportChange);
-    this.ownerDocument.removeEventListener('visibilitychange', this.handleDocumentVisibilityChange);
+    visualViewport?.removeEventListener("resize", this.handleVisualViewportChange);
+    this.ownerDocument.removeEventListener("visibilitychange", this.handleDocumentVisibilityChange);
 
     this.uniformLocations = {};
 
@@ -583,7 +602,11 @@ export class ShaderMount {
   };
 }
 
-function createShader(gl: WebGL2RenderingContext, type: number, source: string): WebGLShader | null {
+function createShader(
+  gl: WebGL2RenderingContext,
+  type: number,
+  source: string,
+): WebGLShader | null {
   const shader = gl.createShader(type);
   if (!shader) return null;
 
@@ -591,7 +614,7 @@ function createShader(gl: WebGL2RenderingContext, type: number, source: string):
   gl.compileShader(shader);
 
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    console.error('An error occurred compiling the shaders: ' + gl.getShaderInfoLog(shader));
+    console.error("An error occurred compiling the shaders: " + gl.getShaderInfoLog(shader));
     gl.deleteShader(shader);
     return null;
   }
@@ -602,17 +625,20 @@ function createShader(gl: WebGL2RenderingContext, type: number, source: string):
 function createProgram(
   gl: WebGL2RenderingContext,
   vertexShaderSource: string,
-  fragmentShaderSource: string
+  fragmentShaderSource: string,
 ): WebGLProgram | null {
   const format = gl.getShaderPrecisionFormat(gl.FRAGMENT_SHADER, gl.MEDIUM_FLOAT);
   const precision = format ? format.precision : null;
   // MEDIUM_FLOAT precision can be 10, 16 or 23 bits depending on device;
   // Shaders fail on 10 bit (and 16 bit is hard to test) => we force 23-bit by switching to highp
   if (precision && precision < 23) {
-    vertexShaderSource = vertexShaderSource.replace(/precision\s+(lowp|mediump)\s+float;/g, 'precision highp float;');
+    vertexShaderSource = vertexShaderSource.replace(
+      /precision\s+(lowp|mediump)\s+float;/g,
+      "precision highp float;",
+    );
     fragmentShaderSource = fragmentShaderSource
-      .replace(/precision\s+(lowp|mediump)\s+float/g, 'precision highp float')
-      .replace(/\b(uniform|varying|attribute)\s+(lowp|mediump)\s+(\w+)/g, '$1 highp $3');
+      .replace(/precision\s+(lowp|mediump)\s+float/g, "precision highp float")
+      .replace(/\b(uniform|varying|attribute)\s+(lowp|mediump)\s+(\w+)/g, "$1 highp $3");
   }
 
   const vertexShader = createShader(gl, gl.VERTEX_SHADER, vertexShaderSource);
@@ -628,7 +654,7 @@ function createProgram(
   gl.linkProgram(program);
 
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    console.error('Unable to initialize the shader program: ' + gl.getProgramInfoLog(program));
+    console.error("Unable to initialize the shader program: " + gl.getProgramInfoLog(program));
     gl.deleteProgram(program);
     gl.deleteShader(vertexShader);
     gl.deleteShader(fragmentShader);
@@ -670,7 +696,7 @@ export interface PaperShaderElement extends HTMLElement {
 
 /** Check if an element is a Paper shader element */
 export function isPaperShaderElement(element: HTMLElement): element is PaperShaderElement {
-  return 'paperShaderMount' in element;
+  return "paperShaderMount" in element;
 }
 
 /**
@@ -702,12 +728,12 @@ export type ImageShaderPreset<T> = {
    *
    * While we exclude images from presets they should still be set with a default prop value so the code-first usage of shaders remains great.
    */
-  params: Required<Omit<T, 'image'>>;
+  params: Required<Omit<T, "image">>;
 };
 
 function isSafari() {
   const ua = navigator.userAgent.toLowerCase();
-  return ua.includes('safari') && !ua.includes('chrome') && !ua.includes('android');
+  return ua.includes("safari") && !ua.includes("chrome") && !ua.includes("android");
 }
 
 // Zoom level can be estimated comparing the browser's outerWidth and the viewport width.
